@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Banzai::Filter::UploadLinkFilter do
+RSpec.describe Banzai::Filter::UploadLinkFilter, feature_category: :team_planning do
   def filter(doc, contexts = {})
     contexts.reverse_merge!(
       project: project,

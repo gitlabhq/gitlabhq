@@ -1737,6 +1737,22 @@ RSpec.describe Ci::Runner, feature_category: :runner do
     end
   end
 
+  describe '#token' do
+    subject(:token) { runner.token }
+
+    context 'when runner is registered' do
+      let(:runner) { create(:ci_runner) }
+
+      it { is_expected.not_to start_with('glrt-') }
+    end
+
+    context 'when runner is created in UI' do
+      let(:runner) { create(:ci_runner, :created_in_ui) }
+
+      it { is_expected.to start_with('glrt-') }
+    end
+  end
+
   describe '#token_expires_at', :freeze_time do
     shared_examples 'expiring token' do |interval:|
       it 'expires' do

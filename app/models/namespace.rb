@@ -660,7 +660,6 @@ class Namespace < ApplicationRecord
 
     groups_requiring_authorizations_refresh.find_each do |group|
       group.refresh_members_authorized_projects(
-        blocking: false,
         priority: priority
       )
     end

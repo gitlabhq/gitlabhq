@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe MergeRequests::ExportCsvService do
+RSpec.describe MergeRequests::ExportCsvService, feature_category: :importers do
   let_it_be(:merge_request) { create(:merge_request) }
 
   let(:csv) { CSV.parse(subject.csv_data, headers: true).first }
@@ -111,6 +111,22 @@ RSpec.describe MergeRequests::ExportCsvService do
         it 'returns an empty string' do
           expect(csv['Milestone ID']).to eq('')
         end
+      end
+    end
+
+    describe '#email' do
+      let_it_be(:user) { create(:user) }
+
+      it 'emails csv' do
+        expect { subject.email(user) }.to change { ActionMailer::Base.deliveries.count }
+      end
+
+      it 'renders with a target filesize' do
+        expect_next_instance_of(CsvBuilder) do |csv_builder|
+          expect(csv_builder).to receive(:render).with(described_class::TARGET_FILESIZE).once
+        end
+
+        subject.email(user)
       end
     end
   end

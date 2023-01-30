@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Banzai::ReferenceParser::DesignParser do
+RSpec.describe Banzai::ReferenceParser::DesignParser, feature_category: :design_management do
   include ReferenceParserHelpers
   include DesignManagementTestHelpers
 

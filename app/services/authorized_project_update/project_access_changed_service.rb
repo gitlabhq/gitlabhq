@@ -6,16 +6,12 @@ module AuthorizedProjectUpdate
       @project_ids = Array.wrap(project_ids)
     end
 
-    def execute(blocking: true)
+    def execute
       return if @project_ids.empty?
 
       bulk_args = @project_ids.map { |id| [id] }
 
-      if blocking
-        AuthorizedProjectUpdate::ProjectRecalculateWorker.bulk_perform_and_wait(bulk_args)
-      else
-        AuthorizedProjectUpdate::ProjectRecalculateWorker.bulk_perform_async(bulk_args) # rubocop:disable Scalability/BulkPerformWithContext
-      end
+      AuthorizedProjectUpdate::ProjectRecalculateWorker.bulk_perform_async(bulk_args) # rubocop:disable Scalability/BulkPerformWithContext
     end
   end
 end

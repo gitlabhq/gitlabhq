@@ -22,38 +22,6 @@ RSpec.describe WaitableWorker do
 
   subject(:job) { worker.new }
 
-  describe '.bulk_perform_and_wait' do
-    context '1 job' do
-      it 'runs the jobs asynchronously' do
-        arguments = [[1]]
-
-        expect(worker).to receive(:bulk_perform_async).with(arguments)
-
-        worker.bulk_perform_and_wait(arguments)
-      end
-    end
-
-    context 'between 2 and 3 jobs' do
-      it 'runs the jobs asynchronously' do
-        arguments = [[1], [2], [3]]
-
-        expect(worker).to receive(:bulk_perform_async).with(arguments)
-
-        worker.bulk_perform_and_wait(arguments)
-      end
-    end
-
-    context '>= 4 jobs' do
-      it 'runs jobs using sidekiq' do
-        arguments = 1.upto(5).map { |i| [i] }
-
-        expect(worker).to receive(:bulk_perform_async).with(arguments)
-
-        worker.bulk_perform_and_wait(arguments)
-      end
-    end
-  end
-
   describe '#perform' do
     shared_examples 'perform' do
       it 'notifies the JobWaiter when done if the key is provided' do

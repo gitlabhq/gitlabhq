@@ -1,4 +1,0 @@
----
-Gitlab/DelegatePredicateMethods:
-  Exclude:
-    - 'app/models/clusters/cluster.rb'

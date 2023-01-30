@@ -1,0 +1,8 @@
+---
+name: optimized_head_tree
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110248
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/389448
+milestone: '15.9'
+type: development
+group: group::source code
+default_enabled: false

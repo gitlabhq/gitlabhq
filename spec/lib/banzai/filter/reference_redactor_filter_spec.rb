@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Banzai::Filter::ReferenceRedactorFilter do
+RSpec.describe Banzai::Filter::ReferenceRedactorFilter, feature_category: :team_planning do
   include FilterSpecHelper
 
   it 'ignores non-GFM links' do

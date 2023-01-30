@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlEmptyState, GlTooltipDirective } from '@gitlab/ui';
+import { GlButton, GlEmptyState, GlFilteredSearchToken, GlTooltipDirective } from '@gitlab/ui';
 import * as Sentry from '@sentry/browser';
 import getIssuesQuery from 'ee_else_ce/issues/dashboard/queries/get_issues.query.graphql';
 import IssueCardStatistics from 'ee_else_ce/issues/list/components/issue_card_statistics.vue';
@@ -7,6 +7,7 @@ import IssueCardTimeInfo from 'ee_else_ce/issues/list/components/issue_card_time
 import { IssuableStatus } from '~/issues/constants';
 import {
   CREATED_DESC,
+  defaultTypeTokenOptions,
   i18n,
   PAGE_SIZE,
   PARAM_STATE,
@@ -28,16 +29,24 @@ import axios from '~/lib/utils/axios_utils';
 import { scrollUp } from '~/lib/utils/scroll_utils';
 import { getParameterByName } from '~/lib/utils/url_utility';
 import {
+  OPERATORS_IS,
+  OPERATORS_IS_NOT_OR,
   TOKEN_TITLE_ASSIGNEE,
   TOKEN_TITLE_AUTHOR,
+  TOKEN_TITLE_CONFIDENTIAL,
   TOKEN_TITLE_LABEL,
   TOKEN_TITLE_MILESTONE,
   TOKEN_TITLE_MY_REACTION,
+  TOKEN_TITLE_SEARCH_WITHIN,
+  TOKEN_TITLE_TYPE,
   TOKEN_TYPE_ASSIGNEE,
   TOKEN_TYPE_AUTHOR,
+  TOKEN_TYPE_CONFIDENTIAL,
   TOKEN_TYPE_LABEL,
   TOKEN_TYPE_MILESTONE,
   TOKEN_TYPE_MY_REACTION,
+  TOKEN_TYPE_SEARCH_WITHIN,
+  TOKEN_TYPE_TYPE,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
 import { IssuableListTabs, IssuableStates } from '~/vue_shared/issuable/list/constants';
@@ -201,6 +210,7 @@ export default {
           title: TOKEN_TITLE_ASSIGNEE,
           icon: 'user',
           token: UserToken,
+          operators: OPERATORS_IS_NOT_OR,
           fetchUsers: this.fetchUsers,
           preloadedUsers,
           recentSuggestionsStorageKey: 'dashboard-issues-recent-tokens-assignee',
@@ -210,6 +220,7 @@ export default {
           title: TOKEN_TITLE_AUTHOR,
           icon: 'pencil',
           token: UserToken,
+          operators: OPERATORS_IS_NOT_OR,
           fetchUsers: this.fetchUsers,
           defaultUsers: [],
           preloadedUsers,
@@ -220,6 +231,7 @@ export default {
           title: TOKEN_TITLE_LABEL,
           icon: 'labels',
           token: LabelToken,
+          operators: OPERATORS_IS_NOT_OR,
           fetchLabels: this.fetchLabels,
           recentSuggestionsStorageKey: 'dashboard-issues-recent-tokens-label',
         },
@@ -232,9 +244,45 @@ export default {
           recentSuggestionsStorageKey: 'dashboard-issues-recent-tokens-milestone',
           shouldSkipSort: true,
         },
+        {
+          type: TOKEN_TYPE_SEARCH_WITHIN,
+          title: TOKEN_TITLE_SEARCH_WITHIN,
+          icon: 'search',
+          token: GlFilteredSearchToken,
+          unique: true,
+          operators: OPERATORS_IS,
+          options: [
+            { icon: 'title', value: 'TITLE', title: this.$options.i18n.titles },
+            {
+              icon: 'text-description',
+              value: 'DESCRIPTION',
+              title: this.$options.i18n.descriptions,
+            },
+          ],
+        },
+        {
+          type: TOKEN_TYPE_TYPE,
+          title: TOKEN_TITLE_TYPE,
+          icon: 'issues',
+          token: GlFilteredSearchToken,
+          options: defaultTypeTokenOptions,
+        },
       ];
 
       if (this.isSignedIn) {
+        tokens.push({
+          type: TOKEN_TYPE_CONFIDENTIAL,
+          title: TOKEN_TITLE_CONFIDENTIAL,
+          icon: 'eye-slash',
+          token: GlFilteredSearchToken,
+          unique: true,
+          operators: OPERATORS_IS,
+          options: [
+            { icon: 'eye-slash', value: 'yes', title: this.$options.i18n.confidentialYes },
+            { icon: 'eye', value: 'no', title: this.$options.i18n.confidentialNo },
+          ],
+        });
+
         tokens.push({
           type: TOKEN_TYPE_MY_REACTION,
           title: TOKEN_TITLE_MY_REACTION,

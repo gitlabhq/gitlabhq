@@ -10,7 +10,7 @@ add-jh-files:
   extends:
     - .shared-as-if-jh
     - .as-if-jh:rules:prepare-as-if-jh
-  image: ${GITLAB_DEPENDENCY_PROXY}ruby:${RUBY_VERSION}
+  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}ruby:${RUBY_VERSION}
   stage: prepare
   before_script:
     - source ./scripts/utils.sh

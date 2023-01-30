@@ -33,6 +33,7 @@ import {
   INSTANCE_TYPE,
   I18N_FETCH_ERROR,
   FILTER_CSS_CLASSES,
+  JOBS_ROUTE_PATH,
 } from '../constants';
 import { captureException } from '../sentry_utils';
 
@@ -150,7 +151,7 @@ export default {
   methods: {
     jobsUrl(runner) {
       const url = new URL(runner.adminUrl);
-      url.hash = '#/jobs';
+      url.hash = `#${JOBS_ROUTE_PATH}`;
 
       return url.href;
     },
@@ -228,16 +229,16 @@ export default {
         :checkable="true"
         @deleted="onDeleted"
       >
-        <template #runner-name="{ runner }">
-          <gl-link :href="runner.adminUrl">
-            <runner-name :runner="runner" />
-          </gl-link>
-        </template>
         <template #runner-job-status-badge="{ runner }">
           <runner-job-status-badge
             :href="jobsUrl(runner)"
             :job-status="runner.jobExecutionStatus"
           />
+        </template>
+        <template #runner-name="{ runner }">
+          <gl-link :href="runner.adminUrl">
+            <runner-name :runner="runner" />
+          </gl-link>
         </template>
         <template #runner-actions-cell="{ runner }">
           <runner-actions-cell

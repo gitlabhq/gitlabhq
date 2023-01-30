@@ -30,7 +30,7 @@ export const I18N = {
   ),
   statusChecksLinkTitle: s__('BranchRules|Manage in status checks'),
   statusChecksHeader: s__('BranchRules|Status checks (%{total})'),
-  allowedToPushHeader: s__('BranchRules|Allowed to push (%{total})'),
+  allowedToPushHeader: s__('BranchRules|Allowed to push and merge (%{total})'),
   allowedToMergeHeader: s__('BranchRules|Allowed to merge (%{total})'),
   approvalsHeader: s__('BranchRules|Required approvals (%{total})'),
   noData: s__('BranchRules|No data to display'),

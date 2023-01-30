@@ -89,15 +89,7 @@ module Clusters
 
     delegate :status, to: :provider, allow_nil: true
     delegate :status_reason, to: :provider, allow_nil: true
-    delegate :on_creation?, to: :provider, allow_nil: true
-    delegate :knative_pre_installed?, to: :provider, allow_nil: true
 
-    delegate :active?, to: :platform_kubernetes, prefix: true, allow_nil: true
-    delegate :rbac?, to: :platform_kubernetes, prefix: true, allow_nil: true
-    delegate :available?, to: :application_helm, prefix: true, allow_nil: true
-    delegate :available?, to: :application_ingress, prefix: true, allow_nil: true
-    delegate :available?, to: :application_knative, prefix: true, allow_nil: true
-    delegate :available?, to: :integration_prometheus, prefix: true, allow_nil: true
     delegate :external_ip, to: :application_ingress, prefix: true, allow_nil: true
     delegate :external_hostname, to: :application_ingress, prefix: true, allow_nil: true
 
@@ -262,6 +254,38 @@ module Clusters
 
     def find_or_build_integration_prometheus
       integration_prometheus || build_integration_prometheus
+    end
+
+    def on_creation?
+      !!provider&.on_creation?
+    end
+
+    def knative_pre_installed?
+      !!provider&.knative_pre_installed?
+    end
+
+    def platform_kubernetes_active?
+      !!platform_kubernetes&.active?
+    end
+
+    def platform_kubernetes_rbac?
+      !!platform_kubernetes&.rbac?
+    end
+
+    def application_helm_available?
+      !!application_helm&.available?
+    end
+
+    def application_ingress_available?
+      !!application_ingress&.available?
+    end
+
+    def application_knative_available?
+      !!application_knative&.available?
+    end
+
+    def integration_prometheus_available?
+      !!integration_prometheus&.available?
     end
 
     def provider

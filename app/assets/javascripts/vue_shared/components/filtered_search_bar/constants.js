@@ -85,5 +85,4 @@ export const TOKEN_TYPE_STATUS = 'status';
 export const TOKEN_TYPE_TARGET_BRANCH = 'target-branch';
 export const TOKEN_TYPE_TYPE = 'type';
 export const TOKEN_TYPE_WEIGHT = 'weight';
-
 export const TOKEN_TYPE_SEARCH_WITHIN = 'in';

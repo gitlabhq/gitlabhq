@@ -45,8 +45,7 @@ export default {
   <gl-badge
     v-if="badge"
     v-bind="$attrs"
-    size="sm"
-    class="gl-mr-3 gl-bg-transparent!"
+    class="gl-display-inline-block gl-max-w-full gl-text-truncate gl-bg-transparent!"
     variant="muted"
     :class="badge.classes"
   >

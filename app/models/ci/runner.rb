@@ -15,6 +15,8 @@ module Ci
     include EachBatch
     include Ci::HasRunnerExecutor
 
+    extend ::Gitlab::Utils::Override
+
     add_authentication_token_field :token, encrypted: :optional, expires_at: :compute_token_expiration
 
     enum access_level: {
@@ -27,6 +29,9 @@ module Ci
       group_type: 2,
       project_type: 3
     }
+
+    # Prefix assigned to runners created from the UI, instead of registered via the command line
+    CREATED_RUNNER_TOKEN_PREFIX = 'glrt-'
 
     # This `ONLINE_CONTACT_TIMEOUT` needs to be larger than
     #   `RUNNER_QUEUE_EXPIRY_TIME+UPDATE_CONTACT_COLUMN_EVERY`
@@ -191,6 +196,8 @@ module Ci
 
     cached_attr_reader :version, :revision, :platform, :architecture, :ip_address, :contacted_at, :executor_type
 
+    attr_writer :legacy_registered
+
     chronic_duration_attr :maximum_timeout_human_readable, :maximum_timeout,
         error_message: 'Maximum job timeout has a value which could not be accepted'
 
@@ -288,6 +295,13 @@ module Ci
           tag_list: tag_list
         })
       end
+    end
+
+    def initialize(params)
+      @legacy_registered = params&.delete(:legacy_registered)
+      @legacy_registered = true if @legacy_registered.nil?
+
+      super(params)
     end
 
     def assign_to(project, current_user = nil)
@@ -472,6 +486,13 @@ module Ci
       when 'project_type'
         compute_token_expiration_project
       end
+    end
+
+    override :format_token
+    def format_token(token)
+      return token if @legacy_registered
+
+      "#{CREATED_RUNNER_TOKEN_PREFIX}#{token}"
     end
 
     private

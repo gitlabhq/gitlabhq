@@ -31,7 +31,7 @@ module Groups
       end
 
       def setup_authorizations
-        shared_with_group.refresh_members_authorized_projects(blocking: false, direct_members_only: true)
+        shared_with_group.refresh_members_authorized_projects(direct_members_only: true)
       end
     end
   end

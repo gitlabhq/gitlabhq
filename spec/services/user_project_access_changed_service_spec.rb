@@ -4,18 +4,11 @@ require 'spec_helper'
 
 RSpec.describe UserProjectAccessChangedService do
   describe '#execute' do
-    it 'schedules the user IDs' do
-      expect(AuthorizedProjectsWorker).to receive(:bulk_perform_and_wait)
-        .with([[1], [2]])
-
-      described_class.new([1, 2]).execute
-    end
-
-    it 'permits non-blocking operation' do
+    it 'permits high-priority operation' do
       expect(AuthorizedProjectsWorker).to receive(:bulk_perform_async)
         .with([[1], [2]])
 
-      described_class.new([1, 2]).execute(blocking: false)
+      described_class.new([1, 2]).execute
     end
 
     it 'permits low-priority operation' do
@@ -27,8 +20,7 @@ RSpec.describe UserProjectAccessChangedService do
         )
       )
 
-      described_class.new([1, 2]).execute(blocking: false,
-                                          priority: described_class::LOW_PRIORITY)
+      described_class.new([1, 2]).execute(priority: described_class::LOW_PRIORITY)
     end
 
     it 'permits medium-priority operation' do
@@ -40,14 +32,12 @@ RSpec.describe UserProjectAccessChangedService do
         )
       )
 
-      described_class.new([1, 2]).execute(blocking: false,
-                                          priority: described_class::MEDIUM_PRIORITY)
+      described_class.new([1, 2]).execute(priority: described_class::MEDIUM_PRIORITY)
     end
 
     it 'sets the current caller_id as related_class in the context of all the enqueued jobs' do
       Gitlab::ApplicationContext.with_context(caller_id: 'Foo') do
-        described_class.new([1, 2]).execute(blocking: false,
-                                            priority: described_class::LOW_PRIORITY)
+        described_class.new([1, 2]).execute(priority: described_class::LOW_PRIORITY)
       end
 
       expect(AuthorizedProjectUpdate::UserRefreshFromReplicaWorker.jobs).to all(
@@ -60,7 +50,7 @@ RSpec.describe UserProjectAccessChangedService do
     let(:service) { UserProjectAccessChangedService.new([1, 2]) }
 
     before do
-      expect(AuthorizedProjectsWorker).to receive(:bulk_perform_and_wait)
+      expect(AuthorizedProjectsWorker).to receive(:bulk_perform_async)
                                             .with([[1], [2]])
                                             .and_return(10)
     end
@@ -79,7 +69,7 @@ RSpec.describe UserProjectAccessChangedService do
 
       service = UserProjectAccessChangedService.new([1, 2, 3, 4, 5])
 
-      allow(AuthorizedProjectsWorker).to receive(:bulk_perform_and_wait)
+      allow(AuthorizedProjectsWorker).to receive(:bulk_perform_async)
                                             .with([[1], [2], [3], [4], [5]])
                                             .and_return(10)
 

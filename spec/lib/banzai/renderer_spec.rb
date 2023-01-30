@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Banzai::Renderer do
+RSpec.describe Banzai::Renderer, feature_category: :team_planning do
   let(:renderer) { described_class }
 
   def fake_object(fresh:)

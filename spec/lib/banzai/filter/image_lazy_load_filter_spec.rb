@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Banzai::Filter::ImageLazyLoadFilter do
+RSpec.describe Banzai::Filter::ImageLazyLoadFilter, feature_category: :team_planning do
   include FilterSpecHelper
 
   def image(path)

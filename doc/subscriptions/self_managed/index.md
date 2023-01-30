@@ -110,6 +110,7 @@ The user must not be assigned any other role, anywhere in the instance.
   [a set of permissions](../../user/permissions.md#project-members-permissions).
 - If your project is public, all users, including those with the Guest role
   can access your project.
+- A user's highest assigned role is updated asynchronously and may take some time to update.
 
 NOTE:
 If a user creates a project, they are assigned the Maintainer or Owner role.

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Banzai::Filter::AutolinkFilter do
+RSpec.describe Banzai::Filter::AutolinkFilter, feature_category: :team_planning do
   include FilterSpecHelper
 
   let(:link) { 'http://about.gitlab.com/' }

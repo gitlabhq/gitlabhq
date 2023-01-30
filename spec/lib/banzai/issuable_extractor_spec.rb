@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Banzai::IssuableExtractor do
+RSpec.describe Banzai::IssuableExtractor, feature_category: :team_planning do
   let(:project) { create(:project) }
   let(:user) { create(:user) }
   let(:extractor) { described_class.new(Banzai::RenderContext.new(project, user)) }

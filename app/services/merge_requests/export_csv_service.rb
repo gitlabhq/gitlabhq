@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
 module MergeRequests
-  class ExportCsvService < Issuable::ExportCsv::BaseService
+  class ExportCsvService < ExportCsv::BaseService
     include Gitlab::Routing.url_helpers
     include GitlabRoutingHelper
 
     def email(user)
-      Notify.merge_requests_csv_email(user, project, csv_data, csv_builder.status).deliver_now
+      Notify.merge_requests_csv_email(user, resource_parent, csv_data, csv_builder.status).deliver_now
     end
 
     private

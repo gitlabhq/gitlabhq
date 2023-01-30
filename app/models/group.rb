@@ -422,15 +422,14 @@ class Group < Namespace
     )
   end
 
-  def add_member(user, access_level, current_user: nil, expires_at: nil, ldap: false, blocking_refresh: true)
+  def add_member(user, access_level, current_user: nil, expires_at: nil, ldap: false)
     Members::Groups::CreatorService.add_member( # rubocop:disable CodeReuse/ServiceClass
       self,
       user,
       access_level,
       current_user: current_user,
       expires_at: expires_at,
-      ldap: ldap,
-      blocking_refresh: blocking_refresh
+      ldap: ldap
     )
   end
 
@@ -539,7 +538,6 @@ class Group < Namespace
 
   # rubocop: disable CodeReuse/ServiceClass
   def refresh_members_authorized_projects(
-    blocking: true,
     priority: UserProjectAccessChangedService::HIGH_PRIORITY,
     direct_members_only: false
   )
@@ -552,7 +550,7 @@ class Group < Namespace
 
     UserProjectAccessChangedService
       .new(user_ids)
-      .execute(blocking: blocking, priority: priority)
+      .execute(priority: priority)
   end
   # rubocop: enable CodeReuse/ServiceClass
 
@@ -748,7 +746,7 @@ class Group < Namespace
   end
 
   def refresh_project_authorizations
-    refresh_members_authorized_projects(blocking: false)
+    refresh_members_authorized_projects
   end
 
   # each existing group needs to have a `runners_token`.

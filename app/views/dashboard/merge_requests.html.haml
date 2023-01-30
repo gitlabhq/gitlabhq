@@ -13,7 +13,7 @@
       = render 'shared/new_project_item_vue_select'
 
 .top-area
-  = render 'shared/issuable/nav', type: :merge_requests, display_count: !@no_filters_set
+  = render 'shared/issuable/nav', type: :merge_requests, display_count: !(@no_filters_set || @search_timeout_occurred)
 
 = render 'shared/issuable/search_bar', type: :merge_requests, disable_target_branch: true
 

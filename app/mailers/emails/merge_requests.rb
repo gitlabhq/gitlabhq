@@ -138,7 +138,7 @@ module Emails
       @written_count = export_status.fetch(:rows_written)
       @truncated = export_status.fetch(:truncated)
       @size_limit = ActiveSupport::NumberHelper
-        .number_to_human_size(Issuable::ExportCsv::BaseService::TARGET_FILESIZE)
+        .number_to_human_size(ExportCsv::BaseService::TARGET_FILESIZE)
 
       filename = "#{project.full_path.parameterize}_merge_requests_#{Date.current.iso8601}.csv"
       attachments[filename] = { content: csv_data, mime_type: 'text/csv' }

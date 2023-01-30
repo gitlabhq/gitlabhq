@@ -147,11 +147,6 @@ e2e-test-report:
     GIT_STRATEGY: none
   allow_failure: true
   when: always
-  artifacts:  # re-save rspec results for displaying in parent pipeline
-    expire_in: 1 day
-    when: always
-    paths:
-      - qa/tmp/rspec-*.xml
 
 upload-knapsack-report:
   extends:

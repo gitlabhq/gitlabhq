@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Banzai::Filter::References::MergeRequestReferenceFilter do
+RSpec.describe Banzai::Filter::References::MergeRequestReferenceFilter, feature_category: :code_review_workflow do
   include FilterSpecHelper
 
   let(:project) { create(:project, :public) }

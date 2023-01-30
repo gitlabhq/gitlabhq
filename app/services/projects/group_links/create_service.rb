@@ -36,7 +36,6 @@ module Projects
         # AuthorizedProjectsWorker but with some delay and lower urgency as a
         # safety net.
         shared_with_group.refresh_members_authorized_projects(
-          blocking: false,
           priority: UserProjectAccessChangedService::LOW_PRIORITY
         )
       end

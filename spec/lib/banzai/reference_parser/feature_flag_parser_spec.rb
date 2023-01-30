@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Banzai::ReferenceParser::FeatureFlagParser do
+RSpec.describe Banzai::ReferenceParser::FeatureFlagParser, feature_category: :feature_flags do
   include ReferenceParserHelpers
 
   subject { described_class.new(Banzai::RenderContext.new(project, user)) }

@@ -21,8 +21,7 @@ module Members
         expires_at: nil,
         tasks_to_be_done: [],
         tasks_project_id: nil,
-        ldap: nil,
-        blocking_refresh: nil
+        ldap: nil
       )
         return [] unless invitees.present?
 
@@ -40,8 +39,7 @@ module Members
             expires_at: expires_at,
             tasks_to_be_done: tasks_to_be_done,
             tasks_project_id: tasks_project_id,
-            ldap: ldap,
-            blocking_refresh: blocking_refresh
+            ldap: ldap
           }
 
           members = emails.map do |email|
@@ -62,16 +60,14 @@ module Members
         access_level,
         current_user: nil,
         expires_at: nil,
-        ldap: nil,
-        blocking_refresh: nil
+        ldap: nil
       )
         add_members(source,
                   [invitee],
                   access_level,
                   current_user: current_user,
                   expires_at: expires_at,
-                  ldap: ldap,
-                  blocking_refresh: blocking_refresh).first
+                  ldap: ldap).first
       end
 
       private
@@ -250,8 +246,6 @@ module Members
 
     def find_or_build_member
       @member = builder.new(source, invitee, existing_members).execute
-
-      @member.blocking_refresh = args[:blocking_refresh]
     end
 
     def ldap

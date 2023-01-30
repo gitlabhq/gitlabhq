@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Banzai::Filter::BroadcastMessageSanitizationFilter do
+RSpec.describe Banzai::Filter::BroadcastMessageSanitizationFilter, feature_category: :team_planning do
   include FilterSpecHelper
 
   it_behaves_like 'default allowlist'

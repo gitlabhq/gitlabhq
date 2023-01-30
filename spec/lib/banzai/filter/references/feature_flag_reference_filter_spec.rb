@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Banzai::Filter::References::FeatureFlagReferenceFilter do
+RSpec.describe Banzai::Filter::References::FeatureFlagReferenceFilter, feature_category: :feature_flags do
   include FilterSpecHelper
 
   let_it_be(:project) { create(:project, :public) }

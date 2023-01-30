@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Banzai::Filter::References::ReferenceCache do
+RSpec.describe Banzai::Filter::References::ReferenceCache, feature_category: :team_planning do
   let_it_be(:project)  { create(:project) }
   let_it_be(:project2) { create(:project) }
   let_it_be(:issue1)   { create(:issue, project: project) }

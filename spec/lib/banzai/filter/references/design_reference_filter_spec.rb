@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Banzai::Filter::References::DesignReferenceFilter do
+RSpec.describe Banzai::Filter::References::DesignReferenceFilter, feature_category: :design_management do
   include FilterSpecHelper
   include DesignManagementTestHelpers
 

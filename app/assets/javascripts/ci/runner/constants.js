@@ -98,6 +98,8 @@ export const I18N_ADMIN = s__('Runners|Administrator');
 
 // Runner details
 
+export const JOBS_ROUTE_PATH = '/jobs'; // vue-router route path
+
 export const I18N_DETAILS = s__('Runners|Details');
 export const I18N_JOBS = s__('Runners|Jobs');
 export const I18N_ASSIGNED_PROJECTS = s__('Runners|Assigned Projects (%{projectCount})');

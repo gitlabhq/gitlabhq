@@ -69,12 +69,32 @@ RSpec.describe DashboardController, feature_category: :code_review_workflow do
 
             expect(response.body).to have_content('Too many results to display. Edit your search or add a filter.')
           end
+
+          it 'does not display MR counts in nav' do
+            get :merge_requests, params: { author_id: user.id }
+
+            expect(response.body).to have_content('Open Merged Closed All')
+            expect(response.body).not_to have_content('Open 0 Merged 0 Closed 0 All 0')
+          end
         end
 
         it 'logs the exception' do
           expect(Gitlab::ErrorTracking).to receive(:track_exception).and_call_original
 
           get :merge_requests, params: { author_id: user.id }
+        end
+      end
+
+      context 'when an ActiveRecord::QueryCanceled is not raised' do
+        context 'rendering views' do
+          render_views
+
+          it 'displays MR counts in nav' do
+            get :merge_requests, params: { author_id: user.id }
+
+            expect(response.body).to have_content('Open 0 Merged 0 Closed 0 All 0')
+            expect(response.body).not_to have_content('Open Merged Closed All')
+          end
         end
       end
     end

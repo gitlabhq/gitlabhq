@@ -3,11 +3,15 @@ query getDashboardIssuesCount(
   $assigneeId: String
   $assigneeUsernames: [String!]
   $authorUsername: String
+  $confidential: Boolean
   $labelName: [String]
   $milestoneTitle: [String]
   $milestoneWildcardId: MilestoneWildcardId
   $myReactionEmoji: String
+  $types: [IssueType!]
+  $in: [IssuableSearchableField!]
   $not: NegatedIssueFilterInput
+  $or: UnionedIssueFilterInput
 ) {
   openedIssues: issues(
     state: opened
@@ -15,11 +19,15 @@ query getDashboardIssuesCount(
     assigneeId: $assigneeId
     assigneeUsernames: $assigneeUsernames
     authorUsername: $authorUsername
+    confidential: $confidential
     labelName: $labelName
     milestoneTitle: $milestoneTitle
     milestoneWildcardId: $milestoneWildcardId
     myReactionEmoji: $myReactionEmoji
+    types: $types
+    in: $in
     not: $not
+    or: $or
   ) {
     count
   }
@@ -29,11 +37,15 @@ query getDashboardIssuesCount(
     assigneeId: $assigneeId
     assigneeUsernames: $assigneeUsernames
     authorUsername: $authorUsername
+    confidential: $confidential
     labelName: $labelName
     milestoneTitle: $milestoneTitle
     milestoneWildcardId: $milestoneWildcardId
     myReactionEmoji: $myReactionEmoji
+    types: $types
+    in: $in
     not: $not
+    or: $or
   ) {
     count
   }
@@ -43,11 +55,15 @@ query getDashboardIssuesCount(
     assigneeId: $assigneeId
     assigneeUsernames: $assigneeUsernames
     authorUsername: $authorUsername
+    confidential: $confidential
     labelName: $labelName
     milestoneTitle: $milestoneTitle
     milestoneWildcardId: $milestoneWildcardId
     myReactionEmoji: $myReactionEmoji
+    types: $types
+    in: $in
     not: $not
+    or: $or
   ) {
     count
   }

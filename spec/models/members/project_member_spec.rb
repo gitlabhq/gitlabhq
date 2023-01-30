@@ -200,7 +200,8 @@ RSpec.describe ProjectMember do
       end
 
       it 'refreshes the authorization without calling AuthorizedProjectUpdate::ProjectRecalculatePerUserWorker' do
-        expect(AuthorizedProjectUpdate::ProjectRecalculatePerUserWorker).not_to receive(:bulk_perform_and_wait)
+        # this is inline with the overridden behaviour in stubbed_member.rb
+        expect(AuthorizedProjectUpdate::ProjectRecalculatePerUserWorker).not_to receive(:new)
 
         project.destroy!
       end
@@ -215,8 +216,9 @@ RSpec.describe ProjectMember do
         expect(project.authorized_users).not_to include(user)
       end
 
-      it 'refreshes the authorization without calling UserProjectAccessChangedService' do
-        expect(UserProjectAccessChangedService).not_to receive(:new)
+      it 'refreshes the authorization without calling `AuthorizedProjectUpdate::ProjectRecalculatePerUserWorker`' do
+        # this is inline with the overridden behaviour in stubbed_member.rb
+        expect(AuthorizedProjectUpdate::ProjectRecalculatePerUserWorker).not_to receive(:new)
 
         user.destroy!
       end
@@ -224,7 +226,8 @@ RSpec.describe ProjectMember do
 
     context 'when importing' do
       it 'does not refresh' do
-        expect(AuthorizedProjectUpdate::ProjectRecalculatePerUserWorker).not_to receive(:bulk_perform_and_wait)
+        # this is inline with the overridden behaviour in stubbed_member.rb
+        expect(AuthorizedProjectUpdate::ProjectRecalculatePerUserWorker).not_to receive(:new)
 
         member = build(:project_member, project: project)
         member.importing = true
@@ -294,16 +297,11 @@ RSpec.describe ProjectMember do
         project.add_member(user, Gitlab::Access::GUEST)
       end
 
-      it 'changes access level', :sidekiq_inline do
+      it 'changes access level' do
         expect { action }.to change { user.can?(:guest_access, project) }.from(true).to(false)
       end
 
-      it 'calls AuthorizedProjectUpdate::ProjectRecalculatePerUserWorker to recalculate authorizations' do
-        expect(AuthorizedProjectUpdate::ProjectRecalculatePerUserWorker).to receive(:perform_async).with(project.id, user.id)
-
-        action
-      end
-
+      it_behaves_like 'calls AuthorizedProjectUpdate::ProjectRecalculatePerUserWorker inline to recalculate authorizations'
       it_behaves_like 'calls AuthorizedProjectUpdate::UserRefreshFromReplicaWorker with a delay to update project authorizations'
     end
   end

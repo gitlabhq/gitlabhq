@@ -7037,10 +7037,10 @@ msgstr ""
 msgid "BranchRules|Allowed to merge (%{total})"
 msgstr ""
 
-msgid "BranchRules|Allowed to push"
+msgid "BranchRules|Allowed to push and merge"
 msgstr ""
 
-msgid "BranchRules|Allowed to push (%{total})"
+msgid "BranchRules|Allowed to push and merge (%{total})"
 msgstr ""
 
 msgid "BranchRules|An error occurred while fetching branches."
@@ -34202,10 +34202,10 @@ msgstr ""
 msgid "ProtectedBranch|Allowed to merge:"
 msgstr ""
 
-msgid "ProtectedBranch|Allowed to push"
+msgid "ProtectedBranch|Allowed to push and merge"
 msgstr ""
 
-msgid "ProtectedBranch|Allowed to push:"
+msgid "ProtectedBranch|Allowed to push and merge:"
 msgstr ""
 
 msgid "ProtectedBranch|An error occurred while loading branch rules. Please try again."

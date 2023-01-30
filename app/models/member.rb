@@ -22,7 +22,6 @@ class Member < ApplicationRecord
   STATE_AWAITING = 1
 
   attr_accessor :raw_invite_token
-  attr_writer :blocking_refresh
 
   belongs_to :created_by, class_name: "User"
   belongs_to :user
@@ -279,12 +278,8 @@ class Member < ApplicationRecord
   after_save :log_invitation_token_cleanup
 
   after_commit :send_request, if: :request?, unless: :importing?, on: [:create]
-  after_commit on: [:create, :update], unless: :importing? do
-    refresh_member_authorized_projects(blocking: blocking_refresh)
-  end
-
-  after_commit on: [:destroy], unless: :importing? do
-    refresh_member_authorized_projects(blocking: false)
+  after_commit on: [:create, :update, :destroy], unless: :importing? do
+    refresh_member_authorized_projects
   end
 
   attribute :notification_level, default: -> { NotificationSetting.levels[:global] }
@@ -555,8 +550,8 @@ class Member < ApplicationRecord
   # rubocop: disable CodeReuse/ServiceClass
 
   # This method is overridden in the test environment, see stubbed_member.rb
-  def refresh_member_authorized_projects(blocking:)
-    UserProjectAccessChangedService.new(user_id).execute(blocking: blocking)
+  def refresh_member_authorized_projects
+    UserProjectAccessChangedService.new(user_id).execute
   end
   # rubocop: enable CodeReuse/ServiceClass
 
@@ -641,12 +636,6 @@ class Member < ApplicationRecord
 
     error = StandardError.new("Invitation token is present but invite was already accepted!")
     Gitlab::ErrorTracking.track_exception(error, attributes.slice(%w["invite_accepted_at created_at source_type source_id user_id id"]))
-  end
-
-  def blocking_refresh
-    return true if @blocking_refresh.nil?
-
-    @blocking_refresh
   end
 end
 

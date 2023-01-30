@@ -47,6 +47,7 @@ RSpec.describe ::Ci::Runners::RegisterRunnerService, '#execute', feature_categor
         expect(runner.run_untagged).to be true
         expect(runner.active).to be true
         expect(runner.token).not_to eq(registration_token)
+        expect(runner.token).not_to start_with(::Ci::Runner::CREATED_RUNNER_TOKEN_PREFIX)
         expect(runner).to be_instance_type
       end
 

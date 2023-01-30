@@ -625,11 +625,6 @@ e2e-test-report:
     ALLURE_MERGE_REQUEST_IID: $CI_MERGE_REQUEST_IID
     ALLURE_JOB_NAME: e2e-package-and-test
     GIT_STRATEGY: none
-  artifacts:  # save rspec results for displaying in parent pipeline
-    expire_in: 1 day
-    when: always
-    paths:
-      - gitlab-qa-run-*/**/rspec-*.xml
 
 upload-knapsack-report:
   extends:

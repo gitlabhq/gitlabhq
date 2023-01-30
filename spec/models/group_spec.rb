@@ -1006,22 +1006,14 @@ RSpec.describe Group, feature_category: :subgroups do
   describe '#add_user' do
     let(:user) { create(:user) }
 
-    it 'adds the user with a blocking refresh by default' do
+    it 'adds the user' do
       expect_next_instance_of(GroupMember) do |member|
-        expect(member).to receive(:refresh_member_authorized_projects).with(blocking: true)
+        expect(member).to receive(:refresh_member_authorized_projects).and_call_original
       end
 
       group.add_member(user, GroupMember::MAINTAINER)
 
       expect(group.group_members.maintainers.map(&:user)).to include(user)
-    end
-
-    it 'passes the blocking refresh value to member' do
-      expect_next_instance_of(GroupMember) do |member|
-        expect(member).to receive(:refresh_member_authorized_projects).with(blocking: false)
-      end
-
-      group.add_member(user, GroupMember::MAINTAINER, blocking_refresh: false)
     end
   end
 

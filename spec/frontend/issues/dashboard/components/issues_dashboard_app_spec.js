@@ -28,9 +28,12 @@ import { scrollUp } from '~/lib/utils/scroll_utils';
 import {
   TOKEN_TYPE_ASSIGNEE,
   TOKEN_TYPE_AUTHOR,
+  TOKEN_TYPE_CONFIDENTIAL,
   TOKEN_TYPE_LABEL,
   TOKEN_TYPE_MILESTONE,
   TOKEN_TYPE_MY_REACTION,
+  TOKEN_TYPE_SEARCH_WITHIN,
+  TOKEN_TYPE_TYPE,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
 import { IssuableStates } from '~/vue_shared/issuable/list/constants';
@@ -355,9 +358,12 @@ describe('IssuesDashboardApp component', () => {
       expect(findIssuableList().props('searchTokens')).toMatchObject([
         { type: TOKEN_TYPE_ASSIGNEE, preloadedUsers },
         { type: TOKEN_TYPE_AUTHOR, preloadedUsers },
+        { type: TOKEN_TYPE_CONFIDENTIAL },
         { type: TOKEN_TYPE_LABEL },
         { type: TOKEN_TYPE_MILESTONE },
         { type: TOKEN_TYPE_MY_REACTION },
+        { type: TOKEN_TYPE_SEARCH_WITHIN },
+        { type: TOKEN_TYPE_TYPE },
       ]);
     });
   });

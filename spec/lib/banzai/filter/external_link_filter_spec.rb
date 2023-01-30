@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.shared_examples 'an external link with rel attribute' do
+RSpec.shared_examples 'an external link with rel attribute', feature_category: :team_planning do
   it 'adds rel="nofollow" to external links' do
     expect(doc.at_css('a')).to have_attribute('rel')
     expect(doc.at_css('a')['rel']).to include 'nofollow'

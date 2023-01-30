@@ -5,7 +5,7 @@ import VueApollo from 'vue-apollo';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import { I18N_DETAILS, I18N_JOBS } from '~/ci/runner/constants';
+import { JOBS_ROUTE_PATH, I18N_DETAILS, I18N_JOBS } from '~/ci/runner/constants';
 
 import RunnerDetailsTabs from '~/ci/runner/components/runner_details_tabs.vue';
 import RunnerDetails from '~/ci/runner/components/runner_details.vue';
@@ -59,7 +59,7 @@ describe('RunnerDetailsTabs', () => {
   });
 
   it('shows runner jobs', async () => {
-    setWindowLocation('#/jobs');
+    setWindowLocation(`#${JOBS_ROUTE_PATH}`);
 
     await createComponent({ mountFn: mountExtended });
 

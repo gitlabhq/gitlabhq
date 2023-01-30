@@ -2,7 +2,7 @@
 import { GlBadge, GlTabs, GlTab } from '@gitlab/ui';
 import VueRouter from 'vue-router';
 import HelpPopover from '~/vue_shared/components/help_popover.vue';
-import { I18N_DETAILS, I18N_JOBS } from '../constants';
+import { JOBS_ROUTE_PATH, I18N_DETAILS, I18N_JOBS } from '../constants';
 import { formatJobCount } from '../utils';
 import RunnerDetails from './runner_details.vue';
 import RunnerJobs from './runner_jobs.vue';
@@ -17,7 +17,7 @@ const routes = [
     component: RunnerDetails,
   },
   {
-    path: '/jobs',
+    path: JOBS_ROUTE_PATH,
     name: ROUTE_JOBS,
     component: RunnerJobs,
   },

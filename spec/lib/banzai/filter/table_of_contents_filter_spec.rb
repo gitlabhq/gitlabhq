@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Banzai::Filter::TableOfContentsFilter do
+RSpec.describe Banzai::Filter::TableOfContentsFilter, feature_category: :team_planning do
   include FilterSpecHelper
 
   def header(level, text)

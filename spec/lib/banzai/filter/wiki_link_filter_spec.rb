@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Banzai::Filter::WikiLinkFilter do
+RSpec.describe Banzai::Filter::WikiLinkFilter, feature_category: :wiki do
   include FilterSpecHelper
 
   let(:namespace) { build_stubbed(:namespace, name: "wiki_link_ns") }

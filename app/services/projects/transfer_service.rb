@@ -192,7 +192,6 @@ module Projects
       # the old approach, we still run AuthorizedProjectsWorker
       # but with some delay and lower urgency as a safety net.
       UserProjectAccessChangedService.new(user_ids).execute(
-        blocking: false,
         priority: UserProjectAccessChangedService::LOW_PRIORITY
       )
     end

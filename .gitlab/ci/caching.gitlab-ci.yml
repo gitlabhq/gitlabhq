@@ -56,7 +56,7 @@ packages-cleanup:
   extends:
     - .default-retry
     - .caching:rules:packages-cleanup
-  image: ${GITLAB_DEPENDENCY_PROXY}ruby:${RUBY_VERSION}
+  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}ruby:${RUBY_VERSION}
   stage: prepare
   before_script:
     - source scripts/utils.sh

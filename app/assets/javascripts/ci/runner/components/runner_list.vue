@@ -150,16 +150,17 @@ export default {
       </template>
 
       <template #cell(status)="{ item }">
-        <runner-status-cell :runner="item" />
+        <runner-status-cell :runner="item">
+          <template #runner-job-status-badge="{ runner }">
+            <slot name="runner-job-status-badge" :runner="runner"></slot>
+          </template>
+        </runner-status-cell>
       </template>
 
-      <template #cell(summary)="{ item, index }">
+      <template #cell(summary)="{ item }">
         <runner-summary-cell :runner="item">
           <template #runner-name="{ runner }">
-            <slot name="runner-name" :runner="runner" :index="index"></slot>
-          </template>
-          <template #runner-job-status-badge="{ runner }">
-            <slot name="runner-job-status-badge" :runner="runner" :index="index"></slot>
+            <slot name="runner-name" :runner="runner"></slot>
           </template>
         </runner-summary-cell>
       </template>

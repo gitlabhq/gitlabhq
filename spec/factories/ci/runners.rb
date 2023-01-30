@@ -58,6 +58,10 @@ FactoryBot.define do
       end
     end
 
+    trait :created_in_ui do
+      legacy_registered { false }
+    end
+
     trait :without_projects do
       # we use that to create invalid runner:
       # the one without projects

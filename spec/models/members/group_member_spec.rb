@@ -253,17 +253,13 @@ RSpec.describe GroupMember do
 
       let(:action) { group.members.find_by(user: user).destroy! }
 
-      it 'changes access level', :sidekiq_inline do
+      it 'changes access level' do
         expect { action }.to change { user.can?(:guest_access, project_a) }.from(true).to(false)
           .and change { user.can?(:guest_access, project_b) }.from(true).to(false)
           .and change { user.can?(:guest_access, project_c) }.from(true).to(false)
       end
 
-      it 'schedules an AuthorizedProjectsWorker job to recalculate authorizations' do
-        expect(AuthorizedProjectsWorker).to receive(:bulk_perform_async).with([[user.id]])
-
-        action
-      end
+      it_behaves_like 'calls AuthorizedProjectsWorker inline to recalculate authorizations'
     end
   end
 end

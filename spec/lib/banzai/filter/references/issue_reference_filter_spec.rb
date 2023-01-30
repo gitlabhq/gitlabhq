@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Banzai::Filter::References::IssueReferenceFilter do
+RSpec.describe Banzai::Filter::References::IssueReferenceFilter, feature_category: :team_planning do
   include FilterSpecHelper
   include DesignManagementTestHelpers
 

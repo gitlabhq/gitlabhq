@@ -88,30 +88,6 @@ start-review-app-pipeline:
       - artifact: review-app-pipeline.yml
         job: e2e-test-pipeline-generate
 
-# Fetch child pipeline test results and store in parent pipeline
-# workaround until natively implemented: https://gitlab.com/groups/gitlab-org/-/epics/8205
-review-app-test-results:
-  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/debian-bullseye-ruby-${RUBY_VERSION}:bundler-2.3
-  stage: review
-  extends:
-    - .qa-cache
-    - .review:rules:start-review-app-pipeline
-  needs:
-    - start-review-app-pipeline
-  variables:
-    COLORIZED_LOGS: "true"
-    QA_LOG_LEVEL: "debug"
-  before_script:
-    - cd qa && bundle install
-  script:
-    - bundle exec rake "ci:download_test_results[start-review-app-pipeline,e2e-test-report,${CI_PROJECT_DIR}]"
-  when: always
-  allow_failure: true
-  artifacts:
-    when: always
-    reports:
-      junit: qa/tmp/rspec-*.xml
-
 danger-review:
   extends:
     - .default-retry
