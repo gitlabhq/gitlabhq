@@ -9,6 +9,7 @@ module Gitlab
       Error = Class.new(StandardError)
 
       MAX_ARCHIVE_SIZE = 5.megabytes
+      TMP_ARTIFACT_EXTRACTION_DIR = "extracted_artifacts_job_%{id}"
 
       def initialize(job)
         @job = job
@@ -45,20 +46,20 @@ module Gitlab
       end
 
       def read_zip_file!(file_path)
-        job.artifacts_file.use_open_file do |file|
-          zip_file = Zip::File.new(file, false, true)
-          entry = zip_file.find_entry(file_path)
+        dir_name = format(TMP_ARTIFACT_EXTRACTION_DIR, id: job.id.to_i)
 
-          unless entry
-            raise Error, "Path `#{file_path}` does not exist inside the `#{job.name}` artifacts archive!"
+        job.artifacts_file.use_open_file(unlink_early: false) do |tmp_open_file|
+          Dir.mktmpdir(dir_name) do |tmp_dir|
+            SafeZip::Extract.new(tmp_open_file.file_path).extract(files: [file_path], to: tmp_dir)
+            File.read(File.join(tmp_dir, file_path))
           end
-
-          if entry.name_is_directory?
-            raise Error, "Path `#{file_path}` was expected to be a file but it was a directory!"
-          end
-
-          zip_file.read(entry)
         end
+      rescue SafeZip::Extract::NoMatchingError
+        raise Error, "Path `#{file_path}` does not exist inside the `#{job.name}` artifacts archive!"
+      rescue SafeZip::Extract::EntrySizeError
+        raise Error, "Path `#{file_path}` has invalid size in the zip!"
+      rescue Errno::EISDIR
+        raise Error, "Path `#{file_path}` was expected to be a file but it was a directory!"
       end
 
       def max_archive_size_in_mb
