@@ -10,40 +10,111 @@ RSpec.shared_examples 'matches_cross_reference_regex? fails fast' do
 end
 
 RSpec.shared_examples 'validates description length with custom validation' do
-  let(:issuable) { build(:issue, description: 'x' * (::Issuable::DESCRIPTION_LENGTH_MAX + 1)) }
-  let(:context) { :update }
+  let(:invalid_description) { 'x' * (::Issuable::DESCRIPTION_LENGTH_MAX + 1) }
+  let(:valid_description) { 'short description' }
+  let(:issuable) { build(:issue, description: description) }
 
-  subject { issuable.validate(context) }
+  let(:error_message) do
+    format(
+      _('is too long (%{size}). The maximum size is %{max_size}.'),
+      size: ActiveSupport::NumberHelper.number_to_human_size(invalid_description.bytesize),
+      max_size: ActiveSupport::NumberHelper.number_to_human_size(::Issuable::DESCRIPTION_LENGTH_MAX)
+    )
+  end
+
+  subject(:validate) { issuable.validate(context) }
 
   context 'when Issuable is a new record' do
-    it 'validates the maximum description length' do
-      subject
-      expect(issuable.errors[:description]).to eq(["is too long (maximum is #{::Issuable::DESCRIPTION_LENGTH_MAX} characters)"])
+    let(:context) { :create }
+
+    context 'when description exceeds the maximum size' do
+      let(:description) { invalid_description }
+
+      it 'adds a description too long error' do
+        validate
+
+        expect(issuable.errors[:description]).to contain_exactly(error_message)
+      end
     end
 
-    context 'on create' do
-      let(:context) { :create }
+    context 'when description is within the allowed limits' do
+      let(:description) { valid_description }
 
-      it 'does not validate the maximum description length' do
-        allow(issuable).to receive(:description_max_length_for_new_records_is_valid).and_call_original
+      it 'does not add a validation error' do
+        validate
 
-        subject
-
-        expect(issuable).not_to have_received(:description_max_length_for_new_records_is_valid)
+        expect(issuable.errors).not_to have_key(:description)
       end
     end
   end
 
   context 'when Issuable is an existing record' do
+    let(:context) { :update }
+
     before do
       allow(issuable).to receive(:expire_etag_cache) # to skip the expire_etag_cache callback
 
+      issuable.description = existing_description
       issuable.save!(validate: false)
+      issuable.description = description
     end
 
-    it 'does not validate the maximum description length' do
-      subject
-      expect(issuable.errors).not_to have_key(:description)
+    context 'when record already had a valid description' do
+      let(:existing_description) { 'small difference so it triggers description_changed?' }
+
+      context 'when new description exceeds the maximum size' do
+        let(:description) { invalid_description }
+
+        it 'adds a description too long error' do
+          validate
+
+          expect(issuable.errors[:description]).to contain_exactly(error_message)
+        end
+      end
+
+      context 'when new description is within the allowed limits' do
+        let(:description) { valid_description }
+
+        it 'does not add a validation error' do
+          validate
+
+          expect(issuable.errors).not_to have_key(:description)
+        end
+      end
+    end
+
+    context 'when record existed with an invalid description' do
+      let(:existing_description) { "#{invalid_description} small difference so it triggers description_changed?" }
+
+      context 'when description is not changed' do
+        let(:description) { existing_description }
+
+        it 'does not add a validation error' do
+          validate
+
+          expect(issuable.errors).not_to have_key(:description)
+        end
+      end
+
+      context 'when new description exceeds the maximum size' do
+        let(:description) { invalid_description }
+
+        it 'allows updating descriptions that already existed above the limit' do
+          validate
+
+          expect(issuable.errors).not_to have_key(:description)
+        end
+      end
+
+      context 'when new description is within the allowed limits' do
+        let(:description) { valid_description }
+
+        it 'does not add a validation error' do
+          validate
+
+          expect(issuable.errors).not_to have_key(:description)
+        end
+      end
     end
   end
 end

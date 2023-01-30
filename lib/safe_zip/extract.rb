@@ -6,6 +6,7 @@ module SafeZip
     PermissionDeniedError = Class.new(Error)
     SymlinkSourceDoesNotExistError = Class.new(Error)
     UnsupportedEntryError = Class.new(Error)
+    EntrySizeError = Class.new(Error)
     AlreadyExistsError = Class.new(Error)
     NoMatchingError = Class.new(Error)
     ExtractError = Class.new(Error)

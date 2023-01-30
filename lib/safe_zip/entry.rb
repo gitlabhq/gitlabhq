@@ -25,8 +25,8 @@ module SafeZip
     end
 
     def extract
-      # do not extract if file is not part of target directory
-      return false unless matching_target_directory
+      # do not extract if file is not part of target directory or target file
+      return false unless matching_target_directory || matching_target_file
 
       # do not overwrite existing file
       raise SafeZip::Extract::AlreadyExistsError, "File already exists #{zip_entry.name}" if exist?
@@ -44,6 +44,8 @@ module SafeZip
       end
     rescue SafeZip::Extract::Error
       raise
+    rescue Zip::EntrySizeError => e
+      raise SafeZip::Extract::EntrySizeError, e.message
     rescue StandardError => e
       raise SafeZip::Extract::ExtractError, e.message
     end
@@ -82,6 +84,10 @@ module SafeZip
 
     def matching_target_directory
       params.matching_target_directory(path)
+    end
+
+    def matching_target_file
+      params.matching_target_file(path)
     end
 
     def read_symlink
