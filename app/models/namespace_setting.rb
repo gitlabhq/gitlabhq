@@ -14,9 +14,10 @@ class NamespaceSetting < ApplicationRecord
 
   validates :enabled_git_access_protocol, inclusion: { in: enabled_git_access_protocols.keys }
 
-  validate :default_branch_name_content
   validate :allow_mfa_for_group
   validate :allow_resource_access_token_creation_for_group
+
+  sanitizes! :default_branch_name
 
   before_validation :normalize_default_branch_name
 
@@ -44,8 +45,6 @@ class NamespaceSetting < ApplicationRecord
   def self.allowed_namespace_settings_params
     NAMESPACE_SETTINGS_PARAMS
   end
-
-  sanitizes! :default_branch_name
 
   def prevent_sharing_groups_outside_hierarchy
     return super if namespace.root?
@@ -83,14 +82,6 @@ class NamespaceSetting < ApplicationRecord
 
   def normalize_default_branch_name
     self.default_branch_name = default_branch_name.presence
-  end
-
-  def default_branch_name_content
-    return if default_branch_name.nil?
-
-    if default_branch_name.blank?
-      errors.add(:default_branch_name, "can not be an empty string")
-    end
   end
 
   def allow_mfa_for_group

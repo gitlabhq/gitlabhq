@@ -4,11 +4,13 @@ module SafeZip
   class ExtractParams
     include Gitlab::Utils::StrongMemoize
 
-    attr_reader :directories, :extract_path
+    attr_reader :directories, :files, :extract_path
 
-    def initialize(directories:, to:)
+    def initialize(to:, directories: [], files: [])
       @directories = directories
+      @files = files
       @extract_path = ::File.realpath(to)
+      validate!
     end
 
     def matching_target_directory(path)
@@ -31,6 +33,24 @@ module SafeZip
           ::File.join(directory, '*')
         end
       end
+    end
+
+    def matching_target_file(path)
+      target_files.include?(path)
+    end
+
+    private
+
+    def target_files
+      strong_memoize(:target_files) do
+        files.map do |file|
+          ::File.join(extract_path, file)
+        end
+      end
+    end
+
+    def validate!
+      raise ArgumentError, 'Either directories or files are required' if directories.empty? && files.empty?
     end
   end
 end
