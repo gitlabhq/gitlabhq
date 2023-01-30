@@ -40,7 +40,7 @@ RSpec.describe TodosHelper do
   end
 
   let_it_be(:group_todo) do
-    create(:todo, target: group)
+    create(:todo, target: group, group: group, project: nil, user: user)
   end
 
   let_it_be(:project_access_request_todo) do
@@ -433,6 +433,23 @@ RSpec.describe TodosHelper do
       end
 
       it { expect(result).to match("Due #{l(Date.tomorrow, format: Date::DATE_FORMATS[:medium])}") }
+    end
+  end
+
+  describe '#todo_parent_path' do
+    context 'when todo resource parent is a group' do
+      subject(:result) { helper.todo_parent_path(group_todo) }
+
+      it { expect(result).to eq(group_todo.group.name) }
+    end
+
+    context 'when todo resource parent is not a group' do
+      it 'returns project title with namespace' do
+        result = helper.todo_parent_path(project_access_request_todo)
+
+        expect(result).to include(project_access_request_todo.project.name)
+        expect(result).to include(project_access_request_todo.project.namespace.human_name)
+      end
     end
   end
 end
