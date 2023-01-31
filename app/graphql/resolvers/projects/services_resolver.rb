@@ -2,6 +2,7 @@
 
 module Resolvers
   module Projects
+    # TODO: Remove in 17.0, see https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108418
     class ServicesResolver < BaseResolver
       include Gitlab::Graphql::Authorize::AuthorizeResource
 

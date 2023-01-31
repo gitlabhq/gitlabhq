@@ -9,6 +9,8 @@ class WebHookLog < ApplicationRecord
 
   OVERSIZE_REQUEST_DATA = { 'oversize' => true }.freeze
 
+  attr_accessor :interpolated_url
+
   self.primary_key = :id
 
   partitioned_by :created_at, strategy: :monthly, retain_for: 3.months
@@ -23,6 +25,7 @@ class WebHookLog < ApplicationRecord
 
   before_save :obfuscate_basic_auth
   before_save :redact_user_emails
+  before_save :set_url_hash, if: -> { interpolated_url.present? }
 
   def self.recent
     where(created_at: 2.days.ago.beginning_of_day..Time.zone.now)
@@ -65,5 +68,9 @@ class WebHookLog < ApplicationRecord
     self.request_data.deep_transform_values! do |value|
       value.to_s =~ URI::MailTo::EMAIL_REGEXP ? _('[REDACTED]') : value
     end
+  end
+
+  def set_url_hash
+    self.url_hash = Gitlab::CryptoHelper.sha256(interpolated_url)
   end
 end

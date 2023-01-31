@@ -475,7 +475,8 @@ CREATE TABLE web_hook_logs (
     execution_duration double precision,
     internal_error_message character varying,
     updated_at timestamp without time zone NOT NULL,
-    created_at timestamp without time zone NOT NULL
+    created_at timestamp without time zone NOT NULL,
+    url_hash text
 )
 PARTITION BY RANGE (created_at);
 
@@ -25804,6 +25805,9 @@ ALTER TABLE group_import_states
 ALTER TABLE sprints
     ADD CONSTRAINT check_df3816aed7 CHECK ((due_date IS NOT NULL)) NOT VALID;
 
+ALTER TABLE web_hook_logs
+    ADD CONSTRAINT check_df72cb58f5 CHECK ((char_length(url_hash) <= 44)) NOT VALID;
+
 ALTER TABLE projects
     ADD CONSTRAINT check_fa75869cb1 CHECK ((project_namespace_id IS NOT NULL)) NOT VALID;
 
@@ -29806,7 +29810,7 @@ CREATE INDEX index_gitlab_subscription_histories_on_gitlab_subscription_id ON gi
 
 CREATE INDEX index_gitlab_subscriptions_on_end_date_and_namespace_id ON gitlab_subscriptions USING btree (end_date, namespace_id);
 
-CREATE INDEX index_gitlab_subscriptions_on_hosted_plan_id ON gitlab_subscriptions USING btree (hosted_plan_id);
+CREATE INDEX index_gitlab_subscriptions_on_hosted_plan_id_and_trial ON gitlab_subscriptions USING btree (hosted_plan_id, trial);
 
 CREATE INDEX index_gitlab_subscriptions_on_max_seats_used_changed_at ON gitlab_subscriptions USING btree (max_seats_used_changed_at, namespace_id);
 

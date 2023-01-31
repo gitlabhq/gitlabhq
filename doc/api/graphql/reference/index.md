@@ -18603,6 +18603,10 @@ Returns [`SentryDetailedError`](#sentrydetailederror).
 
 Project services.
 
+WARNING:
+**Deprecated** in 15.9.
+This will be renamed to `Project.integrations`.
+
 Returns [`ServiceConnection`](#serviceconnection).
 
 This field returns a [connection](#connections). It accepts the

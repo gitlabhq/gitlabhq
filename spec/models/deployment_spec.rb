@@ -171,23 +171,6 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
         end
       end
 
-      context 'when improve_deployment_hooksworker_serialization is disabled' do
-        before do
-          stub_feature_flags(improve_deployment_hooksworker_serialization: false)
-        end
-
-        it 'executes Deployments::HooksWorker asynchronously' do
-          freeze_time do
-            expect(Deployments::HooksWorker)
-              .to receive(:perform_async)
-                    .with(hash_including({ deployment_id: deployment.id, status: 'running',
-status_changed_at: Time.current }))
-
-            deployment.run!
-          end
-        end
-      end
-
       it 'does not execute Deployments::DropOlderDeploymentsWorker' do
         expect(Deployments::DropOlderDeploymentsWorker)
           .not_to receive(:perform_async).with(deployment.id)
@@ -225,22 +208,6 @@ status_changed_at: Time.current }))
           deployment.succeed!
         end
       end
-
-      context 'when improve_deployment_hooksworker_serialization is disabled' do
-        before do
-          stub_feature_flags(improve_deployment_hooksworker_serialization: false)
-        end
-
-        it 'executes Deployments::HooksWorker asynchronously' do
-          freeze_time do
-            expect(Deployments::HooksWorker)
-            .to receive(:perform_async)
-            .with(hash_including({ deployment_id: deployment.id, status: 'success', status_changed_at: Time.current }))
-
-            deployment.succeed!
-          end
-        end
-      end
     end
 
     context 'when deployment failed' do
@@ -272,23 +239,6 @@ status_changed_at: Time.current }))
           deployment.drop!
         end
       end
-
-      context 'when improve_deployment_hooksworker_serialization is disabled' do
-        before do
-          stub_feature_flags(improve_deployment_hooksworker_serialization: false)
-        end
-
-        it 'executes Deployments::HooksWorker asynchronously' do
-          freeze_time do
-            expect(Deployments::HooksWorker)
-              .to receive(:perform_async)
-                    .with(hash_including({ deployment_id: deployment.id, status: 'failed',
-status_changed_at: Time.current }))
-
-            deployment.drop!
-          end
-        end
-      end
     end
 
     context 'when deployment was canceled' do
@@ -317,23 +267,6 @@ status_changed_at: Time.current }))
                   .with(hash_including({ 'deployment_id' => deployment.id, 'status' => 'canceled',
                                          'status_changed_at' => Time.current.to_s }))
           deployment.cancel!
-        end
-      end
-
-      context 'when improve_deployment_hooksworker_serialization is disabled' do
-        before do
-          stub_feature_flags(improve_deployment_hooksworker_serialization: false)
-        end
-
-        it 'executes Deployments::HooksWorker asynchronously' do
-          freeze_time do
-            expect(Deployments::HooksWorker)
-              .to receive(:perform_async)
-                    .with(hash_including({ deployment_id: deployment.id, status: 'canceled',
-status_changed_at: Time.current }))
-
-            deployment.cancel!
-          end
         end
       end
     end

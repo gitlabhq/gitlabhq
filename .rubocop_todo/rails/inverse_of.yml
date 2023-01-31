@@ -36,7 +36,6 @@ Rails/InverseOf:
     - 'app/models/custom_emoji.rb'
     - 'app/models/customer_relations/contact.rb'
     - 'app/models/customer_relations/organization.rb'
-    - 'app/models/deploy_key.rb'
     - 'app/models/deploy_token.rb'
     - 'app/models/environment.rb'
     - 'app/models/error_tracking/error.rb'

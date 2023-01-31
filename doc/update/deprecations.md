@@ -64,6 +64,20 @@ Due to limited customer usage, Browser Performance Testing is deprecated and wil
 
 </div>
 
+<div class="deprecation removal-160 breaking-change">
+
+### CI/CD jobs will fail when no secret is returned from Hashicorp Vault
+
+Planned removal: GitLab <span class="removal-milestone">16.0</span> <span class="removal-date"></span>
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+When using the native HashiCorp Vault integration, CI/CD jobs will fail when no secret is returned from Vault. Make sure your configuration always return a secret, or update your pipeline to handle this change, before GitLab 16.0.
+
+</div>
+
 <div class="deprecation removal-170 breaking-change">
 
 ### GitLab Runner platforms and setup instructions in GraphQL API

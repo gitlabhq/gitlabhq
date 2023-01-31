@@ -2,6 +2,7 @@
 
 module Types
   module Projects
+    # TODO: Remove in 17.0, see https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108418
     class ServiceTypeEnum < BaseEnum
       graphql_name 'ServiceType'
 

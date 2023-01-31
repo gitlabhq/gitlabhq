@@ -393,6 +393,10 @@ module Types
 
     field :services, Types::Projects::ServiceType.connection_type,
           null: true,
+          deprecated: {
+            reason: 'This will be renamed to `Project.integrations`',
+            milestone: '15.9'
+          },
           description: 'Project services.',
           resolver: Resolvers::Projects::ServicesResolver
 

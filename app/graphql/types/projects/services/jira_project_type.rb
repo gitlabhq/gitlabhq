@@ -4,6 +4,7 @@ module Types
   module Projects
     module Services
       # rubocop:disable Graphql/AuthorizeTypes
+      # TODO: Remove in 17.0, see https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108418
       class JiraProjectType < BaseObject
         graphql_name 'JiraProject'
 

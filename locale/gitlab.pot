@@ -8474,9 +8474,6 @@ msgstr ""
 msgid "Checkout|Need more users? Purchase GitLab for your %{company}."
 msgstr ""
 
-msgid "Checkout|Network Error: %{message}"
-msgstr ""
-
 msgid "Checkout|Number of users"
 msgstr ""
 
@@ -8493,9 +8490,6 @@ msgid "Checkout|Select a country"
 msgstr ""
 
 msgid "Checkout|Select a state"
-msgstr ""
-
-msgid "Checkout|Something went wrong while loading price details."
 msgstr ""
 
 msgid "Checkout|State"
@@ -18599,9 +18593,6 @@ msgid "Get started with performance monitoring"
 msgstr ""
 
 msgid "Get started!"
-msgstr ""
-
-msgid "Getting started with releases"
 msgstr ""
 
 msgid "Git"
@@ -35088,13 +35079,7 @@ msgstr ""
 msgid "Releases"
 msgstr ""
 
-msgid "Releases are based on Git tags and mark specific points in a project's development history. They can contain information about the type of changes and can also deliver binaries, like compiled versions of your software."
-msgstr ""
-
 msgid "Releases are based on Git tags. We recommend tags that use semantic versioning, for example %{codeStart}1.0.0%{codeEnd}, %{codeStart}2.1.0-pre%{codeEnd}."
-msgstr ""
-
-msgid "Releases documentation"
 msgstr ""
 
 msgid "Releases|New Release"
@@ -35103,7 +35088,22 @@ msgstr ""
 msgid "Releases|Tag message"
 msgstr ""
 
+msgid "Release|Create a new release"
+msgstr ""
+
+msgid "Release|Getting started with releases"
+msgstr ""
+
 msgid "Release|Include message from the annotated tag."
+msgstr ""
+
+msgid "Release|Learn more about releases"
+msgstr ""
+
+msgid "Release|More information"
+msgstr ""
+
+msgid "Release|Releases are based on Git tags and mark specific points in a project's development history. They can contain information about the type of changes and can also deliver binaries, like compiled versions of your software."
 msgstr ""
 
 msgid "Release|Something went wrong while creating a new release."
@@ -37091,12 +37091,6 @@ msgid "ScanExecutionPolicy|%{period} %{days} at %{time}"
 msgstr ""
 
 msgid "ScanExecutionPolicy|%{rules} actions for the %{scopes} %{branches} %{agents} %{namespaces}"
-msgstr ""
-
-msgid "ScanExecutionPolicy|%{thenLabelStart}Then%{thenLabelEnd} Require a %{scan} scan to run"
-msgstr ""
-
-msgid "ScanExecutionPolicy|%{thenLabelStart}Then%{thenLabelEnd} Require a %{scan} scan to run with site profile %{siteProfile} and scanner profile %{scannerProfile}"
 msgstr ""
 
 msgid "ScanExecutionPolicy|%{thenLabelStart}Then%{thenLabelEnd} Require a %{scan} scan to run with site profile %{siteProfile} and scanner profile %{scannerProfile} with tags %{tags}"

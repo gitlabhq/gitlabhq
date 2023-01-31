@@ -10,6 +10,7 @@ RSpec.describe DeployKey, :mailer do
       is_expected.to have_many(:deploy_keys_projects_with_write_access)
         .conditions(can_push: true)
         .class_name('DeployKeysProject')
+        .inverse_of(:deploy_key)
     end
 
     it do
@@ -20,7 +21,7 @@ RSpec.describe DeployKey, :mailer do
     end
 
     it { is_expected.to have_many(:projects) }
-    it { is_expected.to have_many(:protected_branch_push_access_levels) }
+    it { is_expected.to have_many(:protected_branch_push_access_levels).inverse_of(:deploy_key) }
   end
 
   describe 'notification' do

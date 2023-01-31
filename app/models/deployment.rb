@@ -107,9 +107,7 @@ class Deployment < ApplicationRecord
       deployment.run_after_commit do
         perform_params = { deployment_id: id, status: transition.to, status_changed_at: Time.current }
 
-        if Feature.enabled?(:improve_deployment_hooksworker_serialization, deployment.project)
-          serialize_params_for_sidekiq!(perform_params)
-        end
+        serialize_params_for_sidekiq!(perform_params)
 
         Deployments::HooksWorker.perform_async(perform_params)
       end
@@ -127,9 +125,7 @@ class Deployment < ApplicationRecord
       deployment.run_after_commit do
         perform_params = { deployment_id: id, status: transition.to, status_changed_at: Time.current }
 
-        if Feature.enabled?(:improve_deployment_hooksworker_serialization, deployment.project)
-          serialize_params_for_sidekiq!(perform_params)
-        end
+        serialize_params_for_sidekiq!(perform_params)
 
         Deployments::HooksWorker.perform_async(perform_params)
       end

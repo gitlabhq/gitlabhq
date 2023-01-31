@@ -4,6 +4,7 @@ import ReleasesEmptyState from '~/releases/components/releases_empty_state.vue';
 
 describe('releases_empty_state.vue', () => {
   const documentationPath = 'path/to/releases/documentation';
+  const newReleasePath = 'path/to/releases/new-release';
   const illustrationPath = 'path/to/releases/empty/state/illustration';
 
   let wrapper;
@@ -12,6 +13,7 @@ describe('releases_empty_state.vue', () => {
     wrapper = shallowMountExtended(ReleasesEmptyState, {
       provide: {
         documentationPath,
+        newReleasePath,
         illustrationPath,
       },
     });
@@ -21,36 +23,17 @@ describe('releases_empty_state.vue', () => {
     createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders a GlEmptyState and provides it with the correct props', () => {
     const emptyStateProps = wrapper.findComponent(GlEmptyState).props();
 
-    expect(emptyStateProps).toEqual(
-      expect.objectContaining({
-        title: ReleasesEmptyState.i18n.emptyStateTitle,
-        svgPath: illustrationPath,
-      }),
-    );
-  });
-
-  it('renders the empty state text', () => {
-    expect(wrapper.findByText(ReleasesEmptyState.i18n.emptyStateText).exists()).toBe(true);
-  });
-
-  it('renders a link to the documentation', () => {
-    const documentationLink = wrapper.findByText(ReleasesEmptyState.i18n.moreInformation);
-
-    expect(documentationLink.exists()).toBe(true);
-
-    expect(documentationLink.attributes()).toEqual(
-      expect.objectContaining({
-        'aria-label': ReleasesEmptyState.i18n.releasesDocumentation,
-        href: documentationPath,
-        target: '_blank',
-      }),
-    );
+    expect(emptyStateProps).toMatchObject({
+      title: ReleasesEmptyState.i18n.emptyStateTitle,
+      svgPath: illustrationPath,
+      description: ReleasesEmptyState.i18n.emptyStateText,
+      primaryButtonLink: newReleasePath,
+      primaryButtonText: ReleasesEmptyState.i18n.newRelease,
+      secondaryButtonLink: documentationPath,
+      secondaryButtonText: ReleasesEmptyState.i18n.releasesDocumentation,
+    });
   });
 });
