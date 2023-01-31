@@ -11,10 +11,21 @@ module Gitlab
       #
       # build - A `Ci::Build` that executed a chat command.
       def self.responder_for(build)
-        integration = build.pipeline.chat_data&.chat_name&.integration
+        if Feature.enabled?(:use_response_url_for_chat_responder)
+          response_url = build.pipeline.chat_data&.response_url
+          return unless response_url
 
-        if (responder = integration.try(:chat_responder))
-          responder.new(build)
+          if response_url.start_with?('https://hooks.slack.com/')
+            Gitlab::Chat::Responder::Slack.new(build)
+          else
+            Gitlab::Chat::Responder::Mattermost.new(build)
+          end
+        else
+          integration = build.pipeline.chat_data&.chat_name&.integration
+
+          if (responder = integration.try(:chat_responder))
+            responder.new(build)
+          end
         end
       end
     end

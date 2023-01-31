@@ -10,6 +10,14 @@ In GitLab, [permissions](../permissions.md) are fundamentally defined around the
 idea of having read or write permission to the repository and branches. To impose
 further restrictions on certain branches, they can be protected.
 
+A protected branch controls:
+
+- Which users can merge into the branch.
+- Which users can push to the branch.
+- If users can force push to the branch.
+- If changes to files listed in the CODEOWNERS file can be pushed directly to the branch.
+- Which users can unprotect the branch.
+
 The [default branch](repository/branches/default.md) for your repository is protected by default.
 
 ## Who can modify a protected branch

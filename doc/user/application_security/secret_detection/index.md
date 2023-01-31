@@ -65,6 +65,64 @@ Different features are available in different [GitLab tiers](https://about.gitla
 | [Access the Security Dashboard](../security_dashboard/index.md)  | **{dotted-circle}** No | **{check-circle}** Yes |
 | [Customize Secret Detection rulesets](#custom-rulesets)          | **{dotted-circle}** No | **{check-circle}** Yes |
 
+## Coverage
+
+Secret Detection scans different aspects of your code, depending on the situation. For all methods
+except "Default branch", Secret Detection scans commits, not the working tree. For example,
+Secret Detection can detect if a secret was added in one commit and removed in a later commit.
+
+- Historical scan
+
+  If the `SECRET_DETECTION_HISTORIC_SCAN` variable is set, the content of all
+  [branches](../../project/repository/branches/index.md) is scanned. Before scanning the
+  repository's content, Secret Detection runs the command `git fetch --all` to fetch the content of all
+  branches.
+
+- Commit range
+
+  If the `SECRET_DETECTION_LOG_OPTS` variable is set, the secrets analyzer fetches the entire
+  history of the branch or reference the pipeline is being run for. Secret Detection then runs,
+  scanning the commit range specified.
+
+- Default branch
+
+  When Secret Detection is run on the default branch, the Git repository is treated as a plain
+  folder. Only the contents of the repository at the current HEAD are scanned. Commit history is not scanned.
+
+- Push event
+
+  On a push event, Secret Detection determines what commit range to scan, given the information
+  available in the runner. To determine the commit range, the variables `CI_COMMIT_SHA` and
+  `CI_COMMIT_BEFORE_SHA` are important.
+
+  - `CI_COMMIT_SHA` is the commit at HEAD for a given branch. This variable is always set for push events.
+  - `CI_COMMIT_BEFORE_SHA` is set in most cases. However, it is not set for the first push event on
+    a new branch, nor for merge pipelines. Because of this, Secret Detection can't be guaranteed
+    when multiple commits are committed to a new branch.
+
+- Merge request
+
+  In a merge request, Secret Detection scans every commit made on the source branch. To use this
+  feature, you must use the [`latest` Secret Detection template](#templates), as it supports
+  [merge request pipelines](../../../ci/pipelines/merge_request_pipelines.md).
+
+## Templates
+
+Secret Detection default configuration is defined in CI/CD templates. Updates to the template are
+provided with GitLab upgrades, allowing you to benefit from any improvements and additions.
+
+Available templates:
+
+- [`Secret-Detection.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Secret-Detection.gitlab-ci.yml): Stable version of the Secret Detection CI/CD template.
+- [`Secret-Detection.latest.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Secret-Detection.latest.gitlab-ci.yml): Latest version of the Secret Detection template.
+
+WARNING:
+The latest version of the template may include breaking changes. Use the stable template unless you
+need a feature provided only in the latest template.
+
+For more information about template versioning, see the
+[CI/CD documentation](../../../development/cicd/templates.md#latest-version).
+
 ## Enable Secret Detection
 
 Prerequisites:

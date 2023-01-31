@@ -24,7 +24,7 @@ module JiraConnectInstallations
         end
       end
 
-      send_uninstalled_hook if instance_url_changed?
+      send_uninstalled_hook if instance_url_changed? && @installation.instance_url.blank?
 
       ServiceResponse.new(status: :success)
     end

@@ -43,15 +43,7 @@ module Gitlab
         end
 
         def update!
-          if without_prepared_statement?
-            # A workaround for https://github.com/rails/rails/issues/24893
-            # When prepared statements are prevented (such as when using the
-            # query counter or in omnibus by default), we cannot call
-            # `exec_update`, since that will discard the bindings.
-            connection.send(:exec_no_cache, sql, log_name, params) # rubocop: disable GitlabSecurity/PublicSend
-          else
-            connection.exec_update(sql, log_name, params)
-          end
+          connection.exec_update(sql, log_name, params)
         end
 
         def self.column_definitions(model, columns)
@@ -90,14 +82,6 @@ module Gitlab
             obj_id = k.try(:id) || k
             v = v.merge(id: obj_id)
             columns.map { |c| query_attribute(c, k, v.with_indifferent_access) }
-          end
-        end
-
-        # A workaround for https://github.com/rails/rails/issues/24893
-        # We need to detect if prepared statements have been disabled.
-        def without_prepared_statement?
-          strong_memoize(:without_prepared_statement) do
-            connection.send(:without_prepared_statement?, [1]) # rubocop: disable GitlabSecurity/PublicSend
           end
         end
 

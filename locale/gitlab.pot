@@ -37414,6 +37414,12 @@ msgstr ""
 msgid "SearchCodeResults|of %{link_to_project}"
 msgstr ""
 
+msgid "SearchError|A search query problem has occurred"
+msgstr ""
+
+msgid "SearchError|To resolve the problem, check the query syntax and try again."
+msgstr ""
+
 msgid "SearchResults|Showing %{count} %{scope} for %{term_element}"
 msgstr ""
 

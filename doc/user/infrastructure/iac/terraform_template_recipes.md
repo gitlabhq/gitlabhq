@@ -29,6 +29,69 @@ The `destroy` job is part of the `cleanup` stage. Like the `deploy`
 job, the `destroy` job is always `manual` and is not tied to the
 default branch.
 
+To connect the `destroy` job to the GitLab environment:
+
+```yaml
+include:
+  - template: Terraform.latest.gitlab-ci.yml
+
+deploy:
+  envrionment:
+    name: $TF_STATE_NAME
+    action: start
+    on_stop: destroy
+
+destroy:
+  extends: .terraform:destroy
+  environment:
+    name: $TF_STATE_NAME
+    action: stop
+```
+
+In this configuration, the `destroy` job is always created. However, you might want to create a `destroy` job only if certain
+conditions are met.
+
+The following configuration creates a `destroy` job, runs a destroy plan and omits the `deploy` job only if `TF_DESTROY` is true:
+
+```yaml
+include:
+  - template: Terraform.latest.gitlab-ci.yml
+
+build:
+  rules:
+    - if: $TF_DESTROY == "true"
+      variables:
+        TF_CLI_ARGS_plan: "-destroy"
+    - when: on_success
+
+deploy:
+  envrionment:
+    name: $TF_STATE_NAME
+    action: start
+    on_stop: destroy
+  rules:
+    - if: $TF_DESTROY == "true"
+      when: never
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $TF_AUTO_DEPLOY == "true"
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      when: manual
+
+destroy:
+  extends: .terraform:destroy
+  dependencies:
+    - build
+  variables:
+    TF_CLI_ARGS_destroy: "${TF_PLAN_CACHE}"
+  environment:
+    name: $TF_STATE_NAME
+    action: stop
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $TF_DESTROY == "true"
+      when: manual
+```
+
+This configuration has a known issue: when the `destroy` job is not in the same pipeline as the `deploy` job, the `on_stop` environment action does not work.
+
 ## Run a custom `terraform` command in a job
 
 To define a job that runs a custom `terraform` command, the

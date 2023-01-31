@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'PostgreSQL registered types' do
-  subject(:types) { ApplicationRecord.connection.send(:type_map).keys }
+  subject(:types) { ApplicationRecord.connection.reload_type_map.keys }
 
   # These can be obtained via SELECT oid, typname from pg_type
   it 'includes custom and standard OIDs' do

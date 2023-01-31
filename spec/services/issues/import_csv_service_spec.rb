@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Issues::ImportCsvService do
+RSpec.describe Issues::ImportCsvService, feature_category: :team_planning do
   let(:project) { create(:project) }
   let(:user) { create(:user) }
   let(:assignee) { create(:user, username: 'csv_assignee') }

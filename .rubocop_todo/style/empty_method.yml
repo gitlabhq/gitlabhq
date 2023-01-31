@@ -108,7 +108,6 @@ Style/EmptyMethod:
     - 'ee/app/controllers/registrations/company_controller.rb'
     - 'ee/app/controllers/registrations/verification_controller.rb'
     - 'ee/app/controllers/subscriptions/groups_controller.rb'
-    - 'ee/app/controllers/trial_registrations_controller.rb'
     - 'ee/app/controllers/trials_controller.rb'
     - 'ee/app/controllers/users/identity_verification_controller.rb'
     - 'ee/app/experiments/cart_abandonment_modal_experiment.rb'
