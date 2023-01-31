@@ -45,6 +45,15 @@ module Sanitizable
           unless input.to_s == CGI.unescapeHTML(input.to_s)
             record.errors.add(attr, 'cannot contain escaped HTML entities')
           end
+
+          # This method raises an exception on failure so perform this
+          # last if multiple errors should be returned.
+          Gitlab::Utils.check_path_traversal!(input.to_s)
+
+        rescue Gitlab::Utils::DoubleEncodingError
+          record.errors.add(attr, 'cannot contain escaped components')
+        rescue Gitlab::Utils::PathTraversalAttackError
+          record.errors.add(attr, "cannot contain a path traversal component")
         end
       end
     end
