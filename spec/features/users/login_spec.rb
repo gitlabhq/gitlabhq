@@ -926,7 +926,8 @@ RSpec.describe 'Login', :clean_gitlab_redis_sessions, feature_category: :system_
         stub_omniauth_saml_config(enabled: true, auto_link_saml_user: true, allow_single_sign_on: ['saml'], providers: [mock_saml_config])
       end
 
-      it 'asks the user to accept the terms before setting an email' do
+      it 'asks the user to accept the terms before setting an email',
+        quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/388049', type: :flaky } do
         expect(authentication_metrics)
           .to increment(:user_authenticated_counter)
 

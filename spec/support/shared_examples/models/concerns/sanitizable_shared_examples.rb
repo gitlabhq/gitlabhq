@@ -32,8 +32,25 @@ RSpec.shared_examples 'sanitizable' do |factory, fields|
         subject { build(factory, attributes) }
 
         it 'is not valid', :aggregate_failures do
+          error = 'cannot contain escaped HTML entities'
+
           expect(subject).not_to be_valid
-          expect(subject.errors.details[field].flat_map(&:values)).to include('cannot contain escaped HTML entities')
+          expect(subject.errors.details[field].flat_map(&:values)).to contain_exactly(error)
+        end
+      end
+
+      context 'when it contains a path component' do
+        let_it_be(:input) do
+          'main../../../../../../api/v4/projects/1/import_project_members/2'
+        end
+
+        subject { build(factory, attributes) }
+
+        it 'is not valid', :aggregate_failures do
+          error = 'cannot contain a path traversal component'
+
+          expect(subject).not_to be_valid
+          expect(subject.errors.details[field].flat_map(&:values)).to contain_exactly(error)
         end
       end
     end
