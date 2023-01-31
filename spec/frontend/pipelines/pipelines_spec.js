@@ -13,7 +13,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import Api from '~/api';
 import { createAlert, VARIANT_WARNING } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
-import { HTTP_STATUS_INTERNAL_SERVER_ERROR } from '~/lib/utils/http_status';
+import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import NavigationControls from '~/pipelines/components/pipelines_list/nav_controls.vue';
 import PipelinesComponent from '~/pipelines/components/pipelines_list/pipelines.vue';
 import PipelinesCiTemplates from '~/pipelines/components/pipelines_list/empty_state/pipelines_ci_templates.vue';
@@ -142,7 +142,7 @@ describe('Pipelines', () => {
     beforeEach(() => {
       mock
         .onGet(mockPipelinesEndpoint, { params: { scope: 'all', page: '1' } })
-        .reply(200, mockPipelinesResponse);
+        .reply(HTTP_STATUS_OK, mockPipelinesResponse);
     });
 
     describe('when user has no permissions', () => {
@@ -234,7 +234,7 @@ describe('Pipelines', () => {
           beforeEach(async () => {
             mock
               .onGet(mockPipelinesEndpoint, { params: { scope: 'finished', page: '1' } })
-              .reply(200, {
+              .reply(HTTP_STATUS_OK, {
                 pipelines: [mockFinishedPipeline],
                 count: mockPipelinesResponse.count,
               });
@@ -278,7 +278,7 @@ describe('Pipelines', () => {
           beforeEach(async () => {
             mock
               .onGet(mockPipelinesEndpoint, { params: { scope: 'branches', page: '1' } })
-              .reply(200, {
+              .reply(HTTP_STATUS_OK, {
                 pipelines: [],
                 count: mockPipelinesResponse.count,
               });
@@ -321,7 +321,7 @@ describe('Pipelines', () => {
             .onGet(mockPipelinesEndpoint, {
               params: expectedParams,
             })
-            .replyOnce(200, {
+            .replyOnce(HTTP_STATUS_OK, {
               pipelines: [mockFilteredPipeline],
               count: mockPipelinesResponse.count,
             });
@@ -399,7 +399,7 @@ describe('Pipelines', () => {
 
     beforeEach(async () => {
       mock.onGet(mockPipelinesEndpoint, { params: { scope: 'all', page: '1' } }).reply(
-        200,
+        HTTP_STATUS_OK,
         {
           pipelines: firstPage,
           count: mockPipelinesResponse.count,
@@ -407,7 +407,7 @@ describe('Pipelines', () => {
         mockPageHeaders({ page: 1 }),
       );
       mock.onGet(mockPipelinesEndpoint, { params: { scope: 'all', page: '2' } }).reply(
-        200,
+        HTTP_STATUS_OK,
         {
           pipelines: secondPage,
           count: mockPipelinesResponse.count,
@@ -462,13 +462,13 @@ describe('Pipelines', () => {
       // Mock no pipelines in the first attempt
       mock
         .onGet(mockPipelinesEndpoint, { params: { scope: 'all', page: '1' } })
-        .replyOnce(200, emptyResponse, {
+        .replyOnce(HTTP_STATUS_OK, emptyResponse, {
           'POLL-INTERVAL': 100,
         });
       // Mock pipelines in the next attempt
       mock
         .onGet(mockPipelinesEndpoint, { params: { scope: 'all', page: '1' } })
-        .reply(200, mockPipelinesResponse, {
+        .reply(HTTP_STATUS_OK, mockPipelinesResponse, {
           'POLL-INTERVAL': 100,
         });
     });
@@ -509,10 +509,12 @@ describe('Pipelines', () => {
 
   describe('when no pipelines exist', () => {
     beforeEach(() => {
-      mock.onGet(mockPipelinesEndpoint, { params: { scope: 'all', page: '1' } }).reply(200, {
-        pipelines: [],
-        count: { all: '0' },
-      });
+      mock
+        .onGet(mockPipelinesEndpoint, { params: { scope: 'all', page: '1' } })
+        .reply(HTTP_STATUS_OK, {
+          pipelines: [],
+          count: { all: '0' },
+        });
     });
 
     describe('when CI is enabled and user has permissions', () => {
@@ -551,10 +553,12 @@ describe('Pipelines', () => {
       });
 
       it('renders tab empty state finished scope', async () => {
-        mock.onGet(mockPipelinesEndpoint, { params: { scope: 'finished', page: '1' } }).reply(200, {
-          pipelines: [],
-          count: { all: '0' },
-        });
+        mock
+          .onGet(mockPipelinesEndpoint, { params: { scope: 'finished', page: '1' } })
+          .reply(HTTP_STATUS_OK, {
+            pipelines: [],
+            count: { all: '0' },
+          });
 
         findNavigationTabs().vm.$emit('onChangeTab', 'finished');
 
@@ -644,7 +648,7 @@ describe('Pipelines', () => {
 
       beforeEach(() => {
         mock.onGet(mockPipelinesEndpoint, { scope: 'all', page: '1' }).reply(
-          200,
+          HTTP_STATUS_OK,
           {
             pipelines: [mockPipelineWithStages],
             count: { all: '1' },
@@ -654,7 +658,9 @@ describe('Pipelines', () => {
           },
         );
 
-        mock.onGet(mockPipelineWithStages.details.stages[0].dropdown_path).reply(200, stageReply);
+        mock
+          .onGet(mockPipelineWithStages.details.stages[0].dropdown_path)
+          .reply(HTTP_STATUS_OK, stageReply);
 
         createComponent();
 
@@ -665,7 +671,7 @@ describe('Pipelines', () => {
 
       describe('when a request is being made', () => {
         beforeEach(async () => {
-          mock.onGet(mockPipelinesEndpoint).reply(200, mockPipelinesResponse);
+          mock.onGet(mockPipelinesEndpoint).reply(HTTP_STATUS_OK, mockPipelinesResponse);
 
           await waitForPromises();
         });

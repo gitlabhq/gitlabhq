@@ -4,6 +4,7 @@ import 'vendor/jquery.endless-scroll';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import CommitsList from '~/commits';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import Pager from '~/pager';
 
 describe('Commits List', () => {
@@ -64,7 +65,7 @@ describe('Commits List', () => {
       jest.spyOn(window.history, 'replaceState').mockImplementation(() => {});
       mock = new MockAdapter(axios);
 
-      mock.onGet('/h5bp/html5-boilerplate/commits/main').reply(200, {
+      mock.onGet('/h5bp/html5-boilerplate/commits/main').reply(HTTP_STATUS_OK, {
         html: '<li>Result</li>',
       });
 

@@ -2,7 +2,7 @@ import MockAdapter from 'axios-mock-adapter';
 import testAction from 'helpers/vuex_action_helper';
 
 import axios from '~/lib/utils/axios_utils';
-import { HTTP_STATUS_NOT_FOUND } from '~/lib/utils/http_status';
+import { HTTP_STATUS_NOT_FOUND, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import * as actions from '~/vue_shared/security_reports/store/modules/secret_detection/actions';
 import * as types from '~/vue_shared/security_reports/store/modules/secret_detection/mutation_types';
 import createState from '~/vue_shared/security_reports/store/modules/secret_detection/state';
@@ -100,9 +100,9 @@ describe('secret detection report actions', () => {
       beforeEach(() => {
         mock
           .onGet(diffEndpoint)
-          .replyOnce(200, reports.diff)
+          .replyOnce(HTTP_STATUS_OK, reports.diff)
           .onGet(vulnerabilityFeedbackPath)
-          .replyOnce(200, reports.enrichData);
+          .replyOnce(HTTP_STATUS_OK, reports.enrichData);
       });
 
       it('should dispatch the `receiveDiffSuccess` action', () => {
@@ -130,7 +130,7 @@ describe('secret detection report actions', () => {
     describe('when diff endpoint responds successfully and fetching vulnerability feedback is not authorized', () => {
       beforeEach(() => {
         rootState.canReadVulnerabilityFeedback = false;
-        mock.onGet(diffEndpoint).replyOnce(200, reports.diff);
+        mock.onGet(diffEndpoint).replyOnce(HTTP_STATUS_OK, reports.diff);
       });
 
       it('should dispatch the `receiveDiffSuccess` action with empty enrich data', () => {
@@ -159,7 +159,7 @@ describe('secret detection report actions', () => {
       beforeEach(() => {
         mock
           .onGet(diffEndpoint)
-          .replyOnce(200, reports.diff)
+          .replyOnce(HTTP_STATUS_OK, reports.diff)
           .onGet(vulnerabilityFeedbackPath)
           .replyOnce(HTTP_STATUS_NOT_FOUND);
       });
@@ -181,7 +181,7 @@ describe('secret detection report actions', () => {
           .onGet(diffEndpoint)
           .replyOnce(HTTP_STATUS_NOT_FOUND)
           .onGet(vulnerabilityFeedbackPath)
-          .replyOnce(200, reports.enrichData);
+          .replyOnce(HTTP_STATUS_OK, reports.enrichData);
       });
 
       it('should dispatch the `receiveDiffError` action', () => {

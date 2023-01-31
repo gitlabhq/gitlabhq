@@ -11617,6 +11617,22 @@ Represents a code quality degradation on the pipeline.
 | <a id="codequalitydegradationseverity"></a>`severity` | [`CodeQualityDegradationSeverity!`](#codequalitydegradationseverity) | Status of the degradation (BLOCKER, CRITICAL, MAJOR, MINOR, INFO, UNKNOWN). |
 | <a id="codequalitydegradationweburl"></a>`webUrl` | [`String`](#string) | URL to the file along with line number. |
 
+### `CodeQualityReportSummary`
+
+Code Quality report for a pipeline.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="codequalityreportsummaryblocker"></a>`blocker` | [`Int`](#int) | Total number of blocker status. |
+| <a id="codequalityreportsummarycount"></a>`count` | [`Int`](#int) | Total number of Code Quality reports. |
+| <a id="codequalityreportsummarycritical"></a>`critical` | [`Int`](#int) | Total number of critical status. |
+| <a id="codequalityreportsummaryinfo"></a>`info` | [`Int`](#int) | Total number of info status. |
+| <a id="codequalityreportsummarymajor"></a>`major` | [`Int`](#int) | Total number of major status. |
+| <a id="codequalityreportsummaryminor"></a>`minor` | [`Int`](#int) | Total number of minor status. |
+| <a id="codequalityreportsummaryunknown"></a>`unknown` | [`Int`](#int) | Total number of unknown status. |
+
 ### `Commit`
 
 #### Fields
@@ -17104,6 +17120,7 @@ Represents a file or directory in the project repository that has been locked.
 | <a id="pipelineactive"></a>`active` | [`Boolean!`](#boolean) | Indicates if the pipeline is active. |
 | <a id="pipelinebeforesha"></a>`beforeSha` | [`String`](#string) | Base SHA of the source branch. |
 | <a id="pipelinecancelable"></a>`cancelable` | [`Boolean!`](#boolean) | Specifies if a pipeline can be canceled. |
+| <a id="pipelinecodequalityreportsummary"></a>`codeQualityReportSummary` | [`CodeQualityReportSummary`](#codequalityreportsummary) | Code Quality report summary for a pipeline. |
 | <a id="pipelinecodequalityreports"></a>`codeQualityReports` | [`CodeQualityDegradationConnection`](#codequalitydegradationconnection) | Code Quality degradations reported on the pipeline. (see [Connections](#connections)) |
 | <a id="pipelinecommit"></a>`commit` | [`Commit`](#commit) | Git commit of the pipeline. |
 | <a id="pipelinecommitpath"></a>`commitPath` | [`String`](#string) | Path to the commit that triggered the pipeline. |

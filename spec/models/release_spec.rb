@@ -81,14 +81,9 @@ RSpec.describe Release do
       end
     end
 
-    # Mimic releases created before 11.7
-    # See: https://gitlab.com/gitlab-org/gitlab/-/blob/8e5a110b01f842d8b6a702197928757a40ce9009/app/models/release.rb#L14
+    # Deleting user along with their contributions, nullifies releases author_id.
     context 'when updating existing release without author' do
       let(:release) { create(:release, :legacy) }
-
-      before do
-        stub_feature_flags(validate_release_with_author: false)
-      end
 
       it 'updates successfully' do
         release.description += 'Update'

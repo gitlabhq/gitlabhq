@@ -5,6 +5,7 @@ import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import axios from '~/lib/utils/axios_utils';
 import initSearchAutocomplete from '~/search_autocomplete';
 import '~/lib/utils/common_utils';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 
 describe('Search autocomplete dropdown', () => {
   let widget = null;
@@ -191,7 +192,7 @@ describe('Search autocomplete dropdown', () => {
       const axiosMock = new AxiosMockAdapter(axios);
       const autocompleteUrl = new RegExp(autocompletePath);
 
-      axiosMock.onGet(autocompleteUrl).reply(200, [
+      axiosMock.onGet(autocompleteUrl).reply(HTTP_STATUS_OK, [
         {
           category: 'Projects',
           id: 1,

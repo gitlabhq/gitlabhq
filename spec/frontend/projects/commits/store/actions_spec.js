@@ -2,7 +2,7 @@ import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import testAction from 'helpers/vuex_action_helper';
 import { createAlert } from '~/flash';
-import { HTTP_STATUS_INTERNAL_SERVER_ERROR } from '~/lib/utils/http_status';
+import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import actions from '~/projects/commits/store/actions';
 import * as types from '~/projects/commits/store/mutation_types';
 import createState from '~/projects/commits/store/state';
@@ -52,7 +52,7 @@ describe('Project commits actions', () => {
       state.projectId = '8';
       const data = [{ id: 1 }];
 
-      mock.onGet(path).replyOnce(200, data);
+      mock.onGet(path).replyOnce(HTTP_STATUS_OK, data);
       testAction(
         actions.fetchAuthors,
         null,

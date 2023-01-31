@@ -4,6 +4,7 @@ import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import { TEST_HOST } from 'helpers/test_constants';
 import waitForPromises from 'helpers/wait_for_promises';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { removeParams } from '~/lib/utils/url_utility';
 import Pager from '~/pager';
 
@@ -49,7 +50,7 @@ describe('pager', () => {
     const urlRegex = /(.*)some_list(.*)$/;
 
     function mockSuccess(count = 0) {
-      axiosMock.onGet(urlRegex).reply(200, {
+      axiosMock.onGet(urlRegex).reply(HTTP_STATUS_OK, {
         count,
         html: '',
       });

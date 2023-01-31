@@ -42,6 +42,18 @@ module Gitlab
         rescue StandardError => _
           false
         end
+
+        def code_quality_report_summary
+          report_degradations = @degradations.presence
+          return if report_degradations.nil?
+
+          summary = ::Gitlab::Ci::Reports::CodequalityReports::SEVERITY_PRIORITIES.keys.index_with(0)
+          report_degradations.each_value do |degradation|
+            summary[degradation[:severity]] += 1
+          end
+          summary['count'] = summary.values.sum
+          summary
+        end
       end
     end
   end

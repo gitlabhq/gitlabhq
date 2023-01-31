@@ -4,7 +4,7 @@ import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import { TEST_HOST } from 'helpers/test_constants';
 import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
-import { HTTP_STATUS_INTERNAL_SERVER_ERROR } from '~/lib/utils/http_status';
+import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import ProtectedBranchEdit from '~/protected_branches/protected_branch_edit';
 
 jest.mock('~/flash');
@@ -116,7 +116,9 @@ describe('ProtectedBranchEdit', () => {
 
     describe('when clicked', () => {
       beforeEach(async () => {
-        mock.onPatch(TEST_URL, { protected_branch: { [patchParam]: true } }).replyOnce(200, {});
+        mock
+          .onPatch(TEST_URL, { protected_branch: { [patchParam]: true } })
+          .replyOnce(HTTP_STATUS_OK, {});
       });
 
       it('checks and disables button', async () => {

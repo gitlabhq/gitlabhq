@@ -5,7 +5,7 @@ import { TEST_HOST } from 'spec/test_constants';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
-import { HTTP_STATUS_CONFLICT } from '~/lib/utils/http_status';
+import { HTTP_STATUS_CONFLICT, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import MergeRequest from '~/merge_request';
 
 jest.mock('~/flash');
@@ -23,7 +23,7 @@ describe('MergeRequest', () => {
 
       mock
         .onPatch(`${TEST_HOST}/frontend-fixtures/merge-requests-project/-/merge_requests/1.json`)
-        .reply(200, {});
+        .reply(HTTP_STATUS_OK, {});
 
       test.merge = new MergeRequest();
       return test.merge;

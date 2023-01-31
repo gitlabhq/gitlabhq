@@ -4,6 +4,7 @@ import { TEST_HOST } from 'helpers/test_constants';
 import testAction from 'helpers/vuex_action_helper';
 import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import * as actions from '~/pipelines/stores/test_reports/actions';
 import * as types from '~/pipelines/stores/test_reports/mutation_types';
 
@@ -35,7 +36,7 @@ describe('Actions TestReports Store', () => {
 
   describe('fetch report summary', () => {
     beforeEach(() => {
-      mock.onGet(summaryEndpoint).replyOnce(200, summary, {});
+      mock.onGet(summaryEndpoint).replyOnce(HTTP_STATUS_OK, summary, {});
     });
 
     it('sets testReports and shows tests', () => {
@@ -66,7 +67,7 @@ describe('Actions TestReports Store', () => {
       testReports.test_suites[0].build_ids = buildIds;
       mock
         .onGet(suiteEndpoint, { params: { build_ids: buildIds } })
-        .replyOnce(200, testReports.test_suites[0], {});
+        .replyOnce(HTTP_STATUS_OK, testReports.test_suites[0], {});
     });
 
     it('sets test suite and shows tests', () => {

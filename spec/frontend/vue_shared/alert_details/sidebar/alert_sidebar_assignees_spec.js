@@ -3,6 +3,7 @@ import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import SidebarAssignee from '~/vue_shared/alert_details/components/sidebar/sidebar_assignee.vue';
 import SidebarAssignees from '~/vue_shared/alert_details/components/sidebar/sidebar_assignees.vue';
 import AlertSetAssignees from '~/vue_shared/alert_details/graphql/mutations/alert_set_assignees.mutation.graphql';
@@ -97,7 +98,7 @@ describe('Alert Details Sidebar Assignees', () => {
     beforeEach(() => {
       mock = new MockAdapter(axios);
 
-      mock.onGet(mockPath).replyOnce(200, mockUsers);
+      mock.onGet(mockPath).replyOnce(HTTP_STATUS_OK, mockUsers);
       mountComponent({
         data: { alert: mockAlert },
         sidebarCollapsed: false,
@@ -187,7 +188,7 @@ describe('Alert Details Sidebar Assignees', () => {
     beforeEach(() => {
       mock = new MockAdapter(axios);
 
-      mock.onGet(mockPath).replyOnce(200, mockUsers);
+      mock.onGet(mockPath).replyOnce(HTTP_STATUS_OK, mockUsers);
 
       mountComponent({
         data: { alert: mockAlert },

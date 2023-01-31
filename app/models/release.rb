@@ -11,7 +11,6 @@ class Release < ApplicationRecord
   cache_markdown_field :description
 
   belongs_to :project, touch: true
-  # releases prior to 11.7 have no author
   belongs_to :author, class_name: 'User'
 
   has_many :links, class_name: 'Releases::Link'
@@ -26,7 +25,7 @@ class Release < ApplicationRecord
   before_create :set_released_at
 
   validates :project, :tag, presence: true
-  validates :author_id, presence: true, if: :validate_release_with_author?
+  validates :author_id, presence: true, on: :create, if: :validate_release_with_author?
 
   validates :tag, uniqueness: { scope: :project_id }
 

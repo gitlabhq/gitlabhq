@@ -342,6 +342,25 @@ Note the following:
   exporting a group from the Enterprise Edition to the Community Edition, you may lose this data. For more information,
   see [downgrading from EE to CE](../../../index.md).
 
+### Compatibility
+
+Group file exports are in NDJSON format. GitLab previously produced group file exports in JSON format, however:
+
+- From GitLab 15.8, GitLab no longer supports importing a JSON-formatted group file export.
+- Between GitLab 14.0 and GitLab 14.7, GitLab no longer produces group file exports in JSON format but, to support
+  transitions, can still import JSON-formatted group file exports.
+
+From GitLab 13.0, GitLab can import group file exports that were exported from a version of GitLab up to two
+[minor](../../../policy/maintenance.md#versioning) versions behind, which is similar to our process for
+[security releases](../../../policy/maintenance.md#security-releases).
+
+For example:
+
+| Destination version | Compatible source versions |
+|:--------------------|:---------------------------|
+| 13.0                | 13.0, 12.10, 12.9          |
+| 13.1                | 13.1, 13.0, 12.10          |
+
 ### Exported contents
 
 The [`import_export.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/import_export/group/import_export.yml)
@@ -439,27 +458,6 @@ To help avoid abuse, by default, users are rate limited to:
 | Export           | 6 groups per minute                |
 | Download export  | 1 download per group per minute  |
 | Import           | 6 groups per minute                |
-
-### Version history
-
-#### 14.0+
-
-In GitLab 14.0, the JSON format is no longer supported for project and group exports. To allow for a
-transitional period, you can still import any JSON exports. The new format for imports and exports
-is NDJSON.
-
-#### 13.0+
-
-GitLab can import bundles that were exported from a different GitLab deployment.
-This ability is limited to two previous GitLab [minor](../../../policy/maintenance.md#versioning)
-releases, which is similar to our process for [Security Releases](../../../policy/maintenance.md#security-releases).
-
-For example:
-
-| Current version | Can import bundles exported from |
-|-----------------|----------------------------------|
-| 13.0            | 13.0, 12.10, 12.9                |
-| 13.1            | 13.1, 13.0, 12.10                |
 
 ## Automate group and project import **(PREMIUM)**
 

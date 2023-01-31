@@ -105,10 +105,9 @@ module Gitlab
     VERSION = '0.2.4'
 ```
 
-## Version history
+## Compatibility
 
-Check the [version history](../user/project/settings/import_export.md#version-history)
-for compatibility when importing and exporting projects.
+Check for [compatibility](../user/project/settings/import_export.md#compatibility) when importing and exporting projects.
 
 ### When to bump the version up
 

@@ -4,7 +4,7 @@ import AxiosMockAdapter from 'axios-mock-adapter';
 import { nextTick } from 'vue';
 import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
-import { HTTP_STATUS_NOT_FOUND } from '~/lib/utils/http_status';
+import { HTTP_STATUS_NOT_FOUND, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import RevisionDropdown from '~/projects/compare/components/revision_dropdown_legacy.vue';
 
 const defaultProps = {
@@ -51,7 +51,7 @@ describe('RevisionDropdown component', () => {
     const Branches = ['branch-1', 'branch-2'];
     const Tags = ['tag-1', 'tag-2', 'tag-3'];
 
-    axiosMock.onGet(defaultProps.refsProjectPath).replyOnce(200, {
+    axiosMock.onGet(defaultProps.refsProjectPath).replyOnce(HTTP_STATUS_OK, {
       Branches,
       Tags,
     });
@@ -65,7 +65,7 @@ describe('RevisionDropdown component', () => {
   });
 
   it('sets branches and tags to be an empty array when no tags or branches are given', async () => {
-    axiosMock.onGet(defaultProps.refsProjectPath).replyOnce(200, {
+    axiosMock.onGet(defaultProps.refsProjectPath).replyOnce(HTTP_STATUS_OK, {
       Branches: undefined,
       Tags: undefined,
     });

@@ -3,7 +3,7 @@ import MockAdapter from 'axios-mock-adapter';
 import testAction from 'helpers/vuex_action_helper';
 import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
-import { HTTP_STATUS_INTERNAL_SERVER_ERROR } from '~/lib/utils/http_status';
+import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import * as actions from '~/sidebar/components/labels/labels_select_vue/store/actions';
 import * as types from '~/sidebar/components/labels/labels_select_vue/store/mutation_types';
 import defaultState from '~/sidebar/components/labels/labels_select_vue/store/state';
@@ -122,7 +122,7 @@ describe('LabelsSelect Actions', () => {
     describe('on success', () => {
       it('dispatches `requestLabels` & `receiveLabelsSuccess` actions', () => {
         const labels = [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }];
-        mock.onGet(/labels.json/).replyOnce(200, labels);
+        mock.onGet(/labels.json/).replyOnce(HTTP_STATUS_OK, labels);
 
         return testAction(
           actions.fetchLabels,
@@ -206,7 +206,7 @@ describe('LabelsSelect Actions', () => {
     describe('on success', () => {
       it('dispatches `requestCreateLabel`, `fetchLabels` & `receiveCreateLabelSuccess` & `toggleDropdownContentsCreateView` actions', () => {
         const label = { id: 1 };
-        mock.onPost(/labels.json/).replyOnce(200, label);
+        mock.onPost(/labels.json/).replyOnce(HTTP_STATUS_OK, label);
 
         return testAction(
           actions.createLabel,

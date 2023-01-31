@@ -21,7 +21,7 @@ export default {
       default: '',
     },
     currentProject: {
-      default: '',
+      default: () => ({}),
     },
     currentBranch: {
       default: () => ({}),
@@ -50,6 +50,9 @@ export default {
 
       return [this.currentProject];
     },
+    showCommitBox() {
+      return this.commitHtml || this.loading || !this.selectedBranch.value;
+    },
   },
   mounted() {
     this.fetchCommit();
@@ -63,6 +66,8 @@ export default {
       this.fetchCommit();
     },
     async fetchCommit() {
+      if (!this.selectedBranch.value) return;
+
       this.loading = true;
 
       const { data } = await axios.get(this.branchCommitPath, {
@@ -104,16 +109,22 @@ export default {
         />
       </div>
     </div>
-    <div v-if="commitHtml || loading" class="gl-bg-gray-50 gl-rounded-base gl-my-4">
+    <div
+      v-if="showCommitBox"
+      class="gl-bg-gray-50 gl-rounded-base gl-my-4"
+      data-testid="commit-box"
+    >
       <gl-loading-icon v-if="loading" class="gl-py-3" />
-      <div
-        v-if="!selectedBranch.value"
-        class="compare-commit-empty gl-display-flex gl-align-items-center gl-p-5"
-      >
-        <gl-icon name="branch" class="gl-mr-3" />
-        {{ __('Select a branch to compare') }}
-      </div>
-      <ul v-safe-html="commitHtml" class="list-unstyled mr_source_commit"></ul>
+      <template v-else>
+        <div
+          v-if="!selectedBranch.value"
+          class="compare-commit-empty gl-display-flex gl-align-items-center gl-p-5"
+        >
+          <gl-icon name="branch" class="gl-mr-3" />
+          {{ __('Select a branch to compare') }}
+        </div>
+        <ul v-safe-html="commitHtml" class="list-unstyled mr_source_commit"></ul>
+      </template>
     </div>
   </div>
 </template>

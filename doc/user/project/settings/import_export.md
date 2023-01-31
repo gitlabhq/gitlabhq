@@ -27,6 +27,30 @@ To preserve contribution history, [migrate using direct transfer](../../group/im
 
 If you migrate from GitLab.com to self-managed GitLab, an administrator can create users on the self-managed GitLab instance.
 
+## Compatibility
+
+FLAG:
+On self-managed GitLab by default project, file exports are in NDJSON format. To make GitLab produce project file
+exports in JSON format, ask an administrator to [disable the feature flags](../../../administration/feature_flags.md)
+named `project_export_as_ndjson`. To allow GitLab to import project file exports in JSON format, ask an administrator to
+[disable the feature flags](../../../administration/feature_flags.md) named `project_import_ndjson`. On GitLab.com,
+project file exports are in NDJSON format only.
+
+Project file exports are in NDJSON format. Before version 14.0, GitLab produced project file exports in JSON format.
+To support transitions, you can still import JSON-formatted project file exports if you configure the relevant feature
+flags.
+
+From GitLab 13.0, GitLab can import project file exports that were exported from a version of GitLab up to two
+[minor](../../../policy/maintenance.md#versioning) versions behind, which is similar to our process for
+[security releases](../../../policy/maintenance.md#security-releases).
+
+For example:
+
+| Destination version | Compatible source versions |
+|:--------------------|:---------------------------|
+| 13.0                | 13.0, 12.10, 12.9          |
+| 13.1                | 13.1, 13.0, 12.10          |
+
 ## Configure file exports as an import source **(FREE SELF)**
 
 Before you can migrate projects on a self-managed GitLab instance using file exports, GitLab administrators must:
@@ -47,7 +71,7 @@ To enable file exports as an import source for the destination instance:
 ## Between CE and EE
 
 You can export projects from the [Community Edition to the Enterprise Edition](https://about.gitlab.com/install/ce-or-ee/)
-and vice versa. This assumes [version history](#version-history) requirements are met.
+and vice versa, assuming [compatibility](#compatibility) is met.
 
 If you're exporting a project from the Enterprise Edition to the Community Edition, you may lose
 data that is retained only in the Enterprise Edition. For more information, see
@@ -146,7 +170,7 @@ Prerequisites:
 - You must have [exported the project and its data](#export-a-project-and-its-data).
 - Compare GitLab versions and ensure you are importing to a GitLab version that is the same or later
   than the GitLab version you exported to.
-- Review the [Version history](#version-history) for compatibility issues.
+- Review [compatibility](#compatibility) for any issues.
 - At least the Maintainer role on the destination group to migrate to. Using the Developer role for this purpose was
   [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/387891) in GitLab 15.8 and will be removed in GitLab 16.0.
 
@@ -220,32 +244,6 @@ To help avoid abuse, by default, users are rate limited to:
 | Export           | 6 projects per minute |
 | Download export  | 1 download per group per minute |
 | Import           | 6 projects per minute |
-
-## Version history
-
-### 15.8+
-
-Starting with GitLab 15.8, importing groups from a JSON export is no longer supported. Groups must be imported
-in NDJSON format.
-
-### 14.0+
-
-In GitLab 14.0, the JSON format is no longer supported for project and group exports. To allow for a
-transitional period, you can still import any JSON exports. The new format for imports and exports
-is NDJSON.
-
-### 13.0+
-
-Starting with GitLab 13.0, GitLab can import bundles that were exported from a different GitLab deployment.
-**This ability is limited to two previous GitLab [minor](../../../policy/maintenance.md#versioning)
-releases**, which is similar to our process for [Security Releases](../../../policy/maintenance.md#security-releases).
-
-For example:
-
-| Current version | Can import bundles exported from |
-|-----------------|----------------------------------|
-| 13.0            | 13.0, 12.10, 12.9                |
-| 13.1            | 13.1, 13.0, 12.10                |
 
 ## Related topics
 

@@ -3,7 +3,7 @@ import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import waitForPromises from 'helpers/wait_for_promises';
 import axios from '~/lib/utils/axios_utils';
-import { HTTP_STATUS_INTERNAL_SERVER_ERROR } from '~/lib/utils/http_status';
+import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import MarkdownViewer from '~/vue_shared/components/content_viewer/viewers/markdown_viewer.vue';
 
 jest.mock('~/behaviors/markdown/render_gfm');
@@ -36,9 +36,11 @@ describe('MarkdownViewer', () => {
 
   describe('success', () => {
     beforeEach(() => {
-      mock.onPost(`${gon.relative_url_root}/testproject/preview_markdown`).replyOnce(200, {
-        body: '<b>testing</b> {{gl_md_img_1}}',
-      });
+      mock
+        .onPost(`${gon.relative_url_root}/testproject/preview_markdown`)
+        .replyOnce(HTTP_STATUS_OK, {
+          body: '<b>testing</b> {{gl_md_img_1}}',
+        });
     });
 
     it('renders a skeleton loader while the markdown is loading', () => {
