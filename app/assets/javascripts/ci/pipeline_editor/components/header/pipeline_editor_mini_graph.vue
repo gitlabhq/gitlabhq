@@ -1,5 +1,6 @@
 <script>
 import { __ } from '~/locale';
+import { keepLatestDownstreamPipelines } from '~/pipelines/components/parsing_utils';
 import PipelineMiniGraph from '~/pipelines/components/pipeline_mini_graph/pipeline_mini_graph.vue';
 import getLinkedPipelinesQuery from '~/projects/commit_box/info/graphql/queries/get_linked_pipelines.query.graphql';
 import { PIPELINE_FAILURE } from '../../constants';
@@ -43,7 +44,8 @@ export default {
   },
   computed: {
     downstreamPipelines() {
-      return this.linkedPipelines?.downstream?.nodes || [];
+      const downstream = this.linkedPipelines?.downstream?.nodes;
+      return keepLatestDownstreamPipelines(downstream);
     },
     hasPipelineStages() {
       return this.pipelineStages.length > 0;

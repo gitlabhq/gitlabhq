@@ -4,8 +4,8 @@ include:
 db:rollback:
   extends: .db-job-base
   script:
-    - scripts/db_tasks db:migrate VERSION=20210602155110
-    - scripts/db_tasks db:migrate SKIP_SCHEMA_VERSION_CHECK=true
+    - scripts/db_tasks db:migrate VERSION=20220502173045  # 14.10 (last 14.x version)
+    - scripts/db_tasks db:migrate
 
 db:rollback single-db:
   extends:

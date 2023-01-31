@@ -173,7 +173,14 @@ describe('Commit box pipeline mini graph', () => {
       const upstreamPipeline = findPipelineMiniGraph().props('upstreamPipeline');
 
       expect(upstreamPipeline).toEqual(samplePipeline);
-      expect(downstreamPipelines).toEqual(expect.arrayContaining([samplePipeline]));
+      expect(downstreamPipelines).toEqual(
+        expect.arrayContaining([
+          {
+            ...samplePipeline,
+            sourceJob: expect.any(Object),
+          },
+        ]),
+      );
     });
   });
 

@@ -377,6 +377,24 @@ git config core.sshCommand "ssh -o IdentitiesOnly=yes -i ~/.ssh/private-key-file
 This command does not use the SSH Agent and requires Git 2.10 or later. For more information
 on `ssh` command options, see the `man` pages for both `ssh` and `ssh_config`.
 
+## View your account's SSH keys
+
+1. Sign in to GitLab.
+1. On the top bar, in the top right corner, select your avatar.
+1. Select **Preferences**.
+1. On the left sidebar, select **SSH Keys**.
+
+Your existing SSH keys are listed at the bottom of the page. The information includes:
+
+- The key's:
+  - Name.
+  - Public fingerprint.
+  - Expiry date.
+  - Permitted usage types.
+- The time a key was last used. On GitLab.com this value is unavailable, and you are unable to see if or when an SSH key has been used. For more information, see [issue 324764](https://gitlab.com/gitlab-org/gitlab/-/issues/324764).
+
+Select **Delete** to permanently delete an SSH key.
+
 ## Use different accounts on a single GitLab instance
 
 You can use multiple accounts to connect to a single instance of GitLab. You

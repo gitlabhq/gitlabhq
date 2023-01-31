@@ -47,11 +47,6 @@ describe('Pipeline Status', () => {
     mockLinkedPipelinesQuery = jest.fn();
   });
 
-  afterEach(() => {
-    mockLinkedPipelinesQuery.mockReset();
-    wrapper.destroy();
-  });
-
   describe('when there are stages', () => {
     beforeEach(() => {
       createComponent();
@@ -74,9 +69,11 @@ describe('Pipeline Status', () => {
 
   describe('when querying upstream and downstream pipelines', () => {
     describe('when query succeeds', () => {
-      beforeEach(() => {
+      beforeEach(async () => {
         mockLinkedPipelinesQuery.mockResolvedValue(mockLinkedPipelines());
         createComponentWithApollo();
+
+        await waitForPromises();
       });
 
       it('should call the query with the correct variables', () => {
@@ -85,6 +82,10 @@ describe('Pipeline Status', () => {
           fullPath: mockProjectFullPath,
           iid: mockProjectPipeline().pipeline.iid,
         });
+      });
+
+      it('renders only the latest downstream pipelines', () => {
+        expect(findPipelineMiniGraph().props('downstreamPipelines')).toHaveLength(1);
       });
     });
 

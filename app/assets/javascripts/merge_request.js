@@ -95,10 +95,6 @@ MergeRequest.prototype.initMRBtnListeners = function () {
           .then(({ data }) => {
             draftToggle.removeAttribute('disabled');
 
-            if (!window.gon?.features?.realtimeMrStatusChange) {
-              eventHub.$emit('MRWidgetUpdateRequested');
-            }
-
             MergeRequest.toggleDraftStatus(data.title, wipEvent === 'ready');
           })
           .catch(() => {
@@ -155,6 +151,10 @@ MergeRequest.hideCloseButton = function () {
 };
 
 MergeRequest.toggleDraftStatus = function (title, isReady) {
+  if (!window.gon?.features?.realtimeMrStatusChange) {
+    eventHub.$emit('MRWidgetUpdateRequested');
+  }
+
   if (isReady) {
     toast(__('Marked as ready. Merging is now allowed.'));
   } else {

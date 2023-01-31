@@ -28844,9 +28844,6 @@ msgstr ""
 msgid "Oh no!"
 msgstr ""
 
-msgid "Ok, let's go"
-msgstr ""
-
 msgid "Okay"
 msgstr ""
 
@@ -45030,6 +45027,9 @@ msgstr ""
 msgid "Unauthenticated web rate limit period in seconds"
 msgstr ""
 
+msgid "Unavailable"
+msgstr ""
+
 msgid "Unban"
 msgstr ""
 
@@ -47106,9 +47106,6 @@ msgid "We couldn't find any %{scope} matching %{term} in project %{project}"
 msgstr ""
 
 msgid "We couldn't reach the Prometheus server. Either the server no longer exists or the configuration details need updating."
-msgstr ""
-
-msgid "We created a sandbox project that will help you learn the basics of GitLab. You’ll be guided by issues in an issue board. You can go through the issues at your own pace."
 msgstr ""
 
 msgid "We detected an attempt to sign in to your %{host} account using a wrong two-factor authentication code"

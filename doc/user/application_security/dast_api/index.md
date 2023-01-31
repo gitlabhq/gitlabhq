@@ -1941,7 +1941,7 @@ Follow these steps to view details of a vulnerability:
 
 1. You can view vulnerabilities in a project, or a merge request:
 
-   - In a project, go to the project's **{shield}** **Security & Compliance > Vulnerability Report**
+   - In a project, go to the project's **Security & Compliance > Vulnerability Report**
      page. This page shows all vulnerabilities from the default branch only.
    - In a merge request, go the merge request's **Security** section and select the **Expand**
      button. DAST API vulnerabilities are available in a section labeled

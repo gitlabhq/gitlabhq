@@ -86,6 +86,13 @@ RSpec.describe DashboardController, feature_category: :code_review_workflow do
       end
 
       context 'when an ActiveRecord::QueryCanceled is not raised' do
+        it 'does not set :search_timeout_occurred' do
+          get :merge_requests, params: { author_id: user.id }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(assigns(:search_timeout_occurred)).to eq(nil)
+        end
+
         context 'rendering views' do
           render_views
 

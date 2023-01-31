@@ -2,14 +2,20 @@
 import { GlButton } from '@gitlab/ui';
 import { produce } from 'immer';
 import { createAlert } from '~/flash';
-import toast from '~/vue_shared/plugins/global_toast';
-import { __ } from '~/locale';
+import { __, s__ } from '~/locale';
+import MergeRequest from '~/merge_request';
 import mergeRequestQueryVariablesMixin from '../../mixins/merge_request_query_variables';
 import getStateQuery from '../../queries/get_state.query.graphql';
 import draftQuery from '../../queries/states/draft.query.graphql';
 import removeDraftMutation from '../../queries/toggle_draft.mutation.graphql';
 import StateContainer from '../state_container.vue';
-import eventHub from '../../event_hub';
+
+// Export for testing
+export const MSG_SOMETHING_WENT_WRONG = __('Something went wrong. Please try again.');
+export const MSG_MERGE_BLOCKED = __(
+  "Merge blocked: merge request must be marked as ready. It's still marked as draft.",
+);
+export const MSG_MARK_READY = s__('mrWidget|Mark as ready');
 
 export default {
   name: 'WorkInProgress',
@@ -62,7 +68,7 @@ export default {
           ) {
             if (errors?.length) {
               createAlert({
-                message: __('Something went wrong. Please try again.'),
+                message: MSG_SOMETHING_WENT_WRONG,
               });
 
               return;
@@ -109,19 +115,12 @@ export default {
               },
             },
           }) => {
-            toast(__('Marked as ready. Merging is now allowed.'));
-            document.querySelector(
-              '.merge-request .detail-page-description .title',
-            ).textContent = title;
-
-            if (!window.gon?.features?.realtimeMrStatusChange) {
-              eventHub.$emit('MRWidgetUpdateRequested');
-            }
+            MergeRequest.toggleDraftStatus(title, true);
           },
         )
         .catch(() =>
           createAlert({
-            message: __('Something went wrong. Please try again.'),
+            message: MSG_SOMETHING_WENT_WRONG,
           }),
         )
         .finally(() => {
@@ -129,13 +128,15 @@ export default {
         });
     },
   },
+  MSG_MERGE_BLOCKED,
+  MSG_MARK_READY,
 };
 </script>
 
 <template>
   <state-container :mr="mr" status="failed">
     <span class="gl-font-weight-bold gl-ml-0! gl-text-body! gl-flex-grow-1">
-      {{ __("Merge blocked: merge request must be marked as ready. It's still marked as draft.") }}
+      {{ $options.MSG_MERGE_BLOCKED }}
     </span>
     <template #actions>
       <gl-button
@@ -148,7 +149,7 @@ export default {
         data-testid="removeWipButton"
         @click="handleRemoveDraft"
       >
-        {{ s__('mrWidget|Mark as ready') }}
+        {{ $options.MSG_MARK_READY }}
       </gl-button>
     </template>
   </state-container>

@@ -24,10 +24,47 @@ RSpec.describe 'profiles/keys/_key.html.haml', feature_category: :authentication
       expect(rendered).to have_text(key.title)
       expect(rendered).to have_css('[data-testid="key-icon"]')
       expect(rendered).to have_text(key.fingerprint)
-      expect(rendered).to have_text(l(key.last_used_at, format: "%b %d, %Y"))
       expect(rendered).to have_text(l(key.created_at, format: "%b %d, %Y"))
       expect(rendered).to have_text(key.expires_at.to_date)
       expect(rendered).to have_button('Remove')
+    end
+
+    context 'when disable_ssh_key_used_tracking is enabled' do
+      before do
+        stub_feature_flags(disable_ssh_key_used_tracking: true)
+      end
+
+      it 'renders "Unavailable" for last used' do
+        render
+
+        expect(rendered).to have_text('Last used: Unavailable')
+      end
+    end
+
+    context 'when disable_ssh_key_used_tracking is disabled' do
+      before do
+        stub_feature_flags(disable_ssh_key_used_tracking: false)
+      end
+
+      it 'displays the correct last used date' do
+        render
+
+        expect(rendered).to have_text(l(key.last_used_at, format: "%b %d, %Y"))
+      end
+
+      context 'when the key has not been used' do
+        let_it_be(:key) do
+          create(:personal_key,
+                 user: user,
+                 last_used_at: nil)
+        end
+
+        it 'renders "Never" for last used' do
+          render
+
+          expect(rendered).to have_text('Last used: Never')
+        end
+      end
     end
 
     context 'displays the usage type' do
@@ -64,20 +101,6 @@ RSpec.describe 'profiles/keys/_key.html.haml', feature_category: :authentication
             expect(rendered).not_to have_text(button)
           end
         end
-      end
-    end
-
-    context 'when the key has not been used' do
-      let_it_be(:key) do
-        create(:personal_key,
-               user: user,
-               last_used_at: nil)
-      end
-
-      it 'renders "Never" for last used' do
-        render
-
-        expect(rendered).to have_text('Last used: Never')
       end
     end
 

@@ -170,3 +170,12 @@ export const generateColumnsFromLayersListBare = ({ stages, stagesLookup }, pipe
 };
 
 export const generateColumnsFromLayersListMemoized = memoize(generateColumnsFromLayersListBare);
+
+// TODO: handle REST / MR values
+// See https://gitlab.com/gitlab-org/gitlab/-/issues/367547
+export const keepLatestDownstreamPipelines = (downstreamPipelines = []) => {
+  // handles GraphQL
+  return downstreamPipelines.filter((job) => {
+    return !job.sourceJob.retried;
+  });
+};
