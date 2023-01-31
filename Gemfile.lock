@@ -942,7 +942,7 @@ GEM
     netrc (0.11.0)
     nio4r (2.5.8)
     no_proxy_fix (0.1.2)
-    nokogiri (1.14.0)
+    nokogiri (1.14.1)
       mini_portile2 (~> 2.8.0)
       racc (~> 1.4)
     notiffany (0.1.3)
@@ -1742,7 +1742,7 @@ DEPENDENCIES
   multi_json (~> 1.14.1)
   net-ldap (~> 0.17.1)
   net-ntp
-  nokogiri (~> 1.14.0)
+  nokogiri (~> 1.14.1)
   oauth2 (~> 2.0)
   octokit (~> 4.15)
   ohai (~> 16.10)

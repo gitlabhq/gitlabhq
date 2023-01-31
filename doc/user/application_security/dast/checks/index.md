@@ -126,7 +126,7 @@ The [DAST browser-based crawler](../browser_based.md) provides a number of vulne
 | [798.94](798.94.md) | Exposure of confidential secret or token Private Key | High | Passive |
 | [798.95](798.95.md) | Exposure of confidential secret or token Pulumi API token | High | Passive |
 | [798.96](798.96.md) | Exposure of confidential secret or token PyPI upload token | High | Passive |
-| [798.97](798.97.md) | Exposure of confidential secret or token RubyGem API token | High | Passive |
+| [798.97](798.97.md) | Exposure of confidential secret or token RubyGems API token | High | Passive |
 | [798.98](798.98.md) | Exposure of confidential secret or token RapidAPI Access Token | High | Passive |
 | [798.99](798.99.md) | Exposure of confidential secret or token Sendbird Access ID | High | Passive |
 | [798.100](798.100.md) | Exposure of confidential secret or token Sendbird Access Token | High | Passive |

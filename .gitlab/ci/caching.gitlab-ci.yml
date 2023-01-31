@@ -47,10 +47,9 @@ cache-assets:test as-if-foss:
     - .as-if-foss
 
 cache-assets:production:
-  extends: .cache-assets-base
-  variables:
-    NODE_ENV: "production"
-    RAILS_ENV: "production"
+  extends:
+    - .cache-assets-base
+    - .production
 
 packages-cleanup:
   extends:

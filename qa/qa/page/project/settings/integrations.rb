@@ -10,6 +10,7 @@ module QA
             element :prometheus_link, %q(:data-qa-selector="`${item.name}_link`") # rubocop:disable QA/ElementWithPattern
             element :jira_link, %q(:data-qa-selector="`${item.name}_link`") # rubocop:disable QA/ElementWithPattern
             element :pipelines_email_link, %q(:data-qa-selector="`${item.name}_link`") # rubocop:disable QA/ElementWithPattern
+            element :gitlab_slack_application_link, %q(:data-qa-selector="`${item.name}_link`") # rubocop:disable QA/ElementWithPattern
           end
 
           def click_on_prometheus_integration
@@ -26,6 +27,10 @@ module QA
 
           def click_jenkins_ci_link
             click_element :jenkins_link
+          end
+
+          def click_slack_application_link
+            click_element :gitlab_slack_application_link
           end
         end
       end

@@ -262,9 +262,11 @@ module UsersHelper
     if with_schema_markup
       job_title = '<span itemprop="jobTitle">'.html_safe + job_title + "</span>".html_safe
       organization = '<span itemprop="worksFor">'.html_safe + organization + "</span>".html_safe
-    end
 
-    html_escape(s_('Profile|%{job_title} at %{organization}')) % { job_title: job_title, organization: organization }
+      html_escape(s_('Profile|%{job_title} at %{organization}')) % { job_title: job_title, organization: organization }
+    else
+      s_('Profile|%{job_title} at %{organization}') % { job_title: job_title, organization: organization }
+    end
   end
 
   def user_table_headers

@@ -104,7 +104,7 @@ module QA
 
             # Specify the user-agent to allow challenges to be bypassed
             # See https://gitlab.com/gitlab-com/gl-infra/infrastructure/-/issues/11938
-            if QA::Runtime::Env.user_agent
+            unless QA::Runtime::Env.user_agent.blank?
               capabilities['goog:chromeOptions'][:args] << "user-agent=#{QA::Runtime::Env.user_agent}"
             end
 
@@ -115,6 +115,38 @@ module QA
               capabilities['appium:platformVersion'] = 'latest'
             else
               capabilities['goog:chromeOptions'][:args] << 'window-size=1480,2200'
+            end
+
+            # Slack tries to open an external URL handler
+            # The test needs to default the handler to always open Slack
+            # to prevent a blocking popup.
+            if QA::Runtime::Env.slack_workspace
+              slack_default_preference = {
+                'protocol_handler' => {
+                  'allowed_origin_protocol_pairs' => {
+                    "https://#{QA::Runtime::Env.slack_workspace}.slack.com" => {
+                      'slack' => true
+                    }
+                  }
+                }
+              }
+
+              default_profile = File.join("#{chrome_profile_location}/Default")
+              FileUtils.mkdir_p(default_profile) unless Dir.exist?(default_profile)
+              preferences = slack_default_preference
+
+              # mutate the preferences if it exists
+              # else write a new file
+              if File.exist?("#{default_profile}/Preferences")
+                begin
+                  preferences = JSON.parse(File.read("#{default_profile}/Preferences"))
+                  preferences.deep_merge!(slack_default_preference)
+                rescue JSON::ParserError => _
+                end
+              end
+
+              File.write("#{default_profile}/Preferences", preferences.to_json)
+              append_chrome_profile_to_capabilities(capabilities)
             end
 
           when :safari
@@ -131,10 +163,7 @@ module QA
 
           # Use the same profile on QA runs if CHROME_REUSE_PROFILE is true.
           # Useful to speed up local QA.
-          if QA::Runtime::Env.reuse_chrome_profile?
-            qa_profile_dir = ::File.expand_path('../../tmp/qa-profile', __dir__)
-            capabilities['goog:chromeOptions'][:args] << "user-data-dir=#{qa_profile_dir}"
-          end
+          append_chrome_profile_to_capabilities(capabilities) if QA::Runtime::Env.reuse_chrome_profile?
 
           selenium_options = {
             browser: QA::Runtime::Env.browser,
@@ -192,6 +221,16 @@ module QA
         @configured = true
       end
       # rubocop: enable Metrics/AbcSize
+
+      def self.append_chrome_profile_to_capabilities(capabilities)
+        return if capabilities['goog:chromeOptions'][:args].include?(chrome_profile_location)
+
+        capabilities['goog:chromeOptions'][:args] << "user-data-dir=#{chrome_profile_location}"
+      end
+
+      def self.chrome_profile_location
+        ::File.expand_path('../../tmp/qa-profile', __dir__)
+      end
 
       class Session
         include Capybara::DSL

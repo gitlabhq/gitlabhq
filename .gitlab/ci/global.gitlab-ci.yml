@@ -21,6 +21,12 @@
     - !reference [.default-utils-before_script, before_script]
     - source scripts/prepare_build.sh
 
+.production:
+  variables:
+    RAILS_ENV: "production"
+    NODE_ENV: "production"
+    GITLAB_ALLOW_SEPARATE_CI_DATABASE: "true"
+
 .ruby-gems-cache: &ruby-gems-cache
   key: "ruby-gems-debian-${DEBIAN_VERSION}-ruby-${RUBY_VERSION}"
   paths:

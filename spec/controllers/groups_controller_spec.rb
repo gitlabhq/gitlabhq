@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe GroupsController, factory_default: :keep do
+RSpec.describe GroupsController, factory_default: :keep, feature_category: :code_review_workflow do
   include ExternalAuthorizationServiceHelpers
   include AdminModeHelper
 
