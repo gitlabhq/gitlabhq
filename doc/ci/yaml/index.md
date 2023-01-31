@@ -1112,6 +1112,12 @@ Caches are:
 - By default, not shared between [protected](../../user/project/protected_branches.md) and unprotected branches.
 - Restored before [artifacts](#artifacts).
 
+You can [disable caching for specific jobs](../caching/index.md#disable-cache-for-specific-jobs),
+for example to override:
+
+- A default cache defined with [`default`](#default).
+- The configuration for a job added with [`include`](#include).
+
 Learn more about caches in [Caching in GitLab CI/CD](../caching/index.md).
 
 #### `cache:paths`

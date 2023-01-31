@@ -1,9 +1,9 @@
 /* eslint-disable class-methods-use-this, no-new */
-
 import $ from 'jquery';
 import issuableEventHub from '~/issues/list/eventhub';
 import LabelsSelect from '~/labels/labels_select';
 import {
+  mountAssigneesDropdown,
   mountMilestoneDropdown,
   mountMoveIssuesButton,
   mountStatusDropdown,
@@ -64,6 +64,7 @@ export default class IssuableBulkUpdateSidebar {
     mountMoveIssuesButton();
     mountStatusDropdown();
     mountSubscriptionsDropdown();
+    mountAssigneesDropdown();
 
     // Checking IS_EE and using ee_else_ce is odd, but we do it here to satisfy
     // the import/no-unresolved lint rule when FOSS_ONLY=1, even though at

@@ -28,7 +28,10 @@ export default function initPageShortcuts() {
   // TODO: replace this whitelist with something more automated/maintainable
   if (page && !pagesWithCustomShortcuts.includes(page)) {
     import(/* webpackChunkName: 'shortcutsBundle' */ './shortcuts/shortcuts')
-      .then(({ default: Shortcuts }) => new Shortcuts())
+      .then(({ default: Shortcuts }) => {
+        const shortcuts = new Shortcuts();
+        window.toggleShortcutsHelp = shortcuts.onToggleHelp;
+      })
       .catch(() => {});
   }
   return false;

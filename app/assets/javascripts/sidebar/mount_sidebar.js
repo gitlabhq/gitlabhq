@@ -1,21 +1,22 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { TYPE_ISSUE, TYPE_MERGE_REQUEST } from '~/graphql_shared/constants';
-import { convertToGraphQLId } from '~/graphql_shared/utils';
+import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import initInviteMembersModal from '~/invite_members/init_invite_members_modal';
 import initInviteMembersTrigger from '~/invite_members/init_invite_members_trigger';
 import { IssuableType } from '~/issues/constants';
 import { gqlClient } from '~/issues/list/graphql';
 import {
-  isInIssuePage,
   isInDesignPage,
   isInIncidentPage,
+  isInIssuePage,
   isInMRPage,
   parseBoolean,
 } from '~/lib/utils/common_utils';
 import { __ } from '~/locale';
 import { apolloProvider } from '~/graphql_shared/issuable_client';
 import Translate from '~/vue_shared/translate';
+import UserSelect from '~/vue_shared/components/user_select/user_select.vue';
 import CollapsedAssigneeList from './components/assignees/collapsed_assignee_list.vue';
 import SidebarAssignees from './components/assignees/sidebar_assignees.vue';
 import SidebarAssigneesWidget from './components/assignees/sidebar_assignees_widget.vue';
@@ -722,6 +723,70 @@ export function mountMoveIssueButton() {
       issueIid,
     },
     render: (createElement) => createElement(MoveIssueButton),
+  });
+}
+
+export function mountAssigneesDropdown() {
+  const el = document.querySelector('.js-assignee-dropdown');
+  const assigneeIdsInput = document.querySelector('.js-assignee-ids-input');
+
+  if (!el || !assigneeIdsInput) {
+    return null;
+  }
+
+  const { fullPath } = el.dataset;
+  const currentUser = {
+    id: gon?.current_user_id,
+    username: gon?.current_username,
+    name: gon?.current_user_fullname,
+    avatarUrl: gon?.current_user_avatar_url,
+  };
+
+  return new Vue({
+    el,
+    apolloProvider,
+    data() {
+      return {
+        selectedUserName: '',
+        value: [],
+      };
+    },
+    methods: {
+      onSelectedUnassigned() {
+        assigneeIdsInput.value = 0;
+        this.value = [];
+        this.selectedUserName = __('Unassigned');
+      },
+      onSelected(selected) {
+        assigneeIdsInput.value = selected.map((user) => getIdFromGraphQLId(user.id));
+        this.value = selected;
+        this.selectedUserName = selected.map((user) => user.name).join(', ');
+      },
+    },
+    render(h) {
+      const component = this;
+
+      return h(UserSelect, {
+        props: {
+          text: component.selectedUserName || __('Select assignee'),
+          headerText: __('Assign to'),
+          fullPath,
+          currentUser,
+          value: component.value,
+        },
+        on: {
+          input(selected) {
+            if (!selected.length) {
+              component.onSelectedUnassigned();
+              return;
+            }
+
+            component.onSelected(selected);
+          },
+        },
+        class: 'gl-w-full',
+      });
+    },
   });
 }
 

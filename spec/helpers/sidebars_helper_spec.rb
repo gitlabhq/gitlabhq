@@ -66,7 +66,9 @@ RSpec.describe SidebarsHelper do
         assigned_open_issues_count: 1,
         assigned_open_merge_requests_count: 2,
         todos_pending_count: 3,
-        issues_dashboard_path: issues_dashboard_path(assignee_username: user.username)
+        issues_dashboard_path: issues_dashboard_path(assignee_username: user.username),
+        support_path: helper.support_url,
+        display_whats_new: helper.display_whats_new?
       })
     end
 

@@ -209,6 +209,7 @@ module API
         mount ::API::DeployKeys
         mount ::API::DeployTokens
         mount ::API::Deployments
+        mount ::API::DraftNotes
         mount ::API::Environments
         mount ::API::ErrorTracking::ClientKeys
         mount ::API::ErrorTracking::ProjectSettings

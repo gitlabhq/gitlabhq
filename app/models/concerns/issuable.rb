@@ -92,10 +92,9 @@ module Issuable
 
     validates :author, presence: true
     validates :title, presence: true, length: { maximum: TITLE_LENGTH_MAX }
-    # we validate the description against DESCRIPTION_LENGTH_MAX only for Issuables being created
-    # to avoid breaking the existing Issuables which may have their descriptions longer
-    validates :description, length: { maximum: DESCRIPTION_LENGTH_MAX }, allow_blank: true, on: :create
-    validate :description_max_length_for_new_records_is_valid, on: :update
+    # we validate the description against DESCRIPTION_LENGTH_MAX only for Issuables being created and on updates if
+    # the description changes to avoid breaking the existing Issuables which may have their descriptions longer
+    validates :description, bytesize: { maximum: -> { DESCRIPTION_LENGTH_MAX } }, if: :validate_description_length?
     validate :validate_assignee_size_length, unless: :importing?
 
     before_validation :truncate_description_on_import!
@@ -229,10 +228,14 @@ module Issuable
 
     private
 
-    def description_max_length_for_new_records_is_valid
-      if new_record? && description.length > Issuable::DESCRIPTION_LENGTH_MAX
-        errors.add(:description, :too_long, count: Issuable::DESCRIPTION_LENGTH_MAX)
-      end
+    def validate_description_length?
+      return false unless description_changed?
+
+      previous_description = changes['description'].first
+      # previous_description will be nil for new records
+      return true if previous_description.blank?
+
+      previous_description.bytesize <= DESCRIPTION_LENGTH_MAX
     end
 
     def truncate_description_on_import!

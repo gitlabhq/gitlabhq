@@ -1205,6 +1205,12 @@
       changes: *db-patterns
     - <<: *if-default-branch-schedule-nightly
 
+.rails:rules:db:check-migrations-single-db:
+  rules:
+    - <<: *if-merge-request-labels-run-single-db
+    - <<: *if-merge-request
+      changes: *db-patterns
+
 .rails:rules:db-backup:
   rules:
     - <<: *if-merge-request-labels-run-all-rspec
@@ -2191,7 +2197,7 @@
     - <<: *if-not-ee
       when: never
     - <<: *if-dot-com-ee-schedule-default-branch-maintenance
-    - <<: *if-default-refs
+    - <<: *if-default-branch-refs
       changes:
         - ".gitlab/ci/setup.gitlab-ci.yml"
         - ".gitlab/ci/test-metadata.gitlab-ci.yml"
@@ -2213,7 +2219,7 @@
     - <<: *if-not-ee
       when: never
     - <<: *if-dot-com-ee-schedule-default-branch-maintenance
-    - <<: *if-default-refs
+    - <<: *if-default-branch-refs
       changes:
         - ".gitlab/ci/test-metadata.gitlab-ci.yml"
         - "scripts/rspec_helpers.sh"

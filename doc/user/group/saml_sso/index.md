@@ -347,7 +347,7 @@ To migrate users to a new email domain, users must:
 ## User access and management
 
 > - SAML user provisioning [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/268142) in GitLab 13.7.
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/325712) in GitLab 14.0, GitLab users created by [SAML SSO](index.md#user-access-and-management) or SCIM provisioning are displayed with an **Enterprise** badge in the **Members** view.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/325712) in GitLab 14.0, GitLab users created by [SAML SSO](index.md#user-access-and-management) or SCIM provisioning are displayed with an ][**Enterprise**](../../enterprise_user/index.md) badge in the **Members** view.
 
 After group SSO is configured and enabled, users can access the GitLab.com group through the identity provider's dashboard.
 If [SCIM](scim_setup.md) is configured, see [user access](scim_setup.md#user-access) on the SCIM page.
@@ -445,8 +445,9 @@ convert the information to XML. An example SAML response is shown here.
 
 By default, users provisioned with SAML or SCIM are sent a verification email to verify their identity. Instead, you can
 [configure GitLab with a custom domain](../../project/pages/custom_domains_ssl_tls_certification/index.md) and GitLab
-automatically confirms user accounts. Users still receive an enterprise user welcome email. Confirmation is bypassed for
-users:
+automatically confirms user accounts. Users still receive an
+[enterprise user](../../enterprise_user/index.md) welcome email. Confirmation is
+bypassed for users:
 
 - That are provisioned with SAML or SCIM.
 - That have an email address that belongs to the verified domain.

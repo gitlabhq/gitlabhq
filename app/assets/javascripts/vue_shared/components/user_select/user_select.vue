@@ -2,11 +2,11 @@
 import { debounce } from 'lodash';
 import {
   GlDropdown,
-  GlDropdownForm,
   GlDropdownDivider,
+  GlDropdownForm,
   GlDropdownItem,
-  GlSearchBoxByType,
   GlLoadingIcon,
+  GlSearchBoxByType,
   GlTooltipDirective,
 } from '@gitlab/ui';
 import { __ } from '~/locale';
@@ -47,7 +47,8 @@ export default {
     },
     iid: {
       type: String,
-      required: true,
+      required: false,
+      default: null,
     },
     value: {
       type: Array,
@@ -167,13 +168,10 @@ export default {
       return this.$apollo.queries.searchUsers.loading || this.$apollo.queries.participants.loading;
     },
     users() {
-      if (!this.participants) {
-        return [];
-      }
-
-      const filteredParticipants = this.participants.filter(
-        (user) => user.name.includes(this.search) || user.username.includes(this.search),
-      );
+      const filteredParticipants =
+        this.participants?.filter(
+          (user) => user.name.includes(this.search) || user.username.includes(this.search),
+        ) || [];
 
       // TODO this de-duplication is temporary (BE fix required)
       // https://gitlab.com/gitlab-org/gitlab/-/issues/327822
@@ -254,6 +252,10 @@ export default {
         this.$emit('input', selected);
       }
     },
+    unassign() {
+      this.$emit('input', []);
+      this.$refs.dropdown.hide();
+    },
     unselect(name) {
       const selected = this.value.filter((user) => user.username !== name);
       this.$emit('input', selected);
@@ -323,7 +325,7 @@ export default {
             :is-checked="selectedIsEmpty"
             is-check-centered
             data-testid="unassign"
-            @click.native.capture.stop="$emit('input', [])"
+            @click.native.capture.stop="unassign"
           >
             <span :class="selectedIsEmpty ? 'gl-pl-0' : 'gl-pl-6'" class="gl-font-weight-bold">{{
               $options.i18n.unassigned

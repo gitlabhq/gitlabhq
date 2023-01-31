@@ -450,11 +450,10 @@ To start the process, add a regular migration to create the new `bigint` columns
 to keep in sync both columns for any new records ([see an example](https://gitlab.com/gitlab-org/gitlab/-/blob/41fbe34a4725a4e357a83fda66afb382828767b2/db/migrate/20210608072312_initialize_conversion_of_ci_stages_to_bigint.rb)):
 
 ```ruby
-class InitializeConversionOfCiStagesToBigint < ActiveRecord::Migration[6.1]
-  include Gitlab::Database::MigrationHelpers
+class InitializeConversionOfCiStagesToBigint < Gitlab::Database::Migration[2.1]
 
   TABLE = :ci_stages
-  COLUMNS = %i(id)
+  COLUMNS = %i[id]
 
   def up
     initialize_conversion_of_integer_to_bigint(TABLE, COLUMNS)
@@ -484,11 +483,10 @@ and collecting metrics. To start the process, use the provided `backfill_convers
 helper ([example](https://gitlab.com/gitlab-org/gitlab/-/blob/41fbe34a4725a4e357a83fda66afb382828767b2/db/migrate/20210608072346_backfill_ci_stages_for_bigint_conversion.rb)):
 
 ```ruby
-class BackfillCiStagesForBigintConversion < ActiveRecord::Migration[6.1]
-  include Gitlab::Database::MigrationHelpers
+class BackfillCiStagesForBigintConversion < Gitlab::Database::Migration[2.1]
 
   TABLE = :ci_stages
-  COLUMNS = %i(id)
+  COLUMNS = %i[id]
 
   def up
     backfill_conversion_of_integer_to_bigint(TABLE, COLUMNS)

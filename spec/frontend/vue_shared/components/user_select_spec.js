@@ -285,6 +285,20 @@ describe('User select dropdown', () => {
       expect(wrapper.emitted('input')).toEqual([[[]]]);
     });
 
+    it('hides the dropdown after clicking on `Unassigned`', async () => {
+      createComponent({
+        props: {
+          value: [assignee],
+        },
+      });
+      wrapper.vm.$refs.dropdown.hide = jest.fn();
+      await waitForPromises();
+
+      findUnassignLink().trigger('click');
+
+      expect(wrapper.vm.$refs.dropdown.hide).toHaveBeenCalledTimes(1);
+    });
+
     it('emits an empty array after unselecting the only selected assignee', async () => {
       createComponent({
         props: {

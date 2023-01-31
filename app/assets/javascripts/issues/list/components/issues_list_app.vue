@@ -592,9 +592,6 @@ export default {
         const bulkUpdateSidebar = await import('~/issuable');
         bulkUpdateSidebar.initBulkUpdateSidebar('issuable_');
 
-        const UsersSelect = (await import('~/users_select')).default;
-        new UsersSelect(); // eslint-disable-line no-new
-
         this.hasInitBulkEdit = true;
       }
 

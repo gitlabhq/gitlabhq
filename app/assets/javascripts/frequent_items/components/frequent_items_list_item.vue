@@ -1,6 +1,5 @@
 <script>
 import { GlButton, GlTooltipDirective, GlIcon } from '@gitlab/ui';
-import { snakeCase } from 'lodash';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import highlight from '~/lib/utils/highlight';
 import { truncateNamespace } from '~/lib/utils/text_utility';
@@ -61,7 +60,7 @@ export default {
       return highlight(this.itemName, this.matcher);
     },
     itemTrackingLabel() {
-      return `${this.dropdownType}_dropdown_frequent_items_list_item_${snakeCase(this.itemName)}`;
+      return `${this.dropdownType}_dropdown_frequent_items_list_item`;
     },
   },
   methods: {

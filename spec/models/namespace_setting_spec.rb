@@ -18,7 +18,7 @@ RSpec.describe NamespaceSetting, feature_category: :subgroups, type: :model do
     describe "#default_branch_name_content" do
       let_it_be(:group) { create(:group) }
 
-      let(:namespace_settings) { group.namespace_settings }
+      subject(:namespace_settings) { group.namespace_settings }
 
       shared_examples "doesn't return an error" do
         it "doesn't return an error" do
@@ -28,6 +28,10 @@ RSpec.describe NamespaceSetting, feature_category: :subgroups, type: :model do
       end
 
       context "when not set" do
+        before do
+          namespace_settings.default_branch_name = nil
+        end
+
         it_behaves_like "doesn't return an error"
       end
 

@@ -1,6 +1,7 @@
 .super-sidebar {
   top: 0;
   width: $contextual-sidebar-width;
+  z-index: 600;
 
   .user-bar {
     background-color: $t-gray-a-04;

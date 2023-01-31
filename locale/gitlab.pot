@@ -3649,15 +3649,6 @@ msgstr ""
 msgid "After a successful password update, you will be redirected to the login page where you can log in with your new password."
 msgstr ""
 
-msgid "After it expires, you can't use merge approvals, code quality, or many other features."
-msgstr ""
-
-msgid "After it expires, you can't use merge approvals, epics, or many other features."
-msgstr ""
-
-msgid "After it expires, you can't use merge approvals, epics, or many security features."
-msgstr ""
-
 msgid "After the Apple App Store Connect integration is activated, the following protected variables will be created for CI/CD use."
 msgstr ""
 
@@ -10187,6 +10178,9 @@ msgstr ""
 msgid "Compare GitLab editions"
 msgstr ""
 
+msgid "Compare GitLab plans"
+msgstr ""
+
 msgid "Compare Revisions"
 msgstr ""
 
@@ -12373,9 +12367,6 @@ msgstr ""
 msgid "DORA4Metrics|Average (last %{days}d)"
 msgstr ""
 
-msgid "DORA4Metrics|Average number of deployments to production per day. This metric measures how often value is delivered to end users."
-msgstr ""
-
 msgid "DORA4Metrics|Change Failure Rate"
 msgstr ""
 
@@ -12433,12 +12424,6 @@ msgstr ""
 msgid "DORA4Metrics|Median time an incident was open in a production environment over the given time period."
 msgstr ""
 
-msgid "DORA4Metrics|Median time from issue created to issue closed."
-msgstr ""
-
-msgid "DORA4Metrics|Median time from the earliest commit of a linked issue's merge request to when that issue is closed."
-msgstr ""
-
 msgid "DORA4Metrics|Metrics comparison for %{name} group"
 msgstr ""
 
@@ -12463,13 +12448,7 @@ msgstr ""
 msgid "DORA4Metrics|Number of incidents divided by the number of deployments to a production environment in the given time period."
 msgstr ""
 
-msgid "DORA4Metrics|Number of new issues created."
-msgstr ""
-
 msgid "DORA4Metrics|Past 6 Months"
-msgstr ""
-
-msgid "DORA4Metrics|Percentage of deployments that cause an incident in production."
 msgstr ""
 
 msgid "DORA4Metrics|Percentage of failed deployments"
@@ -12493,12 +12472,6 @@ msgstr ""
 msgid "DORA4Metrics|The chart displays the median time between a merge request being merged and deployed to production environment(s) that are based on the %{linkStart}deployment_tier%{linkEnd} value."
 msgstr ""
 
-msgid "DORA4Metrics|The time it takes an organization to recover from a failure in production."
-msgstr ""
-
-msgid "DORA4Metrics|The time to successfully deliver a commit into production. This metric reflects the efficiency of CI/CD pipelines."
-msgstr ""
-
 msgid "DORA4Metrics|Time to Restore Service"
 msgstr ""
 
@@ -12506,9 +12479,6 @@ msgid "DORA4Metrics|Time to restore service"
 msgstr ""
 
 msgid "DORA4Metrics|Time to restore service (median days)"
-msgstr ""
-
-msgid "DORA4Metrics|Total number of deploys to production."
 msgstr ""
 
 msgid "DSN"
@@ -18742,6 +18712,9 @@ msgstr ""
 msgid "GitLab commit"
 msgstr ""
 
+msgid "GitLab documentation"
+msgstr ""
+
 msgid "GitLab events trigger webhooks. Use the request details of a webhook to help troubleshoot problems. %{link_start}How do I troubleshoot?%{link_end}"
 msgstr ""
 
@@ -21099,6 +21072,12 @@ msgid "If you did not recently try to sign in, you should immediately %{password
 msgstr ""
 
 msgid "If you did not recently try to sign in, you should immediately change your password: %{password_link}."
+msgstr ""
+
+msgid "If you do not renew by %{strong}%{downgrades_on}%{strong_close}, you can't use merge approvals, %{end_message}"
+msgstr ""
+
+msgid "If you don't renew by %{strong}%{downgrades_on}%{strong_close} your instance will become read-only, and you won't be able to create issues or merge requests. You will also lose access to your paid features and support entitlement. %{learn_more_link}"
 msgstr ""
 
 msgid "If you get a lot of false alarms from repository checks, you can clear all repository check information from the database."
@@ -25816,10 +25795,10 @@ msgstr ""
 msgid "Maximum file size is 1 MB. Image size must be 32 x 32 pixels. Allowed image formats are %{favicon_extension_allowlist}."
 msgstr ""
 
-msgid "Maximum file size is 1MB. Pages are optimized for a 24px tall header logo"
+msgid "Maximum file size is 1 MB. Pages are optimized for a 128x128 px logo."
 msgstr ""
 
-msgid "Maximum file size is 1MB. Pages are optimized for a 640x360 px logo."
+msgid "Maximum file size is 1MB. Pages are optimized for a 24px tall header logo"
 msgstr ""
 
 msgid "Maximum files in a diff"
@@ -34428,6 +34407,9 @@ msgid "Provide Feedback"
 msgstr ""
 
 msgid "Provide a number our sales team can use to call you."
+msgstr ""
+
+msgid "Provide feedback"
 msgstr ""
 
 msgid "Provider"
@@ -46265,6 +46247,9 @@ msgstr ""
 msgid "ValueStreamAnalytics|Average number of deployments to production per day."
 msgstr ""
 
+msgid "ValueStreamAnalytics|Average number of deployments to production per day. This metric measures how often value is delivered to end users."
+msgstr ""
+
 msgid "ValueStreamAnalytics|DORA metrics"
 msgstr ""
 
@@ -46317,6 +46302,12 @@ msgid "ValueStreamAnalytics|Shows %{selectedSubjectFilterText} for group '%{grou
 msgstr ""
 
 msgid "ValueStreamAnalytics|Tasks by type"
+msgstr ""
+
+msgid "ValueStreamAnalytics|The time it takes an organization to recover from a failure in production."
+msgstr ""
+
+msgid "ValueStreamAnalytics|The time to successfully deliver a commit into production. This metric reflects the efficiency of CI/CD pipelines."
 msgstr ""
 
 msgid "ValueStreamAnalytics|There was an error while fetching value stream analytics %{requestTypeName} data."
@@ -48851,13 +48842,13 @@ msgstr ""
 msgid "Your %{group} membership will now expire in %{days}."
 msgstr ""
 
+msgid "Your %{plan_name} subscription will expire on %{expires_on}"
+msgstr ""
+
 msgid "Your %{spammable_entity_type} has been recognized as spam and has been discarded."
 msgstr ""
 
 msgid "Your %{spammable_entity_type} has been recognized as spam. Please, change the content or solve the reCAPTCHA to proceed."
-msgstr ""
-
-msgid "Your %{strong}%{plan_name}%{strong_close} subscription expires on %{strong}%{expires_on}%{strong_close}. If you do not renew, you will lose access to your paid features on %{strong}%{downgrades_on}%{strong_close}. After that date, you can't create issues or merge requests, or use many other features."
 msgstr ""
 
 msgid "Your %{strong}%{plan_name}%{strong_close} subscription for %{strong}%{namespace_name}%{strong_close} will expire on %{strong}%{expires_on}%{strong_close}."
@@ -49160,9 +49151,6 @@ msgid "Your subscription has %{remaining_seat_count} out of %{total_seat_count} 
 msgid_plural "Your subscription has %{remaining_seat_count} out of %{total_seat_count} seats remaining."
 msgstr[0] ""
 msgstr[1] ""
-
-msgid "Your subscription will expire on %{expires_on}"
-msgstr ""
 
 msgid "Your top-level group %{namespace_name} has reached the %{free_limit} user limit"
 msgstr ""

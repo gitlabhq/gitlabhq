@@ -42,7 +42,9 @@ module SidebarsHelper
       assigned_open_merge_requests_count: user.assigned_open_merge_requests_count,
       todos_pending_count: user.todos_pending_count,
       issues_dashboard_path: issues_dashboard_path(assignee_username: user.username),
-      create_new_menu_groups: create_new_menu_groups(group: group, project: project)
+      create_new_menu_groups: create_new_menu_groups(group: group, project: project),
+      support_path: support_url,
+      display_whats_new: display_whats_new?
     }
   end
 

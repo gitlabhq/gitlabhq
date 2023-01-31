@@ -4,6 +4,7 @@ module Gitlab
   module Utils
     extend self
     PathTraversalAttackError ||= Class.new(StandardError)
+    DoubleEncodingError ||= Class.new(StandardError)
 
     private_class_method def logger
       @logger ||= Gitlab::AppLogger
@@ -55,7 +56,7 @@ module Gitlab
     def decode_path(encoded_path)
       decoded = CGI.unescape(encoded_path)
       if decoded != CGI.unescape(decoded)
-        raise StandardError, "path #{encoded_path} is not allowed"
+        raise DoubleEncodingError, "path #{encoded_path} is not allowed"
       end
 
       decoded

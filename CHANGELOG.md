@@ -2,6 +2,16 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 15.8.1 (2023-01-30)
+
+### Security (5 changes)
+
+- [Remove parameter validation for registry notification request [15.8]](gitlab-org/security/gitlab@bf5a28cc21ffa3e7b63eeca02f220c1312314f75) ([merge request](gitlab-org/security/gitlab!3028))
+- [Add size validation for Chart.yaml during file extraction](gitlab-org/security/gitlab@f4afa319cffded561731c117c808969b5261ca52) ([merge request](gitlab-org/security/gitlab!3018))
+- [Prevent default branches from storing paths](gitlab-org/security/gitlab@a906e14f6891e84cfe854be960266adc7f0f6092) ([merge request](gitlab-org/security/gitlab!3011))
+- [Validate Issuable description max length on update](gitlab-org/security/gitlab@312fbac888d0452d9beb9d6545b22972b7e1f09d) ([merge request](gitlab-org/security/gitlab!3004))
+- [Security fix dynamic child pipeline zip extraction](gitlab-org/security/gitlab@ea09503c67eb1eb1f17ea49b7748543d2676e393) ([merge request](gitlab-org/security/gitlab!3007))
+
 ## 15.8.0 (2023-01-20)
 
 ### Added (120 changes)
@@ -469,6 +479,16 @@ entry.
 - [Factor out S3 API types](gitlab-org/gitlab@9997fee4babdbe7ca97834f40c1ff0e10395741b) ([merge request](gitlab-org/gitlab!107373))
 - [Do not use _test when not necessary](gitlab-org/gitlab@1bde73aba2bd1d7f9e833c7325cffa0c90d1c106) ([merge request](gitlab-org/gitlab!107373))
 - [Add config/redis.yml unified config file](gitlab-org/gitlab@ace8301236eecc07a511975b57f80e21ec7be3c2) ([merge request](gitlab-org/gitlab!106854))
+
+## 15.7.6 (2023-01-30)
+
+### Security (5 changes)
+
+- [Remove parameter validation for registry notification request [15.7]](gitlab-org/security/gitlab@ca091312787e3a01f39551357095409fcf6fc840) ([merge request](gitlab-org/security/gitlab!3029))
+- [Add size validation for Chart.yaml during file extraction](gitlab-org/security/gitlab@d43bf6a5b147350668e538bd981af5f9400e6fca) ([merge request](gitlab-org/security/gitlab!3019))
+- [Prevent default branches from storing paths](gitlab-org/security/gitlab@9f18aa40711e334b172d208255a4b396b89c50a9) ([merge request](gitlab-org/security/gitlab!3012))
+- [Validate Issuable description max length on update](gitlab-org/security/gitlab@9c2799bef06ada7d48b682fa4fe403ec00e74c4a) ([merge request](gitlab-org/security/gitlab!3003))
+- [Security fix dynamic child pipeline zip extraction](gitlab-org/security/gitlab@cada7e3290da854f437538cdc1680c3f5284278e) ([merge request](gitlab-org/security/gitlab!2980))
 
 ## 15.7.5 (2023-01-12)
 
@@ -1319,6 +1339,21 @@ No changes.
 - [Enforces HTTP/HTTPS schemes in KubeClient](gitlab-org/gitlab@7cc32f43ab3d57e5ad9bc609b6473e0571453abe) ([merge request](gitlab-org/gitlab!103685))
 - [Propagate RemoteIP to Gitaly via Workhorse](gitlab-org/gitlab@71da945c85931bac0263c193902dc1b54e2e62da) ([merge request](gitlab-org/gitlab!103635))
 - [Documentation to reflect 100MB upload limit](gitlab-org/gitlab@33063bb26ab7699802ecb2b325cc8619d6fe7b86) ([merge request](gitlab-org/gitlab!103978))
+
+## 15.6.7 (2023-01-30)
+
+### Fixed (2 changes)
+
+- [Clear DuplicateJobs cookies from post-deployment migration](gitlab-org/security/gitlab@9071bc623c81f4ecbccb63bcfc78d6d503421e2b)
+- [Geo: Container Repository push events don't work](gitlab-org/security/gitlab@00ca7dd923444da0b19afa7d72d5e3b505889290)
+
+### Security (5 changes)
+
+- [Quarantine features/users/login_spec line 292 [15.6]](gitlab-org/security/gitlab@d202f35e1cac8df0bcbb5d40d42cea2312c09762) ([merge request](gitlab-org/security/gitlab!3025))
+- [Add size validation for Chart.yaml during file extraction](gitlab-org/security/gitlab@59df02bf2658468f9f254c34ed009a6414d6c6b3) ([merge request](gitlab-org/security/gitlab!3020))
+- [Prevent default branches from storing paths](gitlab-org/security/gitlab@b7b402a0a37bb839b601569a035a62fe79febe72) ([merge request](gitlab-org/security/gitlab!3013))
+- [Validate Issuable description max length on update](gitlab-org/security/gitlab@fa68365e853a5701b217ccafea9885705d4a4133) ([merge request](gitlab-org/security/gitlab!3002))
+- [Security fix dynamic child pipeline zip extraction](gitlab-org/security/gitlab@2285d716f10f33d8dbea5112de95d9d7e5cd8b00) ([merge request](gitlab-org/security/gitlab!2981))
 
 ## 15.6.6 (2023-01-12)
 

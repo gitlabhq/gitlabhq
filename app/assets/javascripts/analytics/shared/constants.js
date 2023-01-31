@@ -1,5 +1,6 @@
 import { masks } from '~/lib/dateformat';
 import { s__ } from '~/locale';
+import { helpPagePath } from '~/helpers/help_page_helper';
 
 export const DATE_RANGE_LIMIT = 180;
 export const PROJECTS_PER_PAGE = 50;
@@ -12,8 +13,101 @@ export const dateFormats = {
   month: 'mmmm',
 };
 
-// Some content is duplicated due to backward compatibility.
-// It will be removed with https://gitlab.com/gitlab-org/gitlab/-/issues/350614 in 14.9
+export const KEY_METRICS = {
+  LEAD_TIME: 'lead_time',
+  CYCLE_TIME: 'cycle_time',
+  ISSUES: 'issues',
+  COMMITS: 'commits',
+  DEPLOYS: 'deploys',
+};
+
+export const DORA_METRICS = {
+  DEPLOYMENT_FREQUENCY: 'deployment_frequency',
+  LEAD_TIME_FOR_CHANGES: 'lead_time_for_changes',
+  TIME_TO_RESTORE_SERVICE: 'time_to_restore_service',
+  CHANGE_FAILURE_RATE: 'change_failure_rate',
+};
+
+export const VSA_METRICS_GROUPS = [
+  {
+    key: 'key_metrics',
+    title: s__('ValueStreamAnalytics|Key metrics'),
+    keys: Object.values(KEY_METRICS),
+  },
+  {
+    key: 'dora_metrics',
+    title: s__('ValueStreamAnalytics|DORA metrics'),
+    keys: Object.values(DORA_METRICS),
+  },
+];
+
+export const METRIC_TOOLTIPS = {
+  [DORA_METRICS.DEPLOYMENT_FREQUENCY]: {
+    description: s__(
+      'ValueStreamAnalytics|Average number of deployments to production per day. This metric measures how often value is delivered to end users.',
+    ),
+    groupLink: '-/analytics/ci_cd?tab=deployment-frequency',
+    projectLink: '-/pipelines/charts?chart=deployment-frequency',
+    docsLink: helpPagePath('user/analytics/dora_metrics', { anchor: 'deployment-frequency' }),
+  },
+  [DORA_METRICS.LEAD_TIME_FOR_CHANGES]: {
+    description: s__(
+      'ValueStreamAnalytics|The time to successfully deliver a commit into production. This metric reflects the efficiency of CI/CD pipelines.',
+    ),
+    groupLink: '-/analytics/ci_cd?tab=lead-time',
+    projectLink: '-/pipelines/charts?chart=lead-time',
+    docsLink: helpPagePath('user/analytics/dora_metrics', { anchor: 'lead-time-for-changes' }),
+  },
+  [DORA_METRICS.TIME_TO_RESTORE_SERVICE]: {
+    description: s__(
+      'ValueStreamAnalytics|The time it takes an organization to recover from a failure in production.',
+    ),
+    groupLink: '-/analytics/ci_cd?tab=time-to-restore-service',
+    projectLink: '-/pipelines/charts?chart=time-to-restore-service',
+    docsLink: helpPagePath('user/analytics/dora_metrics', { anchor: 'time-to-restore-service' }),
+  },
+  [DORA_METRICS.CHANGE_FAILURE_RATE]: {
+    description: s__(
+      'ValueStreamAnalytics|Percentage of deployments that cause an incident in production.',
+    ),
+    groupLink: '-/analytics/ci_cd?tab=change-failure-rate',
+    projectLink: '-/pipelines/charts?chart=change-failure-rate',
+    docsLink: helpPagePath('user/analytics/dora_metrics', { anchor: 'change-failure-rate' }),
+  },
+  [KEY_METRICS.LEAD_TIME]: {
+    description: s__('ValueStreamAnalytics|Median time from issue created to issue closed.'),
+    groupLink: '-/analytics/value_stream_analytics',
+    projectLink: '-/value_stream_analytics',
+    docsLink: helpPagePath('user/analytics/value_stream_analytics', {
+      anchor: 'view-the-lead-time-and-cycle-time-for-issues',
+    }),
+  },
+  [KEY_METRICS.CYCLE_TIME]: {
+    description: s__(
+      "ValueStreamAnalytics|Median time from the earliest commit of a linked issue's merge request to when that issue is closed.",
+    ),
+    groupLink: '-/analytics/value_stream_analytics',
+    projectLink: '-/value_stream_analytics',
+    docsLink: helpPagePath('user/analytics/value_stream_analytics', {
+      anchor: 'view-the-lead-time-and-cycle-time-for-issues',
+    }),
+  },
+  [KEY_METRICS.ISSUES]: {
+    description: s__('ValueStreamAnalytics|Number of new issues created.'),
+    groupLink: '-/issues_analytics',
+    projectLink: '-/analytics/issues_analytics',
+    docsLink: helpPagePath('user/analytics/issue_analytics'),
+  },
+  [KEY_METRICS.DEPLOYS]: {
+    description: s__('ValueStreamAnalytics|Total number of deploys to production.'),
+    groupLink: '-/analytics/productivity_analytics',
+    projectLink: '-/analytics/merge_request_analytics',
+    docsLink: helpPagePath('user/analytics/merge_request_analytics'),
+  },
+};
+
+// TODO: Remove this once the migration to METRIC_TOOLTIPS is complete
+// https://gitlab.com/gitlab-org/gitlab/-/issues/388067
 export const METRICS_POPOVER_CONTENT = {
   lead_time: {
     description: s__('ValueStreamAnalytics|Median time from issue created to issue closed.'),
@@ -47,19 +141,3 @@ export const METRICS_POPOVER_CONTENT = {
     ),
   },
 };
-
-const KEY_METRICS_TITLE = s__('ValueStreamAnalytics|Key metrics');
-const KEY_METRICS_KEYS = ['lead_time', 'cycle_time', 'issues', 'commits', 'deploys'];
-
-const DORA_METRICS_TITLE = s__('ValueStreamAnalytics|DORA metrics');
-const DORA_METRICS_KEYS = [
-  'deployment_frequency',
-  'lead_time_for_changes',
-  'time_to_restore_service',
-  'change_failure_rate',
-];
-
-export const VSA_METRICS_GROUPS = [
-  { key: 'key_metrics', title: KEY_METRICS_TITLE, keys: KEY_METRICS_KEYS },
-  { key: 'dora_metrics', title: DORA_METRICS_TITLE, keys: DORA_METRICS_KEYS },
-];

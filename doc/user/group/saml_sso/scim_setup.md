@@ -170,7 +170,7 @@ encounter issues.
 
 ## User access
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/325712) in GitLab 14.0, GitLab users created by [SAML SSO](index.md#user-access-and-management) or SCIM provisioning are displayed with an **Enterprise** badge in the **Members** view.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/325712) in GitLab 14.0, GitLab users created by [SAML SSO](index.md#user-access-and-management) or SCIM provisioning are displayed with an [**Enterprise**](../../enterprise_user/index.md) badge in the **Members** view.
 
 During the synchronization process, all new users:
 

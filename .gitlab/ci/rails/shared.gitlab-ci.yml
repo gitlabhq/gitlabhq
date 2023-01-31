@@ -107,7 +107,12 @@ include:
     - .rspec-base
     - .as-if-foss
     - .use-pg12
-  needs: ["setup-test-env", "retrieve-tests-metadata", "compile-test-assets as-if-foss", "detect-tests"]
+  needs:
+    - job: "setup-test-env"
+    - job: "retrieve-tests-metadata"
+    - job: "compile-test-assets as-if-foss"
+    - job: "detect-tests"
+      optional: true
 
 .rspec-base-pg13:
   extends:

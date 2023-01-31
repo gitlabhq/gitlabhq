@@ -82,17 +82,18 @@ This approach reduces disruption to users responsible for deploying runners.
 
 ### Reusing the runner authentication token across many machines
 
-In the existing model, a new runner is created whenever a new worker is required. This
-has led to many situations where runners are left behind and become stale.
+In the existing autoscaling model, a new runner is created whenever a new job needs to be executed.
+This has led to many situations where runners are left behind and become stale.
 
 In the proposed model, a `ci_runners` table entry describes a configuration that the user can reuse
-across multiple machines.
+across multiple machines, and runner state from each machine (for example, IP address, platform,
+or architecture) is moved to a separate table (`ci_runner_machines`).
 A unique system identifier is [generated automatically](#generating-a-system_id-value) whenever the
 runner application starts up or the configuration is saved.
-This allows differentiating the context in which the runner is being used.
+This allows differentiating the machine in which the runner is being used.
 
-The `system_id` value complements the short runner token that is currently used to identify a
-runner in command line output, CI job logs, and GitLab UI.
+The `system_id` value complements the short runner token that is used to identify a runner in
+command line output, CI job logs, and GitLab UI.
 
 Given that the creation of runners involves user interaction, it should be possible
 to eventually lower the per-plan limit of CI runners that can be registered per scope.
@@ -295,8 +296,11 @@ enum column created in the `ci_runners` table.
 
 ### Runner creation through API
 
-Automated runner creation may be allowed, although always through authenticated API calls -
-using PAT tokens for example - such that every runner is associated with an owner.
+Automated runner creation is possible through a new GraphQL mutation and the existing
+[`POST /runners` REST API endpoint](../../../api/runners.md#register-a-new-runner).
+The difference in the REST API endpoint is that it is modified to accept a request from an
+authorized user with a scope (instance, a group, or a project) instead of the registration token.
+These endpoints are only available to users that are allowed to create runners at the specified scope.
 
 ## Implementation plan
 
@@ -315,7 +319,7 @@ using PAT tokens for example - such that every runner is associated with an owne
 | Component        | Milestone | Changes |
 |------------------|----------:|---------|
 | GitLab Runner    | `15.7` | Ensure a sidecar TOML file exists with a `system_id` value.<br/>Log new system ID values with `INFO` level as they get assigned. |
-| GitLab Runner    | `15.7` | Log unique system ID in the build logs. |
+| GitLab Runner    | `15.9` | Log unique system ID in the build logs. |
 | GitLab Runner    | `15.9` | Label Prometheus metrics with unique system ID. |
 | GitLab Runner    | `15.8` | Prepare `register` command to fail if runner server-side configuration options are passed together with a new `glrt-` token. |
 
@@ -327,21 +331,23 @@ using PAT tokens for example - such that every runner is associated with an owne
 | GitLab Rails app | `%15.8` | Create database migration to add `ci_runner_machines` table. |
 | GitLab Rails app | `%15.9` | Create database migration to add `ci_runner_machines.id` foreign key to `ci_builds_metadata` table. |
 | GitLab Rails app | `%15.8` | Create database migrations to add `allow_runner_registration_token` setting to `application_settings` and `namespace_settings` tables (default: `true`). |
-| GitLab Rails app | `%15.8` | Create database migration to add config column to `ci_runner_machines` table. |
-| GitLab Runner    | | Start sending `system_id` value in `POST /jobs/request` request and other follow-up requests that require identifying the unique system. |
-| GitLab Rails app | | Create service similar to `StaleGroupRunnersPruneCronWorker` service to clean up `ci_runner_machines` records instead of `ci_runners` records.<br/>Existing service continues to exist but focuses only on legacy runners. |
-| GitLab Rails app | | Create `ci_runner_machines` record in `POST /runners/verify` request if the runner token is prefixed with `glrt-`. |
-| GitLab Rails app | | Use runner token + `system_id` JSON parameters in `POST /jobs/request` request in the [heartbeat request](https://gitlab.com/gitlab-org/gitlab/blob/c73c96a8ffd515295842d72a3635a8ae873d688c/lib/api/ci/helpers/runner.rb#L14-20) to update the `ci_runner_machines` cache/table. |
+| GitLab Rails app | `%15.8` | Create database migration to add `config` column to `ci_runner_machines` table. |
+| GitLab Runner    | `%15.9` | Start sending `system_id` value in `POST /jobs/request` request and other follow-up requests that require identifying the unique system. |
+| GitLab Rails app | `%15.9` | Create service similar to `StaleGroupRunnersPruneCronWorker` service to clean up `ci_runner_machines` records instead of `ci_runners` records.<br/>Existing service continues to exist but focuses only on legacy runners. |
+| GitLab Rails app | `%15.9` | Create `ci_runner_machines` record in `POST /runners/verify` request if the runner token is prefixed with `glrt-`. |
+| GitLab Rails app | `%15.9` | Use runner token + `system_id` JSON parameters in `POST /jobs/request` request in the [heartbeat request](https://gitlab.com/gitlab-org/gitlab/blob/c73c96a8ffd515295842d72a3635a8ae873d688c/lib/api/ci/helpers/runner.rb#L14-20) to update the `ci_runner_machines` cache/table. |
+| GitLab Rails app | `%15.9` | [Feature flag] Enable runner creation workflow (`create_runner_workflow`). |
 
 ### Stage 4 - New UI
 
 | Component        | Milestone | Changes |
 |------------------|----------:|---------|
-| GitLab Rails app | `%15.10` | Implement new GraphQL user-authenticated API to create a new runner. |
-| GitLab Rails app | `%15.10` | [Add prefix to newly generated runner authentication tokens](https://gitlab.com/gitlab-org/gitlab/-/issues/383198). |
+| GitLab Rails app | `%15.9` | Implement new GraphQL user-authenticated API to create a new runner. |
+| GitLab Rails app | `%15.9` | [Add prefix to newly generated runner authentication tokens](https://gitlab.com/gitlab-org/gitlab/-/issues/383198). |
 | GitLab Rails app | `%15.10` | Implement UI to create new runner. |
 | GitLab Rails app | `%15.10` | GraphQL changes to `CiRunner` type. |
 | GitLab Rails app | `%15.10` | UI changes to runner details view (listing of platform, architecture, IP address, etc.) (?) |
+| GitLab Rails app | `%15.11` | Adapt `POST /api/v4/runners` REST endpoint to accept a request from an authorized user with a scope instead of a registration token. |
 
 ### Stage 5 - Optional disabling of registration token
 

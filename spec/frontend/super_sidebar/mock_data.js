@@ -48,4 +48,6 @@ export const sidebarData = {
   todos_pending_count: 3,
   issues_dashboard_path: 'path/to/issues',
   create_new_menu_groups: createNewMenuGroups,
+  support_path: '/support',
+  display_whats_new: true,
 };

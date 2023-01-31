@@ -264,6 +264,22 @@ The GitLab npm repository supports the following commands for the npm CLI (`npm`
 
 ## Troubleshooting
 
+### `404 Not Found` errors are happening on `npm install` or `yarn`
+
+Using `CI_JOB_TOKEN` to install npm packages with dependencies in another project gives you 404 Not Found errors. A fix for this problem is proposed in [issue 352962](https://gitlab.com/gitlab-org/gitlab/-/issues/352962). 
+
+As a workaround, you can:
+
+1. Create a [personal access token](../../profile/personal_access_tokens.md).
+1. Authenticate at both the instance level and project level for each package:
+
+   ```ini
+   @foo:registry=https://gitlab.example.com/api/v4/packages/npm/
+   //gitlab.example.com/api/v4/packages/npm/:_authToken=${MY_TOKEN}
+   //gitlab.example.com/api/v4/projects/<your_project_id_a>/packages/npm/:_authToken=${MY_TOKEN}
+   //gitlab.example.com/api/v4/projects/<your_project_id_b>/packages/npm/:_authToken=${MY_TOKEN}
+   ```
+
 ### `npm publish` targets default npm registry (`registry.npmjs.org`)
 
 Ensure that your package scope is set consistently in your `package.json` and `.npmrc` files.

@@ -9,10 +9,6 @@ module Trigger
     %w[gitlab gitlab-ee].include?(ENV['CI_PROJECT_NAME'])
   end
 
-  def self.security?
-    %r{\Agitlab-org/security(\z|/)}.match?(ENV['CI_PROJECT_NAMESPACE'])
-  end
-
   def self.non_empty_variable_value(variable)
     variable_value = ENV[variable]
 
@@ -30,10 +26,10 @@ module Trigger
   class Base
     # Can be overridden
     def self.access_token
-      ENV['GITLAB_BOT_MULTI_PROJECT_PIPELINE_POLLING_TOKEN']
+      ENV['PROJECT_TOKEN_FOR_CI_SCRIPTS_API_USAGE']
     end
 
-    def invoke!(downstream_job_name: nil)
+    def invoke!
       pipeline_variables = variables
 
       puts "Triggering downstream pipeline on #{downstream_project_path}"
@@ -48,18 +44,7 @@ module Trigger
       puts "Triggered downstream pipeline: #{pipeline.web_url}\n"
       puts "Waiting for downstream pipeline status"
 
-      downstream_job =
-        if downstream_job_name
-          downstream_client.pipeline_jobs(downstream_project_path, pipeline.id).auto_paginate.find do |potential_job|
-            potential_job.name == downstream_job_name
-          end
-        end
-
-      if downstream_job
-        Trigger::Job.new(downstream_project_path, downstream_job.id, downstream_client)
-      else
-        Trigger::Pipeline.new(downstream_project_path, pipeline.id, downstream_client)
-      end
+      Trigger::Pipeline.new(downstream_project_path, pipeline.id, downstream_client)
     end
 
     def variables
@@ -221,6 +206,11 @@ module Trigger
     end
   end
 
+  # This is used in:
+  # - https://gitlab.com/gitlab-org/gitlab-runner/-/blob/ddaf90761c917a42ed4aab60541b6bc33871fe68/.gitlab/ci/docs.gitlab-ci.yml#L1-47
+  # - https://gitlab.com/gitlab-org/charts/gitlab/-/blob/fa348e709e901196803051669b4874b657b4ea91/.gitlab-ci.yml#L497-543
+  # - https://gitlab.com/gitlab-org/omnibus-gitlab/-/blob/b44483f05c5e22628ba3b49ec4c7f8761c688af0/gitlab-ci-config/gitlab-com.yml#L199-224
+  # - https://gitlab.com/gitlab-org/omnibus-gitlab/-/blob/b44483f05c5e22628ba3b49ec4c7f8761c688af0/gitlab-ci-config/gitlab-com.yml#L356-380
   class Docs < Base
     def self.access_token
       # Default to "DOCS_PROJECT_API_TOKEN" at https://gitlab.com/gitlab-org/gitlab-docs/-/settings/access_tokens
@@ -321,7 +311,7 @@ module Trigger
   class DatabaseTesting < Base
     IDENTIFIABLE_NOTE_TAG = 'gitlab-org/database-team/gitlab-com-database-testing:identifiable-note'
 
-    def invoke!(downstream_job_name: nil)
+    def invoke!
       pipeline = super
       project_path = variables['TOP_UPSTREAM_SOURCE_PROJECT']
       merge_request_id = variables['TOP_UPSTREAM_MERGE_REQUEST_IID']
@@ -438,14 +428,10 @@ module Trigger
 
     attr_reader :project, :gitlab_client, :start_time
   end
-
-  Job = Class.new(Pipeline)
 end
 
 if $PROGRAM_NAME == __FILE__
   case ARGV[0]
-  when 'cng'
-    Trigger::CNG.new.invoke!.wait!
   when 'gitlab-com-database-testing'
     Trigger::DatabaseTesting.new.invoke!
   when 'docs'
@@ -463,7 +449,6 @@ if $PROGRAM_NAME == __FILE__
   else
     puts "Please provide a valid option:
     omnibus - Triggers a pipeline that builds the omnibus-gitlab package
-    cng - Triggers a pipeline that builds images used by the GitLab helm chart
     gitlab-com-database-testing - Triggers a pipeline that tests database changes on GitLab.com data"
   end
 end
