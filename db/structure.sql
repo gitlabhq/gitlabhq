@@ -23696,6 +23696,28 @@ CREATE SEQUENCE wiki_page_slugs_id_seq
 
 ALTER SEQUENCE wiki_page_slugs_id_seq OWNED BY wiki_page_slugs.id;
 
+CREATE TABLE wiki_repository_states (
+    id bigint NOT NULL,
+    verification_started_at timestamp with time zone,
+    verification_retry_at timestamp with time zone,
+    verified_at timestamp with time zone,
+    project_wiki_repository_id bigint NOT NULL,
+    verification_state smallint DEFAULT 0 NOT NULL,
+    verification_retry_count smallint,
+    verification_checksum bytea,
+    verification_failure text,
+    CONSTRAINT check_2933ff60dc CHECK ((char_length(verification_failure) <= 255))
+);
+
+CREATE SEQUENCE wiki_repository_states_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE wiki_repository_states_id_seq OWNED BY wiki_repository_states.id;
+
 CREATE TABLE work_item_hierarchy_restrictions (
     id bigint NOT NULL,
     parent_type_id bigint NOT NULL,
@@ -24953,6 +24975,8 @@ ALTER TABLE ONLY webauthn_registrations ALTER COLUMN id SET DEFAULT nextval('web
 ALTER TABLE ONLY wiki_page_meta ALTER COLUMN id SET DEFAULT nextval('wiki_page_meta_id_seq'::regclass);
 
 ALTER TABLE ONLY wiki_page_slugs ALTER COLUMN id SET DEFAULT nextval('wiki_page_slugs_id_seq'::regclass);
+
+ALTER TABLE ONLY wiki_repository_states ALTER COLUMN id SET DEFAULT nextval('wiki_repository_states_id_seq'::regclass);
 
 ALTER TABLE ONLY work_item_hierarchy_restrictions ALTER COLUMN id SET DEFAULT nextval('work_item_hierarchy_restrictions_id_seq'::regclass);
 
@@ -27412,6 +27436,9 @@ ALTER TABLE ONLY wiki_page_meta
 
 ALTER TABLE ONLY wiki_page_slugs
     ADD CONSTRAINT wiki_page_slugs_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY wiki_repository_states
+    ADD CONSTRAINT wiki_repository_states_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY work_item_hierarchy_restrictions
     ADD CONSTRAINT work_item_hierarchy_restrictions_pkey PRIMARY KEY (id);
@@ -31854,6 +31881,16 @@ CREATE UNIQUE INDEX index_wiki_page_slugs_on_slug_and_wiki_page_meta_id ON wiki_
 
 CREATE INDEX index_wiki_page_slugs_on_wiki_page_meta_id ON wiki_page_slugs USING btree (wiki_page_meta_id);
 
+CREATE INDEX index_wiki_repository_states_failed_verification ON wiki_repository_states USING btree (verification_retry_at NULLS FIRST) WHERE (verification_state = 3);
+
+CREATE INDEX index_wiki_repository_states_needs_verification ON wiki_repository_states USING btree (verification_state) WHERE ((verification_state = 0) OR (verification_state = 3));
+
+CREATE UNIQUE INDEX index_wiki_repository_states_on_project_wiki_repository_id ON wiki_repository_states USING btree (project_wiki_repository_id);
+
+CREATE INDEX index_wiki_repository_states_on_verification_state ON wiki_repository_states USING btree (verification_state);
+
+CREATE INDEX index_wiki_repository_states_pending_verification ON wiki_repository_states USING btree (verified_at NULLS FIRST) WHERE (verification_state = 0);
+
 CREATE INDEX index_work_item_hierarchy_restrictions_on_child_type_id ON work_item_hierarchy_restrictions USING btree (child_type_id);
 
 CREATE UNIQUE INDEX index_work_item_hierarchy_restrictions_on_parent_and_child ON work_item_hierarchy_restrictions USING btree (parent_type_id, child_type_id);
@@ -35482,6 +35519,9 @@ ALTER TABLE ONLY ci_pipeline_artifacts
 
 ALTER TABLE ONLY merge_request_user_mentions
     ADD CONSTRAINT fk_rails_aa1b2961b1 FOREIGN KEY (merge_request_id) REFERENCES merge_requests(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY wiki_repository_states
+    ADD CONSTRAINT fk_rails_aa2f8a61ba FOREIGN KEY (project_wiki_repository_id) REFERENCES project_wiki_repositories(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY x509_commit_signatures
     ADD CONSTRAINT fk_rails_ab07452314 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

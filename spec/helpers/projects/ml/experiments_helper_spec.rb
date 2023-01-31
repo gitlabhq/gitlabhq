@@ -110,67 +110,47 @@ RSpec.describe Projects::Ml::ExperimentsHelper, feature_category: :mlops do
     end
   end
 
-  describe '#paginate_candidates' do
-    let(:page) { 1 }
-    let(:max_per_page) { 1 }
-
-    subject { helper.paginate_candidates(experiment.candidates.order(:id), page, max_per_page) }
-
-    it 'paginates' do
-      expect(subject[1]).not_to be_nil
+  describe '#page_info' do
+    def paginator(cursor = nil)
+      experiment.candidates.keyset_paginate(cursor: cursor, per_page: 1)
     end
 
-    it 'only returns max_per_page elements' do
-      expect(subject[0].size).to eq(1)
-    end
+    let_it_be(:first_page) { paginator }
+    let_it_be(:second_page) { paginator(first_page.cursor_for_next_page) }
 
-    it 'fetches the items on the first page' do
-      expect(subject[0]).to eq([candidate0])
-    end
+    let(:page) { nil }
 
-    it 'creates the pagination info' do
-      expect(subject[1]).to eq({
-        page: 1,
-        is_last_page: false,
-        per_page: 1,
-        total_items: 2,
-        total_pages: 2,
-        out_of_range: false
-      })
-    end
+    subject { helper.page_info(page) }
 
-    context 'when not the first page' do
-      let(:page) { 2 }
+    context 'when is first page' do
+      let(:page) { first_page }
 
-      it 'fetches the right page' do
-        expect(subject[0]).to eq([candidate1])
-      end
-
-      it 'creates the pagination info' do
-        expect(subject[1]).to eq({
-          page: 2,
-          is_last_page: true,
-          per_page: 1,
-          total_items: 2,
-          total_pages: 2,
-          out_of_range: false
+      it 'generates the correct page_info' do
+        is_expected.to include({
+          has_next_page: true,
+          has_previous_page: false,
+          start_cursor: nil
         })
       end
     end
 
-    context 'when out of bounds' do
-      let(:page) { 3 }
+    context 'when is last page' do
+      let(:page) { second_page }
 
-      it 'creates the pagination info' do
-        expect(subject[1]).to eq({
-          page: page,
-          is_last_page: false,
-          per_page: 1,
-          total_items: 2,
-          total_pages: 2,
-          out_of_range: true
+      it 'generates the correct page_info' do
+        is_expected.to include({
+          has_next_page:  false,
+          has_previous_page: true,
+          start_cursor: second_page.cursor_for_previous_page,
+          end_cursor: nil
         })
       end
+    end
+  end
+
+  describe '#formatted_page_info' do
+    it 'formats to json' do
+      expect(helper.formatted_page_info({ a: 1, b: 'c' })).to eq("{\"a\":1,\"b\":\"c\"}")
     end
   end
 end

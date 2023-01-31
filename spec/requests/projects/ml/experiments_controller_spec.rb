@@ -75,35 +75,58 @@ RSpec.describe Projects::Ml::ExperimentsController, feature_category: :mlops do
     end
 
     describe 'pagination' do
-      let_it_be(:candidates) { create_list(:ml_candidates, 5, experiment: experiment) }
+      let_it_be(:candidates) do
+        create_list(:ml_candidates, 5, experiment: experiment).tap do |c|
+          c.first.metrics.create!(name: 'metric1', value: 0.3)
+          c[1].metrics.create!(name: 'metric1', value: 0.2)
+          c.last.metrics.create!(name: 'metric1', value: 0.6)
+        end
+      end
+
+      let(:params) { basic_params.merge(id: experiment.iid) }
 
       before do
         stub_const("Projects::Ml::ExperimentsController::MAX_CANDIDATES_PER_PAGE", 2)
-        candidates
 
         show_experiment
       end
 
-      context 'when out of bounds' do
-        let(:params) { basic_params.merge(id: experiment.iid, page: 10000) }
-
-        it 'redirects to last page' do
-          last_page = (experiment.candidates.size + 1) / 2
-
-          expect(response).to redirect_to(project_ml_experiment_path(project, experiment.iid, page: last_page))
-        end
+      it 'fetches only MAX_CANDIDATES_PER_PAGE candidates' do
+        expect(assigns(:candidates).size).to eq(2)
       end
 
-      context 'when bad page' do
-        let(:params) { basic_params.merge(id: experiment.iid, page: 's') }
+      it 'paginates' do
+        received = assigns(:page_info)
 
-        it 'uses first page' do
-          expect(assigns(:pagination_info)).to include(
-            page: 1,
-            is_last_page: false,
-            per_page: 2,
-            total_items: experiment.candidates&.size
-          )
+        expect(received).to include({
+          has_next_page: true,
+          has_previous_page: false,
+          start_cursor: nil
+        })
+      end
+
+      context 'when order by metric' do
+        let(:params) do
+          {
+            order_by: "metric1",
+            order_by_type: "metric",
+            sort: "desc"
+          }
+        end
+
+        it 'paginates', :aggregate_failures do
+          page = assigns(:candidates)
+
+          expect(page.first).to eq(candidates.last)
+          expect(page.last).to eq(candidates.first)
+
+          new_params = params.merge(cursor: assigns(:page_info)[:end_cursor])
+
+          show_experiment(new_params)
+
+          new_page = assigns(:candidates)
+
+          expect(new_page.first).to eq(candidates[1])
         end
       end
     end
@@ -151,8 +174,8 @@ RSpec.describe Projects::Ml::ExperimentsController, feature_category: :mlops do
 
   private
 
-  def show_experiment
-    get project_ml_experiment_path(project, experiment.iid), params: params
+  def show_experiment(new_params = nil)
+    get project_ml_experiment_path(project, experiment.iid), params: new_params || params
   end
 
   def list_experiments

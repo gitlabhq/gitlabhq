@@ -1,26 +1,33 @@
-import { GlAlert, GlPagination, GlTable, GlLink } from '@gitlab/ui';
+import { GlAlert, GlTable, GlLink } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import MlExperiment from '~/ml/experiment_tracking/components/ml_experiment.vue';
 import RegistrySearch from '~/vue_shared/components/registry/registry_search.vue';
+import Pagination from '~/vue_shared/components/incubation/pagination.vue';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import * as urlHelpers from '~/lib/utils/url_utility';
 
 describe('MlExperiment', () => {
   let wrapper;
 
+  const startCursor = 'eyJpZCI6IjE2In0';
+  const defaultPageInfo = {
+    startCursor,
+    endCursor: 'eyJpZCI6IjIifQ',
+    hasNextPage: true,
+    hasPreviousPage: true,
+  };
+
   const createWrapper = (
     candidates = [],
     metricNames = [],
     paramNames = [],
-    pagination = { page: 1, isLastPage: false, per_page: 2, totalItems: 0 },
+    pageInfo = defaultPageInfo,
   ) => {
     wrapper = mountExtended(MlExperiment, {
-      provide: { candidates, metricNames, paramNames, pagination },
+      provide: { candidates, metricNames, paramNames, pageInfo },
     });
   };
-
-  const defaultPagination = { page: 1, isLastPage: false, per_page: 2, totalItems: 5 };
 
   const candidates = [
     {
@@ -66,12 +73,12 @@ describe('MlExperiment', () => {
     },
   ];
 
-  const createWrapperWithCandidates = (pagination = defaultPagination) => {
-    createWrapper(candidates, ['rmse', 'auc', 'mae'], ['l1_ratio'], pagination);
+  const createWrapperWithCandidates = (pageInfo = defaultPageInfo) => {
+    createWrapper(candidates, ['rmse', 'auc', 'mae'], ['l1_ratio'], pageInfo);
   };
 
   const findAlert = () => wrapper.findComponent(GlAlert);
-  const findPagination = () => wrapper.findComponent(GlPagination);
+  const findPagination = () => wrapper.findComponent(Pagination);
   const findEmptyState = () => wrapper.findByText('No candidates to display');
   const findRegistrySearch = () => wrapper.findComponent(RegistrySearch);
   const findTable = () => wrapper.findComponent(GlTable);
@@ -116,30 +123,6 @@ describe('MlExperiment', () => {
 
     it('initializes filters correctly', () => {
       expect(findRegistrySearch().props('filters')).toMatchObject([{ value: { data: '' } }]);
-    });
-  });
-
-  describe('generateLink', () => {
-    it('generates the correct url', () => {
-      setWindowLocation(
-        'https://blah.com/?name=query&orderBy=name&orderByType=column&sort=asc&page=1',
-      );
-
-      createWrapperWithCandidates();
-
-      expect(findPagination().props('linkGen')(2)).toBe(
-        'https://blah.com/?name=query&orderBy=name&orderByType=column&sort=asc&page=2',
-      );
-    });
-
-    it('generates the correct url when no name', () => {
-      setWindowLocation('https://blah.com/?orderBy=auc&orderByType=metric&sort=asc');
-
-      createWrapperWithCandidates();
-
-      expect(findPagination().props('linkGen')(2)).toBe(
-        'https://blah.com/?orderBy=auc&orderByType=metric&sort=asc&page=2',
-      );
     });
   });
 
@@ -194,30 +177,30 @@ describe('MlExperiment', () => {
         createWrapper();
       });
 
-      it('On submit, reloads to correct page', () => {
+      it('On submit, resets the cursor and reloads to correct page', () => {
         findRegistrySearch().vm.$emit('filter:submit');
 
         expect(urlHelpers.visitUrl).toHaveBeenCalledTimes(1);
         expect(urlHelpers.visitUrl).toHaveBeenCalledWith(
-          'https://blah.com/?name=query&orderBy=name&orderByType=column&sort=asc&page=1',
+          'https://blah.com/?name=query&orderBy=name&orderByType=column&sort=asc',
         );
       });
 
-      it('On sorting changed, reloads to correct page', () => {
+      it('On sorting changed, resets cursor and reloads to correct page', () => {
         findRegistrySearch().vm.$emit('sorting:changed', { orderBy: 'created_at' });
 
         expect(urlHelpers.visitUrl).toHaveBeenCalledTimes(1);
         expect(urlHelpers.visitUrl).toHaveBeenCalledWith(
-          'https://blah.com/?name=query&orderBy=created_at&orderByType=column&sort=asc&page=1',
+          'https://blah.com/?name=query&orderBy=created_at&orderByType=column&sort=asc',
         );
       });
 
-      it('On sorting changed and is metric, reloads to correct page', () => {
+      it('On sorting changed and is metric, resets cursor and reloads to correct page', () => {
         findRegistrySearch().vm.$emit('sorting:changed', { orderBy: 'metric.auc' });
 
         expect(urlHelpers.visitUrl).toHaveBeenCalledTimes(1);
         expect(urlHelpers.visitUrl).toHaveBeenCalledWith(
-          'https://blah.com/?name=query&orderBy=auc&orderByType=metric&sort=asc&page=1',
+          'https://blah.com/?name=query&orderBy=auc&orderByType=metric&sort=asc',
         );
       });
 
@@ -226,47 +209,25 @@ describe('MlExperiment', () => {
 
         expect(urlHelpers.visitUrl).toHaveBeenCalledTimes(1);
         expect(urlHelpers.visitUrl).toHaveBeenCalledWith(
-          'https://blah.com/?name=query&orderBy=name&orderByType=column&sort=desc&page=1',
+          'https://blah.com/?name=query&orderBy=name&orderByType=column&sort=desc',
         );
       });
     });
   });
 
-  describe('with candidates', () => {
-    describe('Pagination behaviour', () => {
-      beforeEach(() => {
-        createWrapperWithCandidates();
-      });
+  describe('Pagination behaviour', () => {
+    beforeEach(() => {
+      createWrapperWithCandidates();
+    });
 
-      it('should show', () => {
-        expect(findPagination().exists()).toBe(true);
-      });
+    it('should show', () => {
+      expect(findPagination().exists()).toBe(true);
+    });
 
-      it('should get the page number from the URL', () => {
-        createWrapperWithCandidates({ ...defaultPagination, page: 2 });
+    it('Passes pagination to pagination component', () => {
+      createWrapperWithCandidates();
 
-        expect(findPagination().props().value).toBe(2);
-      });
-
-      it('should not have a prevPage if the page is 1', () => {
-        expect(findPagination().props().prevPage).toBe(null);
-      });
-
-      it('should set the prevPage to 1 if the page is 2', () => {
-        createWrapperWithCandidates({ ...defaultPagination, page: 2 });
-
-        expect(findPagination().props().prevPage).toBe(1);
-      });
-
-      it('should not have a nextPage if isLastPage is true', async () => {
-        createWrapperWithCandidates({ ...defaultPagination, isLastPage: true });
-
-        expect(findPagination().props().nextPage).toBe(null);
-      });
-
-      it('should set the nextPage to 2 if the page is 1', () => {
-        expect(findPagination().props().nextPage).toBe(2);
-      });
+      expect(findPagination().props('startCursor')).toBe(startCursor);
     });
   });
 

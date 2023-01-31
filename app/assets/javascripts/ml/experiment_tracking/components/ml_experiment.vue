@@ -1,5 +1,5 @@
 <script>
-import { GlTable, GlLink, GlPagination, GlTooltipDirective } from '@gitlab/ui';
+import { GlTable, GlLink, GlTooltipDirective } from '@gitlab/ui';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import RegistrySearch from '~/vue_shared/components/registry/registry_search.vue';
 import { FILTERED_SEARCH_TERM } from '~/vue_shared/components/filtered_search_bar/constants';
@@ -11,6 +11,7 @@ import {
 import { s__ } from '~/locale';
 import { queryToObject, setUrlParams, visitUrl } from '~/lib/utils/url_utility';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
+import KeysetPagination from '~/vue_shared/components/incubation/pagination.vue';
 import IncubationAlert from './incubation_alert.vue';
 
 export default {
@@ -20,13 +21,13 @@ export default {
     GlLink,
     TimeAgo,
     IncubationAlert,
-    GlPagination,
     RegistrySearch,
+    KeysetPagination,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  inject: ['candidates', 'metricNames', 'paramNames', 'pagination'],
+  inject: ['candidates', 'metricNames', 'paramNames', 'pageInfo'],
   data() {
     const query = queryToObject(window.location.search);
 
@@ -39,7 +40,6 @@ export default {
     }
 
     return {
-      page: parseInt(query.page, 10) || 1,
       filters: filter,
       sorting: {
         orderBy,
@@ -63,12 +63,6 @@ export default {
     },
     displayPagination() {
       return this.candidates.length > 0;
-    },
-    prevPage() {
-      return this.pagination.page > 1 ? this.pagination.page - 1 : null;
-    },
-    nextPage() {
-      return !this.pagination.isLastPage ? this.pagination.page + 1 : null;
     },
     sortableFields() {
       return [
@@ -100,11 +94,8 @@ export default {
     },
   },
   methods: {
-    generateLink(page) {
-      return setUrlParams({ ...this.parsedQuery, page });
-    },
     submitFilters() {
-      return visitUrl(setUrlParams({ ...this.parsedQuery, page: this.page }));
+      return visitUrl(setUrlParams({ ...this.parsedQuery }));
     },
     updateFilters(newValue) {
       this.filters = newValue;
@@ -197,16 +188,6 @@ export default {
       </template>
     </gl-table>
 
-    <gl-pagination
-      v-if="displayPagination"
-      v-model="pagination.page"
-      :prev-page="prevPage"
-      :next-page="nextPage"
-      :total-items="pagination.totalItems"
-      :per-page="pagination.perPage"
-      :link-gen="generateLink"
-      align="center"
-      class="w-100"
-    />
+    <keyset-pagination v-if="displayPagination" v-bind="pageInfo" />
   </div>
 </template>

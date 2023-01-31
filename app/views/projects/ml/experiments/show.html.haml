@@ -4,6 +4,7 @@
 - items = candidates_table_items(@candidates)
 - metrics = unique_logged_names(@candidates, &:latest_metrics)
 - params = unique_logged_names(@candidates, &:params)
+- page_info = formatted_page_info(@page_info)
 
 .page-title-holder.d-flex.align-items-center
   %h1.page-title.gl-font-size-h-display= @experiment.name
@@ -12,5 +13,5 @@
   candidates: items,
   metrics: metrics,
   params: params,
-  pagination: @pagination_info.to_json
+  page_info: page_info
 } }

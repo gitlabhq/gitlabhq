@@ -42,24 +42,18 @@ module Projects
         Gitlab::Json.generate(data)
       end
 
-      def paginate_candidates(candidates, page, max_per_page)
-        return [candidates, nil] unless candidates
-
-        candidates = candidates.page(page).per(max_per_page)
-
-        pagination_info = {
-          page: page,
-          is_last_page: candidates.last_page?,
-          per_page: max_per_page,
-          total_items: candidates.total_count,
-          total_pages: candidates.total_pages,
-          out_of_range: candidates.out_of_range?
+      def page_info(paginator)
+        {
+          has_next_page: paginator.has_next_page?,
+          has_previous_page: paginator.has_previous_page?,
+          start_cursor: paginator.cursor_for_previous_page,
+          end_cursor: paginator.cursor_for_next_page
         }
-
-        [candidates, pagination_info]
       end
 
-      private
+      def formatted_page_info(page_info)
+        Gitlab::Json.generate(page_info)
+      end
 
       def link_to_artifact(candidate)
         artifact = candidate.artifact

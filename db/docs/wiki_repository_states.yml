@@ -1,0 +1,10 @@
+---
+table_name: wiki_repository_states
+classes:
+- Geo::WikiRepositoryState
+feature_categories:
+- geo_replication
+description: Separate table for project wikis containing Geo verification metadata.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/109033
+milestone: '15.9'
+gitlab_schema: gitlab_main

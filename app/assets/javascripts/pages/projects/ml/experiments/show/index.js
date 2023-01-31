@@ -14,7 +14,7 @@ const initShowExperiment = () => {
   const candidates = JSON.parse(element.dataset.candidates);
   const metricNames = JSON.parse(element.dataset.metrics);
   const paramNames = JSON.parse(element.dataset.params);
-  const pagination = convertObjectPropsToCamelCase(JSON.parse(element.dataset.pagination));
+  const pageInfo = convertObjectPropsToCamelCase(JSON.parse(element.dataset.pageInfo));
 
   // eslint-disable-next-line no-new
   new Vue({
@@ -23,7 +23,7 @@ const initShowExperiment = () => {
       candidates,
       metricNames,
       paramNames,
-      pagination,
+      pageInfo,
     },
     render(h) {
       return h(MlExperiment);

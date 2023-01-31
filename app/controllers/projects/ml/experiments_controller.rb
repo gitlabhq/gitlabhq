@@ -25,17 +25,13 @@ module Projects
                         .transform_keys(&:underscore)
                         .permit(:name, :order_by, :sort, :order_by_type)
 
-        @candidates = CandidateFinder.new(@experiment, find_params).execute
+        paginator = CandidateFinder
+                        .new(@experiment, find_params)
+                        .execute
+                        .keyset_paginate(cursor: params[:cursor], per_page: MAX_CANDIDATES_PER_PAGE)
 
-        page = [params[:page].to_i, 1].max
-
-        @candidates, @pagination_info = paginate_candidates(@candidates, page, MAX_CANDIDATES_PER_PAGE)
-
-        return if @pagination_info[:total_pages] == 0
-
-        redirect_to(url_for(safe_params.merge(page: @pagination_info[:total_pages]))) if @pagination_info[:out_of_range]
-
-        @candidates.each(&:artifact_lazy)
+        @candidates = paginator.records.each(&:artifact_lazy)
+        @page_info = page_info(paginator)
       end
 
       private
