@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Packages::Debian::CreatePackageFileService do
+RSpec.describe Packages::Debian::CreatePackageFileService, feature_category: :package_registry do
   include WorkhorseHelpers
 
   let_it_be(:package) { create(:debian_incoming, without_package_files: true) }

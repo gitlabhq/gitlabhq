@@ -138,10 +138,12 @@ class Packages::Package < ApplicationRecord
     joins(:conan_metadatum).where(packages_conan_metadata: { package_username: package_username })
   end
 
-  scope :with_debian_codename, -> (codename) do
-    debian
-      .joins(:debian_distribution)
-      .where(Packages::Debian::ProjectDistribution.table_name => { codename: codename })
+  scope :with_debian_codename, ->(codename) do
+    joins(:debian_distribution).where(Packages::Debian::ProjectDistribution.table_name => { codename: codename })
+  end
+  scope :with_debian_codename_or_suite, ->(codename_or_suite) do
+    joins(:debian_distribution).where(Packages::Debian::ProjectDistribution.table_name => { codename: codename_or_suite })
+                               .or(where(Packages::Debian::ProjectDistribution.table_name => { suite: codename_or_suite }))
   end
   scope :preload_debian_file_metadata, -> { preload(package_files: :debian_file_metadatum) }
   scope :with_composer_target, -> (target) do

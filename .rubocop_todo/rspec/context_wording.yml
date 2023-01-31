@@ -1771,7 +1771,6 @@ RSpec/ContextWording:
     - 'spec/lib/gitlab/ci/status/build/failed_spec.rb'
     - 'spec/lib/gitlab/ci/status/composite_spec.rb'
     - 'spec/lib/gitlab/ci/status/factory_spec.rb'
-    - 'spec/lib/gitlab/ci/templates/5_minute_production_app_ci_yaml_spec.rb'
     - 'spec/lib/gitlab/ci/templates/Jobs/code_quality_gitlab_ci_yaml_spec.rb'
     - 'spec/lib/gitlab/ci/templates/Jobs/sast_iac_gitlab_ci_yaml_spec.rb'
     - 'spec/lib/gitlab/ci/templates/Jobs/sast_iac_latest_gitlab_ci_yaml_spec.rb'

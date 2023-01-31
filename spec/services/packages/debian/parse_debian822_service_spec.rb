@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe Packages::Debian::ParseDebian822Service do
+RSpec.describe Packages::Debian::ParseDebian822Service, feature_category: :package_registry do
   subject { described_class.new(input) }
 
   context 'with dpkg-deb --field output' do

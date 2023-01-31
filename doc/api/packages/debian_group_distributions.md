@@ -50,7 +50,7 @@ Example response:
 [
   {
     "id": 1,
-    "codename": "unstable",
+    "codename": "sid",
     "suite": null,
     "origin": null,
     "label": null,
@@ -90,7 +90,7 @@ Example response:
 ```json
 {
   "id": 1,
-  "codename": "unstable",
+  "codename": "sid",
   "suite": null,
   "origin": null,
   "label": null,
@@ -166,7 +166,7 @@ POST /groups/:id/debian_distributions
 | `architectures`               | architectures  | no       | The new Debian distribution's list of architectures. |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/5/debian_distributions?codename=unstable"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/5/debian_distributions?codename=sid"
 ```
 
 Example response:
@@ -174,7 +174,7 @@ Example response:
 ```json
 {
   "id": 1,
-  "codename": "unstable",
+  "codename": "sid",
   "suite": null,
   "origin": null,
   "label": null,
@@ -221,7 +221,7 @@ Example response:
 ```json
 {
   "id": 1,
-  "codename": "unstable",
+  "codename": "sid",
   "suite": "new-suite",
   "origin": null,
   "label": null,

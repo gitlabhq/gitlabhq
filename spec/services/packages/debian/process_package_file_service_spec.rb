@@ -3,10 +3,11 @@ require 'spec_helper'
 
 RSpec.describe Packages::Debian::ProcessPackageFileService, feature_category: :package_registry do
   describe '#execute' do
-    let_it_be_with_reload(:distribution) { create(:debian_project_distribution, :with_file, codename: 'unstable') }
+    let_it_be_with_reload(:distribution) { create(:debian_project_distribution, :with_suite, :with_file) }
 
     let!(:package) { create(:debian_package, :processing, project: distribution.project, published_in: nil) }
     let(:distribution_name) { distribution.codename }
+    let(:component_name) { 'main' }
     let(:debian_file_metadatum) { package_file.debian_file_metadatum }
 
     subject { described_class.new(package_file, distribution_name, component_name) }
@@ -42,6 +43,12 @@ RSpec.describe Packages::Debian::ProcessPackageFileService, feature_category: :p
 
         context 'when there is no matching published package' do
           it_behaves_like 'updates package and package file'
+
+          context 'with suite as distribution name' do
+            let(:distribution_name) { distribution.suite }
+
+            it_behaves_like 'updates package and package file'
+          end
         end
 
         context 'when there is a matching published package' do
@@ -106,6 +113,34 @@ RSpec.describe Packages::Debian::ProcessPackageFileService, feature_category: :p
           .and not_change(Packages::PackageFile, :count)
           .and not_change(package.package_files, :count)
           .and raise_error(ActiveRecord::RecordNotFound)
+      end
+    end
+
+    context 'without distribution name' do
+      let!(:package_file) { create(:debian_package_file, without_loaded_metadatum: true) }
+      let(:distribution_name) { '' }
+
+      it 'raise ArgumentError', :aggregate_failures do
+        expect(::Packages::Debian::GenerateDistributionWorker).not_to receive(:perform_async)
+        expect { subject.execute }
+          .to not_change(Packages::Package, :count)
+          .and not_change(Packages::PackageFile, :count)
+          .and not_change(package.package_files, :count)
+          .and raise_error(ArgumentError, 'missing distribution name')
+      end
+    end
+
+    context 'without component name' do
+      let!(:package_file) { create(:debian_package_file, without_loaded_metadatum: true) }
+      let(:component_name) { '' }
+
+      it 'raise ArgumentError', :aggregate_failures do
+        expect(::Packages::Debian::GenerateDistributionWorker).not_to receive(:perform_async)
+        expect { subject.execute }
+          .to not_change(Packages::Package, :count)
+          .and not_change(Packages::PackageFile, :count)
+          .and not_change(package.package_files, :count)
+          .and raise_error(ArgumentError, 'missing component name')
       end
     end
 

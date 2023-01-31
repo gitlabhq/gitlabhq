@@ -19,9 +19,9 @@ module Packages
       def execute
         return if @package_file.package.pending_destruction?
 
-        try_obtain_lease do
-          validate!
+        validate!
 
+        try_obtain_lease do
           package.transaction do
             rename_package_and_set_version
             update_package
@@ -36,6 +36,8 @@ module Packages
       private
 
       def validate!
+        raise ArgumentError, 'missing distribution name' unless @distribution_name.present?
+        raise ArgumentError, 'missing component name' unless @component_name.present?
         raise ArgumentError, 'package file without Debian metadata' unless @package_file.debian_file_metadatum
         raise ArgumentError, 'already processed package file' unless @package_file.debian_file_metadatum.unknown?
 
@@ -55,7 +57,7 @@ module Packages
                               .debian
                               .with_name(package_name)
                               .with_version(package_version)
-                              .with_debian_codename(@distribution_name)
+                              .with_debian_codename_or_suite(@distribution_name)
                               .not_pending_destruction
                               .last
         package || temp_package
@@ -113,7 +115,7 @@ module Packages
       def distribution
         Packages::Debian::DistributionsFinder.new(
           @package_file.package.project,
-          codename: @distribution_name
+          codename_or_suite: @distribution_name
         ).execute.last!
       end
       strong_memoize_attr :distribution

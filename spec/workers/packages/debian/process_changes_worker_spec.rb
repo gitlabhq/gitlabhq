@@ -2,12 +2,14 @@
 
 require 'spec_helper'
 
-RSpec.describe Packages::Debian::ProcessChangesWorker, type: :worker do
+RSpec.describe Packages::Debian::ProcessChangesWorker, type: :worker, feature_category: :package_registry do
   let_it_be(:user) { create(:user) }
-  let_it_be_with_reload(:distribution) { create(:debian_project_distribution, :with_file, codename: 'unstable') }
+  let_it_be_with_reload(:distribution) do
+    create(:debian_project_distribution, :with_file, codename: FFaker::Lorem.word, suite: 'unstable')
+  end
 
   let(:incoming) { create(:debian_incoming, project: distribution.project) }
-  let(:package_file) { incoming.package_files.last }
+  let(:package_file) { incoming.package_files.with_file_name('sample_1.2.3~alpha2_amd64.changes').first }
   let(:worker) { described_class.new }
 
   describe '#perform' do

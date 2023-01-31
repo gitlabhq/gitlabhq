@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Packages::Debian::GenerateDistributionKeyService do
+RSpec.describe Packages::Debian::GenerateDistributionKeyService, feature_category: :package_registry do
   let(:params) { {} }
 
   subject { described_class.new(params: params) }

@@ -304,7 +304,7 @@ In GitLab 14.5 and later, you can also use:
 
 - [Trigger variables](../triggers/index.md#pass-cicd-variables-in-the-api-call).
 - [Scheduled pipeline variables](../pipelines/schedules.md#add-a-pipeline-schedule).
-- [Manual pipeline run variables](../variables/index.md#override-a-variable-when-running-a-pipeline-manually).
+- [Manual pipeline run variables](../pipelines/index.md#run-a-pipeline-manually).
 - Pipeline [predefined variables](../variables/predefined_variables.md).
 
   YAML files are parsed before the pipeline is created, so the following pipeline predefined variables

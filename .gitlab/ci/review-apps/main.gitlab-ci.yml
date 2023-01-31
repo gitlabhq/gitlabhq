@@ -19,7 +19,6 @@ include:
 .base-before_script: &base-before_script
   - source ./scripts/utils.sh
   - source ./scripts/review_apps/review-apps.sh
-  - apt-get update && apt-get install -y jq
 
 dont-interrupt-me:
   extends: .rules:dont-interrupt

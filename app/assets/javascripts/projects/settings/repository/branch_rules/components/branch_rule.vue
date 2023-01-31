@@ -106,7 +106,7 @@ export default {
     },
     approvalDetails() {
       const approvalDetails = [];
-      if (this.isWildcard) {
+      if (this.isWildcard || this.matchingBranchesCount > 1) {
         approvalDetails.push(this.matchingBranchesText);
       }
       if (this.branchProtection?.allowForcePush) {

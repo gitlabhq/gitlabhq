@@ -11,6 +11,7 @@ RSpec.describe GitlabSchema.types['WorkItem'] do
 
   it 'has specific fields' do
     fields = %i[
+      author
       confidential
       description
       description_html

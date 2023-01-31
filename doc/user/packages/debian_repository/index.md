@@ -82,12 +82,12 @@ To create a project-level distribution:
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/<project_id>/debian_distributions?codename=<codename>"
 ```
 
-Example response with `codename=unstable`:
+Example response with `codename=sid`:
 
 ```json
 {
   "id": 1,
-  "codename": "unstable",
+  "codename": "sid",
   "suite": null,
   "origin": null,
   "label": null,

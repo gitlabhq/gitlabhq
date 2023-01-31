@@ -15,12 +15,12 @@ module Packages
       end
 
       def execute
+        # return if changes file has already been processed
+        return if package_file.debian_file_metadatum&.changes?
+
+        validate!
+
         try_obtain_lease do
-          # return if changes file has already been processed
-          break if package_file.debian_file_metadatum&.changes?
-
-          validate!
-
           package_file.transaction do
             update_files_metadata
             update_changes_metadata
@@ -38,6 +38,9 @@ module Packages
         raise ArgumentError, 'invalid package file' unless package_file.debian_file_metadatum
         raise ArgumentError, 'invalid package file' unless package_file.debian_file_metadatum.unknown?
         raise ArgumentError, 'invalid package file' unless metadata[:file_type] == :changes
+        raise ArgumentError, 'missing Source field' unless metadata.dig(:fields, 'Source').present?
+        raise ArgumentError, 'missing Version field' unless metadata.dig(:fields, 'Version').present?
+        raise ArgumentError, 'missing Distribution field' unless metadata.dig(:fields, 'Distribution').present?
       end
 
       def update_files_metadata

@@ -95,6 +95,20 @@ in the `.gitlab/product_analytics/dashboards/` directory of a project repository
 
 Project maintainers can enforce approval rules on dashboard changes using features such as code owners and approval rules. Dashboards are versioned in source control with the rest of a project's code.
 
+### View project dashboards
+
+> Introduced in GitLab 15.9 behind the [feature flag](../../administration/feature_flags.md) named `combined_analytics_dashboards`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available per project or for your entire instance, ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `combined_analytics_dashboards`.
+On GitLab.com, this feature is not available.
+This feature is not ready for production use.
+
+To view a list of product analytics dashboards for a project:
+
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, select **Analytics > Dashboards**.
+
 ### Define a dashboard
 
 To define a dashboard:

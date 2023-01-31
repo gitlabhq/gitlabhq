@@ -10,7 +10,7 @@ module Packages
                          .debian
                          .with_name(params[:name])
                          .with_version(params[:version])
-                         .with_debian_codename(params[:distribution_name])
+                         .with_debian_codename_or_suite(params[:distribution_name])
                          .not_pending_destruction
                          .first
 
@@ -26,7 +26,10 @@ module Packages
 
       def distribution
         strong_memoize(:distribution) do
-          Packages::Debian::DistributionsFinder.new(project, codename: params[:distribution_name]).execute.last!
+          Packages::Debian::DistributionsFinder.new(
+            project,
+            codename_or_suite: params[:distribution_name]
+          ).execute.last!
         end
       end
     end

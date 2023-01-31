@@ -67,6 +67,42 @@ If a user is:
 - A direct member of a project, the **Expiration** and **Max role** fields can be updated directly on the project.
 - An inherited member from a parent group, the **Expiration** and **Max role** fields must be updated on the parent group.
 
+### Membership and visibility rights
+
+Depending on their membership type, members of groups or projects are granted different visibility levels
+and rights into the group or project.
+
+| Action | Direct group member | Inherited group member | Direct shared group member | Inherited shared group member |
+| --- | ------------------- | ---------------------- | -------------------------- | ----------------------------- |
+| Generate boards | ✓ | ✓ | ✓ | ✓ |
+| View issues of groups higher in the hierarchy | ✓ | ✓ | ✓ | ✓ |
+| View labels of groups higher in the hierarchy | ✓ | ✓ | ✓ | ✓ |
+| View milestones of groups higher in the hierarchy | ✓ | ✓ | ✓ | ✓ |
+| Be shared into other groups | ✓ |  |  |  |
+| Be shared into other projects | ✓ | ✓ |  |  |
+| Share the group with other members | ✓ |  |  |  |
+
+In the following example, `User` is a:
+
+- Direct member of `subgroup`.
+- Inherited member of `subsubgroup`.
+- Indirect member of `subgroup-2` and `subgroup-3`.
+- Indirect inherited member of `subsubgroup-2` and `subsubgroup-3`.
+
+```mermaid
+graph TD
+  classDef user stroke:green,color:green;
+
+  root --> subgroup --> subsubgroup
+  root-2 --> subgroup-2 --> subsubgroup-2
+  root-3 --> subgroup-3 --> subsubgroup-3
+  subgroup -. shared .-> subgroup-2 -. shared .-> subgroup-3
+
+  User-. member .- subgroup
+
+  class User user
+```
+
 ## Add users to a project
 
 > - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/247208) in GitLab 13.11 from a form to a modal window [with a flag](../../feature_flags.md). Disabled by default.

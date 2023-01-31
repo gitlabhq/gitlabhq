@@ -8,6 +8,9 @@ module Types
 
     authorize :read_work_item
 
+    field :author, Types::UserType, null: true,
+                                    description: 'User that created the work item.',
+                                    alpha: { milestone: '15.9' }
     field :closed_at, Types::TimeType, null: true,
                                        description: 'Timestamp of when the work item was closed.'
     field :confidential, GraphQL::Types::Boolean, null: false,

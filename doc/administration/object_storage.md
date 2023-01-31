@@ -586,6 +586,30 @@ If you are using a custom Azure storage domain,
 configuration. This information is exchanged in an API call between
 GitLab Rails and Workhorse.
 
+#### Storj Gateway Configuration (SJ)
+
+NOTE:
+The Storj Gateway [does not support](https://github.com/storj/gateway-st/blob/4b74c3b92c63b5de7409378b0d1ebd029db9337d/docs/s3-compatibility.md) multi-threaded copying (see `UploadPartCopy` in the table).
+While an implementation [is planned](https://github.com/storj/roadmap/issues/40), you must [disable multi-threaded copying](#multi-threaded-copying) until completion.
+
+The [Storj Network](https://www.storj.io/) provides an S3-compatible API gateway. Use the following configuration example:
+
+```ruby
+gitlab_rails['object_store']['connection'] = {
+  'provider' => 'AWS',
+  'endpoint' => 'https://gateway.storjshare.io',
+  'path_style' => true,
+  'region' => 'eu1',
+  'aws_access_key_id' => 'ACCESS_KEY',
+  'aws_secret_access_key' => 'SECRET_KEY',
+  'aws_signature_version' => 2,
+  'enable_signature_v4_streaming' => false
+}
+```
+
+The signature version must be `2`. Using v4 results in a HTTP 411 Length Required error.
+For more information, see [issue #4419](https://gitlab.com/gitlab-org/gitlab/-/issues/4419).
+
 ### Object-specific configuration
 
 The following YAML shows how the `object_store` section defines

@@ -2,16 +2,16 @@
 
 require 'spec_helper'
 
-RSpec.describe '5-Minute-Production-App.gitlab-ci.yml' do
+RSpec.describe '5-Minute-Production-App.gitlab-ci.yml', feature_category: :five_minute_production_app do
   subject(:template) { Gitlab::Template::GitlabCiYmlTemplate.find('5-Minute-Production-App') }
 
   describe 'the created pipeline' do
-    let_it_be(:project) { create(:project, :auto_devops, :custom_repo, files: { 'README.md' => '' }) }
+    let_it_be_with_refind(:project) { create(:project, :auto_devops, :custom_repo, files: { 'README.md' => '' }) }
 
     let(:user) { project.first_owner }
     let(:default_branch) { 'master' }
     let(:pipeline_branch) { default_branch }
-    let(:service) { Ci::CreatePipelineService.new(project, user, ref: pipeline_branch ) }
+    let(:service) { Ci::CreatePipelineService.new(project, user, ref: pipeline_branch) }
     let(:pipeline) { service.execute(:push).payload }
     let(:build_names) { pipeline.builds.pluck(:name) }
 
@@ -24,24 +24,27 @@ RSpec.describe '5-Minute-Production-App.gitlab-ci.yml' do
     end
 
     context 'when AWS variables are set' do
+      def create_ci_variable(key, value)
+        create(:ci_variable, project: project, key: key, value: value)
+      end
+
       before do
-        create(:ci_variable, project: project, key: 'AWS_ACCESS_KEY_ID', value: 'AKIAIOSFODNN7EXAMPLE')
-        create(:ci_variable, project: project, key: 'AWS_SECRET_ACCESS_KEY', value: 'wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY')
-        create(:ci_variable, project: project, key: 'AWS_DEFAULT_REGION', value: 'us-west-2')
+        create_ci_variable('AWS_ACCESS_KEY_ID', 'AKIAIOSFODNN7EXAMPLE')
+        create_ci_variable('AWS_SECRET_ACCESS_KEY', 'wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY')
+        create_ci_variable('AWS_DEFAULT_REGION', 'us-west-2')
       end
 
       it 'creates all jobs' do
-        expect(build_names).to match_array(%w(build terraform_apply deploy terraform_destroy))
+        expect(build_names).to match_array(%w[build terraform_apply deploy terraform_destroy])
       end
 
-      context 'pipeline branch is protected' do
+      context 'when pipeline branch is protected' do
         before do
           create(:protected_branch, project: project, name: pipeline_branch)
-          project.reload
         end
 
         it 'does not create a destroy job' do
-          expect(build_names).to match_array(%w(build terraform_apply deploy))
+          expect(build_names).to match_array(%w[build terraform_apply deploy])
         end
       end
     end

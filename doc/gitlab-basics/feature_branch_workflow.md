@@ -32,7 +32,5 @@ disqus_identifier: 'https://docs.gitlab.com/ee/workflow/workflow.html'
    ```
 
 1. Review your code on commits page.
-
 1. Create a merge request.
-
 1. Your team lead reviews the code and merges it to the main branch.

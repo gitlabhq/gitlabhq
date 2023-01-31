@@ -21232,6 +21232,7 @@ Represents vulnerability letter grades with associated projects.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="workitemauthor"></a>`author` **{warning-solid}** | [`UserCore`](#usercore) | **Introduced** in 15.9. This feature is in Alpha. It can be changed or removed at any time. User that created the work item. |
 | <a id="workitemclosedat"></a>`closedAt` | [`Time`](#time) | Timestamp of when the work item was closed. |
 | <a id="workitemconfidential"></a>`confidential` | [`Boolean!`](#boolean) | Indicates the work item is confidential. |
 | <a id="workitemcreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the work item was created. |

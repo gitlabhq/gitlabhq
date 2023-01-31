@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Packages::Debian::SignDistributionService do
+RSpec.describe Packages::Debian::SignDistributionService, feature_category: :package_registry do
   let_it_be(:group) { create(:group, :public) }
 
   let(:content) { FFaker::Lorem.paragraph }

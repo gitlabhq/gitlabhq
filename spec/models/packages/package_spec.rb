@@ -33,6 +33,26 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
     it { is_expected.to contain_exactly(publication.package) }
   end
 
+  describe '.with_debian_codename_or_suite' do
+    let_it_be(:distribution1) { create(:debian_project_distribution, :with_suite) }
+    let_it_be(:distribution2) { create(:debian_project_distribution, :with_suite) }
+
+    let_it_be(:package1) { create(:debian_package, published_in: distribution1) }
+    let_it_be(:package2) { create(:debian_package, published_in: distribution2) }
+
+    context 'with a codename' do
+      subject { described_class.with_debian_codename_or_suite(distribution1.codename).to_a }
+
+      it { is_expected.to contain_exactly(package1) }
+    end
+
+    context 'with a suite' do
+      subject { described_class.with_debian_codename_or_suite(distribution2.suite).to_a }
+
+      it { is_expected.to contain_exactly(package2) }
+    end
+  end
+
   describe '.with_composer_target' do
     let!(:package1) { create(:composer_package, :with_metadatum, sha: '123') }
     let!(:package2) { create(:composer_package, :with_metadatum, sha: '123') }

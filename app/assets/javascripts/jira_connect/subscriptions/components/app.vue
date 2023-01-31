@@ -31,6 +31,9 @@ export default {
     subscriptionsPath: {
       default: '',
     },
+    publicKeyStorageEnabled: {
+      default: false,
+    },
   },
   computed: {
     ...mapState(['currentUser']),
@@ -144,6 +147,7 @@ export default {
           <sign-in-page
             v-show="!userSignedIn"
             :has-subscriptions="hasSubscriptions"
+            :public-key-storage-enabled="publicKeyStorageEnabled"
             @sign-in-oauth="onSignInOauth"
             @error="onSignInError"
           />

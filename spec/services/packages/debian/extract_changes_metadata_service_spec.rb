@@ -1,10 +1,9 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe Packages::Debian::ExtractChangesMetadataService do
+RSpec.describe Packages::Debian::ExtractChangesMetadataService, feature_category: :package_registry do
   describe '#execute' do
-    let_it_be(:distribution) { create(:debian_project_distribution, codename: 'unstable') }
-    let_it_be(:incoming) { create(:debian_incoming, project: distribution.project) }
+    let_it_be(:incoming) { create(:debian_incoming) }
 
     let(:source_file) { incoming.package_files.first }
     let(:dsc_file) { incoming.package_files.second }

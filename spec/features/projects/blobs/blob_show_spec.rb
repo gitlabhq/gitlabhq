@@ -961,8 +961,8 @@ RSpec.describe 'File blob', :js, feature_category: :projects do
       end
 
       it 'renders sandboxed iframe' do
-        expected = %(<iframe src="/-/sandbox/swagger" sandbox="allow-scripts allow-popups allow-forms" frameborder="0" width="100%" height="1000">)
-        expect(page.html).to include(expected)
+        expected = %(iframe[src$="/-/sandbox/swagger"][sandbox="allow-scripts allow-popups allow-forms"][frameborder="0"][width="100%"][height="1000"])
+        expect(page).to have_css(expected)
       end
     end
   end

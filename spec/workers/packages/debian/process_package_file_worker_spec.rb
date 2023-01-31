@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Packages::Debian::ProcessPackageFileWorker, type: :worker, feature_category: :package_registry do
-  let_it_be_with_reload(:distribution) { create(:debian_project_distribution, :with_file, codename: 'unstable') }
+  let_it_be_with_reload(:distribution) { create(:debian_project_distribution, :with_file) }
   let_it_be_with_reload(:package) do
     create(:debian_package, :processing, project: distribution.project, published_in: nil)
   end

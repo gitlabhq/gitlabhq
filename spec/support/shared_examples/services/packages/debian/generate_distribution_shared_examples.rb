@@ -76,9 +76,9 @@ RSpec.shared_examples 'Generate Debian Distribution and component files' do
           .and change { component_file1.reload.updated_at }.to(current_time.round)
 
         package_files = package.package_files.order(id: :asc).preload_debian_file_metadata.to_a
-        pool_prefix = 'pool/unstable'
+        pool_prefix = "pool/#{distribution.codename}"
         pool_prefix += "/#{project.id}" if container_type == :group
-        pool_prefix += "/p/#{package.name}/#{package.version}"
+        pool_prefix += "/#{package.name[0]}/#{package.name}/#{package.version}"
         expected_main_amd64_content = <<~EOF
         Package: libsample0
         Source: #{package.name}
@@ -183,7 +183,7 @@ RSpec.shared_examples 'Generate Debian Distribution and component files' do
         main_sources_sha256 = Digest::SHA256.hexdigest(expected_main_sources_content)
 
         expected_release_content = <<~EOF
-        Codename: unstable
+        Codename: #{distribution.codename}
         Date: Sat, 25 Jan 2020 15:17:18 +0000
         Valid-Until: Mon, 27 Jan 2020 15:17:18 +0000
         Acquire-By-Hash: yes
@@ -205,6 +205,7 @@ RSpec.shared_examples 'Generate Debian Distribution and component files' do
          e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855        0 main/debian-installer/binary-arm64/Packages
          #{main_sources_sha256}      #{main_sources_size} main/source/Sources
         EOF
+        expected_release_content = "Suite: #{distribution.suite}\n#{expected_release_content}" if distribution.suite
 
         check_release_files(expected_release_content)
       end
@@ -228,12 +229,13 @@ RSpec.shared_examples 'Generate Debian Distribution and component files' do
           .and not_change { distribution.component_files.reset.count }
 
         expected_release_content = <<~EOF
-        Codename: unstable
+        Codename: #{distribution.codename}
         Date: Sat, 25 Jan 2020 15:17:18 +0000
         Valid-Until: Mon, 27 Jan 2020 15:17:18 +0000
         Acquire-By-Hash: yes
         SHA256:
         EOF
+        expected_release_content = "Suite: #{distribution.suite}\n#{expected_release_content}" if distribution.suite
 
         check_release_files(expected_release_content)
       end

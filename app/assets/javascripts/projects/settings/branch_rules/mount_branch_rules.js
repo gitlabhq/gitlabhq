@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createDefaultClient from '~/lib/graphql';
-import View from './components/view/index.vue';
+import View from 'ee_else_ce/projects/settings/branch_rules/components/view/index.vue';
 
 export default function mountBranchRules(el) {
   if (!el) {

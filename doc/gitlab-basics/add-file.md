@@ -37,7 +37,7 @@ You can also [switch to an existing branch](start-using-git.md#switch-to-a-branc
 if you have one already.
 
 Using your standard tool for copying files (for example, Finder in macOS, or File Explorer
-on Windows), put the file into a directory within the GitLab project.
+on Windows), put the file into a directory in the GitLab project.
 
 Check if your file is actually present in the directory (if you're on Windows,
 use `dir` instead):

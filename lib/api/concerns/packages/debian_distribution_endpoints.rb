@@ -76,7 +76,7 @@ module API
             end
 
             params do
-              requires :codename, type: String, regexp: Gitlab::Regex.debian_distribution_regex, desc: 'The Debian Codename', documentation: { example: 'unstable' }
+              requires :codename, type: String, regexp: Gitlab::Regex.debian_distribution_regex, desc: 'The Debian Codename', documentation: { example: 'sid' }
               use :optional_distribution_params
             end
             post '/' do
@@ -107,7 +107,7 @@ module API
 
             params do
               use :pagination
-              optional :codename, type: String, regexp: Gitlab::Regex.debian_distribution_regex, desc: 'The Debian Codename', documentation: { example: 'unstable' }
+              optional :codename, type: String, regexp: Gitlab::Regex.debian_distribution_regex, desc: 'The Debian Codename', documentation: { example: 'sid' }
               use :optional_distribution_params
             end
             get '/' do
@@ -132,7 +132,7 @@ module API
             end
 
             params do
-              requires :codename, type: String, regexp: Gitlab::Regex.debian_distribution_regex, desc: 'The Debian Codename', documentation: { example: 'unstable' }
+              requires :codename, type: String, regexp: Gitlab::Regex.debian_distribution_regex, desc: 'The Debian Codename', documentation: { example: 'sid' }
             end
             get '/:codename' do
               authorize_read_package!(project_or_group)
@@ -153,7 +153,7 @@ module API
             end
 
             params do
-              requires :codename, type: String, regexp: Gitlab::Regex.debian_distribution_regex, desc: 'The Debian Codename', documentation: { example: 'unstable' }
+              requires :codename, type: String, regexp: Gitlab::Regex.debian_distribution_regex, desc: 'The Debian Codename', documentation: { example: 'sid' }
             end
             get '/:codename/key.asc' do
               authorize_read_package!(project_or_group)
@@ -179,7 +179,7 @@ module API
             end
 
             params do
-              requires :codename, type: String, regexp: Gitlab::Regex.debian_distribution_regex, desc: 'The Debian Codename', documentation: { example: 'unstable' }
+              requires :codename, type: String, regexp: Gitlab::Regex.debian_distribution_regex, desc: 'The Debian Codename', documentation: { example: 'sid' }
               use :optional_distribution_params
             end
             put '/:codename' do
@@ -210,7 +210,7 @@ module API
             end
 
             params do
-              requires :codename, type: String, regexp: Gitlab::Regex.debian_distribution_regex, desc: 'The Debian Codename', documentation: { example: 'unstable' }
+              requires :codename, type: String, regexp: Gitlab::Regex.debian_distribution_regex, desc: 'The Debian Codename', documentation: { example: 'sid' }
               use :optional_distribution_params
             end
             delete '/:codename' do

@@ -122,6 +122,88 @@ classDef default fill:#FCA326
 linkStyle default fill:none,stroke:#7759C2
 ```
 
+## Requirements
+
+Before implementing a reference architecture, refer to the following requirements and guidance.
+
+### Supported CPUs
+
+These reference architectures were built and tested on Google Cloud Platform (GCP) using the
+[Intel Xeon E5 v3 (Haswell)](https://cloud.google.com/compute/docs/cpu-platforms)
+CPU platform as a baseline ([Sysbench benchmark](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Reference-Architectures/GCP-CPU-Benchmarks)).
+
+Newer, similarly-sized CPUs are supported and may have improved performance as a result. For Omnibus GitLab environments,
+ARM-based equivalents are also supported.
+
+NOTE:
+Any "burstable" instance types are not recommended due to inconsistent performance.
+
+### Supported infrastructure
+
+As a general guidance, GitLab should run on most infrastructure such as reputable Cloud Providers (AWS, GCP, Azure) and
+their services, or self managed (ESXi) that meet both:
+
+- The specifications detailed in each reference architecture.
+- Any requirements in this section.
+
+However, this does not constitute a guarantee for every potential permutation.
+
+See [Recommended cloud providers and services](index.md#recommended-cloud-providers-and-services) for more information.
+
+### Additional workloads
+
+These reference architectures have been [designed and tested](index.md#validation-and-test-results) for standard GitLab
+setups with good headroom in mind to cover most scenarios. However, if any additional workloads are being added on the
+nodes, such as security software, you may still need to adjust the specs accordingly to compensate.
+
+This also applies for some GitLab features where it's possible to run custom scripts, for example
+[server hooks](../server_hooks.md).
+
+As a general rule, you should have robust monitoring in place to measure the impact of any additional workloads to
+inform any changes needed to be made.
+
+### No swap
+
+Swap is not recommended in the reference architectures. It's a failsafe that impacts performance greatly. The
+reference architectures are designed to have memory headroom to avoid needing swap.
+
+### Large repositories
+
+The relevant reference architectures were tested with repositories of varying sizes that follow best practices.
+
+However, large repositories or monorepos (several gigabytes or more) can **significantly** impact the performance
+of Git and in turn the environment itself if best practices aren't being followed such as not storing binary or blob
+files in LFS.
+
+Repositories are at the core of any environment and the consequences can be wide-ranging when they are not optimized.
+Some examples of this impact include:
+
+- [Git packing operations](https://git-scm.com/book/en/v2/Git-Internals-Packfiles) taking longer and consuming high CPU
+  and memory resources.
+- Git checkouts taking longer that affect both users and CI/CD pipelines alike.
+
+As such, large repositories come with notable cost and typically require more resources to handle, (significantly more
+in some cases). You should review large repositories to ensure they maintain good health and reduce their size wherever
+possible.
+
+NOTE:
+If best practices aren't followed and large repositories are present on the environment, increased Gitaly specs may be
+required to ensure stable performance.
+
+Refer to the [Managing large repositories documentation](../../user/project/repository/managing_large_repositories.md)
+for more information and guidance.
+
+### Praefect PostgreSQL
+
+[Praefect requires its own database server](../gitaly/praefect.md#postgresql) and
+that to achieve full High Availability, a third-party PostgreSQL database solution is required.
+
+We hope to offer a built in solutions for these restrictions in the future but, in the meantime, a non HA PostgreSQL server
+can be set up using Omnibus GitLab, the specifications reflect. Refer to the following issues for more information:
+
+- [`omnibus-gitlab#5919`](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5919).
+- [`gitaly#3398`](https://gitlab.com/gitlab-org/gitaly/-/issues/3398).
+
 ## Recommended cloud providers and services
 
 NOTE:

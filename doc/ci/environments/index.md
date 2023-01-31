@@ -62,11 +62,17 @@ To search environments by name:
 
 ## Types of environments
 
-There are two types of environments:
+An environment is either static or dynamic:
 
-- Static environments have static names, like `staging` or `production`.
-- Dynamic environments have dynamic names. Dynamic environments
-  are a fundamental part of [Review apps](../review_apps/index.md).
+- Static environment
+  - Usually reused by successive deployments.
+  - Has a static name - for example, `staging` or `production`.
+  - Created manually or as part of a CI/CD pipeline.
+- Dynamic environment
+  - Usually created in a CI/CD pipeline and used by only a single deployment, then either stopped or
+    deleted.
+  - Has a dynamic name, usually based on the value of a CI/CD variable.
+  - A feature of [review apps](../review_apps/index.md).
 
 ### Create a static environment
 

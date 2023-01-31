@@ -21580,6 +21580,24 @@ CREATE SEQUENCE sbom_vulnerable_component_versions_id_seq
 
 ALTER SEQUENCE sbom_vulnerable_component_versions_id_seq OWNED BY sbom_vulnerable_component_versions.id;
 
+CREATE TABLE scan_result_policies (
+    id bigint NOT NULL,
+    security_orchestration_policy_configuration_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    orchestration_policy_idx smallint NOT NULL,
+    license_states text[] DEFAULT '{}'::text[]
+);
+
+CREATE SEQUENCE scan_result_policies_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE scan_result_policies_id_seq OWNED BY scan_result_policies.id;
+
 CREATE TABLE schema_migrations (
     version character varying NOT NULL,
     finished_at timestamp with time zone DEFAULT now()
@@ -22011,7 +22029,8 @@ CREATE TABLE software_license_policies (
     software_license_id integer NOT NULL,
     classification integer DEFAULT 0 NOT NULL,
     created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL
+    updated_at timestamp with time zone NOT NULL,
+    scan_result_policy_id bigint
 );
 
 CREATE SEQUENCE software_license_policies_id_seq
@@ -24796,6 +24815,8 @@ ALTER TABLE ONLY sbom_sources ALTER COLUMN id SET DEFAULT nextval('sbom_sources_
 
 ALTER TABLE ONLY sbom_vulnerable_component_versions ALTER COLUMN id SET DEFAULT nextval('sbom_vulnerable_component_versions_id_seq'::regclass);
 
+ALTER TABLE ONLY scan_result_policies ALTER COLUMN id SET DEFAULT nextval('scan_result_policies_id_seq'::regclass);
+
 ALTER TABLE ONLY scim_identities ALTER COLUMN id SET DEFAULT nextval('scim_identities_id_seq'::regclass);
 
 ALTER TABLE ONLY scim_oauth_access_tokens ALTER COLUMN id SET DEFAULT nextval('scim_oauth_access_tokens_id_seq'::regclass);
@@ -27127,6 +27148,9 @@ ALTER TABLE ONLY sbom_sources
 
 ALTER TABLE ONLY sbom_vulnerable_component_versions
     ADD CONSTRAINT sbom_vulnerable_component_versions_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY scan_result_policies
+    ADD CONSTRAINT scan_result_policies_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY schema_migrations
     ADD CONSTRAINT schema_migrations_pkey PRIMARY KEY (version);
@@ -31271,6 +31295,8 @@ CREATE UNIQUE INDEX index_sbom_occurrences_on_uuid ON sbom_occurrences USING btr
 
 CREATE UNIQUE INDEX index_sbom_sources_on_source_type_and_source ON sbom_sources USING btree (source_type, source);
 
+CREATE INDEX index_scan_result_policies_on_policy_configuration_id ON scan_result_policies USING btree (security_orchestration_policy_configuration_id);
+
 CREATE INDEX index_scim_identities_on_group_id ON scim_identities USING btree (group_id);
 
 CREATE UNIQUE INDEX index_scim_identities_on_lower_extern_uid_and_group_id ON scim_identities USING btree (lower((extern_uid)::text), group_id);
@@ -31380,6 +31406,8 @@ CREATE INDEX index_snippets_on_title_trigram ON snippets USING gin (title gin_tr
 CREATE INDEX index_snippets_on_updated_at ON snippets USING btree (updated_at);
 
 CREATE INDEX index_snippets_on_visibility_level_and_secret ON snippets USING btree (visibility_level, secret);
+
+CREATE INDEX index_software_license_policies_on_scan_result_policy_id ON software_license_policies USING btree (scan_result_policy_id);
 
 CREATE INDEX index_software_license_policies_on_software_license_id ON software_license_policies USING btree (software_license_id);
 
@@ -35844,6 +35872,9 @@ ALTER TABLE ONLY incident_management_timeline_event_tags
 ALTER TABLE ONLY user_callouts
     ADD CONSTRAINT fk_rails_ddfdd80f3d FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY scan_result_policies
+    ADD CONSTRAINT fk_rails_de9e5d2ce6 FOREIGN KEY (security_orchestration_policy_configuration_id) REFERENCES security_orchestration_policy_configurations(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY dast_scanner_profiles_tags
     ADD CONSTRAINT fk_rails_deb79b7f19 FOREIGN KEY (dast_scanner_profile_id) REFERENCES dast_scanner_profiles(id) ON DELETE CASCADE;
 
@@ -35894,6 +35925,9 @@ ALTER TABLE ONLY serverless_domain_cluster
 
 ALTER TABLE ONLY incident_management_escalation_policies
     ADD CONSTRAINT fk_rails_e5b513daa7 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY software_license_policies
+    ADD CONSTRAINT fk_rails_e5b77d620e FOREIGN KEY (scan_result_policy_id) REFERENCES scan_result_policies(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY vulnerability_external_issue_links
     ADD CONSTRAINT fk_rails_e5ba7f7b13 FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE SET NULL;

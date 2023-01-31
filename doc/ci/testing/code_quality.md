@@ -197,7 +197,7 @@ to learn more about how to define one.
 To disable Code Quality, create a custom CI/CD variable named `CODE_QUALITY_DISABLED`, for either:
 
 - [The whole project](../variables/index.md#for-a-project).
-- [A single pipeline](../variables/index.md#override-a-variable-when-running-a-pipeline-manually).
+- [A single pipeline](../pipelines/index.md#run-a-pipeline-manually).
 
 ## Customizing scan settings
 

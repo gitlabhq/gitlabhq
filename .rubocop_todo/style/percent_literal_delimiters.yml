@@ -748,7 +748,6 @@ Style/PercentLiteralDelimiters:
     - 'spec/lib/gitlab/ci/reports/test_suite_spec.rb'
     - 'spec/lib/gitlab/ci/status/composite_spec.rb'
     - 'spec/lib/gitlab/ci/status/stage/factory_spec.rb'
-    - 'spec/lib/gitlab/ci/templates/5_minute_production_app_ci_yaml_spec.rb'
     - 'spec/lib/gitlab/ci/templates/Jobs/deploy_gitlab_ci_yaml_spec.rb'
     - 'spec/lib/gitlab/ci/templates/Jobs/sast_iac_latest_gitlab_ci_yaml_spec.rb'
     - 'spec/lib/gitlab/ci/templates/auto_devops_gitlab_ci_yaml_spec.rb'

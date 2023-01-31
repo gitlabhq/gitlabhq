@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe Packages::Debian::ExtractDebMetadataService do
+RSpec.describe Packages::Debian::ExtractDebMetadataService, feature_category: :package_registry do
   subject { described_class.new(file_path) }
 
   let(:file_name) { 'libsample0_1.2.3~alpha2_amd64.deb' }

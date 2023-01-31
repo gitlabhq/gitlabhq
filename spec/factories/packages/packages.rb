@@ -66,7 +66,7 @@ FactoryBot.define do
     end
 
     factory :debian_package do
-      sequence(:name) { |n| "package-#{n}" }
+      sequence(:name) { |n| "#{FFaker::Lorem.word}#{n}" }
       sequence(:version) { |n| "1.0-#{n}" }
       package_type { :debian }
 

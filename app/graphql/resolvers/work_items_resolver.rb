@@ -46,7 +46,12 @@ module Resolvers
     def nested_preloads
       {
         widgets: widget_preloads,
-        user_permissions: { update_work_item: :assignees }
+        user_permissions: { update_work_item: :assignees },
+        project: { jira_import_status: { project: :jira_imports } },
+        author: {
+          location: { author: :user_detail },
+          gitpod_enabled: { author: :user_preference }
+        }
       }
     end
 
@@ -57,7 +62,7 @@ module Resolvers
         parent: :work_item_parent,
         children: { work_item_children_by_created_at: [:author, { project: :project_feature }] },
         labels: :labels,
-        milestone: :milestone
+        milestone: { milestone: [:project, :group] }
       }
     end
 

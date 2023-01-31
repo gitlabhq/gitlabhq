@@ -4,24 +4,14 @@ query getBranchRulesDetails($projectPath: ID!) {
     branchRules {
       nodes {
         name
+        matchingBranchesCount
         branchProtection {
           allowForcePush
-          codeOwnerApprovalRequired
           mergeAccessLevels {
             edges {
               node {
                 accessLevel
                 accessLevelDescription
-                group {
-                  id
-                  avatarUrl
-                }
-                user {
-                  id
-                  name
-                  avatarUrl
-                  webUrl
-                }
               }
             }
           }
@@ -30,45 +20,10 @@ query getBranchRulesDetails($projectPath: ID!) {
               node {
                 accessLevel
                 accessLevelDescription
-                group {
-                  id
-                  avatarUrl
-                }
-                user {
-                  id
-                  name
-                  avatarUrl
-                  webUrl
-                }
               }
             }
           }
         }
-        approvalRules {
-          nodes {
-            id
-            name
-            type
-            approvalsRequired
-            eligibleApprovers {
-              nodes {
-                id
-                name
-                username
-                webUrl
-                avatarUrl
-              }
-            }
-          }
-        }
-        externalStatusChecks {
-          nodes {
-            id
-            name
-            externalUrl
-          }
-        }
-        matchingBranchesCount
       }
     }
   }

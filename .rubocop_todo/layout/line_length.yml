@@ -4289,7 +4289,6 @@ Layout/LineLength:
     - 'spec/lib/gitlab/ci/status/build/manual_spec.rb'
     - 'spec/lib/gitlab/ci/status/build/waiting_for_approval_spec.rb'
     - 'spec/lib/gitlab/ci/status/stage/play_manual_spec.rb'
-    - 'spec/lib/gitlab/ci/templates/5_minute_production_app_ci_yaml_spec.rb'
     - 'spec/lib/gitlab/ci/templates/Jobs/deploy_gitlab_ci_yaml_spec.rb'
     - 'spec/lib/gitlab/ci/templates/auto_devops_gitlab_ci_yaml_spec.rb'
     - 'spec/lib/gitlab/ci/variables/builder_spec.rb'

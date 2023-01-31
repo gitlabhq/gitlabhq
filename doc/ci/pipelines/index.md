@@ -145,7 +145,7 @@ To execute a pipeline manually:
 1. On the left sidebar, select **CI/CD > Pipelines**.
 1. Select **Run pipeline**.
 1. In the **Run for branch name or tag** field, select the branch or tag to run the pipeline for.
-1. Enter any [environment variables](../variables/index.md) required for the pipeline to run.
+1. Enter any [CI/CD variables](../variables/index.md) required for the pipeline to run.
    You can set specific variables to have their [values prefilled in the form](#prefill-variables-in-manual-pipelines).
 1. Select **Run pipeline**.
 

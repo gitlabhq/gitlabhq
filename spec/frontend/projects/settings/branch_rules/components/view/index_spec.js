@@ -1,23 +1,21 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import * as util from '~/lib/utils/url_utility';
-import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import RuleView from '~/projects/settings/branch_rules/components/view/index.vue';
+import Protection from '~/projects/settings/branch_rules/components/view/protection.vue';
 import {
   I18N,
   ALL_BRANCHES_WILDCARD,
 } from '~/projects/settings/branch_rules/components/view/constants';
-import Protection from '~/projects/settings/branch_rules/components/view/protection.vue';
-import branchRulesQuery from '~/projects/settings/branch_rules/queries/branch_rules_details.query.graphql';
+import branchRulesQuery from 'ee_else_ce/projects/settings/branch_rules/queries/branch_rules_details.query.graphql';
 import { sprintf } from '~/locale';
 import {
   branchProtectionsMockResponse,
-  approvalRulesMock,
-  statusChecksRulesMock,
   matchingBranchesCount,
-} from './mock_data';
+} from 'ee_else_ce_jest/projects/settings/branch_rules/components/view/mock_data';
 
 jest.mock('~/lib/utils/url_utility', () => ({
   getParameterByName: jest.fn().mockReturnValue('main'),
@@ -29,18 +27,18 @@ Vue.use(VueApollo);
 
 const protectionMockProps = {
   headerLinkHref: 'protected/branches',
-  headerLinkTitle: 'Manage in protected branches',
-  roles: [{ accessLevelDescription: 'Maintainers' }],
-  users: [{ avatarUrl: 'test.com/user.png', name: 'peter', webUrl: 'test.com' }],
+  headerLinkTitle: I18N.manageProtectionsLinkTitle,
 };
+const roles = [
+  { accessLevelDescription: 'Maintainers' },
+  { accessLevelDescription: 'Maintainers + Developers' },
+];
 
 describe('View branch rules', () => {
   let wrapper;
   let fakeApollo;
   const projectPath = 'test/testing';
   const protectedBranchesPath = 'protected/branches';
-  const approvalRulesPath = 'approval/rules';
-  const statusChecksPath = 'status/checks';
   const branchProtectionsMockRequestHandler = jest
     .fn()
     .mockResolvedValue(branchProtectionsMockResponse);
@@ -50,7 +48,8 @@ describe('View branch rules', () => {
 
     wrapper = shallowMountExtended(RuleView, {
       apolloProvider: fakeApollo,
-      provide: { projectPath, protectedBranchesPath, approvalRulesPath, statusChecksPath },
+      provide: { projectPath, protectedBranchesPath },
+      stubs: { Protection },
     });
 
     await waitForPromises();
@@ -106,9 +105,22 @@ describe('View branch rules', () => {
 
   it('renders a branch protection component for push rules', () => {
     expect(findBranchProtections().at(0).props()).toMatchObject({
-      header: sprintf(I18N.allowedToPushHeader, { total: 2 }),
+      header: sprintf(I18N.allowedToPushHeader, {
+        total: 2,
+      }),
       ...protectionMockProps,
     });
+  });
+
+  it('passes expected roles for push rules via props', () => {
+    findBranchProtections()
+      .at(0)
+      .props()
+      .roles.forEach((role, i) => {
+        expect(role).toMatchObject({
+          accessLevelDescription: roles[i].accessLevelDescription,
+        });
+      });
   });
 
   it('renders force push protection', () => {
@@ -117,30 +129,29 @@ describe('View branch rules', () => {
 
   it('renders a branch protection component for merge rules', () => {
     expect(findBranchProtections().at(1).props()).toMatchObject({
-      header: sprintf(I18N.allowedToMergeHeader, { total: 2 }),
+      header: sprintf(I18N.allowedToMergeHeader, {
+        total: 2,
+      }),
       ...protectionMockProps,
     });
   });
 
-  it('renders a branch protection component for approvals', () => {
-    expect(findApprovalsTitle().exists()).toBe(true);
-
-    expect(findBranchProtections().at(2).props()).toMatchObject({
-      header: sprintf(I18N.approvalsHeader, { total: 3 }),
-      headerLinkHref: approvalRulesPath,
-      headerLinkTitle: I18N.manageApprovalsLinkTitle,
-      approvals: approvalRulesMock,
-    });
+  it('passes expected roles form merge rules via props', () => {
+    findBranchProtections()
+      .at(1)
+      .props()
+      .roles.forEach((role, i) => {
+        expect(role).toMatchObject({
+          accessLevelDescription: roles[i].accessLevelDescription,
+        });
+      });
   });
 
-  it('renders a branch protection component for status checks', () => {
-    expect(findStatusChecksTitle().exists()).toBe(true);
+  it('does not render a branch protection component for approvals', () => {
+    expect(findApprovalsTitle().exists()).toBe(false);
+  });
 
-    expect(findBranchProtections().at(3).props()).toMatchObject({
-      header: sprintf(I18N.statusChecksHeader, { total: 2 }),
-      headerLinkHref: statusChecksPath,
-      headerLinkTitle: I18N.statusChecksLinkTitle,
-      statusChecks: statusChecksRulesMock,
-    });
+  it('does not render a branch protection component for status checks', () => {
+    expect(findStatusChecksTitle().exists()).toBe(false);
   });
 });

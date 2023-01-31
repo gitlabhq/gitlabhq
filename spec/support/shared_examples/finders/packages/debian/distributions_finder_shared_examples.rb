@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.shared_examples 'Debian Distributions Finder' do |factory, can_freeze|
-  let_it_be(:distribution_with_suite, freeze: can_freeze) { create(factory, suite: 'mysuite') }
+  let_it_be(:distribution_with_suite, freeze: can_freeze) { create(factory, :with_suite) }
   let_it_be(:container) { distribution_with_suite.container }
   let_it_be(:distribution_with_same_container, freeze: can_freeze) { create(factory, container: container ) }
   let_it_be(:distribution_with_same_codename, freeze: can_freeze) { create(factory, codename: distribution_with_suite.codename ) }
@@ -35,7 +35,7 @@ RSpec.shared_examples 'Debian Distributions Finder' do |factory, can_freeze|
 
   context 'by suite' do
     context 'with existing suite' do
-      let(:params) { { suite: 'mysuite' } }
+      let(:params) { { suite: distribution_with_suite.suite } }
 
       it 'finds distribution by suite' do
         is_expected.to contain_exactly(distribution_with_suite)
@@ -61,7 +61,7 @@ RSpec.shared_examples 'Debian Distributions Finder' do |factory, can_freeze|
     end
 
     context 'with existing suite' do
-      let(:params) { { codename_or_suite: 'mysuite' } }
+      let(:params) { { codename_or_suite: distribution_with_suite.suite } }
 
       it 'finds distribution by suite' do
         is_expected.to contain_exactly(distribution_with_suite)

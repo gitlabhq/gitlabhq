@@ -12,7 +12,11 @@ describe('SignInPage', () => {
   const findSignInGitlabCom = () => wrapper.findComponent(SignInGitlabCom);
   const findSignInGitabMultiversion = () => wrapper.findComponent(SignInGitlabMultiversion);
 
-  const createComponent = ({ props = {}, jiraConnectOauthEnabled } = {}) => {
+  const createComponent = ({
+    props = {},
+    jiraConnectOauthEnabled,
+    publicKeyStorageEnabled,
+  } = {}) => {
     store = createStore();
 
     wrapper = shallowMount(SignInPage, {
@@ -22,7 +26,11 @@ describe('SignInPage', () => {
           jiraConnectOauth: jiraConnectOauthEnabled,
         },
       },
-      propsData: { hasSubscriptions: false, ...props },
+      propsData: {
+        hasSubscriptions: false,
+        publicKeyStorageEnabled,
+        ...props,
+      },
     });
   };
 
@@ -31,15 +39,20 @@ describe('SignInPage', () => {
   });
 
   it.each`
-    jiraConnectOauthEnabled | shouldRenderDotCom | shouldRenderMultiversion
-    ${false}                | ${true}            | ${false}
-    ${false}                | ${true}            | ${false}
-    ${true}                 | ${false}           | ${true}
-    ${true}                 | ${false}           | ${true}
+    jiraConnectOauthEnabled | publicKeyStorageEnabled | shouldRenderDotCom | shouldRenderMultiversion
+    ${false}                | ${true}                 | ${true}            | ${false}
+    ${false}                | ${false}                | ${true}            | ${false}
+    ${true}                 | ${true}                 | ${false}           | ${true}
+    ${true}                 | ${false}                | ${true}            | ${false}
   `(
     'renders correct component when jiraConnectOauth is $jiraConnectOauthEnabled',
-    ({ jiraConnectOauthEnabled, shouldRenderDotCom, shouldRenderMultiversion }) => {
-      createComponent({ jiraConnectOauthEnabled });
+    ({
+      jiraConnectOauthEnabled,
+      publicKeyStorageEnabled,
+      shouldRenderDotCom,
+      shouldRenderMultiversion,
+    }) => {
+      createComponent({ jiraConnectOauthEnabled, publicKeyStorageEnabled });
 
       expect(findSignInGitlabCom().exists()).toBe(shouldRenderDotCom);
       expect(findSignInGitabMultiversion().exists()).toBe(shouldRenderMultiversion);

@@ -42,7 +42,9 @@ For a full list of reference architectures, see
 3. Can be optionally run on reputable third-party load balancing services (LB PaaS). See [Recommended cloud providers and services](index.md#recommended-cloud-providers-and-services) for more information.
     - [Google Cloud Load Balancing](https://cloud.google.com/load-balancing) and [Amazon Elastic Load Balancing](https://aws.amazon.com/elasticloadbalancing/) are known to work.
 4. Should be run on reputable Cloud Provider or Self Managed solutions. More information can be found in the [Configure the object storage](#configure-the-object-storage) section.
-5. Gitaly has been designed and tested with repositories of varying sizes that follow best practices. However, large repositories or monorepos that don't follow these practices can significantly impact Gitaly requirements. Refer to the [Large Repositories](#large-repositories) for more info.
+5. Gitaly has been designed and tested with repositories of varying sizes that follow best practices. However, large
+   repositories or monorepos that don't follow these practices can significantly impact Gitaly requirements. Refer to
+   [Large repositories](index.md#large-repositories) for more information.
 <!-- markdownlint-enable MD029 -->
 
 NOTE:
@@ -80,59 +82,7 @@ monitor .[#7FFFD4,norank]u--> elb
 
 ## Requirements
 
-Before starting, you should take note of the following requirements / guidance for this reference architecture.
-
-### Supported CPUs
-
-This reference architecture was built and tested on Google Cloud Platform (GCP) using the
-[Intel Xeon E5 v3 (Haswell)](https://cloud.google.com/compute/docs/cpu-platforms)
-CPU platform as a baseline ([Sysbench benchmark](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Reference-Architectures/GCP-CPU-Benchmarks)).
-
-Newer, similarly sized CPUs are supported and may have improved performance as a result. For Omnibus environments, ARM-based equivalents are also supported.
-
-NOTE:
-Any "burstable" instance types are not recommended due to inconsistent performance.
-
-### Supported infrastructure
-
-As a general guidance, GitLab should run on most infrastructure such as reputable Cloud Providers (AWS, GCP) and their services,
-or self managed (ESXi) that meet both the specs detailed above, as well as any requirements in this section.
-However, this does not constitute a guarantee for every potential permutation.
-
-See [Recommended cloud providers and services](index.md#recommended-cloud-providers-and-services) for more information.
-
-### Additional workloads
-
-The Reference Architectures have been [designed and tested](index.md#validation-and-test-results) for standard GitLab setups with
-good headroom in mind to cover most scenarios. However, if any additional workloads are being added on the nodes,
-such as security software, you may still need to adjust the specs accordingly to compensate.
-
-This also applies for some GitLab features where it's possible to run custom scripts, for example [server hooks](../server_hooks.md).
-
-As a general rule, it's recommended to have robust monitoring in place to measure the impact of
-any additional workloads to inform any changes needed to be made.
-
-### Large repositories
-
-The Reference Architectures were tested with repositories of varying sizes that follow best practices.
-
-However, large repositories or monorepos (several gigabytes or more) can **significantly** impact the performance
-of Git and in turn the environment itself if best practices aren't being followed such as not storing
-binary or blob files in LFS. Repositories are at the core of any environment the consequences can be wide-ranging
-when they are not optimized. Some examples of this impact include [Git packing operations](https://git-scm.com/book/en/v2/Git-Internals-Packfiles)
-taking longer and consuming high CPU / Memory resources or Git checkouts taking longer that affect both users and
-CI pipelines alike.
-
-As such, large repositories come with notable cost and typically will require more resources to handle,
-significantly so in some cases. It's therefore **strongly** recommended then to review large repositories
-to ensure they maintain good health and reduce their size wherever possible.
-
-NOTE:
-If best practices aren't followed and large repositories are present on the environment,
-increased Gitaly specs may be required to ensure stable performance.
-
-Refer to the [Managing large repositories documentation](../../user/project/repository/managing_large_repositories.md)
-for more information and guidance.
+Before starting, see the [requirements](index.md#requirements) for reference architectures.
 
 ## Setup components
 
@@ -460,14 +410,14 @@ specifically the number of projects and those projects' sizes.
 
 NOTE:
 Increased specs for Gitaly nodes may be required in some circumstances such as
-significantly large repositories or if any [additional workloads](#additional-workloads),
+significantly large repositories or if any [additional workloads](index.md#additional-workloads),
 such as [server hooks](../server_hooks.md), have been added.
 
 NOTE:
 Gitaly has been designed and tested with repositories of varying sizes that follow best practices.
 However, large repositories or monorepos not following these practices can significantly
 impact Gitaly performance and requirements.
-Refer to the [Large Repositories](#large-repositories) for more info.
+Refer to [Large repositories](index.md#large-repositories) for more information.
 
 Due to Gitaly having notable input and output requirements, we strongly
 recommend that all Gitaly nodes use solid-state drives (SSDs). These SSDs

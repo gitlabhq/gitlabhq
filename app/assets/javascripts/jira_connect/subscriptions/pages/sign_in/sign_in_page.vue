@@ -12,10 +12,14 @@ export default {
       type: Boolean,
       required: true,
     },
+    publicKeyStorageEnabled: {
+      type: Boolean,
+      required: true,
+    },
   },
   computed: {
     isOauthSelfManagedEnabled() {
-      return this.glFeatures.jiraConnectOauth;
+      return this.glFeatures.jiraConnectOauth && this.publicKeyStorageEnabled;
     },
   },
 };
