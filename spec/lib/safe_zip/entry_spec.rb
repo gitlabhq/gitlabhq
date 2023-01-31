@@ -5,12 +5,13 @@ require 'spec_helper'
 RSpec.describe SafeZip::Entry do
   let(:target_path) { Dir.mktmpdir('safe-zip') }
   let(:directories) { %w(public folder/with/subfolder) }
-  let(:params) { SafeZip::ExtractParams.new(directories: directories, to: target_path) }
+  let(:files) { %w(public/index.html public/assets/image.png) }
+  let(:params) { SafeZip::ExtractParams.new(directories: directories, files: files, to: target_path) }
 
   let(:entry) { described_class.new(zip_archive, zip_entry, params) }
   let(:entry_name) { 'public/folder/index.html' }
   let(:entry_path_dir) { File.join(target_path, File.dirname(entry_name)) }
-  let(:entry_path) { File.join(target_path, entry_name) }
+  let(:entry_path) { File.join(File.realpath(target_path), entry_name) }
   let(:zip_archive) { double }
 
   let(:zip_entry) do
@@ -28,7 +29,7 @@ RSpec.describe SafeZip::Entry do
   describe '#path_dir' do
     subject { entry.path_dir }
 
-    it { is_expected.to eq(target_path + '/public/folder') }
+    it { is_expected.to eq(File.realpath(target_path) + '/public/folder') }
   end
 
   describe '#exist?' do
@@ -51,6 +52,9 @@ RSpec.describe SafeZip::Entry do
     subject { entry.extract }
 
     context 'when entry does not match the filtered directories' do
+      let(:directories) { %w(public folder/with/subfolder) }
+      let(:files) { [] }
+
       using RSpec::Parameterized::TableSyntax
 
       where(:entry_name) do
@@ -70,7 +74,30 @@ RSpec.describe SafeZip::Entry do
       end
     end
 
-    context 'when entry does exist' do
+    context 'when entry does not match the filtered files' do
+      let(:directories) { [] }
+      let(:files) { %w(public/index.html public/assets/image.png) }
+
+      using RSpec::Parameterized::TableSyntax
+
+      where(:entry_name) do
+        [
+          'assets/folder/index.html',
+          'public/../folder/index.html',
+          'public/../../../../../index.html',
+          '../../../../../public/index.html',
+          '/etc/passwd'
+        ]
+      end
+
+      with_them do
+        it 'does not extract file' do
+          is_expected.to be_falsey
+        end
+      end
+    end
+
+    context 'when there is an existing extracted entry' do
       before do
         create_entry
       end

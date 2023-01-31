@@ -7,6 +7,10 @@ module Packages
     class ExtractFileMetadataService
       ExtractionError = Class.new(StandardError)
 
+      # Charts must be smaller than 1M because of the storage limitations of Kubernetes objects.
+      # based on https://helm.sh/docs/chart_template_guide/accessing_files/
+      MAX_FILE_SIZE = 1.megabytes.freeze
+
       def initialize(package_file)
         @package_file = package_file
       end
@@ -42,6 +46,7 @@ module Packages
           end
 
           raise ExtractionError, 'Chart.yaml not found within a directory' unless chart_yaml
+          raise ExtractionError, 'Chart.yaml too big' if chart_yaml.size > MAX_FILE_SIZE
 
           chart_yaml.read
         ensure
