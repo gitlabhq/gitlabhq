@@ -42,11 +42,6 @@ export default {
       required: false,
       default: true,
     },
-    iconClasses: {
-      type: String,
-      required: false,
-      default: '',
-    },
   },
   computed: {
     title() {
@@ -73,7 +68,7 @@ export default {
     :href="detailsPath"
     @click="$emit('ciStatusBadgeClick')"
   >
-    <ci-icon :status="status" :css-classes="iconClasses" />
+    <ci-icon :status="status" />
 
     <template v-if="showText">
       <span class="gl-ml-2">{{ status.text }}</span>

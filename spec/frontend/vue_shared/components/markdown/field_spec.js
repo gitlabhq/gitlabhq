@@ -2,6 +2,7 @@ import { nextTick } from 'vue';
 import AxiosMockAdapter from 'axios-mock-adapter';
 import { TEST_HOST, FIXTURES_PATH } from 'spec/test_constants';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
 import MarkdownFieldHeader from '~/vue_shared/components/markdown/header.vue';
 import MarkdownToolbar from '~/vue_shared/components/markdown/toolbar.vue';
@@ -107,7 +108,7 @@ describe('Markdown field component', () => {
     it('renders referenced commands on markdown preview', async () => {
       axiosMock
         .onPost(markdownPreviewPath)
-        .reply(200, { references: { users: [], commands: 'test command' } });
+        .reply(HTTP_STATUS_OK, { references: { users: [], commands: 'test command' } });
 
       previewLink = getPreviewLink();
       previewLink.vm.$emit('click', { target: {} });
@@ -121,7 +122,7 @@ describe('Markdown field component', () => {
 
     describe('markdown preview', () => {
       beforeEach(() => {
-        axiosMock.onPost(markdownPreviewPath).reply(200, { body: previewHTML });
+        axiosMock.onPost(markdownPreviewPath).reply(HTTP_STATUS_OK, { body: previewHTML });
       });
 
       it('sets preview link as active', async () => {
@@ -267,7 +268,7 @@ describe('Markdown field component', () => {
         const users = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map((i) => `user_${i}`);
 
         it('shows warning on mention of all users', async () => {
-          axiosMock.onPost(markdownPreviewPath).reply(200, { references: { users } });
+          axiosMock.onPost(markdownPreviewPath).reply(HTTP_STATUS_OK, { references: { users } });
 
           subject.setProps({ textareaValue: 'hello @all' });
 
@@ -279,7 +280,7 @@ describe('Markdown field component', () => {
         });
 
         it('removes warning when all mention is removed', async () => {
-          axiosMock.onPost(markdownPreviewPath).reply(200, { references: { users } });
+          axiosMock.onPost(markdownPreviewPath).reply(HTTP_STATUS_OK, { references: { users } });
 
           subject.setProps({ textareaValue: 'hello @all' });
 
@@ -298,7 +299,7 @@ describe('Markdown field component', () => {
         });
 
         it('removes warning when all mention is removed while endpoint is loading', async () => {
-          axiosMock.onPost(markdownPreviewPath).reply(200, { references: { users } });
+          axiosMock.onPost(markdownPreviewPath).reply(HTTP_STATUS_OK, { references: { users } });
           jest.spyOn(axios, 'post');
 
           subject.setProps({ textareaValue: 'hello @all' });

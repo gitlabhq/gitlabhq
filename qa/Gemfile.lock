@@ -180,7 +180,7 @@ GEM
     multi_json (1.15.0)
     multi_xml (0.6.0)
     netrc (0.11.0)
-    nokogiri (1.14.0)
+    nokogiri (1.14.1)
       mini_portile2 (~> 2.8.0)
       racc (~> 1.4)
     octokit (6.0.1)
@@ -320,7 +320,7 @@ DEPENDENCIES
   gitlab-qa (~> 8, >= 8.15.2)
   influxdb-client (~> 2.9)
   knapsack (~> 4.0)
-  nokogiri (~> 1.14)
+  nokogiri (~> 1.14, >= 1.14.1)
   octokit (~> 6.0.1)
   parallel (~> 1.22, >= 1.22.1)
   parallel_tests (~> 4.1)
@@ -342,4 +342,4 @@ DEPENDENCIES
   zeitwerk (~> 2.6, >= 2.6.6)
 
 BUNDLED WITH
-   2.4.5
+   2.4.4

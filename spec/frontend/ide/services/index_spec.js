@@ -109,7 +109,7 @@ describe('IDE services', () => {
         };
 
         mock = new MockAdapter(axios);
-        mock.onGet(file.rawPath).reply(200, 'raw content');
+        mock.onGet(file.rawPath).reply(HTTP_STATUS_OK, 'raw content');
 
         jest.spyOn(axios, 'get');
       });
@@ -206,7 +206,7 @@ describe('IDE services', () => {
                 filePath,
               )}`,
             )
-            .reply(200, TEST_FILE_CONTENTS);
+            .reply(HTTP_STATUS_OK, TEST_FILE_CONTENTS);
         });
 
         it('fetches file content', () =>
@@ -231,7 +231,7 @@ describe('IDE services', () => {
 
       mock
         .onGet(`${TEST_RELATIVE_URL_ROOT}/${TEST_PROJECT_ID}/-/files/${TEST_COMMIT_SHA}`)
-        .reply(200, [TEST_FILE_PATH]);
+        .reply(HTTP_STATUS_OK, [TEST_FILE_PATH]);
     });
 
     afterEach(() => {

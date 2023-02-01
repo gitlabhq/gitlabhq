@@ -2,6 +2,7 @@ import { GlEmptyState, GlLoadingIcon, GlTable } from '@gitlab/ui';
 import { mount, shallowMount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import ImportErrorDetails from '~/pages/import/history/components/import_error_details.vue';
 import ImportHistoryApp from '~/pages/import/history/components/import_history_app.vue';
 import PaginationBar from '~/vue_shared/components/pagination_bar/pagination_bar.vue';
@@ -84,7 +85,7 @@ describe('ImportHistoryApp', () => {
     });
 
     it('renders empty state when no data is available', async () => {
-      mock.onGet(API_URL).reply(200, [], DEFAULT_HEADERS);
+      mock.onGet(API_URL).reply(HTTP_STATUS_OK, [], DEFAULT_HEADERS);
       createComponent();
       await axios.waitForAll();
 
@@ -93,7 +94,7 @@ describe('ImportHistoryApp', () => {
     });
 
     it('renders table with data when history is available', async () => {
-      mock.onGet(API_URL).reply(200, DUMMY_RESPONSE, DEFAULT_HEADERS);
+      mock.onGet(API_URL).reply(HTTP_STATUS_OK, DUMMY_RESPONSE, DEFAULT_HEADERS);
       createComponent();
       await axios.waitForAll();
 
@@ -105,7 +106,7 @@ describe('ImportHistoryApp', () => {
     it('changes page when requested by pagination bar', async () => {
       const NEW_PAGE = 4;
 
-      mock.onGet(API_URL).reply(200, DUMMY_RESPONSE, DEFAULT_HEADERS);
+      mock.onGet(API_URL).reply(HTTP_STATUS_OK, DUMMY_RESPONSE, DEFAULT_HEADERS);
       createComponent();
       await axios.waitForAll();
       mock.resetHistory();
@@ -121,7 +122,7 @@ describe('ImportHistoryApp', () => {
         },
       ];
 
-      mock.onGet(API_URL).reply(200, FAKE_NEXT_PAGE_REPLY, DEFAULT_HEADERS);
+      mock.onGet(API_URL).reply(HTTP_STATUS_OK, FAKE_NEXT_PAGE_REPLY, DEFAULT_HEADERS);
 
       wrapper.findComponent(PaginationBar).vm.$emit('set-page', NEW_PAGE);
       await axios.waitForAll();
@@ -135,7 +136,7 @@ describe('ImportHistoryApp', () => {
   it('changes page size when requested by pagination bar', async () => {
     const NEW_PAGE_SIZE = 4;
 
-    mock.onGet(API_URL).reply(200, DUMMY_RESPONSE, DEFAULT_HEADERS);
+    mock.onGet(API_URL).reply(HTTP_STATUS_OK, DUMMY_RESPONSE, DEFAULT_HEADERS);
     createComponent();
     await axios.waitForAll();
     mock.resetHistory();
@@ -152,7 +153,7 @@ describe('ImportHistoryApp', () => {
   it('resets page to 1 when page size is changed', async () => {
     const NEW_PAGE_SIZE = 4;
 
-    mock.onGet(API_URL).reply(200, DUMMY_RESPONSE, DEFAULT_HEADERS);
+    mock.onGet(API_URL).reply(HTTP_STATUS_OK, DUMMY_RESPONSE, DEFAULT_HEADERS);
     createComponent();
     await axios.waitForAll();
     wrapper.findComponent(PaginationBar).vm.$emit('set-page', 2);
@@ -170,7 +171,7 @@ describe('ImportHistoryApp', () => {
 
   describe('details button', () => {
     beforeEach(() => {
-      mock.onGet(API_URL).reply(200, DUMMY_RESPONSE, DEFAULT_HEADERS);
+      mock.onGet(API_URL).reply(HTTP_STATUS_OK, DUMMY_RESPONSE, DEFAULT_HEADERS);
       createComponent({ shallow: false });
       return axios.waitForAll();
     });

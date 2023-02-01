@@ -2,6 +2,7 @@ import { GlLoadingIcon, GlModal } from '@gitlab/ui';
 import MockAdapter from 'axios-mock-adapter';
 import { mount } from '@vue/test-utils';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import SecureFilesList from '~/ci_secure_files/components/secure_files_list.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
@@ -64,7 +65,7 @@ describe('SecureFilesList', () => {
   describe('when secure files exist in a project', () => {
     beforeEach(async () => {
       mock = new MockAdapter(axios);
-      mock.onGet(expectedUrl).reply(200, secureFiles);
+      mock.onGet(expectedUrl).reply(HTTP_STATUS_OK, secureFiles);
 
       createWrapper();
       await waitForPromises();
@@ -116,7 +117,7 @@ describe('SecureFilesList', () => {
   describe('when no secure files exist in a project', () => {
     beforeEach(async () => {
       mock = new MockAdapter(axios);
-      mock.onGet(expectedUrl).reply(200, []);
+      mock.onGet(expectedUrl).reply(HTTP_STATUS_OK, []);
 
       createWrapper();
       await waitForPromises();
@@ -137,7 +138,7 @@ describe('SecureFilesList', () => {
   describe('pagination', () => {
     it('displays the pagination component with there are more than 20 items', async () => {
       mock = new MockAdapter(axios);
-      mock.onGet(expectedUrl).reply(200, secureFiles, { 'x-total': 30 });
+      mock.onGet(expectedUrl).reply(HTTP_STATUS_OK, secureFiles, { 'x-total': 30 });
 
       createWrapper();
       await waitForPromises();
@@ -147,7 +148,7 @@ describe('SecureFilesList', () => {
 
     it('does not display the pagination component with there are 20 items', async () => {
       mock = new MockAdapter(axios);
-      mock.onGet(expectedUrl).reply(200, secureFiles, { 'x-total': 20 });
+      mock.onGet(expectedUrl).reply(HTTP_STATUS_OK, secureFiles, { 'x-total': 20 });
 
       createWrapper();
       await waitForPromises();
@@ -159,7 +160,7 @@ describe('SecureFilesList', () => {
   describe('loading state', () => {
     it('displays the loading icon while waiting for the backend request', () => {
       mock = new MockAdapter(axios);
-      mock.onGet(expectedUrl).reply(200, secureFiles);
+      mock.onGet(expectedUrl).reply(HTTP_STATUS_OK, secureFiles);
       createWrapper();
 
       expect(findLoadingIcon().exists()).toBe(true);
@@ -167,7 +168,7 @@ describe('SecureFilesList', () => {
 
     it('does not display the loading icon after the backend request has completed', async () => {
       mock = new MockAdapter(axios);
-      mock.onGet(expectedUrl).reply(200, secureFiles);
+      mock.onGet(expectedUrl).reply(HTTP_STATUS_OK, secureFiles);
 
       createWrapper();
       await waitForPromises();
@@ -180,7 +181,7 @@ describe('SecureFilesList', () => {
     describe('with admin permissions', () => {
       beforeEach(async () => {
         mock = new MockAdapter(axios);
-        mock.onGet(expectedUrl).reply(200, secureFiles);
+        mock.onGet(expectedUrl).reply(HTTP_STATUS_OK, secureFiles);
 
         createWrapper();
         await waitForPromises();
@@ -198,7 +199,7 @@ describe('SecureFilesList', () => {
     describe('without admin permissions', () => {
       beforeEach(async () => {
         mock = new MockAdapter(axios);
-        mock.onGet(expectedUrl).reply(200, secureFiles);
+        mock.onGet(expectedUrl).reply(HTTP_STATUS_OK, secureFiles);
 
         createWrapper(false);
         await waitForPromises();

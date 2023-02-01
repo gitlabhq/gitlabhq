@@ -16,6 +16,7 @@ import {
 } from '~/ide/stores/actions/merge_request';
 import * as types from '~/ide/stores/mutation_types';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 
 const TEST_PROJECT = 'abcproject';
 const TEST_PROJECT_ID = 17;
@@ -63,7 +64,9 @@ describe('IDE store merge request actions', () => {
       describe('base case', () => {
         beforeEach(() => {
           jest.spyOn(service, 'getProjectMergeRequests');
-          mock.onGet(/api\/(.*)\/projects\/abcproject\/merge_requests/).reply(200, mockData);
+          mock
+            .onGet(/api\/(.*)\/projects\/abcproject\/merge_requests/)
+            .reply(HTTP_STATUS_OK, mockData);
         });
 
         it('calls getProjectMergeRequests service method', async () => {
@@ -113,7 +116,7 @@ describe('IDE store merge request actions', () => {
       describe('no merge requests for branch available case', () => {
         beforeEach(() => {
           jest.spyOn(service, 'getProjectMergeRequests');
-          mock.onGet(/api\/(.*)\/projects\/abcproject\/merge_requests/).reply(200, []);
+          mock.onGet(/api\/(.*)\/projects\/abcproject\/merge_requests/).reply(HTTP_STATUS_OK, []);
         });
 
         it('does not fail if there are no merge requests for current branch', async () => {
@@ -155,7 +158,7 @@ describe('IDE store merge request actions', () => {
 
         mock
           .onGet(/api\/(.*)\/projects\/abcproject\/merge_requests\/1/)
-          .reply(200, { title: 'mergerequest' });
+          .reply(HTTP_STATUS_OK, { title: 'mergerequest' });
       });
 
       it('calls getProjectMergeRequestData service method', async () => {
@@ -212,7 +215,7 @@ describe('IDE store merge request actions', () => {
 
         mock
           .onGet(/api\/(.*)\/projects\/abcproject\/merge_requests\/1\/changes/)
-          .reply(200, { title: 'mergerequest' });
+          .reply(HTTP_STATUS_OK, { title: 'mergerequest' });
       });
 
       it('calls getProjectMergeRequestChanges service method', async () => {
@@ -276,7 +279,7 @@ describe('IDE store merge request actions', () => {
       beforeEach(() => {
         mock
           .onGet(/api\/(.*)\/projects\/abcproject\/merge_requests\/1\/versions/)
-          .reply(200, [{ id: 789 }]);
+          .reply(HTTP_STATUS_OK, [{ id: 789 }]);
         jest.spyOn(service, 'getProjectMergeRequestVersions');
       });
 

@@ -7,7 +7,7 @@ import * as actions from '~/clusters_list/store/actions';
 import * as types from '~/clusters_list/store/mutation_types';
 import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
-import { HTTP_STATUS_BAD_REQUEST } from '~/lib/utils/http_status';
+import { HTTP_STATUS_BAD_REQUEST, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import Poll from '~/lib/utils/poll';
 import { apiData } from '../mock_data';
 
@@ -66,7 +66,7 @@ describe('Clusters store actions', () => {
     afterEach(() => mock.restore());
 
     it('should commit SET_CLUSTERS_DATA with received response', () => {
-      mock.onGet().reply(200, apiData, headers);
+      mock.onGet().reply(HTTP_STATUS_OK, apiData, headers);
 
       return testAction(
         actions.fetchClusters,
@@ -119,7 +119,7 @@ describe('Clusters store actions', () => {
         pollRequest = jest.spyOn(Poll.prototype, 'makeRequest');
         pollStop = jest.spyOn(Poll.prototype, 'stop');
 
-        mock.onGet().reply(200, apiData, pollHeaders);
+        mock.onGet().reply(HTTP_STATUS_OK, apiData, pollHeaders);
       });
 
       afterEach(() => {
@@ -172,7 +172,7 @@ describe('Clusters store actions', () => {
 
       it('should stop polling and report to Sentry when data is invalid', async () => {
         const badApiResponse = { clusters: {} };
-        mock.onGet().reply(200, badApiResponse, pollHeaders);
+        mock.onGet().reply(HTTP_STATUS_OK, badApiResponse, pollHeaders);
 
         await testAction(
           actions.fetchClusters,

@@ -7,6 +7,7 @@ import { loadHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import { TEST_HOST } from 'helpers/test_constants';
 import waitForPromises from 'helpers/wait_for_promises';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import * as urlUtility from '~/lib/utils/url_utility';
 
 // These must be imported synchronously because they pull dependencies
@@ -75,7 +76,7 @@ describe.skip('Old Notes (~/deprecated_notes.js)', () => {
 
   describe('task lists', () => {
     beforeEach(() => {
-      mockAxios.onAny().reply(200, {});
+      mockAxios.onAny().reply(HTTP_STATUS_OK, {});
       new Notes('', []);
     });
 
@@ -181,7 +182,7 @@ describe.skip('Old Notes (~/deprecated_notes.js)', () => {
       const $form = $('form.js-main-target-form');
       $form.find('textarea.js-note-text').val(sampleComment);
 
-      mockAxios.onPost(NOTES_POST_PATH).reply(200, noteEntity);
+      mockAxios.onPost(NOTES_POST_PATH).reply(HTTP_STATUS_OK, noteEntity);
     });
 
     it('updates note and resets edit form', () => {
@@ -546,7 +547,7 @@ describe.skip('Old Notes (~/deprecated_notes.js)', () => {
     let $notesContainer;
 
     function mockNotesPost() {
-      mockAxios.onPost(NOTES_POST_PATH).reply(200, note);
+      mockAxios.onPost(NOTES_POST_PATH).reply(HTTP_STATUS_OK, note);
     }
 
     function mockNotesPostError() {
@@ -591,7 +592,7 @@ describe.skip('Old Notes (~/deprecated_notes.js)', () => {
         };
         mockAxios.onPost(NOTES_POST_PATH).replyOnce(() => {
           expect($submitButton).toBeDisabled();
-          return [200, note];
+          return [HTTP_STATUS_OK, note];
         });
 
         await notes.postComment(dummyEvent);
@@ -650,7 +651,7 @@ describe.skip('Old Notes (~/deprecated_notes.js)', () => {
 
     beforeEach(() => {
       loadHTMLFixture('commit/show.html');
-      mockAxios.onPost(NOTES_POST_PATH).reply(200, note);
+      mockAxios.onPost(NOTES_POST_PATH).reply(HTTP_STATUS_OK, note);
 
       new Notes('', []);
       window.gon.current_username = 'root';
@@ -695,7 +696,7 @@ describe.skip('Old Notes (~/deprecated_notes.js)', () => {
         note: sampleComment,
         valid: true,
       };
-      mockAxios.onPost(NOTES_POST_PATH).reply(200, note);
+      mockAxios.onPost(NOTES_POST_PATH).reply(HTTP_STATUS_OK, note);
 
       new Notes('', []);
       $form = $('form.js-main-target-form');
@@ -730,7 +731,7 @@ describe.skip('Old Notes (~/deprecated_notes.js)', () => {
     let $notesContainer;
 
     beforeEach(() => {
-      mockAxios.onPost(NOTES_POST_PATH).reply(200, note);
+      mockAxios.onPost(NOTES_POST_PATH).reply(HTTP_STATUS_OK, note);
 
       new Notes('', []);
       window.gon.current_username = 'root';

@@ -14,8 +14,10 @@ RSpec.shared_examples 'Generate Debian Distribution and component files' do
     expect(distribution.file_signature).to end_with("\n-----END PGP SIGNATURE-----\n")
 
     distribution.signed_file.use_file do |file_path|
-      expect(File.read(file_path)).to start_with("-----BEGIN PGP SIGNED MESSAGE-----\nHash: SHA512\n\n#{expected_release_content}-----BEGIN PGP SIGNATURE-----\n")
-      expect(File.read(file_path)).to end_with("\n-----END PGP SIGNATURE-----\n")
+      signed_file_content = File.read(file_path)
+      expect(signed_file_content).to start_with("-----BEGIN PGP SIGNED MESSAGE-----\nHash:")
+      expect(signed_file_content).to include("\n\n#{expected_release_content}-----BEGIN PGP SIGNATURE-----\n")
+      expect(signed_file_content).to end_with("\n-----END PGP SIGNATURE-----\n")
     end
   end
 

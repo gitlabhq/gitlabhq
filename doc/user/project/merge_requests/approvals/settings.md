@@ -121,13 +121,17 @@ permission enables an electronic signature for approvals, such as the one define
 
 ## Remove all approvals when commits are added to the source branch
 
-By default, an approval on a merge request remains in place, even if you add more changes
-after the approval. If you want to remove all existing approvals on a merge request
-when more changes are added to it:
+By default, an approval on a merge request is removed when you add more changes
+after the approval. In GitLab Premium and higher tiers, to keep existing approvals
+after more changes are added to the merge request:
 
 1. On the left sidebar, select **Settings > Merge requests**.
 1. In the **Merge request approvals** section, scroll to **Approval settings** and
-   select **Remove all approvals**.
+   clear the **Remove all approvals** checkbox.
+
+   NOTE:
+   This setting is not available in GitLab Free.
+
 1. Select **Save changes**.
 
 Approvals aren't removed when a merge request is [rebased from the UI](../methods/index.md#rebasing-in-semi-linear-merge-methods)

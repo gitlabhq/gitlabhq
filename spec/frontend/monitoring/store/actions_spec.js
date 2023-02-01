@@ -206,7 +206,7 @@ describe('Monitoring store actions', () => {
 
     it('on success, dispatches receive and success actions, then fetches dashboard warnings', () => {
       document.body.dataset.page = 'projects:environments:metrics';
-      mock.onGet(state.dashboardEndpoint).reply(200, response);
+      mock.onGet(state.dashboardEndpoint).reply(HTTP_STATUS_OK, response);
 
       return testAction(
         fetchDashboard,
@@ -420,7 +420,7 @@ describe('Monitoring store actions', () => {
     });
 
     it('commits result', () => {
-      mock.onGet(prometheusEndpointPath).reply(200, { data }); // One attempt
+      mock.onGet(prometheusEndpointPath).reply(HTTP_STATUS_OK, { data }); // One attempt
 
       return testAction(
         fetchPrometheusMetric,
@@ -453,7 +453,7 @@ describe('Monitoring store actions', () => {
       };
 
       it('uses calculated step', async () => {
-        mock.onGet(prometheusEndpointPath).reply(200, { data }); // One attempt
+        mock.onGet(prometheusEndpointPath).reply(HTTP_STATUS_OK, { data }); // One attempt
 
         await testAction(
           fetchPrometheusMetric,
@@ -492,7 +492,7 @@ describe('Monitoring store actions', () => {
       };
 
       it('uses metric step', async () => {
-        mock.onGet(prometheusEndpointPath).reply(200, { data }); // One attempt
+        mock.onGet(prometheusEndpointPath).reply(HTTP_STATUS_OK, { data }); // One attempt
 
         await testAction(
           fetchPrometheusMetric,
@@ -555,7 +555,7 @@ describe('Monitoring store actions', () => {
   describe('fetchDeploymentsData', () => {
     it('dispatches receiveDeploymentsDataSuccess on success', () => {
       state.deploymentsEndpoint = '/success';
-      mock.onGet(state.deploymentsEndpoint).reply(200, {
+      mock.onGet(state.deploymentsEndpoint).reply(HTTP_STATUS_OK, {
         deployments: deploymentData,
       });
 
@@ -1068,7 +1068,7 @@ describe('Monitoring store actions', () => {
         },
       ];
 
-      mock.onGet('/series?match[]=metric_name').reply(200, {
+      mock.onGet('/series?match[]=metric_name').reply(HTTP_STATUS_OK, {
         status: 'success',
         data,
       });

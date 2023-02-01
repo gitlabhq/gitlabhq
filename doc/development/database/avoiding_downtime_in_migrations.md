@@ -451,9 +451,10 @@ to keep in sync both columns for any new records ([see an example](https://gitla
 
 ```ruby
 class InitializeConversionOfCiStagesToBigint < Gitlab::Database::Migration[2.1]
-
   TABLE = :ci_stages
   COLUMNS = %i[id]
+
+  enable_lock_retries!
 
   def up
     initialize_conversion_of_integer_to_bigint(TABLE, COLUMNS)
@@ -475,18 +476,15 @@ module Ci
   end
 ```
 
-To migrate existing data, we introduced new type of _batched background migrations_.
-Unlike the classic background migrations, built on top of Sidekiq, batched background migrations
-don't have to enqueue and schedule all the background jobs at the beginning.
-They also have other advantages, like automatic tuning of the batch size, better progress visibility,
-and collecting metrics. To start the process, use the provided `backfill_conversion_of_integer_to_bigint`
-helper ([example](https://gitlab.com/gitlab-org/gitlab/-/blob/41fbe34a4725a4e357a83fda66afb382828767b2/db/migrate/20210608072346_backfill_ci_stages_for_bigint_conversion.rb)):
+Enqueue batched background migration ([another example](https://gitlab.com/gitlab-org/gitlab/-/blob/41fbe34a4725a4e357a83fda66afb382828767b2/db/migrate/20210608072346_backfill_ci_stages_for_bigint_conversion.rb))
+to migrate the existing data:
 
 ```ruby
 class BackfillCiStagesForBigintConversion < Gitlab::Database::Migration[2.1]
-
   TABLE = :ci_stages
   COLUMNS = %i[id]
+
+  restrict_gitlab_migration gitlab_schema: :gitlab_ci
 
   def up
     backfill_conversion_of_integer_to_bigint(TABLE, COLUMNS)

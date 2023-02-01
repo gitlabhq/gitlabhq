@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module QA
+module Gitlab
   module Page
     module Trials
       class New < Chemlab::Page

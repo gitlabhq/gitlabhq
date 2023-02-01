@@ -13,8 +13,8 @@ module QA
         state: 'CA'
       }.freeze
 
-      def register_for_trial(skip_select: false)
-        Page::Trials::New.perform do |new|
+      def register_for_trial(group: nil)
+        Gitlab::Page::Trials::New.perform do |new|
           new.company_name = CUSTOMER_TRIAL_INFO[:company_name]
           new.number_of_employees = CUSTOMER_TRIAL_INFO[:number_of_employees]
           new.country = CUSTOMER_TRIAL_INFO[:country]
@@ -24,10 +24,10 @@ module QA
           new.continue
         end
 
-        return if skip_select
+        return unless group
 
-        Page::Trials::Select.perform do |select|
-          select.subscription_for = group_for_trial.path
+        Gitlab::Page::Trials::Select.perform do |select|
+          select.subscription_for = group.path
           select.trial_company
           select.start_your_free_trial
         end

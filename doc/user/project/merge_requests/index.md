@@ -7,8 +7,9 @@ type: index, reference
 
 # Merge requests **(FREE)**
 
-Merge requests (MRs) are the way you check source code changes into a branch.
-When you open a merge request, you can visualize and collaborate on the code changes before merge.
+To incorporate changes from a source branch to a target branch, you use a *merge request* (MR).
+
+When you open a merge request, you can visualize and collaborate on the changes before merge.
 Merge requests include:
 
 - A description of the request.
@@ -17,7 +18,9 @@ Merge requests include:
 - A comment section for discussion threads.
 - The list of commits.
 
-Read more about [how to get started](getting_started.md).
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For a quick overview of merge requests,
+view [this GitLab Flow video](https://www.youtube.com/watch?v=InKNIvky2KE).
 
 ## Create a merge request
 
@@ -204,6 +207,15 @@ To delete a merge request:
    Only users with this role can delete merge requests in a project.
 1. Go to the merge request you want to delete, and select **Edit**.
 1. Scroll to the bottom of the page, and select **Delete merge request**.
+
+### Delete the source branch on merge
+
+You can delete the source branch for a merge request:
+
+- When you create a merge request, by selecting **Delete source branch when merge request accepted**.
+- When you merge a merge request, if you have the Maintainer role, by selecting **Delete source branch**.
+
+An administrator can make this option the default in the project's settings.
 
 ### Update merge requests when target branch merges **(FREE SELF)**
 

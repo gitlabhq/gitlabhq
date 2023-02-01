@@ -218,7 +218,7 @@ description:
 - Issues `#4` and `#6` are closed automatically when the MR is merged.
 - Issue `#5` is marked as a [related issue](related_issues.md), but it's not closed automatically.
 
-Alternatively, when you [create a merge request from an issue](../merge_requests/getting_started.md#merge-requests-to-close-issues),
+Alternatively, when you [create a merge request from an issue](../merge_requests/creating_merge_requests.md#from-an-issue),
 it inherits the issue's milestone and labels.
 
 For performance reasons, automatic issue closing is disabled for the very first

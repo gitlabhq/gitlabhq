@@ -9,7 +9,11 @@ import {
 } from 'jest/issuable/components/related_issuable_mock_data';
 import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
-import { HTTP_STATUS_CONFLICT, HTTP_STATUS_UNPROCESSABLE_ENTITY } from '~/lib/utils/http_status';
+import {
+  HTTP_STATUS_CONFLICT,
+  HTTP_STATUS_OK,
+  HTTP_STATUS_UNPROCESSABLE_ENTITY,
+} from '~/lib/utils/http_status';
 import { linkedIssueTypesMap } from '~/related_issues/constants';
 import RelatedIssuesBlock from '~/related_issues/components/related_issues_block.vue';
 import RelatedIssuesRoot from '~/related_issues/components/related_issues_root.vue';
@@ -25,7 +29,7 @@ describe('RelatedIssuesRoot', () => {
 
   beforeEach(() => {
     mock = new MockAdapter(axios);
-    mock.onGet(defaultProps.endpoint).reply(200, []);
+    mock.onGet(defaultProps.endpoint).reply(HTTP_STATUS_OK, []);
   });
 
   afterEach(() => {
@@ -60,7 +64,7 @@ describe('RelatedIssuesRoot', () => {
         });
 
         it('removes related issue on API success', async () => {
-          mock.onDelete(issuable1.referencePath).reply(200, { issues: [] });
+          mock.onDelete(issuable1.referencePath).reply(HTTP_STATUS_OK, { issues: [] });
 
           findRelatedIssuesBlock().vm.$emit('relatedIssueRemoveRequest', issuable1.id);
           await axios.waitForAll();
@@ -164,7 +168,7 @@ describe('RelatedIssuesRoot', () => {
       });
 
       it('submits pending issue as related issue', async () => {
-        mock.onPost(defaultProps.endpoint).reply(200, {
+        mock.onPost(defaultProps.endpoint).reply(HTTP_STATUS_OK, {
           issuables: [issuable1],
           result: {
             message: 'something was successfully related',
@@ -183,7 +187,7 @@ describe('RelatedIssuesRoot', () => {
       });
 
       it('submits multiple pending issues as related issues', async () => {
-        mock.onPost(defaultProps.endpoint).reply(200, {
+        mock.onPost(defaultProps.endpoint).reply(HTTP_STATUS_OK, {
           issuables: [issuable1, issuable2],
           result: {
             message: 'something was successfully related',

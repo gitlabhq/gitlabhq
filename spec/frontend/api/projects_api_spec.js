@@ -39,7 +39,7 @@ describe('~/api/projects_api.js', () => {
       const expectedParams = { params: { per_page: 20, search: '', simple: true } };
       const query = '';
 
-      mock.onGet(expectedUrl).reply(200, { data: expectedProjects });
+      mock.onGet(expectedUrl).reply(HTTP_STATUS_OK, { data: expectedProjects });
 
       return projectsApi.getProjects(query, options).then(({ data }) => {
         expect(axios.get).toHaveBeenCalledWith(expectedUrl, expectedParams);
@@ -50,7 +50,7 @@ describe('~/api/projects_api.js', () => {
     it('omits search param if query is undefined', () => {
       const expectedParams = { params: { per_page: 20, simple: true } };
 
-      mock.onGet(expectedUrl).reply(200, { data: expectedProjects });
+      mock.onGet(expectedUrl).reply(HTTP_STATUS_OK, { data: expectedProjects });
 
       return projectsApi.getProjects(undefined, options).then(({ data }) => {
         expect(axios.get).toHaveBeenCalledWith(expectedUrl, expectedParams);
@@ -64,7 +64,7 @@ describe('~/api/projects_api.js', () => {
       };
       const query = 'group/project1';
 
-      mock.onGet(expectedUrl).reply(200, { data: expectedProjects });
+      mock.onGet(expectedUrl).reply(HTTP_STATUS_OK, { data: expectedProjects });
 
       return projectsApi.getProjects(query, options).then(({ data }) => {
         expect(axios.get).toHaveBeenCalledWith(expectedUrl, expectedParams);

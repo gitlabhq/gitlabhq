@@ -2,6 +2,7 @@ import { GlEmptyState, GlLoadingIcon, GlTableLite } from '@gitlab/ui';
 import { mount, shallowMount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import PaginationBar from '~/vue_shared/components/pagination_bar/pagination_bar.vue';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import BulkImportsHistoryApp from '~/pages/import/bulk_imports/history/components/bulk_imports_history_app.vue';
@@ -78,7 +79,7 @@ describe('BulkImportsHistoryApp', () => {
 
   beforeEach(() => {
     mock = new MockAdapter(axios);
-    mock.onGet(API_URL).reply(200, DUMMY_RESPONSE, DEFAULT_HEADERS);
+    mock.onGet(API_URL).reply(HTTP_STATUS_OK, DUMMY_RESPONSE, DEFAULT_HEADERS);
   });
 
   afterEach(() => {
@@ -93,7 +94,7 @@ describe('BulkImportsHistoryApp', () => {
     });
 
     it('renders empty state when no data is available', async () => {
-      mock.onGet(API_URL).reply(200, [], DEFAULT_HEADERS);
+      mock.onGet(API_URL).reply(HTTP_STATUS_OK, [], DEFAULT_HEADERS);
       createComponent();
       await axios.waitForAll();
 
@@ -167,7 +168,7 @@ describe('BulkImportsHistoryApp', () => {
   it('renders loading icon when destination namespace is not defined', async () => {
     const RESPONSE = [{ ...DUMMY_RESPONSE[0], destination_full_path: null }];
 
-    mock.onGet(API_URL).reply(200, RESPONSE, DEFAULT_HEADERS);
+    mock.onGet(API_URL).reply(HTTP_STATUS_OK, RESPONSE, DEFAULT_HEADERS);
     createComponent({ shallow: false });
     await axios.waitForAll();
 
@@ -192,7 +193,7 @@ describe('BulkImportsHistoryApp', () => {
 
   describe('details button', () => {
     beforeEach(() => {
-      mock.onGet(API_URL).reply(200, DUMMY_RESPONSE, DEFAULT_HEADERS);
+      mock.onGet(API_URL).reply(HTTP_STATUS_OK, DUMMY_RESPONSE, DEFAULT_HEADERS);
       createComponent({ shallow: false });
       return axios.waitForAll();
     });

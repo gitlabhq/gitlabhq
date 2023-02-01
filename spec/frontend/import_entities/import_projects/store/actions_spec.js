@@ -98,7 +98,7 @@ describe('import_projects store actions', () => {
 
     describe('with a successful request', () => {
       it('commits REQUEST_REPOS, SET_PAGE, RECEIVE_REPOS_SUCCESS mutations', () => {
-        mock.onGet(MOCK_ENDPOINT).reply(200, payload);
+        mock.onGet(MOCK_ENDPOINT).reply(HTTP_STATUS_OK, payload);
 
         return testAction(
           fetchRepos,
@@ -122,7 +122,7 @@ describe('import_projects store actions', () => {
         });
 
         it('commits SET_PAGE_CURSORS instead of SET_PAGE', () => {
-          mock.onGet(MOCK_ENDPOINT).reply(200, payload);
+          mock.onGet(MOCK_ENDPOINT).reply(HTTP_STATUS_OK, payload);
 
           return testAction(
             fetchRepos,
@@ -162,7 +162,7 @@ describe('import_projects store actions', () => {
         let requestedUrl;
         mock.onGet().reply((config) => {
           requestedUrl = config.url;
-          return [200, payload];
+          return [HTTP_STATUS_OK, payload];
         });
 
         const localStateWithPage = { ...localState, pageInfo: { page: 2 } };
@@ -187,7 +187,7 @@ describe('import_projects store actions', () => {
           let requestedUrl;
           mock.onGet().reply((config) => {
             requestedUrl = config.url;
-            return [200, payload];
+            return [HTTP_STATUS_OK, payload];
           });
 
           const localStateWithPage = { ...localState, pageInfo: { endCursor: 'endTest' } };
@@ -238,7 +238,7 @@ describe('import_projects store actions', () => {
 
     describe('when filtered', () => {
       it('fetches repos with filter applied', () => {
-        mock.onGet(`${TEST_HOST}/endpoint.json?filter=filter`).reply(200, payload);
+        mock.onGet(`${TEST_HOST}/endpoint.json?filter=filter`).reply(HTTP_STATUS_OK, payload);
 
         return testAction(
           fetchRepos,
@@ -269,7 +269,7 @@ describe('import_projects store actions', () => {
 
     it('commits REQUEST_IMPORT and REQUEST_IMPORT_SUCCESS mutations on a successful request', () => {
       const importedProject = { name: 'imported/project' };
-      mock.onPost(MOCK_ENDPOINT).reply(200, importedProject);
+      mock.onPost(MOCK_ENDPOINT).reply(HTTP_STATUS_OK, importedProject);
 
       return testAction(
         fetchImport,
@@ -356,7 +356,7 @@ describe('import_projects store actions', () => {
     afterEach(() => mock.restore());
 
     it('commits RECEIVE_JOBS_SUCCESS mutation on a successful request', async () => {
-      mock.onGet(MOCK_ENDPOINT).reply(200, updatedProjects);
+      mock.onGet(MOCK_ENDPOINT).reply(HTTP_STATUS_OK, updatedProjects);
 
       await testAction(
         fetchJobs,
@@ -378,7 +378,9 @@ describe('import_projects store actions', () => {
       });
 
       it('fetches realtime changes with filter applied', () => {
-        mock.onGet(`${TEST_HOST}/endpoint.json?filter=filter`).reply(200, updatedProjects);
+        mock
+          .onGet(`${TEST_HOST}/endpoint.json?filter=filter`)
+          .reply(HTTP_STATUS_OK, updatedProjects);
 
         return testAction(
           fetchJobs,

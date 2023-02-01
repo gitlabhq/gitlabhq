@@ -163,6 +163,7 @@ gem 'gitlab-fog-azure-rm', '~> 1.4.0', require: 'fog/azurerm'
 
 # for Google storage
 gem 'google-api-client', '~> 0.33'
+gem 'google-cloud-storage', '~> 1.44.0'
 
 # for aws storage
 gem 'unf', '~> 0.1.4'

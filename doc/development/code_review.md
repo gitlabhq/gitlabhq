@@ -37,7 +37,7 @@ also to spread the workload.
 
 For assistance with security scans or comments, include the Application Security Team (`@gitlab-com/gl-security/appsec`).
 
-The reviewers use the [reviewer functionality](../user/project/merge_requests/getting_started.md#reviewer) in the sidebar.
+The reviewers use the [reviewer functionality](../user/project/merge_requests/reviews/index.md) in the sidebar.
 Reviewers can add their approval by [approving additionally](../user/project/merge_requests/approvals/index.md#approve-a-merge-request).
 
 Depending on the areas your merge request touches, it must be **approved** by one
@@ -459,7 +459,7 @@ first time.
 ### Requesting a review
 
 When you are ready to have your merge request reviewed,
-you should [request an initial review](../user/project/merge_requests/getting_started.md#reviewer) by selecting a reviewer based on the [approval guidelines](#approval-guidelines).
+you should [request an initial review](../user/project/merge_requests/reviews/index.md) by selecting a reviewer based on the [approval guidelines](#approval-guidelines).
 
 When a merge request has multiple areas for review, it is recommended you specify which area a reviewer should be reviewing, and at which stage (first or second).
 This will help team members who qualify as a reviewer for multiple areas to know which area they're being requested to review.

@@ -73,7 +73,7 @@ describe('Pipelines stage component', () => {
     beforeEach(async () => {
       createComponent({ updateDropdown: true });
 
-      mock.onGet(dropdownPath).reply(200, stageReply);
+      mock.onGet(dropdownPath).reply(HTTP_STATUS_OK, stageReply);
 
       await openStageDropdown();
     });
@@ -122,7 +122,7 @@ describe('Pipelines stage component', () => {
 
   describe('when user opens dropdown and stage request is successful', () => {
     beforeEach(async () => {
-      mock.onGet(dropdownPath).reply(200, stageReply);
+      mock.onGet(dropdownPath).reply(HTTP_STATUS_OK, stageReply);
       createComponent();
 
       await openStageDropdown();
@@ -164,7 +164,7 @@ describe('Pipelines stage component', () => {
     beforeEach(async () => {
       const copyStage = { ...stageReply };
       copyStage.latest_statuses[0].name = 'this is the updated content';
-      mock.onGet('bar.json').reply(200, copyStage);
+      mock.onGet('bar.json').reply(HTTP_STATUS_OK, copyStage);
       createComponent({
         stage: {
           status: {
@@ -215,7 +215,7 @@ describe('Pipelines stage component', () => {
 
   describe('With merge trains enabled', () => {
     it('shows a warning on the dropdown', async () => {
-      mock.onGet(dropdownPath).reply(200, stageReply);
+      mock.onGet(dropdownPath).reply(HTTP_STATUS_OK, stageReply);
       createComponent({
         isMergeTrain: true,
       });
@@ -232,7 +232,7 @@ describe('Pipelines stage component', () => {
 
   describe('With merge trains disabled', () => {
     beforeEach(async () => {
-      mock.onGet(dropdownPath).reply(200, stageReply);
+      mock.onGet(dropdownPath).reply(HTTP_STATUS_OK, stageReply);
       createComponent();
 
       await openStageDropdown();
