@@ -214,6 +214,19 @@ RSpec.describe 'getting a work item list for a project', feature_category: :team
     end
   end
 
+  context 'when filtering by author username' do
+    let_it_be(:author) { create(:author) }
+    let_it_be(:item_3) { create(:work_item, project: project, author: author) }
+
+    let(:item_filter_params) { { author_username: item_3.author.username } }
+
+    it 'returns correct results' do
+      post_graphql(query, current_user: current_user)
+
+      expect(item_ids).to match_array([item_3.to_global_id.to_s])
+    end
+  end
+
   describe 'sorting and pagination' do
     let(:data_path) { [:project, :work_items] }
 

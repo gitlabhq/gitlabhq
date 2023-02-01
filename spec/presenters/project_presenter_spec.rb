@@ -632,6 +632,58 @@ RSpec.describe ProjectPresenter do
         end
       end
     end
+
+    describe '#wiki_anchor_data' do
+      using RSpec::Parameterized::TableSyntax
+
+      let(:anchor_goto_wiki) do
+        have_attributes(
+          is_link: false,
+          label: a_string_ending_with('Wiki'),
+          link: wiki_path(project.wiki),
+          class_modifier: 'btn-default'
+        )
+      end
+
+      let(:anchor_add_wiki) do
+        have_attributes(
+          is_link: false,
+          label: a_string_ending_with('Add Wiki'),
+          link: "#{wiki_path(project.wiki)}?view=create"
+        )
+      end
+
+      where(:wiki_enabled, :can_read_wiki, :has_home_page, :can_create_wiki, :expected_result) do
+        true  | true  | true  | true  | ref(:anchor_goto_wiki)
+        true  | true  | true  | false | ref(:anchor_goto_wiki)
+        true  | true  | false | true  | ref(:anchor_add_wiki)
+        true  | true  | false | false | nil
+        true  | false | true  | true  | nil
+        true  | false | true  | false | nil
+        true  | false | false | true  | nil
+        true  | false | false | false | nil
+        false | true  | true  | true  | nil
+        false | true  | true  | false | nil
+        false | true  | true  | false | nil
+        false | true  | false | true  | nil
+        false | true  | false | false | nil
+        false | false | true  | true  | nil
+        false | false | true  | false | nil
+        false | false | false | true  | nil
+        false | false | false | false | nil
+      end
+
+      with_them do
+        before do
+          allow(project).to receive(:wiki_enabled?).and_return(wiki_enabled)
+          allow(presenter).to receive(:can?).with(user, :read_wiki, project).and_return(can_read_wiki)
+          allow(project.wiki).to receive(:has_home_page?).and_return(has_home_page)
+          allow(presenter).to receive(:can?).with(user, :create_wiki, project).and_return(can_create_wiki)
+        end
+
+        it { expect(presenter.wiki_anchor_data).to match(expected_result) }
+      end
+    end
   end
 
   describe '#statistics_buttons' do

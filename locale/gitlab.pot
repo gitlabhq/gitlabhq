@@ -2179,6 +2179,9 @@ msgstr ""
 msgid "Add README"
 msgstr ""
 
+msgid "Add Wiki"
+msgstr ""
+
 msgid "Add Zoom meeting"
 msgstr ""
 

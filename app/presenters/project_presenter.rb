@@ -43,6 +43,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
       autodevops_anchor_data(show_auto_devops_callout: show_auto_devops_callout),
       kubernetes_cluster_anchor_data,
       gitlab_ci_anchor_data,
+      wiki_anchor_data,
       integrations_anchor_data
     ].compact.reject(&:is_link).sort_by.with_index { |item, idx| [item.class_modifier ? 0 : 1, idx] }
   end
@@ -60,6 +61,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
       changelog_anchor_data,
       contribution_guide_anchor_data,
       gitlab_ci_anchor_data,
+      wiki_anchor_data,
       integrations_anchor_data
     ].compact.reject { |item| item.is_link }
   end
@@ -364,6 +366,16 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
     end
   end
 
+  def wiki_anchor_data
+    return unless project.wiki_enabled? && can_read_wiki?
+
+    if project.wiki.has_home_page?
+      AnchorData.new(false, statistic_icon('book') + _('Wiki'), project_wiki_path, 'btn-default', nil, nil)
+    elsif can_create_wiki?
+      AnchorData.new(false, statistic_icon + _('Add Wiki'), project_create_wiki_path, nil, nil, nil)
+    end
+  end
+
   def topics_to_show
     project_topic_list.take(MAX_TOPICS_TO_SHOW) # rubocop: disable CodeReuse/ActiveRecord
   end
@@ -452,6 +464,22 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
   # Avoid including ActionView::Helpers::UrlHelper
   def content_tag(*args)
     ActionController::Base.helpers.content_tag(*args)
+  end
+
+  def can_create_wiki?
+    current_user && can?(current_user, :create_wiki, project)
+  end
+
+  def can_read_wiki?
+    current_user && can?(current_user, :read_wiki, project)
+  end
+
+  def project_wiki_path
+    wiki_path(project.wiki)
+  end
+
+  def project_create_wiki_path
+    "#{wiki_path(project.wiki)}?view=create"
   end
 end
 

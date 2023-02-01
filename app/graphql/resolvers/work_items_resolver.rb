@@ -7,6 +7,10 @@ module Resolvers
 
     type Types::WorkItemType.connection_type, null: true
 
+    argument :author_username, GraphQL::Types::String,
+             required: false,
+             description: 'Filter work items by author username.',
+             alpha: { milestone: '15.9' }
     argument :iid, GraphQL::Types::String,
              required: false,
              description: 'IID of the issue. For example, "1".'
