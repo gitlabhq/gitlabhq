@@ -466,7 +466,9 @@ FactoryBot.define do
   trait :with_jira_integration do
     has_external_issue_tracker { true }
 
-    jira_integration
+    after :create do |project|
+      create(:jira_integration, project: project)
+    end
   end
 
   trait :with_prometheus_integration do

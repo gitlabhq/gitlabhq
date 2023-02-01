@@ -92,6 +92,7 @@ RSpec.describe 'Query.runner(id)', feature_category: :runner_fleet do
         run_untagged: runner.run_untagged,
         ip_address: runner.ip_address,
         runner_type: runner.instance_type? ? 'INSTANCE_TYPE' : 'PROJECT_TYPE',
+        ephemeral_authentication_token: nil,
         executor_name: runner.executor_type&.dasherize,
         architecture_name: runner.architecture,
         platform_name: runner.platform,
@@ -515,6 +516,108 @@ RSpec.describe 'Query.runner(id)', feature_category: :runner_fleet do
 
     it_behaves_like 'retrieval by unauthorized user' do
       let(:runner) { active_instance_runner }
+    end
+  end
+
+  describe 'ephemeralAuthenticationToken', :freeze_time do
+    subject(:request) { post_graphql(query, current_user: user) }
+
+    let_it_be(:creator) { create(:user) }
+
+    let(:created_at) { Time.current }
+    let(:token_prefix) { '' }
+    let(:query) do
+      %(
+        query {
+          runner(id: "#{runner.to_global_id}") {
+            id
+            ephemeralAuthenticationToken
+          }
+        }
+      )
+    end
+
+    let(:runner) do
+      create(:ci_runner, :group,
+             groups: [group], creator: creator, created_at: created_at, token: "#{token_prefix}abc123")
+    end
+
+    before_all do
+      group.add_owner(creator) # Allow creating runners in the group
+    end
+
+    shared_examples 'an ephemeral_authentication_token' do
+      it 'returns token in ephemeral_authentication_token field' do
+        request
+
+        runner_data = graphql_data_at(:runner)
+        expect(runner_data).not_to be_nil
+        expect(runner_data).to match a_graphql_entity_for(runner, ephemeral_authentication_token: runner.token)
+      end
+    end
+
+    shared_examples 'a protected ephemeral_authentication_token' do
+      it 'returns nil ephemeral_authentication_token' do
+        request
+
+        runner_data = graphql_data_at(:runner)
+        expect(runner_data).not_to be_nil
+        expect(runner_data).to match a_graphql_entity_for(runner, ephemeral_authentication_token: nil)
+      end
+    end
+
+    context 'with request made by creator' do
+      let(:user) { creator }
+
+      context 'with runner created in UI' do
+        let(:token_prefix) { ::Ci::Runner::CREATED_RUNNER_TOKEN_PREFIX }
+
+        context 'with runner created in last 3 hours' do
+          let(:created_at) { (3.hours - 1.second).ago }
+
+          context 'with no runner machine registed yet' do
+            it_behaves_like 'an ephemeral_authentication_token'
+          end
+
+          context 'with first runner machine already registed' do
+            let!(:runner_machine) { create(:ci_runner_machine, runner: runner) }
+
+            it_behaves_like 'a protected ephemeral_authentication_token'
+          end
+        end
+
+        context 'with runner created almost too long ago' do
+          let(:created_at) { (3.hours - 1.second).ago }
+
+          it_behaves_like 'an ephemeral_authentication_token'
+        end
+
+        context 'with runner created too long ago' do
+          let(:created_at) { 3.hours.ago }
+
+          it_behaves_like 'a protected ephemeral_authentication_token'
+        end
+      end
+
+      context 'with runner registered from command line' do
+        let(:token_prefix) { '' }
+
+        context 'with runner created in last 3 hours' do
+          let(:created_at) { (3.hours - 1.second).ago }
+
+          it_behaves_like 'a protected ephemeral_authentication_token'
+        end
+      end
+    end
+
+    context 'when request is made by non-creator of the runner' do
+      let(:user) { create(:admin) }
+
+      context 'with runner created in UI' do
+        let(:token_prefix) { ::Ci::Runner::CREATED_RUNNER_TOKEN_PREFIX }
+
+        it_behaves_like 'a protected ephemeral_authentication_token'
+      end
     end
   end
 

@@ -175,7 +175,7 @@ export default {
 
       this.isSubmitting = true;
       this.$emit('replying', this.commentText);
-      const { queryVariables, fetchByIid, sortOrder } = this;
+      const { queryVariables, fetchByIid } = this;
 
       try {
         this.track('add_work_item_comment');
@@ -193,7 +193,7 @@ export default {
             if (createNoteData.data?.createNote?.errors?.length) {
               throw new Error(createNoteData.data?.createNote?.errors[0]);
             }
-            updateCommentState(store, createNoteData, fetchByIid, queryVariables, sortOrder);
+            updateCommentState(store, createNoteData, fetchByIid, queryVariables);
           },
         });
         clearDraft(this.autosaveKey);

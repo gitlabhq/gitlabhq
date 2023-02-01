@@ -53,18 +53,6 @@ RSpec.describe Gitlab::Metrics::RequestsRackMiddleware, :aggregate_failures, fea
         subject.call(env)
       end
 
-      it 'does not track error rate when feature flag is disabled' do
-        stub_feature_flags(gitlab_metrics_error_rate_sli: false)
-
-        expect(described_class).to receive_message_chain(:http_requests_total, :increment).with(method: 'get', status: '200', feature_category: 'unknown')
-        expect(described_class).to receive_message_chain(:http_request_duration_seconds, :observe).with({ method: 'get' }, a_positive_execution_time)
-        expect(Gitlab::Metrics::RailsSlis.request_apdex).to receive(:increment)
-          .with(labels: { feature_category: 'unknown', endpoint_id: 'unknown', request_urgency: :default }, success: true)
-        expect(Gitlab::Metrics::RailsSlis.request_error_rate).not_to receive(:increment)
-
-        subject.call(env)
-      end
-
       context 'request is a health check endpoint' do
         ['/-/liveness', '/-/liveness/', '/-/%6D%65%74%72%69%63%73'].each do |path|
           context "when path is #{path}" do
@@ -113,17 +101,6 @@ RSpec.describe Gitlab::Metrics::RequestsRackMiddleware, :aggregate_failures, fea
         expect(Gitlab::Metrics::RailsSlis).not_to receive(:request_apdex)
         expect(Gitlab::Metrics::RailsSlis.request_error_rate).to receive(:increment)
           .with(labels: { feature_category: 'unknown', endpoint_id: 'unknown', request_urgency: :default }, error: true)
-
-        subject.call(env)
-      end
-
-      it 'does not track error rate when feature flag is disabled' do
-        stub_feature_flags(gitlab_metrics_error_rate_sli: false)
-
-        expect(described_class).to receive_message_chain(:http_requests_total, :increment).with(method: 'get', status: '500', feature_category: 'unknown')
-        expect(described_class).not_to receive(:http_request_duration_seconds)
-        expect(Gitlab::Metrics::RailsSlis).not_to receive(:request_apdex)
-        expect(Gitlab::Metrics::RailsSlis.request_error_rate).not_to receive(:increment)
 
         subject.call(env)
       end

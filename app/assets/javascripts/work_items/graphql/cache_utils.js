@@ -1,6 +1,5 @@
 import { produce } from 'immer';
 import { WIDGET_TYPE_NOTES } from '~/work_items/constants';
-import { ASC } from '~/notes/constants';
 import { getWorkItemNotesQuery } from '~/work_items/utils';
 
 /**
@@ -12,13 +11,7 @@ import { getWorkItemNotesQuery } from '~/work_items/utils';
  * @param queryVariables
  * @param sortOrder
  */
-export const updateCommentState = (
-  store,
-  { data: { createNote } },
-  fetchByIid,
-  queryVariables,
-  sortOrder,
-) => {
+export const updateCommentState = (store, { data: { createNote } }, fetchByIid, queryVariables) => {
   const notesQuery = getWorkItemNotesQuery(fetchByIid);
   const variables = {
     ...queryVariables,
@@ -36,7 +29,10 @@ export const updateCommentState = (
         )
       : draftData.workItem.widgets.find((widget) => widget.type === WIDGET_TYPE_NOTES);
 
-    const arrayPushMethod = sortOrder === ASC ? 'push' : 'unshift';
+    // as notes are currently sorted/reversed on the frontend rather than in the query
+    // we only ever push.
+    // const arrayPushMethod = sortOrder === ASC ? 'push' : 'unshift';
+    const arrayPushMethod = 'push';
 
     // manual update of cache with a completely new discussion
     if (createNote.note.discussion.notes.nodes.length === 1) {

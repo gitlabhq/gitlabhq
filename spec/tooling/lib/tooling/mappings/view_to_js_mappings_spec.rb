@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 require 'tempfile'
-require_relative '../../../../tooling/lib/tooling/view_to_js_mappings'
+require_relative '../../../../../tooling/lib/tooling/mappings/view_to_js_mappings'
 
-RSpec.describe Tooling::ViewToJsMappings, feature_category: :tooling do
+RSpec.describe Tooling::Mappings::ViewToJsMappings, feature_category: :tooling do
   # We set temporary folders, and those readers give access to those folder paths
   attr_accessor :view_base_folder, :js_base_folder
 
@@ -32,7 +32,7 @@ RSpec.describe Tooling::ViewToJsMappings, feature_category: :tooling do
 
     context 'when no view files have been changed' do
       before do
-        allow(instance).to receive(:view_files).and_return([])
+        allow(instance).to receive(:filter_files).and_return([])
       end
 
       it 'returns nothing' do
@@ -140,8 +140,8 @@ RSpec.describe Tooling::ViewToJsMappings, feature_category: :tooling do
     end
   end
 
-  describe '#view_files' do
-    subject { described_class.new(view_base_folder: view_base_folder).view_files(changed_files) }
+  describe '#filter_files' do
+    subject { described_class.new(view_base_folder: view_base_folder).filter_files(changed_files) }
 
     before do
       File.write("#{js_base_folder}/index.js", "index.js")
@@ -177,45 +177,6 @@ RSpec.describe Tooling::ViewToJsMappings, feature_category: :tooling do
 
       it 'returns an empty array' do
         expect(subject).to match_array([])
-      end
-    end
-  end
-
-  describe '#folders_for_available_editions' do
-    let(:base_folder_path) { 'app/views' }
-
-    subject { described_class.new.folders_for_available_editions(base_folder_path) }
-
-    context 'when FOSS' do
-      before do
-        allow(GitlabEdition).to receive(:ee?).and_return(false)
-        allow(GitlabEdition).to receive(:jh?).and_return(false)
-      end
-
-      it 'returns the correct paths' do
-        expect(subject).to match_array([base_folder_path])
-      end
-    end
-
-    context 'when EE' do
-      before do
-        allow(GitlabEdition).to receive(:ee?).and_return(true)
-        allow(GitlabEdition).to receive(:jh?).and_return(false)
-      end
-
-      it 'returns the correct paths' do
-        expect(subject).to eq([base_folder_path, "ee/#{base_folder_path}"])
-      end
-    end
-
-    context 'when JiHu' do
-      before do
-        allow(GitlabEdition).to receive(:ee?).and_return(true)
-        allow(GitlabEdition).to receive(:jh?).and_return(true)
-      end
-
-      it 'returns the correct paths' do
-        expect(subject).to eq([base_folder_path, "ee/#{base_folder_path}", "jh/#{base_folder_path}"])
       end
     end
   end

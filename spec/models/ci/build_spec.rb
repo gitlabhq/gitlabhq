@@ -69,7 +69,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
       it 'executes hooks' do
         expect_next(described_class).to receive(:execute_hooks)
 
-        create(:ci_build)
+        create(:ci_build, pipeline: pipeline)
       end
     end
   end
@@ -108,19 +108,19 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
     subject { described_class.ref_protected }
 
     context 'when protected is true' do
-      let!(:job) { create(:ci_build, :protected) }
+      let!(:job) { create(:ci_build, :protected, pipeline: pipeline) }
 
       it { is_expected.to include(job) }
     end
 
     context 'when protected is false' do
-      let!(:job) { create(:ci_build) }
+      let!(:job) { create(:ci_build, pipeline: pipeline) }
 
       it { is_expected.not_to include(job) }
     end
 
     context 'when protected is nil' do
-      let!(:job) { create(:ci_build) }
+      let!(:job) { create(:ci_build, pipeline: pipeline) }
 
       before do
         job.update_attribute(:protected, nil)
@@ -134,7 +134,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
     subject { described_class.with_downloadable_artifacts }
 
     context 'when job does not have a downloadable artifact' do
-      let!(:job) { create(:ci_build) }
+      let!(:job) { create(:ci_build, pipeline: pipeline) }
 
       it 'does not return the job' do
         is_expected.not_to include(job)
@@ -144,7 +144,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
     ::Ci::JobArtifact::DOWNLOADABLE_TYPES.each do |type|
       context "when job has a #{type} artifact" do
         it 'returns the job' do
-          job = create(:ci_build)
+          job = create(:ci_build, pipeline: pipeline)
           create(
             :ci_job_artifact,
             file_format: ::Ci::JobArtifact::TYPE_AND_FORMAT_PAIRS[type.to_sym],
@@ -158,7 +158,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
     end
 
     context 'when job has a non-downloadable artifact' do
-      let!(:job) { create(:ci_build, :trace_artifact) }
+      let!(:job) { create(:ci_build, :trace_artifact, pipeline: pipeline) }
 
       it 'does not return the job' do
         is_expected.not_to include(job)
@@ -170,7 +170,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
     subject { described_class.with_erasable_artifacts }
 
     context 'when job does not have any artifacts' do
-      let!(:job) { create(:ci_build) }
+      let!(:job) { create(:ci_build, pipeline: pipeline) }
 
       it 'does not return the job' do
         is_expected.not_to include(job)
@@ -180,7 +180,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
     ::Ci::JobArtifact.erasable_file_types.each do |type|
       context "when job has a #{type} artifact" do
         it 'returns the job' do
-          job = create(:ci_build)
+          job = create(:ci_build, pipeline: pipeline)
           create(
             :ci_job_artifact,
             file_format: ::Ci::JobArtifact::TYPE_AND_FORMAT_PAIRS[type.to_sym],
@@ -194,7 +194,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
     end
 
     context 'when job has a non-erasable artifact' do
-      let!(:job) { create(:ci_build, :trace_artifact) }
+      let!(:job) { create(:ci_build, :trace_artifact, pipeline: pipeline) }
 
       it 'does not return the job' do
         is_expected.not_to include(job)
@@ -206,7 +206,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
     subject { described_class.with_live_trace }
 
     context 'when build has live trace' do
-      let!(:build) { create(:ci_build, :success, :trace_live) }
+      let!(:build) { create(:ci_build, :success, :trace_live, pipeline: pipeline) }
 
       it 'selects the build' do
         is_expected.to eq([build])
@@ -214,7 +214,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
     end
 
     context 'when build does not have live trace' do
-      let!(:build) { create(:ci_build, :success, :trace_artifact) }
+      let!(:build) { create(:ci_build, :success, :trace_artifact, pipeline: pipeline) }
 
       it 'does not select the build' do
         is_expected.to be_empty
@@ -226,7 +226,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
     subject { described_class.with_stale_live_trace }
 
     context 'when build has a stale live trace' do
-      let!(:build) { create(:ci_build, :success, :trace_live, finished_at: 1.day.ago) }
+      let!(:build) { create(:ci_build, :success, :trace_live, finished_at: 1.day.ago, pipeline: pipeline) }
 
       it 'selects the build' do
         is_expected.to eq([build])
@@ -234,7 +234,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
     end
 
     context 'when build does not have a stale live trace' do
-      let!(:build) { create(:ci_build, :success, :trace_live, finished_at: 1.hour.ago) }
+      let!(:build) { create(:ci_build, :success, :trace_live, finished_at: 1.hour.ago, pipeline: pipeline) }
 
       it 'does not select the build' do
         is_expected.to be_empty
@@ -245,9 +245,9 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
   describe '.license_management_jobs' do
     subject { described_class.license_management_jobs }
 
-    let!(:management_build) { create(:ci_build, :success, name: :license_management) }
-    let!(:scanning_build) { create(:ci_build, :success, name: :license_scanning) }
-    let!(:another_build) { create(:ci_build, :success, name: :another_type) }
+    let!(:management_build) { create(:ci_build, :success, name: :license_management, pipeline: pipeline) }
+    let!(:scanning_build) { create(:ci_build, :success, name: :license_scanning, pipeline: pipeline) }
+    let!(:another_build) { create(:ci_build, :success, name: :another_type, pipeline: pipeline) }
 
     it 'returns license_scanning jobs' do
       is_expected.to include(scanning_build)
@@ -268,7 +268,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
     let(:date) { 1.hour.ago }
 
     context 'when build has finished one day ago' do
-      let!(:build) { create(:ci_build, :success, finished_at: 1.day.ago) }
+      let!(:build) { create(:ci_build, :success, finished_at: 1.day.ago, pipeline: pipeline) }
 
       it 'selects the build' do
         is_expected.to eq([build])
@@ -276,7 +276,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
     end
 
     context 'when build has finished 30 minutes ago' do
-      let!(:build) { create(:ci_build, :success, finished_at: 30.minutes.ago) }
+      let!(:build) { create(:ci_build, :success, finished_at: 30.minutes.ago, pipeline: pipeline) }
 
       it 'returns an empty array' do
         is_expected.to be_empty
@@ -284,7 +284,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
     end
 
     context 'when build is still running' do
-      let!(:build) { create(:ci_build, :running) }
+      let!(:build) { create(:ci_build, :running, pipeline: pipeline) }
 
       it 'returns an empty array' do
         is_expected.to be_empty
@@ -295,9 +295,9 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
   describe '.with_exposed_artifacts' do
     subject { described_class.with_exposed_artifacts }
 
-    let!(:job1) { create(:ci_build) }
-    let!(:job2) { create(:ci_build, options: options) }
-    let!(:job3) { create(:ci_build) }
+    let!(:job1) { create(:ci_build, pipeline: pipeline) }
+    let!(:job2) { create(:ci_build, options: options, pipeline: pipeline) }
+    let!(:job3) { create(:ci_build, pipeline: pipeline) }
 
     context 'when some jobs have exposed artifacs and some not' do
       let(:options) { { artifacts: { expose_as: 'test', paths: ['test'] } } }
@@ -337,7 +337,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
 
     context 'when there are multiple builds containing artifacts' do
       before do
-        create_list(:ci_build, 5, :success, :test_reports)
+        create_list(:ci_build, 5, :success, :test_reports, pipeline: pipeline)
       end
 
       it 'does not execute a query for selecting job artifact one by one' do
@@ -353,8 +353,8 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
   end
 
   describe '.with_needs' do
-    let!(:build) { create(:ci_build) }
-    let!(:build_b) { create(:ci_build) }
+    let!(:build) { create(:ci_build, pipeline: pipeline) }
+    let!(:build_b) { create(:ci_build, pipeline: pipeline) }
     let!(:build_need_a) { create(:ci_build_need, build: build) }
     let!(:build_need_b) { create(:ci_build_need, build: build_b) }
 
@@ -393,7 +393,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
 
   describe '#stick_build_if_status_changed' do
     it 'sticks the build if the status changed' do
-      job = create(:ci_build, :pending)
+      job = create(:ci_build, :pending, pipeline: pipeline)
 
       expect(described_class.sticking).to receive(:stick)
         .with(:build, job.id)
@@ -403,7 +403,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
   end
 
   describe '#enqueue' do
-    let(:build) { create(:ci_build, :created) }
+    let(:build) { create(:ci_build, :created, pipeline: pipeline) }
 
     before do
       allow(build).to receive(:any_unmet_prerequisites?).and_return(has_prerequisites)
@@ -480,7 +480,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
   end
 
   describe '#enqueue_preparing' do
-    let(:build) { create(:ci_build, :preparing) }
+    let(:build) { create(:ci_build, :preparing, pipeline: pipeline) }
 
     before do
       allow(build).to receive(:any_unmet_prerequisites?).and_return(has_unmet_prerequisites)
@@ -535,7 +535,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
 
   describe '#run' do
     context 'when build has been just created' do
-      let(:build) { create(:ci_build, :created) }
+      let(:build) { create(:ci_build, :created, pipeline: pipeline) }
 
       it 'creates queuing entry and then removes it' do
         build.enqueue!
@@ -547,7 +547,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
     end
 
     context 'when build status transition fails' do
-      let(:build) { create(:ci_build, :pending) }
+      let(:build) { create(:ci_build, :pending, pipeline: pipeline) }
 
       before do
         create(:ci_pending_build, build: build, project: build.project)
@@ -563,7 +563,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
     end
 
     context 'when build has been picked by a shared runner' do
-      let(:build) { create(:ci_build, :pending) }
+      let(:build) { create(:ci_build, :pending, pipeline: pipeline) }
 
       it 'creates runtime metadata entry' do
         build.runner = create(:ci_runner, :instance_type)
@@ -577,7 +577,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
 
   describe '#drop' do
     context 'when has a runtime tracking entry' do
-      let(:build) { create(:ci_build, :pending) }
+      let(:build) { create(:ci_build, :pending, pipeline: pipeline) }
 
       it 'removes runtime tracking entry' do
         build.runner = create(:ci_runner, :instance_type)
@@ -614,10 +614,10 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
   describe '#outdated_deployment?' do
     subject { build.outdated_deployment? }
 
-    let(:build) { create(:ci_build, :created, :with_deployment, project: project, environment: 'production') }
+    let(:build) { create(:ci_build, :created, :with_deployment, pipeline: pipeline, environment: 'production') }
 
     context 'when build has no environment' do
-      let(:build) { create(:ci_build, :created, project: project, environment: nil) }
+      let(:build) { create(:ci_build, :created, pipeline: pipeline, environment: nil) }
 
       it { expect(subject).to be_falsey }
     end
@@ -647,7 +647,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
     end
 
     context 'when build is older than the latest deployment but succeeded once' do
-      let(:build) { create(:ci_build, :success, :with_deployment, project: project, environment: 'production') }
+      let(:build) { create(:ci_build, :success, :with_deployment, pipeline: pipeline, environment: 'production') }
 
       before do
         allow(build.deployment).to receive(:older_than_last_successful_deployment?).and_return(true)
@@ -663,13 +663,13 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
     subject { build.schedulable? }
 
     context 'when build is schedulable' do
-      let(:build) { create(:ci_build, :created, :schedulable, project: project) }
+      let(:build) { create(:ci_build, :created, :schedulable, pipeline: pipeline) }
 
       it { expect(subject).to be_truthy }
     end
 
     context 'when build is not schedulable' do
-      let(:build) { create(:ci_build, :created, project: project) }
+      let(:build) { create(:ci_build, :created, pipeline: pipeline) }
 
       it { expect(subject).to be_falsy }
     end
@@ -682,7 +682,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
       project.add_developer(user)
     end
 
-    let(:build) { create(:ci_build, :created, :schedulable, user: user, project: project) }
+    let(:build) { create(:ci_build, :created, :schedulable, user: user, pipeline: pipeline) }
 
     it 'transits to scheduled' do
       allow(Ci::BuildScheduleWorker).to receive(:perform_at)
@@ -743,7 +743,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
   describe '#options_scheduled_at' do
     subject { build.options_scheduled_at }
 
-    let(:build) { build_stubbed(:ci_build, options: option) }
+    let(:build) { build_stubbed(:ci_build, options: option, pipeline: pipeline) }
 
     context 'when start_in is 1 day' do
       let(:option) { { start_in: '1 day' } }
@@ -881,18 +881,18 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
 
     context 'when new artifacts are used' do
       context 'artifacts archive does not exist' do
-        let(:build) { create(:ci_build) }
+        let(:build) { create(:ci_build, pipeline: pipeline) }
 
         it { is_expected.to be_falsy }
       end
 
       context 'artifacts archive exists' do
-        let(:build) { create(:ci_build, :artifacts) }
+        let(:build) { create(:ci_build, :artifacts, pipeline: pipeline) }
 
         it { is_expected.to be_truthy }
 
         context 'is expired' do
-          let(:build) { create(:ci_build, :artifacts, :expired) }
+          let(:build) { create(:ci_build, :artifacts, :expired, pipeline: pipeline) }
 
           it { is_expected.to be_falsy }
         end
@@ -909,13 +909,13 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
       end
 
       context 'artifacts archive does not exist' do
-        let(:build) { create(:ci_build) }
+        let(:build) { create(:ci_build, pipeline: pipeline) }
 
         it { is_expected.to be_falsy }
       end
 
       context 'artifacts archive exists' do
-        let(:build) { create(:ci_build, :artifacts) }
+        let(:build) { create(:ci_build, :artifacts, pipeline: pipeline) }
 
         it { is_expected.to be_truthy }
       end
@@ -927,13 +927,13 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
       end
 
       context 'artifacts archive does not exist' do
-        let(:build) { create(:ci_build) }
+        let(:build) { create(:ci_build, pipeline: pipeline) }
 
         it { is_expected.to be_falsy }
       end
 
       context 'artifacts archive exists' do
-        let(:build) { create(:ci_build, :artifacts) }
+        let(:build) { create(:ci_build, :artifacts, pipeline: pipeline) }
 
         it { is_expected.to be_falsy }
       end
@@ -941,7 +941,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
   end
 
   describe '#available_artifacts?' do
-    let(:build) { create(:ci_build) }
+    let(:build) { create(:ci_build, pipeline: pipeline) }
 
     subject { build.available_artifacts? }
 
@@ -1000,7 +1000,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
     subject { build.browsable_artifacts? }
 
     context 'artifacts metadata does exists' do
-      let(:build) { create(:ci_build, :artifacts) }
+      let(:build) { create(:ci_build, :artifacts, pipeline: pipeline) }
 
       it { is_expected.to be_truthy }
     end
@@ -1010,13 +1010,13 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
     subject { build.artifacts_public? }
 
     context 'artifacts with defaults' do
-      let(:build) { create(:ci_build, :artifacts) }
+      let(:build) { create(:ci_build, :artifacts, pipeline: pipeline) }
 
       it { is_expected.to be_truthy }
     end
 
     context 'non public artifacts' do
-      let(:build) { create(:ci_build, :artifacts, :non_public_artifacts) }
+      let(:build) { create(:ci_build, :artifacts, :non_public_artifacts, pipeline: pipeline) }
 
       it { is_expected.to be_falsey }
     end
@@ -1050,7 +1050,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
     end
 
     context 'artifacts archive is a zip file and metadata exists' do
-      let(:build) { create(:ci_build, :artifacts) }
+      let(:build) { create(:ci_build, :artifacts, pipeline: pipeline) }
 
       it { is_expected.to be_truthy }
     end
@@ -1277,12 +1277,12 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
   describe '#has_live_trace?' do
     subject { build.has_live_trace? }
 
-    let(:build) { create(:ci_build, :trace_live) }
+    let(:build) { create(:ci_build, :trace_live, pipeline: pipeline) }
 
     it { is_expected.to be_truthy }
 
     context 'when build does not have live trace' do
-      let(:build) { create(:ci_build) }
+      let(:build) { create(:ci_build, pipeline: pipeline) }
 
       it { is_expected.to be_falsy }
     end
@@ -1291,12 +1291,12 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
   describe '#has_archived_trace?' do
     subject { build.has_archived_trace? }
 
-    let(:build) { create(:ci_build, :trace_artifact) }
+    let(:build) { create(:ci_build, :trace_artifact, pipeline: pipeline) }
 
     it { is_expected.to be_truthy }
 
     context 'when build does not have archived trace' do
-      let(:build) { create(:ci_build) }
+      let(:build) { create(:ci_build, pipeline: pipeline) }
 
       it { is_expected.to be_falsy }
     end
@@ -1306,7 +1306,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
     subject { build.has_job_artifacts? }
 
     context 'when build has a job artifact' do
-      let(:build) { create(:ci_build, :artifacts) }
+      let(:build) { create(:ci_build, :artifacts, pipeline: pipeline) }
 
       it { is_expected.to be_truthy }
     end
@@ -1316,13 +1316,13 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
     subject { build.has_test_reports? }
 
     context 'when build has a test report' do
-      let(:build) { create(:ci_build, :test_reports) }
+      let(:build) { create(:ci_build, :test_reports, pipeline: pipeline) }
 
       it { is_expected.to be_truthy }
     end
 
     context 'when build does not have a test report' do
-      let(:build) { create(:ci_build) }
+      let(:build) { create(:ci_build, pipeline: pipeline) }
 
       it { is_expected.to be_falsey }
     end
@@ -1395,7 +1395,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
     end
 
     with_them do
-      let(:build) { create(:ci_build, trait, project: project, pipeline: pipeline) }
+      let(:build) { create(:ci_build, trait, pipeline: pipeline) }
       let(:event) { state }
 
       context "when transitioning to #{params[:state]}" do
@@ -1419,7 +1419,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
   describe 'state transition as a deployable' do
     subject { build.send(event) }
 
-    let!(:build) { create(:ci_build, :with_deployment, :start_review_app, project: project, pipeline: pipeline) }
+    let!(:build) { create(:ci_build, :with_deployment, :start_review_app, pipeline: pipeline) }
     let(:deployment) { build.deployment }
     let(:environment) { deployment.environment }
 
@@ -1583,7 +1583,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
     subject { build.on_stop }
 
     context 'when a job has a specification that it can be stopped from the other job' do
-      let(:build) { create(:ci_build, :start_review_app) }
+      let(:build) { create(:ci_build, :start_review_app, pipeline: pipeline) }
 
       it 'returns the other job name' do
         is_expected.to eq('stop_review_app')
@@ -1591,7 +1591,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
     end
 
     context 'when a job does not have environment information' do
-      let(:build) { create(:ci_build) }
+      let(:build) { create(:ci_build, pipeline: pipeline) }
 
       it 'returns nil' do
         is_expected.to be_nil
@@ -1666,7 +1666,8 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
         let(:build) do
           create(:ci_build,
                  ref: 'master',
-                 environment: 'review/$CI_COMMIT_REF_NAME')
+                 environment: 'review/$CI_COMMIT_REF_NAME',
+                 pipeline: pipeline)
         end
 
         it { is_expected.to eq('review/master') }
@@ -1676,7 +1677,8 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
         let(:build) do
           create(:ci_build,
                  yaml_variables: [{ key: :APP_HOST, value: 'host' }],
-                 environment: 'review/$APP_HOST')
+                 environment: 'review/$APP_HOST',
+                 pipeline: pipeline)
         end
 
         it 'returns an expanded environment name with a list of variables' do
@@ -1698,7 +1700,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
 
       context 'when using persisted variables' do
         let(:build) do
-          create(:ci_build, environment: 'review/x$CI_BUILD_ID')
+          create(:ci_build, environment: 'review/x$CI_BUILD_ID', pipeline: pipeline)
         end
 
         it { is_expected.to eq('review/x') }
@@ -1715,7 +1717,8 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
           create(:ci_build,
                  ref: 'master',
                  yaml_variables: yaml_variables,
-                 environment: 'review/$ENVIRONMENT_NAME')
+                 environment: 'review/$ENVIRONMENT_NAME',
+                 pipeline: pipeline)
         end
 
         it { is_expected.to eq('review/master') }
@@ -1723,7 +1726,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
     end
 
     describe '#expanded_kubernetes_namespace' do
-      let(:build) { create(:ci_build, environment: environment, options: options) }
+      let(:build) { create(:ci_build, environment: environment, options: options, pipeline: pipeline) }
 
       subject { build.expanded_kubernetes_namespace }
 
@@ -1859,7 +1862,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
     end
 
     context 'build is not erasable' do
-      let!(:build) { create(:ci_build) }
+      let!(:build) { create(:ci_build, pipeline: pipeline) }
 
       describe '#erasable?' do
         subject { build.erasable? }
@@ -1870,7 +1873,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
 
     context 'build is erasable' do
       context 'new artifacts' do
-        let!(:build) { create(:ci_build, :test_reports, :trace_artifact, :success, :artifacts) }
+        let!(:build) { create(:ci_build, :test_reports, :trace_artifact, :success, :artifacts, pipeline: pipeline) }
 
         describe '#erasable?' do
           subject { build.erasable? }
@@ -1879,7 +1882,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
         end
 
         describe '#erased?' do
-          let!(:build) { create(:ci_build, :trace_artifact, :success, :artifacts) }
+          let!(:build) { create(:ci_build, :trace_artifact, :success, :artifacts, pipeline: pipeline) }
 
           subject { build.erased? }
 
@@ -1973,13 +1976,13 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
         end
 
         context 'when build is created' do
-          let(:build) { create(:ci_build, :created) }
+          let(:build) { create(:ci_build, :created, pipeline: pipeline) }
 
           it { is_expected.to be_cancelable }
         end
 
         context 'when build is waiting for resource' do
-          let(:build) { create(:ci_build, :waiting_for_resource) }
+          let(:build) { create(:ci_build, :waiting_for_resource, pipeline: pipeline) }
 
           it { is_expected.to be_cancelable }
         end
@@ -2042,7 +2045,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
   end
 
   describe '#tag_list' do
-    let_it_be(:build) { create(:ci_build, tag_list: ['tag']) }
+    let_it_be(:build) { create(:ci_build, tag_list: ['tag'], pipeline: pipeline) }
 
     context 'when tags are preloaded' do
       it 'does not trigger queries' do
@@ -2059,7 +2062,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
   end
 
   describe '#save_tags' do
-    let(:build) { create(:ci_build, tag_list: ['tag']) }
+    let(:build) { create(:ci_build, tag_list: ['tag'], pipeline: pipeline) }
 
     it 'saves tags' do
       build.save!
@@ -2088,13 +2091,13 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
 
   describe '#has_tags?' do
     context 'when build has tags' do
-      subject { create(:ci_build, tag_list: ['tag']) }
+      subject { create(:ci_build, tag_list: ['tag'], pipeline: pipeline) }
 
       it { is_expected.to have_tags }
     end
 
     context 'when build does not have tags' do
-      subject { create(:ci_build, tag_list: []) }
+      subject { create(:ci_build, tag_list: [], pipeline: pipeline) }
 
       it { is_expected.not_to have_tags }
     end
@@ -2149,9 +2152,9 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
   end
 
   describe '.keep_artifacts!' do
-    let!(:build) { create(:ci_build, artifacts_expire_at: Time.current + 7.days) }
+    let!(:build) { create(:ci_build, artifacts_expire_at: Time.current + 7.days, pipeline: pipeline) }
     let!(:builds_for_update) do
-      Ci::Build.where(id: create_list(:ci_build, 3, artifacts_expire_at: Time.current + 7.days).map(&:id))
+      Ci::Build.where(id: create_list(:ci_build, 3, artifacts_expire_at: Time.current + 7.days, pipeline: pipeline).map(&:id))
     end
 
     it 'resets expire_at' do
@@ -2193,7 +2196,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
   end
 
   describe '#keep_artifacts!' do
-    let(:build) { create(:ci_build, artifacts_expire_at: Time.current + 7.days) }
+    let(:build) { create(:ci_build, artifacts_expire_at: Time.current + 7.days, pipeline: pipeline) }
 
     subject { build.keep_artifacts! }
 
@@ -2215,7 +2218,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
   end
 
   describe '#auto_retry_expected?' do
-    subject { create(:ci_build, :failed) }
+    subject { create(:ci_build, :failed, pipeline: pipeline) }
 
     context 'when build is failed and auto retry is configured' do
       before do
@@ -2237,7 +2240,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
   end
 
   describe '#artifacts_file_for_type' do
-    let(:build) { create(:ci_build, :artifacts) }
+    let(:build) { create(:ci_build, :artifacts, pipeline: pipeline) }
     let(:file_type) { :archive }
 
     subject { build.artifacts_file_for_type(file_type) }
@@ -2250,6 +2253,8 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
   end
 
   describe '#merge_request' do
+    let_it_be(:merge_request) { create(:merge_request, source_project: project) }
+
     subject { pipeline.builds.take.merge_request }
 
     context 'on a branch pipeline' do
@@ -2294,19 +2299,23 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
     end
 
     context 'on a detached merged request pipeline' do
-      let(:pipeline) { create(:ci_pipeline, :detached_merge_request_pipeline, :with_job) }
+      let(:pipeline) do
+        create(:ci_pipeline, :detached_merge_request_pipeline, :with_job, merge_request: merge_request)
+      end
 
       it { is_expected.to eq(pipeline.merge_request) }
     end
 
     context 'on a legacy detached merged request pipeline' do
-      let(:pipeline) { create(:ci_pipeline, :legacy_detached_merge_request_pipeline, :with_job) }
+      let(:pipeline) do
+        create(:ci_pipeline, :legacy_detached_merge_request_pipeline, :with_job, merge_request: merge_request)
+      end
 
       it { is_expected.to eq(pipeline.merge_request) }
     end
 
     context 'on a pipeline for merged results' do
-      let(:pipeline) { create(:ci_pipeline, :merged_result_pipeline, :with_job) }
+      let(:pipeline) { create(:ci_pipeline, :merged_result_pipeline, :with_job, merge_request: merge_request) }
 
       it { is_expected.to eq(pipeline.merge_request) }
     end
@@ -2342,7 +2351,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
     end
 
     context 'when options include artifacts:expose_as' do
-      let(:build) { create(:ci_build, options: { artifacts: { expose_as: 'test' } }) }
+      let(:build) { create(:ci_build, options: { artifacts: { expose_as: 'test' } }, pipeline: pipeline) }
 
       it 'saves the presence of expose_as into build metadata' do
         expect(build.metadata).to have_exposed_artifacts
@@ -2468,56 +2477,56 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
   describe '#playable?' do
     context 'when build is a manual action' do
       context 'when build has been skipped' do
-        subject { build_stubbed(:ci_build, :manual, status: :skipped) }
+        subject { build_stubbed(:ci_build, :manual, status: :skipped, pipeline: pipeline) }
 
         it { is_expected.not_to be_playable }
       end
 
       context 'when build has been canceled' do
-        subject { build_stubbed(:ci_build, :manual, status: :canceled) }
+        subject { build_stubbed(:ci_build, :manual, status: :canceled, pipeline: pipeline) }
 
         it { is_expected.to be_playable }
       end
 
       context 'when build is successful' do
-        subject { build_stubbed(:ci_build, :manual, status: :success) }
+        subject { build_stubbed(:ci_build, :manual, status: :success, pipeline: pipeline) }
 
         it { is_expected.to be_playable }
       end
 
       context 'when build has failed' do
-        subject { build_stubbed(:ci_build, :manual, status: :failed) }
+        subject { build_stubbed(:ci_build, :manual, status: :failed, pipeline: pipeline) }
 
         it { is_expected.to be_playable }
       end
 
       context 'when build is a manual untriggered action' do
-        subject { build_stubbed(:ci_build, :manual, status: :manual) }
+        subject { build_stubbed(:ci_build, :manual, status: :manual, pipeline: pipeline) }
 
         it { is_expected.to be_playable }
       end
 
       context 'when build is a manual and degenerated' do
-        subject { build_stubbed(:ci_build, :manual, :degenerated, status: :manual) }
+        subject { build_stubbed(:ci_build, :manual, :degenerated, status: :manual, pipeline: pipeline) }
 
         it { is_expected.not_to be_playable }
       end
     end
 
     context 'when build is scheduled' do
-      subject { build_stubbed(:ci_build, :scheduled) }
+      subject { build_stubbed(:ci_build, :scheduled, pipeline: pipeline) }
 
       it { is_expected.to be_playable }
     end
 
     context 'when build is not a manual action' do
-      subject { build_stubbed(:ci_build, :success) }
+      subject { build_stubbed(:ci_build, :success, pipeline: pipeline) }
 
       it { is_expected.not_to be_playable }
     end
 
     context 'when build is waiting for deployment approval' do
-      subject { build_stubbed(:ci_build, :manual, environment: 'production') }
+      subject { build_stubbed(:ci_build, :manual, environment: 'production', pipeline: pipeline) }
 
       before do
         create(:deployment, :blocked, deployable: subject)
@@ -3767,7 +3776,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
   end
 
   describe '#any_unmet_prerequisites?' do
-    let(:build) { create(:ci_build, :created) }
+    let(:build) { create(:ci_build, :created, pipeline: pipeline) }
 
     subject { build.any_unmet_prerequisites? }
 
@@ -3854,7 +3863,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
   end
 
   describe 'state transition: any => [:preparing]' do
-    let(:build) { create(:ci_build, :created) }
+    let(:build) { create(:ci_build, :created, pipeline: pipeline) }
 
     before do
       allow(build).to receive(:prerequisites).and_return([double])
@@ -3868,7 +3877,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
   end
 
   describe 'when the build is waiting for deployment approval' do
-    let(:build) { create(:ci_build, :manual, environment: 'production') }
+    let(:build) { create(:ci_build, :manual, environment: 'production', pipeline: pipeline) }
 
     before do
       create(:deployment, :blocked, deployable: build)
@@ -3880,7 +3889,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
   end
 
   describe 'state transition: any => [:pending]' do
-    let(:build) { create(:ci_build, :created) }
+    let(:build) { create(:ci_build, :created, pipeline: pipeline) }
 
     it 'queues BuildQueueWorker' do
       expect(BuildQueueWorker).to receive(:perform_async).with(build.id)
@@ -3900,8 +3909,10 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
   end
 
   describe 'state transition: pending: :running' do
-    let(:runner) { create(:ci_runner) }
-    let(:job) { create(:ci_build, :pending, runner: runner) }
+    let_it_be_with_reload(:runner) { create(:ci_runner) }
+    let_it_be_with_reload(:pipeline) { create(:ci_pipeline, project: project) }
+
+    let(:job) { create(:ci_build, :pending, runner: runner, pipeline: pipeline) }
 
     before do
       job.project.update_attribute(:build_timeout, 1800)
@@ -4005,7 +4016,9 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
       end
 
       context 'when artifacts of depended job has been erased' do
-        let!(:pre_stage_job) { create(:ci_build, :success, pipeline: pipeline, name: 'test', stage_idx: 0, erased_at: 1.minute.ago) }
+        let!(:pre_stage_job) do
+          create(:ci_build, :success, pipeline: pipeline, name: 'test', stage_idx: 0, erased_at: 1.minute.ago)
+        end
 
         it { expect(job).not_to have_valid_build_dependencies }
       end
@@ -4062,7 +4075,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
     end
 
     context 'when build is configured to be retried' do
-      subject { create(:ci_build, :running, options: { script: ["ls -al"], retry: 3 }, project: project, user: user) }
+      subject { create(:ci_build, :running, options: { script: ["ls -al"], retry: 3 }, pipeline: pipeline, user: user) }
 
       it 'retries build and assigns the same user to it' do
         expect_next_instance_of(::Ci::RetryJobService) do |service|
@@ -4111,7 +4124,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
     end
 
     context 'when build is not configured to be retried' do
-      subject { create(:ci_build, :running, project: project, user: user, pipeline: pipeline) }
+      subject { create(:ci_build, :running, pipeline: pipeline, user: user) }
 
       let(:pipeline) do
         create(:ci_pipeline,
@@ -4175,7 +4188,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
   end
 
   describe '.matches_tag_ids' do
-    let_it_be(:build, reload: true) { create(:ci_build, project: project, user: user) }
+    let_it_be(:build, reload: true) { create(:ci_build, pipeline: pipeline, user: user) }
 
     let(:tag_ids) { ::ActsAsTaggableOn::Tag.named_any(tag_list).ids }
 
@@ -4223,7 +4236,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
   end
 
   describe '.matches_tags' do
-    let_it_be(:build, reload: true) { create(:ci_build, project: project, user: user) }
+    let_it_be(:build, reload: true) { create(:ci_build, pipeline: pipeline, user: user) }
 
     subject { described_class.where(id: build).with_any_tags }
 
@@ -4249,7 +4262,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
   end
 
   describe 'pages deployments' do
-    let_it_be(:build, reload: true) { create(:ci_build, project: project, user: user) }
+    let_it_be(:build, reload: true) { create(:ci_build, pipeline: pipeline, user: user) }
 
     context 'when job is "pages"' do
       before do
@@ -4575,7 +4588,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
   end
 
   describe '#artifacts_metadata_entry' do
-    let_it_be(:build) { create(:ci_build, project: project) }
+    let_it_be(:build) { create(:ci_build, pipeline: pipeline) }
 
     let(:path) { 'other_artifacts_0.1.2/another-subdirectory/banana_sample.gif' }
 
@@ -4635,7 +4648,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
   end
 
   describe '#publishes_artifacts_reports?' do
-    let(:build) { create(:ci_build, options: options) }
+    let(:build) { create(:ci_build, options: options, pipeline: pipeline) }
 
     subject { build.publishes_artifacts_reports? }
 
@@ -4663,7 +4676,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
   end
 
   describe '#runner_required_feature_names' do
-    let(:build) { create(:ci_build, options: options) }
+    let(:build) { create(:ci_build, options: options, pipeline: pipeline) }
 
     subject { build.runner_required_feature_names }
 
@@ -4685,7 +4698,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
   end
 
   describe '#supported_runner?' do
-    let_it_be_with_refind(:build) { create(:ci_build) }
+    let_it_be_with_refind(:build) { create(:ci_build, pipeline: pipeline) }
 
     subject { build.supported_runner?(runner_features) }
 
@@ -4793,7 +4806,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
     end
 
     context 'when build is a last deployment' do
-      let(:build) { create(:ci_build, :success, environment: 'production', pipeline: pipeline, project: project) }
+      let(:build) { create(:ci_build, :success, environment: 'production', pipeline: pipeline) }
       let(:environment) { create(:environment, name: 'production', project: build.project) }
       let!(:deployment) { create(:deployment, :success, environment: environment, project: environment.project, deployable: build) }
 
@@ -4801,7 +4814,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
     end
 
     context 'when there is a newer build with deployment' do
-      let(:build) { create(:ci_build, :success, environment: 'production', pipeline: pipeline, project: project) }
+      let(:build) { create(:ci_build, :success, environment: 'production', pipeline: pipeline) }
       let(:environment) { create(:environment, name: 'production', project: build.project) }
       let!(:deployment) { create(:deployment, :success, environment: environment, project: environment.project, deployable: build) }
       let!(:last_deployment) { create(:deployment, :success, environment: environment, project: environment.project) }
@@ -4810,7 +4823,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
     end
 
     context 'when build with deployment has failed' do
-      let(:build) { create(:ci_build, :failed, environment: 'production', pipeline: pipeline, project: project) }
+      let(:build) { create(:ci_build, :failed, environment: 'production', pipeline: pipeline) }
       let(:environment) { create(:environment, name: 'production', project: build.project) }
       let!(:deployment) { create(:deployment, :success, environment: environment, project: environment.project, deployable: build) }
 
@@ -4818,7 +4831,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
     end
 
     context 'when build with deployment is running' do
-      let(:build) { create(:ci_build, environment: 'production', pipeline: pipeline, project: project) }
+      let(:build) { create(:ci_build, environment: 'production', pipeline: pipeline) }
       let(:environment) { create(:environment, name: 'production', project: build.project) }
       let!(:deployment) { create(:deployment, :success, environment: environment, project: environment.project, deployable: build) }
 
@@ -4828,13 +4841,13 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
 
   describe '#degenerated?' do
     context 'when build is degenerated' do
-      subject { create(:ci_build, :degenerated) }
+      subject { create(:ci_build, :degenerated, pipeline: pipeline) }
 
       it { is_expected.to be_degenerated }
     end
 
     context 'when build is valid' do
-      subject { create(:ci_build) }
+      subject { create(:ci_build, pipeline: pipeline) }
 
       it { is_expected.not_to be_degenerated }
 
@@ -4849,7 +4862,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
   end
 
   describe 'degenerate!' do
-    let(:build) { create(:ci_build) }
+    let(:build) { create(:ci_build, pipeline: pipeline) }
 
     subject { build.degenerate! }
 
@@ -4869,13 +4882,13 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
 
   describe '#archived?' do
     context 'when build is degenerated' do
-      subject { create(:ci_build, :degenerated) }
+      subject { create(:ci_build, :degenerated, pipeline: pipeline) }
 
       it { is_expected.to be_archived }
     end
 
     context 'for old build' do
-      subject { create(:ci_build, created_at: 1.day.ago) }
+      subject { create(:ci_build, created_at: 1.day.ago, pipeline: pipeline) }
 
       context 'when archive_builds_in is set' do
         before do
@@ -4896,7 +4909,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
   end
 
   describe '#read_metadata_attribute' do
-    let(:build) { create(:ci_build, :degenerated) }
+    let(:build) { create(:ci_build, :degenerated, pipeline: pipeline) }
     let(:build_options) { { key: "build" } }
     let(:metadata_options) { { key: "metadata" } }
     let(:default_options) { { key: "default" } }
@@ -4933,7 +4946,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
   end
 
   describe '#write_metadata_attribute' do
-    let(:build) { create(:ci_build, :degenerated) }
+    let(:build) { create(:ci_build, :degenerated, pipeline: pipeline) }
     let(:options) { { key: "new options" } }
     let(:existing_options) { { key: "existing options" } }
 
@@ -5059,13 +5072,15 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
     subject { build.environment_auto_stop_in }
 
     context 'when build option has environment auto_stop_in' do
-      let(:build) { create(:ci_build, options: { environment: { name: 'test', auto_stop_in: '1 day' } }) }
+      let(:build) do
+        create(:ci_build, options: { environment: { name: 'test', auto_stop_in: '1 day' } }, pipeline: pipeline)
+      end
 
       it { is_expected.to eq('1 day') }
     end
 
     context 'when build option does not have environment auto_stop_in' do
-      let(:build) { create(:ci_build) }
+      let(:build) { create(:ci_build, pipeline: pipeline) }
 
       it { is_expected.to be_nil }
     end
@@ -5385,7 +5400,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
   end
 
   describe '.build_matchers' do
-    let_it_be(:pipeline) { create(:ci_pipeline, :protected) }
+    let_it_be(:pipeline) { create(:ci_pipeline, :protected, project: project) }
 
     subject(:matchers) { pipeline.builds.build_matchers(pipeline.project) }
 
@@ -5434,7 +5449,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
 
   describe '#build_matcher' do
     let_it_be(:build) do
-      build_stubbed(:ci_build, tag_list: %w[tag1 tag2])
+      build_stubbed(:ci_build, tag_list: %w[tag1 tag2], pipeline: pipeline)
     end
 
     subject(:matcher) { build.build_matcher }
@@ -5570,7 +5585,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
 
   it 'does not generate cross DB queries when a record is created via FactoryBot' do
     with_cross_database_modification_prevented do
-      create(:ci_build)
+      create(:ci_build, pipeline: pipeline)
     end
   end
 
@@ -5598,7 +5613,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
   end
 
   it_behaves_like 'cleanup by a loose foreign key' do
-    let!(:model) { create(:ci_build, user: create(:user)) }
+    let!(:model) { create(:ci_build, user: create(:user), pipeline: pipeline) }
     let!(:parent) { model.user }
   end
 
@@ -5608,7 +5623,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
     context 'when given new job variables' do
       context 'when the cloned build has an action' do
         it 'applies the new job variables' do
-          build = create(:ci_build, :actionable)
+          build = create(:ci_build, :actionable, pipeline: pipeline)
           create(:ci_job_variable, job: build, key: 'TEST_KEY', value: 'old value')
           create(:ci_job_variable, job: build, key: 'OLD_KEY', value: 'i will not live for long')
 
@@ -5627,7 +5642,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
 
       context 'when the cloned build does not have an action' do
         it 'applies the old job variables' do
-          build = create(:ci_build)
+          build = create(:ci_build, pipeline: pipeline)
           create(:ci_job_variable, job: build, key: 'TEST_KEY', value: 'old value')
 
           new_build = build.clone(
@@ -5645,7 +5660,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
 
     context 'when not given new job variables' do
       it 'applies the old job variables' do
-        build = create(:ci_build)
+        build = create(:ci_build, pipeline: pipeline)
         create(:ci_job_variable, job: build, key: 'TEST_KEY', value: 'old value')
 
         new_build = build.clone(current_user: user)
@@ -5659,14 +5674,14 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
   end
 
   describe '#test_suite_name' do
-    let(:build) { create(:ci_build, name: 'test') }
+    let(:build) { create(:ci_build, name: 'test', pipeline: pipeline) }
 
     it 'uses the group name for test suite name' do
       expect(build.test_suite_name).to eq('test')
     end
 
     context 'when build is part of parallel build' do
-      let(:build) { create(:ci_build, name: 'build 1/2') }
+      let(:build) { create(:ci_build, name: 'build 1/2', pipeline: pipeline) }
 
       it 'uses the group name for test suite name' do
         expect(build.test_suite_name).to eq('build')
@@ -5674,7 +5689,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
     end
 
     context 'when build is part of matrix build' do
-      let!(:matrix_build) { create(:ci_build, :matrix) }
+      let!(:matrix_build) { create(:ci_build, :matrix, pipeline: pipeline) }
 
       it 'uses the job name for the test suite' do
         expect(matrix_build.test_suite_name).to eq(matrix_build.name)
@@ -5685,7 +5700,8 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
   describe '#runtime_hooks' do
     let(:build1) do
       FactoryBot.build(:ci_build,
-                       options: { hooks: { pre_get_sources_script: ["echo 'hello pre_get_sources_script'"] } })
+                       options: { hooks: { pre_get_sources_script: ["echo 'hello pre_get_sources_script'"] } },
+                       pipeline: pipeline)
     end
 
     subject(:runtime_hooks) { build1.runtime_hooks }
@@ -5700,7 +5716,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
   describe 'partitioning', :ci_partitionable do
     include Ci::PartitioningHelpers
 
-    let(:new_pipeline) { create(:ci_pipeline) }
+    let(:new_pipeline) { create(:ci_pipeline, project: project) }
     let(:ci_build) { FactoryBot.build(:ci_build, pipeline: new_pipeline) }
 
     before do
@@ -5724,7 +5740,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
   describe 'assigning token', :ci_partitionable do
     include Ci::PartitioningHelpers
 
-    let(:new_pipeline) { create(:ci_pipeline) }
+    let(:new_pipeline) { create(:ci_pipeline, project: project) }
     let(:ci_build) { create(:ci_build, pipeline: new_pipeline) }
 
     before do

@@ -5,7 +5,6 @@ require 'optparse'
 require 'time'
 require 'fileutils'
 require 'uri'
-require 'cgi'
 require 'net/http'
 require 'json'
 require_relative 'api/default_options'
@@ -19,50 +18,79 @@ require_relative 'api/default_options'
 # https://gitlab.com/gitlab-org/gitlab/-/pipelines/363788864/tests/suite.json?build_ids[]=1555608749
 # Push into expected format for failed tests
 class PipelineTestReportBuilder
+  DEFAULT_OPTIONS = {
+    target_project: Host::DEFAULT_OPTIONS[:target_project],
+    mr_iid: Host::DEFAULT_OPTIONS[:mr_iid],
+    api_endpoint: API::DEFAULT_OPTIONS[:endpoint],
+    output_file_path: 'test_results/test_reports.json',
+    pipeline_index: :previous
+  }.freeze
+
   def initialize(options)
     @target_project = options.delete(:target_project)
-    @mr_id = options.delete(:mr_id) || Host::DEFAULT_OPTIONS[:mr_id]
-    @instance_base_url = options.delete(:instance_base_url) || Host::DEFAULT_OPTIONS[:instance_base_url]
-    @output_file_path = options.delete(:output_file_path)
-  end
-
-  def test_report_for_latest_pipeline
-    build_test_report_json_for_pipeline(previous_pipeline)
+    @mr_iid = options.delete(:mr_iid)
+    @api_endpoint = options.delete(:api_endpoint).to_s
+    @output_file_path = options.delete(:output_file_path).to_s
+    @pipeline_index = options.delete(:pipeline_index).to_sym
   end
 
   def execute
-    if output_file_path
-      FileUtils.mkdir_p(File.dirname(output_file_path))
-    end
+    FileUtils.mkdir_p(File.dirname(output_file_path))
 
     File.open(output_file_path, 'w') do |file|
-      file.write(test_report_for_latest_pipeline)
+      file.write(test_report_for_pipeline)
     end
   end
 
+  def test_report_for_pipeline
+    build_test_report_json_for_pipeline
+  end
+
+  def latest_pipeline
+    pipelines_sorted_descending[0]
+  end
+
   def previous_pipeline
-    # Top of the list will always be the current pipeline
+    # Top of the list will always be the latest pipeline
     # Second from top will be the previous pipeline
-    pipelines_for_mr.sort_by { |a| -Time.parse(a['created_at']).to_i }[1]
+    pipelines_sorted_descending[1]
   end
 
   private
 
-  attr_reader :target_project, :mr_id, :instance_base_url, :output_file_path
+  def pipeline
+    @pipeline ||=
+      case pipeline_index
+      when :latest
+        latest_pipeline
+      when :previous
+        previous_pipeline
+      else
+        raise "[PipelineTestReportBuilder] Unsupported pipeline_index `#{pipeline_index}` (allowed index: `latest` and `previous`!"
+      end
+  end
+
+  def pipelines_sorted_descending
+    # Top of the list will always be the current pipeline
+    # Second from top will be the previous pipeline
+    pipelines_for_mr.sort_by { |a| -a['id'] }
+  end
+
+  attr_reader :target_project, :mr_iid, :api_endpoint, :output_file_path, :pipeline_index
 
   def pipeline_project_api_base_url(pipeline)
-    "#{instance_base_url}/api/v4/projects/#{pipeline['project_id']}"
+    "#{api_endpoint}/projects/#{pipeline['project_id']}"
   end
 
   def target_project_api_base_url
-    "#{instance_base_url}/api/v4/projects/#{CGI.escape(target_project)}"
+    "#{api_endpoint}/projects/#{target_project}"
   end
 
   def pipelines_for_mr
-    fetch("#{target_project_api_base_url}/merge_requests/#{mr_id}/pipelines")
+    @pipelines_for_mr ||= fetch("#{target_project_api_base_url}/merge_requests/#{mr_iid}/pipelines")
   end
 
-  def failed_builds_for_pipeline(pipeline)
+  def failed_builds_for_pipeline
     fetch("#{pipeline_project_api_base_url(pipeline)}/pipelines/#{pipeline['id']}/jobs?scope=failed&per_page=100")
   end
 
@@ -70,44 +98,45 @@ class PipelineTestReportBuilder
   # Here we request individual builds, even though it is possible to supply multiple build IDs.
   # The reason for this; it is possible to lose the job context and name when requesting multiple builds.
   # Please see for more info: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/69053#note_709939709
-  def test_report_for_build(pipeline, build_id)
-    fetch("#{pipeline['web_url']}/tests/suite.json?build_ids[]=#{build_id}")
+  def test_report_for_build(pipeline_url, build_id)
+    fetch("#{pipeline_url}/tests/suite.json?build_ids[]=#{build_id}").tap do |suite|
+      suite['job_url'] = job_url(pipeline_url, build_id)
+    end
   rescue Net::HTTPServerException => e
     raise e unless e.response.code.to_i == 404
 
-    puts "Artifacts not found. They may have expired. Skipping this build."
+    puts "[PipelineTestReportBuilder] Artifacts not found. They may have expired. Skipping this build."
   end
 
-  def build_test_report_json_for_pipeline(pipeline)
+  def build_test_report_json_for_pipeline
     # empty file if no previous failed pipeline
-    return {}.to_json if pipeline.nil? || pipeline['status'] != 'failed'
+    return {}.to_json if pipeline.nil?
 
-    test_report = {}
+    test_report = { 'suites' => [] }
 
-    puts "Discovered last failed pipeline (#{pipeline['id']}) for MR!#{mr_id}"
+    puts "[PipelineTestReportBuilder] Discovered #{pipeline_index} failed pipeline (##{pipeline['id']}) for MR!#{mr_iid}"
 
-    failed_builds_for_test_stage = failed_builds_for_pipeline(pipeline).select do |failed_build|
-      failed_build['stage'] == 'test'
+    failed_builds_for_pipeline.each do |failed_build|
+      next if failed_build['stage'] != 'test'
+
+      test_report['suites'] << test_report_for_build(pipeline['web_url'], failed_build['id'])
     end
 
-    puts "#{failed_builds_for_test_stage.length} failed builds in test stage found..."
+    test_report['suites'].compact!
 
-    if failed_builds_for_test_stage.any?
-      test_report['suites'] ||= []
-
-      failed_builds_for_test_stage.each do |failed_build|
-        suite = test_report_for_build(pipeline, failed_build['id'])
-        test_report['suites'] << suite if suite
-      end
-    end
+    puts "[PipelineTestReportBuilder] #{test_report['suites'].size} failed builds in test stage found..."
 
     test_report.to_json
+  end
+
+  def job_url(pipeline_url, build_id)
+    pipeline_url.sub(%r{/pipelines/.+}, "/jobs/#{build_id}")
   end
 
   def fetch(uri_str)
     uri = URI(uri_str)
 
-    puts "URL: #{uri}"
+    puts "[PipelineTestReportBuilder] URL: #{uri}"
 
     request = Net::HTTP::Get.new(uri)
 
@@ -119,7 +148,7 @@ class PipelineTestReportBuilder
         when Net::HTTPSuccess
           body = response.read_body
         else
-          raise "Unexpected response: #{response.value}"
+          raise "[PipelineTestReportBuilder] Unexpected response: #{response.value}"
         end
       end
     end
@@ -129,23 +158,15 @@ class PipelineTestReportBuilder
 end
 
 if $PROGRAM_NAME == __FILE__
-  options = Host::DEFAULT_OPTIONS.dup
+  options = PipelineTestReportBuilder::DEFAULT_OPTIONS.dup
 
   OptionParser.new do |opts|
-    opts.on("-t", "--target-project TARGET_PROJECT", String, "Project where to find the merge request") do |value|
-      options[:target_project] = value
-    end
-
-    opts.on("-m", "--mr-id MR_ID", String, "A merge request ID") do |value|
-      options[:mr_id] = value
-    end
-
-    opts.on("-i", "--instance-base-url INSTANCE_BASE_URL", String, "URL of the instance where project and merge request resides") do |value|
-      options[:instance_base_url] = value
-    end
-
     opts.on("-o", "--output-file-path OUTPUT_PATH", String, "A path for output file") do |value|
       options[:output_file_path] = value
+    end
+
+    opts.on("-p", "--pipeline-index [latest|previous]", String, "What pipeline to retrieve (defaults to `#{PipelineTestReportBuilder::DEFAULT_OPTIONS[:pipeline_index]}`)") do |value|
+      options[:pipeline_index] = value
     end
 
     opts.on("-h", "--help", "Prints this help") do

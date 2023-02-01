@@ -886,7 +886,7 @@ rspec rspec-pg12-rerun-previous-failed-tests:
     - .rspec-base-pg12
     - .base-rspec-pg12-rerun-previous-failed-tests
   variables:
-    PREVIOUS_FAILED_TESTS_FILE: tmp/previous_failed_tests/rspec_failed_files.txt
+    PREVIOUS_FAILED_TESTS_FILE: tmp/previous_failed_tests/rspec_failed_tests.txt
 
 rspec rspec-ee-pg12-rerun-previous-failed-tests:
   extends:

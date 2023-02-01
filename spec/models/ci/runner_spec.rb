@@ -1931,7 +1931,7 @@ RSpec.describe Ci::Runner, feature_category: :runner do
     end
   end
 
-  describe '#with_upgrade_status' do
+  describe '.with_upgrade_status' do
     subject { described_class.with_upgrade_status(upgrade_status) }
 
     let_it_be(:runner_14_0_0) { create(:ci_runner, version: '14.0.0') }
@@ -1973,6 +1973,22 @@ RSpec.describe Ci::Runner, feature_category: :runner do
       it 'returns runner matching the composed scope' do
         is_expected.to contain_exactly(inactive_runner_14_0_0)
       end
+    end
+  end
+
+  describe '#created_via_ui?' do
+    subject(:created_via_ui) { runner.created_via_ui? }
+
+    context 'when runner registered from command line' do
+      let(:runner) { create(:ci_runner) }
+
+      it { is_expected.to eq false }
+    end
+
+    context 'when runner created via UI' do
+      let(:runner) { create(:ci_runner, :created_in_ui) }
+
+      it { is_expected.to eq true }
     end
   end
 end

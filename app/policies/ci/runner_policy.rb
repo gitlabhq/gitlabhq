@@ -9,6 +9,10 @@ module Ci
       @user.owns_runner?(@subject)
     end
 
+    condition(:creator) do
+      @user == @subject.creator
+    end
+
     with_options scope: :subject, score: 0
     condition(:is_instance_runner) do
       @subject.instance_type?
@@ -72,6 +76,8 @@ module Ci
     rule { ~admin & belongs_to_multiple_projects }.prevent :delete_runner
 
     rule { ~admin & locked }.prevent :assign_runner
+
+    rule { creator }.enable :read_ephemeral_token
   end
 end
 

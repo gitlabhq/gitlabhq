@@ -50,7 +50,6 @@ export default {
   },
   data() {
     return {
-      notesArray: [],
       isLoadingMore: false,
       perPage: DEFAULT_PAGE_SIZE_NOTES,
       sortOrder: ASC,
@@ -61,11 +60,11 @@ export default {
     initialLoading() {
       return this.$apollo.queries.workItemNotes.loading && !this.isLoadingMore;
     },
-    pageInfo() {
-      return this.workItemNotes?.pageInfo;
-    },
     avatarUrl() {
       return window.gon.current_user_avatar_url;
+    },
+    pageInfo() {
+      return this.workItemNotes?.pageInfo;
     },
     hasNextPage() {
       return this.pageInfo?.hasNextPage;
@@ -95,6 +94,14 @@ export default {
         sortOrder: this.sortOrder,
       };
     },
+    notesArray() {
+      const notes = this.workItemNotes?.nodes || [];
+
+      if (this.sortOrder === DESC) {
+        return [...notes].reverse();
+      }
+      return notes;
+    },
   },
   apollo: {
     workItemNotes: {
@@ -117,8 +124,6 @@ export default {
           : data.workItem?.widgets;
         const discussionNodes =
           workItemWidgets.find((widget) => widget.type === 'NOTES')?.discussions || [];
-        this.notesArray = discussionNodes?.nodes || [];
-        this.updateSortingOrderIfApplicable();
         return discussionNodes;
       },
       skip() {
@@ -128,6 +133,8 @@ export default {
         this.$emit('error', i18n.fetchError);
       },
       result() {
+        this.updateSortingOrderIfApplicable();
+
         if (this.hasNextPage) {
           this.fetchMoreNotes();
         }
@@ -163,7 +170,6 @@ export default {
     },
     changeNotesSortOrder(direction) {
       this.sortOrder = direction;
-      this.notesArray = [...this.notesArray].reverse();
       this.changeNotesSortOrderAfterLoading = false;
     },
     async fetchMoreNotes() {

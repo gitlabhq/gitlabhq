@@ -75,23 +75,19 @@ function crystalball_rspec_data_exists() {
   compgen -G "crystalball/rspec*.yml" >/dev/null
 }
 
-function retrieve_previous_failed_tests() {
+function retrieve_failed_tests() {
   local directory_for_output_reports="${1}"
-  local rspec_pg_regex="${2}"
-  local rspec_ee_pg_regex="${3}"
-  local pipeline_report_path="test_results/previous/test_reports.json"
-
-  # Used to query merge requests. This variable reflects where the merge request has been created
-  local target_project_path="${CI_MERGE_REQUEST_PROJECT_PATH}"
-  local instance_url="${CI_SERVER_URL}"
+  local failed_tests_format="${2}"
+  local pipeline_index="${3}"
+  local pipeline_report_path="tmp/test_results/${pipeline_index}/test_reports.json"
 
   echo 'Attempting to build pipeline test report...'
 
-  scripts/pipeline_test_report_builder.rb --instance-base-url "${instance_url}" --target-project "${target_project_path}" --mr-id "${CI_MERGE_REQUEST_IID}" --output-file-path "${pipeline_report_path}"
+  scripts/pipeline_test_report_builder.rb --output-file-path "${pipeline_report_path}" --pipeline-index "${pipeline_index}"
 
   echo 'Generating failed tests lists...'
 
-  scripts/failed_tests.rb --previous-tests-report-path "${pipeline_report_path}" --output-directory "${directory_for_output_reports}" --rspec-pg-regex "${rspec_pg_regex}" --rspec-ee-pg-regex "${rspec_ee_pg_regex}"
+  scripts/failed_tests.rb --previous-tests-report-path "${pipeline_report_path}" --format "${failed_tests_format}" --output-directory "${directory_for_output_reports}"
 }
 
 function rspec_args() {

@@ -47,7 +47,7 @@ The following GitLab application features are not available:
 - FortiAuthenticator, or FortiToken 2FA
 - Reply-by email
 - Service Desk
-- GitLab-managed runners
+- GitLab-managed runners (hosted runners)
 - Any feature [not listed above](#available-features) which must be configured outside of the GitLab user interface.
 
 The following features will not be supported:
@@ -64,7 +64,9 @@ The following operational features are not available:
 - Multiple Geo secondaries (Geo replicas) beyond the secondary site included by default
 - Self-serve purchasing and configuration
 - Multiple login providers
-- Non-AWS cloud providers, such as GCP or Azure
+- Support for deploying to non-AWS cloud providers, such as GCP or Azure
+- Observability Dashboard using Switchboard
+- Pre-Production Instance
 
 ### AWS regions not supported
 

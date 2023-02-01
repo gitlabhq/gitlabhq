@@ -127,8 +127,6 @@ module Gitlab
       end
 
       def record_error(urgency, status)
-        return unless Feature.enabled?(:gitlab_metrics_error_rate_sli, type: :development)
-
         Gitlab::Metrics::RailsSlis.request_error_rate.increment(
           labels: labels_from_context.merge(request_urgency: urgency.name),
           error: ::Gitlab::Metrics.server_error?(status)

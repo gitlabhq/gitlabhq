@@ -46,16 +46,6 @@ RSpec.describe Gitlab::Metrics::RailsSlis do
 
       described_class.initialize_request_slis!
     end
-
-    it "initializes the SLI for all possible endpoints if they weren't given error rate feature flag is disabled", :aggregate_failures do
-      stub_feature_flags(gitlab_metrics_error_rate_sli: false)
-
-      expect(Gitlab::Metrics::Sli::Apdex).to receive(:initialize_sli).with(:rails_request, array_including(*possible_labels)).and_call_original
-      expect(Gitlab::Metrics::Sli::Apdex).to receive(:initialize_sli).with(:graphql_query, array_including(*possible_graphql_labels)).and_call_original
-      expect(Gitlab::Metrics::Sli::ErrorRate).not_to receive(:initialize_sli)
-
-      described_class.initialize_request_slis!
-    end
   end
 
   describe '.request_apdex' do

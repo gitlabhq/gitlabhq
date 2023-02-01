@@ -128,6 +128,7 @@ detect-tests:
     - source ./scripts/rspec_helpers.sh
     - install_gitlab_gem
     - install_tff_gem
+    - install_activesupport_gem
     - retrieve_tests_mapping
     - retrieve_frontend_fixtures_mapping
     - |
@@ -135,6 +136,7 @@ detect-tests:
         mkdir -p $(dirname "$RSPEC_CHANGED_FILES_PATH")
         tooling/bin/find_changes ${RSPEC_CHANGED_FILES_PATH};
         tooling/bin/find_tests ${RSPEC_CHANGED_FILES_PATH} ${RSPEC_MATCHING_TESTS_PATH};
+        tooling/bin/js_to_system_specs_mappings ${RSPEC_CHANGED_FILES_PATH} ${RSPEC_MATCHING_TESTS_PATH};
         tooling/bin/find_changes ${RSPEC_CHANGED_FILES_PATH} ${RSPEC_MATCHING_TESTS_PATH} ${FRONTEND_FIXTURES_MAPPING_PATH};
         filter_rspec_matched_foss_tests ${RSPEC_MATCHING_TESTS_PATH} ${RSPEC_MATCHING_TESTS_FOSS_PATH};
         filter_rspec_matched_ee_tests ${RSPEC_MATCHING_TESTS_PATH} ${RSPEC_MATCHING_TESTS_EE_PATH};
@@ -160,12 +162,10 @@ detect-previous-failed-tests:
     - .rails:rules:detect-previous-failed-tests
   variables:
     PREVIOUS_FAILED_TESTS_DIR: tmp/previous_failed_tests/
-    RSPEC_PG_REGEX: /rspec .+ pg12( .+)?/
-    RSPEC_EE_PG_REGEX: /rspec-ee .+ pg12( .+)?/
   script:
     - source ./scripts/utils.sh
     - source ./scripts/rspec_helpers.sh
-    - retrieve_previous_failed_tests ${PREVIOUS_FAILED_TESTS_DIR} "${RSPEC_PG_REGEX}" "${RSPEC_EE_PG_REGEX}"
+    - retrieve_failed_tests "${PREVIOUS_FAILED_TESTS_DIR}" "oneline" "previous"
   artifacts:
     expire_in: 7d
     paths:

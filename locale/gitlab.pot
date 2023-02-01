@@ -17557,6 +17557,9 @@ msgstr ""
 msgid "Find file"
 msgstr ""
 
+msgid "FindFile|Switch branch/tag"
+msgstr ""
+
 msgid "Fingerprint (MD5)"
 msgstr ""
 
@@ -34311,6 +34314,9 @@ msgid "ProtectedEnvironments|An error occurred while fetching information on the
 msgstr ""
 
 msgid "ProtectedEnvironments|Approval rules"
+msgstr ""
+
+msgid "ProtectedEnvironments|List of protected environments (%{protectedEnvironmentsCount})"
 msgstr ""
 
 msgid "ProtectedEnvironments|Number of approvals must be between 1 and 5"

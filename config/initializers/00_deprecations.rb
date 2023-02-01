@@ -20,8 +20,10 @@ end
 #
 # This way we prevent already fixed warnings from sneaking back into the codebase silently.
 rails7_deprecation_warnings = [
+  # https://gitlab.com/gitlab-org/gitlab/-/issues/366910
+  /no longer takes non-deterministic result/,
   # https://gitlab.com/gitlab-org/gitlab/-/issues/339739
-  /ActiveModel::Errors#keys is deprecated/,
+  /ActiveModel::Errors/,
   # https://gitlab.com/gitlab-org/gitlab/-/issues/342492
   /Rendering actions with '\.' in the name is deprecated/,
   # https://gitlab.com/gitlab-org/gitlab/-/issues/333086

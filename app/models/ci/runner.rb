@@ -495,6 +495,10 @@ module Ci
       "#{CREATED_RUNNER_TOKEN_PREFIX}#{token}"
     end
 
+    def created_via_ui?
+      token.start_with?(CREATED_RUNNER_TOKEN_PREFIX)
+    end
+
     private
 
     scope :with_upgrade_status, ->(upgrade_status) do
