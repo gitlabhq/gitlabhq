@@ -1,8 +1,7 @@
 <script>
 import {
   GlAlert,
-  GlDropdown,
-  GlDropdownItem,
+  GlCollapsibleListbox,
   GlLink,
   GlSprintf,
   GlFormCheckboxGroup,
@@ -40,8 +39,7 @@ export default {
   components: {
     GlAlert,
     GlLink,
-    GlDropdown,
-    GlDropdownItem,
+    GlCollapsibleListbox,
     GlSprintf,
     GlFormCheckboxGroup,
     GlButton,
@@ -124,6 +122,7 @@ export default {
       invalidMembers: {},
       selectedTasksToBeDone: [],
       selectedTaskProject: this.projects[0],
+      selectedTaskProjectId: this.projects[0]?.id,
       source: 'unknown',
       mode: 'default',
       // Kept in sync with "base"
@@ -131,6 +130,7 @@ export default {
       errorsLimit: 2,
       isErrorsSectionExpanded: false,
       shouldShowEmptyInvitesAlert: false,
+      projectsForDropdown: this.projects.map((p) => ({ value: p.id, text: p.title, ...p })),
     };
   },
   computed: {
@@ -347,8 +347,8 @@ export default {
       this.selectedTasksToBeDone = [];
       [this.selectedTaskProject] = this.projects;
     },
-    changeSelectedTaskProject(project) {
-      this.selectedTaskProject = project;
+    changeSelectedTaskProject(projectId) {
+      this.selectedTaskProject = this.projects.find((project) => project.id === projectId);
     },
     onInviteSuccess() {
       if (this.reloadPageOnSubmit) {
@@ -514,23 +514,14 @@ export default {
             <label class="gl-mt-5 gl-display-block">
               {{ $options.labels.tasksProject.title }}
             </label>
-            <gl-dropdown
+            <gl-collapsible-listbox
+              v-model="selectedTaskProjectId"
+              :items="projectsForDropdown"
+              :block="true"
               class="gl-w-half gl-xs-w-full"
-              :text="selectedTaskProject.title"
               data-testid="invite-members-modal-project-select"
-            >
-              <template v-for="project in projects">
-                <gl-dropdown-item
-                  :key="project.id"
-                  active-class="is-active"
-                  is-check-item
-                  :is-checked="project.id === selectedTaskProject.id"
-                  @click="changeSelectedTaskProject(project)"
-                >
-                  {{ project.title }}
-                </gl-dropdown-item>
-              </template>
-            </gl-dropdown>
+              @select="changeSelectedTaskProject"
+            />
           </template>
         </template>
         <gl-alert

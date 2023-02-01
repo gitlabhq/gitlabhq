@@ -10,7 +10,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/228893) in GitLab 13.4.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/258206) in GitLab 13.8
 
-With [Gitpod](https://gitpod.io/) you can describe your development environment as code to get fully
+With [Gitpod](https://www.gitpod.io/), you can describe your development environment as code to get fully
 set up, compiled, and tested development environments for any GitLab project. The development
 environments are not only automated but also prebuilt which means that Gitpod continuously builds
 your Git branches like a CI/CD server.
@@ -42,19 +42,18 @@ With the Gitpod integration enabled for your GitLab instance, to enable it for y
 
 ## Configure a self-managed instance **(FREE SELF)**
 
-For GitLab self-managed instances, a GitLab administrator needs to:
+For self-managed GitLab instances, a GitLab administrator must:
 
-1. Set up a Gitpod instance to integrate with GitLab. Refer to the [Gitpod documentation](https://www.gitpod.io/docs/configure/self-hosted/latest)
-   to get your instance up and running.
-1. Enable it in GitLab:
+1. Enable the Gitpod integration in GitLab:
    1. On the top bar, select **Main menu > Admin**.
    1. On the left sidebar, select **Settings > General**.
    1. Expand the **Gitpod** configuration section.
    1. Select the **Enable Gitpod integration** checkbox.
-   1. Add your Gitpod instance URL (for example, `https://gitpod.example.com`).
+   1. Add the Gitpod instance URL (for example, `https://gitpod.example.com` or `https://gitpod.io`).
    1. Select **Save changes**.
+1. Register the self-managed GitLab instance in Gitpod. For more information, see the [Gitpod documentation](https://www.gitpod.io/docs/configure/authentication/gitlab#registering-a-self-hosted-gitlab-installation).
 
-Your users can then [enable it for themselves](#enable-gitpod-in-your-user-settings).
+GitLab users can then [enable the Gitpod integration for themselves](#enable-gitpod-in-your-user-settings).
 
 ## Launch Gitpod in GitLab
 
