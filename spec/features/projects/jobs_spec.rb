@@ -302,7 +302,7 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state, feature_category: :proj
           click_link 'Download'
         end
 
-        artifact_request = requests.find { |req| req.url.match(%r{artifacts/download}) }
+        artifact_request = requests.find { |req| req.url.include?('artifacts/download') }
 
         expect(artifact_request.response_headers['Content-Disposition']).to eq(%Q{attachment; filename="#{job.artifacts_file.filename}"; filename*=UTF-8''#{job.artifacts_file.filename}})
         expect(artifact_request.response_headers['Content-Transfer-Encoding']).to eq("binary")

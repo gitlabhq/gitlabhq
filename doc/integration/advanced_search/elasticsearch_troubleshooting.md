@@ -100,8 +100,8 @@ Here are some common pitfalls and how to overcome them.
 
 There are a couple of ways to achieve that:
 
-- Whenever you perform a search there is a link on the search results page
-  in the top right hand corner saying "Advanced search functionality is enabled".
+- When you perform a search, in the upper-right corner of the search results page,
+  **Advanced search functionality is enabled** is displayed.
   This is always correctly identifying whether the current project/namespace
   being searched is using Elasticsearch.
 

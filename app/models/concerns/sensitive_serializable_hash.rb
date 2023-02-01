@@ -24,12 +24,12 @@ module SensitiveSerializableHash
 
     options[:except].concat self.class.attributes_exempt_from_serializable_hash
 
-    if self.class.respond_to?(:encrypted_attributes)
-      options[:except].concat self.class.encrypted_attributes.keys
+    if self.class.respond_to?(:attr_encrypted_attributes)
+      options[:except].concat self.class.attr_encrypted_attributes.keys
 
       # Per https://github.com/attr-encrypted/attr_encrypted/blob/a96693e9a2a25f4f910bf915e29b0f364f277032/lib/attr_encrypted.rb#L413
-      options[:except].concat self.class.encrypted_attributes.values.map { |v| v[:attribute] }
-      options[:except].concat self.class.encrypted_attributes.values.map { |v| "#{v[:attribute]}_iv" }
+      options[:except].concat self.class.attr_encrypted_attributes.values.map { |v| v[:attribute] }
+      options[:except].concat self.class.attr_encrypted_attributes.values.map { |v| "#{v[:attribute]}_iv" }
     end
 
     super(options)

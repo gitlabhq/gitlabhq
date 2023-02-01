@@ -36,7 +36,7 @@ To import issues:
 
 1. Go to your project's Issues list page.
 1. Open the import feature, depending if the project has issues:
-   - Existing issues are present: Select the import icon at the top right, next to **Edit issues**.
+   - Existing issues are present: Select the import icon in the upper right, next to **Edit issues**.
    - Project has no issues: Select **Import CSV** in the middle of the page.
 1. Select the file you want to import, and then select **Import issues**.
 

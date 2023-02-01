@@ -124,7 +124,7 @@ existing GitLab account. To do so:
 
 If you're not an administrator:
 
-1. In the top-right corner, select your avatar.
+1. In the upper-right corner, select your avatar.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Account**.
 1. In the **Service sign-in** section, select **Connect Kerberos**.

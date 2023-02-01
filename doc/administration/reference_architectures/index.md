@@ -49,7 +49,7 @@ The Reference Architectures are designed to strike a balance between two importa
 
 While they are designed to make it easier to set up GitLab at scale, it can still be a challenge to know which one meets your requirements.
 
-As a general guide, **the more performant and/or resilient you want your environment to be, the more involved it is**.
+As a general guide, **the more performant and/or resilient you want your environment to be, the more complex it is**.
 
 This section explains the designs you can choose from. It begins with the least complexity, goes to the most, and ends with a decision tree.
 
@@ -57,11 +57,13 @@ This section explains the designs you can choose from. It begins with the least 
 
 For environments serving 2,000 or fewer users we generally recommend that an [automated backup](../../raketasks/backup_gitlab.md#configuring-cron-to-make-daily-backups) strategy is used instead of HA.
 
+Depending on your setup and requirements, this can include configuring backups on any external services you may be using, such as Object Storage (AWS S3 / Google Cloud Storage) or Postgres (AWS RDS / Google Cloud SQL) backups for further resilience.
+
 Backups can provide a good level of RPO / RTO while avoiding the complexities that come with HA.
 
 ### High Availability (HA)
 
-High Availability ensures every component in the GitLab setup can handle failures through various mechanisms. To achieve this however is involved, and the environments required can be sizable.
+High Availability ensures every component in the GitLab setup can handle failures through various mechanisms. To achieve this however is complex, and the environments required can be sizable.
 
 For environments serving 3,000 or more users we generally recommend that a HA strategy is used as at this level outages have a bigger impact against more users. All the architectures in this range have HA built in by design for this reason.
 
@@ -80,7 +82,7 @@ In general then, we'd only recommend you employ HA in the following scenarios:
 
 #### Zero Downtime Upgrades
 
-[Zero Downtime Upgrades](../../update/zero_downtime.md) are available for standard Reference Architecture environments with HA (Cloud Native Hybrid is not supported at this time). This allows for an environment to stay up during an upgrade, but the process is more involved as a result and has some limitations as detailed in the documentation.
+[Zero Downtime Upgrades](../../update/zero_downtime.md) are available for standard Reference Architecture environments with HA (Cloud Native Hybrid is not supported at this time). This allows for an environment to stay up during an upgrade, but the process is more complex as a result and has some limitations as detailed in the documentation.
 
 When going through this process it's worth noting that there may still be brief moments of downtime when the HA mechanisms tale effect.
 
@@ -96,7 +98,7 @@ This is an alternative and more **advanced** setup compared to a standard Refere
 
 With [GitLab Geo](../geo/index.md) you can have both distributed environments in different regions and a full Disaster Recovery (DR) setup in place. With this setup you would have 2 or more separate environments, with one being a primary that gets replicated to the others. In the rare event the primary site went down completely you could fail over to one of the other environments.
 
-This is an **advanced and involved** setup and should only be undertaken if you have DR as a key requirement. Decisions then on how each environment are configured would also need to be taken, such as if each environment itself would be the full size and / or have HA.
+This is an **advanced and complex** setup and should only be undertaken if you have DR as a key requirement. Decisions then on how each environment are configured would also need to be taken, such as if each environment itself would be the full size and / or have HA.
 
 ### Decision Tree
 
@@ -299,8 +301,8 @@ Due to performance issues that we found with several key Azure services, we only
 In addition to the above, you should be aware of the additional specific guidance for Azure:
 
 - **We outright strongly do not recommend [Azure Database for PostgreSQL Single Server](https://learn.microsoft.com/en-us/azure/postgresql/single-server/overview-single-server)** specifically due to significant performance and stability issues found. **For GitLab 14.0 and higher the service is not supported** due to it only supporting up to PostgreSQL 11.
-  - A new service, [Azure Database for PostgreSQL Flexible Server](https://learn.microsoft.com/en-us/azure/postgresql/flexible-server/) has been released but due to it missing some functionality we don't recommend it at this time.
-- [Azure Blob Storage](https://azure.microsoft.com/en-gb/products/storage/blobs/) has been found to have performance limits that can impact production use at certain times. However, this has only been seen in larger architectures.
+  - A new service, [Azure Database for PostgreSQL Flexible Server](https://learn.microsoft.com/en-us/azure/postgresql/flexible-server/) has been released. [Internal testing](https://gitlab.com/gitlab-org/quality/reference-architectures/-/issues/91) has shown that it does look to perform as expected, but this hasn't been validated in production, so generally isn't recommended at this time. Additionally, as it's a new service, you may find that it's missing some functionality depending on your requirements.
+- [Azure Blob Storage](https://azure.microsoft.com/en-gb/products/storage/blobs/) has been found to have [performance limits that can impact production use at certain times](https://gitlab.com/gitlab-org/gitlab/-/issues/344861). However, this has only been seen in our largest architectures (25k+) so far.
 
 ## Validation and test results
 

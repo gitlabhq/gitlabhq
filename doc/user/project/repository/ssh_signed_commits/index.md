@@ -169,7 +169,7 @@ If an SSH key becomes compromised, revoke it. Revoking a key changes both future
 
 To revoke an SSH key:
 
-1. In the top-right corner, select your avatar.
+1. In the upper-right corner, select your avatar.
 1. Select **Edit profile**.
 1. On the left sidebar, select (**{key}**) **SSH Keys**.
 1. Select **Revoke** next to the SSH key you want to delete.

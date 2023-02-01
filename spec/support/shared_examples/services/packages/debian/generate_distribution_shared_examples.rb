@@ -56,7 +56,8 @@ RSpec.shared_examples 'Generate Debian Distribution and component files' do
       end
     end
 
-    it 'generates Debian distribution and component files', :aggregate_failures do
+    it 'generates Debian distribution and component files', :aggregate_failures,
+      quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/389950' do
       current_time = Time.utc(2020, 01, 25, 15, 17, 18, 123456)
 
       travel_to(current_time) do

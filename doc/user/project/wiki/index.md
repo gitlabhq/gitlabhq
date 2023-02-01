@@ -252,7 +252,7 @@ replaces the default sidebar navigation:
    - For project wikis, select **Projects** and find your project.
    - For group wikis, select **Groups** and find your group.
 1. On the left sidebar, select **Wiki**.
-1. In the top right corner of the page, select **Edit sidebar**.
+1. In the upper-right corner of the page, select **Edit sidebar**.
 1. When complete, select **Save changes**.
 
 A `_sidebar` example, formatted with Markdown:

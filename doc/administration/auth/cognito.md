@@ -17,7 +17,7 @@ To enable AWS Cognito as an authentication provider, complete the following step
 
 1. Sign in to the [AWS console](https://console.aws.amazon.com/console/home).
 1. From the **Services** menu, select **Cognito**.
-1. Select **Manage User Pools** and then select **Create a user pool** in the top right corner.
+1. Select **Manage User Pools** and then in the upper-right corner, select **Create a user pool**.
 1. Enter the user pool name and then select **Step through settings**.
 1. Under **How do you want your end users to sign in?**, select **Email address or phone number** and **Allow email addresses**.
 1. Under **Which standard attributes do you want to require?**, select **email**.

@@ -40,7 +40,7 @@ can't be terminated and its memory usage grows over time.
 ## Select a version to install
 
 Make sure you view [this installation guide](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/install/installation.md) from the branch (version) of GitLab you would like to install (for example, `11-7-stable`).
-You can select the branch in the version dropdown list in the top left corner of GitLab (below the menu bar).
+You can select the branch in the version dropdown list in the upper-left corner of GitLab (below the menu bar).
 
 If the highest number stable branch is unclear, check the [GitLab blog](https://about.gitlab.com/blog/) for installation guide links by version.
 

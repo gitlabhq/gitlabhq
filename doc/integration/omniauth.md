@@ -235,7 +235,7 @@ created, you can activate an OmniAuth provider. For example, if you originally s
 provider like Twitter.
 
 1. Sign in to GitLab with your GitLab credentials, LDAP, or another OmniAuth provider.
-1. On the top bar, in the top right corner, select your avatar.
+1. On the top bar, in the upper-right corner, select your avatar.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Account**.
 1. In the **Connected Accounts** section, select the OmniAuth provider, such as Twitter.

@@ -2096,7 +2096,7 @@
       changes: *code-patterns
       when: manual
       allow_failure: true
-    - <<: *if-dot-com-gitlab-org-schedule
+    - <<: *if-dot-com-ee-schedule-default-branch-maintenance
       allow_failure: true
 
 .review:rules:review-k8s-resources-count-checks:

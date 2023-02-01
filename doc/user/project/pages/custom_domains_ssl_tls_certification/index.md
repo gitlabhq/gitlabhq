@@ -59,7 +59,7 @@ To add your custom domain to GitLab Pages:
 
    If this path is not visible, select **Deployments > Pages**.
    [This location is part of an experiment](../index.md#menu-position-test).
-1. In the top-right corner, select **New Domain**.
+1. In the upper-right corner, select **New Domain**.
 1. In **Domain**, enter the domain name.
 1. Optional. In **Certificate**, turn off the **Automatic certificate management using Let's Encrypt** toggle to add an [SSL/TLS certificate](#adding-an-ssltls-certificate-to-pages). You can also add the certificate and key later.
 1. Select **Create New Domain**.
@@ -300,7 +300,7 @@ meet these requirements.
 
      If this path is not visible, select **Deployments > Pages**.
      [This location is part of an experiment](../index.md#menu-position-test).
-  1. In the top-right corner, select **New Domain**.
+  1. In the upper-right corner, select **New Domain**.
   1. In **Domain**, enter the domain name.
   1. In **Certificate**, turn off the **Automatic certificate management using Let's Encrypt** toggle to add an [SSL/TLS certificate](#adding-an-ssltls-certificate-to-pages).
   1. Select **Create New Domain**.

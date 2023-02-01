@@ -62,7 +62,7 @@ To do this:
 1. If you don't know the merge request the commit originated from:
    1. On the left sidebar, select **Repository > Commits**.
    1. Select the title of the commit to display full information about the commit.
-1. In the top right corner, select **Options**, then select **Revert**.
+1. In the upper-right corner, select **Options**, then select **Revert**.
 1. In **Revert in branch**, select the branch to revert your changes into.
 1. Optional. Select **Start a new merge request** to start a new merge request with the new revert commit.
 1. Select **Revert**.

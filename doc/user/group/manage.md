@@ -155,7 +155,7 @@ You can sort members by **Account**, **Access granted**, **Max role**, or **Last
 
 1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Group information > Members**.
-1. Above the list of members, on the top right, from the **Account** list, select
+1. Above the list of members, in the upper right, from the **Account** list, select
    the criteria to filter by.
 1. To switch the sort between ascending and descending, to the right of the **Account** list, select the
    arrow (**{sort-lowest}** or **{sort-highest}**).

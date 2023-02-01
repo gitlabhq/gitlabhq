@@ -267,10 +267,10 @@ function deploy() {
     sentry_enabled="true"
   fi
 
-  ensure_namespace "${namespace}"
-  label_namespace "${namespace}" "tls=review-apps-tls" # label namespace for kubed to sync tls
+  retry "ensure_namespace \"${namespace}\""
+  retry "label_namespace \"${namespace}\" \"tls=review-apps-tls\"" # label namespace for kubed to sync tls
 
-  create_application_secret
+  retry "create_application_secret"
 
 cat > review_apps.values.yml <<EOF
   gitlab:

@@ -349,20 +349,35 @@ background migration.
    `BatchedMigrationJob` is initialized with necessary arguments to
    execute the batch, as well as a connection to the tracking database.
 
-1. Add a new trigger to the database to update newly created and updated routes,
-   similar to this example:
+1. Create a database migration that adds a new trigger to the database. Example:
 
    ```ruby
-   execute(<<~SQL)
-     CREATE OR REPLACE FUNCTION example() RETURNS trigger
-     LANGUAGE plpgsql
-     AS $$
-     BEGIN
-       NEW."namespace_id" = NEW."source_id"
-       RETURN NEW;
-     END;
-     $$;
-   SQL
+   class AddTriggerToRoutesToCopySourceIdToNamespaceId < Gitlab::Database::Migration[2.1]
+     FUNCTION_NAME = 'example_function'
+     TRIGGER_NAME = 'example_trigger'
+
+     def up
+       execute(<<~SQL)
+         CREATE OR REPLACE FUNCTION #{FUNCTION_NAME}() RETURNS trigger
+         LANGUAGE plpgsql
+         AS $$
+         BEGIN
+           NEW."namespace_id" = NEW."source_id"
+           RETURN NEW;
+         END;
+         $$;
+
+         CREATE TRIGGER #{TRIGGER_NAME}() AFTER INSERT OR UPDATE
+         ON routes
+         FOR EACH ROW EXECUTE FUNCTION #{FUNCTION_NAME}();
+       SQL
+     end
+
+     def down
+       drop_trigger(TRIGGER_NAME, :routes)
+       drop_function(FUNCTION_NAME)
+     end
+   end
    ```
 
 1. Create a post-deployment migration that queues the migration for existing data:
@@ -398,10 +413,28 @@ background migration.
    `restrict_gitlab_migration gitlab_schema: :gitlab_ci`.
 
    After deployment, our application:
-   - Continues using the data as before.
-   - Ensures that both existing and new data are migrated.
+     - Continues using the data as before.
+     - Ensures that both existing and new data are migrated.
 
-1. In the next release, remove the trigger. We must also add a new post-deployment migration
+1. In the next release, add a database migration to remove the trigger.
+
+   ```ruby
+   class RemoveNamepaceIdTriggerFromRoutes < Gitlab::Database::Migration[2.1]
+     FUNCTION_NAME = 'example_function'
+     TRIGGER_NAME = 'example_trigger'
+
+     def up
+       drop_trigger(TRIGGER_NAME, :routes)
+       drop_function(FUNCTION_NAME)
+     end
+
+     def down
+       # Should reverse the trigger and the function in the up method of the migration that added it
+     end
+   end
+   ```
+
+1. Add a new post-deployment migration
    that checks that the batched background migration is completed. For example:
 
    ```ruby

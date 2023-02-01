@@ -43,7 +43,7 @@ To view a user's public GPG key, you can either:
 
 - Go to `https://gitlab.example.com/<USERNAME>.gpg`. GitLab displays the GPG key,
   if the user has configured one, or a blank page for users without a configured GPG key.
-- Go to the user's profile (such as `https://gitlab.example.com/<USERNAME>`). In the top right
+- Go to the user's profile (such as `https://gitlab.example.com/<USERNAME>`). In the upper right
   of the user's profile, select **View public GPG keys** (**{key}**).
 
 ## Configure commit signing
@@ -119,7 +119,7 @@ If you don't already have a GPG key, create one:
 To add a GPG key to your user settings:
 
 1. Sign in to GitLab.
-1. In the top-right corner, select your avatar.
+1. In the upper-right corner, select your avatar.
 1. Select **Edit profile**.
 1. On the left sidebar, select **GPG Keys** (**{key}**).
 1. In **Key**, paste your _public_ key.
@@ -253,7 +253,7 @@ If a GPG key becomes compromised, revoke it. Revoking a key changes both future 
 
 To revoke a GPG key:
 
-1. In the top-right corner, select your avatar.
+1. In the upper-right corner, select your avatar.
 1. Select **Edit profile**.
 1. On the left sidebar, select **GPG Keys** (**{key}**).
 1. Select **Revoke** next to the GPG key you want to delete.
@@ -268,7 +268,7 @@ When you remove a GPG key from your GitLab account:
 
 To remove a GPG key from your account:
 
-1. In the top-right corner, select your avatar.
+1. In the upper-right corner, select your avatar.
 1. Select **Edit profile**.
 1. On the left sidebar, select **GPG Keys** (**{key}**).
 1. Select **Remove** (**{remove}**) next to the GPG key you want to delete.

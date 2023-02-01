@@ -8,7 +8,7 @@ comments: false
 # Upgrading Community Edition and Enterprise Edition from source **(FREE SELF)**
 
 Make sure you view this update guide from the branch (version) of GitLab you
-would like to install (for example, `11.8`). You can select the required version of documentation in the dropdown list at the top right corner of GitLab documentation page.
+would like to install (for example, `11.8`). You can select the required version of documentation in the dropdown list in the upper-right corner of GitLab documentation page.
 
 In each of the following examples, replace `BRANCH` with the branch of the version you upgrading to (for example, `11-8-stable` for `11.8`). Replace `PREVIOUS_BRANCH` with the
 branch for the version you are upgrading from (for example, `11-7-stable` for `11.7`).

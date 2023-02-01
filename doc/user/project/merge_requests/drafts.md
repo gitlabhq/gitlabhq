@@ -25,7 +25,7 @@ the **Merge** button until you remove the **Draft** flag:
 
 There are several ways to flag a merge request as a draft:
 
-- **Viewing a merge request**: In the top right corner of the merge request, select **Mark as draft**.
+- **Viewing a merge request**: In the upper-right corner of the merge request, select **Mark as draft**.
 - **Creating or editing a merge request**: Add `[Draft]`, `Draft:` or `(Draft)` to
   the beginning of the merge request's title, or select **Mark as draft**
   below the **Title** field.
@@ -41,7 +41,7 @@ There are several ways to flag a merge request as a draft:
 
 When a merge request is ready to be merged, you can remove the `Draft` flag in several ways:
 
-- **Viewing a merge request**: In the top right corner of the merge request, select **Mark as ready**.
+- **Viewing a merge request**: In the upper-right corner of the merge request, select **Mark as ready**.
   Users with at least the Developer role
   can also scroll to the bottom of the merge request description and select **Mark as ready**:
 

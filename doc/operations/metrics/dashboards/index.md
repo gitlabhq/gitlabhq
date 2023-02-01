@@ -33,7 +33,7 @@ To create a new dashboard from the GitLab user interface:
 1. Sign in to GitLab as a user with Maintainer or Owner
    [permissions](../../../user/permissions.md#project-members-permissions).
 1. Navigate to your dashboard at **Monitor > Metrics**.
-1. In the top-right corner of your dashboard, select the **{ellipsis_v}** **More actions** menu,
+1. In the upper-right corner of your dashboard, select the **{ellipsis_v}** **More actions** menu,
    and select **Create new**:
    ![Monitoring Dashboard actions menu with create new item](img/actions_menu_create_new_dashboard_v13_3.png)
 1. In the modal window, select **Open Repository**, then follow the instructions

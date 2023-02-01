@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import apolloProvider from '~/issues/show/graphql';
+import { apolloProvider } from '~/graphql_shared/issuable_client';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import RelatedIssuesRoot from './components/related_issues_root.vue';
 

@@ -236,7 +236,7 @@ To import requirements:
 
 1. In a project, go to **Issues > Requirements**.
    - If the project already has existing requirements, select the import icon (**{import}**) in the
-     top right.
+     upper right.
    - For a project without any requirements, select **Import CSV** in the middle of the page.
 1. Select the file and select **Import requirements**.
 
@@ -296,7 +296,7 @@ Prerequisite:
 To export requirements:
 
 1. In a project, go to **Issues > Requirements**.
-1. In the top right, select the **Export as CSV** icon (**{export}**).
+1. In the upper right, select the **Export as CSV** icon (**{export}**).
 
    A confirmation modal appears.
 

@@ -175,8 +175,8 @@ access to the selected branch, you see a warning, but can still create
 a new branch and start a merge request.
 
 To discard a change in a particular file, select **Discard changes** on that
-file in the changes tab. To discard all the changes, select the trash icon on the
-top-right corner of the changes sidebar.
+file in the changes tab. To discard all the changes, select the trash icon in the
+upper-right corner of the changes sidebar.
 
 ![Commit changes](img/commit_changes_v13_11.png)
 

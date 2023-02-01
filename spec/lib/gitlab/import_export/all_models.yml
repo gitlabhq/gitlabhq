@@ -386,6 +386,7 @@ create_access_levels:
 - user
 - protected_tag
 - group
+- deploy_key
 container_repositories:
 - project
 - name

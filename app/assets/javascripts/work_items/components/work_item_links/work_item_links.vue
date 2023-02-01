@@ -1,6 +1,5 @@
 <script>
 import { GlDropdown, GlDropdownItem, GlIcon, GlLoadingIcon, GlTooltipDirective } from '@gitlab/ui';
-import { produce } from 'immer';
 import { isEmpty } from 'lodash';
 import { s__ } from '~/locale';
 import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
@@ -18,6 +17,8 @@ import {
   WORK_ITEM_STATUS_TEXT,
 } from '../../constants';
 import getWorkItemLinksQuery from '../../graphql/work_item_links.query.graphql';
+import addHierarchyChildMutation from '../../graphql/add_hierarchy_child.mutation.graphql';
+import removeHierarchyChildMutation from '../../graphql/remove_hierarchy_child.mutation.graphql';
 import updateWorkItemMutation from '../../graphql/update_work_item.mutation.graphql';
 import workItemQuery from '../../graphql/work_item.query.graphql';
 import workItemByIidQuery from '../../graphql/work_item_by_iid.query.graphql';
@@ -177,10 +178,6 @@ export default {
     hideAddForm() {
       this.isShownAddForm = false;
     },
-    addChild(child) {
-      const { defaultClient: client } = this.$apollo.provider.clients;
-      this.toggleChildFromCache(child, child.id, client);
-    },
     openChild(child, e) {
       if (isMetaKey(e)) {
         return;
@@ -194,9 +191,8 @@ export default {
       this.activeChild = {};
       this.updateWorkItemIdUrlQuery();
     },
-    handleWorkItemDeleted(childId) {
-      const { defaultClient: client } = this.$apollo.provider.clients;
-      this.toggleChildFromCache(null, childId, client);
+    handleWorkItemDeleted(child) {
+      this.removeHierarchyChild(child);
       this.activeToast = this.$toast.show(s__('WorkItem|Task deleted'));
     },
     updateWorkItemIdUrlQuery({ id, iid } = {}) {
@@ -205,38 +201,31 @@ export default {
         : { work_item_id: getIdFromGraphQLId(id) };
       updateHistory({ url: setUrlParams(params), replace: true });
     },
-    toggleChildFromCache(workItem, childId, store) {
-      const sourceData = store.readQuery({
-        query: getWorkItemLinksQuery,
-        variables: { id: this.issuableGid },
+    async addHierarchyChild(workItem) {
+      return this.$apollo.mutate({
+        mutation: addHierarchyChildMutation,
+        variables: { id: this.issuableGid, workItem },
       });
-
-      const newData = produce(sourceData, (draftState) => {
-        const widgetHierarchy = draftState.workItem.widgets.find(
-          (widget) => widget.type === WIDGET_TYPE_HIERARCHY,
-        );
-
-        const index = widgetHierarchy.children.nodes.findIndex((child) => child.id === childId);
-
-        if (index >= 0) {
-          widgetHierarchy.children.nodes.splice(index, 1);
-        } else {
-          widgetHierarchy.children.nodes.push(workItem);
-        }
-      });
-
-      store.writeQuery({
-        query: getWorkItemLinksQuery,
-        variables: { id: this.issuableGid },
-        data: newData,
+    },
+    async removeHierarchyChild(workItem) {
+      return this.$apollo.mutate({
+        mutation: removeHierarchyChildMutation,
+        variables: { id: this.issuableGid, workItem },
       });
     },
     async updateWorkItem(workItem, childId, parentId) {
-      return this.$apollo.mutate({
+      const response = await this.$apollo.mutate({
         mutation: updateWorkItemMutation,
         variables: { input: { id: childId, hierarchyWidget: { parentId } } },
-        update: (store) => this.toggleChildFromCache(workItem, childId, store),
       });
+
+      if (parentId === null) {
+        await this.removeHierarchyChild(workItem);
+      } else {
+        await this.addHierarchyChild(workItem);
+      }
+
+      return response;
     },
     async undoChildRemoval(workItem, childId) {
       const { data } = await this.updateWorkItem(workItem, childId, this.issuableGid);
@@ -246,7 +235,7 @@ export default {
       }
     },
     async removeChild(childId) {
-      const { data } = await this.updateWorkItem(null, childId, null);
+      const { data } = await this.updateWorkItem({ id: childId }, childId, null);
 
       if (data.workItemUpdate.errors.length === 0) {
         this.activeToast = this.$toast.show(s__('WorkItem|Child removed'), {
@@ -365,7 +354,7 @@ export default {
           :form-type="formType"
           :parent-work-item-type="workItem.workItemType.name"
           @cancel="hideAddForm"
-          @addWorkItemChild="addChild"
+          @addWorkItemChild="addHierarchyChild"
         />
         <work-item-link-child
           v-for="child in children"
@@ -384,7 +373,7 @@ export default {
           :work-item-id="activeChild.id"
           :work-item-iid="activeChild.iid"
           @close="closeModal"
-          @workItemDeleted="handleWorkItemDeleted(activeChild.id)"
+          @workItemDeleted="handleWorkItemDeleted(activeChild)"
         />
       </template>
     </template>

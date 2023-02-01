@@ -63,7 +63,7 @@ If a GitLab administrator has enabled Sourcegraph, you can enable this feature i
 
 In GitLab:
 
-1. In the top-right corner, select your avatar.
+1. In the upper-right corner, select your avatar.
 1. Select **Preferences**.
 1. In the **Integrations** section, select the checkbox under **Sourcegraph**.
 1. Select **Save changes**.

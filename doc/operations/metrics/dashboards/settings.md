@@ -51,7 +51,7 @@ existing external dashboards:
 
 1. Select **Save changes**.
 
-GitLab displays a **View full dashboard** button in the top right corner of your
+GitLab displays a **View full dashboard** button in the upper-right corner of your
 [monitoring dashboard](../../../ci/environments/index.md#monitor-environments)
 which opens the URL you provided:
 

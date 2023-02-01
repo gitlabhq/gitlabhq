@@ -44,7 +44,7 @@ rspec_profiling_is_configured =
   ENV['RSPEC_PROFILING']
 branch_can_be_profiled =
   (ENV['CI_COMMIT_REF_NAME'] == 'master' ||
-    ENV['CI_COMMIT_REF_NAME'] =~ /rspec-profile/)
+    ENV['CI_COMMIT_REF_NAME']&.include?('rspec-profile'))
 
 if rspec_profiling_is_configured && (!ENV.key?('CI') || branch_can_be_profiled)
   require 'rspec_profiling/rspec'
@@ -105,7 +105,7 @@ RSpec.configure do |config|
     location = metadata[:location]
 
     metadata[:level] = quality_level.level_for(location)
-    metadata[:api] = true if location =~ %r{/spec/requests/api/}
+    metadata[:api] = true if location.include?('/spec/requests/api/')
 
     # Do not overwrite migration if it's already set
     unless metadata.key?(:migration)

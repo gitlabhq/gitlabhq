@@ -775,7 +775,7 @@ Gitlab.ee do
   Settings.cron_jobs['elastic_migration_worker']['cron'] ||= '*/30 * * * *'
   Settings.cron_jobs['elastic_migration_worker']['job_class'] ||= 'Elastic::MigrationWorker'
   Settings.cron_jobs['search_index_curation_worker'] ||= Settingslogic.new({})
-  Settings.cron_jobs['search_index_curation_worker']['cron'] ||= '*/30 * * * *'
+  Settings.cron_jobs['search_index_curation_worker']['cron'] ||= '*/1 * * * *'
   Settings.cron_jobs['search_index_curation_worker']['job_class'] ||= 'Search::IndexCurationWorker'
   Settings.cron_jobs['sync_seat_link_worker'] ||= Settingslogic.new({})
   Settings.cron_jobs['sync_seat_link_worker']['cron'] ||= "#{rand(60)} #{rand(3..4)} * * * UTC"

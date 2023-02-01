@@ -22,6 +22,7 @@ RSpec.describe DeployKey, :mailer do
 
     it { is_expected.to have_many(:projects) }
     it { is_expected.to have_many(:protected_branch_push_access_levels).inverse_of(:deploy_key) }
+    it { is_expected.to have_many(:protected_tag_create_access_levels).inverse_of(:deploy_key) }
   end
 
   describe 'notification' do

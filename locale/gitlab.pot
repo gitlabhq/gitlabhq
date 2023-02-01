@@ -29215,6 +29215,9 @@ msgstr ""
 msgid "OnDemandScans|View results"
 msgstr ""
 
+msgid "OnDemandScans|You cannot perform any action on this page because you only have %{linkStart}auditor-level access%{linkEnd} and are not a member of the project."
+msgstr ""
+
 msgid "OnDemandScans|You have unsaved changes"
 msgstr ""
 

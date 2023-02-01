@@ -23,7 +23,7 @@ submit them through a merge request to the repository you don't have access to.
 
 To fork an existing project in GitLab:
 
-1. On the project's home page, in the top right, select **{fork}** **Fork**:
+1. On the project's home page, in the upper right, select **{fork}** **Fork**:
    ![Fork this project](img/forking_workflow_fork_button_v13_10.png)
 1. Optional. Edit the **Project name**.
 1. For **Project URL**, select the [namespace](../../namespace/index.md)

@@ -1005,6 +1005,7 @@ excluded_attributes:
     - :protected_branch_id
   create_access_levels:
     - :protected_tag_id
+    - :deploy_key_id
   deploy_access_levels:
     - :protected_environment_id
   boards:

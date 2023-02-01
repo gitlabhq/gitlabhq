@@ -7,6 +7,7 @@ import setWindowLocation from 'helpers/set_window_location_helper';
 import { stubComponent } from 'helpers/stub_component';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import issueDetailsQuery from 'ee_else_ce/work_items/graphql/get_issue_details.query.graphql';
+import { resolvers } from '~/graphql_shared/issuable_client';
 import WidgetWrapper from '~/work_items/components/widget_wrapper.vue';
 import WorkItemLinks from '~/work_items/components/work_item_links/work_item_links.vue';
 import WorkItemLinkChild from '~/work_items/components/work_item_links/work_item_link_child.vue';
@@ -95,7 +96,7 @@ describe('WorkItemLinks', () => {
         [issueDetailsQuery, issueDetailsQueryHandler],
         [workItemByIidQuery, childWorkItemByIidHandler],
       ],
-      {},
+      resolvers,
       { addTypename: true },
     );
 
@@ -176,6 +177,24 @@ describe('WorkItemLinks', () => {
       await nextTick();
 
       expect(findAddLinksForm().exists()).toBe(false);
+    });
+
+    it('adds work item child from the form', async () => {
+      const workItem = {
+        ...workItemQueryResponse.data.workItem,
+        id: 'gid://gitlab/WorkItem/11',
+      };
+      await createComponent();
+      findToggleFormDropdown().vm.$emit('click');
+      findToggleCreateFormButton().vm.$emit('click');
+      await nextTick();
+
+      expect(findWorkItemLinkChildItems()).toHaveLength(4);
+
+      findAddLinksForm().vm.$emit('addWorkItemChild', workItem);
+      await waitForPromises();
+
+      expect(findWorkItemLinkChildItems()).toHaveLength(5);
     });
   });
 

@@ -19,7 +19,7 @@ Deleting a user deletes all projects in that user namespace.
 
 As a user, to delete your own account:
 
-1. On the top bar, in the top right corner, select your avatar.
+1. On the top bar, in the upper-right corner, select your avatar.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Account**.
 1. Select **Delete account**.

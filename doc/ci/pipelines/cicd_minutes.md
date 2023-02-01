@@ -111,7 +111,7 @@ subgroups, sorted in descending order of CI/CD minute usage.
 
 You can view the number of CI/CD minutes being used by a personal namespace:
 
-1. On the top bar, in the top right corner, select your avatar.
+1. On the top bar, in the upper-right corner, select your avatar.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Usage Quotas**.
 
@@ -161,7 +161,7 @@ namespace.
 
 To purchase additional minutes for your personal namespace:
 
-1. On the top bar, in the top right corner, select your avatar.
+1. On the top bar, in the upper-right corner, select your avatar.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Usage Quotas**.
 1. Select **Buy additional minutes**. GitLab redirects you to the Customers Portal.

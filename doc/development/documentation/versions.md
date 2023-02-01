@@ -13,7 +13,7 @@ including when features were introduced and when they were updated or removed.
 ## View older documentation versions
 
 Previous versions of the documentation are available on `docs.gitlab.com`.
-To view a previous version, select the **Versions** button in the top right.
+To view a previous version, select the **Versions** button in the upper right.
 
 To view versions that are not available on `docs.gitlab.com`:
 

@@ -46,8 +46,8 @@ RSpec.describe SensitiveSerializableHash do
       context "#{klass.name}\##{attribute_name}" do
         let(:attributes) { [attribute_name, "encrypted_#{attribute_name}", "encrypted_#{attribute_name}_iv"] }
 
-        it 'has a encrypted_attributes field' do
-          expect(klass.encrypted_attributes).to include(attribute_name.to_sym)
+        it 'has a attr_encrypted_attributes field' do
+          expect(klass.attr_encrypted_attributes).to include(attribute_name.to_sym)
         end
 
         it 'does not include the attribute in serializable_hash', :aggregate_failures do

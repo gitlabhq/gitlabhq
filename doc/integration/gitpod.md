@@ -35,7 +35,7 @@ To learn more about Gitpod, see their [features](https://www.gitpod.io/) and
 
 With the Gitpod integration enabled for your GitLab instance, to enable it for yourself:
 
-1. In the top-right corner, select your avatar.
+1. In the upper-right corner, select your avatar.
 1. Select **Preferences**.
 1. Under **Preferences**, locate the **Integrations** section.
 1. Select the **Enable Gitpod integration** checkbox and select **Save changes**.
@@ -49,7 +49,7 @@ For self-managed GitLab instances, a GitLab administrator must:
    1. On the left sidebar, select **Settings > General**.
    1. Expand the **Gitpod** configuration section.
    1. Select the **Enable Gitpod integration** checkbox.
-   1. Add the Gitpod instance URL (for example, `https://gitpod.example.com` or `https://gitpod.io`).
+   1. Enter the Gitpod instance URL (for example, `https://gitpod.example.com` or `https://gitpod.io`).
    1. Select **Save changes**.
 1. Register the self-managed GitLab instance in Gitpod. For more information, see the [Gitpod documentation](https://www.gitpod.io/docs/configure/authentication/gitlab#registering-a-self-hosted-gitlab-installation).
 

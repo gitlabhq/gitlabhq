@@ -26,7 +26,7 @@ GitLab by using our OpenID authentication feature.
 First you must create a GitLab application to obtain an application ID and secret
 for authenticating into Vault. To do this, sign in to GitLab and follow these steps:
 
-1. In the top-right corner, select your avatar.
+1. In the upper-right corner, select your avatar.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Applications**.
 1. Fill out the application **Name** and [**Redirect URI**](https://developer.hashicorp.com/vault/docs/auth/jwt#redirect-uris).

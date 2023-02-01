@@ -98,7 +98,7 @@ access on GitLab.com or any other GitLab instance.
 To use the repository in the examples on this page:
 
 1. Go to [https://gitlab.com/gitlab-tests/sample-project/](https://gitlab.com/gitlab-tests/sample-project/).
-1. In the top right, select **Fork**.
+1. In the upper right, select **Fork**.
 1. Choose a namespace for your fork.
 
 The project becomes available at `https://gitlab.com/<your-namespace>/sample-project/`.

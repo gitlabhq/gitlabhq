@@ -1050,9 +1050,11 @@ RSpec.describe Integration do
       expect(hash['encrypted_properties']).not_to eq(record.encrypted_properties)
       expect(hash['encrypted_properties_iv']).not_to eq(record.encrypted_properties_iv)
 
-      decrypted = described_class.decrypt(:properties,
-                                          hash['encrypted_properties'],
-                                          { iv: hash['encrypted_properties_iv'] })
+      decrypted = described_class.attr_decrypt(
+        :properties,
+        hash['encrypted_properties'],
+        { iv: hash['encrypted_properties_iv'] }
+      )
 
       expect(decrypted).to eq db_props
     end

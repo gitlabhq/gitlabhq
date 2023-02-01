@@ -21,7 +21,7 @@ You can use the To-Do List to track [actions](#actions-that-create-to-do-items) 
 
 To access your To-Do List:
 
-On the top bar, in the top right, select To-Do List (**{task-done}**).
+On the top bar, in the upper right, select To-Do List (**{task-done}**).
 
 ## Search the To-Do List
 
@@ -157,7 +157,7 @@ There are two ways to do this:
 
 You can mark all your to-do items as done at the same time.
 
-In the To-Do List, in the top right, select **Mark all as done**.
+In the To-Do List, in the upper right, select **Mark all as done**.
 
 ## How a user's To-Do List is affected when their access changes
 

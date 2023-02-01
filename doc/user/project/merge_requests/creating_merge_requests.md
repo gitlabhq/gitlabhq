@@ -19,7 +19,7 @@ You can create a merge request from the list of merge requests.
 
 1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left menu, select **Merge requests**.
-1. In the top right, select **New merge request**.
+1. In the upper right, select **New merge request**.
 1. Select a source and target branch and then **Compare branches and continue**.
 1. Fill out the fields and select **Create merge request**.
 
@@ -172,7 +172,7 @@ To create a merge request by sending an email:
 
 1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left menu, select **Merge requests**.
-1. In the top right, select **Email a new merge request to this project**.
+1. In the upper right, select **Email a new merge request to this project**.
    An email address is displayed. Copy this address.
    Ensure you keep this address private.
 1. Open an email and compose a message with the following information:

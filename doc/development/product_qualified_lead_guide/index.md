@@ -102,7 +102,7 @@ We currently use the following `glm_content` values:
 | `discover-project-security`         | This value is used in the project security feature discovery page. |
 | `discover-project-security-pqltest` | This value is used in the project security feature discovery page [experiment with 3 CTAs](https://gitlab.com/gitlab-org/gitlab/-/issues/349799). |
 | `group-billing`                     | This value is used in the group billing page. |
-| `trial-status-show-group`           | This value is used in the top left nav when a namespace has an active trial. |
+| `trial-status-show-group`           | This value is used in the upper-left nav when a namespace has an active trial. |
 
 ### Test the component
 

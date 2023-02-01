@@ -65,7 +65,7 @@ or:
 
 or:
 
-1. On the top bar, on the top right, select **{merge-request-open}** **Merge requests**.
+1. On the top bar, in the upper right, select **{merge-request-open}** **Merge requests**.
 1. From the dropdown list, select **Assigned to you**.
 
 ## Filter the list of merge requests
@@ -258,7 +258,7 @@ On self-managed GitLab, by default this feature is not available. To make it ava
 On GitLab.com, this feature is enabled in the following projects: `gitlab-org/gitlab`, `gitlab-com/www-gitlab-com`, and `gitlab-org/customers-gitlab-com`.
 
 When this feature flag is enabled, you can find the following actions in
-**Merge request actions** (**{ellipsis_v}**) on the top right:
+**Merge request actions** (**{ellipsis_v}**) in the upper right:
 
 - The [notifications](../../profile/notifications.md#edit-notification-settings-for-issues-merge-requests-and-epics) toggle
 - Mark merge request as ready or [draft](../merge_requests/drafts.md)

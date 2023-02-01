@@ -60,7 +60,8 @@ module Sidebars
             link: link,
             active_routes: { page: link },
             has_pill: true,
-            pill_count: user_merge_requests_counts[:assigned]
+            pill_count: user_merge_requests_counts[:assigned],
+            item_id: :merge_requests_assigned
           )
         end
 
@@ -72,7 +73,8 @@ module Sidebars
             link: link,
             active_routes: { page: link },
             has_pill: true,
-            pill_count: user_merge_requests_counts[:review_requested]
+            pill_count: user_merge_requests_counts[:review_requested],
+            item_id: :merge_requests_to_review
           )
         end
       end

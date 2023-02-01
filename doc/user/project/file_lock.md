@@ -209,7 +209,7 @@ requests that modify locked files. Unlock the file to allow changes.
 To lock a file:
 
 1. Open the file or directory in GitLab.
-1. On the top right, above the file, select **Lock**.
+1. In the upper right, above the file, select **Lock**.
 1. On the confirmation dialog box, select **OK**.
 
 If you do not have permission to lock the file, the button is not enabled.

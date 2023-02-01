@@ -45,7 +45,7 @@ To create an issue:
 
 1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Issues > List**.
-1. In the top right corner, select **New issue**.
+1. In the upper-right corner, select **New issue**.
 1. Complete the fields. (If you have reference content that lists each field, link to it here.)
 1. Select **Create issue**.
 

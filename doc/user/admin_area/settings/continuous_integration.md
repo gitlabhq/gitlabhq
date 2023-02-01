@@ -54,7 +54,7 @@ To enable a project runner for more than one project:
 1. On the top bar, select **Main menu > Admin**.
 1. From the left sidebar, select **CI/CD > Runners**.
 1. Select the runner you want to edit.
-1. In the top right, select **Edit** (**{pencil}**).
+1. In the upper right, select **Edit** (**{pencil}**).
 1. Under **Restrict projects for this runner**, search for a project.
 1. To the left of the project, select **Enable**.
 1. Repeat this process for each additional project.

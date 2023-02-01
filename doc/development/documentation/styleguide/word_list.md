@@ -14,6 +14,7 @@ recommends these word choices. In addition:
   [top misused terms](https://about.gitlab.com/handbook/communication/top-misused-terms/).
 - The documentation [style guide](../styleguide#language) includes details
   about language and capitalization.
+- The GitLab handbook provides guidance on the [use of third-party trademarks](https://about.gitlab.com/handbook/legal/policies/product-third-party-trademarks-guidelines/#process-for-adding-third-party-trademarks-to-gitlab).
 
 For guidance not on this page, we defer to these style guides:
 

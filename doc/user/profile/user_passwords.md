@@ -26,7 +26,7 @@ authorization provider, you do not need to choose a password. GitLab
 You can change your password. GitLab enforces [password requirements](#password-requirements) when you choose your new
 password.
 
-1. On the top bar, in the top-right corner, select your avatar.
+1. On the top bar, in the upper-right corner, select your avatar.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Password**.
 1. In the **Current password** text box, enter your current password.

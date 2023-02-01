@@ -87,7 +87,7 @@ where needed.
 You can check all existing queries and mutations on the right side
 of GraphiQL in its **Documentation explorer**. You can also
 write queries and mutations directly on the left tab and check
-their execution by clicking **Execute query** button on the top left:
+their execution by selecting **Execute query** in the upper left:
 
 ![GraphiQL interface](img/graphiql_explorer_v12_4.png)
 

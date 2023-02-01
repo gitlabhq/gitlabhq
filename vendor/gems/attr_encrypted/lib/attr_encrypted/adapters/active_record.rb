@@ -11,7 +11,7 @@ if defined?(ActiveRecord::Base)
             alias_method :reload_without_attr_encrypted, :reload
             def reload(*args, &block)
               result = reload_without_attr_encrypted(*args, &block)
-              self.class.encrypted_attributes.keys.each do |attribute_name|
+              self.class.attr_encrypted_attributes.keys.each do |attribute_name|
                 instance_variable_set("@#{attribute_name}", nil)
               end
               result
@@ -27,8 +27,8 @@ if defined?(ActiveRecord::Base)
             def perform_attribute_assignment(method, new_attributes, *args)
               return if new_attributes.blank?
 
-              send method, new_attributes.reject { |k, _|  self.class.encrypted_attributes.key?(k.to_sym) }, *args
-              send method, new_attributes.reject { |k, _| !self.class.encrypted_attributes.key?(k.to_sym) }, *args
+              send method, new_attributes.reject { |k, _|  self.class.attr_encrypted_attributes.key?(k.to_sym) }, *args
+              send method, new_attributes.reject { |k, _| !self.class.attr_encrypted_attributes.key?(k.to_sym) }, *args
             end
             private :perform_attribute_assignment
 
@@ -54,7 +54,7 @@ if defined?(ActiveRecord::Base)
             options = attrs.extract_options!
             attr = attrs.pop
             attribute attr if ::ActiveRecord::VERSION::STRING >= "5.1.0"
-            options.merge! encrypted_attributes[attr]
+            options.merge! attr_encrypted_attributes[attr]
 
             define_method("#{attr}_was") do
               attribute_was(attr)
@@ -125,10 +125,10 @@ if defined?(ActiveRecord::Base)
             if match = /^(find|scoped)_(all_by|by)_([_a-zA-Z]\w*)$/.match(method.to_s)
               attribute_names = match.captures.last.split('_and_')
               attribute_names.each_with_index do |attribute, index|
-                if attr_encrypted?(attribute) && encrypted_attributes[attribute.to_sym][:mode] == :single_iv_and_salt
+                if attr_encrypted?(attribute) && attr_encrypted_attributes[attribute.to_sym][:mode] == :single_iv_and_salt
                   args[index] = send("encrypt_#{attribute}", args[index])
                   warn "DEPRECATION WARNING: This feature will be removed in the next major release."
-                  attribute_names[index] = encrypted_attributes[attribute.to_sym][:attribute]
+                  attribute_names[index] = attr_encrypted_attributes[attribute.to_sym][:attribute]
                 end
               end
               method = "#{match.captures[0]}_#{match.captures[1]}_#{attribute_names.join('_and_')}".to_sym

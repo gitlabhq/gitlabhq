@@ -6,6 +6,8 @@ import getIssueStateQuery from '~/issues/show/queries/get_issue_state.query.grap
 import createDefaultClient from '~/lib/graphql';
 import typeDefs from '~/work_items/graphql/typedefs.graphql';
 import { WIDGET_TYPE_NOTES } from '~/work_items/constants';
+import getWorkItemLinksQuery from '~/work_items/graphql/work_item_links.query.graphql';
+import { findHierarchyWidgetChildren } from '~/work_items/utils';
 
 export const config = {
   typeDefs,
@@ -143,6 +145,28 @@ export const config = {
 
 export const resolvers = {
   Mutation: {
+    addHierarchyChild: (_, { id, workItem }, { cache }) => {
+      const queryArgs = { query: getWorkItemLinksQuery, variables: { id } };
+      const sourceData = cache.readQuery(queryArgs);
+
+      const data = produce(sourceData, (draftState) => {
+        findHierarchyWidgetChildren(draftState.workItem).push(workItem);
+      });
+
+      cache.writeQuery({ ...queryArgs, data });
+    },
+    removeHierarchyChild: (_, { id, workItem }, { cache }) => {
+      const queryArgs = { query: getWorkItemLinksQuery, variables: { id } };
+      const sourceData = cache.readQuery(queryArgs);
+
+      const data = produce(sourceData, (draftState) => {
+        const hierarchyChildren = findHierarchyWidgetChildren(draftState.workItem);
+        const index = hierarchyChildren.findIndex((child) => child.id === workItem.id);
+        hierarchyChildren.splice(index, 1);
+      });
+
+      cache.writeQuery({ ...queryArgs, data });
+    },
     updateIssueState: (_, { issueType = undefined, isDirty = false }, { cache }) => {
       const sourceData = cache.readQuery({ query: getIssueStateQuery });
       const data = produce(sourceData, (draftData) => {

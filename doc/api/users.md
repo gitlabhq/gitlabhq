@@ -946,7 +946,7 @@ Example response:
 
 ## User counts
 
-Get the counts (same as in top right menu) of the authenticated user.
+Get the counts (same as in the upper-right menu) of the authenticated user.
 
 | Attribute                         | Type   | Description                                                                  |
 | --------------------------------- | ------ | ---------------------------------------------------------------------------- |

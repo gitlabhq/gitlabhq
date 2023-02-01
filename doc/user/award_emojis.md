@@ -36,7 +36,7 @@ celebrate an accomplishment or agree with an opinion.
 
 To add an award emoji:
 
-1. In the top right of the comment, select the smile (**{slight-smile}**).
+1. In the upper right of the comment, select the smile (**{slight-smile}**).
 1. Select an emoji from the dropdown list.
 
 To remove an award emoji, select the emoji again.

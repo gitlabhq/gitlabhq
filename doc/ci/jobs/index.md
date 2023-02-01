@@ -337,7 +337,7 @@ In the example above:
 - `date +%s`: The Unix timestamp (for example `1560896352`).
 - `my_first_section`: The name given to the section.
 - `\r\e[0K`: Prevents the section markers from displaying in the rendered (colored)
-  job log, but they are displayed in the raw job log. To see them, in the top right
+  job log, but they are displayed in the raw job log. To see them, in the upper right
   of the job log, select **{doc-text}** (**Show complete raw**).
   - `\r`: carriage return.
   - `\e[0K`: clear line ANSI escape code.

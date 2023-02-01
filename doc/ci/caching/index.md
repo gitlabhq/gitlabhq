@@ -570,7 +570,7 @@ You can clear the cache in the GitLab UI:
 
 1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **CI/CD > Pipelines**.
-1. In the top right, select **Clear runner caches**.
+1. In the upper right, select **Clear runner caches**.
 
 On the next commit, your CI/CD jobs use a new cache.
 
