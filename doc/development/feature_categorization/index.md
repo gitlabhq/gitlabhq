@@ -191,7 +191,7 @@ within that class.
 You must set feature category metadata for each RSpec example. This information is used for flaky test
 issues to identify the group that owns the feature.
 
-The `feature_category` should be a value from [`categories.json`](https://about.gitlab.com/categories.json).
+The `feature_category` should be a value from [`config/feature_categories.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/feature_categories.yml).
 
 The `feature_category` metadata can be set:
 

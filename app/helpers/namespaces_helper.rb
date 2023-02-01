@@ -91,6 +91,15 @@ module NamespacesHelper
     }
   end
 
+  def storage_usage_app_data(namespace)
+    {
+      namespace_id: namespace.id,
+      namespace_path: namespace.full_path,
+      user_namespace: namespace.user_namespace?.to_s,
+      default_per_page: page_size
+    }
+  end
+
   private
 
   # Many importers create a temporary Group, so use the real

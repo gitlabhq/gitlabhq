@@ -97,6 +97,23 @@ export default {
       type: Boolean,
       required: true,
     },
+    /**
+     * A button is composed of the following properties:
+     *
+     * {
+     *   "id": string,
+     *   "href": string,
+     *   "dataMethod": string,
+     *   "dataClipboardText": string,
+     *   "icon": string,
+     *   "variant": string,
+     *   "loading": boolean,
+     *   "testId":string,
+     *   "text": string,
+     *   "class": string | Object,
+     *   "fullReport": boolean,
+     * }
+     */
     actionButtons: {
       type: Array,
       required: false,

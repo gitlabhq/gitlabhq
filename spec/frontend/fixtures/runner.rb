@@ -30,7 +30,7 @@ RSpec.describe 'Runner (JavaScript fixtures)' do
   before do
     allow_next_instance_of(::Gitlab::Ci::RunnerUpgradeCheck) do |instance|
       allow(instance).to receive(:check_runner_upgrade_suggestion)
-        .and_return([nil, :not_available])
+        .and_return([nil, :unavailable])
     end
   end
 

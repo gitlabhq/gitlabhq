@@ -64,7 +64,7 @@ module RuboCop
         end
 
         # Used by RuboCop to invalidate its cache if the contents of
-        # config/feature_categories.json changes.
+        # config/feature_categories.yml changes.
         def external_dependency_checksum
           @external_dependency_checksum ||=
             Digest::SHA256.file(FEATURE_CATEGORIES_PATH).hexdigest

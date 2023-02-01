@@ -177,7 +177,6 @@ upgraded to. This is to ensure [compatibility with GitLab versions](https://docs
 ## Upgrade paths
 
 Upgrading across multiple GitLab versions in one go is *only possible by accepting downtime*.
-The following examples assume downtime is acceptable while upgrading.
 If you don't want any downtime, read how to [upgrade with zero downtime](zero_downtime.md).
 
 For a dynamic view of examples of supported upgrade paths, try the [Upgrade Path tool](https://gitlab-com.gitlab.io/support/toolbox/upgrade-path/) maintained by the [GitLab Support team](https://about.gitlab.com/handbook/support/#about-the-support-team). To share feedback and help improve the tool, create an issue or MR in the [upgrade-path project](https://gitlab.com/gitlab-com/support/toolbox/upgrade-path).
@@ -186,7 +185,14 @@ Find where your version sits in the upgrade path below, and upgrade GitLab
 accordingly, while also consulting the
 [version-specific upgrade instructions](#version-specific-upgrading-instructions):
 
-`8.11.Z` -> `8.12.0` -> `8.17.7` -> `9.0.13` -> `9.5.10` -> `10.0.7` -> `10.8.7` -> `11.0.6` -> [`11.11.8`](#1200) -> `12.0.12` -> [`12.1.17`](#1210) -> [`12.10.14`](#12100) -> `13.0.14` -> [`13.1.11`](#1310) -> [`13.8.8`](#1388) -> [`13.12.15`](#13120) -> [`14.0.12`](#1400) -> [`14.3.6`](#1430) -> [`14.9.5`](#1490) -> [`14.10.Z`](#14100) -> [`15.0.Z`](#1500) -> [`15.1.Z`](#1510) (for GitLab instances with multiple web nodes) -> [`15.4.0`](#1540) -> [latest `15.Y.Z`](https://gitlab.com/gitlab-org/gitlab/-/releases)
+- GitLab 8: `8.11.Z` > `8.12.0` > `8.17.7`
+- GitLab 9: `9.0.13` > `9.5.10`
+- GitLab 10: `10.0.7` > `10.8.7`
+- GitLab 11: `11.0.6` > [`11.11.8`](#1200)
+- GitLab 12: `12.0.12` > [`12.1.17`](#1210) > [`12.10.14`](#12100)
+- GitLab 13: `13.0.14` > [`13.1.11`](#1310) > [`13.8.8`](#1388) > [`13.12.15`](#13120)
+- GitLab 14: [`14.0.12`](#1400) > [`14.3.6`](#1430) > [`14.9.5`](#1490) > [`14.10.5`](#14100)
+- GitLab 15: [`15.0.5`](#1500) > [`15.1.6`](#1510) (for GitLab instances with multiple web nodes) > [`15.4.6`](#1540) > [latest `15.Y.Z`](https://gitlab.com/gitlab-org/gitlab/-/releases)
 
 NOTE:
 When not explicitly specified, upgrade GitLab to the latest available patch
@@ -195,23 +201,6 @@ This includes versions you must stop at on the upgrade path as there may
 be fixes for issues relating to the upgrade process.
 Specifically around a [major version](#upgrading-to-a-new-major-version),
 crucial database schema and migration patches are included in the latest patch releases.
-
-The following table, while not exhaustive, shows some examples of the supported
-upgrade paths.
-Additional steps between the mentioned versions are possible. We list the minimally necessary steps only.
-
-| Target version | Your version | Supported upgrade path                                                                                     | Note                                                                                                  |
-| -------------- | ------------ | ---------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
-| `15.1.0`       | `14.6.2`     | `14.6.2` -> `14.9.5` -> `14.10.5` -> `15.0.2` -> `15.1.0`                                                  | Three intermediate versions are required: `14.9`, `14.10`, and `15.0`.                                |
-| `15.0.0`       | `14.6.2`     | `14.6.2` -> `14.9.5` -> `14.10.5` -> `15.0.2`                                                              | Two intermediate versions are required: `14.9` and `14.10`.                                          |
-| `14.6.2`       | `13.10.2`    | `13.10.2` -> `13.12.15` -> `14.0.12` -> `14.3.6` => `14.6.2`                                               | Three intermediate versions are required: `13.12`, `14.0`, and `14.3`.                                |
-| `14.1.8`       | `13.9.2`     | `13.9.2` -> `13.12.15` -> `14.0.12` -> `14.1.8`                                                            | Two intermediate versions are required: `13.12` and `14.0`.                                          |
-| `13.12.15`     | `12.9.2`     | `12.9.2` -> `12.10.14` -> `13.0.14`  -> `13.1.11` -> `13.8.8` -> `13.12.15`                                | Four intermediate versions are required: `12.10`, `13.0`, `13.1`, and `13.8`.                         |
-| `13.2.10`      | `11.5.0`     | `11.5.0` -> `11.11.8` -> `12.0.12` -> `12.1.17` -> `12.10.14` -> `13.0.14` -> `13.1.11` -> `13.2.10`       | Six intermediate versions are required: `11.11`, `12.0`, `12.1`, `12.10`, `13.0`, and `13.1`.         |
-| `12.10.14`     | `11.3.4`     | `11.3.4` -> `11.11.8` -> `12.0.12` -> `12.1.17` -> `12.10.14`                                              | Three intermediate versions are required: `11.11`, `12.0`, and `12.1`.                                |
-| `12.9.5`       | `10.4.5`     | `10.4.5` -> `10.8.7` -> `11.0.6` -> `11.11.8` -> `12.0.12` -> `12.1.17` -> `12.9.5`                        | Five intermediate versions are required: `10.8`, `11.0`, `11.11`, `12.0`, and `12.1`.                 |
-| `12.2.5`       | `9.2.6`      | `9.2.6` -> `9.5.10` -> `10.0.7` -> `10.8.7` -> `11.0.6` -> `11.11.8` -> `12.0.12` -> `12.1.17` -> `12.2.5` | Seven intermediate versions are required: `9.5`, `10.0`, `10.8`, `11.0`, `11.11`, `12.0`, and `12.1`. |
-| `11.3.4`       | `8.13.4`     | `8.13.4` -> `8.17.7` -> `9.0.13` -> `9.5.10` -> `10.0.7` -> `10.8.7` -> `11.0.6` -> `11.3.4`               | Six intermediate versions are required: `8.17`, `9.0`, `9.5`, `10.0`, `10.8`, and `11.0`.             |
 
 ## Upgrading between editions
 

@@ -58,7 +58,7 @@ module ReviewApps
     end
 
     def helm
-      @helm ||= Tooling::Helm3Client.new(namespace: review_apps_namespace)
+      @helm ||= Tooling::Helm3Client.new
     end
 
     def kubernetes

@@ -3,7 +3,8 @@
 module BulkImports
   class Error < StandardError
     def self.unsupported_gitlab_version
-      self.new("Unsupported GitLab Version. Minimum Supported Gitlab Version #{BulkImport::MIN_MAJOR_VERSION}.")
+      self.new("Unsupported GitLab version. Source instance must run GitLab version #{BulkImport::MIN_MAJOR_VERSION} " \
+               "or later.")
     end
 
     def self.scope_validation_failure

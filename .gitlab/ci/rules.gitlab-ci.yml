@@ -181,8 +181,7 @@
   - ".gitlab/ci/build-images.gitlab-ci.yml"
   - ".gitlab/ci/review.gitlab-ci.yml"
   - ".gitlab/ci/review-apps/**/*"
-  - "scripts/review_apps/base-config.yaml"
-  - "scripts/review_apps/review-apps.sh"
+  - "scripts/review_apps/**/*"
   - "scripts/trigger-build.rb"
   - "{,ee/,jh/}{bin,config}/**/*.rb"
 
@@ -344,14 +343,15 @@
 # DB patterns + .ci-patterns
 .db-patterns: &db-patterns
   - "{,ee/,jh/}{,spec/}{db,migrations}/**/*"
-  - "{,ee/,jh/}{,spec/}lib/{,ee/,jh/}gitlab/database/**/*"
-  - "{,ee/,jh/}{,spec/}lib/{,ee/,jh/}gitlab/database{,_spec}.rb"
-  - "{,ee/,jh/}{,spec/}lib/{,ee/,jh/}gitlab/background_migration/**/*"
   - "{,ee/,jh/}{,spec/}lib/{,ee/,jh/}gitlab/background_migration{,_spec}.rb"
+  - "{,ee/,jh/}{,spec/}lib/{,ee/,jh/}gitlab/background_migration/**/*"
+  - "{,ee/,jh/}{,spec/}lib/{,ee/,jh/}gitlab/content_security_policy/config_loader{,_spec}.rb"
+  - "{,ee/,jh/}{,spec/}lib/{,ee/,jh/}gitlab/database{,_spec}.rb"
+  - "{,ee/,jh/}{,spec/}lib/{,ee/,jh/}gitlab/database/**/*"
   - "{,ee/,jh/}spec/support/helpers/database/**/*"
   - "{,ee/,jh/}spec/support/helpers/migrations_helpers/**/*"
-  - "lib/gitlab/markdown_cache/active_record/**/*"
   - "lib/api/admin/batched_background_migrations.rb"
+  - "lib/gitlab/markdown_cache/active_record/**/*"
   - "spec/requests/api/admin/batched_background_migrations_spec.rb"
   - "config/prometheus/common_metrics.yml"  # Used by Gitlab::DatabaseImporters::CommonMetrics::Importer
   - "{,ee/,jh/}app/models/project_statistics.rb"  # Used to calculate sizes in migration specs

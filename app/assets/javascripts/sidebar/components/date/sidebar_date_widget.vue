@@ -235,7 +235,7 @@ export default {
     help: __('Help'),
     learnMore: __('Learn more'),
   },
-  dateHelpUrl: '/help/user/group/epics/index.md#start-date-and-due-date',
+  dateHelpUrl: '/help/user/group/epics/manage_epics.md#start-and-due-date-inheritance',
 };
 </script>
 

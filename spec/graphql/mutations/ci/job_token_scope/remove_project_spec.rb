@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe Mutations::Ci::JobTokenScope::RemoveProject do
+RSpec.describe Mutations::Ci::JobTokenScope::RemoveProject, feature_category: :continuous_integration do
   let(:mutation) do
     described_class.new(object: nil, context: { current_user: current_user }, field: nil)
   end

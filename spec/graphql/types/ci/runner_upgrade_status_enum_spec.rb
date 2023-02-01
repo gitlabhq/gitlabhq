@@ -15,6 +15,7 @@ RSpec.describe Types::Ci::RunnerUpgradeStatusEnum, feature_category: :runner_fle
       expected_graphql_source_values
         .map(&:upcase)
         .map { |v| v == 'INVALID_VERSION' ? 'INVALID' : v }
+        .map { |v| v == 'UNAVAILABLE' ? 'NOT_AVAILABLE' : v }
     )
   end
 

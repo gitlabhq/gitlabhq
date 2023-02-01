@@ -381,3 +381,37 @@ To delete these references to missing local and/or remote artifacts (`job.log` f
 If `gitlab-rake gitlab:lfs:check VERBOSE=1` detects LFS objects that exist in the database
 but not on disk, [follow the procedure in the LFS documentation](../lfs/index.md#missing-lfs-objects)
 to remove the database entries.
+
+### Update dangling object storage references
+
+If you have [migrated from object storage to local storage](../job_artifacts.md#migrating-from-object-storage-to-local-storage) and files were missing, then dangling database references remain.
+
+This is visible in the migration logs with errors like the following:
+
+```shell
+W, [2022-11-28T13:14:09.283833 #10025]  WARN -- : Failed to transfer Ci::JobArtifact ID 11 with error: undefined method `body' for nil:NilClass
+W, [2022-11-28T13:14:09.296911 #10025]  WARN -- : Failed to transfer Ci::JobArtifact ID 12 with error: undefined method `body' for nil:NilClass
+```
+
+Attempting to [delete references to missing artifacts](check.md#delete-references-to-missing-artifacts) after you have disabled object storage, results in the following error:
+
+```shell
+RuntimeError (Object Storage is not enabled for JobArtifactUploader)
+```
+
+To update these references to point to local storage:
+
+1. Open the [GitLab Rails Console](../operations/rails_console.md#starting-a-rails-console-session).
+1. Run the following Ruby code:
+
+   ```ruby
+   artifacts_updated = 0
+   ::Ci::JobArtifact.find_each do |artifact|                    ### Iterate artifacts
+     next if artifact.file_store != 2                           ### Skip if file_store already points to local storage
+     artifacts_updated += 1
+     # artifact.update(file_store: 1)                           ### Uncomment to actually update
+   end
+   puts "Updated file_store count: #{artifacts_updated}"
+   ```
+
+The script to [delete references to missing artifacts](check.md#delete-references-to-missing-artifacts) now functions correctly and cleans up the database.

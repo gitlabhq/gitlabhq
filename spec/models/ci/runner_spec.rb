@@ -1939,12 +1939,12 @@ RSpec.describe Ci::Runner, feature_category: :runner do
     let_it_be(:runner_14_1_1) { create(:ci_runner, version: '14.1.1') }
     let_it_be(:runner_version_14_0_0) { create(:ci_runner_version, version: '14.0.0', status: :available) }
     let_it_be(:runner_version_14_1_0) { create(:ci_runner_version, version: '14.1.0', status: :recommended) }
-    let_it_be(:runner_version_14_1_1) { create(:ci_runner_version, version: '14.1.1', status: :not_available) }
+    let_it_be(:runner_version_14_1_1) { create(:ci_runner_version, version: '14.1.1', status: :unavailable) }
 
-    context ':not_available' do
-      let(:upgrade_status) { :not_available }
+    context ':unavailable' do
+      let(:upgrade_status) { :unavailable }
 
-      it 'returns runners whose version is assigned :not_available' do
+      it 'returns runners whose version is assigned :unavailable' do
         is_expected.to contain_exactly(runner_14_1_1)
       end
     end

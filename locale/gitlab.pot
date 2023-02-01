@@ -36555,6 +36555,9 @@ msgstr ""
 msgid "Runners|Members of the %{type} can register runners"
 msgstr ""
 
+msgid "Runners|Minor version upgrades are available."
+msgstr ""
+
 msgid "Runners|Name"
 msgstr ""
 
@@ -36756,6 +36759,9 @@ msgid "Runners|Running"
 msgstr ""
 
 msgid "Runners|Runs untagged jobs"
+msgstr ""
+
+msgid "Runners|Security or compatibility upgrades are recommended."
 msgstr ""
 
 msgid "Runners|Select all"

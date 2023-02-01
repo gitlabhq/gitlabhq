@@ -71,14 +71,6 @@ RSpec.describe Release do
       subject { build(:release, project: project, name: 'Release 1.0') }
 
       it { is_expected.to validate_presence_of(:author_id) }
-
-      context 'when feature flag is disabled' do
-        before do
-          stub_feature_flags(validate_release_with_author: false)
-        end
-
-        it { is_expected.not_to validate_presence_of(:author_id) }
-      end
     end
 
     # Deleting user along with their contributions, nullifies releases author_id.
