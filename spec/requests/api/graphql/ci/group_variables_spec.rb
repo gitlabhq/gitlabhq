@@ -47,7 +47,7 @@ RSpec.describe 'Query.group(fullPath).ciVariables', feature_category: :pipeline_
 
       post_graphql(query, current_user: user)
 
-      expect(graphql_data.dig('group', 'ciVariables', 'limit')).to be(200)
+      expect(graphql_data.dig('group', 'ciVariables', 'limit')).to be(30000)
       expect(graphql_data.dig('group', 'ciVariables', 'nodes')).to contain_exactly({
         'id' => variable.to_global_id.to_s,
         'key' => 'TEST_VAR',

@@ -150,8 +150,9 @@ variables:
   RSPEC_FOSS_IMPACT_PIPELINE_YML: rspec-foss-impact-pipeline.yml
   RSPEC_LAST_RUN_RESULTS_FILE: rspec/rspec_last_run_results.txt
   RSPEC_MATCHING_JS_FILES_PATH: rspec/js_matching_files.txt
-  RSPEC_MATCHING_TESTS_FOSS_PATH: rspec/matching_tests-foss.txt
   RSPEC_MATCHING_TESTS_PATH: rspec/matching_tests.txt
+  RSPEC_MATCHING_TESTS_FOSS_PATH: rspec/matching_tests-foss.txt
+  RSPEC_MATCHING_TESTS_EE_PATH: rspec/matching_tests-ee.txt
   RSPEC_PACKED_TESTS_MAPPING_PATH: crystalball/packed-mapping.json
   RSPEC_PROFILING_FOLDER_PATH: rspec/profiling
   RSPEC_TESTS_MAPPING_PATH: crystalball/mapping.json

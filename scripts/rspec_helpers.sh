@@ -351,8 +351,16 @@ function filter_rspec_matched_foss_tests() {
   local matching_tests_file="${1}"
   local foss_matching_tests_file="${2}"
 
-  # Keep only files that exists (i.e. exclude EE speficic files)
+  # Keep only FOSS files that exists
   cat ${matching_tests_file} | ruby -e 'puts $stdin.read.split(" ").select { |f| f.start_with?("spec/") && File.exist?(f) }.join(" ")' > "${foss_matching_tests_file}"
+}
+
+function filter_rspec_matched_ee_tests() {
+  local matching_tests_file="${1}"
+  local ee_matching_tests_file="${2}"
+
+  # Keep only EE files that exists
+  cat ${matching_tests_file} | ruby -e 'puts $stdin.read.split(" ").select { |f| f.start_with?("ee/spec/") && File.exist?(f) }.join(" ")' > "${ee_matching_tests_file}"
 }
 
 function generate_frontend_fixtures_mapping() {

@@ -40,7 +40,8 @@ When you access a pipeline, you can see the related jobs for that pipeline.
 Selecting an individual job shows you its job log, and allows you to:
 
 - Cancel the job.
-- Retry the job.
+- Retry the job, if it failed.
+- Run the job again, if it passed.
 - Erase the job log.
 
 ### View all jobs in a project

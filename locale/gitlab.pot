@@ -27435,6 +27435,9 @@ msgstr ""
 msgid "Namespace or group to import repository into does not exist."
 msgstr ""
 
+msgid "Namespace or project is required"
+msgstr ""
+
 msgid "Namespace:"
 msgstr ""
 
@@ -29296,6 +29299,9 @@ msgid "Only log Akismet verdict, do not prevent issue or snippet creation when s
 msgstr ""
 
 msgid "Only members of this group can access the wiki."
+msgstr ""
+
+msgid "Only one source is required but both were provided"
 msgstr ""
 
 msgid "Only policy:"
@@ -33161,6 +33167,9 @@ msgstr ""
 msgid "ProjectSettings|Analytics"
 msgstr ""
 
+msgid "ProjectSettings|Analytics Dashboards"
+msgstr ""
+
 msgid "ProjectSettings|Anyone can pull packages with a package manager API."
 msgstr ""
 
@@ -33434,6 +33443,12 @@ msgstr ""
 msgid "ProjectSettings|Select the default branch for this project, and configure the template for branch names."
 msgstr ""
 
+msgid "ProjectSettings|Select the project containing Analytics Dashboards configuration files"
+msgstr ""
+
+msgid "ProjectSettings|Select the project containing Analytics Dashboards configuration files."
+msgstr ""
+
 msgid "ProjectSettings|Set the default behavior of this option in merge requests. Changes to this are also applied to existing merge requests."
 msgstr ""
 
@@ -33546,6 +33561,9 @@ msgid "ProjectSettings|What are badges?"
 msgstr ""
 
 msgid "ProjectSettings|What are merge trains?"
+msgstr ""
+
+msgid "ProjectSettings|What is Analytics Dashboards?"
 msgstr ""
 
 msgid "ProjectSettings|What is squashing?"

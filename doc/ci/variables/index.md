@@ -124,7 +124,8 @@ all variables become available to the pipeline.
 
 ### For a project
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362227) in GitLab 15.7, projects can define a maximum of 200 CI/CD variables.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362227) in GitLab 15.7, projects can define a maximum of 200 CI/CD variables.
+> - [Updated](https://gitlab.com/gitlab-org/gitlab/-/issues/373289) in GitLab 15.9, projects can define a maximum of 8000 CI/CD variables.
 
 You can add CI/CD variables to a project's settings.
 
@@ -153,6 +154,7 @@ or in [job scripts](#use-cicd-variables-in-job-scripts).
 
 > - Support for environment scopes [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/2874) in GitLab Premium 13.11
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362227) in GitLab 15.7, groups can define a maximum of 200 CI/CD variables.
+> - [Updated](https://gitlab.com/gitlab-org/gitlab/-/issues/373289) in GitLab 15.9, groups can define a maximum of 30000 CI/CD variables.
 
 You can make a CI/CD variable available to all projects in a group.
 

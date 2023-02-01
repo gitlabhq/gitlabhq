@@ -10,6 +10,7 @@ import initSearchSettings from '~/search_settings';
 import initSettingsPanels from '~/settings_panels';
 import UserCallout from '~/user_callout';
 import initTopicsTokenSelector from '~/projects/settings/topics';
+import { initProjectSelects } from '~/vue_shared/components/entity_select/init_project_selects';
 import initProjectPermissionsSettings from '../shared/permissions';
 import initProjectLoadingSpinner from '../shared/save_project_loader';
 
@@ -30,3 +31,4 @@ dirtySubmitFactory(document.querySelectorAll('.js-general-settings-form, .js-mr-
 
 initSearchSettings();
 initTopicsTokenSelector();
+initProjectSelects();

@@ -16,7 +16,7 @@
 
 .run-dev-fixtures-script: &run-dev-fixtures-script
   - run_timed_command "scripts/gitaly-test-spawn"
-  - run_timed_command "RAILS_ENV=test bundle exec rake db:seed_fu"
+  - run_timed_command "bundle exec rake db:seed_fu"
 
 run-dev-fixtures:
   extends:

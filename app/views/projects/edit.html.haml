@@ -36,6 +36,8 @@
       = c.body do
         = _('On the left sidebar, select %{merge_requests_link} to view them.').html_safe % { merge_requests_link: link_to('Settings > Merge requests', project_settings_merge_requests_path(@project)).html_safe }
 
+= render_if_exists 'projects/settings/analytics_dashboards', expanded: expanded
+
 %section.settings.no-animate{ class: ('expanded' if expanded), data: { qa_selector: 'badges_settings_content' } }
   .settings-header
     %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only

@@ -1168,6 +1168,10 @@ However, large repositories or monorepos not following these practices can signi
 impact Gitaly performance and requirements.
 Refer to [Large repositories](index.md#large-repositories) for more information.
 
+NOTE:
+This architecture uses [Gitaly Cluster](../gitaly/praefect.md). If you have existing repositories that aren't already managed by Gitaly Cluster, you must first
+[migrate to Gitaly Cluster](../gitaly/index.md#migrate-to-gitaly-cluster).
+
 The recommended cluster setup includes the following components:
 
 - 3 Gitaly nodes: Replicated storage of Git repositories.

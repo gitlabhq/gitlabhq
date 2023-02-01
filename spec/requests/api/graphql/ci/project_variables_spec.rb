@@ -41,7 +41,7 @@ RSpec.describe 'Query.project(fullPath).ciVariables', feature_category: :pipelin
 
       post_graphql(query, current_user: user)
 
-      expect(graphql_data.dig('project', 'ciVariables', 'limit')).to be(200)
+      expect(graphql_data.dig('project', 'ciVariables', 'limit')).to be(8000)
       expect(graphql_data.dig('project', 'ciVariables', 'nodes')).to contain_exactly({
         'id' => variable.to_global_id.to_s,
         'key' => 'TEST_VAR',

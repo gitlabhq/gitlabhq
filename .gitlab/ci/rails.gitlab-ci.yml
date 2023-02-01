@@ -794,19 +794,32 @@ rspec-ee system pg13:
 
 ##################################################
 # EE: Canonical MR pipelines
-rspec fail-fast:
+.rspec-fail-fast:
   extends:
-    - .rspec-ee-base-pg12  # This job also runs EE spec which needs elasticsearch
     - .rails:rules:rspec fail-fast
   stage: test
   needs: ["setup-test-env", "retrieve-tests-metadata", "compile-test-assets", "detect-tests"]
   script:
     - !reference [.base-script, script]
-    - rspec_fail_fast "${RSPEC_MATCHING_TESTS_PATH}" "--tag ~quarantine --tag ~zoekt"
+    - rspec_fail_fast "${MATCHING_TESTS_PATH}" "--tag ~quarantine --tag ~zoekt"
   artifacts:
     expire_in: 7d
     paths:
       - tmp/capybara/
+
+rspec fail-fast:
+  extends:
+    - .rspec-fail-fast
+    - .rspec-base-pg12
+  variables:
+    MATCHING_TESTS_PATH: "${RSPEC_MATCHING_TESTS_FOSS_PATH}"
+
+rspec-ee fail-fast:
+  extends:
+    - .rspec-fail-fast
+    - .rspec-base-pg12
+  variables:
+    MATCHING_TESTS_PATH: "${RSPEC_MATCHING_TESTS_EE_PATH}"
 
 rspec-foss-impact:pipeline-generate:
   extends:

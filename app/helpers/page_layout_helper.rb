@@ -175,7 +175,7 @@ module PageLayoutHelper
       current_emoji: user.status.emoji.to_s,
       current_message: user.status.message.to_s,
       current_availability: user.status.availability.to_s,
-      current_clear_status_after: user.status.clear_status_at.to_s
+      current_clear_status_after: user.status.clear_status_at&.to_s(:iso8601)
     })
   end
 

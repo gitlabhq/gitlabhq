@@ -26,6 +26,28 @@ the `Sign in` button. The challenge needs to be completed to proceed with the si
 attempt. If Arkose Protect trusts the user, the challenge runs in transparent mode, meaning that the
 user doesn't need to take any additional action and can sign in as usual.
 
+```mermaid
+sequenceDiagram
+    participant U as User
+    participant G as GitLab
+    participant A as Arkose Labs
+    U->>G: User loads form <br />(POST /api/:version/users/captcha_check)
+    G->>A: Sends device fingerprint and telemetry
+    A->>U: Returns Session token and decision on if to challenge
+    opt Requires Challenge
+        U->>U: User interacts with Challenge iframe
+    end
+    U->>G: Submits form with Arkose Labs token
+    G ->> A: Sends token to be verified
+    A ->> G: Returns verification response
+    Note over G: records `UserCustomAttribute::risk_band`
+    alt session_details.solved == true
+        G ->> U: Proceed
+    else session_details.solved == false
+        G ->> U: Do not proceed
+    end
+```
+
 ## How do we treat malicious sign-in attempts?
 
 Users are not denied access if Arkose Protect considers they are malicious. However,
@@ -103,6 +125,27 @@ You can find the usage of the allowlist telltale in our [Arkose::VerifyResponse]
 
 To help Arkose improve their protection service, we created a daily background job to send them the list of blocked users by us.
 This job is performed by the `Arkose::BlockedUsersReportWorker` class.
+
+## Test your integration
+
+In staging and development environments only, you can suppress a challenge, or force one to appear.
+You can use this feature if you want to receive a specific risk band.
+
+To force a challenge, change your browser [user agent string](https://developer.chrome.com/docs/devtools/device-mode/override-user-agent/). You can find the appropriate string in [1Password](https://start.1password.com/open/i?a=LKATQYUATRBRDHRRABEBH4RJ5Y&v=6gq44ckmq23vqk5poqunurdgay&i=5v3ushqmfgifpwyqohop5gv5xe&h=gitlab.1password.com).
+
+Alternatively, to request specific behaviors, modify the `setConfig` to include a `data.id` property:
+
+- `'ML_defence'` - Force a challenge to appear.
+- `'customer_request'` - Suppress a challenge. If you suppress a challenge, ArkoseLabs considers your session safe.
+
+For example, this `setConfig` suppresses a challenge:
+
+```javascript
+      arkoseObject.setConfig({
+        data: { id: 'customer_request' },
+        ...
+      });
+```
 
 ## Additional resources
 

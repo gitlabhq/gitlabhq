@@ -10982,8 +10982,10 @@ ALTER SEQUENCE analytics_cycle_analytics_stage_event_hashes_id_seq OWNED BY anal
 
 CREATE TABLE analytics_dashboards_pointers (
     id bigint NOT NULL,
-    namespace_id bigint NOT NULL,
-    project_id bigint NOT NULL
+    namespace_id bigint,
+    project_id bigint,
+    target_project_id bigint NOT NULL,
+    CONSTRAINT chk_analytics_dashboards_pointers_project_or_namespace CHECK (((project_id IS NULL) <> (namespace_id IS NULL)))
 );
 
 CREATE SEQUENCE analytics_dashboards_pointers_id_seq
@@ -19660,8 +19662,8 @@ CREATE TABLE plan_limits (
     security_policy_scan_execution_schedules integer DEFAULT 0 NOT NULL,
     web_hook_calls_mid integer DEFAULT 0 NOT NULL,
     web_hook_calls_low integer DEFAULT 0 NOT NULL,
-    project_ci_variables integer DEFAULT 200 NOT NULL,
-    group_ci_variables integer DEFAULT 200 NOT NULL,
+    project_ci_variables integer DEFAULT 8000 NOT NULL,
+    group_ci_variables integer DEFAULT 30000 NOT NULL,
     ci_max_artifact_size_cyclonedx integer DEFAULT 1 NOT NULL,
     rpm_max_file_size bigint DEFAULT '5368709120'::bigint NOT NULL,
     ci_max_artifact_size_requirements_v2 integer DEFAULT 0 NOT NULL,
@@ -28657,6 +28659,8 @@ CREATE INDEX idx_streaming_headers_on_external_audit_event_destination_id ON aud
 
 CREATE INDEX idx_test_reports_on_issue_id_created_at_and_id ON requirements_management_test_reports USING btree (issue_id, created_at, id);
 
+CREATE UNIQUE INDEX idx_uniq_analytics_dashboards_pointers_on_project_id ON analytics_dashboards_pointers USING btree (project_id);
+
 CREATE INDEX idx_user_details_on_provisioned_by_group_id_user_id ON user_details USING btree (provisioned_by_group_id, user_id);
 
 CREATE UNIQUE INDEX idx_vuln_signatures_on_occurrences_id_and_signature_sha ON vulnerability_finding_signatures USING btree (finding_id, signature_sha);
@@ -28757,7 +28761,7 @@ CREATE INDEX index_analytics_cycle_analytics_group_stages_custom_only ON analyti
 
 CREATE UNIQUE INDEX index_analytics_dashboards_pointers_on_namespace_id ON analytics_dashboards_pointers USING btree (namespace_id);
 
-CREATE INDEX index_analytics_dashboards_pointers_on_project_id ON analytics_dashboards_pointers USING btree (project_id);
+CREATE INDEX index_analytics_dashboards_pointers_on_target_project_id ON analytics_dashboards_pointers USING btree (target_project_id);
 
 CREATE INDEX index_application_settings_on_custom_project_templates_group_id ON application_settings USING btree (custom_project_templates_group_id);
 
@@ -33482,6 +33486,9 @@ ALTER TABLE ONLY service_desk_settings
 
 ALTER TABLE ONLY design_management_designs_versions
     ADD CONSTRAINT fk_03c671965c FOREIGN KEY (design_id) REFERENCES design_management_designs(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY analytics_dashboards_pointers
+    ADD CONSTRAINT fk_05d96922bd FOREIGN KEY (target_project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY issues
     ADD CONSTRAINT fk_05f1e72feb FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE SET NULL;

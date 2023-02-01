@@ -3,7 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'profiles/show' do
-  let(:user) { create(:user) }
+  let_it_be(:user_status) { create(:user_status, clear_status_at: 8.hours.from_now) }
+  let_it_be(:user) { user_status.user }
 
   before do
     assign(:user, user)
@@ -22,6 +23,31 @@ RSpec.describe 'profiles/show' do
       expected_link_html = "<a href=\"#{expectd_link}\" target=\"_blank\" " \
                            "rel=\"noopener noreferrer\">#{_('Learn more.')}</a>"
       expect(rendered.include?(expected_link_html)).to eq(true)
+    end
+
+    it 'renders required hidden inputs for set status form' do
+      render
+
+      expect(rendered).to have_field(
+        'user[status][emoji]',
+        with: user_status.emoji,
+        type: :hidden
+      )
+      expect(rendered).to have_field(
+        'user[status][message]',
+        with: user_status.message,
+        type: :hidden
+      )
+      expect(rendered).to have_field(
+        'user[status][availability]',
+        with: user_status.availability,
+        type: :hidden
+      )
+      expect(rendered).to have_field(
+        'user[status][clear_status_after]',
+        with: user_status.clear_status_at.to_s(:iso8601),
+        type: :hidden
+      )
     end
   end
 end

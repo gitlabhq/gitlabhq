@@ -127,13 +127,13 @@ tests = [
   {
     explanation: 'FOSS factory should map to factories spec',
     source: 'spec/factories/users.rb',
-    expected: ['spec/models/factories_spec.rb']
+    expected: ['ee/spec/models/factories_spec.rb']
   },
 
   {
     explanation: 'EE factory should map to factories spec',
     source: 'ee/spec/factories/users.rb',
-    expected: ['spec/models/factories_spec.rb']
+    expected: ['ee/spec/models/factories_spec.rb']
   },
 
   {
