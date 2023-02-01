@@ -285,6 +285,17 @@ RSpec.describe GitlabSchema.types['Project'] do
         end
       end
     end
+
+    context 'with empty repository' do
+      let_it_be(:project) { create(:project_empty_repo) }
+
+      it 'raises an error' do
+        expect(subject['errors'][0]['message']).to eq('You must <a target="_blank" rel="noopener noreferrer" ' \
+                                                      'href="http://localhost/help/user/project/repository/index.md#' \
+                                                      'add-files-to-a-repository">add at least one file to the ' \
+                                                      'repository</a> before using Security features.')
+      end
+    end
   end
 
   describe 'issue field' do

@@ -351,9 +351,19 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
   private
 
+  # NOTE: Remove this disable with add_prepared_state_to_mr FF removal
+  # rubocop: disable Metrics/AbcSize
   def show_merge_request
     close_merge_request_if_no_source_project
     @merge_request.check_mergeability(async: true)
+
+    # NOTE: Remove the created_at check when removing the FF check
+    if ::Feature.enabled?(:add_prepared_state_to_mr, @merge_request.project) &&
+        @merge_request.created_at < 5.minutes.ago &&
+        !@merge_request.prepared?
+
+      @merge_request.prepare
+    end
 
     respond_to do |format|
       format.html do
@@ -396,6 +406,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
       end
     end
   end
+  # rubocop: enable Metrics/AbcSize
 
   def render_html_page
     preload_assignees_for_render(@merge_request)

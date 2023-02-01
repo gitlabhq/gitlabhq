@@ -1912,7 +1912,6 @@ Layout/LineLength:
     - 'ee/spec/helpers/license_helper_spec.rb'
     - 'ee/spec/helpers/license_monitoring_helper_spec.rb'
     - 'ee/spec/helpers/notes_helper_spec.rb'
-    - 'ee/spec/helpers/paid_feature_callout_helper_spec.rb'
     - 'ee/spec/helpers/projects/on_demand_scans_helper_spec.rb'
     - 'ee/spec/helpers/projects/project_members_helper_spec.rb'
     - 'ee/spec/helpers/projects/security/dast_profiles_helper_spec.rb'

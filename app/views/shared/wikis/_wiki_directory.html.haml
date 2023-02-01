@@ -1,4 +1,5 @@
-%li{ data: { qa_selector: 'wiki_directory_content' } }
-  = wiki_directory.title
+%li{ class: active_when(params[:id] == wiki_directory.slug), data: { qa_selector: 'wiki_directory_content' } }
+  = link_to wiki_page_path(@wiki, wiki_directory), data: { qa_selector: 'wiki_dir_page_link', qa_page_name: wiki_directory.title } do
+    = wiki_directory.title
   %ul
     = render wiki_directory.entries, context: context

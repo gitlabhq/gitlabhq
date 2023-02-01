@@ -5537,4 +5537,33 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       end
     end
   end
+
+  describe '#prepared?' do
+    subject(:merge_request) { build_stubbed(:merge_request, prepared_at: prepared_at) }
+
+    context 'when prepared_at is nil' do
+      let(:prepared_at) { nil }
+
+      it 'returns false' do
+        expect(merge_request.prepared?).to be_falsey
+      end
+    end
+
+    context 'when prepared_at is not nil' do
+      let(:prepared_at) { Time.current }
+
+      it 'returns true' do
+        expect(merge_request.prepared?).to be_truthy
+      end
+    end
+  end
+
+  describe 'prepare' do
+    it 'calls NewMergeRequestWorker' do
+      expect(NewMergeRequestWorker).to receive(:perform_async)
+        .with(subject.id, subject.author_id)
+
+      subject.prepare
+    end
+  end
 end

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ObjectStorage::CDN do
+RSpec.describe ObjectStorage::CDN, feature_category: :build_artifacts do
   let(:cdn_options) do
     {
       'object_store' => {

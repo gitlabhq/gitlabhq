@@ -2836,6 +2836,7 @@ Input type: `EpicMoveListInput`
 | <a id="mutationepicmovelistfromlistid"></a>`fromListId` | [`BoardsEpicListID`](#boardsepiclistid) | ID of the board list that the epic will be moved from. Required if moving between lists. |
 | <a id="mutationepicmovelistmoveafterid"></a>`moveAfterId` | [`EpicID`](#epicid) | ID of epic that should be placed after the current epic. |
 | <a id="mutationepicmovelistmovebeforeid"></a>`moveBeforeId` | [`EpicID`](#epicid) | ID of epic that should be placed before the current epic. |
+| <a id="mutationepicmovelistpositioninlist"></a>`positionInList` | [`Int`](#int) | Position of epics within the board list. Positions start at 0. Use -1 to move to the end of the list. |
 | <a id="mutationepicmovelisttolistid"></a>`toListId` | [`BoardsEpicListID!`](#boardsepiclistid) | ID of the list the epic will be in after mutation. |
 
 #### Fields

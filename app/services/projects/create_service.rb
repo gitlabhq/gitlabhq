@@ -197,7 +197,7 @@ module Projects
     end
 
     def create_sast_commit
-      ::Security::CiConfiguration::SastCreateService.new(@project, current_user, {}, commit_on_default: true).execute
+      ::Security::CiConfiguration::SastCreateService.new(@project, current_user, { initialize_with_sast: true }, commit_on_default: true).execute
     end
 
     def readme_content

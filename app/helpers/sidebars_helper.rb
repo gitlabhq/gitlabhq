@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module SidebarsHelper
+  include MergeRequestsHelper
   include Nav::NewDropdownHelper
 
   def sidebar_tracking_attributes_by_object(object)
@@ -39,10 +40,11 @@ module SidebarsHelper
       username: user.username,
       avatar_url: user.avatar_url,
       assigned_open_issues_count: user.assigned_open_issues_count,
-      assigned_open_merge_requests_count: user.assigned_open_merge_requests_count,
       todos_pending_count: user.todos_pending_count,
       issues_dashboard_path: issues_dashboard_path(assignee_username: user.username),
+      total_merge_requests_count: user_merge_requests_counts[:total],
       create_new_menu_groups: create_new_menu_groups(group: group, project: project),
+      merge_request_menu: create_merge_request_menu(user),
       support_path: support_url,
       display_whats_new: display_whats_new?
     }
@@ -64,6 +66,26 @@ module SidebarsHelper
         end
       }
     end
+  end
+
+  def create_merge_request_menu(user)
+    [
+      {
+        name: _('Merge requests'),
+        items: [
+          {
+            text: _('Assigned'),
+            href: merge_requests_dashboard_path(assignee_username: user.username),
+            count: user_merge_requests_counts[:assigned]
+          },
+          {
+            text: _('Review requests'),
+            href: merge_requests_dashboard_path(reviewer_username: user.username),
+            count: user_merge_requests_counts[:review_requested]
+          }
+        ]
+      }
+    ]
   end
 
   def sidebar_attributes_for_object(object)

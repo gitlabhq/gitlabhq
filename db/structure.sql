@@ -17898,6 +17898,7 @@ CREATE TABLE merge_requests (
     sprint_id bigint,
     merge_ref_sha bytea,
     draft boolean DEFAULT false NOT NULL,
+    prepared_at timestamp with time zone,
     CONSTRAINT check_970d272570 CHECK ((lock_version IS NOT NULL))
 );
 
@@ -20968,7 +20969,7 @@ CREATE TABLE protected_environment_deploy_access_levels (
     id integer NOT NULL,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
-    access_level integer DEFAULT 40,
+    access_level integer,
     protected_environment_id integer NOT NULL,
     user_id integer,
     group_id integer,

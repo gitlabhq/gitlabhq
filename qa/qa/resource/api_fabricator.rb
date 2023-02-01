@@ -19,6 +19,7 @@ module QA
           (respond_to?(:api_put_path) && respond_to?(:api_put_body))
       end
 
+      # @return [String] the resource web url
       def fabricate_via_api!
         unless api_support?
           raise NotImplementedError, "Resource #{self.class.name} does not support fabrication via the API!"

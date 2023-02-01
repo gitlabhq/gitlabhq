@@ -310,8 +310,13 @@ index creation can proceed at a lower level of risk.
 
 ### Schedule the index to be created
 
-Create an MR with a post-deployment migration which prepares the index
-for asynchronous creation. An example of creating an index using
+1. Create a merge request containing a post-deployment migration, which prepares
+   the index for asynchronous creation.
+1. [Create a follow-up issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new?issuable_template=Synchronous%20Database%20Index)
+   to add a migration that creates the index synchronously.
+1. In the merge request that prepares the asynchronous index, add a comment mentioning the follow-up issue.
+
+An example of creating an index using
 the asynchronous index helpers can be seen in the block below. This migration
 enters the index name and definition into the `postgres_async_indexes`
 table. The process that runs on weekends pulls indexes from this
@@ -322,6 +327,7 @@ table and attempt to create them.
 
 INDEX_NAME = 'index_ci_builds_on_some_column'
 
+# TODO: Index to be created synchronously in https://gitlab.com/gitlab-org/gitlab/-/issues/XXXXX
 def up
   prepare_async_index :ci_builds, :some_column, name: INDEX_NAME
 end
@@ -405,8 +411,13 @@ index destruction can proceed at a lower level of risk.
 
 ### Schedule the index to be removed
 
-Create an MR with a post-deployment migration which prepares the index
-for asynchronous destruction. For example. to destroy an index using
+1. Create a merge request containing a post-deployment migration, which prepares
+   the index for asynchronous destruction.
+1. [Create a follow-up issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new?issuable_template=Synchronous%20Database%20Index)
+   to add a migration that destroys the index synchronously.
+1. In the merge request that prepares the asynchronous index removal, add a comment mentioning the follow-up issue.
+
+For example, to destroy an index using
 the asynchronous index helpers:
 
 ```ruby
@@ -414,6 +425,7 @@ the asynchronous index helpers:
 
 INDEX_NAME = 'index_ci_builds_on_some_column'
 
+# TODO: Index to be destroyed synchronously in https://gitlab.com/gitlab-org/gitlab/-/issues/XXXXX
 def up
   prepare_async_index_removal :ci_builds, :some_column, name: INDEX_NAME
 end

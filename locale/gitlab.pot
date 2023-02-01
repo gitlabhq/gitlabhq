@@ -5540,6 +5540,9 @@ msgid_plural "%d Assignees"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "Assignee (optional)"
+msgstr ""
+
 msgid "Assignee has no permissions"
 msgstr ""
 
@@ -35109,6 +35112,9 @@ msgstr ""
 msgid "Release|More information"
 msgstr ""
 
+msgid "Release|Release %{createdRelease} has been successfully created."
+msgstr ""
+
 msgid "Release|Releases are based on Git tags and mark specific points in a project's development history. They can contain information about the type of changes and can also deliver binaries, like compiled versions of your software."
 msgstr ""
 
@@ -46370,9 +46376,6 @@ msgstr ""
 msgid "ValueStreamEvent|Stop"
 msgstr ""
 
-msgid "ValueStream|The Default Value Stream cannot be deleted"
-msgstr ""
-
 msgid "Variable"
 msgstr ""
 
@@ -49302,6 +49305,9 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "access:"
+msgstr ""
+
+msgid "add at least one file to the repository"
 msgstr ""
 
 msgid "added %{emails}"

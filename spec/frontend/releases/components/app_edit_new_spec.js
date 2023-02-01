@@ -10,6 +10,7 @@ import { mountExtended } from 'helpers/vue_test_utils_helper';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import { TEST_HOST } from 'helpers/test_constants';
 import ReleaseEditNewApp from '~/releases/components/app_edit_new.vue';
+import { putCreateReleaseNotification } from '~/releases/release_notification_service';
 import AssetLinksForm from '~/releases/components/asset_links_form.vue';
 import ConfirmDeleteModal from '~/releases/components/confirm_delete_modal.vue';
 import { BACK_URL_PARAM } from '~/releases/constants';
@@ -19,6 +20,8 @@ const originalRelease = originalOneReleaseForEditingQueryResponse.data.project.r
 const originalMilestones = originalRelease.milestones;
 const releasesPagePath = 'path/to/releases/page';
 const upcomingReleaseDocsPath = 'path/to/upcoming/release/docs';
+const projectPath = 'project/path';
+jest.mock('~/releases/release_notification_service');
 
 describe('Release edit/new component', () => {
   let wrapper;
@@ -32,6 +35,7 @@ describe('Release edit/new component', () => {
     state = {
       release,
       isExistingRelease: true,
+      projectPath,
       markdownDocsPath: 'path/to/markdown/docs',
       releasesPagePath,
       projectId: '8',
@@ -162,6 +166,13 @@ describe('Release edit/new component', () => {
       findForm().trigger('submit');
 
       expect(actions.saveRelease).toHaveBeenCalledTimes(1);
+    });
+
+    it('sets release created notification when the form is submitted', () => {
+      findForm().trigger('submit');
+      const releaseName = originalOneReleaseForEditingQueryResponse.data.project.release.name;
+      expect(putCreateReleaseNotification).toHaveBeenCalledTimes(1);
+      expect(putCreateReleaseNotification).toHaveBeenCalledWith(projectPath, releaseName);
     });
   });
 

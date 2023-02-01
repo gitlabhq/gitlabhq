@@ -636,6 +636,11 @@ module Types
     def sast_ci_configuration
       return unless Ability.allowed?(current_user, :read_code, object)
 
+      if project.repository.empty?
+        raise Gitlab::Graphql::Errors::MutationError,
+              _(format('You must %s before using Security features.', add_file_docs_link.html_safe)).html_safe
+      end
+
       ::Security::CiConfiguration::SastParserService.new(object).configuration
     end
 
@@ -653,6 +658,15 @@ module Types
 
     def project
       @project ||= object.respond_to?(:sync) ? object.sync : object
+    end
+
+    def add_file_docs_link
+      ActionController::Base.helpers.link_to _('add at least one file to the repository'),
+                                               Rails.application.routes.url_helpers.help_page_url(
+                                                 'user/project/repository/index.md',
+                                                 anchor: 'add-files-to-a-repository'),
+                                               target: '_blank',
+                                               rel: 'noopener noreferrer'
     end
   end
 end

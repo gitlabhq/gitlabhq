@@ -11,6 +11,24 @@
     }
   }
 
+  .counter .gl-icon {
+    color: var(--gray-500, $gray-500);
+  }
+
+  .counter:hover,
+  .counter:focus,
+  .gl-dropdown-custom-toggle:hover .counter,
+  .gl-dropdown-custom-toggle:focus .counter,
+  .gl-dropdown-custom-toggle[aria-expanded='true'] .counter {
+    background-color: $gray-50;
+    border-color: transparent;
+    mix-blend-mode: multiply;
+
+    .gl-icon {
+      color: var(--gray-700, $gray-700);
+    }
+  }
+
   .context-switcher-toggle {
     &[aria-expanded='true'] {
       background-color: $t-gray-a-08;

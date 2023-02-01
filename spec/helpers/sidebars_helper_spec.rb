@@ -54,8 +54,10 @@ RSpec.describe SidebarsHelper do
     before do
       allow(helper).to receive(:current_user) { user }
       Rails.cache.write(['users', user.id, 'assigned_open_issues_count'], 1)
-      Rails.cache.write(['users', user.id, 'assigned_open_merge_requests_count'], 2)
+      Rails.cache.write(['users', user.id, 'assigned_open_merge_requests_count'], 4)
+      Rails.cache.write(['users', user.id, 'review_requested_open_merge_requests_count'], 0)
       Rails.cache.write(['users', user.id, 'todos_pending_count'], 3)
+      Rails.cache.write(['users', user.id, 'total_merge_requests_count'], 4)
     end
 
     it 'returns sidebar values from user', :use_clean_rails_memory_store_caching do
@@ -64,12 +66,32 @@ RSpec.describe SidebarsHelper do
         username: user.username,
         avatar_url: user.avatar_url,
         assigned_open_issues_count: 1,
-        assigned_open_merge_requests_count: 2,
         todos_pending_count: 3,
         issues_dashboard_path: issues_dashboard_path(assignee_username: user.username),
+        total_merge_requests_count: 4,
         support_path: helper.support_url,
         display_whats_new: helper.display_whats_new?
       })
+    end
+
+    it 'returns "Merge requests" menu', :use_clean_rails_memory_store_caching do
+      expect(subject[:merge_request_menu]).to eq([
+        {
+          name: _('Merge requests'),
+          items: [
+            {
+              text: _('Assigned'),
+              href: merge_requests_dashboard_path(assignee_username: user.username),
+              count: 4
+            },
+            {
+              text: _('Review requests'),
+              href: merge_requests_dashboard_path(reviewer_username: user.username),
+              count: 0
+            }
+          ]
+        }
+      ])
     end
 
     it 'returns "Create new" menu groups without headers', :use_clean_rails_memory_store_caching do

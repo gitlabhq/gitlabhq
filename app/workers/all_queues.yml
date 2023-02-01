@@ -2935,7 +2935,7 @@
   :urgency: :high
   :resource_boundary: :cpu
   :weight: 2
-  :idempotent: false
+  :idempotent: true
   :tags: []
 - :name: new_note
   :worker_name: NewNoteWorker

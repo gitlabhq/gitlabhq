@@ -1,6 +1,7 @@
 <script>
 import { createAlert } from '~/flash';
 import { s__ } from '~/locale';
+import { popCreateReleaseNotification } from '~/releases/release_notification_service';
 import oneReleaseQuery from '../graphql/queries/one_release.query.graphql';
 import { convertGraphQLRelease } from '../util';
 import ReleaseBlock from './release_block.vue';
@@ -48,6 +49,9 @@ export default {
         this.showFlash(error);
       },
     },
+  },
+  mounted() {
+    popCreateReleaseNotification(this.fullPath);
   },
   methods: {
     showFlash(error) {

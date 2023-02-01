@@ -13,15 +13,20 @@ RSpec.describe WikiDirectory do
     let_it_be(:toplevel1) { build(:wiki_page, title: 'aaa-toplevel1') }
     let_it_be(:toplevel2) { build(:wiki_page, title: 'zzz-toplevel2') }
     let_it_be(:toplevel3) { build(:wiki_page, title: 'zzz-toplevel3') }
+    let_it_be(:parent1) { build(:wiki_page, title: 'parent1') }
+    let_it_be(:parent2) { build(:wiki_page, title: 'parent2') }
     let_it_be(:child1) { build(:wiki_page, title: 'parent1/child1') }
     let_it_be(:child2) { build(:wiki_page, title: 'parent1/child2') }
     let_it_be(:child3) { build(:wiki_page, title: 'parent2/child3') }
+    let_it_be(:subparent) { build(:wiki_page, title: 'parent1/subparent') }
     let_it_be(:grandchild1) { build(:wiki_page, title: 'parent1/subparent/grandchild1') }
     let_it_be(:grandchild2) { build(:wiki_page, title: 'parent1/subparent/grandchild2') }
 
     it 'returns a nested array of entries' do
       entries = described_class.group_pages(
-        [toplevel1, toplevel2, toplevel3, child1, child2, child3, grandchild1, grandchild2].sort_by(&:title)
+        [toplevel1, toplevel2, toplevel3,
+          parent1, parent2, child1, child2, child3,
+          subparent, grandchild1, grandchild2].sort_by(&:title)
       )
 
       expect(entries).to match(

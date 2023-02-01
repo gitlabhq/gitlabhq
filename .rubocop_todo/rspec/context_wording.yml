@@ -284,7 +284,6 @@ RSpec/ContextWording:
     - 'ee/spec/helpers/groups/security_features_helper_spec.rb'
     - 'ee/spec/helpers/license_helper_spec.rb'
     - 'ee/spec/helpers/license_monitoring_helper_spec.rb'
-    - 'ee/spec/helpers/paid_feature_callout_helper_spec.rb'
     - 'ee/spec/helpers/projects/security/discover_helper_spec.rb'
     - 'ee/spec/helpers/projects_helper_spec.rb'
     - 'ee/spec/helpers/roadmaps_helper_spec.rb'

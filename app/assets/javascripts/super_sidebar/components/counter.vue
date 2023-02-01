@@ -40,9 +40,9 @@ export default {
     :is="component"
     :aria-label="ariaLabel"
     :href="href"
-    class="counter gl-relative gl-display-inline-block gl-flex-grow-1 gl-text-center gl-py-3 gl-bg-gray-10 gl-rounded-base gl-text-black-normal gl-border gl-border-gray-a-08 gl-font-sm gl-font-weight-bold"
+    class="counter gl-display-block gl-flex-grow-1 gl-text-center gl-py-3 gl-bg-gray-10 gl-rounded-base gl-text-gray-900 gl-border gl-border-gray-a-08 gl-font-sm gl-hover-text-gray-900 gl-hover-text-decoration-none"
   >
     <gl-icon aria-hidden="true" :name="icon" />
-    <span aria-hidden="true">{{ count }}</span>
+    <span v-if="count" aria-hidden="true" class="gl-ml-1">{{ count }}</span>
   </component>
 </template>

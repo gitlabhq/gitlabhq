@@ -1006,7 +1006,6 @@
 - './ee/spec/helpers/nav/new_dropdown_helper_spec.rb'
 - './ee/spec/helpers/nav/top_nav_helper_spec.rb'
 - './ee/spec/helpers/notes_helper_spec.rb'
-- './ee/spec/helpers/paid_feature_callout_helper_spec.rb'
 - './ee/spec/helpers/path_locks_helper_spec.rb'
 - './ee/spec/helpers/preferences_helper_spec.rb'
 - './ee/spec/helpers/prevent_forking_helper_spec.rb'

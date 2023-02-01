@@ -25,9 +25,9 @@ review merge requests in Visual Studio Code.
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/modelops/applied-ml/review-recommender/-/epics/3) in GitLab 15.4.
 
-GitLab can recommend reviewers with Suggested Reviewers. Using the changes in a merge request and a project's contribution graph, machine learning powered suggestions appear in the reviewer section of the right merge request sidebar.
+GitLab can suggest reviewers. Using the changes in a merge request and a project's contribution graph, machine learning suggestions appear in the reviewer section of the right sidebar.
 
-![Suggested Reviewers](img/suggested_reviewers_v15_4.png)
+![Suggested Reviewers](img/suggested_reviewers_v15_9.png)
 
 This feature is currently in [Open Beta](https://about.gitlab.com/handbook/product/gitlab-the-product/#open-beta) behind a [feature flag](https://gitlab.com/gitlab-org/gitlab/-/issues/368356).
 
@@ -176,11 +176,11 @@ below the name of each suggested reviewer. [Code Owners](../../code_owners.md) a
 
 This example shows reviewers and approval rules when creating a new merge request:
 
-![Reviewer approval rules in new/edit form](img/reviewer_approval_rules_form_v13_8.png)
+![Reviewer approval rules in new/edit form](img/reviewer_approval_rules_form_v15_9.png)
 
 This example shows reviewers and approval rules in a merge request sidebar:
 
-![Reviewer approval rules in sidebar](img/reviewer_approval_rules_sidebar_v13_8.png)
+![Reviewer approval rules in sidebar](img/reviewer_approval_rules_sidebar_v15_9.png)
 
 ### Request a new review
 

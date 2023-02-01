@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe NewMergeRequestWorker do
+RSpec.describe NewMergeRequestWorker, feature_category: :code_review_workflow do
   describe '#perform' do
     let(:worker) { described_class.new }
 
@@ -71,19 +71,64 @@ RSpec.describe NewMergeRequestWorker do
         it_behaves_like 'a new merge request where the author cannot trigger notifications'
       end
 
-      context 'when everything is ok' do
+      include_examples 'an idempotent worker' do
         let(:user) { create(:user) }
+        let(:job_args) { [merge_request.id, user.id] }
 
-        it 'creates a new event record' do
-          expect { worker.perform(merge_request.id, user.id) }.to change { Event.count }.from(0).to(1)
-        end
+        context 'when everything is ok' do
+          it 'creates a new event record' do
+            expect { worker.perform(merge_request.id, user.id) }.to change { Event.count }.from(0).to(1)
+          end
 
-        it 'creates a notification for the mentioned user' do
-          expect(Notify).to receive(:new_merge_request_email)
-            .with(mentioned.id, merge_request.id, NotificationReason::MENTIONED)
-            .and_return(double(deliver_later: true))
+          it 'creates a notification for the mentioned user' do
+            expect(Notify).to receive(:new_merge_request_email)
+              .with(mentioned.id, merge_request.id, NotificationReason::MENTIONED)
+              .and_return(double(deliver_later: true))
 
-          worker.perform(merge_request.id, user.id)
+            worker.perform(merge_request.id, user.id)
+          end
+
+          context 'when add_prepared_state_to_mr feature flag is off' do
+            before do
+              stub_feature_flags(add_prepared_state_to_mr: false)
+            end
+
+            it 'calls the create service' do
+              expect_next_instance_of(MergeRequests::AfterCreateService, project: merge_request.target_project, current_user: user) do |service|
+                expect(service).to receive(:execute).with(merge_request)
+              end
+
+              worker.perform(merge_request.id, user.id)
+            end
+          end
+
+          context 'when add_prepared_state_to_mr feature flag is on' do
+            before do
+              stub_feature_flags(add_prepared_state_to_mr: true)
+            end
+
+            context 'when the merge request is prepared' do
+              before do
+                merge_request.update!(prepared_at: Time.current)
+              end
+
+              it 'does not call the create service' do
+                expect(MergeRequests::AfterCreateService).not_to receive(:new)
+
+                worker.perform(merge_request.id, user.id)
+              end
+            end
+
+            context 'when the merge request is not prepared' do
+              it 'calls the create service' do
+                expect_next_instance_of(MergeRequests::AfterCreateService, project: merge_request.target_project, current_user: user) do |service|
+                  expect(service).to receive(:execute).with(merge_request)
+                end
+
+                worker.perform(merge_request.id, user.id)
+              end
+            end
+          end
         end
       end
     end

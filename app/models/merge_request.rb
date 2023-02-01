@@ -2021,6 +2021,14 @@ class MergeRequest < ApplicationRecord
     Feature.enabled?(:diffs_batch_cache_with_max_age, project)
   end
 
+  def prepared?
+    prepared_at.present?
+  end
+
+  def prepare
+    NewMergeRequestWorker.perform_async(id, author_id)
+  end
+
   private
 
   attr_accessor :skip_fetch_ref

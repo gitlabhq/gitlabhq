@@ -326,7 +326,6 @@ Gitlab/StrongMemoizeAttr:
     - 'ee/app/helpers/ee/trial_helper.rb'
     - 'ee/app/helpers/ee/welcome_helper.rb'
     - 'ee/app/helpers/license_monitoring_helper.rb'
-    - 'ee/app/helpers/paid_feature_callout_helper.rb'
     - 'ee/app/helpers/subscriptions_helper.rb'
     - 'ee/app/helpers/trial_status_widget_helper.rb'
     - 'ee/app/models/approval_merge_request_rule.rb'

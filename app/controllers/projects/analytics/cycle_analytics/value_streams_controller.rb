@@ -1,17 +1,16 @@
 # frozen_string_literal: true
 
 class Projects::Analytics::CycleAnalytics::ValueStreamsController < Projects::ApplicationController
+  include ::Analytics::CycleAnalytics::ValueStreamActions
+
   respond_to :json
 
   feature_category :planning_analytics
   urgency :low
 
-  before_action :authorize_read_cycle_analytics!
+  private
 
-  def index
-    # FOSS users can only see the default value stream
-    value_streams = [Analytics::CycleAnalytics::ProjectValueStream.build_default_value_stream(@project)]
-
-    render json: Analytics::CycleAnalytics::ValueStreamSerializer.new.represent(value_streams)
+  def namespace
+    project.project_namespace
   end
 end

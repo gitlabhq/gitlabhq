@@ -4,6 +4,7 @@ import { __, s__ } from '~/locale';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import UserCalloutDismisser from '~/vue_shared/components/user_callout_dismisser.vue';
 import SectionLayout from '~/vue_shared/security_configuration/components/section_layout.vue';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import AutoDevOpsAlert from './auto_dev_ops_alert.vue';
 import AutoDevOpsEnabledAlert from './auto_dev_ops_enabled_alert.vue';
 import { AUTO_DEVOPS_ENABLED_ALERT_DISMISSED_STORAGE_KEY } from './constants';
@@ -51,6 +52,7 @@ export default {
     UserCalloutDismisser,
     TrainingProviderList,
   },
+  directives: { SafeHtml },
   inject: ['projectFullPath', 'vulnerabilityTrainingDocsPath'],
   props: {
     augmentedSecurityFeatures: {
@@ -143,7 +145,7 @@ export default {
       variant="danger"
       @dismiss="dismissAlert"
     >
-      {{ errorMessage }}
+      <span v-safe-html="errorMessage"></span>
     </gl-alert>
     <local-storage-sync
       v-model="autoDevopsEnabledAlertDismissedProjects"

@@ -39,15 +39,34 @@ export const createNewMenuGroups = [
   },
 ];
 
+export const mergeRequestMenuGroup = [
+  {
+    name: 'Merge requests',
+    items: [
+      {
+        text: 'Assigned',
+        href: '/dashboard/merge_requests?assignee_username=root',
+        count: 4,
+      },
+      {
+        text: 'Review requests',
+        href: '/dashboard/merge_requests?reviewer_username=root',
+        count: 0,
+      },
+    ],
+  },
+];
+
 export const sidebarData = {
   name: 'Administrator',
   username: 'root',
   avatar_url: 'path/to/img_administrator',
   assigned_open_issues_count: 1,
-  assigned_open_merge_requests_count: 2,
   todos_pending_count: 3,
   issues_dashboard_path: 'path/to/issues',
+  total_merge_requests_count: 4,
   create_new_menu_groups: createNewMenuGroups,
+  merge_request_menu: mergeRequestMenuGroup,
   support_path: '/support',
   display_whats_new: true,
 };

@@ -5,12 +5,14 @@ import oneReleaseQueryResponse from 'test_fixtures/graphql/releases/graphql/quer
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/flash';
+import { popCreateReleaseNotification } from '~/releases/release_notification_service';
 import ReleaseShowApp from '~/releases/components/app_show.vue';
 import ReleaseBlock from '~/releases/components/release_block.vue';
 import ReleaseSkeletonLoader from '~/releases/components/release_skeleton_loader.vue';
 import oneReleaseQuery from '~/releases/graphql/queries/one_release.query.graphql';
 
 jest.mock('~/flash');
+jest.mock('~/releases/release_notification_service');
 
 Vue.use(VueApollo);
 
@@ -86,6 +88,11 @@ describe('Release show component', () => {
       const apolloProvider = createMockApollo([[oneReleaseQuery, queryHandler]]);
 
       createComponent({ apolloProvider });
+    });
+
+    it('shows info notification on mount', () => {
+      expect(popCreateReleaseNotification).toHaveBeenCalledTimes(1);
+      expect(popCreateReleaseNotification).toHaveBeenCalledWith(MOCK_FULL_PATH);
     });
 
     it('builds a GraphQL with the expected variables', () => {
