@@ -222,7 +222,7 @@ export default {
       :work-item-type="workItemType"
       :is-project-archived="isProjectArchived"
     />
-    <div v-else class="gl-display-flex gl-align-items-flex-start gl-flex-wrap-nowrap">
+    <div v-else class="gl-relative gl-display-flex gl-align-items-flex-start gl-flex-wrap-nowrap">
       <gl-avatar :src="$options.constantOptions.avatarUrl" :size="32" class="gl-mr-3" />
       <form v-if="isEditing" class="common-note-form gfm-form js-main-target-form gl-flex-grow-1">
         <markdown-editor
@@ -250,7 +250,7 @@ export default {
           @click="updateWorkItem"
           >{{ __('Comment') }}
         </gl-button>
-        <gl-button category="tertiary" class="gl-ml-3" @click="cancelEditing"
+        <gl-button category="primary" class="gl-ml-3" @click="cancelEditing"
           >{{ __('Cancel') }}
         </gl-button>
       </form>

@@ -1,0 +1,7 @@
+---
+name: ci_job_assistant_drawer
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107828
+rollout_issue_url:
+milestone: '15.9'
+type: development
+default_enabled: false

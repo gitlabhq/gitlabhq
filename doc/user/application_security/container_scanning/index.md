@@ -580,7 +580,7 @@ For details on saving and transporting Docker images as a file, see the Docker d
      - template: Jobs/Container-Scanning.gitlab-ci.yml
 
    container_scanning:
-     image: $CI_REGISTRY/namespace/gitlab-container-scanning
+     image: $CI_REGISTRY/namespace/container-scanning
    ```
 
 1. If your local Docker container registry is running securely over `HTTPS`, but you're using a
@@ -597,7 +597,7 @@ following `.gitlab-ci.yml` example as a template.
 ```yaml
 variables:
   SOURCE_IMAGE: registry.gitlab.com/security-products/container-scanning:5
-  TARGET_IMAGE: $CI_REGISTRY/namespace/gitlab-container-scanning
+  TARGET_IMAGE: $CI_REGISTRY/namespace/container-scanning
 
 image: docker:stable
 

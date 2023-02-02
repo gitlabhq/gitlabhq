@@ -20,3 +20,11 @@
   @include gl-display-block;
   top: 2px;
 }
+
+.job-assistant-drawer {
+  width: 100%;
+
+  @include media-breakpoint-up(sm) {
+    width: 560px;
+  }
+}

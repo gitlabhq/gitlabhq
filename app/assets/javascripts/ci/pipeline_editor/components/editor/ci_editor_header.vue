@@ -1,21 +1,27 @@
 <script>
 import { GlButton } from '@gitlab/ui';
-import { __ } from '~/locale';
+import { __, s__ } from '~/locale';
 import Tracking from '~/tracking';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { pipelineEditorTrackingOptions, TEMPLATE_REPOSITORY_URL } from '../../constants';
 
 export default {
   i18n: {
     browseTemplates: __('Browse templates'),
     help: __('Help'),
+    jobAssistant: s__('JobAssistant|Job assistant'),
   },
   TEMPLATE_REPOSITORY_URL,
   components: {
     GlButton,
   },
-  mixins: [Tracking.mixin()],
+  mixins: [glFeatureFlagMixin(), Tracking.mixin()],
   props: {
     showDrawer: {
+      type: Boolean,
+      required: true,
+    },
+    showJobAssistantDrawer: {
       type: Boolean,
       required: true,
     },
@@ -28,6 +34,11 @@ export default {
         this.$emit('open-drawer');
         this.trackHelpDrawerClick();
       }
+    },
+    toggleJobAssistantDrawer() {
+      this.$emit(
+        this.showJobAssistantDrawer ? 'close-job-assistant-drawer' : 'open-job-assistant-drawer',
+      );
     },
     trackHelpDrawerClick() {
       const { label, actions } = pipelineEditorTrackingOptions;
@@ -63,6 +74,16 @@ export default {
       @click="toggleDrawer"
     >
       {{ $options.i18n.help }}
+    </gl-button>
+    <gl-button
+      v-if="glFeatures.ciJobAssistantDrawer"
+      icon="bulb"
+      size="small"
+      data-testid="job-assistant-drawer-toggle"
+      data-qa-selector="job_assistant_drawer_toggle"
+      @click="toggleJobAssistantDrawer"
+    >
+      {{ $options.i18n.jobAssistant }}
     </gl-button>
   </div>
 </template>

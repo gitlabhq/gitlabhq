@@ -56,6 +56,7 @@ describe('Pipeline editor tabs component', () => {
         currentTab: CREATE_TAB,
         isNewCiConfigFile: true,
         showDrawer: false,
+        showJobAssistantDrawer: false,
         ...props,
       },
       data() {

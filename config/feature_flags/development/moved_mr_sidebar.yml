@@ -1,7 +1,7 @@
 ---
 name: moved_mr_sidebar
-introduced_by_url:
-rollout_issue_url:
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85584
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/385460
 milestone: '14.10'
 type: development
 group: group::code review
