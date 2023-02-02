@@ -261,7 +261,7 @@ describe('Description component', () => {
     });
   });
 
-  describe('with work_items_create_from_markdown feature flag enabled', () => {
+  describe('with work_items_mvc_2 feature flag enabled', () => {
     describe('empty description', () => {
       beforeEach(() => {
         createComponent({
@@ -270,7 +270,7 @@ describe('Description component', () => {
           },
           provide: {
             glFeatures: {
-              workItemsCreateFromMarkdown: true,
+              workItemsMvc2: true,
             },
           },
         });
@@ -290,7 +290,7 @@ describe('Description component', () => {
           },
           provide: {
             glFeatures: {
-              workItemsCreateFromMarkdown: true,
+              workItemsMvc2: true,
             },
           },
         });
@@ -330,7 +330,7 @@ describe('Description component', () => {
    1. [ ] item 4;`;
           createComponent({
             props: { descriptionText },
-            provide: { glFeatures: { workItemsCreateFromMarkdown: true } },
+            provide: { glFeatures: { workItemsMvc2: true } },
           });
 
           eventHub.$emit('delete-task-list-item', '4:4-5:19');
@@ -348,7 +348,7 @@ describe('Description component', () => {
               descriptionHtml: descriptionHtmlWithTask,
             },
             provide: {
-              glFeatures: { workItemsCreateFromMarkdown: true },
+              glFeatures: { workItemsMvc2: true },
             },
           });
           return nextTick();
@@ -410,7 +410,7 @@ describe('Description component', () => {
 
             createComponent({
               props: { descriptionHtml: descriptionHtmlWithTask },
-              provide: { glFeatures: { workItemsCreateFromMarkdown: true } },
+              provide: { glFeatures: { workItemsMvc2: true } },
             });
 
             expect(showDetailsModal).toHaveBeenCalledTimes(modalOpened);
@@ -426,7 +426,7 @@ describe('Description component', () => {
             descriptionHtml: descriptionHtmlWithTask,
           },
           provide: {
-            glFeatures: { workItemsCreateFromMarkdown: true },
+            glFeatures: { workItemsMvc2: true },
           },
         });
         return nextTick();

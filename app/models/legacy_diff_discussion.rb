@@ -27,10 +27,10 @@ class LegacyDiffDiscussion < Discussion
     true
   end
 
-  def active?(*args)
+  def active?(...)
     return @active if @active.present?
 
-    @active = first_note.active?(*args)
+    @active = first_note.active?(...)
   end
 
   def collapsed?

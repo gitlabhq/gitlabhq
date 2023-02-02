@@ -14,7 +14,7 @@ RSpec.describe BulkImports::Projects::Transformers::ProjectAttributesTransformer
         source_type: :project_entity,
         bulk_import: bulk_import,
         source_full_path: 'source/full/path',
-        destination_slug: 'Destination Project Name',
+        destination_slug: 'Destination-Project-Name',
         destination_namespace: destination_namespace
       )
     end
@@ -58,7 +58,7 @@ RSpec.describe BulkImports::Projects::Transformers::ProjectAttributesTransformer
             source_type: :project_entity,
             bulk_import: bulk_import,
             source_full_path: 'source/full/path',
-            destination_slug: 'Destination Project Name',
+            destination_slug: 'Destination-Project-Name',
             destination_namespace: ''
           )
 

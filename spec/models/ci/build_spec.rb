@@ -2,16 +2,16 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::Build, feature_category: :continuous_integration do
+RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_default: :keep do
   include Ci::TemplateHelpers
   include AfterNextHelpers
 
   let_it_be(:user) { create(:user) }
-  let_it_be(:group, reload: true) { create(:group) }
-  let_it_be(:project, reload: true) { create(:project, :repository, group: group) }
+  let_it_be(:group, reload: true) { create_default(:group) }
+  let_it_be(:project, reload: true) { create_default(:project, :repository, group: group) }
 
   let_it_be(:pipeline, reload: true) do
-    create(:ci_pipeline, project: project,
+    create_default(:ci_pipeline, project: project,
                          sha: project.commit.id,
                          ref: project.default_branch,
                          status: 'success')
@@ -904,9 +904,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
     subject(:locked_artifacts) { build.locked_artifacts? }
 
     context 'when pipeline is artifacts_locked' do
-      before do
-        build.pipeline.artifacts_locked!
-      end
+      let(:pipeline) { create(:ci_pipeline, locked: :artifacts_locked) }
 
       context 'artifacts archive does not exist' do
         let(:build) { create(:ci_build, pipeline: pipeline) }
@@ -922,9 +920,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
     end
 
     context 'when pipeline is unlocked' do
-      before do
-        build.pipeline.unlocked!
-      end
+      let(:pipeline) { create(:ci_pipeline, locked: :unlocked) }
 
       context 'artifacts archive does not exist' do
         let(:build) { create(:ci_build, pipeline: pipeline) }

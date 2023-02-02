@@ -79,8 +79,8 @@ class Compare
     commit&.sha
   end
 
-  def raw_diffs(*args)
-    @compare.diffs(*args)
+  def raw_diffs(...)
+    @compare.diffs(...)
   end
 
   def diffs(diff_options = nil)

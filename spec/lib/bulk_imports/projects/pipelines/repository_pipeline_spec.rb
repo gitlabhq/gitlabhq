@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BulkImports::Projects::Pipelines::RepositoryPipeline do
+RSpec.describe BulkImports::Projects::Pipelines::RepositoryPipeline, feature_category: :importers do
   let_it_be(:user) { create(:user) }
   let_it_be(:parent) { create(:project) }
   let_it_be(:bulk_import) { create(:bulk_import, user: user) }
@@ -14,7 +14,7 @@ RSpec.describe BulkImports::Projects::Pipelines::RepositoryPipeline do
       :project_entity,
       bulk_import: bulk_import,
       source_full_path: 'source/full/path',
-      destination_name: 'My Destination Repository',
+      destination_slug: 'My-Destination-Repository',
       destination_namespace: parent.full_path,
       project: parent
     )

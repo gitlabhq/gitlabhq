@@ -2,6 +2,7 @@
 
 RSpec.shared_examples 'a creatable merge request' do
   include WaitForRequests
+  include ListboxHelpers
 
   it 'creates new merge request', :js do
     find('.js-assignee-search').click
@@ -64,7 +65,7 @@ RSpec.shared_examples 'a creatable merge request' do
     visit project_new_merge_request_path(source_project)
 
     first('.js-target-project').click
-    find('.gl-dropdown-item', text: target_project.full_path).click
+    select_listbox_item(target_project.full_path)
 
     wait_for_requests
 
@@ -74,6 +75,6 @@ RSpec.shared_examples 'a creatable merge request' do
 
     wait_for_requests
 
-    expect(page).to have_selector('.gl-dropdown-item', text: 'a-brand-new-branch-to-test')
+    expect_listbox_item('a-brand-new-branch-to-test')
   end
 end

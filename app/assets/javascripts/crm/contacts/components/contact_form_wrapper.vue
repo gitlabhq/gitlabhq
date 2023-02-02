@@ -1,7 +1,7 @@
 <script>
 import { s__, __ } from '~/locale';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
-import { TYPE_CRM_CONTACT, TYPE_GROUP } from '~/graphql_shared/constants';
+import { TYPENAME_CRM_CONTACT, TYPENAME_GROUP } from '~/graphql_shared/constants';
 import CrmForm from '../../components/crm_form.vue';
 import getGroupOrganizationsQuery from '../../organizations/components/graphql/get_group_organizations.query.graphql';
 import getGroupContactsQuery from './graphql/get_group_contacts.query.graphql';
@@ -44,10 +44,10 @@ export default {
     contactGraphQLId() {
       if (!this.isEditMode) return null;
 
-      return convertToGraphQLId(TYPE_CRM_CONTACT, this.$route.params.id);
+      return convertToGraphQLId(TYPENAME_CRM_CONTACT, this.$route.params.id);
     },
     groupGraphQLId() {
-      return convertToGraphQLId(TYPE_GROUP, this.groupId);
+      return convertToGraphQLId(TYPENAME_GROUP, this.groupId);
     },
     mutation() {
       if (this.isEditMode) return updateContactMutation;

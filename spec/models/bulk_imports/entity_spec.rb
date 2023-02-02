@@ -17,6 +17,38 @@ RSpec.describe BulkImports::Entity, type: :model, feature_category: :importers d
 
     it { is_expected.to define_enum_for(:source_type).with_values(%i[group_entity project_entity]) }
 
+    context 'when formatting with regexes' do
+      subject { described_class.new(group: Group.new) }
+
+      it { is_expected.to allow_values('namespace', 'parent/namespace', 'parent/group/subgroup', '').for(:destination_namespace) }
+      it { is_expected.not_to allow_values('parent/namespace/', '/namespace', 'parent group/subgroup', '@namespace').for(:destination_namespace) }
+
+      it { is_expected.to allow_values('source', 'source/path', 'source/full/path').for(:source_full_path) }
+      it { is_expected.not_to allow_values('/source', 'http://source/path', 'sou    rce/full/path', '').for(:source_full_path) }
+
+      it { is_expected.to allow_values('destination', 'destination-slug', 'new-destination-slug').for(:destination_slug) }
+
+      # it { is_expected.not_to allow_values('destination/slug', '/destination-slug', 'destination slug').for(:destination_slug) } <-- this test should
+      # succeed but it's failing possibly due to rspec caching. To ensure this case is covered see the more cumbersome test below:
+      context 'when destination_slug is invalid' do
+        let(:invalid_slugs) { ['destination/slug', '/destination-slug', 'destination slug'] }
+        let(:error_message) do
+          'cannot start with a non-alphanumeric character except for periods or underscores, ' \
+            'can contain only alphanumeric characters, periods, and underscores, ' \
+            'cannot end with a period or forward slash, and has no ' \
+            'leading or trailing forward slashes'
+        end
+
+        it 'raises an error' do
+          invalid_slugs.each do |slug|
+            entity = build(:bulk_import_entity, :group_entity, group: build(:group), project: nil, destination_slug: slug)
+            expect(entity).not_to be_valid
+            expect(entity.errors.errors[0].message).to include(error_message)
+          end
+        end
+      end
+    end
+
     context 'when associated with a group and project' do
       it 'is invalid' do
         entity = build(:bulk_import_entity, group: build(:group), project: build(:project))

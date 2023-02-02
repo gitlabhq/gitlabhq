@@ -1,7 +1,7 @@
 <script>
 import { GlButton, GlEmptyState, GlLoadingIcon } from '@gitlab/ui';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
-import { TYPE_ISSUE } from '~/graphql_shared/constants';
+import { TYPENAME_ISSUE } from '~/graphql_shared/constants';
 import { fetchPolicies } from '~/lib/graphql';
 import notesEventHub from '~/notes/event_hub';
 import getTimelineEvents from './graphql/queries/get_timeline_events.query.graphql';
@@ -33,7 +33,7 @@ export default {
       variables() {
         return {
           fullPath: this.fullPath,
-          incidentId: convertToGraphQLId(TYPE_ISSUE, this.issuableId),
+          incidentId: convertToGraphQLId(TYPENAME_ISSUE, this.issuableId),
         };
       },
       update(data) {

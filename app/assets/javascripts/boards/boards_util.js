@@ -1,5 +1,10 @@
 import { sortBy, cloneDeep } from 'lodash';
-import { TYPE_BOARD, TYPE_ITERATION, TYPE_MILESTONE, TYPE_USER } from '~/graphql_shared/constants';
+import {
+  TYPENAME_BOARD,
+  TYPENAME_ITERATION,
+  TYPE_MILESTONE,
+  TYPE_USER,
+} from '~/graphql_shared/constants';
 import { isGid, convertToGraphQLId } from '~/graphql_shared/utils';
 import {
   ListType,
@@ -86,11 +91,11 @@ export function fullBoardId(boardId) {
   if (!boardId) {
     return null;
   }
-  return convertToGraphQLId(TYPE_BOARD, boardId);
+  return convertToGraphQLId(TYPENAME_BOARD, boardId);
 }
 
 export function fullIterationId(id) {
-  return convertToGraphQLId(TYPE_ITERATION, id);
+  return convertToGraphQLId(TYPENAME_ITERATION, id);
 }
 
 export function fullUserId(id) {

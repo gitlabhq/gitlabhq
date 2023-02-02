@@ -3,7 +3,7 @@ import { GlIcon, GlLink, GlPopover, GlTooltipDirective } from '@gitlab/ui';
 import { __, n__, sprintf } from '~/locale';
 import { createAlert } from '~/flash';
 import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
-import { TYPE_ISSUE } from '~/graphql_shared/constants';
+import { TYPENAME_ISSUE } from '~/graphql_shared/constants';
 import getIssueCrmContactsQuery from '../../queries/get_issue_crm_contacts.query.graphql';
 import issueCrmContactsSubscription from '../../queries/issue_crm_contacts.subscription.graphql';
 
@@ -65,7 +65,7 @@ export default {
       return this.contacts?.length;
     },
     queryVariables() {
-      return { id: convertToGraphQLId(TYPE_ISSUE, this.issueId) };
+      return { id: convertToGraphQLId(TYPENAME_ISSUE, this.issueId) };
     },
     contactsLabel() {
       return sprintf(n__('%{count} contact', '%{count} contacts', this.contactCount), {

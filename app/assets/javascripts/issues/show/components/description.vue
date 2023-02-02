@@ -119,7 +119,7 @@ export default {
         };
       },
       skip() {
-        return !this.workItemId || !this.workItemsEnabled;
+        return !this.workItemId || !this.workItemsMvc2Enabled;
       },
     },
     workItemTypes: {
@@ -133,13 +133,13 @@ export default {
         return data.workspace?.workItemTypes?.nodes;
       },
       skip() {
-        return !this.workItemsEnabled;
+        return !this.workItemsMvc2Enabled;
       },
     },
   },
   computed: {
-    workItemsEnabled() {
-      return this.glFeatures.workItemsCreateFromMarkdown;
+    workItemsMvc2Enabled() {
+      return this.glFeatures.workItemsMvc2;
     },
     taskWorkItemType() {
       return this.workItemTypes.find((type) => type.name === TASK_TYPE_NAME)?.id;
@@ -170,7 +170,7 @@ export default {
     this.renderGFM();
     this.updateTaskStatusText();
 
-    if (this.workItemId && this.workItemsEnabled) {
+    if (this.workItemId && this.workItemsMvc2Enabled) {
       const taskLink = this.$el.querySelector(
         `.gfm-issue[data-issue="${getIdFromGraphQLId(this.workItemId)}"]`,
       );
@@ -202,7 +202,7 @@ export default {
 
         this.renderSortableLists();
 
-        if (this.workItemsEnabled) {
+        if (this.workItemsMvc2Enabled) {
           this.renderTaskListItemActions();
         }
       }

@@ -11,7 +11,7 @@ import {
 } from '@gitlab/ui';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { formatDate } from '~/lib/utils/datetime_utility';
-import { TYPE_ISSUE, TYPE_MERGE_REQUEST } from '~/graphql_shared/constants';
+import { TYPENAME_ISSUE, TYPE_MERGE_REQUEST } from '~/graphql_shared/constants';
 import { joinPaths } from '~/lib/utils/url_utility';
 import { s__ } from '~/locale';
 import createTimelogMutation from '../../queries/create_timelog.mutation.graphql';
@@ -130,7 +130,7 @@ export default {
       return this.issuableType === 'issue';
     },
     getGraphQLEntityType() {
-      return this.isIssue() ? TYPE_ISSUE : TYPE_MERGE_REQUEST;
+      return this.isIssue() ? TYPENAME_ISSUE : TYPE_MERGE_REQUEST;
     },
     updateSpentAtDate(val) {
       this.spentAt = val;

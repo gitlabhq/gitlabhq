@@ -48,8 +48,8 @@ module Analytics
       end
 
       # Avoid including ActionView::Helpers::UrlHelper
-      def link_to(*args)
-        ActionController::Base.helpers.link_to(*args)
+      def link_to(...)
+        ActionController::Base.helpers.link_to(...)
       end
 
       private

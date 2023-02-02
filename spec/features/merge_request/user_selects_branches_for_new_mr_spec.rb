@@ -3,13 +3,15 @@
 require 'spec_helper'
 
 RSpec.describe 'Merge request > User selects branches for new MR', :js, feature_category: :code_review_workflow do
+  include ListboxHelpers
+
   let(:project) { create(:project, :public, :repository) }
   let(:user) { project.creator }
 
   def select_source_branch(branch_name)
     find('.js-source-branch', match: :first).click
     find('.gl-listbox-search-input').native.send_keys branch_name
-    find('.gl-dropdown-item', text: branch_name, match: :first).click
+    select_listbox_item(branch_name)
   end
 
   before do
@@ -27,7 +29,7 @@ RSpec.describe 'Merge request > User selects branches for new MR', :js, feature_
     expect(page).to have_content('Target branch')
 
     first('.js-source-branch').click
-    find('.gl-dropdown-item', match: :first).click
+    find('.gl-new-dropdown-item', match: :first).click
 
     expect(page).to have_content "b83d6e3"
   end
@@ -44,7 +46,7 @@ RSpec.describe 'Merge request > User selects branches for new MR', :js, feature_
 
     first('.js-target-branch').click
     find('.gl-listbox-search-input').native.send_keys 'v1.1.0'
-    find('.gl-dropdown-item', text: 'v1.1.0', match: :first).click
+    select_listbox_item('v1.1.0')
 
     expect(page).to have_content "b83d6e3"
   end

@@ -9,8 +9,8 @@ class AccessRequestsFinder
     @source = source
   end
 
-  def execute(*args)
-    execute!(*args)
+  def execute(...)
+    execute!(...)
   rescue Gitlab::Access::AccessDeniedError
     []
   end

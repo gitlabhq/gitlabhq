@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BulkImports::Common::Pipelines::MilestonesPipeline do
+RSpec.describe BulkImports::Common::Pipelines::MilestonesPipeline, feature_category: :importers do
   let(:user) { create(:user) }
   let(:group) { create(:group) }
   let(:bulk_import) { create(:bulk_import, user: user) }
@@ -97,7 +97,7 @@ RSpec.describe BulkImports::Common::Pipelines::MilestonesPipeline do
         group: group,
         bulk_import: bulk_import,
         source_full_path: 'source/full/path',
-        destination_name: 'My Destination Group',
+        destination_slug: 'My-Destination-Group',
         destination_namespace: group.full_path
       )
     end
@@ -119,7 +119,7 @@ RSpec.describe BulkImports::Common::Pipelines::MilestonesPipeline do
         project: project,
         bulk_import: bulk_import,
         source_full_path: 'source/full/path',
-        destination_name: 'My Destination Project',
+        destination_slug: 'My-Destination-Project',
         destination_namespace: group.full_path
       )
     end

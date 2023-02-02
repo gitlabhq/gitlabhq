@@ -501,8 +501,8 @@ class Commit
     end
   end
 
-  def raw_diffs(*args)
-    raw.diffs(*args)
+  def raw_diffs(...)
+    raw.diffs(...)
   end
 
   def raw_deltas

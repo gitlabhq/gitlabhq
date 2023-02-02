@@ -888,8 +888,8 @@ class Repository
     end
   end
 
-  def delete_refs(*ref_names)
-    raw.delete_refs(*ref_names)
+  def delete_refs(...)
+    raw.delete_refs(...)
   end
 
   def ff_merge(user, source, target_branch, merge_request: nil)

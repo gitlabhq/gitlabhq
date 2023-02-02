@@ -42,9 +42,9 @@ module Integrations
     end
 
     # Execute the webhook, creating it if necessary.
-    def execute_web_hook!(*args)
+    def execute_web_hook!(...)
       update_web_hook!
-      service_hook.execute(*args)
+      service_hook.execute(...)
     end
   end
 end

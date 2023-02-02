@@ -6,7 +6,7 @@ import {
   GROUP_TYPE,
   STATUS_ONLINE,
 } from '~/ci/runner/constants';
-import { TYPE_CI_RUNNER } from '~/graphql_shared/constants';
+import { TYPENAME_CI_RUNNER } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 
@@ -71,7 +71,7 @@ describe('RunnerHeader', () => {
   it('displays the runner id', () => {
     createComponent({
       runner: {
-        id: convertToGraphQLId(TYPE_CI_RUNNER, 99),
+        id: convertToGraphQLId(TYPENAME_CI_RUNNER, 99),
       },
     });
 
@@ -99,7 +99,7 @@ describe('RunnerHeader', () => {
   it('does not display runner creation time if "createdAt" is missing', () => {
     createComponent({
       runner: {
-        id: convertToGraphQLId(TYPE_CI_RUNNER, 99),
+        id: convertToGraphQLId(TYPENAME_CI_RUNNER, 99),
         createdAt: null,
       },
     });

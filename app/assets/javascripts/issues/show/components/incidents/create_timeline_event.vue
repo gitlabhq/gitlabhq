@@ -5,7 +5,7 @@ import { GlIcon } from '@gitlab/ui';
 import { sprintf } from '~/locale';
 import { createAlert } from '~/flash';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
-import { TYPE_ISSUE } from '~/graphql_shared/constants';
+import { TYPENAME_ISSUE } from '~/graphql_shared/constants';
 import { timelineFormI18n } from './constants';
 import TimelineEventsForm from './timeline_events_form.vue';
 
@@ -41,7 +41,7 @@ export default {
       }
 
       const variables = {
-        incidentId: convertToGraphQLId(TYPE_ISSUE, this.issuableId),
+        incidentId: convertToGraphQLId(TYPENAME_ISSUE, this.issuableId),
         fullPath: this.fullPath,
       };
 
@@ -71,7 +71,7 @@ export default {
           mutation: CreateTimelineEvent,
           variables: {
             input: {
-              incidentId: convertToGraphQLId(TYPE_ISSUE, this.issuableId),
+              incidentId: convertToGraphQLId(TYPENAME_ISSUE, this.issuableId),
               note: eventDetails.note,
               occurredAt: eventDetails.occurredAt,
               timelineEventTagNames: eventDetails.timelineEventTags,

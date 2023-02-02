@@ -123,10 +123,10 @@ module Noteable
     notes.limit(max).count
   end
 
-  def grouped_diff_discussions(*args)
+  def grouped_diff_discussions(...)
     # Doesn't use `discussion_notes`, because this may include commit diff notes
     # besides MR diff notes, that we do not want to display on the MR Changes tab.
-    notes.inc_relations_for_view(self).grouped_diff_discussions(*args)
+    notes.inc_relations_for_view(self).grouped_diff_discussions(...)
   end
 
   # rubocop:disable Gitlab/ModuleWithInstanceVariables

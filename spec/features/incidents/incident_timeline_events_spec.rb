@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'Incident timeline events', :js, feature_category: :incident_management do
+  include ListboxHelpers
+
   let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user, developer_projects: [project]) }
   let_it_be(:incident) { create(:incident, project: project) }
@@ -47,11 +49,7 @@ RSpec.describe 'Incident timeline events', :js, feature_category: :incident_mana
       # Add event
       click_button(s_('Incident|Add new timeline event'))
 
-      click_button _('Select tags')
-      page.within '.gl-dropdown-inner' do
-        expect(page).to have_content(_('Start time'))
-        page.find('.gl-dropdown-item-text-wrapper', text: _('Start time')).click
-      end
+      select_from_listbox('Start time', from: 'Select tags')
 
       complete_form('Event note goes here', '07', '25')
 
@@ -64,11 +62,9 @@ RSpec.describe 'Incident timeline events', :js, feature_category: :incident_mana
 
       # Edit event
       trigger_dropdown_action(_('Edit'))
-      click_button _('Start time')
 
-      page.within '.gl-dropdown-inner' do
-        page.find('.gl-dropdown-item-text-wrapper', text: _('Start time')).click
-      end
+      select_from_listbox('Start time', from: 'Start time')
+
       complete_form('Edited event note goes here', '08', '30')
 
       page.within '.timeline-event-note' do

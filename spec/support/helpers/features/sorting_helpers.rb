@@ -26,8 +26,8 @@ module Spec
           # all of the dropdowns are converted, pajamas_sort_by can be renamed to sort_by
           # https://gitlab.com/groups/gitlab-org/-/epics/7551
           def pajamas_sort_by(value)
-            find('.filter-dropdown-container .dropdown').click
-            find('.dropdown-item', text: value).click
+            find('.filter-dropdown-container .gl-new-dropdown').click
+            find('.gl-new-dropdown-item', text: value).click
           end
         end
       end

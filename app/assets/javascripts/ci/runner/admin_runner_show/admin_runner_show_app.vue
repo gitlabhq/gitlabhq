@@ -1,6 +1,6 @@
 <script>
 import { createAlert, VARIANT_SUCCESS } from '~/flash';
-import { TYPE_CI_RUNNER } from '~/graphql_shared/constants';
+import { TYPENAME_CI_RUNNER } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { redirectTo } from '~/lib/utils/url_utility';
 
@@ -44,7 +44,7 @@ export default {
       query: runnerQuery,
       variables() {
         return {
-          id: convertToGraphQLId(TYPE_CI_RUNNER, this.runnerId),
+          id: convertToGraphQLId(TYPENAME_CI_RUNNER, this.runnerId),
         };
       },
       error(error) {

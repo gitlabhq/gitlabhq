@@ -244,6 +244,11 @@
   category: issues_edit
   redis_slot: project_management
   aggregation: daily
+# Runner group
+- name: g_runner_fleet_read_jobs_statistics
+  category: runner
+  redis_slot: runner
+  aggregation: weekly
 # Secrets Management
 - name: i_snippets_show
   category: snippets

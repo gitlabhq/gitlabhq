@@ -67,6 +67,7 @@ qa:update-qa-cache:
 
 e2e:package-and-test:
   extends:
+    - .production  # this makes sure GITLAB_ALLOW_SEPARATE_CI_DATABASE is passed to the child pipeline
     - .qa:rules:package-and-test
   stage: qa
   needs:

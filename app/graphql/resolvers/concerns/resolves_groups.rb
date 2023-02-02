@@ -5,8 +5,8 @@ module ResolvesGroups
   extend ActiveSupport::Concern
   include LooksAhead
 
-  def resolve_with_lookahead(**args)
-    apply_lookahead(resolve_groups(**args))
+  def resolve_with_lookahead(...)
+    apply_lookahead(resolve_groups(...))
   end
 
   private

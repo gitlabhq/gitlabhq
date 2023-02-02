@@ -2,6 +2,8 @@
 require 'spec_helper'
 
 RSpec.describe 'Sort Issuable List', feature_category: :team_planning do
+  include ListboxHelpers
+
   let(:project) { create(:project, :public) }
 
   let(:first_created_issuable) { issuables.order_created_asc.first }
@@ -94,8 +96,7 @@ RSpec.describe 'Sort Issuable List', feature_category: :team_planning do
       it 'supports sorting in asc and desc order' do
         visit_merge_requests_with_state(project, 'open')
 
-        click_button('Created date')
-        find('.dropdown-item', text: 'Updated date').click
+        select_from_listbox('Updated date', from: 'Created date')
 
         expect(first_merge_request).to include(last_updated_issuable.title)
         expect(last_merge_request).to include(first_updated_issuable.title)
@@ -209,7 +210,7 @@ RSpec.describe 'Sort Issuable List', feature_category: :team_planning do
   end
 
   def selected_sort_order
-    find('.filter-dropdown-container .dropdown button').text.downcase
+    find('.filter-dropdown-container .gl-new-dropdown button').text.downcase
   end
 
   def visit_merge_requests_with_state(project, state)

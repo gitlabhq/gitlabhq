@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BulkImports::Groups::Pipelines::ProjectEntitiesPipeline do
+RSpec.describe BulkImports::Groups::Pipelines::ProjectEntitiesPipeline, feature_category: :importers do
   let_it_be(:user) { create(:user) }
   let_it_be(:destination_group) { create(:group) }
 
@@ -20,8 +20,9 @@ RSpec.describe BulkImports::Groups::Pipelines::ProjectEntitiesPipeline do
   let(:extracted_data) do
     BulkImports::Pipeline::ExtractedData.new(data: {
       'id' => 'gid://gitlab/Project/1234567',
-      'name' => 'project',
-      'full_path' => 'group/project'
+      'name' => 'My Project',
+      'path' => 'my-project',
+      'full_path' => 'group/my-project'
     })
   end
 
@@ -42,8 +43,9 @@ RSpec.describe BulkImports::Groups::Pipelines::ProjectEntitiesPipeline do
       project_entity = BulkImports::Entity.last
 
       expect(project_entity.source_type).to eq('project_entity')
-      expect(project_entity.source_full_path).to eq('group/project')
-      expect(project_entity.destination_name).to eq('project')
+      expect(project_entity.source_full_path).to eq('group/my-project')
+      expect(project_entity.destination_slug).to eq('my-project')
+      expect(project_entity.destination_name).to eq('my-project')
       expect(project_entity.destination_namespace).to eq(destination_group.full_path)
       expect(project_entity.source_xid).to eq(1234567)
     end

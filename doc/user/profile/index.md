@@ -269,10 +269,7 @@ To change your commit email:
 
 ## Change your primary email
 
-Your primary email:
-
-- Is the default email address for your login, commit email, and notification email.
-- Must be already [linked to your user profile](#add-emails-to-your-user-profile).
+Your primary email is the default email address for your login, commit email, and notification email.
 
 To change your primary email:
 
@@ -280,6 +277,7 @@ To change your primary email:
 1. Select **Edit profile**.
 1. In the **Email** field, enter your new email address.
 1. Select **Update profile settings**.
+1. Optional. Select the confirmation email if you have not previously added this email to your GitLab.com account.
 
 ## Set your public email
 

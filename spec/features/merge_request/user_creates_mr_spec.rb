@@ -61,7 +61,7 @@ RSpec.describe 'Merge request > User creates MR', feature_category: :code_review
       find('.js-source-project').click
       find('.gl-listbox-search-input').set('source')
 
-      expect(first('.merge-request-select .dropdown-menu')).not_to have_content(source_project.name)
+      expect(first('.merge-request-select .gl-new-dropdown-panel')).not_to have_content(source_project.name)
     end
   end
 end

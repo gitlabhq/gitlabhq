@@ -28966,6 +28966,9 @@ msgstr ""
 msgid "OnCallSchedules|Rotation length"
 msgstr ""
 
+msgid "OnCallSchedules|Rotation length must be a positive number"
+msgstr ""
+
 msgid "OnCallSchedules|Rotation name cannot be empty"
 msgstr ""
 

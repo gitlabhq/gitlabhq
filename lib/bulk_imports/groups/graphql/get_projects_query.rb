@@ -22,6 +22,7 @@ module BulkImports
                 nodes {
                   id
                   name
+                  path
                   full_path: fullPath
                 }
               }

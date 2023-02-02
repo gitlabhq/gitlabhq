@@ -121,7 +121,12 @@ To add a user to a project:
 1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Project information > Members**.
 1. Select **Invite members**.
-1. Enter an email address and select a [role](../../permissions.md).
+1. If the user:
+
+   - Has a GitLab account, enter their username.
+   - Doesn't have a GitLab account, enter their email address.
+
+1. Select a [role](../../permissions.md).
 1. Optional. Select an **Access expiration date**.
    From that date onward, the user can no longer access the project.
 
@@ -131,16 +136,12 @@ To add a user to a project:
    to extend their own time in the Maintainer role.
 
 1. Select **Invite**.
+   If you invited the user using their:
 
-If the user has a GitLab account, they are added to the members list.
-If you used an email address, the user receives an email.
-
-If the invitation is not accepted, GitLab sends reminder emails two,
-five, and ten days later. Unaccepted invites are automatically
-deleted after 90 days.
-
-If the user does not have a GitLab account, they are prompted to create an account
-using the email address the invitation was sent to.
+   - GitLab username, they are added to the members list.
+   - Email address, an invitation is sent to their email address, and they are prompted to create an account.
+   If the invitation is not accepted, GitLab sends reminder emails two, five, and ten days later.
+   Unaccepted invites are automatically deleted after 90 days.
 
 ### Which roles you can assign
 

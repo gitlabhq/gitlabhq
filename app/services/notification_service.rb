@@ -939,12 +939,12 @@ class NotificationService
     NotificationRecipients::BuildService.build_project_maintainers_recipients(target, action: action)
   end
 
-  def notifiable?(*args)
-    NotificationRecipients::BuildService.notifiable?(*args)
+  def notifiable?(...)
+    NotificationRecipients::BuildService.notifiable?(...)
   end
 
-  def notifiable_users(*args)
-    NotificationRecipients::BuildService.notifiable_users(*args)
+  def notifiable_users(...)
+    NotificationRecipients::BuildService.notifiable_users(...)
   end
 
   def deliver_access_request_email(recipient, member)

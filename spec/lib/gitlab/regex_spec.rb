@@ -21,6 +21,7 @@ RSpec.describe Gitlab::Regex, feature_category: :tooling do
     it_behaves_like 'project/group name chars regex'
     it { is_expected.not_to match('?gitlab') }
     it { is_expected.not_to match("Users's something") }
+    it { is_expected.not_to match('users/something') }
   end
 
   shared_examples_for 'project name regex' do
@@ -28,6 +29,7 @@ RSpec.describe Gitlab::Regex, feature_category: :tooling do
     it { is_expected.to match("Gitlab++") }
     it { is_expected.not_to match('?gitlab') }
     it { is_expected.not_to match("Users's something") }
+    it { is_expected.not_to match('users/something') }
   end
 
   describe '.project_name_regex' do
@@ -72,8 +74,20 @@ RSpec.describe Gitlab::Regex, feature_category: :tooling do
     it { is_expected.to eq("can contain only letters, digits, emojis, '_', '.', dash, space, parenthesis. It must start with letter, digit, emoji or '_'.") }
   end
 
-  describe '.bulk_import_namespace_path_regex' do
-    subject { described_class.bulk_import_namespace_path_regex }
+  describe '.bulk_import_destination_namespace_path_regex_message' do
+    subject { described_class.bulk_import_destination_namespace_path_regex_message }
+
+    it {
+      is_expected
+        .to eq("cannot start with a non-alphanumeric character except for periods or underscores, " \
+               "can contain only alphanumeric characters, forward slashes, periods, and underscores, " \
+               "cannot end with a period or forward slash, and has a relative path structure " \
+               "with no http protocol chars or leading or trailing forward slashes")
+    }
+  end
+
+  describe '.bulk_import_destination_namespace_path_regex' do
+    subject { described_class.bulk_import_destination_namespace_path_regex }
 
     it { is_expected.not_to match('?gitlab') }
     it { is_expected.not_to match("Users's something") }
@@ -87,6 +101,34 @@ RSpec.describe Gitlab::Regex, feature_category: :tooling do
     it { is_expected.not_to match('good_for+you') }
     it { is_expected.not_to match('source/') }
     it { is_expected.not_to match('.source/full./path') }
+
+    it { is_expected.to match('source') }
+    it { is_expected.to match('.source') }
+    it { is_expected.to match('_source') }
+    it { is_expected.to match('source/full') }
+    it { is_expected.to match('source/full/path') }
+    it { is_expected.to match('.source/.full/.path') }
+    it { is_expected.to match('domain_namespace') }
+    it { is_expected.to match('gitlab-migration-test') }
+    it { is_expected.to match('') } # it is possible to pass an empty string for destination_namespace in bulk_import POST request
+  end
+
+  describe '.bulk_import_source_full_path_regex' do
+    subject { described_class.bulk_import_source_full_path_regex }
+
+    it { is_expected.not_to match('?gitlab') }
+    it { is_expected.not_to match("Users's something") }
+    it { is_expected.not_to match('/source') }
+    it { is_expected.not_to match('http:') }
+    it { is_expected.not_to match('https:') }
+    it { is_expected.not_to match('example.com/?stuff=true') }
+    it { is_expected.not_to match('example.com:5000/?stuff=true') }
+    it { is_expected.not_to match('http://gitlab.example/gitlab-org/manage/import/gitlab-migration-test') }
+    it { is_expected.not_to match('_good_for_me!') }
+    it { is_expected.not_to match('good_for+you') }
+    it { is_expected.not_to match('source/') }
+    it { is_expected.not_to match('.source/full./path') }
+    it { is_expected.not_to match('') }
 
     it { is_expected.to match('source') }
     it { is_expected.to match('.source') }

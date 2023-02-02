@@ -1,15 +1,15 @@
 export const MINIMUM_SEARCH_LENGTH = 3;
 
-export const TYPE_BOARD = 'Board';
-export const TYPE_CI_RUNNER = 'Ci::Runner';
-export const TYPE_CRM_CONTACT = 'CustomerRelations::Contact';
-export const TYPE_CRM_ORGANIZATION = 'CustomerRelations::Organization';
-export const TYPE_DISCUSSION = 'Discussion';
-export const TYPE_EPIC = 'Epic';
-export const TYPE_EPIC_BOARD = 'Boards::EpicBoard';
-export const TYPE_GROUP = 'Group';
-export const TYPE_ISSUE = 'Issue';
-export const TYPE_ITERATION = 'Iteration';
+export const TYPENAME_BOARD = 'Board';
+export const TYPENAME_CI_RUNNER = 'Ci::Runner';
+export const TYPENAME_CRM_CONTACT = 'CustomerRelations::Contact';
+export const TYPENAME_CRM_ORGANIZATION = 'CustomerRelations::Organization';
+export const TYPENAME_DISCUSSION = 'Discussion';
+export const TYPENAME_EPIC = 'Epic';
+export const TYPENAME_EPIC_BOARD = 'Boards::EpicBoard';
+export const TYPENAME_GROUP = 'Group';
+export const TYPENAME_ISSUE = 'Issue';
+export const TYPENAME_ITERATION = 'Iteration';
 export const TYPE_ITERATIONS_CADENCE = 'Iterations::Cadence';
 export const TYPE_MERGE_REQUEST = 'MergeRequest';
 export const TYPE_MILESTONE = 'Milestone';

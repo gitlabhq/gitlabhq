@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'User creates a merge request', :js, feature_category: :code_review_workflow do
   include ProjectForksHelper
+  include ListboxHelpers
 
   shared_examples 'creates a merge request' do
     specify do
@@ -155,7 +156,7 @@ RSpec.describe 'User creates a merge request', :js, feature_category: :code_revi
     wait_for_requests
 
     find('.gl-listbox-search-input').set(project.full_path)
-    first('.gl-dropdown-item', text: project.full_path).click
+    select_listbox_item(project.full_path)
   end
 
   def select_branch(selector, branch)
@@ -164,6 +165,6 @@ RSpec.describe 'User creates a merge request', :js, feature_category: :code_revi
     wait_for_requests
 
     find('.gl-listbox-search-input').set(branch)
-    first('.gl-dropdown-item', text: branch).click
+    select_listbox_item(branch, exact_text: true)
   end
 end

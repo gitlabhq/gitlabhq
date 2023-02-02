@@ -79,7 +79,7 @@ module BulkImports
             bulk_import: bulk_import,
             source_type: entity_params[:source_type],
             source_full_path: entity_params[:source_full_path],
-            destination_slug: entity_params[:destination_slug],
+            destination_slug: entity_params[:destination_slug] || entity_params[:destination_name],
             destination_namespace: entity_params[:destination_namespace],
             migrate_projects: Gitlab::Utils.to_boolean(entity_params[:migrate_projects], default: true)
           )
@@ -103,7 +103,7 @@ module BulkImports
 
       full_path = [
         entity_params[:destination_namespace],
-        entity_params[:destination_slug]
+        entity_params[:destination_slug] || entity_params[:destination_name]
       ].reject(&:blank?).join('/')
 
       case source_type

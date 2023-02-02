@@ -1,6 +1,6 @@
 <script>
 import { createAlert } from '~/flash';
-import { TYPE_CI_RUNNER } from '~/graphql_shared/constants';
+import { TYPENAME_CI_RUNNER } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import RunnerHeader from '../components/runner_header.vue';
 import RunnerUpdateForm from '../components/runner_update_form.vue';
@@ -35,7 +35,7 @@ export default {
       query: runnerFormQuery,
       variables() {
         return {
-          id: convertToGraphQLId(TYPE_CI_RUNNER, this.runnerId),
+          id: convertToGraphQLId(TYPENAME_CI_RUNNER, this.runnerId),
         };
       },
       error(error) {

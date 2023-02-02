@@ -19,8 +19,8 @@ module SystemNotes
       Note.create(note_params)
     end
 
-    def content_tag(*args)
-      ActionController::Base.helpers.content_tag(*args)
+    def content_tag(...)
+      ActionController::Base.helpers.content_tag(...)
     end
 
     def url_helpers

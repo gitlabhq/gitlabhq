@@ -273,8 +273,8 @@ class EventCreateService
     { resource_parent_attr => resource_parent.id }
   end
 
-  def track_event(**params)
-    Gitlab::UsageDataCounters::TrackUniqueEvents.track_event(**params)
+  def track_event(...)
+    Gitlab::UsageDataCounters::TrackUniqueEvents.track_event(...)
   end
 
   def track_snowplow_event(action:, project:, user:, label:, property:)

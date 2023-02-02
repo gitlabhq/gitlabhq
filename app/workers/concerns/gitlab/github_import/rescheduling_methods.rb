@@ -25,8 +25,8 @@ module Gitlab
         end
       end
 
-      def try_import(*args)
-        import(*args)
+      def try_import(...)
+        import(...)
         true
       rescue RateLimitError
         false

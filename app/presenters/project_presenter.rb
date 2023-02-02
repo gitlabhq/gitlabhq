@@ -462,8 +462,8 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
   end
 
   # Avoid including ActionView::Helpers::UrlHelper
-  def content_tag(*args)
-    ActionController::Base.helpers.content_tag(*args)
+  def content_tag(...)
+    ActionController::Base.helpers.content_tag(...)
   end
 
   def can_create_wiki?

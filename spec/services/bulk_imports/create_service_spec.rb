@@ -8,6 +8,7 @@ RSpec.describe BulkImports::CreateService, feature_category: :importers do
   let(:destination_group) { create(:group, path: 'destination1') }
   let(:migrate_projects) { true }
   let_it_be(:parent_group) { create(:group, path: 'parent-group') }
+  # note: destination_name and destination_slug are currently interchangable so we need to test for both possibilities
   let(:params) do
     [
       {
@@ -20,7 +21,7 @@ RSpec.describe BulkImports::CreateService, feature_category: :importers do
       {
         source_type: 'group_entity',
         source_full_path: 'full/path/to/group2',
-        destination_slug: 'destination-group-2',
+        destination_name: 'destination-group-2',
         destination_namespace: 'parent-group',
         migrate_projects: migrate_projects
       },
@@ -225,7 +226,12 @@ RSpec.describe BulkImports::CreateService, feature_category: :importers do
 
         expect(result).to be_a(ServiceResponse)
         expect(result).to be_error
-        expect(result.message).to eq("Validation failed: Source full path can't be blank")
+        expect(result.message).to eq("Validation failed: Source full path can't be blank, " \
+                                     "Source full path cannot start with a non-alphanumeric character except " \
+                                     "for periods or underscores, can contain only alphanumeric characters, " \
+                                     "forward slashes, periods, and underscores, cannot end with " \
+                                     "a period or forward slash, and has a relative path structure " \
+                                     "with no http protocol chars or leading or trailing forward slashes")
       end
 
       describe '#user-role' do

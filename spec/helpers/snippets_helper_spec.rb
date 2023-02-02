@@ -80,9 +80,24 @@ RSpec.describe SnippetsHelper do
 
     context 'for Project Snippets' do
       let(:snippet) { public_project_snippet }
+      let(:project) { snippet.project }
 
       it 'returns copy button of embedded snippets' do
         expect(subject).to eq(copy_button(blob.id.to_s))
+      end
+
+      describe 'path helpers' do
+        specify '#toggle_award_emoji_project_project_snippet_path' do
+          expect(toggle_award_emoji_project_project_snippet_path(project, snippet, a: 1)).to eq(
+            "/#{project.full_path}/-/snippets/#{snippet.id}/toggle_award_emoji?a=1"
+          )
+        end
+
+        specify '#toggle_award_emoji_project_project_snippet_url' do
+          expect(toggle_award_emoji_project_project_snippet_url(project, snippet, a: 1)).to eq(
+            "http://test.host/#{project.full_path}/-/snippets/#{snippet.id}/toggle_award_emoji?a=1"
+          )
+        end
       end
     end
 
