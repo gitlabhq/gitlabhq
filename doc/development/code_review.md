@@ -290,6 +290,23 @@ warrant a comment could be:
 
 If there are any projects, snippets, or other assets that are required for a reviewer to validate the solution, ensure they have access to those assets before requesting review.
 
+When assigning reviewers, it can be helpful to:
+
+- Add a comment to the MR indicating which *type* of review you are looking for
+  from that reviewer.
+  - For example, if an MR changes a database query and updates
+    backend code, the MR author first needs a `~backend` review and a `~database`
+    review. While assigning the reviewers, the author adds a comment to the MR
+    letting each reviewer know which domain they should review.
+  - Many GitLab team members are domain experts in more than one area,
+    so without this type of comment it is sometimes ambiguous what type
+    of review they are being asked to provide.
+  - Explicitness around MR review types is efficient for the MR author because
+    they receive the type of review that they are looking for and it is
+    efficient for the MR reviewers because they immediately know which type of review to provide.
+  - [Example 1](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/75921#note_758161716)
+  - [Example 2](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/109500#note_1253955051)
+
 Avoid:
 
 - Adding TODO comments (referenced above) directly to the source code unless the reviewer requires

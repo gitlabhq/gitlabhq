@@ -1,6 +1,7 @@
 import MockAdapter from 'axios-mock-adapter';
 import { createMockClient } from 'helpers/mock_apollo_helper';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { resolveCommit, fetchLogsTree } from '~/repository/log_tree';
 import commitsQuery from '~/repository/queries/commits.query.graphql';
 import projectPathQuery from '~/repository/queries/project_path.query.graphql';
@@ -47,7 +48,7 @@ describe('fetchLogsTree', () => {
   beforeEach(() => {
     mock = new MockAdapter(axios);
 
-    mock.onGet(/(.*)/).reply(200, mockData, {});
+    mock.onGet(/(.*)/).reply(HTTP_STATUS_OK, mockData, {});
 
     jest.spyOn(axios, 'get');
 

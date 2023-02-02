@@ -88,7 +88,6 @@ RSpec/InvalidFeatureCategory:
     - 'spec/lib/gitlab/graphql/tracers/logger_tracer_spec.rb'
     - 'spec/lib/gitlab/graphql/tracers/metrics_tracer_spec.rb'
     - 'spec/lib/gitlab/import_export/version_checker_spec.rb'
-    - 'spec/lib/gitlab/job_waiter_spec.rb'
     - 'spec/lib/gitlab/metrics/background_transaction_spec.rb'
     - 'spec/lib/gitlab/sidekiq_middleware/worker_context/client_spec.rb'
     - 'spec/lib/gitlab/sidekiq_middleware/worker_context/server_spec.rb'

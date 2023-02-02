@@ -1735,6 +1735,9 @@ msgstr ""
 msgid "A page with that title already exists"
 msgstr ""
 
+msgid "A parent must be provided when bulk updating issuables"
+msgstr ""
+
 msgid "A personal access token has been revoked"
 msgstr ""
 
@@ -28073,6 +28076,9 @@ msgid "No messages were logged"
 msgstr ""
 
 msgid "No milestone"
+msgstr ""
+
+msgid "No more than %{max_issues} issues can be updated at the same time"
 msgstr ""
 
 msgid "No other labels with such name or description"

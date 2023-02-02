@@ -49,7 +49,7 @@ describe('New Environments Dropdown', () => {
   describe('with empty results', () => {
     let item;
     beforeEach(async () => {
-      axiosMock.onGet(TEST_HOST).reply(200, []);
+      axiosMock.onGet(TEST_HOST).reply(HTTP_STATUS_OK, []);
       wrapper.findComponent(GlSearchBoxByType).vm.$emit('focus');
       wrapper.findComponent(GlSearchBoxByType).vm.$emit('input', TEST_SEARCH);
       await axios.waitForAll();

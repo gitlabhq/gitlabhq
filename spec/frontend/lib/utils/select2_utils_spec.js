@@ -3,6 +3,7 @@ import $ from 'jquery';
 import { setHTMLFixture } from 'helpers/fixtures';
 import waitForPromises from 'helpers/wait_for_promises';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { select2AxiosTransport } from '~/lib/utils/select2_utils';
 
 import 'select2/select2';
@@ -85,7 +86,7 @@ describe('lib/utils/select2_utils', () => {
     `(
       'passes results and pagination to results callback, with headers=$headers',
       async ({ headers, pagination }) => {
-        mock.onGet(TEST_URL).reply(200, TEST_DATA, headers);
+        mock.onGet(TEST_URL).reply(HTTP_STATUS_OK, TEST_DATA, headers);
 
         await setupSelect2AndSearch();
 

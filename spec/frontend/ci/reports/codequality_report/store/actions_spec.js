@@ -60,7 +60,7 @@ describe('Codequality Reports actions', () => {
 
     describe('on success', () => {
       it('commits REQUEST_REPORTS and dispatches receiveReportsSuccess', () => {
-        mock.onGet(endpoint).reply(200, reportIssues);
+        mock.onGet(endpoint).reply(HTTP_STATUS_OK, reportIssues);
 
         return testAction(
           actions.fetchReports,
@@ -94,7 +94,7 @@ describe('Codequality Reports actions', () => {
     describe('when base report is not found', () => {
       it('commits REQUEST_REPORTS and dispatches receiveReportsError', () => {
         const data = { status: STATUS_NOT_FOUND };
-        mock.onGet(`${TEST_HOST}/codequality_reports.json`).reply(200, data);
+        mock.onGet(`${TEST_HOST}/codequality_reports.json`).reply(HTTP_STATUS_OK, data);
 
         return testAction(
           actions.fetchReports,

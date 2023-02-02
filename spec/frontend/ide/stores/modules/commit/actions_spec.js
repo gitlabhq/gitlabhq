@@ -14,6 +14,7 @@ import {
   COMMIT_TO_NEW_BRANCH,
 } from '~/ide/stores/modules/commit/constants';
 import * as mutationTypes from '~/ide/stores/modules/commit/mutation_types';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { visitUrl } from '~/lib/utils/url_utility';
 
 jest.mock('~/lib/utils/url_utility', () => ({
@@ -48,7 +49,7 @@ describe('IDE commit module actions', () => {
 
     mock
       .onGet('/api/v1/projects/abcproject/repository/branches/main')
-      .reply(200, { commit: COMMIT_RESPONSE });
+      .reply(HTTP_STATUS_OK, { commit: COMMIT_RESPONSE });
   });
 
   afterEach(() => {

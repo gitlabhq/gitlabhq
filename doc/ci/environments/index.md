@@ -699,32 +699,22 @@ You can manually override a deployment's expiration date.
 
 The `auto_stop_in` setting is overwritten and the environment remains active until it's stopped manually.
 
-#### Delete a stopped environment
+### Delete an environment
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/20620) in GitLab 12.10.
+Delete an environment when you want to remove it and all its deployments.
 
-You can delete [stopped environments](#stop-an-environment) in the GitLab UI or by using
-[the API](../../api/environments.md#delete-an-environment).
+Prerequisites:
 
-To delete a stopped environment in the GitLab UI:
+- You must have at least the Developer role.
+- You must [stop](#stop-an-environment) the environment before it can be deleted.
+
+To delete an environment:
 
 1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Deployments > Environments**.
 1. Select the **Stopped** tab.
 1. Next to the environment you want to delete, select **Delete environment**.
 1. On the confirmation dialog box, select **Delete environment**.
-
-#### Delete an active environment without running a stop job
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/225794) in GitLab 15.1.
-
-You can delete an active environment without running a stop job.
-This is useful when you have an active environment, but the corresponding `action: stop` job can't run or succeed for some reason.
-
-To delete an active environment:
-
-1. Execute the [Stop an environment API](../../api/environments.md#stop-an-environment) while specifying `force=true`.
-1. Execute the [Delete an environment API](../../api/environments.md#delete-an-environment).
 
 ### Access an environment for preparation or verification purposes
 

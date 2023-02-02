@@ -47,6 +47,14 @@ RSpec.describe QuickActions::TargetService do
       it_behaves_like 'build target', type_iid: -1
     end
 
+    context 'for work item' do
+      let(:target) { create(:work_item, :task, project: project) }
+      let(:target_iid) { target.iid }
+      let(:type) { 'WorkItem' }
+
+      it_behaves_like 'find target'
+    end
+
     context 'for merge request' do
       let(:target) { create(:merge_request, source_project: project) }
       let(:target_iid) { target.iid }

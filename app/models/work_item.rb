@@ -22,6 +22,8 @@ class WorkItem < Issue
 
   scope :inc_relations_for_permission_check, -> { includes(:author, project: :project_feature) }
 
+  delegate :supports_assignee?, to: :work_item_type
+
   class << self
     def assignee_association_name
       'issue'
@@ -57,7 +59,7 @@ class WorkItem < Issue
   end
 
   def supported_quick_action_commands
-    commands_for_widgets = widgets.map(&:class).flat_map(&:quick_action_commands).uniq
+    commands_for_widgets = work_item_type.widgets.flat_map(&:quick_action_commands).uniq
 
     COMMON_QUICK_ACTIONS_COMMANDS + commands_for_widgets
   end

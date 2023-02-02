@@ -7,6 +7,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import DraftNote from '~/batch_comments/components/draft_note.vue';
 import batchComments from '~/batch_comments/stores/modules/batch_comments';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { getLocationHash } from '~/lib/utils/url_utility';
 import * as urlUtility from '~/lib/utils/url_utility';
 import CommentForm from '~/notes/components/comment_form.vue';
@@ -286,7 +287,7 @@ describe('note_app', () => {
 
   describe('emoji awards', () => {
     beforeEach(() => {
-      axiosMock.onAny().reply(200, []);
+      axiosMock.onAny().reply(HTTP_STATUS_OK, []);
       wrapper = mountComponent();
       return waitForPromises();
     });

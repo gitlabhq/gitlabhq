@@ -17,6 +17,7 @@ import CollapsedFilesWarning from '~/diffs/components/collapsed_files_warning.vu
 import HiddenFilesWarning from '~/diffs/components/hidden_files_warning.vue';
 
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import * as urlUtils from '~/lib/utils/url_utility';
 import { stubPerformanceWebAPI } from 'helpers/performance';
 import createDiffsStore from '../create_diffs_store';
@@ -87,7 +88,7 @@ describe('diffs/components/app', () => {
     };
     window.mrTabs.expandViewContainer = jest.fn();
     mock = new MockAdapter(axios);
-    mock.onGet(TEST_ENDPOINT).reply(200, {});
+    mock.onGet(TEST_ENDPOINT).reply(HTTP_STATUS_OK, {});
   });
 
   afterEach(() => {

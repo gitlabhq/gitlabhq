@@ -10,6 +10,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import getPipelineDetails from 'shared_queries/pipelines/get_pipeline_details.query.graphql';
 import getUserCallouts from '~/graphql_shared/queries/get_user_callouts.query.graphql';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import {
   PIPELINES_DETAIL_LINK_DURATION,
   PIPELINES_DETAIL_LINKS_TOTAL,
@@ -546,7 +547,7 @@ describe('Pipeline graph wrapper', () => {
       describe('with duration and no error', () => {
         beforeEach(async () => {
           mock = new MockAdapter(axios);
-          mock.onPost(metricsPath).reply(200, {});
+          mock.onPost(metricsPath).reply(HTTP_STATUS_OK, {});
 
           jest.spyOn(window.performance, 'getEntriesByName').mockImplementation(() => {
             return [{ duration }];

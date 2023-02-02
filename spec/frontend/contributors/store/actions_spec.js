@@ -4,7 +4,7 @@ import * as actions from '~/contributors/stores/actions';
 import * as types from '~/contributors/stores/mutation_types';
 import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
-import { HTTP_STATUS_BAD_REQUEST } from '~/lib/utils/http_status';
+import { HTTP_STATUS_BAD_REQUEST, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 
 jest.mock('~/flash.js');
 
@@ -23,7 +23,7 @@ describe('Contributors store actions', () => {
     });
 
     it('should commit SET_CHART_DATA with received response', () => {
-      mock.onGet().reply(200, chartData);
+      mock.onGet().reply(HTTP_STATUS_OK, chartData);
 
       return testAction(
         actions.fetchChartData,

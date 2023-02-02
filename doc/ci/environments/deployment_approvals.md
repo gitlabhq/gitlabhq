@@ -139,6 +139,9 @@ Using either the GitLab UI or the API, you can:
 - Approve a deployment to allow it to proceed.
 - Reject a deployment to prevent it.
 
+NOTE:
+GitLab administrators can approve or reject all deployments.
+
 ### Approve or reject a deployment using the UI
 
 Prerequisites:

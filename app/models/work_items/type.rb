@@ -141,6 +141,10 @@ module WorkItems
       WIDGETS_FOR_TYPE[base_type.to_sym]
     end
 
+    def supports_assignee?
+      widgets.include? ::WorkItems::Widgets::Assignees
+    end
+
     private
 
     def strip_whitespace

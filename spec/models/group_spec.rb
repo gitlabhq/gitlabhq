@@ -422,7 +422,6 @@ RSpec.describe Group, feature_category: :subgroups do
 
       before do
         group.save!
-        group.reload
       end
 
       it { expect(group.traversal_ids).to eq [group.id] }
@@ -434,7 +433,6 @@ RSpec.describe Group, feature_category: :subgroups do
 
       before do
         group.save!
-        reload_models(parent, group)
       end
 
       it { expect(parent.traversal_ids).to eq [parent.id] }
@@ -449,7 +447,6 @@ RSpec.describe Group, feature_category: :subgroups do
       before do
         parent.update!(parent: new_grandparent)
         group.save!
-        reload_models(parent, group)
       end
 
       it 'avoid traversal_ids race condition' do
@@ -487,7 +484,6 @@ RSpec.describe Group, feature_category: :subgroups do
         new_parent.update!(parent: new_grandparent)
 
         group.save!
-        reload_models(parent, group, new_grandparent, new_parent)
       end
 
       it 'avoids traversal_ids race condition' do
@@ -509,14 +505,13 @@ RSpec.describe Group, feature_category: :subgroups do
       end
 
       context 'within the same hierarchy' do
-        let!(:root) { create(:group).reload }
+        let!(:root) { create(:group) }
         let!(:old_parent) { create(:group, parent: root) }
         let!(:new_parent) { create(:group, parent: root) }
 
         context 'with FOR NO KEY UPDATE lock' do
           before do
             subject
-            reload_models(old_parent, new_parent, group)
           end
 
           it 'updates traversal_ids' do
@@ -537,7 +532,6 @@ RSpec.describe Group, feature_category: :subgroups do
 
         before do
           subject
-          reload_models(old_parent, new_parent, group)
         end
 
         it 'updates traversal_ids' do
@@ -567,7 +561,6 @@ RSpec.describe Group, feature_category: :subgroups do
 
         before do
           subject
-          reload_models(old_parent, new_parent, group)
         end
 
         it 'updates traversal_ids' do
@@ -589,7 +582,6 @@ RSpec.describe Group, feature_category: :subgroups do
 
         before do
           subject
-          reload_models(old_parent, new_parent, group)
         end
 
         it 'updates traversal_ids' do
@@ -614,11 +606,12 @@ RSpec.describe Group, feature_category: :subgroups do
 
       before do
         parent_group.update!(parent: new_grandparent)
+        reload_models(parent_group, group)
       end
 
       it 'updates traversal_ids for all descendants' do
-        expect(parent_group.reload.traversal_ids).to eq [new_grandparent.id, parent_group.id]
-        expect(group.reload.traversal_ids).to eq [new_grandparent.id, parent_group.id, group.id]
+        expect(parent_group.traversal_ids).to eq [new_grandparent.id, parent_group.id]
+        expect(group.traversal_ids).to eq [new_grandparent.id, parent_group.id, group.id]
       end
     end
   end

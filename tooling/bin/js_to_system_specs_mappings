@@ -3,8 +3,12 @@
 
 require_relative '../lib/tooling/mappings/js_to_system_specs_mappings'
 
-changes       = ARGV.shift
-output_file   = ARGV.shift
-changed_files = File.read(changes).split(' ')
+changes        = ARGV.shift
+matching_tests = ARGV.shift
 
-File.write(output_file, Tooling::Mappings::JsToSystemSpecsMappings.new.execute(changed_files).join(' '))
+changed_files = File.read(changes).split(' ')
+matching_test_files = File.read(matching_tests).split(' ')
+
+system_tests = Tooling::Mappings::JsToSystemSpecsMappings.new.execute(changed_files)
+
+File.write(matching_tests, (matching_test_files + system_tests).join(' '))

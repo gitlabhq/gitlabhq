@@ -220,7 +220,7 @@ describe('ProjectSelect', () => {
       it('show an error if fetching the individual project fails', async () => {
         mock
           .onGet(groupProjectEndpoint)
-          .reply(200, [{ full_name: 'notTheSelectedProject', id: '2' }]);
+          .reply(HTTP_STATUS_OK, [{ full_name: 'notTheSelectedProject', id: '2' }]);
         mock.onGet(projectEndpoint).reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
         createComponent({ props: { initialSelection: projectMock.id } });
 

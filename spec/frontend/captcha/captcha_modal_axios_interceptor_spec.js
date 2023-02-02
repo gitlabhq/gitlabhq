@@ -34,7 +34,7 @@ describe('registerCaptchaModalInterceptor', () => {
     waitForCaptchaToBeSolved.mockRejectedValue(new UnsolvedCaptchaError());
 
     mock = new MockAdapter(axios);
-    mock.onAny('/endpoint-without-captcha').reply(200, AXIOS_RESPONSE);
+    mock.onAny('/endpoint-without-captcha').reply(HTTP_STATUS_OK, AXIOS_RESPONSE);
     mock.onAny('/endpoint-with-unrelated-error').reply(HTTP_STATUS_NOT_FOUND, AXIOS_RESPONSE);
     mock.onAny('/endpoint-with-captcha').reply((config) => {
       if (!supportedMethods.includes(config.method)) {

@@ -42,10 +42,10 @@ describe('Awards app actions', () => {
           window.gon = { relative_url_root: relativeRootUrl };
           mock
             .onGet(`${relativeRootUrl || ''}/awards`, { params: { per_page: 100, page: '1' } })
-            .reply(200, ['thumbsup'], { 'x-next-page': '2' });
+            .reply(HTTP_STATUS_OK, ['thumbsup'], { 'x-next-page': '2' });
           mock
             .onGet(`${relativeRootUrl || ''}/awards`, { params: { per_page: 100, page: '2' } })
-            .reply(200, ['thumbsdown']);
+            .reply(HTTP_STATUS_OK, ['thumbsdown']);
         });
 
         it('commits FETCH_AWARDS_SUCCESS', async () => {
@@ -116,7 +116,7 @@ describe('Awards app actions', () => {
       describe('adding new award', () => {
         describe('success', () => {
           beforeEach(() => {
-            mock.onPost(`${relativeRootUrl || ''}/awards`).reply(200, { id: 1 });
+            mock.onPost(`${relativeRootUrl || ''}/awards`).reply(HTTP_STATUS_OK, { id: 1 });
           });
 
           it('adds an optimistic award, removes it, and then commits ADD_NEW_AWARD', async () => {

@@ -1,6 +1,6 @@
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
-import { HTTP_STATUS_INTERNAL_SERVER_ERROR } from '~/lib/utils/http_status';
+import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { createStore } from '~/mr_notes/stores';
 
 describe('MR Notes Mutator Actions', () => {
@@ -31,7 +31,7 @@ describe('MR Notes Mutator Actions', () => {
 
       mock = new MockAdapter(axios);
 
-      mock.onGet(metadata).reply(200, mrMetadata);
+      mock.onGet(metadata).reply(HTTP_STATUS_OK, mrMetadata);
     });
 
     afterEach(() => {

@@ -17,7 +17,7 @@ class PreviewMarkdownService < BaseService
   private
 
   def quick_action_types
-    %w(Issue MergeRequest Commit)
+    %w(Issue MergeRequest Commit WorkItem)
   end
 
   def explain_quick_actions(text)

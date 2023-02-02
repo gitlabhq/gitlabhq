@@ -21,6 +21,7 @@ class Group < Namespace
   include ChronicDurationAttribute
   include RunnerTokenExpirationInterval
   include Todoable
+  include IssueParent
 
   extend ::Gitlab::Utils::Override
 

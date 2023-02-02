@@ -262,6 +262,7 @@ export default {
   <div
     class="gl-absolute gl-top-0 gl-left-0 frame"
     :style="overlayStyle"
+    data-testid="design-overlay"
     @mousemove="onOverlayMousemove"
     @mouseleave="onNoteMouseup"
   >
@@ -287,6 +288,7 @@ export default {
       :is-inactive="isNoteInactive(note)"
       :is-resolved="note.resolved"
       is-on-image
+      data-testid="note-pin"
       @mousedown.stop="onNoteMousedown($event, note)"
       @mouseup.stop="onNoteMouseup(note)"
     />
@@ -294,6 +296,7 @@ export default {
     <design-note-pin
       v-if="currentCommentForm"
       :position="currentCommentPositionStyle"
+      data-testid="comment-badge"
       @mousedown.stop="onNoteMousedown"
       @mouseup.stop="onNoteMouseup"
     />

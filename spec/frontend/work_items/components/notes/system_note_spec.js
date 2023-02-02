@@ -6,6 +6,7 @@ import { renderGFM } from '~/behaviors/markdown/render_gfm';
 import WorkItemSystemNote from '~/work_items/components/notes/system_note.vue';
 import NoteHeader from '~/notes/components/note_header.vue';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 
 jest.mock('~/behaviors/markdown/render_gfm');
 
@@ -95,7 +96,7 @@ describe('system note component', () => {
   it.skip('renders outdated code lines', async () => {
     mock
       .onGet('/outdated_line_change_path')
-      .reply(200, [
+      .reply(HTTP_STATUS_OK, [
         { rich_text: 'console.log', type: 'new', line_code: '123', old_line: null, new_line: 1 },
       ]);
 

@@ -75,8 +75,10 @@ describe('MrWidgetOptions', () => {
     gon.features = { asyncMrWidget: true };
 
     mock = new MockAdapter(axios);
-    mock.onGet(mockData.merge_request_widget_path).reply(() => [200, { ...mockData }]);
-    mock.onGet(mockData.merge_request_cached_widget_path).reply(() => [200, { ...mockData }]);
+    mock.onGet(mockData.merge_request_widget_path).reply(() => [HTTP_STATUS_OK, { ...mockData }]);
+    mock
+      .onGet(mockData.merge_request_cached_widget_path)
+      .reply(() => [HTTP_STATUS_OK, { ...mockData }]);
   });
 
   afterEach(() => {
@@ -806,8 +808,8 @@ describe('MrWidgetOptions', () => {
 
       // Override top-level mocked requests, which always use a fresh copy of
       // mockData, which always includes the full pipeline object.
-      mock.onGet(mockData.merge_request_widget_path).reply(() => [200, mrData]);
-      mock.onGet(mockData.merge_request_cached_widget_path).reply(() => [200, mrData]);
+      mock.onGet(mockData.merge_request_widget_path).reply(() => [HTTP_STATUS_OK, mrData]);
+      mock.onGet(mockData.merge_request_cached_widget_path).reply(() => [HTTP_STATUS_OK, mrData]);
 
       return createComponent(mrData, {
         apolloMock: [
@@ -987,12 +989,12 @@ describe('MrWidgetOptions', () => {
             () =>
               Promise.resolve({
                 headers: { 'poll-interval': 0 },
-                status: 200,
+                status: HTTP_STATUS_OK,
                 data: { reports: 'parsed' },
               }),
             () =>
               Promise.resolve({
-                status: 200,
+                status: HTTP_STATUS_OK,
                 data: { reports: 'parsed' },
               }),
           ]),
@@ -1014,7 +1016,7 @@ describe('MrWidgetOptions', () => {
               }),
             () =>
               Promise.resolve({
-                status: 200,
+                status: HTTP_STATUS_OK,
                 data: { reports: 'parsed' },
               }),
           ]),

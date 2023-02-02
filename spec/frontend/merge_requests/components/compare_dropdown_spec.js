@@ -3,6 +3,7 @@ import { GlCollapsibleListbox } from '@gitlab/ui';
 import MockAdapter from 'axios-mock-adapter';
 import waitForPromises from 'helpers/wait_for_promises';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import CompareDropdown from '~/merge_requests/components/compare_dropdown.vue';
 
 let wrapper;
@@ -27,7 +28,7 @@ const findDropdown = () => wrapper.findComponent(GlCollapsibleListbox);
 describe('Merge requests compare dropdown component', () => {
   beforeEach(() => {
     mock = new MockAdapter(axios);
-    mock.onGet('/gitlab-org/gitlab/target_projects').reply(200, [
+    mock.onGet('/gitlab-org/gitlab/target_projects').reply(HTTP_STATUS_OK, [
       {
         id: 10,
         name: 'Gitlab Test',

@@ -61,6 +61,7 @@ RSpec.describe RuboCop::Cop::RSpec::InvalidFeatureCategory, feature_category: :t
 
   context 'with custom categories' do
     it_behaves_like 'feature category validation', 'tooling'
+    it_behaves_like 'feature category validation', 'shared'
   end
 
   it 'flags invalid feature category for non-symbols' do

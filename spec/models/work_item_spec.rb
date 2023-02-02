@@ -57,6 +57,18 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
     end
   end
 
+  describe '#supports_assignee?' do
+    let(:work_item) { build(:work_item, :task) }
+
+    before do
+      allow(work_item.work_item_type).to receive(:supports_assignee?).and_return(false)
+    end
+
+    it 'delegates the call to its work item type' do
+      expect(work_item.supports_assignee?).to be(false)
+    end
+  end
+
   describe '#supported_quick_action_commands' do
     let(:work_item) { build(:work_item, :task) }
 

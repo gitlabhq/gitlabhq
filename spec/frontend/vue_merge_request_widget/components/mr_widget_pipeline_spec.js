@@ -4,6 +4,7 @@ import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import { trimText } from 'helpers/text_helper';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import MRWidgetPipelineComponent from '~/vue_merge_request_widget/components/mr_widget_pipeline.vue';
 import PipelineMiniGraph from '~/pipelines/components/pipeline_mini_graph/pipeline_mini_graph.vue';
 import { SUCCESS } from '~/vue_merge_request_widget/constants';
@@ -39,7 +40,7 @@ describe('MRWidgetPipeline', () => {
   const findMonitoringPipelineMessage = () => wrapper.findByTestId('monitoring-pipeline-message');
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
 
-  const mockArtifactsRequest = () => new MockAdapter(axios).onGet().reply(200, []);
+  const mockArtifactsRequest = () => new MockAdapter(axios).onGet().reply(HTTP_STATUS_OK, []);
 
   const createWrapper = (props = {}, mountFn = shallowMount) => {
     wrapper = extendedWrapper(

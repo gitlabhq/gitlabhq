@@ -7,6 +7,7 @@ import { TEST_HOST } from 'helpers/test_constants';
 import createEventHub from '~/helpers/event_hub_factory';
 
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import DiscussionFilter from '~/notes/components/discussion_filter.vue';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import Tracking from '~/tracking';
@@ -74,7 +75,7 @@ describe('DiscussionFilter component', () => {
 
     // We are mocking the discussions retrieval,
     // as it doesn't matter for our tests here
-    mock.onGet(DISCUSSION_PATH).reply(200, '');
+    mock.onGet(DISCUSSION_PATH).reply(HTTP_STATUS_OK, '');
     window.mrTabs = undefined;
     wrapper = mountComponent();
     jest.spyOn(Tracking, 'event');

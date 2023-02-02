@@ -5,6 +5,7 @@ import Vuex from 'vuex';
 import { nextTick } from 'vue';
 import { GlDatepicker, GlFormCheckbox } from '@gitlab/ui';
 import originalOneReleaseForEditingQueryResponse from 'test_fixtures/graphql/releases/graphql/queries/one_release_for_editing.query.graphql.json';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { convertOneReleaseGraphQLResponse } from '~/releases/util';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import setWindowLocation from 'helpers/set_window_location_helper';
@@ -95,7 +96,7 @@ describe('Release edit/new component', () => {
     mock = new MockAdapter(axios);
     gon.api_version = 'v4';
 
-    mock.onGet('/api/v4/projects/8/milestones').reply(200, originalMilestones);
+    mock.onGet('/api/v4/projects/8/milestones').reply(HTTP_STATUS_OK, originalMilestones);
 
     release = convertOneReleaseGraphQLResponse(originalOneReleaseForEditingQueryResponse).data;
   });

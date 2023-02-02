@@ -36,7 +36,9 @@ module RuboCop
         # List of feature categories which are not defined in config/feature_categories.yml
         CUSTOM_FEATURE_CATEGORIES = [
           # https://docs.gitlab.com/ee/development/feature_categorization/#tooling-feature-category
-          :tooling
+          :tooling,
+          # https://docs.gitlab.com/ee/development/feature_categorization/#shared-feature-category
+          :shared
         ].to_set.freeze
 
         # @!method feature_category?(node)

@@ -22,6 +22,7 @@ import ModelManager from '~/ide/lib/common/model_manager';
 import service from '~/ide/services';
 import { createStoreOptions } from '~/ide/stores';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import ContentViewer from '~/vue_shared/components/content_viewer/content_viewer.vue';
 import SourceEditorInstance from '~/editor/source_editor_instance';
 import { file } from '../helpers';
@@ -265,7 +266,7 @@ describe('RepoEditor', () => {
 
       mock = new MockAdapter(axios);
 
-      mock.onPost(/(.*)\/preview_markdown/).reply(200, {
+      mock.onPost(/(.*)\/preview_markdown/).reply(HTTP_STATUS_OK, {
         body: `<p>${dummyFile.text.content}</p>`,
       });
     });

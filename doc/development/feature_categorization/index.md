@@ -221,3 +221,8 @@ Additionally, we flag the offenses via `RSpec/MissingFeatureCategory` RuboCop ru
 For Engineering Productivity internal tooling we use `feature_category: :tooling`.
 
 For example in [`spec/tooling/danger/specs_spec.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/tooling/danger/specs_spec.rb#L12).
+
+### Shared feature category
+
+For features that support developers and they are not specific to a product group we use `feature_category: :shared`
+For example [`spec/lib/gitlab/job_waiter_spec.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/lib/gitlab/job_waiter_spec.rb)

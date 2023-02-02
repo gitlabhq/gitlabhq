@@ -9,7 +9,9 @@ RSpec.describe Projects::AutocompleteSourcesController do
   let_it_be(:public_project) { create(:project, :public, group: group) }
   let_it_be(:development) { create(:label, project: project, name: 'Development') }
   let_it_be(:private_issue) { create(:labeled_issue, project: project, labels: [development]) }
+  let_it_be(:private_work_item) { create(:work_item, project: project) }
   let_it_be(:issue) { create(:labeled_issue, project: public_project, labels: [development]) }
+  let_it_be(:work_item) { create(:work_item, project: public_project, id: 1, iid: 100) }
   let_it_be(:user) { create(:user) }
 
   def members_by_username(username)
@@ -54,6 +56,13 @@ RSpec.describe Projects::AutocompleteSourcesController do
         it_behaves_like 'issuable commands'
       end
 
+      context 'with work items' do
+        let(:issuable_type) { work_item.class.name }
+        let(:issuable_iid) { work_item.iid }
+
+        it_behaves_like 'issuable commands'
+      end
+
       context 'with merge request' do
         let(:merge_request) { create(:merge_request, target_project: public_project, source_project: public_project) }
         let(:issuable_type) { merge_request.class.name }
@@ -91,11 +100,19 @@ RSpec.describe Projects::AutocompleteSourcesController do
 
       it_behaves_like 'label commands'
     end
+
+    context 'with work items' do
+      let(:issuable_type) { work_item.class.name }
+      let(:issuable_iid) { work_item.iid }
+
+      it_behaves_like 'label commands'
+    end
   end
 
   describe 'GET members' do
     let_it_be(:invited_private_member) { create(:user) }
     let_it_be(:issue) { create(:labeled_issue, project: public_project, labels: [development], author: user) }
+    let_it_be(:work_item) { create(:work_item, project: public_project, author: user) }
 
     before_all do
       create(:project_group_link, group: private_group, project: public_project)
@@ -145,6 +162,12 @@ RSpec.describe Projects::AutocompleteSourcesController do
 
         it_behaves_like 'all members are returned'
       end
+
+      context 'with work item' do
+        let(:issuable_type) { work_item.class.name }
+
+        it_behaves_like 'all members are returned'
+      end
     end
 
     context 'when anonymous' do
@@ -179,6 +202,16 @@ RSpec.describe Projects::AutocompleteSourcesController do
 
         it_behaves_like 'only public members are returned for public project' do
           let(:issuable_type) { issue.class.name }
+        end
+      end
+
+      context 'with work item' do
+        it_behaves_like 'private project is inaccessible' do
+          let(:issuable_type) { private_work_item.class.name }
+        end
+
+        it_behaves_like 'only public members are returned for public project' do
+          let(:issuable_type) { work_item.class.name }
         end
       end
     end

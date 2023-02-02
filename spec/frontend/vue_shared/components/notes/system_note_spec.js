@@ -4,6 +4,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import createStore from '~/notes/stores';
 import IssueSystemNote from '~/vue_shared/components/notes/system_note.vue';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { renderGFM } from '~/behaviors/markdown/render_gfm';
 
 jest.mock('~/behaviors/markdown/render_gfm');
@@ -85,7 +86,7 @@ describe('system note component', () => {
   it('renders outdated code lines', async () => {
     mock
       .onGet('/outdated_line_change_path')
-      .reply(200, [
+      .reply(HTTP_STATUS_OK, [
         { rich_text: 'console.log', type: 'new', line_code: '123', old_line: null, new_line: 1 },
       ]);
 

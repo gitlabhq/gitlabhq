@@ -40,6 +40,7 @@ class Project < ApplicationRecord
   include RunnerTokenExpirationInterval
   include BlocksUnsafeSerialization
   include Subquery
+  include IssueParent
 
   extend Gitlab::Cache::RequestCache
   extend Gitlab::Utils::Override

@@ -2,7 +2,7 @@ import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import { setHTMLFixture } from 'helpers/fixtures';
 import waitForPromises from 'helpers/wait_for_promises';
-import { HTTP_STATUS_INTERNAL_SERVER_ERROR } from '~/lib/utils/http_status';
+import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { loadBranches } from '~/projects/commit_box/info/load_branches';
 
 const mockCommitPath = '/commit/abcd/branches';
@@ -23,7 +23,7 @@ describe('~/projects/commit_box/info/load_branches', () => {
       </div>`);
 
     mock = new MockAdapter(axios);
-    mock.onGet(mockCommitPath).reply(200, mockBranchesRes);
+    mock.onGet(mockCommitPath).reply(HTTP_STATUS_OK, mockBranchesRes);
   });
 
   it('loads and renders branches info', async () => {
@@ -46,7 +46,7 @@ describe('~/projects/commit_box/info/load_branches', () => {
     beforeEach(() => {
       mock
         .onGet(mockCommitPath)
-        .reply(200, '<a onload="alert(\'xss!\');" href="/-/commits/main">main</a>');
+        .reply(HTTP_STATUS_OK, '<a onload="alert(\'xss!\');" href="/-/commits/main">main</a>');
     });
 
     it('displays sanitized html', async () => {

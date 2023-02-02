@@ -4,6 +4,8 @@ module QuickActions
   class TargetService < BaseService
     def execute(type, type_iid)
       case type&.downcase
+      when 'workitem'
+        work_item(type_iid)
       when 'issue'
         issue(type_iid)
       when 'mergerequest'
@@ -14,6 +16,12 @@ module QuickActions
     end
 
     private
+
+    # rubocop: disable CodeReuse/ActiveRecord
+    def work_item(type_iid)
+      WorkItems::WorkItemsFinder.new(current_user, project_id: project.id).find_by(iid: type_iid)
+    end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     # rubocop: disable CodeReuse/ActiveRecord
     def issue(type_iid)

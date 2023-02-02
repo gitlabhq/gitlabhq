@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::JobWaiter, :redis, feature_category: :not_owned do
+RSpec.describe Gitlab::JobWaiter, :redis, feature_category: :shared do
   describe '.notify' do
     it 'pushes the jid to the named queue' do
       key = described_class.new.key

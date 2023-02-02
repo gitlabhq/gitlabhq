@@ -41,6 +41,14 @@ RSpec.describe Members::DestroyService, feature_category: :subgroups do
           .not_to change { member_user.notification_settings.count }
       end
     end
+
+    it 'resolves the access request todos for the owner' do
+      expect_next_instance_of(described_class) do |instance|
+        expect(instance).to receive(:resolve_access_request_todos).with(current_user, member)
+      end
+
+      described_class.new(current_user).execute(member, **opts)
+    end
   end
 
   shared_examples 'a service destroying a member with access' do

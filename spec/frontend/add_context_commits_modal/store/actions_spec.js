@@ -16,7 +16,7 @@ import {
 } from '~/add_context_commits_modal/store/actions';
 import * as types from '~/add_context_commits_modal/store/mutation_types';
 import axios from '~/lib/utils/axios_utils';
-import { HTTP_STATUS_NO_CONTENT } from '~/lib/utils/http_status';
+import { HTTP_STATUS_NO_CONTENT, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 
 describe('AddContextCommitsModalStoreActions', () => {
   const contextCommitEndpoint =
@@ -100,7 +100,7 @@ describe('AddContextCommitsModalStoreActions', () => {
 
   describe('createContextCommits', () => {
     it('calls API to create context commits', async () => {
-      mock.onPost(contextCommitEndpoint).reply(200, {});
+      mock.onPost(contextCommitEndpoint).reply(HTTP_STATUS_OK, {});
 
       await testAction(createContextCommits, { commits: [] }, {}, [], []);
 
@@ -117,7 +117,7 @@ describe('AddContextCommitsModalStoreActions', () => {
         .onGet(
           `/api/${gon.api_version}/projects/gitlab-org%2Fgitlab/merge_requests/1/context_commits`,
         )
-        .reply(200, [dummyCommit]);
+        .reply(HTTP_STATUS_OK, [dummyCommit]);
     });
     it('commits FETCH_CONTEXT_COMMITS', () => {
       const contextCommit = { ...dummyCommit, isSelected: true };

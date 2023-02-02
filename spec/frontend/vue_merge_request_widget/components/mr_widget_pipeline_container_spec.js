@@ -2,6 +2,7 @@ import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import ArtifactsApp from '~/vue_merge_request_widget/components/artifacts_list_app.vue';
 import DeploymentList from '~/vue_merge_request_widget/components/deployment/deployment_list.vue';
 import MrWidgetPipeline from '~/vue_merge_request_widget/components/mr_widget_pipeline.vue';
@@ -25,7 +26,7 @@ describe('MrWidgetPipelineContainer', () => {
 
   beforeEach(() => {
     mock = new MockAdapter(axios);
-    mock.onGet().reply(200, {});
+    mock.onGet().reply(HTTP_STATUS_OK, {});
   });
 
   afterEach(() => {

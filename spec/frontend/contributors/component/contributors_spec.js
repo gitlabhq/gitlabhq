@@ -4,6 +4,7 @@ import { mountExtended } from 'helpers/vue_test_utils_helper';
 import ContributorsCharts from '~/contributors/components/contributors.vue';
 import { createStore } from '~/contributors/stores';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { visitUrl } from '~/lib/utils/url_utility';
 import RefSelector from '~/ref/components/ref_selector.vue';
 import { REF_TYPE_BRANCHES, REF_TYPE_TAGS } from '~/ref/constants';
@@ -28,7 +29,7 @@ const commitsPath = 'some/path';
 function factory() {
   mock = new MockAdapter(axios);
   jest.spyOn(axios, 'get');
-  mock.onGet().reply(200, chartData);
+  mock.onGet().reply(HTTP_STATUS_OK, chartData);
   store = createStore();
 
   wrapper = mountExtended(Component, {

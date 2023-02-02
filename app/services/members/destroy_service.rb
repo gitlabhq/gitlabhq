@@ -63,6 +63,7 @@ module Members
 
       delete_subresources(member) unless skip_subresources
       delete_project_invitations_by(member) unless skip_subresources
+      resolve_access_request_todos(current_user, member)
       enqueue_delete_todos(member)
       enqueue_unassign_issuables(member) if unassign_issuables
 

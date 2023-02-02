@@ -1,3 +1,4 @@
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { EXTENSION_ICONS } from '~/vue_merge_request_widget/constants';
 
 export const workingExtension = (shouldCollapse = true) => ({
@@ -120,7 +121,7 @@ export const pollingFullDataExtension = {
       return Promise.resolve([
         {
           headers: { 'poll-interval': 0 },
-          status: 200,
+          status: HTTP_STATUS_OK,
           data: {
             id: 1,
             text: 'Hello world',

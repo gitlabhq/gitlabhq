@@ -130,6 +130,7 @@ To-do items are marked as done if you:
 - Create a comment.
 - Edit the description.
 - Resolve a [design discussion thread](project/issues/design_management.md#resolve-a-discussion-thread-on-a-design).
+- Accept or deny a project or group membership request.
 
 To-do items are **not** marked as done if you:
 

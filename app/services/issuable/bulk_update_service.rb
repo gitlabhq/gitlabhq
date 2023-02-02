@@ -13,9 +13,9 @@ module Issuable
     end
 
     def execute(type)
-      ids = params.delete(:issuable_ids).split(",")
+      model_ids = ids_from_params(params.delete(:issuable_ids))
       set_update_params(type)
-      updated_issuables = update_issuables(type, ids)
+      updated_issuables = update_issuables(type, model_ids)
 
       if updated_issuables.present? && requires_count_cache_reset?(type)
         schedule_group_issues_count_reset(updated_issuables)
@@ -28,9 +28,15 @@ module Issuable
 
     private
 
+    def ids_from_params(issuable_ids)
+      return issuable_ids if issuable_ids.is_a?(Array)
+
+      issuable_ids.split(',')
+    end
+
     def set_update_params(type)
       params.slice!(*permitted_attrs(type))
-      params.delete_if { |k, v| v.blank? }
+      params.delete_if { |_, v| !v.is_a?(Array) && v.blank? }
 
       if params[:assignee_ids] == [IssuableFinder::Params::NONE.to_s]
         params[:assignee_ids] = []
@@ -53,10 +59,12 @@ module Issuable
       model_class = type.classify.constantize
       update_class = type.classify.pluralize.constantize::UpdateService
       items = find_issuables(parent, model_class, ids)
+      authorized_issuables = []
 
       items.each do |issuable|
         next unless can?(current_user, :"update_#{type}", issuable)
 
+        authorized_issuables << issuable
         update_class.new(
           **update_class.constructor_container_arg(issuable.issuing_parent),
           current_user: current_user,
@@ -64,23 +72,22 @@ module Issuable
         ).execute(issuable)
       end
 
-      items
+      authorized_issuables
     end
 
     def find_issuables(parent, model_class, ids)
+      issuables = model_class.id_in(ids)
+
       case parent
       when Project
-        projects = parent
+        issuables = issuables.of_projects(parent)
       when Group
-        projects = parent.all_projects
+        issuables = issuables.of_projects(parent.all_projects)
       else
-        return
+        raise ArgumentError, _('A parent must be provided when bulk updating issuables')
       end
 
-      model_class
-        .id_in(ids)
-        .of_projects(projects)
-        .includes_for_bulk_update
+      issuables.includes_for_bulk_update
     end
 
     # Duplicates params and its top-level values

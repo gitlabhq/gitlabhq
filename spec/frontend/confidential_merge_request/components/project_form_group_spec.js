@@ -3,6 +3,7 @@ import { shallowMount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import ProjectFormGroup from '~/confidential_merge_request/components/project_form_group.vue';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 
 const mockData = [
   {
@@ -27,7 +28,7 @@ let mock;
 
 function factory(projects = mockData) {
   mock = new MockAdapter(axios);
-  mock.onGet(/api\/(.*)\/projects\/gitlab-org%2Fgitlab-ce\/forks/).reply(200, projects);
+  mock.onGet(/api\/(.*)\/projects\/gitlab-org%2Fgitlab-ce\/forks/).reply(HTTP_STATUS_OK, projects);
 
   wrapper = shallowMount(ProjectFormGroup, {
     propsData: {

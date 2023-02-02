@@ -22,7 +22,7 @@ GET /projects/:id/merge_requests/:merge_request_iid/draft_notes
 | `merge_request_iid` | integer             | yes        | The IID of a project merge request
 
 ```json
-{
+[{
   id: 5,
   author_id: 23,
   merge_request_id: 11,
@@ -43,9 +43,10 @@ GET /projects/:id/merge_requests/:merge_request_iid/draft_notes
     new_line: nil,
     line_range: nil
   }
-}
+}]
 ```
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/merge_requests/11/draft_notes"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+     "https://gitlab.example.com/api/v4/projects/14/merge_requests/11/draft_notes"
 ```

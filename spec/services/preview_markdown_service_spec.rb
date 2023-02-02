@@ -192,4 +192,21 @@ RSpec.describe PreviewMarkdownService do
         "Sets time estimate to 2y.<br>Assigns #{user.to_reference}."
     end
   end
+
+  context 'work item quick action types' do
+    let(:work_item) { create(:work_item, :task, project: project) }
+    let(:params) do
+      {
+        text: "/title new title",
+        target_type: 'WorkItem',
+        target_id: work_item.iid
+      }
+    end
+
+    let(:result) { described_class.new(project, user, params).execute }
+
+    it 'renders the quick action preview' do
+      expect(result[:commands]).to eq "Changes the title to \"new title\"."
+    end
+  end
 end

@@ -47,6 +47,9 @@ module Namespaces
         # This uses rails internal before_commit API to sync traversal_ids on namespace create, right before transaction is committed.
         # This helps reduce the time during which the root namespace record is locked to ensure updated traversal_ids are valid
         before_commit :sync_traversal_ids, on: [:create]
+        after_commit :set_traversal_ids,
+          if: -> { traversal_ids.empty? || saved_change_to_parent_id? },
+          on: [:create, :update]
 
         define_model_callbacks :sync_traversal_ids
       end
@@ -76,6 +79,15 @@ module Namespaces
 
           prefixes
         end
+      end
+
+      def traversal_ids=(ids)
+        super(ids)
+        self.transient_traversal_ids = nil
+      end
+
+      def traversal_ids
+        read_attribute(:traversal_ids).presence || transient_traversal_ids || []
       end
 
       def use_traversal_ids?
@@ -174,12 +186,11 @@ module Namespaces
         # we need to preserve those specific parameters for super.
         hierarchy_order ||= :desc
 
-        # Get all ancestor IDs inclusively between top and our parent.
-        top_index = top ? traversal_ids.find_index(top.id) : 0
-        ids = traversal_ids[top_index...-1]
-        ids_string = ids.map { |id| Integer(id) }.join(',')
+        top_index = ancestors_upto_top_index(top)
+        ids = traversal_ids[top_index...-1].reverse
 
         # WITH ORDINALITY lets us order the result to match traversal_ids order.
+        ids_string = ids.map { |id| Integer(id) }.join(',')
         from_sql = <<~SQL
           unnest(ARRAY[#{ids_string}]::bigint[]) WITH ORDINALITY AS ancestors(id, ord)
           INNER JOIN namespaces ON namespaces.id = ancestors.id
@@ -206,6 +217,8 @@ module Namespaces
 
       private
 
+      attr_accessor :transient_traversal_ids
+
       # Update the traversal_ids for the full hierarchy.
       #
       # NOTE: self.traversal_ids will be stale. Reload for a fresh record.
@@ -216,6 +229,27 @@ module Namespaces
 
           Namespace::TraversalHierarchy.for_namespace(self).sync_traversal_ids!
         end
+      end
+
+      def set_traversal_ids
+        # This is a temporary guard and will be removed.
+        return if is_a?(Namespaces::ProjectNamespace)
+
+        return unless Feature.enabled?(:set_traversal_ids_on_save, root_ancestor)
+
+        self.transient_traversal_ids = if parent_id
+                                         parent.traversal_ids + [id]
+                                       else
+                                         [id]
+                                       end
+
+        # Clear root_ancestor memo if changed.
+        if read_attribute(traversal_ids)&.first != transient_traversal_ids.first
+          clear_memoization(:root_ancestor)
+        end
+
+        # Update traversal_ids for any associated child objects.
+        children.each(&:reload) if children.loaded?
       end
 
       # Lock the root of the hierarchy we just left, and lock the root of the hierarchy
@@ -265,6 +299,17 @@ module Namespaces
         end
 
         skope
+      end
+
+      def ancestors_upto_top_index(top)
+        return 0 if top.nil?
+
+        index = traversal_ids.find_index(top.id)
+        if index.nil?
+          0
+        else
+          index + 1
+        end
       end
     end
   end

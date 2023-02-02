@@ -404,6 +404,62 @@ RSpec.describe Namespace, feature_category: :subgroups do
     it { is_expected.to include_module(Namespaces::Traversal::LinearScopes) }
   end
 
+  describe '#traversal_ids' do
+    let(:namespace) { build(:group) }
+
+    context 'when namespace not persisted' do
+      it 'returns []' do
+        expect(namespace.traversal_ids).to eq []
+      end
+    end
+
+    context 'when namespace just saved' do
+      let(:namespace) { build(:group) }
+
+      before do
+        namespace.save!
+      end
+
+      it 'returns value that matches database' do
+        expect(namespace.traversal_ids).to eq Namespace.find(namespace.id).traversal_ids
+      end
+    end
+
+    context 'when namespace loaded from database' do
+      before do
+        namespace.save!
+        namespace.reload
+      end
+
+      it 'returns database value' do
+        expect(namespace.traversal_ids).to eq Namespace.find(namespace.id).traversal_ids
+      end
+    end
+
+    context 'when made a child group' do
+      let!(:namespace) { create(:group) }
+      let!(:parent_namespace) { create(:group, children: [namespace]) }
+
+      it 'returns database value' do
+        expect(namespace.traversal_ids).to eq [parent_namespace.id, namespace.id]
+      end
+    end
+
+    context 'when root_ancestor changes' do
+      let(:old_root) { create(:group) }
+      let(:namespace) { create(:group, parent: old_root) }
+      let(:new_root) { create(:group) }
+
+      it 'resets root_ancestor memo' do
+        expect(namespace.root_ancestor).to eq old_root
+
+        namespace.update!(parent: new_root)
+
+        expect(namespace.root_ancestor).to eq new_root
+      end
+    end
+  end
+
   context 'traversal scopes' do
     context 'recursive' do
       before do
@@ -479,36 +535,60 @@ RSpec.describe Namespace, feature_category: :subgroups do
   end
 
   context 'traversal_ids on create' do
-    shared_examples 'default traversal_ids' do
-      let!(:namespace) { create(:group) }
-      let!(:child_namespace) { create(:group, parent: namespace) }
+    let(:parent) { create(:group) }
+    let(:child) { create(:group, parent: parent) }
 
-      it { expect(namespace.reload.traversal_ids).to eq [namespace.id] }
-      it { expect(child_namespace.reload.traversal_ids).to eq [namespace.id, child_namespace.id] }
-      it { expect(namespace.sync_events.count).to eq 1 }
-      it { expect(child_namespace.sync_events.count).to eq 1 }
+    it { expect(parent.traversal_ids).to eq [parent.id] }
+    it { expect(child.traversal_ids).to eq [parent.id, child.id] }
+    it { expect(parent.sync_events.count).to eq 1 }
+    it { expect(child.sync_events.count).to eq 1 }
+
+    context 'when set_traversal_ids_on_save feature flag is disabled' do
+      before do
+        stub_feature_flags(set_traversal_ids_on_save: false)
+      end
+
+      it 'only sets traversal_ids on reload' do
+        expect { parent.reload }.to change(parent, :traversal_ids).from([]).to([parent.id])
+        expect { child.reload }.to change(child, :traversal_ids).from([]).to([parent.id, child.id])
+      end
     end
-
-    it_behaves_like 'default traversal_ids'
   end
 
   context 'traversal_ids on update' do
-    let!(:namespace1) { create(:group) }
-    let!(:namespace2) { create(:group) }
+    let(:namespace1) { create(:group) }
+    let(:namespace2) { create(:group) }
 
-    it 'updates the traversal_ids when the parent_id is changed' do
-      expect do
-        namespace1.update!(parent: namespace2)
-      end.to change { namespace1.reload.traversal_ids }.from([namespace1.id]).to([namespace2.id, namespace1.id])
+    context 'when parent_id is changed' do
+      subject { namespace1.update!(parent: namespace2) }
+
+      it 'sets the traversal_ids attribute' do
+        expect { subject }.to change { namespace1.traversal_ids }.from([namespace1.id]).to([namespace2.id, namespace1.id])
+      end
+
+      context 'when set_traversal_ids_on_save feature flag is disabled' do
+        before do
+          stub_feature_flags(set_traversal_ids_on_save: false)
+        end
+
+        it 'sets traversal_ids after reload' do
+          subject
+
+          expect { namespace1.reload }.to change(namespace1, :traversal_ids).from([]).to([namespace2.id, namespace1.id])
+        end
+      end
     end
 
     it 'creates a Namespaces::SyncEvent using triggers' do
       Namespaces::SyncEvent.delete_all
-      namespace1.update!(parent: namespace2)
-      expect(namespace1.reload.sync_events.count).to eq(1)
+
+      expect { namespace1.update!(parent: namespace2) }.to change(namespace1.sync_events, :count).by(1)
     end
 
     it 'creates sync_events using database trigger on the table' do
+      namespace1.save!
+      namespace2.save!
+
       expect { Group.update_all(traversal_ids: [-1]) }.to change(Namespaces::SyncEvent, :count).by(2)
     end
 

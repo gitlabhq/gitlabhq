@@ -5,7 +5,7 @@ import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import { TEST_HOST as FAKE_ENDPOINT } from 'helpers/test_constants';
 import axios from '~/lib/utils/axios_utils';
-import { HTTP_STATUS_INTERNAL_SERVER_ERROR } from '~/lib/utils/http_status';
+import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import ArtifactsListApp from '~/vue_merge_request_widget/components/artifacts_list_app.vue';
 import { getStoreConfig } from '~/vue_merge_request_widget/stores/artifacts_list';
 import { artifacts } from '../mock_data';
@@ -79,10 +79,10 @@ describe('Merge Requests Artifacts list app', () => {
   describe('with results', () => {
     beforeEach(() => {
       createComponent();
-      mock.onGet(FAKE_ENDPOINT).reply(200, artifacts, {});
+      mock.onGet(FAKE_ENDPOINT).reply(HTTP_STATUS_OK, artifacts, {});
       store.dispatch('receiveArtifactsSuccess', {
         data: artifacts,
-        status: 200,
+        status: HTTP_STATUS_OK,
       });
       return nextTick();
     });

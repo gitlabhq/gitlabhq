@@ -4,7 +4,11 @@ import * as actions from '~/error_tracking/store/details/actions';
 import * as types from '~/error_tracking/store/details/mutation_types';
 import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
-import { HTTP_STATUS_BAD_REQUEST, HTTP_STATUS_NO_CONTENT } from '~/lib/utils/http_status';
+import {
+  HTTP_STATUS_BAD_REQUEST,
+  HTTP_STATUS_NO_CONTENT,
+  HTTP_STATUS_OK,
+} from '~/lib/utils/http_status';
 import Poll from '~/lib/utils/poll';
 
 let mockedAdapter;
@@ -31,7 +35,7 @@ describe('Sentry error details store actions', () => {
     const endpoint = '123/stacktrace';
     it('should commit SET_ERROR with received response', () => {
       const payload = { error: [1, 2, 3] };
-      mockedAdapter.onGet().reply(200, payload);
+      mockedAdapter.onGet().reply(HTTP_STATUS_OK, payload);
       return testAction(
         actions.startPollingStacktrace,
         { endpoint },

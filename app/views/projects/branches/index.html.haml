@@ -2,6 +2,11 @@
 - page_title _('Branches')
 - add_to_breadcrumbs(_('Repository'), project_tree_path(@project))
 
+-# Possible values for variables passed down from the projects/branches_controller.rb
+-#
+-#   @mode   - overview|active|stale|all (default:overview)
+-#   @sort   - name_asc|updated_asc|updated_desc
+
 .top-area.gl-border-0
   = gl_tabs_nav({ class: 'gl-flex-grow-1 gl-border-b-0' }) do
     = gl_tab_link_to s_('Branches|Overview'), project_branches_path(@project), { item_active: @mode == 'overview', title: s_('Branches|Show overview of the branches') }
@@ -10,7 +15,12 @@
     = gl_tab_link_to s_('Branches|All'), project_branches_filtered_path(@project, state: 'all'), { item_active: %w[overview active stale].exclude?(@mode), title: s_('Branches|Show all branches') }
 
   .nav-controls
-    #js-branches-sort-dropdown{ data: { project_branches_filtered_path: project_branches_path(@project, state: 'all'), sort_options: branches_sort_options_hash.to_json, mode: @mode } }
+    #js-branches-sort-dropdown{ data: {
+        project_branches_filtered_path: project_branches_path(@project, state: 'all'),
+        sort_options: branches_sort_options_hash.to_json,
+        show_dropdown: @mode == 'overview' ? 'false' : 'true',
+        sorted_by: @sort }
+    }
 
     - if can? current_user, :push_code, @project
       .js-delete-merged-branches{ data: {

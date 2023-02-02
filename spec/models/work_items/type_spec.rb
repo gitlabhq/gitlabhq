@@ -126,4 +126,24 @@ RSpec.describe WorkItems::Type do
       expect(work_item_type.name).to eq('label😸')
     end
   end
+
+  describe '#supports_assignee?' do
+    subject(:supports_assignee) { build(:work_item_type, :task).supports_assignee? }
+
+    context 'when the assignees widget is supported' do
+      before do
+        stub_const('::WorkItems::Type::WIDGETS_FOR_TYPE', { task: [::WorkItems::Widgets::Assignees] })
+      end
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when the assignees widget is not supported' do
+      before do
+        stub_const('::WorkItems::Type::WIDGETS_FOR_TYPE', { task: [] })
+      end
+
+      it { is_expected.to be_falsey }
+    end
+  end
 end

@@ -423,6 +423,7 @@ export default {
               target="_blank"
               :href="webIdeUrl"
               block
+              @click="dismissCalloutOnActionClicked(dismiss)"
             >
               {{ __('Try it out now') }}
             </gl-link>

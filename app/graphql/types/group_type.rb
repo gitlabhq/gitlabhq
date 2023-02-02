@@ -233,6 +233,12 @@ module Types
           resolver: Resolvers::WorkItems::TypesResolver,
           description: 'Work item types available to the group.'
 
+    field :releases,
+          Types::ReleaseType.connection_type,
+          null: true,
+          description: 'Releases belonging to projects in the group.',
+          resolver: Resolvers::GroupReleasesResolver
+
     def label(title:)
       BatchLoader::GraphQL.for(title).batch(key: group) do |titles, loader, args|
         LabelsFinder

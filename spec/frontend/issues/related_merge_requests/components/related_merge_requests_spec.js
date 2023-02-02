@@ -2,6 +2,7 @@ import { shallowMount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import mockData from 'test_fixtures/issues/related_merge_requests.json';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import RelatedMergeRequests from '~/issues/related_merge_requests/components/related_merge_requests.vue';
 import createStore from '~/issues/related_merge_requests/store/index';
 import RelatedIssuableItem from '~/issuable/components/related_issuable_item.vue';
@@ -18,7 +19,7 @@ describe('RelatedMergeRequests', () => {
     document.getElementById('js-issuable-app').dataset.initial = JSON.stringify(mockData);
 
     mock = new MockAdapter(axios);
-    mock.onGet(`${API_ENDPOINT}?per_page=100`).reply(200, mockData, { 'x-total': 2 });
+    mock.onGet(`${API_ENDPOINT}?per_page=100`).reply(HTTP_STATUS_OK, mockData, { 'x-total': 2 });
 
     wrapper = shallowMount(RelatedMergeRequests, {
       store: createStore(),

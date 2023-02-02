@@ -3,7 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::QuickActions::CommandDefinition do
-  subject { described_class.new(:command) }
+  let(:mock_command) { :command }
+
+  subject { described_class.new(mock_command) }
 
   describe "#all_names" do
     context "when the command has aliases" do
@@ -74,13 +76,33 @@ RSpec.describe Gitlab::QuickActions::CommandDefinition do
 
     context "when the command has types" do
       before do
-        subject.types = [Issue, Commit]
+        subject.types = [Issue, Commit, WorkItem]
       end
 
       context "when the command target type is allowed" do
         it "returns true" do
           opts[:quick_action_target] = Issue.new
           expect(subject.available?(opts)).to be true
+        end
+
+        context 'when the command target type is Work Item' do
+          context 'when the command is not allowed' do
+            it "returns false" do
+              opts[:quick_action_target] = build(:work_item)
+              expect(subject.available?(opts)).to be false
+            end
+          end
+
+          context 'when the command is allowed' do
+            it "returns true" do
+              allow_next_instance_of(WorkItem) do |work_item|
+                allow(work_item).to receive(:supported_quick_action_commands).and_return([mock_command])
+              end
+
+              opts[:quick_action_target] = build(:work_item)
+              expect(subject.available?(opts)).to be true
+            end
+          end
         end
       end
 
@@ -98,6 +120,9 @@ RSpec.describe Gitlab::QuickActions::CommandDefinition do
         expect(subject.available?(opts)).to be true
 
         opts[:quick_action_target] = MergeRequest.new
+        expect(subject.available?(opts)).to be true
+
+        opts[:quick_action_target] = build(:work_item)
         expect(subject.available?(opts)).to be true
       end
     end

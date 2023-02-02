@@ -4,6 +4,7 @@ import { loadHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import { EVENT_ISSUABLE_VUE_APP_CHANGE } from '~/issuable/constants';
 import Issue from '~/issues/issue';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 
 describe('Issue', () => {
   let testContext;
@@ -11,7 +12,7 @@ describe('Issue', () => {
 
   beforeEach(() => {
     mock = new MockAdapter(axios);
-    mock.onGet(/(.*)\/related_branches$/).reply(200, {});
+    mock.onGet(/(.*)\/related_branches$/).reply(HTTP_STATUS_OK, {});
 
     testContext = {};
     testContext.issue = new Issue();

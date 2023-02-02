@@ -53,6 +53,10 @@ module Members
       end
     end
 
+    def resolve_access_request_todos(current_user, requester)
+      todo_service.resolve_access_request_todos(current_user, requester)
+    end
+
     def enqueue_delete_todos(member)
       type = member.is_a?(GroupMember) ? 'Group' : 'Project'
       # don't enqueue immediately to prevent todos removal in case of a mistake
