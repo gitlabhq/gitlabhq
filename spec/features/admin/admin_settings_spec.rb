@@ -155,17 +155,26 @@ RSpec.describe 'Admin updates settings', feature_category: :not_owned do
         context 'when Gitlab.com' do
           let(:dot_com?) { true }
 
-          it 'does not expose the setting' do
-            expect(page).to have_no_selector('#application_setting_deactivate_dormant_users')
-          end
-
-          it 'does not expose the setting' do
-            expect(page).to have_no_selector('#application_setting_deactivate_dormant_users_period')
+          it 'does not expose the setting section' do
+            # NOTE: not_to have_content may have false positives for content
+            #       that might not load instantly, so before checking that
+            #       `Dormant users` subsection has _not_ loaded, we check that the
+            #       `Account and limit` section _was_ loaded
+            expect(page).to have_content('Account and limit')
+            expect(page).not_to have_content('Dormant users')
+            expect(page).not_to have_field('Deactivate dormant users after a period of inactivity')
+            expect(page).not_to have_field('Days of inactivity before deactivation')
           end
         end
 
         context 'when not Gitlab.com' do
           let(:dot_com?) { false }
+
+          it 'exposes the setting section' do
+            expect(page).to have_content('Dormant users')
+            expect(page).to have_field('Deactivate dormant users after a period of inactivity')
+            expect(page).to have_field('Days of inactivity before deactivation')
+          end
 
           it 'changes dormant users' do
             expect(page).to have_unchecked_field('Deactivate dormant users after a period of inactivity')

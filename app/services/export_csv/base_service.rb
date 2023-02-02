@@ -25,7 +25,11 @@ module ExportCsv
     # rubocop: disable CodeReuse/ActiveRecord
     def csv_builder
       @csv_builder ||=
-        CsvBuilder.new(objects.preload(associations_to_preload), header_to_value_hash)
+        if preload_associations_in_batches?
+          CsvBuilder.new(objects, header_to_value_hash, associations_to_preload)
+        else
+          CsvBuilder.new(objects.preload(associations_to_preload), header_to_value_hash, [])
+        end
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
@@ -35,6 +39,10 @@ module ExportCsv
 
     def header_to_value_hash
       raise NotImplementedError
+    end
+
+    def preload_associations_in_batches?
+      false
     end
   end
 end

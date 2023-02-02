@@ -23,15 +23,17 @@ class CsvBuilder
   #
   # * +collection+ - The data collection to be used
   # * +header_to_hash_value+ - A hash of 'Column Heading' => 'value_method'.
+  # * +associations_to_preload+ - An array of records to preload with a batch of records.
   #
   # The value method will be called once for each object in the collection, to
   # determine the value for that row. It can either be the name of a method on
   # the object, or a lamda to call passing in the object.
-  def initialize(collection, header_to_value_hash)
+  def initialize(collection, header_to_value_hash, associations_to_preload = [])
     @header_to_value_hash = header_to_value_hash
     @collection = collection
     @truncated = false
     @rows_written = 0
+    @associations_to_preload = associations_to_preload
   end
 
   # Renders the csv to a string
@@ -75,7 +77,13 @@ class CsvBuilder
   protected
 
   def each(&block)
-    @collection.find_each(&block) # rubocop: disable CodeReuse/ActiveRecord
+    if @associations_to_preload.present? && @collection.respond_to?(:each_batch)
+      @collection.each_batch(order_hint: :created_at) do |relation|
+        relation.preload(@associations_to_preload).order(:id).each(&block) # rubocop:disable CodeReuse/ActiveRecord
+      end
+    else
+      @collection.find_each(&block) # rubocop: disable CodeReuse/ActiveRecord
+    end
   end
 
   private

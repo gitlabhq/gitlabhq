@@ -55,6 +55,10 @@ module Issues
       issue.timelogs.sum(&:time_spent)
     end
     # rubocop: enable CodeReuse/ActiveRecord
+
+    def preload_associations_in_batches?
+      Feature.enabled?(:export_csv_preload_in_batches, resource_parent)
+    end
   end
 end
 

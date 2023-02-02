@@ -381,6 +381,26 @@ sudo gitlab-rake gitlab:geo:check
   When performing a PostgreSQL major version (9 > 10), update this is expected. Follow
   the [initiate-the-replication-process](../setup/database.md#step-3-initiate-the-replication-process).
 
+- Rails does not appear to have the configuration necessary to connect to the Geo tracking database.
+
+  ```plaintext
+  Checking Geo ...
+
+  GitLab Geo is available ... yes
+  GitLab Geo is enabled ... yes
+  GitLab Geo tracking database is correctly configured ... no
+  Try fixing it:
+  Rails does not appear to have the configuration necessary to connect to the Geo tracking database. If the tracking database is running on a node other than this one, then you may need to add configuration.
+  ...
+  Checking Geo ... Finished
+  ```
+
+  - If you are running the secondary site on a single node for all services, then follow [Geo database replication - Configure the secondary server](../setup/database.md#step-2-configure-the-secondary-server).
+  - If you are running the secondary site's tracking database on its own node, then follow [Geo for multiple servers - Configure the Geo tracking database on the Geo secondary site](multiple_servers.md#step-3-configure-the-geo-tracking-database-on-the-geo-secondary-site)
+  - If you are running the secondary site's tracking database in a Patroni cluster, then follow [Geo database replication - Configure the tracking database on the secondary sites](../setup/database.md#step-3-configure-the-tracking-database-on-the-secondary-sites)
+  - If you are running the secondary site's tracking database in an external database, then follow [Geo with external PostgreSQL instances](../setup/external_database.md#configure-the-tracking-database)
+  - If the Geo check task was run on a node which is not running a service which runs the GitLab Rails app (Puma, Sidekiq, or Geo Log Cursor), then this error can be ignored. The node does not need Rails to be configured.
+
 ### Message: Machine clock is synchronized ... Exception
 
 The Rake task attempts to verify that the server clock is synchronized with NTP. Synchronized clocks

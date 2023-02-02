@@ -778,7 +778,7 @@ example:
 
 gitaly['concurrency'] = [
   {
-    'rpc' => "/gitaly.SmartHTTPService/PostUploadPackWithSidechanel",
+    'rpc' => "/gitaly.SmartHTTPService/PostUploadPackWithSidechannel",
     'max_per_repo' => 20,
     'max_queue_time' => "1s",
     'max_queue_size' => 10

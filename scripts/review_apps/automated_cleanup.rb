@@ -91,7 +91,7 @@ module ReviewApps
           deleted_environment = delete_environment(environment, deployment)
 
           if deleted_environment
-            release = Tooling::Helm3Client::Release.new(environment.slug, 1, deployed_at.to_s, nil, nil, environment.slug)
+            release = Tooling::Helm3Client::Release.new(name: environment.slug, namespace: environment.slug, revision: 1)
             releases_to_delete << release
           end
         end
@@ -100,7 +100,7 @@ module ReviewApps
       end
 
       delete_stopped_environments(environment_type: :review_app, checked_environments: checked_environments, last_updated_threshold: delete_threshold) do |environment|
-        releases_to_delete << Tooling::Helm3Client::Release.new(environment.slug, 1, environment.updated_at, nil, nil, environment.slug)
+        releases_to_delete << Tooling::Helm3Client::Release.new(name: environment.slug, namespace: environment.slug, revision: 1, updated: environment.updated_at)
       end
 
       delete_helm_releases(releases_to_delete)
