@@ -300,7 +300,9 @@ Automated runner creation is possible through a new GraphQL mutation and the exi
 [`POST /runners` REST API endpoint](../../../api/runners.md#register-a-new-runner).
 The difference in the REST API endpoint is that it is modified to accept a request from an
 authorized user with a scope (instance, a group, or a project) instead of the registration token.
-These endpoints are only available to users that are allowed to create runners at the specified scope.
+These endpoints are only available to users that are
+[allowed](../../../user/permissions.md#gitlab-cicd-permissions) to create runners at the specified
+scope.
 
 ## Implementation plan
 

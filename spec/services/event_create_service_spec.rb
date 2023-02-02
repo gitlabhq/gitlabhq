@@ -319,7 +319,6 @@ RSpec.describe EventCreateService, :clean_gitlab_redis_cache, :clean_gitlab_redi
       let(:category) { described_class.to_s }
       let(:action) { :push }
       let(:namespace) { project.namespace }
-      let(:feature_flag_name) { :route_hll_to_snowplow }
       let(:label) { 'usage_activity_by_stage_monthly.create.action_monthly_active_users_project_repo' }
       let(:property) { 'project_action' }
     end
@@ -346,7 +345,6 @@ RSpec.describe EventCreateService, :clean_gitlab_redis_cache, :clean_gitlab_redi
       let(:category) { described_class.to_s }
       let(:action) { :push }
       let(:namespace) { project.namespace }
-      let(:feature_flag_name) { :route_hll_to_snowplow }
       let(:label) { 'usage_activity_by_stage_monthly.create.action_monthly_active_users_project_repo' }
       let(:property) { 'project_action' }
     end

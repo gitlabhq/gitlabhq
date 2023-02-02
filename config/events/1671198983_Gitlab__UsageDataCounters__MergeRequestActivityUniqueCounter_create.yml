@@ -1,9 +1,8 @@
 ---
-description: Count of unique merge requests created per month
+description: Count of unique users creating a merge request per month
 category: Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter
 action: create
 label_description: "Mirrored RedisHLL i_code_review_user_create_mr_monthly events sent to Snowplow"
-label_description:
 property_description:
 value_description:
 extra_properties:

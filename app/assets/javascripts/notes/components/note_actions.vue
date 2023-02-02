@@ -141,7 +141,7 @@ export default {
     ...mapState(['isPromoteCommentToTimelineEventInProgress']),
     ...mapGetters(['getUserDataByProp', 'getNoteableData', 'canUserAddIncidentTimelineEvents']),
     shouldShowActionsDropdown() {
-      return this.currentUserId && (this.canEdit || this.canReportAsAbuse);
+      return this.currentUserId;
     },
     showDeleteAction() {
       return this.canDelete && !this.canReportAsAbuse && !this.noteUrl;

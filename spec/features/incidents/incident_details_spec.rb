@@ -3,11 +3,16 @@
 require 'spec_helper'
 
 RSpec.describe 'Incident details', :js, feature_category: :incident_management do
+  include MergeRequestDiffHelpers
+
   let_it_be(:project) { create(:project) }
   let_it_be(:developer) { create(:user) }
   let_it_be(:incident) { create(:incident, project: project, author: developer, description: 'description') }
   let_it_be(:issue) { create(:issue, project: project, author: developer, description: 'Issue description') }
   let_it_be(:escalation_status) { create(:incident_management_issuable_escalation_status, issue: incident) }
+  let_it_be(:confidential_incident) do
+    create(:incident, confidential: true, project: project, author: developer, description: 'Confidential')
+  end
 
   before_all do
     project.add_developer(developer)
@@ -124,5 +129,13 @@ RSpec.describe 'Incident details', :js, feature_category: :incident_management d
 
       expect(page).to have_current_path("#{project_path}/-/issues/#{incident.iid}")
     end
+  end
+
+  it 'displays the confidential badge on the sticky header when the incident is confidential' do
+    visit incident_project_issues_path(project, confidential_incident)
+    wait_for_requests
+
+    sticky_header = find_by_scrolling('[data-testid=issue-sticky-header]')
+    expect(sticky_header.find('[data-testid=confidential]')).to be_present
   end
 end

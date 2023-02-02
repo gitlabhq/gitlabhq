@@ -5,6 +5,8 @@ module ProductAnalyticsTracking
   include RedisTracking
   extend ActiveSupport::Concern
 
+  MIGRATED_EVENTS = ['g_analytics_valuestream']
+
   class_methods do
     # TODO: Remove once all the events are migrated to #track_custom_event
     # during https://gitlab.com/groups/gitlab-org/-/epics/8641
@@ -63,9 +65,9 @@ module ProductAnalyticsTracking
   end
 
   def event_enabled?(event)
-    events_to_ff = {
-      g_analytics_valuestream: '',
+    return true if MIGRATED_EVENTS.include?(event)
 
+    events_to_ff = {
       i_search_paid: :_phase2,
       i_search_total: :_phase2,
       i_search_advanced: :_phase2,

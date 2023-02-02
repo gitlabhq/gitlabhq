@@ -20,7 +20,7 @@ const bootstrapApollo = (state = {}) => {
   });
 };
 
-export function initIncidentApp(issueData = {}) {
+export function initIncidentApp(issueData = {}, store) {
   const el = document.getElementById('js-issuable-app');
 
   if (!el) {
@@ -49,6 +49,7 @@ export function initIncidentApp(issueData = {}) {
     el,
     name: 'DescriptionRoot',
     apolloProvider,
+    store,
     provide: {
       issueType: INCIDENT_TYPE,
       canCreateIncident,
@@ -62,6 +63,9 @@ export function initIncidentApp(issueData = {}) {
       uploadMetricsFeatureAvailable: parseBoolean(uploadMetricsFeatureAvailable),
       contentEditorOnIssues: gon.features.contentEditorOnIssues,
     },
+    computed: {
+      ...mapGetters(['getNoteableData']),
+    },
     render(createElement) {
       return createElement(IssueApp, {
         props: {
@@ -70,6 +74,7 @@ export function initIncidentApp(issueData = {}) {
           issuableStatus: state,
           descriptionComponent: IncidentTabs,
           showTitleBorder: false,
+          isConfidential: this.getNoteableData?.confidential,
         },
       });
     },

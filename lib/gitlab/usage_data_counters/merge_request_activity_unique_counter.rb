@@ -76,10 +76,10 @@ module Gitlab
             project: project,
             namespace: project.namespace,
             user: user,
-            property: MR_CREATE_ACTION,
-            label: 'redis_hll_counters.code_review.i_code_review_create_mr_monthly',
+            property: MR_USER_CREATE_ACTION,
+            label: 'redis_hll_counters.code_review.i_code_review_user_create_mr_monthly',
             context: [Gitlab::Tracking::ServicePingContext.new(data_source: :redis_hll,
-                                                               event: MR_CREATE_ACTION).to_context]
+                                                               event: MR_USER_CREATE_ACTION).to_context]
           )
         end
 
