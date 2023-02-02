@@ -42,7 +42,6 @@ module BulkImports
     def run
       return skip_tracker if entity.failed?
 
-      raise(Pipeline::ExpiredError, 'Pipeline timeout') if job_timeout?
       raise(Pipeline::FailedError, "Export from source instance failed: #{export_status.error}") if export_failed?
       raise(Pipeline::ExpiredError, 'Empty export status on source instance') if empty_export_timeout?
 
@@ -103,14 +102,8 @@ module BulkImports
       pipeline_tracker.file_extraction_pipeline?
     end
 
-    def job_timeout?
-      return false unless file_extraction_pipeline?
-
-      time_since_entity_created > Pipeline::NDJSON_EXPORT_TIMEOUT
-    end
-
     def empty_export_timeout?
-      export_empty? && time_since_entity_created > Pipeline::EMPTY_EXPORT_STATUS_TIMEOUT
+      export_empty? && time_since_tracker_created > Pipeline::EMPTY_EXPORT_STATUS_TIMEOUT
     end
 
     def export_failed?
@@ -167,8 +160,8 @@ module BulkImports
       logger.error(structured_payload(payload))
     end
 
-    def time_since_entity_created
-      Time.zone.now - entity.created_at
+    def time_since_tracker_created
+      Time.zone.now - (pipeline_tracker.created_at || entity.created_at)
     end
 
     def lease_timeout

@@ -433,11 +433,11 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
           allow(status).to receive(:failed?).and_return(false)
         end
 
-        entity.update!(created_at: entity_created_at)
+        pipeline_tracker.update!(created_at: created_at)
       end
 
       context 'when timeout is not reached' do
-        let(:entity_created_at) { 1.minute.ago }
+        let(:created_at) { 1.minute.ago }
 
         it 'reenqueues pipeline worker' do
           expect(described_class)
@@ -455,8 +455,8 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
         end
       end
 
-      context 'when timeout is reached' do
-        let(:entity_created_at) { 10.minutes.ago }
+      context 'when empty export timeout is reached' do
+        let(:created_at) { 10.minutes.ago }
 
         it 'marks as failed and logs the error' do
           expect_next_instance_of(Gitlab::Import::Logger) do |logger|
@@ -485,39 +485,25 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
           expect(pipeline_tracker.reload.status_name).to eq(:failed)
         end
       end
-    end
 
-    context 'when job reaches timeout' do
-      it 'marks as failed and logs the error' do
-        old_created_at = entity.created_at
-        entity.update!(created_at: (BulkImports::Pipeline::NDJSON_EXPORT_TIMEOUT + 1.hour).ago)
+      context 'when tracker created_at is nil' do
+        let(:created_at) { nil }
 
-        expect_next_instance_of(Gitlab::Import::Logger) do |logger|
-          expect(logger)
-            .to receive(:error)
-            .with(
-              hash_including(
-                'pipeline_name' => 'NdjsonPipeline',
-                'bulk_import_entity_id' => entity.id,
-                'bulk_import_id' => entity.bulk_import_id,
-                'bulk_import_entity_type' => entity.source_type,
-                'source_full_path' => entity.source_full_path,
-                'class' => 'BulkImports::PipelineWorker',
-                'exception.backtrace' => anything,
-                'exception.class' => 'BulkImports::Pipeline::ExpiredError',
-                'exception.message' => 'Pipeline timeout',
-                'importer' => 'gitlab_migration',
-                'message' => 'Pipeline failed',
-                'source_version' => entity.bulk_import.source_version_info.to_s
+        it 'falls back to entity created_at' do
+          entity.update!(created_at: 10.minutes.ago)
+
+          expect_next_instance_of(Gitlab::Import::Logger) do |logger|
+            expect(logger)
+              .to receive(:error)
+              .with(
+                hash_including('exception.message' => 'Empty export status on source instance')
               )
-            )
+          end
+
+          subject.perform(pipeline_tracker.id, pipeline_tracker.stage, entity.id)
+
+          expect(pipeline_tracker.reload.status_name).to eq(:failed)
         end
-
-        subject.perform(pipeline_tracker.id, pipeline_tracker.stage, entity.id)
-
-        expect(pipeline_tracker.reload.status_name).to eq(:failed)
-
-        entity.update!(created_at: old_created_at)
       end
     end
 

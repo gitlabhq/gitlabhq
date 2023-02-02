@@ -9,7 +9,7 @@ database_config = YAML.load_file(File.join(File.expand_path('..', __dir__), 'con
 task = ARGV.shift
 raise ArgumentError, 'You need to pass a task name!' unless task
 
-task = "${task}:main" unless database_config.one?
+task = "#{task}:main" unless database_config.one?
 cmd = ['bundle', 'exec', 'rake', task, *ARGV]
 
 puts "Running: `#{cmd.join(' ')}`"

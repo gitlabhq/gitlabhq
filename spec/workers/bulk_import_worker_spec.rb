@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BulkImportWorker do
+RSpec.describe BulkImportWorker, feature_category: :importers do
   describe '#perform' do
     context 'when no bulk import is found' do
       it 'does nothing' do
@@ -56,6 +56,19 @@ RSpec.describe BulkImportWorker do
       end
     end
 
+    context 'when maximum allowed number of import entities in progress' do
+      it 'reenqueues itself' do
+        bulk_import = create(:bulk_import, :started)
+        create(:bulk_import_entity, :created, bulk_import: bulk_import)
+        (described_class::DEFAULT_BATCH_SIZE + 1).times { |_| create(:bulk_import_entity, :started, bulk_import: bulk_import) }
+
+        expect(described_class).to receive(:perform_in).with(described_class::PERFORM_DELAY, bulk_import.id)
+        expect(BulkImports::ExportRequestWorker).not_to receive(:perform_async)
+
+        subject.perform(bulk_import.id)
+      end
+    end
+
     context 'when bulk import is created' do
       it 'marks bulk import as started' do
         bulk_import = create(:bulk_import, :created)
@@ -82,16 +95,20 @@ RSpec.describe BulkImportWorker do
       context 'when there are created entities to process' do
         let_it_be(:bulk_import) { create(:bulk_import, :created) }
 
-        it 'marks all entities as started, enqueues EntityWorker, ExportRequestWorker and reenqueues' do
+        before do
+          stub_const("#{described_class}::DEFAULT_BATCH_SIZE", 1)
+        end
+
+        it 'marks a batch of entities as started, enqueues EntityWorker, ExportRequestWorker and reenqueues' do
           create(:bulk_import_entity, :created, bulk_import: bulk_import)
           create(:bulk_import_entity, :created, bulk_import: bulk_import)
 
           expect(described_class).to receive(:perform_in).with(described_class::PERFORM_DELAY, bulk_import.id)
-          expect(BulkImports::ExportRequestWorker).to receive(:perform_async).twice
+          expect(BulkImports::ExportRequestWorker).to receive(:perform_async).once
 
           subject.perform(bulk_import.id)
 
-          expect(bulk_import.entities.map(&:status_name)).to contain_exactly(:started, :started)
+          expect(bulk_import.entities.map(&:status_name)).to contain_exactly(:created, :started)
         end
 
         context 'when there are project entities to process' do
