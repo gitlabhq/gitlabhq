@@ -2,6 +2,7 @@ package badgateway
 
 import (
 	"bytes"
+	"context"
 	_ "embed"
 	"encoding/base64"
 	"fmt"
@@ -47,9 +48,14 @@ func (t *roundTripper) RoundTrip(r *http.Request) (*http.Response, error) {
 	fields := log.Fields{"duration_ms": int64(time.Since(start).Seconds() * 1000)}
 	log.WithRequest(r).WithFields(fields).WithError(&sentryError{fmt.Errorf("badgateway: failed to receive response: %v", err)}).Error()
 
+	code := http.StatusBadGateway
+	if r.Context().Err() == context.Canceled {
+		code = 499 // Code used by NGINX when client disconnects
+	}
+
 	injectedResponse := &http.Response{
-		StatusCode: http.StatusBadGateway,
-		Status:     http.StatusText(http.StatusBadGateway),
+		StatusCode: code,
+		Status:     http.StatusText(code),
 
 		Request:    r,
 		ProtoMajor: r.ProtoMajor,

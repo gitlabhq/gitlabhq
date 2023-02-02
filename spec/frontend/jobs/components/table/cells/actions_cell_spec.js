@@ -37,6 +37,7 @@ describe('Job actions cell', () => {
   const cancelableJob = findMockJob('cancelable');
   const playableJob = findMockJob('playable');
   const retryableJob = findMockJob('retryable');
+  const failedJob = findMockJob('failed');
   const scheduledJob = findMockJob('scheduled');
   const jobWithArtifact = findMockJob('with_artifact');
   const cannotPlayJob = findMockJob('playable', mockJobsNodesAsGuest);
@@ -78,10 +79,6 @@ describe('Job actions cell', () => {
       },
     });
   };
-
-  afterEach(() => {
-    wrapper.destroy();
-  });
 
   it('displays the artifacts download button with correct link', () => {
     createComponent(jobWithArtifact);
@@ -189,6 +186,20 @@ describe('Job actions cell', () => {
     await waitForPromises();
 
     expect(button().props('disabled')).toBe(true);
+  });
+
+  describe('Retry button title', () => {
+    it('displays retry title when job has failed and is retryable', () => {
+      createComponent(failedJob);
+
+      expect(findRetryButton().attributes('title')).toBe('Retry');
+    });
+
+    it('displays run again title when job has passed and is retryable', () => {
+      createComponent(retryableJob);
+
+      expect(findRetryButton().attributes('title')).toBe('Run again');
+    });
   });
 
   describe('Scheduled Jobs', () => {

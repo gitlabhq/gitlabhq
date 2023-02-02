@@ -1,4 +1,5 @@
-- title = s_('Runners|Create an instance runner')
-
 - add_to_breadcrumbs _('Runners'), admin_runners_path
-- page_title title
+- breadcrumb_title s_('Runner|New')
+- page_title s_('Runners|Create an instance runner')
+
+#js-admin-new-runner{ data: { legacy_registration_token: Gitlab::CurrentSettings.runners_registration_token } }

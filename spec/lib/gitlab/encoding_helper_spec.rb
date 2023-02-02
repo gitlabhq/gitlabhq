@@ -283,4 +283,12 @@ RSpec.describe Gitlab::EncodingHelper do
       expect(described_class.unquote_path('"\a\b\e\f\n\r\t\v\""')).to eq("\a\b\e\f\n\r\t\v\"")
     end
   end
+
+  describe '#strip_bom' do
+    it do
+      expect(described_class.strip_bom('no changes')).to eq('no changes')
+      expect(described_class.strip_bom("\xEF\xBB\xBFhello world")).to eq('hello world')
+      expect(described_class.strip_bom("BOM at the end\xEF\xBB\xBF")).to eq("BOM at the end\xEF\xBB\xBF")
+    end
+  end
 end

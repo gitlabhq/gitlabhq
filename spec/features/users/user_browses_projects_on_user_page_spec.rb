@@ -28,6 +28,10 @@ RSpec.describe 'Users > User browses projects on user page', :js, feature_catego
     end
   end
 
+  before do
+    stub_feature_flags(profile_tabs_vue: false)
+  end
+
   it 'hides loading spinner after load', :js do
     visit user_path(user)
     click_nav_link('Personal projects')

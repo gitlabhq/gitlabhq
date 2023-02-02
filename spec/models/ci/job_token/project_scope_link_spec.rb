@@ -18,11 +18,12 @@ RSpec.describe Ci::JobToken::ProjectScopeLink, feature_category: :continuous_int
   describe 'unique index' do
     let!(:link) { create(:ci_job_token_project_scope_link) }
 
-    it 'raises an error' do
+    it 'raises an error, when not unique' do
       expect do
         create(:ci_job_token_project_scope_link,
           source_project: link.source_project,
-          target_project: link.target_project)
+          target_project: link.target_project,
+          direction: link.direction)
       end.to raise_error(ActiveRecord::RecordNotUnique)
     end
   end

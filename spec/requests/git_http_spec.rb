@@ -7,6 +7,7 @@ RSpec.describe 'Git HTTP requests', feature_category: :source_code_management do
   include TermsHelper
   include GitHttpHelpers
   include WorkhorseHelpers
+  include Ci::JobTokenScopeHelpers
 
   shared_examples 'pulls require Basic HTTP Authentication' do
     context "when no credentials are provided" do
@@ -869,14 +870,15 @@ RSpec.describe 'Git HTTP requests', feature_category: :source_code_management do
 
         context "when a gitlab ci token is provided" do
           let(:project) { create(:project, :repository) }
-          let(:build) { create(:ci_build, :running) }
-          let(:other_project) { create(:project, :repository) }
-
-          before do
-            build.update!(project: project) # can't associate it on factory create
+          let(:build) { create(:ci_build, :running, project: project, user: user) }
+          let(:other_project) do
+            create(:project, :repository).tap do |o|
+              make_project_fully_accessible(project, o)
+            end
           end
 
           context 'when build created by system is authenticated' do
+            let(:user) { nil }
             let(:path) { "#{project.full_path}.git" }
             let(:env) { { user: 'gitlab-ci-token', password: build.token } }
 
@@ -899,12 +901,7 @@ RSpec.describe 'Git HTTP requests', feature_category: :source_code_management do
 
           context 'and build created by' do
             before do
-              build.update!(user: user)
               project.add_reporter(user)
-              create(:ci_job_token_project_scope_link,
-                     source_project: project,
-                     target_project: other_project,
-                     added_by: user)
             end
 
             shared_examples 'can download code only' do
@@ -1474,19 +1471,16 @@ RSpec.describe 'Git HTTP requests', feature_category: :source_code_management do
 
         context "when a gitlab ci token is provided" do
           let(:project) { create(:project, :repository) }
-          let(:build) { create(:ci_build, :running) }
-          let(:other_project) { create(:project, :repository) }
-
-          before do
-            build.update!(project: project) # can't associate it on factory create
-            create(:ci_job_token_project_scope_link,
-                    source_project: project,
-                    target_project: other_project,
-                    added_by: user)
+          let(:build) { create(:ci_build, :running, project: project, user: user) }
+          let(:other_project) do
+            create(:project, :repository).tap do |o|
+              make_project_fully_accessible(project, o)
+            end
           end
 
           # legacy behavior that is blocked/deprecated
           context 'when build created by system is authenticated' do
+            let(:user) { nil }
             let(:path) { "#{project.full_path}.git" }
             let(:env) { { user: 'gitlab-ci-token', password: build.token } }
 
@@ -1505,7 +1499,6 @@ RSpec.describe 'Git HTTP requests', feature_category: :source_code_management do
 
           context 'and build created by' do
             before do
-              build.update!(user: user)
               project.add_reporter(user)
             end
 
@@ -1862,12 +1855,8 @@ RSpec.describe 'Git HTTP requests', feature_category: :source_code_management do
     end
 
     context 'from CI' do
-      let(:build) { create(:ci_build, :running) }
+      let(:build) { create(:ci_build, :running, user: user, project: project) }
       let(:env) { { user: 'gitlab-ci-token', password: build.token } }
-
-      before do
-        build.update!(user: user, project: project)
-      end
 
       it_behaves_like 'pulls are allowed'
     end

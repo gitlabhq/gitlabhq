@@ -26,6 +26,9 @@ class UsersController < ApplicationController
   before_action only: [:exists] do
     check_rate_limit!(:username_exists, scope: request.ip)
   end
+  before_action only: [:show] do
+    push_frontend_feature_flag(:profile_tabs_vue, current_user)
+  end
 
   feature_category :user_profile, [:show, :activity, :groups, :projects, :contributed, :starred,
                             :followers, :following, :calendar, :calendar_activities,

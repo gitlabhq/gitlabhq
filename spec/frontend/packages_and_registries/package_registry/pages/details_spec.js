@@ -595,7 +595,8 @@ describe('PackagesApp', () => {
 
     it('binds the correct props', async () => {
       const versionNodes = packageVersions();
-      createComponent({ packageEntity: { versions: { nodes: versionNodes } } });
+      createComponent();
+
       await waitForPromises();
 
       expect(findVersionsList().props()).toMatchObject({

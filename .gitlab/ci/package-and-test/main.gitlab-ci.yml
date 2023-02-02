@@ -620,7 +620,7 @@ e2e-test-report:
     - .rules:report:allure-report
   stage: report
   variables:
-    GITLAB_AUTH_TOKEN: $GITLAB_QA_MR_ALLURE_REPORT_TOKEN
+    GITLAB_AUTH_TOKEN: $PROJECT_TOKEN_FOR_CI_SCRIPTS_API_USAGE
     ALLURE_PROJECT_PATH: $CI_PROJECT_PATH
     ALLURE_MERGE_REQUEST_IID: $CI_MERGE_REQUEST_IID
     ALLURE_JOB_NAME: e2e-package-and-test
@@ -654,7 +654,7 @@ relate-test-failures:
   variables:
     QA_FAILURES_REPORTING_PROJECT: gitlab-org/gitlab
     QA_FAILURES_MAX_DIFF_RATIO: "0.15"
-    GITLAB_QA_ACCESS_TOKEN: $GITLAB_QA_PRODUCTION_ACCESS_TOKEN
+    GITLAB_QA_ACCESS_TOKEN: $QA_GITLAB_CI_TOKEN
   when: on_failure
   script:
     - |

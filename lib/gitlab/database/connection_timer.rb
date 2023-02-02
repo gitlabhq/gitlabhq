@@ -27,7 +27,7 @@ module Gitlab
         end
 
         def current_clock_value
-          Concurrent.monotonic_time
+          Process.clock_gettime(Process::CLOCK_MONOTONIC)
         end
       end
 

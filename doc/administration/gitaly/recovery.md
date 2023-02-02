@@ -9,6 +9,57 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 Gitaly Cluster can recover from primary-node failure and unavailable repositories. Gitaly Cluster can perform data
 recovery and has Praefect tracking database tools.
 
+## Manage Gitaly nodes on a Gitaly Cluster
+
+You can add and replace Gitaly nodes on a Gitaly Cluster.
+
+### Add new Gitaly nodes
+
+To add a new Gitaly node to a Gitaly Cluster that has [replication factor](praefect.md#configure-replication-factor):
+
+- Set, set the [replication factor](praefect.md#configure-replication-factor) for each repository using `set-replication-factor` Praefect command. New repositories are
+  replicated based on [replication factor](praefect.md#configure-replication-factor). Praefect doesn't automatically replicate existing repositories to the new Gitaly node.
+- Not set, add the new node in your [Praefect configuration](praefect.md#praefect) under `praefect['virtual_storages']`. Praefect automatically replicates all data to any
+  new Gitaly node added to the configuration.
+
+### Replace an existing Gitaly node
+
+You can replace an existing Gitaly node with a new node with either the same name or a different name.
+
+#### With a node with the same name
+
+To use the same name for the replacement node, use [repository verifier](praefect.md#enable-deletions) to scan the storage and remove dangling metadata records.
+[Manually prioritize verification](praefect.md#prioritize-verification-manually) of the replaced storage to speed up the process.
+
+#### With a node with a different name
+
+To use a different name for the replacement node for a Gitaly Cluster that has [replication factor](praefect.md#configure-replication-factor):
+
+- Set, use [`praefect set-replication-factor`](praefect.md#configure-replication-factor) to set the replication factor per repository again to get new storage assigned.
+  For example:
+
+  ```shell
+  $ sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml set-replication-factor -virtual-storage default -repository @hashed/3f/db/3fdba35f04dc8c462986c992bcf875546257113072a909c162f7e470e581e278.git -replication-factor 2
+
+  current assignments: gitaly-1, gitaly-2
+  ```
+
+  To reassign all repositories from the old storage to the new one, after configuring the new Gitaly node:
+
+  1. Connect to Praefect database:
+
+     ```shell
+     /opt/gitlab/embedded/bin/psql -h <psql host> -U <user> -d <database name>
+     ```
+
+  1. Update `repository_assignments` table to replace the old Gitaly node name (for example, `old-gitaly`) with the new Gitaly node name (for example, `new-gitaly`):
+
+     ```sql
+     UPDATE repository_assignments SET storage='new-gitaly' WHERE storage='old-gitaly';
+     ```
+
+- Not set, replace the node in the configuration. The old node's state remains in the Praefect database but it is ignored.
+
 ## Primary node failure
 
 > - Introduced in GitLab 13.0, Gitaly Cluster, elects the secondary with the least unreplicated writes from the primary to be the new primary. There can still be some unreplicated writes, so [data loss can occur](#check-for-data-loss).

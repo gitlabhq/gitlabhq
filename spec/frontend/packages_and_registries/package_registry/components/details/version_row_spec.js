@@ -19,6 +19,7 @@ describe('VersionRow', () => {
   const findPackageTags = () => wrapper.findComponent(PackageTags);
   const findPublishMethod = () => wrapper.findComponent(PublishMethod);
   const findTimeAgoTooltip = () => wrapper.findComponent(TimeAgoTooltip);
+  const findPackageName = () => wrapper.findComponent(GlTruncate);
 
   function createComponent(packageEntity = packageVersion) {
     wrapper = shallowMountExtended(VersionRow, {
@@ -74,16 +75,28 @@ describe('VersionRow', () => {
   });
 
   describe('disabled status', () => {
-    it('disables the list item', () => {
-      createComponent({ ...packageVersion, status: 'something' });
+    beforeEach(() => {
+      createComponent({
+        ...packageVersion,
+        status: 'something',
+        _links: {
+          webPath: null,
+        },
+      });
+    });
 
+    it('disables the list item', () => {
       expect(findListItem().props('disabled')).toBe(true);
     });
 
-    it('disables the link', () => {
-      createComponent({ ...packageVersion, status: 'something' });
+    it('lists the package name', () => {
+      expect(findPackageName().props()).toMatchObject({
+        text: '@gitlab-org/package-15',
+      });
+    });
 
-      expect(findLink().attributes('disabled')).toBe('true');
+    it('does not have a link to navigate to the details page', () => {
+      expect(findLink().exists()).toBe(false);
     });
   });
 });

@@ -77,6 +77,12 @@ still succeeds even if that warning was printed. For example:
   as a volume under `/builds`). In that case, the service does its job, and
   because the job is not trying to connect to it, it does not fail.
 
+If the services start successfully, they start before the
+[`before_script`](../../ci/yaml/index.md#before_script) runs. This means you can
+write a `before_script` that queries the service.
+
+Services stop at the end of the job, even if the job fails.
+
 ## What services are not for
 
 As mentioned before, this feature is designed to provide **network accessible**

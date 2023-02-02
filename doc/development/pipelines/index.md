@@ -501,14 +501,12 @@ pipeline in `ruby2-sync` branch, which updates the `ruby2` branch with latest
 is triggering a pipeline in `ruby2` 5 minutes after it, which is considered
 the maintenance schedule to run test suites and update cache.
 
-Any changes in `ruby2` are only for running the pipeline. It should
-never be merged back to `master`. Any other Ruby 2.7 changes should go into
-`master` directly, which should be compatible with Ruby 3.
+The `ruby2` branch must not have any changes. The branch is only there to set
+`RUBY_VERSION` to `2.7` in the maintenance pipeline schedule.
 
-Previously, `ruby2-sync` was using a project token stored in `RUBY2_SYNC_TOKEN`
-(now backed up in `RUBY2_SYNC_TOKEN_NOT_USED`), however due to various
-permissions issues, we ended up using an access token from `gitlab-bot` so now
-`RUBY2_SYNC_TOKEN` is actually an access token from `gitlab-bot`.
+The `gitlab` job in the `ruby2-sync` branch uses a `gitlab-org/gitlab` project
+token with `write_repository` scope and `Maintainer` role with no expiration.
+The token is stored in the `RUBY2_SYNC_TOKEN` variable in `gitlab-org/gitlab`.
 
 #### Long-term plan
 

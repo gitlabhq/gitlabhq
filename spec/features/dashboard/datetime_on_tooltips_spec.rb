@@ -12,6 +12,10 @@ RSpec.describe 'Tooltips on .timeago dates', :js, feature_category: :user_profil
     project.add_maintainer(user)
   end
 
+  before do
+    stub_feature_flags(profile_tabs_vue: false)
+  end
+
   context 'on the activity tab' do
     before do
       Event.create!(project: project, author_id: user.id, action: :joined,

@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe API::Ci::JobArtifacts, feature_category: :build_artifacts do
   include HttpBasicAuthHelpers
   include DependencyProxyHelpers
+  include Ci::JobTokenScopeHelpers
 
   include HttpIOHelpers
 
@@ -312,7 +313,7 @@ RSpec.describe API::Ci::JobArtifacts, feature_category: :build_artifacts do
     context 'normal authentication' do
       context 'job with artifacts' do
         context 'when artifacts are stored locally' do
-          let(:job) { create(:ci_build, :artifacts, pipeline: pipeline) }
+          let(:job) { create(:ci_build, :artifacts, pipeline: pipeline, project: project) }
 
           subject { get api("/projects/#{project.id}/jobs/#{job.id}/artifacts", api_user) }
 
@@ -329,11 +330,12 @@ RSpec.describe API::Ci::JobArtifacts, feature_category: :build_artifacts do
               stub_licensed_features(cross_project_pipelines: true)
             end
 
-            it_behaves_like 'downloads artifact'
-
             context 'when job token scope is enabled' do
               before do
-                other_job.project.ci_cd_settings.update!(job_token_scope_enabled: true)
+                other_job.project.ci_cd_settings.update!(
+                  job_token_scope_enabled: true,
+                  inbound_job_token_scope_enabled: true
+                )
               end
 
               it 'does not allow downloading artifacts' do
@@ -343,7 +345,9 @@ RSpec.describe API::Ci::JobArtifacts, feature_category: :build_artifacts do
               end
 
               context 'when project is added to the job token scope' do
-                let!(:link) { create(:ci_job_token_project_scope_link, source_project: other_job.project, target_project: job.project) }
+                before do
+                  make_project_fully_accessible(other_job.project, job.project)
+                end
 
                 it_behaves_like 'downloads artifact'
               end

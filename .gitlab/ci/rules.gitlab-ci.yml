@@ -559,6 +559,7 @@
   - "{,ee/,jh/}Gemfile.lock"  # This should include gitlab-styles, rubocop itself, and any plugins we might be using
   - "lib/gitlab_edition.rb"  # This is required in RuboCop::CodeReuseHelpers
   - ".gitlab/ci/static-analysis.gitlab-ci.yml"
+  - "config/feature_categories.yml"  # Used by RSpec/InvalidFeatureCategory
 
 .danger-patterns: &danger-patterns
   - "Dangerfile"

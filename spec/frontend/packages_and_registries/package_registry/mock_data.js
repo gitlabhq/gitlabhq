@@ -97,6 +97,12 @@ export const packageProject = () => ({
   __typename: 'Project',
 });
 
+export const linksData = {
+  _links: {
+    webPath: '/gitlab-org/package-15',
+  },
+};
+
 export const packageVersions = () => [
   {
     createdAt: '2021-08-10T09:33:54Z',
@@ -105,6 +111,7 @@ export const packageVersions = () => [
     status: 'DEFAULT',
     tags: { nodes: packageTags() },
     version: '1.0.1',
+    ...linksData,
     __typename: 'Package',
   },
   {
@@ -114,16 +121,10 @@ export const packageVersions = () => [
     status: 'DEFAULT',
     tags: { nodes: packageTags() },
     version: '1.0.2',
+    ...linksData,
     __typename: 'Package',
   },
 ];
-
-export const linksData = {
-  _links: {
-    webPath: '/gitlab-org/package-15',
-    __typeName: 'PackageLinks',
-  },
-};
 
 export const packageData = (extend) => ({
   __typename: 'Package',

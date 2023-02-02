@@ -337,6 +337,8 @@ spec:
     website: # by default all declared inputs are mandatory.
     environment:
       default: test # apply default if not provided. This makes the input optional.
+    flags:
+      default: null # make an input entirely optional with no value by default.
     test_run:
       options: # a choice must be made from the list since there is no default value.
         - unit

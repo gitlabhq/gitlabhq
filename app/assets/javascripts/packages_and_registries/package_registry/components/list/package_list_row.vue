@@ -78,9 +78,6 @@ export default {
     nonDefaultRow() {
       return this.packageEntity.status && this.packageEntity.status !== PACKAGE_DEFAULT_STATUS;
     },
-    routerLinkEvent() {
-      return this.nonDefaultRow ? '' : 'click';
-    },
     errorPackageStyle() {
       return {
         'gl-text-red-500': this.errorStatusRow,
@@ -117,7 +114,6 @@ export default {
           class="gl-text-body gl-min-w-0"
           data-testid="details-link"
           data-qa-selector="package_link"
-          :event="routerLinkEvent"
           :to="{ name: 'details', params: { id: packageId } }"
         >
           <gl-truncate :text="packageEntity.name" />

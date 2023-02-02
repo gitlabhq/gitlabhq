@@ -84,22 +84,13 @@ describe('packages_list_row', () => {
     mountComponent();
 
     expect(findPackageLink().props()).toMatchObject({
-      event: 'click',
       to: { name: 'details', params: { id: getIdFromGraphQLId(packageWithoutTags.id) } },
     });
   });
 
-  it('does not have a link to navigate to the details page', () => {
-    mountComponent({
-      packageEntity: {
-        ...packageWithoutTags,
-        _links: {
-          webPath: null,
-        },
-      },
-    });
+  it('lists the package name', () => {
+    mountComponent();
 
-    expect(findPackageLink().exists()).toBe(false);
     expect(findPackageName().props()).toMatchObject({
       text: '@gitlab-org/package-15',
     });
@@ -156,11 +147,25 @@ describe('packages_list_row', () => {
 
   describe(`when the package is in ${PACKAGE_ERROR_STATUS} status`, () => {
     beforeEach(() => {
-      mountComponent({ packageEntity: { ...packageWithoutTags, status: PACKAGE_ERROR_STATUS } });
+      mountComponent({
+        packageEntity: {
+          ...packageWithoutTags,
+          status: PACKAGE_ERROR_STATUS,
+          _links: {
+            webPath: null,
+          },
+        },
+      });
     });
 
-    it('details link is disabled', () => {
-      expect(findPackageLink().props('event')).toBe('');
+    it('lists the package name', () => {
+      expect(findPackageName().props()).toMatchObject({
+        text: '@gitlab-org/package-15',
+      });
+    });
+
+    it('does not have a link to navigate to the details page', () => {
+      expect(findPackageLink().exists()).toBe(false);
     });
 
     it('has a warning icon', () => {

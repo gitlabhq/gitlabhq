@@ -11,7 +11,7 @@ module Types
             Types::ProjectType.connection_type,
             null: false,
             description: 'Allow list of projects that can be accessed by CI Job tokens created by this project.',
-            method: :all_projects
+            method: :outbound_projects
     end
   end
   # rubocop: enable Graphql/AuthorizeTypes

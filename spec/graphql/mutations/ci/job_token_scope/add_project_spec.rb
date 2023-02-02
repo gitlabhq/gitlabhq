@@ -45,7 +45,7 @@ RSpec.describe Mutations::Ci::JobTokenScope::AddProject do
         it 'adds target project to the job token scope' do
           expect do
             expect(subject).to include(ci_job_token_scope: be_present, errors: be_empty)
-          end.to change { Ci::JobToken::ProjectScopeLink.count }.by(1)
+          end.to change { Ci::JobToken::ProjectScopeLink.outbound.count }.by(1)
         end
 
         context 'when the service returns an error' do

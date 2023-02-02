@@ -9,6 +9,7 @@ export const RAW_TEXT_WARNING = s__(
 
 /* Job Status Constants */
 export const JOB_SCHEDULED = 'SCHEDULED';
+export const JOB_SUCCESS = 'SUCCESS';
 
 /* Artifact file types */
 export const FILE_TYPE_ARCHIVE = 'ARCHIVE';
@@ -19,6 +20,7 @@ export const ACTIONS_START_NOW = s__('DelayedJobs|Start now');
 export const ACTIONS_UNSCHEDULE = s__('DelayedJobs|Unschedule');
 export const ACTIONS_PLAY = __('Play');
 export const ACTIONS_RETRY = __('Retry');
+export const ACTIONS_RUN_AGAIN = __('Run again');
 
 export const CANCEL = __('Cancel');
 export const GENERIC_ERROR = __('An error occurred while making the request.');

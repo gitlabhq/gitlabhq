@@ -8,9 +8,11 @@ import {
   ACTIONS_UNSCHEDULE,
   ACTIONS_PLAY,
   ACTIONS_RETRY,
+  ACTIONS_RUN_AGAIN,
   CANCEL,
   GENERIC_ERROR,
   JOB_SCHEDULED,
+  JOB_SUCCESS,
   PLAY_JOB_CONFIRMATION_MESSAGE,
   RUN_JOB_NOW_HEADER_TITLE,
   FILE_TYPE_ARCHIVE,
@@ -106,6 +108,9 @@ export default {
     },
     shouldDisplayArtifacts() {
       return this.canReadArtifacts && this.hasArtifacts;
+    },
+    retryButtonTitle() {
+      return this.job.status === JOB_SUCCESS ? ACTIONS_RUN_AGAIN : ACTIONS_RETRY;
     },
   },
   methods: {
@@ -223,8 +228,8 @@ export default {
         <gl-button
           v-else-if="isRetryable"
           icon="retry"
-          :title="$options.ACTIONS_RETRY"
-          :aria-label="$options.ACTIONS_RETRY"
+          :title="retryButtonTitle"
+          :aria-label="retryButtonTitle"
           :method="currentJobMethod"
           :disabled="retryBtnDisabled"
           data-testid="retry"

@@ -50,6 +50,7 @@ export default {
       actionPrimary: { text: __('Retry') },
       actionCancel: { text: __('Cancel') },
     },
+    runAgainTooltipText: __('Run again'),
   },
   hoverClass: 'gl-shadow-x0-y0-b3-s1-blue-500',
   components: {
@@ -246,6 +247,14 @@ export default {
     withConfirmationModal() {
       return this.isRetryableBridge && !this.skipRetryModal;
     },
+    jobActionTooltipText() {
+      const { group } = this.status;
+      const { title, icon } = this.status.action;
+
+      return icon === 'retry' && group === 'success'
+        ? this.$options.i18n.runAgainTooltipText
+        : title;
+    },
   },
   watch: {
     skipRetryModal(val) {
@@ -334,7 +343,7 @@ export default {
 
     <action-component
       v-if="hasAction"
-      :tooltip-text="status.action.title"
+      :tooltip-text="jobActionTooltipText"
       :link="status.action.path"
       :action-icon="status.action.icon"
       class="gl-mr-1"

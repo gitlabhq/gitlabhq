@@ -71,6 +71,7 @@ RSpec.describe 'Contributions Calendar', :js, feature_category: :user_profile do
   end
 
   before do
+    stub_feature_flags(profile_tabs_vue: false)
     sign_in user
   end
 

@@ -8,7 +8,7 @@ import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import { PACKAGE_DEFAULT_STATUS } from '../../constants';
 
 export default {
-  name: 'PackageListRow',
+  name: 'PackageVersionRow',
   components: {
     GlLink,
     GlSprintf,
@@ -25,6 +25,9 @@ export default {
     },
   },
   computed: {
+    containsWebPathLink() {
+      return Boolean(this.packageEntity?._links?.webPath);
+    },
     packageLink() {
       return `${getIdFromGraphQLId(this.packageEntity.id)}`;
     },
@@ -39,9 +42,15 @@ export default {
   <list-item :disabled="disabledRow">
     <template #left-primary>
       <div class="gl-display-flex gl-align-items-center gl-mr-3 gl-min-w-0">
-        <gl-link :href="packageLink" class="gl-text-body gl-min-w-0" :disabled="disabledRow">
+        <gl-link
+          v-if="containsWebPathLink"
+          class="gl-text-body gl-min-w-0"
+          :disabled="disabledRow"
+          :href="packageLink"
+        >
           <gl-truncate :text="packageEntity.name" />
         </gl-link>
+        <gl-truncate v-else :text="packageEntity.name" />
 
         <package-tags
           v-if="packageEntity.tags.nodes && packageEntity.tags.nodes.length"

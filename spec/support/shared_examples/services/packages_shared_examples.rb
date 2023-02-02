@@ -2,7 +2,7 @@
 
 RSpec.shared_examples 'assigns build to package' do
   context 'with build info' do
-    let(:job) { create(:ci_build, user: user) }
+    let(:job) { create(:ci_build, user: user, project: project) }
     let(:params) { super().merge(build: job) }
 
     it 'assigns the pipeline to the package' do

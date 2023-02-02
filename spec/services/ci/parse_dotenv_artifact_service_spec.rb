@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::ParseDotenvArtifactService do
+RSpec.describe Ci::ParseDotenvArtifactService, feature_category: :build_artifacts do
   let_it_be(:project) { create(:project) }
   let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
 
@@ -220,6 +220,18 @@ RSpec.describe Ci::ParseDotenvArtifactService do
             expect(subject[:status]).to eq(:error)
             expect(subject[:message]).to eq('Invalid Format')
             expect(subject[:http_status]).to eq(:bad_request)
+          end
+        end
+
+        context 'when blob is encoded in UTF-16 LE' do
+          let(:blob) { File.read(Rails.root.join('spec/fixtures/build_artifacts/dotenv_utf16_le.txt')) }
+
+          it 'parses the dotenv data' do
+            subject
+
+            expect(build.job_variables.as_json(only: [:key, :value])).to contain_exactly(
+              hash_including('key' => 'MY_ENV_VAR', 'value' => 'true'),
+              hash_including('key' => 'TEST2', 'value' => 'false'))
           end
         end
 

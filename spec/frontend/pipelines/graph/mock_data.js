@@ -1055,3 +1055,25 @@ export const triggerJobWithRetryAction = {
     },
   },
 };
+
+export const mockFailedJob = {
+  id: 3999,
+  name: 'failed job',
+  kind: BUILD_KIND,
+  status: {
+    id: 'failed-3999-3999',
+    icon: 'status_failed',
+    tooltip: 'failed - (stuck or timeout failure)',
+    hasDetails: true,
+    detailsPath: '/root/ci-project/-/jobs/3999',
+    group: 'failed',
+    label: 'failed',
+    action: {
+      id: 'Ci::BuildPresenter-failed-3999',
+      buttonTitle: 'Retry this job',
+      icon: 'retry',
+      path: '/root/ci-project/-/jobs/3999/retry',
+      title: 'Retry',
+    },
+  },
+};

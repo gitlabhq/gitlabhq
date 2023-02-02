@@ -12,6 +12,7 @@ import {
   mockJob,
   mockJobWithoutDetails,
   mockJobWithUnauthorizedAction,
+  mockFailedJob,
   triggerJob,
   triggerJobWithRetryAction,
 } from './mock_data';
@@ -64,7 +65,6 @@ describe('pipeline graph job item', () => {
 
   afterEach(() => {
     mockAxios.restore();
-    wrapper.destroy();
   });
 
   describe('name with link', () => {
@@ -130,6 +130,18 @@ describe('pipeline graph job item', () => {
       expect(actionComponent.exists()).toBe(true);
       expect(actionComponent.props('actionIcon')).toBe('stop');
       expect(actionComponent.attributes('disabled')).toBe('disabled');
+    });
+
+    it('action icon tooltip text when job has passed but can be ran again', () => {
+      createWrapper({ props: { job: mockJob } });
+
+      expect(findActionComponent().props('tooltipText')).toBe('Run again');
+    });
+
+    it('action icon tooltip text when job has failed and can be retried', () => {
+      createWrapper({ props: { job: mockFailedJob } });
+
+      expect(findActionComponent().props('tooltipText')).toBe('Retry');
     });
   });
 

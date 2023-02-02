@@ -1,6 +1,0 @@
----
-# Cop supports --autocorrect.
-Performance/ConcurrentMonotonicTime:
-  Details: grace period
-  Exclude:
-    - 'lib/gitlab/database/connection_timer.rb'

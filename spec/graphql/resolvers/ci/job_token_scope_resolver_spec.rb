@@ -23,18 +23,18 @@ RSpec.describe Resolvers::Ci::JobTokenScopeResolver do
       it 'returns the same project in the allow list of projects for the Ci Job Token when scope is not enabled' do
         allow(project).to receive(:ci_outbound_job_token_scope_enabled?).and_return(false)
 
-        expect(resolve_scope.all_projects).to contain_exactly(project)
+        expect(resolve_scope.outbound_projects).to contain_exactly(project)
       end
 
       it 'returns the same project in the allow list of projects for the Ci Job Token' do
-        expect(resolve_scope.all_projects).to contain_exactly(project)
+        expect(resolve_scope.outbound_projects).to contain_exactly(project)
       end
 
       context 'when another projects gets added to the allow list' do
         let!(:link) { create(:ci_job_token_project_scope_link, source_project: project) }
 
         it 'returns both projects' do
-          expect(resolve_scope.all_projects).to contain_exactly(project, link.target_project)
+          expect(resolve_scope.outbound_projects).to contain_exactly(project, link.target_project)
         end
       end
 
@@ -44,7 +44,7 @@ RSpec.describe Resolvers::Ci::JobTokenScopeResolver do
         end
 
         it 'resolves projects' do
-          expect(resolve_scope.all_projects).to contain_exactly(project)
+          expect(resolve_scope.outbound_projects).to contain_exactly(project)
         end
       end
     end

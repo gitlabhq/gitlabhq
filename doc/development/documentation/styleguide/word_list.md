@@ -61,7 +61,7 @@ Instead of:
 ## access level
 
 Access levels are different than [roles](#roles) or [permissions](#permissions).
-When you create a user, you choose an access level: **Regular**, **Auditor**, or **Admin**.
+When you create a user, you choose an access level: **Regular**, **Auditor**, or **Administrator**.
 
 Capitalize these words when you refer to the UI. Otherwise use lowercase.
 
