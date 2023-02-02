@@ -33,7 +33,7 @@ RSpec.shared_examples "chat integration" do |integration_name|
 
   describe "#execute" do
     let_it_be(:user) { create(:user) }
-    let_it_be_with_reload(:project) { create(:project, :repository) }
+    let_it_be_with_refind(:project) { create(:project, :repository) }
 
     let(:webhook_url) { "https://example.gitlab.com/" }
     let(:webhook_url_regex) { /\A#{webhook_url}.*/ }

@@ -1878,4 +1878,34 @@ RSpec.describe Note do
       it { is_expected.to eq :read_internal_note }
     end
   end
+
+  describe '#exportable_record?' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:project) { create(:project, :private) }
+    let_it_be(:noteable) { create(:issue, project: project) }
+
+    subject { note.exportable_record?(user) }
+
+    context 'when not a system note' do
+      let(:note) { build(:note, noteable: noteable) }
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'with system note' do
+      let(:note) { build(:system_note, project: project, noteable: noteable) }
+
+      it 'returns `false` when the user cannot read the note' do
+        is_expected.to be_falsey
+      end
+
+      context 'when user can read the note' do
+        before do
+          project.add_developer(user)
+        end
+
+        it { is_expected.to be_truthy }
+      end
+    end
+  end
 end

@@ -171,14 +171,25 @@ RSpec.describe Gitlab::Usage::ServicePingReport, :use_clean_rails_memory_store_c
     let(:metric_definitions) { ::Gitlab::Usage::MetricDefinition.definitions }
 
     it 'generates queries that match collected data', :aggregate_failures do
-      message = "Expected %{query} result to match %{value} for %{key_path} metric"
+      message = "Expected %{query} result to match %{value} for %{key_path} metric (got %{payload_value} instead)"
 
       metrics_queries_with_values.each do |key_path, query, value|
-        value = type_cast_to_defined_type(value, metric_definitions[key_path.join('.')])
+        metric_definition = metric_definitions[key_path.join('.')]
+
+        # Skip broken metrics since they are usually overriden to return -1
+        next if metric_definition&.attributes&.fetch(:status) == 'broken'
+
+        value = type_cast_to_defined_type(value, metric_definition)
+        payload_value = service_ping_payload.dig(*key_path)
 
         expect(value).to(
-          eq(service_ping_payload.dig(*key_path)),
-          message % { query: query, value: (value || 'NULL'), key_path: key_path.join('.') }
+          eq(payload_value),
+          message % {
+            query: query,
+            value: (value || 'NULL'),
+            payload_value: payload_value,
+            key_path: key_path.join('.')
+          }
         )
       end
     end

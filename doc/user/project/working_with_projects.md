@@ -157,6 +157,17 @@ You can sort projects by:
 
 You can also choose to hide or show archived projects.
 
+### Filter projects by language
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385465) in GitLab 15.9 [with a flag](../../administration/feature_flags.md) named `project_language_search`. Enabled by default.
+
+You can filter projects by the programming language they use. To do this:
+
+1. On the top bar, select **Main menu > Projects > View all projects**.
+1. From the **Language** dropdown list, select the language you want to filter projects by.
+
+A list of projects that use the selected language is displayed.
+
 ## Change the visibility of individual features in a project
 
 You can change the visibility of individual features in a project.

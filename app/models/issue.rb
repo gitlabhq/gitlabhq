@@ -25,6 +25,7 @@ class Issue < ApplicationRecord
   include FromUnion
   include EachBatch
   include PgFullTextSearchable
+  include Exportable
 
   extend ::Gitlab::Utils::Override
 

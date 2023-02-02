@@ -162,8 +162,16 @@ gem 'fog-aliyun', '~> 0.4'
 gem 'gitlab-fog-azure-rm', '~> 1.4.0', require: 'fog/azurerm'
 
 # for Google storage
-gem 'google-api-client', '~> 0.33'
 gem 'google-cloud-storage', '~> 1.44.0'
+gem 'google-apis-core', '~> 0.10.0'
+gem 'google-apis-compute_v1', '~> 0.57.0'
+gem 'google-apis-container_v1', '~> 0.43.0'
+gem 'google-apis-container_v1beta1', '~> 0.43.0'
+gem 'google-apis-cloudbilling_v1', '~> 0.21.0'
+gem 'google-apis-cloudresourcemanager_v1', '~> 0.31.0'
+gem 'google-apis-iam_v1', '~> 0.36.0'
+gem 'google-apis-serviceusage_v1', '~> 0.28.0'
+gem 'google-apis-sqladmin_v1beta4', '~> 0.41.0'
 
 # for aws storage
 gem 'unf', '~> 0.1.4'

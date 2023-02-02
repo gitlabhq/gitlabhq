@@ -4,7 +4,6 @@ module UsageDataHelpers
   COUNTS_KEYS = %i(
     assignee_lists
     ci_builds
-    ci_internal_pipelines
     ci_external_pipelines
     ci_pipeline_config_auto_devops
     ci_pipeline_config_repository

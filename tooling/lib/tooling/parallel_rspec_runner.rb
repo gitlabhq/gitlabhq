@@ -2,52 +2,6 @@
 
 require 'knapsack'
 
-module KnapsackRefinements
-  # Refine https://github.com/KnapsackPro/knapsack/blob/v1.21.1/lib/knapsack/distributors/base_distributor.rb
-  # to take in account the additional filtering we do for predictive jobs.
-  refine ::Knapsack::Distributors::BaseDistributor do
-    attr_reader :filter_tests
-
-    def initialize(args = {})
-      super
-
-      @filter_tests = args[:filter_tests]
-    end
-
-    def all_tests
-      @all_tests ||= begin
-        pattern_tests = Dir.glob(test_file_pattern).uniq
-
-        if filter_tests.empty?
-          Knapsack.logger.info 'Running all node tests without filter'
-          pattern_tests
-        else
-          pattern_tests & filter_tests
-        end
-      end.sort
-    end
-  end
-
-  # Refine https://github.com/KnapsackPro/knapsack/blob/v1.21.1/lib/knapsack/allocator_builder.rb
-  # to take in account the additional filtering we do for predictive jobs.
-  refine ::Knapsack::AllocatorBuilder do
-    attr_accessor :filter_tests
-
-    def allocator
-      Knapsack::Allocator.new({
-        report: Knapsack.report.open,
-        test_file_pattern: test_file_pattern,
-        ci_node_total: Knapsack::Config::Env.ci_node_total,
-        ci_node_index: Knapsack::Config::Env.ci_node_index,
-        # Additional argument
-        filter_tests: filter_tests
-      })
-    end
-  end
-end
-
-using KnapsackRefinements
-
 # A custom parallel rspec runner based on Knapsack runner
 # which takes in additional option for a file containing
 # list of test files.
@@ -59,7 +13,7 @@ using KnapsackRefinements
 # would be executed in the CI node.
 #
 # Reference:
-# https://github.com/ArturT/knapsack/blob/v1.21.1/lib/knapsack/runners/rspec_runner.rb
+# https://github.com/ArturT/knapsack/blob/v1.20.0/lib/knapsack/runners/rspec_runner.rb
 module Tooling
   class ParallelRSpecRunner
     def self.run(rspec_args: nil, filter_tests_file: nil)
@@ -74,14 +28,17 @@ module Tooling
 
     def run
       Knapsack.logger.info
+      Knapsack.logger.info 'Knapsack node specs:'
+      Knapsack.logger.info node_tests
+      Knapsack.logger.info
       Knapsack.logger.info 'Filter specs:'
       Knapsack.logger.info filter_tests
       Knapsack.logger.info
       Knapsack.logger.info 'Running specs:'
-      Knapsack.logger.info node_tests
+      Knapsack.logger.info tests_to_run
       Knapsack.logger.info
 
-      if node_tests.empty?
+      if tests_to_run.empty?
         Knapsack.logger.info 'No tests to run on this node, exiting.'
         return
       end
@@ -100,8 +57,17 @@ module Tooling
         cmd.push(*rspec_args)
         cmd.push('--default-path', allocator.test_dir)
         cmd.push('--')
-        cmd.push(*node_tests)
+        cmd.push(*tests_to_run)
       end
+    end
+
+    def tests_to_run
+      if filter_tests.empty?
+        Knapsack.logger.info 'Running all node tests without filter'
+        return node_tests
+      end
+
+      @tests_to_run ||= node_tests & filter_tests
     end
 
     def node_tests
@@ -120,9 +86,7 @@ module Tooling
     end
 
     def knapsack_allocator
-      Knapsack::AllocatorBuilder.new(Knapsack::Adapters::RSpecAdapter).tap do |builder|
-        builder.filter_tests = filter_tests
-      end.allocator
+      Knapsack::AllocatorBuilder.new(Knapsack::Adapters::RSpecAdapter).allocator
     end
   end
 end

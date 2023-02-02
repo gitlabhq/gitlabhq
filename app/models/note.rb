@@ -710,6 +710,12 @@ class Note < ApplicationRecord
     confidential? ? :read_internal_note : :read_note
   end
 
+  def exportable_record?(user)
+    return true unless system?
+
+    readable_by?(user)
+  end
+
   private
 
   def system_note_viewable_by?(user)

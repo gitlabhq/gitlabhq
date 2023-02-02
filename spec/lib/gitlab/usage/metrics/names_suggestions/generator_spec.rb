@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Usage::Metrics::NamesSuggestions::Generator do
+RSpec.describe Gitlab::Usage::Metrics::NamesSuggestions::Generator, feature_category: :service_ping do
   include UsageDataHelpers
 
   before do
@@ -43,9 +43,9 @@ RSpec.describe Gitlab::Usage::Metrics::NamesSuggestions::Generator do
     context 'joined relations' do
       context 'counted attribute comes from source relation' do
         it_behaves_like 'name suggestion' do
-          # corresponding metric is collected with count(Issue.with_alert_management_alerts.not_authored_by(::User.alert_bot), start: issue_minimum_id, finish: issue_maximum_id)
-          let(:key_path) { 'counts.issues_created_manually_from_alerts' }
-          let(:name_suggestion) { /count_<adjective describing: '\(issues\.author_id != \d+\)'>_issues_<with>_alert_management_alerts/ }
+          # corresponding metric is collected with distinct_count(Release.with_milestones, :author_id)
+          let(:key_path) { 'usage_activity_by_stage.release.releases_with_milestones' }
+          let(:name_suggestion) { /count_distinct_author_id_from_releases_<with>_milestone_releases/ }
         end
       end
     end

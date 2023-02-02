@@ -557,9 +557,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
       expect(count_data[:issues_using_zoom_quick_actions]).to eq(3)
       expect(count_data[:issues_with_embedded_grafana_charts_approx]).to eq(2)
       expect(count_data[:incident_issues]).to eq(4)
-      expect(count_data[:issues_created_gitlab_alerts]).to eq(1)
       expect(count_data[:issues_created_from_alerts]).to eq(3)
-      expect(count_data[:issues_created_manually_from_alerts]).to eq(1)
       expect(count_data[:alert_bot_incident_issues]).to eq(4)
       expect(count_data[:clusters_enabled]).to eq(6)
       expect(count_data[:project_clusters_enabled]).to eq(4)
@@ -1135,22 +1133,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
 
       expect(result.error).to be_an(StandardError)
       expect(result).to be_nil
-    end
-  end
-
-  context 'on Gitlab.com' do
-    before do
-      allow(Gitlab).to receive(:com?).and_return(true)
-    end
-
-    describe '.system_usage_data' do
-      subject { described_class.system_usage_data }
-
-      it 'returns fallback value for disabled metrics' do
-        expect(subject[:counts][:ci_internal_pipelines]).to eq(Gitlab::Utils::UsageData::FALLBACK)
-        expect(subject[:counts][:issues_created_gitlab_alerts]).to eq(Gitlab::Utils::UsageData::FALLBACK)
-        expect(subject[:counts][:issues_created_manually_from_alerts]).to eq(Gitlab::Utils::UsageData::FALLBACK)
-      end
     end
   end
 end
