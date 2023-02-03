@@ -398,9 +398,9 @@ An invoice is generated for the renewal and available for viewing or download on
 ### Automatic subscription renewal
 
 When a subscription is set to auto-renew, it renews automatically on the
-expiration date without a gap in available service. Subscriptions purchased through Customers Portal are set to auto-renew by default.
+expiration date (at midnight UTC) without a gap in available service. Subscriptions purchased through Customers Portal are set to auto-renew by default.
 The number of user licenses is adjusted to fit the [number of billable users in your instance](#view-user-totals) at the time of renewal.
-Before auto-renewal you should [prepare for the renewal](#prepare-for-renewal-by-reviewing-your-account). To auto-renew your subscription,
+Before auto-renewal you should [prepare for the renewal](#prepare-for-renewal-by-reviewing-your-account) at least 2 days before the renewal date, so that your changes synchronize to GitLab in time for your renewal. To auto-renew your subscription,
 you must have enabled the [synchronization of subscription data](#subscription-data-synchronization).
 
 You can view and download your renewal invoice on the Customers Portal

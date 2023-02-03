@@ -42,14 +42,18 @@ RSpec.describe 'PipelineSchedulePlay', feature_category: :continuious_integratio
     end
   end
 
-  context 'when authorized' do
+  context 'when authorized', :sidekiq_inline do
     before do
       project.add_maintainer(user)
       pipeline_schedule.update_columns(next_run_at: 2.hours.ago)
     end
 
     context 'when mutation succeeds' do
+      let(:service_response) { instance_double('ServiceResponse', payload: new_pipeline) }
+      let(:new_pipeline) { instance_double('Ci::Pipeline', persisted?: true) }
+
       it do
+        expect(Ci::CreatePipelineService).to receive_message_chain(:new, :execute).and_return(service_response)
         post_graphql_mutation(mutation, current_user: user)
 
         expect(mutation_response['pipelineSchedule']['id']).to include(pipeline_schedule.id.to_s)
@@ -61,19 +65,50 @@ RSpec.describe 'PipelineSchedulePlay', feature_category: :continuious_integratio
     end
 
     context 'when mutation fails' do
-      before do
-        allow(RunPipelineScheduleWorker).to receive(:perform_async).and_return(nil)
-      end
-
       it do
         expect(RunPipelineScheduleWorker)
           .to receive(:perform_async)
-          .with(pipeline_schedule.id, user.id, next_run_scheduled: true)
+          .with(pipeline_schedule.id, user.id, next_run_scheduled: true).and_return(nil)
 
         post_graphql_mutation(mutation, current_user: user)
 
         expect(mutation_response['pipelineSchedule']).to be_nil
         expect(mutation_response['errors']).to match_array(['Unable to schedule a pipeline to run immediately.'])
+      end
+    end
+
+    context 'when feature flag ci_use_run_pipeline_schedule_worker is disabled' do
+      before do
+        stub_feature_flags(ci_use_run_pipeline_schedule_worker: false)
+      end
+
+      context 'when mutation succeeds' do
+        let(:service_response) { instance_double('ServiceResponse', payload: new_pipeline) }
+        let(:new_pipeline) { instance_double('Ci::Pipeline', persisted?: true) }
+
+        it do
+          expect(Ci::CreatePipelineService).to receive_message_chain(:new, :execute).and_return(service_response)
+          post_graphql_mutation(mutation, current_user: user)
+
+          expect(mutation_response['pipelineSchedule']['id']).to include(pipeline_schedule.id.to_s)
+          new_next_run_at = DateTime.parse(mutation_response['pipelineSchedule']['nextRunAt'])
+          expect(new_next_run_at).not_to eq(pipeline_schedule.next_run_at)
+          expect(new_next_run_at).to eq(pipeline_schedule.reset.next_run_at)
+          expect(mutation_response['errors']).to eq([])
+        end
+      end
+
+      context 'when mutation fails' do
+        it do
+          expect(RunPipelineScheduleWorker)
+            .to receive(:perform_async)
+            .with(pipeline_schedule.id, user.id, next_run_scheduled: true).and_return(nil)
+
+          post_graphql_mutation(mutation, current_user: user)
+
+          expect(mutation_response['pipelineSchedule']).to be_nil
+          expect(mutation_response['errors']).to match_array(['Unable to schedule a pipeline to run immediately.'])
+        end
       end
     end
   end

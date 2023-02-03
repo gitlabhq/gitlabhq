@@ -92,17 +92,17 @@ RSpec.describe RunPipelineScheduleWorker, feature_category: :continuous_integrat
 
           context 'when next_run_scheduled option is given as true' do
             it "returns the service response" do
-              expect(worker.perform(pipeline_schedule.id, user.id, next_run_scheduled: true)).to eq(service_response)
+              expect(worker.perform(pipeline_schedule.id, user.id, 'next_run_scheduled' => true)).to eq(service_response)
             end
 
             it "does not log errors" do
               expect(worker).not_to receive(:log_extra_metadata_on_done)
 
-              expect(worker.perform(pipeline_schedule.id, user.id, next_run_scheduled: true)).to eq(service_response)
+              expect(worker.perform(pipeline_schedule.id, user.id, 'next_run_scheduled' => true)).to eq(service_response)
             end
 
             it "does not change the next_run_at" do
-              expect { worker.perform(pipeline_schedule.id, user.id, next_run_scheduled: true) }.not_to change { pipeline_schedule.reload.next_run_at }
+              expect { worker.perform(pipeline_schedule.id, user.id, 'next_run_scheduled' => true) }.not_to change { pipeline_schedule.reload.next_run_at }
             end
 
             context 'when feature flag ci_use_run_pipeline_schedule_worker is disabled' do
@@ -111,7 +111,7 @@ RSpec.describe RunPipelineScheduleWorker, feature_category: :continuous_integrat
               end
 
               it 'does not change the next_run_at' do
-                expect { worker.perform(pipeline_schedule.id, user.id, next_run_scheduled: true) }.not_to change { pipeline_schedule.reload.next_run_at }
+                expect { worker.perform(pipeline_schedule.id, user.id, 'next_run_scheduled' => true) }.not_to change { pipeline_schedule.reload.next_run_at }
               end
             end
           end

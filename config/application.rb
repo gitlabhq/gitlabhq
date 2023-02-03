@@ -364,6 +364,7 @@ module Gitlab
     config.assets.precompile << "illustrations/jh/*.svg" if Gitlab.jh?
     config.assets.precompile << "icons.svg"
     config.assets.precompile << "icons.json"
+    config.assets.precompile << "file_icons/file_icons.svg"
     config.assets.precompile << "illustrations/*.svg"
     config.assets.precompile << "illustrations/*.png"
 

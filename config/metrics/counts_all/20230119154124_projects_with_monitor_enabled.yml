@@ -1,0 +1,23 @@
+---
+key_path: counts.projects_with_monitor_enabled
+description: The number of projects with Monitor turned on.
+product_section: ops
+product_stage: monitor
+product_group: respond
+product_category: incident_management
+value_type: number
+status: active
+milestone: "15.9"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/109380
+time_frame: all
+data_source: database
+data_category: optional
+instrumentation_class: CountProjectsWithMonitorEnabledMetric
+performance_indicator_type: []
+distribution:
+- ce
+- ee
+tier:
+- free
+- premium
+- ultimate

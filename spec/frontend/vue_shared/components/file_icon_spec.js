@@ -8,10 +8,7 @@ describe('File Icon component', () => {
   const findSvgIcon = () => wrapper.find('svg');
   const findGlIcon = () => wrapper.findComponent(GlIcon);
   const getIconName = () =>
-    findSvgIcon()
-      .find('use')
-      .element.getAttribute('xlink:href')
-      .replace(`${gon.sprite_file_icons}#`, '');
+    findSvgIcon().find('use').element.getAttribute('href').replace(`${gon.sprite_file_icons}#`, '');
 
   const createComponent = (props = {}) => {
     wrapper = shallowMount(FileIcon, {

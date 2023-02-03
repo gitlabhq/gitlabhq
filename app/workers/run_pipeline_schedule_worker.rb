@@ -19,7 +19,7 @@ class RunPipelineScheduleWorker # rubocop:disable Scalability/IdempotentWorker
 
     return unless schedule && schedule.project && user
 
-    if Feature.enabled?(:ci_use_run_pipeline_schedule_worker) && !options[:next_run_scheduled]
+    if Feature.enabled?(:ci_use_run_pipeline_schedule_worker) && !options['next_run_scheduled']
       return if schedule.next_run_at > Time.current
 
       update_next_run_at_for(schedule)
