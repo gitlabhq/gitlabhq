@@ -2735,6 +2735,148 @@ RSpec.describe ProjectPolicy, feature_category: :authentication_and_authorizatio
     end
   end
 
+  describe 'create_project_runners' do
+    context 'create_runner_workflow flag enabled' do
+      before do
+        stub_feature_flags(create_runner_workflow: true)
+      end
+
+      context 'admin' do
+        let(:current_user) { admin }
+
+        context 'when admin mode is enabled', :enable_admin_mode do
+          it { is_expected.to be_allowed(:create_project_runners) }
+
+          context 'with project runner registration disabled' do
+            before do
+              stub_application_setting(valid_runner_registrars: ['group'])
+            end
+
+            it { is_expected.to be_allowed(:create_project_runners) }
+          end
+        end
+
+        context 'when admin mode is disabled' do
+          it { is_expected.to be_disallowed(:create_project_runners) }
+        end
+      end
+
+      context 'with owner' do
+        let(:current_user) { owner }
+
+        it { is_expected.to be_allowed(:create_project_runners) }
+
+        context 'with project runner registration disabled' do
+          before do
+            stub_application_setting(valid_runner_registrars: ['group'])
+          end
+
+          it { is_expected.to be_disallowed(:create_project_runners) }
+        end
+      end
+
+      context 'with maintainer' do
+        let(:current_user) { maintainer }
+
+        it { is_expected.to be_allowed(:create_project_runners) }
+      end
+
+      context 'with reporter' do
+        let(:current_user) { reporter }
+
+        it { is_expected.to be_disallowed(:create_project_runners) }
+      end
+
+      context 'with guest' do
+        let(:current_user) { guest }
+
+        it { is_expected.to be_disallowed(:create_project_runners) }
+      end
+
+      context 'with developer' do
+        let(:current_user) { developer }
+
+        it { is_expected.to be_disallowed(:create_project_runners) }
+      end
+
+      context 'with anonymous' do
+        let(:current_user) { nil }
+
+        it { is_expected.to be_disallowed(:create_project_runners) }
+      end
+    end
+
+    context 'create_runner_workflow flag disabled' do
+      before do
+        stub_feature_flags(create_runner_workflow: false)
+      end
+
+      context 'admin' do
+        let(:current_user) { admin }
+
+        context 'when admin mode is enabled', :enable_admin_mode do
+          it { is_expected.to be_disallowed(:create_project_runners) }
+
+          context 'with project runner registration disabled' do
+            before do
+              stub_application_setting(valid_runner_registrars: ['group'])
+            end
+
+            it { is_expected.to be_disallowed(:create_project_runners) }
+          end
+        end
+
+        context 'when admin mode is disabled' do
+          it { is_expected.to be_disallowed(:create_project_runners) }
+        end
+      end
+
+      context 'with owner' do
+        let(:current_user) { owner }
+
+        it { is_expected.to be_disallowed(:create_project_runners) }
+
+        context 'with project runner registration disabled' do
+          before do
+            stub_application_setting(valid_runner_registrars: ['group'])
+          end
+
+          it { is_expected.to be_disallowed(:create_project_runners) }
+        end
+      end
+
+      context 'with maintainer' do
+        let(:current_user) { maintainer }
+
+        it { is_expected.to be_disallowed(:create_project_runners) }
+      end
+
+      context 'with reporter' do
+        let(:current_user) { reporter }
+
+        it { is_expected.to be_disallowed(:create_project_runners) }
+      end
+
+      context 'with guest' do
+        let(:current_user) { guest }
+
+        it { is_expected.to be_disallowed(:create_project_runners) }
+      end
+
+      context 'with developer' do
+        let(:current_user) { developer }
+
+        it { is_expected.to be_disallowed(:create_project_runners) }
+      end
+
+      context 'with anonymous' do
+        let(:current_user) { nil }
+
+        it { is_expected.to be_disallowed(:create_project_runners) }
+      end
+    end
+  end
+
   describe 'update_sentry_issue' do
     using RSpec::Parameterized::TableSyntax
 

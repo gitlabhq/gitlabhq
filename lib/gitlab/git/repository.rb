@@ -465,9 +465,9 @@ module Gitlab
       end
 
       # Returns the SHA of the most recent common ancestor of +from+ and +to+
-      def merge_base(*commits)
+      def merge_base(...)
         wrapped_gitaly_errors do
-          gitaly_repository_client.find_merge_base(*commits)
+          gitaly_repository_client.find_merge_base(...)
         end
       end
 
@@ -720,9 +720,9 @@ module Gitlab
         raise DeleteBranchError, e
       end
 
-      def delete_refs(*ref_names)
+      def delete_refs(...)
         wrapped_gitaly_errors do
-          gitaly_delete_refs(*ref_names)
+          gitaly_delete_refs(...)
         end
       end
 

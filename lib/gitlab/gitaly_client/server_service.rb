@@ -26,19 +26,6 @@ module Gitlab
         storage_specific(disk_statistics)
       end
 
-      def readiness_check
-        request = Gitaly::ReadinessCheckRequest.new(timeout: GitalyClient.medium_timeout)
-        response = GitalyClient.call(@storage, :server_service, :readiness_check, request, timeout: GitalyClient.default_timeout)
-
-        return { success: true } if response.ok_response
-
-        failed_checks = response.failure_response.failed_checks.map do |failed_check|
-          ["#{failed_check.name}: #{failed_check.error_message}"]
-        end
-
-        { success: false, message: failed_checks.join("\n") }
-      end
-
       private
 
       def storage_specific(response)

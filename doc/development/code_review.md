@@ -718,7 +718,7 @@ Enterprise Edition instance. This has some implications:
    cached value returns (say, from a string or nil to an array), change the
    cache key at the same time.
 1. **Settings** should be added as a
-   [last resort](https://about.gitlab.com/handbook/product/#convention-over-configuration).
+   [last resort](https://about.gitlab.com/handbook/product/product-principles/#convention-over-configuration).
    If you're adding a new setting in `gitlab.yml`:
    1. Try to avoid that, and add to `ApplicationSetting` instead.
    1. Ensure that it is also

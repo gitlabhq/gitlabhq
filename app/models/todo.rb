@@ -251,7 +251,7 @@ class Todo < ApplicationRecord
   end
 
   def for_issue_or_work_item?
-    [Issue.name, WorkItem.name].any? { |klass_name| target_type == klass_name }
+    [Issue.name, WorkItem.name].any?(target_type)
   end
 
   # override to return commits, which are not active record

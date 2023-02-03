@@ -100,8 +100,8 @@ module Gitlab
           end
 
           # Builds a metrics dashboard url based on the passed in arguments
-          def build_dashboard_url(*args)
-            Gitlab::Routing.url_helpers.metrics_dashboard_namespace_project_environment_url(*args)
+          def build_dashboard_url(...)
+            Gitlab::Routing.url_helpers.metrics_dashboard_namespace_project_environment_url(...)
           end
 
           private

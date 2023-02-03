@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe GroupPolicy do
+RSpec.describe GroupPolicy, feature_category: :authentication_and_authorization do
   include AdminModeHelper
   include_context 'GroupPolicy context'
 
@@ -1271,6 +1271,178 @@ RSpec.describe GroupPolicy do
       let(:current_user) { nil }
 
       it { is_expected.to be_disallowed(:register_group_runners) }
+    end
+  end
+
+  describe 'create_group_runners' do
+    shared_examples 'disallowed when group runner registration disabled' do
+      context 'with group runner registration disabled' do
+        before do
+          stub_application_setting(valid_runner_registrars: ['project'])
+          group.runner_registration_enabled = runner_registration_enabled
+        end
+
+        context 'with specific group runner registration enabled' do
+          let(:runner_registration_enabled) { true }
+
+          it { is_expected.to be_disallowed(:create_group_runners) }
+        end
+
+        context 'with specific group runner registration disabled' do
+          let(:runner_registration_enabled) { false }
+
+          it { is_expected.to be_disallowed(:create_group_runners) }
+        end
+      end
+    end
+
+    context 'create_runner_workflow flag enabled' do
+      before do
+        stub_feature_flags(create_runner_workflow: true)
+      end
+
+      context 'admin' do
+        let(:current_user) { admin }
+
+        context 'when admin mode is enabled', :enable_admin_mode do
+          it { is_expected.to be_allowed(:create_group_runners) }
+
+          context 'with specific group runner registration disabled' do
+            before do
+              group.runner_registration_enabled = false
+            end
+
+            it { is_expected.to be_allowed(:create_group_runners) }
+          end
+
+          context 'with group runner registration disabled' do
+            before do
+              stub_application_setting(valid_runner_registrars: ['project'])
+              group.runner_registration_enabled = runner_registration_enabled
+            end
+
+            context 'with specific group runner registration enabled' do
+              let(:runner_registration_enabled) { true }
+
+              it { is_expected.to be_allowed(:create_group_runners) }
+            end
+
+            context 'with specific group runner registration disabled' do
+              let(:runner_registration_enabled) { false }
+
+              it { is_expected.to be_allowed(:create_group_runners) }
+            end
+          end
+        end
+
+        context 'when admin mode is disabled' do
+          it { is_expected.to be_disallowed(:create_group_runners) }
+        end
+      end
+
+      context 'with owner' do
+        let(:current_user) { owner }
+
+        it { is_expected.to be_allowed(:create_group_runners) }
+
+        it_behaves_like 'disallowed when group runner registration disabled'
+      end
+
+      context 'with maintainer' do
+        let(:current_user) { maintainer }
+
+        it { is_expected.to be_disallowed(:create_group_runners) }
+      end
+
+      context 'with reporter' do
+        let(:current_user) { reporter }
+
+        it { is_expected.to be_disallowed(:create_group_runners) }
+      end
+
+      context 'with guest' do
+        let(:current_user) { guest }
+
+        it { is_expected.to be_disallowed(:create_group_runners) }
+      end
+
+      context 'with developer' do
+        let(:current_user) { developer }
+
+        it { is_expected.to be_disallowed(:create_group_runners) }
+      end
+
+      context 'with anonymous' do
+        let(:current_user) { nil }
+
+        it { is_expected.to be_disallowed(:create_group_runners) }
+      end
+    end
+
+    context 'with create_runner_workflow flag disabled' do
+      before do
+        stub_feature_flags(create_runner_workflow: false)
+      end
+
+      context 'admin' do
+        let(:current_user) { admin }
+
+        context 'when admin mode is enabled', :enable_admin_mode do
+          it { is_expected.to be_disallowed(:create_group_runners) }
+
+          context 'with specific group runner registration disabled' do
+            before do
+              group.runner_registration_enabled = false
+            end
+
+            it { is_expected.to be_disallowed(:create_group_runners) }
+          end
+
+          it_behaves_like 'disallowed when group runner registration disabled'
+        end
+
+        context 'when admin mode is disabled' do
+          it { is_expected.to be_disallowed(:create_group_runners) }
+        end
+      end
+
+      context 'with owner' do
+        let(:current_user) { owner }
+
+        it { is_expected.to be_disallowed(:create_group_runners) }
+
+        it_behaves_like 'disallowed when group runner registration disabled'
+      end
+
+      context 'with maintainer' do
+        let(:current_user) { maintainer }
+
+        it { is_expected.to be_disallowed(:create_group_runners) }
+      end
+
+      context 'with reporter' do
+        let(:current_user) { reporter }
+
+        it { is_expected.to be_disallowed(:create_group_runners) }
+      end
+
+      context 'with guest' do
+        let(:current_user) { guest }
+
+        it { is_expected.to be_disallowed(:create_group_runners) }
+      end
+
+      context 'with developer' do
+        let(:current_user) { developer }
+
+        it { is_expected.to be_disallowed(:create_group_runners) }
+      end
+
+      context 'with anonymous' do
+        let(:current_user) { nil }
+
+        it { is_expected.to be_disallowed(:create_group_runners) }
+      end
     end
   end
 

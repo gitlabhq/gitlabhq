@@ -16,7 +16,7 @@ module Gitlab
             def valid?
               data[:seq].is_a?(Array) &&
                 !data[:seq].empty? &&
-                data[:seq].all? { |identifier| identifier.is_a?(String) }
+                data[:seq].all?(String)
             end
 
             private

@@ -22,10 +22,6 @@ RSpec.describe RepositoryCheck::DispatchWorker do
   end
 
   it 'dispatches work to RepositoryCheck::BatchWorker' do
-    expect_next_instance_of(Gitlab::GitalyClient::ServerService) do |service|
-      expect(service).to receive(:readiness_check).and_return({ success: true })
-    end
-
     expect(RepositoryCheck::BatchWorker).to receive(:perform_async).at_least(:once)
 
     subject.perform

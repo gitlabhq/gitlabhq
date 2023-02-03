@@ -18,10 +18,6 @@ RSpec.describe Gitlab::HealthChecks::Probes::Collection do
       end
 
       it 'responds with readiness checks data' do
-        expect_next_instance_of(Gitlab::GitalyClient::ServerService) do |service|
-          expect(service).to receive(:readiness_check).and_return({ success: true })
-        end
-
         expect(subject.http_status).to eq(200)
 
         expect(subject.json[:status]).to eq('ok')

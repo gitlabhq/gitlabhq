@@ -67,8 +67,8 @@ module Gitlab
           self.class.authorization.ok?(object, current_user)
         end
 
-        def raise_resource_not_available_error!(*args)
-          self.class.raise_resource_not_available_error!(*args)
+        def raise_resource_not_available_error!(...)
+          self.class.raise_resource_not_available_error!(...)
         end
       end
     end

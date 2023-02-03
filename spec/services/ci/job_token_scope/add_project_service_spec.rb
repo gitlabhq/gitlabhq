@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe Ci::JobTokenScope::AddProjectService do
+RSpec.describe Ci::JobTokenScope::AddProjectService, feature_category: :continuous_integration do
   let(:service) { described_class.new(project, current_user) }
 
   let_it_be(:project) { create(:project, ci_outbound_job_token_scope_enabled: true).tap(&:save!) }
@@ -21,6 +21,8 @@ RSpec.describe Ci::JobTokenScope::AddProjectService do
 
     it_behaves_like 'editable job token scope' do
       context 'when user has permissions on source and target projects' do
+        let(:resulting_direction) { result.payload.fetch(:project_link)&.direction }
+
         before do
           project.add_maintainer(current_user)
           target_project.add_developer(current_user)
@@ -34,6 +36,26 @@ RSpec.describe Ci::JobTokenScope::AddProjectService do
           end
 
           it_behaves_like 'adds project'
+
+          it 'creates an outbound link by default' do
+            expect(resulting_direction).to eq('outbound')
+          end
+
+          context 'when direction is specified' do
+            subject(:result) { service.execute(target_project, direction: direction) }
+
+            context 'when the direction is outbound' do
+              let(:direction) { :outbound }
+
+              specify { expect(resulting_direction).to eq('outbound') }
+            end
+
+            context 'when the direction is inbound' do
+              let(:direction) { :inbound }
+
+              specify { expect(resulting_direction).to eq('inbound') }
+            end
+          end
         end
       end
 

@@ -200,11 +200,14 @@ module Gitlab
           end
         end
 
+        # rubocop: disable Style/ArgumentsForwarding
+        # Reason: the default argument will not apply if we just forward via `...`
         def migrate_in(*args, coordinator: coordinator_for_tracking_database)
           with_migration_context do
             coordinator.perform_in(*args)
           end
         end
+        # rubocop: enable Style/ArgumentsForwarding
 
         def delete_queued_jobs(class_name)
           coordinator_for_tracking_database.steal(class_name) do |job|

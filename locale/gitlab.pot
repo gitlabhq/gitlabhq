@@ -990,6 +990,16 @@ msgstr[1] ""
 msgid "%{retryButtonStart}Try again%{retryButtonEnd} or %{newFileButtonStart}attach a new file%{newFileButtonEnd}."
 msgstr ""
 
+msgid "%{reviewer_names} was added as a reviewer."
+msgid_plural "%{reviewer_names} were added as reviewers."
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "%{reviewer_names} was removed from reviewers."
+msgid_plural "%{reviewer_names} were removed from reviewers."
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%{rotation} has been recalculated with the remaining participants. Please review the new setup for %{rotation_link}. It is recommended that you reach out to the current on-call responder to ensure continuity of on-call coverage."
 msgstr ""
 
@@ -8129,9 +8139,6 @@ msgid "Change your password"
 msgstr ""
 
 msgid "Change your password or recover your current one"
-msgstr ""
-
-msgid "ChangeReviewer|%{added_reviewers_text}%{removed_reviewers_text}"
 msgstr ""
 
 msgid "ChangeReviewer|All reviewers were removed."
@@ -15651,6 +15658,18 @@ msgid "Enter your password to approve"
 msgstr ""
 
 msgid "Enterprise"
+msgstr ""
+
+msgid "EnterpriseUsers|The user detail cannot be updated"
+msgstr ""
+
+msgid "EnterpriseUsers|The user does not match the \"Enterprise User\" definition for the group"
+msgstr ""
+
+msgid "EnterpriseUsers|The user is already an enterprise user"
+msgstr ""
+
+msgid "EnterpriseUsers|The user is not a member of the group"
 msgstr ""
 
 msgid "Environment"
@@ -29655,9 +29674,6 @@ msgstr ""
 msgid "Package already exists"
 msgstr ""
 
-msgid "Package and registry settings"
-msgstr ""
-
 msgid "Package deleted successfully"
 msgstr ""
 
@@ -30144,6 +30160,9 @@ msgid "Packages"
 msgstr ""
 
 msgid "Packages and registries"
+msgstr ""
+
+msgid "Packages and registries settings"
 msgstr ""
 
 msgid "Page not found"

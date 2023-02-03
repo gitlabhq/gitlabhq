@@ -98,7 +98,7 @@ module Gitlab
           private
 
           def validate_array_of_hashes(value)
-            value.is_a?(Array) && value.all? { |obj| obj.is_a?(Hash) }
+            value.is_a?(Array) && value.all?(Hash)
           end
         end
 

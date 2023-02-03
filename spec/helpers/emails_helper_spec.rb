@@ -385,7 +385,7 @@ RSpec.describe EmailsHelper do
 
       context 'with no html tag' do
         let(:expected_output) do
-          'John was added as a reviewer.<br>'
+          'John was added as a reviewer.'
         end
 
         it 'returns the expected output' do
@@ -395,7 +395,7 @@ RSpec.describe EmailsHelper do
 
       context 'with <strong> tag' do
         let(:expected_output) do
-          '<strong>John</strong> was added as a reviewer.<br>'
+          '<strong>John</strong> was added as a reviewer.'
         end
 
         it 'returns the expected output' do
@@ -410,7 +410,7 @@ RSpec.describe EmailsHelper do
 
       context 'with no html tag' do
         let(:expected_output) do
-          'Ted was added as a reviewer.<br>John and Mary were removed from reviewers.'
+          "Ted was added as a reviewer.\nJohn and Mary were removed from reviewers."
         end
 
         it 'returns the expected output' do
@@ -460,7 +460,7 @@ RSpec.describe EmailsHelper do
       let(:fishy_user) { build(:user, name: "<script>alert('hi')</script>") }
 
       let(:expected_output) do
-        '<strong>&lt;script&gt;alert(&#39;hi&#39;)&lt;/script&gt;</strong> was added as a reviewer.<br>'
+        '<strong>&lt;script&gt;alert(&#39;hi&#39;)&lt;/script&gt;</strong> was added as a reviewer.'
       end
 
       it 'escapes the html tag' do
@@ -476,7 +476,7 @@ RSpec.describe EmailsHelper do
       let(:fishy_user) { build(:user, name: "example.com") }
 
       let(:expected_output) do
-        'example_com was added as a reviewer.<br>'
+        'example_com was added as a reviewer.'
       end
 
       it "sanitizes user's name" do

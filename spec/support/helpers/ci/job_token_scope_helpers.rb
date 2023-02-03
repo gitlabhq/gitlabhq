@@ -2,14 +2,21 @@
 
 module Ci
   module JobTokenScopeHelpers
-    def create_project_in_allowlist(root_project, direction:)
-      create(:project).tap do |scoped_project|
-        create(
-          :ci_job_token_project_scope_link,
-          source_project: root_project,
-          target_project: scoped_project,
-          direction: direction
-        )
+    def create_project_in_allowlist(root_project, direction:, target_project: nil)
+      included_project = target_project || create(:project)
+      create(
+        :ci_job_token_project_scope_link,
+        source_project: root_project,
+        target_project: included_project,
+        direction: direction
+      )
+
+      included_project
+    end
+
+    def create_project_in_both_allowlists(root_project)
+      create_project_in_allowlist(root_project, direction: :outbound).tap do |new_project|
+        create_project_in_allowlist(root_project, target_project: new_project, direction: :inbound)
       end
     end
 

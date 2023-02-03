@@ -57,6 +57,35 @@ RSpec.describe Ci::JobToken::Scope, feature_category: :continuous_integration, f
     end
   end
 
+  describe 'add!' do
+    let_it_be(:new_project) { create(:project) }
+
+    subject { scope.add!(new_project, direction: direction, user: user) }
+
+    [:inbound, :outbound].each do |d|
+      let(:direction) { d }
+
+      it 'adds the project' do
+        subject
+
+        expect(scope.send("#{direction}_projects")).to contain_exactly(current_project, new_project)
+      end
+    end
+
+    # Context and before block can go away leaving just the example in 16.0
+    context 'with inbound only enabled' do
+      before do
+        project.ci_cd_settings.update!(job_token_scope_enabled: false)
+      end
+
+      it 'provides access' do
+        expect do
+          scope.add!(new_project, direction: :inbound, user: user)
+        end.to change { described_class.new(new_project).accessible?(current_project) }.from(false).to(true)
+      end
+    end
+  end
+
   RSpec.shared_examples 'enforces outbound scope only' do
     include_context 'with accessible and inaccessible projects'
 

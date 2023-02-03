@@ -40,6 +40,26 @@ RSpec.describe Ci::JobToken::Allowlist, feature_category: :continuous_integratio
     end
   end
 
+  describe 'add!' do
+    let_it_be(:added_project) { create(:project) }
+    let_it_be(:user) { create(:user) }
+
+    subject { allowlist.add!(added_project, user: user) }
+
+    [:inbound, :outbound].each do |d|
+      let(:direction) { d }
+
+      it 'adds the project' do
+        subject
+
+        expect(allowlist.projects).to contain_exactly(source_project, added_project)
+        expect(subject.added_by_id).to eq(user.id)
+        expect(subject.source_project_id).to eq(source_project.id)
+        expect(subject.target_project_id).to eq(added_project.id)
+      end
+    end
+  end
+
   describe '#includes?' do
     subject { allowlist.includes?(includes_project) }
 

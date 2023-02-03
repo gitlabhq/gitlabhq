@@ -1183,6 +1183,7 @@ Input type: `CiJobTokenScopeAddProjectInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationcijobtokenscopeaddprojectclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationcijobtokenscopeaddprojectdirection"></a>`direction` | [`CiJobTokenScopeDirection`](#cijobtokenscopedirection) | Direction of access, which defaults to outbound. |
 | <a id="mutationcijobtokenscopeaddprojectprojectpath"></a>`projectPath` | [`ID!`](#id) | Project that the CI job token scope belongs to. |
 | <a id="mutationcijobtokenscopeaddprojecttargetprojectpath"></a>`targetProjectPath` | [`ID!`](#id) | Project to be added to the CI job token scope. |
 
@@ -1190,7 +1191,7 @@ Input type: `CiJobTokenScopeAddProjectInput`
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mutationcijobtokenscopeaddprojectcijobtokenscope"></a>`ciJobTokenScope` | [`CiJobTokenScopeType`](#cijobtokenscopetype) | CI job token's scope of access. |
+| <a id="mutationcijobtokenscopeaddprojectcijobtokenscope"></a>`ciJobTokenScope` | [`CiJobTokenScopeType`](#cijobtokenscopetype) | CI job token's access scope. |
 | <a id="mutationcijobtokenscopeaddprojectclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationcijobtokenscopeaddprojecterrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
@@ -11348,7 +11349,9 @@ CI/CD variables for a GitLab instance.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="cijobtokenscopetypeprojects"></a>`projects` | [`ProjectConnection!`](#projectconnection) | Allow list of projects that can be accessed by CI Job tokens created by this project. (see [Connections](#connections)) |
+| <a id="cijobtokenscopetypeinboundallowlist"></a>`inboundAllowlist` | [`ProjectConnection!`](#projectconnection) | Allow list of projects that can access the current project through its CI Job tokens. (see [Connections](#connections)) |
+| <a id="cijobtokenscopetypeoutboundallowlist"></a>`outboundAllowlist` | [`ProjectConnection!`](#projectconnection) | Allow list of projects that are accessible using the current project's CI Job tokens. (see [Connections](#connections)) |
+| <a id="cijobtokenscopetypeprojects"></a>`projects` **{warning-solid}** | [`ProjectConnection!`](#projectconnection) | **Deprecated** in 15.9. The `projects` attribute is being deprecated. Use `outbound_allowlist`. |
 
 ### `CiJobsDurationStatistics`
 
@@ -21799,6 +21802,15 @@ Deploy freeze period status.
 | <a id="cijobstatusskipped"></a>`SKIPPED` | A job that is skipped. |
 | <a id="cijobstatussuccess"></a>`SUCCESS` | A job that is success. |
 | <a id="cijobstatuswaiting_for_resource"></a>`WAITING_FOR_RESOURCE` | A job that is waiting for resource. |
+
+### `CiJobTokenScopeDirection`
+
+Direction of access.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="cijobtokenscopedirectioninbound"></a>`INBOUND` | Target projects in the inbound allowlist can access the scope project through their job tokens. |
+| <a id="cijobtokenscopedirectionoutbound"></a>`OUTBOUND` | Job token scope project can access target project in the outbound allowlist. |
 
 ### `CiRunnerAccessLevel`
 

@@ -237,7 +237,7 @@ in your Sidekiq logs. For more information, see
 
 #### Elasticsearch with role privileges
 
-To access Elasticsearch, you must have at least the following privileges in GitLab:
+To access and perform operations in Elasticsearch, GitLab requires a role with the following privileges:
 
 ```json
 {

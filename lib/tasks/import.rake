@@ -4,8 +4,8 @@ require 'benchmark'
 require 'rainbow/ext/string'
 
 class GithubImport
-  def self.run!(*args)
-    new(*args).run!
+  def self.run!(...)
+    new(...).run!
   end
 
   def initialize(token, gitlab_username, project_path, extras)

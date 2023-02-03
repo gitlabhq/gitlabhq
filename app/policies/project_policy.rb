@@ -234,6 +234,10 @@ class ProjectPolicy < BasePolicy
     Gitlab.config.packages.enabled
   end
 
+  condition(:create_runner_workflow_enabled) do
+    Feature.enabled?(:create_runner_workflow)
+  end
+
   # `:read_project` may be prevented in EE, but `:read_project_for_iids` should
   # not.
   rule { guest | admin }.enable :read_project_for_iids
@@ -272,6 +276,7 @@ class ProjectPolicy < BasePolicy
     enable :set_warn_about_potentially_unwanted_characters
 
     enable :register_project_runners
+    enable :create_project_runners
     enable :manage_owners
   end
 
@@ -522,6 +527,7 @@ class ProjectPolicy < BasePolicy
     enable :destroy_freeze_period
     enable :admin_feature_flags_client
     enable :register_project_runners
+    enable :create_project_runners
     enable :update_runners_registration_token
     enable :admin_project_google_cloud
     enable :admin_secure_files
@@ -826,6 +832,7 @@ class ProjectPolicy < BasePolicy
 
   rule { ~admin & ~project_runner_registration_allowed }.policy do
     prevent :register_project_runners
+    prevent :create_project_runners
   end
 
   rule { can?(:admin_project_member) }.policy do
@@ -848,6 +855,10 @@ class ProjectPolicy < BasePolicy
 
   rule { can?(:download_code) }.policy do
     enable :read_code
+  end
+
+  rule { ~create_runner_workflow_enabled }.policy do
+    prevent :create_project_runners
   end
 
   private

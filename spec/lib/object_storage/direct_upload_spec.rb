@@ -272,7 +272,7 @@ RSpec.describe ObjectStorage::DirectUpload do
       it 'uses only strings in query parameters' do
         expect(direct_upload.send(:connection)).to receive(:signed_url).at_least(:once) do |params|
           if params[:query]
-            expect(params[:query].keys.all? { |key| key.is_a?(String) }).to be_truthy
+            expect(params[:query].keys.all?(String)).to be_truthy
           end
         end
 

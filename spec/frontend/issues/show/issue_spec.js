@@ -19,7 +19,9 @@ const setupHTML = (initialData) => {
 
 describe('Issue show index', () => {
   describe('initIssueApp', () => {
-    it('should initialize app with no potential XSS attack', async () => {
+    // https://gitlab.com/gitlab-org/gitlab/-/issues/390368
+    // eslint-disable-next-line jest/no-disabled-tests
+    it.skip('should initialize app with no potential XSS attack', async () => {
       const alertSpy = jest.spyOn(window, 'alert').mockImplementation(() => {});
       const parseDataSpy = jest.spyOn(parseData, 'parseIssuableData');
 

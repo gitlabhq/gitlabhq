@@ -17,7 +17,7 @@ module Gitlab
 
       def delegator_override(*names)
         return unless Gitlab::Environment.static_verification?
-        raise TypeError unless names.all? { |n| n.is_a?(Symbol) }
+        raise TypeError unless names.all?(Symbol)
 
         DelegatorOverride.validator(self).add_allowlist(names)
       end

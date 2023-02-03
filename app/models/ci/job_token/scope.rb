@@ -39,6 +39,15 @@ module Ci
         inbound_allowlist.projects
       end
 
+      def add!(added_project, user:, direction:)
+        case direction
+        when :inbound
+          inbound_allowlist.add!(added_project, user: user)
+        when :outbound
+          outbound_allowlist.add!(added_project, user: user)
+        end
+      end
+
       private
 
       def outbound_accessible?(accessed_project)

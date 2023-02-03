@@ -5,10 +5,14 @@ module Ci
     class AddProjectService < ::BaseService
       include EditScopeValidations
 
-      def execute(target_project)
+      def execute(target_project, direction: :outbound)
+        direction = :outbound if Feature.disabled?(:ci_inbound_job_token_scope)
+
         validate_edit!(project, target_project, current_user)
 
-        link = add_project!(target_project)
+        link = allowlist(direction)
+          .add!(target_project, user: current_user)
+
         ServiceResponse.success(payload: { project_link: link })
 
       rescue ActiveRecord::RecordNotUnique
@@ -19,12 +23,10 @@ module Ci
         ServiceResponse.error(message: e.message)
       end
 
-      def add_project!(target_project)
-        ::Ci::JobToken::ProjectScopeLink.create!(
-          source_project: project,
-          target_project: target_project,
-          added_by: current_user
-        )
+      private
+
+      def allowlist(direction)
+        Ci::JobToken::Allowlist.new(project, direction: direction)
       end
     end
   end

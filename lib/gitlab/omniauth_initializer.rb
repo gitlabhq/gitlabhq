@@ -69,8 +69,8 @@ module Gitlab
 
     private
 
-    def add_provider_to_devise(*args)
-      @devise_config.omniauth(*args)
+    def add_provider_to_devise(...)
+      @devise_config.omniauth(...)
     end
 
     def arguments_for(provider)

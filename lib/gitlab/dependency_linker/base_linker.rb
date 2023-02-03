@@ -13,8 +13,8 @@ module Gitlab
         Gitlab::FileDetector.type_of(blob_name) == file_type
       end
 
-      def self.link(*args)
-        new(*args).link
+      def self.link(...)
+        new(...).link
       end
 
       attr_accessor :plain_text, :highlighted_text

@@ -84,6 +84,10 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
   with_scope :subject
   condition(:crm_enabled, score: 0, scope: :subject) { @subject.crm_enabled? }
 
+  condition(:create_runner_workflow_enabled) do
+    Feature.enabled?(:create_runner_workflow)
+  end
+
   condition(:group_runner_registration_allowed, scope: :subject) do
     Gitlab::CurrentSettings.valid_runner_registrars.include?('group') && @subject.runner_registration_enabled?
   end
@@ -200,6 +204,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :read_group_runners
     enable :admin_group_runners
     enable :register_group_runners
+    enable :create_group_runners
 
     enable :set_note_created_at
     enable :set_emails_disabled
@@ -308,6 +313,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
 
   rule { ~admin & ~group_runner_registration_allowed }.policy do
     prevent :register_group_runners
+    prevent :create_group_runners
   end
 
   rule { migration_bot }.policy do
@@ -317,6 +323,10 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
 
   rule { can?(:developer_access) & observability_enabled }.policy do
     enable :read_observability
+  end
+
+  rule { ~create_runner_workflow_enabled }.policy do
+    prevent :create_group_runners
   end
 
   def access_level(for_any_session: false)

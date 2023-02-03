@@ -34,10 +34,10 @@ module BulkImports
         @compatible_instance_version = false
       end
 
-      def execute(*args)
+      def execute(...)
         validate_instance_version!
 
-        client.execute(*args)
+        client.execute(...)
       end
 
       def options(extra = {})
