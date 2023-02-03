@@ -144,11 +144,11 @@ export default {
         {{ eventDate }}
       </h2>
 
-      <ul class="notes main-notes-list gl-pt-2!">
+      <ul class="notes main-notes-list">
         <li
           v-for="(event, eventIndex) in events"
           :key="eventIndex"
-          class="timeline-entry-vertical-line timeline-entry note system-note note-wrapper gl-my-2! gl-pr-0!"
+          class="timeline-entry-vertical-line timeline-entry note system-note note-wrapper gl-my-0! gl-pr-0!"
         >
           <edit-timeline-event
             v-if="eventToEdit === event.id"

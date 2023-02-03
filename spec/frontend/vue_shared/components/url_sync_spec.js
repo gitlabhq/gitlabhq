@@ -35,32 +35,22 @@ describe('url sync component', () => {
     wrapper.destroy();
   });
 
-  const expectUrlSyncFactory = (
-    query,
-    times,
-    urlParamsUpdateStrategy,
-    urlOptions,
-    urlReturnValue,
-  ) => {
-    expect(urlParamsUpdateStrategy).toHaveBeenCalledTimes(times);
-    expect(urlParamsUpdateStrategy).toHaveBeenCalledWith(query, window.location.href, urlOptions);
+  const expectUrlSyncWithMergeUrlParams = (query, times, mergeUrlParamsReturnValue) => {
+    expect(mergeUrlParams).toHaveBeenCalledTimes(times);
+    expect(mergeUrlParams).toHaveBeenCalledWith(query, window.location.href, {
+      spreadArrays: true,
+    });
 
     expect(historyPushState).toHaveBeenCalledTimes(times);
-    expect(historyPushState).toHaveBeenCalledWith(urlReturnValue);
-  };
-
-  const expectUrlSyncWithMergeUrlParams = (query, times, mergeUrlParamsReturnValue) => {
-    expectUrlSyncFactory(
-      query,
-      times,
-      mergeUrlParams,
-      { spreadArrays: true },
-      mergeUrlParamsReturnValue,
-    );
+    expect(historyPushState).toHaveBeenCalledWith(mergeUrlParamsReturnValue);
   };
 
   const expectUrlSyncWithSetUrlParams = (query, times, setUrlParamsReturnValue) => {
-    expectUrlSyncFactory(query, times, setUrlParams, true, setUrlParamsReturnValue);
+    expect(setUrlParams).toHaveBeenCalledTimes(times);
+    expect(setUrlParams).toHaveBeenCalledWith(query, window.location.href, true, true, true);
+
+    expect(historyPushState).toHaveBeenCalledTimes(times);
+    expect(historyPushState).toHaveBeenCalledWith(setUrlParamsReturnValue);
   };
 
   describe('with query as a props', () => {

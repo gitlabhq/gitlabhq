@@ -35,30 +35,19 @@ Also on self-managed GitLab, by default [migrating project items](#migrated-proj
 this feature, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named
 `bulk_import_projects`. The feature is not ready for production use. On GitLab.com, migration of both groups and projects is available.
 
-Prerequisites:
+Migrating groups by direct transfer copies the groups from one place to another. You can:
 
-- Network connection between instances or GitLab.com. Must support HTTPS.
-- Both GitLab instances have group migration by direct transfer
-  [enabled in application settings](../../admin_area/settings/visibility_and_access_controls.md#enable-migration-of-groups-and-projects-by-direct-transfer)
-  by an instance administrator.
-- Owner role on the source group to migrate from.
-- At least the Maintainer role on the destination group to migrate to. Using the Developer role for this purpose was
-  [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/387891) in GitLab 15.8 and will be removed in GitLab 16.0.
-
-By direct transfer you can migrate:
-
-- Using either the UI or the [API](../../../api/bulk_imports.md).
-- Many groups at once.
-- Top-level groups using UI, using API you can also migrate chosen subgroups to:
+- Copy many groups at once.
+- Copy top-level groups to:
   - Another top-level group.
   - The subgroup of any existing top-level group.
   - Another GitLab instance, including GitLab.com.
-- With projects (in [beta](../../../policy/alpha-beta-support.md#beta-features) and not ready for production use) or without projects. Migrating projects with groups
-  is available:
+- Copy groups with projects (in [beta](../../../policy/alpha-beta-support.md#beta-features) and not ready for production
+  use) or without projects. Copying projects with groups is available:
   - On GitLab.com by default.
   - On self-managed GitLab instances after an administrator first [enables the feature flag](../../../administration/feature_flags.md) named `bulk_import_projects`.
 
-Not all group and project resources are imported. See list of migrated resources below:
+Not all group and project resources are copied. See list of copied resources below:
 
 - [Migrated group items](#migrated-group-items).
 - [Migrated project items](#migrated-project-items-beta).
@@ -66,14 +55,30 @@ Not all group and project resources are imported. See list of migrated resources
 We invite you to leave your feedback about migrating by direct transfer in
 [the feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/284495).
 
+If you want to move groups instead of copying groups, you can [transfer groups](../manage.md#transfer-a-group) if the
+groups are in the same GitLab instance. Transferring groups is a faster and more complete option.
+
+### Prerequisites
+
+To migrate groups by direct transfer:
+
+- The network connection between instances or GitLab.com must support HTTPS.
+- Both GitLab instances must have group migration by direct transfer
+  [enabled in application settings](../../admin_area/settings/visibility_and_access_controls.md#enable-migration-of-groups-and-projects-by-direct-transfer)
+  by an instance administrator.
+- You must have the Owner role on the source group to migrate from.
+- You must have at least the Maintainer role on the destination group to migrate to. Using the Developer role for this
+  purpose was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/387891) in GitLab 15.8 and will be removed in
+  GitLab 16.0.
+
 ### Visibility rules
 
 After migration:
 
 - Private groups and projects stay private.
 - Public groups and projects:
-  - Stay public when imported into a public group.
-  - Become private when imported into a private group.
+  - Stay public when copied into a public group.
+  - Become private when copied into a private group.
 
 If used a private network on your source instance to hide content from the general public,
 make sure to have a similar setup on the destination instance, or to import into a private group.

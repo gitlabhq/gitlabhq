@@ -163,7 +163,12 @@ describe('Board list component', () => {
         wrapper.setProps({ list: { issuesCount: 4, maxIssueCount: 3 } });
 
         await nextTick();
-        expect(wrapper.find('.bg-danger-100').exists()).toBe(true);
+        const block = wrapper.find('.bg-danger-100');
+
+        expect(block.exists()).toBe(true);
+        expect(block.attributes('class')).toContain(
+          'gl-rounded-bottom-left-base gl-rounded-bottom-right-base',
+        );
       });
     });
 

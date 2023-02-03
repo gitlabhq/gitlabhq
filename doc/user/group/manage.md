@@ -336,11 +336,14 @@ After sharing the `Frontend` group with the `Engineering` group:
 
 ## Transfer a group
 
-You can transfer groups in the following ways:
+Transferring groups moves them from one place to another in the same GitLab instance. You can:
 
 - Transfer a subgroup to a new parent group.
 - Convert a top-level group into a subgroup by transferring it to the desired group.
 - Convert a subgroup into a top-level group by transferring it out of its current group.
+
+If you need to copy a group to a different GitLab instance,
+[migrate the group by direct transfer](import/index.md#migrate-groups-by-direct-transfer-recommended).
 
 When transferring groups, note:
 

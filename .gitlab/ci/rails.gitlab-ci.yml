@@ -802,22 +802,18 @@ rspec-ee system pg13:
   script:
     - !reference [.base-script, script]
     - rspec_fail_fast "${MATCHING_TESTS_PATH}" "--tag ~quarantine --tag ~zoekt"
-  artifacts:
-    expire_in: 7d
-    paths:
-      - tmp/capybara/
 
 rspec fail-fast:
   extends:
-    - .rspec-fail-fast
     - .rspec-base-pg12
+    - .rspec-fail-fast  # extends from .rspec-fail-fast last to override script from .rspec-base-pg12
   variables:
     MATCHING_TESTS_PATH: "${RSPEC_MATCHING_TESTS_FOSS_PATH}"
 
 rspec-ee fail-fast:
   extends:
-    - .rspec-fail-fast
-    - .rspec-base-pg12
+    - .rspec-ee-base-pg12
+    - .rspec-fail-fast  # extends from .rspec-fail-fast last to override script from .rspec-ee-base-pg12
   variables:
     MATCHING_TESTS_PATH: "${RSPEC_MATCHING_TESTS_EE_PATH}"
 

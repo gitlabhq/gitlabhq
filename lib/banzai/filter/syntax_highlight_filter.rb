@@ -72,8 +72,9 @@ module Banzai
         pre_node.set_attribute(LANG_PARAMS_ATTR, escape_once(lang_params)) if lang_params.present?
         pre_node.set_attribute('v-pre', 'true')
         pre_node.remove_attribute('data-meta')
+        copy_code_btn = "<copy-code></copy-code>" unless language == 'suggestion'
 
-        highlighted = %(<div class="gl-relative markdown-code-block js-markdown-code">#{pre_node.to_html}<copy-code></copy-code></div>)
+        highlighted = %(<div class="gl-relative markdown-code-block js-markdown-code">#{pre_node.to_html}#{copy_code_btn}</div>)
 
         # Extracted to a method to measure it
         replace_pre_element(pre_node, highlighted)

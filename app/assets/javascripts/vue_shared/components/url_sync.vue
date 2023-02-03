@@ -40,7 +40,7 @@ export default {
     updateQuery(newQuery) {
       const url =
         this.urlParamsUpdateStrategy === URL_SET_PARAMS_STRATEGY
-          ? setUrlParams(this.query, window.location.href, true)
+          ? setUrlParams(this.query, window.location.href, true, true, true)
           : mergeUrlParams(newQuery, window.location.href, { spreadArrays: true });
       historyPushState(url);
     },

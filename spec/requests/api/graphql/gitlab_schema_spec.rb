@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'GitlabSchema configurations', feature_category: :not_owned do
+RSpec.describe 'GitlabSchema configurations', feature_category: :integrations do
   include GraphqlHelpers
 
   let_it_be(:project) { create(:project) }
@@ -221,6 +221,103 @@ RSpec.describe 'GitlabSchema configurations', feature_category: :not_owned do
       parsed_id = GlobalID.parse(graphql_data['project']['id'])
 
       expect(parsed_id).to eq(project.to_global_id)
+    end
+  end
+
+  describe 'removal of deprecated items' do
+    let(:mock_schema) do
+      Class.new(GraphQL::Schema) do
+        lazy_resolve ::Gitlab::Graphql::Lazy, :force
+
+        query(Class.new(::Types::BaseObject) do
+          graphql_name 'Query'
+
+          field :foo, GraphQL::Types::Boolean,
+                    deprecated: { milestone: '0.1', reason: :renamed }
+
+          field :bar, (Class.new(::Types::BaseEnum) do
+            graphql_name 'BarEnum'
+
+            value 'FOOBAR', value: 'foobar', deprecated: { milestone: '0.1', reason: :renamed }
+          end)
+
+          field :baz, GraphQL::Types::Boolean do
+            argument :arg, String, required: false, deprecated: { milestone: '0.1', reason: :renamed }
+          end
+
+          def foo
+            false
+          end
+
+          def bar
+            'foobar'
+          end
+
+          def baz(arg:)
+            false
+          end
+        end)
+      end
+    end
+
+    let(:params) { {} }
+    let(:headers) { {} }
+
+    before do
+      allow(GitlabSchema).to receive(:execute).and_wrap_original do |method, *args|
+        mock_schema.execute(*args)
+      end
+    end
+
+    context 'without `remove_deprecated` param' do
+      it 'shows deprecated items' do
+        query = '{ foo bar baz(arg: "test") }'
+
+        post_graphql(query, params: params, headers: headers)
+
+        expect(json_response).to include('data' => { 'foo' => false, 'bar' => 'FOOBAR', 'baz' => false })
+      end
+    end
+
+    context 'with `remove_deprecated` param' do
+      let(:params) { { remove_deprecated: '1' } }
+
+      it 'hides deprecated field' do
+        query = '{ foo }'
+
+        post_graphql(query, params: params)
+
+        expect(json_response).not_to include('data' => { 'foo' => false })
+        expect(json_response).to include(
+          'errors' => include(a_hash_including('message' => /Field 'foo' doesn't exist on type 'Query'/))
+        )
+      end
+
+      it 'hides deprecated enum value' do
+        query = '{ bar }'
+
+        post_graphql(query, params: params)
+
+        expect(json_response).not_to include('data' => { 'bar' => 'FOOBAR' })
+        expect(json_response).to include(
+          'errors' => include(
+            a_hash_including(
+              'message' => /`Query.bar` returned `"foobar"` at `bar`, but this isn't a valid value for `BarEnum`/
+            )
+          )
+        )
+      end
+
+      it 'hides deprecated argument' do
+        query = '{ baz(arg: "test") }'
+
+        post_graphql(query, params: params)
+
+        expect(json_response).not_to include('data' => { 'bar' => 'FOOBAR' })
+        expect(json_response).to include(
+          'errors' => include(a_hash_including('message' => /Field 'baz' doesn't accept argument 'arg'/))
+        )
+      end
     end
   end
 end

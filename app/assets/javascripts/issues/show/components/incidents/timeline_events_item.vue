@@ -51,12 +51,12 @@ export default {
 <template>
   <div class="timeline-event gl-display-grid">
     <div
-      class="gl-display-flex gl-align-items-center gl-justify-content-center gl-bg-white gl-text-gray-200 gl-border-gray-100 gl-border-1 gl-border-solid gl-rounded-full gl-mt-2 gl-mr-3 gl-w-8 gl-h-8 gl-p-3 gl-z-index-1"
+      class="gl-display-flex gl-align-items-center gl-justify-content-center gl-bg-white gl-text-gray-200 gl-border-gray-100 gl-border-1 gl-border-solid gl-rounded-full gl-mt-2 gl-w-8 gl-h-8 gl-p-3 gl-z-index-1"
     >
       <gl-icon :name="getEventIcon(action)" class="note-icon" />
     </div>
     <div class="timeline-event-note timeline-event-border" data-testid="event-text-container">
-      <div class="gl-display-flex gl-flex-wrap gl-align-items-center gl-gap-3 gl-mb-3">
+      <div class="gl-display-flex gl-flex-wrap gl-align-items-center gl-gap-3 gl-mb-2">
         <h3
           class="timeline-event-note-date gl-font-weight-bold gl-font-sm gl-my-0"
           data-testid="event-time"

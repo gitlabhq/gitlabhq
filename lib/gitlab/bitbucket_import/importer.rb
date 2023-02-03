@@ -92,15 +92,15 @@ module Gitlab
       def import_issues
         return unless repo.issues_enabled?
 
-        # If a user creates an issue while the import is in progress, this can lead to an import failure.
-        # The workaround is to allocate IIDs before starting the importer.
-        allocate_issues_internal_id!(project, client)
-
         create_labels
 
         issue_type_id = ::WorkItems::Type.default_issue_type.id
 
-        client.issues(repo).each do |issue|
+        client.issues(repo).each_with_index do |issue, index|
+          # If a user creates an issue while the import is in progress, this can lead to an import failure.
+          # The workaround is to allocate IIDs before starting the importer.
+          allocate_issues_internal_id!(project, client) if index == 0
+
           import_issue(issue, issue_type_id)
         end
       end

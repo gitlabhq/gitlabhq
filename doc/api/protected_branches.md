@@ -83,7 +83,8 @@ Example response:
 ```
 
 Users on GitLab Premium or higher also see
-the `user_id` and `group_id` parameters:
+the `user_id`, `group_id` and `inherited` parameters. If the `inherited` parameter
+exists, means the setting was inherited from the project's group.
 
 Example response:
 
@@ -111,7 +112,8 @@ Example response:
       }
     ],
     "allow_force_push":false,
-    "code_owner_approval_required": false
+    "code_owner_approval_required": false,
+    "inherited": true
   },
   ...
 ]

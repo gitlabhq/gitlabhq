@@ -42,7 +42,7 @@ step to generate the file to be imported.
 
 GitLab Group migration leverages on [GitLab API](../api/rest/index.md) to speed the migration.
 
-And, because we're on the road to [GraphQL](../api/index.md#graphql-api),
+And, because we're on the road to [GraphQL](../api/graphql/index.md),
 GitLab Group Migration will be contributing towards to expand the GraphQL API coverage, which benefits both GitLab
 and its users.
 

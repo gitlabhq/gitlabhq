@@ -295,7 +295,7 @@ RSpec.describe Gitlab::ImportExport::Json::StreamingSerializer, feature_category
               end
             end
 
-            it_behaves_like 'record with exportable associations' do
+            it_behaves_like 'record with exportable associations', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/390356' do
               let(:expected_issue) do
                 issue_hash[many_relation].delete_at(1)
                 issue_hash.to_json(options)

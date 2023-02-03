@@ -2,7 +2,7 @@
 
 module Types
   class BaseArgument < GraphQL::Schema::Argument
-    include GitlabStyleDeprecations
+    include Gitlab::Graphql::Deprecations
 
     attr_reader :doc_reference
 

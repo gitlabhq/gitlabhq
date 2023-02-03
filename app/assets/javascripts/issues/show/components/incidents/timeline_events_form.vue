@@ -166,11 +166,11 @@ export default {
 
 <template>
   <form class="gl-flex-grow-1 gl-border-gray-50">
-    <div class="gl-display-flex gl-flex-direction-column gl-sm-flex-direction-row">
-      <gl-form-group :label="__('Date')" class="gl-mt-5 gl-mr-5">
+    <div class="gl-display-flex gl-flex-direction-column gl-sm-flex-direction-row gl-mt-3">
+      <gl-form-group :label="__('Date')" class="gl-mr-5">
         <gl-datepicker id="incident-date" ref="datepicker" v-model="datePickerInput" />
       </gl-form-group>
-      <div class="gl-display-flex gl-mt-5">
+      <div class="gl-display-flex">
         <gl-form-group :label="__('Time')">
           <div class="gl-display-flex">
             <label label-for="timeline-input-hours" class="sr-only"></label>
