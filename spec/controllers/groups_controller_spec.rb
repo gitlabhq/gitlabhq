@@ -596,6 +596,7 @@ RSpec.describe GroupsController, factory_default: :keep, feature_category: :code
 
           expect(response.body).to have_content('Open Merged Closed All')
           expect(response.body).not_to have_content('Open 0 Merged 0 Closed 0 All 0')
+          expect(assigns(:can_bulk_update)).to be_falsey
         end
       end
     end

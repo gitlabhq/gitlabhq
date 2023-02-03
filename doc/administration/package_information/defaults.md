@@ -49,7 +49,7 @@ by default:
 |      PgBouncer       |      No       |       Port       |      X      |                    6432                    |
 |        Consul        |      No       |       Port       |      X      | 8300, 8301(UDP), 8500, 8600[^Consul-notes] |
 |       Patroni        |      No       |       Port       |      X      |                    8008                    |
-|      GitLab KAS      |      No       |       Port       |      X      |                    8150                    |
+|      GitLab KAS      |      Yes       |       Port       |      X      |                    8150                    |
 |        Gitaly        |      No       |       Port       |      X      |                    8075                    |
 
 Legend:

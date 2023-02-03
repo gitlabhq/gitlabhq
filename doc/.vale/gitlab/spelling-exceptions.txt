@@ -1186,3 +1186,4 @@ ZenTao
 zsh
 Zstandard
 Zuora
+Zoekt
