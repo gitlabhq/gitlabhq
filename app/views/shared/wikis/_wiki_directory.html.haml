@@ -2,4 +2,5 @@
   = link_to wiki_page_path(@wiki, wiki_directory), data: { qa_selector: 'wiki_dir_page_link', qa_page_name: wiki_directory.title } do
     = wiki_directory.title
   %ul
-    = render wiki_directory.entries, context: context
+    - wiki_directory.entries.each do |entry|
+      = render partial: entry.to_partial_path, object: entry, locals: { context: context }

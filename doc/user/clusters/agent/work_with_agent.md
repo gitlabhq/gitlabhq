@@ -19,6 +19,7 @@ Prerequisite:
 To view the list of agents:
 
 1. On the top bar, select **Main menu > Projects** and find the project that contains your agent configuration file.
+   You cannot view registered agents from a project that does not contain the agent configuration file.
 1. On the left sidebar, select **Infrastructure > Kubernetes clusters**.
 1. Select **Agent** tab to view clusters connected to GitLab through the agent.
 

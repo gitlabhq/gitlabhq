@@ -86,6 +86,9 @@ To modify the maximum file size for imports in GitLab:
 1. On the left sidebar, select **Settings > General**, then expand **Account and limit**.
 1. Increase or decrease by changing the value in **Maximum import size (MB)**.
 
+This setting applies only to repositories
+[imported from a GitLab export file](../../project/settings/import_export.md#import-a-project-and-its-data).
+
 If you choose a size larger than the configured value for the web server,
 you may receive errors. See the [troubleshooting section](#troubleshooting) for more
 details.

@@ -260,7 +260,7 @@ module Ci
     end
 
     def acquire_temporary_lock(build_id)
-      return true unless Feature.enabled?(:ci_register_job_temporary_lock, runner)
+      return true if Feature.disabled?(:ci_register_job_temporary_lock, runner, type: :ops)
 
       key = "build/register/#{build_id}"
 

@@ -4,7 +4,7 @@ import * as Sentry from '@sentry/browser';
 import getIssuesQuery from 'ee_else_ce/issues/dashboard/queries/get_issues.query.graphql';
 import IssueCardStatistics from 'ee_else_ce/issues/list/components/issue_card_statistics.vue';
 import IssueCardTimeInfo from 'ee_else_ce/issues/list/components/issue_card_time_info.vue';
-import { IssuableStatus } from '~/issues/constants';
+import { STATUS_CLOSED } from '~/issues/constants';
 import {
   CREATED_DESC,
   defaultTypeTokenOptions,
@@ -363,10 +363,10 @@ export default {
       return axios.get('/-/autocomplete/users.json', { params: { active: true, search } });
     },
     getStatus(issue) {
-      if (issue.state === IssuableStatus.Closed && issue.moved) {
+      if (issue.state === STATUS_CLOSED && issue.moved) {
         return this.$options.i18n.closedMoved;
       }
-      if (issue.state === IssuableStatus.Closed) {
+      if (issue.state === STATUS_CLOSED) {
         return this.$options.i18n.closed;
       }
       return undefined;

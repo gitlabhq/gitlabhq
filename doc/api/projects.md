@@ -2867,7 +2867,7 @@ Read more in the [Project vulnerabilities](project_vulnerabilities.md) documenta
 
 ## Get a project's pull mirror details **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/354506) in GitLab 15.5.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/354506) in GitLab 15.6.
 
 Returns the details of the project's pull mirror.
 

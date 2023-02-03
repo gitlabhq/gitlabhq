@@ -12,7 +12,7 @@ import {
 import { mapActions, mapGetters, mapState } from 'vuex';
 import { createAlert, VARIANT_SUCCESS } from '~/flash';
 import { EVENT_ISSUABLE_VUE_APP_CHANGE } from '~/issuable/constants';
-import { IssuableStatus, IssueType } from '~/issues/constants';
+import { IssueType, STATUS_CLOSED } from '~/issues/constants';
 import { ISSUE_STATE_EVENT_CLOSE, ISSUE_STATE_EVENT_REOPEN } from '~/issues/show/constants';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 import { visitUrl } from '~/lib/utils/url_utility';
@@ -114,7 +114,7 @@ export default {
     ...mapState(['isToggleStateButtonLoading']),
     ...mapGetters(['openState', 'getBlockedByIssues']),
     isClosed() {
-      return this.openState === IssuableStatus.Closed;
+      return this.openState === STATUS_CLOSED;
     },
     issueTypeText() {
       const issueTypeTexts = {

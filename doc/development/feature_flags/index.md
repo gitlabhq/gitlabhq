@@ -459,6 +459,18 @@ dynamic (querying the DB, for example).
 Once defined in `lib/feature.rb`, you can to activate a
 feature for a given feature group via the [`feature_group` parameter of the features API](../../api/features.md#set-or-create-a-feature)
 
+The available feature groups are:
+
+| Group name            | Scoped to | Description |
+| --------------------- | --------- | ----------- |
+| `gitlab_team_members` | Users     | Enables the feature for users who are members of [`gitlab-com`](https://gitlab.com/gitlab-com) |
+
+Feature groups can be enabled via the group name:
+
+```ruby
+Feature.enable(:feature_flag_name, :gitlab_team_members)
+```
+
 ### Enabling a feature flag locally (in development)
 
 In the rails console (`rails c`), enter the following command to enable a feature flag:

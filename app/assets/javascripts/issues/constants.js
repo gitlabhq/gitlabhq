@@ -1,15 +1,13 @@
 import { __ } from '~/locale';
 
-export const IssuableStatus = {
-  Closed: 'closed',
-  Open: 'opened',
-  Reopened: 'reopened',
-};
+export const STATUS_CLOSED = 'closed';
+export const STATUS_OPEN = 'opened';
+export const STATUS_REOPENED = 'reopened';
 
 export const IssuableStatusText = {
-  [IssuableStatus.Closed]: __('Closed'),
-  [IssuableStatus.Open]: __('Open'),
-  [IssuableStatus.Reopened]: __('Open'),
+  [STATUS_CLOSED]: __('Closed'),
+  [STATUS_OPEN]: __('Open'),
+  [STATUS_REOPENED]: __('Open'),
 };
 
 export const IssuableType = {

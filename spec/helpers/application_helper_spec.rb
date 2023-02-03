@@ -540,6 +540,23 @@ RSpec.describe ApplicationHelper do
     end
   end
 
+  describe '#profile_social_links' do
+    context 'when discord is set' do
+      let_it_be(:user) { build(:user) }
+      let(:discord) { discord_url(user) }
+
+      it 'returns an empty string if discord is not set' do
+        expect(discord).to eq('')
+      end
+
+      it 'returns discord url when discord id is set' do
+        user.discord = '1234567890123456789'
+
+        expect(discord).to eq('https://discord.com/users/1234567890123456789')
+      end
+    end
+  end
+
   describe '#gitlab_ui_form_for' do
     let_it_be(:user) { build(:user) }
 

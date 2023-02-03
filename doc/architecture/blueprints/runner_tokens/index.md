@@ -336,9 +336,12 @@ scope.
 | GitLab Rails app | `%15.8` | Create database migration to add `config` column to `ci_runner_machines` table. |
 | GitLab Runner    | `%15.9` | Start sending `system_id` value in `POST /jobs/request` request and other follow-up requests that require identifying the unique system. |
 | GitLab Rails app | `%15.9` | Create service similar to `StaleGroupRunnersPruneCronWorker` service to clean up `ci_runner_machines` records instead of `ci_runners` records.<br/>Existing service continues to exist but focuses only on legacy runners. |
+| GitLab Rails app | `%15.9` | [Feature flag] Rollout of `create_runner_machine`. |
 | GitLab Rails app | `%15.9` | Create `ci_runner_machines` record in `POST /runners/verify` request if the runner token is prefixed with `glrt-`. |
 | GitLab Rails app | `%15.9` | Use runner token + `system_id` JSON parameters in `POST /jobs/request` request in the [heartbeat request](https://gitlab.com/gitlab-org/gitlab/blob/c73c96a8ffd515295842d72a3635a8ae873d688c/lib/api/ci/helpers/runner.rb#L14-20) to update the `ci_runner_machines` cache/table. |
 | GitLab Rails app | `%15.9` | [Feature flag] Enable runner creation workflow (`create_runner_workflow`). |
+| GitLab Rails app | `%15.9` | Implement `create_{instance|group|project}_runner` permissions. |
+| GitLab Rails app | `%15.10` | Rename `ci_runner_machines.machine_xid` column to `system_xid` to be consistent with `system_id` passed in APIs. |
 
 ### Stage 4 - New UI
 
@@ -355,13 +358,22 @@ scope.
 
 | Component        | Milestone | Changes |
 |------------------|----------:|---------|
-| GitLab Rails app | | Add UI to allow disabling use of registration tokens at project or group level. |
-| GitLab Rails app | `16.0` | Introduce `:disable_runner_registration_tokens` feature flag (enabled by default) to control whether use of registration tokens is allowed. |
-| GitLab Rails app | | Make [`POST /api/v4/runners` endpoint](../../../api/runners.md#register-a-new-runner) permanently return `HTTP 410 Gone` if either `allow_runner_registration_token` setting or `:disable_runner_registration_tokens` feature flag disables registration tokens.<br/>A future v5 version of the API should return `HTTP 404 Not Found`. |
-| GitLab Rails app | | Start refusing job requests that don't include a unique ID, if either `allow_runner_registration_token` setting or `:disable_runner_registration_tokens` feature flag disables registration tokens. |
-| GitLab Rails app | | Hide legacy UI showing registration with a registration token, if `:disable_runner_registration_tokens` feature flag disables registration tokens. |
+| GitLab Rails app | `%15.11` | Adapt `register_{group|project}_runner` permissions to take [application setting](https://gitlab.com/gitlab-org/gitlab/-/issues/386712) in consideration. |
+| GitLab Rails app | `%15.11` | Add UI to allow disabling use of registration tokens at project or group level. |
+| GitLab Rails app | `%15.11` | Introduce `:enforce_create_runner_workflow` feature flag (disabled by default) to control whether use of registration tokens is allowed. |
+| GitLab Rails app | `%15.11` | Make [`POST /api/v4/runners` endpoint](../../../api/runners.md#register-a-new-runner) permanently return `HTTP 410 Gone` if either `allow_runner_registration_token` setting or `:enforce_create_runner_workflow` feature flag disables registration tokens.<br/>A future v5 version of the API should return `HTTP 404 Not Found`. |
+| GitLab Rails app | `%15.11` | Start refusing job requests that don't include a unique ID, if either `allow_runner_registration_token` setting or `:enforce_create_runner_workflow` feature flag disables registration tokens. |
+| GitLab Rails app | `%15.11` | Hide legacy UI showing registration with a registration token, if `:enforce_create_runner_workflow` feature flag disables registration tokens. |
 
-### Stage 6 - Removals
+### Stage 6 - Enforcement
+
+| Component        | Milestone | Changes |
+|------------------|----------:|---------|
+| GitLab Runner    | `%16.0`   | Do not allow runner to start if `.runner_system_id` file cannot be written. |
+| GitLab Rails app | `%16.0`   | Enable `:enforce_create_runner_workflow` feature flag by default. |
+| GitLab Rails app | `%16.0`   | Start reject job requests that don't include `system_id` value. |
+
+### Stage 7 - Removals
 
 | Component        | Milestone | Changes |
 |------------------|----------:|---------|
@@ -369,7 +381,7 @@ scope.
 | GitLab Runner    | `17.0` | Remove runner model arguments from `register` command (for example `--run-untagged`, `--tag-list`, etc.) |
 | GitLab Rails app | `17.0` | Create database migrations to drop `allow_runner_registration_token` setting columns from `application_settings` and `namespace_settings` tables. |
 | GitLab Rails app | `17.0` | Create database migrations to drop:<br/>- `runners_registration_token`/`runners_registration_token_encrypted` columns from `application_settings`;<br/>- `runners_token`/`runners_token_encrypted` from `namespaces` table;<br/>- `runners_token`/`runners_token_encrypted` from `projects` table. |
-| GitLab Rails app | `17.0` | Remove `:disable_runner_registration_tokens` feature flag. |
+| GitLab Rails app | `17.0` | Remove `:enforce_create_runner_workflow` feature flag. |
 
 ## Status
 

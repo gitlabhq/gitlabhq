@@ -301,6 +301,8 @@ class ProjectPolicy < BasePolicy
 
   rule { can?(:reporter_access) & can?(:create_issue) }.enable :create_incident
 
+  rule { can?(:reporter_access) & can?(:read_environment) }.enable :read_freeze_period
+
   rule { can?(:create_issue) }.enable :create_work_item
 
   rule { can?(:create_issue) }.enable :create_task

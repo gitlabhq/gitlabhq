@@ -2,12 +2,7 @@
 import { GlIcon, GlBadge, GlIntersectionObserver, GlTooltipDirective } from '@gitlab/ui';
 import Visibility from 'visibilityjs';
 import { createAlert } from '~/flash';
-import {
-  IssuableStatus,
-  IssuableStatusText,
-  WorkspaceType,
-  IssuableType,
-} from '~/issues/constants';
+import { IssuableStatusText, WorkspaceType, IssuableType, STATUS_CLOSED } from '~/issues/constants';
 import Poll from '~/lib/utils/poll';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { __, sprintf } from '~/locale';
@@ -251,7 +246,7 @@ export default {
       return sprintf(__('Error updating %{issuableType}'), { issuableType: this.issuableType });
     },
     isClosed() {
-      return this.issuableStatus === IssuableStatus.Closed;
+      return this.issuableStatus === STATUS_CLOSED;
     },
     pinnedLinkClasses() {
       return this.showTitleBorder

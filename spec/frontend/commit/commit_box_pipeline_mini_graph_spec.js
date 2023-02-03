@@ -141,6 +141,16 @@ describe('Commit box pipeline mini graph', () => {
       expect(upstreamPipeline).toEqual(null);
     });
 
+    it('should render the latest downstream pipeline only', async () => {
+      createComponent(downstreamHandler);
+
+      await waitForPromises();
+
+      const downstreamPipelines = findPipelineMiniGraph().props('downstreamPipelines');
+
+      expect(downstreamPipelines).toHaveLength(1);
+    });
+
     it('should pass the pipeline path prop for the counter badge', async () => {
       createComponent(downstreamHandler);
 

@@ -368,6 +368,12 @@ module ApplicationHelper
     end
   end
 
+  def discord_url(user)
+    return '' if user.discord.blank?
+
+    "https://discord.com/users/#{user.discord}"
+  end
+
   def collapsed_sidebar?
     cookies["sidebar_collapsed"] == "true"
   end

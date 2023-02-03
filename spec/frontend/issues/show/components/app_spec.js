@@ -6,7 +6,13 @@ import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/flash';
-import { IssuableStatus, IssuableStatusText, IssuableType } from '~/issues/constants';
+import {
+  IssuableStatusText,
+  IssuableType,
+  STATUS_CLOSED,
+  STATUS_OPEN,
+  STATUS_REOPENED,
+} from '~/issues/constants';
 import IssuableApp from '~/issues/show/components/app.vue';
 import DescriptionComponent from '~/issues/show/components/description.vue';
 import EditedComponent from '~/issues/show/components/edited.vue';
@@ -473,11 +479,11 @@ describe('Issuable output', () => {
       });
 
       it.each`
-        issuableType          | issuableStatus           | statusIcon
-        ${IssuableType.Issue} | ${IssuableStatus.Open}   | ${'issues'}
-        ${IssuableType.Issue} | ${IssuableStatus.Closed} | ${'issue-closed'}
-        ${IssuableType.Epic}  | ${IssuableStatus.Open}   | ${'epic'}
-        ${IssuableType.Epic}  | ${IssuableStatus.Closed} | ${'epic-closed'}
+        issuableType          | issuableStatus   | statusIcon
+        ${IssuableType.Issue} | ${STATUS_OPEN}   | ${'issues'}
+        ${IssuableType.Issue} | ${STATUS_CLOSED} | ${'issue-closed'}
+        ${IssuableType.Epic}  | ${STATUS_OPEN}   | ${'epic'}
+        ${IssuableType.Epic}  | ${STATUS_CLOSED} | ${'epic-closed'}
       `(
         'shows with state icon "$statusIcon" for $issuableType when status is $issuableStatus',
         async ({ issuableType, issuableStatus, statusIcon }) => {
@@ -491,9 +497,9 @@ describe('Issuable output', () => {
 
       it.each`
         title                                        | state
-        ${'shows with Open when status is opened'}   | ${IssuableStatus.Open}
-        ${'shows with Closed when status is closed'} | ${IssuableStatus.Closed}
-        ${'shows with Open when status is reopened'} | ${IssuableStatus.Reopened}
+        ${'shows with Open when status is opened'}   | ${STATUS_OPEN}
+        ${'shows with Closed when status is closed'} | ${STATUS_CLOSED}
+        ${'shows with Open when status is reopened'} | ${STATUS_REOPENED}
       `('$title', async ({ state }) => {
         wrapper.setProps({ issuableStatus: state });
 

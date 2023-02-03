@@ -17,6 +17,7 @@
         = wiki_sort_controls(@wiki, params[:direction])
 
 %ul.wiki-pages-list.content-list
-  = render @wiki_entries, context: 'pages'
+  - @wiki_entries.each do |entry|
+    = render partial: entry.to_partial_path, object: entry, locals: { context: 'pages' }
 
 = paginate @wiki_pages, theme: 'gitlab'

@@ -149,7 +149,7 @@ describe('Timeline events form', () => {
       it('should show the number of selected tags, when more than one is selected', async () => {
         await selectTags(mockTags);
 
-        expect(findTagsListbox().props('toggleText')).toBe('2 tags');
+        expect(findTagsListbox().props('toggleText')).toBe(`${mockTags.length} tags`);
       });
 
       it('should be cleared when clear is triggered', async () => {

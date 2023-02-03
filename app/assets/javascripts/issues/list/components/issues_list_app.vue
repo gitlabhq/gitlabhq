@@ -12,7 +12,7 @@ import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { ITEM_TYPE } from '~/groups/constants';
 import CsvImportExportButtons from '~/issuable/components/csv_import_export_buttons.vue';
 import IssuableByEmail from '~/issuable/components/issuable_by_email.vue';
-import { IssuableStatus } from '~/issues/constants';
+import { STATUS_CLOSED } from '~/issues/constants';
 import axios from '~/lib/utils/axios_utils';
 import { fetchPolicies } from '~/lib/graphql';
 import { isPositiveInteger } from '~/lib/utils/number_utils';
@@ -572,10 +572,10 @@ export default {
       return `${this.exportCsvPath}${window.location.search}`;
     },
     getStatus(issue) {
-      if (issue.state === IssuableStatus.Closed && issue.moved) {
+      if (issue.state === STATUS_CLOSED && issue.moved) {
         return this.$options.i18n.closedMoved;
       }
-      if (issue.state === IssuableStatus.Closed) {
+      if (issue.state === STATUS_CLOSED) {
         return this.$options.i18n.closed;
       }
       return undefined;

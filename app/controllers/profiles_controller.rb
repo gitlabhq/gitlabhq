@@ -127,6 +127,7 @@ class ProfilesController < Profiles::ApplicationController
       :commit_email,
       :skype,
       :twitter,
+      :discord,
       :username,
       :website_url,
       :organization,

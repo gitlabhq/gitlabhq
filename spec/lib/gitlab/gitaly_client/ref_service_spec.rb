@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::GitalyClient::RefService do
+RSpec.describe Gitlab::GitalyClient::RefService, feature_category: :gitaly do
   let_it_be(:project) { create(:project, :repository, create_tag: 'test') }
 
   let(:storage_name) { project.repository_storage }
@@ -390,10 +390,15 @@ RSpec.describe Gitlab::GitalyClient::RefService do
   end
 
   describe '#list_refs' do
+    let(:oid) { project.repository.commit.id }
+
     it 'sends a list_refs message' do
       expect_any_instance_of(Gitaly::RefService::Stub)
         .to receive(:list_refs)
-        .with(gitaly_request_with_params(patterns: ['refs/heads/']), kind_of(Hash))
+        .with(
+          gitaly_request_with_params(patterns: ['refs/heads/'], pointing_at_oids: [], peel_tags: false),
+          kind_of(Hash)
+        )
         .and_call_original
 
       client.list_refs
@@ -406,6 +411,24 @@ RSpec.describe Gitlab::GitalyClient::RefService do
         .and_call_original
 
       client.list_refs([Gitlab::Git::TAG_REF_PREFIX])
+    end
+
+    it 'accepts a pointing_at_oids argument' do
+      expect_any_instance_of(Gitaly::RefService::Stub)
+        .to receive(:list_refs)
+        .with(gitaly_request_with_params(pointing_at_oids: [oid]), kind_of(Hash))
+        .and_call_original
+
+      client.list_refs(pointing_at_oids: [oid])
+    end
+
+    it 'accepts a peel_tags argument' do
+      expect_any_instance_of(Gitaly::RefService::Stub)
+        .to receive(:list_refs)
+        .with(gitaly_request_with_params(peel_tags: true), kind_of(Hash))
+        .and_call_original
+
+      client.list_refs(peel_tags: true)
     end
   end
 

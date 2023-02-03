@@ -359,6 +359,7 @@ class Admin::UsersController < Admin::ApplicationController
       :skype,
       :theme_id,
       :twitter,
+      :discord,
       :username,
       :website_url,
       :note,

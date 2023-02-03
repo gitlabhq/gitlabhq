@@ -13,8 +13,9 @@ You can use the Freeze Periods API to manipulate GitLab [Freeze Period](../user/
 
 ## Permissions and security
 
-Only users with Maintainer [permissions](../user/permissions.md) can
-interact with the Freeze Period API endpoints.
+Users with Reporter [permissions](../user/permissions.md) or greater can read
+Freeze Period API endpoints. Only users with the Maintainer role can modify
+Freeze Periods.
 
 ## List freeze periods
 

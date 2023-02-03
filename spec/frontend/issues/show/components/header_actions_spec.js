@@ -4,7 +4,7 @@ import { shallowMount } from '@vue/test-utils';
 import Vuex from 'vuex';
 import { mockTracking } from 'helpers/tracking_helper';
 import { createAlert, VARIANT_SUCCESS } from '~/flash';
-import { IssuableStatus, IssueType } from '~/issues/constants';
+import { IssueType, STATUS_CLOSED, STATUS_OPEN } from '~/issues/constants';
 import DeleteIssueModal from '~/issues/show/components/delete_issue_modal.vue';
 import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_selector.vue';
 import HeaderActions from '~/issues/show/components/header_actions.vue';
@@ -81,7 +81,7 @@ describe('HeaderActions component', () => {
 
   const mountComponent = ({
     props = {},
-    issueState = IssuableStatus.Open,
+    issueState = STATUS_OPEN,
     blockedByIssues = [],
     mutateResponse = {},
   } = {}) => {
@@ -123,9 +123,9 @@ describe('HeaderActions component', () => {
   `('when issue type is $issueType', ({ issueType }) => {
     describe('close/reopen button', () => {
       describe.each`
-        description                          | issueState               | buttonText               | newIssueState
-        ${`when the ${issueType} is open`}   | ${IssuableStatus.Open}   | ${`Close ${issueType}`}  | ${ISSUE_STATE_EVENT_CLOSE}
-        ${`when the ${issueType} is closed`} | ${IssuableStatus.Closed} | ${`Reopen ${issueType}`} | ${ISSUE_STATE_EVENT_REOPEN}
+        description                          | issueState       | buttonText               | newIssueState
+        ${`when the ${issueType} is open`}   | ${STATUS_OPEN}   | ${`Close ${issueType}`}  | ${ISSUE_STATE_EVENT_CLOSE}
+        ${`when the ${issueType} is closed`} | ${STATUS_CLOSED} | ${`Reopen ${issueType}`} | ${ISSUE_STATE_EVENT_REOPEN}
       `('$description', ({ issueState, buttonText, newIssueState }) => {
         beforeEach(() => {
           dispatchEventSpy = jest.spyOn(document, 'dispatchEvent');

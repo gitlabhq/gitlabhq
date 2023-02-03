@@ -40,6 +40,10 @@ The Debian group API is behind a feature flag that is disabled by default.
 can opt to enable it. To enable it, follow the instructions in
 [Enable the Debian group API](../../user/packages/debian_repository/index.md#enable-the-debian-group-api).
 
+### Authenticate to the Debian Package Repositories
+
+See [Authenticate to the Debian Package Repositories](../../user/packages/debian_repository/index.md#authenticate-to-the-debian-package-repositories).
+
 ## Upload a package file
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/62028) in GitLab 14.0.

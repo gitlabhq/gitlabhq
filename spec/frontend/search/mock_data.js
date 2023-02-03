@@ -622,3 +622,34 @@ export const MOCK_RECEIVE_AGGREGATIONS_ERROR_MUTATION = [
     type: types.RECEIVE_AGGREGATIONS_ERROR,
   },
 ];
+
+export const TEST_RAW_BUCKETS = [
+  { key: 'Go', count: 350 },
+  { key: 'C', count: 298 },
+  { key: 'JavaScript', count: 128 },
+  { key: 'YAML', count: 58 },
+  { key: 'Text', count: 46 },
+  { key: 'Markdown', count: 37 },
+  { key: 'HTML', count: 34 },
+  { key: 'Shell', count: 34 },
+  { key: 'Makefile', count: 21 },
+  { key: 'JSON', count: 15 },
+];
+
+export const TEST_FILTER_DATA = {
+  header: 'Language',
+  scopes: { BLOBS: 'blobs' },
+  filterParam: 'language',
+  filters: {
+    GO: { label: 'Go', value: 'Go', count: 350 },
+    C: { label: 'C', value: 'C', count: 298 },
+    JAVASCRIPT: { label: 'JavaScript', value: 'JavaScript', count: 128 },
+    YAML: { label: 'YAML', value: 'YAML', count: 58 },
+    TEXT: { label: 'Text', value: 'Text', count: 46 },
+    MARKDOWN: { label: 'Markdown', value: 'Markdown', count: 37 },
+    HTML: { label: 'HTML', value: 'HTML', count: 34 },
+    SHELL: { label: 'Shell', value: 'Shell', count: 34 },
+    MAKEFILE: { label: 'Makefile', value: 'Makefile', count: 21 },
+    JSON: { label: 'JSON', value: 'JSON', count: 15 },
+  },
+};

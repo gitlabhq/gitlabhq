@@ -132,8 +132,9 @@ To add links to other accounts:
 1. On the top bar, in the upper-right corner, select your avatar.
 1. Select **Edit profile**.
 1. In the **Main settings** section, add your information from:
-   - Skype
+   - Discord ([User ID](https://support.discord.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID-))
    - LinkedIn
+   - Skype
    - Twitter
 1. Select **Update profile settings**.
 

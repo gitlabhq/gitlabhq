@@ -101,6 +101,10 @@
               = render 'middle_dot_divider', breakpoint: 'sm' do
                 = link_to twitter_url(@user), class: 'gl-hover-text-decoration-none', title: "Twitter", target: '_blank', rel: 'noopener noreferrer nofollow' do
                   = sprite_icon('twitter', css_class: 'twitter-icon')
+            - unless @user.discord.blank?
+              = render 'middle_dot_divider', breakpoint: 'sm' do
+                = link_to discord_url(@user), class: 'gl-hover-text-decoration-none', title: "Discord", target: '_blank', rel: 'noopener noreferrer nofollow' do
+                  = sprite_icon('discord', css_class: 'discord-icon')
             - unless @user.website_url.blank?
               = render 'middle_dot_divider', stacking: true do
                 - if Feature.enabled?(:security_auto_fix) && @user.bot?

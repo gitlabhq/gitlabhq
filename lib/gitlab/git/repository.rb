@@ -847,9 +847,10 @@ module Gitlab
         end
       end
 
-      def list_refs(patterns = [Gitlab::Git::BRANCH_REF_PREFIX])
+      # peel_tags slows down the request by a factor of 3-4
+      def list_refs(patterns = [Gitlab::Git::BRANCH_REF_PREFIX], pointing_at_oids: [], peel_tags: false)
         wrapped_gitaly_errors do
-          gitaly_ref_client.list_refs(patterns)
+          gitaly_ref_client.list_refs(patterns, pointing_at_oids: pointing_at_oids, peel_tags: peel_tags)
         end
       end
 

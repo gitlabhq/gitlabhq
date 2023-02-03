@@ -1947,6 +1947,53 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
       expect(reference.name).to be_a(String)
       expect(reference.target).to be_a(String)
     end
+
+    it 'filters by pattern' do
+      refs = repository.list_refs([Gitlab::Git::TAG_REF_PREFIX])
+
+      refs.each do |reference|
+        expect(reference.name).to include(Gitlab::Git::TAG_REF_PREFIX)
+      end
+    end
+
+    context 'with pointing_at_oids and peel_tags options' do
+      let(:commit_id) { mutable_repository.commit.id }
+      let!(:annotated_tag) { mutable_repository.add_tag('annotated-tag', user: user, target: commit_id, message: 'Tag message') }
+      let!(:lw_tag) { mutable_repository.add_tag('lw-tag', user: user, target: commit_id) }
+
+      it 'filters by target OIDs' do
+        refs = mutable_repository.list_refs([Gitlab::Git::TAG_REF_PREFIX], pointing_at_oids: [commit_id])
+
+        expect(refs.length).to eq(2)
+        expect(refs).to contain_exactly(
+          Gitaly::ListRefsResponse::Reference.new(
+            name: "#{Gitlab::Git::TAG_REF_PREFIX}#{lw_tag.name}",
+            target: commit_id
+          ),
+          Gitaly::ListRefsResponse::Reference.new(
+            name: "#{Gitlab::Git::TAG_REF_PREFIX}#{annotated_tag.name}",
+            target: annotated_tag.id
+          )
+        )
+      end
+
+      it 'returns peeled_target for annotated tags' do
+        refs = mutable_repository.list_refs([Gitlab::Git::TAG_REF_PREFIX], pointing_at_oids: [commit_id], peel_tags: true)
+
+        expect(refs.length).to eq(2)
+        expect(refs).to contain_exactly(
+          Gitaly::ListRefsResponse::Reference.new(
+            name: "#{Gitlab::Git::TAG_REF_PREFIX}#{lw_tag.name}",
+            target: commit_id
+          ),
+          Gitaly::ListRefsResponse::Reference.new(
+            name: "#{Gitlab::Git::TAG_REF_PREFIX}#{annotated_tag.name}",
+            target: annotated_tag.id,
+            peeled_target: commit_id
+          )
+        )
+      end
+    end
   end
 
   describe '#refs_by_oid' do

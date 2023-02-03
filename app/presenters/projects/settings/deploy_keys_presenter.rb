@@ -68,10 +68,6 @@ module Projects
         }
       end
 
-      def to_partial_path
-        '../../shared/deploy_keys/index'
-      end
-
       def form_partial_path
         'shared/deploy_keys/project_group_form'
       end

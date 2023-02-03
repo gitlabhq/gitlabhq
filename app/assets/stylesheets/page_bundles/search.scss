@@ -5,6 +5,7 @@ $search-avatar-size: 16px;
 $search-sidebar-min-width: 240px;
 $search-sidebar-max-width: 300px;
 $search-keyboard-shortcut: '/';
+$language-filter-max-height: 20rem;
 
 $border-radius-medium: 3px;
 
@@ -24,6 +25,16 @@ $border-radius-medium: 3px;
   @include media-breakpoint-up(md) {
     min-width: $search-sidebar-min-width;
     max-width: $search-sidebar-max-width;
+  }
+
+  .language-filter-checkbox {
+    .custom-control-label {
+      flex-grow: 1;
+    }
+  }
+
+  .language-filter-max-height {
+    max-height: $language-filter-max-height;
   }
 }
 

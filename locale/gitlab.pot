@@ -72,6 +72,9 @@ msgstr ""
 msgid "\"%{repository_name}\" size (%{repository_size}) is larger than the limit of %{limit}."
 msgstr ""
 
+msgid "##### ERROR ##### You have used %{usage_percentage} of the storage quota for %{namespace_name} (%{current_size} of %{size_limit}). %{namespace_name} is now read-only. Projects under this namespace are locked and actions will be restricted. To manage storage, or purchase additional storage, see %{manage_storage_url}. To learn more about restricted actions, see %{restricted_actions_url}"
+msgstr ""
+
 msgid "#%{issueIid} (closed)"
 msgstr ""
 
@@ -8054,6 +8057,9 @@ msgid "CascadingSettings|cannot be changed because it is locked by an ancestor"
 msgstr ""
 
 msgid "CascadingSettings|cannot be nil when locking the attribute"
+msgstr ""
+
+msgid "Cause identified"
 msgstr ""
 
 msgid "Certain user content will be moved to a system-wide \"Ghost User\" in order to maintain content for posterity. For further information, please refer to the %{link_start}user account deletion documentation.%{link_end}"
@@ -19050,6 +19056,9 @@ msgstr ""
 msgid "GlobalSearch|%{count} default results provided. Use the up and down arrow keys to navigate search results list."
 msgstr ""
 
+msgid "GlobalSearch|Aggregations load error."
+msgstr ""
+
 msgid "GlobalSearch|Close"
 msgstr ""
 
@@ -19117,6 +19126,12 @@ msgid "GlobalSearch|Search results are loading"
 msgstr ""
 
 msgid "GlobalSearch|Settings"
+msgstr ""
+
+msgid "GlobalSearch|Show more"
+msgstr ""
+
+msgid "GlobalSearch|Showing top %{maxItems}"
 msgstr ""
 
 msgid "GlobalSearch|Syntax options"
@@ -21023,6 +21038,9 @@ msgstr ""
 msgid "Identity|Provider ID"
 msgstr ""
 
+msgid "If %{namespace_name} exceeds the storage quota, all projects in the namespace will be locked and actions will be restricted. To manage storage, or purchase additional storage, see %{manage_storage_url}. To learn more about restricted actions, see %{restricted_actions_url}"
+msgstr ""
+
 msgid "If any indexed field exceeds this limit, it is truncated to this number of characters. The rest of the content is neither indexed nor searchable. This does not apply to repository and wiki indexing. For unlimited characters, set this to 0."
 msgstr ""
 
@@ -21153,6 +21171,12 @@ msgid "ImageViewerDimensions|W"
 msgstr ""
 
 msgid "Images with incorrect dimensions are not resized automatically, and may result in unexpected behavior."
+msgstr ""
+
+msgid "Impact detected"
+msgstr ""
+
+msgid "Impact mitigated"
 msgstr ""
 
 msgid "Impersonate"
@@ -27491,7 +27515,7 @@ msgstr ""
 msgid "NamespaceStorageSize|You have consumed all of your additional storage, please purchase more to unlock your projects over the free %{free_size_limit} limit. You can't %{repository_limits_description}"
 msgstr ""
 
-msgid "NamespaceStorageSize|You have reached the free storage limit of %{free_size_limit} on one or more projects."
+msgid "NamespaceStorageSize|You have reached the free storage limit of %{free_size_limit} on one or more projects"
 msgstr ""
 
 msgid "NamespaceStorageSize|You have used %{usage_in_percent} of the storage quota for %{namespace_name} (%{used_storage} of %{storage_limit})"
@@ -29050,6 +29074,9 @@ msgstr ""
 msgid "OnDemandScans|%{profileType} profile library"
 msgstr ""
 
+msgid "OnDemandScans|%{textStart}Tags specify which runners process this scan. Runners must have every tag selected.%{textEnd} %{linkStart}What are runner tags?%{linkEnd}"
+msgstr ""
+
 msgid "OnDemandScans|Add a schedule to run this scan at a specified date and time or on a recurring basis. Scheduled scans are automatically saved to scan library."
 msgstr ""
 
@@ -29089,7 +29116,7 @@ msgstr ""
 msgid "OnDemandScans|Delete profile"
 msgstr ""
 
-msgid "OnDemandScans|Description (optional)"
+msgid "OnDemandScans|Description"
 msgstr ""
 
 msgid "OnDemandScans|Discard changes"
@@ -29158,13 +29185,16 @@ msgstr ""
 msgid "OnDemandScans|On-demand scans run outside the DevOps cycle and find vulnerabilities in your projects. %{learnMoreLinkStart}Learn more%{learnMoreLinkEnd}"
 msgstr ""
 
+msgid "OnDemandScans|Only project owners and maintainers can select runner tags."
+msgstr ""
+
 msgid "OnDemandScans|Repeats"
 msgstr ""
 
 msgid "OnDemandScans|Run scan"
 msgstr ""
 
-msgid "OnDemandScans|Runner tags (optional)"
+msgid "OnDemandScans|Runner tags"
 msgstr ""
 
 msgid "OnDemandScans|Save and run scan"
@@ -29225,9 +29255,6 @@ msgid "OnDemandScans|Timezone"
 msgstr ""
 
 msgid "OnDemandScans|Unable to fetch runner tags. Try reloading the page."
-msgstr ""
-
-msgid "OnDemandScans|Use runner tags to select specific runners for this security scan. %{linkStart}What are runner tags?%{linkEnd}"
 msgstr ""
 
 msgid "OnDemandScans|Verify configuration"
@@ -32684,6 +32711,9 @@ msgstr ""
 msgid "Profiles|You must transfer ownership or delete these groups before you can delete your account."
 msgstr ""
 
+msgid "Profiles|Your Discord user ID. Should be between %{min} and %{max} digits long. %{external_accounts_link_start}Learn more.%{external_accounts_link_end}"
+msgstr ""
+
 msgid "Profiles|Your LinkedIn profile name from linkedin.com/in/profilename"
 msgstr ""
 
@@ -34353,6 +34383,9 @@ msgid "ProtectedEnvironments|Set which groups, access levels or users are requir
 msgstr ""
 
 msgid "ProtectedEnvironments|Set which groups, access levels or users that are allowed to deploy to this environment"
+msgstr ""
+
+msgid "ProtectedEnvironments|Users"
 msgstr ""
 
 msgid "ProtectedEnvironment|%{environment_name} will be writable for developers. Are you sure?"
@@ -36083,6 +36116,9 @@ msgid "Response"
 msgstr ""
 
 msgid "Response didn't include `service_desk_address`"
+msgstr ""
+
+msgid "Response initiated"
 msgstr ""
 
 msgid "Response metrics (AWS ELB)"
@@ -50891,6 +50927,9 @@ msgid "must belong to same project of its requirement object."
 msgstr ""
 
 msgid "must belong to same project of the work item."
+msgstr ""
+
+msgid "must contain only a discord user ID."
 msgstr ""
 
 msgid "must have a repository"

@@ -3,29 +3,13 @@
 class SanitizeConfidentialNoteTodos < Gitlab::Database::Migration[2.0]
   restrict_gitlab_migration gitlab_schema: :gitlab_main
 
-  MIGRATION = 'SanitizeConfidentialTodos'
-  DELAY_INTERVAL = 2.minutes.to_i
-  BATCH_SIZE = 200
-  MAX_BATCH_SIZE = 1000
-  SUB_BATCH_SIZE = 20
-
-  disable_ddl_transaction!
-  restrict_gitlab_migration gitlab_schema: :gitlab_main
-
   def up
-    queue_batched_background_migration(
-      MIGRATION,
-      :notes,
-      :id,
-      job_interval: DELAY_INTERVAL,
-      batch_size: BATCH_SIZE,
-      max_batch_size: MAX_BATCH_SIZE,
-      sub_batch_size: SUB_BATCH_SIZE,
-      gitlab_schema: :gitlab_main
-    )
+    # no-op: this empty migration is left here only for compatibility reasons.
+    # It was a temporary migration which used not-isolated code.
+    # https://gitlab.com/gitlab-org/gitlab/-/issues/382557
   end
 
   def down
-    delete_batched_background_migration(MIGRATION, :notes, :id, [])
+    # no-op
   end
 end

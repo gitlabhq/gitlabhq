@@ -5,6 +5,7 @@ import { MOCK_QUERY } from 'jest/search/mock_data';
 import GlobalSearchSidebar from '~/search/sidebar/components/app.vue';
 import ResultsFilters from '~/search/sidebar/components/results_filters.vue';
 import ScopeNavigation from '~/search/sidebar/components/scope_navigation.vue';
+import LanguageFilter from '~/search/sidebar/components/language_filter.vue';
 
 Vue.use(Vuex);
 
@@ -35,53 +36,41 @@ describe('GlobalSearchSidebar', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findSidebarSection = () => wrapper.find('section');
   const findFilters = () => wrapper.findComponent(ResultsFilters);
   const findSidebarNavigation = () => wrapper.findComponent(ScopeNavigation);
+  const findLanguageAggregation = () => wrapper.findComponent(LanguageFilter);
 
   describe('renders properly', () => {
-    describe('scope=projects', () => {
+    describe('always', () => {
       beforeEach(() => {
-        createComponent({ urlQuery: { ...MOCK_QUERY, scope: 'projects' } });
+        createComponent({});
       });
-
-      it('shows section', () => {
+      it(`shows section`, () => {
         expect(findSidebarSection().exists()).toBe(true);
-      });
-
-      it("doesn't shows filters", () => {
-        expect(findFilters().exists()).toBe(false);
       });
     });
 
-    describe('scope=merge_requests', () => {
+    describe.each`
+      scope               | showFilters | ShowsLanguage
+      ${'issues'}         | ${true}     | ${false}
+      ${'merge_requests'} | ${true}     | ${false}
+      ${'projects'}       | ${false}    | ${false}
+      ${'blobs'}          | ${false}    | ${true}
+    `('sidebar scope: $scope', ({ scope, showFilters, ShowsLanguage }) => {
       beforeEach(() => {
-        createComponent({ urlQuery: { ...MOCK_QUERY, scope: 'merge_requests' } });
+        createComponent(
+          { urlQuery: { scope } },
+          { searchBlobsLanguageAggregation: true, searchPageVerticalNav: true },
+        );
       });
 
-      it('shows section', () => {
-        expect(findSidebarSection().exists()).toBe(true);
+      it(`${!showFilters ? "doesn't" : ''} shows filters`, () => {
+        expect(findFilters().exists()).toBe(showFilters);
       });
 
-      it('shows filters', () => {
-        expect(findFilters().exists()).toBe(true);
-      });
-    });
-
-    describe('scope=issues', () => {
-      beforeEach(() => {
-        createComponent({ urlQuery: MOCK_QUERY });
-      });
-      it('shows section', () => {
-        expect(findSidebarSection().exists()).toBe(true);
-      });
-
-      it('shows filters', () => {
-        expect(findFilters().exists()).toBe(true);
+      it(`${!ShowsLanguage ? "doesn't" : ''} shows language filters`, () => {
+        expect(findLanguageAggregation().exists()).toBe(ShowsLanguage);
       });
     });
 
@@ -92,6 +81,24 @@ describe('GlobalSearchSidebar', () => {
       it('shows the vertical navigation', () => {
         expect(findSidebarNavigation().exists()).toBe(true);
       });
+    });
+  });
+
+  describe('when search_blobs_language_aggregation is enabled', () => {
+    beforeEach(() => {
+      createComponent({ urlQuery: { scope: 'blobs' } }, { searchBlobsLanguageAggregation: true });
+    });
+    it('shows the language filter', () => {
+      expect(findLanguageAggregation().exists()).toBe(true);
+    });
+  });
+
+  describe('when search_blobs_language_aggregation is disabled', () => {
+    beforeEach(() => {
+      createComponent({ urlQuery: { scope: 'blobs' } }, { searchBlobsLanguageAggregation: false });
+    });
+    it('hides the language filter', () => {
+      expect(findLanguageAggregation().exists()).toBe(false);
     });
   });
 });

@@ -47,6 +47,10 @@ export const timelineItemI18n = Object.freeze({
 
 export const timelineEventTagsI18n = Object.freeze({
   startTime: __('Start time'),
+  impactDetected: __('Impact detected'),
+  responseInitiated: __('Response initiated'),
+  impactMitigated: __('Impact mitigated'),
+  causeIdentified: __('Cause identified'),
   endTime: __('End time'),
 });
 

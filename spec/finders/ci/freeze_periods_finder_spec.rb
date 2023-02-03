@@ -44,7 +44,7 @@ RSpec.describe Ci::FreezePeriodsFinder, feature_category: :release_orchestration
       project.add_developer(user)
     end
 
-    it_behaves_like 'returns nothing'
+    it_behaves_like 'returns freeze_periods ordered by created_at asc'
   end
 
   context 'when user is not a project member' do

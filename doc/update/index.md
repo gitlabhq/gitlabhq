@@ -264,6 +264,10 @@ NOTE:
 Specific information that follow related to Ruby and Git versions do not apply to [Omnibus installations](https://docs.gitlab.com/omnibus/)
 and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with appropriate Ruby and Git versions and are not using system binaries for Ruby and Git. There is no need to install Ruby or Git when utilizing these two approaches.
 
+### 15.9.0
+
+- This version removes `SanitizeConfidentialTodos` background migration which was [added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87908/diffs) in 15.6 and removed any user inaccessible Todos. Make sure that this migration is finished before upgrading to 15.9.
+
 ### 15.8.0
 
 - Git 2.38.0 and later is required by Gitaly. For installations from source, you should use the [Git version provided by Gitaly](../install/installation.md#git).

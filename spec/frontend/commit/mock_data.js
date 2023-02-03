@@ -21,6 +21,48 @@ const downstream = {
       },
       __typename: 'Pipeline',
     },
+    {
+      id: 'gid://gitlab/Ci::Pipeline/611',
+      path: '/root/job-log-sections/-/pipelines/611',
+      project: {
+        id: 'gid://gitlab/Project/21',
+        name: 'job-log-sections',
+        __typename: 'Project',
+      },
+      detailedStatus: {
+        id: 'success-611-611',
+        group: 'success',
+        icon: 'status_success',
+        label: 'passed',
+        __typename: 'DetailedStatus',
+      },
+      sourceJob: {
+        id: 'gid://gitlab/Ci::Bridge/531',
+        retried: true,
+      },
+      __typename: 'Pipeline',
+    },
+    {
+      id: 'gid://gitlab/Ci::Pipeline/609',
+      path: '/root/job-log-sections/-/pipelines/609',
+      project: {
+        id: 'gid://gitlab/Project/21',
+        name: 'job-log-sections',
+        __typename: 'Project',
+      },
+      detailedStatus: {
+        id: 'success-609-609',
+        group: 'success',
+        icon: 'status_success',
+        label: 'passed',
+        __typename: 'DetailedStatus',
+      },
+      sourceJob: {
+        id: 'gid://gitlab/Ci::Bridge/530',
+        retried: true,
+      },
+      __typename: 'Pipeline',
+    },
   ],
   __typename: 'PipelineConnection',
 };

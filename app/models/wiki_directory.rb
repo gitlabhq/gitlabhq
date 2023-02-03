@@ -49,6 +49,6 @@ class WikiDirectory
   # Relative path to the partial to be used when rendering collections
   # of this object.
   def to_partial_path
-    '../shared/wikis/wiki_directory'
+    'shared/wikis/wiki_directory'
   end
 end

@@ -125,4 +125,30 @@ describe('~/api/projects_api.js', () => {
       });
     });
   });
+
+  describe('getProjectMembers', () => {
+    it('requests members of a project', async () => {
+      const expectedUrl = `/api/v7/projects/1/members`;
+
+      const response = [{ id: 0, username: 'root' }];
+
+      mock.onGet(expectedUrl).replyOnce(200, response);
+
+      await expect(projectsApi.getProjectMembers(projectId)).resolves.toMatchObject({
+        data: response,
+      });
+    });
+
+    it('requests inherited members of a project when requested', async () => {
+      const expectedUrl = `/api/v7/projects/1/members/all`;
+
+      const response = [{ id: 0, username: 'root' }];
+
+      mock.onGet(expectedUrl).replyOnce(200, response);
+
+      await expect(projectsApi.getProjectMembers(projectId, true)).resolves.toMatchObject({
+        data: response,
+      });
+    });
+  });
 });

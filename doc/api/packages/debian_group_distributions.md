@@ -26,12 +26,16 @@ Debian group repository support is still a work in progress. It's gated behind a
 can opt to enable it. To enable it, follow the instructions in
 [Enable the Debian group API](../../user/packages/debian_repository/index.md#enable-the-debian-group-api).
 
+## Authenticate to the Debian distributions APIs
+
+See [Authenticate to the Debian distributions APIs](../../user/packages/debian_repository/index.md#authenticate-to-the-debian-distributions-apis).
+
 ## List all Debian distributions in a group
 
 Lists Debian distributions in the given group.
 
 ```plaintext
-GET /groups/:id/debian_distributions
+GET /groups/:id/-/debian_distributions
 ```
 
 | Attribute  | Type            | Required | Description |
@@ -73,7 +77,7 @@ Example response:
 Gets a single Debian group distribution.
 
 ```plaintext
-GET /groups/:id/debian_distributions/:codename
+GET /groups/:id/-/debian_distributions/:codename
 ```
 
 | Attribute  | Type           | Required | Description |
@@ -112,7 +116,7 @@ Example response:
 Gets a single Debian group distribution key.
 
 ```plaintext
-GET /groups/:id/debian_distributions/:codename/key.asc
+GET /groups/:id/-/debian_distributions/:codename/key.asc
 ```
 
 | Attribute  | Type           | Required | Description |
@@ -149,7 +153,7 @@ DAAKCRDyMVUMT0fjjlnQAQDFHUs6TIcxrNTtEZFjUFm1M0PJ1Dng/cDW4xN80fsn
 Creates a Debian group distribution.
 
 ```plaintext
-POST /groups/:id/debian_distributions
+POST /groups/:id/-/debian_distributions
 ```
 
 | Attribute                     | Type           | Required | Description |
@@ -196,7 +200,7 @@ Example response:
 Updates a Debian group distribution.
 
 ```plaintext
-PUT /groups/:id/debian_distributions/:codename
+PUT /groups/:id/-/debian_distributions/:codename
 ```
 
 | Attribute                     | Type           | Required | Description |
@@ -243,7 +247,7 @@ Example response:
 Deletes a Debian group distribution.
 
 ```plaintext
-DELETE /groups/:id/debian_distributions/:codename
+DELETE /groups/:id/-/debian_distributions/:codename
 ```
 
 | Attribute  | Type           | Required | Description |

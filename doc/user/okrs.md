@@ -13,8 +13,8 @@ OKRs are in [**Alpha**](../policy/alpha-beta-support.md#alpha-features).
 For the OKR feature roadmap, see [epic 7864](https://gitlab.com/groups/gitlab-org/-/epics/7864).
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available,
-ask an administrator to [enable the featured flag](../administration/feature_flags.md) named `okrs_mvc`.
+On self-managed GitLab, by default this feature is not available. To make it available per project, ask an administrator to [enable the featured flag](../administration/feature_flags.md) named `okrs_mvc`.
+On GitLab.com, this feature is not available.
 The feature is not ready for production use.
 
 Use objectives and key results to align your workforce towards common goals and track the progress.

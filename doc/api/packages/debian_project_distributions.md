@@ -25,6 +25,10 @@ The Debian API is behind a feature flag that is disabled by default.
 can opt to enable it. To enable it, follow the instructions in
 [Enable the Debian API](../../user/packages/debian_repository/index.md#enable-the-debian-api).
 
+## Authenticate to the Debian distributions APIs
+
+See [Authenticate to the Debian distributions APIs](../../user/packages/debian_repository/index.md#authenticate-to-the-debian-distributions-apis).
+
 ## List all Debian distributions in a project
 
 Lists Debian distributions in the given project.

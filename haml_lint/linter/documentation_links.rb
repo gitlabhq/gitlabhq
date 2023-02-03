@@ -9,11 +9,12 @@ module HamlLint
     class DocumentationLinks < Linter
       include ::HamlLint::LinterRegistry
       include ::Gitlab::Utils::Markdown
+      extend ::RuboCop::AST::NodePattern::Macros
 
       DOCS_DIRECTORY = File.join(File.expand_path('../..', __dir__), 'doc')
 
-      HELP_PATH_LINK_PATTERN = <<~PATTERN
-      (send nil? {:help_page_url :help_page_path} $...)
+      def_node_matcher :help_link, <<~PATTERN
+        (send _ {:help_page_url :help_page_path} $...)
       PATTERN
 
       MARKDOWN_HEADER = %r{\A\#{1,6}\s+(?<header>.+)\Z}.freeze
@@ -59,7 +60,7 @@ module HamlLint
       end
 
       def extract_link_and_anchor(ast_tree)
-        link_match, attributes_match = ::RuboCop::NodePattern.new(HELP_PATH_LINK_PATTERN).match(ast_tree)
+        link_match, attributes_match = help_link(ast_tree)
 
         { link: fetch_link(link_match), anchor: fetch_anchor(attributes_match) }.compact
       end

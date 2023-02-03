@@ -104,6 +104,15 @@
         = f.label :twitter
         = f.text_field :twitter, class: 'gl-form-input form-control gl-md-form-input-lg', placeholder: s_("Profiles|@username")
       .form-group.gl-form-group
+        - external_accounts_help_url = help_page_path('user/profile/index', anchor: 'add-external-accounts-to-your-user-profile-page')
+        - external_accounts_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: external_accounts_help_url }
+        - external_accounts_docs_link = s_('Profiles|Your Discord user ID. Should be between %{min} and %{max} digits long. %{external_accounts_link_start}Learn more.%{external_accounts_link_end}').html_safe % { min: '17', max: '20', external_accounts_link_start: external_accounts_link_start, external_accounts_link_end: '</a>'.html_safe }
+        = f.label :discord
+        = f.text_field :discord, class: 'gl-form-input form-control gl-md-form-input-lg', placeholder: s_("Profiles|User ID")
+        %small.form-text.text-gl-muted
+          = external_accounts_docs_link
+
+      .form-group.gl-form-group
         = f.label :website_url, s_('Profiles|Website url')
         = f.text_field :website_url, class: 'gl-form-input form-control gl-md-form-input-lg', placeholder: s_("Profiles|https://website.com")
       .form-group.gl-form-group

@@ -137,6 +137,12 @@ Storage types that add to the total namespace storage are:
 
 If your total namespace storage exceeds the available namespace storage quota, all projects under the namespace become read-only. Your ability to write new data is restricted until the read-only state is removed. For more information, see [Restricted actions](../user/read_only_namespaces.md#restricted-actions).
 
+To notify you that you have nearly exceeded your namespace storage quota:
+
+- In the command line interface, a notification displays after each `git push` action when you've reached 95% and 100% of your namespace storage quota.
+- In the GitLab UI, a notification displays when you've reached 75%, 95%, and 100% of your namespace storage quota.
+- GitLab sends an email to members with the Owner role to notify them when namespace storage usage is at 70%, 85%, 95%, and 100%.
+
 To prevent exceeding the namespace storage quota, you can:
 
 - Reduce storage consumption by following the suggestions in the [Manage Your Storage Usage](#manage-your-storage-usage) section of this page.
