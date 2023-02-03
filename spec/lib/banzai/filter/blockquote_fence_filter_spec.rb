@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Banzai::Filter::BlockquoteFenceFilter, feature_category: :team_planning do
   include FilterSpecHelper
 
-  it 'converts blockquote fences to blockquote lines' do
+  it 'converts blockquote fences to blockquote lines', :unlimited_max_formatted_output_length do
     content = File.read(Rails.root.join('spec/fixtures/blockquote_fence_before.md'))
     expected = File.read(Rails.root.join('spec/fixtures/blockquote_fence_after.md'))
 

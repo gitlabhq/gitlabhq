@@ -7,7 +7,7 @@ import IssueCardTimeInfo from 'ee_else_ce/issues/list/components/issue_card_time
 import getIssuesQuery from 'ee_else_ce/issues/list/queries/get_issues.query.graphql';
 import getIssuesCountsQuery from 'ee_else_ce/issues/list/queries/get_issues_counts.query.graphql';
 import { createAlert, VARIANT_INFO } from '~/flash';
-import { TYPE_USER } from '~/graphql_shared/constants';
+import { TYPENAME_USER } from '~/graphql_shared/constants';
 import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { ITEM_TYPE } from '~/groups/constants';
 import CsvImportExportButtons from '~/issuable/components/csv_import_export_buttons.vue';
@@ -300,7 +300,7 @@ export default {
 
       if (gon.current_user_id) {
         preloadedUsers.push({
-          id: convertToGraphQLId(TYPE_USER, gon.current_user_id),
+          id: convertToGraphQLId(TYPENAME_USER, gon.current_user_id),
           name: gon.current_user_fullname,
           username: gon.current_username,
           avatar_url: gon.current_user_avatar_url,

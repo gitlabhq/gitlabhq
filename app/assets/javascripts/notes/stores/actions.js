@@ -20,7 +20,7 @@ import TaskList from '~/task_list';
 import mrWidgetEventHub from '~/vue_merge_request_widget/event_hub';
 import SidebarStore from '~/sidebar/stores/sidebar_store';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
-import { TYPE_NOTE } from '~/graphql_shared/constants';
+import { TYPENAME_NOTE } from '~/graphql_shared/constants';
 import notesEventHub from '../event_hub';
 
 import promoteTimelineEvent from '../graphql/promote_timeline_event.mutation.graphql';
@@ -276,7 +276,7 @@ export const promoteCommentToTimelineEvent = (
       mutation: promoteTimelineEvent,
       variables: {
         input: {
-          noteId: convertToGraphQLId(TYPE_NOTE, noteId),
+          noteId: convertToGraphQLId(TYPENAME_NOTE, noteId),
         },
       },
     })

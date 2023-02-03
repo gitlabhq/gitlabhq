@@ -7,7 +7,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import CreateTimelogForm from '~/sidebar/components/time_tracking/create_timelog_form.vue';
 import createTimelogMutation from '~/sidebar/queries/create_timelog.mutation.graphql';
-import { TYPENAME_ISSUE, TYPE_MERGE_REQUEST } from '~/graphql_shared/constants';
+import { TYPENAME_ISSUE, TYPENAME_MERGE_REQUEST } from '~/graphql_shared/constants';
 
 const mockMutationErrorMessage = 'Example error message';
 
@@ -158,7 +158,7 @@ describe('Create Timelog Form', () => {
     it.each`
       issuableType       | typeConstant
       ${'issue'}         | ${TYPENAME_ISSUE}
-      ${'merge_request'} | ${TYPE_MERGE_REQUEST}
+      ${'merge_request'} | ${TYPENAME_MERGE_REQUEST}
     `(
       'calls the mutation with all the fields when the the form is submitted and issuable type is $issuableType',
       async ({ issuableType, typeConstant }) => {

@@ -1,7 +1,7 @@
 <script>
 import { isEmpty } from 'lodash';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
-import { TYPE_WORK_ITEM } from '~/graphql_shared/constants';
+import { TYPENAME_WORK_ITEM } from '~/graphql_shared/constants';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import { getParameterByName } from '~/lib/utils/url_utility';
@@ -100,7 +100,7 @@ export default {
       } else {
         const workItemId = getParameterByName('work_item_id');
         if (workItemId) {
-          params.id = convertToGraphQLId(TYPE_WORK_ITEM, workItemId);
+          params.id = convertToGraphQLId(TYPENAME_WORK_ITEM, workItemId);
         }
       }
       return params;

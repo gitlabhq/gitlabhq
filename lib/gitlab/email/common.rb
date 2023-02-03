@@ -54,6 +54,10 @@ module Gitlab
         # It's looking for each <...>
         references.scan(/(?!<)[^<>]+(?=>)/)
       end
+
+      def encrypted_secrets
+        Settings.encrypted(config.encrypted_secret_file)
+      end
     end
   end
 end

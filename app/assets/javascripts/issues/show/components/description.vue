@@ -6,7 +6,7 @@ import Sortable from 'sortablejs';
 import Vue from 'vue';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { getIdFromGraphQLId, convertToGraphQLId } from '~/graphql_shared/utils';
-import { TYPE_WORK_ITEM } from '~/graphql_shared/constants';
+import { TYPENAME_WORK_ITEM } from '~/graphql_shared/constants';
 import { createAlert } from '~/flash';
 import { IssuableType } from '~/issues/constants';
 import { isMetaKey } from '~/lib/utils/common_utils';
@@ -105,7 +105,7 @@ export default {
       initialUpdate: true,
       activeTask: {},
       workItemId: isPositiveInteger(workItemId)
-        ? convertToGraphQLId(TYPE_WORK_ITEM, workItemId)
+        ? convertToGraphQLId(TYPENAME_WORK_ITEM, workItemId)
         : undefined,
       workItemTypes: [],
     };
@@ -145,7 +145,7 @@ export default {
       return this.workItemTypes.find((type) => type.name === TASK_TYPE_NAME)?.id;
     },
     issueGid() {
-      return this.issueId ? convertToGraphQLId(TYPE_WORK_ITEM, this.issueId) : null;
+      return this.issueId ? convertToGraphQLId(TYPENAME_WORK_ITEM, this.issueId) : null;
     },
   },
   watch: {
@@ -347,7 +347,7 @@ export default {
           if (issueType !== workItemTypes.TASK) {
             return;
           }
-          const workItemId = convertToGraphQLId(TYPE_WORK_ITEM, issue);
+          const workItemId = convertToGraphQLId(TYPENAME_WORK_ITEM, issue);
           this.addHoverListeners(taskLink, workItemId);
           taskLink.classList.add('gl-link');
           taskLink.addEventListener('click', (e) => {

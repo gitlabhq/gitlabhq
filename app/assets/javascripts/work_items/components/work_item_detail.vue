@@ -19,7 +19,7 @@ import { getParameterByName, updateHistory, setUrlParams } from '~/lib/utils/url
 import { isPositiveInteger } from '~/lib/utils/number_utils';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
-import { TYPE_WORK_ITEM } from '~/graphql_shared/constants';
+import { TYPENAME_WORK_ITEM } from '~/graphql_shared/constants';
 import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
 import {
   sprintfWorkItem,
@@ -123,7 +123,7 @@ export default {
       workItem: {},
       updateInProgress: false,
       modalWorkItemId: isPositiveInteger(workItemId)
-        ? convertToGraphQLId(TYPE_WORK_ITEM, workItemId)
+        ? convertToGraphQLId(TYPENAME_WORK_ITEM, workItemId)
         : null,
       modalWorkItemIid: getParameterByName('work_item_iid'),
     };

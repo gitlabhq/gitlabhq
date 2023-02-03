@@ -2,8 +2,8 @@ import { sortBy, cloneDeep } from 'lodash';
 import {
   TYPENAME_BOARD,
   TYPENAME_ITERATION,
-  TYPE_MILESTONE,
-  TYPE_USER,
+  TYPENAME_MILESTONE,
+  TYPENAME_USER,
 } from '~/graphql_shared/constants';
 import { isGid, convertToGraphQLId } from '~/graphql_shared/utils';
 import {
@@ -99,11 +99,11 @@ export function fullIterationId(id) {
 }
 
 export function fullUserId(id) {
-  return convertToGraphQLId(TYPE_USER, id);
+  return convertToGraphQLId(TYPENAME_USER, id);
 }
 
 export function fullMilestoneId(id) {
-  return convertToGraphQLId(TYPE_MILESTONE, id);
+  return convertToGraphQLId(TYPENAME_MILESTONE, id);
 }
 
 export function fullLabelId(label) {

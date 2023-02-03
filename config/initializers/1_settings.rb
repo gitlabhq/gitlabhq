@@ -280,12 +280,14 @@ Settings.ci_secure_files['object_store'] = ObjectStoreSettings.legacy_parse(Sett
 Settings['incoming_email'] ||= Settingslogic.new({})
 Settings.incoming_email['enabled'] = false if Settings.incoming_email['enabled'].nil?
 Settings.incoming_email['inbox_method'] ||= 'imap'
+Settings.incoming_email['encrypted_secret_file'] = Settings.absolute(Settings.incoming_email['encrypted_secret_file'] || File.join(Settings.encrypted_settings['path'], "incoming_email.yaml.enc"))
 
 #
 # Service desk email
 #
 Settings['service_desk_email'] ||= Settingslogic.new({})
 Settings.service_desk_email['enabled'] = false if Settings.service_desk_email['enabled'].nil?
+Settings.service_desk_email['encrypted_secret_file'] = Settings.absolute(Settings.service_desk_email['encrypted_secret_file'] || File.join(Settings.encrypted_settings['path'], "service_desk_email.yaml.enc"))
 
 #
 # Build Artifacts

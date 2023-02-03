@@ -63,6 +63,18 @@ RSpec.describe Gitlab::Email::ReplyParser do
         )
     end
 
+    it "properly renders html-only email with table and blockquote" do
+      expect(test_parse_body(fixture_file("emails/html_table_and_blockquote.eml")))
+        .to eq(
+          <<-BODY.strip_heredoc.chomp
+            Company	Contact	Country
+            Alfreds Futterkiste	Maria Anders	Germany
+            Centro comercial Moctezuma	Francisco Chang	Mexico
+            Words can be like X-rays, if you use them properly—they’ll go through anything. You read and you’re pierced.
+          BODY
+        )
+    end
+
     it "supports a Dutch reply" do
       expect(test_parse_body(fixture_file("emails/dutch.eml"))).to eq("Dit is een antwoord in het Nederlands.")
     end

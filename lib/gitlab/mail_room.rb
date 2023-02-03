@@ -3,6 +3,9 @@
 require 'yaml'
 require 'json'
 require 'pathname'
+require 'active_support'
+require "active_support/core_ext/module/delegation"
+require_relative 'encrypted_configuration' unless defined?(Gitlab::EncryptedConfiguration)
 require_relative 'redis/queues' unless defined?(Gitlab::Redis::Queues)
 
 # This service is run independently of the main Rails process,
@@ -42,6 +45,20 @@ module Gitlab
       }
     }.freeze
 
+    # Default path strings (this is a data duplication
+    # with Settings which is not pulled in - see the service
+    # comment at the top of this file)
+    DEFAULT_PATHS = {
+      shared_path: 'shared',
+      encrypted_settings_path: 'encrypted_settings',
+      incoming_email: {
+        encrypted_secret_filename: 'incoming_email.yaml.enc'
+      },
+      service_desk_email: {
+        encrypted_secret_filename: 'service_desk_email.yaml.enc'
+      }
+    }.freeze
+
     class << self
       def enabled_configs
         @enabled_configs ||= configs.select { |_key, config| enabled?(config) }
@@ -73,6 +90,12 @@ module Gitlab
         config.merge!(redis_config) if enabled?(config)
 
         config[:log_path] = File.expand_path(config[:log_path], RAILS_ROOT_DIR)
+
+        # override password/user from any encrypted secrets
+        if secrets = decrypted_secrets(config_key)
+          config[:password] = secrets[:password] if secrets[:password]
+          config[:user] = secrets[:user] if secrets[:user]
+        end
 
         config
       end
@@ -107,6 +130,58 @@ module Gitlab
 
       def load_yaml
         @yaml ||= YAML.load_file(config_file)[rails_env].deep_symbolize_keys
+      end
+
+      def application_secrets_file
+        ENV['MAIL_ROOM_GITLAB_SECRETS_FILE'] || File.expand_path('../../config/secrets.yml', __dir__)
+      end
+
+      def application_secrets
+        @application_secrets ||= {}.tap do |application_secrets|
+          # Uses Rails::Secret.parse
+          # from: https://github.com/rails/rails/blob/v6.1.6.1/railties/lib/rails/secrets.rb#L24
+          erb_processed_yaml = ERB.new(File.read(application_secrets_file)).result
+          yaml_secrets =
+            YAML.respond_to?(:unsafe_load) ? YAML.unsafe_load(erb_processed_yaml) : YAML.safe_load(erb_processed_yaml)
+          application_secrets.merge!(yaml_secrets["shared"].deep_symbolize_keys) if yaml_secrets["shared"]
+          application_secrets.merge!(yaml_secrets[rails_env].deep_symbolize_keys) if yaml_secrets[rails_env]
+        end
+      end
+
+      def default_encrypted_secret_filename(config_key)
+        DEFAULT_PATHS[config_key][:encrypted_secret_filename]
+      end
+
+      def encrypted_secret_file(config_key)
+        config = merged_configs(config_key)
+        return config[:encrypted_secret_file] if config[:encrypted_secret_file]
+
+        config_yaml = load_yaml
+        # Path handling for shared.path / encrypted_settings.path is a duplicate
+        # of the logic in config/initializers/1_settings.rb
+        shared_path = File.expand_path(config_yaml.dig(:shared, :path) ||
+                                       DEFAULT_PATHS[:shared_path], RAILS_ROOT_DIR)
+        encrypted_settings_path =
+          File.expand_path(config_yaml.dig(:encrypted_settings, :path) ||
+                           File.join(shared_path, DEFAULT_PATHS[:encrypted_settings_path]),
+                           RAILS_ROOT_DIR)
+        File.join(encrypted_settings_path, default_encrypted_secret_filename(config_key))
+      end
+
+      def encrypted_configuration_settings(config_key)
+        {
+          content_path: encrypted_secret_file(config_key),
+          base_key: application_secrets[:encrypted_settings_key_base],
+          previous_keys: application_secrets[:rotated_encrypted_settings_key_base] || []
+        }
+      end
+
+      def decrypted_secrets(config_key)
+        settings = encrypted_configuration_settings(config_key)
+        return if settings[:base_key].nil?
+
+        encrypted = Gitlab::EncryptedConfiguration.new(**settings)
+        encrypted.active? ? encrypted.config : nil
       end
     end
   end

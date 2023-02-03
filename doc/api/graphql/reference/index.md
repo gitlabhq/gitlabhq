@@ -25275,6 +25275,7 @@ Values for ordering deployments by a specific field.
 | <a id="epicfilterslabelname"></a>`labelName` | [`[String]`](#string) | Filter by label name. |
 | <a id="epicfiltersmyreactionemoji"></a>`myReactionEmoji` | [`String`](#string) | Filter by reaction emoji applied by the current user. Wildcard values "NONE" and "ANY" are supported. |
 | <a id="epicfiltersnot"></a>`not` | [`NegatedEpicBoardIssueInput`](#negatedepicboardissueinput) | Negated epic arguments. |
+| <a id="epicfiltersor"></a>`or` | [`UnionedEpicFilterInput`](#unionedepicfilterinput) | List of arguments with inclusive OR. |
 | <a id="epicfilterssearch"></a>`search` | [`String`](#string) | Search query for epic title or description. |
 
 ### `EpicTreeNodeFieldsInputType`

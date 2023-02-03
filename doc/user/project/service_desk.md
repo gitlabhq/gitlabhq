@@ -260,6 +260,134 @@ service_desk_email:
 The configuration options are the same as for configuring
 [incoming email](../../administration/incoming_email.md#set-it-up).
 
+##### Use encrypted credentials
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108279) in GitLab 15.9.
+
+Instead of having the Service Desk email credentials stored in plaintext in the configuration files, you can optionally
+use an encrypted file for the Incoming email credentials.
+
+Prerequisites:
+
+- To use encrypted credentials, you must first enable the
+  [encrypted configuration](../../administration/encrypted_configuration.md).
+
+The supported configuration items for the encrypted file are:
+
+- `user`
+- `password`
+
+::Tabs
+
+:::TabTitle Linux package (Omnibus)
+
+1. If initially your Service Desk configuration in `/etc/gitlab/gitlab.rb` looked like:
+
+   ```ruby
+   gitlab_rails['service_desk_email_email'] = "service-desk-email@mail.example.com"
+   gitlab_rails['service_desk_email_password'] = "examplepassword"
+   ```
+
+1. Edit the encrypted secret:
+
+   ```shell
+   sudo gitlab-rake gitlab:service_desk_email:secret:edit EDITOR=vim
+   ```
+
+1. Enter the unencrypted contents of the Service Desk email secret:
+
+   ```yaml
+   user: 'service-desk-email@mail.example.com'
+   password: 'examplepassword'
+   ```
+
+1. Edit `/etc/gitlab/gitlab.rb` and remove the `service_desk` settings for `email` and `password`.
+1. Save the file and reconfigure GitLab:
+
+   ```shell
+   sudo gitlab-ctl reconfigure
+   ```
+
+:::TabTitle Helm chart (Kubernetes)
+
+Use a Kubernetes secret to store the Service Desk email password. For more information,
+read about [Helm IMAP secrets](https://docs.gitlab.com/charts/installation/secrets.html#imap-password-for-service-desk-emails).
+
+:::TabTitle Docker
+
+1. If initially your Service Desk configuration in `docker-compose.yml` looked like:
+
+   ```yaml
+   version: "3.6"
+   services:
+     gitlab:
+       image: 'gitlab/gitlab-ee:latest'
+       restart: always
+       hostname: 'gitlab.example.com'
+       environment:
+         GITLAB_OMNIBUS_CONFIG: |
+           gitlab_rails['service_desk_email_email'] = "service-desk-email@mail.example.com"
+           gitlab_rails['service_desk_email_password'] = "examplepassword"
+   ```
+
+1. Get inside the container, and edit the encrypted secret:
+
+   ```shell
+   sudo docker exec -t <container_name> bash
+   gitlab-rake gitlab:service_desk_email:secret:edit EDITOR=editor
+   ```
+
+1. Enter the unencrypted contents of the Service Desk secret:
+
+   ```yaml
+   user: 'service-desk-email@mail.example.com'
+   password: 'examplepassword'
+   ```
+
+1. Edit `docker-compose.yml` and remove the `service_desk` settings for `email` and `password`.
+1. Save the file and restart GitLab:
+
+   ```shell
+   docker compose up -d
+   ```
+
+:::TabTitle Self-compiled (source)
+
+1. If initially your Service Desk configuration in `/home/git/gitlab/config/gitlab.yml` looked like:
+
+   ```yaml
+   production:
+     service_desk_email:
+       user: 'service-desk-email@mail.example.com'
+       password: 'examplepassword'
+   ```
+
+1. Edit the encrypted secret:
+
+   ```shell
+   bundle exec rake gitlab:service_desk_email:secret:edit EDITOR=vim RAILS_ENVIRONMENT=production
+   ```
+
+1. Enter the unencrypted contents of the Service Desk secret:
+
+   ```yaml
+   user: 'service-desk-email@mail.example.com'
+   password: 'examplepassword'
+   ```
+
+1. Edit `/home/git/gitlab/config/gitlab.yml` and remove the `service_desk_email:` settings for `user` and `password`.
+1. Save the file and restart GitLab and Mailroom
+
+   ```shell
+   # For systems running systemd
+   sudo systemctl restart gitlab.target
+
+   # For systems running SysV init
+   sudo service gitlab restart
+   ```
+
+::EndTabs
+
 ##### Microsoft Graph
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214900) in GitLab 13.11.

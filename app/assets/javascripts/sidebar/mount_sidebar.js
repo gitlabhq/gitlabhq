@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import { TYPENAME_ISSUE, TYPE_MERGE_REQUEST } from '~/graphql_shared/constants';
+import { TYPENAME_ISSUE, TYPENAME_MERGE_REQUEST } from '~/graphql_shared/constants';
 import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import initInviteMembersModal from '~/invite_members/init_invite_members_modal';
 import initInviteMembersTrigger from '~/invite_members/init_invite_members_trigger';
@@ -76,7 +76,7 @@ function mountSidebarTodoWidget() {
           issuableId:
             isInIssuePage() || isInIncidentPage() || isInDesignPage()
               ? convertToGraphQLId(TYPENAME_ISSUE, id)
-              : convertToGraphQLId(TYPE_MERGE_REQUEST, id),
+              : convertToGraphQLId(TYPENAME_MERGE_REQUEST, id),
           issuableIid: iid,
           issuableType:
             isInIssuePage() || isInIncidentPage() || isInDesignPage()

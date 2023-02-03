@@ -3,7 +3,7 @@ import '~/commons/bootstrap';
 import { GlIcon, GlLink, GlTooltip, GlTooltipDirective, GlButton } from '@gitlab/ui';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import IssueDueDate from '~/boards/components/issue_due_date.vue';
-import { TYPE_WORK_ITEM } from '~/graphql_shared/constants';
+import { TYPENAME_WORK_ITEM } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { isMetaKey } from '~/lib/utils/common_utils';
 import { setUrlParams, updateHistory } from '~/lib/utils/url_utility';
@@ -69,7 +69,7 @@ export default {
       return `${this.iconClass} ic-${this.iconName}`;
     },
     workItemId() {
-      return convertToGraphQLId(TYPE_WORK_ITEM, this.idKey);
+      return convertToGraphQLId(TYPENAME_WORK_ITEM, this.idKey);
     },
   },
   methods: {

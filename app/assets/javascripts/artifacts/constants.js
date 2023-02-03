@@ -1,5 +1,9 @@
 import { __, s__, n__, sprintf } from '~/locale';
 
+export const PAGE_TITLE = s__('Artifacts|Artifacts');
+export const TOTAL_ARTIFACTS_SIZE = s__('Artifacts|Total artifacts size');
+export const SIZE_UNKNOWN = __('Unknown');
+
 export const JOB_STATUS_GROUP_SUCCESS = 'success';
 
 export const STATUS_BADGE_VARIANTS = {

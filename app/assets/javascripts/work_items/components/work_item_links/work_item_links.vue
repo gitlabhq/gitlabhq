@@ -4,7 +4,7 @@ import { isEmpty } from 'lodash';
 import { s__ } from '~/locale';
 import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
-import { TYPE_WORK_ITEM } from '~/graphql_shared/constants';
+import { TYPENAME_WORK_ITEM } from '~/graphql_shared/constants';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import getIssueDetailsQuery from 'ee_else_ce/work_items/graphql/get_issue_details.query.graphql';
 import { isMetaKey, parseBoolean } from '~/lib/utils/common_utils';
@@ -131,7 +131,7 @@ export default {
       return this.children?.length === 0;
     },
     issuableGid() {
-      return this.issuableId ? convertToGraphQLId(TYPE_WORK_ITEM, this.issuableId) : null;
+      return this.issuableId ? convertToGraphQLId(TYPENAME_WORK_ITEM, this.issuableId) : null;
     },
     isLoading() {
       return this.$apollo.queries.workItem.loading;
@@ -155,7 +155,7 @@ export default {
       } else {
         const workItemId = getParameterByName('work_item_id');
         if (workItemId) {
-          params.id = convertToGraphQLId(TYPE_WORK_ITEM, workItemId);
+          params.id = convertToGraphQLId(TYPENAME_WORK_ITEM, workItemId);
         }
       }
       return params;

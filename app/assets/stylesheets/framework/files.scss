@@ -591,3 +591,18 @@ span.idiff {
 .file-holder [data-loading] .file-content *:nth-of-type(1n+30) {
   @include gl-display-none;
 }
+
+.tree-list-scroll:not(.tree-list-blobs) {
+  .tree-list-parent::before {
+    @include gl-content-empty;
+    @include gl-absolute;
+    @include gl-z-index-1;
+    @include gl-pointer-events-none;
+
+    top: 28px;
+    left: calc(14px + (var(--level) * 16px));
+    width: 1px;
+    height: calc(100% - 24px);
+    background-color: var(--gray-100, $gray-100);
+  }
+}

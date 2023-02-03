@@ -29,6 +29,5 @@ GitLab does not limit the number of private projects you can create.
 - [Deploy keys](../../user/project/deploy_keys/index.md)
 - [Deploy tokens](../../user/project/deploy_tokens/index.md)
 - [File finder](../../user/project/repository/file_finder.md)
-- [GitLab Pages](../../user/project/pages/index.md)
 - [Migrating projects](../../user/project/import/index.md)
 - [Migrate projects by using file exports](../../user/project/settings/import_export.md)

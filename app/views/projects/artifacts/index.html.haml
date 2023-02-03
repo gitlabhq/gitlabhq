@@ -1,11 +1,5 @@
 - page_title _('Artifacts')
 
-%div{ class: container_class }
-  %h1.page-title.gl-font-size-h-display.gl-mb-0
-    = s_('Artifacts|Artifacts')
-  .gl-mb-6
-    %strong= s_('Artifacts|Total artifacts size')
-    = number_to_human_size(@total_size, precicion: 2)
-  #js-artifact-management{ data: { "project-path": @project.full_path,
-    "can-destroy-artifacts" => can?(current_user, :destroy_artifacts, @project).to_s,
-    "artifacts-management-feedback-image-path": image_path('illustrations/chat-bubble-sm.svg') } }
+#js-artifact-management{ data: { "project-path": @project.full_path,
+  "can-destroy-artifacts" => can?(current_user, :destroy_artifacts, @project).to_s,
+  "artifacts-management-feedback-image-path": image_path('illustrations/chat-bubble-sm.svg') } }

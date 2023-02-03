@@ -1,0 +1,8 @@
+query getBuildArtifactsSize($projectPath: ID!) {
+  project(fullPath: $projectPath) {
+    id
+    statistics {
+      buildArtifactsSize
+    }
+  }
+}

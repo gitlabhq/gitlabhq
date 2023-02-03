@@ -1,7 +1,7 @@
 <script>
 import { GlDropdownItem, GlLoadingIcon, GlModal, GlModalDirective } from '@gitlab/ui';
 import { createAlert } from '~/flash';
-import { TYPENAME_GROUP, TYPE_PROJECT } from '~/graphql_shared/constants';
+import { TYPENAME_GROUP, TYPENAME_PROJECT } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { __, s__ } from '~/locale';
 import runnersRegistrationTokenResetMutation from '~/ci/runner/graphql/list/runners_registration_token_reset.mutation.graphql';
@@ -63,7 +63,7 @@ export default {
           };
         case PROJECT_TYPE:
           return {
-            id: convertToGraphQLId(TYPE_PROJECT, this.projectId),
+            id: convertToGraphQLId(TYPENAME_PROJECT, this.projectId),
             type: this.type,
           };
         default:

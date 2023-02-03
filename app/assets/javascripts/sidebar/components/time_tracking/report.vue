@@ -1,7 +1,7 @@
 <script>
 import { GlLoadingIcon, GlTableLite, GlButton, GlTooltipDirective } from '@gitlab/ui';
 import { createAlert } from '~/flash';
-import { TYPENAME_ISSUE, TYPE_MERGE_REQUEST } from '~/graphql_shared/constants';
+import { TYPENAME_ISSUE, TYPENAME_MERGE_REQUEST } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { formatDate, parseSeconds, stringifyTime } from '~/lib/utils/datetime_utility';
 import { __, s__ } from '~/locale';
@@ -69,7 +69,7 @@ export default {
       };
     },
     getGraphQLEntityType() {
-      return this.isIssue() ? TYPENAME_ISSUE : TYPE_MERGE_REQUEST;
+      return this.isIssue() ? TYPENAME_ISSUE : TYPENAME_MERGE_REQUEST;
     },
     extractTimelogs(data) {
       const timelogs = data?.issuable?.timelogs?.nodes || [];

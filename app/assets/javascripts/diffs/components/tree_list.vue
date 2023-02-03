@@ -112,6 +112,9 @@ export default {
           :hide-file-stats="hideFileStats"
           :file-row-component="$options.DiffFileRow"
           :current-diff-file-id="currentDiffFileId"
+          :style="{ '--level': 0 }"
+          :class="{ 'tree-list-parent': file.tree.length }"
+          class="gl-relative"
           @toggleTreeOpen="toggleTreeOpen"
           @clickFile="(path) => scrollToFile({ path })"
         />

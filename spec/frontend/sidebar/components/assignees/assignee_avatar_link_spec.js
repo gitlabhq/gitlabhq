@@ -1,7 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
 import { GlLink } from '@gitlab/ui';
 import { TEST_HOST } from 'helpers/test_constants';
-import { TYPE_USER } from '~/graphql_shared/constants';
+import { TYPENAME_USER } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import AssigneeAvatar from '~/sidebar/components/assignees/assignee_avatar.vue';
 import AssigneeAvatarLink from '~/sidebar/components/assignees/assignee_avatar_link.vue';
@@ -133,7 +133,7 @@ describe('AssigneeAvatarLink component', () => {
     createComponent({
       tooltipHasName: true,
       issuableType: 'issue',
-      user: { ...userDataMock(), id: convertToGraphQLId(TYPE_USER, userId) },
+      user: { ...userDataMock(), id: convertToGraphQLId(TYPENAME_USER, userId) },
     });
 
     expect(findUserLink().attributes('data-user-id')).toBe(String(userId));

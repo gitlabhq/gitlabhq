@@ -100,15 +100,6 @@ describe('File row component', () => {
     });
   });
 
-  it('indents row based on level', () => {
-    createComponent({
-      file: file('t4'),
-      level: 2,
-    });
-
-    expect(wrapper.find('.file-row-name').element.style.marginLeft).toBe('16px');
-  });
-
   it('renders header for file', () => {
     createComponent({
       file: {

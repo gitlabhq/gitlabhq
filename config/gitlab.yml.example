@@ -271,6 +271,10 @@ production: &base
     # Default is '.gitlab_mailroom_secret' relative to Rails.root (i.e. root of the GitLab app).
     # secret_file: /home/git/gitlab/.gitlab_mailroom_secret
 
+    # File location to read encrypted incoming email secrets from
+    # encrypted_secret_file: /mnt/gitlab/smtp.yaml.enc 
+    # Default: shared/encrypted_settings/incoming_email.yaml.enc
+
   ## Consolidated object store config
   ## This will only take effect if the object_store sections are not defined
   ## within the types (e.g. artifacts, lfs, etc.).
