@@ -1099,8 +1099,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
         {
           action_monthly_active_users_web_ide_edit: 2,
           action_monthly_active_users_sfe_edit: 2,
-          action_monthly_active_users_snippet_editor_edit: 2,
-          action_monthly_active_users_ide_edit: 3
+          action_monthly_active_users_snippet_editor_edit: 2
         }
       )
     end

@@ -45,6 +45,8 @@ function initDeactivateDormantUsersPeriodInputSection() {
     'application_setting_deactivate_dormant_users_period_error',
   );
 
+  if (!checkbox || !input || !errorLabel) return;
+
   const hideInputErrorLabel = () => {
     if (input.checkValidity()) {
       errorLabel.classList.add(DISPLAY_NONE_CLASS);

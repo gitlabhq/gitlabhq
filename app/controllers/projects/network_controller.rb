@@ -14,11 +14,7 @@ class Projects::NetworkController < Projects::ApplicationController
   urgency :low, [:show]
 
   def show
-    @url = if Feature.enabled?(:use_ref_type_parameter, @project)
-             project_network_path(@project, @ref, @options.merge(format: :json, ref_type: ref_type))
-           else
-             project_network_path(@project, @ref, @options.merge(format: :json))
-           end
+    @url = project_network_path(@project, @ref, @options.merge(format: :json, ref_type: ref_type))
 
     @ref_type = ref_type
     @commit_url = project_commit_path(@project, 'ae45ca32').gsub("ae45ca32", "%s")

@@ -1,6 +1,6 @@
 - breadcrumb_title _("Graph")
 - page_title _("Graph"), @ref
-- network_path = Feature.enabled?(:use_ref_type_parameter) ? project_network_path(@project, @id, ref_type: @ref_type) : project_network_path(@project, @id)
+- network_path = project_network_path(@project, @id, ref_type: @ref_type)
 = render "head"
 .gl-mt-5
   .project-network.gl-border-1.gl-border-solid.gl-border-gray-300

@@ -38,6 +38,9 @@ export const initGitlabWebIDE = async (el) => {
     filePath,
     mergeRequest: mrId,
     forkInfo: forkInfoJSON,
+    editorFontSrcUrl,
+    editorFontFormat,
+    editorFontFamily,
   } = el.dataset;
 
   const rootEl = setupRootElement(el);
@@ -63,6 +66,11 @@ export const initGitlabWebIDE = async (el) => {
     links: {
       feedbackIssue: GITLAB_WEB_IDE_FEEDBACK_ISSUE,
       userPreferences: el.dataset.userPreferencesPath,
+    },
+    editorFont: {
+      srcUrl: editorFontSrcUrl,
+      fontFamily: editorFontFamily,
+      format: editorFontFormat,
     },
     async handleStartRemote({ remoteHost, remotePath, connectionToken }) {
       const confirmed = await confirmAction(

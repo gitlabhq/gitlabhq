@@ -10,18 +10,6 @@ module Gitlab
       # See https://www.postgresql.org/message-id/16934.1568989957%40sss.pgh.pa.us
       EXPECTED_TRIGGER_RECORD_COUNT = 3
 
-      def self.tables_to_lock(connection)
-        Gitlab::Database::GitlabSchema.tables_to_schema.each do |table_name, schema_name|
-          yield table_name, schema_name
-        end
-
-        Gitlab::Database::SharedModel.using_connection(connection) do
-          Postgresql::DetachedPartition.find_each do |detached_partition|
-            yield detached_partition.fully_qualified_table_name, detached_partition.table_schema
-          end
-        end
-      end
-
       def initialize(table_name:, connection:, database_name:, with_retries: true, logger: nil, dry_run: false)
         @table_name = table_name
         @connection = connection

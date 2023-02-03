@@ -16,6 +16,7 @@ import { stubComponent } from 'helpers/stub_component';
 import WorkItemDetail from '~/work_items/components/work_item_detail.vue';
 import WorkItemActions from '~/work_items/components/work_item_actions.vue';
 import WorkItemDescription from '~/work_items/components/work_item_description.vue';
+import WorkItemCreatedUpdated from '~/work_items/components/work_item_created_updated.vue';
 import WorkItemDueDate from '~/work_items/components/work_item_due_date.vue';
 import WorkItemState from '~/work_items/components/work_item_state.vue';
 import WorkItemTitle from '~/work_items/components/work_item_title.vue';
@@ -74,6 +75,7 @@ describe('WorkItemDetail component', () => {
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findWorkItemActions = () => wrapper.findComponent(WorkItemActions);
   const findWorkItemTitle = () => wrapper.findComponent(WorkItemTitle);
+  const findCreatedUpdated = () => wrapper.findComponent(WorkItemCreatedUpdated);
   const findWorkItemState = () => wrapper.findComponent(WorkItemState);
   const findWorkItemDescription = () => wrapper.findComponent(WorkItemDescription);
   const findWorkItemDueDate = () => wrapper.findComponent(WorkItemDueDate);
@@ -763,5 +765,19 @@ describe('WorkItemDetail component', () => {
 
       expect(findNotesWidget().exists()).toBe(true);
     });
+  });
+
+  it('does not render created/updated by default', async () => {
+    createComponent();
+    await waitForPromises();
+
+    expect(findCreatedUpdated().exists()).toBe(false);
+  });
+
+  it('renders created/updated when the work_items_mvc flag is on', async () => {
+    createComponent({ workItemsMvcEnabled: true });
+    await waitForPromises();
+
+    expect(findCreatedUpdated().exists()).toBe(true);
   });
 });

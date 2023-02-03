@@ -51,6 +51,7 @@ import WorkItemTree from './work_item_links/work_item_tree.vue';
 import WorkItemActions from './work_item_actions.vue';
 import WorkItemState from './work_item_state.vue';
 import WorkItemTitle from './work_item_title.vue';
+import WorkItemCreatedUpdated from './work_item_created_updated.vue';
 import WorkItemDescription from './work_item_description.vue';
 import WorkItemDueDate from './work_item_due_date.vue';
 import WorkItemAssignees from './work_item_assignees.vue';
@@ -74,6 +75,7 @@ export default {
     GlEmptyState,
     WorkItemAssignees,
     WorkItemActions,
+    WorkItemCreatedUpdated,
     WorkItemDescription,
     WorkItemDueDate,
     WorkItemLabels,
@@ -568,6 +570,13 @@ export default {
         :work-item-parent-id="workItemParentId"
         :can-update="canUpdate"
         @error="updateError = $event"
+      />
+      <work-item-created-updated
+        v-if="workItemsMvcEnabled"
+        :work-item-id="workItem.id"
+        :work-item-iid="workItemIid"
+        :full-path="fullPath"
+        :fetch-by-iid="fetchByIid"
       />
       <work-item-state
         :work-item="workItem"

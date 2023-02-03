@@ -75,7 +75,7 @@ class Projects::CommitsController < Projects::ApplicationController
     search = permitted_params[:search]
     author = permitted_params[:author]
 
-    # fully_qualified_ref is available in some situations when the use_ref_type_parameter FF is enabled
+    # fully_qualified_ref is available in some situations from ExtractsRef
     ref = @fully_qualified_ref || @ref
     @commits =
       if search.present?

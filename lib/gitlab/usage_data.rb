@@ -589,8 +589,7 @@ module Gitlab
         {
           action_monthly_active_users_web_ide_edit: redis_usage_data { counter.count_web_ide_edit_actions(**date_range) },
           action_monthly_active_users_sfe_edit: redis_usage_data { counter.count_sfe_edit_actions(**date_range) },
-          action_monthly_active_users_snippet_editor_edit: redis_usage_data { counter.count_snippet_editor_edit_actions(**date_range) },
-          action_monthly_active_users_ide_edit: redis_usage_data { counter.count_edit_using_editor(**date_range) }
+          action_monthly_active_users_snippet_editor_edit: redis_usage_data { counter.count_snippet_editor_edit_actions(**date_range) }
         }
       end
 

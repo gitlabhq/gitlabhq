@@ -33,11 +33,6 @@ module Gitlab
           count_unique(EDIT_BY_SNIPPET_EDITOR, date_from, date_to)
         end
 
-        def count_edit_using_editor(date_from:, date_to:)
-          events = Gitlab::UsageDataCounters::HLLRedisCounter.events_for_category(EDIT_CATEGORY)
-          count_unique(events, date_from, date_to)
-        end
-
         private
 
         def track_unique_action(event_name, author, time, project = nil)

@@ -2,11 +2,20 @@
 
 require 'spec_helper'
 
+RSpec.configure do |rspec|
+  rspec.expect_with :rspec do |c|
+    c.max_formatted_output_length = nil
+  end
+end
+
 RSpec.describe Backup::Database, feature_category: :backup_restore do
   let(:progress) { StringIO.new }
   let(:output) { progress.string }
   let(:one_db_configured?) { Gitlab::Database.database_base_models.one? }
   let(:database_models_for_backup) { Gitlab::Database.database_base_models_with_gitlab_shared }
+  let(:timeout_service) do
+    instance_double(Gitlab::Database::TransactionTimeoutSettings, restore_timeouts: nil, disable_timeouts: nil)
+  end
 
   before(:all) do
     Rake::Task.define_task(:environment)
@@ -26,6 +35,7 @@ RSpec.describe Backup::Database, feature_category: :backup_restore do
     before do
       database_models_for_backup.each do |database_name, base_model|
         base_model.connection.rollback_transaction unless base_model.connection.open_transactions.zero?
+        allow(base_model.connection).to receive(:execute).and_call_original
       end
     end
 
@@ -51,6 +61,18 @@ RSpec.describe Backup::Database, feature_category: :backup_restore do
         ).and_call_original
         expect(base_model.connection).to receive(:rollback_transaction).and_call_original
 
+        subject.dump(dir, backup_id)
+      end
+    end
+
+    it 'disables transaction time out' do
+      number_of_databases = Gitlab::Database.database_base_models_with_gitlab_shared.count
+      expect(Gitlab::Database::TransactionTimeoutSettings)
+        .to receive(:new).exactly(2 * number_of_databases).times.and_return(timeout_service)
+      expect(timeout_service).to receive(:disable_timeouts).exactly(number_of_databases).times
+      expect(timeout_service).to receive(:restore_timeouts).exactly(number_of_databases).times
+
+      Dir.mktmpdir do |dir|
         subject.dump(dir, backup_id)
       end
     end
@@ -101,6 +123,23 @@ RSpec.describe Backup::Database, feature_category: :backup_restore do
           expect(dumper).to receive(:dump).with(anything, anything, additional_args)
 
           subject.dump(destination_dir, backup_id)
+        end
+      end
+    end
+
+    context 'when a StandardError (or descendant) is raised' do
+      before do
+        allow(FileUtils).to receive(:mkdir_p).and_raise(StandardError)
+      end
+
+      it 'restores timeouts' do
+        Dir.mktmpdir do |dir|
+          number_of_databases = Gitlab::Database.database_base_models_with_gitlab_shared.count
+          expect(Gitlab::Database::TransactionTimeoutSettings)
+            .to receive(:new).exactly(number_of_databases).times.and_return(timeout_service)
+          expect(timeout_service).to receive(:restore_timeouts).exactly(number_of_databases).times
+
+          expect { subject.dump(dir, backup_id) }.to raise_error StandardError
         end
       end
     end

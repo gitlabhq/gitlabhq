@@ -57,7 +57,16 @@ export const workItemQueryResponse = {
       description: 'description',
       confidential: false,
       createdAt: '2022-08-03T12:41:54Z',
+      updatedAt: null,
       closedAt: null,
+      author: {
+        avatarUrl: 'http://127.0.0.1:3000/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
+        id: 'gid://gitlab/User/1',
+        name: 'Administrator',
+        username: 'root',
+        webUrl: 'http://127.0.0.1:3000/root',
+        __typename: 'UserCore',
+      },
       project: {
         __typename: 'Project',
         id: '1',
@@ -153,7 +162,11 @@ export const updateWorkItemMutationResponse = {
         description: 'description',
         confidential: false,
         createdAt: '2022-08-03T12:41:54Z',
+        updatedAt: '2022-08-08T12:41:54Z',
         closedAt: null,
+        author: {
+          ...mockAssignees[0],
+        },
         project: {
           __typename: 'Project',
           id: '1',
@@ -281,6 +294,9 @@ export const workItemResponseFactory = ({
   withCheckboxes = false,
   parent = mockParent.parent,
   workItemType = taskType,
+  author = mockAssignees[0],
+  createdAt = '2022-08-03T12:41:54Z',
+  updatedAt = '2022-08-08T12:32:54Z',
 } = {}) => ({
   data: {
     workItem: {
@@ -291,8 +307,10 @@ export const workItemResponseFactory = ({
       state: 'OPEN',
       description: 'description',
       confidential,
-      createdAt: '2022-08-03T12:41:54Z',
+      createdAt,
+      updatedAt,
       closedAt: null,
+      author,
       project: {
         __typename: 'Project',
         id: '1',
@@ -473,7 +491,11 @@ export const createWorkItemMutationResponse = {
         description: 'description',
         confidential: false,
         createdAt: '2022-08-03T12:41:54Z',
+        updatedAt: null,
         closedAt: null,
+        author: {
+          ...mockAssignees[0],
+        },
         project: {
           __typename: 'Project',
           id: '1',
@@ -1048,11 +1070,15 @@ export const workItemObjectiveWithChild = {
     deleteWorkItem: true,
     updateWorkItem: true,
   },
+  author: {
+    ...mockAssignees[0],
+  },
   title: 'Objective',
   description: 'Objective description',
   state: 'OPEN',
   confidential: false,
   createdAt: '2022-08-03T12:41:54Z',
+  updatedAt: null,
   closedAt: null,
   widgets: [
     {
@@ -1193,7 +1219,11 @@ export const changeWorkItemParentMutationResponse = {
         title: 'Foo',
         confidential: false,
         createdAt: '2022-08-03T12:41:54Z',
+        updatedAt: null,
         closedAt: null,
+        author: {
+          ...mockAssignees[0],
+        },
         project: {
           __typename: 'Project',
           id: '1',

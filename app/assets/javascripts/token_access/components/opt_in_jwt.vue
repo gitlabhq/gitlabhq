@@ -1,25 +1,17 @@
 <script>
-import { GlLoadingIcon, GlSprintf, GlToggle } from '@gitlab/ui';
+import { GlLink, GlLoadingIcon, GlSprintf, GlToggle } from '@gitlab/ui';
 import CodeInstruction from '~/vue_shared/components/registry/code_instruction.vue';
 import { createAlert } from '~/flash';
 import { __, s__ } from '~/locale';
 import updateOptInJwtMutation from '../graphql/mutations/update_opt_in_jwt.mutation.graphql';
 import getOptInJwtSettingQuery from '../graphql/queries/get_opt_in_jwt_setting.query.graphql';
-
-const LIMIT_JWT_ACCESS_SNIPPET = `job_name:
-  id_tokens:
-    ID_TOKEN_1: # or any other name
-      aud: "..." # sub-keyword to configure the token's audience
-  secrets:
-    TEST_SECRET:
-      vault: db/prod
-`;
+import { LIMIT_JWT_ACCESS_SNIPPET, OPT_IN_JWT_HELP_LINK } from '../constants';
 
 export default {
   i18n: {
     labelText: s__('CICD|Limit JSON Web Token (JWT) access'),
     helpText: s__(
-      `CICD|The JWT must be manually declared in each job that needs it. When disabled, the token is always available in all jobs in the pipeline.`,
+      `CICD|The JWT must be manually declared in each job that needs it. When disabled, the token is always available in all jobs in the pipeline. %{linkStart}Learn more.%{linkEnd}`,
     ),
     expandedText: s__(
       'CICD|Use the %{codeStart}secrets%{codeEnd} keyword to configure a job with a JWT.',
@@ -30,6 +22,7 @@ export default {
   },
   components: {
     CodeInstruction,
+    GlLink,
     GlLoadingIcon,
     GlSprintf,
     GlToggle,
@@ -90,6 +83,7 @@ export default {
       }
     },
   },
+  OPT_IN_JWT_HELP_LINK,
   LIMIT_JWT_ACCESS_SNIPPET,
 };
 </script>
@@ -104,7 +98,13 @@ export default {
         @change="updateOptInJwt"
       >
         <template #help>
-          {{ $options.i18n.helpText }}
+          <gl-sprintf :message="$options.i18n.helpText">
+            <template #link="{ content }">
+              <gl-link :href="$options.OPT_IN_JWT_HELP_LINK" class="inline-link" target="_blank">
+                {{ content }}
+              </gl-link>
+            </template>
+          </gl-sprintf>
         </template>
       </gl-toggle>
       <div v-if="optInJwt" class="gl-mt-5" data-testid="opt-in-jwt-expanded-section">

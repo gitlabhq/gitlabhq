@@ -107,6 +107,24 @@ Review the details carefully before upgrading.
 Due to low customer usage, Load Performance Testing is deprecated and will be removed. There is no planned replacement and users should stop using Load Performance Testing before GitLab 17.0.
 
 </div>
+
+<div class="deprecation removal-160 breaking-change">
+
+### Option to delete projects immediately is deprecated from deletion protection settings
+
+Planned removal: GitLab <span class="removal-milestone">16.0</span> <span class="removal-date"></span>
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+The project deletion protection setting in the Admin Area had an option to delete projects immediately. Starting with 16.0, this option will no longer be available, and delayed project deletion will become the default behavior.
+
+The option will no longer appear as a group setting. Self-managed users will still have the option to define the deletion delay period, and SaaS users have a non-adjustable default retention period of 7 days. Users can still delete the project immediately from the project settings.
+
+The option to delete projects immediately by default was deprecated to prevent users from accidentally taking this action and permanently losing projects.
+
+</div>
 </div>
 
 <div class="announcement-milestone">

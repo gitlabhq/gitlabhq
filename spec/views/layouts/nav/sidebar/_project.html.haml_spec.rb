@@ -83,24 +83,10 @@ RSpec.describe 'layouts/nav/sidebar/_project', feature_category: :navigation do
     end
 
     describe 'Commits' do
-      context 'when the use_ref_type_parameter flag is not enabled' do
-        before do
-          stub_feature_flags(use_ref_type_parameter: false)
-        end
+      it 'has a link to the fully qualified project commits path' do
+        render
 
-        it 'has a link to the project commits path' do
-          render
-
-          expect(rendered).to have_link('Commits', href: project_commits_path(project, current_ref), id: 'js-onboarding-commits-link')
-        end
-      end
-
-      context 'when the use_ref_type_parameter flag is enabled' do
-        it 'has a link to the fully qualified project commits path' do
-          render
-
-          expect(rendered).to have_link('Commits', href: project_commits_path(project, current_ref, ref_type: 'heads'), id: 'js-onboarding-commits-link')
-        end
+        expect(rendered).to have_link('Commits', href: project_commits_path(project, current_ref, ref_type: 'heads'), id: 'js-onboarding-commits-link')
       end
     end
 
@@ -121,24 +107,10 @@ RSpec.describe 'layouts/nav/sidebar/_project', feature_category: :navigation do
     end
 
     describe 'Contributors' do
-      context 'and the use_ref_type_parameter flag is disabled' do
-        before do
-          stub_feature_flags(use_ref_type_parameter: false)
-        end
+      it 'has a link to the project contributors path' do
+        render
 
-        it 'has a link to the project contributors path' do
-          render
-
-          expect(rendered).to have_link('Contributors', href: project_graph_path(project, current_ref))
-        end
-      end
-
-      context 'and the use_ref_type_parameter flag is enabled' do
-        it 'has a link to the project contributors path' do
-          render
-
-          expect(rendered).to have_link('Contributors', href: project_graph_path(project, current_ref, ref_type: 'heads'))
-        end
+        expect(rendered).to have_link('Contributors', href: project_graph_path(project, current_ref, ref_type: 'heads'))
       end
     end
 

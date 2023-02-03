@@ -1,10 +1,11 @@
-import { GlLoadingIcon, GlToggle } from '@gitlab/ui';
+import { GlLink, GlLoadingIcon, GlToggle, GlSprintf } from '@gitlab/ui';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/flash';
+import { OPT_IN_JWT_HELP_LINK } from '~/token_access/constants';
 import OptInJwt from '~/token_access/components/opt_in_jwt.vue';
 import getOptInJwtSettingQuery from '~/token_access/graphql/queries/get_opt_in_jwt_setting.query.graphql';
 import updateOptInJwtMutation from '~/token_access/graphql/mutations/update_opt_in_jwt.mutation.graphql';
@@ -25,6 +26,7 @@ describe('OptInJwt component', () => {
   const disabledOptInJwtHandler = jest.fn().mockResolvedValue(optInJwtQueryResponse(false));
   const updateOptInJwtHandler = jest.fn().mockResolvedValue(optInJwtMutationResponse(true));
 
+  const findHelpLink = () => wrapper.findComponent(GlLink);
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findToggle = () => wrapper.findComponent(GlToggle);
   const findOptInJwtExpandedSection = () => wrapper.findByTestId('opt-in-jwt-expanded-section');
@@ -33,7 +35,7 @@ describe('OptInJwt component', () => {
     return createMockApollo(requestHandlers);
   };
 
-  const createComponent = (requestHandlers, mountFn = shallowMountExtended) => {
+  const createComponent = (requestHandlers, mountFn = shallowMountExtended, options = {}) => {
     wrapper = mountFn(OptInJwt, {
       provide: {
         fullPath: 'root/my-repo',
@@ -44,12 +46,18 @@ describe('OptInJwt component', () => {
           targetProjectPath: 'root/test',
         };
       },
+      ...options,
     });
   };
 
+  const createShallowComponent = (requestHandlers, options = {}) =>
+    createComponent(requestHandlers, shallowMountExtended, options);
+  const createFullComponent = (requestHandlers, options = {}) =>
+    createComponent(requestHandlers, mountExtended, options);
+
   describe('loading state', () => {
     it('shows loading state and hides toggle while waiting on query to resolve', async () => {
-      createComponent([[getOptInJwtSettingQuery, enabledOptInJwtHandler]]);
+      createShallowComponent([[getOptInJwtSettingQuery, enabledOptInJwtHandler]]);
 
       expect(findLoadingIcon().exists()).toBe(true);
       expect(findToggle().exists()).toBe(false);
@@ -61,9 +69,25 @@ describe('OptInJwt component', () => {
     });
   });
 
+  describe('template', () => {
+    it('renders help link', async () => {
+      createShallowComponent([[getOptInJwtSettingQuery, enabledOptInJwtHandler]], {
+        stubs: {
+          GlToggle,
+          GlSprintf,
+          GlLink,
+        },
+      });
+      await waitForPromises();
+
+      expect(findHelpLink().exists()).toBe(true);
+      expect(findHelpLink().attributes('href')).toBe(OPT_IN_JWT_HELP_LINK);
+    });
+  });
+
   describe('toggle JWT token access', () => {
     it('code instruction is visible when toggle is enabled', async () => {
-      createComponent([[getOptInJwtSettingQuery, enabledOptInJwtHandler]]);
+      createShallowComponent([[getOptInJwtSettingQuery, enabledOptInJwtHandler]]);
 
       await waitForPromises();
 
@@ -72,7 +96,7 @@ describe('OptInJwt component', () => {
     });
 
     it('code instruction is hidden when toggle is disabled', async () => {
-      createComponent([[getOptInJwtSettingQuery, disabledOptInJwtHandler]]);
+      createShallowComponent([[getOptInJwtSettingQuery, disabledOptInJwtHandler]]);
 
       await waitForPromises();
 
@@ -82,13 +106,10 @@ describe('OptInJwt component', () => {
 
     describe('update JWT token access', () => {
       it('calls updateOptInJwtMutation with correct arguments', async () => {
-        createComponent(
-          [
-            [getOptInJwtSettingQuery, disabledOptInJwtHandler],
-            [updateOptInJwtMutation, updateOptInJwtHandler],
-          ],
-          mountExtended,
-        );
+        createFullComponent([
+          [getOptInJwtSettingQuery, disabledOptInJwtHandler],
+          [updateOptInJwtMutation, updateOptInJwtHandler],
+        ]);
 
         await waitForPromises();
 
@@ -103,13 +124,10 @@ describe('OptInJwt component', () => {
       });
 
       it('handles update error', async () => {
-        createComponent(
-          [
-            [getOptInJwtSettingQuery, enabledOptInJwtHandler],
-            [updateOptInJwtMutation, failureHandler],
-          ],
-          mountExtended,
-        );
+        createFullComponent([
+          [getOptInJwtSettingQuery, enabledOptInJwtHandler],
+          [updateOptInJwtMutation, failureHandler],
+        ]);
 
         await waitForPromises();
 

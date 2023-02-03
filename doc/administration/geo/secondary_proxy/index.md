@@ -32,6 +32,9 @@ Use secondary proxying for use-cases including:
 - Having all Geo sites behind a single URL.
 - Geographically load-balancing traffic without worrying about write access.
 
+NOTE:
+Geo proxying for secondary sites is separate from Geo proxying/redirecting for Git push operations.
+
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For an overview, see: [Secondary proxying using geographic load-balancer and AWS Route53](https://www.youtube.com/watch?v=TALLy7__Na8).
 

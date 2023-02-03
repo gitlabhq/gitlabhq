@@ -48,20 +48,13 @@ RSpec.describe Sidebars::Projects::Menus::RepositoryMenu, feature_category: :sou
                                           ref_type: ref_type)
         end
 
-        where(:feature_flag_enabled, :ref_type, :link) do
-          true  | nil     | lazy { "#{route}?ref_type=heads" }
-          true  | 'heads' | lazy { "#{route}?ref_type=heads" }
-          true  | 'tags'  | lazy { "#{route}?ref_type=tags" }
-          false | nil     | lazy { route }
-          false | 'heads' | lazy { route }
-          false | 'tags'  | lazy { route }
+        where(:ref_type, :link) do
+          nil     | lazy { "#{route}?ref_type=heads" }
+          'heads' | lazy { "#{route}?ref_type=heads" }
+          'tags'  | lazy { "#{route}?ref_type=tags" }
         end
 
         with_them do
-          before do
-            stub_feature_flags(use_ref_type_parameter: feature_flag_enabled)
-          end
-
           it 'has a link with the fully qualifed ref route' do
             expect(subject).to eq(link)
           end

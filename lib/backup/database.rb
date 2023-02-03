@@ -25,13 +25,6 @@ module Backup
 
     override :dump
     def dump(destination_dir, backup_id)
-      snapshot_ids = base_models_for_backup.each_with_object({}) do |(database_name, base_model), snapshot_ids|
-        base_model.connection.begin_transaction(isolation: :repeatable_read)
-
-        snapshot_ids[database_name] =
-          base_model.connection.execute("SELECT pg_export_snapshot() as snapshot_id;").first['snapshot_id']
-      end
-
       FileUtils.mkdir_p(destination_dir)
 
       snapshot_ids.each do |database_name, snapshot_id|
@@ -68,6 +61,10 @@ module Backup
 
         report_success(success)
         progress.flush
+      end
+    ensure
+      base_models_for_backup.each do |_database_name, base_model|
+        Gitlab::Database::TransactionTimeoutSettings.new(base_model.connection).restore_timeouts
       end
     end
 
@@ -254,6 +251,17 @@ module Backup
 
     def pg_restore_cmd(database)
       ['psql', database]
+    end
+
+    def snapshot_ids
+      @snapshot_ids ||= base_models_for_backup.each_with_object({}) do |(database_name, base_model), snapshot_ids|
+        Gitlab::Database::TransactionTimeoutSettings.new(base_model.connection).disable_timeouts
+
+        base_model.connection.begin_transaction(isolation: :repeatable_read)
+
+        snapshot_ids[database_name] =
+          base_model.connection.execute("SELECT pg_export_snapshot() as snapshot_id;").first['snapshot_id']
+      end
     end
   end
 end

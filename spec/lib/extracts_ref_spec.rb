@@ -48,13 +48,11 @@ RSpec.describe ExtractsRef do
     context 'when a ref_type parameter is provided' do
       let(:params) { ActionController::Parameters.new(path: path, ref: ref, ref_type: 'tags') }
 
-      context 'and the use_ref_type_parameter feature flag is enabled' do
-        it 'sets a fully_qualified_ref variable' do
-          fully_qualified_ref = "refs/tags/#{ref}"
-          expect(container.repository).to receive(:commit).with(fully_qualified_ref)
-          assign_ref_vars
-          expect(@fully_qualified_ref).to eq(fully_qualified_ref)
-        end
+      it 'sets a fully_qualified_ref variable' do
+        fully_qualified_ref = "refs/tags/#{ref}"
+        expect(container.repository).to receive(:commit).with(fully_qualified_ref)
+        assign_ref_vars
+        expect(@fully_qualified_ref).to eq(fully_qualified_ref)
       end
     end
   end

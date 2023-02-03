@@ -68,7 +68,7 @@ module ExtractsRef
 
     return unless @ref.present?
 
-    @commit = if ref_type && Feature.enabled?(:use_ref_type_parameter, @repo.project)
+    @commit = if ref_type
                 @fully_qualified_ref = %(refs/#{ref_type}/#{@ref})
                 @repo.commit(@fully_qualified_ref)
               else

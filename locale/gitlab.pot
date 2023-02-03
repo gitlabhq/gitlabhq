@@ -7750,7 +7750,7 @@ msgstr ""
 msgid "CICD|The Auto DevOps pipeline runs if no alternative CI configuration file is found."
 msgstr ""
 
-msgid "CICD|The JWT must be manually declared in each job that needs it. When disabled, the token is always available in all jobs in the pipeline."
+msgid "CICD|The JWT must be manually declared in each job that needs it. When disabled, the token is always available in all jobs in the pipeline. %{linkStart}Learn more.%{linkEnd}"
 msgstr ""
 
 msgid "CICD|There are several CI/CD limits in place."
@@ -11865,6 +11865,12 @@ msgid "Created"
 msgstr ""
 
 msgid "Created %{epicTimeagoDate}"
+msgstr ""
+
+msgid "Created %{timeAgo}"
+msgstr ""
+
+msgid "Created %{timeAgo} by %{author}"
 msgstr ""
 
 msgid "Created %{timestamp}"
@@ -45325,6 +45331,9 @@ msgid "UpdateRepositoryStorage|Timeout waiting for %{type} repository pushes"
 msgstr ""
 
 msgid "Updated"
+msgstr ""
+
+msgid "Updated %{timeAgo}"
 msgstr ""
 
 msgid "Updated %{updated_at} by %{updated_by}"

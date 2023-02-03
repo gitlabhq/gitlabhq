@@ -14,6 +14,9 @@ RSpec.describe Gitlab::Redis::RepositoryCache, feature_category: :scalability do
 
     before do
       allow(described_class).to receive(:config_file_name).and_return(config_new_format_host)
+
+      # Override rails root to avoid having our fixtures overwritten by `redis.yml` if it exists
+      allow(Gitlab::Redis::Cache).to receive(:rails_root).and_return(mktmpdir)
       allow(Gitlab::Redis::Cache).to receive(:config_file_name).and_return(config_new_format_socket)
     end
 

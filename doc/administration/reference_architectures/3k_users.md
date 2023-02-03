@@ -1107,25 +1107,25 @@ The following IPs will be used as an example:
 
 ## Configure Gitaly Cluster
 
-[Gitaly Cluster](../gitaly/praefect.md) is a GitLab provided and recommended fault tolerant solution for storing Git repositories.
-In this configuration, every Git repository is stored on every Gitaly node in the cluster, with one being designated the primary, and failover occurs automatically if the primary node goes down.
+[Gitaly Cluster](../gitaly/praefect.md) is a GitLab-provided and recommended fault tolerant solution for storing Git
+repositories. In this configuration, every Git repository is stored on every Gitaly node in the cluster, with one being
+designated the primary, and failover occurs automatically if the primary node goes down.
 
-NOTE:
-Gitaly Cluster provides the benefits of fault tolerance, but comes with additional complexity of setup and management. Review the existing [technical limitations and considerations before deploying Gitaly Cluster](../gitaly/index.md#before-deploying-gitaly-cluster).
-For implementations with sharded Gitaly, use the same Gitaly specs. Follow the [separate Gitaly documentation](../gitaly/configure_gitaly.md) instead of this section.
+Gitaly Cluster provides the benefits of fault tolerance, but comes with additional complexity of setup and management.
+Review the existing [technical limitations and considerations before deploying Gitaly Cluster](../gitaly/index.md#before-deploying-gitaly-cluster).
 
-NOTE:
-For guidance on how to migrate existing repositories from NFS to Gitaly Cluster, [follow the main documentation](../gitaly/index.md#migrate-to-gitaly-cluster).
+For guidance on:
+
+- Implementing sharded Gitaly instead, follow the [separate Gitaly documentation](../gitaly/configure_gitaly.md)
+  instead of this section. Use the same Gitaly specs.
+- Migrating existing repositories that aren't managed by Gitaly Cluster, see
+  [migrate to Gitaly Cluster](../gitaly/index.md#migrate-to-gitaly-cluster).
 
 NOTE:
 Gitaly has been designed and tested with repositories of varying sizes that follow best practices.
 However, large repositories or monorepos not following these practices can significantly
 impact Gitaly performance and requirements.
 Refer to [Large repositories](index.md#large-repositories) for more information.
-
-NOTE:
-This architecture uses [Gitaly Cluster](../gitaly/praefect.md). If you have existing repositories that aren't already managed by Gitaly Cluster, you must first
-[migrate to Gitaly Cluster](../gitaly/index.md#migrate-to-gitaly-cluster).
 
 The recommended cluster setup includes the following components:
 
@@ -1134,9 +1134,9 @@ The recommended cluster setup includes the following components:
 - 1 Praefect PostgreSQL node: Database server for Praefect. A third-party solution
   is required for Praefect database connections to be made highly available.
 - 1 load balancer: A load balancer is required for Praefect. The
-  [internal load balancer](#configure-the-internal-load-balancer) will be used.
+  [internal load balancer](#configure-the-internal-load-balancer) is used.
 
-This section will detail how to configure the recommended standard setup in order.
+This section details how to configure the recommended standard setup in order.
 For more advanced setups refer to the [standalone Gitaly Cluster documentation](../gitaly/praefect.md).
 
 ### Configure Praefect PostgreSQL

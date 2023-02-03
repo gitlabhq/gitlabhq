@@ -215,6 +215,20 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
           it 'places the newest child item to the end of the children list' do
             expect(hierarchy_children.last['id']).to eq(newest_child.to_gid.to_s)
           end
+
+          context 'when relative position is set' do
+            let_it_be(:first_child) { create(:work_item, :task, project: project, created_at: 5.minutes.from_now) }
+
+            let_it_be(:first_link) do
+              create(:parent_link, work_item_parent: work_item, work_item: first_child, relative_position: 1)
+            end
+
+            it 'places children according to relative_position at the beginning of the children list' do
+              ordered_list = [first_child, oldest_child, child_item1, child_item2, newest_child]
+
+              expect(hierarchy_children.pluck('id')).to eq(ordered_list.map(&:to_gid).map(&:to_s))
+            end
+          end
         end
       end
 

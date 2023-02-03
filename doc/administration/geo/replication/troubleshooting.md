@@ -1323,6 +1323,34 @@ To fix this issue, set the primary site's internal URL to a URL that is:
    GeoNode.where(primary: true).first.update!(internal_url: "https://unique.url.for.primary.site")
    ```
 
+### Secondary site returns `Received HTTP code 403 from proxy after CONNECT`
+
+If you have installed GitLab using the Linux package (Omnibus) and have configured the `no_proxy` [custom environment variable](https://docs.gitlab.com/omnibus/settings/environment-variables.html) for Gitaly, you may experience this issue. Affected versions:
+
+- `15.4.6`
+- `15.5.0`-`15.5.6`
+- `15.6.0`-`15.6.3`
+- `15.7.0`-`15.7.1`
+
+This is due to [a bug introduced in the included version of cURL](https://github.com/curl/curl/issues/10122) shipped with Omnibus GitLab 15.4.6 and later. You are encouraged to upgrade to a later version where this has been [fixed](https://about.gitlab.com/releases/2023/01/09/security-release-gitlab-15-7-2-released/). 
+
+The bug causes all wildcard domains (`.example.com`) to be ignored except for the last on in the `no_proxy` environment variable list. Therefore, if for any reason you cannot upgrade to a newer version, you can work around the issue by moving your wildcard domain to the end of the list:
+
+1. Edit `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+   gitaly['env'] = {
+     "no_proxy" => "sever.yourdomain.org, .yourdomain.com",
+   }
+
+1. Reconfigure GitLab:
+
+   ```shell
+   sudo gitlab-ctl reconfigure
+   ``` 
+
+You can have only one wildcard domain in the `no_proxy` list.
+
 ## Fixing non-PostgreSQL replication failures
 
 If you notice replication failures in `Admin > Geo > Sites` or the [Sync status Rake task](#sync-status-rake-task), you can try to resolve the failures with the following general steps:
