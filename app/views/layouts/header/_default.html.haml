@@ -8,7 +8,7 @@
       .title-container.hide-when-top-nav-responsive-open.gl-transition-medium.gl-display-flex.gl-align-items-stretch.gl-pt-0.gl-mr-3
         .title
           %span.gl-sr-only GitLab
-          = link_to root_path, title: _('Dashboard'), id: 'logo', class: 'has-tooltip', **tracking_attrs('main_navigation', 'click_gitlab_logo_link', 'navigation') do
+          = link_to root_path, title: _('Dashboard'), id: 'logo', class: 'has-tooltip', **tracking_attrs('main_navigation', 'click_gitlab_logo_link', 'navigation_top') do
             = brand_header_logo
         .gl-display-flex.gl-align-items-center
           - if Gitlab.com_and_canary?
@@ -36,7 +36,11 @@
                 - else
                   = render 'layouts/search'
             %li.nav-item{ class: 'd-none d-sm-inline-block d-lg-none' }
-              = link_to search_menu_item.fetch(:href), title: search_menu_item.fetch(:title), aria: { label: search_menu_item.fetch(:title) }, data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
+              = link_to search_menu_item.fetch(:href), title: search_menu_item.fetch(:title), aria: { label: search_menu_item.fetch(:title) },
+                data: { toggle: 'tooltip', placement: 'bottom', container: 'body',
+                track_action: 'click_link',
+                track_label: 'global_search',
+                track_property: 'navigation_top' } do
                 = sprite_icon(search_menu_item.fetch(:icon))
 
       .navbar-collapse.gl-transition-medium.collapse
@@ -49,7 +53,7 @@
                 data: { qa_selector: 'issues_shortcut_button', toggle: 'tooltip', placement: 'bottom',
                 track_label: 'main_navigation',
                 track_action: 'click_issues_link',
-                track_property: 'navigation',
+                track_property: 'navigation_top',
                 container: 'body' } do
                 = sprite_icon('issues')
                 - issues_count = assigned_issuables_count(:issues)
@@ -62,9 +66,9 @@
                 data: { qa_selector: 'merge_requests_shortcut_button',
                 toggle: "dropdown",
                 placement: 'bottom',
-                track_label: 'main_navigation',
-                track_action: 'click_merge_link',
-                track_property: 'navigation',
+                track_label: 'merge_requests_menu',
+                track_action: 'click_dropdown',
+                track_property: 'navigation_top',
                 container: 'body' } do
                 = sprite_icon('git-merge')
                 = gl_badge_tag({ size: :sm, variant: :warning }, { class: "js-merge-requests-count gl-ml-n2 #{'gl-display-none' if user_merge_requests_counts[:total] == 0}", "aria-label": n_("%d merge request", "%d merge requests", user_merge_requests_counts[:total]) % user_merge_requests_counts[:total] }) do
@@ -75,12 +79,16 @@
                   %li.dropdown-header
                     = _('Merge requests')
                   %li
-                    = link_to assigned_mrs_dashboard_path, class: 'gl-display-flex! gl-align-items-center js-prefetch-document' do
+                    = link_to assigned_mrs_dashboard_path,
+                      class: 'gl-display-flex! gl-align-items-center js-prefetch-document',
+                      data: {track_action: 'click_link', track_label: 'merge_requests_assigned', track_property: 'navigation_top'} do
                       = _('Assigned')
                       = gl_badge_tag({ variant: :neutral, size: :sm }, { class: "js-assigned-mr-count gl-ml-auto" }) do
                         = user_merge_requests_counts[:assigned]
                   %li
-                    = link_to reviewer_mrs_dashboard_path, class: 'dashboard-shortcuts-review_requests gl-display-flex! gl-align-items-center js-prefetch-document' do
+                    = link_to reviewer_mrs_dashboard_path,
+                      class: 'dashboard-shortcuts-review_requests gl-display-flex! gl-align-items-center js-prefetch-document',
+                      data: {track_action: 'click_link', track_label: 'merge_requests_to_review', track_property: 'navigation_top'} do
                       = _('Review requests')
                       = gl_badge_tag({ variant: :neutral, size: :sm }, { class: "js-reviewer-mr-count gl-ml-auto" }) do
                         = user_merge_requests_counts[:review_requested]
@@ -90,15 +98,15 @@
                 data: { qa_selector: 'todos_shortcut_button', toggle: 'tooltip', placement: 'bottom',
                 track_label: 'main_navigation',
                 track_action: 'click_to_do_link',
-                track_property: 'navigation',
+                track_property: 'navigation_top',
                 container: 'body' } do
                 = sprite_icon('todo-done')
                 -# The todos' counter badge's visibility is being toggled by adding or removing the .hidden class in Js.
                 -# We'll eventually migrate to .gl-display-none: https://gitlab.com/gitlab-org/gitlab/-/issues/351792.
                 = gl_badge_tag({ size: :sm, variant: :info }, { class: "js-todos-count gl-ml-n2 #{'hidden' if todos_pending_count == 0}", "aria-label": _("Todos count") }) do
                   = todos_count_format(todos_pending_count)
-          %li.nav-item.header-help.dropdown.d-none.d-md-block{ data: { track_action: 'click_question_mark_link', track_label: 'main_navigation', track_property: 'navigation', track_experiment: 'cross_stage_fdm' } }
-            = link_to help_path, class: 'header-help-dropdown-toggle gl-relative', data: { toggle: "dropdown" } do
+          %li.nav-item.header-help.dropdown.d-none.d-md-block
+            = link_to help_path, class: 'header-help-dropdown-toggle gl-relative', data: { toggle: "dropdown", track_action: 'click_question_mark_link', track_label: 'main_navigation', track_property: 'navigation_top', track_experiment: 'cross_stage_fdm' } do
               %span.gl-sr-only
                 = s_('Nav|Help')
               = sprite_icon('question-o')
@@ -110,8 +118,8 @@
             %li.nav-item.gl-display-none.gl-sm-display-block
               = render "layouts/nav/top_nav"
           - if header_link?(:user_dropdown)
-            %li.nav-item.header-user.js-nav-user-dropdown.dropdown{ data: { track_label: "profile_dropdown", track_action: "click_dropdown", track_value: "", qa_selector: 'user_menu', testid: 'user-menu' }, class: ('mr-0' if has_impersonation_link) }
-              = link_to current_user, class: user_dropdown_class, data: { toggle: "dropdown" } do
+            %li.nav-item.header-user.js-nav-user-dropdown.dropdown{ data: { qa_selector: 'user_menu', testid: 'user-menu' }, class: ('mr-0' if has_impersonation_link) }
+              = link_to current_user, class: user_dropdown_class, data: { toggle: "dropdown", track_label: "profile_dropdown", track_action: "click_dropdown", track_property: "navigation_top" } do
                 = render Pajamas::AvatarComponent.new(current_user, size: 24, class: 'header-user-avatar', avatar_options: { data: { qa_selector: 'user_avatar_content' } })
                 = render_if_exists 'layouts/header/user_notification_dot', project: project, namespace: group
                 = sprite_icon('chevron-down', css_class: 'caret-down')

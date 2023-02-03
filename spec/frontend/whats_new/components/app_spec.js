@@ -91,6 +91,7 @@ describe('App', () => {
       expect(actions.openDrawer).toHaveBeenCalledWith(expect.any(Object), 'version-digest');
       expect(trackingSpy).toHaveBeenCalledWith(undefined, 'click_whats_new_drawer', {
         label: 'namespace_id',
+        property: 'navigation_top',
         value: 'namespace-840',
       });
     });

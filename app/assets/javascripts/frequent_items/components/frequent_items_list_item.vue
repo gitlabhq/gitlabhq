@@ -64,6 +64,13 @@ export default {
     },
   },
   methods: {
+    removeFrequentItemTracked(item) {
+      this.track('click_button', {
+        label: `${this.dropdownType}_dropdown_remove_frequent_item`,
+        property: 'navigation_top',
+      });
+      this.removeFrequentItem(item);
+    },
     ...mapVuexModuleActions((vm) => vm.vuexModule, ['removeFrequentItem']),
   },
 };
@@ -77,7 +84,7 @@ export default {
       class="gl-text-left gl-w-full"
       button-text-classes="gl-display-flex gl-w-full"
       data-testid="frequent-item-link"
-      @click="track('click_link', { label: itemTrackingLabel })"
+      @click="track('click_link', { label: itemTrackingLabel, property: 'navigation_top' })"
     >
       <div class="gl-flex-grow-1">
         <project-avatar
@@ -117,7 +124,7 @@ export default {
       :title="__('Remove')"
       class="gl-align-self-center gl-p-1! gl-absolute! gl-w-auto! gl-right-4 gl-top-half gl-translate-y-n50"
       data-testid="item-remove"
-      @click.stop.prevent="removeFrequentItem(itemId)"
+      @click.stop.prevent="removeFrequentItemTracked(itemId)"
     >
       <gl-icon name="close" />
     </gl-button>

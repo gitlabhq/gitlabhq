@@ -148,6 +148,53 @@ RSpec.describe Projects::MergeRequestsController, '(JavaScript fixtures)', type:
       end
     end
 
+    context 'merge request with no approvals' do
+      base_input_path = 'vue_merge_request_widget/components/approvals/queries/'
+      base_output_path = 'graphql/merge_requests/approvals/'
+      query_name = 'approved_by.query.graphql'
+
+      it "#{base_output_path}#{query_name}_no_approvals.json" do
+        query = get_graphql_query_as_string("#{base_input_path}#{query_name}", ee: Gitlab.ee?)
+
+        post_graphql(query, current_user: user, variables: { projectPath: project.full_path, iid: merge_request.iid.to_s })
+
+        expect_graphql_errors_to_be_empty
+      end
+    end
+
+    context 'merge request approved by current user' do
+      base_input_path = 'vue_merge_request_widget/components/approvals/queries/'
+      base_output_path = 'graphql/merge_requests/approvals/'
+      query_name = 'approved_by.query.graphql'
+
+      it "#{base_output_path}#{query_name}.json" do
+        merge_request.approved_by_users << user
+
+        query = get_graphql_query_as_string("#{base_input_path}#{query_name}", ee: Gitlab.ee?)
+
+        post_graphql(query, current_user: user, variables: { projectPath: project.full_path, iid: merge_request.iid.to_s })
+
+        expect_graphql_errors_to_be_empty
+      end
+    end
+
+    context 'merge request approved by multiple users' do
+      base_input_path = 'vue_merge_request_widget/components/approvals/queries/'
+      base_output_path = 'graphql/merge_requests/approvals/'
+      query_name = 'approved_by.query.graphql'
+
+      it "#{base_output_path}#{query_name}_multiple_users.json" do
+        merge_request.approved_by_users << user
+        merge_request.approved_by_users << create(:user)
+
+        query = get_graphql_query_as_string("#{base_input_path}#{query_name}", ee: Gitlab.ee?)
+
+        post_graphql(query, current_user: user, variables: { projectPath: project.full_path, iid: merge_request.iid.to_s })
+
+        expect_graphql_errors_to_be_empty
+      end
+    end
+
     context 'merge request in state getState query' do
       base_input_path = 'vue_merge_request_widget/queries/'
       base_output_path = 'graphql/merge_requests/'

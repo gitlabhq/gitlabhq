@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Build::AutoRetry do
+RSpec.describe Gitlab::Ci::Build::AutoRetry, feature_category: :pipeline_authoring do
   let(:auto_retry) { described_class.new(build) }
 
   describe '#allowed?' do

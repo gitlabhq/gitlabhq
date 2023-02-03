@@ -1068,14 +1068,16 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
     let_it_be(:project) { create(:project) }
     let_it_be(:package) { create(:maven_package, project: project) }
     let_it_be(:package2) { create(:maven_package, project: project) }
-    let_it_be(:package3) { create(:maven_package, project: project, name: 'foo') }
+    let_it_be(:package3) { create(:maven_package, :error, project: project) }
+    let_it_be(:package4) { create(:maven_package, project: project, name: 'foo') }
+    let_it_be(:pending_destruction_package) { create(:maven_package, :pending_destruction, project: project) }
 
     it 'returns other package versions of the same package name belonging to the project' do
-      expect(package.versions).to contain_exactly(package2)
+      expect(package.versions).to contain_exactly(package2, package3)
     end
 
     it 'does not return different packages' do
-      expect(package.versions).not_to include(package3)
+      expect(package.versions).not_to include(package4)
     end
   end
 

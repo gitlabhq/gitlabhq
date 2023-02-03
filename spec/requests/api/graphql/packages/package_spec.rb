@@ -113,6 +113,29 @@ RSpec.describe 'package details', feature_category: :package_registry do
       end
     end
 
+    context 'versions field', :aggregate_failures do
+      let_it_be(:composer_package2) { create(:composer_package, project: project, name: composer_package.name) }
+      let_it_be(:composer_package3) { create(:composer_package, :error, project: project, name: composer_package.name) }
+      let_it_be(:pending_destruction) { create(:composer_package, :pending_destruction, project: project, name: composer_package.name) }
+
+      def run_query
+        versions_nodes = <<~QUERY
+        nodes { id }
+        QUERY
+
+        query = graphql_query_for(:package, { id: package_global_id }, query_graphql_field("versions", {}, versions_nodes))
+        post_graphql(query, current_user: user)
+      end
+
+      it 'returns other versions' do
+        run_query
+        versions_ids = graphql_data.dig('package', 'versions', 'nodes').pluck('id')
+        expected_ids = [composer_package2, composer_package3].map(&:to_gid).map(&:to_s)
+
+        expect(versions_ids).to contain_exactly(*expected_ids)
+      end
+    end
+
     context 'pipelines field', :aggregate_failures do
       let(:pipelines) { create_list(:ci_pipeline, 6, project: project) }
       let(:pipeline_gids) { pipelines.sort_by(&:id).map(&:to_gid).map(&:to_s).reverse }

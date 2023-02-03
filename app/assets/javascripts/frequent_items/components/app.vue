@@ -6,12 +6,15 @@ import {
   mapVuexModuleActions,
   mapVuexModuleGetters,
 } from '~/lib/utils/vuex_module_mappers';
+import Tracking from '~/tracking';
 import { FREQUENT_ITEMS, STORAGE_KEY } from '../constants';
 import eventHub from '../event_hub';
 import { isMobile, updateExistingFrequentItem, sanitizeItem } from '../utils';
 import FrequentItemsList from './frequent_items_list.vue';
 import frequentItemsMixin from './frequent_items_mixin';
 import FrequentItemsSearchInput from './frequent_items_search_input.vue';
+
+const trackingMixin = Tracking.mixin();
 
 export default {
   components: {
@@ -24,7 +27,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [frequentItemsMixin],
+  mixins: [frequentItemsMixin, trackingMixin],
   inject: ['vuexModule'],
   props: {
     currentUserName: {
@@ -84,6 +87,13 @@ export default {
       'toggleItemsListEditablity',
       'fetchFrequentItems',
     ]),
+    toggleItemsListEditablityTracked() {
+      this.track('click_button', {
+        label: 'toggle_edit_frequent_items',
+        property: 'navigation_top',
+      });
+      this.toggleItemsListEditablity();
+    },
     dropdownOpenHandler() {
       if (this.searchQuery === '' || isMobile()) {
         this.fetchFrequentItems();
@@ -155,7 +165,7 @@ export default {
         :title="translations.headerEditToggle"
         :class="{ 'gl-bg-gray-100!': isItemsListEditable }"
         class="gl-p-2!"
-        @click="toggleItemsListEditablity"
+        @click="toggleItemsListEditablityTracked"
       >
         <gl-icon name="pencil" :class="{ 'gl-text-gray-900!': isItemsListEditable }" />
       </gl-button>

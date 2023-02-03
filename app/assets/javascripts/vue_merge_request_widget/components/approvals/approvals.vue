@@ -62,6 +62,7 @@ export default {
       fetchingApprovals: true,
       hasApprovalAuthError: false,
       isApproving: false,
+      updatedCount: 0,
     };
   },
   computed: {
@@ -197,6 +198,7 @@ export default {
       return serviceFn()
         .then((data) => {
           this.mr.setApprovals(data);
+          this.updatedCount += 1;
 
           if (!window.gon?.features?.realtimeMrStatusChange) {
             eventHub.$emit('MRWidgetUpdateRequested');
@@ -250,10 +252,10 @@ export default {
             />
             <approvals-summary
               v-else
-              :approved="isApproved"
-              :approvals-left="approvals.approvals_left || 0"
-              :rules-left="approvals.approvalRuleNamesLeft"
-              :approvers="approvedBy"
+              :project-path="mr.targetProjectFullPath"
+              :iid="`${mr.iid}`"
+              :updated-count="updatedCount"
+              :multiple-approval-rules-available="mr.multipleApprovalRulesAvailable"
             />
           </div>
           <div v-if="hasInvalidRules" class="gl-text-gray-400 gl-mt-2" data-testid="invalid-rules">

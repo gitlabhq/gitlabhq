@@ -155,6 +155,7 @@ describe('FrequentItemsListItemComponent', () => {
 
       expect(trackingSpy).toHaveBeenCalledWith(undefined, 'click_link', {
         label: 'projects_dropdown_frequent_items_list_item',
+        property: 'navigation_top',
       });
     });
   });

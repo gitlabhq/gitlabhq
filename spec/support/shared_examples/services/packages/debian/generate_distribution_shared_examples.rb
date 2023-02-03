@@ -56,8 +56,7 @@ RSpec.shared_examples 'Generate Debian Distribution and component files' do
       end
     end
 
-    it 'generates Debian distribution and component files', :aggregate_failures,
-      quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/389950' do
+    it 'generates Debian distribution and component files', :aggregate_failures do
       current_time = Time.utc(2020, 01, 25, 15, 17, 18, 123456)
 
       travel_to(current_time) do
@@ -193,7 +192,7 @@ RSpec.shared_examples 'Generate Debian Distribution and component files' do
         Architectures: all amd64 arm64
         Components: contrib main
         SHA256:
-         #{contrib_all_sha256}        #{contrib_all_size} contrib/binary-all/Packages
+         #{contrib_all_sha256} #{contrib_all_size.to_s.rjust(8)} contrib/binary-all/Packages
          e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855        0 contrib/debian-installer/binary-all/Packages
          e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855        0 contrib/binary-amd64/Packages
          e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855        0 contrib/debian-installer/binary-amd64/Packages
@@ -202,11 +201,11 @@ RSpec.shared_examples 'Generate Debian Distribution and component files' do
          e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855        0 contrib/source/Sources
          e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855        0 main/binary-all/Packages
          e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855        0 main/debian-installer/binary-all/Packages
-         #{main_amd64_sha256}     #{main_amd64_size} main/binary-amd64/Packages
-         #{main_amd64_di_sha256}      #{main_amd64_di_size} main/debian-installer/binary-amd64/Packages
+         #{main_amd64_sha256} #{main_amd64_size.to_s.rjust(8)} main/binary-amd64/Packages
+         #{main_amd64_di_sha256} #{main_amd64_di_size.to_s.rjust(8)} main/debian-installer/binary-amd64/Packages
          e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855        0 main/binary-arm64/Packages
          e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855        0 main/debian-installer/binary-arm64/Packages
-         #{main_sources_sha256}      #{main_sources_size} main/source/Sources
+         #{main_sources_sha256} #{main_sources_size.to_s.rjust(8)} main/source/Sources
         EOF
         expected_release_content = "Suite: #{distribution.suite}\n#{expected_release_content}" if distribution.suite
 

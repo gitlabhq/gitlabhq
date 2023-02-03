@@ -224,7 +224,7 @@ requirements.
 1. Working and clean code that is commented where needed.
 1. The change is evaluated to [limit the impact of far-reaching work](https://about.gitlab.com/handbook/engineering/development/#reducing-the-impact-of-far-reaching-work).
 1. [Performance guidelines](../merge_request_concepts/performance.md) have been followed.
-1. [Secure coding guidelines](https://gitlab.com/gitlab-com/gl-security/security-guidelines) have been followed.
+1. [Secure coding guidelines](../secure_coding_guidelines.md) have been followed.
 1. [Application and rate limit guidelines](../merge_request_concepts/rate_limits.md) have been followed.
 1. [Documented](../documentation/index.md) in the `/doc` directory.
 1. If your MR touches code that executes shell commands, reads or opens files, or
