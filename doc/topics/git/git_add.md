@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 comments: false
 ---
 
-# Git Add **(FREE)**
+# Git add **(FREE)**
 
 Adds content to the index or staging area.
 

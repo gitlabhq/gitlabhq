@@ -1,5 +1,5 @@
 - form_id = "transfer-group-form"
-- initial_data = { button_text: s_('GroupSettings|Transfer group'), group_name: @group.name, group_id: @group.id, target_form_id: form_id, is_paid_group: group.paid?.to_s }
+- initial_data = { button_text: s_('GroupSettings|Transfer group'), group_full_path: @group.full_path, group_name: @group.name, group_id: @group.id, target_form_id: form_id, is_paid_group: group.paid?.to_s }
 
 .sub-section{ data: { qa_selector: 'transfer_group_content' } }
   %h4.warning-title= s_('GroupSettings|Transfer group')

@@ -34,6 +34,7 @@ fragment LinkedPipelineData on Pipeline {
     __typename
     id
     name
+    retried
   }
   project {
     __typename

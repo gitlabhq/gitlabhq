@@ -6,7 +6,7 @@ type: concepts, howto
 description: "Introduction to Git rebase and force push, methods to resolve merge conflicts through the command line."
 ---
 
-# Introduction to Git rebase and force push **(FREE)**
+# Git rebase and force push **(FREE)**
 
 This guide helps you to get started with rebases, force pushes, and fixing
 [merge conflicts](../../user/project/merge_requests/conflicts.md) locally.

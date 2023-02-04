@@ -730,6 +730,7 @@ export const downstream = {
       sourceJob: {
         name: 'test_c',
         id: '71',
+        retried: false,
         __typename: 'CiJob',
       },
       project: {
@@ -760,6 +761,7 @@ export const downstream = {
       sourceJob: {
         id: '73',
         name: 'test_d',
+        retried: true,
         __typename: 'CiJob',
       },
       project: {
@@ -845,6 +847,7 @@ export const wrappedPipelineReturn = {
           sourceJob: {
             name: 'test_c',
             id: '78',
+            retried: false,
             __typename: 'CiJob',
           },
           project: {

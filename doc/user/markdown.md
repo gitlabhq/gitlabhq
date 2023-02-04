@@ -84,9 +84,9 @@ The following features are not found in standard Markdown.
 
 ### Colors
 
-[View this topic in GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#colors).
+Markdown does not support changing text color.
 
-You can write a color in the formats: `HEX`, `RGB`, or `HSL`.
+You can write a color code in the formats: `HEX`, `RGB`, or `HSL`.
 
 - `HEX`: `` `#RGB[A]` `` or `` `#RRGGBB[AA]` ``
 - `RGB`: `` `RGB[A](R, G, B[, A])` ``
@@ -94,7 +94,8 @@ You can write a color in the formats: `HEX`, `RGB`, or `HSL`.
 
 Named colors are not supported.
 
-Colors in backticks are followed by a color indicator:
+In the GitLab application (but not the GitLab documentation) color codes in backticks
+display a color chip next to the color code. For example:
 
 ```markdown
 - `#F00`
@@ -107,6 +108,9 @@ Colors in backticks are followed by a color indicator:
 - `HSL(540,70%,50%)`
 - `HSLA(540,70%,50%,0.3)`
 ```
+
+[View this topic in GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#colors)
+to see the color chips next to the color code:
 
 - `#F00`
 - `#F00A`

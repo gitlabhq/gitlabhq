@@ -6,7 +6,7 @@ type: howto, tutorial
 description: "Introduction to using Git through the command line."
 ---
 
-# Git on the command line **(FREE)**
+# Command line Git **(FREE)**
 
 [Git](https://git-scm.com/) is an open-source distributed version control system. GitLab is built
 on top of Git.

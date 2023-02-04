@@ -1,4 +1,5 @@
-import { mount, shallowMount } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { LAYER_VIEW, STAGE_VIEW } from '~/pipelines/components/graph/constants';
 import PipelineGraph from '~/pipelines/components/graph/graph_component.vue';
 import JobItem from '~/pipelines/components/graph/job_item.vue';
@@ -15,10 +16,11 @@ import {
 describe('graph component', () => {
   let wrapper;
 
+  const findDownstreamColumn = () => wrapper.findByTestId('downstream-pipelines');
   const findLinkedColumns = () => wrapper.findAllComponents(LinkedPipelinesColumn);
   const findLinksLayer = () => wrapper.findComponent(LinksLayer);
   const findStageColumns = () => wrapper.findAllComponents(StageColumnComponent);
-  const findStageNameInJob = () => wrapper.find('[data-testid="stage-name-in-job"]');
+  const findStageNameInJob = () => wrapper.findByTestId('stage-name-in-job');
 
   const defaultProps = {
     pipeline: generateResponse(mockPipelineResponse, 'root/fungi-xoxo'),
@@ -64,14 +66,9 @@ describe('graph component', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   describe('with data', () => {
     beforeEach(() => {
-      createComponent({ mountFn: mount });
+      createComponent({ mountFn: mountExtended });
     });
 
     it('renders the main columns in the graph', () => {
@@ -109,7 +106,7 @@ describe('graph component', () => {
     describe('when links are present', () => {
       beforeEach(() => {
         createComponent({
-          mountFn: mount,
+          mountFn: mountExtended,
           stubOverride: { 'job-item': false },
           data: { hoveredJobName: 'test_a' },
         });
@@ -126,7 +123,7 @@ describe('graph component', () => {
 
   describe('when linked pipelines are not present', () => {
     beforeEach(() => {
-      createComponent({ mountFn: mount });
+      createComponent({ mountFn: mountExtended });
     });
 
     it('should not render a linked pipelines column', () => {
@@ -137,7 +134,7 @@ describe('graph component', () => {
   describe('when linked pipelines are present', () => {
     beforeEach(() => {
       createComponent({
-        mountFn: mount,
+        mountFn: mountExtended,
         props: { pipeline: pipelineWithUpstreamDownstream(mockPipelineResponse) },
       });
     });
@@ -150,7 +147,7 @@ describe('graph component', () => {
   describe('in layers mode', () => {
     beforeEach(() => {
       createComponent({
-        mountFn: mount,
+        mountFn: mountExtended,
         stubOverride: {
           'job-item': false,
           'job-group-dropdown': false,
@@ -164,6 +161,24 @@ describe('graph component', () => {
 
     it('displays the stage name on the job', () => {
       expect(findStageNameInJob().exists()).toBe(true);
+    });
+  });
+
+  describe('downstream pipelines', () => {
+    beforeEach(() => {
+      createComponent({
+        mountFn: mountExtended,
+        props: {
+          pipeline: pipelineWithUpstreamDownstream(mockPipelineResponse),
+        },
+      });
+    });
+
+    it('filters pipelines spawned from the same trigger job', () => {
+      // The mock data has one downstream with `retried: true and one
+      // with retried false. We filter the `retried: true` out so we
+      // should only pass one downstream
+      expect(findDownstreamColumn().props().linkedPipelines).toHaveLength(1);
     });
   });
 });

@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: howto
 ---
 
-# Undo possibilities in Git **(FREE)**
+# Undo options in Git **(FREE)**
 
 [Nothing in Git is deleted](https://git-scm.com/book/en/v2/Git-Internals-Maintenance-and-Data-Recovery),
 so when you work in Git, you can undo your work.

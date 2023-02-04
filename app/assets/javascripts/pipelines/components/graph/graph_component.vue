@@ -2,7 +2,10 @@
 import { reportToSentry } from '../../utils';
 import LinkedGraphWrapper from '../graph_shared/linked_graph_wrapper.vue';
 import LinksLayer from '../graph_shared/links_layer.vue';
-import { generateColumnsFromLayersListMemoized } from '../parsing_utils';
+import {
+  generateColumnsFromLayersListMemoized,
+  keepLatestDownstreamPipelines,
+} from '../parsing_utils';
 import { DOWNSTREAM, MAIN, UPSTREAM, ONE_COL_WIDTH, STAGE_VIEW } from './constants';
 import LinkedPipelinesColumn from './linked_pipelines_column.vue';
 import StageColumnComponent from './stage_column_component.vue';
@@ -81,7 +84,9 @@ export default {
       return `${this.$options.BASE_CONTAINER_ID}-${this.pipeline.id}`;
     },
     downstreamPipelines() {
-      return this.hasDownstreamPipelines ? this.pipeline.downstream : [];
+      return this.hasDownstreamPipelines
+        ? keepLatestDownstreamPipelines(this.pipeline.downstream)
+        : [];
     },
     layout() {
       return this.isStageView
@@ -241,6 +246,7 @@ export default {
             :show-links="showJobLinks"
             :type="$options.pipelineTypeConstants.DOWNSTREAM"
             :view-type="viewType"
+            data-testid="downstream-pipelines"
             @downstreamHovered="setSourceJob"
             @pipelineExpandToggle="togglePipelineExpanded"
             @refreshPipelineGraph="$emit('refreshPipelineGraph')"
