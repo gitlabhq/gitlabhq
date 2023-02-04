@@ -1,4 +1,4 @@
-import { __ } from '~/locale';
+import { __, s__ } from '~/locale';
 
 export const METRIC_KEY_PREFIX = 'metric.';
 
@@ -14,3 +14,7 @@ export const BASE_SORT_FIELDS = Object.freeze([
     label: __('Created at'),
   },
 ]);
+
+export const FEATURE_NAME = s__('MlExperimentTracking|Machine learning experiment tracking');
+
+export const FEATURE_FEEDBACK_ISSUE = 'https://gitlab.com/gitlab-org/gitlab/-/issues/381660';

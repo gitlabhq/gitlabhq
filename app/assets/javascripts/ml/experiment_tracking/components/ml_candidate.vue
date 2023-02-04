@@ -1,7 +1,8 @@
 <script>
 import { GlLink } from '@gitlab/ui';
 import { __ } from '~/locale';
-import IncubationAlert from './incubation_alert.vue';
+import { FEATURE_NAME, FEATURE_FEEDBACK_ISSUE } from '~/ml/experiment_tracking/constants';
+import IncubationAlert from '~/vue_shared/components/incubation/incubation_alert.vue';
 
 export default {
   name: 'MlCandidate',
@@ -39,12 +40,17 @@ export default {
       ];
     },
   },
+  FEATURE_NAME,
+  FEATURE_FEEDBACK_ISSUE,
 };
 </script>
 
 <template>
   <div>
-    <incubation-alert />
+    <incubation-alert
+      :feature-name="$options.FEATURE_NAME"
+      :link-to-feedback-issue="$options.FEATURE_FEEDBACK_ISSUE"
+    />
 
     <h3>
       {{ $options.i18n.titleLabel }}

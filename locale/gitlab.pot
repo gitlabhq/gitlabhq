@@ -17432,9 +17432,6 @@ msgstr ""
 msgid "February"
 msgstr ""
 
-msgid "Feedback"
-msgstr ""
-
 msgid "Feedback and Updates"
 msgstr ""
 
@@ -22315,6 +22312,18 @@ msgid "Incomplete"
 msgstr ""
 
 msgid "Increase"
+msgstr ""
+
+msgid "Incubation|%{featureName} is in incubating phase"
+msgstr ""
+
+msgid "Incubation|GitLab incubates features to explore new use cases. These features are updated regularly, and support is limited."
+msgstr ""
+
+msgid "Incubation|Give feedback on this feature"
+msgstr ""
+
+msgid "Incubation|Learn more about incubating features"
 msgstr ""
 
 msgid "Indent line"
@@ -27236,6 +27245,9 @@ msgid "MlExperimentTracking|Experiment candidates"
 msgstr ""
 
 msgid "MlExperimentTracking|Filter candidates"
+msgstr ""
+
+msgid "MlExperimentTracking|Machine learning experiment tracking"
 msgstr ""
 
 msgid "MlExperimentTracking|Name"

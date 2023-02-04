@@ -1,6 +1,6 @@
 import { mount } from '@vue/test-utils';
 import { GlAlert, GlButton } from '@gitlab/ui';
-import IncubationAlert from '~/ml/experiment_tracking/components/incubation_alert.vue';
+import IncubationAlert from '~/vue_shared/components/incubation/incubation_alert.vue';
 
 describe('IncubationAlert', () => {
   let wrapper;
@@ -10,13 +10,20 @@ describe('IncubationAlert', () => {
   const findButton = () => wrapper.findComponent(GlButton);
 
   beforeEach(() => {
-    wrapper = mount(IncubationAlert);
+    wrapper = mount(IncubationAlert, {
+      propsData: {
+        featureName: 'some feature',
+        linkToFeedbackIssue: 'some_link',
+      },
+    });
+  });
+
+  it('displays the feature name in the title', () => {
+    expect(wrapper.html()).toContain('some feature is in incubating phase');
   });
 
   it('displays link to issue', () => {
-    expect(findButton().attributes().href).toBe(
-      'https://gitlab.com/gitlab-org/gitlab/-/issues/381660',
-    );
+    expect(findButton().attributes().href).toBe('some_link');
   });
 
   it('is removed if dismissed', async () => {

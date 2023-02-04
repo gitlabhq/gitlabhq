@@ -7,12 +7,14 @@ import {
   LIST_KEY_CREATED_AT,
   BASE_SORT_FIELDS,
   METRIC_KEY_PREFIX,
+  FEATURE_NAME,
+  FEATURE_FEEDBACK_ISSUE,
 } from '~/ml/experiment_tracking/constants';
 import { s__ } from '~/locale';
 import { queryToObject, setUrlParams, visitUrl } from '~/lib/utils/url_utility';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 import KeysetPagination from '~/vue_shared/components/incubation/pagination.vue';
-import IncubationAlert from './incubation_alert.vue';
+import IncubationAlert from '~/vue_shared/components/incubation/incubation_alert.vue';
 
 export default {
   name: 'MlExperiment',
@@ -119,12 +121,17 @@ export default {
     noDataContent: s__('MlExperimentTracking|-'),
     filterCandidatesLabel: s__('MlExperimentTracking|Filter candidates'),
   },
+  FEATURE_NAME,
+  FEATURE_FEEDBACK_ISSUE,
 };
 </script>
 
 <template>
   <div>
-    <incubation-alert />
+    <incubation-alert
+      :feature-name="$options.FEATURE_NAME"
+      :link-to-feedback-issue="$options.FEATURE_FEEDBACK_ISSUE"
+    />
 
     <h3>
       {{ $options.i18n.titleLabel }}
