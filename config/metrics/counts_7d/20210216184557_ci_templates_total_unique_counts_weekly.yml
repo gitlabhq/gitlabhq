@@ -177,6 +177,8 @@ options:
   - p_ci_templates_matlab
   - p_ci_templates_themekit
   - p_ci_templates_katalon
+  - p_ci_templates_terraform_module_base
+  - p_ci_templates_terraform_module
 distribution:
 - ce
 - ee

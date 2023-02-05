@@ -595,3 +595,11 @@
   category: ci_templates
   redis_slot: ci_templates
   aggregation: weekly
+- name: p_ci_templates_terraform_module_base
+  category: ci_templates
+  redis_slot: ci_templates
+  aggregation: weekly
+- name: p_ci_templates_terraform_module
+  category: ci_templates
+  redis_slot: ci_templates
+  aggregation: weekly
