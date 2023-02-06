@@ -169,12 +169,14 @@ To monitor [strong consistency](index.md#strong-consistency), you can use the fo
 
 To monitor the number of repositories that have no healthy, up-to-date replicas:
 
-- `gitaly_praefect_unavailable_repositories`
+- `gitaly_praefect_unavailable_repositories`, the number of repositories that have no healthy, up to date replicas.
+  - [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/390266) in GitLab 15.9 and will be removed in GitLab 16.0.
 
 To monitor [repository verification](praefect.md#repository-verification), use the following Prometheus metrics:
 
-- `gitaly_praefect_verification_queue_depth`, the total number of replicas pending verification. This
-  metric is scraped from the database and is only available when Prometheus is scraping the database metrics.
+- `gitaly_praefect_verification_queue_depth`, the total number of replicas pending verification. This metric is:
+  - Scraped from the database and is only available when Prometheus is scraping the database metrics.
+  - [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/390266) in GitLab 15.9 and will be removed in GitLab 16.0.
 - `gitaly_praefect_verification_jobs_dequeued_total`, the number of verification jobs picked up by the
   worker.
 - `gitaly_praefect_verification_jobs_completed_total`, the number of verification jobs completed by the
@@ -194,7 +196,7 @@ You can also monitor the [Praefect logs](../logs/index.md#praefect-logs).
 The following metrics are available from the `/db_metrics` endpoint:
 
 - `gitaly_praefect_unavailable_repositories`, the number of repositories that have no healthy, up to date replicas.
-- `gitaly_praefect_read_only_repositories`, the number of repositories in read-only mode in a virtual storage.
-  This metric is available for backwards compatibility reasons. `gitaly_praefect_unavailable_repositories` is more
-  accurate.
 - `gitaly_praefect_replication_queue_depth`, the number of jobs in the replication queue.
+- `gitaly_praefect_verification_queue_depth`, the total number of replicas pending verification.
+- `gitaly_praefect_read_only_repositories`, the number of repositories in read-only mode in a virtual storage.
+  - This metric was [removed](https://gitlab.com/gitlab-org/gitaly/-/issues/4229) in GitLab 15.4.

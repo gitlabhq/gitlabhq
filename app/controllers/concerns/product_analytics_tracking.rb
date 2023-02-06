@@ -5,7 +5,7 @@ module ProductAnalyticsTracking
   include RedisTracking
   extend ActiveSupport::Concern
 
-  MIGRATED_EVENTS = ['g_analytics_valuestream']
+  MIGRATED_EVENTS = ['g_analytics_valuestream'].freeze
 
   class_methods do
     # TODO: Remove once all the events are migrated to #track_custom_event

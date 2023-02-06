@@ -11,6 +11,7 @@ import {
   KEEP_N_DUPLICATED_PACKAGE_FILES_LABEL,
   KEEP_N_DUPLICATED_PACKAGE_FILES_DESCRIPTION,
 } from '~/packages_and_registries/settings/project/constants';
+import packagesCleanupPolicyQuery from '~/packages_and_registries/settings/project/graphql/queries/get_packages_cleanup_policy.query.graphql';
 import updatePackagesCleanupPolicyMutation from '~/packages_and_registries/settings/project/graphql/mutations/update_packages_cleanup_policy.mutation.graphql';
 import Tracking from '~/tracking';
 import { packagesCleanupPolicyPayload, packagesCleanupPolicyMutationPayload } from '../mock_data';
@@ -39,10 +40,13 @@ describe('Packages Cleanup Policy Settings Form', () => {
     label: 'packages_cleanup_policies',
   };
 
+  const defaultQueryResolver = jest.fn().mockResolvedValue(packagesCleanupPolicyPayload());
+
   const findForm = () => wrapper.findComponent({ ref: 'form-element' });
   const findSaveButton = () => wrapper.findByTestId('save-button');
   const findKeepNDuplicatedPackageFilesDropdown = () =>
     wrapper.findByTestId('keep-n-duplicated-package-files-dropdown');
+  const findNextRunAt = () => wrapper.findByTestId('next-run-at');
 
   const submitForm = async () => {
     findForm().trigger('submit');
@@ -77,10 +81,14 @@ describe('Packages Cleanup Policy Settings Form', () => {
 
   const mountComponentWithApollo = ({
     provide = defaultProvidedValues,
+    queryResolver = defaultQueryResolver,
     mutationResolver,
     queryPayload = packagesCleanupPolicyPayload(),
   } = {}) => {
-    const requestHandlers = [[updatePackagesCleanupPolicyMutation, mutationResolver]];
+    const requestHandlers = [
+      [updatePackagesCleanupPolicyMutation, mutationResolver],
+      [packagesCleanupPolicyQuery, queryResolver],
+    ];
 
     fakeApollo = createMockApollo(requestHandlers);
 
@@ -160,6 +168,40 @@ describe('Packages Cleanup Policy Settings Form', () => {
     });
   });
 
+  describe('nextRunAt', () => {
+    it('when present renders time until next package cleanup', () => {
+      jest.spyOn(Date, 'now').mockImplementation(() => new Date('2063-04-04T00:42:00Z').getTime());
+
+      mountComponent({
+        props: { value: { ...defaultProps.value, nextRunAt: '2063-04-04T02:42:00Z' } },
+      });
+
+      expect(findNextRunAt().text()).toMatchInterpolatedText(
+        'Packages and assets will not be deleted until cleanup runs in about 2 hours.',
+      );
+    });
+
+    it('renders message for cleanup when its before current date', () => {
+      jest.spyOn(Date, 'now').mockImplementation(() => new Date('2063-04-04T00:42:00Z').getTime());
+
+      mountComponent({
+        props: { value: { ...defaultProps.value, nextRunAt: '2063-03-04T00:42:00Z' } },
+      });
+
+      expect(findNextRunAt().text()).toMatchInterpolatedText(
+        'Packages and assets cleanup is ready to be executed when the next cleanup job runs.',
+      );
+    });
+
+    it('when null hides time until next package cleanup', () => {
+      mountComponent({
+        props: { value: { ...defaultProps.value, nextRunAt: null } },
+      });
+
+      expect(findNextRunAt().exists()).toBe(false);
+    });
+  });
+
   describe('form', () => {
     describe('actions', () => {
       describe('submit button', () => {
@@ -209,7 +251,7 @@ describe('Packages Cleanup Policy Settings Form', () => {
     });
 
     describe('form submit event', () => {
-      it('dispatches the correct apollo mutation', () => {
+      it('dispatches the correct apollo mutation and refetches query', async () => {
         const mutationResolver = jest
           .fn()
           .mockResolvedValue(packagesCleanupPolicyMutationPayload());
@@ -224,6 +266,12 @@ describe('Packages Cleanup Policy Settings Form', () => {
             keepNDuplicatedPackageFiles: 'ALL_PACKAGE_FILES',
             projectPath: 'path',
           },
+        });
+
+        await waitForPromises();
+
+        expect(defaultQueryResolver).toHaveBeenCalledWith({
+          projectPath: 'path',
         });
       });
 
@@ -249,6 +297,18 @@ describe('Packages Cleanup Policy Settings Form', () => {
         await submitForm();
 
         expect(wrapper.vm.$toast.show).toHaveBeenCalledWith(UPDATE_SETTINGS_SUCCESS_MESSAGE);
+      });
+
+      it('shows error toast when mutation responds with errors', async () => {
+        mountComponentWithApollo({
+          mutationResolver: jest
+            .fn()
+            .mockResolvedValue(packagesCleanupPolicyMutationPayload({ errors: [new Error()] })),
+        });
+
+        await submitForm();
+
+        expect(wrapper.vm.$toast.show).toHaveBeenCalledWith(UPDATE_SETTINGS_ERROR_MESSAGE);
       });
 
       describe('when submit fails', () => {

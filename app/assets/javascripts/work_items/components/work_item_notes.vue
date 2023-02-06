@@ -53,7 +53,6 @@ export default {
       isLoadingMore: false,
       perPage: DEFAULT_PAGE_SIZE_NOTES,
       sortOrder: ASC,
-      changeNotesSortOrderAfterLoading: false,
     };
   },
   computed: {
@@ -68,12 +67,6 @@ export default {
     },
     hasNextPage() {
       return this.pageInfo?.hasNextPage;
-    },
-    showInitialLoader() {
-      return this.initialLoading || this.changeNotesSortOrderAfterLoading;
-    },
-    showTimeline() {
-      return !this.changeNotesSortOrderAfterLoading;
     },
     showLoadingMoreSkeleton() {
       return this.isLoadingMore && !this.changeNotesSortOrderAfterLoading;
@@ -161,16 +154,8 @@ export default {
         this.changeNotesSortOrder(DESC);
       }
     },
-    updateInitialSortedOrder(direction) {
-      this.sortOrder = direction;
-      // when the direction is reverse , we need to load all since the sorting is on the frontend
-      if (direction === DESC) {
-        this.changeNotesSortOrderAfterLoading = true;
-      }
-    },
     changeNotesSortOrder(direction) {
       this.sortOrder = direction;
-      this.changeNotesSortOrderAfterLoading = false;
     },
     async fetchMoreNotes() {
       this.isLoadingMore = true;
@@ -187,9 +172,6 @@ export default {
         })
         .catch((error) => this.$emit('error', error.message));
       this.isLoadingMore = false;
-      if (this.changeNotesSortOrderAfterLoading && !this.hasNextPage) {
-        this.changeNotesSortOrder(this.sortOrder);
-      }
     },
   },
 };
@@ -205,10 +187,10 @@ export default {
         :sort-order="sortOrder"
         :work-item-type="workItemType"
         @changeSortOrder="changeNotesSortOrder"
-        @updateSavedSortOrder="updateInitialSortedOrder"
+        @updateSavedSortOrder="changeNotesSortOrder"
       />
     </div>
-    <div v-if="showInitialLoader" class="gl-mt-5">
+    <div v-if="initialLoading" class="gl-mt-5">
       <gl-skeleton-loader
         v-for="index in $options.loader.repeat"
         :key="index"
@@ -221,7 +203,7 @@ export default {
       </gl-skeleton-loader>
     </div>
     <div v-else class="issuable-discussion gl-mb-5 gl-clearfix!">
-      <template v-if="showTimeline">
+      <template v-if="!initialLoading">
         <ul class="notes main-notes-list timeline gl-clearfix!">
           <work-item-comment-form
             v-if="formAtTop"

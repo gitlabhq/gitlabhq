@@ -9,41 +9,55 @@ RSpec.describe RuboCop::Cop::RSpec::InvalidFeatureCategory, feature_category: :t
   shared_examples 'feature category validation' do |valid_category|
     it 'flags invalid feature category in top level example group' do
       expect_offense(<<~RUBY, invalid: invalid_category)
-      RSpec.describe 'foo', feature_category: :%{invalid}, foo: :bar do
-                                              ^^{invalid} Please use a valid feature category. See https://docs.gitlab.com/ee/development/feature_categorization/#rspec-examples.
-      end
+        RSpec.describe 'foo', feature_category: :%{invalid}, foo: :bar do
+                                                ^^{invalid} Please use a valid feature category. See https://docs.gitlab.com/ee/development/feature_categorization/#rspec-examples.
+        end
       RUBY
     end
 
     it 'flags invalid feature category in nested context' do
       expect_offense(<<~RUBY, valid: valid_category, invalid: invalid_category)
-      RSpec.describe 'foo', feature_category: :%{valid} do
-        context 'bar', foo: :bar, feature_category: :%{invalid} do
-                                                    ^^{invalid} Please use a valid feature category. See https://docs.gitlab.com/ee/development/feature_categorization/#rspec-examples.
+        RSpec.describe 'foo', feature_category: :%{valid} do
+          context 'bar', foo: :bar, feature_category: :%{invalid} do
+                                                      ^^{invalid} Please use a valid feature category. See https://docs.gitlab.com/ee/development/feature_categorization/#rspec-examples.
+          end
         end
-      end
       RUBY
     end
 
     it 'flags invalid feature category in examples' do
       expect_offense(<<~RUBY, valid: valid_category, invalid: invalid_category)
-      RSpec.describe 'foo', feature_category: :%{valid} do
-        it 'bar', feature_category: :%{invalid} do
-                                    ^^{invalid} Please use a valid feature category. See https://docs.gitlab.com/ee/development/feature_categorization/#rspec-examples.
+        RSpec.describe 'foo', feature_category: :%{valid} do
+          it 'bar', feature_category: :%{invalid} do
+                                      ^^{invalid} Please use a valid feature category. See https://docs.gitlab.com/ee/development/feature_categorization/#rspec-examples.
+          end
         end
-      end
       RUBY
     end
 
     it 'does not flag if feature category is valid' do
       expect_no_offenses(<<~RUBY)
-      RSpec.describe 'foo', feature_category: :#{valid_category} do
-        context 'bar', feature_category: :#{valid_category} do
-          it 'baz', feature_category: :#{valid_category} do
+        RSpec.describe 'foo', feature_category: :#{valid_category} do
+          context 'bar', feature_category: :#{valid_category} do
+            it 'baz', feature_category: :#{valid_category} do
+            end
           end
         end
-      end
       RUBY
+    end
+
+    it 'suggests an alternative' do
+      mistyped = make_typo(valid_category)
+
+      expect_offense(<<~RUBY, invalid: mistyped, valid: valid_category)
+        RSpec.describe 'foo', feature_category: :%{invalid} do
+                                                ^^{invalid} Please use a valid feature category. Did you mean `:%{valid}`? See [...]
+        end
+      RUBY
+    end
+
+    def make_typo(string)
+      "#{string}#{string[-1]}"
     end
   end
 

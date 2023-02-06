@@ -2,6 +2,7 @@
 
 require 'rubocop/cop/rspec/base'
 require 'rubocop/cop/rspec/mixin/top_level_group'
+require 'did_you_mean'
 
 module RuboCop
   module Cop
@@ -26,8 +27,10 @@ module RuboCop
       #   end
       #
       class InvalidFeatureCategory < RuboCop::Cop::RSpec::Base
-        MSG = 'Please use a valid feature category. ' \
+        MSG = 'Please use a valid feature category. %{msg_suggestion}' \
               'See https://docs.gitlab.com/ee/development/feature_categorization/#rspec-examples.'
+
+        MSG_DID_YOU_MEAN = 'Did you mean `:%{suggestion}`? '
 
         MSG_SYMBOL = 'Please use a symbol as value.'
 
@@ -62,7 +65,8 @@ module RuboCop
 
           return if valid_feature_category?(value_node)
 
-          add_offense(value_node)
+          message = format(MSG, msg_suggestion: suggestion_message(value_node))
+          add_offense(value_node, message: message)
         end
 
         # Used by RuboCop to invalidate its cache if the contents of
@@ -74,9 +78,17 @@ module RuboCop
 
         private
 
+        def suggestion_message(value_node)
+          spell = DidYouMean::SpellChecker.new(dictionary: self.class.feature_categories)
+
+          suggestions = spell.correct(value_node.value)
+          return if suggestions.none?
+
+          format(MSG_DID_YOU_MEAN, suggestion: suggestions.first)
+        end
+
         def valid_feature_category?(node)
-          CUSTOM_FEATURE_CATEGORIES.include?(node.value) ||
-            self.class.feature_categories.include?(node.value)
+          self.class.feature_categories.include?(node.value)
         end
 
         def self.feature_categories
@@ -84,6 +96,7 @@ module RuboCop
             .load_file(FEATURE_CATEGORIES_PATH)
             .map(&:to_sym)
             .to_set
+            .union(CUSTOM_FEATURE_CATEGORIES)
         end
       end
     end

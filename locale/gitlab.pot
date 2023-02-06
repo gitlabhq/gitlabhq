@@ -30023,6 +30023,12 @@ msgstr[1] ""
 msgid "PackageRegistry|Package updated by commit %{link} on branch %{branch}, built by pipeline %{pipeline}, and published to the registry %{datetime}"
 msgstr ""
 
+msgid "PackageRegistry|Packages and assets cleanup is ready to be executed when the next cleanup job runs."
+msgstr ""
+
+msgid "PackageRegistry|Packages and assets will not be deleted until cleanup runs in %{nextRunAt}."
+msgstr ""
+
 msgid "PackageRegistry|Packages deleted successfully"
 msgstr ""
 
