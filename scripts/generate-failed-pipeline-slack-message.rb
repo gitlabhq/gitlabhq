@@ -107,7 +107,7 @@ class GenerateFailedPipelineSlackMessage
     if incident_exist?
       incident['web_url']
     else
-      "#{ENV['CI_SERVER_URL']}/#{ENV['BROKEN_MASTER_INCIDENTS_PROJECT']}/-/issues/new?" \
+      "#{ENV['CI_SERVER_URL']}/#{ENV['BROKEN_BRANCH_INCIDENTS_PROJECT']}/-/issues/new?" \
         "issuable_template=incident&issue%5Bissue_type%5D=incident"
     end
   end
