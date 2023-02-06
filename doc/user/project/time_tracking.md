@@ -42,7 +42,8 @@ You can see the estimated time remaining when you hover over the time tracking i
 
 Prerequisites:
 
-- You must have at least the Reporter role for the project.
+- In issues, you must have at least the Reporter role for the project.
+- In merge requests, you must have at least the Developer role for the project.
 
 To enter an estimate, use the `/estimate` [quick action](quick_actions.md), followed by the time.
 
@@ -57,7 +58,8 @@ Every time you enter a new time estimate, it overwrites the previous value.
 
 Prerequisites:
 
-- You must have at least the Reporter role for the project.
+- In issues, you must have at least the Reporter role for the project.
+- In merge requests, you must have at least the Developer role for the project.
 
 To remove an estimate entirely, use the `/remove_estimate` [quick action](quick_actions.md).
 

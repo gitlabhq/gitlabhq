@@ -30,7 +30,8 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
       branches_anchor_data,
       tags_anchor_data,
       storage_anchor_data,
-      releases_anchor_data
+      releases_anchor_data,
+      environments_anchor_data
     ].compact.select(&:is_link)
   end
 
@@ -189,6 +190,22 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
                      strong_end: '</strong>'.html_safe
                    },
                   project_releases_path(project))
+  end
+
+  def environments_anchor_data
+    return unless can?(current_user, :read_environment, project)
+
+    environments_count = project.environments.available.count
+    return if environments_count == 0
+
+    AnchorData.new(true,
+    statistic_icon('environment') +
+                   n_('%{strong_start}%{count}%{strong_end} Environment', '%{strong_start}%{count}%{strong_end} Environments', environments_count).html_safe % {
+                     count: number_with_delimiter(environments_count),
+                     strong_start: '<strong class="project-stat-value">'.html_safe,
+                     strong_end: '</strong>'.html_safe
+                   },
+                   project_environments_path(project))
   end
 
   def commits_anchor_data

@@ -10,7 +10,6 @@ stages:
 
 include:
   - local: .gitlab/ci/global.gitlab-ci.yml
-  - local: .gitlab/ci/rules.gitlab-ci.yml
   - local: .gitlab/ci/review-apps/rules.gitlab-ci.yml
   - local: .gitlab/ci/review-apps/qa.gitlab-ci.yml
   - local: .gitlab/ci/review-apps/dast.gitlab-ci.yml

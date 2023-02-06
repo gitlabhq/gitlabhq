@@ -11,16 +11,20 @@ RSpec.describe Banzai::Filter::VideoLinkFilter, feature_category: :team_planning
     described_class.call(doc, contexts)
   end
 
-  def link_to_image(path)
+  def link_to_image(path, height = nil, width = nil)
     return '<img/>' if path.nil?
 
-    %(<img src="#{path}"/>)
+    attrs = %(src="#{path}")
+    attrs += %( width="#{width}") if width
+    attrs += %( height="#{height}") if height
+
+    %(<img #{attrs}/>)
   end
 
   let(:project) { create(:project, :repository) }
 
   shared_examples 'a video element' do
-    let(:image) { link_to_image(src) }
+    let(:image) { link_to_image(src, height, width) }
 
     it 'replaces the image tag with a video tag' do
       container = filter(image).children.first
@@ -32,7 +36,9 @@ RSpec.describe Banzai::Filter::VideoLinkFilter, feature_category: :team_planning
 
       expect(video.name).to eq 'video'
       expect(video['src']).to eq src
-      expect(video['width']).to eq "400"
+      expect(video['height']).to eq height if height
+      expect(video['width']).to eq width if width
+      expect(video['width']).to eq '400' unless width || height
       expect(video['preload']).to eq 'metadata'
 
       expect(link.name).to eq 'a'
@@ -51,6 +57,9 @@ RSpec.describe Banzai::Filter::VideoLinkFilter, feature_category: :team_planning
   end
 
   context 'when the element src has a video extension' do
+    let(:height) { nil }
+    let(:width) { nil }
+
     Gitlab::FileTypeDetection::SAFE_VIDEO_EXT.each do |ext|
       it_behaves_like 'a video element' do
         let(:src) { "/path/video.#{ext}" }
@@ -59,6 +68,25 @@ RSpec.describe Banzai::Filter::VideoLinkFilter, feature_category: :team_planning
       it_behaves_like 'a video element' do
         let(:src) { "/path/video.#{ext.upcase}" }
       end
+    end
+  end
+
+  context 'when the element has height or width specified' do
+    let(:src) { '/path/video.mp4' }
+
+    it_behaves_like 'a video element' do
+      let(:height) { '100%' }
+      let(:width) { '50px' }
+    end
+
+    it_behaves_like 'a video element' do
+      let(:height) { nil }
+      let(:width) { '50px' }
+    end
+
+    it_behaves_like 'a video element' do
+      let(:height) { '50px' }
+      let(:width) { nil }
     end
   end
 
@@ -85,6 +113,8 @@ RSpec.describe Banzai::Filter::VideoLinkFilter, feature_category: :team_planning
 
     context 'and src is a video' do
       let(:src) { '/path/video.mp4' }
+      let(:height) { nil }
+      let(:width) { nil }
 
       it_behaves_like 'a video element'
     end

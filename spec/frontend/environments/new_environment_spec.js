@@ -5,7 +5,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import NewEnvironment from '~/environments/components/new_environment.vue';
 import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
-import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
+import { HTTP_STATUS_BAD_REQUEST, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { visitUrl } from '~/lib/utils/url_utility';
 
 jest.mock('~/lib/utils/url_utility');
@@ -96,7 +96,7 @@ describe('~/environments/components/new.vue', () => {
   it('shows errors on error', async () => {
     const expected = { name: 'test', url: 'https://google.ca' };
 
-    await submitForm(expected, [400, { message: ['name taken'] }]);
+    await submitForm(expected, [HTTP_STATUS_BAD_REQUEST, { message: ['name taken'] }]);
 
     expect(createAlert).toHaveBeenCalledWith({ message: 'name taken' });
     expect(showsLoading()).toBe(false);

@@ -4131,6 +4131,7 @@ Input type: `MergeRequestUpdateInput`
 | <a id="mutationmergerequestupdateprojectpath"></a>`projectPath` | [`ID!`](#id) | Project the merge request to mutate is in. |
 | <a id="mutationmergerequestupdatestate"></a>`state` | [`MergeRequestNewState`](#mergerequestnewstate) | Action to perform to change the state. |
 | <a id="mutationmergerequestupdatetargetbranch"></a>`targetBranch` | [`String`](#string) | Target branch of the merge request. |
+| <a id="mutationmergerequestupdatetimeestimate"></a>`timeEstimate` | [`String`](#string) | Estimated time to complete the merge request, or `0` to remove the current estimate. |
 | <a id="mutationmergerequestupdatetitle"></a>`title` | [`String`](#string) | Title of the merge request. |
 
 #### Fields
@@ -5744,6 +5745,7 @@ Input type: `UpdateIssueInput`
 | <a id="mutationupdateissueprojectpath"></a>`projectPath` | [`ID!`](#id) | Project the issue to mutate is in. |
 | <a id="mutationupdateissueremovelabelids"></a>`removeLabelIds` | [`[ID!]`](#id) | IDs of labels to be removed from the issue. |
 | <a id="mutationupdateissuestateevent"></a>`stateEvent` | [`IssueStateEvent`](#issuestateevent) | Close or reopen an issue. |
+| <a id="mutationupdateissuetimeestimate"></a>`timeEstimate` | [`String`](#string) | Estimated time to complete the issue, or `0` to remove the current estimate. |
 | <a id="mutationupdateissuetitle"></a>`title` | [`String`](#string) | Title of the issue. |
 | <a id="mutationupdateissuetype"></a>`type` | [`IssueType`](#issuetype) | Type of the issue. |
 | <a id="mutationupdateissueweight"></a>`weight` | [`Int`](#int) | Weight of the issue. |

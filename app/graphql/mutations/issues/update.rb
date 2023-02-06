@@ -31,6 +31,10 @@ module Mutations
                description: 'Close or reopen an issue.',
                required: false
 
+      argument :time_estimate, GraphQL::Types::String,
+               required: false,
+               description: 'Estimated time to complete the issue, or `0` to remove the current estimate.'
+
       def resolve(project_path:, iid:, **args)
         issue = authorized_find!(project_path: project_path, iid: iid)
         project = issue.project
@@ -46,9 +50,13 @@ module Mutations
         }
       end
 
-      def ready?(label_ids: [], add_label_ids: [], remove_label_ids: [], **args)
+      def ready?(label_ids: [], add_label_ids: [], remove_label_ids: [], time_estimate: nil, **args)
         if label_ids.any? && (add_label_ids.any? || remove_label_ids.any?)
           raise Gitlab::Graphql::Errors::ArgumentError, 'labelIds is mutually exclusive with any of addLabelIds or removeLabelIds'
+        end
+
+        if !time_estimate.nil? && Gitlab::TimeTrackingFormatter.parse(time_estimate, keep_zero: true).nil?
+          raise Gitlab::Graphql::Errors::ArgumentError, 'timeEstimate must be formatted correctly, for example `1h 30m`'
         end
 
         super
@@ -60,6 +68,10 @@ module Mutations
         args[:add_label_ids] = parse_label_ids(args[:add_label_ids])
         args[:remove_label_ids] = parse_label_ids(args[:remove_label_ids])
         args[:label_ids] = parse_label_ids(args[:label_ids])
+
+        unless args[:time_estimate].nil?
+          args[:time_estimate] = Gitlab::TimeTrackingFormatter.parse(args[:time_estimate], keep_zero: true)
+        end
 
         args
       end

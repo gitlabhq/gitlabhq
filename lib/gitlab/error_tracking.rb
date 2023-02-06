@@ -57,6 +57,7 @@ module Gitlab
           config.before_send = method(:before_send_sentry)
           config.background_worker_threads = 0
           config.send_default_pii = true
+          config.traces_sample_rate = 0.2 if Gitlab::Utils.to_boolean(ENV['ENABLE_SENTRY_PERFORMANCE_MONITORING'])
 
           yield config if block_given?
         end

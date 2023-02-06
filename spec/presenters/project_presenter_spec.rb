@@ -108,6 +108,19 @@ RSpec.describe ProjectPresenter do
             link: presenter.project_releases_path(project)
           )
         end
+
+        it 'returns environments anchor' do
+          environment = create(:environment, project: project)
+          unavailable_environment = create(:environment, project: project)
+          unavailable_environment.stop
+
+          expect(environment).to be_truthy
+          expect(presenter.environments_anchor_data).to have_attributes(
+            is_link: true,
+            label: a_string_including(project.environments.available.count.to_s),
+            link: presenter.project_environments_path(project)
+          )
+        end
       end
     end
 

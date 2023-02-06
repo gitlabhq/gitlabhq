@@ -490,4 +490,28 @@ RSpec.describe Gitlab::ErrorTracking do
       end
     end
   end
+
+  context 'Sentry performance monitoring' do
+    context 'when ENABLE_SENTRY_PERFORMANCE_MONITORING env is disabled' do
+      before do
+        stub_env('ENABLE_SENTRY_PERFORMANCE_MONITORING', false)
+        described_class.configure_sentry # Force re-initialization to reset traces_sample_rate setting
+      end
+
+      it 'does not set traces_sample_rate' do
+        expect(Sentry.get_current_client.configuration.traces_sample_rate.present?).to eq false
+      end
+    end
+
+    context 'when ENABLE_SENTRY_PERFORMANCE_MONITORING env is enabled' do
+      before do
+        stub_env('ENABLE_SENTRY_PERFORMANCE_MONITORING', true)
+        described_class.configure_sentry # Force re-initialization to reset traces_sample_rate setting
+      end
+
+      it 'sets traces_sample_rate' do
+        expect(Sentry.get_current_client.configuration.traces_sample_rate.present?).to eq true
+      end
+    end
+  end
 end

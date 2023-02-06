@@ -1104,6 +1104,11 @@ msgid_plural "%{strong_start}%{count} members%{strong_end} must approve to merge
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%{strong_start}%{count}%{strong_end} Environment"
+msgid_plural "%{strong_start}%{count}%{strong_end} Environments"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%{strong_start}%{errors}%{strong_end} %{prefix} finding"
 msgid_plural "%{strong_start}%{errors}%{strong_end} %{prefix} findings"
 msgstr[0] ""
@@ -3675,6 +3680,39 @@ msgid "After the export is complete, download the data file from a notification 
 msgstr ""
 
 msgid "After you've reviewed these contribution guidelines, you'll be all set to"
+msgstr ""
+
+msgid "Airflow"
+msgstr ""
+
+msgid "Airflow|Airflow DAGs"
+msgstr ""
+
+msgid "Airflow|DAG"
+msgstr ""
+
+msgid "Airflow|DAG file location"
+msgstr ""
+
+msgid "Airflow|Either the Airflow instance does not contain DAGs or has yet to be configured"
+msgstr ""
+
+msgid "Airflow|GitLab Airflow integration is in the Incubating Phase."
+msgstr ""
+
+msgid "Airflow|Is active"
+msgstr ""
+
+msgid "Airflow|Is paused"
+msgstr ""
+
+msgid "Airflow|Next run"
+msgstr ""
+
+msgid "Airflow|Schedule"
+msgstr ""
+
+msgid "Airflow|There are no DAGs to show"
 msgstr ""
 
 msgid "Akismet"
@@ -17427,6 +17465,9 @@ msgid "Feb"
 msgstr ""
 
 msgid "February"
+msgstr ""
+
+msgid "Feedback"
 msgstr ""
 
 msgid "Feedback and Updates"

@@ -1011,11 +1011,12 @@ Do not change to a reference style link.
 
 ![alt text](img/markdown_logo.png "Title Text")
 
-#### Change the image dimensions
+#### Change the image or video dimensions
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/28118) in GitLab 15.7.
+> - Support for images [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/28118) in GitLab 15.7.
+> - Support for videos [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/17139) in GitLab 15.9.
 
-You can control the width and height of an image by following the image with
+You can control the width and height of an image or video by following the image with
 an attribute list.
 The value must an integer with a unit of either `px` (default) or `%`.
 

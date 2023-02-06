@@ -28,15 +28,17 @@ Prerequisites:
 
 - You must have at least the Reporter role.
 
-To view a list of environments and deployments:
+There are a few ways to view a list of environments for a given project:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Deployments > Environments**.
+- On the project's overview page, if at least one environment is available (that is, not stopped).
+  ![Number of Environments](img/environments_project_home.png "Incremental counter of available Environments")
+
+- On the left sidebar, select **Deployments > Environments**.
    The environments are displayed.
 
    ![Environments list](img/environments_list_v14_8.png)
 
-1. To view a list of deployments for an environment, select the environment name,
+- To view a list of deployments for an environment, select the environment name,
    for example, `staging`.
 
    ![Deployments list](img/deployments_list.png)

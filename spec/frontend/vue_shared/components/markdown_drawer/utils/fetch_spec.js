@@ -4,6 +4,7 @@ import {
   splitDocument,
 } from '~/vue_shared/components/markdown_drawer/utils/fetch';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import {
   MOCK_HTML,
   MOCK_DRAWER_DATA,
@@ -20,9 +21,9 @@ describe('utils/fetch', () => {
   });
 
   describe.each`
-    axiosMock                        | type         | toExpect
-    ${{ code: 200, res: MOCK_HTML }} | ${'success'} | ${MOCK_DRAWER_DATA}
-    ${{ code: 500, res: null }}      | ${'error'}   | ${MOCK_DRAWER_DATA_ERROR}
+    axiosMock                                                 | type         | toExpect
+    ${{ code: HTTP_STATUS_OK, res: MOCK_HTML }}               | ${'success'} | ${MOCK_DRAWER_DATA}
+    ${{ code: HTTP_STATUS_INTERNAL_SERVER_ERROR, res: null }} | ${'error'}   | ${MOCK_DRAWER_DATA_ERROR}
   `('process markdown data', ({ axiosMock, type, toExpect }) => {
     describe(`if api fetch responds with ${type}`, () => {
       beforeEach(() => {

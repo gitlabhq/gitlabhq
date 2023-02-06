@@ -2,6 +2,7 @@ import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import EnvironmentsFolderViewComponent from '~/environments/folder/environments_folder_view.vue';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { environmentsList } from './mock_data';
 
 describe('Environments Folder View', () => {
@@ -29,7 +30,7 @@ describe('Environments Folder View', () => {
   describe('successful request', () => {
     beforeEach(() => {
       mock.onGet(mockData.endpoint).reply(
-        200,
+        HTTP_STATUS_OK,
         {
           environments: environmentsList,
           stopped_count: 1,

@@ -66,6 +66,8 @@ RSpec.describe Banzai::Filter::AttributesFilter, feature_category: :team_plannin
       where(:text, :result) do
         "#{image}{width=100cs}"           | '<img src="example.jpg">'
         "#{image}{width=auto height=200}" | '<img src="example.jpg" height="200">'
+        "#{image}{width=10000}"           | '<img src="example.jpg">'
+        "#{image}{width=-200}"            | '<img src="example.jpg">'
       end
 
       with_them do

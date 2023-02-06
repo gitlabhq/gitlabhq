@@ -75,7 +75,7 @@ describe('GroupsApi', () => {
 
       const response = [{ id: 0, username: 'root' }];
 
-      mock.onGet(expectedUrl).replyOnce(200, response);
+      mock.onGet(expectedUrl).replyOnce(HTTP_STATUS_OK, response);
 
       await expect(getGroupMembers(mockGroupId)).resolves.toMatchObject({
         data: response,
@@ -87,7 +87,7 @@ describe('GroupsApi', () => {
 
       const response = [{ id: 0, username: 'root' }];
 
-      mock.onGet(expectedUrl).replyOnce(200, response);
+      mock.onGet(expectedUrl).replyOnce(HTTP_STATUS_OK, response);
 
       await expect(getGroupMembers(mockGroupId, true)).resolves.toMatchObject({
         data: response,

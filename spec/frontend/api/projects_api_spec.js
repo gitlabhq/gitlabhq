@@ -132,7 +132,7 @@ describe('~/api/projects_api.js', () => {
 
       const response = [{ id: 0, username: 'root' }];
 
-      mock.onGet(expectedUrl).replyOnce(200, response);
+      mock.onGet(expectedUrl).replyOnce(HTTP_STATUS_OK, response);
 
       await expect(projectsApi.getProjectMembers(projectId)).resolves.toMatchObject({
         data: response,
@@ -144,7 +144,7 @@ describe('~/api/projects_api.js', () => {
 
       const response = [{ id: 0, username: 'root' }];
 
-      mock.onGet(expectedUrl).replyOnce(200, response);
+      mock.onGet(expectedUrl).replyOnce(HTTP_STATUS_OK, response);
 
       await expect(projectsApi.getProjectMembers(projectId, true)).resolves.toMatchObject({
         data: response,

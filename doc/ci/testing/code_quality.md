@@ -606,7 +606,7 @@ variables:
 
 ### Using Code Quality with Kubernetes CI executor
 
-Code Quality requires a Docker in Docker setup to work. The Kubernetes executor already [has support for this](https://docs.gitlab.com/runner/executors/kubernetes.md#using-dockerdind).
+Code Quality requires a Docker in Docker setup to work. The Kubernetes executor already [has support for this](https://docs.gitlab.com/runner/executors/kubernetes.html#using-dockerdind).
 
 To ensure Code Quality jobs can run on a Kubernetes executor:
 

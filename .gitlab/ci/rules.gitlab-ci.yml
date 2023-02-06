@@ -133,9 +133,6 @@
 .if-dot-com-ee-schedule-default-branch-maintenance: &if-dot-com-ee-schedule-default-branch-maintenance
   if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_PATH == "gitlab-org/gitlab" && $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TYPE == "maintenance"'
 
-.if-dot-com-ee-schedule-nightly-child-pipeline: &if-dot-com-ee-schedule-nightly-child-pipeline
-  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_PATH == "gitlab-org/gitlab" && $CI_PIPELINE_SOURCE == "parent_pipeline" && $SCHEDULE_TYPE == "nightly"'
-
 .if-dot-com-gitlab-org-default-branch: &if-dot-com-gitlab-org-default-branch
   if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE == "gitlab-org" && $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH'
 
@@ -1965,12 +1962,6 @@
     - <<: *if-default-refs
       changes: *nodejs-patterns
 
-.reports:rules:schedule-dast:
-  rules:
-    - if: '$DAST_DISABLED || $GITLAB_FEATURES !~ /\bdast\b/'
-      when: never
-    - <<: *if-dot-com-ee-schedule-nightly-child-pipeline
-
 .reports:rules:test-dast:
   rules:
     - if: '$DAST_DISABLED || $GITLAB_FEATURES !~ /\bdast\b/'
@@ -2053,28 +2044,6 @@
         QA_SAVE_TEST_METRICS: "true"
         QA_EXPORT_TEST_METRICS: "false" # on main runs, metrics are exported to separate bucket via rake task for better consistency
 
-.review:rules:review-build-cng:
-  rules:
-    - when: always
-
-.review:rules:review-deploy:
-  rules:
-    - when: on_success
-
-.review:rules:review-performance:
-  rules:
-    - if: '$DAST_RUN == "true"'  # Skip this job when DAST is run
-      when: never
-    - <<: *if-merge-request-labels-run-review-app  # we explicitely don't allow the job to fail in that case
-    - <<: *if-dot-com-gitlab-org-merge-request  # we explicitely don't allow the job to fail in that case
-      changes: *ci-review-patterns
-    - when: on_success
-      allow_failure: true
-
-.review:rules:review-delete-deployment:
-  rules:
-    - when: on_success
-
 # The following rules needs to be the same as the one for .review:rules:start-review-app-pipeline
 # except that:
 # - all rules have `when: manual` and `allow_failure: true` here
@@ -2145,11 +2114,6 @@
     - <<: *if-dot-com-gitlab-org-merge-request
       changes:
         - "scripts/review_apps/gcp-quotas-checks.rb"
-      allow_failure: true
-
-.review:rules:trigger-review-stop:
-  rules:
-    - when: manual
       allow_failure: true
 
 .review:rules:danger:

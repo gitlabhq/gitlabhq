@@ -587,7 +587,6 @@ ee:elasticsearch:
   variables:
     QA_SCENARIO: "Test::Integration::Elasticsearch"
   before_script:
-    - unset ELASTIC_URL  # unset url which is globally defined in .gitlab-ci.yml
     - !reference [.qa, before_script]
   rules:
     - !reference [.rules:test:qa, rules]

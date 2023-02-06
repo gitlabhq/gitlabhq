@@ -17,6 +17,7 @@ import { TEST_HOST } from 'helpers/test_constants';
 import waitForPromises from 'helpers/wait_for_promises';
 import AjaxCache from '~/lib/utils/ajax_cache';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import {
   eventlistenersMockDefaultMap,
   crmContactsMock,
@@ -184,17 +185,20 @@ describe('GfmAutoComplete', () => {
           });
         });
 
-        it.each([200, 500])('should set the loading state', async (responseStatus) => {
-          mock.onGet('vulnerabilities_autocomplete_url').replyOnce(responseStatus);
+        it.each([HTTP_STATUS_OK, HTTP_STATUS_INTERNAL_SERVER_ERROR])(
+          'should set the loading state',
+          async (responseStatus) => {
+            mock.onGet('vulnerabilities_autocomplete_url').replyOnce(responseStatus);
 
-          fetchData.call(context, {}, '[vulnerability:', 'query');
+            fetchData.call(context, {}, '[vulnerability:', 'query');
 
-          expect(context.isLoadingData['[vulnerability:']).toBe(true);
+            expect(context.isLoadingData['[vulnerability:']).toBe(true);
 
-          await waitForPromises();
+            await waitForPromises();
 
-          expect(context.isLoadingData['[vulnerability:']).toBe(false);
-        });
+            expect(context.isLoadingData['[vulnerability:']).toBe(false);
+          },
+        );
       });
 
       describe('data is in cache', () => {

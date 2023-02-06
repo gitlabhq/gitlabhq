@@ -47,7 +47,7 @@ describe('error tracking settings actions', () => {
     });
 
     it('should handle a server error', async () => {
-      mock.onGet(`${TEST_HOST}.json`).reply(() => [400]);
+      mock.onGet(`${TEST_HOST}.json`).reply(() => [HTTP_STATUS_BAD_REQUEST]);
       await testAction(
         actions.fetchProjects,
         null,

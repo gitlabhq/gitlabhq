@@ -1,3 +1,6 @@
+# ------------------------------------------
+# Conditions
+# ------------------------------------------
 # Specific specs passed
 .specific-specs: &specific-specs
   if: $QA_TESTS != ""
@@ -22,6 +25,31 @@
 .default-branch: &default-branch
   if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
 
+.if-merge-request: &if-merge-request
+  if: '$CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached"'
+
+.if-merge-request-labels-run-review-app: &if-merge-request-labels-run-review-app
+  if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-review-app/'
+
+.if-dot-com-ee-schedule-nightly-child-pipeline: &if-dot-com-ee-schedule-nightly-child-pipeline
+  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_PATH == "gitlab-org/gitlab" && $CI_PIPELINE_SOURCE == "parent_pipeline" && $SCHEDULE_TYPE == "nightly"'
+
+# ------------------------------------------
+# Changes patterns
+# ------------------------------------------
+.ci-review-patterns: &ci-review-patterns
+  - ".gitlab-ci.yml"
+  - ".gitlab/ci/frontend.gitlab-ci.yml"
+  - ".gitlab/ci/build-images.gitlab-ci.yml"
+  - ".gitlab/ci/review.gitlab-ci.yml"
+  - ".gitlab/ci/review-apps/**/*"
+  - "scripts/review_apps/**/*"
+  - "scripts/trigger-build.rb"
+  - "{,ee/,jh/}{bin,config}/**/*.rb"
+
+# ------------------------------------------
+# Conditions set
+# ------------------------------------------
 .qa-manual: &qa-manual
   when: manual
   allow_failure: true
@@ -51,6 +79,26 @@
       allow_failure: true
     - if: $CI_MERGE_REQUEST_IID
       when: manual
+      allow_failure: true
+
+.review:rules:review-build-cng:
+  rules:
+    - when: always
+
+.review:rules:review-delete-deployment:
+  rules:
+    - when: on_success
+
+# ------------------------------------------
+# Deploy
+# ------------------------------------------
+.review:rules:review-deploy:
+  rules:
+    - when: on_success
+
+.review:rules:trigger-review-stop:
+  rules:
+    - when: manual
       allow_failure: true
 
 # ------------------------------------------
@@ -90,6 +138,25 @@
     - !reference [.never-when-specific-specs-always-when-qa-run-all-tests]
     - *all-specs-mr  # set full suite to manual when no specific specs passed in mr
     - if: $QA_SUITES =~ /Test::Instance::ReviewNonBlocking/
+
+.review:rules:review-performance:
+  rules:
+    - if: '$DAST_RUN == "true"'  # Skip this job when DAST is run
+      when: never
+    - <<: *if-merge-request-labels-run-review-app  # we explicitly don't allow the job to fail in that case
+    - <<: *if-merge-request  # we explicitly don't allow the job to fail in that case
+      changes: *ci-review-patterns
+    - when: on_success
+      allow_failure: true
+
+# ------------------------------------------
+# DAST
+# ------------------------------------------
+.reports:rules:schedule-dast:
+  rules:
+    - if: '$DAST_DISABLED || $GITLAB_FEATURES !~ /\bdast\b/'
+      when: never
+    - <<: *if-dot-com-ee-schedule-nightly-child-pipeline
 
 # ------------------------------------------
 # Prepare/Report

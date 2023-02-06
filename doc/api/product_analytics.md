@@ -38,30 +38,30 @@ The body of the load request must be a valid Cube query.
 {
   "query": {
     "measures": [
-      "Jitsu.count"
+      "TrackedEvents.count"
     ],
     "timeDimensions": [
       {
-        "dimension": "Jitsu.utcTime",
+        "dimension": "TrackedEvents.utcTime",
         "dateRange": "This week"
       }
     ],
     "order": [
       [
-        "Jitsu.count",
+        "TrackedEvents.count",
         "desc"
       ],
       [
-        "Jitsu.docPath",
+        "TrackedEvents.docPath",
         "desc"
       ],
       [
-        "Jitsu.utcTime",
+        "TrackedEvents.utcTime",
         "asc"
       ]
     ],
     "dimensions": [
-      "Jitsu.docPath"
+      "TrackedEvents.docPath"
     ],
     "limit": 23
   },

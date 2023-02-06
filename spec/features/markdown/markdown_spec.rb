@@ -296,6 +296,11 @@ RSpec.describe 'GitLab Markdown', :aggregate_failures, feature_category: :team_p
 
         expect(img.attr('width')).to eq('75%')
         expect(img.attr('height')).to eq('100')
+
+        vid = doc.at_css('video[data-title="Sized Video"]')
+
+        expect(vid.attr('width')).to eq('75%')
+        expect(vid.attr('height')).to eq('100')
       end
     end
   end

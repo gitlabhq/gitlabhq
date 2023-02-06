@@ -12,7 +12,7 @@ RSpec/EmptyLineAfterHook:
     - 'ee/spec/lib/gitlab/proxy_spec.rb'
     - 'ee/spec/lib/gitlab/vulnerabilities/container_scanning_vulnerability_spec.rb'
     - 'ee/spec/models/ee/key_spec.rb'
-    - 'ee/spec/models/project_spec.rb'
+    - 'ee/spec/models/ee/project_spec.rb'
     - 'ee/spec/requests/api/users_spec.rb'
     - 'ee/spec/services/ci/sync_reports_to_approval_rules_service_spec.rb'
     - 'ee/spec/services/ee/gpg_keys/destroy_service_spec.rb'

@@ -1,6 +1,7 @@
 import MockAdapter from 'axios-mock-adapter';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import '~/performance_bar/components/performance_bar_app.vue';
 import performanceBar from '~/performance_bar';
 import PerformanceBarService from '~/performance_bar/services/performance_bar_service';
@@ -26,7 +27,7 @@ describe('performance bar wrapper', () => {
     mock = new MockAdapter(axios);
 
     mock.onGet('/-/peek/results').reply(
-      200,
+      HTTP_STATUS_OK,
       {
         data: {
           gc: {

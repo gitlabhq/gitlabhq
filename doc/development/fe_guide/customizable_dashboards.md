@@ -64,8 +64,8 @@ export default {
           data: {
             query: {
               users: {
-                measures: ['Jitsu.count'],
-                dimensions: ['Jitsu.eventType'],
+                measures: ['TrackedEvents.count'],
+                dimensions: ['TrackedEvents.eventType'],
               },
             },
           },

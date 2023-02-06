@@ -5,7 +5,7 @@ import { removeBreakLine, removeWhitespace } from 'helpers/text_helper';
 import EnvironmentTable from '~/environments/components/environments_table.vue';
 import EnvironmentsFolderViewComponent from '~/environments/folder/environments_folder_view.vue';
 import axios from '~/lib/utils/axios_utils';
-import { HTTP_STATUS_INTERNAL_SERVER_ERROR } from '~/lib/utils/http_status';
+import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { environmentsList } from '../mock_data';
 
 describe('Environments Folder View', () => {
@@ -23,7 +23,7 @@ describe('Environments Folder View', () => {
 
   const mockEnvironments = (environmentList) => {
     mock.onGet(mockData.endpoint).reply(
-      200,
+      HTTP_STATUS_OK,
       {
         environments: environmentList,
         stopped_count: 1,

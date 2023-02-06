@@ -85,7 +85,8 @@ RSpec.shared_context 'project navbar structure' do
           _('Metrics'),
           _('Error Tracking'),
           _('Alerts'),
-          _('Incidents')
+          _('Incidents'),
+          _('Airflow')
         ]
       },
       {
