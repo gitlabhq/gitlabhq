@@ -36464,7 +36464,7 @@ msgstr ""
 msgid "Runners|Active"
 msgstr ""
 
-msgid "Runners|Add notes, like who owns the runner or what it should be used for."
+msgid "Runners|Add notes such as the runner owner or what it should be used for."
 msgstr ""
 
 msgid "Runners|Administrator"
@@ -36713,6 +36713,9 @@ msgid "Runners|Online"
 msgstr ""
 
 msgid "Runners|Online:"
+msgstr ""
+
+msgid "Runners|Only administrators can view this."
 msgstr ""
 
 msgid "Runners|Owner"
@@ -38608,6 +38611,9 @@ msgid "SecurityReports|There was an error creating the merge request."
 msgstr ""
 
 msgid "SecurityReports|There was an error deleting the comment."
+msgstr ""
+
+msgid "SecurityReports|There was an error dismissing the finding. Please try again."
 msgstr ""
 
 msgid "SecurityReports|There was an error dismissing the vulnerabilities."

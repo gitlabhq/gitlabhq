@@ -4,7 +4,7 @@ group: Pipeline Authoring
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Configure OpenID Connect with GCP Workload Identity Federation
+# Configure OpenID Connect with GCP Workload Identity Federation **(FREE)**
 
 WARNING:
 The `CI_JOB_JWT_V2` variable is under development [(alpha)](../../../policy/alpha-beta-support.md#alpha-features) and is not yet suitable for production use.

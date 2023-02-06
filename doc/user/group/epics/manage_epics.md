@@ -116,10 +116,10 @@ Prerequisites:
 
 To reorder list items, when viewing an epic:
 
-1. Hover over the list item row to make the drag icon (**{drag-vertical}**) visible.
-1. Select and hold the drag icon.
+1. Hover over the list item row to make the grip icon (**{grip}**) visible.
+1. Select and hold the grip icon.
 1. Drag the row to the new position in the list.
-1. Release the drag icon.
+1. Release the grip icon.
 
 ## Bulk edit epics
 

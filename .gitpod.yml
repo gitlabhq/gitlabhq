@@ -2,6 +2,7 @@
 # https://www.gitpod.io/docs/configure/workspaces/tasks
 
 image: registry.gitlab.com/gitlab-org/gitlab-development-kit/gitpod-workspace:stable
+checkoutLocation: gitlab-development-kit/gitlab
 
 tasks:
 
@@ -24,8 +25,6 @@ tasks:
         echo "$(date) – Copying GDK" | tee -a /workspace/startup.log
         cp -r $HOME/gitlab-development-kit /workspace/
         cd /workspace/gitlab-development-kit
-        # ensure GitLab directory is symlinked under the GDK
-        ln -nfs "$GITPOD_REPO_ROOT" /workspace/gitlab-development-kit/gitlab
         mv -v /workspace/gitlab-development-kit/secrets.yml /workspace/gitlab-development-kit/gitlab/config
         # ensure gdk.yml has correct instance settings
         gdk config set gitlab.rails.port 443  |& tee -a /workspace/startup.log

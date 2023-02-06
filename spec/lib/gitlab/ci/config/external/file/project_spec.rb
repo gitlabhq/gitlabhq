@@ -70,7 +70,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Project, feature_category: :p
 
   describe '#valid?' do
     subject(:valid?) do
-      project_file.validate!
+      Gitlab::Ci::Config::External::Mapper::Verifier.new(context).process([project_file])
       project_file.valid?
     end
 
@@ -79,7 +79,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Project, feature_category: :p
         { project: project.full_path, file: '/file.yml' }
       end
 
-      around(:all) do |example|
+      around do |example|
         create_and_delete_files(project, { '/file.yml' => 'image: image:1.0' }) do
           example.run
         end
@@ -102,7 +102,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Project, feature_category: :p
         { project: project.full_path, ref: 'master', file: '/file.yml' }
       end
 
-      around(:all) do |example|
+      around do |example|
         create_and_delete_files(project, { '/file.yml' => 'image: image:1.0' }) do
           example.run
         end
@@ -118,7 +118,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Project, feature_category: :p
 
       let(:variables) { Gitlab::Ci::Variables::Collection.new([{ 'key' => 'GITLAB_TOKEN', 'value' => 'secret_file', 'masked' => true }]) }
 
-      around(:all) do |example|
+      around do |example|
         create_and_delete_files(project, { '/secret_file.yml' => '' }) do
           example.run
         end

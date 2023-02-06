@@ -115,6 +115,9 @@ Configure DNS for an alternate SSH hostname such as `altssh.gitlab.example.com`.
 
 It is strongly recommend that multi-node deployments configure load balancers to use the [readiness check](../user/admin_area/monitoring/health_check.md#readiness) to ensure a node is ready to accept traffic, before routing traffic to it. This is especially important when utilizing Puma, as there is a brief period during a restart where Puma doesn't accept requests.
 
+WARNING:
+Using the `all=1` parameter with the readiness check in GitLab versions 15.4 to 15.8 may cause [increased Praefect memory usage](https://gitlab.com/gitlab-org/gitaly/-/issues/4751) and lead to memory errors.
+
 ## Troubleshooting
 
 ### The health check is returning a `408` HTTP code via the load balancer

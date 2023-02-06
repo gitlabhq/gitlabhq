@@ -914,6 +914,11 @@ When this is used, GitLab fetches temporary credentials each time an
 S3 bucket is accessed, so no hard-coded values are needed in the
 configuration.
 
+To use an Amazon instance profile, GitLab must be able to connect to the 
+[instance metadata endpoint](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instancedata-data-retrieval.html). 
+If GitLab is [configured to use an Internet proxy](https://docs.gitlab.com/omnibus/settings/environment-variables.html), the endpoint IP 
+address must be added to the `no_proxy` list.
+
 #### Encrypted S3 buckets
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/466) in GitLab 13.1 for instance profiles only and [S3 default encryption](https://docs.aws.amazon.com/AmazonS3/latest/dev/bucket-encryption.html).

@@ -238,7 +238,7 @@ export default {
       const container = document.createElement('div');
       // eslint-disable-next-line no-unsanitized/property
       container.innerHTML = `<svg class="drag-icon s14 gl-icon gl-cursor-grab gl-opacity-0" role="img" aria-hidden="true">
-        <use href="${gon.sprite_icons}#drag-vertical"></use>
+        <use href="${gon.sprite_icons}#grip"></use>
       </svg>`;
       return container.firstChild;
     },
@@ -259,7 +259,7 @@ export default {
       };
 
       // We use pointerover/pointerout instead of CSS so that when we hover over a
-      // list item with children, the drag icons of its children do not become visible.
+      // list item with children, the grip icons of its children do not become visible.
       listItem.addEventListener('pointerover', pointeroverListener);
       listItem.addEventListener('pointerout', pointeroutListener);
 

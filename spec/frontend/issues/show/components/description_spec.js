@@ -25,6 +25,7 @@ import {
 } from 'jest/work_items/mock_data';
 import {
   descriptionProps as initialProps,
+  descriptionHtmlWithList,
   descriptionHtmlWithCheckboxes,
   descriptionHtmlWithTask,
 } from '../mock_data/mock_data';
@@ -36,6 +37,7 @@ jest.mock('~/lib/utils/url_utility', () => ({
 jest.mock('~/task_list');
 jest.mock('~/behaviors/markdown/render_gfm');
 
+const mockSpriteIcons = '/icons.svg';
 const showModal = jest.fn();
 const hideModal = jest.fn();
 const showDetailsModal = jest.fn();
@@ -57,11 +59,13 @@ const createWorkItemFromTaskSuccessHandler = jest
 
 describe('Description component', () => {
   let wrapper;
+  let originalGon;
 
   Vue.use(VueApollo);
 
   const findGfmContent = () => wrapper.find('[data-testid="gfm-content"]');
   const findTextarea = () => wrapper.find('[data-testid="textarea"]');
+  const findListItems = () => findGfmContent().findAll('ul > li');
   const findTaskActionButtons = () => wrapper.findAll('.task-list-item-actions');
   const findTaskLink = () => wrapper.find('a.gfm-issue');
   const findModal = () => wrapper.findComponent(GlModal);
@@ -71,6 +75,7 @@ describe('Description component', () => {
     props = {},
     provide,
     createWorkItemFromTaskHandler = createWorkItemFromTaskSuccessHandler,
+    ...options
   } = {}) {
     wrapper = shallowMountExtended(Description, {
       propsData: {
@@ -103,10 +108,14 @@ describe('Description component', () => {
           },
         }),
       },
+      ...options,
     });
   }
 
   beforeEach(() => {
+    originalGon = window.gon;
+    window.gon = { sprite_icons: mockSpriteIcons };
+
     setWindowLocation(TEST_HOST);
 
     if (!document.querySelector('.issuable-meta')) {
@@ -120,6 +129,8 @@ describe('Description component', () => {
   });
 
   afterAll(() => {
+    window.gon = originalGon;
+
     $('.issuable-meta .flash-container').remove();
   });
 
@@ -258,6 +269,37 @@ describe('Description component', () => {
       await nextTick();
 
       expect(document.querySelector('.issuable-meta #task_status').textContent.trim()).toBe('');
+    });
+  });
+
+  describe('with list', () => {
+    beforeEach(async () => {
+      createComponent({
+        props: {
+          descriptionHtml: descriptionHtmlWithList,
+        },
+        attachTo: document.body,
+      });
+      await nextTick();
+    });
+
+    it('shows list items', () => {
+      expect(findListItems()).toHaveLength(3);
+    });
+
+    it('shows list items drag icons', () => {
+      const dragIcon = findListItems().at(0).find('.drag-icon');
+
+      expect(dragIcon.classes()).toEqual(
+        expect.arrayContaining(['s14', 'gl-icon', 'gl-cursor-grab', 'gl-opacity-0']),
+      );
+      expect(dragIcon.attributes()).toMatchObject({
+        'aria-hidden': 'true',
+        role: 'img',
+      });
+      expect(dragIcon.find('use').attributes()).toEqual({
+        href: `${mockSpriteIcons}#grip`,
+      });
     });
   });
 

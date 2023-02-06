@@ -4,7 +4,7 @@ group: Pipeline Authoring
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Configure OpenID Connect in Azure to retrieve temporary credentials
+# Configure OpenID Connect in Azure to retrieve temporary credentials **(FREE)**
 
 This tutorial demonstrates how to use a JSON web token (JWT) in a GitLab CI/CD job
 to retrieve temporary credentials from Azure without needing to store secrets.

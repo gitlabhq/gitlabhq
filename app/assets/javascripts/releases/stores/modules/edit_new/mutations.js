@@ -40,6 +40,7 @@ export default {
 
   [types.UPDATE_RELEASE_TAG_NAME](state, tagName) {
     state.release.tagName = tagName;
+    state.existingRelease = null;
   },
   [types.UPDATE_RELEASE_TAG_MESSAGE](state, tagMessage) {
     state.release.tagMessage = tagMessage;
@@ -118,6 +119,7 @@ export default {
     state.fetchError = error;
     state.isFetchingTagNotes = false;
     state.tagNotes = '';
+    state.existingRelease = null;
   },
   [types.UPDATE_INCLUDE_TAG_NOTES](state, includeTagNotes) {
     state.includeTagNotes = includeTagNotes;

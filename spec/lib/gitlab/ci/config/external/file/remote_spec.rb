@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Config::External::File::Remote do
+RSpec.describe Gitlab::Ci::Config::External::File::Remote, feature_category: :pipeline_authoring do
   include StubRequests
 
   let(:variables) { Gitlab::Ci::Variables::Collection.new([{ 'key' => 'GITLAB_TOKEN', 'value' => 'secret_file', 'masked' => true }]) }
@@ -55,7 +55,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Remote do
 
   describe "#valid?" do
     subject(:valid?) do
-      remote_file.validate!
+      Gitlab::Ci::Config::External::Mapper::Verifier.new(context).process([remote_file])
       remote_file.valid?
     end
 
@@ -138,7 +138,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Remote do
 
   describe "#error_message" do
     subject(:error_message) do
-      remote_file.validate!
+      Gitlab::Ci::Config::External::Mapper::Verifier.new(context).process([remote_file])
       remote_file.error_message
     end
 

@@ -78,6 +78,21 @@ When using the native HashiCorp Vault integration, CI/CD jobs will fail when no 
 
 </div>
 
+<div class="deprecation removal-160 breaking-change">
+
+### Embedding Grafana panels in Markdown is deprecated
+
+Planned removal: GitLab <span class="removal-milestone">16.0</span> <span class="removal-date"></span>
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+The ability to add Grafana panels in GitLab Flavored Markdown is deprecated in 15.9 and will be removed in 16.0.
+We intend to replace this feature with the ability to [embed charts](https://gitlab.com/groups/gitlab-org/opstrace/-/epics/33) with the [GitLab Observability UI](https://gitlab.com/gitlab-org/opstrace/opstrace-ui).
+
+</div>
+
 <div class="deprecation removal-170 breaking-change">
 
 ### GitLab Runner platforms and setup instructions in GraphQL API

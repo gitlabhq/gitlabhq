@@ -59,6 +59,14 @@ export const appProps = {
   publishedIncidentUrl,
 };
 
+export const descriptionHtmlWithList = `
+  <ul data-sourcepos="1:1-3:8" dir="auto">
+    <li data-sourcepos="1:1-1:8">todo 1</li>
+    <li data-sourcepos="2:1-2:8">todo 2</li>
+    <li data-sourcepos="3:1-3:8">todo 3</li>
+  </ul>
+`;
+
 export const descriptionHtmlWithCheckboxes = `
   <ul dir="auto" class="task-list" data-sourcepos"3:1-5:12">
     <li class="task-list-item" data-sourcepos="3:1-3:11">

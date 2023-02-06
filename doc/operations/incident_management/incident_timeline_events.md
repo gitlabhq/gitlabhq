@@ -124,3 +124,14 @@ When you create a timeline event and select the tags, the event note
 is populated with a default message.
 This allows for a quick event creation. If a note has already been set, it isn't changed.
 Added tags are displayed next to the timestamp.
+
+## Formatting rules
+
+Incident timeline events support the following [GitLab Flavored Markdown](../../user/markdown.md) features.
+
+- [Code](../../user/markdown.md#code-spans-and-blocks).
+- [Emojis](../../user/markdown.md#emojis).
+- [Emphasis](../../user/markdown.md#emphasis).
+- [GitLab-specific references](../../user/markdown.md#gitlab-specific-references).
+- [Images](../../user/markdown.md#images), rendered as a link to the uploaded image.
+- [Links](../../user/markdown.md#links).

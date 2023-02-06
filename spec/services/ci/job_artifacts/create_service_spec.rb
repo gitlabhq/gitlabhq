@@ -37,7 +37,7 @@ RSpec.describe Ci::JobArtifacts::CreateService do
       it 'logs the created artifact' do
         expect(Gitlab::Ci::Artifacts::Logger)
           .to receive(:log_created)
-          .with(an_instance_of(Ci::JobArtifact))
+          .with([an_instance_of(Ci::JobArtifact)])
 
         subject
       end
@@ -130,6 +130,14 @@ RSpec.describe Ci::JobArtifacts::CreateService do
 
           new_artifact = job.job_artifacts.last
           expect(new_artifact).to be_public_accessibility
+        end
+
+        it 'logs the created artifact and metadata' do
+          expect(Gitlab::Ci::Artifacts::Logger)
+            .to receive(:log_created)
+            .with([an_instance_of(Ci::JobArtifact), an_instance_of(Ci::JobArtifact)])
+
+          subject
         end
 
         context 'when accessibility level passed as private' do
