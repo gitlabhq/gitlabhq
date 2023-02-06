@@ -8,7 +8,7 @@ RSpec.describe Gitlab::Analytics::CycleAnalytics::Aggregated::RecordsFetcher do
   let_it_be(:issue_2) { create(:issue, project: project) }
   let_it_be(:issue_3) { create(:issue, project: project) }
 
-  let_it_be(:stage) { create(:cycle_analytics_project_stage, start_event_identifier: :issue_created, end_event_identifier: :issue_deployed_to_production, project: project) }
+  let_it_be(:stage) { create(:cycle_analytics_stage, start_event_identifier: :issue_created, end_event_identifier: :issue_deployed_to_production, namespace: project.reload.project_namespace) }
 
   let_it_be(:stage_event_1) { create(:cycle_analytics_issue_stage_event, stage_event_hash_id: stage.stage_event_hash_id, project_id: project.id, issue_id: issue_1.id, start_event_timestamp: 2.years.ago, end_event_timestamp: 1.year.ago) } # duration: 1 year
   let_it_be(:stage_event_2) { create(:cycle_analytics_issue_stage_event, stage_event_hash_id: stage.stage_event_hash_id, project_id: project.id, issue_id: issue_2.id, start_event_timestamp: 5.years.ago, end_event_timestamp: 2.years.ago) } # duration: 3 years

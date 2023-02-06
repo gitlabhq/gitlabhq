@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe ScheduleVulnerabilitiesFeedbackMigration2, feature_category: :vulnerability_management do
+RSpec.describe ScheduleVulnerabilitiesFeedbackMigration3, feature_category: :vulnerability_management do
   let(:migration) { described_class::MIGRATION }
 
   describe '#up' do

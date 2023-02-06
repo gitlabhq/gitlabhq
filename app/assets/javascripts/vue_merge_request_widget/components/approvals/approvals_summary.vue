@@ -67,7 +67,7 @@ export default {
     rulesLeft() {
       return getApprovalRuleNamesLeft(
         this.multipleApprovalRulesAvailable,
-        (this.approvalState.approvalState?.rules || []).filter((r) => r.approvalsRequired !== 0),
+        (this.approvalState.approvalState?.rules || []).filter((r) => !r.approved),
       );
     },
     approvalLeftMessage() {

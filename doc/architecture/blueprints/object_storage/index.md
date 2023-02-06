@@ -1,5 +1,5 @@
 ---
-status: ready
+status: accepted
 creation-date: "2021-11-18"
 authors: [ "@nolith" ]
 coach: "@glopezfernandez"

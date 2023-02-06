@@ -100,7 +100,7 @@ review-build-cng:
   environment:
     name: review/${CI_COMMIT_REF_SLUG}${SCHEDULE_TYPE}  # No separator for SCHEDULE_TYPE so it's compatible as before and looks nice without it
     url: https://gitlab-${CI_ENVIRONMENT_SLUG}.${REVIEW_APPS_DOMAIN}
-    on_stop: review-stop
+    on_stop: trigger-review-stop
 
 review-deploy:
   extends:
@@ -173,12 +173,6 @@ review-deploy-sample-projects:
     # because some repos are private and CI_JOB_TOKEN cannot access files.
     # See https://gitlab.com/gitlab-org/gitlab/issues/191273
     GIT_DEPTH: 1
-  before_script:
-    - source ./scripts/utils.sh
-    - source ./scripts/review_apps/review-apps.sh
-    - !reference [".use-kube-context", before_script]
-  script:
-    - retry delete_helm_release
 
 review-delete-deployment:
   extends:
@@ -186,11 +180,23 @@ review-delete-deployment:
     - .review:rules:review-delete-deployment
   dependencies: []
   stage: prepare
+  before_script:
+    - source ./scripts/utils.sh
+    - source ./scripts/review_apps/review-apps.sh
+    - !reference [".use-kube-context", before_script]
+  script:
+    - retry delete_helm_release
 
-review-stop:
+trigger-review-stop:
   extends:
     - .review-stop-base
-    - .review:rules:review-stop
-  resource_group: review/${CI_COMMIT_REF_SLUG}${SCHEDULE_TYPE}  # CI_ENVIRONMENT_SLUG is not available here and we want this to be the same as the environment
+    - .review:rules:trigger-review-stop
   stage: deploy
   needs: []
+  before_script:
+    - source ./scripts/utils.sh
+    - install_gitlab_gem
+  script:
+    - review_stop_job_id="$(scripts/api/get_job_id.rb --pipeline-id "${PARENT_PIPELINE_ID}" --job-name "review-stop")"
+    - |
+      curl --request POST --header "Private-Token: ${PROJECT_TOKEN_FOR_CI_SCRIPTS_API_USAGE}" "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/jobs/${review_stop_job_id}/play"

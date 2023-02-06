@@ -228,6 +228,11 @@
   - "scripts/lint-doc.sh"
   - ".gitlab/ci/docs.gitlab-ci.yml"
 
+.docs-blueprints-patterns: &docs-blueprints-patterns
+  - "doc/architecture/blueprints/**/*"
+  - "scripts/lint-docs-blueprints.rb"
+  - ".gitlab/ci/docs.gitlab-ci.yml"
+
 .docs-deprecations-and-removals-patterns: &docs-deprecations-and-removals-patterns
   - "doc/update/deprecations.md"
   - "doc/update/removals.md"
@@ -850,6 +855,11 @@
   rules:
     - <<: *if-default-refs
       changes: *docs-patterns
+
+.docs:rules:docs-blueprints-lint:
+  rules:
+    - <<: *if-default-refs
+      changes: *docs-blueprints-patterns
 
 .docs:rules:deprecations-and-removals:
   rules:
@@ -2060,7 +2070,7 @@
 # The following rules needs to be the same as the one for .review:rules:start-review-app-pipeline
 # except that:
 # - all rules have `when: manual` and `allow_failure: true` here
-.review:rules:review-cleanup:
+.review:rules:review-stop-merge-requests:
   rules:
     - <<: *if-not-ee
       when: never
@@ -2097,7 +2107,18 @@
       changes: *code-patterns
       when: manual
       allow_failure: true
+
+.review:rules:review-cleanup:
+  rules:
+    - !reference [".review:rules:review-stop-merge-requests", rules]
     - <<: *if-dot-com-ee-schedule-default-branch-maintenance
+      allow_failure: true
+
+.review:rules:review-stop:
+  rules:
+    - !reference [".review:rules:review-stop-merge-requests", rules]
+    - <<: *if-dot-com-gitlab-org-schedule
+      when: manual
       allow_failure: true
 
 .review:rules:review-k8s-resources-count-checks:
@@ -2118,7 +2139,7 @@
         - "scripts/review_apps/gcp-quotas-checks.rb"
       allow_failure: true
 
-.review:rules:review-stop:
+.review:rules:trigger-review-stop:
   rules:
     - when: manual
       allow_failure: true

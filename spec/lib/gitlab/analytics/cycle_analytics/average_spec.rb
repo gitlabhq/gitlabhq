@@ -21,7 +21,7 @@ RSpec.describe Gitlab::Analytics::CycleAnalytics::Average do
 
   let(:stage) do
     build(
-      :cycle_analytics_project_stage,
+      :cycle_analytics_stage,
       start_event_identifier: Gitlab::Analytics::CycleAnalytics::StageEvents::IssueCreated.identifier,
       end_event_identifier: Gitlab::Analytics::CycleAnalytics::StageEvents::IssueFirstMentionedInCommit.identifier,
       project: project

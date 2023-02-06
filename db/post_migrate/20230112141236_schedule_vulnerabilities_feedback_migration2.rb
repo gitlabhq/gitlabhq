@@ -14,23 +14,10 @@ class ScheduleVulnerabilitiesFeedbackMigration2 < Gitlab::Database::Migration[2.
   restrict_gitlab_migration gitlab_schema: :gitlab_main
 
   def up
-    queue_batched_background_migration(
-      MIGRATION,
-      TABLE_NAME,
-      BATCH_COLUMN,
-      job_interval: DELAY_INTERVAL,
-      batch_size: BATCH_SIZE,
-      max_batch_size: MAX_BATCH_SIZE,
-      sub_batch_size: SUB_BATCH_SIZE
-    )
+    # rescheduled by 20230203122602_schedule_vulnerabilities_feedback_migration3.rb
   end
 
   def down
-    delete_batched_background_migration(
-      MIGRATION,
-      TABLE_NAME,
-      BATCH_COLUMN,
-      []
-    )
+    # no-op
   end
 end

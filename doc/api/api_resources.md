@@ -135,6 +135,7 @@ The following API resources are available in the group context:
 | [Issues](issues.md)                                              | `/groups/:id/issues` (also available for projects and standalone) |
 | [Issues Statistics](issues_statistics.md)                        | `/groups/:id/issues_statistics` (also available for projects and standalone) |
 | [Linked epics](linked_epics.md)                  | `/groups/:id/epics/.../related_epics` |
+| [Member Roles](member_roles.md)                                  | `/groups/:id/member_roles` |
 | [Members](members.md)                                            | `/groups/:id/members` (also available for projects) |
 | [Merge requests](merge_requests.md)                              | `/groups/:id/merge_requests` (also available for projects and standalone) |
 | [Notes](notes.md) (comments)                                     | `/groups/:id/epics/.../notes` (also available for projects) |

@@ -10,10 +10,10 @@ RSpec.describe Gitlab::Analytics::CycleAnalytics::BaseQueryBuilder do
 
   let(:params) { { current_user: user } }
   let(:records) do
-    stage = build(:cycle_analytics_project_stage, {
+    stage = build(:cycle_analytics_stage, {
       start_event_identifier: :merge_request_created,
       end_event_identifier: :merge_request_merged,
-      project: project
+      namespace: project.reload.project_namespace
     })
     described_class.new(stage: stage, params: params).build.to_a
   end

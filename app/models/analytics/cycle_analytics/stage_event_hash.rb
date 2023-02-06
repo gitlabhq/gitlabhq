@@ -3,7 +3,6 @@
 module Analytics
   module CycleAnalytics
     class StageEventHash < ApplicationRecord
-      has_many :cycle_analytics_project_stages, class_name: 'Analytics::CycleAnalytics::ProjectStage', inverse_of: :stage_event_hash
       has_many :cycle_analytics_stages, class_name: 'Analytics::CycleAnalytics::Stage', inverse_of: :stage_event_hash
 
       validates :hash_sha256, presence: true
@@ -34,13 +33,9 @@ module Analytics
       end
 
       def self.unused_hashes_for(id)
-        project_stage_exists_query = Analytics::CycleAnalytics::ProjectStage.where(stage_event_hash_id: id).select('1').limit(1)
         stage_exists_query = ::Analytics::CycleAnalytics::Stage.where(stage_event_hash_id: id).select('1').limit(1)
 
-        where
-          .not('EXISTS (?)', project_stage_exists_query)
-          .where
-          .not('EXISTS (?)', stage_exists_query)
+        where.not('EXISTS (?)', stage_exists_query)
       end
     end
   end

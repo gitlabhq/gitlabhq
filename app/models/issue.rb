@@ -329,13 +329,22 @@ class Issue < ApplicationRecord
     '#'
   end
 
+  # Alternative prefix for situations where the standard prefix would be
+  # interpreted as a comment, most notably to begin commit messages with
+  # (e.g. "GL-123: My commit")
+  def self.alternative_reference_prefix
+    'GL-'
+  end
+
   # Pattern used to extract `#123` issue references from text
   #
   # This pattern supports cross-project references.
   def self.reference_pattern
     @reference_pattern ||= %r{
-      (#{Project.reference_pattern})?
-      #{Regexp.escape(reference_prefix)}#{Gitlab::Regex.issue}
+      (?:
+        (#{Project.reference_pattern})?#{Regexp.escape(reference_prefix)} |
+        #{Regexp.escape(alternative_reference_prefix)}
+      )#{Gitlab::Regex.issue}
     }x
   end
 

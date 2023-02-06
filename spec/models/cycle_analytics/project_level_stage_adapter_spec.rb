@@ -10,11 +10,14 @@ RSpec.describe CycleAnalytics::ProjectLevelStageAdapter, type: :model do
     end
   end
 
-  let_it_be(:project) { merge_request.target_project }
+  let_it_be(:project) { merge_request.target_project.reload }
 
   let(:stage) do
-    params = Gitlab::Analytics::CycleAnalytics::DefaultStages.find_by_name!(stage_name).merge(project: project)
-    Analytics::CycleAnalytics::ProjectStage.new(params)
+    params = Gitlab::Analytics::CycleAnalytics::DefaultStages
+      .find_by_name!(stage_name)
+      .merge(namespace: project.project_namespace)
+
+    Analytics::CycleAnalytics::Stage.new(params)
   end
 
   around do |example|

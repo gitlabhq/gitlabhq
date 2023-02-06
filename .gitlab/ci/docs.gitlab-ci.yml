@@ -70,6 +70,16 @@ docs-lint markdown:
   script:
     - scripts/lint-doc.sh
 
+docs-lint blueprint:
+  extends:
+    - .default-retry
+    - .docs:rules:docs-blueprints-lint
+  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}ruby:${RUBY_VERSION}-slim
+  stage: lint
+  needs: []
+  script:
+    - scripts/lint-docs-blueprints.rb
+
 docs code_quality:
   extends:
     - .reports:rules:code_quality

@@ -9,10 +9,10 @@ RSpec.describe Gitlab::Analytics::CycleAnalytics::Median do
 
   let(:stage) do
     build(
-      :cycle_analytics_project_stage,
+      :cycle_analytics_stage,
       start_event_identifier: Gitlab::Analytics::CycleAnalytics::StageEvents::MergeRequestCreated.identifier,
       end_event_identifier: Gitlab::Analytics::CycleAnalytics::StageEvents::MergeRequestMerged.identifier,
-      project: project
+      namespace: project.reload.project_namespace
     )
   end
 

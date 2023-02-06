@@ -24,7 +24,7 @@ module Gitlab
           def initialize(stage:, params: {})
             @stage = stage
             @params = params
-            @root_ancestor = stage.parent.root_ancestor
+            @root_ancestor = stage.namespace.root_ancestor
             @stage_event_model = MODEL_CLASSES.fetch(stage.subject_class.to_s)
           end
 
@@ -90,7 +90,7 @@ module Gitlab
           end
 
           def filter_by_stage_parent(query)
-            query.by_project_id(stage.parent_id)
+            query.by_project_id(stage.namespace.project.id)
           end
 
           def base_query

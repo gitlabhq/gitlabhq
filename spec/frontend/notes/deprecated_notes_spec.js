@@ -28,6 +28,10 @@ window.gl = window.gl || {};
 gl.utils = gl.utils || {};
 gl.utils.disableButtonIfEmptyField = () => {};
 
+function wrappedDiscussionNote(note) {
+  return `<table><tbody>${note}</tbody></table>`;
+}
+
 // the following test is unreliable and failing in main 2-3 times a day
 // see https://gitlab.com/gitlab-org/gitlab/issues/206906#note_290602581
 // eslint-disable-next-line jest/no-disabled-tests
@@ -436,22 +440,40 @@ describe.skip('Old Notes (~/deprecated_notes.js)', () => {
         );
       });
 
-      it('should append to row selected with line_code', () => {
-        $form.length = 0;
-        note.discussion_line_code = 'line_code';
-        note.diff_discussion_html = '<tr></tr>';
+      describe('HTML output', () => {
+        let line;
 
-        const line = document.createElement('div');
-        line.id = note.discussion_line_code;
-        document.body.appendChild(line);
+        beforeEach(() => {
+          $form.length = 0;
+          note.discussion_line_code = 'line_code';
+          note.diff_discussion_html = '<tr></tr>';
 
-        // Override mocks for this single test
-        $form.closest.mockReset();
-        $form.closest.mockReturnValue($form);
+          line = document.createElement('div');
+          line.id = note.discussion_line_code;
+          document.body.appendChild(line);
 
-        Notes.prototype.renderDiscussionNote.call(notes, note, $form);
+          // Override mocks for these tests
+          $form.closest.mockReset();
+          $form.closest.mockReturnValue($form);
+        });
 
-        expect(line.nextSibling.outerHTML).toEqual(note.diff_discussion_html);
+        it('should append to row selected with line_code', () => {
+          Notes.prototype.renderDiscussionNote.call(notes, note, $form);
+
+          expect(line.nextSibling.outerHTML).toEqual(
+            wrappedDiscussionNote(note.diff_discussion_html),
+          );
+        });
+
+        it('sanitizes the output html without stripping leading <tr> or <td> elements', () => {
+          const sanitizedDiscussion = '<tr><td><a>I am a dolphin!</a></td></tr>';
+          note.diff_discussion_html =
+            '<tr><td><a href="javascript:alert(1)">I am a dolphin!</a></td></tr>';
+
+          Notes.prototype.renderDiscussionNote.call(notes, note, $form);
+
+          expect(line.nextSibling.outerHTML).toEqual(wrappedDiscussionNote(sanitizedDiscussion));
+        });
       });
     });
 
