@@ -447,14 +447,16 @@ without downtime and causing too much load on the database is described below.
 
 To start the process, add a regular migration to create the new `bigint` columns. Use the provided
 `initialize_conversion_of_integer_to_bigint` helper. The helper also creates a database trigger
-to keep in sync both columns for any new records ([see an example](https://gitlab.com/gitlab-org/gitlab/-/blob/41fbe34a4725a4e357a83fda66afb382828767b2/db/migrate/20210608072312_initialize_conversion_of_ci_stages_to_bigint.rb)):
+to keep in sync both columns for any new records ([code](https://gitlab.com/gitlab-org/gitlab/-/blob/97aee76c4bfc2043dc0a1ef9ffbb71c58e0e2857/db/migrate/20230127093353_initialize_conversion_of_merge_request_metrics_to_bigint.rb)):
 
 ```ruby
-class InitializeConversionOfCiStagesToBigint < Gitlab::Database::Migration[2.1]
-  TABLE = :ci_stages
-  COLUMNS = %i[id]
+# frozen_string_literal: true
 
-  enable_lock_retries!
+class InitializeConversionOfMergeRequestMetricsToBigint < Gitlab::Database::Migration[2.1]
+  disable_ddl_transaction!
+
+  TABLE = :merge_request_metrics
+  COLUMNS = %i[id]
 
   def up
     initialize_conversion_of_integer_to_bigint(TABLE, COLUMNS)
@@ -469,25 +471,28 @@ end
 Ignore the new `bigint` columns:
 
 ```ruby
-module Ci
-  class Stage < Ci::ApplicationRecord
-    include IgnorableColumns
-    ignore_column :id_convert_to_bigint, remove_with: '14.2', remove_after: '2021-08-22'
-  end
+# frozen_string_literal: true
+
+class MergeRequest::Metrics < ApplicationRecord
+  include IgnorableColumns
+  ignore_column :id_convert_to_bigint, remove_with: '16.0', remove_after: '2023-05-22'
+end
 ```
 
-Enqueue batched background migration ([another example](https://gitlab.com/gitlab-org/gitlab/-/blob/41fbe34a4725a4e357a83fda66afb382828767b2/db/migrate/20210608072346_backfill_ci_stages_for_bigint_conversion.rb))
+Enqueue batched background migration ([code](https://gitlab.com/gitlab-org/gitlab/-/blob/97aee76c4bfc2043dc0a1ef9ffbb71c58e0e2857/db/post_migrate/20230127101834_backfill_merge_request_metrics_for_bigint_conversion.rb))
 to migrate the existing data:
 
 ```ruby
-class BackfillCiStagesForBigintConversion < Gitlab::Database::Migration[2.1]
-  TABLE = :ci_stages
+# frozen_string_literal: true
+
+class BackfillMergeRequestMetricsForBigintConversion < Gitlab::Database::Migration[2.1]
+  restrict_gitlab_migration gitlab_schema: :gitlab_main
+
+  TABLE = :merge_request_metrics
   COLUMNS = %i[id]
 
-  restrict_gitlab_migration gitlab_schema: :gitlab_ci
-
   def up
-    backfill_conversion_of_integer_to_bigint(TABLE, COLUMNS)
+    backfill_conversion_of_integer_to_bigint(TABLE, COLUMNS, sub_batch_size: 200)
   end
 
   def down

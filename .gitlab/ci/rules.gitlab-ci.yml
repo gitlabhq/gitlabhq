@@ -350,7 +350,6 @@
   - "{,ee/,jh/}{,spec/}{db,migrations}/**/*"
   - "{,ee/,jh/}{,spec/}lib/{,ee/,jh/}gitlab/background_migration{,_spec}.rb"
   - "{,ee/,jh/}{,spec/}lib/{,ee/,jh/}gitlab/background_migration/**/*"
-  - "{,ee/,jh/}{,spec/}lib/{,ee/,jh/}gitlab/content_security_policy/config_loader{,_spec}.rb"
   - "{,ee/,jh/}{,spec/}lib/{,ee/,jh/}gitlab/database{,_spec}.rb"
   - "{,ee/,jh/}{,spec/}lib/{,ee/,jh/}gitlab/database/**/*"
   - "{,ee/,jh/}spec/support/helpers/database/**/*"
@@ -1231,6 +1230,15 @@
       when: never
     - <<: *if-default-refs
       changes: *db-patterns
+
+.rails:rules:db-rollback:
+  rules:
+    - !reference [".rails:rules:ee-and-foss-migration", rules]
+    - <<: *if-default-refs
+      changes: *initializers-patterns
+    - <<: *if-default-refs
+      changes:
+        - "{,ee/,jh/}{,spec/}lib/{,ee/,jh/}gitlab/content_security_policy/config_loader{,_spec}.rb"
 
 .rails:rules:praefect-with-db:
   rules:

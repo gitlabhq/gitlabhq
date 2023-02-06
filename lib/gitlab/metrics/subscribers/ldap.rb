@@ -73,8 +73,8 @@ module Gitlab
         def add_to_request_store(event)
           return unless Gitlab::SafeRequestStore.active?
 
-          Gitlab::SafeRequestStore[COUNTER] = Gitlab::SafeRequestStore[COUNTER].to_i + 1
-          Gitlab::SafeRequestStore[DURATION] = Gitlab::SafeRequestStore[DURATION].to_f + event.duration.to_f
+          Gitlab::SafeRequestStore[COUNTER] = self.class.count + 1
+          Gitlab::SafeRequestStore[DURATION] = self.class.duration + convert_to_seconds(event.duration)
         end
 
         # Converts the observed events into Prometheus metrics
@@ -85,17 +85,22 @@ module Gitlab
           # and so we only want the first part, which is the
           # true name of the event
           labels = { name: event.name.split(".").first }
+          duration = convert_to_seconds(event.duration)
 
           current_transaction.increment(:gitlab_net_ldap_total, 1, labels) do
             docstring 'Net::LDAP calls'
             label_keys labels.keys
           end
 
-          current_transaction.observe(:gitlab_net_ldap_duration_seconds, event.duration, labels) do
+          current_transaction.observe(:gitlab_net_ldap_duration_seconds, duration, labels) do
             docstring 'Net::LDAP time'
             buckets [0.001, 0.01, 0.1, 1.0, 2.0, 5.0]
             label_keys labels.keys
           end
+        end
+
+        def convert_to_seconds(duration_f)
+          (BigDecimal(duration_f.to_s) / BigDecimal("1000.0")).to_f
         end
       end
     end

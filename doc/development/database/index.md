@@ -104,6 +104,12 @@ including the major methods:
 - [External PostgreSQL instances](../../administration/postgresql/external.md)
 - [Replication and failover](../../administration/postgresql/replication_and_failover.md)
 
+## ClickHouse
+
+- [Introduction](clickhouse/index.md)
+- [Optimizing query execution](clickhouse/optimization.md)
+- [Rebuild GitLab features using ClickHouse 1: Activity data](clickhouse/gitlab_activity_data.md)
+
 ## Miscellaneous
 
 - [Maintenance operations](maintenance_operations.md)

@@ -20456,7 +20456,8 @@ CREATE TABLE project_mirror_data (
     last_error text,
     last_update_at timestamp with time zone,
     last_successful_update_at timestamp with time zone,
-    correlation_id_value character varying(128)
+    correlation_id_value character varying(128),
+    checksums jsonb DEFAULT '{}'::jsonb NOT NULL
 );
 
 CREATE SEQUENCE project_mirror_data_id_seq

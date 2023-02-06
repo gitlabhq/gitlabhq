@@ -384,6 +384,7 @@ RSpec.describe 'User page', feature_category: :user_profile do
 
       page.within '.navbar-gitlab' do
         expect(page).to have_link('Sign in')
+        expect(page).not_to have_link('Register')
       end
     end
   end
@@ -395,7 +396,8 @@ RSpec.describe 'User page', feature_category: :user_profile do
       subject
 
       page.within '.navbar-gitlab' do
-        expect(page).to have_link('Sign in / Register')
+        expect(page).to have_link(_('Sign in'), exact: true)
+        expect(page).to have_link(_('Register'), exact: true)
       end
     end
   end

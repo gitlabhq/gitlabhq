@@ -985,13 +985,6 @@ kbd {
 .header-new .dropdown-menu {
   margin-top: 4px;
 }
-.btn-sign-in {
-  background-color: #ebebfa;
-  color: #292961;
-  font-weight: 600;
-  line-height: 18px;
-  margin: 4px 0 4px 2px;
-}
 @media (max-width: 575.98px) {
   .navbar-gitlab .container-fluid {
     font-size: 18px;
@@ -1650,11 +1643,6 @@ svg.s16 {
 }
 .gl-display-none {
   display: none;
-}
-@media (min-width: 576px) {
-  .gl-sm-display-none {
-    display: none;
-  }
 }
 .gl-display-flex {
   display: flex;

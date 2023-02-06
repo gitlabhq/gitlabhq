@@ -115,6 +115,7 @@ build_import_state: # import_state
     - last_update_at
     - last_successful_update_at
     - correlation_id_value
+    - checksums
   remapped_attributes:
     status: import_status
     last_error: import_error

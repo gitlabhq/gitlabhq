@@ -32,6 +32,9 @@ To configure deletion of inactive projects:
    - The email duration must be less than the **Delete project after** duration.
 1. Select **Save changes**.
 
+Inactive projects that meet the criteria are scheduled for deletion and a warning email is sent. If the
+projects remain inactive, they are deleted after the specified duration.
+
 ### Configuration example
 
 If you use these settings:

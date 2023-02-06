@@ -6,8 +6,9 @@ require_relative '../../../lib/gitlab/popen' unless defined?(Gitlab::Popen)
 
 module Tooling
   class KubernetesClient
-    RESOURCE_LIST = 'ingress,svc,pdb,hpa,deploy,statefulset,job,pod,secret,configmap,pvc,secret,clusterrole,clusterrolebinding,role,rolebinding,sa,crd'
-    CommandFailedError = Class.new(StandardError)
+    RESOURCE_LIST                = 'ingress,svc,pdb,hpa,deploy,statefulset,job,pod,secret,configmap,pvc,secret,clusterrole,clusterrolebinding,role,rolebinding,sa,crd'
+    K8S_ALLOWED_NAMESPACES_REGEX = /^review-(?!apps).+/.freeze
+    CommandFailedError           = Class.new(StandardError)
 
     attr_reader :namespace
 
@@ -129,14 +130,16 @@ module Tooling
       command = [
         'get',
         'namespace',
-        "-l tls=review-apps-tls", # Get only namespaces used for review-apps
         "--sort-by='{.metadata.creationTimestamp}'",
         '-o json'
       ]
 
       response = run_command(command)
 
-      resources_created_before_date(response, created_before)
+      stale_namespaces = resources_created_before_date(response, created_before)
+
+      # `kubectl` doesn't allow us to filter namespaces with a regexp. We therefore do the filtering in Ruby.
+      stale_namespaces.select { |ns| K8S_ALLOWED_NAMESPACES_REGEX.match?(ns) }
     end
 
     def resources_created_before_date(response, date)

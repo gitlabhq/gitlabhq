@@ -3439,6 +3439,31 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
     end
   end
 
+  describe '#import_checksums' do
+    context 'with import_checksums' do
+      it 'returns the right checksums' do
+        project = create(:project)
+        create(:import_state, project: project, checksums: {
+          'fetched' => {},
+          'imported' => {}
+        })
+
+        expect(project.import_checksums).to eq(
+          'fetched' => {},
+          'imported' => {}
+        )
+      end
+    end
+
+    context 'without import_state' do
+      it 'returns empty hash' do
+        project = create(:project)
+
+        expect(project.import_checksums).to eq({})
+      end
+    end
+  end
+
   describe '#jira_import_status' do
     let_it_be(:project) { create(:project, import_type: 'jira') }
 

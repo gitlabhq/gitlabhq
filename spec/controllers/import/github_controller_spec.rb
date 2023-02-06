@@ -375,7 +375,9 @@ RSpec.describe Import::GithubController, feature_category: :import do
     it_behaves_like 'a GitHub-ish import controller: GET realtime_changes'
 
     it 'includes stats in response' do
-      create(:project, import_type: provider, namespace: user.namespace, import_status: :finished, import_source: 'example/repo')
+      project = create(:project, import_type: provider, namespace: user.namespace, import_status: :finished, import_source: 'example/repo')
+
+      ::Gitlab::GithubImport::ObjectCounter.increment(project, :issue, :imported, value: 8)
 
       get :realtime_changes
 

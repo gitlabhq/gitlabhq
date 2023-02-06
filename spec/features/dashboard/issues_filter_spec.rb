@@ -92,7 +92,7 @@ RSpec.describe 'Dashboard Issues filtering', :js, feature_category: :team_planni
     end
   end
 
-  def visit_issues(*args)
-    visit issues_dashboard_path(*args)
+  def visit_issues(...)
+    visit issues_dashboard_path(...)
   end
 end

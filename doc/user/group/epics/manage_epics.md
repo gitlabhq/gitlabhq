@@ -240,6 +240,7 @@ than 1000. The cached value is rounded to thousands or millions and updated ever
 > - Filtering by milestone and confidentiality [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/268372) in GitLab 14.2 [with a flag](../../../administration/feature_flags.md) named `vue_epics_list`. Disabled by default.
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/276189) in GitLab 14.7.
 > - [Feature flag `vue_epics_list`](https://gitlab.com/gitlab-org/gitlab/-/issues/327320) removed in GitLab 14.8.
+> - Filtering by group was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385191) in GitLab 15.9.
 
 You can filter the list of epics by:
 
@@ -249,6 +250,7 @@ You can filter the list of epics by:
 - Milestones
 - Confidentiality
 - Reaction emoji
+- Groups
 
 ![epics filter](img/epics_filter_v14_7.png)
 

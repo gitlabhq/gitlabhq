@@ -250,7 +250,7 @@ RSpec.describe Tooling::KubernetesClient do
   describe '#review_app_namespaces_created_before' do
     let(:three_days_ago) { Time.now - 3600 * 24 * 3 }
     let(:two_days_ago) { Time.now - 3600 * 24 * 2 }
-    let(:namespace_created_three_days_ago) { 'namespace-created-three-days-ago' }
+    let(:namespace_created_three_days_ago) { 'review-ns-created-three-days-ago' }
     let(:resource_type) { 'namespace' }
     let(:raw_resources) do
       {
@@ -260,10 +260,7 @@ RSpec.describe Tooling::KubernetesClient do
             kind: "Namespace",
             metadata: {
               creationTimestamp: three_days_ago,
-              name: namespace_created_three_days_ago,
-              labels: {
-                tls: 'review-apps-tls'
-              }
+              name: namespace_created_three_days_ago
             }
           },
           {
@@ -271,10 +268,7 @@ RSpec.describe Tooling::KubernetesClient do
             kind: "Namespace",
             metadata: {
               creationTimestamp: Time.now,
-              name: 'another-pvc',
-              labels: {
-                tls: 'review-apps-tls'
-              }
+              name: 'another-namespace'
             }
           }
         ]
@@ -283,12 +277,10 @@ RSpec.describe Tooling::KubernetesClient do
 
     specify do
       expect(Gitlab::Popen).to receive(:popen_with_detail)
-                                 .with(["kubectl get namespace " \
-                                          "-l tls=review-apps-tls " \
-                                          "--sort-by='{.metadata.creationTimestamp}' -o json"])
-                                 .and_return(Gitlab::Popen::Result.new([], raw_resources, '', double(success?: true)))
+                          .with(["kubectl get namespace --sort-by='{.metadata.creationTimestamp}' -o json"])
+                          .and_return(Gitlab::Popen::Result.new([], raw_resources, '', double(success?: true)))
 
-      expect(subject.__send__(:review_app_namespaces_created_before, created_before: two_days_ago)).to contain_exactly(namespace_created_three_days_ago)
+      expect(subject.__send__(:review_app_namespaces_created_before, created_before: two_days_ago)).to eq([namespace_created_three_days_ago])
     end
   end
 end

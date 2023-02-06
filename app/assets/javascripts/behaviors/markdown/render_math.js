@@ -69,6 +69,7 @@ class SafeMathRenderer {
 
       codeElement.className = 'code';
       codeElement.textContent = el.textContent;
+      codeElement.dataset.mathStyle = el.dataset.mathStyle;
 
       const { parentNode } = el;
       parentNode.replaceChild(wrapperElement, el);

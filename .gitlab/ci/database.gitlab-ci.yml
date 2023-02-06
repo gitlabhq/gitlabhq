@@ -2,7 +2,9 @@ include:
   - local: .gitlab/ci/rails/shared.gitlab-ci.yml
 
 db:rollback:
-  extends: .db-job-base
+  extends:
+    - .db-job-base
+    - .rails:rules:db-rollback
   script:
     - scripts/db_tasks db:migrate VERSION=20220502173045  # 14.10 (last 14.x version)
     - scripts/db_tasks db:migrate

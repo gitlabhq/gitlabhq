@@ -6,8 +6,8 @@ module Graphql
       @trace_callback = trace_callback
     end
 
-    def trace(*args)
-      @trace_callback.call(*args)
+    def trace(...)
+      @trace_callback.call(...)
 
       yield
     end

@@ -113,21 +113,21 @@ Considering example above, perform the following steps to create a new job:
 ### Parallel jobs
 
 For selective execution to work correctly with job types that require running multiple parallel jobs,
-a job definition typically must be split into parallel and non parallel variants. Splitting is necessary so that when selective execution
+a job definition typically must be split into parallel and selective variants. Splitting is necessary so that when selective execution
 executes only a single spec, multiple unnecessary jobs are not spawned. For example:
 
 ```yaml
-ee:my-new-job:
+ee:my-new-job-selective:
   extends: .qa
   variables:
     QA_SCENARIO: Test::Integration::MyNewJob
   rules:
-    - !reference [.rules:test:qa-non-parallel, rules]
+    - !reference [.rules:test:qa-selective, rules]
     - if: $QA_SUITES =~ /Test::Integration::MyNewJob/
-ee:instance-parallel:
+ee:my-new-job:
   extends:
     - .parallel
-    - ee:my-new-job
+    - ee:my-new-job-selective
   rules:
     - !reference [.rules:test:qa-parallel, rules]
     - if: $QA_SUITES =~ /Test::Integration::MyNewJob/

@@ -1,0 +1,23 @@
+---
+key_path: counts.count_ml_experiments
+description: Count of created Ml Experiments
+product_section: dev
+product_stage: create
+product_group: mlops
+product_category: MLOps
+value_type: number
+status: active
+milestone: "15.9"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110642
+time_frame: all
+data_source: database
+data_category: optional
+instrumentation_class: CountMlExperimentsMetric
+performance_indicator_type: []
+distribution:
+- ce
+- ee
+tier:
+- free
+- premium
+- ultimate

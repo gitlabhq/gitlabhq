@@ -14,7 +14,6 @@ module ReviewApps
       review_app: 'review/',
       docs_review_app: 'review-docs/'
     }.freeze
-    HELM_ALLOWED_NAMESPACES_REGEX = /^review-(?!apps).+/.freeze
     IGNORED_HELM_ERRORS = [
       'transport is closing',
       'error upgrading connection',
@@ -149,7 +148,7 @@ module ReviewApps
 
       helm_releases.each do |release|
         # Prevents deleting `dns-gitlab-review-app` releases or other unrelated releases
-        next unless HELM_ALLOWED_NAMESPACES_REGEX.match?(release.namespace)
+        next unless Tooling::KubernetesClient::K8S_ALLOWED_NAMESPACES_REGEX.match?(release.namespace)
         next unless release.name.start_with?('review-')
 
         if release.status == 'failed' || release.last_update < threshold

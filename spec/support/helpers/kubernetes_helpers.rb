@@ -534,10 +534,10 @@ module KubernetesHelpers
     }
   end
 
-  def kube_knative_services_body(**options)
+  def kube_knative_services_body(...)
     {
       "kind" => "List",
-      "items" => [knative_09_service(**options)]
+      "items" => [knative_09_service(...)]
     }
   end
 

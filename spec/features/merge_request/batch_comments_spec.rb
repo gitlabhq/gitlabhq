@@ -252,10 +252,10 @@ RSpec.describe 'Merge request > Batch comments', :js, feature_category: :code_re
     wait_for_requests
   end
 
-  def write_diff_comment(**params)
+  def write_diff_comment(...)
     click_diff_line(find_by_scrolling("[id='#{sample_compare.changes[0][:line_code]}']"))
 
-    write_comment(**params)
+    write_comment(...)
   end
 
   def write_parallel_comment(line, **params)

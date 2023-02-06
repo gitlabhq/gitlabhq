@@ -47,7 +47,7 @@ RSpec.describe Gitlab::OtherMarkup do
     end
   end
 
-  def render(*args)
-    described_class.render(*args)
+  def render(...)
+    described_class.render(...)
   end
 end

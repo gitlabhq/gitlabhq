@@ -11,10 +11,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - Operational container scanning [introduced](https://gitlab.com/groups/gitlab-org/-/epics/3410) in GitLab 15.5
 
 Group, subgroup, or project owners can use scan execution policies to require that security scans run on a specified
-schedule or with the project (or multiple projects if the policy is defined at a group or subgroup level) pipeline. Required scans are injected into the CI pipeline as new jobs
-with a long, random job name. In the unlikely event of a job name collision, the security policy job overwrites
-any pre-existing job in the pipeline. If a policy is created at the group-level, it applies to every child
-project or subgroup. A group-level policy cannot be edited from a child project or subgroup.
+schedule or with the project pipeline. The security scan runs with multiple project pipelines if you define the policy
+at a group or subgroup level. GitLab injects the required scans into the CI pipeline as new jobs. In the event
+of a job name collision, GitLab adds a dash and a number to the job name. GitLab increments the number until the name
+no longer conflicts with existing job names. If you create a policy at the group level, it applies to every child project
+or subgroup. You cannot edit a group-level policy from a child project or subgroup.
 
 This feature has some overlap with [compliance framework pipelines](../../group/compliance_frameworks.md#configure-a-compliance-pipeline),
 as we have not [unified the user experience for these two features](https://gitlab.com/groups/gitlab-org/-/epics/7312).

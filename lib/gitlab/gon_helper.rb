@@ -68,7 +68,6 @@ module Gitlab
       push_frontend_feature_flag(:source_editor_toolbar)
       push_frontend_feature_flag(:vscode_web_ide, current_user)
       push_frontend_feature_flag(:integration_slack_app_notifications)
-      push_frontend_feature_flag(:new_fonts, current_user)
       push_frontend_feature_flag(:full_path_project_search, current_user)
     end
 

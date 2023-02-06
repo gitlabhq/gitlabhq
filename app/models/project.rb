@@ -1254,6 +1254,10 @@ class Project < ApplicationRecord
     import_state&.status || 'none'
   end
 
+  def import_checksums
+    import_state&.checksums || {}
+  end
+
   def jira_import_status
     latest_jira_import&.status || 'initial'
   end

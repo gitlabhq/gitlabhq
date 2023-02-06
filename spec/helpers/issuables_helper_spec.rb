@@ -263,7 +263,7 @@ RSpec.describe IssuablesHelper, feature_category: :team_planning do
           allow(helper).to receive(:issuables_count_for_state).and_return(-1)
         end
 
-        it 'returns avigation without badges' do
+        it 'returns navigation without badges' do
           expect(helper.issuables_state_counter_text(:issues, :opened, true))
             .to eq('<span>Open</span>')
           expect(helper.issuables_state_counter_text(:issues, :closed, true))

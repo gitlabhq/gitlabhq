@@ -10,6 +10,7 @@ module QA
             element :incident_templates_dropdown
             element :save_changes_button
             element :incident_templates_item
+            element :enable_email_notification_checkbox
           end
 
           view 'app/assets/javascripts/alerts_settings/components/alerts_settings_wrapper.vue' do
@@ -32,6 +33,10 @@ module QA
 
           def enable_incident_for_alert
             check_element(:create_incident_checkbox, true)
+          end
+
+          def enable_email_notification
+            check_element(:enable_email_notification_checkbox, true)
           end
 
           def select_issue_template(template)

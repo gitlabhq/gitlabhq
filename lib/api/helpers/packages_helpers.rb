@@ -97,11 +97,37 @@ module API
           context: [Gitlab::Tracking::ServicePingContext.new(data_source: :redis_hll, event: event_name).to_context],
           **args
         )
+
+        return unless Feature.enabled?(:route_hll_to_snowplow_phase3)
+
+        track_push_package_by_deploy_token_event(action, category, args)
       end
 
       def present_package_file!(package_file, supports_direct_download: true)
         package_file.package.touch_last_downloaded_at
         present_carrierwave_file!(package_file.file, supports_direct_download: supports_direct_download)
+      end
+
+      private
+
+      def track_push_package_by_deploy_token_event(action, category, args)
+        return unless action.to_s == 'push_package' && current_user.is_a?(DeployToken)
+
+        event_name = 'i_package_push_package_by_deploy_token'
+        key_path = 'counts.package_events_i_package_push_package_by_deploy_token'
+        service_ping_context = Gitlab::Tracking::ServicePingContext.new(
+          data_source: :redis,
+          key_path: key_path
+        ).to_context
+
+        Gitlab::Tracking.event(
+          category,
+          'push_package_by_deploy_token',
+          property: event_name,
+          label: key_path,
+          context: [service_ping_context],
+          **args
+        )
       end
     end
   end

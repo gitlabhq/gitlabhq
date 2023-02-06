@@ -266,7 +266,7 @@ export default {
     <user-access-role-badge
       v-if="isAuthor"
       v-gl-tooltip
-      class="gl-mr-3 d-none d-md-inline-block"
+      class="gl-mr-3 gl-display-none gl-sm-display-block"
       :title="displayAuthorBadgeText"
     >
       {{ __('Author') }}
@@ -274,7 +274,7 @@ export default {
     <user-access-role-badge
       v-if="accessLevel"
       v-gl-tooltip
-      class="gl-mr-3"
+      class="gl-mr-3 gl-display-none gl-sm-display-block"
       :title="displayMemberBadgeText"
     >
       {{ accessLevel }}
@@ -282,7 +282,7 @@ export default {
     <user-access-role-badge
       v-else-if="isContributor"
       v-gl-tooltip
-      class="gl-mr-3"
+      class="gl-mr-3 gl-display-none gl-sm-display-block"
       :title="displayContributorBadgeText"
     >
       {{ __('Contributor') }}
@@ -339,7 +339,7 @@ export default {
       :aria-label="$options.i18n.editCommentLabel"
       icon="pencil"
       category="tertiary"
-      class="note-action-button js-note-edit"
+      class="note-action-button js-note-edit gl-display-none gl-sm-display-block"
       data-qa-selector="note_edit_button"
       @click="onEdit"
     />
@@ -367,6 +367,13 @@ export default {
       />
       <!-- eslint-enable @gitlab/vue-no-data-toggle -->
       <ul class="dropdown-menu more-actions-dropdown dropdown-open-left">
+        <gl-dropdown-item
+          v-if="canEdit"
+          class="js-note-edit gl-sm-display-none!"
+          @click.prevent="onEdit"
+        >
+          {{ __('Edit comment') }}
+        </gl-dropdown-item>
         <gl-dropdown-item
           v-if="canReportAsAbuse"
           data-testid="report-abuse-button"

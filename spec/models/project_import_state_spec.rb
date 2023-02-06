@@ -14,6 +14,30 @@ RSpec.describe ProjectImportState, type: :model, feature_category: :importers do
 
   describe 'validations' do
     it { is_expected.to validate_presence_of(:project) }
+
+    describe 'checksums attribute' do
+      let(:import_state) { build(:import_state, checksums: checksums) }
+
+      before do
+        import_state.validate
+      end
+
+      context 'when the checksums attribute has invalid fields' do
+        let(:checksums) { { fetched: { issue: :foo, note: 20 } } }
+
+        it 'adds errors' do
+          expect(import_state.errors.details.keys).to include(:checksums)
+        end
+      end
+
+      context 'when the checksums attribute has valid fields' do
+        let(:checksums) { { fetched: { issue: 8, note: 2 }, imported: { issue: 3, note: 2 } } }
+
+        it 'does not add errors' do
+          expect(import_state.errors.details.keys).not_to include(:checksums)
+        end
+      end
+    end
   end
 
   describe 'Project import job' do
@@ -197,6 +221,37 @@ RSpec.describe ProjectImportState, type: :model, feature_category: :importers do
           project.reload
         end.to change { project.import_data }
           .from(import_data).to(nil)
+      end
+    end
+
+    context 'state transition: started: [:finished, :canceled, :failed]' do
+      using RSpec::Parameterized::TableSyntax
+
+      let_it_be_with_reload(:project) { create(:project) }
+
+      where(
+        :import_type,
+        :import_status,
+        :transition,
+        :expected_checksums
+      ) do
+        'github'         | :started   | :finish  | { 'fetched' => {}, 'imported' => {} }
+        'github'         | :started   | :cancel  | { 'fetched' => {}, 'imported' => {} }
+        'github'         | :started   | :fail_op | { 'fetched' => {}, 'imported' => {} }
+        'github'         | :scheduled | :cancel  | {}
+        'gitlab_project' | :started   | :cancel  | {}
+      end
+
+      with_them do
+        before do
+          create(:import_state, status: import_status, import_type: import_type, project: project)
+        end
+
+        it 'updates (or does not update) checksums' do
+          project.import_state.send(transition)
+
+          expect(project.import_state.checksums).to eq(expected_checksums)
+        end
       end
     end
   end

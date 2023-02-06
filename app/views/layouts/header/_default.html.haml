@@ -129,15 +129,12 @@
             %li.nav-item.impersonation.ml-0
               = render Pajamas::ButtonComponent.new(href: admin_impersonation_path, icon: 'incognito', button_options: { title: _('Stop impersonation'), class: 'impersonation-btn', aria: { label: _('Stop impersonation') }, data: { method: :delete, toggle: 'tooltip', placement: 'bottom', container: 'body', qa_selector: 'stop_impersonation_link' } })
           - if header_link?(:sign_in)
-            - if Gitlab.com?
-              %li.nav-item.gl-display-none.gl-sm-display-block
+            - if allow_signup?
+              %li.nav-item
                 = render Pajamas::ButtonComponent.new(href: new_user_registration_path) do
-                  = _('Sign up now')
-              %li.nav-item.gl-display-none.gl-sm-display-block
-                = link_to _('Login'), new_session_path(:user, redirect_to_referer: 'yes')
-              = render 'layouts/header/sign_in_register_button', class: 'gl-sm-display-none'
-            - else
-              = render 'layouts/header/sign_in_register_button'
+                  = _('Register')
+            %li.nav-item
+              = link_to _('Sign in'), new_session_path(:user, redirect_to_referer: 'yes')
 
       %button.navbar-toggler.d-block.d-sm-none{ type: 'button', class: 'gl-border-none!', data: { testid: 'top-nav-responsive-toggle', qa_selector: 'mobile_navbar_button' } }
         %span.sr-only= _('Toggle navigation')

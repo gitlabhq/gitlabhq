@@ -63,6 +63,17 @@ module QA
         end
       end
 
+      def enable_email_notification
+        Page::Project::Settings::Monitor.perform do |setting|
+          setting.expand_alerts do |alert|
+            alert.go_to_alert_settings
+            alert.enable_email_notification
+            alert.save_alert_settings
+            alert.click_button('Collapse')
+          end
+        end
+      end
+
       private
 
       def random_word

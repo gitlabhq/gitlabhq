@@ -25403,9 +25403,6 @@ msgstr ""
 msgid "LoggedOutMarketingHeader|Talk to an expert"
 msgstr ""
 
-msgid "Login"
-msgstr ""
-
 msgid "Login with smartcard"
 msgstr ""
 
@@ -39656,9 +39653,6 @@ msgid "Sign out & Register"
 msgstr ""
 
 msgid "Sign up"
-msgstr ""
-
-msgid "Sign up now"
 msgstr ""
 
 msgid "Sign up was successful! Please confirm your email to sign in."

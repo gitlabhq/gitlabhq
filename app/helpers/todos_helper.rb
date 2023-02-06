@@ -139,6 +139,8 @@ module TodosHelper
       variant = 'info' if state == 'closed'
     when AlertManagement::Alert
       variant = 'info' if state == 'resolved'
+    else
+      variant = 'info'
     end
 
     content_tag(:span, class: 'todo-target-state') do

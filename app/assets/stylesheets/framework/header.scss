@@ -435,18 +435,6 @@ $search-input-field-x-min-width: 200px;
   margin-left: auto;
 }
 
-.btn-sign-in {
-  background-color: $indigo-100;
-  color: $indigo-900;
-  font-weight: $gl-font-weight-bold;
-  line-height: 18px;
-  margin: 4px 0 4px 2px;
-
-  &:hover {
-    background-color: $white;
-  }
-}
-
 @include media-breakpoint-down(xs) {
   .navbar-gitlab .container-fluid {
     font-size: 18px;

@@ -263,7 +263,7 @@
     - name: redis:5.0-alpine
     - name: elasticsearch:7.17.6
       command: ["elasticsearch", "-E", "discovery.type=single-node", "-E", "xpack.security.enabled=false"]
-    - name: registry.gitlab.com/gitlab-org/gitlab-build-images:zoekt-ci-image-1.0
+    - name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:zoekt-ci-image-1.0
       alias: zoekt-ci-image
   variables:
     POSTGRES_HOST_AUTH_METHOD: trust
@@ -278,7 +278,7 @@
     - name: redis:6.0-alpine
     - name: elasticsearch:7.17.6
       command: ["elasticsearch", "-E", "discovery.type=single-node", "-E", "xpack.security.enabled=false"]
-    - name: registry.gitlab.com/gitlab-org/gitlab-build-images:zoekt-ci-image-1.0
+    - name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:zoekt-ci-image-1.0
       alias: zoekt-ci-image
   variables:
     POSTGRES_HOST_AUTH_METHOD: trust
@@ -293,7 +293,7 @@
     - name: redis:6.2-alpine
     - name: elasticsearch:7.17.6
       command: ["elasticsearch", "-E", "discovery.type=single-node", "-E", "xpack.security.enabled=false"]
-    - name: registry.gitlab.com/gitlab-org/gitlab-build-images:zoekt-ci-image-1.0
+    - name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:zoekt-ci-image-1.0
       alias: zoekt-ci-image
   variables:
     POSTGRES_HOST_AUTH_METHOD: trust
@@ -307,7 +307,7 @@
       command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off"]
     - name: redis:6.0-alpine
     - name: elasticsearch:8.5.3
-    - name: registry.gitlab.com/gitlab-org/gitlab-build-images:zoekt-ci-image-1.0
+    - name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:zoekt-ci-image-1.0
       alias: zoekt-ci-image
   variables:
     POSTGRES_HOST_AUTH_METHOD: trust
@@ -325,7 +325,7 @@
     - name: opensearchproject/opensearch:1.3.5
       alias: elasticsearch
       command: ["bin/opensearch", "-E", "discovery.type=single-node", "-E", "plugins.security.disabled=true"]
-    - name: registry.gitlab.com/gitlab-org/gitlab-build-images:zoekt-ci-image-1.0
+    - name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:zoekt-ci-image-1.0
       alias: zoekt-ci-image
   variables:
     POSTGRES_HOST_AUTH_METHOD: trust
@@ -341,7 +341,7 @@
     - name: opensearchproject/opensearch:2.2.1
       alias: elasticsearch
       command: ["bin/opensearch", "-E", "discovery.type=single-node", "-E", "plugins.security.disabled=true"]
-    - name: registry.gitlab.com/gitlab-org/gitlab-build-images:zoekt-ci-image-1.0
+    - name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:zoekt-ci-image-1.0
       alias: zoekt-ci-image
   variables:
     POSTGRES_HOST_AUTH_METHOD: trust
