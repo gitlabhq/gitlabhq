@@ -7,7 +7,7 @@ import {
   MSG_CONNECTION_ERROR,
   SERVICE_DELAY,
 } from '~/ide/lib/mirror';
-import { HTTP_STATUS_INTERNAL_SERVER_ERROR } from '~/lib/utils/http_status';
+import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { getWebSocketUrl } from '~/lib/utils/url_utility';
 
 jest.mock('~/ide/lib/create_diff', () => jest.fn());
@@ -19,10 +19,13 @@ const TEST_DIFF = {
 };
 const TEST_ERROR = 'Something bad happened...';
 const TEST_SUCCESS_RESPONSE = {
-  data: JSON.stringify({ error: { code: 0 }, payload: { status_code: 200 } }),
+  data: JSON.stringify({ error: { code: 0 }, payload: { status_code: HTTP_STATUS_OK } }),
 };
 const TEST_ERROR_RESPONSE = {
-  data: JSON.stringify({ error: { code: 1, Message: TEST_ERROR }, payload: { status_code: 200 } }),
+  data: JSON.stringify({
+    error: { code: 1, Message: TEST_ERROR },
+    payload: { status_code: HTTP_STATUS_OK },
+  }),
 };
 const TEST_ERROR_PAYLOAD_RESPONSE = {
   data: JSON.stringify({

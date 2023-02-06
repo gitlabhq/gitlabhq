@@ -2,17 +2,17 @@
 
 require 'spec_helper'
 
-RSpec.describe Clusters::Agents::RefreshAuthorizationService do
+RSpec.describe Clusters::Agents::RefreshAuthorizationService, feature_category: :kubernetes_management do
   describe '#execute' do
     let_it_be(:root_ancestor) { create(:group) }
 
     let_it_be(:removed_group) { create(:group, parent: root_ancestor) }
     let_it_be(:modified_group) { create(:group, parent: root_ancestor) }
-    let_it_be(:added_group) { create(:group, parent: root_ancestor) }
+    let_it_be(:added_group) { create(:group, path: 'group-path-with-UPPERCASE', parent: root_ancestor) }
 
     let_it_be(:removed_project) { create(:project, namespace: root_ancestor) }
     let_it_be(:modified_project) { create(:project, namespace: root_ancestor) }
-    let_it_be(:added_project) { create(:project, namespace: root_ancestor) }
+    let_it_be(:added_project) { create(:project, path: 'project-path-with-UPPERCASE', namespace: root_ancestor) }
 
     let(:project) { create(:project, namespace: root_ancestor) }
     let(:agent) { create(:cluster_agent, project: project) }
@@ -22,11 +22,13 @@ RSpec.describe Clusters::Agents::RefreshAuthorizationService do
         ci_access: {
           groups: [
             { id: added_group.full_path, default_namespace: 'default' },
-            { id: modified_group.full_path, default_namespace: 'new-namespace' }
+            # Uppercase path verifies case-insensitive matching.
+            { id: modified_group.full_path.upcase, default_namespace: 'new-namespace' }
           ],
           projects: [
             { id: added_project.full_path, default_namespace: 'default' },
-            { id: modified_project.full_path, default_namespace: 'new-namespace' }
+            # Uppercase path verifies case-insensitive matching.
+            { id: modified_project.full_path.upcase, default_namespace: 'new-namespace' }
           ]
         }
       }.deep_stringify_keys

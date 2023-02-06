@@ -195,7 +195,12 @@ Pipelines now include a Secret Detection job.
 
 ## Responding to a leaked secret
 
-If the scanner detects a secret you should rotate it immediately. [Purging a file from the repository's history](../../project/repository/reducing_the_repo_size_using_git.md#purge-files-from-repository-history) may not be effective in removing all references to the file. Also, the secret remains in any forks of the repository.
+Secrets detected by the analyzer should be immediately rotated.
+[Purging a file from the repository's history](../../project/repository/reducing_the_repo_size_using_git.md#purge-files-from-repository-history)
+may not be effective in removing all references to the file. Additionally, the secret will remain in any existing
+forks or clones of the repository.
+
+GitLab will attempt to [automatically revoke](post_processing.md) some types of leaked secrets.
 
 ## Pinning to specific analyzer version
 

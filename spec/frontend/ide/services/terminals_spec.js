@@ -1,6 +1,7 @@
 import MockAdapter from 'axios-mock-adapter';
 import * as terminalService from '~/ide/services/terminals';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 
 const TEST_PROJECT_PATH = 'lorem/ipsum/dolar';
 const TEST_BRANCH = 'ref';
@@ -11,7 +12,7 @@ describe('~/ide/services/terminals', () => {
   const prevRelativeUrlRoot = gon.relative_url_root;
 
   beforeEach(() => {
-    axiosSpy = jest.fn().mockReturnValue([200, {}]);
+    axiosSpy = jest.fn().mockReturnValue([HTTP_STATUS_OK, {}]);
 
     mock = new MockAdapter(axios);
     mock.onPost(/.*/).reply((...args) => axiosSpy(...args));

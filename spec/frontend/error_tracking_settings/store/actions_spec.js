@@ -29,7 +29,7 @@ describe('error tracking settings actions', () => {
     });
 
     it('should request and transform the project list', async () => {
-      mock.onGet(TEST_HOST).reply(() => [200, { projects: projectList }]);
+      mock.onGet(TEST_HOST).reply(() => [HTTP_STATUS_OK, { projects: projectList }]);
       await testAction(
         actions.fetchProjects,
         null,

@@ -23,6 +23,7 @@ import PinnedLinks from '~/issues/show/components/pinned_links.vue';
 import { POLLING_DELAY } from '~/issues/show/constants';
 import eventHub from '~/issues/show/event_hub';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { visitUrl } from '~/lib/utils/url_utility';
 import {
   appProps,
@@ -100,7 +101,7 @@ describe('Issuable output', () => {
     mock
       .onGet('/gitlab-org/gitlab-shell/-/issues/9/realtime_changes/realtime_changes')
       .reply(() => {
-        const res = Promise.resolve([200, REALTIME_REQUEST_STACK[realtimeRequestCount]]);
+        const res = Promise.resolve([HTTP_STATUS_OK, REALTIME_REQUEST_STACK[realtimeRequestCount]]);
         realtimeRequestCount += 1;
         return res;
       });
@@ -336,7 +337,9 @@ describe('Issuable output', () => {
       const mockData = {
         test: [{ name: 'test', id: 'test', project_path: '/', namespace_path: '/' }],
       };
-      mock.onGet('/issuable-templates-path').reply(() => Promise.resolve([200, mockData]));
+      mock
+        .onGet('/issuable-templates-path')
+        .reply(() => Promise.resolve([HTTP_STATUS_OK, mockData]));
 
       return wrapper.vm.requestTemplatesAndShowForm().then(() => {
         expect(formSpy).toHaveBeenCalledWith(mockData);
@@ -345,7 +348,9 @@ describe('Issuable output', () => {
 
     it('shows the form if template names as array request is successful', () => {
       const mockData = [{ name: 'test', id: 'test', project_path: '/', namespace_path: '/' }];
-      mock.onGet('/issuable-templates-path').reply(() => Promise.resolve([200, mockData]));
+      mock
+        .onGet('/issuable-templates-path')
+        .reply(() => Promise.resolve([HTTP_STATUS_OK, mockData]));
 
       return wrapper.vm.requestTemplatesAndShowForm().then(() => {
         expect(formSpy).toHaveBeenCalledWith(mockData);

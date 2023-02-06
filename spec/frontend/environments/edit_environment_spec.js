@@ -5,6 +5,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import EditEnvironment from '~/environments/components/edit_environment.vue';
 import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { visitUrl } from '~/lib/utils/url_utility';
 
 jest.mock('~/lib/utils/url_utility');
@@ -68,7 +69,7 @@ describe('~/environments/components/edit.vue', () => {
 
     expect(showsLoading()).toBe(false);
 
-    await submitForm(expected, [200, { path: '/test' }]);
+    await submitForm(expected, [HTTP_STATUS_OK, { path: '/test' }]);
 
     expect(showsLoading()).toBe(true);
   });
@@ -76,7 +77,7 @@ describe('~/environments/components/edit.vue', () => {
   it('submits the updated environment on submit', async () => {
     const expected = { url: 'https://google.ca' };
 
-    await submitForm(expected, [200, { path: '/test' }]);
+    await submitForm(expected, [HTTP_STATUS_OK, { path: '/test' }]);
 
     expect(visitUrl).toHaveBeenCalledWith('/test');
   });

@@ -1,6 +1,7 @@
 <script>
 import { GlLoadingIcon } from '@gitlab/ui';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import NotebookLab from '~/notebook/index.vue';
 
 export default {
@@ -51,7 +52,7 @@ export default {
           this.loading = false;
         })
         .catch((e) => {
-          if (e.status !== 200) {
+          if (e.status !== HTTP_STATUS_OK) {
             this.loadError = true;
           }
           this.error = true;

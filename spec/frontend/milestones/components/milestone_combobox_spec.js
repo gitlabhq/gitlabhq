@@ -4,7 +4,7 @@ import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
-import { HTTP_STATUS_INTERNAL_SERVER_ERROR } from '~/lib/utils/http_status';
+import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { ENTER_KEY } from '~/lib/utils/keys';
 import MilestoneCombobox from '~/milestones/components/milestone_combobox.vue';
 import createStore from '~/milestones/stores/';
@@ -64,15 +64,15 @@ describe('Milestone combobox component', () => {
 
     projectMilestonesApiCallSpy = jest
       .fn()
-      .mockReturnValue([200, projectMilestones, { [X_TOTAL_HEADER]: '6' }]);
+      .mockReturnValue([HTTP_STATUS_OK, projectMilestones, { [X_TOTAL_HEADER]: '6' }]);
 
     groupMilestonesApiCallSpy = jest
       .fn()
-      .mockReturnValue([200, groupMilestones, { [X_TOTAL_HEADER]: '6' }]);
+      .mockReturnValue([HTTP_STATUS_OK, groupMilestones, { [X_TOTAL_HEADER]: '6' }]);
 
     searchApiCallSpy = jest
       .fn()
-      .mockReturnValue([200, projectMilestones, { [X_TOTAL_HEADER]: '6' }]);
+      .mockReturnValue([HTTP_STATUS_OK, projectMilestones, { [X_TOTAL_HEADER]: '6' }]);
 
     mock
       .onGet(`/api/v4/projects/${projectId}/milestones`)
@@ -248,9 +248,11 @@ describe('Milestone combobox component', () => {
       beforeEach(() => {
         projectMilestonesApiCallSpy = jest
           .fn()
-          .mockReturnValue([200, [], { [X_TOTAL_HEADER]: '0' }]);
+          .mockReturnValue([HTTP_STATUS_OK, [], { [X_TOTAL_HEADER]: '0' }]);
 
-        groupMilestonesApiCallSpy = jest.fn().mockReturnValue([200, [], { [X_TOTAL_HEADER]: '0' }]);
+        groupMilestonesApiCallSpy = jest
+          .fn()
+          .mockReturnValue([HTTP_STATUS_OK, [], { [X_TOTAL_HEADER]: '0' }]);
 
         createComponent();
 
@@ -301,7 +303,7 @@ describe('Milestone combobox component', () => {
         beforeEach(() => {
           projectMilestonesApiCallSpy = jest
             .fn()
-            .mockReturnValue([200, [], { [X_TOTAL_HEADER]: '0' }]);
+            .mockReturnValue([HTTP_STATUS_OK, [], { [X_TOTAL_HEADER]: '0' }]);
 
           createComponent();
 
@@ -366,7 +368,7 @@ describe('Milestone combobox component', () => {
             createComponent();
             projectMilestonesApiCallSpy = jest
               .fn()
-              .mockReturnValue([200, [{ title: 'v1.0' }], { [X_TOTAL_HEADER]: '1' }]);
+              .mockReturnValue([HTTP_STATUS_OK, [{ title: 'v1.0' }], { [X_TOTAL_HEADER]: '1' }]);
 
             return waitForRequests();
           });
@@ -430,7 +432,7 @@ describe('Milestone combobox component', () => {
         beforeEach(() => {
           groupMilestonesApiCallSpy = jest
             .fn()
-            .mockReturnValue([200, [], { [X_TOTAL_HEADER]: '0' }]);
+            .mockReturnValue([HTTP_STATUS_OK, [], { [X_TOTAL_HEADER]: '0' }]);
 
           createComponent();
 
@@ -495,7 +497,11 @@ describe('Milestone combobox component', () => {
             createComponent();
             groupMilestonesApiCallSpy = jest
               .fn()
-              .mockReturnValue([200, [{ title: 'group-v1.0' }], { [X_TOTAL_HEADER]: '1' }]);
+              .mockReturnValue([
+                HTTP_STATUS_OK,
+                [{ title: 'group-v1.0' }],
+                { [X_TOTAL_HEADER]: '1' },
+              ]);
 
             return waitForRequests();
           });

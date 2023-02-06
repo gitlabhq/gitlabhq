@@ -1,6 +1,7 @@
 import { GlFilteredSearchToken } from '@gitlab/ui';
 import { keyBy } from 'lodash';
 import { ListType } from '~/boards/constants';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import {
   OPERATORS_IS,
   OPERATORS_IS_NOT,
@@ -460,7 +461,7 @@ export const BoardsMockData = {
 
 export const boardsMockInterceptor = (config) => {
   const body = BoardsMockData[config.method.toUpperCase()][config.url];
-  return [200, body];
+  return [HTTP_STATUS_OK, body];
 };
 
 export const mockList = {

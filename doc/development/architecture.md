@@ -378,6 +378,7 @@ Component statuses are linked to configuration documentation for each component.
 | [Runner](#gitlab-runner)                              | Executes GitLab CI/CD jobs                                           |       ⤓        |       ⤓        |      ✅       |        ⚙         |     ✅      |   ⚙    |  ⚙  | CE & EE |
 | [Sentry integration](#sentry)                         | Error tracking for deployed apps                                     |       ⤓        |       ⤓        |      ⤓       |        ⤓         |     ⤓      |   ⤓    |  ⤓  | CE & EE |
 | [Sidekiq](#sidekiq)                                   | Background jobs processor                                            |       ✅       |       ✅        |      ✅       |        ✅         |     ✅      |   ✅    |  ✅  | CE & EE |
+| [Token Revocation API](sec/token_revocation_api.md)   | Receives and revokes leaked secrets                                  |       ❌       |       ❌        |      ❌       |        ❌         |     ✅      |   ❌    |  ❌  | EE Only |
 
 ### Component details
 

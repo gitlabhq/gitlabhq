@@ -9,7 +9,11 @@ import commit from 'test_fixtures/api/commits/commit.json';
 import branches from 'test_fixtures/api/branches/branches.json';
 import tags from 'test_fixtures/api/tags/tags.json';
 import { trimText } from 'helpers/text_helper';
-import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_NOT_FOUND } from '~/lib/utils/http_status';
+import {
+  HTTP_STATUS_INTERNAL_SERVER_ERROR,
+  HTTP_STATUS_NOT_FOUND,
+  HTTP_STATUS_OK,
+} from '~/lib/utils/http_status';
 import { ENTER_KEY } from '~/lib/utils/keys';
 import { sprintf } from '~/locale';
 import RefSelector from '~/ref/components/ref_selector.vue';
@@ -69,9 +73,11 @@ describe('Ref selector component', () => {
 
     branchesApiCallSpy = jest
       .fn()
-      .mockReturnValue([200, fixtures.branches, { [X_TOTAL_HEADER]: '123' }]);
-    tagsApiCallSpy = jest.fn().mockReturnValue([200, fixtures.tags, { [X_TOTAL_HEADER]: '456' }]);
-    commitApiCallSpy = jest.fn().mockReturnValue([200, fixtures.commit]);
+      .mockReturnValue([HTTP_STATUS_OK, fixtures.branches, { [X_TOTAL_HEADER]: '123' }]);
+    tagsApiCallSpy = jest
+      .fn()
+      .mockReturnValue([HTTP_STATUS_OK, fixtures.tags, { [X_TOTAL_HEADER]: '456' }]);
+    commitApiCallSpy = jest.fn().mockReturnValue([HTTP_STATUS_OK, fixtures.commit]);
     requestSpies = { branchesApiCallSpy, tagsApiCallSpy, commitApiCallSpy };
 
     mock
@@ -309,8 +315,10 @@ describe('Ref selector component', () => {
 
     describe('when no results are found', () => {
       beforeEach(() => {
-        branchesApiCallSpy = jest.fn().mockReturnValue([200, [], { [X_TOTAL_HEADER]: '0' }]);
-        tagsApiCallSpy = jest.fn().mockReturnValue([200, [], { [X_TOTAL_HEADER]: '0' }]);
+        branchesApiCallSpy = jest
+          .fn()
+          .mockReturnValue([HTTP_STATUS_OK, [], { [X_TOTAL_HEADER]: '0' }]);
+        tagsApiCallSpy = jest.fn().mockReturnValue([HTTP_STATUS_OK, [], { [X_TOTAL_HEADER]: '0' }]);
         commitApiCallSpy = jest.fn().mockReturnValue([HTTP_STATUS_NOT_FOUND]);
 
         createComponent();
@@ -386,7 +394,9 @@ describe('Ref selector component', () => {
 
       describe('when the branches search returns no results', () => {
         beforeEach(() => {
-          branchesApiCallSpy = jest.fn().mockReturnValue([200, [], { [X_TOTAL_HEADER]: '0' }]);
+          branchesApiCallSpy = jest
+            .fn()
+            .mockReturnValue([HTTP_STATUS_OK, [], { [X_TOTAL_HEADER]: '0' }]);
 
           createComponent();
 
@@ -451,7 +461,9 @@ describe('Ref selector component', () => {
 
       describe('when the tags search returns no results', () => {
         beforeEach(() => {
-          tagsApiCallSpy = jest.fn().mockReturnValue([200, [], { [X_TOTAL_HEADER]: '0' }]);
+          tagsApiCallSpy = jest
+            .fn()
+            .mockReturnValue([HTTP_STATUS_OK, [], { [X_TOTAL_HEADER]: '0' }]);
 
           createComponent();
 

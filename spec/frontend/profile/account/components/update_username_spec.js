@@ -5,7 +5,7 @@ import { nextTick } from 'vue';
 import { TEST_HOST } from 'helpers/test_constants';
 import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
-
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import UpdateUsername from '~/profile/account/components/update_username.vue';
 
 jest.mock('~/flash');
@@ -97,7 +97,7 @@ describe('UpdateUsername component', () => {
     });
 
     it('executes API call on confirmation button click', async () => {
-      axiosMock.onPut(actionUrl).replyOnce(() => [200, { message: 'Username changed' }]);
+      axiosMock.onPut(actionUrl).replyOnce(() => [HTTP_STATUS_OK, { message: 'Username changed' }]);
       jest.spyOn(axios, 'put');
 
       await wrapper.vm.onConfirm();
@@ -114,7 +114,7 @@ describe('UpdateUsername component', () => {
         expect(openModalBtn.props('disabled')).toBe(false);
         expect(openModalBtn.props('loading')).toBe(true);
 
-        return [200, { message: 'Username changed' }];
+        return [HTTP_STATUS_OK, { message: 'Username changed' }];
       });
 
       await wrapper.vm.onConfirm();
