@@ -51,6 +51,8 @@ workflow:
         CRYSTALBALL: "true"
         CREATE_INCIDENT_FOR_PIPELINE_FAILURE: "true"
         NOTIFY_PIPELINE_FAILURE_CHANNEL: "master-broken"
+        BROKEN_BRANCH_INCIDENTS_PROJECT: "gitlab-org/quality/engineering-productivity/master-broken-incidents"
+        BROKEN_BRANCH_INCIDENTS_PROJECT_TOKEN: "${BROKEN_MASTER_INCIDENTS_PROJECT_TOKEN}"
         PIPELINE_NAME: 'Scheduled $CI_COMMIT_BRANCH pipeline'
     # Run pipelines for ruby3 branch
     - if: '$CI_COMMIT_BRANCH == "ruby3" && $CI_PIPELINE_SOURCE == "schedule"'
@@ -67,11 +69,15 @@ workflow:
         GITLAB_DEPENDENCY_PROXY_ADDRESS: ""
         CREATE_INCIDENT_FOR_PIPELINE_FAILURE: "true"
         NOTIFY_PIPELINE_FAILURE_CHANNEL: "master-broken"
+        BROKEN_BRANCH_INCIDENTS_PROJECT: "gitlab-org/quality/engineering-productivity/master-broken-incidents"
+        BROKEN_BRANCH_INCIDENTS_PROJECT_TOKEN: "${BROKEN_MASTER_INCIDENTS_PROJECT_TOKEN}"
     # For `$CI_DEFAULT_BRANCH` branch, create a pipeline (this includes on schedules, pushes, merges, etc.).
     - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
       variables:
         CREATE_INCIDENT_FOR_PIPELINE_FAILURE: "true"
         NOTIFY_PIPELINE_FAILURE_CHANNEL: "master-broken"
+        BROKEN_BRANCH_INCIDENTS_PROJECT: "gitlab-org/quality/engineering-productivity/master-broken-incidents"
+        BROKEN_BRANCH_INCIDENTS_PROJECT_TOKEN: "${BROKEN_MASTER_INCIDENTS_PROJECT_TOKEN}"
     # For tags, create a pipeline.
     - if: '$CI_COMMIT_TAG'
     # If `$GITLAB_INTERNAL` isn't set, don't create a pipeline.
@@ -81,6 +87,9 @@ workflow:
     - if: '$CI_COMMIT_BRANCH =~ /^[\d-]+-stable(-ee)?$/'
       variables:
         NOTIFY_PIPELINE_FAILURE_CHANNEL: "releases"
+        CREATE_INCIDENT_FOR_PIPELINE_FAILURE: "true"
+        BROKEN_BRANCH_INCIDENTS_PROJECT: "gitlab-org/release/tasks"
+        BROKEN_BRANCH_INCIDENTS_PROJECT_TOKEN: "${BROKEN_STABLE_INCIDENTS_PROJECT_TOKEN}"
     - if: '$CI_COMMIT_BRANCH =~ /^\d+-\d+-auto-deploy-\d+$/'
     - if: '$CI_COMMIT_BRANCH =~ /^security\//'
 

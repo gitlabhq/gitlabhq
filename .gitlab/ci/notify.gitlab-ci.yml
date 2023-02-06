@@ -43,8 +43,9 @@ notify-pipeline-failure:
     - .notify:rules:notify-pipeline-failure
   image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}ruby:${RUBY_VERSION}
   variables:
-    BROKEN_MASTER_INCIDENTS_PROJECT: "gitlab-org/quality/engineering-productivity/master-broken-incidents"
-    BROKEN_MASTER_INCIDENT_JSON: "${CI_PROJECT_DIR}/incident.json"
+    INCIDENT_PROJECT: "${BROKEN_BRANCH_INCIDENTS_PROJECT}"
+    BROKEN_BRANCH_PROJECT_TOKEN: "${BROKEN_BRANCH_INCIDENTS_PROJECT_TOKEN}"
+    INCIDENT_JSON: "${CI_PROJECT_DIR}/incident.json"
     SLACK_CHANNEL: "${NOTIFY_PIPELINE_FAILURE_CHANNEL}"
     FAILED_PIPELINE_SLACK_MESSAGE_FILE: "${CI_PROJECT_DIR}/failed_pipeline_slack_message.json"
   before_script:
@@ -54,17 +55,17 @@ notify-pipeline-failure:
   script:
     - |
       if [[ "${CREATE_INCIDENT_FOR_PIPELINE_FAILURE}" == "true" ]]; then
-        scripts/create-pipeline-failure-incident.rb -p ${BROKEN_MASTER_INCIDENTS_PROJECT} -f ${BROKEN_MASTER_INCIDENT_JSON} -t ${BROKEN_MASTER_INCIDENTS_PROJECT_TOKEN};
-        echosuccess "Created incident $(jq '.web_url' ${BROKEN_MASTER_INCIDENT_JSON})";
+        scripts/create-pipeline-failure-incident.rb -p ${INCIDENT_PROJECT} -f ${INCIDENT_JSON} -t ${BROKEN_BRANCH_PROJECT_TOKEN};
+        echosuccess "Created incident $(jq '.web_url' ${INCIDENT_JSON})";
       fi
     - |
-      scripts/generate-failed-pipeline-slack-message.rb -i ${BROKEN_MASTER_INCIDENT_JSON} -f ${FAILED_PIPELINE_SLACK_MESSAGE_FILE};
+      scripts/generate-failed-pipeline-slack-message.rb -i ${INCIDENT_JSON} -f ${FAILED_PIPELINE_SLACK_MESSAGE_FILE};
       curl -X POST -H 'Content-Type: application/json' --data @${FAILED_PIPELINE_SLACK_MESSAGE_FILE} "$CI_SLACK_WEBHOOK_URL" ||
         scripts/slack ${SLACK_CHANNEL} "☠️  Broken pipeline notification failed! ☠️  See ${CI_JOB_URL}" ci_failing "Failed pipeline reporter"
 
   artifacts:
     paths:
-      - ${BROKEN_MASTER_INCIDENT_JSON}
+      - ${INCIDENT_JSON}
       - ${FAILED_PIPELINE_SLACK_MESSAGE_FILE}
     when: always
     expire_in: 2 days
