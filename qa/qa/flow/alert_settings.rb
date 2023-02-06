@@ -33,7 +33,9 @@ module QA
         end
       end
 
-      def send_test_alert(payload: { title: random_word, description: random_word })
+      def send_test_alert(integration_type: 'http', payload: nil)
+        payload ||= integration_type == 'http' ? http_payload : prometheus_payload
+
         Page::Project::Settings::Alerts.perform do |alert|
           alert.fill_in_test_payload(payload.to_json)
           alert.send_test_alert
@@ -65,6 +67,37 @@ module QA
 
       def random_word
         Faker::Lorem.word
+      end
+
+      def http_payload
+        { title: random_word, description: random_word }
+      end
+
+      def prometheus_payload
+        {
+          version: '4',
+          groupKey: nil,
+          status: 'firing',
+          receiver: '',
+          groupLabels: {},
+          commonLabels: {},
+          commonAnnotations: {},
+          externalURL: '',
+          alerts: [
+            {
+              startsAt: Time.now,
+              generatorURL: Faker::Internet.url,
+              endsAt: nil,
+              status: 'firing',
+              labels: { gitlab_environment_name: Faker::Lorem.word },
+              annotations:
+                {
+                  title: random_word,
+                  gitlab_y_label: 'status'
+                }
+            }
+          ]
+        }
       end
     end
   end

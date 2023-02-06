@@ -1,5 +1,3 @@
 - page_title _('Artifacts')
 
-#js-artifact-management{ data: { "project-path": @project.full_path,
-  "can-destroy-artifacts" => can?(current_user, :destroy_artifacts, @project).to_s,
-  "artifacts-management-feedback-image-path": image_path('illustrations/chat-bubble-sm.svg') } }
+#js-artifact-management{ data: artifacts_app_data(@project) }
