@@ -75,7 +75,7 @@ You can apply a feature flag strategy across multiple environments, without defi
 the strategy multiple times.
 
 GitLab feature flags use [Unleash](https://docs.getunleash.io/) as the feature flag
-engine. In Unleash, there are [strategies](https://docs.getunleash.io/user_guide/activation_strategy)
+engine. In Unleash, there are [strategies](https://docs.getunleash.io/reference/activation-strategies)
 for granular feature flag controls. GitLab feature flags can have multiple strategies,
 and the supported strategies are:
 
@@ -90,7 +90,7 @@ and selecting **Edit** (**{pencil}**).
 
 ### All users
 
-Enables the feature for all users. It uses the Standard (`default`) Unleash activation [strategy](https://docs.getunleash.io/user_guide/activation_strategy#standard).
+Enables the feature for all users. It uses the Standard (`default`) Unleash activation [strategy](https://docs.getunleash.io/reference/activation-strategies#standard).
 
 ### Percent Rollout
 
@@ -98,7 +98,7 @@ Enables the feature for all users. It uses the Standard (`default`) Unleash acti
 
 Enables the feature for a percentage of page views, with configurable consistency
 of behavior. This consistency is also known as stickiness. It uses the
-Gradual Rollout (`flexibleRollout`) Unleash activation [strategy](https://docs.getunleash.io/user_guide/activation_strategy#gradual-rollout).
+Gradual Rollout (`flexibleRollout`) Unleash activation [strategy](https://docs.getunleash.io/reference/activation-strategies#gradual-rollout).
 
 You can configure the consistency to be based on:
 
@@ -126,7 +126,7 @@ Selecting **Random** provides inconsistent application behavior for individual u
 ### Percent of Users
 
 Enables the feature for a percentage of authenticated users. It uses the Unleash activation strategy
-[`gradualRolloutUserId`](https://docs.getunleash.io/user_guide/activation_strategy#gradual-rollout).
+[`gradualRolloutUserId`](https://docs.getunleash.io/reference/activation-strategies#gradual-rollout).
 
 For example, set a value of 15% to enable the feature for 15% of authenticated users.
 
@@ -148,7 +148,7 @@ ID for the feature to be enabled. See the [Ruby example](#ruby-application-examp
 > - [Updated](https://gitlab.com/gitlab-org/gitlab/-/issues/34363) to be defined per environment in GitLab 12.6.
 
 Enables the feature for a list of target users. It is implemented
-using the Unleash UserIDs (`userWithId`) activation [strategy](https://docs.getunleash.io/user_guide/activation_strategy#userids).
+using the Unleash UserIDs (`userWithId`) activation [strategy](https://docs.getunleash.io/reference/activation-strategies#userids).
 
 Enter user IDs as a comma-separated list of values (for example,
 `user@example.com, user2@example.com`, or `username1,username2,username3`, and so on). 
@@ -163,7 +163,7 @@ target users. See the [Ruby example](#ruby-application-example) below.
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/35930) in GitLab 13.1.
 
 Enables the feature for lists of users created [in the feature flags UI](#create-a-user-list), or with the [feature flag user list API](../api/feature_flag_user_lists.md).
-Similar to [User IDs](#user-ids), it uses the Unleash UsersIDs (`userWithId`) activation [strategy](https://docs.getunleash.io/user_guide/activation_strategy#userids).
+Similar to [User IDs](#user-ids), it uses the Unleash UsersIDs (`userWithId`) activation [strategy](https://docs.getunleash.io/reference/activation-strategies#userids).
 
 It's not possible to *disable* a feature for members of a user list, but you can achieve the same
 effect by enabling a feature for a user list that doesn't contain the excluded users.
@@ -372,7 +372,7 @@ end
 
 ### Unleash Proxy example
 
-As of [Unleash Proxy](https://docs.getunleash.io/sdks/unleash-proxy) version
+As of [Unleash Proxy](https://docs.getunleash.io/reference/unleash-proxy) version
 0.2, the proxy is compatible with feature flags. To run a Docker container to
 connect to your project's feature flags, run the following command:
 
@@ -389,7 +389,7 @@ docker run \
 
 | Variable                    | Value                                                                                                                                |
 | --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| `UNLEASH_PROXY_SECRETS`      | Shared secret used to configure an [Unleash Proxy client](https://docs.getunleash.io/sdks/unleash-proxy#how-to-connect-to-the-proxy). |
+| `UNLEASH_PROXY_SECRETS`      | Shared secret used to configure an [Unleash Proxy client](https://docs.getunleash.io/reference/unleash-proxy#how-to-connect-to-the-proxy). |
 | `UNLEASH_URL`         | Your project's API URL. For more details, read [Get access credentials](#get-access-credentials). |
 | `UNLEASH_INSTANCE_ID` | Your project's Instance ID. For more details, read [Get access credentials](#get-access-credentials). |
 | `UNLEASH_APP_NAME`    | The name of the environment the application runs in. For more details, read [Get access credentials](#get-access-credentials). |

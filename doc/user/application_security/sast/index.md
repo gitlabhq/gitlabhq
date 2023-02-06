@@ -144,14 +144,16 @@ the repository. For details on the Solution format, see the Microsoft reference 
 
 ## False positive detection **(ULTIMATE)**
 
-> Introduced in GitLab 14.2.
+> - Introduced for Ruby in GitLab 14.2.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/378622) for Go in GitLab 15.8.
 
-Vulnerabilities that have been detected and are false positives are flagged as false positives in the security dashboard.
+GitLab SAST can identify certain types of false positive results in the output of other tools.
+These results are flagged as false positives on the [Vulnerability Report](../vulnerability_report/index.md) and the [Vulnerability Page](../vulnerabilities/index.md).
 
 False positive detection is available in a subset of the [supported languages](#supported-languages-and-frameworks) and [analyzers](analyzers.md):
 
+- Go, in the Semgrep-based analyzer
 - Ruby, in the Brakeman-based analyzer
-- Go
 
 ![SAST false-positives show in Vulnerability Pages](img/sast_vulnerability_page_fp_detection_v15_2.png)
 
@@ -169,7 +171,7 @@ GitLab SAST uses an advanced vulnerability tracking algorithm to more accurately
 Advanced vulnerability tracking is available in a subset of the [supported languages](#supported-languages-and-frameworks) and [analyzers](analyzers.md):
 
 - C, in the Semgrep-based analyzer only
-- Go, in the Gosec- and Semgrep-based analyzers
+- Go, in the Semgrep-based analyzer only
 - Java, in the Semgrep-based analyzer only
 - JavaScript, in the Semgrep-based analyzer only
 - Python, in the Semgrep-based analyzer only

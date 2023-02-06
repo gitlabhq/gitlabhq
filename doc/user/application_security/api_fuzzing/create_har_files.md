@@ -109,7 +109,7 @@ responses in HAR format.
 have an account, first create an account.
 1. Browse pages that call an API. Fiddler automatically captures the requests.
 1. Select one or more requests, then from the context menu, select **Export > Selected Sessions**.
-1. In the **Choose Format** dropdown list select **HTTP Archive v1.2**.
+1. In the **Choose Format** dropdown list select **HTTPArchive v1.2**.
 1. Enter a filename and select **Save**.
 
 Fiddler shows a popup message confirming the export has succeeded.
