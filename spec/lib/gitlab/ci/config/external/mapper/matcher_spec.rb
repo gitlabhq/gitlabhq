@@ -17,11 +17,14 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper::Matcher, feature_category: 
 
   describe '#process' do
     let(:locations) do
-      [{ local: 'file.yml' },
-       { file: 'file.yml', project: 'namespace/project' },
-       { remote: 'https://example.com/.gitlab-ci.yml' },
-       { template: 'file.yml' },
-       { artifact: 'generated.yml', job: 'test' }]
+      [
+        { local: 'file.yml' },
+        { file: 'file.yml', project: 'namespace/project' },
+        { component: 'gitlab.com/org/component@1.0' },
+        { remote: 'https://example.com/.gitlab-ci.yml' },
+        { template: 'file.yml' },
+        { artifact: 'generated.yml', job: 'test' }
+      ]
     end
 
     subject(:process) { matcher.process(locations) }
@@ -30,6 +33,7 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper::Matcher, feature_category: 
       is_expected.to contain_exactly(
         an_instance_of(Gitlab::Ci::Config::External::File::Local),
         an_instance_of(Gitlab::Ci::Config::External::File::Project),
+        an_instance_of(Gitlab::Ci::Config::External::File::Component),
         an_instance_of(Gitlab::Ci::Config::External::File::Remote),
         an_instance_of(Gitlab::Ci::Config::External::File::Template),
         an_instance_of(Gitlab::Ci::Config::External::File::Artifact)
@@ -42,8 +46,7 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper::Matcher, feature_category: 
       it 'raises an error' do
         expect { process }.to raise_error(
           Gitlab::Ci::Config::External::Mapper::AmbigiousSpecificationError,
-          '`{"invalid":"file.yml"}` does not have a valid subkey for include. ' \
-          'Valid subkeys are: `local`, `project`, `remote`, `template`, `artifact`'
+          /`{"invalid":"file.yml"}` does not have a valid subkey for include. Valid subkeys are:/
         )
       end
 
@@ -53,8 +56,7 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper::Matcher, feature_category: 
         it 'raises an error with a masked sentence' do
           expect { process }.to raise_error(
             Gitlab::Ci::Config::External::Mapper::AmbigiousSpecificationError,
-            '`{"invalid":"xxxxxxxxxxxxxx.yml"}` does not have a valid subkey for include. ' \
-            'Valid subkeys are: `local`, `project`, `remote`, `template`, `artifact`'
+            /`{"invalid":"xxxxxxxxxxxxxx.yml"}` does not have a valid subkey for include. Valid subkeys are:/
           )
         end
       end
@@ -66,7 +68,7 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper::Matcher, feature_category: 
       it 'raises an error' do
         expect { process }.to raise_error(
           Gitlab::Ci::Config::External::Mapper::AmbigiousSpecificationError,
-          "Each include must use only one of: `local`, `project`, `remote`, `template`, `artifact`"
+          /Each include must use only one of:/
         )
       end
     end

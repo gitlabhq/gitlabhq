@@ -2047,7 +2047,6 @@ Layout/ArgumentAlignment:
     - 'lib/gitlab/ci/ansi2json/line.rb'
     - 'lib/gitlab/ci/config/entry/environment.rb'
     - 'lib/gitlab/ci/config/entry/imageable.rb'
-    - 'lib/gitlab/ci/config/entry/include.rb'
     - 'lib/gitlab/ci/config/entry/job.rb'
     - 'lib/gitlab/ci/config/entry/product/parallel.rb'
     - 'lib/gitlab/ci/config/entry/pull_policy.rb'

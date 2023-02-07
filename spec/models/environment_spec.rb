@@ -62,6 +62,33 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching, feature_categ
         expect(environment).not_to be_valid
       end
     end
+
+    context 'tier' do
+      let!(:env) { build(:environment, tier: nil) }
+
+      before do
+        # Disable `before_validation: :ensure_environment_tier` since it always set tier and interfere with tests.
+        # See: https://github.com/thoughtbot/shoulda/issues/178#issuecomment-1654014
+
+        allow_any_instance_of(described_class).to receive(:ensure_environment_tier).and_return(env)
+      end
+
+      context 'presence is checked' do
+        it 'during create and update' do
+          expect(env).to validate_presence_of(:tier).on(:create)
+          expect(env).to validate_presence_of(:tier).on(:update)
+        end
+      end
+
+      context 'when FF is disabled' do
+        before do
+          stub_feature_flags(validate_environment_tier_presence: false)
+        end
+
+        it { expect(env).to validate_presence_of(:tier).on(:create) }
+        it { expect(env).not_to validate_presence_of(:tier).on(:update) }
+      end
+    end
   end
 
   describe 'preloading deployment associations' do
@@ -145,7 +172,7 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching, feature_categ
       environment = create(:environment, name: 'gprd')
       environment.update_column(:tier, nil)
 
-      expect { environment.stop! }.to change { environment.reload.tier }.from(nil).to('production')
+      expect { environment.save! }.to change { environment.reload.tier }.from(nil).to('production')
     end
 
     it 'does not overwrite the existing environment tier' do

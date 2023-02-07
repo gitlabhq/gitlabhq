@@ -417,6 +417,20 @@
           "type": "object",
           "additionalProperties": false,
           "properties": {
+            "component": {
+              "description": "Local path to component directory or full path to external component directory.",
+              "type": "string",
+              "format": "uri-reference"
+            }
+          },
+          "required": [
+            "component"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
             "remote": {
               "description": "URL to a `yaml`/`yml` template file using HTTP/HTTPS.",
               "type": "string",

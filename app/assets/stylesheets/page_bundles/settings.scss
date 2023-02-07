@@ -71,6 +71,7 @@
   animation: collapseMaxHeight 300ms ease-out;
   // Keep the section from expanding when we scroll over it
   pointer-events: none;
+  margin-bottom: $gl-spacing-scale-5;
 
   .settings.expanded & {
     max-height: none;
@@ -101,7 +102,6 @@
     display: block;
     height: 1px;
     overflow: hidden;
-    margin-top: 20px;
   }
 
   .sub-section {

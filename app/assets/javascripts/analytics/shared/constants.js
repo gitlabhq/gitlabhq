@@ -13,6 +13,8 @@ export const dateFormats = {
   month: 'mmmm',
 };
 
+export const METRIC_POPOVER_LABEL = s__('ValueStreamAnalytics|View details');
+
 export const KEY_METRICS = {
   LEAD_TIME: 'lead_time',
   CYCLE_TIME: 'cycle_time',

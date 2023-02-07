@@ -265,6 +265,7 @@ Settings['gitlab_ci'] ||= Settingslogic.new({})
 Settings.gitlab_ci['shared_runners_enabled'] = true if Settings.gitlab_ci['shared_runners_enabled'].nil?
 Settings.gitlab_ci['builds_path']           = Settings.absolute(Settings.gitlab_ci['builds_path'] || "builds/")
 Settings.gitlab_ci['url']                 ||= Settings.__send__(:build_gitlab_ci_url)
+Settings.gitlab_ci['component_fqdn']      ||= Settings.__send__(:build_ci_component_fqdn)
 
 #
 # CI Secure Files

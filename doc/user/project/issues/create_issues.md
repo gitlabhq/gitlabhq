@@ -127,7 +127,7 @@ You can send an email to create an issue in a project on the project's
 Prerequisites:
 
 - Your GitLab instance must have [incoming email](../../../administration/incoming_email.md)
-  configured.
+  configured with [email sub-addressing or catch-all mailbox](../../../administration/incoming_email.md#requirements).
 - There must be at least one issue in the issue list.
 - You must have at least the Guest role for the project.
 

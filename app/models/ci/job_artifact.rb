@@ -141,7 +141,10 @@ module Ci
 
     before_save :set_size, if: :file_changed?
     after_save :store_file_in_transaction!, unless: :store_after_commit?
+
     after_commit :store_file_after_transaction!, on: [:create, :update], if: :store_after_commit?
+
+    after_destroy_commit :log_destroy
 
     validates :job, presence: true
     validates :file_format, presence: true, unless: :trace?, on: :create
@@ -383,6 +386,10 @@ module Ci
     def project_destroyed?
       # Use job.project to avoid extra DB query for project
       job.project.pending_delete?
+    end
+
+    def log_destroy
+      Gitlab::Ci::Artifacts::Logger.log_deleted(self, __method__)
     end
   end
 end

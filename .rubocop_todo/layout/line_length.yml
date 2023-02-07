@@ -1871,7 +1871,6 @@ Layout/LineLength:
     - 'ee/spec/graphql/types/incident_management/escalation_rule_input_type_spec.rb'
     - 'ee/spec/graphql/types/issue_type_spec.rb'
     - 'ee/spec/graphql/types/permission_types/vulnerability_spec.rb'
-    - 'ee/spec/graphql/types/pipeline_security_report_finding_type_spec.rb'
     - 'ee/spec/graphql/types/project_type_spec.rb'
     - 'ee/spec/graphql/types/security_scanner_type_enum_spec.rb'
     - 'ee/spec/graphql/types/vulnerability_details/file_location_type_spec.rb'

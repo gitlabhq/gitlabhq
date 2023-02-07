@@ -400,6 +400,44 @@ RSpec.describe Gitlab::Ci::Config::External::Processor, feature_category: :pipel
       end
     end
 
+    describe 'include:component' do
+      let(:values) do
+        {
+          include: { component: "#{Gitlab.config.gitlab.host}/#{another_project.full_path}/component-x@master" },
+          image: 'image:1.0'
+        }
+      end
+
+      let(:other_project_files) do
+        {
+          '/component-x/template.yml' => <<~YAML
+          component_x_job:
+            script: echo Component X
+          YAML
+        }
+      end
+
+      before do
+        another_project.add_developer(user)
+      end
+
+      it 'appends the file to the values' do
+        output = processor.perform
+        expect(output.keys).to match_array([:image, :component_x_job])
+      end
+
+      context 'when feature flag ci_include_components is disabled' do
+        before do
+          stub_feature_flags(ci_include_components: false)
+        end
+
+        it 'returns an error' do
+          expect { processor.perform }
+            .to raise_error(described_class::IncludeError, /does not have a valid subkey for include./)
+        end
+      end
+    end
+
     context 'when a valid project file is defined' do
       let(:values) do
         {

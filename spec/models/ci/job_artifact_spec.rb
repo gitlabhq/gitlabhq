@@ -27,6 +27,14 @@ RSpec.describe Ci::JobArtifact do
     subject { build(:ci_job_artifact, :archive, job: job, size: 107464) }
   end
 
+  describe 'after_destroy callback' do
+    it 'logs the job artifact destroy' do
+      expect(Gitlab::Ci::Artifacts::Logger).to receive(:log_deleted).with(artifact, :log_destroy)
+
+      artifact.destroy!
+    end
+  end
+
   describe '.not_expired' do
     it 'returns artifacts that have not expired' do
       _expired_artifact = create(:ci_job_artifact, :expired)

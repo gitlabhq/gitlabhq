@@ -124,7 +124,7 @@ RSpec.shared_context 'gitlab_ci_config_external_mapper' do |ci_batch_request_for
         end
 
         it 'returns ambigious specification error' do
-          expect { subject }.to raise_error(described_class::AmbigiousSpecificationError, '`{"invalid":"secret-file.yml"}` does not have a valid subkey for include. Valid subkeys are: `local`, `project`, `remote`, `template`, `artifact`')
+          expect { subject }.to raise_error(described_class::AmbigiousSpecificationError, /`{"invalid":"secret-file.yml"}` does not have a valid subkey for include. Valid subkeys are:/)
         end
       end
 
@@ -138,7 +138,7 @@ RSpec.shared_context 'gitlab_ci_config_external_mapper' do |ci_batch_request_for
         end
 
         it 'returns ambigious specification error' do
-          expect { subject }.to raise_error(described_class::AmbigiousSpecificationError, 'Each include must use only one of: `local`, `project`, `remote`, `template`, `artifact`')
+          expect { subject }.to raise_error(described_class::AmbigiousSpecificationError, /Each include must use only one of/)
         end
       end
 

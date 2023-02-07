@@ -31,8 +31,10 @@ module Gitlab
           end
 
           def supported_purl_type?
+            # the purl type is not required as per the spec: https://cyclonedx.org/docs/1.4/json/#components_items_purl
             return true unless purl
 
+            # however, if the purl type is provided, it _must be valid_
             ::Enums::Sbom.purl_types.include?(purl.type.to_sym)
           end
         end

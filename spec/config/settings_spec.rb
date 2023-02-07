@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Settings, feature_category: :authentication_and_authorization do
+  using RSpec::Parameterized::TableSyntax
+
   describe 'omniauth' do
     it 'defaults to enabled' do
       expect(described_class.omniauth.enabled).to be true
@@ -12,6 +14,32 @@ RSpec.describe Settings, feature_category: :authentication_and_authorization do
   describe '.load_dynamic_cron_schedules!' do
     it 'generates a valid cron schedule' do
       expect(Fugit::Cron.parse(described_class.load_dynamic_cron_schedules!)).to be_a(Fugit::Cron)
+    end
+  end
+
+  describe '.build_ci_component_fqdn' do
+    subject(:fqdn) { described_class.build_ci_component_fqdn }
+
+    where(:host, :port, :relative_url, :result) do
+      'acme.com' | 9090 | '/gitlab' | 'acme.com:9090/gitlab/'
+      'acme.com' | 443  | '/gitlab' | 'acme.com/gitlab/'
+      'acme.com' | 443  | ''        | 'acme.com/'
+      'acme.com' | 9090 | ''        | 'acme.com:9090/'
+      'test'     | 9090 | ''        | 'test:9090/'
+    end
+
+    with_them do
+      before do
+        allow(Gitlab.config).to receive(:gitlab).and_return(
+          Settingslogic.new({
+            'host' => host,
+            'https' => true,
+            'port' => port,
+            'relative_url_root' => relative_url
+          }))
+      end
+
+      it { is_expected.to eq(result) }
     end
   end
 

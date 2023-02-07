@@ -1,5 +1,6 @@
 <script>
 import { GlPopover, GlLink, GlIcon } from '@gitlab/ui';
+import { METRIC_POPOVER_LABEL } from '../constants';
 
 export default {
   name: 'MetricPopover',
@@ -19,34 +20,34 @@ export default {
     },
   },
   computed: {
-    metricLinks() {
-      return this.metric.links?.filter((link) => !link.docs_link) || [];
+    metricLink() {
+      return this.metric.links?.find((link) => !link.docs_link);
     },
     docsLink() {
       return this.metric.links?.find((link) => link.docs_link);
     },
   },
+  metricPopoverLabel: METRIC_POPOVER_LABEL,
 };
 </script>
 
 <template>
-  <gl-popover :target="target" placement="bottom">
+  <gl-popover :target="target" placement="top">
     <template #title>
-      <span class="gl-display-block gl-text-left" data-testid="metric-label">{{
-        metric.label
-      }}</span>
+      <div
+        class="gl-display-flex gl-justify-content-space-between gl-text-right gl-py-1 gl-align-items-center"
+      >
+        <span data-testid="metric-label">{{ metric.label }}</span>
+        <gl-link
+          v-if="metricLink"
+          :href="metricLink.url"
+          class="gl-font-sm gl-font-weight-normal"
+          data-testid="metric-link"
+          >{{ $options.metricPopoverLabel }}
+          <gl-icon name="chart" />
+        </gl-link>
+      </div>
     </template>
-    <div
-      v-for="(link, idx) in metricLinks"
-      :key="`link-${idx}`"
-      class="gl-display-flex gl-justify-content-space-between gl-text-right gl-py-1"
-      data-testid="metric-link"
-    >
-      <span>{{ link.label }}</span>
-      <gl-link :href="link.url" class="gl-font-sm">
-        {{ link.name }}
-      </gl-link>
-    </div>
     <span v-if="metric.description" data-testid="metric-description">{{ metric.description }}</span>
     <gl-link
       v-if="docsLink"

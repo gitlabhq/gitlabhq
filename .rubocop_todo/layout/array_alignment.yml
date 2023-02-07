@@ -256,7 +256,6 @@ Layout/ArrayAlignment:
     - 'spec/lib/gitlab/ci/config/external/file/remote_spec.rb'
     - 'spec/lib/gitlab/ci/config/external/mapper/filter_spec.rb'
     - 'spec/lib/gitlab/ci/config/external/mapper/location_expander_spec.rb'
-    - 'spec/lib/gitlab/ci/config/external/mapper/matcher_spec.rb'
     - 'spec/lib/gitlab/ci/config/external/mapper/normalizer_spec.rb'
     - 'spec/lib/gitlab/ci/config/external/mapper_spec.rb'
     - 'spec/lib/gitlab/ci/config_spec.rb'
