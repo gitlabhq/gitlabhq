@@ -98,6 +98,10 @@ module API
         user_id.present?
       end
 
+      def self.member_access_levels
+        Gitlab::Access.all_values
+      end
+
       private
 
       def member_already_exists?(source, user_id)

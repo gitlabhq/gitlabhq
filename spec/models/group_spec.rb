@@ -2898,6 +2898,22 @@ RSpec.describe Group, feature_category: :subgroups do
     end
   end
 
+  describe "#access_level_roles" do
+    let(:group) { create(:group) }
+
+    it "returns the correct roles" do
+      expect(group.access_level_roles).to eq(
+        {
+          'Guest' => 10,
+          'Reporter' => 20,
+          'Developer' => 30,
+          'Maintainer' => 40,
+          'Owner' => 50
+        }
+      )
+    end
+  end
+
   describe '#membership_locked?' do
     it 'returns false' do
       expect(build(:group)).not_to be_membership_locked

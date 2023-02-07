@@ -296,6 +296,7 @@ export default {
         </div>
 
         <slot name="alert"></slot>
+        <slot name="active-trial-alert"></slot>
 
         <gl-form-group
           :label="labelSearchField"

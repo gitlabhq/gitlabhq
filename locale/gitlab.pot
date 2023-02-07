@@ -23068,6 +23068,9 @@ msgstr ""
 msgid "InviteMembersModal|Access expiration date (optional)"
 msgstr ""
 
+msgid "InviteMembersModal|Add unlimited members with your trial"
+msgstr ""
+
 msgid "InviteMembersModal|Cancel"
 msgstr ""
 
@@ -23081,6 +23084,9 @@ msgid "InviteMembersModal|Congratulations on creating your project, you're almos
 msgstr ""
 
 msgid "InviteMembersModal|Create issues for your new team member to work on (optional)"
+msgstr ""
+
+msgid "InviteMembersModal|During your trial, you can invite as many members to %{groupName} as you like. When the trial ends, you'll have a maximum of %{dashboardLimit} members on the Free tier. To get more members, %{linkStart}upgrade to a paid plan%{linkEnd}."
 msgstr ""
 
 msgid "InviteMembersModal|Explore paid plans"

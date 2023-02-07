@@ -562,6 +562,21 @@ RSpec.describe GroupsController, factory_default: :keep, feature_category: :code
         expect(response.body).to have_content('Open 2 Merged 0 Closed 0 All 2')
         expect(response.body).not_to have_content('Open Merged Closed All')
       end
+
+      context 'when MergeRequestsFinder raises an exception' do
+        before do
+          allow_next_instance_of(MergeRequestsFinder) do |instance|
+            allow(instance).to receive(:count_by_state).and_raise(ActiveRecord::QueryCanceled)
+          end
+        end
+
+        it 'does not display MR counts in nav' do
+          get :merge_requests, params: { id: group.to_param }
+
+          expect(response.body).to have_content('Open Merged Closed All')
+          expect(response.body).not_to have_content('Open 0 Merged 0 Closed 0 All 0')
+        end
+      end
     end
 
     context 'when an ActiveRecord::QueryCanceled is raised' do

@@ -10928,7 +10928,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="boardepicancestorsmilestonetitle"></a>`milestoneTitle` | [`String`](#string) | Filter epics by milestone title, computed from epic's issues. |
 | <a id="boardepicancestorsmyreactionemoji"></a>`myReactionEmoji` | [`String`](#string) | Filter by reaction emoji applied by the current user. |
 | <a id="boardepicancestorsnot"></a>`not` | [`NegatedEpicFilterInput`](#negatedepicfilterinput) | Negated epic arguments. |
-| <a id="boardepicancestorsor"></a>`or` | [`UnionedEpicFilterInput`](#unionedepicfilterinput) | List of arguments with inclusive OR. |
+| <a id="boardepicancestorsor"></a>`or` **{warning-solid}** | [`UnionedEpicFilterInput`](#unionedepicfilterinput) | **Introduced** in 15.9. This feature is in Alpha. It can be changed or removed at any time. List of arguments with inclusive OR. Ignored unless `or_issuable_queries` flag is enabled. |
 | <a id="boardepicancestorssearch"></a>`search` | [`String`](#string) | Search query for title or description. |
 | <a id="boardepicancestorssort"></a>`sort` | [`EpicSort`](#epicsort) | List epics by sort order. |
 | <a id="boardepicancestorsstartdate"></a>`startDate` **{warning-solid}** | [`Time`](#time) | **Deprecated** in 13.5. Use timeframe.start. |
@@ -10967,7 +10967,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="boardepicchildrenmilestonetitle"></a>`milestoneTitle` | [`String`](#string) | Filter epics by milestone title, computed from epic's issues. |
 | <a id="boardepicchildrenmyreactionemoji"></a>`myReactionEmoji` | [`String`](#string) | Filter by reaction emoji applied by the current user. |
 | <a id="boardepicchildrennot"></a>`not` | [`NegatedEpicFilterInput`](#negatedepicfilterinput) | Negated epic arguments. |
-| <a id="boardepicchildrenor"></a>`or` | [`UnionedEpicFilterInput`](#unionedepicfilterinput) | List of arguments with inclusive OR. |
+| <a id="boardepicchildrenor"></a>`or` **{warning-solid}** | [`UnionedEpicFilterInput`](#unionedepicfilterinput) | **Introduced** in 15.9. This feature is in Alpha. It can be changed or removed at any time. List of arguments with inclusive OR. Ignored unless `or_issuable_queries` flag is enabled. |
 | <a id="boardepicchildrensearch"></a>`search` | [`String`](#string) | Search query for title or description. |
 | <a id="boardepicchildrensort"></a>`sort` | [`EpicSort`](#epicsort) | List epics by sort order. |
 | <a id="boardepicchildrenstartdate"></a>`startDate` **{warning-solid}** | [`Time`](#time) | **Deprecated** in 13.5. Use timeframe.start. |
@@ -13018,7 +13018,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="epicancestorsmilestonetitle"></a>`milestoneTitle` | [`String`](#string) | Filter epics by milestone title, computed from epic's issues. |
 | <a id="epicancestorsmyreactionemoji"></a>`myReactionEmoji` | [`String`](#string) | Filter by reaction emoji applied by the current user. |
 | <a id="epicancestorsnot"></a>`not` | [`NegatedEpicFilterInput`](#negatedepicfilterinput) | Negated epic arguments. |
-| <a id="epicancestorsor"></a>`or` | [`UnionedEpicFilterInput`](#unionedepicfilterinput) | List of arguments with inclusive OR. |
+| <a id="epicancestorsor"></a>`or` **{warning-solid}** | [`UnionedEpicFilterInput`](#unionedepicfilterinput) | **Introduced** in 15.9. This feature is in Alpha. It can be changed or removed at any time. List of arguments with inclusive OR. Ignored unless `or_issuable_queries` flag is enabled. |
 | <a id="epicancestorssearch"></a>`search` | [`String`](#string) | Search query for title or description. |
 | <a id="epicancestorssort"></a>`sort` | [`EpicSort`](#epicsort) | List epics by sort order. |
 | <a id="epicancestorsstartdate"></a>`startDate` **{warning-solid}** | [`Time`](#time) | **Deprecated** in 13.5. Use timeframe.start. |
@@ -13057,7 +13057,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="epicchildrenmilestonetitle"></a>`milestoneTitle` | [`String`](#string) | Filter epics by milestone title, computed from epic's issues. |
 | <a id="epicchildrenmyreactionemoji"></a>`myReactionEmoji` | [`String`](#string) | Filter by reaction emoji applied by the current user. |
 | <a id="epicchildrennot"></a>`not` | [`NegatedEpicFilterInput`](#negatedepicfilterinput) | Negated epic arguments. |
-| <a id="epicchildrenor"></a>`or` | [`UnionedEpicFilterInput`](#unionedepicfilterinput) | List of arguments with inclusive OR. |
+| <a id="epicchildrenor"></a>`or` **{warning-solid}** | [`UnionedEpicFilterInput`](#unionedepicfilterinput) | **Introduced** in 15.9. This feature is in Alpha. It can be changed or removed at any time. List of arguments with inclusive OR. Ignored unless `or_issuable_queries` flag is enabled. |
 | <a id="epicchildrensearch"></a>`search` | [`String`](#string) | Search query for title or description. |
 | <a id="epicchildrensort"></a>`sort` | [`EpicSort`](#epicsort) | List epics by sort order. |
 | <a id="epicchildrenstartdate"></a>`startDate` **{warning-solid}** | [`Time`](#time) | **Deprecated** in 13.5. Use timeframe.start. |
@@ -14077,7 +14077,7 @@ Returns [`Epic`](#epic).
 | <a id="groupepicmilestonetitle"></a>`milestoneTitle` | [`String`](#string) | Filter epics by milestone title, computed from epic's issues. |
 | <a id="groupepicmyreactionemoji"></a>`myReactionEmoji` | [`String`](#string) | Filter by reaction emoji applied by the current user. |
 | <a id="groupepicnot"></a>`not` | [`NegatedEpicFilterInput`](#negatedepicfilterinput) | Negated epic arguments. |
-| <a id="groupepicor"></a>`or` | [`UnionedEpicFilterInput`](#unionedepicfilterinput) | List of arguments with inclusive OR. |
+| <a id="groupepicor"></a>`or` **{warning-solid}** | [`UnionedEpicFilterInput`](#unionedepicfilterinput) | **Introduced** in 15.9. This feature is in Alpha. It can be changed or removed at any time. List of arguments with inclusive OR. Ignored unless `or_issuable_queries` flag is enabled. |
 | <a id="groupepicsearch"></a>`search` | [`String`](#string) | Search query for title or description. |
 | <a id="groupepicsort"></a>`sort` | [`EpicSort`](#epicsort) | List epics by sort order. |
 | <a id="groupepicstartdate"></a>`startDate` **{warning-solid}** | [`Time`](#time) | **Deprecated** in 13.5. Use timeframe.start. |
@@ -14128,7 +14128,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="groupepicsmilestonetitle"></a>`milestoneTitle` | [`String`](#string) | Filter epics by milestone title, computed from epic's issues. |
 | <a id="groupepicsmyreactionemoji"></a>`myReactionEmoji` | [`String`](#string) | Filter by reaction emoji applied by the current user. |
 | <a id="groupepicsnot"></a>`not` | [`NegatedEpicFilterInput`](#negatedepicfilterinput) | Negated epic arguments. |
-| <a id="groupepicsor"></a>`or` | [`UnionedEpicFilterInput`](#unionedepicfilterinput) | List of arguments with inclusive OR. |
+| <a id="groupepicsor"></a>`or` **{warning-solid}** | [`UnionedEpicFilterInput`](#unionedepicfilterinput) | **Introduced** in 15.9. This feature is in Alpha. It can be changed or removed at any time. List of arguments with inclusive OR. Ignored unless `or_issuable_queries` flag is enabled. |
 | <a id="groupepicssearch"></a>`search` | [`String`](#string) | Search query for title or description. |
 | <a id="groupepicssort"></a>`sort` | [`EpicSort`](#epicsort) | List epics by sort order. |
 | <a id="groupepicsstartdate"></a>`startDate` **{warning-solid}** | [`Time`](#time) | **Deprecated** in 13.5. Use timeframe.start. |
@@ -25289,7 +25289,7 @@ Values for ordering deployments by a specific field.
 | <a id="epicfilterslabelname"></a>`labelName` | [`[String]`](#string) | Filter by label name. |
 | <a id="epicfiltersmyreactionemoji"></a>`myReactionEmoji` | [`String`](#string) | Filter by reaction emoji applied by the current user. Wildcard values "NONE" and "ANY" are supported. |
 | <a id="epicfiltersnot"></a>`not` | [`NegatedEpicBoardIssueInput`](#negatedepicboardissueinput) | Negated epic arguments. |
-| <a id="epicfiltersor"></a>`or` | [`UnionedEpicFilterInput`](#unionedepicfilterinput) | List of arguments with inclusive OR. |
+| <a id="epicfiltersor"></a>`or` | [`UnionedEpicFilterInput`](#unionedepicfilterinput) | List of arguments with inclusive OR. Ignored unless `or_issuable_queries` flag is enabled. |
 | <a id="epicfilterssearch"></a>`search` | [`String`](#string) | Search query for epic title or description. |
 
 ### `EpicTreeNodeFieldsInputType`
@@ -25570,7 +25570,8 @@ A time-frame defined as a closed inclusive range of two dates.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="unionedepicfilterinputlabelname"></a>`labelName` | [`[String!]`](#string) | Filters epics that have at least one of the given labels. Ignored unless `or_issuable_queries` flag is enabled. |
+| <a id="unionedepicfilterinputauthorusername"></a>`authorUsername` | [`[String!]`](#string) | Filters epics that are authored by one of the given users. |
+| <a id="unionedepicfilterinputlabelname"></a>`labelName` | [`[String!]`](#string) | Filters epics that have at least one of the given labels. |
 
 ### `UnionedIssueFilterInput`
 

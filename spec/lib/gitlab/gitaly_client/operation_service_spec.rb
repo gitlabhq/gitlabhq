@@ -42,21 +42,6 @@ RSpec.describe Gitlab::GitalyClient::OperationService do
       expect(subject.dereferenced_target).to eq(commit)
     end
 
-    context "when pre_receive_error is present" do
-      let(:response) do
-        Gitaly::UserCreateBranchResponse.new(pre_receive_error: "GitLab: something failed")
-      end
-
-      it "throws a PreReceive exception" do
-        expect_any_instance_of(Gitaly::OperationService::Stub)
-          .to receive(:user_create_branch).with(request, kind_of(Hash))
-          .and_return(response)
-
-        expect { subject }.to raise_error(
-          Gitlab::Git::PreReceiveError, "something failed")
-      end
-    end
-
     context 'with structured errors' do
       context 'with CustomHookError' do
         let(:stdout) { nil }
@@ -230,21 +215,6 @@ RSpec.describe Gitlab::GitalyClient::OperationService do
         .and_return(response)
 
       subject
-    end
-
-    context "when pre_receive_error is present" do
-      let(:response) do
-        Gitaly::UserDeleteBranchResponse.new(pre_receive_error: "GitLab: something failed")
-      end
-
-      it "throws a PreReceive exception" do
-        expect_any_instance_of(Gitaly::OperationService::Stub)
-          .to receive(:user_delete_branch).with(request, kind_of(Hash))
-          .and_return(response)
-
-        expect { subject }.to raise_error(
-          Gitlab::Git::PreReceiveError, "something failed")
-      end
     end
 
     context 'with a custom hook error' do
@@ -572,16 +542,6 @@ RSpec.describe Gitlab::GitalyClient::OperationService do
         start_branch_name: 'master',
         start_repository: repository
       )
-    end
-
-    context 'when errors are not raised but returned in the response' do
-      before do
-        expect_any_instance_of(Gitaly::OperationService::Stub)
-          .to receive(:user_cherry_pick).with(kind_of(Gitaly::UserCherryPickRequest), kind_of(Hash))
-          .and_return(response)
-      end
-
-      it_behaves_like 'cherry pick and revert errors'
     end
 
     context 'when AccessCheckError is raised' do
@@ -1146,18 +1106,6 @@ RSpec.describe Gitlab::GitalyClient::OperationService do
 
       it 'raises an InvalidRef error' do
         expect { add_tag }.to raise_error(Gitlab::Git::Repository::InvalidRef)
-      end
-    end
-
-    context 'with pre-receive error' do
-      before do
-        expect_any_instance_of(Gitaly::OperationService::Stub)
-          .to receive(:user_create_tag)
-          .and_return(Gitaly::UserCreateTagResponse.new(pre_receive_error: "GitLab: something failed"))
-      end
-
-      it 'raises a PreReceiveError' do
-        expect { add_tag }.to raise_error(Gitlab::Git::PreReceiveError, "something failed")
       end
     end
 

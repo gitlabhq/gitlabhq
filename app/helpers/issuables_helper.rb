@@ -308,7 +308,7 @@ module IssuablesHelper
   end
 
   def issuables_count_for_state(issuable_type, state)
-    Gitlab::IssuablesCountForState.new(finder, store_in_redis_cache: true)[state]
+    Gitlab::IssuablesCountForState.new(finder, fast_fail: true, store_in_redis_cache: true)[state]
   end
 
   def close_issuable_path(issuable)

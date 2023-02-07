@@ -107,6 +107,11 @@ export default {
       required: false,
       default: () => ({}),
     },
+    activeTrialDataset: {
+      type: Object,
+      required: false,
+      default: () => ({}),
+    },
     reloadPageOnSubmit: {
       type: Boolean,
       required: false,
@@ -405,6 +410,7 @@ export default {
     :new-users-to-invite="newUsersToInvite"
     :root-group-id="rootId"
     :users-limit-dataset="usersLimitDataset"
+    :active-trial-dataset="activeTrialDataset"
     :full-path="fullPath"
     @reset="resetFields"
     @submit="sendInvite"

@@ -1711,7 +1711,7 @@ Use the `action` keyword to specify how the job interacts with the environment.
 |:----------|:----------------|
 | `start`   | Default value. Indicates that the job starts the environment. The deployment is created after the job starts. |
 | `prepare` | Indicates that the job is only preparing the environment. It does not trigger deployments. [Read more about preparing environments](../environments/index.md#access-an-environment-for-preparation-or-verification-purposes). |
-| `stop`    | Indicates that the job stops a deployment. For more detail, read [Stop an environment](../environments/index.md#stop-an-environment). |
+| `stop`    | Indicates that the job stops an environment. [Read more about stopping an environment](../environments/index.md#stop-an-environment). |
 | `verify`  | Indicates that the job is only verifying the environment. It does not trigger deployments. [Read more about verifying environments](../environments/index.md#access-an-environment-for-preparation-or-verification-purposes). |
 | `access`  | Indicates that the job is only accessing the environment. It does not trigger deployments. [Read more about accessing environments](../environments/index.md#access-an-environment-for-preparation-or-verification-purposes). |
 

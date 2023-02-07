@@ -66,6 +66,7 @@ describe('InviteMembersModal', () => {
       },
       propsData: {
         usersLimitDataset: {},
+        activeTrialDataset: {},
         fullPath: 'project',
         ...propsData,
         ...props,
@@ -83,12 +84,20 @@ describe('InviteMembersModal', () => {
     });
   };
 
-  const createInviteMembersToProjectWrapper = (usersLimitDataset = {}, stubs = {}) => {
-    createComponent({ usersLimitDataset, isProject: true }, stubs);
+  const createInviteMembersToProjectWrapper = (
+    usersLimitDataset = {},
+    activeTrialDataset = {},
+    stubs = {},
+  ) => {
+    createComponent({ usersLimitDataset, activeTrialDataset, isProject: true }, stubs);
   };
 
-  const createInviteMembersToGroupWrapper = (usersLimitDataset = {}, stubs = {}) => {
-    createComponent({ usersLimitDataset, isProject: false }, stubs);
+  const createInviteMembersToGroupWrapper = (
+    usersLimitDataset = {},
+    activeTrialDataset = {},
+    stubs = {},
+  ) => {
+    createComponent({ usersLimitDataset, activeTrialDataset, isProject: false }, stubs);
   };
 
   beforeEach(() => {
