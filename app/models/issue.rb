@@ -181,11 +181,7 @@ class Issue < ApplicationRecord
   scope :confidential_only, -> { where(confidential: true) }
 
   scope :without_hidden, -> {
-    if Feature.enabled?(:ban_user_feature_flag)
-      where('NOT EXISTS (?)', Users::BannedUser.select(1).where('issues.author_id = banned_users.user_id'))
-    else
-      all
-    end
+    where.not(author_id: Users::BannedUser.select(:user_id))
   }
 
   scope :counts_by_state, -> { reorder(nil).group(:state_id).count }

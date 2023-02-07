@@ -7,7 +7,6 @@ class Admin::UsersController < Admin::ApplicationController
   before_action :user, except: [:index, :new, :create]
   before_action :check_impersonation_availability, only: :impersonate
   before_action :ensure_destroy_prerequisites_met, only: [:destroy]
-  before_action :check_ban_user_feature_flag, only: [:ban]
 
   feature_category :user_management
 
@@ -376,10 +375,6 @@ class Admin::UsersController < Admin::ApplicationController
 
   def check_impersonation_availability
     access_denied! unless Gitlab.config.gitlab.impersonation_enabled
-  end
-
-  def check_ban_user_feature_flag
-    access_denied! unless Feature.enabled?(:ban_user_feature_flag)
   end
 
   def log_impersonation_event

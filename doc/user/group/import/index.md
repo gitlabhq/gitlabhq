@@ -58,19 +58,6 @@ We invite you to leave your feedback about migrating by direct transfer in
 If you want to move groups instead of copying groups, you can [transfer groups](../manage.md#transfer-a-group) if the
 groups are in the same GitLab instance. Transferring groups is a faster and more complete option.
 
-### Prerequisites
-
-To migrate groups by direct transfer:
-
-- The network connection between instances or GitLab.com must support HTTPS.
-- Both GitLab instances must have group migration by direct transfer
-  [enabled in application settings](../../admin_area/settings/visibility_and_access_controls.md#enable-migration-of-groups-and-projects-by-direct-transfer)
-  by an instance administrator.
-- You must have the Owner role on the source group to migrate from.
-- You must have at least the Maintainer role on the destination group to migrate to. Using the Developer role for this
-  purpose was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/387891) in GitLab 15.8 and will be removed in
-  GitLab 16.0.
-
 ### Visibility rules
 
 After migration:
@@ -83,24 +70,35 @@ After migration:
 If used a private network on your source instance to hide content from the general public,
 make sure to have a similar setup on the destination instance, or to import into a private group.
 
-### Preparation
+### Prerequisites
 
-GitLab maps users and their contributions correctly provided:
+To migrate groups by direct transfer:
 
-- Users already exist on the target GitLab instance.
-- Users have a public email on the source GitLab instance that matches their primary email on the target GitLab instance.
-- Users' primary email addresses on the target GitLab instance are confirmed. Most users receive an email asking them to confirm their email address.
-- When using an OmniAuth provider like SAML, GitLab and SAML accounts of users on GitLab must be linked. All users on the target GitLab instance must sign in
-  and verify their account on the target GitLab instance.
+- The network connection between instances or GitLab.com must support HTTPS.
+- Any firewalls must not block the connection between the source and destination GitLab instances.
+- Both GitLab instances must have group migration by direct transfer
+  [enabled in application settings](../../admin_area/settings/visibility_and_access_controls.md#enable-migration-of-groups-and-projects-by-direct-transfer)
+  by an instance administrator.
+- You must have the Owner role on the source group to migrate from.
+- You must have at least the Maintainer role on the destination group to migrate to. Using the Developer role for this
+  purpose was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/387891) in GitLab 15.8 and will be removed in
+  GitLab 16.0.
 
-You might need to reconfigure your firewall to prevent blocking the connection on the self-managed
-instance.
+### Prepare user accounts
 
-If you use [SAML SSO for GitLab.com groups](../../group/saml_sso/index.md),
-contributing users must have [linked their SAML identity to their GitLab.com account](../../group/saml_sso/index.md#linking-saml-to-your-existing-gitlabcom-account).
+To ensure GitLab maps users and their contributions correctly:
 
-When migrating to GitLab.com, you must create users manually unless [SCIM](../../group/saml_sso/scim_setup.md) is used. Creating users with the API is only
-available to self-managed instances because it requires administrator access.
+1. Create the required users on the destination GitLab instance. When migrating to GitLab.com, you must create users
+   manually unless [SCIM](../../group/saml_sso/scim_setup.md) is used. Creating users with the API is only available to
+   self-managed instances because it requires administrator access.
+1. Check that users have a public email on the source GitLab instance that matches their primary email on the
+   destination GitLab instance.
+1. Ensure that users confirm their primary email addresses on the destination GitLab instance. Most users receive an
+   email asking them to confirm their email address.
+1. If using an OmniAuth provider like SAML, link GitLab and SAML accounts of users on GitLab. All users on the
+   destination GitLab instance must sign in and verify their account on the destination GitLab instance. If using
+   [SAML SSO for GitLab.com groups](../../group/saml_sso/index.md), users must
+   [link their SAML identity to their GitLab.com account](../../group/saml_sso/index.md#linking-saml-to-your-existing-gitlabcom-account).
 
 ### Connect to the source GitLab instance
 
@@ -160,7 +158,7 @@ file for groups lists many of the items imported when migrating groups by direct
 for your version of GitLab to see the list of items relevant to you. For example,
 [`import_export.yml` on the `14-10-stable-ee` branch](https://gitlab.com/gitlab-org/gitlab/-/blob/14-10-stable-ee/lib/gitlab/import_export/group/import_export.yml).
 
-Group items that are migrated to the target instance include:
+Group items that are migrated to the destination GitLab instance include:
 
 - Badges ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/292431) in 13.11)
 - Board Lists
@@ -173,9 +171,9 @@ Group items that are migrated to the target instance include:
 - Iterations cadences ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96570) in 15.4)
 - Members ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/299415) in 13.9)
   Group members are associated with the imported group if:
-  - The user already exists in the target GitLab instance and
+  - The user already exists in the destination GitLab instance and
   - The user has a public email in the source GitLab instance that matches a
-    confirmed email in the target GitLab instance
+    confirmed email in the destination GitLab instance
 - Milestones ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/292427) in 13.10)
 - Namespace Settings
 - Releases
@@ -204,7 +202,7 @@ WARNING:
 Migrating projects when migrating groups by direct transfer is in [Beta](../../../policy/alpha-beta-support.md#beta-features)
 and is not ready for production use.
 
-Project items that are migrated to the target instance include:
+Project items that are migrated to the destination GitLab instance include:
 
 - Projects ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/267945) in GitLab 14.4)
   - Auto DevOps ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339410) in GitLab 14.6)

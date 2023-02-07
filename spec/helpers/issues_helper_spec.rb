@@ -478,20 +478,8 @@ RSpec.describe IssuesHelper do
       let_it_be(:banned_user) { build(:user, :banned) }
       let_it_be(:hidden_issue) { build(:issue, author: banned_user) }
 
-      context 'when `ban_user_feature_flag` feature flag is enabled' do
-        it 'returns `true`' do
-          expect(helper.issue_hidden?(hidden_issue)).to eq(true)
-        end
-      end
-
-      context 'when `ban_user_feature_flag` feature flag is disabled' do
-        before do
-          stub_feature_flags(ban_user_feature_flag: false)
-        end
-
-        it 'returns `false`' do
-          expect(helper.issue_hidden?(hidden_issue)).to eq(false)
-        end
+      it 'returns `true`' do
+        expect(helper.issue_hidden?(hidden_issue)).to eq(true)
       end
     end
 

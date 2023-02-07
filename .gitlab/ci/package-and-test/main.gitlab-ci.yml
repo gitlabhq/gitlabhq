@@ -8,7 +8,7 @@ include:
   - local: .gitlab/ci/package-and-test/rules.gitlab-ci.yml
   - local: .gitlab/ci/package-and-test/variables.gitlab-ci.yml
   - project: gitlab-org/quality/pipeline-common
-    ref: 1.14.1
+    ref: 2.0.0
     file:
       - /ci/base.gitlab-ci.yml
       - /ci/allure-report.yml
@@ -64,10 +64,10 @@ stages:
     QA_CAN_TEST_PRAEFECT: "false"
     QA_INTERCEPT_REQUESTS: "true"
     QA_RUN_TYPE: e2e-package-and-test
-    TEST_LICENSE_MODE: $QA_TEST_LICENSE_MODE
     EE_LICENSE: $QA_EE_LICENSE
     GITHUB_ACCESS_TOKEN: $QA_GITHUB_ACCESS_TOKEN
     GITLAB_QA_ADMIN_ACCESS_TOKEN: $QA_ADMIN_ACCESS_TOKEN
+    GITLAB_LICENSE_MODE: test
 
 # ==========================================
 # Prepare stage

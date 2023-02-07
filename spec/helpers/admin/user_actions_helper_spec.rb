@@ -114,23 +114,5 @@ RSpec.describe Admin::UserActionsHelper do
 
       it { is_expected.to match_array([]) }
     end
-
-    context 'when `ban_user_feature_flag` is disabled' do
-      before do
-        stub_feature_flags(ban_user_feature_flag: false)
-      end
-
-      context 'the user is a standard user' do
-        let_it_be(:user) { create(:user) }
-
-        it { is_expected.not_to include("ban") }
-      end
-
-      context 'the user is banned' do
-        let_it_be(:user) { create(:user, :banned) }
-
-        it { is_expected.not_to include("unban") }
-      end
-    end
   end
 end

@@ -228,29 +228,17 @@ RSpec.describe GitlabSchema.types['Issue'] do
 
     subject { GitlabSchema.execute(query, context: { current_user: admin }).as_json }
 
-    context 'when `ban_user_feature_flag` is enabled' do
-      context 'when issue is hidden' do
-        it 'returns `true`' do
-          expect(subject.dig('data', 'project', 'issue', 'hidden')).to eq(true)
-        end
-      end
-
-      context 'when issue is visible' do
-        let(:issue) { visible_issue }
-
-        it 'returns `false`' do
-          expect(subject.dig('data', 'project', 'issue', 'hidden')).to eq(false)
-        end
+    context 'when issue is hidden' do
+      it 'returns `true`' do
+        expect(subject.dig('data', 'project', 'issue', 'hidden')).to eq(true)
       end
     end
 
-    context 'when `ban_user_feature_flag` is disabled' do
-      before do
-        stub_feature_flags(ban_user_feature_flag: false)
-      end
+    context 'when issue is visible' do
+      let(:issue) { visible_issue }
 
-      it 'returns `nil`' do
-        expect(subject.dig('data', 'project', 'issue', 'hidden')).to be_nil
+      it 'returns `false`' do
+        expect(subject.dig('data', 'project', 'issue', 'hidden')).to eq(false)
       end
     end
   end

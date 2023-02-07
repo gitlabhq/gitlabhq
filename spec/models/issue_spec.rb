@@ -1465,16 +1465,6 @@ RSpec.describe Issue, feature_category: :project_management do
     it 'only returns without_hidden issues' do
       expect(described_class.without_hidden).to eq([public_issue])
     end
-
-    context 'when feature flag is disabled' do
-      before do
-        stub_feature_flags(ban_user_feature_flag: false)
-      end
-
-      it 'returns public and hidden issues' do
-        expect(described_class.without_hidden).to contain_exactly(public_issue, hidden_issue)
-      end
-    end
   end
 
   describe '.by_project_id_and_iid' do

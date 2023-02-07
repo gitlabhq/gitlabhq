@@ -120,10 +120,6 @@ module UsersHelper
     !user.confirmed?
   end
 
-  def ban_feature_available?
-    Feature.enabled?(:ban_user_feature_flag)
-  end
-
   def confirm_user_data(user)
     message = if user.unconfirmed_email.present?
                 _('This user has an unconfirmed email address (%{email}). You may force a confirmation.') % { email: user.unconfirmed_email }

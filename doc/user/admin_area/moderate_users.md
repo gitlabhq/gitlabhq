@@ -220,7 +220,6 @@ Users can also be activated using the [GitLab API](../../api/users.md#activate-u
 
 FLAG:
 On self-managed GitLab, by default this feature is available.
-To hide the feature, ask an administrator to [disable the feature flag](../../administration/feature_flags.md) named `ban_user_feature_flag`.
 On GitLab.com, this feature is available to GitLab.com administrators only.
 
 GitLab administrators can ban and unban users. Banned users are blocked, and their issues and merge requests are hidden.

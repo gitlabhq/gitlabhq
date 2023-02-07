@@ -842,12 +842,12 @@ The [Phabricator task importer](https://docs.gitlab.com/ee/user/project/import/p
 
 </div>
 
-<div class="deprecation removal-160 breaking-change">
+<div class="deprecation removal-170 breaking-change">
 
 ### The `gitlab-runner exec` command is deprecated
 
-End of Support: GitLab <span class="removal-milestone">16.0</span> <span class="support-end-date"></span><br />
-Planned removal: GitLab <span class="removal-milestone">16.0</span> <span class="removal-date"></span>
+End of Support: GitLab <span class="removal-milestone">17.0</span> <span class="support-end-date"></span><br />
+Planned removal: GitLab <span class="removal-milestone">17.0</span> <span class="removal-date"></span>
 
 WARNING:
 This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).

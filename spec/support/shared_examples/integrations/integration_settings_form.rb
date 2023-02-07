@@ -54,12 +54,14 @@ RSpec.shared_examples 'integration settings form' do
     # Should match `integrationTriggerEventTitles` in app/assets/javascripts/integrations/constants.js
     event_titles = {
       push_events: s_('IntegrationEvents|A push is made to the repository'),
-      issues_events: s_('IntegrationEvents|IntegrationEvents|An issue is created, updated, or closed'),
-      confidential_issues_events: s_('IntegrationEvents|A confidential issue is created, updated, or closed'),
-      merge_requests_events: s_('IntegrationEvents|A merge request is created, updated, or merged'),
-      note_events: s_('IntegrationEvents|A comment is added on an issue'),
-      confidential_note_events: s_('IntegrationEvents|A comment is added on a confidential issue'),
-      tag_push_events: s_('IntegrationEvents|A tag is pushed to the repository'),
+      issues_events: s_('IntegrationEvents|An issue is created, closed, or reopened'),
+      confidential_issues_events: s_('A confidential issue is created, closed, or reopened'),
+      merge_requests_events: s_('IntegrationEvents|A merge request is created, merged, closed, or reopened'),
+      note_events: s_('IntegrationEvents|A comment is added'),
+      confidential_note_events: s_(
+        'IntegrationEvents|An internal note or comment on a confidential issue is added'
+      ),
+      tag_push_events: s_('IntegrationEvents|A tag is pushed to the repository or removed'),
       pipeline_events: s_('IntegrationEvents|A pipeline status changes'),
       wiki_page_events: s_('IntegrationEvents|A wiki page is created or updated')
     }.with_indifferent_access

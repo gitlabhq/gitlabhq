@@ -57,7 +57,7 @@ module IssuesHelper
   end
 
   def issue_hidden?(issue)
-    Feature.enabled?(:ban_user_feature_flag) && issue.hidden?
+    issue.hidden?
   end
 
   def hidden_issue_icon(issue)

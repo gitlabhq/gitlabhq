@@ -22543,19 +22543,16 @@ msgstr ""
 msgid "Integration Settings"
 msgstr ""
 
-msgid "IntegrationEvents|A comment is added on a confidential issue"
+msgid "IntegrationEvents|A comment is added"
 msgstr ""
 
-msgid "IntegrationEvents|A comment is added on an issue"
-msgstr ""
-
-msgid "IntegrationEvents|A confidential issue is created, updated, or closed"
+msgid "IntegrationEvents|A confidential issue is created, closed, or reopened"
 msgstr ""
 
 msgid "IntegrationEvents|A deployment is started or finished"
 msgstr ""
 
-msgid "IntegrationEvents|A merge request is created, updated, or merged"
+msgid "IntegrationEvents|A merge request is created, merged, closed, or reopened"
 msgstr ""
 
 msgid "IntegrationEvents|A new, unique alert is recorded"
@@ -22570,16 +22567,19 @@ msgstr ""
 msgid "IntegrationEvents|A push is made to the repository"
 msgstr ""
 
-msgid "IntegrationEvents|A tag is pushed to the repository"
+msgid "IntegrationEvents|A tag is pushed to the repository or removed"
 msgstr ""
 
 msgid "IntegrationEvents|A wiki page is created or updated"
 msgstr ""
 
-msgid "IntegrationEvents|An incident is created"
+msgid "IntegrationEvents|An incident is created, closed, or reopened"
 msgstr ""
 
-msgid "IntegrationEvents|An issue is created, updated, or closed"
+msgid "IntegrationEvents|An internal note or comment on a confidential issue is added"
+msgstr ""
+
+msgid "IntegrationEvents|An issue is created, closed, or reopened"
 msgstr ""
 
 msgid "Integrations"
@@ -42760,6 +42760,9 @@ msgstr ""
 msgid "The time period in seconds that the maximum requests per project limit applies to."
 msgstr ""
 
+msgid "The top-level group, including any subgroups and projects, will be placed into a %{link_start}read-only%{link_end} state soon. To retain write access, ask your top-level group Owner to %{reduce_link_start}reduce the number of users%{link_end} to %{free_user_limit} or less. An Owner of the top-level group can also start a free trial or upgrade to a paid tier, which do not have user limits. The Owners of the top-level group have also been notified."
+msgstr ""
+
 msgid "The update action will time out after %{number_of_minutes} minutes. For big repositories, use a clone/push combination."
 msgstr ""
 
@@ -44795,9 +44798,6 @@ msgid "Trials|Create a new group to start your GitLab Ultimate trial."
 msgstr ""
 
 msgid "Trials|Day %{daysUsed}/%{duration}"
-msgstr ""
-
-msgid "Trials|Upgrade %{groupName} to %{planName}"
 msgstr ""
 
 msgid "Trials|You can apply your trial to a new group or an existing group."
