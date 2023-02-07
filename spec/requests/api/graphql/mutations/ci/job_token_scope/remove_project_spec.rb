@@ -22,6 +22,7 @@ RSpec.describe 'CiJobTokenScopeRemoveProject', feature_category: :continuous_int
 
   let(:variables) do
     {
+      direction: 'OUTBOUND',
       project_path: project.full_path,
       target_project_path: target_project.full_path
     }
@@ -67,7 +68,7 @@ RSpec.describe 'CiJobTokenScopeRemoveProject', feature_category: :continuous_int
       target_project.add_guest(current_user)
     end
 
-    it 'removes the target project from the job token scope' do
+    it 'removes the target project from the job token outbound scope' do
       expect do
         post_graphql_mutation(mutation, current_user: current_user)
         expect(response).to have_gitlab_http_status(:success)

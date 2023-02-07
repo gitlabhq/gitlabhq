@@ -177,19 +177,17 @@ module Users
 
     # Allowed params for user signup
     def signup_params
-      signup_params = [
+      [
         :email,
         :name,
         :password,
         :password_automatically_set,
+        :preferred_language,
         :username,
         :user_type,
         :first_name,
         :last_name
       ]
-      signup_params << :preferred_language if ::Feature.enabled?(:preferred_language_switcher)
-
-      signup_params
     end
   end
 end

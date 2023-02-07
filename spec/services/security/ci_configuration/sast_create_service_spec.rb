@@ -2,7 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe Security::CiConfiguration::SastCreateService, :snowplow, feature_category: :sast do
+RSpec.describe Security::CiConfiguration::SastCreateService, :snowplow,
+  feature_category: :static_application_security_testing do
   subject(:result) { described_class.new(project, user, params).execute }
 
   let(:branch_name) { 'set-sast-config-1' }

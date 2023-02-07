@@ -34463,6 +34463,9 @@ msgstr ""
 msgid "ProtectedEnvironments|Approval rules"
 msgstr ""
 
+msgid "ProtectedEnvironments|Delete deployment rule"
+msgstr ""
+
 msgid "ProtectedEnvironments|List of protected environments (%{protectedEnvironmentsCount})"
 msgstr ""
 

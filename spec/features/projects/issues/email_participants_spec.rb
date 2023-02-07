@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'viewing an issue', :js, feature_category: :issue_email_participants do
+RSpec.describe 'viewing an issue', :js, feature_category: :service_desk do
   let_it_be(:user) { create(:user) }
   let_it_be(:non_member) { create(:user) }
   let_it_be(:project) { create(:project, :public) }

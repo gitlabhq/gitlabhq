@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Merge request > User sees draft toggle', feature_category: :code_review do
+RSpec.describe 'Merge request > User sees draft toggle', feature_category: :code_review_workflow do
   let_it_be(:project) { create(:project, :public, :repository) }
   let(:user) { project.creator }
 

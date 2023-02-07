@@ -98,7 +98,7 @@ RSpec.describe IssuablesHelper, feature_category: :team_planning do
     end
   end
 
-  describe '#assigned_issuables_count', feature_category: :project_management do
+  describe '#assigned_issuables_count', feature_category: :team_planning do
     context 'when issuable is issues' do
       let_it_be(:user) { create(:user) }
       let_it_be(:project) { create(:project).tap { |p| p.add_developer(user) } }
@@ -117,7 +117,7 @@ RSpec.describe IssuablesHelper, feature_category: :team_planning do
     end
   end
 
-  describe '#assigned_open_issues_count_text', feature_category: :project_management do
+  describe '#assigned_open_issues_count_text', feature_category: :team_planning do
     let_it_be(:user) { create(:user) }
     let_it_be(:project) { create(:project).tap { |p| p.add_developer(user) } }
 

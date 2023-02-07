@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ResourceLabelEvent, feature_category: :team_planing, type: :model do
+RSpec.describe ResourceLabelEvent, feature_category: :team_planning, type: :model do
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:issue) { create(:issue, project: project) }
   let_it_be(:merge_request) { create(:merge_request, source_project: project) }

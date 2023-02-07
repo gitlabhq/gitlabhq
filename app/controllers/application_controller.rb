@@ -510,8 +510,6 @@ class ApplicationController < ActionController::Base
   end
 
   def set_locale(&block)
-    return Gitlab::I18n.with_user_locale(current_user, &block) unless Feature.enabled?(:preferred_language_switcher)
-
     if current_user
       Gitlab::I18n.with_user_locale(current_user, &block)
     else

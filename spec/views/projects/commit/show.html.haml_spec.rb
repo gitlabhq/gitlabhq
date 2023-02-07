@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'projects/commit/show.html.haml', feature_category: :source_code do
+RSpec.describe 'projects/commit/show.html.haml', feature_category: :source_code_management do
   let(:project) { create(:project, :repository) }
   let(:commit) { project.commit }
 

@@ -42,7 +42,6 @@ class Ci::PipelineEntity < Grape::Entity
     expose :duration
     expose :finished_at
     expose :event_type_name
-    expose :event_type_name, as: :name # To be removed in 15.7
   end
 
   expose :merge_request, if: -> (*) { has_presentable_merge_request? }, with: MergeRequestForPipelineEntity do |pipeline|

@@ -512,7 +512,7 @@ RSpec.describe Notes::CreateService, feature_category: :team_planning do
       end
     end
 
-    context 'personal snippet note', feature_category: :snippets do
+    context 'personal snippet note', feature_category: :source_code_management do
       subject { described_class.new(nil, user, params).execute }
 
       let(:snippet) { create(:personal_snippet) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ResourceEvent, feature_category: :team_planing, type: :model do
+RSpec.describe ResourceEvent, feature_category: :team_planning, type: :model do
   let(:dummy_resource_label_event_class) do
     Class.new(ResourceEvent) do
       self.table_name = 'resource_label_events'

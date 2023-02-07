@@ -13,8 +13,9 @@ module Ci
       belongs_to :target_project, class_name: 'Project'
       belongs_to :added_by, class_name: 'User'
 
-      scope :with_source, ->(project) { where(source_project: project) }
-      scope :with_target, ->(project) { where(target_project: project) }
+      scope :with_access_direction, ->(direction) { where(direction: direction) }
+      scope :with_source, ->(project)   { where(source_project: project) }
+      scope :with_target, ->(project)   { where(target_project: project) }
 
       validates :source_project, presence: true
       validates :target_project, presence: true

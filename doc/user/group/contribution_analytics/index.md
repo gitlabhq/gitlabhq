@@ -22,31 +22,25 @@ To view Contribution Analytics:
 1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Analytics > Contribution**.
 
-## Using Contribution Analytics
-
 Three bar graphs illustrate the number of contributions made by each group member:
 
 - Push events
 - Merge requests
 - Closed issues
 
+### View a member's contributions
+
 Hover over each bar to display the number of events for a specific group member.
 
 ![Contribution analytics bar graphs](img/group_stats_graph.png)
 
-## Changing the period time
+### Zoom in on a chart
 
-You can choose from the following three periods:
+You can zoom in on a bar chart to display only a subset of group members.
 
-- Last week (default)
-- Last month
-- Last three months
+To do this, select the sliders (**{status-paused}**) below the chart and slide them along the axis.
 
-Select the desired period from the calendar dropdown list.
-
-![Contribution analytics choose period](img/group_stats_cal.png)
-
-## Sorting by different factors
+### Sort contributions
 
 Contributions per group member are also presented in tabular format. Select a column header to sort the table by that column:
 
@@ -60,6 +54,18 @@ Contributions per group member are also presented in tabular format. Select a co
 - Number of total contributions
 
 ![Contribution analytics contributions table](img/group_stats_table.png)
+
+## Change the time period
+
+You can choose from the following three periods:
+
+- Last week (default)
+- Last month
+- Last three months
+
+Select the desired period from the calendar dropdown list.
+
+![Contribution analytics choose period](img/group_stats_cal.png)
 
 ## Contribution analytics GraphQL API
 

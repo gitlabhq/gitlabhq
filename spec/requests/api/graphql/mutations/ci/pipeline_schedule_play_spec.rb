@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'PipelineSchedulePlay', feature_category: :continuious_integration do
+RSpec.describe 'PipelineSchedulePlay', feature_category: :continuous_integration do
   include GraphqlHelpers
 
   let_it_be(:user) { create(:user) }

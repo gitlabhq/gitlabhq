@@ -25,5 +25,6 @@ each security partner:
 - [Tenable](https://docs.tenable.com/tenableio/Content/ContainerSecurity/GetStarted.htm)
 - [Venafi](https://marketplace.venafi.com/details/gitlab-ci-cd/)
 - [Veracode](https://community.veracode.com/s/knowledgeitem/gitlab-ci-MCEKSYPRWL35BRTGOVI55SK5RI4A)
+- [Fortify](https://www.microfocus.com/en-us/fortify-integrations/gitlab)
 
 <!-- vale gitlab.Spelling = YES -->

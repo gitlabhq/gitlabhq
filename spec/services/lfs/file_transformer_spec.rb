@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe Lfs::FileTransformer, feature_category: :git_lfs do
+RSpec.describe Lfs::FileTransformer, feature_category: :source_code_management do
   let(:project) { create(:project, :repository, :wiki_repo) }
   let(:repository) { project.repository }
   let(:file_content) { 'Test file content' }

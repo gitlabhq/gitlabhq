@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Issue, feature_category: :project_management do
+RSpec.describe Issue, feature_category: :team_planning do
   include ExternalAuthorizationServiceHelpers
 
   using RSpec::Parameterized::TableSyntax

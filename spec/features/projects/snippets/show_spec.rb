@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Projects > Snippets > Project snippet', :js, feature_category: :snippets do
+RSpec.describe 'Projects > Snippets > Project snippet', :js, feature_category: :source_code_management do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) do
     create(:project, creator: user).tap do |p|

@@ -1,7 +1,0 @@
----
-name: preferred_language_switcher
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/101621
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/381181
-milestone: '15.6'
-type: development
-default_enabled: false

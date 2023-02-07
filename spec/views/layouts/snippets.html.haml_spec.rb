@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'layouts/snippets', feature_category: :snippets do
+RSpec.describe 'layouts/snippets', feature_category: :source_code_management do
   before do
     allow(view).to receive(:current_user).and_return(user)
     allow(view).to receive(:current_user_mode).and_return(Gitlab::Auth::CurrentUserMode.new(user))

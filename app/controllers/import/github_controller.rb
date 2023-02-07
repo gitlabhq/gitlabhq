@@ -93,6 +93,23 @@ class Import::GithubController < Import::BaseController
     end
   end
 
+  def cancel_all
+    projects_to_cancel = Project.imported_from(provider_name).created_by(current_user).is_importing
+
+    canceled = projects_to_cancel.map do |project|
+      # #reset is called to make sure project was not finished/canceled brefore calling service
+      result = Import::Github::CancelProjectImportService.new(project.reset, current_user).execute
+
+      {
+        id: project.id,
+        status: result[:status],
+        error: result[:message]
+      }.compact
+    end
+
+    render json: canceled
+  end
+
   protected
 
   override :importable_repos

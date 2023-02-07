@@ -199,7 +199,7 @@ export default {
               data-testid="pipeline-info-container"
               data-qa-selector="merge_request_pipeline_info_content"
             >
-              {{ pipeline.details.event_type_name || pipeline.details.name }}
+              {{ pipeline.details.event_type_name }}
               <gl-link
                 :href="pipeline.path"
                 class="pipeline-id"

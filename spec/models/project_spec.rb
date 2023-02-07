@@ -8813,6 +8813,16 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
     end
   end
 
+  describe '.is_importing' do
+    it 'returns projects that have import in progress' do
+      project_1 = create(:project, :import_scheduled, import_type: 'github')
+      project_2 = create(:project, :import_started, import_type: 'github')
+      create(:project, :import_finished, import_type: 'github')
+
+      expect(described_class.is_importing).to match_array([project_1, project_2])
+    end
+  end
+
   private
 
   def finish_job(export_job)

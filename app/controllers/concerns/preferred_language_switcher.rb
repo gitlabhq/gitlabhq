@@ -6,8 +6,6 @@ module PreferredLanguageSwitcher
   private
 
   def init_preferred_language
-    return unless Feature.enabled?(:preferred_language_switcher)
-
     cookies[:preferred_language] = preferred_language
   end
 
