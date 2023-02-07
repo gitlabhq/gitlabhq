@@ -19,7 +19,9 @@ class Projects::BranchesController < Projects::ApplicationController
   def index
     respond_to do |format|
       format.html do
-        @mode = params[:state].presence || 'overview'
+        @mode = fetch_mode
+        next render_404 unless @mode
+
         @sort = sort_param || default_sort
         @overview_max_branches = 5
 
@@ -209,6 +211,14 @@ class Projects::BranchesController < Projects::ApplicationController
         .execute(gitaly_pagination: true).select(&:stale?)
 
     @branches = @active_branches + @stale_branches
+  end
+
+  def fetch_mode
+    state = params[:state].presence
+
+    return 'overview' unless state
+
+    state.presence_in(%w[active stale all overview])
   end
 
   def confidential_issue_project

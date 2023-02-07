@@ -262,6 +262,21 @@ To filter:
 1. From the dropdown list, select the scope or enter plain text to search by epic title or description.
 1. Press <kbd>Enter</kbd> on your keyboard. The list is filtered.
 
+### Filter with the OR operator
+
+> OR filtering for labels was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/382969) in GitLab 15.9 [with a flag](../../../administration/feature_flags.md) named `or_issuable_queries`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available.
+To make it available, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `or_issuable_queries`.
+The feature is not ready for production use.
+
+When this feature is enabled, you can use the OR operator (**is one of: `||`**)
+to [filter the list of epics](#filter-the-list-of-epics) by labels.
+
+`is one of` represents an inclusive OR. For example, if you filter by `Label is one of Deliverable` and
+`Label is one of UX`, GitLab shows epics with either `Deliverable`, `UX`, or both labels.
+
 ## Sort the list of epics
 
 You can sort the epics list by:

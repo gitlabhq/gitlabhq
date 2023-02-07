@@ -174,7 +174,7 @@ export default {
         />
       </template>
       <template #default>
-        <board-sidebar-title />
+        <board-sidebar-title data-testid="sidebar-title" />
         <sidebar-assignees-widget
           :iid="activeBoardItem.iid"
           :full-path="fullPath"

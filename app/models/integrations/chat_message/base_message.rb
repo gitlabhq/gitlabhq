@@ -5,10 +5,6 @@ module Integrations
     class BaseMessage
       RELATIVE_LINK_REGEX = %r{!\[[^\]]*\]\((/uploads/[^\)]*)\)}.freeze
 
-      # Markup characters which are used for links in HTML, Markdown,
-      # and Slack "mrkdwn" syntax (`<http://example.com|Label>`).
-      UNSAFE_MARKUP_CHARACTERS = '<>[]|'
-
       attr_reader :markdown
       attr_reader :user_full_name
       attr_reader :user_name
@@ -85,7 +81,7 @@ module Integrations
       # - https://api.slack.com/reference/surfaces/formatting#escaping
       # - https://gitlab.com/gitlab-org/slack-notifier#escaping
       def strip_markup(string)
-        string&.delete(UNSAFE_MARKUP_CHARACTERS)
+        SlackMarkdownSanitizer.sanitize(string)
       end
 
       def attachment_color

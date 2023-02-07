@@ -676,6 +676,18 @@ RSpec.describe Projects::BranchesController do
       end
     end
 
+    context 'when state is not supported' do
+      before do
+        get :index, format: :html, params: {
+          namespace_id: project.namespace, project_id: project, state: 'unknown'
+        }
+      end
+
+      it 'returns 404 page' do
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
     context 'sorting', :aggregate_failures do
       let(:sort) { 'name_asc' }
 

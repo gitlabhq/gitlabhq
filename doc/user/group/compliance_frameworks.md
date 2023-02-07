@@ -274,3 +274,18 @@ Therefore, in projects with compliance frameworks, we recommend replacing
   pipeline feature.
 
 This alternative ensures the compliance pipeline does not re-start the parent pipeline.
+
+## Troubleshooting
+
+### Cannot remove compliance framework from a project
+
+If you move a project, the compliance framework can become orphaned and can't be removed. To manually remove a compliance framework from a project, run the following GraphQL
+mutation with your project's ID:
+
+```graphql
+mutation {
+  projectSetComplianceFramework(input: {projectId: "gid://gitlab/Project/1234567", complianceFrameworkId: null}) {
+    errors
+  }
+}
+```

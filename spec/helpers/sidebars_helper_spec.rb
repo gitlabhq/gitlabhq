@@ -70,7 +70,9 @@ RSpec.describe SidebarsHelper do
         issues_dashboard_path: issues_dashboard_path(assignee_username: user.username),
         total_merge_requests_count: 4,
         support_path: helper.support_url,
-        display_whats_new: helper.display_whats_new?
+        display_whats_new: helper.display_whats_new?,
+        whats_new_most_recent_release_items_count: helper.whats_new_most_recent_release_items_count,
+        whats_new_version_digest: helper.whats_new_version_digest
       })
     end
 

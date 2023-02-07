@@ -1,10 +1,12 @@
-import { GlDisclosureDropdown } from '@gitlab/ui';
+import { GlDisclosureDropdownGroup } from '@gitlab/ui';
 import { within } from '@testing-library/dom';
 import toggleWhatsNewDrawer from '~/whats_new';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import HelpCenter from '~/super_sidebar/components/help_center.vue';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { PROMO_URL } from 'jh_else_ce/lib/utils/url_utility';
+import { useLocalStorageSpy } from 'helpers/local_storage_helper';
+import { STORAGE_KEY } from '~/whats_new/utils/notification';
 import { sidebarData } from '../mock_data';
 
 jest.mock('~/whats_new');
@@ -12,11 +14,14 @@ jest.mock('~/whats_new');
 describe('HelpCenter component', () => {
   let wrapper;
 
-  const findDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
+  const findDropdownGroup = (i = 0) => {
+    return wrapper.findAllComponents(GlDisclosureDropdownGroup).at(i);
+  };
   const withinComponent = () => within(wrapper.element);
   const findButton = (name) => withinComponent().getByRole('button', { name });
 
-  const createWrapper = () => {
+  // eslint-disable-next-line no-shadow
+  const createWrapper = (sidebarData) => {
     wrapper = mountExtended(HelpCenter, {
       propsData: { sidebarData },
     });
@@ -24,11 +29,11 @@ describe('HelpCenter component', () => {
 
   describe('default', () => {
     beforeEach(() => {
-      createWrapper();
+      createWrapper(sidebarData);
     });
 
     it('renders menu items', () => {
-      expect(findDropdown().props('items')[0].items).toEqual([
+      expect(findDropdownGroup(0).props('group').items).toEqual([
         { text: HelpCenter.i18n.help, href: helpPagePath() },
         { text: HelpCenter.i18n.support, href: sidebarData.support_path },
         { text: HelpCenter.i18n.docs, href: 'https://docs.gitlab.com' },
@@ -41,7 +46,7 @@ describe('HelpCenter component', () => {
         { text: HelpCenter.i18n.feedback, href: 'https://about.gitlab.com/submit-feedback' },
       ]);
 
-      expect(findDropdown().props('items')[1].items).toEqual([
+      expect(findDropdownGroup(1).props('group').items).toEqual([
         expect.objectContaining({ text: HelpCenter.i18n.shortcuts }),
         expect.objectContaining({ text: HelpCenter.i18n.whatsnew }),
       ]);
@@ -51,7 +56,7 @@ describe('HelpCenter component', () => {
       beforeEach(() => {
         jest.spyOn(wrapper.vm.$refs.dropdown, 'close');
         window.toggleShortcutsHelp = jest.fn();
-        findButton('Keyboard shortcuts').click();
+        findButton('Keyboard shortcuts ?').click();
       });
 
       it('closes the dropdown', () => {
@@ -66,7 +71,7 @@ describe('HelpCenter component', () => {
     describe('showWhatsNew', () => {
       beforeEach(() => {
         jest.spyOn(wrapper.vm.$refs.dropdown, 'close');
-        findButton("What's new").click();
+        findButton("What's new 5").click();
       });
 
       it('closes the dropdown', () => {
@@ -81,6 +86,51 @@ describe('HelpCenter component', () => {
         findButton("What's new").click();
         expect(toggleWhatsNewDrawer).toHaveBeenCalledTimes(2);
         expect(toggleWhatsNewDrawer).toHaveBeenLastCalledWith();
+      });
+    });
+
+    describe('shouldShowWhatsNewNotification', () => {
+      describe('when setting is disabled', () => {
+        beforeEach(() => {
+          createWrapper({ ...sidebarData, display_whats_new: false });
+        });
+
+        it('is false', () => {
+          expect(wrapper.vm.showWhatsNewNotification).toBe(false);
+        });
+      });
+
+      describe('when setting is enabled', () => {
+        useLocalStorageSpy();
+
+        beforeEach(() => {
+          createWrapper({ ...sidebarData, display_whats_new: true });
+        });
+
+        it('is true', () => {
+          expect(wrapper.vm.showWhatsNewNotification).toBe(true);
+        });
+
+        describe('when "What\'s new" drawer got opened', () => {
+          beforeEach(() => {
+            findButton("What's new 5").click();
+          });
+
+          it('is false', () => {
+            expect(wrapper.vm.showWhatsNewNotification).toBe(false);
+          });
+        });
+
+        describe('with matching version digest in local storage', () => {
+          beforeEach(() => {
+            window.localStorage.setItem(STORAGE_KEY, 1);
+            createWrapper({ ...sidebarData, display_whats_new: true });
+          });
+
+          it('is false', () => {
+            expect(wrapper.vm.showWhatsNewNotification).toBe(false);
+          });
+        });
       });
     });
   });

@@ -46,7 +46,9 @@ module SidebarsHelper
       create_new_menu_groups: create_new_menu_groups(group: group, project: project),
       merge_request_menu: create_merge_request_menu(user),
       support_path: support_url,
-      display_whats_new: display_whats_new?
+      display_whats_new: display_whats_new?,
+      whats_new_most_recent_release_items_count: whats_new_most_recent_release_items_count,
+      whats_new_version_digest: whats_new_version_digest
     }
   end
 

@@ -34,6 +34,29 @@
       background-color: $t-gray-a-08;
     }
   }
+
+  .btn-with-notification {
+    mix-blend-mode: unset !important; // Our tertiary buttons otherwise use another mix-blend mode, making border-color semi-transparent.
+
+    .notification {
+      background-color: $blue-500;
+      border: 2px solid $gray-10; // Same as the sidebar's background color.
+      position: absolute;
+      height: 9px;
+      width: 9px;
+      top: 5px;
+      left: 22px;
+      border-radius: 50%;
+      transition: background-color 100ms linear, border-color 100ms linear;
+    }
+
+    &:hover,
+    &:focus {
+      .notification {
+        border-color: $gray-50; // Same as the button's hover background color.
+      }
+    }
+  }
 }
 
 .with-performance-bar .super-sidebar {

@@ -96,6 +96,24 @@ def perform
 end
 ```
 
+## Failure handling
+
+Failures are typically handled by Sidekiq itself, which takes advantage of the inbuilt retry mechanism mentioned above. You should allow exceptions to be raised so that Sidekiq can reschedule the job.
+
+If you need to perform an action when a job fails after all of its retry attempts, add it to the `sidekiq_retries_exhausted` method.
+
+```ruby
+sidekiq_retries_exhausted do |msg, ex|
+  project = Project.find(msg['args'].first)
+  project.perform_a_rollback # handle the permanent failure
+end
+
+def perform(project_id)
+  project = Project.find(project_id)
+  project.some_action # throws an exception
+end
+```
+
 ## Sidekiq Queues
 
 Previously, each worker had its own queue, which was automatically set based on the

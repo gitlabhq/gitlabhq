@@ -18,8 +18,19 @@ foreign_key: :group_value_stream_id, inverse_of: :stages
       alias_attribute :value_stream_id, :group_value_stream_id
 
       def self.distinct_stages_within_hierarchy(namespace)
+        # Looking up the whole hierarchy including all kinds (type) of Namespace records.
+        # We're doing a custom traversal_ids query because:
+        # - The traversal_ids based `self_and_descendants` doesn't include the ProjectNamespace records.
+        # - The default recursive lookup also excludes the ProjectNamespace records.
+        #
+        # Related issue: https://gitlab.com/gitlab-org/gitlab/-/issues/386124
+        all_namespace_ids =
+          Namespace
+          .select(Arel.sql('namespaces.traversal_ids[array_length(namespaces.traversal_ids, 1)]').as('id'))
+          .where("traversal_ids @> ('{?}')", namespace.id)
+
         with_preloaded_labels
-          .where(group_id: namespace.self_and_descendants.select(:id))
+          .where(parent_id: all_namespace_ids)
           .select("DISTINCT ON(stage_event_hash_id) #{quoted_table_name}.*")
       end
 
