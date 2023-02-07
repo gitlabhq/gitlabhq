@@ -7,6 +7,7 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { GRAPHQL_ID_TYPES } from '~/jobs/constants';
 import waitForPromises from 'helpers/wait_for_promises';
+import { redirectTo } from '~/lib/utils/url_utility';
 import ManualVariablesForm from '~/jobs/components/job/manual_variables_form.vue';
 import getJobQuery from '~/jobs/components/job/graphql/queries/get_job.query.graphql';
 import retryJobMutation from '~/jobs/components/job/graphql/mutations/job_retry_with_variables.mutation.graphql';
@@ -20,6 +21,11 @@ import {
 
 const localVue = createLocalVue();
 localVue.use(VueApollo);
+
+jest.mock('~/lib/utils/url_utility', () => ({
+  ...jest.requireActual('~/lib/utils/url_utility'),
+  redirectTo: jest.fn(),
+}));
 
 const defaultProvide = {
   projectPath: mockFullPath,
@@ -155,6 +161,15 @@ describe('Manual Variables Form', () => {
           ],
         },
       });
+    });
+
+    // redirect to job after initial trigger assertion will be added in https://gitlab.com/gitlab-org/gitlab/-/issues/377268
+    it('redirects to job properly after rerun', async () => {
+      findRerunBtn().vm.$emit('click');
+      await waitForPromises();
+
+      expect(wrapper.vm.$apollo.mutate).toHaveBeenCalledTimes(1);
+      expect(redirectTo).toHaveBeenCalledWith(mockJobMutationData.data.jobRetry.job.webPath);
     });
   });
 

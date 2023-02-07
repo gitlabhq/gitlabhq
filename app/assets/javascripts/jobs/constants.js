@@ -42,3 +42,4 @@ export const JOB_RETRY_FORWARD_DEPLOYMENT_MODAL = {
 
 export const SUCCESS_STATUS = 'SUCCESS';
 export const PASSED_STATUS = 'passed';
+export const MANUAL_STATUS = 'manual';

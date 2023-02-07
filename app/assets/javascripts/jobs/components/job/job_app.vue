@@ -9,6 +9,7 @@ import { __, sprintf } from '~/locale';
 import CiHeader from '~/vue_shared/components/header_ci_component.vue';
 import delayedJobMixin from '~/jobs/mixins/delayed_job_mixin';
 import Log from '~/jobs/components/log/log.vue';
+import { MANUAL_STATUS } from '~/jobs/constants';
 import EmptyState from './empty_state.vue';
 import EnvironmentsBlock from './environments_block.vue';
 import ErasedBlock from './erased_block.vue';
@@ -144,6 +145,12 @@ export default {
           this.fetchJobsForStage(defaultStage);
         }
       }
+
+      // Only poll for job log if we are not in the manual variables form empty state.
+      // This will be handled more elegantly in the future with GraphQL in https://gitlab.com/gitlab-org/gitlab/-/issues/389597
+      if (newVal?.status?.group !== MANUAL_STATUS && !this.showUpdateVariablesState) {
+        this.fetchJobLog();
+      }
     },
   },
   created() {
@@ -163,6 +170,7 @@ export default {
   },
   methods: {
     ...mapActions([
+      'fetchJobLog',
       'fetchJobsForStage',
       'hideSidebar',
       'showSidebar',

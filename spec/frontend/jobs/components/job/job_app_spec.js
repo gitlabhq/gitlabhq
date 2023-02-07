@@ -16,7 +16,9 @@ import UnmetPrerequisitesBlock from '~/jobs/components/job/unmet_prerequisites_b
 import createStore from '~/jobs/store';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
+import { MANUAL_STATUS } from '~/jobs/constants';
 import job from '../../mock_data';
+import { mockPendingJobData } from './mock_data';
 
 describe('Job App', () => {
   Vue.use(Vuex);
@@ -309,6 +311,31 @@ describe('Job App', () => {
 
     it('should render job log', () => {
       expect(findJobLog().exists()).toBe(true);
+    });
+  });
+
+  describe('job log polling', () => {
+    beforeEach(() => {
+      jest.spyOn(store, 'dispatch');
+    });
+
+    it('should poll job log by default', async () => {
+      await setupAndMount({
+        jobData: mockPendingJobData,
+      });
+
+      expect(store.dispatch).toHaveBeenCalledWith('fetchJobLog');
+    });
+
+    it('should NOT poll job log for manual variables form empty state', async () => {
+      const manualPendingJobData = mockPendingJobData;
+      manualPendingJobData.status.group = MANUAL_STATUS;
+
+      await setupAndMount({
+        jobData: manualPendingJobData,
+      });
+
+      expect(store.dispatch).not.toHaveBeenCalledWith('fetchJobLog');
     });
   });
 });

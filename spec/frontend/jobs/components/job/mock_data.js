@@ -74,3 +74,25 @@ export const mockJobMutationData = {
     },
   },
 };
+
+export const mockPendingJobData = {
+  has_trace: false,
+  status: {
+    group: 'pending',
+    icon: 'status_pending',
+    label: 'pending',
+    text: 'pending',
+    details_path: 'path',
+    illustration: {
+      image: 'path',
+      size: '340',
+      title: '',
+      content: '',
+    },
+    action: {
+      button_title: 'Retry job',
+      method: 'post',
+      path: '/path',
+    },
+  },
+};

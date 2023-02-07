@@ -13,6 +13,9 @@ inherit_from:
     <% end %>
   - '.rubocop_todo.yml'
   <% end %>
+  <% if RUBY_VERSION[/^\d+\.\d+/, 0] == '2.7' %>
+  - ./rubocop/rubocop-ruby27.yml
+  <% end %>
   <% if RUBY_VERSION[/^\d+\.\d+/, 0] == '3.0' %>
   - ./rubocop/rubocop-ruby30.yml
   <% end %>
