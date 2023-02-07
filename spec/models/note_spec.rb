@@ -1482,6 +1482,7 @@ RSpec.describe Note do
     end
 
     it "expires cache for note's issue when note is destroyed" do
+      note.save!
       expect_expiration(note.noteable)
 
       note.destroy!

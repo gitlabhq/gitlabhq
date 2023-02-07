@@ -35,7 +35,7 @@ module Gitlab
               message: 'Artifact created',
               job_artifact_id: artifact.id,
               size: artifact.size,
-              type: artifact.file_type,
+              file_type: artifact.file_type,
               build_id: artifact.job_id,
               project_id: artifact.project_id
             )
@@ -51,7 +51,7 @@ module Gitlab
               job_artifact_id: artifact.id,
               expire_at: artifact.expire_at,
               size: artifact.size,
-              type: artifact.file_type,
+              file_type: artifact.file_type,
               build_id: artifact.job_id,
               project_id: artifact.project_id,
               method: method

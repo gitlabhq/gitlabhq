@@ -112,7 +112,7 @@ function setup_db_praefect() {
 
 function setup_db() {
   run_timed_command "setup_db_user_only"
-  run_timed_command_with_metric "bundle exec rake db:drop db:create db:schema:load db:migrate" "setup_db"
+  run_timed_command_with_metric "bundle exec rake db:drop db:create db:schema:load db:migrate gitlab:db:lock_writes" "setup_db"
   run_timed_command "setup_db_praefect"
 }
 

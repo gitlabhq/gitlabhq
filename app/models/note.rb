@@ -182,6 +182,39 @@ class Note < ApplicationRecord
   after_commit :notify_after_create, on: :create
   after_commit :notify_after_destroy, on: :destroy
 
+  after_commit :trigger_note_subscription_create, on: :create
+  after_commit :trigger_note_subscription_update, on: :update
+  after_commit :trigger_note_subscription_destroy, on: :destroy
+
+  def trigger_note_subscription_create
+    return unless trigger_note_subscription?
+
+    GraphqlTriggers.work_item_note_created(noteable.to_work_item_global_id, self)
+  end
+
+  def trigger_note_subscription_update
+    return unless trigger_note_subscription?
+
+    GraphqlTriggers.work_item_note_updated(noteable.to_work_item_global_id, self)
+  end
+
+  def trigger_note_subscription_destroy
+    return unless trigger_note_subscription?
+
+    # when deleting a note, we cannot pass it on as a Note instance, as GitlabSchema.object_from_id
+    # would try to resolve the given Note and fetch it from DB which would raise NotFound exception.
+    # So instead we just pass over the string representations of the note and discussion IDs,
+    # so that the subscriber can identify the discussion and the note.
+    deleted_note_data = {
+      id: self.id,
+      model_name: self.class.name,
+      discussion_id: self.discussion_id,
+      last_discussion_note: discussion.notes == [self]
+    }
+
+    GraphqlTriggers.work_item_note_deleted(noteable.to_work_item_global_id, deleted_note_data)
+  end
+
   class << self
     extend Gitlab::Utils::Override
 
@@ -717,6 +750,10 @@ class Note < ApplicationRecord
   end
 
   private
+
+  def trigger_note_subscription?
+    for_issue? && noteable
+  end
 
   def system_note_viewable_by?(user)
     return true unless system_note_metadata

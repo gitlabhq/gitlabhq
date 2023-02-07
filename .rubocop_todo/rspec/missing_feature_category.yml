@@ -7019,7 +7019,6 @@ RSpec/MissingFeatureCategory:
     - 'spec/rubocop/cop/safe_params_spec.rb'
     - 'spec/rubocop/cop/scalability/bulk_perform_with_context_spec.rb'
     - 'spec/rubocop/cop/scalability/cron_worker_context_spec.rb'
-    - 'spec/rubocop/cop/scalability/file_uploads_spec.rb'
     - 'spec/rubocop/cop/scalability/idempotent_worker_spec.rb'
     - 'spec/rubocop/cop/sidekiq_api_usage_spec.rb'
     - 'spec/rubocop/cop/sidekiq_load_balancing/worker_data_consistency_spec.rb'

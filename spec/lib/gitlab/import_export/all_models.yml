@@ -487,6 +487,7 @@ project:
 - requesters
 - namespace_members
 - namespace_requesters
+- namespace_members_and_requesters
 - deploy_keys_projects
 - deploy_keys
 - users_star_projects

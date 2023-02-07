@@ -1,4 +1,4 @@
-import { GlSearchBoxByType, GlAvatarLabeled, GlDropdownItem } from '@gitlab/ui';
+import { GlAvatarLabeled, GlCollapsibleListbox } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import * as projectsApi from '~/api/projects_api';
@@ -9,7 +9,12 @@ describe('ProjectSelect', () => {
   let wrapper;
 
   const createComponent = () => {
-    wrapper = shallowMountExtended(ProjectSelect, {});
+    wrapper = shallowMountExtended(ProjectSelect, {
+      stubs: {
+        GlCollapsibleListbox,
+        GlAvatarLabeled,
+      },
+    });
   };
 
   beforeEach(() => {
@@ -22,16 +27,24 @@ describe('ProjectSelect', () => {
     wrapper.destroy();
   });
 
-  const findSearchBoxByType = () => wrapper.findComponent(GlSearchBoxByType);
-  const findDropdownItem = (index) => wrapper.findAllComponents(GlDropdownItem).at(index);
-  const findAvatarLabeled = (index) => findDropdownItem(index).findComponent(GlAvatarLabeled);
-  const findEmptyResultMessage = () => wrapper.findByTestId('empty-result-message');
-  const findErrorMessage = () => wrapper.findByTestId('error-message');
+  const findGlCollapsibleListbox = () => wrapper.findComponent(GlCollapsibleListbox);
+  const findAvatarLabeled = (index) => wrapper.findAllComponents(GlAvatarLabeled).at(index);
 
-  it('renders GlSearchBoxByType with default attributes', () => {
-    expect(findSearchBoxByType().exists()).toBe(true);
-    expect(findSearchBoxByType().vm.$attrs).toMatchObject({
-      placeholder: 'Search projects',
+  it('renders GlCollapsibleListbox with default props', () => {
+    expect(findGlCollapsibleListbox().exists()).toBe(true);
+    expect(findGlCollapsibleListbox().props()).toMatchObject({
+      items: [],
+      loading: false,
+      multiple: false,
+      noResultsText: 'No matching results',
+      placement: 'left',
+      searchPlaceholder: 'Search projects',
+      searchable: true,
+      searching: false,
+      size: 'medium',
+      toggleText: 'Select a project',
+      totalItems: null,
+      variant: 'default',
     });
   });
 
@@ -48,7 +61,7 @@ describe('ProjectSelect', () => {
           }),
       );
 
-      findSearchBoxByType().vm.$emit('input', project1.name);
+      findGlCollapsibleListbox().vm.$emit('search', project1.name);
     });
 
     it('calls the API', () => {
@@ -61,14 +74,12 @@ describe('ProjectSelect', () => {
     });
 
     it('displays loading icon while waiting for API call to resolve and then sets loading false', async () => {
-      expect(findSearchBoxByType().props('isLoading')).toBe(true);
+      expect(findGlCollapsibleListbox().props('searching')).toBe(true);
 
       resolveApiRequest({ data: allProjects });
       await waitForPromises();
 
-      expect(findSearchBoxByType().props('isLoading')).toBe(false);
-      expect(findEmptyResultMessage().exists()).toBe(false);
-      expect(findErrorMessage().exists()).toBe(false);
+      expect(findGlCollapsibleListbox().props('searching')).toBe(false);
     });
 
     it('displays a dropdown item and avatar for each project fetched', async () => {
@@ -76,11 +87,11 @@ describe('ProjectSelect', () => {
       await waitForPromises();
 
       allProjects.forEach((project, index) => {
-        expect(findDropdownItem(index).attributes('name')).toBe(project.name_with_namespace);
         expect(findAvatarLabeled(index).attributes()).toMatchObject({
           src: project.avatar_url,
           'entity-id': String(project.id),
           'entity-name': project.name_with_namespace,
+          size: '32',
         });
         expect(findAvatarLabeled(index).props('label')).toBe(project.name_with_namespace);
       });
@@ -90,16 +101,17 @@ describe('ProjectSelect', () => {
       resolveApiRequest({ data: [] });
       await waitForPromises();
 
-      expect(findEmptyResultMessage().text()).toBe('No matching results');
+      expect(findGlCollapsibleListbox().text()).toBe('No matching results');
     });
 
     it('displays the error message when the fetch fails', async () => {
       rejectApiRequest();
       await waitForPromises();
 
-      expect(findErrorMessage().text()).toBe(
-        'There was an error fetching the projects. Please try again.',
-      );
+      // To be displayed in GlCollapsibleListbox once we implement
+      // https://gitlab.com/gitlab-org/gitlab-ui/-/issues/2132
+      // https://gitlab.com/gitlab-org/gitlab/-/issues/389974
+      expect(findGlCollapsibleListbox().text()).toBe('No matching results');
     });
   });
 });

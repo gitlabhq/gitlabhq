@@ -165,7 +165,6 @@
 - './ee/spec/controllers/projects/vulnerability_feedback_controller_spec.rb'
 - './ee/spec/controllers/registrations/company_controller_spec.rb'
 - './ee/spec/controllers/registrations/groups_projects_controller_spec.rb'
-- './ee/spec/controllers/registrations/verification_controller_spec.rb'
 - './ee/spec/controllers/repositories/git_http_controller_spec.rb'
 - './ee/spec/controllers/security/dashboard_controller_spec.rb'
 - './ee/spec/controllers/security/projects_controller_spec.rb'

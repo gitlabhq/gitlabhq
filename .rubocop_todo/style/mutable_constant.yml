@@ -52,6 +52,7 @@ Style/MutableConstant:
     - 'rubocop/cop/scalability/idempotent_worker.rb'
     - 'rubocop/cop/sidekiq_load_balancing/worker_data_consistency.rb'
     - 'scripts/lib/glfm/constants.rb'
+    - 'scripts/lint-docs-blueprints.rb'
     - 'scripts/perf/gc/collect_gc_stats.rb'
     - 'spec/support/helpers/jira_integration_helpers.rb'
     - 'tooling/danger/stable_branch.rb'

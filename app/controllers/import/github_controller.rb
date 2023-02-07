@@ -79,13 +79,7 @@ class Import::GithubController < Import::BaseController
   def realtime_changes
     Gitlab::PollingInterval.set_header(response, interval: 3_000)
 
-    render json: already_added_projects.map { |project|
-      {
-        id: project.id,
-        import_status: project.import_status,
-        stats: ::Gitlab::GithubImport::ObjectCounter.summary(project)
-      }
-    }
+    render json: Import::GithubRealtimeRepoSerializer.new.represent(already_added_projects)
   end
 
   def cancel

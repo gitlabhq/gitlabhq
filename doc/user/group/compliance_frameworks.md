@@ -26,7 +26,7 @@ Group owners can create, edit, and delete compliance frameworks:
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/375036) in GitLab 15.6.
 
 Group owners can set a default compliance framework. The default framework is applied to all the new and imported
-projects that are created within that group. It does not affect the framework applied to the existing projects. The
+projects that are created in that group. It does not affect the framework applied to the existing projects. The
 default framework cannot be deleted.
 
 A compliance framework that is set to default has a **default** label.
@@ -202,7 +202,8 @@ include:  # Execute individual project's configuration (if project contains .git
 When an MR originates in a fork, the branch to be merged usually only exists in the fork.
 When creating such an MR against a project with CF pipelines, the above snippet fails with a
 `Project <project-name> reference <branch-name> does not exist!` error message.
-This is because in the context of the target project, `$CI_COMMIT_REF_NAME` evaluates to a non-existing branch name.
+This error occurs because in the context of the target project, `$CI_COMMIT_REF_NAME` evaluates to a non-existing
+branch name.
 
 To get the correct context, use `$CI_MERGE_REQUEST_SOURCE_PROJECT_PATH` instead of `$CI_PROJECT_PATH`.
 This variable is only available in
@@ -241,7 +242,7 @@ Generally, if a value in a compliance job:
 
 Either might be wanted or not depending on your use case.
 
-There are a few best practices for ensuring that these jobs are always run exactly
+The following are a few best practices for ensuring that these jobs are always run exactly
 as you define them and that downstream, project-level pipeline configurations
 cannot change them:
 
@@ -266,7 +267,7 @@ compatibility for combining compliance pipelines, and parent and child pipelines
 Compliance pipelines start on the run of _every_ pipeline in a labeled project. This means that if a pipeline in the labeled project
 triggers a child pipeline, the compliance pipeline runs first. This can trigger the parent pipeline, instead of the child pipeline.
 
-Therefore, in projects with compliance frameworks, we recommend replacing
+Therefore, in projects with compliance frameworks, you should replace
 [parent-child pipelines](../../ci/pipelines/downstream_pipelines.md#parent-child-pipelines) with the following:
 
 - Direct [`include`](../../ci/yaml/index.md#include) statements that provide the parent pipeline with child pipeline configuration.
@@ -279,8 +280,9 @@ This alternative ensures the compliance pipeline does not re-start the parent pi
 
 ### Cannot remove compliance framework from a project
 
-If you move a project, the compliance framework can become orphaned and can't be removed. To manually remove a compliance framework from a project, run the following GraphQL
-mutation with your project's ID:
+Because of a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/390626), if you move a project, its compliance
+framework becomes orphaned and can't be removed. To manually remove a compliance framework from a project, run the
+following GraphQL mutation with your project's ID:
 
 ```graphql
 mutation {

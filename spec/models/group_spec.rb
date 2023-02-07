@@ -17,6 +17,7 @@ RSpec.describe Group, feature_category: :subgroups do
     it { is_expected.to have_many(:requesters).dependent(:destroy) }
     it { is_expected.to have_many(:namespace_requesters) }
     it { is_expected.to have_many(:members_and_requesters) }
+    it { is_expected.to have_many(:namespace_members_and_requesters) }
     it { is_expected.to have_many(:project_group_links).dependent(:destroy) }
     it { is_expected.to have_many(:shared_projects).through(:project_group_links) }
     it { is_expected.to have_many(:notification_settings).dependent(:destroy) }
@@ -93,6 +94,34 @@ RSpec.describe Group, feature_category: :subgroups do
       end
     end
 
+    describe '#namespace_members_and_requesters' do
+      let_it_be(:group) { create(:group) }
+      let_it_be(:requester) { create(:user) }
+      let_it_be(:developer) { create(:user) }
+      let_it_be(:invited_member) { create(:group_member, :invited, :owner, group: group) }
+
+      before do
+        group.request_access(requester)
+        group.add_developer(developer)
+      end
+
+      it 'includes the correct users' do
+        expect(group.namespace_members_and_requesters).to include(
+          Member.find_by(user: requester),
+          Member.find_by(user: developer),
+          Member.find(invited_member.id)
+        )
+      end
+
+      it 'is equivalent to #members_and_requesters' do
+        expect(group.namespace_members_and_requesters).to match_array group.members_and_requesters
+      end
+
+      it_behaves_like 'query without source filters' do
+        subject { group.namespace_members_and_requesters }
+      end
+    end
+
     shared_examples 'polymorphic membership relationship' do
       it do
         expect(membership.attributes).to include(
@@ -128,6 +157,24 @@ RSpec.describe Group, feature_category: :subgroups do
       let(:user) { create(:user) }
       let(:membership) do
         group.namespace_requesters.create!(user: user, requested_at: requested_at, access_level: Gitlab::Access::DEVELOPER)
+      end
+
+      it { expect(membership).to be_instance_of(GroupMember) }
+      it { expect(membership.user).to eq user }
+      it { expect(membership.group).to eq group }
+      it { expect(membership.requested_at).to eq requested_at }
+
+      it_behaves_like 'polymorphic membership relationship'
+      it_behaves_like 'member_namespace membership relationship'
+    end
+
+    describe '#namespace_members_and_requesters setters' do
+      let(:requested_at) { Time.current }
+      let(:user) { create(:user) }
+      let(:membership) do
+        group.namespace_members_and_requesters.create!(
+          user: user, requested_at: requested_at, access_level: Gitlab::Access::DEVELOPER
+        )
       end
 
       it { expect(membership).to be_instance_of(GroupMember) }

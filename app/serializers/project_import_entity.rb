@@ -12,4 +12,8 @@ class ProjectImportEntity < ProjectEntity
   expose :provider_link, documentation: { type: 'string', example: '/source/source-repo' } do |project, options|
     provider_project_link_url(options[:provider_url], project[:import_source])
   end
+
+  expose :import_error, if: ->(project) { project.import_state&.failed? } do |project|
+    project.import_failures.last&.exception_message
+  end
 end

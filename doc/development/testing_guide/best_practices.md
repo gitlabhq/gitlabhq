@@ -432,6 +432,12 @@ results are available, and not just the first failure.
 
 You must [set feature category metadata for each RSpec example](../feature_categorization/index.md#rspec-examples).
 
+### Tests depending on EE license
+
+You can use `if: Gitlab.ee?` or `unless: Gitlab.ee?` on context/spec blocks to execute tests depending on whether running with `FOSS_ONLY=1`.
+
+Example: [SchemaValidator reads a different path depending on the license](https://gitlab.com/gitlab-org/gitlab/-/blob/7cdcf9819cfa02c701d6fa9f18c1e7a8972884ed/spec/lib/gitlab/ci/parsers/security/validators/schema_validator_spec.rb#L571)
+
 ### Coverage
 
 [`simplecov`](https://github.com/colszowka/simplecov) is used to generate code test coverage reports.

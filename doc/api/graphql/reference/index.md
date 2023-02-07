@@ -12227,6 +12227,16 @@ The response from the AdminSidekiqQueuesDeleteJobs mutation.
 | <a id="deletejobsresponsedeletedjobs"></a>`deletedJobs` | [`Int`](#int) | Number of matching jobs deleted. |
 | <a id="deletejobsresponsequeuesize"></a>`queueSize` | [`Int`](#int) | Queue size after processing. |
 
+### `DeletedNote`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="deletednotediscussionid"></a>`discussionId` | [`DiscussionID`](#discussionid) | ID of the discussion for the deleted note. |
+| <a id="deletednoteid"></a>`id` | [`NoteID!`](#noteid) | ID of the deleted note. |
+| <a id="deletednotelastdiscussionnote"></a>`lastDiscussionNote` | [`Boolean`](#boolean) | Whether deleted note is the last note in the discussion. |
+
 ### `DependencyProxyBlob`
 
 Dependency proxy blob.

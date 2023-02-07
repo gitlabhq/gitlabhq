@@ -678,6 +678,12 @@ class Issue < ApplicationRecord
     true
   end
 
+  # we want to have subscriptions working on work items only, legacy issues do not support graphql subscriptions, yet so
+  # we need sometimes GID of an issue instance to be represented as WorkItem GID. E.g. notes subscriptions.
+  def to_work_item_global_id
+    ::Gitlab::GlobalId.as_global_id(id, model_name: WorkItem.name)
+  end
+
   private
 
   def due_date_after_start_date

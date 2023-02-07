@@ -112,6 +112,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
     it { is_expected.to have_many(:uploads) }
     it { is_expected.to have_many(:pipeline_schedules) }
     it { is_expected.to have_many(:members_and_requesters) }
+    it { is_expected.to have_many(:namespace_members_and_requesters) }
     it { is_expected.to have_many(:clusters) }
     it { is_expected.to have_many(:management_clusters).class_name('Clusters::Cluster') }
     it { is_expected.to have_many(:kubernetes_namespaces) }
@@ -402,6 +403,34 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
       end
     end
 
+    describe '#namespace_members_and_requesters' do
+      let_it_be(:project) { create(:project, :public) }
+      let_it_be(:requester) { create(:user) }
+      let_it_be(:developer) { create(:user) }
+      let_it_be(:invited_member) { create(:project_member, :invited, :owner, project: project) }
+
+      before_all do
+        project.request_access(requester)
+        project.add_developer(developer)
+      end
+
+      it 'includes the correct users' do
+        expect(project.namespace_members_and_requesters).to include(
+          Member.find_by(user: requester),
+          Member.find_by(user: developer),
+          Member.find(invited_member.id)
+        )
+      end
+
+      it 'is equivalent to #project_members' do
+        expect(project.namespace_members_and_requesters).to match_array(project.members_and_requesters)
+      end
+
+      it_behaves_like 'query without source filters' do
+        subject { project.namespace_members_and_requesters }
+      end
+    end
+
     shared_examples 'polymorphic membership relationship' do
       it do
         expect(membership.attributes).to include(
@@ -439,6 +468,25 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
       let_it_be(:user) { create(:user) }
       let_it_be(:membership) do
         project.namespace_requesters.create!(user: user, requested_at: requested_at, access_level: Gitlab::Access::DEVELOPER)
+      end
+
+      it { expect(membership).to be_instance_of(ProjectMember) }
+      it { expect(membership.user).to eq user }
+      it { expect(membership.project).to eq project }
+      it { expect(membership.requested_at).to eq requested_at }
+
+      it_behaves_like 'polymorphic membership relationship'
+      it_behaves_like 'member_namespace membership relationship'
+    end
+
+    describe '#namespace_members_and_requesters setters' do
+      let_it_be(:requested_at) { Time.current }
+      let_it_be(:project) { create(:project) }
+      let_it_be(:user) { create(:user) }
+      let_it_be(:membership) do
+        project.namespace_members_and_requesters.create!(
+          user: user, requested_at: requested_at, access_level: Gitlab::Access::DEVELOPER
+        )
       end
 
       it { expect(membership).to be_instance_of(ProjectMember) }

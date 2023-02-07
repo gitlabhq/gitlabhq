@@ -65,7 +65,7 @@ module Gitlab
 
                 if latest_vendored_patch_version
                   latest_vendored_patch_version_file = File.join(root_path, latest_vendored_patch_version, file_name)
-                  return latest_vendored_patch_version_file if File.file?(latest_vendored_patch_version)
+                  return latest_vendored_patch_version_file if File.file?(latest_vendored_patch_version_file)
                 end
 
                 earliest_supported_version = SUPPORTED_VERSIONS[report_type].min

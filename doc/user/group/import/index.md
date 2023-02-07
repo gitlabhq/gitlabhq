@@ -122,7 +122,8 @@ Create the group you want to import to and connect the source:
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385689) in GitLab 15.8, option to import groups with or without projects.
 
 After you have authorized access to the source GitLab instance, you are redirected to the GitLab group
-importer page. The top-level groups on the connected source instance you have the Owner role for are listed.
+importer page. Here you can see a list of the top-level groups on the connected source instance where you have the Owner
+role.
 
 1. By default, the proposed group namespaces match the names as they exist in source instance, but based on your permissions, you can choose to edit these names before you proceed to import any of them.
 1. Next to the groups you want to import, select either:

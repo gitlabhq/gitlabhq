@@ -1,0 +1,7 @@
+subscription workItemNoteDeleted($noteableId: NoteableID) {
+  workItemNoteDeleted(noteableId: $noteableId) {
+    id
+    discussionId
+    lastDiscussionNote
+  }
+}

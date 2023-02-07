@@ -10,7 +10,8 @@ class Discussion
   # Bump this if we need to refresh the cached versions of discussions
   CACHE_VERSION = 1
 
-  attr_reader :notes, :context_noteable
+  attr_reader :context_noteable
+  attr_accessor :notes
 
   delegate  :created_at,
             :project,

@@ -14,7 +14,7 @@ then imported into a new GitLab instance. You can also:
 
 GitLab maps user contributions correctly when an admin access token is used to perform the import.
 
-As a result, migrating projects using file exports does not map user contributions correctly when you are importing
+Consequently, migrating projects using file exports does not map user contributions correctly when you are importing
 projects from a self-managed instance to GitLab.com.
 
 Instead, all GitLab user associations (such as comment author) are changed to the user importing the project. For more

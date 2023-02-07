@@ -29,27 +29,33 @@ module GraphqlTriggers
     GitlabSchema.subscriptions.trigger('issuableMilestoneUpdated', { issuable_id: issuable.to_gid }, issuable)
   end
 
+  def self.work_item_note_created(work_item_gid, note_data)
+    GitlabSchema.subscriptions.trigger('workItemNoteCreated', { noteable_id: work_item_gid }, note_data)
+  end
+
+  def self.work_item_note_deleted(work_item_gid, note_data)
+    GitlabSchema.subscriptions.trigger('workItemNoteDeleted', { noteable_id: work_item_gid }, note_data)
+  end
+
+  def self.work_item_note_updated(work_item_gid, note_data)
+    GitlabSchema.subscriptions.trigger('workItemNoteUpdated', { noteable_id: work_item_gid }, note_data)
+  end
+
   def self.merge_request_reviewers_updated(merge_request)
     GitlabSchema.subscriptions.trigger(
-      'mergeRequestReviewersUpdated',
-      { issuable_id: merge_request.to_gid },
-      merge_request
+      'mergeRequestReviewersUpdated', { issuable_id: merge_request.to_gid }, merge_request
     )
   end
 
   def self.merge_request_merge_status_updated(merge_request)
     GitlabSchema.subscriptions.trigger(
-      'mergeRequestMergeStatusUpdated',
-      { issuable_id: merge_request.to_gid },
-      merge_request
+      'mergeRequestMergeStatusUpdated', { issuable_id: merge_request.to_gid }, merge_request
     )
   end
 
   def self.merge_request_approval_state_updated(merge_request)
     GitlabSchema.subscriptions.trigger(
-      'mergeRequestApprovalStateUpdated',
-      { issuable_id: merge_request.to_gid },
-      merge_request
+      'mergeRequestApprovalStateUpdated', { issuable_id: merge_request.to_gid }, merge_request
     )
   end
 end
