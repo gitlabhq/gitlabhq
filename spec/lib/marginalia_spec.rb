@@ -70,7 +70,7 @@ RSpec.describe 'Marginalia spec' do
       end
 
       before do
-        skip_if_multiple_databases_not_setup
+        skip_if_multiple_databases_not_setup(:ci)
       end
 
       it 'generates a query that includes the component and value' do

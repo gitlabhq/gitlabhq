@@ -52,6 +52,7 @@ The OpenID Connect provides you with a client's details and secret for you to us
          client_auth_method: "query",
          uid_field: "<uid_field>",
          send_scope_to_token_endpoint: "false",
+         pkce: true,
          client_options: {
            identifier: "<your_oidc_client_id>",
            secret: "<your_oidc_client_secret>",
@@ -77,6 +78,7 @@ The OpenID Connect provides you with a client's details and secret for you to us
            client_auth_method: 'query',
            uid_field: '<uid_field>',
            send_scope_to_token_endpoint: false,
+           pkce: true,
            client_options: {
              identifier: '<your_oidc_client_id>',
              secret: '<your_oidc_client_secret>',
@@ -123,6 +125,7 @@ The OpenID Connect provides you with a client's details and secret for you to us
      is usually included in requests to the token endpoint.
      However, if your OpenID Connect provider does not accept the `scope` parameter
      in such requests, set this to `false`.
+   - `pkce` (optional): Enable [Proof Key for Code Exchange](https://www.rfc-editor.org/rfc/rfc766). Available in [GitLab 15.9](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/109557).
    - `client_options` are the OpenID Connect client-specific options. Specifically:
      - `identifier` is the client identifier as configured in the OpenID Connect service provider.
      - `secret` is the client secret as configured in the OpenID Connect service provider. For example,
@@ -172,6 +175,7 @@ gitlab_rails['omniauth_providers'] = [
       client_auth_method: "query",
       discovery: true,
       uid_field: "preferred_username",
+      pkce: true,
       client_options: {
         identifier: "<YOUR PROJECT CLIENT ID>",
         secret: "<YOUR PROJECT CLIENT SECRET>",
@@ -209,6 +213,7 @@ gitlab_rails['omniauth_providers'] = [
       client_auth_method: "query",
       discovery: true,
       uid_field: "preferred_username",
+      pkce: true,
       client_options: {
         identifier: "<YOUR APP CLIENT ID>",
         secret: "<YOUR APP CLIENT SECRET>",
@@ -341,6 +346,7 @@ but `LocalAccounts` authenticates against local Active Directory accounts. Befor
        client_auth_method: "query",
        discovery: true,
        send_scope_to_token_endpoint: true,
+       pkce: true,
        client_options: {
          identifier: "<YOUR APP CLIENT ID>",
          secret: "<YOUR APP CLIENT SECRET>",
@@ -399,6 +405,7 @@ gitlab_rails['omniauth_providers'] = [
       client_auth_method: "query",
       discovery: true,
       uid_field: "preferred_username",
+      pkce: true,
       client_options: {
         identifier: "<YOUR CLIENT ID>",
         secret: "<YOUR CLIENT SECRET>",
@@ -479,6 +486,7 @@ To use symmetric key encryption:
          discovery: true,
          uid_field: "preferred_username",
          jwt_secret_base64: "<YOUR BASE64-ENCODED SECRET>",
+         pkce: true,
          client_options: {
            identifier: "<YOUR CLIENT ID>",
            secret: "<YOUR CLIENT SECRET>",

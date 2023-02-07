@@ -947,6 +947,8 @@ RSpec.describe Projects::CreateService, '#execute', feature_category: :projects 
     end
 
     it 'schedules authorization update for users with access to group', :sidekiq_inline do
+      stub_feature_flags(do_not_run_safety_net_auth_refresh_jobs: false)
+
       expect(AuthorizedProjectsWorker).not_to(
         receive(:bulk_perform_async)
       )

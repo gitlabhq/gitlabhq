@@ -29,7 +29,13 @@ module Packages
           }
         )
 
-        if params[:file_name].end_with? '.changes'
+        if params[:distribution].present? && params[:component].present?
+          ::Packages::Debian::ProcessPackageFileWorker.perform_async(
+            package_file.id,
+            params[:distribution],
+            params[:component]
+          )
+        elsif params[:file_name].end_with? '.changes'
           ::Packages::Debian::ProcessChangesWorker.perform_async(package_file.id, current_user.id)
         end
 

@@ -75,7 +75,8 @@ RSpec.shared_context 'Debian repository shared context' do |container_type, can_
     end
   end
 
-  let(:api_params) { workhorse_params }
+  let(:extra_params) { {} }
+  let(:api_params) { workhorse_params.merge(extra_params) }
 
   let(:auth_headers) { {} }
   let(:wh_headers) do

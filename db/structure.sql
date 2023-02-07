@@ -29133,6 +29133,8 @@ CREATE INDEX index_ci_job_variables_on_job_id ON ci_job_variables USING btree (j
 
 CREATE UNIQUE INDEX index_ci_job_variables_on_key_and_job_id ON ci_job_variables USING btree (key, job_id);
 
+CREATE INDEX index_ci_job_variables_on_partition_id_job_id ON ci_job_variables USING btree (partition_id, job_id);
+
 CREATE INDEX index_ci_minutes_additional_packs_on_namespace_id_purchase_xid ON ci_minutes_additional_packs USING btree (namespace_id, purchase_xid);
 
 CREATE UNIQUE INDEX index_ci_namespace_mirrors_on_namespace_id ON ci_namespace_mirrors USING btree (namespace_id);
@@ -36151,6 +36153,9 @@ ALTER TABLE ONLY serverless_domain_cluster
 
 ALTER TABLE ONLY ci_job_variables
     ADD CONSTRAINT fk_rails_fbf3b34792 FOREIGN KEY (job_id) REFERENCES ci_builds(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY ci_job_variables
+    ADD CONSTRAINT fk_rails_fbf3b34792_p FOREIGN KEY (partition_id, job_id) REFERENCES ci_builds(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE NOT VALID;
 
 ALTER TABLE ONLY packages_nuget_metadata
     ADD CONSTRAINT fk_rails_fc0c19f5b4 FOREIGN KEY (package_id) REFERENCES packages_packages(id) ON DELETE CASCADE;

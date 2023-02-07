@@ -267,6 +267,7 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
 ### 15.9.0
 
 - This version removes `SanitizeConfidentialTodos` background migration which was [added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87908/diffs) in 15.6 and removed any user inaccessible Todos. Make sure that this migration is finished before upgrading to 15.9.
+- As part of the [CI Partitioning effort](../architecture/blueprints/ci_data_decay/pipeline_partitioning.md), a [new Foreign Key](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107547) was added to `ci_builds_needs`. On GitLab instances with large CI tables, adding this constraint can take longer than usual. Make sure that this migration is finished before upgrading to 15.9.
 
 ### 15.8.0
 

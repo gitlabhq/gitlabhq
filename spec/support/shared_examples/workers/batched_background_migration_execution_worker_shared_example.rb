@@ -101,7 +101,7 @@ RSpec.shared_examples 'batched background migrations execution worker' do
 
       context 'when the provided database is sharing config' do
         before do
-          skip_if_multiple_databases_not_setup
+          skip_if_multiple_databases_not_setup(:ci)
         end
 
         it 'does nothing' do

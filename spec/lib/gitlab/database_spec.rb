@@ -200,7 +200,7 @@ RSpec.describe Gitlab::Database do
       end
 
       it 'returns the ci_replica for a ci database replica' do
-        skip_if_multiple_databases_not_setup
+        skip_if_multiple_databases_not_setup(:ci)
         replica = Ci::ApplicationRecord.load_balancer.host
         expect(described_class.db_config_name(replica)).to eq('ci_replica')
       end
@@ -267,7 +267,7 @@ RSpec.describe Gitlab::Database do
 
     context "when there's CI connection" do
       before do
-        skip_if_multiple_databases_not_setup
+        skip_if_multiple_databases_not_setup(:ci)
       end
 
       context 'when CI uses database_tasks: false does indicate that ci: is subset of main:' do

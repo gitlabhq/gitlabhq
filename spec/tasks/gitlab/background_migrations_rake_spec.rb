@@ -62,7 +62,7 @@ RSpec.describe 'gitlab:background_migrations namespace rake tasks', :suppress_gi
       let(:databases) { [Gitlab::Database::MAIN_DATABASE_NAME, ci_database_name] }
 
       before do
-        skip_if_multiple_databases_not_setup
+        skip_if_multiple_databases_not_setup(:ci)
 
         allow(Gitlab::Database).to receive(:database_base_models).and_return(base_models)
       end

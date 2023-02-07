@@ -38003,7 +38003,7 @@ msgstr ""
 msgid "SecurityOrchestration|An error occurred while fetching the scan result policies."
 msgstr ""
 
-msgid "SecurityOrchestration|Any scanner finds"
+msgid "SecurityOrchestration|Any security scanner finds"
 msgstr ""
 
 msgid "SecurityOrchestration|Are you sure you want to delete this policy? This action cannot be undone."

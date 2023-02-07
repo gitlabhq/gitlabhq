@@ -140,6 +140,10 @@ module Gitlab
         @debian_component_regex ||= %r{\A#{::Packages::Debian::COMPONENT_REGEX}\z}o.freeze
       end
 
+      def debian_direct_upload_filename_regex
+        @debian_direct_upload_filename_regex ||= %r{\A.*\.(deb|udeb)\z}o.freeze
+      end
+
       def helm_channel_regex
         @helm_channel_regex ||= %r{\A([a-zA-Z0-9](\.|-|_)?){1,255}(?<!\.|-|_)\z}.freeze
       end

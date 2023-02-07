@@ -2478,6 +2478,10 @@ RSpec.describe ProjectPolicy, feature_category: :authentication_and_authorizatio
       before do
         current_user.set_ci_job_token_scope!(job)
         current_user.external = external_user
+        project.update!(
+          ci_outbound_job_token_scope_enabled: token_scope_enabled,
+          ci_inbound_job_token_scope_enabled: token_scope_enabled
+        )
         scope_project.update!(
           ci_outbound_job_token_scope_enabled: token_scope_enabled,
           ci_inbound_job_token_scope_enabled: token_scope_enabled

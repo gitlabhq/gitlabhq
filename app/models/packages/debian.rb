@@ -2,6 +2,8 @@
 
 module Packages
   module Debian
+    TEMPORARY_PACKAGE_NAME = 'debian-temporary-package'
+
     DISTRIBUTION_REGEX = %r{[a-z0-9][a-z0-9.-]*}i.freeze
     COMPONENT_REGEX = DISTRIBUTION_REGEX.freeze
     ARCHITECTURE_REGEX = %r{[a-z0-9][-a-z0-9]*}.freeze

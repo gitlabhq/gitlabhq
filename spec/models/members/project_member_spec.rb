@@ -253,6 +253,8 @@ RSpec.describe ProjectMember do
 
     shared_examples_for 'calls AuthorizedProjectUpdate::UserRefreshFromReplicaWorker with a delay to update project authorizations' do
       it 'calls AuthorizedProjectUpdate::UserRefreshFromReplicaWorker' do
+        stub_feature_flags(do_not_run_safety_net_auth_refresh_jobs: false)
+
         expect(AuthorizedProjectUpdate::UserRefreshFromReplicaWorker).to(
           receive(:bulk_perform_in)
             .with(1.hour,

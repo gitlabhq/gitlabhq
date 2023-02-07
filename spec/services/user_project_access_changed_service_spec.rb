@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe UserProjectAccessChangedService do
+RSpec.describe UserProjectAccessChangedService, feature_category: :authentication_and_authorization do
   describe '#execute' do
     it 'permits high-priority operation' do
       expect(AuthorizedProjectsWorker).to receive(:bulk_perform_async)
@@ -11,16 +11,30 @@ RSpec.describe UserProjectAccessChangedService do
       described_class.new([1, 2]).execute
     end
 
-    it 'permits low-priority operation' do
-      expect(AuthorizedProjectUpdate::UserRefreshFromReplicaWorker).to(
-        receive(:bulk_perform_in).with(
-          described_class::DELAY,
-          [[1], [2]],
-          { batch_delay: 30.seconds, batch_size: 100 }
-        )
-      )
+    context 'for low priority operation' do
+      context 'when the feature flag `do_not_run_safety_net_auth_refresh_jobs` is disabled' do
+        before do
+          stub_feature_flags(do_not_run_safety_net_auth_refresh_jobs: false)
+        end
 
-      described_class.new([1, 2]).execute(priority: described_class::LOW_PRIORITY)
+        it 'permits low-priority operation' do
+          expect(AuthorizedProjectUpdate::UserRefreshFromReplicaWorker).to(
+            receive(:bulk_perform_in).with(
+              described_class::DELAY,
+              [[1], [2]],
+              { batch_delay: 30.seconds, batch_size: 100 }
+            )
+          )
+
+          described_class.new([1, 2]).execute(priority: described_class::LOW_PRIORITY)
+        end
+      end
+
+      it 'does not perform low-priority operation' do
+        expect(AuthorizedProjectUpdate::UserRefreshFromReplicaWorker).not_to receive(:bulk_perform_in)
+
+        described_class.new([1, 2]).execute(priority: described_class::LOW_PRIORITY)
+      end
     end
 
     it 'permits medium-priority operation' do

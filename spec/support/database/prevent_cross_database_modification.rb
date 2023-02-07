@@ -28,8 +28,6 @@ RSpec.configure do |config|
   config.after do |example_file|
     ::Gitlab::Database::QueryAnalyzers::PreventCrossDatabaseModification.suppress_in_rspec = true
 
-    [::ApplicationRecord, ::Ci::ApplicationRecord].each do |base_class|
-      base_class.gitlab_transactions_stack.clear if base_class.respond_to?(:gitlab_transactions_stack)
-    end
+    ::ApplicationRecord.gitlab_transactions_stack.clear
   end
 end

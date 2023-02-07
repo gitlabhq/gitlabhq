@@ -24,7 +24,7 @@ RSpec.describe Gitlab::Database::IndexingExclusiveLeaseGuard, feature_category: 
       let(:database_name) { Gitlab::Database::CI_DATABASE_NAME }
 
       before do
-        skip_if_multiple_databases_not_setup
+        skip_if_multiple_databases_not_setup(:ci)
       end
 
       it { expect(helper.lease_key).to eq(lease_key) }

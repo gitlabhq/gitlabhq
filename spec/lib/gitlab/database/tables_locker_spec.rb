@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Database::TablesLocker, :reestablished_active_record_base, :delete, :silence_stdout,
-               :suppress_gitlab_schemas_validate_connection, feature_category: :pods do
+  :suppress_gitlab_schemas_validate_connection, feature_category: :pods do
   let(:main_connection) { ApplicationRecord.connection }
   let(:ci_connection) { Ci::ApplicationRecord.connection }
   let!(:user) { create(:user) }
@@ -50,7 +50,7 @@ RSpec.describe Gitlab::Database::TablesLocker, :reestablished_active_record_base
 
   context 'when running on single database' do
     before do
-      skip_if_multiple_databases_are_setup
+      skip_if_multiple_databases_are_setup(:ci)
     end
 
     describe '#lock_writes' do
@@ -73,7 +73,7 @@ RSpec.describe Gitlab::Database::TablesLocker, :reestablished_active_record_base
 
   context 'when running on multiple databases' do
     before do
-      skip_if_multiple_databases_not_setup
+      skip_if_multiple_databases_not_setup(:ci)
 
       Gitlab::Database::SharedModel.using_connection(ci_connection) do
         Postgresql::DetachedPartition.create!(

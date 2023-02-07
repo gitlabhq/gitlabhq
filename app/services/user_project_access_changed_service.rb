@@ -24,12 +24,14 @@ class UserProjectAccessChangedService
       when MEDIUM_PRIORITY
         AuthorizedProjectUpdate::UserRefreshWithLowUrgencyWorker.bulk_perform_in(MEDIUM_DELAY, bulk_args, batch_size: 100, batch_delay: 30.seconds) # rubocop:disable Scalability/BulkPerformWithContext
       when LOW_PRIORITY
-        with_related_class_context do
-          # We wrap the execution in `with_related_class_context`so as to obtain
-          # the location of the original caller
-          # in jobs enqueued from within `AuthorizedProjectUpdate::UserRefreshFromReplicaWorker`
-          AuthorizedProjectUpdate::UserRefreshFromReplicaWorker.bulk_perform_in( # rubocop:disable Scalability/BulkPerformWithContext
-            DELAY, bulk_args, batch_size: 100, batch_delay: 30.seconds)
+        if Feature.disabled?(:do_not_run_safety_net_auth_refresh_jobs)
+          with_related_class_context do
+            # We wrap the execution in `with_related_class_context`so as to obtain
+            # the location of the original caller
+            # in jobs enqueued from within `AuthorizedProjectUpdate::UserRefreshFromReplicaWorker`
+            AuthorizedProjectUpdate::UserRefreshFromReplicaWorker.bulk_perform_in( # rubocop:disable Scalability/BulkPerformWithContext
+              DELAY, bulk_args, batch_size: 100, batch_delay: 30.seconds)
+          end
         end
       end
 

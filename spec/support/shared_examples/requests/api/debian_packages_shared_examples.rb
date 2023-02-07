@@ -19,7 +19,6 @@ RSpec.shared_examples 'Debian packages upload request' do |status, body = nil|
 
   if status == :created
     it 'creates package files', :aggregate_failures do
-      expect(::Packages::Debian::FindOrCreateIncomingService).to receive(:new).with(container, user).and_call_original
       expect(::Packages::Debian::CreatePackageFileService).to receive(:new).with(package: be_a(Packages::Package), current_user: be_an(User), params: be_an(Hash)).and_call_original
 
       if file_name.end_with? '.changes'
@@ -28,10 +27,23 @@ RSpec.shared_examples 'Debian packages upload request' do |status, body = nil|
         expect(::Packages::Debian::ProcessChangesWorker).not_to receive(:perform_async)
       end
 
-      expect { subject }
+      if extra_params[:distribution]
+        expect(::Packages::Debian::FindOrCreateIncomingService).not_to receive(:new)
+        expect(::Packages::Debian::ProcessPackageFileWorker).to receive(:perform_async)
+
+        expect { subject }
+          .to change { container.packages.debian.count }.by(1)
+          .and not_change { container.packages.debian.where(name: 'incoming').count }
+          .and change { container.package_files.count }.by(1)
+      else
+        expect(::Packages::Debian::FindOrCreateIncomingService).to receive(:new).with(container, user).and_call_original
+        expect(::Packages::Debian::ProcessPackageFileWorker).not_to receive(:perform_async)
+
+        expect { subject }
           .to change { container.packages.debian.count }.by(1)
           .and change { container.packages.debian.where(name: 'incoming').count }.by(1)
           .and change { container.package_files.count }.by(1)
+      end
 
       expect(response).to have_gitlab_http_status(status)
       expect(response.media_type).to eq('text/plain')

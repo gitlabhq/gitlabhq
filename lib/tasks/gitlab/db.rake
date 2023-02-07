@@ -306,7 +306,7 @@ namespace :gitlab do
     namespace :migration_testing do
       # Not possible to import Gitlab::Database::DATABASE_NAMES here
       # Specs verify that a task exists for each entry in that array.
-      all_databases = %i[main ci]
+      all_databases = %i[main ci main_clusterwide]
 
       task up: :environment do
         Gitlab::Database::Migrations::Runner.up(database: 'main', legacy_mode: true).run

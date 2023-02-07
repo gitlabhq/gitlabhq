@@ -633,67 +633,45 @@ RSpec.describe ProjectsController do
 
     let(:housekeeping) { Repositories::HousekeepingService.new(project) }
 
-    shared_examples 'a housekeeping job' do
-      context 'when authenticated as owner' do
-        before do
-          group.add_owner(user)
-          sign_in(user)
+    context 'when authenticated as owner' do
+      before do
+        group.add_owner(user)
+        sign_in(user)
 
-          allow(Repositories::HousekeepingService).to receive(:new).with(project, expected_task).and_return(housekeeping)
-        end
-
-        it 'forces a full garbage collection' do
-          expect(housekeeping).to receive(:execute).once
-
-          post :housekeeping,
-            params: {
-              namespace_id: project.namespace.path,
-              id: project.path
-            }
-
-          expect(response).to have_gitlab_http_status(:found)
-        end
+        allow(Repositories::HousekeepingService).to receive(:new).with(project, :eager).and_return(housekeeping)
       end
 
-      context 'when authenticated as developer' do
-        let(:developer) { create(:user) }
+      it 'forces a full garbage collection' do
+        expect(housekeeping).to receive(:execute).once
 
-        before do
-          group.add_developer(developer)
-        end
+        post :housekeeping,
+          params: {
+            namespace_id: project.namespace.path,
+            id: project.path
+          }
 
-        it 'does not execute housekeeping' do
-          expect(housekeeping).not_to receive(:execute)
-
-          post :housekeeping,
-            params: {
-              namespace_id: project.namespace.path,
-              id: project.path
-            }
-
-          expect(response).to have_gitlab_http_status(:found)
-        end
+        expect(response).to have_gitlab_http_status(:found)
       end
     end
 
-    context 'with :eager_housekeeping_on_manual_jobs disabled' do
-      let(:expected_task) { :gc }
+    context 'when authenticated as developer' do
+      let(:developer) { create(:user) }
 
       before do
-        stub_feature_flags(eager_housekeeping_on_manual_jobs: false)
+        group.add_developer(developer)
       end
 
-      it_behaves_like 'a housekeeping job'
-    end
+      it 'does not execute housekeeping' do
+        expect(housekeeping).not_to receive(:execute)
 
-    context 'with :eager_housekeeping_on_manual_jobs enabled' do
-      let(:expected_task) { :eager }
+        post :housekeeping,
+          params: {
+            namespace_id: project.namespace.path,
+            id: project.path
+          }
 
-      before do
-        stub_feature_flags(eager_housekeeping_on_manual_jobs: true)
+        expect(response).to have_gitlab_http_status(:found)
       end
-
-      it_behaves_like 'a housekeeping job'
     end
   end
 

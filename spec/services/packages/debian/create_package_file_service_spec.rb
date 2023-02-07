@@ -11,8 +11,9 @@ RSpec.describe Packages::Debian::CreatePackageFileService, feature_category: :pa
   describe '#execute' do
     let(:file_name) { 'libsample0_1.2.3~alpha2_amd64.deb' }
     let(:fixture_path) { "spec/fixtures/packages/debian/#{file_name}" }
+    let(:params) { default_params }
 
-    let(:params) do
+    let(:default_params) do
       {
         file: file,
         file_name: file_name,
@@ -25,8 +26,15 @@ RSpec.describe Packages::Debian::CreatePackageFileService, feature_category: :pa
 
     subject(:package_file) { service.execute }
 
-    shared_examples 'a valid deb' do
+    shared_examples 'a valid deb' do |process_package_file_worker|
       it 'creates a new package file', :aggregate_failures do
+        if process_package_file_worker
+          expect(::Packages::Debian::ProcessPackageFileWorker)
+            .to receive(:perform_async).with(an_instance_of(Integer), params[:distribution], params[:component])
+        else
+          expect(::Packages::Debian::ProcessPackageFileWorker).not_to receive(:perform_async)
+        end
+
         expect(::Packages::Debian::ProcessChangesWorker).not_to receive(:perform_async)
         expect(package_file).to be_valid
         expect(package_file.file.read).to start_with('!<arch>')
@@ -44,7 +52,8 @@ RSpec.describe Packages::Debian::CreatePackageFileService, feature_category: :pa
 
     shared_examples 'a valid changes' do
       it 'creates a new package file', :aggregate_failures do
-        expect(::Packages::Debian::ProcessChangesWorker).to receive(:perform_async)
+        expect(::Packages::Debian::ProcessChangesWorker)
+          .to receive(:perform_async).with(an_instance_of(Integer), current_user.id)
 
         expect(package_file).to be_valid
         expect(package_file.file.read).to start_with('Format: 1.8')
@@ -78,6 +87,12 @@ RSpec.describe Packages::Debian::CreatePackageFileService, feature_category: :pa
         let(:fixture_path) { "spec/fixtures/packages/debian/#{file_name}" }
 
         it_behaves_like 'a valid changes'
+      end
+
+      context 'with distribution' do
+        let(:params) { default_params.merge(distribution: 'unstable', component: 'main') }
+
+        it_behaves_like 'a valid deb', true
       end
 
       context 'when current_user is missing' do

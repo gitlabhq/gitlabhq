@@ -49,7 +49,7 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager do
         let(:connection) { Ci::ApplicationRecord.connection }
 
         it 'uses the explicitly provided connection when any' do
-          skip_if_multiple_databases_not_setup
+          skip_if_multiple_databases_not_setup(:ci)
 
           expect(connection).to receive(:execute).with("LOCK TABLE \"#{table}\" IN ACCESS EXCLUSIVE MODE")
           expect(connection).to receive(:execute).with(partitions.first.to_sql)

@@ -3,7 +3,10 @@
 module Ci
   module JobTokenScopeHelpers
     def create_project_in_allowlist(root_project, direction:, target_project: nil)
-      included_project = target_project || create(:project)
+      included_project = target_project || create(:project,
+        ci_outbound_job_token_scope_enabled: true,
+        ci_inbound_job_token_scope_enabled: true
+      )
       create(
         :ci_job_token_project_scope_link,
         source_project: root_project,

@@ -131,9 +131,8 @@ RSpec.describe Ci::JobToken::Scope, feature_category: :continuous_integration, f
 
     context 'with inbound scope enabled and outbound scope disabled' do
       before do
-        source_project.ci_inbound_job_token_scope_enabled = true
-        source_project.ci_outbound_job_token_scope_enabled = false
-        source_project.save!
+        accessed_project.update!(ci_inbound_job_token_scope_enabled: true)
+        current_project.update!(ci_outbound_job_token_scope_enabled: false)
       end
 
       include_context 'with accessible and inaccessible projects'
@@ -155,9 +154,8 @@ RSpec.describe Ci::JobToken::Scope, feature_category: :continuous_integration, f
 
     context 'with inbound scope disabled and outbound scope enabled' do
       before do
-        source_project.ci_inbound_job_token_scope_enabled = false
-        source_project.ci_outbound_job_token_scope_enabled = true
-        source_project.save!
+        accessed_project.update!(ci_inbound_job_token_scope_enabled: false)
+        current_project.update!(ci_outbound_job_token_scope_enabled: true)
       end
 
       include_examples 'enforces outbound scope only'

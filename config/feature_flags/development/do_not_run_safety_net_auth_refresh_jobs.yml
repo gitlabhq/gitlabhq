@@ -1,0 +1,8 @@
+---
+name: do_not_run_safety_net_auth_refresh_jobs
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110986
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/390336
+milestone: '15.9'
+type: development
+group: group::organization
+default_enabled: false

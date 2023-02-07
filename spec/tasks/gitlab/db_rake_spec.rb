@@ -661,7 +661,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
       let(:base_models) { { 'main' => double(:model), 'ci' => double(:model) } }
 
       before do
-        skip_if_multiple_databases_not_setup
+        skip_if_multiple_databases_not_setup(:ci)
 
         allow(Gitlab::Database).to receive(:database_base_models_with_gitlab_shared).and_return(base_models)
       end

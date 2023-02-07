@@ -27,6 +27,8 @@ RSpec.describe Members::Projects::CreatorService do
 
     context 'authorized projects update' do
       it 'schedules a single project authorization update job when called multiple times' do
+        stub_feature_flags(do_not_run_safety_net_auth_refresh_jobs: false)
+
         expect(AuthorizedProjectUpdate::UserRefreshFromReplicaWorker).to receive(:bulk_perform_in).once
 
         1.upto(3) do

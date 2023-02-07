@@ -662,6 +662,8 @@ RSpec.describe Projects::TransferService do
     end
 
     it 'calls AuthorizedProjectUpdate::UserRefreshFromReplicaWorker with a delay to update project authorizations' do
+      stub_feature_flags(do_not_run_safety_net_auth_refresh_jobs: false)
+
       user_ids = [user.id, member_of_old_group.id, member_of_new_group.id].map { |id| [id] }
 
       expect(AuthorizedProjectUpdate::UserRefreshFromReplicaWorker).to(

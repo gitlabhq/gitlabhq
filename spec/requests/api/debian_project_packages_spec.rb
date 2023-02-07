@@ -136,6 +136,35 @@ RSpec.describe API::DebianProjectPackages, feature_category: :package_registry d
         let(:file_name) { 'libsample0_1.2.3~alpha2_amd64.deb' }
 
         it_behaves_like 'Debian packages write endpoint', 'upload', :created, nil
+
+        context 'with codename and component' do
+          let(:extra_params) { { distribution: distribution.codename, component: 'main' } }
+
+          it_behaves_like 'Debian packages write endpoint', 'upload', :created, nil
+        end
+
+        context 'with codename and without component' do
+          let(:extra_params) { { distribution: distribution.codename } }
+
+          include_context 'Debian repository access', :public, :developer, :basic do
+            it_behaves_like 'Debian packages GET request', :bad_request, /component is missing/
+          end
+        end
+      end
+
+      context 'with a buildinfo' do
+        let(:file_name) { 'sample_1.2.3~alpha2_amd64.buildinfo' }
+
+        include_context 'Debian repository access', :public, :developer, :basic do
+          it_behaves_like "Debian packages upload request", :created, nil
+
+          context 'with codename and component' do
+            let(:extra_params) { { distribution: distribution.codename, component: 'main' } }
+
+            it_behaves_like "Debian packages upload request", :bad_request,
+              /^file_name Only debs and udebs can be directly added to a distribution$/
+          end
+        end
       end
 
       context 'with a changes file' do

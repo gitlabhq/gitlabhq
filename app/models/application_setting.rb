@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class ApplicationSetting < ApplicationRecord
+class ApplicationSetting < MainClusterwide::ApplicationRecord
   include CacheableAttributes
   include CacheMarkdownField
   include TokenAuthenticatable

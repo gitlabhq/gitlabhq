@@ -37,7 +37,7 @@ RSpec.describe API::Admin::BatchedBackgroundMigrations, feature_category: :datab
 
     context 'when multiple database is enabled' do
       before do
-        skip_if_multiple_databases_not_setup
+        skip_if_multiple_databases_not_setup(:ci)
       end
 
       let(:ci_model) { Ci::ApplicationRecord }
@@ -121,7 +121,7 @@ RSpec.describe API::Admin::BatchedBackgroundMigrations, feature_category: :datab
 
           it 'returns CI database records' do
             # If we only have one DB we'll see both migrations
-            skip_if_multiple_databases_not_setup
+            skip_if_multiple_databases_not_setup(:ci)
 
             ci_database_migration = Gitlab::Database::SharedModel.using_connection(ci_model.connection) do
               create(:batched_background_migration, :active, gitlab_schema: schema)
@@ -194,7 +194,7 @@ RSpec.describe API::Admin::BatchedBackgroundMigrations, feature_category: :datab
       let(:database) { :ci }
 
       before do
-        skip_if_multiple_databases_not_setup
+        skip_if_multiple_databases_not_setup(:ci)
       end
 
       it 'uses the correct connection' do
@@ -262,7 +262,7 @@ RSpec.describe API::Admin::BatchedBackgroundMigrations, feature_category: :datab
       let(:database) { :ci }
 
       before do
-        skip_if_multiple_databases_not_setup
+        skip_if_multiple_databases_not_setup(:ci)
       end
 
       it 'uses the correct connection' do

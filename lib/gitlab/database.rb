@@ -2,7 +2,7 @@
 
 module Gitlab
   module Database
-    DATABASE_NAMES = %w[main ci].freeze
+    DATABASE_NAMES = %w[main ci main_clusterwide].freeze
 
     MAIN_DATABASE_NAME = 'main'
     CI_DATABASE_NAME = 'ci'
@@ -57,6 +57,7 @@ module Gitlab
         # that inherit from ActiveRecord::Base; not just our own models that
         # inherit from ApplicationRecord.
         main: ::ActiveRecord::Base,
+        main_clusterwide: ::MainClusterwide::ApplicationRecord.connection_class? ? ::MainClusterwide::ApplicationRecord : nil,
         ci: ::Ci::ApplicationRecord.connection_class? ? ::Ci::ApplicationRecord : nil
       }.compact.with_indifferent_access.freeze
     end
@@ -72,6 +73,7 @@ module Gitlab
         # that inher from ActiveRecord::Base; not just our own models that
         # inherit from ApplicationRecord.
         main: ::ActiveRecord::Base,
+        main_clusterwide: ::MainClusterwide::ApplicationRecord.connection_class? ? ::MainClusterwide::ApplicationRecord : nil,
         ci: ::Ci::ApplicationRecord.connection_class? ? ::Ci::ApplicationRecord : nil
       }.compact.with_indifferent_access.freeze
     end
@@ -89,6 +91,7 @@ module Gitlab
         # that inher from ActiveRecord::Base; not just our own models that
         # inherit from ApplicationRecord.
         main: ::ActiveRecord::Base,
+        main_clusterwide: ::MainClusterwide::ApplicationRecord.connection_class? ? ::MainClusterwide::ApplicationRecord : nil,
         ci: ::Ci::ApplicationRecord.connection_class? ? ::Ci::ApplicationRecord : nil
       }.compact.with_indifferent_access.freeze
     end
@@ -101,7 +104,7 @@ module Gitlab
         gitlab_shared: database_base_models_with_gitlab_shared.values, # all models
         gitlab_internal: database_base_models.values, # all models
         gitlab_pm: [self.database_base_models.fetch(:main)], # package metadata models
-        gitlab_main_clusterwide: [self.database_base_models.fetch(:main)]
+        gitlab_main_clusterwide: [self.database_base_models[:main_clusterwide] || self.database_base_models.fetch(:main)]
       }.with_indifferent_access.freeze
     end
 

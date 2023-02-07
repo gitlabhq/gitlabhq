@@ -86,7 +86,7 @@ RSpec.describe 'gitlab:db:decomposition:rollback:bump_ci_sequences', :silence_st
 
   context 'when multiple databases' do
     before do
-      skip_if_multiple_databases_not_setup
+      skip_if_multiple_databases_not_setup(:ci)
     end
 
     it 'does not change ci sequences on the ci database' do

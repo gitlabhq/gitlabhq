@@ -1,8 +1,0 @@
----
-name: eager_housekeeping_on_manual_jobs
-introduced_by_url: 'https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108970'
-rollout_issue_url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/388097'
-milestone: '15.9'
-type: development
-group: group::gitaly
-default_enabled: false

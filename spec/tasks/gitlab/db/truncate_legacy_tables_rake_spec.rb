@@ -20,7 +20,7 @@ RSpec.describe 'gitlab:db:truncate_legacy_tables', :silence_stdout, :reestablish
   end
 
   before do
-    skip_if_multiple_databases_not_setup
+    skip_if_multiple_databases_not_setup(:ci)
 
     # Filling the table on both databases main and ci
     Gitlab::Database.database_base_models.each_value do |base_model|

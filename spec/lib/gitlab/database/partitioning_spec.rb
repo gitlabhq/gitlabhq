@@ -117,7 +117,7 @@ RSpec.describe Gitlab::Database::Partitioning do
       end
 
       it 'creates partitions in each database' do
-        skip_if_multiple_databases_not_setup
+        skip_if_multiple_databases_not_setup(:ci)
 
         expect { described_class.sync_partitions(models) }
           .to change { find_partitions(table_names.first, conn: connection).size }.from(0)
@@ -176,7 +176,7 @@ RSpec.describe Gitlab::Database::Partitioning do
       end
 
       it 'manages partitions for models for the given database', :aggregate_failures do
-        skip_if_multiple_databases_not_setup
+        skip_if_multiple_databases_not_setup(:ci)
 
         expect { described_class.sync_partitions([models.first, ci_model], only_on: 'ci') }
           .to change { find_partitions(ci_model.table_name, conn: ci_connection).size }.from(0)

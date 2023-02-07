@@ -704,6 +704,22 @@ RSpec.describe Gitlab::Regex, feature_category: :tooling do
     end
   end
 
+  describe '.debian_direct_upload_filename_regex' do
+    subject { described_class.debian_direct_upload_filename_regex }
+
+    it { is_expected.to match('libsample0_1.2.3~alpha2_amd64.deb') }
+    it { is_expected.to match('sample-dev_1.2.3~binary_amd64.deb') }
+    it { is_expected.to match('sample-udeb_1.2.3~alpha2_amd64.udeb') }
+
+    it { is_expected.not_to match('sample_1.2.3~alpha2_amd64.buildinfo') }
+    it { is_expected.not_to match('sample_1.2.3~alpha2_amd64.changes') }
+    it { is_expected.not_to match('sample_1.2.3~alpha2.dsc') }
+    it { is_expected.not_to match('sample_1.2.3~alpha2.tar.xz') }
+
+    # ensure right anchor
+    it { is_expected.not_to match('libsample0_1.2.3~alpha2_amd64.debu') }
+  end
+
   describe '.helm_channel_regex' do
     subject { described_class.helm_channel_regex }
 
