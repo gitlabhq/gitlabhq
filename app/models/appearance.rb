@@ -5,6 +5,8 @@ class Appearance < ApplicationRecord
   include CacheMarkdownField
   include WithUploads
 
+  ALLOWED_PWA_ICON_SCALER_WIDTHS = [192, 512].freeze
+
   attribute :title, default: ''
   attribute :description, default: ''
   attribute :pwa_name, default: ''
@@ -59,6 +61,12 @@ class Appearance < ApplicationRecord
     if self.class.any?
       errors.add(:base, _('Only 1 appearances row can exist'))
     end
+  end
+
+  def pwa_icon_path_scaled(width)
+    return unless pwa_icon_path.present?
+
+    pwa_icon_path + "?width=#{width}"
   end
 
   def logo_path

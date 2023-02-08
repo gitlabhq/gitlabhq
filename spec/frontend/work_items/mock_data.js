@@ -215,6 +215,14 @@ export const updateWorkItemMutationResponse = {
               nodes: [mockAssignees[0]],
             },
           },
+          {
+            __typename: 'WorkItemWidgetLabels',
+            type: 'LABELS',
+            allowsScopedLabels: false,
+            labels: {
+              nodes: mockLabels,
+            },
+          },
         ],
       },
     },
@@ -279,7 +287,6 @@ export const workItemResponseFactory = ({
   allowsMultipleAssignees = true,
   assigneesWidgetPresent = true,
   datesWidgetPresent = true,
-  labelsWidgetPresent = true,
   weightWidgetPresent = true,
   progressWidgetPresent = true,
   milestoneWidgetPresent = true,
@@ -288,6 +295,8 @@ export const workItemResponseFactory = ({
   notesWidgetPresent = true,
   confidential = false,
   canInviteMembers = false,
+  labelsWidgetPresent = true,
+  labels = mockLabels,
   allowsScopedLabels = false,
   lastEditedAt = null,
   lastEditedBy = null,
@@ -350,7 +359,7 @@ export const workItemResponseFactory = ({
               type: 'LABELS',
               allowsScopedLabels,
               labels: {
-                nodes: mockLabels,
+                nodes: labels,
               },
             }
           : { type: 'MOCK TYPE' },

@@ -1,4 +1,5 @@
 <script>
+import { __ } from '~/locale';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
@@ -35,6 +36,16 @@ export default {
       default: true,
     },
   },
+  data() {
+    return {
+      formFieldProps: {
+        id: 'issue-description',
+        name: 'issue-description',
+        placeholder: __('Write a comment or drag your files here…'),
+        'aria-label': __('Description'),
+      },
+    };
+  },
   computed: {
     quickActionsDocsPath() {
       return helpPagePath('user/project/quick_actions');
@@ -60,10 +71,7 @@ export default {
       :value="value"
       :render-markdown-path="markdownPreviewPath"
       :markdown-docs-path="markdownDocsPath"
-      :form-field-aria-label="__('Description')"
-      :form-field-placeholder="__('Write a comment or drag your files here…')"
-      form-field-id="issue-description"
-      form-field-name="issue-description"
+      :form-field-props="formFieldProps"
       :quick-actions-docs-path="quickActionsDocsPath"
       :enable-autocomplete="enableAutocomplete"
       supports-quick-actions
@@ -84,15 +92,13 @@ export default {
     >
       <template #textarea>
         <textarea
-          id="issue-description"
+          v-bind="formFieldProps"
           ref="textarea"
           :value="value"
           class="note-textarea js-gfm-input js-autosize markdown-area"
           data-qa-selector="description_field"
           dir="auto"
           data-supports-quick-actions="true"
-          :aria-label="__('Description')"
-          :placeholder="__('Write a comment or drag your files here…')"
           @input="$emit('input', $event.target.value)"
           @keydown.meta.enter="updateIssuable"
           @keydown.ctrl.enter="updateIssuable"

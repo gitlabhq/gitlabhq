@@ -44671,6 +44671,11 @@ msgstr ""
 msgid "Topic was successfully updated."
 msgstr ""
 
+msgid "TopicSelect|%d topic found"
+msgid_plural "TopicSelect|%d topics found"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "TopicSelect|No matching results"
 msgstr ""
 

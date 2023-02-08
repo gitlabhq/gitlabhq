@@ -9,8 +9,8 @@ RSpec.describe API::DraftNotes, feature_category: :code_review_workflow do
   let_it_be(:merge_request) { create(:merge_request, source_project: project, target_project: project, author: user) }
 
   let_it_be(:merge_request_note) { create(:note, noteable: merge_request, project: project, author: user) }
-  let_it_be(:draft_note_by_current_user) { create(:draft_note, merge_request: merge_request, author: user) }
-  let_it_be(:draft_note_by_random_user) { create(:draft_note, merge_request: merge_request) }
+  let!(:draft_note_by_current_user) { create(:draft_note, merge_request: merge_request, author: user) }
+  let!(:draft_note_by_random_user) { create(:draft_note, merge_request: merge_request) }
 
   before do
     project.add_developer(user)
@@ -71,6 +71,49 @@ RSpec.describe API::DraftNotes, feature_category: :code_review_workflow do
 
           expect(response).to have_gitlab_http_status(:not_found)
         end
+      end
+    end
+  end
+
+  describe "delete a draft note" do
+    context "when deleting an existing draft note by the user" do
+      let!(:deleted_draft_note_id) { draft_note_by_current_user.id }
+
+      before do
+        delete api(
+          "/projects/#{project.id}/merge_requests/#{merge_request.iid}/draft_notes/#{draft_note_by_current_user.id}",
+          user
+        )
+      end
+
+      it "returns 204 No Content status" do
+        expect(response).to have_gitlab_http_status(:no_content)
+      end
+
+      it "deletes the specified draft note" do
+        expect(DraftNote.exists?(deleted_draft_note_id)).to eq(false)
+      end
+    end
+
+    context "when deleting a non-existent draft note" do
+      it "returns a 404 Not Found" do
+        delete api(
+          "/projects/#{project.id}/merge_requests/#{merge_request.iid}/draft_notes/#{non_existing_record_id}",
+          user
+        )
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context "when deleting a draft note by a different user" do
+      it "returns a 404 Not Found" do
+        delete api(
+          "/projects/#{project.id}/merge_requests/#{merge_request.iid}/draft_notes/#{draft_note_by_random_user.id}",
+          user
+        )
+
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
   end

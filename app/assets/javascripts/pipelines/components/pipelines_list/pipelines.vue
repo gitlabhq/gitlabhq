@@ -311,7 +311,7 @@ export default {
         this.resetRequestData();
       }
 
-      this.updateContent(this.requestData);
+      this.updateContent({ ...this.requestData, page: '1' });
     },
     changeVisibilityPipelineID(val) {
       this.selectedPipelineKeyOption = PipelineKeyOptions.find((e) => val === e.value);

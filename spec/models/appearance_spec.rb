@@ -26,6 +26,7 @@ RSpec.describe Appearance do
     it { expect(appearance.message_background_color).to eq('#E75E40') }
     it { expect(appearance.message_font_color).to eq('#FFFFFF') }
     it { expect(appearance.email_header_and_footer_enabled).to eq(false) }
+    it { expect(Appearance::ALLOWED_PWA_ICON_SCALER_WIDTHS).to match_array([192, 512]) }
   end
 
   describe '#single_appearance_row' do
@@ -83,6 +84,19 @@ RSpec.describe Appearance do
   %i(logo header_logo pwa_icon favicon).each do |logo_type|
     it_behaves_like 'logo paths', logo_type
   end
+
+  shared_examples 'icon paths sized' do |width|
+    let_it_be(:appearance) { create(:appearance, :with_pwa_icon) }
+    let_it_be(:filename) { 'dk.png' }
+    let_it_be(:expected_path) { "/uploads/-/system/appearance/pwa_icon/#{appearance.id}/#{filename}?width=#{width}" }
+
+    it 'returns icon path with size parameter' do
+      expect(appearance.pwa_icon_path_scaled(width)).to eq(expected_path)
+    end
+  end
+
+  it_behaves_like 'icon paths sized', 192
+  it_behaves_like 'icon paths sized', 512
 
   describe 'validations' do
     let(:triplet) { '#000' }

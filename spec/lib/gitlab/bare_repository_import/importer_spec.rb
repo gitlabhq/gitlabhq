@@ -73,9 +73,8 @@ RSpec.describe Gitlab::BareRepositoryImport::Importer do
       end
 
       it 'does not schedule an import' do
-        expect_next_instance_of(Project) do |instance|
-          expect(instance).not_to receive(:import_schedule)
-        end
+        project = Project.find_by_full_path(project_path)
+        expect(project).not_to receive(:import_schedule)
 
         importer.create_project_if_needed
       end

@@ -1,0 +1,45 @@
+Delivered-To: reply@discourse.org
+Return-Path: <walter.white@googlemail.com>
+MIME-Version: 1.0
+In-Reply-To: <topic/22638/86406@meta.discourse.org>
+References: <topic/22638@meta.discourse.org>
+  <topic/22638/86406@meta.discourse.org>
+Date: Fri, 28 Nov 2014 12:36:49 -0800
+Subject: Re: [Discourse Meta] [Lounge] Testing default email replies
+From: Walter White <walter.white@googlemail.com>
+To: Discourse Meta <reply@discourse.org>
+Content-Type: multipart/related; boundary=001a11c2e04e6544f30508f138ba
+
+--001a11c2e04e6544f30508f138ba
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div>### This is a reply from standard GMail in Google Chr=
+ome.</div><div><br></div><div>The quick brown fox jumps over the lazy dog. =
+The quick brown fox jumps over the lazy dog. The quick brown fox jumps over=
+ the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown=
+ fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. =
+The quick brown fox jumps over the lazy dog. The quick brown fox jumps over=
+ the lazy dog.=C2=A0</div><div><br></div><div>Here&#39;s some **bold** text=
+, <strong>strong</strong> text and <em>italic</em> in Markdown.</div><div><=
+br></div><div>Here&#39;s a link <a href=3D"http://example.com">http://examp=
+le.com</a></div></div><div class=3D"gmail_extra"><br>Here&#39;s an img <i=
+mg class="header__logoSize_110px" src="http://img.png" hspace="0" vspac=
+e="0" border="0" style="display:block; width:138px; max-width:138px;" width=
+="138" alt="Miro"><details><summary>One</summary> Some details</details>
+<details><summary>Two</summary> Some details</details></div>
+
+<table style=3D"margin-bottom:25px" cellspacing=3D"0" cellpadding=3D"0" bor=
+der=3D"0">
+  <tbody>
+    <tr>
+      <td style=3D"padding-top:5px" colspan=3D"2">
+        <p style=3D"margin-top:0;border:0">Test reply.</p>
+        <p style=3D"margin-top:0;border:0">First paragraph.</p>
+        <p style=3D"margin-top:0;border:0">Second paragraph.</p>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+--001a11c2e04e6544f30508f138ba--

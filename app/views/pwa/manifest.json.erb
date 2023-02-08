@@ -8,20 +8,28 @@
   "orientation": "any",
   "background_color": "#fff",
   "theme_color": "<%= user_theme_primary_color %>",
-  "icons": [{
-    "src": "<%= Gitlab::Utils.append_path(Gitlab.config.gitlab.relative_url_root, '/-/pwa-icons/logo-192.png') %>",
-    "sizes": "192x192",
-    "type": "image/png"
-  },
+  "icons": [
+  <% widths = Appearance::ALLOWED_PWA_ICON_SCALER_WIDTHS %>
+  <% widths.each do |width| -%>
   {
-    "src": "<%= Gitlab::Utils.append_path(Gitlab.config.gitlab.relative_url_root, '/-/pwa-icons/logo-512.png') %>",
-    "sizes": "512x512",
+    <% if source = appearance_pwa_icon_path_scaled(width) -%>
+    "src": "<%= source %>",
+    "sizes": "<%=  width.to_s + "x" + width.to_s %>",
     "type": "image/png"
-  },
-  {
-    "src": "<%= Gitlab::Utils.append_path(Gitlab.config.gitlab.relative_url_root, '/-/pwa-icons/maskable-logo.png') %>",
+    <% else -%>
+    "error": "<%= "#{width} is not an allowed PWA scale" %>"
+    <% end -%>
+  }
+  <% unless width == widths.last -%>
+  ,
+  <% end -%>
+  <% end -%>
+  <% unless current_appearance&.pwa_icon.present? -%>
+  ,{
+    "src": "<%= appearance_maskable_logo %>",
     "sizes": "512x512",
     "type": "image/png",
     "purpose": "maskable"
-  }]
+  }
+  <% end -%>]
 }

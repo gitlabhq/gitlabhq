@@ -504,6 +504,23 @@ On GitLab.com, this feature is not available.
 If a comment contains any attachments and their total size is less than or equal to 10 MB, these
 attachments are sent as part of the email. In other cases, the email contains links to the attachments.
 
+#### Special HTML formatting in HTML emails
+
+<!-- When the feature flag is removed, delete this topic and add as a line in version history under one of the topics above this one.-->
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/372301) in GitLab 15.9 [with a flag](../../administration/feature_flags.md) named `service_desk_html_to_text_email_handler`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available per project or for your entire instance, ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `service_desk_html_to_text_email_handler`.
+On GitLab.com, this feature is not available.
+
+When this feature is enabled, HTML emails correctly show additional HTML formatting, such as:
+
+- Tables
+- Blockquotes
+- Images
+- Collapsible sections
+
 #### Privacy considerations
 
 > [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108901) the minimum required role to view the creator's and participant's email in GitLab 15.9.

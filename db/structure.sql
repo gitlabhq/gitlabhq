@@ -234,6 +234,15 @@ BEGIN
 END;
 $$;
 
+CREATE FUNCTION trigger_7f4fcd5aa322() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+  NEW."id_convert_to_bigint" := NEW."id";
+  RETURN NEW;
+END;
+$$;
+
 CREATE FUNCTION trigger_c5a5f48f12b0() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -21824,7 +21833,8 @@ CREATE TABLE sent_notifications (
     line_code character varying,
     note_type character varying,
     "position" text,
-    in_reply_to_discussion_id character varying
+    in_reply_to_discussion_id character varying,
+    id_convert_to_bigint bigint DEFAULT 0 NOT NULL
 );
 
 CREATE SEQUENCE sent_notifications_id_seq
@@ -30879,7 +30889,7 @@ CREATE UNIQUE INDEX index_personal_access_tokens_on_token_digest ON personal_acc
 
 CREATE INDEX index_personal_access_tokens_on_user_id ON personal_access_tokens USING btree (user_id);
 
-CREATE INDEX index_pipeline_metadata_on_pipeline_id_name_lower_text_pattern ON ci_pipeline_metadata USING btree (pipeline_id, lower(name) text_pattern_ops);
+CREATE INDEX index_pipeline_metadata_on_pipeline_id_name_text_pattern ON ci_pipeline_metadata USING btree (pipeline_id, name text_pattern_ops);
 
 CREATE UNIQUE INDEX index_plan_limits_on_plan_id ON plan_limits USING btree (plan_id);
 
@@ -33470,6 +33480,8 @@ CREATE TRIGGER nullify_merge_request_metrics_build_data_on_update BEFORE UPDATE 
 CREATE TRIGGER projects_loose_fk_trigger AFTER DELETE ON projects REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
 
 CREATE TRIGGER trigger_1a857e8db6cd BEFORE INSERT OR UPDATE ON vulnerability_occurrences FOR EACH ROW EXECUTE FUNCTION trigger_1a857e8db6cd();
+
+CREATE TRIGGER trigger_7f4fcd5aa322 BEFORE INSERT OR UPDATE ON sent_notifications FOR EACH ROW EXECUTE FUNCTION trigger_7f4fcd5aa322();
 
 CREATE TRIGGER trigger_c5a5f48f12b0 BEFORE INSERT OR UPDATE ON epic_user_mentions FOR EACH ROW EXECUTE FUNCTION trigger_c5a5f48f12b0();
 

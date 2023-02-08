@@ -355,7 +355,7 @@ module Ci
     scope :for_name, -> (name) do
       name_column = Ci::PipelineMetadata.arel_table[:name]
 
-      joins(:pipeline_metadata).where(name_column.lower.eq(name.downcase))
+      joins(:pipeline_metadata).where(name_column.eq(name))
     end
     scope :created_after, -> (time) { where(arel_table[:created_at].gt(time)) }
     scope :created_before_id, -> (id) { where(arel_table[:id].lt(id)) }

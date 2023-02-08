@@ -91,10 +91,8 @@ To create an OAuth application:
 1. In **Redirect URI**:
    - If you're installing the app from the official marketplace listing, enter `https://gitlab.com/-/jira_connect/oauth_callbacks`.
    - If you're installing the app manually, enter `<instance_url>/-/jira_connect/oauth_callbacks` and replace `<instance_url>` with the URL of your instance.
-1. Clear the **Confidential** checkbox.
-<!-- markdownlint-disable MD044 -->
-1. In **Scopes**, select the **api** checkbox only.
-<!-- markdownlint-enable MD044 -->
+1. Clear the **Trusted** and **Confidential** checkboxes.
+1. In **Scopes**, select the `api` checkbox only.
 1. Select **Save application**.
 1. Copy the **Application ID** value.
 1. On the left sidebar, select **Settings > General** (`/admin/application_settings/general`).

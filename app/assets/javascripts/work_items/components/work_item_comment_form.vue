@@ -79,6 +79,12 @@ export default {
       isSubmitting: false,
       isSubmittingWithKeydown: false,
       commentText: '',
+      formFieldProps: {
+        'aria-label': __('Add a comment'),
+        placeholder: __('Write a comment or drag your files here…'),
+        id: 'work-item-add-comment',
+        name: 'work-item-add-comment',
+      },
     };
   },
   apollo: {
@@ -230,10 +236,7 @@ export default {
           :value="commentText"
           :render-markdown-path="markdownPreviewPath"
           :markdown-docs-path="$options.constantOptions.markdownDocsPath"
-          :form-field-aria-label="__('Add a comment')"
-          :form-field-placeholder="__('Write a comment or drag your files here…')"
-          form-field-id="work-item-add-comment"
-          form-field-name="work-item-add-comment"
+          :form-field-props="formFieldProps"
           data-testid="work-item-add-comment"
           enable-autocomplete
           autofocus

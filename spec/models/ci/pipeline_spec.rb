@@ -226,9 +226,9 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     let_it_be(:pipeline2) { create(:ci_pipeline, name: 'Chatops pipeline') }
 
     context 'when name exists' do
-      let(:name) { 'build Pipeline' }
+      let(:name) { 'Build pipeline' }
 
-      it 'performs case insensitive compare' do
+      it 'performs exact compare' do
         is_expected.to contain_exactly(pipeline1)
       end
     end

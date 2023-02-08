@@ -16,12 +16,16 @@ function latest_stable_tag() {
   git -c versionsort.prereleaseSuffix=rc tag --sort=-v:refname | awk '!/rc/' | head -1
 }
 
-QA_IMAGE_NAME="gitlab-ee-qa"
-QA_BUILD_TARGET="ee"
-
 if [[ "${CI_PROJECT_NAME}" == "gitlabhq" || "${CI_PROJECT_NAME}" == "gitlab-foss" || "${FOSS_ONLY}" == "1" ]]; then
   QA_IMAGE_NAME="gitlab-ce-qa"
   QA_BUILD_TARGET="foss"
+# Build QA Image for JH project
+elif [[ "${CI_PROJECT_PATH}" =~ ^gitlab-(jh|cn)\/.*$ || "${CI_PROJECT_NAME}" =~ ^gitlab-jh ]]; then
+  QA_IMAGE_NAME="gitlab-jh-qa"
+  QA_BUILD_TARGET="jhqa"
+else
+  QA_IMAGE_NAME="gitlab-ee-qa"
+  QA_BUILD_TARGET="ee"
 fi
 
 # Tag with commit SHA by default

@@ -63,21 +63,32 @@ module SendFileUpload
   private
 
   def image_scaling_request?(file_upload)
-    avatar_safe_for_scaling?(file_upload) &&
-      scaling_allowed_by_feature_flags?(file_upload) &&
-      valid_image_scaling_width?
+    (avatar_safe_for_scaling?(file_upload) || pwa_icon_safe_for_scaling?(file_upload)) &&
+      scaling_allowed_by_feature_flags?(file_upload)
+  end
+
+  def pwa_icon_safe_for_scaling?(file_upload)
+    file_upload.try(:image_safe_for_scaling?) &&
+      mounted_as_pwa_icon?(file_upload) &&
+      valid_image_scaling_width?(Appearance::ALLOWED_PWA_ICON_SCALER_WIDTHS)
   end
 
   def avatar_safe_for_scaling?(file_upload)
-    file_upload.try(:image_safe_for_scaling?) && mounted_as_avatar?(file_upload)
+    file_upload.try(:image_safe_for_scaling?) &&
+      mounted_as_avatar?(file_upload) &&
+      valid_image_scaling_width?(Avatarable::ALLOWED_IMAGE_SCALER_WIDTHS)
   end
 
   def mounted_as_avatar?(file_upload)
     file_upload.try(:mounted_as)&.to_sym == :avatar
   end
 
-  def valid_image_scaling_width?
-    Avatarable::ALLOWED_IMAGE_SCALER_WIDTHS.include?(params[:width]&.to_i)
+  def mounted_as_pwa_icon?(file_upload)
+    file_upload.try(:mounted_as)&.to_sym == :pwa_icon
+  end
+
+  def valid_image_scaling_width?(allowed_scalar_widths)
+    allowed_scalar_widths.include?(params[:width]&.to_i)
   end
 
   def scaling_allowed_by_feature_flags?(file_upload)

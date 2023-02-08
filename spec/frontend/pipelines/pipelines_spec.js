@@ -449,6 +449,26 @@ describe('Pipelines', () => {
           `${window.location.pathname}?page=2&scope=all`,
         );
       });
+
+      it('should reset page to 1 when filtering pipelines', () => {
+        expect(window.history.pushState).toHaveBeenCalledTimes(1);
+        expect(window.history.pushState).toHaveBeenCalledWith(
+          expect.anything(),
+          expect.anything(),
+          `${window.location.pathname}?page=2&scope=all`,
+        );
+
+        findFilteredSearch().vm.$emit('submit', [
+          { type: 'status', value: { data: 'success', operator: '=' } },
+        ]);
+
+        expect(window.history.pushState).toHaveBeenCalledTimes(2);
+        expect(window.history.pushState).toHaveBeenCalledWith(
+          expect.anything(),
+          expect.anything(),
+          `${window.location.pathname}?page=1&scope=all&status=success`,
+        );
+      });
     });
   });
 

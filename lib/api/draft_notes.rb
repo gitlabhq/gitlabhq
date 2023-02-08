@@ -20,6 +20,10 @@ module API
       def get_draft_note(params:)
         load_draft_notes(params: params).find(params[:draft_note_id])
       end
+
+      def delete_draft_note(draft_note)
+        ::DraftNotes::DestroyService.new(user_project, current_user).execute(draft_note)
+      end
     end
 
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
@@ -56,6 +60,32 @@ module API
 
         if draft_note
           present draft_note, with: Entities::DraftNote
+        else
+          not_found!("Draft Note")
+        end
+      end
+
+      desc "Delete a draft note" do
+        success Entities::DraftNote
+        failure [
+          { code: 401, message: 'Unauthorized' },
+          { code: 404, message: 'Not found' }
+        ]
+      end
+      params do
+        requires :id,                type: String,  desc: "The ID of a project"
+        requires :merge_request_iid, type: Integer, desc: "The ID of a merge request"
+        requires :draft_note_id,     type: Integer, desc: "The ID of a draft note"
+      end
+      delete(
+        ":id/merge_requests/:merge_request_iid/draft_notes/:draft_note_id",
+        feature_category: :code_review_workflow) do
+        draft_note = get_draft_note(params: params)
+
+        if draft_note
+          delete_draft_note(draft_note)
+          status 204
+          body false
         else
           not_found!("Draft Note")
         end

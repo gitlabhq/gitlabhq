@@ -19,7 +19,13 @@ import {
 } from '../constants';
 
 function isTokenSelectorElement(el) {
-  return el?.classList.contains('gl-label-close') || el?.classList.contains('dropdown-item');
+  return (
+    el?.classList.contains('gl-label-close') ||
+    el?.classList.contains('dropdown-item') ||
+    // TODO: replace this logic when we have a class added to clear-all button in GitLab UI
+    (el?.classList.contains('gl-button') &&
+      el?.closest('.form-control')?.classList.contains('gl-token-selector'))
+  );
 }
 
 function addClass(el) {
@@ -146,7 +152,17 @@ export default {
   watch: {
     labels(newVal) {
       if (!this.isEditing) {
-        this.localLabels = newVal.map(addClass);
+        // remove labels that aren't in list from server
+        this.localLabels = this.localLabels.filter((label) =>
+          newVal.find((l) => l.id === label.id),
+        );
+
+        // add any that we don't have to the end
+        const labelsToAdd = newVal
+          .map(addClass)
+          .filter((label) => !this.localLabels.find((l) => l.id === label.id));
+
+        this.localLabels = this.localLabels.concat(labelsToAdd);
       }
     },
   },
@@ -163,10 +179,11 @@ export default {
       this.setLabels();
     },
     async setLabels() {
-      if (this.addLabelIds.length === 0 && this.removeLabelIds.length === 0) return;
-
       this.searchKey = '';
       this.isEditing = false;
+
+      if (this.addLabelIds.length === 0 && this.removeLabelIds.length === 0) return;
+
       try {
         const {
           data: {
@@ -214,18 +231,23 @@ export default {
       this.searchStarted = true;
     },
     async focusTokenSelector(labels) {
-      const labelsToAdd = without(labels, ...this.localLabels).map((label) => label.id);
-      const labelsToRemove = without(this.localLabels, ...labels).map((label) => label.id);
+      const labelsToAdd = without(labels, ...this.localLabels);
+      const labelIdsToAdd = labelsToAdd.map((label) => label.id);
+      const labelIdsToRemove = without(this.localLabels, ...labels).map((label) => label.id);
 
-      if (labelsToAdd.length > 0) {
-        this.addLabelIds.push(...labelsToAdd);
+      if (labelIdsToAdd.length > 0) {
+        this.addLabelIds.push(...labelIdsToAdd);
       }
 
-      if (labelsToRemove.length > 0) {
-        this.removeLabelIds.push(...labelsToRemove);
+      if (labelIdsToRemove.length > 0) {
+        this.removeLabelIds.push(...labelIdsToRemove);
       }
 
-      this.localLabels = labels;
+      if (labels.length === 0) {
+        this.localLabels = [];
+      } else {
+        this.localLabels = this.localLabels.concat(labelsToAdd);
+      }
 
       this.handleFocus();
       await this.$nextTick();
@@ -265,6 +287,7 @@ export default {
       :dropdown-items="searchLabels"
       :loading="isLoading"
       :view-only="!canUpdate"
+      :allow-clear-all="isEditing"
       class="gl-flex-grow-1 gl-border gl-border-white gl-rounded-base col-9 gl-align-self-start gl-px-0! gl-mx-2!"
       data-testid="work-item-labels-input"
       :class="{ 'gl-hover-border-gray-200': canUpdate }"

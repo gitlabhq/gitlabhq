@@ -4,28 +4,74 @@ require 'spec_helper'
 
 RSpec.describe PwaController, feature_category: :navigation do
   describe 'GET #manifest' do
-    it 'responds with json' do
-      get manifest_path(format: :json)
-
-      expect(Gitlab::Json.parse(response.body)).to include({ 'name' => 'GitLab' })
-      expect(Gitlab::Json.parse(response.body)).to include({ 'short_name' => 'GitLab' })
-      expect(response.body).to include('The complete DevOps platform.')
-      expect(response).to have_gitlab_http_status(:success)
-    end
-
-    context 'with customized appearance' do
-      let_it_be(:appearance) do
-        create(:appearance, pwa_name: 'PWA name', pwa_short_name: 'Short name', pwa_description: 'This is a test')
-      end
+    shared_examples 'text values' do |params, result|
+      let_it_be(:appearance) { create(:appearance, **params) }
 
       it 'uses custom values', :aggregate_failures do
         get manifest_path(format: :json)
 
-        expect(Gitlab::Json.parse(response.body)).to include({
-                                                               'description' => 'This is a test',
-                                                               'name' => 'PWA name',
-                                                               'short_name' => 'Short name'
-                                                             })
+        expect(Gitlab::Json.parse(response.body)).to include(result)
+        expect(response).to have_gitlab_http_status(:success)
+      end
+    end
+
+    context 'with default appearance' do
+      it_behaves_like 'text values', {}, {
+                                           'name' => 'GitLab',
+                                           'short_name' => 'GitLab',
+                                           'description' => 'The complete DevOps platform. ' \
+                                                            'One application with endless possibilities. ' \
+                                                            'Organizations rely on GitLab’s source code management, ' \
+                                                            'CI/CD, security, and more to deliver software rapidly.'
+                                           }
+    end
+
+    context 'with customized appearance' do
+      context 'with custom text values' do
+        it_behaves_like 'text values', { pwa_name: 'PWA name' }, { 'name' => 'PWA name' }
+        it_behaves_like 'text values', { pwa_short_name: 'Short name' }, { 'short_name' => 'Short name' }
+        it_behaves_like 'text values', { pwa_description: 'This is a test' }, { 'description' => 'This is a test' }
+      end
+
+      shared_examples 'icon paths' do
+        it 'returns expected icon paths', :aggregate_failures do
+          get manifest_path(format: :json)
+
+          expect(Gitlab::Json.parse(response.body)["icons"]).to match_array(result)
+          expect(response).to have_gitlab_http_status(:success)
+        end
+      end
+
+      context 'with custom icon' do
+        let_it_be(:appearance) { create(:appearance, :with_pwa_icon) }
+        let_it_be(:result) do
+          [{ "src" => "/uploads/-/system/appearance/pwa_icon/#{appearance.id}/dk.png?width=192", "sizes" => "192x192",
+             "type" => "image/png" },
+            { "src" => "/uploads/-/system/appearance/pwa_icon/#{appearance.id}/dk.png?width=512", "sizes" => "512x512",
+              "type" => "image/png" }]
+        end
+
+        it_behaves_like 'icon paths'
+      end
+
+      context 'with no custom icon' do
+        let_it_be(:appearance) { create(:appearance) }
+        let_it_be(:result) do
+          [{ "src" => "/-/pwa-icons/logo-192.png", "sizes" => "192x192", "type" => "image/png" },
+            { "src" => "/-/pwa-icons/logo-512.png", "sizes" => "512x512", "type" => "image/png" },
+            { "src" => "/-/pwa-icons/maskable-logo.png", "sizes" => "512x512", "type" => "image/png",
+              "purpose" => "maskable" }]
+        end
+
+        it_behaves_like 'icon paths'
+      end
+    end
+
+    describe 'GET #offline' do
+      it 'responds with static HTML page' do
+        get offline_path
+
+        expect(response.body).to include('You are currently offline')
         expect(response).to have_gitlab_http_status(:success)
       end
     end
@@ -45,15 +91,6 @@ RSpec.describe PwaController, feature_category: :navigation do
 
         get manifest_path(format: :json)
       end
-    end
-  end
-
-  describe 'GET #offline' do
-    it 'responds with static HTML page' do
-      get offline_path
-
-      expect(response.body).to include('You are currently offline')
-      expect(response).to have_gitlab_http_status(:success)
     end
   end
 end

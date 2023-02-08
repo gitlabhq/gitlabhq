@@ -246,9 +246,9 @@ RSpec.describe Ci::PipelinesFinder do
       let_it_be(:pipeline) { create(:ci_pipeline, project: project, name: 'Build pipeline') }
       let_it_be(:pipeline_other) { create(:ci_pipeline, project: project, name: 'Some other pipeline') }
 
-      let(:params) { { name: 'build Pipeline' } }
+      let(:params) { { name: 'Build pipeline' } }
 
-      it 'performs case insensitive compare' do
+      it 'performs exact compare' do
         is_expected.to contain_exactly(pipeline)
       end
 

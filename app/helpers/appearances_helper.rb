@@ -4,6 +4,20 @@ module AppearancesHelper
   include MarkupHelper
   include Gitlab::Utils::StrongMemoize
 
+  def appearance_pwa_icon_path_scaled(width)
+    return unless Appearance::ALLOWED_PWA_ICON_SCALER_WIDTHS.include?(width)
+
+    append_root_path((current_appearance&.pwa_icon_path_scaled(width) || "/-/pwa-icons/logo-#{width}.png"))
+  end
+
+  def appearance_maskable_logo
+    append_root_path('/-/pwa-icons/maskable-logo.png')
+  end
+
+  def append_root_path(path)
+    Gitlab::Utils.append_path(Gitlab.config.gitlab.relative_url_root, path)
+  end
+
   def brand_title
     current_appearance&.title.presence || default_brand_title
   end

@@ -56,6 +56,12 @@ export default {
       descriptionText: '',
       descriptionHtml: '',
       conflictedDescription: '',
+      formFieldProps: {
+        'aria-label': __('Description'),
+        placeholder: __('Write a comment or drag your files here…'),
+        id: 'work-item-description',
+        name: 'work-item-description',
+      },
     };
   },
   apollo: {
@@ -241,10 +247,7 @@ export default {
         :value="descriptionText"
         :render-markdown-path="markdownPreviewPath"
         :markdown-docs-path="$options.markdownDocsPath"
-        :form-field-aria-label="__('Description')"
-        :form-field-placeholder="__('Write a comment or drag your files here…')"
-        form-field-id="work-item-description"
-        form-field-name="work-item-description"
+        :form-field-props="formFieldProps"
         enable-autocomplete
         init-on-autofocus
         use-bottom-toolbar
@@ -263,15 +266,13 @@ export default {
       >
         <template #textarea>
           <textarea
-            id="work-item-description"
+            v-bind="formFieldProps"
             ref="textarea"
             v-model="descriptionText"
             :disabled="isSubmitting"
             class="note-textarea js-gfm-input js-autosize markdown-area"
             dir="auto"
             data-supports-quick-actions="false"
-            :aria-label="__('Description')"
-            :placeholder="__('Write a comment or drag your files here…')"
             @keydown.meta.enter="updateWorkItem"
             @keydown.ctrl.enter="updateWorkItem"
             @keydown.exact.esc.stop="cancelEditing"

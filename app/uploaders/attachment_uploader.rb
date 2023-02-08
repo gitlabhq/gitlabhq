@@ -6,12 +6,6 @@ class AttachmentUploader < GitlabUploader
   prepend ObjectStorage::Extension::RecordsUploads
   include UploaderHelper
 
-  private
-
-  def dynamic_segment
-    File.join(model.class.underscore, mounted_as.to_s, model.id.to_s)
-  end
-
   def mounted_as
     # Geo fails to sync attachments on Note, and LegacyDiffNotes with missing mount_point.
     #
@@ -21,5 +15,11 @@ class AttachmentUploader < GitlabUploader
     else
       super
     end
+  end
+
+  private
+
+  def dynamic_segment
+    File.join(model.class.underscore, mounted_as.to_s, model.id.to_s)
   end
 end

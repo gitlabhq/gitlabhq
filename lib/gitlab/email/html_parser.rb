@@ -34,7 +34,11 @@ module Gitlab
       end
 
       def filtered_text
-        @filtered_text ||= Html2Text.convert(filtered_html)
+        @filtered_text ||= if Feature.enabled?(:service_desk_html_to_text_email_handler)
+                             ::Gitlab::Email::HtmlToMarkdownParser.convert(filtered_html)
+                           else
+                             Html2Text.convert(filtered_html)
+                           end
       end
     end
   end

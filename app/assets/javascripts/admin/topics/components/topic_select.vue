@@ -1,22 +1,14 @@
 <script>
-import {
-  GlAvatarLabeled,
-  GlDropdown,
-  GlDropdownItem,
-  GlDropdownText,
-  GlSearchBoxByType,
-} from '@gitlab/ui';
-import { s__ } from '~/locale';
+import { GlAvatarLabeled, GlCollapsibleListbox } from '@gitlab/ui';
+import { uniqueId } from 'lodash';
+import { s__, n__ } from '~/locale';
 import { AVATAR_SHAPE_OPTION_RECT } from '~/vue_shared/constants';
 import searchProjectTopics from '~/graphql_shared/queries/project_topics_search.query.graphql';
 
 export default {
   components: {
     GlAvatarLabeled,
-    GlDropdown,
-    GlDropdownItem,
-    GlDropdownText,
-    GlSearchBoxByType,
+    GlCollapsibleListbox,
   },
   props: {
     selectedTopic: {
@@ -48,14 +40,12 @@ export default {
     return {
       topics: [],
       search: '',
+      selected: null,
     };
   },
   computed: {
     loading() {
       return this.$apollo.queries.topics.loading;
-    },
-    isResultEmpty() {
-      return this.topics.length === 0;
     },
     dropdownText() {
       if (Object.keys(this.selectedTopic).length) {
@@ -64,10 +54,35 @@ export default {
 
       return this.$options.i18n.dropdownText;
     },
+    items() {
+      return this.topics.map(({ id, title, name, avatarUrl }) => ({
+        value: id,
+        text: title,
+        secondaryText: name,
+        icon: avatarUrl,
+      }));
+    },
+    searchSummary() {
+      return n__('TopicSelect|%d topic found', 'TopicSelect|%d topics found', this.topics.length);
+    },
+    labelId() {
+      if (!this.labelText) {
+        return null;
+      }
+
+      return uniqueId('topic-listbox-label-');
+    },
   },
   methods: {
-    selectTopic(topic) {
-      this.$emit('click', topic);
+    onSelect(topicId) {
+      const topicObj = this.topics.find((topic) => topic.id === topicId);
+
+      if (!topicObj) return;
+
+      this.$emit('click', topicObj);
+    },
+    onSearch(query) {
+      this.search = query;
     },
   },
   i18n: {
@@ -81,26 +96,34 @@ export default {
 
 <template>
   <div>
-    <label v-if="labelText">{{ labelText }}</label>
-    <gl-dropdown block :text="dropdownText">
-      <gl-search-box-by-type
-        v-model="search"
-        :is-loading="loading"
-        :placeholder="$options.i18n.searchPlaceholder"
-      />
-      <gl-dropdown-item v-for="topic in topics" :key="topic.id" @click="selectTopic(topic)">
+    <label v-if="labelText" :id="labelId">{{ labelText }}</label>
+    <gl-collapsible-listbox
+      v-model="selected"
+      block
+      searchable
+      is-check-centered
+      :items="items"
+      :toggle-text="dropdownText"
+      :searching="loading"
+      :search-placeholder="$options.i18n.searchPlaceholder"
+      :no-results-text="$options.i18n.emptySearchResult"
+      :toggle-aria-labelled-by="labelId"
+      @select="onSelect"
+      @search="onSearch"
+    >
+      <template #list-item="{ item: { text, secondaryText, icon } }">
         <gl-avatar-labeled
-          :label="topic.title"
-          :sub-label="topic.name"
-          :src="topic.avatarUrl"
-          :entity-name="topic.name"
+          :label="text"
+          :sub-label="secondaryText"
+          :src="icon"
+          :entity-name="secondaryText"
           :size="32"
           :shape="$options.AVATAR_SHAPE_OPTION_RECT"
         />
-      </gl-dropdown-item>
-      <gl-dropdown-text v-if="isResultEmpty && !loading">
-        <span class="gl-text-gray-500">{{ $options.i18n.emptySearchResult }}</span>
-      </gl-dropdown-text>
-    </gl-dropdown>
+      </template>
+      <template #search-summary-sr-only>
+        {{ searchSummary }}
+      </template>
+    </gl-collapsible-listbox>
   </div>
 </template>

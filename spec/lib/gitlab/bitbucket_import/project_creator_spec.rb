@@ -27,8 +27,8 @@ RSpec.describe Gitlab::BitbucketImport::ProjectCreator do
   end
 
   it 'creates project' do
-    expect_next_instance_of(Project) do |project|
-      expect(project).to receive(:add_import_job)
+    allow_next_instances_of(Project, 2) do |project|
+      allow(project).to receive(:add_import_job)
     end
 
     project_creator = described_class.new(repo, 'vim', namespace, user, access_params)

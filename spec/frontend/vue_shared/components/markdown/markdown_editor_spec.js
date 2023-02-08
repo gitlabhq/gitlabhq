@@ -36,10 +36,12 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
         quickActionsDocsPath,
         enableAutocomplete,
         enablePreview,
-        formFieldId,
-        formFieldName,
-        formFieldPlaceholder,
-        formFieldAriaLabel,
+        formFieldProps: {
+          id: formFieldId,
+          name: formFieldName,
+          placeholder: formFieldPlaceholder,
+          'aria-label': formFieldAriaLabel,
+        },
         ...propsData,
       },
       stubs: {
@@ -93,6 +95,12 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
     );
 
     expect(findTextarea().element.value).toBe(value);
+  });
+
+  it('fails to render if textarea id and name is not passed', () => {
+    expect(() => {
+      buildWrapper({ propsData: { formFieldProps: {} } });
+    }).toThrow('Invalid prop: custom validator check failed for prop "formFieldProps"');
   });
 
   it(`emits ${EDITING_MODE_CONTENT_EDITOR} event when enableContentEditor emitted from markdown editor`, async () => {
