@@ -80,6 +80,11 @@ To migrate groups by direct transfer:
   [enabled in application settings](../../admin_area/settings/visibility_and_access_controls.md#enable-migration-of-groups-and-projects-by-direct-transfer)
   by an instance administrator.
 - The source GitLab instance must be running GitLab 14.0 or later.
+- You must have a [personal access token](../../../user/profile/personal_access_tokens.md) for the source GitLab
+  instance:
+  - For GitLab 15.1 and later source instances, the personal access token must have the `api` scope.
+  - For GitLab 15.0 and earlier source instances, the personal access token must have both the `api` and
+    `read_repository` scopes.
 - You must have the Owner role on the source group to migrate from.
 - You must have at least the Maintainer role on the destination group to migrate to. Using the Developer role for this
   purpose was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/387891) in GitLab 15.8 and will be removed in
@@ -111,10 +116,6 @@ Create the group you want to import to and connect the source GitLab instance:
      - Select **New subgroup**.
      - On the top bar, Select **{plus-square}** and then **New subgroup**. Then on the left sidebar, select the **import an existing group** link.
 1. Enter the URL of a GitLab instance running GitLab 14.0 or later.
-1. Generate or copy a [personal access token](../../../user/profile/personal_access_tokens.md) on your source GitLab
-   instance with:
-   - The `api` scope, if the source GitLab instance on version 15.1 or later.
-   - Both `api` and `read_repository` scopes, if the source GitLab instance on version 15.0 or earlier.
 1. Enter the [personal access token](../../../user/profile/personal_access_tokens.md) for your source GitLab instance.
 1. Select **Connect instance**.
 

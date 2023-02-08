@@ -2155,6 +2155,11 @@
     - <<: *if-default-refs
       changes: *code-backstage-patterns
 
+.setup:rules:rails-production-environment:
+  rules:
+    - <<: *if-default-refs
+      changes: *code-patterns
+
 .setup:rules:no-ee-check:
   rules:
     - <<: *if-not-foss

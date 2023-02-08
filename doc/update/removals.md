@@ -47,6 +47,16 @@ If you want to preserve this functionality, you can follow one of these two path
 
 ## Removed in 15.7
 
+### File Type variable expansion in `.gitlab-ci.yml`
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+Prior to this change, variables that referenced or applied alias file variables expanded the value of the `File` type variable. For example, the file contents. This behavior was incorrect because it did not comply with typical shell variable expansion rules. A user could run an $echo command with the variable as an input parameter to leak secrets or sensitive information stored in 'File' type variables.
+
+In 15.7, we are removing file type variable expansion from GitLab. It is essential to check your CI pipelines to confirm if your scripts reference a file variable. If your CI job relies on the previous expansion functionality, that CI job will not work and generate an error as of 15.7.  The new behavior is that variable expansion that reference or apply alias file variables expand to the file name or path of the `File` type variable, instead of its value, such as the file contents.
+
 ### Flowdock integration
 
 As of December 22, 2022, we are removing the Flowdock integration because the service was shut down on August 15, 2022.

@@ -124,6 +124,38 @@ RSpec.describe Projects::ArtifactsController do
       end
     end
 
+    context 'when artifact is set as private' do
+      let(:filename) { job.artifacts_file.filename }
+
+      before do
+        job.job_artifacts.update_all(accessibility: 'private')
+      end
+
+      context 'and user is not authoirized' do
+        let(:user) { create(:user) }
+
+        it 'returns forbidden' do
+          download_artifact(file_type: 'archive')
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+
+      context 'and user has access to project' do
+        it 'downloads' do
+          expect(controller).to receive(:send_file)
+                          .with(
+                            job.artifacts_file.file.path,
+                            hash_including(disposition: 'attachment', filename: filename)).and_call_original
+
+          download_artifact(file_type: 'archive')
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response.headers['Content-Disposition']).to eq(%Q(attachment; filename="#{filename}"; filename*=UTF-8''#{filename}))
+        end
+      end
+    end
+
     context 'when a file type is supplied' do
       context 'when an invalid file type is supplied' do
         let(:file_type) { 'invalid' }

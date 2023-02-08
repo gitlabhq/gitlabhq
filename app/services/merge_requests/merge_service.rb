@@ -98,6 +98,7 @@ module MergeRequests
       commit_id
     ensure
       merge_request.update_and_mark_in_progress_merge_commit_sha(nil)
+      log_info("Merge request marked in progress")
     end
 
     def update_merge_sha_metadata(commit_id)

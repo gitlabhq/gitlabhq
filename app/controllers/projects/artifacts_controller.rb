@@ -12,6 +12,7 @@ class Projects::ArtifactsController < Projects::ApplicationController
   layout 'project'
   before_action :authorize_read_build!
   before_action :authorize_read_build_trace!, only: [:download]
+  before_action :authorize_read_job_artifacts!, only: [:download]
   before_action :authorize_update_build!, only: [:keep]
   before_action :authorize_destroy_artifacts!, only: [:destroy]
   before_action :extract_ref_name_and_path
@@ -41,10 +42,10 @@ class Projects::ArtifactsController < Projects::ApplicationController
   end
 
   def download
-    return render_404 unless artifacts_file
+    return render_404 unless artifact_file
 
-    log_artifacts_filesize(artifacts_file.model)
-    send_upload(artifacts_file, attachment: artifacts_file.filename, proxy: params[:proxy])
+    log_artifacts_filesize(artifact_file.model)
+    send_upload(artifact_file, attachment: artifact_file.filename, proxy: params[:proxy])
   end
 
   def browse
@@ -83,11 +84,11 @@ class Projects::ArtifactsController < Projects::ApplicationController
 
   def raw
     return render_404 unless zip_artifact?
-    return render_404 unless artifacts_file
+    return render_404 unless artifact_file
 
     path = Gitlab::Ci::Build::Artifacts::Path.new(params[:path])
 
-    send_artifacts_entry(artifacts_file, path)
+    send_artifacts_entry(artifact_file, path)
   end
 
   def keep
@@ -154,8 +155,12 @@ class Projects::ArtifactsController < Projects::ApplicationController
     project.latest_successful_build_for_ref(params[:job], @ref_name)
   end
 
-  def artifacts_file
-    @artifacts_file ||= build&.artifacts_file_for_type(params[:file_type] || :archive)
+  def job_artifact
+    @job_artifact ||= build&.artifact_for_type(params[:file_type] || :archive)
+  end
+
+  def artifact_file
+    @artifact_file ||= job_artifact&.file
   end
 
   def zip_artifact?
@@ -175,5 +180,9 @@ class Projects::ArtifactsController < Projects::ApplicationController
     return unless params[:file_type] == 'trace'
 
     super
+  end
+
+  def authorize_read_job_artifacts!
+    return access_denied! unless can?(current_user, :read_job_artifacts, job_artifact)
   end
 end

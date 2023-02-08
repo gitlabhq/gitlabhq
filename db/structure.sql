@@ -11639,10 +11639,12 @@ CREATE TABLE application_settings (
     search_max_docs_denominator integer DEFAULT 5000000 NOT NULL,
     search_min_docs_before_rollover integer DEFAULT 100000 NOT NULL,
     deactivation_email_additional_text text,
+    git_rate_limit_users_alertlist integer[] DEFAULT '{}'::integer[] NOT NULL,
     CONSTRAINT app_settings_container_reg_cleanup_tags_max_list_size_positive CHECK ((container_registry_cleanup_tags_service_max_list_size >= 0)),
     CONSTRAINT app_settings_container_registry_pre_import_tags_rate_positive CHECK ((container_registry_pre_import_tags_rate >= (0)::numeric)),
     CONSTRAINT app_settings_dep_proxy_ttl_policies_worker_capacity_positive CHECK ((dependency_proxy_ttl_group_policy_worker_capacity >= 0)),
     CONSTRAINT app_settings_ext_pipeline_validation_service_url_text_limit CHECK ((char_length(external_pipeline_validation_service_url) <= 255)),
+    CONSTRAINT app_settings_git_rate_limit_users_alertlist_max_usernames CHECK ((cardinality(git_rate_limit_users_alertlist) <= 100)),
     CONSTRAINT app_settings_git_rate_limit_users_allowlist_max_usernames CHECK ((cardinality(git_rate_limit_users_allowlist) <= 100)),
     CONSTRAINT app_settings_max_pages_custom_domains_per_project_check CHECK ((max_pages_custom_domains_per_project >= 0)),
     CONSTRAINT app_settings_max_terraform_state_size_bytes_check CHECK ((max_terraform_state_size_bytes >= 0)),
@@ -18353,7 +18355,9 @@ CREATE TABLE namespace_settings (
     default_compliance_framework_id bigint,
     runner_registration_enabled boolean DEFAULT true,
     allow_runner_registration_token boolean DEFAULT true NOT NULL,
+    unique_project_download_limit_alertlist integer[] DEFAULT '{}'::integer[] NOT NULL,
     CONSTRAINT check_0ba93c78c7 CHECK ((char_length(default_branch_name) <= 255)),
+    CONSTRAINT namespace_settings_unique_project_download_limit_alertlist_size CHECK ((cardinality(unique_project_download_limit_alertlist) <= 100)),
     CONSTRAINT namespace_settings_unique_project_download_limit_allowlist_size CHECK ((cardinality(unique_project_download_limit_allowlist) <= 100))
 );
 

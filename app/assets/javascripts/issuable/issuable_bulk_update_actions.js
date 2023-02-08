@@ -43,10 +43,10 @@ export default {
    */
 
   getFormDataAsObject() {
+    const assigneeIds = this.form.find('input[name="update[assignee_ids][]"]').val();
     const formData = {
       update: {
         state_event: this.form.find('input[name="update[state_event]"]').val(),
-        assignee_ids: [this.form.find('input[name="update[assignee_ids][]"]').val()],
         milestone_id: this.form.find('input[name="update[milestone_id]"]').val(),
         issuable_ids: this.form.find('input[name="update[issuable_ids]"]').val(),
         subscription_event: this.form.find('input[name="update[subscription_event]"]').val(),
@@ -57,6 +57,9 @@ export default {
         remove_label_ids: [],
       },
     };
+    if (assigneeIds) {
+      formData.update.assignee_ids = [assigneeIds];
+    }
     if (this.willUpdateLabels) {
       formData.update.add_label_ids = this.$labelDropdown.data('user-checked');
       formData.update.remove_label_ids = this.$labelDropdown.data('user-unchecked');

@@ -17,10 +17,8 @@ module Ci
         return if pipeline.parent_pipeline? # skip if child pipeline
         return unless project.auto_cancel_pending_pipelines?
 
-        pipelines = move_service_to_async? ? parent_and_child_pipelines : all_auto_cancelable_pipelines
-
         Gitlab::OptimisticLocking
-        .retry_lock(pipelines, name: 'cancel_pending_pipelines') do |cancelables|
+        .retry_lock(parent_and_child_pipelines, name: 'cancel_pending_pipelines') do |cancelables|
           cancelables.select(:id).each_batch(of: BATCH_SIZE) do |cancelables_batch|
             auto_cancel_interruptible_pipelines(cancelables_batch.ids)
           end
@@ -31,15 +29,11 @@ module Ci
 
       attr_reader :pipeline, :project
 
-      def all_auto_cancelable_pipelines
-        same_ref_pipelines
-          .id_not_in(pipeline.id)
-          .ci_and_parent_sources
-          .alive_or_scheduled
-      end
-
       def parent_auto_cancelable_pipelines
-        same_ref_pipelines
+        project.all_pipelines
+          .created_after(1.week.ago)
+          .for_ref(pipeline.ref)
+          .where_not_sha(project.commit(pipeline.ref).try(:id))
           .where("created_at < ?", pipeline.created_at)
           .ci_sources
       end
@@ -71,18 +65,6 @@ module Ci
             )
           end
       end
-
-      def same_ref_pipelines
-        project.all_pipelines
-          .created_after(1.week.ago)
-          .for_ref(pipeline.ref)
-          .where_not_sha(project.commit(pipeline.ref).try(:id))
-      end
-
-      def move_service_to_async?
-        Feature.enabled?(:move_cancel_pending_pipelines_to_async, project)
-      end
-      strong_memoize_attr :move_service_to_async?
     end
   end
 end

@@ -5194,6 +5194,9 @@ msgstr ""
 msgid "Approve"
 msgstr ""
 
+msgid "Approve All"
+msgstr ""
+
 msgid "Approve a merge request"
 msgstr ""
 
@@ -5282,6 +5285,9 @@ msgid "Are you sure you want to %{action} %{name}?"
 msgstr ""
 
 msgid "Are you sure you want to approve %{user}?"
+msgstr ""
+
+msgid "Are you sure you want to approve all users?"
 msgstr ""
 
 msgid "Are you sure you want to attempt to merge?"
@@ -6630,10 +6636,16 @@ msgstr ""
 msgid "Billing|Add seats"
 msgstr ""
 
+msgid "Billing|All members were successfully approved"
+msgstr ""
+
 msgid "Billing|An email address is only visible for users with public emails."
 msgstr ""
 
 msgid "Billing|An error occurred while approving %{user}"
+msgstr ""
+
+msgid "Billing|An error occurred while approving all members"
 msgstr ""
 
 msgid "Billing|An error occurred while getting a billable member details."
@@ -50295,6 +50307,9 @@ msgstr ""
 msgid "example.com"
 msgstr ""
 
+msgid "exceeds maximum length (100 user ids)"
+msgstr ""
+
 msgid "exceeds maximum length (100 usernames)"
 msgstr ""
 
@@ -51366,6 +51381,9 @@ msgid "severity|Unknown"
 msgstr ""
 
 msgid "should be an array of %{object_name} objects"
+msgstr ""
+
+msgid "should be an array of existing user ids. %{invalid} does not exist"
 msgstr ""
 
 msgid "should be an array of existing usernames. %{invalid} does not exist"

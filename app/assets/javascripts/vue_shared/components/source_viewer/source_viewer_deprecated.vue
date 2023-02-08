@@ -13,7 +13,7 @@ import {
   LINES_PER_CHUNK,
   LEGACY_FALLBACKS,
 } from './constants';
-import Chunk from './components/chunk.vue';
+import Chunk from './components/chunk_deprecated.vue';
 import { registerPlugins } from './plugins/index';
 
 /*

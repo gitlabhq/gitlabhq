@@ -7,15 +7,19 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Issues workflow
 
-## Issue tracker guidelines
+**Before you submit an issue, [search the issue tracker](https://gitlab.com/gitlab-org/gitlab/-/issues)**
+for similar entries. Someone else might have already had the same bug or feature proposal.
+If you find an existing issue, show your support with an award emoji and add your notes to the discussion.
 
-**[Search the issue tracker](https://gitlab.com/gitlab-org/gitlab/-/issues)** for similar entries before
-submitting your own, there's a good chance somebody else had the same issue or
-feature proposal. Show your support with an award emoji and/or join the
-discussion.
+To submit a bug:
 
-Please submit bugs using the ['Bug' issue template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/issue_templates/Bug.md) provided on the issue tracker.
-The text in the comments (`<!-- ... -->`) is there to help you with what to include.
+- Use the ['Bug' issue template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/issue_templates/Bug.md).
+  The text in the comments (`<!-- ... -->`) should help you with which information to include.
+- To report a suspected security vulnerability, follow the
+  [disclosure process on the GitLab.com website](https://about.gitlab.com/security/disclosure/).
+
+WARNING:
+Do **not** create publicly viewable issues for suspected security vulnerabilities.
 
 ## Issue triaging
 

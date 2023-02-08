@@ -287,20 +287,3 @@ function setup_gcloud() {
   gcloud auth activate-service-account --key-file="${REVIEW_APPS_GCP_CREDENTIALS}"
   gcloud config set project "${REVIEW_APPS_GCP_PROJECT}"
 }
-
-function download_files() {
-  # If public fork, just download the files directly from there. Otherwise, get files from canonical.
-  if [[ "${CI_PROJECT_VISIBILITY}" == "public" ]]; then
-    local url="${CI_PROJECT_URL}/raw/${CI_COMMIT_SHA}"
-  else
-    local url="https://gitlab.com/gitlab-org/gitlab/raw/master"
-  fi
-
-  # Loop through all files and download them one by one sequentially.
-  for file in "$@"; do
-    local file_url="${url}/${file}"
-
-    echo "Downloading file: ${file_url}"
-    curl "${file_url}" --create-dirs --output "${file}"
-  done
-}

@@ -2,9 +2,9 @@ import hljs from 'highlight.js/lib/core';
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import SourceViewer from '~/vue_shared/components/source_viewer/source_viewer.vue';
+import SourceViewer from '~/vue_shared/components/source_viewer/source_viewer_deprecated.vue';
 import { registerPlugins } from '~/vue_shared/components/source_viewer/plugins/index';
-import Chunk from '~/vue_shared/components/source_viewer/components/chunk.vue';
+import Chunk from '~/vue_shared/components/source_viewer/components/chunk_deprecated.vue';
 import {
   EVENT_ACTION,
   EVENT_LABEL_VIEWER,

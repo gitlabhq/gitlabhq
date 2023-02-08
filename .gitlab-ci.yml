@@ -1,5 +1,6 @@
 stages:
   - sync
+  - preflight
   - prepare
   - build-images
   - fixtures

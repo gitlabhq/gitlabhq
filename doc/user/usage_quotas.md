@@ -35,6 +35,13 @@ is updated every 90 minutes.
 If your namespace shows `'Not applicable.'`, push a commit to any project in the
 namespace to recalculate the storage.
 
+### Container Registry usage **(FREE SAAS)**
+
+Container Registry usage is available only for GitLab.com. This feature requires a
+[new version](https://about.gitlab.com/blog/2022/04/12/next-generation-container-registry/)
+of the GitLab Container Registry. To learn about the proposed release for self-managed
+installations, see [epic 5521](https://gitlab.com/groups/gitlab-org/-/epics/5521).
+
 ### Storage usage statistics
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68898) project-level graph in GitLab 14.4 [with a flag](../administration/feature_flags.md) named `project_storage_ui`. Disabled by default.

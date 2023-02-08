@@ -6,8 +6,8 @@ RSpec.describe Gitlab::ImportExport::Importer do
   let(:user) { create(:user) }
   let(:test_path) { "#{Dir.tmpdir}/importer_spec" }
   let(:shared) { project.import_export_shared }
-  let(:project) { create(:project) }
   let(:import_file) { fixture_file_upload('spec/features/projects/import_export/test_project_export.tar.gz') }
+  let_it_be(:project) { create(:project) }
 
   subject(:importer) { described_class.new(project) }
 

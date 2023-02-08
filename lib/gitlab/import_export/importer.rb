@@ -176,3 +176,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::ImportExport::Importer.prepend_mod_with('Gitlab::ImportExport::Importer')

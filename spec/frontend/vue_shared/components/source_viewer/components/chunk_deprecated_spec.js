@@ -1,7 +1,7 @@
 import { nextTick } from 'vue';
 import { GlIntersectionObserver } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import Chunk from '~/vue_shared/components/source_viewer/components/chunk.vue';
+import Chunk from '~/vue_shared/components/source_viewer/components/chunk_deprecated.vue';
 import ChunkLine from '~/vue_shared/components/source_viewer/components/chunk_line.vue';
 import LineHighlighter from '~/blob/line_highlighter';
 

@@ -868,10 +868,10 @@ module Ci
       job_artifacts.update_all(expire_at: nil)
     end
 
-    def artifacts_file_for_type(type)
+    def artifact_for_type(type)
       file_types = Ci::JobArtifact.associated_file_types_for(type)
       file_types_ids = file_types&.map { |file_type| Ci::JobArtifact.file_types[file_type] }
-      job_artifacts.find_by(file_type: file_types_ids)&.file
+      job_artifacts.find_by(file_type: file_types_ids)
     end
 
     def steps
@@ -1288,6 +1288,19 @@ module Ci
 
     def track_ci_secrets_management_id_tokens_usage
       ::Gitlab::UsageDataCounters::HLLRedisCounter.track_event('i_ci_secrets_management_id_tokens_build_created', values: user_id)
+
+      Gitlab::Tracking.event(
+        self.class.to_s,
+        'create_id_tokens',
+        namespace: namespace,
+        user: user,
+        label: 'redis_hll_counters.ci_secrets_management.i_ci_secrets_management_id_tokens_build_created_monthly',
+        ultimate_namespace_id: namespace.root_ancestor.id,
+        context: [Gitlab::Tracking::ServicePingContext.new(
+          data_source: :redis_hll,
+          event: 'i_ci_secrets_management_id_tokens_build_created'
+        ).to_context]
+      )
     end
   end
 end

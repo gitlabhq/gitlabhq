@@ -145,6 +145,38 @@ To view the **Branch rules overview** list:
 
 ## Troubleshooting
 
+### Multiple branches containing the same commit
+
+At a deeper technical level, Git branches aren't separate entities, but labels
+attached to a set of commit SHAs. When GitLab determines whether or not a branch has been
+merged, it checks the target branch for the existence of those commit SHAs.
+This behavior can cause unexpected results when two merge requests contain the same
+commits. In this example, branches `B` and `C` both start from the same commit (`3`)
+on branch `A`:
+
+```mermaid
+gitGraph
+    commit id:"a"
+    branch "branch A"
+    commit id:"b"
+    commit id:"c" type: HIGHLIGHT
+    branch "branch B"
+    commit id:"d"
+    checkout "branch A"
+    branch "branch C"
+    commit id:"e"
+    checkout main
+    merge "branch B" id:"merges commits b, c, d"
+```
+
+If you merge branch `B`, branch `A` also appears as merged (without any action from you)
+because all commits from branch `A` now appear in the target branch `main`. Branch `C`
+remains unmerged, because commit `5` wasn't part of branch `A` or `B`.
+
+Merge request `A` remains merged, even if you attempt to push new commits
+to its branch. If any changes in merge request `A` remain unmerged (because they
+weren't part of merge request `A`), open a new merge request for them.
+
 ### Error: ambiguous `HEAD` branch exists
 
 In versions of Git earlier than 2.16.0, you could create a branch named `HEAD`.

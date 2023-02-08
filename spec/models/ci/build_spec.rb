@@ -2235,19 +2235,6 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     end
   end
 
-  describe '#artifacts_file_for_type' do
-    let(:build) { create(:ci_build, :artifacts, pipeline: pipeline) }
-    let(:file_type) { :archive }
-
-    subject { build.artifacts_file_for_type(file_type) }
-
-    it 'queries artifacts for type' do
-      expect(build).to receive_message_chain(:job_artifacts, :find_by).with(file_type: [Ci::JobArtifact.file_types[file_type]])
-
-      subject
-    end
-  end
-
   describe '#merge_request' do
     let_it_be(:merge_request) { create(:merge_request, source_project: project) }
 
@@ -5793,26 +5780,48 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
   describe 'secrets management id_tokens usage data' do
     context 'when ID tokens are defined' do
-      let(:ci_build) { FactoryBot.build(:ci_build, user: user, id_tokens: { 'ID_TOKEN_1' => { aud: 'developers' } }) }
-
       context 'on create' do
-        it 'tracks event with user_id' do
+        let(:ci_build) { FactoryBot.build(:ci_build, user: user, id_tokens: { 'ID_TOKEN_1' => { aud: 'developers' } }) }
+
+        it 'tracks RedisHLL event with user_id' do
           expect(::Gitlab::UsageDataCounters::HLLRedisCounter).to receive(:track_event)
             .with('i_ci_secrets_management_id_tokens_build_created', values: user.id)
 
           ci_build.save!
         end
+
+        it 'tracks Snowplow event with RedisHLL context' do
+          params = {
+            category: described_class.to_s,
+            action: 'create_id_tokens',
+            namespace: ci_build.namespace,
+            user: user,
+            label: 'redis_hll_counters.ci_secrets_management.i_ci_secrets_management_id_tokens_build_created_monthly',
+            ultimate_namespace_id: ci_build.namespace.root_ancestor.id,
+            context: [Gitlab::Tracking::ServicePingContext.new(
+              data_source: :redis_hll,
+              event: 'i_ci_secrets_management_id_tokens_build_created'
+            ).to_context.to_json]
+          }
+
+          ci_build.save!
+          expect_snowplow_event(**params)
+        end
       end
 
       context 'on update' do
-        before do
-          ci_build.save!
-        end
+        let_it_be(:ci_build) { create(:ci_build, user: user, id_tokens: { 'ID_TOKEN_1' => { aud: 'developers' } }) }
 
-        it 'does not track event' do
+        it 'does not track RedisHLL event' do
           expect(Gitlab::UsageDataCounters::HLLRedisCounter).not_to receive(:track_event)
 
           ci_build.success
+        end
+
+        it 'does not track Snowplow event' do
+          ci_build.success
+
+          expect_no_snowplow_event
         end
       end
     end
@@ -5821,10 +5830,15 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       let(:ci_build) { FactoryBot.build(:ci_build, user: user) }
 
       context 'on create' do
-        it 'does not track event' do
+        it 'does not track RedisHLL event' do
           expect(Gitlab::UsageDataCounters::HLLRedisCounter).not_to receive(:track_event)
 
           ci_build.save!
+        end
+
+        it 'does not track Snowplow event' do
+          ci_build.save!
+          expect_no_snowplow_event
         end
       end
     end
