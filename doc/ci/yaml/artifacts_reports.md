@@ -67,19 +67,6 @@ GitLab can display the results of one report in the merge request
 
 GitLab cannot display the combined results of multiple `browser_performance` reports.
 
-## `artifacts:reports:cluster_image_scanning` **(ULTIMATE)**
-
-> - Introduced in GitLab 14.1.
-> - Requires GitLab Runner 14.1 and above.
-
-The `cluster_image_scanning` report collects `CLUSTER_IMAGE_SCANNING` vulnerabilities. The collected
-`CLUSTER_IMAGE_SCANNING` report uploads to GitLab as an artifact.
-
-GitLab can display the results of one or more reports in:
-
-- The [security dashboard](../../user/application_security/security_dashboard/index.md).
-- The [Project Vulnerability report](../../user/application_security/vulnerability_report/index.md).
-
 ## `artifacts:reports:coverage_report`
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/344533) in GitLab 14.10.

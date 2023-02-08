@@ -94,6 +94,20 @@ When using the native HashiCorp Vault integration, CI/CD jobs will fail when no 
 
 <div class="deprecation removal-160 breaking-change">
 
+### Development dependencies reported for PHP and Python
+
+Planned removal: GitLab <span class="removal-milestone">16.0</span> <span class="removal-date"></span>
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+In GitLab 16.0 the GitLab Dependency Scanning analyzer will begin reporting development dependencies for both Python/pipenv and PHP/composer projects. Users who do not wish to have these development dependencies reported should set `DS_INCLUDE_DEV_DEPENDENCIES: false` in their CI/CD file.
+
+</div>
+
+<div class="deprecation removal-160 breaking-change">
+
 ### Embedding Grafana panels in Markdown is deprecated
 
 Planned removal: GitLab <span class="removal-milestone">16.0</span> <span class="removal-date"></span>

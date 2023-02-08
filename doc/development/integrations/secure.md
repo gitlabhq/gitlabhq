@@ -31,7 +31,6 @@ For consistency, scanning jobs should be named after the scanner, in lower case.
 The job name is suffixed after the type of scanning:
 
 - `_dependency_scanning`
-- `_cluster_image_scanning`
 - `_container_scanning`
 - `_dast`
 - `_sast`
@@ -79,7 +78,6 @@ Valid reports are:
 
 - `dependency_scanning`
 - `container_scanning`
-- `cluster_image_scanning`
 - `dast`
 - `api_fuzzing`
 - `coverage_fuzzing`
@@ -108,7 +106,6 @@ for variables such as:
 
 - `DEPENDENCY_SCANNING_DISABLED`
 - `CONTAINER_SCANNING_DISABLED`
-- `CLUSTER_IMAGE_SCANNING_DISABLED`
 - `SAST_DISABLED`
 - `DAST_DISABLED`
 
@@ -214,19 +211,6 @@ using the variables `DOCKER_USER` and `DOCKER_PASSWORD`.
 If these are not defined, then the scanner should use
 `CI_REGISTRY_USER` and `CI_REGISTRY_PASSWORD` as default values.
 
-#### Cluster Image Scanning
-
-To be consistent with the official `cluster_image_scanning` for GitLab, scanners must scan the
-Kubernetes cluster whose configuration is given by `KUBECONFIG`.
-
-If you use the `CIS_KUBECONFIG` CI/CD variable, then the
-`KUBECONFIG` variable is ignored and the cluster specified in the
-`CIS_KUBECONFIG` variable is scanned instead. If you don't provide
-the `CIS_KUBECONFIG` CI/CD variable, the value defaults to the value of
-`$KUBECONFIG`. `$KUBECONFIG` is a predefined CI/CD variable configured when the project is assigned to a
-Kubernetes cluster. When multiple contexts are provided in the `KUBECONFIG` variable, the context
-selected as `current-context` is used to fetch vulnerabilities.
-
 #### Configuration files
 
 While scanners may use `CI_PROJECT_DIR` to load specific configuration files,
@@ -320,7 +304,6 @@ and [Container Scanning](../../user/application_security/container_scanning/inde
 
 You can find the schemas for these scanners here:
 
-- [Cluster Image Scanning](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/cluster-image-scanning-report-format.json)
 - [Container Scanning](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/container-scanning-report-format.json)
 - [Coverage Fuzzing](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/coverage-fuzzing-report-format.json)
 - [DAST](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/dast-report-format.json)
@@ -414,7 +397,6 @@ We recommend that you generate a UUID and use it as the `id` field's value.
 The value of the `category` field matches the report type:
 
 - `dependency_scanning`
-- `cluster_image_scanning`
 - `container_scanning`
 - `sast`
 - `dast`
@@ -603,40 +585,6 @@ combines the `operating_system` and the package `name`,
 so these attributes are mandatory.
 The `image` is also mandatory.
 All other attributes are optional.
-
-##### Cluster Image Scanning
-
-The `location` of a `cluster_image_scanning` vulnerability has a `dependency` field. It also has
-an `operating_system` field. For example, here is the `location` object for a vulnerability
-affecting version `2.50.3-2+deb9u1` of Debian package `glib2.0`:
-
-```json
-{
-    "dependency": {
-        "package": {
-            "name": "glib2.0"
-        },
-    },
-    "version": "2.50.3-2+deb9u1",
-    "operating_system": "debian:9",
-    "image": "index.docker.io/library/nginx:1.18",
-    "kubernetes_resource": {
-        "namespace": "production",
-        "kind": "Deployment",
-        "name": "nginx-ingress",
-        "container_name": "nginx",
-        "agent_id": "1"
-    }
-}
-```
-
-The affected package is found when scanning a deployment using the `index.docker.io/library/nginx:1.18` image.
-
-The location fingerprint of a Cluster Image Scanning vulnerability combines the
-`namespace`, `kind`, `name`, and `container_name` fields from the `kubernetes_resource`,
-as well as the package `name`, so these fields are required. The `image` field is also mandatory.
-The `cluster_id` and `agent_id` are mutually exclusive, and one of them must be present.
-All other fields are optional.
 
 ##### SAST
 

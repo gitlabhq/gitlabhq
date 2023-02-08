@@ -257,7 +257,6 @@ once it's imported into the database.
 Describes the type of scan. This must be one of the following:
 
 - `api_fuzzing`
-- `cluster_image_scanning`
 - `container_scanning`
 - `coverage_fuzzing`
 - `dast`

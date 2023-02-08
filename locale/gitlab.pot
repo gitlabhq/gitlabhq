@@ -6036,6 +6036,12 @@ msgstr ""
 msgid "Automatically update this project's branches and tags from the upstream repository."
 msgstr ""
 
+msgid "Automation"
+msgstr ""
+
+msgid "Automation|Automation App"
+msgstr ""
+
 msgid "Autosave|Note"
 msgstr ""
 
@@ -12715,7 +12721,7 @@ msgstr ""
 msgid "DastProfiles|Enter URLs in a comma-separated list."
 msgstr ""
 
-msgid "DastProfiles|Enter headers in a comma-separated list."
+msgid "DastProfiles|Enter a comma-separated list of request header names and values. DAST adds header to every request."
 msgstr ""
 
 msgid "DastProfiles|Error Details"
@@ -12731,6 +12737,9 @@ msgid "DastProfiles|Excluded paths"
 msgstr ""
 
 msgid "DastProfiles|Excluded paths (optional)"
+msgstr ""
+
+msgid "DastProfiles|Headers will appear in vulnerability reports. %{linkStart}Only some headers are automatically masked%{linkEnd}."
 msgstr ""
 
 msgid "DastProfiles|Hide debug messages"
@@ -12797,9 +12806,6 @@ msgid "DastProfiles|Profile is being used by this on-demand scan"
 msgstr ""
 
 msgid "DastProfiles|Profile name"
-msgstr ""
-
-msgid "DastProfiles|Request header names and values. Headers are added to every request made by DAST."
 msgstr ""
 
 msgid "DastProfiles|Request headers"
