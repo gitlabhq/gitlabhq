@@ -12,23 +12,24 @@ import {
 import { createAlert } from '~/flash';
 import { __, s__ } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
-import addProjectCIJobTokenScopeMutation from '../graphql/mutations/add_project_ci_job_token_scope.mutation.graphql';
-import removeProjectCIJobTokenScopeMutation from '../graphql/mutations/remove_project_ci_job_token_scope.mutation.graphql';
-import updateCIJobTokenScopeMutation from '../graphql/mutations/update_ci_job_token_scope.mutation.graphql';
-import getCIJobTokenScopeQuery from '../graphql/queries/get_ci_job_token_scope.query.graphql';
-import getProjectsWithCIJobTokenScopeQuery from '../graphql/queries/get_projects_with_ci_job_token_scope.query.graphql';
-import OptInJwt from './opt_in_jwt.vue';
+import inboundAddProjectCIJobTokenScopeMutation from '../graphql/mutations/inbound_add_project_ci_job_token_scope.mutation.graphql';
+import inboundRemoveProjectCIJobTokenScopeMutation from '../graphql/mutations/inbound_remove_project_ci_job_token_scope.mutation.graphql';
+import inboundUpdateCIJobTokenScopeMutation from '../graphql/mutations/inbound_update_ci_job_token_scope.mutation.graphql';
+import inboundGetCIJobTokenScopeQuery from '../graphql/queries/inbound_get_ci_job_token_scope.query.graphql';
+import inboundGetProjectsWithCIJobTokenScopeQuery from '../graphql/queries/inbound_get_projects_with_ci_job_token_scope.query.graphql';
 import TokenProjectsTable from './token_projects_table.vue';
 
 export default {
   i18n: {
-    toggleLabelTitle: s__('CICD|Limit CI_JOB_TOKEN access'),
+    toggleLabelTitle: s__('CICD|Allow access to this project with a CI_JOB_TOKEN'),
     toggleHelpText: s__(
-      `CICD|Select the projects that can be accessed by API requests authenticated with this project's CI_JOB_TOKEN CI/CD variable. It is a security risk to disable this feature, because unauthorized projects might attempt to retrieve an active token and access the API. %{linkStart}Learn more.%{linkEnd}`,
+      `CICD|Manage which projects can use their CI_JOB_TOKEN to access this project. It is a security risk to disable this feature, because unauthorized projects might attempt to retrieve an active token and access the API. %{linkStart}Learn more.%{linkEnd}`,
     ),
-    cardHeaderTitle: s__('CICD|Add an existing project to the scope'),
+    cardHeaderTitle: s__(
+      'CICD|Allow CI job tokens from the following projects to access this project',
+    ),
     settingDisabledMessage: s__(
-      'CICD|Enable feature to limit job token access to the following projects.',
+      'CICD|Enable feature to allow job token access by the following projects.',
     ),
     addProject: __('Add project'),
     cancel: __('Cancel'),
@@ -36,6 +37,27 @@ export default {
     projectsFetchError: __('There was a problem fetching the projects'),
     scopeFetchError: __('There was a problem fetching the job token scope value'),
   },
+  fields: [
+    {
+      key: 'project',
+      label: __('Project with access'),
+      thClass: 'gl-border-t-none!',
+      columnClass: 'gl-w-40p',
+    },
+    {
+      key: 'namespace',
+      label: __('Namespace'),
+      thClass: 'gl-border-t-none!',
+      columnClass: 'gl-w-40p',
+    },
+    {
+      key: 'actions',
+      label: '',
+      tdClass: 'gl-text-right',
+      thClass: 'gl-border-t-none!',
+      columnClass: 'gl-w-10p',
+    },
+  ],
   components: {
     GlAlert,
     GlButton,
@@ -45,7 +67,6 @@ export default {
     GlLoadingIcon,
     GlSprintf,
     GlToggle,
-    OptInJwt,
     TokenProjectsTable,
   },
   inject: {
@@ -54,29 +75,29 @@ export default {
     },
   },
   apollo: {
-    jobTokenScopeEnabled: {
-      query: getCIJobTokenScopeQuery,
+    inboundJobTokenScopeEnabled: {
+      query: inboundGetCIJobTokenScopeQuery,
       variables() {
         return {
           fullPath: this.fullPath,
         };
       },
-      update(data) {
-        return data.project.ciCdSettings.jobTokenScopeEnabled;
+      update({ project }) {
+        return project.ciCdSettings.inboundJobTokenScopeEnabled;
       },
       error() {
         createAlert({ message: this.$options.i18n.scopeFetchError });
       },
     },
     projects: {
-      query: getProjectsWithCIJobTokenScopeQuery,
+      query: inboundGetProjectsWithCIJobTokenScopeQuery,
       variables() {
         return {
           fullPath: this.fullPath,
         };
       },
-      update(data) {
-        return data.project?.ciJobTokenScope?.projects?.nodes ?? [];
+      update({ project }) {
+        return project?.ciJobTokenScope?.inboundAllowlist?.nodes ?? [];
       },
       error() {
         createAlert({ message: this.$options.i18n.projectsFetchError });
@@ -85,7 +106,7 @@ export default {
   },
   data() {
     return {
-      jobTokenScopeEnabled: null,
+      inboundJobTokenScopeEnabled: null,
       targetProjectPath: '',
       projects: [],
     };
@@ -106,11 +127,11 @@ export default {
             ciCdSettingsUpdate: { errors },
           },
         } = await this.$apollo.mutate({
-          mutation: updateCIJobTokenScopeMutation,
+          mutation: inboundUpdateCIJobTokenScopeMutation,
           variables: {
             input: {
               fullPath: this.fullPath,
-              jobTokenScopeEnabled: this.jobTokenScopeEnabled,
+              inboundJobTokenScopeEnabled: this.inboundJobTokenScopeEnabled,
             },
           },
         });
@@ -119,6 +140,7 @@ export default {
           throw new Error(errors[0]);
         }
       } catch (error) {
+        this.inboundJobTokenScopeEnabled = !this.inboundJobTokenScopeEnabled;
         createAlert({ message: error.message });
       }
     },
@@ -129,12 +151,10 @@ export default {
             ciJobTokenScopeAddProject: { errors },
           },
         } = await this.$apollo.mutate({
-          mutation: addProjectCIJobTokenScopeMutation,
+          mutation: inboundAddProjectCIJobTokenScopeMutation,
           variables: {
-            input: {
-              projectPath: this.fullPath,
-              targetProjectPath: this.targetProjectPath,
-            },
+            projectPath: this.fullPath,
+            targetProjectPath: this.targetProjectPath,
           },
         });
 
@@ -155,12 +175,10 @@ export default {
             ciJobTokenScopeRemoveProject: { errors },
           },
         } = await this.$apollo.mutate({
-          mutation: removeProjectCIJobTokenScopeMutation,
+          mutation: inboundRemoveProjectCIJobTokenScopeMutation,
           variables: {
-            input: {
-              projectPath: this.fullPath,
-              targetProjectPath: removeTargetPath,
-            },
+            projectPath: this.fullPath,
+            targetProjectPath: removeTargetPath,
           },
         });
 
@@ -187,7 +205,7 @@ export default {
     <gl-loading-icon v-if="$apollo.loading" size="lg" class="gl-mt-5" />
     <template v-else>
       <gl-toggle
-        v-model="jobTokenScopeEnabled"
+        v-model="inboundJobTokenScopeEnabled"
         :label="$options.i18n.toggleLabelTitle"
         @change="updateCIJobTokenScope"
       >
@@ -221,18 +239,20 @@ export default {
           </template>
         </gl-card>
         <gl-alert
-          v-if="!jobTokenScopeEnabled"
+          v-if="!inboundJobTokenScopeEnabled"
           class="gl-mb-3"
           variant="warning"
           :dismissible="false"
           :show-icon="false"
-          data-testid="token-disabled-alert"
         >
           {{ $options.i18n.settingDisabledMessage }}
         </gl-alert>
-        <token-projects-table :projects="projects" @removeProject="removeProject" />
+        <token-projects-table
+          :projects="projects"
+          :table-fields="$options.fields"
+          @removeProject="removeProject"
+        />
       </div>
-      <opt-in-jwt />
     </template>
   </div>
 </template>

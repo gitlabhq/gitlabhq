@@ -5,8 +5,7 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/flash';
-import OptInJwt from '~/token_access/components/opt_in_jwt.vue';
-import TokenAccess from '~/token_access/components/token_access.vue';
+import OutboundTokenAccess from '~/token_access/components/outbound_token_access.vue';
 import addProjectCIJobTokenScopeMutation from '~/token_access/graphql/mutations/add_project_ci_job_token_scope.mutation.graphql';
 import removeProjectCIJobTokenScopeMutation from '~/token_access/graphql/mutations/remove_project_ci_job_token_scope.mutation.graphql';
 import updateCIJobTokenScopeMutation from '~/token_access/graphql/mutations/update_ci_job_token_scope.mutation.graphql';
@@ -41,7 +40,6 @@ describe('TokenAccess component', () => {
   const failureHandler = jest.fn().mockRejectedValue(error);
 
   const findToggle = () => wrapper.findComponent(GlToggle);
-  const findOptInJwt = () => wrapper.findComponent(OptInJwt);
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findAddProjectBtn = () => wrapper.findByRole('button', { name: 'Add project' });
   const findRemoveProjectBtn = () => wrapper.findByRole('button', { name: 'Remove access' });
@@ -52,7 +50,7 @@ describe('TokenAccess component', () => {
   };
 
   const createComponent = (requestHandlers, mountFn = shallowMountExtended) => {
-    wrapper = mountFn(TokenAccess, {
+    wrapper = mountFn(OutboundTokenAccess, {
       provide: {
         fullPath: projectPath,
       },
@@ -64,10 +62,6 @@ describe('TokenAccess component', () => {
       },
     });
   };
-
-  afterEach(() => {
-    wrapper.destroy();
-  });
 
   describe('loading state', () => {
     it('shows loading state while waiting on query to resolve', async () => {
@@ -81,21 +75,6 @@ describe('TokenAccess component', () => {
       await waitForPromises();
 
       expect(findLoadingIcon().exists()).toBe(false);
-    });
-  });
-
-  describe('template', () => {
-    beforeEach(async () => {
-      createComponent([
-        [getCIJobTokenScopeQuery, enabledJobTokenScopeHandler],
-        [getProjectsWithCIJobTokenScopeQuery, getProjectsWithScopeHandler],
-      ]);
-
-      await waitForPromises();
-    });
-
-    it('renders the opt in jwt component', () => {
-      expect(findOptInJwt().exists()).toBe(true);
     });
   });
 

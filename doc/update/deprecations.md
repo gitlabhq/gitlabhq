@@ -179,8 +179,15 @@ WARNING:
 This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
 Review the details carefully before upgrading.
 
-Support for using the `prometheus_exclude_database_from_default_metrics` configuration value is deprecated because using it is non-performant. Instead, all metrics
-that scrape the Praefect database will be exported to the `/db_metrics` endpoint. This may require updating your metrics collection targets.
+Support for using the `prometheus_exclude_database_from_default_metrics` configuration value is deprecated in GitLab
+15.9 and will be removed in GitLab 16.0. We are removing this configuration value because using it is non-performant.
+This change means the following metrics will become unavailable on `/metrics`:
+
+- `gitaly_praefect_unavailable_repositories`.
+- `gitaly_praefect_verification_queue_depth`.
+- `gitaly_praefect_replication_queue_depth`.
+
+This may require updating your metrics collection targets to also scrape `/db_metrics`.
 
 </div>
 </div>

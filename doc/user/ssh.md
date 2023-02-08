@@ -13,6 +13,21 @@ GitLab uses the SSH protocol to securely communicate with Git.
 When you use SSH keys to authenticate to the GitLab remote server,
 you don't need to supply your username and password each time.
 
+## What are SSH keys
+
+SSH uses two keys, a public key and a private key.
+
+- The public key can be distributed.
+- The private key should be protected.
+
+When you need to copy or upload your SSH public key, make sure you do not accidentally copy or upload your private key instead.
+
+You cannot expose data by uploading your public key. For example, you can use your public key to
+[sign commits](project/repository/ssh_signed_commits/index.md),
+which makes your use of GitLab and your data even more secure.
+
+For details, see [Asymmetric cryptography, also known as public-key cryptography](https://en.wikipedia.org/wiki/Public-key_cryptography).
+
 ## Prerequisites
 
 To use SSH to communicate with GitLab, you need:

@@ -1,10 +1,11 @@
 ---
 table_name: ar_internal_metadata
-classes: []
+classes:
+- ActiveRecord::InternalMetadata
 feature_categories:
 - database
-description: >-
-  An internal table used by ActiveRecord to store information about how the database was migrated.
+description: An internal table used by ActiveRecord to store information about how
+  the database was migrated.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/9ba1224867665844b117fa037e1465bb706b3685
 milestone: '0.8'
 gitlab_schema: gitlab_internal

@@ -14,6 +14,7 @@ module Projects
 
       before_action do
         push_frontend_feature_flag(:ci_remove_character_limitation_raw_masked_var, type: :development)
+        push_frontend_feature_flag(:ci_inbound_job_token_scope, @project)
       end
 
       helper_method :highlight_badge

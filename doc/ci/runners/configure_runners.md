@@ -668,7 +668,7 @@ variables:
 
 test:
   script:
-    - pwd
+    - pwd -P
 ```
 
 The `$CI_CONCURRENT_PROJECT_ID` should be used in conjunction with `$CI_PROJECT_PATH`
@@ -680,7 +680,7 @@ variables:
 
 test:
   script:
-    - pwd
+    - pwd -P
 ```
 
 #### Nested paths

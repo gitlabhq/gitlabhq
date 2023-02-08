@@ -1,7 +1,6 @@
 import Vue from 'vue';
 import { parseBoolean, convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import GitlabVersionCheckBadge from './components/gitlab_version_check_badge.vue';
-import SecurityPatchUpgradeAlert from './components/security_patch_upgrade_alert.vue';
 import SecurityPatchUpgradeAlertModal from './components/security_patch_upgrade_alert_modal.vue';
 
 const mountGitlabVersionCheckBadge = (el) => {
@@ -24,25 +23,6 @@ const mountGitlabVersionCheckBadge = (el) => {
             size,
             actionable,
             status: severity,
-          },
-        });
-      },
-    });
-  } catch {
-    return null;
-  }
-};
-
-const mountSecurityPatchUpgradeAlert = (el) => {
-  const { currentVersion } = el.dataset;
-
-  try {
-    return new Vue({
-      el,
-      render(createElement) {
-        return createElement(SecurityPatchUpgradeAlert, {
-          props: {
-            currentVersion,
           },
         });
       },
@@ -78,15 +58,10 @@ const mountSecurityPatchUpgradeAlertModal = (el) => {
 export default () => {
   const renderedApps = [];
 
-  const securityPatchUpgradeAlert = document.getElementById('js-security-patch-upgrade-alert');
   const securityPatchUpgradeAlertModal = document.getElementById(
     'js-security-patch-upgrade-alert-modal',
   );
   const versionCheckBadges = [...document.querySelectorAll('.js-gitlab-version-check-badge')];
-
-  if (securityPatchUpgradeAlert) {
-    renderedApps.push(mountSecurityPatchUpgradeAlert(securityPatchUpgradeAlert));
-  }
 
   if (securityPatchUpgradeAlertModal) {
     renderedApps.push(mountSecurityPatchUpgradeAlertModal(securityPatchUpgradeAlertModal));

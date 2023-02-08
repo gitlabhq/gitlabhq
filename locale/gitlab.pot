@@ -7783,6 +7783,12 @@ msgstr ""
 msgid "CICD|Add an existing project to the scope"
 msgstr ""
 
+msgid "CICD|Allow CI job tokens from the following projects to access this project"
+msgstr ""
+
+msgid "CICD|Allow access to this project with a CI_JOB_TOKEN"
+msgstr ""
+
 msgid "CICD|An error occurred while update the setting. Please try again."
 msgstr ""
 
@@ -7807,6 +7813,9 @@ msgstr ""
 msgid "CICD|Deployment strategy"
 msgstr ""
 
+msgid "CICD|Enable feature to allow job token access by the following projects."
+msgstr ""
+
 msgid "CICD|Enable feature to limit job token access to the following projects."
 msgstr ""
 
@@ -7820,6 +7829,9 @@ msgid "CICD|Limit CI_JOB_TOKEN access"
 msgstr ""
 
 msgid "CICD|Limit JSON Web Token (JWT) access"
+msgstr ""
+
+msgid "CICD|Manage which projects can use their CI_JOB_TOKEN to access this project. It is a security risk to disable this feature, because unauthorized projects might attempt to retrieve an active token and access the API. %{linkStart}Learn more.%{linkEnd}"
 msgstr ""
 
 msgid "CICD|Select the projects that can be accessed by API requests authenticated with this project's CI_JOB_TOKEN CI/CD variable. It is a security risk to disable this feature, because unauthorized projects might attempt to retrieve an active token and access the API. %{linkStart}Learn more.%{linkEnd}"
@@ -12764,9 +12776,6 @@ msgid "DastProfiles|Manage %{profileType} profiles"
 msgstr ""
 
 msgid "DastProfiles|Manage profiles"
-msgstr ""
-
-msgid "DastProfiles|Manage site profiles"
 msgstr ""
 
 msgid "DastProfiles|Minimum = 0 (no timeout enabled), Maximum = 2880 minutes"
@@ -27387,9 +27396,6 @@ msgstr ""
 msgid "Months"
 msgstr ""
 
-msgid "More"
-msgstr ""
-
 msgid "More Details"
 msgstr ""
 
@@ -27412,6 +27418,9 @@ msgid "More information is available|here"
 msgstr ""
 
 msgid "More information."
+msgstr ""
+
+msgid "More options"
 msgstr ""
 
 msgid "More than %{number_commits_distance} commits different with %{default_branch}"
@@ -33014,6 +33023,9 @@ msgstr ""
 msgid "Project slug"
 msgstr ""
 
+msgid "Project that can be accessed"
+msgstr ""
+
 msgid "Project uploads"
 msgstr ""
 
@@ -33024,6 +33036,9 @@ msgid "Project visibility level will be changed to match namespace rules when tr
 msgstr ""
 
 msgid "Project was not found or you do not have permission to add this project to Security Dashboards."
+msgstr ""
+
+msgid "Project with access"
 msgstr ""
 
 msgid "Project: %{name}"
@@ -33888,9 +33903,6 @@ msgid "Projects in this group can use Git LFS"
 msgstr ""
 
 msgid "Projects shared with %{group_name}"
-msgstr ""
-
-msgid "Projects that can be accessed"
 msgstr ""
 
 msgid "Projects to index"
@@ -46657,9 +46669,6 @@ msgstr ""
 msgid "VersionCheck|%{details}"
 msgstr ""
 
-msgid "VersionCheck|Critical security upgrade available"
-msgstr ""
-
 msgid "VersionCheck|Important notice - Critical security release"
 msgstr ""
 
@@ -46685,9 +46694,6 @@ msgid "VersionCheck|You are currently on version %{currentVersion}! We strongly 
 msgstr ""
 
 msgid "VersionCheck|You are currently on version %{currentVersion}! We strongly recommend upgrading your GitLab installation to one of the following versions immediately: %{latestStableVersions}."
-msgstr ""
-
-msgid "VersionCheck|You are currently on version %{currentVersion}. We strongly recommend upgrading your GitLab installation. %{link}"
 msgstr ""
 
 msgid "VersionCheck|Your GitLab Version"

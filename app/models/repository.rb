@@ -696,22 +696,14 @@ class Repository
   end
 
   def head_tree(skip_flat_paths: true)
-    if Feature.enabled?(:optimized_head_tree)
-      return if empty? || root_ref.nil?
+    return if empty? || root_ref.nil?
 
-      @head_tree ||= Tree.new(self, root_ref, nil, skip_flat_paths: skip_flat_paths)
-    elsif head_commit
-      @head_tree ||= Tree.new(self, head_commit.sha, nil, skip_flat_paths: skip_flat_paths)
-    end
+    @head_tree ||= Tree.new(self, root_ref, nil, skip_flat_paths: skip_flat_paths)
   end
 
   def tree(sha = :head, path = nil, recursive: false, skip_flat_paths: true, pagination_params: nil)
     if sha == :head
-      if Feature.enabled?(:optimized_head_tree)
-        return if empty? || root_ref.nil?
-      else
-        return unless head_commit
-      end
+      return if empty? || root_ref.nil?
 
       if path.nil?
         return head_tree(skip_flat_paths: skip_flat_paths)

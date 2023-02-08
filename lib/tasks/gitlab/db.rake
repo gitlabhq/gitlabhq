@@ -485,7 +485,7 @@ namespace :gitlab do
                 outdated = true
               end
 
-              if existing_metadata['classes'].sort != table_metadata['classes'].sort
+              if existing_metadata['classes'] && existing_metadata['classes'].sort != table_metadata['classes'].sort
                 existing_metadata['classes'] = table_metadata['classes']
                 outdated = true
               end
@@ -514,10 +514,9 @@ namespace :gitlab do
         File.join(path, sub_directory, "#{source_name}.yml")
       end
 
-      # Temporary disable this, see https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85760#note_998452069
-      # Rake::Task['db:migrate'].enhance do
-      #   Rake::Task['gitlab:db:dictionary:generate'].invoke if Rails.env.development?
-      # end
+      Rake::Task['db:migrate'].enhance do
+        Rake::Task['gitlab:db:dictionary:generate'].invoke if Rails.env.development?
+      end
     end
   end
 end

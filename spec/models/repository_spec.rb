@@ -2775,16 +2775,6 @@ RSpec.describe Repository, feature_category: :source_code_management do
       it 'returns a Tree' do
         expect(repository.head_tree).to be_an_instance_of(Tree)
       end
-
-      context 'when feature flag "optimized_head_tree" is disabled' do
-        before do
-          stub_feature_flags(optimized_head_tree: false)
-        end
-
-        it 'returns a Tree' do
-          expect(repository.head_tree).to be_an_instance_of(Tree)
-        end
-      end
     end
 
     context 'with a non-existing repository' do
@@ -2792,18 +2782,6 @@ RSpec.describe Repository, feature_category: :source_code_management do
         expect(repository).to receive(:root_ref).and_return(nil)
 
         expect(repository.head_tree).to be_nil
-      end
-
-      context 'when feature flag "optimized_head_tree" is disabled' do
-        before do
-          stub_feature_flags(optimized_head_tree: false)
-        end
-
-        it 'returns nil' do
-          expect(repository).to receive(:head_commit).and_return(nil)
-
-          expect(repository.head_tree).to be_nil
-        end
       end
     end
   end
@@ -2817,33 +2795,16 @@ RSpec.describe Repository, feature_category: :source_code_management do
     let(:pagination_params) { nil }
 
     context 'using a non-existing repository' do
-      context 'when feature flag "optimized_head_tree" is enabled' do
-        before do
-          allow(repository).to receive(:root_ref).and_return(nil)
-        end
-
-        it { is_expected.to be_nil }
-
-        context 'when path is defined' do
-          let(:path) { 'README.md' }
-
-          it { is_expected.to be_nil }
-        end
+      before do
+        allow(repository).to receive(:root_ref).and_return(nil)
       end
 
-      context 'when feature flag "optimized_head_tree" is disabled' do
-        before do
-          stub_feature_flags(optimized_head_tree: false)
-          allow(repository).to receive(:head_commit).and_return(nil)
-        end
+      it { is_expected.to be_nil }
+
+      context 'when path is defined' do
+        let(:path) { 'README.md' }
 
         it { is_expected.to be_nil }
-
-        context 'when path is defined' do
-          let(:path) { 'README.md' }
-
-          it { is_expected.to be_nil }
-        end
       end
     end
 

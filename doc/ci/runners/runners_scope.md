@@ -109,9 +109,7 @@ shared runner resources.
 The fair usage queue algorithm assigns jobs based on the projects that have the
 fewest number of jobs already running on shared runners.
 
-**Example 1**
-
-If these jobs are in the queue:
+For example, if these jobs are in the queue:
 
 - Job 1 for Project 1
 - Job 2 for Project 1
@@ -120,7 +118,7 @@ If these jobs are in the queue:
 - Job 5 for Project 2
 - Job 6 for Project 3
 
-The fair usage algorithm assigns jobs in this order:
+When several CI/CD jobs run concurrently, the fair usage algorithm assigns jobs in this order:
 
 1. Job 1 is first, because it has the lowest job number from projects with no running jobs (that is, all projects).
 1. Job 4 is next, because 4 is now the lowest job number from projects with no running jobs (Project 1 has a job running).
@@ -129,20 +127,7 @@ The fair usage algorithm assigns jobs in this order:
 1. Job 5 is next, because Project 1 now has 2 jobs running and Job 5 is the lowest remaining job number between Projects 2 and 3.
 1. Finally is Job 3... because it's the only job left.
 
----
-
-**Example 2**
-
-If these jobs are in the queue:
-
-- Job 1 for Project 1
-- Job 2 for Project 1
-- Job 3 for Project 1
-- Job 4 for Project 2
-- Job 5 for Project 2
-- Job 6 for Project 3
-
-The fair usage algorithm assigns jobs in this order:
+When only one job runs at a time, the fair usage algorithm assigns jobs in this order:
 
 1. Job 1 is chosen first, because it has the lowest job number from projects with no running jobs (that is, all projects).
 1. We finish Job 1.

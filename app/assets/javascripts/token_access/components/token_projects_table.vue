@@ -1,32 +1,11 @@
 <script>
 import { GlButton, GlTable } from '@gitlab/ui';
-import { __, s__ } from '~/locale';
+import { s__ } from '~/locale';
 
 export default {
   i18n: {
     emptyText: s__('CI/CD|No projects have been added to the scope'),
   },
-  fields: [
-    {
-      key: 'project',
-      label: __('Projects that can be accessed'),
-      thClass: 'gl-border-t-none!',
-      columnClass: 'gl-w-40p',
-    },
-    {
-      key: 'namespace',
-      label: __('Namespace'),
-      thClass: 'gl-border-t-none!',
-      columnClass: 'gl-w-40p',
-    },
-    {
-      key: 'actions',
-      label: '',
-      tdClass: 'gl-text-right',
-      thClass: 'gl-border-t-none!',
-      columnClass: 'gl-w-10p',
-    },
-  ],
   components: {
     GlButton,
     GlTable,
@@ -41,6 +20,10 @@ export default {
       type: Array,
       required: true,
     },
+    tableFields: {
+      type: Array,
+      required: true,
+    },
   },
   methods: {
     removeProject(project) {
@@ -52,7 +35,7 @@ export default {
 <template>
   <gl-table
     :items="projects"
-    :fields="$options.fields"
+    :fields="tableFields"
     :tbody-tr-attr="{ 'data-testid': 'projects-token-table-row' }"
     :empty-text="$options.i18n.emptyText"
     show-empty

@@ -49,26 +49,29 @@ RSpec.describe VersionCheckHelper do
 
   describe '#show_security_patch_upgrade_alert?' do
     describe 'return conditions' do
-      where(:feature_enabled, :show_version_check, :gitlab_version_check, :result) do
+      where(:show_version_check, :gitlab_version_check, :result) do
         [
-          [false, false, nil, false],
-          [false, false, { "severity" => "success" }, false],
-          [false, false, { "severity" => "danger" }, false],
-          [false, true, nil, false],
-          [false, true, { "severity" => "success" }, false],
-          [false, true, { "severity" => "danger" }, false],
-          [true, false, nil, false],
-          [true, false, { "severity" => "success" }, false],
-          [true, false, { "severity" => "danger" }, false],
-          [true, true, nil, false],
-          [true, true, { "severity" => "success" }, false],
-          [true, true, { "severity" => "danger" }, true]
+          [false, nil, false],
+          [false, { "severity" => "success" }, false],
+          [false, { "severity" => "danger" }, false],
+          [false, { "severity" => "danger", "critical_vulnerability" => 'some text' }, false],
+          [false, { "severity" => "danger", "critical_vulnerability" => 'false' }, false],
+          [false, { "severity" => "danger", "critical_vulnerability" => false }, false],
+          [false, { "severity" => "danger", "critical_vulnerability" => 'true' }, false],
+          [false, { "severity" => "danger", "critical_vulnerability" => true }, false],
+          [true, nil, false],
+          [true, { "severity" => "success" }, nil],
+          [true, { "severity" => "danger" }, nil],
+          [true, { "severity" => "danger", "critical_vulnerability" => 'some text' }, nil],
+          [true, { "severity" => "danger", "critical_vulnerability" => 'false' }, false],
+          [true, { "severity" => "danger", "critical_vulnerability" => false }, false],
+          [true, { "severity" => "danger", "critical_vulnerability" => 'true' }, true],
+          [true, { "severity" => "danger", "critical_vulnerability" => true }, true]
         ]
       end
 
       with_them do
         before do
-          stub_feature_flags(critical_security_alert: feature_enabled)
           allow(helper).to receive(:show_version_check?).and_return(show_version_check)
           allow(helper).to receive(:gitlab_version_check).and_return(gitlab_version_check)
         end

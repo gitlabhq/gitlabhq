@@ -1,18 +1,63 @@
 <script>
-import { GlDropdown, GlDropdownItem, GlTooltipDirective as GlTooltip } from '@gitlab/ui';
+import { GlTooltip, GlDisclosureDropdown } from '@gitlab/ui';
+import { uniqueId } from 'lodash';
+
+import { __ } from '~/locale';
 
 export default {
   components: {
-    GlDropdown,
-    GlDropdownItem,
-  },
-  directives: {
+    GlDisclosureDropdown,
     GlTooltip,
   },
   inject: ['tiptapEditor'],
   data() {
     return {
-      isActive: {},
+      toggleId: uniqueId('dropdown-toggle-btn-'),
+      items: [
+        {
+          text: __('Comment'),
+          action: () => this.insert('comment'),
+        },
+        {
+          text: __('Code block'),
+          action: () => this.insert('codeBlock'),
+        },
+        {
+          text: __('Details block'),
+          action: () => this.insertList('details', 'detailsContent'),
+        },
+        {
+          text: __('Bullet list'),
+          action: () => this.insertList('bulletList', 'listItem'),
+          wrapperClass: 'gl-sm-display-none!',
+        },
+        {
+          text: __('Ordered list'),
+          action: () => this.insertList('orderedList', 'listItem'),
+          wrapperClass: 'gl-sm-display-none!',
+        },
+        {
+          text: __('Task list'),
+          action: () => this.insertList('taskList', 'taskItem'),
+          wrapperClass: 'gl-sm-display-none!',
+        },
+        {
+          text: __('Horizontal rule'),
+          action: () => this.execute('setHorizontalRule', 'horizontalRule'),
+        },
+        {
+          text: __('Mermaid diagram'),
+          action: () => this.insert('diagram', { language: 'mermaid' }),
+        },
+        {
+          text: __('PlantUML diagram'),
+          action: () => this.insert('diagram', { language: 'plantuml' }),
+        },
+        {
+          text: __('Table of contents'),
+          action: () => this.execute('insertTableOfContents', 'tableOfContents'),
+        },
+      ],
     };
   },
   methods: {
@@ -46,47 +91,17 @@ export default {
 };
 </script>
 <template>
-  <gl-dropdown
-    v-gl-tooltip
-    size="small"
-    category="tertiary"
-    icon="plus"
-    :text="__('More')"
-    :title="__('More')"
-    text-sr-only
-    class="content-editor-dropdown"
-    right
-    lazy
-  >
-    <gl-dropdown-item @click="insert('comment')">
-      {{ __('Comment') }}
-    </gl-dropdown-item>
-    <gl-dropdown-item @click="insert('codeBlock')">
-      {{ __('Code block') }}
-    </gl-dropdown-item>
-    <gl-dropdown-item @click="insertList('details', 'detailsContent')">
-      {{ __('Details block') }}
-    </gl-dropdown-item>
-    <gl-dropdown-item class="gl-sm-display-none!" @click="insertList('bulletList', 'listItem')">
-      {{ __('Bullet list') }}
-    </gl-dropdown-item>
-    <gl-dropdown-item class="gl-sm-display-none!" @click="insertList('orderedList', 'listItem')">
-      {{ __('Ordered list') }}
-    </gl-dropdown-item>
-    <gl-dropdown-item class="gl-sm-display-none!" @click="insertList('taskList', 'taskItem')">
-      {{ __('Task list') }}
-    </gl-dropdown-item>
-    <gl-dropdown-item @click="execute('setHorizontalRule', 'horizontalRule')">
-      {{ __('Horizontal rule') }}
-    </gl-dropdown-item>
-    <gl-dropdown-item @click="insert('diagram', { language: 'mermaid' })">
-      {{ __('Mermaid diagram') }}
-    </gl-dropdown-item>
-    <gl-dropdown-item @click="insert('diagram', { language: 'plantuml' })">
-      {{ __('PlantUML diagram') }}
-    </gl-dropdown-item>
-    <gl-dropdown-item @click="execute('insertTableOfContents', 'tableOfContents')">
-      {{ __('Table of contents') }}
-    </gl-dropdown-item>
-  </gl-dropdown>
+  <div class="gl-display-inline-flex gl-vertical-align-middle">
+    <gl-disclosure-dropdown
+      :items="items"
+      :toggle-id="toggleId"
+      size="small"
+      category="tertiary"
+      icon="plus"
+      :toggle-text="__('More options')"
+      text-sr-only
+      right
+    />
+    <gl-tooltip :target="toggleId" placement="top">{{ __('More options') }}</gl-tooltip>
+  </div>
 </template>
