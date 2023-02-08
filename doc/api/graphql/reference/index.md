@@ -9535,6 +9535,7 @@ The connection type for [`SavedReply`](#savedreply).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="savedreplyconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
 | <a id="savedreplyconnectionedges"></a>`edges` | [`[SavedReplyEdge]`](#savedreplyedge) | A list of edges. |
 | <a id="savedreplyconnectionnodes"></a>`nodes` | [`[SavedReply]`](#savedreply) | A list of nodes. |
 | <a id="savedreplyconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
@@ -15683,6 +15684,18 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="mergerequestassigneereviewrequestedmergerequestsupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Merge requests updated after this timestamp. |
 | <a id="mergerequestassigneereviewrequestedmergerequestsupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Merge requests updated before this timestamp. |
 
+##### `MergeRequestAssignee.savedReply`
+
+Saved reply authored by the user. Will not return saved reply if `saved_replies` feature flag is disabled.
+
+Returns [`SavedReply`](#savedreply).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mergerequestassigneesavedreplyid"></a>`id` | [`UsersSavedReplyID!`](#userssavedreplyid) | ID of a saved reply. |
+
 ##### `MergeRequestAssignee.snippets`
 
 Snippets authored by the user.
@@ -15916,6 +15929,18 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="mergerequestauthorreviewrequestedmergerequeststargetbranches"></a>`targetBranches` | [`[String!]`](#string) | Array of target branch names. All resolved merge requests will have one of these branches as their target. |
 | <a id="mergerequestauthorreviewrequestedmergerequestsupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Merge requests updated after this timestamp. |
 | <a id="mergerequestauthorreviewrequestedmergerequestsupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Merge requests updated before this timestamp. |
+
+##### `MergeRequestAuthor.savedReply`
+
+Saved reply authored by the user. Will not return saved reply if `saved_replies` feature flag is disabled.
+
+Returns [`SavedReply`](#savedreply).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mergerequestauthorsavedreplyid"></a>`id` | [`UsersSavedReplyID!`](#userssavedreplyid) | ID of a saved reply. |
 
 ##### `MergeRequestAuthor.snippets`
 
@@ -16170,6 +16195,18 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="mergerequestparticipantreviewrequestedmergerequestsupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Merge requests updated after this timestamp. |
 | <a id="mergerequestparticipantreviewrequestedmergerequestsupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Merge requests updated before this timestamp. |
 
+##### `MergeRequestParticipant.savedReply`
+
+Saved reply authored by the user. Will not return saved reply if `saved_replies` feature flag is disabled.
+
+Returns [`SavedReply`](#savedreply).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mergerequestparticipantsavedreplyid"></a>`id` | [`UsersSavedReplyID!`](#userssavedreplyid) | ID of a saved reply. |
+
 ##### `MergeRequestParticipant.snippets`
 
 Snippets authored by the user.
@@ -16421,6 +16458,18 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="mergerequestreviewerreviewrequestedmergerequeststargetbranches"></a>`targetBranches` | [`[String!]`](#string) | Array of target branch names. All resolved merge requests will have one of these branches as their target. |
 | <a id="mergerequestreviewerreviewrequestedmergerequestsupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Merge requests updated after this timestamp. |
 | <a id="mergerequestreviewerreviewrequestedmergerequestsupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Merge requests updated before this timestamp. |
+
+##### `MergeRequestReviewer.savedReply`
+
+Saved reply authored by the user. Will not return saved reply if `saved_replies` feature flag is disabled.
+
+Returns [`SavedReply`](#savedreply).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mergerequestreviewersavedreplyid"></a>`id` | [`UsersSavedReplyID!`](#userssavedreplyid) | ID of a saved reply. |
 
 ##### `MergeRequestReviewer.snippets`
 
@@ -20585,6 +20634,18 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="usercorereviewrequestedmergerequeststargetbranches"></a>`targetBranches` | [`[String!]`](#string) | Array of target branch names. All resolved merge requests will have one of these branches as their target. |
 | <a id="usercorereviewrequestedmergerequestsupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Merge requests updated after this timestamp. |
 | <a id="usercorereviewrequestedmergerequestsupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Merge requests updated before this timestamp. |
+
+##### `UserCore.savedReply`
+
+Saved reply authored by the user. Will not return saved reply if `saved_replies` feature flag is disabled.
+
+Returns [`SavedReply`](#savedreply).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="usercoresavedreplyid"></a>`id` | [`UsersSavedReplyID!`](#userssavedreplyid) | ID of a saved reply. |
 
 ##### `UserCore.snippets`
 
@@ -25003,6 +25064,18 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="userreviewrequestedmergerequeststargetbranches"></a>`targetBranches` | [`[String!]`](#string) | Array of target branch names. All resolved merge requests will have one of these branches as their target. |
 | <a id="userreviewrequestedmergerequestsupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Merge requests updated after this timestamp. |
 | <a id="userreviewrequestedmergerequestsupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Merge requests updated before this timestamp. |
+
+###### `User.savedReply`
+
+Saved reply authored by the user. Will not return saved reply if `saved_replies` feature flag is disabled.
+
+Returns [`SavedReply`](#savedreply).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="usersavedreplyid"></a>`id` | [`UsersSavedReplyID!`](#userssavedreplyid) | ID of a saved reply. |
 
 ###### `User.snippets`
 

@@ -137,6 +137,11 @@ module Types
           description: 'Saved replies authored by the user. ' \
                        'Will not return saved replies if `saved_replies` feature flag is disabled.'
 
+    field :saved_reply,
+          resolver: Resolvers::SavedReplyResolver,
+          description: 'Saved reply authored by the user. ' \
+                       'Will not return saved reply if `saved_replies` feature flag is disabled.'
+
     field :gitpod_enabled, GraphQL::Types::Boolean, null: true,
                                                     description: 'Whether Gitpod is enabled at the user level.'
 

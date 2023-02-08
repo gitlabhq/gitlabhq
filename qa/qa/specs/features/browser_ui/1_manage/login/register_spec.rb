@@ -5,7 +5,9 @@ module QA
     it 'allows the user to register and login' do
       Runtime::Browser.visit(:gitlab, Page::Main::Login)
 
-      Resource::User.fabricate_via_browser_ui!
+      Resource::User.fabricate_via_browser_ui! do |user_resource|
+        user_resource.email_domain = 'gitlab.com'
+      end
 
       Page::Main::Menu.perform do |menu|
         expect(menu).to have_personal_area

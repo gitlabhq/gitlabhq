@@ -10,6 +10,7 @@ module QA
           if welcome_page.has_get_started_button?
             welcome_page.select_role('Other')
             welcome_page.choose_setup_for_company_if_available
+            welcome_page.choose_create_a_new_project_if_available
             welcome_page.click_get_started_button
           end
         end

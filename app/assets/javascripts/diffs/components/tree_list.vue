@@ -101,7 +101,7 @@ export default {
         </button>
       </div>
     </div>
-    <div :class="{ 'pt-0 tree-list-blobs': !renderTreeList }" class="tree-list-scroll">
+    <div :class="{ 'pt-0 tree-list-blobs': !renderTreeList || search }" class="tree-list-scroll">
       <template v-if="filteredTreeList.length">
         <file-tree
           v-for="file in filteredTreeList"

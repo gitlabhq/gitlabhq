@@ -41,6 +41,7 @@ RSpec.shared_examples "a user type with merge request interaction type" do
       preferencesGitpodPath
       profileEnableGitpodPath
       savedReplies
+      savedReply
     ]
 
     expect(described_class).to have_graphql_fields(*expected_fields)

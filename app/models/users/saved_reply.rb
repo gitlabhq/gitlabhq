@@ -11,5 +11,9 @@ module Users
       length: { maximum: 255 },
       uniqueness: { scope: [:user_id] }
     validates :content, length: { maximum: 10000 }
+
+    def self.find_saved_reply(user_id:, id:)
+      ::Users::SavedReply.find_by(user_id: user_id, id: id)
+    end
   end
 end

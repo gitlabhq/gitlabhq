@@ -72,13 +72,15 @@ WARNING:
 If a metric is not used in Sisense or any other system after 6 months, the
 Product Intelligence team marks it as inactive and assigns it to the group owner for review.
 
-We are working on automating this process. See [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/338466) for details.
+We are working on automating this process. See [this epic](https://gitlab.com/groups/gitlab-org/-/epics/8988) for details.
 
 Product Intelligence removes metrics from Service Ping if they are not used in any Sisense dashboard.
 
-For an example of the metric removal process, see this [example issue](https://gitlab.com/gitlab-org/gitlab/-/issues/297029).
+For an example of the metric removal process, see this [example issue](https://gitlab.com/gitlab-org/gitlab/-/issues/388236).
 
 To remove a metric:
+
+1. Create an issue for removing the metric if none exists yet. The issue needs to outline why the metric should be deleted. You can use this issue to document the removal process.
 
 1. Check the following YAML files and verify the metric is not used in an aggregate:
    - [`config/metrics/aggregates/*.yaml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/aggregates/)
@@ -111,13 +113,16 @@ To remove a metric:
    [GitLab Data Team project](https://gitlab.com/gitlab-data/analytics/-/issues).
    Ask for confirmation that the metric is not referred to in any SiSense dashboards and
    can be safely removed from Service Ping. Use this
-   [example issue](https://gitlab.com/gitlab-data/analytics/-/issues/7539) for guidance.
+   [example issue](https://gitlab.com/gitlab-data/analytics/-/issues/15266) for guidance.
+
+1. Notify the Customer Success Ops team (`@csops-team`), Analytics Engineers (`@gitlab-data/analytics-engineers`), and Product Analysts (`@gitlab-data/product-analysts`) by `@` mentioning those groups in a comment in the issue regarding the deletion of the metric.
+   Many Service Ping metrics are relied upon for health score and XMAU reporting and unexpected changes to those metrics could break reporting.
 
 1. After you verify the metric can be safely removed,
    update the attributes of the metric's YAML definition:
 
    - Set the `status:` to `removed`.
-   - Set `removed_by_url:` to the URL of the MR removing the metric
+   - Set `removed_by_url:` to the URL of the issue removing the metric
    - Set `milestone_removed:` to the number of the
      milestone in which the metric was removed.
 
@@ -139,6 +144,3 @@ To remove a metric:
 1. Remove any other records related to the metric:
    - The feature flag YAML file at [`config/feature_flags/*/*.yaml`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/config/feature_flags).
    - The entry in the known events YAML file at [`lib/gitlab/usage_data_counters/known_events/*.yaml`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/usage_data_counters/known_events).
-
-1. Notify the Customer Success Ops team (`@csops-team`), Analytics Engineers (`@gitlab-data/analytics-engineers`), and Product Analysts (`@gitlab-data/product-analysts`) by `@` mentioning those groups in a comment on the MR.
-   Many Service Ping metrics are relied upon for health score and XMAU reporting and unexpected changes to those metrics could break reporting.

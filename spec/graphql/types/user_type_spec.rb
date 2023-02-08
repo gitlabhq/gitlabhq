@@ -46,6 +46,7 @@ RSpec.describe GitlabSchema.types['User'], feature_category: :user_profile do
       preferencesGitpodPath
       profileEnableGitpodPath
       savedReplies
+      savedReply
     ]
 
     expect(described_class).to have_graphql_fields(*expected_fields)

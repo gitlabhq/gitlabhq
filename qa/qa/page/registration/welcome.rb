@@ -21,6 +21,10 @@ module QA
           # Only implemented in EE
         end
 
+        def choose_create_a_new_project_if_available
+          # Only implemented in EE
+        end
+
         def click_get_started_button
           Support::Retrier.retry_until do
             click_element :get_started_button
