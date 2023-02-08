@@ -1737,6 +1737,24 @@ RSpec.describe Ci::Runner, feature_category: :runner do
     end
   end
 
+  describe '#short_sha' do
+    subject(:short_sha) { runner.short_sha }
+
+    context 'when registered via command-line' do
+      let(:runner) { create(:ci_runner) }
+
+      specify { expect(runner.token).not_to start_with(described_class::CREATED_RUNNER_TOKEN_PREFIX) }
+      it { is_expected.not_to start_with(described_class::CREATED_RUNNER_TOKEN_PREFIX) }
+    end
+
+    context 'when creating new runner via UI' do
+      let(:runner) { create(:ci_runner, :created_via_ui) }
+
+      specify { expect(runner.token).to start_with(described_class::CREATED_RUNNER_TOKEN_PREFIX) }
+      it { is_expected.not_to start_with(described_class::CREATED_RUNNER_TOKEN_PREFIX) }
+    end
+  end
+
   describe '#token' do
     subject(:token) { runner.token }
 
@@ -1746,8 +1764,8 @@ RSpec.describe Ci::Runner, feature_category: :runner do
       it { is_expected.not_to start_with('glrt-') }
     end
 
-    context 'when runner is created in UI' do
-      let(:runner) { create(:ci_runner, :created_in_ui) }
+    context 'when runner is created via UI' do
+      let(:runner) { create(:ci_runner, :created_via_ui) }
 
       it { is_expected.to start_with('glrt-') }
     end
@@ -1986,7 +2004,7 @@ RSpec.describe Ci::Runner, feature_category: :runner do
     end
 
     context 'when runner created via UI' do
-      let(:runner) { create(:ci_runner, :created_in_ui) }
+      let(:runner) { create(:ci_runner, :created_via_ui) }
 
       it { is_expected.to eq true }
     end

@@ -252,6 +252,15 @@ BEGIN
 END;
 $$;
 
+CREATE FUNCTION trigger_3207b8d0d6f3() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+  NEW."id_convert_to_bigint" := NEW."id";
+  RETURN NEW;
+END;
+$$;
+
 CREATE FUNCTION unset_has_issues_on_vulnerability_reads() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -12680,7 +12689,8 @@ CREATE TABLE ci_build_needs (
     artifacts boolean DEFAULT true NOT NULL,
     optional boolean DEFAULT false NOT NULL,
     build_id bigint NOT NULL,
-    partition_id bigint DEFAULT 100 NOT NULL
+    partition_id bigint DEFAULT 100 NOT NULL,
+    id_convert_to_bigint bigint DEFAULT 0 NOT NULL
 );
 
 CREATE SEQUENCE ci_build_needs_id_seq
@@ -33462,6 +33472,8 @@ CREATE TRIGGER projects_loose_fk_trigger AFTER DELETE ON projects REFERENCING OL
 CREATE TRIGGER trigger_1a857e8db6cd BEFORE INSERT OR UPDATE ON vulnerability_occurrences FOR EACH ROW EXECUTE FUNCTION trigger_1a857e8db6cd();
 
 CREATE TRIGGER trigger_c5a5f48f12b0 BEFORE INSERT OR UPDATE ON epic_user_mentions FOR EACH ROW EXECUTE FUNCTION trigger_c5a5f48f12b0();
+
+CREATE TRIGGER trigger_3207b8d0d6f3 BEFORE INSERT OR UPDATE ON ci_build_needs FOR EACH ROW EXECUTE FUNCTION trigger_3207b8d0d6f3();
 
 CREATE TRIGGER trigger_c7107f30d69d BEFORE INSERT OR UPDATE ON merge_request_metrics FOR EACH ROW EXECUTE FUNCTION trigger_c7107f30d69d();
 

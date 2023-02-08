@@ -38,6 +38,7 @@ heading to toggle the list of the milestone bars.
 > - Filtering by epic confidentiality [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/218624) in GitLab 13.9.
 > - Filtering by epic [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/218623) in GitLab 13.11.
 > - Filtering by milestone [feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/323917) in GitLab 14.5.
+> - Filtering by group was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385191) in GitLab 15.9.
 
 NOTE:
 Filtering roadmaps by milestone might not be available to you. Be sure to review this section's version history for details.
@@ -62,6 +63,7 @@ You can also filter epics in the Roadmap view by the epics':
 - [Confidentiality](../epics/manage_epics.md#make-an-epic-confidential)
 - Epic
 - Your Reaction
+- Groups
 
 ![roadmap date range in weeks](img/roadmap_filters_v13_11.png)
 

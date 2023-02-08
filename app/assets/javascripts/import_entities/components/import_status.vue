@@ -142,7 +142,13 @@ export default {
 <template>
   <div>
     <div class="gl-display-inline-block gl-w-13">
-      <gl-badge :icon="mappedStatus.icon" :variant="mappedStatus.variant" size="md" class="gl-mr-2">
+      <gl-badge
+        :icon="mappedStatus.icon"
+        :variant="mappedStatus.variant"
+        size="md"
+        icon-size="sm"
+        class="gl-mr-2"
+      >
         {{ mappedStatus.text }}
       </gl-badge>
     </div>

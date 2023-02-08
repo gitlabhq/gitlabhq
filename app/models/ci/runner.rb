@@ -387,7 +387,10 @@ module Ci
     end
 
     def short_sha
-      token[0...8] if token
+      return unless token
+
+      start_index = created_via_ui? ? CREATED_RUNNER_TOKEN_PREFIX.length : 0
+      token[start_index..start_index + 8]
     end
 
     def tag_list

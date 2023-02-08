@@ -58,7 +58,7 @@ FactoryBot.define do
       end
     end
 
-    trait :created_in_ui do
+    trait :created_via_ui do
       legacy_registered { false }
     end
 

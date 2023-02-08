@@ -167,16 +167,8 @@ To monitor [strong consistency](index.md#strong-consistency), you can use the fo
 - `gitaly_hook_transaction_voting_delay_seconds`, the client-side delay introduced by waiting for
   the transaction to be committed.
 
-To monitor the number of repositories that have no healthy, up-to-date replicas:
-
-- `gitaly_praefect_unavailable_repositories`, the number of repositories that have no healthy, up to date replicas.
-  - [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/390266) in GitLab 15.9 and will be removed in GitLab 16.0.
-
 To monitor [repository verification](praefect.md#repository-verification), use the following Prometheus metrics:
 
-- `gitaly_praefect_verification_queue_depth`, the total number of replicas pending verification. This metric is:
-  - Scraped from the database and is only available when Prometheus is scraping the database metrics.
-  - [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/390266) in GitLab 15.9 and will be removed in GitLab 16.0.
 - `gitaly_praefect_verification_jobs_dequeued_total`, the number of verification jobs picked up by the
   worker.
 - `gitaly_praefect_verification_jobs_completed_total`, the number of verification jobs completed by the
@@ -186,6 +178,9 @@ To monitor [repository verification](praefect.md#repository-verification), use t
   - `error` indicates the job failed and has to be retried.
 - `gitaly_praefect_stale_verification_leases_released_total`, the number of stale verification leases
   released.
+
+The `/metrics` endpoint also provides all the metrics available under the `/db_metrics` endpoint. Using `/metrics` for `/db_metrics` metrics
+is [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/390266) in GitLab 15.9 and will be removed in GitLab 16.0.
 
 You can also monitor the [Praefect logs](../logs/index.md#praefect-logs).
 

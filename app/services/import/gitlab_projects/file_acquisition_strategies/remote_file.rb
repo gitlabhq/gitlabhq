@@ -16,10 +16,8 @@ module Import
           allow_local_network: allow_local_requests?,
           dns_rebind_protection: true
         }
-        validate :aws_s3, if: :validate_aws_s3?
-        # When removing the import_project_from_remote_file_s3 remove the
-        # whole condition of this validation:
-        validates_with RemoteFileValidator, if: -> { validate_aws_s3? || !s3_request? }
+
+        validates_with RemoteFileValidator, if: -> { !s3_request? }
 
         def initialize(params:, current_user: nil)
           @params = params
@@ -47,18 +45,8 @@ module Import
 
         attr_reader :params
 
-        def aws_s3
-          if s3_request?
-            errors.add(:base, 'To import from AWS S3 use `projects/remote-import-s3`')
-          end
-        end
-
         def s3_request?
           headers['Server'] == 'AmazonS3' && headers['x-amz-request-id'].present?
-        end
-
-        def validate_aws_s3?
-          ::Feature.enabled?(:import_project_from_remote_file_s3)
         end
 
         def headers
