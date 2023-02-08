@@ -80,7 +80,11 @@ describe('~/nav/components/top_nav_menu_sections.vue', () => {
           }),
         },
         {
-          classes: [...TopNavMenuSections.BORDER_CLASSES.split(' '), 'gl-mt-3'],
+          classes: [
+            ...TopNavMenuSections.BORDER_CLASSES.split(' '),
+            'gl-border-gray-50',
+            'gl-mt-3',
+          ],
           menuItems: TEST_SECTIONS[1].menuItems.map((menuItem, index) => {
             const classes = menuItem.type === 'header' ? [...headerClasses] : [...itemClasses];
             if (index > 0) classes.push(menuItem.type === 'header' ? 'gl-pt-3!' : 'gl-mt-1');
@@ -117,8 +121,21 @@ describe('~/nav/components/top_nav_menu_sections.vue', () => {
 
     it('renders border classes for top section', () => {
       expect(findSectionModels().map((x) => x.classes)).toEqual([
-        [...TopNavMenuSections.BORDER_CLASSES.split(' ')],
-        [...TopNavMenuSections.BORDER_CLASSES.split(' '), 'gl-mt-3'],
+        [...TopNavMenuSections.BORDER_CLASSES.split(' '), 'gl-border-gray-50'],
+        [...TopNavMenuSections.BORDER_CLASSES.split(' '), 'gl-border-gray-50', 'gl-mt-3'],
+      ]);
+    });
+  });
+
+  describe('with isPrimarySection=true', () => {
+    beforeEach(() => {
+      createComponent({ isPrimarySection: true });
+    });
+
+    it('renders border classes for top section', () => {
+      expect(findSectionModels().map((x) => x.classes)).toEqual([
+        [],
+        [...TopNavMenuSections.BORDER_CLASSES.split(' '), 'gl-border-gray-100', 'gl-mt-3'],
       ]);
     });
   });

@@ -246,7 +246,16 @@ module IssuableActions
   end
 
   def bulk_update_params
-    params.require(:update).permit(bulk_update_permitted_keys)
+    clean_bulk_update_params(
+      params.require(:update).permit(bulk_update_permitted_keys)
+    )
+  end
+
+  def clean_bulk_update_params(permitted_params)
+    assignee_ids = permitted_params[:assignee_ids]
+    return permitted_params unless assignee_ids.is_a?(Array) && assignee_ids.compact.empty?
+
+    permitted_params.except(:assignee_ids)
   end
 
   def bulk_update_permitted_keys

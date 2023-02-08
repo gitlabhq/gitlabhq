@@ -35,7 +35,6 @@ module Gitlab
       # - name: g_compliance_dashboard # Unique event name
       #   redis_slot: compliance       # Optional slot name, if not defined it will use name as a slot, used for totals
       #   category: compliance         # Group events in categories
-      #   expiry: 29                   # Optional expiration time in days, default value 29 days for daily and 6.weeks for weekly
       #   aggregation: daily           # Aggregation level, keys are stored daily or weekly
       #   feature_flag:                # The event feature flag
       #
@@ -203,8 +202,6 @@ module Gitlab
         end
 
         def expiry(event)
-          return event[:expiry].days if event[:expiry].present?
-
           event[:aggregation].to_sym == :daily ? DEFAULT_DAILY_KEY_EXPIRY_LENGTH : DEFAULT_WEEKLY_KEY_EXPIRY_LENGTH
         end
 

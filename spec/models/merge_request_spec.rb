@@ -320,7 +320,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     describe '#ensure_merge_request_diff' do
       let(:merge_request) { build(:merge_request) }
 
-      context 'when async_merge_request_diff_creation is true' do
+      context 'when skip_ensure_merge_request_diff is true' do
         before do
           merge_request.skip_ensure_merge_request_diff = true
         end
@@ -332,7 +332,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
         end
       end
 
-      context 'when async_merge_request_diff_creation is false' do
+      context 'when skip_ensure_merge_request_diff is false' do
         before do
           merge_request.skip_ensure_merge_request_diff = false
         end

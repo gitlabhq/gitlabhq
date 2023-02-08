@@ -3,22 +3,18 @@
 - name: g_edit_by_web_ide
   category: ide_edit
   redis_slot: edit
-  expiry: 29
   aggregation: daily
 - name: g_edit_by_sfe
   category: ide_edit
   redis_slot: edit
-  expiry: 29
   aggregation: daily
 - name: g_edit_by_snippet_ide
   category: ide_edit
   redis_slot: edit
-  expiry: 29
   aggregation: daily
 - name: g_edit_by_live_preview
   category: ide_edit
   redis_slot: edit
-  expiry: 29
   aggregation: daily
 - name: i_search_total
   category: search
@@ -310,7 +306,6 @@
 - name: unique_active_user
   category: manage
   aggregation: weekly
-  expiry: 42
 # Environments page
 - name: users_visiting_environments_pages
   category: environments

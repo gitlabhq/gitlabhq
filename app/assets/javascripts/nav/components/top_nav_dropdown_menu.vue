@@ -76,7 +76,11 @@ export default {
       :class="menuClass"
       data-testid="menu-sidebar"
     >
-      <top-nav-menu-sections :sections="menuSections" @menu-item-click="onMenuItemClick" />
+      <top-nav-menu-sections
+        :sections="menuSections"
+        :is-primary-section="true"
+        @menu-item-click="onMenuItemClick"
+      />
     </div>
     <keep-alive-slots
       v-show="activeView"

@@ -501,40 +501,12 @@ RSpec.describe MergeRequests::CreateService, :clean_gitlab_redis_shared_state do
           project.add_developer(user)
         end
 
-        context 'when async_merge_request_diff_creation is enabled' do
-          before do
-            stub_feature_flags(async_merge_request_diff_creation: true)
-          end
+        it 'creates the merge request', :sidekiq_inline do
+          merge_request = described_class.new(project: project, current_user: user, params: opts).execute
 
-          it 'creates the merge request', :sidekiq_inline do
-            expect_next_instance_of(MergeRequest) do |instance|
-              expect(instance).not_to receive(:eager_fetch_ref!)
-            end
-
-            merge_request = described_class.new(project: project, current_user: user, params: opts).execute
-
-            expect(merge_request).to be_persisted
-            expect(merge_request.iid).to be > 0
-            expect(merge_request.merge_request_diff).not_to be_empty
-          end
-        end
-
-        context 'when async_merge_request_diff_creation is disabled' do
-          before do
-            stub_feature_flags(async_merge_request_diff_creation: false)
-          end
-
-          it 'creates the merge request' do
-            expect_next_instance_of(MergeRequest) do |instance|
-              expect(instance).to receive(:eager_fetch_ref!).and_call_original
-            end
-
-            merge_request = described_class.new(project: project, current_user: user, params: opts).execute
-
-            expect(merge_request).to be_persisted
-            expect(merge_request.iid).to be > 0
-            expect(merge_request.merge_request_diff).not_to be_empty
-          end
+          expect(merge_request).to be_persisted
+          expect(merge_request.iid).to be > 0
+          expect(merge_request.merge_request_diff).not_to be_empty
         end
 
         it 'does not create the merge request when the target project is archived' do

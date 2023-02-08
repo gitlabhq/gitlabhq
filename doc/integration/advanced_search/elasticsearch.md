@@ -612,7 +612,6 @@ In addition to the Rake tasks, there are some environment variables that can be 
 
 | Environment Variable | Data Type | What it does                                                                 |
 | -------------------- |:---------:| ---------------------------------------------------------------------------- |
-| `UPDATE_INDEX`       | Boolean   | Tells the indexer to overwrite any existing index data (true/false).         |
 | `ID_TO`              | Integer   | Tells the indexer to only index projects less than or equal to the value.    |
 | `ID_FROM`            | Integer   | Tells the indexer to only index projects greater than or equal to the value. |
 
@@ -770,21 +769,7 @@ Make sure to prepare for this task by having a
    NOTE:
    Sometimes the project indexing jobs queued by `gitlab:elastic:index_projects`
    can get interrupted. This may happen for many reasons, but it's always safe
-   to run the indexing task again. It skips repositories that have
-   already been indexed.
-
-   As the indexer stores the last commit SHA of every indexed repository in the
-   database, you can run the indexer with the special parameter `UPDATE_INDEX` and
-   it checks every project repository again to make sure that every commit in
-   a repository is indexed, which can be useful in case if your index is outdated:
-
-   ```shell
-   # Omnibus installations
-   sudo gitlab-rake gitlab:elastic:index_projects UPDATE_INDEX=true ID_TO=1000
-
-   # Installations from source
-   bundle exec rake gitlab:elastic:index_projects UPDATE_INDEX=true ID_TO=1000 RAILS_ENV=production
-   ```
+   to run the indexing task again.
 
    You can also use the `gitlab:elastic:clear_index_status` Rake task to force the
    indexer to "forget" all progress, so it retries the indexing process from the
