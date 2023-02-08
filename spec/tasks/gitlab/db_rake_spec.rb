@@ -724,6 +724,80 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
     end
   end
 
+  describe 'execute_async_index_operations' do
+    before do
+      skip_if_multiple_databases_not_setup
+    end
+
+    it 'delegates ci task to Gitlab::Database::AsyncIndexes' do
+      expect(Gitlab::Database::AsyncIndexes).to receive(:execute_pending_actions!).with(how_many: 2)
+
+      run_rake_task('gitlab:db:execute_async_index_operations:ci')
+    end
+
+    it 'delegates ci task to Gitlab::Database::AsyncIndexes with specified argument' do
+      expect(Gitlab::Database::AsyncIndexes).to receive(:execute_pending_actions!).with(how_many: 5)
+
+      run_rake_task('gitlab:db:execute_async_index_operations:ci', '[5]')
+    end
+
+    it 'delegates main task to Gitlab::Database::AsyncIndexes' do
+      expect(Gitlab::Database::AsyncIndexes).to receive(:execute_pending_actions!).with(how_many: 2)
+
+      run_rake_task('gitlab:db:execute_async_index_operations:main')
+    end
+
+    it 'delegates main task to Gitlab::Database::AsyncIndexes with specified argument' do
+      expect(Gitlab::Database::AsyncIndexes).to receive(:execute_pending_actions!).with(how_many: 7)
+
+      run_rake_task('gitlab:db:execute_async_index_operations:main', '[7]')
+    end
+
+    it 'delegates all task to every database with higher default for dev' do
+      expect(Rake::Task['gitlab:db:execute_async_index_operations:ci']).to receive(:invoke).with(1000)
+      expect(Rake::Task['gitlab:db:execute_async_index_operations:main']).to receive(:invoke).with(1000)
+
+      run_rake_task('gitlab:db:execute_async_index_operations:all')
+    end
+
+    it 'delegates all task to every database with lower default for prod' do
+      allow(Gitlab).to receive(:dev_or_test_env?).and_return(false)
+
+      expect(Rake::Task['gitlab:db:execute_async_index_operations:ci']).to receive(:invoke).with(2)
+      expect(Rake::Task['gitlab:db:execute_async_index_operations:main']).to receive(:invoke).with(2)
+
+      run_rake_task('gitlab:db:execute_async_index_operations:all')
+    end
+
+    it 'delegates all task to every database with specified argument' do
+      expect(Rake::Task['gitlab:db:execute_async_index_operations:ci']).to receive(:invoke).with('50')
+      expect(Rake::Task['gitlab:db:execute_async_index_operations:main']).to receive(:invoke).with('50')
+
+      run_rake_task('gitlab:db:execute_async_index_operations:all', '[50]')
+    end
+
+    context 'when feature is not enabled' do
+      it 'is a no-op' do
+        stub_feature_flags(database_async_index_operations: false)
+
+        expect(Gitlab::Database::AsyncIndexes).not_to receive(:execute_pending_actions!)
+
+        expect { run_rake_task('gitlab:db:execute_async_index_operations:main') }.to raise_error(SystemExit)
+      end
+    end
+
+    context 'with geo configured' do
+      before do
+        skip_unless_geo_configured
+      end
+
+      it 'does not create a task for the geo database' do
+        expect { run_rake_task('gitlab:db:execute_async_index_operations:geo') }
+          .to raise_error(/Don't know how to build task 'gitlab:db:execute_async_index_operations:geo'/)
+      end
+    end
+  end
+
   describe 'active' do
     using RSpec::Parameterized::TableSyntax
 

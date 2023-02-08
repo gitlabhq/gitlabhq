@@ -88,6 +88,7 @@ module API
 
       expose :emails_disabled, documentation: { type: 'boolean' }
       expose :shared_runners_enabled, documentation: { type: 'boolean' }
+      expose :group_runners_enabled, documentation: { type: 'boolean' }
       expose :lfs_enabled?, as: :lfs_enabled, documentation: { type: 'boolean' }
       expose :creator_id, documentation: { type: 'integer', example: 1 }
       expose :forked_from_project, using: Entities::BasicProjectDetails, if: ->(project, options) do

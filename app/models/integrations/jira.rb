@@ -48,21 +48,21 @@ module Integrations
           section: SECTION_TYPE_CONNECTION,
           required: true,
           title: -> { s_('JiraService|Web URL') },
-          help: -> { s_('JiraService|Base URL of the Jira instance.') },
+          help: -> { s_('JiraService|Base URL of the Jira instance') },
           placeholder: 'https://jira.example.com',
           exposes_secrets: true
 
     field :api_url,
           section: SECTION_TYPE_CONNECTION,
           title: -> { s_('JiraService|Jira API URL') },
-          help: -> { s_('JiraService|If different from Web URL.') },
+          help: -> { s_('JiraService|If different from the Web URL') },
           exposes_secrets: true
 
     field :username,
           section: SECTION_TYPE_CONNECTION,
           required: true,
-          title: -> { s_('JiraService|Username or Email') },
-          help: -> { s_('JiraService|Use a username for server version and an email for cloud version.') }
+          title: -> { s_('JiraService|Username or email') },
+          help: -> { s_('JiraService|Username for the server version or an email for the cloud version') }
 
     field :password,
           section: SECTION_TYPE_CONNECTION,
@@ -70,7 +70,7 @@ module Integrations
           title: -> { s_('JiraService|Password or API token') },
           non_empty_password_title: -> { s_('JiraService|Enter new password or API token') },
           non_empty_password_help: -> { s_('JiraService|Leave blank to use your current password or API token.') },
-          help: -> { s_('JiraService|Use a password for server version and an API token for cloud version.') }
+          help: -> { s_('JiraService|Password for the server version or an API token for the cloud version') }
 
     field :jira_issue_transition_id, api_only: true
 

@@ -9,7 +9,7 @@ RSpec.describe API::Ci::Helpers::Runner do
     allow(helper).to receive(:env).and_return({})
   end
 
-  describe '#current_job' do
+  describe '#current_job', feature_category: :continuous_integration do
     let(:build) { create(:ci_build, :running) }
 
     it 'handles sticking of a build when a build ID is specified' do
@@ -38,7 +38,7 @@ RSpec.describe API::Ci::Helpers::Runner do
     end
   end
 
-  describe '#current_runner' do
+  describe '#current_runner', feature_category: :runner do
     let(:runner) { create(:ci_runner, token: 'foo') }
 
     it 'handles sticking of a runner if a token is specified' do
@@ -67,7 +67,73 @@ RSpec.describe API::Ci::Helpers::Runner do
     end
   end
 
-  describe '#track_runner_authentication', :prometheus do
+  describe '#current_runner_machine', :freeze_time, feature_category: :runner_fleet do
+    let(:runner) { create(:ci_runner, token: 'foo') }
+    let(:runner_machine) { create(:ci_runner_machine, runner: runner, machine_xid: 'bar', contacted_at: 1.hour.ago) }
+
+    subject(:current_runner_machine) { helper.current_runner_machine }
+
+    context 'with create_runner_machine FF enabled' do
+      before do
+        stub_feature_flags(create_runner_machine: true)
+      end
+
+      it 'does not return runner machine if no system_id specified' do
+        allow(helper).to receive(:params).and_return(token: runner.token)
+
+        is_expected.to be_nil
+      end
+
+      context 'when runner machine already exists' do
+        before do
+          allow(helper).to receive(:params).and_return(token: runner.token, system_id: runner_machine.machine_xid)
+        end
+
+        it { is_expected.to eq(runner_machine) }
+
+        it 'does not update the contacted_at field' do
+          expect(current_runner_machine.contacted_at).to eq 1.hour.ago
+        end
+      end
+
+      it 'creates a new runner machine if one could be not be found', :aggregate_failures do
+        allow(helper).to receive(:params).and_return(token: runner.token, system_id: 'new_system_id')
+
+        expect { current_runner_machine }.to change { Ci::RunnerMachine.count }.by(1)
+
+        expect(current_runner_machine).not_to be_nil
+        expect(current_runner_machine.machine_xid).to eq('new_system_id')
+        expect(current_runner_machine.contacted_at).to eq(Time.current)
+        expect(current_runner_machine.runner).to eq(runner)
+      end
+    end
+
+    context 'with create_runner_machine FF disabled' do
+      before do
+        stub_feature_flags(create_runner_machine: false)
+      end
+
+      it 'does not return runner machine if no system_id specified' do
+        allow(helper).to receive(:params).and_return(token: runner.token)
+
+        is_expected.to be_nil
+      end
+
+      context 'when runner machine can not be found' do
+        before do
+          allow(helper).to receive(:params).and_return(token: runner.token, system_id: 'new_system_id')
+        end
+
+        it 'does not create a new runner machine', :aggregate_failures do
+          expect { current_runner_machine }.not_to change { Ci::RunnerMachine.count }
+
+          expect(current_runner_machine).to be_nil
+        end
+      end
+    end
+  end
+
+  describe '#track_runner_authentication', :prometheus, feature_category: :runner do
     subject { helper.track_runner_authentication }
 
     let(:runner) { create(:ci_runner, token: 'foo') }

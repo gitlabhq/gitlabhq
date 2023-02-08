@@ -22,7 +22,7 @@ module Gitlab
           return unless async_index_creation_available?
 
           PostgresAsyncIndex.find_by(name: index_name).try do |async_index|
-            async_index.destroy
+            async_index.destroy!
           end
         end
 

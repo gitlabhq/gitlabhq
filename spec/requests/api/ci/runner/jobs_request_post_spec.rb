@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_category: :runner do
+RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_category: :continuous_integration do
   include StubGitlabCalls
   include RedisHelpers
   include WorkhorseHelpers
@@ -116,6 +116,32 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
 
             expect(response).to have_gitlab_http_status(:no_content)
             expect(response.header['X-GitLab-Last-Update']).to eq(update_value)
+          end
+        end
+
+        context 'when system_id parameter is specified' do
+          subject(:request) { request_job(**args) }
+
+          context 'when ci_runner_machines with same machine_xid does not exist' do
+            let(:args) { { system_id: 's_some_system_id' } }
+
+            it 'creates respective ci_runner_machines record', :freeze_time do
+              expect { request }.to change { runner.runner_machines.reload.count }.from(0).to(1)
+
+              machine = runner.runner_machines.last
+              expect(machine.machine_xid).to eq args[:system_id]
+              expect(machine.runner).to eq runner
+              expect(machine.contacted_at).to eq Time.current
+            end
+          end
+
+          context 'when ci_runner_machines with same machine_xid already exists' do
+            let(:args) { { system_id: 's_existing_system_id' } }
+            let!(:runner_machine) { create(:ci_runner_machine, runner: runner, machine_xid: args[:system_id]) }
+
+            it 'does not create new ci_runner_machines record' do
+              expect { request }.not_to change { Ci::RunnerMachine.count }
+            end
           end
         end
 

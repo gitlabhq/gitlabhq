@@ -39,7 +39,6 @@ Rails/RedundantForeignKey:
     - 'app/models/work_item.rb'
     - 'app/models/x509_certificate.rb'
     - 'ee/app/models/allowed_email_domain.rb'
-    - 'ee/app/models/audit_events/streaming/header.rb'
     - 'ee/app/models/boards/epic_board.rb'
     - 'ee/app/models/boards/epic_list_user_preference.rb'
     - 'ee/app/models/ci/sources/project.rb'

@@ -2442,6 +2442,7 @@ RSpec.describe API::Projects, feature_category: :projects do
         expect(json_response['created_at']).to be_present
         expect(json_response['last_activity_at']).to be_present
         expect(json_response['shared_runners_enabled']).to be_present
+        expect(json_response['group_runners_enabled']).to be_present
         expect(json_response['creator_id']).to be_present
         expect(json_response['namespace']).to be_present
         expect(json_response['avatar_url']).to be_nil
@@ -2546,6 +2547,7 @@ RSpec.describe API::Projects, feature_category: :projects do
         expect(json_response['created_at']).to be_present
         expect(json_response['last_activity_at']).to be_present
         expect(json_response['shared_runners_enabled']).to be_present
+        expect(json_response['group_runners_enabled']).to be_present
         expect(json_response['creator_id']).to be_present
         expect(json_response['namespace']).to be_present
         expect(json_response['import_status']).to be_present

@@ -207,6 +207,7 @@ When the user is authenticated and `simple` is not set this returns something li
     "security_and_compliance_access_level": "private",
     "emails_disabled": null,
     "shared_runners_enabled": true,
+    "group_runners_enabled": true,
     "lfs_enabled": true,
     "creator_id": 1,
     "import_status": "none",
@@ -391,6 +392,7 @@ GET /users/:user_id/projects
     "archived": false,
     "avatar_url": "http://example.com/uploads/project/avatar/4/uploads/avatar.png",
     "shared_runners_enabled": true,
+    "group_runners_enabled": true,
     "forks_count": 0,
     "star_count": 0,
     "runners_token": "b8547b1dc37721d05889db52fa2f02",
@@ -502,6 +504,7 @@ GET /users/:user_id/projects
     "archived": false,
     "avatar_url": null,
     "shared_runners_enabled": true,
+    "group_runners_enabled": true,
     "forks_count": 0,
     "star_count": 0,
     "runners_token": "b8547b1dc37721d05889db52fa2f02",
@@ -653,6 +656,7 @@ Example response:
     "archived": false,
     "avatar_url": "http://example.com/uploads/project/avatar/4/uploads/avatar.png",
     "shared_runners_enabled": true,
+    "group_runners_enabled": true,
     "forks_count": 0,
     "star_count": 0,
     "runners_token": "b8547b1dc37721d05889db52fa2f02",
@@ -757,6 +761,7 @@ Example response:
     "archived": false,
     "avatar_url": null,
     "shared_runners_enabled": true,
+    "group_runners_enabled": true,
     "forks_count": 0,
     "star_count": 0,
     "runners_token": "b8547b1dc37721d05889db52fa2f02",
@@ -916,6 +921,7 @@ GET /projects/:id
     "source_url": "http://www.gnu.org/licenses/lgpl-3.0.txt"
   },
   "shared_runners_enabled": true,
+  "group_runners_enabled": true,
   "forks_count": 0,
   "star_count": 0,
   "runners_token": "b8bc4a7a29eb76ea83cf79e4908c2b",
@@ -1287,6 +1293,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your-token>" \
 | `resolve_outdated_diff_discussions`                         | boolean | **{dotted-circle}** No | Automatically resolve merge request diffs discussions on lines changed with a push. |
 | `security_and_compliance_access_level`                      | string  | **{dotted-circle}** No | (GitLab 14.9 and later) Security and compliance access level. One of `disabled`, `private`, or `enabled`. |
 | `shared_runners_enabled`                                    | boolean | **{dotted-circle}** No | Enable shared runners for this project. |
+| `group_runners_enabled`                                     | boolean | **{dotted-circle}** No | Enable group runners for this project. |
 | `snippets_access_level`                                     | string  | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
 | `snippets_enabled`                                          | boolean | **{dotted-circle}** No | _(Deprecated)_ Enable snippets for this project. Use `snippets_access_level` instead. |
 | `squash_option`                                             | string  | **{dotted-circle}** No | One of `never`, `always`, `default_on`, or `default_off`. |
@@ -1371,6 +1378,7 @@ POST /projects/user/:user_id
 | `resolve_outdated_diff_discussions`                         | boolean | **{dotted-circle}** No | Automatically resolve merge request diffs discussions on lines changed with a push. |
 | `security_and_compliance_access_level`                      | string  | **{dotted-circle}** No | (GitLab 14.9 and later) Security and compliance access level. One of `disabled`, `private`, or `enabled`. |
 | `shared_runners_enabled`                                    | boolean | **{dotted-circle}** No | Enable shared runners for this project. |
+| `group_runners_enabled`                                     | boolean | **{dotted-circle}** No | Enable group runners for this project. |
 | `snippets_access_level`                                     | string  | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
 | `snippets_enabled`                                          | boolean | **{dotted-circle}** No | _(Deprecated)_ Enable snippets for this project. Use `snippets_access_level` instead. |
 | `issue_branch_template`                                     | string  | **{dotted-circle}** No | Template used to suggest names for [branches created from issues](../user/project/merge_requests/creating_merge_requests.md#from-an-issue). _([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/21243) in GitLab 15.6.)_ |
@@ -1481,6 +1489,7 @@ Supported attributes:
 | `security_and_compliance_access_level`                      | string         | **{dotted-circle}** No | (GitLab 14.9 and later) Security and compliance access level. One of `disabled`, `private`, or `enabled`. |
 | `service_desk_enabled`                                      | boolean        | **{dotted-circle}** No | Enable or disable Service Desk feature. |
 | `shared_runners_enabled`                                    | boolean        | **{dotted-circle}** No | Enable shared runners for this project. |
+| `group_runners_enabled`                                     | boolean        | **{dotted-circle}** No | Enable group runners for this project. |
 | `snippets_access_level`                                     | string         | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
 | `snippets_enabled`                                          | boolean        | **{dotted-circle}** No | _(Deprecated)_ Enable snippets for this project. Use `snippets_access_level` instead. |
 | `issue_branch_template`                                     | string         | **{dotted-circle}** No | Template used to suggest names for [branches created from issues](../user/project/merge_requests/creating_merge_requests.md#from-an-issue). _([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/21243) in GitLab 15.6.)_ |
@@ -1600,6 +1609,7 @@ Example responses:
     "archived": true,
     "avatar_url": "http://example.com/uploads/project/avatar/3/uploads/avatar.png",
     "shared_runners_enabled": true,
+    "group_runners_enabled": true,
     "forks_count": 0,
     "star_count": 1,
     "public_jobs": true,
@@ -1707,6 +1717,7 @@ Example response:
     "source_url": "http://www.gnu.org/licenses/lgpl-3.0.txt"
   },
   "shared_runners_enabled": true,
+  "group_runners_enabled": true,
   "forks_count": 0,
   "star_count": 1,
   "public_jobs": true,
@@ -1812,6 +1823,7 @@ Example response:
     "source_url": "http://www.gnu.org/licenses/lgpl-3.0.txt"
   },
   "shared_runners_enabled": true,
+  "group_runners_enabled": true,
   "forks_count": 0,
   "star_count": 0,
   "public_jobs": true,
@@ -2008,6 +2020,7 @@ Example response:
     "source_url": "http://www.gnu.org/licenses/lgpl-3.0.txt"
   },
   "shared_runners_enabled": true,
+  "group_runners_enabled": true,
   "forks_count": 0,
   "star_count": 0,
   "runners_token": "b8bc4a7a29eb76ea83cf79e4908c2b",
@@ -2136,6 +2149,7 @@ Example response:
     "source_url": "http://www.gnu.org/licenses/lgpl-3.0.txt"
   },
   "shared_runners_enabled": true,
+  "group_runners_enabled": true,
   "forks_count": 0,
   "star_count": 0,
   "runners_token": "b8bc4a7a29eb76ea83cf79e4908c2b",
@@ -2819,6 +2833,7 @@ Example response:
   "security_and_compliance_access_level": "enabled",
   "emails_disabled": null,
   "shared_runners_enabled": true,
+  "group_runners_enabled": true,
   "lfs_enabled": true,
   "creator_id": 2,
   "import_status": "none",

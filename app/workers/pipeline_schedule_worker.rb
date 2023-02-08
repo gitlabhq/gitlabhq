@@ -24,7 +24,7 @@ class PipelineScheduleWorker # rubocop:disable Scalability/IdempotentWorker
           .find_in_batches do |schedules|
             RunPipelineScheduleWorker.bulk_perform_async_with_contexts(
               schedules,
-              arguments_proc: ->(schedule) { [schedule.id, schedule.owner_id] },
+              arguments_proc: ->(schedule) { [schedule.id, schedule.owner_id, { scheduling: true }] },
               context_proc: ->(schedule) { { project: schedule.project, user: schedule.owner } }
             )
           end

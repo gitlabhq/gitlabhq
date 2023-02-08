@@ -2873,7 +2873,13 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
           before do
             allow_next_instance_of(Gitlab::Ci::Variables::Builder) do |builder|
+              pipeline_variables_builder = double(
+                ::Gitlab::Ci::Variables::Builder::Pipeline,
+                predefined_variables: [pipeline_pre_var]
+              )
+
               allow(builder).to receive(:predefined_variables) { [build_pre_var] }
+              allow(builder).to receive(:pipeline_variables_builder) { pipeline_variables_builder }
             end
 
             allow(build).to receive(:yaml_variables) { [build_yaml_var] }
@@ -2886,9 +2892,6 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
               .to receive(:predefined_variables) { [project_pre_var] }
 
             project.variables.create!(key: 'secret', value: 'value')
-
-            allow(build.pipeline)
-              .to receive(:predefined_variables).and_return([pipeline_pre_var])
           end
 
           it 'returns variables in order depending on resource hierarchy' do

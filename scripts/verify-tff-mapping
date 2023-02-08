@@ -78,8 +78,8 @@ tests = [
 
   {
     explanation: 'Migration should map to its non-timestamped spec',
-    source: 'db/migrate/20210818220234_add_default_project_approval_rules_vuln_allowed.rb',
-    expected: ['spec/migrations/add_default_project_approval_rules_vuln_allowed_spec.rb']
+    source: 'db/migrate/20221014034338_populate_releases_access_level_from_repository.rb',
+    expected: ['spec/migrations/populate_releases_access_level_from_repository_spec.rb']
   },
 
   {

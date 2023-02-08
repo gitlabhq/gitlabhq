@@ -19811,6 +19811,28 @@ CREATE SEQUENCE pool_repositories_id_seq
 
 ALTER SEQUENCE pool_repositories_id_seq OWNED BY pool_repositories.id;
 
+CREATE TABLE postgres_async_foreign_key_validations (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    name text NOT NULL,
+    table_name text NOT NULL,
+    last_error text,
+    attempts integer DEFAULT 0 NOT NULL,
+    CONSTRAINT check_536a40afbf CHECK ((char_length(last_error) <= 10000)),
+    CONSTRAINT check_74fb7c8e57 CHECK ((char_length(name) <= 63)),
+    CONSTRAINT check_cd435d6301 CHECK ((char_length(table_name) <= 63))
+);
+
+CREATE SEQUENCE postgres_async_foreign_key_validations_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE postgres_async_foreign_key_validations_id_seq OWNED BY postgres_async_foreign_key_validations.id;
+
 CREATE TABLE postgres_async_indexes (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -19818,7 +19840,10 @@ CREATE TABLE postgres_async_indexes (
     name text NOT NULL,
     definition text NOT NULL,
     table_name text NOT NULL,
+    attempts integer DEFAULT 0 NOT NULL,
+    last_error text,
     CONSTRAINT check_083b21157b CHECK ((char_length(definition) <= 2048)),
+    CONSTRAINT check_45dc23c315 CHECK ((char_length(last_error) <= 10000)),
     CONSTRAINT check_b732c6cd1d CHECK ((char_length(name) <= 63)),
     CONSTRAINT check_e64ff4359e CHECK ((char_length(table_name) <= 63))
 );
@@ -24723,6 +24748,8 @@ ALTER TABLE ONLY pm_packages ALTER COLUMN id SET DEFAULT nextval('pm_packages_id
 
 ALTER TABLE ONLY pool_repositories ALTER COLUMN id SET DEFAULT nextval('pool_repositories_id_seq'::regclass);
 
+ALTER TABLE ONLY postgres_async_foreign_key_validations ALTER COLUMN id SET DEFAULT nextval('postgres_async_foreign_key_validations_id_seq'::regclass);
+
 ALTER TABLE ONLY postgres_async_indexes ALTER COLUMN id SET DEFAULT nextval('postgres_async_indexes_id_seq'::regclass);
 
 ALTER TABLE ONLY postgres_reindex_actions ALTER COLUMN id SET DEFAULT nextval('postgres_reindex_actions_id_seq'::regclass);
@@ -26954,6 +26981,9 @@ ALTER TABLE ONLY pm_packages
 
 ALTER TABLE ONLY pool_repositories
     ADD CONSTRAINT pool_repositories_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY postgres_async_foreign_key_validations
+    ADD CONSTRAINT postgres_async_foreign_key_validations_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY postgres_async_indexes
     ADD CONSTRAINT postgres_async_indexes_pkey PRIMARY KEY (id);
@@ -30906,6 +30936,8 @@ CREATE UNIQUE INDEX index_pool_repositories_on_disk_path ON pool_repositories US
 CREATE INDEX index_pool_repositories_on_shard_id ON pool_repositories USING btree (shard_id);
 
 CREATE UNIQUE INDEX index_pool_repositories_on_source_project_id_and_shard_id ON pool_repositories USING btree (source_project_id, shard_id);
+
+CREATE UNIQUE INDEX index_postgres_async_foreign_key_validations_on_name ON postgres_async_foreign_key_validations USING btree (name);
 
 CREATE UNIQUE INDEX index_postgres_async_indexes_on_name ON postgres_async_indexes USING btree (name);
 

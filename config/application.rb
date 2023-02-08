@@ -60,6 +60,7 @@ module Gitlab
     require_dependency Rails.root.join('lib/gitlab/redis/rate_limiting')
     require_dependency Rails.root.join('lib/gitlab/redis/sessions')
     require_dependency Rails.root.join('lib/gitlab/redis/repository_cache')
+    require_dependency Rails.root.join('lib/gitlab/redis/db_load_balancing')
     require_dependency Rails.root.join('lib/gitlab/current_settings')
     require_dependency Rails.root.join('lib/gitlab/middleware/read_only')
     require_dependency Rails.root.join('lib/gitlab/middleware/compressed_json')

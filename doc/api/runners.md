@@ -739,9 +739,10 @@ Validates authentication credentials for a registered runner.
 POST /runners/verify
 ```
 
-| Attribute   | Type    | Required | Description                                                                   |
-|-------------|---------|----------|-------------------------------------------------------------------------------|
-| `token`     | string  | yes      | The runner's [authentication token](#registration-and-authentication-tokens). |
+| Attribute   | Type    | Required | Description                                                                                    |
+|-------------|---------|----------|------------------------------------------------------------------------------------------------|
+| `token`     | string  | yes      | The runner's [authentication token](#registration-and-authentication-tokens).                  |
+| `system_id` | string  | no       | The runner's system identifier. This attribute is required if the `token` starts with `glrt-`. |
 
 ```shell
 curl --request POST "https://gitlab.example.com/api/v4/runners/verify" \

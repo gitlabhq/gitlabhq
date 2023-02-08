@@ -71,8 +71,6 @@ Rails/InverseOf:
     - 'ee/app/models/allowed_email_domain.rb'
     - 'ee/app/models/analytics/devops_adoption/enabled_namespace.rb'
     - 'ee/app/models/analytics/devops_adoption/snapshot.rb'
-    - 'ee/app/models/audit_events/external_audit_event_destination.rb'
-    - 'ee/app/models/audit_events/streaming/header.rb'
     - 'ee/app/models/ci/sources/project.rb'
     - 'ee/app/models/compliance_management/compliance_framework/project_settings.rb'
     - 'ee/app/models/concerns/incident_management/base_pending_escalation.rb'

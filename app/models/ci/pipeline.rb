@@ -845,97 +845,6 @@ module Ci
       end
     end
 
-    def predefined_variables
-      Gitlab::Ci::Variables::Collection.new.tap do |variables|
-        variables.append(key: 'CI_PIPELINE_IID', value: iid.to_s)
-        variables.append(key: 'CI_PIPELINE_SOURCE', value: source.to_s)
-        variables.append(key: 'CI_PIPELINE_CREATED_AT', value: created_at&.iso8601)
-
-        variables.concat(predefined_commit_variables)
-        variables.concat(predefined_merge_request_variables)
-
-        if open_merge_requests_refs.any?
-          variables.append(key: 'CI_OPEN_MERGE_REQUESTS', value: open_merge_requests_refs.join(','))
-        end
-
-        variables.append(key: 'CI_GITLAB_FIPS_MODE', value: 'true') if Gitlab::FIPS.enabled?
-
-        variables.append(key: 'CI_KUBERNETES_ACTIVE', value: 'true') if has_kubernetes_active?
-        variables.append(key: 'CI_DEPLOY_FREEZE', value: 'true') if freeze_period?
-
-        if external_pull_request_event? && external_pull_request
-          variables.concat(external_pull_request.predefined_variables)
-        end
-      end
-    end
-
-    def predefined_commit_variables
-      strong_memoize(:predefined_commit_variables) do
-        Gitlab::Ci::Variables::Collection.new.tap do |variables|
-          next variables unless sha.present?
-
-          variables.append(key: 'CI_COMMIT_SHA', value: sha)
-          variables.append(key: 'CI_COMMIT_SHORT_SHA', value: short_sha)
-          variables.append(key: 'CI_COMMIT_BEFORE_SHA', value: before_sha)
-          variables.append(key: 'CI_COMMIT_REF_NAME', value: source_ref)
-          variables.append(key: 'CI_COMMIT_REF_SLUG', value: source_ref_slug)
-          variables.append(key: 'CI_COMMIT_BRANCH', value: ref) if branch?
-          variables.append(key: 'CI_COMMIT_MESSAGE', value: git_commit_message.to_s)
-          variables.append(key: 'CI_COMMIT_TITLE', value: git_commit_full_title.to_s)
-          variables.append(key: 'CI_COMMIT_DESCRIPTION', value: git_commit_description.to_s)
-          variables.append(key: 'CI_COMMIT_REF_PROTECTED', value: (!!protected_ref?).to_s)
-          variables.append(key: 'CI_COMMIT_TIMESTAMP', value: git_commit_timestamp.to_s)
-          variables.append(key: 'CI_COMMIT_AUTHOR', value: git_author_full_text.to_s)
-
-          # legacy variables
-          variables.append(key: 'CI_BUILD_REF', value: sha)
-          variables.append(key: 'CI_BUILD_BEFORE_SHA', value: before_sha)
-          variables.append(key: 'CI_BUILD_REF_NAME', value: source_ref)
-          variables.append(key: 'CI_BUILD_REF_SLUG', value: source_ref_slug)
-
-          variables.concat(predefined_commit_tag_variables)
-        end
-      end
-    end
-
-    def predefined_merge_request_variables
-      strong_memoize(:predefined_merge_request_variables) do
-        Gitlab::Ci::Variables::Collection.new.tap do |variables|
-          next variables unless merge_request?
-
-          variables.append(key: 'CI_MERGE_REQUEST_EVENT_TYPE', value: merge_request_event_type.to_s)
-          variables.append(key: 'CI_MERGE_REQUEST_SOURCE_BRANCH_SHA', value: source_sha.to_s)
-          variables.append(key: 'CI_MERGE_REQUEST_TARGET_BRANCH_SHA', value: target_sha.to_s)
-
-          diff = self.merge_request_diff
-          if diff.present?
-            variables.append(key: 'CI_MERGE_REQUEST_DIFF_ID', value: diff.id.to_s)
-            variables.append(key: 'CI_MERGE_REQUEST_DIFF_BASE_SHA', value: diff.base_commit_sha)
-          end
-
-          variables.concat(merge_request.predefined_variables)
-        end
-      end
-    end
-
-    def predefined_commit_tag_variables
-      strong_memoize(:predefined_commit_ref_variables) do
-        Gitlab::Ci::Variables::Collection.new.tap do |variables|
-          next variables unless tag?
-
-          git_tag = project.repository.find_tag(ref)
-
-          next variables unless git_tag
-
-          variables.append(key: 'CI_COMMIT_TAG', value: ref)
-          variables.append(key: 'CI_COMMIT_TAG_MESSAGE', value: git_tag.message)
-
-          # legacy variable
-          variables.append(key: 'CI_BUILD_TAG', value: ref)
-        end
-      end
-    end
-
     def queued_duration
       return unless started_at
 
@@ -1407,6 +1316,12 @@ module Ci
       (Time.current - created_at).ceil / 60
     end
 
+    def merge_request_diff
+      return unless merge_request?
+
+      merge_request.merge_request_diff_for(merge_request_diff_sha)
+    end
+
     private
 
     def cancel_jobs(jobs, retries: 1, auto_canceled_by_pipeline_id: nil)
@@ -1457,12 +1372,6 @@ module Ci
       else
         sha
       end
-    end
-
-    def merge_request_diff
-      return unless merge_request?
-
-      merge_request.merge_request_diff_for(merge_request_diff_sha)
     end
 
     def push_details

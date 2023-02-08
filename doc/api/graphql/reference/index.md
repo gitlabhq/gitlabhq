@@ -9111,28 +9111,28 @@ The edge type for [`ProductAnalyticsDashboard`](#productanalyticsdashboard).
 | <a id="productanalyticsdashboardedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="productanalyticsdashboardedgenode"></a>`node` | [`ProductAnalyticsDashboard`](#productanalyticsdashboard) | The item at the end of the edge. |
 
-#### `ProductAnalyticsDashboardWidgetConnection`
+#### `ProductAnalyticsDashboardPanelConnection`
 
-The connection type for [`ProductAnalyticsDashboardWidget`](#productanalyticsdashboardwidget).
-
-##### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="productanalyticsdashboardwidgetconnectionedges"></a>`edges` | [`[ProductAnalyticsDashboardWidgetEdge]`](#productanalyticsdashboardwidgetedge) | A list of edges. |
-| <a id="productanalyticsdashboardwidgetconnectionnodes"></a>`nodes` | [`[ProductAnalyticsDashboardWidget]`](#productanalyticsdashboardwidget) | A list of nodes. |
-| <a id="productanalyticsdashboardwidgetconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
-
-#### `ProductAnalyticsDashboardWidgetEdge`
-
-The edge type for [`ProductAnalyticsDashboardWidget`](#productanalyticsdashboardwidget).
+The connection type for [`ProductAnalyticsDashboardPanel`](#productanalyticsdashboardpanel).
 
 ##### Fields
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="productanalyticsdashboardwidgetedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
-| <a id="productanalyticsdashboardwidgetedgenode"></a>`node` | [`ProductAnalyticsDashboardWidget`](#productanalyticsdashboardwidget) | The item at the end of the edge. |
+| <a id="productanalyticsdashboardpanelconnectionedges"></a>`edges` | [`[ProductAnalyticsDashboardPanelEdge]`](#productanalyticsdashboardpaneledge) | A list of edges. |
+| <a id="productanalyticsdashboardpanelconnectionnodes"></a>`nodes` | [`[ProductAnalyticsDashboardPanel]`](#productanalyticsdashboardpanel) | A list of nodes. |
+| <a id="productanalyticsdashboardpanelconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `ProductAnalyticsDashboardPanelEdge`
+
+The edge type for [`ProductAnalyticsDashboardPanel`](#productanalyticsdashboardpanel).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="productanalyticsdashboardpaneledgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="productanalyticsdashboardpaneledgenode"></a>`node` | [`ProductAnalyticsDashboardPanel`](#productanalyticsdashboardpanel) | The item at the end of the edge. |
 
 #### `ProjectConnection`
 
@@ -17552,8 +17552,20 @@ Represents a product analytics dashboard.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="productanalyticsdashboarddescription"></a>`description` | [`String`](#string) | Description of the dashboard. |
+| <a id="productanalyticsdashboardpanels"></a>`panels` | [`ProductAnalyticsDashboardPanelConnection!`](#productanalyticsdashboardpanelconnection) | Panels shown on the dashboard. (see [Connections](#connections)) |
 | <a id="productanalyticsdashboardtitle"></a>`title` | [`String!`](#string) | Title of the dashboard. |
-| <a id="productanalyticsdashboardwidgets"></a>`widgets` | [`ProductAnalyticsDashboardWidgetConnection!`](#productanalyticsdashboardwidgetconnection) | Widgets shown on the dashboard. (see [Connections](#connections)) |
+
+### `ProductAnalyticsDashboardPanel`
+
+Represents a product analytics dashboard panel.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="productanalyticsdashboardpanelgridattributes"></a>`gridAttributes` | [`JSON`](#json) | Description of the position and size of the panel. |
+| <a id="productanalyticsdashboardpaneltitle"></a>`title` | [`String!`](#string) | Title of the panel. |
+| <a id="productanalyticsdashboardpanelvisualization"></a>`visualization` | [`ProductAnalyticsDashboardVisualization!`](#productanalyticsdashboardvisualization) | Visualization of the panel. |
 
 ### `ProductAnalyticsDashboardVisualization`
 
@@ -17566,18 +17578,6 @@ Represents a product analytics dashboard visualization.
 | <a id="productanalyticsdashboardvisualizationdata"></a>`data` | [`JSON!`](#json) | Data of the visualization. |
 | <a id="productanalyticsdashboardvisualizationoptions"></a>`options` | [`JSON!`](#json) | Options of the visualization. |
 | <a id="productanalyticsdashboardvisualizationtype"></a>`type` | [`String!`](#string) | Type of the visualization. |
-
-### `ProductAnalyticsDashboardWidget`
-
-Represents a product analytics dashboard widget.
-
-#### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="productanalyticsdashboardwidgetgridattributes"></a>`gridAttributes` | [`JSON`](#json) | Description of the position and size of the widget. |
-| <a id="productanalyticsdashboardwidgettitle"></a>`title` | [`String!`](#string) | Title of the widget. |
-| <a id="productanalyticsdashboardwidgetvisualization"></a>`visualization` | [`ProductAnalyticsDashboardVisualization!`](#productanalyticsdashboardvisualization) | Visualization of the widget. |
 
 ### `Project`
 

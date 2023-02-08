@@ -21,7 +21,7 @@ RSpec.describe Ci::PipelineScheduleService, feature_category: :continuous_integr
 
     it 'runs RunPipelineScheduleWorker' do
       expect(RunPipelineScheduleWorker)
-        .to receive(:perform_async).with(schedule.id, schedule.owner.id, next_run_scheduled: true)
+        .to receive(:perform_async).with(schedule.id, schedule.owner.id)
 
       subject
     end
@@ -43,7 +43,7 @@ RSpec.describe Ci::PipelineScheduleService, feature_category: :continuous_integr
 
       it 'does not run RunPipelineScheduleWorker' do
         expect(RunPipelineScheduleWorker)
-          .not_to receive(:perform_async).with(schedule.id, schedule.owner.id, next_run_scheduled: true)
+          .not_to receive(:perform_async).with(schedule.id, schedule.owner.id)
 
         subject
       end

@@ -439,7 +439,6 @@ RSpec/ContextWording:
     - 'ee/spec/models/approval_merge_request_rule_spec.rb'
     - 'ee/spec/models/approval_project_rule_spec.rb'
     - 'ee/spec/models/approval_state_spec.rb'
-    - 'ee/spec/models/audit_events/external_audit_event_destination_spec.rb'
     - 'ee/spec/models/board_spec.rb'
     - 'ee/spec/models/boards/epic_board_position_spec.rb'
     - 'ee/spec/models/ci/minutes/namespace_monthly_usage_spec.rb'

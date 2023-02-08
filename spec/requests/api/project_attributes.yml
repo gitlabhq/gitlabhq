@@ -90,7 +90,6 @@ ci_cd_settings:
   unexposed_attributes:
     - id
     - project_id
-    - group_runners_enabled
     - merge_trains_enabled
     - merge_pipelines_enabled
     - auto_rollback_enabled

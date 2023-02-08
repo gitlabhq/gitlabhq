@@ -26,7 +26,6 @@ Layout/SpaceInsideParens:
     - 'ee/spec/migrations/add_non_null_constraint_for_escalation_rule_on_pending_alert_escalations_spec.rb'
     - 'ee/spec/migrations/drop_invalid_remediations_spec.rb'
     - 'ee/spec/models/allowed_email_domain_spec.rb'
-    - 'ee/spec/models/audit_events/external_audit_event_destination_spec.rb'
     - 'ee/spec/models/boards/epic_board_position_spec.rb'
     - 'ee/spec/models/dora/change_failure_rate_metric_spec.rb'
     - 'ee/spec/models/ee/integrations/jira_spec.rb'

@@ -120,6 +120,8 @@ export const EVENT_LABEL_FALLBACK = 'legacy_fallback';
 
 export const LINES_PER_CHUNK = 70;
 
+export const NEWLINE = '\n';
+
 export const BIDI_CHARS = [
   '\u202A', // Left-to-Right Embedding (Try treating following text as left-to-right)
   '\u202B', // Right-to-Left Embedding (Try treating following text as right-to-left)

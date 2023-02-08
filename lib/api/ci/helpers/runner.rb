@@ -23,8 +23,15 @@ module API
           return get_runner_ip unless params['info'].present?
 
           attributes_for_keys(%w(name version revision platform architecture executor), params['info'])
+            .merge(get_system_id_from_request)
             .merge(get_runner_config_from_request)
             .merge(get_runner_ip)
+        end
+
+        def get_system_id_from_request
+          return { system_id: params[:system_id] } if params.include?(:system_id)
+
+          {}
         end
 
         def get_runner_ip
@@ -40,6 +47,15 @@ module API
 
           strong_memoize(:current_runner) do
             ::Ci::Runner.find_by_token(token.to_s)
+          end
+        end
+
+        def current_runner_machine
+          return if Feature.disabled?(:create_runner_machine)
+          return unless params[:system_id]
+
+          strong_memoize(:current_runner_machine) do
+            current_runner.ensure_machine(machine_xid: params[:system_id]) { |m| m.contacted_at = Time.current }
           end
         end
 

@@ -23943,7 +23943,7 @@ msgstr ""
 msgid "JiraService|Automatically transitions Jira issues to the \"Done\" category. %{linkStart}Learn more%{linkEnd}"
 msgstr ""
 
-msgid "JiraService|Base URL of the Jira instance."
+msgid "JiraService|Base URL of the Jira instance"
 msgstr ""
 
 msgid "JiraService|Change GitLab version"
@@ -23997,7 +23997,7 @@ msgstr ""
 msgid "JiraService|IDs must be a list of numbers that can be split with , or ;"
 msgstr ""
 
-msgid "JiraService|If different from Web URL."
+msgid "JiraService|If different from the Web URL"
 msgstr ""
 
 msgid "JiraService|In order to complete the set up, you’ll need to complete a few steps in GitLab."
@@ -24030,6 +24030,9 @@ msgstr ""
 msgid "JiraService|Open Jira"
 msgstr ""
 
+msgid "JiraService|Password for the server version or an API token for the cloud version"
+msgstr ""
+
 msgid "JiraService|Password or API token"
 msgstr ""
 
@@ -24060,16 +24063,13 @@ msgstr ""
 msgid "JiraService|Use Jira as this project's issue tracker."
 msgstr ""
 
-msgid "JiraService|Use a password for server version and an API token for cloud version."
-msgstr ""
-
-msgid "JiraService|Use a username for server version and an email for cloud version."
-msgstr ""
-
 msgid "JiraService|Use custom transitions"
 msgstr ""
 
-msgid "JiraService|Username or Email"
+msgid "JiraService|Username for the server version or an email for the cloud version"
+msgstr ""
+
+msgid "JiraService|Username or email"
 msgstr ""
 
 msgid "JiraService|Using Jira for issue tracking?"
@@ -32231,7 +32231,7 @@ msgstr ""
 msgid "ProductAnalytics|All pages"
 msgstr ""
 
-msgid "ProductAnalytics|An error occured while loading the %{widgetTitle} widget."
+msgid "ProductAnalytics|An error occured while loading the %{panelTitle} panel."
 msgstr ""
 
 msgid "ProductAnalytics|An error occurred while fetching data. Refresh the page to try again."
@@ -32330,7 +32330,7 @@ msgstr ""
 msgid "ProductAnalytics|Measuring"
 msgstr ""
 
-msgid "ProductAnalytics|New Analytics Widget Title"
+msgid "ProductAnalytics|New Analytics Panel Title"
 msgstr ""
 
 msgid "ProductAnalytics|OS"
@@ -32355,6 +32355,9 @@ msgid "ProductAnalytics|Page Views"
 msgstr ""
 
 msgid "ProductAnalytics|Pages"
+msgstr ""
+
+msgid "ProductAnalytics|Panel"
 msgstr ""
 
 msgid "ProductAnalytics|Product analytics dashboards"
@@ -32391,9 +32394,6 @@ msgid "ProductAnalytics|Visualization Type"
 msgstr ""
 
 msgid "ProductAnalytics|What do you want to measure?"
-msgstr ""
-
-msgid "ProductAnalytics|Widget"
 msgstr ""
 
 msgid "Productivity"
@@ -37961,6 +37961,9 @@ msgstr ""
 msgid "SecurityOrchestration| or "
 msgstr ""
 
+msgid "SecurityOrchestration| that is %{licenseState} and is"
+msgstr ""
+
 msgid "SecurityOrchestration|%{agent} for %{namespaces}"
 msgstr ""
 
@@ -37968,6 +37971,9 @@ msgid "SecurityOrchestration|%{branches} and %{lastBranch} branches"
 msgstr ""
 
 msgid "SecurityOrchestration|%{branches} branch"
+msgstr ""
+
+msgid "SecurityOrchestration|%{licenses} and %{lastLicense}"
 msgstr ""
 
 msgid "SecurityOrchestration|%{scannerStart}%{scanner}%{scannerEnd}"
@@ -38121,6 +38127,9 @@ msgid "SecurityOrchestration|Latest scan run against %{agent}"
 msgstr ""
 
 msgid "SecurityOrchestration|License Scan"
+msgstr ""
+
+msgid "SecurityOrchestration|License scanner finds any license %{matching} %{licenses}%{detection} in an open merge request targeting %{branches}."
 msgstr ""
 
 msgid "SecurityOrchestration|New policy"

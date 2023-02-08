@@ -55,6 +55,7 @@ RSpec.describe RunPipelineScheduleWorker, feature_category: :continuous_integrat
     describe "#run_pipeline_schedule" do
       let(:create_pipeline_service) { instance_double(Ci::CreatePipelineService, execute: service_response) }
       let(:service_response) { instance_double(ServiceResponse, payload: pipeline, error?: false) }
+      let(:pipeline) { instance_double(Ci::Pipeline, persisted?: true) }
 
       context 'when pipeline can be created' do
         before do
@@ -64,8 +65,6 @@ RSpec.describe RunPipelineScheduleWorker, feature_category: :continuous_integrat
         end
 
         context "when pipeline is persisted" do
-          let(:pipeline) { instance_double(Ci::Pipeline, persisted?: true) }
-
           it "returns the service response" do
             expect(worker.perform(pipeline_schedule.id, user.id)).to eq(service_response)
           end
@@ -76,8 +75,8 @@ RSpec.describe RunPipelineScheduleWorker, feature_category: :continuous_integrat
             expect(worker.perform(pipeline_schedule.id, user.id)).to eq(service_response)
           end
 
-          it "changes the next_run_at" do
-            expect { worker.perform(pipeline_schedule.id, user.id) }.to change { pipeline_schedule.reload.next_run_at }.by(1.day)
+          it "does not change the next_run_at" do
+            expect { worker.perform(pipeline_schedule.id, user.id) }.not_to change { pipeline_schedule.reload.next_run_at }
           end
 
           context 'when feature flag ci_use_run_pipeline_schedule_worker is disabled' do
@@ -90,19 +89,19 @@ RSpec.describe RunPipelineScheduleWorker, feature_category: :continuous_integrat
             end
           end
 
-          context 'when next_run_scheduled option is given as true' do
+          context 'when scheduling option is given as true' do
             it "returns the service response" do
-              expect(worker.perform(pipeline_schedule.id, user.id, 'next_run_scheduled' => true)).to eq(service_response)
+              expect(worker.perform(pipeline_schedule.id, user.id, scheduling: true)).to eq(service_response)
             end
 
             it "does not log errors" do
               expect(worker).not_to receive(:log_extra_metadata_on_done)
 
-              expect(worker.perform(pipeline_schedule.id, user.id, 'next_run_scheduled' => true)).to eq(service_response)
+              expect(worker.perform(pipeline_schedule.id, user.id, scheduling: true)).to eq(service_response)
             end
 
-            it "does not change the next_run_at" do
-              expect { worker.perform(pipeline_schedule.id, user.id, 'next_run_scheduled' => true) }.not_to change { pipeline_schedule.reload.next_run_at }
+            it "changes the next_run_at" do
+              expect { worker.perform(pipeline_schedule.id, user.id, scheduling: true) }.to change { pipeline_schedule.reload.next_run_at }.by(1.day)
             end
 
             context 'when feature flag ci_use_run_pipeline_schedule_worker is disabled' do
@@ -111,7 +110,7 @@ RSpec.describe RunPipelineScheduleWorker, feature_category: :continuous_integrat
               end
 
               it 'does not change the next_run_at' do
-                expect { worker.perform(pipeline_schedule.id, user.id, 'next_run_scheduled' => true) }.not_to change { pipeline_schedule.reload.next_run_at }
+                expect { worker.perform(pipeline_schedule.id, user.id, scheduling: true) }.not_to change { pipeline_schedule.reload.next_run_at }
               end
             end
           end
@@ -143,8 +142,9 @@ RSpec.describe RunPipelineScheduleWorker, feature_category: :continuous_integrat
           expect { worker.perform(pipeline_schedule.id, user.id) }.to not_change { pipeline_schedule.reload.next_run_at }
         end
 
-        it 'does not create a pipeline' do
-          expect(Ci::CreatePipelineService).not_to receive(:new)
+        it 'creates a pipeline' do
+          expect(Ci::CreatePipelineService).to receive(:new).with(project, user, ref: pipeline_schedule.ref).and_return(create_pipeline_service)
+          expect(create_pipeline_service).to receive(:execute).with(:schedule, ignore_skip_ci: true, save_on_errors: false, schedule: pipeline_schedule).and_return(service_response)
 
           worker.perform(pipeline_schedule.id, user.id)
         end

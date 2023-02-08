@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::AsyncIndexes::MigrationHelpers do
+RSpec.describe Gitlab::Database::AsyncIndexes::MigrationHelpers, feature_category: :database do
   let(:migration) { ActiveRecord::Migration.new.extend(described_class) }
   let(:index_model) { Gitlab::Database::AsyncIndexes::PostgresAsyncIndex }
   let(:connection) { ApplicationRecord.connection }

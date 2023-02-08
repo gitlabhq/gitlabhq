@@ -48,6 +48,7 @@ module API
         optional :warn_about_potentially_unwanted_characters, type: Boolean, desc: 'Warn about Potentially Unwanted Characters'
         optional :enforce_auth_checks_on_uploads, type: Boolean, desc: 'Enforce auth check on uploads'
         optional :shared_runners_enabled, type: Boolean, desc: 'Flag indication if shared runners are enabled for that project'
+        optional :group_runners_enabled, type: Boolean, desc: 'Flag indication if group runners are enabled for that project'
         optional :resolve_outdated_diff_discussions, type: Boolean, desc: 'Automatically resolve merge request diff threads on lines changed with a push'
         optional :remove_source_branch_after_merge, type: Boolean, desc: 'Remove the source branch by default after merge'
         optional :container_registry_enabled, type: Boolean, desc: 'Deprecated: Use :container_registry_access_level instead. Flag indication if the container registry is enabled for that project'
@@ -170,6 +171,7 @@ module API
           :security_and_compliance_access_level,
           :squash_option,
           :shared_runners_enabled,
+          :group_runners_enabled,
           :snippets_access_level,
           :tag_list,
           :topics,
