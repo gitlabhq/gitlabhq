@@ -16,8 +16,7 @@ To create a blank project:
 1. On the right of the page, select **New project**.
 1. Select **Create blank project**.
 1. Enter the project details:
-   - In the **Project name** field, enter the name of your project. You cannot use special characters at
-     the start or end of a project name.
+   - In the **Project name** field, enter the name of your project. The name must start with a lowercase or uppercase letter (`a-zA-Z`), digit (`0-9`), emoji, or underscore (`_`). It can also contain dots (`.`), pluses (`+`), dashes (`-`), or spaces.
    - In the **Project slug** field, enter the path to your project. The GitLab instance uses the
      slug as the URL path to the project. To change the slug, first enter the project name,
      then change the slug.
@@ -51,8 +50,7 @@ To create a project from a built-in template:
    - To view a preview of the template, select **Preview**.
    - To use a template for the project, select **Use template**.
 1. Enter the project details:
-   - In the **Project name** field, enter the name of your project. You cannot use special characters at
-     the start or end of a project name.
+   - In the **Project name** field, enter the name of your project. The name must start with a lowercase or uppercase letter (`a-zA-Z`), digit (`0-9`), emoji, or underscore (`_`). It can also contain dots (`.`), pluses (`+`), dashes (`-`), or spaces.
    - In the **Project slug** field, enter the path to your project. The GitLab instance uses the
      slug as the URL path to the project. To change the slug, first enter the project name,
      then change the slug.
@@ -83,8 +81,7 @@ Custom project templates are available at:
    - To view a preview of the template, select **Preview**.
    - To use a template for the project, select **Use template**.
 1. Enter the project details:
-   - In the **Project name** field, enter the name of your project. You cannot use special characters at
-     the start or end of a project name.
+   - In the **Project name** field, enter the name of your project. The name must start with a lowercase or uppercase letter (`a-zA-Z`), digit (`0-9`), emoji, or underscore (`_`). It can also contain dots (`.`), pluses (`+`), dashes (`-`), or spaces.
    - In the **Project slug** field, enter the path to your project. The GitLab instance uses the
      slug as the URL path to the project. To change the slug, first enter the project name,
      then change the slug.
@@ -110,8 +107,7 @@ To create a project from the HIPAA Audit Protocol template:
    - To view a preview of the template, select **Preview**.
    - To use the template for the project, select **Use template**.
 1. Enter the project details:
-   - In the **Project name** field, enter the name of your project. You cannot use special characters at
-     the start or end of a project name.
+   - In the **Project name** field, enter the name of your project. The name must start with a lowercase or uppercase letter (`a-zA-Z`), digit (`0-9`), emoji, or underscore (`_`). It can also contain dots (`.`), pluses (`+`), dashes (`-`), or spaces.
    - In the **Project slug** field, enter the path to your project. The GitLab instance uses the
      slug as the URL path to the project. To change the slug, first enter the project name,
      then change the slug.

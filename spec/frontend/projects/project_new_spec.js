@@ -9,6 +9,7 @@ describe('New Project', () => {
   let $projectPath;
   let $projectName;
   let $projectNameError;
+  let $projectNameDescription;
 
   const mockKeyup = (el) => el.dispatchEvent(new KeyboardEvent('keyup'));
   const mockChange = (el) => el.dispatchEvent(new Event('change'));
@@ -31,7 +32,8 @@ describe('New Project', () => {
                 </div>
               </div>
               <input id="project_name" />
-              <div class="gl-field-error hidden" id="project_name_error" />
+              <small id="js-project-name-description" />
+              <div class="gl-field-error gl-display-none" id="js-project-name-error" />
               <input id="project_path" />
             </div>
             <div class="js-user-readme-repo"></div>
@@ -44,7 +46,8 @@ describe('New Project', () => {
     $projectImportUrl = document.querySelector('#project_import_url');
     $projectPath = document.querySelector('#project_path');
     $projectName = document.querySelector('#project_name');
-    $projectNameError = document.querySelector('#project_name_error');
+    $projectNameError = document.querySelector('#js-project-name-error');
+    $projectNameDescription = document.querySelector('#js-project-name-description');
   });
 
   afterEach(() => {
@@ -98,7 +101,7 @@ describe('New Project', () => {
     });
 
     it('no error message by default', () => {
-      expect($projectNameError.classList.contains('hidden')).toBe(true);
+      expect($projectNameError.classList.contains('gl-display-none')).toBe(true);
     });
 
     it('show error message if name is validate', () => {
@@ -106,15 +109,16 @@ describe('New Project', () => {
       triggerEvent($projectName, 'change');
 
       expect($projectNameError.innerText).toBe(
-        "Name must start with a letter, digit, emoji, or '_'",
+        'Name must start with a letter, digit, emoji, or underscore.',
       );
-      expect($projectNameError.classList.contains('hidden')).toBe(false);
+      expect($projectNameError.classList.contains('gl-display-none')).toBe(false);
+      expect($projectNameDescription.classList.contains('gl-display-none')).toBe(true);
     });
   });
 
   describe('project name rule', () => {
     describe("Name must start with a letter, digit, emoji, or '_'", () => {
-      const errormsg = "Name must start with a letter, digit, emoji, or '_'";
+      const errormsg = 'Name must start with a letter, digit, emoji, or underscore.';
       it("'.foo' should error", () => {
         const text = '.foo';
         expect(checkRules(text)).toBe(errormsg);
@@ -127,7 +131,7 @@ describe('New Project', () => {
 
     describe("Name can contain only letters, digits, emojis, '_', '.', '+', dashes, or spaces", () => {
       const errormsg =
-        "Name can contain only letters, digits, emojis, '_', '.', '+', dashes, or spaces";
+        'Name can contain only lowercase or uppercase letters, digits, emojis, spaces, dots, underscores, dashes, or pluses.';
       it("'foo(#^.^#)foo' should error", () => {
         const text = 'foo(#^.^#)foo';
         expect(checkRules(text)).toBe(errormsg);

@@ -155,6 +155,7 @@ namespace :admin do
       member do
         get :preview_sign_in
         delete :logo
+        delete :pwa_icon
         delete :header_logos
         delete :favicon
       end

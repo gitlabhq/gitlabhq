@@ -5,6 +5,7 @@ FactoryBot.define do
     namespace { association(:group) }
     base_access_level { Gitlab::Access::DEVELOPER }
 
-    trait(:guest) { base_access_level { GroupMember::GUEST } }
+    trait(:developer) { base_access_level { Gitlab::Access::DEVELOPER } }
+    trait(:guest) { base_access_level { Gitlab::Access::GUEST } }
   end
 end

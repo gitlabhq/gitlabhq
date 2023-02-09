@@ -61,11 +61,7 @@ InitializerConnections.with_disabled_database_connections do
 
     # Sign up
     scope path: '/users/sign_up', module: :registrations, as: :users_sign_up do
-      resource :welcome, only: [:show, :update], controller: 'welcome' do
-        Gitlab.ee do
-          get :continuous_onboarding_getting_started, on: :collection
-        end
-      end
+      resource :welcome, only: [:show, :update], controller: 'welcome'
 
       Gitlab.ee do
         resource :company, only: [:new, :create], controller: 'company'

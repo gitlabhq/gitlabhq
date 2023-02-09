@@ -139,6 +139,7 @@ module API
           requires :user_id, type: Integer, desc: 'The user ID of the new member'
           requires :access_level, type: Integer, desc: 'A valid access level'
           optional :expires_at, type: DateTime, desc: 'Date string in the format YEAR-MONTH-DAY'
+          use :optional_put_params_ee
         end
         # rubocop: disable CodeReuse/ActiveRecord
         put ":id/members/:user_id", feature_category: feature_category do

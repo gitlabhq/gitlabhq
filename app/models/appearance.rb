@@ -27,15 +27,21 @@ class Appearance < ApplicationRecord
   cache_markdown_field :footer_message, pipeline: :broadcast_message
 
   validates :pwa_name,
-            length: { maximum: 255, message: N_("is too long (maximum is %{count} characters)") },
+            length: { maximum: 255, too_long: ->(object, data) {
+                                                N_("is too long (maximum is %{count} characters)")
+                                              } },
             allow_blank: true
 
   validates :pwa_short_name,
-            length: { maximum: 255, message: N_("is too long (maximum is %{count} characters)") },
+            length: { maximum: 255, too_long: ->(object, data) {
+                                                N_("is too long (maximum is %{count} characters)")
+                                              } },
             allow_blank: true
 
   validates :pwa_description,
-            length: { maximum: 2048, message: N_("is too long (maximum is %{count} characters)") },
+            length: { maximum: 2048, too_long: ->(object, data) {
+                                                 N_("is too long (maximum is %{count} characters)")
+                                               } },
             allow_blank: true
 
   validates :logo,        file_size: { maximum: 1.megabyte }

@@ -618,6 +618,16 @@ Because `stop_review_app` is set to `auto_stop_in: 1 week`,
 if a merge request is inactive for more than a week,
 GitLab automatically triggers the `stop_review_app` job to stop the environment.
 
+#### Stop an environment without running the `on_stop` action
+
+There may be times when you want to stop an environment without running the defined
+[`on_stop`](../yaml/index.md#environmenton_stop) action. For example, you want to delete many
+environments without using CI/CD minutes.
+
+To stop an environment without running the defined `on_stop` action, execute the
+[Stop an environment API](../../api/environments.md#stop-an-environment) with the parameter
+`force=true`.
+
 #### Stop an environment through the UI
 
 NOTE:

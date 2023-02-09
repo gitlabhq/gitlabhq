@@ -6,6 +6,8 @@ module Gitlab
       class TestBatchedBackgroundRunner < BaseBackgroundRunner
         include Gitlab::Database::DynamicModelHelpers
 
+        MIGRATION_DETAILS_FILE_NAME = 'details.json'
+
         def initialize(result_dir:, connection:, from_id:)
           super(result_dir: result_dir, connection: connection)
           @connection = connection
@@ -64,7 +66,11 @@ module Gitlab
                 end
               end
 
-              [migration.job_class_name, jobs_to_sample]
+              job_class_name = migration.job_class_name
+
+              export_migration_details(job_class_name, migration.slice(:interval, :total_tuple_count, :max_batch_size))
+
+              [job_class_name, jobs_to_sample]
             end
           end
         end
@@ -112,10 +118,24 @@ module Gitlab
           Gitlab::Database::SharedModel.using_connection(connection, &block)
         end
 
-        def migration_meta(job)
+        def job_meta(job)
           set_shared_model_connection do
-            job.batched_migration.slice(:max_batch_size, :total_tuple_count, :interval)
+            job.slice(:min_value, :max_value, :batch_size, :sub_batch_size, :pause_ms)
           end
+        end
+
+        def export_migration_details(migration_name, attributes)
+          directory = result_dir.join(migration_name)
+
+          FileUtils.mkdir_p(directory) unless Dir.exist?(directory)
+
+          File.write(directory.join(MIGRATION_DETAILS_FILE_NAME), attributes.to_json)
+        end
+
+        def observers
+          ::Gitlab::Database::Migrations::Observers.all_observers + [
+            ::Gitlab::Database::Migrations::Observers::BatchDetails
+          ]
         end
       end
     end

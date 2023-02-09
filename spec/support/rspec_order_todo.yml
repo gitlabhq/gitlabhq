@@ -3147,7 +3147,6 @@
 - './ee/spec/views/projects/security/sast_configuration/show.html.haml_spec.rb'
 - './ee/spec/views/projects/settings/subscriptions/_index.html.haml_spec.rb'
 - './ee/spec/views/registrations/groups_projects/new.html.haml_spec.rb'
-- './ee/spec/views/registrations/welcome/continuous_onboarding_getting_started.html.haml_spec.rb'
 - './ee/spec/views/search/_category.html.haml_spec.rb'
 - './ee/spec/views/shared/billings/_billing_plan_actions.html.haml_spec.rb'
 - './ee/spec/views/shared/billings/_billing_plan.html.haml_spec.rb'

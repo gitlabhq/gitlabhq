@@ -116,6 +116,8 @@ export default {
         value: this.boardListsToUse,
         delay: 100,
         delayOnTouchOnly: true,
+        filter: 'input',
+        preventOnFilter: false,
       };
 
       return this.canDragColumns ? options : {};

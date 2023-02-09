@@ -45,17 +45,14 @@ RSpec.describe Gitlab::Database::Migrations::TestBatchedBackgroundRunner, :freez
   end
 
   with_them do
-    let(:result_dir) { Dir.mktmpdir }
+    let(:result_dir) { Pathname.new(Dir.mktmpdir) }
+    let(:connection) { base_model.connection }
+    let(:table_name) { "_test_column_copying" }
+    let(:from_id) { 0 }
 
     after do
       FileUtils.rm_rf(result_dir)
     end
-
-    let(:connection) { base_model.connection }
-
-    let(:table_name) { "_test_column_copying" }
-
-    let(:from_id) { 0 }
 
     before do
       connection.execute(<<~SQL)
@@ -70,26 +67,15 @@ RSpec.describe Gitlab::Database::Migrations::TestBatchedBackgroundRunner, :freez
 
     context 'running a real background migration' do
       let(:interval) { 5.minutes }
-      let(:meta) { { "max_batch_size" => nil, "total_tuple_count" => nil, "interval" => interval } }
-
-      let(:params) do
-        {
-          version: nil,
-          connection: connection,
-          meta: {
-            interval: 300,
-            max_batch_size: nil,
-            total_tuple_count: nil
-          }
-        }
-      end
+      let(:params) { { version: nil, connection: connection } }
+      let(:migration_name) { 'CopyColumnUsingBackgroundMigrationJob' }
+      let(:migration_file_path) { result_dir.join('CopyColumnUsingBackgroundMigrationJob', 'details.json') }
+      let(:json_file) { Gitlab::Json.parse(File.read(migration_file_path)) }
+      let(:expected_file_keys) { %w[interval total_tuple_count max_batch_size] }
 
       before do
-        queue_migration('CopyColumnUsingBackgroundMigrationJob',
-                        table_name, :id,
-                        :id, :data,
-                        batch_size: 100,
-                        job_interval: interval) # job_interval is skipped when testing
+        # job_interval is skipped when testing
+        queue_migration(migration_name, table_name, :id, :id, :data, batch_size: 100, job_interval: interval)
       end
 
       subject(:sample_migration) do
@@ -112,6 +98,12 @@ RSpec.describe Gitlab::Database::Migrations::TestBatchedBackgroundRunner, :freez
         end
 
         subject
+      end
+
+      it 'exports migration details to a file' do
+        subject
+
+        expect(json_file.keys).to match_array(expected_file_keys)
       end
     end
 

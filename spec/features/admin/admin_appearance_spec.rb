@@ -19,6 +19,9 @@ RSpec.describe 'Admin Appearance', feature_category: :not_owned do
 
       fill_in 'appearance_title', with: 'MyCompany'
       fill_in 'appearance_description', with: 'dev server'
+      fill_in 'appearance_pwa_name', with: 'GitLab PWA'
+      fill_in 'appearance_pwa_short_name', with: 'GitLab'
+      fill_in 'appearance_pwa_description', with: 'GitLab as PWA'
       fill_in 'appearance_new_project_guidelines', with: 'Custom project guidelines'
       fill_in 'appearance_profile_image_guidelines', with: 'Custom profile image guidelines'
       click_button 'Update appearance settings'
@@ -28,6 +31,9 @@ RSpec.describe 'Admin Appearance', feature_category: :not_owned do
 
       expect(page).to have_field('appearance_title', with: 'MyCompany')
       expect(page).to have_field('appearance_description', with: 'dev server')
+      expect(page).to have_field('appearance_pwa_name', with: 'GitLab PWA')
+      expect(page).to have_field('appearance_pwa_short_name', with: 'GitLab')
+      expect(page).to have_field('appearance_pwa_description', with: 'GitLab as PWA')
       expect(page).to have_field('appearance_new_project_guidelines', with: 'Custom project guidelines')
       expect(page).to have_field('appearance_profile_image_guidelines', with: 'Custom profile image guidelines')
       expect(page).to have_content 'Last edit'
@@ -135,6 +141,19 @@ RSpec.describe 'Admin Appearance', feature_category: :not_owned do
       expect(page).not_to have_css(logo_selector)
     end
 
+    it 'appearance pwa icon' do
+      sign_in(admin)
+      gitlab_enable_admin_mode_sign_in(admin)
+      visit admin_application_settings_appearances_path
+
+      attach_file(:appearance_pwa_icon, logo_fixture)
+      click_button 'Update appearance settings'
+      expect(page).to have_css(pwa_icon_selector)
+
+      click_link 'Remove icon'
+      expect(page).not_to have_css(pwa_icon_selector)
+    end
+
     it 'header logos' do
       sign_in(admin)
       gitlab_enable_admin_mode_sign_in(admin)
@@ -181,6 +200,10 @@ RSpec.describe 'Admin Appearance', feature_category: :not_owned do
 
   def logo_selector
     '//img[data-src^="/uploads/-/system/appearance/logo"]'
+  end
+
+  def pwa_icon_selector
+    '//img[data-src^="/uploads/-/system/appearance/pwa_icon"]'
   end
 
   def header_logo_selector

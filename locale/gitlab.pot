@@ -20969,6 +20969,9 @@ msgstr ""
 msgid "IP subnet restriction only allowed for top-level groups"
 msgstr ""
 
+msgid "Icon will be removed. Are you sure?"
+msgstr ""
+
 msgid "Id"
 msgstr ""
 
@@ -25969,6 +25972,9 @@ msgstr ""
 msgid "Maximum file size is 1 MB. Pages are optimized for a 128x128 px logo."
 msgstr ""
 
+msgid "Maximum file size is 1MB."
+msgstr ""
+
 msgid "Maximum file size is 1MB. Pages are optimized for a 24px tall header logo"
 msgstr ""
 
@@ -27573,7 +27579,7 @@ msgstr ""
 msgid "Name"
 msgstr ""
 
-msgid "Name can contain only letters, digits, emojis, '_', '.', '+', dashes, or spaces"
+msgid "Name can contain only lowercase or uppercase letters, digits, emojis, spaces, dots, underscores, dashes, or pluses."
 msgstr ""
 
 msgid "Name can't be blank"
@@ -27585,7 +27591,7 @@ msgstr ""
 msgid "Name is already taken."
 msgstr ""
 
-msgid "Name must start with a letter, digit, emoji, or '_'"
+msgid "Name must start with a letter, digit, emoji, or underscore."
 msgstr ""
 
 msgid "Name new label"
@@ -32891,6 +32897,12 @@ msgstr ""
 msgid "Progress tracking"
 msgstr ""
 
+msgid "Progressive Web App (PWA)"
+msgstr ""
+
+msgid "Progressive Web App (PWA) icon was successfully removed."
+msgstr ""
+
 msgid "Project"
 msgstr ""
 
@@ -34020,6 +34032,9 @@ msgid "ProjectsNew|Initialize repository with a README"
 msgstr ""
 
 msgid "ProjectsNew|Migrate your data from an external source like GitHub, Bitbucket, or another instance of GitLab."
+msgstr ""
+
+msgid "ProjectsNew|Must start with a lowercase or uppercase letter, digit, emoji, or underscore. Can also contain dots, pluses, dashes, or spaces."
 msgstr ""
 
 msgid "ProjectsNew|No import options available"
@@ -35434,6 +35449,9 @@ msgid "Remove group"
 msgstr ""
 
 msgid "Remove header logo"
+msgstr ""
+
+msgid "Remove icon"
 msgstr ""
 
 msgid "Remove iteration"
@@ -39512,6 +39530,9 @@ msgid "Shimo|Shimo Workspace integration is enabled"
 msgstr ""
 
 msgid "Shimo|You've enabled the Shimo Workspace integration. You can view your wiki directly in Shimo."
+msgstr ""
+
+msgid "Short name"
 msgstr ""
 
 msgid "Should you ever lose your phone or access to your one time password secret, each of these recovery codes can be used one time each to regain access to your account. Please save them in a safe place, or you %{boldStart}will%{boldEnd} lose access to your account."

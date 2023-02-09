@@ -38,13 +38,15 @@ module Gitlab
         def run_jobs_for_migration(migration_name:, jobs:, run_until:)
           per_background_migration_result_dir = File.join(@result_dir, migration_name)
 
-          instrumentation = Instrumentation.new(result_dir: per_background_migration_result_dir)
+          instrumentation = Instrumentation.new(result_dir: per_background_migration_result_dir,
+                                                observer_classes: observers)
+
           batch_names = (1..).each.lazy.map { |i| "batch_#{i}" }
 
           jobs.each do |j|
             break if run_until <= Time.current
 
-            meta = migration_meta(j)
+            meta = { job_meta: job_meta(j) }
 
             instrumentation.observe(version: nil,
                                     name: batch_names.next,
@@ -55,8 +57,12 @@ module Gitlab
           end
         end
 
-        def migration_meta(_job)
+        def job_meta(_job)
           {}
+        end
+
+        def observers
+          ::Gitlab::Database::Migrations::Observers.all_observers
         end
       end
     end

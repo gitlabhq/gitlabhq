@@ -33,10 +33,23 @@ RSpec.describe Gitlab::Cache::Helpers, :use_clean_rails_redis_caching do
     context 'single object' do
       let_it_be(:presentable) { create(:merge_request, source_project: project, source_branch: 'wip') }
 
-      it_behaves_like 'object cache helper'
+      context 'when presenter is a serializer' do
+        let(:expected_cache_key_prefix) { 'MergeRequestSerializer' }
+
+        it_behaves_like 'object cache helper'
+      end
+
+      context 'when presenter is a Grape::Entity' do
+        let(:presenter) { API::Entities::MergeRequest }
+        let(:expected_cache_key_prefix) { 'API::Entities::MergeRequest' }
+
+        it_behaves_like 'object cache helper'
+      end
     end
 
     context 'collection of objects' do
+      let(:expected_cache_key_prefix) { 'MergeRequestSerializer' }
+
       let_it_be(:presentable) do
         [
           create(:merge_request, source_project: project, source_branch: 'fix'),
@@ -45,6 +58,18 @@ RSpec.describe Gitlab::Cache::Helpers, :use_clean_rails_redis_caching do
       end
 
       it_behaves_like 'collection cache helper'
+    end
+
+    context 'when passed presenter is not a serializer or an entity' do
+      let(:presenter) { User }
+
+      let_it_be(:presentable) do
+        create(:merge_request, source_project: project, source_branch: 'master')
+      end
+
+      it 'throws an exception' do
+        expect { subject }.to raise_exception(ArgumentError, "presenter User is not supported")
+      end
     end
   end
 end

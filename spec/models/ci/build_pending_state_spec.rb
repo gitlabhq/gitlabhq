@@ -2,7 +2,14 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::BuildPendingState do
+RSpec.describe Ci::BuildPendingState, feature_category: :continuous_integration do
+  describe 'validations' do
+    subject(:pending_state) { build(:ci_build_pending_state) }
+
+    it { is_expected.to belong_to(:build) }
+    it { is_expected.to validate_presence_of(:build) }
+  end
+
   describe '#crc32' do
     context 'when checksum does not exist' do
       let(:pending_state) do

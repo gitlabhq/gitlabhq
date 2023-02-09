@@ -16,7 +16,7 @@ import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import csrf from '~/lib/utils/csrf';
 import { redirectTo } from '~/lib/utils/url_utility';
-import { s__ } from '~/locale';
+import { s__, __ } from '~/locale';
 import validation from '~/vue_shared/directives/validation';
 import {
   VISIBILITY_LEVEL_PRIVATE_STRING,
@@ -25,7 +25,23 @@ import {
   VISIBILITY_LEVELS_STRING_TO_INTEGER,
   VISIBILITY_LEVELS_INTEGER_TO_STRING,
 } from '~/visibility_level/constants';
+import { START_RULE, CONTAINS_RULE } from '~/projects/project_name_rules';
 import ProjectNamespace from './project_namespace.vue';
+
+const feedbackMap = {
+  valueMissing: {
+    isInvalid: (el) => el.validity?.valueMissing,
+    message: __('Please fill out this field.'),
+  },
+  nameStartPattern: {
+    isInvalid: (el) => el.validity?.patternMismatch && !START_RULE.reg.test(el.value),
+    message: START_RULE.msg,
+  },
+  nameContainsPattern: {
+    isInvalid: (el) => el.validity?.patternMismatch && !CONTAINS_RULE.reg.test(el.value),
+    message: CONTAINS_RULE.msg,
+  },
+};
 
 const initFormField = ({ value, required = true, skipValidation = false }) => ({
   value,
@@ -48,7 +64,7 @@ export default {
     ProjectNamespace,
   },
   directives: {
-    validation: validation(),
+    validation: validation(feedbackMap),
   },
   inject: {
     newGroupPath: {
@@ -109,6 +125,15 @@ export default {
     };
   },
   computed: {
+    projectNameDescription() {
+      if (this.form.fields.name.state === false) {
+        return null;
+      }
+
+      return s__(
+        'ProjectsNew|Must start with a lowercase or uppercase letter, digit, emoji, or underscore. Can also contain dots, pluses, dashes, or spaces.',
+      );
+    },
     projectVisibilityLevel() {
       return VISIBILITY_LEVELS_STRING_TO_INTEGER[this.projectVisibility];
     },
@@ -248,6 +273,7 @@ export default {
     },
   },
   csrf,
+  projectNamePattern: `(${START_RULE.reg.source})|(${CONTAINS_RULE.reg.source})`,
 };
 </script>
 
@@ -257,8 +283,10 @@ export default {
 
     <gl-form-group
       :label="__('Project name')"
+      :description="projectNameDescription"
       label-for="fork-name"
       :invalid-feedback="form.fields.name.feedback"
+      data-testid="fork-name-form-group"
     >
       <gl-form-input
         id="fork-name"
@@ -268,6 +296,7 @@ export default {
         data-testid="fork-name-input"
         :state="form.fields.name.state"
         required
+        :pattern="$options.projectNamePattern"
       />
     </gl-form-group>
 
