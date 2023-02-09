@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import { nextTick } from 'vue';
 import AxiosMockAdapter from 'axios-mock-adapter';
 import { TEST_HOST, FIXTURES_PATH } from 'spec/test_constants';
@@ -6,7 +7,7 @@ import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
 import MarkdownFieldHeader from '~/vue_shared/components/markdown/header.vue';
 import MarkdownToolbar from '~/vue_shared/components/markdown/toolbar.vue';
-import { mountExtended } from 'helpers/vue_test_utils_helper';
+import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { renderGFM } from '~/behaviors/markdown/render_gfm';
 
 jest.mock('~/behaviors/markdown/render_gfm');
@@ -75,6 +76,22 @@ describe('Markdown field component', () => {
     );
   }
 
+  function createWrapper({ autocompleteDataSources = {} } = {}) {
+    subject = shallowMountExtended(MarkdownField, {
+      propsData: {
+        markdownDocsPath,
+        markdownPreviewPath,
+        isSubmitting: false,
+        textareaValue,
+        lines: [],
+        enablePreview: true,
+        restrictedToolBarItems,
+        showContentEditorSwitcher: false,
+        autocompleteDataSources,
+      },
+    });
+  }
+
   const getPreviewLink = () => subject.findByTestId('preview-tab');
   const getWriteLink = () => subject.findByTestId('write-tab');
   const getMarkdownButton = () => subject.find('.js-md');
@@ -85,6 +102,7 @@ describe('Markdown field component', () => {
   const findDropzone = () => subject.find('.div-dropzone');
   const findMarkdownHeader = () => subject.findComponent(MarkdownFieldHeader);
   const findMarkdownToolbar = () => subject.findComponent(MarkdownToolbar);
+  const findGlForm = () => $(subject.vm.$refs['gl-form']).data('glForm');
 
   describe('mounted', () => {
     const previewHTML = `
@@ -99,6 +117,18 @@ describe('Markdown field component', () => {
       dropzoneSpy = jest.fn();
       createSubject();
       findDropzone().element.addEventListener('click', dropzoneSpy);
+    });
+
+    describe('GlForm', () => {
+      beforeEach(() => {
+        createWrapper({ autocompleteDataSources: { commands: '/foobar/-/autocomplete_sources' } });
+      });
+
+      it('initializes GlForm with autocomplete data sources', () => {
+        expect(findGlForm().autoComplete.dataSources).toMatchObject({
+          commands: '/foobar/-/autocomplete_sources',
+        });
+      });
     });
 
     it('renders textarea inside backdrop', () => {

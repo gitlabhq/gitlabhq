@@ -22,9 +22,11 @@ SSH uses two keys, a public key and a private key.
 
 When you need to copy or upload your SSH public key, make sure you do not accidentally copy or upload your private key instead.
 
-You cannot expose data by uploading your public key. For example, you can use your public key to
-[sign commits](project/repository/ssh_signed_commits/index.md),
+You cannot expose data by uploading your public key. When you need to copy or upload your SSH public key, make sure you do not accidentally copy or upload your private key instead.  
+
+You can use your private key to [sign commits](project/repository/ssh_signed_commits/index.md),
 which makes your use of GitLab and your data even more secure.
+This signature then can be verified by anyone using your public key.
 
 For details, see [Asymmetric cryptography, also known as public-key cryptography](https://en.wikipedia.org/wiki/Public-key_cryptography).
 

@@ -1,5 +1,5 @@
 ---
-status: proposed
+status: ongoing
 creation-date: "2022-09-14"
 authors: [ "@ayufan", "@fabiopitino", "@grzesiek" ]
 coach: [ "@ayufan", "@grzesiek" ]
@@ -8,20 +8,22 @@ owning-stage: "~devops::verify"
 participating-stages: []
 ---
 
-# CI/CD pipeline components catalog
+# CI/CD Catalog
 
 ## Summary
 
 ## Goals
 
-The goal of the CI/CD pipeline components catalog is to make the reusing pipeline configurations
-easier and more efficient.
-Providing a way to discover, understand and learn how to reuse pipeline constructs allows for a more streamlined experience.
-Having a CI/CD pipeline components catalog also sets a framework for users to collaborate on pipeline constructs so that they can be evolved
-and improved over time.
+The goal of the CI/CD pipeline components catalog is to make the reusing
+pipeline configurations easier and more efficient. Providing a way to
+discover, understand and learn how to reuse pipeline constructs allows for a
+more streamlined experience. Having a CI/CD pipeline components catalog also
+sets a framework for users to collaborate on pipeline constructs so that they
+can be evolved and improved over time.
 
-This blueprint defines the architectural guidelines on how to build a CI/CD catalog of pipeline components.
-This blueprint also defines the long-term direction for iterations and improvements to the solution.
+This blueprint defines the architectural guidelines on how to build a CI/CD
+catalog of pipeline components. This blueprint also defines the long-term
+direction for iterations and improvements to the solution.
 
 ## Challenges
 
@@ -392,6 +394,32 @@ scan-website:
 ```
 
 With `$[[ inputs.XXX ]]` inputs are interpolated immediately after parsing the content.
+
+### CI configuration interpolation perspectives and limitations
+
+With `spec:` users will be able to define input arguments for CI configuration.
+With `with:` keywords, they will pass these arguments to CI components.
+
+`inputs` in `$[[ inputs.something ]]` is going to be an initial "object" or
+"container" that we will provide, to allow users to access their arguments in
+the interpolation block. This, however, can evolve into myriads of directions, for example:
+
+1. We could provide `variables` or `env` object, for users to access their environment variables easier.
+1. We can extend the block evaluation to easier navigate JSON or YAML objects passed from elsewhere.
+1. We can provide access to the repository files, snippets or issues from there too.
+
+The CI configuration interpolation is a relative compute-intensive technology,
+especially because we foresee this mechanism being used frequently on
+GitLab.com. In order to ensure that users are using this responsibly, we have
+introduced various limits, required to keep our production system safe. The
+limits should not impact users, because there are application limits available
+on a different level (maximum YAML size supported, timeout on parsing YAML
+files etc); the interpolation limits we've introduced are typically much higher
+then these. Some of them are:
+
+1. An interpolation block should not be larger than 1 kilobyte.
+1. A YAML value with interpolation in it can't be larger than 1 megabyte.
+1. YAML configuration can't consist of more than half million entries.
 
 ### Why input parameters and not environment variables?
 

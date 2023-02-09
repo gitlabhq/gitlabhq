@@ -35,6 +35,9 @@ export default {
     toggleClass: {
       default: () => ({}),
     },
+    branchQaSelector: {
+      default: '',
+    },
   },
   data() {
     return {
@@ -105,6 +108,7 @@ export default {
           :input-name="inputs.branch.name"
           :default="currentBranch"
           :toggle-class="toggleClass.branch"
+          :qa-selector="branchQaSelector"
           @selected="selectBranch"
         />
       </div>

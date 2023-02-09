@@ -1,5 +1,5 @@
 <script>
-import { GlListbox } from '@gitlab/ui';
+import { GlListbox, GlButton, GlIcon } from '@gitlab/ui';
 import { debounce } from 'lodash';
 import { createAlert } from '~/flash';
 import { __ } from '~/locale';
@@ -8,6 +8,8 @@ import axios from '~/lib/utils/axios_utils';
 export default {
   components: {
     GlListbox,
+    GlButton,
+    GlIcon,
   },
   props: {
     staticData: {
@@ -45,6 +47,11 @@ export default {
       type: String,
       required: false,
       default: '',
+    },
+    qaSelector: {
+      type: String,
+      required: false,
+      default: null,
     },
   },
   data() {
@@ -134,6 +141,17 @@ export default {
       @shown="fetchData"
       @search="searchData"
       @select="selectItem"
-    />
+    >
+      <template #toggle>
+        <gl-button
+          class="gl-w-full gl-align-items-flex-start! gl-justify-content-start! mr-compare-dropdown"
+          :class="toggleClass"
+          :data-qa-selector="qaSelector"
+        >
+          {{ current.text || dropdownHeader }}
+          <gl-icon name="chevron-down" class="gl-new-dropdown-chevron gl-float-right" />
+        </gl-button>
+      </template>
+    </gl-listbox>
   </div>
 </template>

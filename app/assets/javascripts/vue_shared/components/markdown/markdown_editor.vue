@@ -46,6 +46,11 @@ export default {
       required: false,
       default: true,
     },
+    autocompleteDataSources: {
+      type: Object,
+      required: false,
+      default: () => ({}),
+    },
     enableAutocomplete: {
       type: Boolean,
       required: false,
@@ -139,6 +144,7 @@ export default {
       :textarea-value="value"
       :markdown-docs-path="markdownDocsPath"
       :quick-actions-docs-path="quickActionsDocsPath"
+      :autocomplete-data-sources="autocompleteDataSources"
       :uploads-path="uploadsPath"
       :enable-preview="enablePreview"
       show-content-editor-switcher

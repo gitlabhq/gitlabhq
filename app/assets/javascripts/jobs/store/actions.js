@@ -8,7 +8,6 @@ import {
   canScroll,
   isScrolledToBottom,
   isScrolledToTop,
-  isScrolledToMiddle,
   scrollDown,
   scrollUp,
 } from '~/lib/utils/scroll_utils';
@@ -124,15 +123,15 @@ export const scrollBottom = ({ dispatch }) => {
  */
 export const toggleScrollButtons = ({ dispatch }) => {
   if (canScroll()) {
-    if (isScrolledToMiddle()) {
-      dispatch('enableScrollTop');
-      dispatch('enableScrollBottom');
-    } else if (isScrolledToTop()) {
+    if (isScrolledToTop()) {
       dispatch('disableScrollTop');
       dispatch('enableScrollBottom');
     } else if (isScrolledToBottom()) {
       dispatch('disableScrollBottom');
       dispatch('enableScrollTop');
+    } else {
+      dispatch('enableScrollTop');
+      dispatch('enableScrollBottom');
     }
   } else {
     dispatch('disableScrollBottom');

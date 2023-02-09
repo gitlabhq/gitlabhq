@@ -20,10 +20,6 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
     :branch_to
   ]
 
-  before_action do
-    push_frontend_feature_flag(:mr_compare_dropdowns, project)
-  end
-
   def new
     define_new_vars
   end

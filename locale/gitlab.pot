@@ -16175,9 +16175,6 @@ msgstr ""
 msgid "Error fetching payload data."
 msgstr ""
 
-msgid "Error fetching refs"
-msgstr ""
-
 msgid "Error fetching the dependency list. Please check your network connection and try again."
 msgstr ""
 

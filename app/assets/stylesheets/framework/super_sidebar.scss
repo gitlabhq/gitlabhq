@@ -37,6 +37,7 @@
 
   .btn-with-notification {
     mix-blend-mode: unset !important; // Our tertiary buttons otherwise use another mix-blend mode, making border-color semi-transparent.
+    position: relative;
 
     .notification {
       background-color: $blue-500;

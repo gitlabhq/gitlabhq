@@ -6,6 +6,47 @@ import '~/lib/utils/common_utils';
 
 describe('GLForm', () => {
   const testContext = {};
+  const mockGl = {
+    GfmAutoComplete: {
+      dataSources: {
+        commands: '/group/projects/-/autocomplete_sources/commands',
+      },
+    },
+  };
+
+  describe('Setting up GfmAutoComplete', () => {
+    describe('setupForm', () => {
+      let setupFormSpy;
+
+      beforeEach(() => {
+        setupFormSpy = jest.spyOn(GLForm.prototype, 'setupForm');
+
+        testContext.form = $('<form class="gfm-form"><textarea class="js-gfm-input"></form>');
+        testContext.textarea = testContext.form.find('textarea');
+      });
+
+      it('should be called with the global data source `windows.gl`', () => {
+        window.gl = { ...mockGl };
+        testContext.glForm = new GLForm(testContext.form, {}, false);
+
+        expect(setupFormSpy).toHaveBeenCalledTimes(1);
+        expect(setupFormSpy).toHaveBeenCalledWith(window.gl.GfmAutoComplete.dataSources, false);
+      });
+
+      it('should be called with the provided custom data source', () => {
+        window.gl = { ...mockGl };
+
+        const customDataSources = {
+          foobar: '/group/projects/-/autocomplete_sources/foobar',
+        };
+
+        testContext.glForm = new GLForm(testContext.form, {}, false, customDataSources);
+
+        expect(setupFormSpy).toHaveBeenCalledTimes(1);
+        expect(setupFormSpy).toHaveBeenCalledWith(customDataSources, false);
+      });
+    });
+  });
 
   describe('when instantiated', () => {
     beforeEach(() => {

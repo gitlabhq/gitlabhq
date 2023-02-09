@@ -6,7 +6,15 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Runners API **(FREE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/2640) in GitLab 8.5.
+[Pagination](rest/index.md#pagination) is available on the following API endpoints (they return 20 items by default):
+
+```plaintext
+GET /runners
+GET /runners/all
+GET /runners/:id/jobs
+GET /projects/:id/runners
+GET /groups/:id/runners
+```
 
 ## Registration and authentication tokens
 

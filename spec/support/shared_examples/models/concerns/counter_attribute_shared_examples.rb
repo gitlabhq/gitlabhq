@@ -15,7 +15,7 @@ RSpec.shared_examples_for CounterAttribute do |counter_attributes|
     describe attribute do
       describe '#increment_counter', :redis do
         let(:amount) { 10 }
-        let(:increment) { Gitlab::Counters::Increment.new(amount: amount) }
+        let(:increment) { Gitlab::Counters::Increment.new(amount: amount, ref: 3) }
         let(:counter_key) { model.counter(attribute).key }
 
         subject { model.increment_counter(attribute, increment) }
@@ -31,6 +31,7 @@ RSpec.shared_examples_for CounterAttribute do |counter_attributes|
                   attribute: attribute,
                   project_id: model.project_id,
                   increment: amount,
+                  ref: increment.ref,
                   new_counter_value: 0 + amount,
                   current_db_value: model.read_attribute(attribute),
                   'correlation_id' => an_instance_of(String),
@@ -74,33 +75,66 @@ RSpec.shared_examples_for CounterAttribute do |counter_attributes|
       end
 
       describe '#bulk_increment_counter', :redis do
-        let(:increments) { [Gitlab::Counters::Increment.new(amount: 10), Gitlab::Counters::Increment.new(amount: 5)] }
+        let(:increments) do
+          [
+            Gitlab::Counters::Increment.new(amount: 10, ref: 1),
+            Gitlab::Counters::Increment.new(amount: 5, ref: 2)
+          ]
+        end
+
         let(:total_amount) { increments.sum(&:amount) }
         let(:counter_key) { model.counter(attribute).key }
 
         subject { model.bulk_increment_counter(attribute, increments) }
 
         context 'when attribute is a counter attribute' do
-          it 'increments the counter in Redis and logs it' do
-            expect(Gitlab::AppLogger).to receive(:info).with(
-              hash_including(
-                message: 'Increment counter attribute',
-                attribute: attribute,
-                project_id: model.project_id,
-                increment: total_amount,
-                new_counter_value: 0 + total_amount,
-                current_db_value: model.read_attribute(attribute),
-                'correlation_id' => an_instance_of(String),
-                'meta.feature_category' => 'test',
-                'meta.caller_id' => 'caller'
+          it 'increments the counter in Redis and logs each increment' do
+            increments.each do |increment|
+              expect(Gitlab::AppLogger).to receive(:info).with(
+                hash_including(
+                  message: 'Increment counter attribute',
+                  attribute: attribute,
+                  project_id: model.project_id,
+                  increment: increment.amount,
+                  ref: increment.ref,
+                  new_counter_value: 0 + total_amount,
+                  current_db_value: model.read_attribute(attribute),
+                  'correlation_id' => an_instance_of(String),
+                  'meta.feature_category' => 'test',
+                  'meta.caller_id' => 'caller'
+                )
               )
-            )
+            end
 
             subject
 
             Gitlab::Redis::SharedState.with do |redis|
               counter = redis.get(counter_key)
               expect(counter).to eq(total_amount.to_s)
+            end
+          end
+
+          context 'when feature flag split_log_bulk_increment_counter is disabled' do
+            before do
+              stub_feature_flags(split_log_bulk_increment_counter: false)
+            end
+
+            it 'logs a single total increment' do
+              expect(Gitlab::AppLogger).to receive(:info).with(
+                hash_including(
+                  message: 'Increment counter attribute',
+                  attribute: attribute,
+                  project_id: model.project_id,
+                  increment: increments.sum(&:amount),
+                  new_counter_value: 0 + total_amount,
+                  current_db_value: model.read_attribute(attribute),
+                  'correlation_id' => an_instance_of(String),
+                  'meta.feature_category' => 'test',
+                  'meta.caller_id' => 'caller'
+                )
+              )
+
+              subject
             end
           end
 

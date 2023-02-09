@@ -1,5 +1,6 @@
 import autosize from 'autosize';
 import $ from 'jquery';
+import { isEmpty } from 'lodash';
 import GfmAutoComplete, { defaultAutocompleteConfig } from 'ee_else_ce/gfm_auto_complete';
 import { disableButtonIfEmptyField } from '~/lib/utils/common_utils';
 import dropzoneInput from './dropzone_input';
@@ -12,14 +13,22 @@ export default class GLForm {
    * @param {jQuery} form Root element of the GLForm
    * @param {Object} enableGFM Which autocomplete features should be enabled?
    * @param {Boolean} forceNew If true, treat the element as a **new** form even if `gfm-form` class already exists.
+   * @param {Object} gfmDataSources The paths of the autocomplete data sources to use for GfmAutoComplete
+   *                                By default, the backend embeds these in the global object gl.GfmAutocomplete.dataSources.
+   *                                Use this param to override them.
    */
-  constructor(form, enableGFM = {}, forceNew = false) {
+  constructor(form, enableGFM = {}, forceNew = false, gfmDataSources = {}) {
     this.form = form;
     this.textarea = this.form.find('textarea.js-gfm-input');
     this.enableGFM = { ...defaultAutocompleteConfig, ...enableGFM };
 
     // Disable autocomplete for keywords which do not have dataSources available
-    const dataSources = (gl.GfmAutoComplete && gl.GfmAutoComplete.dataSources) || {};
+    let dataSources = (gl.GfmAutoComplete && gl.GfmAutoComplete.dataSources) || {};
+
+    if (!isEmpty(gfmDataSources)) {
+      dataSources = gfmDataSources;
+    }
+
     Object.keys(this.enableGFM).forEach((item) => {
       if (item !== 'emojis' && !dataSources[item]) {
         this.enableGFM[item] = false;
@@ -29,7 +38,7 @@ export default class GLForm {
     // Before we start, we should clean up any previous data for this form
     this.destroy();
     // Set up the form
-    this.setupForm(forceNew);
+    this.setupForm(dataSources, forceNew);
     this.form.data('glForm', this);
   }
 
@@ -46,7 +55,7 @@ export default class GLForm {
     this.form.data('glForm', null);
   }
 
-  setupForm(forceNew = false) {
+  setupForm(dataSources, forceNew = false) {
     const isNewForm = this.form.is(':not(.gfm-form)') || forceNew;
     this.form.removeClass('js-new-note-form');
     if (isNewForm) {
@@ -57,7 +66,7 @@ export default class GLForm {
         this.form.find('.js-note-text'),
         this.form.find('.js-comment-button, .js-note-new-discussion'),
       );
-      this.autoComplete = new GfmAutoComplete(gl.GfmAutoComplete && gl.GfmAutoComplete.dataSources);
+      this.autoComplete = new GfmAutoComplete(dataSources);
       this.autoComplete.setup(this.form.find('.js-gfm-input'), this.enableGFM);
       this.formDropzone = dropzoneInput(this.form, { parallelUploads: 1 });
 

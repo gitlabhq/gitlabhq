@@ -76,6 +76,22 @@ RSpec.shared_examples 'work items description' do
     end
   end
 
+  it 'autocompletes available quick actions', :aggregate_failures do
+    click_button "Edit description"
+
+    find('[aria-label="Description"]').send_keys("/")
+
+    wait_for_requests
+
+    page.within('.atwho-container') do
+      expect(page).to have_text("title")
+      expect(page).to have_text("shrug")
+      expect(page).to have_text("tableflip")
+      expect(page).to have_text("close")
+      expect(page).to have_text("cc")
+    end
+  end
+
   context 'on conflict' do
     let_it_be(:other_user) { create(:user) }
     let(:expected_warning) { 'Someone edited the description at the same time you did.' }

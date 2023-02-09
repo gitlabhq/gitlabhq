@@ -429,7 +429,7 @@ Supported attributes:
 | `config_file` | string   | no | The path of changelog configuration file in the project's Git repository, defaults to `.gitlab/changelog_config.yml`. |
 | `date`    | datetime | no | The date and time of the release, ISO 8601 formatted. Example: `2016-03-11T03:45:40Z`. Defaults to the current time. |
 | `from`    | string   | no | The start of the range of commits (as a SHA) to use for generating the changelog. This commit itself isn't included in the list. |
-| `to`      | string   | no | The end of the range of commits (as a SHA) to use for the changelog. This commit _is_ included in the list. Defaults to the branch specified in the `branch` attribute. |
+| `to`      | string   | no | The end of the range of commits (as a SHA) to use for the changelog. This commit _is_ included in the list. Defaults to the HEAD of the default project branch. |
 | `trailer` | string   | no | The Git trailer to use for including commits, defaults to `Changelog`. |
 
 ```shell

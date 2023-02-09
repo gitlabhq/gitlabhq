@@ -1,8 +1,0 @@
----
-name: mr_compare_dropdowns
-introduced_by_url: 
-rollout_issue_url: 
-milestone: '15.7'
-type: development
-group: group::code review
-default_enabled: false

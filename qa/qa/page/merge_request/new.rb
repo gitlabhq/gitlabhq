@@ -10,6 +10,9 @@ module QA
 
         view 'app/views/projects/merge_requests/creations/_new_compare.html.haml' do
           element :compare_branches_button
+        end
+
+        view 'app/assets/javascripts/pages/projects/merge_requests/creations/new/index.js' do
           element :source_branch_dropdown
         end
 
