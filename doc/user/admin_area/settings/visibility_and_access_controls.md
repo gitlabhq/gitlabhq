@@ -155,18 +155,23 @@ For more details on group visibility, see
 
 ## Restrict visibility levels
 
-To restrict visibility levels for projects, snippets, and selected pages:
+To restrict visibility levels for groups, projects, snippets, and selected pages:
 
 1. Sign in to GitLab as a user with Administrator access level.
 1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Settings > General**.
 1. Expand the **Visibility and access controls** section.
 1. In the **Restricted visibility levels** section, select the desired visibility levels to restrict.
-   If you restrict the **Public** level:
-   - User profiles are only visible to authenticated users via the Web interface.
-   - User attributes via the GraphQL API are:
-     - Not visible in [GitLab 15.1 and later](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88020).
-     - Only visible to authenticated users between [GitLab 13.1](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/33195) and GitLab 15.0.
+   - If you restrict the **Public** level:
+      - Only administrators are able to create public groups, projects, and snippets.
+      - User profiles are only visible to authenticated users through the Web interface.
+      - User attributes through the GraphQL API are:
+         - Not visible in [GitLab 15.1 and later](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88020).
+         - Only visible to authenticated users between [GitLab 13.1](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/33195) and GitLab 15.0.
+   - If you restrict the **Internal** level:
+     - Only administrators are able to create internal groups, projects, and snippets.
+   - If you restrict the **Private** level:
+     - Only administrators are able to create private groups, projects, and snippets.
 1. Select **Save changes**.
 
 For more details on project visibility, see

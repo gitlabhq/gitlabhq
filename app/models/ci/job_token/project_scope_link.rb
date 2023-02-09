@@ -8,6 +8,8 @@ module Ci
     class ProjectScopeLink < Ci::ApplicationRecord
       self.table_name = 'ci_job_token_project_scope_links'
 
+      PROJECT_LINK_DIRECTIONAL_LIMIT = 100
+
       belongs_to :source_project, class_name: 'Project'
       # the project added to the scope's allowlist
       belongs_to :target_project, class_name: 'Project'
@@ -20,6 +22,7 @@ module Ci
       validates :source_project, presence: true
       validates :target_project, presence: true
       validate :not_self_referential_link
+      validate :source_project_under_link_limit, on: :create
 
       # When outbound the target project is allowed to be accessed by the source job token.
       # When inbound the source project is allowed to be accessed by the target job token.
@@ -39,6 +42,16 @@ module Ci
 
         if source_project == target_project
           self.errors.add(:target_project, _("can't be the same as the source project"))
+        end
+      end
+
+      def source_project_under_link_limit
+        return unless source_project
+
+        existing_links_count = self.class.with_source(source_project).with_access_direction(direction).count
+
+        if existing_links_count >= PROJECT_LINK_DIRECTIONAL_LIMIT
+          errors.add(:source_project, "exceeds the allowable number of project links in this direction")
         end
       end
     end

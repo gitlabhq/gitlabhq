@@ -75,16 +75,38 @@ module ApplicationSettingsHelper
   end
 
   def restricted_level_checkboxes(form)
-    Gitlab::VisibilityLevel.values.map do |level|
+    restricted_visibility_levels_help_text = {
+      Gitlab::VisibilityLevel::PUBLIC => s_(
+        'AdminSettings|If selected, only administrators are able to create public groups, projects, ' \
+        'and snippets. Also, profiles are only visible to authenticated users.'
+      ),
+      Gitlab::VisibilityLevel::INTERNAL => s_(
+        'AdminSettings|If selected, only administrators are able to create internal groups, projects, and ' \
+        'snippets.'
+      ),
+      Gitlab::VisibilityLevel::PRIVATE => s_(
+        'AdminSettings|If selected, only administrators are able to create private groups, projects, and ' \
+        'snippets.'
+      )
+    }
+
+    Gitlab::VisibilityLevel.options.map do |label, level|
       checked = restricted_visibility_levels(true).include?(level)
 
       form.gitlab_ui_checkbox_component(
         :restricted_visibility_levels,
-        "#{visibility_level_icon(level)} #{visibility_level_label(level)}".html_safe,
         checkbox_options: { checked: checked, multiple: true, autocomplete: 'off' },
         checked_value: level,
         unchecked_value: nil
-      )
+      ) do |c|
+        c.label do
+          visibility_level_icon(level) + content_tag(:span, label, { class: 'gl-ml-2' })
+        end
+
+        c.help_text do
+          restricted_visibility_levels_help_text.fetch(level)
+        end
+      end
     end
   end
 

@@ -2929,6 +2929,15 @@ msgstr ""
 msgid "AdminSettings|If not specified at the group or instance level, the default is %{default_initial_branch_name}. Does not affect existing repositories."
 msgstr ""
 
+msgid "AdminSettings|If selected, only administrators are able to create internal groups, projects, and snippets."
+msgstr ""
+
+msgid "AdminSettings|If selected, only administrators are able to create private groups, projects, and snippets."
+msgstr ""
+
+msgid "AdminSettings|If selected, only administrators are able to create public groups, projects, and snippets. Also, profiles are only visible to authenticated users."
+msgstr ""
+
 msgid "AdminSettings|If there isn't any existing index, GitLab creates one."
 msgstr ""
 
@@ -3010,6 +3019,9 @@ msgstr ""
 msgid "AdminSettings|Pause Elasticsearch indexing"
 msgstr ""
 
+msgid "AdminSettings|Prevent non-administrators from using the selected visibility levels for groups, projects and snippets."
+msgstr ""
+
 msgid "AdminSettings|Preview payload"
 msgstr ""
 
@@ -3035,6 +3047,9 @@ msgid "AdminSettings|Requires %{linkStart}email notifications%{linkEnd}"
 msgstr ""
 
 msgid "AdminSettings|Restrict group access by IP address. %{link_start}Learn more%{link_end}."
+msgstr ""
+
+msgid "AdminSettings|Restricted visibility levels"
 msgstr ""
 
 msgid "AdminSettings|Save %{name} limits"
@@ -29368,6 +29383,9 @@ msgstr ""
 msgid "OnDemandScans|Unable to fetch runner tags. Try reloading the page."
 msgstr ""
 
+msgid "OnDemandScans|Verify"
+msgstr ""
+
 msgid "OnDemandScans|Verify configuration"
 msgstr ""
 
@@ -38994,9 +39012,6 @@ msgid "Selected for all items."
 msgstr ""
 
 msgid "Selected for some items."
-msgstr ""
-
-msgid "Selected levels cannot be used by non-admin users for groups, projects or snippets. If the public level is restricted, user profiles are only visible to logged in users."
 msgstr ""
 
 msgid "Selected tag is already in use. Choose another option."

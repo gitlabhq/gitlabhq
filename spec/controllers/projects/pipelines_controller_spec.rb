@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::PipelinesController do
+RSpec.describe Projects::PipelinesController, feature_category: :continuous_integration do
   include ApiHelpers
 
   let_it_be(:user) { create(:user) }
@@ -51,21 +51,6 @@ RSpec.describe Projects::PipelinesController do
         json_response.dig('pipelines', 0, 'details', 'stages').tap do |stages|
           expect(stages.count).to eq 3
         end
-      end
-
-      it 'does not execute N+1 queries', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/345470' do
-        get_pipelines_index_json
-
-        control_count = ActiveRecord::QueryRecorder.new do
-          get_pipelines_index_json
-        end.count
-
-        create_all_pipeline_types
-
-        # There appears to be one extra query for Pipelines#has_warnings? for some reason
-        expect { get_pipelines_index_json }.not_to exceed_query_limit(control_count + 1)
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response['pipelines'].count).to eq 12
       end
     end
 

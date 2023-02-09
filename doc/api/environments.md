@@ -293,7 +293,7 @@ PUT /projects/:id/environments/:environments_id
 |------------------|----------------|----------|---------------------------------------------------------------------------------------------------------------------|
 | `id`             | integer/string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding).                                |
 | `environment_id` | integer        | yes      | The ID of the environment.                                                                                          |
-| `name`           | string         | no       | [Deprecated and will be removed in GitLab 15.0](https://gitlab.com/gitlab-org/gitlab/-/issues/338897).              |
+| `name`           | string         | no       | [Deprecated and will be removed in GitLab 16.0](https://gitlab.com/gitlab-org/gitlab/-/issues/338897).              |
 | `external_url`   | string         | no       | The new `external_url`.                                                                                             |
 | `tier`           | string         | no       | The tier of the new environment. Allowed values are `production`, `staging`, `testing`, `development`, and `other`. |
 

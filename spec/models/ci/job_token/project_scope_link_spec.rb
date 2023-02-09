@@ -28,6 +28,30 @@ RSpec.describe Ci::JobToken::ProjectScopeLink, feature_category: :continuous_int
     end
   end
 
+  describe '.create' do
+    let_it_be(:target) { create(:project) }
+    let(:new_link) { described_class.create(source_project: project, target_project: target) } # rubocop:disable Rails/SaveBang
+
+    context 'when there are more than PROJECT_LINK_DIRECTIONAL_LIMIT existing links' do
+      before do
+        create_list(:ci_job_token_project_scope_link, 5, source_project: project)
+        stub_const("#{described_class}::PROJECT_LINK_DIRECTIONAL_LIMIT", 3)
+      end
+
+      it 'invalidates new links and prevents them from being created' do
+        expect { new_link }.not_to change { described_class.count }
+        expect(new_link).not_to be_persisted
+        expect(new_link.errors.full_messages)
+          .to include('Source project exceeds the allowable number of project links in this direction')
+      end
+
+      it 'does not invalidate existing links' do
+        expect(described_class.count).to be > described_class::PROJECT_LINK_DIRECTIONAL_LIMIT
+        expect(described_class.all).to all(be_valid)
+      end
+    end
+  end
+
   describe 'validations' do
     it 'must have a source project', :aggregate_failures do
       link = build(:ci_job_token_project_scope_link, source_project: nil)

@@ -761,7 +761,9 @@ Backup failed
 
 If this happens, examine the following:
 
-- Confirm there is sufficient disk space for the Gzip operation.
+- Confirm there is sufficient disk space for the Gzip operation. It's not uncommon for backups that
+  use the [default strategy](backup_gitlab.md#backup-strategy-option) to require half the instance size
+  in free disk space during backup creation.
 - If NFS is being used, check if the mount option `timeout` is set. The
   default is `600`, and changing this to smaller values results in this error.
 

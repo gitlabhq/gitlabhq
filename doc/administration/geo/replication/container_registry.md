@@ -7,7 +7,12 @@ type: howto
 
 # Container Registry for a secondary site **(PREMIUM SELF)**
 
-You can set up a Container Registry on your **secondary** Geo site that mirrors the one on the **primary** Geo site.
+You can set up a Container Registry on your **secondary** Geo site that mirrors the one on the **primary** Geo site. 
+
+NOTE:
+The Container Registry replication is used only for disaster recovery purposes. We do not recommend
+pulling the Container Registry data from the secondary. For a feature proposal to implement it in the
+future, see [Geo: Accelerate container images by serving read request from secondary site](https://gitlab.com/gitlab-org/gitlab/-/issues/365864) for details.
 
 ## Supported container registries
 

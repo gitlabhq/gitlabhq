@@ -121,6 +121,26 @@ We intend to replace this feature with the ability to [embed charts](https://git
 
 </div>
 
+<div class="deprecation removal-160 breaking-change">
+
+### Error Tracking UI in GitLab Rails is deprecated
+
+Planned removal: GitLab <span class="removal-milestone">16.0</span> <span class="removal-date"></span>
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+The [Error Tracking UI](https://docs.gitlab.com/ee/operations/error_tracking.html) is deprecated in 15.9 and will be removed in 16.0. In future versions, you should use the [GitLab Observability UI](https://gitlab.com/gitlab-org/opstrace/opstrace-ui/), which will gradually be made available on GitLab.com over the next few releases.
+
+During the transition to the GitLab Observability UI, we will migrate the [GitLab Observability Backend](https://gitlab.com/gitlab-org/opstrace/opstrace) from a per-cluster deployment model to a per-tenant deployment model. Because [Integrated Error Tracking](https://docs.gitlab.com/ee/operations/error_tracking.html#integrated-error-tracking) is in Open Beta, we will not migrate any existing user data. For more details about the migration, see the direction pages for:
+
+- [Observability](https://about.gitlab.com/direction/monitor/observability/data-visualization/).
+- The [Observability Backend](https://about.gitlab.com/direction/monitor/observability/data-management/).
+- [Data visualization](https://about.gitlab.com/direction/monitor/observability/data-visualization/).
+
+</div>
+
 <div class="deprecation removal-170 breaking-change">
 
 ### GitLab Runner platforms and setup instructions in GraphQL API
@@ -188,6 +208,20 @@ This change means the following metrics will become unavailable on `/metrics`:
 - `gitaly_praefect_replication_queue_depth`.
 
 This may require updating your metrics collection targets to also scrape `/db_metrics`.
+
+</div>
+
+<div class="deprecation removal-170 breaking-change">
+
+### The GitLab legacy requirement IID is deprecated in favor of work item IID
+
+Planned removal: GitLab <span class="removal-milestone">17.0</span> <span class="removal-date"></span>
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+We will be transitioning to a new IID as a result of moving requirements to a [work item type](https://docs.gitlab.com/ee/development/work_items.html#work-items-and-work-item-types). Users should begin using the new IID as support for the legacy IID and existing formatting will end in GitLab 17.0. The legacy requirement IID remains available until its removal in GitLab 17.0.
 
 </div>
 </div>

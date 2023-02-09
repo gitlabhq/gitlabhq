@@ -24,7 +24,7 @@ RSpec.describe 'Admin updates settings', feature_category: :not_owned do
       end
 
       it 'change visibility settings' do
-        page.within('.as-visibility-access') do
+        page.within('[data-testid="admin-visibility-access-settings"]') do
           choose "application_setting_default_project_visibility_20"
           click_button 'Save changes'
         end
@@ -33,23 +33,29 @@ RSpec.describe 'Admin updates settings', feature_category: :not_owned do
       end
 
       it 'uncheck all restricted visibility levels' do
-        page.within('.as-visibility-access') do
-          find('#application_setting_restricted_visibility_levels_0').set(false)
-          find('#application_setting_restricted_visibility_levels_10').set(false)
-          find('#application_setting_restricted_visibility_levels_20').set(false)
+        page.within('[data-testid="restricted-visibility-levels"]') do
+          uncheck s_('VisibilityLevel|Public')
+          uncheck s_('VisibilityLevel|Internal')
+          uncheck s_('VisibilityLevel|Private')
+        end
+
+        page.within('[data-testid="admin-visibility-access-settings"]') do
           click_button 'Save changes'
         end
 
         expect(page).to have_content "Application settings saved successfully"
-        expect(find('#application_setting_restricted_visibility_levels_0')).not_to be_checked
-        expect(find('#application_setting_restricted_visibility_levels_10')).not_to be_checked
-        expect(find('#application_setting_restricted_visibility_levels_20')).not_to be_checked
+
+        page.within('[data-testid="restricted-visibility-levels"]') do
+          expect(find_field(s_('VisibilityLevel|Public'))).not_to be_checked
+          expect(find_field(s_('VisibilityLevel|Internal'))).not_to be_checked
+          expect(find_field(s_('VisibilityLevel|Private'))).not_to be_checked
+        end
       end
 
       it 'modify import sources' do
         expect(current_settings.import_sources).not_to be_empty
 
-        page.within('.as-visibility-access') do
+        page.within('[data-testid="admin-visibility-access-settings"]') do
           Gitlab::ImportSources.options.map do |name, _|
             uncheck name
           end
@@ -60,7 +66,7 @@ RSpec.describe 'Admin updates settings', feature_category: :not_owned do
         expect(page).to have_content "Application settings saved successfully"
         expect(current_settings.import_sources).to be_empty
 
-        page.within('.as-visibility-access') do
+        page.within('[data-testid="admin-visibility-access-settings"]') do
           check "Repository by URL"
           click_button 'Save changes'
         end
@@ -70,7 +76,7 @@ RSpec.describe 'Admin updates settings', feature_category: :not_owned do
       end
 
       it 'change Visibility and Access Controls' do
-        page.within('.as-visibility-access') do
+        page.within('[data-testid="admin-visibility-access-settings"]') do
           page.within('[data-testid="project-export"]') do
             uncheck 'Enabled'
           end
@@ -88,7 +94,7 @@ RSpec.describe 'Admin updates settings', feature_category: :not_owned do
       end
 
       it 'change Keys settings' do
-        page.within('.as-visibility-access') do
+        page.within('[data-testid="admin-visibility-access-settings"]') do
           select 'Are forbidden', from: 'RSA SSH keys'
           select 'Are allowed', from: 'DSA SSH keys'
           select 'Must be at least 384 bits', from: 'ECDSA SSH keys'
