@@ -337,6 +337,8 @@
   - 1
 - - migrate_external_diffs
   - 1
+- - namespaces_free_user_cap_over_limit_notification
+  - 1
 - - namespaces_process_sync_events
   - 1
 - - namespaces_sync_namespace_name

@@ -1,5 +1,5 @@
 #import "~/graphql_shared/fragments/user.fragment.graphql"
-#import "~/work_items/graphql/work_item_note.fragment.graphql"
+#import "./work_item_note.fragment.graphql"
 
 fragment WorkItemDiscussionNote on Note {
   id

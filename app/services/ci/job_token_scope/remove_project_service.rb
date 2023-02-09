@@ -5,7 +5,7 @@ module Ci
     class RemoveProjectService < ::BaseService
       include EditScopeValidations
 
-      def execute(target_project, direction: :outbound)
+      def execute(target_project, direction)
         validate_edit!(project, target_project, current_user)
 
         if project == target_project

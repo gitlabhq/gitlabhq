@@ -122,7 +122,8 @@ RSpec.describe 'Profile > SSH Keys', feature_category: :user_profile do
         project.add_developer(user)
       end
 
-      it 'revoking the SSH key marks commits as unverified' do
+      it 'revoking the SSH key marks commits as unverified',
+        quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/390905' do
         visit project_commit_path(project, commit)
 
         find('a.gpg-status-box', text: 'Verified').click

@@ -424,4 +424,5 @@ module Feature
   end
 end
 
+Feature.prepend_mod
 Feature::ActiveSupportCacheStoreAdapter.prepend_mod_with('Feature::ActiveSupportCacheStoreAdapter')

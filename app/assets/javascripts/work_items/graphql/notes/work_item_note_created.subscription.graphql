@@ -1,4 +1,4 @@
-#import "~/work_items/graphql/work_item_discussion_note.fragment.graphql"
+#import "./work_item_discussion_note.fragment.graphql"
 
 subscription workItemNoteCreated($noteableId: NoteableID) {
   workItemNoteCreated(noteableId: $noteableId) {

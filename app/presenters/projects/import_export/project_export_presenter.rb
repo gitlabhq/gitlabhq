@@ -17,7 +17,7 @@ module Projects
 
       delegator_override :project_members
       def project_members
-        super + converted_group_members
+        super.preload(:user) + converted_group_members # rubocop:disable CodeReuse/ActiveRecord
       end
 
       delegator_override :description
@@ -46,7 +46,7 @@ module Projects
         # invitee, it would make the following query return 0 rows since a NULL
         # user_id would be present in the subquery
         non_null_user_ids = project.project_members.connected_to_user.select(:user_id)
-        GroupMembersFinder.new(project.group).execute.where.not(user_id: non_null_user_ids)
+        GroupMembersFinder.new(project.group).execute.where.not(user_id: non_null_user_ids).preload(:user)
       end
       # rubocop: enable CodeReuse/ActiveRecord
     end

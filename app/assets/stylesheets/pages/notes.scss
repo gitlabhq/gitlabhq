@@ -637,6 +637,11 @@ $system-note-svg-size: 1rem;
           &.new {
             border-right-width: 0;
           }
+
+          .note-header {
+            flex-wrap: wrap;
+            align-items: center;
+          }
         }
 
         .notes {

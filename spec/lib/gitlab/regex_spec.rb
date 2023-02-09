@@ -1089,4 +1089,73 @@ RSpec.describe Gitlab::Regex, feature_category: :tooling do
     it { is_expected.not_to match('random string') }
     it { is_expected.not_to match('12321342545356434523412341245452345623453542345234523453245') }
   end
+
+  describe 'code, html blocks, or html comment blocks regex' do
+    context 'code blocks' do
+      subject { described_class::MARKDOWN_CODE_BLOCK_REGEX }
+
+      let(:expected) { %(```code\nsome code\n\n>>>\nthat includes a multiline-blockquote\n>>>\n```) }
+      let(:markdown) do
+        <<~MARKDOWN
+        Regular text
+
+        ```code
+        some code
+
+        >>>
+        that includes a multiline-blockquote
+        >>>
+        ```
+        MARKDOWN
+      end
+
+      it { is_expected.to match(%(```ruby\nsomething\n```)) }
+      it { is_expected.not_to match(%(must start in first column ```ruby\nsomething\n```)) }
+      it { is_expected.not_to match(%(```ruby must be multi-line ```)) }
+      it { expect(subject.match(markdown)[:code]).to eq expected }
+    end
+
+    context 'HTML blocks' do
+      subject { described_class::MARKDOWN_HTML_BLOCK_REGEX }
+
+      let(:expected) { %(<section>\n<p>paragraph</p>\n\n>>>\nthat includes a multiline-blockquote\n>>>\n</section>) }
+      let(:markdown) do
+        <<~MARKDOWN
+        Regular text
+
+        <section>
+        <p>paragraph</p>
+
+        >>>
+        that includes a multiline-blockquote
+        >>>
+        </section>
+        MARKDOWN
+      end
+
+      it { is_expected.to match(%(<section>\nsomething\n</section>)) }
+      it { is_expected.not_to match(%(must start in first column <section>\nsomething\n</section>)) }
+      it { is_expected.not_to match(%(<section>must be multi-line</section>)) }
+      it { expect(subject.match(markdown)[:html]).to eq expected }
+    end
+
+    context 'HTML comment blocks' do
+      subject { described_class::MARKDOWN_HTML_COMMENT_BLOCK_REGEX }
+
+      let(:expected) { %(<!-- the start of an HTML comment\n- [ ] list item commented out\n-->) }
+      let(:markdown) do
+        <<~MARKDOWN
+        Regular text
+
+        <!-- the start of an HTML comment
+        - [ ] list item commented out
+        -->
+        MARKDOWN
+      end
+
+      it { is_expected.to match(%(<!--\ncomment\n-->)) }
+      it { is_expected.not_to match(%(must start in first column <!--\ncomment\n-->)) }
+      it { expect(subject.match(markdown)[:html_block_comment]).to eq expected }
+    end
+  end
 end

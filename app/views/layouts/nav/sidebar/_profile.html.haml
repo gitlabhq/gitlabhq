@@ -130,6 +130,18 @@
             = link_to profile_preferences_path do
               %strong.fly-out-top-item-name
                 = _('Preferences')
+      - if saved_replies_enabled?
+        = nav_link(controller: :saved_replies) do
+          = link_to profile_saved_replies_path do
+            .nav-icon-container
+              = sprite_icon('symlink')
+            %span.nav-item-name
+              = _('Saved Replies')
+          %ul.sidebar-sub-level-items.is-fly-out-only
+            = nav_link(controller: :saved_replies, html_options: { class: "fly-out-top-item" }) do
+              = link_to profile_saved_replies_path do
+                %strong.fly-out-top-item-name
+                  = _('Saved Replies')
       = nav_link(controller: :active_sessions) do
         = link_to profile_active_sessions_path do
           .nav-icon-container

@@ -130,4 +130,11 @@ describe('Work Item Discussion', () => {
       expect(findToggleRepliesWidget().props('collapsed')).toBe(false);
     });
   });
+
+  it('emits `deleteNote` event with correct parameter when child note component emits `deleteNote` event', () => {
+    createComponent();
+    findThreadAtIndex(0).vm.$emit('deleteNote');
+
+    expect(wrapper.emitted('deleteNote')).toEqual([[mockWorkItemCommentNote]]);
+  });
 });

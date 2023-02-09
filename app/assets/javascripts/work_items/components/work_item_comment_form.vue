@@ -11,7 +11,7 @@ import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { updateCommentState } from '~/work_items/graphql/cache_utils';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
 import { getWorkItemQuery } from '../utils';
-import createNoteMutation from '../graphql/create_work_item_note.mutation.graphql';
+import createNoteMutation from '../graphql/notes/create_work_item_note.mutation.graphql';
 import { TRACKING_CATEGORY_SHOW, i18n } from '../constants';
 import WorkItemNoteSignedOut from './work_item_note_signed_out.vue';
 import WorkItemCommentLocked from './work_item_comment_locked.vue';

@@ -18310,7 +18310,8 @@ CREATE TABLE namespace_details (
     free_user_cap_over_limt_notified_at timestamp with time zone,
     free_user_cap_over_limit_notified_at timestamp with time zone,
     dashboard_notification_at timestamp with time zone,
-    dashboard_enforcement_at timestamp with time zone
+    dashboard_enforcement_at timestamp with time zone,
+    next_over_limit_check_at timestamp with time zone
 );
 
 CREATE TABLE namespace_limits (

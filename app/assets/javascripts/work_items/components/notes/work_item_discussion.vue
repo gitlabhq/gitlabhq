@@ -140,6 +140,7 @@ export default {
                 :note="note"
                 :discussion-id="discussionId"
                 @startReplying="showReplyForm"
+                @deleteNote="$emit('deleteNote', note)"
               />
               <discussion-notes-replies-wrapper>
                 <toggle-replies-widget
@@ -155,6 +156,7 @@ export default {
                       discussion-id="discussionId"
                       :note="reply"
                       @startReplying="showReplyForm"
+                      @deleteNote="$emit('deleteNote', reply)"
                     />
                   </template>
                   <work-item-note-replying v-if="isReplying" :body="replyingText" />

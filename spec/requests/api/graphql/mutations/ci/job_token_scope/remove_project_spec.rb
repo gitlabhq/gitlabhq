@@ -76,6 +76,15 @@ RSpec.describe 'CiJobTokenScopeRemoveProject', feature_category: :continuous_int
       end.to change { Ci::JobToken::ProjectScopeLink.outbound.count }.by(-1)
     end
 
+    it 'responds successfully' do
+      post_graphql_mutation(mutation, current_user: current_user)
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(graphql_errors).to be_nil
+      expect(graphql_data_at(:ciJobTokenScopeRemoveProject, :ciJobTokenScope, :projects, :nodes))
+        .to contain_exactly({ 'path' => project.path })
+    end
+
     context 'when invalid target project is provided' do
       before do
         variables[:target_project_path] = 'unknown/project'

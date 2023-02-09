@@ -10,7 +10,7 @@ import MarkdownField from '~/vue_shared/components/markdown/field.vue';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
 import WorkItemCommentForm from '~/work_items/components/work_item_comment_form.vue';
 import WorkItemCommentLocked from '~/work_items/components/work_item_comment_locked.vue';
-import createNoteMutation from '~/work_items/graphql/create_work_item_note.mutation.graphql';
+import createNoteMutation from '~/work_items/graphql/notes/create_work_item_note.mutation.graphql';
 import { TRACKING_CATEGORY_SHOW } from '~/work_items/constants';
 import workItemQuery from '~/work_items/graphql/work_item.query.graphql';
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';

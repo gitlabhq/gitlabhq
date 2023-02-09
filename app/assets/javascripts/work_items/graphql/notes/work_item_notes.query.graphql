@@ -1,5 +1,5 @@
 #import "~/graphql_shared/fragments/page_info.fragment.graphql"
-#import "~/work_items/graphql/work_item_note.fragment.graphql"
+#import "./work_item_note.fragment.graphql"
 
 query workItemNotes($id: WorkItemID!, $after: String, $pageSize: Int) {
   workItem(id: $id) {

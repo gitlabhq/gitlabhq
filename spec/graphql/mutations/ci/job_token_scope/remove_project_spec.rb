@@ -66,7 +66,7 @@ RSpec.describe Mutations::Ci::JobTokenScope::RemoveProject, feature_category: :c
           it 'executes project removal for the correct direction' do
             expect(::Ci::JobTokenScope::RemoveProjectService)
               .to receive(:new).with(project, current_user).and_return(service)
-            expect(service).to receive(:execute).with(target_project, direction: 'inbound')
+            expect(service).to receive(:execute).with(target_project, 'inbound')
               .and_return(instance_double('ServiceResponse', "success?": true))
 
             subject
@@ -78,7 +78,7 @@ RSpec.describe Mutations::Ci::JobTokenScope::RemoveProject, feature_category: :c
 
           it 'returns an error response' do
             expect(::Ci::JobTokenScope::RemoveProjectService).to receive(:new).with(project, current_user).and_return(service)
-            expect(service).to receive(:execute).with(target_project, direction: :outbound).and_return(ServiceResponse.error(message: 'The error message'))
+            expect(service).to receive(:execute).with(target_project, :outbound).and_return(ServiceResponse.error(message: 'The error message'))
 
             expect(subject.fetch(:ci_job_token_scope)).to be_nil
             expect(subject.fetch(:errors)).to include("The error message")

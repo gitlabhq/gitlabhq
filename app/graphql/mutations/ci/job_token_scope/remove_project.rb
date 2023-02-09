@@ -24,9 +24,9 @@ module Mutations
                  description: 'Direction of access, which defaults to outbound.'
 
         field :ci_job_token_scope,
-          Types::Ci::JobTokenScopeType,
-          null: true,
-          description: "CI job token's scope of access."
+              Types::Ci::JobTokenScopeType,
+              null: true,
+              description: "CI job token's scope of access."
 
         def resolve(project_path:, target_project_path:, direction: :outbound)
           project = authorized_find!(project_path)
@@ -34,7 +34,7 @@ module Mutations
 
           result = ::Ci::JobTokenScope::RemoveProjectService
             .new(project, current_user)
-            .execute(target_project, direction: direction)
+            .execute(target_project, direction)
 
           if result.success?
             {

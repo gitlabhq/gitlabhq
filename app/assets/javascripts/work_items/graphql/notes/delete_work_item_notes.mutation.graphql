@@ -1,0 +1,7 @@
+mutation deleteWorkItemNote($input: DestroyNoteInput!) {
+  destroyNote(input: $input) {
+    note {
+      id
+    }
+  }
+}

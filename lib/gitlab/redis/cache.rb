@@ -12,8 +12,12 @@ module Gitlab
           redis: pool,
           compress: Gitlab::Utils.to_boolean(ENV.fetch('ENABLE_REDIS_CACHE_COMPRESSION', '1')),
           namespace: CACHE_NAMESPACE,
-          expires_in: ENV.fetch('GITLAB_RAILS_CACHE_DEFAULT_TTL_SECONDS', 8.hours).to_i # Cache should not grow forever
+          expires_in: default_ttl_seconds
         }
+      end
+
+      def self.default_ttl_seconds
+        ENV.fetch('GITLAB_RAILS_CACHE_DEFAULT_TTL_SECONDS', 8.hours).to_i
       end
     end
   end

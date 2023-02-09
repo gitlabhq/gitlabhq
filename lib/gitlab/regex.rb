@@ -435,30 +435,59 @@ module Gitlab
       }x.freeze
     end
 
+    MARKDOWN_CODE_BLOCK_REGEX = %r{
+      (?<code>
+        # Code blocks:
+        # ```
+        # Anything, including `>>>` blocks which are ignored by this filter
+        # ```
+
+        ^```
+        .+?
+        \n```\ *$
+      )
+    }mx.freeze
+
+    MARKDOWN_HTML_BLOCK_REGEX = %r{
+      (?<html>
+        # HTML block:
+        # <tag>
+        # Anything, including `>>>` blocks which are ignored by this filter
+        # </tag>
+
+        ^<[^>]+?>\ *\n
+        .+?
+        \n<\/[^>]+?>\ *$
+      )
+    }mx.freeze
+
+    MARKDOWN_HTML_COMMENT_BLOCK_REGEX = %r{
+      (?<html_block_comment>
+        # HTML block comment:
+        # <!-- some comment text
+        # more comment
+        # and more comment -->
+
+        ^<!--.*?\ *\n
+        .+?
+        \n.*?-->\ *$
+      )
+    }mx.freeze
+
     def markdown_code_or_html_blocks
       @markdown_code_or_html_blocks ||= %r{
-          (?<code>
-            # Code blocks:
-            # ```
-            # Anything, including `>>>` blocks which are ignored by this filter
-            # ```
-
-            ^```
-            .+?
-            \n```\ *$
-          )
+          #{MARKDOWN_CODE_BLOCK_REGEX}
         |
-          (?<html>
-            # HTML block:
-            # <tag>
-            # Anything, including `>>>` blocks which are ignored by this filter
-            # </tag>
+          #{MARKDOWN_HTML_BLOCK_REGEX}
+      }mx.freeze
+    end
 
-            ^<[^>]+?>\ *\n
-            .+?
-            \n<\/[^>]+?>\ *$
-          )
-      }mx
+    def markdown_code_or_html_comment_blocks
+      @markdown_code_or_html_comment_blocks ||= %r{
+          #{MARKDOWN_CODE_BLOCK_REGEX}
+        |
+          #{MARKDOWN_HTML_COMMENT_BLOCK_REGEX}
+      }mx.freeze
     end
 
     # Based on Jira's project key format

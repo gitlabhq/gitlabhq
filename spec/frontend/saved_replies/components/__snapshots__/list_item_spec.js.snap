@@ -1,0 +1,21 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Saved replies list item component renders list item 1`] = `
+<li
+  class="gl-mb-5"
+>
+  <div
+    class="gl-display-flex gl-align-items-center"
+  >
+    <strong>
+      test
+    </strong>
+  </div>
+   
+  <div
+    class="gl-mt-3 gl-font-monospace"
+  >
+    /assign_reviewer
+  </div>
+</li>
+`;

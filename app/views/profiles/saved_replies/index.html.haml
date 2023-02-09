@@ -1,0 +1,10 @@
+- page_title _('Saved Replies')
+
+#js-saved-replies-root.row.gl-mt-5{ data: { base_path: profile_saved_replies_path } }
+  .col-lg-4
+    %h4.gl-mt-0
+      = page_title
+    %p
+      = _('Saved replies can be used when creating comments inside issues, merge requests, and epics.')
+  .col-lg-8
+    = gl_loading_icon(size: 'lg')

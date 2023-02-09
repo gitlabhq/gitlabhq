@@ -6525,6 +6525,9 @@ msgstr ""
 msgid "BillingPlans|Ultimate"
 msgstr ""
 
+msgid "BillingPlans|Upgrade"
+msgstr ""
+
 msgid "BillingPlans|Upgrade to Premium"
 msgstr ""
 
@@ -13377,6 +13380,9 @@ msgstr ""
 msgid "Delete comment"
 msgstr ""
 
+msgid "Delete comment?"
+msgstr ""
+
 msgid "Delete corpus"
 msgstr ""
 
@@ -17970,7 +17976,7 @@ msgstr ""
 msgid "FreeUserCap|Explore paid plans:"
 msgstr ""
 
-msgid "FreeUserCap|Looks like you've reached your limit of %{free_user_limit} members for \"%{namespace_name}\". You can't add any more, but you can manage your existing members, for example, by removing inactive members and replacing them with new members."
+msgid "FreeUserCap|It looks like you've reached your limit of %{free_user_limit} members for \"%{namespace_name}\", according to the check we ran on %{date_time}. You can't add any more, but you can manage your existing members, for example, by removing inactive members and replacing them with new members."
 msgstr ""
 
 msgid "FreeUserCap|Manage members"
@@ -27562,6 +27568,9 @@ msgid "My awesome group"
 msgstr ""
 
 msgid "My company or team"
+msgstr ""
+
+msgid "My saved replies (%{count})"
 msgstr ""
 
 msgid "My topic"
@@ -37339,6 +37348,12 @@ msgstr ""
 msgid "Save pipeline schedule"
 msgstr ""
 
+msgid "Saved Replies"
+msgstr ""
+
+msgid "Saved replies can be used when creating comments inside issues, merge requests, and epics."
+msgstr ""
+
 msgid "Saving"
 msgstr ""
 
@@ -40159,6 +40174,9 @@ msgid "Something went wrong trying to change the locked state of this %{issuable
 msgstr ""
 
 msgid "Something went wrong trying to load issue contacts."
+msgstr ""
+
+msgid "Something went wrong when deleting a comment. Please try again"
 msgstr ""
 
 msgid "Something went wrong when reordering designs. Please try again"

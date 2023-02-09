@@ -333,6 +333,41 @@ RSpec.describe 'Task Lists', :js, feature_category: :team_planning do
         expect(page).to have_selector('ul.task-list',      count: 1)
         expect(page).to have_selector('li.task-list-item', count: 1)
         expect(page).to have_selector('ul input[checked]', count: 1)
+        expect(page).to have_content('1 of 1 checklist item completed')
+      end
+    end
+
+    describe 'tasks in code blocks' do
+      let(:code_tasks_markdown) do
+        <<-EOT.strip_heredoc
+        ```
+        - [ ] a
+        ```
+
+        - [ ] b
+        EOT
+      end
+
+      let!(:issue) { create(:issue, description: code_tasks_markdown, author: user, project: project) }
+
+      it 'renders' do
+        visit_issue(project, issue)
+        wait_for_requests
+
+        expect(page).to have_selector('ul.task-list',      count: 1)
+        expect(page).to have_selector('li.task-list-item', count: 1)
+        expect(page).to have_selector('ul input[checked]', count: 0)
+
+        find('.task-list-item-checkbox').click
+        wait_for_requests
+
+        visit_issue(project, issue)
+        wait_for_requests
+
+        expect(page).to have_selector('ul.task-list',      count: 1)
+        expect(page).to have_selector('li.task-list-item', count: 1)
+        expect(page).to have_selector('ul input[checked]', count: 1)
+        expect(page).to have_content('1 of 1 checklist item completed')
       end
     end
 
@@ -367,6 +402,43 @@ RSpec.describe 'Task Lists', :js, feature_category: :team_planning do
         expect(page).to have_selector('ul.task-list',      count: 1)
         expect(page).to have_selector('li.task-list-item', count: 1)
         expect(page).to have_selector('ul input[checked]', count: 1)
+      end
+    end
+
+    describe 'summary properly formatted' do
+      let(:summary_markdown) do
+        <<-EOT.strip_heredoc
+        <details open>
+        <summary>Valid detail/summary with tasklist</summary>
+
+        - [ ] People Ops: do such and such
+
+        </details>
+
+        * [x] Task 1
+        EOT
+      end
+
+      let!(:issue) { create(:issue, description: summary_markdown, author: user, project: project) }
+
+      it 'renders' do
+        visit_issue(project, issue)
+        wait_for_requests
+
+        expect(page).to have_selector('ul.task-list',      count: 2)
+        expect(page).to have_selector('li.task-list-item', count: 2)
+        expect(page).to have_selector('ul input[checked]', count: 1)
+
+        first('.task-list-item-checkbox').click
+        wait_for_requests
+
+        visit_issue(project, issue)
+        wait_for_requests
+
+        expect(page).to have_selector('ul.task-list',      count: 2)
+        expect(page).to have_selector('li.task-list-item', count: 2)
+        expect(page).to have_selector('ul input[checked]', count: 2)
+        expect(page).to have_content('2 of 2 checklist items completed')
       end
     end
 

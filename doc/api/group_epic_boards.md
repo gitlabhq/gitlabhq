@@ -178,6 +178,8 @@ Example response:
 
 ## List group epic board lists
 
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385904) in GitLab 15.9.
+
 Gets a list of the epic board's lists.
 Does not include `open` and `closed` lists.
 
@@ -235,6 +237,8 @@ Example response:
 ```
 
 ## Single group epic board list
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385904) in GitLab 15.9.
 
 Gets a single board list.
 

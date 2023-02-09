@@ -23,7 +23,8 @@ RSpec.describe 'Broadcast Messages', feature_category: :onboarding do
   end
 
   shared_examples 'a dismissable Broadcast Messages' do
-    it 'hides broadcast message after dismiss', :js do
+    it 'hides broadcast message after dismiss', :js,
+      quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/390900' do
       visit root_path
 
       find('.js-dismiss-current-broadcast-notification').click

@@ -1,16 +1,18 @@
-import { GlSkeletonLoader } from '@gitlab/ui';
+import { GlSkeletonLoader, GlModal } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
+import { stubComponent } from 'helpers/stub_component';
 import waitForPromises from 'helpers/wait_for_promises';
 import SystemNote from '~/work_items/components/notes/system_note.vue';
 import WorkItemNotes from '~/work_items/components/work_item_notes.vue';
 import WorkItemDiscussion from '~/work_items/components/notes/work_item_discussion.vue';
 import WorkItemCommentForm from '~/work_items/components/work_item_comment_form.vue';
 import ActivityFilter from '~/work_items/components/notes/activity_filter.vue';
-import workItemNotesQuery from '~/work_items/graphql/work_item_notes.query.graphql';
-import workItemNotesByIidQuery from '~/work_items/graphql/work_item_notes_by_iid.query.graphql';
+import workItemNotesQuery from '~/work_items/graphql/notes/work_item_notes.query.graphql';
+import workItemNotesByIidQuery from '~/work_items/graphql/notes/work_item_notes_by_iid.query.graphql';
+import deleteWorkItemNoteMutation from '~/work_items/graphql/notes/delete_work_item_notes.mutation.graphql';
 import { DEFAULT_PAGE_SIZE_NOTES, WIDGET_TYPE_NOTES } from '~/work_items/constants';
 import { ASC, DESC } from '~/notes/constants';
 import {
@@ -47,6 +49,8 @@ describe('WorkItemNotes component', () => {
 
   Vue.use(VueApollo);
 
+  const showModal = jest.fn();
+
   const findAllSystemNotes = () => wrapper.findAllComponents(SystemNote);
   const findAllListItems = () => wrapper.findAll('ul.timeline > *');
   const findActivityLabel = () => wrapper.find('label');
@@ -56,6 +60,8 @@ describe('WorkItemNotes component', () => {
   const findSystemNoteAtIndex = (index) => findAllSystemNotes().at(index);
   const findAllWorkItemCommentNotes = () => wrapper.findAllComponents(WorkItemDiscussion);
   const findWorkItemCommentNoteAtIndex = (index) => findAllWorkItemCommentNotes().at(index);
+  const findDeleteNoteModal = () => wrapper.findComponent(GlModal);
+
   const workItemNotesQueryHandler = jest.fn().mockResolvedValue(mockWorkItemNotesResponse);
   const workItemNotesByIidQueryHandler = jest
     .fn()
@@ -64,16 +70,22 @@ describe('WorkItemNotes component', () => {
   const workItemNotesWithCommentsQueryHandler = jest
     .fn()
     .mockResolvedValue(mockWorkItemNotesResponseWithComments);
+  const deleteWorkItemNoteMutationSuccessHandler = jest.fn().mockResolvedValue({
+    data: { destroyNote: { note: null, __typename: 'DestroyNote' } },
+  });
+  const errorHandler = jest.fn().mockRejectedValue('Houston, we have a problem');
 
   const createComponent = ({
     workItemId = mockWorkItemId,
     fetchByIid = false,
     defaultWorkItemNotesQueryHandler = workItemNotesQueryHandler,
+    deleteWINoteMutationHandler = deleteWorkItemNoteMutationSuccessHandler,
   } = {}) => {
     wrapper = shallowMount(WorkItemNotes, {
       apolloProvider: createMockApollo([
         [workItemNotesQuery, defaultWorkItemNotesQueryHandler],
         [workItemNotesByIidQuery, workItemNotesByIidQueryHandler],
+        [deleteWorkItemNoteMutation, deleteWINoteMutationHandler],
       ]),
       propsData: {
         workItemId,
@@ -88,6 +100,9 @@ describe('WorkItemNotes component', () => {
         glFeatures: {
           useIidInWorkItemsPath: fetchByIid,
         },
+      },
+      stubs: {
+        GlModal: stubComponent(GlModal, { methods: { show: showModal } }),
       },
     });
   };
@@ -239,5 +254,84 @@ describe('WorkItemNotes component', () => {
         mockDiscussions[commentIndex].notes.nodes,
       );
     });
+  });
+
+  it('should open delete modal confirmation when child discussion emits `deleteNote` event', async () => {
+    createComponent({
+      defaultWorkItemNotesQueryHandler: workItemNotesWithCommentsQueryHandler,
+    });
+    await waitForPromises();
+
+    findWorkItemCommentNoteAtIndex(0).vm.$emit('deleteNote', { id: '1', isLastNote: false });
+    expect(showModal).toHaveBeenCalled();
+  });
+
+  describe('when modal is open', () => {
+    beforeEach(() => {
+      createComponent({
+        defaultWorkItemNotesQueryHandler: workItemNotesWithCommentsQueryHandler,
+      });
+      return waitForPromises();
+    });
+
+    it('sends the mutation with correct variables', () => {
+      const noteId = 'some-test-id';
+
+      findWorkItemCommentNoteAtIndex(0).vm.$emit('deleteNote', { id: noteId });
+      findDeleteNoteModal().vm.$emit('primary');
+
+      expect(deleteWorkItemNoteMutationSuccessHandler).toHaveBeenCalledWith({
+        input: {
+          id: noteId,
+        },
+      });
+    });
+
+    it('successfully removes the note from the discussion', async () => {
+      expect(findWorkItemCommentNoteAtIndex(0).props('discussion')).toHaveLength(2);
+
+      findWorkItemCommentNoteAtIndex(0).vm.$emit('deleteNote', {
+        id: mockDiscussions[0].notes.nodes[0].id,
+      });
+      findDeleteNoteModal().vm.$emit('primary');
+
+      await waitForPromises();
+      expect(findWorkItemCommentNoteAtIndex(0).props('discussion')).toHaveLength(1);
+    });
+
+    it('successfully removes the discussion from work item if discussion only had one note', async () => {
+      const secondDiscussion = findWorkItemCommentNoteAtIndex(1);
+
+      expect(findAllWorkItemCommentNotes()).toHaveLength(2);
+      expect(secondDiscussion.props('discussion')).toHaveLength(1);
+
+      secondDiscussion.vm.$emit('deleteNote', {
+        id: mockDiscussions[1].notes.nodes[0].id,
+        discussion: { id: mockDiscussions[1].id },
+      });
+      findDeleteNoteModal().vm.$emit('primary');
+
+      await waitForPromises();
+      expect(findAllWorkItemCommentNotes()).toHaveLength(1);
+    });
+  });
+
+  it('emits `error` event if delete note mutation is rejected', async () => {
+    createComponent({
+      defaultWorkItemNotesQueryHandler: workItemNotesWithCommentsQueryHandler,
+      deleteWINoteMutationHandler: errorHandler,
+    });
+    await waitForPromises();
+
+    findWorkItemCommentNoteAtIndex(0).vm.$emit('deleteNote', {
+      id: mockDiscussions[0].notes.nodes[0].id,
+    });
+    findDeleteNoteModal().vm.$emit('primary');
+
+    await waitForPromises();
+
+    expect(wrapper.emitted('error')).toEqual([
+      ['Something went wrong when deleting a comment. Please try again'],
+    ]);
   });
 });

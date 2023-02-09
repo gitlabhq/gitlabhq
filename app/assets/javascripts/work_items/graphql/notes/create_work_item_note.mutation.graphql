@@ -1,4 +1,4 @@
-#import "~/work_items/graphql/work_item_note.fragment.graphql"
+#import "./work_item_note.fragment.graphql"
 
 mutation createWorkItemNote($input: CreateNoteInput!) {
   createNote(input: $input) {

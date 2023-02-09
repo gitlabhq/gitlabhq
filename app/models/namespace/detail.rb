@@ -11,3 +11,5 @@ class Namespace::Detail < ApplicationRecord
 
   self.primary_key = :namespace_id
 end
+
+Namespace::Detail.prepend_mod

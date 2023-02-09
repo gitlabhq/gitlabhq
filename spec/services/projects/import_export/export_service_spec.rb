@@ -2,11 +2,12 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::ImportExport::ExportService do
+RSpec.describe Projects::ImportExport::ExportService, feature_category: :importers do
   describe '#execute' do
     let_it_be(:user) { create(:user) }
+    let_it_be(:group) { create(:group) }
+    let_it_be_with_reload(:project) { create(:project, group: group) }
 
-    let(:project) { create(:project) }
     let(:shared) { project.import_export_shared }
     let!(:after_export_strategy) { Gitlab::ImportExport::AfterExportStrategies::DownloadNotificationStrategy.new }
 
@@ -219,6 +220,22 @@ RSpec.describe Projects::ImportExport::ExportService do
           [another_user.id, project.name, project.id]
         expect { service.execute }.to raise_error(Gitlab::ImportExport::Error).with_message(expected_message)
       end
+    end
+
+    it "avoids N+1 when exporting project members" do
+      group.add_owner(user)
+      group.add_maintainer(create(:user))
+      project.add_maintainer(create(:user))
+
+      # warm up
+      service.execute
+
+      control = ActiveRecord::QueryRecorder.new { service.execute }
+
+      group.add_maintainer(create(:user))
+      project.add_maintainer(create(:user))
+
+      expect { service.execute }.not_to exceed_query_limit(control)
     end
   end
 end

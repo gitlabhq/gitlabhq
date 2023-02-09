@@ -23,9 +23,6 @@ GitLab comes in two flavors:
 
 Throughout this guide you will see references to CE and EE for abbreviation.
 
-To get an overview of GitLab community membership, including those that would review or merge
-your contributions, visit [the community roles page](community_roles.md).
-
 ## Code of conduct
 
 We want to create a welcoming environment for everyone who is interested in contributing.

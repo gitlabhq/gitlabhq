@@ -12,7 +12,8 @@ class Projects::NotesController < Projects::ApplicationController
   before_action :authorize_resolve_note!, only: [:resolve, :unresolve]
 
   feature_category :team_planning
-  urgency :low
+  urgency :medium, [:index]
+  urgency :low, [:create, :update, :destroy, :resolve, :unresolve, :toggle_award_emoji, :outdated_line_change]
 
   def delete_attachment
     note.remove_attachment!

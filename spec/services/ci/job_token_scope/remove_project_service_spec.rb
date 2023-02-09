@@ -23,7 +23,7 @@ RSpec.describe Ci::JobTokenScope::RemoveProjectService, feature_category: :conti
   end
 
   describe '#execute' do
-    subject(:result) { service.execute(target_project) }
+    subject(:result) { service.execute(target_project, :outbound) }
 
     it_behaves_like 'editable job token scope' do
       context 'when user has permissions on source and target project' do

@@ -98,6 +98,9 @@ methods:
   epics:
     - :state
 
+# Add in this list the nested associations that are used to export the parent
+# association, but are not present in the tree list. In other words, the associations
+# that needs to be preloaded but do not need to be exported.
 preloads:
 
 export_reorders:

@@ -1,12 +1,15 @@
 <script>
-import { GlSkeletonLoader } from '@gitlab/ui';
-import { s__ } from '~/locale';
+import { GlSkeletonLoader, GlModal } from '@gitlab/ui';
+import * as Sentry from '@sentry/browser';
+import { s__, __ } from '~/locale';
+import { TYPENAME_DISCUSSION, TYPENAME_NOTE } from '~/graphql_shared/constants';
 import SystemNote from '~/work_items/components/notes/system_note.vue';
 import ActivityFilter from '~/work_items/components/notes/activity_filter.vue';
 import { i18n, DEFAULT_PAGE_SIZE_NOTES } from '~/work_items/constants';
 import { ASC, DESC } from '~/notes/constants';
 import { getWorkItemNotesQuery } from '~/work_items/utils';
 import WorkItemDiscussion from '~/work_items/components/notes/work_item_discussion.vue';
+import deleteNoteMutation from '../graphql/notes/delete_work_item_notes.mutation.graphql';
 import WorkItemCommentForm from './work_item_comment_form.vue';
 
 export default {
@@ -20,6 +23,7 @@ export default {
   },
   components: {
     GlSkeletonLoader,
+    GlModal,
     ActivityFilter,
     SystemNote,
     WorkItemCommentForm,
@@ -53,6 +57,7 @@ export default {
       isLoadingMore: false,
       perPage: DEFAULT_PAGE_SIZE_NOTES,
       sortOrder: ASC,
+      noteToDelete: null,
     };
   },
   computed: {
@@ -173,6 +178,45 @@ export default {
         .catch((error) => this.$emit('error', error.message));
       this.isLoadingMore = false;
     },
+    showDeleteNoteModal(note, discussion) {
+      const isLastNote = discussion.notes.nodes.length === 1;
+      this.$refs.deleteNoteModal.show();
+      this.noteToDelete = { ...note, isLastNote };
+    },
+    cancelDeletingNote() {
+      this.noteToDelete = null;
+    },
+    async deleteNote() {
+      try {
+        const { id, isLastNote, discussion } = this.noteToDelete;
+        await this.$apollo.mutate({
+          mutation: deleteNoteMutation,
+          variables: {
+            input: {
+              id,
+            },
+          },
+          update(cache) {
+            const deletedObject = isLastNote
+              ? { __typename: TYPENAME_DISCUSSION, id: discussion.id }
+              : { __typename: TYPENAME_NOTE, id };
+            cache.modify({
+              id: cache.identify(deletedObject),
+              fields: (_, { DELETE }) => DELETE,
+            });
+          },
+          optimisticResponse: {
+            destroyNote: {
+              note: null,
+              __typename: 'DestroyNotePayload',
+            },
+          },
+        });
+      } catch (error) {
+        this.$emit('error', __('Something went wrong when deleting a comment. Please try again'));
+        Sentry.captureException(error);
+      }
+    },
   },
 };
 </script>
@@ -226,6 +270,7 @@ export default {
                 :work-item-id="workItemId"
                 :fetch-by-iid="fetchByIid"
                 :work-item-type="workItemType"
+                @deleteNote="showDeleteNoteModal($event, discussion)"
               />
             </template>
           </template>
@@ -251,5 +296,17 @@ export default {
         </gl-skeleton-loader>
       </template>
     </div>
+    <gl-modal
+      ref="deleteNoteModal"
+      modal-id="delete-note-modal"
+      :title="__('Delete comment?')"
+      :ok-title="__('Delete comment')"
+      ok-variant="danger"
+      size="sm"
+      @primary="deleteNote"
+      @canceled="cancelDeletingNote"
+    >
+      {{ __('Are you sure you want to delete this comment?') }}
+    </gl-modal>
   </div>
 </template>

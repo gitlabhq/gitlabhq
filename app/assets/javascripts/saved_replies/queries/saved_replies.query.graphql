@@ -1,0 +1,19 @@
+query savedReplies {
+  currentUser {
+    id
+    savedReplies {
+      nodes {
+        id
+        name
+        content
+      }
+      count
+      pageInfo {
+        hasNextPage
+        hasPreviousPage
+        endCursor
+        startCursor
+      }
+    }
+  }
+}

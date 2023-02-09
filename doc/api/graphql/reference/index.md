@@ -11666,6 +11666,7 @@ Represents a code quality degradation on the pipeline.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="codequalitydegradationdescription"></a>`description` | [`String!`](#string) | Description of the code quality degradation. |
+| <a id="codequalitydegradationenginename"></a>`engineName` | [`String!`](#string) | Code Quality plugin that reported the finding. |
 | <a id="codequalitydegradationfingerprint"></a>`fingerprint` | [`String!`](#string) | Unique fingerprint to identify the code quality degradation. For example, an MD5 hash. |
 | <a id="codequalitydegradationline"></a>`line` | [`Int!`](#int) | Line on which the code quality degradation occurred. |
 | <a id="codequalitydegradationpath"></a>`path` | [`String!`](#string) | Relative path to the file containing the code quality degradation. |

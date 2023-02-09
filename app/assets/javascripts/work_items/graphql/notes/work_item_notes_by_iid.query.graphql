@@ -1,5 +1,5 @@
 #import "~/graphql_shared/fragments/page_info.fragment.graphql"
-#import "~/work_items/graphql/work_item_note.fragment.graphql"
+#import "./work_item_note.fragment.graphql"
 
 query workItemNotesByIid($fullPath: ID!, $iid: String, $after: String, $pageSize: Int) {
   workspace: project(fullPath: $fullPath) {

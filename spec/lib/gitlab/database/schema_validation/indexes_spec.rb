@@ -6,8 +6,8 @@ RSpec.describe Gitlab::Database::SchemaValidation::Indexes, feature_category: :d
   let(:structure_file_path) { Rails.root.join('spec/fixtures/structure.sql') }
   let(:database_indexes) do
     [
-      ['wrong_index', 'CREATE UNIQUE INDEX public.wrong_index ON table_name (column_name)'],
-      ['extra_index', 'CREATE INDEX public.extra_index ON table_name (column_name)'],
+      ['wrong_index', 'CREATE UNIQUE INDEX wrong_index ON public.table_name (column_name)'],
+      ['extra_index', 'CREATE INDEX extra_index ON public.table_name (column_name)'],
       ['index', 'CREATE UNIQUE INDEX "index" ON public.achievements USING btree (namespace_id, lower(name))']
     ]
   end
@@ -20,7 +20,10 @@ RSpec.describe Gitlab::Database::SchemaValidation::Indexes, feature_category: :d
 
   let(:query_result) { instance_double('ActiveRecord::Result', rows: database_indexes) }
 
-  subject(:schema_validation) { described_class.new(structure_file_path, database_name) }
+  let(:database) { Gitlab::Database::SchemaValidation::Database.new(connection) }
+  let(:structure_file) { Gitlab::Database::SchemaValidation::StructureSql.new(structure_file_path) }
+
+  subject(:schema_validation) { described_class.new(structure_file, database) }
 
   before do
     allow(connection).to receive(:exec_query).and_return(query_result)

@@ -25,4 +25,10 @@ RSpec.configure do |config|
       instance_class.with(&:flushdb)
     end
   end
+
+  config.before(:each, :use_null_store_as_repository_cache) do |example|
+    null_store = ActiveSupport::Cache::NullStore.new
+
+    allow(Gitlab::Redis::RepositoryCache).to receive(:cache_store).and_return(null_store)
+  end
 end

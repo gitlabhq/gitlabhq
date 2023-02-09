@@ -300,6 +300,10 @@ module UsersHelper
       other: s_('User|Other')
     }.with_indifferent_access.freeze
   end
+
+  def saved_replies_enabled?
+    Feature.enabled?(:saved_replies, current_user)
+  end
 end
 
 UsersHelper.prepend_mod_with('UsersHelper')
