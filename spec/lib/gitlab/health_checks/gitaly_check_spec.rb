@@ -14,35 +14,19 @@ RSpec.describe Gitlab::HealthChecks::GitalyCheck do
     subject { described_class.readiness }
 
     before do
-      expect(Gitlab::GitalyClient::HealthCheckService).to receive(:new).and_return(healthy_check)
+      expect(Gitlab::GitalyClient::HealthCheckService).to receive(:new).and_return(gitaly_check)
     end
 
     context 'Gitaly server is up' do
-      before do
-        expect(Gitlab::GitalyClient::ServerService).to receive(:new).and_return(ready_check)
-      end
-
-      let(:healthy_check) { double(check: { success: true }) }
-      let(:ready_check) { double(readiness_check: { success: true }) }
+      let(:gitaly_check) { double(check: { success: true }) }
 
       it { is_expected.to eq([result_class.new('gitaly_check', true, nil, shard: 'default')]) }
     end
 
     context 'Gitaly server is down' do
-      let(:healthy_check) { double(check: { success: false, message: 'Connection refused' }) }
+      let(:gitaly_check) { double(check: { success: false, message: 'Connection refused' }) }
 
       it { is_expected.to eq([result_class.new('gitaly_check', false, 'Connection refused', shard: 'default')]) }
-    end
-
-    context 'Gitaly server is not ready' do
-      before do
-        expect(Gitlab::GitalyClient::ServerService).to receive(:new).and_return(ready_check)
-      end
-
-      let(:healthy_check) { double(check: { success: true }) }
-      let(:ready_check) { double(readiness_check: { success: false, message: 'A readiness check has failed' }) }
-
-      it { is_expected.to match_array([result_class.new('gitaly_check', false, 'A readiness check has failed', shard: 'default')]) }
     end
   end
 

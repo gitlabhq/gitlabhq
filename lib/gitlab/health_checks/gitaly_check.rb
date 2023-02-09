@@ -27,33 +27,15 @@ module Gitlab
         end
 
         def check(storage_name)
-          storage_healthy = healthy(storage_name)
-          unless storage_healthy[:success]
-            return HealthChecks::Result.new(
-              name,
-              storage_healthy[:success],
-              storage_healthy[:message],
-              shard: storage_name
-            )
-          end
+          serv = Gitlab::GitalyClient::HealthCheckService.new(storage_name)
+          result = serv.check
 
-          storage_ready = ready(storage_name)
           HealthChecks::Result.new(
             name,
-            storage_ready[:success],
-            storage_ready[:message],
+            result[:success],
+            result[:message],
             shard: storage_name
           )
-        end
-
-        def healthy(storage_name)
-          serv = Gitlab::GitalyClient::HealthCheckService.new(storage_name)
-          serv.check
-        end
-
-        def ready(storage_name)
-          serv = Gitlab::GitalyClient::ServerService.new(storage_name)
-          serv.readiness_check
         end
 
         private
