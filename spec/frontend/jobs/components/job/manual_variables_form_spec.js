@@ -4,8 +4,8 @@ import VueApollo from 'vue-apollo';
 import { nextTick } from 'vue';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
+import { TYPENAME_CI_BUILD } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
-import { GRAPHQL_ID_TYPES } from '~/jobs/constants';
 import waitForPromises from 'helpers/wait_for_promises';
 import { redirectTo } from '~/lib/utils/url_utility';
 import ManualVariablesForm from '~/jobs/components/job/manual_variables_form.vue';
@@ -152,7 +152,7 @@ describe('Manual Variables Form', () => {
       expect(wrapper.vm.$apollo.mutate).toHaveBeenCalledWith({
         mutation: retryJobMutation,
         variables: {
-          id: convertToGraphQLId(GRAPHQL_ID_TYPES.ciBuild, mockId),
+          id: convertToGraphQLId(TYPENAME_CI_BUILD, mockId),
           variables: [
             {
               key: 'new key',

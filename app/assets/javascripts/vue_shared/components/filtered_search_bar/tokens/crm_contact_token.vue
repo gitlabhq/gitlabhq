@@ -2,6 +2,7 @@
 import { GlFilteredSearchSuggestion } from '@gitlab/ui';
 
 import { ITEM_TYPE } from '~/groups/constants';
+import { TYPENAME_CRM_CONTACT } from '~/graphql_shared/constants';
 import { getIdFromGraphQLId, convertToGraphQLId } from '~/graphql_shared/utils';
 import { createAlert } from '~/flash';
 import { isPositiveInteger } from '~/lib/utils/number_utils';
@@ -93,7 +94,7 @@ export default {
       return `${getIdFromGraphQLId(contact.id)}`;
     },
     formatContactGraphQLId(id) {
-      return convertToGraphQLId('CustomerRelations::Contact', id);
+      return convertToGraphQLId(TYPENAME_CRM_CONTACT, id);
     },
   },
 };

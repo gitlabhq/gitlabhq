@@ -13,8 +13,9 @@ import { cloneDeep, uniqueId } from 'lodash';
 import { mapActions } from 'vuex';
 import { fetchPolicies } from '~/lib/graphql';
 import { createAlert } from '~/flash';
+import { TYPENAME_CI_BUILD, TYPENAME_COMMIT_STATUS } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
-import { JOB_GRAPHQL_ERRORS, GRAPHQL_ID_TYPES } from '~/jobs/constants';
+import { JOB_GRAPHQL_ERRORS } from '~/jobs/constants';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { redirectTo } from '~/lib/utils/url_utility';
 import { s__ } from '~/locale';
@@ -45,7 +46,7 @@ export default {
       variables() {
         return {
           fullPath: this.projectPath,
-          id: convertToGraphQLId(GRAPHQL_ID_TYPES.commitStatus, this.jobId),
+          id: convertToGraphQLId(TYPENAME_COMMIT_STATUS, this.jobId),
         };
       },
       fetchPolicy: fetchPolicies.CACHE_AND_NETWORK,
@@ -157,7 +158,7 @@ export default {
         const { data } = await this.$apollo.mutate({
           mutation: retryJobWithVariablesMutation,
           variables: {
-            id: convertToGraphQLId(GRAPHQL_ID_TYPES.ciBuild, this.jobId),
+            id: convertToGraphQLId(TYPENAME_CI_BUILD, this.jobId),
             // we need to ensure no empty variables are passed to the API
             variables: this.preparedVariables,
           },

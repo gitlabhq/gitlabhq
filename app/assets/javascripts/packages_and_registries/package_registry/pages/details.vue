@@ -11,6 +11,7 @@ import {
   GlSprintf,
 } from '@gitlab/ui';
 import { createAlert, VARIANT_SUCCESS, VARIANT_WARNING } from '~/flash';
+import { TYPENAME_PACKAGES_PACKAGE } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
 import { objectToQuery } from '~/lib/utils/url_utility';
@@ -132,7 +133,7 @@ export default {
     },
     queryVariables() {
       return {
-        id: convertToGraphQLId('Packages::Package', this.packageId),
+        id: convertToGraphQLId(TYPENAME_PACKAGES_PACKAGE, this.packageId),
         first: GRAPHQL_PAGE_SIZE,
       };
     },

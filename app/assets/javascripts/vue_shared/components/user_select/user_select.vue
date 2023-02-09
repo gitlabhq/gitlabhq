@@ -14,6 +14,7 @@ import SidebarParticipant from '~/sidebar/components/assignees/sidebar_participa
 import { IssuableType } from '~/issues/constants';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { participantsQueries, userSearchQueries } from '~/sidebar/constants';
+import { TYPENAME_MERGE_REQUEST } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 
 export default {
@@ -161,7 +162,7 @@ export default {
       }
       return {
         ...variables,
-        mergeRequestId: convertToGraphQLId('MergeRequest', this.issuableId),
+        mergeRequestId: convertToGraphQLId(TYPENAME_MERGE_REQUEST, this.issuableId),
       };
     },
     isLoading() {

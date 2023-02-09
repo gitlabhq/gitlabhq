@@ -1,12 +1,8 @@
 <script>
+import { TYPENAME_PROJECT } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import {
-  ADD_MUTATION_ACTION,
-  DELETE_MUTATION_ACTION,
-  GRAPHQL_PROJECT_TYPE,
-  UPDATE_MUTATION_ACTION,
-} from '../constants';
+import { ADD_MUTATION_ACTION, DELETE_MUTATION_ACTION, UPDATE_MUTATION_ACTION } from '../constants';
 import getProjectEnvironments from '../graphql/queries/project_environments.query.graphql';
 import getProjectVariables from '../graphql/queries/project_variables.query.graphql';
 import addProjectVariable from '../graphql/mutations/project_add_variable.mutation.graphql';
@@ -22,7 +18,7 @@ export default {
   inject: ['projectFullPath', 'projectId'],
   computed: {
     graphqlId() {
-      return convertToGraphQLId(GRAPHQL_PROJECT_TYPE, this.projectId);
+      return convertToGraphQLId(TYPENAME_PROJECT, this.projectId);
     },
   },
   mutationData: {

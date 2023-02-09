@@ -399,14 +399,6 @@ RSpec.describe ProjectsFinder do
         let(:params) { { language: ruby.id } }
 
         it { is_expected.to match_array([internal_project]) }
-
-        context 'when project_language_search feature flag disabled' do
-          before do
-            stub_feature_flags(project_language_search: false)
-          end
-
-          it { is_expected.to match_array([internal_project, public_project]) }
-        end
       end
 
       describe 'when with_issues_enabled is true' do

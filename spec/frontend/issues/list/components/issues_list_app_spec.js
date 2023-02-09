@@ -22,6 +22,7 @@ import {
   urlParams,
 } from 'jest/issues/list/mock_data';
 import { createAlert, VARIANT_INFO } from '~/flash';
+import { TYPENAME_USER } from '~/graphql_shared/constants';
 import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import CsvImportExportButtons from '~/issuable/components/csv_import_export_buttons.vue';
 import IssuableByEmail from '~/issuable/components/issuable_by_email.vue';
@@ -568,7 +569,7 @@ describe('CE IssuesListApp component', () => {
 
       it('renders all tokens alphabetically', () => {
         const preloadedUsers = [
-          { ...mockCurrentUser, id: convertToGraphQLId('User', mockCurrentUser.id) },
+          { ...mockCurrentUser, id: convertToGraphQLId(TYPENAME_USER, mockCurrentUser.id) },
         ];
 
         expect(findIssuableList().props('searchTokens')).toMatchObject([

@@ -236,7 +236,7 @@ class ProjectsFinder < UnionFinder
   end
 
   def by_language(items)
-    if Feature.enabled?(:project_language_search, current_user) && params[:language].present?
+    if params[:language].present?
       items.with_programming_language_id(params[:language])
     else
       items

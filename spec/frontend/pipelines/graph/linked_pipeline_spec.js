@@ -5,10 +5,10 @@ import { mount } from '@vue/test-utils';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
+import { TYPENAME_CI_PIPELINE } from '~/graphql_shared/constants';
 import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
 import { ACTION_FAILURE, UPSTREAM, DOWNSTREAM } from '~/pipelines/components/graph/constants';
 import LinkedPipelineComponent from '~/pipelines/components/graph/linked_pipeline.vue';
-import { PIPELINE_GRAPHQL_TYPE } from '~/pipelines/constants';
 import CancelPipelineMutation from '~/pipelines/graphql/mutations/cancel_pipeline.mutation.graphql';
 import RetryPipelineMutation from '~/pipelines/graphql/mutations/retry_pipeline.mutation.graphql';
 import CiStatus from '~/vue_shared/components/ci_icon.vue';
@@ -219,7 +219,7 @@ describe('Linked pipeline', () => {
                   expect(wrapper.vm.$apollo.mutate).toHaveBeenCalledWith({
                     mutation: RetryPipelineMutation,
                     variables: {
-                      id: convertToGraphQLId(PIPELINE_GRAPHQL_TYPE, mockPipeline.id),
+                      id: convertToGraphQLId(TYPENAME_CI_PIPELINE, mockPipeline.id),
                     },
                   });
                 });
@@ -285,7 +285,7 @@ describe('Linked pipeline', () => {
                   expect(wrapper.vm.$apollo.mutate).toHaveBeenCalledWith({
                     mutation: CancelPipelineMutation,
                     variables: {
-                      id: convertToGraphQLId(PIPELINE_GRAPHQL_TYPE, mockPipeline.id),
+                      id: convertToGraphQLId(TYPENAME_CI_PIPELINE, mockPipeline.id),
                     },
                   });
                 });

@@ -15,8 +15,9 @@ import notify from '~/lib/utils/notify';
 import { sprintf, s__, __ } from '~/locale';
 import Project from '~/pages/projects/project';
 import SmartInterval from '~/smart_interval';
+import { TYPENAME_MERGE_REQUEST } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
-import { setFaviconOverlay } from '../lib/utils/favicon';
+import { setFaviconOverlay } from '~/lib/utils/favicon';
 import Loading from './components/loading.vue';
 import MrWidgetAlertMessage from './components/mr_widget_alert_message.vue';
 import MrWidgetPipelineContainer from './components/mr_widget_pipeline_container.vue';
@@ -120,7 +121,7 @@ export default {
         },
         variables() {
           return {
-            issuableId: convertToGraphQLId('MergeRequest', this.mr?.id),
+            issuableId: convertToGraphQLId(TYPENAME_MERGE_REQUEST, this.mr?.id),
           };
         },
         updateQuery(

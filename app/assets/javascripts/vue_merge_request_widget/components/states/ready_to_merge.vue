@@ -15,6 +15,7 @@ import { isEmpty } from 'lodash';
 import readyToMergeMixin from 'ee_else_ce/vue_merge_request_widget/mixins/ready_to_merge';
 import readyToMergeQuery from 'ee_else_ce/vue_merge_request_widget/queries/states/ready_to_merge.query.graphql';
 import { createAlert } from '~/flash';
+import { TYPENAME_MERGE_REQUEST } from '~/graphql_shared/constants';
 import { secondsToMilliseconds } from '~/lib/utils/datetime_utility';
 import simplePoll from '~/lib/utils/simple_poll';
 import { __, s__, n__ } from '~/locale';
@@ -98,7 +99,7 @@ export default {
         },
         variables() {
           return {
-            issuableId: convertToGraphQLId('MergeRequest', this.mr?.id),
+            issuableId: convertToGraphQLId(TYPENAME_MERGE_REQUEST, this.mr?.id),
           };
         },
         updateQuery(

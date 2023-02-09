@@ -28,16 +28,15 @@
   - if params[:language].present?
     = hidden_field_tag :language, params[:language]
 
-  - if Feature.enabled?(:project_language_search, current_user)
-    .dropdown{ class: 'gl-m-0!' }
-      = dropdown_toggle(search_language_placeholder, { toggle: 'dropdown', testid: 'project-language-dropdown' })
-      %ul.dropdown-menu.dropdown-menu-right.dropdown-menu-selectable
+  .dropdown{ class: 'gl-m-0!' }
+    = dropdown_toggle(search_language_placeholder, { toggle: 'dropdown', testid: 'project-language-dropdown' })
+    %ul.dropdown-menu.dropdown-menu-right.dropdown-menu-selectable
+      %li
+        = link_to _('Any'), filter_projects_path(language: nil, name: nil)
+      - programming_languages.each do |language|
         %li
-          = link_to _('Any'), filter_projects_path(language: nil, name: nil)
-        - programming_languages.each do |language|
-          %li
-            = link_to filter_projects_path(language: language.id, name: nil), class: language_state_class(language) do
-              = language.name
+          = link_to filter_projects_path(language: language.id, name: nil), class: language_state_class(language) do
+            = language.name
 
   = submit_tag nil, class: 'gl-display-none!'
 

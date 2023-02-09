@@ -88,9 +88,6 @@ export const ADD_VARIABLE_ACTION = 'ADD_VARIABLE';
 export const EDIT_VARIABLE_ACTION = 'EDIT_VARIABLE';
 export const VARIABLE_ACTIONS = [ADD_VARIABLE_ACTION, EDIT_VARIABLE_ACTION];
 
-export const GRAPHQL_PROJECT_TYPE = 'Project';
-export const GRAPHQL_GROUP_TYPE = 'Group';
-
 export const ADD_MUTATION_ACTION = 'add';
 export const UPDATE_MUTATION_ACTION = 'update';
 export const DELETE_MUTATION_ACTION = 'delete';

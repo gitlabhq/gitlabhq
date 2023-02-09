@@ -6,6 +6,7 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/flash';
 import { resolvers } from '~/ci/ci_variable_list/graphql/settings';
+import { TYPENAME_GROUP } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 
 import ciVariableShared from '~/ci/ci_variable_list/components/ci_variable_shared.vue';
@@ -227,7 +228,7 @@ describe('Ci Variable Shared Component', () => {
           variables: {
             endpoint: mockProvide.endpoint,
             fullPath: groupProps.fullPath,
-            id: convertToGraphQLId('Group', groupProps.id),
+            id: convertToGraphQLId(TYPENAME_GROUP, groupProps.id),
             variable: newVariable,
           },
         });

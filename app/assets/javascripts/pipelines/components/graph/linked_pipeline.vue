@@ -7,13 +7,13 @@ import {
   GlTooltip,
   GlTooltipDirective,
 } from '@gitlab/ui';
+import { TYPENAME_CI_PIPELINE } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
 import { __, sprintf } from '~/locale';
 import CancelPipelineMutation from '~/pipelines/graphql/mutations/cancel_pipeline.mutation.graphql';
 import RetryPipelineMutation from '~/pipelines/graphql/mutations/retry_pipeline.mutation.graphql';
 import CiStatus from '~/vue_shared/components/ci_icon.vue';
-import { PIPELINE_GRAPHQL_TYPE } from '../../constants';
 import { reportToSentry } from '../../utils';
 import { ACTION_FAILURE, DOWNSTREAM, UPSTREAM } from './constants';
 
@@ -118,7 +118,7 @@ export default {
       return this.isUpstream ? 'gl-flex-direction-row-reverse' : 'gl-flex-direction-row';
     },
     graphqlPipelineId() {
-      return convertToGraphQLId(PIPELINE_GRAPHQL_TYPE, this.pipeline.id);
+      return convertToGraphQLId(TYPENAME_CI_PIPELINE, this.pipeline.id);
     },
     hasUpdatePipelinePermissions() {
       return Boolean(this.pipeline?.userPermissions?.updatePipeline);
