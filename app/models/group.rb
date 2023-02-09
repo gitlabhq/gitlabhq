@@ -25,6 +25,8 @@ class Group < Namespace
 
   extend ::Gitlab::Utils::Override
 
+  README_PROJECT_PATH = 'gitlab-profile'
+
   def self.sti_name
     'Group'
   end
@@ -945,6 +947,16 @@ class Group < Namespace
   def update_two_factor_requirement_for_members
     direct_and_indirect_members.find_each(&:update_two_factor_requirement)
   end
+
+  def readme_project
+    projects.find_by(path: README_PROJECT_PATH)
+  end
+  strong_memoize_attr :readme_project
+
+  def group_readme
+    readme_project&.repository&.readme
+  end
+  strong_memoize_attr :group_readme
 
   private
 

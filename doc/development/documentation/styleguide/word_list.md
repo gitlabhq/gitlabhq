@@ -1363,16 +1363,19 @@ in present tense, active voice.
 
 ## you, your, yours
 
-Use **you**, **your**, and **yours** instead of **the user** and **the user's**.
-Documentation should be from the [point of view](https://design.gitlab.com/content/voice-and-tone#point-of-view) of the reader.
+Use **you** instead of **the user**, **the administrator** or **the customer**.
+Documentation should speak directly to the user, whether that user is someone installing the product,
+configuring it, administering it, or using it.
 
 Use:
 
 - You can configure a pipeline.
+- You can reset a user's password. (In content for an administrator)
 
 Instead of:
 
 - Users can configure a pipeline.
+- Administrators can reset a user's password.
 
 ## you can
 

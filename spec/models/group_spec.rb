@@ -3717,4 +3717,28 @@ RSpec.describe Group, feature_category: :subgroups do
       end
     end
   end
+
+  describe '#readme_project' do
+    it 'returns groups project containing metadata' do
+      readme_project = create(:project, path: Group::README_PROJECT_PATH, namespace: group)
+      create(:project, namespace: group)
+
+      expect(group.readme_project).to eq(readme_project)
+    end
+  end
+
+  describe '#group_readme' do
+    it 'returns readme from group readme project' do
+      create(:project, :repository, path: Group::README_PROJECT_PATH, namespace: group)
+
+      expect(group.group_readme.name).to eq('README.md')
+      expect(group.group_readme.data).to include('testme')
+    end
+
+    it 'returns nil if no readme project is present' do
+      create(:project, :repository, namespace: group)
+
+      expect(group.group_readme).to be(nil)
+    end
+  end
 end

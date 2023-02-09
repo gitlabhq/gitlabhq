@@ -7,7 +7,7 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { createAlert } from '~/flash';
-import { HTTP_STATUS_BAD_REQUEST, HTTP_STATUS_OK } from '~/lib/utils/http_status';
+import { HTTP_STATUS_OK, HTTP_STATUS_TOO_MANY_REQUESTS } from '~/lib/utils/http_status';
 import axios from '~/lib/utils/axios_utils';
 import { STATUSES } from '~/import_entities/constants';
 import { i18n, ROOT_NAMESPACE } from '~/import_entities/import_groups/constants';
@@ -270,8 +270,6 @@ describe('import table', () => {
       },
     });
 
-    axiosMock.onPost('/import/bulk_imports.json').reply(HTTP_STATUS_BAD_REQUEST);
-
     await waitForPromises();
     await findImportButtons()[0].trigger('click');
     await waitForPromises();
@@ -281,6 +279,28 @@ describe('import table', () => {
         message: i18n.ERROR_IMPORT,
       }),
     );
+  });
+
+  it('displays inline error if importing group reports rate limit', async () => {
+    createComponent({
+      bulkImportSourceGroups: () => ({
+        nodes: [FAKE_GROUP],
+        pageInfo: FAKE_PAGE_INFO,
+        versionValidation: FAKE_VERSION_VALIDATION,
+      }),
+      importGroups: () => {
+        const error = new Error();
+        error.response = { status: HTTP_STATUS_TOO_MANY_REQUESTS };
+        throw error;
+      },
+    });
+
+    await waitForPromises();
+    await findImportButtons()[0].trigger('click');
+    await waitForPromises();
+
+    expect(createAlert).not.toHaveBeenCalled();
+    expect(wrapper.find('tbody tr').text()).toContain(i18n.ERROR_TOO_MANY_REQUESTS);
   });
 
   describe('pagination', () => {

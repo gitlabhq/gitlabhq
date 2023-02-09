@@ -17,6 +17,7 @@ import {
 import { debounce } from 'lodash';
 import { createAlert } from '~/flash';
 import { s__, __, n__, sprintf } from '~/locale';
+import { HTTP_STATUS_TOO_MANY_REQUESTS } from '~/lib/utils/http_status';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import PaginationBar from '~/vue_shared/components/pagination_bar/pagination_bar.vue';
 import HelpPopover from '~/vue_shared/components/help_popover.vue';
@@ -181,7 +182,7 @@ export default {
         const status = this.getStatus(group);
 
         const flags = {
-          isInvalid: importTarget.validationErrors?.length > 0,
+          isInvalid: (importTarget.validationErrors ?? []).filter((e) => !e.nonBlocking).length > 0,
           isAvailableForImport: isAvailableForImport(group) && status !== STATUSES.SCHEDULING,
           isFinished: isFinished(group),
         };
@@ -376,11 +377,19 @@ export default {
           variables: { importRequests },
         });
       } catch (error) {
-        createAlert({
-          message: i18n.ERROR_IMPORT,
-          captureError: true,
-          error,
-        });
+        if (error.networkError?.response?.status === HTTP_STATUS_TOO_MANY_REQUESTS) {
+          newPendingGroupsIds.forEach((id) => {
+            this.importTargets[id].validationErrors = [
+              { field: NEW_NAME_FIELD, message: i18n.ERROR_TOO_MANY_REQUESTS, nonBlocking: true },
+            ];
+          });
+        } else {
+          createAlert({
+            message: i18n.ERROR_IMPORT,
+            captureError: true,
+            error,
+          });
+        }
       } finally {
         this.pendingGroupsIds = this.pendingGroupsIds.filter(
           (id) => !newPendingGroupsIds.includes(id),

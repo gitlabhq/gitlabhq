@@ -42,7 +42,7 @@ to help identify if something is wrong:
 
 ![Geo health check](img/geo_site_health_v14_0.png)
 
-A site shows as "Unhealthy" if the site's status is more than 10 minutes old. It that case, try running the following in the [Rails console](../../operations/rails_console.md) on the affected site:
+A site shows as "Unhealthy" if the site's status is more than 10 minutes old. In that case, try running the following in the [Rails console](../../operations/rails_console.md) on the affected site:
 
 ```ruby
 Geo::MetricsUpdateWorker.new.perform

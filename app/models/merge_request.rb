@@ -287,7 +287,7 @@ class MergeRequest < ApplicationRecord
   validates :merge_user, presence: true, if: :auto_merge_enabled?, unless: :importing?
   validate :validate_branches, unless: [:allow_broken, :importing?, :closed_or_merged_without_fork?]
   validate :validate_fork, unless: :closed_or_merged_without_fork?
-  validate :validate_target_project, on: :create
+  validate :validate_target_project, on: :create, unless: :importing?
   validate :validate_reviewer_size_length, unless: :importing?
 
   scope :by_source_or_target_branch, ->(branch_name) do

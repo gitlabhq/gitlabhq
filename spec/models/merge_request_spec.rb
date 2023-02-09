@@ -314,6 +314,34 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
         expect(subject).to be_valid
       end
     end
+
+    describe '#validate_target_project' do
+      let(:merge_request) do
+        build(:merge_request, source_project: project, target_project: project, importing: importing)
+      end
+
+      let(:project) { build_stubbed(:project) }
+      let(:importing) { false }
+
+      context 'when projects #merge_requests_enabled? is true' do
+        it { expect(merge_request.valid?(false)).to eq true }
+      end
+
+      context 'when projects #merge_requests_enabled? is false' do
+        let(:project) { build_stubbed(:project, merge_requests_enabled: false) }
+
+        it 'is invalid' do
+          expect(merge_request.valid?(false)).to eq false
+          expect(merge_request.errors.full_messages).to contain_exactly('Target project has disabled merge requests')
+        end
+
+        context 'when #import? is true' do
+          let(:importing) { true }
+
+          it { expect(merge_request.valid?(false)).to eq true }
+        end
+      end
+    end
   end
 
   describe 'callbacks' do

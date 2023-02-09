@@ -4,7 +4,7 @@ import { s__ } from '~/locale';
 import { setUrlParams } from '~/lib/utils/url_utility';
 import { formatDate } from '~/lib/utils/datetime/date_format_utility';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
-import IncubationAlert from './incubation_alert.vue';
+import IncubationAlert from '~/vue_shared/components/incubation/incubation_alert.vue';
 
 export default {
   name: 'AirflowDags',
@@ -73,13 +73,19 @@ export default {
     isActiveLabel: s__('Airflow|Is active'),
     isPausedLabel: s__('Airflow|Is paused'),
     fileLocLabel: s__('Airflow|DAG file location'),
+    featureName: s__('Airflow|GitLab Airflow integration'),
   },
+  linkToFeedbackIssue:
+    'https://gitlab.com/gitlab-org/incubation-engineering/airflow/meta/-/issues/2',
 };
 </script>
 
 <template>
   <div>
-    <incubation-alert />
+    <incubation-alert
+      :feature-name="$options.i18n.featureName"
+      :link-to-feedback-issue="$options.linkToFeedbackIssue"
+    />
     <gl-empty-state
       v-if="!dags.length"
       :title="$options.i18n.emptyStateLabel"

@@ -182,6 +182,7 @@ the page is rendered to HTML. There can be only **one** level 1 heading per page
   Heading levels greater than `H5` do not display in the right sidebar navigation.
 - Do not skip a level. For example: `##` > `####`.
 - Leave one blank line before and after the topic title.
+- If you use code in topic titles, ensure the code is in backticks.
 
 ### Backticks in Markdown
 

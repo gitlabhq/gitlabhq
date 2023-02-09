@@ -2,7 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe ResourceEvents::ChangeLabelsService do
+# feature category is shared among plan(issues, epics), monitor(incidents), create(merge request) stages
+RSpec.describe ResourceEvents::ChangeLabelsService, feature_category: :shared do
   let_it_be(:project) { create(:project) }
   let_it_be(:author)  { create(:user) }
   let_it_be(:issue) { create(:issue, project: project) }
@@ -86,12 +87,30 @@ RSpec.describe ResourceEvents::ChangeLabelsService do
       let(:added)   { [labels[0]] }
       let(:removed) { [labels[1]] }
 
+      it_behaves_like 'creating timeline events'
+
       it 'creates all label events in a single query' do
         expect(ApplicationRecord).to receive(:legacy_bulk_insert).once.and_call_original
         expect { change_labels }.to change { resource.resource_label_events.count }.from(0).to(2)
       end
 
-      it_behaves_like 'creating timeline events'
+      context 'when resource is a work item' do
+        it 'triggers note created subscription' do
+          expect(GraphqlTriggers).to receive(:work_item_note_created)
+
+          change_labels
+        end
+      end
+
+      context 'when resource is an MR' do
+        let(:resource) { create(:merge_request, source_project: project) }
+
+        it 'does not trigger note created subscription' do
+          expect(GraphqlTriggers).not_to receive(:work_item_note_created)
+
+          change_labels
+        end
+      end
     end
 
     describe 'usage data' do

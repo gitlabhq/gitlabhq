@@ -11,6 +11,9 @@ export const i18n = {
   ),
   ERROR_IMPORT: s__('BulkImport|Importing the group failed.'),
   ERROR_IMPORT_COMPLETED: s__('BulkImport|Import is finished. Pick another name for re-import'),
+  ERROR_TOO_MANY_REQUESTS: s__(
+    'Bulkmport|Over six imports in one minute were attempted. Wait at least one minute and try again.',
+  ),
 
   NO_GROUPS_FOUND: s__('BulkImport|No groups found'),
   OWNER: __('Owner'),

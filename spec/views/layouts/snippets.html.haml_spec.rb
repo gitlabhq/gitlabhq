@@ -9,34 +9,18 @@ RSpec.describe 'layouts/snippets', feature_category: :source_code_management do
   end
 
   describe 'sidebar' do
-    context 'when feature flag is on' do
-      context 'when signed in' do
-        let(:user) { build_stubbed(:user) }
+    context 'when signed in' do
+      let(:user) { build_stubbed(:user) }
 
-        it 'renders the "Your work" sidebar' do
-          render
+      it 'renders the "Your work" sidebar' do
+        render
 
-          expect(rendered).to have_css('aside.nav-sidebar[aria-label="Your work"]')
-        end
-      end
-
-      context 'when not signed in' do
-        let(:user) { nil }
-
-        it 'renders no sidebar' do
-          render
-
-          expect(rendered).not_to have_css('aside.nav-sidebar')
-        end
+        expect(rendered).to have_css('aside.nav-sidebar[aria-label="Your work"]')
       end
     end
 
-    context 'when feature flag is off' do
-      before do
-        stub_feature_flags(your_work_sidebar: false)
-      end
-
-      let(:user) { build_stubbed(:user) }
+    context 'when not signed in' do
+      let(:user) { nil }
 
       it 'renders no sidebar' do
         render

@@ -160,6 +160,16 @@ RSpec.shared_examples 'a resource event for merge requests' do
       end
     end
   end
+
+  context 'on callbacks' do
+    it 'does not trigger note created subscription' do
+      event = build(described_class.name.underscore.to_sym, merge_request: merge_request1)
+
+      expect(GraphqlTriggers).not_to receive(:work_item_note_created)
+      expect(event).not_to receive(:trigger_note_subscription_create)
+      event.save!
+    end
+  end
 end
 
 RSpec.shared_examples 'a note for work item resource event' do
@@ -171,5 +181,15 @@ RSpec.shared_examples 'a note for work item resource event' do
     event = build(described_class.name.underscore.to_sym, issue: work_item)
 
     expect(event.work_item_synthetic_system_note.class.name).to eq(event.synthetic_note_class.name)
+  end
+
+  context 'on callbacks' do
+    it 'triggers note created subscription' do
+      event = build(described_class.name.underscore.to_sym, issue: work_item)
+
+      expect(GraphqlTriggers).to receive(:work_item_note_created)
+      expect(event).to receive(:trigger_note_subscription_create).and_call_original
+      event.save!
+    end
   end
 end

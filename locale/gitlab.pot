@@ -3712,7 +3712,7 @@ msgstr ""
 msgid "Airflow|Either the Airflow instance does not contain DAGs or has yet to be configured"
 msgstr ""
 
-msgid "Airflow|GitLab Airflow integration is in the Incubating Phase."
+msgid "Airflow|GitLab Airflow integration"
 msgstr ""
 
 msgid "Airflow|Is active"
@@ -7650,6 +7650,9 @@ msgid "BulkImport|invalid entity source type"
 msgstr ""
 
 msgid "BulkImport|must be a group"
+msgstr ""
+
+msgid "Bulkmport|Over six imports in one minute were attempted. Wait at least one minute and try again."
 msgstr ""
 
 msgid "Bullet list"
@@ -17522,9 +17525,6 @@ msgid "Feb"
 msgstr ""
 
 msgid "February"
-msgstr ""
-
-msgid "Feedback"
 msgstr ""
 
 msgid "Feedback and Updates"
