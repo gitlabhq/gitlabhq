@@ -35,6 +35,7 @@ describe('Board List Header Component', () => {
     withLocalStorage = true,
     currentUserId = 1,
     listQueryHandler = jest.fn().mockResolvedValue(boardListQueryResponse()),
+    injectedProps = {},
   } = {}) => {
     const boardId = '1';
 
@@ -76,6 +77,7 @@ describe('Board List Header Component', () => {
           currentUserId,
           isEpicBoard: false,
           disabled: false,
+          ...injectedProps,
         },
       }),
     );
@@ -86,6 +88,7 @@ describe('Board List Header Component', () => {
   const findAddIssueButton = () => wrapper.findComponent({ ref: 'newIssueBtn' });
   const findTitle = () => wrapper.find('.board-title');
   const findCaret = () => wrapper.findByTestId('board-title-caret');
+  const findSettingsButton = () => wrapper.findComponent({ ref: 'settingsBtn' });
 
   describe('Add issue button', () => {
     const hasNoAddButton = [ListType.closed];
@@ -123,6 +126,33 @@ describe('Board List Header Component', () => {
       });
 
       expect(findAddIssueButton().exists()).toBe(false);
+    });
+  });
+
+  describe('Settings Button', () => {
+    describe('with disabled=true', () => {
+      const hasSettings = [
+        ListType.assignee,
+        ListType.milestone,
+        ListType.iteration,
+        ListType.label,
+      ];
+      const hasNoSettings = [ListType.backlog, ListType.closed];
+
+      it.each(hasSettings)('does render for List Type `%s` when disabled=true', (listType) => {
+        createComponent({ listType, injectedProps: { disabled: true } });
+
+        expect(findSettingsButton().exists()).toBe(true);
+      });
+
+      it.each(hasNoSettings)(
+        'does not render for List Type `%s` when disabled=true',
+        (listType) => {
+          createComponent({ listType });
+
+          expect(findSettingsButton().exists()).toBe(false);
+        },
+      );
     });
   });
 

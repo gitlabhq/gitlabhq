@@ -14,12 +14,15 @@ requirements or needs additional oversight. The label can optionally enforce
 [compliance pipeline configuration](#configure-a-compliance-pipeline) to the projects on which it is
 [applied](../project/settings/index.md#add-a-compliance-framework-to-a-project).
 
-Group owners can create, edit, and delete compliance frameworks:
+Compliance frameworks are created on top-level groups. Group owners can create, edit, and delete compliance frameworks:
 
 1. On the top bar, select **Main menu > Groups > View all groups** and find your group.
 1. On the left sidebar, select **Settings** > **General**.
 1. Expand the **Compliance frameworks** section.
 1. Create, edit, or delete compliance frameworks.
+
+Subgroups and projects have access to all compliance frameworks created on their top-level group. However, compliance frameworks cannot be created, edited,
+or deleted at the subgroup or project level. Project owners can choose a framework to apply to their projects.
 
 ## Default compliance frameworks
 

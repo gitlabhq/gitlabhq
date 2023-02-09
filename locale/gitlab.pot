@@ -34433,6 +34433,9 @@ msgstr ""
 msgid "ProtectedBranch|Does not apply to users allowed to push. Optional sections are not enforced."
 msgstr ""
 
+msgid "ProtectedBranch|Inherited - This setting can be changed at the group level"
+msgstr ""
+
 msgid "ProtectedBranch|Keep stable branches secure and force developers to use merge requests."
 msgstr ""
 

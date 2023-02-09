@@ -25,10 +25,6 @@ GitLab Shell solves this by providing a way to authorize SSH users via a fast,
 indexed lookup in the GitLab database. This page describes how to enable the fast
 lookup of authorized SSH keys.
 
-WARNING:
-OpenSSH version 6.9+ is required because `AuthorizedKeysCommand` must be
-able to accept a fingerprint. Check the version of OpenSSH on your server with `sshd -V`.
-
 ## Fast lookup is required for Geo **(PREMIUM)**
 
 Unlike [Cloud Native GitLab](https://docs.gitlab.com/charts/), Omnibus GitLab by default
@@ -51,11 +47,28 @@ secondary nodes, but **Write to "authorized keys" file**
 must be unchecked only on the primary node, because it is reflected
 automatically on the secondary if database replication is working.
 
-## Setting up fast lookup via GitLab Shell
+## Set up fast lookup
 
 GitLab Shell provides a way to authorize SSH users via a fast, indexed lookup
 to the GitLab database. GitLab Shell uses the fingerprint of the SSH key to
 check whether the user is authorized to access GitLab.
+
+Fast lookup can be enabled with the following SSH servers:
+
+- [`gitlab-sshd`](gitlab_sshd.md)
+- OpenSSH
+
+### `gitlab-sshd`
+
+To set up `gitlab-sshd`, see [the `gitlab-sshd` documentation](gitlab_sshd.md).
+After `gitlab-sshd` is enabled, GitLab Shell and `gitlab-sshd` are configured
+to use fast lookup automatically.
+
+### OpenSSH
+
+WARNING:
+OpenSSH version 6.9+ is required because `AuthorizedKeysCommand` must be
+able to accept a fingerprint. Check the version of OpenSSH on your server with `sshd -V`.
 
 Add the following to your `sshd_config` file. This file is usually located at
 `/etc/ssh/sshd_config`, but it is at `/assets/sshd_config` if you're using
@@ -119,7 +132,7 @@ Then you can backup and delete your `authorized_keys` file for best performance.
 The current users' keys are already present in the database, so there is no need for migration
 or for users to re-add their keys.
 
-## How to go back to using the `authorized_keys` file
+### How to go back to using the `authorized_keys` file
 
 This overview is brief. Refer to the above instructions for more context.
 
@@ -131,138 +144,6 @@ This overview is brief. Refer to the above instructions for more context.
    1. Select the **Use authorized_keys file to authenticate SSH keys** checkbox.
 1. Remove the `AuthorizedKeysCommand` lines from `/etc/ssh/sshd_config` or from `/assets/sshd_config` if you are using Omnibus Docker.
 1. Reload `sshd`: `sudo service sshd reload`.
-
-## Use `gitlab-sshd` instead of OpenSSH
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/299109) in GitLab 14.5 as an **Alpha** release for self-managed customers.
-> - Ready for production use with [Cloud Native GitLab in GitLab 15.1](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/2540) and [Omnibus GitLab in GitLab 15.9](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5937).
-
-`gitlab-sshd` is [a standalone SSH server](https://gitlab.com/gitlab-org/gitlab-shell/-/tree/main/internal/sshd)
-written in Go. It is provided as a part of the `gitlab-shell` package. It has a lower memory
-use as a OpenSSH alternative, and supports
-[group access restriction by IP address](../../user/group/index.md) for applications
-running behind the proxy.
-
-`gitlab-sshd` is a lightweight alternative to OpenSSH for providing
-[SSH operations](https://gitlab.com/gitlab-org/gitlab-shell/-/blob/71a7f34a476f778e62f8fe7a453d632d395eaf8f/doc/features.md).
-While OpenSSH uses a restricted shell approach, `gitlab-sshd` behaves more like a
-modern multi-threaded server application, responding to incoming requests. The major
-difference is that OpenSSH uses SSH as a transport protocol while `gitlab-sshd` uses Remote Procedure Calls (RPCs). See [the blog post](https://about.gitlab.com/blog/2022/08/17/why-we-have-implemented-our-own-sshd-solution-on-gitlab-sass/) for more details.
-
-The capabilities of GitLab Shell are not limited to Git operations.
-
-If you are considering switching from OpenSSH to `gitlab-sshd`, consider these concerns:
-
-- `gitlab-sshd` supports the PROXY protocol. It can run behind proxy servers that rely
-  on it, such as HAProxy. The PROXY protocol is not enabled by default, but [it can be enabled](#proxy-protocol-support).
-- `gitlab-sshd` **does not** support SSH certificates. For more details, read
-  [issue #495](https://gitlab.com/gitlab-org/gitlab-shell/-/issues/495).
-
-To use `gitlab-sshd`:
-
-::Tabs
-
-:::TabTitle Linux package (Omnibus)
-
-The following instructions enable `gitlab-sshd` on a different port than OpenSSH:
-
-1. Edit `/etc/gitlab/gitlab.rb`:
-
-   ```ruby
-   gitlab_sshd['enable'] = true
-   gitlab_sshd['listen_address'] = '[::]:2222' # Adjust the port accordingly
-   ```
-
-1. Optional. By default, Omnibus GitLab generates SSH host keys for `gitlab-sshd` if
-they do not exist in `/var/opt/gitlab/gitlab-sshd`. If you wish to disable this automatic generation, add this line:
-
-   ```ruby
-   gitlab_sshd['generate_host_keys'] = false
-   ```
-
-1. Save the file and reconfigure GitLab:
-
-   ```shell
-   sudo gitlab-ctl reconfigure
-   ```
-
-By default, `gitlab-sshd` runs as the `git` user. As a result, `gitlab-sshd` cannot
-run on privileged port numbers lower than 1024. This means users must
-access Git with the `gitlab-sshd` port, or use a load balancer that
-directs SSH traffic to the `gitlab-sshd` port to hide this.
-
-Users may see host key warnings because the newly-generated host keys
-differ from the OpenSSH host keys. Consider disabling host key
-generation and copy the existing OpenSSH host keys into
-`/var/opt/gitlab/gitlab-sshd` if this is an issue.
-
-:::TabTitle Helm chart (Kubernetes)
-
-The following instructions switch OpenSSH in favor of `gitlab-sshd`:
-
-1. Set the `gitlab-shell` charts `sshDaemon` option to
-   [`gitlab-sshd`](https://docs.gitlab.com/charts/charts/gitlab/gitlab-shell/index.html#installation-command-line-options).
-   For example:
-
-   ```yaml
-   gitlab:
-     gitlab-shell:
-       sshDaemon: gitlab-sshd
-   ```
-
-1. Perform a Helm upgrade.
-
-By default, `gitlab-sshd` listens for:
-
-- External requests on port 22 (`global.shell.port`).
-- Internal requests on port 2222 (`gitlab.gitlab-shell.service.internalPort`).
-
-You can [configure different ports in the Helm chart](https://docs.gitlab.com/charts/charts/gitlab/gitlab-shell/#configuration).
-
-::EndTabs
-
-### PROXY protocol support
-
-When a load balancer is used in front of `gitlab-sshd`, GitLab reports the IP
-address of the proxy instead of the actual IP address of the client. `gitlab-sshd`
-supports the [PROXY protocol](https://www.haproxy.org/download/1.8/doc/proxy-protocol.txt) to
-obtain the real IP address.
-
-::Tabs
-
-:::TabTitle Linux package (Omnibus)
-
-To enable the PROXY protocol:
-
-1. Edit `/etc/gitlab/gitlab.rb`:
-
-    ```ruby
-    gitlab_sshd['proxy_protocol'] = true
-    # # Proxy protocol policy ("use", "require", "reject", "ignore"), "use" is the default value
-    gitlab_sshd['proxy_policy'] = "use"
-    ```
-
-1. Save the file and reconfigure GitLab:
-
-   ```shell
-   sudo gitlab-ctl reconfigure
-   ```
-
-:::TabTitle Helm chart (Kubernetes)
-
-1. Set the [`gitlab.gitlab-shell.config` options](https://docs.gitlab.com/charts/charts/gitlab/gitlab-shell/index.html#installation-command-line-options). For example:
-
-   ```yaml
-   gitlab:
-     gitlab-shell:
-       config:
-         proxyProtocol: true
-         proxyPolicy: "use"
-   ```
-
-1. Perform a Helm upgrade.
-
-::EndTabs
 
 ## SELinux support and limitations
 

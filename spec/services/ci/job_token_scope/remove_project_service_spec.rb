@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe Ci::JobTokenScope::RemoveProjectService do
+RSpec.describe Ci::JobTokenScope::RemoveProjectService, feature_category: :continuous_integration do
   let(:service) { described_class.new(project, current_user) }
 
   let_it_be(:project) { create(:project, ci_outbound_job_token_scope_enabled: true).tap(&:save!) }

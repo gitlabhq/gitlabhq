@@ -835,6 +835,9 @@ Gitlab.ee do
     Settings.cron_jobs['notify_seats_exceeded_batch_worker'] ||= Settingslogic.new({})
     Settings.cron_jobs['notify_seats_exceeded_batch_worker']['cron'] ||= '0 3 * * *'
     Settings.cron_jobs['notify_seats_exceeded_batch_worker']['job_class'] ||= 'GitlabSubscriptions::NotifySeatsExceededBatchWorker'
+    Settings.cron_jobs['gitlab_subscriptionsschedule_refresh_seats_worker'] ||= Settingslogic.new({})
+    Settings.cron_jobs['gitlab_subscriptions_schedule_refresh_seats_worker']['cron'] ||= "0 */6 * * *"
+    Settings.cron_jobs['gitlab_subscriptions_schedule_refresh_seats_worker']['job_class'] = 'GitlabSubscriptions::ScheduleRefreshSeatsWorker'
   end
 end
 

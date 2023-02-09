@@ -27,7 +27,8 @@ The following steps help you get the most from GitLab application security tools
 1. Consider creating [labels](../project/labels.md) and [issue boards](../project/issue_board.md) to
    help manage issues created from vulnerabilities. Issue boards allow all stakeholders to have a
    common view of all issues and track remediation progress.
-1. Use [scheduled pipelines](../../ci/pipelines/schedules.md#scheduled-pipelines) to regularly scan important branches such as `default` or those used for maintenance releases.
+1. Enforce scheduled security scanning jobs by using a [scan execution policy](policies/scan-execution-policies.md).
+   - These scheduled jobs run independently from any other security scans you may have defined in a compliance framework pipeline or in the project's `.gitlab-ci.yml` file.
    - Running regular dependency and [container scans](container_scanning/index.md) surface newly-discovered vulnerabilities that already exist in your repository.
    - Scheduled scans are most useful for projects or important branches with low development activity where pipeline scans are infrequent.
 1. Create a [scan result policy](policies/index.md) to limit new vulnerabilities from being merged

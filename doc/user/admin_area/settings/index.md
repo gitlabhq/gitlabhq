@@ -117,7 +117,7 @@ The **Metrics and profiling** settings contain:
 The **Network** settings contain:
 
 - Performance optimization - Various settings that affect GitLab performance, including:
-  - [Write to `authorized_keys` file](../../../administration/operations/fast_ssh_key_lookup.md#setting-up-fast-lookup-via-gitlab-shell).
+  - [Write to `authorized_keys` file](../../../administration/operations/fast_ssh_key_lookup.md#set-up-fast-lookup).
   - [Push event activities limit and bulk push events](push_event_activities_limit.md).
 - [User and IP rate limits](user_and_ip_rate_limits.md) - Configure limits for web and API requests.
   These rate limits can be overridden:

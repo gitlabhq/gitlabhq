@@ -135,7 +135,9 @@ export default {
     },
     isSettingsShown() {
       return (
-        this.listType !== ListType.backlog && this.showListHeaderButton && !this.list.collapsed
+        this.listType !== ListType.backlog &&
+        this.listType !== ListType.closed &&
+        !this.list.collapsed
       );
     },
     uniqueKey() {

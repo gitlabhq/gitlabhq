@@ -526,4 +526,22 @@ RSpec.describe ProtectedBranch do
       it { is_expected.not_to be_default_branch }
     end
   end
+
+  describe '#group_level?' do
+    context 'when entity is a Group' do
+      before do
+        subject.assign_attributes(project: nil, group: build(:group))
+      end
+
+      it { is_expected.to be_group_level }
+    end
+
+    context 'when entity is a Project' do
+      before do
+        subject.assign_attributes(project: build(:project), group: nil)
+      end
+
+      it { is_expected.not_to be_group_level }
+    end
+  end
 end

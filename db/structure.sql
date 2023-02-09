@@ -225,11 +225,29 @@ RETURN NULL;
 END
 $$;
 
+CREATE FUNCTION trigger_17c3a95ee58a() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+  NEW."note_id_convert_to_bigint" := NEW."note_id";
+  RETURN NEW;
+END;
+$$;
+
 CREATE FUNCTION trigger_1a857e8db6cd() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
 BEGIN
   NEW."uuid_convert_string_to_uuid" := NEW."uuid";
+  RETURN NEW;
+END;
+$$;
+
+CREATE FUNCTION trigger_3207b8d0d6f3() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+  NEW."id_convert_to_bigint" := NEW."id";
   RETURN NEW;
 END;
 $$;
@@ -253,15 +271,6 @@ END;
 $$;
 
 CREATE FUNCTION trigger_c7107f30d69d() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-BEGIN
-  NEW."id_convert_to_bigint" := NEW."id";
-  RETURN NEW;
-END;
-$$;
-
-CREATE FUNCTION trigger_3207b8d0d6f3() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
 BEGIN
@@ -14262,7 +14271,8 @@ CREATE TABLE commit_user_mentions (
     mentioned_users_ids integer[],
     mentioned_projects_ids integer[],
     mentioned_groups_ids integer[],
-    commit_id character varying NOT NULL
+    commit_id character varying NOT NULL,
+    note_id_convert_to_bigint bigint DEFAULT 0 NOT NULL
 );
 
 CREATE SEQUENCE commit_user_mentions_id_seq
@@ -33515,13 +33525,15 @@ CREATE TRIGGER nullify_merge_request_metrics_build_data_on_update BEFORE UPDATE 
 
 CREATE TRIGGER projects_loose_fk_trigger AFTER DELETE ON projects REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
 
+CREATE TRIGGER trigger_17c3a95ee58a BEFORE INSERT OR UPDATE ON commit_user_mentions FOR EACH ROW EXECUTE FUNCTION trigger_17c3a95ee58a();
+
 CREATE TRIGGER trigger_1a857e8db6cd BEFORE INSERT OR UPDATE ON vulnerability_occurrences FOR EACH ROW EXECUTE FUNCTION trigger_1a857e8db6cd();
+
+CREATE TRIGGER trigger_3207b8d0d6f3 BEFORE INSERT OR UPDATE ON ci_build_needs FOR EACH ROW EXECUTE FUNCTION trigger_3207b8d0d6f3();
 
 CREATE TRIGGER trigger_7f4fcd5aa322 BEFORE INSERT OR UPDATE ON sent_notifications FOR EACH ROW EXECUTE FUNCTION trigger_7f4fcd5aa322();
 
 CREATE TRIGGER trigger_c5a5f48f12b0 BEFORE INSERT OR UPDATE ON epic_user_mentions FOR EACH ROW EXECUTE FUNCTION trigger_c5a5f48f12b0();
-
-CREATE TRIGGER trigger_3207b8d0d6f3 BEFORE INSERT OR UPDATE ON ci_build_needs FOR EACH ROW EXECUTE FUNCTION trigger_3207b8d0d6f3();
 
 CREATE TRIGGER trigger_c7107f30d69d BEFORE INSERT OR UPDATE ON merge_request_metrics FOR EACH ROW EXECUTE FUNCTION trigger_c7107f30d69d();
 

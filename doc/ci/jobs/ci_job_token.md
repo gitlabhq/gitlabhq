@@ -61,26 +61,96 @@ your [runners](../runners/index.md) to be secure. Avoid:
 If you have an insecure GitLab Runner configuration, you increase the risk that someone
 tries to steal tokens from other jobs.
 
-## Limit GitLab CI/CD job token access
+## Configure CI/CD job token access
+
+You can control what projects a CI/CD job token can access to increase the
+job token's security. A job token might give extra permissions that aren't necessary
+to access specific private resources.
+
+If a job token is leaked, it could potentially be used to access private data
+to the job token's user. By limiting the job token access scope, private data cannot
+be accessed unless projects are explicitly authorized.
+
+There is a proposal to add more strategic control of the access permissions,
+see [epic 3559](https://gitlab.com/groups/gitlab-org/-/epics/3559).
+
+### Allow access to your project with a job token
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/346298/) in GitLab 15.9. [Deployed behind the `:inbound_ci_scoped_job_token` feature flag](../../user/feature_flags.md), enabled by default.
+
+Control your project's job token scope by creating an **inbound** allowlist of projects which can
+access your project through its `CI_JOB_TOKEN`.
+
+For example, you can add project `B` to the inbound allowlist for project `A`. Jobs
+in the pipeline for "allowed project" `B` can now use the CI/CD job token to authenticate
+API calls to access project `A`.
+
+By default the allowlist includes your current project.
+
+It is a security risk to disable this feature, so project maintainers or owners should
+keep this setting enabled at all times. Add projects to the allowlist only when cross-project
+access is needed.
+
+### Disable the inbound job token scope allowlist
+
+WARNING:
+It is a security risk to disable the allowlist. A malicious user could try to compromise
+a pipeline created in an unauthorized project. If the pipeline was created by one of
+your maintainers, the job token could be used in an attempt to access your project.
+
+You can disable the inbound job token scope allowlist for testing or a similar reason,
+but you should enable it again as soon as possible.
+
+Prerequisite:
+
+- You must have at least the Maintainer role for the project.
+
+To disable the inbound job token scope allowlist:
+
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > CI/CD**.
+1. Expand **Token Access**.
+1. Toggle **Allow access to this project with a CI_JOB_TOKEN** to disabled.
+   Enabled by default in new projects.
+
+### Add a project to the inbound job token scope allowlist
+
+You can add projects to the inbound allowlist for a project. Projects added to the allowlist
+can make API calls from running pipelines by using the CI/CD job token.
+
+Prerequisite:
+
+- You must have at least the Maintainer role in the current project and at least
+  the Guest role in the allowed project.
+- You must not have more than 100 projects added to the allowlist.
+
+To add a project:
+
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > CI/CD**.
+1. Expand **Token Access**.
+1. Verify **Allow access to this project with a CI_JOB_TOKEN** is enabled.
+1. Under **Allow CI job tokens from the following projects to access this project**,
+   add projects to the allowlist.
+
+### Limit your project's job token access
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/328553) in GitLab 14.1. [Deployed behind the `:ci_scoped_job_token` feature flag](../../user/feature_flags.md), disabled by default.
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/332272) in GitLab 14.4.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/332272) in GitLab 14.6.
 
-You can limit the access scope of a project's CI/CD job token to increase the
-job token's security. A job token might give extra permissions that aren't necessary
-to access specific private resources.
-If a job token is leaked it could potentially be used to access data that is private
-to the job token's user. By limiting the job token access scope, private data cannot
-be accessed unless projects are explicitly authorized.
+NOTE:
+This feature is disabled by default for all new projects and is [scheduled for removal](https://gitlab.com/gitlab-org/gitlab/-/issues/383084)
+in GitLab 16.0. Project maintainers or owners should enable the **inbound** access control instead.
 
-Control the job token access scope with an allowlist of other projects authorized
-to be accessed by authenticating with the current project's job token. By default
-the token scope only allows access to the same project where the token comes from.
+Control your project's job token scope by creating an **outbound** allowlist of projects which
+can be accessed by your project's job token.
+
+By default, the allowlist includes your current project.
 Other projects can be added and removed by maintainers with access to both projects.
 
-This setting is disabled by default for all new projects. It is recommended that project maintainers or owners enable this
-setting at all times, and configure the allowlist for cross-project access if needed.
+With the setting disabled, all projects are considered in the allowlist and the job token is
+limited only by the user's access permissions.
 
 For example, when the setting is enabled, jobs in a pipeline in project `A` have
 a `CI_JOB_TOKEN` scope limited to project `A`. If the job needs to use the token
@@ -88,7 +158,13 @@ to make an API request to a private project `B`, then `B` must be added to the a
 If project `B` is public or internal, it's not required to be added to the allowlist.
 The job token scope is only for controlling access to private projects.
 
-### Configure the job token scope limit
+### Configure the outbound job token scope
+
+Prerequisite:
+
+- You must not have more than 100 projects added to the token's scope.
+
+To configure the outbound job token scope:
 
 1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > CI/CD**.
@@ -96,9 +172,6 @@ The job token scope is only for controlling access to private projects.
 1. Toggle **Limit CI_JOB_TOKEN access** to enabled.
 1. Optional. Add existing projects to the token's access scope. The user adding a
    project must have the Maintainer role in both projects.
-
-There is [a proposal](https://gitlab.com/groups/gitlab-org/-/epics/3559) to improve
-the feature with more strategic control of the access permissions.
 
 ## Download an artifact from a different pipeline **(PREMIUM)**
 
@@ -157,10 +230,10 @@ CI job token failures are usually shown as responses like `404 Not Found` or sim
 
 While troubleshooting CI/CD job token authentication issues, be aware that:
 
-- When the [CI/CD job token limit](#limit-gitlab-cicd-job-token-access) is enabled,
+- When the [CI/CD job token scopes](#configure-cicd-job-token-access) are enabled,
   and the job token is being used to access a different project:
   - The user that executes the job must be a member of the project that is being accessed.
   - The user must have the [permissions](../../user/permissions.md) to perform the action.
-  - The target project must be [allowlisted for the job token scope limit](#configure-the-job-token-scope-limit).
+  - The accessed project must have the project attempting to access it [added to the inbound allowlist](#add-a-project-to-the-inbound-job-token-scope-allowlist).
 - The CI job token becomes invalid if the job is no longer running, has been erased,
   or if the project is in the process of being deleted.

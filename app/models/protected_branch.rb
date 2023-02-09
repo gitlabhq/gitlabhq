@@ -12,6 +12,7 @@ class ProtectedBranch < ApplicationRecord
   scope :requiring_code_owner_approval, -> { where(code_owner_approval_required: true) }
   scope :allowing_force_push, -> { where(allow_force_push: true) }
   scope :sorted_by_name, -> { order(name: :asc) }
+  scope :sorted_by_namespace_and_name, -> { order(:namespace_id, :name) }
 
   scope :for_group, ->(group) { where(group: group) }
 
@@ -119,6 +120,14 @@ class ProtectedBranch < ApplicationRecord
 
   def default_branch?
     name == project.default_branch
+  end
+
+  def group_level?
+    entity.is_a?(Group)
+  end
+
+  def project_level?
+    entity.is_a?(Project)
   end
 
   def entity

@@ -303,6 +303,7 @@ RSpec.describe 'Every Sidekiq worker' do
         'Gitlab::JiraImport::Stage::StartImportWorker' => 5,
         'Gitlab::PhabricatorImport::ImportTasksWorker' => 5,
         'GitlabPerformanceBarStatsWorker' => 3,
+        'GitlabSubscriptions::RefreshSeatsWorker' => 0,
         'GitlabShellWorker' => 3,
         'GitlabServicePingWorker' => 3,
         'GroupDestroyWorker' => 3,

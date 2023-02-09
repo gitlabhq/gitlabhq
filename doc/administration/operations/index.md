@@ -17,6 +17,7 @@ Keep your GitLab instance up and running smoothly.
   to restart Sidekiq.
 - [Multiple Sidekiq processes](../sidekiq/extra_sidekiq_processes.md): Configure multiple Sidekiq processes to ensure certain queues always have dedicated workers, no matter the number of jobs that must be processed. **(FREE SELF)**
 - [Puma](puma.md): Understand Puma and puma-worker-killer.
+- [`gitlab-sshd`](gitlab_sshd.md): Use GitLab SSH daemon instead of OpenSSH.
 - Speed up SSH operations by
   [Authorizing SSH users via a fast, indexed lookup to the GitLab database](fast_ssh_key_lookup.md), and/or
   by [doing away with user SSH keys stored on GitLab entirely in favor of SSH certificates](ssh_certificates.md).

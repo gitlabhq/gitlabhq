@@ -5,4 +5,4 @@ rollout_issue_url:
 milestone: '15.7'
 type: ops
 group: group::pods
-default_enabled: false
+default_enabled: true
