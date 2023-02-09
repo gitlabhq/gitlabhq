@@ -18,7 +18,7 @@ module VersionCheckHelper
   strong_memoize_attr :gitlab_version_check
 
   def show_security_patch_upgrade_alert?
-    return false unless show_version_check? && gitlab_version_check
+    return false unless Feature.enabled?(:critical_security_alert) && show_version_check? && gitlab_version_check
 
     gitlab_version_check['severity'] === SECURITY_ALERT_SEVERITY
   end
