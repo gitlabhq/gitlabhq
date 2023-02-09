@@ -244,3 +244,27 @@ You might get an error if you have installed the GitLab for Jira Cloud app from 
   1. Expand the **GitLab for Jira App** section.
   1. Clear the **Jira Connect Proxy URL** text box.
   1. Select **Save changes**.
+
+### Data sync fails with `Invalid JWT` error
+
+If the GitLab for Jira Cloud app continuously fails to sync data, it may be due to an outdated secret token. Atlassian can send new secret tokens that must be processed and stored by GitLab.
+If GitLab fails to store the token or misses the new token request, an `Invalid JWT` error occurs.
+
+To resolve this issue on GitLab self-managed, follow one of the solutions below, depending on your app installation method.
+
+- If you installed the app from the official marketplace listing:
+
+  1. Open the GitLab for Jira Cloud app on Jira.
+  1. Select **Change GitLab version**.
+  1. Select **GitLab.com (SaaS)**.
+  1. Select **Change GitLab version** again.
+  1. Select **GitLab (self-managed)**.
+  1. Enter your **GitLab instance URL**.
+  1. Select **Save**.
+
+- If you [installed the GitLab for Jira Cloud app manually](#install-the-gitlab-for-jira-cloud-app-manually):
+
+  - In GitLab 14.9 and later:
+    - Contact the [Jira Software Cloud support](https://support.atlassian.com/jira-software-cloud/) and ask to trigger a new installed lifecycle event for the GitLab for Jira Cloud app in your namespace.
+  - In all GitLab versions:
+    - Re-install the GitLab for Jira Cloud app. This might remove all already synced development panel data.

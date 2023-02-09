@@ -565,6 +565,36 @@ RSpec.describe Issues::CreateService do
     end
 
     context 'Quick actions' do
+      context 'as work item' do
+        let(:opts) do
+          {
+            title: "My work item",
+            work_item_type: work_item_type,
+            description: "/shrug"
+          }
+        end
+
+        context 'when work item type is not the default Issue' do
+          let(:work_item_type) { create(:work_item_type, namespace: project.namespace) }
+
+          it 'saves the work item without applying the quick action' do
+            expect(result).to be_success
+            expect(issue).to be_persisted
+            expect(issue.description).to eq("/shrug")
+          end
+        end
+
+        context 'when work item type is the default Issue' do
+          let(:work_item_type) { WorkItems::Type.default_by_type(:issue) }
+
+          it 'saves the work item and applies the quick action' do
+            expect(result).to be_success
+            expect(issue).to be_persisted
+            expect(issue.description).to eq(" ¯\\＿(ツ)＿/¯")
+          end
+        end
+      end
+
       context 'with assignee, milestone, and contact in params and command' do
         let_it_be(:contact) { create(:contact, group: group) }
 

@@ -1,6 +1,8 @@
 <script>
 import { GlSprintf, GlLink, GlModalDirective } from '@gitlab/ui';
 import RunnerInstructionsModal from '~/vue_shared/components/runner_instructions/runner_instructions_modal.vue';
+import RunnerPlatformsRadioGroup from '~/ci/runner/components/runner_platforms_radio_group.vue';
+import { DEFAULT_PLATFORM } from '../constants';
 
 export default {
   name: 'AdminNewRunnerApp',
@@ -8,6 +10,7 @@ export default {
     GlLink,
     GlSprintf,
     RunnerInstructionsModal,
+    RunnerPlatformsRadioGroup,
   },
   directives: {
     GlModal: GlModalDirective,
@@ -17,6 +20,11 @@ export default {
       type: String,
       required: true,
     },
+  },
+  data() {
+    return {
+      platform: DEFAULT_PLATFORM,
+    };
   },
   modalId: 'runners-legacy-registration-instructions-modal',
 };
@@ -44,5 +52,12 @@ export default {
         </template>
       </gl-sprintf>
     </p>
+
+    <hr />
+
+    <h2 class="gl-font-weight-normal gl-font-lg gl-my-5">
+      {{ s__('Runners|Platform') }}
+    </h2>
+    <runner-platforms-radio-group v-model="platform" />
   </div>
 </template>

@@ -12,7 +12,7 @@ export const initAdminNewRunner = (selector = '#js-admin-new-runner') => {
     return null;
   }
 
-  const { legacyRegistrationToken } = el.dataset;
+  const { legacyRegistrationToken, awsImgPath, dockerImgPath, kubernetesImgPath } = el.dataset;
 
   const apolloProvider = new VueApollo({
     defaultClient: createDefaultClient(),
@@ -21,6 +21,11 @@ export const initAdminNewRunner = (selector = '#js-admin-new-runner') => {
   return new Vue({
     el,
     apolloProvider,
+    provide: {
+      awsImgPath,
+      dockerImgPath,
+      kubernetesImgPath,
+    },
     render(h) {
       return h(AdminNewRunnerApp, {
         props: {

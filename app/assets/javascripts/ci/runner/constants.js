@@ -172,3 +172,17 @@ export const DEFAULT_MEMBERSHIP = MEMBERSHIP_DESCENDANTS;
 
 export const ADMIN_FILTERED_SEARCH_NAMESPACE = 'admin_runners';
 export const GROUP_FILTERED_SEARCH_NAMESPACE = 'group_runners';
+
+// Platforms
+
+export const LINUX_PLATFORM = 'linux';
+export const MACOS_PLATFORM = 'osx';
+export const WINDOWS_PLATFORM = 'windows';
+export const AWS_PLATFORM = 'aws';
+
+export const DEFAULT_PLATFORM = LINUX_PLATFORM;
+
+// Runner docs are in a separate repository and are not shipped with GitLab
+// they are rendered as external URLs.
+export const DOCKER_HELP_URL = 'https://docs.gitlab.com/runner/install/docker.html';
+export const KUBERNETES_HELP_URL = 'https://docs.gitlab.com/runner/install/kubernetes.html';

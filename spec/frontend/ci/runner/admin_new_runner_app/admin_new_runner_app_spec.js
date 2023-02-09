@@ -6,6 +6,8 @@ import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 
 import AdminNewRunnerApp from '~/ci/runner/admin_new_runner/admin_new_runner_app.vue';
 import RunnerInstructionsModal from '~/vue_shared/components/runner_instructions/runner_instructions_modal.vue';
+import RunnerPlatformsRadioGroup from '~/ci/runner/components/runner_platforms_radio_group.vue';
+import { DEFAULT_PLATFORM } from '~/ci/runner/constants';
 
 const mockLegacyRegistrationToken = 'LEGACY_REGISTRATION_TOKEN';
 
@@ -16,6 +18,7 @@ describe('AdminNewRunnerApp', () => {
 
   const findLegacyInstructionsLink = () => wrapper.findByTestId('legacy-instructions-link');
   const findRunnerInstructionsModal = () => wrapper.findComponent(RunnerInstructionsModal);
+  const findRunnerPlatformsRadioGroup = () => wrapper.findComponent(RunnerPlatformsRadioGroup);
 
   const createComponent = ({ props = {}, mountFn = shallowMountExtended, ...options } = {}) => {
     wrapper = mountFn(AdminNewRunnerApp, {
@@ -48,6 +51,14 @@ describe('AdminNewRunnerApp', () => {
       const modalId = getBinding(findLegacyInstructionsLink().element, 'gl-modal').value;
 
       expect(findRunnerInstructionsModal().props('modalId')).toBe(modalId);
+    });
+  });
+
+  describe('New runner form fields', () => {
+    describe('Platform', () => {
+      it('shows the platforms radio group', () => {
+        expect(findRunnerPlatformsRadioGroup().props('value')).toBe(DEFAULT_PLATFORM);
+      });
     });
   });
 });

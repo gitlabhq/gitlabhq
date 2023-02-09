@@ -8,8 +8,9 @@ type: reference
 # Issue closing pattern **(FREE SELF)**
 
 NOTE:
-This is the administration documentation. There is a separate [user documentation](../user/project/issues/managing_issues.md#closing-issues-automatically)
-on issue closing pattern.
+This page explains how an administrator can configure issue closing patterns.
+For user documentation about the feature, see
+[Closing issues automatically](../user/project/issues/managing_issues.md#closing-issues-automatically).
 
 When a commit or merge request resolves one or more issues, it is possible to
 automatically close these issues when the commit or merge request lands
@@ -21,9 +22,9 @@ The [default issue closing pattern](../user/project/issues/managing_issues.md#de
 covers a wide range of words. You can change the pattern to suit your needs.
 
 NOTE:
-You are advised to use <https://rubular.com> to test the issue closing pattern.
-However, since Rubular doesn't understand `%{issue_ref}`, you can replace this by
-`#\d+` when testing your patterns, which matches only local issue references like `#123`.
+To test the issue closing pattern, use <https://rubular.com>.
+However, Rubular doesn't understand `%{issue_ref}`. When testing your patterns,
+replace this string with `#\d+`, which matches only local issue references like `#123`.
 
 To change the default issue closing pattern:
 

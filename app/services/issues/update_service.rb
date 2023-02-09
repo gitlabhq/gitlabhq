@@ -116,6 +116,14 @@ module Issues
 
     attr_reader :spam_params
 
+    def handle_quick_actions(issue)
+      # Do not handle quick actions unless the work item is the default Issue.
+      # The available quick actions for a work item depend on its type and widgets.
+      return unless issue.work_item_type.default_issue?
+
+      super
+    end
+
     def handle_date_changes(issue)
       return unless issue.previous_changes.slice('due_date', 'start_date').any?
 

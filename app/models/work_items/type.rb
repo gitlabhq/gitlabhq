@@ -145,6 +145,10 @@ module WorkItems
       widgets.include? ::WorkItems::Widgets::Assignees
     end
 
+    def default_issue?
+      name == WorkItems::Type::TYPE_NAMES[:issue]
+    end
+
     private
 
     def strip_whitespace

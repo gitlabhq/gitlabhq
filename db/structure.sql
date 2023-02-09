@@ -252,6 +252,15 @@ BEGIN
 END;
 $$;
 
+CREATE FUNCTION trigger_3dc62927cae8() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+  NEW."note_id_convert_to_bigint" := NEW."note_id";
+  RETURN NEW;
+END;
+$$;
+
 CREATE FUNCTION trigger_7f4fcd5aa322() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -15143,7 +15152,8 @@ CREATE TABLE design_user_mentions (
     note_id integer NOT NULL,
     mentioned_users_ids integer[],
     mentioned_projects_ids integer[],
-    mentioned_groups_ids integer[]
+    mentioned_groups_ids integer[],
+    note_id_convert_to_bigint bigint DEFAULT 0 NOT NULL
 );
 
 CREATE SEQUENCE design_user_mentions_id_seq
@@ -33530,6 +33540,8 @@ CREATE TRIGGER trigger_17c3a95ee58a BEFORE INSERT OR UPDATE ON commit_user_menti
 CREATE TRIGGER trigger_1a857e8db6cd BEFORE INSERT OR UPDATE ON vulnerability_occurrences FOR EACH ROW EXECUTE FUNCTION trigger_1a857e8db6cd();
 
 CREATE TRIGGER trigger_3207b8d0d6f3 BEFORE INSERT OR UPDATE ON ci_build_needs FOR EACH ROW EXECUTE FUNCTION trigger_3207b8d0d6f3();
+
+CREATE TRIGGER trigger_3dc62927cae8 BEFORE INSERT OR UPDATE ON design_user_mentions FOR EACH ROW EXECUTE FUNCTION trigger_3dc62927cae8();
 
 CREATE TRIGGER trigger_7f4fcd5aa322 BEFORE INSERT OR UPDATE ON sent_notifications FOR EACH ROW EXECUTE FUNCTION trigger_7f4fcd5aa322();
 

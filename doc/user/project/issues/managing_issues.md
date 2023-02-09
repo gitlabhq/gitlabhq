@@ -204,9 +204,11 @@ A reopened issue is no different from any other open issue.
 
 ### Closing issues automatically
 
-You can close issues automatically by using certain words in the commit message or MR description.
+You can close issues automatically by using certain words, called a _closing pattern_,
+in a commit message or merge request description. Administrators of self-managed GitLab instances
+can [change the default closing pattern](../../../administration/issue_closing_pattern.md).
 
-If a commit message or merge request description contains text matching the [defined pattern](#default-closing-pattern),
+If a commit message or merge request description contains text matching the [closing pattern](#default-closing-pattern),
 all issues referenced in the matched text are closed when either:
 
 - The commit is pushed to a project's [**default** branch](../repository/branches/default.md).

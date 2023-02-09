@@ -100,6 +100,14 @@ module Issues
 
     private
 
+    def handle_quick_actions(issue)
+      # Do not handle quick actions unless the work item is the default Issue.
+      # The available quick actions for a work item depend on its type and widgets.
+      return if @params[:work_item_type].present? && @params[:work_item_type] != WorkItems::Type.default_by_type(:issue)
+
+      super
+    end
+
     def authorization_action
       :create_issue
     end
