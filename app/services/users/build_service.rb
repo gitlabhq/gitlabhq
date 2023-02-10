@@ -163,6 +163,7 @@ module Users
         :skype,
         :theme_id,
         :twitter,
+        :discord,
         :username,
         :website_url,
         :private_profile,

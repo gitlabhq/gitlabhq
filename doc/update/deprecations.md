@@ -191,6 +191,22 @@ The option to delete projects immediately by default was deprecated to prevent u
 
 <div class="deprecation removal-160 breaking-change">
 
+### Required Pipeline Configuration is deprecated
+
+Planned removal: GitLab <span class="removal-milestone">16.0</span> <span class="removal-date"></span>
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+Required Pipeline Configuration will be removed in the 16.0 release. This impacts Self-Managed users on the Ultimate license.
+
+We recommend replacing this with an alternative [compliance solution](https://docs.gitlab.com/ee/user/group/compliance_frameworks.html#configure-a-compliance-pipeline) that is available now. We recommend this alternative solution because it provides greater flexibility, allowing required pipelines to be assigned to specific compliance framework labels.
+
+</div>
+
+<div class="deprecation removal-160 breaking-change">
+
 ### Support for Praefect custom metrics endpoint configuration
 
 Planned removal: GitLab <span class="removal-milestone">16.0</span> <span class="removal-date"></span>

@@ -103,6 +103,9 @@ export default {
     showDelete() {
       return this.boards.length > 1;
     },
+    showDropdown() {
+      return this.showCreate || this.hasMissingBoards;
+    },
     scrollFadeClass() {
       return {
         'fade-out': !this.hasScrollFade,
@@ -244,6 +247,7 @@ export default {
   <div class="boards-switcher gl-mr-3" data-testid="boards-selector">
     <span class="boards-selector-wrapper">
       <gl-dropdown
+        v-if="showDropdown"
         data-testid="boards-dropdown"
         data-qa-selector="boards_dropdown"
         toggle-class="dropdown-menu-toggle"

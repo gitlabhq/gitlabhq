@@ -46,6 +46,7 @@ module API
           optional :skype, type: String, desc: 'The Skype username'
           optional :linkedin, type: String, desc: 'The LinkedIn username'
           optional :twitter, type: String, desc: 'The Twitter username'
+          optional :discord, type: String, desc: 'The Discord user ID'
           optional :website_url, type: String, desc: 'The website of the user'
           optional :organization, type: String, desc: 'The organization of the user'
           optional :projects_limit, type: Integer, desc: 'The number of projects a user can create'

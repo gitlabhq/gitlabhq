@@ -142,6 +142,7 @@ GET /users
     "skype": "",
     "linkedin": "",
     "twitter": "",
+    "discord": "",
     "website_url": "",
     "organization": "",
     "job_title": "",
@@ -183,6 +184,7 @@ GET /users
     "skype": "",
     "linkedin": "",
     "twitter": "",
+    "discord": "",
     "website_url": "",
     "organization": "",
     "job_title": "",
@@ -319,6 +321,7 @@ Parameters:
   "skype": "",
   "linkedin": "",
   "twitter": "",
+  "discord": "",
   "website_url": "",
   "organization": "",
   "job_title": "Operations Specialist",
@@ -365,6 +368,7 @@ Example Responses:
   "skype": "",
   "linkedin": "",
   "twitter": "",
+  "discord": "",
   "website_url": "",
   "organization": "",
   "job_title": "Operations Specialist",
@@ -508,6 +512,7 @@ Parameters:
 | `skype`                              | No       | Skype ID                                                                                                                                                |
 | `theme_id`                           | No       | GitLab theme for the user (for more information, see the [user preference documentation](../user/profile/preferences.md#navigation-theme) for more information)                    |
 | `twitter`                            | No       | Twitter account                                                                                                                                         |
+| `discord`                            | No       | Discord account                                                                                                                                         |
 | `username`                           | Yes      | Username                                                                                                                                                |
 | `view_diffs_file_by_file`            | No       | Flag indicating the user sees only one file diff per page                                                                                               |
 | `website_url`                        | No       | Website URL                                                                                                                                             |
@@ -558,6 +563,7 @@ Parameters:
 | `skype`                              | No       | Skype ID                                                                                                                                                |
 | `theme_id`                           | No       | GitLab theme for the user (for more information, see the [user preference documentation](../user/profile/preferences.md#navigation-theme) for more information)                    |
 | `twitter`                            | No       | Twitter account                                                                                                                                         |
+| `discord`                            | No       | Discord account                                                                                                                                         |
 | `username`                           | No       | Username                                                                                                                                                |
 | `view_diffs_file_by_file`            | No       | Flag indicating the user sees only one file diff per page                                                                                               |
 | `website_url`                        | No       | Website URL                                                                                                                                             |
@@ -626,6 +632,7 @@ GET /user
   "skype": "",
   "linkedin": "",
   "twitter": "",
+  "discord": "",
   "website_url": "",
   "organization": "",
   "job_title": "",
@@ -690,6 +697,7 @@ Parameters:
   "skype": "",
   "linkedin": "",
   "twitter": "",
+  "discord": "",
   "website_url": "",
   "organization": "",
   "job_title": "",

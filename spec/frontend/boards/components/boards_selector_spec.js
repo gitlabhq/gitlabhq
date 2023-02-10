@@ -82,6 +82,7 @@ describe('BoardsSelector', () => {
     projectRecentBoardsQueryHandler = projectRecentBoardsQueryHandlerSuccess,
     isGroupBoard = false,
     isProjectBoard = false,
+    provide = {},
   } = {}) => {
     fakeApollo = createMockApollo([
       [projectBoardsQuery, projectBoardsQueryHandler],
@@ -109,6 +110,7 @@ describe('BoardsSelector', () => {
         isGroupBoard,
         isProjectBoard,
         isApolloBoard: false,
+        ...provide,
       },
     });
   };
@@ -244,6 +246,36 @@ describe('BoardsSelector', () => {
 
       expect(queryHandler).toHaveBeenCalled();
       expect(notCalledHandler).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('dropdown visibility', () => {
+    describe('when multipleIssueBoardsAvailable is enabled', () => {
+      it('show dropdown', async () => {
+        createStore();
+        createComponent({ provide: { multipleIssueBoardsAvailable: true } });
+        expect(findDropdown().exists()).toBe(true);
+      });
+    });
+
+    describe('when multipleIssueBoardsAvailable is disabled but it hasMissingBoards', () => {
+      it('show dropdown', async () => {
+        createStore();
+        createComponent({
+          provide: { multipleIssueBoardsAvailable: false, hasMissingBoards: true },
+        });
+        expect(findDropdown().exists()).toBe(true);
+      });
+    });
+
+    describe("when multipleIssueBoardsAvailable is disabled and it dosn't hasMissingBoards", () => {
+      it('hide dropdown', async () => {
+        createStore();
+        createComponent({
+          provide: { multipleIssueBoardsAvailable: false, hasMissingBoards: false },
+        });
+        expect(findDropdown().exists()).toBe(false);
+      });
     });
   });
 });

@@ -7,7 +7,7 @@ module API
       include TimeZoneHelper
 
       expose :created_at, if: ->(user, opts) { Ability.allowed?(opts[:current_user], :read_user_profile, user) }
-      expose :bio, :location, :public_email, :skype, :linkedin, :twitter, :website_url, :organization, :job_title, :pronouns
+      expose :bio, :location, :public_email, :skype, :linkedin, :twitter, :discord, :website_url, :organization, :job_title, :pronouns
       expose :bot?, as: :bot
       expose :work_information do |user|
         work_information(user)
