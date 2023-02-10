@@ -1116,6 +1116,7 @@ Caches are:
 - Shared between pipelines and jobs.
 - By default, not shared between [protected](../../user/project/protected_branches.md) and unprotected branches.
 - Restored before [artifacts](#artifacts).
+- Limited to a maximum of four [different caches](../caching/index.md#use-multiple-caches).
 
 You can [disable caching for specific jobs](../caching/index.md#disable-cache-for-specific-jobs),
 for example to override:

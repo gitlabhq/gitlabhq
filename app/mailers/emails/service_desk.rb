@@ -63,7 +63,7 @@ module Emails
         next unless template_body = template_content(email_type)
 
         options[:body] = template_body
-        options[:content_type] = 'text/html'
+        options[:content_type] = 'text/html' unless attachments.present?
       end
     end
 

@@ -1,8 +1,0 @@
----
-name: only_allow_merge_if_all_status_checks_passed
-introduced_by_url: "https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96765"
-rollout_issue_url: "https://gitlab.com/gitlab-org/gitlab/-/issues/372340"
-milestone: '15.5'
-type: development
-group: group::compliance
-default_enabled: true

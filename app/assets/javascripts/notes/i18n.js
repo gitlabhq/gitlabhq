@@ -45,4 +45,7 @@ export const COMMENT_FORM = {
     commentHelp: __('Add a general comment to this %{noteableDisplayName}.'),
     internalCommentHelp: __('Add a confidential internal note to this %{noteableDisplayName}.'),
   },
+  attachmentMsg: s__(
+    'Notes|Attachments are sent by email. Attachments over 10 MB are sent as links to your GitLab instance, and only accessible to project members.',
+  ),
 };

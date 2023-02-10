@@ -65,4 +65,18 @@ RSpec.describe 'viewing an issue', :js, feature_category: :service_desk do
       end
     end
   end
+
+  context 'for feature flags' do
+    before do
+      sign_in(user)
+    end
+
+    it 'pushes service_desk_new_note_email_native_attachments feature flag to frontend' do
+      stub_feature_flags(service_desk_new_note_email_native_attachments: true)
+
+      visit project_issue_path(project, issue)
+
+      expect(page).to have_pushed_frontend_feature_flags(serviceDeskNewNoteEmailNativeAttachments: true)
+    end
+  end
 end

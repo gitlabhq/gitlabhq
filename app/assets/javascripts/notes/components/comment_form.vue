@@ -28,6 +28,7 @@ import CommentTypeDropdown from './comment_type_dropdown.vue';
 import DiscussionLockedWidget from './discussion_locked_widget.vue';
 import NoteSignedOutWidget from './note_signed_out_widget.vue';
 
+const ATTACHMENT_REGEXP = /!?\[.*?\]\(\/uploads\/[0-9a-f]{32}\/.*?\)/;
 export default {
   name: 'CommentForm',
   i18n: COMMENT_FORM,
@@ -175,6 +176,9 @@ export default {
     },
     disableSubmitButton() {
       return this.note.length === 0 || this.isSubmitting;
+    },
+    containsLink() {
+      return ATTACHMENT_REGEXP.test(this.note);
     },
   },
   mounted() {
@@ -356,6 +360,7 @@ export default {
               :noteable-data="getNoteableData"
               :is-internal-note="noteIsInternal"
               :noteable-type="noteableType"
+              :contains-link="containsLink"
             >
               <markdown-field
                 ref="markdownField"

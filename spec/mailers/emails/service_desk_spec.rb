@@ -70,7 +70,7 @@ RSpec.describe Emails::ServiceDesk do
         is_expected.to have_referable_subject(issue, include_project: false, reply: reply_in_subject)
         is_expected.to have_body_text(expected_body)
         expect(subject.attachments.count).to eq(attachments_count.to_i)
-        expect(subject.content_type).to include('text/html')
+        expect(subject.content_type).to include(attachments_count.to_i > 0 ? 'multipart/mixed' : 'text/html')
       end
     end
   end

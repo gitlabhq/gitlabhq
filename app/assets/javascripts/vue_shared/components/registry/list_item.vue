@@ -33,6 +33,7 @@ export default {
         'gl-border-t-transparent': !this.first && !this.selected,
         'gl-border-t-gray-100': this.first && !this.selected,
         'gl-border-b-gray-100': !this.selected,
+        'gl-border-t-transparent!': this.selected && !this.first,
         'gl-bg-blue-50 gl-border-blue-200': this.selected,
       };
     },

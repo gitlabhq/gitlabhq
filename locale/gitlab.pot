@@ -13356,9 +13356,6 @@ msgstr ""
 msgid "Delete Key"
 msgstr ""
 
-msgid "Delete Selected"
-msgstr ""
-
 msgid "Delete Value Stream"
 msgstr ""
 
@@ -13432,6 +13429,9 @@ msgid "Delete release %{release}?"
 msgstr ""
 
 msgid "Delete row"
+msgstr ""
+
+msgid "Delete selected"
 msgstr ""
 
 msgid "Delete self-monitoring project"
@@ -28488,6 +28488,9 @@ msgstr ""
 msgid "Notes|Are you sure you want to cancel creating this comment?"
 msgstr ""
 
+msgid "Notes|Attachments are sent by email. Attachments over 10 MB are sent as links to your GitLab instance, and only accessible to project members."
+msgstr ""
+
 msgid "Notes|Collapse replies"
 msgstr ""
 
@@ -40885,9 +40888,6 @@ msgid "StatusCheck|Apply this status check to all branches or a specific protect
 msgstr ""
 
 msgid "StatusCheck|Check for a status response in merge requests. %{link_start}Learn more%{link_end}."
-msgstr ""
-
-msgid "StatusCheck|Check for a status response in merge requests. Failures do not block merges. %{link_start}Learn more%{link_end}."
 msgstr ""
 
 msgid "StatusCheck|Examples: QA, Security."
