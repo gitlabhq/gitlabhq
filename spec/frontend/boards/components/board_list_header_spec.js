@@ -162,7 +162,7 @@ describe('Board List Header Component', () => {
 
       const icon = findCaret();
 
-      expect(icon.props('icon')).toBe('chevron-down');
+      expect(icon.props('icon')).toBe('chevron-lg-down');
     });
 
     it('should display expand icon when column is collapsed', async () => {
@@ -170,7 +170,7 @@ describe('Board List Header Component', () => {
 
       const icon = findCaret();
 
-      expect(icon.props('icon')).toBe('chevron-right');
+      expect(icon.props('icon')).toBe('chevron-lg-right');
     });
 
     it('should dispatch toggleListCollapse when clicking the collapse icon', async () => {

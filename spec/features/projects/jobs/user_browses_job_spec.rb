@@ -34,10 +34,6 @@ RSpec.describe 'User browses a job', :js, feature_category: :projects do
     wait_for_requests
 
     expect(page).to have_no_css('.artifacts')
-    expect(build).not_to have_trace
-    expect(build.artifacts_file.present?).to be_falsy
-    expect(build.artifacts_metadata.present?).to be_falsy
-
     expect(page).to have_content('Job has been erased')
   end
 

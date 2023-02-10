@@ -7,6 +7,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Configure SCIM for self-managed GitLab instances **(PREMIUM SELF)**
 
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/8902) in GitLab 15.8.
+
 You can use the open standard System for Cross-domain Identity Management (SCIM) to automatically:
 
 - Create users.

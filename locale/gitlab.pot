@@ -29817,6 +29817,9 @@ msgstr ""
 msgid "Package type"
 msgstr ""
 
+msgid "Package type must be Composer"
+msgstr ""
+
 msgid "Package type must be Conan"
 msgstr ""
 

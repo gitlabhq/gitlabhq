@@ -157,6 +157,27 @@ are deprecated and will be removed from the GraphQL API. For installation instru
 
 </div>
 
+<div class="deprecation removal-160 breaking-change">
+
+### HashiCorp Vault integration will no longer use CI_JOB_JWT by default
+
+Planned removal: GitLab <span class="removal-milestone">16.0</span> <span class="removal-date"></span>
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+As part of our effort to improve the security of your CI workflows using JWT and OIDC, the native HashiCorp integration is also being updated in GitLab 16.0. Any projects that use the [`secrets:vault`](https://docs.gitlab.com/ee/ci/yaml/#secretsvault) keyword to retrieve secrets from Vault will need to be [configured to use ID tokens](https://docs.gitlab.com/ee/ci/secrets/id_token_authentication.html#configure-automatic-id-token-authentication).
+
+To be prepared for this change, you should do the following before GitLab 16.0:
+
+- [Disable the use of JSON web tokens](https://docs.gitlab.com/ee/ci/secrets/id_token_authentication.html#enable-automatic-id-token-authentication) in the pipeline.
+- Ensure the bound audience is prefixed with `https://`.
+- Use the new [`id_tokens`](https://docs.gitlab.com/ee/ci/yaml/#id_tokens) keyword
+  and configure the `aud` claim.
+
+</div>
+
 <div class="deprecation removal-170 breaking-change">
 
 ### Load Performance Testing is deprecated

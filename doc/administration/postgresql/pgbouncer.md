@@ -5,7 +5,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# Working with the bundled PgBouncer service **(PREMIUM SELF)**
+# Working with the bundled PgBouncer service **(FREE SELF)**
+
+NOTE:
+PgBouncer is bundled in the `gitlab-ee` package, but is free to use.
+For support, you need a [Premium subscription](https://about.gitlab.com/pricing/).
 
 [PgBouncer](https://www.pgbouncer.org/) is used to seamlessly migrate database
 connections between servers in a failover scenario. Additionally, it can be used
