@@ -23916,6 +23916,9 @@ msgstr ""
 msgid "JiraConnect|Create branch for Jira issue %{jiraIssue}"
 msgstr ""
 
+msgid "JiraConnect|Enable public key storage"
+msgstr ""
+
 msgid "JiraConnect|Failed to create branch."
 msgstr ""
 

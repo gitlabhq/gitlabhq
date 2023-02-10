@@ -212,6 +212,23 @@ NOTE:
 This method uses [automated updates](#update-the-gitlab-for-jira-cloud-app)
 the same way as our GitLab.com Marketplace listing.
 
+## Configure your GitLab instance to serve as a proxy for the GitLab for Jira Cloud app
+
+A GitLab instance can serve as a proxy for other GitLab instances using the GitLab for Jira Cloud app.
+This can be useful if you are managing multiple GitLab instance but only want to [manually install](#install-the-gitlab-for-jira-cloud-app-manually)
+the GitLab for Jira app once.
+
+To configure your GitLab instance to serve as a proxy:
+
+1. On the top bar, select **Main menu > Admin**.
+1. On the left sidebar, select **Settings > General** (`/admin/application_settings/general`).
+1. Expand the **GitLab for Jira App** section.
+1. Select **Enable public key storage**.
+1. Select **Save changes**.
+1. [Install the GitLab for Jira Cloud app manually](#install-the-gitlab-for-jira-cloud-app-manually)
+
+Other GitLab instances using the proxy must configure the **Jira Connect Proxy URL** setting and the [OAuth application](#set-up-oauth-authentication) **Redirect URI** to point to the proxy instance.
+
 ## Troubleshooting
 
 ### Browser displays a sign-in message when already signed in

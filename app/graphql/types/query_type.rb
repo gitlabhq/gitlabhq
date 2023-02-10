@@ -76,6 +76,15 @@ module Types
           null: true,
           resolver: Resolvers::NamespaceResolver,
           description: "Find a namespace."
+    field :note,
+          ::Types::Notes::NoteType,
+          null: true,
+          description: 'Find a note.',
+          alpha: { milestone: '15.9' } do
+            argument :id, ::Types::GlobalIDType[::Note],
+              required: true,
+              description: 'Global ID of the note.'
+          end
     field :package,
           description: 'Find a package. This field can only be resolved for one query in any single request. Returns `null` if a package has no `default` status.',
           resolver: Resolvers::PackageDetailsResolver
@@ -108,6 +117,12 @@ module Types
           null: true,
           resolver: Resolvers::SnippetsResolver,
           description: 'Find Snippets visible to the current user.'
+    field :synthetic_note,
+          Types::Notes::NoteType,
+          null: true,
+          description: 'Find a synthetic note',
+          resolver: ::Resolvers::Notes::SyntheticNoteResolver,
+          alpha: { milestone: '15.9' }
     field :timelogs, Types::TimelogType.connection_type,
           null: true,
           description: 'Find timelogs visible to the current user.',
@@ -144,6 +159,10 @@ module Types
     end
 
     def issue(id:)
+      GitlabSchema.find_by_gid(id)
+    end
+
+    def note(id:)
       GitlabSchema.find_by_gid(id)
     end
 

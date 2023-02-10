@@ -20,4 +20,9 @@ RSpec.describe 'admin/application_settings/_jira_connect.html.haml', feature_cat
     render
     expect(rendered).to have_field('Jira Connect Proxy URL', type: 'text')
   end
+
+  it 'renders the enable public key storage checkbox' do
+    render
+    expect(rendered).to have_field('Enable public key storage', type: 'checkbox')
+  end
 end

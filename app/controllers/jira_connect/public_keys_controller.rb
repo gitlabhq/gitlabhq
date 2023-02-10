@@ -10,7 +10,7 @@ module JiraConnect
     skip_before_action :authenticate_user!
 
     def show
-      return render_404 unless Gitlab.config.jira_connect.enable_public_keys_storage
+      return render_404 unless public_key_storage_enabled?
 
       render plain: public_key.key
     end
@@ -19,6 +19,12 @@ module JiraConnect
 
     def public_key
       JiraConnect::PublicKey.find(params[:id])
+    end
+
+    def public_key_storage_enabled?
+      return true if Gitlab.config.jira_connect.enable_public_keys_storage
+
+      Gitlab::CurrentSettings.jira_connect_public_key_storage_enabled?
     end
   end
 end

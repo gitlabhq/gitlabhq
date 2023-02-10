@@ -18,7 +18,7 @@ module ResourceEvents
     def milestone_change_events
       return [] unless resource.respond_to?(:resource_milestone_events)
 
-      events = resource.resource_milestone_events.includes(user: :status) # rubocop: disable CodeReuse/ActiveRecord
+      events = resource.resource_milestone_events.includes(:milestone, user: :status) # rubocop: disable CodeReuse/ActiveRecord
       apply_common_filters(events)
     end
 

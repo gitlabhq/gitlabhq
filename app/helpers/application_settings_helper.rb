@@ -305,6 +305,7 @@ module ApplicationSettingsHelper
       :inactive_projects_send_warning_email_after_months,
       :invisible_captcha_enabled,
       :jira_connect_application_key,
+      :jira_connect_public_key_storage_enabled,
       :jira_connect_proxy_url,
       :max_artifacts_size,
       :max_attachment_size,

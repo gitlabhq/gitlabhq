@@ -13,10 +13,13 @@ working in Slack and Mattermost, you can use slash commands.
 Type the command as a message in your chat client to activate it.
 For Slack, this requires an [integration configuration](../user/project/integrations/slack_slash_commands.md).
 
-Slash commands are scoped to a project
-and require the trigger command specified during configuration.
+Slash commands are scoped to a project and require
+a specified trigger command during configuration.
+You should use the project name as the trigger command.
 
-We suggest you use the project name as the trigger command for simplicity and clarity.
+If you're using the [GitLab for Slack app](../user/project/integrations/gitlab_slack_application.md) for
+your GitLab.com projects, [add the `gitlab` keyword at the beginning of the command](../user/project/integrations/gitlab_slack_application.md#slash-commands)
+(for example, `/gitlab <project-name> issue show <id>`).
 
 Assuming `project-name` is the trigger command, the slash commands are:
 
@@ -31,9 +34,6 @@ Assuming `project-name` is the trigger command, the slash commands are:
 | `/project-name issue comment <id> <shift+return> <comment>` | Adds a new comment with comment body `<comment>` to the issue with ID `<id>`. |
 | `/project-name deploy <from> to <to>` | [Deploys](#deploy-command) from the `<from>` environment to the `<to>` environment. |
 | `/project-name run <job name> <arguments>` | Executes the [ChatOps](../ci/chatops/index.md) job `<job name>` on the default branch. |
-
-If you are using the [GitLab for Slack app](../user/project/integrations/gitlab_slack_application.md) for
-your GitLab.com projects, [add the `gitlab` keyword at the beginning of the command](../user/project/integrations/gitlab_slack_application.md#usage).
 
 ## Issue commands
 

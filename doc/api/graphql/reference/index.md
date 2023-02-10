@@ -351,6 +351,22 @@ Returns [`Namespace`](#namespace).
 | ---- | ---- | ----------- |
 | <a id="querynamespacefullpath"></a>`fullPath` | [`ID!`](#id) | Full path of the project, group, or namespace. For example, `gitlab-org/gitlab-foss`. |
 
+### `Query.note`
+
+Find a note.
+
+WARNING:
+**Introduced** in 15.9.
+This feature is in Alpha. It can be changed or removed at any time.
+
+Returns [`Note`](#note).
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="querynoteid"></a>`id` | [`NoteID!`](#noteid) | Global ID of the note. |
+
 ### `Query.package`
 
 Find a package. This field can only be resolved for one query in any single request. Returns `null` if a package has no `default` status.
@@ -502,6 +518,23 @@ Returns [`SubscriptionFutureEntryConnection`](#subscriptionfutureentryconnection
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
 `before: String`, `after: String`, `first: Int`, `last: Int`.
+
+### `Query.syntheticNote`
+
+Find a synthetic note.
+
+WARNING:
+**Introduced** in 15.9.
+This feature is in Alpha. It can be changed or removed at any time.
+
+Returns [`Note`](#note).
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="querysyntheticnotenoteableid"></a>`noteableId` | [`NoteableID!`](#noteableid) | Global ID of the resource to search synthetic note on. |
+| <a id="querysyntheticnotesha"></a>`sha` | [`String!`](#string) | Global ID of the note. |
 
 ### `Query.timelogs`
 

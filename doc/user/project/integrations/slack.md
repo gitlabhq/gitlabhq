@@ -6,6 +6,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Slack notifications integration **(FREE)**
 
+WARNING:
+This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/372411) for GitLab SaaS customers
+in GitLab 15.10 and is [planned for removal](https://gitlab.com/groups/gitlab-org/-/epics/8673).
+GitLab SaaS customers can use the [GitLab for Slack app](gitlab_slack_application.md) instead.
+Self-managed GitLab customers can continue to use this feature.
+
 The Slack notifications integration enables your GitLab project to send events
 (such as issue creation) to your existing Slack team as notifications. Setting up
 Slack notifications requires configuration changes for both Slack and GitLab.

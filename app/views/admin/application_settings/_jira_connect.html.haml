@@ -8,7 +8,12 @@
       = expanded ? _('Collapse') : _('Expand')
     %p
       = s_('JiraConnect|Configure your Jira Connect Application ID.')
-      = link_to sprite_icon('question-o'), 'https://marketplace.atlassian.com/apps/1221011/gitlab-com-for-jira-cloud', target: '_blank', rel: "noopener noreferrer", class: 'has-tooltip', title: _('More information'), aria: { label: _('GitLab for Jira Cloud') }
+      = link_to sprite_icon('question-o'),
+          help_page_path('integration/jira/connect-app',
+          aria: { label: _('GitLab for Jira Cloud') },
+          class: 'has-tooltip',
+          anchor: 'connect-the-gitlab-for-jira-cloud-app-for-self-managed-instances'),
+          title: _('More information')
 
   .settings-content
     = gitlab_ui_form_for @application_setting, url: general_admin_application_settings_path(anchor: 'js-jira-connect-application-id-settings'), html: { class: 'fieldset-form', id: 'jira-connect-application-id-settings' } do |f|
@@ -23,5 +28,9 @@
         .form-group
           = f.label :jira_connect_proxy_url, s_('JiraConnect|Jira Connect Proxy URL'), class: 'label-bold'
           = f.text_field :jira_connect_proxy_url, class: 'form-control gl-form-input'
+
+      %fieldset
+        .form-group
+          = f.gitlab_ui_checkbox_component :jira_connect_public_key_storage_enabled, s_('JiraConnect|Enable public key storage')
 
       = f.submit _('Save changes'), pajamas_button: true

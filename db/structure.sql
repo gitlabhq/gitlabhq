@@ -11666,6 +11666,7 @@ CREATE TABLE application_settings (
     search_max_docs_denominator integer DEFAULT 5000000 NOT NULL,
     search_min_docs_before_rollover integer DEFAULT 100000 NOT NULL,
     deactivation_email_additional_text text,
+    jira_connect_public_key_storage_enabled boolean DEFAULT false NOT NULL,
     git_rate_limit_users_alertlist integer[] DEFAULT '{}'::integer[] NOT NULL,
     CONSTRAINT app_settings_container_reg_cleanup_tags_max_list_size_positive CHECK ((container_registry_cleanup_tags_service_max_list_size >= 0)),
     CONSTRAINT app_settings_container_registry_pre_import_tags_rate_positive CHECK ((container_registry_pre_import_tags_rate >= (0)::numeric)),

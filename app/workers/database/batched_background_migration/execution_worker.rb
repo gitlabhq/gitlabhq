@@ -11,7 +11,7 @@ module Database
 
       INTERVAL_VARIANCE = 5.seconds.freeze
       LEASE_TIMEOUT_MULTIPLIER = 3
-      MAX_RUNNING_MIGRATIONS = 2
+      MAX_RUNNING_MIGRATIONS = 4
 
       included do
         data_consistency :always
