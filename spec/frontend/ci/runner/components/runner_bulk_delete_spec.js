@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import { makeVar } from '@apollo/client/core';
 import { GlModal, GlSprintf } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
 import { createAlert } from '~/flash';
@@ -22,6 +23,7 @@ describe('RunnerBulkDelete', () => {
   let mockState;
   let mockCheckedRunnerIds;
 
+  const findBanner = () => wrapper.findByTestId('runner-bulk-delete-banner');
   const findClearBtn = () => wrapper.findByText(s__('Runners|Clear selection'));
   const findDeleteBtn = () => wrapper.findByText(s__('Runners|Delete selected'));
   const findModal = () => wrapper.findComponent(GlModal);
@@ -64,10 +66,11 @@ describe('RunnerBulkDelete', () => {
 
   beforeEach(() => {
     mockState = createLocalState();
+    mockCheckedRunnerIds = makeVar([]);
 
     jest
       .spyOn(mockState.cacheConfig.typePolicies.Query.fields, 'checkedRunnerIds')
-      .mockImplementation(() => mockCheckedRunnerIds);
+      .mockImplementation(() => mockCheckedRunnerIds());
   });
 
   afterEach(() => {
@@ -76,15 +79,13 @@ describe('RunnerBulkDelete', () => {
 
   describe('When no runners are checked', () => {
     beforeEach(async () => {
-      mockCheckedRunnerIds = [];
-
       createComponent();
 
       await waitForPromises();
     });
 
     it('shows no contents', () => {
-      expect(wrapper.html()).toBe('');
+      expect(findBanner().exists()).toBe(false);
     });
   });
 
@@ -94,7 +95,7 @@ describe('RunnerBulkDelete', () => {
     ${2}  | ${[mockId1, mockId2]} | ${'2 runners'}
   `('When $count runner(s) are checked', ({ ids, text }) => {
     beforeEach(() => {
-      mockCheckedRunnerIds = ids;
+      mockCheckedRunnerIds(ids);
 
       createComponent();
 
@@ -102,7 +103,7 @@ describe('RunnerBulkDelete', () => {
     });
 
     it(`shows "${text}"`, () => {
-      expect(wrapper.text()).toContain(text);
+      expect(findBanner().text()).toContain(text);
     });
 
     it('clears selection', () => {
@@ -133,7 +134,7 @@ describe('RunnerBulkDelete', () => {
     };
 
     beforeEach(() => {
-      mockCheckedRunnerIds = [mockId1, mockId2];
+      mockCheckedRunnerIds([mockId1, mockId2]);
 
       createComponent();
 
@@ -157,20 +158,23 @@ describe('RunnerBulkDelete', () => {
 
       it('mutation is called', () => {
         expect(bulkRunnerDeleteHandler).toHaveBeenCalledWith({
-          input: { ids: mockCheckedRunnerIds },
+          input: { ids: mockCheckedRunnerIds() },
         });
       });
     });
 
     describe('when deletion is successful', () => {
+      let deletedIds;
+
       beforeEach(async () => {
+        deletedIds = mockCheckedRunnerIds();
         bulkRunnerDeleteHandler.mockResolvedValue({
           data: {
-            bulkRunnerDelete: { deletedIds: mockCheckedRunnerIds, errors: [] },
+            bulkRunnerDelete: { deletedIds, errors: [] },
           },
         });
-
         confirmDeletion();
+        mockCheckedRunnerIds([]);
         await waitForPromises();
       });
 
@@ -182,12 +186,12 @@ describe('RunnerBulkDelete', () => {
       it('user interface is updated', () => {
         const { evict, gc } = apolloCache;
 
-        expect(evict).toHaveBeenCalledTimes(mockCheckedRunnerIds.length);
+        expect(evict).toHaveBeenCalledTimes(deletedIds.length);
         expect(evict).toHaveBeenCalledWith({
-          id: expect.stringContaining(mockCheckedRunnerIds[0]),
+          id: expect.stringContaining(deletedIds[0]),
         });
         expect(evict).toHaveBeenCalledWith({
-          id: expect.stringContaining(mockCheckedRunnerIds[1]),
+          id: expect.stringContaining(deletedIds[1]),
         });
 
         expect(gc).toHaveBeenCalledTimes(1);
@@ -195,7 +199,7 @@ describe('RunnerBulkDelete', () => {
 
       it('emits deletion confirmation', () => {
         expect(wrapper.emitted('deleted')).toEqual([
-          [{ message: expect.stringContaining(`${mockCheckedRunnerIds.length}`) }],
+          [{ message: expect.stringContaining(`${deletedIds.length}`) }],
         ]);
       });
 

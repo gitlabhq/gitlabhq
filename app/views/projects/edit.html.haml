@@ -74,6 +74,9 @@
       = link_to _('Run housekeeping'), housekeeping_project_path(@project),
         method: :post, class: "btn gl-button btn-default"
 
+      .gl-display-inline-flex
+        #js-project-prune-unreachable-objects-button{ data: { prune_objects_path: housekeeping_project_path(@project, prune: true), prune_objects_doc_path: help_page_path('administration/housekeeping', anchor: 'prune-unreachable-objects') } }
+
     = render 'export', project: @project
 
     = render_if_exists 'projects/settings/archive'

@@ -629,9 +629,20 @@ RSpec.describe ProjectsController do
 
   describe '#housekeeping' do
     let_it_be(:group) { create(:group) }
-    let_it_be(:project) { create(:project, group: group) }
+    let(:housekeeping_service_dbl) { instance_double(Repositories::HousekeepingService) }
+    let(:params) do
+      {
+        namespace_id: project.namespace.path,
+        id: project.path,
+        prune: prune
+      }
+    end
 
+    let(:prune) { nil }
+    let_it_be(:project) { create(:project, group: group) }
     let(:housekeeping) { Repositories::HousekeepingService.new(project) }
+
+    subject { post :housekeeping, params: params }
 
     context 'when authenticated as owner' do
       before do
@@ -651,6 +662,18 @@ RSpec.describe ProjectsController do
           }
 
         expect(response).to have_gitlab_http_status(:found)
+      end
+
+      context 'and requesting prune' do
+        let(:prune) { true }
+
+        it 'enqueues pruning' do
+          allow(Repositories::HousekeepingService).to receive(:new).with(project, :prune).and_return(housekeeping_service_dbl)
+          expect(housekeeping_service_dbl).to receive(:execute)
+
+          subject
+          expect(response).to have_gitlab_http_status(:found)
+        end
       end
     end
 

@@ -155,6 +155,10 @@ helm upgrade --install gitlab-agent gitlab/gitlab-agent \
   ...
 ```
 
+NOTE:
+DNS rebind protection is disabled when either the HTTP_PROXY or the HTTPS_PROXY environment variable is set,
+and the domain DNS can't be resolved.
+
 #### Advanced installation method
 
 GitLab also provides a [KPT package for the agent](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/tree/master/build/deployment/gitlab-agent). This method provides greater flexibility, but is only recommended for advanced users.

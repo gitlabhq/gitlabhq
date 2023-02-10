@@ -157,7 +157,7 @@ describe('CommitFormModal', () => {
     });
 
     it('Changes the start_branch input value', async () => {
-      findBranchesDropdown().vm.$emit('selectBranch', '_changed_branch_value_');
+      findBranchesDropdown().vm.$emit('input', '_changed_branch_value_');
 
       await nextTick();
 

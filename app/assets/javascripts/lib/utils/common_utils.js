@@ -4,7 +4,7 @@
 
 import { GlBreakpointInstance as breakpointInstance } from '@gitlab/ui/dist/utils';
 import $ from 'jquery';
-import { isFunction, defer, escape } from 'lodash';
+import { isFunction, defer, escape, partial, toLower } from 'lodash';
 import Cookies from '~/lib/utils/cookies';
 import { SCOPED_LABEL_DELIMITER } from '~/sidebar/components/labels/labels_select_widget/constants';
 import { convertToCamelCase, convertToSnakeCase } from './text_utility';
@@ -550,6 +550,22 @@ export const convertObjectProps = (conversionFunction, obj = {}, options = {}) =
  */
 export const convertObjectPropsToCamelCase = (obj = {}, options = {}) =>
   convertObjectProps(convertToCamelCase, obj, options);
+
+/**
+ * This method returns a new object with lowerCase property names
+ *
+ * Reasoning for this method is to ensure consistent access for some
+ * sort of objects
+ *
+ * This method also supports additional params in `options` object
+ *
+ * @param {Object} obj - Object to be converted.
+ * @param {Object} options - Object containing additional options.
+ * @param {boolean} options.deep - FLag to allow deep object converting
+ * @param {Array[]} options.dropKeys - List of properties to discard while building new object
+ * @param {Array[]} options.ignoreKeyNames - List of properties to leave intact while building new object
+ */
+export const convertObjectPropsToLowerCase = partial(convertObjectProps, toLower);
 
 /**
  * Converts all the object keys to snake case

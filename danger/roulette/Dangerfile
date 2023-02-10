@@ -104,26 +104,26 @@ categories << :product_intelligence if helper.mr_labels.include?("product intell
 # Skip Product intelligence reviews for growth experiment MRs
 categories.delete(:product_intelligence) if helper.mr_labels.include?("growth experiment")
 
-# if changes.any?
-#   random_roulette_spins = roulette.spin(nil, categories, timezone_experiment: false)
+if changes.any?
+  random_roulette_spins = roulette.spin(nil, categories, timezone_experiment: false)
 
-#   rows = random_roulette_spins.map do |spin|
-#     markdown_row_for_spin(spin.category, spin)
-#   end
+  rows = random_roulette_spins.map do |spin|
+    markdown_row_for_spin(spin.category, spin)
+  end
 
-#   roulette.required_approvals.each do |approval|
-#     rows << markdown_row_for_spin(approval.category, approval.spin)
-#   end
+  roulette.required_approvals.each do |approval|
+    rows << markdown_row_for_spin(approval.category, approval.spin)
+  end
 
-#   markdown(REVIEW_ROULETTE_SECTION)
+  markdown(REVIEW_ROULETTE_SECTION)
 
-#   if rows.empty?
-#     markdown(NO_SUGGESTIONS)
-#   else
-#     markdown(CATEGORY_TABLE + rows.join("\n"))
-#     markdown(POST_TABLE_MESSAGE)
-#   end
+  if rows.empty?
+    markdown(NO_SUGGESTIONS)
+  else
+    markdown(CATEGORY_TABLE + rows.join("\n"))
+    markdown(POST_TABLE_MESSAGE)
+  end
 
-#   unknown = changes.fetch(:unknown, [])
-#   markdown(UNKNOWN_FILES_MESSAGE + helper.markdown_list(unknown)) unless unknown.empty?
-# end
+  unknown = changes.fetch(:unknown, [])
+  markdown(UNKNOWN_FILES_MESSAGE + helper.markdown_list(unknown)) unless unknown.empty?
+end

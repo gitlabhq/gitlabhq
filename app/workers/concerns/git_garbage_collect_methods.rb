@@ -84,13 +84,10 @@ module GitGarbageCollectMethods
     repository = resource.repository.raw_repository
     client = repository.gitaly_repository_client
 
-    case task
-    when :prune
+    if task == :prune
       client.prune_unreachable_objects
-    when :eager
-      client.optimize_repository(eager: true)
     else
-      client.optimize_repository
+      client.optimize_repository(eager: task == :eager)
     end
   rescue GRPC::NotFound => e
     Gitlab::GitLogger.error("#{__method__} failed:\nRepository not found")

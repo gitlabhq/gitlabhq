@@ -11,6 +11,7 @@ import initSettingsPanels from '~/settings_panels';
 import UserCallout from '~/user_callout';
 import initTopicsTokenSelector from '~/projects/settings/topics';
 import { initProjectSelects } from '~/vue_shared/components/entity_select/init_project_selects';
+import initPruneObjectsButton from '~/projects/prune_objects_button';
 import initProjectPermissionsSettings from '../shared/permissions';
 import initProjectLoadingSpinner from '../shared/save_project_loader';
 
@@ -18,6 +19,7 @@ initFilePickers();
 initConfirmDanger();
 initSettingsPanels();
 initProjectDeleteButton();
+initPruneObjectsButton();
 mountBadgeSettings(PROJECT_BADGE);
 
 new UserCallout({ className: 'js-service-desk-callout' }); // eslint-disable-line no-new

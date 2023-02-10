@@ -119,6 +119,29 @@ background worker asks Gitaly to perform a number of optimizations.
 Housekeeping also [removes unreferenced LFS files](../raketasks/cleanup.md#remove-unreferenced-lfs-files)
 from your project every `200` push, freeing up storage space for your project.
 
+### Prune unreachable objects
+
+Unreachable objects are pruned as part of scheduled housekeeping. However,
+you can trigger manual pruning as well. An example: removing commits that contain sensitive
+information. Triggering housekeeping prunes unreachable objects with a grace period of
+two weeks. When you manually trigger the pruning of unreachable objects, the grace period
+is reduced to 30 minutes.
+
+WARNING:
+If a concurrent process (like `git push`) has created an object but hasn't created
+a reference to the object yet, your repository can become corrupted if a reference
+to the object is added after the object is deleted. The grace period exists to
+reduce the likelihood of such race conditions.
+
+To trigger a manual prune of unreachable objects:
+
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > General**.
+1. Expand **Advanced**.
+1. Select **Run housekeeping**.
+1. Wait 30 minutes for the operation to complete.
+1. Return to the page where you selected **Run housekeeping**, and select **Prune unreachable objects**.
+
 ### Scheduled housekeeping
 
 While GitLab automatically performs housekeeping tasks based on the number of

@@ -21,6 +21,17 @@ module Packages
       end
     end
 
+    def originator_type
+      case current_user
+      when User
+        :user
+      when DeployToken
+        :deploy_token
+      else
+        :guest
+      end
+    end
+
     private
 
     def event_scope
@@ -33,21 +44,6 @@ module Packages
 
     def event_name
       params[:event_name]
-    end
-
-    def originator_type
-      case current_user
-      when User
-        :user
-      when DeployToken
-        :deploy_token
-      else
-        :guest
-      end
-    end
-
-    def guest?
-      originator_type == :guest
     end
   end
 end

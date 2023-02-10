@@ -174,6 +174,17 @@ RSpec.describe Gitlab::UrlBlocker, :stub_invalid_dns_only do
 
           expect { subject }.to raise_error(described_class::BlockedUrlError)
         end
+
+        context 'with HTTP_PROXY' do
+          before do
+            allow(Gitlab).to receive(:http_proxy_env?).and_return(true)
+          end
+
+          it_behaves_like 'validates URI and hostname' do
+            let(:expected_uri) { import_url }
+            let(:expected_hostname) { nil }
+          end
+        end
       end
 
       context 'when domain is too long' do

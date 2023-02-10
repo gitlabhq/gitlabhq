@@ -151,12 +151,7 @@ export default {
       >
         <input id="start_branch" type="hidden" name="start_branch" :value="branch" />
 
-        <branches-dropdown
-          class="gl-w-half"
-          :value="branch"
-          :blanked="isRevert"
-          @selectBranch="setBranch"
-        />
+        <branches-dropdown :value="branch" :blanked="isRevert" @input="setBranch" />
       </gl-form-group>
 
       <gl-form-checkbox

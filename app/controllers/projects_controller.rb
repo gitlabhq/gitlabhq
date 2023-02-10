@@ -222,7 +222,13 @@ class ProjectsController < Projects::ApplicationController
   end
 
   def housekeeping
-    ::Repositories::HousekeepingService.new(@project, :eager).execute
+    task = if params[:prune].present?
+             :prune
+           else
+             :eager
+           end
+
+    ::Repositories::HousekeepingService.new(@project, task).execute
 
     redirect_to(
       project_path(@project),

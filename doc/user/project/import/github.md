@@ -7,7 +7,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Import your project from GitHub to GitLab **(FREE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/381902) in GitLab 15.8, GitLab no longer automatically creates namespaces or groups that don't exist. GitLab also no longer falls back to using the user's personal namespace if the namespace or group name is taken.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/381902) in GitLab 15.8, GitLab no longer automatically creates namespaces or groups that don't exist. GitLab also no longer falls back to using the user's personal namespace if the namespace or group name is taken.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/378267) in GitLab 15.9, GitLab instances behind proxies no longer require `github.com` and `api.github.com` entries in the [allowlist for local requests](../../../security/webhooks.md#create-an-allowlist-for-local-requests).
 
 You can import your GitHub projects from either GitHub.com or GitHub Enterprise. Importing projects does not
 migrate or import any types of groups or organizations from GitHub to GitLab.
@@ -65,9 +66,8 @@ prerequisites for those imports.
 If you are importing from GitHub Enterprise to a self-managed GitLab instance:
 
 - You must first enable the [GitHub integration](../../../integration/github.md).
-- If GitLab is behind a HTTP/HTTPS proxy, you must populate the [allowlist for local requests](../../../security/webhooks.md#create-an-allowlist-for-local-requests)
-  with `github.com` and `api.github.com` to solve the hostname. For more information, read the issue
-  [Importing a GitHub project requires DNS resolution even when behind a proxy](https://gitlab.com/gitlab-org/gitlab/-/issues/37941).
+- For GitLab 15.8 and earlier, you must add `github.com` and `api.github.com` entries in the
+  [allowlist for local requests](../../../security/webhooks.md#create-an-allowlist-for-local-requests).
 
 ### Importing from GitHub.com to self-managed GitLab
 
