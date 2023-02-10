@@ -100,7 +100,7 @@ The following table lists the data available for the Gemnasium analyzer.
 
 | Property \ Tool                       |      Gemnasium     |
 |---------------------------------------|:------------------:|
-| Severity                              | 𐄂                  |
+| Severity                              | ✓                  |
 | Title                                 | ✓                  |
 | File                                  | ✓                  |
 | Start line                            | 𐄂                  |

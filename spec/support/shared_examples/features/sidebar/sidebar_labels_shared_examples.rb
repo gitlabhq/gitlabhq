@@ -95,7 +95,7 @@ RSpec.shared_examples 'labels sidebar widget' do
         end
       end
 
-      it 'creates new label' do
+      it 'creates new label', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/391240' do
         page.within(labels_widget) do
           fill_in 'Name new label', with: 'wontfix'
           page.find('.suggest-colors a', match: :first).click

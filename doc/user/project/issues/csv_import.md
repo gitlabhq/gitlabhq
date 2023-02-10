@@ -50,7 +50,7 @@ To import issues, GitLab requires CSV files have a specific format:
 | Element                | Format |
 |------------------------|--------|
 | header row             | CSV files must include the following headers: `title` and `description`. The case of the headers does not matter. |
-| columns                | Data from columns beyond `title` and `description` are not imported. |
+| columns                | Data from columns outside of `title`, `description`, and `due_date` are not imported. |
 | separators             | The column separator is detected from the header row. Supported separator characters are commas (`,`), semicolons (`;`), and tabs (`\t`). The row separator can be either `CRLF` or `LF`. |
 | double-quote character | The double-quote (`"`) character is used to quote fields, enabling the use of the column separator in a field (see the third line in the sample CSV data below). To insert a double-quote (`"`) in a quoted field use two double-quote characters in succession (`""`). |
 | data rows              | After the header row, following rows must use the same column order. The issue title is required, but the description is optional. |
@@ -63,7 +63,7 @@ When using [quick actions](../quick_actions.md), each action must be on a separa
 Sample CSV data:
 
 ```plaintext
-title,description,due date
+title,description,due_date
 My Issue Title,My Issue Description,2022-06-28
 Another Title,"A description, with a comma",
 "One More Title","One More Description",

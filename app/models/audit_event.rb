@@ -65,7 +65,9 @@ class AuditEvent < ApplicationRecord
   end
 
   def formatted_details
-    details.merge(details.slice(:from, :to).transform_values(&:to_s))
+    details
+      .merge(details.slice(:from, :to).transform_values(&:to_s))
+      .merge(author_email: author.try(:email))
   end
 
   def author

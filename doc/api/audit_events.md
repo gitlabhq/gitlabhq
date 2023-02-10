@@ -6,7 +6,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Audit Events API **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/121) in GitLab 12.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/121) in GitLab 12.4.
+> - [Author Email added to the response body](https://gitlab.com/gitlab-org/gitlab/-/issues/386322) in GitLab 15.9.
 
 ## Instance Audit Events **(PREMIUM SELF)**
 
@@ -49,6 +50,7 @@ Example response:
     "details": {
       "custom_message": "Project archived",
       "author_name": "Administrator",
+      "author_email": "admin@example.com",
       "target_id": "flightjs/flight",
       "target_type": "Project",
       "target_details": "flightjs/flight",
@@ -65,6 +67,7 @@ Example response:
     "details": {
       "add": "group",
       "author_name": "Administrator",
+      "author_email": "admin@example.com",
       "target_id": "flightjs",
       "target_type": "Group",
       "target_details": "flightjs",
@@ -83,6 +86,7 @@ Example response:
       "from": "hello@flightjs.com",
       "to": "maintainer@flightjs.com",
       "author_name": "Andreas",
+      "author_email": "admin@example.com",
       "target_id": 51,
       "target_type": "User",
       "target_details": "Andreas",
@@ -119,6 +123,7 @@ Example response:
   "details": {
     "custom_message": "Project archived",
     "author_name": "Administrator",
+    "author_email": "admin@example.com",
     "target_id": "flightjs/flight",
     "target_type": "Project",
     "target_details": "flightjs/flight",
@@ -178,6 +183,7 @@ Example response:
     "details": {
       "custom_message": "Group marked for deletion",
       "author_name": "Administrator",
+      "author_email": "admin@example.com",
       "target_id": "flightjs",
       "target_type": "Group",
       "target_details": "flightjs",
@@ -194,6 +200,7 @@ Example response:
     "details": {
       "add": "group",
       "author_name": "Administrator",
+      "author_email": "admin@example.com",
       "target_id": "flightjs",
       "target_type": "Group",
       "target_details": "flightjs",
@@ -233,6 +240,7 @@ Example response:
   "details": {
     "custom_message": "Group marked for deletion",
     "author_name": "Administrator",
+    "author_email": "admin@example.com",
     "target_id": "flightjs",
     "target_type": "Group",
     "target_details": "flightjs",
@@ -287,6 +295,7 @@ Example response:
         "from": "",
         "to": "true",
         "author_name": "Administrator",
+        "author_email": "admin@example.com",
         "target_id": 7,
         "target_type": "Project",
         "target_details": "twitter/typeahead-js",
@@ -305,6 +314,7 @@ Example response:
           "from": "false",
           "to": "true",
           "author_name": "Administrator",
+          "author_email": "admin@example.com",
           "target_id": 7,
           "target_type": "Project",
           "target_details": "twitter/typeahead-js",
@@ -346,6 +356,7 @@ Example response:
       "from": "",
       "to": "true",
       "author_name": "Administrator",
+      "author_email": "admin@example.com",
       "target_id": 7,
       "target_type": "Project",
       "target_details": "twitter/typeahead-js",

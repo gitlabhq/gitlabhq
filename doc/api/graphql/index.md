@@ -172,7 +172,7 @@ Limit                | Default
 Max page size        | 100 records (nodes) per page. Applies to most connections in the API. Particular connections may have different max page size limits that are higher or lower.
 [Max query complexity](#max-query-complexity) | `200` for unauthenticated requests and `250` for authenticated requests.
 Request timeout      | 30 seconds.
-Max query size       | 10,000 characters per query. If this limit is reached, use [variables](https://graphql.org/learn/queries/#variables) and [fragments](https://graphql.org/learn/queries/#fragments) to reduce the query size. Remove white spaces as last resort.
+Max query size       | 10,000 characters per query or mutation. If this limit is reached, use [variables](https://graphql.org/learn/queries/#variables) and [fragments](https://graphql.org/learn/queries/#fragments) to reduce the query or mutation size. Remove white spaces as last resort.
 
 ### Max query complexity
 

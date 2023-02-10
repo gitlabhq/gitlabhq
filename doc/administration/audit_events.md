@@ -358,11 +358,12 @@ Issue [343933](https://gitlab.com/gitlab-org/gitlab/-/issues/343933) proposes to
 
 ## Unsupported events
 
-Some events are not tracked in audit events. The following epics propose support for more events:
+Some events are not tracked in audit events. The following epics and issues propose support for more events:
 
 - [Project settings and activity](https://gitlab.com/groups/gitlab-org/-/epics/474).
 - [Group settings and activity](https://gitlab.com/groups/gitlab-org/-/epics/475).
 - [Instance-level settings and activity](https://gitlab.com/groups/gitlab-org/-/epics/476).
+- [Deployment Approval activity](https://gitlab.com/gitlab-org/gitlab/-/issues/354782).
 
 If you don't see the event you want in any of the epics, you can either:
 

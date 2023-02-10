@@ -28,39 +28,8 @@ Throughout this guide you will see references to CE and EE for abbreviation.
 We want to create a welcoming environment for everyone who is interested in contributing.
 Visit our [Code of Conduct page](https://about.gitlab.com/community/contribute/code-of-conduct/) to learn more about our commitment to an open and welcoming environment.
 
-## Closing policy for issues and merge requests
-
-GitLab is a popular open source project and the capacity to deal with issues
-and merge requests is limited. Out of respect for our volunteers, issues and
-merge requests not in line with the guidelines listed in this document may be
-closed without notice.
-
-Treat our volunteers with courtesy and respect, it will go a long way
-towards getting your issue resolved.
-
 Issues and merge requests should be in English and contain appropriate language
 for audiences of all ages.
-
-If a contributor is no longer actively working on a submitted merge request,
-we can:
-
-- Decide that the merge request will be finished by one of our
-  [Merge request coaches](https://about.gitlab.com/company/team/).
-- Close the merge request.
-
-We make this decision based on how important the change is for our product vision. If a merge
-request coach is going to finish the merge request, we assign the
-`~coach will finish` label.
-
-When a team member picks up a community contribution,
-we credit the original author by adding a changelog entry crediting the author
-and optionally include the original author on at least one of the commits
-within the MR.
-
-## Closing policy for inactive bugs
-
-GitLab values the time spent by contributors on reporting bugs. However, if a bug remains inactive for a very long period,
-it will qualify for auto-closure. Please refer to the [auto-close inactive bugs](https://about.gitlab.com/handbook/engineering/quality/triage-operations/#auto-close-inactive-bugs) section in our handbook to understand the complete workflow.
 
 ## How to contribute
 
@@ -173,19 +142,10 @@ This [documentation](merge_request_workflow.md) outlines the current merge reque
 - [Definition of done](merge_request_workflow.md#definition-of-done)
 - [Dependencies](merge_request_workflow.md#dependencies)
 
-## Style guides
+## Closing policy for issues and merge requests
 
-This [documentation](style_guides.md) outlines the current style guidelines.
-
-## Implement design & UI elements
-
-This [design documentation](design.md) outlines the current process for implementing design and UI
-elements.
-
-## Contribute documentation
-
-For information on how to contribute documentation, see GitLab
-[documentation guidelines](../documentation/index.md).
+- For the criteria for closing issues, see [the Issue Triage handbook page](https://about.gitlab.com/handbook/engineering/quality/issue-triage/#outdated-issues).
+- For the criteria for closing merge requests, see [the Merge Request Workflow](merge_request_workflow.md).
 
 ## Getting an Enterprise Edition License
 

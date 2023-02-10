@@ -13,8 +13,23 @@ for community contributions have the [`Seeking community contributions`](issue_w
 label, but you are free to contribute to any issue you want.
 
 If an issue is marked for the current milestone at any time, even
-when you are working on it, a GitLab Inc. team member may take over the merge request
-to ensure the work is finished before the release date.
+when you are working on it, a GitLab team member may take over the merge request to ensure the work is finished before the release date. 
+
+If a contributor is no longer actively working on a submitted merge request,
+we can:
+
+- Decide that the merge request will be finished by one of our
+  [Merge request coaches](https://about.gitlab.com/company/team/).
+- Close the merge request.
+
+We make this decision based on how important the change is for our product vision. If a merge
+request coach is going to finish the merge request, we assign the
+`~coach will finish` label.
+
+When a team member picks up a community contribution,
+we credit the original author by adding a changelog entry crediting the author
+and optionally include the original author on at least one of the commits
+within the MR.
 
 If you want to add a new feature that is not labeled, it is best to first create
 an issue (if there isn't one already) and leave a comment asking for it
