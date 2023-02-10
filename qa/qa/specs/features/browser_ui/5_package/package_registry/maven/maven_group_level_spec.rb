@@ -41,7 +41,11 @@ module QA
             'using a ci job token' => {
               authentication_token_type: :ci_job_token,
               maven_header_name: 'Job-Token',
-              testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347579'
+              testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347579',
+              quarantine: {
+                issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/373189',
+                type: :stale
+              }
             }
           }
         end
@@ -60,7 +64,7 @@ module QA
             end
           end
 
-          it 'pushes and pulls a maven package', testcase: params[:testcase] do
+          it 'pushes and pulls a maven package', testcase: params[:testcase], quarantine: params[:quarantine] do
             Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2) do
               Resource::Repository::Commit.fabricate_via_api! do |commit|
                 gitlab_ci_yaml = ERB.new(read_fixture('package_managers/maven/group/producer', 'gitlab_ci.yaml.erb')).result(binding)

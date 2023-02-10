@@ -112,7 +112,9 @@ describe('TimelineEventsTab', () => {
       await waitForPromises();
 
       expect(findEmptyState().exists()).toBe(false);
-      expect(findTimelineEventsList().props('timelineEvents')).toHaveLength(3);
+      expect(findTimelineEventsList().props('timelineEvents')).toHaveLength(
+        timelineEventsQueryListResponse.data.project.incidentManagementTimelineEvents.nodes.length,
+      );
     });
   });
 

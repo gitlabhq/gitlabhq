@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Feature, stub_feature_flags: false do # rubocop:disable RSpec/MissingFeatureCategory
+RSpec.describe Feature, stub_feature_flags: false, feature_category: :shared do
   include StubVersion
 
   before do

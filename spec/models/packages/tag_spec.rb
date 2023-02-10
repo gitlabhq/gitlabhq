@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe Packages::Tag, type: :model do
+RSpec.describe Packages::Tag, type: :model, feature_category: :package_registry do
   let!(:project) { create(:project) }
   let!(:package) { create(:npm_package, version: '1.0.2', project: project, updated_at: 3.days.ago) }
 
@@ -16,14 +16,14 @@ RSpec.describe Packages::Tag, type: :model do
     it { is_expected.to validate_presence_of(:name) }
   end
 
-  describe '.for_packages' do
+  describe '.for_package_ids' do
     let(:package2) { create(:package, project: project, updated_at: 2.days.ago) }
     let(:package3) { create(:package, project: project, updated_at: 1.day.ago) }
     let!(:tag1) { create(:packages_tag, package: package) }
     let!(:tag2) { create(:packages_tag, package: package2) }
     let!(:tag3) { create(:packages_tag, package: package3) }
 
-    subject { described_class.for_packages(project.packages) }
+    subject { described_class.for_package_ids(project.packages) }
 
     it { is_expected.to match_array([tag1, tag2, tag3]) }
 
@@ -33,6 +33,12 @@ RSpec.describe Packages::Tag, type: :model do
       end
 
       it { is_expected.to match_array([tag2, tag3]) }
+    end
+
+    context 'with package ids' do
+      subject { described_class.for_package_ids(project.packages.select(:id)) }
+
+      it { is_expected.to match_array([tag1, tag2, tag3]) }
     end
   end
 

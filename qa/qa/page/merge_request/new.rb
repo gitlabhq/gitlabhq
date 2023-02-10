@@ -49,8 +49,7 @@ module QA
 
         def select_source_branch(branch)
           click_element(:source_branch_dropdown)
-          fill_element(:dropdown_input_field, branch)
-          click_via_capybara(:click_on, branch)
+          search_and_select(branch)
         end
       end
     end

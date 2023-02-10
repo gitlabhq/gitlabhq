@@ -116,7 +116,7 @@ For each attribute:
 1. Select the required settings.
 1. Select **Ok**.
 
-If your SAML configuration differs from [the recommended SAML settings](index.md#azure-setup-notes), select the mapping
+If your SAML configuration differs from [the recommended SAML settings](index.md#set-up-azure), select the mapping
 attributes and modify them accordingly. In particular, the `objectId` source attribute must map to the `externalId`
 target attribute.
 

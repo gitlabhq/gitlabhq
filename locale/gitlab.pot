@@ -34568,6 +34568,9 @@ msgstr ""
 msgid "ProtectedBranch|default"
 msgstr ""
 
+msgid "ProtectedEnvironments|Add deployment rules"
+msgstr ""
+
 msgid "ProtectedEnvironments|Allowed to deploy"
 msgstr ""
 
@@ -34575,6 +34578,9 @@ msgid "ProtectedEnvironments|An error occurred while fetching information on the
 msgstr ""
 
 msgid "ProtectedEnvironments|Approval rules"
+msgstr ""
+
+msgid "ProtectedEnvironments|Create deployment rule"
 msgstr ""
 
 msgid "ProtectedEnvironments|Delete deployment rule"
@@ -39291,6 +39297,9 @@ msgid "Set %{epic_ref} as the parent epic."
 msgstr ""
 
 msgid "Set a default description template to be used for new issues. %{link_start}What are description templates?%{link_end}"
+msgstr ""
+
+msgid "Set a group, access level or users who are required to deploy."
 msgstr ""
 
 msgid "Set a password on your account to pull or push via %{protocol}."

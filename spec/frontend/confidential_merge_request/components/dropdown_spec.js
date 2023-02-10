@@ -1,47 +1,79 @@
-import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
-import { mount } from '@vue/test-utils';
+import { GlCollapsibleListbox } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import Dropdown from '~/confidential_merge_request/components/dropdown.vue';
 
-let vm;
+const TEST_PROJECTS = [
+  {
+    id: 7,
+    name: 'test',
+  },
+  {
+    id: 9,
+    name: 'lorem ipsum',
+  },
+  {
+    id: 11,
+    name: 'dolar sit',
+  },
+];
 
-function factory(projects = []) {
-  vm = mount(Dropdown, {
-    propsData: {
-      projects,
-      selectedProject: projects[0],
-    },
-  });
-}
+describe('~/confidential_merge_request/components/dropdown.vue', () => {
+  let wrapper;
 
-describe('Confidential merge request project dropdown component', () => {
-  afterEach(() => {
-    vm.destroy();
-  });
-
-  it('renders dropdown items', () => {
-    factory([
-      {
-        id: 1,
-        name: 'test',
+  function factory(props = {}) {
+    wrapper = shallowMount(Dropdown, {
+      propsData: {
+        projects: TEST_PROJECTS,
+        ...props,
       },
-      {
-        id: 2,
-        name: 'test',
-      },
-    ]);
+    });
+  }
 
-    expect(vm.findAllComponents(GlDropdownItem).length).toBe(2);
+  const findListbox = () => wrapper.findComponent(GlCollapsibleListbox);
+
+  describe('default', () => {
+    beforeEach(() => {
+      factory();
+    });
+
+    it('renders collapsible listbox', () => {
+      expect(findListbox().props()).toMatchObject({
+        icon: 'lock',
+        selected: [],
+        toggleText: 'Select private project',
+        block: true,
+        items: TEST_PROJECTS.map(({ id, name }) => ({
+          value: String(id),
+          text: name,
+        })),
+      });
+    });
+
+    it('does not emit anything', () => {
+      expect(wrapper.emitted()).toEqual({});
+    });
+
+    describe('when listbox emits selected', () => {
+      beforeEach(() => {
+        findListbox().vm.$emit('select', String(TEST_PROJECTS[1].id));
+      });
+
+      it('emits selected project', () => {
+        expect(wrapper.emitted('select')).toEqual([[TEST_PROJECTS[1]]]);
+      });
+    });
   });
 
-  it('shows lock icon', () => {
-    factory();
+  describe('with selected', () => {
+    beforeEach(() => {
+      factory({ selectedProject: TEST_PROJECTS[1] });
+    });
 
-    expect(vm.findComponent(GlDropdown).props('icon')).toBe('lock');
-  });
-
-  it('has dropdown text', () => {
-    factory();
-
-    expect(vm.findComponent(GlDropdown).props('text')).toBe('Select private project');
+    it('shows selected project', () => {
+      expect(findListbox().props()).toMatchObject({
+        selected: String(TEST_PROJECTS[1].id),
+        toggleText: TEST_PROJECTS[1].name,
+      });
+    });
   });
 });

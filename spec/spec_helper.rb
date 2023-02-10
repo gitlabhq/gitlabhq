@@ -362,8 +362,6 @@ RSpec.configure do |config|
       ./spec/requests/api/admin/instance_clusters_spec.rb
       ./spec/requests/api/admin/plan_limits_spec.rb
       ./spec/requests/api/admin/sidekiq_spec.rb
-      ./spec/requests/api/appearance_spec.rb
-      ./spec/requests/api/applications_spec.rb
       ./spec/requests/api/broadcast_messages_spec.rb
       ./spec/requests/api/ci/pipelines_spec.rb
       ./spec/requests/api/ci/runners_reset_registration_token_spec.rb

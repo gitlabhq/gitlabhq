@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe FeatureGroups::GitlabTeamMembers do # rubocop:disable RSpec/MissingFeatureCategory
+RSpec.describe FeatureGroups::GitlabTeamMembers, feature_category: :shared do
   let_it_be(:gitlab_com) { create(:group) }
   let_it_be_with_reload(:member) { create(:user).tap { |user| gitlab_com.add_developer(user) } }
   let_it_be_with_reload(:non_member) { create(:user) }

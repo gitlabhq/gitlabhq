@@ -42,6 +42,9 @@ export default {
     time() {
       return formatDate(this.occurredAt, 'HH:MM', true);
     },
+    canEditEvent() {
+      return this.action === 'comment';
+    },
   },
   methods: {
     getEventIcon,
@@ -83,7 +86,7 @@ export default {
       category="tertiary"
       no-caret
     >
-      <gl-dropdown-item @click="$emit('edit')">
+      <gl-dropdown-item v-if="canEditEvent" @click="$emit('edit')">
         {{ $options.i18n.edit }}
       </gl-dropdown-item>
       <gl-dropdown-item @click="$emit('delete')">

@@ -214,9 +214,9 @@ for additional guidance on information your identity provider may require.
 GitLab provides the following information for guidance only.
 If you have any questions on configuring the SAML app, contact your provider's support.
 
-### Azure setup notes
+### Set up Azure
 
-Follow the Azure documentation on [configuring single sign-on to applications](https://learn.microsoft.com/en-us/azure/active-directory/manage-apps/view-applications-portal) with the notes below for consideration.
+Follow the Azure documentation on [configuring single sign-on to applications](https://learn.microsoft.com/en-us/azure/active-directory/manage-apps/add-application-portal-setup-sso), and use the following notes when needed.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For a demo of the Azure SAML setup including SCIM, see [SCIM Provisioning on Azure Using SAML SSO for Groups Demo](https://youtu.be/24-ZxmTeEBU).
@@ -230,11 +230,11 @@ The video is outdated in regard to objectID mapping and you should follow the [S
 | Identity provider single sign-on URL | Login URL                                  |
 | Certificate fingerprint              | Thumbprint                                 |
 
-The recommended attributes are:
+You should set the following attributes:
 
-- **Unique User Identifier (Name identifier)** set to `user.objectID`.
-- **nameid-format** set to persistent.
-- Additional claims set to [supported attributes](#user-attributes).
+- **Unique User Identifier (Name identifier)** to `user.objectID`.
+- **nameid-format** to persistent.
+- Additional claims to [supported attributes](#user-attributes).
 
 If using [Group Sync](#group-sync), customize the name of the group claim to match the required attribute.
 

@@ -10,8 +10,8 @@ class Packages::Tag < ApplicationRecord
   scope :preload_package, -> { preload(:package) }
   scope :with_name, -> (name) { where(name: name) }
 
-  def self.for_packages(packages)
-    where(package_id: packages.select(:id))
+  def self.for_package_ids(package_ids)
+    where(package_id: package_ids)
       .order(updated_at: :desc)
       .limit(FOR_PACKAGES_TAGS_LIMIT)
   end

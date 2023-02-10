@@ -1,11 +1,10 @@
 <script>
-import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
+import { GlCollapsibleListbox } from '@gitlab/ui';
 import { __ } from '~/locale';
 
 export default {
   components: {
-    GlDropdown,
-    GlDropdownItem,
+    GlCollapsibleListbox,
   },
   props: {
     projects: {
@@ -19,32 +18,37 @@ export default {
     },
   },
   computed: {
-    dropdownText() {
-      if (Object.keys(this.selectedProject).length) {
-        return this.selectedProject.name;
-      }
-
-      return __('Select private project');
+    selectedProjectValue() {
+      return this.selectedProject?.id && String(this.selectedProject.id);
+    },
+    toggleText() {
+      return this.selectedProject?.name || __('Select private project');
+    },
+    listboxItems() {
+      return this.projects.map(({ id, name }) => {
+        return {
+          value: String(id),
+          text: name,
+        };
+      });
     },
   },
   methods: {
-    selectProject(project) {
-      this.$emit('click', project);
+    selectProject(projectId) {
+      const project = this.projects.find(({ id }) => String(id) === projectId);
+      this.$emit('select', project);
     },
   },
 };
 </script>
 
 <template>
-  <gl-dropdown block icon="lock" :text="dropdownText">
-    <gl-dropdown-item
-      v-for="project in projects"
-      :key="project.id"
-      is-check-item
-      :is-checked="project.id === selectedProject.id"
-      @click="selectProject(project)"
-    >
-      {{ project.name }}
-    </gl-dropdown-item>
-  </gl-dropdown>
+  <gl-collapsible-listbox
+    icon="lock"
+    :items="listboxItems"
+    :selected="selectedProjectValue"
+    :toggle-text="toggleText"
+    block
+    @select="selectProject"
+  />
 </template>
