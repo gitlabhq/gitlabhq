@@ -1668,8 +1668,14 @@ svg.s16 {
 .gl-align-items-stretch {
   align-items: stretch;
 }
+.gl-flex-grow-0\! {
+  flex-grow: 0 !important;
+}
 .gl-flex-grow-1 {
   flex-grow: 1;
+}
+.gl-flex-basis-half\! {
+  flex-basis: 50% !important;
 }
 .gl-justify-content-end {
   justify-content: flex-end;

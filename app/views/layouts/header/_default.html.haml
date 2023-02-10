@@ -133,7 +133,7 @@
               %li.nav-item
                 = render Pajamas::ButtonComponent.new(href: new_user_registration_path) do
                   = _('Register')
-            %li.nav-item
+            %li.nav-item{ class: 'gl-flex-grow-0! gl-flex-basis-half!' }
               = link_to _('Sign in'), new_session_path(:user, redirect_to_referer: 'yes')
 
       %button.navbar-toggler.d-block.d-sm-none{ type: 'button', class: 'gl-border-none!', data: { testid: 'top-nav-responsive-toggle', qa_selector: 'mobile_navbar_button' } }

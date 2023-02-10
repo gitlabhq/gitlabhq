@@ -2336,7 +2336,7 @@
   :tags: []
 - :name: ci_parse_secure_file_metadata
   :worker_name: Ci::ParseSecureFileMetadataWorker
-  :feature_category: :mobile_signing_deployment
+  :feature_category: :mobile_devops
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown

@@ -4,7 +4,7 @@ module Ci
   class ParseSecureFileMetadataWorker
     include ::ApplicationWorker
 
-    feature_category :mobile_signing_deployment
+    feature_category :mobile_devops
     urgency :low
     idempotent!
 

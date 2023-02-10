@@ -11198,7 +11198,19 @@ msgstr ""
 msgid "ContributionAnalytics|%{pushes}, more than %{commits} by %{contributors}."
 msgstr ""
 
+msgid "ContributionAnalytics|Approved MRs"
+msgstr ""
+
+msgid "ContributionAnalytics|Closed MRs"
+msgstr ""
+
+msgid "ContributionAnalytics|Closed issues"
+msgstr ""
+
 msgid "ContributionAnalytics|Contribution analytics for issues, merge requests and push events since %{start_date}"
+msgstr ""
+
+msgid "ContributionAnalytics|Failed to load the contribution stats"
 msgstr ""
 
 msgid "ContributionAnalytics|Issues"
@@ -11213,7 +11225,16 @@ msgstr ""
 msgid "ContributionAnalytics|Last week"
 msgstr ""
 
+msgid "ContributionAnalytics|Loading contribution stats for group members"
+msgstr ""
+
 msgid "ContributionAnalytics|Merge requests"
+msgstr ""
+
+msgid "ContributionAnalytics|Merged MRs"
+msgstr ""
+
+msgid "ContributionAnalytics|Name"
 msgstr ""
 
 msgid "ContributionAnalytics|No issues for the selected time period."
@@ -11225,6 +11246,15 @@ msgstr ""
 msgid "ContributionAnalytics|No pushes for the selected time period."
 msgstr ""
 
+msgid "ContributionAnalytics|Opened MRs"
+msgstr ""
+
+msgid "ContributionAnalytics|Opened issues"
+msgstr ""
+
+msgid "ContributionAnalytics|Pushed"
+msgstr ""
+
 msgid "ContributionAnalytics|The given date range is larger than 31 days"
 msgstr ""
 
@@ -11232,6 +11262,9 @@ msgid "ContributionAnalytics|The to date is earlier than the given from date"
 msgstr ""
 
 msgid "ContributionAnalytics|There is too much data to calculate. Try lowering the period_limit setting in the insights configuration file."
+msgstr ""
+
+msgid "ContributionAnalytics|Total Contributions"
 msgstr ""
 
 msgid "Contributions for %{calendar_date}"

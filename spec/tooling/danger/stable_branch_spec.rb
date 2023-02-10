@@ -34,6 +34,14 @@ RSpec.describe Tooling::Danger::StableBranch, feature_category: :delivery do
       end
     end
 
+    shared_examples 'with a warning' do |failure_message|
+      it 'fails' do
+        expect(stable_branch).to receive(:warn).with(failure_message)
+
+        subject
+      end
+    end
+
     context 'when not applicable' do
       where(:stable_branch?, :security_mr?) do
         true  | true
@@ -103,17 +111,13 @@ RSpec.describe Tooling::Danger::StableBranch, feature_category: :delivery do
       context 'when not an applicable version' do
         let(:target_branch) { '14-9-stable-ee' }
 
-        it_behaves_like 'with a failure', described_class::VERSION_ERROR_MESSAGE
+        it_behaves_like 'with a warning', described_class::VERSION_ERROR_MESSAGE
       end
 
       context 'when the version API request fails' do
         let(:response_success) { false }
 
-        it 'adds a warning' do
-          expect(stable_branch).to receive(:warn).with(described_class::FAILED_VERSION_REQUEST_MESSAGE)
-
-          subject
-        end
+        it_behaves_like 'with a warning', described_class::FAILED_VERSION_REQUEST_MESSAGE
       end
 
       context 'when more than one page of versions is needed' do

@@ -33,7 +33,7 @@ module Tooling
       MSG
 
       VERSION_ERROR_MESSAGE = <<~MSG
-      Patches are only being accepted on the most recent 3 minor versions of GitLab. #{MAINTENANCE_POLICY_MESSAGE}
+      Patches are generally only accepted on the most recent 3 minor versions of GitLab. #{MAINTENANCE_POLICY_MESSAGE}
       MSG
 
       FAILED_VERSION_REQUEST_MESSAGE = <<~MSG
@@ -46,7 +46,8 @@ module Tooling
 
         fail FEATURE_ERROR_MESSAGE if has_feature_label?
         fail BUG_ERROR_MESSAGE unless has_bug_label?
-        fail VERSION_ERROR_MESSAGE unless targeting_patchable_version?
+
+        warn VERSION_ERROR_MESSAGE unless targeting_patchable_version?
       end
       # rubocop:enable Style/SignalException
 
@@ -69,7 +70,6 @@ module Tooling
 
         last_three_minor_versions.include?(targeted_version)
       rescue VersionApiError
-        # don't fail the job since we do not know the recent versions
         warn FAILED_VERSION_REQUEST_MESSAGE
         true
       end

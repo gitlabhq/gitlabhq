@@ -33,12 +33,7 @@ RSpec.describe ProjectCiCdSetting do
         stub_feature_flags(ci_inbound_job_token_scope: true)
       end
 
-      it 'sets inbound_job_token_scope_enabled to true' do
-        project = build(:project)
-        setting = project.build_ci_cd_settings
-
-        expect(setting.inbound_job_token_scope_enabled).to eq(true)
-      end
+      it { is_expected.to be_inbound_job_token_scope_enabled }
     end
 
     context 'when feature flag ci_inbound_job_token_scope is disabled' do
@@ -46,12 +41,7 @@ RSpec.describe ProjectCiCdSetting do
         stub_feature_flags(ci_inbound_job_token_scope: false)
       end
 
-      it 'sets inbound_job_token_scope_enabled to false' do
-        project = build(:project)
-        setting = project.build_ci_cd_settings
-
-        expect(setting.inbound_job_token_scope_enabled).to eq(false)
-      end
+      it { is_expected.not_to be_inbound_job_token_scope_enabled }
     end
   end
 

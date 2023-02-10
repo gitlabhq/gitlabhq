@@ -20285,7 +20285,7 @@ CREATE TABLE project_ci_cd_settings (
     separated_caches boolean DEFAULT true NOT NULL,
     opt_in_jwt boolean DEFAULT false NOT NULL,
     allow_fork_pipelines_to_run_in_parent_project boolean DEFAULT true NOT NULL,
-    inbound_job_token_scope_enabled boolean DEFAULT false NOT NULL
+    inbound_job_token_scope_enabled boolean DEFAULT true NOT NULL
 );
 
 CREATE SEQUENCE project_ci_cd_settings_id_seq

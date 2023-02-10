@@ -570,7 +570,7 @@ GEM
       terminal-table (>= 1.5.1)
     gitlab-chronic (0.10.5)
       numerizer (~> 0.2)
-    gitlab-dangerfiles (3.6.6)
+    gitlab-dangerfiles (3.6.7)
       danger (>= 8.4.5)
       danger-gitlab (>= 8.0.0)
       rake

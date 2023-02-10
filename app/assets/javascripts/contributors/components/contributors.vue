@@ -238,7 +238,6 @@ export default {
               :project-id="projectId"
               :enabled-ref-types="$options.refTypes"
               :translations="$options.i18n.refSelectorTranslations"
-              toggle-button-class="gl-max-w-26"
               @input="visitBranch"
             />
           </div>

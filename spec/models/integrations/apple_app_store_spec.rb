@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Integrations::AppleAppStore, feature_category: :mobile_signing_deployment do
+RSpec.describe Integrations::AppleAppStore, feature_category: :mobile_devops do
   describe 'Validations' do
     context 'when active' do
       before do

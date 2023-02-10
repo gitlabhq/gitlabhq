@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Ci::SecureFiles, feature_category: :pipeline_authoring do
+RSpec.describe API::Ci::SecureFiles, feature_category: :mobile_devops do
   before do
     stub_ci_secure_file_object_storage
     stub_feature_flags(ci_secure_files_read_only: false)

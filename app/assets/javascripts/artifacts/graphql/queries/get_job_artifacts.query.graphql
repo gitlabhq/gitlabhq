@@ -10,13 +10,12 @@ query getJobArtifacts(
   project(fullPath: $projectPath) {
     id
     jobs(
-      statuses: [SUCCESS, FAILED]
+      withArtifacts: true
       first: $firstPageSize
       last: $lastPageSize
       after: $nextPageCursor
       before: $prevPageCursor
     ) {
-      count
       nodes {
         id
         name

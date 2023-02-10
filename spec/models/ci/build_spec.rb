@@ -202,6 +202,34 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     end
   end
 
+  describe '.with_any_artifacts' do
+    subject { described_class.with_any_artifacts }
+
+    context 'when job does not have any artifacts' do
+      it 'does not return the job' do
+        job = create(:ci_build, project: project)
+
+        is_expected.not_to include(job)
+      end
+    end
+
+    ::Ci::JobArtifact.file_types.each_key do |type|
+      context "when job has a #{type} artifact" do
+        it 'returns the job' do
+          job = create(:ci_build, project: project)
+          create(
+            :ci_job_artifact,
+            file_format: ::Ci::JobArtifact::TYPE_AND_FORMAT_PAIRS[type.to_sym],
+            file_type: type,
+            job: job
+          )
+
+          is_expected.to include(job)
+        end
+      end
+    end
+  end
+
   describe '.with_live_trace' do
     subject { described_class.with_live_trace }
 

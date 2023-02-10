@@ -3,7 +3,7 @@
 require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/scalability/file_uploads'
 
-RSpec.describe RuboCop::Cop::Scalability::FileUploads do
+RSpec.describe RuboCop::Cop::Scalability::FileUploads, feature_category: :scalability do
   let(:message) { 'Do not upload files without workhorse acceleration. Please refer to https://docs.gitlab.com/ee/development/uploads.html' }
 
   context 'with required params' do

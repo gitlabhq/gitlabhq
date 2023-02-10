@@ -90,6 +90,12 @@ module Ci
 
     scope :unstarted, -> { where(runner_id: nil) }
 
+    scope :with_any_artifacts, -> do
+      where('EXISTS (?)',
+        Ci::JobArtifact.select(1).where("#{Ci::Build.quoted_table_name}.id = #{Ci::JobArtifact.quoted_table_name}.job_id")
+      )
+    end
+
     scope :with_downloadable_artifacts, -> do
       where('EXISTS (?)',
         Ci::JobArtifact.select(1)

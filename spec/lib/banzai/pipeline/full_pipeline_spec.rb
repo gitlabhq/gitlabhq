@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Banzai::Pipeline::FullPipeline, feature_category: :team_planning do
+  using RSpec::Parameterized::TableSyntax
+
   describe 'References' do
     let(:project) { create(:project, :public) }
     let(:issue)   { create(:issue, project: project) }
@@ -157,14 +159,44 @@ RSpec.describe Banzai::Pipeline::FullPipeline, feature_category: :team_planning 
       markdown = "\\#{issue.to_reference}"
       output = described_class.to_html(markdown, project: project)
 
-      expect(output).to include("<span>#</span>#{issue.iid}")
+      expect(output).to include("<span data-escaped-char>#</span>#{issue.iid}")
     end
 
     it 'converts user reference with escaped underscore because of italics' do
       markdown = '_@test\__'
       output = described_class.to_html(markdown, project: project)
 
-      expect(output).to include('<em>@test<span>_</span></em>')
+      expect(output).to include('<em>@test_</em>')
+    end
+
+    context 'when a reference (such as a label name) is autocompleted with characters that require escaping' do
+      # Labels are fairly representative of the type of characters that can be in a reference
+      # and aligns with the testing in spec/frontend/gfm_auto_complete_spec.js
+      where(:valid, :label_name, :markdown) do
+        # These are currently not supported
+        # true   | 'a~bug'      | '~"a\~bug"'
+        # true   | 'b~~bug~~'   | '~"b\~\~bug\~\~"'
+
+        true   | 'c_bug_'     | '~c_bug\_'
+        true   | 'c_bug_'     | 'Label ~c_bug\_ and _more_ text'
+        true   | 'd _bug_'    | '~"d \_bug\_"'
+        true   | 'e*bug*'     | '~"e\*bug\*"'
+        true   | 'f *bug*'    | '~"f \*bug\*"'
+        true   | 'f *bug*'    | 'Label ~"f \*bug\*" **with** more text'
+        true   | 'g`bug`'     | '~"g\`bug\`" '
+        true   | 'h `bug`'    | '~"h \`bug\`"'
+      end
+
+      with_them do
+        it 'detects valid escaped reference' do
+          create(:label, name: label_name, project: project)
+
+          result = Banzai::Pipeline::FullPipeline.call(markdown, project: project)
+
+          expect(result[:output].css('a').first.attr('class')).to eq 'gfm gfm-label has-tooltip gl-link gl-label-link'
+          expect(result[:output].css('a').first.content).to eq label_name
+        end
+      end
     end
   end
 

@@ -15,10 +15,15 @@ RSpec.describe Banzai::Pipeline::PlainMarkdownPipeline, feature_category: :team_
       result = described_class.call(markdown, project: project)
       output = result[:output].to_html
 
-      Banzai::Filter::MarkdownPreEscapeFilter::ESCAPABLE_CHARS.pluck(:char).each do |char|
-        char = '&amp;' if char == '&'
+      Banzai::Filter::MarkdownPreEscapeFilter::ESCAPABLE_CHARS.each do |item|
+        char = item[:char] == '&' ? '&amp;' : item[:char]
 
-        expect(output).to include("<span>#{char}</span>")
+        if item[:reference]
+          expect(output).to include("<span data-escaped-char>#{char}</span>")
+        else
+          expect(output).not_to include("<span data-escaped-char>#{char}</span>")
+          expect(output).to include(char)
+        end
       end
 
       expect(result[:escaped_literals]).to be_truthy

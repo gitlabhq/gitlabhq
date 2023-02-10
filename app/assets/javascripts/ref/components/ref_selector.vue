@@ -142,6 +142,7 @@ export default {
           'gl-inset-border-1-red-500!': !this.state,
           'gl-font-monospace': Boolean(this.selectedRef),
         },
+        'gl-max-w-26',
       ];
 
       if (Array.isArray(this.toggleButtonClass)) {
@@ -257,7 +258,7 @@ export default {
       :header-text="i18n.dropdownHeader"
       :toggle-class="extendedToggleButtonClass"
       :text="buttonText"
-      class="ref-selector gl-w-full"
+      class="ref-selector"
       v-bind="$attrs"
       v-on="$listeners"
       @shown="focusSearchBox"

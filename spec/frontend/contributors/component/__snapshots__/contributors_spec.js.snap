@@ -16,7 +16,6 @@ exports[`Contributors charts should render charts and a RefSelector when loading
           name=""
           projectid="23"
           state="true"
-          togglebuttonclass="gl-max-w-26"
           translations="[object Object]"
           value="main"
         />
