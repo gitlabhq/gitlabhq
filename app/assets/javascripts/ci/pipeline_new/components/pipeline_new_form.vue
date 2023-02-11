@@ -35,7 +35,10 @@ let pollTimeout;
 export const POLLING_INTERVAL = 2000;
 const i18n = {
   variablesDescription: s__(
-    'Pipeline|Specify variable values to be used in this run. The values specified in %{linkStart}CI/CD settings%{linkEnd} will be used by default.',
+    'Pipeline|Specify variable values to be used in this run. The variables specified in the configuration file as well as %{linkStart}CI/CD settings%{linkEnd} are used by default.',
+  ),
+  overrideNoteText: s__(
+    'CiVariables|Variables specified here are %{boldStart}expanded%{boldEnd} and not %{boldStart}masked.%{boldEnd}',
   ),
   defaultError: __('Something went wrong on our end. Please try again.'),
   refsLoadingErrorTitle: s__('Pipeline|Branches or tags could not be loaded.'),
@@ -408,7 +411,7 @@ export default {
 
     <gl-loading-icon v-if="isLoading" class="gl-mb-5" size="lg" />
 
-    <gl-form-group v-else :label="s__('Pipeline|Variables')">
+    <gl-form-group v-else class="gl-mb-3" :label="s__('Pipeline|Variables')">
       <div
         v-for="(variable, index) in variables"
         :key="variable.uniqueId"
@@ -503,6 +506,15 @@ export default {
         </gl-sprintf></template
       >
     </gl-form-group>
+    <div class="gl-mb-4 gl-text-gray-500">
+      <gl-sprintf :message="$options.i18n.overrideNoteText">
+        <template #bold="{ content }">
+          <strong>
+            {{ content }}
+          </strong>
+        </template>
+      </gl-sprintf>
+    </div>
     <div class="gl-pt-5 gl-display-flex">
       <gl-button
         type="submit"

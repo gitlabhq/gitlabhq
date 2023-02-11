@@ -272,9 +272,11 @@ the pipeline view, *not* the play (**{play}**) button.
 
 Define CI/CD variables here when you want to alter the execution of a job that uses
 [CI/CD variables](../variables/index.md).
-Add a variable name (key) and value to [override the value](../variables/index.md#override-a-defined-cicd-variable)
-defined in the UI or `.gitlab-ci.yml`
-for a single run of the manual job.
+
+If you add a variable that is already defined in the CI/CD settings or `.gitlab-ci.yml` file,
+the [variable is overridden](../variables/index.md#override-a-defined-cicd-variable) with the new value.
+Any variables overridden by using this process are [expanded](../variables/index.md#prevent-cicd-variable-expansion)
+and not [masked](../variables/index.md#mask-a-cicd-variable).
 
 ![Manual job variables](img/manual_job_variables_v13_10.png)
 

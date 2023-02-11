@@ -77,13 +77,16 @@ export default {
   i18n: {
     clearInputs: s__('CiVariables|Clear inputs'),
     formHelpText: s__(
-      'CiVariables|Specify variable values to be used in this run. The values specified in %{linkStart}CI/CD settings%{linkEnd} will be used as default',
+      'CiVariables|Specify variable values to be used in this run. The variables specified in the configuration file and %{linkStart}CI/CD settings%{linkEnd} are used by default.',
+    ),
+    overrideNoteText: s__(
+      'CiVariables|Variables specified here are %{boldStart}expanded%{boldEnd} and not %{boldStart}masked.%{boldEnd}',
     ),
     header: s__('CiVariables|Variables'),
     keyLabel: s__('CiVariables|Key'),
     keyPlaceholder: s__('CiVariables|Input variable key'),
     runAgainButtonText: s__('CiVariables|Run job again'),
-    triggerButtonText: s__('CiVariables|Trigger this manual action'),
+    triggerButtonText: s__('CiVariables|Run job'),
     valueLabel: s__('CiVariables|Value'),
     valuePlaceholder: s__('CiVariables|Input variable value'),
   },
@@ -256,6 +259,15 @@ export default {
             <gl-link :href="variableSettings" target="_blank">
               {{ content }}
             </gl-link>
+          </template>
+        </gl-sprintf>
+      </div>
+      <div class="gl-text-center gl-mt-3">
+        <gl-sprintf :message="$options.i18n.overrideNoteText">
+          <template #bold="{ content }">
+            <strong>
+              {{ content }}
+            </strong>
           </template>
         </gl-sprintf>
       </div>

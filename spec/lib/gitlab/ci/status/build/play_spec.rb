@@ -75,7 +75,7 @@ RSpec.describe Gitlab::Ci::Status::Build::Play do
   end
 
   describe '#action_button_title' do
-    it { expect(subject.action_button_title).to eq 'Trigger this manual action' }
+    it { expect(subject.action_button_title).to eq 'Run job' }
   end
 
   describe '.matches?' do

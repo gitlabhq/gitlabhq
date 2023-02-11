@@ -745,11 +745,11 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state, feature_category: :proj
             'You can add CI/CD variables below for last-minute configuration changes before starting the job.'
           )
         )
-        expect(page).to have_button('Trigger this manual action')
+        expect(page).to have_button('Run job')
       end
 
       it 'plays manual action and shows pending status', :js do
-        click_button 'Trigger this manual action'
+        click_button 'Run job'
 
         wait_for_requests
         expect(page).to have_content('This job has not started yet')
@@ -783,7 +783,7 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state, feature_category: :proj
             'You can add CI/CD variables below for last-minute configuration changes before starting the job.'
           )
         )
-        expect(page).to have_button('Trigger this manual action')
+        expect(page).to have_button('Run job')
       end
     end
 

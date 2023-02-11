@@ -7,7 +7,7 @@
     "state": "active",
     "avatar_url": "https://assets.gitlab-static.net/uploads/-/system/user/avatar/3585/avatar.png",
     "web_url": "https://gitlab.com/axil",
-    "status_tooltip_html": "\u003cspan class=\"user-status-emoji has-tooltip\" title=\"I like pizza\" data-html=\"true\" data-placement=\"top\"\u003e\u003cgl-emoji title=\"slice of pizza\" data-name=\"pizza\" data-unicode-version=\"6.0\"\u003e🍕\u003c/gl-emoji\u003e\u003c/span\u003e",
+    "status_tooltip_html": "<span class=\"user-status-emoji has-tooltip\" title=\"I like pizza\" data-html=\"true\" data-placement=\"top\"><gl-emoji title=\"slice of pizza\" data-name=\"pizza\" data-unicode-version=\"6.0\">🍕</gl-emoji></span>",
     "path": "/axil"
   },
   "active": false,
@@ -68,7 +68,7 @@
                 "title": "Play",
                 "path": "/gitlab-org/gitlab-runner/-/jobs/72469032/play",
                 "method": "post",
-                "button_title": "Trigger this manual action"
+                "button_title": "Run job"
               }
             },
             "jobs": [
@@ -104,7 +104,7 @@
                     "title": "Play",
                     "path": "/gitlab-org/gitlab-runner/-/jobs/72469032/play",
                     "method": "post",
-                    "button_title": "Trigger this manual action"
+                    "button_title": "Run job"
                   }
                 }
               }
@@ -290,7 +290,9 @@
         "dropdown_path": "/gitlab-org/gitlab-runner/pipelines/23211253/stage.json?stage=cleanup"
       }
     ],
-    "artifacts": [],
+    "artifacts": [
+
+    ],
     "manual_actions": [
       {
         "name": "review-docs-cleanup",
@@ -305,7 +307,9 @@
         "scheduled": false
       }
     ],
-    "scheduled_actions": []
+    "scheduled_actions": [
+
+    ]
   },
   "ref": {
     "name": "docs/add-development-guide-to-readme",
@@ -319,7 +323,9 @@
     "short_id": "8083eb0a",
     "title": "Add link to development guide in readme",
     "created_at": "2018-06-05T11:30:48.000Z",
-    "parent_ids": ["1d7cf79b5a1a2121b9474ac20d61c1b8f621289d"],
+    "parent_ids": [
+      "1d7cf79b5a1a2121b9474ac20d61c1b8f621289d"
+    ],
     "message": "Add link to development guide in readme\n\nCloses https://gitlab.com/gitlab-org/gitlab-runner/issues/3122\n",
     "author_name": "Achilleas Pipinellis",
     "author_email": "axil@gitlab.com",
@@ -337,7 +343,7 @@
       "status_tooltip_html": null,
       "path": "/axil"
     },
-    "author_gravatar_url": "https://secure.gravatar.com/avatar/1d37af00eec153a8333a4ce18e9aea41?s=80\u0026d=identicon",
+    "author_gravatar_url": "https://secure.gravatar.com/avatar/1d37af00eec153a8333a4ce18e9aea41?s=80&d=identicon",
     "commit_url": "https://gitlab.com/gitlab-org/gitlab-runner/commit/8083eb0a920572214d0dccedd7981f05d535ad46",
     "commit_path": "/gitlab-org/gitlab-runner/commit/8083eb0a920572214d0dccedd7981f05d535ad46"
   },
@@ -402,7 +408,7 @@
                   "title": "Play",
                   "path": "/gitlab-com/gitlab-docs/-/jobs/114982853/play",
                   "method": "post",
-                  "button_title": "Trigger this manual action"
+                  "button_title": "Run job"
                 }
               },
               "jobs": [
@@ -437,7 +443,7 @@
                       "title": "Play",
                       "path": "/gitlab-com/gitlab-docs/-/jobs/114982853/play",
                       "method": "post",
-                      "button_title": "Trigger this manual action"
+                      "button_title": "Run job"
                     }
                   }
                 }
@@ -466,7 +472,7 @@
                   "title": "Play",
                   "path": "/gitlab-com/gitlab-docs/-/jobs/114982854/play",
                   "method": "post",
-                  "button_title": "Trigger this manual action"
+                  "button_title": "Run job"
                 }
               },
               "jobs": [
@@ -501,7 +507,7 @@
                       "title": "Play",
                       "path": "/gitlab-com/gitlab-docs/-/jobs/114982854/play",
                       "method": "post",
-                      "button_title": "Trigger this manual action"
+                      "button_title": "Run job"
                     }
                   }
                 }
@@ -530,7 +536,7 @@
                   "title": "Play",
                   "path": "/gitlab-com/gitlab-docs/-/jobs/114982855/play",
                   "method": "post",
-                  "button_title": "Trigger this manual action"
+                  "button_title": "Run job"
                 }
               },
               "jobs": [
@@ -565,7 +571,7 @@
                       "title": "Play",
                       "path": "/gitlab-com/gitlab-docs/-/jobs/114982855/play",
                       "method": "post",
-                      "button_title": "Trigger this manual action"
+                      "button_title": "Run job"
                     }
                   }
                 }
@@ -782,7 +788,9 @@
           "dropdown_path": "/gitlab-com/gitlab-docs/pipelines/34993051/stage.json?stage=deploy"
         }
       ],
-      "artifacts": [],
+      "artifacts": [
+
+      ],
       "manual_actions": [
         {
           "name": "image:bootstrap",
@@ -809,7 +817,9 @@
           "scheduled": false
         }
       ],
-      "scheduled_actions": []
+      "scheduled_actions": [
+
+      ]
     },
     "project": {
       "id": 1794617,
@@ -875,7 +885,7 @@
                     "title": "Play",
                     "path": "/gitlab-com/gitlab-docs/-/jobs/114982853/play",
                     "method": "post",
-                    "button_title": "Trigger this manual action"
+                    "button_title": "Run job"
                   }
                 },
                 "jobs": [
@@ -910,7 +920,7 @@
                         "title": "Play",
                         "path": "/gitlab-com/gitlab-docs/-/jobs/114982853/play",
                         "method": "post",
-                        "button_title": "Trigger this manual action"
+                        "button_title": "Run job"
                       }
                     }
                   }
@@ -939,7 +949,7 @@
                     "title": "Play",
                     "path": "/gitlab-com/gitlab-docs/-/jobs/114982854/play",
                     "method": "post",
-                    "button_title": "Trigger this manual action"
+                    "button_title": "Run job"
                   }
                 },
                 "jobs": [
@@ -974,7 +984,7 @@
                         "title": "Play",
                         "path": "/gitlab-com/gitlab-docs/-/jobs/114982854/play",
                         "method": "post",
-                        "button_title": "Trigger this manual action"
+                        "button_title": "Run job"
                       }
                     }
                   }
@@ -1003,7 +1013,7 @@
                     "title": "Play",
                     "path": "/gitlab-com/gitlab-docs/-/jobs/114982855/play",
                     "method": "post",
-                    "button_title": "Trigger this manual action"
+                    "button_title": "Run job"
                   }
                 },
                 "jobs": [
@@ -1038,7 +1048,7 @@
                         "title": "Play",
                         "path": "/gitlab-com/gitlab-docs/-/jobs/114982855/play",
                         "method": "post",
-                        "button_title": "Trigger this manual action"
+                        "button_title": "Run job"
                       }
                     }
                   }
@@ -1255,7 +1265,9 @@
             "dropdown_path": "/gitlab-com/gitlab-docs/pipelines/34993051/stage.json?stage=deploy"
           }
         ],
-        "artifacts": [],
+        "artifacts": [
+
+        ],
         "manual_actions": [
           {
             "name": "image:bootstrap",
@@ -1282,7 +1294,9 @@
             "scheduled": false
           }
         ],
-        "scheduled_actions": []
+        "scheduled_actions": [
+
+        ]
       },
       "project": {
         "id": 1794617,
@@ -1291,7 +1305,9 @@
         "full_name": "GitLab.com / GitLab Docs"
       }
     },
-    "triggered": []
+    "triggered": [
+
+    ]
   },
   "triggered": [
     {
@@ -1352,7 +1368,7 @@
                     "title": "Play",
                     "path": "/gitlab-com/gitlab-docs/-/jobs/114982853/play",
                     "method": "post",
-                    "button_title": "Trigger this manual action"
+                    "button_title": "Run job"
                   }
                 },
                 "jobs": [
@@ -1387,7 +1403,7 @@
                         "title": "Play",
                         "path": "/gitlab-com/gitlab-docs/-/jobs/114982853/play",
                         "method": "post",
-                        "button_title": "Trigger this manual action"
+                        "button_title": "Run job"
                       }
                     }
                   }
@@ -1416,7 +1432,7 @@
                     "title": "Play",
                     "path": "/gitlab-com/gitlab-docs/-/jobs/114982854/play",
                     "method": "post",
-                    "button_title": "Trigger this manual action"
+                    "button_title": "Run job"
                   }
                 },
                 "jobs": [
@@ -1451,7 +1467,7 @@
                         "title": "Play",
                         "path": "/gitlab-com/gitlab-docs/-/jobs/114982854/play",
                         "method": "post",
-                        "button_title": "Trigger this manual action"
+                        "button_title": "Run job"
                       }
                     }
                   }
@@ -1480,7 +1496,7 @@
                     "title": "Play",
                     "path": "/gitlab-com/gitlab-docs/-/jobs/114982855/play",
                     "method": "post",
-                    "button_title": "Trigger this manual action"
+                    "button_title": "Run job"
                   }
                 },
                 "jobs": [
@@ -1515,7 +1531,7 @@
                         "title": "Play",
                         "path": "/gitlab-com/gitlab-docs/-/jobs/114982855/play",
                         "method": "post",
-                        "button_title": "Trigger this manual action"
+                        "button_title": "Run job"
                       }
                     }
                   }
@@ -1732,7 +1748,9 @@
             "dropdown_path": "/gitlab-com/gitlab-docs/pipelines/34993051/stage.json?stage=deploy"
           }
         ],
-        "artifacts": [],
+        "artifacts": [
+
+        ],
         "manual_actions": [
           {
             "name": "image:bootstrap",
@@ -1759,7 +1777,9 @@
             "scheduled": false
           }
         ],
-        "scheduled_actions": []
+        "scheduled_actions": [
+
+        ]
       },
       "project": {
         "id": 1794617,
@@ -1767,7 +1787,10 @@
         "full_path": "/gitlab-com/gitlab-docs",
         "full_name": "GitLab.com / GitLab Docs"
       },
-      "triggered": [{}]
+      "triggered": [
+        {
+        }
+      ]
     },
     {
       "id": 34993052,
@@ -1827,7 +1850,7 @@
                     "title": "Play",
                     "path": "/gitlab-com/gitlab-docs/-/jobs/114982853/play",
                     "method": "post",
-                    "button_title": "Trigger this manual action"
+                    "button_title": "Run job"
                   }
                 },
                 "jobs": [
@@ -1862,7 +1885,7 @@
                         "title": "Play",
                         "path": "/gitlab-com/gitlab-docs/-/jobs/114982853/play",
                         "method": "post",
-                        "button_title": "Trigger this manual action"
+                        "button_title": "Run job"
                       }
                     }
                   }
@@ -1891,7 +1914,7 @@
                     "title": "Play",
                     "path": "/gitlab-com/gitlab-docs/-/jobs/114982854/play",
                     "method": "post",
-                    "button_title": "Trigger this manual action"
+                    "button_title": "Run job"
                   }
                 },
                 "jobs": [
@@ -1926,7 +1949,7 @@
                         "title": "Play",
                         "path": "/gitlab-com/gitlab-docs/-/jobs/114982854/play",
                         "method": "post",
-                        "button_title": "Trigger this manual action"
+                        "button_title": "Run job"
                       }
                     }
                   }
@@ -1955,7 +1978,7 @@
                     "title": "Play",
                     "path": "/gitlab-com/gitlab-docs/-/jobs/114982855/play",
                     "method": "post",
-                    "button_title": "Trigger this manual action"
+                    "button_title": "Run job"
                   }
                 },
                 "jobs": [
@@ -1990,7 +2013,7 @@
                         "title": "Play",
                         "path": "/gitlab-com/gitlab-docs/-/jobs/114982855/play",
                         "method": "post",
-                        "button_title": "Trigger this manual action"
+                        "button_title": "Run job"
                       }
                     }
                   }
@@ -2207,7 +2230,9 @@
             "dropdown_path": "/gitlab-com/gitlab-docs/pipelines/34993051/stage.json?stage=deploy"
           }
         ],
-        "artifacts": [],
+        "artifacts": [
+
+        ],
         "manual_actions": [
           {
             "name": "image:bootstrap",
@@ -2234,7 +2259,9 @@
             "scheduled": false
           }
         ],
-        "scheduled_actions": []
+        "scheduled_actions": [
+
+        ]
       },
       "project": {
         "id": 1794617,
@@ -3373,7 +3400,7 @@
                         "title": "Play",
                         "path": "/h5bp/html5-boilerplate/-/jobs/545/play",
                         "method": "post",
-                        "button_title": "Trigger this manual action"
+                        "button_title": "Run job"
                       }
                     },
                     "jobs": [
@@ -3409,7 +3436,7 @@
                             "title": "Play",
                             "path": "/h5bp/html5-boilerplate/-/jobs/545/play",
                             "method": "post",
-                            "button_title": "Trigger this manual action"
+                            "button_title": "Run job"
                           }
                         }
                       }
@@ -3467,7 +3494,9 @@
                 "scheduled": false
               }
             ],
-            "scheduled_actions": []
+            "scheduled_actions": [
+
+            ]
           },
           "ref": {
             "name": "master",
@@ -3481,7 +3510,9 @@
             "short_id": "bad98c45",
             "title": "remove instances of shrink-to-fit=no (#2103)",
             "created_at": "2018-12-17T20:52:18.000Z",
-            "parent_ids": ["49130f6cfe9ff1f749015d735649a2bc6f66cf3a"],
+            "parent_ids": [
+              "49130f6cfe9ff1f749015d735649a2bc6f66cf3a"
+            ],
             "message": "remove instances of shrink-to-fit=no (#2103)\n\ncloses #2102\r\n\r\nPer my findings, the need for it as a default was rectified with the release of iOS 9.3, where the viewport no longer shrunk to accommodate overflow, as was introduced in iOS 9.",
             "author_name": "Scott O'Hara",
             "author_email": "scottaohara@users.noreply.github.com",
@@ -3490,7 +3521,7 @@
             "committer_email": "rob@drunkenfist.com",
             "committed_date": "2018-12-17T20:52:18.000Z",
             "author": null,
-            "author_gravatar_url": "https://www.gravatar.com/avatar/6d597df7cf998d16cbe00ccac063b31e?s=80\u0026d=identicon",
+            "author_gravatar_url": "https://www.gravatar.com/avatar/6d597df7cf998d16cbe00ccac063b31e?s=80&d=identicon",
             "commit_url": "http://localhost:3001/h5bp/html5-boilerplate/commit/bad98c453eab56d20057f3929989251d45cd1a8b",
             "commit_path": "/h5bp/html5-boilerplate/commit/bad98c453eab56d20057f3929989251d45cd1a8b"
           },
@@ -3522,7 +3553,9 @@
               "full_name": "Gitlab Org / Gitlab Test"
             }
           },
-          "triggered": [],
+          "triggered": [
+
+          ],
           "project": {
             "id": 1794617,
             "name": "GitLab Docs",

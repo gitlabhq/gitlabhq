@@ -8849,22 +8849,22 @@ msgstr ""
 msgid "CiVariables|Remove variable row"
 msgstr ""
 
+msgid "CiVariables|Run job"
+msgstr ""
+
 msgid "CiVariables|Run job again"
 msgstr ""
 
 msgid "CiVariables|Scope"
 msgstr ""
 
-msgid "CiVariables|Specify variable values to be used in this run. The values specified in %{linkStart}CI/CD settings%{linkEnd} will be used as default"
+msgid "CiVariables|Specify variable values to be used in this run. The variables specified in the configuration file and %{linkStart}CI/CD settings%{linkEnd} are used by default."
 msgstr ""
 
 msgid "CiVariables|State"
 msgstr ""
 
 msgid "CiVariables|This %{entity} has %{currentVariableCount} defined CI/CD variables. The maximum number of variables per %{entity} is %{maxVariableLimit}. To add new variables, you must reduce the number of defined variables."
-msgstr ""
-
-msgid "CiVariables|Trigger this manual action"
 msgstr ""
 
 msgid "CiVariables|Type"
@@ -8874,6 +8874,9 @@ msgid "CiVariables|Value"
 msgstr ""
 
 msgid "CiVariables|Variables"
+msgstr ""
+
+msgid "CiVariables|Variables specified here are %{boldStart}expanded%{boldEnd} and not %{boldStart}masked.%{boldEnd}"
 msgstr ""
 
 msgid "CiVariables|Variables store information, like passwords and secret keys, that you can use in job scripts. Each %{entity} can define a maximum of %{limit} variables."
@@ -31544,6 +31547,9 @@ msgstr ""
 msgid "Pipeline|Specify variable values to be used in this run. The values specified in %{linkStart}CI/CD settings%{linkEnd} will be used by default."
 msgstr ""
 
+msgid "Pipeline|Specify variable values to be used in this run. The variables specified in the configuration file as well as %{linkStart}CI/CD settings%{linkEnd} are used by default."
+msgstr ""
+
 msgid "Pipeline|Stages"
 msgstr ""
 
@@ -36582,6 +36588,9 @@ msgid "Run housekeeping"
 msgstr ""
 
 msgid "Run housekeeping tasks to automatically optimize Git repositories. Disabling this option will cause performance to degenerate over time."
+msgstr ""
+
+msgid "Run job"
 msgstr ""
 
 msgid "Run manual job again"
@@ -45042,9 +45051,6 @@ msgid "Trigger removed."
 msgstr ""
 
 msgid "Trigger repository check"
-msgstr ""
-
-msgid "Trigger this manual action"
 msgstr ""
 
 msgid "Trigger token:"

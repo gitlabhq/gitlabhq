@@ -812,7 +812,8 @@ $tabs-holder-z-index: 250;
 
 .mr-widget-body-ready-merge {
   @include media-breakpoint-down(sm) {
-    @include gl-p-3;
+    @include gl-py-3;
+    @include gl-pr-3;
   }
 }
 
