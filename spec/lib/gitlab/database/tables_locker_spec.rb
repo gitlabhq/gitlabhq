@@ -4,15 +4,13 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Database::TablesLocker, :reestablished_active_record_base, :delete, :silence_stdout,
   :suppress_gitlab_schemas_validate_connection, feature_category: :pods do
-  let(:main_connection) { ApplicationRecord.connection }
-  let(:ci_connection) { Ci::ApplicationRecord.connection }
-  let!(:user) { create(:user) }
-  let!(:ci_build) { create(:ci_build) }
-
   let(:detached_partition_table) { '_test_gitlab_main_part_20220101' }
+  let(:lock_writes_manager) do
+    instance_double(Gitlab::Database::LockWritesManager, lock_writes: nil, unlock_writes: nil)
+  end
 
   before do
-    described_class.new.unlock_writes
+    allow(Gitlab::Database::LockWritesManager).to receive(:new).with(any_args).and_return(lock_writes_manager)
   end
 
   before(:all) do
@@ -34,8 +32,6 @@ RSpec.describe Gitlab::Database::TablesLocker, :reestablished_active_record_base
   end
 
   after(:all) do
-    described_class.new.unlock_writes
-
     drop_detached_partition_sql = <<~SQL
       DROP TABLE IF EXISTS gitlab_partitions_dynamic._test_gitlab_main_part_20220101
     SQL
@@ -48,6 +44,54 @@ RSpec.describe Gitlab::Database::TablesLocker, :reestablished_active_record_base
     end
   end
 
+  shared_examples "lock tables" do |table_schema, database_name|
+    let(:table_name) do
+      Gitlab::Database::GitlabSchema
+      .tables_to_schema.filter_map { |table_name, schema| table_name if schema == table_schema }
+      .first
+    end
+
+    let(:database) { database_name }
+
+    it "locks table in schema #{table_schema} and database #{database_name}" do
+      expect(Gitlab::Database::LockWritesManager).to receive(:new).with(
+        table_name: table_name,
+        connection: anything,
+        database_name: database,
+        with_retries: true,
+        logger: anything,
+        dry_run: anything
+      ).once.and_return(lock_writes_manager)
+      expect(lock_writes_manager).to receive(:lock_writes)
+
+      subject
+    end
+  end
+
+  shared_examples "unlock tables" do |table_schema, database_name|
+    let(:table_name) do
+      Gitlab::Database::GitlabSchema
+      .tables_to_schema.filter_map { |table_name, schema| table_name if schema == table_schema }
+      .first
+    end
+
+    let(:database) { database_name }
+
+    it "unlocks table in schema #{table_schema} and database #{database_name}" do
+      expect(Gitlab::Database::LockWritesManager).to receive(:new).with(
+        table_name: table_name,
+        connection: anything,
+        database_name: database,
+        with_retries: true,
+        logger: anything,
+        dry_run: anything
+      ).once.and_return(lock_writes_manager)
+      expect(lock_writes_manager).to receive(:unlock_writes)
+
+      subject
+    end
+  end
+
   context 'when running on single database' do
     before do
       skip_if_multiple_databases_are_setup(:ci)
@@ -56,17 +100,27 @@ RSpec.describe Gitlab::Database::TablesLocker, :reestablished_active_record_base
     describe '#lock_writes' do
       subject { described_class.new.lock_writes }
 
-      it 'does not add any triggers to the main schema tables' do
-        expect { subject }.not_to change { number_of_triggers(main_connection) }
+      it 'does not call Gitlab::Database::LockWritesManager.lock_writes' do
+        expect(Gitlab::Database::LockWritesManager).to receive(:new).with(any_args).and_return(lock_writes_manager)
+        expect(lock_writes_manager).not_to receive(:lock_writes)
+
+        subject
       end
 
-      it 'will be still able to modify tables that belong to the main two schemas' do
-        subject
+      include_examples "unlock tables", :gitlab_main, 'main'
+      include_examples "unlock tables", :gitlab_ci, 'ci'
+      include_examples "unlock tables", :gitlab_shared, 'main'
+      include_examples "unlock tables", :gitlab_internal, 'main'
+    end
 
-        expect do
-          User.last.touch
-          Ci::Build.last.touch
-        end.not_to raise_error
+    describe '#unlock_writes' do
+      subject { described_class.new.lock_writes }
+
+      it 'does call Gitlab::Database::LockWritesManager.unlock_writes' do
+        expect(Gitlab::Database::LockWritesManager).to receive(:new).with(any_args).and_return(lock_writes_manager)
+        expect(lock_writes_manager).to receive(:unlock_writes)
+
+        subject
       end
     end
   end
@@ -74,112 +128,72 @@ RSpec.describe Gitlab::Database::TablesLocker, :reestablished_active_record_base
   context 'when running on multiple databases' do
     before do
       skip_if_multiple_databases_not_setup(:ci)
-
-      Gitlab::Database::SharedModel.using_connection(ci_connection) do
-        Postgresql::DetachedPartition.create!(
-          table_name: detached_partition_table,
-          drop_after: Time.zone.now
-        )
-      end
     end
 
     describe '#lock_writes' do
       subject { described_class.new.lock_writes }
 
-      it 'still allows writes on the tables with the correct connections' do
-        User.touch_all
-        Ci::Build.touch_all
-      end
+      include_examples "lock tables", :gitlab_ci, 'main'
+      include_examples "lock tables", :gitlab_main, 'ci'
 
-      it 'still allows writing to gitlab_shared schema on any connection' do
-        connections = [main_connection, ci_connection]
-        connections.each do |connection|
-          Gitlab::Database::SharedModel.using_connection(connection) do
-            LooseForeignKeys::DeletedRecord.create!(
-              fully_qualified_table_name: "public.users",
-              primary_key_value: 1,
-              cleanup_attempts: 0
-            )
-          end
-        end
-      end
+      include_examples "unlock tables", :gitlab_main, 'main'
+      include_examples "unlock tables", :gitlab_ci, 'ci'
+      include_examples "unlock tables", :gitlab_shared, 'main'
+      include_examples "unlock tables", :gitlab_shared, 'ci'
+      include_examples "unlock tables", :gitlab_internal, 'main'
+      include_examples "unlock tables", :gitlab_internal, 'ci'
+    end
 
-      it 'prevents writes on the main tables on the ci database' do
+    describe '#unlock_writes' do
+      subject { described_class.new.unlock_writes }
+
+      include_examples "unlock tables", :gitlab_ci, 'main'
+      include_examples "unlock tables", :gitlab_main, 'ci'
+      include_examples "unlock tables", :gitlab_main, 'main'
+      include_examples "unlock tables", :gitlab_ci, 'ci'
+      include_examples "unlock tables", :gitlab_shared, 'main'
+      include_examples "unlock tables", :gitlab_shared, 'ci'
+      include_examples "unlock tables", :gitlab_internal, 'main'
+      include_examples "unlock tables", :gitlab_internal, 'ci'
+    end
+
+    context 'when running in dry_run mode' do
+      subject { described_class.new(dry_run: true).lock_writes }
+
+      it 'passes dry_run flag to LockManger' do
+        expect(Gitlab::Database::LockWritesManager).to receive(:new).with(
+          table_name: 'users',
+          connection: anything,
+          database_name: 'ci',
+          with_retries: true,
+          logger: anything,
+          dry_run: true
+        ).and_return(lock_writes_manager)
+        expect(lock_writes_manager).to receive(:lock_writes)
+
         subject
+      end
+    end
 
-        expect do
-          ci_connection.execute("delete from users")
-        end.to raise_error(ActiveRecord::StatementInvalid, /Table: "users" is write protected/)
+    context 'when running on multiple shared databases' do
+      subject { described_class.new.lock_writes }
+
+      before do
+        allow(::Gitlab::Database).to receive(:db_config_share_with).and_return(nil)
+        ci_db_config = Ci::ApplicationRecord.connection_db_config
+        allow(::Gitlab::Database).to receive(:db_config_share_with).with(ci_db_config).and_return('main')
       end
 
-      it 'prevents writes on the ci tables on the main database' do
+      it 'does not lock any tables if the ci database is shared with main database' do
+        expect(Gitlab::Database::LockWritesManager).to receive(:new).with(any_args).and_return(lock_writes_manager)
+        expect(lock_writes_manager).not_to receive(:lock_writes)
+
         subject
-
-        expect do
-          main_connection.execute("delete from ci_builds")
-        end.to raise_error(ActiveRecord::StatementInvalid, /Table: "ci_builds" is write protected/)
-      end
-
-      it 'prevents truncating a ci table on the main database' do
-        subject
-
-        expect do
-          main_connection.execute("truncate ci_build_needs")
-        end.to raise_error(ActiveRecord::StatementInvalid, /Table: "ci_build_needs" is write protected/)
-      end
-
-      it 'prevents writes to detached partitions' do
-        subject
-
-        expect do
-          ci_connection.execute("INSERT INTO gitlab_partitions_dynamic.#{detached_partition_table} DEFAULT VALUES")
-        end.to raise_error(ActiveRecord::StatementInvalid, /Table: "#{detached_partition_table}" is write protected/)
-      end
-
-      context 'when running in dry_run mode' do
-        subject { described_class.new(dry_run: true).lock_writes }
-
-        it 'allows writes on the main tables on the ci database' do
-          subject
-
-          expect do
-            ci_connection.execute("delete from users")
-          end.not_to raise_error
-        end
-
-        it 'allows writes on the ci tables on the main database' do
-          subject
-
-          expect do
-            main_connection.execute("delete from ci_builds")
-          end.not_to raise_error
-        end
-      end
-
-      context 'when running on multiple shared databases' do
-        before do
-          allow(::Gitlab::Database).to receive(:db_config_share_with).and_return(nil)
-          ci_db_config = Ci::ApplicationRecord.connection_db_config
-          allow(::Gitlab::Database).to receive(:db_config_share_with).with(ci_db_config).and_return('main')
-        end
-
-        it 'does not lock any tables if the ci database is shared with main database' do
-          subject { described_class.new.lock_writes }
-
-          expect do
-            ApplicationRecord.connection.execute("delete from ci_builds")
-            Ci::ApplicationRecord.connection.execute("delete from users")
-          end.not_to raise_error
-        end
       end
     end
   end
 
   context 'when geo database is configured' do
-    let(:lock_writes_manager) do
-      instance_double(Gitlab::Database::LockWritesManager, lock_writes: nil, unlock_writes: nil)
-    end
-
     let(:geo_table) do
       Gitlab::Database::GitlabSchema
         .tables_to_schema.filter_map { |table_name, schema| table_name if schema == :gitlab_geo }
@@ -190,8 +204,6 @@ RSpec.describe Gitlab::Database::TablesLocker, :reestablished_active_record_base
 
     before do
       skip "Geo database is not configured" unless Gitlab::Database.has_config?(:geo)
-
-      allow(Gitlab::Database::LockWritesManager).to receive(:new).with(any_args).and_return(lock_writes_manager)
     end
 
     it 'does not lock table in geo database' do

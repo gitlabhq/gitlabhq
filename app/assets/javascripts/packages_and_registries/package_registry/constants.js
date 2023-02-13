@@ -128,6 +128,12 @@ export const DELETE_PACKAGE_ERROR_MESSAGE = s__(
   'PackageRegistry|Something went wrong while deleting the package.',
 );
 
+export const ERRORED_PACKAGE_TEXT = s__(
+  'PackageRegistry|Invalid Package: failed metadata extraction',
+);
+export const ERROR_PUBLISHING = s__('PackageRegistry|Error publishing');
+export const WARNING_TEXT = __('Warning');
+
 export const PACKAGE_REGISTRY_TITLE = __('Package Registry');
 
 export const PACKAGE_ERROR_STATUS = 'ERROR';

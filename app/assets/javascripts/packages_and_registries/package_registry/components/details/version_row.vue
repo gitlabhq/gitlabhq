@@ -1,15 +1,21 @@
 <script>
-import { GlLink, GlSprintf, GlTruncate } from '@gitlab/ui';
+import { GlIcon, GlLink, GlSprintf, GlTooltipDirective, GlTruncate } from '@gitlab/ui';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import PackageTags from '~/packages_and_registries/shared/components/package_tags.vue';
 import PublishMethod from '~/packages_and_registries/shared/components/publish_method.vue';
 import ListItem from '~/vue_shared/components/registry/list_item.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
-import { PACKAGE_DEFAULT_STATUS } from '../../constants';
+import {
+  ERRORED_PACKAGE_TEXT,
+  ERROR_PUBLISHING,
+  PACKAGE_ERROR_STATUS,
+  WARNING_TEXT,
+} from '../../constants';
 
 export default {
   name: 'PackageVersionRow',
   components: {
+    GlIcon,
     GlLink,
     GlSprintf,
     GlTruncate,
@@ -17,6 +23,9 @@ export default {
     PublishMethod,
     ListItem,
     TimeAgoTooltip,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
   },
   props: {
     packageEntity: {
@@ -31,23 +40,23 @@ export default {
     packageLink() {
       return `${getIdFromGraphQLId(this.packageEntity.id)}`;
     },
-    disabledRow() {
-      return this.packageEntity.status && this.packageEntity.status !== PACKAGE_DEFAULT_STATUS;
+    errorStatusRow() {
+      return this.packageEntity?.status === PACKAGE_ERROR_STATUS;
     },
+  },
+  i18n: {
+    erroredPackageText: ERRORED_PACKAGE_TEXT,
+    errorPublishing: ERROR_PUBLISHING,
+    warningText: WARNING_TEXT,
   },
 };
 </script>
 
 <template>
-  <list-item :disabled="disabledRow">
+  <list-item>
     <template #left-primary>
       <div class="gl-display-flex gl-align-items-center gl-mr-3 gl-min-w-0">
-        <gl-link
-          v-if="containsWebPathLink"
-          class="gl-text-body gl-min-w-0"
-          :disabled="disabledRow"
-          :href="packageLink"
-        >
+        <gl-link v-if="containsWebPathLink" class="gl-text-body gl-min-w-0" :href="packageLink">
           <gl-truncate :text="packageEntity.name" />
         </gl-link>
         <gl-truncate v-else :text="packageEntity.name" />
@@ -62,7 +71,20 @@ export default {
       </div>
     </template>
     <template #left-secondary>
-      {{ packageEntity.version }}
+      <div v-if="errorStatusRow" class="gl-text-red-500">
+        <gl-icon
+          v-gl-tooltip="{ title: $options.i18n.erroredPackageText }"
+          name="warning"
+          :aria-label="$options.i18n.warningText"
+        />
+        <span>{{ $options.i18n.errorPublishing }}</span>
+      </div>
+      <gl-truncate
+        v-else
+        class="gl-max-w-15 gl-md-max-w-26"
+        :text="packageEntity.version"
+        :with-tooltip="true"
+      />
     </template>
 
     <template #right-primary>

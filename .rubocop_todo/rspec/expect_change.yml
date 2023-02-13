@@ -161,8 +161,6 @@ RSpec/ExpectChange:
     - 'ee/spec/services/projects/transfer_service_spec.rb'
     - 'ee/spec/services/protected_environments/create_service_spec.rb'
     - 'ee/spec/services/quality_management/test_cases/create_service_spec.rb'
-    - 'ee/spec/services/registrations/import_namespace_create_service_spec.rb'
-    - 'ee/spec/services/registrations/standard_namespace_create_service_spec.rb'
     - 'ee/spec/services/requirements_management/export_csv_service_spec.rb'
     - 'ee/spec/services/sbom/ingestion/tasks/ingest_component_versions_spec.rb'
     - 'ee/spec/services/sbom/ingestion/tasks/ingest_components_spec.rb'

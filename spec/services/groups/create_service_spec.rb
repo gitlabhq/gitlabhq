@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Groups::CreateService, '#execute' do
+RSpec.describe Groups::CreateService, '#execute', feature_category: :subgroups do
   let!(:user) { create(:user) }
   let!(:group_params) { { path: "group_path", visibility_level: Gitlab::VisibilityLevel::PUBLIC } }
 
@@ -78,10 +78,6 @@ RSpec.describe Groups::CreateService, '#execute' do
 
       it { is_expected.to be_persisted }
 
-      it 'adds an onboarding progress record' do
-        expect { subject }.to change(Onboarding::Progress, :count).from(0).to(1)
-      end
-
       context 'with before_commit callback' do
         it_behaves_like 'has sync-ed traversal_ids'
       end
@@ -106,10 +102,6 @@ RSpec.describe Groups::CreateService, '#execute' do
       end
 
       it { is_expected.to be_persisted }
-
-      it 'does not add an onboarding progress record' do
-        expect { subject }.not_to change(Onboarding::Progress, :count).from(0)
-      end
 
       it_behaves_like 'has sync-ed traversal_ids'
     end

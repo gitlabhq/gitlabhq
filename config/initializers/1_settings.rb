@@ -828,6 +828,9 @@ Gitlab.ee do
   Settings.cron_jobs['abandoned_trial_emails'] ||= Settingslogic.new({})
   Settings.cron_jobs['abandoned_trial_emails']['cron'] ||= "0 1 * * *"
   Settings.cron_jobs['abandoned_trial_emails']['job_class'] = 'Emails::AbandonedTrialEmailsCronWorker'
+  Settings.cron_jobs['package_metadata_sync_worker'] ||= Settingslogic.new({})
+  Settings.cron_jobs['package_metadata_sync_worker']['cron'] ||= "0 1 * * *"
+  Settings.cron_jobs['package_metadata_sync_worker']['job_class'] = 'PackageMetadata::SyncWorker'
   Gitlab.com do
     Settings.cron_jobs['disable_legacy_open_source_license_for_inactive_projects'] ||= Settingslogic.new({})
     Settings.cron_jobs['disable_legacy_open_source_license_for_inactive_projects']['cron'] ||= "30 5 * * 0"

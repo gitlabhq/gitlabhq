@@ -14614,7 +14614,7 @@ ALTER SEQUENCE dast_pre_scan_verification_steps_id_seq OWNED BY dast_pre_scan_ve
 CREATE TABLE dast_pre_scan_verifications (
     id bigint NOT NULL,
     dast_profile_id bigint NOT NULL,
-    ci_pipeline_id bigint NOT NULL,
+    ci_pipeline_id bigint,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
     status smallint DEFAULT 0 NOT NULL

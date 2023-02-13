@@ -11,8 +11,11 @@ import {
 import { s__, __ } from '~/locale';
 import ListItem from '~/vue_shared/components/registry/list_item.vue';
 import {
+  ERRORED_PACKAGE_TEXT,
+  ERROR_PUBLISHING,
   PACKAGE_ERROR_STATUS,
   PACKAGE_DEFAULT_STATUS,
+  WARNING_TEXT,
 } from '~/packages_and_registries/package_registry/constants';
 import { getPackageTypeLabel } from '~/packages_and_registries/package_registry/utils';
 import PackagePath from '~/packages_and_registries/shared/components/package_path.vue';
@@ -86,11 +89,11 @@ export default {
     },
   },
   i18n: {
-    erroredPackageText: s__('PackageRegistry|Invalid Package: failed metadata extraction'),
+    erroredPackageText: ERRORED_PACKAGE_TEXT,
     createdAt: __('Created %{timestamp}'),
     deletePackage: s__('PackageRegistry|Delete package'),
-    errorPublishing: s__('PackageRegistry|Error publishing'),
-    warning: __('Warning'),
+    errorPublishing: ERROR_PUBLISHING,
+    warning: WARNING_TEXT,
     moreActions: __('More actions'),
   },
 };

@@ -39,7 +39,6 @@ module Groups
         if @group.save
           @group.add_owner(current_user)
           Integration.create_from_active_default_integrations(@group, :group_id)
-          Onboarding::Progress.onboard(@group)
         end
       end
 

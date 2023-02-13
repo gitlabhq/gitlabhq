@@ -2222,8 +2222,6 @@ RSpec/MissingFeatureCategory:
     - 'ee/spec/services/protected_environments/update_service_spec.rb'
     - 'ee/spec/services/push_rules/create_or_update_service_spec.rb'
     - 'ee/spec/services/quality_management/test_cases/create_service_spec.rb'
-    - 'ee/spec/services/registrations/import_namespace_create_service_spec.rb'
-    - 'ee/spec/services/registrations/standard_namespace_create_service_spec.rb'
     - 'ee/spec/services/releases/create_service_spec.rb'
     - 'ee/spec/services/releases/update_service_spec.rb'
     - 'ee/spec/services/requirements_management/export_csv_service_spec.rb'
