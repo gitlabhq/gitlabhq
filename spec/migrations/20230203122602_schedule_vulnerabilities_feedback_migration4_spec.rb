@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe ScheduleVulnerabilitiesFeedbackMigration3, feature_category: :vulnerability_management do
+RSpec.describe ScheduleVulnerabilitiesFeedbackMigration4, feature_category: :vulnerability_management do
   let(:migration) { described_class::MIGRATION }
 
   describe '#up' do
@@ -13,9 +13,9 @@ RSpec.describe ScheduleVulnerabilitiesFeedbackMigration3, feature_category: :vul
       expect(migration).to have_scheduled_batched_migration(
         table_name: :vulnerability_feedback,
         column_name: :id,
-        interval: described_class::DELAY_INTERVAL,
+        interval: described_class::JOB_INTERVAL,
         batch_size: described_class::BATCH_SIZE,
-        max_batch_size: described_class::MAX_BATCH_SIZE
+        sub_batch_size: described_class::SUB_BATCH_SIZE
       )
     end
   end

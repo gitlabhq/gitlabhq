@@ -36,6 +36,8 @@ Display name override is not enabled by default, you need to ask your administra
 
 ## Configure GitLab to send notifications to Mattermost
 
+> [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106760) in GitLab 15.9 to limit Mattermost channels to 10 per event.
+
 After the Mattermost instance has an incoming webhook set up, you can set up GitLab
 to send the notifications:
 

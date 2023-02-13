@@ -94,7 +94,12 @@ export function initIssueApp(issueData, store) {
 
   bootstrapApollo({ ...issueState, issueType: el.dataset.issueType });
 
-  const { canCreateIncident, hasIssueWeightsFeature, ...issueProps } = issueData;
+  const {
+    canCreateIncident,
+    hasIssueWeightsFeature,
+    hasIterationsFeature,
+    ...issueProps
+  } = issueData;
 
   return new Vue({
     el,
@@ -107,6 +112,7 @@ export function initIssueApp(issueData, store) {
       registerPath,
       signInPath,
       hasIssueWeightsFeature,
+      hasIterationsFeature,
     },
     computed: {
       ...mapGetters(['getNoteableData']),
@@ -119,6 +125,7 @@ export function initIssueApp(issueData, store) {
           isLocked: this.getNoteableData?.discussion_locked,
           issuableStatus: this.getNoteableData?.state,
           issueId: this.getNoteableData?.id,
+          issueIid: this.getNoteableData?.iid,
         },
       });
     },

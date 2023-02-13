@@ -58,6 +58,22 @@ To create a task:
 1. Enter the task title.
 1. Select **Create task**.
 
+### Create a task from a task list item
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/377307) in GitLab 15.9 [with a flag](../administration/feature_flags.md) named `work_items_mvc_2`. Disabled by default.
+
+Prerequisites:
+
+- You must have at least the Reporter role for the project.
+
+In an issue description with task list items:
+
+1. Hover over a task list item and select the options menu (**{ellipsis_v}**).
+1. Select **Convert to task**.
+
+The task list item is removed from the issue description and a task is created in the tasks widget from its contents.
+Any nested task list items are moved up a nested level.
+
 ## Add existing tasks to an issue
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/381868) in GitLab 15.6.

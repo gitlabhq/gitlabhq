@@ -667,42 +667,6 @@ RSpec.describe GroupPolicy, feature_category: :authentication_and_authorization 
 
         it { is_expected.to be_allowed(:create_projects) }
       end
-
-      context 'when there are no available visibility levels because they have been restricted by an administrator' do
-        before do
-          stub_application_setting(
-            restricted_visibility_levels: [
-              Gitlab::VisibilityLevel::PUBLIC,
-              Gitlab::VisibilityLevel::INTERNAL,
-              Gitlab::VisibilityLevel::PRIVATE
-            ]
-          )
-        end
-
-        context 'reporter' do
-          let(:current_user) { reporter }
-
-          it { is_expected.to be_disallowed(:create_projects) }
-        end
-
-        context 'developer' do
-          let(:current_user) { developer }
-
-          it { is_expected.to be_disallowed(:create_projects) }
-        end
-
-        context 'maintainer' do
-          let(:current_user) { maintainer }
-
-          it { is_expected.to be_disallowed(:create_projects) }
-        end
-
-        context 'owner' do
-          let(:current_user) { owner }
-
-          it { is_expected.to be_disallowed(:create_projects) }
-        end
-      end
     end
   end
 

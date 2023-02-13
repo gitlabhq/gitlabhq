@@ -2515,6 +2515,9 @@ msgstr ""
 msgid "Additional text"
 msgstr ""
 
+msgid "Additional text for deactivation email"
+msgstr ""
+
 msgid "Additional text for the sign-in and Help page."
 msgstr ""
 
@@ -40071,6 +40074,9 @@ msgstr ""
 msgid "SlackIntegration|You may need to reinstall the GitLab for Slack app when we %{linkStart}make updates or change permissions%{linkEnd}."
 msgstr ""
 
+msgid "SlackIntegration|cannot have more than %{limit} channels"
+msgstr ""
+
 msgid "SlackModal|Are you sure you want to change the project?"
 msgstr ""
 
@@ -42437,6 +42443,9 @@ msgid "Text (optional)"
 msgstr ""
 
 msgid "Text added to the body of all email messages. %{character_limit} character limit"
+msgstr ""
+
+msgid "Text added to the body of user deactivation email messages. 1000 character limit."
 msgstr ""
 
 msgid "Text style"
@@ -45545,6 +45554,9 @@ msgstr ""
 msgid "Unsupported todo type passed. Supported todo types are: %{todo_types}"
 msgstr ""
 
+msgid "Untitled"
+msgstr ""
+
 msgid "Unused"
 msgstr ""
 
@@ -48298,6 +48310,12 @@ msgstr ""
 msgid "WorkItem|Closed"
 msgstr ""
 
+msgid "WorkItem|Convert to task"
+msgstr ""
+
+msgid "WorkItem|Converted to task"
+msgstr ""
+
 msgid "WorkItem|Create %{workItemType}"
 msgstr ""
 
@@ -48443,6 +48461,9 @@ msgid "WorkItem|Task actions"
 msgstr ""
 
 msgid "WorkItem|Task deleted"
+msgstr ""
+
+msgid "WorkItem|Task reverted"
 msgstr ""
 
 msgid "WorkItem|Tasks"

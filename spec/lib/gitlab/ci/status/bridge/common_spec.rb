@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Status::Bridge::Common do
+RSpec.describe Gitlab::Ci::Status::Bridge::Common, feature_category: :continuous_integration do
   let_it_be(:user) { create(:user) }
   let_it_be(:bridge) { create(:ci_bridge) }
   let_it_be(:downstream_pipeline) { create(:ci_pipeline) }
@@ -35,6 +35,37 @@ RSpec.describe Gitlab::Ci::Status::Bridge::Common do
     context 'when user does not have access to read downstream pipeline' do
       it { expect(subject).not_to have_details }
       it { expect(subject.details_path).to be_nil }
+    end
+  end
+
+  describe '#label' do
+    let(:description) { 'my description' }
+    let(:bridge) { create(:ci_bridge, description: description) }
+
+    subject do
+      Gitlab::Ci::Status::Created
+        .new(bridge, user)
+        .extend(described_class)
+    end
+
+    it 'returns description' do
+      expect(subject.label).to eq description
+    end
+
+    context 'when description is nil' do
+      let(:description) { nil }
+
+      it 'returns core status label' do
+        expect(subject.label).to eq('created')
+      end
+    end
+
+    context 'when description is empty string' do
+      let(:description) { '' }
+
+      it 'returns core status label' do
+        expect(subject.label).to eq('created')
+      end
     end
   end
 end

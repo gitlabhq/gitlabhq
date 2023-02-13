@@ -38,6 +38,15 @@ export default {
       // this will highlight field in green like "passed validation"
       return this.group.flags.isInvalid && this.group.flags.isAvailableForImport ? false : null;
     },
+    isPathSelectionAvailable() {
+      return this.group.flags.isAvailableForImport;
+    },
+  },
+
+  methods: {
+    focusNewName() {
+      this.$refs.newName.$el.focus();
+    },
   },
 };
 </script>
@@ -48,7 +57,7 @@ export default {
       <import-group-dropdown
         #default="{ namespaces }"
         :text="fullPath"
-        :disabled="!group.flags.isAvailableForImport"
+        :disabled="!isPathSelectionAvailable"
         toggle-class="gl-rounded-top-right-none! gl-rounded-bottom-right-none!"
         class="gl-h-7 gl-flex-grow-1"
         data-qa-selector="target_namespace_selector_dropdown"
@@ -76,23 +85,22 @@ export default {
       <div
         class="gl-h-7 gl-px-3 gl-display-flex gl-align-items-center gl-border-solid gl-border-0 gl-border-t-1 gl-border-b-1 gl-bg-gray-10"
         :class="{
-          'gl-text-gray-400 gl-border-gray-100': !group.flags.isAvailableForImport,
-          'gl-border-gray-200': group.flags.isAvailableForImport,
+          'gl-text-gray-400 gl-border-gray-100': !isPathSelectionAvailable,
+          'gl-border-gray-200': isPathSelectionAvailable,
         }"
       >
         /
       </div>
       <div class="gl-flex-grow-1">
         <gl-form-input
+          ref="newName"
           class="gl-rounded-top-left-none gl-rounded-bottom-left-none"
           :class="{
-            'gl-inset-border-1-gray-200!':
-              group.flags.isAvailableForImport && !group.flags.isInvalid,
-            'gl-inset-border-1-gray-100!':
-              !group.flags.isAvailableForImport && !group.flags.isInvalid,
+            'gl-inset-border-1-gray-200!': isPathSelectionAvailable,
+            'gl-inset-border-1-gray-100!': !isPathSelectionAvailable,
           }"
           debounce="500"
-          :disabled="!group.flags.isAvailableForImport"
+          :disabled="!isPathSelectionAvailable"
           :value="group.importTarget.newName"
           :aria-label="__('New name')"
           :state="validNameState"
@@ -101,7 +109,7 @@ export default {
       </div>
     </div>
     <div
-      v-if="group.flags.isAvailableForImport && (group.flags.isInvalid || validationMessage)"
+      v-if="isPathSelectionAvailable && (group.flags.isInvalid || validationMessage)"
       class="gl-text-red-500 gl-m-0 gl-mt-2"
       role="alert"
     >

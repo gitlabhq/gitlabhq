@@ -46,7 +46,7 @@ export default {
 <template>
   <span class="gl-white-space-nowrap gl-inline-flex gl-align-items-center">
     <gl-dropdown
-      v-if="isProjectsImportEnabled && isAvailableForImport"
+      v-if="isProjectsImportEnabled && (isAvailableForImport || isFinished)"
       :text="isFinished ? __('Re-import with projects') : __('Import with projects')"
       :disabled="isInvalid"
       variant="confirm"
@@ -60,7 +60,7 @@ export default {
       }}</gl-dropdown-item>
     </gl-dropdown>
     <gl-button
-      v-else-if="isAvailableForImport"
+      v-else-if="isAvailableForImport || isFinished"
       :disabled="isInvalid"
       variant="confirm"
       category="secondary"
@@ -70,7 +70,7 @@ export default {
       {{ isFinished ? __('Re-import') : __('Import') }}
     </gl-button>
     <gl-icon
-      v-if="isAvailableForImport && isFinished"
+      v-if="isFinished"
       v-gl-tooltip
       :size="16"
       name="information-o"

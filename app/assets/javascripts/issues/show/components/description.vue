@@ -4,6 +4,7 @@ import $ from 'jquery';
 import { uniqueId } from 'lodash';
 import Sortable from 'sortablejs';
 import Vue from 'vue';
+import getIssueDetailsQuery from 'ee_else_ce/work_items/graphql/get_issue_details.query.graphql';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { getIdFromGraphQLId, convertToGraphQLId } from '~/graphql_shared/utils';
 import { TYPENAME_WORK_ITEM } from '~/graphql_shared/constants';
@@ -16,22 +17,29 @@ import { __, s__, sprintf } from '~/locale';
 import { getSortableDefaultOptions, isDragging } from '~/sortable/utils';
 import TaskList from '~/task_list';
 import Tracking from '~/tracking';
+import addHierarchyChildMutation from '~/work_items/graphql/add_hierarchy_child.mutation.graphql';
+import removeHierarchyChildMutation from '~/work_items/graphql/remove_hierarchy_child.mutation.graphql';
+import createWorkItemMutation from '~/work_items/graphql/create_work_item.mutation.graphql';
+import deleteWorkItemMutation from '~/work_items/graphql/delete_work_item.mutation.graphql';
 import workItemQuery from '~/work_items/graphql/work_item.query.graphql';
 import projectWorkItemTypesQuery from '~/work_items/graphql/project_work_item_types.query.graphql';
-import createWorkItemFromTaskMutation from '~/work_items/graphql/create_work_item_from_task.mutation.graphql';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import WorkItemDetailModal from '~/work_items/components/work_item_detail_modal.vue';
 import {
   sprintfWorkItem,
   I18N_WORK_ITEM_ERROR_CREATING,
+  I18N_WORK_ITEM_ERROR_DELETING,
   TRACKING_CATEGORY_SHOW,
   TASK_TYPE_NAME,
-  WIDGET_TYPE_DESCRIPTION,
 } from '~/work_items/constants';
 import { renderGFM } from '~/behaviors/markdown/render_gfm';
 import eventHub from '../event_hub';
 import animateMixin from '../mixins/animate';
-import { convertDescriptionWithDeletedTaskListItem, convertDescriptionWithNewSort } from '../utils';
+import {
+  deleteTaskListItem,
+  convertDescriptionWithNewSort,
+  extractTaskTitleAndDescription,
+} from '../utils';
 import TaskListItemActions from './task_list_item_actions.vue';
 
 Vue.use(GlToast);
@@ -49,7 +57,7 @@ export default {
     WorkItemDetailModal,
   },
   mixins: [animateMixin, glFeatureFlagMixin(), Tracking.mixin()],
-  inject: ['fullPath'],
+  inject: ['fullPath', 'hasIterationsFeature'],
   props: {
     canUpdate: {
       type: Boolean,
@@ -89,6 +97,11 @@ export default {
       required: false,
       default: null,
     },
+    issueIid: {
+      type: Number,
+      required: false,
+      default: null,
+    },
     isUpdating: {
       type: Boolean,
       required: false,
@@ -103,6 +116,7 @@ export default {
       preAnimation: false,
       pulseAnimation: false,
       initialUpdate: true,
+      issueDetails: {},
       activeTask: {},
       workItemId: isPositiveInteger(workItemId)
         ? convertToGraphQLId(TYPENAME_WORK_ITEM, workItemId)
@@ -111,6 +125,16 @@ export default {
     };
   },
   apollo: {
+    issueDetails: {
+      query: getIssueDetailsQuery,
+      variables() {
+        return {
+          fullPath: this.fullPath,
+          iid: String(this.issueIid),
+        };
+      },
+      update: (data) => data.workspace?.issuable,
+    },
     workItem: {
       query: workItemQuery,
       variables() {
@@ -165,6 +189,7 @@ export default {
     },
   },
   mounted() {
+    eventHub.$on('convert-task-list-item', this.convertTaskListItem);
     eventHub.$on('delete-task-list-item', this.deleteTaskListItem);
 
     this.renderGFM();
@@ -178,6 +203,7 @@ export default {
     }
   },
   beforeDestroy() {
+    eventHub.$off('convert-task-list-item', this.convertTaskListItem);
     eventHub.$off('delete-task-list-item', this.deleteTaskListItem);
 
     this.removeAllPointerEventListeners();
@@ -319,19 +345,26 @@ export default {
         $tasksShort.text('');
       }
     },
-    createTaskListItemActions(toggleClass) {
+    createTaskListItemActions(provide) {
       const app = new Vue({
         el: document.createElement('div'),
-        provide: { toggleClass },
+        provide,
         render: (createElement) => createElement(TaskListItemActions),
       });
       return app.$el;
     },
-    deleteTaskListItem(sourcepos) {
-      this.$emit(
-        'saveDescription',
-        convertDescriptionWithDeletedTaskListItem(this.descriptionText, sourcepos),
+    convertTaskListItem(sourcepos) {
+      const oldDescription = this.descriptionText;
+      const { newDescription, taskDescription, taskTitle } = deleteTaskListItem(
+        oldDescription,
+        sourcepos,
       );
+      this.$emit('saveDescription', newDescription);
+      this.createTask({ taskTitle, taskDescription, oldDescription });
+    },
+    deleteTaskListItem(sourcepos) {
+      const { newDescription } = deleteTaskListItem(this.descriptionText, sourcepos);
+      this.$emit('saveDescription', newDescription);
     },
     renderTaskListItemActions() {
       if (!this.$el?.querySelectorAll) {
@@ -368,8 +401,9 @@ export default {
         }
 
         const toggleClass = uniqueId('task-list-item-actions-');
+        const dropdown = this.createTaskListItemActions({ canUpdate: this.canUpdate, toggleClass });
         this.addPointerEventListeners(item, `.${toggleClass}`);
-        this.insertNextToTaskListItemText(this.createTaskListItemActions(toggleClass), item);
+        this.insertNextToTaskListItemText(dropdown, item);
         this.hasTaskListItemActions = true;
       });
     },
@@ -423,54 +457,89 @@ export default {
       this.workItemId = undefined;
       this.updateWorkItemIdUrlQuery(undefined);
     },
-    async handleCreateTask(el) {
-      this.setActiveTask(el);
+    async createTask({ taskTitle, taskDescription, oldDescription }) {
       try {
+        const { title, description } = extractTaskTitleAndDescription(taskTitle, taskDescription);
+        const iterationInput = {
+          iterationWidget: {
+            iterationId: this.issueDetails.iteration?.id ?? null,
+          },
+        };
+        const input = {
+          confidential: this.issueDetails.confidential,
+          description,
+          hierarchyWidget: {
+            parentId: this.issueGid,
+          },
+          ...(this.hasIterationsFeature && iterationInput),
+          milestoneWidget: {
+            milestoneId: this.issueDetails.milestone?.id ?? null,
+          },
+          projectPath: this.fullPath,
+          title,
+          workItemTypeId: this.taskWorkItemType,
+        };
+
         const { data } = await this.$apollo.mutate({
-          mutation: createWorkItemFromTaskMutation,
-          variables: {
-            input: {
-              id: this.issueGid,
-              workItemData: {
-                lockVersion: this.lockVersion,
-                title: this.activeTask.title,
-                lineNumberStart: Number(this.activeTask.lineNumberStart),
-                lineNumberEnd: Number(this.activeTask.lineNumberEnd),
-                workItemTypeId: this.taskWorkItemType,
-              },
+          mutation: createWorkItemMutation,
+          variables: { input },
+        });
+
+        const { workItem, errors } = data.workItemCreate;
+
+        if (errors?.length) {
+          throw new Error(errors);
+        }
+
+        await this.$apollo.mutate({
+          mutation: addHierarchyChildMutation,
+          variables: { id: this.issueGid, workItem },
+        });
+
+        this.$toast.show(s__('WorkItem|Converted to task'), {
+          action: {
+            text: s__('WorkItem|Undo'),
+            onClick: (_, toast) => {
+              this.undoCreateTask(oldDescription, workItem.id);
+              toast.hide();
             },
           },
-          update(store, { data: { workItemCreateFromTask } }) {
-            const { newWorkItem } = workItemCreateFromTask;
-
-            store.writeQuery({
-              query: workItemQuery,
-              variables: {
-                id: newWorkItem.id,
-              },
-              data: {
-                workItem: newWorkItem,
-              },
-            });
-          },
         });
-
-        const { workItem, newWorkItem } = data.workItemCreateFromTask;
-
-        const updatedDescription = workItem?.widgets?.find(
-          (widget) => widget.type === WIDGET_TYPE_DESCRIPTION,
-        )?.descriptionHtml;
-
-        this.$emit('updateDescription', updatedDescription);
-        this.workItemId = newWorkItem.id;
-        this.openWorkItemDetailModal(el);
       } catch (error) {
-        createAlert({
-          message: sprintfWorkItem(I18N_WORK_ITEM_ERROR_CREATING, workItemTypes.TASK),
-          error,
-          captureError: true,
-        });
+        this.showAlert(I18N_WORK_ITEM_ERROR_CREATING, error);
       }
+    },
+    async undoCreateTask(oldDescription, id) {
+      this.$emit('saveDescription', oldDescription);
+
+      try {
+        const { data } = await this.$apollo.mutate({
+          mutation: deleteWorkItemMutation,
+          variables: { input: { id } },
+        });
+
+        const { errors } = data.workItemDelete;
+
+        if (errors?.length) {
+          throw new Error(errors);
+        }
+
+        await this.$apollo.mutate({
+          mutation: removeHierarchyChildMutation,
+          variables: { id: this.issueGid, workItem: { id } },
+        });
+
+        this.$toast.show(s__('WorkItem|Task reverted'));
+      } catch (error) {
+        this.showAlert(I18N_WORK_ITEM_ERROR_DELETING, error);
+      }
+    },
+    showAlert(message, error) {
+      createAlert({
+        message: sprintfWorkItem(message, workItemTypes.TASK),
+        error,
+        captureError: true,
+      });
     },
     handleDeleteTask(description) {
       this.$emit('updateDescription', description);

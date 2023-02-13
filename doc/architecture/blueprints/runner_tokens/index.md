@@ -46,11 +46,38 @@ runner in supported environments using the existing `gitlab-runner register` com
 
 The remaining concerns become non-issues due to the elimination of the registration token.
 
+### Comparison of current and new runner registration flow
+
+```mermaid
+graph TD
+    subgraph new[<b>New registration flow</b>]
+    A[<b>GitLab</b>: User creates a runner in GitLab UI and adds the runner configuration] -->|<b>GitLab</b>: creates ci_runners record and returns<br/>new 'glrt-' prefixed authentication token| B
+    B(<b>Runner</b>: User runs 'gitlab-runner register' command with</br>authentication token to register new runner machine with<br/>the GitLab instance) --> C{<b>Runner</b>: Does a .runner_system_id file exist in<br/>the gitlab-runner configuration directory?}
+    C -->|Yes| D[<b>Runner</b>: Reads existing system ID] --> F
+    C -->|No| E[<b>Runner</b>: Generates and persists unique system ID] --> F
+    F[<b>Runner</b>: Issues 'POST /runner/verify' request<br/>to verify authentication token validity] --> G{<b>GitLab</b>: Is the authentication token valid?}
+    G -->|Yes| H[<b>GitLab</b>: Creates ci_runner_machine database record if missing] --> J[<b>Runner</b>: Store authentication token in .config.toml]
+    G -->|No| I(<b>GitLab</b>: Returns '403 Forbidden' error) --> K(gitlab-runner register command fails)
+    J --> Z(Runner and runner machine are ready for use)
+    end
+
+    subgraph current[<b>Current registration flow</b>]
+    A'[<b>GitLab</b>: User retrieves runner registration token in GitLab UI] --> B'
+    B'[<b>Runner</b>: User runs 'gitlab-runner register' command<br/>with registration token to register new runner] -->|<b>Runner</b>: Issues 'POST /runner request' to create<br/>new runner and obtain authentication token| C'{<b>GitLab</b>: Is the registration token valid?}
+    C' -->|Yes| D'[<b>GitLab</b>: Create ci_runners database record] --> F'
+    C' -->|No| E'(<b>GitLab</b>: Return '403 Forbidden' error) --> K'(gitlab-runner register command fails)
+    F'[<b>Runner</b>: Store authentication token<br/>from response in .config.toml] --> Z'(Runner is ready for use)
+    end
+
+    style new fill:#f2ffe6
+```
+
 ### Using the authentication token in place of the registration token
 
 <!-- vale gitlab.Spelling = NO -->
-In this proposal, runners created in the GitLab UI are assigned authentication tokens prefixed with
-`glrt-` (**G**it**L**ab **R**unner **T**oken).
+In this proposal, runners created in the GitLab UI are assigned
+[authentication tokens](../../../security/token_overview.md#runner-authentication-tokens-also-called-runner-tokens)
+prefixed with `glrt-` (**G**it**L**ab **R**unner **T**oken).
 <!-- vale gitlab.Spelling = YES -->
 The prefix allows the existing `register` command to use the authentication token _in lieu_
 of the current registration token (`--registration-token`), requiring minimal adjustments in
@@ -68,8 +95,8 @@ token in the `--registration-token` argument:
 
 | Token type | Behavior |
 | ---------- | -------- |
-| Registration token | Leverages the `POST /api/v4/runners` REST endpoint to create a new runner, creating a new entry in `config.toml`. |
-| Authentication token | Leverages the `POST /api/v4/runners/verify` REST endpoint to ensure the validity of the authentication token. Creates an entry in `config.toml` file and a `system_id` value in a sidecar file if missing (`.runner_system_id`). |
+| [Registration token](../../../security/token_overview.md#runner-authentication-tokens-also-called-runner-tokens) | Leverages the `POST /api/v4/runners` REST endpoint to create a new runner, creating a new entry in `config.toml`. |
+| [Authentication token](../../../security/token_overview.md#runner-authentication-tokens-also-called-runner-tokens) | Leverages the `POST /api/v4/runners/verify` REST endpoint to ensure the validity of the authentication token. Creates an entry in `config.toml` file and a `system_id` value in a sidecar file if missing (`.runner_system_id`). |
 
 ### Transition period
 

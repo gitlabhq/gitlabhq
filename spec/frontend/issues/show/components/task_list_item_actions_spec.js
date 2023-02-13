@@ -7,7 +7,8 @@ describe('TaskListItemActions component', () => {
   let wrapper;
 
   const findGlDropdown = () => wrapper.findComponent(GlDropdown);
-  const findGlDropdownItem = () => wrapper.findComponent(GlDropdownItem);
+  const findConvertToTaskItem = () => wrapper.findAllComponents(GlDropdownItem).at(0);
+  const findDeleteItem = () => wrapper.findAllComponents(GlDropdownItem).at(1);
 
   const mountComponent = () => {
     const li = document.createElement('li');
@@ -16,7 +17,7 @@ describe('TaskListItemActions component', () => {
     document.body.appendChild(li);
 
     wrapper = shallowMount(TaskListItemActions, {
-      provide: { toggleClass: 'task-list-item-actions' },
+      provide: { canUpdate: true, toggleClass: 'task-list-item-actions' },
       attachTo: document.querySelector('div'),
     });
   };
@@ -35,10 +36,18 @@ describe('TaskListItemActions component', () => {
     });
   });
 
+  it('emits event when `Convert to task` dropdown item is clicked', () => {
+    jest.spyOn(eventHub, '$emit');
+
+    findConvertToTaskItem().vm.$emit('click');
+
+    expect(eventHub.$emit).toHaveBeenCalledWith('convert-task-list-item', '3:1-3:10');
+  });
+
   it('emits event when `Delete` dropdown item is clicked', () => {
     jest.spyOn(eventHub, '$emit');
 
-    findGlDropdownItem().vm.$emit('click');
+    findDeleteItem().vm.$emit('click');
 
     expect(eventHub.$emit).toHaveBeenCalledWith('delete-task-list-item', '3:1-3:10');
   });

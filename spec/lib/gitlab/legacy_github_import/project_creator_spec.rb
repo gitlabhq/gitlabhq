@@ -20,7 +20,7 @@ RSpec.describe Gitlab::LegacyGithubImport::ProjectCreator do
   before do
     namespace.add_owner(user)
 
-    allow_next_instances_of(Project, 2) do |project|
+    expect_next_instance_of(Project) do |project|
       allow(project).to receive(:add_import_job)
     end
   end

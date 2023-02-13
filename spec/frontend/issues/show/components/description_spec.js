@@ -2,6 +2,7 @@ import $ from 'jquery';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import { GlModal } from '@gitlab/ui';
+import getIssueDetailsQuery from 'ee_else_ce/work_items/graphql/get_issue_details.query.graphql';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import { stubComponent } from 'helpers/stub_component';
 import { TEST_HOST } from 'helpers/test_constants';
@@ -9,19 +10,22 @@ import { mockTracking } from 'helpers/tracking_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { createAlert } from '~/flash';
 import Description from '~/issues/show/components/description.vue';
 import eventHub from '~/issues/show/event_hub';
 import { updateHistory } from '~/lib/utils/url_utility';
 import workItemQuery from '~/work_items/graphql/work_item.query.graphql';
+import createWorkItemMutation from '~/work_items/graphql/create_work_item.mutation.graphql';
 import workItemTypesQuery from '~/work_items/graphql/project_work_item_types.query.graphql';
-import createWorkItemFromTaskMutation from '~/work_items/graphql/create_work_item_from_task.mutation.graphql';
 import TaskList from '~/task_list';
 import WorkItemDetailModal from '~/work_items/components/work_item_detail_modal.vue';
 import { TRACKING_CATEGORY_SHOW } from '~/work_items/constants';
 import { renderGFM } from '~/behaviors/markdown/render_gfm';
 import {
+  createWorkItemMutationErrorResponse,
+  createWorkItemMutationResponse,
+  getIssueDetailsResponse,
   projectWorkItemTypesQueryResponse,
-  createWorkItemFromTaskMutationResponse,
 } from 'jest/work_items/mock_data';
 import {
   descriptionProps as initialProps,
@@ -30,6 +34,7 @@ import {
   descriptionHtmlWithTask,
 } from '../mock_data/mock_data';
 
+jest.mock('~/flash');
 jest.mock('~/lib/utils/url_utility', () => ({
   ...jest.requireActual('~/lib/utils/url_utility'),
   updateHistory: jest.fn(),
@@ -45,6 +50,7 @@ const $toast = {
   show: jest.fn(),
 };
 
+const issueDetailsResponse = getIssueDetailsResponse();
 const workItemQueryResponse = {
   data: {
     workItem: null,
@@ -53,9 +59,6 @@ const workItemQueryResponse = {
 
 const queryHandler = jest.fn().mockResolvedValue(workItemQueryResponse);
 const workItemTypesQueryHandler = jest.fn().mockResolvedValue(projectWorkItemTypesQueryResponse);
-const createWorkItemFromTaskSuccessHandler = jest
-  .fn()
-  .mockResolvedValue(createWorkItemFromTaskMutationResponse);
 
 describe('Description component', () => {
   let wrapper;
@@ -74,23 +77,27 @@ describe('Description component', () => {
   function createComponent({
     props = {},
     provide,
-    createWorkItemFromTaskHandler = createWorkItemFromTaskSuccessHandler,
+    issueDetailsQueryHandler = jest.fn().mockResolvedValue(issueDetailsResponse),
+    createWorkItemMutationHandler,
     ...options
   } = {}) {
     wrapper = shallowMountExtended(Description, {
       propsData: {
         issueId: 1,
+        issueIid: 1,
         ...initialProps,
         ...props,
       },
       provide: {
         fullPath: 'gitlab-org/gitlab-test',
+        hasIterationsFeature: true,
         ...provide,
       },
       apolloProvider: createMockApollo([
         [workItemQuery, queryHandler],
         [workItemTypesQuery, workItemTypesQueryHandler],
-        [createWorkItemFromTaskMutation, createWorkItemFromTaskHandler],
+        [getIssueDetailsQuery, issueDetailsQueryHandler],
+        [createWorkItemMutation, createWorkItemMutationHandler],
       ]),
       mocks: {
         $toast,
@@ -357,6 +364,100 @@ describe('Description component', () => {
     });
 
     describe('task list item actions', () => {
+      describe('converting the task list item to a task', () => {
+        describe('when successful', () => {
+          let createWorkItemMutationHandler;
+
+          beforeEach(async () => {
+            createWorkItemMutationHandler = jest
+              .fn()
+              .mockResolvedValue(createWorkItemMutationResponse);
+            const descriptionText = `Tasks
+
+1. [ ] item 1
+   1. [ ] item 2
+
+      paragraph text
+
+      1. [ ] item 3
+   1. [ ] item 4;`;
+            createComponent({
+              props: { descriptionText },
+              provide: { glFeatures: { workItemsMvc2: true } },
+              createWorkItemMutationHandler,
+            });
+            await waitForPromises();
+
+            eventHub.$emit('convert-task-list-item', '4:4-8:19');
+            await waitForPromises();
+          });
+
+          it('emits an event to update the description with the deleted task list item omitted', () => {
+            const newDescriptionText = `Tasks
+
+1. [ ] item 1
+   1. [ ] item 3
+   1. [ ] item 4;`;
+
+            expect(wrapper.emitted('saveDescription')).toEqual([[newDescriptionText]]);
+          });
+
+          it('calls a mutation to create a task', () => {
+            const {
+              confidential,
+              iteration,
+              milestone,
+            } = issueDetailsResponse.data.workspace.issuable;
+            expect(createWorkItemMutationHandler).toHaveBeenCalledWith({
+              input: {
+                confidential,
+                description: '\nparagraph text\n',
+                hierarchyWidget: {
+                  parentId: 'gid://gitlab/WorkItem/1',
+                },
+                iterationWidget: {
+                  iterationId: IS_EE ? iteration.id : null,
+                },
+                milestoneWidget: {
+                  milestoneId: milestone.id,
+                },
+                projectPath: 'gitlab-org/gitlab-test',
+                title: 'item 2',
+                workItemTypeId: 'gid://gitlab/WorkItems::Type/3',
+              },
+            });
+          });
+
+          it('shows a toast to confirm the creation of the task', () => {
+            expect($toast.show).toHaveBeenCalledWith('Converted to task', expect.any(Object));
+          });
+        });
+
+        describe('when unsuccessful', () => {
+          beforeEach(async () => {
+            createComponent({
+              props: { descriptionText: 'description' },
+              provide: { glFeatures: { workItemsMvc2: true } },
+              createWorkItemMutationHandler: jest
+                .fn()
+                .mockResolvedValue(createWorkItemMutationErrorResponse),
+            });
+            await waitForPromises();
+
+            eventHub.$emit('convert-task-list-item', '1:1-1:11');
+            await waitForPromises();
+          });
+
+          it('shows an alert with an error message', () => {
+            expect(createAlert).toHaveBeenCalledWith({
+              message: 'Something went wrong when creating task. Please try again.',
+              error: new Error('an error'),
+              captureError: true,
+            });
+          });
+        });
+      });
+
       describe('deleting the task list item', () => {
         it('emits an event to update the description with the deleted task list item', () => {
           const descriptionText = `Tasks

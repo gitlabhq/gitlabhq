@@ -5,6 +5,7 @@ import eventHub from '../event_hub';
 
 export default {
   i18n: {
+    convertToTask: s__('WorkItem|Convert to task'),
     delete: __('Delete'),
     taskActions: s__('WorkItem|Task actions'),
   },
@@ -12,8 +13,11 @@ export default {
     GlDropdown,
     GlDropdownItem,
   },
-  inject: ['toggleClass'],
+  inject: ['canUpdate', 'toggleClass'],
   methods: {
+    convertToTask() {
+      eventHub.$emit('convert-task-list-item', this.$el.closest('li').dataset.sourcepos);
+    },
     deleteTaskListItem() {
       eventHub.$emit('delete-task-list-item', this.$el.closest('li').dataset.sourcepos);
     },
@@ -33,7 +37,10 @@ export default {
     text-sr-only
     :toggle-class="`task-list-item-actions gl-opacity-0 gl-p-2! ${toggleClass}`"
   >
-    <gl-dropdown-item variant="danger" @click="deleteTaskListItem">
+    <gl-dropdown-item v-if="canUpdate" @click="convertToTask">
+      {{ $options.i18n.convertToTask }}
+    </gl-dropdown-item>
+    <gl-dropdown-item v-if="canUpdate" variant="danger" @click="deleteTaskListItem">
       {{ $options.i18n.delete }}
     </gl-dropdown-item>
   </gl-dropdown>

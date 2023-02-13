@@ -18,6 +18,7 @@ import changeWorkItemParentMutation from '~/work_items/graphql/update_work_item.
 import getWorkItemLinksQuery from '~/work_items/graphql/work_item_links.query.graphql';
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
 import {
+  getIssueDetailsResponse,
   workItemHierarchyResponse,
   workItemHierarchyEmptyResponse,
   workItemHierarchyNoUpdatePermissionResponse,
@@ -28,39 +29,6 @@ import {
 
 Vue.use(VueApollo);
 
-const issueDetailsResponse = (confidential = false) => ({
-  data: {
-    workspace: {
-      id: 'gid://gitlab/Project/1',
-      issuable: {
-        id: 'gid://gitlab/Issue/4',
-        confidential,
-        iteration: {
-          id: 'gid://gitlab/Iteration/1124',
-          title: null,
-          startDate: '2022-06-22',
-          dueDate: '2022-07-19',
-          webUrl: 'http://127.0.0.1:3000/groups/gitlab-org/-/iterations/1124',
-          iterationCadence: {
-            id: 'gid://gitlab/Iterations::Cadence/1101',
-            title: 'Quod voluptates quidem ea eaque eligendi ex corporis.',
-            __typename: 'IterationCadence',
-          },
-          __typename: 'Iteration',
-        },
-        milestone: {
-          dueDate: null,
-          expired: false,
-          id: 'gid://gitlab/Milestone/28',
-          title: 'v2.0',
-          __typename: 'Milestone',
-        },
-        __typename: 'Issue',
-      },
-      __typename: 'Project',
-    },
-  },
-});
 const showModal = jest.fn();
 
 describe('WorkItemLinks', () => {
@@ -84,7 +52,7 @@ describe('WorkItemLinks', () => {
     data = {},
     fetchHandler = jest.fn().mockResolvedValue(workItemHierarchyResponse),
     mutationHandler = mutationChangeParentHandler,
-    issueDetailsQueryHandler = jest.fn().mockResolvedValue(issueDetailsResponse()),
+    issueDetailsQueryHandler = jest.fn().mockResolvedValue(getIssueDetailsResponse()),
     hasIterationsFeature = false,
     fetchByIid = false,
   } = {}) => {
@@ -295,7 +263,9 @@ describe('WorkItemLinks', () => {
   describe('when parent item is confidential', () => {
     it('passes correct confidentiality status to form', async () => {
       await createComponent({
-        issueDetailsQueryHandler: jest.fn().mockResolvedValue(issueDetailsResponse(true)),
+        issueDetailsQueryHandler: jest
+          .fn()
+          .mockResolvedValue(getIssueDetailsResponse({ confidential: true })),
       });
       findToggleFormDropdown().vm.$emit('click');
       findToggleAddFormButton().vm.$emit('click');

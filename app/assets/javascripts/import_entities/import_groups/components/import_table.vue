@@ -103,6 +103,7 @@ export default {
       perPage: DEFAULT_PAGE_SIZE,
       selectedGroupsIds: [],
       pendingGroupsIds: [],
+      reimportRequests: [],
       importTargets: {},
       unavailableFeaturesAlertVisible: true,
       helpUrl: helpPagePath('ee/user/group/import', {
@@ -181,9 +182,14 @@ export default {
         const importTarget = this.importTargets[group.id];
         const status = this.getStatus(group);
 
+        const isGroupAvailableForImport = isFinished(group)
+          ? this.reimportRequests.includes(group.id)
+          : isAvailableForImport(group) && status !== STATUSES.SCHEDULING;
+
         const flags = {
           isInvalid: (importTarget.validationErrors ?? []).filter((e) => !e.nonBlocking).length > 0,
-          isAvailableForImport: isAvailableForImport(group) && status !== STATUSES.SCHEDULING,
+          isAvailableForImport: isGroupAvailableForImport,
+          isAllowedForReimport: false,
           isFinished: isFinished(group),
         };
 
@@ -359,13 +365,9 @@ export default {
       this.validateImportTarget(newImportTarget);
     },
 
-    async importGroups(importRequests) {
+    async requestGroupsImport(importRequests) {
       const newPendingGroupsIds = importRequests.map((request) => request.sourceGroupId);
       newPendingGroupsIds.forEach((id) => {
-        this.importTargets[id].validationErrors = [
-          { field: NEW_NAME_FIELD, message: i18n.ERROR_IMPORT_COMPLETED },
-        ];
-
         if (!this.pendingGroupsIds.includes(id)) {
           this.pendingGroupsIds.push(id);
         }
@@ -397,6 +399,26 @@ export default {
       }
     },
 
+    importGroup({ group, extraArgs, index }) {
+      if (group.flags.isFinished && !this.reimportRequests.includes(group.id)) {
+        this.validateImportTarget(group.importTarget);
+        this.reimportRequests.push(group.id);
+        this.$nextTick(() => {
+          this.$refs[`importTargetCell-${index}`].focusNewName();
+        });
+      } else {
+        this.reimportRequests = this.reimportRequests.filter((id) => id !== group.id);
+        this.requestGroupsImport([
+          {
+            sourceGroupId: group.id,
+            targetNamespace: group.importTarget.targetNamespace.fullPath,
+            newName: group.importTarget.newName,
+            ...extraArgs,
+          },
+        ]);
+      }
+    },
+
     importSelectedGroups(extraArgs = {}) {
       const importRequests = this.groupsTableData
         .filter((group) => this.selectedGroupsIds.includes(group.id))
@@ -407,7 +429,7 @@ export default {
           ...extraArgs,
         }));
 
-      this.importGroups(importRequests);
+      this.requestGroupsImport(importRequests);
     },
 
     setPageSize(size) {
@@ -768,8 +790,9 @@ export default {
           <template #cell(webUrl)="{ item: group }">
             <import-source-cell :group="group" />
           </template>
-          <template #cell(importTarget)="{ item: group }">
+          <template #cell(importTarget)="{ item: group, index }">
             <import-target-cell
+              :ref="`importTargetCell-${index}`"
               :group="group"
               :group-path-regex="groupPathRegex"
               @update-target-namespace="updateImportTarget(group, { targetNamespace: $event })"
@@ -779,22 +802,13 @@ export default {
           <template #cell(progress)="{ item: group }">
             <import-status-cell :status="group.visibleStatus" class="gl-line-height-32" />
           </template>
-          <template #cell(actions)="{ item: group }">
+          <template #cell(actions)="{ item: group, index }">
             <import-actions-cell
               :is-projects-import-enabled="isProjectsImportEnabled"
               :is-finished="group.flags.isFinished"
               :is-available-for-import="group.flags.isAvailableForImport"
               :is-invalid="group.flags.isInvalid"
-              @import-group="
-                importGroups([
-                  {
-                    sourceGroupId: group.id,
-                    targetNamespace: group.importTarget.targetNamespace.fullPath,
-                    newName: group.importTarget.newName,
-                    ...$event,
-                  },
-                ])
-              "
+              @import-group="importGroup({ group, extraArgs: $event, index })"
             />
           </template>
         </gl-table>

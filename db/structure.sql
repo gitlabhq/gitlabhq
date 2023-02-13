@@ -11840,6 +11840,7 @@ CREATE TABLE approval_merge_request_rules (
     severity_levels text[] DEFAULT '{}'::text[] NOT NULL,
     vulnerability_states text[] DEFAULT '{newly_detected}'::text[] NOT NULL,
     security_orchestration_policy_configuration_id bigint,
+    scan_result_policy_id bigint,
     CONSTRAINT check_6fca5928b2 CHECK ((char_length(section) <= 255))
 );
 
@@ -11912,7 +11913,8 @@ CREATE TABLE approval_project_rules (
     vulnerability_states text[] DEFAULT '{newly_detected}'::text[] NOT NULL,
     orchestration_policy_idx smallint,
     applies_to_all_protected_branches boolean DEFAULT false NOT NULL,
-    security_orchestration_policy_configuration_id bigint
+    security_orchestration_policy_configuration_id bigint,
+    scan_result_policy_id bigint
 );
 
 CREATE TABLE approval_project_rules_groups (
@@ -21726,7 +21728,8 @@ CREATE TABLE scan_result_policies (
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
     orchestration_policy_idx smallint NOT NULL,
-    license_states text[] DEFAULT '{}'::text[]
+    license_states text[] DEFAULT '{}'::text[],
+    match_on_inclusion boolean
 );
 
 CREATE SEQUENCE scan_result_policies_id_seq
@@ -28806,6 +28809,8 @@ CREATE INDEX idx_security_scans_on_scan_type ON security_scans USING btree (scan
 
 CREATE UNIQUE INDEX idx_serverless_domain_cluster_on_clusters_applications_knative ON serverless_domain_cluster USING btree (clusters_applications_knative_id);
 
+CREATE UNIQUE INDEX idx_software_license_policies_unique_on_project_and_scan_policy ON software_license_policies USING btree (project_id, software_license_id, scan_result_policy_id);
+
 CREATE INDEX idx_streaming_headers_on_external_audit_event_destination_id ON audit_events_streaming_headers USING btree (external_audit_event_destination_id);
 
 CREATE INDEX idx_test_reports_on_issue_id_created_at_and_id ON requirements_management_test_reports USING btree (issue_id, created_at, id);
@@ -31577,8 +31582,6 @@ CREATE INDEX index_snippets_on_visibility_level_and_secret ON snippets USING btr
 CREATE INDEX index_software_license_policies_on_scan_result_policy_id ON software_license_policies USING btree (scan_result_policy_id);
 
 CREATE INDEX index_software_license_policies_on_software_license_id ON software_license_policies USING btree (software_license_id);
-
-CREATE UNIQUE INDEX index_software_license_policies_unique_per_project ON software_license_policies USING btree (project_id, software_license_id);
 
 CREATE INDEX index_software_licenses_on_spdx_identifier ON software_licenses USING btree (spdx_identifier);
 
@@ -34494,6 +34497,9 @@ ALTER TABLE ONLY protected_branches
 ALTER TABLE ONLY issues
     ADD CONSTRAINT fk_df75a7c8b8 FOREIGN KEY (promoted_to_epic_id) REFERENCES epics(id) ON DELETE SET NULL;
 
+ALTER TABLE ONLY approval_project_rules
+    ADD CONSTRAINT fk_e1372c912e FOREIGN KEY (scan_result_policy_id) REFERENCES scan_result_policies(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY ci_resources
     ADD CONSTRAINT fk_e169a8e3d5_p FOREIGN KEY (partition_id, build_id) REFERENCES ci_builds(partition_id, id) ON UPDATE CASCADE ON DELETE SET NULL;
 
@@ -34577,6 +34583,9 @@ ALTER TABLE ONLY boards_epic_list_user_preferences
 
 ALTER TABLE ONLY user_project_callouts
     ADD CONSTRAINT fk_f62dd11a33 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY approval_merge_request_rules
+    ADD CONSTRAINT fk_f726c79756 FOREIGN KEY (scan_result_policy_id) REFERENCES scan_result_policies(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY cluster_agents
     ADD CONSTRAINT fk_f7d43dee13 FOREIGN KEY (created_by_user_id) REFERENCES users(id) ON DELETE SET NULL;

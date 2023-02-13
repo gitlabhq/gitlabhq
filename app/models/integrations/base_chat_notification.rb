@@ -23,6 +23,7 @@ module Integrations
     ].freeze
 
     SECRET_MASK = '************'
+    CHANNEL_LIMIT_PER_EVENT = 10
 
     attribute :category, default: 'chat'
 
@@ -37,7 +38,8 @@ module Integrations
               presence: true,
               public_url: true,
               if: -> (integration) { integration.activated? && integration.requires_webhook? }
-    validates :labels_to_be_notified_behavior, inclusion: { in: LABEL_NOTIFICATION_BEHAVIOURS }, allow_blank: true
+    validates :labels_to_be_notified_behavior, inclusion: { in: LABEL_NOTIFICATION_BEHAVIOURS }, allow_blank: true, if: :activated?
+    validate :validate_channel_limit, if: :activated?
 
     def initialize_properties
       super
@@ -300,13 +302,28 @@ module Integrations
       channel_names = event_channel_value(event).presence || channel.presence
       return [] unless channel_names
 
-      channel_names.split(',').map(&:strip)
+      channel_names.split(',').map(&:strip).uniq
     end
 
     def unique_channels
       @unique_channels ||= supported_events.flat_map do |event|
         channels_for_event(event)
       end.uniq
+    end
+
+    def validate_channel_limit
+      supported_events.each do |event|
+        count = channels_for_event(event).count
+        next unless count > CHANNEL_LIMIT_PER_EVENT
+
+        errors.add(
+          event_channel_name(event).to_sym,
+          format(
+            s_('SlackIntegration|cannot have more than %{limit} channels'),
+            limit: CHANNEL_LIMIT_PER_EVENT
+          )
+        )
+      end
     end
   end
 end

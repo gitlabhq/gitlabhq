@@ -38,6 +38,7 @@ describe('import table', () => {
   const FAKE_GROUPS = [
     generateFakeEntry({ id: 1, status: STATUSES.NONE }),
     generateFakeEntry({ id: 2, status: STATUSES.FINISHED }),
+    generateFakeEntry({ id: 3, status: STATUSES.NONE }),
   ];
   const FAKE_PAGE_INFO = { page: 1, perPage: 20, total: 40, totalPages: 2 };
   const FAKE_VERSION_VALIDATION = {
@@ -65,8 +66,8 @@ describe('import table', () => {
   const triggerSelectAllCheckbox = (checked = true) =>
     wrapper.find('thead input[type=checkbox]').setChecked(checked);
 
-  const selectRow = (idx) =>
-    wrapper.findAll('tbody td input[type=checkbox]').at(idx).setChecked(true);
+  const findRowCheckbox = (idx) => wrapper.findAll('tbody td input[type=checkbox]').at(idx);
+  const selectRow = (idx) => findRowCheckbox(idx).setChecked(true);
 
   const createComponent = ({
     bulkImportSourceGroups,
@@ -115,7 +116,7 @@ describe('import table', () => {
 
   beforeEach(() => {
     axiosMock = new MockAdapter(axios);
-    axiosMock.onGet(/.*\/exists$/, () => []).reply(HTTP_STATUS_OK);
+    axiosMock.onGet(/.*\/exists$/, () => []).reply(HTTP_STATUS_OK, { exists: false });
   });
 
   afterEach(() => {
@@ -607,6 +608,40 @@ describe('import table', () => {
 
     expect(tooltip).toBeDefined();
     expect(tooltip.value).toBe('Path of the new group.');
+  });
+
+  describe('re-import', () => {
+    it('renders finished row as disabled by default', async () => {
+      createComponent({
+        bulkImportSourceGroups: () => ({
+          nodes: [generateFakeEntry({ id: 5, status: STATUSES.FINISHED })],
+          pageInfo: FAKE_PAGE_INFO,
+          versionValidation: FAKE_VERSION_VALIDATION,
+        }),
+      });
+      await waitForPromises();
+
+      expect(findRowCheckbox(0).attributes('disabled')).toBeDefined();
+    });
+
+    it('enables row after clicking re-import', async () => {
+      createComponent({
+        bulkImportSourceGroups: () => ({
+          nodes: [generateFakeEntry({ id: 5, status: STATUSES.FINISHED })],
+          pageInfo: FAKE_PAGE_INFO,
+          versionValidation: FAKE_VERSION_VALIDATION,
+        }),
+      });
+      await waitForPromises();
+
+      const reimportButton = wrapper
+        .findAll('tbody td button')
+        .wrappers.find((w) => w.text().includes('Re-import'));
+
+      await reimportButton.trigger('click');
+
+      expect(findRowCheckbox(0).attributes('disabled')).toBeUndefined();
+    });
   });
 
   describe('unavailable features warning', () => {

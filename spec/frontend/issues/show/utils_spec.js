@@ -1,6 +1,7 @@
 import {
-  convertDescriptionWithDeletedTaskListItem,
+  deleteTaskListItem,
   convertDescriptionWithNewSort,
+  extractTaskTitleAndDescription,
 } from '~/issues/show/utils';
 
 describe('app/assets/javascripts/issues/show/utils.js', () => {
@@ -141,7 +142,7 @@ describe('app/assets/javascripts/issues/show/utils.js', () => {
     });
   });
 
-  describe('convertDescriptionWithDeletedTaskListItem', () => {
+  describe('deleteTaskListItem', () => {
     const description = `Tasks
 
 1. [ ] item 1
@@ -226,9 +227,10 @@ describe('app/assets/javascripts/issues/show/utils.js', () => {
       1. [ ] item 9
    1. [ ] item 10`;
 
-      expect(convertDescriptionWithDeletedTaskListItem(description, sourcepos)).toBe(
+      expect(deleteTaskListItem(description, sourcepos)).toEqual({
         newDescription,
-      );
+        taskTitle: 'item 2',
+      });
     });
 
     it('deletes deeply nested item with no children', () => {
@@ -254,9 +256,10 @@ describe('app/assets/javascripts/issues/show/utils.js', () => {
       1. [ ] item 9
    1. [ ] item 10`;
 
-      expect(convertDescriptionWithDeletedTaskListItem(description, sourcepos)).toBe(
+      expect(deleteTaskListItem(description, sourcepos)).toEqual({
         newDescription,
-      );
+        taskTitle: 'item 4',
+      });
     });
 
     it('deletes item with children and moves sub-tasks up a level', () => {
@@ -282,9 +285,10 @@ describe('app/assets/javascripts/issues/show/utils.js', () => {
       1. [ ] item 9
    1. [ ] item 10`;
 
-      expect(convertDescriptionWithDeletedTaskListItem(description, sourcepos)).toBe(
+      expect(deleteTaskListItem(description, sourcepos)).toEqual({
         newDescription,
-      );
+        taskTitle: 'item 3',
+      });
     });
 
     it('deletes item with associated paragraph text', () => {
@@ -306,10 +310,15 @@ describe('app/assets/javascripts/issues/show/utils.js', () => {
 
       1. [ ] item 9
    1. [ ] item 10`;
+      const taskDescription = `
+paragraph text
+`;
 
-      expect(convertDescriptionWithDeletedTaskListItem(description, sourcepos)).toBe(
+      expect(deleteTaskListItem(description, sourcepos)).toEqual({
         newDescription,
-      );
+        taskDescription,
+        taskTitle: 'item 6',
+      });
     });
 
     it('deletes item with associated paragraph text and moves sub-tasks up a level', () => {
@@ -331,10 +340,71 @@ describe('app/assets/javascripts/issues/show/utils.js', () => {
 
    1. [ ] item 9
    1. [ ] item 10`;
+      const taskDescription = `
+paragraph text
+`;
 
-      expect(convertDescriptionWithDeletedTaskListItem(description, sourcepos)).toBe(
+      expect(deleteTaskListItem(description, sourcepos)).toEqual({
         newDescription,
-      );
+        taskDescription,
+        taskTitle: 'item 7',
+      });
+    });
+  });
+
+  describe('extractTaskTitleAndDescription', () => {
+    const description = `A multi-line
+description`;
+
+    describe('when title is pure code block', () => {
+      const title = '`code block`';
+
+      it('moves the title to the description', () => {
+        expect(extractTaskTitleAndDescription(title)).toEqual({
+          title: 'Untitled',
+          description: title,
+        });
+      });
+
+      it('moves the title to the description and appends the description to it', () => {
+        expect(extractTaskTitleAndDescription(title, description)).toEqual({
+          title: 'Untitled',
+          description: `${title}\n\n${description}`,
+        });
+      });
+    });
+
+    describe('when title is too long', () => {
+      const title =
+        'Deleniti id facere numquam cum consectetur sint ipsum consequatur. Odit nihil harum consequuntur est nemo adipisci. Incidunt suscipit voluptatem et culpa at voluptatem consequuntur. Rerum aliquam earum quia consequatur ipsam quae ut. Quod molestias ducimus quia ratione nostrum ut adipisci.';
+      const expectedTitle =
+        'Deleniti id facere numquam cum consectetur sint ipsum consequatur. Odit nihil harum consequuntur est nemo adipisci. Incidunt suscipit voluptatem et culpa at voluptatem consequuntur. Rerum aliquam earum quia consequatur ipsam quae ut. Quod molestias ducimu';
+
+      it('moves the title beyond the character limit to the description', () => {
+        expect(extractTaskTitleAndDescription(title)).toEqual({
+          title: expectedTitle,
+          description: 's quia ratione nostrum ut adipisci.',
+        });
+      });
+
+      it('moves the title beyond the character limit to the description and appends the description to it', () => {
+        expect(extractTaskTitleAndDescription(title, description)).toEqual({
+          title: expectedTitle,
+          description: `s quia ratione nostrum ut adipisci.\n\n${description}`,
+        });
+      });
+    });
+
+    describe('when title is fine', () => {
+      const title = 'A fine title';
+
+      it('uses the title with no modifications', () => {
+        expect(extractTaskTitleAndDescription(title)).toEqual({ title });
+      });
+
+      it('uses the title and description with no modifications', () => {
+        expect(extractTaskTitleAndDescription(title, description)).toEqual({ title, description });
+      });
     });
   });
 });

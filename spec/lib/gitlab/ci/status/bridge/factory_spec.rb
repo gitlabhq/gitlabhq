@@ -25,7 +25,7 @@ RSpec.describe Gitlab::Ci::Status::Bridge::Factory, feature_category: :continuou
       expect(status.text).to eq s_('CiStatusText|created')
       expect(status.icon).to eq 'status_created'
       expect(status.favicon).to eq 'favicon_status_created'
-      expect(status.label).to be_nil
+      expect(status.label).to eq 'created'
       expect(status).not_to have_details
       expect(status).not_to have_action
     end
@@ -52,7 +52,7 @@ RSpec.describe Gitlab::Ci::Status::Bridge::Factory, feature_category: :continuou
       expect(status.text).to eq s_('CiStatusText|failed')
       expect(status.icon).to eq 'status_failed'
       expect(status.favicon).to eq 'favicon_status_failed'
-      expect(status.label).to be_nil
+      expect(status.label).to eq 'failed'
       expect(status.status_tooltip).to eq "#{s_('CiStatusText|failed')} - (unknown failure)"
       expect(status).not_to have_details
       expect(status).to have_action

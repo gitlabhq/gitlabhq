@@ -22,6 +22,22 @@ To edit an issue:
 1. Edit the available fields.
 1. Select **Save changes**.
 
+### Remove a task list item
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/377307) in GitLab 15.9 [with a flag](../../../administration/feature_flags.md) named `work_items_mvc_2`. Disabled by default.
+
+Prerequisites:
+
+- You must have at least the Reporter role for the project, or be the author or assignee of the issue.
+
+In an issue description with task list items:
+
+1. Hover over a task list item and select the options menu (**{ellipsis_v}**).
+1. Select **Delete**.
+
+The task list item is removed from the issue description.
+Any nested task list items are moved up a nested level.
+
 ## Bulk edit issues from a project
 
 > - Assigning epic [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/210470) in GitLab 13.2.

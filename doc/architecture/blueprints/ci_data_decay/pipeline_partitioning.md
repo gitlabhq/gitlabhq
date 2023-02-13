@@ -758,26 +758,25 @@ gantt
   section Phase 0
     Build data partitioning strategy :done, 0_1, 2022-06-01, 90d
   section Phase 1
-    Partition biggest CI tables :1_1, after 0_1, 140d
-    Biggest table partitioned :milestone, metadata, 2022-12-01, 1min
+    Partition biggest CI tables :1_1, after 0_1, 200d
+    Biggest table partitioned :milestone, metadata, 2023-03-01, 1min
     Tables larger than 100GB partitioned :milestone, 100gb, after 1_1, 1min
   section Phase 2
-    Add paritioning keys to SQL queries :2_1, after 1_1, 120d
+    Add paritioning keys to SQL queries :2_1, 2023-01-01, 120d
     Emergency partition detachment possible :milestone, detachment, 2023-04-01, 1min
     All SQL queries are routed to partitions :milestone, routing, after 2_1, 1min
   section Phase 3
-    Build new data access patterns :3_1, 2023-03-01, 120d
-    New API endpoint created for inactive data :milestone, api1, 2023-05-01, 1min
-    Filtering added to existing API endpoints :milestone, api2, 2023-07-01, 1min
+    Build new data access patterns :3_1, 2023-05-01, 120d
+    New API endpoint created for inactive data :milestone, api1, 2023-07-01, 1min
+    Filtering added to existing API endpoints :milestone, api2, 2023-09-01, 1min
   section Phase 4
-    Introduce time-decay mechanisms :4_1, 2023-06-01, 120d
-    Inactive partitions are not being read :milestone, part1, 2023-08-01, 1min
-    Performance of the database cluster improves :milestone, part2, 2023-09-01, 1min
+    Introduce time-decay mechanisms :4_1, 2023-08-01, 120d
+    Inactive partitions are not being read :milestone, part1, 2023-10-01, 1min
+    Performance of the database cluster improves :milestone, part2, 2023-11-01, 1min
   section Phase 5
-    Introduce auto-partitioning mechanisms :5_1, 2023-07-01, 120d
-    New partitions are being created automatically :milestone, part3, 2023-10-01, 1min
-    Partitioning is made available on self-managed :milestone, part4, 2023-11-01, 1min
-```
+    Introduce auto-partitioning mechanisms :5_1, 2023-09-01, 120d
+    New partitions are being created automatically :milestone, part3, 2023-12-01, 1min
+    Partitioning is made available on self-managed :milestone, part4, 2024-01-01, 1min
 
 ## Conclusions
 

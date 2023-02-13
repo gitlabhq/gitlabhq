@@ -2,7 +2,6 @@
 Rake/Require:
   Details: grace period
   Exclude:
-    - 'ee/lib/tasks/gitlab/spdx.rake'
     - 'lib/tasks/gitlab/artifacts/migrate.rake'
     - 'lib/tasks/gitlab/assets.rake'
     - 'lib/tasks/gitlab/backup.rake'

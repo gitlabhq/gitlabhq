@@ -28,6 +28,8 @@ to control GitLab from Slack. Slash commands are configured separately.
 
 ## Configure GitLab
 
+> [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106760) in GitLab 15.9 to limit Slack channels to 10 per event.
+
 1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > Integrations**.
 1. Select **Slack notifications**.

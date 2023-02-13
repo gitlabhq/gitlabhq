@@ -829,7 +829,34 @@ RSpec.describe 'Admin updates settings', feature_category: :not_owned do
 
     context 'Preferences page' do
       before do
+        stub_feature_flags(deactivation_email_additional_text: deactivation_email_additional_text_feature_flag)
         visit preferences_admin_application_settings_path
+      end
+
+      let(:deactivation_email_additional_text_feature_flag) { true }
+
+      describe 'Email page' do
+        context 'when deactivation email additional text feature flag is enabled' do
+          it 'shows deactivation email additional text field' do
+            expect(page).to have_field 'Additional text for deactivation email'
+
+            page.within('.as-email') do
+              fill_in 'Additional text for deactivation email', with: 'So long and thanks for all the fish!'
+              click_button 'Save changes'
+            end
+
+            expect(page).to have_content 'Application settings saved successfully'
+            expect(current_settings.deactivation_email_additional_text).to eq('So long and thanks for all the fish!')
+          end
+        end
+
+        context 'when deactivation email additional text feature flag is disabled' do
+          let(:deactivation_email_additional_text_feature_flag) { false }
+
+          it 'does not show deactivation email additional text field' do
+            expect(page).not_to have_field 'Additional text for deactivation email'
+          end
+        end
       end
 
       it 'change Help page' do
