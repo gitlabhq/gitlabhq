@@ -55,7 +55,7 @@ module API
           return unless params[:system_id]
 
           strong_memoize(:current_runner_machine) do
-            current_runner.ensure_machine(machine_xid: params[:system_id]) { |m| m.contacted_at = Time.current }
+            current_runner.ensure_machine(system_xid: params[:system_id]) { |m| m.contacted_at = Time.current }
           end
         end
 

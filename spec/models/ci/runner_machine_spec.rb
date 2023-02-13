@@ -12,8 +12,8 @@ RSpec.describe Ci::RunnerMachine, feature_category: :runner_fleet, type: :model 
 
   describe 'validation' do
     it { is_expected.to validate_presence_of(:runner) }
-    it { is_expected.to validate_presence_of(:machine_xid) }
-    it { is_expected.to validate_length_of(:machine_xid).is_at_most(64) }
+    it { is_expected.to validate_presence_of(:system_xid) }
+    it { is_expected.to validate_length_of(:system_xid).is_at_most(64) }
     it { is_expected.to validate_length_of(:version).is_at_most(2048) }
     it { is_expected.to validate_length_of(:revision).is_at_most(255) }
     it { is_expected.to validate_length_of(:platform).is_at_most(255) }

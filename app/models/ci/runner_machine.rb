@@ -4,6 +4,9 @@ module Ci
   class RunnerMachine < Ci::ApplicationRecord
     include FromUnion
     include Ci::HasRunnerExecutor
+    include IgnorableColumns
+
+    ignore_column :machine_xid, remove_with: '15.10', remove_after: '2022-03-22'
 
     belongs_to :runner
 
@@ -13,7 +16,7 @@ module Ci
                class_name: 'Ci::RunnerVersion'
 
     validates :runner, presence: true
-    validates :machine_xid, presence: true, length: { maximum: 64 }
+    validates :system_xid, presence: true, length: { maximum: 64 }
     validates :version, length: { maximum: 2048 }
     validates :revision, length: { maximum: 255 }
     validates :platform, length: { maximum: 255 }

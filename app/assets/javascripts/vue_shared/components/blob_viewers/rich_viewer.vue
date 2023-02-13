@@ -16,7 +16,7 @@ export default {
     handleBlobRichViewer(this.$refs.content, this.type);
   },
   safeHtmlConfig: {
-    ADD_TAGS: ['copy-code'],
+    ADD_TAGS: ['gl-emoji', 'copy-code'],
   },
 };
 </script>

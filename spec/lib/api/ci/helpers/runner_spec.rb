@@ -69,7 +69,7 @@ RSpec.describe API::Ci::Helpers::Runner do
 
   describe '#current_runner_machine', :freeze_time, feature_category: :runner_fleet do
     let(:runner) { create(:ci_runner, token: 'foo') }
-    let(:runner_machine) { create(:ci_runner_machine, runner: runner, machine_xid: 'bar', contacted_at: 1.hour.ago) }
+    let(:runner_machine) { create(:ci_runner_machine, runner: runner, system_xid: 'bar', contacted_at: 1.hour.ago) }
 
     subject(:current_runner_machine) { helper.current_runner_machine }
 
@@ -86,7 +86,7 @@ RSpec.describe API::Ci::Helpers::Runner do
 
       context 'when runner machine already exists' do
         before do
-          allow(helper).to receive(:params).and_return(token: runner.token, system_id: runner_machine.machine_xid)
+          allow(helper).to receive(:params).and_return(token: runner.token, system_id: runner_machine.system_xid)
         end
 
         it { is_expected.to eq(runner_machine) }
@@ -102,7 +102,7 @@ RSpec.describe API::Ci::Helpers::Runner do
         expect { current_runner_machine }.to change { Ci::RunnerMachine.count }.by(1)
 
         expect(current_runner_machine).not_to be_nil
-        expect(current_runner_machine.machine_xid).to eq('new_system_id')
+        expect(current_runner_machine.system_xid).to eq('new_system_id')
         expect(current_runner_machine.contacted_at).to eq(Time.current)
         expect(current_runner_machine.runner).to eq(runner)
       end

@@ -502,8 +502,8 @@ module Ci
       token.start_with?(CREATED_RUNNER_TOKEN_PREFIX)
     end
 
-    def ensure_machine(machine_xid:, &blk)
-      RunnerMachine.safe_find_or_create_by!(runner_id: id, machine_xid: machine_xid.to_s, &blk) # rubocop: disable Performance/ActiveRecordSubtransactionMethods
+    def ensure_machine(system_xid:, &blk)
+      RunnerMachine.safe_find_or_create_by!(runner_id: id, system_xid: system_xid.to_s, &blk) # rubocop: disable Performance/ActiveRecordSubtransactionMethods
     end
 
     private

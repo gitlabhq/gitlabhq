@@ -167,7 +167,7 @@ CREATE TABLE ci_builds_metadata (
 
 CREATE TABLE ci_runner_machines (
     id bigint NOT NULL,
-    machine_xid character varying UNIQUE NOT NULL,
+    system_xid character varying UNIQUE NOT NULL,
     contacted_at timestamp without time zone,
     version character varying,
     revision character varying,
@@ -242,7 +242,7 @@ future after the legacy registration system is removed, and runners have been up
 versions.
 
 Job pings from such legacy runners results in a `ci_runner_machines` record containing a
-`<legacy>` `machine_xid` field value.
+`<legacy>` `system_xid` field value.
 
 Not using the unique system ID means that all connected runners with the same token are
 notified, instead of just the runner matching the exact system identifier. While not ideal, this is
