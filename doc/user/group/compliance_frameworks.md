@@ -106,6 +106,12 @@ However, the compliance pipeline configuration can reference the `.gitlab-ci.yml
 See [example configuration](#example-configuration) for help configuring a compliance pipeline that runs jobs from
 labeled project pipeline configuration.
 
+Be aware that users have no way of knowing that a compliance pipeline has been configured and might be confused
+why their own pipelines are not running at all, or include jobs that they did not define themselves. When authoring
+pipelines on a labeled project, there is no indication that a compliance pipeline has been configured. The only marker
+at the project level is the compliance framework label itself, but the label does not say whether the framework has a
+compliance pipeline configured or not.
+
 To configure a compliance pipeline:
 
 1. On the top bar, select **Main menu > Groups > View all groups** and find your group.

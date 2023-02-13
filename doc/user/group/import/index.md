@@ -261,7 +261,7 @@ you can find the failure or error messages for the group import attempt using:
 
 ```ruby
 # Get relevant import records
-import = BulkImports::Entity.where(namespace_id: Group.id).map(&:bulk_import)
+import = BulkImports::Entity.where(namespace_id: Group.id).map(&:bulk_import).last
 
 # Alternative lookup by user
 import = BulkImport.where(user_id: User.find(...)).last
