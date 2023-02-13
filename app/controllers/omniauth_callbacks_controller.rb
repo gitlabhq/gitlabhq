@@ -61,14 +61,6 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     handle_omniauth
   end
 
-  def authentiq
-    if params['sid']
-      handle_service_ticket oauth['provider'], params['sid']
-    end
-
-    handle_omniauth
-  end
-
   def auth0
     if oauth['uid'].blank?
       fail_auth0_login

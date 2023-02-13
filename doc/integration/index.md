@@ -29,7 +29,6 @@ You can integrate GitLab with the following authentication sources:
 - Enable sign-in with [LDAP](../administration/auth/ldap/index.md).
 - Enable creating [OAuth 2.0](oauth_provider.md) applications.
 - Use [OmniAuth](omniauth.md) to enable sign-in through:
-  - Authentiq ID
   - Azure
   - Bitbucket
   - Crowd

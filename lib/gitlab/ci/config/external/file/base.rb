@@ -46,14 +46,6 @@ module Gitlab
               expanded_content_hash
             end
 
-            # Will be removed with the FF ci_batch_request_for_local_and_project_includes
-            def validate!
-              validate_location!
-              validate_context! if valid?
-              fetch_and_validate_content! if valid?
-              load_and_validate_expanded_hash! if valid?
-            end
-
             def metadata
               {
                 context_project: context.project&.full_path,
@@ -115,19 +107,6 @@ module Gitlab
               end
             rescue Gitlab::Config::Loader::FormatError
               nil
-            end
-
-            # Will be removed with the FF ci_batch_request_for_local_and_project_includes
-            def fetch_and_validate_content!
-              context.logger.instrument(:config_file_fetch_content) do
-                content # calling the method fetches then memoizes the result
-              end
-
-              return if errors.any?
-
-              context.logger.instrument(:config_file_validate_content) do
-                validate_content!
-              end
             end
 
             def validate_hash!

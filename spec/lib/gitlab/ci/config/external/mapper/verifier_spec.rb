@@ -81,17 +81,6 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper::Verifier, feature_category:
         # 1 for project.commit.id, 1 for the files
         expect { process }.to change { Gitlab::GitalyClient.get_request_count }.by(2)
       end
-
-      context 'when the FF ci_batch_request_for_local_and_project_includes is disabled' do
-        before do
-          stub_feature_flags(ci_batch_request_for_local_and_project_includes: false)
-        end
-
-        it 'calls Gitaly for each file', :request_store do
-          # 1 for project.commit.id, 3 for the files
-          expect { process }.to change { Gitlab::GitalyClient.get_request_count }.by(4)
-        end
-      end
     end
 
     context 'when files are project files' do
@@ -130,17 +119,6 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper::Verifier, feature_category:
       it 'calls Gitaly only once for all files', :request_store do
         # 1 for project.commit.id, 3 for the sha check, 1 for the files
         expect { process }.to change { Gitlab::GitalyClient.get_request_count }.by(5)
-      end
-
-      context 'when the FF ci_batch_request_for_local_and_project_includes is disabled' do
-        before do
-          stub_feature_flags(ci_batch_request_for_local_and_project_includes: false)
-        end
-
-        it 'calls Gitaly for each file', :request_store do
-          # 1 for project.commit.id, 3 for the sha check, 3 for the files
-          expect { process }.to change { Gitlab::GitalyClient.get_request_count }.by(7)
-        end
       end
     end
 

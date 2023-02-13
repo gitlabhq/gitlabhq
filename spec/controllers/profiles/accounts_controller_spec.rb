@@ -31,7 +31,7 @@ RSpec.describe Profiles::AccountsController do
       end
     end
 
-    [:twitter, :facebook, :google_oauth2, :gitlab, :github, :bitbucket, :crowd, :auth0, :authentiq, :dingtalk, :alicloud].each do |provider|
+    [:twitter, :facebook, :google_oauth2, :gitlab, :github, :bitbucket, :crowd, :auth0, :dingtalk, :alicloud].each do |provider|
       describe "#{provider} provider" do
         let(:user) { create(:omniauth_user, provider: provider.to_s) }
 

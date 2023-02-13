@@ -1139,6 +1139,26 @@ RSpec.describe Gitlab::Regex, feature_category: :tooling do
       it { expect(subject.match(markdown)[:html]).to eq expected }
     end
 
+    context 'HTML comment lines' do
+      subject { described_class::MARKDOWN_HTML_COMMENT_LINE_REGEX }
+
+      let(:expected) { %(<!-- an HTML comment -->) }
+      let(:markdown) do
+        <<~MARKDOWN
+        Regular text
+
+        <!-- an HTML comment -->
+
+        more text
+        MARKDOWN
+      end
+
+      it { is_expected.to match(%(<!-- single line comment -->)) }
+      it { is_expected.not_to match(%(<!--\nblock comment\n-->)) }
+      it { is_expected.not_to match(%(must start in first column <!-- comment -->)) }
+      it { expect(subject.match(markdown)[:html_comment_line]).to eq expected }
+    end
+
     context 'HTML comment blocks' do
       subject { described_class::MARKDOWN_HTML_COMMENT_BLOCK_REGEX }
 
@@ -1155,7 +1175,7 @@ RSpec.describe Gitlab::Regex, feature_category: :tooling do
 
       it { is_expected.to match(%(<!--\ncomment\n-->)) }
       it { is_expected.not_to match(%(must start in first column <!--\ncomment\n-->)) }
-      it { expect(subject.match(markdown)[:html_block_comment]).to eq expected }
+      it { expect(subject.match(markdown)[:html_comment_block]).to eq expected }
     end
   end
 end

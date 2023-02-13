@@ -44,16 +44,6 @@ RSpec.describe Gitlab::Ci::Config::External::File::Local, feature_category: :pip
         it 'removes the slash' do
           expect(local_file.location).to eq('file')
         end
-
-        context 'when the FF ci_batch_request_for_local_and_project_includes is disabled' do
-          before do
-            stub_feature_flags(ci_batch_request_for_local_and_project_includes: false)
-          end
-
-          it 'does not remove the slash' do
-            expect(local_file.location).to eq('/file')
-          end
-        end
       end
 
       context 'when the local is prefixed with multiple slashes' do
@@ -61,16 +51,6 @@ RSpec.describe Gitlab::Ci::Config::External::File::Local, feature_category: :pip
 
         it 'removes slashes' do
           expect(local_file.location).to eq('file')
-        end
-
-        context 'when the FF ci_batch_request_for_local_and_project_includes is disabled' do
-          before do
-            stub_feature_flags(ci_batch_request_for_local_and_project_includes: false)
-          end
-
-          it 'does not remove slashes' do
-            expect(local_file.location).to eq('//file')
-          end
         end
       end
     end
@@ -159,17 +139,6 @@ RSpec.describe Gitlab::Ci::Config::External::File::Local, feature_category: :pip
       it 'returns false and adds an error message stating that included file does not exist' do
         expect(valid?).to be_falsy
         expect(local_file.errors).to include("Local file `lib/gitlab/ci/templates/existent-file.yml` does not exist!")
-      end
-
-      context 'when the FF ci_batch_request_for_local_and_project_includes is disabled' do
-        before do
-          stub_feature_flags(ci_batch_request_for_local_and_project_includes: false)
-        end
-
-        it 'returns false and adds an error message stating that sha does not exist' do
-          expect(valid?).to be_falsy
-          expect(local_file.errors).to include("Sha #{sha} is not valid!")
-        end
       end
     end
   end

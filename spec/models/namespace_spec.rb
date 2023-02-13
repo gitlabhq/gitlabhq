@@ -2087,10 +2087,21 @@ RSpec.describe Namespace, feature_category: :subgroups do
   end
 
   describe '#emails_enabled?' do
-    it "is the opposite of emails_disabled" do
-      group = create(:group, emails_disabled: false)
+    context 'without a persisted namespace_setting object' do
+      let(:group) { build(:group, emails_disabled: false) }
 
-      expect(group.emails_enabled?).to be_truthy
+      it "is the opposite of emails_disabled" do
+        expect(group.emails_enabled?).to be_truthy
+      end
+    end
+
+    context 'with a persisted namespace_setting object' do
+      let(:namespace_settings) { create(:namespace_settings, emails_enabled: true) }
+      let(:group) { build(:group, emails_disabled: false, namespace_settings: namespace_settings) }
+
+      it "is the opposite of emails_disabled" do
+        expect(group.emails_enabled?).to be_truthy
+      end
     end
   end
 

@@ -119,6 +119,7 @@ class Project < ApplicationRecord
   before_validation :remove_leading_spaces_on_name
   after_validation :check_pending_delete
   before_save :ensure_runners_token
+  before_save :update_new_emails_created_column, if: -> { emails_disabled_changed? }
 
   after_create -> { create_or_load_association(:project_feature) }
   after_create -> { create_or_load_association(:ci_cd_settings) }
@@ -3386,6 +3387,17 @@ class Project < ApplicationRecord
       ProjectFeature::ENABLED
     else
       ProjectFeature::PRIVATE
+    end
+  end
+
+  def update_new_emails_created_column
+    return if project_setting.nil?
+    return if project_setting.emails_enabled == !emails_disabled
+
+    if project_setting.persisted?
+      project_setting.update!(emails_enabled: !emails_disabled)
+    elsif project_setting
+      project_setting.emails_enabled = !emails_disabled
     end
   end
 end

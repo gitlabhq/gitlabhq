@@ -461,16 +461,25 @@ module Gitlab
       )
     }mx.freeze
 
-    MARKDOWN_HTML_COMMENT_BLOCK_REGEX = %r{
-      (?<html_block_comment>
-        # HTML block comment:
-        # <!-- some comment text
-        # more comment
-        # and more comment -->
+    MARKDOWN_HTML_COMMENT_LINE_REGEX = %r{
+      (?<html_comment_line>
+        # HTML comment line:
+        # <!-- some commented text -->
 
-        ^<!--.*?\ *\n
+        ^<!--\ .*\ -->\ *$
+      )
+    }mx.freeze
+
+    MARKDOWN_HTML_COMMENT_BLOCK_REGEX = %r{
+      (?<html_comment_block>
+        # HTML comment block:
+        # <!-- some commented text
+        # additional text
+        # -->
+
+        ^<!--.*\n
         .+?
-        \n.*?-->\ *$
+        \n-->\ *$
       )
     }mx.freeze
 
@@ -482,9 +491,11 @@ module Gitlab
       }mx.freeze
     end
 
-    def markdown_code_or_html_comment_blocks
-      @markdown_code_or_html_comment_blocks ||= %r{
+    def markdown_code_or_html_comments
+      @markdown_code_or_html_comments ||= %r{
           #{MARKDOWN_CODE_BLOCK_REGEX}
+        |
+          #{MARKDOWN_HTML_COMMENT_LINE_REGEX}
         |
           #{MARKDOWN_HTML_COMMENT_BLOCK_REGEX}
       }mx.freeze

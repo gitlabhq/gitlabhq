@@ -96,6 +96,56 @@ RSpec.describe ProjectSetting, type: :model do
       end
     end
 
+    describe '#emails_enabled?' do
+      context "when a project does not have a parent group" do
+        let(:project_settings) { create(:project_setting, emails_enabled: true) }
+        let(:project) { create(:project, project_setting: project_settings) }
+
+        it "returns true" do
+          expect(project.emails_enabled?).to be_truthy
+        end
+
+        it "returns false when updating project settings" do
+          project.update_attribute(:emails_disabled, false)
+          expect(project.emails_enabled?).to be_truthy
+        end
+      end
+
+      context "when a project has a parent group" do
+        let(:namespace_settings) { create(:namespace_settings, emails_enabled: true) }
+        let(:project_settings) { create(:project_setting, emails_enabled: true) }
+        let(:group) { create(:group, namespace_settings: namespace_settings) }
+        let(:project) do
+          create(:project, namespace_id: group.id,
+            project_setting: project_settings)
+        end
+
+        context 'when emails have been disabled in parent group' do
+          it 'returns false' do
+            group.update_attribute(:emails_disabled, true)
+
+            expect(project.emails_enabled?).to be_falsey
+          end
+        end
+
+        context 'when emails are enabled in parent group' do
+          before do
+            allow(project.namespace).to receive(:emails_enabled?).and_return(true)
+          end
+
+          it 'returns true' do
+            expect(project.emails_enabled?).to be_truthy
+          end
+
+          it 'returns false when disabled at the project' do
+            project.update_attribute(:emails_disabled, true)
+
+            expect(project.emails_enabled?).to be_falsey
+          end
+        end
+      end
+    end
+
     context 'when a parent group has a parent group' do
       let(:namespace_settings) { create(:namespace_settings, show_diff_preview_in_email: false) }
       let(:project_settings) { create(:project_setting, show_diff_preview_in_email: true) }

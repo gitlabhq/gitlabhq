@@ -306,6 +306,12 @@ RSpec.describe 'Task Lists', :js, feature_category: :team_planning do
     describe 'commented tasks' do
       let(:commented_tasks_markdown) do
         <<-EOT.strip_heredoc
+        <!-- comment text -->
+
+        text
+
+        <!-- - [ ] commented out task -->
+
         <!--
         - [ ] a
         -->

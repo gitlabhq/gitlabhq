@@ -114,7 +114,7 @@ export default {
       return this.targetProjectPath === '';
     },
     ciJobTokenHelpPage() {
-      return helpPagePath('ci/jobs/ci_job_token');
+      return helpPagePath('ci/jobs/ci_job_token#limit-your-projects-job-token-access');
     },
   },
   methods: {

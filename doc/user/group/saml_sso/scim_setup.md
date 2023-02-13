@@ -133,7 +133,7 @@ Prerequisites:
   product tier is required to use SCIM on Okta.
 - [GitLab is configured](#configure-gitlab).
 - SAML application for [Okta](https://developer.okta.com/docs/guides/build-sso-integration/saml2/main/) set up as
-  described in the [Okta setup notes](index.md#okta-setup-notes).
+  described in the [Okta setup notes](index.md#set-up-okta).
 - Your Okta SAML setup matches the [configuration steps exactly](index.md), especially the NameID configuration.
 
 To configure Okta for SCIM:

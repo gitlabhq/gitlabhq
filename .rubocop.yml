@@ -526,12 +526,14 @@ RSpec/FactoryBot/AvoidCreate:
     - 'spec/views/**/*.rb'
     - 'spec/components/**/*.rb'
     - 'spec/mailers/**/*.rb'
+    - 'spec/routes/directs/*.rb'
     - 'ee/spec/presenters/**/*.rb'
     - 'ee/spec/serializers/**/*.rb'
     - 'ee/spec/helpers/**/*.rb'
     - 'ee/spec/views/**/*.rb'
     - 'ee/spec/components/**/*.rb'
     - 'ee/spec/mailers/**/*.rb'
+    - 'ee/spec/routes/directs/*.rb'
 
 RSpec/FactoryBot/StrategyInCallback:
   Enabled: true

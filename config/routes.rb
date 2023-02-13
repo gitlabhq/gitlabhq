@@ -299,7 +299,7 @@ InitializerConnections.with_disabled_database_connections do
     # TODO: We don't need the `Gitlab::Routing` module at all as we can use
     # the `direct` DSL method of Rails to define url helpers. Move all the
     # custom url helpers to use the `direct` DSL method and remove the `Gitlab::Routing`.
-    # For more information: https://gitlab.com/gitlab-org/gitlab/-/issues/299583
+    # For more information: https://gitlab.com/groups/gitlab-org/-/epics/9866
     Gitlab::Application.routes.set.filter_map { |route| route.name if route.name&.include?('namespace_project') }.each do |name|
       new_name = name.sub('namespace_project', 'project')
 
@@ -315,7 +315,9 @@ InitializerConnections.with_disabled_database_connections do
     root to: "root#index"
 
     get '*unmatched_route', to: 'application#route_not_found', format: false
-  end
 
-  Gitlab::Routing.add_helpers(TimeboxesRoutingHelper)
+    # Load all custom URLs definitions via `direct' after the last route
+    # definition.
+    draw :directs
+  end
 end

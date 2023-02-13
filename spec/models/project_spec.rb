@@ -3946,10 +3946,21 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
   end
 
   describe '#emails_enabled?' do
-    let(:project) { build(:project, emails_disabled: false) }
+    context 'without a persisted project_setting object' do
+      let(:project) { build(:project, emails_disabled: false) }
 
-    it "is the opposite of emails_disabled" do
-      expect(project.emails_enabled?).to be_truthy
+      it "is the opposite of emails_disabled" do
+        expect(project.emails_enabled?).to be_truthy
+      end
+    end
+
+    context 'with a persisted project_setting object' do
+      let(:project_settings) { create(:project_setting, emails_enabled: true) }
+      let(:project) { build(:project, emails_disabled: false, project_setting: project_settings) }
+
+      it "is the opposite of emails_disabled" do
+        expect(project.emails_enabled?).to be_truthy
+      end
     end
   end
 

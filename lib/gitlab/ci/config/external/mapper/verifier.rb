@@ -10,10 +10,6 @@ module Gitlab
             private
 
             def process_without_instrumentation(files)
-              if ::Feature.disabled?(:ci_batch_request_for_local_and_project_includes, context.project)
-                return legacy_process_without_instrumentation(files)
-              end
-
               files.each do |file|
                 verify_execution_time!
 
@@ -31,18 +27,6 @@ module Gitlab
 
                 file.validate_content! if file.valid?
                 file.load_and_validate_expanded_hash! if file.valid?
-
-                context.expandset.add(file)
-              end
-            end
-
-            # Will be removed with the FF ci_batch_request_for_local_and_project_includes
-            def legacy_process_without_instrumentation(files)
-              files.select do |file|
-                verify_max_includes!
-                verify_execution_time!
-
-                file.validate!
 
                 context.expandset.add(file)
               end

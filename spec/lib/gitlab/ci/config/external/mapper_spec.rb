@@ -2,9 +2,7 @@
 
 require 'spec_helper'
 
-# This will be moved from a `shared_context` to a `describe` once every feature flag is removed.
-# - ci_batch_request_for_local_and_project_includes_enabled is also removed with the FF.
-RSpec.shared_context 'gitlab_ci_config_external_mapper' do |ci_batch_request_for_local_and_project_includes_enabled|
+RSpec.describe Gitlab::Ci::Config::External::Mapper, feature_category: :pipeline_authoring do
   include StubRequests
   include RepoHelpers
 
@@ -168,11 +166,7 @@ RSpec.shared_context 'gitlab_ci_config_external_mapper' do |ci_batch_request_for
             an_instance_of(Gitlab::Ci::Config::External::File::Project))
         end
 
-        if ci_batch_request_for_local_and_project_includes_enabled
-          it_behaves_like 'logging config file fetch', 'config_file_fetch_project_content_duration_s', 1
-        else
-          it_behaves_like 'logging config file fetch', 'config_file_fetch_project_content_duration_s', 2
-        end
+        it_behaves_like 'logging config file fetch', 'config_file_fetch_project_content_duration_s', 1
       end
     end
 
@@ -466,17 +460,5 @@ RSpec.shared_context 'gitlab_ci_config_external_mapper' do |ci_batch_request_for
         expect(context.expandset.size).to eq(2)
       end
     end
-  end
-end
-
-RSpec.describe Gitlab::Ci::Config::External::Mapper, feature_category: :pipeline_authoring do
-  it_behaves_like 'gitlab_ci_config_external_mapper', true
-
-  context 'when the FF ci_batch_request_for_local_and_project_includes is disabled' do
-    before do
-      stub_feature_flags(ci_batch_request_for_local_and_project_includes: false)
-    end
-
-    it_behaves_like 'gitlab_ci_config_external_mapper', false
   end
 end

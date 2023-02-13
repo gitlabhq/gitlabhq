@@ -18427,6 +18427,7 @@ CREATE TABLE namespace_settings (
     runner_registration_enabled boolean DEFAULT true,
     allow_runner_registration_token boolean DEFAULT true NOT NULL,
     unique_project_download_limit_alertlist integer[] DEFAULT '{}'::integer[] NOT NULL,
+    emails_enabled boolean DEFAULT true NOT NULL,
     CONSTRAINT check_0ba93c78c7 CHECK ((char_length(default_branch_name) <= 255)),
     CONSTRAINT namespace_settings_unique_project_download_limit_alertlist_size CHECK ((cardinality(unique_project_download_limit_alertlist) <= 100)),
     CONSTRAINT namespace_settings_unique_project_download_limit_allowlist_size CHECK ((cardinality(unique_project_download_limit_allowlist) <= 100))
@@ -20752,6 +20753,7 @@ CREATE TABLE project_settings (
     only_allow_merge_if_all_status_checks_passed boolean DEFAULT false NOT NULL,
     mirror_branch_regex text,
     allow_pipeline_trigger_approve_deployment boolean DEFAULT false NOT NULL,
+    emails_enabled boolean DEFAULT true NOT NULL,
     CONSTRAINT check_2981f15877 CHECK ((char_length(jitsu_key) <= 100)),
     CONSTRAINT check_3a03e7557a CHECK ((char_length(previous_default_branch) <= 4096)),
     CONSTRAINT check_3ca5cbffe6 CHECK ((char_length(issue_branch_template) <= 255)),

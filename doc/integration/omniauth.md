@@ -20,7 +20,6 @@ GitLab supports the following OmniAuth providers.
 | [AliCloud](alicloud.md)                                             | `alicloud`                 |
 | [Atlassian](../administration/auth/atlassian.md)                    | `atlassian_oauth2`         |
 | [Auth0](auth0.md)                                                   | `auth0`                    |
-| [Authentiq](../administration/auth/authentiq.md)                    | `authentiq`                |
 | [AWS Cognito](../administration/auth/cognito.md)                    | `cognito`                  |
 | [Azure v2](azure.md)                                                | `azure_activedirectory_v2` |
 | [Azure v1](azure.md)                                                | `azure_oauth2`             |

@@ -141,12 +141,14 @@ class Namespace < ApplicationRecord
            :npm_package_requests_forwarding,
            to: :package_settings
 
+  before_save :update_new_emails_created_column, if: -> { emails_disabled_changed? }
   before_create :sync_share_with_group_lock_with_parent
   before_update :sync_share_with_group_lock_with_parent, if: :parent_changed?
   after_update :force_share_with_group_lock_on_descendants, if: -> { saved_change_to_share_with_group_lock? && share_with_group_lock? }
   after_update :expire_first_auto_devops_config_cache, if: -> { saved_change_to_auto_devops_enabled? }
   after_update :move_dir, if: :saved_change_to_path_or_parent?, unless: -> { is_a?(Namespaces::ProjectNamespace) }
   after_destroy :rm_dir
+
   after_save :reload_namespace_details
 
   after_commit :refresh_access_of_projects_invited_groups, on: :update, if: -> { previous_changes.key?('share_with_group_lock') }
@@ -598,6 +600,17 @@ class Namespace < ApplicationRecord
   end
 
   private
+
+  def update_new_emails_created_column
+    return if namespace_settings.nil?
+    return if namespace_settings.emails_enabled == !emails_disabled
+
+    if namespace_settings.persisted?
+      namespace_settings.update!(emails_enabled: !emails_disabled)
+    elsif namespace_settings
+      namespace_settings.emails_enabled = !emails_disabled
+    end
+  end
 
   def cluster_enabled_granted?
     (Gitlab.com? || Gitlab.dev_or_test_env?) && root_ancestor.cluster_enabled_grant.present?

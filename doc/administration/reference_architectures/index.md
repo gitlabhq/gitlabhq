@@ -43,6 +43,14 @@ The following Cloud Native Hybrid reference architectures, where select recommen
 - [Up to 25,000 users](25k_users.md#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative)
 - [Up to 50,000 users](50k_users.md#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative)
 
+## Before you start
+
+The first choice to consider is whether a Self Managed approach is correct for you and your requirements.
+
+Running any application in production is complex, and the same applies for GitLab. While we aim to make this as smooth as possible, there are still the general complexities. This depends on the design chosen, but typically you'll need to manage all aspects such as hardware, operating systems, networking, storage, security, GitLab itself, and more.
+
+As such, it's recommended that you have a working knowledge of running applications in production when deciding on going down this route. For users who want a more managed solution it's recommended to instead explore our other offerings such as [GitLab SaaS](../../subscriptions/gitlab_com/index.md) or [GitLab Dedicated](../../subscriptions/gitlab_dedicated/index.md).
+
 ## Deciding which architecture to use
 
 The Reference Architectures are designed to strike a balance between two important factors--performance and resilience.
@@ -53,13 +61,14 @@ As a general guide, **the more performant and/or resilient you want your environ
 
 This section explains the designs you can choose from. It begins with the least complexity, goes to the most, and ends with a decision tree.
 
-### Backups
+### Standalone (non-HA)
 
-For environments serving 2,000 or fewer users we generally recommend that an [automated backup](../../raketasks/backup_gitlab.md#configuring-cron-to-make-daily-backups) strategy is used instead of HA.
+For environments serving 2,000 or fewer users, we generally recommend a standalone approach by deploying a non-highly available single or multi-node environment. With this approach, you can employ strategies such as [automated backups](../../raketasks/backup_gitlab.md#configuring-cron-to-make-daily-backups) for recovery to provide a good level of RPO / RTO while avoiding the complexities that come with HA.
 
-Depending on your setup and requirements, this can include configuring backups on any external services you may be using, such as Object Storage (AWS S3 / Google Cloud Storage) or Postgres (AWS RDS / Google Cloud SQL) backups for further resilience.
+*[RTO]: Recovery time objective
+*[RPO]: Recovery point objective
 
-Backups can provide a good level of RPO / RTO while avoiding the complexities that come with HA.
+With standalone setups, especially single node environments, there are [various options available for installation](../../install/index.md) and management including [the ability to deploy directly via select cloud provider marketplaces](https://page.gitlab.com/cloud-partner-marketplaces.html) that reduce the complexity a little further.
 
 ### High Availability (HA)
 
@@ -100,6 +109,12 @@ With [GitLab Geo](../geo/index.md) you can have both distributed environments in
 
 This is an **advanced and complex** setup and should only be undertaken if you have DR as a key requirement. Decisions then on how each environment are configured would also need to be taken, such as if each environment itself would be the full size and / or have HA.
 
+### Cloud provider services
+
+For all the previously described strategies, you can run select GitLab components on equivalent cloud provider services such as the PostgreSQL database or Redis.
+
+[For more information, see the recommended cloud providers and services](#recommended-cloud-providers-and-services).
+
 ### Decision Tree
 
 Below you can find the above guidance in the form of a decision tree. It's recommended you read through the above guidance in full first before though.
@@ -107,14 +122,30 @@ Below you can find the above guidance in the form of a decision tree. It's recom
 ```mermaid
 %%{init: { 'theme': 'base' } }%%
 graph TD
-   L1A(<b>What Reference Architecture should I use?</b>) --> L2A(More than 3000 users?)
-   L2A -->|No| L3A("<a href=#do-you-need-high-availability-ha>Do you need HA?</a><br>(or Zero-Downtime Upgrades)") --> |Yes| L4A><b>Recommendation</b><br><br>3K architecture with HA<br>including supported modifications]
-   L3A -->|No| L4B><b>Recommendation</b><br><br>Architecture closest to user<br>count with Backups]
-   L2A -->|Yes| L3B[Do you have experience with<br/>and want additional resilience<br/>with select components in Kubernetes?]
-   L3B -->|No| L4C><b>Recommendation</b><br><br>Architecture closest to user<br>count with HA]
-   L3B -->|Yes| L4D><b>Recommendation</b><br><br>Cloud Native Hybrid architecture<br>closest to user count]
+   L1A(<b>What Reference Architecture should I use?</b>)
 
-   L5A("<a href=#gitlab-geo-cross-regional-distribution-disaster-recovery>Do you need cross regional distribution or disaster recovery?"</a>) --> |Yes| L6A><b>Additional Recommendation</b><br><br> GitLab Geo]
+   L2A(3,000 users or more?)
+   L2B(2,000 users or less?)
+
+   L3A("<a href=#do-you-need-high-availability-ha>Do you need HA?</a><br>(or Zero-Downtime Upgrades)")
+   L3B[Do you have experience with<br/>and want additional resilience<br/>with select components in Kubernetes?]
+
+   L4A><b>Recommendation</b><br><br>3K architecture with HA<br>and supported reductions]
+   L4B><b>Recommendation</b><br><br>Architecture closest to user<br>count with HA]
+   L4C><b>Recommendation</b><br><br>Cloud Native Hybrid architecture<br>closest to user count]
+   L4D>"<b>Recommendation</b><br><br>Standalone 1K or 2K<br/>architecture with Backups"]
+
+   L1A --> L2A
+   L1A --> L2B
+   L2A -->|Yes| L3B
+   L3B -->|Yes| L4C
+   L3B -->|No| L4B
+
+   L2B --> L3A
+   L3A -->|Yes| L4A
+   L3A -->|No| L4D
+
+   L5A("<a href=#gitlab-geo-cross-regional-distribution-disaster--recovery>Do you need cross regional distribution or disaster recovery?"</a>) --> |Yes| L6A><b>Additional Recommendation</b><br><br> GitLab Geo]
    L4A -.- L5A
    L4B -.- L5A
    L4C -.- L5A

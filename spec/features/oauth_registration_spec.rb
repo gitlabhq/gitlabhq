@@ -23,7 +23,6 @@ RSpec.describe 'OAuth Registration', :js, :allow_forgery_protection, feature_cat
     :facebook       | {}
     :cas3           | {}
     :auth0          | {}
-    :authentiq      | {}
     :salesforce     | { extra: { email_verified: true } }
     :dingtalk       | {}
     :alicloud       | {}

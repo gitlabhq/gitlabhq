@@ -27,7 +27,7 @@ module Taskable
   # ignore tasks in code or html comment blocks.  HTML blocks
   # are ok as we allow tasks inside <detail> blocks
   REGEX = %r{
-      #{::Gitlab::Regex.markdown_code_or_html_comment_blocks}
+      #{::Gitlab::Regex.markdown_code_or_html_comments}
     |
       (?<task_item>
         #{ITEM_PATTERN}

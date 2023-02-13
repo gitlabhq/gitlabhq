@@ -10,9 +10,9 @@ This page describes GitLab reference architecture for up to 1,000 users. For a
 full list of reference architectures, see
 [Available reference architectures](index.md#available-reference-architectures).
 
-If you are serving up to 1,000 users and you don't have strict availability
-requirements, a single-node solution with
-[frequent backups](index.md#backups) is appropriate for
+If you are serving up to 1,000 users, and you don't have strict availability
+requirements, a [standalone](index.md#standalone-non-ha) single-node solution with
+frequent backups is appropriate for
 many organizations.
 
 > - **Supported users (approximate):** 1,000

@@ -90,6 +90,28 @@ RSpec.describe RuboCop::Cop::RSpec::InvalidFeatureCategory, feature_category: :t
     RUBY
   end
 
+  it 'does not flag use of invalid categories in non-example code' do
+    # See https://gitlab.com/gitlab-org/gitlab/-/issues/381882#note_1265865125
+    expect_no_offenses(<<~RUBY)
+      RSpec.describe 'A spec' do
+        let(:api_handler) do
+          Class.new(described_class) do
+            namespace '/test' do
+              get 'hello', feature_category: :foo, urgency: :#{invalid_category} do
+              end
+            end
+          end
+        end
+
+        it 'tests something' do
+          Gitlab::ApplicationContext.with_context(feature_category: :#{invalid_category}) do
+            payload = generator.generate(exception, extra)
+          end
+        end
+      end
+    RUBY
+  end
+
   describe '#external_dependency_checksum' do
     it 'returns a SHA256 digest used by RuboCop to invalid cache' do
       expect(cop.external_dependency_checksum).to match(/^\h{64}$/)

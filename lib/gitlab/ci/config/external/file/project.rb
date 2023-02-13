@@ -12,12 +12,8 @@ module Gitlab
             attr_reader :project_name, :ref_name
 
             def initialize(params, context)
-              @location = if ::Feature.enabled?(:ci_batch_request_for_local_and_project_includes, context.project)
-                            # `Repository#blobs_at` does not support files with the `/` prefix.
-                            Gitlab::Utils.remove_leading_slashes(params[:file])
-                          else
-                            params[:file]
-                          end
+              # `Repository#blobs_at` does not support files with the `/` prefix.
+              @location = Gitlab::Utils.remove_leading_slashes(params[:file])
 
               @project_name = get_project_name(params[:project])
               @ref_name = params[:ref] || 'HEAD'
@@ -76,10 +72,6 @@ module Gitlab
             end
 
             def fetch_local_content
-              if ::Feature.disabled?(:ci_batch_request_for_local_and_project_includes, context.project)
-                return legacy_fetch_local_content
-              end
-
               return unless can_access_local_content?
               return unless sha
 
@@ -93,17 +85,6 @@ module Gitlab
               rescue GRPC::NotFound, GRPC::Internal
                 # no-op
               end
-            end
-
-            def legacy_fetch_local_content
-              return unless can_access_local_content?
-              return unless sha
-
-              context.logger.instrument(:config_file_fetch_project_content) do
-                project.repository.blob_data_at(sha, location)
-              end
-            rescue GRPC::NotFound, GRPC::Internal
-              nil
             end
 
             def sha

@@ -1,8 +1,0 @@
----
-name: ci_batch_request_for_local_and_project_includes
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108826
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/387974
-milestone: '15.9'
-type: development
-group: group::pipeline authoring
-default_enabled: false

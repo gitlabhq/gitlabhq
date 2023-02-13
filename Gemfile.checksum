@@ -391,7 +391,6 @@
 {"name":"omniauth-alicloud","version":"2.0.1","platform":"ruby","checksum":"b14c425bca02b4d0f73e710ceb62c0f1f8533e0c427c1c495d2b40f87b3f48d3"},
 {"name":"omniauth-atlassian-oauth2","version":"0.2.0","platform":"ruby","checksum":"eb07574a188ab8a03376ce288bce86bc2dd4a1382ffa5781cb5e2b7bc15d76c9"},
 {"name":"omniauth-auth0","version":"2.0.0","platform":"ruby","checksum":"823769be7883b45b2fa94367c2f6a17f7b3b1333986016089c016d45827da545"},
-{"name":"omniauth-authentiq","version":"0.3.3","platform":"ruby","checksum":"11b3791085a130782bf14b0088653beeb085638a9548d7110a57d3cbbb54fb4c"},
 {"name":"omniauth-azure-activedirectory-v2","version":"2.0.0","platform":"ruby","checksum":"c484cedd52cd233e3c216c4b3ed667ec07d20e51c550a613b65a0f90fe8ad072"},
 {"name":"omniauth-dingtalk-oauth2","version":"1.0.1","platform":"ruby","checksum":"6545670f1c38344eaf960df9750c550a9534f790f888af088761a9e04269139b"},
 {"name":"omniauth-facebook","version":"4.0.0","platform":"ruby","checksum":"05ae3565c8fdb38df8dab04eb8ca854ea6c18e81591d3e6598ce101293a2f20f"},

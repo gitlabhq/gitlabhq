@@ -60,7 +60,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Component, feature_category: 
 
   describe '#valid?' do
     subject(:valid?) do
-      external_resource.validate!
+      Gitlab::Ci::Config::External::Mapper::Verifier.new(context).process([external_resource])
       external_resource.valid?
     end
 

@@ -216,14 +216,6 @@ RSpec.describe Gitlab::OmniauthInitializer do
       expect { subject.execute([hash_config]) }.to raise_error(NameError)
     end
 
-    it 'configures remote_sign_out_handler proc for authentiq' do
-      authentiq_config = { 'name' => 'authentiq', 'args' => {} }
-
-      expect(devise_config).to receive(:omniauth).with(:authentiq, { remote_sign_out_handler: an_instance_of(Proc) })
-
-      subject.execute([authentiq_config])
-    end
-
     it 'configures on_single_sign_out proc for cas3' do
       cas3_config = { 'name' => 'cas3', 'args' => {} }
 

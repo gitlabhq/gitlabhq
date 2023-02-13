@@ -29,7 +29,6 @@ This page gathers all the resources for the topic **Authentication** within GitL
   - [Debugging LDAP](https://about.gitlab.com/handbook/support/workflows/debugging_ldap.html)
 - **Integrations:**
   - [OmniAuth](../../integration/omniauth.md)
-  - [Authentiq OmniAuth Provider](../../administration/auth/authentiq.md#authentiq-omniauth-provider)
   - [Atlassian Crowd OmniAuth Provider](../../administration/auth/crowd.md)
   - [CAS OmniAuth Provider](../../integration/cas.md)
   - [SAML OmniAuth Provider](../../integration/saml.md)

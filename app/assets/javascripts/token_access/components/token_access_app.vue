@@ -20,8 +20,8 @@ export default {
 </script>
 <template>
   <div>
-    <outbound-token-access />
-    <inbound-token-access v-if="inboundTokenAccessEnabled" class="gl-pt-5" />
+    <inbound-token-access v-if="inboundTokenAccessEnabled" class="gl-pb-5" />
+    <outbound-token-access class="gl-py-5" />
     <opt-in-jwt />
   </div>
 </template>

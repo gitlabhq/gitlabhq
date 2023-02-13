@@ -159,6 +159,36 @@ RSpec.describe NamespaceSetting, feature_category: :subgroups, type: :model do
       end
     end
 
+    describe '#emails_enabled?' do
+      context 'when a group has no parent'
+      let(:settings) { create(:namespace_settings, emails_enabled: true) }
+      let(:grandparent) { create(:group) }
+      let(:parent)      { create(:group, parent: grandparent) }
+      let(:group)       { create(:group, parent: parent, namespace_settings: settings) }
+
+      context 'when the groups setting is changed' do
+        it 'returns false when the attribute is false' do
+          group.update_attribute(:emails_disabled, true)
+
+          expect(group.emails_enabled?).to be_falsey
+        end
+      end
+
+      context 'when a group has a parent' do
+        it 'returns true when no parent has disabled emails' do
+          expect(group.emails_enabled?).to be_truthy
+        end
+
+        context 'when ancestor emails are disabled' do
+          it 'returns false' do
+            grandparent.update_attribute(:emails_disabled, true)
+
+            expect(group.emails_enabled?).to be_falsey
+          end
+        end
+      end
+    end
+
     context 'when a group has parent groups' do
       let(:grandparent) { create(:group, namespace_settings: settings) }
       let(:parent)      { create(:group, parent: grandparent) }

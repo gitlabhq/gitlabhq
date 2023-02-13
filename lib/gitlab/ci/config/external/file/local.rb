@@ -10,12 +10,8 @@ module Gitlab
             include Gitlab::Utils::StrongMemoize
 
             def initialize(params, context)
-              @location = if ::Feature.enabled?(:ci_batch_request_for_local_and_project_includes, context.project)
-                            # `Repository#blobs_at` does not support files with the `/` prefix.
-                            Gitlab::Utils.remove_leading_slashes(params[:local])
-                          else
-                            params[:local]
-                          end
+              # `Repository#blobs_at` does not support files with the `/` prefix.
+              @location = Gitlab::Utils.remove_leading_slashes(params[:local])
 
               super
             end
@@ -51,10 +47,6 @@ module Gitlab
             private
 
             def fetch_local_content
-              if ::Feature.disabled?(:ci_batch_request_for_local_and_project_includes, context.project)
-                return legacy_fetch_local_content
-              end
-
               BatchLoader.for([context.sha, location])
                          .batch(key: context.project) do |locations, loader, args|
                 context.logger.instrument(:config_file_fetch_local_content) do
@@ -65,17 +57,6 @@ module Gitlab
               rescue GRPC::InvalidArgument
                 # no-op
               end
-            end
-
-            # Will be removed with the FF ci_batch_request_for_local_and_project_includes
-            def legacy_fetch_local_content
-              context.logger.instrument(:config_file_fetch_local_content) do
-                context.project.repository.blob_data_at(context.sha, location)
-              end
-            rescue GRPC::InvalidArgument
-              errors.push("Sha #{context.sha} is not valid!")
-
-              nil
             end
 
             override :expand_context_attrs

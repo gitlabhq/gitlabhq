@@ -48,7 +48,6 @@ auditability
 auditable
 Auth0
 authenticator
-Authentiq
 Authy
 autocomplete
 autocompleted
