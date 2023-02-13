@@ -268,6 +268,15 @@ BEGIN
   NEW."diff_note_id_convert_to_bigint" := NEW."diff_note_id";
   RETURN NEW;
 END;
+$$;  
+
+CREATE FUNCTION trigger_428d92773fe7() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+  NEW."note_id_convert_to_bigint" := NEW."note_id";
+  RETURN NEW;
+END;
 $$;
 
 CREATE FUNCTION trigger_7f4fcd5aa322() RETURNS trigger
@@ -22525,6 +22534,7 @@ CREATE TABLE timelogs (
     note_id integer,
     project_id integer,
     summary text,
+    note_id_convert_to_bigint bigint,
     CONSTRAINT check_271d321699 CHECK ((char_length(summary) <= 255))
 );
 
@@ -33584,6 +33594,8 @@ CREATE TRIGGER trigger_3207b8d0d6f3 BEFORE INSERT OR UPDATE ON ci_build_needs FO
 CREATE TRIGGER trigger_3dc62927cae8 BEFORE INSERT OR UPDATE ON design_user_mentions FOR EACH ROW EXECUTE FUNCTION trigger_3dc62927cae8();
 
 CREATE TRIGGER trigger_775287b6d67a BEFORE INSERT OR UPDATE ON note_diff_files FOR EACH ROW EXECUTE FUNCTION trigger_775287b6d67a();
+
+CREATE TRIGGER trigger_428d92773fe7 BEFORE INSERT OR UPDATE ON timelogs FOR EACH ROW EXECUTE FUNCTION trigger_428d92773fe7();
 
 CREATE TRIGGER trigger_7f4fcd5aa322 BEFORE INSERT OR UPDATE ON sent_notifications FOR EACH ROW EXECUTE FUNCTION trigger_7f4fcd5aa322();
 
