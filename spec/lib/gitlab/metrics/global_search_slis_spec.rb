@@ -6,10 +6,22 @@ RSpec.describe Gitlab::Metrics::GlobalSearchSlis do
   using RSpec::Parameterized::TableSyntax
 
   describe '#initialize_slis!' do
+    let(:api_endpoint_labels) do
+      [a_hash_including(endpoint_id: 'GET /api/:version/search')]
+    end
+
+    let(:web_endpoint_labels) do
+      [a_hash_including(endpoint_id: "SearchController#show")]
+    end
+
+    let(:all_endpoint_labels) do
+      api_endpoint_labels + web_endpoint_labels
+    end
+
     it 'initializes Apdex SLIs for global_search' do
       expect(Gitlab::Metrics::Sli::Apdex).to receive(:initialize_sli).with(
         :global_search,
-        a_kind_of(Array)
+        array_including(all_endpoint_labels)
       )
 
       described_class.initialize_slis!
@@ -18,10 +30,59 @@ RSpec.describe Gitlab::Metrics::GlobalSearchSlis do
     it 'initializes ErrorRate SLIs for global_search' do
       expect(Gitlab::Metrics::Sli::ErrorRate).to receive(:initialize_sli).with(
         :global_search,
-        a_kind_of(Array)
+        array_including(all_endpoint_labels)
       )
 
       described_class.initialize_slis!
+    end
+
+    context "when initializeing for limited types" do
+      where(:api, :web) do
+        [true, false].repeated_permutation(2).to_a
+      end
+
+      with_them do
+        it 'only initializes for the relevant endpoints', :aggregate_failures do
+          allow(Gitlab::Metrics::Environment).to receive(:api?).and_return(api)
+          allow(Gitlab::Metrics::Environment).to receive(:web?).and_return(web)
+          allow(Gitlab::Metrics::Sli::Apdex).to receive(:initialize_sli)
+          allow(Gitlab::Metrics::Sli::ErrorRate).to receive(:initialize_sli)
+
+          described_class.initialize_slis!
+
+          if api
+            expect(Gitlab::Metrics::Sli::Apdex).to(
+              have_received(:initialize_sli).with(:global_search, array_including(*api_endpoint_labels))
+            )
+            expect(Gitlab::Metrics::Sli::ErrorRate).to(
+              have_received(:initialize_sli).with(:global_search, array_including(*api_endpoint_labels))
+            )
+          else
+            expect(Gitlab::Metrics::Sli::Apdex).not_to(
+              have_received(:initialize_sli).with(:global_search, array_including(*api_endpoint_labels))
+            )
+            expect(Gitlab::Metrics::Sli::ErrorRate).not_to(
+              have_received(:initialize_sli).with(:global_search, array_including(*api_endpoint_labels))
+            )
+          end
+
+          if web
+            expect(Gitlab::Metrics::Sli::Apdex).to(
+              have_received(:initialize_sli).with(:global_search, array_including(*web_endpoint_labels))
+            )
+            expect(Gitlab::Metrics::Sli::ErrorRate).to(
+              have_received(:initialize_sli).with(:global_search, array_including(*web_endpoint_labels))
+            )
+          else
+            expect(Gitlab::Metrics::Sli::Apdex).not_to(
+              have_received(:initialize_sli).with(:global_search, array_including(*web_endpoint_labels))
+            )
+            expect(Gitlab::Metrics::Sli::ErrorRate).not_to(
+              have_received(:initialize_sli).with(:global_search, array_including(*web_endpoint_labels))
+            )
+          end
+        end
+      end
     end
   end
 

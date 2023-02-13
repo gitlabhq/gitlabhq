@@ -185,6 +185,8 @@ To find more details about failed items, check
 
 If you notice replication or verification failures, you can try to [resolve them](#fixing-non-postgresql-replication-failures).
 
+If there are Repository check failures, you can try to [resolve them](#find-repository-check-failures-in-a-geo-secondary-site).
+
 ### Check if PostgreSQL replication is working
 
 To check if PostgreSQL replication is working, check if:
@@ -1576,6 +1578,49 @@ Geo::ProjectRegistry.update_all(resync_repository: true, resync_wiki: true)
 project = Project.find_by_full_path('<group/project>')
 
 Geo::RepositorySyncService.new(project).execute
+```
+
+#### Find repository check failures in a Geo secondary site
+
+When [enabled for all projects](../../repository_checks.md#enable-repository-checks-for-all-projects), [Repository checks](../../repository_checks.md) are also performed on Geo secondary sites. The metadata is stored in the Geo tracking database.
+
+Repository check failures on a Geo secondary site do not necessarily imply a replication problem. Here is a general approach to resolve these failures.
+
+1. Find affected repositories as mentioned below, as well as their [logged errors](../../repository_checks.md#what-to-do-if-a-check-failed).
+1. Try to diagnose specific `git fsck` errors. The range of possible errors is wide, try putting them into search engines.
+1. Test normal functions of the affected repositories. Pull from the secondary, view the files.
+1. Check if the primary site's copy of the repository has an identical `git fsck` error. If you are planning a failover, then consider prioritizing that the secondary site has the same information that the primary site has. Ensure you have a backup of the primary, and follow [planned failover guidelines](../disaster_recovery/planned_failover.md).
+1. Push to the primary and check if the change gets replicated to the secondary site.
+1. If replication is not automatically working, try to manually sync the repository.
+
+[Start a Rails console session](../../operations/rails_console.md#starting-a-rails-console-session)
+to enact the following, basic troubleshooting steps.
+
+WARNING:
+Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
+
+##### Get the number of repositories that failed the repository check
+
+```ruby
+Geo::ProjectRegistry.where(last_repository_check_failed: true).count
+```
+
+##### Find the repositories that failed the repository check
+
+```ruby
+Geo::ProjectRegistry.where(last_repository_check_failed: true)
+```
+
+##### Recheck repositories that failed the repository check
+
+When you run this, `fsck` is executed against each failed repository.
+
+The [`fsck` Rake command](../../raketasks/check.md#check-project-code-repositories) can be used on the secondary site to understand why the repository check might be failing.
+
+```ruby
+Geo::ProjectRegistry.where(last_repository_check_failed: true).each do |pr|
+    RepositoryCheck::SingleRepositoryWorker.new.perform(pr.project_id)
+end
 ```
 
 ## Fixing client errors

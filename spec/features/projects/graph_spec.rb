@@ -59,23 +59,30 @@ RSpec.describe 'Project Graph', :js, feature_category: :projects do
 
     it 'HTML escapes branch name' do
       expect(page.body).to include("Commit statistics for <strong>#{ERB::Util.html_escape(branch_name)}</strong>")
-      expect(page.find('.dropdown-toggle-text')['innerHTML']).to eq(ERB::Util.html_escape(branch_name))
+      expect(page.find('.gl-dropdown-button-text')['innerHTML']).to eq(ERB::Util.html_escape(branch_name))
     end
   end
 
   context 'charts graph ref switcher' do
     it 'switches ref to branch' do
-      ref_name = 'feature'
+      ref_name = 'add-pdf-file'
       visit charts_project_graph_path(project, 'master')
-      first('.js-project-refs-dropdown').click
 
-      page.within '.project-refs-form' do
-        click_link ref_name
+      # Not a huge fan of using a HTML (CSS) selectors here as any change of them will cause a failed test
+      ref_selector = find('.ref-selector .gl-dropdown-toggle')
+      scroll_to(ref_selector)
+      ref_selector.click
+
+      page.within '[data-testid="branches-section"]' do
+        dropdown_branch_item = find('.gl-dropdown-item', text: 'add-pdf-file')
+        scroll_to(dropdown_branch_item)
+        dropdown_branch_item.click
       end
 
-      expect(page).to have_selector '.dropdown-menu-toggle', text: ref_name
+      scroll_to(find('.tree-ref-header'), align: :center)
+      expect(page).to have_selector '.gl-dropdown-toggle', text: ref_name
       page.within '.tree-ref-header' do
-        expect(page).to have_content ref_name
+        expect(page).to have_selector('h4', text: ref_name)
       end
     end
   end

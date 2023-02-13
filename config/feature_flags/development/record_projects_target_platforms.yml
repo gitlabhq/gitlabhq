@@ -1,8 +1,0 @@
----
-name: record_projects_target_platforms
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/80361
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/354286
-milestone: '14.10'
-type: development
-group: group::activation
-default_enabled: false

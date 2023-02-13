@@ -120,7 +120,7 @@ export default {
     data-testid="ci-header-content"
   >
     <section class="header-main-content gl-mr-3">
-      <ci-badge-link :status="status" />
+      <ci-badge-link class="gl-mr-3" :status="status" />
 
       <strong data-testid="ci-header-item-text">{{ item }}</strong>
 

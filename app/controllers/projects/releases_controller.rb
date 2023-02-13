@@ -10,7 +10,7 @@ class Projects::ReleasesController < Projects::ApplicationController
   before_action :validate_suffix_path, :fetch_latest_tag, only: :latest_permalink
 
   prepend_before_action(only: [:downloads]) do
-    authenticate_sessionless_user!(:download) if Feature.enabled?(:allow_release_as_web_access_format)
+    authenticate_sessionless_user!(:download)
   end
 
   feature_category :release_orchestration

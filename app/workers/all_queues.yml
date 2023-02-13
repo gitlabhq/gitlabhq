@@ -3164,7 +3164,7 @@
   :tags: []
 - :name: projects_record_target_platforms
   :worker_name: Projects::RecordTargetPlatformsWorker
-  :feature_category: :experimentation_activation
+  :feature_category: :projects
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown

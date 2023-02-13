@@ -8549,14 +8549,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
       end
     end
 
-    context 'when feature flag is disabled' do
-      before do
-        stub_feature_flags(record_projects_target_platforms: false)
-      end
-
-      it_behaves_like 'does not enqueue a Projects::RecordTargetPlatformsWorker'
-    end
-
     context 'when not in gitlab.com' do
       let(:com) { false }
 

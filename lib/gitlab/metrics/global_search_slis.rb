@@ -58,8 +58,16 @@ module Gitlab
         end
 
         def endpoint_ids
-          ['SearchController#show', 'GET /api/:version/search', 'GET /api/:version/projects/:id/(-/)search',
-           'GET /api/:version/groups/:id/(-/)search']
+          api_endpoints = ['GET /api/:version/search', 'GET /api/:version/projects/:id/(-/)search',
+                           'GET /api/:version/groups/:id/(-/)search']
+          web_endpoints = ['SearchController#show']
+
+          endpoints = []
+
+          endpoints += api_endpoints if Gitlab::Metrics::Environment.api?
+          endpoints += web_endpoints if Gitlab::Metrics::Environment.web?
+
+          endpoints
         end
 
         def possible_labels

@@ -3072,7 +3072,6 @@ class Project < ApplicationRecord
 
   def enqueue_record_project_target_platforms
     return unless Gitlab.com?
-    return unless Feature.enabled?(:record_projects_target_platforms, self)
 
     Projects::RecordTargetPlatformsWorker.perform_async(id)
   end

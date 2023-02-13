@@ -37,39 +37,6 @@ RSpec.describe Ci::Maskable, feature_category: :pipeline_authoring do
       end
     end
 
-    context 'when the ci_remove_character_limitation_raw_masked_var FF is disabled' do
-      before do
-        stub_feature_flags(ci_remove_character_limitation_raw_masked_var: false)
-      end
-
-      context 'when variable is masked and raw' do
-        before do
-          subject.masked = true
-          subject.raw = true
-        end
-
-        it { is_expected.not_to allow_value('hello').for(:value) }
-        it { is_expected.not_to allow_value('hello world').for(:value) }
-        it { is_expected.not_to allow_value('hello$VARIABLEworld').for(:value) }
-        it { is_expected.not_to allow_value('hello\rworld').for(:value) }
-        it { is_expected.not_to allow_value('hello&&&world').for(:value) }
-        it { is_expected.not_to allow_value('helloworld!!!!').for(:value) }
-        it { is_expected.to allow_value('helloworld').for(:value) }
-      end
-
-      context 'when variable is not masked' do
-        before do
-          subject.masked = false
-        end
-
-        it { is_expected.to allow_value('hello').for(:value) }
-        it { is_expected.to allow_value('hello world').for(:value) }
-        it { is_expected.to allow_value('hello$VARIABLEworld').for(:value) }
-        it { is_expected.to allow_value('hello\rworld').for(:value) }
-        it { is_expected.to allow_value('helloworld').for(:value) }
-      end
-    end
-
     context 'when variable is masked and raw' do
       before do
         subject.masked = true

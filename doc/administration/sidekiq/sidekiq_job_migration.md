@@ -28,11 +28,11 @@ Step 4 involves rewriting some Sidekiq job data for jobs that are already stored
 - `gitlab:sidekiq:migrate_jobs:retry` for jobs to be retried.
 - `gitlab:sidekiq:migrate_jobs:scheduled` for scheduled jobs.
 
-Queued jobs that are yet to be run can also be migrated with a Rake task:
+Queued jobs that are yet to be run can also be migrated with a Rake task ([available in GitLab 15.6](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/101348) and later):
 
 - `gitlab:sidekiq:migrate_jobs:queued` for queued jobs to be performed asynchronously.
 
-Most of the time, running all three at the same time is the correct choice. There are three separate tasks to allow for more fine-grained control where needed. To run all three at once:
+Most of the time, running all three at the same time is the correct choice. There are three separate tasks to allow for more fine-grained control where needed. To run all three at once ([available in GitLab 15.6](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/101348) and later):
 
 ```shell
 # omnibus-gitlab

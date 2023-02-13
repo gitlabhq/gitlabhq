@@ -25,14 +25,12 @@ module Ci
     end
 
     def masked_and_raw?
-      return false unless Feature.enabled?(:ci_remove_character_limitation_raw_masked_var)
       return false unless self.class.method_defined?(:raw)
 
       masked? && raw?
     end
 
     def masked_and_expanded?
-      return masked? unless Feature.enabled?(:ci_remove_character_limitation_raw_masked_var)
       return masked? unless self.class.method_defined?(:raw)
 
       masked? && !raw?

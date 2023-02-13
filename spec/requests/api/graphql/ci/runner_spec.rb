@@ -681,7 +681,7 @@ RSpec.describe 'Query.runner(id)', feature_category: :runner_fleet do
       QUERY
     end
 
-    it 'does not execute more queries per runner', :aggregate_failures do
+    it 'does not execute more queries per runner', :aggregate_failures, quarantine: "https://gitlab.com/gitlab-org/gitlab/-/issues/391442" do
       # warm-up license cache and so on:
       personal_access_token = create(:personal_access_token, user: user)
       args = { current_user: user, token: { personal_access_token: personal_access_token } }

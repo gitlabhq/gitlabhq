@@ -621,9 +621,17 @@ sudo -u git -H editor config/database.yml
 # You can keep the double quotes around the password
 sudo -u git -H editor config/database.yml
 
+# Uncomment the `ci:` sections in config/database.yml.
+# Ensure the `database` value in `ci:` matches the database value in `main:`.
+
 # Make config/database.yml readable to git only
 sudo -u git -H chmod o-rwx config/database.yml
 ```
+
+NOTE:
+From GitLab 15.9, `database.yml` with only a section: `main:` is deprecated.
+In GitLab 15.10 and later, you should have two sections in your `database.yml`, `main:` and `ci:`. The `ci`: connection [must be to the same database](../administration/postgresql/multiple_databases.md).
+In GitLab 17.0 and later, you must have the two `main:` and `ci:` sections in your `database.yml`.
 
 ### Install Gems
 

@@ -78,39 +78,49 @@ An environment is either static or dynamic:
 
 ### Create a static environment
 
-You can create an environment and deployment in the UI or in your `.gitlab-ci.yml` file.
+You can create a static environment in the UI or in your `.gitlab-ci.yml` file.
 
-In the UI:
+#### In the UI
+
+Prerequisites:
+
+- You must have at least the Developer role.
+
+To create a static environment in the UI:
 
 1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Deployments > Environments**.
 1. Select **New environment**.
-1. Enter a name and external URL.
+1. Complete the fields.
 1. Select **Save**.
 
-In your `.gitlab-ci.yml` file:
+#### In your `.gitlab-ci.yml` file
 
-1. Specify a name for the environment and optionally, a URL, which determines the deployment URL.
-   For example:
+Prerequisites:
 
-   ```yaml
-   deploy_staging:
-     stage: deploy
-     script:
-       - echo "Deploy to staging server"
-     environment:
-       name: staging
-       url: https://staging.example.com
-   ```
+- You must have at least the Developer role.
 
-1. Trigger a deployment. (For example, by creating and pushing a commit.)
+To create a static environment, in your `.gitlab-ci.yml` file:
 
-When the job runs, the environment and deployment are created.
+1. Define a job in the `deploy` stage.
+1. In the job, define the environment `name` and `url`. If an
+environment of that name doesn't exist when the pipeline runs, it is created.
 
 NOTE:
-Some characters cannot be used in environment names.
-For more information about the `environment` keywords, see
-[the `.gitlab-ci.yml` keyword reference](../yaml/index.md#environment).
+Some characters cannot be used in environment names. For more information about the
+`environment` keywords, see the [`.gitlab-ci.yml` keyword reference](../yaml/index.md#environment).
+
+For example, to create an environment named `staging`, with URL `https://staging.example.com`:
+
+```yaml
+deploy_staging:
+  stage: deploy
+  script:
+    - echo "Deploy to staging server"
+  environment:
+    name: staging
+    url: https://staging.example.com
+```
 
 ### Create a dynamic environment
 

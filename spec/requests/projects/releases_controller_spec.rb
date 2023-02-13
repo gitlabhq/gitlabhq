@@ -56,28 +56,12 @@ RSpec.describe 'Projects::ReleasesController', feature_category: :release_orches
 
       subject { get url, params: { private_token: personal_access_token.token } }
 
-      context 'when allow_release_as_web_access_format FF is disabled' do
-        before do
-          stub_feature_flags(allow_release_as_web_access_format: false)
-        end
+      it 'will allow sessionless users to download the file' do
+        subject
 
-        it 'will not allow sessionless authentication' do
-          expect_next_instance_of(::Projects::ReleasesController) do |controller|
-            expect(controller).not_to receive(:authenticate_sessionless_user!)
-          end
-
-          subject
-        end
-      end
-
-      context 'when allow_release_as_web_access_format FF is enabled' do
-        it 'will allow sessionless users to download the file' do
-          subject
-
-          expect(controller.current_user).to eq(user)
-          expect(response).to have_gitlab_http_status(:redirect)
-          expect(response).to redirect_to(link.url)
-        end
+        expect(controller.current_user).to eq(user)
+        expect(response).to have_gitlab_http_status(:redirect)
+        expect(response).to redirect_to(link.url)
       end
     end
   end
