@@ -131,7 +131,7 @@ RSpec.describe Gitlab::Ci::Status::Bridge::Factory, feature_category: :continuou
       expect(status.text).to eq 'waiting'
       expect(status.group).to eq 'waiting-for-resource'
       expect(status.icon).to eq 'status_pending'
-      expect(status.favicon).to eq 'favicon_pending'
+      expect(status.favicon).to eq 'favicon_status_pending'
       expect(status.illustration).to include(:image, :size, :title)
       expect(status).not_to have_details
     end

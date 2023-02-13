@@ -20,7 +20,7 @@ RSpec.describe Gitlab::Ci::Status::WaitingForResource do
   end
 
   describe '#favicon' do
-    it { expect(subject.favicon).to eq 'favicon_pending' }
+    it { expect(subject.favicon).to eq 'favicon_status_pending' }
   end
 
   describe '#group' do

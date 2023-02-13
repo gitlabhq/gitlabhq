@@ -152,6 +152,15 @@ Use uppercase for **Alpha**. For example: **The XYZ feature is in Alpha.** or **
 You might also want to link to [this section](../../../policy/alpha-beta-support.md#alpha-features)
 in the handbook when writing about Alpha features.
 
+## analytics
+
+Use lowercase for **analytics** and its variations, like **contribution analytics** and **issue analytics**.
+However, if the UI has different capitalization, make the documentation match the UI.
+
+For example:
+
+- You can view merge request analytics for a project. They are displayed on the Merge Request Analytics dashboard.
+
 ## and/or
 
 Instead of **and/or**, use **or** or rewrite the sentence to spell out both options.

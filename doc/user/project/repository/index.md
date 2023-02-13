@@ -86,12 +86,27 @@ Visual Studio Code:
 - From the GitLab interface:
   1. Go to the project's overview page.
   1. Select **Clone**.
-  1. Under either the **HTTPS** or **SSH** method, select **Clone with Visual Studio Code**.
+  1. Under **Open in your IDE**, select **Visual Studio Code (SSH)** or **Visual Studio Code (HTTPS)**.
   1. Select a folder to clone the project into.
 
      After Visual Studio Code clones your project, it opens the folder.
 - From Visual Studio Code, with the [extension](vscode.md) installed, use the
   extension's [`Git: Clone` command](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow#clone-gitlab-projects).
+
+### Clone and open in IntelliJ IDEA
+
+All projects can be cloned into [IntelliJ IDEA](https://www.jetbrains.com/idea/)
+from the GitLab user interface.
+
+Prerequisites:
+
+- The [Jetbrains Toolbox App](https://www.jetbrains.com/toolbox-app/) must be also be installed.
+
+To do this:
+
+1. Go to the project's overview page.
+1. Select **Clone**.
+1. Under **Open in your IDE**, select **IntelliJ IDEA (SSH)** or **IntelliJ IDEA (HTTPS)**.
 
 ## Download the code in a repository
 

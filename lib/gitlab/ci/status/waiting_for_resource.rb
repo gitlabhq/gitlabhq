@@ -17,7 +17,7 @@ module Gitlab
         end
 
         def favicon
-          'favicon_pending'
+          'favicon_status_pending'
         end
 
         def group

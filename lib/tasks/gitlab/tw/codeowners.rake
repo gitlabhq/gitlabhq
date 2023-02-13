@@ -14,7 +14,7 @@ namespace :tw do
       end
 
       def directory
-        @directory ||= File.dirname(path)
+        @directory ||= "#{File.dirname(path)}/"
       end
     end
 
@@ -123,15 +123,19 @@ namespace :tw do
       mappings << DocumentOwnerMapping.new(relative_file, writer) if document.has_a_valid_group?
     end
 
-    deduplicated_mappings = Set.new
-
-    mappings.each do |mapping|
+    transformed_mappings = mappings.map do |mapping|
       if mapping.writer_owns_directory?(mappings)
-        deduplicated_mappings.add("#{mapping.directory}/ #{mapping.writer}")
+        DocumentOwnerMapping.new(mapping.directory, mapping.writer)
       else
-        deduplicated_mappings.add("#{mapping.path} #{mapping.writer}")
+        DocumentOwnerMapping.new(mapping.path, mapping.writer)
       end
     end
+
+    deduplicated_mappings = Set.new
+
+    transformed_mappings
+      .reject { |mapping| transformed_mappings.any? { |m| m.path == mapping.directory && m.writer == mapping.writer } }
+      .each { |mapping| deduplicated_mappings.add("#{mapping.path} #{mapping.writer}") }
 
     new_docs_owners = deduplicated_mappings.sort.join("\n")
 

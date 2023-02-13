@@ -60,3 +60,12 @@ ISO3166::Data.register(
   currency_code: "UAH",
   start_of_week: "monday"
 )
+
+# Updating the display name of Taiwan, from `Taiwan, Province of China` to `Taiwan`
+# See issue: https://gitlab.com/gitlab-org/gitlab/-/issues/349333
+ISO3166::Data.register(
+  ISO3166::Data.new('TW')
+               .call
+               .deep_symbolize_keys
+               .merge({ name: 'Taiwan' })
+)

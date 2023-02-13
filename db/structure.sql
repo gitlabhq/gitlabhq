@@ -19816,6 +19816,14 @@ CREATE SEQUENCE plans_id_seq
 
 ALTER SEQUENCE plans_id_seq OWNED BY plans.id;
 
+CREATE TABLE pm_checkpoints (
+    sequence integer NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    purl_type smallint NOT NULL,
+    chunk smallint NOT NULL
+);
+
 CREATE TABLE pm_licenses (
     id bigint NOT NULL,
     spdx_identifier text NOT NULL,
@@ -27044,6 +27052,9 @@ ALTER TABLE ONLY plan_limits
 
 ALTER TABLE ONLY plans
     ADD CONSTRAINT plans_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY pm_checkpoints
+    ADD CONSTRAINT pm_checkpoints_pkey PRIMARY KEY (purl_type);
 
 ALTER TABLE ONLY pm_licenses
     ADD CONSTRAINT pm_licenses_pkey PRIMARY KEY (id);

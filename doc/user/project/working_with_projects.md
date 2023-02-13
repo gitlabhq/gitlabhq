@@ -87,7 +87,7 @@ called `my-project` under your username, the project is created at `https://gitl
 To view your personal projects:
 
 1. On the top bar, select **Main menu > Projects > View all projects**.
-1. In the **Your projects** tab, select **Personal**.
+1. In the **Yours** tab, select **Personal**.
 
 ## Delete a project
 

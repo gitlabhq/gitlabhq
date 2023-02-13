@@ -6,7 +6,7 @@ module Ci
     include Ci::HasRunnerExecutor
     include IgnorableColumns
 
-    ignore_column :machine_xid, remove_with: '15.10', remove_after: '2022-03-22'
+    ignore_column :machine_xid, remove_with: '15.11', remove_after: '2022-03-22'
 
     belongs_to :runner
 

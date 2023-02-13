@@ -293,7 +293,10 @@ export default {
       return this.isWidgetPresent(WIDGET_TYPE_NOTES);
     },
     fetchByIid() {
-      return this.glFeatures.useIidInWorkItemsPath && parseBoolean(getParameterByName('iid_path'));
+      return (
+        (this.glFeatures.useIidInWorkItemsPath && parseBoolean(getParameterByName('iid_path'))) ||
+        false
+      );
     },
     queryVariables() {
       return this.fetchByIid
@@ -572,7 +575,6 @@ export default {
         @error="updateError = $event"
       />
       <work-item-created-updated
-        v-if="workItemsMvcEnabled"
         :work-item-id="workItem.id"
         :work-item-iid="workItemIid"
         :full-path="fullPath"

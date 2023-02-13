@@ -122,7 +122,7 @@ export default {
     onError(error) {
       this.deleting = false;
       const { message } = error;
-      const title = sprintf(s__('Runner|Runner %{runnerName} failed to delete'), {
+      const title = sprintf(s__('Runners|Runner %{runnerName} failed to delete'), {
         runnerName: this.runnerName,
       });
 

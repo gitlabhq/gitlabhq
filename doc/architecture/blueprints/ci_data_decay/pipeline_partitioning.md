@@ -777,6 +777,7 @@ gantt
     Introduce auto-partitioning mechanisms :5_1, 2023-09-01, 120d
     New partitions are being created automatically :milestone, part3, 2023-12-01, 1min
     Partitioning is made available on self-managed :milestone, part4, 2024-01-01, 1min
+```
 
 ## Conclusions
 

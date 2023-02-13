@@ -42,6 +42,16 @@ describe('Design management large image component', () => {
     expect(wrapper.element).toMatchSnapshot();
   });
 
+  it('renders SVG with proper height and width', () => {
+    createComponent({
+      isLoading: false,
+      image: 'mockImage.svg',
+      name: 'test',
+    });
+
+    expect(wrapper.element).toMatchSnapshot();
+  });
+
   it('sets correct classes and styles if imageStyle is set', async () => {
     createComponent(
       {

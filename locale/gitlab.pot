@@ -8735,6 +8735,9 @@ msgstr ""
 msgid "Choose your framework"
 msgstr ""
 
+msgid "Ci config already present"
+msgstr ""
+
 msgid "CiCdAnalytics|Date range: %{range}"
 msgstr ""
 
@@ -11600,7 +11603,7 @@ msgstr ""
 msgid "Couldn't find event type filters where audit event type(s): %{missing_filters}"
 msgstr ""
 
-msgid "Country"
+msgid "Country / Region"
 msgstr ""
 
 msgid "Counts"
@@ -31826,7 +31829,7 @@ msgstr ""
 msgid "Please select a Jira project"
 msgstr ""
 
-msgid "Please select a country"
+msgid "Please select a country / region"
 msgstr ""
 
 msgid "Please select a group"
@@ -33081,6 +33084,9 @@ msgid "Project members"
 msgstr ""
 
 msgid "Project milestone"
+msgstr ""
+
+msgid "Project must have default branch"
 msgstr ""
 
 msgid "Project name"
@@ -36891,6 +36897,9 @@ msgstr ""
 msgid "Runners|Never expires"
 msgstr ""
 
+msgid "Runners|New"
+msgstr ""
+
 msgid "Runners|New group runners can be registered"
 msgstr ""
 
@@ -37002,6 +37011,9 @@ msgid "Runners|Runner #%{runner_id}"
 msgstr ""
 
 msgid "Runners|Runner %{name} was deleted"
+msgstr ""
+
+msgid "Runners|Runner %{runnerName} failed to delete"
 msgstr ""
 
 msgid "Runners|Runner Registration"
@@ -37253,15 +37265,6 @@ msgid "Runners|project"
 msgstr ""
 
 msgid "Runners|shared"
-msgstr ""
-
-msgid "Runner|New"
-msgstr ""
-
-msgid "Runner|Owner"
-msgstr ""
-
-msgid "Runner|Runner %{runnerName} failed to delete"
 msgstr ""
 
 msgid "Running"

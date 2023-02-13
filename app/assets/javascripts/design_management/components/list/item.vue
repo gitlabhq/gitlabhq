@@ -144,7 +144,7 @@ export default {
           />
         </span>
       </div>
-      <gl-intersection-observer @appear="onAppear">
+      <gl-intersection-observer class="gl-flex-grow-1" @appear="onAppear">
         <gl-loading-icon v-if="showLoadingSpinner" size="lg" />
         <gl-icon
           v-else-if="showImageErrorIcon"
@@ -156,7 +156,7 @@ export default {
           v-show="showImage"
           :src="imageLink"
           :alt="filename"
-          class="gl-display-block gl-mx-auto gl-max-w-full gl-max-h-full design-img"
+          class="gl-display-block gl-mx-auto gl-max-w-full gl-max-h-full gl-w-auto design-img"
           data-qa-selector="design_image"
           :data-qa-filename="filename"
           :data-testid="`design-img-${id}`"

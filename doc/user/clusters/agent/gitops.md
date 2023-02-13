@@ -183,4 +183,4 @@ update your agent configuration file with the location of these projects.
 WARNING:
 The project with the agent's
 configuration file can be private or public. Other projects with Kubernetes manifests must be public. Support for private manifest projects is tracked
-in [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/283885).
+in [this epic](https://gitlab.com/groups/gitlab-org/-/epics/7704).

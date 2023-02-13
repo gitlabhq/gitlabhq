@@ -767,15 +767,8 @@ describe('WorkItemDetail component', () => {
     });
   });
 
-  it('does not render created/updated by default', async () => {
+  it('renders created/updated', async () => {
     createComponent();
-    await waitForPromises();
-
-    expect(findCreatedUpdated().exists()).toBe(false);
-  });
-
-  it('renders created/updated when the work_items_mvc flag is on', async () => {
-    createComponent({ workItemsMvcEnabled: true });
     await waitForPromises();
 
     expect(findCreatedUpdated().exists()).toBe(true);

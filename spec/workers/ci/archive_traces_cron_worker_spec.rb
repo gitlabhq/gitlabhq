@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::ArchiveTracesCronWorker do
+RSpec.describe Ci::ArchiveTracesCronWorker, feature_category: :continuous_integration do
   subject { described_class.new.perform }
 
   let(:finished_at) { 1.day.ago }
@@ -34,12 +34,26 @@ RSpec.describe Ci::ArchiveTracesCronWorker do
 
     it_behaves_like 'archives trace'
 
-    it 'executes service' do
+    it 'batch_execute service' do
       expect_next_instance_of(Ci::ArchiveTraceService) do |instance|
-        expect(instance).to receive(:execute).with(build, anything)
+        expect(instance).to receive(:batch_execute).with(worker_name: "Ci::ArchiveTracesCronWorker")
       end
 
       subject
+    end
+
+    context "with FF deduplicate_archive_traces_cron_worker false" do
+      before do
+        stub_feature_flags(deduplicate_archive_traces_cron_worker: false)
+      end
+
+      it 'calls execute service' do
+        expect_next_instance_of(Ci::ArchiveTraceService) do |instance|
+          expect(instance).to receive(:execute).with(build, worker_name: "Ci::ArchiveTracesCronWorker")
+        end
+
+        subject
+      end
     end
 
     context 'when the job finished recently' do

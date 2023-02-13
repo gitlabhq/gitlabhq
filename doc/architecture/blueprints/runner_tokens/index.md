@@ -352,6 +352,13 @@ scope.
 | GitLab Runner    | `15.9` | Label Prometheus metrics with unique system ID. |
 | GitLab Runner    | `15.8` | Prepare `register` command to fail if runner server-side configuration options are passed together with a new `glrt-` token. |
 
+### Stage 2a - Prepare GitLab Runner Helm Chart and GitLab Runner Operator
+
+| Component        | Milestone | Issue | Changes |
+|------------------|----------:|-------|---------|
+|GitLab Runner Helm Chart| `%15.10` | Update the Runner Helm Chart to support registration with the authentication token. |
+|GitLab Runner Operator| `%15.10` | Update the Runner Operator to support registration with the authentication token. |
+
 ### Stage 3 - Database changes
 
 | Component        | Milestone | Changes |
@@ -368,14 +375,18 @@ scope.
 | GitLab Rails app | `%15.9` | Use runner token + `system_id` JSON parameters in `POST /jobs/request` request in the [heartbeat request](https://gitlab.com/gitlab-org/gitlab/blob/c73c96a8ffd515295842d72a3635a8ae873d688c/lib/api/ci/helpers/runner.rb#L14-20) to update the `ci_runner_machines` cache/table. |
 | GitLab Rails app | `%15.9` | [Feature flag] Enable runner creation workflow (`create_runner_workflow`). |
 | GitLab Rails app | `%15.9` | Implement `create_{instance|group|project}_runner` permissions. |
-| GitLab Rails app | `%15.10` | Rename `ci_runner_machines.machine_xid` column to `system_xid` to be consistent with `system_id` passed in APIs. |
+| GitLab Rails app | `%15.9` | Rename `ci_runner_machines.machine_xid` column to `system_xid` to be consistent with `system_id` passed in APIs. |
+| GitLab Rails app | `%15.10` | Drop `ci_runner_machines.machine_xid` column. |
+| GitLab Rails app | `%15.11` | Remove the ignore rule for `ci_runner_machines.machine_xid` column. |
 
-### Stage 4 - New UI
+### Stage 4 - Create runners from the UI
 
 | Component        | Milestone | Changes |
 |------------------|----------:|---------|
 | GitLab Rails app | `%15.9` | Implement new GraphQL user-authenticated API to create a new runner. |
 | GitLab Rails app | `%15.9` | [Add prefix to newly generated runner authentication tokens](https://gitlab.com/gitlab-org/gitlab/-/issues/383198). |
+| GitLab Rails app | `%15.10` | Return token and runner ID information from `/runners/verify` REST endpoint. |
+| GitLab Runner    | `%15.10` | [Modify register command to allow new flow with glrt- prefixed authentication tokens](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/29613). |
 | GitLab Rails app | `%15.10` | Implement UI to create new runner. |
 | GitLab Rails app | `%15.10` | GraphQL changes to `CiRunner` type. |
 | GitLab Rails app | `%15.10` | UI changes to runner details view (listing of platform, architecture, IP address, etc.) (?) |

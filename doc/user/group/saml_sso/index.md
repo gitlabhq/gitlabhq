@@ -97,7 +97,7 @@ After you set up your identity provider to work with GitLab, you must configure 
 ![Group SAML Settings for GitLab.com](img/group_saml_settings_v13_12.png)
 
 NOTE:
-The certificate [fingerprint algorithm](../../../integration/saml.md#configure-saml-on-your-idp) must be in SHA1. When configuring the identity provider (such as [Google Workspace](#google-workspace-setup-notes)), use a secure signature algorithm.
+The certificate [fingerprint algorithm](../../../integration/saml.md#configure-saml-on-your-idp) must be in SHA1. When configuring the identity provider (such as [Google Workspace](#set-up-google-workspace)), use a secure signature algorithm.
 
 ### Additional configuration information
 
@@ -240,37 +240,38 @@ If using [Group Sync](#group-sync), customize the name of the group claim to mat
 
 See our [example configuration page](example_saml_config.md#azure-active-directory).
 
-### Google Workspace setup notes
+### Set up Google Workspace
 
-Follow the Google Workspace documentation on
-[setting up SSO with Google as your identity provider](https://support.google.com/a/answer/6087519?hl=en)
-with the notes below for consideration.
+1. [Set up SSO with Google as your identity provider](https://support.google.com/a/answer/6087519?hl=en).
+   The following GitLab settings correspond to the Google Workspace fields.
 
-| GitLab setting                       | Google Workspace field |
-|:-------------------------------------|:-----------------------|
-| Identifier                           | Entity ID              |
-| Assertion consumer service URL       | ACS URL                |
-| GitLab single sign-on URL            | Start URL              |
-| Identity provider single sign-on URL | SSO URL                |
+   | GitLab setting                       | Google Workspace field |
+   |:-------------------------------------|:-----------------------|
+   | Identifier                           | **Entity ID**          |
+   | Assertion consumer service URL       | **ACS URL**            |
+   | GitLab single sign-on URL            | **Start URL**          |
+   | Identity provider single sign-on URL | **SSO URL**            |
 
-NOTE:
-Google Workspace displays a SHA256 fingerprint. To retrieve the SHA1 fingerprint required by GitLab for [configuring SAML](#configure-gitlab), download the certificate and calculate
-the SHA1 certificate fingerprint using this sample command: `openssl x509 -noout -fingerprint -sha1 -inform pem -in "GoogleIDPCertificate-domain.com.pem"`.
+1. Google Workspace displays a SHA256 fingerprint. To retrieve the SHA1 fingerprint
+   required by GitLab to [configure SAML](#configure-gitlab):
+   1. Download the certificate.
+   1. Run this command:
 
-The recommended attributes and claims settings are:
+      ```shell
+      openssl x509 -noout -fingerprint -sha1 -inform pem -in "GoogleIDPCertificate-domain.com.pem"
+      ```
 
-- **Primary email** set to `email`.
-- **First name** set to `first_name`.
-- **Last name** set to `last_name`.
+1. Set these values:
+   - For **Primary email**: `email`.
+   - For **First name**: `first_name`.
+   - For **Last name**: `last_name`.
+   - For **Name ID format**: `EMAIL`.
+   - For **NameID**: `Basic Information > Primary email`.
 
-For NameID, the following settings are recommended:
+On the GitLab SAML SSO page, when you select **Verify SAML Configuration**, disregard
+the warning that recommends setting the **NameID** format to `persistent`.
 
-- **Name ID format** is set to `EMAIL`.
-- **NameID** set to `Basic Information > Primary email`.
-
-When selecting **Verify SAML Configuration** on the GitLab SAML SSO page, disregard the warning recommending setting the NameID format to "persistent".
-
-See our [example configuration page](example_saml_config.md#google-workspace).
+For details, see the [example configuration page](example_saml_config.md#google-workspace).
 
 ### Okta setup notes
 
