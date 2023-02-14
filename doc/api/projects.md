@@ -210,7 +210,10 @@ When the user is authenticated and `simple` is not set this returns something li
     "group_runners_enabled": true,
     "lfs_enabled": true,
     "creator_id": 1,
+    "import_url": null,
+    "import_type": null,
     "import_status": "none",
+    "import_error": null,
     "open_issues_count": 0,
     "ci_default_git_depth": 20,
     "ci_forward_deployment_enabled": true,
@@ -381,6 +384,10 @@ GET /users/:user_id/projects
     "created_at": "2013-09-30T13:46:02Z",
     "last_activity_at": "2013-09-30T13:46:02Z",
     "creator_id": 3,
+    "import_url": null,
+    "import_type": null,
+    "import_status": "none",
+    "import_error": null,
     "namespace": {
       "id": 3,
       "name": "Diaspora",
@@ -482,6 +489,10 @@ GET /users/:user_id/projects
     "created_at": "2013-09-30T13:46:02Z",
     "last_activity_at": "2013-09-30T13:46:02Z",
     "creator_id": 3,
+    "import_url": null,
+    "import_type": null,
+    "import_status": "none",
+    "import_error": null,
     "namespace": {
       "id": 4,
       "name": "Brightbox",
@@ -898,6 +909,8 @@ GET /projects/:id
     "avatar_url": "http://localhost:3000/uploads/group/avatar/3/foo.jpg",
     "web_url": "http://localhost:3000/groups/diaspora"
   },
+  "import_url": null,
+  "import_type": null,
   "import_status": "none",
   "import_error": null,
   "permissions": {

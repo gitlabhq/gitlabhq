@@ -100,7 +100,7 @@ export default {
 </script>
 
 <template>
-  <list-item data-testid="package-row" v-bind="$attrs">
+  <list-item data-testid="package-row" :selected="selected" v-bind="$attrs">
     <template #left-action>
       <gl-form-checkbox
         v-if="packageEntity.canDestroy"

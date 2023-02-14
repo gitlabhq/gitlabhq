@@ -59,7 +59,7 @@ RSpec.describe 'Project Graph', :js, feature_category: :projects do
 
     it 'HTML escapes branch name' do
       expect(page.body).to include("Commit statistics for <strong>#{ERB::Util.html_escape(branch_name)}</strong>")
-      expect(page.find('.gl-dropdown-button-text')['innerHTML']).to eq(ERB::Util.html_escape(branch_name))
+      expect(page.find('.gl-new-dropdown-button-text')['innerHTML']).to include(ERB::Util.html_escape(branch_name))
     end
   end
 
@@ -69,18 +69,18 @@ RSpec.describe 'Project Graph', :js, feature_category: :projects do
       visit charts_project_graph_path(project, 'master')
 
       # Not a huge fan of using a HTML (CSS) selectors here as any change of them will cause a failed test
-      ref_selector = find('.ref-selector .gl-dropdown-toggle')
+      ref_selector = find('.ref-selector .gl-new-dropdown-toggle')
       scroll_to(ref_selector)
       ref_selector.click
 
-      page.within '[data-testid="branches-section"]' do
-        dropdown_branch_item = find('.gl-dropdown-item', text: 'add-pdf-file')
+      page.within '.gl-new-dropdown-contents' do
+        dropdown_branch_item = find('li', text: 'add-pdf-file')
         scroll_to(dropdown_branch_item)
         dropdown_branch_item.click
       end
 
       scroll_to(find('.tree-ref-header'), align: :center)
-      expect(page).to have_selector '.gl-dropdown-toggle', text: ref_name
+      expect(page).to have_selector '.gl-new-dropdown-toggle', text: ref_name
       page.within '.tree-ref-header' do
         expect(page).to have_selector('h4', text: ref_name)
       end

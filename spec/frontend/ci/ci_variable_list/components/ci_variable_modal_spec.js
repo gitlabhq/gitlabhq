@@ -438,42 +438,24 @@ describe('Ci variable modal', () => {
         raw: true,
       };
 
-      describe('and FF is enabled', () => {
-        beforeEach(() => {
-          createComponent({
-            mountFn: mountExtended,
-            props: { selectedVariable: validRawMaskedVariable },
-          });
-        });
-
-        it('should not show an error with symbols', async () => {
-          await findMaskedVariableCheckbox().trigger('click');
-
-          expect(findModal().text()).not.toContain(maskError);
-        });
-
-        it('should not show an error when length is less than 8', async () => {
-          await findValueField().vm.$emit('input', 'a');
-          await findMaskedVariableCheckbox().trigger('click');
-
-          expect(findModal().text()).toContain(maskError);
+      beforeEach(() => {
+        createComponent({
+          mountFn: mountExtended,
+          props: { selectedVariable: validRawMaskedVariable },
         });
       });
 
-      describe('and FF is disabled', () => {
-        beforeEach(() => {
-          createComponent({
-            mountFn: mountExtended,
-            props: { selectedVariable: validRawMaskedVariable },
-            provide: { glFeatures: { ciRemoveCharacterLimitationRawMaskedVar: false } },
-          });
-        });
+      it('should not show an error with symbols', async () => {
+        await findMaskedVariableCheckbox().trigger('click');
 
-        it('should show an error with symbols', async () => {
-          await findMaskedVariableCheckbox().trigger('click');
+        expect(findModal().text()).not.toContain(maskError);
+      });
 
-          expect(findModal().text()).toContain(maskError);
-        });
+      it('should not show an error when length is less than 8', async () => {
+        await findValueField().vm.$emit('input', 'a');
+        await findMaskedVariableCheckbox().trigger('click');
+
+        expect(findModal().text()).toContain(maskError);
       });
     });
 

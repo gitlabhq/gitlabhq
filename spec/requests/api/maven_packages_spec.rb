@@ -125,6 +125,8 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
           expect_any_instance_of(Fog::AWS::Storage::Files).not_to receive(:head_url)
 
           subject
+
+          expect(response).to have_gitlab_http_status(:redirect)
         end
       end
 

@@ -130,9 +130,6 @@ export default {
     displayMaskedError() {
       return !this.canMask && this.variable.masked;
     },
-    isUsingRawRegexFlag() {
-      return this.glFeatures.ciRemoveCharacterLimitationRawMaskedVar;
-    },
     isEditing() {
       return this.mode === EDIT_VARIABLE_ACTION;
     },
@@ -177,7 +174,7 @@ export default {
       return true;
     },
     useRawMaskableRegexp() {
-      return this.isRaw && this.isUsingRawRegexFlag;
+      return this.isRaw;
     },
     variableValidationFeedback() {
       return `${this.tokenValidationFeedback} ${this.maskedFeedback}`;

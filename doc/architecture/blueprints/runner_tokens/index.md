@@ -421,6 +421,92 @@ scope.
 | GitLab Rails app | `17.0` | Create database migrations to drop:<br/>- `runners_registration_token`/`runners_registration_token_encrypted` columns from `application_settings`;<br/>- `runners_token`/`runners_token_encrypted` from `namespaces` table;<br/>- `runners_token`/`runners_token_encrypted` from `projects` table. |
 | GitLab Rails app | `17.0` | Remove `:enforce_create_runner_workflow` feature flag. |
 
+## FAQ
+
+### Will my runner registration workflow break?
+
+If no action is taken before your GitLab instance is upgraded to 16.0, then your runner registration
+worflow will break.
+For self-managed instances, to continue using the previous runner registration process,
+you can disable the `enforce_create_runner_workflow` feature flag until GitLab 17.0.
+
+To avoid a broken workflow, you need to first create a runner in the GitLab runners admin page.
+After that, you'll need to replace the registration token you're using in your runner registration
+workflow with the obtained runner authentication token.
+
+### What is the new runner registration process?
+
+When the new runner registration process is introduced, you will:
+
+1. Create a runner directly in the GitLab UI.
+1. Receive an authentication token in return.
+1. Use the authentication token instead of the registration token.
+
+This has added benefits such as preserved ownership records for runners, and minimizes
+impact on users.
+The addition of a unique system ID ensures that you can reuse the same authentication token across
+multiple runners.
+For example, in an auto-scaling scenario where a runner manager spawns a runner process with a
+fixed authentication token.
+This ID generates once at the runner's startup, persists in a sidecar file, and is sent to the
+GitLab instance when requesting jobs.
+This allows the GitLab instance to display which system executed a given job.
+
+### What is the estimated timeframe for the planned changes?
+
+- In GitLab 15.10, we plan to implement runner creation directly in the runners administration page,
+  and prepare the runner to follow the new workflow.
+- In GitLab 16.0, we plan to disable registration tokens.
+  For self-managed instances, to continue using
+  registration tokens, you can disable the `enforce_create_runner_workflow` feature flag until
+  GitLab 17.0.
+
+  Previous `gitlab-runner` versions (that don't include the new `system_id` value) will start to be
+  rejected by the GitLab instance;
+- In GitLab 17.0, we plan to completely remove support for runner registration tokens.
+
+### How will the `gitlab-runner register` command syntax change?
+
+The `gitlab-runner register` command will stop accepting registration tokens and instead accept new
+authentication tokens generated in the GitLab runners administration page.
+These authentication tokens are recognizable by their `glrt-` prefix.
+
+Example command for GitLab 15.9:
+
+```shell
+gitlab-runner register
+    --executor "shell" \
+    --url "https://gitlab.com/" \
+    --tag-list "shell,mac,gdk,test" \
+    --run-untagged="false" \
+    --locked="false" \
+    --access-level="not_protected" \
+    --non-interactive \
+    --registration-token="GR1348941C6YcZVddc8kjtdU-yWYD"
+```
+
+In GitLab 16.0, the runner will be created in the UI where some of its attributes can be
+pre-configured by the creator.
+Examples are the tag list, locked status, or access level. These are no longer accepted as arguments
+to `register`. The following example shows the new command:
+
+```shell
+gitlab-runner register
+    --executor "shell" \
+    --url "https://gitlab.com/" \
+    --non-interactive \
+    --registration-token="grlt-2CR8_eVxiioB1QmzPZwa"
+```
+
+### How does this change impact auto-scaling scenarios?
+
+In auto-scaling scenarios such as GitLab Runner Operator or GitLab Runner Helm Chart, the
+registration token is replaced with the authentication token generated from the UI.
+This means that the same runner configuration is reused across jobs, instead of creating a runner
+for each job.
+The specific runner can be identified by the unique system ID that is generated when the runner
+process is started.
+
 ## Status
 
 Status: RFC.

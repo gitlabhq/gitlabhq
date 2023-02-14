@@ -115,6 +115,10 @@ export const DELETE_PACKAGES_TRACKING_ACTION = 'delete_packages';
 export const REQUEST_DELETE_PACKAGES_TRACKING_ACTION = 'request_delete_packages';
 export const CANCEL_DELETE_PACKAGES_TRACKING_ACTION = 'cancel_delete_packages';
 
+export const DELETE_PACKAGE_VERSIONS_TRACKING_ACTION = 'delete_package_versions';
+export const REQUEST_DELETE_PACKAGE_VERSIONS_TRACKING_ACTION = 'request_delete_package_versions';
+export const CANCEL_DELETE_PACKAGE_VERSIONS_TRACKING_ACTION = 'cancel_delete_package_versions';
+
 export const DELETE_PACKAGES_ERROR_MESSAGE = s__(
   'PackageRegistry|Something went wrong while deleting packages.',
 );

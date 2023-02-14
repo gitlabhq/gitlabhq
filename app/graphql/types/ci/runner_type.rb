@@ -142,7 +142,7 @@ module Types
       end
 
       def ephemeral_authentication_token
-        return unless runner.created_via_ui?
+        return unless runner.authenticated_user_registration_type?
         return unless runner.created_at > RUNNER_EPHEMERAL_TOKEN_AVAILABILITY_TIME.ago
         return if runner.runner_machines.any?
 

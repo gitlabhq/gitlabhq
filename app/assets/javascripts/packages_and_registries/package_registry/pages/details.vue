@@ -95,6 +95,7 @@ export default {
       deletePackageModalContent: DELETE_MODAL_CONTENT,
       filesToDelete: [],
       mutationLoading: false,
+      versionsMutationLoading: false,
       packageEntity: {},
     };
   },
@@ -146,6 +147,9 @@ export default {
     isLoading() {
       return this.$apollo.queries.packageEntity.loading;
     },
+    isVersionsLoading() {
+      return this.isLoading || this.versionsMutationLoading;
+    },
     packageFilesLoading() {
       return this.isLoading || this.mutationLoading;
     },
@@ -156,9 +160,6 @@ export default {
       return {
         category: packageTypeToTrackCategory(this.packageType),
       };
-    },
-    hasVersions() {
-      return this.packageEntity.versions?.nodes?.length > 0;
     },
     versionPageInfo() {
       return this.packageEntity?.versions?.pageInfo ?? {};
@@ -180,6 +181,14 @@ export default {
         PACKAGE_TYPE_NUGET,
         PACKAGE_TYPE_PYPI,
       ].includes(this.packageType);
+    },
+    refetchQueriesData() {
+      return [
+        {
+          query: getPackageDetails,
+          variables: this.queryVariables,
+        },
+      ];
     },
   },
   methods: {
@@ -206,12 +215,7 @@ export default {
             ids,
           },
           awaitRefetchQueries: true,
-          refetchQueries: [
-            {
-              query: getPackageDetails,
-              variables: this.queryVariables,
-            },
-          ],
+          refetchQueries: this.refetchQueriesData,
         });
         if (data?.destroyPackageFiles?.errors[0]) {
           throw data.destroyPackageFiles.errors[0];
@@ -403,19 +407,30 @@ export default {
           }}</gl-badge>
         </template>
 
-        <package-versions-list
-          :is-loading="isLoading"
-          :page-info="versionPageInfo"
-          :versions="packageEntity.versions.nodes"
-          @prev-page="fetchPreviousVersionsPage"
-          @next-page="fetchNextVersionsPage"
+        <delete-packages
+          :refetch-queries="refetchQueriesData"
+          show-success-alert
+          @start="versionsMutationLoading = true"
+          @end="versionsMutationLoading = false"
         >
-          <template #empty-state>
-            <p class="gl-mt-3" data-testid="no-versions-message">
-              {{ s__('PackageRegistry|There are no other versions of this package.') }}
-            </p>
+          <template #default="{ deletePackages }">
+            <package-versions-list
+              :can-destroy="packageEntity.canDestroy"
+              :is-loading="isVersionsLoading"
+              :page-info="versionPageInfo"
+              :versions="packageEntity.versions.nodes"
+              @delete="deletePackages"
+              @prev-page="fetchPreviousVersionsPage"
+              @next-page="fetchNextVersionsPage"
+            >
+              <template #empty-state>
+                <p class="gl-mt-3" data-testid="no-versions-message">
+                  {{ s__('PackageRegistry|There are no other versions of this package.') }}
+                </p>
+              </template>
+            </package-versions-list>
           </template>
-        </package-versions-list>
+        </delete-packages>
       </gl-tab>
     </gl-tabs>
 

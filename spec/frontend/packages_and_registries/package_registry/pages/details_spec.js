@@ -128,6 +128,7 @@ describe('PackagesApp', () => {
   const findDependenciesCountBadge = () => wrapper.findByTestId('dependencies-badge');
   const findNoDependenciesMessage = () => wrapper.findByTestId('no-dependencies-message');
   const findDependencyRows = () => wrapper.findAllComponents(DependencyRow);
+  const findDeletePackageModal = () => wrapper.findAllComponents(DeletePackages).at(1);
   const findDeletePackages = () => wrapper.findComponent(DeletePackages);
 
   afterEach(() => {
@@ -267,7 +268,7 @@ describe('PackagesApp', () => {
 
         await waitForPromises();
 
-        findDeletePackages().vm.$emit('end');
+        findDeletePackageModal().vm.$emit('end');
 
         expect(window.location.replace).toHaveBeenCalledWith(
           'projectListUrl?showSuccessDeleteAlert=true',
@@ -281,7 +282,7 @@ describe('PackagesApp', () => {
 
         await waitForPromises();
 
-        findDeletePackages().vm.$emit('end');
+        findDeletePackageModal().vm.$emit('end');
 
         expect(window.location.replace).toHaveBeenCalledWith(
           'groupListUrl?showSuccessDeleteAlert=true',
@@ -600,7 +601,49 @@ describe('PackagesApp', () => {
       await waitForPromises();
 
       expect(findVersionsList().props()).toMatchObject({
+        canDestroy: true,
         versions: expect.arrayContaining(versionNodes),
+      });
+    });
+
+    describe('delete packages', () => {
+      it('exists and has the correct props', async () => {
+        createComponent();
+
+        await waitForPromises();
+
+        expect(findDeletePackages().props()).toMatchObject({
+          refetchQueries: [{ query: getPackageDetails, variables: {} }],
+          showSuccessAlert: true,
+        });
+      });
+
+      it('deletePackages is bound to package-versions-list delete event', async () => {
+        createComponent();
+
+        await waitForPromises();
+
+        findVersionsList().vm.$emit('delete', [{ id: 1 }]);
+
+        expect(findDeletePackages().emitted('start')).toEqual([[]]);
+      });
+
+      it('start and end event set loading correctly', async () => {
+        createComponent();
+
+        await waitForPromises();
+
+        findDeletePackages().vm.$emit('start');
+
+        await nextTick();
+
+        expect(findVersionsList().props('isLoading')).toBe(true);
+
+        findDeletePackages().vm.$emit('end');
+
+        await nextTick();
+
+        expect(findVersionsList().props('isLoading')).toBe(false);
       });
     });
   });

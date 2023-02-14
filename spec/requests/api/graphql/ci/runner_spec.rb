@@ -525,7 +525,8 @@ RSpec.describe 'Query.runner(id)', feature_category: :runner_fleet do
     let_it_be(:creator) { create(:user) }
 
     let(:created_at) { Time.current }
-    let(:token_prefix) { '' }
+    let(:token_prefix) { registration_type == :authenticated_user ? 'glrt-' : '' }
+    let(:registration_type) {}
     let(:query) do
       %(
         query {
@@ -539,7 +540,8 @@ RSpec.describe 'Query.runner(id)', feature_category: :runner_fleet do
 
     let(:runner) do
       create(:ci_runner, :group,
-             groups: [group], creator: creator, created_at: created_at, token: "#{token_prefix}abc123")
+             groups: [group], creator: creator, created_at: created_at,
+             registration_type: registration_type, token: "#{token_prefix}abc123")
     end
 
     before_all do
@@ -570,7 +572,7 @@ RSpec.describe 'Query.runner(id)', feature_category: :runner_fleet do
       let(:user) { creator }
 
       context 'with runner created in UI' do
-        let(:token_prefix) { ::Ci::Runner::CREATED_RUNNER_TOKEN_PREFIX }
+        let(:registration_type) { :authenticated_user }
 
         context 'with runner created in last 3 hours' do
           let(:created_at) { (3.hours - 1.second).ago }
@@ -600,7 +602,7 @@ RSpec.describe 'Query.runner(id)', feature_category: :runner_fleet do
       end
 
       context 'with runner registered from command line' do
-        let(:token_prefix) { '' }
+        let(:registration_type) { :registration_token }
 
         context 'with runner created in last 3 hours' do
           let(:created_at) { (3.hours - 1.second).ago }
@@ -614,7 +616,7 @@ RSpec.describe 'Query.runner(id)', feature_category: :runner_fleet do
       let(:user) { create(:admin) }
 
       context 'with runner created in UI' do
-        let(:token_prefix) { ::Ci::Runner::CREATED_RUNNER_TOKEN_PREFIX }
+        let(:registration_type) { :authenticated_user }
 
         it_behaves_like 'a protected ephemeral_authentication_token'
       end

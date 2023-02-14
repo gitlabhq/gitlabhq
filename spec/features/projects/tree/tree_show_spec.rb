@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe 'Projects tree', :js, feature_category: :web_ide do
   include WebIdeSpecHelpers
   include RepoHelpers
+  include ListboxHelpers
 
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository) }
@@ -160,17 +161,13 @@ RSpec.describe 'Projects tree', :js, feature_category: :web_ide do
   context 'ref switcher', :js do
     it 'switches ref to branch' do
       ref_selector = '.ref-selector'
-      ref_name = 'feature'
+      ref_name = 'fix'
       visit project_tree_path(project, 'master')
 
-      find(ref_selector).click
-      wait_for_requests
+      click_button 'master'
+      send_keys ref_name
 
-      page.within(ref_selector) do
-        fill_in 'Search by Git revision', with: ref_name
-        wait_for_requests
-        find('li', text: ref_name, match: :prefer_exact).click
-      end
+      select_listbox_item ref_name
 
       expect(find(ref_selector)).to have_text(ref_name)
     end

@@ -124,38 +124,40 @@ deploy_staging:
 
 ### Create a dynamic environment
 
-To create a dynamic name and URL for an environment, you can use
-[predefined CI/CD variables](../variables/predefined_variables.md). For example:
+To create a dynamic environment, you use [CI/CD variables](../variables/index.md) that are unique to each pipeline.
+
+Prerequisites:
+
+- You must have at least the Developer role.
+
+To create a dynamic environment, in your `.gitlab-ci.yml` file:
+
+1. Define a job in the `deploy` stage.
+1. In the job, define the following environment attributes:
+   - `name`: Use a related CI/CD variable like `$CI_COMMIT_REF_SLUG`. Optionally, add a static
+     prefix to the environment's name, which [groups in the UI](#group-similar-environments) all
+     environments with the same prefix.
+   - `url`: Optional. Prefix the hostname with a related CI/CD variable like `$CI_ENVIRONMENT_SLUG`.
+
+NOTE:
+Some characters cannot be used in environment names. For more information about the
+`environment` keywords, see the [`.gitlab-ci.yml` keyword reference](../yaml/index.md#environment).
+
+In the following example, every time the `deploy_review_app` job runs the environment's name and
+URL are defined using unique values.
 
 ```yaml
-deploy_review:
+deploy_review_app:
   stage: deploy
-  script:
-    - echo "Deploy a review app"
+  script: make deploy
   environment:
     name: review/$CI_COMMIT_REF_SLUG
     url: https://$CI_ENVIRONMENT_SLUG.example.com
-  rules:
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-      when: never
-    - if: $CI_COMMIT_BRANCH
+  only:
+    - branches
+  except:
+    - main
 ```
-
-In this example:
-
-- The `name` is `review/$CI_COMMIT_REF_SLUG`. Because the [environment name](../yaml/index.md#environmentname)
-  can contain slashes (`/`), you can use this pattern to distinguish between dynamic and static environments.
-- For the `url`, you could use `$CI_COMMIT_REF_SLUG`, but because this value
-  may contain a `/` or other characters that would not be valid in a domain name or URL,
-  use `$CI_ENVIRONMENT_SLUG` instead. The `$CI_ENVIRONMENT_SLUG` variable is guaranteed to be unique.
-
-You do not have to use the same prefix or only slashes (`/`) in the dynamic environment name.
-However, when you use this format, you can [group similar environments](#group-similar-environments).
-
-NOTE:
-Some variables cannot be used as environment names or URLs.
-For more information about the `environment` keywords, see
-[the `.gitlab-ci.yml` keyword reference](../yaml/index.md#environment).
 
 ## Deployment tier of environments
 

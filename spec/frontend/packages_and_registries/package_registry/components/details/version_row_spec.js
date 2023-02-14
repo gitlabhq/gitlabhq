@@ -1,6 +1,7 @@
-import { GlIcon, GlLink, GlSprintf, GlTruncate } from '@gitlab/ui';
+import { GlFormCheckbox, GlIcon, GlLink, GlSprintf, GlTruncate } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import ListItem from '~/vue_shared/components/registry/list_item.vue';
 import PackageTags from '~/packages_and_registries/shared/components/package_tags.vue';
 import PublishMethod from '~/packages_and_registries/shared/components/publish_method.vue';
 import VersionRow from '~/packages_and_registries/package_registry/components/details/version_row.vue';
@@ -15,17 +16,20 @@ const packageVersion = packageVersions()[0];
 describe('VersionRow', () => {
   let wrapper;
 
+  const findListItem = () => wrapper.findComponent(ListItem);
   const findLink = () => wrapper.findComponent(GlLink);
   const findPackageTags = () => wrapper.findComponent(PackageTags);
   const findPublishMethod = () => wrapper.findComponent(PublishMethod);
   const findTimeAgoTooltip = () => wrapper.findComponent(TimeAgoTooltip);
   const findPackageName = () => wrapper.findComponent(GlTruncate);
   const findWarningIcon = () => wrapper.findComponent(GlIcon);
+  const findBulkDeleteAction = () => wrapper.findComponent(GlFormCheckbox);
 
-  function createComponent(packageEntity = packageVersion) {
+  function createComponent({ packageEntity = packageVersion, selected = false } = {}) {
     wrapper = shallowMountExtended(VersionRow, {
       propsData: {
         packageEntity,
+        selected,
       },
       stubs: {
         GlSprintf,
@@ -76,13 +80,47 @@ describe('VersionRow', () => {
     expect(findTimeAgoTooltip().props('time')).toBe(packageVersion.createdAt);
   });
 
+  describe('left action template', () => {
+    it('does not render checkbox if not permitted', () => {
+      createComponent({ packageEntity: { ...packageVersion, canDestroy: false } });
+
+      expect(findBulkDeleteAction().exists()).toBe(false);
+    });
+
+    it('renders checkbox', () => {
+      createComponent();
+
+      expect(findBulkDeleteAction().exists()).toBe(true);
+      expect(findBulkDeleteAction().attributes('checked')).toBeUndefined();
+    });
+
+    it('emits select when checked', () => {
+      createComponent();
+
+      findBulkDeleteAction().vm.$emit('change');
+
+      expect(wrapper.emitted('select')).toHaveLength(1);
+    });
+
+    it('renders checkbox in selected state if selected', () => {
+      createComponent({
+        selected: true,
+      });
+
+      expect(findBulkDeleteAction().attributes('checked')).toBe('true');
+      expect(findListItem().props('selected')).toBe(true);
+    });
+  });
+
   describe(`when the package is in ${PACKAGE_ERROR_STATUS} status`, () => {
     beforeEach(() => {
       createComponent({
-        ...packageVersion,
-        status: PACKAGE_ERROR_STATUS,
-        _links: {
-          webPath: null,
+        packageEntity: {
+          ...packageVersion,
+          status: PACKAGE_ERROR_STATUS,
+          _links: {
+            webPath: null,
+          },
         },
       });
     });
@@ -109,10 +147,12 @@ describe('VersionRow', () => {
   describe('disabled status', () => {
     beforeEach(() => {
       createComponent({
-        ...packageVersion,
-        status: 'something',
-        _links: {
-          webPath: null,
+        packageEntity: {
+          ...packageVersion,
+          status: 'something',
+          _links: {
+            webPath: null,
+          },
         },
       });
     });

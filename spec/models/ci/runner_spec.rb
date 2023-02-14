@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::Runner, feature_category: :runner do
+RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
   include StubGitlabCalls
 
   it_behaves_like 'having unique enum values'
@@ -85,6 +85,7 @@ RSpec.describe Ci::Runner, feature_category: :runner do
   describe 'validation' do
     it { is_expected.to validate_presence_of(:access_level) }
     it { is_expected.to validate_presence_of(:runner_type) }
+    it { is_expected.to validate_presence_of(:registration_type) }
 
     context 'when runner is not allowed to pick untagged jobs' do
       context 'when runner does not have tags' do
@@ -1748,7 +1749,7 @@ RSpec.describe Ci::Runner, feature_category: :runner do
     end
 
     context 'when creating new runner via UI' do
-      let(:runner) { create(:ci_runner, :created_via_ui) }
+      let(:runner) { create(:ci_runner, registration_type: :authenticated_user) }
 
       specify { expect(runner.token).to start_with(described_class::CREATED_RUNNER_TOKEN_PREFIX) }
       it { is_expected.not_to start_with(described_class::CREATED_RUNNER_TOKEN_PREFIX) }
@@ -1765,7 +1766,7 @@ RSpec.describe Ci::Runner, feature_category: :runner do
     end
 
     context 'when runner is created via UI' do
-      let(:runner) { create(:ci_runner, :created_via_ui) }
+      let(:runner) { create(:ci_runner, registration_type: :authenticated_user) }
 
       it { is_expected.to start_with('glrt-') }
     end
@@ -1991,22 +1992,6 @@ RSpec.describe Ci::Runner, feature_category: :runner do
       it 'returns runner matching the composed scope' do
         is_expected.to contain_exactly(inactive_runner_14_0_0)
       end
-    end
-  end
-
-  describe '#created_via_ui?' do
-    subject(:created_via_ui) { runner.created_via_ui? }
-
-    context 'when runner registered from command line' do
-      let(:runner) { create(:ci_runner) }
-
-      it { is_expected.to eq false }
-    end
-
-    context 'when runner created via UI' do
-      let(:runner) { create(:ci_runner, :created_via_ui) }
-
-      it { is_expected.to eq true }
     end
   end
 end

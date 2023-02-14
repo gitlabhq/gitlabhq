@@ -1,7 +1,8 @@
 # frozen_string_literal: true
-require 'set'
 
 namespace :gitlab do
+  require 'set'
+
   namespace :cleanup do
     desc "GitLab | Cleanup | Block users that have been removed in LDAP"
     task block_removed_ldap_users: :gitlab_environment do

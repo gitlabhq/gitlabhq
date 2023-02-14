@@ -426,6 +426,11 @@ msgid_plural "%d unresolved threads"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%d version"
+msgid_plural "%d versions"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d vulnerability"
 msgid_plural "%d vulnerabilities"
 msgstr[0] ""
@@ -36258,13 +36263,19 @@ msgstr ""
 msgid "Requirement %{reference} has been updated"
 msgstr ""
 
-msgid "Requirement title cannot have more than %{limit} characters."
-msgstr ""
-
 msgid "Requirements"
 msgstr ""
 
 msgid "Requirements can be based on users, stakeholders, system, software, or anything else you find important to capture."
+msgstr ""
+
+msgid "Requirement|Legacy requirement ID: %{legacyId}"
+msgstr ""
+
+msgid "Requirement|Legacy requirement IDs are being deprecated. Update your links to reference this item's new ID %{id}. %{linkStart}Learn more%{linkEnd}."
+msgstr ""
+
+msgid "Requirement|Requirements have become work items and the legacy requirement IDs are being deprecated. Update your links to reference this item's new ID %{id}. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
 msgid "Requires %d approval from eligible users."

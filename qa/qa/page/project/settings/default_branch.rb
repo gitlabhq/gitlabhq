@@ -5,6 +5,8 @@ module QA
     module Project
       module Settings
         class DefaultBranch < Page::Base
+          include ::QA::Page::Component::Dropdown
+
           view 'app/views/projects/branch_defaults/_show.html.haml' do
             element :save_changes_button
           end
@@ -13,14 +15,9 @@ module QA
             element :default_branch_dropdown
           end
 
-          view 'app/assets/javascripts/ref/components/ref_selector.vue' do
-            element :ref_selector_searchbox
-          end
-
           def set_default_branch(branch)
-            find_element(:default_branch_dropdown, visible: false).click
-            find_element(:ref_selector_searchbox, visible: false).fill_in(with: branch)
-            click_button branch
+            expand_select_list
+            search_and_select(branch)
           end
 
           def click_save_changes_button

@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'User find project file', feature_category: :projects do
+  include ListboxHelpers
+
   let(:user)    { create :user }
   let(:project) { create :project, :repository }
 
@@ -22,7 +24,7 @@ RSpec.describe 'User find project file', feature_category: :projects do
   end
 
   def ref_selector_dropdown
-    find('.gl-dropdown-toggle > .gl-dropdown-button-text')
+    find('.gl-button-text')
   end
 
   it 'navigates to find file by shortcut', :js do
@@ -99,7 +101,7 @@ RSpec.describe 'User find project file', feature_category: :projects do
         fill_in _('Switch branch/tag'), with: ref
         wait_for_requests
 
-        find('.gl-dropdown-item', text: ref).click
+        select_listbox_item(ref)
       end
       expect(ref_selector_dropdown).to have_text(ref)
     end

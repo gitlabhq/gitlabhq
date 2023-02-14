@@ -47,8 +47,15 @@ module Gitlab
       # cached settings hash to build the payload cache key to be invalidated.
       def clear_cache
         keys = cached_settings_hashes
-          .map { |hash| payload_cache_key_for(hash) }
-          .push(settings_cache_key)
+         .map { |hash| payload_cache_key_for(hash) }
+         .push(settings_cache_key)
+
+        ::Gitlab::AppLogger.info(
+          message: 'clear pages cache',
+          keys: keys,
+          type: @type,
+          id: @id
+        )
 
         Gitlab::Instrumentation::RedisClusterValidator.allow_cross_slot_commands do
           Rails.cache.delete_multi(keys)

@@ -1,5 +1,4 @@
-import { GlLoadingIcon, GlSearchBoxByType, GlDropdownItem, GlDropdown, GlIcon } from '@gitlab/ui';
-import { mount } from '@vue/test-utils';
+import { GlLoadingIcon, GlCollapsibleListbox, GlListboxItem } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
@@ -8,13 +7,13 @@ import Vuex from 'vuex';
 import commit from 'test_fixtures/api/commits/commit.json';
 import branches from 'test_fixtures/api/branches/branches.json';
 import tags from 'test_fixtures/api/tags/tags.json';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { trimText } from 'helpers/text_helper';
 import {
   HTTP_STATUS_INTERNAL_SERVER_ERROR,
   HTTP_STATUS_NOT_FOUND,
   HTTP_STATUS_OK,
 } from '~/lib/utils/http_status';
-import { ENTER_KEY } from '~/lib/utils/keys';
 import { sprintf } from '~/locale';
 import RefSelector from '~/ref/components/ref_selector.vue';
 import {
@@ -42,7 +41,7 @@ describe('Ref selector component', () => {
   let requestSpies;
 
   const createComponent = (mountOverrides = {}, propsData = {}) => {
-    wrapper = mount(
+    wrapper = mountExtended(
       RefSelector,
       merge(
         {
@@ -56,9 +55,6 @@ describe('Ref selector component', () => {
             input: (selectedRef) => {
               wrapper.setProps({ value: selectedRef });
             },
-          },
-          stubs: {
-            GlSearchBoxByType: true,
           },
           store: createStore(),
         },
@@ -91,76 +87,63 @@ describe('Ref selector component', () => {
       .reply((config) => commitApiCallSpy(config));
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   //
   // Finders
   //
-  const findButtonContent = () => wrapper.find('button');
+  const findListbox = () => wrapper.findComponent(GlCollapsibleListbox);
 
-  const findNoResults = () => wrapper.find('[data-testid="no-results"]');
+  const findButtonToggle = () => wrapper.findByTestId('base-dropdown-toggle');
+
+  const findNoResults = () => wrapper.findByTestId('listbox-no-results-text');
 
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
 
-  const findSearchBox = () => wrapper.findComponent(GlSearchBoxByType);
+  const findListBoxSection = (section) => {
+    const foundSections = wrapper
+      .findAll('[role="group"]')
+      .filter((ul) => ul.text().includes(section));
+    return foundSections.length > 0 ? foundSections.at(0) : foundSections;
+  };
 
-  const findBranchesSection = () => wrapper.find('[data-testid="branches-section"]');
-  const findBranchDropdownItems = () => findBranchesSection().findAllComponents(GlDropdownItem);
-  const findFirstBranchDropdownItem = () => findBranchDropdownItems().at(0);
+  const findErrorListWrapper = () => wrapper.findByTestId('red-selector-error-list');
 
-  const findTagsSection = () => wrapper.find('[data-testid="tags-section"]');
-  const findTagDropdownItems = () => findTagsSection().findAllComponents(GlDropdownItem);
-  const findFirstTagDropdownItem = () => findTagDropdownItems().at(0);
+  const findBranchesSection = () => findListBoxSection('Branches');
+  const findBranchDropdownItems = () => wrapper.findAllComponents(GlListboxItem);
 
-  const findCommitsSection = () => wrapper.find('[data-testid="commits-section"]');
-  const findCommitDropdownItems = () => findCommitsSection().findAllComponents(GlDropdownItem);
-  const findFirstCommitDropdownItem = () => findCommitDropdownItems().at(0);
+  const findTagsSection = () => findListBoxSection('Tags');
 
-  const findHiddenInputField = () => wrapper.find('[data-testid="selected-ref-form-field"]');
+  const findCommitsSection = () => findListBoxSection('Commits');
+
+  const findHiddenInputField = () => wrapper.findByTestId('selected-ref-form-field');
 
   //
   // Expecters
   //
-  const branchesSectionContainsErrorMessage = () => {
-    const branchesSection = findBranchesSection();
+  const sectionContainsErrorMessage = (message) => {
+    const errorSection = findErrorListWrapper();
 
-    return branchesSection.text().includes(DEFAULT_I18N.branchesErrorMessage);
-  };
-
-  const tagsSectionContainsErrorMessage = () => {
-    const tagsSection = findTagsSection();
-
-    return tagsSection.text().includes(DEFAULT_I18N.tagsErrorMessage);
-  };
-
-  const commitsSectionContainsErrorMessage = () => {
-    const commitsSection = findCommitsSection();
-
-    return commitsSection.text().includes(DEFAULT_I18N.commitsErrorMessage);
+    return errorSection ? errorSection.text().includes(message) : false;
   };
 
   //
   // Convenience methods
   //
   const updateQuery = (newQuery) => {
-    findSearchBox().vm.$emit('input', newQuery);
+    findListbox().vm.$emit('search', newQuery);
   };
 
   const selectFirstBranch = async () => {
-    findFirstBranchDropdownItem().vm.$emit('click');
+    findListbox().vm.$emit('select', fixtures.branches[0].name);
     await nextTick();
   };
 
   const selectFirstTag = async () => {
-    findFirstTagDropdownItem().vm.$emit('click');
+    findListbox().vm.$emit('select', fixtures.tags[0].name);
     await nextTick();
   };
 
   const selectFirstCommit = async () => {
-    findFirstCommitDropdownItem().vm.$emit('click');
+    findListbox().vm.$emit('select', fixtures.commit.id);
     await nextTick();
   };
 
@@ -195,7 +178,7 @@ describe('Ref selector component', () => {
     });
 
     describe('when name property is provided', () => {
-      it('renders an forrm input hidden field', () => {
+      it('renders an form input hidden field', () => {
         const name = 'default_tag';
 
         createComponent({ propsData: { name } });
@@ -205,7 +188,7 @@ describe('Ref selector component', () => {
     });
 
     describe('when name property is not provided', () => {
-      it('renders an forrm input hidden field', () => {
+      it('renders an form input hidden field', () => {
         createComponent();
 
         expect(findHiddenInputField().exists()).toBe(false);
@@ -224,7 +207,7 @@ describe('Ref selector component', () => {
       });
 
       it('adds the provided ID to the GlDropdown instance', () => {
-        expect(wrapper.findComponent(GlDropdown).attributes().id).toBe(id);
+        expect(findListbox().attributes().id).toBe(id);
       });
     });
 
@@ -238,7 +221,7 @@ describe('Ref selector component', () => {
       });
 
       it('renders the pre-selected ref name', () => {
-        expect(findButtonContent().text()).toBe(preselectedRef);
+        expect(findButtonToggle().text()).toBe(preselectedRef);
       });
 
       it('binds hidden input field to the pre-selected ref', () => {
@@ -259,7 +242,7 @@ describe('Ref selector component', () => {
         wrapper.setProps({ value: updatedRef });
 
         await nextTick();
-        expect(findButtonContent().text()).toBe(updatedRef);
+        expect(findButtonToggle().text()).toBe(updatedRef);
       });
     });
 
@@ -292,23 +275,6 @@ describe('Ref selector component', () => {
 
         return waitForRequests().then(() => {
           expect(commitApiCallSpy).toHaveBeenCalled();
-        });
-      });
-    });
-
-    describe('when the Enter is pressed', () => {
-      beforeEach(() => {
-        createComponent();
-
-        return waitForRequests({ andClearMocks: true });
-      });
-
-      it('requeries the endpoints when Enter is pressed', () => {
-        findSearchBox().vm.$emit('keydown', new KeyboardEvent({ key: ENTER_KEY }));
-
-        return waitForRequests().then(() => {
-          expect(branchesApiCallSpy).toHaveBeenCalledTimes(1);
-          expect(tagsApiCallSpy).toHaveBeenCalledTimes(1);
         });
       });
     });
@@ -357,27 +323,10 @@ describe('Ref selector component', () => {
 
         it('renders the branches section in the dropdown', () => {
           expect(findBranchesSection().exists()).toBe(true);
-          expect(findBranchesSection().props('shouldShowCheck')).toBe(true);
-        });
-
-        it('renders the "Branches" heading with a total number indicator', () => {
-          expect(
-            findBranchesSection().find('[data-testid="section-header"]').text(),
-          ).toMatchInterpolatedText('Branches 123');
         });
 
         it("does not render an error message in the branches section's body", () => {
-          expect(branchesSectionContainsErrorMessage()).toBe(false);
-        });
-
-        it('renders each non-default branch as a selectable item', () => {
-          const dropdownItems = findBranchDropdownItems();
-
-          fixtures.branches.forEach((b, i) => {
-            if (!b.default) {
-              expect(dropdownItems.at(i).text()).toBe(b.name);
-            }
-          });
+          expect(findErrorListWrapper().exists()).toBe(false);
         });
 
         it('renders the default branch as a selectable item with a "default" badge', () => {
@@ -418,11 +367,11 @@ describe('Ref selector component', () => {
         });
 
         it('renders the branches section in the dropdown', () => {
-          expect(findBranchesSection().exists()).toBe(true);
+          expect(findBranchesSection().exists()).toBe(false);
         });
 
         it("renders an error message in the branches section's body", () => {
-          expect(branchesSectionContainsErrorMessage()).toBe(true);
+          expect(sectionContainsErrorMessage(DEFAULT_I18N.branchesErrorMessage)).toBe(true);
         });
       });
     });
@@ -437,25 +386,16 @@ describe('Ref selector component', () => {
 
         it('renders the tags section in the dropdown', () => {
           expect(findTagsSection().exists()).toBe(true);
-          expect(findTagsSection().props('shouldShowCheck')).toBe(true);
         });
 
         it('renders the "Tags" heading with a total number indicator', () => {
-          expect(
-            findTagsSection().find('[data-testid="section-header"]').text(),
-          ).toMatchInterpolatedText('Tags 456');
+          expect(findTagsSection().find('[role="presentation"]').text()).toMatchInterpolatedText(
+            `Tags ${fixtures.tags.length}`,
+          );
         });
 
         it("does not render an error message in the tags section's body", () => {
-          expect(tagsSectionContainsErrorMessage()).toBe(false);
-        });
-
-        it('renders each tag as a selectable item', () => {
-          const dropdownItems = findTagDropdownItems();
-
-          fixtures.tags.forEach((t, i) => {
-            expect(dropdownItems.at(i).text()).toBe(t.name);
-          });
+          expect(findErrorListWrapper().exists()).toBe(false);
         });
       });
 
@@ -485,11 +425,11 @@ describe('Ref selector component', () => {
         });
 
         it('renders the tags section in the dropdown', () => {
-          expect(findTagsSection().exists()).toBe(true);
+          expect(findTagsSection().exists()).toBe(false);
         });
 
         it("renders an error message in the tags section's body", () => {
-          expect(tagsSectionContainsErrorMessage()).toBe(true);
+          expect(sectionContainsErrorMessage(DEFAULT_I18N.tagsErrorMessage)).toBe(true);
         });
       });
     });
@@ -509,19 +449,13 @@ describe('Ref selector component', () => {
         });
 
         it('renders the "Commits" heading with a total number indicator', () => {
-          expect(
-            findCommitsSection().find('[data-testid="section-header"]').text(),
-          ).toMatchInterpolatedText('Commits 1');
+          expect(findCommitsSection().find('[role="presentation"]').text()).toMatchInterpolatedText(
+            `Commits 1`,
+          );
         });
 
-        it("does not render an error message in the comits section's body", () => {
-          expect(commitsSectionContainsErrorMessage()).toBe(false);
-        });
-
-        it('renders each commit as a selectable item with the short SHA and commit title', () => {
-          const dropdownItems = findCommitDropdownItems();
-
-          expect(dropdownItems.at(0).text()).toBe(`${commit.short_id} ${commit.title}`);
+        it("does not render an error message in the commits section's body", () => {
+          expect(findErrorListWrapper().exists()).toBe(false);
         });
       });
 
@@ -553,11 +487,11 @@ describe('Ref selector component', () => {
         });
 
         it('renders the commits section in the dropdown', () => {
-          expect(findCommitsSection().exists()).toBe(true);
+          expect(findCommitsSection().exists()).toBe(false);
         });
 
         it("renders an error message in the commits section's body", () => {
-          expect(commitsSectionContainsErrorMessage()).toBe(true);
+          expect(sectionContainsErrorMessage(DEFAULT_I18N.commitsErrorMessage)).toBe(true);
         });
       });
     });
@@ -571,26 +505,13 @@ describe('Ref selector component', () => {
         return waitForRequests();
       });
 
-      it('renders a checkmark by the selected item', async () => {
-        expect(findFirstBranchDropdownItem().findComponent(GlIcon).element).toHaveClass(
-          'gl-visibility-hidden',
-        );
-
-        await selectFirstBranch();
-
-        expect(findFirstBranchDropdownItem().findComponent(GlIcon).element).not.toHaveClass(
-          'gl-visibility-hidden',
-        );
-      });
-
-      describe('when a branch is seleceted', () => {
+      describe('when a branch is selected', () => {
         it("displays the branch name in the dropdown's button", async () => {
-          expect(findButtonContent().text()).toBe(DEFAULT_I18N.noRefSelected);
+          expect(findButtonToggle().text()).toBe(DEFAULT_I18N.noRefSelected);
 
           await selectFirstBranch();
 
-          await nextTick();
-          expect(findButtonContent().text()).toBe(fixtures.branches[0].name);
+          expect(findButtonToggle().text()).toBe(fixtures.branches[0].name);
         });
 
         it("updates the v-model binding with the branch's name", async () => {
@@ -604,12 +525,11 @@ describe('Ref selector component', () => {
 
       describe('when a tag is seleceted', () => {
         it("displays the tag name in the dropdown's button", async () => {
-          expect(findButtonContent().text()).toBe(DEFAULT_I18N.noRefSelected);
+          expect(findButtonToggle().text()).toBe(DEFAULT_I18N.noRefSelected);
 
           await selectFirstTag();
 
-          await nextTick();
-          expect(findButtonContent().text()).toBe(fixtures.tags[0].name);
+          expect(findButtonToggle().text()).toBe(fixtures.tags[0].name);
         });
 
         it("updates the v-model binding with the tag's name", async () => {
@@ -623,12 +543,11 @@ describe('Ref selector component', () => {
 
       describe('when a commit is selected', () => {
         it("displays the full SHA in the dropdown's button", async () => {
-          expect(findButtonContent().text()).toBe(DEFAULT_I18N.noRefSelected);
+          expect(findButtonToggle().text()).toBe(DEFAULT_I18N.noRefSelected);
 
           await selectFirstCommit();
 
-          await nextTick();
-          expect(findButtonContent().text()).toBe(fixtures.commit.id);
+          expect(findButtonToggle().text()).toBe(fixtures.commit.id);
         });
 
         it("updates the v-model binding with the commit's full SHA", async () => {
@@ -688,21 +607,6 @@ describe('Ref selector component', () => {
       expect(tagsApiCallSpy).toHaveBeenCalledTimes(1);
     });
 
-    it('if a ref type becomes disabled, its section is hidden, even if it had some results in store', async () => {
-      createComponent({ propsData: { enabledRefTypes: [REF_TYPE_BRANCHES, REF_TYPE_COMMITS] } });
-      updateQuery('abcd1234');
-      await waitForRequests();
-
-      expect(findBranchesSection().exists()).toBe(true);
-      expect(findCommitsSection().exists()).toBe(true);
-
-      wrapper.setProps({ enabledRefTypes: [REF_TYPE_COMMITS] });
-      await waitForRequests();
-
-      expect(findBranchesSection().exists()).toBe(false);
-      expect(findCommitsSection().exists()).toBe(true);
-    });
-
     it.each`
       enabledRefType       | findVisibleSection     | findHiddenSections
       ${REF_TYPE_BRANCHES} | ${findBranchesSection} | ${[findTagsSection, findCommitsSection]}
@@ -726,8 +630,7 @@ describe('Ref selector component', () => {
 
   describe('validation state', () => {
     const invalidClass = 'gl-inset-border-1-red-500!';
-    const isInvalidClassApplied = () =>
-      wrapper.findComponent(GlDropdown).props('toggleClass')[0][invalidClass];
+    const isInvalidClassApplied = () => findListbox().props('toggleClass')[0][invalidClass];
 
     describe('valid state', () => {
       describe('when the state prop is not provided', () => {

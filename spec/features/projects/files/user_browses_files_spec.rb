@@ -4,6 +4,7 @@ require "spec_helper"
 
 RSpec.describe "User browses files", :js, feature_category: :projects do
   include RepoHelpers
+  include ListboxHelpers
 
   let(:fork_message) do
     "You're not allowed to make changes to this project directly. "\
@@ -282,17 +283,13 @@ RSpec.describe "User browses files", :js, feature_category: :projects do
       expect(page).to have_content(".gitignore").and have_content("LICENSE")
     end
 
-    it "shows files from a repository with apostroph in its name" do
-      ref_name = 'test'
+    it "shows files from a repository with apostrophe in its name" do
+      ref_name = 'fix'
 
       find(ref_selector).click
       wait_for_requests
 
-      page.within(ref_selector) do
-        fill_in 'Search by Git revision', with: ref_name
-        wait_for_requests
-        find('li', text: ref_name, match: :prefer_exact).click
-      end
+      filter_by(ref_name)
 
       expect(find(ref_selector)).to have_text(ref_name)
 
@@ -307,11 +304,7 @@ RSpec.describe "User browses files", :js, feature_category: :projects do
       find(ref_selector).click
       wait_for_requests
 
-      page.within(ref_selector) do
-        fill_in 'Search by Git revision', with: ref_name
-        wait_for_requests
-        find('li', text: ref_name, match: :prefer_exact).click
-      end
+      filter_by(ref_name)
 
       visit(project_tree_path(project, "fix/.testdir"))
 
@@ -393,5 +386,13 @@ RSpec.describe "User browses files", :js, feature_category: :projects do
         expect(page).to have_content("*.rbc")
       end
     end
+  end
+
+  def filter_by(filter_text)
+    send_keys filter_text
+
+    wait_for_requests
+
+    select_listbox_item filter_text
   end
 end

@@ -34,7 +34,7 @@ RSpec.describe 'Developer creates tag', :js, feature_category: :source_code_mana
       page.within(ref_selector) do
         fill_in _('Search by Git revision'), with: ref_name
         wait_for_requests
-        expect(find('.gl-dropdown-contents')).not_to have_content(ref_name)
+        expect(find('.gl-new-dropdown-inner')).not_to have_content(ref_name)
       end
     end
 
@@ -60,9 +60,9 @@ RSpec.describe 'Developer creates tag', :js, feature_category: :source_code_mana
       page.within ref_row do
         ref_input = find('[name="ref"]', visible: false)
         expect(ref_input.value).to eq 'master'
-        expect(find('.gl-dropdown-button-text')).to have_content 'master'
+        expect(find('.gl-button-text')).to have_content 'master'
         find('.ref-selector').click
-        expect(find('.dropdown-menu')).to have_content 'test'
+        expect(find('.gl-new-dropdown-inner')).to have_content 'test'
       end
     end
   end

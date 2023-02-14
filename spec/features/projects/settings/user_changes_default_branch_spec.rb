@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'Projects > Settings > User changes default branch', feature_category: :projects do
+  include ListboxHelpers
+
   let(:user) { create(:user) }
 
   before do
@@ -20,10 +22,10 @@ RSpec.describe 'Projects > Settings > User changes default branch', feature_cate
       wait_for_requests
 
       expect(page).to have_selector(dropdown_selector)
-      find(dropdown_selector).click
+      click_button 'master'
+      send_keys 'fix'
 
-      fill_in 'Search branch', with: 'fix'
-      click_button 'fix'
+      select_listbox_item 'fix'
 
       page.within '#branch-defaults-settings' do
         click_button 'Save changes'

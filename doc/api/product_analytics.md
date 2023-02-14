@@ -34,6 +34,11 @@ POST /projects/:id/product_analytics/request/dry-run
 
 The body of the load request must be a valid Cube query.
 
+NOTE:
+When measuring `TrackedEvents`, you must use `TrackedEvents.*` for `dimensions` and `timeDimensions`. The same rule applies when measuring `Sessions`.
+
+#### Tracked events example
+
 ```json
 {
   "query": {
@@ -64,6 +69,29 @@ The body of the load request must be a valid Cube query.
       "TrackedEvents.docPath"
     ],
     "limit": 23
+  },
+  "queryType": "multi"
+}
+```
+
+#### Sessions example
+
+```json
+{
+  "query": {
+    "measures": [
+      "Sessions.count"
+    ],
+    "timeDimensions": [
+      {
+        "dimension": "Sessions.startAt",
+        "granularity": "day"
+      }
+    ],
+    "order": {
+      "Sessions.startAt": "asc"
+    },
+    "limit": 100
   },
   "queryType": "multi"
 }

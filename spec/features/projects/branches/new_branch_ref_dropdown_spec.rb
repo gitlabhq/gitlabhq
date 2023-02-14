@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'New Branch Ref Dropdown', :js, feature_category: :projects do
+  include ListboxHelpers
+
   let(:user) { create(:user) }
   let(:project) { create(:project, :public, :repository) }
   let(:sha) { project.commit.sha }
@@ -18,15 +20,13 @@ RSpec.describe 'New Branch Ref Dropdown', :js, feature_category: :projects do
   it 'finds a tag in a list' do
     tag_name = 'v1.0.0'
 
-    toggle.click
-
     filter_by(tag_name)
 
     wait_for_requests
 
     expect(items_count(tag_name)).to be(1)
 
-    item(tag_name).click
+    select_listbox_item tag_name
 
     expect(toggle).to have_content tag_name
   end
@@ -34,22 +34,18 @@ RSpec.describe 'New Branch Ref Dropdown', :js, feature_category: :projects do
   it 'finds a branch in a list' do
     branch_name = 'audio'
 
-    toggle.click
-
     filter_by(branch_name)
 
     wait_for_requests
 
     expect(items_count(branch_name)).to be(1)
 
-    item(branch_name).click
+    select_listbox_item branch_name
 
     expect(toggle).to have_content branch_name
   end
 
   it 'finds a commit in a list' do
-    toggle.click
-
     filter_by(sha)
 
     wait_for_requests
@@ -58,21 +54,19 @@ RSpec.describe 'New Branch Ref Dropdown', :js, feature_category: :projects do
 
     expect(items_count(sha_short)).to be(1)
 
-    item(sha_short).click
+    select_listbox_item sha_short
 
     expect(toggle).to have_content sha_short
   end
 
   it 'shows no results when there is no branch, tag or commit sha found' do
     non_existing_ref = 'non_existing_branch_name'
-
-    toggle.click
-
     filter_by(non_existing_ref)
 
     wait_for_requests
 
-    expect(find('.gl-dropdown-contents')).not_to have_content(non_existing_ref)
+    click_button 'master'
+    expect(toggle).not_to have_content(non_existing_ref)
   end
 
   def item(ref_name)
@@ -84,6 +78,7 @@ RSpec.describe 'New Branch Ref Dropdown', :js, feature_category: :projects do
   end
 
   def filter_by(filter_text)
-    fill_in _('Search by Git revision'), with: filter_text
+    click_button 'master'
+    send_keys filter_text
   end
 end

@@ -30,6 +30,11 @@ module Ci
       project_type: 3
     }
 
+    enum registration_type: {
+      registration_token: 0,
+      authenticated_user: 1
+    }, _suffix: true
+
     # Prefix assigned to runners created from the UI, instead of registered via the command line
     CREATED_RUNNER_TOKEN_PREFIX = 'glrt-'
 
@@ -184,6 +189,7 @@ module Ci
     validate :tag_constraints
     validates :access_level, presence: true
     validates :runner_type, presence: true
+    validates :registration_type, presence: true
 
     validate :no_projects, unless: :project_type?
     validate :no_groups, unless: :group_type?
@@ -195,8 +201,6 @@ module Ci
     after_destroy :cleanup_runner_queue
 
     cached_attr_reader :version, :revision, :platform, :architecture, :ip_address, :contacted_at, :executor_type
-
-    attr_writer :legacy_registered
 
     chronic_duration_attr :maximum_timeout_human_readable, :maximum_timeout,
         error_message: 'Maximum job timeout has a value which could not be accepted'
@@ -297,13 +301,6 @@ module Ci
       end
     end
 
-    def initialize(params)
-      @legacy_registered = params&.delete(:legacy_registered)
-      @legacy_registered = true if @legacy_registered.nil?
-
-      super(params)
-    end
-
     def assign_to(project, current_user = nil)
       if instance_type?
         raise ArgumentError, 'Transitioning an instance runner to a project runner is not supported'
@@ -389,7 +386,7 @@ module Ci
     def short_sha
       return unless token
 
-      start_index = created_via_ui? ? CREATED_RUNNER_TOKEN_PREFIX.length : 0
+      start_index = authenticated_user_registration_type? ? CREATED_RUNNER_TOKEN_PREFIX.length : 0
       token[start_index..start_index + 8]
     end
 
@@ -493,13 +490,9 @@ module Ci
 
     override :format_token
     def format_token(token)
-      return token if @legacy_registered
+      return token if registration_token_registration_type?
 
       "#{CREATED_RUNNER_TOKEN_PREFIX}#{token}"
-    end
-
-    def created_via_ui?
-      token.start_with?(CREATED_RUNNER_TOKEN_PREFIX)
     end
 
     def ensure_machine(system_xid, &blk)

@@ -47,6 +47,7 @@ describe('packages_list_row', () => {
   const findPublishMethod = () => wrapper.findComponent(PublishMethod);
   const findCreatedDateText = () => wrapper.findByTestId('created-date');
   const findTimeAgoTooltip = () => wrapper.findComponent(TimeagoTooltip);
+  const findListItem = () => wrapper.findComponent(ListItem);
   const findBulkDeleteAction = () => wrapper.findComponent(GlFormCheckbox);
   const findPackageName = () => wrapper.findComponent(GlTruncate);
 
@@ -212,6 +213,9 @@ describe('packages_list_row', () => {
       });
 
       expect(findBulkDeleteAction().attributes('checked')).toBe('true');
+      expect(findListItem().props()).toMatchObject({
+        selected: true,
+      });
     });
   });
 

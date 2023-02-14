@@ -3,6 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe 'User searches for code', :js, :disable_rate_limiter, feature_category: :global_search do
+  using RSpec::Parameterized::TableSyntax
+  include ListboxHelpers
+
   let_it_be(:user) { create(:user) }
   let_it_be_with_reload(:project) { create(:project, :repository, namespace: user.namespace) }
 
@@ -83,14 +86,10 @@ RSpec.describe 'User searches for code', :js, :disable_rate_limiter, feature_cat
 
         expect(page).to have_selector('.results', text: expected_result)
 
-        find('.ref-selector').click
+        click_button 'master'
         wait_for_requests
 
-        page.within('.ref-selector') do
-          fill_in 'Search by Git revision', with: ref_selector
-          wait_for_requests
-          find('li', text: ref_selector, match: :prefer_exact).click
-        end
+        select_listbox_item(ref_selector)
 
         expect(page).to have_selector('.results', text: expected_result)
 
@@ -137,18 +136,12 @@ RSpec.describe 'User searches for code', :js, :disable_rate_limiter, feature_cat
         end
 
         it 'search result changes when refs switched' do
-          ref = 'master'
           expect(find('.results')).not_to have_content('path = gitlab-grack')
 
           find('.ref-selector').click
           wait_for_requests
 
-          page.within('.ref-selector') do
-            fill_in _('Search by Git revision'), with: ref
-            wait_for_requests
-
-            find('li', text: ref).click
-          end
+          select_listbox_item('add-ipython-files')
 
           expect(page).to have_selector('.results', text: 'path = gitlab-grack')
         end
@@ -192,18 +185,12 @@ RSpec.describe 'User searches for code', :js, :disable_rate_limiter, feature_cat
         end
 
         it 'search result changes when refs switched' do
-          ref = 'master'
           expect(find('.results')).not_to have_content('path = gitlab-grack')
 
           find('.ref-selector').click
           wait_for_requests
 
-          page.within('.ref-selector') do
-            fill_in _('Search by Git revision'), with: ref
-            wait_for_requests
-
-            find('li', text: ref).click
-          end
+          select_listbox_item('add-ipython-files')
 
           expect(page).to have_selector('.results', text: 'path = gitlab-grack')
         end

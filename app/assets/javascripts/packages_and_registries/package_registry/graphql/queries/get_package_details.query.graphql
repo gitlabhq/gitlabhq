@@ -66,6 +66,7 @@ query getPackageDetails(
       nodes {
         id
         name
+        canDestroy
         createdAt
         version
         status
