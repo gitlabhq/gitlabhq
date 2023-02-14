@@ -6,6 +6,12 @@ module Gitlab
       include Gitlab::EncodingHelper
       include WithFeatureFlagActors
 
+      WHITESPACE_CHANGES = {
+        'ignore_all_spaces' => Gitaly::CommitDiffRequest::WhitespaceChanges::WHITESPACE_CHANGES_IGNORE_ALL,
+        'ignore_spaces' => Gitaly::CommitDiffRequest::WhitespaceChanges::WHITESPACE_CHANGES_IGNORE,
+        'unspecified' => Gitaly::CommitDiffRequest::WhitespaceChanges::WHITESPACE_CHANGES_UNSPECIFIED
+      }.freeze
+
       TREE_ENTRIES_DEFAULT_LIMIT = 100_000
 
       def initialize(repository)
@@ -538,6 +544,11 @@ module Gitlab
 
       def call_commit_diff(request_params, options = {})
         request_params[:ignore_whitespace_change] = options.fetch(:ignore_whitespace_change, false)
+
+        if Feature.enabled?(:add_ignore_all_white_spaces) && (request_params[:ignore_whitespace_change])
+          request_params[:whitespace_changes] = WHITESPACE_CHANGES['ignore_all_spaces']
+        end
+
         request_params[:enforce_limits] = options.fetch(:limits, true)
         request_params[:collapse_diffs] = !options.fetch(:expanded, true)
         request_params.merge!(Gitlab::Git::DiffCollection.limits(options))

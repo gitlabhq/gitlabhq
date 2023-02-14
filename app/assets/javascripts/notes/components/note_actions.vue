@@ -396,8 +396,10 @@ export default {
         </gl-dropdown-item>
       </ul>
     </div>
+    <!-- IMPORTANT: show this component lazily because it causes layout thrashing -->
+    <!-- https://gitlab.com/gitlab-org/gitlab/-/issues/331172#note_1269378396 -->
     <abuse-category-selector
-      v-if="canReportAsAbuse"
+      v-if="canReportAsAbuse && isReportAbuseDrawerOpen"
       :reported-user-id="authorId"
       :reported-from-url="noteUrl"
       :show-drawer="isReportAbuseDrawerOpen"

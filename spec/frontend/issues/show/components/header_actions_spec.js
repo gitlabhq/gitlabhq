@@ -411,9 +411,8 @@ describe('HeaderActions component', () => {
       wrapper = mountComponent({ props: { isIssueAuthor: false } });
     });
 
-    it('renders', () => {
-      expect(findAbuseCategorySelector().exists()).toBe(true);
-      expect(findAbuseCategorySelector().props('showDrawer')).toEqual(false);
+    it("doesn't render", async () => {
+      expect(findAbuseCategorySelector().exists()).toEqual(false);
     });
 
     it('opens the drawer', async () => {
@@ -425,9 +424,10 @@ describe('HeaderActions component', () => {
     });
 
     it('closes the drawer', async () => {
+      await findDesktopDropdownItems().at(2).vm.$emit('click');
       await findAbuseCategorySelector().vm.$emit('close-drawer');
 
-      expect(findAbuseCategorySelector().props('showDrawer')).toEqual(false);
+      expect(findAbuseCategorySelector().exists()).toEqual(false);
     });
   });
 });

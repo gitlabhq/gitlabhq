@@ -63,6 +63,47 @@ RSpec.describe Gitlab::GitalyClient::CommitService do
       end
     end
 
+    context 'when given a whitesapce param' do
+      context 'and the param is true' do
+        it 'uses the ignore all white spaces const' do
+          request = Gitaly::CommitDiffRequest.new
+
+          expect(Gitaly::CommitDiffRequest).to receive(:new)
+            .with(hash_including(whitespace_changes: Gitaly::CommitDiffRequest::WhitespaceChanges::WHITESPACE_CHANGES_IGNORE_ALL)).and_return(request)
+
+          expect_any_instance_of(Gitaly::DiffService::Stub).to receive(:commit_diff).with(request, kind_of(Hash))
+
+          client.diff_from_parent(commit, ignore_whitespace_change: true)
+        end
+      end
+
+      context 'and the param is false' do
+        it 'does not set a whitespace param' do
+          request = Gitaly::CommitDiffRequest.new
+
+          expect(Gitaly::CommitDiffRequest).to receive(:new)
+            .with(hash_not_including(:whitespace_changes)).and_return(request)
+
+          expect_any_instance_of(Gitaly::DiffService::Stub).to receive(:commit_diff).with(request, kind_of(Hash))
+
+          client.diff_from_parent(commit, ignore_whitespace_change: false)
+        end
+      end
+    end
+
+    context 'when given no whitespace param' do
+      it 'does not set a whitespace param' do
+        request = Gitaly::CommitDiffRequest.new
+
+        expect(Gitaly::CommitDiffRequest).to receive(:new)
+          .with(hash_not_including(:whitespace_changes)).and_return(request)
+
+        expect_any_instance_of(Gitaly::DiffService::Stub).to receive(:commit_diff).with(request, kind_of(Hash))
+
+        client.diff_from_parent(commit)
+      end
+    end
+
     it 'returns a Gitlab::GitalyClient::DiffStitcher' do
       ret = client.diff_from_parent(commit)
 

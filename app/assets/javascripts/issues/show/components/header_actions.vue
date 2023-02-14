@@ -374,7 +374,10 @@ export default {
       :title="deleteButtonText"
     />
 
+    <!-- IMPORTANT: show this component lazily because it causes layout thrashing -->
+    <!-- https://gitlab.com/gitlab-org/gitlab/-/issues/331172#note_1269378396 -->
     <abuse-category-selector
+      v-if="isReportAbuseDrawerOpen"
       :reported-user-id="reportedUserId"
       :reported-from-url="reportedFromUrl"
       :show-drawer="isReportAbuseDrawerOpen"

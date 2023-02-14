@@ -403,13 +403,8 @@ describe('noteActions', () => {
         expect(findReportAbuseButton().exists()).toBe(true);
       });
 
-      it('renders abuse category drawer', () => {
-        expect(findAbuseCategorySelector().exists()).toBe(true);
-        expect(findAbuseCategorySelector().props()).toMatchObject({
-          showDrawer: false,
-          reportedUserId: props.authorId,
-          reportedFromUrl: props.noteUrl,
-        });
+      it('does not render the abuse category drawer immediately', () => {
+        expect(findAbuseCategorySelector().exists()).toBe(false);
       });
 
       it('opens the drawer when report abuse button is clicked', async () => {
@@ -419,11 +414,12 @@ describe('noteActions', () => {
       });
 
       it('closes the drawer', async () => {
+        await findReportAbuseButton().trigger('click');
         findAbuseCategorySelector().vm.$emit('close-drawer');
 
         await nextTick();
 
-        expect(findAbuseCategorySelector().props('showDrawer')).toEqual(false);
+        expect(findAbuseCategorySelector().exists()).toEqual(false);
       });
     });
   });

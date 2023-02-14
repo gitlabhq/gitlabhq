@@ -56,12 +56,21 @@ export default {
   data() {
     return {
       selected: '',
+      mounted: false,
     };
   },
   computed: {
     drawerOffsetTop() {
+      // avoid calculating this in advance because it causes layout thrashing
+      // https://gitlab.com/gitlab-org/gitlab/-/issues/331172#note_1269378396
+      if (!this.showDrawer) return '0';
       return getContentWrapperHeight('.content-wrapper');
     },
+  },
+  mounted() {
+    // this is required for the component to properly animate
+    // when it is shown with v-if
+    this.mounted = true;
   },
   methods: {
     closeDrawer() {
@@ -74,7 +83,7 @@ export default {
   <gl-drawer
     :header-height="drawerOffsetTop"
     :z-index="300"
-    :open="showDrawer"
+    :open="showDrawer && mounted"
     @close="closeDrawer"
   >
     <template #title>

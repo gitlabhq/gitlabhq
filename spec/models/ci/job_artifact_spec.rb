@@ -27,7 +27,22 @@ RSpec.describe Ci::JobArtifact do
     subject { build(:ci_job_artifact, :archive, job: job, size: 107464) }
   end
 
-  describe 'after_destroy callback' do
+  describe 'after_create_commit callback' do
+    it 'logs the job artifact create' do
+      artifact = build(:ci_job_artifact, file_type: 3, size: 8888, file_format: 2, locked: 1)
+
+      expect(Gitlab::Ci::Artifacts::Logger).to receive(:log_created) do |record|
+        expect(record.size).to eq(artifact.size)
+        expect(record.file_type).to eq(artifact.file_type)
+        expect(record.file_format).to eq(artifact.file_format)
+        expect(record.locked).to eq(artifact.locked)
+      end
+
+      artifact.save!
+    end
+  end
+
+  describe 'after_destroy_commit callback' do
     it 'logs the job artifact destroy' do
       expect(Gitlab::Ci::Artifacts::Logger).to receive(:log_deleted).with(artifact, :log_destroy)
 
