@@ -1,9 +1,9 @@
 #import "~/graphql_shared/fragments/label.fragment.graphql"
 
-query issueLabels($fullPath: ID!, $iid: String) {
+query issueLabels($fullPath: ID!, $iid: String, $types: [IssueType!]) {
   workspace: project(fullPath: $fullPath) {
     id
-    issuable: issue(iid: $iid) {
+    issuable: issue(iid: $iid, types: $types) {
       id
       labels {
         nodes {

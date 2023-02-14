@@ -71,17 +71,25 @@ module Gitlab
         @connection ||= Gitlab::Database.database_base_models[database_name].connection
       end
 
+      def remove_schema_name(table_with_schema)
+        ActiveRecord::ConnectionAdapters::PostgreSQL::Utils
+          .extract_schema_qualified_name(table_with_schema)
+          .identifier
+      end
+
+      def disable_locks_on_table(table)
+        sql_statement = "SELECT set_config('lock_writes.#{table}', 'false', false)"
+        logger&.info(sql_statement)
+        connection.execute(sql_statement) unless dry_run
+      end
+
       def truncate_tables_in_batches(tables_sorted)
         truncated_tables = []
 
         tables_sorted.flatten.each do |table|
-          table_name_without_schema = ActiveRecord::ConnectionAdapters::PostgreSQL::Utils
-            .extract_schema_qualified_name(table)
-            .identifier
+          table_name_without_schema = remove_schema_name(table)
 
-          sql_statement = "SELECT set_config('lock_writes.#{table_name_without_schema}', 'false', false)"
-          logger&.info(sql_statement)
-          connection.execute(sql_statement) unless dry_run
+          disable_locks_on_table(table_name_without_schema)
 
           # Temporarily unlocking writes on the attached partitions of the table.
           # Because in some cases they might have been locked for writes as well, when they used to be
@@ -89,13 +97,7 @@ module Gitlab
           Gitlab::Database::SharedModel.using_connection(connection) do
             table_partitions = Gitlab::Database::PostgresPartition.for_parent_table(table_name_without_schema)
             table_partitions.each do |table_partition|
-              partition_name_without_schema = ActiveRecord::ConnectionAdapters::PostgreSQL::Utils
-                .extract_schema_qualified_name(table_partition.identifier)
-                .identifier
-
-              sql_statement = "SELECT set_config('lock_writes.#{partition_name_without_schema}', 'false', false)"
-              logger&.info(sql_statement)
-              connection.execute(sql_statement) unless dry_run
+              disable_locks_on_table(remove_schema_name(table_partition.identifier))
             end
           end
         end

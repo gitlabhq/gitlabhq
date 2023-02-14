@@ -5,6 +5,7 @@ import userSearchQuery from '~/graphql_shared/queries/users_search.query.graphql
 import userSearchWithMRPermissionsQuery from '~/graphql_shared/queries/users_search_with_mr_permissions.graphql';
 import { IssuableType, WorkspaceType } from '~/issues/constants';
 import updateAlertAssigneesMutation from '~/vue_shared/alert_details/graphql/mutations/alert_set_assignees.mutation.graphql';
+import updateTestCaseLabelsMutation from './components/labels/labels_select_widget/graphql/update_test_case_labels.mutation.graphql';
 import epicLabelsQuery from './components/labels/labels_select_widget/graphql/epic_labels.query.graphql';
 import updateEpicLabelsMutation from './components/labels/labels_select_widget/graphql/epic_update_labels.mutation.graphql';
 import groupLabelsQuery from './components/labels/labels_select_widget/graphql/group_labels.query.graphql';
@@ -150,6 +151,11 @@ export const issuableLabelsQueries = {
     issuableQuery: epicLabelsQuery,
     mutation: updateEpicLabelsMutation,
     mutationName: 'updateEpic',
+  },
+  [IssuableType.TestCase]: {
+    issuableQuery: issueLabelsQuery,
+    mutation: updateTestCaseLabelsMutation,
+    mutationName: 'updateTestCaseLabels',
   },
 };
 

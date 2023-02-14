@@ -1,0 +1,20 @@
+#import "~/graphql_shared/fragments/author.fragment.graphql"
+#import "~/graphql_shared/fragments/label.fragment.graphql"
+
+mutation updateTestCaseLabels($input: UpdateIssueInput!) {
+  updateIssuableLabels: updateIssue(input: $input) {
+    issuable: issue {
+      id
+      updatedAt
+      updatedBy {
+        ...Author
+      }
+      labels {
+        nodes {
+          ...Label
+        }
+      }
+    }
+    errors
+  }
+}

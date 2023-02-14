@@ -17,6 +17,7 @@ export const IssuableType = {
   Epic: 'epic',
   MergeRequest: 'merge_request',
   Alert: 'alert',
+  TestCase: 'test_case',
 };
 
 export const IssueType = {

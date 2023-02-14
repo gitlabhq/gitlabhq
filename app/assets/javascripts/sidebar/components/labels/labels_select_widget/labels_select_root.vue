@@ -161,10 +161,16 @@ export default {
         return !isDropdownVariantSidebar(this.variant);
       },
       variables() {
-        return {
+        const queryVariables = {
           iid: this.iid,
           fullPath: this.fullPath,
         };
+
+        if (this.issuableType === IssuableType.TestCase) {
+          queryVariables.types = ['TEST_CASE'];
+        }
+
+        return queryVariables;
       },
       update(data) {
         return data.workspace?.issuable;
@@ -256,6 +262,7 @@ export default {
 
       switch (this.issuableType) {
         case IssuableType.Issue:
+        case IssuableType.TestCase:
           return updateVariables;
         case IssuableType.MergeRequest:
           return {
@@ -312,6 +319,7 @@ export default {
 
       switch (this.issuableType) {
         case IssuableType.Issue:
+        case IssuableType.TestCase:
           return {
             ...removeVariables,
             removeLabelIds: [labelId],

@@ -194,7 +194,7 @@ RSpec.describe Integrations::MicrosoftTeams do
   end
 
   describe 'Pipeline events' do
-    let_it_be_with_reload(:project) { create(:project, :repository) }
+    let_it_be_with_refind(:project) { create(:project, :repository) }
 
     let(:pipeline) do
       create(:ci_pipeline,

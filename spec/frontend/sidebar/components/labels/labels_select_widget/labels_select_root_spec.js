@@ -14,6 +14,7 @@ import updateIssueLabelsMutation from '~/boards/graphql/issue_set_labels.mutatio
 import updateMergeRequestLabelsMutation from '~/sidebar/queries/update_merge_request_labels.mutation.graphql';
 import issuableLabelsSubscription from 'ee_else_ce/sidebar/queries/issuable_labels.subscription.graphql';
 import updateEpicLabelsMutation from '~/sidebar/components/labels/labels_select_widget/graphql/epic_update_labels.mutation.graphql';
+import updateTestCaseLabelsMutation from '~/sidebar/components/labels/labels_select_widget/graphql/update_test_case_labels.mutation.graphql';
 import LabelsSelectRoot from '~/sidebar/components/labels/labels_select_widget/labels_select_root.vue';
 import {
   mockConfig,
@@ -37,6 +38,7 @@ const updateLabelsMutation = {
   [IssuableType.Issue]: updateIssueLabelsMutation,
   [IssuableType.MergeRequest]: updateMergeRequestLabelsMutation,
   [IssuableType.Epic]: updateEpicLabelsMutation,
+  [IssuableType.TestCase]: updateTestCaseLabelsMutation,
 };
 
 describe('LabelsSelectRoot', () => {
@@ -214,6 +216,7 @@ describe('LabelsSelectRoot', () => {
     ${IssuableType.Issue}
     ${IssuableType.MergeRequest}
     ${IssuableType.Epic}
+    ${IssuableType.TestCase}
   `('when updating labels for $issuableType', ({ issuableType }) => {
     const label = { id: 'gid://gitlab/ProjectLabel/2' };
 
@@ -228,6 +231,7 @@ describe('LabelsSelectRoot', () => {
 
     it('updates labels correctly after successful mutation', async () => {
       createComponent({ issuableType });
+
       await nextTick();
       findDropdownContents().vm.$emit('setLabels', [label]);
       await waitForPromises();
