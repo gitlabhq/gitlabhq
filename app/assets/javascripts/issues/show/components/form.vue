@@ -1,7 +1,7 @@
 <script>
 import { GlAlert } from '@gitlab/ui';
 import { getDraft, updateDraft, getLockVersion, clearDraft } from '~/lib/utils/autosave';
-import { IssuableType } from '~/issues/constants';
+import { TYPE_ISSUE } from '~/issues/constants';
 import eventHub from '../event_hub';
 import EditActions from './edit_actions.vue';
 import DescriptionField from './fields/description.vue';
@@ -98,7 +98,7 @@ export default {
       return this.formState.lockedWarningVisible && !this.formState.updateLoading;
     },
     isIssueType() {
-      return this.issuableType === IssuableType.Issue;
+      return this.issuableType === TYPE_ISSUE;
     },
   },
   watch: {

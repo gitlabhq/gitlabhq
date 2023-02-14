@@ -12,6 +12,7 @@ import {
   STATUS_CLOSED,
   STATUS_OPEN,
   STATUS_REOPENED,
+  TYPE_ISSUE,
 } from '~/issues/constants';
 import IssuableApp from '~/issues/show/components/app.vue';
 import DescriptionComponent from '~/issues/show/components/description.vue';
@@ -484,11 +485,11 @@ describe('Issuable output', () => {
       });
 
       it.each`
-        issuableType          | issuableStatus   | statusIcon
-        ${IssuableType.Issue} | ${STATUS_OPEN}   | ${'issues'}
-        ${IssuableType.Issue} | ${STATUS_CLOSED} | ${'issue-closed'}
-        ${IssuableType.Epic}  | ${STATUS_OPEN}   | ${'epic'}
-        ${IssuableType.Epic}  | ${STATUS_CLOSED} | ${'epic-closed'}
+        issuableType         | issuableStatus   | statusIcon
+        ${TYPE_ISSUE}        | ${STATUS_OPEN}   | ${'issues'}
+        ${TYPE_ISSUE}        | ${STATUS_CLOSED} | ${'issue-closed'}
+        ${IssuableType.Epic} | ${STATUS_OPEN}   | ${'epic'}
+        ${IssuableType.Epic} | ${STATUS_CLOSED} | ${'epic-closed'}
       `(
         'shows with state icon "$statusIcon" for $issuableType when status is $issuableStatus',
         async ({ issuableType, issuableStatus, statusIcon }) => {

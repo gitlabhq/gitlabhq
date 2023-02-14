@@ -3,7 +3,7 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import { IssuableType } from '~/issues/constants';
+import { IssuableType, TYPE_ISSUE } from '~/issues/constants';
 import SidebarReferenceWidget from '~/sidebar/components/copy/sidebar_reference_widget.vue';
 import issueReferenceQuery from '~/sidebar/queries/issue_reference.query.graphql';
 import mergeRequestReferenceQuery from '~/sidebar/queries/merge_request_reference.query.graphql';
@@ -19,7 +19,7 @@ describe('Sidebar Reference Widget', () => {
   const findCopyableField = () => wrapper.findComponent(CopyableField);
 
   const createComponent = ({
-    issuableType = IssuableType.Issue,
+    issuableType = TYPE_ISSUE,
     referenceQuery = issueReferenceQuery,
     referenceQueryHandler = jest.fn().mockResolvedValue(issueReferenceResponse(mockReferenceValue)),
   } = {}) => {
@@ -51,7 +51,7 @@ describe('Sidebar Reference Widget', () => {
   });
 
   describe.each([
-    [IssuableType.Issue, issueReferenceQuery],
+    [TYPE_ISSUE, issueReferenceQuery],
     [IssuableType.MergeRequest, mergeRequestReferenceQuery],
   ])('when issuableType is %s', (issuableType, referenceQuery) => {
     it('sets CopyableField `value` prop to reference value', async () => {

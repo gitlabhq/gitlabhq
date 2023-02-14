@@ -3,7 +3,7 @@ import { GlButton, GlIcon, GlLink, GlPopover, GlTooltipDirective } from '@gitlab
 import { kebabCase, snakeCase } from 'lodash';
 import { createAlert } from '~/flash';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import { IssuableType } from '~/issues/constants';
+import { IssuableType, TYPE_ISSUE } from '~/issues/constants';
 import { timeFor } from '~/lib/utils/datetime_utility';
 import { __ } from '~/locale';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -71,7 +71,7 @@ export default {
       type: String,
       required: true,
       validator(value) {
-        return [IssuableType.Issue, IssuableType.MergeRequest].includes(value);
+        return [TYPE_ISSUE, IssuableType.MergeRequest].includes(value);
       },
     },
     icon: {
@@ -188,7 +188,7 @@ export default {
             fullPath: this.workspacePath,
             attributeId:
               this.issuableAttribute === IssuableAttributeType.Milestone &&
-              this.issuableType === IssuableType.Issue
+              this.issuableType === TYPE_ISSUE
                 ? getIdFromGraphQLId(id)
                 : id,
             iid: this.iid,

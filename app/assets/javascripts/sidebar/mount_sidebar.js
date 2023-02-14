@@ -4,7 +4,7 @@ import { TYPENAME_ISSUE, TYPENAME_MERGE_REQUEST } from '~/graphql_shared/constan
 import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import initInviteMembersModal from '~/invite_members/init_invite_members_modal';
 import initInviteMembersTrigger from '~/invite_members/init_invite_members_trigger';
-import { IssuableType } from '~/issues/constants';
+import { IssuableType, TYPE_ISSUE } from '~/issues/constants';
 import { gqlClient } from '~/issues/list/graphql';
 import {
   isInDesignPage,
@@ -80,7 +80,7 @@ function mountSidebarTodoWidget() {
           issuableIid: iid,
           issuableType:
             isInIssuePage() || isInIncidentPage() || isInDesignPage()
-              ? IssuableType.Issue
+              ? TYPE_ISSUE
               : IssuableType.MergeRequest,
         },
       }),
@@ -124,7 +124,7 @@ function mountSidebarAssigneesDeprecated(mediator) {
           signedIn: Object.prototype.hasOwnProperty.call(el.dataset, 'signedIn'),
           issuableType:
             isInIssuePage() || isInIncidentPage() || isInDesignPage()
-              ? IssuableType.Issue
+              ? TYPE_ISSUE
               : IssuableType.MergeRequest,
           issuableId: id,
           assigneeAvailabilityStatus,
@@ -142,7 +142,7 @@ function mountSidebarAssigneesWidget() {
 
   const { id, iid, fullPath, editable } = getSidebarOptions();
   const isIssuablePage = isInIssuePage() || isInIncidentPage() || isInDesignPage();
-  const issuableType = isIssuablePage ? IssuableType.Issue : IssuableType.MergeRequest;
+  const issuableType = isIssuablePage ? TYPE_ISSUE : IssuableType.MergeRequest;
   // eslint-disable-next-line no-new
   new Vue({
     el,
@@ -205,7 +205,7 @@ function mountSidebarReviewers(mediator) {
           projectPath: fullPath,
           field: el.dataset.field,
           issuableType:
-            isInIssuePage() || isInDesignPage() ? IssuableType.Issue : IssuableType.MergeRequest,
+            isInIssuePage() || isInDesignPage() ? TYPE_ISSUE : IssuableType.MergeRequest,
         },
       }),
   });
@@ -276,7 +276,7 @@ function mountSidebarMilestoneWidget() {
           workspacePath: projectPath,
           iid: issueIid,
           issuableType:
-            isInIssuePage() || isInDesignPage() ? IssuableType.Issue : IssuableType.MergeRequest,
+            isInIssuePage() || isInDesignPage() ? TYPE_ISSUE : IssuableType.MergeRequest,
           issuableAttribute: IssuableAttributeType.Milestone,
           icon: 'clock',
         },
@@ -313,7 +313,7 @@ export function mountMilestoneDropdown() {
           attrWorkspacePath: fullPath,
           canAdminMilestone,
           inputName,
-          issuableType: isInIssuePage() ? IssuableType.Issue : IssuableType.MergeRequest,
+          issuableType: isInIssuePage() ? TYPE_ISSUE : IssuableType.MergeRequest,
           milestoneId,
           milestoneTitle,
           projectMilestonesPath,
@@ -357,7 +357,7 @@ export function mountSidebarLabelsWidget() {
           variant: DropdownVariant.Sidebar,
           issuableType:
             isInIssuePage() || isInIncidentPage() || isInDesignPage()
-              ? IssuableType.Issue
+              ? TYPE_ISSUE
               : IssuableType.MergeRequest,
           workspaceType: 'project',
           attrWorkspacePath: el.dataset.projectPath,
@@ -397,7 +397,7 @@ function mountSidebarConfidentialityWidget() {
           fullPath,
           issuableType:
             isInIssuePage() || isInIncidentPage() || isInDesignPage()
-              ? IssuableType.Issue
+              ? TYPE_ISSUE
               : IssuableType.MergeRequest,
         },
       }),
@@ -425,7 +425,7 @@ function mountSidebarDueDateWidget() {
         props: {
           iid: String(iid),
           fullPath,
-          issuableType: IssuableType.Issue,
+          issuableType: TYPE_ISSUE,
         },
       }),
   });
@@ -453,7 +453,7 @@ function mountSidebarReferenceWidget() {
         props: {
           issuableType:
             isInIssuePage() || isInIncidentPage() || isInDesignPage()
-              ? IssuableType.Issue
+              ? TYPE_ISSUE
               : IssuableType.MergeRequest,
         },
       }),
@@ -505,7 +505,7 @@ function mountSidebarParticipantsWidget() {
           fullPath,
           issuableType:
             isInIssuePage() || isInIncidentPage() || isInDesignPage()
-              ? IssuableType.Issue
+              ? TYPE_ISSUE
               : IssuableType.MergeRequest,
         },
       }),
@@ -535,7 +535,7 @@ function mountSidebarSubscriptionsWidget() {
           fullPath,
           issuableType:
             isInIssuePage() || isInIncidentPage() || isInDesignPage()
-              ? IssuableType.Issue
+              ? TYPE_ISSUE
               : IssuableType.MergeRequest,
         },
       }),

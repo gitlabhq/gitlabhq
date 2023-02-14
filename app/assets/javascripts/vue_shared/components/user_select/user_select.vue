@@ -11,7 +11,7 @@ import {
 } from '@gitlab/ui';
 import { __ } from '~/locale';
 import SidebarParticipant from '~/sidebar/components/assignees/sidebar_participant.vue';
-import { IssuableType } from '~/issues/constants';
+import { IssuableType, TYPE_ISSUE } from '~/issues/constants';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { participantsQueries, userSearchQueries } from '~/sidebar/constants';
 import { TYPENAME_MERGE_REQUEST } from '~/graphql_shared/constants';
@@ -67,7 +67,7 @@ export default {
     issuableType: {
       type: String,
       required: false,
-      default: IssuableType.Issue,
+      default: TYPE_ISSUE,
     },
     isEditing: {
       type: Boolean,

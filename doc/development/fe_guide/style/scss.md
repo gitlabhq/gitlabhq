@@ -212,13 +212,3 @@ catch any warnings.
 
 If the Rake task is throwing warnings you don't understand, SCSS Lint's
 documentation includes [a full list of their rules](https://stylelint.io/user-guide/rules/).
-
-### Fixing issues
-
-If you want to automate changing a large portion of the codebase to conform to
-the SCSS style guide, you can use [CSSComb](https://github.com/csscomb/csscomb.js). First install
-[Node](https://github.com/nodejs/node) and [npm](https://www.npmjs.com/), then run `npm install csscomb -g` to install
-CSSComb globally (system-wide). Run it in the GitLab directory with
-`csscomb app/assets/stylesheets` to automatically fix issues with CSS/SCSS.
-
-Note that this doesn't fix every problem, but it should fix a majority.

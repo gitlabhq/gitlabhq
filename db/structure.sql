@@ -12135,6 +12135,29 @@ CREATE SEQUENCE authentication_events_id_seq
 
 ALTER SEQUENCE authentication_events_id_seq OWNED BY authentication_events.id;
 
+CREATE TABLE automation_rules (
+    id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    issues_events boolean DEFAULT false NOT NULL,
+    merge_requests_events boolean DEFAULT false NOT NULL,
+    permanently_disabled boolean DEFAULT false NOT NULL,
+    name text NOT NULL,
+    rule text NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    CONSTRAINT check_0be3e2c953 CHECK ((char_length(name) <= 255)),
+    CONSTRAINT check_ed5a4fcbd5 CHECK ((char_length(rule) <= 2048))
+);
+
+CREATE SEQUENCE automation_rules_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE automation_rules_id_seq OWNED BY automation_rules.id;
+
 CREATE TABLE award_emoji (
     id integer NOT NULL,
     name character varying,
@@ -24180,6 +24203,8 @@ ALTER TABLE ONLY audit_events_streaming_headers ALTER COLUMN id SET DEFAULT next
 
 ALTER TABLE ONLY authentication_events ALTER COLUMN id SET DEFAULT nextval('authentication_events_id_seq'::regclass);
 
+ALTER TABLE ONLY automation_rules ALTER COLUMN id SET DEFAULT nextval('automation_rules_id_seq'::regclass);
+
 ALTER TABLE ONLY award_emoji ALTER COLUMN id SET DEFAULT nextval('award_emoji_id_seq'::regclass);
 
 ALTER TABLE ONLY background_migration_jobs ALTER COLUMN id SET DEFAULT nextval('background_migration_jobs_id_seq'::regclass);
@@ -25902,6 +25927,9 @@ ALTER TABLE ONLY audit_events_streaming_headers
 
 ALTER TABLE ONLY authentication_events
     ADD CONSTRAINT authentication_events_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY automation_rules
+    ADD CONSTRAINT automation_rules_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY award_emoji
     ADD CONSTRAINT award_emoji_pkey PRIMARY KEY (id);
@@ -29009,6 +29037,10 @@ CREATE UNIQUE INDEX index_audit_events_external_audit_on_verification_token ON a
 CREATE INDEX index_authentication_events_on_provider ON authentication_events USING btree (provider);
 
 CREATE INDEX index_authentication_events_on_user_and_ip_address_and_result ON authentication_events USING btree (user_id, ip_address, result);
+
+CREATE UNIQUE INDEX index_automation_rules_namespace_id_name ON automation_rules USING btree (namespace_id, lower(name));
+
+CREATE INDEX index_automation_rules_namespace_id_permanently_disabled ON automation_rules USING btree (namespace_id, permanently_disabled);
 
 CREATE INDEX index_award_emoji_on_awardable_type_and_awardable_id ON award_emoji USING btree (awardable_type, awardable_id);
 
@@ -34653,6 +34685,9 @@ ALTER TABLE ONLY approval_merge_request_rules
 
 ALTER TABLE ONLY namespace_statistics
     ADD CONSTRAINT fk_rails_0062050394 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY automation_rules
+    ADD CONSTRAINT fk_rails_025b519b8d FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY incident_management_oncall_participants
     ADD CONSTRAINT fk_rails_032b12996a FOREIGN KEY (oncall_rotation_id) REFERENCES incident_management_oncall_rotations(id) ON DELETE CASCADE;

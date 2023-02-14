@@ -1,7 +1,7 @@
 <script>
 import { GlSprintf, GlButton } from '@gitlab/ui';
 import { createAlert } from '~/flash';
-import { IssuableType } from '~/issues/constants';
+import { TYPE_ISSUE } from '~/issues/constants';
 import { __, sprintf } from '~/locale';
 import { confidentialityQueries } from '../../constants';
 
@@ -53,11 +53,14 @@ export default {
         ? this.$options.i18n.confidentialityOffWarning
         : this.$options.i18n.confidentialityOnWarning;
     },
+    isIssue() {
+      return this.issuableType === TYPE_ISSUE;
+    },
     context() {
-      return this.issuableType === IssuableType.Issue ? __('project') : __('group');
+      return this.isIssue ? __('project') : __('group');
     },
     workspacePath() {
-      return this.issuableType === IssuableType.Issue
+      return this.isIssue
         ? {
             projectPath: this.fullPath,
           }
@@ -66,7 +69,7 @@ export default {
           };
     },
     permissions() {
-      return this.issuableType === IssuableType.Issue
+      return this.isIssue
         ? __('at least the Reporter role, the author, and assignees')
         : __('at least the Reporter role');
     },

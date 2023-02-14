@@ -9,7 +9,7 @@ import SafeHtml from '~/vue_shared/directives/safe_html';
 import { getIdFromGraphQLId, convertToGraphQLId } from '~/graphql_shared/utils';
 import { TYPENAME_WORK_ITEM } from '~/graphql_shared/constants';
 import { createAlert } from '~/flash';
-import { IssuableType } from '~/issues/constants';
+import { TYPE_ISSUE } from '~/issues/constants';
 import { isMetaKey } from '~/lib/utils/common_utils';
 import { isPositiveInteger } from '~/lib/utils/number_utils';
 import { getParameterByName, setUrlParams, updateHistory } from '~/lib/utils/url_utility';
@@ -80,7 +80,7 @@ export default {
     issuableType: {
       type: String,
       required: false,
-      default: IssuableType.Issue,
+      default: TYPE_ISSUE,
     },
     updateUrl: {
       type: String,

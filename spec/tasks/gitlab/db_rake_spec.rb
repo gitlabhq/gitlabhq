@@ -360,11 +360,12 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
 
     let(:base_models) { { 'fake_db' => model }.with_indifferent_access }
 
-    let(:tables) { %w[table1] }
+    let(:tables) { %w[table1 _test_dictionary_table_name] }
     let(:views) { %w[view1] }
 
     let(:table_file_path) { 'db/docs/table1.yml' }
     let(:view_file_path) { 'db/docs/views/view1.yml' }
+    let(:test_table_path) { 'db/docs/_test_dictionary_table_name.yml' }
 
     before do
       allow(Gitlab::Database).to receive(:db_config_for_connection).and_return(db_config)
@@ -385,6 +386,12 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
 
         expect(File).to exist(File.join(table_file_path))
         expect(File).to exist(File.join(view_file_path))
+      end
+
+      it 'do not generate the dictionary files for test tables' do
+        run_rake_task('gitlab:db:dictionary:generate')
+
+        expect(File).not_to exist(File.join(test_table_path))
       end
     end
 

@@ -462,6 +462,8 @@ namespace :gitlab do
             .each { |c| classes[c.table_name] << c.name if classes.has_key?(c.table_name) }
 
           sources.each do |source_name|
+            next if source_name.start_with?('_test_') # Ignore test tables
+
             database = model_class.connection_db_config.name
             file = dictionary_file_path(source_name, views, database)
             key_name = "#{data_source_type(source_name, views)}_name"

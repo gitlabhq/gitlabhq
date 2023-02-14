@@ -4,7 +4,7 @@ import issuableLabelsSubscription from 'ee_else_ce/sidebar/queries/issuable_labe
 import { MutationOperationMode, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { createAlert } from '~/flash';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import { IssuableType } from '~/issues/constants';
+import { IssuableType, TYPE_ISSUE } from '~/issues/constants';
 
 import { __ } from '~/locale';
 import { issuableLabelsQueries } from '../../../constants';
@@ -261,7 +261,7 @@ export default {
       };
 
       switch (this.issuableType) {
-        case IssuableType.Issue:
+        case TYPE_ISSUE:
         case IssuableType.TestCase:
           return updateVariables;
         case IssuableType.MergeRequest:
@@ -318,7 +318,7 @@ export default {
       };
 
       switch (this.issuableType) {
-        case IssuableType.Issue:
+        case TYPE_ISSUE:
         case IssuableType.TestCase:
           return {
             ...removeVariables,

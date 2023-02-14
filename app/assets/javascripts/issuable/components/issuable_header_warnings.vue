@@ -2,7 +2,7 @@
 import { GlIcon, GlTooltipDirective } from '@gitlab/ui';
 import { mapGetters } from 'vuex';
 import { sprintf, __ } from '~/locale';
-import { IssuableType, WorkspaceType } from '~/issues/constants';
+import { TYPE_ISSUE, WorkspaceType } from '~/issues/constants';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import ConfidentialityBadge from '~/vue_shared/components/confidentiality_badge.vue';
 
@@ -12,8 +12,8 @@ const NoteableTypeText = {
 };
 
 export default {
+  TYPE_ISSUE,
   WorkspaceType,
-  IssuableType,
   components: {
     GlIcon,
     ConfidentialityBadge,
@@ -61,7 +61,7 @@ export default {
       v-if="isConfidential"
       data-testid="confidential"
       :workspace-type="$options.WorkspaceType.project"
-      :issuable-type="$options.IssuableType.Issue"
+      :issuable-type="$options.TYPE_ISSUE"
     />
     <template v-for="meta in warningIconsMeta">
       <div

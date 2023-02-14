@@ -2,7 +2,7 @@
 import { GlDropdownItem } from '@gitlab/ui';
 import Vue from 'vue';
 import { createAlert } from '~/flash';
-import { IssuableType } from '~/issues/constants';
+import { IssuableType, TYPE_ISSUE } from '~/issues/constants';
 import { __, n__ } from '~/locale';
 import UserSelect from '~/vue_shared/components/user_select/user_select.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -58,9 +58,9 @@ export default {
     issuableType: {
       type: String,
       required: false,
-      default: IssuableType.Issue,
+      default: TYPE_ISSUE,
       validator(value) {
-        return [IssuableType.Issue, IssuableType.MergeRequest, IssuableType.Alert].includes(value);
+        return [TYPE_ISSUE, IssuableType.MergeRequest, IssuableType.Alert].includes(value);
       },
     },
     issuableId: {
@@ -118,7 +118,7 @@ export default {
   computed: {
     shouldEnableRealtime() {
       // Note: Realtime is only available on issues right now, future support for MR wil be built later.
-      return this.issuableType === IssuableType.Issue;
+      return this.issuableType === TYPE_ISSUE;
     },
     queryVariables() {
       return {

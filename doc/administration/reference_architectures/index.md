@@ -186,11 +186,17 @@ See [Recommended cloud providers and services](index.md#recommended-cloud-provid
 ### Additional workloads
 
 These reference architectures have been [designed and tested](index.md#validation-and-test-results) for standard GitLab
-setups with good headroom in mind to cover most scenarios. However, if any additional workloads are being added on the
-nodes, such as security software, you may still need to adjust the specs accordingly to compensate.
+setups with good headroom in mind to cover most scenarios.
 
-This also applies for some GitLab features where it's possible to run custom scripts, for example
-[server hooks](../server_hooks.md).
+However, additional workloads can multiply the impact of operations by triggering follow-up actions.
+You may need to adjust the suggested specifications to compensate if you use, for example:
+
+- Security software on the nodes.
+- Hundreds of concurrent CI jobs for [large repositories](../../ci/large_repositories/index.md).
+- Custom scripts that [run at high frequency](../logs/log_parsing.md#print-top-api-user-agents).
+- [Integrations](../../integration/index.md) in many large projects.
+- [Server hooks](../server_hooks.md).
+- [System hooks](../system_hooks.md).
 
 As a general rule, you should have robust monitoring in place to measure the impact of any additional workloads to
 inform any changes needed to be made.

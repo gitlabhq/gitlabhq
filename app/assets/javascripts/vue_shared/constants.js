@@ -1,5 +1,5 @@
 import { __, n__, sprintf } from '~/locale';
-import { IssuableType, WorkspaceType } from '~/issues/constants';
+import { TYPE_ISSUE, WorkspaceType } from '~/issues/constants';
 
 const INTERVALS = {
   minute: 'minute',
@@ -88,9 +88,9 @@ export const confidentialityInfoText = (workspaceType, issuableType) =>
     ),
     {
       workspaceType: workspaceType === WorkspaceType.project ? __('project') : __('group'),
-      issuableType: issuableType === IssuableType.Issue ? __('issue') : __('epic'),
+      issuableType: issuableType === TYPE_ISSUE ? __('issue') : __('epic'),
       permissions:
-        issuableType === IssuableType.Issue
+        issuableType === TYPE_ISSUE
           ? __('at least the Reporter role, the author, and assignees')
           : __('at least the Reporter role'),
     },

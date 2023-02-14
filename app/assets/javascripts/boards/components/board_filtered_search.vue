@@ -327,7 +327,6 @@ export default {
             if (Array.isArray(value)) {
               return value.map((valueItem) => encodeURIComponent(valueItem));
             }
-
             return encodeURIComponent(value);
           }
 

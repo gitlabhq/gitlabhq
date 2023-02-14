@@ -73,6 +73,7 @@ You can also [visualize roadmaps inside of an epic](../epics/index.md#roadmap-in
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345158) in GitLab 14.8 [with a flag](../../../administration/feature_flags.md) named `roadmap_settings`. Enabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/350830) in GitLab 14.9. Feature flag `roadmap_settings`removed.
+> - Labels visible on roadmaps [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385231) in GitLab 15.9.
 
 When you enable the roadmap settings sidebar, you can use it to refine epics shown in the roadmap.
 
@@ -84,6 +85,7 @@ You can configure the following:
 - Show all, open, or closed epics.
 - Turn progress tracking for child issues on or off and select whether
   to use issue weights or counts.
+- Turn labels on or off.
 
 The progress tracking setting isn't saved in user preferences, but is saved or
 shared using URL parameters.

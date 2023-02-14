@@ -2,7 +2,13 @@
 import { GlIcon, GlBadge, GlIntersectionObserver, GlTooltipDirective } from '@gitlab/ui';
 import Visibility from 'visibilityjs';
 import { createAlert } from '~/flash';
-import { IssuableStatusText, WorkspaceType, IssuableType, STATUS_CLOSED } from '~/issues/constants';
+import {
+  IssuableStatusText,
+  IssuableType,
+  STATUS_CLOSED,
+  TYPE_ISSUE,
+  WorkspaceType,
+} from '~/issues/constants';
 import Poll from '~/lib/utils/poll';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { __, sprintf } from '~/locale';
@@ -151,7 +157,7 @@ export default {
     issuableType: {
       type: String,
       required: false,
-      default: IssuableType.Issue,
+      default: TYPE_ISSUE,
     },
     canAttachFile: {
       type: Boolean,
@@ -259,7 +265,7 @@ export default {
         : '';
     },
     statusIcon() {
-      if (this.issuableType === IssuableType.Issue) {
+      if (this.issuableType === TYPE_ISSUE) {
         return this.isClosed ? 'issue-closed' : 'issues';
       }
       return this.isClosed ? 'epic-closed' : 'epic';
@@ -271,7 +277,7 @@ export default {
       return IssuableStatusText[this.issuableStatus];
     },
     shouldShowStickyHeader() {
-      return [IssuableType.Issue, IssuableType.Epic].includes(this.issuableType);
+      return [TYPE_ISSUE, IssuableType.Epic].includes(this.issuableType);
     },
   },
   created() {

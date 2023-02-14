@@ -4,7 +4,7 @@ import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/flash';
-import { IssuableType } from '~/issues/constants';
+import { IssuableType, TYPE_ISSUE } from '~/issues/constants';
 import SidebarEditableItem from '~/sidebar/components/sidebar_editable_item.vue';
 import DropdownContents from '~/sidebar/components/labels/labels_select_widget/dropdown_contents.vue';
 import DropdownValue from '~/sidebar/components/labels/labels_select_widget/dropdown_value.vue';
@@ -35,7 +35,7 @@ const subscriptionHandler = jest.fn().mockResolvedValue(issuableLabelsSubscripti
 const errorQueryHandler = jest.fn().mockRejectedValue('Houston, we have a problem');
 
 const updateLabelsMutation = {
-  [IssuableType.Issue]: updateIssueLabelsMutation,
+  [TYPE_ISSUE]: updateIssueLabelsMutation,
   [IssuableType.MergeRequest]: updateMergeRequestLabelsMutation,
   [IssuableType.Epic]: updateEpicLabelsMutation,
   [IssuableType.TestCase]: updateTestCaseLabelsMutation,
@@ -52,7 +52,7 @@ describe('LabelsSelectRoot', () => {
   const createComponent = ({
     config = mockConfig,
     slots = {},
-    issuableType = IssuableType.Issue,
+    issuableType = TYPE_ISSUE,
     queryHandler = successfulQueryHandler,
     mutationHandler = successfulMutationHandler,
   } = {}) => {
@@ -213,7 +213,7 @@ describe('LabelsSelectRoot', () => {
 
   describe.each`
     issuableType
-    ${IssuableType.Issue}
+    ${TYPE_ISSUE}
     ${IssuableType.MergeRequest}
     ${IssuableType.Epic}
     ${IssuableType.TestCase}
