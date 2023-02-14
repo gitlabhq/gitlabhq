@@ -5,7 +5,7 @@ module BoardItemFilterable
 
   private
 
-  def item_filters(args)
+  def item_filters(args, resource_parent)
     filters = args.to_h
 
     set_filter_values(filters)
@@ -44,10 +44,6 @@ module BoardItemFilterable
 
   def rewrite_param_name(filters, old_name, new_name)
     filters[new_name] = filters.delete(old_name) if filters[old_name].present?
-  end
-
-  def resource_parent
-    respond_to?(:board) ? board.resource_parent : list.board.resource_parent
   end
 end
 

@@ -62,6 +62,12 @@ To create a task:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/377307) in GitLab 15.9 [with a flag](../administration/feature_flags.md) named `work_items_mvc_2`. Disabled by default.
 
+FLAG:
+On self-managed GitLab, by default this feature is not available.
+To make it available, ask an administrator to [enable the feature flag](../administration/feature_flags.md) named `work_items_mvc_2`.
+On GitLab.com, this feature is not available.
+The feature is not ready for production use.
+
 Prerequisites:
 
 - You must have at least the Reporter role for the project.
