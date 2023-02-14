@@ -1,0 +1,72 @@
+- name: Block merges unless external status checks pass
+  description: |  # Do not modify this line, instead modify the lines below.
+    You can now configure projects to block merge request merges unless all external status checks pass. This allows you to confidently rely on external systems as part of your GitLab workflows and ensure that all required steps are completed before the code is merged.
+
+    When configured, users can only merge merge requests if external status checks pass and the green checkmark is displayed on the merge request. If an external status check is pending or failed, merging the merge request is blocked.
+
+  stage: govern
+  self-managed: true
+  gitlab-com: true
+  available_in: [Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/user/project/merge_requests/status_checks.html#block-merges-of-merge-requests-unless-all-status-checks-have-passed
+  image_url: https://about.gitlab.com/images/15_8/manage-block-external-status-checks.png
+  published_at: 2023-01-22
+  release: 15.8
+- name: SCIM support for self-managed GitLab
+  description: |  # Do not modify this line, instead modify the lines below.
+    Self-managed GitLab now supports the open standard System for Cross-domain Identity Management (SCIM), which allows you to automatically:
+
+        - Create users.
+        - Remove users by deactivating their SCIM identities.
+
+      Previously, this was only available for GitLab.com. SCIM enables GitLab administrators to completely automate their user lifecycle management.
+  stage: manage
+  self-managed: true
+  gitlab-com: false
+  available_in: [Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/user/admin_area/settings/scim_setup.html
+  image_url: https://about.gitlab.com/images/15_8/manage-scim-token.png
+  published_at: 2023-01-22
+  release: 15.8
+- name: Migrate projects when migrating groups using direct transfer
+  description: |  # Do not modify this line, instead modify the lines below.
+      We are excited to announce the availability of migrating GitLab projects by direct transfer Beta. Now, you can migrate group and project resources together when using direct transfer. You can use direct transfers to migrate between GitLab instances or
+      within the same GitLab instance.
+
+      Migrating projects when [migrating groups using direct transfer](https://docs.gitlab.com/ee/user/group/import/#migrate-groups-by-direct-transfer-recommended) is a major
+      improvement from migrating groups and projects using [file exports](https://docs.gitlab.com/ee/user/project/settings/import_export.html) because:
+
+      - You don't need to manually export each project to a file and then import all those export files to a new location. Now all projects
+        within a top-level group are migrated automatically, making your work more efficient.
+      - When migrating from self-managed GitLab to GitLab.com, user associations (such as comment author) are not changed to the user who is importing the
+        projects. Migration using direct transfer maps users and their contributions correctly, provided
+        [a few conditions are met](https://docs.gitlab.com/ee/user/group/import/#preparation).
+
+      This feature is available on GitLab.com. You can migrate from a self-managed GitLab to GitLab.com
+      right now!
+
+      To enable it on GitLab self-managed instances, see the linked documentation.
+
+      Learn more about migrating GitLab projects by direct transfer Beta and what’s coming next in our recent [blog post](https://about.gitlab.com/blog/2023/01/18/try-out-new-way-to-migrate-projects/).
+  stage: manage
+  self-managed: false
+  gitlab-com: true
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/user/group/import/#migrate-groups-by-direct-transfer-recommended
+  image_url: https://about.gitlab.com/images/15_8/groups-import-with-projects.png
+  published_at: 2023-01-22
+  release: 15.8
+- name: View estimated queuing time for runners in the Admin Area
+  description: |  # Do not modify this line, instead modify the lines below.
+        A key input in GitLab Runner fleet optimization is having deep insights into queue performance over time. While today there are historical queue duration metrics available for each job on a runner in the Admin Area view, there is no simple mechanism to determine the current queue performance for runners.
+
+        With the new estimated queue time feature, you are now able to, at a glance, determine the median estimated wait time for all instance runners. This data will enable you to proactively identify potential CI job execution issues for your organization's developers and provide insights to inform decisions on configuration or resource changes to optimize your runner fleet.
+
+  stage: verify
+  self-managed: true
+  gitlab-com: false
+  available_in: [Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/ci/runners/configure_runners.html#view-statistics-for-runner-performance
+  image_url: https://about.gitlab.com/images/15_8/admin-runners-estimated-queue-wait-time.png
+  published_at: 2023-01-22
+  release: 15.8

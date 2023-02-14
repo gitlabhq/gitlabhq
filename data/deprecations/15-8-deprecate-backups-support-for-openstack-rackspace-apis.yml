@@ -1,0 +1,13 @@
+- title: "Automatic backup upload using Openstack Swift and Rackspace APIs"  # (required) The name of the feature to be deprecated
+  announcement_milestone: "15.8"  # (required) The milestone when this feature was first announced as deprecated.
+  removal_milestone: "15.10"  # (required) The milestone when this feature is planned to be removed
+  end_of_support_milestone: "15.10"  # (optional) Use "XX.YY" format. The milestone when support for this feature will end.
+  breaking_change: true  # (required) If this deprecation is a breaking change, set this value to true
+  reporter: sranasinghe  # (required) GitLab username of the person reporting the deprecation
+  stage: Enablement  # (required) String value of the stage that the feature was created in. e.g., Growth
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/387976  # (required) Link to the deprecation issue in GitLab
+  body: |  # (required) Do not modify this line, instead modify the lines below.
+    We are deprecating support for [uploading backups to remote storage](https://docs.gitlab.com/ee/raketasks/backup_gitlab.html#upload-backups-to-a-remote-cloud-storage) using Openstack Swift and Rackspace APIs. The support for these APIs depends on third-party libraries that are no longer actively maintained and have not been updated for  Ruby 3. GitLab is switching over to Ruby 3 prior to EOL of Ruby 2 in order to stay up to date on security patches.
+
+    - If you're using OpenStack, you need to change you configuration to use the S3 API instead of Swift.
+    - If you're using Rackspace storage, you need to switch to a different provider or manually upload the backup file after the backup task is complete.

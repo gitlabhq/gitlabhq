@@ -38,6 +38,8 @@ of the page to activate it in the GitLab instance.
 
 ## System header and footer messages
 
+> **Enable header and footer in emails** checkbox [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/344819) in GitLab 15.9.
+
 You can add a small header message, a small footer message, or both, to the interface
 of your GitLab instance. These messages appear on all projects and pages of the
 instance, including the sign in / sign up page. The default color is white text on

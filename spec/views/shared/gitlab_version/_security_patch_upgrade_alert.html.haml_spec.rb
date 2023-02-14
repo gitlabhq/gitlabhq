@@ -9,10 +9,6 @@ RSpec.describe 'shared/gitlab_version/_security_patch_upgrade_alert' do
       render
     end
 
-    it 'renders the security patch upgrade alert' do
-      expect(rendered).to have_selector('#js-security-patch-upgrade-alert')
-    end
-
     it 'renders the security patch upgrade alert modal' do
       expect(rendered).to have_selector('#js-security-patch-upgrade-alert-modal')
     end

@@ -99,6 +99,24 @@ Because Cloud Native Buildpacks do not support automatic testing, the Auto Test 
 
 </div>
 
+<div class="deprecation removal-1510 breaking-change">
+
+### Automatic backup upload using Openstack Swift and Rackspace APIs
+
+End of Support: GitLab <span class="removal-milestone">15.10</span> <span class="support-end-date"></span><br />
+Planned removal: GitLab <span class="removal-milestone">15.10</span> <span class="removal-date"></span>
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+We are deprecating support for [uploading backups to remote storage](https://docs.gitlab.com/ee/raketasks/backup_gitlab.html#upload-backups-to-a-remote-cloud-storage) using Openstack Swift and Rackspace APIs. The support for these APIs depends on third-party libraries that are no longer actively maintained and have not been updated for  Ruby 3. GitLab is switching over to Ruby 3 prior to EOL of Ruby 2 in order to stay up to date on security patches.
+
+- If you're using OpenStack, you need to change you configuration to use the S3 API instead of Swift.
+- If you're using Rackspace storage, you need to switch to a different provider or manually upload the backup file after the backup task is complete.
+
+</div>
+
 <div class="deprecation removal-160 breaking-change">
 
 ### Azure Storage Driver defaults to the correct root prefix

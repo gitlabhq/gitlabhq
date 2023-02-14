@@ -416,6 +416,9 @@ GitLab also [imports cloud drivers](https://gitlab.com/gitlab-org/gitlab/-/blob/
 for AWS, Google, OpenStack Swift, Rackspace, and Aliyun. A local driver is
 [also available](#upload-to-locally-mounted-shares).
 
+NOTE:
+Support for Openstack Swift and Rackspace APIs will be removed in GitLab 15.10. See [issue #387976](https://gitlab.com/gitlab-org/gitlab/-/issues/387976) for more information.
+
 [Read more about using object storage with GitLab](../administration/object_storage.md).
 
 #### Using Amazon S3

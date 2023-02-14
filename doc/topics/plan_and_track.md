@@ -21,31 +21,21 @@ with [Scaled Agile Framework (SAFe)](https://about.gitlab.com/solutions/agile-de
 
 <!-- vale gitlab.Spelling = YES -->
 
-## Basic workflow features
-
-Planning features everyone needs to use day-to-day.
-
-- [Keyboard shortcuts](../user/shortcuts.md)
-- [Markdown](../user/markdown.md)
-- [Quick actions](../user/project/quick_actions.md)
-- [To-Do lists](../user/todos.md)
-- [Using Git](../topics/git/index.md)
-
 ## Team planning
 
 Get work done as a team.
 
+- [Labels](../user/project/labels.md)
+- [Iterations](../user/group/iterations/index.md)
+- [Milestones](../user/project/milestones/index.md)
+- [Issues](../user/project/issues/index.md)
 - [Comments and threads](../user/discussions/index.md)
+- [Tasks](../user/tasks.md)
+- [Requirements](../user/project/requirements/index.md)
+- [Time tracking](../user/project/time_tracking.md)
 - [Customer relations (CRM)](../user/crm/index.md)
   - [Contacts](../user/crm/index.md#contacts)
   - [Organizations](../user/crm/index.md#organizations)
-- [Issues](../user/project/issues/index.md)
-- [Iterations](../user/group/iterations/index.md)
-- [Labels](../user/project/labels.md)
-- [Milestones](../user/project/milestones/index.md)
-- [Requirements](../user/project/requirements/index.md)
-- [Tasks](../user/tasks.md)
-- [Time tracking](../user/project/time_tracking.md)
 - [Wikis](../user/project/wiki/index.md)
 
 ## Portfolio management
@@ -59,3 +49,13 @@ Align your work across teams.
 - [Roadmaps](../user/group/roadmap/index.md)
 - [Planning hierarchies](../user/group/planning_hierarchy/index.md)
 - [Objectives and key results](../user/okrs.md)
+
+## Basic workflow features
+
+Use these day-to-day planning features.
+
+- [Keyboard shortcuts](../user/shortcuts.md)
+- [Quick actions](../user/project/quick_actions.md)
+- [Markdown](../user/markdown.md)
+- [To-Do List](../user/todos.md)
+- [Using Git](../topics/git/index.md)

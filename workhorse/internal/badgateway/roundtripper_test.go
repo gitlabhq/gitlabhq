@@ -1,9 +1,11 @@
 package badgateway
 
 import (
+	"context"
 	"errors"
 	"io"
 	"net/http"
+	"net/http/httptest"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -53,4 +55,37 @@ func TestErrorPage502(t *testing.T) {
 			require.Contains(t, string(body), tc.responseSnippet)
 		})
 	}
+}
+
+func TestClientDisconnect499(t *testing.T) {
+	serverSync := make(chan struct{})
+	ts := httptest.NewServer(http.HandlerFunc(func(http.ResponseWriter, *http.Request) {
+		serverSync <- struct{}{}
+		<-serverSync
+	}))
+	defer func() {
+		close(serverSync)
+		ts.Close()
+	}()
+
+	clientResponse := make(chan *http.Response)
+	clientContext, clientCancel := context.WithCancel(context.Background())
+
+	go func() {
+		req, err := http.NewRequestWithContext(clientContext, "GET", ts.URL, nil)
+		require.NoError(t, err, "build request")
+
+		rt := NewRoundTripper(false, http.DefaultTransport)
+		response, err := rt.RoundTrip(req)
+		require.NoError(t, err, "perform roundtrip")
+		require.NoError(t, response.Body.Close())
+
+		clientResponse <- response
+	}()
+
+	<-serverSync
+
+	clientCancel()
+	response := <-clientResponse
+	require.Equal(t, 499, response.StatusCode, "response status")
 }

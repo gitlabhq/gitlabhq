@@ -567,6 +567,28 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator, featu
         end
 
         it { is_expected.to match_array([message]) }
+
+        context 'without license', unless: Gitlab.ee? do
+          let(:schema_path) { Rails.root.join(*%w[lib gitlab ci parsers security validators schemas]) }
+
+          it 'tries to validate against the latest patch version available' do
+            expect(File).to receive(:file?).with("#{schema_path}/#{report_version}/#{report_type}-report-format.json")
+            expect(File).to receive(:file?).with("#{schema_path}/#{latest_patch_version}/#{report_type}-report-format.json")
+
+            subject
+          end
+        end
+
+        context 'with license', if: Gitlab.ee? do
+          let(:schema_path) { Rails.root.join(*%w[ee lib ee gitlab ci parsers security validators schemas]) }
+
+          it 'tries to validate against the latest patch version available' do
+            expect(File).to receive(:file?).with("#{schema_path}/#{report_version}/#{report_type}-report-format.json")
+            expect(File).to receive(:file?).with("#{schema_path}/#{latest_patch_version}/#{report_type}-report-format.json")
+
+            subject
+          end
+        end
       end
 
       context 'and the report is invalid' do

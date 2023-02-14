@@ -3,8 +3,6 @@
 module VersionCheckHelper
   include Gitlab::Utils::StrongMemoize
 
-  SECURITY_ALERT_SEVERITY = 'danger'
-
   def show_version_check?
     return false unless Gitlab::CurrentSettings.version_check_enabled
     return false if User.single_user&.requires_usage_stats_consent?
@@ -18,9 +16,9 @@ module VersionCheckHelper
   strong_memoize_attr :gitlab_version_check
 
   def show_security_patch_upgrade_alert?
-    return false unless Feature.enabled?(:critical_security_alert) && show_version_check? && gitlab_version_check
+    return false unless show_version_check? && gitlab_version_check
 
-    gitlab_version_check['severity'] === SECURITY_ALERT_SEVERITY
+    Gitlab::Utils.to_boolean(gitlab_version_check['critical_vulnerability'])
   end
 
   def link_to_version
