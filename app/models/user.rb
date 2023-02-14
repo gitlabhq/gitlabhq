@@ -1035,17 +1035,30 @@ class User < ApplicationRecord
 
   def disable_two_factor!
     transaction do
-      update(
-        otp_required_for_login: false,
-        encrypted_otp_secret: nil,
-        encrypted_otp_secret_iv: nil,
-        encrypted_otp_secret_salt: nil,
-        otp_grace_period_started_at: nil,
-        otp_backup_codes: nil
-      )
-      self.u2f_registrations.destroy_all # rubocop: disable Cop/DestroyAll
-      self.webauthn_registrations.destroy_all # rubocop: disable Cop/DestroyAll
+      self.u2f_registrations.destroy_all # rubocop:disable Cop/DestroyAll
+      self.disable_webauthn!
+      self.disable_two_factor_otp!
+      self.reset_backup_codes!
     end
+  end
+
+  def disable_two_factor_otp!
+    update(
+      otp_required_for_login: false,
+      encrypted_otp_secret: nil,
+      encrypted_otp_secret_iv: nil,
+      encrypted_otp_secret_salt: nil,
+      otp_grace_period_started_at: nil,
+      otp_secret_expires_at: nil
+    )
+  end
+
+  def disable_webauthn!
+    self.webauthn_registrations.destroy_all # rubocop:disable Cop/DestroyAll
+  end
+
+  def reset_backup_codes!
+    update(otp_backup_codes: nil)
   end
 
   def two_factor_enabled?

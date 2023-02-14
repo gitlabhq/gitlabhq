@@ -159,11 +159,11 @@ describe('Board list component', () => {
     });
 
     describe('when issue count exceeds max issue count', () => {
-      it('sets background to bg-danger-100', async () => {
+      it('sets background to gl-bg-red-100', async () => {
         wrapper.setProps({ list: { issuesCount: 4, maxIssueCount: 3 } });
 
         await nextTick();
-        const block = wrapper.find('.bg-danger-100');
+        const block = wrapper.find('.gl-bg-red-100');
 
         expect(block.exists()).toBe(true);
         expect(block.attributes('class')).toContain(
@@ -173,18 +173,18 @@ describe('Board list component', () => {
     });
 
     describe('when list issue count does NOT exceed list max issue count', () => {
-      it('does not sets background to bg-danger-100', () => {
+      it('does not sets background to gl-bg-red-100', () => {
         wrapper.setProps({ list: { issuesCount: 2, maxIssueCount: 3 } });
 
-        expect(wrapper.find('.bg-danger-100').exists()).toBe(false);
+        expect(wrapper.find('.gl-bg-red-100').exists()).toBe(false);
       });
     });
 
     describe('when list max issue count is 0', () => {
-      it('does not sets background to bg-danger-100', () => {
+      it('does not sets background to gl-bg-red-100', () => {
         wrapper.setProps({ list: { maxIssueCount: 0 } });
 
-        expect(wrapper.find('.bg-danger-100').exists()).toBe(false);
+        expect(wrapper.find('.gl-bg-red-100').exists()).toBe(false);
       });
     });
   });

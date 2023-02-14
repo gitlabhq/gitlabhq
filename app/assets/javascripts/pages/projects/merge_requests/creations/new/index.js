@@ -34,7 +34,7 @@ if (mrNewCompareNode) {
       },
       toggleClass: {
         project: 'js-source-project',
-        branch: 'js-source-branch',
+        branch: 'js-source-branch gl-font-monospace',
       },
       branchQaSelector: 'source_branch_dropdown',
     },
@@ -68,7 +68,7 @@ if (mrNewCompareNode) {
       },
       toggleClass: {
         project: 'js-target-project',
-        branch: 'js-target-branch',
+        branch: 'js-target-branch gl-font-monospace',
       },
     },
     render(h) {

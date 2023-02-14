@@ -60,7 +60,7 @@ If you have:
   - A sharded Gitaly instance.
   - Gitaly Cluster.
 
-Contact your Technical Account Manager or customer support if you have any questions.
+Contact your [Customer Success Manager](https://about.gitlab.com/job-families/sales/customer-success-management/) or customer support if you have any questions.
 
 ### Known issues
 

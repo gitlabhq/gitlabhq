@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Profiles::TwoFactorAuthsController do
+RSpec.describe Profiles::TwoFactorAuthsController, feature_category: :authentication_and_authorization do
   before do
     # `user` should be defined within the action-specific describe blocks
     sign_in(user)
@@ -31,7 +31,7 @@ RSpec.describe Profiles::TwoFactorAuthsController do
 
   shared_examples 'user must enter a valid current password' do
     let(:current_password) { '123' }
-    let(:error_message) { { message: _('You must provide a valid current password') } }
+    let(:error_message) { { message: _('You must provide a valid current password.') } }
 
     it 'requires the current password', :aggregate_failures do
       go
@@ -154,7 +154,7 @@ RSpec.describe Profiles::TwoFactorAuthsController do
 
     context 'with valid pin' do
       before do
-        expect(user).to receive(:validate_and_consume_otp!).with(pin).and_return(true)
+        allow(user).to receive(:validate_and_consume_otp!).with(pin).and_return(true)
       end
 
       it 'enables 2fa for the user' do
@@ -187,6 +187,64 @@ RSpec.describe Profiles::TwoFactorAuthsController do
       it 'renders create' do
         go
         expect(response).to render_template(:create)
+        expect(user.otp_backup_codes?).to be_eql(true)
+      end
+
+      it 'do not create new backup codes if exists' do
+        expect(user).to receive(:otp_backup_codes?).and_return(true)
+        go
+        expect(response).to redirect_to(profile_two_factor_auth_path)
+      end
+
+      it 'calls to delete other sessions when backup codes already exist' do
+        expect(user).to receive(:otp_backup_codes?).and_return(true)
+        expect(ActiveSession).to receive(:destroy_all_but_current)
+        go
+      end
+
+      context 'when webauthn_without_totp flag is disabled' do
+        before do
+          stub_feature_flags(webauthn_without_totp: false)
+          expect(user).to receive(:validate_and_consume_otp!).with(pin).and_return(true)
+        end
+
+        it 'enables 2fa for the user' do
+          go
+
+          user.reload
+          expect(user).to be_two_factor_enabled
+        end
+
+        it 'presents plaintext codes for the user to save' do
+          expect(user).to receive(:generate_otp_backup_codes!).and_return(%w(a b c))
+
+          go
+
+          expect(assigns[:codes]).to match_array %w(a b c)
+        end
+
+        it 'calls to delete other sessions' do
+          expect(ActiveSession).to receive(:destroy_all_but_current)
+
+          go
+        end
+
+        it 'dismisses the `TWO_FACTOR_AUTH_RECOVERY_SETTINGS_CHECK` callout' do
+          expect(controller.helpers).to receive(:dismiss_two_factor_auth_recovery_settings_check)
+
+          go
+        end
+
+        it 'renders create' do
+          go
+          expect(response).to render_template(:create)
+        end
+
+        it 'renders create even if backup code already exists' do
+          expect(user).to receive(:otp_backup_codes?).and_return(true)
+          go
+          expect(response).to render_template(:create)
+        end
       end
     end
 
@@ -251,6 +309,75 @@ RSpec.describe Profiles::TwoFactorAuthsController do
 
     it_behaves_like 'user must enter a valid current password' do
       let(:go) { post :codes, params: { current_password: current_password } }
+    end
+  end
+
+  describe 'POST create_webauthn' do
+    let_it_be_with_reload(:user) { create(:user) }
+    let(:client) { WebAuthn::FakeClient.new('http://localhost', encoding: :base64) }
+    let(:credential) { create_credential(client: client, rp_id: request.host) }
+
+    let(:params) { { device_registration: { name: 'touch id', device_response: device_response } } } # rubocop:disable Rails/SaveBang
+
+    let(:params_with_password) { { device_registration: { name: 'touch id', device_response: device_response }, current_password: user.password } } # rubocop:disable Rails/SaveBang
+
+    before do
+      session[:challenge] = challenge
+    end
+
+    def go
+      post :create_webauthn, params: params
+    end
+
+    def challenge
+      @_challenge ||= begin
+        options_for_create = WebAuthn::Credential.options_for_create(
+          user: { id: user.webauthn_xid, name: user.username },
+          authenticator_selection: { user_verification: 'discouraged' },
+          rp: { name: 'GitLab' }
+        )
+        options_for_create.challenge
+      end
+    end
+
+    def device_response
+      client.create(challenge: challenge).to_json # rubocop:disable Rails/SaveBang
+    end
+
+    it 'update failed_attempts when proper password is not given' do
+      go
+      expect(user.failed_attempts).to be_eql(1)
+    end
+
+    context "when valid password is given" do
+      it "registers and render OTP backup codes" do
+        post :create_webauthn, params: params_with_password
+        expect(user.otp_backup_codes).not_to be_empty
+        expect(flash[:notice]).to match(/Your WebAuthn device was registered!/)
+      end
+
+      it 'registers and redirects back if user is already having backup codes' do
+        expect(user).to receive(:otp_backup_codes?).and_return(true)
+        post :create_webauthn, params: params_with_password
+        expect(response).to redirect_to(profile_two_factor_auth_path)
+        expect(flash[:notice]).to match(/Your WebAuthn device was registered!/)
+      end
+    end
+
+    context "when the feature flag 'webauthn_without_totp' is disabled" do
+      before do
+        stub_feature_flags(webauthn_without_totp: false)
+        session[:challenge] = challenge
+      end
+
+      let(:params) { { device_registration: { name: 'touch id', device_response: device_response } } } # rubocop:disable Rails/SaveBang
+
+      it "does not validate the current_password" do
+        go
+
+        expect(flash[:notice]).to match(/Your WebAuthn device was registered!/)
+        expect(response).to redirect_to(profile_two_factor_auth_path)
+      end
     end
   end
 

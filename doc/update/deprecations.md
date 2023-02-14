@@ -94,6 +94,24 @@ When using the native HashiCorp Vault integration, CI/CD jobs will fail when no 
 
 <div class="deprecation removal-160 breaking-change">
 
+### Default CI/CD job token (`CI_JOB_TOKEN`) scope changed
+
+Planned removal: GitLab <span class="removal-milestone">16.0</span> <span class="removal-date"></span>
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+In GitLab 14.4 we introduced the ability to limit the "outbound" scope of the CI/CD job token (`CI_JOB_TOKEN`) to make it more secure. You can prevent job tokens from your project's pipelines from being used to access other projects. If needed, you can list specific projects that you want to access with your project's job tokens.
+
+In 15.9 we extended this functionality with a better solution, an "inbound" scope limit. You can prevent the job tokens from _other_ projects from being used to access your project. With this feature, you can optionally list specific projects that you want to allow to access your project with _their_ job token.
+
+In 16.0, this inbound scope limit will be the only option available for all projects, and the outbound limit setting will be removed. To prepare for this change, you can enable the ["inbound" CI/CD job token limit](https://docs.gitlab.com/ee/ci/jobs/ci_job_token.html#configure-the-job-token-scope-limit) feature now, and list any projects that need to access your project.
+
+</div>
+
+<div class="deprecation removal-160 breaking-change">
+
 ### Development dependencies reported for PHP and Python
 
 Planned removal: GitLab <span class="removal-milestone">16.0</span> <span class="removal-date"></span>
@@ -245,6 +263,27 @@ We recommend replacing this with an alternative [compliance solution](https://do
 
 </div>
 
+<div class="deprecation removal-170 breaking-change">
+
+### Single database connection is deprecated
+
+Planned removal: GitLab <span class="removal-milestone">17.0</span> <span class="removal-date"></span>
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+Previously, [GitLab's database](https://docs.gitlab.com/omnibus/settings/database.html)
+configuration had a single `main:` section. This is being deprecated. The new
+configuration has both a `main:` and a `ci:` section.
+
+This deprecation affects users compiling GitLab from source, who will need
+to [add the `ci:` section](https://docs.gitlab.com/ee/install/installation.html#configure-gitlab-db-settings).
+Omnibus, the Helm chart, and Operator will handle this configuration
+automatically from GitLab 16.0 onwards.
+
+</div>
+
 <div class="deprecation removal-160 breaking-change">
 
 ### Support for Praefect custom metrics endpoint configuration
@@ -278,6 +317,20 @@ This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_g
 Review the details carefully before upgrading.
 
 We will be transitioning to a new IID as a result of moving requirements to a [work item type](https://docs.gitlab.com/ee/development/work_items.html#work-items-and-work-item-types). Users should begin using the new IID as support for the legacy IID and existing formatting will end in GitLab 17.0. The legacy requirement IID remains available until its removal in GitLab 17.0.
+
+</div>
+
+<div class="deprecation removal-160 breaking-change">
+
+### Trigger jobs can mirror downstream pipeline status exactly
+
+Planned removal: GitLab <span class="removal-milestone">16.0</span> <span class="removal-date"></span>
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+In some cases, like when a downstream pipeline had the `passed with warnings` status, trigger jobs that were using [`strategy: depend`](https://docs.gitlab.com/ee/ci/yaml/index.html#strategydepend) did not mirror the status of the downstream pipeline exactly. In GitLab 16.0 trigger jobs will show the exact same status as the the downstream pipeline. If your pipeline relied on this behavior, you should update your pipeline to handle the more accurate status.
 
 </div>
 </div>

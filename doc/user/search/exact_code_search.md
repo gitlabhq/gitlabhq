@@ -10,17 +10,9 @@ type: reference
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105049) in GitLab 15.9 [with a flag](../../administration/feature_flags.md) named `index_code_with_zoekt` and `search_code_with_zoekt` which enables indexing and searching respectively. Both are disabled by default.
 
 WARNING:
-Exact code search is in [**Alpha**](../../policy/alpha-beta-support.md#alpha-features).
-For the Exact code search feature roadmap, see [epic 9404](https://gitlab.com/groups/gitlab-org/-/epics/9404).
-
-This feature will initially only be rolled out to
-specific customers on GitLab.com that request
-access.
-
-On self-managed GitLab it should be possible to enable this, but no
-documentation is provided as it requires executing commands from the Rails
-console as well advanced configuration of
-[Zoekt](https://github.com/sourcegraph/zoekt) servers.
+Exact Code Search is an MVC. For the Exact Code Search feature roadmap, see [epic 9404](https://gitlab.com/groups/gitlab-org/-/epics/9404).
+When this feature reaches the [**Alpha**](../../policy/alpha-beta-support.md#alpha-features) version, GitLab will dogfood it, and roll it out only to specific customers on GitLab.com who request access to it.
+On self-managed GitLab, this feature is available and can be enabled. However, GitLab does not provide support or documentation at this development stage.
 
 ## Usage
 

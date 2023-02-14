@@ -2129,6 +2129,7 @@ RSpec.describe User, feature_category: :user_profile do
       expect(user.encrypted_otp_secret_salt).to be_nil
       expect(user.otp_backup_codes).to be_nil
       expect(user.otp_grace_period_started_at).to be_nil
+      expect(user.otp_secret_expires_at).to be_nil
     end
   end
 

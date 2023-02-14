@@ -28,7 +28,11 @@ module Gitlab
                 file.validate_content! if file.valid?
                 file.load_and_validate_expanded_hash! if file.valid?
 
-                context.expandset.add(file)
+                if ::Feature.enabled?(:ci_includes_count_duplicates, context.project)
+                  context.expandset << file
+                else
+                  context.expandset.add(file)
+                end
               end
             end
 

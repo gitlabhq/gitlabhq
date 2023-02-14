@@ -84,6 +84,29 @@ To disable these notifications:
 1. Clear the **Enable user deactivation emails** checkbox.
 1. Select **Save changes**.
 
+### Custom additional text in deactivation emails **(FREE SELF)**
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/355964) in GitLab 15.9
+[with a flag](../../../administration/feature_flags.md) named `deactivation_email_additional_text`.
+Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, ask an
+administrator to [enable the feature flag](../../../administration/feature_flags.md) named
+`deactivation_email_additional_text`. On GitLab.com, this feature is unavailable.
+
+You can add additional text at the bottom of the email that GitLab sends to users when their account
+is deactivated. This email text is separate from the [custom additional text](#custom-additional-text)
+setting.
+
+To add additional text to deactivation emails:
+
+1. On the top bar, select **Main menu > Admin**.
+1. On the left sidebar, select **Settings > Preferences** (`/admin/application_settings/preferences`).
+1. Expand **Email**.
+1. Enter your text in the **Additional text for deactivation email** field.
+1. Select **Save changes**.
+
 <!-- ## Troubleshooting
 
 Include any troubleshooting steps that you can foresee. If you know beforehand what issues

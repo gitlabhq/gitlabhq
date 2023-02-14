@@ -382,12 +382,5 @@ $comparison-empty-state-height: 62px;
 
   .gl-button-text {
     @include gl-w-full;
-    @include gl-text-left;
-  }
-}
-
-.merge-request-branch-select {
-  .gl-button-text {
-    @include gl-font-monospace;
   }
 }

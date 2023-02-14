@@ -39873,9 +39873,6 @@ msgstr ""
 msgid "Sign in"
 msgstr ""
 
-msgid "Sign in / Register"
-msgstr ""
-
 msgid "Sign in as a user with the matching email address, add the email to this account, or sign-up for a new account using the matching email."
 msgstr ""
 
@@ -49124,6 +49121,9 @@ msgstr ""
 msgid "You must provide a valid current password"
 msgstr ""
 
+msgid "You must provide a valid current password."
+msgstr ""
+
 msgid "You must provide at least one filter argument for this query"
 msgstr ""
 
@@ -49361,6 +49361,9 @@ msgid "Your SSH key was deleted"
 msgstr ""
 
 msgid "Your SSH keys (%{count})"
+msgstr ""
+
+msgid "Your Time-based OTP device was registered!"
 msgstr ""
 
 msgid "Your To-Do List"
