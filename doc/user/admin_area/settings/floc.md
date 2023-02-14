@@ -11,7 +11,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 Federated Learning of Cohorts (FLoC) is a new feature of the Chrome browser.
 It works by categorizing users into different cohorts, so that
 advertisers can use this data to uniquely target and track users. For more
-information, visit the [FLoC repository](https://github.com/WICG/floc).
+information, see the [FLoC repository](https://github.com/WICG/floc).
 
 To avoid users being tracked and categorized in any GitLab instance, FLoC is
 disabled by default by sending the following header:

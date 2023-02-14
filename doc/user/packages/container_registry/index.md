@@ -72,7 +72,7 @@ NOTE:
 You must [authenticate with the container registry](authenticate_with_container_registry.md) to download
 container images from a private repository.
 
-For more information on running container images, visit the [Docker documentation](https://docs.docker.com/get-started/).
+For more information on running container images, see the [Docker documentation](https://docs.docker.com/get-started/).
 
 ## Naming convention for your container images
 

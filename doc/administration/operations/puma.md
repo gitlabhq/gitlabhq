@@ -138,7 +138,7 @@ When running Puma in single mode, some features are not supported:
 - [Phased restart](https://gitlab.com/gitlab-org/gitlab/-/issues/300665)
 - [Memory killers](#reducing-memory-use)
 
-To learn more, visit [epic 5303](https://gitlab.com/groups/gitlab-org/-/epics/5303).
+For more information, see [epic 5303](https://gitlab.com/groups/gitlab-org/-/epics/5303).
 
 ## Performance caveat when using Puma with Rugged
 

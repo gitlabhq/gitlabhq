@@ -25,7 +25,7 @@ critical. For GitLab to display your information in charts, you must:
    Use applications like Elasticsearch, Prometheus, and Jaeger to gather
    the data you've exposed.
 1. **GitLab collects metrics** - GitLab uses Prometheus to scrape the data you've
-   captured in your applications, and prepares the data for display. To learn more, read
+   captured in your applications, and prepares the data for display. For more information, see
    [Collect and process metrics](#collect-and-process-metrics).
 1. **Display charts in the GitLab user interface** - GitLab converts your metrics
    into easy-to-read charts on a default dashboard. You can create as many custom charts
@@ -54,9 +54,9 @@ GitLab attempts to retrieve performance metrics for any [environment](../../ci/e
 a successful deployment.
 
 GitLab scans the Prometheus server for metrics from known servers like Kubernetes
-and NGINX, and attempts to identify individual environments. To learn more about
-the supported metrics and scan processes, see the
-[Prometheus Metrics Library documentation](../../user/project/integrations/prometheus_library/index.md).
+and NGINX, and attempts to identify individual environments. For more information about
+the supported metrics and scan processes, see
+[Prometheus Metrics library](../../user/project/integrations/prometheus_library/index.md).
 
 To view the [default metrics dashboard](dashboards/default.md) for an environment that is
 [configured to gather metrics](#configure-prometheus-to-gather-metrics):

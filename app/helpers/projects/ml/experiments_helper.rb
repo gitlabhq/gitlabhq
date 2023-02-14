@@ -33,11 +33,23 @@ module Projects
             iid: candidate.iid,
             path_to_artifact: link_to_artifact(candidate),
             experiment_name: candidate.experiment.name,
-            path_to_experiment: link_to_experiment(candidate),
+            path_to_experiment: link_to_experiment(candidate.project, candidate.experiment),
             status: candidate.status
           },
           metadata: candidate.metadata
         }
+
+        Gitlab::Json.generate(data)
+      end
+
+      def experiments_as_data(project, experiments)
+        data = experiments.map do |exp|
+          {
+            name: exp.name,
+            path: link_to_experiment(project, exp),
+            candidate_count: exp.candidate_count
+          }
+        end
 
         Gitlab::Json.generate(data)
       end
@@ -67,10 +79,8 @@ module Projects
         project_ml_candidate_path(candidate.project, candidate.iid)
       end
 
-      def link_to_experiment(candidate)
-        experiment = candidate.experiment
-
-        project_ml_experiment_path(experiment.project, experiment.iid)
+      def link_to_experiment(project, experiment)
+        project_ml_experiment_path(project, experiment.iid)
       end
 
       def user_info(candidate)

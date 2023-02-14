@@ -6,7 +6,6 @@ import { initGroupSelects } from '~/vue_shared/components/entity_select/init_gro
 import { initProjectSelects } from '~/vue_shared/components/entity_select/init_project_selects';
 import { initCascadingSettingsLockPopovers } from '~/namespaces/cascading_settings';
 import mountBadgeSettings from '~/pages/shared/mount_badge_settings';
-import projectSelect from '~/project_select';
 import initSearchSettings from '~/search_settings';
 import initSettingsPanels from '~/settings_panels';
 import initConfirmDanger from '~/init_confirm_danger';
@@ -25,8 +24,6 @@ initGroupSelects();
 
 // Initialize project selectors
 initProjectSelects();
-
-projectSelect();
 
 initSearchSettings();
 initCascadingSettingsLockPopovers();

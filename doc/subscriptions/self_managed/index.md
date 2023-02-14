@@ -478,10 +478,8 @@ If you have a license file or key, you can activate it [in the Admin Area](../..
 
 ## Contact Support
 
-Learn more about:
-
-- The tiers of [GitLab Support](https://about.gitlab.com/support/).
-- [Submit a request via the Support Portal](https://support.gitlab.com/hc/en-us/requests/new).
+- See the tiers of [GitLab Support](https://about.gitlab.com/support/).
+- [Submit a request](https://support.gitlab.com/hc/en-us/requests/new) through the Support Portal.
 
 We also encourage all users to search our project trackers for known issues and
 existing feature requests in the [GitLab](https://gitlab.com/gitlab-org/gitlab/-/issues/) project.

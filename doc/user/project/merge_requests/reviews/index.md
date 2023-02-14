@@ -31,7 +31,7 @@ GitLab can suggest reviewers. Using the changes in a merge request and a project
 
 This feature is currently in [Open Beta](https://about.gitlab.com/handbook/product/gitlab-the-product/#open-beta) behind a [feature flag](https://gitlab.com/gitlab-org/gitlab/-/issues/368356).
 
-Learn more about [how suggested reviewers works and data privacy](data_usage.md).
+For more information, see [Data usage in Suggested Reviewers](data_usage.md).
 
 ### Enable suggested reviewers
 
@@ -57,8 +57,8 @@ to you. When you're ready, you can publish them together in a single action.
 To start your review:
 
 1. Go to the merge request you want to review, and select the **Changes** tab.
-   To learn more about navigating the diffs displayed in this tab, read
-   [Changes tab in merge requests](../changes.md).
+   For more information about navigating the diffs displayed in this tab, see
+   [Changes in merge requests](../changes.md).
 1. Select the **{comment}** **comment** icon in the gutter to expand the diff lines
    and display a comment box. In GitLab version 13.2 and later, you can
    [select multiple lines](#comment-on-multiple-lines).

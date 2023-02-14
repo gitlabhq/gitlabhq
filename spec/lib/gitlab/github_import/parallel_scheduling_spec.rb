@@ -320,11 +320,11 @@ RSpec.describe Gitlab::GithubImport::ParallelScheduling, feature_category: :impo
         expect(importer).to receive(:each_object_to_import)
           .and_yield(object).and_yield(object).and_yield(object)
         expect(worker_class).to receive(:perform_in)
-          .with(1.minute, project.id, { title: 'One' }, 'waiter-key').ordered
+          .with(1.second, project.id, { title: 'One' }, 'waiter-key').ordered
         expect(worker_class).to receive(:perform_in)
-          .with(1.minute, project.id, { title: 'Two' }, 'waiter-key').ordered
+          .with(1.second, project.id, { title: 'Two' }, 'waiter-key').ordered
         expect(worker_class).to receive(:perform_in)
-          .with(2.minutes, project.id, { title: 'Three' }, 'waiter-key').ordered
+          .with(1.minute + 1.second, project.id, { title: 'Three' }, 'waiter-key').ordered
 
         job_waiter = importer.parallel_import
 
@@ -349,11 +349,11 @@ RSpec.describe Gitlab::GithubImport::ParallelScheduling, feature_category: :impo
           expect(importer).to receive(:each_object_to_import).and_yield(object).and_yield(object).and_yield(object)
 
           expect(worker_class).to receive(:perform_in)
-            .with(1.minute, project.id, { title: 'One' }, 'waiter-key').ordered
+            .with(1.second, project.id, { title: 'One' }, 'waiter-key').ordered
           expect(worker_class).to receive(:perform_in)
-            .with(2.minutes, project.id, { title: 'Two' }, 'waiter-key').ordered
+            .with(1.minute + 1.second, project.id, { title: 'Two' }, 'waiter-key').ordered
           expect(worker_class).to receive(:perform_in)
-            .with(3.minutes, project.id, { title: 'Three' }, 'waiter-key').ordered
+            .with(2.minutes + 1.second, project.id, { title: 'Three' }, 'waiter-key').ordered
 
           job_waiter = importer.parallel_import
 

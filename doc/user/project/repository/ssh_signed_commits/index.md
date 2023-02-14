@@ -19,8 +19,8 @@ You may use the same SSH keys for `git+ssh` authentication to GitLab
 and signing commit signatures as long as their usage type is **Authentication & Signing**.
 It can be verified on the page for [adding an SSH key to your GitLab account](../../../ssh.md#add-an-ssh-key-to-your-gitlab-account).
 
-To learn more about managing the SSH keys associated with your GitLab account, read
-[use SSH keys to communicate with GitLab](../../../ssh.md).
+For more information about managing the SSH keys associated with your GitLab account, see
+[Use SSH keys to communicate with GitLab](../../../ssh.md).
 
 ## Configure Git to sign commits with your SSH key
 

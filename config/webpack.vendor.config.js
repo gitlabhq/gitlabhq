@@ -37,7 +37,6 @@ module.exports = {
       'mermaid',
       'katex',
       'three',
-      'select2',
       'moment-mini',
       'dompurify',
       'bootstrap/dist/js/bootstrap.js',

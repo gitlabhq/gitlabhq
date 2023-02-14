@@ -1,9 +1,0 @@
--# This view is used to initialize a select2-based selector, which we are migrating away from.
--# To initialize the Vue selector, use the new_project_item_vue_select view instead.
--# Refer to https://gitlab.com/gitlab-org/gitlab/-/issues/374098 for more information.
-- if any_projects?(@projects)
-  .dropdown.b-dropdown.gl-dropdown.btn-group.project-item-select-holder{ class: 'gl-display-inline-flex!' }
-    %a.btn.gl-button.btn-confirm.split-content-button.js-new-project-item-link.block-truncated{ href: '', data: { label: local_assigns[:label], type: local_assigns[:type] } }
-      = gl_loading_icon(inline: true, color: 'light')
-    = project_select_tag :project_path, class: "project-item-select gl-absolute! gl-visibility-hidden", data: { include_groups: local_assigns[:include_groups], order_by: 'last_activity_at', relative_path: local_assigns[:path], with_shared: local_assigns[:with_shared], include_projects_in_subgroups: local_assigns[:include_projects_in_subgroups] }, with_feature_enabled: local_assigns[:with_feature_enabled]
-    %button.btn.dropdown-toggle.btn-confirm.btn-md.gl-button.gl-dropdown-toggle.dropdown-toggle-split.new-project-item-select-button{ 'aria-label': _('Toggle project select') }

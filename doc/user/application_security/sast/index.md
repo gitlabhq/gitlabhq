@@ -73,7 +73,7 @@ is **not** `19.03.0`. See [troubleshooting information](#error-response-from-dae
 GitLab SAST supports scanning a variety of programming languages and frameworks.
 Once you [enable SAST](#configuration), the right set of analyzers runs automatically even if your project uses more than one language.
 
-Check the [SAST direction page](https://about.gitlab.com/direction/secure/static-analysis/sast/#language-support) to learn more about our plans for language support in SAST.
+For more information about our plans for language support in SAST, see the [category direction page](https://about.gitlab.com/direction/secure/static-analysis/sast/#language-support).
 
 | Language / framework         | [Analyzer](analyzers.md) used for scanning                                                                   | Minimum supported GitLab version                                                        |
 |------------------------------|--------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------|

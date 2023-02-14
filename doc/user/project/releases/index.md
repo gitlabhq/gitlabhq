@@ -435,7 +435,7 @@ release evidence.
 If you [schedule release evidence collection](#schedule-release-evidence-collection),
 some artifacts may already be expired by the time of evidence collection. To avoid this you can use
 the [`artifacts:expire_in`](../../../ci/yaml/index.md#artifactsexpire_in)
-keyword. Learn more in [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/222351).
+keyword. For more information, see [issue 222351](https://gitlab.com/gitlab-org/gitlab/-/issues/222351).
 
 ### Schedule release evidence collection
 

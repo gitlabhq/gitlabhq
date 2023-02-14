@@ -1907,7 +1907,7 @@ code so that we have a single source of truth and we do not trigger a subscripti
 
 ## Pagination implementation
 
-To learn more, visit [GraphQL pagination](graphql_guide/pagination.md).
+For more information, see [GraphQL pagination](graphql_guide/pagination.md).
 
 ## Validating arguments
 

@@ -10,8 +10,8 @@ ViewComponent is a framework for creating reusable, testable & encapsulated view
 components with Ruby on Rails, without the need for a JavaScript framework like Vue.
 They are rendered server-side and can be seamlessly used with template languages like [Haml](haml.md).
 
-Refer to the official [documentation](https://viewcomponent.org/) to learn more or
-watch this [introduction video](https://youtu.be/akRhUbvtnmo).
+For more information, see the [official documentation](https://viewcomponent.org/) or
+[this introduction video](https://youtu.be/akRhUbvtnmo).
 
 ## Browse components with Lookbook
 

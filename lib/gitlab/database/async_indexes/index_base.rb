@@ -4,7 +4,7 @@ module Gitlab
   module Database
     module AsyncIndexes
       class IndexBase
-        include IndexingExclusiveLeaseGuard
+        include AsyncDdlExclusiveLeaseGuard
         extend ::Gitlab::Utils::Override
 
         TIMEOUT_PER_ACTION = 1.day
@@ -30,7 +30,7 @@ module Gitlab
 
         attr_reader :async_index
 
-        delegate :connection, to: :async_index
+        delegate :connection, :connection_db_config, to: :async_index
 
         def preconditions_met?
           raise NotImplementedError, 'must implement preconditions_met?'

@@ -84,8 +84,9 @@ The following AWS regions are not available:
 
 ## Planned features
 
-Learn more about the planned improvements to GitLab Dedicated on the public [direction page](https://about.gitlab.com/direction/saas-platforms/dedicated/).
+For more information about the planned improvements to GitLab Dedicated,
+see the [category direction page](https://about.gitlab.com/direction/saas-platforms/dedicated/).
 
-## Learn more about GitLab Dedicated and join our waitlist
+## Join the GitLab Dedicated waitlist
 
-As we scale this new offering, we are making GitLab Dedicated available by inviting customers to learn more and join our waitlist [on our website](https://about.gitlab.com/single-tenant-saas).
+As we scale this new offering, we are making GitLab Dedicated available by inviting customers to [join our waitlist](https://about.gitlab.com/dedicated/).

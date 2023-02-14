@@ -51,5 +51,5 @@ You can use the following keywords:
 - `work item`
 - `workitem`
 
-Avoid using the keyword `#`. Learn more in the EWM documentation page
+Avoid using the keyword `#`. For more information, see
 [Creating links from commit comments](https://www.ibm.com/docs/en/elm/7.0.0?topic=commits-creating-links-from-commit-comments).

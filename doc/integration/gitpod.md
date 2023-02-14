@@ -28,7 +28,7 @@ To use the GitLab Gitpod integration, it must be enabled for your GitLab instanc
   1. It's [enabled and configured by a GitLab administrator](#configure-a-self-managed-instance).
   1. It's [enabled in their user settings](#enable-gitpod-in-your-user-settings).
 
-To learn more about Gitpod, see their [features](https://www.gitpod.io/) and
+For more information about Gitpod, see the Gitpod [features](https://www.gitpod.io/) and
 [documentation](https://www.gitpod.io/docs/).
 
 ## Enable Gitpod in your user settings

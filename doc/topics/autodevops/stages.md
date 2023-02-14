@@ -63,7 +63,7 @@ For the requirements of other languages and frameworks, read the
 NOTE:
 Auto Test still uses Herokuish, as test suite detection is not
 yet part of the Cloud Native Buildpack specification. For more information, see
-[this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/212689).
+[issue 212689](https://gitlab.com/gitlab-org/gitlab/-/issues/212689).
 
 #### Mount volumes into the build container
 
@@ -210,8 +210,8 @@ After creating the report, it's uploaded as an artifact which you can later
 download and check out. The merge request widget also displays any security
 warnings on [Ultimate](https://about.gitlab.com/pricing/) licenses.
 
-To learn more about [how SAST works](../../user/application_security/sast/index.md),
-see the documentation.
+For more information, see
+[Static Application Security Testing (SAST)](../../user/application_security/sast/index.md).
 
 ## Auto Secret Detection
 
@@ -225,7 +225,7 @@ After creating the report, it's uploaded as an artifact which you can later
 download and evaluate. The merge request widget also displays any security
 warnings on [Ultimate](https://about.gitlab.com/pricing/) licenses.
 
-To learn more, see [Secret Detection](../../user/application_security/secret_detection/index.md).
+For more information, see [Secret Detection](../../user/application_security/secret_detection/index.md).
 
 ## Auto Dependency Scanning **(ULTIMATE)**
 
@@ -237,9 +237,8 @@ The Auto Dependency Scanning stage is skipped on licenses other than
 After creating the report, it's uploaded as an artifact which you can later download and
 check out. The merge request widget displays any security warnings detected,
 
-To learn more about
-[Dependency Scanning](../../user/application_security/dependency_scanning/index.md),
-see the documentation.
+For more information, see
+[Dependency Scanning](../../user/application_security/dependency_scanning/index.md).
 
 ## Auto License Compliance **(ULTIMATE)**
 
@@ -253,9 +252,8 @@ is skipped on licenses other than [Ultimate](https://about.gitlab.com/pricing/).
 After creating the report, it's uploaded as an artifact which you can later download and
 check out. The merge request displays any detected licenses.
 
-To learn more about
-[License Compliance](../../user/compliance/license_compliance/index.md), see the
-documentation.
+For more information, see
+[License Compliance](../../user/compliance/license_compliance/index.md).
 
 ## Auto Container Scanning
 
@@ -266,9 +264,8 @@ skipped on licenses other than [Ultimate](https://about.gitlab.com/pricing/).
 After creating the report, it's uploaded as an artifact which you can later download and
 check out. The merge request displays any detected security issues.
 
-To learn more about
-[Container Scanning](../../user/application_security/container_scanning/index.md),
-see the documentation.
+For more information, see
+[Container Scanning](../../user/application_security/container_scanning/index.md).
 
 ## Auto Review Apps
 
@@ -323,9 +320,8 @@ After the DAST scan completes, any security warnings are displayed
 on the [Security Dashboard](../../user/application_security/security_dashboard/index.md)
 and the merge request widget.
 
-To learn more about
-[Dynamic Application Security Testing](../../user/application_security/dast/index.md),
-see the documentation.
+For more information, see
+[Dynamic Application Security Testing (DAST)](../../user/application_security/dast/index.md).
 
 ### Overriding the DAST target
 

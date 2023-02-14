@@ -1003,7 +1003,6 @@ Style/IfUnlessModifier:
     - 'lib/tasks/gitlab/storage.rake'
     - 'lib/tasks/gitlab/update_templates.rake'
     - 'qa/qa/ee/resource/settings/elasticsearch.rb'
-    - 'qa/qa/page/component/select2.rb'
     - 'qa/qa/page/component/snippet.rb'
     - 'qa/qa/page/element.rb'
     - 'qa/qa/page/mattermost/login.rb'

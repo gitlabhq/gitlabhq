@@ -87,8 +87,7 @@ to a merge request may or may not be able to approve the work:
   [code owners](../../code_owners.md) who commit
   to a merge request cannot approve it, when the merge request affects files they own.
 
-To learn more about the [differences between authors and committers](https://git-scm.com/book/en/v2/Git-Basics-Viewing-the-Commit-History),
-read the official Git documentation for an explanation.
+For more information, see the [official Git documentation](https://git-scm.com/book/en/v2/Git-Basics-Viewing-the-Commit-History).
 
 ## Prevent editing approval rules in merge requests
 
@@ -159,7 +158,7 @@ To do this:
 You can require specific approvals if a merge request would result in a decline in code test
 coverage.
 
-To learn more, see [Coverage check approval rule](../../../../ci/pipelines/settings.md#coverage-check-approval-rule).
+For more information, see [Coverage check approval rule](../../../../ci/pipelines/settings.md#coverage-check-approval-rule).
 
 ## Settings cascading
 

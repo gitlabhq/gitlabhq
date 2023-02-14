@@ -35,7 +35,7 @@ Supported attributes:
 | `page_token` | string        | no       | The tree record ID at which to fetch the next page. Used only with keyset pagination. |
 | `pagination` | string        | no       | If `keyset`, use the [keyset-based pagination method](rest/index.md#keyset-based-pagination). |
 | `path`      | string         | no       | The path inside the repository. Used to get content of subdirectories. |
-| `per_page`  | integer        | no       | Number of results to show per page. If not specified, defaults to `20`. [Learn more on pagination](rest/index.md#pagination). |
+| `per_page`  | integer        | no       | Number of results to show per page. If not specified, defaults to `20`. For more information, see [Pagination](rest/index.md#pagination). |
 | `recursive` | boolean        | no       | Boolean value used to get a recursive tree. Default is `false`. |
 | `ref`       | string         | no       | The name of a repository branch or tag or, if not given, the default branch. |
 

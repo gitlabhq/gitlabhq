@@ -70,7 +70,7 @@ The generated service account has the following roles:
 - `roles/cloudsql.client`
 - `roles/browser`
 
-You can enhance security by storing CI variables in secret managers. Learn more about [secret management with GitLab](../ci/secrets/index.md).
+You can enhance security by storing CI variables in secret managers. For more information, see [secret management with GitLab](../ci/secrets/index.md).
 
 ### Configure your preferred GCP region
 

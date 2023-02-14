@@ -254,7 +254,7 @@ Git LFS authenticates the user with HTTP Basic Authentication on every push for
 every object, so user HTTPS credentials are required.
 
 By default, Git has support for remembering the credentials for each repository
-you use. To learn more, read the [Git credentials man pages](https://git-scm.com/docs/gitcredentials).
+you use. For more information, see the [official Git documentation](https://git-scm.com/docs/gitcredentials).
 
 For example, you can tell Git to remember the password for a period of time in
 which you expect to push the objects:

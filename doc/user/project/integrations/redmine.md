@@ -37,8 +37,8 @@ For example, this is a configuration for a project named `gitlab-ci`:
 - New issue URL: `https://redmine.example.com/projects/gitlab-ci/issues/new`
 
 You can also disable [GitLab internal issue tracking](../issues/index.md) in this project.
-Learn more about the steps and consequences of disabling GitLab issues in
-[Sharing and permissions](../settings/index.md#configure-project-visibility-features-and-permissions).
+For more information about the steps and consequences of disabling GitLab issues, see
+[Configure project visibility, features, and permissions](../settings/index.md#configure-project-visibility-features-and-permissions).
 
 ## Reference Redmine issues in GitLab
 

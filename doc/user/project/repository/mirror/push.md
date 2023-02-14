@@ -38,7 +38,7 @@ To set up push mirroring for an existing project:
 1. Expand **Mirroring repositories**.
 1. Enter a repository URL.
 1. In the **Mirror direction** dropdown list, select **Push**.
-1. Select an **Authentication method**. To learn more, read
+1. Select an **Authentication method**. For more information, see
    [Authentication methods for mirrors](index.md#authentication-methods-for-mirrors).
 1. Select **Only mirror protected branches**, if necessary.
 1. Select **Keep divergent refs**, if desired.

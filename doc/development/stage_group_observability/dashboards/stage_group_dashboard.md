@@ -168,7 +168,7 @@ stageGroupDashboards.dashboard('source_code')
 If you want to see the workflow in action, we've recorded a pairing session on customizing a dashboard,
 available on [GitLab Unfiltered](https://youtu.be/shEd_eiUjdI).
 
-For deeper customization and more complicated metrics, visit the
+For deeper customization and more complicated metrics, see the
 [Grafonnet lib](https://github.com/grafana/grafonnet-lib) project and the
 [GitLab Prometheus Metrics](../../../administration/monitoring/prometheus/gitlab_metrics.md#gitlab-prometheus-metrics)
 documentation.

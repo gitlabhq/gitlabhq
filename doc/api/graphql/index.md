@@ -75,7 +75,7 @@ frequently [verify your API calls against the future breaking-change schema](#ve
 
 Fields behind a feature flag and disabled by default do not follow the deprecation and removal process, and can be removed at any time without notice.
 
-Learn more about [breaking changes](../../development/deprecation_guidelines/index.md).
+For more information, see [Deprecating GitLab features](../../development/deprecation_guidelines/index.md).
 
 WARNING:
 GitLab makes all attempts to follow the [deprecation and removal process](#deprecation-and-removal-process).

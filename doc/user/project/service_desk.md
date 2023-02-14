@@ -217,9 +217,9 @@ To configure a custom mailbox for Service Desk with IMAP, add the following snip
 NOTE:
 In GitLab 15.3 and later, Service Desk uses `webhook` (internal API call) by default instead of enqueuing a Sidekiq job.
 To use `webhook` on an Omnibus installation running GitLab 15.3, you must generate a secret file.
-For more context, visit [Omnibus GitLab MR 5927](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/5927).
+For more information, see [merge request 5927](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/5927).
 In GitLab 15.4, reconfiguring an Omnibus installation generates this secret file automatically, so no secret file configuration setting is needed.
-For details, visit [issue 1462](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/1462).
+For more information, see [issue 1462](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/1462).
 
 ```ruby
 gitlab_rails['service_desk_email_enabled'] = true

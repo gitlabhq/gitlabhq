@@ -423,8 +423,8 @@ When you add a member to a subgroup, they inherit the membership and
 permission level from the parent groups. This model allows access to
 nested groups if you have membership in one of its parents.
 
-To learn more, read through the documentation on
-[subgroups memberships](group/subgroups/index.md#subgroup-membership).
+For more information, see
+[subgroup memberships](group/subgroups/index.md#subgroup-membership).
 
 ## Users with minimal access **(PREMIUM)**
 

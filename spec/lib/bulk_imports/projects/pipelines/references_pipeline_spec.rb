@@ -79,7 +79,7 @@ RSpec.describe BulkImports::Projects::Pipelines::ReferencesPipeline, feature_cat
       expect(system_note.note_html).not_to eq(old_note_html)
       expect(system_note.note_html)
         .to include("class=\"gfm gfm-merge_request\">!#{mr.iid}</a></p>")
-        .and include("<a href=\"/namespace1/project")
+        .and include(project.full_path.to_s)
     end
   end
 

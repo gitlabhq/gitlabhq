@@ -151,7 +151,7 @@ To preview the upcoming changes to the CI/CD configuration in GitLab 15.3 or ear
 1. Verify that scanning jobs succeed in the MR. You notice findings from the removed analyzers in _Fixed_ and findings from Semgrep in _New_. (Some findings may show different names, descriptions, and severities, since GitLab manages and edits the Semgrep rulesets.)
 1. Close the MR.
 
-To learn more about Stable and Latest templates, see documentation on [CI/CD template versioning](../../../development/cicd/templates.md#versioning).
+For more information about Stable and Latest templates, see [CI/CD template versioning](../../../development/cicd/templates.md#versioning).
 
 ## Customize analyzers
 

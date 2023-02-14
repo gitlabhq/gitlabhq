@@ -26,7 +26,7 @@ Throughout this guide you will see references to CE and EE for abbreviation.
 ## Code of conduct
 
 We want to create a welcoming environment for everyone who is interested in contributing.
-Visit our [Code of Conduct page](https://about.gitlab.com/community/contribute/code-of-conduct/) to learn more about our commitment to an open and welcoming environment.
+For more information about our commitment to an open and welcoming environment, see our [Code of Conduct page](https://about.gitlab.com/community/contribute/code-of-conduct/).
 
 Issues and merge requests should be in English and contain appropriate language
 for audiences of all ages.

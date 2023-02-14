@@ -397,7 +397,7 @@ To fix this issue, you can either:
       - echo "custom job"
   ```
 
-Learn more on overriding security jobs:
+For more information about overriding security jobs, see:
 
 - [Overriding SAST jobs](sast/index.md#overriding-sast-jobs).
 - [Overriding Dependency Scanning jobs](dependency_scanning/index.md#overriding-dependency-scanning-jobs).
@@ -602,7 +602,7 @@ To fix this issue, you must either:
 - [Transition your `only/except` syntax to `rules`](#transitioning-your-onlyexcept-syntax-to-rules).
 - (Temporarily) [Pin your templates to the deprecated versions](#pin-your-templates-to-the-deprecated-versions)
 
-[Learn more on overriding SAST jobs](sast/index.md#overriding-sast-jobs).
+For more information, see [Overriding SAST jobs](sast/index.md#overriding-sast-jobs).
 
 #### Transitioning your `only/except` syntax to `rules`
 
@@ -664,7 +664,7 @@ spotbugs-sast:
     - if: $CI_COMMIT_TAG == null
 ```
 
-[Learn more on the usage of `rules`](../../ci/yaml/index.md#rules).
+For more information, see [`rules`](../../ci/yaml/index.md#rules).
 
 #### Pin your templates to the deprecated versions
 

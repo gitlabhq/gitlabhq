@@ -25,9 +25,6 @@ To enable Docker commands for your CI/CD jobs, you can use:
 - [Docker-in-Docker](#use-docker-in-docker)
 - [Docker socket binding](#use-docker-socket-binding)
 
-If you are using shared runners on GitLab.com,
-[learn more about how these runners are configured](../runners/index.md).
-
 ### Use the shell executor
 
 To include Docker commands in your CI/CD jobs, you can configure your runner to
@@ -76,7 +73,7 @@ the Docker commands, but needs permission to do so.
 You can now use `docker` commands (and install `docker-compose` if needed).
 
 When you add `gitlab-runner` to the `docker` group, you are effectively granting `gitlab-runner` full root permissions.
-Learn more about the [security of the `docker` group](https://blog.zopyx.com/on-docker-security-docker-group-considered-harmful/).
+For more information, see the [security of the `docker` group](https://blog.zopyx.com/on-docker-security-docker-group-considered-harmful/).
 
 ### Use Docker-in-Docker
 

@@ -1073,7 +1073,7 @@ varies by file type:
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/320902) in GitLab 13.9.
 
 If a branch is merged while open merge requests still point to it, GitLab can
-retarget merge requests pointing to the now-merged branch. To learn more, read
+retarget merge requests pointing to the now-merged branch. For more information, see
 [Update merge requests when target branch merges](../user/project/merge_requests/index.md#update-merge-requests-when-target-branch-merges).
 
 ## Maximum number of assignees and reviewers

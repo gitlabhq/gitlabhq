@@ -79,7 +79,7 @@ authenticate with GitLab by using the `CI_JOB_TOKEN`.
 
 CI/CD templates, which you can use to get started, are in [this repository](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/ci/templates).
 
-Learn more about using the GitLab Package Registry with CI/CD:
+For more information about using the GitLab Package Registry with CI/CD, see:
 
 - [Composer](../composer_repository/index.md#publish-a-composer-package-by-using-cicd)
 - [Conan](../conan_repository/index.md#publish-a-conan-package-by-using-cicd)

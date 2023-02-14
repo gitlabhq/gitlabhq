@@ -15,7 +15,7 @@ The relationship only shows up in the UI if the user can see both issues. When y
 issue that has open blockers, a warning is displayed.
 
 NOTE:
-To manage linked issues through our API, visit the [issue links API documentation](../../../api/issue_links.md).
+To manage linked issues through our API, see [Issue links API](../../../api/issue_links.md).
 
 ## Add a linked issue
 
@@ -57,7 +57,7 @@ them categorized so their relationships can be better understood visually.
 ![Related issue block](img/related_issue_block_v15_3.png)
 
 You can also add a linked issue from a commit message or the description in another issue or MR.
-[Learn more about crosslinking issues](crosslinking_issues.md).
+For more information, see [Crosslinking issues](crosslinking_issues.md).
 
 ## Remove a linked issue
 

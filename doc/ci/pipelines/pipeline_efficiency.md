@@ -254,7 +254,7 @@ Document CI/CD pipeline problems and incidents in issues, including research don
 and solutions found. This helps onboarding new team members, and also helps
 identify recurring problems with CI pipeline efficiency.
 
-### Learn More
+### Related topics
 
 - [CI Monitoring Webcast Slides](https://docs.google.com/presentation/d/1ONwIIzRB7GWX-WOSziIIv8fz1ngqv77HO1yVfRooOHM/edit?usp=sharing)
 - [GitLab.com Monitoring Handbook](https://about.gitlab.com/handbook/engineering/monitoring/)

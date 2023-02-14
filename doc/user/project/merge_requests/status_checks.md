@@ -24,8 +24,8 @@ at the merge request level itself.
 
 You can configure merge request status checks for each individual project. These are not shared between projects.
 
-To learn more about use cases, feature discovery, and development timelines,
-see the [external status checks epic](https://gitlab.com/groups/gitlab-org/-/epics/3869).
+For more information about use cases, feature discovery, and development timelines,
+see [epic 3869](https://gitlab.com/groups/gitlab-org/-/epics/3869).
 
 ## Block merges of merge requests unless all status checks have passed
 

@@ -59,7 +59,7 @@ GitLab provides solutions for [each of the stages of the DevOps lifecycle](https
 
 ### User account
 
-Learn more about GitLab account management:
+For more information about GitLab account management, see:
 
 | Topic                                                      | Description |
 |:-----------------------------------------------------------|:------------|

@@ -291,7 +291,7 @@ You can use [1Password](https://1password.com/) and the [1Password browser exten
 1. Optional. Update **Expiration date** to modify the default expiration date.
 1. Select **Add key**.
 
-To learn more about using 1Password with SSH keys, see [1Password's documentation](https://developer.1password.com/docs/ssh/get-started).
+For more information about using 1Password with SSH keys, see the [1Password documentation](https://developer.1password.com/docs/ssh/get-started).
 
 ## Add an SSH key to your GitLab account
 

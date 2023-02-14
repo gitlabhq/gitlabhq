@@ -3,7 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe 'Admin Groups', feature_category: :subgroups do
-  include Select2Helper
   include Spec::Support::Helpers::Features::MembersHelpers
   include Spec::Support::Helpers::Features::InviteMembersModalHelper
   include Spec::Support::Helpers::ModalHelpers

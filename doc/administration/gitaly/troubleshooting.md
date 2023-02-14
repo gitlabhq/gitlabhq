@@ -401,6 +401,20 @@ push, which causes a significant delay.
 
 If Git pushes are too slow when Dynatrace is enabled, disable Dynatrace.
 
+## Gitaly fails to fork processes stored on `noexec` file systems
+
+Because of changes [introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/5999) in GitLab 14.10, applying the `noexec` option to a mount
+point (for example, `/var`) causes Gitaly to throw `permission denied` errors related to forking processes. For example:
+
+```shell
+fork/exec /var/opt/gitlab/gitaly/run/gitaly-2057/gitaly-git2go: permission denied
+```
+
+To resolve this, remove the `noexec` option from the file system mount. An alternative is to change the Gitaly runtime directory:
+
+1. Add `gitaly['runtime_dir'] = '<PATH_WITH_EXEC_PERM>'` to `/etc/gitlab/gitlab.rb` and specify a location without `noexec` set.
+1. Run `sudo gitlab-ctl reconfigure`.
+
 ## Troubleshoot Praefect (Gitaly Cluster)
 
 The following sections provide possible solutions to Gitaly Cluster errors.

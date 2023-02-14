@@ -15,7 +15,7 @@ On GitLab.com, this feature is not available.
 This feature is not ready for production use.
 
 This page is a work in progress, and we're updating the information as we add more features.
-For more information, visit the [Product Analytics group direction page](https://about.gitlab.com/direction/analytics/product-analytics/).
+For more information, see the [group direction page](https://about.gitlab.com/direction/analytics/product-analytics/).
 
 ## How Product Analytics works
 

@@ -3321,7 +3321,6 @@ Layout/LineLength:
     - 'qa/qa/git/repository.rb'
     - 'qa/qa/page/component/ci_badge_link.rb'
     - 'qa/qa/page/component/issuable/sidebar.rb'
-    - 'qa/qa/page/component/select2.rb'
     - 'qa/qa/page/dashboard/snippet/index.rb'
     - 'qa/qa/page/dashboard/todos.rb'
     - 'qa/qa/page/group/settings/group_deploy_tokens.rb'

@@ -38,31 +38,74 @@ RSpec.describe Projects::Ml::ExperimentsController, feature_category: :mlops do
   end
 
   describe 'GET index' do
-    before do
-      list_experiments
+    describe 'renderering' do
+      before do
+        list_experiments
+      end
+
+      it 'renders the template' do
+        expect(response).to render_template('projects/ml/experiments/index')
+      end
+
+      it 'does not perform N+1 sql queries' do
+        control_count = ActiveRecord::QueryRecorder.new(skip_cached: false) { list_experiments }
+
+        create_list(:ml_experiments, 2, project: project, user: user)
+
+        expect { list_experiments }.not_to exceed_all_query_limit(control_count)
+      end
     end
 
-    it 'renders the template' do
-      expect(response).to render_template('projects/ml/experiments/index')
-    end
+    describe 'pagination' do
+      let_it_be(:experiments) do
+        create_list(:ml_experiments, 3, project: project_with_feature)
+      end
 
-    it 'does not perform N+1 sql queries' do
-      control_count = ActiveRecord::QueryRecorder.new(skip_cached: false) { list_experiments }
+      let(:params) { basic_params.merge(id: experiment.iid) }
 
-      create_list(:ml_experiments, 2, project: project, user: user)
+      before do
+        stub_const("Projects::Ml::ExperimentsController::MAX_EXPERIMENTS_PER_PAGE", 2)
 
-      expect { list_experiments }.not_to exceed_all_query_limit(control_count)
+        list_experiments
+      end
+
+      it 'fetches only MAX_CANDIDATES_PER_PAGE candidates' do
+        expect(assigns(:experiments).size).to eq(2)
+      end
+
+      it 'paginates', :aggregate_failures do
+        page = assigns(:experiments)
+
+        expect(page.first).to eq(experiments.last)
+        expect(page.last).to eq(experiments[1])
+
+        new_params = params.merge(cursor: assigns(:page_info)[:end_cursor])
+
+        list_experiments(new_params)
+
+        new_page = assigns(:experiments)
+
+        expect(new_page.first).to eq(experiments.first)
+      end
     end
 
     context 'when :ml_experiment_tracking is disabled for the project' do
       let(:project) { project_without_feature }
+
+      before do
+        list_experiments
+      end
 
       it 'responds with a 404' do
         expect(response).to have_gitlab_http_status(:not_found)
       end
     end
 
-    it_behaves_like '404 if feature flag disabled'
+    it_behaves_like '404 if feature flag disabled' do
+      before do
+        list_experiments
+      end
+    end
   end
 
   describe 'GET show' do
@@ -178,7 +221,7 @@ RSpec.describe Projects::Ml::ExperimentsController, feature_category: :mlops do
     get project_ml_experiment_path(project, experiment.iid), params: new_params || params
   end
 
-  def list_experiments
-    get project_ml_experiments_path(project), params: params
+  def list_experiments(new_params = nil)
+    get project_ml_experiments_path(project), params: new_params || params
   end
 end

@@ -152,7 +152,7 @@ To make full use of Auto DevOps with Kubernetes, you need:
 
   The [Prometheus integration](../../user/project/integrations/prometheus.md)
   integration must be activated for the project, or activated at the group or instance level.
-  Learn more about [Project integration management](../../user/admin_area/settings/project_integration_management.md).
+  For more information, see [Project integration management](../../user/admin_area/settings/project_integration_management.md).
 
   To get response metrics (in addition to system metrics), you must
   [configure Prometheus to monitor NGINX](../../user/project/integrations/prometheus_library/nginx_ingress.md#configuring-nginx-ingress-monitoring).

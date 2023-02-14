@@ -11006,11 +11006,6 @@ select-hose@^2.0.0:
   resolved "https://registry.yarnpkg.com/select-hose/-/select-hose-2.0.0.tgz#625d8658f865af43ec962bfc376a37359a4994ca"
   integrity sha1-Yl2GWPhlr0Psliv8N2o3NZpJlMo=
 
-select2@3.5.2-browserify:
-  version "3.5.2-browserify"
-  resolved "https://registry.yarnpkg.com/select2/-/select2-3.5.2-browserify.tgz#dc4dafda38d67a734e8a97a46f0d3529ae05391d"
-  integrity sha1-3E2v2jjWenNOipekbw01Ka4FOR0=
-
 select@^1.1.2:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/select/-/select-1.1.2.tgz#0e7350acdec80b1108528786ec1d4418d11b396d"

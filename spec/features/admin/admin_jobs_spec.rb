@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'Admin Jobs', feature_category: :continuous_integration do
   before do
+    stub_feature_flags(admin_jobs_vue: false)
     admin = create(:admin)
     sign_in(admin)
     gitlab_enable_admin_mode_sign_in(admin)

@@ -67,9 +67,7 @@ side-effects can be notoriously difficult to reason with.
 
 ### References
 
-To read more on this topic, check out the following references:
-
-- [GlobalVariablesAreBad from C2 wiki](https://wiki.c2.com/?GlobalVariablesAreBad)
+For more information, see [Global Variables Are Bad on the C2 wiki](https://wiki.c2.com/?GlobalVariablesAreBad).
 
 ## Singleton (Anti-pattern)
 

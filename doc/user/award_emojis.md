@@ -44,11 +44,11 @@ To remove an award emoji, select the emoji again.
 ## Custom emojis
 
 You can upload custom emojis to a GitLab instance with the GraphQL API.
-For more, visit [Use custom emojis with GraphQL](../api/graphql/custom_emoji.md).
+For more information, see [Use custom emojis with GraphQL](../api/graphql/custom_emoji.md).
 
 Custom emojis don't show in the emoji picker.
 To use them in a text box, type the filename without the extension and surrounded by colons.
 For example, for a file named `thank-you.png`, type `:thank-you:`.
 
-For the list of custom emojis available for GitLab.com, visit
+For a list of custom emojis available for GitLab.com, see
 [the `custom_emoji` project](https://gitlab.com/custom_emoji/custom_emoji/-/tree/main/img).

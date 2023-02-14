@@ -65,8 +65,8 @@ to view the list of database queries, including cached queries. The
 performance bar shows a warning when the number of total executed and cached queries is
 greater than 100.
 
-To learn more about the statistics available to you, read the
-[Performance Bar documentation](../administration/monitoring/performance/performance_bar.md).
+For more information about the statistics available to you, see
+[Performance bar](../administration/monitoring/performance/performance_bar.md).
 
 ## What to look for
 

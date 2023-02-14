@@ -481,9 +481,8 @@ Here are the valid connection parameters for GCS:
 GitLab reads the value of `google_json_key_location`, then `google_json_key_string`, and finally, `google_application_default`.
 It uses the first of these settings that has a value.
 
-The service account must have permission to access the bucket. Learn more
-in Google's
-[Cloud Storage authentication documentation](https://cloud.google.com/storage/docs/authentication).
+The service account must have permission to access the bucket. For more information,
+see the [Cloud Storage authentication documentation](https://cloud.google.com/storage/docs/authentication).
 
 NOTE:
 Bucket encryption with the [Cloud Key Management Service (KMS)](https://cloud.google.com/kms/docs) is not supported and results in [ETag mismatch errors](#etag-mismatch).
@@ -540,9 +539,8 @@ because a single set of credentials are used to access multiple
 containers. The [storage-specific form](#storage-specific-configuration)
 is not supported. For more details, see [how to transition to consolidated form](#transition-to-consolidated-form).
 
-The following are the valid connection parameters for Azure. Read the
-[Azure Blob storage documentation](https://learn.microsoft.com/en-us/azure/storage/blobs/storage-blobs-introduction)
-to learn more.
+The following are the valid connection parameters for Azure. For more information, see the
+[Azure Blob Storage documentation](https://learn.microsoft.com/en-us/azure/storage/blobs/storage-blobs-introduction).
 
 | Setting                      | Description    | Example   |
 |------------------------------|----------------|-----------|

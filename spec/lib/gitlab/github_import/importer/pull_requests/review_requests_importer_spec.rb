@@ -108,10 +108,10 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequests::ReviewRequestsImpor
 
     it 'schedule import for each merge request reviewers' do
       expect(Gitlab::GithubImport::PullRequests::ImportReviewRequestWorker)
-        .to receive(:perform_in).with(1.minute, *expected_worker_payload.first)
+        .to receive(:perform_in).with(1.second, *expected_worker_payload.first)
 
       expect(Gitlab::GithubImport::PullRequests::ImportReviewRequestWorker)
-        .to receive(:perform_in).with(1.minute, *expected_worker_payload.second)
+        .to receive(:perform_in).with(1.second, *expected_worker_payload.second)
 
       importer.parallel_import
     end
@@ -126,7 +126,7 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequests::ReviewRequestsImpor
 
       it "doesn't schedule import this merge request reviewers" do
         expect(Gitlab::GithubImport::PullRequests::ImportReviewRequestWorker)
-          .to receive(:perform_in).with(1.minute, *expected_worker_payload.second)
+          .to receive(:perform_in).with(1.second, *expected_worker_payload.second)
 
         importer.parallel_import
       end

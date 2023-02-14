@@ -16,7 +16,7 @@ The relationship only shows up in the UI if the user can see both epics. When yo
 epic that has open blockers, a warning is displayed.
 
 NOTE:
-To manage linked epics through our API, visit the [epic links API documentation](../../../api/linked_epics.md).
+To manage linked epics through our API, see [Linked epics API](../../../api/linked_epics.md).
 
 ## Add a linked epic
 

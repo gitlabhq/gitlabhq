@@ -65,7 +65,7 @@ GitLab CI/CD build environment to deployment jobs. Deployment jobs have
 The Kubernetes integration provides a `KUBECONFIG` with an auto-generated namespace
 to deployment jobs. It defaults to using project-environment specific namespaces
 of the form `<prefix>-<environment>`, where `<prefix>` is of the form
-`<project_name>-<project_id>`. To learn more, read [Deployment variables](#deployment-variables).
+`<project_name>-<project_id>`. For more information, see [Deployment variables](#deployment-variables).
 
 You can customize the deployment namespace in a few ways:
 

@@ -453,7 +453,7 @@ export default {
         data-testid="aws-guidance-tip"
         @dismiss="dismissTip"
       >
-        <div class="gl-display-flex gl-flex-direction-row gl-flex-wrap-wrap gl-md-flex-wrap-nowrap">
+        <div class="gl-display-flex gl-flex-direction-row gl-md-flex-wrap-nowraps gl-gap-3">
           <div>
             <p>
               <gl-sprintf :message="$options.i18n.awsTipMessage">

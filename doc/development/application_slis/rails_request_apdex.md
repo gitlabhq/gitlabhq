@@ -247,7 +247,7 @@ request rates on the
 In the **Budget Attribution** row, the **Puma Apdex** log link shows you
 how many requests are not meeting a 1s or 5s target.
 
-Learn more about the content of the dashboard in the documentation for
+For more information about the content of the dashboard, see
 [Dashboards for stage groups](../stage_group_observability/index.md). For more information
-on our exploration of the error budget itself, read the infrastructure issue
-[Stage group error budget exploration dashboard](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/1365).
+about our exploration of the error budget itself, see
+[issue 1365](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/1365).

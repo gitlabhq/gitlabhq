@@ -377,9 +377,9 @@ More details are available on the rate limits for
 
 GitLab can rate-limit requests at several layers. The rate limits listed here
 are configured in the application. These limits are the most
-restrictive per IP address. To learn more about the rate limiting
-for GitLab.com, read our runbook page
-[Overview of rate limits for GitLab.com](https://gitlab.com/gitlab-com/runbooks/-/tree/master/docs/rate-limiting).
+restrictive per IP address. For more information about the rate limits
+for GitLab.com, see
+[an overview](https://gitlab.com/gitlab-com/runbooks/-/tree/master/docs/rate-limiting).
 
 ### Rate limiting responses
 

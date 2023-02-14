@@ -203,8 +203,13 @@ audit trail:
 include:  # Execute individual project's configuration (if project contains .gitlab-ci.yml)
   project: '$CI_PROJECT_PATH'
   file: '$CI_CONFIG_PATH'
-  ref: '$CI_COMMIT_REF_NAME' # Must be defined or MR pipelines always use the use default branch
+  ref: '$CI_COMMIT_SHA' # Must be defined or MR pipelines always use the use default branch
+  rules:
+    - if: $CI_PROJECT_PATH != "my-group/project-1" # Must be the hardcoded path to the project that hosts this configuration.
 ```
+
+The `rules` configuration in the `include` definition avoids circular inclusion in case the compliance pipeline must be able to run in the host project itself.
+You can leave it out if your compliance pipeline only ever runs in labeled projects.
 
 #### CF pipelines in Merge Requests originating in project forks
 

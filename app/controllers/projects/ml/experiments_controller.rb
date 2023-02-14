@@ -13,7 +13,12 @@ module Projects
       MAX_CANDIDATES_PER_PAGE = 30
 
       def index
-        @experiments = ::Ml::Experiment.by_project_id(@project.id).page(params[:page]).per(MAX_EXPERIMENTS_PER_PAGE)
+        paginator = ::Ml::Experiment.by_project_id(@project.id)
+                                    .with_candidate_count
+                                    .keyset_paginate(cursor: params[:cursor], per_page: MAX_EXPERIMENTS_PER_PAGE)
+
+        @experiments = paginator.records
+        @page_info = page_info(paginator)
       end
 
       def show

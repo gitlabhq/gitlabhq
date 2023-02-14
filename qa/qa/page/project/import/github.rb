@@ -5,8 +5,6 @@ module QA
     module Project
       module Import
         class Github < Page::Base
-          include Page::Component::Select2
-
           view 'app/views/import/github/new.html.haml' do
             element :personal_access_token_field
             element :authenticate_button

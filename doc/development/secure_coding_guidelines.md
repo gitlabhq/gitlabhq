@@ -266,8 +266,7 @@ value, we **will not** be protected against DNS rebinding.
 
 This is the case with validators such as the `AddressableUrlValidator` (called with `validates :url, addressable_url: {opts}` or `public_url: {opts}`).
 Validation errors are only raised when validations are called, for example when a record is created or saved. If we ignore the value returned by the validation
-when persisting the record, **we need to recheck** its validity before using it. You can learn more about [Time of Check to Time of Use bugs](#time-of-check-to-time-of-use-bugs) in a later section
-of these guidelines.
+when persisting the record, **we need to recheck** its validity before using it. For more information, see [Time of check to time of use bugs](#time-of-check-to-time-of-use-bugs).
 
 #### Feature-specific mitigations
 
@@ -291,7 +290,7 @@ implement.
 - For HTTP connections: Disable redirects or validate the redirect destination
 - To mitigate DNS rebinding attacks, validate and use the first IP address received.
 
-See [`url_blocker_spec.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/lib/gitlab/url_blocker_spec.rb) for examples of SSRF payloads. See [time of check to time of use bugs](#time-of-check-to-time-of-use-bugs) to learn more about DNS rebinding's class of bug.
+See [`url_blocker_spec.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/lib/gitlab/url_blocker_spec.rb) for examples of SSRF payloads. For more information about the DNS-rebinding class of bugs, see [Time of check to time of use bugs](#time-of-check-to-time-of-use-bugs).
 
 Don't rely on methods like `.start_with?` when validating a URL, or make assumptions about which
 part of a string maps to which part of a URL. Use the `URI` class to parse the string, and validate

@@ -43,7 +43,7 @@ When you [view the incidents list](manage_incidents.md#view-incidents-list), it 
 
 ![Incidents List](img/incident_list_v15_6.png)
 
-For an example of the incident list in action, visit this
+For an example of the incident list in action, see this
 [demo project](https://gitlab.com/gitlab-org/monitor/monitor-sandbox/-/incidents).
 
 ### Sort the incident list

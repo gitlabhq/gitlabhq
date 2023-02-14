@@ -59,8 +59,8 @@ If the case of `404.html`, there are different scenarios. For example:
 
 ## Redirects in GitLab Pages
 
-You can configure redirects for your site using a `_redirects` file. To learn more, read
-the [redirects documentation](redirects.md).
+You can configure redirects for your site using a `_redirects` file. For more information, see
+[Create redirects for GitLab Pages](redirects.md).
 
 ## Remove your pages
 
@@ -261,7 +261,7 @@ for both the `/data` and `/data/` URL paths.
 
 ## Known issues
 
-For a list of known issues, visit the GitLab [public issue tracker](https://gitlab.com/gitlab-org/gitlab/-/issues?label_name[]=Category%3APages).
+For a list of known issues, see the GitLab [public issue tracker](https://gitlab.com/gitlab-org/gitlab/-/issues?label_name[]=Category%3APages).
 
 ## Troubleshooting
 

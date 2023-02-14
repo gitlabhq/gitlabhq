@@ -732,8 +732,8 @@ Because our instances are created by the auto scaling group, go back to your ins
 
 Apart from Amazon's Cloudwatch which you can enable on various services,
 GitLab provides its own integrated monitoring solution based on Prometheus.
-For more information on how to set it up, visit the
-[GitLab Prometheus documentation](../../administration/monitoring/prometheus/index.md)
+For more information about how to set it up, see
+[GitLab Prometheus](../../administration/monitoring/prometheus/index.md).
 
 GitLab also has various [health check endpoints](../../user/admin_area/monitoring/health_check.md)
 that you can ping and get reports.

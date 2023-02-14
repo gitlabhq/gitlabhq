@@ -157,7 +157,7 @@ To prevent exceeding the namespace storage quota, you can:
 - Consider using a [self-managed instance](../subscriptions/self_managed/index.md) of GitLab which does not have these limits on the free tier.
 - [Purchase additional storage](../subscriptions/gitlab_com/index.md#purchase-more-storage-and-transfer) units at $60/year for 10 GB of storage.
 - [Start a trial](https://about.gitlab.com/free-trial/) or [upgrade to GitLab Premium or Ultimate](https://about.gitlab.com/pricing/) which include higher limits and features that enable growing teams to ship faster without sacrificing on quality.
-- [Talk to an expert](https://page.gitlab.com/usage_limits_help.html) to learn more about your options and ask questions.
+- [Talk to an expert](https://page.gitlab.com/usage_limits_help.html) for more information about your options.
 
 ### Namespace storage limit application schedule
 

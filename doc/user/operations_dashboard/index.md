@@ -36,4 +36,4 @@ You can drag project cards to change their order. The card order is currently on
 ## Making it the default dashboard when you sign in
 
 The Operations Dashboard can also be made the default GitLab dashboard shown when
-you sign in. To make it the default, visit your [profile preferences](../profile/preferences.md).
+you sign in. To make it the default, see [Profile preferences](../profile/preferences.md).

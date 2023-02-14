@@ -63,11 +63,6 @@ $search-input-field-x-min-width: 200px;
           @include gl-focus($focus-ring: $focus-ring-dark);
         }
       }
-
-      .project-item-select {
-        right: auto;
-        left: 0;
-      }
     }
 
     .dropdown.open {

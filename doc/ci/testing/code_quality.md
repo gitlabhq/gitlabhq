@@ -191,8 +191,8 @@ Code Quality now runs in standard Docker mode.
 ## Disable Code Quality
 
 The `code_quality` job doesn't run if the `$CODE_QUALITY_DISABLED` CI/CD variable
-is present. Refer to the CI/CD variables [documentation](../variables/index.md)
-to learn more about how to define one.
+is present. For more information about how to define a variable, see
+[GitLab CI/CD variables](../variables/index.md).
 
 To disable Code Quality, create a custom CI/CD variable named `CODE_QUALITY_DISABLED`, for either:
 

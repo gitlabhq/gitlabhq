@@ -4,7 +4,7 @@ module Gitlab
   module Database
     module Reindexing
       class Coordinator
-        include IndexingExclusiveLeaseGuard
+        include AsyncDdlExclusiveLeaseGuard
 
         # Maximum lease time for the global Redis lease
         # This should be higher than the maximum time for any
@@ -54,7 +54,7 @@ module Gitlab
 
         private
 
-        delegate :connection, to: :index
+        delegate :connection, :connection_db_config, to: :index
 
         def with_notifications(action)
           notifier.notify_start(action)

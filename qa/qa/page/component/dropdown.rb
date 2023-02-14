@@ -4,36 +4,24 @@ module QA
   module Page
     module Component
       module Dropdown
-        include Select2
-
         def select_item(item_text)
-          return super if use_select2?
-
           find('li.gl-new-dropdown-item', text: item_text, match: :prefer_exact).click
         end
 
         def has_item?(item_text)
-          return super if use_select2?
-
           has_css?('li.gl-new-dropdown-item', text: item_text, match: :prefer_exact)
         end
 
         def current_selection
-          return super if use_select2?
-
           expand_select_list unless dropdown_open?
           find('span.gl-new-dropdown-button-text').text
         end
 
         def all_items
-          raise NotImplementedError if use_select2?
-
           find_all("li.gl-new-dropdown-item").map(&:text)
         end
 
         def clear_current_selection_if_present
-          return super if use_select2?
-
           expand_select_list unless dropdown_open?
 
           if has_css?('button[data-testid="listbox-reset-button"]')
@@ -44,8 +32,6 @@ module QA
         end
 
         def search_item(item_text)
-          return super if use_select2?
-
           QA::Runtime::Logger.info "Searching in dropdown: \"#{item_text}\""
 
           find('div.gl-listbox-search input[type="Search"]').set(item_text, rapid: false)
@@ -58,8 +44,6 @@ module QA
         end
 
         def search_and_select(item_text)
-          return super if use_select2?
-
           search_item(item_text)
 
           unless has_item?(item_text)
@@ -70,8 +54,6 @@ module QA
         end
 
         def search_and_select_exact(item_text)
-          return super if use_select2?
-
           QA::Runtime::Logger.info "Searching and selecting exact: \"#{item_text}\""
 
           search_item(item_text)
@@ -84,14 +66,10 @@ module QA
         end
 
         def expand_select_list
-          return super if use_select2?
-
           find('.gl-new-dropdown-toggle').click
         end
 
         def wait_for_search_to_complete
-          return super if use_select2?
-
           Support::WaitForRequests.wait_for_requests
 
           has_css?('div[data-testid="listbox-search-loader"]', wait: 1)
@@ -99,23 +77,12 @@ module QA
         end
 
         def dropdown_open?
-          return super if use_select2?
-
           has_css?('ul.gl-new-dropdown-contents', wait: 1)
         end
 
         def find_input_by_prefix_and_set(element_prefix, item_text)
           find("input[id^=\"#{element_prefix}\"]").set(item_text)
         end
-
-        private
-
-        # rubocop:disable Gitlab/PredicateMemoization
-        def use_select2?
-          @use_select2 ||= has_css?('.select2-container', wait: 1)
-        end
-
-        # rubocop:enable Gitlab/PredicateMemoization
       end
     end
   end

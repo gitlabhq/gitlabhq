@@ -1124,7 +1124,7 @@ for example to override:
 - A default cache defined with [`default`](#default).
 - The configuration for a job added with [`include`](#include).
 
-Learn more about caches in [Caching in GitLab CI/CD](../caching/index.md).
+For more information about caches, see [Caching in GitLab CI/CD](../caching/index.md).
 
 #### `cache:paths`
 

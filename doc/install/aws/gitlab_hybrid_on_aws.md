@@ -34,7 +34,7 @@ Amazon provides a managed Kubernetes service offering known as [Amazon Elastic K
 
 The [GitLab Environment Toolkit (GET)](https://gitlab.com/gitlab-org/gitlab-environment-toolkit/-/blob/main/README.md) is an effort made by GitLab to create a multi-cloud, multi-GitLab (Omnibus + Cloud Native Hybrid) toolkit to provision GitLab. GET is developed by GitLab developers and is open to community contributions. GET is where GitLab is investing its resources as the primary option for Infrastructure as Code, and is being actively used in production as a part of [GitLab Dedicated](../../subscriptions/gitlab_dedicated/index.md).
 
-Read the [GitLab Environment Toolkit (GET) direction](https://gitlab.com/gitlab-org/gitlab-environment-toolkit/-/blob/main/README.md#direction) to learn more about the project and where it is going.
+For more information about the project, see [GitLab Environment Toolkit](https://gitlab.com/gitlab-org/gitlab-environment-toolkit/-/blob/main/README.md).
 
 The [AWS Quick Start for GitLab Cloud Native Hybrid on EKS](https://aws-quickstart.github.io/quickstart-eks-gitlab/) is developed by AWS, GitLab, and the community that contributes to AWS Quick Starts, whether directly to the GitLab Quick Start or to the underlying Quick Start dependencies GitLab inherits (for example, EKS Quick Start).
 

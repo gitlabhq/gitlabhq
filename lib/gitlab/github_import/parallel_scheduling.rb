@@ -276,9 +276,9 @@ module Gitlab
       end
 
       def calculate_job_delay(job_index)
-        multiplier = (job_index / parallel_import_batch[:size]) + 1
+        multiplier = (job_index / parallel_import_batch[:size])
 
-        multiplier * parallel_import_batch[:delay]
+        (multiplier * parallel_import_batch[:delay]) + 1.second
       end
     end
   end

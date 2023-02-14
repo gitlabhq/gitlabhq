@@ -583,8 +583,8 @@ You may find the results:
   **Metrics Reports** [dropdown list](../ci/testing/metrics_reports.md).
 - In the `memory-on-boot` artifacts for a full report and a dependency breakdown.
 
-`derailed_benchmarks` also provides other methods to investigate memory. To learn more,
-refer to the [gem documentation](https://github.com/zombocom/derailed_benchmarks#running-derailed-exec).
+`derailed_benchmarks` also provides other methods to investigate memory. For more information, see
+the [gem documentation](https://github.com/zombocom/derailed_benchmarks#running-derailed-exec).
 Most of the methods (`derailed exec perf:*`) attempt to boot your Rails app in a
 `production` environment and run benchmarks against it.
 It is possible both in GDK and GCK:

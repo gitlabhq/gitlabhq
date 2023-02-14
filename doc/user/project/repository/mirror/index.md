@@ -55,7 +55,7 @@ Prerequisite:
    When mirroring the repository, GitLab confirms at least one of the stored host keys
    matches before connecting. This check can protect your mirror from malicious code injections,
    or your password from being stolen.
-1. Select an **Authentication method**. To learn more, read
+1. Select an **Authentication method**. For more information, see
    [Authentication methods for mirrors](#authentication-methods-for-mirrors).
 1. If you authenticate with SSH host keys, [verify the host key](#verify-a-host-key)
    to ensure it is correct.
@@ -65,7 +65,7 @@ Prerequisite:
 
 If you select `SSH public key` as your authentication method, GitLab generates a
 public key for your GitLab repository. You must provide this key to the non-GitLab server.
-To learn more, read [Get your SSH public key](#get-your-ssh-public-key).
+For more information, see [Get your SSH public key](#get-your-ssh-public-key).
 
 ## Update a mirror
 

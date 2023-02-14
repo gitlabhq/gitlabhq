@@ -18,7 +18,7 @@ GitLab is available under [different subscriptions](https://about.gitlab.com/pri
 New versions of GitLab are released from stable branches, and the `main` branch is used for
 bleeding-edge development.
 
-For more information, visit the [GitLab Release Process](https://about.gitlab.com/handbook/engineering/releases/).
+For more information, see the [GitLab release process](https://about.gitlab.com/handbook/engineering/releases/).
 
 Both distributions require additional components. These components are described in the
 [Component details](#components) section, and all have their own repositories.
@@ -771,7 +771,8 @@ Whenever a client requests to pull or push an image from the registry, it
 returns a `401` response along with a header detailing where to get an
 authentication token, in this case the GitLab instance. The client then
 requests a pull or push auth token from GitLab and retries the original request
-to the registry. Learn more about [token authentication](https://docs.docker.com/registry/spec/auth/token/).
+to the registry. For more information, see
+[token authentication](https://docs.docker.com/registry/spec/auth/token/).
 
 An external registry can also be configured to use GitLab as an auth endpoint.
 

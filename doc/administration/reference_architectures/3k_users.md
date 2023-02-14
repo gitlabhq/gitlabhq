@@ -946,7 +946,7 @@ in the second step, do not supply the `EXTERNAL_URL` value.
 
 PostgreSQL, with Patroni managing its failover, will default to use `pg_rewind` by default to handle conflicts.
 Like most failover handling methods, this has a small chance of leading to data loss.
-Learn more about the various [Patroni replication methods](../postgresql/replication_and_failover.md#selecting-the-appropriate-patroni-replication-method).
+For more information, see the various [Patroni replication methods](../postgresql/replication_and_failover.md#selecting-the-appropriate-patroni-replication-method).
 
 1. Copy the `/etc/gitlab/gitlab-secrets.json` file from the first Omnibus node you configured and add or replace
    the file of the same name on this server. If this is the first Omnibus node you are configuring then you can skip this step.

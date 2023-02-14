@@ -90,7 +90,7 @@ You can configure a project webhook to listen for specific events
 like pushes, issues, or merge requests. When the webhook is triggered, GitLab
 sends a POST request with data to a specified webhook URL.
 
-Learn more [about webhooks](webhooks.md).
+For more information, see [Webhooks](webhooks.md).
 
 ## Push hooks limit
 
@@ -104,7 +104,7 @@ You can change the number of supported branches or tags by changing the
 
 ## Troubleshooting integrations
 
-Some integrations use hooks to integrate with external applications. To confirm which ones use integration hooks, see the [available integrations](#available-integrations). Learn more about [troubleshooting integration hooks](webhooks.md#troubleshoot-webhooks).
+Some integrations use hooks to integrate with external applications. To confirm which ones use integration hooks, see the [available integrations](#available-integrations). For more information, see [Troubleshooting webhooks](webhooks.md#troubleshoot-webhooks).
 
 ### `Test Failed. Save Anyway` error
 

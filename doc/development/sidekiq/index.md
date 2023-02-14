@@ -131,8 +131,8 @@ gitlab:sidekiq:all_queues_yml:generate` to regenerate
 `app/workers/all_queues.yml` or `ee/app/workers/all_queues.yml` so that
 it can be picked up by
 [`sidekiq-cluster`](../../administration/sidekiq/extra_sidekiq_processes.md)
-in installations that don't use routing rules. To learn more about potential changes,
-read [Use routing rules by default and deprecate queue selectors for self-managed](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/596).
+in installations that don't use routing rules. For more information about potential changes,
+see [epic 596](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/596).
 
 Additionally, run
 `bin/rake gitlab:sidekiq:sidekiq_queues_yml:generate` to regenerate

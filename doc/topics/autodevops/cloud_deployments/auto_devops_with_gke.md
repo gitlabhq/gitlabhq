@@ -188,7 +188,7 @@ The jobs are separated into stages:
     ([Auto License Compliance](../stages.md#auto-license-compliance))
 
 - **Review** - Pipelines on the default branch include this stage with a `dast_environment_deploy` job.
-  To learn more, see [Dynamic Application Security Testing (DAST)](../../../user/application_security/dast/index.md).
+  For more information, see [Dynamic Application Security Testing (DAST)](../../../user/application_security/dast/index.md).
 
 - **Production** - After the tests and checks finish, the application deploys in
   Kubernetes ([Auto Deploy](../stages.md#auto-deploy)).

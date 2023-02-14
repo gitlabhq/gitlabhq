@@ -238,7 +238,7 @@ This machine's Geo node name matches a database record ... no
   doc/administration/geo/replication/troubleshooting.md#can-geo-detect-the-current-node-correctly
 ```
 
-Learn more about recommended site names in the description of the Name field in
+For more information about recommended site names in the description of the Name field, see
 [Geo Admin Area Common Settings](../../../user/admin_area/geo_sites.md#common-settings).
 
 ### Reverify all uploads (or any SSF data type which is verified)

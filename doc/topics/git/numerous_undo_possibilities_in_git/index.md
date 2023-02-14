@@ -391,8 +391,8 @@ Tools are available to execute Git commands more quickly.
 These tools are faster because they do not provide the same
 feature set as `git filter-branch` does, but focus on specific use cases.
 
-Refer to [Reduce repository size](../../../user/project/repository/reducing_the_repo_size_using_git.md) to
-learn more about purging files from repository history and GitLab storage.
+For more information about purging files from the repository history and GitLab storage,
+see [Reduce repository size](../../../user/project/repository/reducing_the_repo_size_using_git.md).
 
 <!-- ## Troubleshooting
 

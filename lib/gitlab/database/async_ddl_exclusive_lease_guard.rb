@@ -2,16 +2,16 @@
 
 module Gitlab
   module Database
-    module IndexingExclusiveLeaseGuard
+    module AsyncDdlExclusiveLeaseGuard
       extend ActiveSupport::Concern
       include ExclusiveLeaseGuard
 
       def lease_key
-        @lease_key ||= "gitlab/database/indexing/actions/#{database_config_name}"
+        @lease_key ||= "gitlab/database/asyncddl/actions/#{database_config_name}"
       end
 
       def database_config_name
-        Gitlab::Database.db_config_name(connection)
+        connection_db_config.name
       end
     end
   end

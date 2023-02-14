@@ -84,7 +84,7 @@ RSpec.describe Gitlab::GithubImport::Importer::NotesImporter, feature_category: 
         .and_yield(github_comment)
 
       expect(Gitlab::GithubImport::ImportNoteWorker).to receive(:perform_in)
-        .with(1.minute, project.id, an_instance_of(Hash), an_instance_of(String))
+        .with(1.second, project.id, an_instance_of(Hash), an_instance_of(String))
 
       waiter = importer.parallel_import
 

@@ -25582,9 +25582,6 @@ msgstr ""
 msgid "MERGED"
 msgstr ""
 
-msgid "ML Experiments"
-msgstr ""
-
 msgid "MR widget|Back to the merge request"
 msgstr ""
 
@@ -25622,9 +25619,6 @@ msgid "MRDiff|Show full file"
 msgstr ""
 
 msgid "Machine Learning Experiment Tracking is in Incubating Phase"
-msgstr ""
-
-msgid "Machine Learning Experiments"
 msgstr ""
 
 msgid "Made this %{type} confidential."
@@ -27384,10 +27378,16 @@ msgstr ""
 msgid "MlExperimentTracking|Artifacts"
 msgstr ""
 
+msgid "MlExperimentTracking|Create a new experiment"
+msgstr ""
+
 msgid "MlExperimentTracking|Created at"
 msgstr ""
 
 msgid "MlExperimentTracking|Details"
+msgstr ""
+
+msgid "MlExperimentTracking|Experiment"
 msgstr ""
 
 msgid "MlExperimentTracking|Experiment candidates"
@@ -27396,13 +27396,25 @@ msgstr ""
 msgid "MlExperimentTracking|Filter candidates"
 msgstr ""
 
+msgid "MlExperimentTracking|Logged candidates for experiment"
+msgstr ""
+
 msgid "MlExperimentTracking|Machine learning experiment tracking"
+msgstr ""
+
+msgid "MlExperimentTracking|Model experiments"
 msgstr ""
 
 msgid "MlExperimentTracking|Name"
 msgstr ""
 
 msgid "MlExperimentTracking|No candidates to display"
+msgstr ""
+
+msgid "MlExperimentTracking|No experiments"
+msgstr ""
+
+msgid "MlExperimentTracking|There are no logged experiments for this project. Create a new experiment using the MLflow client."
 msgstr ""
 
 msgid "MlExperimentTracking|User"
@@ -33281,9 +33293,6 @@ msgstr ""
 msgid "ProjectQualitySummary|This page helps you understand the code testing trends for your project. Let us know how we can improve it!"
 msgstr ""
 
-msgid "ProjectSelect| or group"
-msgstr ""
-
 msgid "ProjectSelect|No matching results"
 msgstr ""
 
@@ -33294,9 +33303,6 @@ msgid "ProjectSelect|Search projects"
 msgstr ""
 
 msgid "ProjectSelect|Select a project"
-msgstr ""
-
-msgid "ProjectSelect|Something went wrong while fetching projects"
 msgstr ""
 
 msgid "ProjectSelect|There was an error fetching the projects. Please try again."

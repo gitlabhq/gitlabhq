@@ -29,7 +29,7 @@ When you successfully connect an existing cluster using cluster certificates, th
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/26815) in GitLab 12.6, you can remove cluster integrations and resources.
 
 When you remove a cluster integration, you only remove the cluster relationship
-to GitLab, not the cluster. To remove the cluster itself, visit your cluster's
+to GitLab, not the cluster. To remove the cluster itself, go to your cluster's
 GKE or EKS dashboard to do it from their UI or use `kubectl`.
 
 You need at least Maintainer [permissions](../../permissions.md) to your

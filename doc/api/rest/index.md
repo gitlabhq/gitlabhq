@@ -733,8 +733,8 @@ The correct encoding for the query parameter would be:
 
 ## Clients
 
-There are many unofficial GitLab API Clients for most of the popular programming
-languages. For a complete list, visit the [GitLab website](https://about.gitlab.com/partners/technology-partners/#api-clients).
+Many unofficial GitLab API Clients are available for most of the popular programming
+languages. For a complete list, see the [GitLab website](https://about.gitlab.com/partners/technology-partners/#api-clients).
 
 ## Rate limits
 
