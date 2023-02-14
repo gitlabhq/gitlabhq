@@ -7767,7 +7767,6 @@ RSpec/MissingFeatureCategory:
     - 'spec/services/packages/update_package_file_service_spec.rb'
     - 'spec/services/packages/update_tags_service_spec.rb'
     - 'spec/services/pages/delete_service_spec.rb'
-    - 'spec/services/pages/destroy_deployments_service_spec.rb'
     - 'spec/services/pages/migrate_from_legacy_storage_service_spec.rb'
     - 'spec/services/pages/migrate_legacy_storage_to_deployment_service_spec.rb'
     - 'spec/services/pages/zip_directory_service_spec.rb'

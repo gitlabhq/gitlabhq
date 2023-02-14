@@ -122,25 +122,56 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
         context 'when system_id parameter is specified' do
           subject(:request) { request_job(**args) }
 
-          context 'when ci_runner_machines with same system_xid does not exist' do
-            let(:args) { { system_id: 's_some_system_id' } }
+          context 'with create_runner_machine FF enabled' do
+            before do
+              stub_feature_flags(create_runner_machine: true)
+            end
 
-            it 'creates respective ci_runner_machines record', :freeze_time do
-              expect { request }.to change { runner.runner_machines.reload.count }.from(0).to(1)
+            context 'when ci_runner_machines with same system_xid does not exist' do
+              let(:args) { { system_id: 's_some_system_id' } }
 
-              machine = runner.runner_machines.last
-              expect(machine.system_xid).to eq args[:system_id]
-              expect(machine.runner).to eq runner
-              expect(machine.contacted_at).to eq Time.current
+              it 'creates respective ci_runner_machines record', :freeze_time do
+                expect { request }.to change { runner.runner_machines.reload.count }.from(0).to(1)
+
+                machine = runner.runner_machines.last
+                expect(machine.system_xid).to eq args[:system_id]
+                expect(machine.runner).to eq runner
+                expect(machine.contacted_at).to eq Time.current
+              end
+            end
+
+            context 'when ci_runner_machines with same system_xid already exists', :freeze_time do
+              let(:args) { { system_id: 's_existing_system_id' } }
+              let!(:runner_machine) do
+                create(:ci_runner_machine, runner: runner, system_xid: args[:system_id], contacted_at: 1.hour.ago)
+              end
+
+              it 'does not create new ci_runner_machines record' do
+                expect { request }.not_to change { Ci::RunnerMachine.count }
+              end
+
+              it 'updates the contacted_at field' do
+                request
+
+                expect(runner_machine.reload.contacted_at).to eq Time.current
+              end
             end
           end
 
-          context 'when ci_runner_machines with same system_xid already exists' do
-            let(:args) { { system_id: 's_existing_system_id' } }
-            let!(:runner_machine) { create(:ci_runner_machine, runner: runner, system_xid: args[:system_id]) }
+          context 'with create_runner_machine FF disabled' do
+            before do
+              stub_feature_flags(create_runner_machine: false)
+            end
 
-            it 'does not create new ci_runner_machines record' do
-              expect { request }.not_to change { Ci::RunnerMachine.count }
+            context 'when ci_runner_machines with same system_xid does not exist' do
+              let(:args) { { system_id: 's_some_system_id' } }
+
+              it 'does not create respective ci_runner_machines record', :freeze_time, :aggregate_failures do
+                expect { request }.not_to change { runner.runner_machines.reload.count }
+
+                expect(response).to have_gitlab_http_status(:created)
+                expect(runner.runner_machines).to be_empty
+              end
             end
           end
         end

@@ -539,8 +539,8 @@ Before taking the decision to merge:
 - If the MR contains both Quality and non-Quality-related changes, the MR should be merged by the relevant maintainer for user-facing changes (backend, frontend, or database) after the Quality related changes are approved by a Software Engineer in Test.
 
 At least one maintainer must approve an MR before it can be merged. MR authors and
-people who add commits to an MR are not authorized to approve the merge request,
-so they must seek a maintainer who has not contributed to the MR to approve the MR before it can be merged.
+people who add commits to an MR are not authorized to approve or merge the MR and
+must seek a maintainer who has not contributed to the MR to approve and merge it.
 
 This policy is in place to satisfy the CHG-04 control of the GitLab
 [Change Management Controls](https://about.gitlab.com/handbook/security/security-assurance/security-compliance/guidance/change-management.html).

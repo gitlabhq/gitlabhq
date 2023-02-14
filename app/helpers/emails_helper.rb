@@ -178,6 +178,10 @@ module EmailsHelper
     strip_tags(render_message(:footer_message, style: ''))
   end
 
+  def service_desk_email_additional_text
+    # overridden on EE
+  end
+
   def say_hi(user)
     _('Hi %{username}!') % { username: sanitize_name(user.name) }
   end

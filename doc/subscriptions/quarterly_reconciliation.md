@@ -78,3 +78,21 @@ and expected invoice amount.
 seats, and an invoice is generated for a prorated amount. If a credit card
 is on file, a payment is automatically applied. Otherwise, an invoice is
 sent and subject to your payment terms.
+
+## Quarterly reconciliation eligibility
+
+### You are automatically enrolled in quarterly reconciliation if
+
+- The credit card you used to purchase your subscription is still linked to your GitLab account.
+- You purchased your subscription through an invoice.
+
+### You are excluded from quarterly reconciliation if
+
+- You purchased your subscription from a reseller or another channel partner.
+- You purchased a multi-year subscription.
+- You purchased your subscription with a purchasing order.
+- You are a pubic sector customer.
+- You have an offline environment and used a license file to activate your subscription.
+- You are enrolled in a program that provides a free tier such as the GitLab for Education, GitLab for Open Source Program, or GitLab for Startups.
+
+If you are excluded from quarterly reconciliation and not on a free tier, your true-ups are reconciled annually.

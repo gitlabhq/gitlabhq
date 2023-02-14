@@ -246,8 +246,14 @@ module API
         optional :milestones,
           type: Array[String],
           coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce,
-          desc: 'The title of each milestone the release is associated with. GitLab Premium customers can specify group milestones',
-          default: []
+          desc: 'The title of each milestone the release is associated with. GitLab Premium customers can specify group milestones. Cannot be combined with `milestone_ids` parameter.'
+
+        optional :milestone_ids,
+           type: Array[String, Integer],
+           coerce_with: ::API::Validations::Types::CommaSeparatedToIntegerArray.coerce,
+           desc: 'The ID of each milestone the release is associated with. GitLab Premium customers can specify group milestones. Cannot be combined with `milestones` parameter.'
+
+        mutually_exclusive :milestones, :milestone_ids, message: 'Cannot specify milestones and milestone_ids at the same time'
 
         optional :released_at,
           type: DateTime,
@@ -292,7 +298,14 @@ module API
         optional :milestones,
           type: Array[String],
           coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce,
-          desc: 'The title of each milestone to associate with the release. GitLab Premium customers can specify group milestones. To remove all milestones from the release, specify `[]`'
+          desc: 'The title of each milestone to associate with the release. GitLab Premium customers can specify group milestones. Cannot be combined with `milestone_ids` parameter. To remove all milestones from the release, specify `[]`'
+
+        optional :milestone_ids,
+          type: Array[String, Integer],
+          coerce_with: ::API::Validations::Types::CommaSeparatedToIntegerArray.coerce,
+          desc: 'The ID of each milestone the release is associated with. GitLab Premium customers can specify group milestones. Cannot be combined with `milestones` parameter. To remove all milestones from the release, specify `[]`'
+
+        mutually_exclusive :milestones, :milestone_ids, message: 'Cannot specify milestones and milestone_ids at the same time'
       end
       route_setting :authentication, job_token_allowed: true
       put ':id/releases/:tag_name', requirements: RELEASE_ENDPOINT_REQUIREMENTS do

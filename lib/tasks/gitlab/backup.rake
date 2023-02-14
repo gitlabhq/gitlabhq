@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require 'active_record/fixtures'
-
 namespace :gitlab do
+  require 'active_record/fixtures'
+
   namespace :backup do
     PID = Process.pid.freeze
     PID_FILE = "#{Rails.application.root}/tmp/backup_restore.pid"

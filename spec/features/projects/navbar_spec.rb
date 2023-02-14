@@ -18,7 +18,7 @@ RSpec.describe 'Project navbar', :with_license, feature_category: :projects do
     stub_feature_flags(show_pages_in_deployments_menu: false)
 
     stub_config(registry: { enabled: false })
-    stub_feature_flags(harbor_registry_integration: false)
+    stub_feature_flags(harbor_registry_integration: false, ml_experiment_tracking: false)
     insert_package_nav(_('Deployments'))
     insert_infrastructure_registry_nav
     insert_infrastructure_google_cloud_nav
@@ -91,6 +91,18 @@ RSpec.describe 'Project navbar', :with_license, feature_category: :projects do
       stub_feature_flags(harbor_registry_integration: true)
 
       insert_harbor_registry_nav(_('Infrastructure Registry'))
+
+      visit project_path(project)
+    end
+
+    it_behaves_like 'verified navigation bar'
+  end
+
+  context 'when models experiments is available' do
+    before do
+      stub_feature_flags(ml_experiment_tracking: true)
+
+      insert_model_experiments_nav(_('Infrastructure Registry'))
 
       visit project_path(project)
     end

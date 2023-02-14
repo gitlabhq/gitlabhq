@@ -121,6 +121,8 @@ visible in the email template. For more information, see
 
 #### Thank you email
 
+> UNSUBSCRIBE_URL, SYSTEM_HEADER, SYSTEM_FOOTER, ADDITIONAL_TEXT placeholders [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/285512) in GitLab 15.9.
+
 When a user submits an issue through Service Desk, GitLab sends a **thank you email**.
 You must name the template file `thank_you.md`.
 
@@ -128,6 +130,10 @@ You can use these placeholders to be automatically replaced in each email:
 
 - `%{ISSUE_ID}`: issue IID
 - `%{ISSUE_PATH}`: project path appended with the issue IID
+- `%{UNSUBSCRIBE_URL}`: unsubscribe URL
+- `%{SYSTEM_HEADER}`: [system header message](../admin_area/appearance.md#system-header-and-footer-messages)
+- `%{SYSTEM_FOOTER}`: [system footer message](../admin_area/appearance.md#system-header-and-footer-messages)
+- `%{ADDITIONAL_TEXT}`: [custom additional text](../admin_area/settings/email.md#custom-additional-text)
 
 Because Service Desk issues are created as [confidential](issues/confidential_issues.md) (only project members can see them),
 the response email does not contain the issue link.
@@ -142,6 +148,10 @@ You can use these placeholders to be automatically replaced in each email:
 - `%{ISSUE_ID}`: issue IID
 - `%{ISSUE_PATH}`: project path appended with the issue IID
 - `%{NOTE_TEXT}`: note text
+- `%{UNSUBSCRIBE_URL}`: unsubscribe URL
+- `%{SYSTEM_HEADER}`: [system header message](../admin_area/appearance.md#system-header-and-footer-messages)
+- `%{SYSTEM_FOOTER}`: [system footer message](../admin_area/appearance.md#system-header-and-footer-messages)
+- `%{ADDITIONAL_TEXT}`: [custom additional text](../admin_area/settings/email.md#custom-additional-text)
 
 #### New Service Desk issues
 

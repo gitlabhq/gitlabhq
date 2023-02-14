@@ -52,4 +52,146 @@ RSpec.describe Ci::RunnerMachine, feature_category: :runner_fleet, type: :model 
       is_expected.to match_array([runner_machine1.id, runner_machine2.id])
     end
   end
+
+  describe '#heartbeat', :freeze_time do
+    let(:runner_machine) { create(:ci_runner_machine) }
+    let(:executor) { 'shell' }
+    let(:version) { '15.0.1' }
+    let(:values) do
+      {
+        ip_address: '8.8.8.8',
+        architecture: '18-bit',
+        config: { gpus: "all" },
+        executor: executor,
+        version: version
+      }
+    end
+
+    subject(:heartbeat) do
+      runner_machine.heartbeat(values)
+    end
+
+    context 'when database was updated recently' do
+      before do
+        runner_machine.contacted_at = Time.current
+      end
+
+      it 'schedules version update' do
+        expect(Ci::Runners::ProcessRunnerVersionUpdateWorker).to receive(:perform_async).with(version).once
+
+        heartbeat
+
+        expect(runner_machine.runner_version).to be_nil
+      end
+
+      it 'updates cache' do
+        expect_redis_update
+
+        heartbeat
+      end
+
+      context 'with only ip_address specified' do
+        let(:values) do
+          { ip_address: '1.1.1.1' }
+        end
+
+        it 'updates only ip_address' do
+          attrs = Gitlab::Json.dump(ip_address: '1.1.1.1', contacted_at: Time.current)
+
+          Gitlab::Redis::Cache.with do |redis|
+            redis_key = runner_machine.send(:cache_attribute_key)
+            expect(redis).to receive(:set).with(redis_key, attrs, any_args)
+          end
+
+          heartbeat
+        end
+      end
+    end
+
+    context 'when database was not updated recently' do
+      before do
+        runner_machine.contacted_at = 2.hours.ago
+
+        allow(Ci::Runners::ProcessRunnerVersionUpdateWorker).to receive(:perform_async).with(version).once
+      end
+
+      context 'with invalid runner_machine' do
+        before do
+          runner_machine.runner = nil
+        end
+
+        it 'still updates redis cache and database' do
+          expect(runner_machine).to be_invalid
+
+          expect_redis_update
+          does_db_update
+
+          expect(Ci::Runners::ProcessRunnerVersionUpdateWorker).to have_received(:perform_async)
+            .with(version).once
+        end
+      end
+
+      context 'with unchanged runner_machine version' do
+        let(:runner_machine) { create(:ci_runner_machine, version: version) }
+
+        it 'does not schedule ci_runner_versions update' do
+          heartbeat
+
+          expect(Ci::Runners::ProcessRunnerVersionUpdateWorker).not_to have_received(:perform_async)
+        end
+      end
+
+      it 'updates redis cache and database' do
+        expect_redis_update
+        does_db_update
+
+        expect(Ci::Runners::ProcessRunnerVersionUpdateWorker).to have_received(:perform_async)
+          .with(version).once
+      end
+
+      Ci::Runner::EXECUTOR_NAME_TO_TYPES.each_key do |executor|
+        context "with #{executor} executor" do
+          let(:executor) { executor }
+
+          it 'updates with expected executor type' do
+            expect_redis_update
+
+            heartbeat
+
+            expect(runner_machine.reload.read_attribute(:executor_type)).to eq(expected_executor_type)
+          end
+
+          def expected_executor_type
+            executor.gsub(/[+-]/, '_')
+          end
+        end
+      end
+
+      context "with an unknown executor type" do
+        let(:executor) { 'some-unknown-type' }
+
+        it 'updates with unknown executor type' do
+          expect_redis_update
+
+          heartbeat
+
+          expect(runner_machine.reload.read_attribute(:executor_type)).to eq('unknown')
+        end
+      end
+    end
+
+    def expect_redis_update
+      Gitlab::Redis::Cache.with do |redis|
+        redis_key = runner_machine.send(:cache_attribute_key)
+        expect(redis).to receive(:set).with(redis_key, anything, any_args).and_call_original
+      end
+    end
+
+    def does_db_update
+      expect { heartbeat }.to change { runner_machine.reload.read_attribute(:contacted_at) }
+                          .and change { runner_machine.reload.read_attribute(:architecture) }
+                          .and change { runner_machine.reload.read_attribute(:config) }
+                          .and change { runner_machine.reload.read_attribute(:executor_type) }
+    end
+  end
 end

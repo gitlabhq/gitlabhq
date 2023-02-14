@@ -78,12 +78,6 @@ RSpec.describe API::Ci::Helpers::Runner do
         stub_feature_flags(create_runner_machine: true)
       end
 
-      it 'does not return runner machine if no system_id specified' do
-        allow(helper).to receive(:params).and_return(token: runner.token)
-
-        is_expected.to be_nil
-      end
-
       context 'when runner machine already exists' do
         before do
           allow(helper).to receive(:params).and_return(token: runner.token, system_id: runner_machine.system_xid)
@@ -96,15 +90,27 @@ RSpec.describe API::Ci::Helpers::Runner do
         end
       end
 
-      it 'creates a new runner machine if one could be not be found', :aggregate_failures do
-        allow(helper).to receive(:params).and_return(token: runner.token, system_id: 'new_system_id')
+      context 'when runner machine cannot be found' do
+        it 'creates a new runner machine', :aggregate_failures do
+          allow(helper).to receive(:params).and_return(token: runner.token, system_id: 'new_system_id')
 
-        expect { current_runner_machine }.to change { Ci::RunnerMachine.count }.by(1)
+          expect { current_runner_machine }.to change { Ci::RunnerMachine.count }.by(1)
 
-        expect(current_runner_machine).not_to be_nil
-        expect(current_runner_machine.system_xid).to eq('new_system_id')
-        expect(current_runner_machine.contacted_at).to eq(Time.current)
-        expect(current_runner_machine.runner).to eq(runner)
+          expect(current_runner_machine).not_to be_nil
+          expect(current_runner_machine.system_xid).to eq('new_system_id')
+          expect(current_runner_machine.contacted_at).to eq(Time.current)
+          expect(current_runner_machine.runner).to eq(runner)
+        end
+
+        it 'creates a new <legacy> runner machine if system_id is not specified', :aggregate_failures do
+          allow(helper).to receive(:params).and_return(token: runner.token)
+
+          expect { current_runner_machine }.to change { Ci::RunnerMachine.count }.by(1)
+
+          expect(current_runner_machine).not_to be_nil
+          expect(current_runner_machine.system_xid).to eq(::API::Ci::Helpers::Runner::LEGACY_SYSTEM_XID)
+          expect(current_runner_machine.runner).to eq(runner)
+        end
       end
     end
 

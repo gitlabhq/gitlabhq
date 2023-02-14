@@ -10,13 +10,15 @@ module API
 
         JOB_TOKEN_HEADER = 'HTTP_JOB_TOKEN'
         JOB_TOKEN_PARAM = :token
+        LEGACY_SYSTEM_XID = '<legacy>'
 
         def authenticate_runner!
           track_runner_authentication
           forbidden! unless current_runner
 
-          current_runner
-            .heartbeat(get_runner_details_from_request)
+          runner_details = get_runner_details_from_request
+          current_runner.heartbeat(runner_details)
+          current_runner_machine&.heartbeat(runner_details)
         end
 
         def get_runner_details_from_request
@@ -52,10 +54,10 @@ module API
 
         def current_runner_machine
           return if Feature.disabled?(:create_runner_machine)
-          return unless params[:system_id]
 
           strong_memoize(:current_runner_machine) do
-            current_runner.ensure_machine(system_xid: params[:system_id]) { |m| m.contacted_at = Time.current }
+            system_xid = params.fetch(:system_id, LEGACY_SYSTEM_XID)
+            current_runner&.ensure_machine(system_xid) { |m| m.contacted_at = Time.current }
           end
         end
 
@@ -94,6 +96,7 @@ module API
           # the heartbeat should be triggered.
           if heartbeat_runner
             job.runner&.heartbeat(get_runner_ip)
+            job.runner_machine&.heartbeat(get_runner_ip)
           end
 
           job

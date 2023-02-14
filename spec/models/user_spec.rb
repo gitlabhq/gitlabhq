@@ -2404,21 +2404,6 @@ RSpec.describe User, feature_category: :user_profile do
           it_behaves_like 'manageable groups examples'
         end
       end
-
-      describe '#manageable_groups_with_routes' do
-        it 'eager loads routes from manageable groups' do
-          control_count =
-            ActiveRecord::QueryRecorder.new(skip_cached: false) do
-              user.manageable_groups_with_routes.map(&:route)
-            end.count
-
-          create(:group, parent: subgroup)
-
-          expect do
-            user.manageable_groups_with_routes.map(&:route)
-          end.not_to exceed_all_query_limit(control_count)
-        end
-      end
     end
   end
 

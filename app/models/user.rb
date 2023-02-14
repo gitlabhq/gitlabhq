@@ -1729,12 +1729,6 @@ class User < ApplicationRecord
     end
   end
 
-  def manageable_groups_with_routes(include_groups_with_developer_maintainer_access: false)
-    manageable_groups(include_groups_with_developer_maintainer_access: include_groups_with_developer_maintainer_access)
-      .eager_load(:route)
-      .order('routes.path')
-  end
-
   def namespaces(owned_only: false)
     user_groups = owned_only ? owned_groups : groups
     personal_namespace = Namespace.where(id: namespace.id)

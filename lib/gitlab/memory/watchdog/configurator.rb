@@ -12,7 +12,7 @@ module Gitlab
         DEFAULT_MAX_HEAP_FRAG = 0.5
         DEFAULT_MAX_MEM_GROWTH = 3.0
         # grace_time / sleep_interval = max_strikes allowed for Sidekiq process to violate defined limits.
-        DEFAULT_SIDEKIQ_GRACE_TIME_S = 300
+        DEFAULT_SIDEKIQ_GRACE_TIME_S = 900
 
         class << self
           def configure_for_puma

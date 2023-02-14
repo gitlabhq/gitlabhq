@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Releases::CreateService do
+RSpec.describe Releases::CreateService, feature_category: :continuous_integration do
   let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
   let(:tag_name) { project.repository.tag_names.first }
@@ -132,6 +132,15 @@ RSpec.describe Releases::CreateService do
         expect(result[:status]).to eq(:error)
         expect(result[:message]).to eq("Milestone(s) not found: #{inexistent_milestone_tag}")
       end
+
+      it 'raises an error saying the milestone id is inexistent' do
+        inexistent_milestone_id = non_existing_record_id
+        service = described_class.new(project, user, params.merge!({ milestone_ids: [inexistent_milestone_id] }))
+        result = service.execute
+
+        expect(result[:status]).to eq(:error)
+        expect(result[:message]).to eq("Milestone id(s) not found: #{inexistent_milestone_id}")
+      end
     end
 
     context 'when existing milestone is passed in' do
@@ -140,15 +149,27 @@ RSpec.describe Releases::CreateService do
       let(:params_with_milestone) { params.merge!({ milestones: [title] }) }
       let(:service) { described_class.new(milestone.project, user, params_with_milestone) }
 
-      it 'creates a release and ties this milestone to it' do
-        result = service.execute
+      shared_examples 'creates release' do
+        it 'creates a release and ties this milestone to it' do
+          result = service.execute
 
-        expect(project.releases.count).to eq(1)
-        expect(result[:status]).to eq(:success)
+          expect(project.releases.count).to eq(1)
+          expect(result[:status]).to eq(:success)
 
-        release = project.releases.last
+          release = project.releases.last
 
-        expect(release.milestones).to match_array([milestone])
+          expect(release.milestones).to match_array([milestone])
+        end
+      end
+
+      context 'by title' do
+        it_behaves_like 'creates release'
+      end
+
+      context 'by ids' do
+        let(:params_with_milestone) { params.merge!({ milestone_ids: [milestone.id] }) }
+
+        it_behaves_like 'creates release'
       end
 
       context 'when another release was previously created with that same milestone linked' do
@@ -164,18 +185,31 @@ RSpec.describe Releases::CreateService do
       end
     end
 
-    context 'when multiple existing milestone titles are passed in' do
+    context 'when multiple existing milestones are passed in' do
       let(:title_1) { 'v1.0' }
       let(:title_2) { 'v1.0-rc' }
       let!(:milestone_1) { create(:milestone, :active, project: project, title: title_1) }
       let!(:milestone_2) { create(:milestone, :active, project: project, title: title_2) }
-      let!(:params_with_milestones) { params.merge!({ milestones: [title_1, title_2] }) }
 
-      it 'creates a release and ties it to these milestones' do
-        described_class.new(project, user, params_with_milestones).execute
-        release = project.releases.last
+      shared_examples 'creates multiple releases' do
+        it 'creates a release and ties it to these milestones' do
+          described_class.new(project, user, params_with_milestones).execute
+          release = project.releases.last
 
-        expect(release.milestones.map(&:title)).to include(title_1, title_2)
+          expect(release.milestones.map(&:title)).to include(title_1, title_2)
+        end
+      end
+
+      context 'by title' do
+        let!(:params_with_milestones) { params.merge!({ milestones: [title_1, title_2] }) }
+
+        it_behaves_like 'creates multiple releases'
+      end
+
+      context 'by ids' do
+        let!(:params_with_milestones) { params.merge!({ milestone_ids: [milestone_1.id, milestone_2.id] }) }
+
+        it_behaves_like 'creates multiple releases'
       end
     end
 
@@ -197,6 +231,17 @@ RSpec.describe Releases::CreateService do
         expect do
           service.execute
         end.not_to change(Release, :count)
+      end
+
+      context 'with milestones as ids' do
+        let!(:params_with_milestones) { params.merge!({ milestone_ids: [milestone.id, non_existing_record_id] }) }
+
+        it 'raises an error' do
+          result = service.execute
+
+          expect(result[:status]).to eq(:error)
+          expect(result[:message]).to eq("Milestone id(s) not found: #{non_existing_record_id}")
+        end
       end
     end
 

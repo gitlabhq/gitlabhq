@@ -26191,6 +26191,9 @@ msgstr ""
 msgid "MemberInviteEmail|Invitation to join the %{project_or_group} %{project_or_group_name}"
 msgstr ""
 
+msgid "MemberRole|%{role} - custom"
+msgstr ""
+
 msgid "MemberRole|can't be changed"
 msgstr ""
 
@@ -27126,6 +27129,9 @@ msgstr[1] ""
 msgid "Milestone due date"
 msgstr ""
 
+msgid "Milestone id(s) not found: %{milestones}"
+msgstr ""
+
 msgid "Milestone lists not available with your current license"
 msgstr ""
 
@@ -27430,6 +27436,9 @@ msgid "ModalButton|Add projects"
 msgstr ""
 
 msgid "Modal|Close"
+msgstr ""
+
+msgid "Model Experiments"
 msgstr ""
 
 msgid "Model candidate details"

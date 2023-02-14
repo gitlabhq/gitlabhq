@@ -21,11 +21,13 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
     let_it_be(:project) { create(:project, namespace: group, shared_runners_enabled: false) }
     let_it_be(:pipeline) { create(:ci_pipeline, project: project, ref: 'master') }
     let_it_be(:runner) { create(:ci_runner, :project, projects: [project]) }
+    let_it_be(:runner_machine) { create(:ci_runner_machine, runner: runner) }
     let_it_be(:user) { create(:user) }
 
     describe 'PUT /api/v4/jobs/:id' do
       let_it_be_with_reload(:job) do
-        create(:ci_build, :pending, :trace_live, pipeline: pipeline, project: project, user: user, runner_id: runner.id)
+        create(:ci_build, :pending, :trace_live, pipeline: pipeline, project: project, user: user,
+          runner_id: runner.id, runner_machine: runner_machine)
       end
 
       before do
@@ -38,6 +40,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
 
       it 'updates runner info' do
         expect { update_job(state: 'success') }.to change { runner.reload.contacted_at }
+                                               .and change { runner_machine.reload.contacted_at }
       end
 
       context 'when status is given' do

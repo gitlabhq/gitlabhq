@@ -57,7 +57,7 @@ direction for iterations and improvements to the solution.
   - The user should be able to import the job inside a given stage or pass the stage names as input parameter
     when using the component.
   - Failures in mapping the correct stage can result in confusing errors.
-- Some templates are designed to work with AutoDevops but are not generic enough
+- Some templates are designed to work with AutoDevOps but are not generic enough
   ([example](https://gitlab.com/gitlab-org/gitlab/-/blob/2c0e8e4470001442e999391df81e19732b3439e6/lib/gitlab/ci/templates/AWS/Deploy-ECS.gitlab-ci.yml)).
 - Many CI templates, especially those [language specific](https://gitlab.com/gitlab-org/gitlab/-/tree/2c0e8e4470001442e999391df81e19732b3439e6/lib/gitlab/ci/templates)
   are tutorial/scaffolding-style templates.
@@ -84,21 +84,7 @@ direction for iterations and improvements to the solution.
 - Competitive landscape is showing the need for such feature
   - [R2DevOps](https://r2devops.io) implements a catalog of CI templates for GitLab pipelines.
   - [GitHub Actions](https://github.com/features/actions) provides an extensive catalog of reusable job steps.
-
-## Implementation guidelines
-
-- Start with the smallest user base. Dogfood the feature for `gitlab-org` and `gitlab-com` groups.
-  Involve the Engineering Productivity and other groups authoring pipeline configurations to test
-  and validate our solutions.
-- Ensure we can integrate all the feedback gathered, even if that means changing the technical design or
-  UX. Until we make the feature GA we should have clear expectations with early adopters.
-- Reuse existing functionality as much as possible. Don't reinvent the wheel on the initial iterations.
-  For example: reuse project features like title, description, avatar to build a catalog.
-- Leverage GitLab features for the development lifecycle of the components (testing via `.gitlab-ci.yml`,
-  release management, Pipeline Editor, etc.).
-- Design the catalog with self-managed support in mind.
-- Allow the catalog an the workflow to support future types of pipeline constructs and new ways of using them.
-- Design components and catalog following industry best practice related to building deterministic package managers.
+  - [CircleCI Orbs](https://circleci.com/orbs/) provide reusable YAML configuration packages.
 
 ## Glossary
 
@@ -530,7 +516,7 @@ spec:
 # rest of the pipeline config
 ```
 
-## Limits
+### Limits
 
 Any MVC that exposes a feature should be added with limitations from the beginning.
 It's safer to add new features with restrictions than trying to limit a feature after it's being used.
@@ -543,6 +529,41 @@ Some limits we could consider adding:
 - number of imports that a component can declare/use
 - max level of nested imports
 - max length of the exported component name
+
+## Publishing components
+
+Users will be able to publish CI Components into a CI Catalog. This can happen
+in a CI pipeline job, similarly to how software is being deployed following
+Continuous Delivery principles. This will allow us to guardrail the quality of
+components being deployed. To ensure that the CI Components meet quality
+standards users will be able to test them before publishing new versions in the
+CI Catalog.
+
+Once a project containing components gets published we will index components'
+metadata. We want to initially index as much metadata as possible, to gain more
+flexibility in how we design CI Catalog's main page. We don't want to be
+constrained by the lack of data available to properly visualize CI Components
+in CI Catalog. In order to do that, we may need to find all components that are
+being published, read their `spec` metadata and index what we find there.
+
+## Implementation guidelines
+
+- Start with the smallest user base. Dogfood the feature for `gitlab-org` and
+  `gitlab-com` groups. Involve the Engineering Productivity and other groups
+  authoring pipeline configurations to test and validate our solutions.
+- Ensure we can integrate all the feedback gathered, even if that means
+  changing the technical design or UX. Until we make the feature GA we should
+  have clear expectations with early adopters.
+- Reuse existing functionality as much as possible. Don't reinvent the wheel on
+  the initial iterations. For example: reuse project features like title,
+  description, avatar to build a catalog.
+- Leverage GitLab features for the development lifecycle of the components
+  (testing via `.gitlab-ci.yml`, release management, Pipeline Editor, etc.).
+- Design the catalog with self-managed support in mind.
+- Allow the catalog and the workflow to support future types of pipeline
+  constructs and new ways of using them.
+- Design components and catalog following industry best practice related to
+  building deterministic package managers.
 
 ## Iterations
 

@@ -268,15 +268,18 @@ For more information, see [Runner SaaS](../../ci/runners/index.md).
 GitLab.com runs [Sidekiq](https://sidekiq.org) with arguments `--timeout=4 --concurrency=4`
 and the following environment variables:
 
-| Setting                                | GitLab.com  | Default   |
-|----------------------------------------|-------------|-----------|
-| `SIDEKIQ_DAEMON_MEMORY_KILLER`         | -           | `1`       |
-| `SIDEKIQ_MEMORY_KILLER_MAX_RSS`        | `2000000`   | `2000000` |
-| `SIDEKIQ_MEMORY_KILLER_HARD_LIMIT_RSS` | -           | -         |
-| `SIDEKIQ_MEMORY_KILLER_CHECK_INTERVAL` | -           | `3`       |
-| `SIDEKIQ_MEMORY_KILLER_GRACE_TIME`     | -           | `900`     |
-| `SIDEKIQ_MEMORY_KILLER_SHUTDOWN_WAIT`  | -           | `30`      |
-| `SIDEKIQ_LOG_ARGUMENTS`                | `1`         | `1`       |
+| Setting                                | GitLab.com | Default   |
+|----------------------------------------|------------|-----------|
+| `GITLAB_MEMORY_WATCHDOG_ENABLED`       | -          | `true`    |
+| `SIDEKIQ_MEMORY_KILLER_MAX_RSS`        | -          | `2000000` |
+| `SIDEKIQ_MEMORY_KILLER_HARD_LIMIT_RSS` | -          | -         |
+| `SIDEKIQ_MEMORY_KILLER_CHECK_INTERVAL` | -          | `3`       |
+| `SIDEKIQ_MEMORY_KILLER_GRACE_TIME`     | -          | `900`     |
+| `SIDEKIQ_MEMORY_KILLER_SHUTDOWN_WAIT`  | -          | `30`      |
+| `SIDEKIQ_LOG_ARGUMENTS`                | `1`        | `1`       |
+
+For more information, see how to
+[configure the environment variables](../../administration/sidekiq/sidekiq_memory_killer.md).
 
 NOTE:
 The `SIDEKIQ_MEMORY_KILLER_MAX_RSS` setting is `16000000` on Sidekiq import

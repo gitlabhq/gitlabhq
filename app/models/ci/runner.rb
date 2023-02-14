@@ -502,7 +502,7 @@ module Ci
       token.start_with?(CREATED_RUNNER_TOKEN_PREFIX)
     end
 
-    def ensure_machine(system_xid:, &blk)
+    def ensure_machine(system_xid, &blk)
       RunnerMachine.safe_find_or_create_by!(runner_id: id, system_xid: system_xid.to_s, &blk) # rubocop: disable Performance/ActiveRecordSubtransactionMethods
     end
 
@@ -598,6 +598,9 @@ module Ci
       end
     end
 
+    # TODO Remove in 16.0 when runners are known to send a system_id
+    # For now, heartbeats with version updates might result in two Sidekiq jobs being queued if a runner has a system_id
+    # This is not a problem since the jobs are deduplicated on the version
     def schedule_runner_version_update
       return unless version
 

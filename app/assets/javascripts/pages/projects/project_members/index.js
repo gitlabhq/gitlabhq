@@ -21,7 +21,6 @@ const SHARED_FIELDS = ['account', 'maxRole', 'expiration', 'actions'];
 initMembersApp(document.querySelector('.js-project-members-list-app'), {
   [MEMBER_TYPES.user]: {
     tableFields: SHARED_FIELDS.concat(['source', 'activity']),
-    tableAttrs: { tr: { 'data-qa-selector': 'member_row' } },
     tableSortableFields: [
       'account',
       'granted',
@@ -41,10 +40,6 @@ initMembersApp(document.querySelector('.js-project-members-list-app'), {
   },
   [MEMBER_TYPES.group]: {
     tableFields: SHARED_FIELDS.concat(['source', 'granted']),
-    tableAttrs: {
-      table: { 'data-qa-selector': 'groups_list' },
-      tr: { 'data-qa-selector': 'group_row' },
-    },
     requestFormatter: groupLinkRequestFormatter,
     filteredSearchBar: {
       show: true,

@@ -6,6 +6,7 @@ import initClustersDeprecationAlert from '~/projects/clusters_deprecation_alert'
 import leaveByUrl from '~/namespaces/leave_by_url';
 import initVueNotificationsDropdown from '~/notifications';
 import Star from '~/projects/star';
+import initTerraformNotification from '~/projects/terraform_notification';
 import { initUploadFileTrigger } from '~/projects/upload_file';
 import initReadMore from '~/read_more';
 
@@ -44,6 +45,7 @@ initUploadFileTrigger();
 initInviteMembersModal();
 initInviteMembersTrigger();
 initClustersDeprecationAlert();
+initTerraformNotification();
 
 initReadMore();
 new Star(); // eslint-disable-line no-new

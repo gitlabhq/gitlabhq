@@ -464,3 +464,75 @@ subscriptions.
 - [Confidential issues](project/issues/confidential_issues.md)
 - [Container Registry permissions](packages/container_registry/index.md#container-registry-visibility-permissions)
 - [Release permissions](project/releases/index.md#release-permissions)
+
+## Custom roles **(ULTIMATE)**
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106256) in GitLab 15.7 [with a flag](../administration/feature_flags.md) named `customizable_roles`.
+> - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110810) in GitLab 15.9.
+
+Custom roles allow group members who are assigned the Owner role to create roles specific to the needs
+of their organization.
+
+### Create a custom role
+
+To enable custom roles for your group, a group member with the Owner role:
+
+1. Makes sure that there is at least one private project in this group or one of
+   its subgroups, so that you can see the effect of giving a Guest a custom role.
+1. Creates a personal access token with the API scope.
+1. Uses [the API](../api/member_roles.md#add-a-member-role-to-a-group) to create the Guest+1 role for the group.
+
+### Associate a custom role with an existing group member
+
+To associate a custom role with an existing group member, a group member with
+the Owner role:
+
+1. Invites a test user account to the root group as a Guest.
+   At this point, this Guest user cannot see any code on the projects in the group.
+1. Optional. If the Owner does not know the `ID` of the Guest user receiving a custom
+   role, finds that `ID` by making an [API request](../api/member_roles.md#list-all-member-roles-of-a-group).
+
+1. Associates the group member with the Guest+1 role using the [Group and Project Members API endpoint](../api/members.md#edit-a-member-of-a-group-or-project)
+
+    ```shell
+    curl --request PUT --header "Content-Type: application/json" --header "Authorization: Bearer $YOUR_ACCESS_TOKEN" --data '{"member_role_id":$MEMBER_ROLE_ID},"access_level":10' "https://example.gitlab.com/api/v4/groups/$GROUP_PATH/members/$GUEST_USER_ID"
+    ```
+
+   Where:
+   - `$MEMBER_ROLE_ID`: The `ID` of the member role created in the previous section.
+   - `$GUEST_USER_ID`: The `ID` of the Guest user receiving a custom role.
+
+   Now the Guest+1 user can view code on all projects in the root group.
+
+### Remove a custom role from a group member
+
+To remove a custom role from a group member, use the [Group and Project Members API endpoint](../api/members.md#edit-a-member-of-a-group-or-project)
+and pass an empty `member_role_id` value.
+
+```shell
+curl --request PUT --header "Content-Type: application/json" --header "Authorization: Bearer $YOUR_ACCESS_TOKEN" --data '{"member_role_id":""},"access_level":10' "https://example.gitlab.com/api/v4/groups/$GROUP_PATH/members/$GUEST_USER_ID"
+```
+
+Now the user is a regular Guest.
+
+### Remove a custom role
+
+Removing a custom role also removes all members with that custom role from
+the group. If you decide to delete a custom role, you must re-add any users with that custom
+role to the group.
+
+To remove a custom role from a group, a group member with
+the Owner role:
+
+1. Optional. If the Owner does not know the `ID` of a custom
+   role, finds that `ID` by making an [API request](../api/member_roles.md#list-all-member-roles-of-a-group).
+1. Uses [the API](../api/member_roles.md#remove-member-role-of-a-group) to delete the custom role.
+
+### Known issues
+
+- Additional permissions can only be applied to users with the Guest role.
+- There is no visual distinction in the UI between the Guest role and the Guest role with additional permission. For more information, see [issue 384099](https://gitlab.com/gitlab-org/gitlab/-/issues/384099).
+- If a user with a custom role is shared with a group or project, their custom role is not transferred over with them. The user has the regular Guest role in the new group or project.
+- If a custom role is deleted, the users associated with that custom role are also removed from the group. For more information, see [issue 370352](https://gitlab.com/gitlab-org/gitlab/-/issues/370352).
+- The API endpoint for associating a custom role with a user only works for users with the Guest role in a group. A project member can be associated with a custom role, but not through the API yet. For more information, see [issue 385495](https://gitlab.com/gitlab-org/gitlab/-/issues/385495).
+- The only way to remove a custom role from a user's membership to a Group is to delete the custom role, which deletes the user membership entirely. See [issue 387769](https://gitlab.com/gitlab-org/gitlab/-/issues/387769).

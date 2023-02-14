@@ -14,6 +14,7 @@ export default {
     text: s__('Members|Remove group'),
     attributes: {
       variant: 'danger',
+      'data-qa-selector': 'remove_group_button',
     },
   },
   csrf,

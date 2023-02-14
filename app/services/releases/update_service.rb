@@ -7,8 +7,8 @@ module Releases
         return error
       end
 
-      if param_for_milestone_titles_provided?
-        previous_milestones = release.milestones.map(&:title)
+      if param_for_milestones_provided?
+        previous_milestones = release.milestones.map(&:id)
         params[:milestones] = milestones
       end
 
@@ -35,7 +35,8 @@ module Releases
       return error(_('Release does not exist'), 404) unless release
       return error(_('Access Denied'), 403) unless allowed?
       return error(_('params is empty'), 400) if empty_params?
-      return error(format(_("Milestone(s) not found: %{milestones}"), milestones: inexistent_milestones.join(', ')), 400) if inexistent_milestones.any? # rubocop:disable Layout/LineLength
+      return error(format(_("Milestone(s) not found: %{milestones}"), milestones: inexistent_milestone_titles.join(', ')), 400) if inexistent_milestone_titles.any? # rubocop:disable Layout/LineLength
+      return error(format(_("Milestone id(s) not found: %{milestones}"), milestones: inexistent_milestone_ids.join(', ')), 400) if inexistent_milestone_ids.any? # rubocop:disable Layout/LineLength
     end
 
     def allowed?
@@ -47,9 +48,9 @@ module Releases
     end
 
     def milestones_updated?(previous_milestones)
-      return false unless param_for_milestone_titles_provided?
+      return false unless param_for_milestones_provided?
 
-      previous_milestones.to_set != release.milestones.map(&:title)
+      previous_milestones.to_set != release.milestones.map(&:id)
     end
   end
 end

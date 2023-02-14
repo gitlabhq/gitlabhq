@@ -101,6 +101,10 @@ module Emails
         .gsub(/%\{\s*ISSUE_ID\s*\}/, issue_id)
         .gsub(/%\{\s*ISSUE_PATH\s*\}/, issue_path)
         .gsub(/%\{\s*NOTE_TEXT\s*\}/, note_text)
+        .gsub(/%\{\s*SYSTEM_HEADER\s*\}/, text_header_message.to_s)
+        .gsub(/%\{\s*SYSTEM_FOOTER\s*\}/, text_footer_message.to_s)
+        .gsub(/%\{\s*UNSUBSCRIBE_URL\s*\}/, unsubscribe_sent_notification_url(@sent_notification))
+        .gsub(/%\{\s*ADDITIONAL_TEXT\s*\}/, service_desk_email_additional_text.to_s)
     end
 
     def issue_id

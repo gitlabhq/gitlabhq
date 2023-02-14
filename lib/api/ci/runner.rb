@@ -81,6 +81,7 @@ module API
         end
         params do
           requires :token, type: String, desc: %q(The runner's authentication token)
+          optional :system_id, type: String, desc: %q(The runner's system identifier)
         end
         post '/verify', urgency: :low, feature_category: :runner do
           authenticate_runner!
@@ -193,7 +194,7 @@ module API
                       [403, 'Forbidden']]
         end
         params do
-          requires :token, type: String, desc: %q(Runner's authentication token)
+          requires :token, type: String, desc: %q(Job token)
           requires :id, type: Integer, desc: %q(Job's ID)
           optional :state, type: String, desc: %q(Job's status: success, failed)
           optional :checksum, type: String, desc: %q(Job's trace CRC32 checksum)
