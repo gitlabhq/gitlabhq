@@ -25,7 +25,7 @@ describe('ShaMismatch', () => {
   });
 
   it('should render warning message', () => {
-    expect(wrapper.element.innerText).toContain(I18N_SHA_MISMATCH.warningMessage);
+    expect(wrapper.text()).toContain('Merge blocked: new changes were just added.');
   });
 
   it('action button should have correct label', () => {

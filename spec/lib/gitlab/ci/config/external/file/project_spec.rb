@@ -230,15 +230,21 @@ RSpec.describe Gitlab::Ci::Config::External::File::Project, feature_category: :p
     }
 
     context 'when project name and ref include masked variables' do
+      let(:project_name) { 'my_project_name' }
+      let(:branch_name) { 'merge-commit-analyze-after' }
+      let(:project) { create(:project, :repository, name: project_name) }
+      let(:namespace_path) { project.namespace.full_path }
+      let(:included_project_sha) { project.commit(branch_name).sha }
+
       let(:variables) do
         Gitlab::Ci::Variables::Collection.new(
           [
-            { key: 'VAR1', value: 'a_secret_variable_value1', masked: true },
-            { key: 'VAR2', value: 'a_secret_variable_value2', masked: true }
+            { key: 'VAR1', value: project_name, masked: true },
+            { key: 'VAR2', value: branch_name, masked: true }
           ])
       end
 
-      let(:params) { { project: 'a_secret_variable_value1', ref: 'a_secret_variable_value2', file: '/file.yml' } }
+      let(:params) { { project: project.full_path, ref: branch_name, file: '/file.yml' } }
 
       it {
         is_expected.to eq(
@@ -246,9 +252,9 @@ RSpec.describe Gitlab::Ci::Config::External::File::Project, feature_category: :p
           context_sha: project_sha,
           type: :file,
           location: 'file.yml',
-          blob: nil,
-          raw: nil,
-          extra: { project: 'xxxxxxxxxxxxxxxxxxxxxxxx', ref: 'xxxxxxxxxxxxxxxxxxxxxxxx' }
+          blob: "http://localhost/#{namespace_path}/xxxxxxxxxxxxxxx/-/blob/#{included_project_sha}/file.yml",
+          raw: "http://localhost/#{namespace_path}/xxxxxxxxxxxxxxx/-/raw/#{included_project_sha}/file.yml",
+          extra: { project: "#{namespace_path}/xxxxxxxxxxxxxxx", ref: 'xxxxxxxxxxxxxxxxxxxxxxxxxx' }
         )
       }
     end

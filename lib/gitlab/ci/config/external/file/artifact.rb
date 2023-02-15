@@ -20,8 +20,6 @@ module Gitlab
 
             def content
               strong_memoize(:content) do
-                next unless artifact_job
-
                 Gitlab::Ci::ArtifactFileReader.new(artifact_job).read(location)
               rescue Gitlab::Ci::ArtifactFileReader::Error => error
                 errors.push(error.message)
@@ -56,8 +54,6 @@ module Gitlab
 
             def artifact_job
               strong_memoize(:artifact_job) do
-                next unless creating_child_pipeline?
-
                 context.parent_pipeline.find_job_with_archive_artifacts(job_name)
               end
             end

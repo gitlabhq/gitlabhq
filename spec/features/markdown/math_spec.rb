@@ -64,7 +64,82 @@ RSpec.describe 'Math rendering', :js, feature_category: :team_planning do
     visit project_issue_path(project, issue)
 
     page.within '.description > .md' do
-      expect(page).to have_selector('.js-lazy-render-math')
+      expect(page).to have_selector('.js-lazy-render-math-container', text: /math block exceeds 1000 characters/)
+    end
+  end
+
+  it 'allows many expansions', :js do
+    description = <<~MATH
+      ```math
+      #{'\\mod e ' * 100}
+      ```
+    MATH
+
+    issue = create(:issue, project: project, description: description)
+
+    visit project_issue_path(project, issue)
+
+    wait_for_requests
+
+    page.within '.description > .md' do
+      expect(page).not_to have_selector('.katex-error')
+    end
+  end
+
+  it 'shows error message when too many expansions', :js do
+    description = <<~MATH
+      ```math
+      #{'\\mod e ' * 150}
+      ```
+    MATH
+
+    issue = create(:issue, project: project, description: description)
+
+    visit project_issue_path(project, issue)
+
+    wait_for_requests
+
+    page.within '.description > .md' do
+      click_button 'Display anyway'
+
+      expect(page).to have_selector('.katex-error', text: /Too many expansions/)
+    end
+  end
+
+  it 'shows error message when other errors are generated', :js do
+    description = <<~MATH
+      ```math
+      \\unknown
+      ```
+    MATH
+
+    issue = create(:issue, project: project, description: description)
+
+    visit project_issue_path(project, issue)
+
+    wait_for_requests
+
+    page.within '.description > .md' do
+      expect(page).to have_selector('.katex-error',
+        text: /There was an error rendering this math block. KaTeX parse error/)
+    end
+  end
+
+  it 'escapes HTML in error', :js do
+    description = <<~MATH
+      ```math
+      \\unknown <script>
+      ```
+    MATH
+
+    issue = create(:issue, project: project, description: description)
+
+    visit project_issue_path(project, issue)
+
+    wait_for_requests
+
+    page.within '.description > .md' do
+      expect(page).to have_selector('.katex-error', text: /&amp;lt;script&amp;gt;/)
     end
   end
 

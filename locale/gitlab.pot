@@ -16501,6 +16501,9 @@ msgstr ""
 msgid "EscalationPolicies|Choose who to email if those contacted first about an alert don't respond."
 msgstr ""
 
+msgid "EscalationPolicies|Choose who to email if those contacted first about an alert don't respond. To access this feature, ask %{linkStart}a project Owner%{linkEnd} to grant you at least the Maintainer role."
+msgstr ""
+
 msgid "EscalationPolicies|Create an escalation policy in GitLab"
 msgstr ""
 
@@ -26455,16 +26458,7 @@ msgstr ""
 msgid "Merge blocked: all merge request dependencies must be merged."
 msgstr ""
 
-msgid "Merge blocked: merge request must be marked as ready. It's still marked as draft."
-msgstr ""
-
-msgid "Merge blocked: new changes were just added."
-msgstr ""
-
 msgid "Merge blocked: pipeline must succeed. It's waiting for a manual job to continue."
-msgstr ""
-
-msgid "Merge blocked: the source branch must be rebased onto the target branch."
 msgstr ""
 
 msgid "Merge commit SHA"
@@ -26537,9 +26531,6 @@ msgid "Merge requests are a place to propose changes you've made to a project an
 msgstr ""
 
 msgid "Merge requests can't be merged if the status checks did not succeed or are still running."
-msgstr ""
-
-msgid "Merge unavailable: merge requests are read-only in a secondary Geo node."
 msgstr ""
 
 msgid "Merge unverified changes"
@@ -35137,22 +35128,13 @@ msgstr ""
 msgid "Reauthenticating with SAML provider."
 msgstr ""
 
-msgid "Rebase"
-msgstr ""
-
 msgid "Rebase completed"
-msgstr ""
-
-msgid "Rebase in progress"
 msgstr ""
 
 msgid "Rebase source branch"
 msgstr ""
 
 msgid "Rebase source branch on the target branch."
-msgstr ""
-
-msgid "Rebase without pipeline"
 msgstr ""
 
 msgid "Recaptcha verified?"
@@ -49353,6 +49335,9 @@ msgstr ""
 msgid "Your %{strong}%{plan_name}%{strong_close} subscription for %{strong}%{namespace_name}%{strong_close} will expire on %{strong}%{expires_on}%{strong_close}."
 msgstr ""
 
+msgid "Your Activity"
+msgstr ""
+
 msgid "Your CI/CD configuration syntax is invalid. Select the Validate tab for more details."
 msgstr ""
 
@@ -49465,6 +49450,9 @@ msgid "Your action has been rejected because the namespace storage limit has bee
 msgstr ""
 
 msgid "Your action succeeded."
+msgstr ""
+
+msgid "Your activity"
 msgstr ""
 
 msgid "Your applications (%{size})"
@@ -50916,10 +50904,16 @@ msgstr ""
 msgid "manual"
 msgstr ""
 
-msgid "math|Displaying this math block may cause performance issues on this page"
+msgid "math|Displaying this math block may cause performance issues on this page."
 msgstr ""
 
-msgid "math|There was an error rendering this math block"
+msgid "math|There was an error rendering this math block. %{katexMessage}"
+msgstr ""
+
+msgid "math|This math block exceeds %{maxMathChars} characters, and may cause performance issues on this page."
+msgstr ""
+
+msgid "math|Too many expansions. Consider using multiple math blocks."
 msgstr ""
 
 msgid "member"
@@ -50975,6 +50969,84 @@ msgid "mrWidgetNothingToMerge|Use merge requests to propose changes to your proj
 msgstr ""
 
 msgid "mrWidget|%{boldHeaderStart}Looks like there's no pipeline here.%{boldHeaderEnd}"
+msgstr ""
+
+msgid "mrWidget|%{boldStart}Merge blocked:%{boldEnd} Select %{boldStart}Mark as ready%{boldEnd} to remove it from Draft status."
+msgstr ""
+
+msgid "mrWidget|%{boldStart}Merge blocked:%{boldEnd} Users who can write to the source or target branches can resolve the conflicts."
+msgstr ""
+
+msgid "mrWidget|%{boldStart}Merge blocked:%{boldEnd} a Jira issue key must be mentioned in the title or description."
+msgstr ""
+
+msgid "mrWidget|%{boldStart}Merge blocked:%{boldEnd} all required approvals must be given."
+msgstr ""
+
+msgid "mrWidget|%{boldStart}Merge blocked:%{boldEnd} all status checks must pass."
+msgstr ""
+
+msgid "mrWidget|%{boldStart}Merge blocked:%{boldEnd} all threads must be resolved."
+msgstr ""
+
+msgid "mrWidget|%{boldStart}Merge blocked:%{boldEnd} denied licenses must be removed."
+msgstr ""
+
+msgid "mrWidget|%{boldStart}Merge blocked:%{boldEnd} fast-forward merge is not possible. To merge this request, first rebase locally."
+msgstr ""
+
+msgid "mrWidget|%{boldStart}Merge blocked:%{boldEnd} merge conflicts must be resolved."
+msgstr ""
+
+msgid "mrWidget|%{boldStart}Merge blocked:%{boldEnd} new changes were just added."
+msgstr ""
+
+msgid "mrWidget|%{boldStart}Merge blocked:%{boldEnd} pipeline must succeed. It's waiting for a manual action to continue."
+msgstr ""
+
+msgid "mrWidget|%{boldStart}Merge blocked:%{boldEnd} pipeline must succeed. Push a commit that fixes the failure or %{linkStart}learn about other solutions.%{linkEnd}"
+msgstr ""
+
+msgid "mrWidget|%{boldStart}Merge blocked:%{boldEnd} the source branch must be rebased onto the target branch."
+msgstr ""
+
+msgid "mrWidget|%{boldStart}Merge blocked:%{boldEnd} you can only merge after the above items are resolved."
+msgstr ""
+
+msgid "mrWidget|%{boldStart}Merge unavailable:%{boldEnd} merge requests are read-only in a secondary Geo node."
+msgstr ""
+
+msgid "mrWidget|%{boldStart}Merge unavailable:%{boldEnd} merge requests are read-only on archived projects."
+msgstr ""
+
+msgid "mrWidget|%{boldStart}Merging!%{boldEnd} Changes are being shipped…"
+msgstr ""
+
+msgid "mrWidget|%{boldStart}Merging!%{boldEnd} Changes will land soon…"
+msgstr ""
+
+msgid "mrWidget|%{boldStart}Merging!%{boldEnd} Drum roll, please…"
+msgstr ""
+
+msgid "mrWidget|%{boldStart}Merging!%{boldEnd} Everything's good…"
+msgstr ""
+
+msgid "mrWidget|%{boldStart}Merging!%{boldEnd} Lift-off in 5… 4… 3…"
+msgstr ""
+
+msgid "mrWidget|%{boldStart}Merging!%{boldEnd} Take a deep breath and relax…"
+msgstr ""
+
+msgid "mrWidget|%{boldStart}Merging!%{boldEnd} The changes are leaving the station…"
+msgstr ""
+
+msgid "mrWidget|%{boldStart}Merging!%{boldEnd} This is going to be great…"
+msgstr ""
+
+msgid "mrWidget|%{boldStart}Merging!%{boldEnd} We're almost there…"
+msgstr ""
+
+msgid "mrWidget|%{boldStart}Ready to be merged automatically.%{boldEnd} Ask someone with write access to this repository to merge this request."
 msgstr ""
 
 msgid "mrWidget|%{mergeError}."
@@ -51119,70 +51191,13 @@ msgid_plural "mrWidget|Mentions issues"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "mrWidget|Merge blocked: a Jira issue key must be mentioned in the title or description."
-msgstr ""
-
 msgid "mrWidget|Merge blocked: all required approvals must be given."
-msgstr ""
-
-msgid "mrWidget|Merge blocked: all status checks must pass."
-msgstr ""
-
-msgid "mrWidget|Merge blocked: all threads must be resolved."
-msgstr ""
-
-msgid "mrWidget|Merge blocked: denied licenses must be removed."
-msgstr ""
-
-msgid "mrWidget|Merge blocked: fast-forward merge is not possible. To merge this request, first rebase locally."
-msgstr ""
-
-msgid "mrWidget|Merge blocked: merge conflicts must be resolved."
-msgstr ""
-
-msgid "mrWidget|Merge blocked: pipeline must succeed. It's waiting for a manual action to continue."
-msgstr ""
-
-msgid "mrWidget|Merge blocked: pipeline must succeed. Push a commit that fixes the failure, or %{linkStart}learn about other solutions.%{linkEnd}"
-msgstr ""
-
-msgid "mrWidget|Merge blocked: you can only merge after the above items are resolved."
 msgstr ""
 
 msgid "mrWidget|Merge failed."
 msgstr ""
 
-msgid "mrWidget|Merge unavailable: merge requests are read-only on archived projects."
-msgstr ""
-
 msgid "mrWidget|Merged by"
-msgstr ""
-
-msgid "mrWidget|Merging! Changes are being shipped…"
-msgstr ""
-
-msgid "mrWidget|Merging! Changes will land soon…"
-msgstr ""
-
-msgid "mrWidget|Merging! Drum roll, please…"
-msgstr ""
-
-msgid "mrWidget|Merging! Everything's good…"
-msgstr ""
-
-msgid "mrWidget|Merging! Lift-off in 5… 4… 3…"
-msgstr ""
-
-msgid "mrWidget|Merging! Take a deep breath and relax…"
-msgstr ""
-
-msgid "mrWidget|Merging! The changes are leaving the station…"
-msgstr ""
-
-msgid "mrWidget|Merging! This is going to be great…"
-msgstr ""
-
-msgid "mrWidget|Merging! We're almost there…"
 msgstr ""
 
 msgid "mrWidget|More information"
@@ -51194,7 +51209,13 @@ msgstr ""
 msgid "mrWidget|Please restore it or use a different %{type} branch."
 msgstr ""
 
-msgid "mrWidget|Ready to be merged automatically. Ask someone with write access to this repository to merge this request"
+msgid "mrWidget|Rebase"
+msgstr ""
+
+msgid "mrWidget|Rebase in progress"
+msgstr ""
+
+msgid "mrWidget|Rebase without pipeline"
 msgstr ""
 
 msgid "mrWidget|Refresh"
@@ -51255,9 +51276,6 @@ msgid "mrWidget|To change this default message, edit the template for merge comm
 msgstr ""
 
 msgid "mrWidget|To change this default message, edit the template for squash commit messages. %{linkStart}Learn more.%{linkEnd}"
-msgstr ""
-
-msgid "mrWidget|Users who can write to the source or target branches can resolve the conflicts."
 msgstr ""
 
 msgid "mrWidget|What is a merge train?"

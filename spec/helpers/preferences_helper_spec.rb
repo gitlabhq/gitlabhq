@@ -27,6 +27,7 @@ RSpec.describe PreferencesHelper do
       expect(helper.dashboard_choices).to match_array [
         { text: "Your Projects (default)", value: 'projects' },
         { text: "Starred Projects", value: 'stars' },
+        { text: "Your Activity", value: 'your_activity' },
         { text: "Your Projects' Activity", value: 'project_activity' },
         { text: "Starred Projects' Activity", value: 'starred_project_activity' },
         { text: "Followed Users' Activity", value: 'followed_user_activity' },

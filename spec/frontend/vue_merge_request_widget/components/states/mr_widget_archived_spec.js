@@ -1,6 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
 import archivedComponent from '~/vue_merge_request_widget/components/states/mr_widget_archived.vue';
 import StateContainer from '~/vue_merge_request_widget/components/state_container.vue';
+import BoldText from '~/vue_merge_request_widget/components/bold_text.vue';
 
 describe('MRWidgetArchived', () => {
   let wrapper;
@@ -20,8 +21,8 @@ describe('MRWidgetArchived', () => {
   });
 
   it('renders information about merging', () => {
-    expect(wrapper.text()).toContain(
-      'Merge unavailable: merge requests are read-only on archived projects.',
-    );
+    const message = wrapper.findComponent(BoldText).props('message');
+    expect(message).toContain('Merge unavailable:');
+    expect(message).toContain('merge requests are read-only on archived projects.');
   });
 });

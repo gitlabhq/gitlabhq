@@ -12,8 +12,14 @@ RSpec.describe 'Dashboard > Activity', feature_category: :user_profile do
   it_behaves_like 'a dashboard page with sidebar', :activity_dashboard_path, :activity
 
   context 'tabs' do
-    it 'shows Your Projects' do
+    it 'shows Your Activity' do
       visit activity_dashboard_path
+
+      expect(find('[data-testid="dashboard-activity-tabs"] a.active')).to have_content('Your activity')
+    end
+
+    it 'shows Your Projects' do
+      visit activity_dashboard_path(filter: 'projects')
 
       expect(find('[data-testid="dashboard-activity-tabs"] a.active')).to have_content('Your projects')
     end
@@ -24,7 +30,7 @@ RSpec.describe 'Dashboard > Activity', feature_category: :user_profile do
       expect(find('[data-testid="dashboard-activity-tabs"] a.active')).to have_content('Starred projects')
     end
 
-    it 'shows Followed Projects' do
+    it 'shows Followed Users' do
       visit activity_dashboard_path(filter: 'followed')
 
       expect(find('[data-testid="dashboard-activity-tabs"] a.active')).to have_content('Followed users')

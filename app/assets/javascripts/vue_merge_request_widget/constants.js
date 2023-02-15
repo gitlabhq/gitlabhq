@@ -4,9 +4,7 @@ import { stateToComponentMap as classStateMap, stateKey } from './stores/state_m
 
 export const SUCCESS = 'success';
 export const WARNING = 'warning';
-export const DANGER = 'danger';
 export const INFO = 'info';
-export const CONFIRM = 'confirm';
 
 export const MWPS_MERGE_STRATEGY = 'merge_when_pipeline_succeeds';
 export const MTWPS_MERGE_STRATEGY = 'add_to_merge_train_when_pipeline_succeeds';
@@ -28,39 +26,39 @@ export const SP_ICON_NAME = 'status_notfound';
 
 export const MERGE_ACTIVE_STATUS_PHRASES = [
   {
-    message: s__('mrWidget|Merging! Drum roll, please…'),
+    message: s__('mrWidget|%{boldStart}Merging!%{boldEnd} Drum roll, please…'),
     emoji: 'drum',
   },
   {
-    message: s__("mrWidget|Merging! We're almost there…"),
+    message: s__("mrWidget|%{boldStart}Merging!%{boldEnd} We're almost there…"),
     emoji: 'sparkles',
   },
   {
-    message: s__('mrWidget|Merging! Changes will land soon…'),
+    message: s__('mrWidget|%{boldStart}Merging!%{boldEnd} Changes will land soon…'),
     emoji: 'airplane_arriving',
   },
   {
-    message: s__('mrWidget|Merging! Changes are being shipped…'),
+    message: s__('mrWidget|%{boldStart}Merging!%{boldEnd} Changes are being shipped…'),
     emoji: 'ship',
   },
   {
-    message: s__("mrWidget|Merging! Everything's good…"),
+    message: s__("mrWidget|%{boldStart}Merging!%{boldEnd} Everything's good…"),
     emoji: 'relieved',
   },
   {
-    message: s__('mrWidget|Merging! This is going to be great…'),
+    message: s__('mrWidget|%{boldStart}Merging!%{boldEnd} This is going to be great…'),
     emoji: 'heart_eyes',
   },
   {
-    message: s__('mrWidget|Merging! Lift-off in 5… 4… 3…'),
+    message: s__('mrWidget|%{boldStart}Merging!%{boldEnd} Lift-off in 5… 4… 3…'),
     emoji: 'rocket',
   },
   {
-    message: s__('mrWidget|Merging! The changes are leaving the station…'),
+    message: s__('mrWidget|%{boldStart}Merging!%{boldEnd} The changes are leaving the station…'),
     emoji: 'bullettrain_front',
   },
   {
-    message: s__('mrWidget|Merging! Take a deep breath and relax…'),
+    message: s__('mrWidget|%{boldStart}Merging!%{boldEnd} Take a deep breath and relax…'),
     emoji: 'sunglasses',
   },
 ];

@@ -105,21 +105,18 @@ describe('MRWidget approvals', () => {
   });
 
   describe('when created', () => {
-    beforeEach(() => {
+    it('shows loading message', async () => {
+      service = {
+        fetchApprovals: jest.fn().mockReturnValue(new Promise(() => {})),
+      };
+
       createComponent();
-    });
-
-    it('shows loading message', () => {
-      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-      // eslint-disable-next-line no-restricted-syntax
-      wrapper.setData({ fetchingApprovals: true });
-
-      return nextTick().then(() => {
-        expect(wrapper.text()).toContain(FETCH_LOADING);
-      });
+      await nextTick();
+      expect(wrapper.text()).toContain(FETCH_LOADING);
     });
 
     it('fetches approvals', () => {
+      createComponent();
       expect(service.fetchApprovals).toHaveBeenCalled();
     });
   });

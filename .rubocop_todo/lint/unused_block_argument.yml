@@ -81,7 +81,6 @@ Lint/UnusedBlockArgument:
     - 'app/views/projects/tags/_tag.atom.builder'
     - 'app/workers/process_commit_worker.rb'
     - 'config/application.rb'
-    - 'config/initializers/0_log_deprecations.rb'
     - 'config/initializers/content_security_policy.rb'
     - 'config/initializers/doorkeeper.rb'
     - 'config/initializers/lograge.rb'

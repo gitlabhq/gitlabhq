@@ -63,7 +63,7 @@ RSpec.describe Gitlab::GitalyClient::CommitService do
       end
     end
 
-    context 'when given a whitesapce param' do
+    context 'when given a whitespace param' do
       context 'and the param is true' do
         it 'uses the ignore all white spaces const' do
           request = Gitaly::CommitDiffRequest.new

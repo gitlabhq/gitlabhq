@@ -71,6 +71,8 @@ module Gitlab
             end
 
             def masked_blob
+              return unless valid?
+
               strong_memoize(:masked_blob) do
                 context.mask_variables_from(
                   Gitlab::Routing.url_helpers.project_blob_url(context.project, ::File.join(context.sha, location))
@@ -79,7 +81,7 @@ module Gitlab
             end
 
             def masked_raw
-              return unless context.project
+              return unless valid?
 
               strong_memoize(:masked_raw) do
                 context.mask_variables_from(

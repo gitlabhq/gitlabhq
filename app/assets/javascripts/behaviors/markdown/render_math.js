@@ -1,17 +1,19 @@
+import { escape } from 'lodash';
 import { spriteIcon } from '~/lib/utils/common_utils';
 import { differenceInMilliseconds } from '~/lib/utils/datetime_utility';
-import { s__ } from '~/locale';
+import { s__, sprintf } from '~/locale';
 import { unrestrictedPages } from './constants';
 
-// Renders math using KaTeX in any element with the
-// `js-render-math` class
+// Renders math using KaTeX in an element.
 //
-// ### Example Markup
+// Typically for elements with the `js-render-math` class such as
+//   <code class="js-render-math"></code>
 //
-//   <code class="js-render-math"></div>
-//
+// See app/assets/javascripts/behaviors/markdown/render_gfm.js
 
 const MAX_MATH_CHARS = 1000;
+const MAX_MACRO_EXPANSIONS = 1000;
+const MAX_USER_SPECIFIED_EMS = 20;
 const MAX_RENDER_TIME_MS = 2000;
 
 // Wait for the browser to reflow the layout. Reflowing SVG takes time.
@@ -74,13 +76,23 @@ class SafeMathRenderer {
       const { parentNode } = el;
       parentNode.replaceChild(wrapperElement, el);
 
+      let message;
+      if (text.length > MAX_MATH_CHARS) {
+        message = sprintf(
+          s__(
+            'math|This math block exceeds %{maxMathChars} characters, and may cause performance issues on this page.',
+          ),
+          { maxMathChars: MAX_MATH_CHARS },
+        );
+      } else {
+        message = s__('math|Displaying this math block may cause performance issues on this page.');
+      }
+
       const html = `
           <div class="alert gl-alert gl-alert-warning alert-dismissible lazy-render-math-container js-lazy-render-math-container fade show" role="alert">
             ${spriteIcon('warning', 'text-warning-600 s16 gl-alert-icon')}
             <div class="display-flex gl-alert-content">
-              <div>${s__(
-                'math|Displaying this math block may cause performance issues on this page',
-              )}</div>
+              <div>${message}</div>
               <div class="gl-alert-actions">
                 <button class="js-lazy-render-math btn gl-alert-action btn-confirm btn-md gl-button">Display anyway</button>
               </div>
@@ -117,8 +129,10 @@ class SafeMathRenderer {
         displayContainer.innerHTML = this.katex.renderToString(text, {
           displayMode: el.dataset.mathStyle === 'display',
           throwOnError: true,
-          maxSize: 20,
-          maxExpand: 20,
+          maxSize: MAX_USER_SPECIFIED_EMS,
+          // See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111107 for
+          // reasoning behind this value
+          maxExpand: MAX_MACRO_EXPANSIONS,
           trust: (context) =>
             // this config option restores the KaTeX pre-v0.11.0
             // behavior of allowing certain commands and protocols
@@ -128,8 +142,17 @@ class SafeMathRenderer {
         });
       } catch (e) {
         // Don't show a flash for now because it would override an existing flash message
-        el.textContent = s__('math|There was an error rendering this math block');
-        // el.style.color = '#d00';
+        if (e.message.match(/Too many expansions/)) {
+          // this is controlled by the maxExpand parameter
+          el.textContent = s__('math|Too many expansions. Consider using multiple math blocks.');
+        } else {
+          // According to https://katex.org/docs/error.html, we need to ensure that
+          // the error message is escaped.
+          el.textContent = sprintf(
+            s__('math|There was an error rendering this math block. %{katexMessage}'),
+            { katexMessage: escape(e.message) },
+          );
+        }
         el.className = 'katex-error';
       }
 

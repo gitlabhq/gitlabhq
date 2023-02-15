@@ -52,9 +52,9 @@ module Gitlab
 
         ::Gitlab::AppLogger.info(
           message: 'clear pages cache',
-          keys: keys,
-          type: @type,
-          id: @id
+          pages_keys: keys,
+          pages_type: @type,
+          pages_id: @id
         )
 
         Gitlab::Instrumentation::RedisClusterValidator.allow_cross_slot_commands do

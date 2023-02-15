@@ -4,7 +4,6 @@ import getStateQueryResponse from 'test_fixtures/graphql/merge_requests/get_stat
 import { createAlert } from '~/flash';
 import WorkInProgress, {
   MSG_SOMETHING_WENT_WRONG,
-  MSG_MERGE_BLOCKED,
   MSG_MARK_READY,
 } from '~/vue_merge_request_widget/components/states/work_in_progress.vue';
 import draftQuery from '~/vue_merge_request_widget/queries/states/draft.query.graphql';
@@ -110,7 +109,9 @@ describe('~/vue_merge_request_widget/components/states/work_in_progress.vue', ()
     });
 
     it('renders text', () => {
-      expect(wrapper.text()).toContain(MSG_MERGE_BLOCKED);
+      const message = wrapper.text();
+      expect(message).toContain('Merge blocked:');
+      expect(message).toContain('Select Mark as ready to remove it from Draft status.');
     });
 
     it('renders mark ready button', () => {

@@ -30,6 +30,7 @@ module PreferencesHelper
     {
       projects: _("Your Projects (default)"),
       stars: _("Starred Projects"),
+      your_activity: _("Your Activity"),
       project_activity: _("Your Projects' Activity"),
       starred_project_activity: _("Starred Projects' Activity"),
       followed_user_activity: _("Followed Users' Activity"),

@@ -44,7 +44,7 @@ unless ActiveSupport::Deprecation.silenced
   Warning.process('', actions)
 
   # Log deprecation warnings emitted from Rails (see ActiveSupport::Deprecation).
-  ActiveSupport::Notifications.subscribe('deprecation.rails') do |name, start, finish, id, payload|
+  ActiveSupport::Notifications.subscribe('deprecation.rails') do |_name, _start, _finish, _id, payload|
     Gitlab::DeprecationJsonLogger.info(message: payload[:message].strip, source: 'rails')
   end
 end

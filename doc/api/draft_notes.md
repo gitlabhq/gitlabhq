@@ -111,3 +111,21 @@ DELETE /projects/:id/merge_requests/:merge_request_iid/draft_notes/:draft_note_i
 ```shell
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/14/merge_requests/11/draft_notes/5"
 ```
+
+## Publish a draft note
+
+Publishes an existing draft note for a given merge request.
+
+```plaintext
+PUT /projects/:id/merge_requests/:merge_request_iid/draft_notes/:draft_note_id/publish
+```
+
+| Attribute           | Type             | Required    | Description           |
+| ------------------- | ---------------- | ----------- | --------------------- |
+| `draft_note_id`     | integer           | yes        | The ID of a draft note.
+| `id`                | integer or string | yes        | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding).
+| `merge_request_iid` | integer           | yes        | The IID of a project merge request.
+
+```shell
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/14/merge_requests/11/draft_notes/5/publish"
+```

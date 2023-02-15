@@ -3,6 +3,7 @@
 
 .top-area
   = gl_tabs_nav({ class: 'gl-border-b-0', data: { testid: 'dashboard-activity-tabs' } }) do
-    = gl_tab_link_to _("Your projects"), activity_dashboard_path, { item_active: params[:filter].nil? }
+    = gl_tab_link_to _("Your activity"), activity_dashboard_path, { item_active: params[:filter].nil? }
+    = gl_tab_link_to _("Your projects"), activity_dashboard_path(filter: 'projects')
     = gl_tab_link_to _("Starred projects"), activity_dashboard_path(filter: 'starred')
     = gl_tab_link_to _("Followed users"), activity_dashboard_path(filter: 'followed')

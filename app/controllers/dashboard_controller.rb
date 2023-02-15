@@ -36,17 +36,20 @@ class DashboardController < Dashboard::ApplicationController
 
   def load_events
     @events =
-      if params[:filter] == "followed"
-        load_user_events
-      else
+      case params[:filter]
+      when "projects", "starred"
         load_project_events
+      when "followed"
+        load_user_events(current_user.followees)
+      else
+        load_user_events(current_user)
       end
 
     Events::RenderService.new(current_user).execute(@events)
   end
 
-  def load_user_events
-    UserRecentEventsFinder.new(current_user, current_user.followees, event_filter, params).execute
+  def load_user_events(user)
+    UserRecentEventsFinder.new(current_user, user, event_filter, params).execute
   end
 
   def load_project_events

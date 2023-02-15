@@ -1029,7 +1029,6 @@ RSpec/MissingFeatureCategory:
     - 'ee/spec/lib/gitlab/geo/log_cursor/events/repository_updated_event_spec.rb'
     - 'ee/spec/lib/gitlab/geo/log_cursor/events/reset_checksum_event_spec.rb'
     - 'ee/spec/lib/gitlab/geo/log_cursor/lease_spec.rb'
-    - 'ee/spec/lib/gitlab/geo/log_cursor/logger_spec.rb'
     - 'ee/spec/lib/gitlab/geo/log_helpers_spec.rb'
     - 'ee/spec/lib/gitlab/geo/logger_spec.rb'
     - 'ee/spec/lib/gitlab/geo/oauth/login_state_spec.rb'

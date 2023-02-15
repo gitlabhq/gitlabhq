@@ -120,20 +120,8 @@ While `1280px` is the standard max width when using fixed layout, some pages sti
 
 For users who have access to a large number of projects but only keep up with a
 select few, the amount of activity on the your dashboard can be
-overwhelming. Changing this setting allows you to redefine what is displayed by default.
-
-You can include the following options for your default dashboard view:
-
-- Your projects (default)
-- Starred projects
-- Your projects' activity
-- Starred projects' activity
-- Followed Users' Activity
-- Your groups
-- Your [To-Do List](../todos.md)
-- Assigned Issues
-- Assigned Merge Requests
-- [Operations Dashboard](../operations_dashboard/index.md)
+overwhelming. From the **Dashboard** dropdown list, select what you'd like displayed on your
+personal dashboard.
 
 ### Group overview content
 

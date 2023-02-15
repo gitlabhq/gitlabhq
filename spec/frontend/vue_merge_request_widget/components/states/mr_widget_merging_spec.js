@@ -1,6 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
 import simplePoll from '~/lib/utils/simple_poll';
 import MrWidgetMerging from '~/vue_merge_request_widget/components/states/mr_widget_merging.vue';
+import BoldText from '~/vue_merge_request_widget/components/bold_text.vue';
 
 jest.mock('~/lib/utils/simple_poll', () =>
   jest.fn().mockImplementation(jest.requireActual('~/lib/utils/simple_poll').default),
@@ -33,14 +34,8 @@ describe('MRWidgetMerging', () => {
   });
 
   it('renders information about merge request being merged', () => {
-    expect(
-      wrapper
-        .find('.media-body')
-        .text()
-        .trim()
-        .replace(/\s\s+/g, ' ')
-        .replace(/[\r\n]+/g, ' '),
-    ).toContain('Merging!');
+    const message = wrapper.findComponent(BoldText).props('message');
+    expect(message).toContain('Merging!');
   });
 
   describe('initiateMergePolling', () => {

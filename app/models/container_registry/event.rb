@@ -8,6 +8,21 @@ module ContainerRegistry
     PUSH_ACTION = 'push'
     DELETE_ACTION = 'delete'
     EVENT_TRACKING_CATEGORY = 'container_registry:notification'
+    EVENT_PREFIX = "i_container_registry"
+
+    ALLOWED_ACTOR_TYPES = %w(
+      personal_access_token
+      build
+      gitlab_or_ldap
+    ).freeze
+
+    TRACKABLE_ACTOR_EVENTS = %w(
+      push_tag
+      delete_tag
+      push_repository
+      delete_repository
+      create_repository
+    ).freeze
 
     attr_reader :event
 
@@ -32,6 +47,9 @@ module ContainerRegistry
       end
 
       ::Gitlab::Tracking.event(EVENT_TRACKING_CATEGORY, tracking_action)
+
+      event = usage_data_event_for(tracking_action)
+      ::Gitlab::UsageDataCounters::HLLRedisCounter.track_event(event, values: originator.id) if event
     end
 
     private
@@ -79,6 +97,29 @@ module ContainerRegistry
 
     def project
       container_registry_path&.repository_project
+    end
+
+    # counter name for unique user tracking (for MAU)
+    def usage_data_event_for(tracking_action)
+      return unless originator
+      return unless TRACKABLE_ACTOR_EVENTS.include?(tracking_action)
+
+      "#{EVENT_PREFIX}_#{tracking_action}_user"
+    end
+
+    def originator_type
+      event.dig('actor', 'user_type')
+    end
+
+    def originator
+      return unless ALLOWED_ACTOR_TYPES.include?(originator_type)
+
+      username = event.dig('actor', 'name')
+      return unless username
+
+      strong_memoize(:originator) do
+        User.find_by_username(username)
+      end
     end
 
     def update_project_statistics

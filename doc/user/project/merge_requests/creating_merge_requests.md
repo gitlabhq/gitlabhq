@@ -35,14 +35,14 @@ If your development workflow requires an issue for every merge
 request, you can create a branch directly from the issue to speed the process up.
 The new branch, and later its merge request, are marked as related to this issue.
 After merging the merge request, the issue is closed automatically, unless [automatic issue closing is disabled](../issues/managing_issues.md#disable-automatic-issue-closing).
-You can see a **Create merge request** dropdown below the issue description.
+You can see a **Create merge request** dropdown list below the issue description.
 
 NOTE:
 In GitLab 14.8 and later, selecting **Create merge request**
 [redirects to the merge request creation form](https://gitlab.com/gitlab-org/gitlab/-/issues/349566)
 instead of immediately creating the merge request.
 
-The **Create merge request** button doesn't display if:
+**Create merge request** doesn't display if:
 
 - A branch with the same name already exists.
 - A merge request already exists for this branch.
@@ -54,15 +54,14 @@ To make this button appear, one possible workaround is to
 After removal, the fork relationship cannot be restored. This project can no longer
 be able to receive or send merge requests to the source project, or other forks.
 
-This dropdown contains the options **Create merge request and branch** and **Create branch**.
+The dropdown list contains the options **Create merge request and branch** and **Create branch**.
 
 After selecting one of these options, a new branch or branch and merge request
 is created based on your project's [default branch](../repository/branches/default.md).
-The branch name is based on an internal ID, and the issue title. The example
-screenshot above creates a branch named
-`2-make-static-site-auto-deploy-and-serve`.
+The branch name is based on your project's branch name template. The default template
+is `%{id}-%{title}`. Supported variables for branch name templates are `%{id}` and `%{title}`.
 
-When you select the **Create branch** button in an empty
+When you select **Create branch** in an empty
 repository project, GitLab performs these actions:
 
 - Creates a default branch.

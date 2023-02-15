@@ -63,12 +63,14 @@ export default {
     <status-icon :show-disabled-button="true" status="failed" />
 
     <div class="media-body space-children">
-      <span class="gl-font-weight-bold js-branch-text" data-testid="widget-content">
-        <gl-sprintf :message="warning">
-          <template #code="{ content }">
-            <code>{{ content }}</code>
-          </template>
-        </gl-sprintf>
+      <span class="js-branch-text" data-testid="widget-content">
+        <span class="gl-font-weight-bold">
+          <gl-sprintf :message="warning">
+            <template #code="{ content }">
+              <code>{{ content }}</code>
+            </template>
+          </gl-sprintf>
+        </span>
         {{ restore }}
         <gl-icon
           v-gl-tooltip

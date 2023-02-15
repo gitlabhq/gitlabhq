@@ -22,9 +22,9 @@ RSpec.describe Gitlab::Pages::CacheControl, feature_category: :pages do
           .to receive(:info)
           .with(
             message: 'clear pages cache',
-            keys: cached_keys,
-            type: type,
-            id: 1
+            pages_keys: cached_keys,
+            pages_type: type,
+            pages_id: 1
           )
 
         expect(Rails.cache)

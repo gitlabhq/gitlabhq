@@ -38,7 +38,7 @@ RSpec.describe 'Merge requests > User merges immediately', :js, feature_category
         end
       end
 
-      expect(find('.media-body h4')).to have_content('Merging!')
+      expect(find('[data-testid="merging-state"]')).to have_content('Merging!')
 
       wait_for_requests
     end

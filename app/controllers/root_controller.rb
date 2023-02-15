@@ -41,8 +41,10 @@ class RootController < Dashboard::ProjectsController
     when 'stars'
       flash.keep
       redirect_to(starred_dashboard_projects_path)
-    when 'project_activity'
+    when 'your_activity'
       redirect_to(activity_dashboard_path)
+    when 'project_activity'
+      redirect_to(activity_dashboard_path(filter: 'projects'))
     when 'starred_project_activity'
       redirect_to(activity_dashboard_path(filter: 'starred'))
     when 'followed_user_activity'

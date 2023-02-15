@@ -111,9 +111,9 @@ RSpec.describe DashboardController, feature_category: :code_review_workflow do
     include DesignManagementTestHelpers
     render_views
 
-    let(:user) { create(:user) }
-    let(:project) { create(:project, :public, issues_access_level: ProjectFeature::PRIVATE) }
-    let(:other_project) { create(:project, :public) }
+    let_it_be(:user) { create(:user) }
+    let_it_be(:project) { create(:project, :public, issues_access_level: ProjectFeature::PRIVATE) }
+    let_it_be(:other_project) { create(:project, :public) }
 
     before do
       enable_design_management
@@ -134,22 +134,53 @@ RSpec.describe DashboardController, feature_category: :code_review_workflow do
         other_project.add_developer(user)
       end
 
-      it 'returns count' do
-        get :activity, params: { format: :json }
+      context 'without filter param' do
+        it 'returns only events of the user' do
+          get :activity, params: { format: :json }
 
-        expect(json_response['count']).to eq(6)
+          expect(json_response['count']).to eq(3)
+        end
+      end
+
+      context 'with "projects" filter' do
+        it 'returns events of the user\'s projects' do
+          get :activity, params: { format: :json, filter: :projects }
+
+          expect(json_response['count']).to eq(6)
+        end
+      end
+
+      context 'with "followed" filter' do
+        let_it_be(:followed_user) { create(:user) }
+        let_it_be(:followed_user_private_project) { create(:project, :private) }
+        let_it_be(:followed_user_public_project) { create(:project, :public) }
+
+        before do
+          followed_user_private_project.add_developer(followed_user)
+          followed_user_public_project.add_developer(followed_user)
+          user.follow(followed_user)
+          create(:event, :created, project: followed_user_private_project, target: create(:issue),
+            author: followed_user)
+          create(:event, :created, project: followed_user_public_project, target: create(:issue), author: followed_user)
+        end
+
+        it 'returns public events of the user\'s followed users' do
+          get :activity, params: { format: :json, filter: :followed }
+
+          expect(json_response['count']).to eq(1)
+        end
       end
     end
 
     context 'when user has no permission to see the event' do
       it 'filters out invisible event' do
-        get :activity, params: { format: :json }
+        get :activity, params: { format: :json, filter: :projects }
 
         expect(json_response['html']).to include(_('No activities found'))
       end
 
       it 'filters out invisible event when calculating the count' do
-        get :activity, params: { format: :json }
+        get :activity, params: { format: :json, filter: :projects }
 
         expect(json_response['count']).to eq(0)
       end

@@ -57,7 +57,7 @@ RSpec.describe 'Merge request > User merges only if pipeline succeeds', :js, fea
           wait_for_requests
 
           expect(page).not_to have_button('Merge')
-          expect(page).to have_content('Merge blocked: pipeline must succeed. Push a commit that fixes the failure, or learn about other solutions.')
+          expect(page).to have_content('Merge blocked: pipeline must succeed. Push a commit that fixes the failure or learn about other solutions.')
         end
       end
 
@@ -70,7 +70,7 @@ RSpec.describe 'Merge request > User merges only if pipeline succeeds', :js, fea
           wait_for_requests
 
           expect(page).not_to have_button 'Merge'
-          expect(page).to have_content('Merge blocked: pipeline must succeed. Push a commit that fixes the failure, or learn about other solutions.')
+          expect(page).to have_content('Merge blocked: pipeline must succeed. Push a commit that fixes the failure or learn about other solutions.')
         end
       end
 

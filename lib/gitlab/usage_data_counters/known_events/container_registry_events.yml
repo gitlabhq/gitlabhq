@@ -1,0 +1,22 @@
+---
+- name: i_container_registry_push_tag_user
+  category: user_container_registry
+  aggregation: weekly
+  redis_slot: container_registry
+- name: i_container_registry_delete_tag_user
+  category: user_container_registry
+  aggregation: weekly
+  redis_slot: container_registry
+- name: i_container_registry_push_repository_user
+  category: user_container_registry
+  aggregation: weekly
+  redis_slot: container_registry
+- name: i_container_registry_delete_repository_user
+  category: user_container_registry
+  aggregation: weekly
+  redis_slot: container_registry
+- name: i_container_registry_create_repository_user
+  category: user_container_registry
+  aggregation: weekly
+  redis_slot: container_registry
+  

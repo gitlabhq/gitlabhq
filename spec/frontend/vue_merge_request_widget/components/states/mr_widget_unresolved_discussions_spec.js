@@ -1,5 +1,6 @@
 import { mount } from '@vue/test-utils';
 import { TEST_HOST } from 'helpers/test_constants';
+import { removeBreakLine } from 'helpers/text_helper';
 import notesEventHub from '~/notes/event_hub';
 import UnresolvedDiscussions from '~/vue_merge_request_widget/components/states/unresolved_discussions.vue';
 
@@ -42,7 +43,9 @@ describe('UnresolvedDiscussions', () => {
     });
 
     it('should have correct elements', () => {
-      expect(wrapper.element.innerText).toContain(`Merge blocked: all threads must be resolved.`);
+      const text = removeBreakLine(wrapper.text()).trim();
+      expect(text).toContain('Merge blocked:');
+      expect(text).toContain('all threads must be resolved.');
 
       expect(wrapper.element.innerText).toContain('Jump to first unresolved thread');
       expect(wrapper.element.innerText).toContain('Create issue to resolve all threads');
@@ -54,7 +57,9 @@ describe('UnresolvedDiscussions', () => {
 
   describe('without threads path', () => {
     it('should not show create issue link if user cannot create issue', () => {
-      expect(wrapper.element.innerText).toContain(`Merge blocked: all threads must be resolved.`);
+      const text = removeBreakLine(wrapper.text()).trim();
+      expect(text).toContain('Merge blocked:');
+      expect(text).toContain('all threads must be resolved.');
 
       expect(wrapper.element.innerText).toContain('Jump to first unresolved thread');
       expect(wrapper.element.innerText).not.toContain('Create issue to resolve all threads');

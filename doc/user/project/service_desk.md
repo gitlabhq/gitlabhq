@@ -80,7 +80,7 @@ WARNING:
 Anyone in your project can use the Service Desk email address to create an issue in this project, **regardless
 of their access level** to your GitLab instance.
 
-To improve your project's security, we recommend the following:
+To improve your project's security, you should:
 
 - Put the Service Desk email address behind an alias on your email system so you can change it later.
 - [Enable Akismet](../../integration/akismet.md) on your GitLab instance to add spam checking to this service.
@@ -95,6 +95,7 @@ displayed in the information note.
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/2460) in GitLab 12.7.
 > - Moved from GitLab Premium to GitLab Free in 13.2.
+> - `UNSUBSCRIBE_URL`, `SYSTEM_HEADER`, `SYSTEM_FOOTER`, and `ADDITIONAL_TEXT` placeholders [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/285512) in GitLab 15.9.
 
 An email is sent to the author when:
 
@@ -120,8 +121,6 @@ visible in the email template. For more information, see
 [System header and footer messages](../admin_area/appearance.md#system-header-and-footer-messages).
 
 #### Thank you email
-
-> UNSUBSCRIBE_URL, SYSTEM_HEADER, SYSTEM_FOOTER, ADDITIONAL_TEXT placeholders [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/285512) in GitLab 15.9.
 
 When a user submits an issue through Service Desk, GitLab sends a **thank you email**.
 You must name the template file `thank_you.md`.

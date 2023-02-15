@@ -4,6 +4,7 @@ import { produce } from 'immer';
 import { createAlert } from '~/flash';
 import { __, s__ } from '~/locale';
 import MergeRequest from '~/merge_request';
+import BoldText from '~/vue_merge_request_widget/components/bold_text.vue';
 import mergeRequestQueryVariablesMixin from '../../mixins/merge_request_query_variables';
 import getStateQuery from '../../queries/get_state.query.graphql';
 import draftQuery from '../../queries/states/draft.query.graphql';
@@ -12,14 +13,12 @@ import StateContainer from '../state_container.vue';
 
 // Export for testing
 export const MSG_SOMETHING_WENT_WRONG = __('Something went wrong. Please try again.');
-export const MSG_MERGE_BLOCKED = __(
-  "Merge blocked: merge request must be marked as ready. It's still marked as draft.",
-);
 export const MSG_MARK_READY = s__('mrWidget|Mark as ready');
 
 export default {
   name: 'WorkInProgress',
   components: {
+    BoldText,
     GlButton,
     StateContainer,
   },
@@ -128,15 +127,19 @@ export default {
         });
     },
   },
-  MSG_MERGE_BLOCKED,
+  i18n: {
+    removeDraftStatus: s__(
+      'mrWidget|%{boldStart}Merge blocked:%{boldEnd} Select %{boldStart}Mark as ready%{boldEnd} to remove it from Draft status.',
+    ),
+  },
   MSG_MARK_READY,
 };
 </script>
 
 <template>
   <state-container :mr="mr" status="failed">
-    <span class="gl-font-weight-bold gl-ml-0! gl-text-body! gl-flex-grow-1">
-      {{ $options.MSG_MERGE_BLOCKED }}
+    <span class="gl-ml-0! gl-text-body! gl-flex-grow-1">
+      <bold-text :message="$options.i18n.removeDraftStatus" />
     </span>
     <template #actions>
       <gl-button

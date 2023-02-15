@@ -72,9 +72,6 @@ module Gitlab
             end
 
             def fetch_local_content
-              return unless can_access_local_content?
-              return unless sha
-
               BatchLoader.for([sha, location])
                          .batch(key: project) do |locations, loader, args|
                 context.logger.instrument(:config_file_fetch_project_content) do
@@ -88,8 +85,6 @@ module Gitlab
             end
 
             def sha
-              return unless project
-
               strong_memoize(:sha) do
                 project.commit(ref_name).try(:sha)
               end
@@ -119,7 +114,7 @@ module Gitlab
             end
 
             def masked_blob
-              return unless project
+              return unless valid?
 
               strong_memoize(:masked_blob) do
                 context.mask_variables_from(
@@ -129,7 +124,7 @@ module Gitlab
             end
 
             def masked_raw
-              return unless project
+              return unless valid?
 
               strong_memoize(:masked_raw) do
                 context.mask_variables_from(
