@@ -443,7 +443,7 @@ RSpec.describe WebHook, feature_category: :integrations do
 
   describe '#update_last_failure' do
     it 'is a method of this class' do
-      expect { described_class.new.update_last_failure }.not_to raise_error
+      expect { described_class.new(project: project).update_last_failure }.not_to raise_error
     end
   end
 

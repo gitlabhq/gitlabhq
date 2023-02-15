@@ -2106,16 +2106,22 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
     let(:repository) { mutable_repository }
     let(:source_sha) { '913c66a37b4a45b9769037c55c2d238bd0942d2e' }
     let(:target_branch) { 'test-merge-target-branch' }
+    let(:target_sha) { '6d394385cf567f80a8fd85055db1ab4c5295806f' }
 
     before do
-      repository.create_branch(target_branch, '6d394385cf567f80a8fd85055db1ab4c5295806f')
+      repository.create_branch(target_branch, target_sha)
     end
 
     it 'can perform a merge' do
       merge_commit_id = nil
-      result = repository.merge(user, source_sha, target_branch, 'Test merge') do |commit_id|
-        merge_commit_id = commit_id
-      end
+      result =
+        repository.merge(user,
+          source_sha: source_sha,
+          target_branch: target_branch,
+          target_sha: target_sha,
+          message: 'Test merge') do |commit_id|
+            merge_commit_id = commit_id
+          end
 
       expect(result.newrev).to eq(merge_commit_id)
       expect(result.repo_created).to eq(false)
@@ -2124,10 +2130,15 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
 
     it 'returns nil if there was a concurrent branch update' do
       concurrent_update_id = '33f3729a45c02fc67d00adb1b8bca394b0e761d9'
-      result = repository.merge(user, source_sha, target_branch, 'Test merge') do
-        # This ref update should make the merge fail
-        repository.write_ref(Gitlab::Git::BRANCH_REF_PREFIX + target_branch, concurrent_update_id)
-      end
+      result =
+        repository.merge(user,
+          source_sha: source_sha,
+          target_branch: target_branch,
+          target_sha: target_sha,
+          message: 'Test merge') do |_commit_id|
+          # This ref update should make the merge fail
+          repository.write_ref(Gitlab::Git::BRANCH_REF_PREFIX + target_branch, concurrent_update_id)
+        end
 
       # This 'nil' signals that the merge was not applied
       expect(result).to be_nil
@@ -2147,7 +2158,13 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
       repository.create_branch(target_branch, branch_head)
     end
 
-    subject { repository.ff_merge(user, source_sha, target_branch) }
+    subject do
+      repository.ff_merge(user,
+        source_sha: source_sha,
+        target_branch: target_branch,
+        target_sha: branch_head
+      )
+    end
 
     shared_examples '#ff_merge' do
       it 'performs a ff_merge' do
@@ -2159,7 +2176,7 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
       end
 
       context 'with a non-existing target branch' do
-        subject { repository.ff_merge(user, source_sha, 'this-isnt-real') }
+        subject { repository.ff_merge(user, source_sha: source_sha, target_branch: 'this-isnt-real') }
 
         it 'throws an ArgumentError' do
           expect { subject }.to raise_error(ArgumentError)
@@ -2187,8 +2204,9 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
 
     it "calls Gitaly's OperationService" do
       expect_any_instance_of(Gitlab::GitalyClient::OperationService)
-        .to receive(:user_ff_branch).with(user, source_sha, target_branch)
-        .and_return(nil)
+        .to receive(:user_ff_branch).with(
+          user, source_sha: source_sha, target_branch: target_branch, target_sha: branch_head
+        ).and_return(nil)
 
       subject
     end

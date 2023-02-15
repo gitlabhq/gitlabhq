@@ -111,6 +111,14 @@ describe('MRWidgetPipeline', () => {
       expect(findPipelineMiniGraph().props('stages')).toHaveLength(stagesCount);
     });
 
+    it('should render the latest downstream pipelines only', () => {
+      // component receives two downstream pipelines. one of them is already outdated
+      // because we retried the trigger job, so the mini pipeline graph will only
+      // render the newly created downstream pipeline instead
+      expect(mockData.pipeline.triggered).toHaveLength(2);
+      expect(findPipelineMiniGraph().props('downstreamPipelines')).toHaveLength(1);
+    });
+
     describe('should render pipeline coverage information', () => {
       it('should render coverage percentage', () => {
         expect(findPipelineCoverage().text()).toMatch(

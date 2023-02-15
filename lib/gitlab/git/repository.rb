@@ -652,15 +652,23 @@ module Gitlab
         end
       end
 
-      def merge(user, source_sha, target_branch, message, &block)
+      def merge(user, source_sha:, target_branch:, message:, target_sha: nil, &block)
         wrapped_gitaly_errors do
-          gitaly_operation_client.user_merge_branch(user, source_sha, target_branch, message, &block)
+          gitaly_operation_client.user_merge_branch(user,
+                                                    source_sha: source_sha,
+                                                    target_branch: target_branch,
+                                                    message: message,
+                                                    target_sha: target_sha,
+                                                    &block)
         end
       end
 
-      def ff_merge(user, source_sha, target_branch)
+      def ff_merge(user, source_sha:, target_branch:, target_sha: nil)
         wrapped_gitaly_errors do
-          gitaly_operation_client.user_ff_branch(user, source_sha, target_branch)
+          gitaly_operation_client.user_ff_branch(user,
+                                                 source_sha: source_sha,
+                                                 target_branch: target_branch,
+                                                 target_sha: target_sha)
         end
       end
 

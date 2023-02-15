@@ -65,7 +65,7 @@ RSpec.describe IssueEntity do
     before do
       project.add_developer(member)
       public_project.add_developer(member)
-      Issues::MoveService.new(project: public_project, current_user: member).execute(issue, project)
+      Issues::MoveService.new(container: public_project, current_user: member).execute(issue, project)
     end
 
     context 'when user cannot read target project' do

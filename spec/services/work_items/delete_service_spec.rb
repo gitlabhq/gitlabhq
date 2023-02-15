@@ -16,7 +16,7 @@ RSpec.describe WorkItems::DeleteService do
   end
 
   describe '#execute' do
-    subject(:result) { described_class.new(project: project, current_user: user).execute(work_item) }
+    subject(:result) { described_class.new(container: project, current_user: user).execute(work_item) }
 
     context 'when user can delete the work item' do
       it { is_expected.to be_success }

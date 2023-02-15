@@ -90,7 +90,7 @@ module IssuableActions
   end
 
   def destroy
-    Issuable::DestroyService.new(project: issuable.project, current_user: current_user).execute(issuable)
+    Issuable::DestroyService.new(container: issuable.project, current_user: current_user).execute(issuable)
 
     name = issuable.human_class_name
     flash[:notice] = "The #{name} was successfully deleted."

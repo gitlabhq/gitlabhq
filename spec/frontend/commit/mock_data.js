@@ -1,4 +1,4 @@
-const downstream = {
+export const mockDownstreamPipelinesGraphql = ({ includeSourceJobRetried = true } = {}) => ({
   nodes: [
     {
       id: 'gid://gitlab/Ci::Pipeline/612',
@@ -17,7 +17,7 @@ const downstream = {
       },
       sourceJob: {
         id: 'gid://gitlab/Ci::Bridge/532',
-        retried: false,
+        retried: includeSourceJobRetried ? false : null,
       },
       __typename: 'Pipeline',
     },
@@ -38,7 +38,7 @@ const downstream = {
       },
       sourceJob: {
         id: 'gid://gitlab/Ci::Bridge/531',
-        retried: true,
+        retried: includeSourceJobRetried ? true : null,
       },
       __typename: 'Pipeline',
     },
@@ -59,13 +59,13 @@ const downstream = {
       },
       sourceJob: {
         id: 'gid://gitlab/Ci::Bridge/530',
-        retried: true,
+        retried: includeSourceJobRetried ? true : null,
       },
       __typename: 'Pipeline',
     },
   ],
   __typename: 'PipelineConnection',
-};
+});
 
 const upstream = {
   id: 'gid://gitlab/Ci::Pipeline/610',
@@ -161,7 +161,7 @@ export const mockDownstreamQueryResponse = {
       pipeline: {
         path: '/root/ci-project/-/pipelines/790',
         id: 'pipeline-1',
-        downstream,
+        downstream: mockDownstreamPipelinesGraphql(),
         upstream: null,
       },
       __typename: 'Project',
@@ -176,7 +176,7 @@ export const mockUpstreamDownstreamQueryResponse = {
       pipeline: {
         id: 'pipeline-1',
         path: '/root/ci-project/-/pipelines/790',
-        downstream,
+        downstream: mockDownstreamPipelinesGraphql(),
         upstream,
       },
       __typename: 'Project',

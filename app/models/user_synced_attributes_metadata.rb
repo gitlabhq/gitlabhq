@@ -14,7 +14,7 @@ class UserSyncedAttributesMetadata < ApplicationRecord
   def read_only_attributes
     return [] unless sync_profile_from_provider?
 
-    SYNCABLE_ATTRIBUTES.select { |key| synced?(key) }
+    self.class.syncable_attributes.select { |key| synced?(key) }
   end
 
   def synced?(attribute)
@@ -23,6 +23,20 @@ class UserSyncedAttributesMetadata < ApplicationRecord
 
   def set_attribute_synced(attribute, value)
     write_attribute("#{attribute}_synced", value)
+  end
+
+  class << self
+    def syncable_attributes
+      return SYNCABLE_ATTRIBUTES if sync_name?
+
+      SYNCABLE_ATTRIBUTES - %i[name]
+    end
+
+    private
+
+    def sync_name?
+      Gitlab.config.ldap.sync_name
+    end
   end
 
   private

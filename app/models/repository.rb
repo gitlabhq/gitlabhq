@@ -872,10 +872,24 @@ class Repository
   end
 
   def merge(user, source_sha, merge_request, message)
+    merge_to_branch(user,
+                    source_sha: source_sha,
+                    target_branch: merge_request.target_branch,
+                    message: message) do |commit_id|
+      merge_request.update_and_mark_in_progress_merge_commit_sha(commit_id)
+      nil # Return value does not matter.
+    end
+  end
+
+  def merge_to_branch(user, source_sha:, target_branch:, message:, target_sha: nil)
     with_cache_hooks do
-      raw_repository.merge(user, source_sha, merge_request.target_branch, message) do |commit_id|
-        merge_request.update_and_mark_in_progress_merge_commit_sha(commit_id)
-        nil # Return value does not matter.
+      raw_repository.merge(user,
+        source_sha: source_sha,
+        target_branch: target_branch,
+        message: message,
+        target_sha: target_sha
+      ) do |commit_id|
+        yield commit_id if block_given?
       end
     end
   end
@@ -884,13 +898,19 @@ class Repository
     raw.delete_refs(...)
   end
 
-  def ff_merge(user, source, target_branch, merge_request: nil)
+  def ff_merge(user, source, target_branch, target_sha: nil, merge_request: nil)
     their_commit_id = commit(source)&.id
     raise 'Invalid merge source' if their_commit_id.nil?
 
     merge_request&.update_and_mark_in_progress_merge_commit_sha(their_commit_id)
 
-    with_cache_hooks { raw.ff_merge(user, their_commit_id, target_branch) }
+    with_cache_hooks do
+      raw.ff_merge(user,
+        source_sha: their_commit_id,
+        target_branch: target_branch,
+        target_sha: target_sha
+      )
+    end
   end
 
   def revert(

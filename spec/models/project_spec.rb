@@ -8826,6 +8826,14 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
     end
   end
 
+  it_behaves_like 'something that has web-hooks' do
+    let_it_be_with_reload(:object) { create(:project) }
+
+    def create_hook
+      create(:project_hook, project: object)
+    end
+  end
+
   private
 
   def finish_job(export_job)

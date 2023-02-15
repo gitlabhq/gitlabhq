@@ -3,6 +3,7 @@ import {
   makeLinksFromNodes,
   filterByAncestors,
   generateColumnsFromLayersListBare,
+  keepLatestDownstreamPipelines,
   listByLayers,
   parseData,
   removeOrphanNodes,
@@ -10,6 +11,8 @@ import {
 } from '~/pipelines/components/parsing_utils';
 import { createNodeDict } from '~/pipelines/utils';
 
+import { mockDownstreamPipelinesRest } from '../vue_merge_request_widget/mock_data';
+import { mockDownstreamPipelinesGraphql } from '../commit/mock_data';
 import { mockParsedGraphQLNodes, missingJob } from './components/dag/mock_data';
 import { generateResponse, mockPipelineResponse } from './graph/mock_data';
 
@@ -156,6 +159,40 @@ describe('DAG visualization parsing utilities', () => {
     */
     it('matches the snapshot', () => {
       expect(columns).toMatchSnapshot();
+    });
+  });
+});
+
+describe('linked pipeline utilities', () => {
+  describe('keepLatestDownstreamPipelines', () => {
+    it('filters data from GraphQL', () => {
+      const downstream = mockDownstreamPipelinesGraphql().nodes;
+      const latestDownstream = keepLatestDownstreamPipelines(downstream);
+
+      expect(downstream).toHaveLength(3);
+      expect(latestDownstream).toHaveLength(1);
+    });
+
+    it('filters data from REST', () => {
+      const downstream = mockDownstreamPipelinesRest();
+      const latestDownstream = keepLatestDownstreamPipelines(downstream);
+
+      expect(downstream).toHaveLength(2);
+      expect(latestDownstream).toHaveLength(1);
+    });
+
+    it('returns downstream pipelines if sourceJob.retried is null', () => {
+      const downstream = mockDownstreamPipelinesGraphql({ includeSourceJobRetried: false }).nodes;
+      const latestDownstream = keepLatestDownstreamPipelines(downstream);
+
+      expect(latestDownstream).toHaveLength(downstream.length);
+    });
+
+    it('returns downstream pipelines if source_job.retried is null', () => {
+      const downstream = mockDownstreamPipelinesRest({ includeSourceJobRetried: false });
+      const latestDownstream = keepLatestDownstreamPipelines(downstream);
+
+      expect(latestDownstream).toHaveLength(downstream.length);
     });
   });
 });

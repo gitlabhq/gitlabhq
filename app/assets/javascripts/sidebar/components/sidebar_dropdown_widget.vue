@@ -3,7 +3,7 @@ import { GlButton, GlIcon, GlLink, GlPopover, GlTooltipDirective } from '@gitlab
 import { kebabCase, snakeCase } from 'lodash';
 import { createAlert } from '~/flash';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import { IssuableType, TYPE_ISSUE } from '~/issues/constants';
+import { IssuableType, TYPE_EPIC, TYPE_ISSUE } from '~/issues/constants';
 import { timeFor } from '~/lib/utils/datetime_utility';
 import { __ } from '~/locale';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -153,7 +153,7 @@ export default {
     },
     isEpic() {
       // MV to EE https://gitlab.com/gitlab-org/gitlab/-/issues/345311
-      return this.issuableAttribute === IssuableType.Epic;
+      return this.issuableAttribute === TYPE_EPIC;
     },
     formatIssuableAttribute() {
       return {

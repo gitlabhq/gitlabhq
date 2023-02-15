@@ -14,6 +14,8 @@ jest.mock('~/whats_new');
 describe('HelpCenter component', () => {
   let wrapper;
 
+  const GlEmoji = { template: '<img/>' };
+
   const findDropdownGroup = (i = 0) => {
     return wrapper.findAllComponents(GlDisclosureDropdownGroup).at(i);
   };
@@ -24,6 +26,7 @@ describe('HelpCenter component', () => {
   const createWrapper = (sidebarData) => {
     wrapper = mountExtended(HelpCenter, {
       propsData: { sidebarData },
+      stubs: { GlEmoji },
     });
   };
 
@@ -50,6 +53,18 @@ describe('HelpCenter component', () => {
         expect.objectContaining({ text: HelpCenter.i18n.shortcuts }),
         expect.objectContaining({ text: HelpCenter.i18n.whatsnew }),
       ]);
+    });
+
+    describe('with Gitlab version check feature enabled', () => {
+      beforeEach(() => {
+        createWrapper({ ...sidebarData, show_version_check: true });
+      });
+
+      it('shows version information as first item', () => {
+        expect(findDropdownGroup(0).props('group').items).toEqual([
+          { text: HelpCenter.i18n.version, href: helpPagePath('update/index'), version: '16.0' },
+        ]);
+      });
     });
 
     describe('showKeyboardShortcuts', () => {

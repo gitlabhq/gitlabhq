@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::GitalyClient::OperationService do
+RSpec.describe Gitlab::GitalyClient::OperationService, feature_category: :source_code_management do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, :repository) }
 
@@ -279,12 +279,39 @@ RSpec.describe Gitlab::GitalyClient::OperationService do
 
   describe '#user_merge_branch' do
     let(:target_branch) { 'master' }
+    let(:target_sha) { repository.commit(target_branch).sha }
     let(:source_sha) { '5937ac0a7beb003549fc5fd26fc247adbce4a52e' }
     let(:message) { 'Merge a branch' }
 
-    subject { client.user_merge_branch(user, source_sha, target_branch, message) {} }
+    subject do
+      client.user_merge_branch(user,
+        source_sha: source_sha,
+        target_branch: target_branch,
+        target_sha: target_sha,
+        message: message
+      ) {}
+    end
 
-    it 'sends a user_merge_branch message' do
+    it 'sends a user_merge_branch message', :freeze_time do
+      first_request =
+        Gitaly::UserMergeBranchRequest.new(
+          repository: repository.gitaly_repository,
+          user: gitaly_user,
+          commit_id: source_sha,
+          branch: target_branch,
+          expected_old_oid: target_sha,
+          message: message,
+          timestamp: Google::Protobuf::Timestamp.new(seconds: Time.now.utc.to_i)
+        )
+
+      second_request = Gitaly::UserMergeBranchRequest.new(apply: true)
+
+      expect_next_instance_of(Gitlab::GitalyClient::QueueEnumerator) do |instance|
+        expect(instance).to receive(:push).with(first_request).and_call_original
+        expect(instance).to receive(:push).with(second_request).and_call_original
+        expect(instance).to receive(:close)
+      end
+
       expect(subject).to be_a(Gitlab::Git::OperationService::BranchUpdate)
       expect(subject.newrev).to be_present
       expect(subject.repo_created).to be(false)
@@ -431,12 +458,14 @@ RSpec.describe Gitlab::GitalyClient::OperationService do
 
   describe '#user_ff_branch' do
     let(:target_branch) { 'my-branch' }
+    let(:target_sha) { '6d394385cf567f80a8fd85055db1ab4c5295806f' }
     let(:source_sha) { 'cfe32cf61b73a0d5e9f13e774abde7ff789b1660' }
     let(:request) do
       Gitaly::UserFFBranchRequest.new(
         repository: repository.gitaly_repository,
         branch: target_branch,
         commit_id: source_sha,
+        expected_old_oid: target_sha,
         user: gitaly_user
       )
     end
@@ -457,7 +486,13 @@ RSpec.describe Gitlab::GitalyClient::OperationService do
         .and_return(response)
     end
 
-    subject { client.user_ff_branch(user, source_sha, target_branch) }
+    subject do
+      client.user_ff_branch(user,
+        source_sha: source_sha,
+        target_branch: target_branch,
+        target_sha: target_sha
+      )
+    end
 
     it 'sends a user_ff_branch message and returns a BranchUpdate object' do
       expect(subject).to be_a(Gitlab::Git::OperationService::BranchUpdate)

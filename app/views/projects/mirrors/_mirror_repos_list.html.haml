@@ -26,7 +26,9 @@
           - @project.remote_mirrors.each_with_index do |mirror, index|
             - next if mirror.new_record?
             %tr.rspec-mirrored-repository-row{ class: ('bg-secondary' if mirror.disabled?), data: { qa_selector: 'mirrored_repository_row_container' } }
-              %td{ data: { qa_selector: 'mirror_repository_url_content' } }= mirror.safe_url || _('Invalid URL')
+              %td{ data: { qa_selector: 'mirror_repository_url_content' } }
+                = mirror.safe_url || _('Invalid URL')
+                = render_if_exists 'projects/mirrors/mirror_branches_setting_badge', record: mirror
               %td= _('Push')
               %td
                 = mirror.last_update_started_at.present? ? time_ago_with_tooltip(mirror.last_update_started_at) : _('Never')

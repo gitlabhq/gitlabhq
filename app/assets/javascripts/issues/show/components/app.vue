@@ -4,8 +4,8 @@ import Visibility from 'visibilityjs';
 import { createAlert } from '~/flash';
 import {
   IssuableStatusText,
-  IssuableType,
   STATUS_CLOSED,
+  TYPE_EPIC,
   TYPE_ISSUE,
   WorkspaceType,
 } from '~/issues/constants';
@@ -277,7 +277,7 @@ export default {
       return IssuableStatusText[this.issuableStatus];
     },
     shouldShowStickyHeader() {
-      return [TYPE_ISSUE, IssuableType.Epic].includes(this.issuableType);
+      return [TYPE_ISSUE, TYPE_EPIC].includes(this.issuableType);
     },
   },
   created() {

@@ -11,6 +11,7 @@ import {
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { s__, n__ } from '~/locale';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
+import { keepLatestDownstreamPipelines } from '~/pipelines/components/parsing_utils';
 import PipelineArtifacts from '~/pipelines/components/pipelines_list/pipelines_artifacts.vue';
 import PipelineMiniGraph from '~/pipelines/components/pipeline_mini_graph/pipeline_mini_graph.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
@@ -86,6 +87,10 @@ export default {
     },
   },
   computed: {
+    downstreamPipelines() {
+      const downstream = this.pipeline.triggered;
+      return keepLatestDownstreamPipelines(downstream);
+    },
     hasPipeline() {
       return this.pipeline && Object.keys(this.pipeline).length > 0;
     },
@@ -274,7 +279,7 @@ export default {
           <span class="gl-align-items-center gl-display-inline-flex">
             <pipeline-mini-graph
               v-if="pipeline.details.stages"
-              :downstream-pipelines="pipeline.triggered"
+              :downstream-pipelines="downstreamPipelines"
               :is-merge-train="isMergeTrain"
               :pipeline-path="pipeline.path"
               :stages="pipeline.details.stages"

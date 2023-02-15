@@ -1,5 +1,6 @@
 <script>
 import { GlBadge, GlButton, GlDisclosureDropdown, GlDisclosureDropdownGroup } from '@gitlab/ui';
+import GitlabVersionCheckBadge from '~/gitlab_version_check/components/gitlab_version_check_badge.vue';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { PROMO_URL } from 'jh_else_ce/lib/utils/url_utility';
 import { __ } from '~/locale';
@@ -11,6 +12,7 @@ export default {
     GlButton,
     GlDisclosureDropdown,
     GlDisclosureDropdownGroup,
+    GitlabVersionCheckBadge,
   },
   i18n: {
     help: __('Help'),
@@ -21,6 +23,7 @@ export default {
     contribute: __('Contribute to GitLab'),
     feedback: __('Provide feedback'),
     shortcuts: __('Keyboard shortcuts'),
+    version: __('Your GitLab version'),
     whatsnew: __("What's new"),
   },
   props: {
@@ -35,9 +38,18 @@ export default {
     };
   },
   computed: {
-    items() {
-      return [
-        {
+    itemGroups() {
+      return {
+        versionCheck: {
+          items: [
+            {
+              text: this.$options.i18n.version,
+              href: helpPagePath('update/index'),
+              version: `${this.sidebarData.gitlab_version.major}.${this.sidebarData.gitlab_version.minor}`,
+            },
+          ],
+        },
+        helpLinks: {
           items: [
             { text: this.$options.i18n.help, href: helpPagePath() },
             { text: this.$options.i18n.support, href: this.sidebarData.support_path },
@@ -51,7 +63,7 @@ export default {
             { text: this.$options.i18n.feedback, href: 'https://about.gitlab.com/submit-feedback' },
           ],
         },
-        {
+        helpActions: {
           items: [
             {
               text: this.$options.i18n.shortcuts,
@@ -67,7 +79,10 @@ export default {
             },
           ].filter(Boolean),
         },
-      ];
+      };
+    },
+    updateSeverity() {
+      return this.sidebarData.gitlab_version_check?.severity;
     },
   },
   methods: {
@@ -120,8 +135,34 @@ export default {
       </gl-button>
     </template>
 
-    <gl-disclosure-dropdown-group :group="items[0]" />
-    <gl-disclosure-dropdown-group :group="items[1]" bordered @action="handleAction">
+    <gl-disclosure-dropdown-group
+      v-if="sidebarData.show_version_check"
+      :group="itemGroups.versionCheck"
+    >
+      <template #list-item="{ item }">
+        <a
+          :href="item.href"
+          tabindex="-1"
+          class="gl-display-flex gl-flex-direction-column gl-line-height-24 gl-text-gray-900 gl-hover-text-gray-900 gl-hover-text-decoration-none"
+        >
+          <span class="gl-font-sm gl-font-weight-bold">
+            {{ item.text }}
+            <gl-emoji data-name="rocket" />
+          </span>
+          <span>
+            <span class="gl-mr-2">{{ item.version }}</span>
+            <gitlab-version-check-badge v-if="updateSeverity" :status="updateSeverity" size="sm" />
+          </span>
+        </a>
+      </template>
+    </gl-disclosure-dropdown-group>
+
+    <gl-disclosure-dropdown-group
+      :group="itemGroups.helpLinks"
+      :bordered="sidebarData.show_version_check"
+    />
+
+    <gl-disclosure-dropdown-group :group="itemGroups.helpActions" bordered @action="handleAction">
       <template #list-item="{ item }">
         <button
           tabindex="-1"

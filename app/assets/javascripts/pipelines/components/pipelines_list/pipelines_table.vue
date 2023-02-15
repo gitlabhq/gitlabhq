@@ -2,6 +2,7 @@
 import { GlTableLite, GlTooltipDirective } from '@gitlab/ui';
 import { s__, __ } from '~/locale';
 import Tracking from '~/tracking';
+import { keepLatestDownstreamPipelines } from '~/pipelines/components/parsing_utils';
 import PipelineMiniGraph from '~/pipelines/components/pipeline_mini_graph/pipeline_mini_graph.vue';
 import eventHub from '../../event_hub';
 import { TRACKING_CATEGORIES } from '../../constants';
@@ -115,6 +116,10 @@ export default {
     eventHub.$off('openConfirmationModal', this.setModalData);
   },
   methods: {
+    getDownstreamPipelines(pipeline) {
+      const downstream = pipeline.triggered;
+      return keepLatestDownstreamPipelines(downstream);
+    },
     setModalData(data) {
       this.pipelineId = data.pipeline.id;
       this.pipeline = data.pipeline;
@@ -171,7 +176,7 @@ export default {
 
       <template #cell(stages)="{ item }">
         <pipeline-mini-graph
-          :downstream-pipelines="item.triggered"
+          :downstream-pipelines="getDownstreamPipelines(item)"
           :pipeline-path="item.path"
           :stages="item.details.stages"
           :update-dropdown="updateGraphDropdown"

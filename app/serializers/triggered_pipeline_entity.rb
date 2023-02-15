@@ -15,6 +15,9 @@ class TriggeredPipelineEntity < Grape::Entity
     expose :name do |pipeline|
       pipeline.source_job&.name
     end
+    expose :retried do |pipeline|
+      pipeline.source_job&.retried
+    end
   end
 
   expose :path do |pipeline|

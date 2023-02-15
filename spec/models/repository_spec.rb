@@ -1848,6 +1848,8 @@ RSpec.describe Repository, feature_category: :source_code_management do
   end
 
   describe '#expire_root_ref_cache' do
+    let(:project) { create(:project) }
+
     it 'expires the root reference cache' do
       repository.root_ref
 
@@ -1949,6 +1951,40 @@ RSpec.describe Repository, feature_category: :source_code_management do
     end
   end
 
+  describe '#merge_to_branch' do
+    let(:merge_request) do
+      create(:merge_request, source_branch: 'feature', target_branch: project.default_branch, source_project: project)
+    end
+
+    it 'merges two branches and returns the merge commit id' do
+      message = 'New merge commit'
+      merge_commit_id =
+        repository.merge_to_branch(user,
+          source_sha: merge_request.diff_head_sha,
+          target_branch: merge_request.target_branch,
+          target_sha: repository.commit(merge_request.target_branch).sha,
+          message: message)
+
+      expect(repository.commit(merge_commit_id).message).to eq(message)
+      expect(repository.commit(merge_request.target_branch).sha).to eq(merge_commit_id)
+    end
+
+    it 'does not merge if target branch has been changed' do
+      target_sha = project.commit.sha
+
+      repository.create_file(user, 'file.txt', 'CONTENT', message: 'Add file', branch_name: project.default_branch)
+
+      merge_commit_id =
+        repository.merge_to_branch(user,
+          source_sha: merge_request.diff_head_sha,
+          target_branch: merge_request.target_branch,
+          target_sha: target_sha,
+          message: 'New merge commit')
+
+      expect(merge_commit_id).to be_nil
+    end
+  end
+
   describe '#merge_to_ref' do
     let(:merge_request) do
       create(:merge_request, source_branch: 'feature',
@@ -1975,15 +2011,20 @@ RSpec.describe Repository, feature_category: :source_code_management do
   end
 
   describe '#ff_merge' do
+    let(:target_branch) { 'ff-target' }
+    let(:merge_request) do
+      create(:merge_request, source_branch: 'feature', target_branch: target_branch, source_project: project)
+    end
+
     before do
-      repository.add_branch(user, 'ff-target', 'feature~5')
+      repository.add_branch(user, target_branch, 'feature~5')
     end
 
     it 'merges the code and return the commit id' do
-      merge_request = create(:merge_request, source_branch: 'feature', target_branch: 'ff-target', source_project: project)
       merge_commit_id = repository.ff_merge(user,
                                             merge_request.diff_head_sha,
                                             merge_request.target_branch,
+                                            target_sha: repository.commit(merge_request.target_branch).sha,
                                             merge_request: merge_request)
       merge_commit = repository.commit(merge_commit_id)
 
@@ -1992,13 +2033,23 @@ RSpec.describe Repository, feature_category: :source_code_management do
     end
 
     it 'sets the `in_progress_merge_commit_sha` flag for the given merge request' do
-      merge_request = create(:merge_request, source_branch: 'feature', target_branch: 'ff-target', source_project: project)
       merge_commit_id = repository.ff_merge(user,
                                             merge_request.diff_head_sha,
                                             merge_request.target_branch,
+                                            target_sha: repository.commit(merge_request.target_branch).sha,
                                             merge_request: merge_request)
 
       expect(merge_request.in_progress_merge_commit_sha).to eq(merge_commit_id)
+    end
+
+    it 'does not merge if target branch has been changed' do
+      target_sha = project.commit(target_branch).sha
+
+      repository.create_file(user, 'file.txt', 'CONTENT', message: 'Add file', branch_name: target_branch)
+
+      merge_commit_id = repository.ff_merge(user, merge_request.diff_head_sha, target_branch, target_sha: target_sha)
+
+      expect(merge_commit_id).to be_nil
     end
   end
 

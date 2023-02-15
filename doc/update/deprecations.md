@@ -161,6 +161,22 @@ During the transition to the GitLab Observability UI, we will migrate the [GitLa
 
 <div class="deprecation removal-160 breaking-change">
 
+### External field in GraphQL ReleaseAssetLink type
+
+Planned removal: GitLab <span class="removal-milestone">16.0</span> <span class="removal-date"></span>
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+In the [GraphQL API](https://docs.gitlab.com/ee/api/graphql), the `external` field of [`ReleaseAssetLink` type](https://docs.gitlab.com/ee/api/graphql/reference/index.html#releaseassetlink) was used to indicate whether a [release link](https://docs.gitlab.com/ee/user/project/releases/release_fields.html#links) is internal or external to your GitLab instance.
+As of GitLab 15.9, we treat all release links as external, and therefore, this field is deprecated in GitLab 15.9, and will be removed in GitLab 16.0.
+To avoid any disruptions to your workflow, please stop using the `external` field because it will be removed and will not be replaced.
+
+</div>
+
+<div class="deprecation removal-160 breaking-change">
+
 ### External field in Releases and Release Links APIs
 
 Planned removal: GitLab <span class="removal-milestone">16.0</span> <span class="removal-date"></span>

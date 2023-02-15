@@ -4,7 +4,7 @@ import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/flash';
-import { IssuableType, TYPE_ISSUE } from '~/issues/constants';
+import { IssuableType, TYPE_EPIC, TYPE_ISSUE } from '~/issues/constants';
 import SidebarEditableItem from '~/sidebar/components/sidebar_editable_item.vue';
 import DropdownContents from '~/sidebar/components/labels/labels_select_widget/dropdown_contents.vue';
 import DropdownValue from '~/sidebar/components/labels/labels_select_widget/dropdown_value.vue';
@@ -37,7 +37,7 @@ const errorQueryHandler = jest.fn().mockRejectedValue('Houston, we have a proble
 const updateLabelsMutation = {
   [TYPE_ISSUE]: updateIssueLabelsMutation,
   [IssuableType.MergeRequest]: updateMergeRequestLabelsMutation,
-  [IssuableType.Epic]: updateEpicLabelsMutation,
+  [TYPE_EPIC]: updateEpicLabelsMutation,
   [IssuableType.TestCase]: updateTestCaseLabelsMutation,
 };
 
@@ -215,7 +215,7 @@ describe('LabelsSelectRoot', () => {
     issuableType
     ${TYPE_ISSUE}
     ${IssuableType.MergeRequest}
-    ${IssuableType.Epic}
+    ${TYPE_EPIC}
     ${IssuableType.TestCase}
   `('when updating labels for $issuableType', ({ issuableType }) => {
     const label = { id: 'gid://gitlab/ProjectLabel/2' };

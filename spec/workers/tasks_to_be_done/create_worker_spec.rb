@@ -20,7 +20,7 @@ RSpec.describe TasksToBeDone::CreateWorker do
 
         expect(service_class)
           .to receive(:new)
-          .with(project: member_task.project, current_user: current_user, assignee_ids: assignee_ids)
+          .with(container: member_task.project, current_user: current_user, assignee_ids: assignee_ids)
           .and_call_original
       end
 

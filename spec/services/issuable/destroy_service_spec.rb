@@ -7,7 +7,7 @@ RSpec.describe Issuable::DestroyService do
   let(:group) { create(:group, :public) }
   let(:project) { create(:project, :public, group: group) }
 
-  subject(:service) { described_class.new(project: project, current_user: user) }
+  subject(:service) { described_class.new(container: project, current_user: user) }
 
   describe '#execute' do
     context 'when issuable is an issue' do

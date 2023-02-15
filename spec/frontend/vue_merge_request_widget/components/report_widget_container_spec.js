@@ -19,7 +19,13 @@ describe('app/assets/javascripts/vue_merge_request_widget/components/report_widg
     expect(wrapper.isVisible()).toBe(false);
   });
 
-  it('shows the container when children have no content', async () => {
+  it('hides the container when children has only empty spaces', async () => {
+    createComponent({ slot: `<span><b>&nbsp;<br/>\t\r\n</b></span>&nbsp;` });
+    await nextTick();
+    expect(wrapper.isVisible()).toBe(false);
+  });
+
+  it('shows the container when a child has content', async () => {
     createComponent({ slot: `<span><b>test</b></span>` });
     await nextTick();
     expect(wrapper.isVisible()).toBe(true);

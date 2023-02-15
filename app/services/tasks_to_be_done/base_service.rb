@@ -4,14 +4,14 @@ module TasksToBeDone
   class BaseService < ::IssuableBaseService
     LABEL_PREFIX = 'tasks to be done'
 
-    def initialize(project:, current_user:, assignee_ids: [])
+    def initialize(container:, current_user:, assignee_ids: [])
       params = {
         assignee_ids: assignee_ids,
         title: title,
         description: description,
         add_labels: label_name
       }
-      super(project: project, current_user: current_user, params: params)
+      super(project: container, current_user: current_user, params: params)
     end
 
     def execute

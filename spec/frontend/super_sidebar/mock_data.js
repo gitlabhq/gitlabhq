@@ -71,4 +71,7 @@ export const sidebarData = {
   display_whats_new: true,
   whats_new_most_recent_release_items_count: 5,
   whats_new_version_digest: 1,
+  show_version_check: false,
+  gitlab_version: { major: 16, minor: 0 },
+  gitlab_version_check: { severity: 'success' },
 };

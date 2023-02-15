@@ -46,14 +46,18 @@ class ProjectHook < WebHook
 
   override :update_last_failure
   def update_last_failure
-    return if executable?
+    if executable?
+      project.cache_web_hook_failure if project.get_web_hook_failure # may need update
+    else
+      project.cache_web_hook_failure(true) # definitely failing, no need to check
 
-    key = "web_hooks:last_failure:project-#{project_id}"
-    time = Time.current.utc.iso8601
+      Gitlab::Redis::SharedState.with do |redis|
+        last_failure_key = project.last_failure_redis_key
+        time = Time.current.utc.iso8601
+        prev = redis.get(last_failure_key)
 
-    Gitlab::Redis::SharedState.with do |redis|
-      prev = redis.get(key)
-      redis.set(key, time) if !prev || prev < time
+        redis.set(last_failure_key, time) if !prev || prev < time
+      end
     end
   end
 end

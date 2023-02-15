@@ -172,7 +172,7 @@ To do it:
 
    issues.each do |issue|
       if issue.state != "closed" && issue.moved_to.nil?
-         Issues::MoveService.new(project: project, current_user: admin_user).execute(issue, target_project)
+         Issues::MoveService.new(container: project, current_user: admin_user).execute(issue, target_project)
       else
          puts "issue with id: #{issue.id} and title: #{issue.title} was not moved"
       end

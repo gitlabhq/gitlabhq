@@ -41,6 +41,7 @@ class Project < ApplicationRecord
   include BlocksUnsafeSerialization
   include Subquery
   include IssueParent
+  include WebHooks::HasWebHooks
 
   extend Gitlab::Cache::RequestCache
   extend Gitlab::Utils::Override

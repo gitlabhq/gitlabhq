@@ -1,5 +1,94 @@
 import { SUCCESS } from '~/vue_merge_request_widget/components/deployment/constants';
 
+export const mockDownstreamPipelinesRest = ({ includeSourceJobRetried = true } = {}) => [
+  {
+    id: 632,
+    user: {
+      id: 1,
+      username: 'root',
+      name: 'Administrator',
+      state: 'active',
+      avatar_url:
+        'https://secure.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
+      web_url: 'https://gdk.test:3000/root',
+      show_status: false,
+      path: '/root',
+    },
+    active: false,
+    coverage: null,
+    source: 'parent_pipeline',
+    source_job: {
+      name: 'bridge_job',
+      retried: includeSourceJobRetried ? false : null,
+    },
+    path: '/kitchen-sink/bakery/-/pipelines/632',
+    details: {
+      status: {
+        icon: 'status_success',
+        text: 'passed',
+        label: 'passed',
+        group: 'success',
+        tooltip: 'passed',
+        has_details: true,
+        details_path: '/kitchen-sink/bakery/-/pipelines/632',
+        illustration: null,
+        favicon:
+          '/assets/ci_favicons/favicon_status_success-8451333011eee8ce9f2ab25dc487fe24a8758c694827a582f17f42b0a90446a2.png',
+      },
+    },
+    project: {
+      id: 21,
+      name: 'bakery',
+      full_path: '/kitchen-sink/bakery',
+      full_name: 'kitchen-sink / bakery',
+      refs_url: '/kitchen-sink/bakery/refs',
+    },
+  },
+  {
+    id: 633,
+    user: {
+      id: 1,
+      username: 'root',
+      name: 'Administrator',
+      state: 'active',
+      avatar_url:
+        'https://secure.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
+      web_url: 'https://gdk.test:3000/root',
+      show_status: false,
+      path: '/root',
+    },
+    active: false,
+    coverage: null,
+    source: 'parent_pipeline',
+    source_job: {
+      name: 'bridge_job',
+      retried: includeSourceJobRetried ? true : null,
+    },
+    path: '/kitchen-sink/bakery/-/pipelines/633',
+    details: {
+      status: {
+        icon: 'status_success',
+        text: 'passed',
+        label: 'passed',
+        group: 'success',
+        tooltip: 'passed',
+        has_details: true,
+        details_path: '/kitchen-sink/bakery/-/pipelines/633',
+        illustration: null,
+        favicon:
+          '/assets/ci_favicons/favicon_status_success-8451333011eee8ce9f2ab25dc487fe24a8758c694827a582f17f42b0a90446a2.png',
+      },
+    },
+    project: {
+      id: 21,
+      name: 'bakery',
+      full_path: '/kitchen-sink/bakery',
+      full_name: 'kitchen-sink / bakery',
+      refs_url: '/kitchen-sink/bakery/refs',
+    },
+  },
+];
+
 export const artifacts = [
   {
     text: 'result.txt',
@@ -207,6 +296,7 @@ export default {
     retry_path: '/root/acets-app/pipelines/172/retry',
     created_at: '2017-04-07T12:27:19.520Z',
     updated_at: '2017-04-07T15:28:44.800Z',
+    triggered: mockDownstreamPipelinesRest(),
   },
   pipelineCoverageDelta: '15.25',
   buildsWithCoverage: [

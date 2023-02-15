@@ -3,7 +3,7 @@ import { s__, __, sprintf } from '~/locale';
 import updateIssueLabelsMutation from '~/boards/graphql/issue_set_labels.mutation.graphql';
 import userSearchQuery from '~/graphql_shared/queries/users_search.query.graphql';
 import userSearchWithMRPermissionsQuery from '~/graphql_shared/queries/users_search_with_mr_permissions.graphql';
-import { IssuableType, TYPE_ISSUE, WorkspaceType } from '~/issues/constants';
+import { IssuableType, TYPE_EPIC, TYPE_ISSUE, WorkspaceType } from '~/issues/constants';
 import updateAlertAssigneesMutation from '~/vue_shared/alert_details/graphql/mutations/alert_set_assignees.mutation.graphql';
 import updateTestCaseLabelsMutation from './components/labels/labels_select_widget/graphql/update_test_case_labels.mutation.graphql';
 import epicLabelsQuery from './components/labels/labels_select_widget/graphql/epic_labels.query.graphql';
@@ -86,7 +86,7 @@ export const participantsQueries = {
   [IssuableType.MergeRequest]: {
     query: getMergeRequestParticipants,
   },
-  [IssuableType.Epic]: {
+  [TYPE_EPIC]: {
     query: epicParticipantsQuery,
   },
   [IssuableType.Alert]: {
@@ -109,7 +109,7 @@ export const confidentialityQueries = {
     query: issueConfidentialQuery,
     mutation: updateIssueConfidentialMutation,
   },
-  [IssuableType.Epic]: {
+  [TYPE_EPIC]: {
     query: epicConfidentialQuery,
     mutation: updateEpicConfidentialMutation,
   },
@@ -122,7 +122,7 @@ export const referenceQueries = {
   [IssuableType.MergeRequest]: {
     query: mergeRequestReferenceQuery,
   },
-  [IssuableType.Epic]: {
+  [TYPE_EPIC]: {
     query: epicReferenceQuery,
   },
 };
@@ -147,7 +147,7 @@ export const issuableLabelsQueries = {
     mutation: updateMergeRequestLabelsMutation,
     mutationName: 'mergeRequestSetLabels',
   },
-  [IssuableType.Epic]: {
+  [TYPE_EPIC]: {
     issuableQuery: epicLabelsQuery,
     mutation: updateEpicLabelsMutation,
     mutationName: 'updateEpic',
@@ -182,7 +182,7 @@ export const subscribedQueries = {
     query: issueSubscribedQuery,
     mutation: updateIssueSubscriptionMutation,
   },
-  [IssuableType.Epic]: {
+  [TYPE_EPIC]: {
     query: epicSubscribedQuery,
     mutation: updateEpicSubscriptionMutation,
   },
@@ -211,14 +211,14 @@ export const dueDateQueries = {
     query: issueDueDateQuery,
     mutation: updateIssueDueDateMutation,
   },
-  [IssuableType.Epic]: {
+  [TYPE_EPIC]: {
     query: epicDueDateQuery,
     mutation: updateEpicDueDateMutation,
   },
 };
 
 export const startDateQueries = {
-  [IssuableType.Epic]: {
+  [TYPE_EPIC]: {
     query: epicStartDateQuery,
     mutation: updateEpicStartDateMutation,
   },
@@ -283,7 +283,7 @@ export const issuableAttributesQueries = {
 };
 
 export const todoQueries = {
-  [IssuableType.Epic]: {
+  [TYPE_EPIC]: {
     query: epicTodoQuery,
   },
   [TYPE_ISSUE]: {

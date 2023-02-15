@@ -18,7 +18,7 @@ RSpec.describe TasksToBeDone::BaseService do
 
   subject(:service) do
     TasksToBeDone::CreateCiTaskService.new(
-      project: project,
+      container: project,
       current_user: current_user,
       assignee_ids: assignee_ids
     )

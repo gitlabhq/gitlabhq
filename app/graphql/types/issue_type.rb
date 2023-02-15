@@ -65,6 +65,13 @@ module Types
     field :merge_requests_count, GraphQL::Types::Int, null: false,
                                                       description: 'Number of merge requests that close the issue on merge.',
                                                       resolver: Resolvers::MergeRequestsCountResolver
+
+    field :related_merge_requests, Types::MergeRequestType.connection_type,
+                                   null: true,
+                                   description: 'Merge requests related to the issue. This field can only be resolved for one issue in any single request.' do
+      extension ::Gitlab::Graphql::Limit::FieldCallCount, limit: 1
+    end
+
     field :relative_position, GraphQL::Types::Int, null: true,
                                                    description: 'Relative position of the issue (used for positioning in epic tree and issue boards).'
     field :upvotes, GraphQL::Types::Int,
@@ -178,6 +185,17 @@ module Types
 
     def closed_as_duplicate_of
       Gitlab::Graphql::Loaders::BatchModelLoader.new(Issue, object.duplicated_to_id).find
+    end
+
+    def related_merge_requests
+      # rubocop: disable CodeReuse/ActiveRecord
+      MergeRequest.where(
+        id: ::Issues::ReferencedMergeRequestsService.new(project: object.project, current_user: current_user)
+        .execute(object)
+        .first
+        .map(&:id)
+      )
+      # rubocop: enable CodeReuse/ActiveRecord
     end
 
     def discussion_locked

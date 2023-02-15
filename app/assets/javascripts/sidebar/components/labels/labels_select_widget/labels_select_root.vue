@@ -4,7 +4,7 @@ import issuableLabelsSubscription from 'ee_else_ce/sidebar/queries/issuable_labe
 import { MutationOperationMode, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { createAlert } from '~/flash';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import { IssuableType, TYPE_ISSUE } from '~/issues/constants';
+import { IssuableType, TYPE_EPIC, TYPE_ISSUE } from '~/issues/constants';
 
 import { __ } from '~/locale';
 import { issuableLabelsQueries } from '../../../constants';
@@ -269,7 +269,7 @@ export default {
             ...updateVariables,
             operationMode: MutationOperationMode.Replace,
           };
-        case IssuableType.Epic:
+        case TYPE_EPIC:
           return {
             iid: currentIid,
             groupPath: this.fullPath,
@@ -330,7 +330,7 @@ export default {
             labelIds: [labelId],
             operationMode: MutationOperationMode.Remove,
           };
-        case IssuableType.Epic:
+        case TYPE_EPIC:
           return {
             iid: this.iid,
             removeLabelIds: [getIdFromGraphQLId(labelId)],

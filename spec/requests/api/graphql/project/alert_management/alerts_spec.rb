@@ -16,7 +16,7 @@ RSpec.describe 'getting Alert Management Alerts', feature_category: :incident_ma
   let(:fields) do
     <<~QUERY
       nodes {
-        #{all_graphql_fields_for('AlertManagementAlert', excluded: ['assignees'])}
+        #{all_graphql_fields_for('AlertManagementAlert', excluded: %w[assignees relatedMergeRequests])}
       }
     QUERY
   end

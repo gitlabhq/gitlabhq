@@ -48,7 +48,10 @@ module SidebarsHelper
       support_path: support_url,
       display_whats_new: display_whats_new?,
       whats_new_most_recent_release_items_count: whats_new_most_recent_release_items_count,
-      whats_new_version_digest: whats_new_version_digest
+      whats_new_version_digest: whats_new_version_digest,
+      show_version_check: show_version_check?,
+      gitlab_version: Gitlab.version_info,
+      gitlab_version_check: gitlab_version_check
     }
   end
 

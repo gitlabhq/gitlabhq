@@ -86,9 +86,7 @@ To disable these notifications:
 
 ### Custom additional text in deactivation emails **(FREE SELF)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/355964) in GitLab 15.9
-[with a flag](../../../administration/feature_flags.md) named `deactivation_email_additional_text`.
-Disabled by default.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/355964) in GitLab 15.9 [with a flag](../../../administration/feature_flags.md) named `deactivation_email_additional_text`. Disabled by default.
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available, ask an

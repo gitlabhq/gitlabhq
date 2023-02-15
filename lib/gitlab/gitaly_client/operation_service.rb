@@ -152,7 +152,7 @@ module Gitlab
         response.commit_id
       end
 
-      def user_merge_branch(user, source_sha, target_branch, message)
+      def user_merge_branch(user, source_sha:, target_branch:, message:, target_sha: nil)
         request_enum = QueueEnumerator.new
         response_enum = gitaly_client_call(
           @repository.storage,
@@ -168,6 +168,7 @@ module Gitlab
             user: Gitlab::Git::User.from_gitlab(user).to_gitaly,
             commit_id: source_sha,
             branch: encode_binary(target_branch),
+            expected_old_oid: target_sha,
             message: encode_binary(message),
             timestamp: Google::Protobuf::Timestamp.new(seconds: Time.now.utc.to_i)
           )
@@ -184,7 +185,6 @@ module Gitlab
         raise Gitlab::Git::CommitError, 'failed to apply merge to branch' unless branch_update.commit_id.present?
 
         Gitlab::Git::OperationService::BranchUpdate.from_gitaly(branch_update)
-
       rescue GRPC::BadStatus => e
         detailed_error = GitalyClient.decode_detailed_error(e)
 
@@ -207,12 +207,13 @@ module Gitlab
         request_enum.close
       end
 
-      def user_ff_branch(user, source_sha, target_branch)
+      def user_ff_branch(user, source_sha:, target_branch:, target_sha: nil)
         request = Gitaly::UserFFBranchRequest.new(
           repository: @gitaly_repo,
           user: Gitlab::Git::User.from_gitlab(user).to_gitaly,
           commit_id: source_sha,
-          branch: encode_binary(target_branch)
+          branch: encode_binary(target_branch),
+          expected_old_oid: target_sha
         )
 
         response = gitaly_client_call(

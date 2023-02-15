@@ -2,6 +2,11 @@
 
 module Issuable
   class DestroyService < IssuableBaseService
+    # TODO: this is to be removed once we get to rename the IssuableBaseService project param to container
+    def initialize(container:, current_user: nil, params: {})
+      super(project: container, current_user: current_user, params: params)
+    end
+
     def execute(issuable)
       after_destroy(issuable) if issuable.destroy
     end

@@ -109,7 +109,7 @@ module Issues
           target_project != issue.project
 
       update(issue)
-      Issues::MoveService.new(project: project, current_user: current_user).execute(issue, target_project)
+      Issues::MoveService.new(container: project, current_user: current_user).execute(issue, target_project)
     end
 
     private
@@ -139,7 +139,7 @@ module Issues
 
       # we've pre-empted this from running in #execute, so let's go ahead and update the Issue now.
       update(issue)
-      Issues::CloneService.new(project: project, current_user: current_user).execute(issue, target_project, with_notes: with_notes)
+      Issues::CloneService.new(container: project, current_user: current_user).execute(issue, target_project, with_notes: with_notes)
     end
 
     def create_merge_request_from_quick_action

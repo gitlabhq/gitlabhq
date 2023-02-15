@@ -376,7 +376,7 @@ module API
         not_found!('Project') unless new_project
 
         begin
-          issue = ::Issues::MoveService.new(project: user_project, current_user: current_user).execute(issue, new_project)
+          issue = ::Issues::MoveService.new(container: user_project, current_user: current_user).execute(issue, new_project)
           present issue, with: Entities::Issue, current_user: current_user, project: user_project
         rescue ::Issues::MoveService::MoveError => error
           render_api_error!(error.message, 400)
@@ -403,7 +403,7 @@ module API
         not_found!('Project') unless target_project
 
         begin
-          issue = ::Issues::CloneService.new(project: user_project, current_user: current_user)
+          issue = ::Issues::CloneService.new(container: user_project, current_user: current_user)
             .execute(issue, target_project, with_notes: params[:with_notes])
           present issue, with: Entities::Issue, current_user: current_user, project: target_project
         rescue ::Issues::CloneService::CloneError => error
@@ -424,7 +424,7 @@ module API
         authorize!(:destroy_issue, issue)
 
         destroy_conditionally!(issue) do |issue|
-          Issuable::DestroyService.new(project: user_project, current_user: current_user).execute(issue)
+          Issuable::DestroyService.new(container: user_project, current_user: current_user).execute(issue)
         end
       end
       # rubocop: enable CodeReuse/ActiveRecord

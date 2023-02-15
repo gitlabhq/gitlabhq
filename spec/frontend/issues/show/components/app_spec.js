@@ -8,10 +8,10 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/flash';
 import {
   IssuableStatusText,
-  IssuableType,
   STATUS_CLOSED,
   STATUS_OPEN,
   STATUS_REOPENED,
+  TYPE_EPIC,
   TYPE_ISSUE,
 } from '~/issues/constants';
 import IssuableApp from '~/issues/show/components/app.vue';
@@ -485,11 +485,11 @@ describe('Issuable output', () => {
       });
 
       it.each`
-        issuableType         | issuableStatus   | statusIcon
-        ${TYPE_ISSUE}        | ${STATUS_OPEN}   | ${'issues'}
-        ${TYPE_ISSUE}        | ${STATUS_CLOSED} | ${'issue-closed'}
-        ${IssuableType.Epic} | ${STATUS_OPEN}   | ${'epic'}
-        ${IssuableType.Epic} | ${STATUS_CLOSED} | ${'epic-closed'}
+        issuableType  | issuableStatus   | statusIcon
+        ${TYPE_ISSUE} | ${STATUS_OPEN}   | ${'issues'}
+        ${TYPE_ISSUE} | ${STATUS_CLOSED} | ${'issue-closed'}
+        ${TYPE_EPIC}  | ${STATUS_OPEN}   | ${'epic'}
+        ${TYPE_EPIC}  | ${STATUS_CLOSED} | ${'epic-closed'}
       `(
         'shows with state icon "$statusIcon" for $issuableType when status is $issuableStatus',
         async ({ issuableType, issuableStatus, statusIcon }) => {

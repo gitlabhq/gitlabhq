@@ -128,9 +128,9 @@ module DesignManagement
 
         target_repository.raw.merge(
           git_user,
-          source_sha,
-          merge_branch,
-          'CopyDesignCollectionService finalize merge'
+          source_sha: source_sha,
+          target_branch: merge_branch,
+          message: 'CopyDesignCollectionService finalize merge'
         ) { nil }
 
         target_design_collection.end_copy!

@@ -378,5 +378,5 @@ with a backup of the instance ready to be restored, just in case.
 u = User.find_by_username('<username>')
 p = Project.find_by_full_path('<namespace/project>')
 m = p.merge_requests.find_by(iid: <iid>)
-Issuable::DestroyService.new(project: m.project, current_user: u).execute(m)
+Issuable::DestroyService.new(container: m.project, current_user: u).execute(m)
 ```

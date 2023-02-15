@@ -27,6 +27,7 @@ end
 
 # backwards compatibility, we only have one host
 if Settings.ldap['enabled'] || Rails.env.test?
+  Settings.ldap['sync_name'] = true if Settings.ldap['sync_name'].nil?
   if Settings.ldap['host'].present?
     # We detected old LDAP configuration syntax. Update the config to make it
     # look like it was entered with the new syntax.

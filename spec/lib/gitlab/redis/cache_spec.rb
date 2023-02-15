@@ -26,5 +26,22 @@ RSpec.describe Gitlab::Redis::Cache do
 
       expect(described_class.active_support_config[:expires_in]).to eq(1.day)
     end
+
+    context 'when encountering an error' do
+      let(:cache) { ActiveSupport::Cache::RedisCacheStore.new(**described_class.active_support_config) }
+
+      subject { cache.read('x') }
+
+      before do
+        described_class.with do |redis|
+          allow(redis).to receive(:get).and_raise(::Redis::CommandError)
+        end
+      end
+
+      it 'logs error' do
+        expect(::Gitlab::ErrorTracking).to receive(:log_exception)
+        subject
+      end
+    end
   end
 end

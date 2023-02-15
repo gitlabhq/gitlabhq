@@ -25,7 +25,7 @@ module WorkItems
         break ::ServiceResponse.error(message: replacement_result.errors, http_status: 422) if replacement_result.error?
 
         delete_result = ::WorkItems::DeleteService.new(
-          project: @task.project,
+          container: @task.project,
           current_user: @current_user
         ).execute(@task)
 
