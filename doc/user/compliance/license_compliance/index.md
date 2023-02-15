@@ -27,6 +27,11 @@ GitLab blocks any merge requests containing that commit and instructs the develo
 license.
 
 NOTE:
+Starting with GitLab 15.9, License Compliance can detect the licenses in use
+[using Dependency Scanning CI jobs](../license_scanning_of_cyclonedx_files/index.md)
+instead of the License Scanning ones.
+
+NOTE:
 If the license compliance report doesn't have anything to compare to, no information
 is displayed in the merge request area. That is the case when you add the
 `license_scanning` job in your `.gitlab-ci.yml` for the first time.

@@ -2,6 +2,10 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 15.8.2 (2023-02-10)
+
+No changes.
+
 ## 15.8.1 (2023-01-30)
 
 ### Security (5 changes)
@@ -479,6 +483,10 @@ entry.
 - [Factor out S3 API types](gitlab-org/gitlab@9997fee4babdbe7ca97834f40c1ff0e10395741b) ([merge request](gitlab-org/gitlab!107373))
 - [Do not use _test when not necessary](gitlab-org/gitlab@1bde73aba2bd1d7f9e833c7325cffa0c90d1c106) ([merge request](gitlab-org/gitlab!107373))
 - [Add config/redis.yml unified config file](gitlab-org/gitlab@ace8301236eecc07a511975b57f80e21ec7be3c2) ([merge request](gitlab-org/gitlab!106854))
+
+## 15.7.7 (2023-02-10)
+
+No changes.
 
 ## 15.7.6 (2023-01-30)
 
@@ -1339,6 +1347,10 @@ No changes.
 - [Enforces HTTP/HTTPS schemes in KubeClient](gitlab-org/gitlab@7cc32f43ab3d57e5ad9bc609b6473e0571453abe) ([merge request](gitlab-org/gitlab!103685))
 - [Propagate RemoteIP to Gitaly via Workhorse](gitlab-org/gitlab@71da945c85931bac0263c193902dc1b54e2e62da) ([merge request](gitlab-org/gitlab!103635))
 - [Documentation to reflect 100MB upload limit](gitlab-org/gitlab@33063bb26ab7699802ecb2b325cc8619d6fe7b86) ([merge request](gitlab-org/gitlab!103978))
+
+## 15.6.8 (2023-02-10)
+
+No changes.
 
 ## 15.6.7 (2023-01-30)
 

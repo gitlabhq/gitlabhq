@@ -13,7 +13,7 @@ if you do not have write access for the repository you want to contribute to, yo
 can create a fork.
 
 A fork is a personal copy of the repository and all its branches, which you create
-in a namespace of your choice. This way you can make changes in your own fork and
+in a namespace of your choice. Make changes in your own fork and
 submit them through a merge request to the repository you don't have access to.
 
 ## Creating a fork
@@ -40,8 +40,8 @@ GitLab creates your fork, and redirects you to the new fork's page.
 ## Update your fork
 
 To copy the latest changes from the upstream repository into your fork, update it
-from the command line. GitLab Premium and higher tiers can also
-[configure forks as pull mirrors](mirror/pull.md#configure-pull-mirroring)
+[from the command line](#from-the-command-line). GitLab Premium and higher tiers can also
+[configure forks as pull mirrors](#with-repository-mirroring)
 of the upstream repository.
 
 ### From the command line
@@ -51,9 +51,14 @@ an `upstream` remote repository for your fork:
 
 1. Clone your fork locally, if you have not already done so. For more information, see
    [Clone a repository](../../../gitlab-basics/start-using-git.md#clone-a-repository).
-1. View the remotes configured for your fork with `git remote -v`.
-1. If your fork does not have an `upstream` remote pointing to the original repository,
-   use one of these examples to configure an `upstream` remote:
+1. View the remotes configured for your fork:
+
+   ```shell
+   git remote -v
+   ```
+
+1. If your fork does not have a remote pointing to the original repository,
+   use one of these examples to configure a remote called `upstream`:
 
    ```shell
    # Use this line to set any repository as your upstream after editing <upstream_url>
@@ -63,7 +68,7 @@ an `upstream` remote repository for your fork:
    git remote add upstream https://gitlab.com/gitlab-org/gitlab.git
    ```
 
-   After ensuring your fork has an `upstream` remote configured, you are ready to update your fork.
+   After ensuring your local copy has the extra remote configured, you are ready to update your fork.
 
 1. In your local copy, ensure you have checked out the [default branch](branches/default.md),
    replacing `main` with the name of your default branch:
@@ -73,7 +78,13 @@ an `upstream` remote repository for your fork:
    ```
 
    If Git identifies unstaged changes, commit or stash them before continuing.
-1. Fetch the changes to the upstream repository with `git fetch upstream`.
+
+1. Fetch the changes to the upstream repository:
+
+   ```shell
+   git fetch upstream
+   ```
+
 1. Pull the changes into your fork, replacing `main` with the name of the branch
    you are updating:
 
@@ -81,7 +92,7 @@ an `upstream` remote repository for your fork:
    git pull upstream main
    ```
 
-1. Push the changes to your fork repository on the server (GitLab.com or self-managed).
+1. Push the changes to your fork repository on the server (GitLab.com or self-managed):
 
    ```shell
    git push origin main
@@ -112,7 +123,7 @@ choose your forked project's branch. For **Target branch**, choose the original 
 NOTE:
 When creating a merge request, if the forked project's visibility is more restrictive than the parent project (for example the fork is private, the parent is public), the target branch defaults to the forked project's default branch. This prevents potentially exposing the private code of the forked project.
 
-![Selecting branches](img/forking_workflow_branch_select.png)
+![Selecting branches](img/forking_workflow_branch_select_v15_9.png)
 
 Then you can add labels, a milestone, and assign the merge request to someone who can review
 your changes. Then select **Submit merge request** to conclude the process. When successfully merged, your

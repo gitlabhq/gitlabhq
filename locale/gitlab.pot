@@ -8596,6 +8596,9 @@ msgstr ""
 msgid "Checkout|Need more users? Purchase GitLab for your %{company}."
 msgstr ""
 
+msgid "Checkout|Network Error: %{message}"
+msgstr ""
+
 msgid "Checkout|Number of users"
 msgstr ""
 
@@ -8612,6 +8615,9 @@ msgid "Checkout|Select a country"
 msgstr ""
 
 msgid "Checkout|Select a state"
+msgstr ""
+
+msgid "Checkout|Something went wrong while loading price details."
 msgstr ""
 
 msgid "Checkout|State"
