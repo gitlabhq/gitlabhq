@@ -3,6 +3,7 @@ import { GITLAB_WEB_IDE_FEEDBACK_ISSUE } from '~/ide/constants';
 import { initGitlabWebIDE } from '~/ide/init_gitlab_web_ide';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_action';
 import { createAndSubmitForm } from '~/lib/utils/create_and_submit_form';
+import { handleTracking } from '~/ide/lib/gitlab_web_ide/handle_tracking_event';
 import { TEST_HOST } from 'helpers/test_constants';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -115,6 +116,7 @@ describe('ide/init_gitlab_web_ide', () => {
           format: TEST_EDITOR_FONT_FORMAT,
         },
         handleStartRemote: expect.any(Function),
+        handleTracking,
       });
     });
 

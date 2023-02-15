@@ -2,6 +2,5 @@
 - add_to_breadcrumbs _("Experiments"), project_ml_experiments_path(@project)
 - add_to_breadcrumbs experiment.name, project_ml_experiment_path(@project, experiment.iid)
 - breadcrumb_title "Candidate #{@candidate.iid}"
-- data = candidate_as_data(@candidate)
 
-#js-show-ml-candidate{ data: { candidate: data } }
+#js-show-ml-candidate{ data: { view_model: show_candidate_view_model(@candidate) } }

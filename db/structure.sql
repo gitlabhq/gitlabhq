@@ -29293,6 +29293,8 @@ CREATE INDEX index_ci_job_artifacts_on_id_project_id_and_file_type ON ci_job_art
 
 CREATE UNIQUE INDEX index_ci_job_artifacts_on_job_id_and_file_type ON ci_job_artifacts USING btree (job_id, file_type);
 
+CREATE INDEX index_ci_job_artifacts_on_partition_id_job_id ON ci_job_artifacts USING btree (partition_id, job_id);
+
 CREATE INDEX index_ci_job_artifacts_on_project_id ON ci_job_artifacts USING btree (project_id);
 
 CREATE INDEX index_ci_job_artifacts_on_project_id_and_id ON ci_job_artifacts USING btree (project_id, id);
@@ -35992,6 +35994,9 @@ ALTER TABLE ONLY boards_epic_board_recent_visits
 
 ALTER TABLE ONLY ci_job_artifacts
     ADD CONSTRAINT fk_rails_c5137cb2c1 FOREIGN KEY (job_id) REFERENCES ci_builds(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY ci_job_artifacts
+    ADD CONSTRAINT fk_rails_c5137cb2c1_p FOREIGN KEY (partition_id, job_id) REFERENCES ci_builds(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE NOT VALID;
 
 ALTER TABLE ONLY packages_events
     ADD CONSTRAINT fk_rails_c6c20d0094 FOREIGN KEY (package_id) REFERENCES packages_packages(id) ON DELETE SET NULL;

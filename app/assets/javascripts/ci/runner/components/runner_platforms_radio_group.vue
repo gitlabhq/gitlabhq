@@ -1,5 +1,9 @@
 <script>
+import AWS_LOGO_URL from '@gitlab/svgs/dist/illustrations/logos/aws.svg?url';
+import DOCKER_LOGO_URL from '@gitlab/svgs/dist/illustrations/third-party-logos/ci_cd-template-logos/docker.png';
+import KUBERNETES_LOGO_URL from '@gitlab/svgs/dist/illustrations/logos/kubernetes.svg?url';
 import { GlFormRadioGroup, GlIcon, GlLink } from '@gitlab/ui';
+
 import {
   LINUX_PLATFORM,
   MACOS_PLATFORM,
@@ -18,7 +22,6 @@ export default {
     GlIcon,
     RunnerPlatformsRadio,
   },
-  inject: ['awsImgPath', 'dockerImgPath', 'kubernetesImgPath'],
   props: {
     value: {
       type: String,
@@ -39,9 +42,13 @@ export default {
   LINUX_PLATFORM,
   MACOS_PLATFORM,
   WINDOWS_PLATFORM,
+
   AWS_PLATFORM,
+  AWS_LOGO_URL,
   DOCKER_HELP_URL,
+  DOCKER_LOGO_URL,
   KUBERNETES_HELP_URL,
+  KUBERNETES_LOGO_URL,
 };
 </script>
 
@@ -68,7 +75,11 @@ export default {
       <label>{{ s__('Runners|Cloud templates') }}</label>
       <!-- eslint-disable @gitlab/vue-require-i18n-strings -->
       <div class="gl-display-flex gl-flex-wrap gl-gap-5">
-        <runner-platforms-radio v-model="model" :image="awsImgPath" :value="$options.AWS_PLATFORM">
+        <runner-platforms-radio
+          v-model="model"
+          :image="$options.AWS_LOGO_URL"
+          :value="$options.AWS_PLATFORM"
+        >
           AWS
         </runner-platforms-radio>
       </div>
@@ -79,13 +90,13 @@ export default {
 
       <div class="gl-display-flex gl-flex-wrap gl-gap-5">
         <!-- eslint-disable @gitlab/vue-require-i18n-strings -->
-        <runner-platforms-radio :image="dockerImgPath">
+        <runner-platforms-radio :image="$options.DOCKER_LOGO_URL">
           <gl-link :href="$options.DOCKER_HELP_URL" target="_blank">
             Docker
             <gl-icon name="external-link" />
           </gl-link>
         </runner-platforms-radio>
-        <runner-platforms-radio :image="kubernetesImgPath">
+        <runner-platforms-radio :image="$options.KUBERNETES_LOGO_URL">
           <gl-link :href="$options.KUBERNETES_HELP_URL" target="_blank">
             Kubernetes
             <gl-icon name="external-link" />

@@ -1000,7 +1000,7 @@ The endpoint to get [changes from a single merge request](https://docs.gitlab.co
 
 ### Support for REST API endpoints that reset runner registration tokens
 
-End of Support: GitLab <span class="removal-milestone">16.0</span> <span class="support-end-date"></span><br />
+End of Support: GitLab <span class="removal-milestone">16.6</span> <span class="support-end-date"></span><br />
 Planned removal: GitLab <span class="removal-milestone">17.0</span> <span class="removal-date"></span>
 
 WARNING:
@@ -1131,7 +1131,7 @@ From GitLab 13.6, users can [specify any runner configuration in the GitLab Runn
 
 ### GitLab Runner registration token in Runner Operator
 
-End of Support: GitLab <span class="removal-milestone">16.0</span> <span class="support-end-date"></span><br />
+End of Support: GitLab <span class="removal-milestone">16.6</span> <span class="support-end-date"></span><br />
 Planned removal: GitLab <span class="removal-milestone">17.0</span> <span class="removal-date"></span>
 
 WARNING:
@@ -1146,7 +1146,7 @@ The [`runner-registration-token`](https://docs.gitlab.com/runner/install/operato
 
 ### Registration tokens and server-side runner arguments in `POST /api/v4/runners` endpoint
 
-End of Support: GitLab <span class="removal-milestone">16.0</span> <span class="support-end-date"></span><br />
+End of Support: GitLab <span class="removal-milestone">16.6</span> <span class="support-end-date"></span><br />
 Planned removal: GitLab <span class="removal-milestone">17.0</span> <span class="removal-date"></span>
 
 WARNING:
@@ -1158,7 +1158,7 @@ This endpoint [registers](https://docs.gitlab.com/ee/api/runners.html#register-a
 with a GitLab instance at the instance, group, or project level through the API. We plan to remove the support for
 registration tokens and certain configuration arguments in this endpoint in GitLab 17.0.
 
-In GitLab 15.8, we plan to implement a new method to bind runners to a GitLab instance,
+In GitLab 15.10, we plan to implement a new method to bind runners to a GitLab instance,
 as part of the new [GitLab Runner token architecture](https://docs.gitlab.com/ee/architecture/blueprints/runner_tokens/).
 This new architecture introduces a new method for registering runners and will eliminate the legacy
 [runner registration token](https://docs.gitlab.com/ee/security/token_overview.html#runner-registration-tokens).
@@ -1170,7 +1170,7 @@ From GitLab 17.0 and later, the runner registration methods implemented by the n
 
 ### Registration tokens and server-side runner arguments in `gitlab-runner register` command
 
-End of Support: GitLab <span class="removal-milestone">16.0</span> <span class="support-end-date"></span><br />
+End of Support: GitLab <span class="removal-milestone">16.6</span> <span class="support-end-date"></span><br />
 Planned removal: GitLab <span class="removal-milestone">17.0</span> <span class="removal-date"></span>
 
 WARNING:
@@ -1178,7 +1178,7 @@ This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_g
 Review the details carefully before upgrading.
 
 The support for registration tokens and certain configuration arguments in the command to [register](https://docs.gitlab.com/runner/register/) a runner, `gitlab-runner register` is deprecated.
-GitLab plans to introduce a new [GitLab Runner token architecture](https://docs.gitlab.com/ee/architecture/blueprints/runner_tokens/) in GitLab 15.8,
+GitLab plans to introduce a new [GitLab Runner token architecture](https://docs.gitlab.com/ee/architecture/blueprints/runner_tokens/) in GitLab 15.10,
 which introduces a new method for registering runners and eliminates the legacy
 [runner registration token](https://docs.gitlab.com/ee/security/token_overview.html#runner-registration-tokens).
 The new method will involve creating the runner in the GitLab UI and passing the
@@ -1191,7 +1191,7 @@ to the `gitlab-runner register` command.
 
 ### `runnerRegistrationToken` parameter for GitLab Runner Helm Chart
 
-End of Support: GitLab <span class="removal-milestone">16.0</span> <span class="support-end-date"></span><br />
+End of Support: GitLab <span class="removal-milestone">16.6</span> <span class="support-end-date"></span><br />
 Planned removal: GitLab <span class="removal-milestone">17.0</span> <span class="removal-date"></span>
 
 WARNING:
@@ -1204,6 +1204,7 @@ As part of the new [GitLab Runner token architecture](https://docs.gitlab.com/ee
 
 - A new method to bind runners to a GitLab instance leveraging `runnerToken`.
 - A unique system ID saved to the `config.toml`, which will ensure traceability between jobs and runners.
+
 From GitLab 17.0 and later, the methods to register runners introduced by the new GitLab Runner token architecture will be the only supported methods.
 
 </div>

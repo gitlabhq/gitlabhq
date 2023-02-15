@@ -7,6 +7,7 @@ import csrf from '~/lib/utils/csrf';
 import { getBaseConfig } from './lib/gitlab_web_ide/get_base_config';
 import { setupRootElement } from './lib/gitlab_web_ide/setup_root_element';
 import { GITLAB_WEB_IDE_FEEDBACK_ISSUE } from './constants';
+import { handleTracking } from './lib/gitlab_web_ide/handle_tracking_event';
 
 const buildRemoteIdeURL = (ideRemotePath, remoteHost, remotePathArg) => {
   const remotePath = cleanLeadingSeparator(remotePathArg);
@@ -72,6 +73,7 @@ export const initGitlabWebIDE = async (el) => {
       fontFamily: editorFontFamily,
       format: editorFontFormat,
     },
+    handleTracking,
     async handleStartRemote({ remoteHost, remotePath, connectionToken }) {
       const confirmed = await confirmAction(
         __('Are you sure you want to leave the Web IDE? All unsaved changes will be lost.'),

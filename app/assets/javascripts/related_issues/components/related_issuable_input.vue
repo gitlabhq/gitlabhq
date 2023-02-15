@@ -1,11 +1,11 @@
 <script>
 import $ from 'jquery';
 import GfmAutoComplete from 'ee_else_ce/gfm_auto_complete';
+import { TYPE_ISSUE } from '~/issues/constants';
 import {
   autoCompleteTextMap,
   inputPlaceholderConfidentialTextMap,
   inputPlaceholderTextMap,
-  issuableTypesMap,
 } from '../constants';
 import IssueToken from './issue_token.vue';
 
@@ -54,7 +54,7 @@ export default {
     issuableType: {
       type: String,
       required: false,
-      default: issuableTypesMap.ISSUE,
+      default: TYPE_ISSUE,
     },
     confidential: {
       type: Boolean,

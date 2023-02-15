@@ -439,7 +439,7 @@ func TestPostUploadPackProxiedToGitalySuccessfully(t *testing.T) {
 			bodySplit := strings.SplitN(body, "\000", 2)
 			require.Len(t, bodySplit, 2)
 
-			gitalyRequest := &gitalypb.PostUploadPackRequest{}
+			gitalyRequest := &gitalypb.PostUploadPackWithSidechannelRequest{}
 			require.NoError(t, jsonpb.UnmarshalString(bodySplit[0], gitalyRequest))
 
 			require.Equal(t, apiResponse.Repository.StorageName, gitalyRequest.Repository.StorageName)

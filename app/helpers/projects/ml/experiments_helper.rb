@@ -5,6 +5,25 @@ module Projects
       require 'json'
       include ActionView::Helpers::NumberHelper
 
+      def show_candidate_view_model(candidate)
+        data = {
+          candidate: {
+            params: candidate.params,
+            metrics: candidate.latest_metrics,
+            info: {
+              iid: candidate.iid,
+              path_to_artifact: link_to_artifact(candidate),
+              experiment_name: candidate.experiment.name,
+              path_to_experiment: link_to_experiment(candidate.project, candidate.experiment),
+              status: candidate.status
+            },
+            metadata: candidate.metadata
+          }
+        }
+
+        Gitlab::Json.generate(data)
+      end
+
       def candidates_table_items(candidates)
         items = candidates.map do |candidate|
           {
@@ -23,23 +42,6 @@ module Projects
 
       def unique_logged_names(candidates, &selector)
         Gitlab::Json.generate(candidates.flat_map(&selector).map(&:name).uniq)
-      end
-
-      def candidate_as_data(candidate)
-        data = {
-          params: candidate.params,
-          metrics: candidate.latest_metrics,
-          info: {
-            iid: candidate.iid,
-            path_to_artifact: link_to_artifact(candidate),
-            experiment_name: candidate.experiment.name,
-            path_to_experiment: link_to_experiment(candidate.project, candidate.experiment),
-            status: candidate.status
-          },
-          metadata: candidate.metadata
-        }
-
-        Gitlab::Json.generate(data)
       end
 
       def experiments_as_data(project, experiments)

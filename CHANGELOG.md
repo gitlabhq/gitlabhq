@@ -2,6 +2,18 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 15.8.3 (2023-02-15)
+
+### Fixed (3 changes)
+
+- [Attempt reading schema file instead of a file named `#{report_version}`](gitlab-org/gitlab@f4b236c5f22c2da89bd4275cd8f5bf2807069ee4) ([merge request](gitlab-org/gitlab!111934))
+- [Revert changes on wiki replication/verification legacy code](gitlab-org/gitlab@71b29b669f0415fa371560139d699aa7ad568549) ([merge request](gitlab-org/gitlab!111934)) **GitLab Enterprise Edition**
+- [Revert changes on wiki replication/verification legacy code](gitlab-org/gitlab@fd824d99fb7b341088841edfaa6c401c4c20dad8) ([merge request](gitlab-org/gitlab!111879)) **GitLab Enterprise Edition**
+
+### Changed (1 change)
+
+- [Upgrade Alert - Add proper API support](gitlab-org/gitlab@6658efdbfb89847f20836e862710260e49c44778) ([merge request](gitlab-org/gitlab!111934))
+
 ## 15.8.2 (2023-02-10)
 
 No changes.

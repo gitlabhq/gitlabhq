@@ -11,11 +11,11 @@
     with a GitLab instance at the instance, group, or project level through the API. We plan to remove the support for
     registration tokens and certain configuration arguments in this endpoint in GitLab 17.0.
 
-    In GitLab 15.8, we plan to implement a new method to bind runners to a GitLab instance,
+    In GitLab 15.10, we plan to implement a new method to bind runners to a GitLab instance,
     as part of the new [GitLab Runner token architecture](https://docs.gitlab.com/ee/architecture/blueprints/runner_tokens/).
     This new architecture introduces a new method for registering runners and will eliminate the legacy
     [runner registration token](https://docs.gitlab.com/ee/security/token_overview.html#runner-registration-tokens).
     From GitLab 17.0 and later, the runner registration methods implemented by the new GitLab Runner token architecture will be the only supported methods.
-  end_of_support_milestone: "16.0"  # (optional) Use "XX.YY" format. The milestone when support for this feature will end.
+  end_of_support_milestone: "16.6"  # (optional) Use "XX.YY" format. The milestone when support for this feature will end.
   tiers:  # (optional - may be required in the future) An array of tiers that the feature is available in currently.  e.g., [Free, Silver, Gold, Core, Premium, Ultimate]
   documentation_url: https://docs.gitlab.com/ee/api/runners.html#register-a-new-runner  # (optional) This is a link to the current documentation page

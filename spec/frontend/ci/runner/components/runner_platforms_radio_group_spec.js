@@ -51,9 +51,9 @@ describe('RunnerPlatformsRadioGroup', () => {
       ['Linux', null],
       ['macOS', null],
       ['Windows', null],
-      ['AWS', mockProvide.awsImgPath],
-      ['Docker', mockProvide.dockerImgPath],
-      ['Kubernetes', mockProvide.kubernetesImgPath],
+      ['AWS', expect.any(String)],
+      ['Docker', expect.any(String)],
+      ['Kubernetes', expect.any(String)],
     ]);
   });
 

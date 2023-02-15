@@ -3,6 +3,7 @@ import { getBaseConfig, setupRootElement } from '~/ide/lib/gitlab_web_ide';
 import { mountRemoteIDE } from '~/ide/remote';
 import { TEST_HOST } from 'helpers/test_constants';
 import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
+import { handleTracking } from '~/ide/lib/gitlab_web_ide/handle_tracking_event';
 
 jest.mock('@gitlab/web-ide');
 jest.mock('~/ide/lib/gitlab_web_ide');
@@ -24,7 +25,6 @@ const TEST_RETURN_URL_SAME_ORIGIN = `${TEST_HOST}/foo/example`;
 describe('~/ide/remote/index', () => {
   useMockLocationHelper();
   const originalHref = window.location.href;
-
   let el;
   let rootEl;
 
@@ -56,6 +56,7 @@ describe('~/ide/remote/index', () => {
         hostPath: `/${TEST_DATA.remotePath}`,
         handleError: expect.any(Function),
         handleClose: expect.any(Function),
+        handleTracking,
       });
     });
   });

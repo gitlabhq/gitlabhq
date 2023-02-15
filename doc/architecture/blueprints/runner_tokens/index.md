@@ -408,8 +408,8 @@ scope.
 | Component        | Milestone | Changes |
 |------------------|----------:|---------|
 | GitLab Runner    | `%16.0`   | Do not allow runner to start if `.runner_system_id` file cannot be written. |
-| GitLab Rails app | `%16.0`   | Enable `:enforce_create_runner_workflow` feature flag by default. |
-| GitLab Rails app | `%16.0`   | Start reject job requests that don't include `system_id` value. |
+| GitLab Rails app | `%16.6`   | Enable `:enforce_create_runner_workflow` feature flag by default. |
+| GitLab Rails app | `%16.6`   | Start reject job requests that don't include `system_id` value. |
 
 ### Stage 7 - Removals
 
@@ -425,7 +425,7 @@ scope.
 
 ### Will my runner registration workflow break?
 
-If no action is taken before your GitLab instance is upgraded to 16.0, then your runner registration
+If no action is taken before your GitLab instance is upgraded to 16.6, then your runner registration
 worflow will break.
 For self-managed instances, to continue using the previous runner registration process,
 you can disable the `enforce_create_runner_workflow` feature flag until GitLab 17.0.
@@ -456,7 +456,7 @@ This allows the GitLab instance to display which system executed a given job.
 
 - In GitLab 15.10, we plan to implement runner creation directly in the runners administration page,
   and prepare the runner to follow the new workflow.
-- In GitLab 16.0, we plan to disable registration tokens.
+- In GitLab 16.6, we plan to disable registration tokens.
   For self-managed instances, to continue using
   registration tokens, you can disable the `enforce_create_runner_workflow` feature flag until
   GitLab 17.0.

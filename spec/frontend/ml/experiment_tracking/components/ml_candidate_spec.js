@@ -28,7 +28,7 @@ describe('MlCandidate', () => {
       },
     };
 
-    return mountExtended(MlCandidate, { provide: { candidate } });
+    return mountExtended(MlCandidate, { propsData: { candidate } });
   };
 
   const findAlert = () => wrapper.findComponent(GlAlert);

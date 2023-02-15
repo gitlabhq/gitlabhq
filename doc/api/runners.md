@@ -789,7 +789,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
 > - [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/104691) in GitLab 15.7.
 
 WARNING:
-This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/383341) in GitLab 15.7 and is planned for removal in 16.0. This change is a breaking change.
+This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/383341) in GitLab 15.7 and is planned for removal in 17.0. This change is a breaking change.
 
 Reset the runner registration token for a project.
 
@@ -808,7 +808,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
 > - [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/104691) in GitLab 15.7.
 
 WARNING:
-This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/383341) in GitLab 15.7 and is planned for removal in 16.0. This change is a breaking change.
+This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/383341) in GitLab 15.7 and is planned for removal in 17.0. This change is a breaking change.
 
 Reset the runner registration token for a group.
 

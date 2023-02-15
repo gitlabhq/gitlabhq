@@ -26,7 +26,7 @@ require (
 	github.com/sirupsen/logrus v1.9.0
 	github.com/smartystreets/goconvey v1.7.2
 	github.com/stretchr/testify v1.8.1
-	gitlab.com/gitlab-org/gitaly/v15 v15.8.1
+	gitlab.com/gitlab-org/gitaly/v15 v15.9.0-rc4
 	gitlab.com/gitlab-org/golang-archive-zip v0.1.1
 	gitlab.com/gitlab-org/labkit v1.17.0
 	gocloud.dev v0.28.0
@@ -111,7 +111,7 @@ require (
 	golang.org/x/exp/typeparams v0.0.0-20220218215828-6cf2b201936e // indirect
 	golang.org/x/mod v0.6.0 // indirect
 	golang.org/x/sync v0.1.0 // indirect
-	golang.org/x/sys v0.4.0 // indirect
+	golang.org/x/sys v0.5.0 // indirect
 	golang.org/x/text v0.6.0 // indirect
 	golang.org/x/time v0.3.0 // indirect
 	golang.org/x/xerrors v0.0.0-20220907171357-04be3eba64a2 // indirect

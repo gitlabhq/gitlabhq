@@ -77,10 +77,10 @@ RSpec.describe Projects::Ml::ExperimentsHelper, feature_category: :mlops do
     end
   end
 
-  describe '#candidate_as_data' do
+  describe '#show_candidate_view_model' do
     let(:candidate) { candidate0 }
 
-    subject { Gitlab::Json.parse(helper.candidate_as_data(candidate)) }
+    subject { Gitlab::Json.parse(helper.show_candidate_view_model(candidate))['candidate'] }
 
     it 'generates the correct params' do
       expect(subject['params']).to include(

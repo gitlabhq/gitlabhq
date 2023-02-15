@@ -19,6 +19,6 @@
     This new architecture introduces a new method for registering runners and will eliminate the legacy
     [runner registration token](https://docs.gitlab.com/ee/security/token_overview.html#runner-registration-tokens).
     From GitLab 17.0 and later, the runner registration methods implemented by the new GitLab Runner token architecture will be the only supported methods.
-  end_of_support_milestone: "16.0"  # (optional) Use "XX.YY" format. The milestone when support for this feature will end.
+  end_of_support_milestone: "16.6"  # (optional) Use "XX.YY" format. The milestone when support for this feature will end.
   tiers:  # (optional - may be required in the future) An array of tiers that the feature is available in currently.  e.g., [Free, Silver, Gold, Core, Premium, Ultimate]
   documentation_url: https://docs.gitlab.com/ee/api/runners.html#register-a-new-runner  # (optional) This is a link to the current documentation page

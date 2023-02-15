@@ -10,7 +10,12 @@ export default {
     IncubationAlert,
     GlLink,
   },
-  inject: ['candidate'],
+  props: {
+    candidate: {
+      type: Object,
+      required: true,
+    },
+  },
   i18n: {
     titleLabel: __('Model candidate details'),
     infoLabel: __('Info'),

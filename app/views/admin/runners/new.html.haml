@@ -2,8 +2,4 @@
 - breadcrumb_title s_('Runners|New')
 - page_title s_('Runners|Create an instance runner')
 
-#js-admin-new-runner{ data: {
-  legacy_registration_token: Gitlab::CurrentSettings.runners_registration_token,
-  aws_img_path: image_path('illustrations/logos/aws.svg'),
-  kubernetes_img_path: image_path('illustrations/logos/kubernetes.svg'),
-  docker_img_path: image_path('illustrations/third-party-logos/ci_cd-template-logos/docker.png') } }
+#js-admin-new-runner{ data: { legacy_registration_token: Gitlab::CurrentSettings.runners_registration_token } }

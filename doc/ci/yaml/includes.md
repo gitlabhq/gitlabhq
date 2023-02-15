@@ -157,6 +157,87 @@ and the `environment:url` of the `production` job defined in the `.gitlab-ci.yml
 override the values defined in the `autodevops-template.yml` file. The other keywords
 do not change. This method is called *merging*.
 
+### Merge method for `include`
+
+For a file containing `include` directives, the included files are read in order (possibly
+recursively), and the configuration in these files is likewise merged in order. If the parameters overlap, the last included file takes precedence. Finally, the directives in the
+file itself are merged with the configuration from the included files.
+
+This merge method is a _deep merge_, where hash maps are merged at any depth in the
+configuration. To merge hash map A (containing the configuration merged so far) and B (the next piece
+of configuration), the keys and values are processed as follows:
+
+- When the key only exists in A, use the key and value from A.
+- When the key exists in both A and B, and their values are both hash maps, merge those hash maps.
+- When the key exists in both A and B, and one of the values is not a hash map, use the value from B.
+- Otherwise, use the key and value from B.
+
+For example:
+
+We have a configuration consisting of two files.
+
+- The `.gitlab-ci.yml` file:
+
+  ```yaml
+  include: 'common.yml'
+
+  variables:
+    POSTGRES_USER: username
+
+  test:
+    rules:
+      - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+        when: manual
+    artifacts:
+      reports:
+        junit: rspec.xml
+  ```
+
+- The `common.yml` file:
+
+  ```yaml
+  variables:
+    POSTGRES_USER: common_username
+    POSTGRES_PASSWORD: testing_password
+
+  test:
+    rules:
+      - when: never
+    script:
+      - echo LOGIN=${POSTGRES_USER} > deploy.env
+      - rake spec
+    artifacts:
+      reports:
+        dotenv: deploy.env
+  ```
+
+The merged result:
+
+```yaml
+variables:
+  POSTGRES_USER: username
+  POSTGRES_PASSWORD: testing_password
+
+test:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      when: manual
+  script:
+    - echo LOGIN=${POSTGRES_USER} > deploy.env
+    - rake spec
+  artifacts:
+    reports:
+      junit: rspec.xml
+      dotenv: deploy.env
+```
+
+In this example:
+
+- Variables are only evaluated after all the files are merged together. A job in an included file
+  might end up using a variable value defined in a different file.
+- `rules` is an array so it cannot be merged. The top-level file takes precedence.
+- `artifacts` is a hash map so it can be deep merged.
+
 ## Override included configuration arrays
 
 You can use merging to extend and override configuration in an included template, but
