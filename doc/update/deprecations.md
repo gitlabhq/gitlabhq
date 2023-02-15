@@ -161,6 +161,32 @@ During the transition to the GitLab Observability UI, we will migrate the [GitLa
 
 <div class="deprecation removal-170 breaking-change">
 
+### Filepath field in Releases and Release Links APIs
+
+Planned removal: GitLab <span class="removal-milestone">17.0</span> <span class="removal-date"></span>
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+Support for specifying a `filepath` for a direct asset link in the [Releases API](https://docs.gitlab.com/ee/api/releases)
+and [Release Links API](https://docs.gitlab.com/ee/api/releases/links.html) is deprecated in GitLab 15.9 and will be
+removed in GitLab 17.0. GitLab introduced a new field called `direct_asset_path` in GitLab 15.9 to replace `filepath`
+until it is finally removed.
+
+To avoid any disruptions, you should replace `filepath` with `direct_asset_path` in your calls to the following endpoints:
+
+- Releases API:
+  - [Create a release](https://docs.gitlab.com/ee/api/releases/#create-a-release)
+  - [Download a release asset](https://docs.gitlab.com/ee/api/releases/#download-a-release-asset)
+- Release Links API:
+  - [Create a release link](https://docs.gitlab.com/ee/api/releases/links.html#create-a-release-link)
+  - [Update a release link](https://docs.gitlab.com/ee/api/releases/links.html#update-a-release-link)
+
+</div>
+
+<div class="deprecation removal-170 breaking-change">
+
 ### GitLab Runner platforms and setup instructions in GraphQL API
 
 Planned removal: GitLab <span class="removal-milestone">17.0</span> <span class="removal-date"></span>

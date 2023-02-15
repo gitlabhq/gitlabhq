@@ -10408,6 +10408,12 @@ msgstr ""
 msgid "Completed in %{duration_seconds} seconds (%{relative_time})"
 msgstr ""
 
+msgid "Compliance Report|Frameworks"
+msgstr ""
+
+msgid "Compliance Report|Violations"
+msgstr ""
+
 msgid "Compliance framework"
 msgstr ""
 
