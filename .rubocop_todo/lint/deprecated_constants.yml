@@ -1,0 +1,7 @@
+---
+# Cop supports --autocorrect.
+Lint/DeprecatedConstants:
+  Details: grace period
+  Exclude:
+    - 'scripts/pipeline_test_report_builder.rb'
+    - 'spec/scripts/pipeline_test_report_builder_spec.rb'

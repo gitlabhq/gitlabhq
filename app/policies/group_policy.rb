@@ -329,6 +329,9 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     prevent :create_group_runners
   end
 
+  # Should be matched with ProjectPolicy#read_internal_note
+  rule { admin | reporter }.enable :read_internal_note
+
   def access_level(for_any_session: false)
     return GroupMember::NO_ACCESS if @user.nil?
     return GroupMember::NO_ACCESS unless user_is_user?

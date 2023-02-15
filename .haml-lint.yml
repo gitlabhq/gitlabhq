@@ -120,9 +120,12 @@ linters:
       - Layout/SpaceInsideHashLiteralBraces
       - Layout/SpaceInsideStringInterpolation
       - Layout/TrailingEmptyLines
+      - Lint/AmbiguousOperatorPrecedence
       - Lint/LiteralInInterpolation
       - Lint/ParenthesesAsGroupedExpression
       - Lint/SafeNavigationConsistency
+      - Lint/SymbolConversion
+      - Lint/UnusedBlockArgument
       - Metrics/BlockNesting
       - Naming/VariableName
       - Performance/RedundantMatch

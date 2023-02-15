@@ -862,6 +862,9 @@ class ProjectPolicy < BasePolicy
     prevent :create_project_runners
   end
 
+  # Should be matched with GroupPolicy#read_internal_note
+  rule { admin | can?(:reporter_access) }.enable :read_internal_note
+
   private
 
   def user_is_user?

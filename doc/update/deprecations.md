@@ -257,9 +257,10 @@ WARNING:
 This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
 Review the details carefully before upgrading.
 
-Required Pipeline Configuration will be removed in the 16.0 release. This impacts Self-Managed users on the Ultimate license.
+Required Pipeline Configuration will be removed in the 16.0 release. This impacts self-managed users on the Ultimate license.
 
-We recommend replacing this with an alternative [compliance solution](https://docs.gitlab.com/ee/user/group/compliance_frameworks.html#configure-a-compliance-pipeline) that is available now. We recommend this alternative solution because it provides greater flexibility, allowing required pipelines to be assigned to specific compliance framework labels.
+We recommend replacing this with an alternative [compliance solution](https://docs.gitlab.com/ee/user/group/compliance_frameworks.html#compliance-pipelines)
+that is available now. We recommend this alternative solution because it provides greater flexibility, allowing required pipelines to be assigned to specific compliance framework labels.
 
 </div>
 

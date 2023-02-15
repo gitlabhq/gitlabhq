@@ -1,0 +1,8 @@
+---
+# Cop supports --autocorrect.
+Lint/OrAssignmentToConstant:
+  Details: grace period
+  Exclude:
+    - 'lib/gitlab/email/handler/base_handler.rb'
+    - 'lib/gitlab/utils.rb'
+    - 'tooling/danger/project_helper.rb'

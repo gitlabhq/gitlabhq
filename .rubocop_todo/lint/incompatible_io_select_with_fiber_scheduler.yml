@@ -1,0 +1,6 @@
+---
+# Cop supports --autocorrect.
+Lint/IncompatibleIoSelectWithFiberScheduler:
+  Details: grace period
+  Exclude:
+    - 'lib/gitlab/stack_prof.rb'

@@ -410,7 +410,7 @@ group :development, :test do
   gem 'spring', '~> 4.1.0'
   gem 'spring-commands-rspec', '~> 1.0.4'
 
-  gem 'gitlab-styles', '~> 9.2.0', require: false
+  gem 'gitlab-styles', '~> 10.0.0', require: false
 
   gem 'haml_lint', '~> 0.40.0', require: false
   gem 'bundler-audit', '~> 0.7.0.1', require: false

@@ -36,6 +36,7 @@ RSpec.shared_context 'GroupPolicy context' do
       read_prometheus
       read_crm_contact
       read_crm_organization
+      read_internal_note
     ]
   end
 
@@ -81,7 +82,7 @@ RSpec.shared_context 'GroupPolicy context' do
     ]
   end
 
-  let(:admin_permissions) { %i[read_confidential_issues] }
+  let(:admin_permissions) { %i[read_confidential_issues read_internal_note] }
 
   before_all do
     group.add_guest(guest)

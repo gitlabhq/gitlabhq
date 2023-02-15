@@ -487,7 +487,7 @@ Security and compliance teams must ensure that security scans:
 
 GitLab provides two methods of accomplishing this, each with advantages and disadvantages.
 
-- [Compliance framework pipelines](../group/compliance_frameworks.md#configure-a-compliance-pipeline)
+- [Compliance framework pipelines](../group/compliance_frameworks.md#compliance-pipelines)
   are recommended when:
 
   - Scan execution enforcement is required for any scanner that uses a GitLab template, such as SAST IaC, DAST, Dependency Scanning,

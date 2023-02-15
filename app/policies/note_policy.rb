@@ -26,12 +26,6 @@ class NotePolicy < BasePolicy
       @subject.noteable.work_item_type.widgets.include?(::WorkItems::Widgets::Notes)
   end
 
-  # Should be matched with IssuablePolicy#read_internal_note
-  # and EpicPolicy#read_internal_note
-  condition(:can_read_internal_note) do
-    access_level >= Gitlab::Access::REPORTER || admin?
-  end
-
   rule { ~notes_widget_enabled }.prevent_all
 
   rule { ~editable }.prevent :admin_note
@@ -67,11 +61,11 @@ class NotePolicy < BasePolicy
     enable :resolve_note
   end
 
-  rule { can_read_internal_note }.policy do
+  rule { can?(:read_internal_note) }.policy do
     enable :mark_note_as_internal
   end
 
-  rule { internal & ~can_read_internal_note }.policy do
+  rule { internal & ~can?(:read_internal_note) }.policy do
     prevent :read_note
     prevent :admin_note
     prevent :resolve_note

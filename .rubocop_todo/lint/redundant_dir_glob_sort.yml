@@ -1,0 +1,11 @@
+---
+# Cop supports --autocorrect.
+Lint/RedundantDirGlobSort:
+  Details: grace period
+  Exclude:
+    - 'app/models/release_highlight.rb'
+    - 'config/application.rb'
+    - 'ee/spec/spec_helper.rb'
+    - 'qa/qa/specs/spec_helper.rb'
+    - 'rubocop/rubocop.rb'
+    - 'spec/spec_helper.rb'

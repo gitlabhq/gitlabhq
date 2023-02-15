@@ -17,7 +17,7 @@ of a job name collision, GitLab adds a dash and a number to the job name. GitLab
 no longer conflicts with existing job names. If you create a policy at the group level, it applies to every child project
 or subgroup. You cannot edit a group-level policy from a child project or subgroup.
 
-This feature has some overlap with [compliance framework pipelines](../../group/compliance_frameworks.md#configure-a-compliance-pipeline),
+This feature has some overlap with [compliance framework pipelines](../../group/compliance_frameworks.md#compliance-pipelines),
 as we have not [unified the user experience for these two features](https://gitlab.com/groups/gitlab-org/-/epics/7312).
 For details on the similarities and differences between these features, see
 [Enforce scan execution](../index.md#enforce-scan-execution).

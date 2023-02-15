@@ -333,6 +333,7 @@ RSpec.shared_examples 'project policies as admin with admin mode' do
       expect_disallowed(*team_member_reporter_permissions)
       expect_allowed(*developer_permissions)
       expect_allowed(*maintainer_permissions)
+      expect_allowed(*admin_permissions)
       expect_allowed(*owner_permissions)
     end
 
@@ -354,6 +355,7 @@ RSpec.shared_examples 'project policies as admin with admin mode' do
         expect_disallowed(*team_member_reporter_permissions)
         expect_disallowed(*developer_permissions)
         expect_disallowed(*maintainer_permissions)
+        expect_disallowed(*admin_permissions)
         expect_disallowed(*owner_permissions)
       end
     end

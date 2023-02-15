@@ -37,7 +37,7 @@ The following steps help you get the most from GitLab application security tools
    remediating existing vulnerabilities and preventing the introduction of new ones.
 1. Enable other scan types such as [SAST](sast/index.md), [DAST](dast/index.md),
    [Fuzz testing](coverage_fuzzing/index.md), or [Container Scanning](container_scanning/index.md).
-1. Use [Compliance Pipelines](../group/compliance_frameworks.md#configure-a-compliance-pipeline)
+1. Use [Compliance Pipelines](../group/compliance_frameworks.md#compliance-pipelines)
    or [Scan Execution Policies](policies/scan-execution-policies.md) to enforce required scan types
    and ensure separation of duties between security and engineering.
 1. Consider enabling [Review Apps](../../development/testing_guide/review_apps.md) to allow for DAST

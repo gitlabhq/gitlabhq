@@ -374,7 +374,7 @@ start. Jobs in the current stage are not stopped and continue to run.
 
 - If a job does not specify a [`stage`](#stage), the job is assigned the `test` stage.
 - If a stage is defined but no jobs use it, the stage is not visible in the pipeline,
-  which can help [compliance pipeline configurations](../../user/group/compliance_frameworks.md#configure-a-compliance-pipeline):
+  which can help [compliance pipeline configurations](../../user/group/compliance_frameworks.md#compliance-pipelines):
   - Stages can be defined in the compliance configuration but remain hidden if not used.
   - The defined stages become visible when developers use them in job definitions.
 

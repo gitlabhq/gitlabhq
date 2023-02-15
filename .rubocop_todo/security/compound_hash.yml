@@ -1,0 +1,8 @@
+---
+Security/CompoundHash:
+  Details: grace period
+  Exclude:
+    - 'ee/app/models/vulnerabilities/finding.rb'
+    - 'ee/lib/gitlab/ci/reports/dependency_list/vulnerability.rb'
+    - 'lib/gitlab/ci/reports/security/finding.rb'
+    - 'lib/gitlab/ci/reports/security/finding_key.rb'

@@ -29,7 +29,7 @@ class Ability
     # A list of users that can read confidential notes in a project
     def users_that_can_read_internal_notes(users, note_parent)
       DeclarativePolicy.subject_scope do
-        users.select { |u| allowed?(u, :reporter_access, note_parent) }
+        users.select { |u| allowed?(u, :read_internal_note, note_parent) }
       end
     end
 

@@ -151,10 +151,8 @@ and verification status on a **secondary** site.
 You can keep track of the progress to implement the missing items in
 these epics/issues:
 
-- [Geo: Build a scalable, self-service Geo replication and verification framework](https://gitlab.com/groups/gitlab-org/-/epics/2161)
 - [Geo: Improve the self-service Geo replication framework](https://gitlab.com/groups/gitlab-org/-/epics/3761)
 - [Geo: Move existing blobs to framework](https://gitlab.com/groups/gitlab-org/-/epics/3588)
-- [Geo: Add unreplicated data types](https://gitlab.com/groups/gitlab-org/-/epics/893)
 
 ### Replicated data types behind a feature flag
 
