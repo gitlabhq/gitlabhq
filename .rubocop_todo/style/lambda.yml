@@ -13,7 +13,6 @@ Style/Lambda:
     - 'app/serializers/merge_request_sidebar_basic_entity.rb'
     - 'config/application.rb'
     - 'config/initializers/0_license.rb'
-    - 'config/initializers/0_log_deprecations.rb'
     - 'config/initializers/action_cable.rb'
     - 'config/initializers/gitlab_experiment.rb'
     - 'config/initializers/lograge.rb'

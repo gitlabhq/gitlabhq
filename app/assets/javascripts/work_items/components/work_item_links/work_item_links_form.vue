@@ -13,7 +13,6 @@ import { debounce } from 'lodash';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { __, s__, sprintf } from '~/locale';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import projectWorkItemTypesQuery from '~/work_items/graphql/project_work_item_types.query.graphql';
 import projectWorkItemsQuery from '../../graphql/project_work_items.query.graphql';
 import updateWorkItemMutation from '../../graphql/update_work_item.mutation.graphql';
@@ -42,7 +41,6 @@ export default {
     GlFormCheckbox,
     GlTooltip,
   },
-  mixins: [glFeatureFlagMixin()],
   inject: ['projectPath', 'hasIterationsFeature'],
   props: {
     issuableGid: {
@@ -160,12 +158,6 @@ export default {
       }
 
       return workItemInput;
-    },
-    workItemsMvcEnabled() {
-      return this.glFeatures.workItemsMvc;
-    },
-    workItemsMvc2Enabled() {
-      return this.glFeatures.workItemsMvc2;
     },
     isCreateForm() {
       return this.formType === FORM_TYPES.create;

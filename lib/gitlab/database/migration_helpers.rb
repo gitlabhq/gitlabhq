@@ -14,6 +14,7 @@ module Gitlab
       include DynamicModelHelpers
       include RenameTableHelpers
       include AsyncIndexes::MigrationHelpers
+      include AsyncForeignKeys::MigrationHelpers
 
       def define_batchable_model(table_name, connection: self.connection)
         super(table_name, connection: connection)

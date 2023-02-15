@@ -4,7 +4,6 @@ module Gitlab
   module Database
     # Backed by the postgres_constraints view
     class PostgresConstraint < SharedModel
-      IDENTIFIER_REGEX = /^\w+\.\w+$/.freeze
       self.primary_key = :oid
 
       scope :check_constraints, -> { where(constraint_type: 'c') }
@@ -18,7 +17,7 @@ module Gitlab
       scope :valid, -> { where(constraint_valid: true) }
 
       scope :by_table_identifier, ->(identifier) do
-        unless identifier =~ IDENTIFIER_REGEX
+        unless identifier =~ Gitlab::Database::FULLY_QUALIFIED_IDENTIFIER
           raise ArgumentError, "Table name is not fully qualified with a schema: #{identifier}"
         end
 

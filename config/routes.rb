@@ -3,7 +3,7 @@
 require 'sidekiq/web'
 require 'sidekiq/cron/web'
 
-InitializerConnections.with_disabled_database_connections do
+InitializerConnections.raise_if_new_database_connection do
   Rails.application.routes.draw do
     concern :access_requestable do
       post :request_access, on: :collection

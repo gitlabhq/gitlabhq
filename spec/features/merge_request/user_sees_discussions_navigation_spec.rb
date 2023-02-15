@@ -58,7 +58,7 @@ RSpec.describe 'Merge request > User sees discussions navigation', :js, feature_
           expect(page).to have_selector(second_discussion_selector, obscured: false)
         end
 
-        it 'cycles back to the first thread' do
+        it 'cycles back to the first thread', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/391604' do
           goto_next_thread
           goto_next_thread
           goto_next_thread

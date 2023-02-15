@@ -60,6 +60,38 @@ RSpec.describe Gitlab::Database::PostgresPartitionedTable, type: :model do
     end
   end
 
+  describe '.each_partition' do
+    context 'without partitions' do
+      it 'does not yield control' do
+        expect { |b| described_class.each_partition(name, &b) }.not_to yield_control
+      end
+    end
+
+    context 'with partitions' do
+      let(:partition_schema) { 'gitlab_partitions_dynamic' }
+      let(:partition1_name) { "#{partition_schema}.#{name}_202001" }
+      let(:partition2_name) { "#{partition_schema}.#{name}_202002" }
+
+      before do
+        ActiveRecord::Base.connection.execute(<<~SQL)
+          CREATE TABLE #{partition1_name} PARTITION OF #{identifier}
+          FOR VALUES FROM ('2020-01-01') TO ('2020-02-01');
+
+          CREATE TABLE #{partition2_name} PARTITION OF #{identifier}
+          FOR VALUES FROM ('2020-02-01') TO ('2020-03-01');
+        SQL
+      end
+
+      it 'yields control with partition as argument' do
+        args = Gitlab::Database::PostgresPartition
+          .where(identifier: [partition1_name, partition2_name])
+          .order(:name).to_a
+
+        expect { |b| described_class.each_partition(name, &b) }.to yield_successive_args(*args)
+      end
+    end
+  end
+
   describe '#dynamic?' do
     it 'returns true for tables partitioned by range' do
       expect(find("#{schema}.#{foo_range_table_name}")).to be_dynamic

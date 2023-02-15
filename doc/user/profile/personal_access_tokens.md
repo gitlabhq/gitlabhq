@@ -154,7 +154,7 @@ To create a personal access token programmatically:
 
    ```ruby
    user = User.find_by_username('automation-bot')
-   token = user.personal_access_tokens.create(scopes: [:read_user, :read_repository], name: 'Automation token')
+   token = user.personal_access_tokens.create(scopes: ['read_user', 'read_repository'], name: 'Automation token')
    token.set_token('token-string-here123')
    token.save!
    ```
@@ -163,7 +163,7 @@ This code can be shortened into a single-line shell command by using the
 [Rails runner](../../administration/operations/rails_console.md#using-the-rails-runner):
 
 ```shell
-sudo gitlab-rails runner "token = User.find_by_username('automation-bot').personal_access_tokens.create(scopes: [:read_user, :read_repository], name: 'Automation token'); token.set_token('token-string-here123'); token.save!"
+sudo gitlab-rails runner "token = User.find_by_username('automation-bot').personal_access_tokens.create(scopes: ['read_user', 'read_repository'], name: 'Automation token'); token.set_token('token-string-here123'); token.save!"
 ```
 
 ## Revoke a personal access token programmatically **(FREE SELF)**

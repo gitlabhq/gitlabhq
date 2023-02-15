@@ -60,11 +60,11 @@ To create a task:
 
 ### Create a task from a task list item
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/377307) in GitLab 15.9 [with a flag](../administration/feature_flags.md) named `work_items_mvc_2`. Disabled by default.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/377307) in GitLab 15.9 [with a flag](../administration/feature_flags.md) named `work_items_mvc`. Disabled by default.
 
 FLAG:
 On self-managed GitLab, by default this feature is not available.
-To make it available, ask an administrator to [enable the feature flag](../administration/feature_flags.md) named `work_items_mvc_2`.
+To make it available, ask an administrator to [enable the feature flag](../administration/feature_flags.md) named `work_items_mvc`.
 On GitLab.com, this feature is not available.
 The feature is not ready for production use.
 

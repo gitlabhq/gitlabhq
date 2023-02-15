@@ -21,7 +21,17 @@ module Ci
     validates :token, presence: true, uniqueness: true
     validates :owner, presence: true
 
+    attr_encrypted :encrypted_token_tmp,
+      attribute: :encrypted_token,
+      mode: :per_attribute_iv,
+      algorithm: 'aes-256-gcm',
+      key: Settings.attr_encrypted_db_key_base_32,
+      encode: false,
+      encode_vi: false
+
     before_validation :set_default_values
+
+    before_save :copy_token_to_encrypted_token
 
     def set_default_values
       self.token = "#{TRIGGER_TOKEN_PREFIX}#{SecureRandom.hex(20)}" if self.token.blank?
@@ -41,6 +51,12 @@ module Ci
 
     def can_access_project?
       Ability.allowed?(self.owner, :create_build, project)
+    end
+
+    private
+
+    def copy_token_to_encrypted_token
+      self.encrypted_token_tmp = token
     end
   end
 end

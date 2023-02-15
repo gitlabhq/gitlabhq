@@ -14,7 +14,9 @@ module Gitlab
       has_many :queued_reindexing_actions, class_name: 'Gitlab::Database::Reindexing::QueuedAction', foreign_key: :index_identifier
 
       scope :by_identifier, ->(identifier) do
-        raise ArgumentError, "Index name is not fully qualified with a schema: #{identifier}" unless identifier =~ /^\w+\.\w+$/
+        unless identifier =~ Gitlab::Database::FULLY_QUALIFIED_IDENTIFIER
+          raise ArgumentError, "Index name is not fully qualified with a schema: #{identifier}"
+        end
 
         find(identifier)
       end

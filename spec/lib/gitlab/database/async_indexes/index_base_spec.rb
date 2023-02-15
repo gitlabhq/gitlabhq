@@ -3,19 +3,12 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Database::AsyncIndexes::IndexBase, feature_category: :database do
-  include ExclusiveLeaseHelpers
-
   describe '#perform' do
     subject { described_class.new(async_index) }
 
     let(:async_index) { create(:postgres_async_index) }
-
     let(:model) { Gitlab::Database.database_base_models[Gitlab::Database::PRIMARY_DATABASE_NAME] }
     let(:connection) { model.connection }
-
-    let!(:lease) { stub_exclusive_lease(lease_key, :uuid, timeout: lease_timeout) }
-    let(:lease_key) { "gitlab/database/indexing/actions/#{Gitlab::Database::PRIMARY_DATABASE_NAME}" }
-    let(:lease_timeout) { described_class::TIMEOUT_PER_ACTION }
 
     around do |example|
       Gitlab::Database::SharedModel.using_connection(connection) do

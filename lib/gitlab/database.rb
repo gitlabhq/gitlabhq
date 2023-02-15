@@ -49,6 +49,8 @@ module Gitlab
 
     PRIMARY_DATABASE_NAME = ActiveRecord::Base.connection_db_config.name.to_sym # rubocop:disable Database/MultipleDatabases
 
+    FULLY_QUALIFIED_IDENTIFIER = /^\w+\.\w+$/
+
     def self.database_base_models
       @database_base_models ||= {
         # Note that we use ActiveRecord::Base here and not ApplicationRecord.

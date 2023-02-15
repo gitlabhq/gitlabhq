@@ -310,7 +310,7 @@ describe('Description component', () => {
     });
   });
 
-  describe('with work_items_mvc_2 feature flag enabled', () => {
+  describe('with work_items_mvc feature flag enabled', () => {
     describe('empty description', () => {
       beforeEach(() => {
         createComponent({
@@ -319,7 +319,7 @@ describe('Description component', () => {
           },
           provide: {
             glFeatures: {
-              workItemsMvc2: true,
+              workItemsMvc: true,
             },
           },
         });
@@ -339,7 +339,7 @@ describe('Description component', () => {
           },
           provide: {
             glFeatures: {
-              workItemsMvc2: true,
+              workItemsMvc: true,
             },
           },
         });
@@ -383,7 +383,7 @@ describe('Description component', () => {
    1. [ ] item 4;`;
             createComponent({
               props: { descriptionText },
-              provide: { glFeatures: { workItemsMvc2: true } },
+              provide: { glFeatures: { workItemsMvc: true } },
               createWorkItemMutationHandler,
             });
             await waitForPromises();
@@ -437,7 +437,7 @@ describe('Description component', () => {
           beforeEach(async () => {
             createComponent({
               props: { descriptionText: 'description' },
-              provide: { glFeatures: { workItemsMvc2: true } },
+              provide: { glFeatures: { workItemsMvc: true } },
               createWorkItemMutationHandler: jest
                 .fn()
                 .mockResolvedValue(createWorkItemMutationErrorResponse),
@@ -473,7 +473,7 @@ describe('Description component', () => {
    1. [ ] item 4;`;
           createComponent({
             props: { descriptionText },
-            provide: { glFeatures: { workItemsMvc2: true } },
+            provide: { glFeatures: { workItemsMvc: true } },
           });
 
           eventHub.$emit('delete-task-list-item', '4:4-5:19');
@@ -491,7 +491,7 @@ describe('Description component', () => {
               descriptionHtml: descriptionHtmlWithTask,
             },
             provide: {
-              glFeatures: { workItemsMvc2: true },
+              glFeatures: { workItemsMvc: true },
             },
           });
           return nextTick();
@@ -553,7 +553,7 @@ describe('Description component', () => {
 
             createComponent({
               props: { descriptionHtml: descriptionHtmlWithTask },
-              provide: { glFeatures: { workItemsMvc2: true } },
+              provide: { glFeatures: { workItemsMvc: true } },
             });
 
             expect(showDetailsModal).toHaveBeenCalledTimes(modalOpened);
@@ -569,7 +569,7 @@ describe('Description component', () => {
             descriptionHtml: descriptionHtmlWithTask,
           },
           provide: {
-            glFeatures: { workItemsMvc2: true },
+            glFeatures: { workItemsMvc: true },
           },
         });
         return nextTick();

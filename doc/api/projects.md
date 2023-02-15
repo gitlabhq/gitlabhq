@@ -1173,7 +1173,7 @@ GET /projects/:id/groups
     "avatar_url": "http://localhost:3000/uploads/group/avatar/1/foo.jpg",
     "web_url": "http://localhost:3000/groups/foo-bar",
     "full_name": "Foobar Group",
-    "full_path": "foo-bar",
+    "full_path": "foo-bar"
   },
   {
     "id": 2,
@@ -1181,7 +1181,7 @@ GET /projects/:id/groups
     "avatar_url": "http://gitlab.example.com/uploads/group/avatar/1/bar.jpg",
     "web_url": "http://gitlab.example.com/groups/foo/bar",
     "full_name": "Shared Group",
-    "full_path": "foo/shared",
+    "full_path": "foo/shared"
   }
 ]
 ```

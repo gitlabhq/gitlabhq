@@ -2,14 +2,14 @@
 
 Rails.application.reloader.to_run(:before) do
   # Make sure connects_to for Ci::ApplicationRecord gets called outside of config/routes.rb first
-  # See InitializerConnections.with_disabled_database_connections
+  # See InitializerConnections.raise_if_new_database_connection
   Ci::ApplicationRecord
 end
 
 Gitlab.ee do
   if Gitlab::Geo.geo_database_configured?
     # Make sure connects_to for geo gets called outside of config/routes.rb first
-    # See InitializerConnections.with_disabled_database_connections
+    # See InitializerConnections.raise_if_new_database_connection
     Geo::TrackingBase
   end
 

@@ -65,18 +65,6 @@ Rails.application.configure do
   # Enable threaded mode
   # config.threadsafe! unless $rails_rake_task
 
-  # Silence deprecation notices on production.
-  # See also config/initializers/00_deprecations.rb.
-  #
-  # Logging to `log/deprecation_json.log` can be enabled with
-  # `GITLAB_LOG_DEPRECATIONS=1`.
-  #
-  # See https://gitlab.com/gitlab-org/gitlab/-/issues/368379
-  config.active_support.deprecation = :silence
-
-  # Silence disallowed deprecations.
-  config.active_support.disallowed_deprecation = :silence
-
   config.action_mailer.delivery_method = :sendmail
   # Defaults to:
   # # config.action_mailer.sendmail_settings = {

@@ -40,7 +40,6 @@ describe('WorkItemLinksForm', () => {
     typesResponse = projectWorkItemTypesQueryResponse,
     parentConfidential = false,
     hasIterationsFeature = false,
-    workItemsMvcEnabled = false,
     parentIteration = null,
     formType = FORM_TYPES.create,
     parentWorkItemType = WORK_ITEM_TYPE_VALUE_ISSUE,
@@ -62,9 +61,6 @@ describe('WorkItemLinksForm', () => {
         formType,
       },
       provide: {
-        glFeatures: {
-          workItemsMvc: workItemsMvcEnabled,
-        },
         projectPath: 'project/path',
         hasIterationsFeature,
       },

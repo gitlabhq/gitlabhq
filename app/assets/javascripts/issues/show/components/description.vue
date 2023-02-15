@@ -143,7 +143,7 @@ export default {
         };
       },
       skip() {
-        return !this.workItemId || !this.workItemsMvc2Enabled;
+        return !this.workItemId || !this.workItemsMvcEnabled;
       },
     },
     workItemTypes: {
@@ -157,13 +157,13 @@ export default {
         return data.workspace?.workItemTypes?.nodes;
       },
       skip() {
-        return !this.workItemsMvc2Enabled;
+        return !this.workItemsMvcEnabled;
       },
     },
   },
   computed: {
-    workItemsMvc2Enabled() {
-      return this.glFeatures.workItemsMvc2;
+    workItemsMvcEnabled() {
+      return this.glFeatures.workItemsMvc;
     },
     taskWorkItemType() {
       return this.workItemTypes.find((type) => type.name === TASK_TYPE_NAME)?.id;
@@ -195,7 +195,7 @@ export default {
     this.renderGFM();
     this.updateTaskStatusText();
 
-    if (this.workItemId && this.workItemsMvc2Enabled) {
+    if (this.workItemId && this.workItemsMvcEnabled) {
       const taskLink = this.$el.querySelector(
         `.gfm-issue[data-issue="${getIdFromGraphQLId(this.workItemId)}"]`,
       );
@@ -228,7 +228,7 @@ export default {
 
         this.renderSortableLists();
 
-        if (this.workItemsMvc2Enabled) {
+        if (this.workItemsMvcEnabled) {
           this.renderTaskListItemActions();
         }
       }

@@ -31,4 +31,22 @@ RSpec.describe Gitlab::Database::AsyncForeignKeys::PostgresAsyncForeignKeyValida
       it { is_expected.to eq([new_validation, failed_validation]) }
     end
   end
+
+  describe '#handle_exception!' do
+    let_it_be_with_reload(:fk_validation) { create(:postgres_async_foreign_key_validation) }
+
+    let(:error) { instance_double(StandardError, message: 'Oups', backtrace: %w[this that]) }
+
+    subject { fk_validation.handle_exception!(error) }
+
+    it 'increases the attempts number' do
+      expect { subject }.to change { fk_validation.reload.attempts }.by(1)
+    end
+
+    it 'saves error details' do
+      subject
+
+      expect(fk_validation.reload.last_error).to eq("Oups\nthis\nthat")
+    end
+  end
 end

@@ -20,6 +20,7 @@ module RuboCop
         ALLOWED_METHODS = %i[
           no_touching
           configurations
+          connection_handler
           logger
         ].freeze
 

@@ -72,6 +72,54 @@ The advantage of providing data from the DOM to the Vue instance through `props`
 `provide` in the `render` function, instead of querying the DOM inside the main Vue
 component, is that you avoid creating a fixture or an HTML element in the unit test.
 
+##### The `initSimpleApp` helper
+
+`initSimpleApp` is a helper function that streamlines the process of mounting a component in Vue.js. It accepts two arguments: a selector string representing the mount point in the HTML, and a Vue component.
+
+To use `initSimpleApp`, include the HTML element in the page with the appropriate selector and add a data-view-model attribute containing a JSON object. Then, import the desired Vue component and pass it along with the selector to `initSimpleApp`. This mounts the component at the specified location.
+
+`initSimpleApp` automatically retrieves the content of the data-view-model attribute as a JSON object and passes it as props to the mounted Vue component. This can be used to pre-populate the component with data.
+
+Example:
+
+```vue
+//my_component.vue
+<template>
+  <div>
+    <p>Prop1: {{ prop1 }}</p>
+    <p>Prop2: {{ prop2 }}</p>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'MyComponent',
+  props: {
+    prop1: {
+      type: String,
+      required: true
+    },
+    prop2: {
+      type: Number,
+      required: true
+    }
+  }
+}
+</script>
+```
+
+```html
+<div id="js-my-element" data-view-model='{"prop1": "my object", "prop2": 42 }'></div>
+```
+
+```javascript
+//index.js
+import MyComponent from './my_component.vue'
+import initSimpleApp from '~/helpers/init_simple_app_helper'
+
+initSimpleApp('#js-my-element', MyComponent)
+```
+
 ##### `provide` and `inject`
 
 Vue supports dependency injection through [`provide` and `inject`](https://v2.vuejs.org/v2/api/#provide-inject).

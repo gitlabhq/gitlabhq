@@ -8,7 +8,9 @@ module Gitlab
       belongs_to :postgres_partitioned_table, foreign_key: 'parent_identifier', primary_key: 'identifier'
 
       scope :for_identifier, ->(identifier) do
-        raise ArgumentError, "Partition name is not fully qualified with a schema: #{identifier}" unless identifier =~ /^\w+\.\w+$/
+        unless identifier =~ Gitlab::Database::FULLY_QUALIFIED_IDENTIFIER
+          raise ArgumentError, "Partition name is not fully qualified with a schema: #{identifier}"
+        end
 
         where(primary_key => identifier)
       end

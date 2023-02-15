@@ -19,7 +19,9 @@ module Gitlab
       enum on_update_action: ACTION_TYPES, _prefix: :on_update
 
       scope :by_referenced_table_identifier, ->(identifier) do
-        raise ArgumentError, "Referenced table name is not fully qualified with a schema: #{identifier}" unless identifier =~ /^\w+\.\w+$/
+        unless identifier =~ Database::FULLY_QUALIFIED_IDENTIFIER
+          raise ArgumentError, "Referenced table name is not fully qualified with a schema: #{identifier}"
+        end
 
         where(referenced_table_identifier: identifier)
       end
@@ -27,7 +29,9 @@ module Gitlab
       scope :by_referenced_table_name, ->(name) { where(referenced_table_name: name) }
 
       scope :by_constrained_table_identifier, ->(identifier) do
-        raise ArgumentError, "Constrained table name is not fully qualified with a schema: #{identifier}" unless identifier =~ /^\w+\.\w+$/
+        unless identifier =~ Database::FULLY_QUALIFIED_IDENTIFIER
+          raise ArgumentError, "Constrained table name is not fully qualified with a schema: #{identifier}"
+        end
 
         where(constrained_table_identifier: identifier)
       end
