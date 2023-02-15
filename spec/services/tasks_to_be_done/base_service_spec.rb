@@ -35,7 +35,7 @@ RSpec.describe TasksToBeDone::BaseService do
 
       expect(Issues::BuildService)
         .to receive(:new)
-        .with(project: project, current_user: current_user, params: params)
+        .with(container: project, current_user: current_user, params: params)
         .and_call_original
 
       expect { service.execute }.to change(Issue, :count).by(1)

@@ -38,20 +38,20 @@ describe('code quality issue body issue body', () => {
   describe('severity rating', () => {
     it.each`
       severity      | iconClass               | iconName
-      ${'INFO'}     | ${'text-primary-400'}   | ${'severity-info'}
-      ${'MINOR'}    | ${'text-warning-200'}   | ${'severity-low'}
-      ${'CRITICAL'} | ${'text-danger-600'}    | ${'severity-high'}
-      ${'BLOCKER'}  | ${'text-danger-800'}    | ${'severity-critical'}
-      ${'UNKNOWN'}  | ${'text-secondary-400'} | ${'severity-unknown'}
-      ${'INVALID'}  | ${'text-secondary-400'} | ${'severity-unknown'}
-      ${'info'}     | ${'text-primary-400'}   | ${'severity-info'}
-      ${'minor'}    | ${'text-warning-200'}   | ${'severity-low'}
-      ${'major'}    | ${'text-warning-400'}   | ${'severity-medium'}
-      ${'critical'} | ${'text-danger-600'}    | ${'severity-high'}
-      ${'blocker'}  | ${'text-danger-800'}    | ${'severity-critical'}
-      ${'unknown'}  | ${'text-secondary-400'} | ${'severity-unknown'}
-      ${'invalid'}  | ${'text-secondary-400'} | ${'severity-unknown'}
-      ${undefined}  | ${'text-secondary-400'} | ${'severity-unknown'}
+      ${'INFO'}     | ${'gl-text-blue-400'}   | ${'severity-info'}
+      ${'MINOR'}    | ${'gl-text-orange-200'} | ${'severity-low'}
+      ${'CRITICAL'} | ${'gl-text-red-600'}    | ${'severity-high'}
+      ${'BLOCKER'}  | ${'gl-text-red-800'}    | ${'severity-critical'}
+      ${'UNKNOWN'}  | ${'gl-text-gray-400'}   | ${'severity-unknown'}
+      ${'INVALID'}  | ${'gl-text-gray-400'}   | ${'severity-unknown'}
+      ${'info'}     | ${'gl-text-blue-400'}   | ${'severity-info'}
+      ${'minor'}    | ${'gl-text-orange-200'} | ${'severity-low'}
+      ${'major'}    | ${'gl-text-orange-400'} | ${'severity-medium'}
+      ${'critical'} | ${'gl-text-red-600'}    | ${'severity-high'}
+      ${'blocker'}  | ${'gl-text-red-800'}    | ${'severity-critical'}
+      ${'unknown'}  | ${'gl-text-gray-400'}   | ${'severity-unknown'}
+      ${'invalid'}  | ${'gl-text-gray-400'}   | ${'severity-unknown'}
+      ${undefined}  | ${'gl-text-gray-400'}   | ${'severity-unknown'}
     `(
       'renders correct icon for "$severity" severity rating',
       ({ severity, iconClass, iconName }) => {

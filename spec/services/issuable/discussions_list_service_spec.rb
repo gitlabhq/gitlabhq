@@ -8,6 +8,7 @@ RSpec.describe Issuable::DiscussionsListService do
   let_it_be(:project) { create(:project, :repository, :private, group: group) }
   let_it_be(:milestone) { create(:milestone, project: project) }
   let_it_be(:label) { create(:label, project: project) }
+  let_it_be(:label_2) { create(:label, project: project) }
 
   let(:finder_params_for_issuable) { {} }
 

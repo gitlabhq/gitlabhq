@@ -1,7 +1,7 @@
 name: validate_environment_tier_presence
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111011
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/385253
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/391293
 milestone: '15.9'
 type: development
 group: group::release
-default_enabled: false
+default_enabled: true

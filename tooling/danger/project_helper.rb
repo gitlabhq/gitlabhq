@@ -12,6 +12,7 @@ module Tooling
         sidekiq_queues
         specialization_labels
         specs
+        stable_branch_patch
         z_metadata
       ].freeze
 

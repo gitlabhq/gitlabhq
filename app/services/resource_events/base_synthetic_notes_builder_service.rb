@@ -32,7 +32,7 @@ module ResourceEvents
       return events if params[:paginated_notes].nil?
       return events.none if params[:paginated_notes][table_name].blank?
 
-      events.id_in(params[:paginated_notes][table_name].map(&:id))
+      events.id_in(params[:paginated_notes][table_name].flat_map(&:ids))
     end
 
     def apply_last_fetched_at(events)

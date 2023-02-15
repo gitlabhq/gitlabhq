@@ -10,7 +10,7 @@ module WorkItems
         current_user: current_user,
         params: params,
         spam_params: spam_params,
-        build_service: ::WorkItems::BuildService.new(project: project, current_user: current_user, params: params)
+        build_service: ::WorkItems::BuildService.new(container: project, current_user: current_user, params: params)
       )
       @widget_params = widget_params
     end

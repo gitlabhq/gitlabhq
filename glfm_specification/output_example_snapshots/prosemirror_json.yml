@@ -20698,47 +20698,7 @@
       }
     ]
   }
-07_01_00__gitlab_official_specification_markdown__footnotes__001: |-
-  {
-    "type": "doc",
-    "content": [
-      {
-        "type": "paragraph",
-        "content": [
-          {
-            "type": "text",
-            "text": "footnote reference tag "
-          },
-          {
-            "type": "footnoteReference",
-            "attrs": {
-              "identifier": "fortytwo",
-              "label": "fortytwo"
-            }
-          }
-        ]
-      },
-      {
-        "type": "footnoteDefinition",
-        "attrs": {
-          "identifier": "fortytwo",
-          "label": "fortytwo"
-        },
-        "content": [
-          {
-            "type": "paragraph",
-            "content": [
-              {
-                "type": "text",
-                "text": "footnote text"
-              }
-            ]
-          }
-        ]
-      }
-    ]
-  }
-07_02_00__gitlab_official_specification_markdown__task_list_items__001: |-
+07_01_00__gitlab_official_specification_markdown__task_list_items__001: |-
   {
     "type": "doc",
     "content": [
@@ -20771,7 +20731,7 @@
       }
     ]
   }
-07_02_00__gitlab_official_specification_markdown__task_list_items__002: |-
+07_01_00__gitlab_official_specification_markdown__task_list_items__002: |-
   {
     "type": "doc",
     "content": [
@@ -20804,7 +20764,7 @@
       }
     ]
   }
-07_03_00__gitlab_official_specification_markdown__front_matter__001: |-
+07_02_00__gitlab_official_specification_markdown__front_matter__001: |-
   {
     "type": "doc",
     "content": [
@@ -20825,7 +20785,7 @@
       }
     ]
   }
-07_03_00__gitlab_official_specification_markdown__front_matter__002: |-
+07_02_00__gitlab_official_specification_markdown__front_matter__002: |-
   {
     "type": "doc",
     "content": [
@@ -20846,7 +20806,7 @@
       }
     ]
   }
-07_03_00__gitlab_official_specification_markdown__front_matter__003: |-
+07_02_00__gitlab_official_specification_markdown__front_matter__003: |-
   {
     "type": "doc",
     "content": [
@@ -20867,7 +20827,7 @@
       }
     ]
   }
-07_03_00__gitlab_official_specification_markdown__front_matter__004: |-
+07_02_00__gitlab_official_specification_markdown__front_matter__004: |-
   {
     "type": "doc",
     "content": [
@@ -20897,7 +20857,7 @@
       }
     ]
   }
-07_03_00__gitlab_official_specification_markdown__front_matter__005: |-
+07_02_00__gitlab_official_specification_markdown__front_matter__005: |-
   {
     "type": "doc",
     "content": [
@@ -20918,7 +20878,7 @@
       }
     ]
   }
-07_04_00__gitlab_official_specification_markdown__table_of_contents__001: |-
+07_03_00__gitlab_official_specification_markdown__table_of_contents__001: |-
   {
     "type": "doc",
     "content": [
@@ -20951,7 +20911,7 @@
       }
     ]
   }
-07_04_00__gitlab_official_specification_markdown__table_of_contents__002: |-
+07_03_00__gitlab_official_specification_markdown__table_of_contents__002: |-
   {
     "type": "doc",
     "content": [
@@ -20984,7 +20944,7 @@
       }
     ]
   }
-07_04_00__gitlab_official_specification_markdown__table_of_contents__003: |-
+07_03_00__gitlab_official_specification_markdown__table_of_contents__003: |-
   {
     "type": "doc",
     "content": [
@@ -21021,7 +20981,7 @@
       }
     ]
   }
-07_04_00__gitlab_official_specification_markdown__table_of_contents__004: |-
+07_03_00__gitlab_official_specification_markdown__table_of_contents__004: |-
   {
     "type": "doc",
     "content": [
@@ -23576,6 +23536,46 @@
           {
             "type": "text",
             "text": "Fernstraßenbauprivatfinanzierungsgesetz"
+          }
+        ]
+      }
+    ]
+  }
+08_06_00__gitlab_internal_extension_markdown__footnotes__001: |-
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "footnote reference tag "
+          },
+          {
+            "type": "footnoteReference",
+            "attrs": {
+              "identifier": "fortytwo",
+              "label": "fortytwo"
+            }
+          }
+        ]
+      },
+      {
+        "type": "footnoteDefinition",
+        "attrs": {
+          "identifier": "fortytwo",
+          "label": "fortytwo"
+        },
+        "content": [
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "footnote text"
+              }
+            ]
           }
         ]
       }

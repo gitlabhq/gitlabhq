@@ -53,6 +53,7 @@ module Gitlab
                     migration.column_name,
                     batch_min_value: batch_start,
                     batch_size: migration.batch_size,
+                    job_class: migration.job_class,
                     job_arguments: migration.job_arguments
                   )
 

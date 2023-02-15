@@ -19,7 +19,7 @@ RSpec.describe Issues::BuildService do
   end
 
   def build_issue(issue_params = {})
-    described_class.new(project: project, current_user: user, params: issue_params).execute
+    described_class.new(container: project, current_user: user, params: issue_params).execute
   end
 
   context 'for a single discussion' do
@@ -45,7 +45,7 @@ RSpec.describe Issues::BuildService do
     describe '#items_for_discussions' do
       it 'has an item for each discussion' do
         create(:diff_note_on_merge_request, noteable: merge_request, project: merge_request.source_project, line_number: 13)
-        service = described_class.new(project: project, current_user: user, params: { merge_request_to_resolve_discussions_of: merge_request.iid })
+        service = described_class.new(container: project, current_user: user, params: { merge_request_to_resolve_discussions_of: merge_request.iid })
 
         service.execute
 
@@ -54,7 +54,7 @@ RSpec.describe Issues::BuildService do
     end
 
     describe '#item_for_discussion' do
-      let(:service) { described_class.new(project: project, current_user: user, params: { merge_request_to_resolve_discussions_of: merge_request.iid }) }
+      let(:service) { described_class.new(container: project, current_user: user, params: { merge_request_to_resolve_discussions_of: merge_request.iid }) }
 
       it 'mentions the author of the note' do
         discussion = create(:diff_note_on_merge_request, author: create(:user, username: 'author')).to_discussion

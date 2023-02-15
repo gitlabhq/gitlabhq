@@ -296,7 +296,6 @@
 </li>
 <li>
 <a href="#gitlab-official-specification-markdown">GitLab Official Specification Markdown</a><ul>
-<li><a href="#footnotes">Footnotes</a></li>
 <li><a href="#task-list-items">Task list items</a></li>
 <li><a href="#front-matter">Front matter</a></li>
 <li><a href="#table-of-contents">Table of contents</a></li>
@@ -336,7 +335,7 @@
 <li><a href="#emoji">emoji</a></li>
 <li><a href="#emphasis">emphasis</a></li>
 <li><a href="#figure">figure</a></li>
-<li><a href="#footnotes-1">footnotes</a></li>
+<li><a href="#footnotes">footnotes</a></li>
 <li><a href="#frontmatter_json">frontmatter_json</a></li>
 <li><a href="#frontmatter_toml">frontmatter_toml</a></li>
 <li><a href="#frontmatter_yaml">frontmatter_yaml</a></li>
@@ -364,6 +363,7 @@
 </ul>
 </li>
 <li><a href="#image-attributes">Image Attributes</a></li>
+<li><a href="#footnotes-1">Footnotes</a></li>
 </ul>
 </li>
 </ul>
@@ -12156,66 +12156,30 @@ be parsed as plain textual content.</p>
 </div>
 <h1 data-sourcepos="13634:1-13634:40" dir="auto">
 <a id="user-content-gitlab-official-specification-markdown" class="anchor" href="#gitlab-official-specification-markdown" aria-hidden="true"></a>GitLab Official Specification Markdown</h1>
-<p data-sourcepos="13636:1-13639:104" dir="auto">Currently, only some of the GitLab-specific markdown features are
-listed in this section. We may eventually add all
-GitLab-specific features currently listed as supported in the
+<p data-sourcepos="13636:1-13638:104" dir="auto">Note: This specification is a work in progress. Only some of the official GLFM extensions
+are defined. We will continue to add any additional ones found in the
 <a href="https://docs.gitlab.com/ee/user/markdown.html" rel="nofollow noreferrer noopener" target="_blank">user-facing documentation for GitLab Flavored Markdown</a>.</p>
-<p data-sourcepos="13641:1-13642:69" dir="auto">There is currently only this single top-level heading, but the
+<p data-sourcepos="13640:1-13641:69" dir="auto">There is currently only this single top-level heading, but the
 examples may be split into multiple top-level headings in the future.</p>
-<h2 data-sourcepos="13644:1-13644:12" dir="auto">
-<a id="user-content-footnotes" class="anchor" href="#footnotes" aria-hidden="true"></a>Footnotes</h2>
-<p data-sourcepos="13646:1-13647:143" dir="auto">See
-<a href="https://docs.gitlab.com/ee/user/markdown.html#footnotes" rel="nofollow noreferrer noopener" target="_blank">the footnotes section of the user-facing documentation for GitLab Flavored Markdown</a>.</p>
-<div>
-<div><a href="#example-674">Example 674</a></div>
-<div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="13652:1-13656:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">footnote reference tag [^fortytwo]</span>
-<span id="LC2" class="line" lang="plaintext"></span>
-<span id="LC3" class="line" lang="plaintext">[^fortytwo]: footnote text</span></code></pre>
-<copy-code></copy-code>
-</div>
-<div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="13658:1-13678:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;p&gt;</span>
-<span id="LC2" class="line" lang="plaintext">footnote reference tag</span>
-<span id="LC3" class="line" lang="plaintext">&lt;sup&gt;</span>
-<span id="LC4" class="line" lang="plaintext">&lt;a href="#fn-fortytwo-42" id="fnref-fortytwo-42" data-footnote-ref&gt;</span>
-<span id="LC5" class="line" lang="plaintext">1</span>
-<span id="LC6" class="line" lang="plaintext">&lt;/a&gt;</span>
-<span id="LC7" class="line" lang="plaintext">&lt;/sup&gt;</span>
-<span id="LC8" class="line" lang="plaintext">&lt;/p&gt;</span>
-<span id="LC9" class="line" lang="plaintext">&lt;section data-footnotes&gt;</span>
-<span id="LC10" class="line" lang="plaintext">&lt;ol&gt;</span>
-<span id="LC11" class="line" lang="plaintext">&lt;li id="fn-fortytwo-42"&gt;</span>
-<span id="LC12" class="line" lang="plaintext">&lt;p&gt;</span>
-<span id="LC13" class="line" lang="plaintext">footnote text</span>
-<span id="LC14" class="line" lang="plaintext">&lt;a href="#fnref-fortytwo-42" data-footnote-backref&gt;</span>
-<span id="LC15" class="line" lang="plaintext">&lt;/a&gt;</span>
-<span id="LC16" class="line" lang="plaintext">&lt;/p&gt;</span>
-<span id="LC17" class="line" lang="plaintext">&lt;/li&gt;</span>
-<span id="LC18" class="line" lang="plaintext">&lt;/ol&gt;</span>
-<span id="LC19" class="line" lang="plaintext">&lt;/section&gt;</span></code></pre>
-<copy-code></copy-code>
-</div>
-</div>
-<h2 data-sourcepos="13681:1-13681:18" dir="auto">
+<h2 data-sourcepos="13643:1-13643:18" dir="auto">
 <a id="user-content-task-list-items" class="anchor" href="#task-list-items" aria-hidden="true"></a>Task list items</h2>
-<p data-sourcepos="13683:1-13684:117" dir="auto">See
+<p data-sourcepos="13645:1-13646:117" dir="auto">See
 <a href="https://docs.gitlab.com/ee/user/markdown.html#task-lists" rel="nofollow noreferrer noopener" target="_blank">Task lists</a> in the GitLab Flavored Markdown documentation.</p>
-<p data-sourcepos="13686:1-13689:39" dir="auto">Task list items (checkboxes) are defined as a GitHub Flavored Markdown extension in a section above.
+<p data-sourcepos="13648:1-13651:39" dir="auto">Task list items (checkboxes) are defined as a GitHub Flavored Markdown extension in a section above.
 GitLab extends the behavior of task list items to support additional features.
 Some of these features are in-progress, and should not yet be considered part of the official
 GitLab Flavored Markdown specification.</p>
-<p data-sourcepos="13691:1-13691:85" dir="auto">Some of the behavior of task list items is implemented as client-side JavaScript/CSS.</p>
-<p data-sourcepos="13693:1-13693:80" dir="auto">The following are some basic examples; more examples may be added in the future.</p>
-<p data-sourcepos="13695:1-13695:16" dir="auto">Incomplete task:</p>
+<p data-sourcepos="13653:1-13653:85" dir="auto">Some of the behavior of task list items is implemented as client-side JavaScript/CSS.</p>
+<p data-sourcepos="13655:1-13655:80" dir="auto">The following are some basic examples; more examples may be added in the future.</p>
+<p data-sourcepos="13657:1-13657:16" dir="auto">Incomplete task:</p>
 <div>
-<div><a href="#example-675">Example 675</a></div>
+<div><a href="#example-674">Example 674</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="13700:1-13702:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">- [ ] incomplete</span></code></pre>
+<pre data-sourcepos="13662:1-13664:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">- [ ] incomplete</span></code></pre>
 <copy-code></copy-code>
 </div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="13704:1-13712:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;ul&gt;</span>
+<pre data-sourcepos="13666:1-13674:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;ul&gt;</span>
 <span id="LC2" class="line" lang="plaintext">&lt;li&gt;</span>
 <span id="LC3" class="line" lang="plaintext">&lt;task-button/&gt;</span>
 <span id="LC4" class="line" lang="plaintext">&lt;input type="checkbox" disabled/&gt;</span>
@@ -12225,15 +12189,15 @@ GitLab Flavored Markdown specification.</p>
 <copy-code></copy-code>
 </div>
 </div>
-<p data-sourcepos="13715:1-13715:15" dir="auto">Completed task:</p>
+<p data-sourcepos="13677:1-13677:15" dir="auto">Completed task:</p>
 <div>
-<div><a href="#example-676">Example 676</a></div>
+<div><a href="#example-675">Example 675</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="13720:1-13722:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">- [x] completed</span></code></pre>
+<pre data-sourcepos="13682:1-13684:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">- [x] completed</span></code></pre>
 <copy-code></copy-code>
 </div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="13724:1-13732:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;ul&gt;</span>
+<pre data-sourcepos="13686:1-13694:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;ul&gt;</span>
 <span id="LC2" class="line" lang="plaintext">&lt;li&gt;</span>
 <span id="LC3" class="line" lang="plaintext">&lt;task-button/&gt;</span>
 <span id="LC4" class="line" lang="plaintext">&lt;input type="checkbox" checked disabled/&gt;</span>
@@ -12243,15 +12207,15 @@ GitLab Flavored Markdown specification.</p>
 <copy-code></copy-code>
 </div>
 </div>
-<p data-sourcepos="13735:1-13735:18" dir="auto">Inapplicable task:</p>
+<p data-sourcepos="13697:1-13697:18" dir="auto">Inapplicable task:</p>
 <div>
-<div><a href="#example-677">Example 677</a></div>
+<div><a href="#example-676">Example 676</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="13740:1-13742:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">- [~] inapplicable</span></code></pre>
+<pre data-sourcepos="13702:1-13704:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">- [~] inapplicable</span></code></pre>
 <copy-code></copy-code>
 </div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="13744:1-13754:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;ul&gt;</span>
+<pre data-sourcepos="13706:1-13716:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;ul&gt;</span>
 <span id="LC2" class="line" lang="plaintext">&lt;li&gt;</span>
 <span id="LC3" class="line" lang="plaintext">&lt;task-button/&gt;</span>
 <span id="LC4" class="line" lang="plaintext">&lt;input type="checkbox" data-inapplicable disabled&gt;</span>
@@ -12263,18 +12227,18 @@ GitLab Flavored Markdown specification.</p>
 <copy-code></copy-code>
 </div>
 </div>
-<p data-sourcepos="13757:1-13758:50" dir="auto">Inapplicable task in a "loose" list. Note that the <code>&lt;del&gt;</code> tag is not applied to the
+<p data-sourcepos="13719:1-13720:50" dir="auto">Inapplicable task in a "loose" list. Note that the <code>&lt;del&gt;</code> tag is not applied to the
 loose text; it has strikethrough applied with CSS.</p>
 <div>
-<div><a href="#example-678">Example 678</a></div>
+<div><a href="#example-677">Example 677</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="13763:1-13767:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">- [~] inapplicable</span>
+<pre data-sourcepos="13725:1-13729:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">- [~] inapplicable</span>
 <span id="LC2" class="line" lang="plaintext"></span>
 <span id="LC3" class="line" lang="plaintext">  text in loose list</span></code></pre>
 <copy-code></copy-code>
 </div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="13769:1-13784:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;ul&gt;</span>
+<pre data-sourcepos="13731:1-13746:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;ul&gt;</span>
 <span id="LC2" class="line" lang="plaintext">&lt;li&gt;</span>
 <span id="LC3" class="line" lang="plaintext">&lt;p&gt;</span>
 <span id="LC4" class="line" lang="plaintext">&lt;task-button/&gt;</span>
@@ -12291,23 +12255,23 @@ loose text; it has strikethrough applied with CSS.</p>
 <copy-code></copy-code>
 </div>
 </div>
-<h2 data-sourcepos="13787:1-13787:15" dir="auto">
+<h2 data-sourcepos="13749:1-13749:15" dir="auto">
 <a id="user-content-front-matter" class="anchor" href="#front-matter" aria-hidden="true"></a>Front matter</h2>
-<p data-sourcepos="13789:1-13790:121" dir="auto">See
+<p data-sourcepos="13751:1-13752:121" dir="auto">See
 <a href="https://docs.gitlab.com/ee/user/markdown.html#front-matter" rel="nofollow noreferrer noopener" target="_blank">Front matter</a> in the GitLab Flavored Markdown documentation.</p>
-<p data-sourcepos="13792:1-13793:95" dir="auto">Front matter is metadata included at the beginning of a Markdown document, preceding the content.
+<p data-sourcepos="13754:1-13755:95" dir="auto">Front matter is metadata included at the beginning of a Markdown document, preceding the content.
 This data can be used by static site generators like Jekyll, Hugo, and many other applications.</p>
-<p data-sourcepos="13795:1-13795:18" dir="auto">YAML front matter:</p>
+<p data-sourcepos="13757:1-13757:18" dir="auto">YAML front matter:</p>
 <div>
-<div><a href="#example-679">Example 679</a></div>
+<div><a href="#example-678">Example 678</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="13800:1-13804:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">---</span>
+<pre data-sourcepos="13762:1-13766:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">---</span>
 <span id="LC2" class="line" lang="plaintext">title: YAML front matter</span>
 <span id="LC3" class="line" lang="plaintext">---</span></code></pre>
 <copy-code></copy-code>
 </div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="13806:1-13812:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;pre&gt;</span>
+<pre data-sourcepos="13768:1-13774:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;pre&gt;</span>
 <span id="LC2" class="line" lang="plaintext">&lt;code&gt;</span>
 <span id="LC3" class="line" lang="plaintext">title: YAML front matter</span>
 <span id="LC4" class="line" lang="plaintext">&lt;/code&gt;</span>
@@ -12315,17 +12279,17 @@ This data can be used by static site generators like Jekyll, Hugo, and many othe
 <copy-code></copy-code>
 </div>
 </div>
-<p data-sourcepos="13815:1-13815:18" dir="auto">TOML front matter:</p>
+<p data-sourcepos="13777:1-13777:18" dir="auto">TOML front matter:</p>
 <div>
-<div><a href="#example-680">Example 680</a></div>
+<div><a href="#example-679">Example 679</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="13820:1-13824:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">+++</span>
+<pre data-sourcepos="13782:1-13786:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">+++</span>
 <span id="LC2" class="line" lang="plaintext">title: TOML front matter</span>
 <span id="LC3" class="line" lang="plaintext">+++</span></code></pre>
 <copy-code></copy-code>
 </div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="13826:1-13832:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;pre&gt;</span>
+<pre data-sourcepos="13788:1-13794:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;pre&gt;</span>
 <span id="LC2" class="line" lang="plaintext">&lt;code&gt;</span>
 <span id="LC3" class="line" lang="plaintext">title: TOML front matter</span>
 <span id="LC4" class="line" lang="plaintext">&lt;/code&gt;</span>
@@ -12333,11 +12297,11 @@ This data can be used by static site generators like Jekyll, Hugo, and many othe
 <copy-code></copy-code>
 </div>
 </div>
-<p data-sourcepos="13835:1-13835:18" dir="auto">JSON front matter:</p>
+<p data-sourcepos="13797:1-13797:18" dir="auto">JSON front matter:</p>
 <div>
-<div><a href="#example-681">Example 681</a></div>
+<div><a href="#example-680">Example 680</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="13840:1-13846:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">;;;</span>
+<pre data-sourcepos="13802:1-13808:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">;;;</span>
 <span id="LC2" class="line" lang="plaintext">{</span>
 <span id="LC3" class="line" lang="plaintext">  "title": "JSON front matter"</span>
 <span id="LC4" class="line" lang="plaintext">}</span>
@@ -12345,7 +12309,7 @@ This data can be used by static site generators like Jekyll, Hugo, and many othe
 <copy-code></copy-code>
 </div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="13848:1-13856:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;pre&gt;</span>
+<pre data-sourcepos="13810:1-13818:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;pre&gt;</span>
 <span id="LC2" class="line" lang="plaintext">&lt;code&gt;</span>
 <span id="LC3" class="line" lang="plaintext">{</span>
 <span id="LC4" class="line" lang="plaintext">  "title": "JSON front matter"</span>
@@ -12355,11 +12319,11 @@ This data can be used by static site generators like Jekyll, Hugo, and many othe
 <copy-code></copy-code>
 </div>
 </div>
-<p data-sourcepos="13859:1-13859:66" dir="auto">Front matter blocks should be inserted at the top of the document:</p>
+<p data-sourcepos="13821:1-13821:66" dir="auto">Front matter blocks should be inserted at the top of the document:</p>
 <div>
-<div><a href="#example-682">Example 682</a></div>
+<div><a href="#example-681">Example 681</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="13864:1-13870:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">text</span>
+<pre data-sourcepos="13826:1-13832:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">text</span>
 <span id="LC2" class="line" lang="plaintext"></span>
 <span id="LC3" class="line" lang="plaintext">---</span>
 <span id="LC4" class="line" lang="plaintext">title: YAML front matter</span>
@@ -12367,43 +12331,67 @@ This data can be used by static site generators like Jekyll, Hugo, and many othe
 <copy-code></copy-code>
 </div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="13872:1-13876:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;p&gt;text&lt;/p&gt;</span>
+<pre data-sourcepos="13834:1-13838:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;p&gt;text&lt;/p&gt;</span>
 <span id="LC2" class="line" lang="plaintext">&lt;hr&gt;</span>
 <span id="LC3" class="line" lang="plaintext">&lt;h2&gt;title: YAML front matter&lt;/h2&gt;</span></code></pre>
 <copy-code></copy-code>
 </div>
 </div>
-<p data-sourcepos="13879:1-13879:74" dir="auto">Front matter block delimiters shouldn’t be preceded by space characters:</p>
+<p data-sourcepos="13841:1-13841:74" dir="auto">Front matter block delimiters shouldn’t be preceded by space characters:</p>
 <div>
-<div><a href="#example-683">Example 683</a></div>
+<div><a href="#example-682">Example 682</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="13884:1-13888:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext"> ---</span>
+<pre data-sourcepos="13846:1-13850:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext"> ---</span>
 <span id="LC2" class="line" lang="plaintext">title: YAML front matter</span>
 <span id="LC3" class="line" lang="plaintext">---</span></code></pre>
 <copy-code></copy-code>
 </div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="13890:1-13893:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;hr&gt;</span>
+<pre data-sourcepos="13852:1-13855:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;hr&gt;</span>
 <span id="LC2" class="line" lang="plaintext">&lt;h2&gt;title: YAML front matter&lt;/h2&gt;</span></code></pre>
 <copy-code></copy-code>
 </div>
 </div>
-<h2 data-sourcepos="13896:1-13896:20" dir="auto">
+<h2 data-sourcepos="13858:1-13858:20" dir="auto">
 <a id="user-content-table-of-contents" class="anchor" href="#table-of-contents" aria-hidden="true"></a>Table of contents</h2>
-<p data-sourcepos="13898:1-13900:46" dir="auto">See
+<p data-sourcepos="13860:1-13862:46" dir="auto">See
 <a href="https://docs.gitlab.com/ee/user/markdown.html#table-of-contents" rel="nofollow noreferrer noopener" target="_blank">table of contents</a>
 in the GitLab Flavored Markdown documentation.</p>
-<p data-sourcepos="13902:1-13906:23" dir="auto">NOTE: Because of this bug (<a href="https://gitlab.com/gitlab-org/gitlab/-/issues/359077" rel="nofollow noreferrer noopener" target="_blank">https://gitlab.com/gitlab-org/gitlab/-/issues/359077</a>),
+<p data-sourcepos="13864:1-13868:23" dir="auto">NOTE: Because of this bug (<a href="https://gitlab.com/gitlab-org/gitlab/-/issues/359077" rel="nofollow noreferrer noopener" target="_blank">https://gitlab.com/gitlab-org/gitlab/-/issues/359077</a>),
 we cannot actually include the <code>TOC</code> tag with single brackets in backticks
 in this Markdown document, otherwise it would render a table of contents inline
 right here. So, it's been switched to <code>[</code> + <code>TOC</code> + <code>]</code> instead. This can be reverted
 once that bug is fixed.</p>
-<p data-sourcepos="13908:1-13909:76" dir="auto">A table of contents is an unordered list that links to subheadings in the document.
+<p data-sourcepos="13870:1-13871:76" dir="auto">A table of contents is an unordered list that links to subheadings in the document.
 Add either the <code>[[_TOC_]]</code> tag or the <code>[</code> + <code>TOC</code> + <code>]</code> tag on its own line.</p>
+<div>
+<div><a href="#example-683">Example 683</a></div>
+<div class="gl-relative markdown-code-block js-markdown-code">
+<pre data-sourcepos="13876:1-13882:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">[TOC]</span>
+<span id="LC2" class="line" lang="plaintext"></span>
+<span id="LC3" class="line" lang="plaintext"># Heading 1</span>
+<span id="LC4" class="line" lang="plaintext"></span>
+<span id="LC5" class="line" lang="plaintext">## Heading 2</span></code></pre>
+<copy-code></copy-code>
+</div>
+<div class="gl-relative markdown-code-block js-markdown-code">
+<pre data-sourcepos="13884:1-13895:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;nav&gt;</span>
+<span id="LC2" class="line" lang="plaintext">  &lt;ul&gt;</span>
+<span id="LC3" class="line" lang="plaintext">    &lt;li&gt;&lt;a href="#heading-1"&gt;Heading 1&lt;/a&gt;&lt;/li&gt;</span>
+<span id="LC4" class="line" lang="plaintext">    &lt;ul&gt;</span>
+<span id="LC5" class="line" lang="plaintext">      &lt;li&gt;&lt;a href="#heading-2"&gt;Heading 2&lt;/a&gt;&lt;/li&gt;</span>
+<span id="LC6" class="line" lang="plaintext">    &lt;/ul&gt;</span>
+<span id="LC7" class="line" lang="plaintext">  &lt;/ul&gt;</span>
+<span id="LC8" class="line" lang="plaintext">&lt;/nav&gt;</span>
+<span id="LC9" class="line" lang="plaintext">&lt;h1&gt;Heading 1&lt;/h1&gt;</span>
+<span id="LC10" class="line" lang="plaintext">&lt;h2&gt;Heading 2&lt;/h2&gt;</span></code></pre>
+<copy-code></copy-code>
+</div>
+</div>
 <div>
 <div><a href="#example-684">Example 684</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="13914:1-13920:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">[TOC]</span>
+<pre data-sourcepos="13901:1-13907:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">[[_TOC_]]</span>
 <span id="LC2" class="line" lang="plaintext"></span>
 <span id="LC3" class="line" lang="plaintext"># Heading 1</span>
 <span id="LC4" class="line" lang="plaintext"></span>
@@ -12411,7 +12399,7 @@ Add either the <code>[[_TOC_]]</code> tag or the <code>[</code> + <code>TOC</cod
 <copy-code></copy-code>
 </div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="13922:1-13933:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;nav&gt;</span>
+<pre data-sourcepos="13909:1-13920:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;nav&gt;</span>
 <span id="LC2" class="line" lang="plaintext">  &lt;ul&gt;</span>
 <span id="LC3" class="line" lang="plaintext">    &lt;li&gt;&lt;a href="#heading-1"&gt;Heading 1&lt;/a&gt;&lt;/li&gt;</span>
 <span id="LC4" class="line" lang="plaintext">    &lt;ul&gt;</span>
@@ -12424,36 +12412,12 @@ Add either the <code>[[_TOC_]]</code> tag or the <code>[</code> + <code>TOC</cod
 <copy-code></copy-code>
 </div>
 </div>
+<p data-sourcepos="13923:1-13924:5" dir="auto">A table of contents is a block element. It should preceded and followed by a blank
+line.</p>
 <div>
 <div><a href="#example-685">Example 685</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="13939:1-13945:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">[[_TOC_]]</span>
-<span id="LC2" class="line" lang="plaintext"></span>
-<span id="LC3" class="line" lang="plaintext"># Heading 1</span>
-<span id="LC4" class="line" lang="plaintext"></span>
-<span id="LC5" class="line" lang="plaintext">## Heading 2</span></code></pre>
-<copy-code></copy-code>
-</div>
-<div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="13947:1-13958:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;nav&gt;</span>
-<span id="LC2" class="line" lang="plaintext">  &lt;ul&gt;</span>
-<span id="LC3" class="line" lang="plaintext">    &lt;li&gt;&lt;a href="#heading-1"&gt;Heading 1&lt;/a&gt;&lt;/li&gt;</span>
-<span id="LC4" class="line" lang="plaintext">    &lt;ul&gt;</span>
-<span id="LC5" class="line" lang="plaintext">      &lt;li&gt;&lt;a href="#heading-2"&gt;Heading 2&lt;/a&gt;&lt;/li&gt;</span>
-<span id="LC6" class="line" lang="plaintext">    &lt;/ul&gt;</span>
-<span id="LC7" class="line" lang="plaintext">  &lt;/ul&gt;</span>
-<span id="LC8" class="line" lang="plaintext">&lt;/nav&gt;</span>
-<span id="LC9" class="line" lang="plaintext">&lt;h1&gt;Heading 1&lt;/h1&gt;</span>
-<span id="LC10" class="line" lang="plaintext">&lt;h2&gt;Heading 2&lt;/h2&gt;</span></code></pre>
-<copy-code></copy-code>
-</div>
-</div>
-<p data-sourcepos="13961:1-13962:5" dir="auto">A table of contents is a block element. It should preceded and followed by a blank
-line.</p>
-<div>
-<div><a href="#example-686">Example 686</a></div>
-<div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="13967:1-13973:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">[[_TOC_]]</span>
+<pre data-sourcepos="13929:1-13935:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">[[_TOC_]]</span>
 <span id="LC2" class="line" lang="plaintext">text</span>
 <span id="LC3" class="line" lang="plaintext"></span>
 <span id="LC4" class="line" lang="plaintext">text</span>
@@ -12461,22 +12425,22 @@ line.</p>
 <copy-code></copy-code>
 </div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="13975:1-13978:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;p&gt;[[&lt;em&gt;TOC&lt;/em&gt;]]text&lt;/p&gt;</span>
+<pre data-sourcepos="13937:1-13940:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;p&gt;[[&lt;em&gt;TOC&lt;/em&gt;]]text&lt;/p&gt;</span>
 <span id="LC2" class="line" lang="plaintext">&lt;p&gt;text[TOC]&lt;/p&gt;</span></code></pre>
 <copy-code></copy-code>
 </div>
 </div>
-<p data-sourcepos="13981:1-13981:60" dir="auto">A table of contents can be indented with up to three spaces.</p>
+<p data-sourcepos="13943:1-13943:60" dir="auto">A table of contents can be indented with up to three spaces.</p>
 <div>
-<div><a href="#example-687">Example 687</a></div>
+<div><a href="#example-686">Example 686</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="13986:1-13990:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">   [[_TOC_]]</span>
+<pre data-sourcepos="13948:1-13952:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">   [[_TOC_]]</span>
 <span id="LC2" class="line" lang="plaintext"></span>
 <span id="LC3" class="line" lang="plaintext"># Heading 1</span></code></pre>
 <copy-code></copy-code>
 </div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="13992:1-13999:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;nav&gt;</span>
+<pre data-sourcepos="13954:1-13961:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;nav&gt;</span>
 <span id="LC2" class="line" lang="plaintext">  &lt;ul&gt;</span>
 <span id="LC3" class="line" lang="plaintext">    &lt;li&gt;&lt;a href="#heading-1"&gt;Heading 1&lt;/a&gt;&lt;/li&gt;</span>
 <span id="LC4" class="line" lang="plaintext">  &lt;/ul&gt;</span>
@@ -12485,265 +12449,265 @@ line.</p>
 <copy-code></copy-code>
 </div>
 </div>
-<h1 data-sourcepos="14002:1-14002:36" dir="auto">
+<h1 data-sourcepos="13964:1-13964:36" dir="auto">
 <a id="user-content-gitlab-internal-extension-markdown" class="anchor" href="#gitlab-internal-extension-markdown" aria-hidden="true"></a>GitLab Internal Extension Markdown</h1>
-<h2 data-sourcepos="14004:1-14004:8" dir="auto">
+<h2 data-sourcepos="13966:1-13966:8" dir="auto">
 <a id="user-content-audio" class="anchor" href="#audio" aria-hidden="true"></a>Audio</h2>
-<p data-sourcepos="14006:1-14007:107" dir="auto">See
+<p data-sourcepos="13968:1-13969:107" dir="auto">See
 <a href="https://docs.gitlab.com/ee/user/markdown.html#audio" rel="nofollow noreferrer noopener" target="_blank">audio</a> in the GitLab Flavored Markdown documentation.</p>
-<p data-sourcepos="14009:1-14011:63" dir="auto">GLFM renders image elements as an audio player as long as the resource’s file extension is
+<p data-sourcepos="13971:1-13973:63" dir="auto">GLFM renders image elements as an audio player as long as the resource’s file extension is
 one of the following supported audio extensions <code>.mp3</code>, <code>.oga</code>, <code>.ogg</code>, <code>.spx</code>, and <code>.wav</code>.
 Audio ignore the alternative text part of an image declaration.</p>
 <div>
+<div><a href="#example-687">Example 687</a></div>
+<div class="gl-relative markdown-code-block js-markdown-code">
+<pre data-sourcepos="13978:1-13980:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">![audio](audio.oga "audio title")</span></code></pre>
+<copy-code></copy-code>
+</div>
+<div class="gl-relative markdown-code-block js-markdown-code">
+<pre data-sourcepos="13982:1-13984:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;p&gt;&lt;audio src="audio.oga" title="audio title"&gt;&lt;/audio&gt;&lt;/p&gt;</span></code></pre>
+<copy-code></copy-code>
+</div>
+</div>
+<p data-sourcepos="13987:1-13987:41" dir="auto">Reference definitions work audio as well:</p>
+<div>
 <div><a href="#example-688">Example 688</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14016:1-14018:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">![audio](audio.oga "audio title")</span></code></pre>
-<copy-code></copy-code>
-</div>
-<div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14020:1-14022:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;p&gt;&lt;audio src="audio.oga" title="audio title"&gt;&lt;/audio&gt;&lt;/p&gt;</span></code></pre>
-<copy-code></copy-code>
-</div>
-</div>
-<p data-sourcepos="14025:1-14025:41" dir="auto">Reference definitions work audio as well:</p>
-<div>
-<div><a href="#example-689">Example 689</a></div>
-<div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14030:1-14034:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">[audio]: audio.oga "audio title"</span>
+<pre data-sourcepos="13992:1-13996:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">[audio]: audio.oga "audio title"</span>
 <span id="LC2" class="line" lang="plaintext"></span>
 <span id="LC3" class="line" lang="plaintext">![audio][audio]</span></code></pre>
 <copy-code></copy-code>
 </div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14036:1-14038:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;p&gt;&lt;audio src="audio.oga" title="audio title"&gt;&lt;/audio&gt;&lt;/p&gt;</span></code></pre>
+<pre data-sourcepos="13998:1-14000:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;p&gt;&lt;audio src="audio.oga" title="audio title"&gt;&lt;/audio&gt;&lt;/p&gt;</span></code></pre>
 <copy-code></copy-code>
 </div>
 </div>
-<h2 data-sourcepos="14041:1-14041:8" dir="auto">
+<h2 data-sourcepos="14003:1-14003:8" dir="auto">
 <a id="user-content-video" class="anchor" href="#video" aria-hidden="true"></a>Video</h2>
-<p data-sourcepos="14043:1-14044:109" dir="auto">See
+<p data-sourcepos="14005:1-14006:109" dir="auto">See
 <a href="https://docs.gitlab.com/ee/user/markdown.html#videos" rel="nofollow noreferrer noopener" target="_blank">videos</a> in the GitLab Flavored Markdown documentation.</p>
-<p data-sourcepos="14046:1-14048:64" dir="auto">GLFM renders image elements as a video player as long as the resource’s file extension is
+<p data-sourcepos="14008:1-14010:64" dir="auto">GLFM renders image elements as a video player as long as the resource’s file extension is
 one of the following supported video extensions  <code>.mp4</code>, <code>.m4v</code>, <code>.mov</code>, <code>.webm</code>, and <code>.ogv</code>.
 Videos ignore the alternative text part of an image declaration.</p>
 <div>
+<div><a href="#example-689">Example 689</a></div>
+<div class="gl-relative markdown-code-block js-markdown-code">
+<pre data-sourcepos="14016:1-14018:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">![video](video.m4v "video title")</span></code></pre>
+<copy-code></copy-code>
+</div>
+<div class="gl-relative markdown-code-block js-markdown-code">
+<pre data-sourcepos="14020:1-14022:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;p&gt;&lt;video src="video.m4v" title="video title"&gt;&lt;/video&gt;&lt;/p&gt;</span></code></pre>
+<copy-code></copy-code>
+</div>
+</div>
+<p data-sourcepos="14025:1-14025:41" dir="auto">Reference definitions work video as well:</p>
+<div>
 <div><a href="#example-690">Example 690</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14054:1-14056:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">![video](video.m4v "video title")</span></code></pre>
-<copy-code></copy-code>
-</div>
-<div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14058:1-14060:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;p&gt;&lt;video src="video.m4v" title="video title"&gt;&lt;/video&gt;&lt;/p&gt;</span></code></pre>
-<copy-code></copy-code>
-</div>
-</div>
-<p data-sourcepos="14063:1-14063:41" dir="auto">Reference definitions work video as well:</p>
-<div>
-<div><a href="#example-691">Example 691</a></div>
-<div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14068:1-14072:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">[video]: video.mov "video title"</span>
+<pre data-sourcepos="14030:1-14034:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">[video]: video.mov "video title"</span>
 <span id="LC2" class="line" lang="plaintext"></span>
 <span id="LC3" class="line" lang="plaintext">![video][video]</span></code></pre>
 <copy-code></copy-code>
 </div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14074:1-14076:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;p&gt;&lt;video src="video.mov" title="video title"&gt;&lt;/video&gt;&lt;/p&gt;</span></code></pre>
+<pre data-sourcepos="14036:1-14038:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;p&gt;&lt;video src="video.mov" title="video title"&gt;&lt;/video&gt;&lt;/p&gt;</span></code></pre>
 <copy-code></copy-code>
 </div>
 </div>
-<h2 data-sourcepos="14079:1-14079:41" dir="auto">
+<h2 data-sourcepos="14041:1-14041:41" dir="auto">
 <a id="user-content-markdown-preview-api-request-overrides" class="anchor" href="#markdown-preview-api-request-overrides" aria-hidden="true"></a>Markdown Preview API Request Overrides</h2>
-<p data-sourcepos="14081:1-14083:42" dir="auto">This section contains examples of all controllers which use <code>PreviewMarkdown</code> module
+<p data-sourcepos="14043:1-14045:42" dir="auto">This section contains examples of all controllers which use <code>PreviewMarkdown</code> module
 and use different <code>markdown_context_params</code>. They exercise the various <code>preview_markdown</code>
 endpoints via <code>glfm_example_metadata.yml</code>.</p>
-<p data-sourcepos="14086:1-14086:75" dir="auto"><code>preview_markdown</code> exercising <code>groups</code> API endpoint and <code>UploadLinkFilter</code>:</p>
+<p data-sourcepos="14048:1-14048:75" dir="auto"><code>preview_markdown</code> exercising <code>groups</code> API endpoint and <code>UploadLinkFilter</code>:</p>
+<div>
+<div><a href="#example-691">Example 691</a></div>
+<div class="gl-relative markdown-code-block js-markdown-code">
+<pre data-sourcepos="14053:1-14055:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">[groups-test-file](/uploads/groups-test-file)</span></code></pre>
+<copy-code></copy-code>
+</div>
+<div class="gl-relative markdown-code-block js-markdown-code">
+<pre data-sourcepos="14057:1-14059:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;p&gt;&lt;a href="groups-test-file"&gt;groups-test-file&lt;/a&gt;&lt;/p&gt;</span></code></pre>
+<copy-code></copy-code>
+</div>
+</div>
+<p data-sourcepos="14062:1-14062:81" dir="auto"><code>preview_markdown</code> exercising <code>projects</code> API endpoint and <code>RepositoryLinkFilter</code>:</p>
 <div>
 <div><a href="#example-692">Example 692</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14091:1-14093:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">[groups-test-file](/uploads/groups-test-file)</span></code></pre>
+<pre data-sourcepos="14067:1-14069:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">[projects-test-file](projects-test-file)</span></code></pre>
 <copy-code></copy-code>
 </div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14095:1-14097:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;p&gt;&lt;a href="groups-test-file"&gt;groups-test-file&lt;/a&gt;&lt;/p&gt;</span></code></pre>
+<pre data-sourcepos="14071:1-14073:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;p&gt;&lt;a href="projects-test-file"&gt;projects-test-file&lt;/a&gt;&lt;/p&gt;</span></code></pre>
 <copy-code></copy-code>
 </div>
 </div>
-<p data-sourcepos="14100:1-14100:81" dir="auto"><code>preview_markdown</code> exercising <code>projects</code> API endpoint and <code>RepositoryLinkFilter</code>:</p>
+<p data-sourcepos="14076:1-14076:83" dir="auto"><code>preview_markdown</code> exercising <code>projects</code> API endpoint and <code>SnippetReferenceFilter</code>:</p>
 <div>
 <div><a href="#example-693">Example 693</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14105:1-14107:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">[projects-test-file](projects-test-file)</span></code></pre>
+<pre data-sourcepos="14081:1-14083:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">This project snippet ID reference IS filtered: $88888</span></code></pre>
 <copy-code></copy-code>
 </div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14109:1-14111:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;p&gt;&lt;a href="projects-test-file"&gt;projects-test-file&lt;/a&gt;&lt;/p&gt;</span></code></pre>
+<pre data-sourcepos="14085:1-14087:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;p&gt;This project snippet ID reference IS filtered: $88888&lt;/p&gt;</span></code></pre>
 <copy-code></copy-code>
 </div>
 </div>
-<p data-sourcepos="14114:1-14114:83" dir="auto"><code>preview_markdown</code> exercising <code>projects</code> API endpoint and <code>SnippetReferenceFilter</code>:</p>
-<div>
-<div><a href="#example-694">Example 694</a></div>
-<div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14119:1-14121:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">This project snippet ID reference IS filtered: $88888</span></code></pre>
-<copy-code></copy-code>
-</div>
-<div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14123:1-14125:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;p&gt;This project snippet ID reference IS filtered: $88888&lt;/p&gt;</span></code></pre>
-<copy-code></copy-code>
-</div>
-</div>
-<p data-sourcepos="14128:1-14131:50" dir="auto"><code>preview_markdown</code> exercising personal (non-project) <code>snippets</code> API endpoint. This is
+<p data-sourcepos="14090:1-14093:50" dir="auto"><code>preview_markdown</code> exercising personal (non-project) <code>snippets</code> API endpoint. This is
 only used by the comment field on personal snippets. It has no unique custom markdown
 extension behavior, and specifically does not render snippet references via
 <code>SnippetReferenceFilter</code>, even if the ID is valid.</p>
 <div>
+<div><a href="#example-694">Example 694</a></div>
+<div class="gl-relative markdown-code-block js-markdown-code">
+<pre data-sourcepos="14098:1-14100:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">This personal snippet ID reference is not filtered: $99999</span></code></pre>
+<copy-code></copy-code>
+</div>
+<div class="gl-relative markdown-code-block js-markdown-code">
+<pre data-sourcepos="14102:1-14104:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;p&gt;This personal snippet ID reference is not filtered: $99999&lt;/p&gt;</span></code></pre>
+<copy-code></copy-code>
+</div>
+</div>
+<p data-sourcepos="14107:1-14107:80" dir="auto"><code>preview_markdown</code> exercising project <code>wikis</code> API endpoint and <code>WikiLinkFilter</code>:</p>
+<div>
 <div><a href="#example-695">Example 695</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14136:1-14138:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">This personal snippet ID reference is not filtered: $99999</span></code></pre>
+<pre data-sourcepos="14112:1-14114:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">[project-wikis-test-file](project-wikis-test-file)</span></code></pre>
 <copy-code></copy-code>
 </div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14140:1-14142:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;p&gt;This personal snippet ID reference is not filtered: $99999&lt;/p&gt;</span></code></pre>
+<pre data-sourcepos="14116:1-14118:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;p&gt;&lt;a href="project-wikis-test-file"&gt;project-wikis-test-file&lt;/a&gt;&lt;/p&gt;</span></code></pre>
 <copy-code></copy-code>
 </div>
 </div>
-<p data-sourcepos="14145:1-14145:80" dir="auto"><code>preview_markdown</code> exercising project <code>wikis</code> API endpoint and <code>WikiLinkFilter</code>:</p>
+<p data-sourcepos="14121:1-14122:63" dir="auto"><code>preview_markdown</code> exercising group <code>wikis</code> API endpoint and <code>WikiLinkFilter</code>. This example
+also requires an EE license enabling the <code>group_wikis</code> feature:</p>
 <div>
 <div><a href="#example-696">Example 696</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14150:1-14152:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">[project-wikis-test-file](project-wikis-test-file)</span></code></pre>
+<pre data-sourcepos="14127:1-14129:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">[group-wikis-test-file](group-wikis-test-file)</span></code></pre>
 <copy-code></copy-code>
 </div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14154:1-14156:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;p&gt;&lt;a href="project-wikis-test-file"&gt;project-wikis-test-file&lt;/a&gt;&lt;/p&gt;</span></code></pre>
+<pre data-sourcepos="14131:1-14133:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;p&gt;&lt;a href="group-wikis-test-file"&gt;group-wikis-test-file&lt;/a&gt;&lt;/p&gt;</span></code></pre>
 <copy-code></copy-code>
 </div>
 </div>
-<p data-sourcepos="14159:1-14160:63" dir="auto"><code>preview_markdown</code> exercising group <code>wikis</code> API endpoint and <code>WikiLinkFilter</code>. This example
-also requires an EE license enabling the <code>group_wikis</code> feature:</p>
+<h2 data-sourcepos="14136:1-14136:34" dir="auto">
+<a id="user-content-migrated-golden-master-examples" class="anchor" href="#migrated-golden-master-examples" aria-hidden="true"></a>Migrated golden master examples</h2>
+<h3 data-sourcepos="14138:1-14138:30" dir="auto">
+<a id="user-content-attachment_image_for_group" class="anchor" href="#attachment_image_for_group" aria-hidden="true"></a>attachment_image_for_group</h3>
 <div>
 <div><a href="#example-697">Example 697</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14165:1-14167:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">[group-wikis-test-file](group-wikis-test-file)</span></code></pre>
+<pre data-sourcepos="14143:1-14145:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">![test-file](/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.png)</span></code></pre>
 <copy-code></copy-code>
 </div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14169:1-14171:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;p&gt;&lt;a href="group-wikis-test-file"&gt;group-wikis-test-file&lt;/a&gt;&lt;/p&gt;</span></code></pre>
+<pre data-sourcepos="14147:1-14149:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">TODO: Write canonical HTML for this example</span></code></pre>
 <copy-code></copy-code>
 </div>
 </div>
-<h2 data-sourcepos="14174:1-14174:34" dir="auto">
-<a id="user-content-migrated-golden-master-examples" class="anchor" href="#migrated-golden-master-examples" aria-hidden="true"></a>Migrated golden master examples</h2>
-<h3 data-sourcepos="14176:1-14176:30" dir="auto">
-<a id="user-content-attachment_image_for_group" class="anchor" href="#attachment_image_for_group" aria-hidden="true"></a>attachment_image_for_group</h3>
+<h3 data-sourcepos="14152:1-14152:32" dir="auto">
+<a id="user-content-attachment_image_for_project" class="anchor" href="#attachment_image_for_project" aria-hidden="true"></a>attachment_image_for_project</h3>
 <div>
 <div><a href="#example-698">Example 698</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14181:1-14183:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">![test-file](/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.png)</span></code></pre>
+<pre data-sourcepos="14157:1-14159:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">![test-file](/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.png)</span></code></pre>
 <copy-code></copy-code>
 </div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14185:1-14187:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">TODO: Write canonical HTML for this example</span></code></pre>
+<pre data-sourcepos="14161:1-14163:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">TODO: Write canonical HTML for this example</span></code></pre>
 <copy-code></copy-code>
 </div>
 </div>
-<h3 data-sourcepos="14190:1-14190:32" dir="auto">
-<a id="user-content-attachment_image_for_project" class="anchor" href="#attachment_image_for_project" aria-hidden="true"></a>attachment_image_for_project</h3>
+<h3 data-sourcepos="14166:1-14166:37" dir="auto">
+<a id="user-content-attachment_image_for_project_wiki" class="anchor" href="#attachment_image_for_project_wiki" aria-hidden="true"></a>attachment_image_for_project_wiki</h3>
 <div>
 <div><a href="#example-699">Example 699</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14195:1-14197:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">![test-file](/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.png)</span></code></pre>
+<pre data-sourcepos="14171:1-14173:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">![test-file](test-file.png)</span></code></pre>
 <copy-code></copy-code>
 </div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14199:1-14201:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">TODO: Write canonical HTML for this example</span></code></pre>
+<pre data-sourcepos="14175:1-14177:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">TODO: Write canonical HTML for this example</span></code></pre>
 <copy-code></copy-code>
 </div>
 </div>
-<h3 data-sourcepos="14204:1-14204:37" dir="auto">
-<a id="user-content-attachment_image_for_project_wiki" class="anchor" href="#attachment_image_for_project_wiki" aria-hidden="true"></a>attachment_image_for_project_wiki</h3>
+<h3 data-sourcepos="14180:1-14180:29" dir="auto">
+<a id="user-content-attachment_link_for_group" class="anchor" href="#attachment_link_for_group" aria-hidden="true"></a>attachment_link_for_group</h3>
 <div>
 <div><a href="#example-700">Example 700</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14209:1-14211:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">![test-file](test-file.png)</span></code></pre>
+<pre data-sourcepos="14185:1-14187:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">[test-file](/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.zip)</span></code></pre>
 <copy-code></copy-code>
 </div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14213:1-14215:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">TODO: Write canonical HTML for this example</span></code></pre>
+<pre data-sourcepos="14189:1-14191:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">TODO: Write canonical HTML for this example</span></code></pre>
 <copy-code></copy-code>
 </div>
 </div>
-<h3 data-sourcepos="14218:1-14218:29" dir="auto">
-<a id="user-content-attachment_link_for_group" class="anchor" href="#attachment_link_for_group" aria-hidden="true"></a>attachment_link_for_group</h3>
+<h3 data-sourcepos="14194:1-14194:31" dir="auto">
+<a id="user-content-attachment_link_for_project" class="anchor" href="#attachment_link_for_project" aria-hidden="true"></a>attachment_link_for_project</h3>
 <div>
 <div><a href="#example-701">Example 701</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14223:1-14225:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">[test-file](/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.zip)</span></code></pre>
+<pre data-sourcepos="14199:1-14201:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">[test-file](/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.zip)</span></code></pre>
 <copy-code></copy-code>
 </div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14227:1-14229:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">TODO: Write canonical HTML for this example</span></code></pre>
+<pre data-sourcepos="14203:1-14205:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">TODO: Write canonical HTML for this example</span></code></pre>
 <copy-code></copy-code>
 </div>
 </div>
-<h3 data-sourcepos="14232:1-14232:31" dir="auto">
-<a id="user-content-attachment_link_for_project" class="anchor" href="#attachment_link_for_project" aria-hidden="true"></a>attachment_link_for_project</h3>
+<h3 data-sourcepos="14208:1-14208:36" dir="auto">
+<a id="user-content-attachment_link_for_project_wiki" class="anchor" href="#attachment_link_for_project_wiki" aria-hidden="true"></a>attachment_link_for_project_wiki</h3>
 <div>
 <div><a href="#example-702">Example 702</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14237:1-14239:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">[test-file](/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.zip)</span></code></pre>
+<pre data-sourcepos="14213:1-14215:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">[test-file](test-file.zip)</span></code></pre>
 <copy-code></copy-code>
 </div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14241:1-14243:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">TODO: Write canonical HTML for this example</span></code></pre>
+<pre data-sourcepos="14217:1-14219:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">TODO: Write canonical HTML for this example</span></code></pre>
 <copy-code></copy-code>
 </div>
 </div>
-<h3 data-sourcepos="14246:1-14246:36" dir="auto">
-<a id="user-content-attachment_link_for_project_wiki" class="anchor" href="#attachment_link_for_project_wiki" aria-hidden="true"></a>attachment_link_for_project_wiki</h3>
+<h3 data-sourcepos="14222:1-14222:34" dir="auto">
+<a id="user-content-attachment_link_for_group_wiki" class="anchor" href="#attachment_link_for_group_wiki" aria-hidden="true"></a>attachment_link_for_group_wiki</h3>
 <div>
 <div><a href="#example-703">Example 703</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14251:1-14253:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">[test-file](test-file.zip)</span></code></pre>
+<pre data-sourcepos="14227:1-14229:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">[test-file](test-file.zip)</span></code></pre>
 <copy-code></copy-code>
 </div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14255:1-14257:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">TODO: Write canonical HTML for this example</span></code></pre>
+<pre data-sourcepos="14231:1-14233:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">TODO: Write canonical HTML for this example</span></code></pre>
 <copy-code></copy-code>
 </div>
 </div>
-<h3 data-sourcepos="14260:1-14260:34" dir="auto">
-<a id="user-content-attachment_link_for_group_wiki" class="anchor" href="#attachment_link_for_group_wiki" aria-hidden="true"></a>attachment_link_for_group_wiki</h3>
+<h3 data-sourcepos="14236:1-14236:9" dir="auto">
+<a id="user-content-audio-1" class="anchor" href="#audio-1" aria-hidden="true"></a>audio</h3>
 <div>
 <div><a href="#example-704">Example 704</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14265:1-14267:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">[test-file](test-file.zip)</span></code></pre>
+<pre data-sourcepos="14241:1-14243:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">![Sample Audio](https://gitlab.com/gitlab.mp3)</span></code></pre>
 <copy-code></copy-code>
 </div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14269:1-14271:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">TODO: Write canonical HTML for this example</span></code></pre>
+<pre data-sourcepos="14245:1-14247:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">TODO: Write canonical HTML for this example</span></code></pre>
 <copy-code></copy-code>
 </div>
 </div>
-<h3 data-sourcepos="14274:1-14274:9" dir="auto">
-<a id="user-content-audio-1" class="anchor" href="#audio-1" aria-hidden="true"></a>audio</h3>
+<h3 data-sourcepos="14250:1-14250:28" dir="auto">
+<a id="user-content-audio_and_video_in_lists" class="anchor" href="#audio_and_video_in_lists" aria-hidden="true"></a>audio_and_video_in_lists</h3>
 <div>
 <div><a href="#example-705">Example 705</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14279:1-14281:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">![Sample Audio](https://gitlab.com/gitlab.mp3)</span></code></pre>
-<copy-code></copy-code>
-</div>
-<div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14283:1-14285:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">TODO: Write canonical HTML for this example</span></code></pre>
-<copy-code></copy-code>
-</div>
-</div>
-<h3 data-sourcepos="14288:1-14288:28" dir="auto">
-<a id="user-content-audio_and_video_in_lists" class="anchor" href="#audio_and_video_in_lists" aria-hidden="true"></a>audio_and_video_in_lists</h3>
-<div>
-<div><a href="#example-706">Example 706</a></div>
-<div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14293:1-14303:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">* ![Sample Audio](https://gitlab.com/1.mp3)</span>
+<pre data-sourcepos="14255:1-14265:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">* ![Sample Audio](https://gitlab.com/1.mp3)</span>
 <span id="LC2" class="line" lang="plaintext">* ![Sample Video](https://gitlab.com/2.mp4)</span>
 <span id="LC3" class="line" lang="plaintext"></span>
 <span id="LC4" class="line" lang="plaintext">1. ![Sample Video](https://gitlab.com/1.mp4)</span>
@@ -12755,134 +12719,134 @@ also requires an EE license enabling the <code>group_wikis</code> feature:</p>
 <copy-code></copy-code>
 </div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14305:1-14307:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">TODO: Write canonical HTML for this example</span></code></pre>
+<pre data-sourcepos="14267:1-14269:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">TODO: Write canonical HTML for this example</span></code></pre>
 <copy-code></copy-code>
 </div>
 </div>
-<h3 data-sourcepos="14310:1-14310:14" dir="auto">
+<h3 data-sourcepos="14272:1-14272:14" dir="auto">
 <a id="user-content-blockquote" class="anchor" href="#blockquote" aria-hidden="true"></a>blockquote</h3>
 <div>
-<div><a href="#example-707">Example 707</a></div>
+<div><a href="#example-706">Example 706</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14315:1-14319:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&gt; This is a blockquote</span>
+<pre data-sourcepos="14277:1-14281:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&gt; This is a blockquote</span>
 <span id="LC2" class="line" lang="plaintext">&gt;</span>
 <span id="LC3" class="line" lang="plaintext">&gt; This is another one</span></code></pre>
 <copy-code></copy-code>
 </div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14321:1-14323:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">TODO: Write canonical HTML for this example</span></code></pre>
+<pre data-sourcepos="14283:1-14285:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">TODO: Write canonical HTML for this example</span></code></pre>
 <copy-code></copy-code>
 </div>
 </div>
-<h3 data-sourcepos="14326:1-14326:8" dir="auto">
+<h3 data-sourcepos="14288:1-14288:8" dir="auto">
 <a id="user-content-bold" class="anchor" href="#bold" aria-hidden="true"></a>bold</h3>
+<div>
+<div><a href="#example-707">Example 707</a></div>
+<div class="gl-relative markdown-code-block js-markdown-code">
+<pre data-sourcepos="14293:1-14295:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">**bold**</span></code></pre>
+<copy-code></copy-code>
+</div>
+<div class="gl-relative markdown-code-block js-markdown-code">
+<pre data-sourcepos="14297:1-14299:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">TODO: Write canonical HTML for this example</span></code></pre>
+<copy-code></copy-code>
+</div>
+</div>
+<h3 data-sourcepos="14302:1-14302:23" dir="auto">
+<a id="user-content-bullet_list_style_1" class="anchor" href="#bullet_list_style_1" aria-hidden="true"></a>bullet_list_style_1</h3>
 <div>
 <div><a href="#example-708">Example 708</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14331:1-14333:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">**bold**</span></code></pre>
-<copy-code></copy-code>
-</div>
-<div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14335:1-14337:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">TODO: Write canonical HTML for this example</span></code></pre>
-<copy-code></copy-code>
-</div>
-</div>
-<h3 data-sourcepos="14340:1-14340:23" dir="auto">
-<a id="user-content-bullet_list_style_1" class="anchor" href="#bullet_list_style_1" aria-hidden="true"></a>bullet_list_style_1</h3>
-<div>
-<div><a href="#example-709">Example 709</a></div>
-<div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14345:1-14349:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">* list item 1</span>
+<pre data-sourcepos="14307:1-14311:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">* list item 1</span>
 <span id="LC2" class="line" lang="plaintext">* list item 2</span>
 <span id="LC3" class="line" lang="plaintext">  * embedded list item 3</span></code></pre>
 <copy-code></copy-code>
 </div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14351:1-14353:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">TODO: Write canonical HTML for this example</span></code></pre>
+<pre data-sourcepos="14313:1-14315:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">TODO: Write canonical HTML for this example</span></code></pre>
 <copy-code></copy-code>
 </div>
 </div>
-<h3 data-sourcepos="14356:1-14356:23" dir="auto">
+<h3 data-sourcepos="14318:1-14318:23" dir="auto">
 <a id="user-content-bullet_list_style_2" class="anchor" href="#bullet_list_style_2" aria-hidden="true"></a>bullet_list_style_2</h3>
 <div>
-<div><a href="#example-710">Example 710</a></div>
+<div><a href="#example-709">Example 709</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14361:1-14365:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">- list item 1</span>
+<pre data-sourcepos="14323:1-14327:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">- list item 1</span>
 <span id="LC2" class="line" lang="plaintext">- list item 2</span>
 <span id="LC3" class="line" lang="plaintext">  * embedded list item 3</span></code></pre>
 <copy-code></copy-code>
 </div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14367:1-14369:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">TODO: Write canonical HTML for this example</span></code></pre>
+<pre data-sourcepos="14329:1-14331:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">TODO: Write canonical HTML for this example</span></code></pre>
 <copy-code></copy-code>
 </div>
 </div>
-<h3 data-sourcepos="14372:1-14372:23" dir="auto">
+<h3 data-sourcepos="14334:1-14334:23" dir="auto">
 <a id="user-content-bullet_list_style_3" class="anchor" href="#bullet_list_style_3" aria-hidden="true"></a>bullet_list_style_3</h3>
 <div>
-<div><a href="#example-711">Example 711</a></div>
+<div><a href="#example-710">Example 710</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14377:1-14381:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">+ list item 1</span>
+<pre data-sourcepos="14339:1-14343:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">+ list item 1</span>
 <span id="LC2" class="line" lang="plaintext">+ list item 2</span>
 <span id="LC3" class="line" lang="plaintext">  - embedded list item 3</span></code></pre>
 <copy-code></copy-code>
 </div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14383:1-14385:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">TODO: Write canonical HTML for this example</span></code></pre>
+<pre data-sourcepos="14345:1-14347:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">TODO: Write canonical HTML for this example</span></code></pre>
 <copy-code></copy-code>
 </div>
 </div>
-<h3 data-sourcepos="14388:1-14388:25" dir="auto">
+<h3 data-sourcepos="14350:1-14350:25" dir="auto">
 <a id="user-content-code_block_javascript" class="anchor" href="#code_block_javascript" aria-hidden="true"></a>code_block_javascript</h3>
 <div>
-<div><a href="#example-712">Example 712</a></div>
+<div><a href="#example-711">Example 711</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14393:1-14397:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">```javascript</span>
+<pre data-sourcepos="14355:1-14359:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">```javascript</span>
 <span id="LC2" class="line" lang="plaintext">  console.log('hello world')</span>
 <span id="LC3" class="line" lang="plaintext">```</span></code></pre>
 <copy-code></copy-code>
 </div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14399:1-14401:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">TODO: Write canonical HTML for this example</span></code></pre>
+<pre data-sourcepos="14361:1-14363:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">TODO: Write canonical HTML for this example</span></code></pre>
 <copy-code></copy-code>
 </div>
 </div>
-<h3 data-sourcepos="14404:1-14404:24" dir="auto">
+<h3 data-sourcepos="14366:1-14366:24" dir="auto">
 <a id="user-content-code_block_plaintext" class="anchor" href="#code_block_plaintext" aria-hidden="true"></a>code_block_plaintext</h3>
 <div>
-<div><a href="#example-713">Example 713</a></div>
+<div><a href="#example-712">Example 712</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14409:1-14413:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">```</span>
+<pre data-sourcepos="14371:1-14375:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">```</span>
 <span id="LC2" class="line" lang="plaintext">  plaintext</span>
 <span id="LC3" class="line" lang="plaintext">```</span></code></pre>
 <copy-code></copy-code>
 </div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14415:1-14417:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">TODO: Write canonical HTML for this example</span></code></pre>
+<pre data-sourcepos="14377:1-14379:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">TODO: Write canonical HTML for this example</span></code></pre>
 <copy-code></copy-code>
 </div>
 </div>
-<h3 data-sourcepos="14420:1-14420:22" dir="auto">
+<h3 data-sourcepos="14382:1-14382:22" dir="auto">
 <a id="user-content-code_block_unknown" class="anchor" href="#code_block_unknown" aria-hidden="true"></a>code_block_unknown</h3>
 <div>
-<div><a href="#example-714">Example 714</a></div>
+<div><a href="#example-713">Example 713</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14425:1-14429:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">```foobar</span>
+<pre data-sourcepos="14387:1-14391:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">```foobar</span>
 <span id="LC2" class="line" lang="plaintext">  custom_language = &gt;&gt; this &lt;&lt;</span>
 <span id="LC3" class="line" lang="plaintext">```</span></code></pre>
 <copy-code></copy-code>
 </div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14431:1-14433:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">TODO: Write canonical HTML for this example</span></code></pre>
+<pre data-sourcepos="14393:1-14395:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">TODO: Write canonical HTML for this example</span></code></pre>
 <copy-code></copy-code>
 </div>
 </div>
-<h3 data-sourcepos="14436:1-14436:15" dir="auto">
+<h3 data-sourcepos="14398:1-14398:15" dir="auto">
 <a id="user-content-color_chips" class="anchor" href="#color_chips" aria-hidden="true"></a>color_chips</h3>
 <div>
-<div><a href="#example-715">Example 715</a></div>
+<div><a href="#example-714">Example 714</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14441:1-14451:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">- `#F00`</span>
+<pre data-sourcepos="14403:1-14413:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">- `#F00`</span>
 <span id="LC2" class="line" lang="plaintext">- `#F00A`</span>
 <span id="LC3" class="line" lang="plaintext">- `#FF0000`</span>
 <span id="LC4" class="line" lang="plaintext">- `#FF0000AA`</span>
@@ -12894,16 +12858,16 @@ also requires an EE license enabling the <code>group_wikis</code> feature:</p>
 <copy-code></copy-code>
 </div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14453:1-14455:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">TODO: Write canonical HTML for this example</span></code></pre>
+<pre data-sourcepos="14415:1-14417:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">TODO: Write canonical HTML for this example</span></code></pre>
 <copy-code></copy-code>
 </div>
 </div>
-<h3 data-sourcepos="14458:1-14458:20" dir="auto">
+<h3 data-sourcepos="14420:1-14420:20" dir="auto">
 <a id="user-content-description_list" class="anchor" href="#description_list" aria-hidden="true"></a>description_list</h3>
 <div>
-<div><a href="#example-716">Example 716</a></div>
+<div><a href="#example-715">Example 715</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14463:1-14480:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;dl&gt;</span>
+<pre data-sourcepos="14425:1-14442:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;dl&gt;</span>
 <span id="LC2" class="line" lang="plaintext">&lt;dt&gt;Frog&lt;/dt&gt;</span>
 <span id="LC3" class="line" lang="plaintext">&lt;dd&gt;Wet green thing&lt;/dd&gt;</span>
 <span id="LC4" class="line" lang="plaintext">&lt;dt&gt;Rabbit&lt;/dt&gt;</span>
@@ -12922,16 +12886,16 @@ also requires an EE license enabling the <code>group_wikis</code> feature:</p>
 <copy-code></copy-code>
 </div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14482:1-14484:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">TODO: Write canonical HTML for this example</span></code></pre>
+<pre data-sourcepos="14444:1-14446:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">TODO: Write canonical HTML for this example</span></code></pre>
 <copy-code></copy-code>
 </div>
 </div>
-<h3 data-sourcepos="14487:1-14487:11" dir="auto">
+<h3 data-sourcepos="14449:1-14449:11" dir="auto">
 <a id="user-content-details" class="anchor" href="#details" aria-hidden="true"></a>details</h3>
 <div>
-<div><a href="#example-717">Example 717</a></div>
+<div><a href="#example-716">Example 716</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14492:1-14500:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;details&gt;</span>
+<pre data-sourcepos="14454:1-14462:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;details&gt;</span>
 <span id="LC2" class="line" lang="plaintext">&lt;summary&gt;This is the visible summary of the collapsible section&lt;/summary&gt;</span>
 <span id="LC3" class="line" lang="plaintext"></span>
 <span id="LC4" class="line" lang="plaintext">1. collapsed markdown</span>
@@ -12941,16 +12905,16 @@ also requires an EE license enabling the <code>group_wikis</code> feature:</p>
 <copy-code></copy-code>
 </div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14502:1-14504:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">TODO: Write canonical HTML for this example</span></code></pre>
+<pre data-sourcepos="14464:1-14466:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">TODO: Write canonical HTML for this example</span></code></pre>
 <copy-code></copy-code>
 </div>
 </div>
-<h3 data-sourcepos="14507:1-14507:25" dir="auto">
+<h3 data-sourcepos="14469:1-14469:25" dir="auto">
 <a id="user-content-diagram_kroki_nomnoml" class="anchor" href="#diagram_kroki_nomnoml" aria-hidden="true"></a>diagram_kroki_nomnoml</h3>
 <div>
-<div><a href="#example-718">Example 718</a></div>
+<div><a href="#example-717">Example 717</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14512:1-14524:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">```nomnoml</span>
+<pre data-sourcepos="14474:1-14486:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">```nomnoml</span>
 <span id="LC2" class="line" lang="plaintext">  #stroke: #a86128</span>
 <span id="LC3" class="line" lang="plaintext">  [&lt;frame&gt;Decorator pattern|</span>
 <span id="LC4" class="line" lang="plaintext">    [&lt;abstract&gt;Component||+ operation()]</span>
@@ -12964,16 +12928,16 @@ also requires an EE license enabling the <code>group_wikis</code> feature:</p>
 <copy-code></copy-code>
 </div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14526:1-14528:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">TODO: Write canonical HTML for this example</span></code></pre>
+<pre data-sourcepos="14488:1-14490:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">TODO: Write canonical HTML for this example</span></code></pre>
 <copy-code></copy-code>
 </div>
 </div>
-<h3 data-sourcepos="14531:1-14531:20" dir="auto">
+<h3 data-sourcepos="14493:1-14493:20" dir="auto">
 <a id="user-content-diagram_plantuml" class="anchor" href="#diagram_plantuml" aria-hidden="true"></a>diagram_plantuml</h3>
 <div>
-<div><a href="#example-719">Example 719</a></div>
+<div><a href="#example-718">Example 718</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14536:1-14544:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">```plantuml</span>
+<pre data-sourcepos="14498:1-14506:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">```plantuml</span>
 <span id="LC2" class="line" lang="plaintext">  Alice -&gt; Bob: Authentication Request</span>
 <span id="LC3" class="line" lang="plaintext">  Bob --&gt; Alice: Authentication Response</span>
 <span id="LC4" class="line" lang="plaintext"></span>
@@ -12983,31 +12947,31 @@ also requires an EE license enabling the <code>group_wikis</code> feature:</p>
 <copy-code></copy-code>
 </div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14546:1-14548:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">TODO: Write canonical HTML for this example</span></code></pre>
+<pre data-sourcepos="14508:1-14510:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">TODO: Write canonical HTML for this example</span></code></pre>
 <copy-code></copy-code>
 </div>
 </div>
-<h3 data-sourcepos="14551:1-14551:28" dir="auto">
+<h3 data-sourcepos="14513:1-14513:28" dir="auto">
 <a id="user-content-diagram_plantuml_unicode" class="anchor" href="#diagram_plantuml_unicode" aria-hidden="true"></a>diagram_plantuml_unicode</h3>
 <div>
-<div><a href="#example-720">Example 720</a></div>
+<div><a href="#example-719">Example 719</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14556:1-14560:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">```plantuml</span>
+<pre data-sourcepos="14518:1-14522:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">```plantuml</span>
 <span id="LC2" class="line" lang="plaintext">A -&gt; B : Text with norwegian characters: æøå</span>
 <span id="LC3" class="line" lang="plaintext">```</span></code></pre>
 <copy-code></copy-code>
 </div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14562:1-14564:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">TODO: Write canonical HTML for this example</span></code></pre>
+<pre data-sourcepos="14524:1-14526:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">TODO: Write canonical HTML for this example</span></code></pre>
 <copy-code></copy-code>
 </div>
 </div>
-<h3 data-sourcepos="14567:1-14567:7" dir="auto">
+<h3 data-sourcepos="14529:1-14529:7" dir="auto">
 <a id="user-content-div" class="anchor" href="#div" aria-hidden="true"></a>div</h3>
 <div>
-<div><a href="#example-721">Example 721</a></div>
+<div><a href="#example-720">Example 720</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14572:1-14579:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;div&gt;plain text&lt;/div&gt;</span>
+<pre data-sourcepos="14534:1-14541:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;div&gt;plain text&lt;/div&gt;</span>
 <span id="LC2" class="line" lang="plaintext">&lt;div&gt;</span>
 <span id="LC3" class="line" lang="plaintext"></span>
 <span id="LC4" class="line" lang="plaintext">just a plain ol' div, not much to _expect_!</span>
@@ -13016,42 +12980,42 @@ also requires an EE license enabling the <code>group_wikis</code> feature:</p>
 <copy-code></copy-code>
 </div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14581:1-14583:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">TODO: Write canonical HTML for this example</span></code></pre>
+<pre data-sourcepos="14543:1-14545:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">TODO: Write canonical HTML for this example</span></code></pre>
 <copy-code></copy-code>
 </div>
 </div>
-<h3 data-sourcepos="14586:1-14586:9" dir="auto">
+<h3 data-sourcepos="14548:1-14548:9" dir="auto">
 <a id="user-content-emoji" class="anchor" href="#emoji" aria-hidden="true"></a>emoji</h3>
+<div>
+<div><a href="#example-721">Example 721</a></div>
+<div class="gl-relative markdown-code-block js-markdown-code">
+<pre data-sourcepos="14553:1-14555:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">:sparkles: :heart: :100:</span></code></pre>
+<copy-code></copy-code>
+</div>
+<div class="gl-relative markdown-code-block js-markdown-code">
+<pre data-sourcepos="14557:1-14559:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">TODO: Write canonical HTML for this example</span></code></pre>
+<copy-code></copy-code>
+</div>
+</div>
+<h3 data-sourcepos="14562:1-14562:12" dir="auto">
+<a id="user-content-emphasis" class="anchor" href="#emphasis" aria-hidden="true"></a>emphasis</h3>
 <div>
 <div><a href="#example-722">Example 722</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14591:1-14593:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">:sparkles: :heart: :100:</span></code></pre>
+<pre data-sourcepos="14567:1-14569:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">_emphasized text_</span></code></pre>
 <copy-code></copy-code>
 </div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14595:1-14597:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">TODO: Write canonical HTML for this example</span></code></pre>
+<pre data-sourcepos="14571:1-14573:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">TODO: Write canonical HTML for this example</span></code></pre>
 <copy-code></copy-code>
 </div>
 </div>
-<h3 data-sourcepos="14600:1-14600:12" dir="auto">
-<a id="user-content-emphasis" class="anchor" href="#emphasis" aria-hidden="true"></a>emphasis</h3>
+<h3 data-sourcepos="14576:1-14576:10" dir="auto">
+<a id="user-content-figure" class="anchor" href="#figure" aria-hidden="true"></a>figure</h3>
 <div>
 <div><a href="#example-723">Example 723</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14605:1-14607:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">_emphasized text_</span></code></pre>
-<copy-code></copy-code>
-</div>
-<div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14609:1-14611:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">TODO: Write canonical HTML for this example</span></code></pre>
-<copy-code></copy-code>
-</div>
-</div>
-<h3 data-sourcepos="14614:1-14614:10" dir="auto">
-<a id="user-content-figure" class="anchor" href="#figure" aria-hidden="true"></a>figure</h3>
-<div>
-<div><a href="#example-724">Example 724</a></div>
-<div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14619:1-14636:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;figure&gt;</span>
+<pre data-sourcepos="14581:1-14598:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;figure&gt;</span>
 <span id="LC2" class="line" lang="plaintext"></span>
 <span id="LC3" class="line" lang="plaintext">![Elephant at sunset](elephant-sunset.jpg)</span>
 <span id="LC4" class="line" lang="plaintext"></span>
@@ -13070,16 +13034,16 @@ also requires an EE license enabling the <code>group_wikis</code> feature:</p>
 <copy-code></copy-code>
 </div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14638:1-14640:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">TODO: Write canonical HTML for this example</span></code></pre>
+<pre data-sourcepos="14600:1-14602:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">TODO: Write canonical HTML for this example</span></code></pre>
 <copy-code></copy-code>
 </div>
 </div>
-<h3 data-sourcepos="14643:1-14643:13" dir="auto">
-<a id="user-content-footnotes-1" class="anchor" href="#footnotes-1" aria-hidden="true"></a>footnotes</h3>
+<h3 data-sourcepos="14605:1-14605:13" dir="auto">
+<a id="user-content-footnotes" class="anchor" href="#footnotes" aria-hidden="true"></a>footnotes</h3>
 <div>
-<div><a href="#example-725">Example 725</a></div>
+<div><a href="#example-724">Example 724</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14648:1-14656:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">A footnote reference tag looks like this: [^1]</span>
+<pre data-sourcepos="14610:1-14618:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">A footnote reference tag looks like this: [^1]</span>
 <span id="LC2" class="line" lang="plaintext"></span>
 <span id="LC3" class="line" lang="plaintext">This reference tag is a mix of letters and numbers. [^footnote]</span>
 <span id="LC4" class="line" lang="plaintext"></span>
@@ -13089,16 +13053,16 @@ also requires an EE license enabling the <code>group_wikis</code> feature:</p>
 <copy-code></copy-code>
 </div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14658:1-14660:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">TODO: Write canonical HTML for this example</span></code></pre>
+<pre data-sourcepos="14620:1-14622:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">TODO: Write canonical HTML for this example</span></code></pre>
 <copy-code></copy-code>
 </div>
 </div>
-<h3 data-sourcepos="14663:1-14663:20" dir="auto">
+<h3 data-sourcepos="14625:1-14625:20" dir="auto">
 <a id="user-content-frontmatter_json" class="anchor" href="#frontmatter_json" aria-hidden="true"></a>frontmatter_json</h3>
 <div>
-<div><a href="#example-726">Example 726</a></div>
+<div><a href="#example-725">Example 725</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14668:1-14674:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">;;;</span>
+<pre data-sourcepos="14630:1-14636:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">;;;</span>
 <span id="LC2" class="line" lang="plaintext">{</span>
 <span id="LC3" class="line" lang="plaintext">  "title": "Page title"</span>
 <span id="LC4" class="line" lang="plaintext">}</span>
@@ -13106,60 +13070,60 @@ also requires an EE license enabling the <code>group_wikis</code> feature:</p>
 <copy-code></copy-code>
 </div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14676:1-14678:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">TODO: Write canonical HTML for this example</span></code></pre>
+<pre data-sourcepos="14638:1-14640:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">TODO: Write canonical HTML for this example</span></code></pre>
 <copy-code></copy-code>
 </div>
 </div>
-<h3 data-sourcepos="14681:1-14681:20" dir="auto">
+<h3 data-sourcepos="14643:1-14643:20" dir="auto">
 <a id="user-content-frontmatter_toml" class="anchor" href="#frontmatter_toml" aria-hidden="true"></a>frontmatter_toml</h3>
 <div>
-<div><a href="#example-727">Example 727</a></div>
+<div><a href="#example-726">Example 726</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14686:1-14690:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">+++</span>
+<pre data-sourcepos="14648:1-14652:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">+++</span>
 <span id="LC2" class="line" lang="plaintext">title = "Page title"</span>
 <span id="LC3" class="line" lang="plaintext">+++</span></code></pre>
 <copy-code></copy-code>
 </div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14692:1-14694:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">TODO: Write canonical HTML for this example</span></code></pre>
+<pre data-sourcepos="14654:1-14656:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">TODO: Write canonical HTML for this example</span></code></pre>
 <copy-code></copy-code>
 </div>
 </div>
-<h3 data-sourcepos="14697:1-14697:20" dir="auto">
+<h3 data-sourcepos="14659:1-14659:20" dir="auto">
 <a id="user-content-frontmatter_yaml" class="anchor" href="#frontmatter_yaml" aria-hidden="true"></a>frontmatter_yaml</h3>
 <div>
-<div><a href="#example-728">Example 728</a></div>
+<div><a href="#example-727">Example 727</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14702:1-14706:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">---</span>
+<pre data-sourcepos="14664:1-14668:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">---</span>
 <span id="LC2" class="line" lang="plaintext">title: Page title</span>
 <span id="LC3" class="line" lang="plaintext">---</span></code></pre>
 <copy-code></copy-code>
 </div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14708:1-14710:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">TODO: Write canonical HTML for this example</span></code></pre>
+<pre data-sourcepos="14670:1-14672:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">TODO: Write canonical HTML for this example</span></code></pre>
 <copy-code></copy-code>
 </div>
 </div>
-<h3 data-sourcepos="14713:1-14713:14" dir="auto">
+<h3 data-sourcepos="14675:1-14675:14" dir="auto">
 <a id="user-content-hard_break" class="anchor" href="#hard_break" aria-hidden="true"></a>hard_break</h3>
 <div>
-<div><a href="#example-729">Example 729</a></div>
+<div><a href="#example-728">Example 728</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14718:1-14721:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">This is a line after a\</span>
+<pre data-sourcepos="14680:1-14683:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">This is a line after a\</span>
 <span id="LC2" class="line" lang="plaintext">hard break</span></code></pre>
 <copy-code></copy-code>
 </div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14723:1-14725:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">TODO: Write canonical HTML for this example</span></code></pre>
+<pre data-sourcepos="14685:1-14687:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">TODO: Write canonical HTML for this example</span></code></pre>
 <copy-code></copy-code>
 </div>
 </div>
-<h3 data-sourcepos="14728:1-14728:12" dir="auto">
+<h3 data-sourcepos="14690:1-14690:12" dir="auto">
 <a id="user-content-headings" class="anchor" href="#headings" aria-hidden="true"></a>headings</h3>
 <div>
-<div><a href="#example-730">Example 730</a></div>
+<div><a href="#example-729">Example 729</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14733:1-14745:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext"># Heading 1</span>
+<pre data-sourcepos="14695:1-14707:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext"># Heading 1</span>
 <span id="LC2" class="line" lang="plaintext"></span>
 <span id="LC3" class="line" lang="plaintext">## Heading 2</span>
 <span id="LC4" class="line" lang="plaintext"></span>
@@ -13173,29 +13137,29 @@ also requires an EE license enabling the <code>group_wikis</code> feature:</p>
 <copy-code></copy-code>
 </div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14747:1-14749:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">TODO: Write canonical HTML for this example</span></code></pre>
+<pre data-sourcepos="14709:1-14711:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">TODO: Write canonical HTML for this example</span></code></pre>
 <copy-code></copy-code>
 </div>
 </div>
-<h3 data-sourcepos="14752:1-14752:19" dir="auto">
+<h3 data-sourcepos="14714:1-14714:19" dir="auto">
 <a id="user-content-horizontal_rule" class="anchor" href="#horizontal_rule" aria-hidden="true"></a>horizontal_rule</h3>
+<div>
+<div><a href="#example-730">Example 730</a></div>
+<div class="gl-relative markdown-code-block js-markdown-code">
+<pre data-sourcepos="14719:1-14721:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">---</span></code></pre>
+<copy-code></copy-code>
+</div>
+<div class="gl-relative markdown-code-block js-markdown-code">
+<pre data-sourcepos="14723:1-14725:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">TODO: Write canonical HTML for this example</span></code></pre>
+<copy-code></copy-code>
+</div>
+</div>
+<h3 data-sourcepos="14728:1-14728:14" dir="auto">
+<a id="user-content-html_marks" class="anchor" href="#html_marks" aria-hidden="true"></a>html_marks</h3>
 <div>
 <div><a href="#example-731">Example 731</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14757:1-14759:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">---</span></code></pre>
-<copy-code></copy-code>
-</div>
-<div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14761:1-14763:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">TODO: Write canonical HTML for this example</span></code></pre>
-<copy-code></copy-code>
-</div>
-</div>
-<h3 data-sourcepos="14766:1-14766:14" dir="auto">
-<a id="user-content-html_marks" class="anchor" href="#html_marks" aria-hidden="true"></a>html_marks</h3>
-<div>
-<div><a href="#example-732">Example 732</a></div>
-<div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14771:1-14787:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">* Content editor is ~~great~~&lt;ins&gt;amazing&lt;/ins&gt;.</span>
+<pre data-sourcepos="14733:1-14749:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">* Content editor is ~~great~~&lt;ins&gt;amazing&lt;/ins&gt;.</span>
 <span id="LC2" class="line" lang="plaintext">* If the changes &lt;abbr title="Looks good to merge"&gt;LGTM&lt;/abbr&gt;, please &lt;abbr title="Merge when pipeline succeeds"&gt;MWPS&lt;/abbr&gt;.</span>
 <span id="LC3" class="line" lang="plaintext">* The English song &lt;q&gt;Oh I do like to be beside the seaside&lt;/q&gt; looks like this in Hebrew: &lt;span dir="rtl"&gt;אה, אני אוהב להיות ליד חוף הים&lt;/span&gt;. In the computer's memory, this is stored as &lt;bdo dir="ltr"&gt;אה, אני אוהב להיות ליד חוף הים&lt;/bdo&gt;.</span>
 <span id="LC4" class="line" lang="plaintext">* &lt;cite&gt;The Scream&lt;/cite&gt; by Edvard Munch. Painted in 1893.</span>
@@ -13213,82 +13177,82 @@ also requires an EE license enabling the <code>group_wikis</code> feature:</p>
 <copy-code></copy-code>
 </div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14789:1-14791:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">TODO: Write canonical HTML for this example</span></code></pre>
+<pre data-sourcepos="14751:1-14753:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">TODO: Write canonical HTML for this example</span></code></pre>
 <copy-code></copy-code>
 </div>
 </div>
-<h3 data-sourcepos="14794:1-14794:9" dir="auto">
+<h3 data-sourcepos="14756:1-14756:9" dir="auto">
 <a id="user-content-image" class="anchor" href="#image" aria-hidden="true"></a>image</h3>
+<div>
+<div><a href="#example-732">Example 732</a></div>
+<div class="gl-relative markdown-code-block js-markdown-code">
+<pre data-sourcepos="14761:1-14763:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">![alt text](https://gitlab.com/logo.png)</span></code></pre>
+<copy-code></copy-code>
+</div>
+<div class="gl-relative markdown-code-block js-markdown-code">
+<pre data-sourcepos="14765:1-14767:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">TODO: Write canonical HTML for this example</span></code></pre>
+<copy-code></copy-code>
+</div>
+</div>
+<h3 data-sourcepos="14770:1-14770:15" dir="auto">
+<a id="user-content-inline_code" class="anchor" href="#inline_code" aria-hidden="true"></a>inline_code</h3>
 <div>
 <div><a href="#example-733">Example 733</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14799:1-14801:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">![alt text](https://gitlab.com/logo.png)</span></code></pre>
+<pre data-sourcepos="14775:1-14777:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">`code`</span></code></pre>
 <copy-code></copy-code>
 </div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14803:1-14805:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">TODO: Write canonical HTML for this example</span></code></pre>
+<pre data-sourcepos="14779:1-14781:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">TODO: Write canonical HTML for this example</span></code></pre>
 <copy-code></copy-code>
 </div>
 </div>
-<h3 data-sourcepos="14808:1-14808:15" dir="auto">
-<a id="user-content-inline_code" class="anchor" href="#inline_code" aria-hidden="true"></a>inline_code</h3>
+<h3 data-sourcepos="14784:1-14784:15" dir="auto">
+<a id="user-content-inline_diff" class="anchor" href="#inline_diff" aria-hidden="true"></a>inline_diff</h3>
 <div>
 <div><a href="#example-734">Example 734</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14813:1-14815:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">`code`</span></code></pre>
-<copy-code></copy-code>
-</div>
-<div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14817:1-14819:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">TODO: Write canonical HTML for this example</span></code></pre>
-<copy-code></copy-code>
-</div>
-</div>
-<h3 data-sourcepos="14822:1-14822:15" dir="auto">
-<a id="user-content-inline_diff" class="anchor" href="#inline_diff" aria-hidden="true"></a>inline_diff</h3>
-<div>
-<div><a href="#example-735">Example 735</a></div>
-<div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14827:1-14830:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">* {-deleted-}</span>
+<pre data-sourcepos="14789:1-14792:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">* {-deleted-}</span>
 <span id="LC2" class="line" lang="plaintext">* {+added+}</span></code></pre>
 <copy-code></copy-code>
 </div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14832:1-14834:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">TODO: Write canonical HTML for this example</span></code></pre>
+<pre data-sourcepos="14794:1-14796:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">TODO: Write canonical HTML for this example</span></code></pre>
 <copy-code></copy-code>
 </div>
 </div>
-<h3 data-sourcepos="14837:1-14837:9" dir="auto">
+<h3 data-sourcepos="14799:1-14799:9" dir="auto">
 <a id="user-content-label" class="anchor" href="#label" aria-hidden="true"></a>label</h3>
+<div>
+<div><a href="#example-735">Example 735</a></div>
+<div class="gl-relative markdown-code-block js-markdown-code">
+<pre data-sourcepos="14804:1-14806:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">~bug</span></code></pre>
+<copy-code></copy-code>
+</div>
+<div class="gl-relative markdown-code-block js-markdown-code">
+<pre data-sourcepos="14808:1-14810:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">TODO: Write canonical HTML for this example</span></code></pre>
+<copy-code></copy-code>
+</div>
+</div>
+<h3 data-sourcepos="14813:1-14813:8" dir="auto">
+<a id="user-content-link" class="anchor" href="#link" aria-hidden="true"></a>link</h3>
 <div>
 <div><a href="#example-736">Example 736</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14842:1-14844:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">~bug</span></code></pre>
+<pre data-sourcepos="14818:1-14820:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">[GitLab](https://gitlab.com)</span></code></pre>
 <copy-code></copy-code>
 </div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14846:1-14848:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">TODO: Write canonical HTML for this example</span></code></pre>
+<pre data-sourcepos="14822:1-14824:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">TODO: Write canonical HTML for this example</span></code></pre>
 <copy-code></copy-code>
 </div>
 </div>
-<h3 data-sourcepos="14851:1-14851:8" dir="auto">
-<a id="user-content-link" class="anchor" href="#link" aria-hidden="true"></a>link</h3>
+<h3 data-sourcepos="14827:1-14827:8" dir="auto">
+<a id="user-content-math" class="anchor" href="#math" aria-hidden="true"></a>math</h3>
 <div>
 <div><a href="#example-737">Example 737</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14856:1-14858:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">[GitLab](https://gitlab.com)</span></code></pre>
-<copy-code></copy-code>
-</div>
-<div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14860:1-14862:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">TODO: Write canonical HTML for this example</span></code></pre>
-<copy-code></copy-code>
-</div>
-</div>
-<h3 data-sourcepos="14865:1-14865:8" dir="auto">
-<a id="user-content-math" class="anchor" href="#math" aria-hidden="true"></a>math</h3>
-<div>
-<div><a href="#example-738">Example 738</a></div>
-<div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14870:1-14878:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">This math is inline $`a^2+b^2=c^2`$.</span>
+<pre data-sourcepos="14832:1-14840:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">This math is inline $`a^2+b^2=c^2`$.</span>
 <span id="LC2" class="line" lang="plaintext"></span>
 <span id="LC3" class="line" lang="plaintext">This is on a separate line:</span>
 <span id="LC4" class="line" lang="plaintext"></span>
@@ -13298,46 +13262,46 @@ also requires an EE license enabling the <code>group_wikis</code> feature:</p>
 <copy-code></copy-code>
 </div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14880:1-14882:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">TODO: Write canonical HTML for this example</span></code></pre>
+<pre data-sourcepos="14842:1-14844:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">TODO: Write canonical HTML for this example</span></code></pre>
 <copy-code></copy-code>
 </div>
 </div>
-<h3 data-sourcepos="14885:1-14885:16" dir="auto">
+<h3 data-sourcepos="14847:1-14847:16" dir="auto">
 <a id="user-content-ordered_list" class="anchor" href="#ordered_list" aria-hidden="true"></a>ordered_list</h3>
 <div>
-<div><a href="#example-739">Example 739</a></div>
+<div><a href="#example-738">Example 738</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14890:1-14894:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">1. list item 1</span>
+<pre data-sourcepos="14852:1-14856:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">1. list item 1</span>
 <span id="LC2" class="line" lang="plaintext">2. list item 2</span>
 <span id="LC3" class="line" lang="plaintext">3. list item 3</span></code></pre>
 <copy-code></copy-code>
 </div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14896:1-14898:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">TODO: Write canonical HTML for this example</span></code></pre>
+<pre data-sourcepos="14858:1-14860:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">TODO: Write canonical HTML for this example</span></code></pre>
 <copy-code></copy-code>
 </div>
 </div>
-<h3 data-sourcepos="14901:1-14901:33" dir="auto">
+<h3 data-sourcepos="14863:1-14863:33" dir="auto">
 <a id="user-content-ordered_list_with_start_order" class="anchor" href="#ordered_list_with_start_order" aria-hidden="true"></a>ordered_list_with_start_order</h3>
 <div>
-<div><a href="#example-740">Example 740</a></div>
+<div><a href="#example-739">Example 739</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14906:1-14910:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">134. list item 1</span>
+<pre data-sourcepos="14868:1-14872:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">134. list item 1</span>
 <span id="LC2" class="line" lang="plaintext">135. list item 2</span>
 <span id="LC3" class="line" lang="plaintext">136. list item 3</span></code></pre>
 <copy-code></copy-code>
 </div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14912:1-14914:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">TODO: Write canonical HTML for this example</span></code></pre>
+<pre data-sourcepos="14874:1-14876:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">TODO: Write canonical HTML for this example</span></code></pre>
 <copy-code></copy-code>
 </div>
 </div>
-<h3 data-sourcepos="14917:1-14917:21" dir="auto">
+<h3 data-sourcepos="14879:1-14879:21" dir="auto">
 <a id="user-content-ordered_task_list" class="anchor" href="#ordered_task_list" aria-hidden="true"></a>ordered_task_list</h3>
 <div>
-<div><a href="#example-741">Example 741</a></div>
+<div><a href="#example-740">Example 740</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14922:1-14929:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">1. [x] hello</span>
+<pre data-sourcepos="14884:1-14891:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">1. [x] hello</span>
 <span id="LC2" class="line" lang="plaintext">2. [x] world</span>
 <span id="LC3" class="line" lang="plaintext">3. [ ] example</span>
 <span id="LC4" class="line" lang="plaintext">   1. [ ] of nested</span>
@@ -13346,57 +13310,57 @@ also requires an EE license enabling the <code>group_wikis</code> feature:</p>
 <copy-code></copy-code>
 </div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14931:1-14933:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">TODO: Write canonical HTML for this example</span></code></pre>
+<pre data-sourcepos="14893:1-14895:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">TODO: Write canonical HTML for this example</span></code></pre>
 <copy-code></copy-code>
 </div>
 </div>
-<h3 data-sourcepos="14936:1-14936:32" dir="auto">
+<h3 data-sourcepos="14898:1-14898:32" dir="auto">
 <a id="user-content-ordered_task_list_with_order" class="anchor" href="#ordered_task_list_with_order" aria-hidden="true"></a>ordered_task_list_with_order</h3>
 <div>
-<div><a href="#example-742">Example 742</a></div>
+<div><a href="#example-741">Example 741</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14941:1-14945:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">4893. [x] hello</span>
+<pre data-sourcepos="14903:1-14907:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">4893. [x] hello</span>
 <span id="LC2" class="line" lang="plaintext">4894. [x] world</span>
 <span id="LC3" class="line" lang="plaintext">4895. [ ] example</span></code></pre>
 <copy-code></copy-code>
 </div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14947:1-14949:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">TODO: Write canonical HTML for this example</span></code></pre>
+<pre data-sourcepos="14909:1-14911:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">TODO: Write canonical HTML for this example</span></code></pre>
 <copy-code></copy-code>
 </div>
 </div>
-<h3 data-sourcepos="14952:1-14952:30" dir="auto">
+<h3 data-sourcepos="14914:1-14914:30" dir="auto">
 <a id="user-content-reference_for_project_wiki" class="anchor" href="#reference_for_project_wiki" aria-hidden="true"></a>reference_for_project_wiki</h3>
+<div>
+<div><a href="#example-742">Example 742</a></div>
+<div class="gl-relative markdown-code-block js-markdown-code">
+<pre data-sourcepos="14919:1-14921:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">Hi @gfm_user - thank you for reporting this ~"UX bug" (#1) we hope to fix it in %1.1 as part of !1</span></code></pre>
+<copy-code></copy-code>
+</div>
+<div class="gl-relative markdown-code-block js-markdown-code">
+<pre data-sourcepos="14923:1-14925:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">TODO: Write canonical HTML for this example</span></code></pre>
+<copy-code></copy-code>
+</div>
+</div>
+<h3 data-sourcepos="14928:1-14928:10" dir="auto">
+<a id="user-content-strike" class="anchor" href="#strike" aria-hidden="true"></a>strike</h3>
 <div>
 <div><a href="#example-743">Example 743</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14957:1-14959:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">Hi @gfm_user - thank you for reporting this ~"UX bug" (#1) we hope to fix it in %1.1 as part of !1</span></code></pre>
+<pre data-sourcepos="14933:1-14935:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">~~del~~</span></code></pre>
 <copy-code></copy-code>
 </div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14961:1-14963:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">TODO: Write canonical HTML for this example</span></code></pre>
+<pre data-sourcepos="14937:1-14939:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">TODO: Write canonical HTML for this example</span></code></pre>
 <copy-code></copy-code>
 </div>
 </div>
-<h3 data-sourcepos="14966:1-14966:10" dir="auto">
-<a id="user-content-strike" class="anchor" href="#strike" aria-hidden="true"></a>strike</h3>
+<h3 data-sourcepos="14942:1-14942:9" dir="auto">
+<a id="user-content-table" class="anchor" href="#table" aria-hidden="true"></a>table</h3>
 <div>
 <div><a href="#example-744">Example 744</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14971:1-14973:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">~~del~~</span></code></pre>
-<copy-code></copy-code>
-</div>
-<div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14975:1-14977:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">TODO: Write canonical HTML for this example</span></code></pre>
-<copy-code></copy-code>
-</div>
-</div>
-<h3 data-sourcepos="14980:1-14980:9" dir="auto">
-<a id="user-content-table" class="anchor" href="#table" aria-hidden="true"></a>table</h3>
-<div>
-<div><a href="#example-745">Example 745</a></div>
-<div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14985:1-14992:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">| header | header |</span>
+<pre data-sourcepos="14947:1-14954:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">| header | header |</span>
 <span id="LC2" class="line" lang="plaintext">|--------|--------|</span>
 <span id="LC3" class="line" lang="plaintext">| `code` | cell with **bold** |</span>
 <span id="LC4" class="line" lang="plaintext">| ~~strike~~ | cell with _italic_ |</span>
@@ -13405,16 +13369,16 @@ also requires an EE license enabling the <code>group_wikis</code> feature:</p>
 <copy-code></copy-code>
 </div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="14994:1-14996:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">TODO: Write canonical HTML for this example</span></code></pre>
+<pre data-sourcepos="14956:1-14958:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">TODO: Write canonical HTML for this example</span></code></pre>
 <copy-code></copy-code>
 </div>
 </div>
-<h3 data-sourcepos="14999:1-14999:21" dir="auto">
+<h3 data-sourcepos="14961:1-14961:21" dir="auto">
 <a id="user-content-table_of_contents" class="anchor" href="#table_of_contents" aria-hidden="true"></a>table_of_contents</h3>
 <div>
-<div><a href="#example-746">Example 746</a></div>
+<div><a href="#example-745">Example 745</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="15004:1-15018:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">[[_TOC_]]</span>
+<pre data-sourcepos="14966:1-14980:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">[[_TOC_]]</span>
 <span id="LC2" class="line" lang="plaintext"></span>
 <span id="LC3" class="line" lang="plaintext"># Lorem</span>
 <span id="LC4" class="line" lang="plaintext"></span>
@@ -13430,16 +13394,16 @@ also requires an EE license enabling the <code>group_wikis</code> feature:</p>
 <copy-code></copy-code>
 </div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="15020:1-15022:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">TODO: Write canonical HTML for this example</span></code></pre>
+<pre data-sourcepos="14982:1-14984:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">TODO: Write canonical HTML for this example</span></code></pre>
 <copy-code></copy-code>
 </div>
 </div>
-<h3 data-sourcepos="15025:1-15025:13" dir="auto">
+<h3 data-sourcepos="14987:1-14987:13" dir="auto">
 <a id="user-content-task_list" class="anchor" href="#task_list" aria-hidden="true"></a>task_list</h3>
 <div>
-<div><a href="#example-747">Example 747</a></div>
+<div><a href="#example-746">Example 746</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="15030:1-15037:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">* [x] hello</span>
+<pre data-sourcepos="14992:1-14999:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">* [x] hello</span>
 <span id="LC2" class="line" lang="plaintext">* [x] world</span>
 <span id="LC3" class="line" lang="plaintext">* [ ] example</span>
 <span id="LC4" class="line" lang="plaintext">  * [ ] of nested</span>
@@ -13448,101 +13412,136 @@ also requires an EE license enabling the <code>group_wikis</code> feature:</p>
 <copy-code></copy-code>
 </div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="15039:1-15041:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">TODO: Write canonical HTML for this example</span></code></pre>
+<pre data-sourcepos="15001:1-15003:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">TODO: Write canonical HTML for this example</span></code></pre>
 <copy-code></copy-code>
 </div>
 </div>
-<h3 data-sourcepos="15044:1-15044:9" dir="auto">
+<h3 data-sourcepos="15006:1-15006:9" dir="auto">
 <a id="user-content-video-1" class="anchor" href="#video-1" aria-hidden="true"></a>video</h3>
+<div>
+<div><a href="#example-747">Example 747</a></div>
+<div class="gl-relative markdown-code-block js-markdown-code">
+<pre data-sourcepos="15011:1-15013:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">![Sample Video](https://gitlab.com/gitlab.mp4)</span></code></pre>
+<copy-code></copy-code>
+</div>
+<div class="gl-relative markdown-code-block js-markdown-code">
+<pre data-sourcepos="15015:1-15017:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">TODO: Write canonical HTML for this example</span></code></pre>
+<copy-code></copy-code>
+</div>
+</div>
+<h3 data-sourcepos="15020:1-15020:14" dir="auto">
+<a id="user-content-word_break" class="anchor" href="#word_break" aria-hidden="true"></a>word_break</h3>
 <div>
 <div><a href="#example-748">Example 748</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="15049:1-15051:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">![Sample Video](https://gitlab.com/gitlab.mp4)</span></code></pre>
+<pre data-sourcepos="15025:1-15027:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">Fernstraßen&lt;wbr&gt;bau&lt;wbr&gt;privat&lt;wbr&gt;finanzierungs&lt;wbr&gt;gesetz</span></code></pre>
 <copy-code></copy-code>
 </div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="15053:1-15055:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">TODO: Write canonical HTML for this example</span></code></pre>
+<pre data-sourcepos="15029:1-15031:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">TODO: Write canonical HTML for this example</span></code></pre>
 <copy-code></copy-code>
 </div>
 </div>
-<h3 data-sourcepos="15058:1-15058:14" dir="auto">
-<a id="user-content-word_break" class="anchor" href="#word_break" aria-hidden="true"></a>word_break</h3>
-<div>
-<div><a href="#example-749">Example 749</a></div>
-<div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="15063:1-15065:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">Fernstraßen&lt;wbr&gt;bau&lt;wbr&gt;privat&lt;wbr&gt;finanzierungs&lt;wbr&gt;gesetz</span></code></pre>
-<copy-code></copy-code>
-</div>
-<div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="15067:1-15069:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">TODO: Write canonical HTML for this example</span></code></pre>
-<copy-code></copy-code>
-</div>
-</div>
-<h2 data-sourcepos="15072:1-15072:19" dir="auto">
+<h2 data-sourcepos="15034:1-15034:19" dir="auto">
 <a id="user-content-image-attributes" class="anchor" href="#image-attributes" aria-hidden="true"></a>Image Attributes</h2>
-<p data-sourcepos="15074:1-15076:46" dir="auto">See
+<p data-sourcepos="15036:1-15038:46" dir="auto">See
 <a href="https://docs.gitlab.com/ee/user/markdown.html#change-the-image-dimensions" rel="nofollow noreferrer noopener" target="_blank">Change the image dimensions</a>
 in the GitLab Flavored Markdown documentation.</p>
-<p data-sourcepos="15078:1-15079:19" dir="auto">The <code>width</code> and <code>height</code> attributes for an image can be specified directly after
+<p data-sourcepos="15040:1-15041:19" dir="auto">The <code>width</code> and <code>height</code> attributes for an image can be specified directly after
 the image markdown.</p>
-<p data-sourcepos="15081:1-15083:21" dir="auto">General syntax conforms to the
+<p data-sourcepos="15043:1-15045:21" dir="auto">General syntax conforms to the
 <a href="https://github.com/jgm/commonmark-hs/blob/master/commonmark-extensions/test/attributes.md" rel="nofollow noreferrer noopener" target="_blank">commonmark-hs attribute syntax</a>
 where it makes sense.</p>
 <div>
+<div><a href="#example-749">Example 749</a></div>
+<div class="gl-relative markdown-code-block js-markdown-code">
+<pre data-sourcepos="15050:1-15052:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">![](https://gitlab.com/logo.png){width="100" height="100"}</span></code></pre>
+<copy-code></copy-code>
+</div>
+<div class="gl-relative markdown-code-block js-markdown-code">
+<pre data-sourcepos="15054:1-15056:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;p&gt;&lt;img src="https://gitlab.com/logo.png" width="100" height="100"&gt;&lt;/p&gt;</span></code></pre>
+<copy-code></copy-code>
+</div>
+</div>
+<p data-sourcepos="15059:1-15059:41" dir="auto"><code>%</code> and <code>px</code> units may also be specified.</p>
+<div>
 <div><a href="#example-750">Example 750</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="15088:1-15090:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">![](https://gitlab.com/logo.png){width="100" height="100"}</span></code></pre>
+<pre data-sourcepos="15064:1-15066:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">![](https://gitlab.com/logo.png){width="100%"}</span></code></pre>
 <copy-code></copy-code>
 </div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="15092:1-15094:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;p&gt;&lt;img src="https://gitlab.com/logo.png" width="100" height="100"&gt;&lt;/p&gt;</span></code></pre>
+<pre data-sourcepos="15068:1-15070:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;p&gt;&lt;img src="https://gitlab.com/logo.png" width="100%"&gt;&lt;/p&gt;</span></code></pre>
 <copy-code></copy-code>
 </div>
 </div>
-<p data-sourcepos="15097:1-15097:41" dir="auto"><code>%</code> and <code>px</code> units may also be specified.</p>
 <div>
 <div><a href="#example-751">Example 751</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="15102:1-15104:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">![](https://gitlab.com/logo.png){width="100%"}</span></code></pre>
+<pre data-sourcepos="15076:1-15078:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">![](https://gitlab.com/logo.png){height="100px"}</span></code></pre>
 <copy-code></copy-code>
 </div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="15106:1-15108:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;p&gt;&lt;img src="https://gitlab.com/logo.png" width="100%"&gt;&lt;/p&gt;</span></code></pre>
+<pre data-sourcepos="15080:1-15082:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;p&gt;&lt;img src="https://gitlab.com/logo.png" height="100px"&gt;&lt;/p&gt;</span></code></pre>
 <copy-code></copy-code>
 </div>
 </div>
+<p data-sourcepos="15085:1-15085:46" dir="auto">Whitespace is tolerated around the delimiters:</p>
 <div>
 <div><a href="#example-752">Example 752</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="15114:1-15116:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">![](https://gitlab.com/logo.png){height="100px"}</span></code></pre>
+<pre data-sourcepos="15090:1-15092:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">![](https://gitlab.com/logo.png){ width="100" height="100" }</span></code></pre>
 <copy-code></copy-code>
 </div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="15118:1-15120:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;p&gt;&lt;img src="https://gitlab.com/logo.png" height="100px"&gt;&lt;/p&gt;</span></code></pre>
+<pre data-sourcepos="15094:1-15096:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;p&gt;&lt;img src="https://gitlab.com/logo.png" width="100" height="100"&gt;&lt;/p&gt;</span></code></pre>
 <copy-code></copy-code>
 </div>
 </div>
-<p data-sourcepos="15123:1-15123:46" dir="auto">Whitespace is tolerated around the delimiters:</p>
+<p data-sourcepos="15099:1-15099:54" dir="auto">Attributes must immediately follow the image markdown.</p>
 <div>
 <div><a href="#example-753">Example 753</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="15128:1-15130:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">![](https://gitlab.com/logo.png){ width="100" height="100" }</span></code></pre>
+<pre data-sourcepos="15104:1-15106:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">![](https://gitlab.com/logo.png) {width="100" height="100"}</span></code></pre>
 <copy-code></copy-code>
 </div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="15132:1-15134:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;p&gt;&lt;img src="https://gitlab.com/logo.png" width="100" height="100"&gt;&lt;/p&gt;</span></code></pre>
+<pre data-sourcepos="15108:1-15110:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;p&gt;&lt;img src="https://gitlab.com/logo.png"&gt; {width="100" height="100"}&lt;/p&gt;</span></code></pre>
 <copy-code></copy-code>
 </div>
 </div>
-<p data-sourcepos="15137:1-15137:54" dir="auto">Attributes must immediately follow the image markdown.</p>
+<h2 data-sourcepos="15113:1-15113:12" dir="auto">
+<a id="user-content-footnotes-1" class="anchor" href="#footnotes-1" aria-hidden="true"></a>Footnotes</h2>
+<p data-sourcepos="15115:1-15116:143" dir="auto">See
+<a href="https://docs.gitlab.com/ee/user/markdown.html#footnotes" rel="nofollow noreferrer noopener" target="_blank">the footnotes section of the user-facing documentation for GitLab Flavored Markdown</a>.</p>
 <div>
 <div><a href="#example-754">Example 754</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="15142:1-15144:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">![](https://gitlab.com/logo.png) {width="100" height="100"}</span></code></pre>
+<pre data-sourcepos="15121:1-15125:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">footnote reference tag [^fortytwo]</span>
+<span id="LC2" class="line" lang="plaintext"></span>
+<span id="LC3" class="line" lang="plaintext">[^fortytwo]: footnote text</span></code></pre>
 <copy-code></copy-code>
 </div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="15146:1-15148:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;p&gt;&lt;img src="https://gitlab.com/logo.png"&gt; {width="100" height="100"}&lt;/p&gt;</span></code></pre>
+<pre data-sourcepos="15127:1-15147:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;p&gt;</span>
+<span id="LC2" class="line" lang="plaintext">footnote reference tag</span>
+<span id="LC3" class="line" lang="plaintext">&lt;sup&gt;</span>
+<span id="LC4" class="line" lang="plaintext">&lt;a href="#fn-fortytwo-42" id="fnref-fortytwo-42" data-footnote-ref&gt;</span>
+<span id="LC5" class="line" lang="plaintext">1</span>
+<span id="LC6" class="line" lang="plaintext">&lt;/a&gt;</span>
+<span id="LC7" class="line" lang="plaintext">&lt;/sup&gt;</span>
+<span id="LC8" class="line" lang="plaintext">&lt;/p&gt;</span>
+<span id="LC9" class="line" lang="plaintext">&lt;section data-footnotes&gt;</span>
+<span id="LC10" class="line" lang="plaintext">&lt;ol&gt;</span>
+<span id="LC11" class="line" lang="plaintext">&lt;li id="fn-fortytwo-42"&gt;</span>
+<span id="LC12" class="line" lang="plaintext">&lt;p&gt;</span>
+<span id="LC13" class="line" lang="plaintext">footnote text</span>
+<span id="LC14" class="line" lang="plaintext">&lt;a href="#fnref-fortytwo-42" data-footnote-backref&gt;</span>
+<span id="LC15" class="line" lang="plaintext">&lt;/a&gt;</span>
+<span id="LC16" class="line" lang="plaintext">&lt;/p&gt;</span>
+<span id="LC17" class="line" lang="plaintext">&lt;/li&gt;</span>
+<span id="LC18" class="line" lang="plaintext">&lt;/ol&gt;</span>
+<span id="LC19" class="line" lang="plaintext">&lt;/section&gt;</span></code></pre>
 <copy-code></copy-code>
 </div>
 </div>

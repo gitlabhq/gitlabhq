@@ -19,7 +19,7 @@ module TasksToBeDone
         update_service = Issues::UpdateService.new(project: project, current_user: current_user, params: { add_assignee_ids: params[:assignee_ids] })
         update_service.execute(issue)
       else
-        build_service = Issues::BuildService.new(project: project, current_user: current_user, params: params)
+        build_service = Issues::BuildService.new(container: project, current_user: current_user, params: params)
         create(build_service.execute)
       end
     end

@@ -12,13 +12,13 @@
   skip_running_snapshot_static_html_tests: false # NOT YET SUPPORTED
   skip_running_snapshot_wysiwyg_html_tests: false
   skip_running_snapshot_prosemirror_json_tests: false
-07_02_00__gitlab_official_specification_markdown__task_list_items__003:
+07_01_00__gitlab_official_specification_markdown__task_list_items__003:
   skip_update_example_snapshot_html_wysiwyg: Inapplicable task list items not yet implemented for WYSYWIG
   skip_update_example_snapshot_prosemirror_json: Inapplicable task list items not yet implemented for WYSYWIG
   skip_running_conformance_wysiwyg_tests: Inapplicable task list items not yet implemented for WYSYWIG
   skip_running_snapshot_wysiwyg_html_tests: Inapplicable task list items not yet implemented for WYSYWIG
   skip_running_snapshot_prosemirror_json_tests: Inapplicable task list items not yet implemented for WYSYWIG
-07_02_00__gitlab_official_specification_markdown__task_list_items__004:
+07_01_00__gitlab_official_specification_markdown__task_list_items__004:
   skip_update_example_snapshot_html_wysiwyg: Inapplicable task list items not yet implemented for WYSYWIG
   skip_update_example_snapshot_prosemirror_json: Inapplicable task list items not yet implemented for WYSYWIG
   skip_running_conformance_wysiwyg_tests: Inapplicable task list items not yet implemented for WYSYWIG

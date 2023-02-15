@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::Migrations::TestBatchedBackgroundRunner, :freeze_time do
+RSpec.describe Gitlab::Database::Migrations::TestBatchedBackgroundRunner, :freeze_time, feature_category: :database do
   include Gitlab::Database::MigrationHelpers
   include Database::MigrationTestingHelpers
 
@@ -95,6 +95,14 @@ RSpec.describe Gitlab::Database::Migrations::TestBatchedBackgroundRunner, :freez
       it 'uses the correct params to instrument the background migration' do
         expect_next_instance_of(Gitlab::Database::Migrations::Instrumentation) do |instrumentation|
           expect(instrumentation).to receive(:observe).with(hash_including(params)).at_least(:once).and_call_original
+        end
+
+        subject
+      end
+
+      it 'uses the filtering clause from the migration' do
+        expect_next_instance_of(Gitlab::BackgroundMigration::BatchingStrategies::PrimaryKeyBatchingStrategy) do |s|
+          expect(s).to receive(:filter_batch).at_least(:once).and_call_original
         end
 
         subject

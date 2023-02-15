@@ -17,7 +17,7 @@ module Issues
       @extra_params = params.delete(:extra_params) || {}
       super(project: project, current_user: current_user, params: params)
       @spam_params = spam_params
-      @build_service = build_service || BuildService.new(project: project, current_user: current_user, params: params)
+      @build_service = build_service || BuildService.new(container: project, current_user: current_user, params: params)
     end
 
     def execute(skip_system_notes: false)
