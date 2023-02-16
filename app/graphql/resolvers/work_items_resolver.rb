@@ -43,7 +43,7 @@ module Resolvers
       {
         work_item_type: :work_item_type,
         web_url: { project: { namespace: :route } },
-        widgets: :work_item_type
+        widgets: { work_item_type: :enabled_widget_definitions }
       }
     end
 

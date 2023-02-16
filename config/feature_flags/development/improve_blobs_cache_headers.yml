@@ -1,8 +1,0 @@
----
-name: improve_blobs_cache_headers
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/98110
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/374126
-milestone: '15.5'
-type: development
-group: group::source code
-default_enabled: false

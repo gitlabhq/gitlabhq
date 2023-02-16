@@ -178,7 +178,7 @@ The following table lists project permissions available for each role:
 | [Projects](project/index.md):<br>Transfer project to another namespace                                                                                                               |          |          |           |            | ✓        |
 | [Projects](project/index.md): View [Usage Quotas](usage_quotas.md) page                                                                                                              |          |          |           | ✓          | ✓        |
 | [Repository](project/repository/index.md):<br>Pull project code                                                                                                                      | ✓ (1)  | ✓        | ✓         | ✓          | ✓        |
-| [Repository](project/repository/index.md):<br>View project code                                                                                                                      | ✓ (1)  | ✓        | ✓         | ✓          | ✓        |
+| [Repository](project/repository/index.md):<br>View project code                                                                                                                      | ✓ (1) (23)  | ✓        | ✓         | ✓          | ✓        |
 | [Repository](project/repository/index.md):<br>View a commit status                                                                                                                   |          | ✓        | ✓         | ✓          | ✓        |
 | [Repository](project/repository/index.md):<br>Add tags                                                                                                                               |          |          | ✓         | ✓          | ✓        |
 | [Repository](project/repository/index.md):<br>Create new branches                                                                                                                    |          |          | ✓         | ✓          | ✓        |
@@ -220,10 +220,7 @@ The following table lists project permissions available for each role:
 
 <!-- markdownlint-disable MD029 -->
 
-1. On self-managed GitLab instances, guest users are able to perform this action only on
-   public and internal projects (not on private projects). [External users](admin_area/external_users.md)
-   must be given explicit access even if the project is internal. Users with the Guest role on GitLab.com are
-   only able to perform this action on public projects because internal visibility is not available.
+1. On self-managed GitLab instances, users with the Guest role are able to perform this action only on public and internal projects (not on private projects). [External users](admin_area/external_users.md) must be given explicit access even if the project is internal. Users with the Guest role on GitLab.com are only able to perform this action on public projects because internal visibility is not available. In GitLab 15.9 and later, this restriction only applies to users with the non-custom Guest role on self-managed GitLab instances and GitLab.com.
 2. Guest users can only view the [confidential issues](project/issues/confidential_issues.md) they created themselves or are assigned to.
 3. Not allowed for Guest, Reporter, Developer, Maintainer, or Owner. See [protected branches](project/protected_branches.md).
 4. If the [branch is protected](project/protected_branches.md), this depends on the access given to Developers and Maintainers.
@@ -250,6 +247,7 @@ The following table lists project permissions available for each role:
 20. Maintainers cannot create, demote, or remove Owners, and they cannot promote users to the Owner role. They also cannot approve Owner role access requests.
 21. Authors of tasks can delete them even if they don't have the Owner role, but they have to have at least the Guest role for the project.
 22. You must have permission to [view the epic](group/epics/manage_epics.md#who-can-view-an-epic).
+23. In GitLab 15.9 and later, users with the Guest role and an Ultimate license can view private repository content if an administrator gives those users permission. The administrator can create a [custom role](#custom-roles) through the API and assign that role to the users.
 
 <!-- markdownlint-enable MD029 -->
 

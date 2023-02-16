@@ -3,7 +3,6 @@
 Layout/SpaceInsideParens:
   Details: grace period
   Exclude:
-    - 'db/post_migrate/20210722042939_update_issuable_slas_where_issue_closed.rb'
     - 'ee/app/models/ee/dependency_proxy/blob.rb'
     - 'ee/app/models/ee/dependency_proxy/manifest.rb'
     - 'ee/app/services/gitlab_subscriptions/notify_seats_exceeded_batch_service.rb'
@@ -19,11 +18,9 @@ Layout/SpaceInsideParens:
     - 'ee/spec/frontend/fixtures/analytics/devops_reports/devops_adoption/enabled_namespaces.rb'
     - 'ee/spec/frontend/fixtures/epic.rb'
     - 'ee/spec/frontend/fixtures/namespace.rb'
-    - 'ee/spec/frontend/fixtures/projects.rb'
     - 'ee/spec/lib/gitlab/search/index_curator_spec.rb'
     - 'ee/spec/lib/world_spec.rb'
     - 'ee/spec/mailers/notify_spec.rb'
-    - 'ee/spec/migrations/add_non_null_constraint_for_escalation_rule_on_pending_alert_escalations_spec.rb'
     - 'ee/spec/migrations/drop_invalid_remediations_spec.rb'
     - 'ee/spec/models/allowed_email_domain_spec.rb'
     - 'ee/spec/models/boards/epic_board_position_spec.rb'
@@ -56,7 +53,6 @@ Layout/SpaceInsideParens:
     - 'ee/spec/requests/api/project_milestones_spec.rb'
     - 'ee/spec/requests/customers_dot/proxy_controller_spec.rb'
     - 'ee/spec/serializers/member_user_entity_spec.rb'
-    - 'ee/spec/services/app_sec/dast/profiles/create_service_spec.rb'
     - 'ee/spec/services/app_sec/dast/site_profile_secret_variables/create_or_update_service_spec.rb'
     - 'ee/spec/services/app_sec/dast/site_validations/runner_service_spec.rb'
     - 'ee/spec/services/app_sec/fuzzing/coverage/corpuses/create_service_spec.rb'
@@ -91,7 +87,6 @@ Layout/SpaceInsideParens:
     - 'ee/spec/workers/security/auto_fix_worker_spec.rb'
     - 'qa/qa/page/group/settings/group_deploy_tokens.rb'
     - 'qa/qa/specs/features/ee/browser_ui/10_govern/scan_result_policy_vulnerabilities_spec.rb'
-    - 'qa/qa/specs/features/ee/browser_ui/10_govern/vulnerability_management_spec.rb'
     - 'qa/qa/tools/delete_subgroups.rb'
     - 'qa/spec/runtime/feature_spec.rb'
     - 'spec/dependencies/omniauth_saml_spec.rb'
@@ -191,7 +186,6 @@ Layout/SpaceInsideParens:
     - 'spec/lib/security/ci_configuration/secret_detection_build_action_spec.rb'
     - 'spec/mailers/emails/profile_spec.rb'
     - 'spec/migrations/20211130165043_backfill_sequence_column_for_sprints_table_spec.rb'
-    - 'spec/migrations/backfill_issues_upvotes_count_spec.rb'
     - 'spec/models/ci/pending_build_spec.rb'
     - 'spec/models/ci/running_build_spec.rb'
     - 'spec/models/ml/candidate_metric_spec.rb'

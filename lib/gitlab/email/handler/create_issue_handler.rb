@@ -62,7 +62,7 @@ module Gitlab
 
         def create_issue
           ::Issues::CreateService.new(
-            project: project,
+            container: project,
             current_user: author,
             params: {
               title: mail.subject,

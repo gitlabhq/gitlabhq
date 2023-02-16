@@ -4,13 +4,13 @@ module WorkItems
   class CreateService < Issues::CreateService
     include WidgetableService
 
-    def initialize(project:, spam_params:, current_user: nil, params: {}, widget_params: {})
+    def initialize(container:, spam_params:, current_user: nil, params: {}, widget_params: {})
       super(
-        project: project,
+        container: container,
         current_user: current_user,
         params: params,
         spam_params: spam_params,
-        build_service: ::WorkItems::BuildService.new(container: project, current_user: current_user, params: params)
+        build_service: ::WorkItems::BuildService.new(container: container, current_user: current_user, params: params)
       )
       @widget_params = widget_params
     end

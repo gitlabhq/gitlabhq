@@ -77,7 +77,6 @@ Rails/TimeZone:
     - 'spec/lib/gitlab/external_authorization/cache_spec.rb'
     - 'spec/lib/gitlab/external_authorization/logger_spec.rb'
     - 'spec/lib/gitlab/fogbugz_import/importer_spec.rb'
-    - 'spec/lib/gitlab/git/commit_spec.rb'
     - 'spec/lib/gitlab/github_import/importer/issue_importer_spec.rb'
     - 'spec/lib/gitlab/github_import/importer/issues_importer_spec.rb'
     - 'spec/lib/gitlab/github_import/importer/milestones_importer_spec.rb'

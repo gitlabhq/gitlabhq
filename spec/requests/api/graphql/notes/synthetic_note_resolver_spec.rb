@@ -44,7 +44,8 @@ RSpec.describe 'Query.synthetic_note(noteable_id, sha)', feature_category: :team
 
     context 'and notes widget is not available' do
       before do
-        stub_const('WorkItems::Type::WIDGETS_FOR_TYPE', { issue: [::WorkItems::Widgets::Description] })
+        WorkItems::Type.default_by_type(:issue).widget_definitions
+          .find_by_widget_type(:notes).update!(disabled: true)
       end
 
       it 'returns nil' do

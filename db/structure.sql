@@ -11722,6 +11722,7 @@ CREATE TABLE application_settings (
     deactivation_email_additional_text text,
     jira_connect_public_key_storage_enabled boolean DEFAULT false NOT NULL,
     git_rate_limit_users_alertlist integer[] DEFAULT '{}'::integer[] NOT NULL,
+    security_policy_global_group_approvers_enabled boolean DEFAULT true NOT NULL,
     CONSTRAINT app_settings_container_reg_cleanup_tags_max_list_size_positive CHECK ((container_registry_cleanup_tags_service_max_list_size >= 0)),
     CONSTRAINT app_settings_container_registry_pre_import_tags_rate_positive CHECK ((container_registry_pre_import_tags_rate >= (0)::numeric)),
     CONSTRAINT app_settings_dep_proxy_ttl_policies_worker_capacity_positive CHECK ((dependency_proxy_ttl_group_policy_worker_capacity >= 0)),
@@ -24027,6 +24028,25 @@ CREATE SEQUENCE work_item_types_id_seq
 
 ALTER SEQUENCE work_item_types_id_seq OWNED BY work_item_types.id;
 
+CREATE TABLE work_item_widget_definitions (
+    id bigint NOT NULL,
+    namespace_id bigint,
+    work_item_type_id bigint NOT NULL,
+    widget_type smallint NOT NULL,
+    disabled boolean DEFAULT false,
+    name text,
+    CONSTRAINT check_050f2e2328 CHECK ((char_length(name) <= 255))
+);
+
+CREATE SEQUENCE work_item_widget_definitions_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE work_item_widget_definitions_id_seq OWNED BY work_item_widget_definitions.id;
+
 CREATE TABLE x509_certificates (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -25235,6 +25255,8 @@ ALTER TABLE ONLY work_item_hierarchy_restrictions ALTER COLUMN id SET DEFAULT ne
 ALTER TABLE ONLY work_item_parent_links ALTER COLUMN id SET DEFAULT nextval('work_item_parent_links_id_seq'::regclass);
 
 ALTER TABLE ONLY work_item_types ALTER COLUMN id SET DEFAULT nextval('work_item_types_id_seq'::regclass);
+
+ALTER TABLE ONLY work_item_widget_definitions ALTER COLUMN id SET DEFAULT nextval('work_item_widget_definitions_id_seq'::regclass);
 
 ALTER TABLE ONLY x509_certificates ALTER COLUMN id SET DEFAULT nextval('x509_certificates_id_seq'::regclass);
 
@@ -27715,6 +27737,9 @@ ALTER TABLE ONLY work_item_progresses
 
 ALTER TABLE ONLY work_item_types
     ADD CONSTRAINT work_item_types_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY work_item_widget_definitions
+    ADD CONSTRAINT work_item_widget_definitions_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY x509_certificates
     ADD CONSTRAINT x509_certificates_pkey PRIMARY KEY (id);
@@ -32193,6 +32218,12 @@ CREATE UNIQUE INDEX index_work_item_parent_links_on_work_item_id ON work_item_pa
 
 CREATE INDEX index_work_item_parent_links_on_work_item_parent_id ON work_item_parent_links USING btree (work_item_parent_id);
 
+CREATE UNIQUE INDEX index_work_item_widget_definitions_on_default_witype_and_name ON work_item_widget_definitions USING btree (work_item_type_id, name) WHERE (namespace_id IS NULL);
+
+CREATE UNIQUE INDEX index_work_item_widget_definitions_on_namespace_type_and_name ON work_item_widget_definitions USING btree (namespace_id, work_item_type_id, name);
+
+CREATE INDEX index_work_item_widget_definitions_on_work_item_type_id ON work_item_widget_definitions USING btree (work_item_type_id);
+
 CREATE INDEX index_x509_certificates_on_subject_key_identifier ON x509_certificates USING btree (subject_key_identifier);
 
 CREATE INDEX index_x509_certificates_on_x509_issuer_id ON x509_certificates USING btree (x509_issuer_id);
@@ -34096,6 +34127,9 @@ ALTER TABLE ONLY user_achievements
 ALTER TABLE ONLY merge_requests
     ADD CONSTRAINT fk_6149611a04 FOREIGN KEY (assignee_id) REFERENCES users(id) ON DELETE SET NULL;
 
+ALTER TABLE ONLY work_item_widget_definitions
+    ADD CONSTRAINT fk_61bfa96db5 FOREIGN KEY (work_item_type_id) REFERENCES work_item_types(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY deployment_approvals
     ADD CONSTRAINT fk_61cdbdc5b9 FOREIGN KEY (approval_rule_id) REFERENCES protected_environment_approval_rules(id) ON DELETE SET NULL;
 
@@ -34638,6 +34672,9 @@ ALTER TABLE ONLY pages_domains
 
 ALTER TABLE ONLY merge_requests_compliance_violations
     ADD CONSTRAINT fk_ec881c1c6f FOREIGN KEY (violating_user_id) REFERENCES users(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY work_item_widget_definitions
+    ADD CONSTRAINT fk_ecf57512f7 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY events
     ADD CONSTRAINT fk_edfd187b6f FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE CASCADE;

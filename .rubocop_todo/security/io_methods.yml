@@ -2,4 +2,3 @@
 # Cop supports --autocorrect.
 Security/IoMethods:
   Details: grace period
-  Exclude:

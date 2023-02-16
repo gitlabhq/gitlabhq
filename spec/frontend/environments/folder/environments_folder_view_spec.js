@@ -55,7 +55,6 @@ describe('Environments Folder View', () => {
 
   afterEach(() => {
     mock.restore();
-    wrapper.destroy();
   });
 
   describe('successful request', () => {
@@ -95,26 +94,6 @@ describe('Environments Folder View', () => {
     describe('pagination', () => {
       it('should render pagination', () => {
         expect(wrapper.findComponent(GlPagination).exists()).toBe(true);
-      });
-
-      it('should make an API request when changing page', () => {
-        jest.spyOn(wrapper.vm, 'updateContent').mockImplementation(() => {});
-        wrapper.find('.gl-pagination .page-item:nth-last-of-type(2) .page-link').trigger('click');
-        expect(wrapper.vm.updateContent).toHaveBeenCalledWith({
-          scope: wrapper.vm.scope,
-          page: '10',
-          nested: true,
-        });
-      });
-
-      it('should make an API request when using tabs', () => {
-        jest.spyOn(wrapper.vm, 'updateContent').mockImplementation(() => {});
-        findEnvironmentsTabStopped().trigger('click');
-        expect(wrapper.vm.updateContent).toHaveBeenCalledWith({
-          scope: 'stopped',
-          page: '1',
-          nested: true,
-        });
       });
     });
   });
@@ -160,30 +139,6 @@ describe('Environments Folder View', () => {
           expect(wrapper.vm.scope).toEqual('stopped');
           expect(wrapper.vm.requestData.page).toEqual('4');
         }));
-    });
-
-    describe('onChangeTab', () => {
-      it('should set page to 1', () => {
-        jest.spyOn(wrapper.vm, 'updateContent').mockImplementation(() => {});
-        wrapper.vm.onChangeTab('stopped');
-        expect(wrapper.vm.updateContent).toHaveBeenCalledWith({
-          scope: 'stopped',
-          page: '1',
-          nested: true,
-        });
-      });
-    });
-
-    describe('onChangePage', () => {
-      it('should update page and keep scope', () => {
-        jest.spyOn(wrapper.vm, 'updateContent').mockImplementation(() => {});
-        wrapper.vm.onChangePage(4);
-        expect(wrapper.vm.updateContent).toHaveBeenCalledWith({
-          scope: wrapper.vm.scope,
-          page: '4',
-          nested: true,
-        });
-      });
     });
   });
 });

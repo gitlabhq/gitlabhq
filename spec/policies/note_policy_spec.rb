@@ -260,9 +260,7 @@ RSpec.describe NotePolicy, feature_category: :team_planning do
             let(:policy) { described_class.new(developer, note) }
 
             before do
-              widgets_per_type = WorkItems::Type::WIDGETS_FOR_TYPE.dup
-              widgets_per_type[:task] = [::WorkItems::Widgets::Description]
-              stub_const('WorkItems::Type::WIDGETS_FOR_TYPE', widgets_per_type)
+              WorkItems::Type.default_by_type(:task).widget_definitions.find_by_widget_type(:notes).update!(disabled: true)
             end
 
             context 'when noteable is task' do

@@ -15,30 +15,18 @@ class PipelineScheduleWorker # rubocop:disable Scalability/IdempotentWorker
   worker_resource_boundary :cpu
 
   def perform
-    if Feature.enabled?(:ci_use_run_pipeline_schedule_worker)
-      in_lock(lock_key, **lock_params) do
-        Ci::PipelineSchedule
-          .select(:id, :owner_id, :project_id) # Minimize the selected columns
-          .runnable_schedules
-          .preloaded
-          .find_in_batches do |schedules|
-            RunPipelineScheduleWorker.bulk_perform_async_with_contexts(
-              schedules,
-              arguments_proc: ->(schedule) { [schedule.id, schedule.owner_id, { scheduling: true }] },
-              context_proc: ->(schedule) { { project: schedule.project, user: schedule.owner } }
-            )
-          end
-      end
-    else
-      Ci::PipelineSchedule.runnable_schedules.preloaded.find_in_batches do |schedules|
-        schedules.each do |schedule|
-          next unless schedule.project
-
-          with_context(project: schedule.project, user: schedule.owner) do
-            Ci::PipelineScheduleService.new(schedule.project, schedule.owner).execute(schedule)
-          end
+    in_lock(lock_key, **lock_params) do
+      Ci::PipelineSchedule
+        .select(:id, :owner_id, :project_id) # Minimize the selected columns
+        .runnable_schedules
+        .preloaded
+        .find_in_batches do |schedules|
+          RunPipelineScheduleWorker.bulk_perform_async_with_contexts(
+            schedules,
+            arguments_proc: ->(schedule) { [schedule.id, schedule.owner_id, { scheduling: true }] },
+            context_proc: ->(schedule) { { project: schedule.project, user: schedule.owner } }
+          )
         end
-      end
     end
   end
 

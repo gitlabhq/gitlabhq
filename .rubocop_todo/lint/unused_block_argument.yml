@@ -40,7 +40,6 @@ Lint/UnusedBlockArgument:
     - 'app/models/merge_request.rb'
     - 'app/models/namespace/root_storage_statistics.rb'
     - 'app/models/project.rb'
-    - 'app/models/project_feature.rb'
     - 'app/models/projects/build_artifacts_size_refresh.rb'
     - 'app/models/service_desk_setting.rb'
     - 'app/models/users/phone_number_validation.rb'

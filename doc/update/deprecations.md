@@ -290,6 +290,31 @@ Due to low customer usage, Load Performance Testing is deprecated and will be re
 
 <div class="deprecation removal-160 breaking-change">
 
+### Old versions of JSON web tokens are deprecated
+
+Planned removal: GitLab <span class="removal-milestone">16.0</span> <span class="removal-date"></span>
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+Now that we have released [ID tokens](https://docs.gitlab.com/ee/ci/secrets/id_token_authentication.html)
+with OIDC support, the old JSON web tokens are deprecated and will be removed.
+Both the `CI_JOB_JWT` and `CI_JOB_JWT_V2` tokens, exposed to jobs as predefined variables,
+will no longer be available in GitLab 16.0.
+
+To prepare for this change, you should:
+
+- Configure your pipelines to use the fully configurable and more secure
+  [`id_token`](https://docs.gitlab.com/ee/ci/yaml/index.html#id_tokens) keyword instead.
+- [Enable the **Limit JSON Web Token (JWT) access**](https://docs.gitlab.com/ee/ci/secrets/id_token_authentication.html#enable-automatic-id-token-authentication)
+  setting, which prevents the old tokens from being exposed to any jobs. This setting
+  will be permanently enabled for all projects in GitLab 16.0.
+
+</div>
+
+<div class="deprecation removal-160 breaking-change">
+
 ### Option to delete projects immediately is deprecated from deletion protection settings
 
 Planned removal: GitLab <span class="removal-milestone">16.0</span> <span class="removal-date"></span>

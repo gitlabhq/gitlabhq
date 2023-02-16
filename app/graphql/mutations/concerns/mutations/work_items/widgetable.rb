@@ -7,7 +7,7 @@ module Mutations
 
       def extract_widget_params!(work_item_type, attributes)
         # Get the list of widgets for the work item's type to extract only the supported attributes
-        widget_keys = ::WorkItems::Type.available_widgets.map(&:api_symbol)
+        widget_keys = ::WorkItems::WidgetDefinition.available_widgets.map(&:api_symbol)
         widget_params = attributes.extract!(*widget_keys)
 
         not_supported_keys = widget_params.keys - work_item_type.widgets.map(&:api_symbol)

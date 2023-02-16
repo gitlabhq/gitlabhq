@@ -81,7 +81,7 @@ module ImportCsv
 
       # default_params can be extracted into a method if we need
       # to support creation of objects that belongs to groups.
-      default_params = { project: project,
+      default_params = { container: project,
                          current_user: user,
                          params: attributes,
                          spam_params: spam_params }

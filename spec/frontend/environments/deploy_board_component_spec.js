@@ -1,6 +1,6 @@
 import { GlTooltip, GlIcon, GlLoadingIcon } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
-import Vue, { nextTick } from 'vue';
+import { nextTick } from 'vue';
 import CanaryIngress from '~/environments/components/canary_ingress.vue';
 import DeployBoard from '~/environments/components/deploy_board.vue';
 import { deployBoardMockData } from './mock_data';
@@ -10,7 +10,7 @@ describe('Deploy Board', () => {
   let wrapper;
 
   const createComponent = (props = {}) =>
-    mount(Vue.extend(DeployBoard), {
+    mount(DeployBoard, {
       propsData: {
         deployBoardData: deployBoardMockData,
         isLoading: false,

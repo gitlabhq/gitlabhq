@@ -181,7 +181,6 @@ Lint/EmptyBlock:
     - 'spec/requests/api/groups_spec.rb'
     - 'spec/requests/api/helpers_spec.rb'
     - 'spec/requests/api/markdown_spec.rb'
-    - 'spec/requests/api/projects_spec.rb'
     - 'spec/requests/api/release/links_spec.rb'
     - 'spec/requests/api/releases_spec.rb'
     - 'spec/requests/api/unleash_spec.rb'

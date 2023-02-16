@@ -21,7 +21,6 @@ Rails/LexicallyScopedActionFilter:
     - 'app/controllers/import/base_controller.rb'
     - 'app/controllers/oauth/applications_controller.rb'
     - 'app/controllers/passwords_controller.rb'
-    - 'app/controllers/projects/analytics/cycle_analytics/stages_controller.rb'
     - 'app/controllers/projects/badges_controller.rb'
     - 'app/controllers/projects/branches_controller.rb'
     - 'app/controllers/projects/environments_controller.rb'

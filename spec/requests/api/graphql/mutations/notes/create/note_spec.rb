@@ -122,8 +122,8 @@ RSpec.describe 'Adding a Note', feature_category: :team_planning do
           let(:variables_extra) { {} }
 
           before do
-            stub_const('WorkItems::Type::BASE_TYPES', { issue: { name: 'NoNotesWidget', enum_value: 0 } })
-            stub_const('WorkItems::Type::WIDGETS_FOR_TYPE', { issue: [::WorkItems::Widgets::Description] })
+            WorkItems::Type.default_by_type(:issue).widget_definitions.find_by_widget_type(:notes)
+              .update!(disabled: true)
           end
 
           it_behaves_like 'a Note mutation that does not create a Note'

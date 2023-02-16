@@ -58,7 +58,6 @@ Gitlab/FeatureAvailableUsage:
     - 'ee/app/policies/compliance_management/framework_policy.rb'
     - 'ee/app/policies/ee/group_policy.rb'
     - 'ee/app/policies/ee/project_policy.rb'
-    - 'ee/app/policies/ee/protected_branch_policy.rb'
     - 'ee/app/presenters/ee/label_presenter.rb'
     - 'ee/app/presenters/merge_request_approver_presenter.rb'
     - 'ee/app/serializers/dashboard_operations_project_entity.rb'

@@ -3,7 +3,6 @@ Rails/InverseOf:
   Exclude:
     - 'app/models/alert_management/alert.rb'
     - 'app/models/alert_management/alert_assignee.rb'
-    - 'app/models/analytics/cycle_analytics/project_stage.rb'
     - 'app/models/application_setting.rb'
     - 'app/models/audit_event.rb'
     - 'app/models/board.rb'

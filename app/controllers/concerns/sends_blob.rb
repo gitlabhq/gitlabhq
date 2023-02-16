@@ -27,12 +27,7 @@ module SendsBlob
   private
 
   def cached_blob?(blob, allow_caching: false)
-    stale =
-      if Feature.enabled?(:improve_blobs_cache_headers)
-        stale?(strong_etag: blob.id)
-      else
-        stale?(etag: blob.id)
-      end
+    stale = stale?(strong_etag: blob.id)
 
     max_age =
       if @ref && @commit && @ref == @commit.id # rubocop:disable Gitlab/ModuleWithInstanceVariables
@@ -47,14 +42,9 @@ module SendsBlob
       end
 
     # Because we are opinionated we set the cache headers ourselves.
-    if Feature.enabled?(:improve_blobs_cache_headers)
-      expires_in(max_age,
-        public: allow_caching, must_revalidate: true, stale_if_error: 5.minutes,
-        stale_while_revalidate: 1.minute, 's-maxage': 1.minute)
-    else
-      response.cache_control[:public] = allow_caching
-      response.cache_control[:max_age] = max_age
-    end
+    expires_in(max_age,
+      public: allow_caching, must_revalidate: true, stale_if_error: 5.minutes,
+      stale_while_revalidate: 1.minute, 's-maxage': 1.minute)
 
     !stale
   end

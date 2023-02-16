@@ -81,7 +81,7 @@ gem 'rack-oauth2', '~> 1.21.3'
 gem 'jwt', '~> 2.1.0'
 
 # Kerberos authentication. EE-only
-gem 'gssapi', group: :kerberos
+gem 'gssapi', '~> 1.3.1', group: :kerberos
 gem 'timfel-krb5-auth', '~> 0.8', group: :kerberos
 
 # Spam and anti-bot protection

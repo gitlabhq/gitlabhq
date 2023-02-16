@@ -146,9 +146,9 @@ RSpec.describe 'Contributions Calendar', :js, feature_category: :user_profile do
 
     describe '1 issue and 1 work item creation calendar activity' do
       before do
-        Issues::CreateService.new(project: contributed_project, current_user: user, params: issue_params, spam_params: nil).execute
+        Issues::CreateService.new(container: contributed_project, current_user: user, params: issue_params, spam_params: nil).execute
         WorkItems::CreateService.new(
-          project: contributed_project,
+          container: contributed_project,
           current_user: user,
           params: { title: 'new task' },
           spam_params: nil
@@ -190,7 +190,7 @@ RSpec.describe 'Contributions Calendar', :js, feature_category: :user_profile do
         push_code_contribution
 
         travel_to(Date.yesterday) do
-          Issues::CreateService.new(project: contributed_project, current_user: user, params: issue_params, spam_params: nil).execute
+          Issues::CreateService.new(container: contributed_project, current_user: user, params: issue_params, spam_params: nil).execute
         end
       end
       include_context 'visit user page'

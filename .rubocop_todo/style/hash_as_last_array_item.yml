@@ -18,7 +18,6 @@ Style/HashAsLastArrayItem:
     - 'app/graphql/resolvers/clusters/agents_resolver.rb'
     - 'app/graphql/types/boards/board_issuable_input_base_type.rb'
     - 'app/graphql/types/boards/board_issue_input_base_type.rb'
-    - 'app/helpers/namespaces_helper.rb'
     - 'app/models/customer_relations/contact.rb'
     - 'app/models/customer_relations/organization.rb'
     - 'app/models/deploy_key.rb'

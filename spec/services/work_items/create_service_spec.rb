@@ -29,7 +29,7 @@ RSpec.describe WorkItems::CreateService do
   describe '#execute' do
     let(:service) do
       described_class.new(
-        project: project,
+        container: project,
         current_user: current_user,
         params: opts,
         spam_params: spam_params,
@@ -118,7 +118,7 @@ RSpec.describe WorkItems::CreateService do
 
       let(:service) do
         described_class.new(
-          project: project,
+          container: project,
           current_user: current_user,
           params: opts,
           spam_params: spam_params,
@@ -188,7 +188,7 @@ RSpec.describe WorkItems::CreateService do
           {
             title: 'Awesome work_item',
             description: 'please fix',
-            work_item_type: create(:work_item_type, :task)
+            work_item_type: WorkItems::Type.default_by_type(:task)
           }
         end
 

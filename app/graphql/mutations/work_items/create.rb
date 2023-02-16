@@ -48,7 +48,7 @@ module Mutations
         widget_params = extract_widget_params!(type, params)
 
         create_result = ::WorkItems::CreateService.new(
-          project: project,
+          container: project,
           current_user: current_user,
           params: params,
           spam_params: spam_params,

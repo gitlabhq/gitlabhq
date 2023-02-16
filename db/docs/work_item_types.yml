@@ -1,10 +1,12 @@
 ---
 table_name: work_item_types
 classes:
+- AddWidgetsForWorkItemTypes::WorkItemType
 - WorkItems::Type
 feature_categories:
 - team_planning
-description: The work item type related to an issue. Currently one of a predefined set but in future will support custom types.
+description: The work item type related to an issue. Currently one of a predefined
+  set but in future will support custom types.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/55705
 milestone: '14.2'
 gitlab_schema: gitlab_main

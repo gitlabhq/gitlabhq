@@ -295,21 +295,6 @@ RSpec.describe Projects::RawController, feature_category: :source_code_managemen
           expect(response).to have_gitlab_http_status(:not_modified)
         end
       end
-
-      context 'when improve_blobs_cache_headers disabled' do
-        before do
-          stub_feature_flags(improve_blobs_cache_headers: false)
-        end
-
-        it 'uses weak etags with a restricted set of headers' do
-          sign_in create(:user)
-          request_file
-
-          expect(response.headers['ETag']).to eq("W/\"bdd5aa537c1e1f6d1b66de4bac8a6132\"")
-          expect(response.cache_control[:no_store]).to be_nil
-          expect(response.header['Cache-Control']).to eq('max-age=60, public')
-        end
-      end
     end
   end
 end

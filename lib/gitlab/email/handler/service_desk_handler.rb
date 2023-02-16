@@ -92,7 +92,7 @@ module Gitlab
 
         def create_issue!
           result = ::Issues::CreateService.new(
-            project: project,
+            container: project,
             current_user: User.support_bot,
             params: {
               title: mail.subject,

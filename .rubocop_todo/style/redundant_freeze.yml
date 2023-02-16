@@ -143,7 +143,6 @@ Style/RedundantFreeze:
     - 'lib/gitlab/database/background_migration/batch_optimizer.rb'
     - 'lib/gitlab/database/load_balancing/service_discovery.rb'
     - 'lib/gitlab/database/migrations/runner.rb'
-    - 'lib/gitlab/database/postgres_constraint.rb'
     - 'lib/gitlab/database/query_analyzers/query_recorder.rb'
     - 'lib/gitlab/dependency_linker/base_linker.rb'
     - 'lib/gitlab/dependency_linker/gemfile_linker.rb'

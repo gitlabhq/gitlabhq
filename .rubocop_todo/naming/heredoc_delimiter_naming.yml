@@ -2,7 +2,6 @@
 Naming/HeredocDelimiterNaming:
   Exclude:
     - 'app/models/ci/build_trace_chunks/redis_base.rb'
-    - 'app/models/concerns/counter_attribute.rb'
     - 'app/models/concerns/legacy_bulk_insert.rb'
     - 'app/models/trending_project.rb'
     - 'app/services/ci/ensure_stage_service.rb'
@@ -41,7 +40,6 @@ Naming/HeredocDelimiterNaming:
     - 'lib/gitlab/utils/delegator_override/validator.rb'
     - 'lib/tasks/gitlab/docs/compile_deprecations.rake'
     - 'lib/tasks/gitlab/password.rake'
-    - 'qa/qa/specs/features/browser_ui/3_create/web_ide/web_terminal_spec.rb'
     - 'qa/qa/specs/features/browser_ui/4_verify/testing/view_code_coverage_spec.rb'
     - 'qa/qa/specs/features/browser_ui/5_package/package_registry/generic_repository_spec.rb'
     - 'qa/qa/specs/features/browser_ui/5_package/package_registry/nuget/nuget_group_level_spec.rb'
@@ -57,7 +55,6 @@ Naming/HeredocDelimiterNaming:
     - 'rubocop/cop/gitlab/predicate_memoization.rb'
     - 'spec/controllers/projects/pipelines_controller_spec.rb'
     - 'spec/deprecation_toolkit_env.rb'
-    - 'spec/factories/packages/debian/distribution.rb'
     - 'spec/factories/packages/debian/file_metadatum.rb'
     - 'spec/features/projects/commit/user_comments_on_commit_spec.rb'
     - 'spec/features/task_lists_spec.rb'
@@ -107,7 +104,6 @@ Naming/HeredocDelimiterNaming:
     - 'spec/lib/gitlab/webpack/manifest_spec.rb'
     - 'spec/lib/gitlab/word_diff/parser_spec.rb'
     - 'spec/models/ci/bridge_spec.rb'
-    - 'spec/models/clusters/applications/cert_manager_spec.rb'
     - 'spec/models/concerns/ci/maskable_spec.rb'
     - 'spec/models/integrations/asana_spec.rb'
     - 'spec/models/ssh_host_key_spec.rb'

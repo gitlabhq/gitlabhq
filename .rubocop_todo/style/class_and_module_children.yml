@@ -250,7 +250,6 @@ Style/ClassAndModuleChildren:
     - 'app/helpers/projects/project_members_helper.rb'
     - 'app/helpers/projects/terraform_helper.rb'
     - 'app/models/analytics/cycle_analytics/aggregation.rb'
-    - 'app/models/analytics/cycle_analytics/project_value_stream.rb'
     - 'app/models/bulk_imports/configuration.rb'
     - 'app/models/bulk_imports/entity.rb'
     - 'app/models/bulk_imports/failure.rb'

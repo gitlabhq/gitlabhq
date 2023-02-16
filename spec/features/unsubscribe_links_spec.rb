@@ -10,7 +10,7 @@ RSpec.describe 'Unsubscribe links', :sidekiq_inline, feature_category: :not_owne
   let_it_be(:recipient) { create(:user) }
 
   let(:params) { { title: 'A bug!', description: 'Fix it!', assignee_ids: [recipient.id] } }
-  let(:issue) { Issues::CreateService.new(project: project, current_user: author, params: params, spam_params: nil).execute[:issue] }
+  let(:issue) { Issues::CreateService.new(container: project, current_user: author, params: params, spam_params: nil).execute[:issue] }
 
   let(:mail) { ActionMailer::Base.deliveries.last }
   let(:body) { Capybara::Node::Simple.new(mail.default_part_body.to_s) }

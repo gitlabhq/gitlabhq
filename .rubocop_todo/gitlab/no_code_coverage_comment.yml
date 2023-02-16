@@ -13,6 +13,5 @@ Gitlab/NoCodeCoverageComment:
     - 'lib/gitlab/database/background_migration/health_status/signals.rb'
     - 'lib/gitlab/seeder.rb'
     - 'lib/gitlab/webpack/dev_server_middleware.rb'
-    - 'lib/tasks/dev.rake'
     - 'lib/tasks/gems.rake'
     - 'lib/tasks/gitlab/db.rake'

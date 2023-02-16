@@ -101,7 +101,7 @@ RSpec.describe Resolvers::WorkItemsResolver do
       end
 
       it 'batches queries that only include IIDs', :request_store do
-        result = batch_sync(max_queries: 7) do
+        result = batch_sync(max_queries: 8) do
           [item1, item2]
             .map { |item| resolve_items(iid: item.iid.to_s) }
             .flat_map(&:to_a)
@@ -111,7 +111,7 @@ RSpec.describe Resolvers::WorkItemsResolver do
       end
 
       it 'finds a specific item with iids', :request_store do
-        result = batch_sync(max_queries: 7) do
+        result = batch_sync(max_queries: 8) do
           resolve_items(iids: [item1.iid]).to_a
         end
 

@@ -252,7 +252,8 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
         let(:input) { { 'descriptionWidget' => { 'description' => "Updating labels.\n/labels ~\"#{label1.name}\"" } } }
 
         before do
-          stub_const('::WorkItems::Type::WIDGETS_FOR_TYPE', { task: [::WorkItems::Widgets::Description] })
+          WorkItems::Type.default_by_type(:task).widget_definitions
+            .find_by_widget_type(:labels).update!(disabled: true)
         end
 
         it 'ignores the quick action' do
@@ -370,7 +371,8 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
           let(:input) { { 'descriptionWidget' => { 'description' => "Updating due date.\n/due today" } } }
 
           before do
-            stub_const('::WorkItems::Type::WIDGETS_FOR_TYPE', { task: [::WorkItems::Widgets::Description] })
+            WorkItems::Type.default_by_type(:task).widget_definitions
+              .find_by_widget_type(:start_and_due_date).update!(disabled: true)
           end
 
           it 'ignores the quick action' do
@@ -736,7 +738,8 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
         end
 
         before do
-          stub_const('::WorkItems::Type::WIDGETS_FOR_TYPE', { task: [::WorkItems::Widgets::Description] })
+          WorkItems::Type.default_by_type(:task).widget_definitions
+            .find_by_widget_type(:assignees).update!(disabled: true)
         end
 
         it 'ignores the quick action' do

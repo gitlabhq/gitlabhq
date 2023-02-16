@@ -66,7 +66,8 @@ RSpec.describe 'Query.note(id)', feature_category: :team_planning do
 
     context 'and notes widget is not available' do
       before do
-        stub_const('WorkItems::Type::WIDGETS_FOR_TYPE', { issue: [::WorkItems::Widgets::Description] })
+        WorkItems::Type.default_by_type(:issue).widget_definitions
+          .find_by_widget_type(:notes).update!(disabled: true)
       end
 
       it 'returns nil' do

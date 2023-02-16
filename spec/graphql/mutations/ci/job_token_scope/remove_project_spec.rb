@@ -46,19 +46,20 @@ RSpec.describe Mutations::Ci::JobTokenScope::RemoveProject, feature_category: :c
           target_project.add_guest(current_user)
         end
 
-        context 'with no direction specified' do
-          it 'defaults to removing an outbound link to the target project' do
-            expect do
-              expect(subject).to include(ci_job_token_scope: be_present, errors: be_empty)
-            end.to change { Ci::JobToken::ProjectScopeLink.count }.by(-1)
+        let(:service) { instance_double('Ci::JobTokenScope::RemoveProjectService') }
 
-            expect(links_relation.outbound.reload).to be_empty
+        context 'with no direction specified' do
+          it 'defaults to asking the RemoveProjectService to remove the outbound link' do
+            expect(::Ci::JobTokenScope::RemoveProjectService)
+              .to receive(:new).with(project, current_user).and_return(service)
+            expect(service).to receive(:execute).with(target_project, :outbound)
+              .and_return(instance_double('ServiceResponse', "success?": true))
+
+            subject
           end
         end
 
         context 'with direction specified' do
-          let(:service) { instance_double('Ci::JobTokenScope::RemoveProjectService') }
-
           subject do
             mutation.resolve(project_path: project.full_path, target_project_path: target_project_path, direction: 'inbound')
           end

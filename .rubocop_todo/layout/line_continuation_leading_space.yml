@@ -1,4 +1,5 @@
 ---
+# Cop supports --autocorrect.
 Layout/LineContinuationLeadingSpace:
   Details: grace period
   Exclude:
@@ -8,7 +9,6 @@ Layout/LineContinuationLeadingSpace:
     - 'app/helpers/application_settings_helper.rb'
     - 'app/helpers/preferences_helper.rb'
     - 'app/models/environment.rb'
-    - 'app/services/projects/container_repository/destroy_service.rb'
     - 'config/initializers_before_autoloader/003_gc_compact.rb'
     - 'ee/app/graphql/ee/mutations/issues/create.rb'
     - 'ee/app/graphql/ee/types/merge_request_type.rb'

@@ -156,7 +156,7 @@ class Projects::IssuesController < Projects::ApplicationController
     )
 
     spam_params = ::Spam::SpamParams.new_from_request(request: request)
-    service = ::Issues::CreateService.new(project: project, current_user: current_user, params: create_params, spam_params: spam_params)
+    service = ::Issues::CreateService.new(container: project, current_user: current_user, params: create_params, spam_params: spam_params)
     result = service.execute
 
     # Only irrecoverable errors such as unauthorized user won't contain an issue in the response

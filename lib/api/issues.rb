@@ -272,7 +272,7 @@ module API
 
         begin
           spam_params = ::Spam::SpamParams.new_from_request(request: request)
-          result = ::Issues::CreateService.new(project: user_project,
+          result = ::Issues::CreateService.new(container: user_project,
                                                current_user: current_user,
                                                params: issue_params,
                                                spam_params: spam_params).execute

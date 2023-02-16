@@ -76,7 +76,7 @@ module Issues
       # The system notes of the old issue are copied over so we don't want to end up with duplicate notes.
       # When cloning without notes, we want to generate system notes for the attributes that were copied.
       create_result = CreateService.new(
-        project: target_project,
+        container: target_project,
         current_user: current_user,
         params: new_params,
         spam_params: spam_params

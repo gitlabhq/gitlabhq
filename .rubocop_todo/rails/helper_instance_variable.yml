@@ -43,7 +43,6 @@ Rails/HelperInstanceVariable:
     - 'app/helpers/routing/pseudonymization_helper.rb'
     - 'app/helpers/routing/snippets_helper.rb'
     - 'app/helpers/search_helper.rb'
-    - 'app/helpers/selects_helper.rb'
     - 'app/helpers/startupjs_helper.rb'
     - 'app/helpers/submodule_helper.rb'
     - 'app/helpers/tab_helper.rb'

@@ -282,7 +282,6 @@ Lint/UnusedMethodArgument:
     - 'ee/app/services/epics/related_epic_links/create_service.rb'
     - 'ee/app/services/epics/transfer_service.rb'
     - 'ee/app/services/group_saml/identity/destroy_service.rb'
-    - 'ee/app/services/package_metadata/ingestion/ingestion_service.rb'
     - 'ee/app/services/projects/update_mirror_service.rb'
     - 'ee/app/services/security/security_orchestration_policies/process_scan_result_policy_service.rb'
     - 'ee/app/services/vulnerabilities/finding_dismiss_service.rb'

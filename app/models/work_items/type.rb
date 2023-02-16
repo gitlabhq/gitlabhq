@@ -35,56 +35,6 @@ module WorkItems
       key_result: { name: TYPE_NAMES[:key_result], icon_name: 'issue-type-keyresult', enum_value: 6 } ## EE-only
     }.freeze
 
-    WIDGETS_FOR_TYPE = {
-      issue: [
-        Widgets::Assignees,
-        Widgets::Labels,
-        Widgets::Description,
-        Widgets::Hierarchy,
-        Widgets::StartAndDueDate,
-        Widgets::Milestone,
-        Widgets::Notes
-      ],
-      incident: [
-        Widgets::Description,
-        Widgets::Hierarchy,
-        Widgets::Notes
-      ],
-      test_case: [
-        Widgets::Description,
-        Widgets::Notes
-      ],
-      requirement: [
-        Widgets::Description,
-        Widgets::Notes
-      ],
-      task: [
-        Widgets::Assignees,
-        Widgets::Labels,
-        Widgets::Description,
-        Widgets::Hierarchy,
-        Widgets::StartAndDueDate,
-        Widgets::Milestone,
-        Widgets::Notes
-      ],
-      objective: [
-        Widgets::Assignees,
-        Widgets::Labels,
-        Widgets::Description,
-        Widgets::Hierarchy,
-        Widgets::Milestone,
-        Widgets::Notes
-      ],
-      key_result: [
-        Widgets::Assignees,
-        Widgets::Labels,
-        Widgets::Description,
-        Widgets::Hierarchy,
-        Widgets::StartAndDueDate,
-        Widgets::Notes
-      ]
-    }.freeze
-
     # A list of types user can change between - both original and new
     # type must be included in this list. This is needed for legacy issues
     # where it's possible to switch between issue and incident.
@@ -98,6 +48,9 @@ module WorkItems
 
     belongs_to :namespace, optional: true
     has_many :work_items, class_name: 'Issue', foreign_key: :work_item_type_id, inverse_of: :work_item_type
+    has_many :widget_definitions, foreign_key: :work_item_type_id, inverse_of: :work_item_type
+    has_many :enabled_widget_definitions, -> { where(disabled: false) }, foreign_key: :work_item_type_id,
+      inverse_of: :work_item_type, class_name: 'WorkItems::WidgetDefinition'
 
     before_validation :strip_whitespace
 
@@ -111,10 +64,6 @@ module WorkItems
     scope :default, -> { where(namespace: nil) }
     scope :order_by_name_asc, -> { order(arel_table[:name].lower.asc) }
     scope :by_type, ->(base_type) { where(base_type: base_type) }
-
-    def self.available_widgets
-      WIDGETS_FOR_TYPE.values.flatten.uniq
-    end
 
     def self.default_by_type(type)
       found_type = find_by(namespace_id: nil, base_type: type)
@@ -138,7 +87,7 @@ module WorkItems
     end
 
     def widgets
-      WIDGETS_FOR_TYPE[base_type.to_sym]
+      enabled_widget_definitions.filter_map(&:widget_class)
     end
 
     def supports_assignee?
@@ -156,5 +105,3 @@ module WorkItems
     end
   end
 end
-
-WorkItems::Type.prepend_mod

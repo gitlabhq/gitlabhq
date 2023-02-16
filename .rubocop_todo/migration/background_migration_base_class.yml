@@ -7,7 +7,6 @@ Migration/BackgroundMigrationBaseClass:
     - 'lib/gitlab/background_migration/backfill_integrations_type_new.rb'
     - 'lib/gitlab/background_migration/backfill_issue_search_data.rb'
     - 'lib/gitlab/background_migration/backfill_iteration_cadence_id_for_boards.rb'
-    - 'lib/gitlab/background_migration/backfill_jira_tracker_deployment_type2.rb'
     - 'lib/gitlab/background_migration/backfill_member_namespace_for_group_members.rb'
     - 'lib/gitlab/background_migration/backfill_namespace_id_for_namespace_route.rb'
     - 'lib/gitlab/background_migration/backfill_namespace_id_for_project_route.rb'
