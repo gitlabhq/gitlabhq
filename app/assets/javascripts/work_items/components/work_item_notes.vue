@@ -10,7 +10,7 @@ import { ASC, DESC } from '~/notes/constants';
 import { getWorkItemNotesQuery } from '~/work_items/utils';
 import WorkItemDiscussion from '~/work_items/components/notes/work_item_discussion.vue';
 import deleteNoteMutation from '../graphql/notes/delete_work_item_notes.mutation.graphql';
-import WorkItemCommentForm from './work_item_comment_form.vue';
+import WorkItemAddNote from './notes/work_item_add_note.vue';
 
 export default {
   i18n: {
@@ -26,7 +26,7 @@ export default {
     GlModal,
     ActivityFilter,
     SystemNote,
-    WorkItemCommentForm,
+    WorkItemAddNote,
     WorkItemDiscussion,
   },
   props: {
@@ -249,7 +249,7 @@ export default {
     <div v-else class="issuable-discussion gl-mb-5 gl-clearfix!">
       <template v-if="!initialLoading">
         <ul class="notes main-notes-list timeline gl-clearfix!">
-          <work-item-comment-form
+          <work-item-add-note
             v-if="formAtTop"
             v-bind="workItemCommentFormProps"
             @error="$emit('error', $event)"
@@ -271,11 +271,12 @@ export default {
                 :fetch-by-iid="fetchByIid"
                 :work-item-type="workItemType"
                 @deleteNote="showDeleteNoteModal($event, discussion)"
+                @error="$emit('error', $event)"
               />
             </template>
           </template>
 
-          <work-item-comment-form
+          <work-item-add-note
             v-if="!formAtTop"
             v-bind="workItemCommentFormProps"
             @error="$emit('error', $event)"

@@ -40313,6 +40313,9 @@ msgstr ""
 msgid "Something went wrong when sending the incident link to Slack."
 msgstr ""
 
+msgid "Something went wrong when updating a comment. Please try again"
+msgstr ""
+
 msgid "Something went wrong while adding timeline event."
 msgstr ""
 

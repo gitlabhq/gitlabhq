@@ -12,8 +12,8 @@ module QA
           element :compare_branches_button
         end
 
-        view 'app/assets/javascripts/pages/projects/merge_requests/creations/new/index.js' do
-          element :source_branch_dropdown
+        view 'app/assets/javascripts/merge_requests/components/compare_dropdown.vue' do
+          element :source_branch_dropdown, ':data-qa-selector="qaSelector"' # rubocop:disable QA/ElementWithPattern
         end
 
         view 'app/views/projects/merge_requests/_page.html.haml' do

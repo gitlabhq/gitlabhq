@@ -91,34 +91,6 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching, feature_categ
     end
   end
 
-  describe 'preloading deployment associations' do
-    let!(:environment) { create(:environment, project: project) }
-
-    associations = [:last_deployment, :last_visible_deployment, :upcoming_deployment]
-    associations.concat Deployment::FINISHED_STATUSES.map { |status| "last_#{status}_deployment".to_sym }
-    associations.concat Deployment::UPCOMING_STATUSES.map { |status| "last_#{status}_deployment".to_sym }
-
-    context 'raises error for legacy approach' do
-      let!(:error_pattern) { /Preloading instance dependent scopes is not supported/ }
-
-      subject { described_class.preload(association_name).find_by(id: environment) }
-
-      shared_examples 'raises error' do
-        it do
-          expect { subject }.to raise_error(error_pattern)
-        end
-      end
-
-      associations.each do |association|
-        context association.to_s do
-          let!(:association_name) { association }
-
-          include_examples "raises error"
-        end
-      end
-    end
-  end
-
   describe 'validate and sanitize external url' do
     let_it_be_with_refind(:environment) { create(:environment) }
 

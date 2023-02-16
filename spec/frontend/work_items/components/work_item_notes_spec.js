@@ -8,7 +8,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import SystemNote from '~/work_items/components/notes/system_note.vue';
 import WorkItemNotes from '~/work_items/components/work_item_notes.vue';
 import WorkItemDiscussion from '~/work_items/components/notes/work_item_discussion.vue';
-import WorkItemCommentForm from '~/work_items/components/work_item_comment_form.vue';
+import WorkItemAddNote from '~/work_items/components/notes/work_item_add_note.vue';
 import ActivityFilter from '~/work_items/components/notes/activity_filter.vue';
 import workItemNotesQuery from '~/work_items/graphql/notes/work_item_notes.query.graphql';
 import workItemNotesByIidQuery from '~/work_items/graphql/notes/work_item_notes_by_iid.query.graphql';
@@ -54,7 +54,7 @@ describe('WorkItemNotes component', () => {
   const findAllSystemNotes = () => wrapper.findAllComponents(SystemNote);
   const findAllListItems = () => wrapper.findAll('ul.timeline > *');
   const findActivityLabel = () => wrapper.find('label');
-  const findWorkItemCommentForm = () => wrapper.findComponent(WorkItemCommentForm);
+  const findWorkItemAddNote = () => wrapper.findComponent(WorkItemAddNote);
   const findSkeletonLoader = () => wrapper.findComponent(GlSkeletonLoader);
   const findSortingFilter = () => wrapper.findComponent(ActivityFilter);
   const findSystemNoteAtIndex = (index) => findAllSystemNotes().at(index);
@@ -123,7 +123,7 @@ describe('WorkItemNotes component', () => {
     });
     await waitForPromises();
 
-    expect(findWorkItemCommentForm().props('fetchByIid')).toEqual(false);
+    expect(findWorkItemAddNote().props('fetchByIid')).toEqual(false);
   });
 
   describe('when notes are loading', () => {
@@ -161,7 +161,7 @@ describe('WorkItemNotes component', () => {
     });
 
     it('passes correct props to comment form component', () => {
-      expect(findWorkItemCommentForm().props('fetchByIid')).toEqual(true);
+      expect(findWorkItemAddNote().props('fetchByIid')).toEqual(true);
     });
   });
 
@@ -218,13 +218,13 @@ describe('WorkItemNotes component', () => {
     it('puts form at start of list in when sorting by newest first', async () => {
       await findSortingFilter().vm.$emit('changeSortOrder', DESC);
 
-      expect(findAllListItems().at(0).is(WorkItemCommentForm)).toEqual(true);
+      expect(findAllListItems().at(0).is(WorkItemAddNote)).toEqual(true);
     });
 
     it('puts form at end of list in when sorting by oldest first', async () => {
       await findSortingFilter().vm.$emit('changeSortOrder', ASC);
 
-      expect(findAllListItems().at(-1).is(WorkItemCommentForm)).toEqual(true);
+      expect(findAllListItems().at(-1).is(WorkItemAddNote)).toEqual(true);
     });
   });
 

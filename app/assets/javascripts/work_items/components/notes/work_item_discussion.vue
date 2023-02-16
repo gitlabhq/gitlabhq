@@ -6,7 +6,7 @@ import DiscussionNotesRepliesWrapper from '~/notes/components/discussion_notes_r
 import ToggleRepliesWidget from '~/notes/components/toggle_replies_widget.vue';
 import WorkItemNote from '~/work_items/components/notes/work_item_note.vue';
 import WorkItemNoteReplying from '~/work_items/components/notes/work_item_note_replying.vue';
-import WorkItemCommentForm from '../work_item_comment_form.vue';
+import WorkItemAddNote from './work_item_add_note.vue';
 
 export default {
   components: {
@@ -14,7 +14,7 @@ export default {
     GlAvatarLink,
     GlAvatar,
     WorkItemNote,
-    WorkItemCommentForm,
+    WorkItemAddNote,
     ToggleRepliesWidget,
     DiscussionNotesRepliesWrapper,
     WorkItemNoteReplying,
@@ -139,8 +139,11 @@ export default {
                 :is-first-note="true"
                 :note="note"
                 :discussion-id="discussionId"
+                :work-item-type="workItemType"
+                :class="{ 'gl-mb-5': hasReplies }"
                 @startReplying="showReplyForm"
                 @deleteNote="$emit('deleteNote', note)"
+                @error="$emit('error', $event)"
               />
               <discussion-notes-replies-wrapper>
                 <toggle-replies-widget
@@ -153,14 +156,16 @@ export default {
                   <template v-for="reply in replies">
                     <work-item-note
                       :key="threadKey(reply)"
-                      discussion-id="discussionId"
+                      :discussion-id="discussionId"
                       :note="reply"
+                      :work-item-type="workItemType"
                       @startReplying="showReplyForm"
                       @deleteNote="$emit('deleteNote', reply)"
+                      @error="$emit('error', $event)"
                     />
                   </template>
                   <work-item-note-replying v-if="isReplying" :body="replyingText" />
-                  <work-item-comment-form
+                  <work-item-add-note
                     :autofocus="autofocus"
                     :query-variables="queryVariables"
                     :full-path="fullPath"

@@ -136,6 +136,7 @@ export default {
         'gl-align-items-flex-start! gl-justify-content-start! mr-compare-dropdown',
         toggleClass,
       ]"
+      :data-qa-selector="qaSelector"
       @shown="fetchData"
       @search="searchData"
       @select="selectItem"

@@ -117,6 +117,7 @@ export default {
     :toggle-text="s__('Boards|Move card')"
     :text-sr-only="true"
     no-caret
+    data-testid="board-move-to-position"
     @action="selectMoveAction"
   />
 </template>

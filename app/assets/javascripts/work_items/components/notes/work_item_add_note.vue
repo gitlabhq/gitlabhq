@@ -1,32 +1,28 @@
 <script>
 import { GlAvatar, GlButton } from '@gitlab/ui';
 import * as Sentry from '@sentry/browser';
-import { helpPagePath } from '~/helpers/help_page_helper';
-import { getDraft, clearDraft, updateDraft } from '~/lib/utils/autosave';
-import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
-import { __, s__ } from '~/locale';
+import { clearDraft } from '~/lib/utils/autosave';
 import Tracking from '~/tracking';
 import { ASC } from '~/notes/constants';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { updateCommentState } from '~/work_items/graphql/cache_utils';
-import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
-import { getWorkItemQuery } from '../utils';
-import createNoteMutation from '../graphql/notes/create_work_item_note.mutation.graphql';
-import { TRACKING_CATEGORY_SHOW, i18n } from '../constants';
+import { getWorkItemQuery } from '../../utils';
+import createNoteMutation from '../../graphql/notes/create_work_item_note.mutation.graphql';
+import { TRACKING_CATEGORY_SHOW, i18n } from '../../constants';
 import WorkItemNoteSignedOut from './work_item_note_signed_out.vue';
 import WorkItemCommentLocked from './work_item_comment_locked.vue';
+import WorkItemCommentForm from './work_item_comment_form.vue';
 
 export default {
   constantOptions: {
-    markdownDocsPath: helpPagePath('user/markdown'),
     avatarUrl: window.gon.current_user_avatar_url,
   },
   components: {
     GlAvatar,
     GlButton,
-    MarkdownEditor,
     WorkItemNoteSignedOut,
     WorkItemCommentLocked,
+    WorkItemCommentForm,
   },
   mixins: [glFeatureFlagMixin(), Tracking.mixin()],
   props: {
@@ -78,13 +74,6 @@ export default {
       isEditing: false,
       isSubmitting: false,
       isSubmittingWithKeydown: false,
-      commentText: '',
-      formFieldProps: {
-        'aria-label': __('Add a comment'),
-        placeholder: __('Write a comment or drag your files here…'),
-        id: 'work-item-add-comment',
-        name: 'work-item-add-comment',
-      },
     };
   },
   apollo: {
@@ -112,7 +101,7 @@ export default {
     },
     autosaveKey() {
       // eslint-disable-next-line @gitlab/require-i18n-strings
-      return `${this.workItemId}-comment`;
+      return this.discussionId ? `${this.discussionId}-comment` : `${this.workItemId}-comment`;
     },
     tracking() {
       return {
@@ -150,37 +139,9 @@ export default {
     },
   },
   methods: {
-    startEditing() {
-      this.isEditing = true;
-      this.commentText = getDraft(this.autosaveKey) || '';
-    },
-    async cancelEditing() {
-      if (this.commentText) {
-        const msg = s__('WorkItem|Are you sure you want to cancel editing?');
-
-        const confirmed = await confirmAction(msg, {
-          primaryBtnText: __('Discard changes'),
-          cancelBtnText: __('Continue editing'),
-        });
-
-        if (!confirmed) {
-          return;
-        }
-      }
-
-      this.$emit('cancelEditing');
-      this.isEditing = false;
-      clearDraft(this.autosaveKey);
-    },
-    async updateWorkItem(event = {}) {
-      const { key } = event;
-
-      if (key) {
-        this.isSubmittingWithKeydown = true;
-      }
-
+    async updateWorkItem(commentText) {
       this.isSubmitting = true;
-      this.$emit('replying', this.commentText);
+      this.$emit('replying', commentText);
       const { queryVariables, fetchByIid } = this;
 
       try {
@@ -191,7 +152,7 @@ export default {
           variables: {
             input: {
               noteableId: this.workItemId,
-              body: this.commentText,
+              body: commentText,
               discussionId: this.discussionId || null,
             },
           },
@@ -204,7 +165,7 @@ export default {
         });
         clearDraft(this.autosaveKey);
         this.$emit('replied');
-        this.isEditing = false;
+        this.cancelEditing();
       } catch (error) {
         this.$emit('error', error.message);
         Sentry.captureException(error);
@@ -212,9 +173,9 @@ export default {
 
       this.isSubmitting = false;
     },
-    setCommentText(newText) {
-      this.commentText = newText;
-      updateDraft(this.autosaveKey, this.commentText);
+    cancelEditing() {
+      this.isEditing = false;
+      this.$emit('cancelEditing');
     },
   },
 };
@@ -230,37 +191,19 @@ export default {
     />
     <div v-else class="gl-relative gl-display-flex gl-align-items-flex-start gl-flex-wrap-nowrap">
       <gl-avatar :src="$options.constantOptions.avatarUrl" :size="32" class="gl-mr-3" />
-      <form v-if="isEditing" class="common-note-form gfm-form js-main-target-form gl-flex-grow-1">
-        <markdown-editor
-          class="gl-mb-3"
-          :value="commentText"
-          :render-markdown-path="markdownPreviewPath"
-          :markdown-docs-path="$options.constantOptions.markdownDocsPath"
-          :form-field-props="formFieldProps"
-          data-testid="work-item-add-comment"
-          enable-autocomplete
-          autofocus
-          use-bottom-toolbar
-          @input="setCommentText"
-          @keydown.meta.enter="updateWorkItem"
-          @keydown.ctrl.enter="updateWorkItem"
-          @keydown.esc="cancelEditing"
-        />
-        <gl-button
-          category="primary"
-          variant="confirm"
-          :loading="isSubmitting"
-          @click="updateWorkItem"
-          >{{ __('Comment') }}
-        </gl-button>
-        <gl-button category="primary" class="gl-ml-3" @click="cancelEditing"
-          >{{ __('Cancel') }}
-        </gl-button>
-      </form>
+      <work-item-comment-form
+        v-if="isEditing"
+        :work-item-type="workItemType"
+        :aria-label="__('Add a comment')"
+        :is-submitting="isSubmitting"
+        :autosave-key="autosaveKey"
+        @submitForm="updateWorkItem"
+        @cancelEditing="cancelEditing"
+      />
       <gl-button
         v-else
         class="gl-flex-grow-1 gl-justify-content-start! gl-text-secondary!"
-        @click="startEditing"
+        @click="isEditing = true"
         >{{ __('Add a comment') }}</gl-button
       >
     </div>

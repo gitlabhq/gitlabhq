@@ -13,6 +13,7 @@ import {
   toggleFormEventPrefix,
   DraggableItemTypes,
   listIssuablesQueries,
+  ListType,
 } from 'ee_else_ce/boards/constants';
 import eventHub from '../eventhub';
 import BoardCard from './board_card.vue';
@@ -195,6 +196,9 @@ export default {
     },
     disableScrollingWhenMutationInProgress() {
       return this.hasNextPage && this.isUpdateIssueOrderInProgress;
+    },
+    showMoveToPosition() {
+      return !this.disabled && this.list.listType !== ListType.closed;
     },
   },
   watch: {
@@ -382,9 +386,8 @@ export default {
         :data-draggable-item-type="$options.draggableItemTypes.card"
         :show-work-item-type-icon="!isEpicBoard"
       >
-        <!-- TODO: remove the condition when https://gitlab.com/gitlab-org/gitlab/-/issues/377862 is resolved -->
         <board-card-move-to-position
-          v-if="!isEpicBoard && !disabled"
+          v-if="showMoveToPosition"
           :item="item"
           :index="index"
           :list="list"

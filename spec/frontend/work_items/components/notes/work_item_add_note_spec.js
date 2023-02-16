@@ -5,21 +5,23 @@ import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { mockTracking } from 'helpers/tracking_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import { updateDraft } from '~/lib/utils/autosave';
-import MarkdownField from '~/vue_shared/components/markdown/field.vue';
-import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
-import WorkItemCommentForm from '~/work_items/components/work_item_comment_form.vue';
-import WorkItemCommentLocked from '~/work_items/components/work_item_comment_locked.vue';
+import { clearDraft } from '~/lib/utils/autosave';
+import { config } from '~/graphql_shared/issuable_client';
+import WorkItemAddNote from '~/work_items/components/notes/work_item_add_note.vue';
+import WorkItemCommentLocked from '~/work_items/components/notes/work_item_comment_locked.vue';
+import WorkItemCommentForm from '~/work_items/components/notes/work_item_comment_form.vue';
 import createNoteMutation from '~/work_items/graphql/notes/create_work_item_note.mutation.graphql';
 import { TRACKING_CATEGORY_SHOW } from '~/work_items/constants';
 import workItemQuery from '~/work_items/graphql/work_item.query.graphql';
+import workItemNotesQuery from '~/work_items/graphql/notes/work_item_notes.query.graphql';
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
 import {
   workItemResponseFactory,
   workItemQueryResponse,
   projectWorkItemResponse,
   createWorkItemNoteResponse,
-} from '../mock_data';
+  mockWorkItemNotesResponse,
+} from '../../mock_data';
 
 jest.mock('~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal');
 jest.mock('~/lib/utils/autosave');
@@ -35,18 +37,7 @@ describe('WorkItemCommentForm', () => {
   const workItemByIidResponseHandler = jest.fn().mockResolvedValue(projectWorkItemResponse);
   let workItemResponseHandler;
 
-  const findMarkdownEditor = () => wrapper.findComponent(MarkdownEditor);
-
-  const setText = (newText) => {
-    return findMarkdownEditor().vm.$emit('input', newText);
-  };
-
-  const clickSave = () =>
-    wrapper
-      .findAllComponents(GlButton)
-      .filter((button) => button.text().startsWith('Comment'))
-      .at(0)
-      .vm.$emit('click', {});
+  const findCommentForm = () => wrapper.findComponent(WorkItemCommentForm);
 
   const createComponent = async ({
     mutationHandler = mutationSuccessHandler,
@@ -65,13 +56,28 @@ describe('WorkItemCommentForm', () => {
       window.gon.current_user_avatar_url = 'avatar.png';
     }
 
-    const { id } = workItemQueryResponse.data.workItem;
-    wrapper = shallowMount(WorkItemCommentForm, {
-      apolloProvider: createMockApollo([
+    const apolloProvider = createMockApollo(
+      [
         [workItemQuery, workItemResponseHandler],
         [createNoteMutation, mutationHandler],
         [workItemByIidQuery, workItemByIidResponseHandler],
-      ]),
+      ],
+      {},
+      { ...config.cacheConfig },
+    );
+
+    apolloProvider.clients.defaultClient.writeQuery({
+      query: workItemNotesQuery,
+      variables: {
+        id: workItemId,
+        pageSize: 100,
+      },
+      data: mockWorkItemNotesResponse.data,
+    });
+
+    const { id } = workItemQueryResponse.data.workItem;
+    wrapper = shallowMount(WorkItemAddNote, {
+      apolloProvider,
       propsData: {
         workItemId: id,
         fullPath: 'test-project-path',
@@ -80,7 +86,6 @@ describe('WorkItemCommentForm', () => {
         workItemType,
       },
       stubs: {
-        MarkdownField,
         WorkItemCommentLocked,
       },
     });
@@ -101,9 +106,7 @@ describe('WorkItemCommentForm', () => {
         signedIn: true,
       });
 
-      setText(noteText);
-
-      clickSave();
+      findCommentForm().vm.$emit('submitForm', noteText);
 
       await waitForPromises();
 
@@ -120,9 +123,7 @@ describe('WorkItemCommentForm', () => {
       await createComponent();
       const trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
 
-      setText('test');
-
-      clickSave();
+      findCommentForm().vm.$emit('submitForm', 'test');
 
       await waitForPromises();
 
@@ -131,6 +132,33 @@ describe('WorkItemCommentForm', () => {
         label: 'item_comment',
         property: 'type_Task',
       });
+    });
+
+    it('emits `replied` event and hides form after successful mutation', async () => {
+      await createComponent({
+        isEditing: true,
+        signedIn: true,
+        queryVariables: {
+          id: mockWorkItemNotesResponse.data.workItem.id,
+        },
+      });
+
+      findCommentForm().vm.$emit('submitForm', 'some text');
+      await waitForPromises();
+
+      expect(wrapper.emitted('replied')).toEqual([[]]);
+    });
+
+    it('clears a draft after successful mutation', async () => {
+      await createComponent({
+        isEditing: true,
+        signedIn: true,
+      });
+
+      findCommentForm().vm.$emit('submitForm', 'some text');
+      await waitForPromises();
+
+      expect(clearDraft).toHaveBeenCalledWith('gid://gitlab/WorkItem/1-comment');
     });
 
     it('emits error when mutation returns error', async () => {
@@ -160,9 +188,7 @@ describe('WorkItemCommentForm', () => {
         }),
       });
 
-      setText('updated desc');
-
-      clickSave();
+      findCommentForm().vm.$emit('submitForm', 'updated desc');
 
       await waitForPromises();
 
@@ -177,23 +203,11 @@ describe('WorkItemCommentForm', () => {
         mutationHandler: jest.fn().mockRejectedValue(new Error(error)),
       });
 
-      setText('updated desc');
-
-      clickSave();
+      findCommentForm().vm.$emit('submitForm', 'updated desc');
 
       await waitForPromises();
 
       expect(wrapper.emitted('error')).toEqual([[error]]);
-    });
-
-    it('autosaves', async () => {
-      await createComponent({
-        isEditing: true,
-      });
-
-      setText('updated');
-
-      expect(updateDraft).toHaveBeenCalled();
     });
   });
 

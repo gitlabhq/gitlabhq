@@ -6,11 +6,13 @@ describe('Work Item Note Actions', () => {
   let wrapper;
 
   const findReplyButton = () => wrapper.findComponent(ReplyButton);
+  const findEditButton = () => wrapper.find('[data-testid="edit-work-item-note"]');
 
-  const createComponent = ({ showReply = true } = {}) => {
+  const createComponent = ({ showReply = true, showEdit = true } = {}) => {
     wrapper = shallowMount(WorkItemNoteActions, {
       propsData: {
         showReply,
+        showEdit,
       },
     });
   };
@@ -27,5 +29,24 @@ describe('Work Item Note Actions', () => {
       createComponent({ showReply: false });
       expect(findReplyButton().exists()).toBe(false);
     });
+  });
+
+  it('shows edit button when `showEdit` prop is true', () => {
+    createComponent();
+
+    expect(findEditButton().exists()).toBe(true);
+  });
+
+  it('does not show edit button when `showEdit` prop is false', () => {
+    createComponent({ showEdit: false });
+
+    expect(findEditButton().exists()).toBe(false);
+  });
+
+  it('emits `startEditing` event when edit button is clicked', () => {
+    createComponent();
+    findEditButton().vm.$emit('click');
+
+    expect(wrapper.emitted('startEditing')).toEqual([[]]);
   });
 });

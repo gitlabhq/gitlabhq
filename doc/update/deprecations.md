@@ -406,6 +406,26 @@ automatically from GitLab 16.0 onwards.
 
 </div>
 
+<div class="deprecation removal-170 breaking-change">
+
+### Slack notifications integration
+
+End of Support: GitLab <span class="removal-milestone">17.0</span> <span class="support-end-date"></span><br />
+Planned removal: GitLab <span class="removal-milestone">17.0</span> <span class="removal-date"></span>
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+As we're consolidating all Slack capabilities into the
+GitLab for Slack app, we're [deprecating the Slack notifications
+integration](https://gitlab.com/gitlab-org/gitlab/-/issues/372411).
+GitLab.com users can now use the GitLab for Slack app to manage notifications
+to their Slack workspace. For self-managed users of the Slack notifications integration,
+we'll be introducing support in [this epic](https://gitlab.com/groups/gitlab-org/-/epics/1211).
+
+</div>
+
 <div class="deprecation removal-160 breaking-change">
 
 ### Support for Praefect custom metrics endpoint configuration
@@ -827,26 +847,6 @@ Alternatives to using the `gitlab:import:repos` Rake task include:
   [direct transfer](https://docs.gitlab.com/ee/user/group/import/#migrate-groups-by-direct-transfer-recommended) migrate repositories as well.
 - Importing a [repository by URL](https://docs.gitlab.com/ee/user/project/import/repo_by_url.html).
 - Importing a [repositories from a non-GitLab source](https://docs.gitlab.com/ee/user/project/import/).
-
-</div>
-
-<div class="deprecation removal-160 breaking-change">
-
-### Slack Notifications integration
-
-End of Support: GitLab <span class="removal-milestone">16.0</span> <span class="support-end-date"></span><br />
-Planned removal: GitLab <span class="removal-milestone">16.0</span> <span class="removal-date"></span>
-
-WARNING:
-This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
-Review the details carefully before upgrading.
-
-As we're consolidating all Slack capabilities into the
-GitLab for Slack app, we're [deprecating the Slack Notifications
-integration](https://gitlab.com/gitlab-org/gitlab/-/issues/372411).
-GitLab.com users can now use the GitLab for Slack app to manage notifications
-to their Slack workspace. For self-managed users of the Slack Notifications integration,
-we'll be introducing support in [this epic](https://gitlab.com/groups/gitlab-org/-/epics/1211).
 
 </div>
 

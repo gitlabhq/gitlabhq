@@ -154,8 +154,11 @@ When a test frequently fails in `master`,
 create [a ~"failure::flaky-test" issue](https://about.gitlab.com/handbook/engineering/workflow/#broken-master).
 
 If the test cannot be fixed in a timely fashion, there is an impact on the
-productivity of all the developers, so it should be quarantined by
-assigning the `:quarantine` metadata with the issue URL, and add the `~"quarantined test"` label to the issue.
+productivity of all the developers, so it should be quarantined. There are two ways to quarantine tests, depending on the test framework being used: RSpec and Jest.
+
+### RSpec
+
+For RSpec tests, you can use the `:quarantine` metadata with the issue URL.
 
 ```ruby
 it 'succeeds', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/12345' do
@@ -168,6 +171,26 @@ This means it is skipped unless run with `--tag quarantine`:
 ```shell
 bin/rspec --tag quarantine
 ```
+
+### Jest
+
+For Jest specs, you can use the `.skip` method along with the `eslint-disable-next-line` comment to disable the `jest/no-disabled-tests` ESLint rule and include the issue URL. Here's an example:
+
+```javascript
+// https://gitlab.com/gitlab-org/gitlab/-/issues/56789
+// eslint-disable-next-line jest/no-disabled-tests
+it.skip('should throw an error', () => {
+  expect(response).toThrowError(expected_error)
+});
+```
+
+This means it is skipped unless the test suit is run with `--runInBand` Jest command line option:
+
+```shell
+jest --runInBand
+```
+
+For both test frameworks, make sure to add the `~"quarantined test"` label to the issue.
 
 Once a test is in quarantine, there are 3 choices:
 

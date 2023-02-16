@@ -1,6 +1,6 @@
 import { GlLink, GlIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import WorkItemCommentLocked from '~/work_items/components/work_item_comment_locked.vue';
+import WorkItemCommentLocked from '~/work_items/components/notes/work_item_comment_locked.vue';
 
 const createComponent = ({ workItemType = 'Task', isProjectArchived = false } = {}) =>
   shallowMount(WorkItemCommentLocked, {

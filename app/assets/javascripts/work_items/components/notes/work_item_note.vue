@@ -1,11 +1,16 @@
 <script>
 import { GlAvatarLink, GlAvatar, GlDropdown, GlDropdownItem, GlTooltipDirective } from '@gitlab/ui';
+import * as Sentry from '@sentry/browser';
 import { __ } from '~/locale';
+import { updateDraft, clearDraft } from '~/lib/utils/autosave';
+import { renderMarkdown } from '~/notes/utils';
+import EditedAt from '~/issues/show/components/edited.vue';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
 import NoteBody from '~/work_items/components/notes/work_item_note_body.vue';
 import NoteHeader from '~/notes/components/note_header.vue';
 import NoteActions from '~/work_items/components/notes/work_item_note_actions.vue';
-import { renderGFM } from '~/behaviors/markdown/render_gfm';
+import updateWorkItemNoteMutation from '../../graphql/notes/update_work_item_note.mutation.graphql';
+import WorkItemCommentForm from './work_item_comment_form.vue';
 
 export default {
   name: 'WorkItemNoteThread',
@@ -22,6 +27,8 @@ export default {
     GlAvatarLink,
     GlDropdown,
     GlDropdownItem,
+    WorkItemCommentForm,
+    EditedAt,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -36,6 +43,15 @@ export default {
       required: false,
       default: false,
     },
+    workItemType: {
+      type: String,
+      required: true,
+    },
+  },
+  data() {
+    return {
+      isEditing: false,
+    };
   },
   computed: {
     author() {
@@ -50,13 +66,53 @@ export default {
     showReply() {
       return this.note.userPermissions.createNote && this.isFirstNote;
     },
+    autosaveKey() {
+      // eslint-disable-next-line @gitlab/require-i18n-strings
+      return `${this.note.id}-comment`;
+    },
+    lastEditedBy() {
+      return this.note.lastEditedBy;
+    },
+    hasAdminPermission() {
+      return this.note.userPermissions.adminNote;
+    },
   },
   methods: {
-    renderGFM() {
-      renderGFM(this.$refs['note-body']);
-    },
     showReplyForm() {
       this.$emit('startReplying');
+    },
+    startEditing() {
+      this.isEditing = true;
+      updateDraft(this.autosaveKey, this.note.body);
+    },
+    async updateNote(newText) {
+      this.isEditing = false;
+      try {
+        await this.$apollo.mutate({
+          mutation: updateWorkItemNoteMutation,
+          variables: {
+            input: {
+              id: this.note.id,
+              body: newText,
+            },
+          },
+          optimisticResponse: {
+            updateNote: {
+              errors: [],
+              note: {
+                ...this.note,
+                bodyHtml: renderMarkdown(newText),
+              },
+            },
+          },
+        });
+        clearDraft(this.autosaveKey);
+      } catch (error) {
+        updateDraft(this.autosaveKey, newText);
+        this.isEditing = true;
+        this.$emit('error', __('Something went wrong when updating a comment. Please try again'));
+        Sentry.captureException(error);
+      }
     },
   },
 };
@@ -74,13 +130,29 @@ export default {
         />
       </gl-avatar-link>
     </div>
-    <div class="timeline-content-inner">
+    <work-item-comment-form
+      v-if="isEditing"
+      :work-item-type="workItemType"
+      :aria-label="__('Edit comment')"
+      :autosave-key="autosaveKey"
+      :initial-value="note.body"
+      :comment-button-text="__('Save comment')"
+      :class="{ 'gl-pl-8': !isFirstNote }"
+      @cancelEditing="isEditing = false"
+      @submitForm="updateNote"
+    />
+    <div v-else class="timeline-content-inner" data-testid="note-wrapper">
       <div class="note-header">
         <note-header :author="author" :created-at="note.createdAt" :note-id="note.id" />
-        <note-actions :show-reply="showReply" @startReplying="showReplyForm" />
+        <note-actions
+          :show-reply="showReply"
+          :show-edit="hasAdminPermission"
+          @startReplying="showReplyForm"
+          @startEditing="startEditing"
+        />
         <!-- v-if condition should be moved to "delete" dropdown item as soon as we implement copying the link -->
         <gl-dropdown
-          v-if="note.userPermissions.adminNote"
+          v-if="hasAdminPermission"
           v-gl-tooltip
           icon="ellipsis_v"
           text-sr-only
@@ -102,6 +174,13 @@ export default {
       <div class="timeline-discussion-body">
         <note-body ref="noteBody" :note="note" />
       </div>
+      <edited-at
+        v-if="note.lastEditedBy"
+        :updated-at="note.lastEditedAt"
+        :updated-by-name="lastEditedBy.name"
+        :updated-by-path="lastEditedBy.webPath"
+        :class="isFirstNote ? 'gl-pl-3' : 'gl-pl-8'"
+      />
     </div>
   </timeline-entry-item>
 </template>

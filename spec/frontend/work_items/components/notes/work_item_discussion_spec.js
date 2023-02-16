@@ -6,7 +6,7 @@ import ToggleRepliesWidget from '~/notes/components/toggle_replies_widget.vue';
 import WorkItemDiscussion from '~/work_items/components/notes/work_item_discussion.vue';
 import WorkItemNote from '~/work_items/components/notes/work_item_note.vue';
 import WorkItemNoteReplying from '~/work_items/components/notes/work_item_note_replying.vue';
-import WorkItemCommentForm from '~/work_items/components/work_item_comment_form.vue';
+import WorkItemAddNote from '~/work_items/components/notes/work_item_add_note.vue';
 import {
   mockWorkItemCommentNote,
   mockWorkItemNotesResponseWithComments,
@@ -27,7 +27,7 @@ describe('Work Item Discussion', () => {
   const findToggleRepliesWidget = () => wrapper.findComponent(ToggleRepliesWidget);
   const findAllThreads = () => wrapper.findAllComponents(WorkItemNote);
   const findThreadAtIndex = (index) => findAllThreads().at(index);
-  const findWorkItemCommentForm = () => wrapper.findComponent(WorkItemCommentForm);
+  const findWorkItemAddNote = () => wrapper.findComponent(WorkItemAddNote);
   const findWorkItemNoteReplying = () => wrapper.findComponent(WorkItemNoteReplying);
 
   const createComponent = ({
@@ -73,7 +73,7 @@ describe('Work Item Discussion', () => {
     });
 
     it('should not show the comment form by default', () => {
-      expect(findWorkItemCommentForm().exists()).toBe(false);
+      expect(findWorkItemAddNote().exists()).toBe(false);
     });
   });
 
@@ -101,8 +101,8 @@ describe('Work Item Discussion', () => {
 
       mainComment.vm.$emit('startReplying');
       await nextTick();
-      expect(findWorkItemCommentForm().exists()).toBe(true);
-      expect(findWorkItemCommentForm().props('autofocus')).toBe(true);
+      expect(findWorkItemAddNote().exists()).toBe(true);
+      expect(findWorkItemAddNote().props('autofocus')).toBe(true);
     });
   });
 
@@ -115,7 +115,7 @@ describe('Work Item Discussion', () => {
 
       mainComment.vm.$emit('startReplying');
       await nextTick();
-      await findWorkItemCommentForm().vm.$emit('replying', 'reply text');
+      await findWorkItemAddNote().vm.$emit('replying', 'reply text');
     });
 
     it('should show optimistic behavior when replying', async () => {
@@ -124,7 +124,7 @@ describe('Work Item Discussion', () => {
     });
 
     it('should be expanded when the reply is successful', async () => {
-      findWorkItemCommentForm().vm.$emit('replied');
+      findWorkItemAddNote().vm.$emit('replied');
       await nextTick();
       expect(findToggleRepliesWidget().exists()).toBe(true);
       expect(findToggleRepliesWidget().props('collapsed')).toBe(false);
@@ -136,5 +136,14 @@ describe('Work Item Discussion', () => {
     findThreadAtIndex(0).vm.$emit('deleteNote');
 
     expect(wrapper.emitted('deleteNote')).toEqual([[mockWorkItemCommentNote]]);
+  });
+
+  it('emits `error` event when child note emits an `error`', () => {
+    const mockErrorText = 'Houston, we have a problem';
+
+    createComponent();
+    findThreadAtIndex(0).vm.$emit('error', mockErrorText);
+
+    expect(wrapper.emitted('error')).toEqual([[mockErrorText]]);
   });
 });

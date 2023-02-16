@@ -11,11 +11,8 @@ mutation createWorkItemNote($input: CreateNoteInput!) {
             ...WorkItemNote
           }
         }
-        __typename
       }
-      __typename
     }
     errors
-    __typename
   }
 }

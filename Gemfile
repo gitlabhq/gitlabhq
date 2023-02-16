@@ -191,7 +191,7 @@ gem 'typhoeus', '~> 1.4.0' # Used with Elasticsearch to support http keep-alive 
 # Markdown and HTML processing
 gem 'html-pipeline', '~> 2.14.3'
 gem 'deckar01-task_list', '2.3.2'
-gem 'gitlab-markup', '~> 1.8.0', require: 'github/markup'
+gem 'gitlab-markup', '~> 1.9.0', require: 'github/markup'
 gem 'commonmarker', '~> 0.23.6'
 gem 'kramdown', '~> 2.3.1'
 gem 'RedCloth', '~> 4.3.2'

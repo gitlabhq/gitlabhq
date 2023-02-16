@@ -206,7 +206,7 @@
 {"name":"gitlab-labkit","version":"0.30.1","platform":"ruby","checksum":"bdedbd86014c83dfd6a50d20dbc1709697bba2bb9e3666383e5f28cbd312b113"},
 {"name":"gitlab-license","version":"2.2.1","platform":"ruby","checksum":"39fcf6be8b2887df8afe01b5dcbae8d08b7c5d937ff56b0fb40484a8c4f02d30"},
 {"name":"gitlab-mail_room","version":"0.0.9","platform":"ruby","checksum":"6700374b5c0aa9d9ad4e711aeb677f0b7d415a6d01d3baa699efab25349d851c"},
-{"name":"gitlab-markup","version":"1.8.1","platform":"ruby","checksum":"ab1f9fd016977497c2af25b76341dea670533014f406861834a0bd99f646707b"},
+{"name":"gitlab-markup","version":"1.9.0","platform":"ruby","checksum":"7eda045a08ec2d110084252fa13a8c9eac8bdac0e302035ca7db4b82bcbd7ed4"},
 {"name":"gitlab-net-dns","version":"0.9.1","platform":"ruby","checksum":"bcd1a08dcb31b731e8ff602d828de619d2d9f53f5812f6abacf11c720873d4cb"},
 {"name":"gitlab-sidekiq-fetcher","version":"0.9.0","platform":"ruby","checksum":"54041aec059f20c8e6dfce394e1b60e0c0a9c7cef32da912a58abbd333e13897"},
 {"name":"gitlab-styles","version":"10.0.0","platform":"ruby","checksum":"8a1b20f7b5f351605ff4ed4ec648ef37226f2774d1e1377ed99389448d6913f0"},

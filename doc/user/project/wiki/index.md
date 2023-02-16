@@ -269,8 +269,6 @@ A `_sidebar` example, formatted with Markdown:
 - [Sidebar](_sidebar)
 ```
 
-Support for displaying a generated table of contents with a custom side navigation is being considered.
-
 ## Enable or disable a project wiki
 
 Wikis are enabled by default in GitLab. Project [administrators](../../permissions.md)

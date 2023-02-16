@@ -1,6 +1,6 @@
 import Draggable from 'vuedraggable';
 import { nextTick } from 'vue';
-import { DraggableItemTypes } from 'ee_else_ce/boards/constants';
+import { DraggableItemTypes, ListType } from 'ee_else_ce/boards/constants';
 import { useFakeRequestAnimationFrame } from 'helpers/fake_request_animation_frame';
 import waitForPromises from 'helpers/wait_for_promises';
 import createComponent from 'jest/boards/board_list_helper';
@@ -104,6 +104,20 @@ describe('Board list component', () => {
 
     it('renders the move to position icon', () => {
       expect(findMoveToPositionComponent().exists()).toBe(true);
+    });
+  });
+
+  describe('when ListType is Closed', () => {
+    beforeEach(() => {
+      wrapper = createComponent({
+        listProps: {
+          listType: ListType.closed,
+        },
+      });
+    });
+
+    it('Board card move to position is not visible', () => {
+      expect(findMoveToPositionComponent().exists()).toBe(false);
     });
   });
 

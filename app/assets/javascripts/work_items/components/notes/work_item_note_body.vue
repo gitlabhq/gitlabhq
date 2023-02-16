@@ -13,8 +13,17 @@ export default {
       required: true,
     },
   },
-  mounted() {
-    this.renderGFM();
+  watch: {
+    'note.bodyHtml': {
+      immediate: true,
+      async handler(newVal, oldVal) {
+        if (newVal === oldVal) {
+          return;
+        }
+        await this.$nextTick();
+        this.renderGFM();
+      },
+    },
   },
   methods: {
     renderGFM() {
