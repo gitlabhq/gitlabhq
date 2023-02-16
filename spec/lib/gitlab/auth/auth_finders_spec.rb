@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Auth::AuthFinders do
+RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :authentication_and_authorization do
   include described_class
   include HttpBasicAuthHelpers
 
@@ -390,9 +390,9 @@ RSpec.describe Gitlab::Auth::AuthFinders do
       end
     end
 
-    context 'when the external_authorization_service is enabled' do
+    context 'when the the deploy token is restricted with external_authorization' do
       before do
-        stub_application_setting(external_authorization_service_enabled: true)
+        allow(Gitlab::ExternalAuthorization).to receive(:allow_deploy_tokens_and_deploy_keys?).and_return(false)
         set_header(described_class::DEPLOY_TOKEN_HEADER, deploy_token.token)
       end
 

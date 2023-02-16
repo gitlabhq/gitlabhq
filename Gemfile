@@ -348,7 +348,7 @@ gem 'pg_query', '~> 2.2', '>= 2.2.1'
 
 gem 'premailer-rails', '~> 1.10.3'
 
-gem 'gitlab-labkit', '~> 0.30.1'
+gem 'gitlab-labkit', '~> 0.31.0'
 gem 'thrift', '>= 0.16.0'
 
 # I18n
@@ -373,7 +373,7 @@ gem 'prometheus-client-mmap', '~> 0.17', require: 'prometheus/client'
 gem 'warning', '~> 1.3.0'
 
 group :development do
-  gem 'lefthook', '~> 1.2.8', require: false
+  gem 'lefthook', '~> 1.2.9', require: false
   gem 'rubocop'
   gem 'solargraph', '~> 0.47.2', require: false
 

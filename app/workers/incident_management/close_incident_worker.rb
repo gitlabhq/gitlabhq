@@ -30,7 +30,7 @@ module IncidentManagement
 
     def close_incident(incident)
       ::Issues::CloseService
-        .new(project: incident.project, current_user: user)
+        .new(container: incident.project, current_user: user)
         .execute(incident, system_note: false)
     end
 

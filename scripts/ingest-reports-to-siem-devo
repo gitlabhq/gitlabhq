@@ -1,0 +1,45 @@
+#!/usr/bin/env node
+
+const { S3Client, PutObjectCommand } = require('@aws-sdk/client-s3')
+const { fromIni } = require('@aws-sdk/credential-provider-ini')
+const path = require('path')
+const fs = require('fs')
+const crypto = require('crypto')
+
+function getMD5HashFromFile(data) {
+  const hash = crypto.createHash('md5').update(data).digest('base64')
+  return hash
+}
+
+(async function () {
+  const s3Client = new S3Client({
+    region: 'us-east-2',
+    credentials: fromIni({ profile: 'gl-logs-for-panther' }),
+  })
+  try {
+    const file = 'gl-dependency-scanning-report.json'
+    const data = fs.readFileSync(file)
+
+    const [filename, fileext] = path.basename(file).split('.')
+    const uniqueId = process.env['CI_PIPELINE_ID'] && process.env['CI_JOB_ID'] ?
+                  process.env['CI_PIPELINE_ID'] + '-' + process.env['CI_JOB_ID'] :
+                  Date.now()
+    const key = path.join('package_hunter_logs', filename + '-' + uniqueId + '.' + fileext)
+
+    const responseData = await s3Client.send(
+      new PutObjectCommand({
+        Bucket: 'package-hunter-logs',
+        Key: key,
+        Body: data,
+        ContentMD5: getMD5HashFromFile(data),
+      }),
+    )
+    console.log('Successfully uploaded %s to %s', file, key)
+  } catch (err) {
+    if (err.name === 'CredentialsProviderError' || err.name === 'AuthorizationHeaderMalformed')
+      console.log('Could not upload the report. Are AWS credentials configured in ~/.aws/credentials?')
+    else 
+      console.log('Unexpected error during upload: ', err.message)
+      process.exit(1)
+  }
+})()

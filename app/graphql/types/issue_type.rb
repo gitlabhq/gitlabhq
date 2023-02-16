@@ -190,7 +190,7 @@ module Types
     def related_merge_requests
       # rubocop: disable CodeReuse/ActiveRecord
       MergeRequest.where(
-        id: ::Issues::ReferencedMergeRequestsService.new(project: object.project, current_user: current_user)
+        id: ::Issues::ReferencedMergeRequestsService.new(container: object.project, current_user: current_user)
         .execute(object)
         .first
         .map(&:id)

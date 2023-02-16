@@ -70,8 +70,8 @@ From there, you can view the import statuses of your Gitea repositories:
 
 - Those that are being imported show a _started_ status.
 - Those already successfully imported are green with a _done_ status.
-- Those that aren't yet imported have an **Import** button on the
-  right side of the table.
+- Those that aren't yet imported have **Import** on the right side of the table.
+- Those that are already imported have **Re-import** on the right side of the table.
 
 You also can:
 

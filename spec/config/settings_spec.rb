@@ -190,4 +190,12 @@ RSpec.describe Settings, feature_category: :authentication_and_authorization do
       expect(described_class.microsoft_graph_mailer.graph_endpoint).to eq('https://graph.microsoft.com')
     end
   end
+
+  describe '.repositories' do
+    it 'sets up storage settings' do
+      described_class.repositories.storages.each do |_, storage|
+        expect(storage).to be_a Gitlab::GitalyClient::StorageSettings
+      end
+    end
+  end
 end

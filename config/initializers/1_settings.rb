@@ -903,6 +903,8 @@ Settings['repositories'] ||= Settingslogic.new({})
 Settings.repositories['storages'] ||= {}
 
 Settings.repositories.storages.each do |key, storage|
+  next if Settings.repositories.storages[key].is_a?(Gitlab::GitalyClient::StorageSettings)
+
   Settings.repositories.storages[key] = Gitlab::GitalyClient::StorageSettings.new(storage)
 end
 

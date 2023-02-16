@@ -120,7 +120,9 @@ describe('IssuesDashboardApp component', () => {
       return waitForPromises();
     });
 
-    it('renders IssuableList component', () => {
+    // https://gitlab.com/gitlab-org/gitlab/-/issues/391722
+    // eslint-disable-next-line jest/no-disabled-tests
+    it.skip('renders IssuableList component', () => {
       expect(findIssuableList().props()).toMatchObject({
         currentTab: IssuableStates.Opened,
         hasNextPage: true,

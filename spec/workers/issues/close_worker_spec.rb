@@ -29,7 +29,7 @@ RSpec.describe Issues::CloseWorker do
           external_issue = ExternalIssue.new("foo", project)
           closer = instance_double(Issues::CloseService, execute: true)
 
-          expect(Issues::CloseService).to receive(:new).with(project: project, current_user: user).and_return(closer)
+          expect(Issues::CloseService).to receive(:new).with(container: project, current_user: user).and_return(closer)
           expect(closer).to receive(:execute).with(external_issue, commit: commit)
 
           worker.perform(project.id, external_issue.id, external_issue.class.to_s, opts)

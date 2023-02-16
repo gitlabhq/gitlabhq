@@ -104,7 +104,6 @@ describe('MRWidgetConflicts', () => {
 
     it('should tell you about conflicts', () => {
       const text = removeBreakLine(wrapper.text()).trim();
-      expect(text).toContain(mergeConflictsText);
       expect(text).toContain(userCannotMergeText);
     });
 

@@ -204,6 +204,14 @@ module Gitlab
           extra.merge(command_name: command_name, instance_name: instance_name))
       end
 
+      def default_store
+        use_primary_store_as_default? ? primary_store : secondary_store
+      end
+
+      def fallback_store
+        use_primary_store_as_default? ? secondary_store : primary_store
+      end
+
       def ping(message = nil)
         if use_primary_and_secondary_stores?
           # Both stores have to response success for the ping to be considered success.
@@ -224,10 +232,6 @@ module Gitlab
         Feature::FlipperFeature.table_exists?
       rescue StandardError
         false
-      end
-
-      def default_store
-        use_primary_store_as_default? ? primary_store : secondary_store
       end
 
       def log_method_missing(command_name, *_args)
@@ -257,7 +261,7 @@ module Gitlab
 
       def read_one_with_fallback(command_name, *args, **kwargs, &block)
         begin
-          value = send_command(primary_store, command_name, *args, **kwargs, &block)
+          value = send_command(default_store, command_name, *args, **kwargs, &block)
         rescue StandardError => e
           log_error(e, command_name,
             multi_store_error_message: FAILED_TO_READ_ERROR_MESSAGE)
@@ -276,7 +280,7 @@ module Gitlab
       end
 
       def fallback_read(command_name, *args, **kwargs, &block)
-        value = send_command(secondary_store, command_name, *args, **kwargs, &block)
+        value = send_command(fallback_store, command_name, *args, **kwargs, &block)
 
         if value
           log_error(ReadFromPrimaryError.new, command_name)

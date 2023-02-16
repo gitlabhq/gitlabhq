@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::APIAuthentication::TokenResolver do
+RSpec.describe Gitlab::APIAuthentication::TokenResolver, feature_category: :authentication_and_authorization do
   let_it_be(:user) { create(:user) }
   let_it_be(:project, reload: true) { create(:project, :public) }
   let_it_be(:personal_access_token) { create(:personal_access_token, user: user) }
@@ -115,9 +115,9 @@ RSpec.describe Gitlab::APIAuthentication::TokenResolver do
         it_behaves_like 'an unauthorized request'
       end
 
-      context 'when the external_authorization_service is enabled' do
+      context 'when the the deploy token is restricted with external_authorization' do
         before do
-          stub_application_setting(external_authorization_service_enabled: true)
+          allow(Gitlab::ExternalAuthorization).to receive(:allow_deploy_tokens_and_deploy_keys?).and_return(false)
         end
 
         context 'with a valid deploy token' do

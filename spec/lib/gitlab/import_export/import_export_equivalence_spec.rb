@@ -25,7 +25,8 @@ RSpec.describe Gitlab::ImportExport, feature_category: :importers do
   end
 
   it 'yields the initial tree when importing and exporting it again' do
-    project = create(:project, creator: create(:user, :admin))
+    project = create(:project)
+    user = create(:user, :admin)
 
     # We first generate a test fixture dynamically from a seed-fixture, so as to
     # account for any fields in the initial fixture that are missing and set to
@@ -34,6 +35,7 @@ RSpec.describe Gitlab::ImportExport, feature_category: :importers do
     expect(
       restore_then_save_project(
         project,
+        user,
         import_path: seed_fixture_path,
         export_path: test_fixture_path)
     ).to be true
@@ -42,6 +44,7 @@ RSpec.describe Gitlab::ImportExport, feature_category: :importers do
     expect(
       restore_then_save_project(
         project,
+        user,
         import_path: test_fixture_path,
         export_path: test_tmp_path)
     ).to be true

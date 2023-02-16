@@ -65,7 +65,9 @@ const STATUS_MAP = {
 };
 
 function isIncompleteImport(stats) {
-  return Object.keys(stats.fetched).some((key) => stats.fetched[key] !== stats.imported[key]);
+  return Object.keys(stats?.fetched ?? []).some(
+    (key) => stats.fetched[key] !== stats.imported[key],
+  );
 }
 
 export default {
@@ -91,7 +93,9 @@ export default {
   computed: {
     knownStats() {
       const knownStatisticKeys = Object.keys(STATISTIC_ITEMS);
-      return Object.keys(this.stats.fetched).filter((key) => knownStatisticKeys.includes(key));
+      return Object.keys(this.stats?.fetched ?? []).filter((key) =>
+        knownStatisticKeys.includes(key),
+      );
     },
 
     hasStats() {

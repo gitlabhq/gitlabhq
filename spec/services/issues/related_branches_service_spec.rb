@@ -9,7 +9,7 @@ RSpec.describe Issues::RelatedBranchesService do
 
   let(:user) { developer }
 
-  subject { described_class.new(project: project, current_user: user) }
+  subject { described_class.new(container: project, current_user: user) }
 
   before_all do
     project.add_developer(developer)
@@ -54,7 +54,7 @@ RSpec.describe Issues::RelatedBranchesService do
         merge_request.create_cross_references!(user)
 
         referenced_merge_requests = Issues::ReferencedMergeRequestsService
-                                      .new(project: issue.project, current_user: user)
+                                      .new(container: issue.project, current_user: user)
                                       .referenced_merge_requests(issue)
 
         expect(referenced_merge_requests).not_to be_empty

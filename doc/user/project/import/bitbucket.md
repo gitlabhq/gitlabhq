@@ -65,6 +65,8 @@ For user contributions to be mapped, each user must complete the following befor
 
 ## Import your Bitbucket repositories
 
+> Ability to re-import projects [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23905) in GitLab 15.9.
+
 1. Sign in to GitLab.
 1. On the top bar, select **New** (**{plus}**).
 1. Select **New project/repository**.
@@ -78,7 +80,9 @@ For user contributions to be mapped, each user must complete the following befor
    You can filter projects by name and select the namespace
    each project is imported for.
 
-   ![Import projects](img/bitbucket_import_select_project_v12_3.png)
+1. To import a project:
+   - For the first time: Select **Import**.
+   - Again: Select **Re-import**. Specify a new name and select **Re-import** again. Re-importing creates a new copy of the source project.
 
 ## Troubleshooting
 

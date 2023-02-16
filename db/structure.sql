@@ -11722,6 +11722,7 @@ CREATE TABLE application_settings (
     deactivation_email_additional_text text,
     jira_connect_public_key_storage_enabled boolean DEFAULT false NOT NULL,
     git_rate_limit_users_alertlist integer[] DEFAULT '{}'::integer[] NOT NULL,
+    allow_deploy_tokens_and_keys_with_external_authn boolean DEFAULT false NOT NULL,
     security_policy_global_group_approvers_enabled boolean DEFAULT true NOT NULL,
     CONSTRAINT app_settings_container_reg_cleanup_tags_max_list_size_positive CHECK ((container_registry_cleanup_tags_service_max_list_size >= 0)),
     CONSTRAINT app_settings_container_registry_pre_import_tags_rate_positive CHECK ((container_registry_pre_import_tags_rate >= (0)::numeric)),
@@ -13141,11 +13142,9 @@ CREATE TABLE ci_job_artifacts (
     id bigint NOT NULL,
     job_id bigint NOT NULL,
     locked smallint DEFAULT 2,
-    original_filename text,
     partition_id bigint DEFAULT 100 NOT NULL,
     accessibility smallint DEFAULT 0 NOT NULL,
-    CONSTRAINT check_27f0f6dbab CHECK ((file_store IS NOT NULL)),
-    CONSTRAINT check_85573000db CHECK ((char_length(original_filename) <= 512))
+    CONSTRAINT check_27f0f6dbab CHECK ((file_store IS NOT NULL))
 );
 
 CREATE SEQUENCE ci_job_artifacts_id_seq

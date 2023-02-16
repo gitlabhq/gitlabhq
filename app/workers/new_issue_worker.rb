@@ -26,7 +26,7 @@ class NewIssueWorker # rubocop:disable Scalability/IdempotentWorker
     issuable.create_cross_references!(user)
 
     Issues::AfterCreateService
-      .new(project: issuable.project, current_user: user)
+      .new(container: issuable.project, current_user: user)
       .execute(issuable)
   end
 end

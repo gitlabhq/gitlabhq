@@ -97,7 +97,7 @@ RSpec.describe IssueEntity do
 
     before do
       Issues::DuplicateService
-        .new(project: project, current_user: member)
+        .new(container: project, current_user: member)
         .execute(issue, new_issue)
     end
 

@@ -4,10 +4,10 @@ module WorkItems
   class UpdateService < ::Issues::UpdateService
     include WidgetableService
 
-    def initialize(project:, current_user: nil, params: {}, spam_params: nil, widget_params: {})
+    def initialize(container:, current_user: nil, params: {}, spam_params: nil, widget_params: {})
       params[:widget_params] = true if widget_params.present?
 
-      super(project: project, current_user: current_user, params: params, spam_params: nil)
+      super(container: container, current_user: current_user, params: params, spam_params: spam_params)
 
       @widget_params = widget_params
     end

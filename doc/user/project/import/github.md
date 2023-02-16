@@ -146,7 +146,8 @@ You can choose to import these items, but this could significantly increase impo
 
 ### Select which repositories to import
 
-> Ability to cancel pending or active imports [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/247325) in GitLab 15.7.
+> - Ability to cancel pending or active imports [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/247325) in GitLab 15.7.
+> - Ability to re-import projects [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23905) in GitLab 15.9.
 
 After you have authorized access to your GitHub repositories, you are redirected to the GitHub importer page and
 your GitHub repositories are listed.
@@ -167,6 +168,8 @@ To cancel imports that are pending or in progress, next to the imported project,
 If the import has already started, the imported files are kept.
 
 To open an repository in GitLab URL after it has been imported, select its GitLab path.
+
+Completed imports can be re-imported by selecting **Re-import** and specifying new name. This creates a new copy of the source project.
 
 ![GitHub importer page](img/import_projects_from_github_importer_v12_3.png)
 

@@ -16,7 +16,7 @@ module TasksToBeDone
 
     def execute
       if (issue = existing_task_issue)
-        update_service = Issues::UpdateService.new(project: project, current_user: current_user, params: { add_assignee_ids: params[:assignee_ids] })
+        update_service = Issues::UpdateService.new(container: project, current_user: current_user, params: { add_assignee_ids: params[:assignee_ids] })
         update_service.execute(issue)
       else
         build_service = Issues::BuildService.new(container: project, current_user: current_user, params: params)

@@ -40,6 +40,7 @@ describe('import table', () => {
     generateFakeEntry({ id: 2, status: STATUSES.FINISHED }),
     generateFakeEntry({ id: 3, status: STATUSES.NONE }),
   ];
+
   const FAKE_PAGE_INFO = { page: 1, perPage: 20, total: 40, totalPages: 2 };
   const FAKE_VERSION_VALIDATION = {
     features: {

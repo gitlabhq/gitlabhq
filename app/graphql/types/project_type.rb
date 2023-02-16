@@ -566,6 +566,11 @@ module Types
           resolver: ::Resolvers::Ci::ProjectRunnersResolver,
           description: "Find runners visible to the current user."
 
+    field :data_transfer, Types::DataTransfer::ProjectDataTransferType,
+          null: true, # disallow null once data_transfer_monitoring feature flag is rolled-out!
+          resolver: Resolvers::DataTransferResolver.project,
+          description: 'Data transfer data point for a specific period. This is mocked data under a development feature flag.'
+
     def timelog_categories
       object.project_namespace.timelog_categories if Feature.enabled?(:timelog_categories)
     end

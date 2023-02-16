@@ -45,7 +45,7 @@ module MergeRequests
       end
 
       Issues::CloseService
-        .new(project: project, current_user: user)
+        .new(container: project, current_user: user)
         .execute(issue, commit: merge_request)
     end
   end

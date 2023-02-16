@@ -185,7 +185,7 @@ module CycleAnalyticsHelpers
 
   def merge_merge_requests_closing_issue(user, project, issue)
     merge_requests = Issues::ReferencedMergeRequestsService
-                       .new(project: project, current_user: user)
+                       .new(container: project, current_user: user)
                        .closed_by_merge_requests(issue)
 
     merge_requests.each { |merge_request| MergeRequests::MergeService.new(project: project, current_user: user, params: { sha: merge_request.diff_head_sha }).execute(merge_request) }

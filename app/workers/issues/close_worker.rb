@@ -42,7 +42,7 @@ module Issues
       end
 
       commit = Commit.build_from_sidekiq_hash(project, params["commit_hash"])
-      service = Issues::CloseService.new(project: project, current_user: author)
+      service = Issues::CloseService.new(container: project, current_user: author)
 
       service.execute(issue, commit: commit)
     end

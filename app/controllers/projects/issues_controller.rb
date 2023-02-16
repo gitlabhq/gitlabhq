@@ -205,7 +205,7 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def reorder
-    service = ::Issues::ReorderService.new(project: project, current_user: current_user, params: reorder_params)
+    service = ::Issues::ReorderService.new(container: project, current_user: current_user, params: reorder_params)
 
     if service.execute(issue)
       head :ok
@@ -216,7 +216,7 @@ class Projects::IssuesController < Projects::ApplicationController
 
   def related_branches
     @related_branches = ::Issues::RelatedBranchesService
-      .new(project: project, current_user: current_user)
+      .new(container: project, current_user: current_user)
       .execute(issue)
       .map { |branch| branch.merge(link: branch_link(branch)) }
 
@@ -371,7 +371,7 @@ class Projects::IssuesController < Projects::ApplicationController
 
   def update_service
     spam_params = ::Spam::SpamParams.new_from_request(request: request)
-    ::Issues::UpdateService.new(project: project, current_user: current_user, params: issue_params, spam_params: spam_params)
+    ::Issues::UpdateService.new(container: project, current_user: current_user, params: issue_params, spam_params: spam_params)
   end
 
   def finder_type

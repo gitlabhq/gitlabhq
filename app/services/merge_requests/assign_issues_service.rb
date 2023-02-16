@@ -14,7 +14,7 @@ module MergeRequests
 
     def execute
       assignable_issues.each do |issue|
-        Issues::UpdateService.new(project: issue.project, current_user: current_user, params: { assignee_ids: [current_user.id] }).execute(issue)
+        Issues::UpdateService.new(container: issue.project, current_user: current_user, params: { assignee_ids: [current_user.id] }).execute(issue)
       end
 
       {

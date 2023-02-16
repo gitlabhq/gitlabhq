@@ -14,7 +14,7 @@ module Mutations
         issue = authorized_find!(project_path: project_path, iid: iid)
         project = issue.project
 
-        ::Issues::UpdateService.new(project: project, current_user: current_user, params: { due_date: due_date })
+        ::Issues::UpdateService.new(container: project, current_user: current_user, params: { due_date: due_date })
           .execute(issue)
 
         {

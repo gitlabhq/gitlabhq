@@ -113,9 +113,9 @@ RSpec.describe Gitlab::GitAccess, :aggregate_failures, feature_category: :authen
             end
           end
 
-          context 'when the external_authorization_service is enabled' do
+          context 'when the the deploy key is restricted with external_authorization' do
             before do
-              stub_application_setting(external_authorization_service_enabled: true)
+              allow(Gitlab::ExternalAuthorization).to receive(:allow_deploy_tokens_and_deploy_keys?).and_return(false)
             end
 
             it 'blocks push and pull with "not found"' do
@@ -191,9 +191,9 @@ RSpec.describe Gitlab::GitAccess, :aggregate_failures, feature_category: :authen
             end
           end
 
-          context 'when the external_authorization_service is enabled' do
+          context 'when the the deploy token is restricted with external_authorization' do
             before do
-              stub_application_setting(external_authorization_service_enabled: true)
+              allow(Gitlab::ExternalAuthorization).to receive(:allow_deploy_tokens_and_deploy_keys?).and_return(false)
             end
 
             it 'blocks pull access' do

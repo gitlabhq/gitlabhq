@@ -239,6 +239,11 @@ module Types
           description: 'Releases belonging to projects in the group.',
           resolver: Resolvers::GroupReleasesResolver
 
+    field :data_transfer, Types::DataTransfer::GroupDataTransferType,
+          null: true,
+          resolver: Resolvers::DataTransferResolver.group,
+          description: 'Data transfer data point for a specific period. This is mocked data under a development feature flag.'
+
     def label(title:)
       BatchLoader::GraphQL.for(title).batch(key: group) do |titles, loader, args|
         LabelsFinder

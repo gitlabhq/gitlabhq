@@ -167,6 +167,10 @@ module ApplicationSettingsHelper
         " using their classification label.")
   end
 
+  def external_authorization_allow_token_help_text
+    s_("ExternalAuthorization|Does not apply if service URL is specified.")
+  end
+
   def external_authorization_timeout_help_text
     s_("ExternalAuthorization|Period GitLab waits for a response from the external "\
         "service. If there is no response, access is denied. Default: 0.5 seconds.")
@@ -499,7 +503,8 @@ module ApplicationSettingsHelper
       :external_authorization_service_default_label,
       :external_authorization_service_enabled,
       :external_authorization_service_timeout,
-      :external_authorization_service_url
+      :external_authorization_service_url,
+      :allow_deploy_tokens_and_keys_with_external_authn
     ]
   end
 

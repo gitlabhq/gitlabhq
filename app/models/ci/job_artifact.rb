@@ -134,9 +134,6 @@ module Ci
     belongs_to :project
     belongs_to :job, class_name: "Ci::Build", foreign_key: :job_id
 
-    # We will start using this column once we complete https://gitlab.com/gitlab-org/gitlab/-/issues/285597
-    ignore_column :original_filename, remove_with: '14.7', remove_after: '2022-11-22'
-
     mount_file_store_uploader JobArtifactUploader, skip_store_file: true
 
     before_save :set_size, if: :file_changed?

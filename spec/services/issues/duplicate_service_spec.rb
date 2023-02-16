@@ -10,7 +10,7 @@ RSpec.describe Issues::DuplicateService do
   let(:canonical_issue) { create(:issue, project: canonical_project) }
   let(:duplicate_issue) { create(:issue, project: duplicate_project) }
 
-  subject { described_class.new(project: duplicate_project, current_user: user) }
+  subject { described_class.new(container: duplicate_project, current_user: user) }
 
   describe '#execute' do
     context 'when the issues passed are the same' do

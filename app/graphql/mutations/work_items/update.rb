@@ -25,7 +25,7 @@ module Mutations
         interpret_quick_actions!(work_item, current_user, widget_params, attributes)
 
         update_result = ::WorkItems::UpdateService.new(
-          project: work_item.project,
+          container: work_item.project,
           current_user: current_user,
           params: attributes,
           widget_params: widget_params,

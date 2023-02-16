@@ -220,6 +220,8 @@ An [epic exists](https://gitlab.com/groups/gitlab-org/-/epics/4624) to fix this 
 
 Keep in mind that mentioned URLs don't work when [Admin Mode](../../user/admin_area/settings/sign_in_restrictions.md#admin-mode) is enabled.
 
+When using Unified URL, visiting the secondary site directly means you must route your requests to the secondary site. Exactly how this might be done depends on your networking configuration. If using DNS to route requests to the appropriate site, then you can, for example, edit your local machine's `/etc/hosts` file to route your requests to the desired secondary site. If the Geo sites are all behind a load balancer, then depending on the load balancer, you might be able to configure all requests from your IP to go to a particular secondary site.
+
 ## Setup instructions
 
 For setup instructions, see [Setting up Geo](setup/index.md).

@@ -106,7 +106,7 @@ RSpec.shared_examples 'work items description' do
       wait_for_requests
 
       ::WorkItems::UpdateService.new(
-        project: work_item.project,
+        container: work_item.project,
         current_user: other_user,
         params: { description: "oh no!" }
       ).execute(work_item)

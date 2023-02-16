@@ -12,6 +12,8 @@ RSpec.describe API::DraftNotes, feature_category: :code_review_workflow do
   let!(:draft_note_by_current_user) { create(:draft_note, merge_request: merge_request, author: user) }
   let!(:draft_note_by_random_user) { create(:draft_note, merge_request: merge_request) }
 
+  let_it_be(:api_stub) { "/projects/#{project.id}/merge_requests/#{merge_request.iid}" }
+
   before do
     project.add_developer(user)
   end
@@ -114,6 +116,62 @@ RSpec.describe API::DraftNotes, feature_category: :code_review_workflow do
         )
 
         expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+  end
+
+  describe "Publishing a draft note" do
+    let(:publish_draft_note) do
+      put api(
+        "#{api_stub}/draft_notes/#{draft_note_by_current_user.id}/publish",
+        user
+      )
+    end
+
+    context "when publishing an existing draft note by the user" do
+      it "returns 204 No Content status" do
+        publish_draft_note
+
+        expect(response).to have_gitlab_http_status(:no_content)
+      end
+
+      it "publishes the specified draft note" do
+        expect { publish_draft_note }.to change { Note.count }.by(1)
+        expect(DraftNote.exists?(draft_note_by_current_user.id)).to eq(false)
+      end
+    end
+
+    context "when publishing a non-existent draft note" do
+      it "returns a 404 Not Found" do
+        put api(
+          "#{api_stub}/draft_notes/#{non_existing_record_id}/publish",
+          user
+        )
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context "when publishing a draft note by a different user" do
+      it "returns a 404 Not Found" do
+        put api(
+          "#{api_stub}/draft_notes/#{draft_note_by_random_user.id}/publish",
+          user
+        )
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context "when DraftNotes::PublishService returns a non-success" do
+      it "returns an :internal_server_error and a message" do
+        expect_next_instance_of(DraftNotes::PublishService) do |instance|
+          expect(instance).to receive(:execute).and_return({ status: :failure, message: "Error message" })
+        end
+
+        publish_draft_note
+
+        expect(response).to have_gitlab_http_status(:internal_server_error)
       end
     end
   end

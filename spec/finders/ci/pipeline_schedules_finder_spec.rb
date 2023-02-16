@@ -15,8 +15,39 @@ RSpec.describe Ci::PipelineSchedulesFinder do
       let(:params) { { scope: nil } }
 
       it 'selects all pipeline schedules' do
-        expect(subject.count).to be(2)
-        expect(subject).to include(active_schedule, inactive_schedule)
+        expect(subject).to contain_exactly(active_schedule, inactive_schedule)
+      end
+    end
+
+    context 'when the id is nil' do
+      let(:params) { { ids: nil } }
+
+      it 'selects all pipeline schedules' do
+        expect(subject).to contain_exactly(active_schedule, inactive_schedule)
+      end
+    end
+
+    context 'when the id is a single pipeline schedule' do
+      let(:params) { { ids: active_schedule.id } }
+
+      it 'selects one pipeline schedule' do
+        expect(subject).to contain_exactly(active_schedule)
+      end
+    end
+
+    context 'when multiple ids are provided' do
+      let(:params) { { ids: [active_schedule.id, inactive_schedule.id] } }
+
+      it 'selects multiple pipeline schedules' do
+        expect(subject).to contain_exactly(active_schedule, inactive_schedule)
+      end
+    end
+
+    context 'when multiple ids are provided and a scope is set' do
+      let(:params) { { scope: 'active', ids: [active_schedule.id, inactive_schedule.id] } }
+
+      it 'selects one pipeline schedule' do
+        expect(subject).to contain_exactly(active_schedule)
       end
     end
 
@@ -24,9 +55,7 @@ RSpec.describe Ci::PipelineSchedulesFinder do
       let(:params) { { scope: 'active' } }
 
       it 'selects only active pipelines' do
-        expect(subject.count).to be(1)
-        expect(subject).to include(active_schedule)
-        expect(subject).not_to include(inactive_schedule)
+        expect(subject).to contain_exactly(active_schedule)
       end
     end
 
@@ -34,9 +63,7 @@ RSpec.describe Ci::PipelineSchedulesFinder do
       let(:params) { { scope: 'inactive' } }
 
       it 'selects only inactive pipelines' do
-        expect(subject.count).to be(1)
-        expect(subject).not_to include(active_schedule)
-        expect(subject).to include(inactive_schedule)
+        expect(subject).to contain_exactly(inactive_schedule)
       end
     end
   end

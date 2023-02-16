@@ -7843,6 +7843,29 @@ The edge type for [`Discussion`](#discussion).
 | <a id="discussionedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="discussionedgenode"></a>`node` | [`Discussion`](#discussion) | The item at the end of the edge. |
 
+#### `EgressNodeConnection`
+
+The connection type for [`EgressNode`](#egressnode).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="egressnodeconnectionedges"></a>`edges` | [`[EgressNodeEdge]`](#egressnodeedge) | A list of edges. |
+| <a id="egressnodeconnectionnodes"></a>`nodes` | [`[EgressNode]`](#egressnode) | A list of nodes. |
+| <a id="egressnodeconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `EgressNodeEdge`
+
+The edge type for [`EgressNode`](#egressnode).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="egressnodeedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="egressnodeedgenode"></a>`node` | [`EgressNode`](#egressnode) | The item at the end of the edge. |
+
 #### `EmailConnection`
 
 The connection type for [`Email`](#email).
@@ -12877,6 +12900,19 @@ Returns [`[DoraMetric!]`](#dorametric).
 | <a id="dorametricdate"></a>`date` | [`String`](#string) | Date of the data point. |
 | <a id="dorametricvalue"></a>`value` | [`Float`](#float) | Value of the data point. |
 
+### `EgressNode`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="egressnodeartifactsegress"></a>`artifactsEgress` | [`BigInt!`](#bigint) | Artifacts egress for that project in that period of time. |
+| <a id="egressnodedate"></a>`date` | [`String!`](#string) | First day of the node range. There is one node per month. |
+| <a id="egressnodepackagesegress"></a>`packagesEgress` | [`BigInt!`](#bigint) | Packages egress for that project in that period of time. |
+| <a id="egressnoderegistryegress"></a>`registryEgress` | [`BigInt!`](#bigint) | Registery egress for that project in that period of time. |
+| <a id="egressnoderepositoryegress"></a>`repositoryEgress` | [`BigInt!`](#bigint) | Repository egress for that project in that period of time. |
+| <a id="egressnodetotalegress"></a>`totalEgress` | [`BigInt!`](#bigint) | Total egress for that project in that period of time. |
+
 ### `Email`
 
 #### Fields
@@ -14079,6 +14115,19 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="groupcontributionsfrom"></a>`from` | [`ISO8601Date!`](#iso8601date) | Start date of the reporting time range. |
 | <a id="groupcontributionsto"></a>`to` | [`ISO8601Date!`](#iso8601date) | End date of the reporting time range. The end date must be within 31 days after the start date. |
 
+##### `Group.dataTransfer`
+
+Data transfer data point for a specific period. This is mocked data under a development feature flag.
+
+Returns [`GroupDataTransfer`](#groupdatatransfer).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="groupdatatransferfrom"></a>`from` | [`Date`](#date) | Retain egress data for 1 year. Current month will increase dynamically as egress occurs. |
+| <a id="groupdatatransferto"></a>`to` | [`Date`](#date) | End date for the data. |
+
 ##### `Group.descendantGroups`
 
 List of descendant groups of this group.
@@ -14687,6 +14736,14 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="groupworkitemtypestaskable"></a>`taskable` | [`Boolean`](#boolean) | If `true`, only taskable work item types will be returned. Argument is experimental and can be removed in the future without notice. |
+
+### `GroupDataTransfer`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="groupdatatransferegressnodes"></a>`egressNodes` | [`EgressNodeConnection`](#egressnodeconnection) | Data nodes. (see [Connections](#connections)) |
 
 ### `GroupMember`
 
@@ -17979,6 +18036,19 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="projectdastsitevalidationsnormalizedtargeturls"></a>`normalizedTargetUrls` | [`[String!]`](#string) | Normalized URL of the target to be scanned. |
 | <a id="projectdastsitevalidationsstatus"></a>`status` | [`DastSiteValidationStatusEnum`](#dastsitevalidationstatusenum) | Status of the site validation. |
 
+##### `Project.dataTransfer`
+
+Data transfer data point for a specific period. This is mocked data under a development feature flag.
+
+Returns [`ProjectDataTransfer`](#projectdatatransfer).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectdatatransferfrom"></a>`from` | [`Date`](#date) | Retain egress data for 1 year. Current month will increase dynamically as egress occurs. |
+| <a id="projectdatatransferto"></a>`to` | [`Date`](#date) | End date for the data. |
+
 ##### `Project.deployment`
 
 Details of the deployment of the project.
@@ -18561,6 +18631,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="projectpipelineschedulesids"></a>`ids` | [`[ID!]`](#id) | Filter pipeline schedules by IDs. |
 | <a id="projectpipelineschedulesstatus"></a>`status` | [`PipelineScheduleStatus`](#pipelineschedulestatus) | Filter pipeline schedules by active status. |
 
 ##### `Project.pipelines`
@@ -18985,6 +19056,15 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="projectcicdsettingmergetrainsenabled"></a>`mergeTrainsEnabled` | [`Boolean`](#boolean) | Whether merge trains are enabled. |
 | <a id="projectcicdsettingoptinjwt"></a>`optInJwt` | [`Boolean`](#boolean) | When disabled, the JSON Web Token is always available in all jobs in the pipeline. |
 | <a id="projectcicdsettingproject"></a>`project` | [`Project`](#project) | Project the CI/CD settings belong to. |
+
+### `ProjectDataTransfer`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectdatatransferegressnodes"></a>`egressNodes` | [`EgressNodeConnection`](#egressnodeconnection) | Data nodes. (see [Connections](#connections)) |
+| <a id="projectdatatransfertotalegress"></a>`totalEgress` | [`BigInt`](#bigint) | Total egress for that project in that period of time. |
 
 ### `ProjectMember`
 

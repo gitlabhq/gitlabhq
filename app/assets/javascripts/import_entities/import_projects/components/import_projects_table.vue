@@ -182,16 +182,16 @@ export default {
     <div v-if="repositories.length" class="gl-w-full">
       <table>
         <thead class="gl-border-0 gl-border-solid gl-border-t-1 gl-border-gray-100">
-          <th class="import-jobs-from-col gl-p-4 gl-vertical-align-top gl-border-b-1">
+          <th class="gl-w-half gl-p-4 gl-vertical-align-top gl-border-b-1">
             {{ fromHeaderText }}
           </th>
-          <th class="import-jobs-to-col gl-p-4 gl-vertical-align-top gl-border-b-1">
+          <th class="gl-w-half gl-p-4 gl-vertical-align-top gl-border-b-1">
             {{ __('To GitLab') }}
           </th>
-          <th class="import-jobs-status-col gl-p-4 gl-vertical-align-top gl-border-b-1">
+          <th class="gl-p-4 gl-vertical-align-top gl-border-b-1">
             {{ __('Status') }}
           </th>
-          <th class="import-jobs-cta-col gl-p-4 gl-vertical-align-top gl-border-b-1"></th>
+          <th class="gl-p-4 gl-vertical-align-top gl-border-b-1"></th>
         </thead>
         <tbody>
           <template v-for="repo in repositories">

@@ -17010,6 +17010,9 @@ msgstr ""
 msgid "ExternalAuthorization|Access to projects is validated on an external service using their classification label."
 msgstr ""
 
+msgid "ExternalAuthorization|Allow deploy tokens and deploy keys to be used with external authorization"
+msgstr ""
+
 msgid "ExternalAuthorization|Certificate used to authenticate with the external authorization service. If blank, the server certificate is validated when accessing over HTTPS."
 msgstr ""
 
@@ -17026,6 +17029,9 @@ msgid "ExternalAuthorization|Client authorization key password (optional)"
 msgstr ""
 
 msgid "ExternalAuthorization|Default classification label"
+msgstr ""
+
+msgid "ExternalAuthorization|Does not apply if service URL is specified."
 msgstr ""
 
 msgid "ExternalAuthorization|Enable classification control using an external service"
@@ -21543,6 +21549,9 @@ msgid "ImportProjects|Importing the project failed"
 msgstr ""
 
 msgid "ImportProjects|Importing the project failed: %{reason}"
+msgstr ""
+
+msgid "ImportProjects|Re-import creates a new project. It does not sync with the existing project."
 msgstr ""
 
 msgid "ImportProjects|Requesting namespaces failed"

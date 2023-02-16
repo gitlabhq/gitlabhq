@@ -19,7 +19,7 @@ describe('import_projects utils', () => {
     it.each`
       status                 | result
       ${STATUSES.FINISHED}   | ${false}
-      ${STATUSES.FAILED}     | ${false}
+      ${STATUSES.FAILED}     | ${true}
       ${STATUSES.SCHEDULED}  | ${false}
       ${STATUSES.STARTED}    | ${false}
       ${STATUSES.NONE}       | ${true}

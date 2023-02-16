@@ -86,10 +86,8 @@ export default {
       </span>
       <template v-else>
         <span class="gl-ml-0! gl-text-body! gl-flex-grow-1 gl-w-full gl-md-w-auto gl-mr-2">
-          <bold-text :message="$options.i18n.shouldBeResolved" />
-          <span v-if="!userPermissions.canMerge">
-            {{ $options.i18n.usersWriteBranches }}
-          </span>
+          <bold-text v-if="userPermissions.canMerge" :message="$options.i18n.shouldBeResolved" />
+          <bold-text v-else :message="$options.i18n.usersWriteBranches" />
         </span>
       </template>
     </template>

@@ -319,7 +319,7 @@ module API
         update_params = convert_parameters_from_legacy_format(update_params)
 
         spam_params = ::Spam::SpamParams.new_from_request(request: request)
-        issue = ::Issues::UpdateService.new(project: user_project,
+        issue = ::Issues::UpdateService.new(container: user_project,
                                             current_user: current_user,
                                             params: update_params,
                                             spam_params: spam_params).execute(issue)
@@ -350,7 +350,7 @@ module API
 
         authorize! :update_issue, issue
 
-        if ::Issues::ReorderService.new(project: user_project, current_user: current_user, params: params).execute(issue)
+        if ::Issues::ReorderService.new(container: user_project, current_user: current_user, params: params).execute(issue)
           present issue, with: Entities::Issue, current_user: current_user, project: user_project
         else
           render_api_error!({ error: 'Unprocessable Entity' }, 422)
@@ -438,9 +438,10 @@ module API
       get ':id/issues/:issue_iid/related_merge_requests' do
         issue = find_project_issue(params[:issue_iid])
 
-        merge_requests = ::Issues::ReferencedMergeRequestsService.new(project: user_project, current_user: current_user)
-          .execute(issue)
-          .first
+        merge_requests = ::Issues::ReferencedMergeRequestsService
+                           .new(container: user_project, current_user: current_user)
+                           .execute(issue)
+                           .first
 
         present paginate(::Kaminari.paginate_array(merge_requests)),
           with: Entities::MergeRequest,

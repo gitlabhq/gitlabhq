@@ -20,13 +20,13 @@ RSpec.describe Issues::CloseService do
   end
 
   describe '#execute' do
-    let(:service) { described_class.new(project: project, current_user: user) }
+    let(:service) { described_class.new(container: project, current_user: user) }
 
     context 'when skip_authorization is true' do
       it 'does close the issue even if user is not authorized' do
         non_authorized_user = create(:user)
 
-        service = described_class.new(project: project, current_user: non_authorized_user)
+        service = described_class.new(container: project, current_user: non_authorized_user)
 
         expect do
           service.execute(issue, skip_authorization: true)
@@ -167,7 +167,7 @@ RSpec.describe Issues::CloseService do
           project.reload
           expect(project.external_issue_tracker).to receive(:close_issue)
 
-          described_class.new(project: project, current_user: user).close_issue(external_issue)
+          described_class.new(container: project, current_user: user).close_issue(external_issue)
         end
       end
 
@@ -178,7 +178,7 @@ RSpec.describe Issues::CloseService do
           project.reload
           expect(project.external_issue_tracker).not_to receive(:close_issue)
 
-          described_class.new(project: project, current_user: user).close_issue(external_issue)
+          described_class.new(container: project, current_user: user).close_issue(external_issue)
         end
       end
 
@@ -189,7 +189,7 @@ RSpec.describe Issues::CloseService do
           project.reload
           expect(project.external_issue_tracker).not_to receive(:close_issue)
 
-          described_class.new(project: project, current_user: user).close_issue(external_issue)
+          described_class.new(container: project, current_user: user).close_issue(external_issue)
         end
       end
     end
@@ -197,7 +197,7 @@ RSpec.describe Issues::CloseService do
     context "closed by a merge request", :sidekiq_might_not_need_inline do
       subject(:close_issue) do
         perform_enqueued_jobs do
-          described_class.new(project: project, current_user: user).close_issue(issue, closed_via: closing_merge_request)
+          described_class.new(container: project, current_user: user).close_issue(issue, closed_via: closing_merge_request)
         end
       end
 
@@ -266,7 +266,7 @@ RSpec.describe Issues::CloseService do
     context "closed by a commit", :sidekiq_might_not_need_inline do
       it 'mentions closure via a commit' do
         perform_enqueued_jobs do
-          described_class.new(project: project, current_user: user).close_issue(issue, closed_via: closing_commit)
+          described_class.new(container: project, current_user: user).close_issue(issue, closed_via: closing_commit)
         end
 
         email = ActionMailer::Base.deliveries.last
@@ -280,7 +280,7 @@ RSpec.describe Issues::CloseService do
         it 'does not mention the commit id' do
           project.project_feature.update_attribute(:repository_access_level, ProjectFeature::DISABLED)
           perform_enqueued_jobs do
-            described_class.new(project: project, current_user: user).close_issue(issue, closed_via: closing_commit)
+            described_class.new(container: project, current_user: user).close_issue(issue, closed_via: closing_commit)
           end
 
           email = ActionMailer::Base.deliveries.last
@@ -296,7 +296,7 @@ RSpec.describe Issues::CloseService do
     context "valid params" do
       subject(:close_issue) do
         perform_enqueued_jobs do
-          described_class.new(project: project, current_user: user).close_issue(issue)
+          described_class.new(container: project, current_user: user).close_issue(issue)
         end
       end
 
@@ -438,7 +438,7 @@ RSpec.describe Issues::CloseService do
         expect(project).to receive(:execute_hooks).with(expected_payload, :issue_hooks)
         expect(project).to receive(:execute_integrations).with(expected_payload, :issue_hooks)
 
-        described_class.new(project: project, current_user: user).close_issue(issue)
+        described_class.new(container: project, current_user: user).close_issue(issue)
       end
     end
 
@@ -449,7 +449,7 @@ RSpec.describe Issues::CloseService do
         expect(project).to receive(:execute_hooks).with(an_instance_of(Hash), :confidential_issue_hooks)
         expect(project).to receive(:execute_integrations).with(an_instance_of(Hash), :confidential_issue_hooks)
 
-        described_class.new(project: project, current_user: user).close_issue(issue)
+        described_class.new(container: project, current_user: user).close_issue(issue)
       end
     end
 

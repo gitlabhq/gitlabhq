@@ -17,6 +17,9 @@
           = f.gitlab_ui_checkbox_component :external_authorization_service_enabled,
             s_('ExternalAuthorization|Enable classification control using an external service'),
             help_text: external_authorization_description
+        = f.gitlab_ui_checkbox_component :allow_deploy_tokens_and_keys_with_external_authn,
+            s_('ExternalAuthorization|Allow deploy tokens and deploy keys to be used with external authorization'),
+            help_text: external_authorization_allow_token_help_text
         .form-group
           = f.label :external_authorization_service_url, s_('ExternalAuthorization|Service URL'), class: 'label-bold'
           = f.text_field :external_authorization_service_url, class: 'form-control gl-form-input'

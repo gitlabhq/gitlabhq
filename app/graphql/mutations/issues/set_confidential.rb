@@ -19,7 +19,7 @@ module Mutations
         # spam_params so a check can be performed.
         spam_params = ::Spam::SpamParams.new_from_request(request: context[:request])
 
-        ::Issues::UpdateService.new(project: project, current_user: current_user, params: { confidential: confidential }, spam_params: spam_params)
+        ::Issues::UpdateService.new(container: project, current_user: current_user, params: { confidential: confidential }, spam_params: spam_params)
           .execute(issue)
         check_spam_action_response!(issue)
 

@@ -210,7 +210,7 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
       end
     end
 
-    RSpec.shared_examples_for 'fallback read from the secondary store' do
+    RSpec.shared_examples_for 'fallback read from the non-default store' do
       let(:counter) { Gitlab::Metrics::NullMetric.instance }
 
       before do
@@ -218,7 +218,7 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
       end
 
       it 'fallback and execute on secondary instance' do
-        expect(secondary_store).to receive(name).with(*expected_args).and_call_original
+        expect(multi_store.fallback_store).to receive(name).with(*expected_args).and_call_original
 
         subject
       end
@@ -242,7 +242,7 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
 
       context 'when fallback read from the secondary instance raises an exception' do
         before do
-          allow(secondary_store).to receive(name).with(*expected_args).and_raise(StandardError)
+          allow(multi_store.fallback_store).to receive(name).with(*expected_args).and_raise(StandardError)
         end
 
         it 'fails with exception' do
@@ -296,7 +296,7 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
 
         context 'when reading from primary instance is raising an exception' do
           before do
-            allow(primary_store).to receive(name).with(*expected_args).and_raise(StandardError)
+            allow(multi_store.default_store).to receive(name).with(*expected_args).and_raise(StandardError)
             allow(Gitlab::ErrorTracking).to receive(:log_exception)
           end
 
@@ -307,16 +307,16 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
             subject
           end
 
-          include_examples 'fallback read from the secondary store'
+          include_examples 'fallback read from the non-default store'
         end
 
-        context 'when reading from empty primary instance' do
+        context 'when reading from empty default instance' do
           before do
-            # this ensures a cache miss without having to stub primary store
-            primary_store.flushdb
+            # this ensures a cache miss without having to stub the default store
+            multi_store.default_store.flushdb
           end
 
-          include_examples 'fallback read from the secondary store'
+          include_examples 'fallback read from the non-default store'
         end
 
         context 'when the command is executed within pipelined block' do

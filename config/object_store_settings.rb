@@ -178,8 +178,12 @@ class ObjectStoreSettings
   # 1. The common settings are defined
   # 2. The legacy settings are not defined
   def use_consolidated_settings?
-    return false unless settings.dig('object_store', 'enabled')
-    return false unless settings.dig('object_store', 'connection').present?
+    # to_h is needed because we define `default` as a Gitaly storage name
+    # in stub_storage_settings. This causes Settingslogic to redefine Hash#default,
+    # which causes Hash#dig to fail when the key doesn't exist: https://gitlab.com/gitlab-org/gitlab/-/issues/286873
+    settings_h = settings.to_h
+    return false unless settings_h.dig('object_store', 'enabled')
+    return false unless settings_h.dig('object_store', 'connection').present?
 
     WORKHORSE_ACCELERATED_TYPES.each do |store|
       # to_h is needed because we define `default` as a Gitaly storage name

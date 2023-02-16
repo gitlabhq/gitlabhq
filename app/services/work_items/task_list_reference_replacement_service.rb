@@ -34,7 +34,7 @@ module WorkItems
       remove_additional_lines!(source_lines)
 
       ::WorkItems::UpdateService.new(
-        project: @work_item.project,
+        container: @work_item.project,
         current_user: @current_user,
         params: { description: source_lines.join("\n"), lock_version: @lock_version }
       ).execute(@work_item)

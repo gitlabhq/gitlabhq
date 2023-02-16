@@ -2,6 +2,11 @@
 
 module Issues
   class ReferencedMergeRequestsService < Issues::BaseService
+    # TODO: this is to be removed once we get to rename the IssuableBaseService project param to container
+    def initialize(container:, current_user: nil, params: {})
+      super(project: container, current_user: current_user, params: params)
+    end
+
     # rubocop: disable CodeReuse/ActiveRecord
     def execute(issue)
       referenced = referenced_merge_requests(issue)

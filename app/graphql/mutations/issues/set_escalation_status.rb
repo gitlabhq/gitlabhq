@@ -17,7 +17,7 @@ module Mutations
         check_feature_availability!(issue)
 
         ::Issues::UpdateService.new(
-          project: project,
+          container: project,
           current_user: current_user,
           params: { escalation_status: { status: status } }
         ).execute(issue)

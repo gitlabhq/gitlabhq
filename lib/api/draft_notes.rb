@@ -24,6 +24,12 @@ module API
       def delete_draft_note(draft_note)
         ::DraftNotes::DestroyService.new(user_project, current_user).execute(draft_note)
       end
+
+      def publish_draft_note(params:)
+        ::DraftNotes::PublishService
+          .new(merge_request(params: params), current_user)
+          .execute(get_draft_note(params: params))
+      end
     end
 
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
@@ -88,6 +94,31 @@ module API
           body false
         else
           not_found!("Draft Note")
+        end
+      end
+
+      desc "Publish a pending draft note" do
+        success code: 204
+        failure [
+          { code: 401, message: 'Unauthorized' },
+          { code: 404, message: 'Not found' }
+        ]
+      end
+      params do
+        requires :id,                type: String,  desc: "The ID of a project"
+        requires :merge_request_iid, type: Integer, desc: "The ID of a merge request"
+        requires :draft_note_id,     type: Integer, desc: "The ID of a draft note"
+      end
+      put(
+        ":id/merge_requests/:merge_request_iid/draft_notes/:draft_note_id/publish",
+        feature_category: :code_review_workflow) do
+        result = publish_draft_note(params: params)
+
+        if result[:status] == :success
+          status 204
+          body false
+        else
+          status 500
         end
       end
     end

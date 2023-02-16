@@ -7,7 +7,7 @@ RSpec.describe Issues::ZoomLinkService do
   let_it_be(:issue) { create(:issue) }
 
   let(:project) { issue.project }
-  let(:service) { described_class.new(project: project, current_user: user, params: { issue: issue }) }
+  let(:service) { described_class.new(container: project, current_user: user, params: { issue: issue }) }
   let(:zoom_link) { 'https://zoom.us/j/123456789' }
 
   before do

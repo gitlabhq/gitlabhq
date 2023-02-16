@@ -11,7 +11,7 @@ RSpec.describe Issues::AfterCreateService do
   let_it_be(:milestone) { create(:milestone, project: project) }
   let_it_be(:issue) { create(:issue, project: project, author: current_user, milestone: milestone, assignee_ids: [assignee.id]) }
 
-  subject(:after_create_service) { described_class.new(project: project, current_user: current_user) }
+  subject(:after_create_service) { described_class.new(container: project, current_user: current_user) }
 
   describe '#execute' do
     it 'creates a pending todo for new assignee' do
