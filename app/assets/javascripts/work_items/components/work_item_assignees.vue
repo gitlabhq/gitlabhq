@@ -313,7 +313,7 @@ export default {
       :view-only="!canUpdate"
       :allow-clear-all="isEditing"
       class="assignees-selector gl-flex-grow-1 gl-border gl-border-white gl-rounded-base col-9 gl-align-self-start gl-px-0! gl-mx-2"
-      data-testid="work-item-asssignees-input"
+      data-testid="work-item-assignees-input"
       @input="handleAssigneesInput"
       @text-input="debouncedSearchKeyUpdate"
       @focus="handleFocus"

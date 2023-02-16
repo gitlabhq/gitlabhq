@@ -52,7 +52,6 @@ Layout/LineContinuationLeadingSpace:
     - 'rubocop/cop/migration/update_column_in_batches.rb'
     - 'scripts/lib/glfm/parse_examples.rb'
     - 'scripts/qa/testcases-check'
-    - 'spec/features/groups/show_spec.rb'
     - 'spec/features/issues/create_issue_for_single_discussion_in_merge_request_spec.rb'
     - 'spec/lib/gitlab/ci/ansi2html_spec.rb'
     - 'spec/lib/gitlab/ci/parsers/sbom/validators/cyclonedx_schema_validator_spec.rb'

@@ -1496,7 +1496,6 @@ Layout/ArgumentAlignment:
     - 'ee/spec/features/search/elastic/global_search_spec.rb'
     - 'ee/spec/features/search/elastic/group_search_spec.rb'
     - 'ee/spec/features/security/project/discover_spec.rb'
-    - 'ee/spec/features/uncompleted_learn_gitlab_link_spec.rb'
     - 'ee/spec/features/users/identity_verification_spec.rb'
     - 'ee/spec/finders/boards/milestones_finder_spec.rb'
     - 'ee/spec/finders/epics/cross_hierarchy_ancestors_finder_spec.rb'

@@ -78,4 +78,30 @@ RSpec.describe MemberRole, feature_category: :authentication_and_authorization d
       end
     end
   end
+
+  describe 'callbacks' do
+    context 'for preventing deletion after member is associated' do
+      let_it_be(:member_role) { create(:member_role) }
+
+      subject(:destroy_member_role) { member_role.destroy } # rubocop: disable Rails/SaveBang
+
+      it 'allows deletion without any member associated' do
+        expect(destroy_member_role).to be_truthy
+      end
+
+      it 'prevent deletion when member is associated' do
+        create(:group_member, { group: member_role.namespace,
+                                access_level: Gitlab::Access::DEVELOPER,
+                                member_role: member_role })
+        member_role.members.reload
+
+        expect(destroy_member_role).to be_falsey
+        expect(member_role.errors.messages[:base])
+          .to(
+            include(s_("MemberRole|cannot be deleted because it is already assigned to a user. "\
+                       "Please disassociate the member role from all users before deletion."))
+          )
+      end
+    end
+  end
 end

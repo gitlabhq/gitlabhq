@@ -2263,6 +2263,17 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     end
   end
 
+  describe '#artifact_for_type' do
+    let(:build) { create(:ci_build) }
+    let!(:archive) { create(:ci_job_artifact, :archive, job: build) }
+    let!(:codequality) { create(:ci_job_artifact, :codequality, job: build) }
+    let(:file_type) { :archive }
+
+    subject { build.artifact_for_type(file_type) }
+
+    it { is_expected.to eq(archive) }
+  end
+
   describe '#merge_request' do
     let_it_be(:merge_request) { create(:merge_request, source_project: project) }
 
@@ -5867,6 +5878,33 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
         it 'does not track Snowplow event' do
           ci_build.save!
           expect_no_snowplow_event
+        end
+      end
+    end
+  end
+
+  describe 'job artifact associations' do
+    Ci::JobArtifact.file_types.each do |type, _|
+      method = "job_artifacts_#{type}"
+
+      describe "##{method}" do
+        subject { build.send(method) }
+
+        context "when job has an artifact of type #{type}" do
+          let!(:artifact) do
+            create(
+              :ci_job_artifact,
+              job: build,
+              file_type: type,
+              file_format: Ci::JobArtifact::TYPE_AND_FORMAT_PAIRS[type.to_sym]
+            )
+          end
+
+          it { is_expected.to eq(artifact) }
+        end
+
+        context "when job has no artifact of type #{type}" do
+          it { is_expected.to be_nil }
         end
       end
     end

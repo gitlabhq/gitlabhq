@@ -26238,6 +26238,9 @@ msgstr ""
 msgid "MemberRole|cannot be changed because it is already assigned to a user. Please create a new Member Role instead"
 msgstr ""
 
+msgid "MemberRole|cannot be deleted because it is already assigned to a user. Please disassociate the member role from all users before deletion."
+msgstr ""
+
 msgid "MemberRole|must be top-level namespace"
 msgstr ""
 
@@ -27471,9 +27474,6 @@ msgid "ModalButton|Add projects"
 msgstr ""
 
 msgid "Modal|Close"
-msgstr ""
-
-msgid "Model Experiments"
 msgstr ""
 
 msgid "Model candidate details"

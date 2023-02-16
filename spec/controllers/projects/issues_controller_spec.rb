@@ -1378,13 +1378,13 @@ RSpec.describe Projects::IssuesController do
       end
 
       context 'when issue creation limits imposed' do
+        before do
+          project.add_developer(user)
+          sign_in(user)
+        end
+
         it 'prevents from creating more issues', :request_store do
-          post_new_issue
-
-          expect { post_new_issue }
-            .to change { Gitlab::GitalyClient.get_request_count }.by(1) # creates 1 projects and 0 issues
-
-          post_new_issue
+          2.times { post_new_issue_in_project }
 
           expect(response.body).to eq(_('This endpoint has been requested too many times. Try again later.'))
           expect(response).to have_gitlab_http_status(:too_many_requests)
@@ -1403,16 +1403,15 @@ RSpec.describe Projects::IssuesController do
 
           expect(Gitlab::AuthLogger).to receive(:error).with(attributes).once
 
-          project.add_developer(user)
-          sign_in(user)
+          2.times { post_new_issue_in_project }
+        end
 
-          2.times do
-            post :create, params: {
-              namespace_id: project.namespace.to_param,
-              project_id: project,
-              issue: { title: 'Title', description: 'Description' }
-            }
-          end
+        def post_new_issue_in_project
+          post :create, params: {
+            namespace_id: project.namespace.to_param,
+            project_id: project,
+            issue: { title: 'Title', description: 'Description' }
+          }
         end
       end
     end

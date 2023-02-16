@@ -35,6 +35,12 @@ export default {
 
       return sprintf(__('%{widget} options'), { widget: this.widget });
     },
+    hasOneOption() {
+      return this.tertiaryButtons.length === 1;
+    },
+    hasMultipleOptions() {
+      return this.tertiaryButtons.length > 1;
+    },
   },
   methods: {
     onClickAction(action) {
@@ -75,34 +81,59 @@ export default {
 
 <template>
   <div class="gl-display-flex gl-align-items-flex-start">
-    <gl-dropdown
-      v-if="tertiaryButtons.length"
-      v-gl-tooltip
-      :title="__('Options')"
-      :text="dropdownLabel"
-      icon="ellipsis_v"
-      no-caret
-      category="tertiary"
-      right
-      lazy
-      text-sr-only
-      size="small"
-      toggle-class="gl-p-2!"
-      class="gl-display-block gl-md-display-none!"
-    >
-      <gl-dropdown-item
+    <template v-if="hasOneOption">
+      <gl-button
         v-for="(btn, index) in tertiaryButtons"
+        :id="btn.id"
         :key="index"
+        v-gl-tooltip.hover
+        :title="setTooltip(btn)"
         :href="btn.href"
         :target="btn.target"
+        :class="[{ 'gl-mr-3': index !== tertiaryButtons.length - 1 }, btn.class]"
         :data-clipboard-text="btn.dataClipboardText"
+        :data-qa-selector="actionButtonQaSelector(btn)"
         :data-method="btn.dataMethod"
+        :icon="btn.icon"
+        :data-testid="btn.testId || 'extension-actions-button'"
+        :variant="btn.variant || 'confirm'"
+        :loading="btn.loading"
+        :disabled="btn.loading"
+        category="tertiary"
+        size="small"
+        class="gl-md-display-block gl-float-left"
         @click="onClickAction(btn)"
       >
         {{ btn.text }}
-      </gl-dropdown-item>
-    </gl-dropdown>
-    <template v-if="tertiaryButtons.length">
+      </gl-button>
+    </template>
+    <template v-if="hasMultipleOptions">
+      <gl-dropdown
+        v-gl-tooltip
+        :title="__('Options')"
+        :text="dropdownLabel"
+        icon="ellipsis_v"
+        no-caret
+        category="tertiary"
+        right
+        lazy
+        text-sr-only
+        size="small"
+        toggle-class="gl-p-2!"
+        class="gl-display-block gl-md-display-none!"
+      >
+        <gl-dropdown-item
+          v-for="(btn, index) in tertiaryButtons"
+          :key="index"
+          :href="btn.href"
+          :target="btn.target"
+          :data-clipboard-text="btn.dataClipboardText"
+          :data-method="btn.dataMethod"
+          @click="onClickAction(btn)"
+        >
+          {{ btn.text }}
+        </gl-dropdown-item>
+      </gl-dropdown>
       <gl-button
         v-for="(btn, index) in tertiaryButtons"
         :id="btn.id"

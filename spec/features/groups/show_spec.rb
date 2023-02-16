@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'Group show page', feature_category: :subgroups do
+  include Spec::Support::Helpers::Features::InviteMembersModalHelper
+
   let_it_be(:user) { create(:user) }
   let_it_be(:group) { create(:group) }
 
@@ -35,6 +37,16 @@ RSpec.describe 'Group show page', feature_category: :subgroups do
         visit path
 
         expect(page).to have_content('Collaborate with your team')
+
+        page.within(find('[data-testid="invite-members-banner"]')) do
+          click_button('Invite your colleagues')
+        end
+
+        page.within(invite_modal_selector) do
+          expect(page).to have_content("You're inviting members to the #{group.name} group")
+
+          click_button('Cancel')
+        end
 
         page.within(find('[data-testid="invite-members-banner"]')) do
           find('[data-testid="close-icon"]').click
@@ -73,7 +85,7 @@ RSpec.describe 'Group show page', feature_category: :subgroups do
       end
     end
 
-    context 'subgroups and projects empty state', :js do
+    context 'with subgroups and projects empty state', :js do
       context 'when user has permissions to create new subgroups or projects' do
         before do
           group.add_owner(user)
@@ -82,22 +94,19 @@ RSpec.describe 'Group show page', feature_category: :subgroups do
         end
 
         it 'shows `Create new subgroup` link' do
-          expect(page).to have_link(
-            s_('GroupsEmptyState|Create new subgroup'),
-            href: new_group_path(parent_id: group.id, anchor: 'create-group-pane')
-          )
+          link = new_group_path(parent_id: group.id, anchor: 'create-group-pane')
+
+          expect(page).to have_link(s_('GroupsEmptyState|Create new subgroup'), href: link)
         end
 
         it 'shows `Create new project` link' do
-          expect(page).to have_link(
-            s_('GroupsEmptyState|Create new project'),
-            href: new_project_path(namespace_id: group.id)
-          )
+          expect(page)
+            .to have_link(s_('GroupsEmptyState|Create new project'), href: new_project_path(namespace_id: group.id))
         end
       end
     end
 
-    context 'visibility warning popover' do
+    context 'with visibility warning popover' do
       let_it_be(:public_project) { create(:project, :public) }
 
       shared_examples 'it shows warning popover' do
@@ -145,23 +154,22 @@ RSpec.describe 'Group show page', feature_category: :subgroups do
       end
 
       it 'does not show `Create new subgroup` link' do
-        expect(page).not_to have_link(
-          s_('GroupsEmptyState|Create new subgroup'),
-          href: new_group_path(parent_id: group.id)
-        )
+        expect(page)
+          .not_to have_link(s_('GroupsEmptyState|Create new subgroup'), href: new_group_path(parent_id: group.id))
       end
 
       it 'does not show `Create new project` link' do
-        expect(page).not_to have_link(
-          s_('GroupsEmptyState|Create new project'),
-          href: new_project_path(namespace_id: group.id)
-        )
+        expect(page)
+          .not_to have_link(s_('GroupsEmptyState|Create new project'), href: new_project_path(namespace_id: group.id))
       end
 
       it 'shows empty state' do
+        content = s_('GroupsEmptyState|You do not have necessary permissions to create a subgroup ' \
+                     'or project in this group. Please contact an owner of this group to create a ' \
+                     'new subgroup or project.')
+
         expect(page).to have_content(s_('GroupsEmptyState|No subgroups or projects.'))
-        expect(page).to have_content(s_('GroupsEmptyState|You do not have necessary permissions to create a subgroup' \
-          ' or project in this group. Please contact an owner of this group to create a new subgroup or project.'))
+        expect(page).to have_content(content)
       end
     end
   end
@@ -198,7 +206,7 @@ RSpec.describe 'Group show page', feature_category: :subgroups do
     end
   end
 
-  context 'subgroup support' do
+  context 'with subgroup support' do
     let_it_be(:restricted_group) do
       create(:group, subgroup_creation_level: ::Gitlab::Access::OWNER_SUBGROUP_ACCESS)
     end
@@ -255,7 +263,7 @@ RSpec.describe 'Group show page', feature_category: :subgroups do
     end
   end
 
-  context 'notification button', :js do
+  context 'for notification button', :js do
     before do
       group.add_maintainer(user)
       sign_in(user)
@@ -276,7 +284,7 @@ RSpec.describe 'Group show page', feature_category: :subgroups do
     end
   end
 
-  context 'page og:description' do
+  context 'for page og:description' do
     before do
       group.update!(description: '**Lorem** _ipsum_ dolor sit [amet](https://example.com)')
       group.add_maintainer(user)
@@ -287,7 +295,7 @@ RSpec.describe 'Group show page', feature_category: :subgroups do
     it_behaves_like 'page meta description', 'Lorem ipsum dolor sit amet'
   end
 
-  context 'structured schema markup' do
+  context 'for structured schema markup' do
     let_it_be(:group) { create(:group, :public, :with_avatar, description: 'foo') }
     let_it_be(:subgroup) { create(:group, :public, :with_avatar, parent: group, description: 'bar') }
     let_it_be_with_reload(:project) { create(:project, :public, :with_avatar, namespace: group, description: 'foo') }

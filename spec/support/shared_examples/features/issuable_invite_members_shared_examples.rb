@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'issuable invite members' do
+  include Spec::Support::Helpers::Features::InviteMembersModalHelper
+
   context 'when a privileged user can invite' do
     before do
       project.add_maintainer(user)
@@ -21,7 +23,9 @@ RSpec.shared_examples 'issuable invite members' do
 
       click_link 'Invite Members'
 
-      expect(page).to have_content("You're inviting members to the")
+      page.within invite_modal_selector do
+        expect(page).to have_content("You're inviting members to the #{project.name} project")
+      end
     end
   end
 

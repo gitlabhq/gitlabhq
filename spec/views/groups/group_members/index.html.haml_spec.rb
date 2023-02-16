@@ -2,9 +2,9 @@
 
 require 'spec_helper'
 
-RSpec.describe 'groups/group_members/index', :aggregate_failures do
-  let_it_be(:user) { create(:user) }
-  let_it_be(:group) { create(:group) }
+RSpec.describe 'groups/group_members/index', :aggregate_failures, feature_category: :subgroups do
+  let_it_be(:user) { create(:user) } # rubocop:todo RSpec/FactoryBot/AvoidCreate
+  let_it_be(:group) { create(:group) } # rubocop:todo RSpec/FactoryBot/AvoidCreate
 
   before do
     allow(view).to receive(:group_members_app_data).and_return({})

@@ -3,7 +3,7 @@
 RSpec.shared_examples 'work items status' do
   let(:state_selector) { '[data-testid="work-item-state-select"]' }
 
-  it 'sucessfully shows and changes the status of the work item' do
+  it 'successfully shows and changes the status of the work item' do
     expect(find(state_selector)).to have_content 'Open'
 
     find(state_selector).select("Closed")
@@ -18,7 +18,7 @@ end
 RSpec.shared_examples 'work items comments' do
   let(:form_selector) { '[data-testid="work-item-add-comment"]' }
 
-  it 'sucessfully creates and shows comments' do
+  it 'successfully creates and shows comments' do
     click_button 'Add a comment'
 
     find(form_selector).fill_in(with: "Test comment")
@@ -31,9 +31,9 @@ RSpec.shared_examples 'work items comments' do
 end
 
 RSpec.shared_examples 'work items assignees' do
-  it 'sucessfully assigns the current user by searching' do
+  it 'successfully assigns the current user by searching' do
     # The button is only when the mouse is over the input
-    find('[data-testid="work-item-asssignees-input"]').fill_in(with: user.username)
+    find('[data-testid="work-item-assignees-input"]').fill_in(with: user.username)
     wait_for_requests
 
     # submit and simulate blur to save
@@ -47,7 +47,7 @@ RSpec.shared_examples 'work items assignees' do
 end
 
 RSpec.shared_examples 'work items labels' do
-  it 'sucessfully assigns a label' do
+  it 'successfully assigns a label' do
     label = create(:label, project: work_item.project, title: "testing-label")
 
     find('[data-testid="work-item-labels-input"]').fill_in(with: label.title)
@@ -120,6 +120,22 @@ RSpec.shared_examples 'work items description' do
       click_button "Save and overwrite"
 
       expect(page.find('[data-testid="work-item-description"]')).to have_text("oh yeah!")
+    end
+  end
+end
+
+RSpec.shared_examples 'work items invite members' do
+  include Spec::Support::Helpers::Features::InviteMembersModalHelper
+
+  it 'successfully assigns the current user by searching' do
+    # The button is only when the mouse is over the input
+    find('[data-testid="work-item-assignees-input"]').fill_in(with: 'Invite members')
+    wait_for_requests
+
+    click_button('Invite members')
+
+    page.within invite_modal_selector do
+      expect(page).to have_content("You're inviting members to the #{work_item.project.name} project")
     end
   end
 end

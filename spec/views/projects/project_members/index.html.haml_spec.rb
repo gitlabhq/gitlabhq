@@ -2,9 +2,9 @@
 
 require 'spec_helper'
 
-RSpec.describe 'projects/project_members/index', :aggregate_failures do
-  let_it_be(:user) { create(:user) }
-  let_it_be(:project) { create(:project, :empty_repo, :with_namespace_settings).present(current_user: user) }
+RSpec.describe 'projects/project_members/index', :aggregate_failures, feature_category: :projects do
+  let_it_be(:user) { create(:user) } # rubocop:todo RSpec/FactoryBot/AvoidCreate
+  let_it_be(:project) { create(:project, :empty_repo, :with_namespace_settings).present(current_user: user) } # rubocop:todo RSpec/FactoryBot/AvoidCreate
 
   before do
     allow(view).to receive(:project_members_app_data_json).and_return({})

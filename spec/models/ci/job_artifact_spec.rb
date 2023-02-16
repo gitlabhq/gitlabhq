@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::JobArtifact do
+RSpec.describe Ci::JobArtifact, feature_category: :build_artifacts do
   let(:artifact) { create(:ci_job_artifact, :archive) }
 
   describe "Associations" do
@@ -792,5 +792,11 @@ RSpec.describe Ci::JobArtifact do
         expect { artifact.valid? }.not_to change(artifact, :partition_id)
       end
     end
+  end
+
+  describe '#filename' do
+    subject { artifact.filename }
+
+    it { is_expected.to eq(artifact.file.filename) }
   end
 end

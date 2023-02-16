@@ -262,7 +262,6 @@ Layout/LineEndStringConcatenationIndentation:
     - 'spec/contracts/provider_specs/helpers/provider/contract_source_helper_spec.rb'
     - 'spec/controllers/graphql_controller_spec.rb'
     - 'spec/controllers/projects/deploy_keys_controller_spec.rb'
-    - 'spec/features/groups/show_spec.rb'
     - 'spec/features/projects/files/user_browses_files_spec.rb'
     - 'spec/features/projects/files/user_creates_directory_spec.rb'
     - 'spec/features/projects/files/user_creates_files_spec.rb'

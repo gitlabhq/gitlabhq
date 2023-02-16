@@ -22,4 +22,16 @@ RSpec.describe 'Work item', :js, feature_category: :team_planning do
     it_behaves_like 'work items comments'
     it_behaves_like 'work items description'
   end
+
+  context 'for signed in owner' do
+    before do
+      project.add_owner(user)
+
+      sign_in(user)
+
+      visit project_work_items_path(project, work_items_path: work_item.id)
+    end
+
+    it_behaves_like 'work items invite members'
+  end
 end

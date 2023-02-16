@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class MemberRole < ApplicationRecord  # rubocop:disable Gitlab/NamespacedClass
+class MemberRole < ApplicationRecord # rubocop:disable Gitlab/NamespacedClass
   include IgnorableColumns
   ignore_column :download_code, remove_with: '15.9', remove_after: '2023-01-22'
 
@@ -14,6 +14,8 @@ class MemberRole < ApplicationRecord  # rubocop:disable Gitlab/NamespacedClass
   validate :attributes_locked_after_member_associated, on: :update
 
   validates_associated :members
+
+  before_destroy :prevent_delete_after_member_associated
 
   private
 
@@ -34,5 +36,14 @@ class MemberRole < ApplicationRecord  # rubocop:disable Gitlab/NamespacedClass
 
     errors.add(:base, s_("MemberRole|cannot be changed because it is already assigned to a user. "\
       "Please create a new Member Role instead"))
+  end
+
+  def prevent_delete_after_member_associated
+    return unless members.present?
+
+    errors.add(:base, s_("MemberRole|cannot be deleted because it is already assigned to a user. "\
+      "Please disassociate the member role from all users before deletion."))
+
+    throw :abort # rubocop:disable Cop/BanCatchThrow
   end
 end
