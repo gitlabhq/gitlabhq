@@ -2,6 +2,14 @@
 
 module WorkItems
   class ExportCsvService < ExportCsv::BaseService
+    NotAvailableError = StandardError.new('This feature is currently behind a feature flag and it is not available.')
+
+    def csv_data
+      raise NotAvailableError unless Feature.enabled?(:import_export_work_items_csv, resource_parent)
+
+      super
+    end
+
     def email(mail_to_user)
       # TODO - will be implemented as part of https://gitlab.com/gitlab-org/gitlab/-/issues/379082
     end

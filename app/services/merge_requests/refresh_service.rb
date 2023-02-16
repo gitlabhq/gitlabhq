@@ -229,7 +229,7 @@ module MergeRequests
         :source, @push.branch_name, presence)
     end
 
-    # Add comment about pushing new commits to merge requests and send nofitication emails
+    # Add comment about pushing new commits to merge requests and send notification emails
     #
     def notify_about_push(merge_request)
       return unless @commits.present?

@@ -15,6 +15,16 @@ RSpec.describe WorkItems::ExportCsvService, :with_license, feature_category: :te
     CSV.parse(subject.csv_data, headers: true)
   end
 
+  context 'when import_export_work_items_csv flag is not enabled' do
+    before do
+      stub_feature_flags(import_export_work_items_csv: false)
+    end
+
+    it 'renders an error' do
+      expect { subject.csv_data }.to raise_error(described_class::NotAvailableError)
+    end
+  end
+
   it 'renders csv to string' do
     expect(subject.csv_data).to be_a String
   end

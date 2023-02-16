@@ -19872,6 +19872,8 @@ CREATE TABLE pm_checkpoints (
 CREATE TABLE pm_licenses (
     id bigint NOT NULL,
     spdx_identifier text NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
     CONSTRAINT check_c1eb81d1ba CHECK ((char_length(spdx_identifier) <= 50))
 );
 
@@ -19886,13 +19888,27 @@ ALTER SEQUENCE pm_licenses_id_seq OWNED BY pm_licenses.id;
 
 CREATE TABLE pm_package_version_licenses (
     pm_package_version_id bigint NOT NULL,
-    pm_license_id bigint NOT NULL
+    pm_license_id bigint NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    id bigint NOT NULL
 );
+
+CREATE SEQUENCE pm_package_version_licenses_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE pm_package_version_licenses_id_seq OWNED BY pm_package_version_licenses.id;
 
 CREATE TABLE pm_package_versions (
     id bigint NOT NULL,
-    pm_package_id bigint,
+    pm_package_id bigint NOT NULL,
     version text NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
     CONSTRAINT check_2d8a88cfcc CHECK ((char_length(version) <= 255))
 );
 
@@ -19909,6 +19925,8 @@ CREATE TABLE pm_packages (
     id bigint NOT NULL,
     purl_type smallint NOT NULL,
     name text NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
     CONSTRAINT check_3a3aedb8ba CHECK ((char_length(name) <= 255))
 );
 
@@ -24880,6 +24898,8 @@ ALTER TABLE ONLY plans ALTER COLUMN id SET DEFAULT nextval('plans_id_seq'::regcl
 
 ALTER TABLE ONLY pm_licenses ALTER COLUMN id SET DEFAULT nextval('pm_licenses_id_seq'::regclass);
 
+ALTER TABLE ONLY pm_package_version_licenses ALTER COLUMN id SET DEFAULT nextval('pm_package_version_licenses_id_seq'::regclass);
+
 ALTER TABLE ONLY pm_package_versions ALTER COLUMN id SET DEFAULT nextval('pm_package_versions_id_seq'::regclass);
 
 ALTER TABLE ONLY pm_packages ALTER COLUMN id SET DEFAULT nextval('pm_packages_id_seq'::regclass);
@@ -27115,7 +27135,7 @@ ALTER TABLE ONLY pm_licenses
     ADD CONSTRAINT pm_licenses_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY pm_package_version_licenses
-    ADD CONSTRAINT pm_package_version_licenses_pkey PRIMARY KEY (pm_package_version_id, pm_license_id);
+    ADD CONSTRAINT pm_package_version_licenses_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY pm_package_versions
     ADD CONSTRAINT pm_package_versions_pkey PRIMARY KEY (id);
@@ -28700,6 +28720,8 @@ CREATE INDEX i_dast_profiles_tags_on_scanner_profiles_id ON dast_profiles_tags U
 CREATE INDEX i_dast_scanner_profiles_tags_on_scanner_profiles_id ON dast_scanner_profiles_tags USING btree (dast_scanner_profile_id);
 
 CREATE UNIQUE INDEX i_pm_licenses_on_spdx_identifier ON pm_licenses USING btree (spdx_identifier);
+
+CREATE UNIQUE INDEX i_pm_package_version_licenses_join_ids ON pm_package_version_licenses USING btree (pm_package_version_id, pm_license_id);
 
 CREATE UNIQUE INDEX i_pm_package_versions_on_package_id_and_version ON pm_package_versions USING btree (pm_package_id, version);
 

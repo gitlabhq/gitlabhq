@@ -21,6 +21,14 @@ RSpec.describe CrossDatabaseModification do
 
       expect(ApplicationRecord.gitlab_transactions_stack).to be_empty
 
+      PackageMetadata::ApplicationRecord.transaction do
+        expect(ApplicationRecord.gitlab_transactions_stack).to contain_exactly(:gitlab_pm)
+
+        Project.first
+      end
+
+      expect(ApplicationRecord.gitlab_transactions_stack).to be_empty
+
       Project.transaction do
         expect(ApplicationRecord.gitlab_transactions_stack).to contain_exactly(:gitlab_main)
 
