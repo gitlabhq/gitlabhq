@@ -742,7 +742,6 @@ Input type: `AchievementsCreateInput`
 | <a id="mutationachievementscreatedescription"></a>`description` | [`String`](#string) | Description of or notes for the achievement. |
 | <a id="mutationachievementscreatename"></a>`name` | [`String!`](#string) | Name for the achievement. |
 | <a id="mutationachievementscreatenamespaceid"></a>`namespaceId` | [`NamespaceID!`](#namespaceid) | Namespace for the achievement. |
-| <a id="mutationachievementscreaterevokeable"></a>`revokeable` | [`Boolean!`](#boolean) | Revokeability for the achievement. |
 
 #### Fields
 
@@ -10507,7 +10506,6 @@ Representation of a GitLab user.
 | <a id="achievementid"></a>`id` | [`AchievementsAchievementID!`](#achievementsachievementid) | ID of the achievement. |
 | <a id="achievementname"></a>`name` | [`String!`](#string) | Name of the achievement. |
 | <a id="achievementnamespace"></a>`namespace` | [`Namespace!`](#namespace) | Namespace of the achievement. |
-| <a id="achievementrevokeable"></a>`revokeable` | [`Boolean!`](#boolean) | Revokeability of the achievement. |
 | <a id="achievementupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp the achievement was last updated. |
 
 ### `AgentConfiguration`

@@ -2606,6 +2606,7 @@ POST /projects/:id/housekeeping
 | Attribute | Type           | Required               | Description |
 |-----------|----------------|------------------------|-------------|
 | `id`      | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+| `task`   | string           | **{dotted-circle}** No | `prune` to trigger manual prune of unreachable objects or `eager` to trigger eager housekeeping. |
 
 ## Push rules **(PREMIUM)**
 

@@ -1,10 +1,8 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
-require 'support/helpers/stubbed_feature'
-require 'support/helpers/stub_feature_flags'
+require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Build::Rules::Rule::Clause::If do
+RSpec.describe Gitlab::Ci::Build::Rules::Rule::Clause::If, feature_category: :continuous_integration do
   include StubFeatureFlags
 
   subject(:if_clause) { described_class.new(expression) }

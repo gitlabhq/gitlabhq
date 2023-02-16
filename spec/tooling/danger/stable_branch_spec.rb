@@ -206,7 +206,7 @@ RSpec.describe Tooling::Danger::StableBranch, feature_category: :delivery do
       context 'when not an applicable version' do
         let(:target_branch) { '14-9-stable-ee' }
 
-        it_behaves_like 'with a warning', described_class::VERSION_ERROR_MESSAGE
+        it_behaves_like 'with a warning', described_class::VERSION_WARNING_MESSAGE
       end
 
       context 'when the version API request fails' do

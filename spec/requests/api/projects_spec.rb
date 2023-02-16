@@ -2265,7 +2265,7 @@ RSpec.describe API::Projects, feature_category: :projects do
 
       context 'when user is the owner of the project' do
         let(:request) { get api("/projects/#{project.id}/share_locations", user), params: params }
-        let(:params) {}
+        let(:params) { {} }
 
         before do
           project.add_owner(user)
@@ -4731,6 +4731,25 @@ RSpec.describe API::Projects, feature_category: :projects do
         post api("/projects/#{project.id}/housekeeping", user)
 
         expect(response).to have_gitlab_http_status(:created)
+      end
+
+      context 'when requesting prune' do
+        it 'triggers a prune' do
+          expect(Repositories::HousekeepingService).to receive(:new).with(project, :prune).and_return(housekeeping)
+          expect(housekeeping).to receive(:execute).once
+
+          post api("/projects/#{project.id}/housekeeping", user), params: { task: :prune }
+
+          expect(response).to have_gitlab_http_status(:created)
+        end
+      end
+
+      context 'when requesting an unsupported task' do
+        it 'responds with bad_request' do
+          expect(Repositories::HousekeepingService).not_to receive(:new)
+          post api("/projects/#{project.id}/housekeeping", user), params: { task: :unsupported_task }
+          expect(response).to have_gitlab_http_status(:bad_request)
+        end
       end
 
       context 'when housekeeping lease is taken' do

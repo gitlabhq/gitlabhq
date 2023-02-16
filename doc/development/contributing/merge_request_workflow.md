@@ -132,7 +132,7 @@ Commit messages should follow the guidelines below, for reasons explained by Chr
 - The commit subject or body must not contain Emojis.
 - Commits that change 30 or more lines across at least 3 files should
   describe these changes in the commit body.
-- Use issues and merge requests' full URLs instead of short references,
+- Use issues, milestones, and merge requests' full URLs instead of short references,
   as they are displayed as plain text outside of GitLab.
 - The merge request should not contain more than 10 commit messages.
 - The commit subject should contain at least 3 words.

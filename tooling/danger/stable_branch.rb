@@ -33,8 +33,8 @@ module Tooling
       This branch is meant for backporting bug fixes. If this MR qualifies please add the `type::bug` label. #{MAINTENANCE_POLICY_MESSAGE}
       MSG
 
-      VERSION_ERROR_MESSAGE = <<~MSG
-      Patches are generally only accepted on the most recent 3 minor versions of GitLab. #{MAINTENANCE_POLICY_MESSAGE}
+      VERSION_WARNING_MESSAGE = <<~MSG
+      Backporting to older releases requires an [exception request process](https://docs.gitlab.com/ee/policy/maintenance.html#backporting-to-older-releases)
       MSG
 
       FAILED_VERSION_REQUEST_MESSAGE = <<~MSG
@@ -62,7 +62,7 @@ module Tooling
         fail FEATURE_ERROR_MESSAGE if has_feature_label?
         fail BUG_ERROR_MESSAGE unless has_bug_label?
 
-        warn VERSION_ERROR_MESSAGE unless targeting_patchable_version?
+        warn VERSION_WARNING_MESSAGE unless targeting_patchable_version?
 
         return if has_flaky_failure_label? || has_only_documentation_changes?
 

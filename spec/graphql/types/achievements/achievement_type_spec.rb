@@ -12,7 +12,6 @@ RSpec.describe GitlabSchema.types['Achievement'], feature_category: :user_profil
       name
       avatar_url
       description
-      revokeable
       created_at
       updated_at
     ]

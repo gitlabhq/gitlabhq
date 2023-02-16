@@ -1,11 +1,10 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
-require 'rspec-parameterized'
+require 'spec_helper'
 
 load File.expand_path('../../bin/feature-flag', __dir__)
 
-RSpec.describe 'bin/feature-flag' do
+RSpec.describe 'bin/feature-flag', feature_category: :feature_flags do
   using RSpec::Parameterized::TableSyntax
 
   describe FeatureFlagCreator do

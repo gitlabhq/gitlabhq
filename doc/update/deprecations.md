@@ -254,6 +254,26 @@ To be prepared for this change, you should do the following before GitLab 16.0:
 
 </div>
 
+<div class="deprecation removal-160 breaking-change">
+
+### Legacy URLs replaced or removed
+
+Planned removal: GitLab <span class="removal-milestone">16.0</span> <span class="removal-date"></span>
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+GitLab 16.0 removes legacy URLs from the GitLab application.
+
+When subgroups were introduced in GitLab 9.0, a `/-/` delimiter was added to URLs to signify the end of a group path. All GitLab URLs now use this delimiter for project, group, and instance level features.
+
+URLs that do not use the `/-/` delimiter are planned for removal in GitLab 16.0. For the full list of these URLs, along with their replacements, see [issue 28848](https://gitlab.com/gitlab-org/gitlab/-/issues/28848#release-notes).
+
+Update any scripts or bookmarks that reference the legacy URLs. GitLab APIs are not affected by this change.
+
+</div>
+
 <div class="deprecation removal-170 breaking-change">
 
 ### Load Performance Testing is deprecated
@@ -319,6 +339,49 @@ Required Pipeline Configuration will be removed in the 16.0 release. This impact
 
 We recommend replacing this with an alternative [compliance solution](https://docs.gitlab.com/ee/user/group/compliance_frameworks.html#compliance-pipelines)
 that is available now. We recommend this alternative solution because it provides greater flexibility, allowing required pipelines to be assigned to specific compliance framework labels.
+
+</div>
+
+<div class="deprecation removal-160 breaking-change">
+
+### Secure analyzers major version update
+
+Planned removal: GitLab <span class="removal-milestone">16.0</span> <span class="removal-date"></span>
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+The Secure stage will be bumping the major versions of its analyzers in tandem with the GitLab 16.0 release. This bump will enable a clear delineation for analyzers, between:
+
+- Those released prior to May 22, 2023
+- Those released after May 22, 2023
+
+If you are not using the default included templates, or have pinned your analyzer versions you will need to update your CI/CD job definition to either remove the pinned version or to update the latest major version.
+Users of GitLab 13.0-15.10 will continue to experience analyzer updates as normal until the release of GitLab 16.0, following which all newly fixed bugs and released features will be released only in the new major version of the analyzers. We do not backport bugs and features to deprecated versions as per our [maintenance policy](https://docs.gitlab.com/ee/policy/maintenance.html). As required, security patches will be backported within the latest 3 minor releases.
+Specifically, the following are being deprecated and will no longer be updated after 16.0 GitLab release:
+
+- API Fuzzing: version 2
+- Container Scanning: version 5
+- Coverage-guided fuzz testing: version 3
+- Dependency Scanning: version 3
+- Dynamic Application Security Testing (DAST): version 3
+- DAST API: version 2
+- IaC Scanning: version 3
+- License Scanning: version 4
+- Secret Detection: version 4
+- Static Application Security Testing (SAST): version 3 of [all analyzers](https://docs.gitlab.com/ee/user/application_security/sast/#supported-languages-and-frameworks)
+  - `brakeman`: version 3
+  - `flawfinder`: version 3
+  - `kubesec`: version 3
+  - `mobsf`: version 3
+  - `nodejs-scan`: version 3
+  - `phpcs-security-audit`: version 3
+  - `pmd-apex`: version 3
+  - `security-code-scan`: version 3
+  - `semgrep`: version 3
+  - `sobelow`: version 3
+  - `spotbugs`: version 3
 
 </div>
 

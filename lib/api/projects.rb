@@ -868,11 +868,14 @@ module API
         ]
         tags %w[projects]
       end
+      params do
+        optional :task, type: Symbol, default: :eager, values: %i[eager prune], desc: '`prune` to trigger manual prune of unreachable objects or `eager` to trigger eager housekeeping.'
+      end
       post ':id/housekeeping', feature_category: :source_code_management do
         authorize_admin_project
 
         begin
-          ::Repositories::HousekeepingService.new(user_project, :eager).execute
+          ::Repositories::HousekeepingService.new(user_project, params[:task]).execute
         rescue ::Repositories::HousekeepingService::LeaseTaken => error
           conflict!(error.message)
         end

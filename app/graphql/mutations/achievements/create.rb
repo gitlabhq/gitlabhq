@@ -28,10 +28,6 @@ module Mutations
                 required: false,
                 description: 'Description of or notes for the achievement.'
 
-      argument :revokeable, GraphQL::Types::Boolean,
-                required: true,
-                description: 'Revokeability for the achievement.'
-
       authorize :admin_achievement
 
       def resolve(args)

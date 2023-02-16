@@ -1,11 +1,8 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
-require 'support/helpers/stubbed_feature'
-require 'support/helpers/stub_feature_flags'
-require_dependency 're2'
+require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Pipeline::Expression::Lexeme::NotMatches do
+RSpec.describe Gitlab::Ci::Pipeline::Expression::Lexeme::NotMatches, feature_category: :continuous_integration do
   include StubFeatureFlags
 
   let(:left) { double('left') }
