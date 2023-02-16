@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference, howto
 ---
 
-# Mailgun and GitLab **(FREE SELF)**
+# Mailgun **(FREE SELF)**
 
 When you use Mailgun to send emails for your GitLab instance and [Mailgun](https://www.mailgun.com/)
 integration is enabled and configured in GitLab, you can receive their webhook for

@@ -4,10 +4,10 @@ group: Integrations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Create an API token for Jira in Atlassian cloud **(FREE)**
+# Create a Jira Cloud API token **(FREE)**
 
 You need an API token to [integrate with Jira](index.md)
-on Atlassian cloud. To create the API token:
+in Atlassian Cloud. To create the API token:
 
 1. Sign in to [Atlassian](https://id.atlassian.com/manage-profile/security/api-tokens)
    using an account with *write* access to Jira projects.

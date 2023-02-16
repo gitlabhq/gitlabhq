@@ -3,7 +3,6 @@ Rake/Require:
   Details: grace period
   Exclude:
     - 'lib/tasks/gitlab/assets.rake'
-    - 'lib/tasks/gitlab/dependency_proxy/migrate.rake'
     - 'lib/tasks/gitlab/docs/redirect.rake'
     - 'lib/tasks/gitlab/graphql.rake'
     - 'lib/tasks/gitlab/lfs/migrate.rake'

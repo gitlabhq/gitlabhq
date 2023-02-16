@@ -764,6 +764,16 @@ Response:
 | 200       | Credentials are valid           |
 | 403       | Credentials are invalid         |
 
+Example response:
+
+```json
+{
+    "id": 12345,
+    "token": "glrt-6337ff461c94fd3fa32ba3b1ff4125",
+    "token_expires_at": "2021-09-27T21:05:03.203Z"
+}
+```
+
 ## Reset instance's runner registration token
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30942) in GitLab 14.3.

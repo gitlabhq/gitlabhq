@@ -4,10 +4,10 @@ group: Integrations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# irker IRC Gateway **(FREE)**
+# irker (IRC gateway) **(FREE)**
 
 GitLab provides a way to push update messages to an irker server. When
-configured, pushes to a project trigger the service to send data directly
+configured, pushes to a project trigger the integration to send data directly
 to the irker server.
 
 See also the [irker integration API documentation](../../../api/integrations.md).

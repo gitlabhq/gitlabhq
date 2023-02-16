@@ -4,7 +4,7 @@ group: Integrations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Google Chat integration **(FREE)**
+# Google Chat **(FREE)**
 
 Integrate your project to send notifications from GitLab to a
 room of your choice in [Google Chat](https://chat.google.com/) (former Google

@@ -435,9 +435,12 @@ After that, the next pipeline uses the up-to-date `knapsack/report-master.json` 
 
 ### Automatic skipping of flaky tests
 
-Tests that are [known to be flaky](../testing_guide/flaky_tests.md#automatic-retries-and-flaky-tests-detection) are
-skipped unless the `$SKIP_FLAKY_TESTS_AUTOMATICALLY` variable is set to `false` or if the `pipeline:run-flaky-tests`
-label is set on the MR.
+We used to skip tests that are [known to be flaky](../testing_guide/flaky_tests.md#automatic-retries-and-flaky-tests-detection),
+but we stopped doing so since that could actually lead to actual broken `master`.
+Instead, we proactively quarantine any flaky test reported in `#master-broken` incidents
+so that they're ultimately fixed by their respective group.
+
+The automatic skipping of flaky tests can still be enabled by setting the `$SKIP_FLAKY_TESTS_AUTOMATICALLY` variable to `true`.
 
 See the [experiment issue](https://gitlab.com/gitlab-org/quality/team-tasks/-/issues/1069).
 

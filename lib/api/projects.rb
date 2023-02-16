@@ -875,7 +875,16 @@ module API
         authorize_admin_project
 
         begin
-          ::Repositories::HousekeepingService.new(user_project, params[:task]).execute
+          ::Repositories::HousekeepingService.new(user_project, params[:task]).execute do
+            ::Gitlab::Audit::Auditor.audit(
+              name: 'manually_trigger_housekeeping',
+              author: current_user,
+              scope: user_project,
+              target: user_project,
+              message: "Housekeeping task: #{params[:task]}",
+              created_at: DateTime.current
+            )
+          end
         rescue ::Repositories::HousekeepingService::LeaseTaken => error
           conflict!(error.message)
         end

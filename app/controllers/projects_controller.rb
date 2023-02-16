@@ -228,7 +228,16 @@ class ProjectsController < Projects::ApplicationController
              :eager
            end
 
-    ::Repositories::HousekeepingService.new(@project, task).execute
+    ::Repositories::HousekeepingService.new(@project, task).execute do
+      ::Gitlab::Audit::Auditor.audit(
+        name: 'manually_trigger_housekeeping',
+        author: current_user,
+        scope: @project,
+        target: @project,
+        message: "Housekeeping task: #{task}",
+        created_at: DateTime.current
+      )
+    end
 
     redirect_to(
       project_path(@project),

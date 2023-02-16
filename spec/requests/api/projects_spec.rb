@@ -4719,6 +4719,9 @@ RSpec.describe API::Projects, feature_category: :projects do
 
   describe 'POST /projects/:id/housekeeping' do
     let(:housekeeping) { Repositories::HousekeepingService.new(project) }
+    let(:params) { {} }
+
+    subject { post api("/projects/#{project.id}/housekeeping", user), params: params }
 
     before do
       allow(Repositories::HousekeepingService).to receive(:new).with(project, :eager).and_return(housekeeping)
@@ -4728,26 +4731,45 @@ RSpec.describe API::Projects, feature_category: :projects do
       it 'starts the housekeeping process' do
         expect(housekeeping).to receive(:execute).once
 
-        post api("/projects/#{project.id}/housekeeping", user)
+        subject
 
         expect(response).to have_gitlab_http_status(:created)
       end
 
+      it 'logs an audit event' do
+        expect(housekeeping).to receive(:execute).once.and_yield
+        expect(::Gitlab::Audit::Auditor).to receive(:audit).with(a_hash_including(
+          name: 'manually_trigger_housekeeping',
+          author: user,
+          scope: project,
+          target: project,
+          message: "Housekeeping task: eager"
+        ))
+
+        subject
+      end
+
       context 'when requesting prune' do
+        let(:params) { { task: :prune } }
+
         it 'triggers a prune' do
           expect(Repositories::HousekeepingService).to receive(:new).with(project, :prune).and_return(housekeeping)
           expect(housekeeping).to receive(:execute).once
 
-          post api("/projects/#{project.id}/housekeeping", user), params: { task: :prune }
+          subject
 
           expect(response).to have_gitlab_http_status(:created)
         end
       end
 
       context 'when requesting an unsupported task' do
+        let(:params) { { task: :unsupported_task } }
+
         it 'responds with bad_request' do
           expect(Repositories::HousekeepingService).not_to receive(:new)
-          post api("/projects/#{project.id}/housekeeping", user), params: { task: :unsupported_task }
+
+          subject
+
           expect(response).to have_gitlab_http_status(:bad_request)
         end
       end
@@ -4756,7 +4778,7 @@ RSpec.describe API::Projects, feature_category: :projects do
         it 'returns conflict' do
           expect(housekeeping).to receive(:execute).once.and_raise(Repositories::HousekeepingService::LeaseTaken)
 
-          post api("/projects/#{project.id}/housekeeping", user)
+          subject
 
           expect(response).to have_gitlab_http_status(:conflict)
           expect(json_response['message']).to match(/Somebody already triggered housekeeping for this resource/)

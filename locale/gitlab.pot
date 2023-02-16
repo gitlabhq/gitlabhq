@@ -20114,6 +20114,9 @@ msgstr ""
 msgid "GroupSettings|Choose a group path that does not start with a dash or end with a period. It can also contain alphanumeric characters and underscores."
 msgstr ""
 
+msgid "GroupSettings|Choose the merge request checks for projects in this group. This setting overrides the same settings configured on each project in this group."
+msgstr ""
+
 msgid "GroupSettings|Compliance frameworks"
 msgstr ""
 
@@ -26555,6 +26558,27 @@ msgid "Merge when pipeline succeeds"
 msgstr ""
 
 msgid "Merge..."
+msgstr ""
+
+msgid "MergeChecks|All threads must be resolved"
+msgstr ""
+
+msgid "MergeChecks|Enable \"Pipelines must succeed\" first."
+msgstr ""
+
+msgid "MergeChecks|Introduces the risk of merging changes that do not pass the pipeline."
+msgstr ""
+
+msgid "MergeChecks|Merge requests can't be merged if the latest pipeline did not succeed or is still running."
+msgstr ""
+
+msgid "MergeChecks|Pipelines must succeed"
+msgstr ""
+
+msgid "MergeChecks|Skipped pipelines are considered successful"
+msgstr ""
+
+msgid "MergeChecks|This setting is configured in group %{groupName} and can only be changed in the group settings by an administrator or group owner."
 msgstr ""
 
 msgid "MergeConflict|Commit to source branch"
@@ -33484,9 +33508,6 @@ msgstr ""
 msgid "ProjectSettings|All merge requests and commits are made against this branch unless you specify a different one."
 msgstr ""
 
-msgid "ProjectSettings|All threads must be resolved"
-msgstr ""
-
 msgid "ProjectSettings|Allow"
 msgstr ""
 
@@ -33637,9 +33658,6 @@ msgstr ""
 msgid "ProjectSettings|Internal"
 msgstr ""
 
-msgid "ProjectSettings|Introduces the risk of merging changes that do not pass the pipeline."
-msgstr ""
-
 msgid "ProjectSettings|Issues"
 msgstr ""
 
@@ -33682,9 +33700,6 @@ msgstr ""
 msgid "ProjectSettings|Merge requests approved for merge are queued, and pipelines validate the combined results of the source and target branches before merge. %{link_start}What are merge trains?%{link_end}"
 msgstr ""
 
-msgid "ProjectSettings|Merge requests can't be merged if the latest pipeline did not succeed or is still running."
-msgstr ""
-
 msgid "ProjectSettings|Merge suggestions"
 msgstr ""
 
@@ -33719,9 +33734,6 @@ msgid "ProjectSettings|Pages"
 msgstr ""
 
 msgid "ProjectSettings|Pages for project documentation."
-msgstr ""
-
-msgid "ProjectSettings|Pipelines must succeed"
 msgstr ""
 
 msgid "ProjectSettings|Prevents direct linking to potentially sensitive media files"
@@ -33791,9 +33803,6 @@ msgid "ProjectSettings|Show default award emojis"
 msgstr ""
 
 msgid "ProjectSettings|Show link to create or view a merge request when pushing from the command line"
-msgstr ""
-
-msgid "ProjectSettings|Skipped pipelines are considered successful"
 msgstr ""
 
 msgid "ProjectSettings|Snippets"

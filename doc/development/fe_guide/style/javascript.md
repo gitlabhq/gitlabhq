@@ -41,12 +41,12 @@ instead.
 
 ```javascript
 // bad
-function a(p1, p2, p3) {
+function a(p1, p2, p3, p4) {
   // ...
 };
 
 // good
-function a(p) {
+function a({ p1, p2, p3, p4 }) {
   // ...
 };
 ```

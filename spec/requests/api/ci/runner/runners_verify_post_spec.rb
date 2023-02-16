@@ -18,7 +18,8 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
 
   describe '/api/v4/runners' do
     describe 'POST /api/v4/runners/verify' do
-      let(:runner) { create(:ci_runner) }
+      let_it_be_with_reload(:runner) { create(:ci_runner, token_expires_at: 3.days.from_now) }
+
       let(:params) {}
 
       subject(:verify) { post api('/runners/verify'), params: params }
@@ -53,6 +54,28 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
             verify
 
             expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response).to eq({
+              'id' => runner.id,
+              'token' => runner.token,
+              'token_expires_at' => runner.token_expires_at.iso8601(3)
+            })
+          end
+
+          context 'with non-expiring runner token' do
+            before do
+              runner.update!(token_expires_at: nil)
+            end
+
+            it 'verifies Runner credentials' do
+              verify
+
+              expect(response).to have_gitlab_http_status(:ok)
+              expect(json_response).to eq({
+                'id' => runner.id,
+                'token' => runner.token,
+                'token_expires_at' => nil
+              })
+            end
           end
 
           it_behaves_like 'storing arguments in the application context for the API' do
@@ -77,6 +100,11 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
             verify
 
             expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response).to eq({
+              'id' => runner.id,
+              'token' => runner.token,
+              'token_expires_at' => runner.token_expires_at.iso8601(3)
+            })
           end
 
           context 'when system_id is provided' do
@@ -100,6 +128,11 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
           verify
 
           expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response).to eq({
+            'id' => runner.id,
+            'token' => runner.token,
+            'token_expires_at' => runner.token_expires_at.iso8601(3)
+          })
         end
       end
 

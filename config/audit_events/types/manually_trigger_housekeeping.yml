@@ -1,0 +1,9 @@
+---
+name: manually_trigger_housekeeping
+description: Triggered when manually triggering housekeeping via api or admin UI
+introduced_by_issue: https://gitlab.com/gitlab-org/gitlab/-/issues/390761
+introduced_by_mr: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112095
+feature_category: source_code_management
+milestone: '15.9'
+saved_to_database: true
+streamed: true

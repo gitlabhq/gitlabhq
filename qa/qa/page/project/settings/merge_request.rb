@@ -16,7 +16,7 @@ module QA
           end
 
           view 'app/views/projects/_merge_request_pipelines_and_threads_options.html.haml' do
-            element :allow_merge_if_all_discussions_are_resolved_checkbox
+            element :only_allow_merge_if_all_discussions_are_resolved_checkbox
           end
 
           def click_save_changes
@@ -29,7 +29,7 @@ module QA
           end
 
           def enable_merge_if_all_disscussions_are_resolved
-            check_element(:allow_merge_if_all_discussions_are_resolved_checkbox, true)
+            check_element(:only_allow_merge_if_all_discussions_are_resolved_checkbox, true)
             click_save_changes
           end
         end

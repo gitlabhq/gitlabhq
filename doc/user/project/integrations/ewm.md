@@ -4,13 +4,13 @@ group: Integrations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# IBM Engineering Workflow Management (EWM) Integration **(FREE)**
+# Engineering Workflow Management (EWM) **(FREE)**
 
-This service allows you to go from GitLab to EWM work items mentioned in merge request
+This integration allows you to go from GitLab to EWM work items mentioned in merge request
 descriptions and commit messages.
 Each work item reference is automatically converted to a link to the work item.
 
-This IBM product was [formerly named Rational Team Concert](https://jazz.net/blog/index.php/2019/04/23/renaming-the-ibm-continuous-engineering-portfolio/)(RTC). This integration is compatible with all versions of RTC and EWM.
+This IBM product was [formerly named Rational Team Concert (RTC)](https://jazz.net/blog/index.php/2019/04/23/renaming-the-ibm-continuous-engineering-portfolio/). This integration is compatible with all versions of RTC and EWM.
 
 To enable the EWM integration, in a project:
 

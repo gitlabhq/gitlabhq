@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: index
 ---
 
-# Security partner integrations **(FREE)**
+# Security partners **(FREE)**
 
 You can integrate GitLab with its security partners. This page has information on how do this with
 each security partner:

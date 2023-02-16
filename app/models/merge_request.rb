@@ -2080,7 +2080,11 @@ class MergeRequest < ApplicationRecord
   end
 
   def report_type_enabled?(report_type)
-    !!actual_head_pipeline&.batch_lookup_report_artifact_for_file_type(report_type)
+    if report_type == :license_scanning
+      ::Gitlab::LicenseScanning.scanner_for_pipeline(project, actual_head_pipeline).has_data?
+    else
+      !!actual_head_pipeline&.batch_lookup_report_artifact_for_file_type(report_type)
+    end
   end
 end
 

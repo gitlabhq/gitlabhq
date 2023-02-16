@@ -883,6 +883,28 @@ Input type: `ApiFuzzingCiConfigurationCreateInput`
 | <a id="mutationapifuzzingciconfigurationcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationapifuzzingciconfigurationcreategitlabciyamleditpath"></a>`gitlabCiYamlEditPath` **{warning-solid}** | [`String`](#string) | **Deprecated:** The configuration snippet is now generated client-side. Deprecated in 14.6. |
 
+### `Mutation.approveDeployment`
+
+Input type: `ApproveDeploymentInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationapprovedeploymentclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationapprovedeploymentcomment"></a>`comment` | [`String`](#string) | Comment to go with the approval. |
+| <a id="mutationapprovedeploymentid"></a>`id` | [`DeploymentID!`](#deploymentid) | ID of the deployment. |
+| <a id="mutationapprovedeploymentrepresentedas"></a>`representedAs` | [`String`](#string) | Name of the User/Group/Role to use for the approval, when the user belongs to multiple approval rules. |
+| <a id="mutationapprovedeploymentstatus"></a>`status` | [`DeploymentsApprovalStatus!`](#deploymentsapprovalstatus) | Status of the approval (either `APPROVED` or `REJECTED`). |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationapprovedeploymentclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationapprovedeploymentdeploymentapproval"></a>`deploymentApproval` | [`DeploymentApproval!`](#deploymentapproval) | DeploymentApproval after mutation. |
+| <a id="mutationapprovedeploymenterrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+
 ### `Mutation.artifactDestroy`
 
 Input type: `ArtifactDestroyInput`
@@ -17130,6 +17152,7 @@ Represents a package details in the Package Registry.
 | <a id="packagedetailstypepackagetype"></a>`packageType` | [`PackageTypeEnum!`](#packagetypeenum) | Package type. |
 | <a id="packagedetailstypepipelines"></a>`pipelines` | [`PipelineConnection`](#pipelineconnection) | Pipelines that built the package. Max page size 20. (see [Connections](#connections)) |
 | <a id="packagedetailstypeproject"></a>`project` | [`Project!`](#project) | Project where the package is stored. |
+| <a id="packagedetailstypepublicpackage"></a>`publicPackage` | [`Boolean`](#boolean) | Indicates if there is public access to the package. |
 | <a id="packagedetailstypepypisetupurl"></a>`pypiSetupUrl` | [`String`](#string) | Url of the PyPi project setup endpoint. |
 | <a id="packagedetailstypepypiurl"></a>`pypiUrl` | [`String`](#string) | Url of the PyPi project endpoint. |
 | <a id="packagedetailstypestatus"></a>`status` | [`PackageStatus!`](#packagestatus) | Package status. |
@@ -24154,6 +24177,12 @@ Date represented in ISO 8601.
 A `DependencyProxyManifestID` is a global ID. It is encoded as a string.
 
 An example `DependencyProxyManifestID` is: `"gid://gitlab/DependencyProxy::Manifest/1"`.
+
+### `DeploymentID`
+
+A `DeploymentID` is a global ID. It is encoded as a string.
+
+An example `DeploymentID` is: `"gid://gitlab/Deployment/1"`.
 
 ### `DescriptionVersionID`
 

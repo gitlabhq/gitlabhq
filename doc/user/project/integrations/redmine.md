@@ -4,7 +4,7 @@ group: Integrations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Redmine service **(FREE)**
+# Redmine **(FREE)**
 
 Use [Redmine](https://www.redmine.org/) as the issue tracker.
 

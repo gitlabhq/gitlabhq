@@ -4,10 +4,10 @@ group: Integrations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Mock CI Service **(FREE)**
+# Mock CI **(FREE)**
 
 NOTE:
-This service is only listed if you are in a [development environment](https://gitlab.com/gitlab-org/gitlab-mock-ci-service#setup-mockci-integration)!
+This integration only appears if you're in a [development environment](https://gitlab.com/gitlab-org/gitlab-mock-ci-service#setup-mockci-integration).
 
 To set up the mock CI service server, respond to the following endpoints
 

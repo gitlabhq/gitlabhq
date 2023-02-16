@@ -1025,7 +1025,7 @@ Particular attention should be shown to:
 
    WARNING:
    If you have existing data stored on the default Gitaly storage,
-   you should [migrate the data your Gitaly Cluster storage](index.md#migrate-to-gitaly-cluster)
+   you should [migrate the data to your Gitaly Cluster storage](index.md#migrate-to-gitaly-cluster)
    first.
 
    ```ruby

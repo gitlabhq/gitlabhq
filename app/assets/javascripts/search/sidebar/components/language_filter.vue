@@ -31,9 +31,6 @@ export default {
   computed: {
     ...mapState(['aggregations', 'sidebarDirty']),
     ...mapGetters(['langugageAggregationBuckets']),
-    ffBasedXPadding() {
-      return this.glFeatures.searchPageVerticalNav ? 'gl-px-5' : 'gl-px-0';
-    },
     hasBuckets() {
       return this.langugageAggregationBuckets.length > 0;
     },
@@ -87,7 +84,7 @@ export default {
       class="gl-overflow-x-hidden gl-overflow-y-auto"
       :class="{ 'language-filter-max-height': showAll }"
     >
-      <checkbox-filter :class="ffBasedXPadding" :filter-data="filtersData" />
+      <checkbox-filter class="gl-px-5" :filter-data="filtersData" />
       <span v-if="showAll && hasOverMax" data-testid="has-over-max-text">{{
         $options.i18n.showingMax
       }}</span>
@@ -109,7 +106,7 @@ export default {
     </div>
     <div v-if="!aggregations.error">
       <hr :class="$options.HR_DEFAULT_CLASSES" />
-      <div class="gl-display-flex gl-align-items-center gl-mt-4 gl-mx-5" :class="ffBasedXPadding">
+      <div class="gl-display-flex gl-align-items-center gl-mt-4 gl-mx-5 gl-px-5">
         <gl-button
           category="primary"
           variant="confirm"

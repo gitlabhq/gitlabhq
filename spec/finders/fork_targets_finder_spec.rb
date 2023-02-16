@@ -55,19 +55,5 @@ RSpec.describe ForkTargetsFinder do
         expect(finder.execute(search: maintained_group.path)).to eq([maintained_group])
       end
     end
-
-    context 'when searchable_fork_targets feature flag is disabled' do
-      before do
-        stub_feature_flags(searchable_fork_targets: false)
-      end
-
-      it_behaves_like 'returns namespaces and groups'
-
-      context 'when search is provided' do
-        it 'ignores the param and returns all user manageable namespaces' do
-          expect(finder.execute).to match_array([user.namespace, maintained_group, owned_group, project.namespace, developer_group])
-        end
-      end
-    end
   end
 end

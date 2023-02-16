@@ -5,7 +5,7 @@ group: Global Search
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Elasticsearch integration **(PREMIUM SELF)**
+# Elasticsearch **(PREMIUM SELF)**
 
 This page describes how to enable Advanced Search. When enabled,
 Advanced Search provides faster search response times and [improved search features](../../user/search/advanced_search.md).

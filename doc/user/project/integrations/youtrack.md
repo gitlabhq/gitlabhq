@@ -4,7 +4,7 @@ group: Integrations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# YouTrack service **(FREE)**
+# YouTrack **(FREE)**
 
 JetBrains [YouTrack](https://www.jetbrains.com/youtrack/) is a web-based issue tracking and project
 management platform.

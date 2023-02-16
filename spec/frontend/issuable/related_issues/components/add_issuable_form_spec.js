@@ -1,10 +1,10 @@
 import { GlFormGroup } from '@gitlab/ui';
 import { mount, shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
-import { TYPE_ISSUE } from '~/issues/constants';
+import { TYPE_EPIC, TYPE_ISSUE } from '~/issues/constants';
 import AddIssuableForm from '~/related_issues/components/add_issuable_form.vue';
 import IssueToken from '~/related_issues/components/issue_token.vue';
-import { issuableTypesMap, linkedIssueTypesMap, PathIdSeparator } from '~/related_issues/constants';
+import { linkedIssueTypesMap, PathIdSeparator } from '~/related_issues/constants';
 
 const issuable1 = {
   id: 200,
@@ -143,7 +143,7 @@ describe('AddIssuableForm', () => {
         wrapper = shallowMount(AddIssuableForm, {
           propsData: {
             inputValue: '',
-            issuableType: issuableTypesMap.EPIC,
+            issuableType: TYPE_EPIC,
             pathIdSeparator,
             pendingReferences: [],
           },
@@ -157,9 +157,9 @@ describe('AddIssuableForm', () => {
 
     describe('categorized issuables', () => {
       it.each`
-        issuableType             | pathIdSeparator          | contextHeader          | contextFooter
-        ${TYPE_ISSUE}            | ${PathIdSeparator.Issue} | ${'The current issue'} | ${'the following issues'}
-        ${issuableTypesMap.EPIC} | ${PathIdSeparator.Epic}  | ${'The current epic'}  | ${'the following epics'}
+        issuableType  | pathIdSeparator          | contextHeader          | contextFooter
+        ${TYPE_ISSUE} | ${PathIdSeparator.Issue} | ${'The current issue'} | ${'the following issues'}
+        ${TYPE_EPIC}  | ${PathIdSeparator.Epic}  | ${'The current epic'}  | ${'the following epics'}
       `(
         'show header text as "$contextHeader" and footer text as "$contextFooter" issuableType is set to $issuableType',
         ({ issuableType, contextHeader, contextFooter }) => {

@@ -59,10 +59,7 @@ describe('GlobalSearchSidebar', () => {
       ${'blobs'}          | ${false}    | ${true}
     `('sidebar scope: $scope', ({ scope, showFilters, ShowsLanguage }) => {
       beforeEach(() => {
-        createComponent(
-          { urlQuery: { scope } },
-          { searchBlobsLanguageAggregation: true, searchPageVerticalNav: true },
-        );
+        createComponent({ urlQuery: { scope } }, { searchBlobsLanguageAggregation: true });
       });
 
       it(`${!showFilters ? "doesn't" : ''} shows filters`, () => {

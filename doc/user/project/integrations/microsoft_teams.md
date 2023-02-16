@@ -4,9 +4,9 @@ group: Integrations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Microsoft Teams service **(FREE)**
+# Microsoft Teams notifications **(FREE)**
 
-You can integrate Microsoft Teams with GitLab, and display notifications about GitLab projects
+You can integrate Microsoft Teams notifications with GitLab and display notifications about GitLab projects
 in Microsoft Teams. To integrate the services, you must:
 
 1. [Configure Microsoft Teams](#configure-microsoft-teams) to enable a webhook

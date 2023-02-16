@@ -77,6 +77,7 @@ module API
 
         desc 'Validate authentication credentials' do
           summary "Verify authentication for a registered runner"
+          success Entities::Ci::RunnerRegistrationDetails
           http_codes [[200, 'Credentials are valid'], [403, 'Forbidden']]
         end
         params do
@@ -86,7 +87,8 @@ module API
         post '/verify', urgency: :low, feature_category: :runner do
           authenticate_runner!
           status 200
-          body "200"
+
+          present current_runner, with: Entities::Ci::RunnerRegistrationDetails
         end
 
         desc 'Reset runner authentication token with current token' do

@@ -4,9 +4,9 @@ group: Integrations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Enabling emails on push **(FREE)**
+# Emails on push **(FREE)**
 
-By enabling this service, you receive email notifications for every change
+When you enable emails on push, you receive email notifications for every change
 that is pushed to your project.
 
 To enable emails on push:

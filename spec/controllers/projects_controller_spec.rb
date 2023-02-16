@@ -664,6 +664,20 @@ RSpec.describe ProjectsController do
         expect(response).to have_gitlab_http_status(:found)
       end
 
+      it 'logs an audit event' do
+        expect(housekeeping).to receive(:execute).once.and_yield
+
+        expect(::Gitlab::Audit::Auditor).to receive(:audit).with(a_hash_including(
+          name: 'manually_trigger_housekeeping',
+          author: user,
+          scope: project,
+          target: project,
+          message: "Housekeeping task: eager"
+        ))
+
+        subject
+      end
+
       context 'and requesting prune' do
         let(:prune) { true }
 
