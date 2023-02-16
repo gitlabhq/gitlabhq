@@ -58,13 +58,15 @@ Fast lookup can be enabled with the following SSH servers:
 - [`gitlab-sshd`](gitlab_sshd.md)
 - OpenSSH
 
-### `gitlab-sshd`
+You can run both services simultaneously by using separate ports for each service.
+
+### With `gitlab-sshd`
 
 To set up `gitlab-sshd`, see [the `gitlab-sshd` documentation](gitlab_sshd.md).
 After `gitlab-sshd` is enabled, GitLab Shell and `gitlab-sshd` are configured
 to use fast lookup automatically.
 
-### OpenSSH
+### With OpenSSH
 
 WARNING:
 OpenSSH version 6.9+ is required because `AuthorizedKeysCommand` must be

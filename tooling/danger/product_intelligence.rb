@@ -22,6 +22,11 @@ module Tooling
 
       MSG
 
+      CHANGED_USAGE_DATA_MESSAGE = <<~MSG
+        Notice that implementing metrics directly in usage_data.rb has been deprecated. ([Deprecated Usage Metrics](https://docs.gitlab.com/ee/development/service_ping/usage_data.html#usage-data-metrics-guide))
+        Please use [Instrumentation Classes](https://docs.gitlab.com/ee/development/service_ping/metrics_instrumentation.html) instead.
+      MSG
+
       WORKFLOW_LABELS = [
         APPROVED_LABEL,
         REVIEW_LABEL
@@ -45,6 +50,13 @@ module Tooling
 
         warn CHANGED_SCOPE_MESSAGE + convert_to_table(metric_scope_list)
         helper.labels_to_add.concat(missing_labels) unless missing_labels.empty?
+      end
+
+      def check_usage_data_insertions!
+        usage_data_changes = helper.changed_lines("lib/gitlab/usage_data.rb")
+        return if usage_data_changes.none? { |change| change.start_with?("+") }
+
+        warn format(CHANGED_USAGE_DATA_MESSAGE)
       end
 
       private

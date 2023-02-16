@@ -35,8 +35,8 @@ class GithubImport
   private
 
   def show_warning!
-    puts "This will import GitHub #{@repo.full_name.bright} into GitLab #{@project_path.bright} as #{@current_user.name}"
-    puts "Permission checks are ignored. Press any key to continue.".color(:red)
+    puts "This will import GitHub #{@repo[:full_name].bright} into GitLab #{@project_path.bright} as #{@current_user.name}"
+    puts 'Permission checks are ignored. Press any key to continue.'.color(:red)
 
     $stdin.getch
 
@@ -57,43 +57,34 @@ class GithubImport
   end
 
   def new_project
-    Project.transaction do
-      namespace_path, _sep, name = @project_path.rpartition('/')
-      namespace = find_or_create_namespace(namespace_path)
+    namespace_path, _sep, project_name = @project_path.rpartition('/')
+    target_namespace = Namespace.find_by_full_path(namespace_path)
 
+    raise 'Namespace or group to import repository into does not exist.' unless target_namespace
+
+    Project.transaction do
       project = Projects::CreateService.new(
         @current_user,
-        name: name,
-        path: name,
-        description: @repo.description,
-        namespace_id: namespace.id,
+        name: project_name,
+        path: project_name,
+        description: @repo[:description],
+        namespace_id: target_namespace.id,
         visibility_level: visibility_level,
-        skip_wiki: @repo.has_wiki
+        skip_wiki: @repo[:has_wiki]
       ).execute
 
       project.update!(
         import_type: 'github',
-        import_source: @repo.full_name,
-        import_url: @repo.clone_url.sub('://', "://#{@options[:token]}@")
+        import_source: @repo[:full_name],
+        import_url: @repo[:clone_url].sub('://', "://#{@options[:token]}@")
       )
 
       project
     end
   end
 
-  def find_or_create_namespace(names)
-    return @current_user.namespace if names == @current_user.namespace_path
-    return @current_user.namespace unless @current_user.can_create_group?
-
-    Groups::NestedCreateService.new(@current_user, group_path: names).execute
-  end
-
-  def full_path_namespace(names)
-    @full_path_namespace ||= Namespace.find_by_full_path(names)
-  end
-
   def visibility_level
-    @repo.private ? Gitlab::VisibilityLevel::PRIVATE : Gitlab::CurrentSettings.current_application_settings.default_project_visibility
+    @repo[:private] ? Gitlab::VisibilityLevel::PRIVATE : Gitlab::CurrentSettings.current_application_settings.default_project_visibility
   end
 end
 
@@ -110,17 +101,17 @@ class GithubRepos
     return found_github_repo if @github_repo
 
     repos.each do |repo|
-      print "ID: #{repo.id.to_s.bright}".color(:green)
-      print "\tName: #{repo.full_name}\n".color(:green)
+      print "ID: #{repo[:id].to_s.bright}".color(:green)
+      print "\tName: #{repo[:full_name]}\n".color(:green)
     end
 
     print 'ID? '.bright
 
-    repos.find { |repo| repo.id == repo_id }
+    repos.find { |repo| repo[:id] == repo_id }
   end
 
   def found_github_repo
-    repos.find { |repo| repo.full_name == @github_repo }
+    repos.find { |repo| repo[:full_name] == @github_repo }
   end
 
   def repo_id
@@ -128,7 +119,7 @@ class GithubRepos
   end
 
   def repos
-    @client.octokit.list_repositories
+    @repos ||= @client.repos
   end
 end
 

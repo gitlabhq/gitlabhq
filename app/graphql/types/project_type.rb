@@ -610,7 +610,11 @@ module Types
     end
 
     def open_issues_count
-      object.open_issues_count if object.feature_available?(:issues, context[:current_user])
+      BatchLoader::GraphQL.wrap(object.open_issues_count) if object.feature_available?(:issues, context[:current_user])
+    end
+
+    def forks_count
+      BatchLoader::GraphQL.wrap(object.forks_count)
     end
 
     def statistics

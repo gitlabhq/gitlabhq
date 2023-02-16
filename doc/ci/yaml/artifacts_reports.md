@@ -253,7 +253,7 @@ Compliance report uploads to GitLab as an artifact.
 GitLab can display the results of one or more reports in:
 
 - The merge request [license compliance widget](../../user/compliance/license_compliance/index.md).
-- The [license list](../../user/compliance/license_compliance/index.md#license-list).
+- The [license list](../../user/compliance/license_list.md).
 
 ## `artifacts:reports:load_performance` **(PREMIUM)**
 

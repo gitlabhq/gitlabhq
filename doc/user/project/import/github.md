@@ -21,9 +21,6 @@ If you are importing to a self-managed GitLab instance, you can use the
 [GitHub Rake task](../../../administration/raketasks/github_import.md) instead. This allows you to import projects
 without the constraints of a [Sidekiq](../../../development/sidekiq/index.md) worker.
 
-NOTE:
-If you are importing a project using the GitHub Rake task, GitLab still creates namespaces or groups that don't exist.
-
 When importing projects:
 
 - If a user referenced in the project is not found in the GitLab database, the project creator is set as the author and

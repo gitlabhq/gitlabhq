@@ -21,7 +21,7 @@ For the job to activate, License Finder needs to find a compatible package defin
 GitLab checks the License Compliance report, compares the
 licenses between the source and target branches, and shows the information right on the merge
 request. Denied licenses are indicated by a `x` red icon next to them as well as new licenses that
-need a decision from you. In addition, you can [manually allow or deny](#policies) licenses in your
+need a decision from you. In addition, you can [manually allow or deny](../license_check_rules.md) licenses in your
 project's license compliance policy section. If a denied license is detected in a new commit,
 GitLab blocks any merge requests containing that commit and instructs the developer to remove the
 license.
@@ -45,23 +45,11 @@ that you can later download and analyze.
 WARNING:
 License Compliance Scanning does not support run-time installation of compilers and interpreters.
 
-![License Compliance Widget](img/license_compliance_v13_0.png)
-
-You can select a license to see more information.
-
-When GitLab detects a **Denied** license, you can view it in the [license list](#license-list).
-
-![License List](img/license_list_v13_0.png)
-
-You can view and modify existing policies from the [policies](#policies) tab.
-
-![Edit Policy](img/policies_maintainer_edit_v14_3.png)
-
 ## License expressions
 
 GitLab has limited support for [composite licenses](https://spdx.github.io/spdx-spec/v2-draft/SPDX-license-expressions/).
 License compliance can read multiple licenses, but always considers them combined using the `AND` operator. For example,
-if a dependency has two licenses, and one of them is allowed and the other is denied by the project [policy](#policies),
+if a dependency has two licenses, and one of them is allowed and the other is denied by the project [policy](../license_check_rules.md),
 GitLab evaluates the composite license as _denied_, as this is the safer option.
 The ability to support other license expression operators (like `OR`, `WITH`) is tracked
 in [this epic](https://gitlab.com/groups/gitlab-org/-/epics/6571).
@@ -701,116 +689,17 @@ Additional configuration may be needed for connecting to private registries for:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/212388) in GitLab 13.3.
 
-Prior to GitLab 13.3, offline environments required an exact name match for [project policies](#policies).
-In GitLab 13.3 and later, GitLab matches the name of [project policies](#policies)
+Prior to GitLab 13.3, offline environments required an exact name match for [project policies](../license_check_rules.md).
+In GitLab 13.3 and later, GitLab matches the name of [project policies](../license_check_rules.md)
 with identifiers from the [SPDX license list](https://spdx.org/licenses/).
 A local copy of the SPDX license list is distributed with the GitLab instance. If needed, the GitLab
 instance's administrator can manually update it with a [Rake task](../../../raketasks/spdx.md).
-
-## License list
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13582) in GitLab 12.7.
-
-The License list allows you to see your project's licenses and key
-details about them.
-
-For the licenses to appear under the license list, the following
-requirements must be met:
-
-1. The License Compliance CI/CD job must be [enabled](#enable-license-compliance) for your project.
-1. Your project must use at least one of the
-   [supported languages and package managers](#supported-languages-and-package-managers).
-
-When everything is configured, on the left sidebar, select **Security & Compliance > License Compliance**.
-
-The licenses are displayed, where:
-
-- **Name:** The name of the license.
-- **Component:** The components which have this license.
-- **Policy Violation:** The license has a [license policy](#policies) marked as **Deny**.
-
-![License List](img/license_list_v13_0.png)
-
-## Policies
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/22465) in GitLab 12.9.
-
-Policies allow you to specify licenses that are `allowed` or `denied` in a project. If a `denied`
-license is newly committed it blocks the merge request and instructs the developer to remove it.
-Note, the merge request is not able to be merged until the `denied` license is removed.
-You may add a [`License-Check` approval rule](#enabling-license-approvals-within-a-project),
-which enables a designated approver that can approve and then merge a merge request with `denied` license.
-
-These policies can be configured by using the [Managed Licenses API](../../../api/managed_licenses.md).
-
-![Merge request with denied licenses](img/denied_licenses_v15_3.png)
-
-The **Policies** tab in the project's license compliance section displays your project's license
-policies. Project maintainers can specify policies in this section.
-
-![Edit Policy](img/policies_maintainer_edit_v14_3.png)
-
-![Add Policy](img/policies_maintainer_add_v14_3.png)
-
-Developers of the project can view the policies configured in a project.
-
-![View Policies](img/policies_v13_0.png)
-
-## Enabling License Approvals within a project
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13067) in GitLab 12.3.
-
-Prerequisites:
-
-- Maintainer or Owner role.
-
-`License-Check` is a [merge request approval](../../project/merge_requests/approvals/index.md) rule
-you can enable to allow an individual or group to approve a merge request that contains a `denied`
-license.
-
-You can enable `License-Check` one of two ways:
-
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > General**.
-1. Expand **Merge request approvals**.
-1. Select **Enable** or **Edit**.
-1. Add or change the **Rule name** to `License-Check` (case sensitive).
-
-![License Check Approver Rule](img/license-check_v13_4.png)
-
-- Create an approval group in the [project policies section for License Compliance](#policies).
-  You must set this approval group's number of approvals required to greater than zero. Once you
-  enable this group in your project, the approval rule is enabled for all merge requests.
-
-Any code changes cause the approvals required to reset.
-
-An approval is required when a license report:
-
-- Contains a dependency that includes a software license that is `denied`.
-- Is not generated during pipeline execution.
-
-An approval is optional when a license report:
-
-- Contains no software license violations.
-- Contains only new licenses that are `allowed` or unknown.
 
 ## Warnings
 
 We recommend that you use the most recent version of all containers, and the most recent supported version of all package managers and languages. Using previous versions carries an increased security risk because unsupported versions may no longer benefit from active security reporting and backporting of security fixes.
 
 ## Troubleshooting
-
-### The License Compliance widget is stuck in a loading state
-
-A loading spinner is displayed in the following scenarios:
-
-- While the pipeline is in progress.
-- If the pipeline is complete, but still parsing the results in the background.
-- If the license scanning job is complete, but the pipeline is still running.
-
-The License Compliance widget polls every few seconds for updated results. When the pipeline is complete, the first poll after pipeline completion triggers the parsing of the results. This can take a few seconds depending on the size of the generated report.
-
-The final state is when a successful pipeline run has been completed, parsed, and the licenses displayed in the widget.
 
 ### ASDF_PYTHON_VERSION does not automatically install the version
 

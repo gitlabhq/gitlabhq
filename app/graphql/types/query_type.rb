@@ -41,6 +41,10 @@ module Types
           null: true,
           resolver: Resolvers::GroupResolver,
           description: "Find a group."
+    field :groups, Types::GroupType.connection_type,
+          null: true,
+          resolver: Resolvers::GroupsResolver,
+          description: "Find groups."
     field :issue, Types::IssueType,
           null: true,
           description: 'Find an issue.' do

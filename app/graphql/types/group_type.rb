@@ -193,7 +193,7 @@ module Types
           null: true,
           description: 'List of descendant groups of this group.',
           complexity: 5,
-          resolver: Resolvers::GroupsResolver
+          resolver: Resolvers::NestedGroupsResolver
 
     field :ci_variables,
           Types::Ci::GroupVariableType.connection_type,

@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # License scanning of CycloneDX files **(ULTIMATE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/384932) in GitLab 15.9 [with a flag](../../../administration/feature_flags.md) named `license_scanning_sbom_scanner`. Disabled by default.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/384932) in GitLab 15.9 [with two flags](../../../administration/feature_flags.md) named `license_scanning_sbom_scanner` and `package_metadata_synchronization`. Both flags are disabled by default and both flags must be enabled for this feature to work.
 
 FLAG:
 On self-managed GitLab, this feature is not available.
@@ -108,3 +108,16 @@ The supported files and versions are the ones supported by
 
 To enable license scanning of CycloneDX files,
 you must configure [Dependency Scanning](../../application_security/dependency_scanning/index.md#configuration).
+
+## License expressions
+
+GitLab has limited support for [composite licenses](https://spdx.github.io/spdx-spec/v2-draft/SPDX-license-expressions/).
+License compliance can read multiple licenses, but always considers them combined using the `AND` operator. For example,
+if a dependency has two licenses, and one of them is allowed and the other is denied by the project [policy](../license_approval_policies.md),
+GitLab evaluates the composite license as _denied_, as this is the safer option.
+The ability to support other license expression operators (like `OR`, `WITH`) is tracked
+in [this epic](https://gitlab.com/groups/gitlab-org/-/epics/6571).
+
+## Blocking merge requests based on detected licenses
+
+Users can require approval for merge requests based on the licenses that are detected by configuring a [license approval policy](../license_approval_policies.md).

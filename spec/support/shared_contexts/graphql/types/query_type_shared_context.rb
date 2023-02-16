@@ -14,6 +14,7 @@ RSpec.shared_context 'with FOSS query type fields' do
       :echo,
       :gitpod_enabled,
       :group,
+      :groups,
       :issue,
       :issues,
       :jobs,

@@ -159,7 +159,7 @@ RSpec.describe 'Projects tree', :js, feature_category: :web_ide do
   end
 
   context 'ref switcher', :js do
-    it 'switches ref to branch' do
+    it 'switches ref to branch', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/391780' do
       ref_selector = '.ref-selector'
       ref_name = 'fix'
       visit project_tree_path(project, 'master')

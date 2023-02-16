@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 require 'rake_helper'
-require_relative '../../../support/helpers/next_instance_of'
+require_relative '../../support/helpers/next_instance_of'
 
-RSpec.describe 'gitlab:metrics_exporter:install' do
+RSpec.describe 'gitlab:metrics_exporter:install', feature_category: :metrics do
   before do
     Rake.application.rake_require 'tasks/gitlab/metrics_exporter'
   end
@@ -21,7 +21,7 @@ RSpec.describe 'gitlab:metrics_exporter:install' do
   end
 
   context 'when target directory is specified' do
-    let(:args) { Rake::TaskArguments.new(%w(dir), %w(path/to/exporter)) }
+    let(:args) { Rake::TaskArguments.new(%w[dir], %w[path/to/exporter]) }
     let(:context) { TOPLEVEL_BINDING.eval('self') }
     let(:expected_clone_params) do
       {

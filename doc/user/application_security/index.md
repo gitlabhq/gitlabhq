@@ -280,7 +280,7 @@ security issues:
 
 - A security vulnerability. For more details, read [Scan result policies](policies/scan-result-policies.md).
 - A software license compliance violation. For more details, read
-  [Enabling license approvals within a project](../compliance/license_compliance/index.md#enabling-license-approvals-within-a-project).
+  [Enabling license approvals within a project](../compliance/license_check_rules.md#enabling-license-approvals-within-a-project).
 
 ## Using private Maven repositories
 
@@ -710,7 +710,7 @@ You can upvote the issue to help with prioritization, and
 If the pipeline has manual steps with a job that has the `allow_failure: false` option, and this job is not finished,
 GitLab can't populate listed pages with the data from security reports.
 In this case, [the Vulnerability Report](vulnerability_report/index.md), [the Dependency List](dependency_list/index.md),
-and [the License list](../compliance/license_compliance/index.md#license-list) pages are empty.
+and [the License list](../compliance/license_list.md) pages are empty.
 These security pages can be populated by running the jobs from the manual step of the pipeline.
 
 There is [an issue open to handle this scenario](https://gitlab.com/gitlab-org/gitlab/-/issues/346843).

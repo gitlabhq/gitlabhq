@@ -202,6 +202,22 @@ Returns [`Group`](#group).
 | ---- | ---- | ----------- |
 | <a id="querygroupfullpath"></a>`fullPath` | [`ID!`](#id) | Full path of the project, group, or namespace. For example, `gitlab-org/gitlab-foss`. |
 
+### `Query.groups`
+
+Find groups.
+
+Returns [`GroupConnection`](#groupconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, `last: Int`.
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="querygroupssearch"></a>`search` | [`String`](#string) | Search query for group name or group full path. |
+
 ### `Query.instanceSecurityDashboard`
 
 Fields related to Instance Security Dashboard.
