@@ -35,7 +35,6 @@ RSpec.shared_examples Integrations::BaseSlackNotification do |factory:|
         end
 
         it_behaves_like 'Snowplow event tracking with RedisHLL context' do
-          let(:feature_flag_name) { :route_hll_to_snowplow_phase2 }
           let(:category) { described_class.to_s }
           let(:action) { 'perform_integrations_action' }
           let(:namespace) { project.namespace }

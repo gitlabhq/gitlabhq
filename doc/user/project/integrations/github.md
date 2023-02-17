@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # GitHub **(PREMIUM)**
 
 You can update GitHub with pipeline status updates from GitLab.
-This integration can help you if you use GitLab for CI/CD.
+The GitHub integration can help you if you use GitLab for CI/CD.
 
 ![Pipeline status update on GitHub](img/github_status_check_pipeline_update.png)
 

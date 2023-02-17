@@ -12,7 +12,7 @@ module Observability
                           defined?(project) ? project&.group : nil
                         end
 
-        next if p.directives.blank? || !Gitlab::Observability.observability_enabled?(current_user, current_group)
+        next if p.directives.blank? || !Feature.enabled?(:observability_group_tab, current_group)
 
         default_frame_src = p.directives['frame-src'] || p.directives['default-src']
 

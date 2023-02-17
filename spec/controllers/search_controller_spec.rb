@@ -231,7 +231,6 @@ RSpec.describe SearchController, feature_category: :global_search do
         end
 
         let(:namespace) { create(:group) }
-        let(:feature_flag_name) { :route_hll_to_snowplow_phase2 }
       end
 
       context 'on restricted projects' do
@@ -426,6 +425,15 @@ RSpec.describe SearchController, feature_category: :global_search do
         expect(controller).to receive(:search_autocomplete_opts).once
 
         get :autocomplete, params: { term: 'setting', filter: 'generic' }
+      end
+
+      it 'sets correct cache control headers' do
+        get :autocomplete, params: { term: 'setting', filter: 'generic' }
+
+        expect(response).to have_gitlab_http_status(:ok)
+
+        expect(response.headers['Cache-Control']).to eq('max-age=60, private')
+        expect(response.headers['Pragma']).to be_nil
       end
     end
 

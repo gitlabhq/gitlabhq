@@ -2,6 +2,8 @@
 - breadcrumb_title _('Integration Settings')
 - page_title _('Integrations')
 
+= render 'shared/integrations/slack_notifications_deprecation_alert'
+
 %section.js-search-settings-section
   %h3= _('Integrations')
   - integrations_link_start = '<a href="%{url}">'.html_safe % { url: help_page_url('user/project/integrations/index') }

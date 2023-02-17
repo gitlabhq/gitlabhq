@@ -933,13 +933,14 @@ RSpec.describe GroupPolicy, feature_category: :authentication_and_authorization 
   describe 'observability' do
     using RSpec::Parameterized::TableSyntax
 
-    let(:allowed) { be_allowed(:read_observability) }
-    let(:disallowed) { be_disallowed(:read_observability) }
+    let(:allowed_admin) { be_allowed(:read_observability) && be_allowed(:admin_observability) }
+    let(:allowed_read) { be_allowed(:read_observability) && be_disallowed(:admin_observability) }
+    let(:disallowed) { be_disallowed(:read_observability) && be_disallowed(:admin_observability) }
 
     # rubocop:disable Layout/LineLength
     where(:feature_enabled, :admin_matcher, :owner_matcher, :maintainer_matcher, :developer_matcher, :reporter_matcher, :guest_matcher, :non_member_matcher, :anonymous_matcher) do
       false | ref(:disallowed) | ref(:disallowed) | ref(:disallowed) | ref(:disallowed) | ref(:disallowed) | ref(:disallowed) | ref(:disallowed) | ref(:disallowed)
-      true | ref(:allowed) | ref(:allowed) | ref(:allowed) | ref(:allowed) | ref(:disallowed) | ref(:disallowed) | ref(:disallowed) | ref(:disallowed)
+      true | ref(:allowed_admin) | ref(:allowed_admin) | ref(:allowed_admin) | ref(:allowed_read) | ref(:disallowed) | ref(:disallowed) | ref(:disallowed) | ref(:disallowed)
     end
     # rubocop:enable Layout/LineLength
 

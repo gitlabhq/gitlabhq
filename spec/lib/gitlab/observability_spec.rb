@@ -31,29 +31,114 @@ RSpec.describe Gitlab::Observability do
     end
   end
 
-  describe '.observability_enabled?' do
+  describe '.valid_observability_url?' do
+    it 'returns true if url is a valid observability url' do
+      expect(described_class.valid_observability_url?('https://observe.gitlab.com')).to eq(true)
+      expect(described_class.valid_observability_url?('https://observe.gitlab.com:443')).to eq(true)
+      expect(described_class.valid_observability_url?('https://observe.gitlab.com/foo/bar')).to eq(true)
+      expect(described_class.valid_observability_url?('https://observe.gitlab.com/123/456')).to eq(true)
+    end
+
+    it 'returns false if url is a not valid observability url' do
+      expect(described_class.valid_observability_url?('http://observe.gitlab.com')).to eq(false)
+      expect(described_class.valid_observability_url?('https://observe.gitlab.com:81')).to eq(false)
+      expect(described_class.valid_observability_url?('https://foo.observe.gitlab.com')).to eq(false)
+      expect(described_class.valid_observability_url?('https://www.gitlab.com')).to eq(false)
+      expect(described_class.valid_observability_url?('foo@@@@bar/1/')).to eq(false)
+      expect(described_class.valid_observability_url?('foo bar')).to eq(false)
+    end
+  end
+
+  describe '.group_id_from_url' do
+    it 'returns the group id extracted from the url' do
+      expect(described_class.group_id_from_url('https://observe.gitlab.com/123/explore')).to eq(123)
+      expect(described_class.group_id_from_url('https://observe.gitlab.com/123')).to eq(123)
+      expect(described_class.group_id_from_url('https://observe.gitlab.com/123/')).to eq(123)
+      expect(described_class.group_id_from_url('https://observe.gitlab.com/123/456')).to eq(123)
+    end
+
+    it 'returns nil if the group id is not valid or missing' do
+      expect(described_class.group_id_from_url('https://observe.gitlab.com')).to be_nil
+      expect(described_class.group_id_from_url('https://observe.gitlab.com/')).to be_nil
+      expect(described_class.group_id_from_url('https://observe.gitlab.com/foo')).to be_nil
+      expect(described_class.group_id_from_url('https://observe.gitlab.com/foo/bar')).to be_nil
+      expect(described_class.group_id_from_url('https://observe.gitlab.com/0')).to be_nil
+      expect(described_class.group_id_from_url('https://observe.gitlab.com/-1')).to be_nil
+    end
+
+    it 'returns nil if the url is not a valid' do
+      expect(described_class.group_id_from_url('https://invalid.gitlab.com/123')).to be_nil
+      expect(described_class.group_id_from_url('foo bar')).to be_nil
+      expect(described_class.group_id_from_url('foo@@@@bar/1/')).to be_nil
+    end
+  end
+
+  describe '.allowed_for_action?' do
     let_it_be(:group) { build(:user) }
     let_it_be(:user) { build(:group) }
 
-    subject do
-      described_class.observability_enabled?(user, group)
+    before do
+      allow(described_class).to receive(:allowed?).and_call_original
     end
 
-    it 'checks if read_observability ability is allowed for the given user and group' do
+    it 'returns false if action is nil' do
+      expect(described_class.allowed_for_action?(user, group, nil)).to eq(false)
+    end
+
+    describe 'allowed? calls' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:action, :permission) do
+        :foo          | :admin_observability
+        :explore      | :read_observability
+        :datasources  | :admin_observability
+        :manage       | :admin_observability
+        :dashboards   | :read_observability
+      end
+
+      with_them do
+        it "calls allowed? with #{params[:permission]} when actions is #{params[:action]}" do
+          described_class.allowed_for_action?(user, group, action)
+          expect(described_class).to have_received(:allowed?).with(user, group, permission)
+        end
+      end
+    end
+  end
+
+  describe '.allowed?' do
+    let_it_be(:group) { build(:user) }
+    let_it_be(:user) { build(:group) }
+    let_it_be(:test_permission) { :read_observability }
+
+    before do
+      allow(Ability).to receive(:allowed?).and_return(false)
+    end
+
+    subject do
+      described_class.allowed?(user, group, test_permission)
+    end
+
+    it 'checks if ability is allowed for the given user and group' do
       allow(Ability).to receive(:allowed?).and_return(true)
 
       subject
 
-      expect(Ability).to have_received(:allowed?).with(user, :read_observability, group)
+      expect(Ability).to have_received(:allowed?).with(user, test_permission, group)
     end
 
-    it 'returns true if the read_observability ability is allowed' do
+    it 'checks for admin_observability if permission is missing' do
+      described_class.allowed?(user, group)
+
+      expect(Ability).to have_received(:allowed?).with(user, :admin_observability, group)
+    end
+
+    it 'returns true if the ability is allowed' do
       allow(Ability).to receive(:allowed?).and_return(true)
 
       expect(subject).to eq(true)
     end
 
-    it 'returns false if the read_observability ability is not allowed' do
+    it 'returns false if the ability is not allowed' do
       allow(Ability).to receive(:allowed?).and_return(false)
 
       expect(subject).to eq(false)
@@ -63,6 +148,14 @@ RSpec.describe Gitlab::Observability do
       allow(described_class).to receive(:observability_url).and_return("")
 
       expect(subject).to eq(false)
+    end
+
+    it 'returns false if group is missing' do
+      expect(described_class.allowed?(user, nil, :read_observability)).to eq(false)
+    end
+
+    it 'returns false if user is missing' do
+      expect(described_class.allowed?(nil, group, :read_observability)).to eq(false)
     end
   end
 end

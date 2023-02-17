@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::SchemaValidation::Indexes, feature_category: :database do
+RSpec.shared_examples "index validators" do |validator, expected_result|
   let(:structure_file_path) { Rails.root.join('spec/fixtures/structure.sql') }
   let(:database_indexes) do
     [
@@ -23,34 +23,13 @@ RSpec.describe Gitlab::Database::SchemaValidation::Indexes, feature_category: :d
   let(:database) { Gitlab::Database::SchemaValidation::Database.new(connection) }
   let(:structure_file) { Gitlab::Database::SchemaValidation::StructureSql.new(structure_file_path) }
 
-  subject(:schema_validation) { described_class.new(structure_file, database) }
+  subject(:result) { validator.new(structure_file, database).execute }
 
   before do
     allow(connection).to receive(:exec_query).and_return(query_result)
   end
 
-  describe '#missing_indexes' do
-    it 'returns missing indexes' do
-      missing_indexes = %w[
-        missing_index
-        index_namespaces_public_groups_name_id
-        index_on_deploy_keys_id_and_type_and_public
-        index_users_on_public_email_excluding_null_and_empty
-      ]
-
-      expect(schema_validation.missing_indexes).to match_array(missing_indexes)
-    end
-  end
-
-  describe '#extra_indexes' do
-    it 'returns extra indexes' do
-      expect(schema_validation.extra_indexes).to match_array(['extra_index'])
-    end
-  end
-
-  describe '#wrong_indexes' do
-    it 'returns wrong indexes' do
-      expect(schema_validation.wrong_indexes).to match_array(['wrong_index'])
-    end
+  it 'returns extra indexes' do
+    expect(result.map(&:name)).to match_array(expected_result)
   end
 end

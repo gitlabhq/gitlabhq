@@ -20,7 +20,7 @@ describe('getStateKey', () => {
     };
     const bound = getStateKey.bind(context);
 
-    expect(bound()).toEqual(null);
+    expect(bound()).toEqual('checking');
 
     context.detailedMergeStatus = 'MERGEABLE';
 

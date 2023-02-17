@@ -1,7 +1,7 @@
 = _('Hi %{username}!') % { username: sanitize_name(@user.name) }
 
-= _('We detected an attempt to sign in to your %{host} account using a wrong two-factor authentication code, from the following IP address: %{ip}, at %{time}') % { host: Gitlab.config.gitlab.host, ip: @ip, time: @time }
+= _('GitLab detected an attempt to sign in to your %{host} account using an incorrect verification code from the following IP address: %{ip}, at %{time}') % { host: Gitlab.config.gitlab.host, ip: @ip, time: @time }
 
-= _('If you recently tried to sign in, but mistakenly entered a wrong two-factor authentication code, you may ignore this email.')
+= _('If you recently tried to sign in, but mistakenly entered an incorrect verification code, you can ignore this email.')
 = _('If you did not recently try to sign in, you should immediately change your password: %{password_link}.') % { password_link: help_page_url('user/profile/user_passwords', anchor: 'change-your-password') }
 = _('Make sure you choose a strong, unique password.')

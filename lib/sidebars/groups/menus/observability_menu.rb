@@ -6,8 +6,11 @@ module Sidebars
       class ObservabilityMenu < ::Sidebars::Menu
         override :configure_menu_items
         def configure_menu_items
-          add_item(explore_menu_item)
-          add_item(datasources_menu_item)
+          add_item(explore_menu_item) if Gitlab::Observability.allowed_for_action?(context.current_user, context.group,
+            :explore)
+
+          add_item(datasources_menu_item) if Gitlab::Observability.allowed_for_action?(context.current_user,
+            context.group, :datasources)
         end
 
         override :title
@@ -22,7 +25,7 @@ module Sidebars
 
         override :render?
         def render?
-          Gitlab::Observability.observability_enabled?(context.current_user, context.group)
+          Gitlab::Observability.allowed_for_action?(context.current_user, context.group, :explore)
         end
 
         private

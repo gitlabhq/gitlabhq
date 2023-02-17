@@ -16,6 +16,10 @@ module Gitlab
           index_map.values
         end
 
+        def index_exists?(index_name)
+          index_map[index_name].present?
+        end
+
         private
 
         def index_map

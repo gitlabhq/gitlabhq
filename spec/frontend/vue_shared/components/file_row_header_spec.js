@@ -1,11 +1,12 @@
 import { shallowMount } from '@vue/test-utils';
+import { GlTruncate } from '@gitlab/ui';
 import FileRowHeader from '~/vue_shared/components/file_row_header.vue';
 
 describe('File row header component', () => {
-  let vm;
+  let wrapper;
 
   function createComponent(path) {
-    vm = shallowMount(FileRowHeader, {
+    wrapper = shallowMount(FileRowHeader, {
       propsData: {
         path,
       },
@@ -13,24 +14,15 @@ describe('File row header component', () => {
   }
 
   afterEach(() => {
-    vm.destroy();
+    wrapper.destroy();
   });
 
   it('renders file path', () => {
-    createComponent('app/assets');
+    const path = 'app/assets';
+    createComponent(path);
 
-    expect(vm.element).toMatchSnapshot();
-  });
-
-  it('trucates path after 40 characters', () => {
-    createComponent('app/assets/javascripts/merge_requests');
-
-    expect(vm.element).toMatchSnapshot();
-  });
-
-  it('adds multiple ellipsises after 40 characters', () => {
-    createComponent('app/assets/javascripts/merge_requests/widget/diffs/notes');
-
-    expect(vm.element).toMatchSnapshot();
+    const truncate = wrapper.findComponent(GlTruncate);
+    expect(truncate.exists()).toBe(true);
+    expect(truncate.props('text')).toBe(path);
   });
 });

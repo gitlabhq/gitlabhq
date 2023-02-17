@@ -24,6 +24,39 @@ RSpec.describe ImportCsv::BaseService, feature_category: :importers do
   it_behaves_like 'abstract method', :validate_headers_presence!, "any"
   it_behaves_like 'abstract method', :create_object_class
 
+  context 'when given a class' do
+    let(:importer_klass) do
+      Class.new(described_class) do
+        def attributes_for(row)
+          { title: row[:title] }
+        end
+
+        def validate_headers_presence!(headers)
+          raise CSV::MalformedCSVError.new("Missing required headers", 1) unless headers.present?
+        end
+
+        def create_object_class
+          Class.new
+        end
+
+        def email_results_to_user
+          # no-op
+        end
+      end
+    end
+
+    let(:service) do
+      uploader = FileUploader.new(project)
+      uploader.store!(file)
+
+      importer_klass.new(user, project, uploader)
+    end
+
+    subject { service.execute }
+
+    it_behaves_like 'correctly handles invalid files'
+  end
+
   describe '#detect_col_sep' do
     context 'when header contains invalid separators' do
       it 'raises error' do
@@ -42,19 +75,19 @@ RSpec.describe ImportCsv::BaseService, feature_category: :importers do
         end
       end
 
-      context 'with ; as separator' do
+      context 'when separator is ;' do
         let(:separator) { ';' }
 
         it_behaves_like 'header with valid separators'
       end
 
-      context 'with \t as separator' do
+      context 'when separator is \t' do
         let(:separator) { "\t" }
 
         it_behaves_like 'header with valid separators'
       end
 
-      context 'with , as separator' do
+      context 'when separator is ,' do
         let(:separator) { ',' }
 
         it_behaves_like 'header with valid separators'

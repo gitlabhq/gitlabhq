@@ -34,6 +34,24 @@ RSpec.describe Gitlab::Database::SchemaValidation::Database, feature_category: :
     end
   end
 
+  describe '#index_exists?' do
+    context 'when index exists' do
+      it 'returns true' do
+        index_exists = database.index_exists?('index')
+
+        expect(index_exists).to be_truthy
+      end
+    end
+
+    context 'when index does not exist' do
+      it 'returns false' do
+        index_exists = database.index_exists?('non_existing_index')
+
+        expect(index_exists).to be_falsey
+      end
+    end
+  end
+
   describe '#indexes' do
     it 'returns indexes' do
       indexes = database.indexes

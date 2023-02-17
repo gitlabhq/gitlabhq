@@ -999,7 +999,7 @@ table.code {
 }
 
 // Note: Prevents tall files from appearing above sticky tabs
-.diffs .vue-recycle-scroller__item-view > div:not(.active) {
+.diff-files-holder .vue-recycle-scroller__item-view > div:not(.active) {
   position: absolute;
   bottom: 100vh;
 }

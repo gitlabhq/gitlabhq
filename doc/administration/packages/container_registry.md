@@ -607,7 +607,7 @@ Without this configuration, the Azure storage driver uses `//` instead of `/` as
 registry['storage'] = {
   'azure' => {
     'accountname' => 'accountname',
-    'accesskey' => 'base64encodedaccountkey',
+    'accountkey' => 'base64encodedaccountkey',
     'container' => 'containername',
     'rootdirectory' => '/azure/virtual/container',
     'trimlegacyrootprefix' => 'true'

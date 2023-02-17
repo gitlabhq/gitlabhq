@@ -30537,6 +30537,8 @@ CREATE INDEX index_lfs_object_states_on_verification_state ON lfs_object_states 
 
 CREATE INDEX index_lfs_object_states_pending_verification ON lfs_object_states USING btree (verified_at NULLS FIRST) WHERE (verification_state = 0);
 
+CREATE INDEX index_lfs_objects_on_file ON lfs_objects USING btree (file);
+
 CREATE INDEX index_lfs_objects_on_file_store ON lfs_objects USING btree (file_store);
 
 CREATE UNIQUE INDEX index_lfs_objects_on_oid ON lfs_objects USING btree (oid);

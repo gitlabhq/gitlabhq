@@ -20,9 +20,8 @@ class IdeController < ApplicationController
   def index
     Gitlab::UsageDataCounters::WebIdeCounter.increment_views_count
 
-    if project && Feature.enabled?(:route_hll_to_snowplow_phase2, project&.namespace)
-      Gitlab::Tracking.event(self.class.to_s, 'web_ide_views',
-        namespace: project&.namespace, user: current_user)
+    if project
+      Gitlab::Tracking.event(self.class.to_s, 'web_ide_views', namespace: project.namespace, user: current_user)
     end
 
     render layout: 'fullscreen', locals: { minimal: helpers.use_new_web_ide? }

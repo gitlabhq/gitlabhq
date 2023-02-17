@@ -50,7 +50,7 @@
 {"name":"bcrypt","version":"3.1.16","platform":"java","checksum":"2925a1546fa8e85bdb1b10f1fc95c4e1ea15992ada16adea4af82b0978ed662c"},
 {"name":"bcrypt","version":"3.1.16","platform":"ruby","checksum":"0b8bf031ba81aa76c0f10c5a8dac779b6035d84b09af1dbb2b1a32a7e360210b"},
 {"name":"benchmark","version":"0.2.0","platform":"ruby","checksum":"5f7087b794613abdd3ac9c13f4351f65b164bcb15ced2ad29508e365f9b28c77"},
-{"name":"benchmark-ips","version":"2.3.0","platform":"ruby","checksum":"12443aa327d3129aa965244f79d7d5cb0f692f0f92ba7db76fba61526a40062e"},
+{"name":"benchmark-ips","version":"2.11.0","platform":"ruby","checksum":"1eaa89841073895af0ee7ff72eb069e5c7dda01c6d6a8b3e79e363bace596dec"},
 {"name":"benchmark-malloc","version":"0.2.0","platform":"ruby","checksum":"37c68f0435261634026f584d79956a35325a3027e3e6b4cc8d7575aa10537e6b"},
 {"name":"benchmark-memory","version":"0.2.0","platform":"ruby","checksum":"ca1e436433b09535ee8f64f80600a5edb407cff1f6ac70e089ca238118e6ab5c"},
 {"name":"benchmark-perf","version":"0.6.0","platform":"ruby","checksum":"fe2b01959f3de0f9dd34820d54ef881eb4f3589fccb7d17b63068ac92d7f9621"},

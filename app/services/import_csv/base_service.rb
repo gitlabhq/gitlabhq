@@ -46,8 +46,9 @@ module ImportCsv
           results[:error_lines].push(line_no)
         end
       end
-    rescue ArgumentError, CSV::MalformedCSVError
+    rescue ArgumentError, CSV::MalformedCSVError => e
       results[:parse_error] = true
+      results[:error_lines].push(e.line_number) if e.respond_to?(:line_number)
     end
 
     def with_csv_lines

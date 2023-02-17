@@ -246,7 +246,9 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
   rule { ~can?(:view_globally) }.prevent   :request_access
   rule { has_access }.prevent              :request_access
 
-  rule { owner & (~share_with_group_locked | ~has_parent | ~parent_share_with_group_locked | can_change_parent_share_with_group_lock) }.enable :change_share_with_group_lock
+  rule do
+    owner & (~share_with_group_locked | ~has_parent | ~parent_share_with_group_locked | can_change_parent_share_with_group_lock)
+  end.enable :change_share_with_group_lock
 
   rule { developer & developer_maintainer_access }.enable :create_projects
   rule { create_projects_disabled }.prevent :create_projects
@@ -323,6 +325,10 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
 
   rule { can?(:developer_access) & observability_enabled }.policy do
     enable :read_observability
+  end
+
+  rule { can?(:maintainer_access) & observability_enabled }.policy do
+    enable :admin_observability
   end
 
   rule { ~create_runner_workflow_enabled }.policy do

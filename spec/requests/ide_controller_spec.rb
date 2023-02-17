@@ -237,18 +237,6 @@ RSpec.describe IdeController, feature_category: :web_ide do
             user: user
           )
         end
-
-        context 'when route_hll_to_snowplow_phase2 FF is disabled' do
-          before do
-            stub_feature_flags(route_hll_to_snowplow_phase2: false)
-          end
-
-          it 'does not track Snowplow event' do
-            subject
-
-            expect_no_snowplow_event
-          end
-        end
       end
 
       # This indirectly tests that `minimal: true` was passed to the fullscreen layout

@@ -21,7 +21,7 @@ module RuboCop
         private
 
         def does_not_match?(arg)
-          !WHITELISTED_ARGUMENTS.include?(arg)
+          !WHITELISTED_ARGUMENTS.include?(arg) # rubocop:disable Rails/NegateInclude
         end
       end
     end

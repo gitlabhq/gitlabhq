@@ -856,7 +856,9 @@ curl --header "PRIVATE-TOKEN: <your_access_token>"\
 > The `commit id` entry was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/47130) in GitLab 13.7.
 
 Creates a new thread to a single project merge request. This is similar to creating
-a note but other comments (replies) can be added to it later.
+a note but other comments (replies) can be added to it later. For other approaches,
+see [Post comment to commit](commits.md#post-comment-to-commit) in the Commits API,
+and [Create new merge request note](notes.md#create-new-merge-request-note) in the Notes API.
 
 ```plaintext
 POST /projects/:id/merge_requests/:merge_request_iid/discussions

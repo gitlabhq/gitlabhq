@@ -278,8 +278,6 @@ class EventCreateService
   end
 
   def track_snowplow_event(action:, project:, user:, label:, property:)
-    return unless Feature.enabled?(:route_hll_to_snowplow_phase2)
-
     Gitlab::Tracking.event(
       self.class.to_s,
       action.to_s,

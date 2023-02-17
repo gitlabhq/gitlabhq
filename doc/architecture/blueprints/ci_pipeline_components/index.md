@@ -202,7 +202,6 @@ A component YAML file:
 - Should be **validated statically** (for example: using JSON schema validators).
 
 ```yaml
----
 spec:
   inputs:
     website:
@@ -319,7 +318,6 @@ This limitation encourages cohesion at project level and keeps complexity low.
 If the component takes any input parameters they must be specified according to the following schema:
 
 ```yaml
----
 spec:
   inputs:
     website: # by default all declared inputs are mandatory.
@@ -363,7 +361,6 @@ Input parameters are validated as soon as possible:
 1. Interpolate input parameters inside the component's content.
 
 ```yaml
----
 spec:
   inputs:
     environment:
@@ -452,7 +449,6 @@ include:
 Then the configuration being included must specify the inputs by defining a specification section in the YAML:
 
 ```yaml
----
 spec:
   inputs:
     foo:
@@ -496,7 +492,6 @@ deploy-app:
 To solve the problem of `Run Pipeline` UI form we could fully leverage the `inputs` specifications:
 
 ```yaml
----
 spec:
   inputs:
     concurrency:

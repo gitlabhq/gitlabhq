@@ -525,6 +525,11 @@ cases below is valid:
 In any of the above cases, the response of `line`, `line_type` and `path` is
 set to `null`.
 
+For other approaches to commenting on a merge request, see
+[Create new merge request note](notes.md#create-new-merge-request-note) in the Notes API,
+and [Create a new thread in the merge request diff](discussions.md#create-a-new-thread-in-the-merge-request-diff)
+in the Discussions API.
+
 ```plaintext
 POST /projects/:id/repository/commits/:sha/comments
 ```

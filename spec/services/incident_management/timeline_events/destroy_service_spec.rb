@@ -67,7 +67,6 @@ RSpec.describe IncidentManagement::TimelineEvents::DestroyService do
       it_behaves_like 'an incident management tracked event', :incident_management_timeline_event_deleted
 
       it_behaves_like 'Snowplow event tracking with RedisHLL context' do
-        let(:feature_flag_name) { :route_hll_to_snowplow_phase2 }
         let(:namespace) { project.namespace.reload }
         let(:category) { described_class.to_s }
         let(:user) { current_user }

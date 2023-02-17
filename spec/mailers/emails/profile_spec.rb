@@ -476,7 +476,7 @@ RSpec.describe Emails::Profile do
     end
 
     it 'has the correct subject' do
-      is_expected.to have_subject "Attempted sign in to #{Gitlab.config.gitlab.host} using a wrong two-factor authentication code"
+      is_expected.to have_subject "Attempted sign in to #{Gitlab.config.gitlab.host} using an incorrect verification code"
     end
 
     it 'mentions the IP address' do

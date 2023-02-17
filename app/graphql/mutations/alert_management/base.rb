@@ -45,8 +45,6 @@ module Mutations
         namespace = project.namespace
         track_usage_event(event, current_user.id)
 
-        return unless Feature.enabled?(:route_hll_to_snowplow_phase2, namespace)
-
         Gitlab::Tracking.event(
           self.class.to_s,
           event,

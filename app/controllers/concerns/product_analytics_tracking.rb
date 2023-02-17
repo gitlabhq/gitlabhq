@@ -5,7 +5,29 @@ module ProductAnalyticsTracking
   include RedisTracking
   extend ActiveSupport::Concern
 
-  MIGRATED_EVENTS = ['g_analytics_valuestream'].freeze
+  MIGRATED_EVENTS = %w[
+    g_analytics_valuestream
+    i_search_paid
+    i_search_total
+    i_search_advanced
+    i_ecosystem_jira_service_list_issues
+    users_viewing_analytics_group_devops_adoption
+    i_analytics_dev_ops_adoption
+    i_analytics_dev_ops_score
+    p_analytics_merge_request
+    i_analytics_instance_statistics
+    g_analytics_contribution
+    p_analytics_pipelines
+    p_analytics_code_reviews
+    p_analytics_valuestream
+    p_analytics_insights
+    p_analytics_issues
+    p_analytics_repo
+    g_analytics_insights
+    g_analytics_issues
+    g_analytics_productivity
+    i_analytics_cohorts
+  ].freeze
 
   class_methods do
     # TODO: Remove once all the events are migrated to #track_custom_event
@@ -68,27 +90,6 @@ module ProductAnalyticsTracking
     return true if MIGRATED_EVENTS.include?(event)
 
     events_to_ff = {
-      i_search_paid: :_phase2,
-      i_search_total: :_phase2,
-      i_search_advanced: :_phase2,
-      i_ecosystem_jira_service_list_issues: :_phase2,
-      users_viewing_analytics_group_devops_adoption: :_phase2,
-      i_analytics_dev_ops_adoption: :_phase2,
-      i_analytics_dev_ops_score: :_phase2,
-      p_analytics_merge_request: :_phase2,
-      i_analytics_instance_statistics: :_phase2,
-      g_analytics_contribution: :_phase2,
-      p_analytics_pipelines: :_phase2,
-      p_analytics_code_reviews: :_phase2,
-      p_analytics_valuestream: :_phase2,
-      p_analytics_insights: :_phase2,
-      p_analytics_issues: :_phase2,
-      p_analytics_repo: :_phase2,
-      g_analytics_insights: :_phase2,
-      g_analytics_issues: :_phase2,
-      g_analytics_productivity: :_phase2,
-      i_analytics_cohorts: :_phase2,
-
       g_compliance_dashboard: :_phase4
     }
 

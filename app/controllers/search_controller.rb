@@ -24,7 +24,7 @@ class SearchController < ApplicationController
 
   before_action :block_anonymous_global_searches, :check_scope_global_search_enabled, except: :opensearch
   skip_before_action :authenticate_user!
-  skip_before_action :default_cache_headers, only: :count
+  skip_before_action :default_cache_headers, only: [:count, :autocomplete]
 
   requires_cross_project_access if: -> do
     search_term_present = params[:search].present? || params[:term].present?
@@ -115,6 +115,9 @@ class SearchController < ApplicationController
     @project = search_service.project
     @ref = params[:project_ref] if params[:project_ref].present?
     @filter = params[:filter]
+
+    # Cache the response on the frontend
+    expires_in 1.minute
 
     render json: Gitlab::Json.dump(search_autocomplete_opts(term, filter: @filter))
   end

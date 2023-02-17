@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 The Unify Circuit integration sends notifications from GitLab to a Circuit conversation.
 
-## Set up Unify Circuit service
+## Set up Unify Circuit
 
 In Unify Circuit, [add a webhook](https://www.circuit.com/unifyportalfaqdetail?articleId=164448) and
 copy its URL.

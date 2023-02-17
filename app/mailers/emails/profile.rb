@@ -153,7 +153,7 @@ module Emails
       Gitlab::I18n.with_locale(@user.preferred_language) do
         email_with_layout(
           to: @user.notification_email_or_default,
-          subject: subject(_("Attempted sign in to %{host} using a wrong two-factor authentication code") % { host: Gitlab.config.gitlab.host }))
+          subject: subject(_("Attempted sign in to %{host} using an incorrect verification code") % { host: Gitlab.config.gitlab.host }))
       end
     end
 

@@ -141,7 +141,6 @@ RSpec.describe Projects::GraphsController do
         end
 
         let(:request_params) { { namespace_id: project.namespace.path, project_id: project.path, id: 'master' } }
-        let(:feature_flag_name) { :route_hll_to_snowplow_phase2 }
         let(:category) { described_class.name }
         let(:action) { 'perform_analytics_usage_action' }
         let(:namespace) { project.namespace }

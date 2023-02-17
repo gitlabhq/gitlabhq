@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Asana **(FREE)**
 
-This integration adds commit messages as comments to Asana tasks.
+The Asana integration adds commit messages as comments to Asana tasks.
 Once enabled, commit messages are checked for Asana task URLs (for example,
 `https://app.asana.com/0/123456/987654`) or task IDs starting with `#`
 (for example, `#987654`). Every task ID found gets the commit comment added to it.

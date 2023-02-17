@@ -590,7 +590,6 @@ RSpec.describe Integrations::Jira do
       it_behaves_like 'Snowplow event tracking with RedisHLL context' do
         subject { close_issue }
 
-        let(:feature_flag_name) { :route_hll_to_snowplow_phase2 }
         let(:category) { 'Integrations::Jira' }
         let(:action) { 'perform_integrations_action' }
         let(:namespace) { project.namespace }
@@ -944,7 +943,6 @@ RSpec.describe Integrations::Jira do
       end
 
       it_behaves_like 'Snowplow event tracking with RedisHLL context' do
-        let(:feature_flag_name) { :route_hll_to_snowplow_phase2 }
         let(:category) { 'Integrations::Jira' }
         let(:action) { 'perform_integrations_action' }
         let(:namespace) { project.namespace }

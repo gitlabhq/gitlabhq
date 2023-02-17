@@ -280,7 +280,6 @@ RSpec.describe PostReceive do
           let(:category) { described_class.name }
           let(:namespace) { project.namespace }
           let(:user) { project.creator }
-          let(:feature_flag_name) { :route_hll_to_snowplow_phase2 }
           let(:label) { 'counts.source_code_pushes' }
           let(:property) { 'source_code_pushes' }
           let(:context) { [Gitlab::Tracking::ServicePingContext.new(data_source: :redis, key_path: label).to_h] }

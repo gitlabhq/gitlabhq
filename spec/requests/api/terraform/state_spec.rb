@@ -51,7 +51,6 @@ RSpec.describe API::Terraform::State, :snowplow, feature_category: :infrastructu
       it_behaves_like 'Snowplow event tracking with RedisHLL context' do
         subject(:api_request) { request }
 
-        let(:feature_flag_name) { :route_hll_to_snowplow_phase2 }
         let(:category) { described_class.name }
         let(:action) { 'terraform_state_api_request' }
         let(:label) { 'redis_hll_counters.terraform.p_terraform_state_api_unique_users_monthly' }

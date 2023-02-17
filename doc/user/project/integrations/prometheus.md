@@ -23,7 +23,7 @@ Once enabled, GitLab detects metrics from known services in the
 [add your own metrics](../../../operations/metrics/index.md#adding-custom-metrics) and create
 [custom dashboards](../../../operations/metrics/dashboards/index.md).
 
-## Enabling Prometheus Integration
+## Enabling the Prometheus integration
 
 ### Prometheus cluster integration
 

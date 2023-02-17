@@ -7,9 +7,8 @@ type: reference, howto
 
 # PlantUML **(FREE)**
 
-When the [PlantUML](https://plantuml.com) integration is enabled and configured in
-GitLab, you can create diagrams in snippets, wikis, and repositories. This integration
-is enabled on GitLab.com for all SaaS users and does not require any additional configuration.
+With the [PlantUML](https://plantuml.com) integration, you can create diagrams in snippets, wikis, and repositories.
+This integration is enabled on GitLab.com for all SaaS users and does not require any additional configuration.
 
 To set up the integration on a self-managed instance, you must:
 
@@ -148,7 +147,7 @@ using Tomcat:
    ```
 
 The Tomcat service should restart. After the restart is complete, the
-PlantUML service is ready and listening for requests on port 8080:
+PlantUML integration is ready and listening for requests on port 8080:
 `http://localhost:8080/plantuml`
 
 To change these defaults, edit the `/etc/tomcat8/server.xml` file.

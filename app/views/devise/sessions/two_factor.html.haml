@@ -7,9 +7,9 @@
           - resource_params = params[resource_name].presence || params
           = f.hidden_field :remember_me, value: resource_params.fetch(:remember_me, 0)
           %div
-            = f.label _('Two-Factor Authentication code'), name: :otp_attempt, class: Feature.enabled?(:restyle_login_page, @project) ? 'gl-mb-1' : ''
-            = f.text_field :otp_attempt, class: 'form-control gl-form-input', required: true, autofocus: true, autocomplete: 'off', title: _('This field is required.'), data: { qa_selector: 'two_fa_code_field' }
-            %p.form-text.text-muted.hint= _("Enter the code from the two-factor app on your mobile device. If you've lost your device, you may enter one of your recovery codes.")
+            = f.label _('Enter verification code'), name: :otp_attempt, class: Feature.enabled?(:restyle_login_page, @project) ? 'gl-mb-1' : ''
+            = f.text_field :otp_attempt, class: 'form-control gl-form-input', required: true, autofocus: true, autocomplete: 'off', inputmode: 'numeric', title: _('This field is required.'), data: { qa_selector: 'two_fa_code_field' }
+            %p.form-text.text-muted.hint= _("Enter the code from your two-factor authenticator app. If you've lost your device, you can enter one of your recovery codes.")
             .prepend-top-20
               = f.submit _("Verify code"), pajamas_button: true, data: { qa_selector: 'verify_code_button' }
       - if @user.two_factor_webauthn_u2f_enabled?

@@ -282,6 +282,7 @@ $tabs-holder-z-index: 250;
 }
 
 .tree-list-holder {
+  --file-row-height: 32px;
   height: 100%;
 
   .file-row {
@@ -295,6 +296,10 @@ $tabs-holder-z-index: 250;
   padding-bottom: $grid-size;
   overflow-y: scroll;
   overflow-x: auto;
+}
+
+.tree-list-gutter {
+  height: $grid-size;
 }
 
 .tree-list-search {
@@ -320,6 +325,12 @@ $tabs-holder-z-index: 250;
   right: 10px;
   left: auto;
   line-height: 0;
+}
+
+.file-row-header {
+  display: flex;
+  align-items: center;
+  height: var(--file-row-height);
 }
 
 @media (max-width: map-get($grid-breakpoints, lg)-1) {

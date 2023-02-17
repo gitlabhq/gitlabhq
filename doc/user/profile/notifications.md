@@ -306,7 +306,7 @@ GitLab uses several methods to identify a known sign-in. All methods must fail f
 - Cookie: After successful sign in, an encrypted cookie is stored in the browser.
   This cookie is set to expire 14 days after the last successful sign in.
 
-## Notifications for attempted sign-in using wrong two-factor authentication codes
+## Notifications for attempted sign-ins using incorrect verification codes
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/374740) in GitLab 15.5.
 

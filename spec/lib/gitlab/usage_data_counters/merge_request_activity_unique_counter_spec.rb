@@ -69,7 +69,6 @@ RSpec.describe Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter, :cl
       let(:project) { target_project }
       let(:namespace) { project.namespace.reload }
       let(:user) { project.creator }
-      let(:feature_flag_name) { :route_hll_to_snowplow_phase2 }
       let(:label) { 'redis_hll_counters.code_review.i_code_review_user_create_mr_monthly' }
       let(:property) { described_class::MR_USER_CREATE_ACTION }
     end
@@ -118,7 +117,6 @@ RSpec.describe Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter, :cl
       let(:project) { target_project }
       let(:namespace) { project.namespace.reload }
       let(:user) { project.creator }
-      let(:feature_flag_name) { :route_hll_to_snowplow_phase2 }
       let(:label) { 'redis_hll_counters.code_review.i_code_review_user_approve_mr_monthly' }
       let(:property) { described_class::MR_APPROVE_ACTION }
     end

@@ -7,8 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Gmail actions **(FREE)**
 
 GitLab supports [Google actions in email](https://developers.google.com/gmail/markup/actions/actions-overview).
-
-If correctly set up, emails that require an action are marked in Gmail.
+When you configure this integration, emails that require an action are marked in Gmail.
 
 ![Gmail actions button](img/gmail_action_buttons_for_gitlab.png)
 

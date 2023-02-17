@@ -6,8 +6,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Google Chat **(FREE)**
 
-Integrate your project to send notifications from GitLab to a
-room of your choice in [Google Chat](https://chat.google.com/) (former Google
+You can configure your project to send notifications from GitLab to a
+room of your choice in [Google Chat](https://chat.google.com/) (formerly Google
 Hangouts).
 
 ## Integration workflow

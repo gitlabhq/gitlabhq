@@ -27,18 +27,6 @@ RSpec.shared_examples 'a daily tracked issuable snowplow and service ping events
 
     expect_snowplow_event(**{ category: category, action: event_action, user: user1 }.merge(event_params))
   end
-
-  context 'with route_hll_to_snowplow_phase2 disabled' do
-    before do
-      stub_feature_flags(route_hll_to_snowplow_phase2: false)
-    end
-
-    it 'does not emit snowplow event' do
-      track_action({ author: user1 }.merge(track_params))
-
-      expect_no_snowplow_event
-    end
-  end
 end
 
 RSpec.shared_examples 'daily tracked issuable snowplow and service ping events with project' do

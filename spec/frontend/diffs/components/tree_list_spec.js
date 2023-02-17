@@ -1,20 +1,36 @@
-import { shallowMount, mount } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import TreeList from '~/diffs/components/tree_list.vue';
 import createStore from '~/diffs/store/modules';
-import FileTree from '~/vue_shared/components/file_tree.vue';
+import DiffFileRow from '~/diffs/components//diff_file_row.vue';
+import { stubComponent } from 'helpers/stub_component';
 
 describe('Diffs tree list component', () => {
   let wrapper;
   let store;
-  const getFileRows = () => wrapper.findAll('.file-row');
+  const getScroller = () => wrapper.findComponent({ name: 'RecycleScroller' });
+  const getFileRow = () => wrapper.findComponent(DiffFileRow);
   Vue.use(Vuex);
 
-  const createComponent = (mountFn = mount) => {
-    wrapper = mountFn(TreeList, {
+  const createComponent = () => {
+    wrapper = shallowMount(TreeList, {
       store,
       propsData: { hideFileStats: false },
+      stubs: {
+        // eslint will fail if we import the real component
+        RecycleScroller: stubComponent(
+          {
+            name: 'RecycleScroller',
+            props: {
+              items: null,
+            },
+          },
+          {
+            template: '<div><slot :item="{ tree: [] }"></slot></div>',
+          },
+        ),
+      },
     });
   };
 
@@ -101,26 +117,32 @@ describe('Diffs tree list component', () => {
     });
 
     describe('search by file extension', () => {
+      it('hides scroller for no matches', async () => {
+        wrapper.find('[data-testid="diff-tree-search"]').setValue('*.md');
+
+        await nextTick();
+
+        expect(getScroller().exists()).toBe(false);
+        expect(wrapper.text()).toContain('No files found');
+      });
+
       it.each`
         extension       | itemSize
-        ${'*.md'}       | ${0}
-        ${'*.js'}       | ${1}
-        ${'index.js'}   | ${1}
-        ${'app/*.js'}   | ${1}
-        ${'*.js, *.rb'} | ${2}
+        ${'*.js'}       | ${2}
+        ${'index.js'}   | ${2}
+        ${'app/*.js'}   | ${2}
+        ${'*.js, *.rb'} | ${3}
       `('returns $itemSize item for $extension', async ({ extension, itemSize }) => {
         wrapper.find('[data-testid="diff-tree-search"]').setValue(extension);
 
         await nextTick();
 
-        expect(getFileRows()).toHaveLength(itemSize);
+        expect(getScroller().props('items')).toHaveLength(itemSize);
       });
     });
 
     it('renders tree', () => {
-      expect(getFileRows()).toHaveLength(2);
-      expect(getFileRows().at(0).html()).toContain('index.js');
-      expect(getFileRows().at(1).html()).toContain('app');
+      expect(getScroller().props('items')).toHaveLength(2);
     });
 
     it('hides file stats', async () => {
@@ -133,33 +155,16 @@ describe('Diffs tree list component', () => {
     it('calls toggleTreeOpen when clicking folder', () => {
       jest.spyOn(wrapper.vm.$store, 'dispatch').mockReturnValue(undefined);
 
-      getFileRows().at(1).trigger('click');
+      getFileRow().vm.$emit('toggleTreeOpen', 'app');
 
       expect(wrapper.vm.$store.dispatch).toHaveBeenCalledWith('diffs/toggleTreeOpen', 'app');
     });
 
-    it('calls scrollToFile when clicking blob', () => {
-      jest.spyOn(wrapper.vm.$store, 'dispatch').mockReturnValue(undefined);
-
-      wrapper.find('.file-row').trigger('click');
-
-      expect(wrapper.vm.$store.dispatch).toHaveBeenCalledWith('diffs/scrollToFile', {
-        path: 'app/index.js',
-      });
-    });
-
-    it('renders as file list when renderTreeList is false', async () => {
+    it('renders when renderTreeList is false', async () => {
       wrapper.vm.$store.state.diffs.renderTreeList = false;
 
       await nextTick();
-      expect(getFileRows()).toHaveLength(2);
-    });
-
-    it('renders file paths when renderTreeList is false', async () => {
-      wrapper.vm.$store.state.diffs.renderTreeList = false;
-
-      await nextTick();
-      expect(wrapper.find('.file-row').html()).toContain('index.js');
+      expect(getScroller().props('items')).toHaveLength(3);
     });
   });
 
@@ -172,12 +177,10 @@ describe('Diffs tree list component', () => {
     });
 
     it('passes the viewedDiffFileIds to the FileTree', async () => {
-      createComponent(shallowMount);
+      createComponent();
 
       await nextTick();
-      // Have to use $attrs['viewed-files'] because we are passing down an object
-      // and attributes('') stringifies values (e.g. [object])...
-      expect(wrapper.findComponent(FileTree).vm.$attrs['viewed-files']).toBe(viewedDiffFileIds);
+      expect(wrapper.findComponent(DiffFileRow).props('viewedFiles')).toBe(viewedDiffFileIds);
     });
   });
 });

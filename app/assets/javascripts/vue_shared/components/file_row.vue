@@ -168,7 +168,7 @@ export default {
 .file-row {
   display: flex;
   align-items: center;
-  height: 32px;
+  height: var(--file-row-height, 32px);
   padding: 4px 8px;
   margin-left: -8px;
   margin-right: -8px;

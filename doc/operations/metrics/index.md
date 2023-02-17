@@ -124,7 +124,7 @@ After saving them, they display on the environment metrics dashboard provided th
 
 - A [connected Kubernetes cluster](../../user/clusters/agent/index.md)
   with the matching [environment scope](../../ci/environments/index.md#limit-the-environment-scope-of-a-cicd-variable) is used and
-  [Prometheus installed on the cluster](../../user/project/integrations/prometheus.md#enabling-prometheus-integration).
+  [Prometheus installed on the cluster](../../user/project/integrations/prometheus.md#enabling-the-prometheus-integration).
 - Prometheus is [manually configured](../../user/project/integrations/prometheus.md#manual-configuration-of-prometheus).
 
 ![Add New Metric](img/prometheus_add_metric.png)

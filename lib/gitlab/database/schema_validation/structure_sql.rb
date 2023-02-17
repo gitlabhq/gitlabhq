@@ -8,6 +8,10 @@ module Gitlab
           @structure_file_path = structure_file_path
         end
 
+        def index_exists?(index_name)
+          indexes.find { |index| index.name == index_name }.present?
+        end
+
         def indexes
           @indexes ||= index_statements.map do |index_statement|
             index_statement.relation.schemaname = "public" if index_statement.relation.schemaname == ''

@@ -5679,7 +5679,7 @@ msgstr[1] ""
 msgid "Attaching the file failed."
 msgstr ""
 
-msgid "Attempted sign in to %{host} using a wrong two-factor authentication code"
+msgid "Attempted sign in to %{host} using an incorrect verification code"
 msgstr ""
 
 msgid "Audit Events"
@@ -15805,7 +15805,7 @@ msgstr ""
 msgid "Enter the %{name} title"
 msgstr ""
 
-msgid "Enter the code from the two-factor app on your mobile device. If you've lost your device, you may enter one of your recovery codes."
+msgid "Enter the code from your two-factor authenticator app. If you've lost your device, you can enter one of your recovery codes."
 msgstr ""
 
 msgid "Enter the following to confirm:"
@@ -15821,6 +15821,9 @@ msgid "Enter the password for password-protected Elasticsearch servers."
 msgstr ""
 
 msgid "Enter the username for password-protected Elasticsearch servers."
+msgstr ""
+
+msgid "Enter verification code"
 msgstr ""
 
 msgid "Enter your Packagist server. Defaults to https://packagist.org."
@@ -18939,6 +18942,12 @@ msgstr ""
 msgid "GitLab commit"
 msgstr ""
 
+msgid "GitLab detected an attempt to sign in to your %{host} account using an incorrect verification code"
+msgstr ""
+
+msgid "GitLab detected an attempt to sign in to your %{host} account using an incorrect verification code from the following IP address: %{ip}, at %{time}"
+msgstr ""
+
 msgid "GitLab documentation"
 msgstr ""
 
@@ -21343,7 +21352,7 @@ msgstr ""
 msgid "If you recently signed in and recognize the IP address, you may disregard this email."
 msgstr ""
 
-msgid "If you recently tried to sign in, but mistakenly entered a wrong two-factor authentication code, you may ignore this email."
+msgid "If you recently tried to sign in, but mistakenly entered an incorrect verification code, you can ignore this email."
 msgstr ""
 
 msgid "If you want to re-enable two-factor authentication, visit %{two_factor_link}"
@@ -30844,9 +30853,6 @@ msgstr ""
 msgid "Pick a name"
 msgstr ""
 
-msgid "Pin code"
-msgstr ""
-
 msgid "Pipeline"
 msgstr ""
 
@@ -33322,7 +33328,19 @@ msgstr ""
 msgid "ProjectQualitySummary|An error occurred while trying to fetch project quality statistics"
 msgstr ""
 
+msgid "ProjectQualitySummary|Analysis of your source code's quality and complexity."
+msgstr ""
+
+msgid "ProjectQualitySummary|Blocker"
+msgstr ""
+
+msgid "ProjectQualitySummary|Code quality"
+msgstr ""
+
 msgid "ProjectQualitySummary|Coverage"
+msgstr ""
+
+msgid "ProjectQualitySummary|Critical"
 msgstr ""
 
 msgid "ProjectQualitySummary|Failure"
@@ -33335,6 +33353,9 @@ msgid "ProjectQualitySummary|Help us improve this page"
 msgstr ""
 
 msgid "ProjectQualitySummary|Latest pipeline results"
+msgstr ""
+
+msgid "ProjectQualitySummary|Learn more about Code Quality"
 msgstr ""
 
 msgid "ProjectQualitySummary|Learn more about test coverage"
@@ -33377,6 +33398,12 @@ msgid "ProjectQualitySummary|The percentage of tests that succeed, fail, or are 
 msgstr ""
 
 msgid "ProjectQualitySummary|This page helps you understand the code testing trends for your project. Let us know how we can improve it!"
+msgstr ""
+
+msgid "ProjectQualitySummary|Violations"
+msgstr ""
+
+msgid "ProjectQualitySummary|Violations found"
 msgstr ""
 
 msgid "ProjectSelect|No matching results"
@@ -40112,6 +40139,9 @@ msgstr ""
 msgid "Slack logo"
 msgstr ""
 
+msgid "Slack notifications integration is deprecated"
+msgstr ""
+
 msgid "SlackIntegration|Are you sure you want to remove this project from the GitLab for Slack app?"
 msgstr ""
 
@@ -42612,6 +42642,9 @@ msgid "The Issue Tracker is the place to add things that need to be improved or 
 msgstr ""
 
 msgid "The Prometheus server responded with \"bad request\". Please check your queries are correct and are supported in your Prometheus version. %{documentationLink}"
+msgstr ""
+
+msgid "The Slack notifications integration is deprecated and will be removed in a future release. To continue to receive notifications from Slack, use the GitLab for Slack app instead. %{learn_more_link_start}Learn more%{link_end}."
 msgstr ""
 
 msgid "The Snowplow cookie domain."
@@ -45259,9 +45292,6 @@ msgstr ""
 msgid "Two-Factor Authentication"
 msgstr ""
 
-msgid "Two-Factor Authentication code"
-msgstr ""
-
 msgid "Two-factor Authentication"
 msgstr ""
 
@@ -47623,12 +47653,6 @@ msgid "We couldn't find any %{scope} matching %{term} in project %{project}"
 msgstr ""
 
 msgid "We couldn't reach the Prometheus server. Either the server no longer exists or the configuration details need updating."
-msgstr ""
-
-msgid "We detected an attempt to sign in to your %{host} account using a wrong two-factor authentication code"
-msgstr ""
-
-msgid "We detected an attempt to sign in to your %{host} account using a wrong two-factor authentication code, from the following IP address: %{ip}, at %{time}"
 msgstr ""
 
 msgid "We detected potential spam in the %{humanized_resource_name}. Please solve the reCAPTCHA to proceed."

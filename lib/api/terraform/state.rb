@@ -28,18 +28,16 @@ module API
 
         increment_unique_values('p_terraform_state_api_unique_users', current_user.id)
 
-        if Feature.enabled?(:route_hll_to_snowplow_phase2, user_project&.namespace)
-          Gitlab::Tracking.event(
-            'API::Terraform::State',
-            'terraform_state_api_request',
-            namespace: user_project&.namespace,
-            user: current_user,
-            project: user_project,
-            label: 'redis_hll_counters.terraform.p_terraform_state_api_unique_users_monthly',
-            context: [Gitlab::Tracking::ServicePingContext.new(data_source: :redis_hll,
-                                                               event: 'p_terraform_state_api_unique_users').to_context]
-          )
-        end
+        Gitlab::Tracking.event(
+          'API::Terraform::State',
+          'terraform_state_api_request',
+          namespace: user_project&.namespace,
+          user: current_user,
+          project: user_project,
+          label: 'redis_hll_counters.terraform.p_terraform_state_api_unique_users_monthly',
+          context: [Gitlab::Tracking::ServicePingContext.new(data_source: :redis_hll,
+                                                             event: 'p_terraform_state_api_unique_users').to_context]
+        )
       end
 
       params do

@@ -69,7 +69,6 @@ RSpec.describe EventCreateService, :clean_gitlab_redis_cache, :clean_gitlab_redi
       end
 
       it_behaves_like 'Snowplow event tracking with RedisHLL context' do
-        let(:feature_flag_name) { :route_hll_to_snowplow_phase2 }
         let(:category) { described_class.name }
         let(:action) { 'created' }
         let(:label) {  described_class::MR_EVENT_LABEL }
@@ -99,7 +98,6 @@ RSpec.describe EventCreateService, :clean_gitlab_redis_cache, :clean_gitlab_redi
       end
 
       it_behaves_like 'Snowplow event tracking with RedisHLL context' do
-        let(:feature_flag_name) { :route_hll_to_snowplow_phase2 }
         let(:category) { described_class.name }
         let(:action) { 'closed' }
         let(:label) {  described_class::MR_EVENT_LABEL }
@@ -129,7 +127,6 @@ RSpec.describe EventCreateService, :clean_gitlab_redis_cache, :clean_gitlab_redi
       end
 
       it_behaves_like 'Snowplow event tracking with RedisHLL context' do
-        let(:feature_flag_name) { :route_hll_to_snowplow_phase2 }
         let(:category) { described_class.name }
         let(:action) { 'merged' }
         let(:label) { described_class::MR_EVENT_LABEL }
@@ -409,7 +406,6 @@ RSpec.describe EventCreateService, :clean_gitlab_redis_cache, :clean_gitlab_redi
         let(:category) { described_class.name }
         let(:property) { Gitlab::UsageDataCounters::TrackUniqueEvents::DESIGN_ACTION.to_s }
         let(:label) { ::EventCreateService::DEGIGN_EVENT_LABEL }
-        let(:feature_flag_name) { :route_hll_to_snowplow_phase2 }
 
         context 'for create event' do
           it_behaves_like 'Snowplow event tracking with RedisHLL context' do
@@ -461,7 +457,6 @@ RSpec.describe EventCreateService, :clean_gitlab_redis_cache, :clean_gitlab_redi
         let(:user) { author }
         let(:property) { Gitlab::UsageDataCounters::TrackUniqueEvents::DESIGN_ACTION.to_s }
         let(:label) { ::EventCreateService::DEGIGN_EVENT_LABEL }
-        let(:feature_flag_name) { :route_hll_to_snowplow_phase2 }
       end
     end
   end
@@ -485,7 +480,6 @@ RSpec.describe EventCreateService, :clean_gitlab_redis_cache, :clean_gitlab_redi
       it_behaves_like "it records the event in the event counter"
 
       it_behaves_like 'Snowplow event tracking with RedisHLL context' do
-        let(:feature_flag_name) { :route_hll_to_snowplow_phase2 }
         let(:note) { create(:diff_note_on_merge_request) }
         let(:category) { described_class.name }
         let(:action) { 'commented' }
