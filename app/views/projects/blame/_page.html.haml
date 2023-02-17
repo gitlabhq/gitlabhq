@@ -1,0 +1,34 @@
+- current_line = @blame.first_line
+
+.file-content.blame.code{ class: user_color_scheme }
+  - groups_length = @blame.groups.size - 1
+  - @blame.groups.each_with_index do |blame_group, index|
+    - commit_data = @blame.commit_data(blame_group[:commit])
+    - line_count = blame_group[:lines].count
+
+    .tr{ class: ('last-row' if groups_length == index) }
+      .td.blame-commit.commit{ class: commit_data.age_map_class }
+        = commit_data.author_avatar
+
+        .commit-row-title
+          %span.item-title.str-truncated-100
+            = commit_data.commit_link
+          = commit_data.project_blame_link
+
+        .light
+          = commit_data.commit_author_link
+          = _('committed')
+          #{commit_data.time_ago_tooltip}
+
+      .td.line-numbers
+        - (current_line...(current_line + line_count)).each do |i|
+          %a.diff-line-num.file-line-num.no-link{ href: "#L#{i}", id: "L#{i}", 'data-line-number' => i }
+            = i
+
+      .td.lines
+        %pre.code.highlight
+          %code
+            - blame_group[:lines].each do |line|
+              #{line}
+
+    - current_line += line_count

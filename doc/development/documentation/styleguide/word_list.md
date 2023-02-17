@@ -316,6 +316,20 @@ Use title case for the GitLab Container Registry.
 Do not use **currently** when talking about the product or its features. The documentation describes the product as it is today.
 ([Vale](../testing.md#vale) rule: [`CurrentStatus.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/CurrentStatus.yml))
 
+## data
+
+Use **data** as a singular noun.
+
+Use:
+
+- Data is collected.
+- The data shows a performance increase.
+
+Instead of:
+
+- Data are collected.
+- The data show a performance increase.
+
 ## default branch
 
 Use **default branch** to refer generically to the primary branch in the repository.

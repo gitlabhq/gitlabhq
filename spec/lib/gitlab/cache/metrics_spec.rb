@@ -3,8 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Cache::Metrics do
-  subject(:metrics) do
-    described_class.new(
+  subject(:metrics) { described_class.new(metadata) }
+
+  let(:metadata) do
+    Gitlab::Cache::Metadata.new(
       caller_id: caller_id,
       cache_identifier: cache_identifier,
       feature_category: feature_category,
@@ -25,24 +27,6 @@ RSpec.describe Gitlab::Cache::Metrics do
         :redis_hit_miss_operations_total,
         'Hit/miss Redis cache counter'
       ).and_return(counter_mock)
-  end
-
-  describe '#initialize' do
-    context 'when backing resource is not supported' do
-      let(:backing_resource) { 'foo' }
-
-      it { expect { metrics }.to raise_error(RuntimeError) }
-
-      context 'when on production' do
-        before do
-          allow(Gitlab).to receive(:dev_or_test_env?).and_return(false)
-        end
-
-        it 'does not raise an exception' do
-          expect { metrics }.not_to raise_error
-        end
-      end
-    end
   end
 
   describe '#increment_cache_hit' do

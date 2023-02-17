@@ -241,6 +241,19 @@ kics-iac-sast:
     SAST_ANALYZER_IMAGE_TAG: "3.1"
 ```
 
+## Automatic vulnerability resolution
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368284) in GitLab 15.9 [with a project-level flag](../../../administration/feature_flags.md) named `sec_mark_dropped_findings_as_resolved`. Enabled by default on GitLab.com; disabled by default in self-managed. On GitLab.com, [contact Support](https://about.gitlab.com/support/) if you need to disable the flag for your project.
+
+To help you focus on the vulnerabilities that are still relevant, GitLab IaC Scanning automatically [resolves](../vulnerabilities/index.md#vulnerability-status-values) vulnerabilities when:
+
+- You [disable a predefined rule](#disable-predefined-analyzer-rules).
+- We remove a rule from the default ruleset.
+
+The Vulnerability Management system leaves a comment on automatically-resolved vulnerabilities so you still have a historical record of the vulnerability.
+
+If you re-enable the rule later, the findings are reopened for triage.
+
 ## Reports JSON format
 
 The IaC tool emits a JSON report file in the existing SAST report format. For more information, see the

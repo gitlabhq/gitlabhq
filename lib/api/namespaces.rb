@@ -81,13 +81,13 @@ module API
         tags NAMESPACES_TAGS
       end
       params do
-        requires :namespace, type: String, desc: "Namespace’s path"
+        requires :id, type: String, desc: "Namespace’s path"
         optional :parent_id, type: Integer, desc: 'The ID of the parent namespace. If no ID is specified, only top-level namespaces are considered.'
       end
-      get ':namespace/exists', requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS, feature_category: :subgroups, urgency: :low do
+      get ':id/exists', requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS, feature_category: :subgroups, urgency: :low do
         check_rate_limit!(:namespace_exists, scope: current_user)
 
-        namespace_path = params[:namespace]
+        namespace_path = params[:id]
         existing_namespaces_within_the_parent = Namespace.without_project_namespaces.by_parent(params[:parent_id])
 
         exists = existing_namespaces_within_the_parent.filter_by_path(namespace_path).exists?

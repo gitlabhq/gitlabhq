@@ -8,7 +8,8 @@ RSpec.describe 'Bulk update issues', feature_category: :team_planning do
   let_it_be(:developer) { create(:user) }
   let_it_be(:group) { create(:group).tap { |group| group.add_developer(developer) } }
   let_it_be(:project) { create(:project, group: group) }
-  let_it_be(:updatable_issues, reload: true) { create_list(:issue, 3, project: project) }
+  let_it_be(:updatable_issues, reload: true) { create_list(:issue, 2, project: project) }
+  let_it_be(:milestone) { create(:milestone, group: group) }
 
   let(:parent) { project }
   let(:max_issues) { Mutations::Issues::BulkUpdate::MAX_ISSUES }
@@ -16,7 +17,13 @@ RSpec.describe 'Bulk update issues', feature_category: :team_planning do
   let(:mutation_response) { graphql_mutation_response(:issues_bulk_update) }
   let(:current_user) { developer }
   let(:base_arguments) { { parent_id: parent.to_gid.to_s, ids: updatable_issues.map { |i| i.to_gid.to_s } } }
-  let(:additional_arguments) { { assignee_ids: [current_user.to_gid.to_s] } }
+
+  let(:additional_arguments) do
+    {
+      assignee_ids: [current_user.to_gid.to_s],
+      milestone_id: milestone.to_gid.to_s
+    }
+  end
 
   context 'when the `bulk_update_issues_mutation` feature flag is disabled' do
     before do
@@ -43,7 +50,7 @@ RSpec.describe 'Bulk update issues', feature_category: :team_planning do
 
         updatable_issues.each(&:reset)
         forbidden_issue.reset
-      end.to change { updatable_issues.flat_map(&:assignee_ids) }.from([]).to([current_user.id] * 3).and(
+      end.to change { updatable_issues.flat_map(&:assignee_ids) }.from([]).to([current_user.id] * 2).and(
         not_change(forbidden_issue, :assignee_ids).from([])
       )
 
@@ -58,7 +65,8 @@ RSpec.describe 'Bulk update issues', feature_category: :team_planning do
       expect do
         post_graphql_mutation(mutation, current_user: current_user)
         updatable_issues.each(&:reload)
-      end.to change { updatable_issues.flat_map(&:assignee_ids) }.from([]).to([current_user.id] * 3)
+      end.to change { updatable_issues.flat_map(&:assignee_ids) }.from([]).to([current_user.id] * 2)
+        .and(change { updatable_issues.map(&:milestone_id) }.from([nil] * 2).to([milestone.id] * 2))
 
       expect(mutation_response).to include(
         'updatedIssueCount' => updatable_issues.count
@@ -87,7 +95,8 @@ RSpec.describe 'Bulk update issues', feature_category: :team_planning do
         expect do
           post_graphql_mutation(mutation, current_user: current_user)
           updatable_issues.each(&:reload)
-        end.to change { updatable_issues.flat_map(&:assignee_ids) }.from([]).to([current_user.id] * 3)
+        end.to change { updatable_issues.flat_map(&:assignee_ids) }.from([]).to([current_user.id] * 2)
+          .and(change { updatable_issues.map(&:milestone_id) }.from([nil] * 2).to([milestone.id] * 2))
 
         expect(mutation_response).to include(
           'updatedIssueCount' => updatable_issues.count
@@ -110,18 +119,21 @@ RSpec.describe 'Bulk update issues', feature_category: :team_planning do
       end
     end
 
-    context 'when removing all assignees' do
-      let(:additional_arguments) { { assignee_ids: [] } }
+    context 'when setting arguments to null or none' do
+      let(:additional_arguments) { { assignee_ids: [], milestone_id: nil } }
 
       before do
-        updatable_issues.each { |issue| issue.update!(assignees: [current_user]) }
+        updatable_issues.each do |issue|
+          issue.update!(assignees: [current_user], milestone: milestone)
+        end
       end
 
       it 'updates all issues' do
         expect do
           post_graphql_mutation(mutation, current_user: current_user)
           updatable_issues.each(&:reload)
-        end.to change { updatable_issues.flat_map(&:assignee_ids) }.from([current_user.id] * 3).to([])
+        end.to change { updatable_issues.flat_map(&:assignee_ids) }.from([current_user.id] * 2).to([])
+          .and(change { updatable_issues.map(&:milestone_id) }.from([milestone.id] * 2).to([nil] * 2))
 
         expect(mutation_response).to include(
           'updatedIssueCount' => updatable_issues.count

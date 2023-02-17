@@ -27,6 +27,10 @@ module Mutations
         description: 'Global ID array of the users that will be assigned to the given issues. ' \
                      'Existing assignees will be replaced with the ones on this list.'
 
+      argument :milestone_id, ::Types::GlobalIDType[::Milestone],
+        required: false,
+        description: 'Global ID of the milestone that will be assigned to the issues.'
+
       field :updated_issue_count, GraphQL::Types::Int,
         null: true,
         description: 'Number of issues that were successfully updated.'
@@ -71,14 +75,32 @@ module Mutations
 
       def prepared_params(attributes, ids)
         prepared = { issuable_ids: model_ids_from(ids).uniq }
-        prepared[:assignee_ids] =  model_ids_from(attributes[:assignee_ids]) if attributes[:assignee_ids]
 
-        prepared
+        global_id_arguments.each do |argument|
+          next unless attributes.key?(argument)
+
+          prepared[argument] = model_ids_from(attributes[argument])
+        end
+
+        prepared.transform_keys(param_mappings)
+      end
+
+      def param_mappings
+        {}
+      end
+
+      def global_id_arguments
+        %i[assignee_ids milestone_id]
       end
 
       def model_ids_from(attributes)
-        attributes.map(&:model_id)
+        return if attributes.nil?
+        return attributes.map(&:model_id) if attributes.is_a?(Array)
+
+        attributes.model_id
       end
     end
   end
 end
+
+Mutations::Issues::BulkUpdate.prepend_mod

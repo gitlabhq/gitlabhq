@@ -274,6 +274,26 @@ Update any scripts or bookmarks that reference the legacy URLs. GitLab APIs are 
 
 </div>
 
+<div class="deprecation removal-160 breaking-change">
+
+### License Compliance CI Template
+
+Planned removal: GitLab <span class="removal-milestone">16.0</span> <span class="removal-date"></span>
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+The GitLab [License Compliance](https://docs.gitlab.com/ee/user/compliance/license_compliance/) CI template is now deprecated and is scheduled for removal in the GitLab 16.0 release. Users who wish to continue using GitLab for License Compliance should remove the License Compliance template from their CI pipeline and add the [Dependency Scanning template](https://docs.gitlab.com/ee/user/application_security/dependency_scanning/#configuration). The Dependency Scanning template is now capable of gathering the required license information so it is no longer necessary to run a separate License Compliance job. The License Compliance CI template should not be removed prior to verifying that the `license_scanning_sbom_scanner` and `package_metadata_synchronization` flags are enabled for the instance and that the instance has been upgraded to a version that supports [the new method of license scanning](https://docs.gitlab.com/ee/user/compliance/license_scanning_of_cyclonedx_files/).
+
+| CI Pipeline Includes | GitLab <= 15.8 | 15.9 <= GitLab < 16.0 | GitLab >= 16.0 |
+| ------------- | ------------- | ------------- | ------------- |
+| Both DS and LS templates | License data from LS job is used | License data from LS job is used | License data from DS job is used |
+| DS template is included but LS template is not | No license data | License data from DS job is used | License data from DS job is used |
+| LS template is included but DS template is not | License data from LS job is used | License data from LS job is used | No license data |
+
+</div>
+
 <div class="deprecation removal-170 breaking-change">
 
 ### Load Performance Testing is deprecated
@@ -364,6 +384,47 @@ Required Pipeline Configuration will be removed in the 16.0 release. This impact
 
 We recommend replacing this with an alternative [compliance solution](https://docs.gitlab.com/ee/user/group/compliance_frameworks.html#compliance-pipelines)
 that is available now. We recommend this alternative solution because it provides greater flexibility, allowing required pipelines to be assigned to specific compliance framework labels.
+
+</div>
+
+<div class="deprecation removal-160 breaking-change">
+
+### SAST analyzer coverage changing in GitLab 16.0
+
+Planned removal: GitLab <span class="removal-milestone">16.0</span> <span class="removal-date"></span>
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+GitLab SAST uses various [analyzers](https://docs.gitlab.com/ee/user/application_security/sast/analyzers/) to scan code for vulnerabilities.
+
+We're reducing the number of supported analyzers used by default in GitLab SAST.
+This is part of our long-term strategy to deliver a faster, more consistent user experience across different programming languages.
+
+Starting in GitLab 16.0, the GitLab SAST CI/CD template will no longer use the following analyzers, and they will enter End of Support status:
+
+- [Security Code Scan](https://gitlab.com/gitlab-org/security-products/analyzers/security-code-scan) (.NET)
+- [PHPCS Security Audit](https://gitlab.com/gitlab-org/security-products/analyzers/phpcs-security-audit) (PHP)
+
+We'll remove these analyzers from the [SAST CI/CD template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/SAST.gitlab-ci.yml) and replace them with GitLab-supported detection rules and the [Semgrep-based analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep).
+Effective immediately, these analyzers will receive only security updates; other routine improvements or updates are not guaranteed.
+After these analyzers reach End of Support, no further updates will be provided.
+However, we won't delete container images previously published for these analyzers or remove the ability to run them by using a custom CI/CD pipeline job.
+
+We will also remove Scala from the scope of the [SpotBugs-based analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs) and replace it with the [Semgrep-based analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep).
+This change will make it simpler to scan Scala code; compilation will no longer be required.
+This change will be reflected in the automatic language detection portion of the [GitLab-managed SAST CI/CD template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/SAST.gitlab-ci.yml).
+Note that the SpotBugs-based analyzer will continue to cover Groovy and Kotlin.
+
+If you've already dismissed a vulnerability finding from one of the deprecated analyzers, the replacement attempts to respect your previous dismissal. The system behavior depends on:
+
+- whether you've excluded the Semgrep-based analyzer from running in the past.
+- which analyzer first discovered the vulnerabilities shown in the project's Vulnerability Report.
+
+See [Vulnerability translation documentation](https://docs.gitlab.com/ee/user/application_security/sast/analyzers.html#vulnerability-translation) for further details.
+
+If you applied customizations to any of the affected analyzers or if you currently disable the Semgrep analyzer in your pipelines, you must take action as detailed in the [deprecation issue for this change](https://gitlab.com/gitlab-org/gitlab/-/issues/390416#breaking-change).
 
 </div>
 

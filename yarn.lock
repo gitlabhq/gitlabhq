@@ -1366,10 +1366,10 @@
   resolved "https://registry.yarnpkg.com/@gitlab/visual-review-tools/-/visual-review-tools-1.7.3.tgz#9ea641146436da388ffbad25d7f2abe0df52c235"
   integrity sha512-NMV++7Ew1FSBDN1xiZaauU9tfeSfgDHcOLpn+8bGpP+O5orUPm2Eu66R5eC5gkjBPaXosNAxNWtriee+aFk4+g==
 
-"@gitlab/web-ide@0.0.1-dev-20230210211358":
-  version "0.0.1-dev-20230210211358"
-  resolved "https://registry.yarnpkg.com/@gitlab/web-ide/-/web-ide-0.0.1-dev-20230210211358.tgz#1417d4beec86879aec4e6c13a4ba2ffbd3cb8874"
-  integrity sha512-U5Q9Dmb/rkfWqzb0TOpxzSzs1BJ1v2/IOj+8AwL+16CWaQE3Lh/d5XizWULwk29McLtm6H8Em2OZwjOqWZvouA==
+"@gitlab/web-ide@0.0.1-dev-20230216131813":
+  version "0.0.1-dev-20230216131813"
+  resolved "https://registry.yarnpkg.com/@gitlab/web-ide/-/web-ide-0.0.1-dev-20230216131813.tgz#f1c5de4e9bea0a1736296b0e63356ca39c065f54"
+  integrity sha512-eqGh/gol3vnT62Fs2dR1JWfkX/hVDwcJaYT1JkFPtiaTi2hFwvqw7k3uKL3qIiYzL7V22avxwRIkbAZCI7aKbQ==
 
 "@graphql-eslint/eslint-plugin@3.12.0":
   version "3.12.0"

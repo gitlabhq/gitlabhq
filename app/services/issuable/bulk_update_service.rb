@@ -36,7 +36,6 @@ module Issuable
 
     def set_update_params(type)
       params.slice!(*permitted_attrs(type))
-      params.delete_if { |_, v| !v.is_a?(Array) && v.blank? }
 
       if params[:assignee_ids] == [IssuableFinder::Params::NONE.to_s]
         params[:assignee_ids] = []
@@ -45,8 +44,6 @@ module Issuable
 
     def permitted_attrs(type)
       attrs = %i(state_event milestone_id add_label_ids remove_label_ids subscription_event)
-
-      attrs.push(:sprint_id) if type == 'issue'
 
       if type == 'issue' || type == 'merge_request'
         attrs.push(:assignee_ids)

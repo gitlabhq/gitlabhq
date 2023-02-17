@@ -221,7 +221,8 @@ RSpec.describe 'Merge request > Batch comments', :js, feature_category: :code_re
       end
     end
 
-    it 'publishes review and unresolves the thread' do
+    it 'publishes review and unresolves the thread',
+      quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/337931' do
       expect(active_discussion.resolved?).to eq(true)
 
       wait_for_requests

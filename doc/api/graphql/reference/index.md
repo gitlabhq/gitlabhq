@@ -3652,6 +3652,8 @@ Input type: `IssuesBulkUpdateInput`
 | <a id="mutationissuesbulkupdateassigneeids"></a>`assigneeIds` | [`[UserID!]`](#userid) | Global ID array of the users that will be assigned to the given issues. Existing assignees will be replaced with the ones on this list. |
 | <a id="mutationissuesbulkupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationissuesbulkupdateids"></a>`ids` | [`[IssueID!]!`](#issueid) | Global ID array of the issues that will be updated. IDs that the user can't update will be ignored. A max of 100 can be provided. |
+| <a id="mutationissuesbulkupdateiterationid"></a>`iterationId` | [`IterationID`](#iterationid) | Global ID of the iteration that will be assigned to the issues. |
+| <a id="mutationissuesbulkupdatemilestoneid"></a>`milestoneId` | [`MilestoneID`](#milestoneid) | Global ID of the milestone that will be assigned to the issues. |
 | <a id="mutationissuesbulkupdateparentid"></a>`parentId` | [`IssueParentID!`](#issueparentid) | Global ID of the parent that the bulk update will be scoped to . Example `IssueParentID` are `"gid://gitlab/Project/1"` and `"gid://gitlab/Group/1"`. |
 
 #### Fields
@@ -15656,6 +15658,7 @@ Information relating to rules that must be satisfied to merge this merge request
 | <a id="mergerequestapprovalstateapprovalrulesoverwritten"></a>`approvalRulesOverwritten` | [`Boolean`](#boolean) | Indicates if the merge request approval rules are overwritten for the merge request. |
 | <a id="mergerequestapprovalstateinvalidapproversrules"></a>`invalidApproversRules` | [`[ApprovalRule!]`](#approvalrule) | List of approval rules that are associated with the merge request, but invalid. |
 | <a id="mergerequestapprovalstaterules"></a>`rules` | [`[ApprovalRule!]`](#approvalrule) | List of approval rules associated with the merge request. |
+| <a id="mergerequestapprovalstatesuggestedapprovers"></a>`suggestedApprovers` | [`UserCoreConnection`](#usercoreconnection) | List of suggested approvers. (see [Connections](#connections)) |
 
 ### `MergeRequestAssignee`
 
@@ -16423,6 +16426,7 @@ Check permissions for the current user on a merge request.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mergerequestpermissionsadminmergerequest"></a>`adminMergeRequest` | [`Boolean!`](#boolean) | Indicates the user can perform `admin_merge_request` on this resource. |
+| <a id="mergerequestpermissionscanapprove"></a>`canApprove` | [`Boolean!`](#boolean) | Indicates the user can perform `can_approve` on this resource. |
 | <a id="mergerequestpermissionscanmerge"></a>`canMerge` | [`Boolean!`](#boolean) | Indicates the user can perform `can_merge` on this resource. |
 | <a id="mergerequestpermissionscherrypickoncurrentmergerequest"></a>`cherryPickOnCurrentMergeRequest` | [`Boolean!`](#boolean) | Indicates the user can perform `cherry_pick_on_current_merge_request` on this resource. |
 | <a id="mergerequestpermissionscreatenote"></a>`createNote` | [`Boolean!`](#boolean) | Indicates the user can perform `create_note` on this resource. |

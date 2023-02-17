@@ -1,10 +1,11 @@
 - page_title _("Blame"), @blob.path, @ref
 - add_page_specific_style 'page_bundles/tree'
+- dataset = { testid: 'blob-content-holder', qa_selector: 'blame_file_content', per_page: @blame_per_page }
 
-#blob-content-holder.tree-holder.js-per-page{ data: { testid: 'blob-content-holder', per_page: @blame_per_page } }
+#blob-content-holder.tree-holder.js-per-page{ data: dataset }
   = render "projects/blob/breadcrumb", blob: @blob, blame: true
 
-  .file-holder.gl-overflow-hidden
+  .file-holder
     = render "projects/blob/header", blob: @blob, blame: true
 
     .file-blame-legend
@@ -21,44 +22,9 @@
       %span.legend-box.legend-box-9
       %span.right-label Older
 
-    .table-responsive.file-content.blame.code{ class: "#{user_color_scheme} gl-rounded-0!", data: { qa_selector: 'blame_file_content' } }
-      %table
-        - current_line = @blame.first_line
-        - @blame.groups.each do |blame_group|
-          - commit_data = @blame.commit_data(blame_group[:commit])
-          - line_count = blame_group[:lines].count
-
-          %tr{ style: intrinsic_row_css(line_count) }
-            %td.blame-commit{ class: commit_data.age_map_class }
-              .commit
-                = commit_data.author_avatar
-
-                .commit-row-title
-                  %span.item-title.str-truncated-100
-                    = commit_data.commit_link
-                  %span
-                    = commit_data.project_blame_link
-                  &nbsp;
-
-                .light
-                  = commit_data.commit_author_link
-                  = _('committed')
-                  #{commit_data.time_ago_tooltip}
-
-            %td.line-numbers
-              - (current_line...(current_line + line_count)).each do |i|
-                %a.diff-line-num.gl-justify-content-end{ href: "#L#{i}", id: "L#{i}", 'data-line-number' => i, class: "gl-display-flex!" }
-                  .file-line-num
-                    = i
-                \
-
-            %td.lines.gl-w-full
-              %pre.code.highlight
-                %code
-                  - blame_group[:lines].each do |line|
-                    #{line}
-
-          - current_line += line_count
+    .table-responsive.blame-table{ data: { qa_selector: 'blame_file_content' } }
+      .blame-table-wrapper
+        = render partial: 'page'
 
     - if @blame_pagination && @blame_pagination.total_pages > 1
       .gl-display-flex.gl-justify-content-center.gl-flex-direction-column.gl-align-items-center.gl-p-3.gl-bg-gray-50.gl-border-t-solid.gl-border-t-1.gl-border-gray-100

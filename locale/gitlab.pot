@@ -36741,6 +36741,9 @@ msgstr ""
 msgid "Runners|Add notes such as the runner owner or what it should be used for."
 msgstr ""
 
+msgid "Runners|Add tags for the types of jobs the runner processes to ensure that the runner only runs jobs that you intend it to. %{helpLinkStart}Learn more.%{helpLinkEnd}"
+msgstr ""
+
 msgid "Runners|Administrator"
 msgstr ""
 
@@ -36878,6 +36881,9 @@ msgstr ""
 msgid "Runners|Enable stale runner cleanup?"
 msgstr ""
 
+msgid "Runners|Enter the number of seconds."
+msgstr ""
+
 msgid "Runners|Enter the number of seconds. This timeout takes precedence over lower timeouts set for the project."
 msgstr ""
 
@@ -36938,6 +36944,9 @@ msgstr ""
 msgid "Runners|Maintenance note"
 msgstr ""
 
+msgid "Runners|Maximum amount of time the runner can run before it terminates. If a project has a shorter job timeout period, the job timeout period of the instance runner is used instead."
+msgstr ""
+
 msgid "Runners|Maximum job timeout"
 msgstr ""
 
@@ -36945,6 +36954,9 @@ msgid "Runners|Members of the %{type} can register runners"
 msgstr ""
 
 msgid "Runners|Minor version upgrades are available."
+msgstr ""
+
+msgid "Runners|Multiple tags must be separated by a comma. For example, %{example}."
 msgstr ""
 
 msgid "Runners|Name"
@@ -37091,6 +37103,9 @@ msgid "Runners|Runner authentication token expiration"
 msgstr ""
 
 msgid "Runners|Runner authentication tokens will expire based on a set interval. They will automatically rotate once expired."
+msgstr ""
+
+msgid "Runners|Runner description"
 msgstr ""
 
 msgid "Runners|Runner has contacted GitLab within the last %{elapsedTime}"
@@ -37273,6 +37288,9 @@ msgid "Runners|Upgrade recommended"
 msgstr ""
 
 msgid "Runners|Use Group runners when you want all projects in a group to have access to a set of runners."
+msgstr ""
+
+msgid "Runners|Use the runner for jobs without tags in addition to tagged jobs."
 msgstr ""
 
 msgid "Runners|Use the runner for jobs without tags, in addition to tagged jobs."

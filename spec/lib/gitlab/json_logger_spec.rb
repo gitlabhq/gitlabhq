@@ -28,6 +28,10 @@ RSpec.describe Gitlab::JsonLogger do
   end
 
   describe '#format_message' do
+    before do
+      allow(Labkit::Correlation::CorrelationId).to receive(:current_id).and_return('new-correlation-id')
+    end
+
     it 'formats strings' do
       output = subject.format_message('INFO', now, 'test', 'Hello world')
       data = Gitlab::Json.parse(output)
@@ -35,7 +39,7 @@ RSpec.describe Gitlab::JsonLogger do
       expect(data['severity']).to eq('INFO')
       expect(data['time']).to eq(now.utc.iso8601(3))
       expect(data['message']).to eq('Hello world')
-      expect(data['correlation_id']).to be_an_instance_of(String)
+      expect(data['correlation_id']).to eq('new-correlation-id')
     end
 
     it 'formats hashes' do
@@ -46,7 +50,7 @@ RSpec.describe Gitlab::JsonLogger do
       expect(data['time']).to eq(now.utc.iso8601(3))
       expect(data['hello']).to eq(1)
       expect(data['message']).to be_nil
-      expect(data['correlation_id']).to be_an_instance_of(String)
+      expect(data['correlation_id']).to eq('new-correlation-id')
     end
   end
 end

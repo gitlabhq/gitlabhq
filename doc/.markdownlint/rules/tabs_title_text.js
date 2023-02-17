@@ -1,9 +1,4 @@
-const { globalPath } = require('../require_helper');
-const {
-  forEachLine,
-  getLineMetadata,
-  isBlankLine,
-} = require(`${globalPath}/markdownlint-rule-helpers`);
+const { forEachLine, getLineMetadata, isBlankLine } = require(`markdownlint-rule-helpers`);
 
 module.exports = {
   names: ['tabs-title-text'],

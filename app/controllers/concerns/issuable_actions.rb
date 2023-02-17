@@ -252,10 +252,15 @@ module IssuableActions
   end
 
   def clean_bulk_update_params(permitted_params)
-    assignee_ids = permitted_params[:assignee_ids]
-    return permitted_params unless assignee_ids.is_a?(Array) && assignee_ids.compact.empty?
+    permitted_params.delete_if do |k, v|
+      next if k == :issuable_ids
 
-    permitted_params.except(:assignee_ids)
+      if v.is_a?(Array)
+        v.compact.empty?
+      else
+        v.blank?
+      end
+    end
   end
 
   def bulk_update_permitted_keys
@@ -263,7 +268,6 @@ module IssuableActions
       :issuable_ids,
       :assignee_id,
       :milestone_id,
-      :sprint_id,
       :state_event,
       :subscription_event,
       assignee_ids: [],

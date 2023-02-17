@@ -181,9 +181,23 @@ Support for more languages and analyzers is tracked in [this epic](https://gitla
 
 For more information, see the confidential project `https://gitlab.com/gitlab-org/security-products/post-analyzers/tracking-calculator`. The content of this project is available only to GitLab team members.
 
+## Automatic vulnerability resolution
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368284) in GitLab 15.9 [with a project-level flag](../../../administration/feature_flags.md) named `sec_mark_dropped_findings_as_resolved`. Enabled by default on GitLab.com; disabled by default in self-managed. On GitLab.com, [contact Support](https://about.gitlab.com/support/) if you need to disable the flag for your project.
+
+To help you focus on the vulnerabilities that are still relevant, GitLab SAST automatically [resolves](../vulnerabilities/index.md#vulnerability-status-values) vulnerabilities when:
+
+- You [disable a predefined rule](customize_rulesets.md#disable-predefined-rules).
+- We remove a rule from the default ruleset.
+
+Automatic resolution is available only for findings from the [Semgrep-based analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep).
+The Vulnerability Management system leaves a comment on automatically-resolved vulnerabilities so you still have a historical record of the vulnerability.
+
+If you re-enable the rule later, the findings are reopened for triage.
+
 ## Supported distributions
 
-The default scanner images are build off a base Alpine image for size and maintainability.
+The default scanner images are built on a base Alpine image for size and maintainability.
 
 ### FIPS-enabled images
 

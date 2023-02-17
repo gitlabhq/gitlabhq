@@ -5,19 +5,9 @@ module Gitlab
   module Cache
     class Metrics
       DEFAULT_BUCKETS = [0, 1, 5].freeze
-      VALID_BACKING_RESOURCES = [:cpu, :database, :gitaly, :memory, :unknown].freeze
-      DEFAULT_BACKING_RESOURCE = :unknown
 
-      def initialize(
-        caller_id:,
-        cache_identifier:,
-        feature_category: ::Gitlab::FeatureCategories::FEATURE_CATEGORY_DEFAULT,
-        backing_resource: DEFAULT_BACKING_RESOURCE
-      )
-        @caller_id = caller_id
-        @cache_identifier = cache_identifier
-        @feature_category = Gitlab::FeatureCategories.default.get!(feature_category)
-        @backing_resource = fetch_backing_resource!(backing_resource)
+      def initialize(cache_metadata)
+        @cache_metadata = cache_metadata
       end
 
       # Increase cache hit counter
@@ -51,7 +41,7 @@ module Gitlab
 
       private
 
-      attr_reader :caller_id, :cache_identifier, :feature_category, :backing_resource
+      attr_reader :cache_metadata
 
       def counter
         @counter ||= Gitlab::Metrics.counter(:redis_hit_miss_operations_total, "Hit/miss Redis cache counter")
@@ -68,19 +58,11 @@ module Gitlab
 
       def labels
         @labels ||= {
-          caller_id: caller_id,
-          cache_identifier: cache_identifier,
-          feature_category: feature_category,
-          backing_resource: backing_resource
+          caller_id: cache_metadata.caller_id,
+          cache_identifier: cache_metadata.cache_identifier,
+          feature_category: cache_metadata.feature_category,
+          backing_resource: cache_metadata.backing_resource
         }
-      end
-
-      def fetch_backing_resource!(resource)
-        return resource if VALID_BACKING_RESOURCES.include?(resource)
-
-        raise "Unknown backing resource: #{resource}" if Gitlab.dev_or_test_env?
-
-        DEFAULT_BACKING_RESOURCE
       end
     end
   end

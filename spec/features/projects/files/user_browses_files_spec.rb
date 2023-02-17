@@ -338,8 +338,8 @@ RSpec.describe "User browses files", :js, feature_category: :projects do
                  .and have_content("Initial commit")
                  .and have_content("Ignore DS files")
 
-      previous_commit_anchor = "//a[@title='Ignore DS files']/parent::span/following-sibling::span/a"
-      find(:xpath, previous_commit_anchor).click
+      previous_commit_link = find('.tr', text: "Ignore DS files").find("[aria-label='View blame prior to this change']")
+      previous_commit_link.click
 
       expect(page).to have_content("*.rb")
                  .and have_content("Dmitriy Zaporozhets")

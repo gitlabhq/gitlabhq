@@ -193,7 +193,8 @@ RSpec.describe 'getting merge request information nested in a project', feature_
         'cherryPickOnCurrentMergeRequest' => false,
         'revertOnCurrentMergeRequest' => false,
         'updateMergeRequest' => false,
-        'canMerge' => false
+        'canMerge' => false,
+        'canApprove' => false
       }
       post_graphql(query, current_user: current_user)
 
