@@ -3,6 +3,7 @@ import { GlIcon, GlLink, GlPopover, GlLoadingIcon } from '@gitlab/ui';
 import { issuableTypes } from '~/boards/constants';
 import { TYPENAME_ISSUE, TYPENAME_EPIC } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
+import { TYPE_ISSUE } from '~/issues/constants';
 import { truncate } from '~/lib/utils/text_utility';
 import { __, n__, s__, sprintf } from '~/locale';
 import { blockingIssuablesQueries } from './constants';
@@ -10,16 +11,16 @@ import { blockingIssuablesQueries } from './constants';
 export default {
   i18n: {
     issuableType: {
-      [issuableTypes.issue]: __('issue'),
+      [TYPE_ISSUE]: __('issue'),
       [issuableTypes.epic]: __('epic'),
     },
   },
   graphQLIdType: {
-    [issuableTypes.issue]: TYPENAME_ISSUE,
+    [TYPE_ISSUE]: TYPENAME_ISSUE,
     [issuableTypes.epic]: TYPENAME_EPIC,
   },
   referenceFormatter: {
-    [issuableTypes.issue]: (r) => r.split('/')[1],
+    [TYPE_ISSUE]: (r) => r.split('/')[1],
   },
   defaultDisplayLimit: 3,
   textTruncateWidth: 80,
@@ -42,7 +43,7 @@ export default {
       type: String,
       required: true,
       validator(value) {
-        return [issuableTypes.issue, issuableTypes.epic].includes(value);
+        return [TYPE_ISSUE, issuableTypes.epic].includes(value);
       },
     },
   },
@@ -119,7 +120,7 @@ export default {
       );
     },
     blockIcon() {
-      return this.issuableType === issuableTypes.issue ? 'issue-block' : 'entity-blocked';
+      return this.issuableType === TYPE_ISSUE ? 'issue-block' : 'entity-blocked';
     },
     glIconId() {
       return `blocked-icon-${this.uniqueId}`;

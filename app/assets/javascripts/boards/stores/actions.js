@@ -11,7 +11,6 @@ import {
   deleteListQueries,
   listsQuery,
   updateListQueries,
-  issuableTypes,
   FilterFields,
   ListTypeTitles,
   DraggableItemTypes,
@@ -35,6 +34,7 @@ import totalCountAndWeightQuery from 'ee_else_ce/boards/graphql/board_lists_defe
 import { fetchPolicies } from '~/lib/graphql';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { defaultClient as gqlClient } from '~/graphql_shared/issuable_client';
+import { TYPE_ISSUE } from '~/issues/constants';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { queryToObject } from '~/lib/utils/url_utility';
 import { s__ } from '~/locale';
@@ -138,7 +138,7 @@ export default {
       fullPath,
       boardId: fullBoardId,
       filters: filterParams,
-      ...(issuableType === issuableTypes.issue && {
+      ...(issuableType === TYPE_ISSUE && {
         isGroup: boardType === BoardType.group,
         isProject: boardType === BoardType.project,
       }),

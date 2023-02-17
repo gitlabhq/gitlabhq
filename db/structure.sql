@@ -351,6 +351,15 @@ BEGIN
 END;
 $$;
 
+CREATE FUNCTION trigger_dca935e3a712() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+  NEW."note_id_convert_to_bigint" := NEW."note_id";
+  RETURN NEW;
+END;
+$$;
+
 CREATE FUNCTION trigger_ee7956d805e6() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -22650,7 +22659,8 @@ CREATE TABLE todos (
     note_id integer,
     commit_id character varying,
     group_id integer,
-    resolved_by_action smallint
+    resolved_by_action smallint,
+    note_id_convert_to_bigint bigint
 );
 
 CREATE SEQUENCE todos_id_seq
@@ -29271,6 +29281,8 @@ CREATE UNIQUE INDEX index_ci_build_trace_chunks_on_build_id_and_chunk_index ON c
 
 CREATE INDEX index_ci_build_trace_chunks_on_partition_id_build_id ON ci_build_trace_chunks USING btree (partition_id, build_id);
 
+CREATE UNIQUE INDEX index_ci_build_trace_metadata_on_partition_id_build_id ON ci_build_trace_metadata USING btree (partition_id, build_id);
+
 CREATE INDEX index_ci_build_trace_metadata_on_trace_artifact_id ON ci_build_trace_metadata USING btree (trace_artifact_id);
 
 CREATE INDEX p_ci_builds_metadata_build_id_idx ON ONLY p_ci_builds_metadata USING btree (build_id) WHERE (has_exposed_artifacts IS TRUE);
@@ -33753,6 +33765,8 @@ CREATE TRIGGER trigger_c5a5f48f12b0 BEFORE INSERT OR UPDATE ON epic_user_mention
 
 CREATE TRIGGER trigger_c7107f30d69d BEFORE INSERT OR UPDATE ON merge_request_metrics FOR EACH ROW EXECUTE FUNCTION trigger_c7107f30d69d();
 
+CREATE TRIGGER trigger_dca935e3a712 BEFORE INSERT OR UPDATE ON todos FOR EACH ROW EXECUTE FUNCTION trigger_dca935e3a712();
+
 CREATE TRIGGER trigger_delete_project_namespace_on_project_delete AFTER DELETE ON projects FOR EACH ROW WHEN ((old.project_namespace_id IS NOT NULL)) EXECUTE FUNCTION delete_associated_project_namespace();
 
 CREATE TRIGGER trigger_ee7956d805e6 BEFORE INSERT OR UPDATE ON suggestions FOR EACH ROW EXECUTE FUNCTION trigger_ee7956d805e6();
@@ -35940,6 +35954,9 @@ ALTER TABLE ONLY metrics_dashboard_annotations
 
 ALTER TABLE ONLY ci_build_trace_metadata
     ADD CONSTRAINT fk_rails_aebc78111f FOREIGN KEY (build_id) REFERENCES ci_builds(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY ci_build_trace_metadata
+    ADD CONSTRAINT fk_rails_aebc78111f_p FOREIGN KEY (partition_id, build_id) REFERENCES ci_builds(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE NOT VALID;
 
 ALTER TABLE ONLY bulk_import_trackers
     ADD CONSTRAINT fk_rails_aed566d3f3 FOREIGN KEY (bulk_import_entity_id) REFERENCES bulk_import_entities(id) ON DELETE CASCADE;

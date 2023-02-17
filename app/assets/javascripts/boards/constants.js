@@ -1,4 +1,5 @@
 import boardListsQuery from 'ee_else_ce/boards/graphql/board_lists.query.graphql';
+import { TYPE_ISSUE } from '~/issues/constants';
 import { s__, __ } from '~/locale';
 import updateEpicSubscriptionMutation from '~/sidebar/queries/update_epic_subscription.mutation.graphql';
 import updateEpicTitleMutation from '~/sidebar/queries/update_epic_title.mutation.graphql';
@@ -72,25 +73,25 @@ export const boardQuery = {
 };
 
 export const listsQuery = {
-  [issuableTypes.issue]: {
+  [TYPE_ISSUE]: {
     query: boardListsQuery,
   },
 };
 
 export const updateListQueries = {
-  [issuableTypes.issue]: {
+  [TYPE_ISSUE]: {
     mutation: updateBoardListMutation,
   },
 };
 
 export const deleteListQueries = {
-  [issuableTypes.issue]: {
+  [TYPE_ISSUE]: {
     mutation: destroyBoardListMutation,
   },
 };
 
 export const titleQueries = {
-  [issuableTypes.issue]: {
+  [TYPE_ISSUE]: {
     mutation: issueSetTitleMutation,
   },
   [issuableTypes.epic]: {
@@ -99,7 +100,7 @@ export const titleQueries = {
 };
 
 export const subscriptionQueries = {
-  [issuableTypes.issue]: {
+  [TYPE_ISSUE]: {
     mutation: issueSetSubscriptionMutation,
   },
   [issuableTypes.epic]: {
@@ -108,13 +109,13 @@ export const subscriptionQueries = {
 };
 
 export const listIssuablesQueries = {
-  [issuableTypes.issue]: {
+  [TYPE_ISSUE]: {
     query: listIssuesQuery,
   },
 };
 
 export const FilterFields = {
-  [issuableTypes.issue]: [
+  [TYPE_ISSUE]: [
     'assigneeUsername',
     'assigneeWildcardId',
     'authorUsername',

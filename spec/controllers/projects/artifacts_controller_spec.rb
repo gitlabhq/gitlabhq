@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::ArtifactsController do
+RSpec.describe Projects::ArtifactsController, feature_category: :build_artifacts do
   include RepoHelpers
 
   let(:user) { project.first_owner }
@@ -110,7 +110,7 @@ RSpec.describe Projects::ArtifactsController do
     end
 
     context 'when no file type is supplied' do
-      let(:filename) { job.artifacts_file.filename }
+      let(:filename) { job.job_artifacts_archive.filename }
 
       it 'sends the artifacts file' do
         expect(controller).to receive(:send_file)
@@ -270,10 +270,14 @@ RSpec.describe Projects::ArtifactsController do
       end
 
       context 'when the user has update_build permissions' do
+        let(:filename) { job.job_artifacts_trace.file.filename }
+
         it 'sends the trace' do
           download_artifact(file_type: file_type)
 
           expect(response).to have_gitlab_http_status(:ok)
+          expect(response.headers['Content-Disposition'])
+            .to eq(%Q(attachment; filename="#{filename}"; filename*=UTF-8''#{filename}))
         end
       end
     end

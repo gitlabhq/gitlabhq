@@ -5,9 +5,13 @@ group: Composition Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# License compliance **(ULTIMATE)**
+# License compliance (DEPRECATED) **(ULTIMATE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5483) in GitLab 11.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5483) in GitLab 11.0.
+> - [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/387561) in GitLab 15.9.
+
+WARNING:
+This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/387561) in GitLab 15.9. Users should migrate over to use the [new method of license scanning](../license_scanning_of_cyclonedx_files/index.md) prior to GitLab 16.0.
 
 If you're using [GitLab CI/CD](../../../ci/index.md), you can use License Compliance to search your
 project's dependencies for their licenses. You can then decide whether to allow or deny the use of

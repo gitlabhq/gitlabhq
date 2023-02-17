@@ -5,9 +5,12 @@ group: Security Policies
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# License Check Policies
+# License Check Policies (DEPRECATED) **(ULTIMATE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/22465) in GitLab 12.9.
+> [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/390417) in GitLab 15.9.
+
+WARNING:
+This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/390417) in GitLab 15.9. Users should migrate over to use [License Approval Policies](license_approval_policies.md) prior to GitLab 16.0.
 
 License check policies allow you to specify licenses that are `allowed` or `denied` in a project. If a `denied`
 license is newly committed it blocks the merge request and instructs the developer to remove it.
@@ -32,8 +35,6 @@ Developers of the project can view the policies configured in a project.
 
 ## Enabling License Approvals within a project
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13067) in GitLab 12.3.
-
 Prerequisites:
 
 - Maintainer or Owner role.
@@ -52,8 +53,8 @@ You can enable `License-Check` one of two ways:
 
 ![License Check Approver Rule](img/license-check_v13_4.png)
 
-- Create an approval group in the [project policies section for License Compliance](#license-check-policies).
-  You must set this approval group's number of approvals required to greater than zero. Once you
+- Create an approval group in the [project policies section for License Compliance](license_check_rules.md#license-check-policies-deprecated).
+  You must set this approval group's number of approvals required to greater than zero. After you
   enable this group in your project, the approval rule is enabled for all merge requests.
 
 Any code changes cause the approvals required to reset.

@@ -32,6 +32,7 @@ RSpec.describe ObjectStorage::CDN, feature_category: :build_artifacts do
 
   let(:object) { build_stubbed(:user) }
   let(:public_ip) { '18.245.0.1' }
+  let(:query_params) { { foo: :bar } }
 
   let_it_be(:project) { build(:project) }
 
@@ -46,9 +47,9 @@ RSpec.describe ObjectStorage::CDN, feature_category: :build_artifacts do
     describe '#cdn_enabled_url' do
       it 'calls #cdn_signed_url' do
         expect(subject).not_to receive(:url)
-        expect(subject).to receive(:cdn_signed_url).and_call_original
+        expect(subject).to receive(:cdn_signed_url).with(query_params).and_call_original
 
-        result = subject.cdn_enabled_url(public_ip)
+        result = subject.cdn_enabled_url(public_ip, query_params)
 
         expect(result.used_cdn).to be true
       end
@@ -74,6 +75,17 @@ RSpec.describe ObjectStorage::CDN, feature_category: :build_artifacts do
   context 'without CDN config' do
     before do
       uploader_class.options = Gitlab.config.uploads
+    end
+
+    describe '#cdn_enabled_url' do
+      it 'calls #url' do
+        expect(subject).not_to receive(:cdn_signed_url)
+        expect(subject).to receive(:url).with(query: query_params).and_call_original
+
+        result = subject.cdn_enabled_url(public_ip, query_params)
+
+        expect(result.used_cdn).to be false
+      end
     end
 
     describe '#use_cdn?' do

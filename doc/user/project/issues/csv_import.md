@@ -58,7 +58,11 @@ To import issues, GitLab requires CSV files have a specific format:
 If you have special characters (for example, `,` or `\n`) or multiple lines in a field (for example,
 when using [quick actions](../quick_actions.md)), surround the characters with double quotes (`"`).
 
-When using [quick actions](../quick_actions.md), each action must be on a separate line.
+Also when using [quick actions](../quick_actions.md):
+
+- Each action must be on a separate line.
+- For quick actions like `/label` and `/milestone`, the label or milestone must already exist in the project.
+- The user you assign the issue to must be a member of the project.
 
 Sample CSV data:
 

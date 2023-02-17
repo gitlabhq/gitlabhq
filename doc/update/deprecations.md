@@ -294,6 +294,20 @@ The GitLab [License Compliance](https://docs.gitlab.com/ee/user/compliance/licen
 
 </div>
 
+<div class="deprecation removal-160 breaking-change">
+
+### License-Check and the Policies tab on the License Compliance page
+
+Planned removal: GitLab <span class="removal-milestone">16.0</span> <span class="removal-date"></span>
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+The [License-Check feature](https://docs.gitlab.com/ee/user/compliance/license_check_rules.html) is now deprecated and is scheduled for removal in GitLab 16.0. Additionally, the Policies tab on the License Compliance page and all APIs related to the License-Check feature are deprecated and planned for removal in GitLab 16.0. Users who wish to continue to enforce approvals based on detected licenses are encouraged to create a new [License Approval policy](https://docs.gitlab.com/ee/user/compliance/license_approval_policies.html) instead.
+
+</div>
+
 <div class="deprecation removal-170 breaking-change">
 
 ### Load Performance Testing is deprecated

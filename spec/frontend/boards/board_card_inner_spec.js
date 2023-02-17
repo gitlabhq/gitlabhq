@@ -8,9 +8,9 @@ import { mountExtended } from 'helpers/vue_test_utils_helper';
 import IssuableBlockedIcon from '~/vue_shared/components/issuable_blocked_icon/issuable_blocked_icon.vue';
 import BoardCardInner from '~/boards/components/board_card_inner.vue';
 import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
-import { issuableTypes } from '~/boards/constants';
 import eventHub from '~/boards/eventhub';
 import defaultStore from '~/boards/stores';
+import { TYPE_ISSUE } from '~/issues/constants';
 import { updateHistory } from '~/lib/utils/url_utility';
 import { mockLabelList, mockIssue, mockIssueFullPath } from './mock_data';
 
@@ -93,7 +93,7 @@ describe('Board card component', () => {
         rootPath: '/',
         scopedLabelsAvailable: false,
         isEpicBoard,
-        issuableType: issuableTypes.issue,
+        issuableType: TYPE_ISSUE,
         isGroupBoard,
       },
     });

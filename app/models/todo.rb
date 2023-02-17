@@ -4,6 +4,9 @@ class Todo < ApplicationRecord
   include Sortable
   include FromUnion
   include EachBatch
+  include IgnorableColumns
+
+  ignore_column :note_id_convert_to_bigint, remove_with: '16.0', remove_after: '2023-05-22'
 
   # Time to wait for todos being removed when not visible for user anymore.
   # Prevents TODOs being removed by mistake, for example, removing access from a user
@@ -171,6 +174,7 @@ class Todo < ApplicationRecord
       done = grouped_count.where(state: :done).select("'done' AS state")
       pending = grouped_count.where(state: :pending).select("'pending' AS state")
       union = unscoped.from_union([done, pending], remove_duplicates: false)
+        .select(:user_id, :count, :state)
 
       connection.select_all(union).each_with_object({}) do |row, counts|
         counts[[row['user_id'], row['state']]] = row['count']

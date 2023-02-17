@@ -5,11 +5,23 @@ group: Security Policies
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# License Approval Policies
+# License Approval Policies **(ULTIMATE)**
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/8092) in GitLab 15.9 [with a flag](../../administration/feature_flags.md) named `license_scanning_policies`. Disabled by default.
 
 License Approval Policies allow you to specify multiple types of criteria that define when approval is required before a merge request can be merged in.
+
+## Create a new license approval policy
+
+Create a license approval policy to enforce license compliance.
+
+To create a license approval policy:
+
+1. [Link a security policy project](../application_security/policies/index.md#managing-the-linked-security-policy-project) to your development group, subgroup, or project (the Owner role is required).
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, select **Security & Compliance > Policies**.
+1. Create a new [Scan Result Policy](../application_security/policies/scan-result-policies.md).
+1. In your policy rule, select **License scanning**.
 
 ## Criteria defining which licenses require approval
 

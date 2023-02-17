@@ -6,8 +6,9 @@ import SidebarDropdownWidget from 'ee_else_ce/sidebar/components/sidebar_dropdow
 import { __, sprintf } from '~/locale';
 import BoardSidebarTimeTracker from '~/boards/components/sidebar/board_sidebar_time_tracker.vue';
 import BoardSidebarTitle from '~/boards/components/sidebar/board_sidebar_title.vue';
-import { BoardType, ISSUABLE, INCIDENT, issuableTypes } from '~/boards/constants';
+import { BoardType, ISSUABLE, INCIDENT } from '~/boards/constants';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import { TYPE_ISSUE } from '~/issues/constants';
 import SidebarAssigneesWidget from '~/sidebar/components/assignees/sidebar_assignees_widget.vue';
 import SidebarConfidentialityWidget from '~/sidebar/components/confidential/sidebar_confidentiality_widget.vue';
 import SidebarDateWidget from '~/sidebar/components/date/sidebar_date_widget.vue';
@@ -66,7 +67,7 @@ export default {
       default: false,
     },
     issuableType: {
-      default: issuableTypes.issue,
+      default: TYPE_ISSUE,
     },
     isGroupBoard: {
       default: false,

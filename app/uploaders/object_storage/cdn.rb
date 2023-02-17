@@ -16,7 +16,7 @@ module ObjectStorage
         if use_cdn?(ip_address)
           UrlResult.new(cdn_signed_url(params), true)
         else
-          UrlResult.new(url, false)
+          UrlResult.new(url(query: params), false)
         end
       end
 

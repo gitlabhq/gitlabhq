@@ -3,8 +3,9 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import BoardApp from '~/boards/components/board_app.vue';
 import '~/boards/filters/due_date_filters';
-import { BoardType, issuableTypes } from '~/boards/constants';
+import { BoardType } from '~/boards/constants';
 import store from '~/boards/stores';
+import { TYPE_ISSUE } from '~/issues/constants';
 import {
   NavigationType,
   isLoggedIn,
@@ -47,7 +48,7 @@ function mountBoardApp(el) {
       fullPath,
       boardType,
       disabled: parseBoolean(el.dataset.disabled) || true,
-      issuableType: issuableTypes.issue,
+      issuableType: TYPE_ISSUE,
     });
   }
 
@@ -75,7 +76,7 @@ function mountBoardApp(el) {
       labelsFilterBasePath: el.dataset.labelsFilterBasePath,
       releasesFetchPath: el.dataset.releasesFetchPath,
       timeTrackingLimitToHours: parseBoolean(el.dataset.timeTrackingLimitToHours),
-      issuableType: issuableTypes.issue,
+      issuableType: TYPE_ISSUE,
       emailsDisabled: parseBoolean(el.dataset.emailsDisabled),
       hasMissingBoards: parseBoolean(el.dataset.hasMissingBoards),
       weights: el.dataset.weights ? JSON.parse(el.dataset.weights) : [],
