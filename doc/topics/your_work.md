@@ -16,3 +16,5 @@ The **Your work** left sidebar provides access to your:
 - [Merge requests](../user/project/merge_requests/index.md)
 - [To-do List](../user/todos.md)
 - [Milestones](../user/project/milestones/index.md)
+- [Snippets](../user/snippets.md#snippets)
+- [Activity](../user/profile/index.md#user-activity)

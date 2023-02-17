@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'spec_helper'
 require 'rspec-parameterized'
 require 'fog/core'
 
@@ -130,6 +130,11 @@ RSpec.describe ObjectStorage::Config do
     it { expect(subject.provider).to eq('AWS') }
     it { expect(subject.aws?).to be true }
     it { expect(subject.google?).to be false }
+    it { expect(subject.credentials).to eq(credentials) }
+
+    context 'with FIPS enabled', :fips_mode do
+      it { expect(subject.credentials).to eq(credentials.merge(disable_content_md5_validation: true)) }
+    end
   end
 
   context 'with Google credentials' do

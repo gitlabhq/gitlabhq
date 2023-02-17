@@ -2116,14 +2116,9 @@ class Project < ApplicationRecord
     pages_metadatum&.deployed?
   end
 
-  def pages_namespace_url
-    # The host in URL always needs to be downcased
-    Gitlab.config.pages.url.sub(%r{^https?://}) do |prefix|
-      "#{prefix}#{pages_subdomain}."
-    end.downcase
-  end
-
   def pages_url
+    return pages_unique_url if pages_unique_domain_enabled?
+
     url = pages_namespace_url
     url_path = full_path.partition('/').last
     namespace_url = "#{Settings.pages.protocol}://#{url_path}".downcase
@@ -2139,6 +2134,14 @@ class Project < ApplicationRecord
     return url if url == namespace_url
 
     "#{url}/#{url_path}"
+  end
+
+  def pages_unique_url
+    pages_url_for(project_setting.pages_unique_domain)
+  end
+
+  def pages_namespace_url
+    pages_url_for(pages_subdomain)
   end
 
   def pages_subdomain
@@ -3120,6 +3123,18 @@ class Project < ApplicationRecord
   end
 
   private
+
+  def pages_unique_domain_enabled?
+    Feature.enabled?(:pages_unique_domain) &&
+      project_setting.pages_unique_domain_enabled?
+  end
+
+  def pages_url_for(domain)
+    # The host in URL always needs to be downcased
+    Gitlab.config.pages.url.sub(%r{^https?://}) do |prefix|
+      "#{prefix}#{domain}."
+    end.downcase
+  end
 
   # overridden in EE
   def project_group_links_with_preload

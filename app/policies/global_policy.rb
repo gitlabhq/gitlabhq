@@ -26,6 +26,8 @@ class GlobalPolicy < BasePolicy
     Feature.enabled?(:create_runner_workflow)
   end
 
+  condition(:service_account, scope: :user) { @user&.service_account? }
+
   rule { anonymous }.policy do
     prevent :log_in
     prevent :receive_notifications
@@ -64,7 +66,7 @@ class GlobalPolicy < BasePolicy
     prevent :access_git
   end
 
-  rule { project_bot }.policy do
+  rule { project_bot | service_account }.policy do
     prevent :log_in
     prevent :receive_notifications
   end

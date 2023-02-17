@@ -141,6 +141,28 @@ We intend to replace this feature with the ability to [embed charts](https://git
 
 <div class="deprecation removal-160 breaking-change">
 
+### Enforced validation of CI/CD parameter character lengths
+
+Planned removal: GitLab <span class="removal-milestone">16.0</span> <span class="removal-date"></span>
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+While CI/CD [job names](https://docs.gitlab.com/ee/ci/jobs/index.html#job-name-limitations) have a strict 255 character limit, other CI/CD parameters do not yet have validations ensuring they also stay under the limit.
+
+In GitLab 16.0, validation will be added to strictly limit the following to 255 characters as well:
+
+- The `stage` keyword.
+- The `ref`, which is the Git branch or tag name for the pipeline.
+- The `description` and `target_url` parameter, used by external CI/CD integrations.
+
+Users on self-managed instances should update their pipelines to ensure they do not use parameters that exceed 255 characters. Users on GitLab.com do not need to make any changes, as these are already limited in that database.
+
+</div>
+
+<div class="deprecation removal-160 breaking-change">
+
 ### Error Tracking UI in GitLab Rails is deprecated
 
 Planned removal: GitLab <span class="removal-milestone">16.0</span> <span class="removal-date"></span>

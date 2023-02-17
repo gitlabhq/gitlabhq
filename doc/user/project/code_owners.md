@@ -86,7 +86,7 @@ Next steps:
 - [Add Code Owners as merge request approvers](merge_requests/approvals/rules.md#code-owners-as-eligible-approvers).
 - Set up [Code Owner approval on a protected branch](protected_branches.md#require-code-owner-approval-on-a-protected-branch).
 
-## Groups as Code Owners
+### Groups as Code Owners
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/53182) in GitLab 12.1.
 > - Group and subgroup hierarchy support was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32432) in GitLab 13.0.
@@ -137,7 +137,7 @@ For approval to be required, groups as Code Owners must have a direct membership
 that inherit membership. Members in the Code Owners group also must be direct members,
 and not inherit membership from any parent groups.
 
-### Add a group as a Code Owner
+#### Add a group as a Code Owner
 
 To set a group as a Code Owner:
 
@@ -154,23 +154,26 @@ file.md @group-x/subgroup-y
 file.md @group-x @group-x/subgroup-y
 ```
 
-## When a file matches multiple `CODEOWNERS` entries
+### Define more specific owners for more specifically defined files or directories
 
-When a file matches multiple entries in the `CODEOWNERS` file,
-the users from last pattern matching the file are used.
+When a file or directory matches multiple entries in the `CODEOWNERS` file,
+the users from last pattern matching the file or directory are used. This enables you
+to define more specific owners for more specifically defined files or directories, when
+you order the entries in a sensible way.
 
 For example, in the following `CODEOWNERS` file:
 
 ```plaintext
-README.md @user1
+# This line would match the file terms.md
+*.md @doc-team
 
-# This line would also match the file README.md
-*.md @user2
+# This line would also match the file terms.md
+terms.md @legal-team
 ```
 
-The Code Owner for `README.md` would be `@user2`.
+The Code Owner for `terms.md` would be `@legal-team`.
 
-If you use sections, the last pattern matching the file for each section is used.
+If you use sections, the last pattern matching the file or directory for each section is used.
 For example, in a `CODEOWNERS` file using sections:
 
 ```plaintext
@@ -183,9 +186,9 @@ README.md @user3
 ```
 
 The Code Owners for the `README.md` in the root directory are `@user1`, `@user2`,
-and `@user3`. The Code Owners for `internal/README.md` are `@user4` and `@user3`. 
+and `@user3`. The Code Owners for `internal/README.md` are `@user4` and `@user3`.
 
-Only one CODEOWNERS pattern can match per file path.
+Only one CODEOWNERS pattern per section will be matched to a file path.
 
 ### Organize Code Owners by putting them into sections
 
@@ -267,6 +270,35 @@ Optional sections in the `CODEOWNERS` file are treated as optional only
 when changes are submitted by using merge requests. If a change is submitted directly
 to the protected branch, approval from Code Owners is still required, even if the
 section is marked as optional.
+
+### Require multiple approvals from Code Owners
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335451) in GitLab 15.9.
+
+You can require multiple approvals for the Code Owners sections under the Approval Rules area in merge requests.
+Append the section name with a number `n` in brackets. This requires `n` approvals from the Code Owners in this section.
+Please note valid entries for `n` are integers `≥ 1`. `[1]` is optional as it is the default. Invalid values for `n` are treated as `1`.
+
+WARNING:
+[Issue #384881](https://gitlab.com/gitlab-org/gitlab/-/issues/385881) proposes changes
+to the behavior of this setting. Do not intentionally set invalid values. They may
+become valid in the future, and cause unexpected behavior.
+
+Please confirm you enabled `Require approval from code owners` in `Settings > Repository > Protected branches`, otherwise the Code Owner approvals will be optional.
+
+In this example, the `[Documentation]` section requires 2 approvals:
+
+```plaintext
+[Documentation][2]
+*.md @tech-writer-team
+
+[Ruby]
+*.rb @dev-team
+```
+
+The `Documentation` Code Owners section under the **Approval Rules** area displays 2 approvals are required:
+
+![MR widget - Multiple Approval Code Owners sections](img/multi_approvals_code_owners_sections_v15_9.png)
 
 ### Allowed to Push
 

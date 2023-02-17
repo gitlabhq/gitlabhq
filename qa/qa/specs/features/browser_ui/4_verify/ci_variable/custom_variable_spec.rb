@@ -51,11 +51,6 @@ module QA
         project.visit!
         Page::Project::Menu.perform(&:click_ci_cd_pipelines)
         Page::Project::Pipeline::Index.perform(&:click_run_pipeline_button)
-
-        # Sometimes the variables will not be prefilled because of reactive cache so we revisit the page again.
-        # TODO: Investigate alternatives to deal with cache implementation
-        # Issue https://gitlab.com/gitlab-org/gitlab/-/issues/381233
-        page.refresh
       end
 
       after do

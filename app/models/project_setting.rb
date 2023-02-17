@@ -25,6 +25,10 @@ class ProjectSetting < ApplicationRecord
   validates :target_platforms, inclusion: { in: ALLOWED_TARGET_PLATFORMS }
   validates :suggested_reviewers_enabled, inclusion: { in: [true, false] }
 
+  validates :pages_unique_domain,
+    uniqueness: { if: -> { pages_unique_domain.present? } },
+    presence: { if: :require_unique_domain? }
+
   validate :validates_mr_default_target_self
 
   attribute :legacy_open_source_license_available, default: -> do
@@ -67,6 +71,11 @@ class ProjectSetting < ApplicationRecord
     if mr_default_target_self_changed? && !project.forked?
       errors.add :mr_default_target_self, _('This setting is allowed for forked projects only')
     end
+  end
+
+  def require_unique_domain?
+    pages_unique_domain_enabled ||
+      pages_unique_domain_in_database.present?
   end
 end
 

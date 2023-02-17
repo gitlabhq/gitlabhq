@@ -19112,10 +19112,16 @@ msgstr ""
 msgid "GitLabPages|Updating your Pages configuration..."
 msgstr ""
 
+msgid "GitLabPages|Use unique domain"
+msgstr ""
+
 msgid "GitLabPages|Verified"
 msgstr ""
 
 msgid "GitLabPages|Waiting for the Pages Pipeline to complete..."
+msgstr ""
+
+msgid "GitLabPages|When enabled, a unique domain is generated to access pages."
 msgstr ""
 
 msgid "GitLabPages|When enabled, all attempts to visit your website through HTTP are automatically redirected to HTTPS using a response with status code 301. Requires a valid certificate for all domains. %{docs_link_start}Learn more.%{link_end}"
@@ -28565,6 +28571,9 @@ msgstr ""
 msgid "Not all browsers support WebAuthn. Therefore, we require that you set up a two-factor authentication app first. That way you'll always be able to sign in - even from an unsupported browser."
 msgstr ""
 
+msgid "Not all browsers support WebAuthn. You must save your recovery codes after you first register a two-factor authenticator to be able to sign in, even from an unsupported browser."
+msgstr ""
+
 msgid "Not all data has been processed yet, the accuracy of the chart for the selected timeframe is limited."
 msgstr ""
 
@@ -35310,13 +35319,13 @@ msgstr ""
 msgid "Register / Sign In"
 msgstr ""
 
-msgid "Register Two-Factor Authenticator"
+msgid "Register a WebAuthn device"
 msgstr ""
 
-msgid "Register Universal Two-Factor (U2F) Device"
+msgid "Register a one-time password authenticator"
 msgstr ""
 
-msgid "Register WebAuthn Device"
+msgid "Register a universal two-factor (U2F) device"
 msgstr ""
 
 msgid "Register device"
@@ -39571,7 +39580,7 @@ msgstr ""
 msgid "Set up a %{type} runner for a project"
 msgstr ""
 
-msgid "Set up a hardware device as a second factor to sign in."
+msgid "Set up a hardware device to enable two-factor authentication (2FA)."
 msgstr ""
 
 msgid "Set up assertions/attributes/claims (email, first_name, last_name) and NameID according to %{docsLinkStart}the documentation %{icon}%{docsLinkEnd}"

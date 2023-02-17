@@ -7,6 +7,7 @@ RSpec.describe GlobalPolicy, feature_category: :shared do
 
   let_it_be(:admin_user) { create(:admin) }
   let_it_be(:project_bot) { create(:user, :project_bot) }
+  let_it_be(:service_account) { create(:user, :service_account) }
   let_it_be(:migration_bot) { create(:user, :migration_bot) }
   let_it_be(:security_bot) { create(:user, :security_bot) }
   let_it_be_with_reload(:current_user) { create(:user) }
@@ -219,6 +220,12 @@ RSpec.describe GlobalPolicy, feature_category: :shared do
       it { is_expected.to be_allowed(:access_api) }
     end
 
+    context 'service account' do
+      let(:current_user) { service_account }
+
+      it { is_expected.to be_allowed(:access_api) }
+    end
+
     context 'migration bot' do
       let(:current_user) { migration_bot }
 
@@ -345,6 +352,12 @@ RSpec.describe GlobalPolicy, feature_category: :shared do
       it { is_expected.to be_disallowed(:receive_notifications) }
     end
 
+    context 'service account' do
+      let(:current_user) { service_account }
+
+      it { is_expected.to be_disallowed(:receive_notifications) }
+    end
+
     context 'migration bot' do
       let(:current_user) { migration_bot }
 
@@ -433,6 +446,12 @@ RSpec.describe GlobalPolicy, feature_category: :shared do
       it { is_expected.to be_allowed(:access_git) }
     end
 
+    context 'service account' do
+      let(:current_user) { service_account }
+
+      it { is_expected.to be_allowed(:access_git) }
+    end
+
     context 'user blocked pending approval' do
       before do
         current_user.block_pending_approval
@@ -517,6 +536,12 @@ RSpec.describe GlobalPolicy, feature_category: :shared do
       it { is_expected.to be_allowed(:use_slash_commands) }
     end
 
+    context 'service account' do
+      let(:current_user) { service_account }
+
+      it { is_expected.to be_allowed(:use_slash_commands) }
+    end
+
     context 'migration bot' do
       let(:current_user) { migration_bot }
 
@@ -567,6 +592,12 @@ RSpec.describe GlobalPolicy, feature_category: :shared do
   describe 'log in' do
     context 'project bot' do
       let(:current_user) { project_bot }
+
+      it { is_expected.to be_disallowed(:log_in) }
+    end
+
+    context 'service account' do
+      let(:current_user) { service_account }
 
       it { is_expected.to be_disallowed(:log_in) }
     end

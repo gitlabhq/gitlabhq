@@ -771,6 +771,24 @@ are recorded in this file. For example:
 {"severity":"INFO","time":"2020-11-24T02:31:29.329Z","correlation_id":null,"key":"cd_auto_rollback","action":"remove"}
 ```
 
+## `ci_resource_groups_json.log`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/384180) in GitLab 15.9.
+
+Depending on your installation method, this file is located at:
+
+- Omnibus GitLab: `/var/log/gitlab/gitlab-rails/ci_resource_group_json.log`
+- Installations from source: `/home/git/gitlab/log/ci_resource_group_json.log`
+
+It contains information about [resource group](../../ci/resource_groups/index.md) acquisition. For example:
+
+```json
+{"severity":"INFO","time":"2023-02-10T23:02:06.095Z","correlation_id":"01GRYS10C2DZQ9J1G12ZVAD4YD","resource_group_id":1,"processable_id":288,"message":"attempted to assign resource to processable","success":true}
+{"severity":"INFO","time":"2023-02-10T23:02:08.945Z","correlation_id":"01GRYS138MYEG32C0QEWMC4BDM","resource_group_id":1,"processable_id":288,"message":"attempted to release resource from processable","success":true}
+```
+
+The examples show the `resource_group_id`, `processable_id`, `message`, and `success` fields for each entry.
+
 ## `auth.log`
 
 > Introduced in GitLab 12.0.

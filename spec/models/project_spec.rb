@@ -2666,7 +2666,11 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
   end
 
   describe '#pages_url', feature_category: :pages do
+    let(:group_name) { 'group' }
+    let(:project_name) { 'project' }
+
     let(:group) { create(:group, name: group_name) }
+    let(:nested_group) { create(:group, parent: group) }
 
     let(:project_path) { project_name.downcase }
     let(:project) do
@@ -2689,98 +2693,111 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
         .and_return(['http://example.com', port].compact.join(':'))
     end
 
-    context 'group page' do
-      let(:group_name) { 'Group' }
+    context 'when pages_unique_domain feature flag is disabled' do
+      before do
+        stub_feature_flags(pages_unique_domain: false)
+      end
+
+      it { is_expected.to eq('http://group.example.com/project') }
+    end
+
+    context 'when pages_unique_domain feature flag is enabled' do
+      before do
+        stub_feature_flags(pages_unique_domain: true)
+
+        project.project_setting.update!(
+          pages_unique_domain_enabled: pages_unique_domain_enabled,
+          pages_unique_domain: 'unique-domain'
+        )
+      end
+
+      context 'when pages_unique_domain_enabled is false' do
+        let(:pages_unique_domain_enabled) { false }
+
+        it { is_expected.to eq('http://group.example.com/project') }
+      end
+
+      context 'when pages_unique_domain_enabled is false' do
+        let(:pages_unique_domain_enabled) { true }
+
+        it { is_expected.to eq('http://unique-domain.example.com') }
+      end
+    end
+
+    context 'with nested group' do
+      let(:project) { create(:project, namespace: nested_group, name: project_name) }
+      let(:expected_url) { "http://group.example.com/#{nested_group.path}/#{project.path}" }
+
+      context 'group page' do
+        let(:project_name) { 'group.example.com' }
+
+        it { is_expected.to eq(expected_url) }
+      end
+
+      context 'project page' do
+        let(:project_name) { 'Project' }
+
+        it { is_expected.to eq(expected_url) }
+      end
+    end
+
+    context 'when the project matches its namespace url' do
       let(:project_name) { 'group.example.com' }
 
-      it { is_expected.to eq("http://group.example.com") }
+      it { is_expected.to eq('http://group.example.com') }
 
-      context 'mixed case path' do
+      context 'with different group name capitalization' do
+        let(:group_name) { 'Group' }
+
+        it { is_expected.to eq("http://group.example.com") }
+      end
+
+      context 'with different project path capitalization' do
         let(:project_path) { 'Group.example.com' }
 
         it { is_expected.to eq("http://group.example.com") }
       end
-    end
 
-    context 'project page' do
-      let(:group_name) { 'Group' }
-      let(:project_name) { 'Project' }
+      context 'with different project name capitalization' do
+        let(:project_name) { 'Project' }
 
-      it { is_expected.to eq("http://group.example.com/project") }
-
-      context 'mixed case path' do
-        let(:project_path) { 'Project' }
-
-        it { is_expected.to eq("http://group.example.com/Project") }
+        it { is_expected.to eq("http://group.example.com/project") }
       end
-    end
 
-    context 'when there is an explicit port' do
-      let(:port) { 3000 }
+      context 'when there is an explicit port' do
+        let(:port) { 3000 }
 
-      context 'when not in dev mode' do
-        before do
-          stub_rails_env('production')
-        end
-
-        context 'group page' do
-          let(:group_name) { 'Group' }
-          let(:project_name) { 'group.example.com' }
+        context 'when not in dev mode' do
+          before do
+            stub_rails_env('production')
+          end
 
           it { is_expected.to eq('http://group.example.com:3000/group.example.com') }
+        end
 
-          context 'mixed case path' do
-            let(:project_path) { 'Group.example.com' }
-
-            it { is_expected.to eq('http://group.example.com:3000/Group.example.com') }
+        context 'when in dev mode' do
+          before do
+            stub_rails_env('development')
           end
-        end
-
-        context 'project page' do
-          let(:group_name) { 'Group' }
-          let(:project_name) { 'Project' }
-
-          it { is_expected.to eq("http://group.example.com:3000/project") }
-
-          context 'mixed case path' do
-            let(:project_path) { 'Project' }
-
-            it { is_expected.to eq("http://group.example.com:3000/Project") }
-          end
-        end
-      end
-
-      context 'when in dev mode' do
-        before do
-          stub_rails_env('development')
-        end
-
-        context 'group page' do
-          let(:group_name) { 'Group' }
-          let(:project_name) { 'group.example.com' }
 
           it { is_expected.to eq('http://group.example.com:3000') }
-
-          context 'mixed case path' do
-            let(:project_path) { 'Group.example.com' }
-
-            it { is_expected.to eq('http://group.example.com:3000') }
-          end
-        end
-
-        context 'project page' do
-          let(:group_name) { 'Group' }
-          let(:project_name) { 'Project' }
-
-          it { is_expected.to eq("http://group.example.com:3000/project") }
-
-          context 'mixed case path' do
-            let(:project_path) { 'Project' }
-
-            it { is_expected.to eq("http://group.example.com:3000/Project") }
-          end
         end
       end
+    end
+  end
+
+  describe '#pages_unique_url', feature_category: :pages do
+    let(:project_settings) { create(:project_setting, pages_unique_domain: 'unique-domain') }
+    let(:project) { build(:project, project_setting: project_settings) }
+    let(:domain) { 'example.com' }
+
+    before do
+      allow(Settings.pages).to receive(:host).and_return(domain)
+      allow(Gitlab.config.pages).to receive(:url).and_return("http://#{domain}")
+    end
+
+    it 'returns the pages unique url' do
+      expect(project.pages_unique_url).to eq('http://unique-domain.example.com')
     end
   end
 
@@ -4639,52 +4656,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
     context 'when not forked' do
       it 'can not target the upstream project' do
         expect(project.mr_can_target_upstream?).to be_falsey
-      end
-    end
-  end
-
-  describe '#pages_url' do
-    let(:group) { create(:group, name: 'Group') }
-    let(:nested_group) { create(:group, parent: group) }
-    let(:domain) { 'Example.com' }
-
-    subject { project.pages_url }
-
-    before do
-      allow(Settings.pages).to receive(:host).and_return(domain)
-      allow(Gitlab.config.pages).to receive(:url).and_return('http://example.com')
-    end
-
-    context 'top-level group' do
-      let(:project) { create(:project, namespace: group, name: project_name) }
-
-      context 'group page' do
-        let(:project_name) { 'group.example.com' }
-
-        it { is_expected.to eq("http://group.example.com") }
-      end
-
-      context 'project page' do
-        let(:project_name) { 'Project' }
-
-        it { is_expected.to eq("http://group.example.com/project") }
-      end
-    end
-
-    context 'nested group' do
-      let(:project) { create(:project, namespace: nested_group, name: project_name) }
-      let(:expected_url) { "http://group.example.com/#{nested_group.path}/#{project.path}" }
-
-      context 'group page' do
-        let(:project_name) { 'group.example.com' }
-
-        it { is_expected.to eq(expected_url) }
-      end
-
-      context 'project page' do
-        let(:project_name) { 'Project' }
-
-        it { is_expected.to eq(expected_url) }
       end
     end
   end

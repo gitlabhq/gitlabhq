@@ -4,7 +4,10 @@ group: Utilization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Managed Licenses API **(ULTIMATE)**
+# Managed Licenses API (DEPRECATED) **(ULTIMATE)**
+
+WARNING:
+This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/390417) in GitLab 15.9.
 
 WARNING:
 "approval" and "blacklisted" approval statuses are changed to "allowed" and "denied" in GitLab 15.0.

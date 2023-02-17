@@ -479,9 +479,13 @@ class Namespace < ApplicationRecord
             end
 
     Pages::VirtualDomain.new(
-      projects: all_projects_with_pages.includes(:route, :project_feature, pages_metadatum: :pages_deployment),
       trim_prefix: full_path,
-      cache: cache
+      cache: cache,
+      projects: all_projects_with_pages.includes(
+        :route,
+        :project_setting,
+        :project_feature,
+        pages_metadatum: :pages_deployment)
     )
   end
 

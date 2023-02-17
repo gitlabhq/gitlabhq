@@ -8,7 +8,7 @@
   .row.gl-mt-3
     .col-lg-4
       %h4.gl-mt-0
-        = _('Register Two-Factor Authenticator')
+        = _('Register a one-time password authenticator')
       %p
         = _('Use a one-time password authenticator on your mobile device or computer to enable two-factor authentication (2FA).')
     .col-lg-8
@@ -76,13 +76,15 @@
     .col-lg-4
       %h4.gl-mt-0
         - if webauthn_enabled
-          = _('Register WebAuthn Device')
+          = _('Register a WebAuthn device')
         - else
-          = _('Register Universal Two-Factor (U2F) Device')
+          = _('Register a universal two-factor (U2F) device')
       %p
-        = _('Set up a hardware device as a second factor to sign in.')
+        = _('Set up a hardware device to enable two-factor authentication (2FA).')
       %p
-        - if webauthn_enabled
+        - if webauthn_enabled && Feature.enabled?(:webauthn_without_totp)
+          = _("Not all browsers support WebAuthn. You must save your recovery codes after you first register a two-factor authenticator to be able to sign in, even from an unsupported browser.")
+        - elsif webauthn_enabled
           = _("Not all browsers support WebAuthn. Therefore, we require that you set up a two-factor authentication app first. That way you'll always be able to sign in - even from an unsupported browser.")
         - else
           = _("Not all browsers support U2F devices. Therefore, we require that you set up a two-factor authentication app first. That way you'll always be able to sign in - even when you're using an unsupported browser.")

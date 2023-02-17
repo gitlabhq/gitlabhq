@@ -111,5 +111,22 @@ RSpec.describe Markup::RenderingService do
         is_expected.to eq(expected_html)
       end
     end
+
+    context 'with reStructuredText' do
+      let(:file_name) { 'foo.rst' }
+      let(:text) { "####\nPART\n####" }
+
+      it 'returns rendered html' do
+        is_expected.to eq("<h1>PART</h1>\n\n")
+      end
+
+      context 'when input has an invalid syntax' do
+        let(:text) { "####\nPART\n##" }
+
+        it 'uses a simple formatter for html' do
+          is_expected.to eq("<p>####\n<br>PART\n<br>##</p>")
+        end
+      end
+    end
   end
 end

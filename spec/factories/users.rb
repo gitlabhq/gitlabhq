@@ -59,6 +59,10 @@ FactoryBot.define do
       user_type { :project_bot }
     end
 
+    trait :service_account do
+      user_type { :service_account }
+    end
+
     trait :migration_bot do
       user_type { :migration_bot }
     end

@@ -13,7 +13,7 @@ module ObjectStorage
     end
 
     def credentials
-      @credentials ||= options[:connection] || {}
+      @credentials ||= connection_params
     end
 
     def storage_options
@@ -85,6 +85,16 @@ module ObjectStorage
     end
 
     private
+
+    def connection_params
+      base_params = options[:connection] || {}
+
+      return base_params unless base_params[:provider].to_s == AWS_PROVIDER
+      return base_params unless ::Gitlab::FIPS.enabled?
+
+      # In fog-aws, this disables the use of Content-Md5: https://github.com/fog/fog-aws/pull/668
+      base_params.merge({ disable_content_md5_validation: true })
+    end
 
     # This returns a Hash of HTTP encryption headers to send along to S3.
     #

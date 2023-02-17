@@ -76,7 +76,13 @@ component, is that you avoid creating a fixture or an HTML element in the unit t
 
 `initSimpleApp` is a helper function that streamlines the process of mounting a component in Vue.js. It accepts two arguments: a selector string representing the mount point in the HTML, and a Vue component.
 
-To use `initSimpleApp`, include the HTML element in the page with the appropriate selector and add a data-view-model attribute containing a JSON object. Then, import the desired Vue component and pass it along with the selector to `initSimpleApp`. This mounts the component at the specified location.
+To use `initSimpleApp`:
+
+1. Include an HTML element in the page with an ID or unique class.
+1. Add a data-view-model attribute containing a JSON object.
+1. Import the desired Vue component, and pass it along with a valid CSS selector string
+   that selects the HTML element to `initSimpleApp`. This string mounts the component
+   at the specified location.
 
 `initSimpleApp` automatically retrieves the content of the data-view-model attribute as a JSON object and passes it as props to the mounted Vue component. This can be used to pre-populate the component with data.
 
