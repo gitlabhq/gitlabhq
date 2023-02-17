@@ -10,6 +10,7 @@ import {
   GlSprintf,
 } from '@gitlab/ui';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
+import { TYPE_ISSUE } from '~/issues/constants';
 import { formatDate } from '~/lib/utils/datetime_utility';
 import { TYPENAME_ISSUE, TYPENAME_MERGE_REQUEST } from '~/graphql_shared/constants';
 import { joinPaths } from '~/lib/utils/url_utility';
@@ -127,7 +128,7 @@ export default {
         });
     },
     isIssue() {
-      return this.issuableType === 'issue';
+      return this.issuableType === TYPE_ISSUE;
     },
     getGraphQLEntityType() {
       return this.isIssue() ? TYPENAME_ISSUE : TYPENAME_MERGE_REQUEST;

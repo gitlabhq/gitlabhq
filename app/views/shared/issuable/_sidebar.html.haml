@@ -14,7 +14,7 @@
 %aside.right-sidebar.js-right-sidebar.js-issuable-sidebar{ data: { signed: { in: signed_in }, issuable_type: issuable_type }, class: "#{sidebar_gutter_collapsed_class} #{'right-sidebar-merge-requests' if moved_sidebar_enabled}", 'aria-live' => 'polite', 'aria-label': issuable_type }
   .issuable-sidebar{ class: "#{'is-merge-request' if moved_sidebar_enabled}" }
     .issuable-sidebar-header{ class: "#{'gl-pb-2! gl-md-display-flex gl-justify-content-end gl-lg-display-none!' if moved_sidebar_enabled}" }
-      %a.gutter-toggle.float-right.js-sidebar-toggle.has-tooltip{ role: "button", class: "#{'gl-display-block' if moved_sidebar_enabled}", href: "#", "aria-label" => _('Toggle sidebar'), title: sidebar_gutter_tooltip_text, data: { container: 'body', placement: 'left', boundary: 'viewport' } }
+      %button.btn.gl-button.gutter-toggle.float-right.js-sidebar-toggle.has-tooltip{ type: "reset", class: "gl-shadow-none! #{'gl-display-block' if moved_sidebar_enabled}", "aria-label" => _('Toggle sidebar'), title: sidebar_gutter_tooltip_text, data: { container: 'body', placement: 'left', boundary: 'viewport' } }
         = sidebar_gutter_toggle_icon
       - if signed_in && !moved_sidebar_enabled
         .js-sidebar-todo-widget-root{ data: { project_path: issuable_sidebar[:project_full_path], iid: issuable_sidebar[:iid], id: issuable_sidebar[:id] } }

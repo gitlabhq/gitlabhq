@@ -151,6 +151,11 @@ $solarized-dark-il: #2aa198;
     color: $solarized-dark-line-color;
   }
 
+  .diff-grid-row.line_holder.diff-tr .diff-td.commented:not(.hll) {
+    --highlight-border-color: #{$blue-600};
+    background-color: $blue-900;
+  }
+
   // Code itself
   pre.code,
   .diff-line-num {
@@ -182,15 +187,15 @@ $solarized-dark-il: #2aa198;
       @include dark-diff-expansion-line;
     }
 
-    .diff-td.diff-line-num.hll:not(.empty-cell),
-    .diff-td.line-coverage.hll:not(.empty-cell),
-    .diff-td.line-codequality.hll:not(.empty-cell),
-    .diff-td.line_content.hll:not(.empty-cell),
-    td.diff-line-num.hll:not(.empty-cell),
-    td.line-coverage.hll:not(.empty-cell),
-    td.line_content.hll:not(.empty-cell) {
-      background-color: $solarized-dark-hll-bg;
-      border-color: darken($solarized-dark-hll-bg, 15%);
+    .diff-td.diff-line-num.hll,
+    .diff-td.line-coverage.hll,
+    .diff-td.line-codequality.hll,
+    .diff-td.line_content.hll,
+    td.diff-line-num.hll,
+    td.line-coverage.hll,
+    td.line_content.hll {
+      --highlight-border-color: #{$orange-500};
+      background-color: $orange-800;
     }
 
     .line-coverage {
@@ -201,7 +206,7 @@ $solarized-dark-il: #2aa198;
     &:not(.match) .diff-grid-right:hover,
     &.code-search-line:hover {
       .diff-line-num:not(.empty-cell) {
-        @include line-number-hover;
+        @include line-number-hover-dark;
       }
     }
 
@@ -240,7 +245,7 @@ $solarized-dark-il: #2aa198;
     .diff-line-num {
       &.is-over,
       &.hll:not(.empty-cell).is-over {
-        @include line-number-hover;
+        @include line-number-hover-dark;
       }
     }
 

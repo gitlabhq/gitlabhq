@@ -742,6 +742,19 @@
   rules:
     - !reference [".build-images:rules:build-qa-image-merge-requests", "rules"]
 
+# We want to rebuild the master image when the full e2e test pipeline runs. Currently this happens on a 2 hour schedule.
+.build-images:rules:build-qa-on-gdk-master-image:
+  rules:
+    - if: '$QA_RUN_TESTS_ON_GDK !~ /true|yes|1/i'
+      when: never
+    - <<: *if-not-canonical-namespace
+      when: never
+    - <<: *if-not-ee
+      when: never
+    - <<: *if-dot-com-gitlab-org-schedule
+      variables:
+        ARCH: amd64,arm64
+
 .build-images:rules:build-assets-image:
   rules:
     - <<: *if-not-canonical-namespace
@@ -1144,7 +1157,7 @@
       allow_failure: true
     - <<: *if-ruby2-branch
 
-.qa:rules:package-and-test:
+.qa:rules:package-and-test-mrs:
   rules:
     - <<: *if-not-canonical-namespace
       when: never
@@ -1184,6 +1197,13 @@
       changes: *code-patterns
       when: manual
       allow_failure: true
+    - <<: *if-force-ci
+      when: manual
+      allow_failure: true
+
+.qa:rules:package-and-test:
+  rules:
+    - !reference [".qa:rules:package-and-test-mrs", rules]
     - <<: *if-dot-com-gitlab-org-schedule
       allow_failure: true
       variables:
@@ -1192,9 +1212,12 @@
         KNAPSACK_GENERATE_REPORT: "true"
         QA_SAVE_TEST_METRICS: "true"
         QA_EXPORT_TEST_METRICS: "false" # on main runs, metrics are exported to separate bucket via rake task for better consistency
-    - <<: *if-force-ci
-      when: manual
-      allow_failure: true
+
+.qa:rules:e2e:test-on-gdk:
+  rules:
+    - if: '$QA_RUN_TESTS_ON_GDK !~ /true|yes|1/i'
+      when: never
+    - !reference [".qa:rules:package-and-test", rules]
 
 ###############
 # Rails rules #
@@ -2218,6 +2241,7 @@
     - <<: *if-not-ee
       when: never
     - <<: *if-dot-com-ee-schedule-default-branch-maintenance
+      when: always
     - <<: *if-default-branch-refs
       changes:
         - ".gitlab/ci/test-metadata.gitlab-ci.yml"

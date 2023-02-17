@@ -1,6 +1,6 @@
 <script>
 import { GlIcon } from '@gitlab/ui';
-import { IssuableType } from '~/issues/constants';
+import { IssuableType, TYPE_ISSUE } from '~/issues/constants';
 import { __, sprintf } from '~/locale';
 
 export default {
@@ -19,7 +19,7 @@ export default {
     issuableType: {
       type: String,
       required: false,
-      default: 'issue',
+      default: TYPE_ISSUE,
     },
   },
   computed: {

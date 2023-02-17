@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publisher do
+RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publisher, feature_category: :projects do
   include ProjectForksHelper
   include BatchDestroyDependentAssociationsHelper
 

@@ -225,6 +225,15 @@ RETURN NULL;
 END
 $$;
 
+CREATE FUNCTION trigger_080e73845bfd() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+  NEW."id_convert_to_bigint" := NEW."id";
+  RETURN NEW;
+END;
+$$;
+
 CREATE FUNCTION trigger_0e214b8a14f2() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -18657,7 +18666,8 @@ CREATE TABLE notes (
     review_id bigint,
     confidential boolean,
     last_edited_at timestamp with time zone,
-    internal boolean DEFAULT false NOT NULL
+    internal boolean DEFAULT false NOT NULL,
+    id_convert_to_bigint bigint DEFAULT 0 NOT NULL
 );
 
 CREATE SEQUENCE notes_id_seq
@@ -33736,6 +33746,8 @@ CREATE TRIGGER namespaces_loose_fk_trigger AFTER DELETE ON namespaces REFERENCIN
 CREATE TRIGGER nullify_merge_request_metrics_build_data_on_update BEFORE UPDATE ON merge_request_metrics FOR EACH ROW EXECUTE FUNCTION nullify_merge_request_metrics_build_data();
 
 CREATE TRIGGER projects_loose_fk_trigger AFTER DELETE ON projects REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
+
+CREATE TRIGGER trigger_080e73845bfd BEFORE INSERT OR UPDATE ON notes FOR EACH ROW EXECUTE FUNCTION trigger_080e73845bfd();
 
 CREATE TRIGGER trigger_0e214b8a14f2 BEFORE INSERT OR UPDATE ON vulnerability_user_mentions FOR EACH ROW EXECUTE FUNCTION trigger_0e214b8a14f2();
 

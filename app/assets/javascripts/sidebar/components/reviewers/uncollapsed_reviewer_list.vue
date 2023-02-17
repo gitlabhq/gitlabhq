@@ -1,5 +1,6 @@
 <script>
 import { GlButton, GlTooltipDirective, GlIcon } from '@gitlab/ui';
+import { TYPE_ISSUE } from '~/issues/constants';
 import { __, sprintf, s__ } from '~/locale';
 import ReviewerAvatarLink from './reviewer_avatar_link.vue';
 
@@ -30,7 +31,7 @@ export default {
     issuableType: {
       type: String,
       required: false,
-      default: 'issue',
+      default: TYPE_ISSUE,
     },
   },
   data() {

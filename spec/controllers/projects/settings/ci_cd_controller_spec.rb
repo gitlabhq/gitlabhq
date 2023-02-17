@@ -2,7 +2,7 @@
 
 require('spec_helper')
 
-RSpec.describe Projects::Settings::CiCdController do
+RSpec.describe Projects::Settings::CiCdController, feature_category: :continuous_integration do
   let_it_be(:user) { create(:user) }
   let_it_be(:project_auto_devops) { create(:project_auto_devops) }
 

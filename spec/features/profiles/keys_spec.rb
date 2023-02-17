@@ -126,7 +126,7 @@ RSpec.describe 'Profile > SSH Keys', feature_category: :user_profile do
         visit project_commit_path(project, commit)
         wait_for_all_requests
 
-        page.find('a.gpg-status-box', text: 'Verified').click
+        find('a.signature-badge', text: 'Verified').click
 
         within('.popover') do
           expect(page).to have_content("Verified commit")
@@ -138,7 +138,7 @@ RSpec.describe 'Profile > SSH Keys', feature_category: :user_profile do
         visit project_commit_path(project, commit)
         wait_for_all_requests
 
-        page.find('a.gpg-status-box', text: 'Unverified').click
+        find('a.signature-badge', text: 'Unverified').click
 
         within('.popover') do
           expect(page).to have_content("Unverified signature")

@@ -94,8 +94,8 @@ RSpec.describe 'Projects tree', :js, feature_category: :web_ide do
       visit project_tree_path(project, '33f3729a45c02fc67d00adb1b8bca394b0e761d9')
       wait_for_requests
 
-      expect(page).not_to have_selector '.gpg-status-box.js-loading-gpg-badge'
-      expect(page).to have_selector '.gpg-status-box.invalid'
+      expect(page).not_to have_selector '.js-loading-signature-badge'
+      expect(page).to have_selector '.gl-badge.badge-muted'
     end
 
     context 'on a directory that has not changed recently' do
@@ -104,8 +104,8 @@ RSpec.describe 'Projects tree', :js, feature_category: :web_ide do
         visit project_tree_path(project, tree_path)
         wait_for_requests
 
-        expect(page).not_to have_selector '.gpg-status-box.js-loading-gpg-badge'
-        expect(page).to have_selector '.gpg-status-box.invalid'
+        expect(page).not_to have_selector '.js-loading-signature-badge'
+        expect(page).to have_selector '.gl-badge.badge-muted'
       end
     end
   end
@@ -152,8 +152,8 @@ RSpec.describe 'Projects tree', :js, feature_category: :web_ide do
         visit project_tree_path(project, '33f3729a45c02fc67d00adb1b8bca394b0e761d9')
         wait_for_requests
 
-        expect(page).not_to have_selector '.gpg-status-box.js-loading-gpg-badge'
-        expect(page).to have_selector '.gpg-status-box.invalid'
+        expect(page).not_to have_selector '.js-loading-signature-badge'
+        expect(page).to have_selector '.gl-badge.badge-muted'
       end
     end
   end

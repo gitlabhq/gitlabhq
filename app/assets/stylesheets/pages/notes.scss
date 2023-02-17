@@ -671,6 +671,7 @@ $system-note-svg-size: 1rem;
   }
 
   .discussion-reply-holder {
+    border-top: 0;
     border-radius: 0 0 $border-radius-default $border-radius-default;
     position: relative;
 

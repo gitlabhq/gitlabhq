@@ -16,7 +16,7 @@ RSpec.describe 'GPG signed commits', feature_category: :source_code_management d
 
     visit project_commit_path(project, ref)
 
-    expect(page).to have_selector('.gpg-status-box', text: 'Unverified')
+    expect(page).to have_selector('.gl-badge', text: 'Unverified')
 
     # user changes their email which makes the gpg key verified
     perform_enqueued_jobs do
@@ -26,7 +26,7 @@ RSpec.describe 'GPG signed commits', feature_category: :source_code_management d
 
     visit project_commit_path(project, ref)
 
-    expect(page).to have_selector('.gpg-status-box', text: 'Verified')
+    expect(page).to have_selector('.gl-badge', text: 'Verified')
   end
 
   it 'changes from unverified to verified when the user adds the missing gpg key', :sidekiq_might_not_need_inline do
@@ -35,7 +35,7 @@ RSpec.describe 'GPG signed commits', feature_category: :source_code_management d
 
     visit project_commit_path(project, ref)
 
-    expect(page).to have_selector('.gpg-status-box', text: 'Unverified')
+    expect(page).to have_selector('.gl-badge', text: 'Unverified')
 
     # user adds the gpg key which makes the signature valid
     perform_enqueued_jobs do
@@ -44,7 +44,7 @@ RSpec.describe 'GPG signed commits', feature_category: :source_code_management d
 
     visit project_commit_path(project, ref)
 
-    expect(page).to have_selector('.gpg-status-box', text: 'Verified')
+    expect(page).to have_selector('.gl-badge', text: 'Verified')
   end
 
   context 'shows popover badges', :js do
@@ -75,7 +75,7 @@ RSpec.describe 'GPG signed commits', feature_category: :source_code_management d
       visit project_commit_path(project, GpgHelpers::SIGNED_COMMIT_SHA)
       wait_for_all_requests
 
-      page.find('.gpg-status-box', text: 'Unverified').click
+      page.find('.gl-badge', text: 'Unverified').click
 
       within '.popover' do
         expect(page).to have_content 'This commit was signed with an unverified signature.'
@@ -90,7 +90,7 @@ RSpec.describe 'GPG signed commits', feature_category: :source_code_management d
       visit project_commit_path(project, GpgHelpers::SIGNED_COMMIT_SHA)
       wait_for_all_requests
 
-      page.find('.gpg-status-box', text: 'Unverified').click
+      page.find('.gl-badge', text: 'Unverified').click
 
       within '.popover' do
         expect(page).to have_content 'This commit was signed with a verified signature, but the committer email is not associated with the GPG Key.'
@@ -104,7 +104,7 @@ RSpec.describe 'GPG signed commits', feature_category: :source_code_management d
       visit project_commit_path(project, GpgHelpers::SIGNED_COMMIT_SHA)
       wait_for_all_requests
 
-      page.find('.gpg-status-box', text: 'Unverified').click
+      page.find('.gl-badge', text: 'Unverified').click
 
       within '.popover' do
         expect(page).to have_content "This commit was signed with a different user's verified signature."
@@ -118,7 +118,7 @@ RSpec.describe 'GPG signed commits', feature_category: :source_code_management d
       visit project_commit_path(project, GpgHelpers::MULTIPLE_SIGNATURES_SHA)
       wait_for_all_requests
 
-      page.find('.gpg-status-box', text: 'Unverified').click
+      page.find('.gl-badge', text: 'Unverified').click
 
       within '.popover' do
         expect(page).to have_content "This commit was signed with multiple signatures."
@@ -131,7 +131,7 @@ RSpec.describe 'GPG signed commits', feature_category: :source_code_management d
       visit project_commit_path(project, GpgHelpers::SIGNED_AND_AUTHORED_SHA)
       wait_for_all_requests
 
-      page.find('.gpg-status-box', text: 'Verified').click
+      page.find('.gl-badge', text: 'Verified').click
 
       within '.popover' do
         expect(page).to have_content 'This commit was signed with a verified signature and the committer email was verified to belong to the same user.'
@@ -146,14 +146,14 @@ RSpec.describe 'GPG signed commits', feature_category: :source_code_management d
       wait_for_all_requests
 
       # wait for the signature to get generated
-      expect(page).to have_selector('.gpg-status-box', text: 'Verified')
+      expect(page).to have_selector('.gl-badge', text: 'Verified')
 
       user_1.destroy!
 
       refresh
       wait_for_all_requests
 
-      page.find('.gpg-status-box', text: 'Verified').click
+      page.find('.gl-badge', text: 'Verified').click
 
       within '.popover' do
         expect(page).to have_content 'This commit was signed with a verified signature and the committer email was verified to belong to the same user.'
@@ -170,9 +170,9 @@ RSpec.describe 'GPG signed commits', feature_category: :source_code_management d
       end
 
       it 'displays commit signature' do
-        expect(page).to have_selector('.gpg-status-box', text: 'Unverified')
+        expect(page).to have_selector('.gl-badge', text: 'Unverified')
 
-        page.find('.gpg-status-box', text: 'Unverified').click
+        page.find('.gl-badge', text: 'Unverified').click
 
         within '.popover' do
           expect(page).to have_content 'This commit was signed with multiple signatures.'

@@ -343,8 +343,8 @@ RSpec.describe 'Project', feature_category: :projects do
         visit project_path(project)
         wait_for_requests
 
-        expect(page).not_to have_selector '.gpg-status-box.js-loading-gpg-badge'
-        expect(page).to have_selector '.gpg-status-box.invalid'
+        expect(page).not_to have_selector '.js-loading-signature-badge'
+        expect(page).to have_selector '.gl-badge.badge-muted'
       end
     end
 
@@ -371,8 +371,8 @@ RSpec.describe 'Project', feature_category: :projects do
           visit project_path(project)
           wait_for_requests
 
-          expect(page).not_to have_selector '.gpg-status-box.js-loading-gpg-badge'
-          expect(page).to have_selector '.gpg-status-box.invalid'
+          expect(page).not_to have_selector '.gl-badge.js-loading-signature-badge'
+          expect(page).to have_selector '.gl-badge.badge-muted'
         end
       end
     end

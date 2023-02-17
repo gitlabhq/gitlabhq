@@ -1,5 +1,5 @@
 - title = _('Verified commit')
 - description = _('This commit was signed with a verified signature and the committer email was verified to belong to the same user.')
-- locals = { signature: signature, title: title, description: description, label: _('Verified'), css_class: 'valid' }
+- locals = { signature: signature, title: title, description: description, label: _('Verified'), variant: 'success' }
 
 = render partial: 'projects/commit/signature_badge', locals: locals

@@ -104,30 +104,16 @@ RSpec.describe Projects::EnvironmentsController, feature_category: :continuous_d
         end
 
         context 'can access stop stale environments feature' do
-          context 'when stop_stale_environments FF is enabled' do
-            it 'maintainers can access the feature' do
-              get :index, params: environment_params(format: :json)
+          it 'maintainers can access the feature' do
+            get :index, params: environment_params(format: :json)
 
-              expect(json_response['can_stop_stale_environments']).to be_truthy
-            end
-
-            context 'when user is a reporter' do
-              let(:user) { reporter }
-
-              it 'reporters cannot access the feature' do
-                get :index, params: environment_params(format: :json)
-
-                expect(json_response['can_stop_stale_environments']).to be_falsey
-              end
-            end
+            expect(json_response['can_stop_stale_environments']).to be_truthy
           end
 
-          context 'when stop_stale_environments FF is disabled' do
-            before do
-              stub_feature_flags(stop_stale_environments: false)
-            end
+          context 'when user is a reporter' do
+            let(:user) { reporter }
 
-            it 'maintainers cannot access the feature' do
+            it 'reporters cannot access the feature' do
               get :index, params: environment_params(format: :json)
 
               expect(json_response['can_stop_stale_environments']).to be_falsey

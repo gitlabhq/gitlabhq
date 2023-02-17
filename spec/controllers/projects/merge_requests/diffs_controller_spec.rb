@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::MergeRequests::DiffsController do
+RSpec.describe Projects::MergeRequests::DiffsController, feature_category: :code_review_workflow do
   include ProjectForksHelper
   include TrackingHelpers
 

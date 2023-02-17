@@ -131,10 +131,6 @@ module CommitsHelper
     }
   end
 
-  def commit_signature_badge_classes(additional_classes)
-    %w(btn gpg-status-box) + Array(additional_classes)
-  end
-
   def conditionally_paginate_diff_files(diffs, paginate:, page:, per:)
     if paginate
       diff_files = diffs.diff_files.to_a

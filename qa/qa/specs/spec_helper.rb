@@ -11,6 +11,7 @@ QA::Support::GitlabAddress.define_gitlab_address_attribute!
 QA::Runtime::Browser.configure! unless QA::Runtime::Env.dry_run
 QA::Runtime::AllureReport.configure!
 QA::Runtime::Scenario.from_env(QA::Runtime::Env.runtime_scenario_attributes)
+QA::Support::KnapsackReport.configure!
 
 # Enable zero monkey patching mode before loading any other RSpec code.
 RSpec.configure(&:disable_monkey_patching!)

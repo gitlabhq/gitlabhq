@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::LabelsController do
+RSpec.describe Projects::LabelsController, feature_category: :team_planning do
   let_it_be(:group)   { create(:group) }
   let_it_be(:project, reload: true) { create(:project, namespace: group) }
   let_it_be(:user)    { create(:user) }

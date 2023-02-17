@@ -450,6 +450,16 @@
   }
 }
 
+.code .diff-grid-row.line_holder.diff-tr .diff-td.commented:not(.hll) {
+  --highlight-border-color: #{$blue-300};
+  background-color: $blue-50;
+
+  .gl-dark & {
+    --highlight-border-color: #{$blue-600};
+    background-color: $blue-900;
+  }
+}
+
 .diff-table.code,
 table.code {
   width: 100%;
@@ -460,6 +470,21 @@ table.code {
   padding: 0;
   table-layout: fixed;
   border-radius: 0 0 $border-radius-default $border-radius-default;
+
+  .diff-td.highlight-top {
+    box-shadow: 0 -1px var(--highlight-border-color, $blue-300);
+    z-index: 1;
+  }
+
+  .diff-td.highlight-bottom {
+    box-shadow: 0 1px var(--highlight-border-color, $blue-300);
+    z-index: 1;
+  }
+
+  .diff-td.highlight-top.highlight-bottom {
+    box-shadow: 0 -1px var(--highlight-border-color, $blue-300), 0 1px var(--highlight-border-color, $blue-300);
+    z-index: 2;
+  }
 
   .diff-tr.line_holder .diff-td,
   tr.line_holder td {
@@ -485,12 +510,15 @@ table.code {
       user-select: none;
       margin: 0;
       padding: 0 10px 0 5px;
-      border-right-width: 1px;
-      border-right-style: solid;
       text-align: right;
       width: 50px;
       position: relative;
       white-space: nowrap;
+
+      &:nth-of-type(2) {
+        border-right-width: 1px;
+        border-right-style: solid;
+      }
 
       a {
         transition: none;

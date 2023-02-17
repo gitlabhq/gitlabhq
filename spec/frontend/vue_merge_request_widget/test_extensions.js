@@ -153,7 +153,7 @@ export const fullReportExtension = {
           text: 'test',
           href: `testref`,
           target: '_blank',
-          fullReport: true,
+          trackFullReportClicked: true,
         },
       ];
     },

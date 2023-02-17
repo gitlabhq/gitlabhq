@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::IssuesController do
+RSpec.describe Projects::IssuesController, feature_category: :team_planning do
   include ProjectForksHelper
   include_context 'includes Spam constants'
 

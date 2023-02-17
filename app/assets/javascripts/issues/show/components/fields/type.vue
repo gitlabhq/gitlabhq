@@ -1,5 +1,6 @@
 <script>
 import { GlFormGroup, GlIcon, GlListbox } from '@gitlab/ui';
+import { TYPE_ISSUE } from '~/issues/constants';
 import { __ } from '~/locale';
 import { issuableTypes, INCIDENT_TYPE } from '../../constants';
 import getIssueStateQuery from '../../queries/get_issue_state.query.graphql';
@@ -22,7 +23,7 @@ export default {
       default: false,
     },
     issueType: {
-      default: 'issue',
+      default: TYPE_ISSUE,
     },
   },
   data() {

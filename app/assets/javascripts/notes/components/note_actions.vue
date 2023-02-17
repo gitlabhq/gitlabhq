@@ -4,6 +4,7 @@ import { mapActions, mapGetters, mapState } from 'vuex';
 import Api from '~/api';
 import resolvedStatusMixin from '~/batch_comments/mixins/resolved_status';
 import { createAlert } from '~/flash';
+import { TYPE_ISSUE } from '~/issues/constants';
 import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
 import { __, sprintf } from '~/locale';
 import eventHub from '~/sidebar/event_hub';
@@ -173,7 +174,7 @@ export default {
       return this.getNoteableData.assignees || [];
     },
     isIssue() {
-      return this.targetType === 'issue';
+      return this.targetType === TYPE_ISSUE;
     },
     canAssign() {
       return this.getNoteableData.current_user?.can_set_issue_metadata && this.isIssue;
@@ -235,7 +236,7 @@ export default {
         assignees.push({ id: this.author.id });
       }
 
-      if (this.targetType === 'issue') {
+      if (this.targetType === TYPE_ISSUE) {
         Api.updateIssue(project_id, iid, {
           assignee_ids: assignees.map((assignee) => assignee.id),
         })

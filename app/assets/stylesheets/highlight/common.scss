@@ -57,6 +57,15 @@
   }
 }
 
+@mixin line-number-hover-dark {
+  background-color: $purple-800;
+  border-color: $purple-300;
+
+  a {
+    color: $purple-50;
+  }
+}
+
 @mixin conflict-colors($theme) {
   .diff-line-num {
     &.conflict_marker_our,
@@ -75,6 +84,8 @@
   .line_holder {
     .line_content,
     .line-coverage {
+      position: relative;
+
       &.conflict_marker_our {
         background-color: map-get($conflict-colors, #{$theme}-header-head-neutral);
         border-color: map-get($conflict-colors, #{$theme}-header-head-neutral);

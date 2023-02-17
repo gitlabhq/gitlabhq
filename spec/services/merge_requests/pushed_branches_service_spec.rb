@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe MergeRequests::PushedBranchesService do
+RSpec.describe MergeRequests::PushedBranchesService, feature_category: :source_code_management do
   let(:project) { create(:project) }
   let!(:service) { described_class.new(project: project, current_user: nil, params: { changes: pushed_branches }) }
 

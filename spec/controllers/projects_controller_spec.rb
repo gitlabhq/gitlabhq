@@ -2,7 +2,7 @@
 
 require('spec_helper')
 
-RSpec.describe ProjectsController do
+RSpec.describe ProjectsController, feature_category: :projects do
   include ExternalAuthorizationServiceHelpers
   include ProjectForksHelper
   using RSpec::Parameterized::TableSyntax

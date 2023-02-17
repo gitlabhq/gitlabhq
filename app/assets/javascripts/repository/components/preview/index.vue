@@ -14,7 +14,6 @@ export default {
           url: this.blob.webPath,
         };
       },
-      loadingKey: 'loading',
     },
   },
   components: {
@@ -34,8 +33,12 @@ export default {
   data() {
     return {
       readme: null,
-      loading: 0,
     };
+  },
+  computed: {
+    isLoading() {
+      return this.$apollo.queries.readme.loading;
+    },
   },
   watch: {
     readme(newVal) {
@@ -64,7 +67,7 @@ export default {
       </div>
     </div>
     <div class="blob-viewer" data-qa-selector="blob_viewer_content" itemprop="about">
-      <gl-loading-icon v-if="loading > 0" size="lg" color="dark" class="my-4 mx-auto" />
+      <gl-loading-icon v-if="isLoading" size="lg" color="dark" class="my-4 mx-auto" />
       <div
         v-else-if="readme"
         ref="readme"

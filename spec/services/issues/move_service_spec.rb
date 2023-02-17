@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Issues::MoveService do
+RSpec.describe Issues::MoveService, feature_category: :team_planning do
   include DesignManagementTestHelpers
 
   let_it_be(:user) { create(:user) }

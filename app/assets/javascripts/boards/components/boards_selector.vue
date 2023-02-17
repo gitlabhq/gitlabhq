@@ -68,11 +68,11 @@ export default {
   data() {
     return {
       hasScrollFade: false,
-      loadingBoards: 0,
-      loadingRecentBoards: false,
       scrollFadeInitialized: false,
       boards: [],
       recentBoards: [],
+      loadingBoards: false,
+      loadingRecentBoards: false,
       throttledSetScrollFade: throttle(this.setScrollFade, this.throttleDuration),
       contentClientHeight: 0,
       maxPosition: 0,
@@ -90,7 +90,7 @@ export default {
       return this.boardType;
     },
     loading() {
-      return this.loadingRecentBoards || Boolean(this.loadingBoards);
+      return this.loadingRecentBoards || this.loadingBoards;
     },
     filteredBoards() {
       return this.boards.filter((board) =>
@@ -171,8 +171,10 @@ export default {
           return { fullPath: this.fullPath };
         },
         query: this.boardQuery,
-        loadingKey: 'loadingBoards',
         update: (data) => this.boardUpdate(data, 'boards'),
+        watchLoading: (isLoading) => {
+          this.loadingBoards = isLoading;
+        },
       });
 
       this.loadRecentBoards();
@@ -183,8 +185,10 @@ export default {
           return { fullPath: this.fullPath };
         },
         query: this.recentBoardsQuery,
-        loadingKey: 'loadingRecentBoards',
         update: (data) => this.boardUpdate(data, 'recentIssueBoards'),
+        watchLoading: (isLoading) => {
+          this.loadingRecentBoards = isLoading;
+        },
       });
     },
     isScrolledUp() {

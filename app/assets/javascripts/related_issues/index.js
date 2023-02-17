@@ -1,9 +1,10 @@
 import Vue from 'vue';
+import { TYPE_ISSUE } from '~/issues/constants';
 import { apolloProvider } from '~/graphql_shared/issuable_client';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import RelatedIssuesRoot from './components/related_issues_root.vue';
 
-export function initRelatedIssues(issueType = 'issue') {
+export function initRelatedIssues(issueType = TYPE_ISSUE) {
   const el = document.querySelector('.js-related-issues-root');
 
   if (!el) {

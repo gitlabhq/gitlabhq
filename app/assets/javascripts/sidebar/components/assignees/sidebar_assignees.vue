@@ -1,6 +1,7 @@
 <script>
 import { refreshUserMergeRequestCounts } from '~/commons/nav/user_merge_requests';
 import { createAlert } from '~/flash';
+import { TYPE_ISSUE } from '~/issues/constants';
 import { __ } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import eventHub from '../../event_hub';
@@ -34,7 +35,7 @@ export default {
     issuableType: {
       type: String,
       required: false,
-      default: 'issue',
+      default: TYPE_ISSUE,
     },
     issuableIid: {
       type: String,
@@ -63,7 +64,7 @@ export default {
   computed: {
     shouldEnableRealtime() {
       // Note: Realtime is only available on issues right now, future support for MR wil be built later.
-      return this.issuableType === 'issue';
+      return this.issuableType === TYPE_ISSUE;
     },
     queryVariables() {
       return {

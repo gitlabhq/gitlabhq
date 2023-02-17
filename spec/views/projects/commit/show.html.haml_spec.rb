@@ -79,7 +79,7 @@ RSpec.describe 'projects/commit/show.html.haml', feature_category: :source_code_
 
   context 'when commit is signed' do
     let(:page) { Nokogiri::HTML.parse(rendered) }
-    let(:badge) { page.at('.gpg-status-box') }
+    let(:badge) { page.at('.signature-badge') }
     let(:badge_attributes) { badge.attributes }
     let(:title) { badge_attributes['data-title'].value }
     let(:content) { badge_attributes['data-content'].value }

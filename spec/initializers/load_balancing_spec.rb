@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'load_balancing', :delete, :reestablished_active_record_base do
+RSpec.describe 'load_balancing', :delete, :reestablished_active_record_base, feature_category: :pods do
   subject(:initialize_load_balancer) do
     load Rails.root.join('config/initializers/load_balancing.rb')
   end

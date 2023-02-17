@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::ForksController do
+RSpec.describe Projects::ForksController, feature_category: :source_code_management do
   let(:user) { create(:user) }
   let(:project) { create(:project, :public, :repository) }
   let(:forked_project) { Projects::ForkService.new(project, user, name: 'Some name').execute }

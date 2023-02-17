@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe MergeRequests::CreateService, :clean_gitlab_redis_shared_state do
+RSpec.describe MergeRequests::CreateService, :clean_gitlab_redis_shared_state, feature_category: :code_review_workflow do
   include ProjectForksHelper
 
   let(:project) { create(:project, :repository) }

@@ -24,13 +24,13 @@ module Ci
         each_partitionable_table do |table_name|
           change_column_default(table_name, from: DEFAULT_PARTITION, to: nil, connection: connection)
           change_column_default("p_#{table_name}", from: DEFAULT_PARTITION, to: nil, connection: connection)
-          create_test_partition(table_name, connection: connection)
+          create_test_partition("p_#{table_name}", connection: connection)
         end
       end
 
       def teardown(connection: Ci::ApplicationRecord.connection)
         each_partitionable_table do |table_name|
-          drop_test_partition(table_name, connection: connection)
+          drop_test_partition("p_#{table_name}", connection: connection)
           change_column_default(table_name, from: nil, to: DEFAULT_PARTITION, connection: connection)
           change_column_default("p_#{table_name}", from: nil, to: DEFAULT_PARTITION, connection: connection)
         end
@@ -54,13 +54,13 @@ module Ci
       end
 
       def create_test_partition(table_name, connection:)
-        return unless table_available?("p_#{table_name}", connection: connection)
+        return unless table_available?(table_name, connection: connection)
 
         drop_test_partition(table_name, connection: connection)
 
-        connection.execute(<<~SQL)
+        connection.execute(<<~SQL.squish)
           CREATE TABLE #{full_partition_name(table_name)}
-            PARTITION OF p_#{table_name}
+            PARTITION OF #{table_name}
             FOR VALUES IN (#{PartitioningTesting::PartitionIdentifiers.ci_testing_partition_id});
         SQL
       end
@@ -68,7 +68,7 @@ module Ci
       def drop_test_partition(table_name, connection:)
         return unless table_available?(table_name, connection: connection)
 
-        connection.execute(<<~SQL)
+        connection.execute(<<~SQL.squish)
           DROP TABLE IF EXISTS #{full_partition_name(table_name)};
         SQL
       end
@@ -79,7 +79,12 @@ module Ci
       end
 
       def full_partition_name(table_name)
-        "#{Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA}._test_gitlab_#{table_name}_partition"
+        [
+          Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA,
+          '._test_gitlab_',
+          table_name.delete_prefix('p_'),
+          '_partition'
+        ].join('')
       end
     end
   end

@@ -28,7 +28,7 @@ describe('GpgBadges', () => {
         <input type="search" name="search" value="${search}" id="commits-search"class="form-control search-text-input input-short">
       </form>
       <div class="parent-container">
-        <div class="js-loading-gpg-badge" data-commit-sha="${dummyCommitSha}"></div>
+        <div class="js-loading-signature-badge" data-commit-sha="${dummyCommitSha}"></div>
       </div>
     `);
   };
@@ -105,8 +105,8 @@ describe('GpgBadges', () => {
     mock.onGet(dummyUrl).replyOnce(HTTP_STATUS_OK);
 
     await GpgBadges.fetch();
-    expect(document.querySelector('.js-loading-gpg-badge:empty')).toBe(null);
-    const spinners = document.querySelectorAll('.js-loading-gpg-badge span.gl-spinner');
+    expect(document.querySelector('.js-loading-signature-badge:empty')).toBe(null);
+    const spinners = document.querySelectorAll('.js-loading-signature-badge span.gl-spinner');
 
     expect(spinners.length).toBe(1);
   });
@@ -115,7 +115,7 @@ describe('GpgBadges', () => {
     mock.onGet(dummyUrl).replyOnce(HTTP_STATUS_OK, dummyResponse);
 
     await GpgBadges.fetch();
-    expect(document.querySelector('.js-loading-gpg-badge')).toBe(null);
+    expect(document.querySelector('.js-loading-signature-badge')).toBe(null);
     const parentContainer = document.querySelector('.parent-container');
 
     expect(parentContainer.innerHTML.trim()).toEqual(dummyBadgeHtml);

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Admin::InstanceReviewController do
+RSpec.describe Admin::InstanceReviewController, feature_category: :service_ping do
   include UsageDataHelpers
 
   let(:admin) { create(:admin) }

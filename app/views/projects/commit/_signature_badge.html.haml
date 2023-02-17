@@ -2,12 +2,10 @@
 - title = local_assigns.fetch(:title)
 - description = local_assigns.fetch(:description, nil)
 - label = local_assigns.fetch(:label)
-- css_class = local_assigns.fetch(:css_class)
-
-- css_classes = commit_signature_badge_classes(css_class)
+- variant = local_assigns.fetch(:variant)
 
 - title = capture do
-  .gpg-popover-status
+  .signature-popover
     %div
       %strong
         = title
@@ -31,5 +29,5 @@
 
     = link_to(_('Learn about signing commits'), help_page_path('user/project/repository/gpg_signed_commits/index.md'), class: 'gl-link gl-display-block gl-mt-3')
 
-%a{ role: 'button', tabindex: 0, class: css_classes, data: { toggle: 'popover', html: 'true', placement: 'top', title: title, content: content } }
-  = label
+%a.signature-badge.gl-display-flex{ role: 'button', tabindex: 0, data: { toggle: 'popover', html: 'true', placement: 'top', title: title, content: content } }
+  = gl_badge_tag label, variant: variant

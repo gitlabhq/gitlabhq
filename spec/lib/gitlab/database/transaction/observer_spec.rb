@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::Transaction::Observer do
+RSpec.describe Gitlab::Database::Transaction::Observer, feature_category: :database do
   # Use the delete DB strategy so that the test won't be wrapped in a transaction
   describe '.instrument_transactions', :delete do
     let(:transaction_context) { ActiveRecord::Base.connection.transaction_manager.transaction_context }

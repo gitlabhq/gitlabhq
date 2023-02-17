@@ -1,7 +1,9 @@
 import { GlLabel, GlLoadingIcon, GlTooltip } from '@gitlab/ui';
 import { range } from 'lodash';
 import Vue, { nextTick } from 'vue';
+import VueApollo from 'vue-apollo';
 import Vuex from 'vuex';
+import createMockApollo from 'helpers/mock_apollo_helper';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
@@ -18,6 +20,7 @@ jest.mock('~/lib/utils/url_utility');
 jest.mock('~/boards/eventhub');
 
 Vue.use(Vuex);
+Vue.use(VueApollo);
 
 describe('Board card component', () => {
   const user = {
@@ -69,6 +72,7 @@ describe('Board card component', () => {
   const createWrapper = ({ props = {}, isEpicBoard = false, isGroupBoard = true } = {}) => {
     wrapper = mountExtended(BoardCardInner, {
       store,
+      apolloProvider: createMockApollo(),
       propsData: {
         list,
         item: issue,
@@ -81,13 +85,6 @@ describe('Board card component', () => {
       },
       directives: {
         GlTooltip: createMockDirective(),
-      },
-      mocks: {
-        $apollo: {
-          queries: {
-            blockingIssuables: { loading: false },
-          },
-        },
       },
       provide: {
         rootPath: '/',

@@ -3,6 +3,7 @@ import { GlLoadingIcon, GlTableLite, GlButton, GlTooltipDirective } from '@gitla
 import { createAlert } from '~/flash';
 import { TYPENAME_ISSUE, TYPENAME_MERGE_REQUEST } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
+import { TYPE_ISSUE } from '~/issues/constants';
 import { formatDate, parseSeconds, stringifyTime } from '~/lib/utils/datetime_utility';
 import { __, s__ } from '~/locale';
 import { timelogQueries } from '../../constants';
@@ -61,7 +62,7 @@ export default {
       return this.removingIds.includes(timelogId);
     },
     isIssue() {
-      return this.issuableType === 'issue';
+      return this.issuableType === TYPE_ISSUE;
     },
     getQueryVariables() {
       return {

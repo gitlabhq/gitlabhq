@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe PgFullTextSearchable do
+RSpec.describe PgFullTextSearchable, feature_category: :global_search do
   let(:project) { build(:project, project_namespace: build(:project_namespace)) }
 
   let(:model_class) do

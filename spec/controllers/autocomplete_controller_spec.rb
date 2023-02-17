@@ -6,7 +6,7 @@ RSpec.describe AutocompleteController do
   let(:project) { create(:project) }
   let(:user) { project.first_owner }
 
-  context 'GET users' do
+  context 'GET users', feature_category: :user_management do
     let!(:user2) { create(:user) }
     let!(:non_member) { create(:user) }
 
@@ -248,7 +248,7 @@ RSpec.describe AutocompleteController do
     end
   end
 
-  context 'GET projects' do
+  context 'GET projects', feature_category: :projects do
     let(:authorized_project) { create(:project) }
     let(:authorized_search_project) { create(:project, name: 'rugged') }
 
@@ -339,7 +339,7 @@ RSpec.describe AutocompleteController do
     end
   end
 
-  context 'GET award_emojis' do
+  context 'GET award_emojis', feature_category: :team_planning do
     let(:user2) { create(:user) }
     let!(:award_emoji1) { create_list(:award_emoji, 2, user: user, name: 'thumbsup') }
     let!(:award_emoji2) { create_list(:award_emoji, 1, user: user, name: 'thumbsdown') }
@@ -377,7 +377,7 @@ RSpec.describe AutocompleteController do
     end
   end
 
-  context 'GET deploy_keys_with_owners' do
+  context 'GET deploy_keys_with_owners', feature_category: :continuous_delivery do
     let_it_be(:public_project) { create(:project, :public) }
     let_it_be(:user) { create(:user) }
     let_it_be(:deploy_key) { create(:deploy_key, user: user) }
@@ -451,7 +451,7 @@ RSpec.describe AutocompleteController do
     end
   end
 
-  context 'Get merge_request_target_branches' do
+  context 'Get merge_request_target_branches', feature_category: :code_review_workflow do
     let!(:merge_request) { create(:merge_request, source_project: project, target_branch: 'feature') }
 
     context 'anonymous user' do

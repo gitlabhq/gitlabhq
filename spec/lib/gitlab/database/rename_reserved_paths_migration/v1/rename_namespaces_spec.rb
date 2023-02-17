@@ -2,7 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameNamespaces, :delete do
+RSpec.describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameNamespaces, :delete,
+feature_category: :subgroups do
   let(:migration) { FakeRenameReservedPathMigrationV1.new }
   let(:subject) { described_class.new(['the-path'], migration) }
   let(:namespace) { create(:group, name: 'the-path') }

@@ -60,4 +60,9 @@ namespace :ci do
 
     QA::Tools::Ci::TestMetrics.export(args[:glob])
   end
+
+  desc "Get available QA environment variables"
+  task :env_var_name_list do
+    puts Gitlab::QA::Runtime::Env.variables.keys.join("\n")
+  end
 end

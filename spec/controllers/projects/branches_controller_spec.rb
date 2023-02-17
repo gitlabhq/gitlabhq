@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::BranchesController do
+RSpec.describe Projects::BranchesController, feature_category: :source_code_management do
   let(:project)   { create(:project, :repository) }
   let(:user)      { create(:user) }
   let(:developer) { create(:user) }

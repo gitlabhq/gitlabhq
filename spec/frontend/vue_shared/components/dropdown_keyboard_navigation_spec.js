@@ -61,27 +61,8 @@ describe('DropdownKeyboardNavigation', () => {
   });
 
   describe('keydown events', () => {
-    let incrementSpy;
-
     beforeEach(() => {
       createComponent();
-      incrementSpy = jest.spyOn(wrapper.vm, 'increment');
-    });
-
-    afterEach(() => {
-      incrementSpy.mockRestore();
-    });
-
-    it('onKeydown-Down calls increment(1)', () => {
-      helpers.arrowDown();
-
-      expect(incrementSpy).toHaveBeenCalledWith(1);
-    });
-
-    it('onKeydown-Up calls increment(-1)', () => {
-      helpers.arrowUp();
-
-      expect(incrementSpy).toHaveBeenCalledWith(-1);
     });
 
     it('onKeydown-Tab $emits @tab event', () => {

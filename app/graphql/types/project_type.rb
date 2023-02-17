@@ -571,6 +571,16 @@ module Types
           resolver: Resolvers::DataTransferResolver.project,
           description: 'Data transfer data point for a specific period. This is mocked data under a development feature flag.'
 
+    field :visible_forks, Types::ProjectType.connection_type,
+          null: true,
+          alpha: { milestone: '15.10' },
+          description: "Visible forks of the project." do
+            argument :minimum_access_level,
+              type: ::Types::AccessLevelEnum,
+              required: false,
+              description: 'Minimum access level.'
+          end
+
     def timelog_categories
       object.project_namespace.timelog_categories if Feature.enabled?(:timelog_categories)
     end
@@ -661,6 +671,14 @@ module Types
 
     def languages
       ::Projects::RepositoryLanguagesService.new(project, current_user).execute
+    end
+
+    def visible_forks(minimum_access_level: nil)
+      if minimum_access_level.nil?
+        object.forks.public_or_visible_to_user(current_user)
+      else
+        object.forks.visible_to_user_and_access_level(current_user, minimum_access_level)
+      end
     end
 
     private

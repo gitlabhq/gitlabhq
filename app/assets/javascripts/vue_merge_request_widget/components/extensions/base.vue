@@ -293,7 +293,7 @@ export default {
       }
     },
     onClickedAction(action) {
-      if (action.fullReport) {
+      if (action.trackFullReportClicked) {
         this.telemetry?.fullReportClicked();
       }
     },

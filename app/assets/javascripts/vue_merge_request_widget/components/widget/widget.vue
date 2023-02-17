@@ -111,7 +111,7 @@ export default {
      *   "testId":string,
      *   "text": string,
      *   "class": string | Object,
-     *   "fullReport": boolean,
+     *   "trackFullReportClicked": boolean,
      * }
      */
     actionButtons: {
@@ -204,7 +204,7 @@ export default {
   },
   methods: {
     onActionClick(action) {
-      if (action.fullReport) {
+      if (action.trackFullReportClicked) {
         this.telemetryHub?.fullReportClicked();
       }
     },

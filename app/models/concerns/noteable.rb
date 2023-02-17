@@ -116,7 +116,9 @@ module Noteable
       relations += synthetic_note_ids_relations
     end
 
-    Note.from_union(relations, remove_duplicates: false).fresh
+    Note.from_union(relations, remove_duplicates: false)
+      .select(:table_name, :id, :created_at, :ids)
+      .fresh
   end
 
   def capped_notes_count(max)

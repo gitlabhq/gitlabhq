@@ -58,13 +58,8 @@ describe('Commits header component', () => {
       expect(findCommitToggle().attributes('aria-label')).toBe('Expand');
     });
 
-    it('has a chevron-right icon', async () => {
+    it('has a chevron-right icon', () => {
       createComponent();
-      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-      // eslint-disable-next-line no-restricted-syntax
-      wrapper.setData({ expanded: false });
-
-      await nextTick();
       expect(findCommitToggle().props('icon')).toBe('chevron-right');
     });
 
@@ -110,25 +105,21 @@ describe('Commits header component', () => {
   });
 
   describe('when expanded', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       createComponent();
-      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-      // eslint-disable-next-line no-restricted-syntax
-      wrapper.setData({ expanded: true });
+      findCommitToggle().trigger('click');
+      await nextTick();
     });
 
-    it('toggle has aria-label equal to collapse', async () => {
-      await nextTick();
+    it('toggle has aria-label equal to collapse', () => {
       expect(findCommitToggle().attributes('aria-label')).toBe('Collapse');
     });
 
-    it('has a chevron-down icon', async () => {
-      await nextTick();
+    it('has a chevron-down icon', () => {
       expect(findCommitToggle().props('icon')).toBe('chevron-down');
     });
 
-    it('has a collapse text', async () => {
-      await nextTick();
+    it('has a collapse text', () => {
       expect(findHeaderWrapper().text()).toBe('Collapse');
     });
   });

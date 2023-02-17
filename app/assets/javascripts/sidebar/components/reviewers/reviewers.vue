@@ -1,6 +1,7 @@
 <script>
 // NOTE! For the first iteration, we are simply copying the implementation of Assignees
 // It will soon be overhauled in Issue https://gitlab.com/gitlab-org/gitlab/-/issues/233736
+import { TYPE_ISSUE } from '~/issues/constants';
 import CollapsedReviewerList from './collapsed_reviewer_list.vue';
 import UncollapsedReviewerList from './uncollapsed_reviewer_list.vue';
 
@@ -28,7 +29,7 @@ export default {
     issuableType: {
       type: String,
       required: false,
-      default: 'issue',
+      default: TYPE_ISSUE,
     },
   },
   computed: {

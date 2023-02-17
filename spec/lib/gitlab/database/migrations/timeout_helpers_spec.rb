@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::Migrations::TimeoutHelpers do
+RSpec.describe Gitlab::Database::Migrations::TimeoutHelpers, feature_category: :database do
   let(:model) do
     ActiveRecord::Migration.new.extend(described_class)
   end

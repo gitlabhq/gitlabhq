@@ -13,7 +13,7 @@ export default class GpgBadges {
       return Promise.resolve();
     }
 
-    const badges = $('.js-loading-gpg-badge');
+    const badges = $('.js-loading-signature-badge');
 
     badges.html(loadingIconForLegacyJS());
     badges.children().attr('aria-label', __('Loading'));

@@ -1007,8 +1007,8 @@ RSpec.describe 'File blob', :js, feature_category: :projects do
     it 'displays a GPG badge' do
       visit_blob('CONTRIBUTING.md', ref: '33f3729a45c02fc67d00adb1b8bca394b0e761d9')
 
-      expect(page).not_to have_selector '.gpg-status-box.js-loading-gpg-badge'
-      expect(page).to have_selector '.gpg-status-box.invalid'
+      expect(page).not_to have_selector '.js-loading-signature-badge'
+      expect(page).to have_selector '.gl-badge.badge-muted'
     end
   end
 
@@ -1016,8 +1016,8 @@ RSpec.describe 'File blob', :js, feature_category: :projects do
     it 'displays a GPG badge' do
       visit_blob('conflicting-file.md', ref: '6101e87e575de14b38b4e1ce180519a813671e10')
 
-      expect(page).not_to have_selector '.gpg-status-box.js-loading-gpg-badge'
-      expect(page).to have_selector '.gpg-status-box.invalid'
+      expect(page).not_to have_selector '.js-loading-signature-badge'
+      expect(page).to have_selector '.gl-badge.badge-muted'
     end
   end
 

@@ -18976,6 +18976,26 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="projecttimelogsstarttime"></a>`startTime` | [`Time`](#time) | List timelogs within a time range where the logged time is equal to or after startTime. |
 | <a id="projecttimelogsusername"></a>`username` | [`String`](#string) | List timelogs for a user. |
 
+##### `Project.visibleForks`
+
+Visible forks of the project.
+
+WARNING:
+**Introduced** in 15.10.
+This feature is in Alpha. It can be changed or removed at any time.
+
+Returns [`ProjectConnection`](#projectconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectvisibleforksminimumaccesslevel"></a>`minimumAccessLevel` | [`AccessLevelEnum`](#accesslevelenum) | Minimum access level. |
+
 ##### `Project.vulnerabilities`
 
 Vulnerabilities reported on the project.

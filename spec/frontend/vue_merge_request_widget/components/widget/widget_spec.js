@@ -402,7 +402,7 @@ describe('~/vue_merge_request_widget/components/widget/widget.vue', () => {
           isCollapsible: true,
           actionButtons: [
             {
-              fullReport: true,
+              trackFullReportClicked: true,
               href: '#',
               target: '_blank',
               id: 'full-report-button',

@@ -58,8 +58,7 @@ class Projects::EnvironmentsController < Projects::ApplicationController
         render json: {
           environments: serialize_environments(request, response, params[:nested]),
           review_app: serialize_review_app,
-          can_stop_stale_environments: Feature.enabled?(:stop_stale_environments, @project) &&
-            can?(current_user, :stop_environment, @project),
+          can_stop_stale_environments: can?(current_user, :stop_environment, @project),
           available_count: environments_count_by_state[:available],
           stopped_count: environments_count_by_state[:stopped]
         }

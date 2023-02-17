@@ -23,6 +23,9 @@ class Note < ApplicationRecord
   include FromUnion
   include Sortable
   include EachBatch
+  include IgnorableColumns
+
+  ignore_column :id_convert_to_bigint, remove_with: '16.0', remove_after: '2023-05-22'
 
   ISSUE_TASK_SYSTEM_NOTE_PATTERN = /\A.*marked\sthe\stask.+as\s(completed|incomplete).*\z/.freeze
 

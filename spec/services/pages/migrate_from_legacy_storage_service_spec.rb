@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Pages::MigrateFromLegacyStorageService do
+RSpec.describe Pages::MigrateFromLegacyStorageService, feature_category: :pages do
   let(:batch_size) { 10 }
   let(:mark_projects_as_not_deployed) { false }
   let(:service) { described_class.new(Rails.logger, ignore_invalid_entries: false, mark_projects_as_not_deployed: mark_projects_as_not_deployed) }
