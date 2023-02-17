@@ -22,7 +22,8 @@ module QA
 
           Page::Project::Menu.perform(&:go_to_monitor_alerts)
           Page::Project::Monitor::Alerts::Index.perform do |index|
-            expect(index).to have_alert_with_title(alert_title)
+            expect { index.has_alert_with_title?(alert_title) }
+              .to eventually_be_truthy.within(max_duration: 60, reload_page: index)
           end
         end
       end

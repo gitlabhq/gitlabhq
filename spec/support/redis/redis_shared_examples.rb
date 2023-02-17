@@ -392,7 +392,8 @@ RSpec.shared_examples "redis_shared_examples" do
   describe '#fetch_config' do
     before do
       FileUtils.mkdir_p(File.join(rails_root, 'config'))
-
+      # Undo top-level stub of config_file_name because we are testing that method now.
+      allow(described_class).to receive(:config_file_name).and_call_original
       allow(described_class).to receive(:rails_root).and_return(rails_root)
     end
 
@@ -416,7 +417,6 @@ RSpec.shared_examples "redis_shared_examples" do
       subject { described_class.new('test').send(:fetch_config) }
 
       before do
-        allow(described_class).to receive(:config_file_name).and_call_original
         allow(described_class).to receive(:redis_yml_path).and_call_original
       end
 
