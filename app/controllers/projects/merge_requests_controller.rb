@@ -39,7 +39,6 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     push_frontend_feature_flag(:refactor_code_quality_inline_findings, project)
     push_frontend_feature_flag(:moved_mr_sidebar, project)
     push_frontend_feature_flag(:mr_experience_survey, project)
-    push_frontend_feature_flag(:realtime_reviewers, project)
     push_frontend_feature_flag(:realtime_mr_status_change, project)
   end
 

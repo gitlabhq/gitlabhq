@@ -18,7 +18,6 @@ import {
   INVITE_BUTTON_TEXT_DISABLED,
   INVITE_BUTTON_TEXT,
   ON_SHOW_TRACK_LABEL,
-  ON_CELEBRATION_TRACK_LABEL,
 } from '~/invite_members/constants';
 
 import { propsData, membersPath, purchasePath } from '../mock_data/modal_base';
@@ -225,31 +224,6 @@ describe('InviteModalBase', () => {
       it('renders correct buttons', () => {
         expect(findCancelButton().text()).toBe(CANCEL_BUTTON_TEXT);
         expect(findActionButton().text()).toBe(INVITE_BUTTON_TEXT);
-      });
-    });
-
-    describe('when isCelebration', () => {
-      it('tracks actions', () => {
-        createComponent({ props: { isCelebration: true, preventCancelDefault: true } });
-
-        trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
-
-        const modal = wrapper.findComponent(GlModal);
-        const mockEvent = { preventDefault: jest.fn() };
-
-        modal.vm.$emit('shown');
-        expectTracking('render', ON_CELEBRATION_TRACK_LABEL);
-
-        modal.vm.$emit('primary', mockEvent);
-        expectTracking('click_invite', ON_CELEBRATION_TRACK_LABEL);
-
-        modal.vm.$emit('cancel', mockEvent);
-        expectTracking('click_cancel', ON_CELEBRATION_TRACK_LABEL);
-
-        modal.vm.$emit('close');
-        expectTracking('click_x', ON_CELEBRATION_TRACK_LABEL);
-
-        unmockTracking();
       });
     });
   });

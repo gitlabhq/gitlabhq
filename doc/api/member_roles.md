@@ -66,7 +66,7 @@ POST /groups/:id/member_roles
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `id`      | integer/string | yes | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
-| `base_access-level` | integer | yes   | Base access level for configured role. |
+| `base_access_level` | integer | yes   | Base access level for configured role. |
 | `read_code` | boolean | no | Permission to read code.  |
 
 If successful, returns [`201`](rest/index.md#status-codes) and the following attributes:

@@ -5,7 +5,6 @@ import Vue from 'vue';
 import { refreshUserMergeRequestCounts } from '~/commons/nav/user_merge_requests';
 import { createAlert } from '~/flash';
 import { __ } from '~/locale';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import eventHub from '../../event_hub';
 import getMergeRequestReviewersQuery from '../../queries/get_merge_request_reviewers.query.graphql';
@@ -26,7 +25,6 @@ export default {
     ReviewerTitle,
     Reviewers,
   },
-  mixins: [glFeatureFlagsMixin()],
   props: {
     mediator: {
       type: Object,
@@ -78,7 +76,7 @@ export default {
           };
         },
         skip() {
-          return !this.issuable?.id || !this.isRealtimeEnabled;
+          return !this.issuable?.id;
         },
         updateQuery(
           _,
@@ -118,9 +116,6 @@ export default {
     },
     canUpdate() {
       return this.issuable.userPermissions?.adminMergeRequest || false;
-    },
-    isRealtimeEnabled() {
-      return this.glFeatures.realtimeReviewers;
     },
   },
   created() {

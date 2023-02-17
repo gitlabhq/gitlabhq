@@ -12,7 +12,6 @@ import {
   CANCEL_BUTTON_TEXT,
   HEADER_CLOSE_LABEL,
   ON_SHOW_TRACK_LABEL,
-  ON_CELEBRATION_TRACK_LABEL,
 } from '../constants';
 
 const DEFAULT_SLOT = 'default';
@@ -82,11 +81,6 @@ export default {
       default: false,
     },
     isLoading: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-    isCelebration: {
       type: Boolean,
       required: false,
       default: false,
@@ -208,19 +202,11 @@ export default {
       this.$emit('reset');
     },
     onShowModal() {
-      if (this.isCelebration) {
-        this.track('render', { label: ON_CELEBRATION_TRACK_LABEL });
-      }
-
       if (this.usersLimitDataset.reachedLimit) {
         this.track('render', { category: 'default', label: ON_SHOW_TRACK_LABEL });
       }
     },
     onCancel(e) {
-      if (this.isCelebration) {
-        this.track('click_cancel', { label: ON_CELEBRATION_TRACK_LABEL });
-      }
-
       if (this.preventCancelDefault) {
         e.preventDefault();
       } else {
@@ -231,10 +217,6 @@ export default {
       this.$emit('cancel');
     },
     onSubmit(e) {
-      if (this.isCelebration) {
-        this.track('click_invite', { label: ON_CELEBRATION_TRACK_LABEL });
-      }
-
       // We never want to hide when submitting
       e.preventDefault();
 
@@ -244,9 +226,7 @@ export default {
       });
     },
     onClose() {
-      if (this.isCelebration) {
-        this.track('click_x', { label: ON_CELEBRATION_TRACK_LABEL });
-      }
+      this.$emit('close');
     },
   },
   HEADER_CLOSE_LABEL,

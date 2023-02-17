@@ -12,6 +12,7 @@ import {
 import { partition, isString, uniqueId, isEmpty } from 'lodash';
 import InviteModalBase from 'ee_else_ce/invite_members/components/invite_modal_base.vue';
 import Api from '~/api';
+import Tracking from '~/tracking';
 import ExperimentTracking from '~/experimentation/experiment_tracking';
 import { BV_SHOW_MODAL, BV_HIDE_MODAL } from '~/lib/utils/constants';
 import { getParameterValues } from '~/lib/utils/url_utility';
@@ -21,6 +22,7 @@ import {
   INVITE_MEMBERS_FOR_TASK,
   MEMBER_MODAL_LABELS,
   LEARN_GITLAB,
+  INVITE_MEMBER_MODAL_TRACKING_CATEGORY,
 } from '../constants';
 import eventHub from '../event_hub';
 import { responseFromSuccess } from '../utils/response_message_parser';
@@ -50,6 +52,7 @@ export default {
     ModalConfetti,
     UserLimitNotification,
   },
+  mixins: [Tracking.mixin({ category: INVITE_MEMBER_MODAL_TRACKING_CATEGORY })],
   inject: ['newProjectPath'],
   props: {
     id: {
@@ -268,11 +271,12 @@ export default {
         usersToAddById.map((user) => user.id).join(','),
       ];
     },
-    openModal({ mode = 'default', source }) {
+    openModal({ mode = 'default', source = 'unknown' }) {
       this.mode = mode;
       this.source = source;
 
       this.$root.$emit(BV_SHOW_MODAL, this.modalId);
+      this.track('render', { label: this.source });
     },
     closeModal() {
       this.$root.$emit(BV_HIDE_MODAL, this.modalId);
@@ -344,6 +348,12 @@ export default {
       const tracking = new ExperimentTracking(INVITE_MEMBERS_FOR_TASK.name, { label, property });
       tracking.event(INVITE_MEMBERS_FOR_TASK.submit);
     },
+    onCancel() {
+      this.track('click_cancel', { label: this.source });
+    },
+    onClose() {
+      this.track('click_x', { label: this.source });
+    },
     resetFields() {
       this.clearValidation();
       this.isLoading = false;
@@ -356,6 +366,8 @@ export default {
       this.selectedTaskProject = this.projects.find((project) => project.id === projectId);
     },
     onInviteSuccess() {
+      this.track('invite_successful', { label: this.source });
+
       if (this.reloadPageOnSubmit) {
         reloadOnInvitationSuccess();
       } else {
@@ -406,12 +418,13 @@ export default {
     :form-group-description="formGroupDescription"
     :invalid-feedback-message="invalidFeedbackMessage"
     :is-loading="isLoading"
-    :is-celebration="isCelebration"
     :new-users-to-invite="newUsersToInvite"
     :root-group-id="rootId"
     :users-limit-dataset="usersLimitDataset"
     :active-trial-dataset="activeTrialDataset"
     :full-path="fullPath"
+    @close="onClose"
+    @cancel="onCancel"
     @reset="resetFields"
     @submit="sendInvite"
     @access-level="onAccessLevelUpdate"

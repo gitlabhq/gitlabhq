@@ -2,6 +2,7 @@ import { GlLink, GlModal, GlSprintf, GlFormGroup, GlCollapse, GlIcon } from '@gi
 import MockAdapter from 'axios-mock-adapter';
 import { nextTick } from 'vue';
 import { stubComponent } from 'helpers/stub_component';
+import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import Api from '~/api';
@@ -20,6 +21,8 @@ import {
   LEARN_GITLAB,
   EXPANDED_ERRORS,
   EMPTY_INVITES_ALERT_TEXT,
+  ON_CELEBRATION_TRACK_LABEL,
+  INVITE_MEMBER_MODAL_TRACKING_CATEGORY,
 } from '~/invite_members/constants';
 import eventHub from '~/invite_members/event_hub';
 import ContentTransition from '~/vue_shared/components/content_transition.vue';
@@ -58,6 +61,13 @@ jest.mock('~/lib/utils/url_utility', () => ({
 describe('InviteMembersModal', () => {
   let wrapper;
   let mock;
+  let trackingSpy;
+
+  const expectTracking = (
+    action,
+    label = undefined,
+    category = INVITE_MEMBER_MODAL_TRACKING_CATEGORY,
+  ) => expect(trackingSpy).toHaveBeenCalledWith(category, action, { label, category });
 
   const createComponent = (props = {}, stubs = {}) => {
     wrapper = shallowMountExtended(InviteMembersModal, {
@@ -138,7 +148,7 @@ describe('InviteMembersModal', () => {
   const findProjectSelect = () => wrapper.findByTestId('invite-members-modal-project-select');
   const findNoProjectsAlert = () => wrapper.findByTestId('invite-members-modal-no-projects-alert');
   const findCelebrationEmoji = () => wrapper.findComponent(GlEmoji);
-  const triggerOpenModal = async ({ mode = 'default', source }) => {
+  const triggerOpenModal = async ({ mode = 'default', source } = {}) => {
     eventHub.$emit('openModal', { mode, source });
     await nextTick();
   };
@@ -300,7 +310,7 @@ describe('InviteMembersModal', () => {
     });
   });
 
-  describe('displaying the correct introText and form group description', () => {
+  describe('rendering with tracking considerations', () => {
     describe('when inviting to a project', () => {
       describe('when inviting members', () => {
         beforeEach(() => {
@@ -327,7 +337,7 @@ describe('InviteMembersModal', () => {
       describe('when inviting members with celebration', () => {
         beforeEach(async () => {
           createInviteMembersToProjectWrapper();
-          await triggerOpenModal({ mode: 'celebrate' });
+          await triggerOpenModal({ mode: 'celebrate', source: ON_CELEBRATION_TRACK_LABEL });
         });
 
         it('renders the modal with confetti', () => {
@@ -353,6 +363,26 @@ describe('InviteMembersModal', () => {
             expect(membersFormGroupDescription()).toContain(MEMBERS_PLACEHOLDER);
           });
         });
+
+        describe('tracking', () => {
+          it('tracks actions', async () => {
+            trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
+
+            const mockEvent = { preventDefault: jest.fn() };
+
+            await triggerOpenModal({ mode: 'celebrate', source: ON_CELEBRATION_TRACK_LABEL });
+
+            expectTracking('render', ON_CELEBRATION_TRACK_LABEL);
+
+            findModal().vm.$emit('cancel', mockEvent);
+            expectTracking('click_cancel', ON_CELEBRATION_TRACK_LABEL);
+
+            findModal().vm.$emit('close');
+            expectTracking('click_x', ON_CELEBRATION_TRACK_LABEL);
+
+            unmockTracking();
+          });
+        });
       });
     });
 
@@ -368,6 +398,32 @@ describe('InviteMembersModal', () => {
           createInviteMembersToGroupWrapper({ GlFormGroup });
           expect(membersFormGroupDescription()).toContain(MEMBERS_PLACEHOLDER);
         });
+      });
+    });
+
+    describe('tracking', () => {
+      it.each`
+        desc         | source                           | label
+        ${'unknown'} | ${{}}                            | ${'unknown'}
+        ${'known'}   | ${{ source: '_invite_source_' }} | ${'_invite_source_'}
+      `('tracks actions with $desc source', async ({ source, label }) => {
+        createInviteMembersToProjectWrapper();
+
+        trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
+
+        const mockEvent = { preventDefault: jest.fn() };
+
+        await triggerOpenModal(source);
+
+        expectTracking('render', label);
+
+        findModal().vm.$emit('cancel', mockEvent);
+        expectTracking('click_cancel', label);
+
+        findModal().vm.$emit('close');
+        expectTracking('click_x', label);
+
+        unmockTracking();
       });
     });
   });
@@ -634,6 +690,7 @@ describe('InviteMembersModal', () => {
           createComponent();
           await triggerMembersTokenSelect([user3]);
 
+          trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
           wrapper.vm.$toast = { show: jest.fn() };
           jest.spyOn(Api, 'inviteGroupMembers').mockResolvedValue({ data: postData });
         });
@@ -851,17 +908,23 @@ describe('InviteMembersModal', () => {
           createComponent();
           await triggerMembersTokenSelect([user1, user3]);
 
+          trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
           wrapper.vm.$toast = { show: jest.fn() };
           jest.spyOn(Api, 'inviteGroupMembers').mockResolvedValue({ data: postData });
         });
 
         describe('when triggered from regular mounting', () => {
-          beforeEach(() => {
+          beforeEach(async () => {
+            await triggerOpenModal({ source: '_invite_source_' });
+
             clickInviteButton();
           });
 
-          it('calls Api inviteGroupMembers with the correct params', () => {
-            expect(Api.inviteGroupMembers).toHaveBeenCalledWith(propsData.id, postData);
+          it('calls Api inviteGroupMembers with the correct params and invite source', () => {
+            expect(Api.inviteGroupMembers).toHaveBeenCalledWith(propsData.id, {
+              ...postData,
+              invite_source: '_invite_source_',
+            });
           });
 
           it('displays the successful toastMessage', () => {
@@ -875,17 +938,20 @@ describe('InviteMembersModal', () => {
           it('does not call reloadOnInvitationSuccess', () => {
             expect(reloadOnInvitationSuccess).not.toHaveBeenCalled();
           });
+
+          it('tracks successful invite when source is known', () => {
+            expectTracking('invite_successful', '_invite_source_');
+
+            unmockTracking();
+          });
         });
 
-        it('calls Apis with the invite source passed through to openModal', async () => {
-          await triggerOpenModal({ source: '_invite_source_' });
+        it('calls Apis without the invite source passed through to openModal', async () => {
+          await triggerOpenModal();
 
           clickInviteButton();
 
-          expect(Api.inviteGroupMembers).toHaveBeenCalledWith(propsData.id, {
-            ...postData,
-            invite_source: '_invite_source_',
-          });
+          expect(Api.inviteGroupMembers).toHaveBeenCalledWith(propsData.id, postData);
         });
       });
     });

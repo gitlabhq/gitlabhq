@@ -4798,7 +4798,9 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
     end
 
     context 'with deploy token users' do
-      let_it_be(:private_project) { create(:project, :private) }
+      let_it_be(:private_project) { create(:project, :private, description: 'Match') }
+      let_it_be(:private_project2) { create(:project, :private, description: 'Match') }
+      let_it_be(:private_project3) { create(:project, :private, description: 'Mismatch') }
 
       subject { described_class.all.public_or_visible_to_user(user) }
 
@@ -4808,10 +4810,16 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
         it { is_expected.to eq [] }
       end
 
-      context 'deploy token user with project' do
-        let_it_be(:user) { create(:deploy_token, projects: [private_project]) }
+      context 'deploy token user with projects' do
+        let_it_be(:user) { create(:deploy_token, projects: [private_project, private_project2, private_project3]) }
 
-        it { is_expected.to include(private_project) }
+        it { is_expected.to contain_exactly(private_project, private_project2, private_project3) }
+
+        context 'with chained filter' do
+          subject { described_class.where(description: 'Match').public_or_visible_to_user(user) }
+
+          it { is_expected.to contain_exactly(private_project, private_project2) }
+        end
       end
     end
   end

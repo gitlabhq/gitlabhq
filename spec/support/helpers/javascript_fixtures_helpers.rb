@@ -24,7 +24,9 @@ module JavaScriptFixturesHelpers
 
       # pick an arbitrary date from the past, so tests are not time dependent
       # Also see spec/frontend/__helpers__/fake_date/jest.js
-      travel_to(Time.utc(2015, 7, 3, 10)) { example.run }
+      travel_to Time.utc(2015, 7, 3, 10)
+      example.run
+      travel_back
 
       raise NoMethodError.new('You need to set `response` for the fixture generator! This will automatically happen with `type: :controller` or `type: :request`.', 'response') unless respond_to?(:response)
 

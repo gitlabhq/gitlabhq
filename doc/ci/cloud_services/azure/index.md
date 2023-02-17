@@ -12,6 +12,9 @@ to retrieve temporary credentials from Azure without needing to store secrets.
 To get started, configure OpenID Connect (OIDC) for identity federation between GitLab and Azure.
 For more information on using OIDC with GitLab, read [Connect to cloud services](../index.md).
 
+Azure [does not support wildcard matching for subjects of a conditional role](https://gitlab.com/gitlab-org/gitlab/-/issues/346737#note_836584745).
+A separate credential configuration must be created for each branch that needs to access Azure.
+
 Prerequisites:
 
 - Access to an existing Azure Subscription with `Owner` access level.

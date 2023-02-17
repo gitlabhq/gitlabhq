@@ -97,7 +97,10 @@ module QA
           end
         end
 
-        it 'publishes a nuget package at the project endpoint and installs it from the group endpoint', testcase: params[:testcase] do
+        it 'publishes a nuget package at the project endpoint and installs it from the group endpoint', testcase: params[:testcase], quarantine: {
+          type: :stale,
+          issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/391648'
+        } do
           Flow::Login.sign_in
 
           Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2) do
@@ -133,14 +136,14 @@ module QA
                   {
                       file_path: 'otherdotnet.csproj',
                       content: <<~EOF
-                        <Project Sdk="Microsoft.NET.Sdk">
+                      <Project Sdk="Microsoft.NET.Sdk">
 
-                          <PropertyGroup>
-                            <OutputType>Exe</OutputType>
-                            <TargetFramework>net7.0</TargetFramework>
-                          </PropertyGroup>
+                        <PropertyGroup>
+                          <OutputType>Exe</OutputType>
+                          <TargetFramework>net7.0</TargetFramework>
+                        </PropertyGroup>
 
-                        </Project>
+                      </Project>
                       EOF
                   }
                 ]

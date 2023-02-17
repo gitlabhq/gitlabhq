@@ -447,7 +447,7 @@ function UsersSelect(currentUser, els, options = {}) {
       hidden() {
         if ($dropdown.hasClass('js-multiselect')) {
           if ($dropdown.hasClass(elsClassName)) {
-            if (window.gon?.features?.realtimeReviewers) {
+            if (!$dropdown.closest('.merge-request-form').length) {
               $dropdown.data('deprecatedJQueryDropdown').clearMenu();
               $dropdown.closest('.selectbox').children('input[type="hidden"]').remove();
             }
