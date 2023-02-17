@@ -66,10 +66,20 @@ module NavHelper
   end
 
   def show_super_sidebar?
-    Feature.enabled?(:super_sidebar_nav, current_user) && current_user&.use_new_navigation
+    Feature.enabled?(:super_sidebar_nav, current_user) && current_user&.use_new_navigation && super_sidebar_supported?
   end
 
   private
+
+  # This is a temporary measure until we support all other existing sidebars:
+  # https://gitlab.com/gitlab-org/gitlab/-/issues/391500
+  # https://gitlab.com/gitlab-org/gitlab/-/issues/391501
+  # https://gitlab.com/gitlab-org/gitlab/-/issues/391502
+  def super_sidebar_supported?
+    return true if @nav.nil?
+
+    %w(your_work project group).include?(@nav)
+  end
 
   def get_header_links
     links = if current_user

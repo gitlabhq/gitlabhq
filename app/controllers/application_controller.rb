@@ -260,10 +260,7 @@ class ApplicationController < ActionController::Base
 
     respond_to do |format|
       format.html do
-        render template,
-               layout: "errors",
-               status: status,
-               locals: { message: message }
+        render template, layout: "errors", status: status, locals: { message: message }
       end
       format.any { head status }
     end

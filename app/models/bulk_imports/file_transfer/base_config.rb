@@ -51,7 +51,8 @@ module BulkImports
       end
 
       def portable_relations_tree
-        @portable_relations_tree ||= attributes_finder.find_relations_tree(portable_class_sym).deep_stringify_keys
+        @portable_relations_tree ||= attributes_finder
+          .find_relations_tree(portable_class_sym, include_import_only_tree: true).deep_stringify_keys
       end
 
       private

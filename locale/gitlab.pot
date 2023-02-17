@@ -11221,10 +11221,19 @@ msgstr ""
 msgid "Contribution Analytics"
 msgstr ""
 
+msgid "ContributionAnalytics|%{createdCount} created, %{closedCount} closed."
+msgstr ""
+
+msgid "ContributionAnalytics|%{createdCount} created, %{mergedCount} merged, %{closedCount} closed."
+msgstr ""
+
 msgid "ContributionAnalytics|%{created} created, %{closed} closed."
 msgstr ""
 
 msgid "ContributionAnalytics|%{created} created, %{merged} merged, %{closed} closed."
+msgstr ""
+
+msgid "ContributionAnalytics|%{pushCount} by %{authorCount}."
 msgstr ""
 
 msgid "ContributionAnalytics|%{pushes}, more than %{commits} by %{contributors}."
@@ -11240,6 +11249,9 @@ msgid "ContributionAnalytics|Closed issues"
 msgstr ""
 
 msgid "ContributionAnalytics|Contribution analytics for issues, merge requests and push events since %{start_date}"
+msgstr ""
+
+msgid "ContributionAnalytics|Contributions per group member"
 msgstr ""
 
 msgid "ContributionAnalytics|Failed to load the contribution stats"
@@ -11287,7 +11299,10 @@ msgstr ""
 msgid "ContributionAnalytics|Pushed"
 msgstr ""
 
-msgid "ContributionAnalytics|The given date range is larger than 31 days"
+msgid "ContributionAnalytics|The given date range is larger than %{number_of_days} days"
+msgstr ""
+
+msgid "ContributionAnalytics|The given date range is larger than 93 days"
 msgstr ""
 
 msgid "ContributionAnalytics|The to date is earlier than the given from date"
@@ -25456,9 +25471,6 @@ msgid "List available repositories"
 msgstr ""
 
 msgid "List of all commits"
-msgstr ""
-
-msgid "List of all merge commits"
 msgstr ""
 
 msgid "List of suitable GCP locations"

@@ -585,15 +585,13 @@ RSpec.describe Projects::IssuesController, feature_category: :team_planning do
     end
 
     def reorder_issue(issue, move_after_id: nil, move_before_id: nil)
-      put :reorder,
-           params: {
-               namespace_id: project.namespace.to_param,
-               project_id: project,
-               id: issue.iid,
-               move_after_id: move_after_id,
-               move_before_id: move_before_id
-           },
-           format: :json
+      put :reorder, params: {
+        namespace_id: project.namespace.to_param,
+        project_id: project,
+        id: issue.iid,
+        move_after_id: move_after_id,
+        move_before_id: move_before_id
+      }, format: :json
     end
   end
 
@@ -601,14 +599,12 @@ RSpec.describe Projects::IssuesController, feature_category: :team_planning do
     let(:issue_params) { { title: 'New title' } }
 
     subject do
-      put :update,
-        params: {
-          namespace_id: project.namespace,
-          project_id: project,
-          id: issue.to_param,
-          issue: issue_params
-        },
-        format: :json
+      put :update, params: {
+        namespace_id: project.namespace,
+        project_id: project,
+        id: issue.to_param,
+        issue: issue_params
+      }, format: :json
     end
 
     before do
@@ -1927,12 +1923,11 @@ RSpec.describe Projects::IssuesController, feature_category: :team_planning do
       end
 
       it 'redirects from an old issue/designs correctly' do
-        get :designs,
-            params: {
-              namespace_id: project.namespace,
-              project_id: project,
-              id: issue
-            }
+        get :designs, params: {
+          namespace_id: project.namespace,
+          project_id: project,
+          id: issue
+        }
 
         expect(response).to redirect_to(designs_project_issue_path(new_project, issue))
         expect(response).to have_gitlab_http_status(:moved_permanently)

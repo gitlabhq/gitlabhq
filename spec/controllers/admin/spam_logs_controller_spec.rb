@@ -33,10 +33,7 @@ RSpec.describe Admin::SpamLogsController do
       end.not_to change { SpamLog.count }
 
       expect(response).to have_gitlab_http_status(:found)
-      expect(
-        Users::GhostUserMigration.where(user: user,
-                                        initiator_user: admin)
-      ).to be_exists
+      expect(Users::GhostUserMigration.where(user: user, initiator_user: admin)).to be_exists
       expect(flash[:notice]).to eq("User #{user.username} was successfully removed.")
     end
   end

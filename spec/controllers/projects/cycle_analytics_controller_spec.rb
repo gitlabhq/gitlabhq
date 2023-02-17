@@ -15,11 +15,7 @@ RSpec.describe Projects::CycleAnalyticsController do
     it 'increases the counter' do
       expect(Gitlab::UsageDataCounters::CycleAnalyticsCounter).to receive(:count).with(:views)
 
-      get(:show,
-          params: {
-            namespace_id: project.namespace,
-            project_id: project
-          })
+      get :show, params: { namespace_id: project.namespace, project_id: project }
 
       expect(response).to be_successful
     end

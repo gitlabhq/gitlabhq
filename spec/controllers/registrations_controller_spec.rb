@@ -756,8 +756,7 @@ RSpec.describe RegistrationsController, feature_category: :user_profile do
         m.call(*args)
 
         expect(Gitlab::ApplicationContext.current)
-          .to include('meta.user' => user.username,
-                      'meta.caller_id' => 'RegistrationsController#destroy')
+          .to include('meta.user' => user.username, 'meta.caller_id' => 'RegistrationsController#destroy')
       end
 
       post :destroy

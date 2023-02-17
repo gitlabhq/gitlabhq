@@ -484,10 +484,7 @@ RSpec.describe Projects::NotesController, type: :controller, feature_category: :
         let(:commit) { create(:commit, project: project) }
 
         let(:existing_comment) do
-          create(:note_on_commit,
-                 note: 'first',
-                 project: project,
-                 commit_id: merge_request.commit_shas.first)
+          create(:note_on_commit, note: 'first', project: project, commit_id: merge_request.commit_shas.first)
         end
 
         let(:discussion) { existing_comment.discussion }

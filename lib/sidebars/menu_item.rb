@@ -30,6 +30,28 @@ module Sidebars
       true
     end
 
+    def serialize_for_super_sidebar(parent_id = nil)
+      {
+        parent_id: parent_id,
+        title: title,
+        icon: sprite_icon,
+        link: link,
+        active_routes: active_routes
+        # Check whether support is needed for the following properties,
+        # in order to get feature parity with the HAML renderer
+        # https://gitlab.com/gitlab-org/gitlab/-/issues/391864
+        #
+        # container_html_options
+        # hint_html_options
+        # nav_link_html_options
+        #
+        # item_id
+        #
+        # has_pill
+        # pill_count
+      }
+    end
+
     def nav_link_html_options
       {
         data: {

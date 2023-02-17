@@ -1338,7 +1338,6 @@ Updates to example must be made at:
 
    # Praefect Configuration
    praefect['enable'] = true
-   praefect['listen_addr'] = '0.0.0.0:2305'
 
    # Prevent database migrations from running on upgrade automatically
    praefect['auto_migrate'] = false
@@ -1347,51 +1346,69 @@ Updates to example must be made at:
    # Configure the Consul agent
    consul['enable'] = true
    ## Enable service discovery for Prometheus
-   consul['monitoring_service_discovery'] =  true
+   consul['monitoring_service_discovery'] = true
 
    # START user configuration
    # Please set the real values as explained in Required Information section
    #
 
-   # Praefect External Token
-   # This is needed by clients outside the cluster (like GitLab Shell) to communicate with the Praefect cluster
-   praefect['auth_token'] = '<praefect_external_token>'
-
-   # Praefect Database Settings
-   praefect['database_host'] = '10.6.0.141'
-   praefect['database_port'] = 5432
-   # `no_proxy` settings must always be a direct connection for caching
-   praefect['database_direct_host'] = '10.6.0.141'
-   praefect['database_direct_port'] = 5432
-   praefect['database_dbname'] = 'praefect_production'
-   praefect['database_user'] = 'praefect'
-   praefect['database_password'] = '<praefect_postgresql_password>'
-
-   # Praefect Virtual Storage config
-   # Name of storage hash must match storage name in git_data_dirs on GitLab
-   # server ('praefect') and in git_data_dirs on Gitaly nodes ('gitaly-1')
-   praefect['virtual_storages'] = {
-     'default' => {
-       'nodes' => {
-         'gitaly-1' => {
-           'address' => 'tcp://10.6.0.91:8075',
-           'token'   => '<praefect_internal_token>'
+   praefect['configuration'] = {
+      # ...
+      listen_addr: '0.0.0.0:2305',
+      auth: {
+        # ...
+        #
+        # Praefect External Token
+        # This is needed by clients outside the cluster (like GitLab Shell) to communicate with the Praefect cluster
+        token: '<praefect_external_token>',
+      },
+      # Praefect Database Settings
+      database: {
+        # ...
+        host: '10.6.0.141',
+        port: 5432,
+        # `no_proxy` settings must always be a direct connection for caching
+        session_pooled: {
+           # ...
+           host: '10.6.0.141',
+           port: 5432,
+           dbname: 'praefect_production',
+           user: 'praefect',
+           password: '<praefect_postgresql_password>',
+        },
+      },
+      # Praefect Virtual Storage config
+      # Name of storage hash must match storage name in git_data_dirs on GitLab
+      # server ('praefect') and in git_data_dirs on Gitaly nodes ('gitaly-1')
+      virtual_storage: [
+         {
+            # ...
+            name: 'default',
+            node: [
+               {
+                  storage: 'gitaly-1',
+                  address: 'tcp://10.6.0.91:8075',
+                  token: '<praefect_internal_token>'
+               },
+               {
+                  storage: 'gitaly-2',
+                  address: 'tcp://10.6.0.92:8075',
+                  token: '<praefect_internal_token>'
+               },
+               {
+                  storage: 'gitaly-3',
+                  address: 'tcp://10.6.0.93:8075',
+                  token: '<praefect_internal_token>'
+               },
+            ],
          },
-         'gitaly-2' => {
-           'address' => 'tcp://10.6.0.92:8075',
-           'token'   => '<praefect_internal_token>'
-         },
-         'gitaly-3' => {
-           'address' => 'tcp://10.6.0.93:8075',
-           'token'   => '<praefect_internal_token>'
-         },
-       }
-     }
+      ],
+      # Set the network address Praefect will listen on for monitoring
+      prometheus_listen_addr: '0.0.0.0:9652',
    }
 
-   # Set the network addresses that the exporters will listen on for monitoring
+   # Set the network address the node exporter will listen on for monitoring
    node_exporter['listen_address'] = '0.0.0.0:9100'
-   praefect['prometheus_listen_addr'] = '0.0.0.0:9652'
 
    ## The IPs of the Consul server nodes
    ## You can also use FQDNs and intermix them with IPs
@@ -1595,7 +1612,7 @@ Note the following:
 - You can configure Praefect servers with both an unencrypted listening address
   `listen_addr` and an encrypted listening address `tls_listen_addr` at the same time.
   This allows you to do a gradual transition from unencrypted to encrypted traffic, if
-  necessary. To disable the unencrypted listener, set `praefect['listen_addr'] = nil`.
+  necessary. To disable the unencrypted listener, set `praefect['configuration'][:listen_addr] = nil`.
 - The Internal Load Balancer will also access to the certificates and need to be configured
   to allow for TLS passthrough.
   Refer to the load balancers documentation on how to configure this.
@@ -1617,9 +1634,15 @@ To configure Praefect with TLS:
 1. Edit `/etc/gitlab/gitlab.rb` and add:
 
    ```ruby
-   praefect['tls_listen_addr'] = "0.0.0.0:3305"
-   praefect['certificate_path'] = "/etc/gitlab/ssl/cert.pem"
-   praefect['key_path'] = "/etc/gitlab/ssl/key.pem"
+   praefect['configuration'] = {
+      # ...
+      tls_listen_addr: '0.0.0.0:3305',
+      tls: {
+         # ...
+         certificate_path: '/etc/gitlab/ssl/cert.pem',
+         key_path: '/etc/gitlab/ssl/key.pem',
+      },
+   }
    ```
 
 1. Save the file and [reconfigure](../restart_gitlab.md#omnibus-gitlab-reconfigure).

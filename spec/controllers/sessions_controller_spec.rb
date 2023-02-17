@@ -375,8 +375,7 @@ RSpec.describe SessionsController do
 
           context 'when OTP is valid for another user' do
             it 'does not authenticate' do
-              authenticate_2fa(login: another_user.username,
-                               otp_attempt: another_user.current_otp)
+              authenticate_2fa(login: another_user.username, otp_attempt: another_user.current_otp)
 
               expect(subject.current_user).not_to eq another_user
             end
@@ -384,8 +383,7 @@ RSpec.describe SessionsController do
 
           context 'when OTP is invalid for another user' do
             it 'does not authenticate' do
-              authenticate_2fa(login: another_user.username,
-                               otp_attempt: 'invalid')
+              authenticate_2fa(login: another_user.username, otp_attempt: 'invalid')
 
               expect(subject.current_user).not_to eq another_user
             end
@@ -567,8 +565,7 @@ RSpec.describe SessionsController do
       it 'sets the username and caller_id in the context' do
         expect(controller).to receive(:destroy).and_wrap_original do |m, *args|
           expect(Gitlab::ApplicationContext.current)
-            .to include('meta.user' => user.username,
-                        'meta.caller_id' => 'SessionsController#destroy')
+            .to include('meta.user' => user.username, 'meta.caller_id' => 'SessionsController#destroy')
 
           m.call(*args)
         end
@@ -607,8 +604,7 @@ RSpec.describe SessionsController do
           m.call(*args)
         end
 
-        post(:create,
-             params: { user: { login: user.username, password: user.password.succ } })
+        post :create, params: { user: { login: user.username, password: user.password.succ } }
       end
     end
   end

@@ -113,7 +113,7 @@ module Gitlab
           @relations ||=
             @reader
               .attributes_finder
-              .find_relations_tree(importable_class_sym)
+              .find_relations_tree(importable_class_sym, include_import_only_tree: true)
               .deep_stringify_keys
         end
 

@@ -42,6 +42,18 @@ RSpec.describe BulkImports::FileTransfer::ProjectConfig do
     it 'returns relation tree of a top level relation' do
       expect(subject.top_relation_tree('labels')).to eq('priorities' => {})
     end
+
+    it 'returns relation tree with merged with deprecated tree' do
+      expect(subject.top_relation_tree('ci_pipelines')).to match(
+        a_hash_including(
+          {
+            'external_pull_request' => {},
+            'merge_request' => {},
+            'stages' => { 'bridges' => {}, 'builds' => {}, 'generic_commit_statuses' => {}, 'statuses' => {} }
+          }
+        )
+      )
+    end
   end
 
   describe '#relation_excluded_keys' do

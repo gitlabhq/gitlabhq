@@ -116,8 +116,7 @@ RSpec.describe Import::FogbugzController do
 
   describe 'GET status' do
     let(:repo) do
-      instance_double(Gitlab::FogbugzImport::Repository,
-                      id: 'demo', name: 'vim', safe_name: 'vim', path: 'vim')
+      instance_double(Gitlab::FogbugzImport::Repository, id: 'demo', name: 'vim', safe_name: 'vim', path: 'vim')
     end
 
     it 'redirects to new page form when client is invalid' do

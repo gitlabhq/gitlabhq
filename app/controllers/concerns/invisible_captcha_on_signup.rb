@@ -26,15 +26,17 @@ module InvisibleCaptchaOnSignup
   end
 
   def invisible_captcha_honeypot_counter
-    @invisible_captcha_honeypot_counter ||=
-      Gitlab::Metrics.counter(:bot_blocked_by_invisible_captcha_honeypot,
-                              'Counter of blocked sign up attempts with filled honeypot')
+    @invisible_captcha_honeypot_counter ||= Gitlab::Metrics.counter(
+      :bot_blocked_by_invisible_captcha_honeypot,
+      'Counter of blocked sign up attempts with filled honeypot'
+    )
   end
 
   def invisible_captcha_timestamp_counter
-    @invisible_captcha_timestamp_counter ||=
-      Gitlab::Metrics.counter(:bot_blocked_by_invisible_captcha_timestamp,
-                              'Counter of blocked sign up attempts with invalid timestamp')
+    @invisible_captcha_timestamp_counter ||= Gitlab::Metrics.counter(
+      :bot_blocked_by_invisible_captcha_timestamp,
+      'Counter of blocked sign up attempts with invalid timestamp'
+    )
   end
 
   def log_request(message)

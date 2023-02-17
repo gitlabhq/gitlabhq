@@ -30,17 +30,8 @@ class Projects::EnvironmentsController < Projects::ApplicationController
   before_action :expire_etag_cache, only: [:index], unless: -> { request.format.json? }
   after_action :expire_etag_cache, only: [:cancel_auto_stop]
 
-  track_event :index,
-              :folder,
-              :show,
-              :new,
-              :edit,
-              :create,
-              :update,
-              :stop,
-              :cancel_auto_stop,
-              :terminal,
-              name: 'users_visiting_environments_pages'
+  track_event :index, :folder, :show, :new, :edit, :create, :update, :stop, :cancel_auto_stop, :terminal,
+    name: 'users_visiting_environments_pages'
 
   feature_category :continuous_delivery
   urgency :low
@@ -255,11 +246,7 @@ class Projects::EnvironmentsController < Projects::ApplicationController
   def search_environments(type: nil)
     search = params[:search] if params[:search] && params[:search].length >= MIN_SEARCH_LENGTH
 
-    @search_environments ||=
-      Environments::EnvironmentsFinder.new(project,
-                                           current_user,
-                                           type: type,
-                                           search: search).execute
+    @search_environments ||= Environments::EnvironmentsFinder.new(project, current_user, type: type, search: search).execute
   end
 
   def metrics_params

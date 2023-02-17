@@ -383,10 +383,12 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
             @merge_request.merge_request_reviewers.map(&:cache_key)
           ]
 
-          render_cached(@merge_request,
-                        with: serializer,
-                        cache_context: ->(_) { [Digest::SHA256.hexdigest(cache_context.to_s)] },
-                        serializer: params[:serializer])
+          render_cached(
+            @merge_request,
+            with: serializer,
+            cache_context: ->(_) { [Digest::SHA256.hexdigest(cache_context.to_s)] },
+            serializer: params[:serializer]
+          )
         else
           render json: serializer.represent(@merge_request, serializer: params[:serializer])
         end
@@ -485,8 +487,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
         AutoMergeService.new(project, current_user, merge_params).update(merge_request)
       else
         AutoMergeService.new(project, current_user, merge_params)
-          .execute(merge_request,
-                   params[:auto_merge_strategy] || AutoMergeService::STRATEGY_MERGE_WHEN_PIPELINE_SUCCEEDS)
+          .execute(merge_request, params[:auto_merge_strategy] || AutoMergeService::STRATEGY_MERGE_WHEN_PIPELINE_SUCCEEDS)
       end
     else
       @merge_request.merge_async(current_user.id, merge_params)

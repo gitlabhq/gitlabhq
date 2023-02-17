@@ -98,15 +98,15 @@ class Projects::PipelinesController < Projects::ApplicationController
       end
       format.json do
         if service_response.success?
-          render json: PipelineSerializer
-                         .new(project: project, current_user: current_user)
-                         .represent(@pipeline),
-                 status: :created
+          render json: PipelineSerializer.new(project: project, current_user: current_user).represent(@pipeline),
+            status: :created
         else
-          render json: { errors: @pipeline.error_messages.map(&:content),
-                         warnings: @pipeline.warning_messages(limit: ::Gitlab::Ci::Warnings::MAX_LIMIT).map(&:content),
-                         total_warnings: @pipeline.warning_messages.length },
-                 status: :bad_request
+          bad_request_json = {
+            errors: @pipeline.error_messages.map(&:content),
+            warnings: @pipeline.warning_messages(limit: ::Gitlab::Ci::Warnings::MAX_LIMIT).map(&:content),
+            total_warnings: @pipeline.warning_messages.length
+          }
+          render json: bad_request_json, status: :bad_request
         end
       end
     end

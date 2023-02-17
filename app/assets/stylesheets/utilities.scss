@@ -257,6 +257,10 @@ to @gitlab/ui by https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1709
   gap: $gl-spacing-scale-2;
 }
 
+.gl-bg-t-gray-a-08 {
+  background-color: $t-gray-a-08;
+}
+
 .gl-hover-bg-t-gray-a-08:hover {
   background-color: $t-gray-a-08;
 }

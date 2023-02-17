@@ -58,6 +58,11 @@ export const mergeRequestMenuGroup = [
 ];
 
 export const sidebarData = {
+  current_menu_items: [],
+  current_context_header: {
+    title: 'Your Work',
+    icon: 'work',
+  },
   name: 'Administrator',
   username: 'root',
   avatar_url: 'path/to/img_administrator',

@@ -514,9 +514,9 @@ Here are common errors and potential causes:
 
 - 500 response code
   - `ActionView::Template::Error (7:permission denied)`
-    - `praefect['auth_token']` and `gitlab_rails['gitaly_token']` do not match on the GitLab server.
+    - `praefect['configuration'][:auth][:token]` and `gitlab_rails['gitaly_token']` do not match on the GitLab server.
   - `Unable to save project. Error: 7:permission denied`
-    - Secret token in `praefect['storage_nodes']` on GitLab server does not match the
+    - Secret token in `praefect['configuration'][:virtual_storage]` on GitLab server does not match the
       value in `gitaly['auth_token']` on one or more Gitaly servers.
 - 503 response code
   - `GRPC::Unavailable (14:failed to connect to all addresses)`
@@ -530,7 +530,7 @@ Here are common errors and potential causes:
 Some common reasons for the Praefect database to experience elevated CPU usage include:
 
 - Prometheus metrics scrapes [running an expensive query](https://gitlab.com/gitlab-org/gitaly/-/issues/3796). If you have GitLab 14.2
-  or above, set `praefect['separate_database_metrics'] = true` in `gitlab.rb`.
+  or above, set `praefect['configuration'][:prometheus_exclude_database_from_default_metrics] = true` in `gitlab.rb`.
 - [Read distribution caching](praefect.md#reads-distribution-caching) is disabled, increasing the number of queries made to the
   database when user traffic is high. Ensure read distribution caching is enabled.
 
@@ -650,7 +650,7 @@ If the supplied value for `-virtual-storage` is incorrect, the command returns t
 get metadata: rpc error: code = NotFound desc = repository not found
 ```
 
-The documented examples specify `-virtual-storage default`. Check the Praefect server setting `praefect['virtual_storages']` in `/etc/gitlab/gitlab.rb`.
+The documented examples specify `-virtual-storage default`. Check the Praefect server setting `praefect['configuration'][:virtual_storage]` in `/etc/gitlab/gitlab.rb`.
 
 ### Check that repositories are in sync
 

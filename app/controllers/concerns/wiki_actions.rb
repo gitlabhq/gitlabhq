@@ -142,8 +142,7 @@ module WikiActions
   # rubocop:disable Gitlab/ModuleWithInstanceVariables
   def history
     if page
-      @commits = Kaminari.paginate_array(page.versions(page: params[:page].to_i),
-                                         total_count: page.count_versions)
+      @commits = Kaminari.paginate_array(page.versions(page: params[:page].to_i), total_count: page.count_versions)
         .page(params[:page])
 
       render 'shared/wikis/history'
@@ -178,8 +177,7 @@ module WikiActions
     if response.success?
       flash[:toast] = _("Wiki page was successfully deleted.")
 
-      redirect_to wiki_path(wiki),
-      status: :found
+      redirect_to wiki_path(wiki), status: :found
     else
       @error = response.message
       render 'shared/wikis/edit'

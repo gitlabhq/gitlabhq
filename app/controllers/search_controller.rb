@@ -11,10 +11,10 @@ class SearchController < ApplicationController
   CODE_SEARCH_LITERALS = %w[blob: extension: path: filename:].freeze
 
   track_custom_event :show,
-              name: 'i_search_total',
-              label: 'redis_hll_counters.search.search_total_unique_counts_monthly',
-              action: 'executed',
-              destinations: [:redis_hll, :snowplow]
+    name: 'i_search_total',
+    label: 'redis_hll_counters.search.search_total_unique_counts_monthly',
+    action: 'executed',
+    destinations: [:redis_hll, :snowplow]
 
   def self.search_rate_limited_endpoints
     %i[show count autocomplete]

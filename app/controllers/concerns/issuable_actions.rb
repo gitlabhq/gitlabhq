@@ -175,10 +175,7 @@ module IssuableActions
   end
 
   def render_cached_discussions(discussions, serializer, cache_context)
-    render_cached(discussions,
-                  with: serializer,
-                  cache_context: ->(_) { cache_context },
-                  context: self)
+    render_cached(discussions, with: serializer, cache_context: ->(_) { cache_context }, context: self)
   end
 
   def notes_filter

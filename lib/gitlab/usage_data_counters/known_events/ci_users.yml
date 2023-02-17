@@ -2,9 +2,7 @@
   category: ci_users
   redis_slot: ci_users
   aggregation: weekly
-  feature_flag:
 - name: ci_users_executing_verify_environment_job
   category: ci_users
   redis_slot: ci_users
   aggregation: weekly
-  feature_flag:

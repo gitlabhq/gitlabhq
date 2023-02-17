@@ -528,7 +528,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, feature_category: :i
           it 'has the correct number of pipelines and statuses' do
             expect(@project.ci_pipelines.size).to eq(7)
 
-            @project.ci_pipelines.order(:id).zip([2, 0, 2, 2, 2, 2, 0])
+            @project.ci_pipelines.order(:id).zip([2, 0, 2, 3, 2, 2, 0])
               .each do |(pipeline, expected_status_size)|
               expect(pipeline.statuses.size).to eq(expected_status_size)
             end
@@ -548,8 +548,16 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, feature_category: :i
             expect(Ci::Stage.all).to all(have_attributes(pipeline_id: a_value > 0))
           end
 
-          it 'restores statuses' do
-            expect(CommitStatus.all.count).to be 10
+          it 'restores builds' do
+            expect(Ci::Build.all.count).to be 7
+          end
+
+          it 'restores bridges' do
+            expect(Ci::Bridge.all.count).to be 1
+          end
+
+          it 'restores generic commit statuses' do
+            expect(GenericCommitStatus.all.count).to be 1
           end
 
           it 'correctly restores association between a stage and a job' do

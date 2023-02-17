@@ -15,8 +15,8 @@ class Admin::SpamLogsController < Admin::ApplicationController
     if params[:remove_user]
       spam_log.remove_user(deleted_by: current_user)
       redirect_to admin_spam_logs_path,
-                  status: :found,
-                  notice: format(_('User %{username} was successfully removed.'), username: spam_log.user.username)
+        status: :found,
+        notice: format(_('User %{username} was successfully removed.'), username: spam_log.user.username)
     else
       spam_log.destroy
       head :ok

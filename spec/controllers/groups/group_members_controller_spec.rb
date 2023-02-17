@@ -489,13 +489,11 @@ RSpec.describe Groups::GroupMembersController do
 
     describe 'PUT #update' do
       it 'is successful' do
-        put :update,
-            params: {
-              group_member: { access_level: Gitlab::Access::GUEST },
-              group_id: group,
-              id: membership
-            },
-            format: :json
+        put :update, params: {
+          group_member: { access_level: Gitlab::Access::GUEST },
+          group_id: group,
+          id: membership
+        }, format: :json
 
         expect(response).to have_gitlab_http_status(:ok)
       end

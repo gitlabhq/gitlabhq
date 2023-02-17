@@ -18,11 +18,7 @@ RSpec.describe Projects::CommitsController, feature_category: :source_code_manag
     describe "GET commits_root" do
       context "no ref is provided" do
         it 'redirects to the default branch of the project' do
-          get(:commits_root,
-              params: {
-                namespace_id: project.namespace,
-                project_id: project
-              })
+          get :commits_root, params: { namespace_id: project.namespace, project_id: project }
 
           expect(response).to redirect_to project_commits_path(project)
         end
@@ -34,12 +30,7 @@ RSpec.describe Projects::CommitsController, feature_category: :source_code_manag
 
       context 'with file path' do
         before do
-          get(:show,
-              params: {
-                namespace_id: project.namespace,
-                project_id: project,
-                id: id
-              })
+          get :show, params: { namespace_id: project.namespace, project_id: project, id: id }
         end
 
         context "valid branch, valid file" do
@@ -78,13 +69,7 @@ RSpec.describe Projects::CommitsController, feature_category: :source_code_manag
             offset: 0
           ).and_call_original
 
-          get(:show,
-              params: {
-                namespace_id: project.namespace,
-                project_id: project,
-                id: id,
-                limit: "foo"
-            })
+          get :show, params: { namespace_id: project.namespace, project_id: project, id: id, limit: "foo" }
 
           expect(response).to be_successful
         end
@@ -98,12 +83,12 @@ RSpec.describe Projects::CommitsController, feature_category: :source_code_manag
               offset: 0
             ).and_call_original
 
-            get(:show, params: {
+            get :show, params: {
               namespace_id: project.namespace,
               project_id: project,
               id: id,
               limit: { 'broken' => 'value' }
-            })
+            }
 
             expect(response).to be_successful
           end
@@ -113,12 +98,7 @@ RSpec.describe Projects::CommitsController, feature_category: :source_code_manag
       context "when the ref name ends in .atom" do
         context "when the ref does not exist with the suffix" do
           before do
-            get(:show,
-                params: {
-                  namespace_id: project.namespace,
-                  project_id: project,
-                  id: "master.atom"
-                })
+            get :show, params: { namespace_id: project.namespace, project_id: project, id: "master.atom" }
           end
 
           it "renders as atom" do
@@ -138,12 +118,11 @@ RSpec.describe Projects::CommitsController, feature_category: :source_code_manag
             allow_any_instance_of(Repository).to receive(:commit).and_call_original
             allow_any_instance_of(Repository).to receive(:commit).with('master.atom').and_return(commit)
 
-            get(:show,
-                params: {
-                  namespace_id: project.namespace,
-                  project_id: project,
-                  id: "master.atom"
-                })
+            get :show, params: {
+              namespace_id: project.namespace,
+              project_id: project,
+              id: "master.atom"
+            }
           end
 
           it "renders as HTML" do
@@ -182,13 +161,11 @@ RSpec.describe Projects::CommitsController, feature_category: :source_code_manag
       before do
         expect(::Gitlab::GitalyClient).to receive(:allow_ref_name_caching).and_call_original unless id.include?(' ')
 
-        get(:signatures,
-            params: {
-              namespace_id: project.namespace,
-              project_id: project,
-              id: id
-            },
-            format: :json)
+        get :signatures, params: {
+          namespace_id: project.namespace,
+          project_id: project,
+          id: id
+        }, format: :json
       end
 
       context "valid branch" do

@@ -2,15 +2,22 @@
 
 require 'spec_helper'
 
-RSpec.describe Sidebars::Menu do
+RSpec.describe Sidebars::Menu, feature_category: :navigation do
   let(:menu) { described_class.new(context) }
-  let(:context) { Sidebars::Context.new(current_user: nil, container: nil) }
+  let(:context) do
+    Sidebars::Context.new(current_user: nil, container: nil, route_is_active: ->(x) { x[:controller] == 'fooc' })
+  end
+
+  let(:menu_item) do
+    Sidebars::MenuItem.new(title: 'foo2', link: 'foo2', active_routes: { controller: 'fooc' })
+  end
+
   let(:nil_menu_item) { Sidebars::NilMenuItem.new(item_id: :foo) }
 
   describe '#all_active_routes' do
     it 'gathers all active routes of items and the current menu' do
       menu.add_item(Sidebars::MenuItem.new(title: 'foo1', link: 'foo1', active_routes: { path: %w(bar test) }))
-      menu.add_item(Sidebars::MenuItem.new(title: 'foo2', link: 'foo2', active_routes: { controller: 'fooc' }))
+      menu.add_item(menu_item)
       menu.add_item(Sidebars::MenuItem.new(title: 'foo3', link: 'foo3', active_routes: { controller: 'barc' }))
       menu.add_item(nil_menu_item)
 
@@ -18,6 +25,43 @@ RSpec.describe Sidebars::Menu do
 
       expect(menu).to receive(:renderable_items).and_call_original
       expect(menu.all_active_routes).to eq({ path: %w(foo bar test), controller: %w(fooc barc) })
+    end
+  end
+
+  describe '#serialize_for_super_sidebar' do
+    it 'returns itself and all renderable menu entries' do
+      menu.add_item(menu_item)
+      menu.add_item(Sidebars::MenuItem.new(title: 'foo3', link: 'foo3', active_routes: { controller: 'barc' }))
+      menu.add_item(nil_menu_item)
+
+      allow(menu).to receive(:title).and_return('Title')
+      allow(menu).to receive(:active_routes).and_return({ path: 'foo' })
+      allow(menu).to receive(:object_id).and_return(31)
+
+      expect(menu.serialize_for_super_sidebar).to eq([
+        {
+          id: 31,
+          parent_id: nil,
+          title: "Title",
+          icon: nil,
+          link: "foo2",
+          is_active: false
+        },
+        {
+          parent_id: 31,
+          title: "foo2",
+          icon: nil,
+          link: "foo2",
+          is_active: true
+        },
+        {
+          parent_id: 31,
+          title: "foo3",
+          icon: nil,
+          link: "foo3",
+          is_active: false
+        }
+      ])
     end
   end
 

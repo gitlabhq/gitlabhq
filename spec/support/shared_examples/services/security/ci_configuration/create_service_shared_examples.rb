@@ -145,7 +145,7 @@ RSpec.shared_examples_for 'services security ci configuration create service' do
         let_it_be(:repository) { project.repository }
 
         it 'is successful' do
-          expect(repository).to receive(:root_ref_sha).and_raise(StandardError)
+          expect(repository).to receive(:commit).and_return(nil)
           expect(result.status).to eq(:success)
         end
       end

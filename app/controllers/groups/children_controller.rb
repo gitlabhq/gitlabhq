@@ -41,10 +41,11 @@ module Groups
     protected
 
     def setup_children(parent)
-      @children = GroupDescendantsFinder.new(current_user: current_user,
-                                             parent_group: parent,
-                                             params: params.to_unsafe_h).execute
-      @children = @children.page(params[:page])
+      @children = GroupDescendantsFinder.new(
+        current_user: current_user,
+        parent_group: parent,
+        params: params.to_unsafe_h
+      ).execute.page(params[:page])
     end
 
     private

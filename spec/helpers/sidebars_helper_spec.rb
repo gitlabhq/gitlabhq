@@ -64,11 +64,16 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
   describe '#super_sidebar_context' do
     let(:user) { build(:user) }
     let(:group) { build(:group) }
+    let(:panel) { {} }
 
-    subject { helper.super_sidebar_context(user, group: group, project: nil) }
+    subject do
+      helper.super_sidebar_context(user, group: group, project: nil, panel: panel)
+    end
 
     before do
       allow(helper).to receive(:current_user) { user }
+      allow(panel).to receive(:super_sidebar_menu_items).and_return(nil)
+      allow(panel).to receive(:super_sidebar_context_header).and_return(nil)
       Rails.cache.write(['users', user.id, 'assigned_open_issues_count'], 1)
       Rails.cache.write(['users', user.id, 'assigned_open_merge_requests_count'], 4)
       Rails.cache.write(['users', user.id, 'review_requested_open_merge_requests_count'], 0)
@@ -78,6 +83,8 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
 
     it 'returns sidebar values from user', :use_clean_rails_memory_store_caching do
       expect(subject).to include({
+        current_context_header: nil,
+        current_menu_items: nil,
         name: user.name,
         username: user.username,
         avatar_url: user.avatar_url,
@@ -150,6 +157,41 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
           )
         )
       )
+    end
+  end
+
+  describe '#super_sidebar_nav_panel' do
+    let(:user) { build(:user) }
+    let(:group) { build(:group) }
+    let(:project) { build(:project) }
+
+    before do
+      allow(helper).to receive(:project_sidebar_context_data).and_return(
+        { current_user: nil, container: project, can_view_pipeline_editor: false })
+      allow(helper).to receive(:group_sidebar_context_data).and_return({ current_user: nil, container: group })
+
+      allow(group).to receive(:to_global_id).and_return(5)
+      Rails.cache.write(['users', user.id, 'assigned_open_issues_count'], 1)
+      Rails.cache.write(['users', user.id, 'assigned_open_merge_requests_count'], 4)
+      Rails.cache.write(['users', user.id, 'review_requested_open_merge_requests_count'], 0)
+      Rails.cache.write(['users', user.id, 'todos_pending_count'], 3)
+      Rails.cache.write(['users', user.id, 'total_merge_requests_count'], 4)
+    end
+
+    it 'returns Project Panel for project nav' do
+      expect(helper.super_sidebar_nav_panel(nav: 'project')).to be_a(Sidebars::Projects::Panel)
+    end
+
+    it 'returns Group Panel for group nav' do
+      expect(helper.super_sidebar_nav_panel(nav: 'group')).to be_a(Sidebars::Groups::Panel)
+    end
+
+    it 'returns "Your Work" Panel for your_work nav', :use_clean_rails_memory_store_caching do
+      expect(helper.super_sidebar_nav_panel(nav: 'your_work', user: user)).to be_a(Sidebars::YourWork::Panel)
+    end
+
+    it 'returns "Your Work" Panel as a fallback', :use_clean_rails_memory_store_caching do
+      expect(helper.super_sidebar_nav_panel(user: user)).to be_a(Sidebars::YourWork::Panel)
     end
   end
 end

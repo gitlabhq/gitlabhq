@@ -37,7 +37,7 @@ By default, GitLab uses UNIX sockets and is not set up to communicate via TCP. T
    ## Set up the Gitaly token as a form of authentication since you are accessing Gitaly over the network
    ## https://docs.gitlab.com/ee/administration/gitaly/configure_gitaly.html#about-the-gitaly-token
    gitaly['auth_token'] = 'abc123secret'
-   praefect['auth_token'] = 'abc123secret'
+   praefect['configuration'][:auth][:token] = 'abc123secret'
    gitlab_rails['gitaly_token'] = 'abc123secret'
 
    ## Redis configuration

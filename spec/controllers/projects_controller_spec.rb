@@ -508,11 +508,7 @@ RSpec.describe ProjectsController, feature_category: :projects do
     it 'allows an admin user to access the page', :enable_admin_mode do
       sign_in(create(:user, :admin))
 
-      get :edit,
-          params: {
-            namespace_id: project.namespace.path,
-            id: project.path
-          }
+      get :edit, params: { namespace_id: project.namespace.path, id: project.path }
 
       expect(response).to have_gitlab_http_status(:ok)
     end
@@ -521,11 +517,7 @@ RSpec.describe ProjectsController, feature_category: :projects do
       sign_in(user)
       project.add_maintainer(user)
 
-      get :edit,
-          params: {
-            namespace_id: project.namespace.path,
-            id: project.path
-          }
+      get :edit, params: { namespace_id: project.namespace.path, id: project.path }
 
       expect(assigns(:badge_api_endpoint)).not_to be_nil
     end
@@ -543,10 +535,7 @@ RSpec.describe ProjectsController, feature_category: :projects do
       before do
         group.add_owner(user)
 
-        post :archive, params: {
-          namespace_id: project.namespace.path,
-          id: project.path
-        }
+        post :archive, params: { namespace_id: project.namespace.path, id: project.path }
       end
 
       it 'archives the project' do
@@ -790,12 +779,7 @@ RSpec.describe ProjectsController, feature_category: :projects do
           merge_method: :ff
         }
 
-        put :update,
-            params: {
-              namespace_id: project.namespace,
-              id: project.id,
-              project: params
-            }
+        put :update, params: { namespace_id: project.namespace, id: project.id, project: params }
 
         expect(response).to have_gitlab_http_status(:found)
         params.each do |param, value|
@@ -811,22 +795,12 @@ RSpec.describe ProjectsController, feature_category: :projects do
         }
 
         expect do
-          put :update,
-            params: {
-              namespace_id: project.namespace,
-              id: project.id,
-              project: params
-            }
+          put :update, params: { namespace_id: project.namespace, id: project.id, project: params }
         end.not_to change { project.namespace.reload }
       end
 
       def update_project(**parameters)
-        put :update,
-            params: {
-              namespace_id: project.namespace.path,
-              id: project.path,
-              project: parameters
-            }
+        put :update, params: { namespace_id: project.namespace.path, id: project.path, project: parameters }
       end
     end
 
@@ -850,12 +824,9 @@ RSpec.describe ProjectsController, feature_category: :projects do
 
       it_behaves_like 'unauthorized when external service denies access' do
         subject do
-          put :update,
-              params: {
-                namespace_id: project.namespace,
-                id: project,
-                project: { description: 'Hello world' }
-              }
+          put :update, params: {
+            namespace_id: project.namespace, id: project, project: { description: 'Hello world' }
+          }
           project.reload
         end
 
@@ -975,13 +946,9 @@ RSpec.describe ProjectsController, feature_category: :projects do
 
         old_namespace = project.namespace
 
-        put :transfer,
-            params: {
-              namespace_id: old_namespace.path,
-              new_namespace_id: new_namespace_id,
-              id: project.path
-            },
-            format: :js
+        put :transfer, params: {
+          namespace_id: old_namespace.path, new_namespace_id: new_namespace_id, id: project.path
+        }, format: :js
 
         project.reload
 
@@ -994,13 +961,9 @@ RSpec.describe ProjectsController, feature_category: :projects do
     it 'updates namespace' do
       sign_in(admin)
 
-      put :transfer,
-          params: {
-            namespace_id: project.namespace.path,
-            new_namespace_id: new_namespace.id,
-            id: project.path
-          },
-          format: :js
+      put :transfer, params: {
+        namespace_id: project.namespace.path, new_namespace_id: new_namespace.id, id: project.path
+      }, format: :js
 
       project.reload
 
@@ -1120,32 +1083,19 @@ RSpec.describe ProjectsController, feature_category: :projects do
     it "toggles star if user is signed in" do
       sign_in(user)
       expect(user.starred?(public_project)).to be_falsey
-      post(:toggle_star,
-           params: {
-             namespace_id: public_project.namespace,
-             id: public_project
-           })
+
+      post :toggle_star, params: { namespace_id: public_project.namespace, id: public_project }
       expect(user.starred?(public_project)).to be_truthy
-      post(:toggle_star,
-           params: {
-             namespace_id: public_project.namespace,
-             id: public_project
-           })
+
+      post :toggle_star, params: { namespace_id: public_project.namespace, id: public_project }
       expect(user.starred?(public_project)).to be_falsey
     end
 
     it "does nothing if user is not signed in" do
-      post(:toggle_star,
-           params: {
-             namespace_id: project.namespace,
-             id: public_project
-           })
+      post :toggle_star, params: { namespace_id: project.namespace, id: public_project }
       expect(user.starred?(public_project)).to be_falsey
-      post(:toggle_star,
-           params: {
-             namespace_id: project.namespace,
-             id: public_project
-           })
+
+      post :toggle_star, params: { namespace_id: project.namespace, id: public_project }
       expect(user.starred?(public_project)).to be_falsey
     end
   end
@@ -1160,12 +1110,9 @@ RSpec.describe ProjectsController, feature_category: :projects do
         let(:forked_project) { fork_project(create(:project, :public), user) }
 
         it 'removes fork from project' do
-          delete(:remove_fork,
-              params: {
-                namespace_id: forked_project.namespace.to_param,
-                id: forked_project.to_param
-              },
-              format: :js)
+          delete :remove_fork, params: {
+            namespace_id: forked_project.namespace.to_param, id: forked_project.to_param
+          }, format: :js
 
           expect(forked_project.reload.forked?).to be_falsey
           expect(flash[:notice]).to eq(s_('The fork relationship has been removed.'))
@@ -1177,12 +1124,9 @@ RSpec.describe ProjectsController, feature_category: :projects do
         let(:unforked_project) { create(:project, namespace: user.namespace) }
 
         it 'does nothing if project was not forked' do
-          delete(:remove_fork,
-              params: {
-                namespace_id: unforked_project.namespace,
-                id: unforked_project
-              },
-              format: :js)
+          delete :remove_fork, params: {
+            namespace_id: unforked_project.namespace, id: unforked_project
+          }, format: :js
 
           expect(flash[:notice]).to be_nil
           expect(response).to redirect_to(edit_project_path(unforked_project))
@@ -1191,12 +1135,10 @@ RSpec.describe ProjectsController, feature_category: :projects do
     end
 
     it "does nothing if user is not signed in" do
-      delete(:remove_fork,
-          params: {
-            namespace_id: project.namespace,
-            id: project
-          },
-          format: :js)
+      delete :remove_fork, params: {
+        namespace_id: project.namespace, id: project
+      }, format: :js
+
       expect(response).to have_gitlab_http_status(:unauthorized)
     end
   end
@@ -1761,12 +1703,7 @@ RSpec.describe ProjectsController, feature_category: :projects do
       service_desk_enabled: true
     }
 
-    put :update,
-        params: {
-          namespace_id: project.namespace,
-          id: project,
-          project: params
-        }
+    put :update, params: { namespace_id: project.namespace, id: project, project: params }
     project.reload
 
     expect(response).to have_gitlab_http_status(:found)

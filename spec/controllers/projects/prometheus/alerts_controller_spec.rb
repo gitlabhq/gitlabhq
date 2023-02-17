@@ -117,10 +117,7 @@ RSpec.describe Projects::Prometheus::AlertsController do
 
   describe 'GET #metrics_dashboard' do
     let!(:alert) do
-      create(:prometheus_alert,
-             project: project,
-             environment: environment,
-             prometheus_metric: metric)
+      create(:prometheus_alert, project: project, environment: environment, prometheus_metric: metric)
     end
 
     it 'returns a json object with the correct keys' do

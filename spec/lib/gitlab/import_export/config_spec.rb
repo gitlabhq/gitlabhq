@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::ImportExport::Config do
+RSpec.describe Gitlab::ImportExport::Config, feature_category: :importers do
   let(:yaml_file) { described_class.new }
 
   describe '#to_h' do
@@ -21,7 +21,9 @@ RSpec.describe Gitlab::ImportExport::Config do
         end
 
         it 'parses default config' do
-          expected_keys = [:tree, :excluded_attributes, :included_attributes, :methods, :preloads, :export_reorders]
+          expected_keys = [
+            :tree, :import_only_tree, :excluded_attributes, :included_attributes, :methods, :preloads, :export_reorders
+          ]
           expected_keys << :include_if_exportable if ee
 
           expect { subject }.not_to raise_error
@@ -110,6 +112,7 @@ RSpec.describe Gitlab::ImportExport::Config do
                   }
                 }
               },
+              import_only_tree: {},
               included_attributes: {
                 user: [:id]
               },
@@ -153,6 +156,7 @@ RSpec.describe Gitlab::ImportExport::Config do
                   }
                 }
               },
+              import_only_tree: {},
               included_attributes: {
                 user: [:id, :name_ee]
               },

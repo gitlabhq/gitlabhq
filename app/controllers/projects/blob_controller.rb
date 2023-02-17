@@ -53,10 +53,13 @@ class Projects::BlobController < Projects::ApplicationController
   end
 
   def create
-    create_commit(Files::CreateService, success_notice: _("The file has been successfully created."),
-                                        success_path: -> { project_blob_path(@project, File.join(@branch_name, @file_path)) },
-                                        failure_view: :new,
-                                        failure_path: project_new_blob_path(@project, @ref))
+    create_commit(
+      Files::CreateService,
+      success_notice: _("The file has been successfully created."),
+      success_path: -> { project_blob_path(@project, File.join(@branch_name, @file_path)) },
+      failure_view: :new,
+      failure_path: project_new_blob_path(@project, @ref)
+    )
   end
 
   def show
@@ -86,9 +89,11 @@ class Projects::BlobController < Projects::ApplicationController
   def update
     @path = params[:file_path] if params[:file_path].present?
 
-    create_commit(Files::UpdateService, success_path: -> { after_edit_path },
-                                        failure_view: :edit,
-                                        failure_path: project_blob_path(@project, @id))
+    create_commit(
+      Files::UpdateService, success_path: -> { after_edit_path },
+      failure_view: :edit,
+      failure_path: project_blob_path(@project, @id)
+    )
   rescue Files::UpdateService::FileChangedError
     @conflict = true
     render :edit
@@ -106,9 +111,12 @@ class Projects::BlobController < Projects::ApplicationController
   end
 
   def destroy
-    create_commit(Files::DeleteService, success_notice: _("The file has been successfully deleted."),
-                                        success_path: -> { after_delete_path },
-                                        failure_path: project_blob_path(@project, @id))
+    create_commit(
+      Files::DeleteService,
+      success_notice: _("The file has been successfully deleted."),
+      success_path: -> { after_delete_path },
+      failure_path: project_blob_path(@project, @id)
+    )
   end
 
   def diff

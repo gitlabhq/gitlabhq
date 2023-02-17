@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Sidebars::Panel do
+RSpec.describe Sidebars::Panel, feature_category: :navigation do
   let(:context) { Sidebars::Context.new(current_user: nil, container: nil) }
   let(:panel) { Sidebars::Panel.new(context) }
   let(:menu1) { Sidebars::Menu.new(context) }
@@ -17,6 +17,67 @@ RSpec.describe Sidebars::Panel do
       allow(menu2).to receive(:render?).and_return(false)
 
       expect(panel.renderable_menus).to eq([menu1])
+    end
+  end
+
+  describe '#super_sidebar_menu_items' do
+    it "groups items under their parent and marks parent as active if a child item is active" do
+      panel.add_menu(menu1)
+      panel.add_menu(menu2)
+
+      allow(menu1).to receive(:render?).and_return(true)
+      allow(menu2).to receive(:render?).and_return(false)
+      allow(menu1).to receive(:serialize_for_super_sidebar).and_return([
+        {
+          id: 31,
+          parent_id: nil,
+          title: "Title",
+          is_active: false
+        },
+        {
+          parent_id: "non_existent_which_makes_this_top_level",
+          title: "Title 2",
+          is_active: false
+        },
+        {
+          parent_id: 31,
+          title: "Title > Item 1",
+          is_active: true
+        },
+        {
+          parent_id: 31,
+          title: "Title > Item 2",
+          is_active: false
+        }
+      ])
+
+      expect(panel.super_sidebar_menu_items).to eq([
+        {
+          id: 31,
+          title: "Title",
+          is_active: true,
+          items: [
+            {
+              title: "Title > Item 1",
+              is_active: true
+            },
+            {
+              title: "Title > Item 2",
+              is_active: false
+            }
+          ]
+        },
+        {
+          title: "Title 2",
+          is_active: false
+        }
+      ])
+    end
+  end
+
+  describe '#super_sidebar_context_header' do
+    it 'raises `NotImplementedError`' do
+      expect { panel.super_sidebar_context_header }.to raise_error(NotImplementedError)
     end
   end
 

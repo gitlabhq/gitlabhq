@@ -58,8 +58,7 @@ RSpec.describe ConfirmationsController do
           m.call(*args)
 
           expect(Gitlab::ApplicationContext.current)
-            .to include('meta.user' => user.username,
-                        'meta.caller_id' => 'ConfirmationsController#show')
+            .to include('meta.user' => user.username, 'meta.caller_id' => 'ConfirmationsController#show')
         end
 
         perform_request
@@ -94,8 +93,7 @@ RSpec.describe ConfirmationsController do
           m.call(*args)
 
           expect(Gitlab::ApplicationContext.current)
-            .to include('meta.user' => user.username,
-                        'meta.caller_id' => 'ConfirmationsController#show')
+            .to include('meta.user' => user.username, 'meta.caller_id' => 'ConfirmationsController#show')
         end
 
         travel_to(3.days.from_now) { perform_request }

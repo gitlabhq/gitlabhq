@@ -277,15 +277,33 @@ The reconciliation frequency can be changed via the configuration. The value can
 Examples:
 
 ```ruby
-praefect['reconciliation_scheduling_interval'] = '5m' # the default value
+praefect['configuration'] = {
+   # ...
+   reconciliation: {
+      # ...
+      scheduling_interval: '5m', # the default value
+   },
+}
 ```
 
 ```ruby
-praefect['reconciliation_scheduling_interval'] = '30s' # reconcile every 30 seconds
+praefect['configuration'] = {
+   # ...
+   reconciliation: {
+      # ...
+      scheduling_interval: '30s', # reconcile every 30 seconds
+   },
+}
 ```
 
 ```ruby
-praefect['reconciliation_scheduling_interval'] = '0' # disable the feature
+praefect['configuration'] = {
+   # ...
+   reconciliation: {
+      # ...
+      scheduling_interval: '0', # disable the feature
+   },
+}
 ```
 
 ### Manual reconciliation
@@ -334,16 +352,21 @@ sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.t
   sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml remove-repository -virtual-storage <virtual-storage> -repository <repository> -apply
   ```
 
-- `-virtual-storage` is the virtual storage the repository is located in. Virtual storages are configured in `/etc/gitlab/gitlab.rb` under `praefect['virtual_storages]` and looks like the following:
+- `-virtual-storage` is the virtual storage the repository is located in. Virtual storages are configured in `/etc/gitlab/gitlab.rb` under `praefect['configuration']['virtual_storage]` and looks like the following:
 
   ```ruby
-  praefect['virtual_storages'] = {
-    'default' => {
-      ...
-    },
-    'storage-1' => {
-      ...
-    }
+  praefect['configuration'] = {
+    # ...
+    virtual_storage: [
+      {
+        # ...
+        name: 'default',
+      },
+      {
+        # ...
+        name: 'storage-1',
+      },
+    ],
   }
   ```
 
@@ -415,16 +438,21 @@ The `track-repository` Praefect sub-command adds repositories on disk to the Pra
 sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml track-repository -virtual-storage <virtual-storage> -authoritative-storage <storage-name> -repository <repository> -replicate-immediately
 ```
 
-- `-virtual-storage` is the virtual storage the repository is located in. Virtual storages are configured in `/etc/gitlab/gitlab.rb` under `praefect['virtual_storages]` and looks like the following:
+- `-virtual-storage` is the virtual storage the repository is located in. Virtual storages are configured in `/etc/gitlab/gitlab.rb` under `praefect['configuration'][:virtual_storage]` and looks like the following:
 
   ```ruby
-  praefect['virtual_storages'] = {
-    'default' => {
-      ...
-    },
-    'storage-1' => {
-      ...
-    }
+  praefect['configuration'] = {
+    # ...
+    virtual_storage: [
+      {
+        # ...
+        name: 'default',
+      },
+      {
+        # ...
+        name: 'storage-1',
+      },
+    ],
   }
   ```
 

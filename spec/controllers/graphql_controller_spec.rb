@@ -43,8 +43,9 @@ RSpec.describe GraphqlController, feature_category: :integrations do
       post :execute
 
       expect(json_response).to include(
-        'errors' => include(a_hash_including('message' => /Internal server error/,
-                                             'raisedAt' => /graphql_controller_spec.rb/))
+        'errors' => include(
+          a_hash_including('message' => /Internal server error/, 'raisedAt' => /graphql_controller_spec.rb/)
+        )
       )
     end
 

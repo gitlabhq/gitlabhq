@@ -9,20 +9,21 @@ class UsersController < ApplicationController
   include Gitlab::NoteableMetadata
 
   requires_cross_project_access show: false,
-                                groups: false,
-                                projects: false,
-                                contributed: false,
-                                snippets: true,
-                                calendar: false,
-                                followers: false,
-                                following: false,
-                                calendar_activities: true
+    groups: false,
+    projects: false,
+    contributed: false,
+    snippets: true,
+    calendar: false,
+    followers: false,
+    following: false,
+    calendar_activities: true
 
   skip_before_action :authenticate_user!
   prepend_before_action(only: [:show]) { authenticate_sessionless_user!(:rss) }
   before_action :user, except: [:exists]
-  before_action :authorize_read_user_profile!,
-                only: [:calendar, :calendar_activities, :groups, :projects, :contributed, :starred, :snippets, :followers, :following]
+  before_action :authorize_read_user_profile!, only: [
+    :calendar, :calendar_activities, :groups, :projects, :contributed, :starred, :snippets, :followers, :following
+  ]
   before_action only: [:exists] do
     check_rate_limit!(:username_exists, scope: request.ip)
   end

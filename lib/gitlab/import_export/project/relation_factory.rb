@@ -12,6 +12,7 @@ module Gitlab
                       triggers: 'Ci::Trigger',
                       pipeline_schedules: 'Ci::PipelineSchedule',
                       builds: 'Ci::Build',
+                      bridges: 'Ci::Bridge',
                       runners: 'Ci::Runner',
                       pipeline_metadata: 'Ci::PipelineMetadata',
                       hooks: 'ProjectHook',
@@ -37,7 +38,7 @@ module Gitlab
                       committer: 'MergeRequest::DiffCommitUser',
                       merge_request_diff_commits: 'MergeRequestDiffCommit' }.freeze
 
-        BUILD_MODELS = %i[Ci::Build commit_status].freeze
+        BUILD_MODELS = %i[Ci::Build Ci::Bridge commit_status generic_commit_status].freeze
 
         GROUP_REFERENCES = %w[group_id].freeze
 
@@ -142,7 +143,20 @@ module Gitlab
 
         def setup_pipeline
           @relation_hash.fetch('stages', []).each do |stage|
+            # old export files have statuses
             stage.statuses.each do |status|
+              status.pipeline = imported_object
+            end
+
+            stage.builds.each do |status|
+              status.pipeline = imported_object
+            end
+
+            stage.bridges.each do |status|
+              status.pipeline = imported_object
+            end
+
+            stage.generic_commit_statuses.each do |status|
               status.pipeline = imported_object
             end
           end

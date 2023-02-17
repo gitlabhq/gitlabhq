@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Sidebars::Projects::Panel do
+RSpec.describe Sidebars::Projects::Panel, feature_category: :navigation do
   let_it_be(:project) { create(:project) }
 
   let(:context) { Sidebars::Projects::Context.new(current_user: nil, container: project) }
@@ -11,6 +11,12 @@ RSpec.describe Sidebars::Projects::Panel do
 
   it 'has a scope menu' do
     expect(subject.scope_menu).to be_a(Sidebars::Projects::Menus::ScopeMenu)
+  end
+
+  it 'implements #super_sidebar_context_header' do
+    expect(subject.super_sidebar_context_header).to eq({
+      title: project.name, avatar: project.avatar_url, id: project.id
+    })
   end
 
   context 'Confluence menu item' do

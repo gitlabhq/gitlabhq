@@ -51,7 +51,7 @@ module Security
       end
 
       def existing_gitlab_ci_content
-        root_ref = root_ref_sha(project)
+        root_ref = root_ref_sha(project.repository)
         return if root_ref.nil?
 
         @gitlab_ci_yml ||= project.ci_config_for(root_ref)
@@ -82,13 +82,10 @@ module Security
         )
       end
 
-      def root_ref_sha(project)
-        project.repository.root_ref_sha
-      rescue StandardError => e
-        # this might fail on the very first commit,
-        # and unfortunately it raises a StandardError
-        Gitlab::ErrorTracking.track_exception(e, project_id: project.id)
-        nil
+      def root_ref_sha(repository)
+        commit = repository.commit(repository.root_ref)
+
+        commit&.sha
       end
     end
   end

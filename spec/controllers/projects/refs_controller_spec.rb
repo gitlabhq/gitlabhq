@@ -54,14 +54,9 @@ RSpec.describe Projects::RefsController, feature_category: :source_code_manageme
     let(:path) { 'foo/bar/baz.html' }
 
     def default_get(format = :html)
-      get :logs_tree,
-          params: {
-            namespace_id: project.namespace.to_param,
-            project_id: project,
-            id: 'master',
-            path: path
-          },
-          format: format
+      get :logs_tree, params: {
+        namespace_id: project.namespace.to_param, project_id: project, id: 'master', path: path
+      }, format: format
     end
 
     def xhr_get(format = :html, params = {})

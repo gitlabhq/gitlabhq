@@ -43,9 +43,7 @@ class Projects::PagesController < Projects::ApplicationController
 
     respond_to do |format|
       format.html do
-        redirect_to project_pages_path(@project),
-                    status: :found,
-                    notice: 'Pages were scheduled for removal'
+        redirect_to project_pages_path(@project), status: :found, notice: 'Pages were scheduled for removal'
       end
     end
   end

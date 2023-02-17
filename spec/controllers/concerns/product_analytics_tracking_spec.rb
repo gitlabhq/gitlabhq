@@ -19,8 +19,13 @@ RSpec.describe ProductAnalyticsTracking, :snowplow, feature_category: :product_a
     include ProductAnalyticsTracking
 
     skip_before_action :authenticate_user!, only: :show
-    track_event(:index, :show, name: 'an_event', destinations: [:redis_hll, :snowplow],
-                               conditions: [:custom_condition_one?, :custom_condition_two?]) { |controller| controller.get_custom_id }
+    track_event(
+      :index,
+      :show,
+      name: 'an_event',
+      destinations: [:redis_hll, :snowplow],
+      conditions: [:custom_condition_one?, :custom_condition_two?]
+    ) { |controller| controller.get_custom_id }
 
     def index
       render html: 'index'

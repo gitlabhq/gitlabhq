@@ -27,6 +27,7 @@ module Ci
     has_many :processables, class_name: 'Ci::Processable', foreign_key: :stage_id, inverse_of: :ci_stage
     has_many :builds, foreign_key: :stage_id, inverse_of: :ci_stage
     has_many :bridges, foreign_key: :stage_id, inverse_of: :ci_stage
+    has_many :generic_commit_statuses, foreign_key: :stage_id, inverse_of: :ci_stage
 
     scope :ordered, -> { order(position: :asc) }
     scope :in_pipelines, ->(pipelines) { where(pipeline: pipelines) }

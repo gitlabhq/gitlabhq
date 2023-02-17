@@ -1,11 +1,5 @@
 import { s__ } from '~/locale';
 
-export const context = {
-  title: 'Typeahead.js',
-  link: '/',
-  avatar: 'https://gitlab.com/uploads/-/system/project/avatar/278964/project_avatar.png?width=32',
-};
-
 export const contextSwitcherItems = {
   yourWork: { title: s__('Navigation|Your work'), link: '/', icon: 'work' },
   recentProjects: [

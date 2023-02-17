@@ -78,9 +78,7 @@ class Projects::PipelineSchedulesController < Projects::ApplicationController
     if schedule.destroy
       redirect_to pipeline_schedules_path(@project), status: :found
     else
-      redirect_to pipeline_schedules_path(@project),
-                  status: :forbidden,
-                  alert: _("Failed to remove the pipeline schedule")
+      redirect_to pipeline_schedules_path(@project), status: :forbidden, alert: _("Failed to remove the pipeline schedule")
     end
   end
 

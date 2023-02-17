@@ -18,12 +18,7 @@ RSpec.describe Projects::FindFileController do
     render_views
 
     before do
-      get(:show,
-          params: {
-            namespace_id: project.namespace,
-            project_id: project,
-            id: id
-          })
+      get :show, params: { namespace_id: project.namespace, project_id: project, id: id }
     end
 
     context "valid branch" do
@@ -41,13 +36,7 @@ RSpec.describe Projects::FindFileController do
 
   describe "GET #list" do
     def go(format: 'json')
-      get :list,
-          params: {
-            namespace_id: project.namespace,
-            project_id: project,
-            id: id
-          },
-          format: format
+      get :list, params: { namespace_id: project.namespace, project_id: project, id: id }, format: format
     end
 
     context "valid branch" do

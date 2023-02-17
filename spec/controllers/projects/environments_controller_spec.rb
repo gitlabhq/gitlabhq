@@ -44,17 +44,9 @@ RSpec.describe Projects::EnvironmentsController, feature_category: :continuous_d
         allow_any_instance_of(Environment).to receive(:has_terminals?).and_return(true)
         allow_any_instance_of(Environment).to receive(:rollout_status).and_return(kube_deployment_rollout_status)
 
-        create(:environment, project: project,
-                             name: 'staging/review-1',
-                             state: :available)
-
-        create(:environment, project: project,
-                             name: 'staging/review-2',
-                             state: :available)
-
-        create(:environment, project: project,
-                             name: 'staging/review-3',
-                             state: :stopped)
+        create(:environment, project: project, name: 'staging/review-1', state: :available)
+        create(:environment, project: project, name: 'staging/review-2', state: :available)
+        create(:environment, project: project, name: 'staging/review-3', state: :stopped)
       end
 
       let(:environments) { json_response['environments'] }
@@ -84,9 +76,7 @@ RSpec.describe Projects::EnvironmentsController, feature_category: :continuous_d
         it 'ignores search option if is shorter than a minimum' do
           get :index, params: environment_params(format: :json, search: 'st')
 
-          expect(environments.map { |env| env['name'] }).to contain_exactly('production',
-                                                                             'staging/review-1',
-                                                                             'staging/review-2')
+          expect(environments.map { |env| env['name'] }).to contain_exactly('production', 'staging/review-1', 'staging/review-2')
           expect(json_response['available_count']).to eq 3
           expect(json_response['stopped_count']).to eq 1
         end
@@ -96,9 +86,7 @@ RSpec.describe Projects::EnvironmentsController, feature_category: :continuous_d
 
           get :index, params: environment_params(format: :json, search: 'review')
 
-          expect(environments.map { |env| env['name'] }).to contain_exactly('review-app',
-                                                                            'staging/review-1',
-                                                                            'staging/review-2')
+          expect(environments.map { |env| env['name'] }).to contain_exactly('review-app', 'staging/review-1', 'staging/review-2')
           expect(json_response['available_count']).to eq 3
           expect(json_response['stopped_count']).to eq 1
         end
@@ -245,23 +233,18 @@ RSpec.describe Projects::EnvironmentsController, feature_category: :continuous_d
 
     context 'when using JSON format' do
       before do
-        create(:environment, project: project,
-                             name: 'staging-1.0/review',
-                             state: :available)
-        create(:environment, project: project,
-                             name: 'staging-1.0/zzz',
-                             state: :available)
+        create(:environment, project: project, name: 'staging-1.0/review', state: :available)
+        create(:environment, project: project, name: 'staging-1.0/zzz', state: :available)
       end
 
       let(:environments) { json_response['environments'] }
 
       it 'sorts the subfolders lexicographically' do
         get :folder, params: {
-                       namespace_id: project.namespace,
-                       project_id: project,
-                       id: 'staging-1.0'
-                     },
-                     format: :json
+          namespace_id: project.namespace,
+          project_id: project,
+          id: 'staging-1.0'
+        }, format: :json
 
         expect(response).to be_ok
         expect(response).not_to render_template 'folder'
@@ -1105,9 +1088,7 @@ RSpec.describe Projects::EnvironmentsController, feature_category: :continuous_d
   end
 
   def environment_params(opts = {})
-    opts.reverse_merge(namespace_id: project.namespace,
-                       project_id: project,
-                       id: environment.id)
+    opts.reverse_merge(namespace_id: project.namespace, project_id: project, id: environment.id)
   end
 
   def additional_metrics(opts = {})

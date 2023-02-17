@@ -150,8 +150,7 @@ RSpec.describe 'Project issue boards', :js, feature_category: :team_planning do
           find('.board .board-list')
 
           inspect_requests(inject_headers: { 'X-GITLAB-DISABLE-SQL-QUERY-LIMIT' => 'https://gitlab.com/gitlab-org/gitlab/-/issues/323426' }) do
-            evaluate_script("window.scrollTo(0, document.body.scrollHeight)")
-            evaluate_script("document.querySelectorAll('.board .board-list')[1].scrollTop = document.querySelectorAll('.board .board-list')[1].scrollHeight")
+            evaluate_script("[...document.querySelectorAll('.board:nth-child(2) .board-list [data-testid=\"board-card-gl-io\"]')].pop().scrollIntoView()")
           end
 
           expect(page).to have_selector('.board-card', count: 20)
@@ -160,8 +159,7 @@ RSpec.describe 'Project issue boards', :js, feature_category: :team_planning do
           find('.board .board-list')
 
           inspect_requests(inject_headers: { 'X-GITLAB-DISABLE-SQL-QUERY-LIMIT' => 'https://gitlab.com/gitlab-org/gitlab/-/issues/323426' }) do
-            evaluate_script("window.scrollTo(0, document.body.scrollHeight)")
-            evaluate_script("document.querySelectorAll('.board .board-list')[1].scrollTop = document.querySelectorAll('.board .board-list')[1].scrollHeight")
+            evaluate_script("[...document.querySelectorAll('.board:nth-child(2) .board-list [data-testid=\"board-card-gl-io\"]')].pop().scrollIntoView()")
           end
 
           expect(page).to have_selector('.board-card', count: 30)
@@ -170,8 +168,7 @@ RSpec.describe 'Project issue boards', :js, feature_category: :team_planning do
           find('.board .board-list')
 
           inspect_requests(inject_headers: { 'X-GITLAB-DISABLE-SQL-QUERY-LIMIT' => 'https://gitlab.com/gitlab-org/gitlab/-/issues/323426' }) do
-            evaluate_script("window.scrollTo(0, document.body.scrollHeight)")
-            evaluate_script("document.querySelectorAll('.board .board-list')[1].scrollTop = document.querySelectorAll('.board .board-list')[1].scrollHeight")
+            evaluate_script("[...document.querySelectorAll('.board:nth-child(2) .board-list [data-testid=\"board-card-gl-io\"]')].pop().scrollIntoView()")
           end
 
           expect(page).to have_selector('.board-card', count: 38)

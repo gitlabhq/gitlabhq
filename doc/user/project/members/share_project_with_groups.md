@@ -70,16 +70,20 @@ are given access to the project. In addition:
 
 ## Maximum role
 
+When you invite a group to a project, the maximum role is the highest level of access the invited group members are allowed to have in the project.
+
 When multiple groups contain the same members, and the groups
 have access to the same project, the group members are
-given the most restrictive role for the project.
-
-This most restrictive role is called the *maximum role*, or **Max role**.
+given the highest access level of the two for the project.
 
 The member's **Max role** is the more restrictive of:
 
 - The role the user is assigned for the group.
 - The role you chose when you invited the group to the project.
+
+NOTE:
+The Max role does not elevate the privileges of users.
+For example, if a group member has the role of Developer, and the group is invited to a project with a Max role of Maintainer, the member's role is not elevated to Maintainer.
 
 ### View the member's Max role
 

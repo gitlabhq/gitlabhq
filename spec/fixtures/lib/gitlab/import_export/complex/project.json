@@ -7327,7 +7327,7 @@
           "status": 1,
           "created_at": "2016-03-22T15:44:44.772Z",
           "updated_at": "2016-03-29T06:44:44.634Z",
-          "statuses": [
+          "builds": [
             {
               "id": 71,
               "project_id": 5,
@@ -7364,7 +7364,41 @@
               "artifacts_file_store": 1,
               "artifacts_metadata_store": 1,
               "artifacts_size": 10
-            },
+            }
+          ],
+          "bridges": [
+            {
+              "id": 72,
+              "project_id": 5,
+              "status": "success",
+              "finished_at": null,
+              "trace": "Porro ea qui ut dolores. Labore ab nemo explicabo aspernatur quis voluptates corporis. Et quasi delectus est sit aperiam perspiciatis asperiores. Repudiandae cum aut consectetur accusantium officia sunt.\n\nQuidem dolore iusto quaerat ut aut inventore et molestiae. Libero voluptates atque nemo qui. Nulla temporibus ipsa similique facere.\n\nAliquam ipsam perferendis qui fugit accusantium omnis id voluptatum. Dignissimos aliquid dicta eos voluptatem assumenda quia. Sed autem natus unde dolor et non nisi et. Consequuntur nihil consequatur rerum est.\n\nSimilique neque est iste ducimus qui fuga cupiditate. Libero autem est aut fuga. Consectetur natus quis non ducimus ut dolore. Magni voluptatibus eius et maxime aut.\n\nAd officiis tempore voluptate vitae corrupti explicabo labore est. Consequatur expedita et sunt nihil aut. Deleniti porro iusto molestiae et beatae.\n\nDeleniti modi nulla qui et labore sequi corrupti. Qui voluptatem assumenda eum cupiditate et. Nesciunt ipsam ut ea possimus eum. Consectetur quidem suscipit atque dolore itaque voluptatibus et cupiditate.",
+              "created_at": "2016-03-22T15:20:35.777Z",
+              "updated_at": "2016-03-22T15:20:35.777Z",
+              "started_at": null,
+              "runner_id": null,
+              "coverage": null,
+              "commit_id": 36,
+              "commands": "$ deploy command",
+              "job_id": null,
+              "name": "test build 2",
+              "deploy": false,
+              "options": null,
+              "allow_failure": false,
+              "stage": "deploy",
+              "trigger_request_id": null,
+              "stage_idx": 1,
+              "stage_id": 12,
+              "tag": null,
+              "ref": "master",
+              "user_id": null,
+              "target_url": null,
+              "description": null,
+              "erased_by_id": null,
+              "erased_at": null
+            }
+          ],
+          "generic_commit_statuses": [
             {
               "id": 72,
               "project_id": 5,
@@ -7435,7 +7469,7 @@
           "status": 1,
           "created_at": "2016-03-22T15:44:44.772Z",
           "updated_at": "2016-03-29T06:44:44.634Z",
-          "statuses": [
+          "builds": [
             {
               "id": 74,
               "project_id": 5,
@@ -7549,7 +7583,7 @@
           "status": 1,
           "created_at": "2016-03-22T15:44:44.772Z",
           "updated_at": "2016-03-29T06:44:44.634Z",
-          "statuses": [
+          "builds": [
             {
               "id": 76,
               "project_id": 5,
@@ -7637,7 +7671,7 @@
           "status": 1,
           "created_at": "2016-03-22T15:44:44.772Z",
           "updated_at": "2016-03-29T06:44:44.634Z",
-          "statuses": [
+          "builds": [
             {
               "id": 78,
               "project_id": 5,

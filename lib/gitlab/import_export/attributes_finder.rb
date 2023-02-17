@@ -3,7 +3,8 @@
 module Gitlab
   module ImportExport
     class AttributesFinder
-      attr_reader :tree, :included_attributes, :excluded_attributes, :methods, :preloads, :export_reorders
+      attr_reader :tree, :included_attributes, :excluded_attributes, :methods, :preloads, :export_reorders,
+        :import_only_tree
 
       def initialize(config:)
         @tree = config[:tree] || {}
@@ -13,13 +14,16 @@ module Gitlab
         @preloads = config[:preloads] || {}
         @export_reorders = config[:export_reorders] || {}
         @include_if_exportable = config[:include_if_exportable] || {}
+        @import_only_tree = config[:import_only_tree] || {}
       end
 
       def find_root(model_key)
         find(model_key, @tree[model_key])
       end
 
-      def find_relations_tree(model_key)
+      def find_relations_tree(model_key, include_import_only_tree: false)
+        return @tree[model_key].deep_merge(@import_only_tree[model_key] || {}) if include_import_only_tree
+
         @tree[model_key]
       end
 

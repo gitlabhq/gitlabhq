@@ -23,19 +23,21 @@ module SidebarsHelper
     end
   end
 
-  def project_sidebar_context(project, user, current_ref, ref_type: nil)
+  def project_sidebar_context(project, user, current_ref, ref_type: nil, **args)
     context_data = project_sidebar_context_data(project, user, current_ref, ref_type: ref_type)
-    Sidebars::Projects::Context.new(**context_data)
+    Sidebars::Projects::Context.new(**context_data, **args)
   end
 
-  def group_sidebar_context(group, user)
+  def group_sidebar_context(group, user, **args)
     context_data = group_sidebar_context_data(group, user)
 
-    Sidebars::Groups::Context.new(**context_data)
+    Sidebars::Groups::Context.new(**context_data, **args)
   end
 
-  def super_sidebar_context(user, group:, project:)
+  def super_sidebar_context(user, group:, project:, panel:)
     {
+      current_menu_items: panel.super_sidebar_menu_items,
+      current_context_header: panel.super_sidebar_context_header,
       name: user.name,
       username: user.username,
       avatar_url: user.avatar_url,
@@ -53,6 +55,21 @@ module SidebarsHelper
       gitlab_version: Gitlab.version_info,
       gitlab_version_check: gitlab_version_check
     }
+  end
+
+  def super_sidebar_nav_panel(nav: nil, project: nil, user: nil, group: nil, current_ref: nil, ref_type: nil)
+    case nav
+    when 'project'
+      context = project_sidebar_context(project, user, current_ref, ref_type: ref_type,
+        route_is_active: method(:active_nav_link?))
+      Sidebars::Projects::Panel.new(context)
+    when 'group'
+      context = group_sidebar_context(group, user, route_is_active: method(:active_nav_link?))
+      Sidebars::Groups::Panel.new(context)
+    else
+      Sidebars::YourWork::Panel.new(Sidebars::Context.new(current_user: user, container: nil,
+        route_is_active: method(:active_nav_link?)))
+    end
   end
 
   private

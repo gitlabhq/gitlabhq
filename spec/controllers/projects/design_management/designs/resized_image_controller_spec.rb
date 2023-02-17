@@ -139,10 +139,13 @@ RSpec.describe Projects::DesignManagement::Designs::ResizedImageController, feat
         let(:sha) { newest_version.sha }
 
         before do
-          create(:design, :with_smaller_image_versions,
-                 issue: create(:issue, project: project),
-                 versions_count: 1,
-                 versions_sha: sha)
+          create(
+            :design,
+            :with_smaller_image_versions,
+            issue: create(:issue, project: project),
+            versions_count: 1,
+            versions_sha: sha
+          )
         end
 
         it 'serves the newest image' do

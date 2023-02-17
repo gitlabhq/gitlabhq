@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::ImportExport::AttributesPermitter do
+RSpec.describe Gitlab::ImportExport::AttributesPermitter, feature_category: :importers do
   let(:yml_config) do
     <<-EOF
       tree:
@@ -12,6 +12,15 @@ RSpec.describe Gitlab::ImportExport::AttributesPermitter do
           - milestones:
             - events:
               - :push_event_payload
+          - ci_pipelines:
+            - stages:
+              - :builds
+
+      import_only_tree:
+        project:
+          - ci_pipelines:
+            - stages:
+              - :statuses
 
       included_attributes:
         labels:
@@ -43,12 +52,16 @@ RSpec.describe Gitlab::ImportExport::AttributesPermitter do
     it 'builds permitted attributes hash' do
       expect(subject.permitted_attributes).to match(
         a_hash_including(
-          project: [:labels, :milestones],
+          project: [:labels, :milestones, :ci_pipelines],
           labels: [:priorities, :title, :description, :type],
           events: [:push_event_payload],
           milestones: [:events],
           priorities: [],
-          push_event_payload: []
+          push_event_payload: [],
+          ci_pipelines: [:stages],
+          stages: [:builds, :statuses],
+          statuses: [],
+          builds: []
         )
       )
     end
@@ -129,6 +142,9 @@ RSpec.describe Gitlab::ImportExport::AttributesPermitter do
       :external_pull_request       | true
       :external_pull_requests      | true
       :statuses                    | true
+      :builds                      | true
+      :generic_commit_statuses     | true
+      :bridges                     | true
       :ci_pipelines                | true
       :stages                      | true
       :actions                     | true

@@ -227,8 +227,7 @@ RSpec.describe SearchController, feature_category: :global_search do
         let(:label) { 'redis_hll_counters.search.search_total_unique_counts_monthly' }
         let(:property) { 'i_search_total' }
         let(:context) do
-          [Gitlab::Tracking::ServicePingContext.new(data_source: :redis_hll,
-                                                    event: property).to_context]
+          [Gitlab::Tracking::ServicePingContext.new(data_source: :redis_hll, event: property).to_context]
         end
 
         let(:namespace) { create(:group) }

@@ -4,7 +4,7 @@ group: Commerce Integrations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Marketplace partner integration guide
+# Marketplace partner integration
 
 GitLab supports automation for selected distribution marketplaces to process sales of GitLab products to authorized
 channel partners. Marketplace partners can use the GitLab Marketplace APIs to integrate their systems with GitLab to 

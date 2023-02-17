@@ -54,7 +54,7 @@ export default {
               :item="project"
             >
               <template #icon>
-                <gl-avatar shape="rect" :size="32" :src="project.avatar" />
+                <gl-avatar shape="rect" :size="24" :src="project.avatar" />
               </template>
             </nav-item>
             <nav-item :item="$options.viewAllProjectsItem" />
@@ -71,7 +71,7 @@ export default {
               :item="project"
             >
               <template #icon>
-                <gl-avatar shape="rect" :size="32" :src="project.avatar" />
+                <gl-avatar shape="rect" :size="24" :src="project.avatar" />
               </template>
             </nav-item>
             <nav-item :item="$options.viewAllGroupsItem" />

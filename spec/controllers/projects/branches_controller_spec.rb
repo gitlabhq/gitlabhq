@@ -22,13 +22,12 @@ RSpec.describe Projects::BranchesController, feature_category: :source_code_mana
       before do
         sign_in(developer)
 
-        post :create,
-             params: {
-               namespace_id: project.namespace,
-               project_id: project,
-               branch_name: branch,
-               ref: ref
-             }
+        post :create, params: {
+          namespace_id: project.namespace,
+          project_id: project,
+          branch_name: branch,
+          ref: ref
+        }
       end
 
       context "valid branch name, valid source" do
@@ -83,13 +82,12 @@ RSpec.describe Projects::BranchesController, feature_category: :source_code_mana
       end
 
       it 'redirects' do
-        post :create,
-             params: {
-               namespace_id: project.namespace,
-               project_id: project,
-               branch_name: branch,
-               issue_iid: issue.iid
-             }
+        post :create, params: {
+          namespace_id: project.namespace,
+          project_id: project,
+          branch_name: branch,
+          issue_iid: issue.iid
+        }
 
         expect(subject)
           .to redirect_to("/#{project.full_path}/-/tree/1-feature-branch")
@@ -98,13 +96,12 @@ RSpec.describe Projects::BranchesController, feature_category: :source_code_mana
       it 'posts a system note' do
         expect(SystemNoteService).to receive(:new_issue_branch).with(issue, project, developer, "1-feature-branch", branch_project: project)
 
-        post :create,
-             params: {
-               namespace_id: project.namespace,
-               project_id: project,
-               branch_name: branch,
-               issue_iid: issue.iid
-             }
+        post :create, params: {
+          namespace_id: project.namespace,
+          project_id: project,
+          branch_name: branch,
+          issue_iid: issue.iid
+        }
       end
 
       context 'confidential_issue_project_id is present' do
@@ -167,13 +164,12 @@ RSpec.describe Projects::BranchesController, feature_category: :source_code_mana
           expect_any_instance_of(::Branches::CreateService).to receive(:execute).and_return(result)
           expect(SystemNoteService).to receive(:new_issue_branch).and_return(true)
 
-          post :create,
-               params: {
-                 namespace_id: project.namespace.to_param,
-                 project_id: project.to_param,
-                 branch_name: branch,
-                 issue_iid: issue.iid
-               }
+          post :create, params: {
+            namespace_id: project.namespace.to_param,
+            project_id: project.to_param,
+            branch_name: branch,
+            issue_iid: issue.iid
+          }
 
           expect(response).to redirect_to project_tree_path(project, branch)
         end
@@ -189,13 +185,12 @@ RSpec.describe Projects::BranchesController, feature_category: :source_code_mana
             expect_any_instance_of(::Branches::CreateService).to receive(:execute).and_return(result)
             expect(SystemNoteService).to receive(:new_issue_branch).and_return(true)
 
-            post :create,
-                 params: {
-                   namespace_id: project.namespace.to_param,
-                   project_id: project.to_param,
-                   branch_name: branch,
-                   issue_iid: issue.iid
-                 }
+            post :create, params: {
+              namespace_id: project.namespace.to_param,
+              project_id: project.to_param,
+              branch_name: branch,
+              issue_iid: issue.iid
+            }
 
             expect(response.location).to include(project_new_blob_path(project, branch))
             expect(response).to have_gitlab_http_status(:found)
@@ -210,13 +205,12 @@ RSpec.describe Projects::BranchesController, feature_category: :source_code_mana
           expect_any_instance_of(::Branches::CreateService).to receive(:execute).and_return(result)
           expect(SystemNoteService).to receive(:new_issue_branch).and_return(true)
 
-          post :create,
-               params: {
-                namespace_id: project.namespace.to_param,
-                project_id: project.to_param,
-                branch_name: branch,
-                issue_iid: issue.iid
-               }
+          post :create, params: {
+            namespace_id: project.namespace.to_param,
+            project_id: project.to_param,
+            branch_name: branch,
+            issue_iid: issue.iid
+          }
 
           expect(response.location).to include(project_new_blob_path(project, branch))
           expect(response).to have_gitlab_http_status(:found)
@@ -229,13 +223,12 @@ RSpec.describe Projects::BranchesController, feature_category: :source_code_mana
         it "doesn't post a system note" do
           expect(SystemNoteService).not_to receive(:new_issue_branch)
 
-          post :create,
-               params: {
-                namespace_id: project.namespace,
-                project_id: project,
-                branch_name: branch,
-                issue_iid: issue.iid
-               }
+          post :create, params: {
+            namespace_id: project.namespace,
+            project_id: project,
+            branch_name: branch,
+            issue_iid: issue.iid
+          }
         end
       end
 
@@ -249,13 +242,12 @@ RSpec.describe Projects::BranchesController, feature_category: :source_code_mana
         it "doesn't post a system note" do
           expect(SystemNoteService).not_to receive(:new_issue_branch)
 
-          post :create,
-               params: {
-                namespace_id: project.namespace,
-                project_id: project,
-                branch_name: branch,
-                issue_iid: issue.iid
-               }
+          post :create, params: {
+            namespace_id: project.namespace,
+            project_id: project,
+            branch_name: branch,
+            issue_iid: issue.iid
+          }
         end
       end
     end
@@ -289,14 +281,12 @@ RSpec.describe Projects::BranchesController, feature_category: :source_code_mana
     end
 
     def create_branch(name:, ref:)
-      post :create,
-           format: :json,
-           params: {
-             namespace_id: project.namespace.to_param,
-             project_id: project.to_param,
-             branch_name: name,
-             ref: ref
-           }
+      post :create, format: :json, params: {
+        namespace_id: project.namespace.to_param,
+        project_id: project.to_param,
+        branch_name: name,
+        ref: ref
+      }
     end
   end
 
@@ -345,13 +335,11 @@ RSpec.describe Projects::BranchesController, feature_category: :source_code_mana
     before do
       sign_in(developer)
 
-      post :destroy,
-           format: format,
-           params: {
-             id: branch,
-             namespace_id: project.namespace,
-             project_id: project
-           }
+      post :destroy, format: format, params: {
+        id: branch,
+        namespace_id: project.namespace,
+        project_id: project
+      }
     end
 
     context 'as JS' do
@@ -445,11 +433,10 @@ RSpec.describe Projects::BranchesController, feature_category: :source_code_mana
 
   describe "DELETE destroy_all_merged" do
     def destroy_all_merged
-      delete :destroy_all_merged,
-             params: {
-               namespace_id: project.namespace,
-               project_id: project
-             }
+      delete :destroy_all_merged, params: {
+        namespace_id: project.namespace,
+        project_id: project
+      }
     end
 
     context 'when user is allowed to push' do
@@ -492,13 +479,11 @@ RSpec.describe Projects::BranchesController, feature_category: :source_code_mana
 
     context 'when rendering a JSON format' do
       it 'filters branches by name' do
-        get :index,
-            format: :json,
-            params: {
-              namespace_id: project.namespace,
-              project_id: project,
-              search: 'master'
-            }
+        get :index, format: :json, params: {
+          namespace_id: project.namespace,
+          project_id: project,
+          search: 'master'
+        }
 
         expect(json_response.length).to eq 1
         expect(json_response.first).to eq 'master'
@@ -523,13 +508,11 @@ RSpec.describe Projects::BranchesController, feature_category: :source_code_mana
           status: :success,
           created_at: 2.months.ago)
 
-        get :index,
-            format: :html,
-            params: {
-              namespace_id: project.namespace,
-              project_id: project,
-              state: 'all'
-            }
+        get :index, format: :html, params: {
+          namespace_id: project.namespace,
+          project_id: project,
+          state: 'all'
+        }
 
         expect(assigns[:branch_pipeline_statuses]["master"].group).to eq("success")
         expect(assigns[:sort]).to eq('updated_desc')
@@ -555,13 +538,11 @@ RSpec.describe Projects::BranchesController, feature_category: :source_code_mana
           status: :success,
           created_at: 2.months.ago)
 
-        get :index,
-            format: :html,
-            params: {
-              namespace_id: project.namespace,
-              project_id: project,
-              state: 'all'
-            }
+        get :index, format: :html, params: {
+          namespace_id: project.namespace,
+          project_id: project,
+          state: 'all'
+        }
 
         expect(assigns[:branch_pipeline_statuses]["master"].group).to eq("running")
         expect(assigns[:branch_pipeline_statuses]["test"].group).to eq("success")
@@ -570,13 +551,11 @@ RSpec.describe Projects::BranchesController, feature_category: :source_code_mana
 
     context 'when a branch contains no pipelines' do
       it 'no commit statuses are received' do
-        get :index,
-            format: :html,
-            params: {
-              namespace_id: project.namespace,
-              project_id: project,
-              state: 'stale'
-            }
+        get :index, format: :html, params: {
+          namespace_id: project.namespace,
+          project_id: project,
+          state: 'stale'
+        }
 
         expect(assigns[:branch_pipeline_statuses]).to be_blank
         expect(assigns[:sort]).to eq('updated_asc')
@@ -589,14 +568,12 @@ RSpec.describe Projects::BranchesController, feature_category: :source_code_mana
     # was not raised whenever the cache is enabled yet cold.
     context 'when cache is enabled yet cold', :request_store do
       it 'return with a status 200' do
-        get :index,
-            format: :html,
-            params: {
-              namespace_id: project.namespace,
-              project_id: project,
-              sort: 'name_asc',
-              state: 'all'
-            }
+        get :index, format: :html, params: {
+          namespace_id: project.namespace,
+          project_id: project,
+          sort: 'name_asc',
+          state: 'all'
+        }
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(assigns[:sort]).to eq('name_asc')
@@ -609,13 +586,11 @@ RSpec.describe Projects::BranchesController, feature_category: :source_code_mana
       end
 
       it 'return with a status 200' do
-        get :index,
-            format: :html,
-            params: {
-              namespace_id: project.namespace,
-              project_id: project,
-              state: 'all'
-            }
+        get :index, format: :html, params: {
+          namespace_id: project.namespace,
+          project_id: project,
+          state: 'all'
+        }
 
         expect(response).to have_gitlab_http_status(:ok)
       end
@@ -623,37 +598,31 @@ RSpec.describe Projects::BranchesController, feature_category: :source_code_mana
 
     context 'when deprecated sort/search/page parameters are specified' do
       it 'returns with a status 301 when sort specified' do
-        get :index,
-            format: :html,
-            params: {
-              namespace_id: project.namespace,
-              project_id: project,
-              sort: 'updated_asc'
-            }
+        get :index, format: :html, params: {
+          namespace_id: project.namespace,
+          project_id: project,
+          sort: 'updated_asc'
+        }
 
         expect(response).to redirect_to project_branches_filtered_path(project, state: 'all')
       end
 
       it 'returns with a status 301 when search specified' do
-        get :index,
-            format: :html,
-            params: {
-              namespace_id: project.namespace,
-              project_id: project,
-              search: 'feature'
-            }
+        get :index, format: :html, params: {
+          namespace_id: project.namespace,
+          project_id: project,
+          search: 'feature'
+        }
 
         expect(response).to redirect_to project_branches_filtered_path(project, state: 'all')
       end
 
       it 'returns with a status 301 when page specified' do
-        get :index,
-            format: :html,
-            params: {
-              namespace_id: project.namespace,
-              project_id: project,
-              page: 2
-            }
+        get :index, format: :html, params: {
+          namespace_id: project.namespace,
+          project_id: project,
+          page: 2
+        }
 
         expect(response).to redirect_to project_branches_filtered_path(project, state: 'all')
       end
@@ -747,13 +716,11 @@ RSpec.describe Projects::BranchesController, feature_category: :source_code_mana
     end
 
     it 'returns the commit counts behind and ahead of default branch' do
-      get :diverging_commit_counts,
-          format: :json,
-          params: {
-            namespace_id: project.namespace,
-            project_id: project,
-            names: %w[fix add-pdf-file branch-merged]
-          }
+      get :diverging_commit_counts, format: :json, params: {
+        namespace_id: project.namespace,
+        project_id: project,
+        names: %w[fix add-pdf-file branch-merged]
+      }
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response).to eq(
@@ -766,12 +733,10 @@ RSpec.describe Projects::BranchesController, feature_category: :source_code_mana
     it 'returns the commits counts with no names provided' do
       allow_any_instance_of(Repository).to receive(:branch_count).and_return(Kaminari.config.default_per_page)
 
-      get :diverging_commit_counts,
-          format: :json,
-          params: {
-            namespace_id: project.namespace,
-            project_id: project
-          }
+      get :diverging_commit_counts, format: :json, params: {
+        namespace_id: project.namespace,
+        project_id: project
+      }
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response.count).to be > 1
@@ -783,25 +748,21 @@ RSpec.describe Projects::BranchesController, feature_category: :source_code_mana
       end
 
       it 'returns 422 if no names are specified' do
-        get :diverging_commit_counts,
-            format: :json,
-            params: {
-              namespace_id: project.namespace,
-              project_id: project
-            }
+        get :diverging_commit_counts, format: :json, params: {
+          namespace_id: project.namespace,
+          project_id: project
+        }
 
         expect(response).to have_gitlab_http_status(:unprocessable_entity)
         expect(json_response['error']).to eq("Specify at least one and at most #{Kaminari.config.default_per_page} branch names")
       end
 
       it 'returns the list of counts' do
-        get :diverging_commit_counts,
-            format: :json,
-            params: {
-              namespace_id: project.namespace,
-              project_id: project,
-              names: %w[fix add-pdf-file branch-merged]
-            }
+        get :diverging_commit_counts, format: :json, params: {
+          namespace_id: project.namespace,
+          project_id: project,
+          names: %w[fix add-pdf-file branch-merged]
+        }
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response.count).to be > 1

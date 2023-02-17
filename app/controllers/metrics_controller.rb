@@ -10,9 +10,10 @@ class MetricsController < ActionController::Base
     response = if Gitlab::Metrics.prometheus_metrics_enabled?
                  metrics_service.metrics_text
                else
-                 help_page = help_page_url('administration/monitoring/prometheus/gitlab_metrics',
-                                           anchor: 'gitlab-prometheus-metrics'
-                                          )
+                 help_page = help_page_url(
+                   'administration/monitoring/prometheus/gitlab_metrics',
+                   anchor: 'gitlab-prometheus-metrics'
+                 )
                  "# Metrics are disabled, see: #{help_page}\n"
                end
 

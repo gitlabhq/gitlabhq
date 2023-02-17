@@ -40,9 +40,12 @@ class Projects::TreeController < Projects::ApplicationController
   def create_dir
     return render_404 unless @commit_params.values.all?
 
-    create_commit(Files::CreateDirService,  success_notice: _("The directory has been successfully created."),
-                                            success_path: project_tree_path(@project, File.join(@branch_name, @dir_name)),
-                                            failure_path: project_tree_path(@project, @ref))
+    create_commit(
+      Files::CreateDirService,
+      success_notice: _("The directory has been successfully created."),
+      success_path: project_tree_path(@project, File.join(@branch_name, @dir_name)),
+      failure_path: project_tree_path(@project, @ref)
+    )
   end
 
   private

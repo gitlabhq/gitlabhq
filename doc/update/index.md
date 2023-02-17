@@ -268,6 +268,150 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
 
 - This version removes `SanitizeConfidentialTodos` background migration [added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87908/diffs) in 15.6, which removed any user inaccessible to-do items. Make sure that this migration is finished before upgrading to 15.9.
 - As part of the [CI Partitioning effort](../architecture/blueprints/ci_data_decay/pipeline_partitioning.md), a [new Foreign Key](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107547) was added to `ci_builds_needs`. On GitLab instances with large CI tables, adding this constraint can take longer than usual. Make sure that this migration is finished before upgrading to 15.9.
+- Praefect's metadata verifier's [invalid metadata deletion behavior](../administration/gitaly/praefect.md#enable-deletions) is now enabled by default.
+
+  The metadata verifier processes replica records in the Praefect database and verifies the replicas actually exist on the Gitaly nodes. If the replica doesn't exist, its
+  metadata record is deleted. This enables Praefect to fix situations where a replica has a metadata record indicating it's fine but, in reality, it doesn't exist on disk.
+  After the metadata record is deleted, Praefect's reconciler schedules a replication job to recreate the replica.
+
+  Because of past issues with the state management logic, there may be invalid metadata records in the database. These could exist, for example, because of incomplete
+  deletions of repositories or partially completed renames. The verifier deletes these stale replica records of affected repositories. These repositories may show up as
+  unavailable repositories in the metrics and `praefect dataloss` sub-command because of the replica records being removed. If you encounter such repositories, remove
+  the repository using `praefect remove-repository` to remove the repository's remaining records.
+
+  You can find repositories with invalid metadata records prior in GitLab 15.0 and later by searching for the log records outputted by the verifier. You can find an example log record [here](../administration/gitaly/praefect.md#repository-verification).
+- Praefect configuration structure in Omnibus GitLab [has changed](https://gitlab.com/gitlab-org/gitaly/-/issues/4467) to be consistent with the Praefect configuration structure
+  used in source installs. Praefect configuration is now under `praefect['configuration']` as a single hash. There are still other top-level keys in `praefect` used by
+  Omnibus GitLab.
+
+  Migrate by moving your existing configuration under the new structure. Below is the new structure with the old keys described in a comment above the key. Replace the
+  `...` with the value from the old key. Default values are the same. If you haven't configured a value previously, you don't need to configure it. Remove the old keys
+  from the configuration once migrated.
+
+  ```ruby
+  praefect['configuration'] = {
+    # praefect['listen_addr']
+    listen_addr: ...,
+    # praefect['socket_path']
+    socket_path: ...,
+    # praefect['prometheus_listen_addr']
+    prometheus_listen_addr: ...,
+    # praefect['tls_listen_addr']
+    tls_listen_addr: ...,
+    # praefect['separate_database_metrics']
+    prometheus_exclude_database_from_default_metrics: ...,
+    auth: {
+      # praefect['auth_token']
+      token: ...,
+      # praefect['auth_transitioning']
+      transitioning: ...,
+    },
+    logging: {
+      # praefect['logging_format']
+      format: ...,
+      # praefect['logging_level']
+      level: ...,
+    },
+    failover: {
+      # praefect['failover_enabled']
+      enabled: ...,
+    },
+    background_verification: {
+      # praefect['background_verification_delete_invalid_records']
+      delete_invalid_records: ...
+      # praefect['background_verification_verification_interval']
+      verification_interval: ...,
+    },
+    reconciliation: {
+      # praefect['reconciliation_scheduling_interval']
+      scheduling_interval: ...,
+      # praefect['reconciliation_histogram_buckets']. The old value was configured as a string
+      # such as '[0, 1, 2]'. The new value must be an array like [0, 1, 2].
+      histogram_buckets: ...,
+    },
+    tls: {
+      # praefect['certificate_path']
+      certificate_path: ...,
+      # praefect['key_path']
+      key_path: ...,
+    },
+    database: {
+      # praefect['database_host']
+      host: ...,
+      # praefect['database_port']
+      port: ...,
+      # praefect['database_user']
+      user: ...,
+      # praefect['database_password']
+      password: ...,
+      # praefect['database_dbname']
+      dbname: ...,
+      # praefect['database_sslmode']
+      sslmode: ...,
+      # praefect['database_sslcert']
+      sslcert: ...,
+      # praefect['database_sslkey']
+      sslkey: ...,
+      # praefect['database_sslrootcert']
+      sslrootcert: ...,
+      session_pooled: {
+        # praefect['database_direct_host']
+        host: ...,
+        # praefect['database_direct_port']
+        port: ...,
+        # praefect['database_direct_user']
+        user: ...,
+        # praefect['database_direct_password']
+        password: ...,
+        # praefect['database_direct_dbname']
+        dbname: ...,
+        # praefect['database_direct_sslmode']
+        sslmode: ...,
+        # praefect['database_direct_sslcert']
+        sslcert: ...,
+        # praefect['database_direct_sslkey']
+        sslkey: ...,
+        # praefect['database_direct_sslrootcert']
+        sslrootcert: ...,
+      }
+    },
+    sentry: {
+      # praefect['sentry_dsn']
+      sentry_dsn: ...,
+      # praefect['sentry_environment']
+      sentry_environment: ...,
+    },
+    prometheus: {
+      # praefect['prometheus_grpc_latency_buckets']. The old value was configured as a string
+      # such as '[0, 1, 2]'. The new value must be an array like [0, 1, 2].
+      grpc_latency_buckets: ...,
+    },
+    # praefect['graceful_stop_timeout']
+    graceful_stop_timeout: ...,
+
+    # praefect['virtual_storages']. The old value was a hash map but the new value is an array.
+    virtual_storage: [
+      {
+        # praefect['virtual_storages'][VIRTUAL_STORAGE_NAME]. The name was previously the key in
+        # the 'virtual_storages' hash.
+        name: ...,
+        # praefect['virtual_storages'][VIRTUAL_STORAGE_NAME]['nodes'][NODE_NAME]. The old value was a hash map
+        # but the new value is an array.
+        node: [
+          {
+            # praefect['virtual_storages'][VIRTUAL_STORAGE_NAME]['nodes'][NODE_NAME]. Use NODE_NAME key as the
+            # storage.
+            storage: ...,
+            # praefect['virtual_storages'][VIRTUAL_STORAGE_NAME]['nodes'][NODE_NAME]['address'].
+            address: ...,
+            # praefect['virtual_storages'][VIRTUAL_STORAGE_NAME]['nodes'][NODE_NAME]['token'].
+            token: ...
+          },
+        ],
+      }
+    ]
+  }
+  ```
 
 ### 15.8.2
 

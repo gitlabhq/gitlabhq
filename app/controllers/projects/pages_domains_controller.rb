@@ -69,9 +69,7 @@ class Projects::PagesDomainsController < Projects::ApplicationController
 
     respond_to do |format|
       format.html do
-        redirect_to project_pages_path(@project),
-                    status: :found,
-                    notice: 'Domain was removed'
+        redirect_to project_pages_path(@project), status: :found, notice: 'Domain was removed'
       end
       format.js
     end

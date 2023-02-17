@@ -75,13 +75,7 @@ RSpec.describe Projects::BlobController do
         let(:id) { 'master/README.md' }
 
         before do
-          get(:show,
-              params: {
-                namespace_id: project.namespace,
-                project_id: project,
-                id: id
-              },
-              format: :json)
+          get :show, params: { namespace_id: project.namespace, project_id: project, id: id }, format: :json
         end
 
         it do
@@ -95,14 +89,7 @@ RSpec.describe Projects::BlobController do
         let(:id) { 'master/README.md' }
 
         before do
-          get(:show,
-              params: {
-                namespace_id: project.namespace,
-                project_id: project,
-                id: id,
-                viewer: 'none'
-              },
-              format: :json)
+          get :show, params: { namespace_id: project.namespace, project_id: project, id: id, viewer: 'none' }, format: :json
         end
 
         it do
@@ -115,12 +102,8 @@ RSpec.describe Projects::BlobController do
 
     context 'with tree path' do
       before do
-        get(:show,
-            params: {
-              namespace_id: project.namespace,
-              project_id: project,
-              id: id
-            })
+        get :show, params: { namespace_id: project.namespace, project_id: project, id: id }
+
         controller.instance_variable_set(:@blob, nil)
       end
 

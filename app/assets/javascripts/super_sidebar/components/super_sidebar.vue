@@ -1,19 +1,19 @@
 <script>
 import { GlCollapse } from '@gitlab/ui';
-import { context } from '../mock_data';
 import UserBar from './user_bar.vue';
 import ContextSwitcherToggle from './context_switcher_toggle.vue';
 import ContextSwitcher from './context_switcher.vue';
 import HelpCenter from './help_center.vue';
+import SidebarMenu from './sidebar_menu.vue';
 
 export default {
-  context,
   components: {
     GlCollapse,
     UserBar,
     ContextSwitcherToggle,
     ContextSwitcher,
     HelpCenter,
+    SidebarMenu,
   },
   props: {
     sidebarData: {
@@ -25,6 +25,11 @@ export default {
     return {
       contextSwitcherOpened: false,
     };
+  },
+  computed: {
+    menuItems() {
+      return this.sidebarData.current_menu_items || [];
+    },
   },
 };
 </script>
@@ -38,9 +43,15 @@ export default {
     <user-bar :sidebar-data="sidebarData" />
     <div class="gl-display-flex gl-flex-direction-column gl-flex-grow-1 gl-overflow-hidden">
       <div class="gl-flex-grow-1 gl-overflow-auto">
-        <context-switcher-toggle :context="$options.context" :expanded="contextSwitcherOpened" />
+        <context-switcher-toggle
+          :context="sidebarData.current_context_header"
+          :expanded="contextSwitcherOpened"
+        />
         <gl-collapse id="context-switcher" v-model="contextSwitcherOpened">
           <context-switcher />
+        </gl-collapse>
+        <gl-collapse :visible="!contextSwitcherOpened">
+          <sidebar-menu :items="menuItems" />
         </gl-collapse>
       </div>
       <div class="gl-p-3">
