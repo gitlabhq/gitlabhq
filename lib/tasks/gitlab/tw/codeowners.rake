@@ -44,6 +44,7 @@ namespace :tw do
       CodeOwnerRule.new('Fuzz Testing', '@rdickenson'),
       CodeOwnerRule.new('Geo', '@axil'),
       CodeOwnerRule.new('Gitaly', '@eread'),
+      CodeOwnerRule.new('GitLab Dedicated', '@axil'),
       CodeOwnerRule.new('Global Search', '@ashrafkhamis'),
       CodeOwnerRule.new('Import', '@eread'),
       CodeOwnerRule.new('Infrastructure', '@sselhorn'),
