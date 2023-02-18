@@ -166,7 +166,7 @@ After the previous command exits, the cluster is ready.
 Go to a namespace you own in the connected GitLab instance and copy the Group ID below the group name.
 
 GOP can only be enabled for groups you own.
-To list all the groups that your user owns, go to the menu in upper left corner and select `Groups`->`View all Groups`. You then see the **Your groups** tab.
+To list all the groups that your user owns, in the upper-left corner, select **Groups > View all Groups**. You then see the **Your groups** tab.
 
 In your browser, go to `http://localhost/-/{GroupID}`. For example, `http://localhost/-/14485840`.
 

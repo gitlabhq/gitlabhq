@@ -6,7 +6,7 @@ module Mutations
       class TakeOwnership < Base
         graphql_name 'PipelineScheduleTakeOwnership'
 
-        authorize :take_ownership_pipeline_schedule
+        authorize :admin_pipeline_schedule
 
         field :pipeline_schedule,
               Types::Ci::PipelineScheduleType,

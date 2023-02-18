@@ -400,7 +400,7 @@ To view all issues assigned to you:
 Or:
 
 - To use a [keyboard shortcut](../../shortcuts.md), press <kbd>Shift</kbd> + <kbd>i</kbd>.
-- On the top bar, in the upper right, select **{issues}** **Issues**.
+- On the top bar, in the upper-right corner, select **Issues** (**{issues}**).
 
 ## Filter the list of issues
 

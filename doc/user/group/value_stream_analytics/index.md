@@ -305,7 +305,7 @@ After you create a value stream, you can customize it to suit your purposes. To 
 
 1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Analytics > Value Stream**.
-1. In the upper right, select the dropdown list, and select a value stream.
+1. In the upper-right corner, select the dropdown list, then select a value stream.
 1. Next to the value stream dropdown list, select **Edit**.
 1. Optional:
     - Rename the value stream.
@@ -324,7 +324,7 @@ To delete a custom value stream:
 
 1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Analytics > Value Stream**.
-1. In the upper right, select the dropdown list and then select the value stream you would like to delete.
+1. In the upper-right corner, select the dropdown list, then select the value stream you would like to delete.
 1. Select **Delete (name of value stream)**.
 1. To confirm, select **Delete**.
 

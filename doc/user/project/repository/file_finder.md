@@ -11,7 +11,7 @@ The file finder feature allows you to search for a file in a repository using th
 GitLab UI. To use it:
 
 1. Go to your project's **Repository > Files**.
-1. In the upper right corner, select **Find File**.
+1. In the upper-right corner, select **Find File**.
 
 If you prefer to keep your fingers on the keyboard, use the
 [shortcut button](../../shortcuts.md), which you can invoke from anywhere

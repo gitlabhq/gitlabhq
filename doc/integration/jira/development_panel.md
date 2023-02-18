@@ -4,59 +4,48 @@ group: Integrations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab Jira development panel integration **(FREE)**
+# Jira development panel **(FREE)**
 
 > [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/233149) from GitLab Premium to GitLab Free in 13.4.
 
-With the Jira development panel integration, you can reference Jira issues in GitLab.
-When configured, activity (such as pipeline, deployment, and feature flags) displays in the Jira issue's
-[development panel](https://support.atlassian.com/jira-software-cloud/docs/view-development-information-for-an-issue/).
-From the development panel, you can open a detailed view and
-[take various actions](#use-the-integration), including creating a new merge request from a branch:
+You can view GitLab activity from the Jira development panel.
 
-![Branch, Commit and Pull Requests links on Jira issue](img/jira_dev_panel_jira_setup_3.png)
+When you are in GitLab, you refer to a Jira issue by ID. Then
+[the activity](https://support.atlassian.com/jira-software-cloud/docs/view-development-information-for-an-issue/)
+for that issue is displayed in the Jira development panel.
 
-The information displayed in the Jira development panel depends on where you mention the Jira issue ID:
+In the Jira development panel, you can create a GitLab merge request from a branch.
+You can also create a GitLab branch from a Jira Cloud issue
+([introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/66032) in GitLab 14.2).
 
-| Your mention of Jira issue ID in GitLab context   | Automated effect in Jira issue                                                                         |
-|---------------------------------------------------|--------------------------------------------------------------------------------------------------------|
-| In a merge request title or description           | Link to the MR is displayed in the development panel.                                                      |
-| In a branch name                                  | Link to the branch is displayed in the development panel.                                                  |
-| In a commit message                               | Link to the commit is displayed in the development panel.                                                  |
-| In a commit message with Jira [Smart Commits](https://confluence.atlassian.com/fisheye/using-smart-commits-960155400.html) | Displays your custom comment or logged time spent and/or performs specified issue transition on merge. |
+## Connected projects in GitLab
 
-This integration connects all GitLab projects to projects in the Jira instance in either:
+The Jira development panel connects to the Jira instance all GitLab projects in:
 
-- A top-level GitLab group: Connects the projects in a group with no parent group,
-  including the projects in its subgroups.
-- A personal namespace: Connects the projects in that personal namespace to Jira.
+- A top-level group, including all projects in its subgroups.
+- A personal namespace.
 
-## Use the integration
+## Where the Jira ID displayed
 
-After the integration is [set up on GitLab and Jira](#configure-the-integration), you can:
+The information displayed in the Jira development panel depends on where you mention the Jira issue ID in GitLab.
 
-- Refer to any Jira issue by its ID (in uppercase) in GitLab branch names,
-  commit messages, and merge request titles.
-- See the linked branches, commits, and merge requests in Jira issues.
-- Create GitLab branches from Jira Cloud issues ([introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/66032) in GitLab 14.2 for the GitLab for Jira app).
+| GitLab: where you mention the Jira issue ID    | Jira development panel: what information is displayed |
+|------------------------------------------------|-------------------------------------------------------|
+| Merge request title or description             | Link to the merge request                             |
+| Branch name                                    | Link to the branch                                    |
+| Commit message                                 | Link to the commit                                    |
+| [Jira Smart Commit](#jira-smart-commits)       | Custom comment, logged time, or workflow transition   |
 
-At this time, merge requests are called "pull requests" in Jira issues.
-This name may change in a future Jira release.
+## Jira Smart Commits
 
-Select the links to see your GitLab repository data.
+Jira Smart Commits are special commands to process a Jira issue. With these commands, you can use GitLab to:
 
-![GitLab commits details on a Jira issue](img/jira_dev_panel_jira_setup_4.png)
+- Add a custom comment to a Jira issue.
+- Log time against a Jira issue.
+- Transition a Jira issue to any status defined in the project workflow.
 
-![GitLab merge requests details on a Jira issue](img/jira_dev_panel_jira_setup_5.png)
-
-### Use Jira Smart Commits
-
-With Jira [Smart Commits](https://confluence.atlassian.com/fisheye/using-smart-commits-960155400.html),
-you can use GitLab to add Jira comments, log time spent on the issue, or apply any issue transition.
-
-For more information about using Jira Smart Commits to track time against an issue, specify
-an issue transition, or add a custom comment, read the Atlassian page
-[Using Smart Commits](https://confluence.atlassian.com/fisheye/using-smart-commits-960155400.html).
+For more information, see [Using Smart Commits](https://confluence.atlassian.com/fisheye/using-smart-commits-960155400.html)
+in the Atlassian documentation.
 
 ## Configure the integration
 

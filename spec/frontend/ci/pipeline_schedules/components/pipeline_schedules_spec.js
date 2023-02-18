@@ -16,6 +16,7 @@ import getPipelineSchedulesQuery from '~/ci/pipeline_schedules/graphql/queries/g
 import {
   mockGetPipelineSchedulesGraphQLResponse,
   mockPipelineScheduleNodes,
+  mockPipelineScheduleCurrentUser,
   deleteMutationResponse,
   playMutationResponse,
   takeOwnershipMutationResponse,
@@ -115,6 +116,7 @@ describe('Pipeline schedules app', () => {
       await waitForPromises();
 
       expect(findTable().props('schedules')).toEqual(mockPipelineScheduleNodes);
+      expect(findTable().props('currentUser')).toEqual(mockPipelineScheduleCurrentUser);
     });
 
     it('shows query error alert', async () => {

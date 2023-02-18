@@ -403,3 +403,8 @@ if any of these conditions are true:
   Check the project [merge request approval](merge_requests/approvals/settings.md#edit-merge-request-approval-settings) settings.
 - A Code Owner group has a visibility of **private**, and the current user is not a
   member of the Code Owner group.
+
+### Approval rule is invalid. GitLab has approved this rule automatically to unblock the merge request
+
+This message may appear if an approval rule uses a Code Owner that is not a direct member of the project.
+Check that the group or user has been invited to the project.

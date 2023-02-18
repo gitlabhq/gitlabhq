@@ -55,7 +55,7 @@ by the merge request:
 1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Merge requests**, and find your merge request.
 1. Scroll to the merge request reports section, and find the **Merged by** report.
-1. In the upper right, select **Cherry-pick**:
+1. In the upper-right corner, select **Cherry-pick**:
 
    ![Cherry-pick merge request](img/cherry_pick_v15_4.png)
 1. In the modal window, select the project and branch to cherry-pick into.

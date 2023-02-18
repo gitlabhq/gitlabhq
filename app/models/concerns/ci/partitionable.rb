@@ -36,6 +36,7 @@ module Ci
         Ci::Pipeline
         Ci::PendingBuild
         Ci::RunningBuild
+        Ci::RunnerMachineBuild
         Ci::PipelineVariable
         Ci::Sources::Pipeline
         Ci::Stage

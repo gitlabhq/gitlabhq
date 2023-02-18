@@ -708,7 +708,7 @@ You can view a deployment's expiration date in the GitLab UI.
 1. On the left sidebar, select **Deployments > Environments**.
 1. Select the name of the deployment.
 
-In the upper left, next to the environment name, the expiration date is displayed.
+In the upper-left corner, next to the environment name, the expiration date is displayed.
 
 #### Override a deployment's scheduled stop time
 
@@ -717,7 +717,7 @@ You can manually override a deployment's expiration date.
 1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Deployments > Environments**.
 1. Select the deployment name.
-1. in the upper right, select the thumbtack (**{thumbtack}**).
+1. in the upper-right corner, select the thumbtack (**{thumbtack}**).
 
 ![Environment auto stop](img/environment_auto_stop_v13_10.png)
 

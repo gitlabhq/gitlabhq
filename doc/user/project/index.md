@@ -139,9 +139,8 @@ Prerequisites:
 - You must have permission to add new projects to a namespace. To check if you have permission:
 
   1. On the top bar, select **Main menu > Groups** and find your group.
-  1. Confirm that **New project** is visible in the upper right
-     corner. Contact your GitLab
-     administrator if you require permission.
+  1. In the upper-right corner, confirm that **New project** is visible.
+     Contact your GitLab administrator if you require permission.
 
 To push your repository and create a project:
 

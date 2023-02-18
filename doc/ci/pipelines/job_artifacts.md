@@ -264,7 +264,7 @@ artifacts and log. You must be:
 To delete a job:
 
 1. Go to a job's detail page.
-1. In the upper right of the job's log, select **Erase job log** (**{remove}**).
+1. In the upper-right corner of the job's log, select **Erase job log** (**{remove}**).
 1. On the confirmation dialog, select **OK**.
 
 ## Expose job artifacts in the merge request UI

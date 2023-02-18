@@ -63,7 +63,7 @@ You can add a star to projects you use frequently to make them easier to find.
 To add a star to a project:
 
 1. On the top bar, select **Main menu > Projects** and find your project.
-1. In the upper right corner of the page, select **Star**.
+1. In the upper-right corner of the page, select **Star**.
 
 ## View starred projects
 

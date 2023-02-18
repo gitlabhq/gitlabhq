@@ -415,6 +415,7 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/administration/compliance.md @eread
 /doc/administration/configure.md @axil
 /doc/administration/consul.md @axil
+/doc/administration/dedicated/ @axil
 /doc/administration/docs_self_host.md @axil
 /doc/administration/encrypted_configuration.md @axil
 /doc/administration/environment_variables.md @axil
@@ -794,6 +795,7 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/integration/jenkins.md @ashrafkhamis
 /doc/integration/jira/ @ashrafkhamis
 /doc/integration/mattermost/ @axil
+/doc/integration/partner_marketplace.md @drcatherinepope
 /doc/integration/recaptcha.md @phillipwells
 /doc/integration/security_partners/ @rdickenson
 /doc/integration/slash_commands.md @ashrafkhamis
@@ -805,6 +807,7 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/operations/incident_management/ @msedlakjakubowski
 /doc/operations/index.md @msedlakjakubowski
 /doc/operations/metrics/ @msedlakjakubowski
+/doc/operations/quickstart-guide.md @drcatherinepope
 /doc/policy/ @axil
 /doc/raketasks/ @axil
 /doc/raketasks/generate_sample_prometheus_data.md @msedlakjakubowski
@@ -877,8 +880,11 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/user/asciidoc.md @aqualls
 /doc/user/award_emojis.md @msedlakjakubowski
 /doc/user/clusters/ @phillipwells
-/doc/user/compliance/ @eread
+/doc/user/compliance/ @dianalogan
+/doc/user/compliance/compliance_report/ @eread
+/doc/user/compliance/index.md @eread
 /doc/user/compliance/license_compliance/ @rdickenson
+/doc/user/compliance/license_scanning_of_cyclonedx_files/ @rdickenson
 /doc/user/crm/ @msedlakjakubowski
 /doc/user/discussions/ @aqualls
 /doc/user/enterprise_user/ @jglassman1

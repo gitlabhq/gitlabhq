@@ -40,7 +40,7 @@ or a merge request.
 
 To open the Web IDE Beta from a file or the repository file list:
 
-- In the upper right of the page, select **Open in Web IDE**.
+- In the upper-right corner of the page, select **Open in Web IDE**.
 
 If **Open in Web IDE** is not visible:
 
@@ -53,7 +53,7 @@ If **Open in Web IDE** is not visible:
 To open the Web IDE Beta from a merge request:
 
 1. Go to your merge request.
-1. In the upper right corner, select **Code > Open in Web IDE**.
+1. In the upper-right corner, select **Code > Open in Web IDE**.
 
 ## Open a file in the Web IDE Beta
 

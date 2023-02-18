@@ -223,6 +223,8 @@ cybersecurity
 CycloneDX
 Dangerfile
 DAST
+Database Lab Engine
+Database Lab
 Databricks
 Datadog
 datasource

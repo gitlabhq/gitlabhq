@@ -74,7 +74,7 @@ Prerequisites:
 
 To create a new issue board:
 
-1. Select the dropdown list with the current board name in the upper left corner of the issue boards page.
+1. In the upper-left corner of the issue board page, select the dropdown list with the current board name.
 1. Select **Create new board**.
 1. Enter the new board's name and select its scope: milestone, labels, assignee, or weight.
 
@@ -86,7 +86,7 @@ Prerequisites:
 
 To delete the currently active issue board:
 
-1. Select the dropdown list with the current board name in the upper left corner of the issue boards page.
+1. In the upper-left corner of the issue board page, select the dropdown list with the current board name.
 1. Select **Delete board**.
 1. Select **Delete** to confirm.
 
@@ -475,7 +475,7 @@ Additionally, you can also see the time tracking value.
 
 ### Create a new list
 
-Create a new list by selecting the **Create** button in the upper right corner of the issue board.
+To create a new list, in the upper-right corner of the issue board, select **Create**.
 
 ![creating a new list in an issue board](img/issue_board_add_list_v14_1.png)
 

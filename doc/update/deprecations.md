@@ -346,6 +346,20 @@ Due to low customer usage, Load Performance Testing is deprecated and will be re
 
 <div class="deprecation removal-160 breaking-change">
 
+### Managed Licenses API
+
+Planned removal: GitLab <span class="removal-milestone">16.0</span> <span class="removal-date"></span>
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+The [Managed Licenses API](https://docs.gitlab.com/ee/api/managed_licenses.html) is now deprecated and is scheduled for removal in GitLab 16.0.
+
+</div>
+
+<div class="deprecation removal-160 breaking-change">
+
 ### Old versions of JSON web tokens are deprecated
 
 Planned removal: GitLab <span class="removal-milestone">16.0</span> <span class="removal-date"></span>

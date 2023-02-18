@@ -183,14 +183,17 @@ CREATE TABLE ci_runners (
 )
 ```
 
-The `ci_builds_metadata` table shall reference `ci_runner_machines`.
+A new `p_ci_runner_machine_builds` table joins the `ci_runner_machines` and `ci_builds` tables, to avoid
+adding more pressure to those tables.
 We might consider a more efficient way to store `contacted_at` than updating the existing record.
 
 ```sql
-CREATE TABLE ci_builds_metadata (
-    ...
+CREATE TABLE p_ci_runner_machine_builds (
+    partition_id bigint DEFAULT 100 NOT NULL,
+    build_id bigint NOT NULL,
     runner_machine_id bigint NOT NULL
-);
+)
+PARTITION BY LIST (partition_id);
 
 CREATE TABLE ci_runner_machines (
     id bigint NOT NULL,
@@ -375,6 +378,7 @@ scope.
 | GitLab Rails app | `%15.9` | Use runner token + `system_id` JSON parameters in `POST /jobs/request` request in the [heartbeat request](https://gitlab.com/gitlab-org/gitlab/blob/c73c96a8ffd515295842d72a3635a8ae873d688c/lib/api/ci/helpers/runner.rb#L14-20) to update the `ci_runner_machines` cache/table. |
 | GitLab Rails app | `%15.9` | [Feature flag] Enable runner creation workflow (`create_runner_workflow`). |
 | GitLab Rails app | `%15.9` | Implement `create_{instance|group|project}_runner` permissions. |
+| GitLab Rails app | `%15.9` | Replace `ci_builds_metadata.runner_machine_id` with a new join table. |
 | GitLab Rails app | `%15.9` | Rename `ci_runner_machines.machine_xid` column to `system_xid` to be consistent with `system_id` passed in APIs. |
 | GitLab Rails app | `%15.10` | Drop `ci_runner_machines.machine_xid` column. |
 | GitLab Rails app | `%15.11` | Remove the ignore rule for `ci_runner_machines.machine_xid` column. |

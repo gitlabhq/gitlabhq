@@ -22,7 +22,7 @@ and from merge requests:
 
 ### When viewing a file or the repository file list
 
-  1. In the upper right corner of the page, select **Open in Web IDE** if it is visible.
+  1. In the upper-right corner of the page, select **Open in Web IDE** if it is visible.
   1. If **Open in Web IDE** is not visible:
      1. Select the (**{chevron-lg-down}**) next to **Edit** or **Gitpod**, depending on your configuration.
      1. Select **Open in Web IDE** from the list to display it as the editing option.
@@ -31,7 +31,7 @@ and from merge requests:
 ### When viewing a merge request
 
   1. Go to your merge request.
-  1. In the upper right corner, select **Code > Open in Web IDE**.
+  1. In the upper-right corner, select **Code > Open in Web IDE**.
 
 ## File finder
 

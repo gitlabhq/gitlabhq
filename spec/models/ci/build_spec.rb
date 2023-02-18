@@ -31,7 +31,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
   it { is_expected.to have_many(:pages_deployments).with_foreign_key(:ci_build_id) }
 
   it { is_expected.to have_one(:deployment) }
-  it { is_expected.to have_one(:runner_machine).through(:metadata) }
+  it { is_expected.to have_one(:runner_machine).through(:runner_machine_build) }
   it { is_expected.to have_one(:runner_session).with_foreign_key(:build_id) }
   it { is_expected.to have_one(:trace_metadata).with_foreign_key(:build_id) }
   it { is_expected.to have_one(:runtime_metadata).with_foreign_key(:build_id) }

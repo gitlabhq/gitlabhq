@@ -123,7 +123,7 @@ You can use your own classification label in the project's
 label" box. When no classification label is specified on a project, the default
 label defined in the [global settings](#configuration) is used.
 
-The label is shown on all project pages in the upper right corner.
+On all project pages, in the upper-right corner, the label appears.
 
 ![classification label on project page](img/classification_label_on_project_page_v14_8.png)
 

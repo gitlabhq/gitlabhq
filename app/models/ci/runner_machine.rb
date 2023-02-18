@@ -10,12 +10,12 @@ module Ci
     ignore_column :machine_xid, remove_with: '15.11', remove_after: '2022-03-22'
 
     # The `UPDATE_CONTACT_COLUMN_EVERY` defines how often the Runner Machine DB entry can be updated
-    UPDATE_CONTACT_COLUMN_EVERY = 40.minutes..55.minutes
+    UPDATE_CONTACT_COLUMN_EVERY = (40.minutes)..(55.minutes)
 
     belongs_to :runner
 
-    has_many :build_metadata, class_name: 'Ci::BuildMetadata'
-    has_many :builds, through: :build_metadata, class_name: 'Ci::Build'
+    has_many :runner_machine_builds, inverse_of: :runner_machine, class_name: 'Ci::RunnerMachineBuild'
+    has_many :builds, through: :runner_machine_builds, class_name: 'Ci::Build'
     belongs_to :runner_version, inverse_of: :runner_machines, primary_key: :version, foreign_key: :version,
                class_name: 'Ci::RunnerVersion'
 

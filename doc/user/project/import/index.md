@@ -109,7 +109,7 @@ To view project import history:
 1. On the top bar, select **Create new...** (**{plus-square}**).
 1. Select **New project/repository**.
 1. Select **Import project**.
-1. Select **History** in the upper right corner.
+1. In the upper-right corner, select **History**.
 1. If there are any errors for a particular import, you can see them by selecting **Details**.
 
 The history also includes projects created from [built-in](../index.md#create-a-project-from-a-built-in-template)

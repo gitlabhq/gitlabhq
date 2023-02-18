@@ -84,10 +84,8 @@ Our GraphQL API can be explored via GraphiQL at your instance's
 [GitLab GraphQL API Reference documentation](../../api/graphql/reference)
 where needed.
 
-You can check all existing queries and mutations on the right side
-of GraphiQL in its **Documentation explorer**. You can also
-write queries and mutations directly on the left tab and check
-their execution by selecting **Execute query** in the upper left:
+To check all existing queries and mutations, on the right side of GraphiQL, select **Documentation explorer**.
+To check the execution of the queries and mutations you've written, in the upper-left corner, select **Execute query**.
 
 ![GraphiQL interface](img/graphiql_explorer_v12_4.png)
 

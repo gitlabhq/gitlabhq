@@ -20,7 +20,7 @@ credentials, you must:
 This process creates a user named `gitlab`:
 
 1. Sign in to your Jira instance as a Jira administrator.
-1. In the upper right corner of the top menu, go to the gear icon and
+1. On the top bar, in the upper-right corner, select the gear icon, then
    select **User Management**.
 1. Create a new user account (`gitlab`) with write access to
    projects in Jira.
@@ -43,9 +43,9 @@ group to assign permissions to the user.
 This process adds the `gitlab` user you created to a new group named `gitlab-developers`:
 
 1. Sign in to your Jira instance as a Jira administrator.
-1. In the upper right corner of the top menu, go to the gear icon and
+1. On the top bar, in the upper-right corner, select the gear icon, then
    select **User Management**.
-1. On the sidebar, select **Groups**.
+1. On the left sidebar, select **Groups**.
 
    ![Jira create new user](img/jira_create_new_group.png)
 
@@ -70,9 +70,9 @@ Next, create a permission scheme for your group.
 After creating the group in Jira, grant permissions to the group by creating a permission scheme:
 
 1. Sign in to your Jira instance as a Jira administrator.
-1. In the upper right corner of the top menu, go to the gear icon and
+1. On the top bar, in the upper-right corner, select the gear icon, then
    select **Issues**.
-1. On the sidebar, select **Permission Schemes**.
+1. On the left sidebar, select **Permission Schemes**.
 1. Select **Add Permission Scheme**, enter a **Name** and (optionally) a
    **Description**, and then select **Add**.
 1. In the permissions scheme list, locate your new permissions scheme, and

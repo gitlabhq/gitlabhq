@@ -19,7 +19,7 @@ To implement a new metric in Service Ping, follow these steps:
 1. [Name and place the metric](metrics_dictionary.md#metric-key_path)
 1. [Test counters manually using your Rails console](#test-counters-manually-using-your-rails-console)
 1. [Generate the SQL query](#generate-the-sql-query)
-1. [Optimize queries with `#database-lab`](#optimize-queries-with-database-lab)
+1. [Optimize queries with Database Lab](#optimize-queries-with-database-lab)
 1. [Add the metric definition to the Metrics Dictionary](#add-the-metric-definition)
 1. [Add the metric to the Versions Application](#add-the-metric-to-the-versions-application)
 1. [Create a merge request](#create-a-merge-request)
@@ -672,10 +672,9 @@ pry(main)> Gitlab::UsageData.count(User.active)
    (1.9ms)  SELECT COUNT("users"."id") FROM "users" WHERE ("users"."state" IN ('active')) AND ("users"."user_type" IS NULL OR "users"."user_type" IN (6, 4)) AND "users"."id" BETWEEN 1 AND 100000
 ```
 
-## Optimize queries with `#database-lab`
+## Optimize queries with Database Lab
 
-`#database-lab` is a Slack channel that uses a production-sized environment to test your queries.
-Paste the SQL query into `#database-lab` to see how the query performs at scale.
+[Database Lab](../database/database_lab.md) is a service that uses a production clone to test queries.
 
 - GitLab.com's production database has a 15 second timeout.
 - Any single query must stay below the [1 second execution time](../database/query_performance.md#timing-guidelines-for-queries) with cold caches.
@@ -691,7 +690,7 @@ to a merge request description:
 - Query generated for the index and time.
 - Migration output for up and down execution.
 
-We also use `#database-lab` and [explain.depesz.com](https://explain.depesz.com/). For more details, see the [database review guide](../database_review.md#preparation-when-adding-or-modifying-queries).
+For more details, see the [database review guide](../database_review.md#preparation-when-adding-or-modifying-queries).
 
 ### Optimization recommendations and examples
 

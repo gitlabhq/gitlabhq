@@ -104,7 +104,7 @@ RSpec.describe Ci::PipelineSchedulePolicy, :models, :clean_gitlab_redis_cache do
       end
 
       it 'includes abilities to take ownership' do
-        expect(policy).to be_allowed :take_ownership_pipeline_schedule
+        expect(policy).to be_allowed :admin_pipeline_schedule
       end
     end
   end

@@ -14,7 +14,7 @@ commit hash. To view it for a file:
 
 1. Go to your project's **Repository > Files**.
 1. Select the file you want to review.
-1. In the upper right corner, select **Blame**.
+1. In the upper-right corner, select **Blame**.
 
 When you select **Blame**, this information is displayed:
 

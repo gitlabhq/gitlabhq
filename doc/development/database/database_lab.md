@@ -12,6 +12,17 @@ on replicated production data. Unlike a typical read-only production replica, in
 also create, update, and delete rows. You can also test the performance of
 schema changes, like additional indexes or columns, in an isolated copy of production data.
 
+## Database Lab quick start
+
+1. [Visit the console](https://console.postgres.ai/).
+1. Select **Sign in with Google**. (Not GitLab, as you need Google SSO to connect with our project.)
+1. After you sign in, select the GitLab organization and then visit "Ask Joe" in the sidebar.
+1. Select the database you're testing against:
+   - Most queries for the GitLab project run against `gitlab-production-tunnel-pg12`.
+   - If the query is for a CI table, select `gitlab-production-ci`.
+   - If the query is for the container registry, select `gitlab-production-registry`.
+1. Type `explain <Query Text>` in the chat box to get a plan.
+
 ## Access Database Lab Engine
 
 Access to the DLE is helpful for:
@@ -21,7 +32,7 @@ Access to the DLE is helpful for:
 
 To access the DLE's services, you can:
 
-- Perform query testing in the `#database_lab` Slack channel, or in the Postgres.ai web console.
+- Perform query testing in the Postgres.ai web console.
   Employees access both services with their GitLab Google account. Query testing
   provides `EXPLAIN` (analyze, buffers) plans for queries executed there.
 - Migration testing by triggering a job as a part of a merge request.
@@ -40,8 +51,6 @@ This procedure is similar to [Rails console access with Teleport](https://gitlab
 
 You can access Database Lab's query analysis features either:
 
-- In the `#database_lab` Slack channel. Shows everyone's commands and results, but
-  your own commands are still isolated in their own clone.
 - In [the Postgres.ai web console](https://console.postgres.ai/GitLab/joe-instances).
   Shows only the commands you run.
 

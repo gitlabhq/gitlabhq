@@ -40,11 +40,11 @@ If you are not a GitLab team member, or do not have the Developer role for the G
    - If you're not taking part in a Hackathon, you don't need an issue to open a merge request.
      If you are looking for issues to work on and don't see any that suit you, you can always fix [Vale](testing.md#vale) issues.
 1. Go to the [GitLab repository](https://gitlab.com/gitlab-org/gitlab).
-1. In the upper right, select **Fork**. Forking makes a copy of the repository on GitLab.com.
+1. In the upper-right corner, select **Fork**. Forking makes a copy of the repository on GitLab.com.
 1. In your fork, find the documentation page in the `\doc` directory.
 1. If you know Git, make your changes and open a merge request.
    If not, follow these steps:
-   1. In the upper right, select **Edit** if it is visible. If it is not, select the down arrow (**{chevron-lg-down}**) next to **Open in Web IDE** or **Gitpod**, and select **Edit**.
+   1. In the upper-right corner, select **Edit** if it is visible. If it is not, select the down arrow (**{chevron-lg-down}**) next to **Open in Web IDE** or **Gitpod**, and select **Edit**.
    1. In the **Commit message** text box, enter a commit message. Use 3-5 words, start with a capital letter, and do not end with a period.
    1. Select **Commit changes**.
    1. On the left sidebar, select **Merge requests**.

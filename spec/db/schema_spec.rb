@@ -91,6 +91,7 @@ RSpec.describe 'Database schema', feature_category: :database do
     oauth_access_grants: %w[resource_owner_id application_id],
     oauth_access_tokens: %w[resource_owner_id application_id],
     oauth_applications: %w[owner_id],
+    p_ci_runner_machine_builds: %w[partition_id build_id runner_machine_id],
     product_analytics_events_experimental: %w[event_id txn_id user_id],
     project_build_artifacts_size_refreshes: %w[last_job_artifact_id],
     project_data_transfers: %w[project_id namespace_id],

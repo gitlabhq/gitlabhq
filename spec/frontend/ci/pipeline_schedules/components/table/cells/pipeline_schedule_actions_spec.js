@@ -3,6 +3,7 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import PipelineScheduleActions from '~/ci/pipeline_schedules/components/table/cells/pipeline_schedule_actions.vue';
 import {
   mockPipelineScheduleNodes,
+  mockPipelineScheduleCurrentUser,
   mockPipelineScheduleAsGuestNodes,
   mockTakeOwnershipNodes,
 } from '../../../mock_data';
@@ -12,6 +13,7 @@ describe('Pipeline schedule actions', () => {
 
   const defaultProps = {
     schedule: mockPipelineScheduleNodes[0],
+    currentUser: mockPipelineScheduleCurrentUser,
   };
 
   const createComponent = (props = defaultProps) => {
@@ -31,14 +33,17 @@ describe('Pipeline schedule actions', () => {
     wrapper.destroy();
   });
 
-  it('displays action buttons', () => {
+  it('displays buttons when user is the owner of schedule and has adminPipelineSchedule permissions', () => {
     createComponent();
 
     expect(findAllButtons()).toHaveLength(3);
   });
 
-  it('does not display action buttons', () => {
-    createComponent({ schedule: mockPipelineScheduleAsGuestNodes[0] });
+  it('does not display action buttons when user is not owner and does not have adminPipelineSchedule permission', () => {
+    createComponent({
+      schedule: mockPipelineScheduleAsGuestNodes[0],
+      currentUser: mockPipelineScheduleCurrentUser,
+    });
 
     expect(findAllButtons()).toHaveLength(0);
   });
@@ -54,7 +59,10 @@ describe('Pipeline schedule actions', () => {
   });
 
   it('take ownership button emits showTakeOwnershipModal event and schedule id', () => {
-    createComponent({ schedule: mockTakeOwnershipNodes[0] });
+    createComponent({
+      schedule: mockTakeOwnershipNodes[0],
+      currentUser: mockPipelineScheduleCurrentUser,
+    });
 
     findTakeOwnershipBtn().vm.$emit('click');
 

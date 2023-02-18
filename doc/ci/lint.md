@@ -26,7 +26,7 @@ To check CI/CD configuration with the CI lint tool:
 
 1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **CI/CD > Pipelines**.
-1. In the upper right, select **CI lint**.
+1. In the upper-right corner, select **CI lint**.
 1. Paste a copy of the CI/CD configuration you want to check into the text box.
 1. Select **Validate**.
 
@@ -47,7 +47,7 @@ To simulate a pipeline:
 
 1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **CI/CD > Pipelines**.
-1. In the upper right, select **CI lint**.
+1. In the upper-right corner, select **CI lint**.
 1. Paste a copy of the CI/CD configuration you want to check into the text box.
 1. Select **Simulate pipeline creation for the default branch**.
 1. Select **Validate**.

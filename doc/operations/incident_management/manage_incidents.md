@@ -220,7 +220,7 @@ Prerequisites:
 
 - You must have at least the Reporter role for the project.
 
-To close an incident, in the upper right, select **Close incident**.
+To close an incident, in the upper-right corner, select **Close incident**.
 
 When you close an incident that is linked to an [alert](alerts.md),
 the linked alert's status changes to **Resolved**.

@@ -68,7 +68,7 @@ Refer to [Preparation when adding or modifying queries](#preparation-when-adding
 A merge request **author**'s role is to:
 
 - Decide whether a database review is needed.
-- If database review is needed, add the ~database label.
+- If database review is needed, add the `~database` label.
 - [Prepare the merge request for a database review](#how-to-prepare-the-merge-request-for-a-database-review).
 - Provide the [required](#required) artifacts prior to submitting the MR.
 
@@ -99,7 +99,7 @@ The MR author should request a review from the suggested database
 the suggested database **maintainer**.
 
 If reviewer roulette didn't suggest a database reviewer & maintainer,
-make sure you have applied the ~database label and rerun the
+make sure you have applied the `~database` label and rerun the
 `danger-review` CI job, or pick someone from the
 [`@gl-database` team](https://gitlab.com/groups/gl-database/-/group_members).
 
@@ -122,14 +122,14 @@ the following preparations into account.
 - When [high-traffic](https://gitlab.com/gitlab-org/gitlab/-/blob/master/rubocop/rubocop-migrations.yml#L3) tables are involved in the migration, use the [`enable_lock_retries`](migration_style_guide.md#retry-mechanism-when-acquiring-database-locks) method to enable lock-retries. Review the relevant [examples in our documentation](migration_style_guide.md#usage-with-transactional-migrations) for use cases and solutions.
 - Ensure RuboCop checks are not disabled unless there's a valid reason to.
 - When adding an index to a [large table](https://gitlab.com/gitlab-org/gitlab/-/blob/master/rubocop/rubocop-migrations.yml#L3),
-test its execution using `CREATE INDEX CONCURRENTLY` in the `#database-lab` Slack channel and add the execution time to the MR description:
-  - Execution time largely varies between `#database-lab` and GitLab.com, but an elevated execution time from `#database-lab`
+  test its execution using `CREATE INDEX CONCURRENTLY` in [Database Lab](database/database_lab.md) and add the execution time to the MR description:
+  - Execution time largely varies between Database Lab and GitLab.com, but an elevated execution time from Database Lab
     can give a hint that the execution on GitLab.com is also considerably high.
-  - If the execution from `#database-lab` is longer than `1h`, the index should be moved to a [post-migration](database/post_deployment_migrations.md).
+  - If the execution from Database Lab is longer than `1h`, the index should be moved to a [post-migration](database/post_deployment_migrations.md).
     Keep in mind that in this case you may need to split the migration and the application changes in separate releases to ensure the index
     is in place when the code that needs it is deployed.
 - Manually trigger the [database testing](database/database_migration_pipeline.md) job (`db:gitlabcom-database-testing`) in the `test` stage.
-  - This job runs migrations in a production-like environment (similar to `#database_lab`) and posts to the MR its findings (queries, runtime, size change).
+  - This job runs migrations in a [Database Lab](database/database_lab.md) clone and posts to the MR its findings (queries, runtime, size change).
   - Review migration runtimes and any warnings.
 
 #### Preparation when adding data migrations
@@ -173,13 +173,11 @@ Include in the MR description:
 ##### Query Plans
 
 - The query plan for each raw SQL query included in the merge request along with the link to the query plan following each raw SQL snippet.
-- Provide a public link to the plan from either:
-  - [postgres.ai](https://postgres.ai/): Follow the link in `#database-lab` and generate a shareable, public link
-    by selecting **Share** in the upper right corner.
-  - [explain.depesz.com](https://explain.depesz.com) or [explain.dalibo.com](https://explain.dalibo.com): Paste both the plan and the query used in the form.
+- Provide a link to the plan from [postgres.ai](database/database_lab.md), provided by the chatbot.
+  - If it's not possible to get an accurate picture in Database Lab, you may need to seed a development environment, and instead provide links
+    from [explain.depesz.com](https://explain.depesz.com) or [explain.dalibo.com](https://explain.dalibo.com). Be sure to paste both the plan
+    and the query used in the form.
 - When providing query plans, make sure it hits enough data:
-  - You can use a GitLab production replica to test your queries on a large scale,
-  through the `#database-lab` Slack channel or through [ChatOps](database/understanding_explain_plans.md#chatops).
   - To produce a query plan with enough data, you can use the IDs of:
     - The `gitlab-org` namespace (`namespace_id = 9970`), for queries involving a group.
     - The `gitlab-org/gitlab-foss` (`project_id = 13083`) or the `gitlab-org/gitlab` (`project_id = 278964`) projects, for queries involving a project.
@@ -188,7 +186,7 @@ Include in the MR description:
   - That means that no query plan should return 0 records or less records than the provided limit (if a limit is included). If a query is used in batching, a proper example batch with adequate included results should be identified and provided.
   - If your queries belong to a new feature in GitLab.com and thus they don't return data in production:
     - You may analyze the query and to provide the plan from a local environment.
-    - `#database-lab` and [postgres.ai](https://postgres.ai/) both allow updates to data (`exec UPDATE issues SET ...`) and creation of new tables and columns (`exec ALTER TABLE issues ADD COLUMN ...`).
+    - [postgres.ai](https://postgres.ai/) allows updates to data (`exec UPDATE issues SET ...`) and creation of new tables and columns (`exec ALTER TABLE issues ADD COLUMN ...`).
   - More information on how to find the number of actual returned records in [Understanding EXPLAIN plans](database/understanding_explain_plans.md)
 - For query changes, it is best to provide both the SQL queries along with the
   plan _before_ and _after_ the change. This helps spot differences quickly.
@@ -231,7 +229,7 @@ Include in the MR description:
     - [Check indexes are present for foreign keys](migration_style_guide.md#adding-foreign-key-constraints)
   - Ensure that migrations execute in a transaction or only contain
     concurrent index/foreign key helpers (with transactions disabled)
-  - If an index to a large table is added and its execution time was elevated (more than 1h) on `#database-lab`:
+  - If an index to a large table is added and its execution time was elevated (more than 1h) on [Database Lab](database/database_lab.md):
     - Ensure it was added in a post-migration.
     - Maintainer: After the merge request is merged, notify Release Managers about it on `#f_upcoming_release` Slack channel.
   - Check consistency with `db/structure.sql` and that migrations are [reversible](migration_style_guide.md#reversibility)
@@ -269,8 +267,7 @@ Include in the MR description:
   - Check for any overly complex queries and queries the author specifically
     points out for review (if any)
   - If not present, ask the author to provide SQL queries and query plans
-    (for example, by using [ChatOps](database/understanding_explain_plans.md#chatops) or direct
-    database access)
+    using [Database Lab](database/database_lab.md)
   - For given queries, review parameters regarding data distribution
   - [Check query plans](database/understanding_explain_plans.md) and suggest improvements
     to queries (changing the query, schema or adding indexes and similar)
