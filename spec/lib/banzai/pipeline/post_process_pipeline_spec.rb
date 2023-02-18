@@ -36,7 +36,7 @@ RSpec.describe Banzai::Pipeline::PostProcessPipeline, feature_category: :team_pl
     end
 
     let(:doc) { HTML::Pipeline.parse(html) }
-    let(:non_related_xpath_calls) { 2 }
+    let(:non_related_xpath_calls) { 3 }
 
     it 'searches for attributes only once' do
       expect(doc).to receive(:xpath).exactly(non_related_xpath_calls + 1).times
