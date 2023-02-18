@@ -18861,13 +18861,22 @@ msgstr ""
 msgid "GitAbuse|Reporting time period should be between %{minTimePeriod}-%{maxTimePeriod} seconds."
 msgstr ""
 
+msgid "GitAbuse|Select between %{minAlertedUsers} and %{maxAlertedUsers} users to notify."
+msgstr ""
+
+msgid "GitAbuse|Send notifications to"
+msgstr ""
+
 msgid "GitAbuse|The maximum number of unique repositories a user can download in the specified time period before they're banned."
+msgstr ""
+
+msgid "GitAbuse|Users who are emailed when Git abuse rate limit is exceeded."
 msgstr ""
 
 msgid "GitAbuse|Users who are excluded from the Git abuse rate limit."
 msgstr ""
 
-msgid "GitAbuse|You cannot specify more than %{maxExcludedUsers} excluded users."
+msgid "GitAbuse|You cannot specify more than %{maxAllowedUsers} excluded users."
 msgstr ""
 
 msgid "GitHub API rate limit exceeded. Try again after %{reset_time}"
