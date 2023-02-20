@@ -8494,6 +8494,9 @@ msgstr ""
 msgid "Checkout|(x%{quantity})"
 msgstr ""
 
+msgid "Checkout|Add active users before adding a coupon."
+msgstr ""
+
 msgid "Checkout|An unknown error has occurred. Please try again by refreshing this page."
 msgstr ""
 
@@ -8536,6 +8539,9 @@ msgstr ""
 msgid "Checkout|Coupon code (optional)"
 msgstr ""
 
+msgid "Checkout|Coupon has been applied to your purchase"
+msgstr ""
+
 msgid "Checkout|Create a new group"
 msgstr ""
 
@@ -8543,6 +8549,9 @@ msgid "Checkout|Credit card form failed to load. Please try again."
 msgstr ""
 
 msgid "Checkout|Credit card form failed to load: %{message}"
+msgstr ""
+
+msgid "Checkout|Discount"
 msgstr ""
 
 msgid "Checkout|Edit"
@@ -8579,6 +8588,9 @@ msgid "Checkout|GitLab plan"
 msgstr ""
 
 msgid "Checkout|Group"
+msgstr ""
+
+msgid "Checkout|Invalid coupon code. Enter a valid coupon code."
 msgstr ""
 
 msgid "Checkout|Must be %{minimumNumberOfUsers} (your seats in use) or more."

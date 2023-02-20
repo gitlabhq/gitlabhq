@@ -174,6 +174,16 @@ wiki, packages, or snippets. The repository size limit applies to both private a
 
 For details on manually purging files, see [reducing the repository size using Git](../../project/repository/reducing_the_repo_size_using_git.md).
 
+## Customize the default session duration
+
+You can change how long users can remain signed in.
+
+1. On the top bar, select **Main menu > Admin**.
+1. On the left sidebar, select **Settings > General**.
+1. Expand **Account and limit**. The set duration is in **Session duration (minutes)**.
+
+For details, see [cookies used for sign-in](../../profile/index.md#cookies-used-for-sign-in).
+
 ## Customize session duration for Git Operations when 2FA is enabled **(PREMIUM SELF)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/296669) in GitLab 13.9.

@@ -40,8 +40,8 @@ To revoke an active session:
 
 NOTE:
 When any session is revoked all **Remember me** tokens for all
-devices are revoked. See [Why do you keep getting signed out?](index.md#why-do-you-keep-getting-signed-out)
-for more information about the **Remember me** feature.
+devices are revoked. For details about **Remember me**, see
+[cookies used for sign-in](index.md#cookies-used-for-sign-in).
 
 <!-- ## Troubleshooting
 

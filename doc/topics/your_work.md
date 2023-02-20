@@ -17,4 +17,4 @@ The **Your work** left sidebar provides access to your:
 - [To-do List](../user/todos.md)
 - [Milestones](../user/project/milestones/index.md)
 - [Snippets](../user/snippets.md#snippets)
-- [Activity](../user/profile/index.md#user-activity)
+- [Activity](../user/profile/index.md#view-your-activity)

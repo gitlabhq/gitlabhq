@@ -310,16 +310,9 @@ and configure it on your local machine by using the following command:
 git config --global user.email <your email address>
 ```
 
-## User activity
+## Follow users
 
-GitLab tracks [user contribution activity](contributions_calendar.md).
-You can view your own activity by clicking **Activity** in the
-[**Your work**](../../topics/your_work.md) sidebar, or by visiting your
-[profile page](#access-your-user-profile).
-
-### Follow users' activity
-
-You can follow or unfollow other users from either:
+You can follow or unfollow users from either:
 
 - Their [user profiles](#access-your-user-profile).
 - The small popover that appears when you hover over a user's name ([introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/76050)
@@ -328,66 +321,56 @@ You can follow or unfollow other users from either:
 In [GitLab 15.5 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/360755),
 the maximum number of users you can follow is 300.
 
-To view a user's activity in a top-level Activity view:
+## View your activity
+
+GitLab tracks [user contribution activity](contributions_calendar.md).
+To view a summary of your activity, or the activity of other users:
 
 1. From a user's profile, select **Follow**.
 1. In the GitLab menu, select **Activity**.
 1. Select the **Followed users** tab.
 
-## Troubleshooting
+## Stay signed in for two weeks
 
-### Why do you keep getting signed out?
+By default, you are signed out of GitLab every seven days, or 10080 minutes.
+GitLab administrators can
+[change this default](../admin_area/settings/account_and_limit_settings.md#customize-the-default-session-duration).
 
-When you sign in to the main GitLab application, a `_gitlab_session` cookie is
-set. When you close your browser, the cookie is cleared client-side
-and it expires after a set duration. GitLab administrators can determine the duration:
+To extend the duration to two weeks:
 
-1. On the top bar, select **Main menu > Admin**.
-1. On the left sidebar, select **Settings > General**.
-1. Expand **Account and limit**. The set duration is in **Session duration (minutes)**.
+- On the GitLab sign-in page, select the **Remember me** checkbox.
 
-The default is `10080`, which equals 7 days.
+## Stay signed in indefinitely
 
-When you sign in to the main GitLab application, you can also check the
-**Remember me** option. This sets the `remember_user_token`
-cookie via [`devise`](https://github.com/heartcombo/devise).
-The `remember_user_token` cookie expires after
-`config/initializers/devise.rb` -> `config.remember_for`. The default is 2 weeks.
+To remain signed in indefinitely:
 
-When the `_gitlab_session` expires or isn't available, GitLab uses the `remember_user_token`
-to get you a new `_gitlab_session` and keep you signed in through browser restarts.
+1. On the GitLab sign-in page, select the **Remember me** checkbox.
+1. Access GitLab at least once every two weeks, and leave your browser open.
 
-After your `remember_user_token` expires and your `_gitlab_session` is cleared/expired,
-you are asked to sign in again to verify your identity for security reasons.
+You remain signed in because, although the server sets a time-to-live (TTL) of one week on your browser session,
+the server continues to reset the TTL, regardless of whether 2FA is installed.
 
-NOTE:
-When any session is signed out, or when a session is revoked
-via [Active Sessions](active_sessions.md), all **Remember me** tokens are revoked.
-While other sessions remain active, the **Remember me** feature doesn't restore
-a session if the browser is closed or the existing session expires.
-
-### Increased sign-in time
+### Cookies used for sign-in
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/20340) in GitLab 13.1.
 
-The `remember_user_token` lifetime of a cookie can now extend beyond the deadline set by `config.remember_for`, as the `config.extend_remember_period` flag is now set to true.
+When you sign in, two cookies are set:
 
-GitLab uses both session and persistent cookies:
+- A session cookie called `_gitlab_session`.
+  This cookie has no set expiration date. However, it expires based on its `session_expire_delay`.
+- A persistent cookie called `remember_user_token`, which is set only if you selected **Remember me** on the sign-in page.
 
-- Session cookie: Session cookies are typically removed at the end of the browser session when
-  the browser is closed. The `_gitlab_session` cookie has no fixed expiration date. However,
-  it expires based on its [`session_expire_delay`](#why-do-you-keep-getting-signed-out).
-- Persistent cookie: The `remember_user_token` is a cookie with an expiration date of two weeks.
-  GitLab activates this cookie if you select **Remember Me** when you sign in.
+When you close your browser, the `_gitlab_session` cookie is usually cleared client-side.
+When it expires or isn't available, GitLab uses the `remember_user_token`cookie to get you
+a new `_gitlab_session` cookie and keep you signed in, even if you close your browser.
 
-By default, the server sets a time-to-live (TTL) of 1-week on any session that is used.
+When both cookies are gone or expired, you must sign in again.
 
-When you close a browser, the session cookie may still remain. For example, Chrome has the "Continue where you left off" option that restores session cookies.
-In other words, as long as you access GitLab at least once every 2 weeks, you could remain signed in with GitLab, as long as your browser tab is open.
-The server continues to reset the TTL for that session, independent of whether 2FA is installed,
-If you close your browser and open it up again, the `remember_user_token` cookie allows your user to reauthenticate itself.
-
-Without the `config.extend_remember_period` flag, you would be forced to sign in again after two weeks.
+NOTE:
+When any session is signed out, or when a session is revoked
+from the [active sessions list](active_sessions.md), all **Remember me** tokens are revoked.
+While other sessions remain active, the **Remember me** feature doesn't restore
+a session if the browser is closed or the existing session expires.
 
 ## Related topics
 
