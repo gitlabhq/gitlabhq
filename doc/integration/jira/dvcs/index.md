@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 Use the Jira DVCS (distributed version control system) connector if you self-host
 your Jira instance, and you want to sync information
 between GitLab and Jira. If you use Jira Cloud, you should use the
-[GitLab.com for Jira Cloud app](../connect-app.md) unless you specifically need the
+[GitLab for Jira Cloud app](../connect-app.md) unless you specifically need the
 DVCS connector.
 
 When you configure the Jira DVCS connector, make sure your GitLab and Jira instances
@@ -150,3 +150,30 @@ can refresh the data manually from the Jira interface:
 1. Select **DVCS accounts**.
 1. In the table, for the repository you want to refresh, in the **Last Activity**
    column, select the icon.
+
+## Migrate to the GitLab for Jira Cloud app
+
+If you are using DVCS with Jira Cloud, you should consider migrating to the GitLab for Jira app.
+[DVCS for Jira Cloud will be deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/362168) in GitLab 16.0.
+
+To get started using the GitLab for Jira Cloud app, follow the guide [Install the GitLab for Jira Cloud app](../connect-app.md#install-the-gitlab-for-jira-cloud-app) .
+
+### Feature comparison of DVCS and GitLab for Jira Cloud app
+
+| Feature            | DVCS (Jira Cloud)  | GitLab for Jira Cloud app             |
+|--------------------|--------------------|---------------------------------------|
+| Smart Commits      | **{check-circle}** Yes | **{check-circle}** Yes |
+| Sync MRs           | **{check-circle}** Yes | **{check-circle}** Yes |
+| Sync branches      | **{check-circle}** Yes | **{check-circle}** Yes |
+| Sync commits       | **{check-circle}** Yes | **{check-circle}** Yes|
+| Sync builds        | **{dotted-circle}** No | **{check-circle}** Yes |
+| Sync deployments   | **{dotted-circle}** No | **{check-circle}** Yes |
+| Sync feature flags | **{dotted-circle}** No | **{check-circle}** Yes |
+| Sync interval      | 60 Minutes         | Real time                             |
+| Create branches    | **{dotted-circle}** No | **{check-circle}** Yes (Only GitLab SaaS) |
+| Historic data sync | **{check-circle}** Yes | **{dotted-circle}** No |
+
+### Risks of migrating
+
+The GitLab for Jira Cloud app has a limited ability to sync historic data.
+Only branches, commits, builds, deployments, and feature flags created after installing the GitLab for Jira Cloud app are synced with Jira.

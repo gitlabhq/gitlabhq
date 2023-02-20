@@ -4,21 +4,25 @@
 - breadcrumb_title _("Jobs")
 - page_title _("Jobs")
 
-.top-area
-  .scrolling-tabs-container.inner-page-scroll-tabs.gl-flex-grow-1.gl-min-w-0.gl-w-full
-    .fade-left= sprite_icon('chevron-lg-left', size: 12)
-    .fade-right= sprite_icon('chevron-lg-right', size: 12)
-    - build_path_proc = ->(scope) { admin_jobs_path(scope: scope) }
-    = render "shared/builds/tabs", build_path_proc: build_path_proc, all_builds: @all_builds, scope: @scope
+- if Feature.enabled?(:admin_jobs_vue)
+  #admin-jobs-app{ data: { job_statuses: job_statuses.to_json, empty_state_svg_path: image_path('jobs-empty-state.svg'), url: cancel_all_admin_jobs_path } }
 
-  - if @all_builds.running_or_pending.any?
-    #js-stop-jobs-modal
-    .nav-controls
-      = render Pajamas::ButtonComponent.new(variant: :danger, button_options: { id: 'js-stop-jobs-button', data: { url: cancel_all_admin_jobs_path } }) do
-        = s_('AdminArea|Stop all jobs')
+- else
+  .top-area
+    .scrolling-tabs-container.inner-page-scroll-tabs.gl-flex-grow-1.gl-min-w-0.gl-w-full
+      .fade-left= sprite_icon('chevron-lg-left', size: 12)
+      .fade-right= sprite_icon('chevron-lg-right', size: 12)
+      - build_path_proc = ->(scope) { admin_jobs_path(scope: scope) }
+      = render "shared/builds/tabs", build_path_proc: build_path_proc, all_builds: @all_builds, scope: @scope
 
-.row-content-block.second-block
-  #{(@scope || 'all').capitalize} jobs
+    - if @all_builds.running_or_pending.any?
+      #js-stop-jobs-modal
+      .nav-controls
+        = render Pajamas::ButtonComponent.new(variant: :danger, button_options: { id: 'js-stop-jobs-button', data: { url: cancel_all_admin_jobs_path } }) do
+          = s_('AdminArea|Stop all jobs')
 
-%ul.content-list.builds-content-list.admin-builds-table
-  = render "projects/jobs/table", builds: @builds, admin: true
+  .row-content-block.second-block
+    #{(@scope || 'all').capitalize} jobs
+
+  %ul.content-list.builds-content-list.admin-builds-table
+    = render "projects/jobs/table", builds: @builds, admin: true

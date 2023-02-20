@@ -13,10 +13,11 @@ class Packages::Debian::FileMetadatum < ApplicationRecord
   }
 
   validates :file_type, presence: true
-  validates :file_type, inclusion: { in: %w[unknown] }, if: -> { package_file&.package&.debian_incoming? }
+  validates :file_type, inclusion: { in: %w[unknown] },
+                        if: -> { package_file&.package&.debian_incoming? || package_file&.package&.processing? }
   validates :file_type,
     inclusion: { in: %w[source dsc deb udeb buildinfo changes] },
-    if: -> { package_file&.package&.debian_package? }
+    if: -> { package_file&.package&.debian_package? && !package_file&.package&.processing? }
 
   validates :component,
     presence: true,

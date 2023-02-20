@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe MergeRequests::RebaseService do
+RSpec.describe MergeRequests::RebaseService, feature_category: :source_code_management do
   include ProjectForksHelper
 
   let(:user) { create(:user) }

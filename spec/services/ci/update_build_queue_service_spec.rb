@@ -277,7 +277,7 @@ RSpec.describe Ci::UpdateBuildQueueService do
       end
     end
 
-    context 'when updating specific runners' do
+    context 'when updating project runners' do
       let(:runner) { create(:ci_runner, :project, projects: [project]) }
 
       it_behaves_like 'matching build'

@@ -2,6 +2,7 @@ import { GlLoadingIcon } from '@gitlab/ui';
 import { mount, shallowMount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import ImportErrorDetails from '~/pages/import/history/components/import_error_details.vue';
 
 describe('ImportErrorDetails', () => {
@@ -46,7 +47,7 @@ describe('ImportErrorDetails', () => {
 
     it('renders import_error if it is available', async () => {
       const FAKE_IMPORT_ERROR = 'IMPORT ERROR';
-      mock.onGet(API_URL).reply(200, { import_error: FAKE_IMPORT_ERROR });
+      mock.onGet(API_URL).reply(HTTP_STATUS_OK, { import_error: FAKE_IMPORT_ERROR });
       createComponent();
       await axios.waitForAll();
 
@@ -55,7 +56,7 @@ describe('ImportErrorDetails', () => {
     });
 
     it('renders default text if error is not available', async () => {
-      mock.onGet(API_URL).reply(200, { import_error: null });
+      mock.onGet(API_URL).reply(HTTP_STATUS_OK, { import_error: null });
       createComponent();
       await axios.waitForAll();
 

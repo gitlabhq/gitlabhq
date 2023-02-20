@@ -5,11 +5,6 @@ const moreInfo = __('More information');
 
 export const forwardDeploymentFailureModalId = 'forward-deployment-failure';
 
-export const GRAPHQL_ID_TYPES = {
-  commitStatus: 'CommitStatus',
-  ciBuild: 'Ci::Build',
-};
-
 export const JOB_SIDEBAR_COPY = {
   cancel,
   cancelJobButtonLabel: s__('Job|Cancel'),
@@ -42,3 +37,4 @@ export const JOB_RETRY_FORWARD_DEPLOYMENT_MODAL = {
 
 export const SUCCESS_STATUS = 'SUCCESS';
 export const PASSED_STATUS = 'passed';
+export const MANUAL_STATUS = 'manual';

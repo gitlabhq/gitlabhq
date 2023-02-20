@@ -4,7 +4,7 @@ import issuableLabelsSubscription from 'ee_else_ce/sidebar/queries/issuable_labe
 import { MutationOperationMode, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { createAlert } from '~/flash';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import { IssuableType } from '~/issues/constants';
+import { IssuableType, TYPE_EPIC, TYPE_ISSUE } from '~/issues/constants';
 
 import { __ } from '~/locale';
 import { issuableLabelsQueries } from '../../../constants';
@@ -161,10 +161,16 @@ export default {
         return !isDropdownVariantSidebar(this.variant);
       },
       variables() {
-        return {
+        const queryVariables = {
           iid: this.iid,
           fullPath: this.fullPath,
         };
+
+        if (this.issuableType === IssuableType.TestCase) {
+          queryVariables.types = ['TEST_CASE'];
+        }
+
+        return queryVariables;
       },
       update(data) {
         return data.workspace?.issuable;
@@ -255,14 +261,15 @@ export default {
       };
 
       switch (this.issuableType) {
-        case IssuableType.Issue:
+        case TYPE_ISSUE:
+        case IssuableType.TestCase:
           return updateVariables;
         case IssuableType.MergeRequest:
           return {
             ...updateVariables,
             operationMode: MutationOperationMode.Replace,
           };
-        case IssuableType.Epic:
+        case TYPE_EPIC:
           return {
             iid: currentIid,
             groupPath: this.fullPath,
@@ -311,7 +318,8 @@ export default {
       };
 
       switch (this.issuableType) {
-        case IssuableType.Issue:
+        case TYPE_ISSUE:
+        case IssuableType.TestCase:
           return {
             ...removeVariables,
             removeLabelIds: [labelId],
@@ -322,7 +330,7 @@ export default {
             labelIds: [labelId],
             operationMode: MutationOperationMode.Remove,
           };
-        case IssuableType.Epic:
+        case TYPE_EPIC:
           return {
             iid: this.iid,
             removeLabelIds: [getIdFromGraphQLId(labelId)],

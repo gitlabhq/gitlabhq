@@ -116,6 +116,8 @@ export default {
         value: this.boardListsToUse,
         delay: 100,
         delayOnTouchOnly: true,
+        filter: 'input',
+        preventOnFilter: false,
       };
 
       return this.canDragColumns ? options : {};
@@ -172,6 +174,7 @@ export default {
         v-for="(list, index) in boardListsToUse"
         :key="index"
         ref="board"
+        :board-id="boardId"
         :list="list"
         :data-draggable-item-type="$options.draggableItemTypes.list"
         :class="{ 'gl-xs-display-none!': addColumnFormVisible }"

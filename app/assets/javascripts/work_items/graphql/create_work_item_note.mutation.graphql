@@ -1,5 +1,0 @@
-mutation createWorkItemNote($input: CreateNoteInput!) {
-  createNote(input: $input) {
-    errors
-  }
-}

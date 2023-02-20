@@ -3,7 +3,7 @@ table_name: push_event_payloads
 classes:
 - PushEventPayload
 feature_categories:
-- users
+- user_profile
 description: Stores log of push events
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/12463
 milestone: '9.5'

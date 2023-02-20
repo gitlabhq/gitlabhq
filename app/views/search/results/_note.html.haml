@@ -3,11 +3,11 @@
 - noteable_identifier = note.noteable.try(:iid) || note.noteable.try(:id)
 
 .search-result-row
-  %h5.note-search-caption.str-truncated
-    = sprite_icon('comment', css_class: 'gl-vertical-align-text-bottom')
-    = link_to_member(project, note.author, avatar: false)
-    - link_to_project = link_to(project.full_name, project)
-    = _("commented on %{link_to_project}").html_safe % { link_to_project: link_to_project }
+  %h5.note-search-caption.gl-max-w-full
+    %span.gl-display-inline-block.gl-text-truncate.search-max-w-inherit.gl-vertical-align-bottom
+      = sprite_icon('comment', css_class: 'gl-vertical-align-text-bottom')
+      = link_to_member(project, note.author, avatar: false)
+      = _("commented on %{link_to_project}").html_safe % { link_to_project: link_to(project.full_name, project) }
     &middot;
 
     - if note.for_commit?

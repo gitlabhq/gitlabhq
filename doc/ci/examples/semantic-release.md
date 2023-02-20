@@ -35,7 +35,7 @@ You can also view or fork the complete [example source](https://gitlab.com/gitla
    }
    ```
 
-1. Update the `files` key with glob patterns that selects all files that should be included in the published module. More information about `files` can be found [in npm's documentation](https://docs.npmjs.com/cli/v6/configuring-npm/package-json/#files).
+1. Update the `files` key with glob patterns that selects all files that should be included in the published module. More information about `files` can be found [in the npm documentation](https://docs.npmjs.com/cli/v6/configuring-npm/package-json/#files).
 
 1. Add a `.gitignore` file to the project to avoid committing `node_modules`:
 
@@ -90,7 +90,7 @@ As part of publishing a package, semantic-release increases the version number i
 
 <!-- markdownlint-disable MD044 -->
 
-1. On the top bar, on the top right, select your avatar.
+1. On the top bar, in the upper right, select your avatar.
 1. On the left sidebar, select **Access Tokens**.
 1. In the **Token name** box, enter a token name.
 1. Under **select scopes**, select the **api** checkbox.

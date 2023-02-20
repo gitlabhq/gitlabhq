@@ -6,12 +6,13 @@ import SidebarDropdownWidget from 'ee_else_ce/sidebar/components/sidebar_dropdow
 import { __, sprintf } from '~/locale';
 import BoardSidebarTimeTracker from '~/boards/components/sidebar/board_sidebar_time_tracker.vue';
 import BoardSidebarTitle from '~/boards/components/sidebar/board_sidebar_title.vue';
-import { BoardType, ISSUABLE, INCIDENT, issuableTypes } from '~/boards/constants';
+import { BoardType, ISSUABLE, INCIDENT } from '~/boards/constants';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import { TYPE_ISSUE } from '~/issues/constants';
 import SidebarAssigneesWidget from '~/sidebar/components/assignees/sidebar_assignees_widget.vue';
 import SidebarConfidentialityWidget from '~/sidebar/components/confidential/sidebar_confidentiality_widget.vue';
 import SidebarDateWidget from '~/sidebar/components/date/sidebar_date_widget.vue';
-import SidebarSeverity from '~/sidebar/components/severity/sidebar_severity.vue';
+import SidebarSeverityWidget from '~/sidebar/components/severity/sidebar_severity_widget.vue';
 import SidebarSubscriptionsWidget from '~/sidebar/components/subscriptions/sidebar_subscriptions_widget.vue';
 import SidebarTodoWidget from '~/sidebar/components/todo_toggle/sidebar_todo_widget.vue';
 import SidebarLabelsWidget from '~/sidebar/components/labels/labels_select_widget/labels_select_root.vue';
@@ -30,7 +31,7 @@ export default {
     SidebarSubscriptionsWidget,
     SidebarDropdownWidget,
     SidebarTodoWidget,
-    SidebarSeverity,
+    SidebarSeverityWidget,
     MountingPortal,
     SidebarHealthStatusWidget: () =>
       import('ee_component/sidebar/components/health_status/sidebar_health_status_widget.vue'),
@@ -66,7 +67,7 @@ export default {
       default: false,
     },
     issuableType: {
-      default: issuableTypes.issue,
+      default: TYPE_ISSUE,
     },
     isGroupBoard: {
       default: false,
@@ -174,7 +175,7 @@ export default {
         />
       </template>
       <template #default>
-        <board-sidebar-title />
+        <board-sidebar-title data-testid="sidebar-title" />
         <sidebar-assignees-widget
           :iid="activeBoardItem.iid"
           :full-path="fullPath"
@@ -237,7 +238,7 @@ export default {
         >
           {{ __('None') }}
         </sidebar-labels-widget>
-        <sidebar-severity
+        <sidebar-severity-widget
           v-if="isIncidentSidebar"
           :iid="activeBoardItem.iid"
           :project-path="fullPath"

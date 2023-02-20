@@ -12,6 +12,7 @@ import ForkForm from '~/pages/projects/forks/new/components/fork_form.vue';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import searchQuery from '~/pages/projects/forks/new/queries/search_forkable_namespaces.query.graphql';
 import ProjectNamespace from '~/pages/projects/forks/new/components/project_namespace.vue';
+import { START_RULE, CONTAINS_RULE } from '~/projects/project_name_rules';
 
 jest.mock('~/flash');
 jest.mock('~/lib/utils/csrf', () => ({ token: 'mock-csrf-token' }));
@@ -474,6 +475,43 @@ describe('ForkForm component', () => {
         await submitForm();
 
         expect(axios.post).not.toHaveBeenCalled();
+      });
+
+      describe('project name', () => {
+        it.each`
+          value   | expectedErrorMessage
+          ${'?'}  | ${START_RULE.msg}
+          ${'*'}  | ${START_RULE.msg}
+          ${'a?'} | ${CONTAINS_RULE.msg}
+          ${'a*'} | ${CONTAINS_RULE.msg}
+        `(
+          'shows "$expectedErrorMessage" error when value is $value',
+          async ({ value, expectedErrorMessage }) => {
+            createFullComponent();
+
+            findForkNameInput().vm.$emit('input', value);
+            await nextTick();
+            await submitForm();
+
+            const formGroup = wrapper.findComponent('[data-testid="fork-name-form-group"]');
+
+            expect(formGroup.vm.$attrs['invalid-feedback']).toBe(expectedErrorMessage);
+            expect(formGroup.vm.$attrs.description).toBe(null);
+          },
+        );
+
+        it.each(['a', '9', 'aa', '99'])('does not show error when value is %s', async (value) => {
+          createFullComponent();
+
+          findForkNameInput().vm.$emit('input', value);
+          await nextTick();
+          await submitForm();
+
+          const formGroup = wrapper.findComponent('[data-testid="fork-name-form-group"]');
+
+          expect(formGroup.vm.$attrs['invalid-feedback']).toBe('');
+          expect(formGroup.vm.$attrs.description).not.toBe(null);
+        });
       });
     });
 

@@ -20,6 +20,7 @@ module QA
 
           base.view 'app/views/shared/wikis/_wiki_directory.html.haml' do
             element :wiki_directory_content
+            element :wiki_dir_page_link
           end
         end
 
@@ -41,6 +42,10 @@ module QA
 
         def has_directory?(directory)
           has_element?(:wiki_directory_content, text: directory)
+        end
+
+        def has_dir_page?(dir_page)
+          has_element?(:wiki_dir_page_link, page_name: dir_page)
         end
       end
     end

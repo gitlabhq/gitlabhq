@@ -1,8 +1,0 @@
----
-name: rate_limit_issuable_searches
-introduced_by_url: "https://gitlab.com/gitlab-org/gitlab/-/merge_requests/104208"
-rollout_issue_url:
-milestone: '15.8'
-type: development
-group: group::project management
-default_enabled: false

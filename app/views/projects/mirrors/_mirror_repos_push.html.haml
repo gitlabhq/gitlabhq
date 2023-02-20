@@ -4,6 +4,7 @@
   = rm_f.hidden_field :enabled, value: '1'
   = rm_f.hidden_field :url, class: 'js-mirror-url-hidden', required: true, pattern: "(#{protocols}):\/\/.+"
   = rm_f.hidden_field :only_protected_branches, class: 'js-mirror-protected-hidden'
+  = render_if_exists partial: 'projects/mirrors/branch_name_regex', locals: { f: rm_f }
   = rm_f.hidden_field :keep_divergent_refs, class: 'js-mirror-keep-divergent-refs-hidden'
   = render partial: 'projects/mirrors/ssh_host_keys', locals: { f: rm_f }
   = render partial: 'projects/mirrors/authentication_method', locals: { f: rm_f }

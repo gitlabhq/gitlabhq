@@ -30,6 +30,40 @@ RSpec.describe Gitlab::Ci::Config::External::File::Local, feature_category: :pip
       .to receive(:check_execution_time!)
   end
 
+  describe '.initialize' do
+    context 'when a local is specified' do
+      let(:params) { { local: 'file' } }
+
+      it 'sets the location' do
+        expect(local_file.location).to eq('file')
+      end
+
+      context 'when the local is prefixed with a slash' do
+        let(:params) { { local: '/file' } }
+
+        it 'removes the slash' do
+          expect(local_file.location).to eq('file')
+        end
+      end
+
+      context 'when the local is prefixed with multiple slashes' do
+        let(:params) { { local: '//file' } }
+
+        it 'removes slashes' do
+          expect(local_file.location).to eq('file')
+        end
+      end
+    end
+
+    context 'with a missing local' do
+      let(:params) { { local: nil } }
+
+      it 'sets the location to an empty string' do
+        expect(local_file.location).to eq('')
+      end
+    end
+  end
+
   describe '#matching?' do
     context 'when a local is specified' do
       let(:params) { { local: 'file' } }
@@ -58,7 +92,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Local, feature_category: :pip
 
   describe '#valid?' do
     subject(:valid?) do
-      local_file.validate!
+      Gitlab::Ci::Config::External::Mapper::Verifier.new(context).process([local_file])
       local_file.valid?
     end
 
@@ -88,10 +122,13 @@ RSpec.describe Gitlab::Ci::Config::External::File::Local, feature_category: :pip
       let(:variables) { Gitlab::Ci::Variables::Collection.new([{ 'key' => 'GITLAB_TOKEN', 'value' => 'secret', 'masked' => true }]) }
       let(:location) { '/lib/gitlab/ci/templates/secret/existent-file.yml' }
 
-      it 'returns false and adds an error message about an empty file' do
+      before do
         allow_any_instance_of(described_class).to receive(:fetch_local_content).and_return("")
-        local_file.validate!
-        expect(local_file.errors).to include("Local file `/lib/gitlab/ci/templates/xxxxxx/existent-file.yml` is empty!")
+      end
+
+      it 'returns false and adds an error message about an empty file' do
+        expect(valid?).to be_falsy
+        expect(local_file.errors).to include("Local file `lib/gitlab/ci/templates/xxxxxx/existent-file.yml` is empty!")
       end
     end
 
@@ -101,7 +138,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Local, feature_category: :pip
 
       it 'returns false and adds an error message stating that included file does not exist' do
         expect(valid?).to be_falsy
-        expect(local_file.errors).to include("Sha #{sha} is not valid!")
+        expect(local_file.errors).to include("Local file `lib/gitlab/ci/templates/existent-file.yml` does not exist!")
       end
     end
   end
@@ -143,11 +180,11 @@ RSpec.describe Gitlab::Ci::Config::External::File::Local, feature_category: :pip
     let(:variables) { Gitlab::Ci::Variables::Collection.new([{ 'key' => 'GITLAB_TOKEN', 'value' => 'secret_file', 'masked' => true }]) }
 
     before do
-      local_file.validate!
+      Gitlab::Ci::Config::External::Mapper::Verifier.new(context).process([local_file])
     end
 
     it 'returns an error message' do
-      expect(local_file.error_message).to eq("Local file `/lib/gitlab/ci/templates/xxxxxxxxxxx.yml` does not exist!")
+      expect(local_file.error_message).to eq("Local file `lib/gitlab/ci/templates/xxxxxxxxxxx.yml` does not exist!")
     end
   end
 
@@ -203,7 +240,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Local, feature_category: :pip
         context_project: project.full_path,
         context_sha: sha,
         type: :local,
-        location: '/lib/gitlab/ci/templates/existent-file.yml',
+        location: 'lib/gitlab/ci/templates/existent-file.yml',
         blob: "http://localhost/#{project.full_path}/-/blob/#{sha}/lib/gitlab/ci/templates/existent-file.yml",
         raw: "http://localhost/#{project.full_path}/-/raw/#{sha}/lib/gitlab/ci/templates/existent-file.yml",
         extra: {}

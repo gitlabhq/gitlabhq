@@ -21,6 +21,12 @@ resources :issues, concerns: :awardable, constraints: { id: /\d+/ } do
     post :bulk_update
     post :import_csv
     post :export_csv
+
+    scope :incident do
+      get '/:id',
+        to: 'incidents#show',
+        as: :incident
+    end
   end
 
   resources :issue_links, only: [:index, :create, :destroy], as: 'links', path: 'links'

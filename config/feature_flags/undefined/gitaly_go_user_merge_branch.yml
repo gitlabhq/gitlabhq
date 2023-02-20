@@ -1,8 +1,8 @@
 ---
 name: gitaly_go_user_merge_branch
-introduced_by_url: 
-rollout_issue_url: 
-milestone: 
+introduced_by_url:
+rollout_issue_url:
+milestone:
 type: undefined
-group: 
+group: group::gitaly
 default_enabled: false

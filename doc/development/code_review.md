@@ -37,7 +37,7 @@ also to spread the workload.
 
 For assistance with security scans or comments, include the Application Security Team (`@gitlab-com/gl-security/appsec`).
 
-The reviewers use the [reviewer functionality](../user/project/merge_requests/getting_started.md#reviewer) in the sidebar.
+The reviewers use the [reviewer functionality](../user/project/merge_requests/reviews/index.md) in the sidebar.
 Reviewers can add their approval by [approving additionally](../user/project/merge_requests/approvals/index.md#approve-a-merge-request).
 
 Depending on the areas your merge request touches, it must be **approved** by one
@@ -290,6 +290,23 @@ warrant a comment could be:
 
 If there are any projects, snippets, or other assets that are required for a reviewer to validate the solution, ensure they have access to those assets before requesting review.
 
+When assigning reviewers, it can be helpful to:
+
+- Add a comment to the MR indicating which *type* of review you are looking for
+  from that reviewer.
+  - For example, if an MR changes a database query and updates
+    backend code, the MR author first needs a `~backend` review and a `~database`
+    review. While assigning the reviewers, the author adds a comment to the MR
+    letting each reviewer know which domain they should review.
+  - Many GitLab team members are domain experts in more than one area,
+    so without this type of comment it is sometimes ambiguous what type
+    of review they are being asked to provide.
+  - Explicitness around MR review types is efficient for the MR author because
+    they receive the type of review that they are looking for and it is
+    efficient for the MR reviewers because they immediately know which type of review to provide.
+  - [Example 1](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/75921#note_758161716)
+  - [Example 2](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/109500#note_1253955051)
+
 Avoid:
 
 - Adding TODO comments (referenced above) directly to the source code unless the reviewer requires
@@ -459,7 +476,7 @@ first time.
 ### Requesting a review
 
 When you are ready to have your merge request reviewed,
-you should [request an initial review](../user/project/merge_requests/getting_started.md#reviewer) by selecting a reviewer based on the [approval guidelines](#approval-guidelines).
+you should [request an initial review](../user/project/merge_requests/reviews/index.md) by selecting a reviewer based on the [approval guidelines](#approval-guidelines).
 
 When a merge request has multiple areas for review, it is recommended you specify which area a reviewer should be reviewing, and at which stage (first or second).
 This will help team members who qualify as a reviewer for multiple areas to know which area they're being requested to review.
@@ -522,8 +539,8 @@ Before taking the decision to merge:
 - If the MR contains both Quality and non-Quality-related changes, the MR should be merged by the relevant maintainer for user-facing changes (backend, frontend, or database) after the Quality related changes are approved by a Software Engineer in Test.
 
 At least one maintainer must approve an MR before it can be merged. MR authors and
-people who add commits to an MR are not authorized to approve the merge request,
-so they must seek a maintainer who has not contributed to the MR to approve the MR before it can be merged.
+people who add commits to an MR are not authorized to approve or merge the MR and
+must seek a maintainer who has not contributed to the MR to approve and merge it.
 
 This policy is in place to satisfy the CHG-04 control of the GitLab
 [Change Management Controls](https://about.gitlab.com/handbook/security/security-assurance/security-compliance/guidance/change-management.html).
@@ -701,11 +718,12 @@ Enterprise Edition instance. This has some implications:
    cached value returns (say, from a string or nil to an array), change the
    cache key at the same time.
 1. **Settings** should be added as a
-   [last resort](https://about.gitlab.com/handbook/product/#convention-over-configuration).
+   [last resort](https://about.gitlab.com/handbook/product/product-principles/#convention-over-configuration).
    If you're adding a new setting in `gitlab.yml`:
    1. Try to avoid that, and add to `ApplicationSetting` instead.
    1. Ensure that it is also
       [added to Omnibus](https://docs.gitlab.com/omnibus/settings/gitlab.yml#adding-a-new-setting-to-gitlabyml).
+   1. Ensure that it is also [added to Charts](https://docs.gitlab.com/charts/development/style_guide.html), if needed.
 1. **File system access** is not possible in a [cloud-native architecture](architecture.md#adapting-existing-and-introducing-new-components).
    Ensure that we support object storage for any file storage we need to perform. For more
    information, see the [uploads documentation](uploads/index.md).

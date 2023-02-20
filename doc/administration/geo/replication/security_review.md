@@ -114,7 +114,7 @@ from [owasp.org](https://owasp.org/).
 ### What private and public network links support the application?
 
 - Customers choose their own networks. As sites are intended to be
-  geographically separated, it is envisioned that replication traffic will pass
+  geographically separated, it is envisioned that replication traffic passes
   over the public Internet in a typical deployment, but this is not a requirement.
 
 ## Systems
@@ -168,7 +168,7 @@ from [owasp.org](https://owasp.org/).
 - GitLab is "cloud native" and this applies to Geo as much as to the rest of the
   product. Deployment in clouds is a common and supported scenario.
 
-## If applicable, what approach(es) to cloud computing will be taken (Managed Hosting versus "Pure" Cloud, a "full machine" approach such as AWS-EC2 versus a "hosted database" approach such as AWS-RDS and Azure, etc)?
+## If applicable, what approach(es) to cloud computing is taken (Managed Hosting versus "Pure" Cloud, a "full machine" approach such as AWS-EC2 versus a "hosted database" approach such as AWS-RDS and Azure, etc)?
 
 - To be decided by our customers, according to their operational needs.
 
@@ -186,7 +186,7 @@ from [owasp.org](https://owasp.org/).
 
 - PostgreSQL >= 12, Redis, Sidekiq, Puma.
 
-### How will database connection strings, encryption keys, and other sensitive components be stored, accessed, and protected from unauthorized detection?
+### How can database connection strings, encryption keys, and other sensitive components be stored, accessed, and protected from unauthorized detection?
 
 - There are some Geo-specific values. Some are shared secrets which must be
   securely transmitted from the **primary** site to the **secondary** site at setup time. Our

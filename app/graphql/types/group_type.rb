@@ -193,14 +193,14 @@ module Types
           null: true,
           description: 'List of descendant groups of this group.',
           complexity: 5,
-          resolver: Resolvers::GroupsResolver
+          resolver: Resolvers::NestedGroupsResolver
 
     field :ci_variables,
           Types::Ci::GroupVariableType.connection_type,
           null: true,
           description: "List of the group's CI/CD variables.",
           authorize: :admin_group,
-          method: :variables
+          resolver: Resolvers::Ci::VariablesResolver
 
     field :runners, Types::Ci::RunnerType.connection_type,
           null: true,
@@ -232,6 +232,17 @@ module Types
     field :work_item_types, Types::WorkItems::TypeType.connection_type,
           resolver: Resolvers::WorkItems::TypesResolver,
           description: 'Work item types available to the group.'
+
+    field :releases,
+          Types::ReleaseType.connection_type,
+          null: true,
+          description: 'Releases belonging to projects in the group.',
+          resolver: Resolvers::GroupReleasesResolver
+
+    field :data_transfer, Types::DataTransfer::GroupDataTransferType,
+          null: true,
+          resolver: Resolvers::DataTransferResolver.group,
+          description: 'Data transfer data point for a specific period. This is mocked data under a development feature flag.'
 
     def label(title:)
       BatchLoader::GraphQL.for(title).batch(key: group) do |titles, loader, args|

@@ -24,7 +24,7 @@ To create an epic in the group you're in:
 
 1. Get to the New Epic form:
    - Go to your group and from the left sidebar select **Epics**. Then select **New epic**.
-   - From an epic in your group, select the vertical ellipsis (**{ellipsis_v}**). Then select **New epic**.
+   - From an epic in your group, select **Epic actions** (**{ellipsis_v}**). Then select **New epic**.
    - From anywhere, in the top menu, select **New...** (**{plus-square}**). Then select **New epic**.
    - In an empty [roadmap](../roadmap/index.md), select **New epic**.
 
@@ -116,10 +116,10 @@ Prerequisites:
 
 To reorder list items, when viewing an epic:
 
-1. Hover over the list item row to make the drag icon (**{drag-vertical}**) visible.
-1. Select and hold the drag icon.
+1. Hover over the list item row to make the grip icon (**{grip}**) visible.
+1. Select and hold the grip icon.
 1. Drag the row to the new position in the list.
-1. Release the drag icon.
+1. Release the grip icon.
 
 ## Bulk edit epics
 
@@ -240,6 +240,7 @@ than 1000. The cached value is rounded to thousands or millions and updated ever
 > - Filtering by milestone and confidentiality [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/268372) in GitLab 14.2 [with a flag](../../../administration/feature_flags.md) named `vue_epics_list`. Disabled by default.
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/276189) in GitLab 14.7.
 > - [Feature flag `vue_epics_list`](https://gitlab.com/gitlab-org/gitlab/-/issues/327320) removed in GitLab 14.8.
+> - Filtering by group was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385191) in GitLab 15.9.
 
 You can filter the list of epics by:
 
@@ -249,6 +250,7 @@ You can filter the list of epics by:
 - Milestones
 - Confidentiality
 - Reaction emoji
+- Groups
 
 ![epics filter](img/epics_filter_v14_7.png)
 
@@ -259,6 +261,25 @@ To filter:
 1. Select the field **Search or filter results**.
 1. From the dropdown list, select the scope or enter plain text to search by epic title or description.
 1. Press <kbd>Enter</kbd> on your keyboard. The list is filtered.
+
+### Filter with the OR operator
+
+> OR filtering for labels and authors was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/382969) in GitLab 15.9 [with a flag](../../../administration/feature_flags.md) named `or_issuable_queries`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available.
+To make it available, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `or_issuable_queries`.
+On GitLab.com, this feature is not available.
+The feature is not ready for production use.
+
+When this feature is enabled, you can use the OR operator (**is one of: `||`**)
+when you [filter the list of epics](#filter-the-list-of-epics) by:
+
+- Authors
+- Labels
+
+`is one of` represents an inclusive OR. For example, if you filter by `Label is one of Deliverable` and
+`Label is one of UX`, GitLab shows epics with either `Deliverable`, `UX`, or both labels.
 
 ## Sort the list of epics
 
@@ -500,10 +521,12 @@ The maximum number of direct child epics is 100.
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/8502) in GitLab 15.6 [with a flag](../../../administration/feature_flags.md) named `child_epics_from_different_hierarchies`. Disabled by default.
 > - Minimum required role for the group [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/382503) from Reporter to Guest in GitLab 15.7.
+> - Cross-group child epics [enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/375622) in GitLab 15.9. Enabled by default.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available per group, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `child_epics_from_different_hierarchies`.
-On GitLab.com, this feature is not available. The feature is not ready for production use.
+On self-managed GitLab, by default this feature is available. To disable it,
+ask an administrator to [disable the feature flag](../../../administration/feature_flags.md) named `child_epics_from_different_hierarchies`.
+On GitLab.com, this feature is available.
 
 You can add a child epic that belongs to a group that is different from the parent epic's group.
 

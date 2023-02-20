@@ -17,12 +17,14 @@ RSpec.describe Projects::RefreshBuildArtifactsSizeStatisticsWorker do
         build(
           :project_build_artifacts_size_refresh,
           :running,
+          id: 99,
           project_id: 77,
           last_job_artifact_id: 123
         )
       end
 
       it 'logs refresh information' do
+        expect(worker).to receive(:log_extra_metadata_on_done).with(:refresh_id, refresh.id)
         expect(worker).to receive(:log_extra_metadata_on_done).with(:project_id, refresh.project_id)
         expect(worker).to receive(:log_extra_metadata_on_done).with(:last_job_artifact_id, refresh.last_job_artifact_id)
         expect(worker).to receive(:log_extra_metadata_on_done).with(:last_batch, refresh.destroyed?)

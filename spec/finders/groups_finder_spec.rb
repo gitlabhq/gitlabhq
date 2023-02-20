@@ -262,6 +262,18 @@ RSpec.describe GroupsFinder do
       end
     end
 
+    context 'with filter_group_ids' do
+      let_it_be(:group_one) { create(:group, :public, name: 'group_one') }
+      let_it_be(:group_two) { create(:group, :public, name: 'group_two') }
+      let_it_be(:group_three) { create(:group, :public, name: 'group_three') }
+
+      subject { described_class.new(user, { filter_group_ids: [group_one.id, group_three.id] }).execute }
+
+      it 'returns only the groups listed in the filter' do
+        is_expected.to contain_exactly(group_one, group_three)
+      end
+    end
+
     context 'with include_ancestors' do
       let_it_be(:user) { create(:user) }
 

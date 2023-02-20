@@ -18,6 +18,10 @@ query getLinkedPipelines($fullPath: ID!, $iid: ID!) {
             icon
             label
           }
+          sourceJob {
+            id
+            retried
+          }
         }
       }
       upstream {

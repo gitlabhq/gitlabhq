@@ -228,18 +228,13 @@ get 'client/features', urgency: :low do
 end
 ```
 
+WARNING:
+We can't specify the urgency at the namespace level. The directive is ignored when doing so.
+
 ### Error budget attribution and ownership
 
 This SLI is used for service level monitoring. It feeds into the
-[error budget for stage groups](../stage_group_observability/index.md#error-budget). For this
-particular SLI, we have opted everyone out by default to give time to
-set the correct urgencies on endpoints before it affects a group's
-error budget.
-
-To include this SLI in the error budget, remove the `rails_requests`
-from the `ignored_components` array in the entry for your group. Read
-more about what is configurable in the
-[runbooks documentation](https://gitlab.com/gitlab-com/runbooks/-/tree/master/services#teamsyml).
+[error budget for stage groups](../stage_group_observability/index.md#error-budget).
 
 For more information, read the epic for
 [defining custom SLIs and incorporating them into error budgets](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/525)).
@@ -252,7 +247,7 @@ request rates on the
 In the **Budget Attribution** row, the **Puma Apdex** log link shows you
 how many requests are not meeting a 1s or 5s target.
 
-Learn more about the content of the dashboard in the documentation for
+For more information about the content of the dashboard, see
 [Dashboards for stage groups](../stage_group_observability/index.md). For more information
-on our exploration of the error budget itself, read the infrastructure issue
-[Stage group error budget exploration dashboard](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/1365).
+about our exploration of the error budget itself, see
+[issue 1365](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/1365).

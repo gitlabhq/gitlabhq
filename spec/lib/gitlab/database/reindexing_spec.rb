@@ -68,6 +68,25 @@ RSpec.describe Gitlab::Database::Reindexing, feature_category: :database, time_t
         end
       end
     end
+
+    context 'when async FK validation is enabled' do
+      it 'executes FK validation for each database prior to any reindexing actions' do
+        expect(Gitlab::Database::AsyncForeignKeys).to receive(:validate_pending_entries!).ordered.exactly(databases_count).times
+        expect(described_class).to receive(:automatic_reindexing).ordered.exactly(databases_count).times
+
+        described_class.invoke
+      end
+    end
+
+    context 'when async FK validation is disabled' do
+      it 'does not execute FK validation' do
+        stub_feature_flags(database_async_foreign_key_validation: false)
+
+        expect(Gitlab::Database::AsyncForeignKeys).not_to receive(:validate_pending_entries!)
+
+        described_class.invoke
+      end
+    end
   end
 
   describe '.automatic_reindexing' do

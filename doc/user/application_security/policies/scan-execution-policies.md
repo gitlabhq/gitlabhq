@@ -11,21 +11,21 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - Operational container scanning [introduced](https://gitlab.com/groups/gitlab-org/-/epics/3410) in GitLab 15.5
 
 Group, subgroup, or project owners can use scan execution policies to require that security scans run on a specified
-schedule or with the project (or multiple projects if the policy is defined at a group or subgroup level) pipeline. Required scans are injected into the CI pipeline as new jobs
-with a long, random job name. In the unlikely event of a job name collision, the security policy job overwrites
-any pre-existing job in the pipeline. If a policy is created at the group-level, it will apply to every child
-project or subgroup. A group-level policy cannot be edited from a child project or subgroup.
+schedule or with the project pipeline. The security scan runs with multiple project pipelines if you define the policy
+at a group or subgroup level. GitLab injects the required scans into the CI pipeline as new jobs. In the event
+of a job name collision, GitLab adds a dash and a number to the job name. GitLab increments the number until the name
+no longer conflicts with existing job names. If you create a policy at the group level, it applies to every child project
+or subgroup. You cannot edit a group-level policy from a child project or subgroup.
 
-This feature has some overlap with [compliance framework pipelines](../../group/compliance_frameworks.md#configure-a-compliance-pipeline),
+This feature has some overlap with [compliance framework pipelines](../../group/compliance_frameworks.md#compliance-pipelines),
 as we have not [unified the user experience for these two features](https://gitlab.com/groups/gitlab-org/-/epics/7312).
 For details on the similarities and differences between these features, see
 [Enforce scan execution](../index.md#enforce-scan-execution).
 
 NOTE:
-Policy jobs are created in the `test` stage of the pipeline. If you modify the default pipeline
+Policy jobs for scans other than DAST scans are created in the `test` stage of the pipeline. If you modify the default pipeline
 [`stages`](../../../ci/yaml/index.md#stages),
-you must ensure that the `test` stage exists in the list. Otherwise, the pipeline fails to run and
-an error appears that states `chosen stage does not exist`.
+to remove the `test` stage, jobs will run in the `scan-policies` stage instead. This stage is injected into the CI pipeline at evaluation time if it doesn't exist. If the `build` stage exists, it is injected just after the `build` stage. If the `build` stage does not exist, it is injected at the beginning of the pipeline. DAST scans always run in the `dast` stage. If this stage does not exist, then a `dast` stage is injected at the end of the pipeline.
 
 ## Scan execution policy editor
 
@@ -89,7 +89,7 @@ This rule enforces the defined actions and schedules a scan on the provided date
 | `type`     | `string` | `schedule` | The rule's type. |
 | `branches` | `array` of `string` | `*` or the branch's name | The branch the given policy applies to (supports wildcard). This field is required if the `agents` field is not set. |
 | `cadence`  | `string` | CRON expression (for example, `0 0 * * *`) | A whitespace-separated string containing five fields that represents the scheduled time. |
-| `agents`   | `object` | | The name of the [GitLab agents](../../clusters/agent/index.md) where [cluster image scanning](../../clusters/agent/vulnerabilities.md) will run. The object key is the name of the Kubernetes agent configured for your project in GitLab. This field is required if the `branches` field is not set. |
+| `agents`   | `object` | | The name of the [GitLab agents](../../clusters/agent/index.md) where [Operational Container Scanning](../../clusters/agent/vulnerabilities.md) runs. The object key is the name of the Kubernetes agent configured for your project in GitLab. This field is required if the `branches` field is not set. |
 
 GitLab supports the following types of CRON syntax for the `cadence` field:
 
@@ -97,10 +97,10 @@ GitLab supports the following types of CRON syntax for the `cadence` field:
 - A weekly cadence of once per week on a specified day and at a specified hour, for example: `0 13 * * 0`
 
 NOTE:
-Other elements of the [CRON syntax]((https://docs.oracle.com/cd/E12058_01/doc/doc.1014/e12030/cron_expressions.htm)) may work in the cadence field if supported by the [cron](https://github.com/robfig/cron) we are using in our implementation, however, GitLab does not officially test or support them.
+Other elements of the [CRON syntax](https://docs.oracle.com/cd/E12058_01/doc/doc.1014/e12030/cron_expressions.htm) may work in the cadence field if supported by the [cron](https://github.com/robfig/cron) we are using in our implementation, however, GitLab does not officially test or support them.
 
 NOTE:
-If using the `agents` field, required for `Operational Container Scanning`, the CRON expression is evaluated in [UTC](https://www.timeanddate.com/worldclock/timezone/utc) using the system-time of the Kubernetes-agent pod. If not using the `agents` field, the CRON expression is evaluated in standard [UTC](https://www.timeanddate.com/worldclock/timezone/utc) time from GitLab.com. If you have a self-managed GitLab instance and have [changed the server timezone](../../../administration/timezone.md), the CRON expression is evaluated with the new timezone.
+If using the `agents` field, required for `Operational Container Scanning`, the CRON expression is evaluated in [UTC](https://www.timeanddate.com/worldclock/timezone/utc) using the system-time of the Kubernetes-agent pod. If not using the `agents` field, the CRON expression is evaluated in standard [UTC](https://www.timeanddate.com/worldclock/timezone/utc) time from GitLab.com. If you have a self-managed GitLab instance and have [changed the server time zone](../../../administration/timezone.md), the CRON expression is evaluated with the new time zone.
 
 ### `agent` schema
 
@@ -108,7 +108,7 @@ Use this schema to define `agents` objects in the [`schedule` rule type](#schedu
 
 | Field        | Type                | Possible values          | Description |
 |--------------|---------------------|--------------------------|-------------|
-| `namespaces` | `array` of `string` | | The namespace that is scanned. If empty, all namespaces will be scanned. |
+| `namespaces` | `array` of `string` | | The namespace that is scanned. If empty, all namespaces are scanned. |
 
 #### Policy example
 
@@ -129,9 +129,9 @@ Use this schema to define `agents` objects in the [`schedule` rule type](#schedu
 
 The keys for a schedule rule are:
 
-- `cadence` (required): a [CRON expression](https://docs.oracle.com/cd/E12058_01/doc/doc.1014/e12030/cron_expressions.htm) for when the scans will be run
+- `cadence` (required): a [CRON expression](https://docs.oracle.com/cd/E12058_01/doc/doc.1014/e12030/cron_expressions.htm) for when the scans are run
 - `agents:<agent-name>` (required): The name of the agent to use for scanning
-- `agents:<agent-name>:namespaces` (optional): The Kubernetes namespaces to scan. If omitted, all namespaces will be scanned.
+- `agents:<agent-name>:namespaces` (optional): The Kubernetes namespaces to scan. If omitted, all namespaces are scanned.
 
 ## `scan` action type
 
@@ -144,7 +144,7 @@ rule in the defined policy are met.
 | `site_profile` | `string` | Name of the selected [DAST site profile](../dast/proxy-based.md#site-profile). | The DAST site profile to execute the DAST scan. This field should only be set if `scan` type is `dast`. |
 | `scanner_profile` | `string` or `null` | Name of the selected [DAST scanner profile](../dast/proxy-based.md#scanner-profile). | The DAST scanner profile to execute the DAST scan. This field should only be set if `scan` type is `dast`.|
 | `variables` | `object` | | A set of CI variables, supplied as an array of `key: value` pairs, to apply and enforce for the selected scan. The `key` is the variable name, with its `value` provided as a string. This parameter supports any variable that the GitLab CI job supports for the specified scan. |
-| `tags` | `array` of `string` | | A list of runner tags for the policy. The policy jobs will be run by runner with the specified tags. |
+| `tags` | `array` of `string` | | A list of runner tags for the policy. The policy jobs are run by runner with the specified tags. |
 
 Note the following:
 
@@ -238,3 +238,14 @@ actions:
   - scan: secret_detection
   - scan: container_scanning
 ```
+
+## Avoiding duplicate scans
+
+Scan execution policies can cause the same type of scanner to run more than once if developers include scan jobs in the project's
+`.gitlab-ci.yml` file. This behavior is intentional as scanners can run more than once with different variables and settings. For example, a
+developer may want to try running a SAST scan with different variables than the one enforced by the security and compliance team. In
+this case, two SAST jobs run in the pipeline, one with the developer's variables and one with the security and compliance team's variables.
+
+If you want to avoid running duplicate scans, you can either remove the scans from the project's `.gitlab-ci.yml` file or disable your
+local jobs by setting `SAST_DISABLED: true`. Disabling jobs this way does not prevent the security jobs defined by scan execution
+policies from running.

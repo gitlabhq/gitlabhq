@@ -2,10 +2,11 @@
 
 require 'spec_helper'
 
-RSpec.describe 'User visits their profile', feature_category: :users do
+RSpec.describe 'User visits their profile', feature_category: :user_profile do
   let_it_be_with_refind(:user) { create(:user) }
 
   before do
+    stub_feature_flags(profile_tabs_vue: false)
     sign_in(user)
   end
 

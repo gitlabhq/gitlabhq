@@ -7,7 +7,6 @@ RSpec/MissingExampleGroupArgument:
     - 'spec/controllers/projects/issues_controller_spec.rb'
     - 'spec/controllers/projects/merge_requests_controller_spec.rb'
     - 'spec/factories/projects/ci_feature_usages.rb'
-    - 'spec/lib/gitlab/background_migration/backfill_jira_tracker_deployment_type2_spec.rb'
     - 'spec/lib/gitlab/git_access_spec.rb'
     - 'spec/policies/award_emoji_policy_spec.rb'
     - 'spec/requests/api/graphql/mutations/notes/create/diff_note_spec.rb'

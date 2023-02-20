@@ -18,7 +18,7 @@ GET /groups/:id/variables
 
 | Attribute | Type    | required | Description         |
 |-----------|---------|----------|---------------------|
-| `id`      | integer/string | yes      | The ID of a group or [URL-encoded path of the group](index.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`      | integer/string | yes      | The ID of a group or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/1/variables"
@@ -57,7 +57,7 @@ GET /groups/:id/variables/:key
 
 | Attribute | Type    | required | Description           |
 |-----------|---------|----------|-----------------------|
-| `id`      | integer/string | yes      | The ID of a group or [URL-encoded path of the group](index.md#namespaced-path-encoding) owned by the authenticated user   |
+| `id`      | integer/string | yes      | The ID of a group or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) owned by the authenticated user   |
 | `key`     | string  | yes      | The `key` of a variable |
 
 ```shell
@@ -86,13 +86,13 @@ POST /groups/:id/variables
 
 | Attribute       | Type    | required | Description           |
 |-----------------|---------|----------|-----------------------|
-| `id`            | integer/string | yes      | The ID of a group or [URL-encoded path of the group](index.md#namespaced-path-encoding) owned by the authenticated user   |
+| `id`            | integer/string | yes      | The ID of a group or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) owned by the authenticated user   |
 | `key`           | string  | yes      | The `key` of a variable; must have no more than 255 characters; only `A-Z`, `a-z`, `0-9`, and `_` are allowed |
 | `value`         | string  | yes      | The `value` of a variable |
 | `variable_type` | string  | no       | The type of a variable. Available types are: `env_var` (default) and `file` |
 | `protected`     | boolean | no       | Whether the variable is protected |
 | `masked`        | boolean | no       | Whether the variable is masked |
-| `raw`           | boolean | no       | Whether the variable is expandable |
+| `raw`           | boolean | no       | Whether the variable is treated as a raw string. Default: `false`. When `true`, variables in the value are not [expanded](../ci/variables/index.md#prevent-cicd-variable-expansion). |
 | `environment_scope` **(PREMIUM)** | string | no | The [environment scope](../ci/environments/index.md#limit-the-environment-scope-of-a-cicd-variable) of a variable |
 
 ```shell
@@ -122,13 +122,13 @@ PUT /groups/:id/variables/:key
 
 | Attribute       | Type    | required | Description             |
 |-----------------|---------|----------|-------------------------|
-| `id`            | integer/string | yes      | The ID of a group or [URL-encoded path of the group](index.md#namespaced-path-encoding) owned by the authenticated user     |
+| `id`            | integer/string | yes      | The ID of a group or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) owned by the authenticated user     |
 | `key`           | string  | yes      | The `key` of a variable   |
 | `value`         | string  | yes      | The `value` of a variable |
 | `variable_type` | string  | no       | The type of a variable. Available types are: `env_var` (default) and `file` |
 | `protected`     | boolean | no       | Whether the variable is protected |
 | `masked`        | boolean | no       | Whether the variable is masked |
-| `raw`           | boolean | no       | Whether the variable is expandable |
+| `raw`           | boolean | no       | Whether the variable is treated as a raw string. Default: `false`. When `true`, variables in the value are not [expanded](../ci/variables/index.md#prevent-cicd-variable-expansion). |
 | `environment_scope` **(PREMIUM)** | string | no | The [environment scope](../ci/environments/index.md#limit-the-environment-scope-of-a-cicd-variable) of a variable |
 
 ```shell
@@ -158,7 +158,7 @@ DELETE /groups/:id/variables/:key
 
 | Attribute | Type    | required | Description             |
 |-----------|---------|----------|-------------------------|
-| `id`      | integer/string | yes      | The ID of a group or [URL-encoded path of the group](index.md#namespaced-path-encoding) owned by the authenticated user     |
+| `id`      | integer/string | yes      | The ID of a group or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) owned by the authenticated user     |
 | `key`     | string  | yes      | The `key` of a variable |
 
 ```shell

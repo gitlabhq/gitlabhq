@@ -5,7 +5,6 @@ class Projects::PipelinesController < Projects::ApplicationController
   include RedisTracking
   include ProductAnalyticsTracking
   include ProjectStatsRefreshConflictsGuard
-  include ZuoraCSP
 
   urgency :low, [
     :index, :new, :builds, :show, :failures, :create,
@@ -220,6 +219,8 @@ class Projects::PipelinesController < Projects::ApplicationController
   def config_variables
     respond_to do |format|
       format.json do
+        # Even if the parameter name is `sha`, it is actually a ref name. We always send `ref` to the endpoint.
+        # See: https://gitlab.com/gitlab-org/gitlab/-/issues/389065
         result = Ci::ListConfigVariablesService.new(@project, current_user).execute(params[:sha])
 
         result.nil? ? head(:no_content) : render(json: result)

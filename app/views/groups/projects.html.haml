@@ -38,8 +38,12 @@
             = render 'project_badges', project: project
 
           .controls.gl-flex-shrink-0.gl-ml-5
-            = link_to _('Members'), project_project_members_path(project), id: dom_id(project, :edit), class: "btn gl-button", data: { qa_selector: 'project_members_button' }
-            = link_to _('Edit'), edit_project_path(project), id: dom_id(project, :edit), class: "btn gl-button", data: { qa_selector: 'project_edit_button' }
+            = render Pajamas::ButtonComponent.new(href: project_project_members_path(project),
+              button_options: { data: { qa_selector: 'project_members_button' } }) do
+              = _('Members')
+            = render Pajamas::ButtonComponent.new(href: edit_project_path(project),
+              button_options: { data: { qa_selector: 'project_edit_button' } }) do
+              = _('Edit')
             = render 'delete_project_button', project: project, data: { qa_selector: 'project_delete_button' }
       - if @projects.blank?
         .nothing-here-block= _("This group has no projects yet")

@@ -121,7 +121,9 @@ To authenticate to the Package Registry, you need one of the following:
 
 NOTE:
 Packages from private and internal projects are hidden if you are not
-authenticated. If you try to search or download a package from a private or internal project without authenticating, you will receive the error `unable to find the package in remote` in the Conan client.
+authenticated. If you try to search or download a package from a private or internal
+project without authenticating, you receive the error `unable to find the package in remote`
+in the Conan client.
 
 ### Add your credentials to the GitLab remote
 
@@ -271,7 +273,7 @@ Prerequisites:
 
 NOTE:
 If you try installing the package you created in this tutorial, the install command
-will have no effect because the package already exists.
+has no effect because the package already exists.
 Delete `~/.conan/data` to clean up the packages stored in the cache.
 
 ## Remove a Conan package

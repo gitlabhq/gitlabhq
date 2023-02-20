@@ -5,6 +5,7 @@ $search-avatar-size: 16px;
 $search-sidebar-min-width: 240px;
 $search-sidebar-max-width: 300px;
 $search-keyboard-shortcut: '/';
+$language-filter-max-height: 20rem;
 
 $border-radius-medium: 3px;
 
@@ -24,6 +25,26 @@ $border-radius-medium: 3px;
   @include media-breakpoint-up(md) {
     min-width: $search-sidebar-min-width;
     max-width: $search-sidebar-max-width;
+  }
+
+  .language-filter-checkbox {
+    .custom-control-label {
+      flex-grow: 1;
+    }
+  }
+
+  .language-filter-max-height {
+    max-height: $language-filter-max-height;
+  }
+}
+
+.search-max-w-inherit {
+  max-width: inherit;
+}
+
+.search-wrap-f-md-down {
+  @include gl-media-breakpoint-down(md) {
+    white-space: normal !important;
   }
 }
 
@@ -324,13 +345,20 @@ $border-radius-medium: 3px;
   }
 }
 
-// Disable Webkit's search input styles
+/**
+ * When form input type is search, browsers add a clear input button inside
+ * the input field. This overlaps with the input field we have already added.
+ */
+
+/* stylelint-disable property-no-vendor-prefix */
 input[type='search'] {
-  /* stylelint-disable-next-line property-no-vendor-prefix */
   -webkit-appearance: textfield;
+  -moz-appearance: textfield;
+  appearance: textfield;
 
   &::-webkit-search-cancel-button,
   &::-webkit-search-results-button {
     @include gl-display-none;
   }
 }
+/* stylelint-enable property-no-vendor-prefix */

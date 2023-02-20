@@ -6,7 +6,7 @@ module Gitlab
       module Bridge
         module Common
           def label
-            subject.description
+            subject.description.presence || super
           end
 
           def has_details?

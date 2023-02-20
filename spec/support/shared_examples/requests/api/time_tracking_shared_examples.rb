@@ -142,7 +142,7 @@ RSpec.shared_examples 'time tracking endpoints' do |issuable_name|
     if issuable_name == 'issue'
       it 'calls update service without :use_specialized_service param' do
         expect(::Issues::UpdateService).to receive(:new).with(
-          project: project,
+          container: project,
           current_user: user,
           params: { spend_time: { duration: 3600, summary: 'summary', user_id: user.id } })
 

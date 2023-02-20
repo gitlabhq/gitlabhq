@@ -47,7 +47,7 @@ anyone else.
 
 To edit your notification settings:
 
-1. In the top-right corner, select your avatar.
+1. In the upper-right corner, select your avatar.
 1. Select **Preferences**.
 1. On the left sidebar, select **Notifications**.
 1. Edit the desired global, group, or project notification settings.
@@ -100,7 +100,7 @@ You can select a notification level and email address for each group.
 
 To select a notification level for a group, use either of these methods:
 
-1. In the top-right corner, select your avatar.
+1. In the upper-right corner, select your avatar.
 1. Select **Preferences**.
 1. On the left sidebar, select **Notifications**.
 1. Locate the project in the **Groups** section.
@@ -119,7 +119,7 @@ Or:
 You can select an email address to receive notifications for each group you belong to.
 You can use group notifications, for example, if you work freelance, and want to keep email about clients' projects separate.
 
-1. In the top-right corner, select your avatar.
+1. In the upper-right corner, select your avatar.
 1. Select **Preferences**.
 1. On the left sidebar, select **Notifications**.
 1. Locate the project in the **Groups** section.
@@ -131,7 +131,7 @@ To help you stay up to date, you can select a notification level for each projec
 
 To select a notification level for a project, use either of these methods:
 
-1. In the top-right corner, select your avatar.
+1. In the upper-right corner, select your avatar.
 1. Select **Preferences**.
 1. On the left sidebar, select **Notifications**.
 1. Locate the project in the **Projects** section.
@@ -153,7 +153,7 @@ These emails are enabled by default.
 
 To opt out:
 
-1. In the top-right corner, select your avatar.
+1. In the upper-right corner, select your avatar.
 1. Select **Preferences**.
 1. On the left sidebar, select **Notifications**.
 1. Clear the **Receive product marketing emails** checkbox.
@@ -330,7 +330,7 @@ The participants are:
 
 If you no longer wish to receive any email notifications:
 
-1. In the top-right corner, select your avatar.
+1. In the upper-right corner, select your avatar.
 1. Select **Preferences**.
 1. On the left sidebar, select **Notifications**.
 1. Clear the **Receive product marketing emails** checkbox.

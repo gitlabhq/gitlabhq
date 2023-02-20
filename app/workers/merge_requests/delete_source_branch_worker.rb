@@ -18,15 +18,10 @@ class MergeRequests::DeleteSourceBranchWorker
     # Source branch changed while it's being removed
     return if merge_request.source_branch_sha != source_branch_sha
 
-    if Feature.enabled?(:add_delete_branch_worker, merge_request.source_project)
-      ::Projects::DeleteBranchWorker.new.perform(merge_request.source_project.id, user_id,
-                                                      merge_request.source_branch)
-    else
-      ::Branches::DeleteService.new(merge_request.source_project, user).execute(merge_request.source_branch)
-    end
-
     ::MergeRequests::RetargetChainService.new(project: merge_request.source_project, current_user: user)
             .execute(merge_request)
+
+    ::Projects::DeleteBranchWorker.new.perform(merge_request.source_project.id, user_id, merge_request.source_branch)
   rescue ActiveRecord::RecordNotFound
   end
 end

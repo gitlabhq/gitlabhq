@@ -1,32 +1,42 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe Gitlab::Metrics::RailsSlis do
-  # Limit what routes we'll initialize so we don't have to load the entire thing
+RSpec.describe Gitlab::Metrics::RailsSlis, feature_category: :error_budgets do
   before do
-    api_route = API::API.routes.find do |route|
-      API::Base.endpoint_id_for_route(route) == "GET /api/:version/version"
-    end
-
-    allow(Gitlab::RequestEndpoints).to receive(:all_api_endpoints).and_return([api_route])
-    allow(Gitlab::RequestEndpoints).to receive(:all_controller_actions).and_return([[ProjectsController, 'index']])
     allow(Gitlab::Graphql::KnownOperations).to receive(:default).and_return(Gitlab::Graphql::KnownOperations.new(%w(foo bar)))
   end
 
   describe '.initialize_request_slis!' do
-    let(:possible_labels) do
+    let(:web_possible_labels) do
       [
-        {
-          endpoint_id: "GET /api/:version/version",
-          feature_category: :not_owned,
-          request_urgency: :default
-        },
         {
           endpoint_id: "ProjectsController#index",
           feature_category: :projects,
           request_urgency: :default
         }
       ]
+    end
+
+    # using the actual `#known_git_endpoints` here makes sure that we keep the
+    # list up to date as endpoints get removed
+    let(:git_possible_labels) do
+      described_class.__send__(:known_git_endpoints).map do |endpoint_id|
+        a_hash_including({
+          endpoint_id: endpoint_id
+        })
+      end
+    end
+
+    let(:api_possible_labels) do
+      [{
+        endpoint_id: "GET /api/:version/version",
+        feature_category: :not_owned,
+        request_urgency: :default
+      }]
+    end
+
+    let(:possible_request_labels) do
+      web_possible_labels + git_possible_labels + api_possible_labels
     end
 
     let(:possible_graphql_labels) do
@@ -40,21 +50,57 @@ RSpec.describe Gitlab::Metrics::RailsSlis do
     end
 
     it "initializes the SLI for all possible endpoints if they weren't", :aggregate_failures do
-      expect(Gitlab::Metrics::Sli::Apdex).to receive(:initialize_sli).with(:rails_request, array_including(*possible_labels)).and_call_original
+      expect(Gitlab::Metrics::Sli::Apdex).to receive(:initialize_sli).with(:rails_request, array_including(*possible_request_labels)).and_call_original
       expect(Gitlab::Metrics::Sli::Apdex).to receive(:initialize_sli).with(:graphql_query, array_including(*possible_graphql_labels)).and_call_original
-      expect(Gitlab::Metrics::Sli::ErrorRate).to receive(:initialize_sli).with(:rails_request, array_including(*possible_labels)).and_call_original
+      expect(Gitlab::Metrics::Sli::ErrorRate).to receive(:initialize_sli).with(:rails_request, array_including(*possible_request_labels)).and_call_original
 
       described_class.initialize_request_slis!
     end
 
-    it "initializes the SLI for all possible endpoints if they weren't given error rate feature flag is disabled", :aggregate_failures do
-      stub_feature_flags(gitlab_metrics_error_rate_sli: false)
+    context "when initializeing for limited types" do
+      using RSpec::Parameterized::TableSyntax
 
-      expect(Gitlab::Metrics::Sli::Apdex).to receive(:initialize_sli).with(:rails_request, array_including(*possible_labels)).and_call_original
-      expect(Gitlab::Metrics::Sli::Apdex).to receive(:initialize_sli).with(:graphql_query, array_including(*possible_graphql_labels)).and_call_original
-      expect(Gitlab::Metrics::Sli::ErrorRate).not_to receive(:initialize_sli)
+      where(:git, :api, :web) do
+        [true, false].repeated_permutation(3).to_a
+      end
 
-      described_class.initialize_request_slis!
+      with_them do
+        it 'initializes only with the expected labels', :aggregate_failures do
+          allow(Gitlab::Metrics::Environment).to receive(:git?).and_return(git)
+          allow(Gitlab::Metrics::Environment).to receive(:api?).and_return(api)
+          allow(Gitlab::Metrics::Environment).to receive(:web?).and_return(web)
+          allow(Gitlab::Metrics::Sli::Apdex).to receive(:initialize_sli)
+          allow(Gitlab::Metrics::Sli::ErrorRate).to receive(:initialize_sli)
+
+          described_class.initialize_request_slis!
+
+          if git
+            expect(Gitlab::Metrics::Sli::Apdex).to have_received(:initialize_sli).with(:rails_request, array_including(*git_possible_labels))
+            expect(Gitlab::Metrics::Sli::ErrorRate).to have_received(:initialize_sli).with(:rails_request, array_including(*git_possible_labels))
+          else
+            expect(Gitlab::Metrics::Sli::Apdex).not_to have_received(:initialize_sli).with(:rails_request, array_including(*git_possible_labels))
+            expect(Gitlab::Metrics::Sli::ErrorRate).not_to have_received(:initialize_sli).with(:rails_request, array_including(*git_possible_labels))
+          end
+
+          if api
+            expect(Gitlab::Metrics::Sli::Apdex).to have_received(:initialize_sli).with(:rails_request, array_including(*api_possible_labels))
+            expect(Gitlab::Metrics::Sli::ErrorRate).to have_received(:initialize_sli).with(:rails_request, array_including(*api_possible_labels))
+            expect(Gitlab::Metrics::Sli::Apdex).to have_received(:initialize_sli).with(:graphql_query, array_including(*possible_graphql_labels))
+          else
+            expect(Gitlab::Metrics::Sli::Apdex).not_to have_received(:initialize_sli).with(:rails_request, array_including(*api_possible_labels))
+            expect(Gitlab::Metrics::Sli::ErrorRate).not_to have_received(:initialize_sli).with(:rails_request, array_including(*api_possible_labels))
+            expect(Gitlab::Metrics::Sli::Apdex).to have_received(:initialize_sli).with(:graphql_query, [])
+          end
+
+          if web
+            expect(Gitlab::Metrics::Sli::Apdex).to have_received(:initialize_sli).with(:rails_request, array_including(*web_possible_labels))
+            expect(Gitlab::Metrics::Sli::ErrorRate).to have_received(:initialize_sli).with(:rails_request, array_including(*web_possible_labels))
+          else
+            expect(Gitlab::Metrics::Sli::Apdex).not_to have_received(:initialize_sli).with(:rails_request, array_including(*web_possible_labels))
+            expect(Gitlab::Metrics::Sli::ErrorRate).not_to have_received(:initialize_sli).with(:rails_request, array_including(*web_possible_labels))
+          end
+        end
+      end
     end
   end
 

@@ -1,0 +1,54 @@
+PATH
+  remote: .
+  specs:
+    gitlab_active_record (0.1.0)
+      activerecord (~> 6.1)
+      activesupport (~> 6.1)
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    activemodel (6.1.7)
+      activesupport (= 6.1.7)
+    activerecord (6.1.7)
+      activemodel (= 6.1.7)
+      activesupport (= 6.1.7)
+    activesupport (6.1.7)
+      concurrent-ruby (~> 1.0, >= 1.0.2)
+      i18n (>= 1.6, < 2)
+      minitest (>= 5.1)
+      tzinfo (~> 2.0)
+      zeitwerk (~> 2.3)
+    concurrent-ruby (1.1.10)
+    diff-lcs (1.5.0)
+    i18n (1.12.0)
+      concurrent-ruby (~> 1.0)
+    minitest (5.16.3)
+    rake (13.0.6)
+    rspec (3.11.0)
+      rspec-core (~> 3.11.0)
+      rspec-expectations (~> 3.11.0)
+      rspec-mocks (~> 3.11.0)
+    rspec-core (3.11.0)
+      rspec-support (~> 3.11.0)
+    rspec-expectations (3.11.0)
+      diff-lcs (>= 1.2.0, < 2.0)
+      rspec-support (~> 3.11.0)
+    rspec-mocks (3.11.0)
+      diff-lcs (>= 1.2.0, < 2.0)
+      rspec-support (~> 3.11.0)
+    rspec-support (3.11.0)
+    tzinfo (2.0.5)
+      concurrent-ruby (~> 1.0)
+    zeitwerk (2.6.6)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  gitlab_active_record!
+  rake (~> 13.0)
+  rspec (~> 3.0)
+
+BUNDLED WITH
+   2.3.26

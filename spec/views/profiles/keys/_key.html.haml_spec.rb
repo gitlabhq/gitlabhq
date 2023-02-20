@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'profiles/keys/_key.html.haml' do
+RSpec.describe 'profiles/keys/_key.html.haml', feature_category: :authentication_and_authorization do
   let_it_be(:user) { create(:user) }
 
   before do
@@ -24,18 +24,58 @@ RSpec.describe 'profiles/keys/_key.html.haml' do
       expect(rendered).to have_text(key.title)
       expect(rendered).to have_css('[data-testid="key-icon"]')
       expect(rendered).to have_text(key.fingerprint)
-      expect(rendered).to have_text(l(key.last_used_at, format: "%b %d, %Y"))
       expect(rendered).to have_text(l(key.created_at, format: "%b %d, %Y"))
       expect(rendered).to have_text(key.expires_at.to_date)
-      expect(response).to render_template(partial: 'shared/ssh_keys/_key_delete')
+      expect(rendered).to have_button('Remove')
+    end
+
+    context 'when disable_ssh_key_used_tracking is enabled' do
+      before do
+        stub_feature_flags(disable_ssh_key_used_tracking: true)
+      end
+
+      it 'renders "Unavailable" for last used' do
+        render
+
+        expect(rendered).to have_text('Last used: Unavailable')
+      end
+    end
+
+    context 'when disable_ssh_key_used_tracking is disabled' do
+      before do
+        stub_feature_flags(disable_ssh_key_used_tracking: false)
+      end
+
+      it 'displays the correct last used date' do
+        render
+
+        expect(rendered).to have_text(l(key.last_used_at, format: "%b %d, %Y"))
+      end
+
+      context 'when the key has not been used' do
+        let_it_be(:key) do
+          create(:personal_key,
+                 user: user,
+                 last_used_at: nil)
+        end
+
+        it 'renders "Never" for last used' do
+          render
+
+          expect(rendered).to have_text('Last used: Never')
+        end
+      end
     end
 
     context 'displays the usage type' do
-      where(:usage_type, :usage_type_text) do
+      where(:usage_type, :usage_type_text, :displayed_buttons, :hidden_buttons, :revoke_ssh_signatures_ff) do
         [
-          [:auth, 'Authentication'],
-          [:auth_and_signing, 'Authentication & Signing'],
-          [:signing, 'Signing']
+          [:auth, 'Authentication', ['Remove'], ['Revoke'], true],
+          [:auth_and_signing, 'Authentication & Signing', %w[Remove Revoke], [], true],
+          [:signing, 'Signing', %w[Remove Revoke], [], true],
+          [:auth, 'Authentication', ['Remove'], ['Revoke'], false],
+          [:auth_and_signing, 'Authentication & Signing', %w[Remove], ['Revoke'], false],
+          [:signing, 'Signing', %w[Remove], ['Revoke'], false]
         ]
       end
 
@@ -47,20 +87,20 @@ RSpec.describe 'profiles/keys/_key.html.haml' do
 
           expect(rendered).to have_text(usage_type_text)
         end
-      end
-    end
 
-    context 'when the key has not been used' do
-      let_it_be(:key) do
-        create(:personal_key,
-               user: user,
-               last_used_at: nil)
-      end
+        it 'renders remove/revoke buttons', :aggregate_failures do
+          stub_feature_flags(revoke_ssh_signatures: revoke_ssh_signatures_ff)
 
-      it 'renders "Never" for last used' do
-        render
+          render
 
-        expect(rendered).to have_text('Last used: Never')
+          displayed_buttons.each do |button|
+            expect(rendered).to have_text(button)
+          end
+
+          hidden_buttons.each do |button|
+            expect(rendered).not_to have_text(button)
+          end
+        end
       end
     end
 
@@ -98,7 +138,8 @@ RSpec.describe 'profiles/keys/_key.html.haml' do
       it 'does not render the partial' do
         render
 
-        expect(response).not_to render_template(partial: 'shared/ssh_keys/_key_delete')
+        expect(response).not_to have_text('Remove')
+        expect(response).not_to have_text('Revoke')
       end
     end
 

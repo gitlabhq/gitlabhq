@@ -15,7 +15,7 @@ RSpec.describe Gitlab::Memory::Watchdog::Configuration do
   describe '#handler' do
     context 'when handler is not set' do
       it 'defaults to NullHandler' do
-        expect(configuration.handler).to be(Gitlab::Memory::Watchdog::NullHandler.instance)
+        expect(configuration.handler).to be(Gitlab::Memory::Watchdog::Handlers::NullHandler.instance)
       end
     end
   end

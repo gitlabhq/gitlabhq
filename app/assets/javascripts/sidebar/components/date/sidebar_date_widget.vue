@@ -1,7 +1,7 @@
 <script>
 import { GlIcon, GlDatepicker, GlTooltipDirective, GlLink, GlPopover } from '@gitlab/ui';
 import { createAlert } from '~/flash';
-import { IssuableType } from '~/issues/constants';
+import { TYPE_ISSUE } from '~/issues/constants';
 import { dateInWords, formatDate, parsePikadayDate } from '~/lib/utils/datetime_utility';
 import { __, sprintf } from '~/locale';
 import { dateFields, dateTypes, dueDateQueries, startDateQueries, Tracking } from '../../constants';
@@ -142,7 +142,7 @@ export default {
       return dateInWords(this.parsedDate, true);
     },
     workspacePath() {
-      return this.issuableType === IssuableType.Issue
+      return this.issuableType === TYPE_ISSUE
         ? {
             projectPath: this.fullPath,
           }
@@ -235,7 +235,7 @@ export default {
     help: __('Help'),
     learnMore: __('Learn more'),
   },
-  dateHelpUrl: '/help/user/group/epics/index.md#start-date-and-due-date',
+  dateHelpUrl: '/help/user/group/epics/manage_epics.md#start-and-due-date-inheritance',
 };
 </script>
 

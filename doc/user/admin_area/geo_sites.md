@@ -52,7 +52,7 @@ How long the backfill takes is dependent on the maximum concurrency, but higher
 values place more strain on the **primary** site. The limits are configurable.
 If your **primary** site has lots of surplus capacity,
 you can increase the values to complete backfill in a shorter time. If it's
-under heavy load and backfill reduces its availability for normal requests,
+under heavy load and backfill reduces its availability for standard requests,
 you can decrease them.
 
 ## Set up the internal URLs

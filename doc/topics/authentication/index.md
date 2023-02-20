@@ -29,7 +29,6 @@ This page gathers all the resources for the topic **Authentication** within GitL
   - [Debugging LDAP](https://about.gitlab.com/handbook/support/workflows/debugging_ldap.html)
 - **Integrations:**
   - [OmniAuth](../../integration/omniauth.md)
-  - [Authentiq OmniAuth Provider](../../administration/auth/authentiq.md#authentiq-omniauth-provider)
   - [Atlassian Crowd OmniAuth Provider](../../administration/auth/crowd.md)
   - [CAS OmniAuth Provider](../../integration/cas.md)
   - [SAML OmniAuth Provider](../../integration/saml.md)
@@ -39,11 +38,11 @@ This page gathers all the resources for the topic **Authentication** within GitL
 
 ## API
 
-- [OAuth 2 Tokens](../../api/index.md#oauth2-tokens)
-- [Personal access tokens](../../api/index.md#personalprojectgroup-access-tokens)
-- [Project access tokens](../../api/index.md#personalprojectgroup-access-tokens)
-- [Group access tokens](../../api/index.md#personalprojectgroup-access-tokens)
-- [Impersonation tokens](../../api/index.md#impersonation-tokens)
+- [OAuth 2 Tokens](../../api/rest/index.md#oauth2-tokens)
+- [Personal access tokens](../../api/rest/index.md#personalprojectgroup-access-tokens)
+- [Project access tokens](../../api/rest/index.md#personalprojectgroup-access-tokens)
+- [Group access tokens](../../api/rest/index.md#personalprojectgroup-access-tokens)
+- [Impersonation tokens](../../api/rest/index.md#impersonation-tokens)
 - [OAuth 2.0 identity provider API](../../api/oauth2.md)
 
 ## Third-party resources

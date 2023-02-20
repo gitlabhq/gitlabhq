@@ -139,12 +139,6 @@ RSpec.describe API::Issues, feature_category: :team_planning do
         expect(json_response).to be_an Array
       end
 
-      it_behaves_like 'issuable anonymous search' do
-        let(:url) { '/issues' }
-        let(:issuable) { issue }
-        let(:result) { issuable.id }
-      end
-
       it_behaves_like 'issuable API rate-limited search' do
         let(:url) { '/issues' }
         let(:issuable) { issue }
@@ -274,31 +268,6 @@ RSpec.describe API::Issues, feature_category: :team_planning do
           let(:counts) { { all: 1, closed: 0, opened: 1 } }
 
           it_behaves_like 'issues statistics'
-
-          context 'with anonymous user' do
-            let(:user) { nil }
-
-            context 'with disable_anonymous_search disabled' do
-              before do
-                stub_feature_flags(disable_anonymous_search: false)
-              end
-
-              it_behaves_like 'issues statistics'
-            end
-
-            context 'with disable_anonymous_search enabled' do
-              before do
-                stub_feature_flags(disable_anonymous_search: true)
-              end
-
-              it 'returns a unprocessable entity 422' do
-                get api("/issues_statistics"), params: params
-
-                expect(response).to have_gitlab_http_status(:unprocessable_entity)
-                expect(json_response['message']).to include('User must be authenticated to use search')
-              end
-            end
-          end
         end
       end
     end

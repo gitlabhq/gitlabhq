@@ -105,7 +105,13 @@ When the consolidated form is:
 
 See the section on [ETag mismatch errors](#etag-mismatch) for more details.
 
-**In Omnibus installations:**
+#### Use AWS S3
+
+The following example uses AWS S3 to enable object storage for all supported services:
+
+::Tabs
+
+:::TabTitle Linux package (Omnibus)
 
 1. Edit `/etc/gitlab/gitlab.rb` and add the following lines, substituting
    the values you want:
@@ -116,7 +122,7 @@ See the section on [ETag mismatch errors](#etag-mismatch) for more details.
     gitlab_rails['object_store']['proxy_download'] = true
     gitlab_rails['object_store']['connection'] = {
       'provider' => 'AWS',
-      'region' => '<eu-central-1>',
+      'region' => 'eu-central-1',
       'aws_access_key_id' => '<AWS_ACCESS_KEY_ID>',
       'aws_secret_access_key' => '<AWS_SECRET_ACCESS_KEY>'
     }
@@ -125,62 +131,231 @@ See the section on [ETag mismatch errors](#etag-mismatch) for more details.
       'server_side_encryption' => '<AES256 or aws:kms>',
       'server_side_encryption_kms_key_id' => '<arn:aws:kms:xxx>'
     }
-    gitlab_rails['object_store']['objects']['artifacts']['bucket'] = '<artifacts>'
-    gitlab_rails['object_store']['objects']['external_diffs']['bucket'] = '<external-diffs>'
-    gitlab_rails['object_store']['objects']['lfs']['bucket'] = '<lfs-objects>'
-    gitlab_rails['object_store']['objects']['uploads']['bucket'] = '<uploads>'
-    gitlab_rails['object_store']['objects']['packages']['bucket'] = '<packages>'
-    gitlab_rails['object_store']['objects']['dependency_proxy']['bucket'] = '<dependency-proxy>'
-    gitlab_rails['object_store']['objects']['terraform_state']['bucket'] = '<terraform-state>'
-    gitlab_rails['object_store']['objects']['pages']['bucket'] = '<pages>'
+    gitlab_rails['object_store']['objects']['artifacts']['bucket'] = 'gitlab-artifacts'
+    gitlab_rails['object_store']['objects']['external_diffs']['bucket'] = 'gitlab-mr-diffs'
+    gitlab_rails['object_store']['objects']['lfs']['bucket'] = 'gitlab-lfs'
+    gitlab_rails['object_store']['objects']['uploads']['bucket'] = 'gitlab-uploads'
+    gitlab_rails['object_store']['objects']['packages']['bucket'] = 'gitlab-packages'
+    gitlab_rails['object_store']['objects']['dependency_proxy']['bucket'] = 'gitlab-dependency-proxy'
+    gitlab_rails['object_store']['objects']['terraform_state']['bucket'] = 'gitlab-terraform-state'
+    gitlab_rails['object_store']['objects']['ci_secure_files']['bucket'] = 'gitlab-ci-secure-files'
+    gitlab_rails['object_store']['objects']['pages']['bucket'] = 'gitlab-pages'
     ```
 
-   If you're using AWS IAM profiles, omit the AWS access key and secret access
-   key/value pairs. For example:
+    If you’re using [AWS IAM profiles](#using-amazon-instance-profiles), omit
+    the AWS access key and secret access key/value pairs. For example:
+
+    ```ruby
+    gitlab_rails['object_store']['connection'] = {
+      'provider' => 'AWS',
+      'region' => 'eu-central-1',
+      'use_iam_profile' => true
+    }
+    ```
+
+1. Save the file and reconfigure GitLab:
+
+   ```shell
+   sudo gitlab-ctl reconfigure
+   ```
+
+:::TabTitle Helm chart (Kubernetes)
+
+1. Put the following content in a file named `object_storage.yaml` to be used as a
+   [Kubernetes Secret](https://docs.gitlab.com/charts/charts/globals.html#connection):
+
+   ```yaml
+   provider: AWS
+   region: us-east-1
+   aws_access_key_id: <AWS_ACCESS_KEY_ID>
+   aws_secret_access_key: <AWS_SECRET_ACCESS_KEY>
+   ```
+
+   If you’re using [AWS IAM profiles](#using-amazon-instance-profiles), omit
+   the AWS access key and secret access key/value pairs. For example:
+
+   ```yaml
+   provider: AWS
+   region: us-east-1
+   use_iam_profile: true
+   ```
+
+1. Create the Kubernetes Secret:
+
+   ```shell
+   kubectl create secret generic -n <namespace> gitlab-object-storage --from-file=connection=object_storage.yaml
+   ```
+
+1. Export the Helm values:
+
+   ```shell
+   helm get values gitlab > gitlab_values.yaml
+   ```
+
+1. Edit `gitlab_values.yaml`:
+
+   ```yaml
+   global:
+     appConfig:
+       object_store:
+         enabled: false
+         proxy_download: true
+         storage_options: {}
+           # server_side_encryption:
+           # server_side_encryption_kms_key_id
+         connection:
+           secret: gitlab-object-storage
+       lfs:
+         enabled: true
+         proxy_download: true
+         bucket: gitlab-lfs
+         connection: {}
+           # secret:
+           # key:
+       artifacts:
+         enabled: true
+         proxy_download: true
+         bucket: gitlab-artifacts
+         connection: {}
+           # secret:
+           # key:
+       uploads:
+         enabled: true
+         proxy_download: true
+         bucket: gitlab-uploads
+         connection: {}
+           # secret:
+           # key:
+       packages:
+         enabled: true
+         proxy_download: true
+         bucket: gitlab-packages
+         connection: {}
+       externalDiffs:
+         enabled: true
+         when:
+         proxy_download: true
+         bucket: gitlab-mr-diffs
+         connection: {}
+       terraformState:
+         enabled: true
+         bucket: gitlab-terraform-state
+         connection: {}
+       ciSecureFiles:
+         enabled: true
+         bucket: gitlab-ci-secure-files
+         connection: {}
+       dependencyProxy:
+         enabled: true
+         proxy_download: true
+         bucket: gitlab-dependency-proxy
+         connection: {}
+   ```
+
+1. Save the file and apply the new values:
+
+   ```shell
+   helm upgrade -f gitlab_values.yaml gitlab gitlab/gitlab
+   ```
+
+:::TabTitle Docker
+
+1. Edit `docker-compose.yml`:
+
+   ```yaml
+   version: "3.6"
+   services:
+     gitlab:
+       environment:
+         GITLAB_OMNIBUS_CONFIG: |
+           # Consolidated object storage configuration
+           gitlab_rails['object_store']['enabled'] = true
+           gitlab_rails['object_store']['proxy_download'] = true
+           gitlab_rails['object_store']['connection'] = {
+             'provider' => 'AWS',
+             'region' => 'eu-central-1',
+             'aws_access_key_id' => '<AWS_ACCESS_KEY_ID>',
+             'aws_secret_access_key' => '<AWS_SECRET_ACCESS_KEY>'
+           }
+           # OPTIONAL: The following lines are only needed if server side encryption is required
+           gitlab_rails['object_store']['storage_options'] = {
+             'server_side_encryption' => '<AES256 or aws:kms>',
+             'server_side_encryption_kms_key_id' => '<arn:aws:kms:xxx>'
+           }
+           gitlab_rails['object_store']['objects']['artifacts']['bucket'] = 'gitlab-artifacts'
+           gitlab_rails['object_store']['objects']['external_diffs']['bucket'] = 'gitlab-mr-diffs'
+           gitlab_rails['object_store']['objects']['lfs']['bucket'] = 'gitlab-lfs'
+           gitlab_rails['object_store']['objects']['uploads']['bucket'] = 'gitlab-uploads'
+           gitlab_rails['object_store']['objects']['packages']['bucket'] = 'gitlab-packages'
+           gitlab_rails['object_store']['objects']['dependency_proxy']['bucket'] = 'gitlab-dependency-proxy'
+           gitlab_rails['object_store']['objects']['terraform_state']['bucket'] = 'gitlab-terraform-state'
+           gitlab_rails['object_store']['objects']['ci_secure_files']['bucket'] = 'gitlab-ci-secure-files'
+           gitlab_rails['object_store']['objects']['pages']['bucket'] = 'gitlab-pages'
+   ```
+
+   If you’re using [AWS IAM profiles](#using-amazon-instance-profiles), omit
+   the AWS access key and secret access key/value pairs. For example:
 
    ```ruby
    gitlab_rails['object_store']['connection'] = {
      'provider' => 'AWS',
-     'region' => '<eu-central-1>',
+     'region' => 'eu-central-1',
      'use_iam_profile' => true
    }
    ```
 
-1. Save the file and [reconfigure GitLab](restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+1. Save the file and restart GitLab:
 
-**In installations from source:**
+   ```shell
+   docker compose up -d
+   ```
+
+:::TabTitle Self-compiled (source)
 
 1. Edit `/home/git/gitlab/config/gitlab.yml` and add or amend the following lines:
 
    ```yaml
-   object_store:
-     enabled: true
-     proxy_download: true
-     connection:
-       provider: AWS
-       aws_access_key_id: <AWS_ACCESS_KEY_ID>
-       aws_secret_access_key: <AWS_SECRET_ACCESS_KEY>
-       region: <eu-central-1>
-     storage_options:
-       server_side_encryption: <AES256 or aws:kms>
-       server_side_encryption_key_kms_id: <arn:aws:kms:xxx>
-     objects:
-       artifacts:
-         bucket: <artifacts>
-       external_diffs:
-         bucket: <external-diffs>
-       lfs:
-         bucket: <lfs-objects>
-       uploads:
-         bucket: <uploads>
-       packages:
-         bucket: <packages>
-       dependency_proxy:
-         bucket: <dependency_proxy>
-       terraform_state:
-         bucket: <terraform>
-       pages:
-         bucket: <pages>
+   production: &base
+     object_store:
+       enabled: true
+       proxy_download: true
+       connection:
+         provider: AWS
+         aws_access_key_id: <AWS_ACCESS_KEY_ID>
+         aws_secret_access_key: <AWS_SECRET_ACCESS_KEY>
+         region: eu-central-1
+       storage_options:
+         server_side_encryption: <AES256 or aws:kms>
+         server_side_encryption_key_kms_id: <arn:aws:kms:xxx>
+       objects:
+         artifacts:
+           bucket: gitlab-artifacts
+         external_diffs:
+           bucket: gitlab-mr-diffs
+         lfs:
+           bucket: gitlab-lfs
+         uploads:
+           bucket: gitlab-uploads
+         packages:
+           bucket: gitlab-packages
+         dependency_proxy:
+           bucket: gitlab-dependency-proxy
+         terraform_state:
+           bucket: gitlab-terraform-state
+         ci_secure_files:
+           bucket: gitlab-ci-secure-files
+         pages:
+           bucket: gitlab-pages
+   ```
+
+   If you’re using [AWS IAM profiles](#using-amazon-instance-profiles), omit
+   the AWS access key and secret access key/value pairs. For example:
+
+   ```yaml
+   connection:
+     provider: AWS
+     region: eu-central-1
+     use_iam_profile: true
    ```
 
 1. Edit `/home/git/gitlab-workhorse/config.toml` and add or amend the following lines:
@@ -194,7 +369,25 @@ See the section on [ETag mismatch errors](#etag-mismatch) for more details.
      aws_secret_access_key = "<AWS_SECRET_ACCESS_KEY>"
    ```
 
-1. Save the file and [restart GitLab](restart_gitlab.md#installations-from-source) for the changes to take effect.
+   If you’re using [AWS IAM profiles](#using-amazon-instance-profiles), omit
+   the AWS access key and secret access key/value pairs. For example:
+
+   ```yaml
+   [object_storage.s3]
+     use_iam_profile = true
+   ```
+
+1. Save the file and restart GitLab:
+
+   ```shell
+   # For systems running systemd
+   sudo systemctl restart gitlab.target
+
+   # For systems running SysV init
+   sudo service gitlab restart
+   ```
+
+::EndTabs
 
 #### Common parameters
 
@@ -288,12 +481,11 @@ Here are the valid connection parameters for GCS:
 GitLab reads the value of `google_json_key_location`, then `google_json_key_string`, and finally, `google_application_default`.
 It uses the first of these settings that has a value.
 
-The service account must have permission to access the bucket. Learn more
-in Google's
-[Cloud Storage authentication documentation](https://cloud.google.com/storage/docs/authentication).
+The service account must have permission to access the bucket. For more information,
+see the [Cloud Storage authentication documentation](https://cloud.google.com/storage/docs/authentication).
 
 NOTE:
-Bucket encryption with the [Cloud Key Management Service (KMS)](https://cloud.google.com/kms/docs) is not supported and will result in [ETag mismatch errors](#etag-mismatch).
+Bucket encryption with the [Cloud Key Management Service (KMS)](https://cloud.google.com/kms/docs) is not supported and results in [ETag mismatch errors](#etag-mismatch).
 
 ##### Google example (consolidated form)
 
@@ -347,9 +539,8 @@ because a single set of credentials are used to access multiple
 containers. The [storage-specific form](#storage-specific-configuration)
 is not supported. For more details, see [how to transition to consolidated form](#transition-to-consolidated-form).
 
-The following are the valid connection parameters for Azure. Read the
-[Azure Blob storage documentation](https://learn.microsoft.com/en-us/azure/storage/blobs/storage-blobs-introduction)
-to learn more.
+The following are the valid connection parameters for Azure. For more information, see the
+[Azure Blob Storage documentation](https://learn.microsoft.com/en-us/azure/storage/blobs/storage-blobs-introduction).
 
 | Setting                      | Description    | Example   |
 |------------------------------|----------------|-----------|
@@ -392,6 +583,30 @@ If you are using a custom Azure storage domain,
 `azure_storage_domain` does **not** have to be set in the Workhorse
 configuration. This information is exchanged in an API call between
 GitLab Rails and Workhorse.
+
+#### Storj Gateway Configuration (SJ)
+
+NOTE:
+The Storj Gateway [does not support](https://github.com/storj/gateway-st/blob/4b74c3b92c63b5de7409378b0d1ebd029db9337d/docs/s3-compatibility.md) multi-threaded copying (see `UploadPartCopy` in the table).
+While an implementation [is planned](https://github.com/storj/roadmap/issues/40), you must [disable multi-threaded copying](#multi-threaded-copying) until completion.
+
+The [Storj Network](https://www.storj.io/) provides an S3-compatible API gateway. Use the following configuration example:
+
+```ruby
+gitlab_rails['object_store']['connection'] = {
+  'provider' => 'AWS',
+  'endpoint' => 'https://gateway.storjshare.io',
+  'path_style' => true,
+  'region' => 'eu1',
+  'aws_access_key_id' => 'ACCESS_KEY',
+  'aws_secret_access_key' => 'SECRET_KEY',
+  'aws_signature_version' => 2,
+  'enable_signature_v4_streaming' => false
+}
+```
+
+The signature version must be `2`. Using v4 results in a HTTP 411 Length Required error.
+For more information, see [issue #4419](https://gitlab.com/gitlab-org/gitlab/-/issues/4419).
 
 ### Object-specific configuration
 
@@ -583,8 +798,8 @@ With Omnibus and source installations it is possible to split a single
 real bucket into multiple virtual buckets. If your object storage
 bucket is called `my-gitlab-objects` you can configure uploads to go
 into `my-gitlab-objects/uploads`, artifacts into
-`my-gitlab-objects/artifacts`, etc. The application will act as if
-these are separate buckets. Note that use of bucket prefixes
+`my-gitlab-objects/artifacts`, etc. The application acts as if
+these are separate buckets. Use of bucket prefixes
 [may not work correctly with Helm backups](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/3376).
 
 Helm-based installs require separate buckets to
@@ -686,7 +901,7 @@ With the consolidated object configuration and instance profile, Workhorse has
 S3 credentials so that it can compute the `Content-MD5` header. This
 eliminates the need to compare ETag headers returned from the S3 server.
 
-Encrypting buckets with GCS' [Cloud Key Management Service (KMS)](https://cloud.google.com/kms/docs) is not supported and will result in ETag mismatch errors.
+Encrypting buckets with the GCS [Cloud Key Management Service (KMS)](https://cloud.google.com/kms/docs) is not supported and results in ETag mismatch errors.
 
 ### Using Amazon instance profiles
 
@@ -696,6 +911,11 @@ configuration, GitLab can be configured to use IAM roles to set up an
 When this is used, GitLab fetches temporary credentials each time an
 S3 bucket is accessed, so no hard-coded values are needed in the
 configuration.
+
+To use an Amazon instance profile, GitLab must be able to connect to the 
+[instance metadata endpoint](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instancedata-data-retrieval.html). 
+If GitLab is [configured to use an Internet proxy](https://docs.gitlab.com/omnibus/settings/environment-variables.html), the endpoint IP 
+address must be added to the `no_proxy` list.
 
 #### Encrypted S3 buckets
 
@@ -714,7 +934,7 @@ Customer master keys (CMKs) and SSE-C encryption are
 
 Setting a default encryption on an S3 bucket is the easiest way to
 enable encryption, but you may want to
-[set a bucket policy to ensure only encrypted objects are uploaded](https://aws.amazon.com/premiumsupport/knowledge-center/s3-bucket-store-kms-encrypted-objects/).
+[set a bucket policy to ensure only encrypted objects are uploaded](https://repost.aws/knowledge-center/s3-bucket-store-kms-encrypted-objects).
 To do this, you must configure GitLab to send the proper encryption headers
 in the `storage_options` configuration section:
 
@@ -817,5 +1037,5 @@ Prerequisites:
 
 After you have done at least one successful Rclone copy from the old location to the new location, schedule maintenance and take your GitLab server offline. During your maintenance window you must do two things:
 
-1. Perform a final `rclone sync` run, knowing that your users cannot add new objects so you will not leave any behind in the old bucket.
+1. Perform a final `rclone sync` run, knowing that your users cannot add new objects so you do not leave any behind in the old bucket.
 1. Update the object storage configuration of your GitLab server to use the new provider for `uploads`.

@@ -1,3 +1,3 @@
 - label_sort_options = label_sort_options_hash.map { |value, text| { value: value, text: text, href: page_filter_path(sort: value) } }
 
-= gl_redirect_listbox_tag label_sort_options, @sort, data: { right: true }
+= gl_redirect_listbox_tag label_sort_options, @sort, data: { placement: 'right' }

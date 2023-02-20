@@ -1,0 +1,8 @@
+---
+name: ci_register_job_temporary_lock
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/55202
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/323180
+milestone: '13.10'
+type: ops
+group: group::pipeline execution
+default_enabled: true

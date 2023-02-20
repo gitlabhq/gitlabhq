@@ -2,16 +2,6 @@ import Vue from 'vue';
 import { STATUSES } from '../../constants';
 import * as types from './mutation_types';
 
-const makeNewImportedProject = (importedProject) => ({
-  importSource: {
-    id: importedProject.id,
-    fullName: importedProject.importSource,
-    sanitizedName: importedProject.name,
-    providerLink: importedProject.providerLink,
-  },
-  importedProject: { ...importedProject },
-});
-
 const makeNewIncompatibleProject = (project) => ({
   importSource: { ...project, incompatible: true },
   importedProject: null,
@@ -55,14 +45,6 @@ export default {
       // Legacy code path, will be removed when all importers will be switched to new pagination format
       // https://gitlab.com/gitlab-org/gitlab/-/issues/27370#note_379034091
 
-      const newImportedProjects = processLegacyEntries({
-        newRepositories: repositories.importedProjects.filter(
-          (p) => p.importStatus !== STATUSES.CANCELED,
-        ),
-        existingRepositories: state.repositories,
-        factory: makeNewImportedProject,
-      });
-
       const incompatibleRepos = repositories.incompatibleRepos ?? [];
       const newIncompatibleProjects = processLegacyEntries({
         newRepositories: incompatibleRepos,
@@ -70,16 +52,22 @@ export default {
         factory: makeNewIncompatibleProject,
       });
 
-      const existingProjects = [...newImportedProjects, ...state.repositories];
-      const existingProjectNames = new Set(existingProjects.map((p) => p.importSource.fullName));
+      const existingProjectNames = new Set(state.repositories.map((p) => p.importSource.fullName));
+      const importedProjects = [...(repositories.importedProjects ?? [])].reverse();
       const newProjects = repositories.providerRepos
         .filter((project) => !existingProjectNames.has(project.fullName))
-        .map((project) => ({
-          importSource: project,
-          importedProject: null,
-        }));
+        .map((project) => {
+          const importedProject = importedProjects.find(
+            (p) => p.providerLink === project.providerLink,
+          );
 
-      state.repositories = [...existingProjects, ...newProjects, ...newIncompatibleProjects];
+          return {
+            importSource: project,
+            importedProject,
+          };
+        });
+
+      state.repositories = [...state.repositories, ...newProjects, ...newIncompatibleProjects];
 
       if (incompatibleRepos.length === 0 && repositories.providerRepos.length === 0) {
         state.pageInfo.page -= 1;
@@ -113,7 +101,7 @@ export default {
 
   [types.RECEIVE_IMPORT_ERROR](state, repoId) {
     const existingRepo = state.repositories.find((r) => r.importSource.id === repoId);
-    existingRepo.importedProject = null;
+    existingRepo.importedProject.importStatus = STATUSES.FAILED;
   },
 
   [types.RECEIVE_JOBS_SUCCESS](state, updatedProjects) {

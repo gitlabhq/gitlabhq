@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BulkImports::Common::Pipelines::BoardsPipeline do
+RSpec.describe BulkImports::Common::Pipelines::BoardsPipeline, feature_category: :importers do
   let_it_be(:user) { create(:user) }
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, group: group) }
@@ -53,7 +53,7 @@ RSpec.describe BulkImports::Common::Pipelines::BoardsPipeline do
         project: project,
         bulk_import: bulk_import,
         source_full_path: 'source/full/path',
-        destination_name: 'My Destination Group',
+        destination_slug: 'My-Destination-Group',
         destination_namespace: group.full_path
       )
     end
@@ -78,7 +78,7 @@ RSpec.describe BulkImports::Common::Pipelines::BoardsPipeline do
         group: group,
         bulk_import: bulk_import,
         source_full_path: 'source/full/path',
-        destination_name: 'My Destination Group',
+        destination_slug: 'My-Destination-Group',
         destination_namespace: group.full_path
       )
     end

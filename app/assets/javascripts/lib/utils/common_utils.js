@@ -4,7 +4,7 @@
 
 import { GlBreakpointInstance as breakpointInstance } from '@gitlab/ui/dist/utils';
 import $ from 'jquery';
-import { isFunction, defer, escape } from 'lodash';
+import { isFunction, defer, escape, partial, toLower } from 'lodash';
 import Cookies from '~/lib/utils/cookies';
 import { SCOPED_LABEL_DELIMITER } from '~/sidebar/components/labels/labels_select_widget/constants';
 import { convertToCamelCase, convertToSnakeCase } from './text_utility';
@@ -552,6 +552,22 @@ export const convertObjectPropsToCamelCase = (obj = {}, options = {}) =>
   convertObjectProps(convertToCamelCase, obj, options);
 
 /**
+ * This method returns a new object with lowerCase property names
+ *
+ * Reasoning for this method is to ensure consistent access for some
+ * sort of objects
+ *
+ * This method also supports additional params in `options` object
+ *
+ * @param {Object} obj - Object to be converted.
+ * @param {Object} options - Object containing additional options.
+ * @param {boolean} options.deep - FLag to allow deep object converting
+ * @param {Array[]} options.dropKeys - List of properties to discard while building new object
+ * @param {Array[]} options.ignoreKeyNames - List of properties to leave intact while building new object
+ */
+export const convertObjectPropsToLowerCase = partial(convertObjectProps, toLower);
+
+/**
  * Converts all the object keys to snake case
  *
  * This method also supports additional params in `options` object
@@ -716,17 +732,4 @@ export const getFirstPropertyValue = (data) => {
   if (!key) return null;
 
   return data[key];
-};
-
-// TODO: remove when FF `new_fonts` is removed https://gitlab.com/gitlab-org/gitlab/-/issues/379147
-/**
- * This method checks the FF `new_fonts`
- * as well as a query parameter `new_fonts`.
- * If either of them is enabled, new fonts will be applied.
- *
- * @returns Boolean Whether to apply new fonts
- */
-export const useNewFonts = () => {
-  const hasQueryParam = new URLSearchParams(window.location.search).has('new_fonts');
-  return window?.gon.features?.newFonts || hasQueryParam;
 };

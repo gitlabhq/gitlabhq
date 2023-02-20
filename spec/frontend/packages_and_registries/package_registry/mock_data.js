@@ -97,14 +97,22 @@ export const packageProject = () => ({
   __typename: 'Project',
 });
 
+export const linksData = {
+  _links: {
+    webPath: '/gitlab-org/package-15',
+  },
+};
+
 export const packageVersions = () => [
   {
     createdAt: '2021-08-10T09:33:54Z',
     id: 'gid://gitlab/Packages::Package/243',
     name: '@gitlab-org/package-15',
     status: 'DEFAULT',
+    canDestroy: true,
     tags: { nodes: packageTags() },
     version: '1.0.1',
+    ...linksData,
     __typename: 'Package',
   },
   {
@@ -112,18 +120,13 @@ export const packageVersions = () => [
     id: 'gid://gitlab/Packages::Package/244',
     name: '@gitlab-org/package-15',
     status: 'DEFAULT',
+    canDestroy: true,
     tags: { nodes: packageTags() },
     version: '1.0.2',
+    ...linksData,
     __typename: 'Package',
   },
 ];
-
-export const linksData = {
-  _links: {
-    webPath: '/gitlab-org/package-15',
-    __typeName: 'PackageLinks',
-  },
-};
 
 export const packageData = (extend) => ({
   __typename: 'Package',
@@ -294,14 +297,6 @@ export const packageMetadataQuery = (packageType) => {
   };
 };
 
-export const packageDestroyMutation = () => ({
-  data: {
-    destroyPackage: {
-      errors: [],
-    },
-  },
-});
-
 export const packagesDestroyMutation = () => ({
   data: {
     destroyPackages: {
@@ -325,25 +320,6 @@ export const packagesDestroyMutationError = () => ({
         },
       ],
       path: ['destroyPackages'],
-    },
-  ],
-});
-
-export const packageDestroyMutationError = () => ({
-  data: {
-    destroyPackage: null,
-  },
-  errors: [
-    {
-      message:
-        "The resource that you are attempting to access does not exist or you don't have permission to perform this action",
-      locations: [
-        {
-          line: 2,
-          column: 3,
-        },
-      ],
-      path: ['destroyPackage'],
     },
   ],
 });

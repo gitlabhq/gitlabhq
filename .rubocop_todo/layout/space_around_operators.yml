@@ -1,5 +1,0 @@
----
-# Cop supports --autocorrect.
-Layout/SpaceAroundOperators:
-  Exclude:
-    - 'lib/gitlab/utils/strong_memoize.rb'

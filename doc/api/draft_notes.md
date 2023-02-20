@@ -1,0 +1,131 @@
+---
+stage: Create
+group: Code Review
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+---
+
+# Draft Notes API **(FREE)**
+
+Draft notes are pending, unpublished comments on merge requests. They can be either start a discussion, or be associated with an existing discussion as a reply. They are viewable only by the author until they are published.
+
+## List all merge request draft notes
+
+Gets a list of all draft notes for a single merge request.
+
+```plaintext
+GET /projects/:id/merge_requests/:merge_request_iid/draft_notes
+```
+
+| Attribute           | Type             | Required   | Description                                                                                                                                         |
+| ------------------- | ---------------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `id`                | integer or string   | yes        | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding)
+| `merge_request_iid` | integer             | yes        | The IID of a project merge request
+
+```json
+[{
+  id: 5,
+  author_id: 23,
+  merge_request_id: 11,
+  resolve_discussion: false,
+  discussion_id: nil,
+  note: "Example title",
+  commit_id: nil,
+  line_code: nil,
+  position:
+  {
+    base_sha: nil,
+    start_sha: nil,
+    head_sha: nil,
+    old_path: nil,
+    new_path: nil,
+    position_type: "text",
+    old_line: nil,
+    new_line: nil,
+    line_range: nil
+  }
+}]
+```
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+     "https://gitlab.example.com/api/v4/projects/14/merge_requests/11/draft_notes"
+```
+
+## Get a single draft note
+
+Returns a single draft note for a given merge request.
+
+```plaintext
+GET /projects/:id/merge_requests/:merge_request_iid/draft_notes/:draft_note_id
+```
+
+| Attribute           | Type             | Required   | Description                                                                                                                                         |
+| ------------------- | ---------------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `id`                | integer or string   | yes        | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding).
+| `draft_note_id`     | integer             | yes        | The ID of a draft note.
+| `merge_request_iid` | integer             | yes        | The IID of a project merge request.
+
+```json
+{
+  id: 5,
+  author_id: 23,
+  merge_request_id: 11,
+  resolve_discussion: false,
+  discussion_id: nil,
+  note: "Example title",
+  commit_id: nil,
+  line_code: nil,
+  position:
+  {
+    base_sha: nil,
+    start_sha: nil,
+    head_sha: nil,
+    old_path: nil,
+    new_path: nil,
+    position_type: "text",
+    old_line: nil,
+    new_line: nil,
+    line_range: nil
+  }
+}
+```
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/14/merge_requests/11/draft_notes/5"
+```
+
+## Delete a draft note
+
+Deletes an existing draft note for a given merge request.
+
+```plaintext
+DELETE /projects/:id/merge_requests/:merge_request_iid/draft_notes/:draft_note_id
+```
+
+| Attribute           | Type             | Required    | Description           |
+| ------------------- | ---------------- | ----------- | --------------------- |
+| `draft_note_id`     | integer           | yes        | The ID of a draft note.
+| `id`                | integer or string | yes        | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding).
+| `merge_request_iid` | integer           | yes        | The IID of a project merge request.
+
+```shell
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/14/merge_requests/11/draft_notes/5"
+```
+
+## Publish a draft note
+
+Publishes an existing draft note for a given merge request.
+
+```plaintext
+PUT /projects/:id/merge_requests/:merge_request_iid/draft_notes/:draft_note_id/publish
+```
+
+| Attribute           | Type             | Required    | Description           |
+| ------------------- | ---------------- | ----------- | --------------------- |
+| `draft_note_id`     | integer           | yes        | The ID of a draft note.
+| `id`                | integer or string | yes        | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding).
+| `merge_request_iid` | integer           | yes        | The IID of a project merge request.
+
+```shell
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/14/merge_requests/11/draft_notes/5/publish"
+```

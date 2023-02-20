@@ -85,11 +85,6 @@ module QA
     "fips" => "FIPS"
   )
 
-  # Configure knapsack at the very begining of the setup
-  loader.on_setup do
-    QA::Support::KnapsackReport.configure!
-  end
-
   loader.setup
   loader.eager_load
 end

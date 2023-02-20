@@ -1482,6 +1482,7 @@ RSpec.describe Note do
     end
 
     it "expires cache for note's issue when note is destroyed" do
+      note.save!
       expect_expiration(note.noteable)
 
       note.destroy!
@@ -1637,17 +1638,6 @@ RSpec.describe Note do
 
         context 'when noteable is not set' do
           let(:noteable) { nil }
-
-          it 'includes additional diff associations' do
-            expect { subject.reload }.to match_query_count(1).for_model(NoteDiffFile).and(
-              match_query_count(1).for_model(DiffNotePosition))
-          end
-        end
-
-        context 'when skip_notes_diff_include flag is disabled' do
-          before do
-            stub_feature_flags(skip_notes_diff_include: false)
-          end
 
           it 'includes additional diff associations' do
             expect { subject.reload }.to match_query_count(1).for_model(NoteDiffFile).and(
@@ -1887,6 +1877,36 @@ RSpec.describe Note do
       let(:note) { build(:note, :confidential) }
 
       it { is_expected.to eq :read_internal_note }
+    end
+  end
+
+  describe '#exportable_record?' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:project) { create(:project, :private) }
+    let_it_be(:noteable) { create(:issue, project: project) }
+
+    subject { note.exportable_record?(user) }
+
+    context 'when not a system note' do
+      let(:note) { build(:note, noteable: noteable) }
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'with system note' do
+      let(:note) { build(:system_note, project: project, noteable: noteable) }
+
+      it 'returns `false` when the user cannot read the note' do
+        is_expected.to be_falsey
+      end
+
+      context 'when user can read the note' do
+        before do
+          project.add_developer(user)
+        end
+
+        it { is_expected.to be_truthy }
+      end
     end
   end
 end

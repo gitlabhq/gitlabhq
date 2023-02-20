@@ -4,6 +4,7 @@ import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import PipelineStage from '~/pipelines/components/pipeline_mini_graph/pipeline_stage.vue';
 import eventHub from '~/pipelines/event_hub';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -72,7 +73,7 @@ describe('Pipelines stage component', () => {
     beforeEach(async () => {
       createComponent({ updateDropdown: true });
 
-      mock.onGet(dropdownPath).reply(200, stageReply);
+      mock.onGet(dropdownPath).reply(HTTP_STATUS_OK, stageReply);
 
       await openStageDropdown();
     });
@@ -121,7 +122,7 @@ describe('Pipelines stage component', () => {
 
   describe('when user opens dropdown and stage request is successful', () => {
     beforeEach(async () => {
-      mock.onGet(dropdownPath).reply(200, stageReply);
+      mock.onGet(dropdownPath).reply(HTTP_STATUS_OK, stageReply);
       createComponent();
 
       await openStageDropdown();
@@ -148,7 +149,7 @@ describe('Pipelines stage component', () => {
 
   describe('when user opens dropdown and stage request fails', () => {
     it('should close the dropdown', async () => {
-      mock.onGet(dropdownPath).reply(500);
+      mock.onGet(dropdownPath).reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
       createComponent();
 
       await openStageDropdown();
@@ -163,7 +164,7 @@ describe('Pipelines stage component', () => {
     beforeEach(async () => {
       const copyStage = { ...stageReply };
       copyStage.latest_statuses[0].name = 'this is the updated content';
-      mock.onGet('bar.json').reply(200, copyStage);
+      mock.onGet('bar.json').reply(HTTP_STATUS_OK, copyStage);
       createComponent({
         stage: {
           status: {
@@ -188,8 +189,8 @@ describe('Pipelines stage component', () => {
 
   describe('job update in dropdown', () => {
     beforeEach(async () => {
-      mock.onGet(dropdownPath).reply(200, stageReply);
-      mock.onPost(`${stageReply.latest_statuses[0].status.action.path}.json`).reply(200);
+      mock.onGet(dropdownPath).reply(HTTP_STATUS_OK, stageReply);
+      mock.onPost(`${stageReply.latest_statuses[0].status.action.path}.json`).reply(HTTP_STATUS_OK);
 
       createComponent();
       await waitForPromises();
@@ -214,7 +215,7 @@ describe('Pipelines stage component', () => {
 
   describe('With merge trains enabled', () => {
     it('shows a warning on the dropdown', async () => {
-      mock.onGet(dropdownPath).reply(200, stageReply);
+      mock.onGet(dropdownPath).reply(HTTP_STATUS_OK, stageReply);
       createComponent({
         isMergeTrain: true,
       });
@@ -231,7 +232,7 @@ describe('Pipelines stage component', () => {
 
   describe('With merge trains disabled', () => {
     beforeEach(async () => {
-      mock.onGet(dropdownPath).reply(200, stageReply);
+      mock.onGet(dropdownPath).reply(HTTP_STATUS_OK, stageReply);
       createComponent();
 
       await openStageDropdown();

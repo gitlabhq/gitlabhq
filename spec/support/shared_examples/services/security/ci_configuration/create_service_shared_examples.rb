@@ -160,6 +160,21 @@ RSpec.shared_examples_for 'services security ci configuration create service' do
           end
         end
       end
+
+      context 'when the project is empty' do
+        let(:params) { nil }
+        let_it_be(:project) { create(:project_empty_repo) }
+
+        it 'returns an error' do
+          expect { result }.to raise_error { |error|
+            expect(error).to be_a(Gitlab::Graphql::Errors::MutationError)
+            expect(error.message).to eq('You must <a target="_blank" rel="noopener noreferrer" ' \
+                                        'href="http://localhost/help/user/project/repository/index.md' \
+                                        '#add-files-to-a-repository">add at least one file to the repository' \
+                                        '</a> before using Security features.')
+          }
+        end
+      end
     end
   end
 end

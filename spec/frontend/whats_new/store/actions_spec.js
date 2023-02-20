@@ -3,6 +3,7 @@ import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import testAction from 'helpers/vuex_action_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import actions from '~/whats_new/store/actions';
 import * as types from '~/whats_new/store/mutation_types';
 
@@ -33,7 +34,7 @@ describe('whats new actions', () => {
       axiosMock = new MockAdapter(axios);
       axiosMock
         .onGet('/-/whats_new')
-        .replyOnce(200, [{ title: 'Whats New Drawer', url: 'www.url.com' }], {
+        .replyOnce(HTTP_STATUS_OK, [{ title: 'Whats New Drawer', url: 'www.url.com' }], {
           'x-next-page': '2',
         });
 
@@ -49,7 +50,7 @@ describe('whats new actions', () => {
 
       axiosMock
         .onGet('/-/whats_new', { params: { page: undefined, v: undefined } })
-        .replyOnce(200, [{ title: 'GitLab Stories' }]);
+        .replyOnce(HTTP_STATUS_OK, [{ title: 'GitLab Stories' }]);
 
       testAction(
         actions.fetchItems,
@@ -66,7 +67,7 @@ describe('whats new actions', () => {
 
       axiosMock
         .onGet('/-/whats_new', { params: { page: 8, v: 42 } })
-        .replyOnce(200, [{ title: 'GitLab Stories' }]);
+        .replyOnce(HTTP_STATUS_OK, [{ title: 'GitLab Stories' }]);
 
       testAction(
         actions.fetchItems,

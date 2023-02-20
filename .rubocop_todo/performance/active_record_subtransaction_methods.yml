@@ -37,7 +37,6 @@ Performance/ActiveRecordSubtransactionMethods:
     - 'ee/app/models/software_license.rb'
     - 'ee/app/services/boards/user_preferences/update_service.rb'
     - 'ee/app/services/ci/minutes/update_project_and_namespace_usage_service.rb'
-    - 'ee/app/services/ee/analytics/cycle_analytics/stages/base_service.rb'
     - 'ee/app/services/security/store_scan_service.rb'
     - 'ee/app/workers/import_software_licenses_worker.rb'
     - 'ee/db/fixtures/production/027_plans.rb'

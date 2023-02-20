@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
 module SidebarsHelper
+  include MergeRequestsHelper
+  include Nav::NewDropdownHelper
+
   def sidebar_tracking_attributes_by_object(object)
     sidebar_attributes_for_object(object).fetch(:tracking_attrs, {})
   end
@@ -31,19 +34,64 @@ module SidebarsHelper
     Sidebars::Groups::Context.new(**context_data)
   end
 
-  def super_sidebar_context(user)
+  def super_sidebar_context(user, group:, project:)
     {
       name: user.name,
       username: user.username,
       avatar_url: user.avatar_url,
       assigned_open_issues_count: user.assigned_open_issues_count,
-      assigned_open_merge_requests_count: user.assigned_open_merge_requests_count,
       todos_pending_count: user.todos_pending_count,
-      issues_dashboard_path: issues_dashboard_path(assignee_username: user.username)
+      issues_dashboard_path: issues_dashboard_path(assignee_username: user.username),
+      total_merge_requests_count: user_merge_requests_counts[:total],
+      create_new_menu_groups: create_new_menu_groups(group: group, project: project),
+      merge_request_menu: create_merge_request_menu(user),
+      support_path: support_url,
+      display_whats_new: display_whats_new?,
+      whats_new_most_recent_release_items_count: whats_new_most_recent_release_items_count,
+      whats_new_version_digest: whats_new_version_digest,
+      show_version_check: show_version_check?,
+      gitlab_version: Gitlab.version_info,
+      gitlab_version_check: gitlab_version_check
     }
   end
 
   private
+
+  def create_new_menu_groups(group:, project:)
+    new_dropdown_sections = new_dropdown_view_model(group: group, project: project)[:menu_sections]
+    show_headers = new_dropdown_sections.length > 1
+    new_dropdown_sections.map do |section|
+      {
+        name: show_headers ? section[:title] : '',
+        items: section[:menu_items].map do |item|
+          {
+            text: item[:title],
+            href: item[:href]
+          }
+        end
+      }
+    end
+  end
+
+  def create_merge_request_menu(user)
+    [
+      {
+        name: _('Merge requests'),
+        items: [
+          {
+            text: _('Assigned'),
+            href: merge_requests_dashboard_path(assignee_username: user.username),
+            count: user_merge_requests_counts[:assigned]
+          },
+          {
+            text: _('Review requests'),
+            href: merge_requests_dashboard_path(reviewer_username: user.username),
+            count: user_merge_requests_counts[:review_requested]
+          }
+        ]
+      }
+    ]
+  end
 
   def sidebar_attributes_for_object(object)
     case object
@@ -98,7 +146,6 @@ module SidebarsHelper
     {
       current_user: user,
       container: project,
-      learn_gitlab_enabled: learn_gitlab_enabled?(project),
       current_ref: current_ref,
       ref_type: ref_type,
       jira_issues_integration: project_jira_issues_integration?,

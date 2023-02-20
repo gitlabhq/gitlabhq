@@ -18,10 +18,6 @@ This API is under development and is not meant for production use.
 For more information about working with Debian packages, see the
 [Debian package registry documentation](../../user/packages/debian_repository/index.md).
 
-NOTE:
-The Debian registry is not FIPS compliant and is disabled when [FIPS mode](../../development/fips_compliance.md) is enabled.
-These endpoints will all return `404 Not Found`.
-
 ## Enable the Debian group API
 
 Debian group repository support is still a work in progress. It's gated behind a feature flag that's
@@ -30,17 +26,21 @@ Debian group repository support is still a work in progress. It's gated behind a
 can opt to enable it. To enable it, follow the instructions in
 [Enable the Debian group API](../../user/packages/debian_repository/index.md#enable-the-debian-group-api).
 
+## Authenticate to the Debian distributions APIs
+
+See [Authenticate to the Debian distributions APIs](../../user/packages/debian_repository/index.md#authenticate-to-the-debian-distributions-apis).
+
 ## List all Debian distributions in a group
 
 Lists Debian distributions in the given group.
 
 ```plaintext
-GET /groups/:id/debian_distributions
+GET /groups/:id/-/debian_distributions
 ```
 
 | Attribute  | Type            | Required | Description |
 | ---------- | --------------- | -------- | ----------- |
-| `id`       | integer/string  | yes      | The ID or [URL-encoded path of the group](../index.md#namespaced-path-encoding). |
+| `id`       | integer/string  | yes      | The ID or [URL-encoded path of the group](../rest/index.md#namespaced-path-encoding). |
 | `codename` | string          | no       | Filter with specific `codename`. |
 | `suite`    | string          | no       | Filter with specific `suite`. |
 
@@ -54,7 +54,7 @@ Example response:
 [
   {
     "id": 1,
-    "codename": "unstable",
+    "codename": "sid",
     "suite": null,
     "origin": null,
     "label": null,
@@ -77,12 +77,12 @@ Example response:
 Gets a single Debian group distribution.
 
 ```plaintext
-GET /groups/:id/debian_distributions/:codename
+GET /groups/:id/-/debian_distributions/:codename
 ```
 
 | Attribute  | Type           | Required | Description |
 | ---------- | -------------- | -------- | ----------- |
-| `id`       | integer/string | yes      | The ID or [URL-encoded path of the group](../index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`       | integer/string | yes      | The ID or [URL-encoded path of the group](../rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `codename` | integer        | yes      | The `codename` of a distribution. |
 
 ```shell
@@ -94,7 +94,7 @@ Example response:
 ```json
 {
   "id": 1,
-  "codename": "unstable",
+  "codename": "sid",
   "suite": null,
   "origin": null,
   "label": null,
@@ -116,12 +116,12 @@ Example response:
 Gets a single Debian group distribution key.
 
 ```plaintext
-GET /groups/:id/debian_distributions/:codename/key.asc
+GET /groups/:id/-/debian_distributions/:codename/key.asc
 ```
 
 | Attribute  | Type           | Required | Description |
 | ---------- | -------------- | -------- | ----------- |
-| `id`       | integer/string | yes      | The ID or [URL-encoded path of the group](../index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`       | integer/string | yes      | The ID or [URL-encoded path of the group](../rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `codename` | integer        | yes      | The `codename` of a distribution. |
 
 ```shell
@@ -153,12 +153,12 @@ DAAKCRDyMVUMT0fjjlnQAQDFHUs6TIcxrNTtEZFjUFm1M0PJ1Dng/cDW4xN80fsn
 Creates a Debian group distribution.
 
 ```plaintext
-POST /groups/:id/debian_distributions
+POST /groups/:id/-/debian_distributions
 ```
 
 | Attribute                     | Type           | Required | Description |
 | ----------------------------- | -------------- | -------- | ----------- |
-| `id`                          | integer/string | yes      | The ID or [URL-encoded path of the group](../index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`                          | integer/string | yes      | The ID or [URL-encoded path of the group](../rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `codename`                    | string         | yes      | The codename of a Debian distribution. |
 | `suite`                       | string         | no       | The suite of the new Debian distribution. |
 | `origin`                      | string         | no       | The origin of the new Debian distribution. |
@@ -170,7 +170,7 @@ POST /groups/:id/debian_distributions
 | `architectures`               | architectures  | no       | The new Debian distribution's list of architectures. |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/5/debian_distributions?codename=unstable"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/5/debian_distributions?codename=sid"
 ```
 
 Example response:
@@ -178,7 +178,7 @@ Example response:
 ```json
 {
   "id": 1,
-  "codename": "unstable",
+  "codename": "sid",
   "suite": null,
   "origin": null,
   "label": null,
@@ -200,12 +200,12 @@ Example response:
 Updates a Debian group distribution.
 
 ```plaintext
-PUT /groups/:id/debian_distributions/:codename
+PUT /groups/:id/-/debian_distributions/:codename
 ```
 
 | Attribute                     | Type           | Required | Description |
 | ----------------------------- | -------------- | -------- | ----------- |
-| `id`                          | integer/string | yes      | The ID or [URL-encoded path of the group](../index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`                          | integer/string | yes      | The ID or [URL-encoded path of the group](../rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `codename`                    | string         | yes      | The Debian distribution's new codename.  |
 | `suite`                       | string         | no       | The Debian distribution's new suite. |
 | `origin`                      | string         | no       | The Debian distribution's new origin. |
@@ -225,7 +225,7 @@ Example response:
 ```json
 {
   "id": 1,
-  "codename": "unstable",
+  "codename": "sid",
   "suite": "new-suite",
   "origin": null,
   "label": null,
@@ -247,12 +247,12 @@ Example response:
 Deletes a Debian group distribution.
 
 ```plaintext
-DELETE /groups/:id/debian_distributions/:codename
+DELETE /groups/:id/-/debian_distributions/:codename
 ```
 
 | Attribute  | Type           | Required | Description |
 | ---------- | -------------- | -------- | ----------- |
-| `id`       | integer/string | yes      | The ID or [URL-encoded path of the group](../index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`       | integer/string | yes      | The ID or [URL-encoded path of the group](../rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `codename` | integer        | yes      | The codename of the Debian distribution. |
 
 ```shell

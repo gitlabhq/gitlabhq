@@ -59,7 +59,7 @@ possible, we encourage you to use all of our security scanning tools:
   Turning this variable on can result in some duplicate findings, as we do not yet
   de-duplicate results between Container Scanning and Dependency Scanning. For more details,
   efforts to de-duplicate these findings can be tracked in
-  [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/348655).
+  [this epic](https://gitlab.com/groups/gitlab-org/-/epics/8026).
 
 The following table summarizes which types of dependencies each scanning tool can detect:
 
@@ -155,23 +155,14 @@ table.supported-languages ul {
   </thead>
   <tbody>
     <tr>
-      <td>Ruby</td>
-      <td>All versions</td>
-      <td><a href="https://bundler.io/">Bundler</a></td>
-      <td>
-        <ul>
-            <li><code>Gemfile.lock</code></li>
-            <li><code>gems.locked</code></li>
-        </ul>
-      </td>
-      <td>Y</td>
+      <td>.NET</td>
+      <td rowspan="2">All versions</td>
+      <td rowspan="2"><a href="https://www.nuget.org/">NuGet</a></td>
+      <td rowspan="2"><a href="https://learn.microsoft.com/en-us/nuget/consume-packages/package-references-in-project-files#enabling-lock-file"><code>packages.lock.json</code></a></td>
+      <td rowspan="2">Y</td>
     </tr>
     <tr>
-      <td>PHP</td>
-      <td>All versions</td>
-      <td><a href="https://getcomposer.org/">Composer</a></td>
-      <td><code>composer.lock</code></td>
-      <td>Y</td>
+      <td>C#</td>
     </tr>
     <tr>
       <td>C</td>
@@ -226,7 +217,7 @@ table.supported-languages ul {
       <td><a href="https://www.npmjs.com/">npm</a></td>
       <td>
         <ul>
-            <li><code>package-lock.json</code><sup><b><a href="#notes-regarding-supported-languages-and-package-managers-3">3</a></b></sup></li>
+            <li><code>package-lock.json</code></li>
             <li><code>npm-shrinkwrap.json</code></li>
         </ul>
       </td>
@@ -239,14 +230,11 @@ table.supported-languages ul {
       <td>Y</td>
     </tr>
     <tr>
-      <td>.NET</td>
-      <td rowspan="2">All versions</td>
-      <td rowspan="2"><a href="https://www.nuget.org/">NuGet</a></td>
-      <td rowspan="2"><a href="https://learn.microsoft.com/en-us/nuget/consume-packages/package-references-in-project-files#enabling-lock-file"><code>packages.lock.json</code></a></td>
-      <td rowspan="2">Y</td>
-    </tr>
-    <tr>
-      <td>C#</td>
+      <td>PHP</td>
+      <td>All versions</td>
+      <td><a href="https://getcomposer.org/">Composer</a></td>
+      <td><code>composer.lock</code></td>
+      <td>Y</td>
     </tr>
     <tr>
       <td rowspan="4">Python</td>
@@ -282,6 +270,18 @@ table.supported-languages ul {
       <td>N</td>
     </tr>
     <tr>
+      <td>Ruby</td>
+      <td>All versions</td>
+      <td><a href="https://bundler.io/">Bundler</a></td>
+      <td>
+        <ul>
+            <li><code>Gemfile.lock</code></li>
+            <li><code>gems.locked</code></li>
+        </ul>
+      </td>
+      <td>Y</td>
+    </tr>
+    <tr>
       <td>Scala</td>
       <td>All versions</td>
       <td><a href="https://www.scala-sbt.org/">sbt</a><sup><b><a href="#notes-regarding-supported-languages-and-package-managers-6">6</a></b></sup></td>
@@ -307,16 +307,10 @@ table.supported-languages ul {
     </p>
   </li>
   <li>
-    <a id="notes-regarding-supported-languages-and-package-managers-3"></a>
-    <p>
-      npm is supported for <code>lockfileVersion = 1</code>, <code>lockfileVersion = 2</code>, and <code>lockfileVersion = 3</code>. Support for <code>lockfileVersion = 3</code> was <a href="https://gitlab.com/gitlab-org/gitlab/-/issues/365176">introduced</a> in GitLab 15.7.
-    </p>
-  </li>
-  <li>
     <a id="notes-regarding-supported-languages-and-package-managers-4"></a>
     <p>
       The presence of a <code>Pipfile.lock</code> file alone will <i>not</i> trigger the analyzer; the presence of a <code>Pipfile</code> is
-      still required in order for the analyzer to be executed. However, if a <code>Pipfile.lock</code> file is found, it will be used by
+      still required in order for the analyzer to be executed. However, if a <code>Pipfile.lock</code> file is found, it is used by
       <code>Gemnasium</code> to scan the exact package versions listed in this file.
     </p>
     <p>
@@ -360,7 +354,7 @@ The following package managers use lockfiles that GitLab analyzers are capable o
 | Conan           | 0.4                            | [1.x](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/qa/fixtures/c-conan/default/conan.lock#L38)                                                                                                                                                             |
 | Go              | Not applicable                 | [1.x](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/qa/fixtures/go-modules/gosum/default/go.sum) <sup><strong><a href="#notes-regarding-parsing-lockfiles-1">1</a></strong></sup>                                                                       |
 | NuGet           | v1                             | [4.9](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/qa/fixtures/csharp-nuget-dotnetcore/default/src/web.api/packages.lock.json#L2)                                                                                                                      |
-| npm             | v1, v2, v3                     | [6.x](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/qa/fixtures/js-npm/default/package-lock.json#L4), [7.x](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/qa/fixtures/js-npm/lockfileVersion2/package-lock.json#L4), [9.x](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/scanner/parser/npm/fixtures/lockfile-v3/simple/package-lock.json#L4) |
+| npm             | v1, v2, v3<sup><b><a href="#notes-regarding-parsing-lockfiles-2">2</a></b></sup>                     | [6.x](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/qa/fixtures/js-npm/default/package-lock.json#L4), [7.x](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/qa/fixtures/js-npm/lockfileVersion2/package-lock.json#L4), [9.x](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/scanner/parser/npm/fixtures/lockfile-v3/simple/package-lock.json#L4) |
 | yarn            | v1                             | [1.x](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/qa/fixtures/js-yarn/default/yarn.lock#L2)                                                                                                                                                           |
 | Poetry          | v1                             | [1.x](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/qa/fixtures/python-poetry/default/poetry.lock)                                                                                                                                                      |
 
@@ -369,8 +363,14 @@ The following package managers use lockfiles that GitLab analyzers are capable o
   <li>
     <a id="notes-regarding-parsing-lockfiles-1"></a>
     <p>
-      Dependency Scanning will only parse <code>go.sum</code> if it's unable to generate the build list
+      Dependency Scanning only parses <code>go.sum</code> if it's unable to generate the build list
       used by the Go project.
+    </p>
+  </li>
+  <li>
+    <a id="notes-regarding-parsing-lockfiles-2"></a>
+    <p>
+      Support for <code>lockfileVersion = 3</code> was <a href="https://gitlab.com/gitlab-org/gitlab/-/issues/365176">introduced</a> in GitLab 15.7.
     </p>
   </li>
 </ol>
@@ -431,7 +431,7 @@ To support the following package managers, the GitLab analyzers proceed in two s
   <li>
     <a id="exported-dependency-information-notes-3"></a>
     <p>
-      This test confirms that if a <code>Pipfile.lock</code> file is found, it will be used by <a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium">Gemnasium</a> to scan the exact package versions listed in this file.
+      This test confirms that if a <code>Pipfile.lock</code> file is found, it is used by <a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium">Gemnasium</a> to scan the exact package versions listed in this file.
     </p>
   </li>
   <li>
@@ -659,7 +659,7 @@ The following variables are used for configuring specific analyzers (used for a 
 
 #### Other variables
 
-The previous tables are not an exhaustive list of all variables that can be used. They contain all specific GitLab and analyzer variables we support and test. There are many variables, such as environment variables, that you can pass in and they will work. This is a large list, many of which we may be unaware of, and as such is not documented.
+The previous tables are not an exhaustive list of all variables that can be used. They contain all specific GitLab and analyzer variables we support and test. There are many variables, such as environment variables, that you can pass in and they do work. This is a large list, many of which we may be unaware of, and as such is not documented.
 
 For example, to pass the non-GitLab environment variable `HTTPS_PROXY` to all Dependency Scanning jobs,
 set it as a [CI/CD variable in your `.gitlab-ci.yml`](../../../ci/variables/index.md#define-a-cicd-variable-in-the-gitlab-ciyml-file)
@@ -678,7 +678,7 @@ dependency_scanning:
     HTTPS_PROXY: $HTTPS_PROXY
 ```
 
-As we have not tested all variables you may find some will work and others will not.
+As we have not tested all variables you may find some do work and others do not.
 If one does not work and you need it we suggest
 [submitting a feature request](https://gitlab.com/gitlab-org/gitlab/-/issues/new?issuable_template=Feature%20proposal%20-%20detailed&issue[title]=Docs%20feedback%20-%20feature%20proposal:%20Write%20your%20title)
 or [contributing to the code](../../../development/index.md) to enable it to be used.
@@ -966,7 +966,7 @@ Here are the requirements for using dependency scanning in an offline environmen
 
   This advisory database is constantly being updated, so you must periodically sync your local copy with GitLab.
 
-Note that GitLab Runner has a [default `pull policy` of `always`](https://docs.gitlab.com/runner/executors/docker.html#using-the-always-pull-policy),
+GitLab Runner has a [default `pull policy` of `always`](https://docs.gitlab.com/runner/executors/docker.html#using-the-always-pull-policy),
 meaning the runner tries to pull Docker images from the GitLab container registry even if a local
 copy is available. The GitLab Runner [`pull_policy` can be set to `if-not-present`](https://docs.gitlab.com/runner/executors/docker.html#using-the-if-not-present-pull-policy)
 in an offline environment if you prefer using only locally available Docker images. However, we
@@ -1262,7 +1262,7 @@ analyzers, edit your `.gitlab-ci.yml` file and either:
   [our current Dependency Scanning template](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Security/Dependency-Scanning.gitlab-ci.yml#L18).
 - If you hardcoded the `DS_ANALYZER_IMAGE` variable directly, change it to match the latest
   line as found in our [current Dependency Scanning template](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Security/Dependency-Scanning.gitlab-ci.yml).
-  The line number will vary depending on which scanning job you edited.
+  The line number varies depending on which scanning job you edited.
 
   For example, currently the `gemnasium-maven-dependency_scanning` job pulls the latest
   `gemnasium-maven` Docker image because `DS_ANALYZER_IMAGE` is set to
@@ -1274,7 +1274,7 @@ Support for [2to3](https://docs.python.org/3/library/2to3.html)
 was [removed](https://setuptools.pypa.io/en/latest/history.html#v58-0-0)
 in `setuptools` version `v58.0.0`. Dependency Scanning (running `python 3.9`) uses `setuptools`
 version `58.1.0+`, which doesn't support `2to3`. Therefore, a `setuptools` dependency relying on
-`lib2to3` will fail with this message:
+`lib2to3` fails with this message:
 
 ```plaintext
 error in <dependency name> setup command: use_2to3 is invalid
@@ -1313,12 +1313,12 @@ To avoid this error, follow [Poetry's configuration advice](https://python-poetr
 
 ### Error: Project has `<number>` unresolved dependencies
 
-The error message `Project has <number> unresolved dependencies` indicates a dependency resolution problem caused by your `gradle.build` or `gradle.build.kts` file. In the current release, `gemnasium-maven` cannot continue processing when an unresolved dependency is encountered. However, There is an [open issue](https://gitlab.com/gitlab-org/gitlab/-/issues/337083) to allow `gemnasium-maven` to recover from unresolved dependency errors and produce a dependency graph. Until this issue has been resolved, you'll need to consult the [Gradle dependency resolution docs](https://docs.gradle.org/current/userguide/dependency_resolution.html) for details on how to fix your `gradle.build` file.
+The error message `Project has <number> unresolved dependencies` indicates a dependency resolution problem caused by your `gradle.build` or `gradle.build.kts` file. In the current release, `gemnasium-maven` cannot continue processing when an unresolved dependency is encountered. However, There is an [open issue](https://gitlab.com/gitlab-org/gitlab/-/issues/337083) to allow `gemnasium-maven` to recover from unresolved dependency errors and produce a dependency graph. Until this issue has been resolved, consult the [Gradle dependency resolution docs](https://docs.gradle.org/current/userguide/dependency_resolution.html) for details on how to fix your `gradle.build` file.
 
 ### Setting build constraints when scanning Go projects
 
 Dependency scanning runs within a `linux/amd64` container. As a result, the build list generated
-for a Go project will contain dependencies that are compatible with this environment. If your deployment environment is not
+for a Go project contains dependencies that are compatible with this environment. If your deployment environment is not
 `linux/amd64`, the final list of dependencies might contain additional incompatible
 modules. The dependency list might also omit modules that are only compatible with your deployment environment. To prevent
 this issue, you can configure the build process to target the operating system and architecture of the deployment

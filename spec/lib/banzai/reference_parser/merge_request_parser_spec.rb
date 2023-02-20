@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Banzai::ReferenceParser::MergeRequestParser do
+RSpec.describe Banzai::ReferenceParser::MergeRequestParser, feature_category: :code_review_workflow do
   include ReferenceParserHelpers
 
   let(:group) { create(:group, :public) }

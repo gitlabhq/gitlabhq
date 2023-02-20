@@ -3,7 +3,7 @@ table_name: user_preferences
 classes:
 - UserPreference
 feature_categories:
-- users
+- user_profile
 description: Stores users' preferences
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/7816
 milestone: '11.5'

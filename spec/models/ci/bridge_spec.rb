@@ -37,8 +37,18 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
   describe '#retryable?' do
     let(:bridge) { create(:ci_bridge, :success) }
 
-    it 'returns false' do
-      expect(bridge.retryable?).to eq(false)
+    it 'returns true' do
+      expect(bridge.retryable?).to eq(true)
+    end
+
+    context 'without ci_recreate_downstream_pipeline ff' do
+      before do
+        stub_feature_flags(ci_recreate_downstream_pipeline: false)
+      end
+
+      it 'returns false' do
+        expect(bridge.retryable?).to eq(false)
+      end
     end
   end
 
@@ -569,5 +579,31 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
         expect(subject.to_hash).to eq(job_variable_1.key => job_variable_1.value)
       end
     end
+  end
+
+  describe 'metadata partitioning', :ci_partitioning do
+    let(:pipeline) { create(:ci_pipeline, project: project, partition_id: ci_testing_partition_id) }
+
+    let(:bridge) do
+      build(:ci_bridge, pipeline: pipeline)
+    end
+
+    it 'creates the metadata record and assigns its partition' do
+      # the factory doesn't use any metadatable setters by default
+      # so the record will be initialized by the before_validation callback
+      expect(bridge.metadata).to be_nil
+
+      expect(bridge.save!).to be_truthy
+
+      expect(bridge.metadata).to be_present
+      expect(bridge.metadata).to be_valid
+      expect(bridge.metadata.partition_id).to eq(ci_testing_partition_id)
+    end
+  end
+
+  describe '#deployment_job?' do
+    subject { bridge.deployment_job? }
+
+    it { is_expected.to eq(false) }
   end
 end

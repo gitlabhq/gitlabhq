@@ -20,4 +20,11 @@ FactoryBot.define do
   trait :object_storage do
     file_store { LfsObjectUploader::Store::REMOTE }
   end
+
+  trait :with_lfs_object_dot_iso_file do
+    with_file
+    object_storage
+    oid { '91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897' }
+    size { 133 }
+  end
 end

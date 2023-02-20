@@ -101,12 +101,14 @@ export default {
     </span>
   </state-container>
   <state-container v-else :mr="mr" status="failed" :actions="actions">
-    <span class="gl-font-weight-bold">
-      <span v-if="mr.mergeError" class="has-error-message" data-testid="merge-error">
-        {{ mergeError }}
-      </span>
-      <span v-else> {{ s__('mrWidget|Merge failed.') }} </span>
-      <span :class="{ 'has-custom-error': mr.mergeError }"> {{ timerText }} </span>
+    <span
+      v-if="mr.mergeError"
+      class="has-error-message gl-font-weight-bold"
+      data-testid="merge-error"
+    >
+      {{ mergeError }}
     </span>
+    <span v-else class="gl-font-weight-bold"> {{ s__('mrWidget|Merge failed.') }} </span>
+    <span :class="{ 'has-custom-error': mr.mergeError }"> {{ timerText }} </span>
   </state-container>
 </template>

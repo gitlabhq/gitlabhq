@@ -5,7 +5,7 @@ import { GlIcon } from '@gitlab/ui';
 import { sprintf } from '~/locale';
 import { createAlert } from '~/flash';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
-import { TYPE_ISSUE } from '~/graphql_shared/constants';
+import { TYPENAME_ISSUE } from '~/graphql_shared/constants';
 import { timelineFormI18n } from './constants';
 import TimelineEventsForm from './timeline_events_form.vue';
 
@@ -41,7 +41,7 @@ export default {
       }
 
       const variables = {
-        incidentId: convertToGraphQLId(TYPE_ISSUE, this.issuableId),
+        incidentId: convertToGraphQLId(TYPENAME_ISSUE, this.issuableId),
         fullPath: this.fullPath,
       };
 
@@ -71,7 +71,7 @@ export default {
           mutation: CreateTimelineEvent,
           variables: {
             input: {
-              incidentId: convertToGraphQLId(TYPE_ISSUE, this.issuableId),
+              incidentId: convertToGraphQLId(TYPENAME_ISSUE, this.issuableId),
               note: eventDetails.note,
               occurredAt: eventDetails.occurredAt,
               timelineEventTagNames: eventDetails.timelineEventTags,
@@ -113,13 +113,13 @@ export default {
   >
     <div
       v-if="hasTimelineEvents"
-      class="gl-display-flex gl-align-items-center gl-justify-content-center gl-align-self-start gl-bg-white gl-text-gray-200 gl-border-gray-100 gl-border-1 gl-border-solid gl-rounded-full gl-mt-2 gl-mr-3 gl-w-8 gl-h-8 gl-z-index-1"
+      class="gl-display-flex gl-align-items-center gl-justify-content-center gl-align-self-start gl-bg-white gl-text-gray-200 gl-border-gray-100 gl-border-1 gl-border-solid gl-rounded-full gl-mt-2 gl-w-8 gl-h-8 gl-z-index-1"
     >
       <gl-icon name="comment" class="note-icon" />
     </div>
     <timeline-events-form
       ref="eventForm"
-      :class="{ 'gl-border-gray-50 gl-border-t': hasTimelineEvents }"
+      :class="{ 'gl-border-gray-50 gl-border-t gl-pt-3': hasTimelineEvents }"
       :is-event-processed="createTimelineEventActive"
       show-save-and-add
       @save-event="createIncidentTimelineEvent"

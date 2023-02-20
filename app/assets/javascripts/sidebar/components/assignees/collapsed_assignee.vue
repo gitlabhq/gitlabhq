@@ -1,4 +1,5 @@
 <script>
+import { TYPE_ISSUE } from '~/issues/constants';
 import AssigneeAvatar from './assignee_avatar.vue';
 import UserNameWithStatus from './user_name_with_status.vue';
 
@@ -15,7 +16,7 @@ export default {
     issuableType: {
       type: String,
       required: false,
-      default: 'issue',
+      default: TYPE_ISSUE,
     },
   },
   computed: {

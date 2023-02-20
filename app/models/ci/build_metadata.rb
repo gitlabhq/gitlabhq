@@ -18,6 +18,7 @@ module Ci
 
     belongs_to :build, class_name: 'CommitStatus'
     belongs_to :project
+    belongs_to :runner_machine, class_name: 'Ci::RunnerMachine'
 
     before_create :set_build_project
 
@@ -67,7 +68,7 @@ module Ci
     private
 
     def set_build_project
-      self.project_id ||= self.build.project_id
+      self.project_id ||= build.project_id
     end
 
     def timeout_with_highest_precedence

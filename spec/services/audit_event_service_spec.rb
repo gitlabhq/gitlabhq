@@ -13,12 +13,12 @@ RSpec.describe AuditEventService, :with_license do
   describe '#security_event' do
     it 'creates an event and logs to a file' do
       expect(service).to receive(:file_logger).and_return(logger)
-      expect(logger).to receive(:info).with(author_id: user.id,
-                                            author_name: user.name,
-                                            entity_id: project.id,
-                                            entity_type: "Project",
-                                            action: :destroy,
-                                            created_at: anything)
+      expect(logger).to receive(:info).with({ author_id: user.id,
+                                              author_name: user.name,
+                                              entity_id: project.id,
+                                              entity_type: "Project",
+                                              action: :destroy,
+                                              created_at: anything })
 
       expect { service.security_event }.to change(AuditEvent, :count).by(1)
     end
@@ -33,15 +33,15 @@ RSpec.describe AuditEventService, :with_license do
           target_id: 1
         })
       expect(service).to receive(:file_logger).and_return(logger)
-      expect(logger).to receive(:info).with(author_id: user.id,
-                                            author_name: user.name,
-                                            entity_type: 'Project',
-                                            entity_id: project.id,
-                                            from: 'true',
-                                            to: 'false',
-                                            action: :create,
-                                            target_id: 1,
-                                            created_at: anything)
+      expect(logger).to receive(:info).with({ author_id: user.id,
+                                              author_name: user.name,
+                                              entity_type: 'Project',
+                                              entity_id: project.id,
+                                              from: 'true',
+                                              to: 'false',
+                                              action: :create,
+                                              target_id: 1,
+                                              created_at: anything })
 
       expect { service.security_event }.to change(AuditEvent, :count).by(1)
 
@@ -58,12 +58,12 @@ RSpec.describe AuditEventService, :with_license do
       it 'is overridden successfully' do
         freeze_time do
           expect(service).to receive(:file_logger).and_return(logger)
-          expect(logger).to receive(:info).with(author_id: user.id,
-                                                author_name: user.name,
-                                                entity_id: project.id,
-                                                entity_type: "Project",
-                                                action: :destroy,
-                                                created_at: 3.weeks.ago)
+          expect(logger).to receive(:info).with({ author_id: user.id,
+                                                  author_name: user.name,
+                                                  entity_id: project.id,
+                                                  entity_type: "Project",
+                                                  action: :destroy,
+                                                  created_at: 3.weeks.ago })
 
           expect { service.security_event }.to change(AuditEvent, :count).by(1)
           expect(AuditEvent.last.created_at).to eq(3.weeks.ago)
@@ -129,12 +129,12 @@ RSpec.describe AuditEventService, :with_license do
   describe '#log_security_event_to_file' do
     it 'logs security event to file' do
       expect(service).to receive(:file_logger).and_return(logger)
-      expect(logger).to receive(:info).with(author_id: user.id,
-                                            author_name: user.name,
-                                            entity_type: 'Project',
-                                            entity_id: project.id,
-                                            action: :destroy,
-                                            created_at: anything)
+      expect(logger).to receive(:info).with({ author_id: user.id,
+                                              author_name: user.name,
+                                              entity_type: 'Project',
+                                              entity_id: project.id,
+                                              action: :destroy,
+                                              created_at: anything })
 
       service.log_security_event_to_file
     end

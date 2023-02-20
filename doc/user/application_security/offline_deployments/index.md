@@ -234,6 +234,6 @@ Once these steps are complete, GitLab has local copies of the Secure analyzers a
 them instead of an Internet-hosted container image. This allows you to run Secure in AutoDevOps in
 an offline environment.
 
-Note that these steps are specific to GitLab Secure with AutoDevOps. Using other stages with
+These steps are specific to GitLab Secure with AutoDevOps. Using other stages with
 AutoDevOps may require other steps covered in the
 [Auto DevOps documentation](../../../topics/autodevops/index.md).

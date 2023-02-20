@@ -24,7 +24,7 @@ module Banzai
         raise NotImplementedError
       end
 
-      def extra_element_attrs
+      def extra_element_attrs(element)
         {}
       end
 
@@ -43,7 +43,7 @@ module Banzai
             controls: true,
             'data-setup': '{}',
             'data-title': element['title'] || element['alt']
-        }.merge!(extra_element_attrs)
+        }.merge!(extra_element_attrs(element))
 
         if element['data-canonical-src']
           media_element_attrs['data-canonical-src'] = element['data-canonical-src']

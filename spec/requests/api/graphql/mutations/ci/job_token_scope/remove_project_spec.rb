@@ -5,7 +5,13 @@ require 'spec_helper'
 RSpec.describe 'CiJobTokenScopeRemoveProject', feature_category: :continuous_integration do
   include GraphqlHelpers
 
-  let_it_be(:project) { create(:project, ci_outbound_job_token_scope_enabled: true).tap(&:save!) }
+  let_it_be(:project) do
+    create(:project,
+      ci_outbound_job_token_scope_enabled: true,
+      ci_inbound_job_token_scope_enabled: true
+    )
+  end
+
   let_it_be(:target_project) { create(:project) }
 
   let_it_be(:link) do
@@ -16,6 +22,7 @@ RSpec.describe 'CiJobTokenScopeRemoveProject', feature_category: :continuous_int
 
   let(:variables) do
     {
+      direction: 'OUTBOUND',
       project_path: project.full_path,
       target_project_path: target_project.full_path
     }
@@ -61,12 +68,21 @@ RSpec.describe 'CiJobTokenScopeRemoveProject', feature_category: :continuous_int
       target_project.add_guest(current_user)
     end
 
-    it 'removes the target project from the job token scope' do
+    it 'removes the target project from the job token outbound scope' do
       expect do
         post_graphql_mutation(mutation, current_user: current_user)
         expect(response).to have_gitlab_http_status(:success)
         expect(mutation_response.dig('ciJobTokenScope', 'projects', 'nodes')).not_to be_empty
-      end.to change { Ci::JobToken::Scope.new(project).allows?(target_project) }.from(true).to(false)
+      end.to change { Ci::JobToken::ProjectScopeLink.outbound.count }.by(-1)
+    end
+
+    it 'responds successfully' do
+      post_graphql_mutation(mutation, current_user: current_user)
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(graphql_errors).to be_nil
+      expect(graphql_data_at(:ciJobTokenScopeRemoveProject, :ciJobTokenScope, :projects, :nodes))
+        .to contain_exactly({ 'path' => project.path })
     end
 
     context 'when invalid target project is provided' do

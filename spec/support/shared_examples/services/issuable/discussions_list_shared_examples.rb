@@ -26,7 +26,9 @@ RSpec.shared_examples 'listing issuable discussions' do |user_role, internal_dis
         discussions = next_page_discussions_service.execute
 
         expect(discussions.count).to eq(2)
-        expect(discussions.first.notes.map(&:note)).to match_array(["added #{label.to_reference} label"])
+        expect(discussions.first.notes.map(&:note)).to match_array(
+          ["added #{label.to_reference} #{label_2.to_reference} labels"]
+        )
         expect(discussions.second.notes.map(&:note)).to match_array(["removed #{label.to_reference} label"])
       end
     end
@@ -93,7 +95,15 @@ def create_notes(issuable, note_body)
     discussion_id: first_discussion.discussion_id, noteable: issuable,
     project: issuable.project, note: "reply on #{note_body}")
 
-  create(:resource_label_event, user: current_user, "#{assoc_name}": issuable, label: label, action: 'add')
+  now = Time.current
+  create(
+    :resource_label_event,
+    user: current_user, "#{assoc_name}": issuable, label: label, action: 'add', created_at: now
+  )
+  create(
+    :resource_label_event,
+    user: current_user, "#{assoc_name}": issuable, label: label_2, action: 'add', created_at: now
+  )
   create(:resource_label_event, user: current_user, "#{assoc_name}": issuable, label: label, action: 'remove')
 
   unless issuable.is_a?(Epic)

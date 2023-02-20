@@ -1,17 +1,23 @@
 <script>
 import { s__ } from '~/locale';
+import BoldText from '~/vue_merge_request_widget/components/bold_text.vue';
 import StateContainer from '../state_container.vue';
 import { DETAILED_MERGE_STATUS } from '../../constants';
 
 export default {
   i18n: {
-    approvalNeeded: s__('mrWidget|Merge blocked: all required approvals must be given.'),
-    blockingMergeRequests: s__(
-      'mrWidget|Merge blocked: you can only merge after the above items are resolved.',
+    approvalNeeded: s__(
+      'mrWidget|%{boldStart}Merge blocked:%{boldEnd} all required approvals must be given.',
     ),
-    externalStatusChecksFailed: s__('mrWidget|Merge blocked: all status checks must pass.'),
+    blockingMergeRequests: s__(
+      'mrWidget|%{boldStart}Merge blocked:%{boldEnd} you can only merge after the above items are resolved.',
+    ),
+    externalStatusChecksFailed: s__(
+      'mrWidget|%{boldStart}Merge blocked:%{boldEnd} all status checks must pass.',
+    ),
   },
   components: {
+    BoldText,
     StateContainer,
   },
   props: {
@@ -38,10 +44,8 @@ export default {
 
 <template>
   <state-container :mr="mr" status="failed">
-    <span
-      class="gl-ml-3 gl-font-weight-bold gl-w-100 gl-flex-grow-1 gl-md-mr-3 gl-ml-0! gl-text-body!"
-    >
-      {{ failedText }}
+    <span class="gl-ml-3 gl-w-100 gl-flex-grow-1 gl-md-mr-3 gl-ml-0! gl-text-body!">
+      <bold-text :message="failedText" />
     </span>
   </state-container>
 </template>

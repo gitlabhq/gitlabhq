@@ -257,12 +257,17 @@ RSpec.describe PageLayoutHelper do
       let(:time) { 3.hours.ago }
 
       before do
-        user.status = UserStatus.new(message: 'Some message', emoji: 'basketball', availability: 'busy', clear_status_at: time)
+        user.status = UserStatus.new(
+          message: 'Some message',
+          emoji: 'basketball',
+          availability: 'busy',
+          clear_status_at: time
+        )
       end
 
       it 'merges the status properties with the defaults' do
         is_expected.to eq({
-          current_clear_status_after: time.to_s,
+          current_clear_status_after: time.to_s(:iso8601),
           current_availability: 'busy',
           current_emoji: 'basketball',
           current_message: 'Some message',

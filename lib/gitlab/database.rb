@@ -2,7 +2,7 @@
 
 module Gitlab
   module Database
-    DATABASE_NAMES = %w[main ci].freeze
+    DATABASE_NAMES = %w[main ci main_clusterwide].freeze
 
     MAIN_DATABASE_NAME = 'main'
     CI_DATABASE_NAME = 'ci'
@@ -34,10 +34,8 @@ module Gitlab
     # https://gitlab.com/gitlab-org/gitlab-foss/issues/61974
     MAX_TEXT_SIZE_LIMIT = 1_000_000
 
-    # Minimum schema version from which migrations are supported
     # Migrations before this version may have been removed
-    MIN_SCHEMA_VERSION = 20190506135400
-    MIN_SCHEMA_GITLAB_VERSION = '11.11.0'
+    MIN_SCHEMA_GITLAB_VERSION = '15.0'
 
     # Schema we store dynamically managed partitions in (e.g. for time partitioning)
     DYNAMIC_PARTITIONS_SCHEMA = :gitlab_partitions_dynamic
@@ -51,6 +49,8 @@ module Gitlab
 
     PRIMARY_DATABASE_NAME = ActiveRecord::Base.connection_db_config.name.to_sym # rubocop:disable Database/MultipleDatabases
 
+    FULLY_QUALIFIED_IDENTIFIER = /^\w+\.\w+$/
+
     def self.database_base_models
       @database_base_models ||= {
         # Note that we use ActiveRecord::Base here and not ApplicationRecord.
@@ -59,6 +59,7 @@ module Gitlab
         # that inherit from ActiveRecord::Base; not just our own models that
         # inherit from ApplicationRecord.
         main: ::ActiveRecord::Base,
+        main_clusterwide: ::MainClusterwide::ApplicationRecord.connection_class? ? ::MainClusterwide::ApplicationRecord : nil,
         ci: ::Ci::ApplicationRecord.connection_class? ? ::Ci::ApplicationRecord : nil
       }.compact.with_indifferent_access.freeze
     end
@@ -74,6 +75,7 @@ module Gitlab
         # that inher from ActiveRecord::Base; not just our own models that
         # inherit from ApplicationRecord.
         main: ::ActiveRecord::Base,
+        main_clusterwide: ::MainClusterwide::ApplicationRecord.connection_class? ? ::MainClusterwide::ApplicationRecord : nil,
         ci: ::Ci::ApplicationRecord.connection_class? ? ::Ci::ApplicationRecord : nil
       }.compact.with_indifferent_access.freeze
     end
@@ -91,6 +93,7 @@ module Gitlab
         # that inher from ActiveRecord::Base; not just our own models that
         # inherit from ApplicationRecord.
         main: ::ActiveRecord::Base,
+        main_clusterwide: ::MainClusterwide::ApplicationRecord.connection_class? ? ::MainClusterwide::ApplicationRecord : nil,
         ci: ::Ci::ApplicationRecord.connection_class? ? ::Ci::ApplicationRecord : nil
       }.compact.with_indifferent_access.freeze
     end
@@ -102,7 +105,8 @@ module Gitlab
         gitlab_ci: [self.database_base_models[:ci] || self.database_base_models.fetch(:main)], # use CI or fallback to main
         gitlab_shared: database_base_models_with_gitlab_shared.values, # all models
         gitlab_internal: database_base_models.values, # all models
-        gitlab_pm: [self.database_base_models.fetch(:main)] # package metadata models
+        gitlab_pm: [self.database_base_models.fetch(:main)], # package metadata models
+        gitlab_main_clusterwide: [self.database_base_models[:main_clusterwide] || self.database_base_models.fetch(:main)]
       }.with_indifferent_access.freeze
     end
 
@@ -125,7 +129,9 @@ module Gitlab
     end
 
     def self.has_config?(database_name)
-      Gitlab::Application.config.database_configuration[Rails.env].include?(database_name.to_s)
+      ActiveRecord::Base.configurations
+        .configs_for(env_name: Rails.env, name: database_name.to_s, include_replicas: true)
+        .present?
     end
 
     class PgUser < ApplicationRecord
@@ -301,6 +307,14 @@ module Gitlab
 
     def self.read_write?
       !read_only?
+    end
+
+    # Determines minimum viable migration version, determined by the timestamp
+    # of the earliest migration file.
+    def self.read_minimum_migration_version
+      Dir.open(
+        Rails.root.join('db/migrate')
+      ).filter_map { |f| /\A\d{14}/.match(f)&.to_s }.map(&:to_i).min
     end
 
     # Monkeypatch rails with upgraded database observability

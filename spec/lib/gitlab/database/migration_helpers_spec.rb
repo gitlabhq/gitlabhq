@@ -1047,59 +1047,63 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
   end
 
   describe '#foreign_key_exists?' do
+    let(:referenced_table_name) { '_test_gitlab_main_referenced' }
+    let(:referencing_table_name) { '_test_gitlab_main_referencing' }
+
     before do
       model.connection.execute(<<~SQL)
-        create table referenced (
+        create table #{referenced_table_name} (
           id bigserial primary key not null
         );
-        create table referencing (
+        create table #{referencing_table_name} (
           id bigserial primary key not null,
           non_standard_id bigint not null,
-          constraint fk_referenced foreign key (non_standard_id) references referenced(id) on delete cascade
+          constraint fk_referenced foreign key (non_standard_id)
+            references #{referenced_table_name}(id) on delete cascade
         );
       SQL
     end
 
     shared_examples_for 'foreign key checks' do
       it 'finds existing foreign keys by column' do
-        expect(model.foreign_key_exists?(:referencing, target_table, column: :non_standard_id)).to be_truthy
+        expect(model.foreign_key_exists?(referencing_table_name, target_table, column: :non_standard_id)).to be_truthy
       end
 
       it 'finds existing foreign keys by name' do
-        expect(model.foreign_key_exists?(:referencing, target_table, name: :fk_referenced)).to be_truthy
+        expect(model.foreign_key_exists?(referencing_table_name, target_table, name: :fk_referenced)).to be_truthy
       end
 
       it 'finds existing foreign_keys by name and column' do
-        expect(model.foreign_key_exists?(:referencing, target_table, name: :fk_referenced, column: :non_standard_id)).to be_truthy
+        expect(model.foreign_key_exists?(referencing_table_name, target_table, name: :fk_referenced, column: :non_standard_id)).to be_truthy
       end
 
       it 'finds existing foreign_keys by name, column and on_delete' do
-        expect(model.foreign_key_exists?(:referencing, target_table, name: :fk_referenced, column: :non_standard_id, on_delete: :cascade)).to be_truthy
+        expect(model.foreign_key_exists?(referencing_table_name, target_table, name: :fk_referenced, column: :non_standard_id, on_delete: :cascade)).to be_truthy
       end
 
       it 'finds existing foreign keys by target table only' do
-        expect(model.foreign_key_exists?(:referencing, target_table)).to be_truthy
+        expect(model.foreign_key_exists?(referencing_table_name, target_table)).to be_truthy
       end
 
       it 'compares by column name if given' do
-        expect(model.foreign_key_exists?(:referencing, target_table, column: :user_id)).to be_falsey
+        expect(model.foreign_key_exists?(referencing_table_name, target_table, column: :user_id)).to be_falsey
       end
 
       it 'compares by target column name if given' do
-        expect(model.foreign_key_exists?(:referencing, target_table, primary_key: :user_id)).to be_falsey
-        expect(model.foreign_key_exists?(:referencing, target_table, primary_key: :id)).to be_truthy
+        expect(model.foreign_key_exists?(referencing_table_name, target_table, primary_key: :user_id)).to be_falsey
+        expect(model.foreign_key_exists?(referencing_table_name, target_table, primary_key: :id)).to be_truthy
       end
 
       it 'compares by foreign key name if given' do
-        expect(model.foreign_key_exists?(:referencing, target_table, name: :non_existent_foreign_key_name)).to be_falsey
+        expect(model.foreign_key_exists?(referencing_table_name, target_table, name: :non_existent_foreign_key_name)).to be_falsey
       end
 
       it 'compares by foreign key name and column if given' do
-        expect(model.foreign_key_exists?(:referencing, target_table, name: :non_existent_foreign_key_name, column: :non_standard_id)).to be_falsey
+        expect(model.foreign_key_exists?(referencing_table_name, target_table, name: :non_existent_foreign_key_name, column: :non_standard_id)).to be_falsey
       end
 
       it 'compares by foreign key name, column and on_delete if given' do
-        expect(model.foreign_key_exists?(:referencing, target_table, name: :fk_referenced, column: :non_standard_id, on_delete: :nullify)).to be_falsey
+        expect(model.foreign_key_exists?(referencing_table_name, target_table, name: :fk_referenced, column: :non_standard_id, on_delete: :nullify)).to be_falsey
       end
     end
 
@@ -1110,7 +1114,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
     end
 
     context 'specifying a target table' do
-      let(:target_table) { :referenced }
+      let(:target_table) { referenced_table_name }
 
       it_behaves_like 'foreign key checks'
     end
@@ -1121,64 +1125,78 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
 
     it 'raises an error if an invalid on_delete is specified' do
       # The correct on_delete key is "nullify"
-      expect { model.foreign_key_exists?(:referenced, on_delete: :set_null) }.to raise_error(ArgumentError)
+      expect { model.foreign_key_exists?(referenced_table_name, on_delete: :set_null) }.to raise_error(ArgumentError)
     end
 
     context 'with foreign key using multiple columns' do
+      let(:p_referenced_table_name) { '_test_gitlab_main_p_referenced' }
+      let(:p_referencing_table_name) { '_test_gitlab_main_p_referencing' }
+
       before do
         model.connection.execute(<<~SQL)
-        create table p_referenced (
-          id bigserial not null,
-          partition_number bigint not null default 100,
-          primary key (partition_number, id)
-        );
-        create table p_referencing (
-          id bigserial primary key not null,
-          partition_number bigint not null,
-          constraint fk_partitioning foreign key (partition_number, id) references p_referenced(partition_number, id) on delete cascade
-        );
+          create table #{p_referenced_table_name} (
+            id bigserial not null,
+            partition_number bigint not null default 100,
+            primary key (partition_number, id)
+          );
+          create table #{p_referencing_table_name} (
+            id bigserial primary key not null,
+            partition_number bigint not null,
+            constraint fk_partitioning foreign key (partition_number, id)
+              references #{p_referenced_table_name} (partition_number, id) on delete cascade
+          );
         SQL
       end
 
       it 'finds existing foreign keys by columns' do
-        expect(model.foreign_key_exists?(:p_referencing, :p_referenced, column: [:partition_number, :id])).to be_truthy
+        expect(model.foreign_key_exists?(p_referencing_table_name, p_referenced_table_name,
+          column: [:partition_number, :id])).to be_truthy
       end
 
       it 'finds existing foreign keys by name' do
-        expect(model.foreign_key_exists?(:p_referencing, :p_referenced, name: :fk_partitioning)).to be_truthy
+        expect(model.foreign_key_exists?(p_referencing_table_name, p_referenced_table_name,
+          name: :fk_partitioning)).to be_truthy
       end
 
       it 'finds existing foreign_keys by name and column' do
-        expect(model.foreign_key_exists?(:p_referencing, :p_referenced, name: :fk_partitioning, column: [:partition_number, :id])).to be_truthy
+        expect(model.foreign_key_exists?(p_referencing_table_name, p_referenced_table_name,
+          name: :fk_partitioning, column: [:partition_number, :id])).to be_truthy
       end
 
       it 'finds existing foreign_keys by name, column and on_delete' do
-        expect(model.foreign_key_exists?(:p_referencing, :p_referenced, name: :fk_partitioning, column: [:partition_number, :id], on_delete: :cascade)).to be_truthy
+        expect(model.foreign_key_exists?(p_referencing_table_name, p_referenced_table_name,
+          name: :fk_partitioning, column: [:partition_number, :id], on_delete: :cascade)).to be_truthy
       end
 
       it 'finds existing foreign keys by target table only' do
-        expect(model.foreign_key_exists?(:p_referencing, :p_referenced)).to be_truthy
+        expect(model.foreign_key_exists?(p_referencing_table_name, p_referenced_table_name)).to be_truthy
       end
 
       it 'compares by column name if given' do
-        expect(model.foreign_key_exists?(:p_referencing, :p_referenced, column: :id)).to be_falsey
+        expect(model.foreign_key_exists?(p_referencing_table_name, p_referenced_table_name,
+          column: :id)).to be_falsey
       end
 
       it 'compares by target column name if given' do
-        expect(model.foreign_key_exists?(:p_referencing, :p_referenced, primary_key: :user_id)).to be_falsey
-        expect(model.foreign_key_exists?(:p_referencing, :p_referenced, primary_key: [:partition_number, :id])).to be_truthy
+        expect(model.foreign_key_exists?(p_referencing_table_name, p_referenced_table_name,
+          primary_key: :user_id)).to be_falsey
+        expect(model.foreign_key_exists?(p_referencing_table_name, p_referenced_table_name,
+          primary_key: [:partition_number, :id])).to be_truthy
       end
 
       it 'compares by foreign key name if given' do
-        expect(model.foreign_key_exists?(:p_referencing, :p_referenced, name: :non_existent_foreign_key_name)).to be_falsey
+        expect(model.foreign_key_exists?(p_referencing_table_name, p_referenced_table_name,
+          name: :non_existent_foreign_key_name)).to be_falsey
       end
 
       it 'compares by foreign key name and column if given' do
-        expect(model.foreign_key_exists?(:p_referencing, :p_referenced, name: :non_existent_foreign_key_name, column: [:partition_number, :id])).to be_falsey
+        expect(model.foreign_key_exists?(p_referencing_table_name, p_referenced_table_name,
+          name: :non_existent_foreign_key_name, column: [:partition_number, :id])).to be_falsey
       end
 
       it 'compares by foreign key name, column and on_delete if given' do
-        expect(model.foreign_key_exists?(:p_referencing, :p_referenced, name: :fk_partitioning, column: [:partition_number, :id], on_delete: :nullify)).to be_falsey
+        expect(model.foreign_key_exists?(p_referencing_table_name, p_referenced_table_name,
+          name: :fk_partitioning, column: [:partition_number, :id], on_delete: :nullify)).to be_falsey
       end
     end
   end

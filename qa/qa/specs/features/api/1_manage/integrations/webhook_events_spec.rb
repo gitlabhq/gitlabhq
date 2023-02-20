@@ -125,11 +125,48 @@ module QA
         end
       end
 
+      context 'when hook fails' do
+        let(:fail_mock) do
+          <<~YAML
+            - request:
+                method: POST
+                path: /default
+              response:
+                status: 404
+                headers:
+                  Content-Type: text/plain
+                body: 'webhook failed'
+          YAML
+        end
+
+        let(:hook_trigger_times) { 5 }
+        let(:disabled_after) { 4 }
+
+        it 'hook is auto-disabled',
+           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/389595' do
+          setup_webhook(fail_mock, issues: true) do |webhook, smocker|
+            hook_trigger_times.times do
+              Resource::Issue.fabricate_via_api! do |issue_init|
+                issue_init.project = webhook.project
+              end
+            end
+
+            expect { smocker.history(session).size }.to eventually_eq(disabled_after)
+                                                  .within(max_duration: 30, sleep_interval: 2),
+              -> { "Should have #{disabled_after} events, got: #{smocker.history(session).size}" }
+
+            webhook.reload!
+
+            expect(webhook.alert_status).to eql('disabled')
+          end
+        end
+      end
+
       private
 
-      def setup_webhook(**event_args)
+      def setup_webhook(mock = Vendor::Smocker::SmockerApi::DEFAULT_MOCK, **event_args)
         Service::DockerRun::Smocker.init(wait: 10) do |smocker|
-          smocker.register(session: session)
+          smocker.register(mock, session: session)
 
           webhook = Resource::ProjectWebHook.fabricate_via_api! do |hook|
             hook.url = smocker.url

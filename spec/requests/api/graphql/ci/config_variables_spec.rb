@@ -14,13 +14,13 @@ RSpec.describe 'Query.project(fullPath).ciConfigVariables(sha)', feature_categor
   let_it_be(:user) { create(:user) }
 
   let(:service) { Ci::ListConfigVariablesService.new(project, user) }
-  let(:sha) { project.repository.commit.sha }
+  let(:ref) { project.default_branch }
 
   let(:query) do
     %(
       query {
         project(fullPath: "#{project.full_path}") {
-          ciConfigVariables(sha: "#{sha}") {
+          ciConfigVariables(sha: "#{ref}") {
             key
             value
             valueOptions
@@ -47,7 +47,7 @@ RSpec.describe 'Query.project(fullPath).ciConfigVariables(sha)', feature_categor
       it 'returns the CI variables for the config' do
         expect(service)
           .to receive(:execute)
-          .with(sha)
+          .with(ref)
           .and_call_original
 
         post_graphql(query, current_user: user)

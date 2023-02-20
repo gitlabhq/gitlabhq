@@ -111,7 +111,7 @@ that contains examples and templates specific to your organization.
 ## Other resources
 
 This section provides further resources to help you get familiar with various uses of GitLab CI/CD.
-Note that older articles and videos may not reflect the state of the latest GitLab release.
+Older articles and videos may not reflect the state of the latest GitLab release.
 
 ### CI/CD in the cloud
 

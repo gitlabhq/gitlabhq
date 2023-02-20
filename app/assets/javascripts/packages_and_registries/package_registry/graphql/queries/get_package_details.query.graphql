@@ -66,9 +66,13 @@ query getPackageDetails(
       nodes {
         id
         name
+        canDestroy
         createdAt
         version
         status
+        _links {
+          webPath
+        }
         tags(first: 1) {
           nodes {
             id

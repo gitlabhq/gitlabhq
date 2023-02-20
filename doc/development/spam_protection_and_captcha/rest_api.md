@@ -32,7 +32,7 @@ The main steps are:
       - Raise a Grape `#error!` exception with a descriptive spam-specific error message.
       - Include the relevant information added as error fields to the response.
         For more details on these fields, refer to the section in the REST API documentation on
-        [Resolve requests detected as spam](../../api/index.md#resolve-requests-detected-as-spam).
+        [Resolve requests detected as spam](../../api/rest/index.md#resolve-requests-detected-as-spam).
 
    NOTE:
    If you use the standard ApolloLink or Axios interceptor CAPTCHA support described

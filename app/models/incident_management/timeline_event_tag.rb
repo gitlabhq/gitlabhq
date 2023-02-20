@@ -4,8 +4,14 @@ module IncidentManagement
   class TimelineEventTag < ApplicationRecord
     self.table_name = 'incident_management_timeline_event_tags'
 
-    START_TIME_TAG_NAME = 'Start time'
-    END_TIME_TAG_NAME = 'End time'
+    PREDEFINED_TAGS = [
+      'Start time',
+      'End time',
+      'Impact detected',
+      'Response initiated',
+      'Impact mitigated',
+      'Cause identified'
+    ].freeze
 
     belongs_to :project, inverse_of: :incident_management_timeline_event_tags
 

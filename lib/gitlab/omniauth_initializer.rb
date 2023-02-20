@@ -23,8 +23,6 @@ module Gitlab
         case provider_name
         when 'cas3'
           { on_single_sign_out: cas3_signout_handler }
-        when 'authentiq'
-          { remote_sign_out_handler: authentiq_signout_handler }
         when 'shibboleth'
           { fail_with_empty_uid: true }
         when 'google_oauth2'
@@ -53,24 +51,12 @@ module Gitlab
           true
         end
       end
-
-      def authentiq_signout_handler
-        lambda do |request|
-          authentiq_session = request.params['sid']
-          if Gitlab::Auth::OAuth::Session.valid?(:authentiq, authentiq_session)
-            Gitlab::Auth::OAuth::Session.destroy(:authentiq, authentiq_session)
-            true
-          else
-            false
-          end
-        end
-      end
     end
 
     private
 
-    def add_provider_to_devise(*args)
-      @devise_config.omniauth(*args)
+    def add_provider_to_devise(...)
+      @devise_config.omniauth(...)
     end
 
     def arguments_for(provider)

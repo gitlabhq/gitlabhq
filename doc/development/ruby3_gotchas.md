@@ -57,7 +57,7 @@ To write code that works under both 2.7 and 3.0, consider the following options:
 
 We recommend always passing the block explicitly, and prefer two required arguments as block parameters.
 
-To learn more, see [Ruby issue 12706](https://bugs.ruby-lang.org/issues/12706).
+For more information, see [Ruby issue 12706](https://bugs.ruby-lang.org/issues/12706).
 
 ## `Symbol#to_proc` returns signature metadata consistent with lambdas
 
@@ -92,7 +92,7 @@ called without a receiver.
 Ruby 3 corrects this: the code that tests `Proc` object arity or parameter lists might now break and
 has to be updated.
 
-To learn more, see [Ruby issue 16260](https://bugs.ruby-lang.org/issues/16260).
+For more information, see [Ruby issue 16260](https://bugs.ruby-lang.org/issues/16260).
 
 ## `OpenStruct` does not evaluate fields lazily
 

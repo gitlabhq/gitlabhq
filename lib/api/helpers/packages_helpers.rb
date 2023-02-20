@@ -86,7 +86,9 @@ module API
       end
 
       def track_package_event(action, scope, **args)
-        ::Packages::CreateEventService.new(nil, current_user, event_name: action, scope: scope).execute
+        service = ::Packages::CreateEventService.new(nil, current_user, event_name: action, scope: scope)
+        service.execute
+
         category = args.delete(:category) || self.options[:for].name
         event_name = "i_package_#{scope}_user"
         ::Gitlab::Tracking.event(
@@ -97,11 +99,39 @@ module API
           context: [Gitlab::Tracking::ServicePingContext.new(data_source: :redis_hll, event: event_name).to_context],
           **args
         )
+
+        return unless Feature.enabled?(:route_hll_to_snowplow_phase3)
+
+        if action.to_s == 'push_package' && service.originator_type == :deploy_token
+          track_snowplow_event("push_package_by_deploy_token", category, args)
+        elsif action.to_s == 'pull_package' && service.originator_type == :guest
+          track_snowplow_event("pull_package_by_guest", category, args)
+        end
       end
 
       def present_package_file!(package_file, supports_direct_download: true)
         package_file.package.touch_last_downloaded_at
         present_carrierwave_file!(package_file.file, supports_direct_download: supports_direct_download)
+      end
+
+      private
+
+      def track_snowplow_event(action_name, category, args)
+        event_name = "i_package_#{action_name}"
+        key_path = "counts.package_events_i_package_#{action_name}"
+        service_ping_context = Gitlab::Tracking::ServicePingContext.new(
+          data_source: :redis,
+          key_path: key_path
+        ).to_context
+
+        Gitlab::Tracking.event(
+          category,
+          action_name,
+          property: event_name,
+          label: key_path,
+          context: [service_ping_context],
+          **args
+        )
       end
     end
   end

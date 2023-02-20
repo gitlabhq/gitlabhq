@@ -67,9 +67,7 @@ side-effects can be notoriously difficult to reason with.
 
 ### References
 
-To read more on this topic, check out the following references:
-
-- [GlobalVariablesAreBad from C2 wiki](https://wiki.c2.com/?GlobalVariablesAreBad)
+For more information, see [Global Variables Are Bad on the C2 wiki](https://wiki.c2.com/?GlobalVariablesAreBad).
 
 ## Singleton (Anti-pattern)
 
@@ -175,7 +173,7 @@ export const fuzzify = (id) => { /* ... */ };
 #### Dependency Injection
 
 [Dependency Injection](https://en.wikipedia.org/wiki/Dependency_injection) is an approach which breaks
-coupling by declaring a module's dependencies to be injected from outside the module (for example, through constructor parameters, a bona-fide Dependency Injection framework, and even Vue's `provide/inject`).
+coupling by declaring a module's dependencies to be injected from outside the module (for example, through constructor parameters, a bona-fide Dependency Injection framework, and even in Vue `provide/inject`).
 
 ```javascript
 // bad - Vue component coupled to Singleton

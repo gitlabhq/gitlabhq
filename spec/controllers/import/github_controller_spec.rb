@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Import::GithubController, feature_category: :import do
+RSpec.describe Import::GithubController, feature_category: :importers do
   include ImportSpecHelper
 
   let(:provider) { :github }
@@ -375,7 +375,9 @@ RSpec.describe Import::GithubController, feature_category: :import do
     it_behaves_like 'a GitHub-ish import controller: GET realtime_changes'
 
     it 'includes stats in response' do
-      create(:project, import_type: provider, namespace: user.namespace, import_status: :finished, import_source: 'example/repo')
+      project = create(:project, import_type: provider, namespace: user.namespace, import_status: :finished, import_source: 'example/repo')
+
+      ::Gitlab::GithubImport::ObjectCounter.increment(project, :issue, :imported, value: 8)
 
       get :realtime_changes
 
@@ -414,6 +416,58 @@ RSpec.describe Import::GithubController, feature_category: :import do
 
         expect(response).to have_gitlab_http_status(:bad_request)
         expect(json_response['errors']).to eq('The import cannot be canceled because it is finished')
+      end
+    end
+  end
+
+  describe 'POST cancel_all' do
+    context 'when import is in progress' do
+      it 'returns success' do
+        project = create(:project, :import_scheduled, namespace: user.namespace, import_type: 'github', import_url: 'https://fake.url')
+        project2 = create(:project, :import_started, namespace: user.namespace, import_type: 'github', import_url: 'https://fake2.url')
+
+        expect(Import::Github::CancelProjectImportService)
+          .to receive(:new).with(project, user)
+          .and_return(double(execute: { status: :success, project: project }))
+
+        expect(Import::Github::CancelProjectImportService)
+          .to receive(:new).with(project2, user)
+          .and_return(double(execute: { status: :bad_request, message: 'The import cannot be canceled because it is finished' }))
+
+        post :cancel_all
+
+        expect(json_response).to eq([
+          {
+            'id' => project.id,
+            'status' => 'success'
+          },
+          {
+            'id' => project2.id,
+            'status' => 'bad_request',
+            'error' => 'The import cannot be canceled because it is finished'
+          }
+        ])
+      end
+    end
+
+    context 'when there is no imports in progress' do
+      it 'returns an empty array' do
+        create(:project, :import_finished, namespace: user.namespace, import_type: 'github', import_url: 'https://fake.url')
+
+        post :cancel_all
+
+        expect(json_response).to eq([])
+      end
+    end
+
+    context 'when there is no projects created by user' do
+      it 'returns an empty array' do
+        other_user_project = create(:project, :import_started, import_type: 'github', import_url: 'https://fake.url')
+
+        post :cancel_all
+
+        expect(json_response).to eq([])
+        expect(other_user_project.import_status).to eq('started')
       end
     end
   end

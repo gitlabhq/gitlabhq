@@ -1,8 +1,9 @@
 import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import { TEST_HOST } from 'helpers/test_constants';
+import { TYPE_ISSUE } from '~/issues/constants';
 import RelatedIssuableInput from '~/related_issues/components/related_issuable_input.vue';
-import { issuableTypesMap, PathIdSeparator } from '~/related_issues/constants';
+import { PathIdSeparator } from '~/related_issues/constants';
 
 jest.mock('ee_else_ce/gfm_auto_complete', () => {
   return function gfmAutoComplete() {
@@ -21,7 +22,7 @@ describe('RelatedIssuableInput', () => {
       inputValue: '',
       references: [],
       pathIdSeparator: PathIdSeparator.Issue,
-      issuableType: issuableTypesMap.issue,
+      issuableType: TYPE_ISSUE,
       autoCompleteSources: {
         issues: `${TEST_HOST}/h5bp/html5-boilerplate/-/autocomplete_sources/issues`,
       },

@@ -40,13 +40,11 @@ describe('Evidence Block', () => {
   });
 
   it('renders the correct hover text for the download', () => {
-    expect(wrapper.findComponent(GlLink).attributes('title')).toBe('Download evidence JSON');
+    expect(wrapper.findComponent(GlLink).attributes('title')).toBe('Open evidence JSON in new tab');
   });
 
-  it('renders the correct file link for download', () => {
-    expect(wrapper.findComponent(GlLink).attributes().download).toMatch(
-      /v1\.1-evidences-[0-9]+\.json/,
-    );
+  it('renders a link that opens in a new tab', () => {
+    expect(wrapper.findComponent(GlLink).attributes().target).toBe('_blank');
   });
 
   describe('sha text', () => {

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Overview tab on a user profile', :js, feature_category: :users do
+RSpec.describe 'Overview tab on a user profile', :js, feature_category: :user_profile do
   let(:user) { create(:user) }
   let(:contributed_project) { create(:project, :public, :repository) }
 
@@ -18,6 +18,7 @@ RSpec.describe 'Overview tab on a user profile', :js, feature_category: :users d
   end
 
   before do
+    stub_feature_flags(profile_tabs_vue: false)
     sign_in user
   end
 

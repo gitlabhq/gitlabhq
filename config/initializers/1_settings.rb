@@ -27,6 +27,7 @@ end
 
 # backwards compatibility, we only have one host
 if Settings.ldap['enabled'] || Rails.env.test?
+  Settings.ldap['sync_name'] = true if Settings.ldap['sync_name'].nil?
   if Settings.ldap['host'].present?
     # We detected old LDAP configuration syntax. Update the config to make it
     # look like it was entered with the new syntax.
@@ -265,6 +266,7 @@ Settings['gitlab_ci'] ||= Settingslogic.new({})
 Settings.gitlab_ci['shared_runners_enabled'] = true if Settings.gitlab_ci['shared_runners_enabled'].nil?
 Settings.gitlab_ci['builds_path']           = Settings.absolute(Settings.gitlab_ci['builds_path'] || "builds/")
 Settings.gitlab_ci['url']                 ||= Settings.__send__(:build_gitlab_ci_url)
+Settings.gitlab_ci['component_fqdn']      ||= Settings.__send__(:build_ci_component_fqdn)
 
 #
 # CI Secure Files
@@ -280,12 +282,14 @@ Settings.ci_secure_files['object_store'] = ObjectStoreSettings.legacy_parse(Sett
 Settings['incoming_email'] ||= Settingslogic.new({})
 Settings.incoming_email['enabled'] = false if Settings.incoming_email['enabled'].nil?
 Settings.incoming_email['inbox_method'] ||= 'imap'
+Settings.incoming_email['encrypted_secret_file'] = Settings.absolute(Settings.incoming_email['encrypted_secret_file'] || File.join(Settings.encrypted_settings['path'], "incoming_email.yaml.enc"))
 
 #
 # Service desk email
 #
 Settings['service_desk_email'] ||= Settingslogic.new({})
 Settings.service_desk_email['enabled'] = false if Settings.service_desk_email['enabled'].nil?
+Settings.service_desk_email['encrypted_secret_file'] = Settings.absolute(Settings.service_desk_email['encrypted_secret_file'] || File.join(Settings.encrypted_settings['path'], "service_desk_email.yaml.enc"))
 
 #
 # Build Artifacts
@@ -440,7 +444,7 @@ Settings.mattermost['enabled'] = false if Settings.mattermost['enabled'].nil?
 Settings.mattermost['host'] = nil unless Settings.mattermost.enabled
 
 #
-# Jira Connect (GitLab.com for Jira Cloud App)
+# Jira Connect (GitLab for Jira Cloud App)
 #
 Settings['jira_connect'] ||= Settingslogic.new({})
 
@@ -676,6 +680,9 @@ Settings.cron_jobs['ci_runner_versions_reconciliation_worker']['job_class'] = 'C
 Settings.cron_jobs['users_migrate_records_to_ghost_user_in_batches_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['users_migrate_records_to_ghost_user_in_batches_worker']['cron'] ||= '*/2 * * * *'
 Settings.cron_jobs['users_migrate_records_to_ghost_user_in_batches_worker']['job_class'] = 'Users::MigrateRecordsToGhostUserInBatchesWorker'
+Settings.cron_jobs['ci_runners_stale_machines_cleanup_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['ci_runners_stale_machines_cleanup_worker']['cron'] ||= '36 4 * * *'
+Settings.cron_jobs['ci_runners_stale_machines_cleanup_worker']['job_class'] = 'Ci::Runners::StaleMachinesCleanupCronWorker'
 
 Gitlab.ee do
   Settings.cron_jobs['analytics_devops_adoption_create_all_snapshots_worker'] ||= Settingslogic.new({})
@@ -771,6 +778,9 @@ Gitlab.ee do
   Settings.cron_jobs['elastic_migration_worker'] ||= Settingslogic.new({})
   Settings.cron_jobs['elastic_migration_worker']['cron'] ||= '*/30 * * * *'
   Settings.cron_jobs['elastic_migration_worker']['job_class'] ||= 'Elastic::MigrationWorker'
+  Settings.cron_jobs['search_index_curation_worker'] ||= Settingslogic.new({})
+  Settings.cron_jobs['search_index_curation_worker']['cron'] ||= '*/1 * * * *'
+  Settings.cron_jobs['search_index_curation_worker']['job_class'] ||= 'Search::IndexCurationWorker'
   Settings.cron_jobs['sync_seat_link_worker'] ||= Settingslogic.new({})
   Settings.cron_jobs['sync_seat_link_worker']['cron'] ||= "#{rand(60)} #{rand(3..4)} * * * UTC"
   Settings.cron_jobs['sync_seat_link_worker']['job_class'] = 'SyncSeatLinkWorker'
@@ -816,13 +826,25 @@ Gitlab.ee do
   Settings.cron_jobs['licenses_reset_submit_license_usage_data_banner'] ||= Settingslogic.new({})
   Settings.cron_jobs['licenses_reset_submit_license_usage_data_banner']['cron'] ||= "0 0 * * *"
   Settings.cron_jobs['licenses_reset_submit_license_usage_data_banner']['job_class'] = 'Licenses::ResetSubmitLicenseUsageDataBannerWorker'
+  Settings.cron_jobs['abandoned_trial_emails'] ||= Settingslogic.new({})
+  Settings.cron_jobs['abandoned_trial_emails']['cron'] ||= "0 1 * * *"
+  Settings.cron_jobs['abandoned_trial_emails']['job_class'] = 'Emails::AbandonedTrialEmailsCronWorker'
+  Settings.cron_jobs['package_metadata_sync_worker'] ||= Settingslogic.new({})
+  Settings.cron_jobs['package_metadata_sync_worker']['cron'] ||= "0 1 * * *"
+  Settings.cron_jobs['package_metadata_sync_worker']['job_class'] = 'PackageMetadata::SyncWorker'
   Gitlab.com do
+    Settings.cron_jobs['free_user_cap_backfill_notification_jobs_worker'] ||= Settingslogic.new({})
+    Settings.cron_jobs['free_user_cap_backfill_notification_jobs_worker']['cron'] ||= '*/5 * * * *'
+    Settings.cron_jobs['free_user_cap_backfill_notification_jobs_worker']['job_class'] = 'Namespaces::FreeUserCap::BackfillNotificationJobsWorker'
     Settings.cron_jobs['disable_legacy_open_source_license_for_inactive_projects'] ||= Settingslogic.new({})
     Settings.cron_jobs['disable_legacy_open_source_license_for_inactive_projects']['cron'] ||= "30 5 * * 0"
     Settings.cron_jobs['disable_legacy_open_source_license_for_inactive_projects']['job_class'] = 'Projects::DisableLegacyOpenSourceLicenseForInactiveProjectsWorker'
     Settings.cron_jobs['notify_seats_exceeded_batch_worker'] ||= Settingslogic.new({})
     Settings.cron_jobs['notify_seats_exceeded_batch_worker']['cron'] ||= '0 3 * * *'
     Settings.cron_jobs['notify_seats_exceeded_batch_worker']['job_class'] ||= 'GitlabSubscriptions::NotifySeatsExceededBatchWorker'
+    Settings.cron_jobs['gitlab_subscriptions_schedule_refresh_seats_worker'] ||= Settingslogic.new({})
+    Settings.cron_jobs['gitlab_subscriptions_schedule_refresh_seats_worker']['cron'] ||= "0 */6 * * *"
+    Settings.cron_jobs['gitlab_subscriptions_schedule_refresh_seats_worker']['job_class'] = 'GitlabSubscriptions::ScheduleRefreshSeatsWorker'
   end
 end
 
@@ -884,6 +906,8 @@ Settings['repositories'] ||= Settingslogic.new({})
 Settings.repositories['storages'] ||= {}
 
 Settings.repositories.storages.each do |key, storage|
+  next if Settings.repositories.storages[key].is_a?(Gitlab::GitalyClient::StorageSettings)
+
   Settings.repositories.storages[key] = Gitlab::GitalyClient::StorageSettings.new(storage)
 end
 

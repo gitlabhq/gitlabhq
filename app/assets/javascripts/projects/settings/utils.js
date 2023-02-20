@@ -9,7 +9,7 @@ export const getAccessLevels = (accessLevels = {}) => {
     } else if (node.group) {
       accessLevelTypes.groups.push(node);
     } else {
-      accessLevelTypes.roles.push(node);
+      accessLevelTypes.roles.push({ accessLevelDescription: node.accessLevelDescription });
     }
   });
 

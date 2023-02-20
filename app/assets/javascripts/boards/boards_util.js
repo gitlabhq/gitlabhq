@@ -1,7 +1,18 @@
 import { sortBy, cloneDeep } from 'lodash';
-import { TYPE_BOARD, TYPE_ITERATION, TYPE_MILESTONE, TYPE_USER } from '~/graphql_shared/constants';
+import {
+  TYPENAME_BOARD,
+  TYPENAME_ITERATION,
+  TYPENAME_MILESTONE,
+  TYPENAME_USER,
+} from '~/graphql_shared/constants';
 import { isGid, convertToGraphQLId } from '~/graphql_shared/utils';
-import { ListType, MilestoneIDs, AssigneeFilterType, MilestoneFilterType } from './constants';
+import {
+  ListType,
+  MilestoneIDs,
+  AssigneeFilterType,
+  MilestoneFilterType,
+  boardQuery,
+} from './constants';
 
 export function getMilestone() {
   return null;
@@ -40,9 +51,7 @@ export function formatListIssues(listIssues) {
   const boardItems = {};
 
   const listData = listIssues.nodes.reduce((map, list) => {
-    let sortedIssues = list.issues.edges.map((issueNode) => ({
-      ...issueNode.node,
-    }));
+    let sortedIssues = list.issues.nodes;
     if (list.listType !== ListType.closed) {
       sortedIssues = sortBy(sortedIssues, 'relativePosition');
     }
@@ -82,19 +91,19 @@ export function fullBoardId(boardId) {
   if (!boardId) {
     return null;
   }
-  return convertToGraphQLId(TYPE_BOARD, boardId);
+  return convertToGraphQLId(TYPENAME_BOARD, boardId);
 }
 
 export function fullIterationId(id) {
-  return convertToGraphQLId(TYPE_ITERATION, id);
+  return convertToGraphQLId(TYPENAME_ITERATION, id);
 }
 
 export function fullUserId(id) {
-  return convertToGraphQLId(TYPE_USER, id);
+  return convertToGraphQLId(TYPENAME_USER, id);
 }
 
 export function fullMilestoneId(id) {
-  return convertToGraphQLId(TYPE_MILESTONE, id);
+  return convertToGraphQLId(TYPENAME_MILESTONE, id);
 }
 
 export function fullLabelId(label) {
@@ -303,6 +312,10 @@ export const filterVariables = ({ filters, issuableType, filterInfo, filterField
 // EE-specific feature. Find the implementation in the `ee/`-folder
 export function transformBoardConfig() {
   return '';
+}
+
+export function getBoardQuery(boardType) {
+  return boardQuery[boardType].query;
 }
 
 export default {

@@ -21,7 +21,7 @@ module GroupDescendant
     descendants = Array.wrap(descendants).uniq
     return [] if descendants.empty?
 
-    unless descendants.all? { |hierarchy| hierarchy.is_a?(GroupDescendant) }
+    unless descendants.all?(GroupDescendant)
       raise ArgumentError, _('element is not a hierarchy')
     end
 

@@ -3,6 +3,7 @@ import { mountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import api from '~/api';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import Poll from '~/lib/utils/poll';
 import extensionsContainer from '~/vue_merge_request_widget/components/extensions/container';
 import { registerExtension } from '~/vue_merge_request_widget/components/extensions';
@@ -22,8 +23,6 @@ describe('Terraform extension', () => {
   let mock;
 
   const endpoint = '/path/to/terraform/report.json';
-  const successStatusCode = 200;
-  const errorStatusCode = 500;
 
   const findListItem = (at) => wrapper.findAllByTestId('extension-list-item').at(at);
 
@@ -57,7 +56,7 @@ describe('Terraform extension', () => {
     describe('while loading', () => {
       const loadingText = 'Loading Terraform reports...';
       it('should render loading text', async () => {
-        mockPollingApi(successStatusCode, plans, {});
+        mockPollingApi(HTTP_STATUS_OK, plans, {});
         createComponent();
 
         expect(wrapper.text()).toContain(loadingText);
@@ -68,7 +67,7 @@ describe('Terraform extension', () => {
 
     describe('when the fetching fails', () => {
       beforeEach(() => {
-        mockPollingApi(errorStatusCode, null, {});
+        mockPollingApi(HTTP_STATUS_INTERNAL_SERVER_ERROR, null, {});
         return createComponent();
       });
 
@@ -85,7 +84,7 @@ describe('Terraform extension', () => {
         ${'1 valid and 2 invalid reports'} | ${{ 0: validPlanWithName, 1: invalidPlanWithName, 2: invalidPlanWithName }} | ${'Terraform report was generated in your pipelines'}     | ${'2 Terraform reports failed to generate'}
       `('and received $responseType', ({ response, summaryTitle, summarySubtitle }) => {
         beforeEach(async () => {
-          mockPollingApi(successStatusCode, response, {});
+          mockPollingApi(HTTP_STATUS_OK, response, {});
           return createComponent();
         });
 
@@ -102,7 +101,7 @@ describe('Terraform extension', () => {
 
   describe('expanded data', () => {
     beforeEach(async () => {
-      mockPollingApi(successStatusCode, plans, {});
+      mockPollingApi(HTTP_STATUS_OK, plans, {});
       await createComponent();
 
       wrapper.findByTestId('toggle-button').trigger('click');
@@ -164,7 +163,7 @@ describe('Terraform extension', () => {
 
     describe('successful poll', () => {
       beforeEach(() => {
-        mockPollingApi(successStatusCode, plans, {});
+        mockPollingApi(HTTP_STATUS_OK, plans, {});
 
         return createComponent();
       });
@@ -176,7 +175,7 @@ describe('Terraform extension', () => {
 
     describe('polling fails', () => {
       beforeEach(() => {
-        mockPollingApi(errorStatusCode, null, {});
+        mockPollingApi(HTTP_STATUS_INTERNAL_SERVER_ERROR, null, {});
         return createComponent();
       });
 

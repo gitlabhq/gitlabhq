@@ -1,6 +1,5 @@
 <script>
 import { GlButton, GlFormCheckbox, GlKeysetPagination } from '@gitlab/ui';
-import { filter } from 'lodash';
 import { __ } from '~/locale';
 
 export default {
@@ -52,24 +51,31 @@ export default {
       return this.pagination.hasPreviousPage || this.pagination.hasNextPage;
     },
     disableDeleteButton() {
-      return this.isLoading || filter(this.selectedReferences).length === 0;
+      return this.isLoading || this.selectedItems.length === 0;
     },
     selectedItems() {
       return this.items.filter(this.isSelected);
     },
-    selectAll: {
-      get() {
-        return this.items.every(this.isSelected);
-      },
-      set(value) {
-        this.items.forEach((item) => {
-          const id = item[this.idProperty];
-          this.$set(this.selectedReferences, id, value);
-        });
-      },
+    disabled() {
+      return this.items.length === 0;
+    },
+    checked() {
+      return this.items.every(this.isSelected);
+    },
+    indeterminate() {
+      return !this.checked && this.items.some(this.isSelected);
+    },
+    label() {
+      return this.checked ? __('Unselect all') : __('Select all');
     },
   },
   methods: {
+    onChange(event) {
+      this.items.forEach((item) => {
+        const id = item[this.idProperty];
+        this.$set(this.selectedReferences, id, event);
+      });
+    },
     selectItem(item) {
       const id = item[this.idProperty];
       this.$set(this.selectedReferences, id, !this.selectedReferences[id]);
@@ -80,7 +86,7 @@ export default {
     },
   },
   i18n: {
-    deleteSelected: __('Delete Selected'),
+    deleteSelected: __('Delete selected'),
   },
 };
 </script>
@@ -91,9 +97,18 @@ export default {
       v-if="!hiddenDelete"
       class="gl-display-flex gl-justify-content-space-between gl-mb-3 gl-align-items-center"
     >
-      <gl-form-checkbox v-model="selectAll" class="gl-ml-2 gl-pt-2">
-        <span class="gl-font-weight-bold">{{ title }}</span>
-      </gl-form-checkbox>
+      <div class="gl-display-flex gl-align-items-center">
+        <gl-form-checkbox
+          class="gl-ml-2 gl-pt-2"
+          :aria-label="label"
+          :checked="checked"
+          :disabled="disabled"
+          :indeterminate="indeterminate"
+          @change="onChange"
+        />
+
+        <p class="gl-font-weight-bold gl-mb-0">{{ title }}</p>
+      </div>
 
       <gl-button
         :disabled="disableDeleteButton"

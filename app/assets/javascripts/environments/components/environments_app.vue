@@ -15,6 +15,7 @@ import { ENVIRONMENTS_SCOPE } from '../constants';
 import EnvironmentFolder from './environment_folder.vue';
 import EnableReviewAppModal from './enable_review_app_modal.vue';
 import StopEnvironmentModal from './stop_environment_modal.vue';
+import StopStaleEnvironmentsModal from './stop_stale_environments_modal.vue';
 import EnvironmentItem from './new_environment_item.vue';
 import ConfirmRollbackModal from './confirm_rollback_modal.vue';
 import DeleteEnvironmentModal from './delete_environment_modal.vue';
@@ -31,6 +32,7 @@ export default {
     EnableReviewAppModal,
     EnvironmentItem,
     StopEnvironmentModal,
+    StopStaleEnvironmentsModal,
     GlBadge,
     GlPagination,
     GlSearchBoxByType,
@@ -75,6 +77,7 @@ export default {
   i18n: {
     newEnvironmentButtonLabel: s__('Environments|New environment'),
     reviewAppButtonLabel: s__('Environments|Enable review app'),
+    cleanUpEnvsButtonLabel: s__('Environments|Clean up environments'),
     available: __('Available'),
     stopped: __('Stopped'),
     prevPage: __('Go to previous page'),
@@ -85,11 +88,13 @@ export default {
     searchPlaceholder: s__('Environments|Search by environment name'),
   },
   modalId: 'enable-review-app-info',
+  stopStaleEnvsModalId: 'stop-stale-environments-modal',
   data() {
     const { page = '1', search = '', scope } = queryToObject(window.location.search);
     return {
       interval: undefined,
       isReviewAppModalVisible: false,
+      isStopStaleEnvModalVisible: false,
       page: parseInt(page, 10),
       pageInfo: {},
       scope: Object.values(ENVIRONMENTS_SCOPE).includes(scope)
@@ -106,6 +111,9 @@ export default {
   computed: {
     canSetupReviewApp() {
       return this.environmentApp?.reviewApp?.canSetupReviewApp;
+    },
+    canCleanUpEnvs() {
+      return this.environmentApp?.canStopStaleEnvironments;
     },
     folders() {
       return this.environmentApp?.environments?.filter((e) => e.size > 1) ?? [];
@@ -149,6 +157,19 @@ export default {
         },
       };
     },
+    openCleanUpEnvsModal() {
+      if (!this.canCleanUpEnvs) {
+        return null;
+      }
+
+      return {
+        text: this.$options.i18n.cleanUpEnvsButtonLabel,
+        attributes: {
+          category: 'secondary',
+          variant: 'confirm',
+        },
+      };
+    },
     stoppedCount() {
       return this.environmentApp?.stoppedCount;
     },
@@ -177,6 +198,9 @@ export default {
   methods: {
     showReviewAppModal() {
       this.isReviewAppModalVisible = true;
+    },
+    showCleanUpEnvsModal() {
+      this.isStopStaleEnvModalVisible = true;
     },
     setScope(scope) {
       this.scope = scope;
@@ -219,16 +243,24 @@ export default {
       :modal-id="$options.modalId"
       data-testid="enable-review-app-modal"
     />
+    <stop-stale-environments-modal
+      v-if="canCleanUpEnvs"
+      v-model="isStopStaleEnvModalVisible"
+      :modal-id="$options.stopStaleEnvsModalId"
+      data-testid="stop-stale-environments-modal"
+    />
     <delete-environment-modal :environment="environmentToDelete" graphql />
     <stop-environment-modal :environment="environmentToStop" graphql />
     <confirm-rollback-modal :environment="environmentToRollback" graphql />
     <canary-update-modal :environment="environmentToChangeCanary" :weight="weight" />
     <gl-tabs
-      :action-secondary="addEnvironment"
-      :action-primary="openReviewAppModal"
+      :action-secondary="openReviewAppModal"
+      :action-primary="openCleanUpEnvsModal"
+      :action-tertiary="addEnvironment"
       sync-active-tab-with-query-params
       query-param-name="scope"
-      @primary="showReviewAppModal"
+      @secondary="showReviewAppModal"
+      @primary="showCleanUpEnvsModal"
     >
       <gl-tab
         :query-param-value="$options.ENVIRONMENTS_SCOPE.AVAILABLE"

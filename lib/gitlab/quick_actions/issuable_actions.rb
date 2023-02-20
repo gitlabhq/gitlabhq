@@ -248,7 +248,7 @@ module Gitlab
 
           if severity
             if quick_action_target.persisted?
-              ::Issues::UpdateService.new(project: quick_action_target.project, current_user: current_user, params: { severity: severity }).execute(quick_action_target)
+              ::Issues::UpdateService.new(container: quick_action_target.project, current_user: current_user, params: { severity: severity }).execute(quick_action_target)
             else
               quick_action_target.build_issuable_severity(severity: severity)
             end

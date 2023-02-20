@@ -6,15 +6,27 @@ module Gitlab
       module Chain
         class Metrics < Chain::Base
           def perform!
-            counter.increment(source: @pipeline.source)
+            increment_pipeline_created_counter
+            create_snowplow_event_for_pipeline_name
           end
 
           def break?
             false
           end
 
-          def counter
-            ::Gitlab::Ci::Pipeline::Metrics.pipelines_created_counter
+          def increment_pipeline_created_counter
+            ::Gitlab::Ci::Pipeline::Metrics.pipelines_created_counter.increment(source: @pipeline.source)
+          end
+
+          def create_snowplow_event_for_pipeline_name
+            return unless @pipeline.pipeline_metadata&.name
+
+            Gitlab::Tracking.event(
+              self.class.name,
+              'create_pipeline_with_name',
+              project: @pipeline.project,
+              user: @pipeline.user,
+              namespace: @pipeline.project.namespace)
           end
         end
       end

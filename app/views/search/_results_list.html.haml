@@ -1,5 +1,7 @@
 - if @timeout
   = render partial: "search/results/timeout"
+- elsif @search_results.respond_to?(:failed?) && @search_results.failed?
+  = render partial: "search/results/error"
 - elsif @search_objects.to_a.empty?
   = render partial: "search/results/empty"
 - else

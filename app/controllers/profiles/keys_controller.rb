@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Profiles::KeysController < Profiles::ApplicationController
-  feature_category :users
+  feature_category :user_profile
   urgency :low, [:create, :index]
 
   def index
@@ -27,6 +27,16 @@ class Profiles::KeysController < Profiles::ApplicationController
   def destroy
     @key = current_user.keys.find(params[:id])
     Keys::DestroyService.new(current_user).execute(@key)
+
+    respond_to do |format|
+      format.html { redirect_to profile_keys_url, status: :found }
+      format.js { head :ok }
+    end
+  end
+
+  def revoke
+    @key = current_user.keys.find(params[:id])
+    Keys::RevokeService.new(current_user).execute(@key)
 
     respond_to do |format|
       format.html { redirect_to profile_keys_url, status: :found }

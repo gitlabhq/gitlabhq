@@ -223,6 +223,7 @@ feature_category: :user_management do
       context 'when the feature flag is toggled on' do
         before do
           stub_feature_flags(require_email_verification: user)
+          stub_feature_flags(skip_require_email_verification: false)
         end
 
         it_behaves_like 'verifying with email'
@@ -241,6 +242,14 @@ feature_category: :user_management do
           end
 
           it_behaves_like 'verifying with email'
+        end
+
+        context 'when the skip_require_email_verification feature flag is turned on' do
+          before do
+            stub_feature_flags(skip_require_email_verification: user)
+          end
+
+          it_behaves_like 'not verifying with email'
         end
       end
     end

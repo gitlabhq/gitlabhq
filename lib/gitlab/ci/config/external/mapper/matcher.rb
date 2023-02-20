@@ -10,6 +10,7 @@ module Gitlab
             FILE_CLASSES = [
               External::File::Local,
               External::File::Project,
+              External::File::Component,
               External::File::Remote,
               External::File::Template,
               External::File::Artifact
@@ -29,11 +30,11 @@ module Gitlab
                   matching.first
                 elsif matching.empty?
                   raise Mapper::AmbigiousSpecificationError,
-                        "`#{masked_location(location.to_json)}` does not have a valid subkey for include. " \
-                        "Valid subkeys are: `#{FILE_SUBKEYS.join('`, `')}`"
+                    "`#{masked_location(location.to_json)}` does not have a valid subkey for include. " \
+                    "Valid subkeys are: `#{FILE_SUBKEYS.join('`, `')}`"
                 else
                   raise Mapper::AmbigiousSpecificationError,
-                        "Each include must use only one of: `#{FILE_SUBKEYS.join('`, `')}`"
+                    "Each include must use only one of: `#{FILE_SUBKEYS.join('`, `')}`"
                 end
               end
             end

@@ -55,11 +55,11 @@ class AwardEmoji < ApplicationRecord
   end
 
   def downvote?
-    self.name == DOWNVOTE_NAME
+    name == DOWNVOTE_NAME
   end
 
   def upvote?
-    self.name == UPVOTE_NAME
+    name == UPVOTE_NAME
   end
 
   def url

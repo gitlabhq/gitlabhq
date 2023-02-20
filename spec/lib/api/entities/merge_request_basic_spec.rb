@@ -4,11 +4,9 @@ require 'spec_helper'
 
 RSpec.describe ::API::Entities::MergeRequestBasic do
   let_it_be(:user) { create(:user) }
-  let_it_be(:project) { create(:project, :public) }
   let_it_be(:merge_request) { create(:merge_request) }
   let_it_be(:labels) { create_list(:label, 3) }
   let_it_be(:merge_requests) { create_list(:labeled_merge_request, 10, :unique_branches, labels: labels) }
-
   let_it_be(:entity) { described_class.new(merge_request) }
 
   # This mimics the behavior of the `Grape::Entity` serializer
@@ -16,7 +14,7 @@ RSpec.describe ::API::Entities::MergeRequestBasic do
     described_class.new(obj).presented
   end
 
-  subject { entity.as_json }
+  subject(:json) { entity.as_json }
 
   it 'includes expected fields' do
     expected_fields = %i[
@@ -57,7 +55,7 @@ RSpec.describe ::API::Entities::MergeRequestBasic do
     end
   end
 
-  context 'reviewers' do
+  describe 'reviewers' do
     before do
       merge_request.reviewers = [user]
     end
@@ -67,5 +65,27 @@ RSpec.describe ::API::Entities::MergeRequestBasic do
 
       expect(result['reviewers'][0]['username']).to eq user.username
     end
+  end
+
+  describe 'squash' do
+    subject { json[:squash] }
+
+    before do
+      merge_request.target_project.project_setting.update!(squash_option: :never)
+      merge_request.update!(squash: true)
+    end
+
+    it { is_expected.to eq(true) }
+  end
+
+  describe 'squash_on_merge' do
+    subject { json[:squash_on_merge] }
+
+    before do
+      merge_request.target_project.project_setting.update!(squash_option: :never)
+      merge_request.update!(squash: true)
+    end
+
+    it { is_expected.to eq(false) }
   end
 end

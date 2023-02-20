@@ -42,6 +42,26 @@ RSpec.shared_examples 'issue boards sidebar' do
     end
   end
 
+  context 'editing issue title' do
+    it 'edits issue title' do
+      page.within('[data-testid="sidebar-title"]') do
+        click_button 'Edit'
+
+        wait_for_requests
+
+        find('input').set('Test title')
+
+        click_button 'Save changes'
+
+        wait_for_requests
+
+        expect(page).to have_content('Test title')
+      end
+
+      expect(first_card).to have_content('Test title')
+    end
+  end
+
   context 'editing issue milestone', :js do
     it_behaves_like 'milestone sidebar widget'
   end

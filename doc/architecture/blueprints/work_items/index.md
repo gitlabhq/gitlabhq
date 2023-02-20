@@ -70,6 +70,24 @@ All Work Item types share the same pool of predefined widgets and are customized
 
 \* status is not currently a widget, but a part of the root work item, similar to title
 
+### Work item relationships
+
+Work items can be related to other work items in a number of different ways:
+
+- Parent: A direct ancestor to the current work item, whose completion relies on completing this work item.
+- Child: A direct descendant of the current work item, which contributes to this work item's completion.
+- Blocked by: A work item preventing the completion of the current work item.
+- Blocks: A work item whose completion is blocked by the current work item.
+- Related: A work item that is relevant to the subject of the current work item, but does not directly contribute to or block the completion of this work item.
+
+#### Hierarchy
+
+Parent-child relationships form the basis of **hierarchy** in work items. Each work item type has a defined set of types that can be parents or children of that type.
+
+As types expand, and parent items have their own parent items, the hierarchy capability can grow exponentially.
+
+[Pajamas](https://design.gitlab.com/objects/work-item#hierarchy) documents how to display hierarchies depending on context.
+
 ### Work Item view
 
 The new frontend view that renders Work Items of any type using global Work Item `id` as an identifier.
@@ -119,6 +137,7 @@ Work Item architecture is designed with making all the features for all the type
 
 ### Links
 
+- [Work items in Pajamas Design System](https://design.gitlab.com/objects/work-item)
 - [Work items initiative epic](https://gitlab.com/groups/gitlab-org/-/epics/6033)
 - [Tasks roadmap](https://gitlab.com/groups/gitlab-org/-/epics/7103?_gl=1*zqatx*_ga*NzUyOTc3NTc1LjE2NjEzNDcwMDQ.*_ga_ENFH3X7M5Y*MTY2MjU0MDQ0MC43LjEuMTY2MjU0MDc2MC4wLjAuMA..)
 - [Work Item "Vision" Prototype](https://gitlab.com/gitlab-org/gitlab/-/issues/368607)

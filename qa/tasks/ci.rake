@@ -54,15 +54,15 @@ namespace :ci do
     append_to_file(env_file, "QA_FEATURE_FLAGS='#{feature_flags}'")
   end
 
-  desc "Download test results from downstream pipeline"
-  task :download_test_results, [:trigger_name, :test_report_job_name, :report_path] do |_, args|
-    QA::Tools::Ci::TestResults.get(args[:trigger_name], args[:test_report_job_name], args[:report_path])
-  end
-
   desc "Export test run metrics to influxdb"
   task :export_test_metrics, [:glob] do |_, args|
     raise("Metrics file glob pattern is required") unless args[:glob]
 
     QA::Tools::Ci::TestMetrics.export(args[:glob])
+  end
+
+  desc "Get available QA environment variables"
+  task :env_var_name_list do
+    puts Gitlab::QA::Runtime::Env.variables.keys.join("\n")
   end
 end

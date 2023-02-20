@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Peek::Views::ActiveRecord, :request_store do
+RSpec.describe Peek::Views::ActiveRecord, :request_store, feature_category: :database do
   subject { Peek.views.find { |v| v.instance_of?(Peek::Views::ActiveRecord) } }
 
   let(:connection_replica) { double(:connection_replica) }

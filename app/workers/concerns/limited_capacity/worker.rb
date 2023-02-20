@@ -61,8 +61,8 @@ module LimitedCapacity
       end
     end
 
-    def perform(*args)
-      perform_registered(*args) if job_tracker.register(jid, max_running_jobs)
+    def perform(...)
+      perform_registered(...) if job_tracker.register(jid, max_running_jobs)
     end
 
     def perform_work(*args)
@@ -81,9 +81,9 @@ module LimitedCapacity
       job_tracker.clean_up
     end
 
-    def report_prometheus_metrics(*args)
+    def report_prometheus_metrics(...)
       report_running_jobs_metrics
-      set_metric(:remaining_work_gauge, remaining_work_count(*args))
+      set_metric(:remaining_work_gauge, remaining_work_count(...))
       set_metric(:max_running_jobs_gauge, max_running_jobs)
     end
 

@@ -110,7 +110,7 @@ To purge files from a GitLab repository:
    for more examples and the complete documentation.
 
 1. Because you are trying to remove internal refs,
-   you'll later rely on `commit-map` files produced by each run
+   you need the `commit-map` files produced by each run
    to tell you which internal refs to remove.
    Every `git filter-repo` run creates a new `commit-map`,
    and overwrites the `commit-map` from the previous run.
@@ -174,7 +174,7 @@ To clean up a repository:
 1. Upload a list of objects. For example, a `commit-map` file created by `git filter-repo` which is located in the
    `filter-repo` directory.
 
-   If your `commit-map` file is larger than about 250KB or 3000 lines, the file can be split and uploaded piece by piece:
+   If your `commit-map` file is larger than about 250 KB or 3000 lines, the file can be split and uploaded piece by piece:
 
    ```shell
    split -l 3000 filter-repo/commit-map filter-repo/commit-map-

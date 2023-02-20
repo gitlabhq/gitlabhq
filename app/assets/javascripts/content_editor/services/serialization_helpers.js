@@ -514,6 +514,7 @@ export const code = {
   open: generateCodeTag(),
   close: generateCodeTag(closeTag),
   mixable: true,
+  escape: false,
   expelEnclosingWhitespace: true,
 };
 

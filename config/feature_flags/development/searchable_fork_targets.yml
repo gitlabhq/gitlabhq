@@ -1,8 +1,0 @@
----
-name: searchable_fork_targets
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/94991
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/370795
-milestone: '15.3'
-type: development
-group: group::source code
-default_enabled: true

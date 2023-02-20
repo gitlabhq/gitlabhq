@@ -37,6 +37,59 @@ RSpec.describe 'projects/issues/_issue.html.haml' do
       end
     end
 
+    context 'when issue is service desk issue' do
+      let_it_be(:email) { 'user@example.com' }
+      let_it_be(:obfuscated_email) { 'us*****@e*****.c**' }
+      let_it_be(:issue) { create(:issue, author: User.support_bot, service_desk_reply_to: email) }
+
+      context 'with anonymous user' do
+        it 'obfuscates service_desk_reply_to email for anonymous user' do
+          expect(rendered).to have_content(obfuscated_email)
+        end
+      end
+
+      context 'with signed in user' do
+        let_it_be(:user) { create(:user) }
+
+        before do
+          allow(view).to receive(:current_user).and_return(user)
+          allow(view).to receive(:issue).and_return(issue)
+        end
+
+        context 'when user has no role in project' do
+          it 'obfuscates service_desk_reply_to email' do
+            render
+
+            expect(rendered).to have_content(obfuscated_email)
+          end
+        end
+
+        context 'when user has guest role in project' do
+          before do
+            issue.project.add_guest(user)
+          end
+
+          it 'obfuscates service_desk_reply_to email' do
+            render
+
+            expect(rendered).to have_content(obfuscated_email)
+          end
+        end
+
+        context 'when user has (at least) reporter role in project' do
+          before do
+            issue.project.add_reporter(user)
+          end
+
+          it 'shows full service_desk_reply_to email' do
+            render
+
+            expect(rendered).to have_content(email)
+          end
+        end
+      end
+    end
+
     def format_timestamp(time)
       l(time, format: "%b %d, %Y")
     end

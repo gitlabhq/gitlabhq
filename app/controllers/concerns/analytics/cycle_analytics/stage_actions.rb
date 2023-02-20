@@ -7,9 +7,11 @@ module Analytics
       extend ActiveSupport::Concern
 
       included do
+        extend ::Gitlab::Utils::Override
         include CycleAnalyticsParams
 
-        before_action :validate_params, only: %i[median]
+        before_action :validate_params, except: %i[index]
+        before_action :authorize_stage, except: %i[index]
       end
 
       def index
@@ -44,11 +46,11 @@ module Analytics
 
       private
 
-      def parent
+      def namespace
         raise NotImplementedError
       end
 
-      def value_stream_class
+      def authorize_stage
         raise NotImplementedError
       end
 
@@ -64,7 +66,7 @@ module Analytics
       end
 
       def stage
-        @stage ||= ::Analytics::CycleAnalytics::StageFinder.new(parent: parent, stage_id: params[:id]).execute
+        @stage ||= ::Analytics::CycleAnalytics::StageFinder.new(parent: namespace, stage_id: params[:id]).execute
       end
 
       def data_collector
@@ -75,7 +77,7 @@ module Analytics
       end
 
       def value_stream
-        @value_stream ||= value_stream_class.build_default_value_stream(parent)
+        @value_stream ||= Analytics::CycleAnalytics::ValueStream.build_default_value_stream(namespace)
       end
 
       def list_params
@@ -83,7 +85,7 @@ module Analytics
       end
 
       def list_service
-        Analytics::CycleAnalytics::Stages::ListService.new(parent: parent, current_user: current_user, params: list_params)
+        Analytics::CycleAnalytics::Stages::ListService.new(parent: namespace, current_user: current_user, params: list_params)
       end
 
       def cycle_analytics_configuration(stages)
@@ -94,3 +96,5 @@ module Analytics
     end
   end
 end
+
+Analytics::CycleAnalytics::StageActions.prepend_mod_with('Analytics::CycleAnalytics::StageActions')

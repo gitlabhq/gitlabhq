@@ -5,6 +5,7 @@ require 'rake'
 
 RSpec.describe 'schema_version_check rake task', :silence_stdout do
   include StubENV
+  let(:valid_schema_version) { 20211004170422 }
 
   before :all do
     Rake.application.rake_require 'active_record/railties/databases'
@@ -15,8 +16,8 @@ RSpec.describe 'schema_version_check rake task', :silence_stdout do
   end
 
   before do
-    allow(ActiveRecord::Migrator).to receive(:current_version).and_return(Gitlab::Database::MIN_SCHEMA_VERSION)
-
+    allow(ActiveRecord::Migrator).to receive(:current_version).and_return(valid_schema_version)
+    allow(Gitlab::Database).to receive(:read_minimum_migration_version).and_return(valid_schema_version)
     # Ensure our check can re-run each time
     Rake::Task[:schema_version_check].reenable
   end

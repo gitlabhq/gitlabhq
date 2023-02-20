@@ -15,7 +15,7 @@ with and agreed upon by backend maintainers and performance specialists.
 
 It's also highly recommended that you read the following guides:
 
-- [Performance Guidelines../performance.md)
+- [Performance Guidelines](../performance.md)
 - [Avoiding downtime in migrations](../database/avoiding_downtime_in_migrations.md)
 
 ## Definition
@@ -59,8 +59,8 @@ section below for more information.
 about the impact.
 
 Sometimes it's hard to assess the impact of a merge request. In this case you
-should ask one of the merge request reviewers to review your changes. You can
-find a list of these reviewers at <https://about.gitlab.com/company/team/>. A reviewer
+should ask one of the merge request reviewers to review your changes.
+([A list of reviewers](https://about.gitlab.com/company/team/) is available.) A reviewer
 in turn can request a performance specialist to review the changes.
 
 ## Think outside of the box
@@ -119,7 +119,7 @@ data migration. Migrating millions of rows is always troublesome and
 can have a negative impact on the application.
 
 To better understand how to get help with the query plan reviews
-read this section on [how to prepare the merge request for a database review../database_review.md#how-to-prepare-the-merge-request-for-a-database-review).
+read this section on [how to prepare the merge request for a database review](../database_review.md#how-to-prepare-the-merge-request-for-a-database-review).
 
 ## Query Counts
 
@@ -193,7 +193,12 @@ costly, time-consuming query to the replicas.
 
 ## Use CTEs wisely
 
-Read about [complex queries on the relation object../database/iterating_tables_in_batches.md#complex-queries-on-the-relation-object) for considerations on how to use CTEs. We have found in some situations that CTEs can become problematic in use (similar to the n+1 problem above). In particular, hierarchical recursive CTE queries such as the CTE in [AuthorizedProjectsWorker](https://gitlab.com/gitlab-org/gitlab/-/issues/325688) are very difficult to optimize and don't scale. We should avoid them when implementing new features that require any kind of hierarchical structure.
+Read about [complex queries on the relation object](../database/iterating_tables_in_batches.md#complex-queries-on-the-relation-object)
+for considerations on how to use CTEs. We have found in some situations that CTEs can become
+problematic in use (similar to the n+1 problem above). In particular, hierarchical recursive
+CTE queries such as the CTE in [AuthorizedProjectsWorker](https://gitlab.com/gitlab-org/gitlab/-/issues/325688)
+are very difficult to optimize and don't scale. We should avoid them when implementing new features
+that require any kind of hierarchical structure.
 
 CTEs have been effectively used as an optimization fence in many simpler cases,
 such as this [example](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/43242#note_61416277).
@@ -224,7 +229,7 @@ The total number of the queries (including cached ones) executed by the code mod
 should not increase unless absolutely necessary.
 The number of executed queries (including cached queries) should not depend on
 collection size.
-You can write a test by passing the `skip_cached` variable to [QueryRecorder../database/query_recorder.md) to detect this and prevent regressions.
+You can write a test by passing the `skip_cached` variable to [QueryRecorder](../database/query_recorder.md) to detect this and prevent regressions.
 
 As an example, say you have a CI pipeline. All pipeline builds belong to the same pipeline,
 thus they also belong to the same project (`pipeline.project`):
@@ -312,7 +317,7 @@ This could result in Puma timeout and should be avoided at all cost.
 You should set a reasonable timeout, gracefully handle exceptions and surface the
 errors in UI or logging internally.
 
-Using [`ReactiveCaching`../utilities.md#reactivecaching) is one of the best solutions to fetch external data.
+Using [`ReactiveCaching`](../utilities.md#reactivecaching) is one of the best solutions to fetch external data.
 
 ## Keep database transaction minimal
 
@@ -424,7 +429,7 @@ Take into consideration the following when choosing a pagination strategy:
    The database has to sort and iterate all previous items, and this operation usually
    can result in substantial load put on database.
 
-You can find useful tips related to pagination in the [pagination guidelines../database/pagination_guidelines.md).
+You can find useful tips related to pagination in the [pagination guidelines](../database/pagination_guidelines.md).
 
 ## Badge counters
 
@@ -561,5 +566,5 @@ can time out, which is especially problematic for slow clients. If clients take 
 to upload/download the processing slot might be killed due to request processing
 timeout (usually between 30s-60s).
 
-For the above reasons it is required that [Workhorse direct upload../uploads/index.md#direct-upload) is implemented
+For the above reasons it is required that [Workhorse direct upload](../uploads/index.md#direct-upload) is implemented
 for all file uploads and downloads.

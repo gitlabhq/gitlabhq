@@ -22,8 +22,9 @@ module Projects
       private
 
       def delete_tags
-        delete_service.execute
-                      .tap(&method(:log_response))
+        delete_service
+          .execute
+          .tap { |response| log_response(response) }
       end
 
       def delete_service

@@ -47,7 +47,7 @@ To ensure maximum availability of the cache, do one or more of the following:
 
 - [Tag your runners](../runners/configure_runners.md#use-tags-to-control-which-jobs-a-runner-can-run) and use the tag on jobs
   that share the cache.
-- [Use runners that are only available to a particular project](../runners/runners_scope.md#prevent-a-specific-runner-from-being-enabled-for-other-projects).
+- [Use runners that are only available to a particular project](../runners/runners_scope.md#prevent-a-project-runner-from-being-enabled-for-other-projects).
 - [Use a `key`](../yaml/index.md#cachekey) that fits your workflow. For example,
   you can configure a different cache for each branch.
 
@@ -570,7 +570,7 @@ You can clear the cache in the GitLab UI:
 
 1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **CI/CD > Pipelines**.
-1. In the top right, select **Clear runner caches**.
+1. In the upper right, select **Clear runner caches**.
 
 On the next commit, your CI/CD jobs use a new cache.
 

@@ -14,7 +14,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 Personal access tokens can be an alternative to [OAuth2](../../api/oauth2.md) and used to:
 
-- Authenticate with the [GitLab API](../../api/index.md#personalprojectgroup-access-tokens).
+- Authenticate with the [GitLab API](../../api/rest/index.md#personalprojectgroup-access-tokens).
 - Authenticate with Git using HTTP Basic Authentication.
 
 In both cases, you authenticate with a personal access token in place of your password.
@@ -40,9 +40,9 @@ Though required, GitLab usernames are ignored when authenticating with a persona
 There is an [issue for tracking](https://gitlab.com/gitlab-org/gitlab/-/issues/212953) to make GitLab
 use the username.
 
-For examples of how you can use a personal access token to authenticate with the API, see the [API documentation](../../api/index.md#personalprojectgroup-access-tokens).
+For examples of how you can use a personal access token to authenticate with the API, see the [API documentation](../../api/rest/index.md#personalprojectgroup-access-tokens).
 
-Alternately, GitLab administrators can use the API to create [impersonation tokens](../../api/index.md#impersonation-tokens).
+Alternately, GitLab administrators can use the API to create [impersonation tokens](../../api/rest/index.md#impersonation-tokens).
 Use impersonation tokens to automate authentication as a specific user.
 
 NOTE:
@@ -54,7 +54,7 @@ Personal access tokens are not FIPS compliant and creation and use are disabled 
 
 You can create as many personal access tokens as you like.
 
-1. In the top-right corner, select your avatar.
+1. In the upper-right corner, select your avatar.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Access Tokens**.
 1. Enter a name and optional expiry date for the token.
@@ -82,7 +82,7 @@ for guidance on managing personal access tokens (for example, setting a short ex
 
 At any time, you can revoke a personal access token.
 
-1. In the top-right corner, select your avatar.
+1. In the upper-right corner, select your avatar.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Access Tokens**.
 1. In the **Active personal access tokens** area, next to the key, select **Revoke**.
@@ -91,12 +91,12 @@ At any time, you can revoke a personal access token.
 
 Token usage information is updated every 24 hours. GitLab considers a token used when the token is used to:
 
-- Authenticate with the [REST](../../api/index.md) or [GraphQL](../../api/graphql/index.md) APIs.
+- Authenticate with the [REST](../../api/rest/index.md) or [GraphQL](../../api/graphql/index.md) APIs.
 - Perform a Git operation.
 
 To view the last time a token was used:
 
-1. In the top-right corner, select your avatar.
+1. In the upper-right corner, select your avatar.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Access Tokens**.
 1. In the **Active personal access tokens** area, next to the key, view the **Last Used** date.
@@ -154,7 +154,7 @@ To create a personal access token programmatically:
 
    ```ruby
    user = User.find_by_username('automation-bot')
-   token = user.personal_access_tokens.create(scopes: [:read_user, :read_repository], name: 'Automation token')
+   token = user.personal_access_tokens.create(scopes: ['read_user', 'read_repository'], name: 'Automation token')
    token.set_token('token-string-here123')
    token.save!
    ```
@@ -163,7 +163,7 @@ This code can be shortened into a single-line shell command by using the
 [Rails runner](../../administration/operations/rails_console.md#using-the-rails-runner):
 
 ```shell
-sudo gitlab-rails runner "token = User.find_by_username('automation-bot').personal_access_tokens.create(scopes: [:read_user, :read_repository], name: 'Automation token'); token.set_token('token-string-here123'); token.save!"
+sudo gitlab-rails runner "token = User.find_by_username('automation-bot').personal_access_tokens.create(scopes: ['read_user', 'read_repository'], name: 'Automation token'); token.set_token('token-string-here123'); token.save!"
 ```
 
 ## Revoke a personal access token programmatically **(FREE SELF)**
@@ -197,6 +197,29 @@ This code can be shortened into a single-line shell command using the
 ```shell
 sudo gitlab-rails runner "PersonalAccessToken.find_by_token('token-string-here123').revoke!"
 ```
+
+## Clone repository using personal access token **(FREE SELF)**
+
+To clone a repository when SSH is disabled, clone it using a personal access token by running the following command:
+
+```shell
+git clone https://<username>:<personal_token>@gitlab.com/gitlab-org/gitlab.git
+```
+
+This method saves your personal access token in your bash history. To avoid this, run the following command:
+
+```shell
+git clone https://<username>@gitlab.com/gitlab-org/gitlab.git
+```
+
+When asked for your password for `https://gitlab.com`, enter your personal access token.
+
+The `username` in the `clone` command:
+
+- Can be any string value.
+- Must not be an empty string.
+
+Remember this if you set up an automation pipeline that depends on authentication.
 
 ## Troubleshooting
 

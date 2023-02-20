@@ -39,7 +39,7 @@ RSpec.describe 'projects/commits/_commit.html.haml' do
         commit: commit
       }
 
-      within '.gpg-status-box' do
+      within '.signature-badge' do
         expect(page).not_to have_css('.gl-spinner')
       end
     end

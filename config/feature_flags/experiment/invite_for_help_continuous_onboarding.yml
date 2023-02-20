@@ -1,8 +1,0 @@
----
-name: invite_for_help_continuous_onboarding
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/73846
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/345708
-milestone: '14.5'
-type: experiment
-group: group::activation
-default_enabled: false

@@ -476,7 +476,7 @@ agent to be authorized is [not yet implemented](https://gitlab.com/gitlab-org/gi
 
 | Attribute | Type   | Required | Description |
 |:----------|:-------|:---------|:------------|
-| `id` | integer/string | yes | The ID or [URL-encoded path of the project](../../api/index.md#namespaced-path-encoding) |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the project](../../api/rest/index.md#namespaced-path-encoding) |
 
 ```plaintext
 GET /internal/kubernetes/project_info
@@ -1377,7 +1377,8 @@ Returns an empty response with a `204` status code if successful.
 
 ### Remove a single SCIM provisioned user
 
-Removes the user's SSO identity.
+The user is placed in an `ldap_blocked` status and signed out. This means
+the user cannot sign in or push or pull code.
 
 ```plaintext
 DELETE /api/scim/v2/application/Users/:id

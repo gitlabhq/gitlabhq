@@ -55,7 +55,11 @@ module Ci
     end
 
     def retryable?
-      false
+      return false unless Feature.enabled?(:ci_recreate_downstream_pipeline, project)
+
+      return false if failed? && (pipeline_loop_detected? || reached_max_descendant_pipelines_depth?)
+
+      super
     end
 
     def self.with_preloads
@@ -76,9 +80,9 @@ module Ci
     def inherit_status_from_downstream!(pipeline)
       case pipeline.status
       when 'success'
-        self.success!
+        success!
       when 'failed', 'canceled', 'skipped'
-        self.drop!
+        drop!
       else
         false
       end
@@ -184,6 +188,10 @@ module Ci
     end
 
     def persisted_environment
+    end
+
+    def deployment_job?
+      false
     end
 
     def execute_hooks

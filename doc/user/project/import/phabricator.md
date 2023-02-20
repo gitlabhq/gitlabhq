@@ -36,7 +36,7 @@ Only the following basic fields are imported:
 
 The assignee and author of a user are deducted from a Task's owner and
 author: If a user with the same username has access to the namespace
-of the project being imported into, then the user will be linked.
+of the project being imported into, then the user is linked.
 
 ## Enable this feature
 

@@ -1,7 +1,7 @@
 ---
 name: enable_new_sentry_clientside_integration
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/102650
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/344832
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/382570
 milestone: '15.6'
 type: development
 group: group::runner

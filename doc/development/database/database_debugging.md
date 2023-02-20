@@ -177,3 +177,21 @@ you should set the `SKIP_SCHEMA_VERSION_CHECK` environment variable.
 ```shell
 bundle exec rake db:migrate SKIP_SCHEMA_VERSION_CHECK=true
 ```
+
+## Performance issues
+
+### Reduce connection overhead with connection pooling
+
+Creating new database connections is not free, and in PostgreSQL specifically, it requires
+forking an entire process to handle each new one. In case a connection lives for a very long time,
+this is no problem. However, forking a process for several small queries can turn out to be costly.
+If left unattended, peaks of new database connections can cause performance degradation,
+or even lead to a complete outage.
+
+A proven solution for instances that deal with surges of small, short-lived database connections
+is to implement [PgBouncer](../../administration/postgresql/pgbouncer.md#pgbouncer-as-part-of-a-fault-tolerant-gitlab-installation) as a connection pooler.
+This pool can be used to hold thousands of connections for almost no overhead. The drawback is the addition of
+a small amount of latency, in exchange for up to more than 90% performance improvement, depending on the usage patterns.
+
+PgBouncer can be fine-tuned to fit different installations. See our documentation on
+[fine-tuning PgBouncer](../../administration/postgresql/pgbouncer.md#fine-tuning) for more information.

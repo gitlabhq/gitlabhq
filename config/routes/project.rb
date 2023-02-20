@@ -92,8 +92,6 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           end
         end
 
-        get :learn_gitlab, action: :index, controller: 'learn_gitlab'
-
         namespace :ci do
           resource :lint, only: [:show, :create]
           resource :pipeline_editor, only: [:show], controller: :pipeline_editor, path: 'editor'
@@ -375,8 +373,6 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           end
         end
 
-        get 'issues/incident/:id' => 'incidents#show', as: :issues_incident
-
         namespace :error_tracking do
           resources :projects, only: :index
         end
@@ -476,6 +472,10 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         namespace :ml do
           resources :experiments, only: [:index, :show], controller: 'experiments'
           resources :candidates, only: [:show], controller: 'candidates', param: :iid
+        end
+
+        namespace :airflow do
+          resources :dags, only: [:index, :show], controller: 'dags'
         end
       end
       # End of the /-/ scope.
@@ -592,8 +592,6 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
       end
 
       scope :service_ping, controller: :service_ping do
-        post :web_ide_clientside_preview # rubocop:todo Cop/PutProjectRoutesUnderScope
-        post :web_ide_clientside_preview_success # rubocop:todo Cop/PutProjectRoutesUnderScope
         post :web_ide_pipelines_count # rubocop:todo Cop/PutProjectRoutesUnderScope
       end
 

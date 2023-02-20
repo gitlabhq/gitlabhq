@@ -9,7 +9,18 @@ module Gitlab
         DMLNotAllowedError = Class.new(UnsupportedSchemaError)
         DMLAccessDeniedError = Class.new(UnsupportedSchemaError)
 
-        IGNORED_SCHEMAS = %i[gitlab_shared gitlab_internal].freeze
+        # Re-map schemas observed schemas to a single cluster mode
+        # - symbol:
+        #     The mapped schema indicates that it contains all data in a single-cluster mode
+        # - nil:
+        #     Inidicates that changes made to this schema are ignored and always allowed
+        SCHEMA_MAPPING = {
+          gitlab_shared: nil,
+          gitlab_internal: nil,
+
+          # Pods specific changes
+          gitlab_main_clusterwide: :gitlab_main
+        }.freeze
 
         class << self
           def enabled?
@@ -90,7 +101,13 @@ module Gitlab
 
           def dml_schemas(tables)
             extra_schemas = ::Gitlab::Database::GitlabSchema.table_schemas(tables)
-            extra_schemas.subtract(IGNORED_SCHEMAS)
+
+            SCHEMA_MAPPING.each do |schema, mapped_schema|
+              next unless extra_schemas.delete?(schema)
+
+              extra_schemas.add(mapped_schema) if mapped_schema
+            end
+
             extra_schemas
           end
 

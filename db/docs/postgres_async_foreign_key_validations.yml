@@ -1,0 +1,11 @@
+---
+table_name: postgres_async_foreign_key_validations
+classes:
+- Gitlab::Database::AsyncForeignKeys::PostgresAsyncForeignKeyValidation
+feature_categories:
+- database
+description: >-
+  Contains a queue-like structure for database foreign key validations scheduled to be executed asynchronously.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111293
+milestone: '15.9'
+gitlab_schema: gitlab_shared

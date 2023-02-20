@@ -11,7 +11,7 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/flash';
-import { IssuableType } from '~/issues/constants';
+import { TYPE_ISSUE } from '~/issues/constants';
 import SidebarDropdown from '~/sidebar/components/sidebar_dropdown.vue';
 import { IssuableAttributeType } from '~/sidebar/constants';
 import projectIssueMilestoneQuery from '~/sidebar/queries/project_issue_milestone.query.graphql';
@@ -66,7 +66,7 @@ describe('SidebarDropdown component', () => {
       propsData: {
         attrWorkspacePath: mockIssue.projectPath,
         currentAttribute: {},
-        issuableType: IssuableType.Issue,
+        issuableType: TYPE_ISSUE,
         issuableAttribute: IssuableAttributeType.Milestone,
       },
       attachTo: document.body,
@@ -83,7 +83,7 @@ describe('SidebarDropdown component', () => {
       propsData: {
         attrWorkspacePath: mockIssue.projectPath,
         currentAttribute: {},
-        issuableType: IssuableType.Issue,
+        issuableType: TYPE_ISSUE,
         issuableAttribute: IssuableAttributeType.Milestone,
         ...props,
       },

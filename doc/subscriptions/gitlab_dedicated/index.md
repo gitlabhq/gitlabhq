@@ -1,6 +1,6 @@
 ---
-stage: Systems
-group: Distribution
+stage: SaaS Platforms
+group: GitLab Dedicated
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -47,7 +47,7 @@ The following GitLab application features are not available:
 - FortiAuthenticator, or FortiToken 2FA
 - Reply-by email
 - Service Desk
-- GitLab-managed runners
+- GitLab-managed runners (hosted runners)
 - Any feature [not listed above](#available-features) which must be configured outside of the GitLab user interface.
 
 The following features will not be supported:
@@ -64,7 +64,9 @@ The following operational features are not available:
 - Multiple Geo secondaries (Geo replicas) beyond the secondary site included by default
 - Self-serve purchasing and configuration
 - Multiple login providers
-- Non-AWS cloud providers, such as GCP or Azure
+- Support for deploying to non-AWS cloud providers, such as GCP or Azure
+- Observability Dashboard using Switchboard
+- Pre-Production Instance
 
 ### AWS regions not supported
 
@@ -82,8 +84,9 @@ The following AWS regions are not available:
 
 ## Planned features
 
-Learn more about the planned improvements to GitLab Dedicated on the public [direction page](https://about.gitlab.com/direction/saas-platforms/dedicated/).
+For more information about the planned improvements to GitLab Dedicated,
+see the [category direction page](https://about.gitlab.com/direction/saas-platforms/dedicated/).
 
-## Learn more about GitLab Dedicated and join our waitlist
+## Join the GitLab Dedicated waitlist
 
-As we scale this new offering, we are making GitLab Dedicated available by inviting customers to learn more and join our waitlist [on our website](https://about.gitlab.com/single-tenant-saas).
+As we scale this new offering, we are making GitLab Dedicated available by inviting customers to [join our waitlist](https://about.gitlab.com/dedicated/).

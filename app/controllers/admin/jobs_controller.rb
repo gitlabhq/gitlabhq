@@ -6,6 +6,10 @@ class Admin::JobsController < Admin::ApplicationController
   feature_category :continuous_integration
   urgency :low
 
+  before_action do
+    push_frontend_feature_flag(:admin_jobs_vue)
+  end
+
   def index
     # We need all builds for tabs counters
     @all_builds = Ci::JobsFinder.new(current_user: current_user).execute

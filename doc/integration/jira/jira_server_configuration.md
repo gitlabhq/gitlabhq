@@ -29,7 +29,7 @@ This process creates a user named `gitlab`:
    - **Username**: Jira creates the username by using the email prefix. You can change
      this username later.
    - **Password**: You must create a password, because the GitLab integration doesn't
-     support SSO, such as SAML. To create the password, visit the user profile, look up
+     support SSO, such as SAML. To create the password, go to the user profile, look up
      the username, and set a password.
 1. Select **Create user**.
 

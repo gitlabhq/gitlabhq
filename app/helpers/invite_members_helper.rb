@@ -45,7 +45,7 @@ module InviteMembersHelper
       full_path: source.full_path
     }
 
-    if show_invite_members_for_task?(source)
+    if current_user && show_invite_members_for_task?(source)
       dataset.merge!(
         tasks_to_be_done_options: tasks_to_be_done_options.to_json,
         projects: projects_for_source(source).to_json,
@@ -71,11 +71,9 @@ module InviteMembersHelper
     {}
   end
 
-  def show_invite_members_for_task?(source)
-    return unless current_user
-
-    invite_for_help_continuous_onboarding = source.is_a?(Project) && experiment(:invite_for_help_continuous_onboarding, namespace: source.namespace).assigned.name == 'candidate'
-    params[:open_modal] == 'invite_members_for_task' || invite_for_help_continuous_onboarding
+  # Overridden in EE
+  def show_invite_members_for_task?(_source)
+    params[:open_modal] == 'invite_members_for_task'
   end
 
   def tasks_to_be_done_options

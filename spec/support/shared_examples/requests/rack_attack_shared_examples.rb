@@ -382,7 +382,7 @@ RSpec.shared_examples 'tracking when dry-run mode is set' do
   end
 
   def reset_rack_attack
-    Rack::Attack.reset!
+    Gitlab::Redis::RateLimiting.with(&:flushdb)
     Rack::Attack.clear_configuration
     Gitlab::RackAttack.configure(Rack::Attack)
   end

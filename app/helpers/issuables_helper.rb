@@ -6,7 +6,7 @@ module IssuablesHelper
   include ::Sidebars::Concerns::HasPill
 
   def sidebar_gutter_toggle_icon
-    content_tag(:span, class: 'js-sidebar-toggle-container', data: { is_expanded: !sidebar_gutter_collapsed? }) do
+    content_tag(:span, class: 'js-sidebar-toggle-container gl-button-text', data: { is_expanded: !sidebar_gutter_collapsed? }) do
       sprite_icon('chevron-double-lg-left', css_class: "js-sidebar-expand #{'hidden' unless sidebar_gutter_collapsed?}") +
       sprite_icon('chevron-double-lg-right', css_class: "js-sidebar-collapse #{'hidden' if sidebar_gutter_collapsed?}")
     end
@@ -152,7 +152,7 @@ module IssuablesHelper
     end
 
     if issuable.is_a?(Issue) && issuable.service_desk_reply_to
-      output << "#{html_escape(issuable.service_desk_reply_to)} via "
+      output << "#{html_escape(issuable.present(current_user: current_user).service_desk_reply_to)} via "
     end
 
     output << content_tag(:strong) do
@@ -242,7 +242,6 @@ module IssuablesHelper
       updateEndpoint: "#{issuable_path(issuable)}.json",
       canUpdate: can?(current_user, :"update_#{issuable.to_ability_name}", issuable),
       canDestroy: can?(current_user, :"destroy_#{issuable.to_ability_name}", issuable),
-      canUpdateTimelineEvent: can?(current_user, :admin_incident_management_timeline_event, issuable),
       issuableRef: issuable.to_reference,
       markdownPreviewPath: preview_markdown_path(parent, target_type: issuable.model_name, target_id: issuable.iid),
       markdownDocsPath: help_page_path('user/markdown'),
@@ -272,7 +271,17 @@ module IssuablesHelper
       sentryIssueIdentifier: SentryIssue.find_by(issue: issuable)&.sentry_issue_identifier, # rubocop:disable CodeReuse/ActiveRecord
       iid: issuable.iid.to_s,
       isHidden: issue_hidden?(issuable),
-      canCreateIncident: create_issue_type_allowed?(issuable.project, :incident)
+      canCreateIncident: create_issue_type_allowed?(issuable.project, :incident),
+      **incident_only_initial_data(issuable)
+    }
+  end
+
+  def incident_only_initial_data(issue)
+    return {} unless issue.incident?
+
+    {
+      hasLinkedAlerts: issue.alert_management_alerts.any?,
+      canUpdateTimelineEvent: can?(current_user, :admin_incident_management_timeline_event, issue)
     }
   end
 
@@ -299,7 +308,7 @@ module IssuablesHelper
   end
 
   def issuables_count_for_state(issuable_type, state)
-    Gitlab::IssuablesCountForState.new(finder, store_in_redis_cache: true)[state]
+    Gitlab::IssuablesCountForState.new(finder, fast_fail: true, store_in_redis_cache: true)[state]
   end
 
   def close_issuable_path(issuable)

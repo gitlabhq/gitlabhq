@@ -1,6 +1,7 @@
 import MockAdapter from 'axios-mock-adapter';
 import init from '~/branches/divergence_graph';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 
 describe('Divergence graph', () => {
   let mock;
@@ -8,7 +9,7 @@ describe('Divergence graph', () => {
   beforeEach(() => {
     mock = new MockAdapter(axios);
 
-    mock.onGet('/-/diverging_counts').reply(200, {
+    mock.onGet('/-/diverging_counts').reply(HTTP_STATUS_OK, {
       main: { ahead: 1, behind: 1 },
       'test/hello-world': { ahead: 1, behind: 1 },
     });

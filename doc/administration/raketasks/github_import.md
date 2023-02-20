@@ -6,6 +6,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # GitHub import Rake task **(FREE SELF)**
 
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/390690) in GitLab 15.9, Rake task no longer automatically creates namespaces or groups that don't exist.
+
 To retrieve and import GitHub repositories, you need a [GitHub personal access token](https://github.com/settings/tokens).
 A username should be passed as the second argument to the Rake task,
 which becomes the owner of the project. You can resume an import
@@ -39,7 +41,7 @@ bundle exec rake "import:github[access_token,root,foo/bar]" RAILS_ENV=production
 
 In this case, `access_token` is your GitHub personal access token, `root`
 is your GitLab username, and `foo/bar` is the new GitLab namespace/project
-created from your GitHub project. Subgroups are also possible: `foo/foo/bar`. The importer creates any missing intermediate namespaces (groups) if they do not exist.
+created from your GitHub project. Subgroups are also possible: `foo/foo/bar`.
 
 ## Importing a single project
 

@@ -178,6 +178,10 @@ module EmailsHelper
     strip_tags(render_message(:footer_message, style: ''))
   end
 
+  def service_desk_email_additional_text
+    # overridden on EE
+  end
+
   def say_hi(user)
     _('Hi %{username}!') % { username: sanitize_name(user.name) }
   end
@@ -290,15 +294,27 @@ module EmailsHelper
       added_reviewers = new_reviewers - previous_reviewers
       removed_reviewers = previous_reviewers - new_reviewers
 
-      added_reviewers_template_text = added_reviewers.size > 1 ? "were added as reviewers.<br>" : "was added as a reviewer.<br>"
-      removed_reviewers_template_text = removed_reviewers.size > 1 ? "were removed from reviewers." : "was removed from reviewers."
+      added_reviewers_text = if added_reviewers.any?
+                               n_(
+                                 '%{reviewer_names} was added as a reviewer.',
+                                 '%{reviewer_names} were added as reviewers.',
+                                 added_reviewers.size) % {
+                                   reviewer_names: format_reviewers_string(added_reviewers, html_tag)
+                                 }
+                             end
 
-      added = format_reviewers_string(added_reviewers, html_tag)
-      removed = format_reviewers_string(removed_reviewers, html_tag)
+      removed_reviewers_text = if removed_reviewers.any?
+                                 n_(
+                                   '%{reviewer_names} was removed from reviewers.',
+                                   '%{reviewer_names} were removed from reviewers.',
+                                   removed_reviewers.size) % {
+                                     reviewer_names: format_reviewers_string(removed_reviewers, html_tag)
+                                   }
+                               end
 
-      added_reviewers_text = added ? "#{added} #{added_reviewers_template_text}".html_safe : ''
-      removed_reviewers_text = removed ? "#{removed} #{removed_reviewers_template_text}".html_safe : ''
-      s_('ChangeReviewer|%{added_reviewers_text}%{removed_reviewers_text}').html_safe % { added_reviewers_text: added_reviewers_text, removed_reviewers_text: removed_reviewers_text }
+      line_delimiter = html_tag.present? ? '<br>' : "\n"
+
+      [added_reviewers_text, removed_reviewers_text].compact.join(line_delimiter).html_safe
     end
   end
 

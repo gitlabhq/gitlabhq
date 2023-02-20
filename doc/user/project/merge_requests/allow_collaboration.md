@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Collaborate on merge requests across forks **(FREE)**
 
-When you open a merge request from your fork, you can allow upstream
+When you open a merge request from your [fork](../repository/forking_workflow.md), you can allow upstream
 members to collaborate with you on your branch.
 When you enable this option, members who have permission to merge to the target branch get
 permission to write to the merge request's source branch.
@@ -15,7 +15,7 @@ The members of the upstream project can then make small fixes or rebase branches
 before merging.
 
 This feature is available for merge requests across forked projects that are
-publicly accessible.
+[publicly accessible](../../public_access.md).
 
 ## Allow commits from upstream members
 

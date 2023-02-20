@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 Review your groups' [releases](../user/project/releases/index.md) with the REST API.
 
 NOTE:
-For information about the project releases API, visit the [Releases API](releases/index.md) page.
+For more information about the project releases API, see [Releases API](releases/index.md).
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../administration/feature_flags.md) named `group_releases_finder_inoperator`.
@@ -27,7 +27,7 @@ Parameters:
 
 | Attribute           | Type           | Required | Description                                                                                                   |
 |---------------------|----------------|----------|---------------------------------------------------------------------------------------------------------------|
-| `id`                | integer/string | yes      | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`                | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `sort`              | string         | no       | The direction of the order. Either `desc` (default) for descending order or `asc` for ascending order.        |
 | `simple`            | boolean        | no       | Return only limited fields for each release.                                                                  |
 

@@ -43,7 +43,7 @@ RSpec.describe Gitlab::ConfigChecker::ExternalDatabaseChecker do
 
     context 'with a multiple database' do
       before do
-        skip_if_multiple_databases_not_setup
+        skip_if_multiple_databases_not_setup(:ci)
       end
 
       context 'when both databases meets minimum supported version' do

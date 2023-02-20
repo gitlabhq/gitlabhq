@@ -11,7 +11,7 @@ export function getImportStatus(project) {
 export function isProjectImportable(project) {
   return (
     !isIncompatible(project) &&
-    [STATUSES.NONE, STATUSES.CANCELED].includes(getImportStatus(project))
+    [STATUSES.NONE, STATUSES.CANCELED, STATUSES.FAILED].includes(getImportStatus(project))
   );
 }
 

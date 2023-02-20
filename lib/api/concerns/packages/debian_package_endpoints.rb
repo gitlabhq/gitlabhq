@@ -44,6 +44,8 @@ module API
             end
 
             def present_index_file!(file_type)
+              not_found!("Format #{params[:format]} is not supported") unless params[:format].nil?
+
               relation = "::Packages::Debian::#{project_or_group.class.name}ComponentFile".constantize
 
               relation = relation

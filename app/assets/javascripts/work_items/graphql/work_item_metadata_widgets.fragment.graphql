@@ -3,6 +3,15 @@
 #import "~/work_items/graphql/milestone.fragment.graphql"
 
 fragment WorkItemMetadataWidgets on WorkItemWidget {
+  ... on WorkItemWidgetDescription {
+    type
+  }
+  ... on WorkItemWidgetStartAndDueDate {
+    type
+  }
+  ... on WorkItemWidgetNotes {
+    type
+  }
   ... on WorkItemWidgetMilestone {
     type
     milestone {
@@ -11,6 +20,8 @@ fragment WorkItemMetadataWidgets on WorkItemWidget {
   }
   ... on WorkItemWidgetAssignees {
     type
+    allowsMultipleAssignees
+    canInviteMembers
     assignees {
       nodes {
         ...User

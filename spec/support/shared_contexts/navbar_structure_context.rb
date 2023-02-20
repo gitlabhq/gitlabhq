@@ -85,7 +85,8 @@ RSpec.shared_context 'project navbar structure' do
           _('Metrics'),
           _('Error Tracking'),
           _('Alerts'),
-          _('Incidents')
+          _('Incidents'),
+          _('Airflow')
         ]
       },
       {
@@ -243,7 +244,10 @@ RSpec.shared_context 'dashboard navbar structure' do
       },
       {
         nav_item: _("Merge requests"),
-        nav_sub_items: []
+        nav_sub_items: [
+          _('Assigned 0'),
+          _('Review requests 0')
+        ]
       },
       {
         nav_item: _("To-Do List"),

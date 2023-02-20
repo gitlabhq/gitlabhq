@@ -33,7 +33,7 @@ GET /projects/:id/dependencies?package_manager=yarn,bundler
 
 | Attribute     | Type           | Required | Description                                                                                                                                                                 |
 | ------------- | -------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `id`          | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding).                                                            |
+| `id`          | integer/string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding).                                                            |
 | `package_manager` | string array   | no       | Returns dependencies belonging to specified package manager. Valid values: `bundler`, `composer`, `conan`, `go`, `gradle`, `maven`, `npm`, `nuget`, `pip`, `pipenv`, `yarn`, `sbt`, or `setuptools`. |
 
 ```shell
@@ -85,4 +85,4 @@ Example response:
 By default, `GET` requests return 20 results at a time because the API results
 are paginated.
 
-Read more on [pagination](index.md#pagination).
+Read more on [pagination](rest/index.md#pagination).

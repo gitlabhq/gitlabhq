@@ -2,7 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::JobArtifacts::DestroyAllExpiredService, :clean_gitlab_redis_shared_state do
+RSpec.describe Ci::JobArtifacts::DestroyAllExpiredService, :clean_gitlab_redis_shared_state,
+feature_category: :build_artifacts do
   include ExclusiveLeaseHelpers
 
   let(:service) { described_class.new }

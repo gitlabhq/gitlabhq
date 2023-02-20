@@ -25,7 +25,7 @@ RSpec.describe 'admin/application_settings/ci_cd.html.haml' do
       render
 
       expect(rendered).to have_content("Runner registration")
-      expect(rendered).to have_content("If no options are selected, only administrators can register runners.")
+      expect(rendered).to have_content(s_("Runners|If both settings are disabled, new runners cannot be registered."))
     end
   end
 end

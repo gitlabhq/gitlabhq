@@ -158,7 +158,7 @@ module Atlassian
       end
 
       def request_body_schema(response)
-        Oj.load(response.request.raw_body).deep_transform_values! {}
+        Oj.load(response.request.raw_body)
       rescue Oj::ParseError, EncodingError, Encoding::UndefinedConversionError
         'Request body includes invalid JSON'
       end

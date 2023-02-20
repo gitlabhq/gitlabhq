@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'Admin Jobs', feature_category: :continuous_integration do
   before do
+    stub_feature_flags(admin_jobs_vue: false)
     admin = create(:admin)
     sign_in(admin)
     gitlab_enable_admin_mode_sign_in(admin)
@@ -28,8 +29,8 @@ RSpec.describe 'Admin Jobs', feature_category: :continuous_integration do
           expect(page).to have_button 'Stop all jobs'
 
           click_button 'Stop all jobs'
-          expect(page).to have_button 'Stop jobs'
-          expect(page).to have_content 'Stop all jobs?'
+          expect(page).to have_button 'Yes, proceed'
+          expect(page).to have_content 'Are you sure?'
         end
       end
 

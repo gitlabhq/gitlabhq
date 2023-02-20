@@ -11,9 +11,9 @@ module Gitlab
               @context = context
             end
 
-            def process(*args)
+            def process(...)
               context.logger.instrument(mapper_instrumentation_key) do
-                process_without_instrumentation(*args)
+                process_without_instrumentation(...)
               end
             end
 

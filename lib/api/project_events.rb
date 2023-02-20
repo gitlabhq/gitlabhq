@@ -6,7 +6,7 @@ module API
     include APIGuard
     helpers ::API::Helpers::EventsHelpers
 
-    feature_category :users
+    feature_category :user_profile
 
     # TODO: Set higher urgency after resolving https://gitlab.com/gitlab-org/gitlab/-/issues/357839
     urgency :low

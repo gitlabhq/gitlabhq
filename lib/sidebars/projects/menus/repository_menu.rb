@@ -56,11 +56,7 @@ module Sidebars
         end
 
         def commits_menu_item
-          link = if Feature.enabled?(:use_ref_type_parameter, context.project)
-                   project_commits_path(context.project, context.current_ref, ref_type: ref_type_from_context(context))
-                 else
-                   project_commits_path(context.project, context.current_ref)
-                 end
+          link = project_commits_path(context.project, context.current_ref, ref_type: ref_type_from_context(context))
 
           ::Sidebars::MenuItem.new(
             title: _('Commits'),
@@ -93,11 +89,7 @@ module Sidebars
         def contributors_menu_item
           return false unless context.project.analytics_enabled?
 
-          link = if Feature.enabled?(:use_ref_type_parameter, context.project)
-                   project_graph_path(context.project, context.current_ref, ref_type: ref_type_from_context(context))
-                 else
-                   project_graph_path(context.project, context.current_ref)
-                 end
+          link = project_graph_path(context.project, context.current_ref, ref_type: ref_type_from_context(context))
 
           ::Sidebars::MenuItem.new(
             title: _('Contributors'),
@@ -108,11 +100,7 @@ module Sidebars
         end
 
         def graphs_menu_item
-          link = if Feature.enabled?(:use_ref_type_parameter, context.project)
-                   project_network_path(context.project, context.current_ref, ref_type: ref_type_from_context(context))
-                 else
-                   project_network_path(context.project, context.current_ref)
-                 end
+          link = project_network_path(context.project, context.current_ref, ref_type: ref_type_from_context(context))
 
           ::Sidebars::MenuItem.new(
             title: _('Graph'),

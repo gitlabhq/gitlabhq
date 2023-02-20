@@ -1,0 +1,8 @@
+---
+name: database_async_foreign_key_validation
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112015
+rollout_issue_url:
+milestone: '15.9'
+type: ops
+group: group::database
+default_enabled: false

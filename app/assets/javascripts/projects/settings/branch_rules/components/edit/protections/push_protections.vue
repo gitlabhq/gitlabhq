@@ -4,7 +4,7 @@ import { s__ } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
 
 export const i18n = {
-  allowedToPush: s__('BranchRules|Allowed to push'),
+  allowedToPush: s__('BranchRules|Allowed to push and merge'),
   forcePushTitle: s__(
     'BranchRules|Allow all users with push access to %{linkStart}force push%{linkEnd}.',
   ),

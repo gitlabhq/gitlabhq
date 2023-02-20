@@ -45,9 +45,7 @@ module FormHelper
     end
   end
 
-  def dropdown_max_select(data, feature_flag)
-    return data[:'max-select'] unless feature_flag.nil? || Feature.enabled?(feature_flag)
-
+  def dropdown_max_select(data)
     if data[:'max-select'] && data[:'max-select'] < ::Issuable::MAX_NUMBER_OF_ASSIGNEES_OR_REVIEWERS
       data[:'max-select']
     else
@@ -179,11 +177,7 @@ module FormHelper
     new_options[:title] = _('Select reviewer(s)')
     new_options[:data][:'dropdown-header'] = _('Reviewer(s)')
 
-    if Feature.enabled?(:limit_reviewer_and_assignee_size)
-      new_options[:data][:'max-select'] = ::Issuable::MAX_NUMBER_OF_ASSIGNEES_OR_REVIEWERS
-    else
-      new_options[:data].delete(:'max-select')
-    end
+    new_options[:data][:'max-select'] = ::Issuable::MAX_NUMBER_OF_ASSIGNEES_OR_REVIEWERS
 
     new_options
   end

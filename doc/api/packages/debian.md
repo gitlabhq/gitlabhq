@@ -22,10 +22,6 @@ For instructions on how to upload and install Debian packages from the GitLab
 package registry, see the [Debian registry documentation](../../user/packages/debian_repository/index.md).
 
 NOTE:
-The Debian registry is not FIPS compliant and is disabled when [FIPS mode](../../development/fips_compliance.md) is enabled.
-These endpoints will all return `404 Not Found`.
-
-NOTE:
 These endpoints do not adhere to the standard API authentication methods.
 See the [Debian registry documentation](../../user/packages/debian_repository/index.md)
 for details on which headers and token types are supported.
@@ -43,6 +39,10 @@ The Debian group API is behind a feature flag that is disabled by default.
 [GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
 can opt to enable it. To enable it, follow the instructions in
 [Enable the Debian group API](../../user/packages/debian_repository/index.md#enable-the-debian-group-api).
+
+### Authenticate to the Debian Package Repositories
+
+See [Authenticate to the Debian Package Repositories](../../user/packages/debian_repository/index.md#authenticate-to-the-debian-package-repositories).
 
 ## Upload a package file
 

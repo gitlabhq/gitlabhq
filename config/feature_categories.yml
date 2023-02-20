@@ -85,8 +85,9 @@
 - merge_trains
 - metrics
 - mlops
-- mobile_signing_deployment
+- mobile_devops
 - navigation
+- no_code_automation
 - omnibus_package
 - on_call_schedule_management
 - onboarding
@@ -133,7 +134,7 @@
 - team_planning
 - tracing
 - user_management
-- users
+- user_profile
 - value_stream_management
 - vulnerability_management
 - web_ide

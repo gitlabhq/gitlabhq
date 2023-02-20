@@ -375,7 +375,7 @@ describe('HeaderSearchApp', () => {
           expect(findHeaderSearchDropdown().exists()).toBe(true);
           expect(trackingSpy).toHaveBeenCalledWith(undefined, 'focus_input', {
             label: 'global_search',
-            property: 'top_navigation',
+            property: 'navigation_top',
           });
         });
 
@@ -388,7 +388,7 @@ describe('HeaderSearchApp', () => {
           expect(findHeaderSearchDropdown().exists()).toBe(true);
           expect(trackingSpy).toHaveBeenCalledWith(undefined, 'focus_input', {
             label: 'global_search',
-            property: 'top_navigation',
+            property: 'navigation_top',
           });
         });
 

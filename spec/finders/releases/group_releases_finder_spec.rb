@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Releases::GroupReleasesFinder do
+RSpec.describe Releases::GroupReleasesFinder, feature_category: :subgroups do
   let(:user)  { create(:user) }
   let(:group) { create(:group) }
   let(:project) { create(:project, :repository, group: group) }

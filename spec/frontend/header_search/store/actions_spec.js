@@ -4,6 +4,7 @@ import * as actions from '~/header_search/store/actions';
 import * as types from '~/header_search/store/mutation_types';
 import initState from '~/header_search/store/state';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import {
   MOCK_SEARCH,
   MOCK_AUTOCOMPLETE_OPTIONS_RES,
@@ -37,9 +38,9 @@ describe('Header Search Store Actions', () => {
   });
 
   describe.each`
-    axiosMock                                                             | type         | expectedMutations
-    ${{ method: 'onGet', code: 200, res: MOCK_AUTOCOMPLETE_OPTIONS_RES }} | ${'success'} | ${[{ type: types.REQUEST_AUTOCOMPLETE }, { type: types.RECEIVE_AUTOCOMPLETE_SUCCESS, payload: MOCK_AUTOCOMPLETE_OPTIONS_RES }, { type: types.RECEIVE_AUTOCOMPLETE_SUCCESS, payload: MOCK_AUTOCOMPLETE_OPTIONS_RES }]}
-    ${{ method: 'onGet', code: 500, res: null }}                          | ${'error'}   | ${[{ type: types.REQUEST_AUTOCOMPLETE }, { type: types.RECEIVE_AUTOCOMPLETE_ERROR }, { type: types.RECEIVE_AUTOCOMPLETE_ERROR }]}
+    axiosMock                                                                        | type         | expectedMutations
+    ${{ method: 'onGet', code: HTTP_STATUS_OK, res: MOCK_AUTOCOMPLETE_OPTIONS_RES }} | ${'success'} | ${[{ type: types.REQUEST_AUTOCOMPLETE }, { type: types.RECEIVE_AUTOCOMPLETE_SUCCESS, payload: MOCK_AUTOCOMPLETE_OPTIONS_RES }, { type: types.RECEIVE_AUTOCOMPLETE_SUCCESS, payload: MOCK_AUTOCOMPLETE_OPTIONS_RES }]}
+    ${{ method: 'onGet', code: HTTP_STATUS_INTERNAL_SERVER_ERROR, res: null }}       | ${'error'}   | ${[{ type: types.REQUEST_AUTOCOMPLETE }, { type: types.RECEIVE_AUTOCOMPLETE_ERROR }, { type: types.RECEIVE_AUTOCOMPLETE_ERROR }]}
   `('fetchAutocompleteOptions', ({ axiosMock, type, expectedMutations }) => {
     describe(`on ${type}`, () => {
       beforeEach(() => {

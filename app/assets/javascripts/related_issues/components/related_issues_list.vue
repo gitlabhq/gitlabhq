@@ -2,6 +2,7 @@
 import { GlLoadingIcon } from '@gitlab/ui';
 import Sortable from 'sortablejs';
 import RelatedIssuableItem from '~/issuable/components/related_issuable_item.vue';
+import { TYPE_ISSUE } from '~/issues/constants';
 import { defaultSortableOptions } from '~/sortable/constants';
 
 export default {
@@ -88,7 +89,7 @@ export default {
       document.body.classList.remove('is-dragging');
     },
     issuableOrderingId({ epicIssueId, id }) {
-      return this.issuableType === 'issue' ? epicIssueId : id;
+      return this.issuableType === TYPE_ISSUE ? epicIssueId : id;
     },
   },
 };

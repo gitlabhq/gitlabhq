@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Create' do
-    context 'Add suggestions to a Merge Request', product_group: :code_review do
+    context 'with merge request suggestions', product_group: :code_review do
       let(:commit_message) { 'Applying suggested change for testing purposes.' }
 
       let(:project) do
@@ -17,9 +17,7 @@ module QA
           merge_request.title = 'Needs some suggestions'
           merge_request.description = '... so please add them.'
           merge_request.file_content = File.read(
-            Pathname
-              .new(__dir__)
-              .join('../../../../../../fixtures/metrics_dashboards/templating.yml')
+            File.join(Runtime::Path.fixtures_path, 'metrics_dashboards', 'templating.yml')
           )
         end
       end
@@ -43,7 +41,8 @@ module QA
         merge_request.visit!
       end
 
-      it 'applies a single suggestion with a custom message', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347711' do
+      it 'applies a single suggestion with a custom message',
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347711' do
         Page::MergeRequest::Show.perform do |merge_request|
           merge_request.click_diffs_tab
           merge_request.apply_suggestion_with_message(commit_message)

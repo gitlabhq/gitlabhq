@@ -26,7 +26,7 @@ class CreateFunctionGitlabSchemaPreventWrite < Gitlab::Database::Migration[2.0]
     return if Gitlab.com?
 
     execute(<<~SQL)
-      DROP FUNCTION #{TRIGGER_FUNCTION_NAME}
+      DROP FUNCTION #{TRIGGER_FUNCTION_NAME} CASCADE
     SQL
   end
 end

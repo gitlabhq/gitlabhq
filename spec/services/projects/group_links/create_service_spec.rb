@@ -58,6 +58,8 @@ RSpec.describe Projects::GroupLinks::CreateService, '#execute' do
       end
 
       it 'schedules authorization update for users with access to group' do
+        stub_feature_flags(do_not_run_safety_net_auth_refresh_jobs: false)
+
         expect(AuthorizedProjectsWorker).not_to(
           receive(:bulk_perform_async)
         )

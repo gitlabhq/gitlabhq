@@ -3,8 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe 'search/_results', feature_category: :global_search do
-  using RSpec::Parameterized::TableSyntax
-
   let_it_be(:user) { create(:user) }
 
   let(:search_objects) { Issue.page(1).per(2) }
@@ -32,30 +30,22 @@ RSpec.describe 'search/_results', feature_category: :global_search do
     assign(:search_service_presenter, search_service_presenter)
   end
 
-  where(search_page_vertical_nav_enabled: [true, false])
+  describe 'page size' do
+    context 'when search results have a count' do
+      it 'displays the page size' do
+        render
 
-  with_them do
-    describe 'page size' do
-      before do
-        stub_feature_flags(search_page_vertical_nav: search_page_vertical_nav_enabled)
+        expect(rendered).to have_content('Showing 1 - 2 of 3 issues for foo')
       end
+    end
 
-      context 'when search results have a count' do
-        it 'displays the page size' do
-          render
+    context 'when search results do not have a count' do
+      let(:search_objects) { Issue.page(1).per(2).without_count }
 
-          expect(rendered).to have_content('Showing 1 - 2 of 3 issues for foo')
-        end
-      end
+      it 'does not display the page size' do
+        render
 
-      context 'when search results do not have a count' do
-        let(:search_objects) { Issue.page(1).per(2).without_count }
-
-        it 'does not display the page size' do
-          render
-
-          expect(rendered).not_to have_content(/Showing .* of .*/)
-        end
+        expect(rendered).not_to have_content(/Showing .* of .*/)
       end
     end
   end

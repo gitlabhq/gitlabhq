@@ -101,7 +101,7 @@ export default {
         </button>
       </div>
     </div>
-    <div :class="{ 'pt-0 tree-list-blobs': !renderTreeList }" class="tree-list-scroll">
+    <div :class="{ 'pt-0 tree-list-blobs': !renderTreeList || search }" class="tree-list-scroll">
       <template v-if="filteredTreeList.length">
         <file-tree
           v-for="file in filteredTreeList"
@@ -112,6 +112,9 @@ export default {
           :hide-file-stats="hideFileStats"
           :file-row-component="$options.DiffFileRow"
           :current-diff-file-id="currentDiffFileId"
+          :style="{ '--level': 0 }"
+          :class="{ 'tree-list-parent': file.tree.length }"
+          class="gl-relative"
           @toggleTreeOpen="toggleTreeOpen"
           @clickFile="(path) => scrollToFile({ path })"
         />

@@ -1,0 +1,8 @@
+query inboundGetCIJobTokenScope($fullPath: ID!) {
+  project(fullPath: $fullPath) {
+    id
+    ciCdSettings {
+      inboundJobTokenScopeEnabled
+    }
+  }
+}

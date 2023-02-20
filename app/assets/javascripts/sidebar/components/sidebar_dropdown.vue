@@ -8,7 +8,7 @@ import {
   GlSearchBoxByType,
 } from '@gitlab/ui';
 import { kebabCase, snakeCase } from 'lodash';
-import { IssuableType, WorkspaceType } from '~/issues/constants';
+import { IssuableType, TYPE_EPIC, TYPE_ISSUE, WorkspaceType } from '~/issues/constants';
 import { __ } from '~/locale';
 import {
   defaultEpicSort,
@@ -70,7 +70,7 @@ export default {
       type: String,
       required: true,
       validator(value) {
-        return [IssuableType.Issue, IssuableType.MergeRequest].includes(value);
+        return [TYPE_ISSUE, IssuableType.MergeRequest].includes(value);
       },
     },
     workspaceType: {
@@ -155,7 +155,7 @@ export default {
     },
     isEpic() {
       // MV to EE https://gitlab.com/gitlab-org/gitlab/-/issues/345311
-      return this.issuableAttribute === IssuableType.Epic;
+      return this.issuableAttribute === TYPE_EPIC;
     },
     issuableAttributeQuery() {
       return this.issuableAttributesQueries[this.issuableAttribute];

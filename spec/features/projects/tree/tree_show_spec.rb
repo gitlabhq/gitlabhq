@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe 'Projects tree', :js, feature_category: :web_ide do
   include WebIdeSpecHelpers
   include RepoHelpers
+  include ListboxHelpers
 
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository) }
@@ -93,8 +94,8 @@ RSpec.describe 'Projects tree', :js, feature_category: :web_ide do
       visit project_tree_path(project, '33f3729a45c02fc67d00adb1b8bca394b0e761d9')
       wait_for_requests
 
-      expect(page).not_to have_selector '.gpg-status-box.js-loading-gpg-badge'
-      expect(page).to have_selector '.gpg-status-box.invalid'
+      expect(page).not_to have_selector '.js-loading-signature-badge'
+      expect(page).to have_selector '.gl-badge.badge-muted'
     end
 
     context 'on a directory that has not changed recently' do
@@ -103,8 +104,8 @@ RSpec.describe 'Projects tree', :js, feature_category: :web_ide do
         visit project_tree_path(project, tree_path)
         wait_for_requests
 
-        expect(page).not_to have_selector '.gpg-status-box.js-loading-gpg-badge'
-        expect(page).to have_selector '.gpg-status-box.invalid'
+        expect(page).not_to have_selector '.js-loading-signature-badge'
+        expect(page).to have_selector '.gl-badge.badge-muted'
       end
     end
   end
@@ -151,26 +152,22 @@ RSpec.describe 'Projects tree', :js, feature_category: :web_ide do
         visit project_tree_path(project, '33f3729a45c02fc67d00adb1b8bca394b0e761d9')
         wait_for_requests
 
-        expect(page).not_to have_selector '.gpg-status-box.js-loading-gpg-badge'
-        expect(page).to have_selector '.gpg-status-box.invalid'
+        expect(page).not_to have_selector '.js-loading-signature-badge'
+        expect(page).to have_selector '.gl-badge.badge-muted'
       end
     end
   end
 
   context 'ref switcher', :js do
-    it 'switches ref to branch' do
+    it 'switches ref to branch', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/391780' do
       ref_selector = '.ref-selector'
-      ref_name = 'feature'
+      ref_name = 'fix'
       visit project_tree_path(project, 'master')
 
-      find(ref_selector).click
-      wait_for_requests
+      click_button 'master'
+      send_keys ref_name
 
-      page.within(ref_selector) do
-        fill_in 'Search by Git revision', with: ref_name
-        wait_for_requests
-        find('li', text: ref_name, match: :prefer_exact).click
-      end
+      select_listbox_item ref_name
 
       expect(find(ref_selector)).to have_text(ref_name)
     end

@@ -1,16 +1,24 @@
 <script>
 import { GlButton, GlSkeletonLoader } from '@gitlab/ui';
 import { createAlert } from '~/flash';
-import { __ } from '~/locale';
+import { __, s__ } from '~/locale';
 import toast from '~/vue_shared/plugins/global_toast';
 import simplePoll from '~/lib/utils/simple_poll';
+import BoldText from '~/vue_merge_request_widget/components/bold_text.vue';
 import eventHub from '../../event_hub';
 import mergeRequestQueryVariablesMixin from '../../mixins/merge_request_query_variables';
 import rebaseQuery from '../../queries/states/rebase.query.graphql';
 import StateContainer from '../state_container.vue';
 
+const i18n = {
+  rebaseError: s__(
+    'mrWidget|%{boldStart}Merge blocked:%{boldEnd} the source branch must be rebased onto the target branch.',
+  ),
+};
+
 export default {
   name: 'MRWidgetRebase',
+  i18n,
   apollo: {
     state: {
       query: rebaseQuery,
@@ -21,6 +29,7 @@ export default {
     },
   },
   components: {
+    BoldText,
     GlSkeletonLoader,
     GlButton,
     StateContainer,
@@ -68,9 +77,6 @@ export default {
         return 'failed';
       }
       return 'success';
-    },
-    fastForwardMergeText() {
-      return __('Merge blocked: the source branch must be rebased onto the target branch.');
     },
     showRebaseWithoutPipeline() {
       return (
@@ -146,29 +152,29 @@ export default {
     <template v-if="!isLoading">
       <span
         v-if="rebaseInProgress || isMakingRequest"
-        class="gl-ml-0! gl-text-body! gl-font-weight-bold"
+        class="gl-ml-0! gl-text-body!"
         data-testid="rebase-message"
-        >{{ __('Rebase in progress') }}</span
+        >{{ s__('mrWidget|Rebase in progress') }}</span
       >
       <span
         v-if="!rebaseInProgress && !canPushToSourceBranch"
-        class="gl-text-body! gl-font-weight-bold gl-ml-0!"
+        class="gl-text-body! gl-ml-0!"
         data-testid="rebase-message"
-        >{{ fastForwardMergeText }}</span
       >
+        <bold-text :message="$options.i18n.rebaseError" />
+      </span>
       <div
         v-if="!rebaseInProgress && canPushToSourceBranch && !isMakingRequest"
         class="accept-merge-holder clearfix js-toggle-container media gl-md-display-flex gl-flex-wrap gl-flex-grow-1"
       >
         <span
           v-if="!rebasingError"
-          class="gl-font-weight-bold gl-w-100 gl-md-w-auto gl-flex-grow-1 gl-ml-0! gl-text-body! gl-md-mr-3"
+          class="gl-w-100 gl-md-w-auto gl-flex-grow-1 gl-ml-0! gl-text-body! gl-md-mr-3"
           data-testid="rebase-message"
           data-qa-selector="no_fast_forward_message_content"
-          >{{
-            __('Merge blocked: the source branch must be rebased onto the target branch.')
-          }}</span
         >
+          <bold-text :message="$options.i18n.rebaseError" />
+        </span>
         <span
           v-else
           class="gl-font-weight-bold danger gl-w-100 gl-md-w-auto gl-flex-grow-1 gl-md-mr-3"
@@ -187,7 +193,7 @@ export default {
         class="gl-align-self-start"
         @click="rebase"
       >
-        {{ __('Rebase') }}
+        {{ s__('mrWidget|Rebase') }}
       </gl-button>
       <gl-button
         v-if="showRebaseWithoutPipeline"
@@ -199,7 +205,7 @@ export default {
         class="gl-align-self-start gl-mr-2"
         @click="rebaseWithoutCi"
       >
-        {{ __('Rebase without pipeline') }}
+        {{ s__('mrWidget|Rebase without pipeline') }}
       </gl-button>
     </template>
   </state-container>

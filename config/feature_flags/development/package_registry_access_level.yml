@@ -1,8 +1,0 @@
----
-name: package_registry_access_level
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82808
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/363018
-milestone: '15.0'
-type: development
-group: group::package registry
-default_enabled: true

@@ -1,0 +1,12 @@
+- title: "Cookie authorization in the GitLab for Jira Cloud app"  # (required) Clearly explain the change, or planned change. For example, "The `confidential` field for a `Note` is deprecated" or "CI/CD job names will be limited to 250 characters."
+  announcement_milestone: "15.8"  # (required) The milestone when this feature was first announced as deprecated.
+  removal_milestone: "16.0"  # (required) The milestone when this feature is planned to be removed
+  breaking_change: true  # (required) Change to false if this is not a breaking change.
+  reporter: Andysoiron  # (required) GitLab username of the person reporting the change
+  stage: Manage  # (required) String value of the stage that the feature was created in. e.g., Growth
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/387299  # (required) Link to the deprecation issue in GitLab
+  body: |  # (required) Do not modify this line, instead modify the lines below.
+    Cookie authentication in the GitLab for Jira Cloud app is now deprecated in favor of OAuth authentication.
+    You must [set up OAuth authentication](https://docs.gitlab.com/ee/integration/jira/connect-app.html#set-up-oauth-authentication)
+    to continue to use the GitLab for Jira Cloud app. Without OAuth, you will not be able to manage linked namespaces.
+  tiers: [Core, Premium, Ultimate] # (optional - may be required in the future) An array of tiers that the feature is available in currently.  e.g., [Free, Silver, Gold, Core, Premium, Ultimate]

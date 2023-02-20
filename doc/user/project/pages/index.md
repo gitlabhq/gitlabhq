@@ -31,8 +31,8 @@ like Gatsby, Jekyll, Hugo, Middleman, Harp, Hexo, or Brunch. You can also
 publish any website written directly in plain HTML, CSS, and JavaScript.
 
 Pages does not support dynamic server-side processing, for instance, as `.php` and `.asp` requires.
-Learn more about
-[static websites compared to dynamic websites](https://about.gitlab.com/blog/2016/06/03/ssg-overview-gitlab-pages-part-1-dynamic-x-static/).
+For more information, see
+[Static vs dynamic websites](https://about.gitlab.com/blog/2016/06/03/ssg-overview-gitlab-pages-part-1-dynamic-x-static/).
 
 ## Menu Position Test
 
@@ -63,7 +63,7 @@ To update a GitLab Pages website:
 | [Let's Encrypt integration](custom_domains_ssl_tls_certification/lets_encrypt_integration.md) | Secure your Pages sites with Let's Encrypt certificates, which are automatically obtained and renewed by GitLab. |
 | [Redirects](redirects.md) | Set up HTTP redirects to forward one page to another. |
 
-Learn more and see examples:
+For more information, see:
 
 | Document | Description |
 |----------|-------------|

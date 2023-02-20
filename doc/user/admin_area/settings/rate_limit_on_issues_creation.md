@@ -22,7 +22,7 @@ For example, if you set a limit of 300, requests using the
 [Projects::IssuesController#create](https://gitlab.com/gitlab-org/gitlab/blob/master/app/controllers/projects/issues_controller.rb)
 action exceeding a rate of 300 per minute are blocked. Access to the endpoint is allowed after one minute.
 
-When using [epics](../../group/epics/index.md), epic creation will share this rate limit with issues.
+When using [epics](../../group/epics/index.md), epic creation shares this rate limit with issues.
 
 ![Rate limits on issues creation](img/rate_limit_on_issues_creation_v14_2.png)
 

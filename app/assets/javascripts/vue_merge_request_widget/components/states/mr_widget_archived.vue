@@ -1,9 +1,17 @@
 <script>
+import { s__ } from '~/locale';
+import BoldText from '~/vue_merge_request_widget/components/bold_text.vue';
 import StateContainer from '../state_container.vue';
+
+const message = s__(
+  'mrWidget|%{boldStart}Merge unavailable:%{boldEnd} merge requests are read-only on archived projects.',
+);
 
 export default {
   name: 'MRWidgetArchived',
+  message,
   components: {
+    BoldText,
     StateContainer,
   },
   props: {
@@ -17,8 +25,6 @@ export default {
 
 <template>
   <state-container :mr="mr" status="failed">
-    <span class="gl-font-weight-bold">
-      {{ s__('mrWidget|Merge unavailable: merge requests are read-only on archived projects.') }}
-    </span>
+    <bold-text :message="$options.message" />
   </state-container>
 </template>

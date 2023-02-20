@@ -31,7 +31,7 @@ To create an issue:
 1. On the top bar, select **Main menu > Projects** and find your project.
 1. Either:
 
-   - On the left sidebar, select **Issues**, and then, in the top right corner, select **New issue**.
+   - On the left sidebar, select **Issues**, and then, in the upper-right corner, select **New issue**.
    - On the top bar, select the plus sign (**{plus-square}**) and then, under **This project**,
      select **New issue**.
 
@@ -53,7 +53,7 @@ To create an issue from a group:
 
 1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Issues**.
-1. In the top right corner, select **Select project to create issue**.
+1. In the upper-right corner, select **Select project to create issue**.
 1. Select the project you'd like to create an issue for. The button now reflects the selected
    project.
 1. Select **New issue in `<project name>`**.
@@ -127,7 +127,7 @@ You can send an email to create an issue in a project on the project's
 Prerequisites:
 
 - Your GitLab instance must have [incoming email](../../../administration/incoming_email.md)
-  configured.
+  configured with [email sub-addressing or catch-all mailbox](../../../administration/incoming_email.md#requirements).
 - There must be at least one issue in the issue list.
 - You must have at least the Guest role for the project.
 
@@ -165,10 +165,10 @@ HTML page to create issues with certain fields prefilled.
 
 | Field                | URL parameter         | Notes                                                                                                                           |
 | -------------------- | --------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
-| Title                | `issue[title]`        | Must be [URL-encoded](../../../api/index.md#namespaced-path-encoding).                                                          |
+| Title                | `issue[title]`        | Must be [URL-encoded](../../../api/rest/index.md#namespaced-path-encoding).                                                          |
 | Issue type           | `issue[issue_type]`   | Either `incident` or `issue`.                                                                                                   |
-| Description template | `issuable_template`   | Must be [URL-encoded](../../../api/index.md#namespaced-path-encoding).                                                          |
-| Description          | `issue[description]`  | Must be [URL-encoded](../../../api/index.md#namespaced-path-encoding). If used in combination with `issuable_template` or a [default issue template](../description_templates.md#set-a-default-template-for-merge-requests-and-issues), the `issue[description]` value is appended to the template. |
+| Description template | `issuable_template`   | Must be [URL-encoded](../../../api/rest/index.md#namespaced-path-encoding).                                                          |
+| Description          | `issue[description]`  | Must be [URL-encoded](../../../api/rest/index.md#namespaced-path-encoding). If used in combination with `issuable_template` or a [default issue template](../description_templates.md#set-a-default-template-for-merge-requests-and-issues), the `issue[description]` value is appended to the template. |
 | Confidential         | `issue[confidential]` | If `true`, the issue is marked as confidential.                                                                                 |
 | Relate to…           | `add_related_issue`   | A numeric issue ID. If present, the issue form shows a [**Relate to…** checkbox](#from-another-issue-or-incident) to optionally link the new issue to the specified existing issue. |
 

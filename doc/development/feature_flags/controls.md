@@ -196,7 +196,22 @@ enabled for only the `gitlab` project. The project is passed by supplying a
 /chatops run feature set --project=gitlab-org/gitlab some_feature true
 ```
 
-For groups the `--group` flag is available:
+You can use the `--user` option to enable a feature flag for a specific user:
+
+```shell
+/chatops run feature set --user=myusername some_feature true
+```
+
+If you would like to gather feedback internally first,
+feature flags scoped to a user can also be enabled
+for GitLab team members with the `gitlab_team_members`
+[feature group](index.md#feature-groups):
+
+```shell
+/chatops run feature set --feature-group=gitlab_team_members some_feature true
+```
+
+You can use the `--group` flag to enable a feature flag for a specific group:
 
 ```shell
 /chatops run feature set --group=gitlab-org some_feature true

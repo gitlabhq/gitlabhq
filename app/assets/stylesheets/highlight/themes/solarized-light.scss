@@ -1,7 +1,7 @@
 /* https://gist.github.com/qguv/7936275 */
 
 @import '../common';
-@import 'highlight.js/styles/base16/solarized-light.css';
+@import 'highlight.js/styles/base16/solarized-light';
 
 /*
 * Solarized light syntax colors
@@ -116,7 +116,7 @@ $solarized-light-il: #2aa198;
   @include hljs-override('variable\\.constant', $solarized-light-no);
   @include hljs-override('variable\\.language', $solarized-light-nb);
   @include hljs-override('params', $solarized-light-nb);
-  
+
   // Line numbers
   .file-line-num {
     @include line-link($black, 'link');
@@ -174,13 +174,13 @@ $solarized-light-il: #2aa198;
       background-color: $solarized-light-matchline-bg;
     }
 
-    .diff-td.diff-line-num.hll:not(.empty-cell),
-    .diff-td.line-coverage.hll:not(.empty-cell),
-    .diff-td.line-codequality.hll:not(.empty-cell),
-    .diff-td.line_content.hll:not(.empty-cell),
-    td.diff-line-num.hll:not(.empty-cell),
-    td.line-coverage.hll:not(.empty-cell),
-    td.line_content.hll:not(.empty-cell) {
+    .diff-td.diff-line-num.hll,
+    .diff-td.line-coverage.hll,
+    .diff-td.line-codequality.hll,
+    .diff-td.line_content.hll,
+    td.diff-line-num.hll,
+    td.line-coverage.hll,
+    td.line_content.hll {
       background-color: $solarized-light-hll-bg;
       border-color: darken($solarized-light-hll-bg, 15%);
     }

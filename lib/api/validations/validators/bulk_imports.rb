@@ -21,7 +21,7 @@ module API
           def validate_param!(attr_name, params)
             return if params[attr_name].blank?
 
-            unless params[attr_name] =~ Gitlab::Regex.bulk_import_namespace_path_regex # rubocop: disable Style/GuardClause
+            unless params[attr_name] =~ Gitlab::Regex.bulk_import_destination_namespace_path_regex # rubocop: disable Style/GuardClause
               raise Grape::Exceptions::Validation.new(
                 params: [@scope.full_name(attr_name)],
                 message: "cannot start with a dash or forward slash, or end with a period or forward slash. " \
@@ -34,7 +34,7 @@ module API
 
         class SourceFullPath < Grape::Validations::Base
           def validate_param!(attr_name, params)
-            unless params[attr_name] =~ Gitlab::Regex.bulk_import_namespace_path_regex # rubocop: disable Style/GuardClause
+            unless params[attr_name] =~ Gitlab::Regex.bulk_import_source_full_path_regex # rubocop: disable Style/GuardClause
               raise Grape::Exceptions::Validation.new(
                 params: [@scope.full_name(attr_name)],
                 message: "must be a relative path and not include protocol, sub-domain, or domain information. " \

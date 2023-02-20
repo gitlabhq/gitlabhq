@@ -9,8 +9,6 @@ class Groups::RunnersController < Groups::ApplicationController
   urgency :low
 
   def index
-    finder = Ci::RunnersFinder.new(current_user: current_user, params: { group: @group })
-    @group_runners_limited_count = finder.execute.except(:limit, :offset).page.total_count_with_limit(:all, limit: 1000)
     @group_runner_registration_token = @group.runners_token if can?(current_user, :register_group_runners, group)
 
     Gitlab::Tracking.event(self.class.name, 'index', user: current_user, namespace: @group)

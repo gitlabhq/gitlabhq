@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Packages::Debian::UpdateDistributionService do
+RSpec.describe Packages::Debian::UpdateDistributionService, feature_category: :package_registry do
   RSpec.shared_examples 'Update Debian Distribution' do |expected_message, expected_components, expected_architectures, component_file_delta = 0|
     it 'returns ServiceResponse', :aggregate_failures do
       expect(distribution).to receive(:update).with(simple_params).and_call_original if expected_message.nil?

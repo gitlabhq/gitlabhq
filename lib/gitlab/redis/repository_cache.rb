@@ -14,18 +14,9 @@ module Gitlab
             redis: pool,
             compress: Gitlab::Utils.to_boolean(ENV.fetch('ENABLE_REDIS_CACHE_COMPRESSION', '1')),
             namespace: Cache::CACHE_NAMESPACE,
-            # Cache should not grow forever
-            expires_in: ENV.fetch('GITLAB_RAILS_CACHE_DEFAULT_TTL_SECONDS', 8.hours).to_i
+            expires_in: Cache.default_ttl_seconds,
+            error_handler: ::Gitlab::Redis::ERROR_HANDLER
           )
-        end
-
-        private
-
-        def redis
-          primary_store = ::Redis.new(params)
-          secondary_store = ::Redis.new(config_fallback.params)
-
-          MultiStore.new(primary_store, secondary_store, store_name)
         end
       end
     end

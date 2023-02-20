@@ -1233,9 +1233,24 @@ RSpec.describe 'Pipeline', :js, feature_category: :projects do
       it 'displays the pipeline graph' do
         subject
 
-        expect(page).to have_current_path(pipeline_path(pipeline), ignore_query: true)
+        expect(page).to have_current_path(pipeline_path(pipeline))
         expect(page).to have_selector('.js-pipeline-graph')
       end
+    end
+  end
+
+  describe 'GET /:project/-/pipelines/latest' do
+    let_it_be(:project) { create(:project, :repository) }
+
+    let!(:pipeline) { create(:ci_pipeline, project: project, ref: 'master', sha: project.commit.id) }
+
+    before do
+      visit latest_project_pipelines_path(project)
+    end
+
+    it 'displays the pipeline graph with correct URL' do
+      expect(page).to have_current_path("#{pipeline_path(pipeline)}/")
+      expect(page).to have_selector('.js-pipeline-graph')
     end
   end
 

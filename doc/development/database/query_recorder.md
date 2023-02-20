@@ -148,3 +148,4 @@ There are multiple ways to find the source of queries.
 - [Performance guidelines](../performance.md)
 - [Merge request performance guidelines - Query counts](../merge_request_concepts/performance.md#query-counts)
 - [Merge request performance guidelines - Cached queries](../merge_request_concepts/performance.md#cached-queries)
+- [RedisCommands::Recorder](../redis.md#n1-calls-problem) For testing `N+1` calls in Redis

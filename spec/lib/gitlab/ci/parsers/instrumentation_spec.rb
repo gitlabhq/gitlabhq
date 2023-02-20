@@ -8,14 +8,14 @@ RSpec.describe Gitlab::Ci::Parsers::Instrumentation do
       Class.new do
         prepend Gitlab::Ci::Parsers::Instrumentation
 
-        def parse!(arg1, arg2)
+        def parse!(arg1, arg2:)
           "parse #{arg1} #{arg2}"
         end
       end
     end
 
     it 'sets metrics for duration of parsing' do
-      result = parser_class.new.parse!('hello', 'world')
+      result = parser_class.new.parse!('hello', arg2: 'world')
 
       expect(result).to eq('parse hello world')
 

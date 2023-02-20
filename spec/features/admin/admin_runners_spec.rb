@@ -21,13 +21,27 @@ RSpec.describe "Admin Runners", feature_category: :runner_fleet do
     let_it_be(:namespace) { create(:namespace) }
     let_it_be(:project) { create(:project, namespace: namespace, creator: user) }
 
+    describe "runners creation" do
+      before do
+        stub_feature_flags(create_runner_workflow: true)
+
+        visit admin_runners_path
+      end
+
+      it 'shows a create button' do
+        expect(page).to have_link s_('Runner|New instance runner'), href: new_admin_runner_path
+      end
+    end
+
     describe "runners registration" do
       before do
+        stub_feature_flags(create_runner_workflow: false)
+
         visit admin_runners_path
       end
 
       it_behaves_like "shows and resets runner registration token" do
-        let(:dropdown_text) { 'Register an instance runner' }
+        let(:dropdown_text) { s_('Runners|Register an instance runner') }
         let(:registration_token) { Gitlab::CurrentSettings.runners_registration_token }
       end
     end
@@ -65,7 +79,6 @@ RSpec.describe "Admin Runners", feature_category: :runner_fleet do
         end
 
         it 'has all necessary texts' do
-          expect(page).to have_text "Register an instance runner"
           expect(page).to have_text "#{s_('Runners|All')} 3"
           expect(page).to have_text "#{s_('Runners|Online')} 1"
           expect(page).to have_text "#{s_('Runners|Offline')} 2"
@@ -491,6 +504,8 @@ RSpec.describe "Admin Runners", feature_category: :runner_fleet do
       )
     end
 
+    let_it_be(:runner_job) { create(:ci_build, runner: runner) }
+
     before do
       visit admin_runner_path(runner)
     end
@@ -515,6 +530,11 @@ RSpec.describe "Admin Runners", feature_category: :runner_fleet do
         expect(page).to have_content 'Maximum job timeout None'
         expect(page).to have_content 'Tags tag1'
       end
+    end
+
+    it_behaves_like 'shows runner jobs tab' do
+      let(:job_count) { '1' }
+      let(:job) { runner_job }
     end
 
     describe 'when a runner is deleted' do
@@ -644,7 +664,7 @@ RSpec.describe "Admin Runners", feature_category: :runner_fleet do
         visit edit_admin_runner_path(runner)
       end
 
-      it 'removed specific runner from project' do
+      it 'removed project runner from project' do
         within '[data-testid="assigned-projects"]' do
           click_on 'Disable'
         end

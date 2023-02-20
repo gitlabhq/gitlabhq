@@ -84,3 +84,4 @@ In SaaS runners on macOS, the objective is to make 90% of CI jobs start executin
 
 - If the VM image does not include the specific software version you need for your job, then the job execution time will increase as the required software needs to be fetched and installed.
 - At this time, it is not possible to bring your own OS image.
+- The keychain for user `gitlab` is not publicly available. You must create a keychain instead. 

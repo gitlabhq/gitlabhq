@@ -522,15 +522,23 @@ function handleContinueList(e, textArea) {
   if (!(e.key === 'Enter')) return;
   if (e.altKey || e.ctrlKey || e.metaKey || e.shiftKey) return;
   if (textArea.selectionStart !== textArea.selectionEnd) return;
+
   // prevent unintended line breaks inserted using Japanese IME on MacOS
   if (compositioningNoteText) return;
 
-  const firstSelectedLine = linesFromSelection(textArea).lines[0];
+  const selectedLines = linesFromSelection(textArea);
+  const firstSelectedLine = selectedLines.lines[0];
   const listLineMatch = firstSelectedLine.match(LIST_LINE_HEAD_PATTERN);
 
   if (listLineMatch) {
     const { leader, indent, content, isOl } = listLineMatch.groups;
     const emptyListItem = !content;
+    const prefixLength = leader.length + indent.length;
+
+    if (selectedLines.selectionStart - selectedLines.startPos < prefixLength) {
+      // cursor in the indent/leader area,  allow the natural line feed to be added
+      return;
+    }
 
     if (emptyListItem) {
       // erase empty list item - select the text and allow the

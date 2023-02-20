@@ -1,6 +1,7 @@
 import { startRemote } from '@gitlab/web-ide';
 import { getBaseConfig, setupRootElement } from '~/ide/lib/gitlab_web_ide';
 import { isSameOriginUrl, joinPaths } from '~/lib/utils/url_utility';
+import { handleTracking } from '~/ide/lib/gitlab_web_ide/handle_tracking_event';
 
 /**
  * @param {Element} rootEl
@@ -36,5 +37,6 @@ export const mountRemoteIDE = async (el) => {
     // TODO Handle error better
     handleError: visitReturnUrl,
     handleClose: visitReturnUrl,
+    handleTracking,
   });
 };

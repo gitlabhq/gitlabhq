@@ -14,7 +14,6 @@ RSpec/Be:
     - 'spec/requests/api/graphql/mutations/snippets/create_spec.rb'
     - 'spec/requests/api/pages_domains_spec.rb'
     - 'spec/services/pages/delete_service_spec.rb'
-    - 'spec/services/pages/destroy_deployments_service_spec.rb'
     - 'spec/services/pages/migrate_from_legacy_storage_service_spec.rb'
     - 'spec/services/projects/update_pages_service_spec.rb'
     - 'spec/support/shared_examples/requests/api/packages_shared_examples.rb'

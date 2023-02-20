@@ -5,7 +5,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 type: reference, how-to
 ---
 
-# Sourcegraph integration **(FREE)**
+# Sourcegraph **(FREE)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/16556) in GitLab 12.5 [with a flag](../administration/feature_flags.md) named `sourcegraph`. Disabled by default.
 > - Enabled on GitLab.com in GitLab 12.5.
@@ -63,7 +63,7 @@ If a GitLab administrator has enabled Sourcegraph, you can enable this feature i
 
 In GitLab:
 
-1. In the top-right corner, select your avatar.
+1. In the upper-right corner, select your avatar.
 1. Select **Preferences**.
 1. In the **Integrations** section, select the checkbox under **Sourcegraph**.
 1. Select **Save changes**.
@@ -99,11 +99,11 @@ for updates.
 
 ### Sourcegraph isn't working
 
-If you enabled Sourcegraph for your project but it isn't working, Sourcegraph may not have indexed the project yet. You can check for Sourcegraph's availability of your project by visiting `https://sourcegraph.com/gitlab.com/<project-path>`replacing `<project-path>` with the path to your GitLab project.
+If you enabled Sourcegraph for your project but it isn't working, Sourcegraph may not have indexed the project yet. You can check if Sourcegraph is available for your project by visiting `https://sourcegraph.com/gitlab.com/<project-path>`replacing `<project-path>` with the path to your GitLab project.
 
 ## Sourcegraph and Privacy
 
-From Sourcegraph's [extension documentation](https://docs.sourcegraph.com/integration/browser_extension#privacy) which is the
+From the Sourcegraph [extension documentation](https://docs.sourcegraph.com/integration/browser_extension#privacy) which is the
 engine behind the native GitLab integration:
 
 > Sourcegraph integrations never send any logs, pings, usage statistics, or telemetry to Sourcegraph.com.

@@ -173,6 +173,7 @@ export default {
           :can-edit="enableEdit"
           :task-list-update-path="taskListUpdatePath"
         />
+        <slot name="secondary-content"></slot>
         <small v-if="isUpdated" class="edited-text gl-font-sm!">
           {{ __('Edited') }}
           <time-ago-tooltip :time="issuable.updatedAt" tooltip-placement="bottom" />

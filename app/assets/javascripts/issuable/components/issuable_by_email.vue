@@ -9,6 +9,7 @@ import {
   GlFormInputGroup,
   GlIcon,
 } from '@gitlab/ui';
+import { TYPE_ISSUE } from '~/issues/constants';
 import axios from '~/lib/utils/axios_utils';
 import { sprintf, __ } from '~/locale';
 import ModalCopyButton from '~/vue_shared/components/modal_copy_button.vue';
@@ -36,7 +37,7 @@ export default {
       default: null,
     },
     issuableType: {
-      default: 'issue',
+      default: TYPE_ISSUE,
     },
     emailsHelpPagePath: {
       default: '',
@@ -54,7 +55,7 @@ export default {
   data() {
     return {
       email: this.initialEmail,
-      issuableName: this.issuableType === 'issue' ? __('issue') : __('merge request'),
+      issuableName: this.issuableType === TYPE_ISSUE ? __('issue') : __('merge request'),
     };
   },
   computed: {

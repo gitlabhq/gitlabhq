@@ -158,7 +158,7 @@ Configure your project's merge request settings:
 - Enable [merge only if pipeline succeeds](../merge_requests/merge_when_pipeline_succeeds.md).
 - Enable [merge only when all threads are resolved](../../discussions/index.md#prevent-merge-unless-all-threads-are-resolved).
 - Enable [require an associated issue from Jira](../../../integration/jira/issues.md#require-associated-jira-issue-for-merge-requests-to-be-merged).
-- Enable [`delete source branch after merge` option by default](../merge_requests/getting_started.md#deleting-the-source-branch).
+- Enable [**Delete source branch when merge request is accepted** option by default](#delete-the-source-branch-on-merge-by-default).
 - Configure [suggested changes commit messages](../merge_requests/reviews/suggestions.md#configure-the-commit-message-for-applied-suggestions).
 - Configure [merge and squash commit message templates](../merge_requests/commit_templates.md).
 - Configure [the default target project](../merge_requests/creating_merge_requests.md#set-the-default-target-project) for merge requests coming from forks.
@@ -230,6 +230,18 @@ To rename a repository:
 1. In the **Change path** text box, edit the path.
 1. Select **Change path**.
 
+## Delete the source branch on merge by default
+
+In merge requests, you can change the default behavior so that the
+**Delete the source branch** checkbox is always selected.
+
+To set this default:
+
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > Merge requests**.
+1. Select **Enable "Delete source branch" option by default**.
+1. Select **Save changes**.
+
 ## Transfer a project to another namespace
 
 When you transfer a project to another namespace, you move the project to a different group.
@@ -241,6 +253,7 @@ Prerequisites:
 - The group must allow creation of new projects.
 - The project must not contain any [container images](../../packages/container_registry/index.md#move-or-rename-container-registry-repositories).
 - Remove any npm packages. If you transfer a project to a different root namespace, the project must not contain any npm packages. When you update the path of a user or group, or transfer a subgroup or project, you must remove any npm packages first. You cannot update the root namespace of a project with npm packages. Make sure you update your .npmrc files to follow the naming convention and run npm publish if necessary.
+- If a security policy is assigned to the project, it is automatically unassigned during the transfer.
 
 To transfer a project:
 

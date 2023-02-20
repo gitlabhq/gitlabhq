@@ -22,12 +22,6 @@ Rails.application.configure do
   # Show a warning when a large data set is loaded into memory
   config.active_record.warn_on_records_fetched_greater_than = 1000
 
-  # Print deprecation notices to the Rails logger
-  config.active_support.deprecation = :log
-
-  # Raise exceptions for disallowed deprecations.
-  config.active_support.disallowed_deprecation = :raise
-
   # Raise an error on page load if there are pending migrations
   config.active_record.migration_error = :page_load
 

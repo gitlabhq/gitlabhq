@@ -28,12 +28,25 @@ export default {
     searchQuery: debounce(function debounceSearchQuery() {
       this.track('type_search_query', {
         label: `${this.dropdownType}_dropdown_frequent_items_search_input`,
+        property: 'navigation_top',
       });
       this.setSearchQuery(this.searchQuery);
     }, 500),
   },
   methods: {
     ...mapVuexModuleActions((vm) => vm.vuexModule, ['setSearchQuery']),
+    trackFocus() {
+      this.track('focus_input', {
+        label: `${this.dropdownType}_dropdown_frequent_items_search_input`,
+        property: 'navigation_top',
+      });
+    },
+    trackBlur() {
+      this.track('blur_input', {
+        label: `${this.dropdownType}_dropdown_frequent_items_search_input`,
+        property: 'navigation_top',
+      });
+    },
   },
 };
 </script>
@@ -43,6 +56,8 @@ export default {
     <gl-search-box-by-type
       v-model="searchQuery"
       :placeholder="translations.searchInputPlaceholder"
+      @focus="trackFocus"
+      @blur="trackBlur"
     />
   </div>
 </template>

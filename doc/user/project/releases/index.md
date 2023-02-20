@@ -194,7 +194,7 @@ Prerequisites:
 In the UI:
 
 1. On the left sidebar, select **Deployments > Releases**.
-1. In the top-right corner of the release you want to modify, select **Edit this release** (the pencil icon).
+1. In the upper-right corner of the release you want to modify, select **Edit this release** (the pencil icon).
 1. On the **Edit Release** page, change the release's details.
 1. Select **Save changes**.
 
@@ -216,7 +216,7 @@ In the UI:
 
 1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Deployments > Releases**.
-1. In the top-right corner of the release you want to delete, select **Edit this release**
+1. In the upper-right corner of the release you want to delete, select **Edit this release**
    (**{pencil}**).
 1. On the **Edit Release** page, select **Delete**.
 1. Select **Delete release**.
@@ -236,7 +236,7 @@ the [Releases API](../../../api/releases/index.md#create-a-release).
 In the user interface, to associate milestones to a release:
 
 1. On the left sidebar, select **Deployments > Releases**.
-1. In the top-right corner of the release you want to modify, select **Edit this release** (the pencil icon).
+1. In the upper-right corner of the release you want to modify, select **Edit this release** (the pencil icon).
 1. From the **Milestones** list, select each milestone you want to associate. You can select multiple milestones.
 1. Select **Save changes**.
 
@@ -435,7 +435,7 @@ release evidence.
 If you [schedule release evidence collection](#schedule-release-evidence-collection),
 some artifacts may already be expired by the time of evidence collection. To avoid this you can use
 the [`artifacts:expire_in`](../../../ci/yaml/index.md#artifactsexpire_in)
-keyword. Learn more in [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/222351).
+keyword. For more information, see [issue 222351](https://gitlab.com/gitlab-org/gitlab/-/issues/222351).
 
 ### Schedule release evidence collection
 

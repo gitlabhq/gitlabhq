@@ -8,6 +8,7 @@ RSpec.describe 'getting a work item list for a project', feature_category: :team
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, :repository, :public, group: group) }
   let_it_be(:current_user) { create(:user) }
+  let_it_be(:reporter) { create(:user).tap { |reporter| project.add_reporter(reporter) } }
   let_it_be(:label1) { create(:label, project: project) }
   let_it_be(:label2) { create(:label, project: project) }
   let_it_be(:milestone1) { create(:milestone, project: project) }
@@ -43,10 +44,10 @@ RSpec.describe 'getting a work item list for a project', feature_category: :team
   end
 
   shared_examples 'work items resolver without N + 1 queries' do
-    it 'avoids N+1 queries' do
+    it 'avoids N+1 queries', :use_sql_query_cache do
       post_graphql(query, current_user: current_user) # warm-up
 
-      control = ActiveRecord::QueryRecorder.new do
+      control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
         post_graphql(query, current_user: current_user)
       end
 
@@ -59,11 +60,12 @@ RSpec.describe 'getting a work item list for a project', feature_category: :team
         last_edited_at: 1.week.ago,
         project: project,
         labels: [label1, label2],
-        milestone: milestone2
+        milestone: milestone2,
+        author: reporter
       )
 
+      expect { post_graphql(query, current_user: current_user) }.not_to exceed_all_query_limit(control)
       expect_graphql_errors_to_be_empty
-      expect { post_graphql(query, current_user: current_user) }.not_to exceed_query_limit(control)
     end
   end
 
@@ -209,6 +211,19 @@ RSpec.describe 'getting a work item list for a project', feature_category: :team
       let(:issuable_data) { items_data }
       let(:user) { current_user }
       let_it_be(:issuable) { create(:work_item, project: project, description: 'bar') }
+    end
+  end
+
+  context 'when filtering by author username' do
+    let_it_be(:author) { create(:author) }
+    let_it_be(:item_3) { create(:work_item, project: project, author: author) }
+
+    let(:item_filter_params) { { author_username: item_3.author.username } }
+
+    it 'returns correct results' do
+      post_graphql(query, current_user: current_user)
+
+      expect(item_ids).to match_array([item_3.to_global_id.to_s])
     end
   end
 

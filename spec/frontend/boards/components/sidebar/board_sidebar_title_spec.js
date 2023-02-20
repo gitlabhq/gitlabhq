@@ -1,4 +1,4 @@
-import { GlAlert, GlFormInput, GlForm } from '@gitlab/ui';
+import { GlAlert, GlFormInput, GlForm, GlLink } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import BoardEditableItem from '~/boards/components/sidebar/board_editable_item.vue';
@@ -11,12 +11,14 @@ const TEST_ISSUE_A = {
   iid: 8,
   title: 'Issue 1',
   referencePath: 'h/b#1',
+  webUrl: 'webUrl',
 };
 const TEST_ISSUE_B = {
   id: 'gid://gitlab/Issue/2',
   iid: 9,
   title: 'Issue 2',
   referencePath: 'h/b#2',
+  webUrl: 'webUrl',
 };
 
 describe('~/boards/components/sidebar/board_sidebar_title.vue', () => {
@@ -49,6 +51,7 @@ describe('~/boards/components/sidebar/board_sidebar_title.vue', () => {
   const findForm = () => wrapper.findComponent(GlForm);
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findFormInput = () => wrapper.findComponent(GlFormInput);
+  const findGlLink = () => wrapper.findComponent(GlLink);
   const findEditableItem = () => wrapper.findComponent(BoardEditableItem);
   const findCancelButton = () => wrapper.find('[data-testid="cancel-button"]');
   const findTitle = () => wrapper.find('[data-testid="item-title"]');
@@ -65,6 +68,12 @@ describe('~/boards/components/sidebar/board_sidebar_title.vue', () => {
     createWrapper();
 
     expect(findAlert().exists()).toBe(false);
+  });
+
+  it('links title to the corresponding issue', () => {
+    createWrapper();
+
+    expect(findGlLink().attributes('href')).toBe('webUrl');
   });
 
   describe('when new title is submitted', () => {

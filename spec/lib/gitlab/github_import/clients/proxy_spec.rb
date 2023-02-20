@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::GithubImport::Clients::Proxy, :manage, feature_category: :import do
+RSpec.describe Gitlab::GithubImport::Clients::Proxy, :manage, feature_category: :importers do
   subject(:client) { described_class.new(access_token, client_options) }
 
   let(:access_token) { 'test_token' }

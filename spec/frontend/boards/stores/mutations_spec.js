@@ -1,8 +1,8 @@
 import { cloneDeep } from 'lodash';
-import { issuableTypes } from '~/boards/constants';
 import * as types from '~/boards/stores/mutation_types';
 import mutations from '~/boards/stores/mutations';
 import defaultState from '~/boards/stores/state';
+import { TYPE_ISSUE } from '~/issues/constants';
 import {
   mockBoard,
   mockLists,
@@ -70,7 +70,7 @@ describe('Board Store Mutations', () => {
       const fullPath = 'gitlab-org';
       const boardType = 'group';
       const disabled = false;
-      const issuableType = issuableTypes.issue;
+      const issuableType = TYPE_ISSUE;
 
       mutations[types.SET_INITIAL_BOARD_DATA](state, {
         allowSubEpics,

@@ -55,7 +55,7 @@ export default {
     <div>
       <div class="gl-mb-1">
         <gl-link :href="href" class="gl-font-weight-bold gl-text-gray-900!">{{ fullName }}</gl-link>
-        <gl-badge v-if="isOwner" variant="info">{{ s__('Runner|Owner') }}</gl-badge>
+        <gl-badge v-if="isOwner" variant="info">{{ s__('Runners|Owner') }}</gl-badge>
       </div>
       <div v-if="description">{{ description }}</div>
     </div>

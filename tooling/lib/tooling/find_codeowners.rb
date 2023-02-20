@@ -89,7 +89,7 @@ module Tooling
     end
 
     def consolidate_paths(matched_files)
-      matched_files.group_by(&File.method(:dirname)).flat_map do |dir, files|
+      matched_files.group_by { |file| File.dirname(file) }.flat_map do |dir, files|
         # First line is the dir itself
         if find_dir_maxdepth_1(dir).lines.drop(1).sort == files.sort
           "#{dir}\n"

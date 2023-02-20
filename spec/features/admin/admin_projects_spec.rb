@@ -6,6 +6,7 @@ RSpec.describe "Admin::Projects", feature_category: :projects do
   include Spec::Support::Helpers::Features::MembersHelpers
   include Spec::Support::Helpers::Features::InviteMembersModalHelper
   include Spec::Support::Helpers::ModalHelpers
+  include ListboxHelpers
 
   let_it_be_with_reload(:user) { create :user }
   let_it_be_with_reload(:project) { create(:project, :with_namespace_settings) }
@@ -117,8 +118,7 @@ RSpec.describe "Admin::Projects", feature_category: :projects do
     it 'transfers project to group web', :js do
       visit admin_project_path(project)
 
-      click_button 'Search for Namespace'
-      click_button 'group: web'
+      select_from_listbox 'group: web', from: 'Search for Namespace'
       click_button 'Transfer'
 
       expect(page).to have_content("Web / #{project.name}")

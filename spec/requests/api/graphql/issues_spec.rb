@@ -109,18 +109,6 @@ RSpec.describe 'getting an issue list at root level', feature_category: :team_pl
     end
   end
 
-  context 'when the root_level_issues_query feature flag is disabled' do
-    before do
-      stub_feature_flags(root_level_issues_query: false)
-    end
-
-    it 'the field returns null' do
-      post_graphql(query, current_user: developer)
-
-      expect(graphql_data).to eq('issues' => nil)
-    end
-  end
-
   context 'when no filters are provided' do
     let(:all_query_params) { {} }
 
@@ -187,15 +175,21 @@ RSpec.describe 'getting an issue list at root level', feature_category: :team_pl
   end
 
   context 'when fetching issues from multiple projects' do
-    it 'avoids N+1 queries' do
+    it 'avoids N+1 queries', :use_sql_query_cache do
       post_query # warm-up
 
-      control = ActiveRecord::QueryRecorder.new { post_query }
+      control = ActiveRecord::QueryRecorder.new(skip_cached: false) { post_query }
+      expect_graphql_errors_to_be_empty
 
       new_private_project = create(:project, :private).tap { |project| project.add_developer(current_user) }
       create(:issue, project: new_private_project)
 
-      expect { post_query }.not_to exceed_query_limit(control)
+      private_group = create(:group, :private).tap { |group| group.add_developer(current_user) }
+      private_project = create(:project, :private, group: private_group)
+      create(:issue, project: private_project)
+
+      expect { post_query }.not_to exceed_all_query_limit(control)
+      expect_graphql_errors_to_be_empty
     end
   end
 

@@ -5,8 +5,10 @@ module Gitlab
     module RailsSlis
       class << self
         def initialize_request_slis!
-          Gitlab::Metrics::Sli::Apdex.initialize_sli(:rails_request, possible_request_labels)
-          initialize_rails_request_error_rate
+          request_labels = possible_request_labels
+
+          Gitlab::Metrics::Sli::Apdex.initialize_sli(:rails_request, request_labels)
+          Gitlab::Metrics::Sli::ErrorRate.initialize_sli(:rails_request, request_labels)
           Gitlab::Metrics::Sli::Apdex.initialize_sli(:graphql_query, possible_graphql_query_labels)
         end
 
@@ -25,6 +27,8 @@ module Gitlab
         private
 
         def possible_graphql_query_labels
+          return [] unless Gitlab::Metrics::Environment.api?
+
           ::Gitlab::Graphql::KnownOperations.default.operations.map do |op|
             {
               endpoint_id: op.to_caller_id,
@@ -39,7 +43,27 @@ module Gitlab
           possible_controller_labels + possible_api_labels
         end
 
+        def possible_controller_labels
+          all_controller_labels.select do |labelset|
+            if known_git_endpoints.include?(labelset[:endpoint_id])
+              Gitlab::Metrics::Environment.git?
+            else
+              Gitlab::Metrics::Environment.web?
+            end
+          end
+        end
+
         def possible_api_labels
+          all_api_labels.select do |labelset|
+            if known_git_endpoints.include?(labelset[:endpoint_id])
+              Gitlab::Metrics::Environment.git?
+            else
+              Gitlab::Metrics::Environment.api?
+            end
+          end
+        end
+
+        def all_api_labels
           Gitlab::RequestEndpoints.all_api_endpoints.map do |route|
             endpoint_id = API::Base.endpoint_id_for_route(route)
             route_class = route.app.options[:for]
@@ -54,7 +78,7 @@ module Gitlab
           end
         end
 
-        def possible_controller_labels
+        def all_controller_labels
           Gitlab::RequestEndpoints.all_controller_actions.map do |controller, action|
             {
               endpoint_id: controller.endpoint_id_for_action(action),
@@ -64,10 +88,27 @@ module Gitlab
           end
         end
 
-        def initialize_rails_request_error_rate
-          return unless Feature.enabled?(:gitlab_metrics_error_rate_sli, type: :development)
-
-          Gitlab::Metrics::Sli::ErrorRate.initialize_sli(:rails_request, possible_request_labels)
+        def known_git_endpoints
+          # This is a list of endpoints that endpoints that HAProxy redirects
+          # to the git fleet for GitLab.com. It is taken from
+          # https://thanos-query.ops.gitlab.net/graph?g0.expr=sum%20by%20(endpoint_id)(sli_aggregations%3Agitlab_sli_rails_request_total_rate6h%7Btype%3D%22git%22%2C%20env%3D%22gprd%22%7D%20%3E%200)&g0.tab=1&g0.stacked=0&g0.range_input=1h&g0.max_source_resolution=0s&g0.deduplicate=1&g0.partial_response=0&g0.store_matches=%5B%5D
+          [
+            "GET /api/:version/internal/authorized_keys",
+            "GET /api/:version/internal/discover",
+            "POST /api/:version/internal/allowed",
+            "POST /api/:version/internal/lfs_authenticate",
+            "POST /api/:version/internal/two_factor_recovery_codes",
+            "ProjectsController#show",
+            "Repositories::GitHttpController#git_receive_pack",
+            "Repositories::GitHttpController#git_upload_pack",
+            "Repositories::GitHttpController#info_refs",
+            "Repositories::LfsApiController#batch",
+            "Repositories::LfsLocksApiController#index",
+            "Repositories::LfsLocksApiController#verify",
+            "Repositories::LfsStorageController#download",
+            "Repositories::LfsStorageController#upload_authorize",
+            "Repositories::LfsStorageController#upload_finalize"
+          ]
         end
       end
     end

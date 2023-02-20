@@ -5,9 +5,13 @@ class Appearance < ApplicationRecord
   include CacheMarkdownField
   include WithUploads
 
+  ALLOWED_PWA_ICON_SCALER_WIDTHS = [192, 512].freeze
+
   attribute :title, default: ''
-  attribute :pwa_short_name, default: ''
   attribute :description, default: ''
+  attribute :pwa_name, default: ''
+  attribute :pwa_short_name, default: ''
+  attribute :pwa_description, default: ''
   attribute :new_project_guidelines, default: ''
   attribute :profile_image_guidelines, default: ''
   attribute :header_message, default: ''
@@ -21,6 +25,24 @@ class Appearance < ApplicationRecord
   cache_markdown_field :profile_image_guidelines
   cache_markdown_field :header_message, pipeline: :broadcast_message
   cache_markdown_field :footer_message, pipeline: :broadcast_message
+
+  validates :pwa_name,
+            length: { maximum: 255, too_long: ->(object, data) {
+                                                N_("is too long (maximum is %{count} characters)")
+                                              } },
+            allow_blank: true
+
+  validates :pwa_short_name,
+            length: { maximum: 255, too_long: ->(object, data) {
+                                                N_("is too long (maximum is %{count} characters)")
+                                              } },
+            allow_blank: true
+
+  validates :pwa_description,
+            length: { maximum: 2048, too_long: ->(object, data) {
+                                                 N_("is too long (maximum is %{count} characters)")
+                                               } },
+            allow_blank: true
 
   validates :logo,        file_size: { maximum: 1.megabyte }
   validates :pwa_icon,    file_size: { maximum: 1.megabyte }
@@ -45,6 +67,12 @@ class Appearance < ApplicationRecord
     if self.class.any?
       errors.add(:base, _('Only 1 appearances row can exist'))
     end
+  end
+
+  def pwa_icon_path_scaled(width)
+    return unless pwa_icon_path.present?
+
+    pwa_icon_path + "?width=#{width}"
   end
 
   def logo_path

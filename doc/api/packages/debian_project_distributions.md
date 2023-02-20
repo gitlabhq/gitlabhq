@@ -18,16 +18,16 @@ This API is under development and is not meant for production use.
 For more information about working with Debian packages, see the
 [Debian package registry documentation](../../user/packages/debian_repository/index.md).
 
-NOTE:
-The Debian registry is not FIPS compliant and is disabled when [FIPS mode](../../development/fips_compliance.md) is enabled.
-These endpoints will all return `404 Not Found`.
-
 ## Enable the Debian API
 
 The Debian API is behind a feature flag that is disabled by default.
 [GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
 can opt to enable it. To enable it, follow the instructions in
 [Enable the Debian API](../../user/packages/debian_repository/index.md#enable-the-debian-api).
+
+## Authenticate to the Debian distributions APIs
+
+See [Authenticate to the Debian distributions APIs](../../user/packages/debian_repository/index.md#authenticate-to-the-debian-distributions-apis).
 
 ## List all Debian distributions in a project
 
@@ -39,7 +39,7 @@ GET /projects/:id/debian_distributions
 
 | Attribute  | Type           | Required | Description |
 | ---------- | -------------- | -------- | ----------- |
-| `id`       | integer/string | yes      | The ID or [URL-encoded path of the project](../index.md#namespaced-path-encoding). |
+| `id`       | integer/string | yes      | The ID or [URL-encoded path of the project](../rest/index.md#namespaced-path-encoding). |
 | `codename` | string         | no       | Filter with a specific `codename`. |
 | `suite`    | string         | no       | Filter with a specific `suite`. |
 
@@ -53,7 +53,7 @@ Example response:
 [
   {
     "id": 1,
-    "codename": "unstable",
+    "codename": "sid",
     "suite": null,
     "origin": null,
     "label": null,
@@ -81,7 +81,7 @@ GET /projects/:id/debian_distributions/:codename
 
 | Attribute  | Type           | Required | Description |
 | ---------- | -------------- | -------- | ----------- |
-| `id`       | integer/string | yes      | The ID or [URL-encoded path of the project](../index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`       | integer/string | yes      | The ID or [URL-encoded path of the project](../rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `codename` | integer        | yes      | The `codename` of a distribution. |
 
 ```shell
@@ -93,7 +93,7 @@ Example response:
 ```json
 {
   "id": 1,
-  "codename": "unstable",
+  "codename": "sid",
   "suite": null,
   "origin": null,
   "label": null,
@@ -120,7 +120,7 @@ GET /projects/:id/debian_distributions/:codename/key.asc
 
 | Attribute  | Type           | Required | Description |
 | ---------- | -------------- | -------- | ----------- |
-| `id`       | integer/string | yes      | The ID or [URL-encoded path of the project](../index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`       | integer/string | yes      | The ID or [URL-encoded path of the project](../rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `codename` | integer        | yes      | The `codename` of a distribution. |
 
 ```shell
@@ -157,7 +157,7 @@ POST /projects/:id/debian_distributions
 
 | Attribute                     | Type           | Required | Description |
 | ----------------------------- | -------------- | -------- | ----------- |
-| `id`                          | integer/string | yes      | The ID or [URL-encoded path of the project](../index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`                          | integer/string | yes      | The ID or [URL-encoded path of the project](../rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `codename`                    | string         | yes      | The Debian distribution's codename.  |
 | `suite`                       | string         | no       | The new Debian distribution's suite. |
 | `origin`                      | string         | no       | The new Debian distribution's origin. |
@@ -169,7 +169,7 @@ POST /projects/:id/debian_distributions
 | `architectures`               | architectures  | no       | The new Debian distribution's list of architectures. |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/debian_distributions?codename=unstable"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/debian_distributions?codename=sid"
 ```
 
 Example response:
@@ -177,7 +177,7 @@ Example response:
 ```json
 {
   "id": 1,
-  "codename": "unstable",
+  "codename": "sid",
   "suite": null,
   "origin": null,
   "label": null,
@@ -204,7 +204,7 @@ PUT /projects/:id/debian_distributions/:codename
 
 | Attribute                     | Type           | Required | Description |
 | ----------------------------- | -------------- | -------- | ----------- |
-| `id`                          | integer/string | yes      | The ID or [URL-encoded path of the project](../index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`                          | integer/string | yes      | The ID or [URL-encoded path of the project](../rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `codename`                    | string         | yes      | The Debian distribution's codename. |
 | `suite`                       | string         | no       | The Debian distribution's new suite. |
 | `origin`                      | string         | no       | The Debian distribution's new origin. |
@@ -224,7 +224,7 @@ Example response:
 ```json
 {
   "id": 1,
-  "codename": "unstable",
+  "codename": "sid",
   "suite": "new-suite",
   "origin": null,
   "label": null,
@@ -251,7 +251,7 @@ DELETE /projects/:id/debian_distributions/:codename
 
 | Attribute  | Type           | Required | Description |
 | ---------- | -------------- | -------- | ----------- |
-| `id`       | integer/string | yes      | The ID or [URL-encoded path of the project](../index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`       | integer/string | yes      | The ID or [URL-encoded path of the project](../rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `codename` | integer        | yes      | The Debian distribution's codename. |
 
 ```shell

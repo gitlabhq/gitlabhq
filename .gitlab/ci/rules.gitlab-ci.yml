@@ -21,7 +21,7 @@
   if: '$FORCE_GITLAB_CI'
 
 .if-default-refs: &if-default-refs
-  if: '$CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH || $CI_COMMIT_REF_NAME =~ /^[\d-]+-stable(-ee)?$/ || $CI_COMMIT_REF_NAME =~ /^\d+-\d+-auto-deploy-\d+$/ || $CI_COMMIT_REF_NAME =~ /^security\// || $CI_COMMIT_REF_NAME == "ruby2" || $CI_MERGE_REQUEST_IID || $CI_COMMIT_TAG || $FORCE_GITLAB_CI'
+  if: '$CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH || $CI_COMMIT_REF_NAME =~ /^[\d-]+-stable(-ee)?$/ || $CI_COMMIT_REF_NAME =~ /^\d+-\d+-auto-deploy-\d+$/ || $CI_COMMIT_REF_NAME =~ /^security\// || $CI_COMMIT_REF_NAME == "ruby2" || ($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") || $CI_COMMIT_TAG || $FORCE_GITLAB_CI'
 
 .if-default-branch-refs: &if-default-branch-refs
   if: '$CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH && $CI_MERGE_REQUEST_IID == null'
@@ -30,30 +30,33 @@
   if: '$CI_COMMIT_BRANCH =~ /^\d+-\d+-auto-deploy-\d+$/'
 
 .if-default-branch-or-tag: &if-default-branch-or-tag
-  if: '$CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH || $CI_COMMIT_TAG'
+  if: '($CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH && $CI_MERGE_REQUEST_IID == null) || $CI_COMMIT_TAG'
+
+.if-tag: &if-tag
+  if: '$CI_COMMIT_TAG'
 
 .if-merge-request: &if-merge-request
-  if: '$CI_MERGE_REQUEST_IID'
+  if: '$CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached"'
 
 # Once https://gitlab.com/gitlab-org/gitlab/-/issues/373904 is implemented, we should be able to change this back to
-# if: '$CI_MERGE_REQUEST_IID && $CI_MERGE_REQUEST_APPROVALS_COUNT > 0'
+# if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_APPROVALS_COUNT > 0'
 # or any similar condition to check that the MR has *any* approval (not just required approval).
 #
 # Temprorarily adding || $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-full-rspec/ for backward compatibility,
 # remove once https://gitlab.com/gitlab-org/quality/quality-engineering/team-tasks/-/issues/1557 is fully rolled out
 .if-merge-request-approved: &if-merge-request-approved
-  if: '$CI_MERGE_REQUEST_IID && $CI_MERGE_REQUEST_LABELS =~ /pipeline:mr-approved/ || $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-full-rspec/'
+  if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:mr-approved/ || $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-full-rspec/'
 
 # Temprorarily adding && $CI_MERGE_REQUEST_LABELS !~ /pipeline:run-full-rspec/ for backward compatibility,
 # remove once https://gitlab.com/gitlab-org/quality/quality-engineering/team-tasks/-/issues/1557 is fully rolled out
 .if-merge-request-not-approved: &if-merge-request-not-approved
-  if: '$CI_MERGE_REQUEST_IID && $CI_MERGE_REQUEST_LABELS !~ /pipeline:mr-approved/ && $CI_MERGE_REQUEST_LABELS !~ /pipeline:run-full-rspec/'
+  if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_LABELS !~ /pipeline:mr-approved/ && $CI_MERGE_REQUEST_LABELS !~ /pipeline:run-full-rspec/'
 
 .if-automated-merge-request: &if-automated-merge-request
   if: '$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME == "release-tools/update-gitaly" || $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /stable-ee$/'
 
 .if-merge-request-targeting-stable-branch: &if-merge-request-targeting-stable-branch
-  if: '$CI_MERGE_REQUEST_IID && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /^[\d-]+-stable(-ee)?$/'
+  if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /^[\d-]+-stable(-ee)?$/'
 
 .if-merge-request-labels-run-in-ruby2: &if-merge-request-labels-run-in-ruby2
   if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-in-ruby2/'
@@ -72,6 +75,9 @@
 
 .if-merge-request-labels-run-all-jest: &if-merge-request-labels-run-all-jest
   if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-all-jest/'
+
+.if-merge-request-labels-run-all-e2e: &if-merge-request-labels-run-all-e2e
+  if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-all-e2e/'
 
 .if-merge-request-labels-run-single-db: &if-merge-request-labels-run-single-db
   if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-single-db/'
@@ -98,10 +104,10 @@
   if: '$CI_MERGE_REQUEST_LABELS =~ /frontend/ && $CI_MERGE_REQUEST_LABELS =~ /feature flag/'
 
 .if-security-merge-request: &if-security-merge-request
-  if: '$CI_PROJECT_NAMESPACE == "gitlab-org/security" && $CI_MERGE_REQUEST_IID'
+  if: '$CI_PROJECT_NAMESPACE == "gitlab-org/security" && ($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached")'
 
 .if-fork-merge-request: &if-fork-merge-request
-  if: '$CI_PROJECT_NAMESPACE !~ /^gitlab(-org)?($|\/)/ && $CI_MERGE_REQUEST_IID && $CI_MERGE_REQUEST_LABELS !~ /pipeline:run-all-rspec/'
+  if: '$CI_PROJECT_NAMESPACE !~ /^gitlab(-org)?($|\/)/ && ($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_LABELS !~ /pipeline:run-all-rspec/'
 
 .if-schedule-pipeline: &if-schedule-pipeline
   if: '$CI_PIPELINE_SOURCE == "schedule"'
@@ -118,29 +124,29 @@
 .if-security-schedule: &if-security-schedule
   if: '$CI_PROJECT_NAMESPACE == "gitlab-org/security" && $CI_PIPELINE_SOURCE == "schedule"'
 
+.if-foss-schedule: &if-foss-schedule
+  if: '$CI_PROJECT_PATH == "gitlab-org/gitlab-foss" && $CI_PIPELINE_SOURCE == "schedule"'
+
 .if-dot-com-gitlab-org-schedule: &if-dot-com-gitlab-org-schedule
   if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE == "gitlab-org" && $CI_PIPELINE_SOURCE == "schedule"'
 
 .if-dot-com-ee-schedule-default-branch-maintenance: &if-dot-com-ee-schedule-default-branch-maintenance
   if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_PATH == "gitlab-org/gitlab" && $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TYPE == "maintenance"'
 
-.if-dot-com-ee-schedule-nightly-child-pipeline: &if-dot-com-ee-schedule-nightly-child-pipeline
-  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_PATH == "gitlab-org/gitlab" && $CI_PIPELINE_SOURCE == "parent_pipeline" && $SCHEDULE_TYPE == "nightly"'
-
 .if-dot-com-gitlab-org-default-branch: &if-dot-com-gitlab-org-default-branch
   if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE == "gitlab-org" && $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH'
 
 .if-dot-com-gitlab-org-merge-request: &if-dot-com-gitlab-org-merge-request
-  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE == "gitlab-org" && $CI_MERGE_REQUEST_IID'
+  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE == "gitlab-org" && ($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached")'
 
 .if-dot-com-gitlab-org-and-security-merge-request: &if-dot-com-gitlab-org-and-security-merge-request
-  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE =~ /^gitlab-org($|\/security$)/ && $CI_MERGE_REQUEST_IID'
+  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE =~ /^gitlab-org($|\/security$)/ && ($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached")'
 
 .if-dot-com-gitlab-org-and-security-merge-request-and-qa-tests-specified: &if-dot-com-gitlab-org-and-security-merge-request-and-qa-tests-specified
-  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE =~ /^gitlab-org($|\/security$)/ && $CI_MERGE_REQUEST_IID && $QA_TESTS'
+  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE =~ /^gitlab-org($|\/security$)/ && ($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $QA_TESTS'
 
 .if-dot-com-gitlab-org-and-security-merge-request-manual-ff-package-and-e2e: &if-dot-com-gitlab-org-and-security-merge-request-manual-ff-package-and-e2e
-  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE =~ /^gitlab-org($|\/security$)/ && $CI_MERGE_REQUEST_IID && $QA_MANUAL_FF_PACKAGE_AND_QA'
+  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE =~ /^gitlab-org($|\/security$)/ && ($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $QA_MANUAL_FF_PACKAGE_AND_QA'
 
 .if-dot-com-gitlab-org-and-security-tag: &if-dot-com-gitlab-org-and-security-tag
   if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE =~ /^gitlab-org($|\/security$)/ && $CI_COMMIT_TAG'
@@ -172,8 +178,7 @@
   - ".gitlab/ci/build-images.gitlab-ci.yml"
   - ".gitlab/ci/review.gitlab-ci.yml"
   - ".gitlab/ci/review-apps/**/*"
-  - "scripts/review_apps/base-config.yaml"
-  - "scripts/review_apps/review-apps.sh"
+  - "scripts/review_apps/**/*"
   - "scripts/trigger-build.rb"
   - "{,ee/,jh/}{bin,config}/**/*.rb"
 
@@ -218,6 +223,11 @@
   - "doc/**/*"
   - ".markdownlint.yml"
   - "scripts/lint-doc.sh"
+  - ".gitlab/ci/docs.gitlab-ci.yml"
+
+.docs-blueprints-patterns: &docs-blueprints-patterns
+  - "doc/architecture/blueprints/**/*"
+  - "scripts/lint-docs-blueprints.rb"
   - ".gitlab/ci/docs.gitlab-ci.yml"
 
 .docs-deprecations-and-removals-patterns: &docs-deprecations-and-removals-patterns
@@ -285,11 +295,14 @@
   - ".browserslistrc"
   - "babel.config.js"
   - "jest.config.{base,integration,unit}.js"
-  - ".csscomb.json"
+  - ".stylelintrc"
   - "Dockerfile.assets"
   - "config/**/*.js"
   - "vendor/assets/**/*"
   - "{app/assets,app/components,app/helpers,app/presenters,app/views,locale,public,spec/frontend,storybook,symbol}/**/*"
+
+.initializers-patterns: &initializers-patterns
+  - "{,ee/,jh/}config/initializers/**/*"
 
 .controllers-patterns: &controllers-patterns
   - "{,ee/,jh/}{app/controllers}/**/*"
@@ -332,14 +345,14 @@
 # DB patterns + .ci-patterns
 .db-patterns: &db-patterns
   - "{,ee/,jh/}{,spec/}{db,migrations}/**/*"
-  - "{,ee/,jh/}{,spec/}lib/{,ee/,jh/}gitlab/database/**/*"
-  - "{,ee/,jh/}{,spec/}lib/{,ee/,jh/}gitlab/database{,_spec}.rb"
-  - "{,ee/,jh/}{,spec/}lib/{,ee/,jh/}gitlab/background_migration/**/*"
   - "{,ee/,jh/}{,spec/}lib/{,ee/,jh/}gitlab/background_migration{,_spec}.rb"
+  - "{,ee/,jh/}{,spec/}lib/{,ee/,jh/}gitlab/background_migration/**/*"
+  - "{,ee/,jh/}{,spec/}lib/{,ee/,jh/}gitlab/database{,_spec}.rb"
+  - "{,ee/,jh/}{,spec/}lib/{,ee/,jh/}gitlab/database/**/*"
   - "{,ee/,jh/}spec/support/helpers/database/**/*"
   - "{,ee/,jh/}spec/support/helpers/migrations_helpers/**/*"
-  - "lib/gitlab/markdown_cache/active_record/**/*"
   - "lib/api/admin/batched_background_migrations.rb"
+  - "lib/gitlab/markdown_cache/active_record/**/*"
   - "spec/requests/api/admin/batched_background_migrations_spec.rb"
   - "config/prometheus/common_metrics.yml"  # Used by Gitlab::DatabaseImporters::CommonMetrics::Importer
   - "{,ee/,jh/}app/models/project_statistics.rb"  # Used to calculate sizes in migration specs
@@ -378,7 +391,7 @@
   - ".browserslistrc"
   - "babel.config.js"
   - "jest.config.{base,integration,unit}.js"
-  - ".csscomb.json"
+  - ".stylelintrc"
   - "Dockerfile.assets"
   - "vendor/assets/**/*"
   - ".{eslintignore,gitattributes,nvmrc,prettierrc,stylelintrc,yamllint}"
@@ -403,7 +416,7 @@
   - ".browserslistrc"
   - "babel.config.js"
   - "jest.config.{base,integration,unit}.js"
-  - ".csscomb.json"
+  - ".stylelintrc"
   - "Dockerfile.assets"
   - "vendor/assets/**/*"
   - ".{eslintignore,gitattributes,nvmrc,prettierrc,stylelintrc,yamllint}"
@@ -434,7 +447,7 @@
   - ".browserslistrc"
   - "babel.config.js"
   - "jest.config.{base,integration,unit}.js"
-  - ".csscomb.json"
+  - ".stylelintrc"
   - "Dockerfile.assets"
   - "vendor/assets/**/*"
   - ".{eslintignore,gitattributes,nvmrc,prettierrc,stylelintrc,yamllint}"
@@ -461,7 +474,7 @@
   - ".browserslistrc"
   - "babel.config.js"
   - "jest.config.{base,integration,unit}.js"
-  - ".csscomb.json"
+  - ".stylelintrc"
   - "Dockerfile.assets"
   - "vendor/assets/**/*"
   - ".{eslintignore,gitattributes,nvmrc,prettierrc,stylelintrc,yamllint}"
@@ -499,7 +512,7 @@
   - ".browserslistrc"
   - "babel.config.js"
   - "jest.config.{base,integration,unit}.js"
-  - ".csscomb.json"
+  - ".stylelintrc"
   - "Dockerfile.assets"
   - "vendor/assets/**/*"
   - ".{eslintignore,gitattributes,nvmrc,prettierrc,stylelintrc,yamllint}"
@@ -547,6 +560,7 @@
   - "{,ee/,jh/}Gemfile.lock"  # This should include gitlab-styles, rubocop itself, and any plugins we might be using
   - "lib/gitlab_edition.rb"  # This is required in RuboCop::CodeReuseHelpers
   - ".gitlab/ci/static-analysis.gitlab-ci.yml"
+  - "config/feature_categories.yml"  # Used by RSpec/InvalidFeatureCategory
 
 .danger-patterns: &danger-patterns
   - "Dangerfile"
@@ -589,6 +603,8 @@
     - <<: *if-security-merge-request
       when: never
     - <<: *if-merge-request-targeting-stable-branch
+      when: never
+    - <<: *if-merge-request-labels-pipeline-expedite
       when: never
 
 .rails:rules:predictive-default-rules:
@@ -679,6 +695,7 @@
   rules:
     - <<: *if-schedule-maintenance
     - <<: *if-security-schedule
+    - <<: *if-foss-schedule
     - <<: *if-merge-request-labels-update-caches
 
 .shared:rules:update-gitaly-binaries-cache:
@@ -690,7 +707,7 @@
 ######################
 # Build images rules #
 ######################
-.build-images:rules:build-qa-image:
+.build-images:rules:build-qa-image-merge-requests:
   rules:
     - <<: *if-not-canonical-namespace
       when: never
@@ -700,17 +717,43 @@
       changes: *ci-build-images-patterns
     - <<: *if-dot-com-gitlab-org-and-security-merge-request
       changes: *code-qa-patterns
+
+.build-images:rules:build-qa-image:
+  rules:
+    - !reference [".build-images:rules:build-qa-image-merge-requests", "rules"]
     - <<: *if-auto-deploy-branches
       variables:
         ARCH: amd64,arm64
-    - <<: *if-default-branch-or-tag
+    - <<: *if-default-branch-refs
       variables:
         ARCH: amd64,arm64
+    - <<: *if-tag
+      variables:
+        ARCH: amd64,arm64
+      # TODO: Remove once confirmed on a tag pipeline
+      allow_failure: true
     - <<: *if-dot-com-gitlab-org-schedule
       variables:
         ARCH: amd64,arm64
     - <<: *if-force-ci
     - <<: *if-ruby2-branch
+
+.build-images:rules:build-qa-image-as-if-foss:
+  rules:
+    - !reference [".build-images:rules:build-qa-image-merge-requests", "rules"]
+
+# We want to rebuild the master image when the full e2e test pipeline runs. Currently this happens on a 2 hour schedule.
+.build-images:rules:build-qa-on-gdk-master-image:
+  rules:
+    - if: '$QA_RUN_TESTS_ON_GDK !~ /true|yes|1/i'
+      when: never
+    - <<: *if-not-canonical-namespace
+      when: never
+    - <<: *if-not-ee
+      when: never
+    - <<: *if-dot-com-gitlab-org-schedule
+      variables:
+        ARCH: amd64,arm64
 
 .build-images:rules:build-assets-image:
   rules:
@@ -821,6 +864,11 @@
   rules:
     - <<: *if-default-refs
       changes: *docs-patterns
+
+.docs:rules:docs-blueprints-lint:
+  rules:
+    - <<: *if-default-refs
+      changes: *docs-blueprints-patterns
 
 .docs:rules:deprecations-and-removals:
   rules:
@@ -1036,7 +1084,7 @@
     - <<: *if-default-branch-refs
       changes: *frontend-build-patterns
       allow_failure: true
-    - if: '$DANGER_GITLAB_API_TOKEN && $CI_MERGE_REQUEST_IID && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == $CI_DEFAULT_BRANCH'
+    - if: '$DANGER_GITLAB_API_TOKEN && ($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == $CI_DEFAULT_BRANCH'
       changes: *frontend-build-patterns
       allow_failure: true
 
@@ -1109,7 +1157,7 @@
       allow_failure: true
     - <<: *if-ruby2-branch
 
-.qa:rules:package-and-test:
+.qa:rules:package-and-test-mrs:
   rules:
     - <<: *if-not-canonical-namespace
       when: never
@@ -1121,12 +1169,17 @@
       allow_failure: true
     - <<: *if-ruby2-branch
       allow_failure: true
+    - <<: *if-merge-request-labels-run-all-e2e
+      allow_failure: true
     - <<: *if-dot-com-gitlab-org-and-security-merge-request-manual-ff-package-and-e2e
       changes: *feature-flag-development-config-patterns
       when: manual
       allow_failure: true
     - <<: *if-dot-com-gitlab-org-and-security-merge-request
       changes: *feature-flag-development-config-patterns
+      allow_failure: true
+    - <<: *if-dot-com-gitlab-org-and-security-merge-request
+      changes: *initializers-patterns
       allow_failure: true
     - <<: *if-dot-com-gitlab-org-and-security-merge-request
       changes: *nodejs-patterns
@@ -1144,6 +1197,13 @@
       changes: *code-patterns
       when: manual
       allow_failure: true
+    - <<: *if-force-ci
+      when: manual
+      allow_failure: true
+
+.qa:rules:package-and-test:
+  rules:
+    - !reference [".qa:rules:package-and-test-mrs", rules]
     - <<: *if-dot-com-gitlab-org-schedule
       allow_failure: true
       variables:
@@ -1152,9 +1212,12 @@
         KNAPSACK_GENERATE_REPORT: "true"
         QA_SAVE_TEST_METRICS: "true"
         QA_EXPORT_TEST_METRICS: "false" # on main runs, metrics are exported to separate bucket via rake task for better consistency
-    - <<: *if-force-ci
-      when: manual
-      allow_failure: true
+
+.qa:rules:e2e:test-on-gdk:
+  rules:
+    - if: '$QA_RUN_TESTS_ON_GDK !~ /true|yes|1/i'
+      when: never
+    - !reference [".qa:rules:package-and-test", rules]
 
 ###############
 # Rails rules #
@@ -1172,6 +1235,12 @@
       changes: *db-patterns
     - <<: *if-default-branch-schedule-nightly
 
+.rails:rules:db:check-migrations-single-db:
+  rules:
+    - <<: *if-merge-request-labels-run-single-db
+    - <<: *if-merge-request
+      changes: *db-patterns
+
 .rails:rules:db-backup:
   rules:
     - <<: *if-merge-request-labels-run-all-rspec
@@ -1181,6 +1250,15 @@
       when: never
     - <<: *if-default-refs
       changes: *db-patterns
+
+.rails:rules:db-rollback:
+  rules:
+    - !reference [".rails:rules:ee-and-foss-migration", rules]
+    - <<: *if-default-refs
+      changes: *initializers-patterns
+    - <<: *if-default-refs
+      changes:
+        - "{,ee/,jh/}{,spec/}lib/{,ee/,jh/}gitlab/content_security_policy/config_loader{,_spec}.rb"
 
 .rails:rules:praefect-with-db:
   rules:
@@ -1542,9 +1620,9 @@
 .rails:rules:detect-tests:
   rules:
     - <<: *if-merge-request-labels-run-all-rspec
-    - <<: *if-default-refs
+    - <<: *if-merge-request
       changes: *code-backstage-qa-patterns
-    - <<: *if-default-refs
+    - <<: *if-merge-request
       changes: *workhorse-patterns
 
 .rails:rules:detect-previous-failed-tests:
@@ -1720,6 +1798,24 @@
     - <<: *if-merge-request
       changes: *static-analysis-patterns
 
+.semgrep-appsec-custom-rules:rules:
+  rules:
+    - <<: *if-not-ee
+      when: never
+    - <<: *if-merge-request
+      changes: *code-backstage-qa-patterns
+
+.ping-appsec-for-sast-findings:rules:
+  rules:
+    # Requiring $CUSTOM_SAST_RULES_BOT_PAT prevents the bot from running on forks or CE
+    # Without it the script would fail too.
+    - if: "$CUSTOM_SAST_RULES_BOT_PAT == null"
+      when: never
+    - <<: *if-not-ee
+      when: never
+    - <<: *if-merge-request
+      changes: *code-backstage-qa-patterns
+
 #######################
 # Vendored gems rules #
 #######################
@@ -1782,6 +1878,12 @@
   rules:
     - <<: *if-merge-request
       changes: ["vendor/gems/devise-pbkdf2-encryptable/**/*"]
+    - <<: *if-merge-request-labels-run-all-rspec
+
+.vendor:rules:gitlab_active_record:
+  rules:
+    - <<: *if-merge-request
+      changes: ["vendor/gems/gitlab_active_record/**/*"]
     - <<: *if-merge-request-labels-run-all-rspec
 
 .vendor:rules:bundler-checksum:
@@ -1883,12 +1985,6 @@
     - <<: *if-default-refs
       changes: *nodejs-patterns
 
-.reports:rules:schedule-dast:
-  rules:
-    - if: '$DAST_DISABLED || $GITLAB_FEATURES !~ /\bdast\b/'
-      when: never
-    - <<: *if-dot-com-ee-schedule-nightly-child-pipeline
-
 .reports:rules:test-dast:
   rules:
     - if: '$DAST_DISABLED || $GITLAB_FEATURES !~ /\bdast\b/'
@@ -1971,32 +2067,10 @@
         QA_SAVE_TEST_METRICS: "true"
         QA_EXPORT_TEST_METRICS: "false" # on main runs, metrics are exported to separate bucket via rake task for better consistency
 
-.review:rules:review-build-cng:
-  rules:
-    - when: always
-
-.review:rules:review-deploy:
-  rules:
-    - when: on_success
-
-.review:rules:review-performance:
-  rules:
-    - if: '$DAST_RUN == "true"'  # Skip this job when DAST is run
-      when: never
-    - <<: *if-merge-request-labels-run-review-app  # we explicitely don't allow the job to fail in that case
-    - <<: *if-dot-com-gitlab-org-merge-request  # we explicitely don't allow the job to fail in that case
-      changes: *ci-review-patterns
-    - when: on_success
-      allow_failure: true
-
-.review:rules:review-delete-deployment:
-  rules:
-    - when: on_success
-
 # The following rules needs to be the same as the one for .review:rules:start-review-app-pipeline
 # except that:
 # - all rules have `when: manual` and `allow_failure: true` here
-.review:rules:review-cleanup:
+.review:rules:review-stop-merge-requests:
   rules:
     - <<: *if-not-ee
       when: never
@@ -2033,12 +2107,23 @@
       changes: *code-patterns
       when: manual
       allow_failure: true
+
+.review:rules:review-cleanup:
+  rules:
+    - !reference [".review:rules:review-stop-merge-requests", rules]
+    - <<: *if-dot-com-ee-schedule-default-branch-maintenance
+      allow_failure: true
+
+.review:rules:review-stop:
+  rules:
+    - !reference [".review:rules:review-stop-merge-requests", rules]
     - <<: *if-dot-com-gitlab-org-schedule
+      when: manual
       allow_failure: true
 
 .review:rules:review-k8s-resources-count-checks:
   rules:
-    - <<: *if-dot-com-gitlab-org-schedule
+    - <<: *if-dot-com-ee-schedule-default-branch-maintenance
       allow_failure: true
     - <<: *if-dot-com-gitlab-org-merge-request
       changes:
@@ -2047,16 +2132,11 @@
 
 .review:rules:review-gcp-quotas-checks:
   rules:
-    - <<: *if-dot-com-gitlab-org-schedule
+    - <<: *if-dot-com-ee-schedule-default-branch-maintenance
       allow_failure: true
     - <<: *if-dot-com-gitlab-org-merge-request
       changes:
         - "scripts/review_apps/gcp-quotas-checks.rb"
-      allow_failure: true
-
-.review:rules:review-stop:
-  rules:
-    - when: manual
       allow_failure: true
 
 .review:rules:danger:
@@ -2098,6 +2178,11 @@
     - <<: *if-default-refs
       changes: *code-backstage-patterns
 
+.setup:rules:rails-production-environment:
+  rules:
+    - <<: *if-default-refs
+      changes: *code-patterns
+
 .setup:rules:no-ee-check:
   rules:
     - <<: *if-not-foss
@@ -2134,7 +2219,7 @@
     - <<: *if-not-ee
       when: never
     - <<: *if-dot-com-ee-schedule-default-branch-maintenance
-    - <<: *if-default-refs
+    - <<: *if-default-branch-refs
       changes:
         - ".gitlab/ci/setup.gitlab-ci.yml"
         - ".gitlab/ci/test-metadata.gitlab-ci.yml"
@@ -2156,7 +2241,8 @@
     - <<: *if-not-ee
       when: never
     - <<: *if-dot-com-ee-schedule-default-branch-maintenance
-    - <<: *if-default-refs
+      when: always
+    - <<: *if-default-branch-refs
       changes:
         - ".gitlab/ci/test-metadata.gitlab-ci.yml"
         - "scripts/rspec_helpers.sh"

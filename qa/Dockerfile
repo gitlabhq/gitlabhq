@@ -15,11 +15,11 @@ ENV WD_INSTALL_DIR=/usr/local/bin
 ##
 # Install system libs
 #
-RUN apt-get update; \
-    apt-get install -y xvfb unzip; \
-    apt-get -yq autoremove; \
-    apt-get clean -yqq; \
-    rm -rf /var/lib/apt/lists/*
+RUN apt-get update \
+    && apt-get install -y xvfb unzip \
+    && apt-get -yq autoremove \
+    && apt-get clean -yqq \
+    && rm -rf /var/lib/apt/lists/*
 
 ##
 # Install root certificate

@@ -121,6 +121,7 @@ module Gitlab
       # It is also used by GraphQL/API requests.
       # And to allow accessing /archive programatically as it was a big pain point
       # for users https://gitlab.com/gitlab-org/gitlab/-/issues/28978.
+      # Used for release downloading as well
       def find_user_from_web_access_token(request_format, scopes: [:api])
         return unless access_token && valid_web_access_format?(request_format)
 
@@ -147,7 +148,7 @@ module Gitlab
       # deploy tokens are accepted with deploy token headers and basic auth headers
       def deploy_token_from_request
         return unless route_authentication_setting[:deploy_token_allowed]
-        return if Gitlab::ExternalAuthorization.enabled?
+        return unless Gitlab::ExternalAuthorization.allow_deploy_tokens_and_deploy_keys?
 
         token = current_request.env[DEPLOY_TOKEN_HEADER].presence || parsed_oauth_token
 
@@ -301,6 +302,8 @@ module Gitlab
           api_request?
         when :archive
           archive_request?
+        when :download
+          download_request?
         end
       end
 
@@ -350,6 +353,10 @@ module Gitlab
 
       def archive_request?
         current_request.path.include?('/-/archive/')
+      end
+
+      def download_request?
+        current_request.path.include?('/downloads/')
       end
 
       def blob_request?

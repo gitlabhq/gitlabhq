@@ -110,17 +110,22 @@ describe('WikiForm', () => {
   it('displays markdown editor', () => {
     createWrapper({ persisted: true });
 
-    expect(findMarkdownEditor().props()).toEqual(
+    const markdownEditor = findMarkdownEditor();
+
+    expect(markdownEditor.props()).toEqual(
       expect.objectContaining({
         value: pageInfoPersisted.content,
         renderMarkdownPath: pageInfoPersisted.markdownPreviewPath,
         markdownDocsPath: pageInfoPersisted.markdownHelpPath,
         uploadsPath: pageInfoPersisted.uploadsPath,
         autofocus: pageInfoPersisted.persisted,
-        formFieldId: 'wiki_content',
-        formFieldName: 'wiki[content]',
       }),
     );
+
+    expect(markdownEditor.props('formFieldProps')).toMatchObject({
+      id: 'wiki_content',
+      name: 'wiki[content]',
+    });
   });
 
   it.each`

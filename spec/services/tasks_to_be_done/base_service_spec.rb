@@ -18,7 +18,7 @@ RSpec.describe TasksToBeDone::BaseService do
 
   subject(:service) do
     TasksToBeDone::CreateCiTaskService.new(
-      project: project,
+      container: project,
       current_user: current_user,
       assignee_ids: assignee_ids
     )
@@ -35,7 +35,7 @@ RSpec.describe TasksToBeDone::BaseService do
 
       expect(Issues::BuildService)
         .to receive(:new)
-        .with(project: project, current_user: current_user, params: params)
+        .with(container: project, current_user: current_user, params: params)
         .and_call_original
 
       expect { service.execute }.to change(Issue, :count).by(1)
@@ -58,7 +58,7 @@ RSpec.describe TasksToBeDone::BaseService do
 
       expect(Issues::UpdateService)
         .to receive(:new)
-        .with(project: project, current_user: current_user, params: params)
+        .with(container: project, current_user: current_user, params: params)
         .and_call_original
 
       expect { service.execute }.not_to change(Issue, :count)

@@ -24,10 +24,28 @@ module Taskable
     (\s.+)                        # followed by whitespace and some text.
   }x.freeze
 
+  # ignore tasks in code or html comment blocks.  HTML blocks
+  # are ok as we allow tasks inside <detail> blocks
+  REGEX = %r{
+      #{::Gitlab::Regex.markdown_code_or_html_comments}
+    |
+      (?<task_item>
+        #{ITEM_PATTERN}
+      )
+  }mx.freeze
+
   def self.get_tasks(content)
-    content.to_s.scan(ITEM_PATTERN).map do |prefix, checkbox, label|
-      TaskList::Item.new("#{prefix} #{checkbox}", label.strip)
+    items = []
+
+    content.to_s.scan(REGEX) do
+      next unless $~[:task_item]
+
+      $~[:task_item].scan(ITEM_PATTERN) do |prefix, checkbox, label|
+        items << TaskList::Item.new("#{prefix.strip} #{checkbox}", label.strip)
+      end
     end
+
+    items
   end
 
   def self.get_updated_tasks(old_content:, new_content:)
@@ -67,10 +85,10 @@ module Taskable
     checklist_item_noun = n_('checklist item', 'checklist items', sum.item_count)
     if short
       format(s_('Tasks|%{complete_count}/%{total_count} %{checklist_item_noun}'),
-checklist_item_noun: checklist_item_noun, complete_count: sum.complete_count, total_count: sum.item_count)
+        checklist_item_noun: checklist_item_noun, complete_count: sum.complete_count, total_count: sum.item_count)
     else
       format(s_('Tasks|%{complete_count} of %{total_count} %{checklist_item_noun} completed'),
-checklist_item_noun: checklist_item_noun, complete_count: sum.complete_count, total_count: sum.item_count)
+        checklist_item_noun: checklist_item_noun, complete_count: sum.complete_count, total_count: sum.item_count)
     end
   end
 

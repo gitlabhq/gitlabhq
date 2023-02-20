@@ -55,7 +55,7 @@ class AuditEvent < ApplicationRecord
   end
 
   def initialize_details
-    return unless self.has_attribute?(:details)
+    return unless has_attribute?(:details)
 
     self.details = {} if details&.nil?
   end
@@ -65,7 +65,9 @@ class AuditEvent < ApplicationRecord
   end
 
   def formatted_details
-    details.merge(details.slice(:from, :to).transform_values(&:to_s))
+    details
+      .merge(details.slice(:from, :to).transform_values(&:to_s))
+      .merge(author_email: author.try(:email))
   end
 
   def author
@@ -74,7 +76,7 @@ class AuditEvent < ApplicationRecord
 
   def lazy_author
     BatchLoader.for(author_id).batch do |author_ids, loader|
-      User.select(:id, :name, :username).where(id: author_ids).find_each do |user|
+      User.select(:id, :name, :username, :email).where(id: author_ids).find_each do |user|
         loader.call(user.id, user)
       end
     end
@@ -82,7 +84,7 @@ class AuditEvent < ApplicationRecord
 
   def as_json(options = {})
     super(options).tap do |json|
-      json['ip_address'] = self.ip_address.to_s
+      json['ip_address'] = ip_address.to_s
     end
   end
 
@@ -114,10 +116,10 @@ class AuditEvent < ApplicationRecord
 
   def parallel_persist
     PARALLEL_PERSISTENCE_COLUMNS.each do |name|
-      original = self[name] || self.details[name]
+      original = self[name] || details[name]
       next unless original
 
-      self[name] = self.details[name] = original
+      self[name] = details[name] = original
     end
   end
 

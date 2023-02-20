@@ -24,14 +24,14 @@ exports[`MlCandidate renders correctly 1`] = `
       <h2
         class="gl-alert-title"
       >
-        Machine Learning Experiment Tracking is in Incubating Phase
+        Machine learning experiment tracking is in incubating phase
       </h2>
        
       <div
         class="gl-alert-body"
       >
         
-  GitLab incubates features to explore new use cases. These features are updated regularly, and support is limited
+  GitLab incubates features to explore new use cases. These features are updated regularly, and support is limited.
   
         <a
           class="gl-link"
@@ -39,7 +39,7 @@ exports[`MlCandidate renders correctly 1`] = `
           rel="noopener noreferrer"
           target="_blank"
         >
-          Learn more
+          Learn more about incubating features
         </a>
       </div>
        
@@ -58,7 +58,7 @@ exports[`MlCandidate renders correctly 1`] = `
             class="gl-button-text"
           >
             
-          Feedback
+          Give feedback on this feature
         
           </span>
         </a>

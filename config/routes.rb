@@ -3,7 +3,7 @@
 require 'sidekiq/web'
 require 'sidekiq/cron/web'
 
-InitializerConnections.with_disabled_database_connections do
+InitializerConnections.raise_if_new_database_connection do
   Rails.application.routes.draw do
     concern :access_requestable do
       post :request_access, on: :collection
@@ -61,13 +61,7 @@ InitializerConnections.with_disabled_database_connections do
 
     # Sign up
     scope path: '/users/sign_up', module: :registrations, as: :users_sign_up do
-      resource :welcome, only: [:show, :update], controller: 'welcome' do
-        Gitlab.ee do
-          get :trial_getting_started, on: :collection
-          get :trial_onboarding_board, on: :collection
-          get :continuous_onboarding_getting_started, on: :collection
-        end
-      end
+      resource :welcome, only: [:show, :update], controller: 'welcome'
 
       Gitlab.ee do
         resource :company, only: [:new, :create], controller: 'company'
@@ -305,7 +299,7 @@ InitializerConnections.with_disabled_database_connections do
     # TODO: We don't need the `Gitlab::Routing` module at all as we can use
     # the `direct` DSL method of Rails to define url helpers. Move all the
     # custom url helpers to use the `direct` DSL method and remove the `Gitlab::Routing`.
-    # For more information: https://gitlab.com/gitlab-org/gitlab/-/issues/299583
+    # For more information: https://gitlab.com/groups/gitlab-org/-/epics/9866
     Gitlab::Application.routes.set.filter_map { |route| route.name if route.name&.include?('namespace_project') }.each do |name|
       new_name = name.sub('namespace_project', 'project')
 
@@ -321,7 +315,9 @@ InitializerConnections.with_disabled_database_connections do
     root to: "root#index"
 
     get '*unmatched_route', to: 'application#route_not_found', format: false
-  end
 
-  Gitlab::Routing.add_helpers(TimeboxesRoutingHelper)
+    # Load all custom URLs definitions via `direct' after the last route
+    # definition.
+    draw :directs
+  end
 end

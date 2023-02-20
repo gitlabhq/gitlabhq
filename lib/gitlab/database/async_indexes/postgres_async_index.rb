@@ -4,6 +4,8 @@ module Gitlab
   module Database
     module AsyncIndexes
       class PostgresAsyncIndex < SharedModel
+        include QueueErrorHandlingConcern
+
         self.table_name = 'postgres_async_indexes'
 
         MAX_IDENTIFIER_LENGTH = Gitlab::Database::MigrationHelpers::MAX_IDENTIFIER_NAME_LENGTH
@@ -15,6 +17,7 @@ module Gitlab
 
         scope :to_create, -> { where("definition ILIKE 'CREATE%'") }
         scope :to_drop, -> { where("definition ILIKE 'DROP%'") }
+        scope :ordered, -> { order(attempts: :asc, id: :asc) }
 
         def to_s
           definition

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::UsageDataMetrics, :with_license do
+RSpec.describe Gitlab::UsageDataMetrics, :with_license, feature_category: :service_ping do
   describe '.uncached_data' do
     subject { described_class.uncached_data }
 

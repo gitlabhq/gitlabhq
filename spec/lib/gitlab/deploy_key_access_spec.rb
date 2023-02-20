@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::DeployKeyAccess do
+RSpec.describe Gitlab::DeployKeyAccess, feature_category: :source_code_management do
   let_it_be(:user) { create(:user) }
   let_it_be(:deploy_key) { create(:deploy_key, user: user) }
 
@@ -17,10 +17,30 @@ RSpec.describe Gitlab::DeployKeyAccess do
   end
 
   describe '#can_create_tag?' do
-    context 'push tag that matches a protected tag pattern via a deploy key' do
-      it 'still pushes that tag' do
-        create(:protected_tag, project: project, name: 'v*')
+    let!(:protected_tag) { create(:protected_tag, :no_one_can_create, project: project, name: 'v*') }
 
+    context 'when no-one can create tag' do
+      it 'returns false' do
+        expect(access.can_create_tag?('v0.1.2')).to be_falsey
+      end
+
+      context 'when deploy_key_for_protected_tags FF is disabled' do
+        before do
+          stub_feature_flags(deploy_key_for_protected_tags: false)
+        end
+
+        it 'allows to push the tag' do
+          expect(access.can_create_tag?('v0.1.2')).to be_truthy
+        end
+      end
+    end
+
+    context 'push tag that matches a protected tag pattern via a deploy key' do
+      before do
+        create(:protected_tag_create_access_level, protected_tag: protected_tag, deploy_key: deploy_key)
+      end
+
+      it 'allows to push the tag' do
         expect(access.can_create_tag?('v0.1.2')).to be_truthy
       end
     end

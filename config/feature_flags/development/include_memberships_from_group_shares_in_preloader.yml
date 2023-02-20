@@ -1,0 +1,8 @@
+---
+name: include_memberships_from_group_shares_in_preloader
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111157
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/390780
+milestone: '15.9'
+type: development
+group: group::organization
+default_enabled: false

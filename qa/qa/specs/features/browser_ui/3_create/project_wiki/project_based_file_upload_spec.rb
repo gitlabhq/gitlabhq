@@ -17,7 +17,7 @@ module QA
       end
 
       it 'by creating a formatted page with an image uploaded',
-  testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347640' do
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347640' do
         initial_wiki.visit!
 
         Page::Project::Wiki::Show.perform(&:click_new_page)
@@ -26,7 +26,7 @@ module QA
           edit.set_title(page_title)
           edit.use_new_editor
           edit.add_heading('Heading 1', heading_text)
-          edit.upload_image(File.absolute_path(File.join('qa', 'fixtures', 'designs', image_file_name)))
+          edit.upload_image(File.join(Runtime::Path.fixtures_path, 'designs', image_file_name))
         end
 
         Page::Project::Wiki::Edit.perform(&:click_submit)

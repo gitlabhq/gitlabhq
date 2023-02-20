@@ -9,14 +9,12 @@ RSpec.describe Import::BulkImportsController, feature_category: :importers do
     stub_application_setting(bulk_import_enabled: true)
 
     sign_in(user)
+
+    allow(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_return(false)
   end
 
   context 'when user is signed in' do
     context 'when bulk_import feature flag is enabled' do
-      before do
-        stub_feature_flags(bulk_import: true)
-      end
-
       describe 'POST configure' do
         before do
           allow_next_instance_of(BulkImports::Clients::HTTP) do |instance|
@@ -398,6 +396,18 @@ RSpec.describe Import::BulkImportsController, feature_category: :importers do
             post :create, params: { bulk_import: bulk_import_params }
 
             expect(response).to have_gitlab_http_status(:unprocessable_entity)
+          end
+        end
+
+        context 'when request exceeds rate limits' do
+          it 'prevents user from starting a new migration' do
+            allow(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_return(true)
+
+            post :create, params: { bulk_import: {} }
+
+            request
+
+            expect(response).to have_gitlab_http_status(:too_many_requests)
           end
         end
       end

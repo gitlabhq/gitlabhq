@@ -6,11 +6,11 @@ module API
       include ::API::Helpers::RelatedResourcesHelpers
 
       expose(:has_tasks) do |issue, _|
-        !issue.task_list_items.empty?
+        !issue.tasks?
       end
 
       expose :task_status, if: -> (issue, _) do
-        !issue.task_list_items.empty?
+        !issue.tasks?
       end
 
       expose :_links do

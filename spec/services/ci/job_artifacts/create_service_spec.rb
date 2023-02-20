@@ -132,6 +132,14 @@ RSpec.describe Ci::JobArtifacts::CreateService do
           expect(new_artifact).to be_public_accessibility
         end
 
+        it 'logs the created artifact and metadata' do
+          expect(Gitlab::Ci::Artifacts::Logger)
+            .to receive(:log_created)
+            .with(an_instance_of(Ci::JobArtifact)).twice
+
+          subject
+        end
+
         context 'when accessibility level passed as private' do
           before do
             params.merge!('accessibility' => 'private')

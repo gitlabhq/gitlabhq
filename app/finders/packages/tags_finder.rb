@@ -15,7 +15,7 @@ class Packages::TagsFinder
                       .with_name(package_name)
     packages = packages.with_package_type(package_type) if package_type.present?
 
-    Packages::Tag.for_packages(packages)
+    Packages::Tag.for_package_ids(packages.select(:id))
   end
 
   private

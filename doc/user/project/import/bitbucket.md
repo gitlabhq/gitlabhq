@@ -46,8 +46,8 @@ the user is not found in the GitLab database, the project creator (most of the t
 user that started the import process) is set as the author, but a reference on the issue about the
 original Bitbucket author is kept.
 
-The importer will create any new namespaces (groups) if they don't exist or in
-the case the namespace is taken, the repository will be imported under the user's
+The importer creates any new namespaces (groups) if they don't exist or in
+the case the namespace is taken, the repository is imported under the user's
 namespace that started the import process.
 
 ## Requirements for user-mapped contributions
@@ -65,6 +65,8 @@ For user contributions to be mapped, each user must complete the following befor
 
 ## Import your Bitbucket repositories
 
+> Ability to re-import projects [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23905) in GitLab 15.9.
+
 1. Sign in to GitLab.
 1. On the top bar, select **New** (**{plus}**).
 1. Select **New project/repository**.
@@ -76,9 +78,11 @@ For user contributions to be mapped, each user must complete the following befor
 
 1. Select the projects that you'd like to import or import all projects.
    You can filter projects by name and select the namespace
-   each project will be imported for.
+   each project is imported for.
 
-   ![Import projects](img/bitbucket_import_select_project_v12_3.png)
+1. To import a project:
+   - For the first time: Select **Import**.
+   - Again: Select **Re-import**. Specify a new name and select **Re-import** again. Re-importing creates a new copy of the source project.
 
 ## Troubleshooting
 

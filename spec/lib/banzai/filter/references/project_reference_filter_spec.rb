@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Banzai::Filter::References::ProjectReferenceFilter do
+RSpec.describe Banzai::Filter::References::ProjectReferenceFilter, feature_category: :team_planning do
   include FilterSpecHelper
 
   def invalidate_reference(reference)

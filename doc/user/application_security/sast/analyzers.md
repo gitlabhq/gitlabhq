@@ -12,7 +12,7 @@ Static Application Security Testing (SAST) uses analyzers
 to detect vulnerabilities in source code. Each analyzer is a wrapper around a [scanner](../terminology/index.md#scanner), a third-party code analysis tool.
 
 The analyzers are published as Docker images that SAST uses to launch dedicated containers for each
-analysis. We recommend a minimum of 4GB RAM to ensure consistent performance of the analyzers.
+analysis. We recommend a minimum of 4 GB RAM to ensure consistent performance of the analyzers.
 
 SAST default images are maintained by GitLab, but you can also integrate your own custom image.
 
@@ -77,8 +77,8 @@ Work to remove language-specific analyzers and replace them with the Semgrep-bas
 
 You can choose to disable the other analyzers early and use Semgrep-based scanning for supported languages before the default behavior changes. If you do so:
 
-- You'll enjoy significantly faster scanning, reduced CI minutes usage, and more customizable scanning rules.
-- However, vulnerabilities previously reported by language-specific analyzers will be reported again under certain conditions, including if you've dismissed the vulnerabilities before. The system behavior depends on:
+- You enjoy significantly faster scanning, reduced CI minutes usage, and more customizable scanning rules.
+- However, vulnerabilities previously reported by language-specific analyzers are reported again under certain conditions, including if you've dismissed the vulnerabilities before. The system behavior depends on:
   - whether you've excluded the Semgrep-based analyzer from running in the past.
   - which analyzer first discovered the vulnerabilities shown in the project's [Vulnerability Report](../vulnerability_report/index.md).
 
@@ -92,7 +92,7 @@ The Vulnerability Management system automatically moves vulnerabilities from the
 - For Go, a vulnerability is moved if it has only ever been detected by Gosec in pipelines where Semgrep also detected it. Semgrep coverage for Go was introduced by default into the CI/CD template in GitLab 14.2 (August 2021).
 - For JavaScript and TypeScript, a vulnerability is moved if it has only ever been detected by ESLint in pipelines where Semgrep also detected it. Semgrep coverage for these languages was introduced into the CI/CD template in GitLab 13.12 (May 2021).
 
-However, you'll see old vulnerabilities re-created based on Semgrep results if:
+However, old vulnerabilities re-created based on Semgrep results are visible if:
 
 - A vulnerability was created by Bandit or SpotBugs and you disable those analyzers. We only recommend disabling Bandit and SpotBugs now if the analyzers aren't working. Work to automatically translate Bandit and SpotBugs vulnerabilities to Semgrep is tracked in [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/328062).
 - A vulnerability was created by ESLint, Gosec, or Flawfinder in a default-branch pipeline where Semgrep scanning did not run successfully (before Semgrep coverage was introduced for the language, because you disabled Semgrep explicitly, or because the Semgrep scan failed in that pipeline). We do not currently plan to combine these vulnerabilities if they already exist.
@@ -119,13 +119,13 @@ To switch to Semgrep-based scanning early, you can:
 1. Create a merge request (MR) to set the [`SAST_EXCLUDED_ANALYZERS` CI/CD variable](#disable-specific-default-analyzers) to `"bandit,gosec,eslint"`.
     - If you also want to disable SpotBugs scanning, add `spotbugs` to the list. We only recommend this for Java projects. SpotBugs is the only current analyzer that can scan Groovy, Kotlin, and Scala.
     - If you also want to disable Flawfinder scanning, add `flawfinder` to the list. We only recommend this for C projects. Flawfinder is the only current analyzer that can scan C++.
-1. Verify that scanning jobs succeed in the MR. You'll notice findings from the removed analyzers in _Fixed_ and findings from Semgrep in _New_. (Some findings may show different names, descriptions, and severities, since GitLab manages and edits the Semgrep rulesets.)
+1. Verify that scanning jobs succeed in the MR. Findings from the removed analyzers are available in _Fixed_ and findings from Semgrep in _New_. (Some findings may show different names, descriptions, and severities, since GitLab manages and edits the Semgrep rulesets.)
 1. Merge the MR and wait for the default-branch pipeline to run.
 1. Use the Vulnerability Report to dismiss the findings that are no longer detected by the language-specific analyzers.
 
 #### Preview Semgrep-based scanning
 
-You can see how Semgrep-based scanning will work in your projects before the GitLab-managed Stable CI/CD template for SAST is updated.
+You can see how Semgrep-based scanning works in your projects before the GitLab-managed Stable CI/CD template for SAST is updated.
 We recommend that you test this change in a merge request but continue using the Stable template in your default branch pipeline configuration.
 
 In GitLab 15.3, we [activated a feature flag](https://gitlab.com/gitlab-org/gitlab/-/issues/362179) to migrate security findings on the default branch from other analyzers to Semgrep.
@@ -148,10 +148,10 @@ To preview the upcoming changes to the CI/CD configuration in GitLab 15.3 or ear
         remote: 'https://gitlab.com/gitlab-org/gitlab/-/raw/2851f4d5/lib/gitlab/ci/templates/Jobs/SAST.latest.gitlab-ci.yml'
       ```
 
-1. Verify that scanning jobs succeed in the MR. You'll notice findings from the removed analyzers in _Fixed_ and findings from Semgrep in _New_. (Some findings may show different names, descriptions, and severities, since GitLab manages and edits the Semgrep rulesets.)
+1. Verify that scanning jobs succeed in the MR. You notice findings from the removed analyzers in _Fixed_ and findings from Semgrep in _New_. (Some findings may show different names, descriptions, and severities, since GitLab manages and edits the Semgrep rulesets.)
 1. Close the MR.
 
-To learn more about Stable and Latest templates, see documentation on [CI/CD template versioning](../../../development/cicd/templates.md#versioning).
+For more information about Stable and Latest templates, see [CI/CD template versioning](../../../development/cicd/templates.md#versioning).
 
 ## Customize analyzers
 

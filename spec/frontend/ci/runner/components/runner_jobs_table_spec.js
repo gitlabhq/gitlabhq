@@ -72,7 +72,7 @@ describe('RunnerJobsTable', () => {
     });
 
     it('Displays details of a job', () => {
-      const { id, detailedStatus, pipeline, shortSha, commitPath } = mockJobs[0];
+      const { id, detailedStatus, project, shortSha, commitPath } = mockJobs[0];
 
       expect(findCell({ field: 'status' }).text()).toMatchInterpolatedText(detailedStatus.text);
 
@@ -81,10 +81,8 @@ describe('RunnerJobsTable', () => {
         detailedStatus.detailsPath,
       );
 
-      expect(findCell({ field: 'project' }).text()).toBe(pipeline.project.name);
-      expect(findCell({ field: 'project' }).find('a').attributes('href')).toBe(
-        pipeline.project.webUrl,
-      );
+      expect(findCell({ field: 'project' }).text()).toBe(project.name);
+      expect(findCell({ field: 'project' }).find('a').attributes('href')).toBe(project.webUrl);
 
       expect(findCell({ field: 'commit' }).text()).toBe(shortSha);
       expect(findCell({ field: 'commit' }).find('a').attributes('href')).toBe(commitPath);

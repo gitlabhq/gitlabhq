@@ -18,7 +18,7 @@ you basically have everything set up already.
 
 NOTE:
 Variables set in the GitLab UI are not passed down to the service containers.
-[Learn more](../variables/index.md).
+For more information, see [GitLab CI/CD variables](../variables/index.md).
 
 First, in your `.gitlab-ci.yml` add:
 

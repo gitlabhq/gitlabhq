@@ -13,11 +13,11 @@ module Issues
     # spam_checking is likely to be necessary.  However, if there is not a request available in scope
     # in the caller (for example, an issue created via email) and the required arguments to the
     # SpamParams constructor are not otherwise available, spam_params: must be explicitly passed as nil.
-    def initialize(project:, spam_params:, current_user: nil, params: {}, build_service: nil)
+    def initialize(container:, spam_params:, current_user: nil, params: {}, build_service: nil)
       @extra_params = params.delete(:extra_params) || {}
-      super(project: project, current_user: current_user, params: params)
+      super(project: container, current_user: current_user, params: params)
       @spam_params = spam_params
-      @build_service = build_service || BuildService.new(project: project, current_user: current_user, params: params)
+      @build_service = build_service || BuildService.new(container: project, current_user: current_user, params: params)
     end
 
     def execute(skip_system_notes: false)
@@ -99,6 +99,18 @@ module Issues
     end
 
     private
+
+    def self.constructor_container_arg(value)
+      { container: value }
+    end
+
+    def handle_quick_actions(issue)
+      # Do not handle quick actions unless the work item is the default Issue.
+      # The available quick actions for a work item depend on its type and widgets.
+      return if @params[:work_item_type].present? && @params[:work_item_type] != WorkItems::Type.default_by_type(:issue)
+
+      super
+    end
 
     def authorization_action
       :create_issue

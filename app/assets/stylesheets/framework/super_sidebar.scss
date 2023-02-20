@@ -1,6 +1,7 @@
 .super-sidebar {
   top: 0;
   width: $contextual-sidebar-width;
+  z-index: 600;
 
   .user-bar {
     background-color: $t-gray-a-04;
@@ -10,9 +11,51 @@
     }
   }
 
+  .counter .gl-icon {
+    color: var(--gray-500, $gray-500);
+  }
+
+  .counter:hover,
+  .counter:focus,
+  .gl-dropdown-custom-toggle:hover .counter,
+  .gl-dropdown-custom-toggle:focus .counter,
+  .gl-dropdown-custom-toggle[aria-expanded='true'] .counter {
+    background-color: $gray-50;
+    border-color: transparent;
+    mix-blend-mode: multiply;
+
+    .gl-icon {
+      color: var(--gray-700, $gray-700);
+    }
+  }
+
   .context-switcher-toggle {
     &[aria-expanded='true'] {
       background-color: $t-gray-a-08;
+    }
+  }
+
+  .btn-with-notification {
+    mix-blend-mode: unset !important; // Our tertiary buttons otherwise use another mix-blend mode, making border-color semi-transparent.
+    position: relative;
+
+    .notification {
+      background-color: $blue-500;
+      border: 2px solid $gray-10; // Same as the sidebar's background color.
+      position: absolute;
+      height: 9px;
+      width: 9px;
+      top: 5px;
+      left: 22px;
+      border-radius: 50%;
+      transition: background-color 100ms linear, border-color 100ms linear;
+    }
+
+    &:hover,
+    &:focus {
+      .notification {
+        border-color: $gray-50; // Same as the button's hover background color.
+      }
     }
   }
 }

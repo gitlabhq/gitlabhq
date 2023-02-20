@@ -1,6 +1,5 @@
 import setHighlightClass from 'ee_else_ce/search/highlight_blob_search_result';
 import { queryToObject } from '~/lib/utils/url_utility';
-import refreshCounts from '~/pages/search/show/refresh_counts';
 import syntaxHighlight from '~/syntax_highlight';
 import { initSidebar, sidebarInitState } from './sidebar';
 import { initSearchSort } from './sort';
@@ -24,8 +23,4 @@ export const initSearchApp = () => {
 
   setHighlightClass(query.search); // Code Highlighting
   initBlobRefSwitcher(); // Code Search Branch Picker
-
-  if (!gon.features?.searchPageVerticalNav) {
-    refreshCounts(); // Other Scope Tab Counts
-  }
 };

@@ -10,7 +10,7 @@ import Tracking from '~/tracking';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
-import { getWorkItemQuery } from '../utils';
+import { getWorkItemQuery, autocompleteDataSources, markdownPreviewPath } from '../utils';
 import workItemDescriptionSubscription from '../graphql/work_item_description.subscription.graphql';
 import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql';
 import { i18n, TRACKING_CATEGORY_SHOW, WIDGET_TYPE_DESCRIPTION } from '../constants';
@@ -46,7 +46,8 @@ export default {
       required: true,
     },
   },
-  markdownDocsPath: helpPagePath('user/markdown'),
+  markdownDocsPath: helpPagePath('user/project/quick_actions'),
+  quickActionsDocsPath: helpPagePath('user/project/quick_actions'),
   data() {
     return {
       workItem: {},
@@ -56,6 +57,12 @@ export default {
       descriptionText: '',
       descriptionHtml: '',
       conflictedDescription: '',
+      formFieldProps: {
+        'aria-label': __('Description'),
+        placeholder: __('Write a comment or drag your files here…'),
+        id: 'work-item-description',
+        name: 'work-item-description',
+      },
     };
   },
   apollo: {
@@ -134,9 +141,10 @@ export default {
       return this.workItemDescription?.lastEditedBy?.webPath;
     },
     markdownPreviewPath() {
-      return `${gon.relative_url_root || ''}/${this.fullPath}/preview_markdown?target_type=${
-        this.workItemType
-      }`;
+      return markdownPreviewPath(this.fullPath, this.workItem.iid);
+    },
+    autocompleteDataSources() {
+      return autocompleteDataSources(this.fullPath, this.workItem.iid);
     },
   },
   methods: {
@@ -241,11 +249,11 @@ export default {
         :value="descriptionText"
         :render-markdown-path="markdownPreviewPath"
         :markdown-docs-path="$options.markdownDocsPath"
-        :form-field-aria-label="__('Description')"
-        :form-field-placeholder="__('Write a comment or drag your files here…')"
-        form-field-id="work-item-description"
-        form-field-name="work-item-description"
+        :form-field-props="formFieldProps"
+        :quick-actions-docs-path="$options.quickActionsDocsPath"
+        :autocomplete-data-sources="autocompleteDataSources"
         enable-autocomplete
+        supports-quick-actions
         init-on-autofocus
         use-bottom-toolbar
         @input="setDescriptionText"
@@ -259,19 +267,19 @@ export default {
         :is-submitting="isSubmitting"
         :markdown-preview-path="markdownPreviewPath"
         :markdown-docs-path="$options.markdownDocsPath"
+        :quick-actions-docs-path="$options.quickActionsDocsPath"
+        :autocomplete-data-sources="autocompleteDataSources"
         class="gl-px-3 bordered-box gl-mt-5"
       >
         <template #textarea>
           <textarea
-            id="work-item-description"
+            v-bind="formFieldProps"
             ref="textarea"
             v-model="descriptionText"
             :disabled="isSubmitting"
             class="note-textarea js-gfm-input js-autosize markdown-area"
             dir="auto"
-            data-supports-quick-actions="false"
-            :aria-label="__('Description')"
-            :placeholder="__('Write a comment or drag your files here…')"
+            data-supports-quick-actions="true"
             @keydown.meta.enter="updateWorkItem"
             @keydown.ctrl.enter="updateWorkItem"
             @keydown.exact.esc.stop="cancelEditing"

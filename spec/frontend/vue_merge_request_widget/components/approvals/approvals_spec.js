@@ -13,7 +13,12 @@ import {
 } from '~/vue_merge_request_widget/components/approvals/messages';
 import eventHub from '~/vue_merge_request_widget/event_hub';
 
-jest.mock('~/flash');
+const mockAlertDismiss = jest.fn();
+jest.mock('~/flash', () => ({
+  createAlert: jest.fn().mockImplementation(() => ({
+    dismiss: mockAlertDismiss,
+  })),
+}));
 
 const RULE_NAME = 'first_rule';
 const TEST_HELP_PATH = 'help/path';
@@ -87,6 +92,8 @@ describe('MRWidget approvals', () => {
       approvalRules: [],
       isOpen: true,
       state: 'open',
+      targetProjectFullPath: 'gitlab-org/gitlab',
+      iid: '1',
     };
 
     jest.spyOn(eventHub, '$emit').mockImplementation(() => {});
@@ -98,21 +105,18 @@ describe('MRWidget approvals', () => {
   });
 
   describe('when created', () => {
-    beforeEach(() => {
+    it('shows loading message', async () => {
+      service = {
+        fetchApprovals: jest.fn().mockReturnValue(new Promise(() => {})),
+      };
+
       createComponent();
-    });
-
-    it('shows loading message', () => {
-      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-      // eslint-disable-next-line no-restricted-syntax
-      wrapper.setData({ fetchingApprovals: true });
-
-      return nextTick().then(() => {
-        expect(wrapper.text()).toContain(FETCH_LOADING);
-      });
+      await nextTick();
+      expect(wrapper.text()).toContain(FETCH_LOADING);
     });
 
     it('fetches approvals', () => {
+      createComponent();
       expect(service.fetchApprovals).toHaveBeenCalled();
     });
   });
@@ -267,8 +271,15 @@ describe('MRWidget approvals', () => {
             return nextTick();
           });
 
-          it('flashes error message', () => {
+          it('shows an alert with error message', () => {
             expect(createAlert).toHaveBeenCalledWith({ message: APPROVE_ERROR });
+          });
+
+          it('clears the previous alert', () => {
+            expect(mockAlertDismiss).toHaveBeenCalledTimes(0);
+
+            findAction().vm.$emit('click');
+            expect(mockAlertDismiss).toHaveBeenCalledTimes(1);
           });
         });
       });
@@ -377,15 +388,14 @@ describe('MRWidget approvals', () => {
     });
 
     it('is rendered with props', () => {
-      const expected = testApprovals();
       const summary = findSummary();
 
       expect(findOptionalSummary().exists()).toBe(false);
       expect(summary.exists()).toBe(true);
       expect(summary.props()).toMatchObject({
-        approvalsLeft: expected.approvals_left,
-        rulesLeft: expected.approval_rules_left,
-        approvers: testApprovedBy(),
+        projectPath: 'gitlab-org/gitlab',
+        iid: '1',
+        updatedCount: 0,
       });
     });
   });

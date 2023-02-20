@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BackgroundMigration::MoveContainerRegistryEnabledToProjectFeature, :migration, schema: 20210602155110 do
+RSpec.describe Gitlab::BackgroundMigration::MoveContainerRegistryEnabledToProjectFeature, :migration, schema: 20210826171758 do
   let(:enabled) { 20 }
   let(:disabled) { 0 }
 

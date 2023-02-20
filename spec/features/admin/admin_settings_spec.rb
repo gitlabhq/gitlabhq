@@ -24,7 +24,7 @@ RSpec.describe 'Admin updates settings', feature_category: :not_owned do
       end
 
       it 'change visibility settings' do
-        page.within('.as-visibility-access') do
+        page.within('[data-testid="admin-visibility-access-settings"]') do
           choose "application_setting_default_project_visibility_20"
           click_button 'Save changes'
         end
@@ -33,23 +33,29 @@ RSpec.describe 'Admin updates settings', feature_category: :not_owned do
       end
 
       it 'uncheck all restricted visibility levels' do
-        page.within('.as-visibility-access') do
-          find('#application_setting_restricted_visibility_levels_0').set(false)
-          find('#application_setting_restricted_visibility_levels_10').set(false)
-          find('#application_setting_restricted_visibility_levels_20').set(false)
+        page.within('[data-testid="restricted-visibility-levels"]') do
+          uncheck s_('VisibilityLevel|Public')
+          uncheck s_('VisibilityLevel|Internal')
+          uncheck s_('VisibilityLevel|Private')
+        end
+
+        page.within('[data-testid="admin-visibility-access-settings"]') do
           click_button 'Save changes'
         end
 
         expect(page).to have_content "Application settings saved successfully"
-        expect(find('#application_setting_restricted_visibility_levels_0')).not_to be_checked
-        expect(find('#application_setting_restricted_visibility_levels_10')).not_to be_checked
-        expect(find('#application_setting_restricted_visibility_levels_20')).not_to be_checked
+
+        page.within('[data-testid="restricted-visibility-levels"]') do
+          expect(find_field(s_('VisibilityLevel|Public'))).not_to be_checked
+          expect(find_field(s_('VisibilityLevel|Internal'))).not_to be_checked
+          expect(find_field(s_('VisibilityLevel|Private'))).not_to be_checked
+        end
       end
 
       it 'modify import sources' do
         expect(current_settings.import_sources).not_to be_empty
 
-        page.within('.as-visibility-access') do
+        page.within('[data-testid="admin-visibility-access-settings"]') do
           Gitlab::ImportSources.options.map do |name, _|
             uncheck name
           end
@@ -60,7 +66,7 @@ RSpec.describe 'Admin updates settings', feature_category: :not_owned do
         expect(page).to have_content "Application settings saved successfully"
         expect(current_settings.import_sources).to be_empty
 
-        page.within('.as-visibility-access') do
+        page.within('[data-testid="admin-visibility-access-settings"]') do
           check "Repository by URL"
           click_button 'Save changes'
         end
@@ -70,7 +76,7 @@ RSpec.describe 'Admin updates settings', feature_category: :not_owned do
       end
 
       it 'change Visibility and Access Controls' do
-        page.within('.as-visibility-access') do
+        page.within('[data-testid="admin-visibility-access-settings"]') do
           page.within('[data-testid="project-export"]') do
             uncheck 'Enabled'
           end
@@ -88,7 +94,7 @@ RSpec.describe 'Admin updates settings', feature_category: :not_owned do
       end
 
       it 'change Keys settings' do
-        page.within('.as-visibility-access') do
+        page.within('[data-testid="admin-visibility-access-settings"]') do
           select 'Are forbidden', from: 'RSA SSH keys'
           select 'Are allowed', from: 'DSA SSH keys'
           select 'Must be at least 384 bits', from: 'ECDSA SSH keys'
@@ -155,19 +161,28 @@ RSpec.describe 'Admin updates settings', feature_category: :not_owned do
         context 'when Gitlab.com' do
           let(:dot_com?) { true }
 
-          it 'does not expose the setting' do
-            expect(page).to have_no_selector('#application_setting_deactivate_dormant_users')
-          end
-
-          it 'does not expose the setting' do
-            expect(page).to have_no_selector('#application_setting_deactivate_dormant_users_period')
+          it 'does not expose the setting section' do
+            # NOTE: not_to have_content may have false positives for content
+            #       that might not load instantly, so before checking that
+            #       `Dormant users` subsection has _not_ loaded, we check that the
+            #       `Account and limit` section _was_ loaded
+            expect(page).to have_content('Account and limit')
+            expect(page).not_to have_content('Dormant users')
+            expect(page).not_to have_field('Deactivate dormant users after a period of inactivity')
+            expect(page).not_to have_field('Days of inactivity before deactivation')
           end
         end
 
         context 'when not Gitlab.com' do
           let(:dot_com?) { false }
 
-          it 'changes Dormant users' do
+          it 'exposes the setting section' do
+            expect(page).to have_content('Dormant users')
+            expect(page).to have_field('Deactivate dormant users after a period of inactivity')
+            expect(page).to have_field('Days of inactivity before deactivation')
+          end
+
+          it 'changes dormant users' do
             expect(page).to have_unchecked_field('Deactivate dormant users after a period of inactivity')
             expect(current_settings.deactivate_dormant_users).to be_falsey
 
@@ -184,7 +199,7 @@ RSpec.describe 'Admin updates settings', feature_category: :not_owned do
             expect(page).to have_checked_field('Deactivate dormant users after a period of inactivity')
           end
 
-          it 'change Dormant users period' do
+          it 'change dormant users period' do
             expect(page).to have_field _('Days of inactivity before deactivation')
 
             page.within(find('[data-testid="account-limit"]')) do
@@ -197,6 +212,27 @@ RSpec.describe 'Admin updates settings', feature_category: :not_owned do
             page.refresh
 
             expect(page).to have_field _('Days of inactivity before deactivation'), with: '90'
+          end
+
+          it 'displays dormant users period field validation error', :js do
+            selector = '#application_setting_deactivate_dormant_users_period_error'
+            expect(page).not_to have_selector(selector, visible: :visible)
+
+            page.within(find('[data-testid="account-limit"]')) do
+              check 'application_setting_deactivate_dormant_users'
+              fill_in _('application_setting_deactivate_dormant_users_period'), with: '30'
+              click_button 'Save changes'
+            end
+
+            expect(page).to have_selector(selector, visible: :visible)
+          end
+
+          it 'auto disables dormant users period field depending on parent checkbox', :js do
+            uncheck 'application_setting_deactivate_dormant_users'
+            expect(page).to have_field('application_setting_deactivate_dormant_users_period', disabled: true)
+
+            check 'application_setting_deactivate_dormant_users'
+            expect(page).to have_field('application_setting_deactivate_dormant_users_period', disabled: false)
           end
         end
       end
@@ -329,11 +365,13 @@ RSpec.describe 'Admin updates settings', feature_category: :not_owned do
           page.within('#js-jira_connect-settings') do
             fill_in 'Jira Connect Application ID', with: '1234'
             fill_in 'Jira Connect Proxy URL', with: 'https://example.com'
+            check 'Enable public key storage'
             click_button 'Save changes'
           end
 
           expect(current_settings.jira_connect_application_key).to eq('1234')
           expect(current_settings.jira_connect_proxy_url).to eq('https://example.com')
+          expect(current_settings.jira_connect_public_key_storage_enabled).to eq(true)
           expect(page).to have_content "Application settings saved successfully"
         end
       end
@@ -791,7 +829,34 @@ RSpec.describe 'Admin updates settings', feature_category: :not_owned do
 
     context 'Preferences page' do
       before do
+        stub_feature_flags(deactivation_email_additional_text: deactivation_email_additional_text_feature_flag)
         visit preferences_admin_application_settings_path
+      end
+
+      let(:deactivation_email_additional_text_feature_flag) { true }
+
+      describe 'Email page' do
+        context 'when deactivation email additional text feature flag is enabled' do
+          it 'shows deactivation email additional text field' do
+            expect(page).to have_field 'Additional text for deactivation email'
+
+            page.within('.as-email') do
+              fill_in 'Additional text for deactivation email', with: 'So long and thanks for all the fish!'
+              click_button 'Save changes'
+            end
+
+            expect(page).to have_content 'Application settings saved successfully'
+            expect(current_settings.deactivation_email_additional_text).to eq('So long and thanks for all the fish!')
+          end
+        end
+
+        context 'when deactivation email additional text feature flag is disabled' do
+          let(:deactivation_email_additional_text_feature_flag) { false }
+
+          it 'does not show deactivation email additional text field' do
+            expect(page).not_to have_field 'Additional text for deactivation email'
+          end
+        end
       end
 
       it 'change Help page' do
@@ -861,7 +926,7 @@ RSpec.describe 'Admin updates settings', feature_category: :not_owned do
 
     context 'Nav bar' do
       it 'shows default help links in nav' do
-        default_support_url = "https://#{ApplicationHelper.promo_host}/getting-help/"
+        default_support_url = "https://#{ApplicationHelper.promo_host}/get-help/"
 
         visit root_dashboard_path
 

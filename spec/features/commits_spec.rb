@@ -24,7 +24,8 @@ RSpec.describe 'Commits', feature_category: :source_code_management do
     end
 
     context 'commit status is Generic Commit Status' do
-      let!(:status) { create(:generic_commit_status, pipeline: pipeline, ref: pipeline.ref) }
+      let(:stage) { create(:ci_stage, pipeline: pipeline, name: 'external') }
+      let!(:status) { create(:generic_commit_status, pipeline: pipeline, ref: pipeline.ref, ci_stage: stage) }
 
       before do
         project.add_reporter(user)

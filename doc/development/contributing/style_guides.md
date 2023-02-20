@@ -9,15 +9,16 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 ## Editor/IDE styling standardization
 
-We use [EditorConfig](https://editorconfig.org/) to automatically apply certain styling
-standards before files are saved locally. Most editors/IDEs will honor the `.editorconfig`
-settings automatically by default. If your editor/IDE does not automatically support `.editorconfig`,
-we suggest investigating to see if a plugin exists. For instance here is the
+We use [EditorConfig](https://editorconfig.org/) to automatically apply certain styling standards before files are saved
+locally. Some editors and IDEs honor the `.editorconfig` settings [automatically by default](https://editorconfig.org/#pre-installed).
+
+If your editor or IDE does not automatically support `.editorconfig`, we suggest investigating to
+[see if a plugin exists](https://editorconfig.org/#download). For example, a
 [plugin for vim](https://github.com/editorconfig/editorconfig-vim).
 
 ## Pre-push static analysis with Lefthook
 
-[Lefthook](https://github.com/Arkweid/lefthook) is a Git hooks manager that allows
+[Lefthook](https://github.com/evilmartians/lefthook) is a Git hooks manager that allows
 custom logic to be executed prior to Git committing or pushing. GitLab comes with
 Lefthook configuration (`lefthook.yml`), but it must be installed.
 
@@ -54,7 +55,7 @@ This should return the Lefthook version and the list of executable commands with
 Lefthook is configured with a combination of:
 
 - Project configuration in [`lefthook.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lefthook.yml).
-- Any [local configuration](https://github.com/Arkweid/lefthook/blob/master/docs/full_guide.md#local-config).
+- Any [local configuration](https://github.com/evilmartians/lefthook/blob/master/README.md#local-config).
 
 ### Disable Lefthook temporarily
 
@@ -72,7 +73,7 @@ To run the `pre-push` Git hook, run:
 bundle exec lefthook run pre-push
 ```
 
-For more information, check out [Lefthook documentation](https://github.com/Arkweid/lefthook/blob/master/docs/full_guide.md#run-githook-group-directly).
+For more information, check out [Lefthook documentation](https://github.com/evilmartians/lefthook/blob/master/README.md#direct-control).
 
 ### Skip Lefthook checks per tag
 
@@ -91,7 +92,7 @@ pre-push:
     - documentation
 ```
 
-For more information, check out [Lefthook documentation](https://github.com/Arkweid/lefthook/blob/master/docs/full_guide.md#skip-some-tags-on-the-fly).
+For more information, check out [Lefthook documentation](https://github.com/evilmartians/lefthook/blob/master/docs/configuration.md#exclude_tags).
 
 ### Skip or enable a specific Lefthook check
 
@@ -106,7 +107,7 @@ pre-push:
       skip: false
 ```
 
-For more information, check out [Lefthook documentation Skipping commands section](https://github.com/evilmartians/lefthook/blob/master/docs/full_guide.md#skipping-commands).
+For more information, check out [Lefthook documentation Skipping commands section](https://github.com/evilmartians/lefthook/blob/master/docs/configuration.md#skip).
 
 ## Database migrations
 
@@ -149,8 +150,6 @@ We're following [Ciro Santilli's Markdown Style Guide](https://cirosantilli.com/
 See the dedicated [Documentation Style Guide](../documentation/styleguide/index.md).
 
 ### Guidelines for good practices
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/36576/) in GitLab 13.2 as GitLab Development documentation.
 
 *Good practice* examples demonstrate encouraged ways of writing code while
 comparing with examples of practices to avoid. These examples are labeled as

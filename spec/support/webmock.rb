@@ -9,10 +9,24 @@ def webmock_allowed_hosts
       hosts << URI.parse(ENV['ELASTIC_URL']).host
     end
 
+    if ENV.key?('ZOEKT_INDEX_BASE_URL')
+      hosts.concat(allowed_host_and_ip(ENV['ZOEKT_INDEX_BASE_URL']))
+    end
+
+    if ENV.key?('ZOEKT_SEARCH_BASE_URL')
+      hosts.concat(allowed_host_and_ip(ENV['ZOEKT_SEARCH_BASE_URL']))
+    end
+
     if Gitlab.config.webpack&.dev_server&.enabled
       hosts << Gitlab.config.webpack.dev_server.host
     end
   end.compact.uniq
+end
+
+def allowed_host_and_ip(url)
+  host = URI.parse(url).host
+  ip_address = Addrinfo.ip(host).ip_address
+  [host, ip_address]
 end
 
 def with_net_connect_allowed

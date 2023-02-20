@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Packages::Debian::CreateDistributionService do
+RSpec.describe Packages::Debian::CreateDistributionService, feature_category: :package_registry do
   RSpec.shared_examples 'Create Debian Distribution' do |expected_message, expected_components, expected_architectures|
     let_it_be(:container) { create(container_type) } # rubocop:disable Rails/SaveBang
 

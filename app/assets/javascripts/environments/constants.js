@@ -1,4 +1,5 @@
 import { __, s__ } from '~/locale';
+import { getDateInPast } from '~/lib/utils/datetime_utility';
 
 // These statuses are based on how the backend defines pod phases here
 // lib/gitlab/kubernetes/pod.rb
@@ -77,3 +78,12 @@ export const REVIEW_APP_MODAL_I18N = {
   viewMoreExampleProjects: s__('EnableReviewApp|View more example projects'),
   copyToClipboardText: s__('EnableReviewApp|Copy snippet'),
 };
+
+export const MIN_STALE_ENVIRONMENT_DATE = getDateInPast(new Date(), 3650); // 10 years ago
+export const MAX_STALE_ENVIRONMENT_DATE = getDateInPast(new Date(), 7); // one week ago
+
+export const ENVIRONMENT_NEW_HELP_TEXT = __(
+  'Environments allow you to track deployments of your application.%{linkStart} More information.%{linkEnd}',
+);
+
+export const ENVIRONMENT_EDIT_HELP_TEXT = ENVIRONMENT_NEW_HELP_TEXT;

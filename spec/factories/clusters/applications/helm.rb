@@ -98,11 +98,6 @@ FactoryBot.define do
       cluster factory: %i(cluster with_installed_helm provided_by_gcp)
     end
 
-    factory :clusters_applications_cert_manager, class: 'Clusters::Applications::CertManager' do
-      email { 'admin@example.com' }
-      cluster factory: %i(cluster with_installed_helm provided_by_gcp)
-    end
-
     factory :clusters_applications_crossplane, class: 'Clusters::Applications::Crossplane' do
       stack { 'gcp' }
       cluster factory: %i(cluster with_installed_helm provided_by_gcp)
@@ -124,10 +119,6 @@ FactoryBot.define do
     factory :clusters_applications_jupyter, class: 'Clusters::Applications::Jupyter' do
       oauth_application factory: :oauth_application
       cluster factory: %i(cluster with_installed_helm provided_by_gcp project)
-    end
-
-    factory :clusters_applications_cilium, class: 'Clusters::Applications::Cilium' do
-      cluster factory: %i(cluster with_installed_helm provided_by_gcp)
     end
   end
 end

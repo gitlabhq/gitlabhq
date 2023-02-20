@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe IssuablesHelper do
+RSpec.describe IssuablesHelper, feature_category: :team_planning do
   let(:label)  { build_stubbed(:label) }
   let(:label2) { build_stubbed(:label) }
 
@@ -98,7 +98,7 @@ RSpec.describe IssuablesHelper do
     end
   end
 
-  describe '#assigned_issuables_count', feature_category: :project_management do
+  describe '#assigned_issuables_count', feature_category: :team_planning do
     context 'when issuable is issues' do
       let_it_be(:user) { create(:user) }
       let_it_be(:project) { create(:project).tap { |p| p.add_developer(user) } }
@@ -117,7 +117,7 @@ RSpec.describe IssuablesHelper do
     end
   end
 
-  describe '#assigned_open_issues_count_text', feature_category: :project_management do
+  describe '#assigned_open_issues_count_text', feature_category: :team_planning do
     let_it_be(:user) { create(:user) }
     let_it_be(:project) { create(:project).tap { |p| p.add_developer(user) } }
 
@@ -200,6 +200,41 @@ RSpec.describe IssuablesHelper do
         expect(content).not_to match('gl-emoji')
       end
     end
+
+    describe 'service desk reply to email address' do
+      let(:email) { 'user@example.com' }
+      let(:obfuscated_email) { 'us*****@e*****.c**' }
+      let(:service_desk_issue) { build_stubbed(:issue, project: project, author: User.support_bot, service_desk_reply_to: email) }
+
+      subject { helper.issuable_meta(service_desk_issue, project) }
+
+      context 'with anonymous user' do
+        before do
+          allow(helper).to receive(:current_user).and_return(nil)
+        end
+
+        it { is_expected.to have_content(obfuscated_email) }
+      end
+
+      context 'with signed in user' do
+        context 'when user has no role in project' do
+          before do
+            allow(helper).to receive(:current_user).and_return(user)
+          end
+
+          it { is_expected.to have_content(obfuscated_email) }
+        end
+
+        context 'when user has reporter role in project' do
+          before do
+            project.add_reporter(user)
+            allow(helper).to receive(:current_user).and_return(user)
+          end
+
+          it { is_expected.to have_content(email) }
+        end
+      end
+    end
   end
 
   describe '#issuables_state_counter_text' do
@@ -228,7 +263,7 @@ RSpec.describe IssuablesHelper do
           allow(helper).to receive(:issuables_count_for_state).and_return(-1)
         end
 
-        it 'returns avigation without badges' do
+        it 'returns navigation without badges' do
           expect(helper.issuables_state_counter_text(:issues, :opened, true))
             .to eq('<span>Open</span>')
           expect(helper.issuables_state_counter_text(:issues, :closed, true))
@@ -385,6 +420,32 @@ RSpec.describe IssuablesHelper do
         isHidden: false
       }
       expect(helper.issuable_initial_data(issue)).to match(hash_including(expected_data))
+    end
+
+    context 'for incident tab' do
+      let(:incident) { create(:incident) }
+      let(:params) do
+        ActionController::Parameters.new({
+          controller: "projects/incidents",
+          action: "show",
+          namespace_id: "foo",
+          project_id: "bar",
+          id: incident.iid
+        }).permit!
+      end
+
+      it 'includes incident attributes' do
+        @project = incident.project
+        allow(helper).to receive(:safe_params).and_return(params)
+
+        expected_data = {
+          issueType: 'incident',
+          hasLinkedAlerts: false,
+          canUpdateTimelineEvent: true
+        }
+
+        expect(helper.issuable_initial_data(incident)).to match(hash_including(expected_data))
+      end
     end
 
     describe '#sentryIssueIdentifier' do

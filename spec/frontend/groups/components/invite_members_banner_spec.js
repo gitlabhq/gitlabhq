@@ -6,6 +6,7 @@ import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import InviteMembersBanner from '~/groups/components/invite_members_banner.vue';
 import eventHub from '~/invite_members/event_hub';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 
 jest.mock('~/lib/utils/common_utils');
 
@@ -89,7 +90,7 @@ describe('InviteMembersBanner', () => {
 
     it('sends the dismissEvent when the banner is dismissed', () => {
       mockTrackingOnWrapper();
-      mockAxios.onPost(provide.calloutsPath).replyOnce(200);
+      mockAxios.onPost(provide.calloutsPath).replyOnce(HTTP_STATUS_OK);
       const dismissEvent = 'invite_members_banner_dismissed';
 
       wrapper.findComponent(GlBanner).vm.$emit('close');
@@ -136,7 +137,7 @@ describe('InviteMembersBanner', () => {
     });
 
     it('should close the banner when dismiss is clicked', async () => {
-      mockAxios.onPost(provide.calloutsPath).replyOnce(200);
+      mockAxios.onPost(provide.calloutsPath).replyOnce(HTTP_STATUS_OK);
       expect(wrapper.findComponent(GlBanner).exists()).toBe(true);
       wrapper.findComponent(GlBanner).vm.$emit('close');
 

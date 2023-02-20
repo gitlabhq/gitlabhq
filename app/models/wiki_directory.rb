@@ -6,7 +6,7 @@ class WikiDirectory
   attr_accessor :slug, :entries
 
   validates :slug, presence: true
-
+  alias_method :to_param, :slug
   # Groups a list of wiki pages into a nested collection of WikiPage and WikiDirectory objects,
   # preserving the order of the passed pages.
   #
@@ -25,6 +25,7 @@ class WikiDirectory
           parent = File.dirname(path)
           parent = '' if parent == '.'
           directories[parent].entries << directory
+          directories[parent].entries.delete_if { |item| item.is_a?(WikiPage) && item.slug == directory.slug }
         end
       end
     end
@@ -48,6 +49,6 @@ class WikiDirectory
   # Relative path to the partial to be used when rendering collections
   # of this object.
   def to_partial_path
-    '../shared/wikis/wiki_directory'
+    'shared/wikis/wiki_directory'
   end
 end

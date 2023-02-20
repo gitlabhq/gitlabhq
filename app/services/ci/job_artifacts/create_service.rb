@@ -132,8 +132,6 @@ module Ci
           job.update_column(:artifacts_expire_at, artifact.expire_at)
         end
 
-        Gitlab::Ci::Artifacts::Logger.log_created(artifact)
-
         success(artifact: artifact)
       rescue ActiveRecord::RecordNotUnique => error
         track_exception(error, params)

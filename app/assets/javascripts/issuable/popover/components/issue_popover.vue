@@ -4,7 +4,7 @@ import query from 'ee_else_ce/issuable/popover/queries/issue.query.graphql';
 import IssueDueDate from '~/boards/components/issue_due_date.vue';
 import IssueMilestone from '~/issuable/components/issue_milestone.vue';
 import StatusBox from '~/issuable/components/status_box.vue';
-import { IssuableStatus } from '~/issues/constants';
+import { STATUS_CLOSED } from '~/issues/constants';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
 
@@ -57,7 +57,7 @@ export default {
       return Object.keys(this.issue).length > 0;
     },
     isIssueClosed() {
-      return this.issue?.state === IssuableStatus.Closed;
+      return this.issue?.state === STATUS_CLOSED;
     },
   },
   apollo: {

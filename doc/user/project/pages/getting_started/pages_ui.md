@@ -34,8 +34,10 @@ a pipeline deploys your Pages website.
 To complete the setup and generate a GitLab Pages deployment:
 
 1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > Pages** (Note: this may also be
-   located at **Deployments > Pages**, [more information](../index.md#menu-position-test)).
+1. On the left sidebar, select **Settings > Pages**.
+
+   If this path is not visible, select **Deployments > Pages**.
+   [This location is part of an experiment](../index.md#menu-position-test).
    A **Get Started with Pages** form appears. If this form is not available,
    see [Troubleshooting](#if-the-get-started-with-pages-form-is-not-available).
 1. For **Step 1**, enter an image name and verify that your files are in a `public` folder.
@@ -61,10 +63,10 @@ and on the right side, select **Download artifacts**.
 
 ### If the `Get Started with Pages` form is not available
 
-When you go to **Settings > Pages**, the form is not available if you:
+The `Get Started with Pages` form is not available if you:
 
 - Deployed a GitLab Pages site before.
-- Committed a `.gitlab-ci.yml` through the forms at least one time.
+- Committed `.gitlab-ci.yml` through the forms at least one time.
 
 To fix this issue:
 

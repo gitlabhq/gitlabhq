@@ -9,7 +9,7 @@ module Projects
     APPLE_PLATFORM_LANGUAGES = %w(swift objective-c).freeze
     ANDROID_PLATFORM_LANGUAGES = %w(java kotlin).freeze
 
-    feature_category :experimentation_activation
+    feature_category :projects
     data_consistency :always
     deduplicate :until_executed
     urgency :low

@@ -5,6 +5,8 @@ export const getVersionDigest = (appEl) => appEl.dataset.versionDigest;
 export const setNotification = (appEl) => {
   const versionDigest = getVersionDigest(appEl);
   const notificationEl = document.querySelector('.header-help');
+  if (!notificationEl) return;
+
   let notificationCountEl = notificationEl.querySelector('.js-whats-new-notification-count');
 
   if (localStorage.getItem(STORAGE_KEY) === versionDigest) {

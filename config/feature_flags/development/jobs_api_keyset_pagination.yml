@@ -1,8 +1,0 @@
----
-name: jobs_api_keyset_pagination
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107152
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/385940
-milestone: '15.8'
-type: development
-group: group::pipeline execution
-default_enabled: false

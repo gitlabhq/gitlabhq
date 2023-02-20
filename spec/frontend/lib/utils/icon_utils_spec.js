@@ -1,5 +1,6 @@
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { clearSvgIconPathContentCache, getSvgIconPathContent } from '~/lib/utils/icon_utils';
 
 describe('Icon utils', () => {
@@ -30,7 +31,7 @@ describe('Icon utils', () => {
 
     describe('when the icons can be loaded', () => {
       beforeEach(() => {
-        axiosMock.onGet(gon.sprite_icons).reply(200, mockIcons);
+        axiosMock.onGet(gon.sprite_icons).reply(HTTP_STATUS_OK, mockIcons);
       });
 
       it('extracts svg icon path content from sprite icons', () => {
@@ -50,11 +51,11 @@ describe('Icon utils', () => {
       beforeEach(() => {
         axiosMock
           .onGet(gon.sprite_icons)
-          .replyOnce(500)
+          .replyOnce(HTTP_STATUS_INTERNAL_SERVER_ERROR)
           .onGet(gon.sprite_icons)
-          .replyOnce(500)
+          .replyOnce(HTTP_STATUS_INTERNAL_SERVER_ERROR)
           .onGet(gon.sprite_icons)
-          .reply(200, mockIcons);
+          .reply(HTTP_STATUS_OK, mockIcons);
       });
 
       it('returns null', () => {

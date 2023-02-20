@@ -2,8 +2,8 @@
 
 module Gitlab
   module Allowable
-    def can?(*args)
-      Ability.allowed?(*args)
+    def can?(...)
+      Ability.allowed?(...)
     end
   end
 end

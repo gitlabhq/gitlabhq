@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::EnvironmentsController do
+RSpec.describe Projects::EnvironmentsController, feature_category: :continuous_delivery do
   include MetricsDashboardHelpers
   include KubernetesHelpers
 
@@ -101,6 +101,24 @@ RSpec.describe Projects::EnvironmentsController do
                                                                             'staging/review-2')
           expect(json_response['available_count']).to eq 3
           expect(json_response['stopped_count']).to eq 1
+        end
+
+        context 'can access stop stale environments feature' do
+          it 'maintainers can access the feature' do
+            get :index, params: environment_params(format: :json)
+
+            expect(json_response['can_stop_stale_environments']).to be_truthy
+          end
+
+          context 'when user is a reporter' do
+            let(:user) { reporter }
+
+            it 'reporters cannot access the feature' do
+              get :index, params: environment_params(format: :json)
+
+              expect(json_response['can_stop_stale_environments']).to be_falsey
+            end
+          end
         end
 
         context 'when enable_environments_search_within_folder FF is disabled' do

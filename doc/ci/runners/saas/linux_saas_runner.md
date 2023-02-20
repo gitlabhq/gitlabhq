@@ -24,7 +24,7 @@ For Free, Premium, and Ultimate plan customers, jobs on these instances consume 
 The `small` machine type is the default. Your job runs on this machine type if you don't specify
 a [tags:](../../yaml/index.md#tags) keyword in your `.gitlab-ci.yml` file.
 
-CI/CD jobs that run on `medium` and `large` machine types **will** consume CI minutes at a different rate than CI/CD jobs on the `small` machine type.
+CI/CD jobs that run on `medium` and `large` machine types consumes CI minutes at a different rate than CI/CD jobs on the `small` machine type.
 
 Refer to the CI/CD minutes [cost factor](../../../ci/pipelines/cicd_minutes.md#cost-factor) for the cost factor applied to the machine type based on size.
 
@@ -167,7 +167,7 @@ from the GitLab repository.
 `CI_REPO_CACHE_CREDENTIALS` must contain the Google Cloud service account
 JSON for uploading to the `gitlab-ci-git-repo-cache` bucket.
 
-Note that this bucket should be located in the same continent as the
+This bucket should be located in the same continent as the
 runner, or [you can incur network egress charges](https://cloud.google.com/storage/pricing).
 
 ## `config.toml`

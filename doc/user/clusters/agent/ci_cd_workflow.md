@@ -66,7 +66,7 @@ To authorize the agent to access the GitLab project where you keep Kubernetes ma
 
 1. On the top bar, select **Main menu > Projects** and find the project that contains the [agent configuration file](install/index.md#create-an-agent-configuration-file) (`config.yaml`).
 1. Edit the `config.yaml` file. Under the `ci_access` keyword, add the `projects` attribute.
-1. For the `id`, add the path:
+1. For the `id`, add the path to the project. Do not wrap the path in quotation marks.
 
    ```yaml
    ci_access:

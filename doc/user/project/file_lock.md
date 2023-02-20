@@ -10,7 +10,7 @@ Preventing wasted work caused by unresolvable merge conflicts requires
 a different way of working. This means explicitly requesting write permissions,
 and verifying no one else is editing the same file before you start.
 
-Although branching strategies usually work well enough for source code and
+Although branching strategies typically work well enough for source code and
 plain text because different versions can be merged together, they do not work
 for binary files.
 
@@ -73,7 +73,7 @@ you can skip this step. If you're unsure, re-installing it does no harm:
 git lfs install
 ```
 
-Check this document to learn more about [using Git LFS](../../topics/git/lfs/index.md#using-git-lfs).
+For more information, see [Using Git LFS](../../topics/git/lfs/index.md#using-git-lfs).
 
 ### Configure Exclusive File Locks
 
@@ -209,7 +209,7 @@ requests that modify locked files. Unlock the file to allow changes.
 To lock a file:
 
 1. Open the file or directory in GitLab.
-1. On the top right, above the file, select **Lock**.
+1. In the upper right, above the file, select **Lock**.
 1. On the confirmation dialog box, select **OK**.
 
 If you do not have permission to lock the file, the button is not enabled.

@@ -8,7 +8,7 @@ class WhatsNewController < ApplicationController
   before_action :check_whats_new_enabled
   before_action :check_valid_page_param, :set_pagination_headers
 
-  feature_category :navigation
+  feature_category :onboarding
   urgency :low
 
   def index

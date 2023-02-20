@@ -4,7 +4,7 @@ group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Push Options **(FREE)**
+# Push options **(FREE)**
 
 GitLab supports using client-side [Git push options](https://git-scm.com/docs/git-push#Documentation/git-push.txt--oltoptiongt)
 to perform various actions at the same time as pushing changes. Additionally, [Push Rules](repository/push_rules.md) offer server-side control and enforcement options.
@@ -36,7 +36,7 @@ You can use push options to skip a CI/CD pipeline, or pass CI/CD variables.
 | Push option                    | Description                                                                                 | Introduced in version |
 | ------------------------------ | ------------------------------------------------------------------------------------------- |---------------------- |
 | `ci.skip`                      | Do not create a CI pipeline for the latest push. Only skips branch pipelines and not [merge request pipelines](../../ci/pipelines/merge_request_pipelines.md). | [11.7](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/15643) |
-| `ci.variable="<name>=<value>"` | Provide [CI/CD variables](../../ci/variables/index.md) to be used in a CI pipeline, if one is created due to the push. | [12.6](https://gitlab.com/gitlab-org/gitlab/-/issues/27983) |
+| `ci.variable="<name>=<value>"` | Provide [CI/CD variables](../../ci/variables/index.md) to be used in a CI pipeline, if one is created due to the push. Only passes variables to branch pipelines and not [merge request pipelines](../../ci/pipelines/merge_request_pipelines.md). | [12.6](https://gitlab.com/gitlab-org/gitlab/-/issues/27983) |
 
 An example of using `ci.skip`:
 

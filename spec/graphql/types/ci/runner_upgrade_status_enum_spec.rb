@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Types::Ci::RunnerUpgradeStatusEnum do
+RSpec.describe Types::Ci::RunnerUpgradeStatusEnum, feature_category: :runner_fleet do
   let(:model_only_enum_values) { %w[not_processed] }
   let(:expected_graphql_source_values) do
     Ci::RunnerVersion.statuses.keys - model_only_enum_values
@@ -15,6 +15,7 @@ RSpec.describe Types::Ci::RunnerUpgradeStatusEnum do
       expected_graphql_source_values
         .map(&:upcase)
         .map { |v| v == 'INVALID_VERSION' ? 'INVALID' : v }
+        .map { |v| v == 'UNAVAILABLE' ? 'NOT_AVAILABLE' : v }
     )
   end
 

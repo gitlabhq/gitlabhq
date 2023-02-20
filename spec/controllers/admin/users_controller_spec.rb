@@ -481,37 +481,22 @@ RSpec.describe Admin::UsersController do
   end
 
   describe 'PUT ban/:id', :aggregate_failures do
-    context 'when ban_user_feature_flag is enabled' do
-      it 'bans user' do
-        put :ban, params: { id: user.username }
+    it 'bans user' do
+      put :ban, params: { id: user.username }
 
-        expect(user.reload.banned?).to be_truthy
-        expect(flash[:notice]).to eq _('Successfully banned')
-      end
-
-      context 'when unsuccessful' do
-        let(:user) { create(:user, :blocked) }
-
-        it 'does not ban user' do
-          put :ban, params: { id: user.username }
-
-          user.reload
-          expect(user.banned?).to be_falsey
-          expect(flash[:alert]).to eq _('Error occurred. User was not banned')
-        end
-      end
+      expect(user.reload.banned?).to be_truthy
+      expect(flash[:notice]).to eq _('Successfully banned')
     end
 
-    context 'when ban_user_feature_flag is not enabled' do
-      before do
-        stub_feature_flags(ban_user_feature_flag: false)
-      end
+    context 'when unsuccessful' do
+      let(:user) { create(:user, :blocked) }
 
-      it 'does not ban user, renders 404' do
+      it 'does not ban user' do
         put :ban, params: { id: user.username }
 
-        expect(user.reload.banned?).to be_falsey
-        expect(response).to have_gitlab_http_status(:not_found)
+        user.reload
+        expect(user.banned?).to be_falsey
+        expect(flash[:alert]).to eq _('Error occurred. User was not banned')
       end
     end
   end

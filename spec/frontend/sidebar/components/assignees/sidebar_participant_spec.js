@@ -1,6 +1,6 @@
 import { GlAvatarLabeled, GlIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import { IssuableType } from '~/issues/constants';
+import { IssuableType, TYPE_ISSUE } from '~/issues/constants';
 import SidebarParticipant from '~/sidebar/components/assignees/sidebar_participant.vue';
 
 const user = {
@@ -16,11 +16,7 @@ describe('Sidebar participant component', () => {
   const findAvatar = () => wrapper.findComponent(GlAvatarLabeled);
   const findIcon = () => wrapper.findComponent(GlIcon);
 
-  const createComponent = ({
-    status = null,
-    issuableType = IssuableType.Issue,
-    canMerge = false,
-  } = {}) => {
+  const createComponent = ({ status = null, issuableType = TYPE_ISSUE, canMerge = false } = {}) => {
     wrapper = shallowMount(SidebarParticipant, {
       propsData: {
         user: {

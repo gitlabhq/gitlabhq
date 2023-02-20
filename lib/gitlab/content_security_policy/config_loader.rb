@@ -26,7 +26,7 @@ module Gitlab
           'manifest_src' => "'self'",
           'media_src' => "'self' data: http: https:",
           'script_src' => ContentSecurityPolicy::Directives.script_src,
-          'style_src' => "'self' 'unsafe-inline'",
+          'style_src' => ContentSecurityPolicy::Directives.style_src,
           'worker_src' => "#{Gitlab::Utils.append_path(Gitlab.config.gitlab.url, 'assets/')} blob: data:",
           'object_src' => "'none'",
           'report_uri' => nil
@@ -43,6 +43,7 @@ module Gitlab
 
         allow_websocket_connections(directives)
         allow_cdn(directives, Settings.gitlab.cdn_host) if Settings.gitlab.cdn_host.present?
+        allow_zuora(directives) if Gitlab.com?
         # Support for Sentry setup via configuration files will be removed in 16.0
         # in favor of Gitlab::CurrentSettings.
         allow_legacy_sentry(directives) if Gitlab.config.sentry&.enabled && Gitlab.config.sentry&.clientside_dsn
@@ -126,6 +127,14 @@ module Gitlab
         append_to_directive(directives, 'font_src', cdn_host)
         append_to_directive(directives, 'worker_src', cdn_host)
         append_to_directive(directives, 'frame_src', cdn_host)
+      end
+
+      def self.zuora_host
+        "https://*.zuora.com/apps/PublicHostedPageLite.do"
+      end
+
+      def self.allow_zuora(directives)
+        append_to_directive(directives, 'frame_src', zuora_host)
       end
 
       def self.append_to_directive(directives, directive, text)

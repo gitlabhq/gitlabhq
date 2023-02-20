@@ -1,7 +1,10 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Manage', product_group: :import do
+  RSpec.describe 'Manage', product_group: :import, quarantine: {
+    issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/391230',
+    type: :waiting_on
+  } do
     describe 'GitHub import' do
       include_context 'with github import'
 
@@ -49,9 +52,9 @@ module QA
 
             aggregate_failures do
               expect(import_page).to have_imported_project(github_repo, wait: 240)
-              # validate button is present instead of navigating to avoid dealing with multiple tabs
+              # validate link is present instead of navigating to avoid dealing with multiple tabs
               # which makes the test more complicated
-              expect(import_page).to have_go_to_project_button(github_repo)
+              expect(import_page).to have_go_to_project_link(github_repo)
             end
           end
 

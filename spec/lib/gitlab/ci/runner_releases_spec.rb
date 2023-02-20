@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::RunnerReleases do
+RSpec.describe Gitlab::Ci::RunnerReleases, feature_category: :runner_fleet do
   subject { described_class.instance }
 
   let(:runner_releases_url) { 'http://testurl.com/runner_public_releases' }

@@ -30,7 +30,7 @@ GET /projects/:id/templates/:type
 
 | Attribute  | Type   | Required | Description |
 | ---------- | ------ | -------- | ----------- |
-| `id`      | integer or string | **{check-circle}** Yes       | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding). |
+| `id`      | integer or string | **{check-circle}** Yes       | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
 | `type`     | string | **{check-circle}** Yes  | The type of the template. Accepted values are: `dockerfiles`, `gitignores`, `gitlab_ci_ymls`, `licenses`, `issues`, or `merge_requests`. |
 
 Example response (licenses):
@@ -96,7 +96,7 @@ GET /projects/:id/templates/:type/:name
 
 | Attribute  | Type   | Required | Description |
 | ---------- | ------ | -------- | ----------- |
-| `id`      | integer or string | **{check-circle}** Yes       | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding). |
+| `id`      | integer or string | **{check-circle}** Yes       | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
 | `name`     | string | **{check-circle}** Yes       | The key of the template, as obtained from the collection endpoint. |
 | `type`     | string | **{check-circle}** Yes | The type of the template. One of: `dockerfiles`, `gitignores`, `gitlab_ci_ymls`, `licenses`, `issues`, or `merge_requests`. |
 | `fullname` | string | **{dotted-circle}** No        | The full name of the copyright holder to use when expanding placeholders in the template. Affects only licenses. |

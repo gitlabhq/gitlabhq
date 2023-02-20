@@ -5,9 +5,9 @@ import { joinPaths } from '~/lib/utils/url_utility';
  * Example: /root/Flight/-/blob/fix/main/test/spec/utils_spec.js
  * Group 1:  /-/blob
  * Group 2:  blob
- * Group 3:  main/test/spec/utils_spec.js
+ * Group 3: /test/spec/utils_spec.js
  */
-const NAMESPACE_TARGET_REGEX = /(\/-\/(blob|tree))\/.*?\/(.*)/;
+const getNamespaceTargetRegex = (ref) => new RegExp(`(/-/(blob|tree))/${ref}/(.*)`);
 
 /**
  * Generates a ref destination path based on the selected ref and current path.
@@ -15,11 +15,12 @@ const NAMESPACE_TARGET_REGEX = /(\/-\/(blob|tree))\/.*?\/(.*)/;
  * @param {string} projectRootPath - The root path for a project.
  * @param {string} selectedRef - The selected ref from the ref dropdown.
  */
-export function generateRefDestinationPath(projectRootPath, selectedRef) {
+export function generateRefDestinationPath(projectRootPath, ref, selectedRef) {
   const currentPath = window.location.pathname;
   const encodedHash = '%23';
   let namespace = '/-/tree';
   let target;
+  const NAMESPACE_TARGET_REGEX = getNamespaceTargetRegex(ref);
   const match = NAMESPACE_TARGET_REGEX.exec(currentPath);
   if (match) {
     [, namespace, , target] = match;

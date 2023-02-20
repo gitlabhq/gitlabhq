@@ -22,6 +22,10 @@ class GlobalPolicy < BasePolicy
   condition(:project_bot, scope: :user) { @user&.project_bot? }
   condition(:migration_bot, scope: :user) { @user&.migration_bot? }
 
+  condition(:create_runner_workflow_enabled) do
+    Feature.enabled?(:create_runner_workflow)
+  end
+
   rule { anonymous }.policy do
     prevent :log_in
     prevent :receive_notifications
@@ -115,6 +119,11 @@ class GlobalPolicy < BasePolicy
     enable :approve_user
     enable :reject_user
     enable :read_usage_trends_measurement
+    enable :create_instance_runners
+  end
+
+  rule { ~create_runner_workflow_enabled }.policy do
+    prevent :create_instance_runners
   end
 
   # We can't use `read_statistics` because the user may have different permissions for different projects

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe Packages::Debian::ExtractMetadataService do
+RSpec.describe Packages::Debian::ExtractMetadataService, feature_category: :package_registry do
   let(:service) { described_class.new(package_file) }
 
   subject { service.execute }

@@ -14,7 +14,7 @@ pre-push:
       tags: style
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
       glob: '*.{json}'
-      run: scripts/lint-json.sh {files}
+      run: scripts/lint-json -v {files}
     haml-lint:
       tags: view haml style
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD

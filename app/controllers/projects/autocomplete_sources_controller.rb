@@ -6,7 +6,7 @@ class Projects::AutocompleteSourcesController < Projects::ApplicationController
 
   feature_category :team_planning, [:issues, :labels, :milestones, :commands, :contacts]
   feature_category :code_review_workflow, [:merge_requests]
-  feature_category :users, [:members]
+  feature_category :user_profile, [:members]
   feature_category :source_code_management, [:snippets]
 
   urgency :low, [:merge_requests, :members]
@@ -54,6 +54,8 @@ class Projects::AutocompleteSourcesController < Projects::ApplicationController
     # type_id is not required in general
     target_type = params.require(:type)
 
+    # TODO https://gitlab.com/gitlab-org/gitlab/-/issues/388541
+    # type_id is a misnomer. QuickActions::TargetService actually requires an iid.
     QuickActions::TargetService
       .new(project, current_user)
       .execute(target_type, params[:type_id])

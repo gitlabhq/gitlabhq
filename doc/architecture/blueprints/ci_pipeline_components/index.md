@@ -1,5 +1,5 @@
 ---
-status: proposed
+status: ongoing
 creation-date: "2022-09-14"
 authors: [ "@ayufan", "@fabiopitino", "@grzesiek" ]
 coach: [ "@ayufan", "@grzesiek" ]
@@ -8,20 +8,22 @@ owning-stage: "~devops::verify"
 participating-stages: []
 ---
 
-# CI/CD pipeline components catalog
+# CI/CD Catalog
 
 ## Summary
 
 ## Goals
 
-The goal of the CI/CD pipeline components catalog is to make the reusing pipeline configurations
-easier and more efficient.
-Providing a way to discover, understand and learn how to reuse pipeline constructs allows for a more streamlined experience.
-Having a CI/CD pipeline components catalog also sets a framework for users to collaborate on pipeline constructs so that they can be evolved
-and improved over time.
+The goal of the CI/CD pipeline components catalog is to make the reusing
+pipeline configurations easier and more efficient. Providing a way to
+discover, understand and learn how to reuse pipeline constructs allows for a
+more streamlined experience. Having a CI/CD pipeline components catalog also
+sets a framework for users to collaborate on pipeline constructs so that they
+can be evolved and improved over time.
 
-This blueprint defines the architectural guidelines on how to build a CI/CD catalog of pipeline components.
-This blueprint also defines the long-term direction for iterations and improvements to the solution.
+This blueprint defines the architectural guidelines on how to build a CI/CD
+catalog of pipeline components. This blueprint also defines the long-term
+direction for iterations and improvements to the solution.
 
 ## Challenges
 
@@ -55,7 +57,7 @@ This blueprint also defines the long-term direction for iterations and improveme
   - The user should be able to import the job inside a given stage or pass the stage names as input parameter
     when using the component.
   - Failures in mapping the correct stage can result in confusing errors.
-- Some templates are designed to work with AutoDevops but are not generic enough
+- Some templates are designed to work with AutoDevOps but are not generic enough
   ([example](https://gitlab.com/gitlab-org/gitlab/-/blob/2c0e8e4470001442e999391df81e19732b3439e6/lib/gitlab/ci/templates/AWS/Deploy-ECS.gitlab-ci.yml)).
 - Many CI templates, especially those [language specific](https://gitlab.com/gitlab-org/gitlab/-/tree/2c0e8e4470001442e999391df81e19732b3439e6/lib/gitlab/ci/templates)
   are tutorial/scaffolding-style templates.
@@ -82,21 +84,7 @@ This blueprint also defines the long-term direction for iterations and improveme
 - Competitive landscape is showing the need for such feature
   - [R2DevOps](https://r2devops.io) implements a catalog of CI templates for GitLab pipelines.
   - [GitHub Actions](https://github.com/features/actions) provides an extensive catalog of reusable job steps.
-
-## Implementation guidelines
-
-- Start with the smallest user base. Dogfood the feature for `gitlab-org` and `gitlab-com` groups.
-  Involve the Engineering Productivity and other groups authoring pipeline configurations to test
-  and validate our solutions.
-- Ensure we can integrate all the feedback gathered, even if that means changing the technical design or
-  UX. Until we make the feature GA we should have clear expectations with early adopters.
-- Reuse existing functionality as much as possible. Don't reinvent the wheel on the initial iterations.
-  For example: reuse project features like title, description, avatar to build a catalog.
-- Leverage GitLab features for the development lifecycle of the components (testing via `.gitlab-ci.yml`,
-  release management, Pipeline Editor, etc.).
-- Design the catalog with self-managed support in mind.
-- Allow the catalog an the workflow to support future types of pipeline constructs and new ways of using them.
-- Design components and catalog following industry best practice related to building deterministic package managers.
+  - [CircleCI Orbs](https://circleci.com/orbs/) provide reusable YAML configuration packages.
 
 ## Glossary
 
@@ -158,38 +146,50 @@ unable to achieve it early iterations.
 
 ## Structure of a component
 
-A pipeline component is identified by the path to a repository or directory that defines it
-and a specific version: `<component-path>@<version>`.
+A pipeline component is identified by a unique address in the form `<fqdn>/<component-path>@<version>` containing:
 
-For example: `gitlab-org/dast@1.0`.
+- FQDN (Fully Qualified Domain Name).
+- The path to a repository or directory that defines it.
+- A specific version
+
+For example: `gitlab.com/gitlab-org/dast@1.0`.
+
+### The FQDN
+
+Initially we support only component addresses that point to the same GitLab instance, meaning that the FQDN matches
+the GitLab host.
 
 ### The component path
 
-A component path must contain at least the component YAML and optionally a
+The directory identified by the component path must contain at least the component YAML and optionally a
 related `README.md` documentation file.
 
 The component path can be:
 
-- A path to a project: `gitlab-org/dast`. The default component is processed.
-- A path to an explicit component: `gitlab-org/dast/api-scan`. In this case the explicit `api-scan` component is processed.
-- A path to a local directory: `/path/to/component`. This path must contain the component YAML that defines the component.
-  The path must start with `/` to indicate a full path in the repository.
+- A path to a project: `gitlab.com/gitlab-org/dast`. The default component is processed.
+- A path to an explicit component: `gitlab.com/gitlab-org/dast/api-scan`. In this case the explicit `api-scan` component is processed.
+- A relative path to a local directory: `./path/to/component`. This path must contain the component YAML that defines the component.
+  The path must start with `./` or `../` to indicate a path relative to the current file's path.
+
+Relative local paths are a abbreviated form of the full component address, meaning that `./path/to/component` called from
+a file `mydir/file.yml` in `gitlab-org/dast` project would be expanded to:
+
+```plaintext
+gitlab.com/gitlab-org/dast/mydir/path/to/component@<CURRENT_SHA>
+```
 
 The component YAML file follows the filename convention `<type>.yml` where component type is one of:
 
 | Component type | Context |
 | -------------- | ------- |
 | `template`     | For components used under `include:` keyword |
-| `step`         | For components used under `steps:` keyword  |
 
 Based on the context where the component is used we fetch the correct YAML file.
 For example:
 
-- if we are including a component `gitlab-org/dast@1.0` we expect a YAML file named `template.yml` in the
+- if we are including a component `gitlab.com/gitlab-org/dast@1.0` we expect a YAML file named `template.yml` in the
   root directory of `gitlab-org/dast` repository.
-- if we are including a component `gitlab-org/dast/api-scan@1.0` we expect a YAML file named `template.yml` inside a
-  directory `api-scan` of `gitlab-org/dast` repository.
-- if we are using a step component `gitlab-org/dast/api-scan@1.0` we expect a YAML file named `step.yml` inside a
+- if we are including a component `gitlab.com/gitlab-org/dast/api-scan@1.0` we expect a YAML file named `template.yml` inside a
   directory `api-scan` of `gitlab-org/dast` repository.
 
 A component YAML file:
@@ -225,11 +225,11 @@ even when not releasing versions in the catalog.
 
 The version of the component can be (in order of highest priority first):
 
-1. A commit SHA - For example: `gitlab-org/dast@e3262fdd0914fa823210cdb79a8c421e2cef79d8`
-1. A released tag - For example: `gitlab-org/dast@1.0`
-1. A special moving target version that points to the most recent released tag - For example: `gitlab-org/dast@~latest`
-1. An unreleased tag - For example: `gitlab-org/dast@rc-1.0`
-1. A branch name - For example: `gitlab-org/dast@master`
+1. A commit SHA - For example: `gitlab.com/gitlab-org/dast@e3262fdd0914fa823210cdb79a8c421e2cef79d8`
+1. A released tag - For example: `gitlab.com/gitlab-org/dast@1.0`
+1. A special moving target version that points to the most recent released tag - For example: `gitlab.com/gitlab-org/dast@~latest`
+1. An unreleased tag - For example: `gitlab.com/gitlab-org/dast@rc-1.0`
+1. A branch name - For example: `gitlab.com/gitlab-org/dast@master`
 
 If a tag and branch exist with the same name, the tag takes precedence over the branch.
 Similarly, if a tag is named `e3262fdd0914fa823210cdb79a8c421e2cef79d8`, a commit SHA (if exists)
@@ -267,7 +267,7 @@ The following directory structure would support 1 component per project:
 
 The `.gitlab-ci.yml` is recommended for the project to ensure changes are verified accordingly.
 
-The component is now identified by the path `myorg/rails-rspec` and we expect a `template.yml` file
+The component is now identified by the path `gitlab.com/myorg/rails-rspec` and we expect a `template.yml` file
 and `README.md` located in the root directory of the repository.
 
 The following directory structure would support multiple components per project:
@@ -287,8 +287,8 @@ The following directory structure would support multiple components per project:
 In this example we are defining multiple test profiles that are executed with RSpec.
 The user could choose to use one or more of these.
 
-Each of these components are identified by their path `myorg/rails-rspec/unit`, `myorg/rails-rspec/integration`
-and `myorg/rails-rspec/feature`.
+Each of these components are identified by their path `gitlab.com/myorg/rails-rspec/unit`, `gitlab.com/myorg/rails-rspec/integration`
+and `gitlab.com/myorg/rails-rspec/feature`.
 
 This directory structure could also support both strategies:
 
@@ -302,12 +302,8 @@ This directory structure could also support both strategies:
 │   └── template.yml   # myorg/rails-rspec/unit
 ├── integration/
 │   └── template.yml   # myorg/rails-rspec/integration
-├── feature/
-│   └── template.yml   # myorg/rails-rspec/feature
-└── report/
-    ├── step.yml       # myorg/rails-rspec/report
-    ├── Dockerfile
-    └── ... other files
+└── feature/
+    └── template.yml   # myorg/rails-rspec/feature
 ```
 
 With the above structure we could have a top-level component that can be used as the
@@ -329,6 +325,8 @@ spec:
     website: # by default all declared inputs are mandatory.
     environment:
       default: test # apply default if not provided. This makes the input optional.
+    flags:
+      default: null # make an input entirely optional with no value by default.
     test_run:
       options: # a choice must be made from the list since there is no default value.
         - unit
@@ -347,7 +345,7 @@ When using the component we pass the input parameters as follows:
 
 ```yaml
 include:
-  - component: org/my-component@1.0
+  - component: gitlab.com/org/my-component@1.0
     with:
       website: ${MY_WEBSITE} # variables expansion
       test_run: system
@@ -359,7 +357,7 @@ possible [inputs provided upstream](#input-parameters-for-pipelines).
 
 Input parameters are validated as soon as possible:
 
-1. Read the file `gitlab-template.yml` inside `org/my-component`.
+1. Read the file `gitlab-template.yml` inside `org/my-component` project.
 1. Parse `spec:inputs` from the specifications and validate the parameters against this schema.
 1. If successfully validated, proceed with parsing the content. Return an error otherwise.
 1. Interpolate input parameters inside the component's content.
@@ -382,6 +380,32 @@ scan-website:
 ```
 
 With `$[[ inputs.XXX ]]` inputs are interpolated immediately after parsing the content.
+
+### CI configuration interpolation perspectives and limitations
+
+With `spec:` users will be able to define input arguments for CI configuration.
+With `with:` keywords, they will pass these arguments to CI components.
+
+`inputs` in `$[[ inputs.something ]]` is going to be an initial "object" or
+"container" that we will provide, to allow users to access their arguments in
+the interpolation block. This, however, can evolve into myriads of directions, for example:
+
+1. We could provide `variables` or `env` object, for users to access their environment variables easier.
+1. We can extend the block evaluation to easier navigate JSON or YAML objects passed from elsewhere.
+1. We can provide access to the repository files, snippets or issues from there too.
+
+The CI configuration interpolation is a relative compute-intensive technology,
+especially because we foresee this mechanism being used frequently on
+GitLab.com. In order to ensure that users are using this responsibly, we have
+introduced various limits, required to keep our production system safe. The
+limits should not impact users, because there are application limits available
+on a different level (maximum YAML size supported, timeout on parsing YAML
+files etc); the interpolation limits we've introduced are typically much higher
+then these. Some of them are:
+
+1. An interpolation block should not be larger than 1 kilobyte.
+1. A YAML value with interpolation in it can't be larger than 1 megabyte.
+1. YAML configuration can't consist of more than half million entries.
 
 ### Why input parameters and not environment variables?
 
@@ -407,7 +431,7 @@ extend it to other `include:` types support inputs via `with:` syntax:
 
 ```yaml
 include:
-  - component: org/my-component@1.0
+  - component: gitlab.com/org/my-component@1.0
     with:
       foo: bar
   - local: path/to/file.yml
@@ -492,7 +516,7 @@ spec:
 # rest of the pipeline config
 ```
 
-## Limits
+### Limits
 
 Any MVC that exposes a feature should be added with limitations from the beginning.
 It's safer to add new features with restrictions than trying to limit a feature after it's being used.
@@ -505,6 +529,41 @@ Some limits we could consider adding:
 - number of imports that a component can declare/use
 - max level of nested imports
 - max length of the exported component name
+
+## Publishing components
+
+Users will be able to publish CI Components into a CI Catalog. This can happen
+in a CI pipeline job, similarly to how software is being deployed following
+Continuous Delivery principles. This will allow us to guardrail the quality of
+components being deployed. To ensure that the CI Components meet quality
+standards users will be able to test them before publishing new versions in the
+CI Catalog.
+
+Once a project containing components gets published we will index components'
+metadata. We want to initially index as much metadata as possible, to gain more
+flexibility in how we design CI Catalog's main page. We don't want to be
+constrained by the lack of data available to properly visualize CI Components
+in CI Catalog. In order to do that, we may need to find all components that are
+being published, read their `spec` metadata and index what we find there.
+
+## Implementation guidelines
+
+- Start with the smallest user base. Dogfood the feature for `gitlab-org` and
+  `gitlab-com` groups. Involve the Engineering Productivity and other groups
+  authoring pipeline configurations to test and validate our solutions.
+- Ensure we can integrate all the feedback gathered, even if that means
+  changing the technical design or UX. Until we make the feature GA we should
+  have clear expectations with early adopters.
+- Reuse existing functionality as much as possible. Don't reinvent the wheel on
+  the initial iterations. For example: reuse project features like title,
+  description, avatar to build a catalog.
+- Leverage GitLab features for the development lifecycle of the components
+  (testing via `.gitlab-ci.yml`, release management, Pipeline Editor, etc.).
+- Design the catalog with self-managed support in mind.
+- Allow the catalog and the workflow to support future types of pipeline
+  constructs and new ways of using them.
+- Design components and catalog following industry best practice related to
+  building deterministic package managers.
 
 ## Iterations
 

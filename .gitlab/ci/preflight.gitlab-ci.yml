@@ -1,0 +1,14 @@
+rails-production-environment:
+  extends:
+    - .default-before_script
+    - .production
+    - .ruby-cache
+    - .setup:rules:rails-production-environment
+    - .use-pg12
+  stage: preflight
+  variables:
+    BUNDLE_WITHOUT: "development:test"
+    BUNDLE_WITH: "production"
+  needs: []
+  script:
+    - bundle exec rails runner --environment=production 'puts Rails.env'

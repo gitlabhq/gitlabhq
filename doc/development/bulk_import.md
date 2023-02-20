@@ -4,16 +4,16 @@ group: Import
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab Group Migration
+# Group migration by direct transfer
 
 [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2771) in GitLab 13.7.
 
 WARNING:
 This feature is [under construction](https://gitlab.com/groups/gitlab-org/-/epics/2771) and its API/Architecture might change in the future.
 
-GitLab Group Migration is the evolution of Project and Group Import functionality. The
-goal is to have an easier way to the user migrate a whole Group, including
-Projects, from one GitLab instance to another.
+[Group migration by direct transfer](../user/group/import/index.md#migrate-groups-by-direct-transfer-recommended) is the
+evolution of migrating groups and projects using file exports. The goal is to have an easier way for the user to migrate a whole group,
+including projects, from one GitLab instance to another.
 
 ## Design decisions
 
@@ -24,7 +24,7 @@ works with a set of [ETL](#etl) Pipelines leveraging from the current [GitLab AP
 
 ![Simplified Component Overview](img/bulk_imports_overview_v13_7.png)
 
-### [ETL](https://www.ibm.com/cloud/learn/etl)
+### [ETL](https://www.ibm.com/topics/etl)
 
 <!-- Direct quote from the IBM URL link -->
 
@@ -40,9 +40,9 @@ idea is to have one ETL pipeline for each relation to be imported.
 The current [Project](../user/project/settings/import_export.md) and [Group](../user/group/settings/import_export.md) Import are file based, so they require an export
 step to generate the file to be imported.
 
-GitLab Group migration leverages on [GitLab API](../api/index.md) to speed the migration.
+GitLab Group migration leverages on [GitLab API](../api/rest/index.md) to speed the migration.
 
-And, because we're on the road to [GraphQL](../api/index.md#graphql-api),
+And, because we're on the road to [GraphQL](../api/graphql/index.md),
 GitLab Group Migration will be contributing towards to expand the GraphQL API coverage, which benefits both GitLab
 and its users.
 

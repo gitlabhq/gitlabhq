@@ -1215,11 +1215,23 @@ RSpec.describe API::Releases, feature_category: :release_orchestration do
       end
 
       context 'with a project milestone' do
-        let(:milestone_params) { { milestones: [milestone.title] } }
+        shared_examples 'adds milestone' do
+          it 'adds the milestone' do
+            expect(response).to have_gitlab_http_status(:created)
+            expect(returned_milestones).to match_array(['v1.0'])
+          end
+        end
 
-        it 'adds the milestone' do
-          expect(response).to have_gitlab_http_status(:created)
-          expect(returned_milestones).to match_array(['v1.0'])
+        context 'by title' do
+          let(:milestone_params) { { milestones: [milestone.title] } }
+
+          it_behaves_like 'adds milestone'
+        end
+
+        context 'by id' do
+          let(:milestone_params) { { milestone_ids: [milestone.id] } }
+
+          it_behaves_like 'adds milestone'
         end
       end
 
@@ -1408,18 +1420,14 @@ RSpec.describe API::Releases, feature_category: :release_orchestration do
 
       context 'when a milestone is passed in' do
         let(:milestone) { create(:milestone, project: project, title: 'v1.0') }
-        let(:milestone_title) { milestone.title }
-        let(:params) { { milestones: [milestone_title] } }
+        let!(:milestone2) { create(:milestone, project: project, title: 'v2.0') }
 
         before do
           release.milestones << milestone
         end
 
-        context 'a different milestone' do
-          let(:milestone_title) { 'v2.0' }
-          let!(:milestone2) { create(:milestone, project: project, title: milestone_title) }
-
-          it 'replaces the milestone' do
+        shared_examples 'updates milestone' do
+          it 'updates the milestone' do
             subject
 
             expect(response).to have_gitlab_http_status(:ok)
@@ -1427,8 +1435,20 @@ RSpec.describe API::Releases, feature_category: :release_orchestration do
           end
         end
 
+        context 'by title' do
+          let(:params) { { milestones: [milestone2.title] } }
+
+          it_behaves_like 'updates milestone'
+        end
+
+        context 'by id' do
+          let(:params) { { milestone_ids: [milestone2.id] } }
+
+          it_behaves_like 'updates milestone'
+        end
+
         context 'an identical milestone' do
-          let(:milestone_title) { 'v1.0' }
+          let(:params) { { milestones: [milestone.title] } }
 
           it 'does not change the milestone' do
             subject
@@ -1439,7 +1459,7 @@ RSpec.describe API::Releases, feature_category: :release_orchestration do
         end
 
         context 'an empty milestone' do
-          let(:milestone_title) { nil }
+          let(:params) { { milestones: [] } }
 
           it 'removes the milestone' do
             subject
@@ -1476,13 +1496,26 @@ RSpec.describe API::Releases, feature_category: :release_orchestration do
           context 'with all new' do
             let!(:milestone2) { create(:milestone, project: project, title: 'milestone2') }
             let!(:milestone3) { create(:milestone, project: project, title: 'milestone3') }
-            let(:params) { { milestones: [milestone2.title, milestone3.title] } }
 
-            it 'replaces the milestones' do
-              subject
+            shared_examples 'update milestones' do
+              it 'replaces the milestones' do
+                subject
 
-              expect(response).to have_gitlab_http_status(:ok)
-              expect(returned_milestones).to match_array(%w(milestone2 milestone3))
+                expect(response).to have_gitlab_http_status(:ok)
+                expect(returned_milestones).to match_array(%w(milestone2 milestone3))
+              end
+            end
+
+            context 'by title' do
+              let(:params) { { milestones: [milestone2.title, milestone3.title] } }
+
+              it_behaves_like 'update milestones'
+            end
+
+            context 'by id' do
+              let(:params) { { milestone_ids: [milestone2.id, milestone3.id] } }
+
+              it_behaves_like 'update milestones'
             end
           end
         end

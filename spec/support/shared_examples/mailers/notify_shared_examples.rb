@@ -280,6 +280,12 @@ RSpec.shared_examples 'no email is sent' do
   end
 end
 
+RSpec.shared_examples 'a mail with default delivery method' do
+  it 'uses mailer default delivery method' do
+    expect(subject.delivery_method).to be_a ActionMailer::Base.delivery_methods[described_class.delivery_method]
+  end
+end
+
 RSpec.shared_examples 'does not render a manage notifications link' do
   it do
     aggregate_failures do

@@ -4,7 +4,8 @@ module Sidebars
   module YourWork
     module Menus
       class MergeRequestsMenu < ::Sidebars::Menu
-        include Gitlab::Utils::StrongMemoize
+        include IssuablesHelper
+        include MergeRequestsHelper
 
         override :link
         def link
@@ -19,6 +20,14 @@ module Sidebars
         override :sprite_icon
         def sprite_icon
           'merge-request'
+        end
+
+        override :configure_menu_items
+        def configure_menu_items
+          add_item(assigned_mrs_menu_item)
+          add_item(reviewer_mrs_menu_item)
+
+          true
         end
 
         override :render?
@@ -38,9 +47,36 @@ module Sidebars
 
         override :pill_count
         def pill_count
-          context.current_user.assigned_open_merge_requests_count
+          user_merge_requests_counts[:total]
         end
-        strong_memoize_attr :pill_count
+
+        private
+
+        def assigned_mrs_menu_item
+          link = merge_requests_dashboard_path(assignee_username: context.current_user.username)
+
+          ::Sidebars::MenuItem.new(
+            title: _('Assigned'),
+            link: link,
+            active_routes: { page: link },
+            has_pill: true,
+            pill_count: user_merge_requests_counts[:assigned],
+            item_id: :merge_requests_assigned
+          )
+        end
+
+        def reviewer_mrs_menu_item
+          link = merge_requests_dashboard_path(reviewer_username: context.current_user.username)
+
+          ::Sidebars::MenuItem.new(
+            title: _('Review requests'),
+            link: link,
+            active_routes: { page: link },
+            has_pill: true,
+            pill_count: user_merge_requests_counts[:review_requested],
+            item_id: :merge_requests_to_review
+          )
+        end
       end
     end
   end

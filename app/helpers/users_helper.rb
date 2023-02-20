@@ -120,10 +120,6 @@ module UsersHelper
     !user.confirmed?
   end
 
-  def ban_feature_available?
-    Feature.enabled?(:ban_user_feature_flag)
-  end
-
   def confirm_user_data(user)
     message = if user.unconfirmed_email.present?
                 _('This user has an unconfirmed email address (%{email}). You may force a confirmation.') % { email: user.unconfirmed_email }
@@ -262,9 +258,11 @@ module UsersHelper
     if with_schema_markup
       job_title = '<span itemprop="jobTitle">'.html_safe + job_title + "</span>".html_safe
       organization = '<span itemprop="worksFor">'.html_safe + organization + "</span>".html_safe
-    end
 
-    html_escape(s_('Profile|%{job_title} at %{organization}')) % { job_title: job_title, organization: organization }
+      html_escape(s_('Profile|%{job_title} at %{organization}')) % { job_title: job_title, organization: organization }
+    else
+      s_('Profile|%{job_title} at %{organization}') % { job_title: job_title, organization: organization }
+    end
   end
 
   def user_table_headers
@@ -301,6 +299,10 @@ module UsersHelper
       product_designer: s_('User|Product Designer'),
       other: s_('User|Other')
     }.with_indifferent_access.freeze
+  end
+
+  def saved_replies_enabled?
+    Feature.enabled?(:saved_replies, current_user)
   end
 end
 

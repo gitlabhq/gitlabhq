@@ -57,11 +57,6 @@ RSpec.shared_examples 'namespace traversal' do
   end
 
   describe '#ancestors' do
-    before do
-      # #reload is called to make sure traversal_ids are reloaded
-      reload_models(group, nested_group, deep_nested_group, very_deep_nested_group)
-    end
-
     it 'returns the correct ancestors' do
       expect(very_deep_nested_group.ancestors).to contain_exactly(group, nested_group, deep_nested_group)
       expect(deep_nested_group.ancestors).to contain_exactly(group, nested_group)

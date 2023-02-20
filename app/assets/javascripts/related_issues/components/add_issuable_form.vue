@@ -1,10 +1,10 @@
 <script>
 import { GlFormGroup, GlFormRadioGroup, GlButton } from '@gitlab/ui';
+import { TYPE_ISSUE } from '~/issues/constants';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
 
 import {
-  issuableTypesMap,
   itemAddFailureTypesMap,
   linkedIssueTypesMap,
   addRelatedIssueErrorMap,
@@ -54,7 +54,7 @@ export default {
     issuableType: {
       type: String,
       required: false,
-      default: issuableTypesMap.ISSUE,
+      default: TYPE_ISSUE,
     },
     hasError: {
       type: Boolean,

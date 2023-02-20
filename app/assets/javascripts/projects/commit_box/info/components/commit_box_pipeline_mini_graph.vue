@@ -6,6 +6,7 @@ import {
   getQueryHeaders,
   toggleQueryPollingByVisibility,
 } from '~/pipelines/components/graph/utils';
+import { keepLatestDownstreamPipelines } from '~/pipelines/components/parsing_utils';
 import PipelineMiniGraph from '~/pipelines/components/pipeline_mini_graph/pipeline_mini_graph.vue';
 import { formatStages } from '../utils';
 import getLinkedPipelinesQuery from '../graphql/queries/get_linked_pipelines.query.graphql';
@@ -91,7 +92,8 @@ export default {
   },
   computed: {
     downstreamPipelines() {
-      return this.pipeline?.downstream?.nodes;
+      const downstream = this.pipeline?.downstream?.nodes;
+      return keepLatestDownstreamPipelines(downstream);
     },
     pipelinePath() {
       return this.pipeline?.path ?? '';

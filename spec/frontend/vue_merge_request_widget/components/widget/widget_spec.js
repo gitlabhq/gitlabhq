@@ -7,6 +7,8 @@ import StatusIcon from '~/vue_merge_request_widget/components/extensions/status_
 import ActionButtons from '~/vue_merge_request_widget/components/widget/action_buttons.vue';
 import Widget from '~/vue_merge_request_widget/components/widget/widget.vue';
 import WidgetContentRow from '~/vue_merge_request_widget/components/widget/widget_content_row.vue';
+import * as logger from '~/lib/logger';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 
 jest.mock('~/vue_merge_request_widget/components/extensions/telemetry', () => ({
   createTelemetryHub: jest.fn().mockReturnValue({
@@ -32,7 +34,7 @@ describe('~/vue_merge_request_widget/components/widget/widget.vue', () => {
         isCollapsible: false,
         loadingText: 'Loading widget',
         widgetName: 'WidgetTest',
-        fetchCollapsedData: () => Promise.resolve([]),
+        fetchCollapsedData: () => Promise.resolve({ headers: {}, status: HTTP_STATUS_OK }),
         value: {
           collapsed: null,
           expanded: null,
@@ -56,7 +58,7 @@ describe('~/vue_merge_request_widget/components/widget/widget.vue', () => {
     it('fetches collapsed', async () => {
       const fetchCollapsedData = jest
         .fn()
-        .mockReturnValue(Promise.resolve({ headers: {}, status: 200, data: {} }));
+        .mockReturnValue(Promise.resolve({ headers: {}, status: HTTP_STATUS_OK, data: {} }));
 
       createComponent({ propsData: { fetchCollapsedData } });
       await waitForPromises();
@@ -83,7 +85,7 @@ describe('~/vue_merge_request_widget/components/widget/widget.vue', () => {
     it('displays loading icon until request is made and then displays status icon when the request is complete', async () => {
       const fetchCollapsedData = jest
         .fn()
-        .mockReturnValue(Promise.resolve({ headers: {}, status: 200, data: {} }));
+        .mockReturnValue(Promise.resolve({ headers: {}, status: HTTP_STATUS_OK, data: {} }));
 
       createComponent({ propsData: { fetchCollapsedData, statusIconName: 'warning' } });
 
@@ -122,15 +124,23 @@ describe('~/vue_merge_request_widget/components/widget/widget.vue', () => {
 
   describe('fetch', () => {
     it('sets the data.collapsed property after a successfull call - multiPolling: false', async () => {
-      const mockData = { headers: {}, status: 200, data: { vulnerabilities: [] } };
+      const mockData = { headers: {}, status: HTTP_STATUS_OK, data: { vulnerabilities: [] } };
       createComponent({ propsData: { fetchCollapsedData: async () => mockData } });
       await waitForPromises();
       expect(wrapper.emitted('input')[0][0]).toEqual({ collapsed: mockData.data, expanded: null });
     });
 
     it('sets the data.collapsed property after a successfull call - multiPolling: true', async () => {
-      const mockData1 = { headers: {}, status: 200, data: { vulnerabilities: [{ vuln: 1 }] } };
-      const mockData2 = { headers: {}, status: 200, data: { vulnerabilities: [{ vuln: 2 }] } };
+      const mockData1 = {
+        headers: {},
+        status: HTTP_STATUS_OK,
+        data: { vulnerabilities: [{ vuln: 1 }] },
+      };
+      const mockData2 = {
+        headers: {},
+        status: HTTP_STATUS_OK,
+        data: { vulnerabilities: [{ vuln: 2 }] },
+      };
 
       createComponent({
         propsData: {
@@ -148,6 +158,21 @@ describe('~/vue_merge_request_widget/components/widget/widget.vue', () => {
         collapsed: [mockData1.data, mockData2.data],
         expanded: null,
       });
+    });
+
+    it('throws an error when the handler does not include headers or status objects', async () => {
+      const error = new Error(Widget.MISSING_RESPONSE_HEADERS);
+      jest.spyOn(Sentry, 'captureException').mockImplementation();
+      jest.spyOn(logger, 'logError').mockImplementation();
+      createComponent({
+        propsData: {
+          fetchCollapsedData: () => Promise.resolve({}),
+        },
+      });
+      await waitForPromises();
+      expect(wrapper.emitted('input')).toBeUndefined();
+      expect(Sentry.captureException).toHaveBeenCalledWith(error);
+      expect(logger.logError).toHaveBeenCalledWith(error.message);
     });
 
     it('calls sentry when failed', async () => {
@@ -279,13 +304,13 @@ describe('~/vue_merge_request_widget/components/widget/widget.vue', () => {
     it('fetches expanded data when clicked for the first time', async () => {
       const mockDataCollapsed = {
         headers: {},
-        status: 200,
+        status: HTTP_STATUS_OK,
         data: { vulnerabilities: [{ vuln: 1 }] },
       };
 
       const mockDataExpanded = {
         headers: {},
-        status: 200,
+        status: HTTP_STATUS_OK,
         data: { vulnerabilities: [{ vuln: 2 }] },
       };
 
@@ -377,7 +402,7 @@ describe('~/vue_merge_request_widget/components/widget/widget.vue', () => {
           isCollapsible: true,
           actionButtons: [
             {
-              fullReport: true,
+              trackFullReportClicked: true,
               href: '#',
               target: '_blank',
               id: 'full-report-button',

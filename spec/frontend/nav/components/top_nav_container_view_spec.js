@@ -103,6 +103,7 @@ describe('~/nav/components/top_nav_container_view.vue', () => {
       expect(findMenuSections().props()).toEqual({
         sections,
         withTopBorder: true,
+        isPrimarySection: false,
       });
     });
   });

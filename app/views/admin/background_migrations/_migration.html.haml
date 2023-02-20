@@ -12,14 +12,17 @@
     = gl_badge_tag migration.status_name.to_s.humanize, { size: :sm, variant: batched_migration_status_badge_variant(migration) }
   %td{ role: 'cell', data: { label: _('Action') } }
     - if migration.active?
-      = button_to pause_admin_background_migration_path(migration, database: params[:database]),
-        class: 'gl-button btn btn-icon has-tooltip', title: _('Pause'), 'aria-label' => _('Pause') do
-        = sprite_icon('pause', css_class: 'gl-button-icon gl-icon')
+      = render Pajamas::ButtonComponent.new(icon: 'pause',
+        method: :post,
+        href: pause_admin_background_migration_path(migration, database: params[:database]),
+        button_options: { class: 'has-tooltip', title: _('Pause'), 'aria-label' => _('Pause') })
     - elsif migration.paused?
-      = button_to resume_admin_background_migration_path(migration, database: params[:database]),
-        class: 'gl-button btn btn-icon has-tooltip', title: _('Resume'), 'aria-label' => _('Resume') do
-        = sprite_icon('play', css_class: 'gl-button-icon gl-icon')
+      = render Pajamas::ButtonComponent.new(icon: 'play',
+        method: :post,
+        href: resume_admin_background_migration_path(migration, database: params[:database]),
+        button_options: { class: 'has-tooltip', title: _('Resume'), 'aria-label' => _('Resume') })
     - elsif migration.failed?
-      = button_to retry_admin_background_migration_path(migration, database: params[:database]),
-        class: 'gl-button btn btn-icon has-tooltip', title: _('Retry'), 'aria-label' => _('Retry') do
-        = sprite_icon('retry', css_class: 'gl-button-icon gl-icon')
+      = render Pajamas::ButtonComponent.new(icon: 'retry',
+        method: :post,
+        href: retry_admin_background_migration_path(migration, database: params[:database]),
+        button_options: { class: 'has-tooltip', title: _('Retry'), 'aria-label' => _('Retry') })

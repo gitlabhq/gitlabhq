@@ -10,6 +10,28 @@ function retry() {
       return 0
     fi
   done
+
+  return 1
+}
+
+# Retry after 2s, 4s, 8s, 16s, 32, 64s, 128s
+function retry_exponential() {
+  if eval "$@"; then
+    return 0
+  fi
+
+  local sleep_time=0
+  # The last try will be after 2**7 = 128 seconds (2min8s)
+  for i in 1 2 3 4 5 6 7; do
+    sleep_time=$((2 ** i))
+
+    echo "Sleep for $sleep_time seconds..."
+    sleep $sleep_time
+    echo "[$(date '+%H:%M:%S')] Attempt #$i..."
+    if eval "$@"; then
+      return 0
+    fi
+  done
   return 1
 }
 
@@ -90,7 +112,7 @@ function setup_db_praefect() {
 
 function setup_db() {
   run_timed_command "setup_db_user_only"
-  run_timed_command_with_metric "bundle exec rake db:drop db:create db:schema:load db:migrate" "setup_db"
+  run_timed_command_with_metric "bundle exec rake db:drop db:create db:schema:load db:migrate gitlab:db:lock_writes" "setup_db"
   run_timed_command "setup_db_praefect"
 }
 
@@ -101,6 +123,10 @@ function install_gitlab_gem() {
 
 function install_tff_gem() {
   run_timed_command "gem install test_file_finder --no-document --version 0.1.4"
+}
+
+function install_activesupport_gem() {
+  run_timed_command "gem install activesupport --no-document --version 6.1.7.1"
 }
 
 function install_junit_merge_gem() {

@@ -7,14 +7,12 @@ module IssuableCollectionsAction
 
   included do
     before_action :check_search_rate_limit!, only: [:issues, :merge_requests], if: -> {
-      params[:search].present? && Feature.enabled?(:rate_limit_issuable_searches)
+      params[:search].present?
     }
   end
 
   # rubocop:disable Gitlab/ModuleWithInstanceVariables
   def issues
-    show_alert_if_search_is_disabled
-
     @issues = issuables_collection
               .non_archived
               .page(params[:page])
@@ -28,11 +26,13 @@ module IssuableCollectionsAction
   end
 
   def merge_requests
-    show_alert_if_search_is_disabled
-
     @merge_requests = issuables_collection.page(params[:page])
 
     @issuable_meta_data = Gitlab::IssuableMetadata.new(current_user, @merge_requests).data
+  rescue ActiveRecord::QueryCanceled => exception # rubocop:disable Database/RescueQueryCanceled
+    log_exception(exception)
+
+    @search_timeout_occurred = true
   end
   # rubocop:enable Gitlab/ModuleWithInstanceVariables
 

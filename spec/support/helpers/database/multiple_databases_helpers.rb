@@ -2,12 +2,28 @@
 
 module Database
   module MultipleDatabasesHelpers
-    def skip_if_multiple_databases_not_setup
-      skip 'Skipping because multiple databases not set up' unless Gitlab::Database.has_config?(:ci)
+    EXTRA_DBS = ::Gitlab::Database::DATABASE_NAMES.map(&:to_sym) - [:main]
+
+    def skip_if_multiple_databases_not_setup(*databases)
+      unless (databases - EXTRA_DBS).empty?
+        raise "Unsupported database in #{databases}. It must be one of #{EXTRA_DBS}."
+      end
+
+      databases = EXTRA_DBS if databases.empty?
+      return if databases.any? { |db| Gitlab::Database.has_config?(db) }
+
+      skip "Skipping because none of the extra databases #{databases} are setup"
     end
 
-    def skip_if_multiple_databases_are_setup
-      skip 'Skipping because multiple databases are set up' if Gitlab::Database.has_config?(:ci)
+    def skip_if_multiple_databases_are_setup(*databases)
+      unless (databases - EXTRA_DBS).empty?
+        raise "Unsupported database in #{databases}. It must be one of #{EXTRA_DBS}."
+      end
+
+      databases = EXTRA_DBS if databases.empty?
+      return if databases.none? { |db| Gitlab::Database.has_config?(db) }
+
+      skip "Skipping because some of the extra databases #{databases} are setup"
     end
 
     def reconfigure_db_connection(name: nil, config_hash: {}, model: ActiveRecord::Base, config_model: nil)
@@ -70,6 +86,14 @@ module Database
       new_handler&.clear_all_connections!
     end
     # rubocop:enable Database/MultipleDatabases
+
+    def with_db_configs(test: test_config)
+      current_configurations = ActiveRecord::Base.configurations # rubocop:disable Database/MultipleDatabases
+      ActiveRecord::Base.configurations = { test: test_config }
+      yield
+    ensure
+      ActiveRecord::Base.configurations = current_configurations
+    end
 
     def with_added_ci_connection
       if Gitlab::Database.has_config?(:ci)

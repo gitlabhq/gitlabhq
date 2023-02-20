@@ -38,7 +38,8 @@ RSpec.shared_context 'ProjectPolicy context' do
       read_commit_status read_confidential_issues read_container_image
       read_harbor_registry read_deployment read_environment read_merge_request
       read_metrics_dashboard_annotation read_pipeline read_prometheus
-      read_sentry_issue update_issue create_merge_request_in
+      read_sentry_issue update_issue create_merge_request_in read_external_emails
+      read_internal_note
     ]
   end
 
@@ -86,6 +87,13 @@ RSpec.shared_context 'ProjectPolicy context' do
       destroy_merge_request manage_owners remove_fork_project remove_project
       set_issue_created_at set_issue_iid set_issue_updated_at
       set_note_created_at
+    ]
+  end
+
+  let(:admin_permissions) do
+    %i[
+      read_project_for_iids update_max_artifacts_size read_storage_disk_path
+      owner_access admin_remote_mirror read_internal_note
     ]
   end
 

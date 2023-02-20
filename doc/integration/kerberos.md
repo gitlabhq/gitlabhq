@@ -99,9 +99,9 @@ to authenticate with Kerberos tokens.
 
 #### Enable single sign-on
 
-See [Configure initial settings](omniauth.md#configure-initial-settings)
-for initial settings to enable single sign-on and add Kerberos servers
-as an identity provider.
+Edit the [common configuration file settings](omniauth.md#configure-common-settings)
+to add `kerberos` as a single sign-on provider. This enables Just-In-Time
+account provisioning for users who do not have an existing GitLab account.
 
 ## Create and link Kerberos accounts
 
@@ -124,7 +124,7 @@ existing GitLab account. To do so:
 
 If you're not an administrator:
 
-1. In the top-right corner, select your avatar.
+1. In the upper-right corner, select your avatar.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Account**.
 1. In the **Service sign-in** section, select **Connect Kerberos**.
@@ -138,7 +138,8 @@ with your Kerberos credentials.
 
 The first time users sign in to GitLab with their Kerberos accounts,
 GitLab creates a matching account.
-Before you continue, review the [Configure initial settings](omniauth.md#configure-initial-settings) options in Omnibus and GitLab source. You must also include `kerberos`.
+Before you continue, review the [common configuration settings](omniauth.md#configure-common-settings)
+options in Omnibus and GitLab source. You must also include `kerberos`.
 
 With that information at hand:
 
@@ -352,7 +353,7 @@ when trying to clone via HTTPS.
 When using Kerberos ticket-based authentication in an Active Directory domain,
 it may be necessary to increase the maximum header size allowed by NGINX,
 as extensions to the Kerberos protocol may result in HTTP authentication headers
-larger than the default size of 8kB. Configure `large_client_header_buffers`
+larger than the default size of 8 kB. Configure `large_client_header_buffers`
 to a larger value in [the NGINX configuration](https://nginx.org/en/docs/http/ngx_http_core_module.html#large_client_header_buffers).
 
 ## Troubleshooting

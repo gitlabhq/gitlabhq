@@ -31,7 +31,6 @@ For consistency, scanning jobs should be named after the scanner, in lower case.
 The job name is suffixed after the type of scanning:
 
 - `_dependency_scanning`
-- `_cluster_image_scanning`
 - `_container_scanning`
 - `_dast`
 - `_sast`
@@ -79,7 +78,6 @@ Valid reports are:
 
 - `dependency_scanning`
 - `container_scanning`
-- `cluster_image_scanning`
 - `dast`
 - `api_fuzzing`
 - `coverage_fuzzing`
@@ -96,7 +94,7 @@ mysec_sast:
       sast: gl-sast-report.json
 ```
 
-Note that `gl-sast-report.json` is an example file path but any other filename can be used. See
+`gl-sast-report.json` is an example file path but any other filename can be used. See
 [the Output file section](#output-file) for more details. It's processed as a SAST report because
 it's declared under the `reports:sast` key in the job definition, not because of the filename.
 
@@ -108,7 +106,6 @@ for variables such as:
 
 - `DEPENDENCY_SCANNING_DISABLED`
 - `CONTAINER_SCANNING_DISABLED`
-- `CLUSTER_IMAGE_SCANNING_DISABLED`
 - `SAST_DISABLED`
 - `DAST_DISABLED`
 
@@ -150,7 +147,7 @@ regardless of the individual machine the scanner runs on.
 Depending on the CI infrastructure,
 the CI may have to fetch the Docker image every time the job runs.
 For the scanning job to run fast and avoid wasting bandwidth, Docker images should be as small as
-possible. You should aim for 50MB or smaller. If that isn't possible, try to keep it below 1.46 GB,
+possible. You should aim for 50 MB or smaller. If that isn't possible, try to keep it below 1.46 GB,
 which is the size of a DVD-ROM.
 
 If the scanner requires a fully functional Linux environment,
@@ -199,7 +196,7 @@ SAST and Dependency Scanning scanners must scan the files in the project directo
 
 #### Container Scanning
 
-In order to be consistent with the official Container Scanning for GitLab,
+To be consistent with the official Container Scanning for GitLab,
 scanners must scan the Docker image whose name and tag are given by
 `CI_APPLICATION_REPOSITORY` and `CI_APPLICATION_TAG`, respectively. If the `DOCKER_IMAGE`
 CI/CD variable is provided, then the `CI_APPLICATION_REPOSITORY` and `CI_APPLICATION_TAG` variables
@@ -213,19 +210,6 @@ The scanner should sign in the Docker registry
 using the variables `DOCKER_USER` and `DOCKER_PASSWORD`.
 If these are not defined, then the scanner should use
 `CI_REGISTRY_USER` and `CI_REGISTRY_PASSWORD` as default values.
-
-#### Cluster Image Scanning
-
-To be consistent with the official `cluster_image_scanning` for GitLab, scanners must scan the
-Kubernetes cluster whose configuration is given by `KUBECONFIG`.
-
-If you use the `CIS_KUBECONFIG` CI/CD variable, then the
-`KUBECONFIG` variable is ignored and the cluster specified in the
-`CIS_KUBECONFIG` variable is scanned instead. If you don't provide
-the `CIS_KUBECONFIG` CI/CD variable, the value defaults to the value of
-`$KUBECONFIG`. `$KUBECONFIG` is a predefined CI/CD variable configured when the project is assigned to a
-Kubernetes cluster. When multiple contexts are provided in the `KUBECONFIG` variable, the context
-selected as `current-context` will be used to fetch vulnerabilities.
 
 #### Configuration files
 
@@ -320,7 +304,6 @@ and [Container Scanning](../../user/application_security/container_scanning/inde
 
 You can find the schemas for these scanners here:
 
-- [Cluster Image Scanning](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/cluster-image-scanning-report-format.json)
 - [Container Scanning](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/container-scanning-report-format.json)
 - [Coverage Fuzzing](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/coverage-fuzzing-report-format.json)
 - [DAST](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/dast-report-format.json)
@@ -414,7 +397,6 @@ We recommend that you generate a UUID and use it as the `id` field's value.
 The value of the `category` field matches the report type:
 
 - `dependency_scanning`
-- `cluster_image_scanning`
 - `container_scanning`
 - `sast`
 - `dast`
@@ -440,7 +422,7 @@ Even when the [`Vulnerabilities`](#vulnerabilities) array for a given scan may b
 should contain the complete list of potential identifiers to inform the Rails application of which
 rules were executed.
 
-When populated, the Rails application will automatically resolve previously detected vulnerabilities as no
+When populated, the Rails application automatically resolves previously detected vulnerabilities as no
 longer relevant when their primary identifier is not included.
 
 ##### Name, message, and description
@@ -526,7 +508,7 @@ Not all vulnerabilities have CVEs, and a CVE can be identified multiple times. A
 isn't a stable identifier and you shouldn't assume it as such when tracking vulnerabilities.
 
 The maximum number of identifiers for a vulnerability is set as 20. If a vulnerability has more than 20 identifiers,
-the system saves only the first 20 of them. Note that vulnerabilities in the [Pipeline Security](../../user/application_security/vulnerability_report/pipeline.md#view-vulnerabilities-in-a-pipeline)
+the system saves only the first 20 of them. The vulnerabilities in the [Pipeline Security](../../user/application_security/vulnerability_report/pipeline.md#view-vulnerabilities-in-a-pipeline)
 tab do not enforce this limit and all identifiers present in the report artifact are displayed.
 
 #### Details
@@ -603,40 +585,6 @@ combines the `operating_system` and the package `name`,
 so these attributes are mandatory.
 The `image` is also mandatory.
 All other attributes are optional.
-
-##### Cluster Image Scanning
-
-The `location` of a `cluster_image_scanning` vulnerability has a `dependency` field. It also has
-an `operating_system` field. For example, here is the `location` object for a vulnerability
-affecting version `2.50.3-2+deb9u1` of Debian package `glib2.0`:
-
-```json
-{
-    "dependency": {
-        "package": {
-            "name": "glib2.0"
-        },
-    },
-    "version": "2.50.3-2+deb9u1",
-    "operating_system": "debian:9",
-    "image": "index.docker.io/library/nginx:1.18",
-    "kubernetes_resource": {
-        "namespace": "production",
-        "kind": "Deployment",
-        "name": "nginx-ingress",
-        "container_name": "nginx",
-        "agent_id": "1"
-    }
-}
-```
-
-The affected package is found when scanning a deployment using the `index.docker.io/library/nginx:1.18` image.
-
-The location fingerprint of a Cluster Image Scanning vulnerability combines the
-`namespace`, `kind`, `name`, and `container_name` fields from the `kubernetes_resource`,
-as well as the package `name`, so these fields are required. The `image` field is also mandatory.
-The `cluster_id` and `agent_id` are mutually exclusive, and one of them must be present.
-All other fields are optional.
 
 ##### SAST
 

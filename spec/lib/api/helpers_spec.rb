@@ -821,7 +821,7 @@ RSpec.describe API::Helpers, feature_category: :not_owned do
 
         it 'redirects to a CDN-fronted URL' do
           expect(helper).to receive(:redirect)
-          expect(helper).to receive(:signed_head_url).and_call_original
+          expect(ObjectStorage::S3).to receive(:signed_head_url).and_call_original
           expect(Gitlab::ApplicationContext).to receive(:push).with(artifact: artifact.file.model).and_call_original
 
           subject

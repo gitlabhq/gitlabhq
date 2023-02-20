@@ -17,6 +17,7 @@ import { escape, uniqueId } from 'lodash';
 import Vue from 'vue';
 import { renderGFM } from '~/behaviors/markdown/render_gfm';
 import { createAlert, VARIANT_INFO } from '~/flash';
+import { sanitize } from '~/lib/dompurify';
 import '~/lib/utils/jquery_at_who';
 import AjaxCache from '~/lib/utils/ajax_cache';
 import { loadingIconForLegacyJS } from '~/loading_icon_for_legacy_js';
@@ -517,8 +518,36 @@ export default class Notes {
     if (discussionContainer.length === 0) {
       if (noteEntity.diff_discussion_html) {
         const discussionElement = document.createElement('table');
-        // eslint-disable-next-line no-unsanitized/method
-        discussionElement.insertAdjacentHTML('afterbegin', noteEntity.diff_discussion_html);
+        let internalNote;
+        let discussionDOM;
+
+        if (!noteEntity.on_image) {
+          /*
+            DOMPurify will strip table-less <tr>/<td>, so to get it to stop deleting
+            nodes (since our note HTML starts with a table-less <tr>), we need to wrap
+            the noteEntity discussion HTML in a <table> to perform the other
+            sanitization.
+          */
+          internalNote = sanitize(`<table>${noteEntity.diff_discussion_html}</table>`, {
+            RETURN_DOM: true,
+          });
+          /*
+            Since we wrapped the <tr> in a <table>, we need to extract the <tr> back out.
+            DOMPurify returns a Body Element, so we have to start there, then get the
+            wrapping table, and then get the content we actually want.
+            Curiously, DOMPurify **ADDS** a totally novel <tbody>, so we're actually
+            inserting a completely as-yet-unseen <tbody> element here.
+          */
+          discussionDOM = internalNote.querySelector('table').firstChild;
+        } else {
+          // Image comments don't need <table> manipulation, they're already <div>s
+          internalNote = sanitize(noteEntity.diff_discussion_html, {
+            RETURN_DOM: true,
+          });
+          discussionDOM = internalNote.firstChild;
+        }
+
+        discussionElement.insertAdjacentElement('afterbegin', discussionDOM);
         renderGFM(discussionElement);
         const $discussion = $(discussionElement).unwrap();
 

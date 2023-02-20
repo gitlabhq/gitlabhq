@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe MergeRequests::RetargetChainService do
+RSpec.describe MergeRequests::RetargetChainService, feature_category: :code_review_workflow do
   include ProjectForksHelper
 
   let_it_be(:user) { create(:user) }

@@ -4,7 +4,7 @@ class BuildDetailsEntity < Ci::JobEntity
   expose :coverage, :erased_at, :finished_at, :duration
   expose :tag_list, as: :tags
   expose :has_trace?, as: :has_trace
-  expose :stage
+  expose :stage_name, as: :stage
   expose :stuck?, as: :stuck
   expose :user, using: UserEntity
   expose :runner, using: RunnerEntity

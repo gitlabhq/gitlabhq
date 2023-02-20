@@ -1,0 +1,8 @@
+---
+name: skip_require_email_verification
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110010
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/389235
+milestone: '15.9'
+type: ops
+group: group::anti-abuse
+default_enabled: false

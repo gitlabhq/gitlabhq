@@ -1,4 +1,5 @@
 # E2E tests pipeline loaded dynamically by script: scripts/generate-e2e-pipeline
+# For adding new tests, refer to: doc/development/testing_guide/end_to_end/package_and_test_pipeline.md
 
 default:
   interruptible: true
@@ -7,7 +8,7 @@ include:
   - local: .gitlab/ci/package-and-test/rules.gitlab-ci.yml
   - local: .gitlab/ci/package-and-test/variables.gitlab-ci.yml
   - project: gitlab-org/quality/pipeline-common
-    ref: 1.14.1
+    ref: 2.0.0
     file:
       - /ci/base.gitlab-ci.yml
       - /ci/allure-report.yml
@@ -57,15 +58,16 @@ stages:
       optional: true
     - job: download-knapsack-report
       artifacts: true
+      optional: true
   variables:
     QA_GENERATE_ALLURE_REPORT: "true"
     QA_CAN_TEST_PRAEFECT: "false"
     QA_INTERCEPT_REQUESTS: "true"
     QA_RUN_TYPE: e2e-package-and-test
-    TEST_LICENSE_MODE: $QA_TEST_LICENSE_MODE
     EE_LICENSE: $QA_EE_LICENSE
     GITHUB_ACCESS_TOKEN: $QA_GITHUB_ACCESS_TOKEN
     GITLAB_QA_ADMIN_ACCESS_TOKEN: $QA_ADMIN_ACCESS_TOKEN
+    GITLAB_LICENSE_MODE: test
 
 # ==========================================
 # Prepare stage
@@ -161,7 +163,7 @@ trigger-omnibus:
 download-knapsack-report:
   extends:
     - .gitlab-qa-image
-    - .rules:prepare
+    - .rules:download-knapsack
   stage: .pre
   variables:
     KNAPSACK_DIR: ${CI_PROJECT_DIR}/qa/knapsack
@@ -216,13 +218,13 @@ _ee:quarantine:
 # ------------------------------------------
 
 # Run specs with feature flags set to the opposite of the default state
-ee:instance-parallel-ff-inverse:
+ee:instance-ff-inverse:
   extends:
     - .qa
     - .parallel
   variables:
     QA_SCENARIO: Test::Instance::Image
-    QA_KNAPSACK_REPORT_NAME: ee-instance-parallel
+    QA_KNAPSACK_REPORT_NAME: ee-instance
     GITLAB_QA_OPTS: --set-feature-flags $QA_FEATURE_FLAGS
   rules:
     - !reference [.rules:test:feature-flags-set, rules]
@@ -230,140 +232,141 @@ ee:instance-parallel-ff-inverse:
 # ------------------------------------------
 # Jobs with parallel variant
 # ------------------------------------------
-ee:instance:
+ee:instance-selective:
   extends: .qa
   variables:
     QA_SCENARIO: Test::Instance::Image
   rules:
-    - !reference [.rules:test:qa-non-parallel, rules]
+    - !reference [.rules:test:qa-selective, rules]
     - if: $QA_SUITES =~ /Test::Instance::All/
-ee:instance-parallel:
+ee:instance:
   extends:
     - .parallel
-    - ee:instance
+    - ee:instance-selective
   rules:
-    - !reference [.rules:test:feature-flags-set, rules]  # always run instance-parallel to validate ff change
+    - !reference [.rules:test:feature-flags-set, rules]  # always run ee:instance to validate ff change
     - !reference [.rules:test:qa-parallel, rules]
     - if: $QA_SUITES =~ /Test::Instance::All/
 
-ee:praefect:
+ee:praefect-selective:
   extends: .qa
   variables:
     QA_SCENARIO: Test::Integration::Praefect
     QA_CAN_TEST_PRAEFECT: "true"
   rules:
-    - !reference [.rules:test:qa-non-parallel, rules]
+    - !reference [.rules:test:qa-selective, rules]
     - if: $QA_SUITES =~ /Test::Instance::All/
-ee:praefect-parallel:
+ee:praefect:
   extends:
     - .parallel
-    - ee:praefect
+    - ee:praefect-selective
   rules:
     - !reference [.rules:test:qa-parallel, rules]
     - if: $QA_SUITES =~ /Test::Instance::All/
 
-ee:relative-url:
+ee:relative-url-selective:
   extends: .qa
   variables:
     QA_SCENARIO: Test::Instance::RelativeUrl
   rules:
-    - !reference [.rules:test:qa-non-parallel, rules]
+    - !reference [.rules:test:qa-selective, rules]
     - if: $QA_SUITES =~ /Test::Instance::All/
-ee:relative-url-parallel:
+ee:relative-url:
   extends:
     - .parallel
-    - ee:relative-url
+    - ee:relative-url-selective
   rules:
     - !reference [.rules:test:qa-parallel, rules]
     - if: $QA_SUITES =~ /Test::Instance::All/
 
-ee:decomposition-single-db:
+ee:decomposition-single-db-selective:
   extends: .qa
   variables:
     QA_SCENARIO: Test::Instance::Image
     GITLAB_QA_OPTS: --omnibus-config decomposition_single_db
   rules:
-    - !reference [.rules:test:qa-non-parallel, rules]
+    - !reference [.rules:test:qa-selective, rules]
     - if: $QA_SUITES =~ /Test::Instance::All/
-ee:decomposition-single-db-parallel:
+ee:decomposition-single-db:
   extends:
     - .parallel
-    - ee:decomposition-single-db
+    - ee:decomposition-single-db-selective
   rules:
     - !reference [.rules:test:qa-parallel, rules]
     - if: $QA_SUITES =~ /Test::Instance::All/
 
-ee:decomposition-multiple-db:
+ee:decomposition-multiple-db-selective:
   extends: .qa
   variables:
     QA_SCENARIO: Test::Instance::Image
+    GITLAB_ALLOW_SEPARATE_CI_DATABASE: "true"
     GITLAB_QA_OPTS: --omnibus-config decomposition_multiple_db
   rules:
-    - !reference [.rules:test:qa-non-parallel, rules]
+    - !reference [.rules:test:qa-selective, rules]
     - if: $QA_SUITES =~ /Test::Instance::All/
-ee:decomposition-multiple-db-parallel:
+ee:decomposition-multiple-db:
   extends:
     - .parallel
-    - ee:decomposition-multiple-db
+    - ee:decomposition-multiple-db-selective
   rules:
     - !reference [.rules:test:qa-parallel, rules]
     - if: $QA_SUITES =~ /Test::Instance::All/
 
-ee:object-storage:
+ee:object-storage-selective:
   extends: .qa
   variables:
     QA_SCENARIO: Test::Instance::Image
     QA_RSPEC_TAGS: --tag object_storage
     GITLAB_QA_OPTS: --omnibus-config object_storage
   rules:
-    - !reference [.rules:test:qa-non-parallel, rules]
+    - !reference [.rules:test:qa-selective, rules]
     - if: $QA_SUITES =~ /Test::Instance::ObjectStorage/
-ee:object-storage-parallel:
-  extends: ee:object-storage
+ee:object-storage:
+  extends: ee:object-storage-selective
   parallel: 2
   rules:
     - !reference [.rules:test:qa-parallel, rules]
     - if: $QA_SUITES =~ /Test::Instance::ObjectStorage/
 
-ee:object-storage-aws:
-  extends: ee:object-storage
+ee:object-storage-aws-selective:
+  extends: ee:object-storage-selective
   variables:
     AWS_S3_ACCESS_KEY: $QA_AWS_S3_ACCESS_KEY
     AWS_S3_BUCKET_NAME: $QA_AWS_S3_BUCKET_NAME
     AWS_S3_KEY_ID: $QA_AWS_S3_KEY_ID
     AWS_S3_REGION: $QA_AWS_S3_REGION
     GITLAB_QA_OPTS: --omnibus-config object_storage_aws
-ee:object-storage-aws-parallel:
-  extends: ee:object-storage-aws
+ee:object-storage-aws:
+  extends: ee:object-storage-aws-selective
   parallel: 2
   rules:
-    - !reference [ee:object-storage-parallel, rules]
+    - !reference [ee:object-storage, rules]
 
-ee:object-storage-gcs:
-  extends: ee:object-storage
+ee:object-storage-gcs-selective:
+  extends: ee:object-storage-selective
   variables:
     GCS_BUCKET_NAME: $QA_GCS_BUCKET_NAME
     GOOGLE_PROJECT: $QA_GOOGLE_PROJECT
     GOOGLE_JSON_KEY: $QA_GOOGLE_JSON_KEY
     GOOGLE_CLIENT_EMAIL: $QA_GOOGLE_CLIENT_EMAIL
     GITLAB_QA_OPTS: --omnibus-config object_storage_gcs
-ee:object-storage-gcs-parallel:
-  extends: ee:object-storage-gcs
+ee:object-storage-gcs:
+  extends: ee:object-storage-gcs-selective
   parallel: 2
   rules:
-    - !reference [ee:object-storage-parallel, rules]
+    - !reference [ee:object-storage, rules]
 
-ee:packages:
+ee:packages-selective:
   extends: .qa
   variables:
     QA_SCENARIO: Test::Instance::Image
     QA_RSPEC_TAGS: --tag packages
     GITLAB_QA_OPTS: --omnibus-config packages
   rules:
-    - !reference [.rules:test:qa-non-parallel, rules]
+    - !reference [.rules:test:qa-selective, rules]
     - if: $QA_SUITES =~ /Test::Instance::Packages/
-ee:packages-parallel:
-  extends: ee:packages
+ee:packages:
+  extends: ee:packages-selective
   parallel: 2
   rules:
     - !reference [.rules:test:qa-parallel, rules]
@@ -440,7 +443,7 @@ ee:jira:
     JIRA_ADMIN_PASSWORD: $QA_JIRA_ADMIN_PASSWORD
   rules:
     - !reference [.rules:test:qa, rules]
-    - if: $QA_SUITES =~ /Test::Instance::Jira/
+    - if: $QA_SUITES =~ /Test::Integration::Jira/
     - !reference [.rules:test:manual, rules]
 
 ee:integrations:
@@ -485,7 +488,7 @@ ee:mtls:
     QA_SCENARIO: Test::Integration::MTLS
   rules:
     - !reference [.rules:test:qa, rules]
-    - if: $QA_SUITES =~ /Test::Integration::MTLS/
+    - if: $QA_SUITES =~ /Test::Integration::Mtls/
     - !reference [.rules:test:manual, rules]
 
 ee:mattermost:
@@ -584,7 +587,6 @@ ee:elasticsearch:
   variables:
     QA_SCENARIO: "Test::Integration::Elasticsearch"
   before_script:
-    - unset ELASTIC_URL  # unset url which is globally defined in .gitlab-ci.yml
     - !reference [.qa, before_script]
   rules:
     - !reference [.rules:test:qa, rules]
@@ -592,7 +594,7 @@ ee:elasticsearch:
     - !reference [.rules:test:manual, rules]
 
 ee:registry-object-storage-tls:
-  extends: ee:object-storage-aws
+  extends: ee:object-storage-aws-selective
   variables:
     QA_SCENARIO: Test::Integration::RegistryTLS
     QA_RSPEC_TAGS: ""
@@ -619,16 +621,11 @@ e2e-test-report:
     - .rules:report:allure-report
   stage: report
   variables:
-    GITLAB_AUTH_TOKEN: $GITLAB_QA_MR_ALLURE_REPORT_TOKEN
+    GITLAB_AUTH_TOKEN: $PROJECT_TOKEN_FOR_CI_SCRIPTS_API_USAGE
     ALLURE_PROJECT_PATH: $CI_PROJECT_PATH
     ALLURE_MERGE_REQUEST_IID: $CI_MERGE_REQUEST_IID
     ALLURE_JOB_NAME: e2e-package-and-test
     GIT_STRATEGY: none
-  artifacts:  # save rspec results for displaying in parent pipeline
-    expire_in: 1 day
-    when: always
-    paths:
-      - gitlab-qa-run-*/**/rspec-*.xml
 
 upload-knapsack-report:
   extends:
@@ -658,7 +655,7 @@ relate-test-failures:
   variables:
     QA_FAILURES_REPORTING_PROJECT: gitlab-org/gitlab
     QA_FAILURES_MAX_DIFF_RATIO: "0.15"
-    GITLAB_QA_ACCESS_TOKEN: $GITLAB_QA_PRODUCTION_ACCESS_TOKEN
+    GITLAB_QA_ACCESS_TOKEN: $QA_GITLAB_CI_TOKEN
   when: on_failure
   script:
     - |

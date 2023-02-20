@@ -123,6 +123,6 @@ module Spammable
 
   # Override in Spammable if differs
   def allow_possible_spam?
-    Feature.enabled?(:allow_possible_spam, project)
+    Gitlab::CurrentSettings.allow_possible_spam
   end
 end

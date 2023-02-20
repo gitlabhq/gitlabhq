@@ -11,12 +11,12 @@ module Gitlab
 
       # Using delegate hides the stacktrace for some errors, so we choose to be explicit.
       # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/62047#note_579031091
-      def add_primary_menu_item(**args)
-        @menu_builder.add_primary_menu_item(**args)
+      def add_primary_menu_item(...)
+        @menu_builder.add_primary_menu_item(...)
       end
 
-      def add_secondary_menu_item(**args)
-        @menu_builder.add_secondary_menu_item(**args)
+      def add_secondary_menu_item(...)
+        @menu_builder.add_secondary_menu_item(...)
       end
 
       def add_shortcut(**args)

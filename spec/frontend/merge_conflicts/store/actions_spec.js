@@ -1,6 +1,7 @@
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import Cookies from '~/lib/utils/cookies';
+import { HTTP_STATUS_BAD_REQUEST, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
 import testAction from 'helpers/vuex_action_helper';
 import { createAlert } from '~/flash';
@@ -35,7 +36,7 @@ describe('merge conflicts actions', () => {
     const conflictsPath = 'conflicts/path/mock';
 
     it('on success dispatches setConflictsData', () => {
-      mock.onGet(conflictsPath).reply(200, {});
+      mock.onGet(conflictsPath).reply(HTTP_STATUS_OK, {});
       return testAction(
         actions.fetchConflictsData,
         conflictsPath,
@@ -49,7 +50,7 @@ describe('merge conflicts actions', () => {
     });
 
     it('when data has type equal to error', () => {
-      mock.onGet(conflictsPath).reply(200, { type: 'error', message: 'error message' });
+      mock.onGet(conflictsPath).reply(HTTP_STATUS_OK, { type: 'error', message: 'error message' });
       return testAction(
         actions.fetchConflictsData,
         conflictsPath,
@@ -64,7 +65,7 @@ describe('merge conflicts actions', () => {
     });
 
     it('when request fails', () => {
-      mock.onGet(conflictsPath).reply(400);
+      mock.onGet(conflictsPath).reply(HTTP_STATUS_BAD_REQUEST);
       return testAction(
         actions.fetchConflictsData,
         conflictsPath,
@@ -102,7 +103,7 @@ describe('merge conflicts actions', () => {
     const resolveConflictsPath = 'resolve/conflicts/path/mock';
 
     it('on success reloads the page', async () => {
-      mock.onPost(resolveConflictsPath).reply(200, { redirect_to: 'hrefPath' });
+      mock.onPost(resolveConflictsPath).reply(HTTP_STATUS_OK, { redirect_to: 'hrefPath' });
       await testAction(
         actions.submitResolvedConflicts,
         resolveConflictsPath,
@@ -114,7 +115,7 @@ describe('merge conflicts actions', () => {
     });
 
     it('on errors shows flash', async () => {
-      mock.onPost(resolveConflictsPath).reply(400);
+      mock.onPost(resolveConflictsPath).reply(HTTP_STATUS_BAD_REQUEST);
       await testAction(
         actions.submitResolvedConflicts,
         resolveConflictsPath,

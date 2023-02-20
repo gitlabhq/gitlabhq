@@ -4,7 +4,7 @@ import Vue from 'vue';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { fetchPolicies } from '~/lib/graphql';
 import { __ } from '~/locale';
-import { IssuableType } from '~/issues/constants';
+import { IssuableType, TYPE_ISSUE } from '~/issues/constants';
 import { IssuableStates } from '~/vue_shared/issuable/list/constants';
 
 export const badgeState = Vue.observable({
@@ -92,7 +92,7 @@ export default {
       return STATUS[this.state];
     },
     badgeIcon() {
-      if (this.issuableType === IssuableType.Issue) {
+      if (this.issuableType === TYPE_ISSUE) {
         return ISSUE_ICONS[this.state];
       }
       return MERGE_REQUEST_ICONS[this.state];

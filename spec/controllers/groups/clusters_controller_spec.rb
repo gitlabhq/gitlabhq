@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Groups::ClustersController do
+RSpec.describe Groups::ClustersController, feature_category: :kubernetes_management do
   include AccessMatchersForController
   include GoogleApi::CloudPlatformHelpers
 

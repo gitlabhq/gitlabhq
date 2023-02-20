@@ -50,9 +50,6 @@ export default {
     },
   },
   methods: {
-    getFirstTag(eventTag) {
-      return eventTag.nodes?.[0]?.name;
-    },
     handleEditSelection(event) {
       this.eventToEdit = event.id;
       this.$emit('hide-new-incident-timeline-event-form');
@@ -105,6 +102,7 @@ export default {
               id: eventDetails.id,
               note: eventDetails.note,
               occurredAt: eventDetails.occurredAt,
+              timelineEventTagNames: eventDetails.timelineEventTags,
             },
           },
         })
@@ -132,21 +130,25 @@ export default {
 </script>
 
 <template>
-  <div class="issuable-discussion incident-timeline-events">
+  <div class="issuable-discussion incident-timeline-events gl-mt-n3">
     <div
       v-for="[eventDate, events] in dateGroupedEvents"
       :key="eventDate"
       data-testid="timeline-group"
       class="timeline-group"
     >
-      <div class="gl-pb-3 gl-border-gray-50 gl-border-1 gl-border-b-solid">
-        <strong class="gl-font-size-h2" data-testid="event-date">{{ eventDate }}</strong>
-      </div>
+      <h2
+        class="gl-font-size-h2 gl-my-0 gl-py-5 gl-border-gray-50 gl-border-1 gl-border-b-solid"
+        data-testid="event-date"
+      >
+        {{ eventDate }}
+      </h2>
+
       <ul class="notes main-notes-list">
         <li
           v-for="(event, eventIndex) in events"
           :key="eventIndex"
-          class="timeline-entry-vertical-line timeline-entry note system-note note-wrapper gl-my-2! gl-pr-0!"
+          class="timeline-entry-vertical-line timeline-entry note system-note note-wrapper gl-my-0! gl-pr-0!"
         >
           <edit-timeline-event
             v-if="eventToEdit === event.id"
@@ -164,7 +166,7 @@ export default {
             :action="event.action"
             :occurred-at="event.occurredAt"
             :note-html="event.noteHtml"
-            :event-tag="getFirstTag(event.timelineEventTags)"
+            :event-tags="event.timelineEventTags.nodes"
             @delete="handleDelete(event)"
             @edit="handleEditSelection(event)"
           />

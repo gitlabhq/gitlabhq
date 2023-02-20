@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe Mutations::Ci::JobTokenScope::AddProject do
+RSpec.describe Mutations::Ci::JobTokenScope::AddProject, feature_category: :continuous_integration do
   let(:mutation) do
     described_class.new(object: nil, context: { current_user: current_user }, field: nil)
   end
@@ -14,9 +14,10 @@ RSpec.describe Mutations::Ci::JobTokenScope::AddProject do
     let_it_be(:target_project) { create(:project) }
 
     let(:target_project_path) { target_project.full_path }
+    let(:mutation_args) { { project_path: project.full_path, target_project_path: target_project_path } }
 
     subject do
-      mutation.resolve(project_path: project.full_path, target_project_path: target_project_path)
+      mutation.resolve(**mutation_args)
     end
 
     context 'when user is not logged in' do
@@ -42,18 +43,45 @@ RSpec.describe Mutations::Ci::JobTokenScope::AddProject do
           target_project.add_guest(current_user)
         end
 
-        it 'adds target project to the job token scope' do
+        it 'adds target project to the outbound job token scope by default' do
           expect do
             expect(subject).to include(ci_job_token_scope: be_present, errors: be_empty)
-          end.to change { Ci::JobToken::ProjectScopeLink.count }.by(1)
+          end.to change { Ci::JobToken::ProjectScopeLink.outbound.count }.by(1)
+        end
+
+        context 'when mutation uses the direction argument' do
+          let(:mutation_args) { super().merge!(direction: direction) }
+
+          context 'when targeting the outbound allowlist' do
+            let(:direction) { :outbound }
+
+            it 'adds the target project' do
+              expect do
+                expect(subject).to include(ci_job_token_scope: be_present, errors: be_empty)
+              end.to change { Ci::JobToken::ProjectScopeLink.outbound.count }.by(1)
+            end
+          end
+
+          context 'when targeting the inbound allowlist' do
+            let(:direction) { :inbound }
+
+            it 'adds the target project' do
+              expect do
+                expect(subject).to include(ci_job_token_scope: be_present, errors: be_empty)
+              end.to change { Ci::JobToken::ProjectScopeLink.inbound.count }.by(1)
+            end
+          end
         end
 
         context 'when the service returns an error' do
           let(:service) { double(:service) }
 
           it 'returns an error response' do
-            expect(::Ci::JobTokenScope::AddProjectService).to receive(:new).with(project, current_user).and_return(service)
-            expect(service).to receive(:execute).with(target_project).and_return(ServiceResponse.error(message: 'The error message'))
+            expect(::Ci::JobTokenScope::AddProjectService).to receive(:new).with(
+              project,
+              current_user
+            ).and_return(service)
+            expect(service).to receive(:execute).with(target_project, direction: :outbound).and_return(ServiceResponse.error(message: 'The error message'))
 
             expect(subject.fetch(:ci_job_token_scope)).to be_nil
             expect(subject.fetch(:errors)).to include("The error message")

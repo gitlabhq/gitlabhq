@@ -25,6 +25,7 @@ class Issue < ApplicationRecord
   include FromUnion
   include EachBatch
   include PgFullTextSearchable
+  include Exportable
 
   extend ::Gitlab::Utils::Override
 
@@ -180,11 +181,7 @@ class Issue < ApplicationRecord
   scope :confidential_only, -> { where(confidential: true) }
 
   scope :without_hidden, -> {
-    if Feature.enabled?(:ban_user_feature_flag)
-      where('NOT EXISTS (?)', Users::BannedUser.select(1).where('issues.author_id = banned_users.user_id'))
-    else
-      all
-    end
+    where('NOT EXISTS (?)', Users::BannedUser.select(1).where('issues.author_id = banned_users.user_id'))
   }
 
   scope :counts_by_state, -> { reorder(nil).group(:state_id).count }
@@ -328,13 +325,22 @@ class Issue < ApplicationRecord
     '#'
   end
 
+  # Alternative prefix for situations where the standard prefix would be
+  # interpreted as a comment, most notably to begin commit messages with
+  # (e.g. "GL-123: My commit")
+  def self.alternative_reference_prefix
+    'GL-'
+  end
+
   # Pattern used to extract `#123` issue references from text
   #
   # This pattern supports cross-project references.
   def self.reference_pattern
     @reference_pattern ||= %r{
-      (#{Project.reference_pattern})?
-      #{Regexp.escape(reference_prefix)}#{Gitlab::Regex.issue}
+      (?:
+        (#{Project.reference_pattern})?#{Regexp.escape(reference_prefix)} |
+        #{Regexp.escape(alternative_reference_prefix)}
+      )#{Gitlab::Regex.issue}
     }x
   end
 
@@ -670,6 +676,12 @@ class Issue < ApplicationRecord
 
   def supports_confidentiality?
     true
+  end
+
+  # we want to have subscriptions working on work items only, legacy issues do not support graphql subscriptions, yet so
+  # we need sometimes GID of an issue instance to be represented as WorkItem GID. E.g. notes subscriptions.
+  def to_work_item_global_id
+    ::Gitlab::GlobalId.as_global_id(id, model_name: WorkItem.name)
   end
 
   private

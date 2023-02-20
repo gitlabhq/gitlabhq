@@ -1,6 +1,7 @@
 - breadcrumb_title _('Artifacts')
 - page_title @path.presence, _('Artifacts'), "#{@build.name} (##{@build.id})", _('Jobs')
 - add_page_specific_style 'page_bundles/tree'
+- add_page_specific_style 'page_bundles/ci_status'
 
 = render "projects/jobs/header"
 

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state do
+RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, feature_category: :continuous_integration do
   include ApiHelpers
   include HttpIOHelpers
 
@@ -809,14 +809,48 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state do
       sign_in(user)
     end
 
+    context 'when job is not retryable' do
+      context 'and the job is a bridge' do
+        let(:job) { create(:ci_bridge, :failed, :reached_max_descendant_pipelines_depth, pipeline: pipeline) }
+
+        it 'renders unprocessable_entity' do
+          post_retry
+
+          expect(response).to have_gitlab_http_status(:unprocessable_entity)
+        end
+      end
+
+      context 'and the job is a build' do
+        let(:job) { create(:ci_build, :deployment_rejected, pipeline: pipeline) }
+
+        it 'renders unprocessable_entity' do
+          post_retry
+
+          expect(response).to have_gitlab_http_status(:unprocessable_entity)
+        end
+      end
+    end
+
     context 'when job is retryable' do
-      let(:job) { create(:ci_build, :retryable, pipeline: pipeline) }
+      context 'and the job is a bridge' do
+        let(:job) { create(:ci_bridge, :retryable, pipeline: pipeline) }
 
-      it 'redirects to the retried job page' do
-        post_retry
+        it 'responds :ok' do
+          post_retry
 
-        expect(response).to have_gitlab_http_status(:found)
-        expect(response).to redirect_to(namespace_project_job_path(id: Ci::Build.last.id))
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+      end
+
+      context 'and the job is a build' do
+        let(:job) { create(:ci_build, :retryable, pipeline: pipeline) }
+
+        it 'redirects to the retried job page' do
+          post_retry
+
+          expect(response).to have_gitlab_http_status(:found)
+          expect(response).to redirect_to(namespace_project_job_path(id: Ci::Build.last.id))
+        end
       end
 
       shared_examples_for 'retried job has the same attributes' do
@@ -844,16 +878,6 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state do
         let!(:job) { create(:ci_build, :retryable, tag: false, when: 'on_success', pipeline: pipeline) }
 
         it_behaves_like 'retried job has the same attributes'
-      end
-    end
-
-    context 'when job is not retryable' do
-      let(:job) { create(:ci_build, pipeline: pipeline) }
-
-      it 'renders unprocessable_entity' do
-        post_retry
-
-        expect(response).to have_gitlab_http_status(:unprocessable_entity)
       end
     end
 

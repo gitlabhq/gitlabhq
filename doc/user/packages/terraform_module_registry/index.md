@@ -15,7 +15,7 @@ as a Terraform module registry.
 
 To authenticate to the Terraform module registry, you need either:
 
-- A [personal access token](../../../api/index.md#personalprojectgroup-access-tokens) with at least `read_api` rights.
+- A [personal access token](../../../api/rest/index.md#personalprojectgroup-access-tokens) with at least `read_api` rights.
 - A [CI/CD job token](../../../ci/jobs/ci_job_token.md).
 
 ## Publish a Terraform Module
@@ -26,7 +26,7 @@ Prerequisites:
 
 - The package name and version [must be unique in the top-level namespace](../infrastructure_registry/index.md#how-module-resolution-works).
 - Your project and group names must not include a dot (`.`). For example, `source = "gitlab.example.com/my.group/project.name"`.
-- You must [authenticate with the API](../../../api/index.md#authentication). If authenticating with a deploy token, it must be configured with the `write_package_registry` scope.
+- You must [authenticate with the API](../../../api/rest/index.md#authentication). If authenticating with a deploy token, it must be configured with the `write_package_registry` scope.
 - The name of a module [must be unique within the scope of its group](../infrastructure_registry/index.md#how-module-resolution-works), otherwise an
   [error occurs](#troubleshooting).
 
@@ -36,9 +36,9 @@ PUT /projects/:id/packages/terraform/modules/:module-name/:module-system/:module
 
 | Attribute          | Type            | Required | Description                                                                                                                      |
 | -------------------| --------------- | ---------| -------------------------------------------------------------------------------------------------------------------------------- |
-| `id`               | integer/string  | yes      | The ID or [URL-encoded path of the project](../../../api/index.md#namespaced-path-encoding).                                    |
-| `module-name`      | string          | yes      | The package name. **Supported syntax**: One to 64 ASCII characters, including lowercase letters (a-z), digits (0-9), and hyphens (`-`).
-| `module-system`    | string          | yes      | The package system. **Supported syntax**: One to 64 ASCII characters, including lowercase letters (a-z), digits (0-9), and hyphens (`-`). More information can be found in the [Terraform Module Registry Protocol documentation](https://www.terraform.io/internals/module-registry-protocol).
+| `id`               | integer/string  | yes      | The ID or [URL-encoded path of the project](../../../api/rest/index.md#namespaced-path-encoding).                                    |
+| `module-name`      | string          | yes      | The package name. **Supported syntax**: One to 64 ASCII characters, including lowercase letters (a-z) and digits (0-9). The package name can't exceed 64 characters.
+| `module-system`    | string          | yes      | The package system. **Supported syntax**: One to 64 ASCII characters, including lowercase letters (a-z) and digits (0-9). The package system can't exceed 64 characters. More information can be found in the [Terraform Module Registry Protocol documentation](https://www.terraform.io/internals/module-registry-protocol).
 | `module-version`   | string          | yes      | The package version. It must be valid according to the [Semantic Versioning Specification](https://semver.org/).
 
 Provide the file content in the request body.
@@ -83,7 +83,7 @@ Example response:
 
 Prerequisites:
 
-- You need to [authenticate with the API](../../../api/index.md#authentication). If authenticating with a personal access token, it must be configured with the `read_api` scope.
+- You need to [authenticate with the API](../../../api/rest/index.md#authentication). If authenticating with a personal access token, it must be configured with the `read_api` scope.
 
 Authentication tokens (Job Token or Personal Access Token) can be provided for `terraform` in your `~/.terraformrc` file:
 
@@ -107,6 +107,38 @@ Where `<namespace>` is the [namespace](../../../user/namespace/index.md) of the 
 
 ## Publish a Terraform module by using CI/CD
 
+> CI/CD template [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110493) in GitLab 15.9.
+
+### Use a CI/CD template (recommended)
+
+You can use the [`Terraform-Module.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Terraform-Module.gitlab-ci.yml)
+or the advanced [`Terraform/Module-Base.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Terraform/Module-Base.gitlab-ci.yml)
+CI/CD template to publish a Terraform module to the GitLab Terraform Registry:
+
+```yaml
+include:
+  template: Terraform-Module.gitlab-ci.yml
+```
+
+The pipeline contains the following jobs:
+
+- `fmt` - Validate the formatting of the Terraform module.
+- `kics-iac-sast` - Test the Terraform module for security issues.
+- `deploy` - For tag pipelines only. Deploy the Terraform module to the GitLab Terraform Registry.
+
+#### Pipeline variables
+
+You can configure the pipeline with the following variables:
+
+| Variable                   | Default              | Description                                                                                     |
+|----------------------------|----------------------|-------------------------------------------------------------------------------------------------|
+| `TERRAFORM_MODULE_DIR`     | `${CI_PROJECT_DIR}`  | The relative path to the root directory of the Terraform project.                               |
+| `TERRAFORM_MODULE_NAME`    | `${CI_PROJECT_NAME}` | The name of your Terraform module. Must not contain any spaces or underscores.                  |
+| `TERRAFORM_MODULE_SYSTEM`  | `local`              | The system or provider of your Terraform module targets. For example, `local`, `aws`, `google`. |
+| `TERRAFORM_MODULE_VERSION` | `${CI_COMMIT_TAG}`   | The Terraform module version. You should follow the semantic versioning specification.          |
+
+### Deploy manually via CI/CD
+
 To work with Terraform modules in [GitLab CI/CD](../../../ci/index.md), you can use
 `CI_JOB_TOKEN` in place of the personal access token in your commands.
 
@@ -114,21 +146,21 @@ For example, this job uploads a new module for the `local` [system provider](htt
 
 ```yaml
 stages:
-  - upload
+  - deploy
 
 upload:
-  stage: upload
+  stage: deploy
   image: curlimages/curl:latest
   variables:
-    TERRAFORM_MODULE_DIR: ${CI_PROJECT_DIR} # The path to your Terraform module
-    TERRAFORM_MODULE_NAME: ${CI_PROJECT_NAME} # The name of your Terraform module
-    TERRAFORM_MODULE_SYSTEM: local # The system or provider your Terraform module targets (ex. local, aws, google)
-    TERRAFORM_MODULE_VERSION: ${CI_COMMIT_TAG} # Tag commits with SemVer for the version of your Terraform module to be published
+    TERRAFORM_MODULE_DIR: ${CI_PROJECT_DIR}    # The relative path to the root directory of the Terraform project.
+    TERRAFORM_MODULE_NAME: ${CI_PROJECT_NAME}  # The name of your Terraform module, must not have any spaces or underscores (will be translated to hyphens).
+    TERRAFORM_MODULE_SYSTEM: local             # The system or provider your Terraform module targets (ex. local, aws, google).
+    TERRAFORM_MODULE_VERSION: ${CI_COMMIT_TAG} # The version - it's recommended to follow SemVer for Terraform Module Versioning.
   script:
     - TERRAFORM_MODULE_NAME=$(echo "${TERRAFORM_MODULE_NAME}" | tr " _" -) # module-name must not have spaces or underscores, so translate them to hyphens
-    - tar -vczf ${TERRAFORM_MODULE_NAME}-${TERRAFORM_MODULE_SYSTEM}-${TERRAFORM_MODULE_VERSION}.tgz -C ${TERRAFORM_MODULE_DIR} --exclude=./.git .
+    - tar -vczf /tmp/${TERRAFORM_MODULE_NAME}-${TERRAFORM_MODULE_SYSTEM}-${TERRAFORM_MODULE_VERSION}.tgz -C ${TERRAFORM_MODULE_DIR} --exclude=./.git .
     - 'curl --fail-with-body --location --header "JOB-TOKEN: ${CI_JOB_TOKEN}"
-         --upload-file ${TERRAFORM_MODULE_NAME}-${TERRAFORM_MODULE_SYSTEM}-${TERRAFORM_MODULE_VERSION}.tgz
+         --upload-file /tmp/${TERRAFORM_MODULE_NAME}-${TERRAFORM_MODULE_SYSTEM}-${TERRAFORM_MODULE_VERSION}.tgz
          ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/terraform/modules/${TERRAFORM_MODULE_NAME}/${TERRAFORM_MODULE_SYSTEM}/${TERRAFORM_MODULE_VERSION}/file'
   rules:
     - if: $CI_COMMIT_TAG

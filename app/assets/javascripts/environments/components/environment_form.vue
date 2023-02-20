@@ -3,6 +3,10 @@ import { GlButton, GlForm, GlFormGroup, GlFormInput, GlLink, GlSprintf } from '@
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { isAbsolute } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
+import {
+  ENVIRONMENT_NEW_HELP_TEXT,
+  ENVIRONMENT_EDIT_HELP_TEXT,
+} from 'ee_else_ce/environments/constants';
 
 export default {
   components: {
@@ -13,6 +17,7 @@ export default {
     GlLink,
     GlSprintf,
   },
+  inject: ['protectedEnvironmentSettingsPath'],
   props: {
     environment: {
       required: true,
@@ -34,9 +39,8 @@ export default {
   },
   i18n: {
     header: __('Environments'),
-    helpMessage: __(
-      'Environments allow you to track deployments of your application. %{linkStart}More information%{linkEnd}.',
-    ),
+    helpNewMessage: ENVIRONMENT_NEW_HELP_TEXT,
+    helpEditMessage: ENVIRONMENT_EDIT_HELP_TEXT,
     nameLabel: __('Name'),
     nameFeedback: __('This field is required'),
     nameDisabledHelp: __("You cannot rename an environment after it's created."),
@@ -61,6 +65,9 @@ export default {
   computed: {
     isNameDisabled() {
       return Boolean(this.environment.id);
+    },
+    showEditHelp() {
+      return this.isNameDisabled && Boolean(this.protectedEnvironmentSettingsPath);
     },
     valid() {
       return {
@@ -89,9 +96,14 @@ export default {
         {{ $options.i18n.header }}
       </h4>
       <p class="gl-w-full">
-        <gl-sprintf :message="$options.i18n.helpMessage">
+        <gl-sprintf
+          :message="showEditHelp ? $options.i18n.helpEditMessage : $options.i18n.helpNewMessage"
+        >
           <template #link="{ content }">
-            <gl-link :href="$options.helpPagePath">{{ content }}</gl-link>
+            <gl-link
+              :href="showEditHelp ? protectedEnvironmentSettingsPath : $options.helpPagePath"
+              >{{ content }}</gl-link
+            >
           </template>
         </gl-sprintf>
       </p>

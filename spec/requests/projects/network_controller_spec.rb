@@ -35,17 +35,6 @@ RSpec.describe Projects::NetworkController, feature_category: :source_code_manag
           subject
           expect(assigns(:url)).to eq(project_network_path(project, ref, format: :json, ref_type: 'heads'))
         end
-
-        context 'when the use_ref_type_parameter flag is disabled' do
-          before do
-            stub_feature_flags(use_ref_type_parameter: false)
-          end
-
-          it 'assigns url without ref_type' do
-            subject
-            expect(assigns(:url)).to eq(project_network_path(project, ref, format: :json))
-          end
-        end
       end
 
       it 'assigns url' do

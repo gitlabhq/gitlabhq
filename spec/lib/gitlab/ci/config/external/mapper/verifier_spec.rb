@@ -25,6 +25,10 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper::Verifier, feature_category:
         my_test:
           script: echo Hello World
       YAML
+      'myfolder/file3.yml' => <<~YAML,
+        my_deploy:
+          script: echo Hello World
+      YAML
       'nested_configs.yml' => <<~YAML
         include:
           - local: myfolder/file1.yml
@@ -58,16 +62,63 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper::Verifier, feature_category:
       let(:files) do
         [
           Gitlab::Ci::Config::External::File::Local.new({ local: 'myfolder/file1.yml' }, context),
-          Gitlab::Ci::Config::External::File::Local.new({ local: 'myfolder/file2.yml' }, context)
+          Gitlab::Ci::Config::External::File::Local.new({ local: 'myfolder/file2.yml' }, context),
+          Gitlab::Ci::Config::External::File::Local.new({ local: 'myfolder/file3.yml' }, context)
         ]
       end
 
       it 'returns an array of file objects' do
-        expect(process.map(&:location)).to contain_exactly('myfolder/file1.yml', 'myfolder/file2.yml')
+        expect(process.map(&:location)).to contain_exactly(
+          'myfolder/file1.yml', 'myfolder/file2.yml', 'myfolder/file3.yml'
+        )
       end
 
       it 'adds files to the expandset' do
-        expect { process }.to change { context.expandset.count }.by(2)
+        expect { process }.to change { context.expandset.count }.by(3)
+      end
+
+      it 'calls Gitaly only once for all files', :request_store do
+        # 1 for project.commit.id, 1 for the files
+        expect { process }.to change { Gitlab::GitalyClient.get_request_count }.by(2)
+      end
+    end
+
+    context 'when files are project files' do
+      let_it_be(:included_project) { create(:project, :repository, namespace: project.namespace, creator: user) }
+
+      let(:files) do
+        [
+          Gitlab::Ci::Config::External::File::Project.new(
+            { file: 'myfolder/file1.yml', project: included_project.full_path }, context
+          ),
+          Gitlab::Ci::Config::External::File::Project.new(
+            { file: 'myfolder/file2.yml', project: included_project.full_path }, context
+          ),
+          Gitlab::Ci::Config::External::File::Project.new(
+            { file: 'myfolder/file3.yml', project: included_project.full_path }, context
+          )
+        ]
+      end
+
+      around(:all) do |example|
+        create_and_delete_files(included_project, project_files) do
+          example.run
+        end
+      end
+
+      it 'returns an array of file objects' do
+        expect(process.map(&:location)).to contain_exactly(
+          'myfolder/file1.yml', 'myfolder/file2.yml', 'myfolder/file3.yml'
+        )
+      end
+
+      it 'adds files to the expandset' do
+        expect { process }.to change { context.expandset.count }.by(3)
+      end
+
+      it 'calls Gitaly only once for all files', :request_store do
+        # 1 for project.commit.id, 3 for the sha check, 1 for the files
+        expect { process }.to change { Gitlab::GitalyClient.get_request_count }.by(5)
       end
     end
 
@@ -99,7 +150,7 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper::Verifier, feature_category:
       end
     end
 
-    context 'when max_includes is exceeded' do
+    context 'when total file count exceeds max_includes' do
       context 'when files are nested' do
         let(:files) do
           [
@@ -107,11 +158,8 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper::Verifier, feature_category:
           ]
         end
 
-        before do
-          allow(context).to receive(:max_includes).and_return(1)
-        end
-
         it 'raises Processor::IncludeError' do
+          allow(context).to receive(:max_includes).and_return(1)
           expect { process }.to raise_error(Gitlab::Ci::Config::External::Processor::IncludeError)
         end
       end
@@ -124,12 +172,35 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper::Verifier, feature_category:
           ]
         end
 
-        before do
+        it 'raises Mapper::TooManyIncludesError' do
           allow(context).to receive(:max_includes).and_return(1)
+          expect { process }.to raise_error(Gitlab::Ci::Config::External::Mapper::TooManyIncludesError)
+        end
+      end
+
+      context 'when files are duplicates' do
+        let(:files) do
+          [
+            Gitlab::Ci::Config::External::File::Local.new({ local: 'myfolder/file1.yml' }, context),
+            Gitlab::Ci::Config::External::File::Local.new({ local: 'myfolder/file1.yml' }, context),
+            Gitlab::Ci::Config::External::File::Local.new({ local: 'myfolder/file1.yml' }, context)
+          ]
         end
 
-        it 'raises Mapper::TooManyIncludesError' do
+        it 'raises error' do
+          allow(context).to receive(:max_includes).and_return(2)
           expect { process }.to raise_error(Gitlab::Ci::Config::External::Mapper::TooManyIncludesError)
+        end
+
+        context 'when FF ci_includes_count_duplicates is disabled' do
+          before do
+            stub_feature_flags(ci_includes_count_duplicates: false)
+          end
+
+          it 'does not raise error' do
+            allow(context).to receive(:max_includes).and_return(2)
+            expect { process }.not_to raise_error
+          end
         end
       end
     end

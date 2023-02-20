@@ -59,8 +59,8 @@ If the case of `404.html`, there are different scenarios. For example:
 
 ## Redirects in GitLab Pages
 
-You can configure redirects for your site using a `_redirects` file. To learn more, read
-the [redirects documentation](redirects.md).
+You can configure redirects for your site using a `_redirects` file. For more information, see
+[Create redirects for GitLab Pages](redirects.md).
 
 ## Remove your pages
 
@@ -68,6 +68,9 @@ To remove your pages:
 
 1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > Pages**.
+
+   If this path is not visible, select **Deployments > Pages**.
+   [This location is part of an experiment](index.md#menu-position-test).
 1. Select **Remove pages**.
 
 ## Subdomains of subdomains
@@ -253,12 +256,12 @@ instead. Here are some examples of what happens given the above Pages site:
 | `/info/details`      | `200 OK`: `public/info/details.html` |
 | `/info/details.html` | `200 OK`: `public/info/details.html` |
 
-Note that when `public/data/index.html` exists, it takes priority over the `public/data.html` file
+When `public/data/index.html` exists, it takes priority over the `public/data.html` file
 for both the `/data` and `/data/` URL paths.
 
 ## Known issues
 
-For a list of known issues, visit the GitLab [public issue tracker](https://gitlab.com/gitlab-org/gitlab/-/issues?label_name[]=Category%3APages).
+For a list of known issues, see the GitLab [public issue tracker](https://gitlab.com/gitlab-org/gitlab/-/issues?label_name[]=Category%3APages).
 
 ## Troubleshooting
 

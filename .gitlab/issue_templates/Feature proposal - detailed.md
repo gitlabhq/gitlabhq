@@ -125,6 +125,7 @@ In which enterprise tier should this feature go? See https://about.gitlab.com/ha
 
 <!-- Label reminders - you should have one of each of the following labels.
 Use the following resources to find the appropriate labels:
+- Use only one tier label choosing the lowest tier this is intended for
 - https://gitlab.com/gitlab-org/gitlab/-/labels
 - https://about.gitlab.com/handbook/product/categories/features/
 -->

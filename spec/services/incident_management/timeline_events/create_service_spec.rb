@@ -171,7 +171,7 @@ RSpec.describe IncidentManagement::TimelineEvents::CreateService do
             occurred_at: Time.current,
             action: 'new comment',
             promoted_from_note: comment,
-            timeline_event_tag_names: ['start time', 'end time']
+            timeline_event_tag_names: ['start time', 'end time', 'Impact mitigated']
           }
         end
 
@@ -180,11 +180,11 @@ RSpec.describe IncidentManagement::TimelineEvents::CreateService do
         it 'matches the two tags on the event and creates on project' do
           result = execute.payload[:timeline_event]
 
-          expect(result.timeline_event_tags.count).to eq(2)
-          expect(result.timeline_event_tags.by_names(['Start time', 'End time']).pluck_names)
-            .to match_array(['Start time', 'End time'])
+          expect(result.timeline_event_tags.count).to eq(3)
+          expect(result.timeline_event_tags.by_names(['Start time', 'End time', 'Impact mitigated']).pluck_names)
+            .to match_array(['Start time', 'End time', 'Impact mitigated'])
           expect(project.incident_management_timeline_event_tags.pluck_names)
-            .to include('Start time', 'End time')
+            .to include('Start time', 'End time', 'Impact mitigated')
         end
       end
 

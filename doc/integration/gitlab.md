@@ -12,7 +12,7 @@ To enable the GitLab.com OmniAuth provider you must register your application wi
 GitLab.com generates an application ID and secret key for you to use.
 
 1. Sign in to GitLab.com.
-1. In the top-right corner, select your avatar.
+1. In the upper-right corner, select your avatar.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Applications**.
 1. Provide the required details for **Add new application**.
@@ -51,7 +51,9 @@ GitLab.com generates an application ID and secret key for you to use.
    sudo -u git -H editor config/gitlab.yml
    ```
 
-1. See [Configure initial settings](omniauth.md#configure-initial-settings) for initial settings.
+1. Edit the [common configuration file settings](omniauth.md#configure-common-settings)
+   to add `gitlab` as a single sign-on provider. This enables Just-In-Time
+   account provisioning for users who do not have an existing GitLab account.
 1. Add the provider configuration:
 
    For Omnibus installations authenticating against **GitLab.com**:

@@ -1,0 +1,8 @@
+---
+name: deploy_key_for_protected_tags
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110238
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/389237
+milestone: '15.9'
+type: development
+group: group::source code
+default_enabled: false

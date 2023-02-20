@@ -2,6 +2,7 @@ import MockAdapter from 'axios-mock-adapter';
 import { loadHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import waitForPromises from 'helpers/wait_for_promises';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import PANEL_STATE from '~/prometheus_metrics/constants';
 import PrometheusMetrics from '~/prometheus_metrics/prometheus_metrics';
 import { metrics2 as metrics, missingVarMetrics } from './mock_data';
@@ -116,7 +117,7 @@ describe('PrometheusMetrics', () => {
     let mock;
 
     function mockSuccess() {
-      mock.onGet(prometheusMetrics.activeMetricsEndpoint).reply(200, {
+      mock.onGet(prometheusMetrics.activeMetricsEndpoint).reply(HTTP_STATUS_OK, {
         data: metrics,
         success: true,
       });

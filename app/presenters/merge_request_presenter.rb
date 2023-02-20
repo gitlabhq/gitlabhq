@@ -281,8 +281,8 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
   end
 
   # Avoid including ActionView::Helpers::UrlHelper
-  def link_to(*args)
-    ApplicationController.helpers.link_to(*args)
+  def link_to(...)
+    ApplicationController.helpers.link_to(...)
   end
 end
 

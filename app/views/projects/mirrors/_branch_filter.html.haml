@@ -1,0 +1,6 @@
+.form-check.gl-mb-3
+  = check_box_tag :only_protected_branches, '1', false, class: 'js-mirror-protected form-check-input'
+  = label_tag :only_protected_branches, _('Mirror only protected branches'), class: 'form-check-label'
+  .form-text.text-muted
+    = _('If enabled, only protected branches will be mirrored.')
+    = link_to _('Learn more.'), help_page_path('user/project/repository/mirror/index.md', anchor: 'mirror-only-protected-branches'), target: '_blank', rel: 'noopener noreferrer'

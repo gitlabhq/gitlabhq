@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import VueRouter from 'vue-router';
 import VueApollo from 'vue-apollo';
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -12,6 +13,9 @@ import RunnerDetails from '~/ci/runner/components/runner_details.vue';
 import RunnerPauseButton from '~/ci/runner/components/runner_pause_button.vue';
 import RunnerDeleteButton from '~/ci/runner/components/runner_delete_button.vue';
 import RunnerEditButton from '~/ci/runner/components/runner_edit_button.vue';
+import RunnerDetailsTabs from '~/ci/runner/components/runner_details_tabs.vue';
+import RunnersJobs from '~/ci/runner/components/runner_jobs.vue';
+
 import runnerQuery from '~/ci/runner/graphql/show/runner.query.graphql';
 import GroupRunnerShowApp from '~/ci/runner/group_runner_show/group_runner_show_app.vue';
 import { captureException } from '~/ci/runner/sentry_utils';
@@ -31,6 +35,7 @@ const mockRunnersPath = '/groups/group1/-/runners';
 const mockEditGroupRunnerPath = `/groups/group1/-/runners/${mockRunnerId}/edit`;
 
 Vue.use(VueApollo);
+Vue.use(VueRouter);
 
 describe('GroupRunnerShowApp', () => {
   let wrapper;
@@ -41,6 +46,8 @@ describe('GroupRunnerShowApp', () => {
   const findRunnerDeleteButton = () => wrapper.findComponent(RunnerDeleteButton);
   const findRunnerEditButton = () => wrapper.findComponent(RunnerEditButton);
   const findRunnerPauseButton = () => wrapper.findComponent(RunnerPauseButton);
+  const findRunnerDetailsTabs = () => wrapper.findComponent(RunnerDetailsTabs);
+  const findRunnersJobs = () => wrapper.findComponent(RunnersJobs);
 
   const mockRunnerQueryResult = (runner = {}) => {
     mockRunnerQuery = jest.fn().mockResolvedValue({
@@ -81,14 +88,21 @@ describe('GroupRunnerShowApp', () => {
       expect(mockRunnerQuery).toHaveBeenCalledWith({ id: mockRunnerGraphqlId });
     });
 
-    it('displays the header', async () => {
+    it('displays the runner header', () => {
       expect(findRunnerHeader().text()).toContain(`Runner #${mockRunnerId}`);
     });
 
-    it('displays edit, pause, delete buttons', async () => {
-      expect(findRunnerEditButton().exists()).toBe(true);
+    it('displays the runner edit and pause buttons', async () => {
+      expect(findRunnerEditButton().attributes('href')).toBe(mockEditGroupRunnerPath);
       expect(findRunnerPauseButton().exists()).toBe(true);
       expect(findRunnerDeleteButton().exists()).toBe(true);
+    });
+
+    it('shows runner details', () => {
+      expect(findRunnerDetailsTabs().props()).toEqual({
+        runner: mockRunner,
+        showAccessHelp: true,
+      });
     });
 
     it('shows basic runner details', () => {
@@ -104,15 +118,10 @@ describe('GroupRunnerShowApp', () => {
                         Token expiry
                         Runner authentication token expiration
                         Runner authentication tokens will expire based on a set interval.
-                        They will automatically rotate once expired. Learn more
-                        Never expires
+                        They will automatically rotate once expired. Learn more Never expires
                         Tags None`.replace(/\s+/g, ' ');
 
       expect(wrapper.text().replace(/\s+/g, ' ')).toContain(expected);
-    });
-
-    it('renders runner details component', () => {
-      expect(findRunnerDetails().props('runner')).toEqual(mockRunner);
     });
 
     describe('when runner cannot be updated', () => {
@@ -129,7 +138,7 @@ describe('GroupRunnerShowApp', () => {
         });
       });
 
-      it('does not display edit and pause buttons', () => {
+      it('does not display the runner edit and pause buttons', () => {
         expect(findRunnerEditButton().exists()).toBe(false);
         expect(findRunnerPauseButton().exists()).toBe(false);
       });
@@ -153,7 +162,7 @@ describe('GroupRunnerShowApp', () => {
         });
       });
 
-      it('does not display delete button', () => {
+      it('does not display the delete button', () => {
         expect(findRunnerDeleteButton().exists()).toBe(false);
       });
 
@@ -187,7 +196,16 @@ describe('GroupRunnerShowApp', () => {
       mockRunnerQueryResult();
 
       createComponent();
+
       expect(findRunnerDetails().exists()).toBe(false);
+    });
+
+    it('does not show runner jobs', () => {
+      mockRunnerQueryResult();
+
+      createComponent();
+
+      expect(findRunnersJobs().exists()).toBe(false);
     });
   });
 

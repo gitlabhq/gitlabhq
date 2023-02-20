@@ -64,10 +64,10 @@ RSpec.describe 'Runners', feature_category: :runner_fleet do
       context 'when a project_type runner is activated on the project' do
         let_it_be(:project_runner) { create(:ci_runner, :project, projects: [project]) }
 
-        it 'user sees the specific runner' do
+        it 'user sees the project runner' do
           visit project_runners_path(project)
 
-          within '.activated-specific-runners' do
+          within '[data-testid="assigned_project_runners"]' do
             expect(page).to have_content(project_runner.display_name)
           end
 
@@ -76,30 +76,30 @@ RSpec.describe 'Runners', feature_category: :runner_fleet do
           expect(page).to have_content(project_runner.platform)
         end
 
-        it 'user can pause and resume the specific runner' do
+        it 'user can pause and resume the project runner' do
           visit project_runners_path(project)
 
-          within '.activated-specific-runners' do
+          within '[data-testid="assigned_project_runners"]' do
             expect(page).to have_link('Pause')
           end
 
           click_on 'Pause'
 
-          within '.activated-specific-runners' do
+          within '[data-testid="assigned_project_runners"]' do
             expect(page).to have_link('Resume')
           end
 
           click_on 'Resume'
 
-          within '.activated-specific-runners' do
+          within '[data-testid="assigned_project_runners"]' do
             expect(page).to have_link('Pause')
           end
         end
 
-        it 'user removes an activated specific runner if this is last project for that runners' do
+        it 'user removes an activated project runner if this is last project for that runners' do
           visit project_runners_path(project)
 
-          within '.activated-specific-runners' do
+          within '[data-testid="assigned_project_runners"]' do
             click_on 'Remove runner'
           end
 
@@ -109,7 +109,7 @@ RSpec.describe 'Runners', feature_category: :runner_fleet do
         it 'user edits the runner to be protected' do
           visit project_runners_path(project)
 
-          within '.activated-specific-runners' do
+          within '[data-testid="assigned_project_runners"]' do
             first('[data-testid="edit-runner-link"]').click
           end
 
@@ -129,7 +129,7 @@ RSpec.describe 'Runners', feature_category: :runner_fleet do
           it 'user edits runner not to run untagged jobs' do
             visit project_runners_path(project)
 
-            within '.activated-specific-runners' do
+            within '[data-testid="assigned_project_runners"]' do
               first('[data-testid="edit-runner-link"]').click
             end
 
@@ -189,7 +189,7 @@ RSpec.describe 'Runners', feature_category: :runner_fleet do
         end
       end
 
-      context 'when a specific runner exists in another project' do
+      context 'when a project runner exists in another project' do
         let(:another_project) { create(:project) }
         let!(:project_runner) { create(:ci_runner, :project, projects: [another_project]) }
 
@@ -197,20 +197,20 @@ RSpec.describe 'Runners', feature_category: :runner_fleet do
           another_project.add_maintainer(user)
         end
 
-        it 'user enables and disables a specific runner' do
+        it 'user enables and disables a project runner' do
           visit project_runners_path(project)
 
-          within '.available-specific-runners' do
+          within '[data-testid="available_project_runners"]' do
             click_on 'Enable for this project'
           end
 
-          expect(page.find('.activated-specific-runners')).to have_content(project_runner.display_name)
+          expect(page.find('[data-testid="assigned_project_runners"]')).to have_content(project_runner.display_name)
 
-          within '.activated-specific-runners' do
+          within '[data-testid="assigned_project_runners"]' do
             click_on 'Disable for this project'
           end
 
-          expect(page.find('.available-specific-runners')).to have_content(project_runner.display_name)
+          expect(page.find('[data-testid="available_project_runners"]')).to have_content(project_runner.display_name)
         end
       end
 

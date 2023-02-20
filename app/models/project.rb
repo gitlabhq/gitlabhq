@@ -40,6 +40,8 @@ class Project < ApplicationRecord
   include RunnerTokenExpirationInterval
   include BlocksUnsafeSerialization
   include Subquery
+  include IssueParent
+  include WebHooks::HasWebHooks
 
   extend Gitlab::Cache::RequestCache
   extend Gitlab::Utils::Override
@@ -118,6 +120,7 @@ class Project < ApplicationRecord
   before_validation :remove_leading_spaces_on_name
   after_validation :check_pending_delete
   before_save :ensure_runners_token
+  before_save :update_new_emails_created_column, if: -> { emails_disabled_changed? }
 
   after_create -> { create_or_load_association(:project_feature) }
   after_create -> { create_or_load_association(:ci_cd_settings) }
@@ -306,6 +309,9 @@ class Project < ApplicationRecord
     primary_key: :project_namespace_id, foreign_key: :member_namespace_id, inverse_of: :project, class_name: 'ProjectMember'
 
   has_many :members_and_requesters, as: :source, class_name: 'ProjectMember'
+  has_many :namespace_members_and_requesters, -> { unscope(where: %i[source_id source_type]) },
+    primary_key: :project_namespace_id, foreign_key: :member_namespace_id, inverse_of: :project,
+    class_name: 'ProjectMember'
 
   has_many :users, through: :project_members
 
@@ -395,9 +401,6 @@ class Project < ApplicationRecord
   has_one :ci_cd_settings, class_name: 'ProjectCiCdSetting', inverse_of: :project, autosave: true, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
   has_many :remote_mirrors, inverse_of: :project
-  has_many :cycle_analytics_stages, class_name: 'Analytics::CycleAnalytics::ProjectStage', inverse_of: :project
-  has_many :value_streams, class_name: 'Analytics::CycleAnalytics::ProjectValueStream', inverse_of: :project
-
   has_many :external_pull_requests, inverse_of: :project
 
   has_many :sourced_pipelines, class_name: 'Ci::Sources::Pipeline', foreign_key: :source_project_id
@@ -750,7 +753,7 @@ class Project < ApplicationRecord
     return public_to_user unless user
 
     if user.is_a?(DeployToken)
-      user.accessible_projects
+      where(id: user.accessible_projects)
     else
       where('EXISTS (?) OR projects.visibility_level IN (?)',
             user.authorizations_for_projects(min_access_level: min_access_level),
@@ -824,6 +827,7 @@ class Project < ApplicationRecord
   scope :for_group, -> (group) { where(group: group) }
   scope :for_group_and_its_subgroups, ->(group) { where(namespace_id: group.self_and_descendants.select(:id)) }
   scope :for_group_and_its_ancestor_groups, ->(group) { where(namespace_id: group.self_and_ancestors.select(:id)) }
+  scope :is_importing, -> { with_import_state.where(import_state: { status: %w[started scheduled] }) }
 
   class << self
     # Searches for a list of projects based on the query given in `query`.
@@ -989,6 +993,13 @@ class Project < ApplicationRecord
     # is to check if the user is the "holder" of the personal namespace, so need to make this
     # check against only a single user (ie, namespace.owner).
     namespace.owner == user
+  end
+
+  def invalidate_personal_projects_count_of_owner
+    return unless personal?
+    return unless namespace.owner
+
+    namespace.owner.invalidate_personal_projects_count
   end
 
   def project_setting
@@ -1247,6 +1258,10 @@ class Project < ApplicationRecord
 
   def import_status
     import_state&.status || 'none'
+  end
+
+  def import_checksums
+    import_state&.checksums || {}
   end
 
   def jira_import_status
@@ -2789,6 +2804,18 @@ class Project < ApplicationRecord
     protected_branches.limit(limit)
   end
 
+  def group_protected_branches
+    root_namespace.is_a?(Group) ? root_namespace.protected_branches : ProtectedBranch.none
+  end
+
+  def all_protected_branches
+    if Feature.enabled?(:group_protected_branches)
+      @all_protected_branches ||= ProtectedBranch.from_union([protected_branches, group_protected_branches])
+    else
+      protected_branches
+    end
+  end
+
   def self_monitoring?
     Gitlab::CurrentSettings.self_monitoring_project_id == id
   end
@@ -3045,13 +3072,8 @@ class Project < ApplicationRecord
     group&.work_items_mvc_2_feature_flag_enabled? || Feature.enabled?(:work_items_mvc_2)
   end
 
-  def work_items_create_from_markdown_feature_flag_enabled?
-    group&.work_items_create_from_markdown_feature_flag_enabled? || Feature.enabled?(:work_items_create_from_markdown)
-  end
-
   def enqueue_record_project_target_platforms
     return unless Gitlab.com?
-    return unless Feature.enabled?(:record_projects_target_platforms, self)
 
     Projects::RecordTargetPlatformsWorker.perform_async(id)
   end
@@ -3366,6 +3388,17 @@ class Project < ApplicationRecord
       ProjectFeature::ENABLED
     else
       ProjectFeature::PRIVATE
+    end
+  end
+
+  def update_new_emails_created_column
+    return if project_setting.nil?
+    return if project_setting.emails_enabled == !emails_disabled
+
+    if project_setting.persisted?
+      project_setting.update!(emails_enabled: !emails_disabled)
+    elsif project_setting
+      project_setting.emails_enabled = !emails_disabled
     end
   end
 end

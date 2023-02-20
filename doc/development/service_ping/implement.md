@@ -356,8 +356,6 @@ Implemented using Redis methods [PFADD](https://redis.io/commands/pfadd/) and [P
      `{users}_creating_epics-2020-34`. If `redis_slot` is not defined the Redis key will
      be `{users_creating_epics}-2020-34`.
      Recommended slots to use are: `users`, `projects`. This is the value we count.
-   - `expiry`: expiry time in days. Default: 29 days for daily aggregation and 6 weeks for weekly
-     aggregation.
    - `aggregation`: may be set to a `:daily` or `:weekly` key. Defines how counting data is stored in Redis.
      Aggregation on a `daily` basis does not pull more fine grained data.
    - `feature_flag`: if no feature flag is set then the tracking is enabled. One feature flag can be used for multiple events. For details, see our [GitLab internal Feature flags](../feature_flags/index.md) documentation. The feature flags are owned by the group adding the event tracking.
@@ -498,9 +496,6 @@ Next, get the unique events for the current week.
 We have the following recommendations for [adding new events](#add-new-events):
 
 - Event aggregation: weekly.
-- Key expiry time:
-  - Daily: 29 days.
-  - Weekly: 42 days.
 - When adding new metrics, use a [feature flag](../../operations/feature_flags.md) to control the impact.
 - For feature flags triggered by another service, set `default_enabled: false`,
   - Events can be triggered using the `UsageData` API, which helps when there are > 10 events per change

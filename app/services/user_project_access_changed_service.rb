@@ -12,21 +12,19 @@ class UserProjectAccessChangedService
     @user_ids = Array.wrap(user_ids)
   end
 
-  def execute(blocking: true, priority: HIGH_PRIORITY)
+  def execute(priority: HIGH_PRIORITY)
     return if @user_ids.empty?
 
     bulk_args = @user_ids.map { |id| [id] }
 
     result =
-      if blocking
-        AuthorizedProjectsWorker.bulk_perform_and_wait(bulk_args)
-      else
-        case priority
-        when HIGH_PRIORITY
-          AuthorizedProjectsWorker.bulk_perform_async(bulk_args) # rubocop:disable Scalability/BulkPerformWithContext
-        when MEDIUM_PRIORITY
-          AuthorizedProjectUpdate::UserRefreshWithLowUrgencyWorker.bulk_perform_in(MEDIUM_DELAY, bulk_args, batch_size: 100, batch_delay: 30.seconds) # rubocop:disable Scalability/BulkPerformWithContext
-        else
+      case priority
+      when HIGH_PRIORITY
+        AuthorizedProjectsWorker.bulk_perform_async(bulk_args) # rubocop:disable Scalability/BulkPerformWithContext
+      when MEDIUM_PRIORITY
+        AuthorizedProjectUpdate::UserRefreshWithLowUrgencyWorker.bulk_perform_in(MEDIUM_DELAY, bulk_args, batch_size: 100, batch_delay: 30.seconds) # rubocop:disable Scalability/BulkPerformWithContext
+      when LOW_PRIORITY
+        if Feature.disabled?(:do_not_run_safety_net_auth_refresh_jobs)
           with_related_class_context do
             # We wrap the execution in `with_related_class_context`so as to obtain
             # the location of the original caller

@@ -42,7 +42,8 @@ You can see the estimated time remaining when you hover over the time tracking i
 
 Prerequisites:
 
-- You must have at least the Reporter role for the project.
+- In issues, you must have at least the Reporter role for the project.
+- In merge requests, you must have at least the Developer role for the project.
 
 To enter an estimate, use the `/estimate` [quick action](quick_actions.md), followed by the time.
 
@@ -57,7 +58,8 @@ Every time you enter a new time estimate, it overwrites the previous value.
 
 Prerequisites:
 
-- You must have at least the Reporter role for the project.
+- In issues, you must have at least the Reporter role for the project.
+- In merge requests, you must have at least the Developer role for the project.
 
 To remove an estimate entirely, use the `/remove_estimate` [quick action](quick_actions.md).
 
@@ -171,10 +173,10 @@ The following time units are available:
 
 | Time unit | What to type                | Conversion rate |
 | --------- | --------------------------- | --------------- |
-| Month     | `mo`, `month`, or `months`  | 4w (160h)       |
-| Week      | `w`, `week`, or `weeks`     | 5d (40h)        |
-| Day       | `d`, `day`, or `days`       | 8h              |
-| Hour      | `h`, `hour`, or `hours`     | 60m             |
+| Month     | `mo`, `month`, or `months`  | 4 w (160 h)      |
+| Week      | `w`, `week`, or `weeks`     | 5 d (40 h)       |
+| Day       | `d`, `day`, or `days`       | 8 h              |
+| Hour      | `h`, `hour`, or `hours`     | 60 m             |
 | Minute    | `m`, `minute`, or `minutes` |                 |
 
 ### Limit displayed units to hours **(FREE SELF)**

@@ -4,6 +4,9 @@ class Todo < ApplicationRecord
   include Sortable
   include FromUnion
   include EachBatch
+  include IgnorableColumns
+
+  ignore_column :note_id_convert_to_bigint, remove_with: '16.0', remove_after: '2023-05-22'
 
   # Time to wait for todos being removed when not visible for user anymore.
   # Prevents TODOs being removed by mistake, for example, removing access from a user
@@ -72,7 +75,9 @@ class Todo < ApplicationRecord
   scope :for_type, -> (type) { where(target_type: type) }
   scope :for_target, -> (id) { where(target_id: id) }
   scope :for_commit, -> (id) { where(commit_id: id) }
-  scope :with_entity_associations, -> { preload(:target, :author, :note, group: :route, project: [:route, { namespace: [:route, :owner] }]) }
+  scope :with_entity_associations, -> do
+    preload(:target, :author, :note, group: :route, project: [:route, { namespace: [:route, :owner] }, :project_setting])
+  end
   scope :joins_issue_and_assignees, -> { left_joins(issue: :assignees) }
   scope :for_internal_notes, -> { joins(:note).where(note: { confidential: true }) }
 
@@ -169,6 +174,7 @@ class Todo < ApplicationRecord
       done = grouped_count.where(state: :done).select("'done' AS state")
       pending = grouped_count.where(state: :pending).select("'pending' AS state")
       union = unscoped.from_union([done, pending], remove_duplicates: false)
+        .select(:user_id, :count, :state)
 
       connection.select_all(union).each_with_object({}) do |row, counts|
         counts[[row['user_id'], row['state']]] = row['count']
@@ -249,7 +255,7 @@ class Todo < ApplicationRecord
   end
 
   def for_issue_or_work_item?
-    [Issue.name, WorkItem.name].any? { |klass_name| target_type == klass_name }
+    [Issue.name, WorkItem.name].any?(target_type)
   end
 
   # override to return commits, which are not active record

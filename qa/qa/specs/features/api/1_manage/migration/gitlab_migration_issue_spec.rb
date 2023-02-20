@@ -78,18 +78,12 @@ module QA
         end
       end
 
-      # we can't fabricate things in source instance via UI
-      context "with designs", quarantine: {
-        type: :broken,
-        issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/366592'
-      } do
+      context "with designs" do
         let!(:source_design) do
-          Flow::Login.sign_in(as: user)
-
-          Resource::Design.fabricate_via_browser_ui! do |design|
-            design.api_client = api_client
+          Resource::Design.fabricate! do |design|
+            design.api_client = source_admin_api_client
             design.issue = source_issue
-          end.reload!
+          end
         end
 
         let(:imported_design) do

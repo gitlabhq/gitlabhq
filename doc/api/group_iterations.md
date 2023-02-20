@@ -26,7 +26,7 @@ GET /groups/:id/iterations?include_ancestors=false
 
 | Attribute           | Type    | Required | Description |
 | ------------------- | ------- | -------- | ----------- |
-| `state`             | string  | no       | 'Return `opened`, `upcoming`, `current (previously started)`, `closed`, or `all` iterations. Filtering by `started` state is deprecated starting with 14.1, please use `current` instead.' |
+| `state`             | string  | no       | 'Return `opened`, `upcoming`, `current (previously started)`, `closed`, or `all` iterations. Filtering by `started` state is deprecated starting with 14.1, use `current` instead.' |
 | `search`            | string  | no       | Return only iterations with a title matching the provided string.                              |
 | `include_ancestors` | boolean | no       | Include iterations from parent group and its ancestors. Defaults to `true`.                    |
 

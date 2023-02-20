@@ -98,6 +98,8 @@ export const I18N_ADMIN = s__('Runners|Administrator');
 
 // Runner details
 
+export const JOBS_ROUTE_PATH = '/jobs'; // vue-router route path
+
 export const I18N_DETAILS = s__('Runners|Details');
 export const I18N_JOBS = s__('Runners|Jobs');
 export const I18N_ASSIGNED_PROJECTS = s__('Runners|Assigned Projects (%{projectCount})');
@@ -150,6 +152,8 @@ export const JOB_STATUS_IDLE = 'IDLE';
 export const ACCESS_LEVEL_NOT_PROTECTED = 'NOT_PROTECTED';
 export const ACCESS_LEVEL_REF_PROTECTED = 'REF_PROTECTED';
 
+export const DEFAULT_ACCESS_LEVEL = ACCESS_LEVEL_NOT_PROTECTED;
+
 // CiRunnerSort
 
 export const CREATED_DESC = 'CREATED_DESC';
@@ -170,3 +174,17 @@ export const DEFAULT_MEMBERSHIP = MEMBERSHIP_DESCENDANTS;
 
 export const ADMIN_FILTERED_SEARCH_NAMESPACE = 'admin_runners';
 export const GROUP_FILTERED_SEARCH_NAMESPACE = 'group_runners';
+
+// Platforms
+
+export const LINUX_PLATFORM = 'linux';
+export const MACOS_PLATFORM = 'osx';
+export const WINDOWS_PLATFORM = 'windows';
+export const AWS_PLATFORM = 'aws';
+
+export const DEFAULT_PLATFORM = LINUX_PLATFORM;
+
+// Runner docs are in a separate repository and are not shipped with GitLab
+// they are rendered as external URLs.
+export const DOCKER_HELP_URL = 'https://docs.gitlab.com/runner/install/docker.html';
+export const KUBERNETES_HELP_URL = 'https://docs.gitlab.com/runner/install/kubernetes.html';

@@ -46,10 +46,10 @@ module Ci
           # Create shared runner. Requires admin access
           { runner_type: :instance_type }
         elsif runner_registrar_valid?('project') && project = ::Project.find_by_runners_token(registration_token)
-          # Create a specific runner for the project
+          # Create a project runner
           { runner_type: :project_type, scope: project }
         elsif runner_registrar_valid?('group') && group = ::Group.find_by_runners_token(registration_token)
-          # Create a specific runner for the group
+          # Create a group runner
           { runner_type: :group_type, scope: group }
         end
       end

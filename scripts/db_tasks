@@ -1,12 +1,17 @@
-#!/bin/bash
+#!/usr/bin/env ruby
+# frozen_string_literal: true
 
-root_path="$(cd "$(dirname "$0")/.." || exit ; pwd -P)"
-task=$1
+require 'yaml'
 
-shift
+rails_env = ENV.fetch('RAILS_ENV')
+database_config = YAML.load_file(File.join(File.expand_path('..', __dir__), 'config', 'database.yml'))[rails_env]
 
-if [[ -d "${root_path}/ee/" || "${DECOMPOSED_DB}" == "true" ]]; then
-	task="${task}:main"
-fi
+task = ARGV.shift
+raise ArgumentError, 'You need to pass a task name!' unless task
 
-eval "bundle exec rake ${task} ${*}"
+task = "#{task}:main" unless database_config.one?
+cmd = ['bundle', 'exec', 'rake', task, *ARGV]
+
+puts "Running: `#{cmd.join(' ')}`"
+
+system(*cmd)

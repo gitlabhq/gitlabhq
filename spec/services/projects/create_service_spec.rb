@@ -163,7 +163,7 @@ RSpec.describe Projects::CreateService, '#execute', feature_category: :projects 
 
   describe 'after create actions' do
     it 'invalidate personal_projects_count caches' do
-      expect(user).to receive(:invalidate_personal_projects_count)
+      expect(Rails.cache).to receive(:delete).with(['users', user.id, 'personal_projects_count'])
 
       create_project(user, opts)
     end
@@ -947,6 +947,8 @@ RSpec.describe Projects::CreateService, '#execute', feature_category: :projects 
     end
 
     it 'schedules authorization update for users with access to group', :sidekiq_inline do
+      stub_feature_flags(do_not_run_safety_net_auth_refresh_jobs: false)
+
       expect(AuthorizedProjectsWorker).not_to(
         receive(:bulk_perform_async)
       )

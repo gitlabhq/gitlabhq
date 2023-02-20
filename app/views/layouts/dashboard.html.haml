@@ -1,9 +1,7 @@
 - page_title    _("Dashboard")
 - header_title  _("Dashboard"), root_path unless header_title
-- if Feature.enabled?(:your_work_sidebar, current_user)
-  - @left_sidebar = true
-  - nav "your_work"
-- else
-  - @hide_breadcrumbs = true
+
+- @left_sidebar = true
+- nav "your_work"
 
 = render template: "layouts/application"

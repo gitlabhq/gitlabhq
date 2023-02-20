@@ -8,3 +8,4 @@
 <%= _('To reactivate your account, sign in to GitLab at %{gitlab_url}.') % { gitlab_url: root_url } %>
 
 <%= _('Please contact your GitLab administrator if you think this is an error.') %>
+<%= render 'layouts/mailer/user_deactivated_additional_text' %>

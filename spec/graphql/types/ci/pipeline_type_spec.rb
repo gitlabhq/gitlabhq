@@ -20,7 +20,7 @@ RSpec.describe Types::Ci::PipelineType do
     if Gitlab.ee?
       expected_fields += %w[
         security_report_summary security_report_findings security_report_finding
-        code_quality_reports dast_profile
+        code_quality_reports dast_profile code_quality_report_summary
       ]
     end
 

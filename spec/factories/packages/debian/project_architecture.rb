@@ -4,6 +4,6 @@ FactoryBot.define do
   factory :debian_project_architecture, class: 'Packages::Debian::ProjectArchitecture' do
     distribution { association(:debian_project_distribution) }
 
-    sequence(:name) { |n| "project-arch-#{n}" }
+    sequence(:name) { |n| "#{FFaker::Lorem.word}#{n}" }
   end
 end

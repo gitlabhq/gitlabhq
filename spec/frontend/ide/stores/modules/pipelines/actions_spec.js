@@ -25,6 +25,11 @@ import {
 import * as types from '~/ide/stores/modules/pipelines/mutation_types';
 import state from '~/ide/stores/modules/pipelines/state';
 import axios from '~/lib/utils/axios_utils';
+import {
+  HTTP_STATUS_INTERNAL_SERVER_ERROR,
+  HTTP_STATUS_NOT_FOUND,
+  HTTP_STATUS_OK,
+} from '~/lib/utils/http_status';
 import waitForPromises from 'helpers/wait_for_promises';
 import { pipelines, jobs } from '../../../mock_data';
 
@@ -60,7 +65,7 @@ describe('IDE pipelines actions', () => {
     it('commits error', () => {
       return testAction(
         receiveLatestPipelineError,
-        { status: 404 },
+        { status: HTTP_STATUS_NOT_FOUND },
         mockedState,
         [{ type: types.RECEIVE_LASTEST_PIPELINE_ERROR }],
         [{ type: 'stopPipelinePolling' }],
@@ -70,7 +75,7 @@ describe('IDE pipelines actions', () => {
     it('dispatches setErrorMessage is not 404', () => {
       return testAction(
         receiveLatestPipelineError,
-        { status: 500 },
+        { status: HTTP_STATUS_INTERNAL_SERVER_ERROR },
         mockedState,
         [{ type: types.RECEIVE_LASTEST_PIPELINE_ERROR }],
         [
@@ -118,7 +123,7 @@ describe('IDE pipelines actions', () => {
       beforeEach(() => {
         mock
           .onGet('/abc/def/commit/abc123def456ghi789jkl/pipelines')
-          .reply(200, { data: { foo: 'bar' } }, { 'poll-interval': '10000' });
+          .reply(HTTP_STATUS_OK, { data: { foo: 'bar' } }, { 'poll-interval': '10000' });
       });
 
       it('dispatches request', async () => {
@@ -151,7 +156,9 @@ describe('IDE pipelines actions', () => {
 
     describe('error', () => {
       beforeEach(() => {
-        mock.onGet('/abc/def/commit/abc123def456ghi789jkl/pipelines').reply(500);
+        mock
+          .onGet('/abc/def/commit/abc123def456ghi789jkl/pipelines')
+          .reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
       });
 
       it('dispatches error', async () => {
@@ -238,7 +245,7 @@ describe('IDE pipelines actions', () => {
 
     describe('success', () => {
       beforeEach(() => {
-        mock.onGet(stage.dropdownPath).replyOnce(200, jobs);
+        mock.onGet(stage.dropdownPath).replyOnce(HTTP_STATUS_OK, jobs);
       });
 
       it('dispatches request', () => {
@@ -257,7 +264,7 @@ describe('IDE pipelines actions', () => {
 
     describe('error', () => {
       beforeEach(() => {
-        mock.onGet(stage.dropdownPath).replyOnce(500);
+        mock.onGet(stage.dropdownPath).replyOnce(HTTP_STATUS_INTERNAL_SERVER_ERROR);
       });
 
       it('dispatches error', () => {
@@ -367,7 +374,7 @@ describe('IDE pipelines actions', () => {
     describe('success', () => {
       beforeEach(() => {
         jest.spyOn(axios, 'get');
-        mock.onGet(`${TEST_HOST}/project/builds/trace`).replyOnce(200, { html: 'html' });
+        mock.onGet(`${TEST_HOST}/project/builds/trace`).replyOnce(HTTP_STATUS_OK, { html: 'html' });
       });
 
       it('dispatches request', () => {
@@ -397,7 +404,9 @@ describe('IDE pipelines actions', () => {
 
     describe('error', () => {
       beforeEach(() => {
-        mock.onGet(`${TEST_HOST}/project/builds/trace`).replyOnce(500);
+        mock
+          .onGet(`${TEST_HOST}/project/builds/trace`)
+          .replyOnce(HTTP_STATUS_INTERNAL_SERVER_ERROR);
       });
 
       it('dispatches error', () => {

@@ -79,12 +79,9 @@ const createTestService = () => ({
 
 Vue.use(VueApollo);
 
+let service;
 let wrapper;
 let readyToMergeResponseSpy;
-
-const findMergeButton = () => wrapper.find('[data-testid="merge-button"]');
-const findPipelineFailedConfirmModal = () =>
-  wrapper.findComponent(MergeFailedPipelineConfirmationDialog);
 
 const createReadyToMergeResponse = (customMr) => {
   return produce(readyToMergeResponse, (draft) => {
@@ -96,7 +93,7 @@ const createComponent = (customConfig = {}, createState = true) => {
   wrapper = shallowMount(ReadyToMerge, {
     propsData: {
       mr: createTestMr(customConfig),
-      service: createTestService(),
+      service,
     },
     data() {
       if (createState) {
@@ -119,6 +116,13 @@ const createComponent = (customConfig = {}, createState = true) => {
   });
 };
 
+const findMergeButton = () => wrapper.find('[data-testid="merge-button"]');
+const findMergeImmediatelyDropdown = () =>
+  wrapper.find('[data-testid="merge-immediately-dropdown"');
+const findSourceBranchDeletedText = () =>
+  wrapper.find('[data-testid="source-branch-deleted-text"]');
+const findPipelineFailedConfirmModal = () =>
+  wrapper.findComponent(MergeFailedPipelineConfirmationDialog);
 const findCheckboxElement = () => wrapper.findComponent(SquashBeforeMerge);
 const findCommitEditElements = () => wrapper.findAllComponents(CommitEdit);
 const findCommitDropdownElement = () => wrapper.findComponent(CommitMessageDropdown);
@@ -129,33 +133,20 @@ const findCommitEditWithInputId = (inputId) =>
 const findMergeCommitMessage = () => findCommitEditWithInputId('merge-message-edit').props('value');
 const findSquashCommitMessage = () =>
   findCommitEditWithInputId('squash-message-edit').props('value');
+const findDeleteSourceBranchCheckbox = () =>
+  wrapper.find('[data-testid="delete-source-branch-checkbox"]');
 
 const triggerApprovalUpdated = () => eventHub.$emit('ApprovalUpdated');
+const triggerEditCommitInput = () =>
+  wrapper.find('[data-testid="widget_edit_commit_message"]').vm.$emit('input', true);
 
 describe('ReadyToMerge', () => {
   beforeEach(() => {
+    service = createTestService();
     readyToMergeResponseSpy = jest.fn().mockResolvedValueOnce(readyToMergeResponse);
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('computed', () => {
-    describe('isAutoMergeAvailable', () => {
-      it('should return true when at least one merge strategy is available', () => {
-        createComponent({});
-
-        expect(wrapper.vm.isAutoMergeAvailable).toBe(true);
-      });
-
-      it('should return false when no merge strategies are available', () => {
-        createComponent({ mr: { availableAutoMergeStrategies: [] } });
-
-        expect(wrapper.vm.isAutoMergeAvailable).toBe(false);
-      });
-    });
-
     describe('status', () => {
       it('defaults to success', () => {
         createComponent({ mr: { pipeline: true, availableAutoMergeStrategies: [] } });
@@ -190,16 +181,6 @@ describe('ReadyToMerge', () => {
       });
     });
 
-    describe('Merge Button Variant', () => {
-      it('defaults to confirm class', () => {
-        createComponent({
-          mr: { availableAutoMergeStrategies: [], mergeable: true },
-        });
-
-        expect(findMergeButton().attributes('variant')).toBe('confirm');
-      });
-    });
-
     describe('status icon', () => {
       it('defaults to tick icon', () => {
         createComponent({ mr: { mergeable: true } });
@@ -219,334 +200,313 @@ describe('ReadyToMerge', () => {
         expect(wrapper.vm.iconClass).toEqual('success');
       });
     });
+  });
 
-    describe('mergeButtonText', () => {
-      it('should return "Merge" when no auto merge strategies are available', () => {
-        createComponent({ mr: { availableAutoMergeStrategies: [] } });
+  describe('merge button text', () => {
+    it('should return "Merge" when no auto merge strategies are available', () => {
+      createComponent({ mr: { availableAutoMergeStrategies: [] } });
 
-        expect(wrapper.vm.mergeButtonText).toEqual('Merge');
-      });
-
-      it('should return "Merge in progress"', async () => {
-        createComponent();
-
-        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-        // eslint-disable-next-line no-restricted-syntax
-        wrapper.setData({ isMergingImmediately: true });
-
-        await nextTick();
-
-        expect(wrapper.vm.mergeButtonText).toEqual('Merge in progress');
-      });
-
-      it('should return "Merge when pipeline succeeds" when the MWPS auto merge strategy is available', () => {
-        createComponent({
-          mr: { isMergingImmediately: false, preferredAutoMergeStrategy: MWPS_MERGE_STRATEGY },
-        });
-
-        expect(wrapper.vm.mergeButtonText).toEqual('Merge when pipeline succeeds');
-      });
+      expect(findMergeButton().text()).toBe('Merge');
     });
 
-    describe('autoMergeText', () => {
-      it('should return Merge when pipeline succeeds', () => {
-        createComponent({ mr: { preferredAutoMergeStrategy: MWPS_MERGE_STRATEGY } });
-
-        expect(wrapper.vm.autoMergeText).toEqual('Merge when pipeline succeeds');
+    it('should return "Merge when pipeline succeeds" when the MWPS auto merge strategy is available', () => {
+      createComponent({
+        mr: { preferredAutoMergeStrategy: MWPS_MERGE_STRATEGY },
       });
+
+      expect(findMergeButton().text()).toBe('Merge when pipeline succeeds');
     });
 
-    describe('shouldShowMergeImmediatelyDropdown', () => {
-      it('should return false if no pipeline is active', () => {
-        createComponent({
-          mr: { isPipelineActive: false, onlyAllowMergeIfPipelineSucceeds: false },
-        });
+    it('should return Merge when pipeline succeeds', () => {
+      createComponent({ mr: { preferredAutoMergeStrategy: MWPS_MERGE_STRATEGY } });
 
-        expect(wrapper.vm.shouldShowMergeImmediatelyDropdown).toBe(false);
-      });
-
-      it('should return false if "Pipelines must succeed" is enabled for the current project', () => {
-        createComponent({ mr: { isPipelineActive: true, onlyAllowMergeIfPipelineSucceeds: true } });
-
-        expect(wrapper.vm.shouldShowMergeImmediatelyDropdown).toBe(false);
-      });
-    });
-
-    describe('isMergeButtonDisabled', () => {
-      it('should return false with initial data', () => {
-        createComponent({ mr: { isMergeAllowed: true, mergeable: false } });
-
-        expect(wrapper.vm.isMergeButtonDisabled).toBe(false);
-      });
-
-      it('should return true when there is no commit message', () => {
-        createComponent({ mr: { isMergeAllowed: true, commitMessage: '' } });
-
-        expect(wrapper.vm.isMergeButtonDisabled).toBe(true);
-      });
-
-      it('should return true if merge is not allowed', () => {
-        createComponent({
-          mr: {
-            isMergeAllowed: false,
-            availableAutoMergeStrategies: [],
-            onlyAllowMergeIfPipelineSucceeds: true,
-            mergeable: false,
-          },
-        });
-
-        expect(wrapper.vm.isMergeButtonDisabled).toBe(true);
-      });
-
-      it('should return true when the vm instance is making request', async () => {
-        createComponent({ mr: { isMergeAllowed: true } });
-
-        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-        // eslint-disable-next-line no-restricted-syntax
-        wrapper.setData({ isMakingRequest: true });
-
-        await nextTick();
-
-        expect(wrapper.vm.isMergeButtonDisabled).toBe(true);
-      });
-    });
-
-    describe('sourceBranchDeletedText', () => {
-      const should = 'Source branch will be deleted.';
-      const shouldNot = 'Source branch will not be deleted.';
-      const did = 'Deleted the source branch.';
-      const didNot = 'Did not delete the source branch.';
-      const scenarios = [
-        "the MR hasn't merged yet, and the backend-provided value expects to delete the branch",
-        "the MR hasn't merged yet, and the backend-provided value expects to leave the branch",
-        "the MR hasn't merged yet, and the backend-provided value is a non-boolean falsey value",
-        "the MR hasn't merged yet, and the backend-provided value is a non-boolean truthy value",
-        'the MR has been merged, and the backend reports that the branch has been removed',
-        'the MR has been merged, and the backend reports that the branch has not been removed',
-        'the MR has been merged, and the backend reports a non-boolean falsey value',
-        'the MR has been merged, and the backend reports a non-boolean truthy value',
-      ];
-
-      it.each`
-        describe        | premerge | mrShould  | mrRemoved | output
-        ${scenarios[0]} | ${true}  | ${true}   | ${null}   | ${should}
-        ${scenarios[1]} | ${true}  | ${false}  | ${null}   | ${shouldNot}
-        ${scenarios[2]} | ${true}  | ${null}   | ${null}   | ${shouldNot}
-        ${scenarios[3]} | ${true}  | ${'yeah'} | ${null}   | ${should}
-        ${scenarios[4]} | ${false} | ${null}   | ${true}   | ${did}
-        ${scenarios[5]} | ${false} | ${null}   | ${false}  | ${didNot}
-        ${scenarios[6]} | ${false} | ${null}   | ${null}   | ${didNot}
-        ${scenarios[7]} | ${false} | ${null}   | ${'yep'}  | ${did}
-      `(
-        'in the case that $describe, returns "$output"',
-        ({ premerge, mrShould, mrRemoved, output }) => {
-          createComponent({
-            mr: {
-              state: !premerge ? 'merged' : 'literally-anything-else',
-              shouldRemoveSourceBranch: mrShould,
-              sourceBranchRemoved: mrRemoved,
-            },
-          });
-
-          expect(wrapper.vm.sourceBranchDeletedText).toBe(output);
-        },
-      );
+      expect(findMergeButton().text()).toBe('Merge when pipeline succeeds');
     });
   });
 
-  describe('methods', () => {
-    describe('handleMergeButtonClick', () => {
-      const response = (status) => ({
-        data: {
-          status,
-        },
+  describe('merge immediately dropdown', () => {
+    it('dropdown should be hidden if no pipeline is active', () => {
+      createComponent({
+        mr: { isPipelineActive: false, onlyAllowMergeIfPipelineSucceeds: false },
       });
 
-      beforeEach(() => {
-        readyToMergeResponseSpy = jest
-          .fn()
-          .mockResolvedValueOnce(createReadyToMergeResponse({ squash: true, squashOnMerge: true }))
-          .mockResolvedValue(
-            createReadyToMergeResponse({
-              squash: true,
-              squashOnMerge: true,
-              defaultMergeCommitMessage: '',
-              defaultSquashCommitMessage: '',
-            }),
-          );
-      });
+      expect(findMergeImmediatelyDropdown().exists()).toBe(false);
+    });
 
-      it('should handle merge when pipeline succeeds', async () => {
-        createComponent();
+    it('dropdown should be hidden if "Pipelines must succeed" is enabled', () => {
+      createComponent({ mr: { isPipelineActive: true, onlyAllowMergeIfPipelineSucceeds: true } });
 
-        jest.spyOn(eventHub, '$emit').mockImplementation(() => {});
-        jest
-          .spyOn(wrapper.vm.service, 'merge')
-          .mockResolvedValue(response('merge_when_pipeline_succeeds'));
-        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-        // eslint-disable-next-line no-restricted-syntax
-        wrapper.setData({ removeSourceBranch: false });
+      expect(findMergeImmediatelyDropdown().exists()).toBe(false);
+    });
+  });
 
-        wrapper.vm.handleMergeButtonClick(true);
+  describe('merge button disabled state', () => {
+    it('should not be disabled initally', () => {
+      createComponent();
 
-        await waitForPromises();
+      expect(findMergeButton().props('disabled')).toBe(false);
+    });
 
-        expect(eventHub.$emit).toHaveBeenCalledWith('MRWidgetUpdateRequested');
-        expect(eventHub.$emit).toHaveBeenCalledWith('StateMachineValueChanged', {
-          transition: 'start-auto-merge',
+    it('should be disabled when there is no commit message', () => {
+      createComponent({ mr: { commitMessage: '' } });
+
+      expect(findMergeButton().props('disabled')).toBe(true);
+    });
+
+    it('should be disabled if merge is not allowed', () => {
+      createComponent({ mr: { preventMerge: true } });
+
+      expect(findMergeButton().props('disabled')).toBe(true);
+    });
+
+    it('should be disabled when making request', async () => {
+      createComponent({ mr: { isMergeAllowed: true } }, true);
+
+      findMergeButton().vm.$emit('click');
+
+      await nextTick();
+
+      expect(findMergeButton().props('disabled')).toBe(true);
+    });
+  });
+
+  describe('sourceBranchDeletedText', () => {
+    const should = 'Source branch will be deleted.';
+    const shouldNot = 'Source branch will not be deleted.';
+    const did = 'Deleted the source branch.';
+    const didNot = 'Did not delete the source branch.';
+    const scenarios = [
+      "the MR hasn't merged yet, and the backend-provided value expects to delete the branch",
+      "the MR hasn't merged yet, and the backend-provided value expects to leave the branch",
+      "the MR hasn't merged yet, and the backend-provided value is a non-boolean falsey value",
+      "the MR hasn't merged yet, and the backend-provided value is a non-boolean truthy value",
+      'the MR has been merged, and the backend reports that the branch has been removed',
+      'the MR has been merged, and the backend reports that the branch has not been removed',
+      'the MR has been merged, and the backend reports a non-boolean falsey value',
+      'the MR has been merged, and the backend reports a non-boolean truthy value',
+    ];
+
+    it.each`
+      describe        | premerge | mrShould  | mrRemoved | output
+      ${scenarios[0]} | ${true}  | ${true}   | ${null}   | ${should}
+      ${scenarios[1]} | ${true}  | ${false}  | ${null}   | ${shouldNot}
+      ${scenarios[2]} | ${true}  | ${null}   | ${null}   | ${shouldNot}
+      ${scenarios[3]} | ${true}  | ${'yeah'} | ${null}   | ${should}
+      ${scenarios[4]} | ${false} | ${null}   | ${true}   | ${did}
+      ${scenarios[5]} | ${false} | ${null}   | ${false}  | ${didNot}
+      ${scenarios[6]} | ${false} | ${null}   | ${null}   | ${didNot}
+      ${scenarios[7]} | ${false} | ${null}   | ${'yep'}  | ${did}
+    `(
+      'in the case that $describe, returns "$output"',
+      ({ premerge, mrShould, mrRemoved, output }) => {
+        createComponent({
+          mr: {
+            state: !premerge ? 'merged' : 'literally-anything-else',
+            shouldRemoveSourceBranch: mrShould,
+            sourceBranchRemoved: mrRemoved,
+            autoMergeEnabled: true,
+          },
         });
 
-        const params = wrapper.vm.service.merge.mock.calls[0][0];
+        expect(findSourceBranchDeletedText().text()).toBe(output);
+      },
+    );
+  });
 
-        expect(params).toEqual(
-          expect.objectContaining({
-            sha: wrapper.vm.mr.sha,
-            commit_message: wrapper.vm.mr.commitMessage,
-            should_remove_source_branch: false,
-            auto_merge_strategy: 'merge_when_pipeline_succeeds',
+  describe('Merge Button Variant', () => {
+    it('defaults to confirm class', () => {
+      createComponent({
+        mr: { availableAutoMergeStrategies: [], mergeable: true },
+      });
+
+      expect(findMergeButton().attributes('variant')).toBe('confirm');
+    });
+  });
+
+  describe('Merge button click', () => {
+    const response = (status) => ({
+      data: {
+        status,
+      },
+    });
+
+    beforeEach(() => {
+      readyToMergeResponseSpy = jest
+        .fn()
+        .mockResolvedValueOnce(createReadyToMergeResponse({ squash: true, squashOnMerge: true }))
+        .mockResolvedValue(
+          createReadyToMergeResponse({
+            squash: true,
+            squashOnMerge: true,
+            defaultMergeCommitMessage: '',
+            defaultSquashCommitMessage: '',
           }),
         );
-      });
-
-      it('should handle merge failed', async () => {
-        createComponent();
-
-        jest.spyOn(eventHub, '$emit').mockImplementation(() => {});
-        jest.spyOn(wrapper.vm.service, 'merge').mockResolvedValue(response('failed'));
-        wrapper.vm.handleMergeButtonClick(false, true);
-
-        await waitForPromises();
-
-        expect(eventHub.$emit).toHaveBeenCalledWith('FailedToMerge', undefined);
-
-        const params = wrapper.vm.service.merge.mock.calls[0][0];
-
-        expect(params.should_remove_source_branch).toBe(true);
-        expect(params.auto_merge_strategy).toBeUndefined();
-      });
-
-      it('should handle merge action accepted case', async () => {
-        createComponent();
-
-        jest.spyOn(eventHub, '$emit').mockImplementation(() => {});
-        jest.spyOn(wrapper.vm.service, 'merge').mockResolvedValue(response('success'));
-        jest.spyOn(wrapper.vm.mr, 'transitionStateMachine');
-        wrapper.vm.handleMergeButtonClick();
-
-        expect(eventHub.$emit).toHaveBeenCalledWith('StateMachineValueChanged', {
-          transition: 'start-merge',
-        });
-
-        await waitForPromises();
-
-        expect(wrapper.vm.mr.transitionStateMachine).toHaveBeenCalledWith({
-          transition: 'start-merge',
-        });
-
-        const params = wrapper.vm.service.merge.mock.calls[0][0];
-
-        expect(params.should_remove_source_branch).toBe(true);
-        expect(params.auto_merge_strategy).toBeUndefined();
-      });
-
-      it('hides edit commit message', async () => {
-        createComponent({}, true, true);
-
-        await waitForPromises();
-
-        jest.spyOn(eventHub, '$emit').mockImplementation(() => {});
-        jest.spyOn(wrapper.vm.service, 'merge').mockResolvedValue(response('success'));
-
-        await wrapper
-          .findComponent('[data-testid="widget_edit_commit_message"]')
-          .vm.$emit('input', true);
-
-        expect(wrapper.findComponent('[data-testid="edit_commit_message"]').exists()).toBe(true);
-
-        wrapper.vm.handleMergeButtonClick();
-
-        await waitForPromises();
-
-        expect(wrapper.findComponent('[data-testid="edit_commit_message"]').exists()).toBe(false);
-      });
     });
 
-    describe('initiateRemoveSourceBranchPolling', () => {
-      it('should emit event and call simplePoll', () => {
-        createComponent();
+    it('should handle merge when pipeline succeeds', async () => {
+      createComponent({ mr: { shouldRemoveSourceBranch: false } }, true);
 
-        jest.spyOn(eventHub, '$emit').mockImplementation(() => {});
+      jest.spyOn(eventHub, '$emit').mockImplementation(() => {});
+      jest.spyOn(service, 'merge').mockResolvedValue(response('merge_when_pipeline_succeeds'));
 
-        wrapper.vm.initiateRemoveSourceBranchPolling();
+      findMergeButton().vm.$emit('click');
 
-        expect(eventHub.$emit).toHaveBeenCalledWith('SetBranchRemoveFlag', [true]);
-        expect(simplePoll).toHaveBeenCalled();
+      await waitForPromises();
+
+      expect(eventHub.$emit).toHaveBeenCalledWith('MRWidgetUpdateRequested');
+      expect(eventHub.$emit).toHaveBeenCalledWith('StateMachineValueChanged', {
+        transition: 'start-auto-merge',
       });
+
+      const params = service.merge.mock.calls[0][0];
+
+      expect(params).toEqual(
+        expect.objectContaining({
+          sha: '12345678',
+          commit_message: commitMessage,
+          should_remove_source_branch: false,
+          auto_merge_strategy: 'merge_when_pipeline_succeeds',
+        }),
+      );
     });
 
-    describe('handleRemoveBranchPolling', () => {
-      const response = (state) => ({
-        data: {
-          source_branch_exists: state,
+    it('should handle merge failed', async () => {
+      createComponent({ mr: { availableAutoMergeStrategies: [] } });
+
+      jest.spyOn(eventHub, '$emit').mockImplementation(() => {});
+      jest.spyOn(service, 'merge').mockResolvedValue(response('failed'));
+
+      findMergeButton().vm.$emit('click');
+
+      await waitForPromises();
+
+      expect(eventHub.$emit).toHaveBeenCalledWith('FailedToMerge', undefined);
+
+      const params = service.merge.mock.calls[0][0];
+
+      expect(params.should_remove_source_branch).toBe(true);
+      expect(params.auto_merge_strategy).toBeUndefined();
+    });
+
+    it('should handle merge action accepted case', async () => {
+      createComponent({ mr: { availableAutoMergeStrategies: [] } });
+
+      jest.spyOn(eventHub, '$emit').mockImplementation(() => {});
+      jest.spyOn(service, 'merge').mockResolvedValue(response('success'));
+      jest.spyOn(wrapper.vm.mr, 'transitionStateMachine');
+
+      findMergeButton().vm.$emit('click');
+
+      expect(eventHub.$emit).toHaveBeenCalledWith('StateMachineValueChanged', {
+        transition: 'start-merge',
+      });
+
+      await waitForPromises();
+
+      expect(wrapper.vm.mr.transitionStateMachine).toHaveBeenCalledWith({
+        transition: 'start-merge',
+      });
+
+      const params = service.merge.mock.calls[0][0];
+
+      expect(params.should_remove_source_branch).toBe(true);
+      expect(params.auto_merge_strategy).toBeUndefined();
+    });
+
+    it('hides edit commit message', async () => {
+      createComponent();
+
+      jest.spyOn(eventHub, '$emit').mockImplementation(() => {});
+      jest.spyOn(service, 'merge').mockResolvedValue(response('success'));
+
+      await triggerEditCommitInput();
+
+      expect(wrapper.findComponent('[data-testid="edit_commit_message"]').exists()).toBe(true);
+
+      findMergeButton().vm.$emit('click');
+
+      await waitForPromises();
+
+      expect(wrapper.findComponent('[data-testid="edit_commit_message"]').exists()).toBe(false);
+    });
+  });
+
+  describe('initiateRemoveSourceBranchPolling', () => {
+    it('should emit event and call simplePoll', () => {
+      createComponent();
+
+      jest.spyOn(eventHub, '$emit').mockImplementation(() => {});
+
+      wrapper.vm.initiateRemoveSourceBranchPolling();
+
+      expect(eventHub.$emit).toHaveBeenCalledWith('SetBranchRemoveFlag', [true]);
+      expect(simplePoll).toHaveBeenCalled();
+    });
+  });
+
+  describe('handleRemoveBranchPolling', () => {
+    const response = (state) => ({
+      data: {
+        source_branch_exists: state,
+      },
+    });
+
+    it('should call start and stop polling when MR merged', async () => {
+      createComponent();
+
+      jest.spyOn(eventHub, '$emit').mockImplementation(() => {});
+      jest.spyOn(service, 'poll').mockResolvedValue(response(false));
+
+      let cpc = false; // continuePollingCalled
+      let spc = false; // stopPollingCalled
+
+      wrapper.vm.handleRemoveBranchPolling(
+        () => {
+          cpc = true;
         },
-      });
+        () => {
+          spc = true;
+        },
+      );
 
-      it('should call start and stop polling when MR merged', async () => {
-        createComponent();
+      await waitForPromises();
 
-        jest.spyOn(eventHub, '$emit').mockImplementation(() => {});
-        jest.spyOn(wrapper.vm.service, 'poll').mockResolvedValue(response(false));
+      expect(service.poll).toHaveBeenCalled();
 
-        let cpc = false; // continuePollingCalled
-        let spc = false; // stopPollingCalled
+      const args = eventHub.$emit.mock.calls[0];
 
-        wrapper.vm.handleRemoveBranchPolling(
-          () => {
-            cpc = true;
-          },
-          () => {
-            spc = true;
-          },
-        );
+      expect(args[0]).toEqual('MRWidgetUpdateRequested');
+      expect(args[1]).toBeDefined();
+      args[1]();
 
-        await waitForPromises();
+      expect(eventHub.$emit).toHaveBeenCalledWith('SetBranchRemoveFlag', [false]);
 
-        expect(wrapper.vm.service.poll).toHaveBeenCalled();
+      expect(cpc).toBe(false);
+      expect(spc).toBe(true);
+    });
 
-        const args = eventHub.$emit.mock.calls[0];
+    it('should continue polling until MR is merged', async () => {
+      createComponent();
 
-        expect(args[0]).toEqual('MRWidgetUpdateRequested');
-        expect(args[1]).toBeDefined();
-        args[1]();
+      jest.spyOn(service, 'poll').mockResolvedValue(response(true));
 
-        expect(eventHub.$emit).toHaveBeenCalledWith('SetBranchRemoveFlag', [false]);
+      let cpc = false; // continuePollingCalled
+      let spc = false; // stopPollingCalled
 
-        expect(cpc).toBe(false);
-        expect(spc).toBe(true);
-      });
+      wrapper.vm.handleRemoveBranchPolling(
+        () => {
+          cpc = true;
+        },
+        () => {
+          spc = true;
+        },
+      );
 
-      it('should continue polling until MR is merged', async () => {
-        createComponent();
+      await waitForPromises();
 
-        jest.spyOn(wrapper.vm.service, 'poll').mockResolvedValue(response(true));
-
-        let cpc = false; // continuePollingCalled
-        let spc = false; // stopPollingCalled
-
-        wrapper.vm.handleRemoveBranchPolling(
-          () => {
-            cpc = true;
-          },
-          () => {
-            spc = true;
-          },
-        );
-
-        await waitForPromises();
-
-        expect(cpc).toBe(true);
-        expect(spc).toBe(false);
-      });
+      expect(cpc).toBe(true);
+      expect(spc).toBe(false);
     });
   });
 
@@ -563,7 +523,7 @@ describe('ReadyToMerge', () => {
           },
         });
 
-        expect(wrapper.find('#remove-source-branch-input').exists()).toBe(false);
+        expect(findDeleteSourceBranchCheckbox().exists()).toBe(false);
       });
     });
 
@@ -575,7 +535,7 @@ describe('ReadyToMerge', () => {
       });
 
       it('isRemoveSourceBranchButtonDisabled should be false', () => {
-        expect(wrapper.find('#remove-source-branch-input').props('disabled')).toBe(undefined);
+        expect(findDeleteSourceBranchCheckbox().props('disabled')).toBe(undefined);
       });
     });
   });
@@ -646,7 +606,7 @@ describe('ReadyToMerge', () => {
             },
           });
 
-          expect(findCommitEditElements().length).toBe(0);
+          expect(findCommitEditElements()).toHaveLength(0);
         });
 
         it('should not be rendered if squash before merge is disabled', () => {
@@ -659,7 +619,7 @@ describe('ReadyToMerge', () => {
             },
           });
 
-          expect(findCommitEditElements().length).toBe(0);
+          expect(findCommitEditElements()).toHaveLength(0);
         });
 
         it('should not be rendered if there is only one commit', () => {
@@ -672,7 +632,7 @@ describe('ReadyToMerge', () => {
             },
           });
 
-          expect(findCommitEditElements().length).toBe(0);
+          expect(findCommitEditElements()).toHaveLength(0);
         });
 
         it('should have one edit component if squash is enabled and there is more than 1 commit', async () => {
@@ -686,9 +646,9 @@ describe('ReadyToMerge', () => {
             },
           });
 
-          await wrapper.find('[data-testid="widget_edit_commit_message"]').vm.$emit('input', true);
+          await triggerEditCommitInput();
 
-          expect(findCommitEditElements().length).toBe(1);
+          expect(findCommitEditElements()).toHaveLength(1);
           expect(findFirstCommitEditLabel()).toBe('Squash commit message');
         });
       });
@@ -702,16 +662,15 @@ describe('ReadyToMerge', () => {
           },
         });
 
-        await wrapper.find('[data-testid="widget_edit_commit_message"]').vm.$emit('input', true);
+        await triggerEditCommitInput();
 
-        expect(findCommitEditElements().length).toBe(2);
+        expect(findCommitEditElements()).toHaveLength(2);
       });
 
-      it('should have two edit components when squash is enabled and there is more than 1 commit and mergeRequestWidgetGraphql is enabled', async () => {
+      it('should have two edit components when squash is enabled', async () => {
         createComponent(
           {
             mr: {
-              commitsCount: 2,
               squashIsSelected: true,
               enableSquashBeforeMerge: true,
             },
@@ -719,37 +678,9 @@ describe('ReadyToMerge', () => {
           true,
         );
 
-        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-        // eslint-disable-next-line no-restricted-syntax
-        wrapper.setData({
-          loading: false,
-          state: {
-            ...createTestMr({}),
-            userPermissions: {},
-            squash: true,
-            mergeable: true,
-            commitCount: 2,
-            commitsWithoutMergeCommits: {},
-          },
-        });
-        await nextTick();
-        await wrapper.find('[data-testid="widget_edit_commit_message"]').vm.$emit('input', true);
+        await triggerEditCommitInput();
 
-        expect(findCommitEditElements().length).toBe(2);
-      });
-
-      it('should have one edit components when squash is enabled and there is 1 commit only', async () => {
-        createComponent({
-          mr: {
-            commitsCount: 1,
-            squash: true,
-            enableSquashBeforeMerge: true,
-          },
-        });
-
-        await wrapper.find('[data-testid="widget_edit_commit_message"]').vm.$emit('input', true);
-
-        expect(findCommitEditElements().length).toBe(1);
+        expect(findCommitEditElements()).toHaveLength(2);
       });
 
       it('should have correct edit squash commit label', async () => {
@@ -761,7 +692,7 @@ describe('ReadyToMerge', () => {
           },
         });
 
-        await wrapper.find('[data-testid="widget_edit_commit_message"]').vm.$emit('input', true);
+        await triggerEditCommitInput();
 
         expect(findFirstCommitEditLabel()).toBe('Squash commit message');
       });
@@ -779,7 +710,7 @@ describe('ReadyToMerge', () => {
           mr: { enableSquashBeforeMerge: true, squashIsSelected: true, commitsCount: 2 },
         });
 
-        await wrapper.find('[data-testid="widget_edit_commit_message"]').vm.$emit('input', true);
+        await triggerEditCommitInput();
 
         expect(findCommitDropdownElement().exists()).toBe(true);
       });
@@ -788,7 +719,7 @@ describe('ReadyToMerge', () => {
     it('renders a tip including a link to docs on templates', async () => {
       createComponent();
 
-      await wrapper.find('[data-testid="widget_edit_commit_message"]').vm.$emit('input', true);
+      await triggerEditCommitInput();
 
       expect(findTipLink().exists()).toBe(true);
     });
@@ -891,7 +822,8 @@ describe('ReadyToMerge', () => {
         createDefaultGqlComponent();
 
         await waitForPromises();
-        await wrapper.find('[data-testid="widget_edit_commit_message"]').vm.$emit('input', true);
+
+        await triggerEditCommitInput();
 
         expect(finderFn()).toBe(initialValue);
       });
@@ -899,7 +831,7 @@ describe('ReadyToMerge', () => {
       it('should have updated value after graphql refetch', async () => {
         createDefaultGqlComponent();
         await waitForPromises();
-        await wrapper.find('[data-testid="widget_edit_commit_message"]').vm.$emit('input', true);
+        await triggerEditCommitInput();
 
         triggerApprovalUpdated();
         await waitForPromises();
@@ -910,7 +842,7 @@ describe('ReadyToMerge', () => {
       it('should not update if user has touched', async () => {
         createDefaultGqlComponent();
         await waitForPromises();
-        await wrapper.find('[data-testid="widget_edit_commit_message"]').vm.$emit('input', true);
+        await triggerEditCommitInput();
 
         const input = wrapper.find(inputId);
         input.element.value = USER_COMMIT_MESSAGE;

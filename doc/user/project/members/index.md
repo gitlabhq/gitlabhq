@@ -10,12 +10,16 @@ Members are the users and groups who have access to your project.
 
 Each member gets a role, which determines what they can do in the project.
 
-Project members can:
+## Membership types
 
-1. Be [direct members](#add-users-to-a-project) of the project.
-1. [Inherit membership](#inherited-membership) of the project from the project's group.
-1. Be a member of a group that was [shared](share_project_with_groups.md) with the project.
-1. Be a member of a group that was [shared with the project's group](../../group/manage.md#share-a-group-with-another-group).
+Users can become members of a group or project in different ways, which define their membership type.
+
+| Membership type                               | Membership process |
+| --------------------------------------------- | ------------------ |
+| [Direct](#add-users-to-a-project)             | The user is added directly to the current group or project. |
+| [Inherited](#inherited-membership)            | The user is a member of an ancestor group or project that is added to the current group or project. |
+| [Direct shared](share_project_with_groups.md) | The user is a member of a group or project that is shared into the current group or project. |
+| [Inherited shared](../../group/manage.md#share-a-group-with-another-group) | The user is a member of an ancestor of a group or project that is shared into the current group or project. |
 
 ```mermaid
 flowchart RL
@@ -41,13 +45,71 @@ flowchart RL
   G-->|Group C shared with Project A|E
 ```
 
+### Inherited membership
+
+When your project belongs to a group, project members inherit their role
+from the group.
+
+![Project members page](img/project_members_v14_4.png)
+
+In this example:
+
+- Three members have access to the project.
+- **User 0** is a Reporter and has inherited their role in the project from the **demo** group,
+  which contains the project.
+- **User 1** belongs directly to the project. In the **Source** column, they are listed
+  as a **Direct member**.
+- **Administrator** is the [Owner](../../permissions.md) and member of all groups.
+  They have inherited their role in the project from the **demo** group.
+
+If a user is:
+
+- A direct member of a project, the **Expiration** and **Max role** fields can be updated directly on the project.
+- An inherited member from a parent group, the **Expiration** and **Max role** fields must be updated on the parent group.
+
+### Membership and visibility rights
+
+Depending on their membership type, members of groups or projects are granted different visibility levels
+and rights into the group or project.
+
+| Action | Direct group member | Inherited group member | Direct shared group member | Inherited shared group member |
+| --- | ------------------- | ---------------------- | -------------------------- | ----------------------------- |
+| Generate boards | ✓ | ✓ | ✓ | ✓ |
+| View issues of groups higher in the hierarchy | ✓ | ✓ | ✓ | ✓ |
+| View labels of groups higher in the hierarchy | ✓ | ✓ | ✓ | ✓ |
+| View milestones of groups higher in the hierarchy | ✓ | ✓ | ✓ | ✓ |
+| Be shared into other groups | ✓ |  |  |  |
+| Be shared into other projects | ✓ | ✓ |  |  |
+| Share the group with other members | ✓ |  |  |  |
+
+In the following example, `User` is a:
+
+- Direct member of `subgroup`.
+- Inherited member of `subsubgroup`.
+- Indirect member of `subgroup-2` and `subgroup-3`.
+- Indirect inherited member of `subsubgroup-2` and `subsubgroup-3`.
+
+```mermaid
+graph TD
+  classDef user stroke:green,color:green;
+
+  root --> subgroup --> subsubgroup
+  root-2 --> subgroup-2 --> subsubgroup-2
+  root-3 --> subgroup-3 --> subsubgroup-3
+  subgroup -. shared .-> subgroup-2 -. shared .-> subgroup-3
+
+  User-. member .- subgroup
+
+  class User user
+```
+
 ## Add users to a project
 
 > - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/247208) in GitLab 13.11 from a form to a modal window [with a flag](../../feature_flags.md). Disabled by default.
 > - Modal window [enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/247208) in GitLab 14.8.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/352526) in GitLab 14.9. [Feature flag `invite_members_group_modal`](https://gitlab.com/gitlab-org/gitlab/-/issues/352526) removed.
 
-Add users to a project so they become members and have permission
+Add users to a project so they become direct members and have permission
 to perform actions.
 
 Prerequisite:
@@ -59,7 +121,12 @@ To add a user to a project:
 1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Project information > Members**.
 1. Select **Invite members**.
-1. Enter an email address and select a [role](../../permissions.md).
+1. If the user:
+
+   - Has a GitLab account, enter their username.
+   - Doesn't have a GitLab account, enter their email address.
+
+1. Select a [role](../../permissions.md).
 1. Optional. Select an **Access expiration date**.
    From that date onward, the user can no longer access the project.
 
@@ -69,16 +136,12 @@ To add a user to a project:
    to extend their own time in the Maintainer role.
 
 1. Select **Invite**.
+   If you invited the user using their:
 
-If the user has a GitLab account, they are added to the members list.
-If you used an email address, the user receives an email.
-
-If the invitation is not accepted, GitLab sends reminder emails two,
-five, and ten days later. Unaccepted invites are automatically
-deleted after 90 days.
-
-If the user does not have a GitLab account, they are prompted to create an account
-using the email address the invitation was sent to.
+   - GitLab username, they are added to the members list.
+   - Email address, an invitation is sent to their email address, and they are prompted to create an account.
+   If the invitation is not accepted, GitLab sends reminder emails two, five, and ten days later.
+   Unaccepted invites are automatically deleted after 90 days.
 
 ### Which roles you can assign
 
@@ -97,14 +160,14 @@ The Owner [role](../../permissions.md#project-members-permissions) can be added 
 > - Modal window [enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/247208) in GitLab 14.8.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/352526) in GitLab 14.9. [Feature flag `invite_members_group_modal`](https://gitlab.com/gitlab-org/gitlab/-/issues/352526) removed.
 
-When you add a group to a project, each user in the group gets access to the project.
-Each user's access is based on:
+When you add a group to a project, every group member (direct or inherited) gets access to the project.
+Each member's access is based on the:
 
-- The role they're assigned in the group.
-- The maximum role you choose when you invite the group.
+- Role they're assigned in the group.
+- Maximum role you choose when you invite the group.
 
-If a user has a group role with fewer permissions than the maximum project role, the user keeps the permissions of their group role.
-For example, if you add a user with the Guest role to a project with a maximum role of Maintainer, the user has only the permissions of the Guest role.
+If a group member has a role in the group with fewer permissions than the maximum project role, the member keeps the permissions of their group role.
+For example, if you add a member with the Guest role to a project with a maximum role of Maintainer, the member has only the permissions of the Guest role in the project.
 
 Prerequisites:
 
@@ -128,10 +191,10 @@ The **Members** tab shows:
 - Members who are directly assigned to the project.
 - If the project was created in a group [namespace](../../namespace/index.md), members of that group.
 
-## Import users from another project
+## Import members from another project
 
-You can import another project's users to your own project. Users
-retain the same permissions as the project you import them from.
+You can import another project's members to your own project.
+Imported project members retain the same permissions as the project you import them from.
 
 Prerequisite:
 
@@ -147,37 +210,16 @@ To import users:
 
 After the success message displays, refresh the page to view the new members.
 
-## Inherited membership
-
-When your project belongs to a group, group members inherit their role
-from the group.
-
-![Project members page](img/project_members_v14_4.png)
-
-In this example:
-
-- Three members have access to the project.
-- **User 0** is a Reporter and has inherited their role from the **demo** group,
-  which contains the project.
-- **User 1** belongs directly to the project. In the **Source** column, they are listed
-  as a **Direct member**.
-- **Administrator** is the [Owner](../../permissions.md) and member of all groups.
-  They have inherited their role from the **demo** group.
-
-If a user is a:
-
-- Direct member of a project, the **Expiration** and **Max role** fields can be updated directly on the project.
-- Inherited member from a parent group, the **Expiration** and **Max role** fields must be updated on the parent group.
-
 ## Remove a member from a project
 
-If a user is a direct member of a project, you can remove them.
-If membership is inherited from a parent group, then the member can be removed only from the parent
-group itself.
+If a user is:
+
+- A direct member of a project, you can remove them directly from the project.
+- An inherited member from a parent group, you can only remove them from the parent group itself.
 
 Prerequisites:
 
-- To remove direct members with the:
+- To remove direct members that have the:
   - Maintainer, Developer, Reporter, or Guest role, you must have the Maintainer role.
   - Owner role, you must have the Owner role.
 - Optional. Unassign the member from all issues and merge requests that
@@ -191,7 +233,7 @@ To remove a member from a project:
 1. Optional. In the confirmation box, select the
    **Also unassign this user from related issues and merge requests** checkbox.
 1. To prevent leaks of sensitive information from private projects, verify the
-   user has not forked the private repository or created webhooks. Existing forks continue to receive
+   member has not forked the private repository or created webhooks. Existing forks continue to receive
    changes from the upstream project, and webhooks continue to receive updates. You may also want to configure your project
    to prevent projects in a group
    [from being forked outside their group](../../group/access_and_permissions.md#prevent-project-forking-outside-group).

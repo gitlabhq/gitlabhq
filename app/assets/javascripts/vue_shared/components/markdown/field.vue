@@ -82,6 +82,11 @@ export default {
       required: false,
       default: true,
     },
+    autocompleteDataSources: {
+      type: Object,
+      required: false,
+      default: () => ({}),
+    },
     line: {
       type: Object,
       required: false,
@@ -257,6 +262,7 @@ export default {
         contacts: this.enableAutocomplete,
       },
       true,
+      this.autocompleteDataSources,
     );
   },
   beforeDestroy() {

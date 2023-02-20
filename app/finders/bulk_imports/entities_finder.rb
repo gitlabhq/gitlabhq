@@ -12,9 +12,9 @@ module BulkImports
       ::BulkImports::Entity
         .preload(:failures) # rubocop: disable CodeReuse/ActiveRecord
         .by_user_id(user.id)
-        .then(&method(:filter_by_bulk_import))
-        .then(&method(:filter_by_status))
-        .then(&method(:sort))
+        .then { |entities| filter_by_bulk_import(entities) }
+        .then { |entities| filter_by_status(entities) }
+        .then { |entities| sort(entities) }
     end
 
     private

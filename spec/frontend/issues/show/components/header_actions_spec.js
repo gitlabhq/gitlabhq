@@ -4,7 +4,7 @@ import { shallowMount } from '@vue/test-utils';
 import Vuex from 'vuex';
 import { mockTracking } from 'helpers/tracking_helper';
 import { createAlert, VARIANT_SUCCESS } from '~/flash';
-import { IssuableStatus, IssueType } from '~/issues/constants';
+import { IssueType, STATUS_CLOSED, STATUS_OPEN } from '~/issues/constants';
 import DeleteIssueModal from '~/issues/show/components/delete_issue_modal.vue';
 import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_selector.vue';
 import HeaderActions from '~/issues/show/components/header_actions.vue';
@@ -40,7 +40,7 @@ describe('HeaderActions component', () => {
     newIssuePath: 'gitlab-org/gitlab-test/-/issues/new',
     projectPath: 'gitlab-org/gitlab-test',
     reportAbusePath: '-/abuse_reports/add_category',
-    reportedUserId: '1',
+    reportedUserId: 1,
     reportedFromUrl: 'http://localhost:/gitlab-org/-/issues/32',
     submitAsSpamPath: 'gitlab-org/gitlab-test/-/issues/32/submit_as_spam',
   };
@@ -81,7 +81,7 @@ describe('HeaderActions component', () => {
 
   const mountComponent = ({
     props = {},
-    issueState = IssuableStatus.Open,
+    issueState = STATUS_OPEN,
     blockedByIssues = [],
     mutateResponse = {},
   } = {}) => {
@@ -123,9 +123,9 @@ describe('HeaderActions component', () => {
   `('when issue type is $issueType', ({ issueType }) => {
     describe('close/reopen button', () => {
       describe.each`
-        description                          | issueState               | buttonText               | newIssueState
-        ${`when the ${issueType} is open`}   | ${IssuableStatus.Open}   | ${`Close ${issueType}`}  | ${ISSUE_STATE_EVENT_CLOSE}
-        ${`when the ${issueType} is closed`} | ${IssuableStatus.Closed} | ${`Reopen ${issueType}`} | ${ISSUE_STATE_EVENT_REOPEN}
+        description                          | issueState       | buttonText               | newIssueState
+        ${`when the ${issueType} is open`}   | ${STATUS_OPEN}   | ${`Close ${issueType}`}  | ${ISSUE_STATE_EVENT_CLOSE}
+        ${`when the ${issueType} is closed`} | ${STATUS_CLOSED} | ${`Reopen ${issueType}`} | ${ISSUE_STATE_EVENT_REOPEN}
       `('$description', ({ issueState, buttonText, newIssueState }) => {
         beforeEach(() => {
           dispatchEventSpy = jest.spyOn(document, 'dispatchEvent');
@@ -411,9 +411,8 @@ describe('HeaderActions component', () => {
       wrapper = mountComponent({ props: { isIssueAuthor: false } });
     });
 
-    it('renders', () => {
-      expect(findAbuseCategorySelector().exists()).toBe(true);
-      expect(findAbuseCategorySelector().props('showDrawer')).toEqual(false);
+    it("doesn't render", async () => {
+      expect(findAbuseCategorySelector().exists()).toEqual(false);
     });
 
     it('opens the drawer', async () => {
@@ -425,9 +424,10 @@ describe('HeaderActions component', () => {
     });
 
     it('closes the drawer', async () => {
+      await findDesktopDropdownItems().at(2).vm.$emit('click');
       await findAbuseCategorySelector().vm.$emit('close-drawer');
 
-      expect(findAbuseCategorySelector().props('showDrawer')).toEqual(false);
+      expect(findAbuseCategorySelector().exists()).toEqual(false);
     });
   });
 });

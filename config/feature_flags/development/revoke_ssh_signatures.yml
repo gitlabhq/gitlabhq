@@ -1,0 +1,8 @@
+---
+name: revoke_ssh_signatures
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108344
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/388986
+milestone: '15.9'
+type: development
+group: group::source code
+default_enabled: true

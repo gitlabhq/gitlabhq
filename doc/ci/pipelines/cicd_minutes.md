@@ -33,7 +33,7 @@ On self-managed GitLab instances:
 - Administrators can [assign more CI/CD minutes](#set-the-quota-of-cicd-minutes-for-a-specific-namespace)
   if a namespace uses all the CI/CD minutes in its monthly quota.
 
-[Specific runners](../runners/runners_scope.md#specific-runners) are not subject to a quota of CI/CD minutes.
+[Project runners](../runners/runners_scope.md#project-runners) are not subject to a quota of CI/CD minutes.
 
 ## Set the quota of CI/CD minutes for all namespaces
 
@@ -111,7 +111,7 @@ subgroups, sorted in descending order of CI/CD minute usage.
 
 You can view the number of CI/CD minutes being used by a personal namespace:
 
-1. On the top bar, in the top right corner, select your avatar.
+1. On the top bar, in the upper-right corner, select your avatar.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Usage Quotas**.
 
@@ -161,7 +161,7 @@ namespace.
 
 To purchase additional minutes for your personal namespace:
 
-1. On the top bar, in the top right corner, select your avatar.
+1. On the top bar, in the upper-right corner, select your avatar.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Usage Quotas**.
 1. Select **Buy additional minutes**. GitLab redirects you to the Customers Portal.
@@ -216,9 +216,9 @@ The cost factors on self-managed instances are:
 
 #### Cost factor for community contributions to GitLab projects
 
-Community contributors can use up to 300,000 minutes on shared runners when contributing to open source projects 
+Community contributors can use up to 300,000 minutes on shared runners when contributing to open source projects
 maintained by GitLab. The maximum of 300,000 minutes would only be possible if contributing exclusively to projects [part of the GitLab product](https://about.gitlab.com/handbook/engineering/metrics/#projects-that-are-part-of-the-product). The total number of minutes available on shared runners
-is reduced by the CI/CD minutes used by pipelines from other projects. 
+is reduced by the CI/CD minutes used by pipelines from other projects.
 The 300,000 minutes applies to all SaaS tiers, and the cost factor calculation is:
 
 - `Monthly minute quota / 300,000 job duration minutes = Cost factor`
@@ -288,7 +288,7 @@ processing new jobs.
 
 The grace period for running jobs is `1,000` CI/CD minutes.
 
-Jobs on specific runners are not affected by the quota of CI/CD minutes.
+Jobs on project runners are not affected by the quota of CI/CD minutes.
 
 ### GitLab SaaS usage notifications
 

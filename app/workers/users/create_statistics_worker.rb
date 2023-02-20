@@ -11,7 +11,7 @@ module Users
     include CronjobQueue
     # rubocop:enable Scalability/CronWorkerContext
 
-    feature_category :users
+    feature_category :user_profile
 
     def perform
       UsersStatistics.create_current_stats!

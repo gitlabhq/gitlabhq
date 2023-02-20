@@ -4,6 +4,7 @@ import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import { trimText } from 'helpers/text_helper';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import MRWidgetPipelineComponent from '~/vue_merge_request_widget/components/mr_widget_pipeline.vue';
 import PipelineMiniGraph from '~/pipelines/components/pipeline_mini_graph/pipeline_mini_graph.vue';
 import { SUCCESS } from '~/vue_merge_request_widget/constants';
@@ -39,7 +40,7 @@ describe('MRWidgetPipeline', () => {
   const findMonitoringPipelineMessage = () => wrapper.findByTestId('monitoring-pipeline-message');
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
 
-  const mockArtifactsRequest = () => new MockAdapter(axios).onGet().reply(200, []);
+  const mockArtifactsRequest = () => new MockAdapter(axios).onGet().reply(HTTP_STATUS_OK, []);
 
   const createWrapper = (props = {}, mountFn = shallowMount) => {
     wrapper = extendedWrapper(
@@ -108,6 +109,14 @@ describe('MRWidgetPipeline', () => {
 
       expect(findPipelineMiniGraph().exists()).toBe(true);
       expect(findPipelineMiniGraph().props('stages')).toHaveLength(stagesCount);
+    });
+
+    it('should render the latest downstream pipelines only', () => {
+      // component receives two downstream pipelines. one of them is already outdated
+      // because we retried the trigger job, so the mini pipeline graph will only
+      // render the newly created downstream pipeline instead
+      expect(mockData.pipeline.triggered).toHaveLength(2);
+      expect(findPipelineMiniGraph().props('downstreamPipelines')).toHaveLength(1);
     });
 
     describe('should render pipeline coverage information', () => {
@@ -223,7 +232,6 @@ describe('MRWidgetPipeline', () => {
       ({ pipeline } = JSON.parse(JSON.stringify(mockData)));
 
       pipeline.details.event_type_name = 'Pipeline';
-      pipeline.details.name = 'Pipeline';
       pipeline.merge_request_event_type = undefined;
       pipeline.ref.tag = false;
       pipeline.ref.branch = false;
@@ -265,7 +273,6 @@ describe('MRWidgetPipeline', () => {
     describe('for a detached merge request pipeline', () => {
       it('renders a pipeline widget that reads "Merge request pipeline <ID> <status> for <SHA>"', () => {
         pipeline.details.event_type_name = 'Merge request pipeline';
-        pipeline.details.name = 'Merge request pipeline';
         pipeline.merge_request_event_type = 'detached';
 
         factory();

@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::BackgroundMigration::ExtractProjectTopicsIntoSeparateTable,
-               :suppress_gitlab_schemas_validate_connection, schema: 20210730104800 do
+               :suppress_gitlab_schemas_validate_connection, schema: 20210826171758 do
   it 'correctly extracts project topics into separate table' do
     namespaces = table(:namespaces)
     projects = table(:projects)

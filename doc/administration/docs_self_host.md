@@ -177,7 +177,7 @@ documentation URL requests as needed. For example, if your GitLab version is
 - When you select the link, you are redirected to
 `http://0.0.0.0:4000/14.5/ee/user/admin_area/settings/help_page/#destination-requirements`.
 
-To test the setting, select a **Learn more** link within the GitLab application.
+To test the setting, select a **Learn more** link in the GitLab application.
 
 ## Upgrade the product documentation to a later version
 

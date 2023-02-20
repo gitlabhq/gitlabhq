@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BulkImports::Common::Pipelines::UploadsPipeline, feature_category: :import do
+RSpec.describe BulkImports::Common::Pipelines::UploadsPipeline, feature_category: :importers do
   let_it_be(:project) { create(:project) }
   let_it_be(:group) { create(:group) }
 

@@ -18,6 +18,8 @@ describe('Branches Sort Dropdown', () => {
             updated_asc: 'Oldest updated',
             updated_desc: 'Last updated',
           },
+          showDropdown: false,
+          sortedBy: 'updated_desc',
           ...props,
         },
       }),
@@ -54,7 +56,7 @@ describe('Branches Sort Dropdown', () => {
 
   describe('when in All branches mode', () => {
     beforeEach(() => {
-      wrapper = createWrapper({ mode: 'all' });
+      wrapper = createWrapper({ mode: 'all', showDropdown: true });
     });
 
     it('should have a search box with a placeholder', () => {
@@ -64,7 +66,7 @@ describe('Branches Sort Dropdown', () => {
       expect(searchBox.find('input').attributes('placeholder')).toBe('Filter by branch name');
     });
 
-    it('should have a branches dropdown when in all branches mode', () => {
+    it('should have a branches dropdown', () => {
       const branchesDropdown = findBranchesDropdown();
 
       expect(branchesDropdown.exists()).toBe(true);
@@ -84,7 +86,7 @@ describe('Branches Sort Dropdown', () => {
       searchBox.vm.$emit('submit');
 
       expect(urlUtils.visitUrl).toHaveBeenCalledWith(
-        '/root/ci-cd-project-demo/-/branches?state=all',
+        '/root/ci-cd-project-demo/-/branches?state=all&sort=updated_desc',
       );
     });
   });

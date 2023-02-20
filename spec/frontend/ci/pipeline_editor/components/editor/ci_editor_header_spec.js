@@ -11,11 +11,12 @@ describe('CI Editor Header', () => {
   let wrapper;
   let trackingSpy = null;
 
-  const createComponent = ({ showDrawer = false } = {}) => {
+  const createComponent = ({ showDrawer = false, showJobAssistantDrawer = false } = {}) => {
     wrapper = extendedWrapper(
       shallowMount(CiEditorHeader, {
         propsData: {
           showDrawer,
+          showJobAssistantDrawer,
         },
       }),
     );

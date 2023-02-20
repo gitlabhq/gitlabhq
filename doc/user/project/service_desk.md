@@ -67,7 +67,7 @@ one from the selector menu to append it to all Service Desk issues.
 To enable Service Desk in your project:
 
 1. (GitLab self-managed only) [Set up incoming email](../../administration/incoming_email.md#set-it-up) for the GitLab instance.
-   We recommend using [email sub-addressing](../../administration/incoming_email.md#email-sub-addressing),
+   You should use [email sub-addressing](../../administration/incoming_email.md#email-sub-addressing),
    but you can also use [catch-all mailboxes](../../administration/incoming_email.md#catch-all-mailbox).
 1. In a project, in the left sidebar, go to **Settings > General** and expand the **Service Desk** section.
 1. Enable the **Activate Service Desk** toggle. This reveals a unique email address to email issues
@@ -80,7 +80,7 @@ WARNING:
 Anyone in your project can use the Service Desk email address to create an issue in this project, **regardless
 of their access level** to your GitLab instance.
 
-To improve your project's security, we recommend the following:
+To improve your project's security, you should:
 
 - Put the Service Desk email address behind an alias on your email system so you can change it later.
 - [Enable Akismet](../../integration/akismet.md) on your GitLab instance to add spam checking to this service.
@@ -95,6 +95,7 @@ displayed in the information note.
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/2460) in GitLab 12.7.
 > - Moved from GitLab Premium to GitLab Free in 13.2.
+> - `UNSUBSCRIBE_URL`, `SYSTEM_HEADER`, `SYSTEM_FOOTER`, and `ADDITIONAL_TEXT` placeholders [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/285512) in GitLab 15.9.
 
 An email is sent to the author when:
 
@@ -128,6 +129,10 @@ You can use these placeholders to be automatically replaced in each email:
 
 - `%{ISSUE_ID}`: issue IID
 - `%{ISSUE_PATH}`: project path appended with the issue IID
+- `%{UNSUBSCRIBE_URL}`: unsubscribe URL
+- `%{SYSTEM_HEADER}`: [system header message](../admin_area/appearance.md#system-header-and-footer-messages)
+- `%{SYSTEM_FOOTER}`: [system footer message](../admin_area/appearance.md#system-header-and-footer-messages)
+- `%{ADDITIONAL_TEXT}`: [custom additional text](../admin_area/settings/email.md#custom-additional-text)
 
 Because Service Desk issues are created as [confidential](issues/confidential_issues.md) (only project members can see them),
 the response email does not contain the issue link.
@@ -142,6 +147,10 @@ You can use these placeholders to be automatically replaced in each email:
 - `%{ISSUE_ID}`: issue IID
 - `%{ISSUE_PATH}`: project path appended with the issue IID
 - `%{NOTE_TEXT}`: note text
+- `%{UNSUBSCRIBE_URL}`: unsubscribe URL
+- `%{SYSTEM_HEADER}`: [system header message](../admin_area/appearance.md#system-header-and-footer-messages)
+- `%{SYSTEM_FOOTER}`: [system footer message](../admin_area/appearance.md#system-header-and-footer-messages)
+- `%{ADDITIONAL_TEXT}`: [custom additional text](../admin_area/settings/email.md#custom-additional-text)
 
 #### New Service Desk issues
 
@@ -154,7 +163,7 @@ You can set description templates at various levels:
 - A specific [group or subgroup](description_templates.md#set-group-level-description-templates).
 - A specific [project](description_templates.md#set-a-default-template-for-merge-requests-and-issues).
 
-The templates are inherited. For example, in a project, you can also access templates set for the instance or the project's parent groups.
+The templates are inherited. For example, in a project, you can also access templates set for the instance, or the project's parent groups.
 
 To use a custom description template with Service Desk:
 
@@ -217,9 +226,9 @@ To configure a custom mailbox for Service Desk with IMAP, add the following snip
 NOTE:
 In GitLab 15.3 and later, Service Desk uses `webhook` (internal API call) by default instead of enqueuing a Sidekiq job.
 To use `webhook` on an Omnibus installation running GitLab 15.3, you must generate a secret file.
-For more context, visit [Omnibus GitLab MR 5927](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/5927).
+For more information, see [merge request 5927](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/5927).
 In GitLab 15.4, reconfiguring an Omnibus installation generates this secret file automatically, so no secret file configuration setting is needed.
-For details, visit [issue 1462](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/1462).
+For more information, see [issue 1462](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/1462).
 
 ```ruby
 gitlab_rails['service_desk_email_enabled'] = true
@@ -260,13 +269,141 @@ service_desk_email:
 The configuration options are the same as for configuring
 [incoming email](../../administration/incoming_email.md#set-it-up).
 
+##### Use encrypted credentials
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108279) in GitLab 15.9.
+
+Instead of having the Service Desk email credentials stored in plaintext in the configuration files, you can optionally
+use an encrypted file for the Incoming email credentials.
+
+Prerequisites:
+
+- To use encrypted credentials, you must first enable the
+  [encrypted configuration](../../administration/encrypted_configuration.md).
+
+The supported configuration items for the encrypted file are:
+
+- `user`
+- `password`
+
+::Tabs
+
+:::TabTitle Linux package (Omnibus)
+
+1. If initially your Service Desk configuration in `/etc/gitlab/gitlab.rb` looked like:
+
+   ```ruby
+   gitlab_rails['service_desk_email_email'] = "service-desk-email@mail.example.com"
+   gitlab_rails['service_desk_email_password'] = "examplepassword"
+   ```
+
+1. Edit the encrypted secret:
+
+   ```shell
+   sudo gitlab-rake gitlab:service_desk_email:secret:edit EDITOR=vim
+   ```
+
+1. Enter the unencrypted contents of the Service Desk email secret:
+
+   ```yaml
+   user: 'service-desk-email@mail.example.com'
+   password: 'examplepassword'
+   ```
+
+1. Edit `/etc/gitlab/gitlab.rb` and remove the `service_desk` settings for `email` and `password`.
+1. Save the file and reconfigure GitLab:
+
+   ```shell
+   sudo gitlab-ctl reconfigure
+   ```
+
+:::TabTitle Helm chart (Kubernetes)
+
+Use a Kubernetes secret to store the Service Desk email password. For more information,
+read about [Helm IMAP secrets](https://docs.gitlab.com/charts/installation/secrets.html#imap-password-for-service-desk-emails).
+
+:::TabTitle Docker
+
+1. If initially your Service Desk configuration in `docker-compose.yml` looked like:
+
+   ```yaml
+   version: "3.6"
+   services:
+     gitlab:
+       image: 'gitlab/gitlab-ee:latest'
+       restart: always
+       hostname: 'gitlab.example.com'
+       environment:
+         GITLAB_OMNIBUS_CONFIG: |
+           gitlab_rails['service_desk_email_email'] = "service-desk-email@mail.example.com"
+           gitlab_rails['service_desk_email_password'] = "examplepassword"
+   ```
+
+1. Get inside the container, and edit the encrypted secret:
+
+   ```shell
+   sudo docker exec -t <container_name> bash
+   gitlab-rake gitlab:service_desk_email:secret:edit EDITOR=editor
+   ```
+
+1. Enter the unencrypted contents of the Service Desk secret:
+
+   ```yaml
+   user: 'service-desk-email@mail.example.com'
+   password: 'examplepassword'
+   ```
+
+1. Edit `docker-compose.yml` and remove the `service_desk` settings for `email` and `password`.
+1. Save the file and restart GitLab:
+
+   ```shell
+   docker compose up -d
+   ```
+
+:::TabTitle Self-compiled (source)
+
+1. If initially your Service Desk configuration in `/home/git/gitlab/config/gitlab.yml` looked like:
+
+   ```yaml
+   production:
+     service_desk_email:
+       user: 'service-desk-email@mail.example.com'
+       password: 'examplepassword'
+   ```
+
+1. Edit the encrypted secret:
+
+   ```shell
+   bundle exec rake gitlab:service_desk_email:secret:edit EDITOR=vim RAILS_ENVIRONMENT=production
+   ```
+
+1. Enter the unencrypted contents of the Service Desk secret:
+
+   ```yaml
+   user: 'service-desk-email@mail.example.com'
+   password: 'examplepassword'
+   ```
+
+1. Edit `/home/git/gitlab/config/gitlab.yml` and remove the `service_desk_email:` settings for `user` and `password`.
+1. Save the file and restart GitLab and Mailroom
+
+   ```shell
+   # For systems running systemd
+   sudo systemctl restart gitlab.target
+
+   # For systems running SysV init
+   sudo service gitlab restart
+   ```
+
+::EndTabs
+
 ##### Microsoft Graph
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214900) in GitLab 13.11.
 > - Alternative Azure deployments [introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/5978) in GitLab 14.9.
 
 Service Desk can be configured to read Microsoft Exchange Online mailboxes with the Microsoft
-Graph API instead of IMAP. Follow the [documentation in the incoming email section for setting up an OAuth2 application for Microsoft Graph](../../administration/incoming_email.md#microsoft-graph).
+Graph API instead of IMAP. Follow the [documentation in the incoming email section for setting up an OAuth 2.0 application for Microsoft Graph](../../administration/incoming_email.md#microsoft-graph).
 
 - Example for Omnibus GitLab installations:
 
@@ -358,11 +495,9 @@ issues created through customer support requests, and filter or interact with th
 
 Messages from the end user are shown as coming from the special
 [Support Bot user](../../subscriptions/self_managed/index.md#billable-users).
-You can read and write comments as you normally do in GitLab:
+You can read and write comments as you usually do in GitLab:
 
 ![Service Desk issue thread](img/service_desk_thread.png)
-
-Note that:
 
 - The project's visibility (private, internal, public) does not affect Service Desk.
 - The path to the project, including its group or namespace, is shown in emails.
@@ -378,12 +513,34 @@ On GitLab.com, this feature is not available.
 If a comment contains any attachments and their total size is less than or equal to 10 MB, these
 attachments are sent as part of the email. In other cases, the email contains links to the attachments.
 
+#### Special HTML formatting in HTML emails
+
+<!-- When the feature flag is removed, delete this topic and add as a line in version history under one of the topics above this one.-->
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/372301) in GitLab 15.9 [with a flag](../../administration/feature_flags.md) named `service_desk_html_to_text_email_handler`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available per project or for your entire instance, ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `service_desk_html_to_text_email_handler`.
+On GitLab.com, this feature is not available.
+
+When this feature is enabled, HTML emails correctly show additional HTML formatting, such as:
+
+- Tables
+- Blockquotes
+- Images
+- Collapsible sections
+
 #### Privacy considerations
+
+> [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108901) the minimum required role to view the creator's and participant's email in GitLab 15.9.
 
 Service Desk issues are confidential, but the project owner can
 [make an issue public](issues/confidential_issues.md#modify-issue-confidentiality).
-When a Service Desk issue becomes public, the issue creator's email address is disclosed
-to everyone who can view the project.
+When a Service Desk issue becomes public, the issue creator's and participants' email addresses are
+visible to signed-in users with at least the Reporter role for the project.
+
+In GitLab 15.8 and earlier, when a Service Desk issue becomes public, the issue creator's email
+address is disclosed to everyone who can view the project.
 
 ### Support Bot user
 

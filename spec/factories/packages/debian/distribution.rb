@@ -4,22 +4,24 @@ FactoryBot.define do
   factory :debian_project_distribution, class: 'Packages::Debian::ProjectDistribution' do
     container { association(:project) }
 
-    sequence(:codename) { |n| "project-dist-#{n}" }
+    sequence(:codename) { |n| "#{FFaker::Lorem.word}#{n}" }
 
     factory :debian_group_distribution, class: 'Packages::Debian::GroupDistribution' do
       container { association(:group) }
+    end
 
-      sequence(:codename) { |n| "group-dist-#{n}" }
+    trait(:with_suite) do
+      sequence(:suite) { |n| "#{FFaker::Lorem.word}#{n}" }
     end
 
     trait(:with_file) do
       file_signature do
-        <<~EOF
+        <<~FILESIGNATURE
         -----BEGIN PGP SIGNATURE-----
 
         ABC
         -----BEGIN PGP SIGNATURE-----
-        EOF
+        FILESIGNATURE
       end
 
       after(:build) do |distribution, evaluator|

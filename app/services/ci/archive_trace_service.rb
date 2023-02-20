@@ -2,6 +2,36 @@
 
 module Ci
   class ArchiveTraceService
+    include ::Gitlab::ExclusiveLeaseHelpers
+
+    EXCLUSIVE_LOCK_KEY = 'archive_trace_service:batch_execute:lock'
+    LOCK_TIMEOUT = 56.minutes
+    LOOP_TIMEOUT = 55.minutes
+    LOOP_LIMIT = 2000
+    BATCH_SIZE = 100
+
+    # rubocop: disable CodeReuse/ActiveRecord
+    def batch_execute(worker_name:)
+      start_time = Time.current
+      in_lock(EXCLUSIVE_LOCK_KEY, ttl: LOCK_TIMEOUT, retries: 1) do
+        Ci::Build.with_stale_live_trace.find_each(batch_size: BATCH_SIZE).with_index do |build, index|
+          break if Time.current - start_time > LOOP_TIMEOUT
+
+          if index > LOOP_LIMIT
+            Sidekiq.logger.warn(class: worker_name, message: 'Loop limit reached.', job_id: build.id)
+            break
+          end
+
+          begin
+            execute(build, worker_name: worker_name)
+          rescue StandardError
+            next
+          end
+        end
+      end
+    end
+    # rubocop: enable CodeReuse/ActiveRecord
+
     def execute(job, worker_name:)
       unless job.trace.archival_attempts_available?
         Sidekiq.logger.warn(class: worker_name, message: 'The job is out of archival attempts.', job_id: job.id)

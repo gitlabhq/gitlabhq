@@ -6,8 +6,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Dependency Proxy
 
-The Dependency Proxy is a pull-through-cache for registry images from DockerHub. This document describes how this
+The Dependency Proxy is a pull-through-cache for public registry images from DockerHub. This document describes how this
 feature is constructed in GitLab.
+
+NOTE:
+Support for private registry images is proposed in [issue 331741](https://gitlab.com/gitlab-org/gitlab/-/issues/331741).
 
 ## Container registry
 

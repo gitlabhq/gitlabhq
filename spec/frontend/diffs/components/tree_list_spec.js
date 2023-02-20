@@ -49,6 +49,7 @@ describe('Diffs tree list component', () => {
         tempFile: true,
         type: 'blob',
         parentPath: 'app',
+        tree: [],
       },
       'test.rb': {
         addedLines: 0,
@@ -62,6 +63,7 @@ describe('Diffs tree list component', () => {
         tempFile: true,
         type: 'blob',
         parentPath: 'app',
+        tree: [],
       },
       app: {
         key: 'app',

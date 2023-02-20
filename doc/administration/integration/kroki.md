@@ -4,7 +4,7 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Kroki diagrams **(FREE SELF)**
+# Kroki **(FREE SELF)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/241744) in GitLab 13.7.
 > - Support for reStructuredText and Textile documents [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/324766) in GitLab 13.12.

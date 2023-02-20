@@ -49,7 +49,6 @@ The **General** settings contain:
 - [External Authentication](external_authorization.md#configuration) - External Classification Policy Authorization.
 - [Web terminal](../../../administration/integration/terminal.md#limiting-websocket-connection-time) -
  Set max session time for web terminal.
-- [Web IDE](../../project/web_ide/index.md#enable-live-preview) - Manage Web IDE features.
 - [FLoC](floc.md) - Enable or disable
  [Federated Learning of Cohorts (FLoC)](https://en.wikipedia.org/wiki/Federated_Learning_of_Cohorts) tracking.
 
@@ -87,7 +86,7 @@ The **Integrations** settings contain:
   to receive invite email bounce events from Mailgun, if it is your email provider.
 - [PlantUML](../../../administration/integration/plantuml.md) - Allow rendering of PlantUML
   diagrams in documents.
-- [Slack application](../../../user/project/integrations/gitlab_slack_application.md#configuration) -
+- [Slack application](../../../user/project/integrations/gitlab_slack_application.md) -
   Slack integration allows you to interact with GitLab via slash commands in a chat window.
   This option is only available on GitLab.com, though it may be
   [available for self-managed instances in the future](https://gitlab.com/gitlab-org/gitlab/-/issues/28164).
@@ -118,7 +117,7 @@ The **Metrics and profiling** settings contain:
 The **Network** settings contain:
 
 - Performance optimization - Various settings that affect GitLab performance, including:
-  - [Write to `authorized_keys` file](../../../administration/operations/fast_ssh_key_lookup.md#setting-up-fast-lookup-via-gitlab-shell).
+  - [Write to `authorized_keys` file](../../../administration/operations/fast_ssh_key_lookup.md#set-up-fast-lookup).
   - [Push event activities limit and bulk push events](push_event_activities_limit.md).
 - [User and IP rate limits](user_and_ip_rate_limits.md) - Configure limits for web and API requests.
   These rate limits can be overridden:

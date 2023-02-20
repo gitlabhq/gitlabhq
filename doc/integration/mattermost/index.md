@@ -307,7 +307,7 @@ These settings can also be configured in `/var/opt/gitlab/mattermost/config.json
 
 Enabling this feature allows users to control how often they receive email notifications.
 
-Email batching can be enabled in the Mattermost **System Console** by going to the **Environment > SMTP** tab, and setting the **Enable Email Batching** setting to **True**.
+Email batching can be enabled in the Mattermost **System Console** by navigating to the **Environment > SMTP** tab, and setting the **Enable Email Batching** setting to **True**.
 
 This setting can also be configured in `/var/opt/gitlab/mattermost/config.json`.
 
@@ -360,7 +360,7 @@ When upgrading the Mattermost version, it is essential to check the
 for Mattermost to address any changes or migrations that need to be performed.
 
 Starting with GitLab 11.0, GitLab Mattermost can be upgraded through the regular Omnibus GitLab update process. When upgrading previous versions of
-GitLab, the update process can only be used if Mattermost configuration settings have not been changed outside of GitLab. That is, no changes to Mattermost's `config.json`
+GitLab, the update process can only be used if Mattermost configuration settings have not been changed outside of GitLab. That is, no changes to the Mattermost `config.json`
 file have been made - either directly or via the Mattermost **System Console**, which saves changes to `config.json`.
 
 If you are upgrading to at least GitLab 11.0 or have only configured Mattermost using `gitlab.rb`, you can upgrade GitLab using Omnibus and then run `gitlab-ctl reconfigure` to upgrade GitLab Mattermost to the latest version.
@@ -402,7 +402,7 @@ generates the `config.json` file, and instead passes limited configuration setti
 The settings that continue to be supported in `gitlab.rb` can be found in
 [`gitlab.rb.template`](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/files/gitlab-config-template/gitlab.rb.template).
 
-From GitLab 11.0, other Mattermost settings can be configured through Mattermost's System Console,
+From GitLab 11.0, other Mattermost settings can be configured through the Mattermost System Console,
 by editing `/var/opt/gitlab/mattermost/config.json`, or by using `mattermost['env']` in `gitlab.rb`.
 
 If you would like to keep configuring Mattermost using `gitlab.rb`, you can take the following actions
@@ -490,9 +490,9 @@ If you encounter any issues [visit the GitLab Mattermost troubleshooting forum](
 
 If you choose to upgrade Mattermost outside of the Omnibus GitLab automation, [follow this guide](https://docs.mattermost.com/administration/upgrade.html).
 
-## OAuth2 sequence diagram
+## OAuth 2.0 sequence diagram
 
-The following image is a sequence diagram for how GitLab works as an OAuth2
+The following image is a sequence diagram for how GitLab works as an OAuth 2.0
 provider for Mattermost. You can use this to troubleshoot errors
 in getting the integration to work:
 
@@ -520,7 +520,7 @@ sequenceDiagram
 
 ## Community support resources
 
-For help and support around your GitLab Mattermost deployment please see:
+For help and support around your GitLab Mattermost deployment, see:
 
 - [Troubleshooting Mattermost issues](https://docs.mattermost.com/install/troubleshooting.html).
 - [Mattermost GitLab Issues Support Handbook](https://docs.mattermost.com/process/support.html?highlight=omnibus#gitlab-issues).

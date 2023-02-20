@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Config::External::File::Template do
+RSpec.describe Gitlab::Ci::Config::External::File::Template, feature_category: :pipeline_authoring do
   let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user) }
 
@@ -46,7 +46,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Template do
 
   describe "#valid?" do
     subject(:valid?) do
-      template_file.validate!
+      Gitlab::Ci::Config::External::Mapper::Verifier.new(context).process([template_file])
       template_file.valid?
     end
 

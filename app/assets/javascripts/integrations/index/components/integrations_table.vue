@@ -1,7 +1,9 @@
 <script>
 import { GlIcon, GlLink, GlTable, GlTooltipDirective } from '@gitlab/ui';
+import { INTEGRATION_TYPE_SLACK } from '~/integrations/constants';
 import { sprintf, s__, __ } from '~/locale';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 export default {
   components: {
@@ -13,6 +15,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [glFeatureFlagsMixin()],
   props: {
     integrations: {
       type: Array,
@@ -55,6 +58,15 @@ export default {
         },
       ];
     },
+    filteredIntegrations() {
+      if (this.glFeatures.integrationSlackAppNotifications) {
+        return this.integrations.filter(
+          (integration) =>
+            !(integration.name === INTEGRATION_TYPE_SLACK && integration.active === false),
+        );
+      }
+      return this.integrations;
+    },
   },
   methods: {
     getStatusTooltipTitle(integration) {
@@ -67,7 +79,7 @@ export default {
 </script>
 
 <template>
-  <gl-table :items="integrations" :fields="fields" :empty-text="emptyText" show-empty fixed>
+  <gl-table :items="filteredIntegrations" :fields="fields" :empty-text="emptyText" show-empty fixed>
     <template #cell(active)="{ item }">
       <gl-icon
         v-if="item.active"

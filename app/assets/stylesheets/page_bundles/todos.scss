@@ -27,18 +27,19 @@
   }
 
   &.todo-pending.done-reversible {
-    &:hover {
-      border-top: 1px solid transparent;
-
-      .todo-avatar,
-      .todo-item {
-        opacity: 0.6;
-      }
+    .todo-item,
+    .todo-timestamp {
+      @include gl-opacity-5;
     }
 
-    .todo-avatar,
-    .todo-item {
-      opacity: 0.2;
+    .todo-avatar {
+      filter: grayscale(1);
+    }
+
+    &:hover {
+      @include gl-border-t-1;
+      @include gl-border-t-transparent;
+      @include gl-border-t-solid;
     }
   }
 }

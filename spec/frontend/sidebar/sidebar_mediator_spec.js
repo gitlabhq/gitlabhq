@@ -1,5 +1,6 @@
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import * as urlUtility from '~/lib/utils/url_utility';
 import SidebarService from '~/sidebar/services/sidebar_service';
 import SidebarMediator from '~/sidebar/sidebar_mediator';
@@ -36,10 +37,10 @@ describe('Sidebar mediator', () => {
   });
 
   it('saves assignees', () => {
-    mock.onPut(mediatorMockData.endpoint).reply(200, {});
+    mock.onPut(mediatorMockData.endpoint).reply(HTTP_STATUS_OK, {});
 
     return mediator.saveAssignees('issue[assignee_ids]').then((resp) => {
-      expect(resp.status).toEqual(200);
+      expect(resp.status).toEqual(HTTP_STATUS_OK);
     });
   });
 
@@ -91,7 +92,7 @@ describe('Sidebar mediator', () => {
 
   it('fetches the data', async () => {
     const mockData = Mock.responseMap.GET[mediatorMockData.endpoint];
-    mock.onGet(mediatorMockData.endpoint).reply(200, mockData);
+    mock.onGet(mediatorMockData.endpoint).reply(HTTP_STATUS_OK, mockData);
     const spy = jest.spyOn(mediator, 'processFetchedData').mockReturnValue(Promise.resolve());
     await mediator.fetch();
 
@@ -120,7 +121,7 @@ describe('Sidebar mediator', () => {
 
   it('fetches autocomplete projects', () => {
     const searchTerm = 'foo';
-    mock.onGet(mediatorMockData.projectsAutocompleteEndpoint).reply(200, {});
+    mock.onGet(mediatorMockData.projectsAutocompleteEndpoint).reply(HTTP_STATUS_OK, {});
     const getterSpy = jest
       .spyOn(mediator.service, 'getProjectsAutocomplete')
       .mockReturnValue(Promise.resolve({ data: {} }));
@@ -137,7 +138,7 @@ describe('Sidebar mediator', () => {
   it('moves issue', () => {
     const mockData = Mock.responseMap.POST[mediatorMockData.moveIssueEndpoint];
     const moveToProjectId = 7;
-    mock.onPost(mediatorMockData.moveIssueEndpoint).reply(200, mockData);
+    mock.onPost(mediatorMockData.moveIssueEndpoint).reply(HTTP_STATUS_OK, mockData);
     mediator.store.setMoveToProjectId(moveToProjectId);
     const moveIssueSpy = jest
       .spyOn(mediator.service, 'moveIssue')

@@ -15,9 +15,11 @@ const updateListItemsCount = ({ state, listId, value }) => {
   }
 };
 
-export const removeItemFromList = ({ state, listId, itemId }) => {
+export const removeItemFromList = ({ state, listId, itemId, reordering = false }) => {
   Vue.set(state.boardItemsByListId, listId, pull(state.boardItemsByListId[listId], itemId));
-  updateListItemsCount({ state, listId, value: -1 });
+  if (!reordering) {
+    updateListItemsCount({ state, listId, value: -1 });
+  }
 };
 
 export const addItemToList = ({
@@ -28,6 +30,7 @@ export const addItemToList = ({
   moveAfterId,
   atIndex,
   positionInList,
+  reordering = false,
 }) => {
   const listIssues = state.boardItemsByListId[listId];
   let newIndex = atIndex || 0;
@@ -41,7 +44,9 @@ export const addItemToList = ({
   }
   listIssues.splice(newIndex, 0, itemId);
   Vue.set(state.boardItemsByListId, listId, listIssues);
-  updateListItemsCount({ state, listId, value: moveToStartOrLast ? 0 : 1 });
+  if (!reordering) {
+    updateListItemsCount({ state, listId, value: moveToStartOrLast ? 0 : 1 });
+  }
 };
 
 export default {

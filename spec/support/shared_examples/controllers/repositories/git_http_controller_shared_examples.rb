@@ -61,9 +61,14 @@ RSpec.shared_examples Repositories::GitHttpController do
       end
 
       it 'updates the user activity' do
-        expect_next_instance_of(Users::ActivityService) do |activity_service|
-          expect(activity_service).to receive(:execute)
-        end
+        activity_project = container.is_a?(PersonalSnippet) ? nil : project
+
+        activity_service = instance_double(Users::ActivityService)
+
+        args = { author: user, project: activity_project, namespace: activity_project&.namespace }
+        expect(Users::ActivityService).to receive(:new).with(args).and_return(activity_service)
+
+        expect(activity_service).to receive(:execute)
 
         get :info_refs, params: params
       end

@@ -5,8 +5,7 @@ RSpec.shared_examples 'Gitlab-style deprecations' do
     it 'raises an informative error if `deprecation_reason` is used' do
       expect { subject(deprecation_reason: 'foo') }.to raise_error(
         ArgumentError,
-        'Use `deprecated` property instead of `deprecation_reason`. ' \
-        'See https://docs.gitlab.com/ee/development/api_graphql_styleguide.html#deprecating-schema-items'
+        start_with('Use `deprecated` property instead of `deprecation_reason`.')
       )
     end
 

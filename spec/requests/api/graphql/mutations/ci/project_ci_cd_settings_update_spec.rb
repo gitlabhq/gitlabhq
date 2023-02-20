@@ -18,7 +18,8 @@ RSpec.describe 'ProjectCiCdSettingsUpdate', feature_category: :continuous_integr
       full_path: project.full_path,
       keep_latest_artifact: false,
       job_token_scope_enabled: false,
-      inbound_job_token_scope_enabled: false
+      inbound_job_token_scope_enabled: false,
+      opt_in_jwt: true
     }
   end
 
@@ -115,6 +116,15 @@ RSpec.describe 'ProjectCiCdSettingsUpdate', feature_category: :continuous_integr
           expect(project.ci_inbound_job_token_scope_enabled).to eq(true)
         end
       end
+    end
+
+    it 'updates ci_opt_in_jwt' do
+      post_graphql_mutation(mutation, current_user: user)
+
+      project.reload
+
+      expect(response).to have_gitlab_http_status(:success)
+      expect(project.ci_opt_in_jwt).to eq(true)
     end
 
     context 'when bad arguments are provided' do

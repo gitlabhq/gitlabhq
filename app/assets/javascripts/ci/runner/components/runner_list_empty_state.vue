@@ -1,5 +1,6 @@
 <script>
 import { GlEmptyState, GlLink, GlSprintf, GlModalDirective } from '@gitlab/ui';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import RunnerInstructionsModal from '~/vue_shared/components/runner_instructions/runner_instructions_modal.vue';
 
 export default {
@@ -12,6 +13,7 @@ export default {
   directives: {
     GlModal: GlModalDirective,
   },
+  mixins: [glFeatureFlagMixin()],
   props: {
     isSearchFiltered: {
       type: Boolean,
@@ -32,6 +34,17 @@ export default {
       type: String,
       required: false,
       default: null,
+    },
+    newRunnerPath: {
+      type: String,
+      required: false,
+      default: null,
+    },
+  },
+  computed: {
+    shouldShowCreateRunnerWorkflow() {
+      // create_runner_workflow feature flag
+      return this.newRunnerPath && this.glFeatures?.createRunnerWorkflow;
     },
   },
   modalId: 'runners-empty-state-instructions-modal',
@@ -61,15 +74,17 @@ export default {
           )
         "
       >
-        <template #link="{ content }">
+        <template v-if="shouldShowCreateRunnerWorkflow" #link="{ content }">
+          <gl-link :href="newRunnerPath">{{ content }}</gl-link>
+        </template>
+        <template v-else #link="{ content }">
           <gl-link v-gl-modal="$options.modalId">{{ content }}</gl-link>
+          <runner-instructions-modal
+            :modal-id="$options.modalId"
+            :registration-token="registrationToken"
+          />
         </template>
       </gl-sprintf>
-
-      <runner-instructions-modal
-        :modal-id="$options.modalId"
-        :registration-token="registrationToken"
-      />
     </template>
     <template v-else #description>
       {{

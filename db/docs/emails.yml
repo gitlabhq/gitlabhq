@@ -3,7 +3,7 @@ table_name: emails
 classes:
 - Email
 feature_categories:
-- users
+- user_profile
 description: Stores users email records
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/29cfd33d949d21d67f3892473c24d4f0a127dfe6
 milestone: '6.6'

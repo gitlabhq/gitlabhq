@@ -13,14 +13,21 @@ module Ci
     def public_image_manifest(registry, repository, reference)
       token = public_image_repository_token(registry, repository)
 
+      headers = {
+        'Authorization' => "Bearer #{token}",
+        'Accept' => 'application/vnd.docker.distribution.manifest.list.v2+json, application/vnd.oci.image.index.v1+json'
+      }
       response = with_net_connect_allowed do
-        Gitlab::HTTP.get(image_manifest_url(registry, repository, reference),
-                         headers: { 'Authorization' => "Bearer #{token}" })
+        Gitlab::HTTP.get(image_manifest_url(registry, repository, reference), headers: headers)
       end
 
-      return unless response.success?
-
-      Gitlab::Json.parse(response.body)
+      if response.success?
+        Gitlab::Json.parse(response.body)
+      elsif response.not_found?
+        nil
+      else
+        raise "Could not retrieve manifest: #{response.body}"
+      end
     end
 
     def public_image_repository_token(registry, repository)
@@ -31,17 +38,17 @@ module Ci
             Gitlab::HTTP.get(image_manifest_url(registry, repository, 'latest'))
           end
 
-          return unless response.unauthorized?
+          raise 'Unauthorized' unless response.unauthorized?
 
           www_authenticate = response.headers['www-authenticate']
-          return unless www_authenticate
+          raise 'Missing www-authenticate' unless www_authenticate
 
           realm, service, scope = www_authenticate.split(',').map { |s| s[/\w+="(.*)"/, 1] }
           token_response = with_net_connect_allowed do
             Gitlab::HTTP.get(realm, query: { service: service, scope: scope })
           end
 
-          return unless token_response.success?
+          raise "Could not get token: #{token_response.body}" unless token_response.success?
 
           token_response['token']
         end

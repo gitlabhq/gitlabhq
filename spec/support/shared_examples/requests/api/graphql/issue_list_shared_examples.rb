@@ -5,7 +5,7 @@ RSpec.shared_examples 'graphql issue list request spec' do
   let(:fields) do
     <<~QUERY
     nodes {
-      #{all_graphql_fields_for('issues'.classify)}
+      #{all_graphql_fields_for('issues'.classify, excluded: ['relatedMergeRequests'])}
     }
     QUERY
   end
@@ -680,6 +680,28 @@ RSpec.shared_examples 'graphql issue list request spec' do
 
       expect(issues_data.count).to eq(6)
       expect(response_assignee_ids(issues_data)).to match_array(assignees_as_global_ids(new_issues))
+    end
+  end
+
+  context 'when selecting `related_merge_requests`' do
+    let(:fields) do
+      <<~QUERY
+      nodes {
+        relatedMergeRequests {
+          nodes {
+            id
+          }
+        }
+      }
+      QUERY
+    end
+
+    it 'limits the field to 1 execution' do
+      post_query
+
+      expect_graphql_errors_to_include(
+        '"relatedMergeRequests" field can be requested only for 1 Issue(s) at a time.'
+      )
     end
   end
 

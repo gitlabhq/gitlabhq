@@ -2,13 +2,15 @@
 
 require 'spec_helper'
 
-RSpec.describe JiraConnectHelper do
+RSpec.describe JiraConnectHelper, feature_category: :integrations do
   describe '#jira_connect_app_data' do
     let_it_be(:installation) { create(:jira_connect_installation) }
     let_it_be(:subscription) { create(:jira_connect_subscription) }
 
     let(:user) { create(:user) }
     let(:client_id) { '123' }
+    let(:enable_public_keys_storage_config) { false }
+    let(:enable_public_keys_storage_setting) { false }
 
     before do
       stub_application_setting(jira_connect_application_key: client_id)
@@ -19,7 +21,10 @@ RSpec.describe JiraConnectHelper do
     context 'user is not logged in' do
       before do
         allow(view).to receive(:current_user).and_return(nil)
-        allow(Gitlab).to receive_message_chain('config.gitlab.url') { 'http://test.host' }
+        allow(Gitlab.config.gitlab).to receive(:url).and_return('http://test.host')
+        allow(Gitlab.config.jira_connect).to receive(:enable_public_keys_storage)
+          .and_return(enable_public_keys_storage_config)
+        stub_application_setting(jira_connect_public_key_storage_enabled: enable_public_keys_storage_setting)
       end
 
       it 'includes Jira Connect app attributes' do
@@ -86,19 +91,6 @@ RSpec.describe JiraConnectHelper do
               oauth_token_path: '/oauth/token'
             )
           end
-
-          context 'and jira_connect_oauth_self_managed feature is disabled' do
-            before do
-              stub_feature_flags(jira_connect_oauth_self_managed: false)
-            end
-
-            it 'does not point urls to the self-managed instance' do
-              expect(parsed_oauth_metadata).not_to include(
-                oauth_authorize_url: start_with('https://gitlab.example.com/oauth/authorize?'),
-                oauth_token_path: 'https://gitlab.example.com/oauth/token'
-              )
-            end
-          end
         end
       end
 
@@ -110,6 +102,26 @@ RSpec.describe JiraConnectHelper do
 
       it 'assigns gitlab_user_path to nil' do
         expect(subject[:gitlab_user_path]).to be_nil
+      end
+
+      it 'assignes public_key_storage_enabled to false' do
+        expect(subject[:public_key_storage_enabled]).to eq(false)
+      end
+
+      context 'when public_key_storage is enabled via config' do
+        let(:enable_public_keys_storage_config) { true }
+
+        it 'assignes public_key_storage_enabled to true' do
+          expect(subject[:public_key_storage_enabled]).to eq(true)
+        end
+      end
+
+      context 'when public_key_storage is enabled via setting' do
+        let(:enable_public_keys_storage_setting) { true }
+
+        it 'assignes public_key_storage_enabled to true' do
+          expect(subject[:public_key_storage_enabled]).to eq(true)
+        end
       end
     end
 

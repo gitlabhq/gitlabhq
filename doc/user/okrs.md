@@ -13,8 +13,8 @@ OKRs are in [**Alpha**](../policy/alpha-beta-support.md#alpha-features).
 For the OKR feature roadmap, see [epic 7864](https://gitlab.com/groups/gitlab-org/-/epics/7864).
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available,
-ask an administrator to [enable the featured flag](../administration/feature_flags.md) named `okrs_mvc`.
+On self-managed GitLab, by default this feature is not available. To make it available per project, ask an administrator to [enable the featured flag](../administration/feature_flags.md) named `okrs_mvc`.
+On GitLab.com, this feature is not available.
 The feature is not ready for production use.
 
 Use objectives and key results to align your workforce towards common goals and track the progress.
@@ -41,7 +41,7 @@ To create an objective:
 
 1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Issues**.
-1. In the top right corner, next to **New issue**, select the down arrow **{chevron-lg-down}** and then select **New objective**.
+1. In the upper-right corner, next to **New issue**, select the down arrow **{chevron-lg-down}** and then select **New objective**.
 1. Select **New objective** again.
 1. Enter the objective title.
 1. Select **Create objective**.

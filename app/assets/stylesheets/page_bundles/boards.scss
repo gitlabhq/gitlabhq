@@ -103,13 +103,9 @@
   }
 }
 
-.board-card-title {
-  width: 95%;
-
-  a {
-    @include media-breakpoint-down(md) {
-      font-size: $gl-font-size-sm;
-    }
+.board-card-title a {
+  @include media-breakpoint-down(md) {
+    font-size: $gl-font-size-sm;
   }
 }
 

@@ -6,6 +6,7 @@ module Tooling
       VersionApiError = Class.new(StandardError)
 
       STABLE_BRANCH_REGEX = %r{\A(?<version>\d+-\d+)-stable-ee\z}.freeze
+      FAILING_PACKAGE_AND_TEST_STATUSES = %w[manual canceled].freeze
 
       # rubocop:disable Lint/MixedRegexpCaptureTypes
       VERSION_REGEX = %r{
@@ -32,25 +33,68 @@ module Tooling
       This branch is meant for backporting bug fixes. If this MR qualifies please add the `type::bug` label. #{MAINTENANCE_POLICY_MESSAGE}
       MSG
 
-      VERSION_ERROR_MESSAGE = <<~MSG
-      Patches are only being accepted on the most recent 3 minor versions of GitLab. #{MAINTENANCE_POLICY_MESSAGE}
+      VERSION_WARNING_MESSAGE = <<~MSG
+      Backporting to older releases requires an [exception request process](https://docs.gitlab.com/ee/policy/maintenance.html#backporting-to-older-releases)
       MSG
 
       FAILED_VERSION_REQUEST_MESSAGE = <<~MSG
       There was a problem checking if this is a qualified version for backporting. Re-running this job may fix the problem.
       MSG
 
+      PIPELINE_EXPEDITE_ERROR_MESSAGE = <<~MSG
+      ~"pipeline:expedite" is not allowed on stable branches because it causes the `e2e:package-and-test` job to be skipped.
+      MSG
+
+      NEEDS_PACKAGE_AND_TEST_MESSAGE = <<~MSG
+      The `e2e:package-and-test` job is not present or needs to be triggered manually. Please start the `e2e:package-and-test`
+      job and re-run `danger-review`.
+      MSG
+
+      WARN_PACKAGE_AND_TEST_MESSAGE = <<~MSG
+      The `e2e:package-and-test` job needs to succeed or have approval from a Software Engineer in Test. See the section below
+      for more details.
+      MSG
+
       # rubocop:disable Style/SignalException
       def check!
-        return unless stable_target_branch && !helper.security_mr?
+        return unless non_security_stable_branch?
 
         fail FEATURE_ERROR_MESSAGE if has_feature_label?
         fail BUG_ERROR_MESSAGE unless has_bug_label?
-        fail VERSION_ERROR_MESSAGE unless targeting_patchable_version?
+
+        warn VERSION_WARNING_MESSAGE unless targeting_patchable_version?
+
+        return if has_flaky_failure_label? || has_only_documentation_changes?
+
+        fail PIPELINE_EXPEDITE_ERROR_MESSAGE if has_pipeline_expedite_label?
+
+        status = package_and_test_status
+
+        if status.nil? || FAILING_PACKAGE_AND_TEST_STATUSES.include?(status) # rubocop:disable Style/GuardClause
+          fail NEEDS_PACKAGE_AND_TEST_MESSAGE
+        else
+          warn WARN_PACKAGE_AND_TEST_MESSAGE unless status == 'success'
+        end
       end
       # rubocop:enable Style/SignalException
 
+      def non_security_stable_branch?
+        !!stable_target_branch && !helper.security_mr?
+      end
+
       private
+
+      def package_and_test_status
+        mr_head_pipeline_id = gitlab.mr_json.dig('head_pipeline', 'id')
+        return unless mr_head_pipeline_id
+
+        pipeline_bridges = gitlab.api.pipeline_bridges(helper.mr_target_project_id, mr_head_pipeline_id)
+        package_and_test_pipeline = pipeline_bridges&.find { |j| j['name'] == 'e2e:package-and-test' }
+
+        return unless package_and_test_pipeline
+
+        package_and_test_pipeline['status']
+      end
 
       def stable_target_branch
         helper.mr_target_branch.match(STABLE_BRANCH_REGEX)
@@ -64,12 +108,27 @@ module Tooling
         helper.mr_has_labels?('type::bug')
       end
 
+      def has_pipeline_expedite_label?
+        helper.mr_has_labels?('pipeline:expedite')
+      end
+
+      def has_flaky_failure_label?
+        helper.mr_has_labels?('failure::flaky-test')
+      end
+
+      def has_only_documentation_changes?
+        categories_changed = helper.changes_by_category.keys
+        return false unless categories_changed.size == 1
+        return true if categories_changed.first == :docs
+
+        false
+      end
+
       def targeting_patchable_version?
         raise VersionApiError if last_three_minor_versions.empty?
 
         last_three_minor_versions.include?(targeted_version)
       rescue VersionApiError
-        # don't fail the job since we do not know the recent versions
         warn FAILED_VERSION_REQUEST_MESSAGE
         true
       end

@@ -22,6 +22,7 @@ RSpec.describe Types::Ci::JobType do
       detailedStatus
       duration
       downstreamPipeline
+      erasedAt
       finished_at
       id
       kind
@@ -32,6 +33,7 @@ RSpec.describe Types::Ci::JobType do
       pipeline
       playable
       previousStageJobsOrNeeds
+      project
       queued_at
       queued_duration
       refName

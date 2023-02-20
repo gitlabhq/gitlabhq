@@ -36,4 +36,13 @@ export default {
     const item = { ...state.navigation[key], count };
     state.navigation = { ...state.navigation, [key]: item };
   },
+  [types.REQUEST_AGGREGATIONS](state) {
+    state.aggregations = { fetching: true, error: false, data: [] };
+  },
+  [types.RECEIVE_AGGREGATIONS_SUCCESS](state, data) {
+    state.aggregations = { fetching: false, error: false, data: [...data] };
+  },
+  [types.RECEIVE_AGGREGATIONS_ERROR](state) {
+    state.aggregations = { fetching: false, error: true, data: [] };
+  },
 };

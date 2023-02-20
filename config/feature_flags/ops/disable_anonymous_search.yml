@@ -1,8 +1,0 @@
----
-name: disable_anonymous_search
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/70223
-rollout_issue_url:
-milestone: '14.3'
-type: ops
-group: group::project management
-default_enabled: false

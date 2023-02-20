@@ -19,8 +19,8 @@ You may use the same SSH keys for `git+ssh` authentication to GitLab
 and signing commit signatures as long as their usage type is **Authentication & Signing**.
 It can be verified on the page for [adding an SSH key to your GitLab account](../../../ssh.md#add-an-ssh-key-to-your-gitlab-account).
 
-To learn more about managing the SSH keys associated with your GitLab account, read
-[use SSH keys to communicate with GitLab](../../../ssh.md).
+For more information about managing the SSH keys associated with your GitLab account, see
+[Use SSH keys to communicate with GitLab](../../../ssh.md).
 
 ## Configure Git to sign commits with your SSH key
 
@@ -160,8 +160,19 @@ for Git to associate SSH public keys with users:
 
 ## Revoke an SSH key for signing commits
 
-You can't revoke an SSH key used for signing commits. To learn more, read
-[Add revocation for SSH keys](https://gitlab.com/gitlab-org/gitlab/-/issues/382984).
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108344) in GitLab 15.9.
+
+If an SSH key becomes compromised, revoke it. Revoking a key changes both future and past commits:
+
+- Past commits signed by this key are marked as unverified.
+- Future commits signed by this key are marked as unverified.
+
+To revoke an SSH key:
+
+1. In the upper-right corner, select your avatar.
+1. Select **Edit profile**.
+1. On the left sidebar, select (**{key}**) **SSH Keys**.
+1. Select **Revoke** next to the SSH key you want to delete.
 
 ## Related topics
 

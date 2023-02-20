@@ -2,7 +2,6 @@
 
 class ReleaseHighlight
   CACHE_DURATION = 1.hour
-  FILES_PATH = Rails.root.join('data', 'whats_new', '*.yml')
 
   FREE_PACKAGE = 'Free'
   PREMIUM_PACKAGE = 'Premium'
@@ -48,13 +47,17 @@ class ReleaseHighlight
     nil
   end
 
+  def self.whats_new_path
+    Rails.root.join('data/whats_new/*.yml')
+  end
+
   def self.file_paths
     @file_paths ||= self.relative_file_paths.map { |path| path.prepend(Rails.root.to_s) }
   end
 
   def self.relative_file_paths
     Rails.cache.fetch(self.cache_key('file_paths'), expires_in: CACHE_DURATION) do
-      Dir.glob(FILES_PATH).sort.reverse.map { |path| path.delete_prefix(Rails.root.to_s) }
+      Dir.glob(whats_new_path).sort.reverse.map { |path| path.delete_prefix(Rails.root.to_s) }
     end
   end
 
@@ -119,3 +122,5 @@ class ReleaseHighlight
     item['available_in']&.include?(current_package)
   end
 end
+
+ReleaseHighlight.prepend_mod

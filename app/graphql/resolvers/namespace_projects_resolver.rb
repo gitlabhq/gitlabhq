@@ -8,9 +8,9 @@ module Resolvers
              description: 'Include also subgroup projects.'
 
     argument :search, GraphQL::Types::String,
-            required: false,
-            default_value: nil,
-            description: 'Search project with most similar names or paths.'
+             required: false,
+             default_value: nil,
+             description: 'Search project with most similar names or paths.'
 
     argument :sort, Types::Projects::NamespaceProjectSortEnum,
             required: false,
@@ -21,6 +21,14 @@ module Resolvers
              required: false,
              default_value: nil,
              description: 'Filter projects by IDs.'
+
+    argument :with_issues_enabled, GraphQL::Types::Boolean,
+             required: false,
+             description: "Return only projects with issues enabled."
+
+    argument :with_merge_requests_enabled, GraphQL::Types::Boolean,
+             required: false,
+             description: "Return only projects with merge requests enabled."
 
     type Types::ProjectType, null: true
 
@@ -54,7 +62,9 @@ module Resolvers
         include_subgroups: args.dig(:include_subgroups),
         sort: args.dig(:sort),
         search: args.dig(:search),
-        ids: parse_gids(args.dig(:ids))
+        ids: parse_gids(args.dig(:ids)),
+        with_issues_enabled: args[:with_issues_enabled],
+        with_merge_requests_enabled: args[:with_merge_requests_enabled]
       }
     end
 

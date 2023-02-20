@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 comments: false
 ---
 
-# Rollback commits **(FREE)**
+# Roll back commits **(FREE)**
 
 ## Undo Commits
 

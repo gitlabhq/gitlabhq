@@ -10,12 +10,15 @@ module Projects
       }.freeze
 
       def execute(container_repository, disable_timeout: true)
-        return false unless can?(current_user, :update_container_image, project)
+        return error('Unauthorized access') unless can_destroy?
 
         # Delete tags outside of the transaction to avoid hitting an idle-in-transaction timeout
-        unless delete_tags(container_repository, disable_timeout) &&
+        if delete_tags(container_repository, disable_timeout) &&
             destroy_container_repository(container_repository)
+          success
+        else
           container_repository.delete_failed!
+          error('Deletion failed for container repository')
         end
       end
 
@@ -40,9 +43,19 @@ module Projects
         false
       end
 
+      def can_destroy?
+        return true if skip_permission_check?
+
+        can?(current_user, :destroy_container_image, project)
+      end
+
       def error_message(container_repository, message)
-        "Container repository with ID: #{container_repository.id} and path: #{container_repository.path}" \
-        " failed with message: #{message}"
+        "Container repository with ID: #{container_repository.id} and path: #{container_repository.path} " \
+          "failed with message: #{message}"
+      end
+
+      def skip_permission_check?
+        !!params[:skip_permission_check]
       end
     end
   end

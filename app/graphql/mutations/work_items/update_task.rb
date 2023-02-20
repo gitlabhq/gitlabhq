@@ -32,7 +32,7 @@ module Mutations
         spam_params = ::Spam::SpamParams.new_from_request(request: context[:request])
 
         ::WorkItems::UpdateService.new(
-          project: task.project,
+          container: task.project,
           current_user: current_user,
           params: task_data_hash.except(:id),
           spam_params: spam_params

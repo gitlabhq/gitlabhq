@@ -131,7 +131,7 @@ RSpec.describe AutoMergeService do
       subject
     end
 
-    context 'when the head piipeline succeeded' do
+    context 'when the head pipeline succeeded' do
       let(:pipeline_status) { :success }
 
       it 'returns failed' do

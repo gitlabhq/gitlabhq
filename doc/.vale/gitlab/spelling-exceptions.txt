@@ -48,7 +48,6 @@ auditability
 auditable
 Auth0
 authenticator
-Authentiq
 Authy
 autocomplete
 autocompleted
@@ -65,6 +64,7 @@ autoscaler
 autoscalers
 autoscales
 autoscaling
+autovacuum
 awardable
 awardables
 Axios
@@ -159,7 +159,7 @@ Citrix
 Citus
 Civo
 Cleartext
-Clickhouse
+ClickHouse
 CLIs
 Clojars
 clonable
@@ -632,6 +632,7 @@ Opstrace
 ORMs
 OS
 OSs
+OTel
 outdent
 Overcommit
 Packagist
@@ -785,6 +786,7 @@ requeued
 requeues
 requeuing
 resolver
+resolver's
 Restlet
 resync
 resynced
@@ -832,6 +834,7 @@ SBOMs
 sbt
 SBT
 scalers
+scalar's
 scatterplot
 scatterplots
 schedulable
@@ -1094,6 +1097,7 @@ unrevoke
 unsanitized
 unschedule
 unscoped
+unsetting
 unshare
 unshared
 unshares
@@ -1181,3 +1185,4 @@ ZenTao
 zsh
 Zstandard
 Zuora
+Zoekt

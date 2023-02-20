@@ -9,7 +9,7 @@ export default {
     BoardCardInner,
   },
   mixins: [Tracking.mixin()],
-  inject: ['disabled'],
+  inject: ['disabled', 'isApolloBoard'],
   props: {
     list: {
       type: Object,
@@ -63,6 +63,15 @@ export default {
     colorClass() {
       return this.isColorful ? 'gl-pl-4 gl-border-l-solid gl-border-4' : '';
     },
+    formattedItem() {
+      return this.isApolloBoard
+        ? {
+            ...this.item,
+            assignees: this.item.assignees?.nodes || [],
+            labels: this.item.labels?.nodes || [],
+          }
+        : this.item;
+    },
   },
   methods: {
     ...mapActions(['toggleBoardItemMultiSelection', 'toggleBoardItem']),
@@ -106,7 +115,7 @@ export default {
   >
     <board-card-inner
       :list="list"
-      :item="item"
+      :item="formattedItem"
       :update-filters="true"
       :index="index"
       :show-work-item-type-icon="showWorkItemTypeIcon"

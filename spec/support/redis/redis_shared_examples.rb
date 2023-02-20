@@ -40,42 +40,30 @@ RSpec.shared_examples "redis_shared_examples" do
     context 'when there is no config file anywhere' do
       it { expect(subject).to be_nil }
 
-      context 'but resque.yml exists' do
+      context 'and there is a global env override' do
         before do
-          FileUtils.touch(File.join(rails_root, 'config', 'resque.yml'))
+          stub_env('GITLAB_REDIS_CONFIG_FILE', 'global override')
         end
 
-        it { expect(subject).to eq("#{rails_root}/config/resque.yml") }
+        it { expect(subject).to eq('global override') }
 
-        it 'returns a path that exists' do
-          expect(File.file?(subject)).to eq(true)
-        end
-
-        context 'and there is a global env override' do
+        context 'and there is an instance specific config file' do
           before do
-            stub_env('GITLAB_REDIS_CONFIG_FILE', 'global override')
+            FileUtils.touch(File.join(rails_root, instance_specific_config_file))
           end
 
-          it { expect(subject).to eq('global override') }
+          it { expect(subject).to eq("#{rails_root}/#{instance_specific_config_file}") }
 
-          context 'and there is an instance specific config file' do
+          it 'returns a path that exists' do
+            expect(File.file?(subject)).to eq(true)
+          end
+
+          context 'and there is a specific env override' do
             before do
-              FileUtils.touch(File.join(rails_root, instance_specific_config_file))
+              stub_env(environment_config_file_name, 'instance specific override')
             end
 
-            it { expect(subject).to eq("#{rails_root}/#{instance_specific_config_file}") }
-
-            it 'returns a path that exists' do
-              expect(File.file?(subject)).to eq(true)
-            end
-
-            context 'and there is a specific env override' do
-              before do
-                stub_env(environment_config_file_name, 'instance specific override')
-              end
-
-              it { expect(subject).to eq('instance specific override') }
-            end
+            it { expect(subject).to eq('instance specific override') }
           end
         end
       end
@@ -402,6 +390,13 @@ RSpec.shared_examples "redis_shared_examples" do
   end
 
   describe '#fetch_config' do
+    before do
+      FileUtils.mkdir_p(File.join(rails_root, 'config'))
+      # Undo top-level stub of config_file_name because we are testing that method now.
+      allow(described_class).to receive(:config_file_name).and_call_original
+      allow(described_class).to receive(:rails_root).and_return(rails_root)
+    end
+
     it 'raises an exception when the config file contains invalid yaml' do
       Tempfile.open('bad.yml') do |file|
         file.write('{"not":"yaml"')
@@ -422,10 +417,7 @@ RSpec.shared_examples "redis_shared_examples" do
       subject { described_class.new('test').send(:fetch_config) }
 
       before do
-        allow(described_class).to receive(:config_file_name).and_call_original
         allow(described_class).to receive(:redis_yml_path).and_call_original
-        allow(described_class).to receive(:rails_root).and_return(rails_root)
-        FileUtils.mkdir_p(File.join(rails_root, 'config'))
       end
 
       it 'uses config/redis.yml' do
@@ -434,6 +426,27 @@ RSpec.shared_examples "redis_shared_examples" do
         }.to_json)
 
         expect(subject).to eq({ 'foobar' => 123 })
+      end
+    end
+
+    context 'when no config file exsits' do
+      subject { described_class.new('test').send(:fetch_config) }
+
+      it 'returns nil' do
+        expect(subject).to eq(nil)
+      end
+
+      context 'but resque.yml exists' do
+        before do
+          FileUtils.mkdir_p(File.join(rails_root, 'config'))
+          File.write(File.join(rails_root, 'config/resque.yml'), {
+            'test' =>  { 'foobar' => 123 }
+          }.to_json)
+        end
+
+        it 'returns the config from resque.yml' do
+          expect(subject).to eq({ 'foobar' => 123 })
+        end
       end
     end
   end

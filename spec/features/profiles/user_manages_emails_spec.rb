@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'User manages emails', feature_category: :users do
+RSpec.describe 'User manages emails', feature_category: :user_profile do
   let(:user) { create(:user) }
   let(:other_user) { create(:user) }
 

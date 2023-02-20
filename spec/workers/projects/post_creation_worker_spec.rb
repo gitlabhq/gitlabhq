@@ -93,13 +93,10 @@ RSpec.describe Projects::PostCreationWorker do
 
         context 'when project is created', :aggregate_failures do
           it 'creates tags for the project' do
-            expect { subject }.to change { IncidentManagement::TimelineEventTag.count }.by(2)
+            expect { subject }.to change { IncidentManagement::TimelineEventTag.count }.by(6)
 
             expect(project.incident_management_timeline_event_tags.pluck_names).to match_array(
-              [
-                ::IncidentManagement::TimelineEventTag::START_TIME_TAG_NAME,
-                ::IncidentManagement::TimelineEventTag::END_TIME_TAG_NAME
-              ]
+              ::IncidentManagement::TimelineEventTag::PREDEFINED_TAGS
             )
           end
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe User, feature_category: :users do
+RSpec.describe User, feature_category: :user_profile do
   include ProjectForksHelper
   include TermsHelper
   include ExclusiveLeaseHelpers
@@ -101,6 +101,9 @@ RSpec.describe User, feature_category: :users do
 
     it { is_expected.to delegate_method(:requires_credit_card_verification).to(:user_detail).allow_nil }
     it { is_expected.to delegate_method(:requires_credit_card_verification=).to(:user_detail).with_arguments(:args).allow_nil }
+
+    it { is_expected.to delegate_method(:discord).to(:user_detail).allow_nil }
+    it { is_expected.to delegate_method(:discord=).to(:user_detail).with_arguments(:args).allow_nil }
 
     it { is_expected.to delegate_method(:linkedin).to(:user_detail).allow_nil }
     it { is_expected.to delegate_method(:linkedin=).to(:user_detail).with_arguments(:args).allow_nil }
@@ -2126,6 +2129,7 @@ RSpec.describe User, feature_category: :users do
       expect(user.encrypted_otp_secret_salt).to be_nil
       expect(user.otp_backup_codes).to be_nil
       expect(user.otp_grace_period_started_at).to be_nil
+      expect(user.otp_secret_expires_at).to be_nil
     end
   end
 
@@ -2399,21 +2403,6 @@ RSpec.describe User, feature_category: :users do
           end
 
           it_behaves_like 'manageable groups examples'
-        end
-      end
-
-      describe '#manageable_groups_with_routes' do
-        it 'eager loads routes from manageable groups' do
-          control_count =
-            ActiveRecord::QueryRecorder.new(skip_cached: false) do
-              user.manageable_groups_with_routes.map(&:route)
-            end.count
-
-          create(:group, parent: subgroup)
-
-          expect do
-            user.manageable_groups_with_routes.map(&:route)
-          end.not_to exceed_all_query_limit(control_count)
         end
       end
     end

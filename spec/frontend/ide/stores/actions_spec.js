@@ -23,6 +23,7 @@ import {
 } from '~/ide/stores/actions';
 import * as types from '~/ide/stores/mutation_types';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_IM_A_TEAPOT, HTTP_STATUS_NOT_FOUND } from '~/lib/utils/http_status';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { file, createTriggerRenameAction, createTriggerChangeAction } from '../helpers';
 
@@ -917,7 +918,7 @@ describe('Multi-file store actions', () => {
       });
 
       it('passes the error further unchanged without dispatching any action when response is 404', async () => {
-        mock.onGet(/(.*)/).replyOnce(404);
+        mock.onGet(/(.*)/).replyOnce(HTTP_STATUS_NOT_FOUND);
 
         await expect(getBranchData(...callParams)).rejects.toEqual(
           new Error('Request failed with status code 404'),
@@ -927,7 +928,7 @@ describe('Multi-file store actions', () => {
       });
 
       it('does not pass the error further and flashes an alert if error is not 404', async () => {
-        mock.onGet(/(.*)/).replyOnce(418);
+        mock.onGet(/(.*)/).replyOnce(HTTP_STATUS_IM_A_TEAPOT);
 
         await expect(getBranchData(...callParams)).rejects.toEqual(
           new Error('Branch not loaded - <strong>abc/def/main-testing</strong>'),

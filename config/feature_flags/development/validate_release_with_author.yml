@@ -1,8 +1,0 @@
----
-name: validate_release_with_author
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89694
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/365350
-milestone: '15.1'
-type: development
-group: group::release
-default_enabled: true

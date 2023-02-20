@@ -192,6 +192,16 @@ func newConnection(server api.GitalyServer) (*grpc.ClientConn, error) {
 				),
 			),
 		),
+
+		// In https://gitlab.com/groups/gitlab-org/-/epics/8971, we added DNS discovery support to Praefect. This was
+		// done by making two changes:
+		// - Configure client-side round-robin load-balancing in client dial options. We added that as a default option
+		// inside gitaly client in gitaly client since v15.9.0
+		// - Configure DNS resolving. Due to some technical limitations, we don't use gRPC's built-in DNS resolver.
+		// Instead, we implement our own DNS resolver. This resolver is exposed via the following configuration.
+		// Afterward, workhorse can detect and handle DNS discovery automatically. The user needs to setup and set
+		// Gitaly address to something like "dns:gitaly.service.dc1.consul"
+		gitalyclient.WithGitalyDNSResolver(gitalyclient.DefaultDNSResolverBuilderConfig()),
 	)
 
 	conn, connErr := gitalyclient.DialSidechannel(context.Background(), server.Address, sidechannelRegistry, connOpts) // lint:allow context.Background

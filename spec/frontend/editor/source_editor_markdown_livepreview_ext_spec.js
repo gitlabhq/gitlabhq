@@ -14,6 +14,7 @@ import { EditorMarkdownPreviewExtension } from '~/editor/extensions/source_edito
 import SourceEditor from '~/editor/source_editor';
 import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import syntaxHighlight from '~/syntax_highlight';
 import { spyOnApi } from './helpers';
 
@@ -154,7 +155,7 @@ describe('Markdown Live Preview Extension for Source Editor', () => {
 
   describe('onBeforeUnuse', () => {
     beforeEach(async () => {
-      mockAxios.onPost().reply(200, { body: responseData });
+      mockAxios.onPost().reply(HTTP_STATUS_OK, { body: responseData });
       await togglePreview();
     });
     afterEach(() => {
@@ -260,7 +261,9 @@ describe('Markdown Live Preview Extension for Source Editor', () => {
     let previewMarkdownSpy;
 
     beforeEach(() => {
-      previewMarkdownSpy = jest.fn().mockImplementation(() => [200, { body: responseData }]);
+      previewMarkdownSpy = jest
+        .fn()
+        .mockImplementation(() => [HTTP_STATUS_OK, { body: responseData }]);
       mockAxios.onPost(previewMarkdownPath).replyOnce((req) => previewMarkdownSpy(req));
     });
 
@@ -285,7 +288,7 @@ describe('Markdown Live Preview Extension for Source Editor', () => {
     });
 
     it('catches the errors when fetching the preview', async () => {
-      mockAxios.onPost().reply(500);
+      mockAxios.onPost().reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
 
       await fetchPreview();
       expect(createAlert).toHaveBeenCalled();
@@ -321,7 +324,7 @@ describe('Markdown Live Preview Extension for Source Editor', () => {
 
   describe('togglePreview', () => {
     beforeEach(() => {
-      mockAxios.onPost().reply(200, { body: responseData });
+      mockAxios.onPost().reply(HTTP_STATUS_OK, { body: responseData });
     });
 
     it('toggles the condition to toggle preview/hide actions in the context menu', () => {

@@ -12,7 +12,7 @@ distributed version control system designed to handle everything from small to
 large projects with speed and efficiency.
 
 [GitLab](https://about.gitlab.com) is a Git-based fully integrated platform for
-software development. Besides Git's functionalities, GitLab has a lot of
+software development. Besides Git functionalities, GitLab has a lot of
 powerful [features](https://about.gitlab.com/features/) to enhance your
 [workflow](https://about.gitlab.com/topics/version-control/what-is-gitlab-flow/).
 

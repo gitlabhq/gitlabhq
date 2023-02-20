@@ -75,7 +75,7 @@ module Ci
 
     def filter_by_with_artifacts(builds)
       if params[:with_artifacts]
-        builds.with_erasable_artifacts
+        builds.with_any_artifacts
       else
         builds
       end

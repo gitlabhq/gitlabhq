@@ -115,6 +115,10 @@ export const DELETE_PACKAGES_TRACKING_ACTION = 'delete_packages';
 export const REQUEST_DELETE_PACKAGES_TRACKING_ACTION = 'request_delete_packages';
 export const CANCEL_DELETE_PACKAGES_TRACKING_ACTION = 'cancel_delete_packages';
 
+export const DELETE_PACKAGE_VERSIONS_TRACKING_ACTION = 'delete_package_versions';
+export const REQUEST_DELETE_PACKAGE_VERSIONS_TRACKING_ACTION = 'request_delete_package_versions';
+export const CANCEL_DELETE_PACKAGE_VERSIONS_TRACKING_ACTION = 'cancel_delete_package_versions';
+
 export const DELETE_PACKAGES_ERROR_MESSAGE = s__(
   'PackageRegistry|Something went wrong while deleting packages.',
 );
@@ -124,6 +128,16 @@ export const DELETE_PACKAGES_MODAL_TITLE = s__('PackageRegistry|Delete packages'
 export const DELETE_PACKAGE_MODAL_PRIMARY_ACTION = s__('PackageRegistry|Permanently delete');
 
 export const DELETE_PACKAGE_SUCCESS_MESSAGE = s__('PackageRegistry|Package deleted successfully');
+export const DELETE_PACKAGE_ERROR_MESSAGE = s__(
+  'PackageRegistry|Something went wrong while deleting the package.',
+);
+
+export const ERRORED_PACKAGE_TEXT = s__(
+  'PackageRegistry|Invalid Package: failed metadata extraction',
+);
+export const ERROR_PUBLISHING = s__('PackageRegistry|Error publishing');
+export const WARNING_TEXT = __('Warning');
+
 export const PACKAGE_REGISTRY_TITLE = __('Package Registry');
 
 export const PACKAGE_ERROR_STATUS = 'ERROR';

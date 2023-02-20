@@ -12,7 +12,7 @@ This tutorial guides you through writing a provider test from scratch. It is a c
 
 Provider tests are quite simple. The goal is to set up the test data and then link that with the corresponding contract. Start by creating a file called `get_discussions_helper.rb` under `spec/contracts/provider/pact_helpers/project/merge_request`. Note that the files are called `helpers` to match how they are called by Pact in the Rake tasks, which are set up at the end of this tutorial.
 
-To learn more about how the contract test directory is structured, see the contract testing [test suite folder structure](index.md#test-suite-folder-structure).
+For more information about how the contract test directory is structured, see [Test suite folder structure](index.md#test-suite-folder-structure).
 
 ### The `service_provider` block
 
@@ -48,7 +48,7 @@ module Provider
 end
 ```
 
-To learn more about how to name the consumers and providers, see contract testing [naming conventions](index.md#naming-conventions).
+For more information about how to name consumers and providers, see [Naming conventions](index.md#naming-conventions).
 
 ## Configure the test app
 

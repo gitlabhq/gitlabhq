@@ -1,12 +1,14 @@
 # frozen_string_literal: true
 
+require_relative 'suggestor'
+
 module Tooling
   module Danger
     module Specs
+      include ::Tooling::Danger::Suggestor
+
       SPEC_FILES_REGEX = 'spec/'
       EE_PREFIX = 'ee/'
-      MATCH_WITH_ARRAY_REGEX = /(?<to>to\(?\s*)(?<matcher>match|eq)(?<expectation>[( ]?\[[^\]]+)/.freeze
-      MATCH_WITH_ARRAY_REPLACEMENT = '\k<to>match_array\k<expectation>'
 
       PROJECT_FACTORIES = %w[
         :project
@@ -29,20 +31,16 @@ module Tooling
       /x.freeze
 
       PROJECT_FACTORY_REPLACEMENT = '\k<head>let_it_be\k<tail>'
-      SUGGESTION_MARKDOWN = <<~SUGGESTION_MARKDOWN
-      ```suggestion
-      %<suggested_line>s
-      ```
-      SUGGESTION_MARKDOWN
-
-      MATCH_WITH_ARRAY_SUGGESTION = <<~SUGGEST_COMMENT
-      If order of the result is not important, please consider using `match_array` to avoid flakiness.
-      SUGGEST_COMMENT
-
       PROJECT_FACTORY_SUGGESTION = <<~SUGGEST_COMMENT
       Project creations are very slow. Use `let_it_be`, `build` or `build_stubbed` if possible.
       See [testing best practices](https://docs.gitlab.com/ee/development/testing_guide/best_practices.html#optimize-factory-usage)
       for background information and alternative options.
+      SUGGEST_COMMENT
+
+      MATCH_WITH_ARRAY_REGEX = /(?<to>to\(?\s*)(?<matcher>match|eq)(?<expectation>[( ]?\[(?=.*,)[^\]]+)/.freeze
+      MATCH_WITH_ARRAY_REPLACEMENT = '\k<to>match_array\k<expectation>'
+      MATCH_WITH_ARRAY_SUGGESTION = <<~SUGGEST_COMMENT
+      If order of the result is not important, please consider using `match_array` to avoid flakiness.
       SUGGEST_COMMENT
 
       RSPEC_TOP_LEVEL_DESCRIBE_REGEX = /^\+.?RSpec\.describe(.+)/.freeze
@@ -69,19 +67,19 @@ module Tooling
 
       def add_suggestions_for_match_with_array(filename)
         add_suggestion(
-          filename,
-          MATCH_WITH_ARRAY_REGEX,
-          MATCH_WITH_ARRAY_SUGGESTION,
-          MATCH_WITH_ARRAY_REPLACEMENT
+          filename: filename,
+          regex: MATCH_WITH_ARRAY_REGEX,
+          replacement: MATCH_WITH_ARRAY_REPLACEMENT,
+          comment_text: MATCH_WITH_ARRAY_SUGGESTION
         )
       end
 
       def add_suggestions_for_project_factory_usage(filename)
         add_suggestion(
-          filename,
-          PROJECT_FACTORY_REGEX,
-          PROJECT_FACTORY_SUGGESTION,
-          PROJECT_FACTORY_REPLACEMENT
+          filename: filename,
+          regex: PROJECT_FACTORY_REGEX,
+          replacement: PROJECT_FACTORY_REPLACEMENT,
+          comment_text: PROJECT_FACTORY_SUGGESTION
         )
       end
 
@@ -103,52 +101,8 @@ module Tooling
 
           suggested_line = file_lines[line_number]
 
-          text = format(comment(FEATURE_CATEGORY_SUGGESTION), suggested_line: suggested_line)
-          markdown(text, file: filename, line: line_number + 1)
+          markdown(comment(FEATURE_CATEGORY_SUGGESTION, suggested_line), file: filename, line: line_number.succ)
         end
-      end
-
-      private
-
-      def added_lines_matching(filename, regex)
-        helper.changed_lines(filename).grep(/\A\+( )?/).grep(regex)
-      end
-
-      def add_suggestion(filename, regex, comment_text, replacement = nil, exclude = nil)
-        added_lines = added_lines_matching(filename, regex)
-
-        return if added_lines.empty?
-
-        spec_file_lines = project_helper.file_lines(filename)
-
-        added_lines.each_with_object([]) do |added_line, processed_line_numbers|
-          line_number = find_line_number(spec_file_lines, added_line.delete_prefix('+'), exclude_indexes: processed_line_numbers)
-          next unless line_number
-          next if !exclude.nil? && added_line.include?(exclude)
-
-          processed_line_numbers << line_number
-
-          suggested_line = spec_file_lines[line_number]
-          suggested_line = suggested_line.gsub(regex, replacement) unless replacement.nil?
-
-          text = format(comment(comment_text), suggested_line: suggested_line)
-          markdown(text, file: filename, line: line_number.succ)
-        end
-      end
-
-      def comment(comment_text)
-        <<~COMMENT_BODY.chomp
-        #{SUGGESTION_MARKDOWN}
-        #{comment_text}
-        COMMENT_BODY
-      end
-
-      def find_line_number(file_lines, searched_line, exclude_indexes: [])
-        _, index = file_lines.each_with_index.find do |file_line, index|
-          file_line == searched_line && !exclude_indexes.include?(index)
-        end
-
-        index
       end
     end
   end

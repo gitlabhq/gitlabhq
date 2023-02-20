@@ -9,7 +9,7 @@ RSpec.describe ::Ci::Runners::ReconcileExistingRunnerVersionsService, '#execute'
 
   let_it_be(:runner_14_0_1) { create(:ci_runner, version: '14.0.1') }
   let_it_be(:runner_version_14_0_1) do
-    create(:ci_runner_version, version: '14.0.1', status: :not_available)
+    create(:ci_runner_version, version: '14.0.1', status: :unavailable)
   end
 
   context 'with RunnerUpgradeCheck recommending 14.0.2' do
@@ -23,15 +23,17 @@ RSpec.describe ::Ci::Runners::ReconcileExistingRunnerVersionsService, '#execute'
 
     context 'with runner with new version' do
       let!(:runner_14_0_2) { create(:ci_runner, version: '14.0.2') }
-      let!(:runner_version_14_0_0) { create(:ci_runner_version, version: '14.0.0', status: :not_available) }
       let!(:runner_14_0_0) { create(:ci_runner, version: '14.0.0') }
+      let!(:runner_version_14_0_0) do
+        create(:ci_runner_version, version: '14.0.0', status: :unavailable)
+      end
 
       before do
         allow(upgrade_check).to receive(:check_runner_upgrade_suggestion)
           .and_return([::Gitlab::VersionInfo.new(14, 0, 2), :recommended])
         allow(upgrade_check).to receive(:check_runner_upgrade_suggestion)
           .with('14.0.2')
-          .and_return([::Gitlab::VersionInfo.new(14, 0, 2), :not_available])
+          .and_return([::Gitlab::VersionInfo.new(14, 0, 2), :unavailable])
           .once
       end
 
@@ -43,9 +45,9 @@ RSpec.describe ::Ci::Runners::ReconcileExistingRunnerVersionsService, '#execute'
           .and_call_original
 
         expect { execute }
-          .to change { runner_version_14_0_0.reload.status }.from('not_available').to('recommended')
-          .and change { runner_version_14_0_1.reload.status }.from('not_available').to('recommended')
-          .and change { ::Ci::RunnerVersion.find_by(version: '14.0.2')&.status }.from(nil).to('not_available')
+          .to change { runner_version_14_0_0.reload.status }.from('unavailable').to('recommended')
+          .and change { runner_version_14_0_1.reload.status }.from('unavailable').to('recommended')
+          .and change { ::Ci::RunnerVersion.find_by(version: '14.0.2')&.status }.from(nil).to('unavailable')
 
         expect(execute).to be_success
         expect(execute.payload).to eq({
@@ -57,17 +59,19 @@ RSpec.describe ::Ci::Runners::ReconcileExistingRunnerVersionsService, '#execute'
     end
 
     context 'with orphan ci_runner_version' do
-      let!(:runner_version_14_0_2) { create(:ci_runner_version, version: '14.0.2', status: :not_available) }
+      let!(:runner_version_14_0_2) do
+        create(:ci_runner_version, version: '14.0.2', status: :unavailable)
+      end
 
       before do
         allow(upgrade_check).to receive(:check_runner_upgrade_suggestion)
-          .and_return([::Gitlab::VersionInfo.new(14, 0, 2), :not_available])
+          .and_return([::Gitlab::VersionInfo.new(14, 0, 2), :unavailable])
       end
 
       it 'deletes orphan ci_runner_versions entry', :aggregate_failures do
         expect { execute }
-          .to change { ::Ci::RunnerVersion.find_by_version('14.0.2')&.status }.from('not_available').to(nil)
-          .and not_change { runner_version_14_0_1.reload.status }.from('not_available')
+          .to change { ::Ci::RunnerVersion.find_by_version('14.0.2')&.status }.from('unavailable').to(nil)
+          .and not_change { runner_version_14_0_1.reload.status }.from('unavailable')
 
         expect(execute).to be_success
         expect(execute.payload).to eq({
@@ -81,11 +85,11 @@ RSpec.describe ::Ci::Runners::ReconcileExistingRunnerVersionsService, '#execute'
     context 'with no runner version changes' do
       before do
         allow(upgrade_check).to receive(:check_runner_upgrade_suggestion)
-          .and_return([::Gitlab::VersionInfo.new(14, 0, 1), :not_available])
+          .and_return([::Gitlab::VersionInfo.new(14, 0, 1), :unavailable])
       end
 
       it 'does not modify ci_runner_versions entries', :aggregate_failures do
-        expect { execute }.not_to change { runner_version_14_0_1.reload.status }.from('not_available')
+        expect { execute }.not_to change { runner_version_14_0_1.reload.status }.from('unavailable')
 
         expect(execute).to be_success
         expect(execute.payload).to eq({
@@ -103,7 +107,7 @@ RSpec.describe ::Ci::Runners::ReconcileExistingRunnerVersionsService, '#execute'
       end
 
       it 'makes no changes to ci_runner_versions', :aggregate_failures do
-        expect { execute }.not_to change { runner_version_14_0_1.reload.status }.from('not_available')
+        expect { execute }.not_to change { runner_version_14_0_1.reload.status }.from('unavailable')
 
         expect(execute).to be_success
         expect(execute.payload).to eq({
@@ -121,7 +125,7 @@ RSpec.describe ::Ci::Runners::ReconcileExistingRunnerVersionsService, '#execute'
     end
 
     it 'does not modify ci_runner_versions entries', :aggregate_failures do
-      expect { execute }.not_to change { runner_version_14_0_1.reload.status }.from('not_available')
+      expect { execute }.not_to change { runner_version_14_0_1.reload.status }.from('unavailable')
 
       expect(execute).to be_success
       expect(execute.payload).to eq({

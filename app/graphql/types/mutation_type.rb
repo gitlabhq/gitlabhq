@@ -66,6 +66,7 @@ module Types
     mount_mutation Mutations::Issues::Move
     mount_mutation Mutations::Issues::LinkAlerts
     mount_mutation Mutations::Issues::UnlinkAlert
+    mount_mutation Mutations::Issues::BulkUpdate, alpha: { milestone: '15.9' }
     mount_mutation Mutations::Labels::Create
     mount_mutation Mutations::Members::Groups::BulkUpdate
     mount_mutation Mutations::MergeRequests::Accept
@@ -123,6 +124,7 @@ module Types
     mount_mutation Mutations::Ci::PipelineSchedule::TakeOwnership
     mount_mutation Mutations::Ci::PipelineSchedule::Play
     mount_mutation Mutations::Ci::PipelineSchedule::Create
+    mount_mutation Mutations::Ci::PipelineSchedule::Update
     mount_mutation Mutations::Ci::CiCdSettingsUpdate, deprecated: {
       reason: :renamed,
       replacement: 'ProjectCiCdSettingsUpdate',

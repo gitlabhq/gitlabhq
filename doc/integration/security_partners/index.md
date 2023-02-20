@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: index
 ---
 
-# Security partner integrations **(FREE)**
+# Security partners **(FREE)**
 
 You can integrate GitLab with its security partners. This page has information on how do this with
 each security partner:
@@ -25,5 +25,6 @@ each security partner:
 - [Tenable](https://docs.tenable.com/tenableio/Content/ContainerSecurity/GetStarted.htm)
 - [Venafi](https://marketplace.venafi.com/details/gitlab-ci-cd/)
 - [Veracode](https://community.veracode.com/s/knowledgeitem/gitlab-ci-MCEKSYPRWL35BRTGOVI55SK5RI4A)
+- [Fortify](https://www.microfocus.com/en-us/fortify-integrations/gitlab)
 
 <!-- vale gitlab.Spelling = YES -->

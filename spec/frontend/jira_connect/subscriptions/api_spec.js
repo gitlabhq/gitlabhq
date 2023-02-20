@@ -104,9 +104,11 @@ describe('JiraConnect API', () => {
       response = await makeRequest();
 
       expect(axiosInstance.get).toHaveBeenCalledWith(mockGroupsPath, {
+        headers: {},
         params: {
           page: mockPage,
           per_page: mockPerPage,
+          search: undefined,
         },
       });
       expect(response.data).toEqual(mockResponse);

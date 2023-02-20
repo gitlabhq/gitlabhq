@@ -60,6 +60,7 @@ module Gitlab
     require_dependency Rails.root.join('lib/gitlab/redis/rate_limiting')
     require_dependency Rails.root.join('lib/gitlab/redis/sessions')
     require_dependency Rails.root.join('lib/gitlab/redis/repository_cache')
+    require_dependency Rails.root.join('lib/gitlab/redis/db_load_balancing')
     require_dependency Rails.root.join('lib/gitlab/current_settings')
     require_dependency Rails.root.join('lib/gitlab/middleware/read_only')
     require_dependency Rails.root.join('lib/gitlab/middleware/compressed_json')
@@ -256,6 +257,7 @@ module Gitlab
     config.assets.precompile << "mailers/*.css"
     config.assets.precompile << "page_bundles/_mixins_and_variables_and_functions.css"
     config.assets.precompile << "page_bundles/admin/application_settings_metrics_and_profiling.css"
+    config.assets.precompile << "page_bundles/admin/elasticsearch_form.css"
     config.assets.precompile << "page_bundles/admin/geo_nodes.css"
     config.assets.precompile << "page_bundles/admin/geo_replicable.css"
     config.assets.precompile << "page_bundles/admin/jobs_index.css"
@@ -314,6 +316,7 @@ module Gitlab
     config.assets.precompile << "page_bundles/project.css"
     config.assets.precompile << "page_bundles/projects_edit.css"
     config.assets.precompile << "page_bundles/prometheus.css"
+    config.assets.precompile << "page_bundles/promotions.css"
     config.assets.precompile << "page_bundles/releases.css"
     config.assets.precompile << "page_bundles/reports.css"
     config.assets.precompile << "page_bundles/roadmap.css"
@@ -333,7 +336,6 @@ module Gitlab
     config.assets.precompile << "page_bundles/work_items.css"
     config.assets.precompile << "page_bundles/xterm.css"
     config.assets.precompile << "lazy_bundles/cropper.css"
-    config.assets.precompile << "lazy_bundles/select2.css"
     config.assets.precompile << "lazy_bundles/gridstack.css"
     config.assets.precompile << "performance_bar.css"
     config.assets.precompile << "disable_animations.css"
@@ -362,6 +364,7 @@ module Gitlab
     config.assets.precompile << "illustrations/jh/*.svg" if Gitlab.jh?
     config.assets.precompile << "icons.svg"
     config.assets.precompile << "icons.json"
+    config.assets.precompile << "file_icons/file_icons.svg"
     config.assets.precompile << "illustrations/*.svg"
     config.assets.precompile << "illustrations/*.png"
 

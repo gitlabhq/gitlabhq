@@ -18,7 +18,7 @@ RSpec.describe Tooling::Danger::ProductIntelligence do
   let(:has_product_intelligence_label) { true }
 
   before do
-    allow(fake_helper).to receive(:changed_lines).and_return(changed_lines)
+    allow(fake_helper).to receive(:changed_lines).and_return(changed_lines) if defined?(changed_lines)
     allow(fake_helper).to receive(:labels_to_add).and_return(labels_to_add)
     allow(fake_helper).to receive(:ci?).and_return(ci_env)
     allow(fake_helper).to receive(:mr_has_labels?).with('product intelligence').and_return(has_product_intelligence_label)
@@ -172,6 +172,51 @@ RSpec.describe Tooling::Danger::ProductIntelligence do
         expect(product_intelligence).not_to receive(:warn)
 
         product_intelligence.check_affected_scopes!
+      end
+    end
+  end
+
+  describe '#check_usage_data_insertions!' do
+    context 'when usage_data.rb is modified' do
+      let(:modified_files) { ['lib/gitlab/usage_data.rb'] }
+
+      before do
+        allow(fake_helper).to receive(:changed_lines).with("lib/gitlab/usage_data.rb").and_return(changed_lines)
+      end
+
+      context 'and has insertions' do
+        let(:changed_lines) { ['+ ci_runners: count(::Ci::CiRunner),'] }
+
+        it 'produces warning' do
+          expect(product_intelligence).to receive(:warn).with(/usage_data\.rb has been deprecated/)
+
+          product_intelligence.check_usage_data_insertions!
+        end
+      end
+
+      context 'and changes are not insertions' do
+        let(:changed_lines) { ['- ci_runners: count(::Ci::CiRunner),'] }
+
+        it 'doesnt do anything' do
+          expect(product_intelligence).not_to receive(:warn)
+
+          product_intelligence.check_usage_data_insertions!
+        end
+      end
+    end
+
+    context 'when usage_data.rb is not modified' do
+      context 'and another file has insertions' do
+        let(:modified_files) { ['tooling/danger/product_intelligence.rb'] }
+
+        it 'doesnt do anything' do
+          expect(fake_helper).to receive(:changed_lines).with("lib/gitlab/usage_data.rb").and_return([])
+          allow(fake_helper).to receive(:changed_lines).with("tooling/danger/product_intelligence.rb").and_return(["+ Inserting"])
+
+          expect(product_intelligence).not_to receive(:warn)
+
+          product_intelligence.check_usage_data_insertions!
+        end
       end
     end
   end

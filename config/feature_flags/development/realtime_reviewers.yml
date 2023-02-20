@@ -1,8 +1,0 @@
----
-name: realtime_reviewers
-introduced_by_url: 'https://gitlab.com/gitlab-org/gitlab/-/merge_requests/99137'
-rollout_issue_url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/378299'
-milestone: '15.5'
-type: development
-group: group::code review
-default_enabled: true

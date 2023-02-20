@@ -70,6 +70,7 @@ export default {
         text: this.actionText,
         attributes: {
           variant: 'danger',
+          'data-qa-selector': 'remove_member_button',
         },
       };
     },

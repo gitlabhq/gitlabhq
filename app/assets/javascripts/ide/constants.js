@@ -64,7 +64,6 @@ export const rightSidebarViews = {
   pipelines: { name: 'pipelines-list', keepAlive: true },
   jobsDetail: { name: 'jobs-detail', keepAlive: false },
   mergeRequestInfo: { name: 'merge-request-info', keepAlive: true },
-  clientSidePreview: { name: 'clientside', keepAlive: false },
   terminal: { name: 'terminal', keepAlive: true },
 };
 
@@ -101,22 +100,13 @@ export const commitActionTypes = {
   update: 'update',
 };
 
-export const packageJsonPath = 'package.json';
-
 export const SIDE_LEFT = 'left';
 export const SIDE_RIGHT = 'right';
-
-// Live Preview feature
-export const LIVE_PREVIEW_DEBOUNCE = 2000;
 
 // This is the maximum number of files to auto open when opening the Web IDE
 // from a merge request
 export const MAX_MR_FILES_AUTO_OPEN = 10;
 
 export const DEFAULT_BRANCH = 'main';
-
-// Ping Usage Metrics Keys
-export const PING_USAGE_PREVIEW_KEY = 'web_ide_clientside_preview';
-export const PING_USAGE_PREVIEW_SUCCESS_KEY = 'web_ide_clientside_preview_success';
 
 export const GITLAB_WEB_IDE_FEEDBACK_ISSUE = 'https://gitlab.com/gitlab-org/gitlab/-/issues/377367';

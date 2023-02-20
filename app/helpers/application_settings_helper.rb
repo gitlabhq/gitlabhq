@@ -75,16 +75,38 @@ module ApplicationSettingsHelper
   end
 
   def restricted_level_checkboxes(form)
-    Gitlab::VisibilityLevel.values.map do |level|
+    restricted_visibility_levels_help_text = {
+      Gitlab::VisibilityLevel::PUBLIC => s_(
+        'AdminSettings|If selected, only administrators are able to create public groups, projects, ' \
+        'and snippets. Also, profiles are only visible to authenticated users.'
+      ),
+      Gitlab::VisibilityLevel::INTERNAL => s_(
+        'AdminSettings|If selected, only administrators are able to create internal groups, projects, and ' \
+        'snippets.'
+      ),
+      Gitlab::VisibilityLevel::PRIVATE => s_(
+        'AdminSettings|If selected, only administrators are able to create private groups, projects, and ' \
+        'snippets.'
+      )
+    }
+
+    Gitlab::VisibilityLevel.options.map do |label, level|
       checked = restricted_visibility_levels(true).include?(level)
 
       form.gitlab_ui_checkbox_component(
         :restricted_visibility_levels,
-        "#{visibility_level_icon(level)} #{visibility_level_label(level)}".html_safe,
         checkbox_options: { checked: checked, multiple: true, autocomplete: 'off' },
         checked_value: level,
         unchecked_value: nil
-      )
+      ) do |c|
+        c.label do
+          visibility_level_icon(level) + content_tag(:span, label, { class: 'gl-ml-2' })
+        end
+
+        c.help_text do
+          restricted_visibility_levels_help_text.fetch(level)
+        end
+      end
     end
   end
 
@@ -145,6 +167,10 @@ module ApplicationSettingsHelper
         " using their classification label.")
   end
 
+  def external_authorization_allow_token_help_text
+    s_("ExternalAuthorization|Does not apply if service URL is specified.")
+  end
+
   def external_authorization_timeout_help_text
     s_("ExternalAuthorization|Period GitLab waits for a response from the external "\
         "service. If there is no response, access is denied. Default: 0.5 seconds.")
@@ -197,6 +223,7 @@ module ApplicationSettingsHelper
       :allow_local_requests_from_hooks_and_services,
       :allow_local_requests_from_web_hooks_and_services,
       :allow_local_requests_from_system_hooks,
+      :allow_possible_spam,
       :dns_rebinding_protection_enabled,
       :archive_builds_in_human_readable,
       :asset_proxy_enabled,
@@ -282,6 +309,7 @@ module ApplicationSettingsHelper
       :inactive_projects_send_warning_email_after_months,
       :invisible_captcha_enabled,
       :jira_connect_application_key,
+      :jira_connect_public_key_storage_enabled,
       :jira_connect_proxy_url,
       :max_artifacts_size,
       :max_attachment_size,
@@ -383,7 +411,6 @@ module ApplicationSettingsHelper
       :user_default_internal_regex,
       :user_oauth_applications,
       :version_check_enabled,
-      :web_ide_clientside_preview_enabled,
       :diff_max_patch_bytes,
       :diff_max_files,
       :diff_max_lines,
@@ -450,7 +477,8 @@ module ApplicationSettingsHelper
       :can_create_group,
       :bulk_import_enabled,
       :allow_runner_registration_token,
-      :user_defaults_to_private_profile
+      :user_defaults_to_private_profile,
+      :deactivation_email_additional_text
     ].tap do |settings|
       next if Gitlab.com?
 
@@ -475,7 +503,8 @@ module ApplicationSettingsHelper
       :external_authorization_service_default_label,
       :external_authorization_service_enabled,
       :external_authorization_service_timeout,
-      :external_authorization_service_url
+      :external_authorization_service_url,
+      :allow_deploy_tokens_and_keys_with_external_authn
     ]
   end
 

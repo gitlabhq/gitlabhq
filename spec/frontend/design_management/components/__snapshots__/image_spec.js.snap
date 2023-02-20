@@ -1,5 +1,19 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Design management large image component renders SVG with proper height and width 1`] = `
+<div
+  class="gl-mx-auto gl-my-auto js-design-image"
+>
+  <!---->
+   
+  <img
+    alt="test"
+    class="mh-100 img-fluid"
+    src="mockImage.svg"
+  />
+</div>
+`;
+
 exports[`Design management large image component renders image 1`] = `
 <div
   class="gl-mx-auto gl-my-auto js-design-image"

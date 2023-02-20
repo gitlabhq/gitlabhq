@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state do
+RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state, feature_category: :integrations do
   include StubRequests
 
   let(:ellipsis) { '…' }
@@ -358,6 +358,7 @@ RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state 
         {
           trigger: 'push_hooks',
           url: project_hook.url,
+          interpolated_url: project_hook.interpolated_url,
           request_headers: headers,
           request_data: data,
           response_body: 'Success',

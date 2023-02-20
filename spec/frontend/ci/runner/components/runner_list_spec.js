@@ -177,18 +177,7 @@ describe('RunnerList', () => {
   });
 
   describe('Scoped cell slots', () => {
-    it('Render #runner-name slot in "summary" cell', () => {
-      createComponent(
-        {
-          scopedSlots: { 'runner-name': ({ runner }) => `Summary: ${runner.id}` },
-        },
-        mountExtended,
-      );
-
-      expect(findCell({ fieldKey: 'summary' }).text()).toContain(`Summary: ${mockRunners[0].id}`);
-    });
-
-    it('Render #runner-job-status-badge slot in "summary" cell', () => {
+    it('Render #runner-job-status-badge slot in "status" cell', () => {
       createComponent(
         {
           scopedSlots: {
@@ -198,9 +187,20 @@ describe('RunnerList', () => {
         mountExtended,
       );
 
-      expect(findCell({ fieldKey: 'summary' }).text()).toContain(
+      expect(findCell({ fieldKey: 'status' }).text()).toContain(
         `Job status ${mockRunners[0].jobExecutionStatus}`,
       );
+    });
+
+    it('Render #runner-name slot in "summary" cell', () => {
+      createComponent(
+        {
+          scopedSlots: { 'runner-name': ({ runner }) => `Summary: ${runner.id}` },
+        },
+        mountExtended,
+      );
+
+      expect(findCell({ fieldKey: 'summary' }).text()).toContain(`Summary: ${mockRunners[0].id}`);
     });
 
     it('Render #runner-actions-cell slot in "actions" cell', () => {

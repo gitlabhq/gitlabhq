@@ -39,6 +39,7 @@ RSpec.describe 'Jobs (JavaScript fixtures)' do
 
     let!(:build) { create(:ci_build, :success, name: 'build', pipeline: pipeline) }
     let!(:cancelable) { create(:ci_build, :cancelable, name: 'cancelable', pipeline: pipeline) }
+    let!(:failed) { create(:ci_build, :failed, name: 'failed', pipeline: pipeline) }
     let!(:created_by_tag) { create(:ci_build, :success, name: 'created_by_tag', tag: true, pipeline: pipeline) }
     let!(:pending) { create(:ci_build, :pending, name: 'pending', pipeline: pipeline) }
     let!(:playable) { create(:ci_build, :playable, name: 'playable', pipeline: pipeline) }

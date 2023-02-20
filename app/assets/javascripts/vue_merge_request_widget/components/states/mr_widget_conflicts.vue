@@ -1,5 +1,7 @@
 <script>
 import { GlButton, GlSkeletonLoader } from '@gitlab/ui';
+import { s__ } from '~/locale';
+import BoldText from '~/vue_merge_request_widget/components/bold_text.vue';
 import mergeRequestQueryVariablesMixin from '../../mixins/merge_request_query_variables';
 import userPermissionsQuery from '../../queries/permissions.query.graphql';
 import conflictsStateQuery from '../../queries/states/conflicts.query.graphql';
@@ -8,6 +10,7 @@ import StateContainer from '../state_container.vue';
 export default {
   name: 'MRWidgetConflicts',
   components: {
+    BoldText,
     GlSkeletonLoader,
     GlButton,
     StateContainer,
@@ -55,6 +58,17 @@ export default {
       );
     },
   },
+  i18n: {
+    shouldBeRebased: s__(
+      'mrWidget|%{boldStart}Merge blocked:%{boldEnd} fast-forward merge is not possible. To merge this request, first rebase locally.',
+    ),
+    shouldBeResolved: s__(
+      'mrWidget|%{boldStart}Merge blocked:%{boldEnd} merge conflicts must be resolved.',
+    ),
+    usersWriteBranches: s__(
+      'mrWidget|%{boldStart}Merge blocked:%{boldEnd} Users who can write to the source or target branches can resolve the conflicts.',
+    ),
+  },
 };
 </script>
 <template>
@@ -67,22 +81,13 @@ export default {
       </gl-skeleton-loader>
     </template>
     <template v-if="!isLoading">
-      <span v-if="state.shouldBeRebased" class="bold gl-ml-0! gl-text-body!">
-        {{
-          s__(`mrWidget|Merge blocked: fast-forward merge is not possible.
-  To merge this request, first rebase locally.`)
-        }}
+      <span v-if="state.shouldBeRebased" class="gl-ml-0! gl-text-body!">
+        <bold-text :message="$options.i18n.shouldBeRebased" />
       </span>
       <template v-else>
-        <span class="bold gl-ml-0! gl-text-body! gl-flex-grow-1 gl-w-full gl-md-w-auto gl-mr-2">
-          {{ s__('mrWidget|Merge blocked: merge conflicts must be resolved.') }}
-          <span v-if="!userPermissions.canMerge">
-            {{
-              s__(
-                `mrWidget|Users who can write to the source or target branches can resolve the conflicts.`,
-              )
-            }}
-          </span>
+        <span class="gl-ml-0! gl-text-body! gl-flex-grow-1 gl-w-full gl-md-w-auto gl-mr-2">
+          <bold-text v-if="userPermissions.canMerge" :message="$options.i18n.shouldBeResolved" />
+          <bold-text v-else :message="$options.i18n.usersWriteBranches" />
         </span>
       </template>
     </template>

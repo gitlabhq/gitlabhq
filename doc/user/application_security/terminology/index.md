@@ -91,7 +91,7 @@ applications, and infrastructure.
 
 Findings are all potential vulnerability items scanners identify in MRs/feature branches. Only after merging to default does a finding become a [vulnerability](#vulnerability).
 
-You can interact with vulnerability findings in two ways. 
+You can interact with vulnerability findings in two ways.
 
 1. You can open an issue or merge request for the vulnerability finding.
 1. You can dismiss the vulnerability finding. Dismissing the finding hides it from the default views.
@@ -243,7 +243,7 @@ of the finding's [first identifier](https://gitlab.com/gitlab-org/security-produ
 combine to create the value.
 
 Examples of primary identifiers include `PluginID` for OWASP Zed Attack Proxy (ZAP), or `CVE` for
-Trivy. Note that the identifier must be stable. Subsequent scans must return the same value for the
+Trivy. The identifier must be stable. Subsequent scans must return the same value for the
 same finding, even if the location has slightly changed.
 
 ### Report finding
@@ -257,7 +257,6 @@ once it's imported into the database.
 Describes the type of scan. This must be one of the following:
 
 - `api_fuzzing`
-- `cluster_image_scanning`
 - `container_scanning`
 - `coverage_fuzzing`
 - `dast`

@@ -15,9 +15,6 @@ The Debian package registry for GitLab is under development and isn't ready for 
 limited functionality. This [epic](https://gitlab.com/groups/gitlab-org/-/epics/6057) details the remaining
 work and timelines to make it production ready.
 
-NOTE:
-The Debian registry is not FIPS compliant and is disabled when [FIPS mode](../../../development/fips_compliance.md) is enabled.
-
 Publish Debian packages in your project's Package Registry. Then install the
 packages whenever you need to use them as a dependency.
 
@@ -65,32 +62,52 @@ Feature.disable(:debian_group_packages)
 
 Creating a Debian package is documented [on the Debian Wiki](https://wiki.debian.org/Packaging).
 
-## Authenticate to the Package Registry
+## Authenticate to the Debian endpoints
 
-To create a distribution, publish a package, or install a private package, you need one of the
-following:
+Authentication methods differs between [distributions APIs](#authenticate-to-the-debian-distributions-apis)
+and [package repositories](#authenticate-to-the-debian-package-repositories).
 
-- [Personal access token](../../../api/index.md#personalprojectgroup-access-tokens)
-- [CI/CD job token](../../../ci/jobs/ci_job_token.md)
+### Authenticate to the Debian distributions APIs
+
+To create, read, update, or delete a distribution, you need one of the following:
+
+- [Personal access token](../../../api/rest/index.md#personalprojectgroup-access-tokens),
+  using `--header "PRIVATE-TOKEN: <personal_access_token>"`
 - [Deploy token](../../project/deploy_tokens/index.md)
+  using `--header "Deploy-Token: <deploy_token>"`
+- [CI/CD job token](../../../ci/jobs/ci_job_token.md)
+  using `--header "Job-Token: <job_token>"`
+
+### Authenticate to the Debian Package Repositories
+
+To publish a package, or install a private package, you need to use basic authentication,
+with one of the following:
+
+- [Personal access token](../../../api/rest/index.md#personalprojectgroup-access-tokens),
+  using `<username>:<personal_access_token>`
+- [Deploy token](../../project/deploy_tokens/index.md)
+  using `<deploy_token_name>:<deploy_token>`
+- [CI/CD job token](../../../ci/jobs/ci_job_token.md)
+  using `gitlab-ci-token:<job_token>`
 
 ## Create a Distribution
 
 On the project-level, Debian packages are published using *Debian Distributions*. To publish
 packages on the group level, create a distribution with the same `codename`.
 
-To create a project-level distribution:
+To create a project-level distribution using a personal access token:
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/<project_id>/debian_distributions?codename=<codename>"
+curl --request POST --header "PRIVATE-TOKEN: <personal_access_token>" \
+  "https://gitlab.example.com/api/v4/projects/<project_id>/debian_distributions?codename=<codename>"
 ```
 
-Example response with `codename=unstable`:
+Example response with `codename=sid`:
 
 ```json
 {
   "id": 1,
-  "codename": "unstable",
+  "codename": "sid",
   "suite": null,
   "origin": null,
   "label": null,
@@ -123,17 +140,34 @@ Once built, several files are created:
 - `.buildinfo` file: Used for Reproducible builds (optional)
 - `.changes` file: Upload metadata, and list of uploaded files (all the above)
 
-To upload these files, you can use `dput-ng >= 1.32` (Debian bullseye):
+To upload these files, you can use `dput-ng >= 1.32` (Debian bullseye).
+`<username>` and `<password>` are defined
+[as above](#authenticate-to-the-debian-package-repositories):
 
 ```shell
 cat <<EOF > dput.cf
 [gitlab]
 method = https
-fqdn = <username>:<your_access_token>@gitlab.example.com
+fqdn = <username>:<password>@gitlab.example.com
 incoming = /api/v4/projects/<project_id>/packages/debian
 EOF
 
 dput --config=dput.cf --unchecked --no-upload-log gitlab <your_package>.changes
+```
+
+## Directly upload a package
+
+> Direct upload [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/101838) in GitLab 15.9.
+
+When you don't have access to `.changes` file, you can directly upload a `.deb` by passing
+distribution `codename` and target `component` as parameters with
+your [credentials](#authenticate-to-the-debian-package-repositories).
+For example, to upload to component `main` of distribution `sid` using a personal access token:
+
+```shell
+curl --request PUT --user "<username>:<personal_access_token>" \
+  "https://gitlab.example.com/api/v4/projects/<project_id>/packages/debian/?distribution=sid&component=main" \
+  --upload-file  /path/to/your.deb
 ```
 
 ## Install a package
@@ -142,14 +176,14 @@ To install a package:
 
 1. Configure the repository:
 
-    If you are using a private project, add your [credentials](#authenticate-to-the-package-registry) to your apt configuration:
+    If you are using a private project, add your [credentials](#authenticate-to-the-debian-package-repositories) to your apt configuration:
 
     ```shell
-    echo 'machine gitlab.example.com login <username> password <your_access_token>' \
+    echo 'machine gitlab.example.com login <username> password <password>' \
       | sudo tee /etc/apt/auth.conf.d/gitlab_project.conf
     ```
 
-    Download your distribution key:
+    Download your distribution key using your [credentials](#authenticate-to-the-debian-distributions-apis):
 
     ```shell
     sudo mkdir -p /usr/local/share/keyrings
@@ -182,14 +216,14 @@ To download a source package:
 
 1. Configure the repository:
 
-    If you are using a private project, add your [credentials](#authenticate-to-the-package-registry) to your apt configuration:
+    If you are using a private project, add your [credentials](#authenticate-to-the-debian-package-repositories) to your apt configuration:
 
     ```shell
-    echo 'machine gitlab.example.com login <username> password <your_access_token>' \
+    echo 'machine gitlab.example.com login <username> password <password>' \
       | sudo tee /etc/apt/auth.conf.d/gitlab_project.conf
     ```
 
-    Download your distribution key:
+    Download your distribution key using your [credentials](#authenticate-to-the-debian-distributions-apis):
 
     ```shell
     sudo mkdir -p /usr/local/share/keyrings

@@ -47,7 +47,19 @@ export const timelineItemI18n = Object.freeze({
 
 export const timelineEventTagsI18n = Object.freeze({
   startTime: __('Start time'),
+  impactDetected: __('Impact detected'),
+  responseInitiated: __('Response initiated'),
+  impactMitigated: __('Impact mitigated'),
+  causeIdentified: __('Cause identified'),
   endTime: __('End time'),
+});
+
+export const timelineEventTagsPopover = Object.freeze({
+  title: s__('Incident|Event tag'),
+  message: s__(
+    'Incident|Adding an event tag associates the timeline comment with specific incident metrics.',
+  ),
+  link: __('Learn more'),
 });
 
 export const MAX_TEXT_LENGTH = 280;

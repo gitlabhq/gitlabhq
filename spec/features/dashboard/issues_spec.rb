@@ -51,29 +51,26 @@ RSpec.describe 'Dashboard Issues', feature_category: :team_planning do
 
   describe 'new issue dropdown' do
     it 'shows projects only with issues feature enabled', :js do
-      click_button 'Toggle project select'
+      click_button _('Select project to create issue')
 
-      page.within('.select2-results') do
+      page.within('[data-testid="new-resource-dropdown"] [role="menu"]') do
         expect(page).to have_content(project.full_name)
         expect(page).not_to have_content(project_with_issues_disabled.full_name)
       end
     end
 
     it 'shows the new issue page', :js do
-      click_button 'Toggle project select'
+      click_button _('Select project to create issue')
 
       wait_for_requests
 
       project_path = "/#{project.full_path}"
-      project_json = { name: project.full_name, url: project_path }.to_json
 
-      # simulate selection, and prevent overlap by dropdown menu
-      first('.project-item-select', visible: false)
-      execute_script("$('.project-item-select').val('#{project_json}').trigger('change');")
-      find('#select2-drop-mask', visible: false)
-      execute_script("$('#select2-drop-mask').remove();")
+      page.within('[data-testid="new-resource-dropdown"]') do
+        find_button(project.full_name).click
+      end
 
-      find('.js-new-project-item-link').click
+      click_link format(_('New issue in %{project}'), project: project.name)
 
       expect(page).to have_current_path("#{project_path}/-/issues/new")
 

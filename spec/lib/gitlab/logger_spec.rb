@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Logger do
+RSpec.describe Gitlab::Logger, feature_category: :logging do
   describe '.build' do
     before do
       allow(described_class).to receive(:file_name_noext).and_return('log')
@@ -25,40 +25,28 @@ RSpec.describe Gitlab::Logger do
     using RSpec::Parameterized::TableSyntax
 
     where(:env_value, :resulting_level) do
-      0         | described_class::DEBUG
-      :debug    | described_class::DEBUG
       'debug'   | described_class::DEBUG
       'DEBUG'   | described_class::DEBUG
       'DeBuG'   | described_class::DEBUG
-      1         | described_class::INFO
-      :info     | described_class::INFO
       'info'    | described_class::INFO
       'INFO'    | described_class::INFO
       'InFo'    | described_class::INFO
-      2         | described_class::WARN
-      :warn     | described_class::WARN
       'warn'    | described_class::WARN
       'WARN'    | described_class::WARN
       'WaRn'    | described_class::WARN
-      3         | described_class::ERROR
-      :error    | described_class::ERROR
       'error'   | described_class::ERROR
       'ERROR'   | described_class::ERROR
       'ErRoR'   | described_class::ERROR
-      4         | described_class::FATAL
-      :fatal    | described_class::FATAL
       'fatal'   | described_class::FATAL
       'FATAL'   | described_class::FATAL
       'FaTaL'   | described_class::FATAL
-      5         | described_class::UNKNOWN
-      :unknown  | described_class::UNKNOWN
       'unknown' | described_class::UNKNOWN
       'UNKNOWN' | described_class::UNKNOWN
       'UnKnOwN' | described_class::UNKNOWN
     end
 
     with_them do
-      it 'builds logger if valid log level' do
+      it 'builds logger if valid log level is provided' do
         stub_env('GITLAB_LOG_LEVEL', env_value)
 
         expect(subject.level).to eq(resulting_level)
@@ -69,15 +57,15 @@ RSpec.describe Gitlab::Logger do
   describe '.log_level' do
     context 'if GITLAB_LOG_LEVEL is set' do
       before do
-        stub_env('GITLAB_LOG_LEVEL', described_class::ERROR)
+        stub_env('GITLAB_LOG_LEVEL', 'error')
       end
 
-      it 'returns value of GITLAB_LOG_LEVEL' do
-        expect(described_class.log_level).to eq(described_class::ERROR)
+      it 'returns value defined by GITLAB_LOG_LEVEL' do
+        expect(described_class.log_level).to eq('error')
       end
 
       it 'ignores fallback' do
-        expect(described_class.log_level(fallback: described_class::FATAL)).to eq(described_class::ERROR)
+        expect(described_class.log_level(fallback: described_class::FATAL)).to eq('error')
       end
     end
 

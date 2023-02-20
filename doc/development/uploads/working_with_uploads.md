@@ -38,7 +38,7 @@ is:
 File.join(model.class.underscore, mounted_as.to_s, model.id.to_s)
 ```
 
-If you look around in the GitLab code base you will find quite a few
+If you look around in the GitLab code base you find quite a few
 Uploaders that have their own storage location. For object storage,
 this means Uploaders have their own buckets. We now **discourage**
 adding new buckets for the following reasons:
@@ -53,7 +53,7 @@ and friction. The `Gitlab.config.uploads` storage location, which is what
 
 ## Implementing Direct Upload support
 
-Below we will outline how to implement [direct upload](#direct-upload-via-workhorse) support.
+Below we outline how to implement [direct upload](#direct-upload-via-workhorse) support.
 
 Using direct upload is not always necessary but it is usually a good
 idea. Unless the uploads handled by your feature are both infrequent
@@ -107,7 +107,7 @@ You should also manually verify that when you perform an upload
 request for your new feature, Workhorse makes a pre-authorization
 request. You can check this by looking at the Rails access logs. This
 is necessary because if you make a mistake in your routing rule you
-won't get a hard failure: you just end up using the less efficient
+don't get a hard failure: you just end up using the less efficient
 default path.
 
 ### Adding a pre-authorization endpoint
@@ -123,8 +123,8 @@ Consider accepting your file upload via Grape instead.
 For Grape pre-authorization endpoints, look for existing examples that
 implement `/authorize` routes. One example is the
 [POST `:id/uploads/authorize` endpoint](https://gitlab.com/gitlab-org/gitlab/-/blob/9ad53d623eecebb799ce89eada951e4f4a59c116/lib/api/projects.rb#L642-651).
-Note that this particular example is using FileUploader, which means
-that the upload will be stored in the storage location (bucket) of
+This particular example is using FileUploader, which means
+that the upload is stored in the storage location (bucket) of
 that Uploader class.
 
 For Rails endpoints you can use the
@@ -154,7 +154,7 @@ scale.
 
 GitLab uses a modified version of
 [CarrierWave](https://github.com/carrierwaveuploader/carrierwave) to
-manage uploads. Below we will describe how we use CarrierWave and how
+manage uploads. Below we describe how we use CarrierWave and how
 we modified it.
 
 The central concept of CarrierWave is the **Uploader** class. The
@@ -197,15 +197,15 @@ particular, you currently cannot use the `version` mechanism of
 CarrierWave. Things you can do include:
 
 - Filename validation
-- **Incompatible with direct upload:** One time pre-processing of file contents, e.g. image resizing
+- **Incompatible with direct upload:** One time pre-processing of file contents, for example, image resizing
 - **Incompatible with direct upload:** Encryption at rest
 
-Note that CarrierWave pre-processing behaviors such as image resizing
+CarrierWave pre-processing behaviors such as image resizing
 or encryption require local access to the uploaded file. This forces
 you to upload the processed file from Ruby. This flies against direct
 upload, which is all about _not_ doing the upload in Ruby. If you use
 direct upload with an Uploader with pre-processing behaviors then the
-pre-processing behaviors will be skipped silently.
+pre-processing behaviors are skipped silently.
 
 ### CarrierWave Storage engines
 
@@ -218,7 +218,7 @@ CarrierWave has 2 storage engines:
 
 GitLab uses both of these engines, depending on configuration.
 
-The normal way to choose a storage engine in CarrierWave is to use the
+The typical way to choose a storage engine in CarrierWave is to use the
 `Uploader.storage` class method. In GitLab we do not do this; we have
 overridden `Uploader#storage` instead. This allows us to vary the
 storage engine file by file.
@@ -228,13 +228,13 @@ storage engine file by file.
 An Uploader is associated with two storage areas: regular storage and
 cache storage. Each has its own storage engine. If you assign a file
 to a mount point setter (`project.avatar = File.open('/tmp/tanuki.png')`)
-you will copy/move the file to cache
+you have to copy/move the file to cache
 storage as a side effect via the `cache!` method. To persist the file
 you must somehow call the `store!` method. This either happens via
 [ActiveRecord callbacks](https://github.com/carrierwaveuploader/carrierwave/blob/v1.3.2/lib/carrierwave/orm/activerecord.rb#L55)
 or by calling `store!` on an Uploader instance.
 
-Normally you do not need to interact with `cache!` and `store!` but if
+Typically you do not need to interact with `cache!` and `store!` but if
 you need to debug GitLab CarrierWave modifications it is useful to
 know that they are there and that they always get called.
 Specifically, it is good to know that CarrierWave pre-processing
@@ -278,7 +278,7 @@ Direct upload works as follows.
 1. Rails deletes the temporary upload
 1. Workhorse deletes the temporary upload a second time in case Rails timed out
 
-Normally, `cache!` returns an instance of
+Typically, `cache!` returns an instance of
 `CarrierWave::SanitizedFile`, and `store!` then
 [uploads that file using Fog](https://github.com/carrierwaveuploader/carrierwave/blob/v1.3.2/lib/carrierwave/storage/fog.rb#L327-L335).
 
@@ -294,7 +294,7 @@ this file to its intended location.
 
 ## Tables
 
-The Scalability::Frameworks team is going to make object storage and uploads more easy to use and more robust. If you add or change uploaders, it helps us if you update this table too. This helps us keep an overview of where and how uploaders are used.
+The Scalability::Frameworks team is making object storage and uploads more easy to use and more robust. If you add or change uploaders, it helps us if you update this table too. This helps us keep an overview of where and how uploaders are used.
 
 ### Feature bucket details
 

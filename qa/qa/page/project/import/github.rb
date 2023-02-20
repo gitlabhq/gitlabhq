@@ -5,8 +5,6 @@ module QA
     module Project
       module Import
         class Github < Page::Base
-          include Page::Component::Select2
-
           view 'app/views/import/github/new.html.haml' do
             element :personal_access_token_field
             element :authenticate_button
@@ -17,7 +15,7 @@ module QA
             element :project_path_field
             element :import_button
             element :project_path_content
-            element :go_to_project_button
+            element :go_to_project_link
             element :import_status_indicator
           end
 
@@ -62,9 +60,9 @@ module QA
           #
           # @param [String] gh_project_name
           # @return [Boolean]
-          def has_go_to_project_button?(gh_project_name)
+          def has_go_to_project_link?(gh_project_name)
             within_element(:project_import_row, source_project: gh_project_name) do
-              has_element?(:go_to_project_button)
+              has_element?(:go_to_project_link)
             end
           end
 

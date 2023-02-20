@@ -227,7 +227,7 @@ RSpec.describe API::Internal::Kubernetes, feature_category: :kubernetes_manageme
     context 'an agent is found' do
       let_it_be(:agent_token) { create(:cluster_agent_token) }
 
-      shared_examples 'agent token tracking'
+      include_examples 'agent token tracking'
 
       context 'project is public' do
         let(:project) { create(:project, :public) }

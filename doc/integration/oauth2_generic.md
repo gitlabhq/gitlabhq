@@ -54,7 +54,9 @@ To configure the provider:
 
    :::TabTitle Linux package (Omnibus)
 
-   1. [Configure the initial settings](omniauth.md#configure-initial-settings).
+   1. Edit the [common configuration file settings](omniauth.md#configure-common-settings)
+      to add `oauth2_generic` as a single sign-on provider. This enables Just-In-Time
+      account provisioning for users who do not have an existing GitLab account.
    1. Edit `/etc/gitlab/gitlab.rb` to add the configuration for your provider. For example:
 
       ```ruby
@@ -96,7 +98,9 @@ To configure the provider:
 
    :::TabTitle Helm chart (Kubernetes)
 
-   1. [Configure the initial settings](omniauth.md#configure-initial-settings).
+   1. Edit the [common configuration file settings](omniauth.md#configure-common-settings)
+      to add `oauth2_generic` as a single sign-on provider. This enables Just-In-Time
+      account provisioning for users who do not have an existing GitLab account.
    1. Export the Helm values:
 
       ```shell
@@ -146,7 +150,9 @@ To configure the provider:
 
    :::TabTitle Self-compiled (source)
 
-   1. [Configure the initial settings](omniauth.md#configure-initial-settings).
+   1. Edit the [common configuration file settings](omniauth.md#configure-common-settings)
+      to add `oauth2_generic` as a single sign-on provider. This enables Just-In-Time
+      account provisioning for users who do not have an existing GitLab account.
    1. Edit `/home/git/gitlab/config/gitlab.yml`:
 
       ```yaml

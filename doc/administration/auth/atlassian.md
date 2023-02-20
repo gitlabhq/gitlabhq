@@ -41,7 +41,10 @@ To enable the Atlassian OmniAuth provider for passwordless authentication you mu
    sudo -u git -H editor /home/git/gitlab/config/gitlab.yml
    ```
 
-1. See [Configure initial settings](../../integration/omniauth.md#configure-initial-settings) for initial settings to enable single sign-on and add `atlassian_oauth2` as an OAuth provider.
+1. Edit the [common configuration file settings](../../integration/omniauth.md#configure-common-settings)
+   to add `atlassian_oauth2` as a single sign-on provider. This enables
+   Just-In-Time account provisioning for users who do not have an existing
+   GitLab account.
 1. Add the provider configuration for Atlassian:
 
    For Omnibus GitLab installations:

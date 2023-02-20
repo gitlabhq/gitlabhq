@@ -5,13 +5,17 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference, howto
 ---
 
-# Authentication (DAST) **(ULTIMATE)**
+# DAST authentication **(ULTIMATE)**
 
 WARNING:
-**Never** run an authenticated scan against a production server.
-Authenticated scans may perform *any* function that the authenticated user can,
+**DO NOT** use credentials that are valid for production systems, production servers, or any that
+contain production data.
+
+WARNING:
+**DO NOT** run an authenticated scan against a production server.
+Authenticated scans may perform **any** function that the authenticated user can,
 including modifying or deleting data, submitting forms, and following links.
-Only run an authenticated scan against a test server.
+Only run an authenticated scan against non-production systems or servers.
 
 Authentication logs a user in before a DAST scan so that the analyzer can test
 as much of the application as possible when searching for vulnerabilities.
@@ -44,8 +48,8 @@ To run a DAST authenticated scan:
 - You are using either the [DAST proxy-based analyzer](proxy-based.md) or the [DAST browser-based analyzer](browser_based.md).
 - You know the URL of the login form of your application. Alternatively, you know how to navigate to the login form from the authentication URL (see [clicking to navigate to the login form](#clicking-to-navigate-to-the-login-form)).
 - You have the username and password of the user you would like to authenticate as during the scan.
-- You know the [selectors](#finding-an-elements-selector) of the username and password HTML fields that DAST will use to input the respective values.
-- You know the element's [selector](#finding-an-elements-selector) that will submit the login form when selected.
+- You know the [selectors](#finding-an-elements-selector) of the username and password HTML fields that DAST uses to input the respective values.
+- You know the element's [selector](#finding-an-elements-selector) that submits the login form when selected.
 - You have thought about how you can [verify](#verifying-authentication-is-successful) whether or not authentication was successful.
 - You have checked the [known limitations](#known-limitations) to ensure DAST can authenticate to your application.
 
@@ -140,7 +144,7 @@ See [Custom CI/CI variables](../../../ci/variables/index.md#for-a-project) for m
 
 ### Configuration for Single Sign-On (SSO)
 
-If a user can log into an application, then in most cases, DAST will also be able to log in.
+If a user can log into an application, then in most cases, DAST is also able to log in.
 This is the case even when an application uses Single Sign-on. Applications using SSO solutions should configure DAST
 authentication using the [single-step](#configuration-for-a-single-step-login-form) or [multi-step](#configuration-for-a-multi-step-login-form) login form configuration guides.
 
@@ -168,8 +172,8 @@ dast:
 
 ### Excluding logout URLs
 
-If DAST crawls the logout URL while running an authenticated scan, the user will be logged out, resulting in the remainder of the scan being unauthenticated.
-It is therefore recommended to exclude logout URLs using the CI/CD variable `DAST_EXCLUDE_URLS`. DAST will not access any excluded URLs, ensuring the user remains logged in.
+If DAST crawls the logout URL while running an authenticated scan, the user is logged out, resulting in the remainder of the scan being unauthenticated.
+It is therefore recommended to exclude logout URLs using the CI/CD variable `DAST_EXCLUDE_URLS`. DAST isn't accessing any excluded URLs, ensuring the user remains logged in.
 
 Provided URLs can be either absolute URLs, or regular expressions of URL paths relative to the base path of the `DAST_WEBSITE`. For example:
 
@@ -193,7 +197,7 @@ Selectors have the format `type`:`search string`. DAST searches for the selector
 | `css`         | `css:.password-field`              | Searches for a HTML element having the supplied CSS selector. Selectors should be as specific as possible for performance reasons.                                                                    |
 | `id`          | `id:element`                       | Searches for an HTML element with the provided element ID.                                                                                                                                            |
 | `name`        | `name:element`                     | Searches for an HTML element with the provided element name.                                                                                                                                          |
-| `xpath`       | `xpath://input[@id="my-button"]/a` | Searches for a HTML element with the provided XPath. Note that XPath searches are expected to be less performant than other searches.                                                                 |
+| `xpath`       | `xpath://input[@id="my-button"]/a` | Searches for a HTML element with the provided XPath. XPath searches are expected to be less performant than other searches.                                                                           |
 | None provided | `a.click-me`                       | Defaults to searching using a CSS selector. **{warning}** **[Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/383348)** in GitLab 15.8. Replaced by explicitly declaring the selector type.  |
 
 #### Find selectors with Google Chrome
@@ -234,7 +238,7 @@ When using selectors to locate specific fields we recommend you avoid searching 
 ## Verifying authentication is successful
 
 Once DAST has submitted the login form, a verification process takes place
-to determine if authentication succeeded. The scan will halt with an error if authentication is unsuccessful.
+to determine if authentication succeeded. The scan halts with an error if authentication is unsuccessful.
 
 Following the submission of the login form, authentication is determined to be unsuccessful when:
 
@@ -247,13 +251,13 @@ Following the submission of the login form, authentication is determined to be u
 Verification checks run checks on the state of the browser once authentication is complete
 to determine further if authentication succeeded.
 
-DAST will test for the absence of a login form if no verification checks are configured.
+DAST tests for the absence of a login form if no verification checks are configured.
 
 #### Verify based on the URL
 
 Define `DAST_AUTH_VERIFICATION_URL` as the URL displayed in the browser tab once the login form is successfully submitted.
 
-DAST will compare the verification URL to the URL in the browser after authentication.
+DAST compares the verification URL to the URL in the browser after authentication.
 If they are not the same, authentication is unsuccessful.
 
 For example:
@@ -270,7 +274,7 @@ dast:
 
 #### Verify based on presence of an element
 
-Define `DAST_AUTH_VERIFICATION_SELECTOR` as a [selector](#finding-an-elements-selector) that will find one or many elements on the page
+Define `DAST_AUTH_VERIFICATION_SELECTOR` as a [selector](#finding-an-elements-selector) that finds one or many elements on the page
 displayed once the login form is successfully submitted. If no element is found, authentication is unsuccessful.
 Searching for the selector on the page displayed when login fails should return no elements.
 
@@ -333,8 +337,8 @@ dast:
 
 ## Known limitations
 
-- DAST cannot bypass a CAPTCHA if the authentication flow includes one. Please turn these off in the testing environment for the application being scanned.
-- DAST cannot handle multi-factor authentication like one-time passwords (OTP) by using SMS, biometrics, or authenticator apps. Please turn these off in the testing environment for the application being scanned.
+- DAST cannot bypass a CAPTCHA if the authentication flow includes one. Turn these off in the testing environment for the application being scanned.
+- DAST cannot handle multi-factor authentication like one-time passwords (OTP) by using SMS, biometrics, or authenticator apps. Turn these off in the testing environment for the application being scanned.
 - DAST cannot authenticate to applications that do not set an [authentication token](#authentication-tokens) during login.
 - DAST cannot authenticate to applications that require more than two inputs to be filled out. Two inputs must be supplied, username and password.
 

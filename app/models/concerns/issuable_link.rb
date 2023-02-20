@@ -20,6 +20,12 @@ module IssuableLink
     def issuable_type
       raise NotImplementedError
     end
+
+    # Used to get the available types for the API
+    # overriden in EE
+    def available_link_types
+      [TYPE_RELATES_TO]
+    end
   end
 
   included do

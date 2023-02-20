@@ -17,7 +17,7 @@ module TasksToBeDone
 
       member_task.tasks_to_be_done.each do |task|
         service_class(task)
-          .new(project: project, current_user: current_user, assignee_ids: assignee_ids)
+          .new(container: project, current_user: current_user, assignee_ids: assignee_ids)
           .execute
       end
     end

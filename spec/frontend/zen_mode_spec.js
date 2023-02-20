@@ -6,6 +6,7 @@ import Mousetrap from 'mousetrap';
 import { loadHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import GLForm from '~/gl_form';
 import * as utils from '~/lib/utils/common_utils';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import ZenMode from '~/zen_mode';
 
 describe('ZenMode', () => {
@@ -32,7 +33,7 @@ describe('ZenMode', () => {
 
   beforeEach(() => {
     mock = new MockAdapter(axios);
-    mock.onGet().reply(200);
+    mock.onGet().reply(HTTP_STATUS_OK);
 
     loadHTMLFixture(fixtureName);
 

@@ -2,6 +2,9 @@
 
 class SystemNoteMetadata < ApplicationRecord
   include Importable
+  include IgnorableColumns
+
+  ignore_column :note_id_convert_to_bigint, remove_with: '16.0', remove_after: '2023-05-22'
 
   # These notes's action text might contain a reference that is external.
   # We should always force a deep validation upon references that are found

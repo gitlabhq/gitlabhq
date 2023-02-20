@@ -1,6 +1,6 @@
 <script>
 import { mapActions } from 'vuex';
-import { IssuableType } from '~/issues/constants';
+import { TYPE_EPIC, TYPE_ISSUE } from '~/issues/constants';
 import { fetchPolicies } from '~/lib/graphql';
 import { confidentialityQueries } from '~/sidebar/constants';
 import { defaultClient as gqlClient } from '~/graphql_shared/issuable_client';
@@ -28,7 +28,7 @@ export default {
     },
   },
   created() {
-    if (this.issuableType !== IssuableType.Issue && this.issuableType !== IssuableType.Epic) {
+    if (this.issuableType !== TYPE_ISSUE && this.issuableType !== TYPE_EPIC) {
       return;
     }
 

@@ -11,9 +11,10 @@ class MergeRequestTargetProjectFinder
     @project_feature = project_feature
   end
 
-  def execute(include_routes: false)
+  def execute(search: nil, include_routes: false)
     if source_project.fork_network
-      include_routes ? projects.inc_routes : projects
+      items = include_routes ? projects.inc_routes : projects
+      by_search(items, search)
     else
       Project.id_in(source_project.id)
     end
@@ -31,4 +32,10 @@ class MergeRequestTargetProjectFinder
       .non_archived
       .with_feature_available_for_user(project_feature, current_user)
   end
+
+  # rubocop: disable CodeReuse/ActiveRecord
+  def by_search(items, search)
+    items.joins(:route).fuzzy_search(search, [Route.arel_table[:path], Route.arel_table[:name], :description])
+  end
+  # rubocop: enable CodeReuse/ActiveRecord
 end

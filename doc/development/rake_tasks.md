@@ -10,7 +10,7 @@ Rake tasks are available for developers and others contributing to GitLab.
 
 ## Set up database with developer seeds
 
-Note that if your database user does not have advanced privileges, you must create the database manually before running this command.
+If your database user does not have advanced privileges, you must create the database manually before running this command.
 
 ```shell
 bundle exec rake setup
@@ -154,7 +154,7 @@ seeds, you can set the `FORCE` environment variable to `yes`:
 FORCE=yes bundle exec rake setup
 ```
 
-This will skip the action confirmation/safety check, saving you from answering
+This skips the action confirmation/safety check, saving you from answering
 `yes` manually.
 
 ### Discard `stdout`
@@ -168,7 +168,7 @@ it to a file. If we don't care about the output, we could just redirect it to
 echo 'yes' | bundle exec rake setup > /dev/null
 ```
 
-Note that since you can't see the questions from `stdout`, you might just want
+Because you can't see the questions from `stdout`, you might just want
 to `echo 'yes'` to keep it running. It would still print the errors on `stderr`
 so no worries about missing errors.
 
@@ -182,7 +182,7 @@ There are a few environment flags you can pass to change how projects are seeded
 
 ## Run tests
 
-In order to run the test you can use the following commands:
+To run the test you can use the following commands:
 
 - `bin/rake spec` to run the RSpec suite
 - `bin/rake spec:unit` to run only the unit tests

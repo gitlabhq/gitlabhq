@@ -8,7 +8,14 @@ import { DEFAULT, DRAW_FAILURE, LOAD_FAILURE } from '../../constants';
 import DismissPipelineGraphCallout from '../../graphql/mutations/dismiss_pipeline_notification.graphql';
 import getPipelineQuery from '../../graphql/queries/get_pipeline_header_data.query.graphql';
 import { reportToSentry, reportMessageToSentry } from '../../utils';
-import { ACTION_FAILURE, IID_FAILURE, LAYER_VIEW, STAGE_VIEW, VIEW_TYPE_KEY } from './constants';
+import {
+  ACTION_FAILURE,
+  IID_FAILURE,
+  LAYER_VIEW,
+  SKIP_RETRY_MODAL_KEY,
+  STAGE_VIEW,
+  VIEW_TYPE_KEY,
+} from './constants';
 import PipelineGraph from './graph_component.vue';
 import GraphViewSelector from './graph_view_selector.vue';
 import {
@@ -53,6 +60,7 @@ export default {
       currentViewType: STAGE_VIEW,
       canRefetchHeaderPipeline: false,
       pipeline: null,
+      skipRetryModal: false,
       showAlert: false,
       showLinks: false,
     };
@@ -206,8 +214,8 @@ export default {
     if (!this.pipelineIid) {
       this.reportFailure({ type: IID_FAILURE, skipSentry: true });
     }
-
     toggleQueryPollingByVisibility(this.$apollo.queries.pipeline);
+    this.skipRetryModal = Boolean(JSON.parse(localStorage.getItem(SKIP_RETRY_MODAL_KEY)));
   },
   errorCaptured(err, _vm, info) {
     reportToSentry(this.$options.name, `error: ${err}, info: ${info}`);
@@ -259,6 +267,9 @@ export default {
     updateShowLinksState(val) {
       this.showLinks = val;
     },
+    setSkipRetryModal() {
+      this.skipRetryModal = true;
+    },
     updateViewType(type) {
       this.currentViewType = type;
     },
@@ -293,10 +304,12 @@ export default {
       :config-paths="configPaths"
       :pipeline="pipeline"
       :computed-pipeline-info="getPipelineInfo()"
+      :skip-retry-modal="skipRetryModal"
       :show-links="showLinks"
       :view-type="graphViewType"
       @error="reportFailure"
       @refreshPipelineGraph="refreshPipelineGraph"
+      @setSkipRetryModal="setSkipRetryModal"
     />
   </div>
 </template>

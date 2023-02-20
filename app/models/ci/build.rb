@@ -34,11 +34,11 @@ module Ci
     DEPLOYMENT_NAMES = %w[deploy release rollout].freeze
 
     has_one :deployment, as: :deployable, class_name: 'Deployment', inverse_of: :deployable
-    has_one :pending_state, class_name: 'Ci::BuildPendingState', inverse_of: :build
+    has_one :pending_state, class_name: 'Ci::BuildPendingState', foreign_key: :build_id, inverse_of: :build
     has_one :queuing_entry, class_name: 'Ci::PendingBuild', foreign_key: :build_id
     has_one :runtime_metadata, class_name: 'Ci::RunningBuild', foreign_key: :build_id
     has_many :trace_chunks, class_name: 'Ci::BuildTraceChunk', foreign_key: :build_id, inverse_of: :build
-    has_many :report_results, class_name: 'Ci::BuildReportResult', inverse_of: :build
+    has_many :report_results, class_name: 'Ci::BuildReportResult', foreign_key: :build_id, inverse_of: :build
     has_one :namespace, through: :project
 
     # Projects::DestroyService destroys Ci::Pipelines, which use_fast_destroy on :job_artifacts
@@ -49,16 +49,18 @@ module Ci
     has_many :job_variables, class_name: 'Ci::JobVariable', foreign_key: :job_id, inverse_of: :job
     has_many :sourced_pipelines, class_name: 'Ci::Sources::Pipeline', foreign_key: :source_job_id
 
-    has_many :pages_deployments, inverse_of: :ci_build
+    has_many :pages_deployments, foreign_key: :ci_build_id, inverse_of: :ci_build
 
     Ci::JobArtifact.file_types.each do |key, value|
-      has_one :"job_artifacts_#{key}", -> { where(file_type: value) }, class_name: 'Ci::JobArtifact', inverse_of: :job, foreign_key: :job_id
+      has_one :"job_artifacts_#{key}", -> { where(file_type: value) }, class_name: 'Ci::JobArtifact', foreign_key: :job_id, inverse_of: :job
     end
 
-    has_one :runner_session, class_name: 'Ci::BuildRunnerSession', validate: true, inverse_of: :build
-    has_one :trace_metadata, class_name: 'Ci::BuildTraceMetadata', inverse_of: :build
+    has_one :runner_machine, through: :metadata, class_name: 'Ci::RunnerMachine'
 
-    has_many :terraform_state_versions, class_name: 'Terraform::StateVersion', inverse_of: :build, foreign_key: :ci_build_id
+    has_one :runner_session, class_name: 'Ci::BuildRunnerSession', validate: true, foreign_key: :build_id, inverse_of: :build
+    has_one :trace_metadata, class_name: 'Ci::BuildTraceMetadata', foreign_key: :build_id, inverse_of: :build
+
+    has_many :terraform_state_versions, class_name: 'Terraform::StateVersion', foreign_key: :ci_build_id, inverse_of: :build
 
     accepts_nested_attributes_for :runner_session, update_only: true
     accepts_nested_attributes_for :job_variables
@@ -87,6 +89,12 @@ module Ci
     end
 
     scope :unstarted, -> { where(runner_id: nil) }
+
+    scope :with_any_artifacts, -> do
+      where('EXISTS (?)',
+        Ci::JobArtifact.select(1).where("#{Ci::Build.quoted_table_name}.id = #{Ci::JobArtifact.quoted_table_name}.job_id")
+      )
+    end
 
     scope :with_downloadable_artifacts, -> do
       where('EXISTS (?)',
@@ -178,6 +186,8 @@ module Ci
     after_create unless: :importing? do |build|
       run_after_commit { build.execute_hooks }
     end
+
+    after_commit :track_ci_secrets_management_id_tokens_usage, on: :create, if: :id_tokens?
 
     class << self
       # This is needed for url_for to work,
@@ -382,21 +392,21 @@ module Ci
 
     def detailed_status(current_user)
       Gitlab::Ci::Status::Build::Factory
-        .new(self.present, current_user)
+        .new(present, current_user)
         .fabricate!
     end
 
     def other_manual_actions
-      pipeline.manual_actions.reject { |action| action.name == self.name }
+      pipeline.manual_actions.reject { |action| action.name == name }
     end
 
     def other_scheduled_actions
-      pipeline.scheduled_actions.reject { |action| action.name == self.name }
+      pipeline.scheduled_actions.reject { |action| action.name == name }
     end
 
     def pages_generator?
       Gitlab.config.pages.enabled &&
-        self.name == 'pages'
+        name == 'pages'
     end
 
     def runnable?
@@ -452,7 +462,7 @@ module Ci
     end
 
     def retries_count
-      pipeline.builds.retried.where(name: self.name).count
+      pipeline.builds.retried.where(name: name).count
     end
 
     override :all_met_to_become_pending?
@@ -525,19 +535,19 @@ module Ci
     end
 
     def deployment_job?
-      has_environment_keyword? && self.environment_action == 'start'
+      has_environment_keyword? && environment_action == 'start'
     end
 
     def stops_environment?
-      has_environment_keyword? && self.environment_action == 'stop'
+      has_environment_keyword? && environment_action == 'stop'
     end
 
     def environment_action
-      self.options.fetch(:environment, {}).fetch(:action, 'start') if self.options
+      options.fetch(:environment, {}).fetch(:action, 'start') if options
     end
 
     def environment_tier_from_options
-      self.options.dig(:environment, :deployment_tier) if self.options
+      options.dig(:environment, :deployment_tier) if options
     end
 
     def environment_tier
@@ -827,7 +837,7 @@ module Ci
     end
 
     def erased?
-      !self.erased_at.nil?
+      !erased_at.nil?
     end
 
     def artifacts_expired?
@@ -860,14 +870,14 @@ module Ci
     end
 
     def keep_artifacts!
-      self.update(artifacts_expire_at: nil)
-      self.job_artifacts.update_all(expire_at: nil)
+      update(artifacts_expire_at: nil)
+      job_artifacts.update_all(expire_at: nil)
     end
 
-    def artifacts_file_for_type(type)
+    def artifact_for_type(type)
       file_types = Ci::JobArtifact.associated_file_types_for(type)
       file_types_ids = file_types&.map { |file_type| Ci::JobArtifact.file_types[file_type] }
-      job_artifacts.find_by(file_type: file_types_ids)&.file
+      job_artifacts.find_by(file_type: file_types_ids)
     end
 
     def steps
@@ -1092,11 +1102,11 @@ module Ci
     # without actually loading data.
     #
     def all_queuing_entries
-      ::Ci::PendingBuild.where(build_id: self.id)
+      ::Ci::PendingBuild.where(build_id: id)
     end
 
     def all_runtime_metadata
-      ::Ci::RunningBuild.where(build_id: self.id)
+      ::Ci::RunningBuild.where(build_id: id)
     end
 
     def shared_runner_build?
@@ -1280,6 +1290,23 @@ module Ci
           .build_completed_report_type_counter(report_type)
           .increment(status: status)
       end
+    end
+
+    def track_ci_secrets_management_id_tokens_usage
+      ::Gitlab::UsageDataCounters::HLLRedisCounter.track_event('i_ci_secrets_management_id_tokens_build_created', values: user_id)
+
+      Gitlab::Tracking.event(
+        self.class.to_s,
+        'create_id_tokens',
+        namespace: namespace,
+        user: user,
+        label: 'redis_hll_counters.ci_secrets_management.i_ci_secrets_management_id_tokens_build_created_monthly',
+        ultimate_namespace_id: namespace.root_ancestor.id,
+        context: [Gitlab::Tracking::ServicePingContext.new(
+          data_source: :redis_hll,
+          event: 'i_ci_secrets_management_id_tokens_build_created'
+        ).to_context]
+      )
     end
   end
 end

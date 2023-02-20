@@ -113,12 +113,12 @@ Formats supported: `milliseconds`, `seconds`
 
 | Format         | Data   | Displayed |
 | -------------- | ------ | --------- |
-| `milliseconds` | `10`   | 10ms      |
-| `milliseconds` | `500`  | 100ms     |
-| `milliseconds` | `1000` | 1000ms    |
-| `seconds`      | `10`   | 10s       |
-| `seconds`      | `500`  | 500s      |
-| `seconds`      | `1000` | 1000s     |
+| `milliseconds` | `10`   | 10 ms      |
+| `milliseconds` | `500`  | 100 ms     |
+| `milliseconds` | `1000` | 1000 ms    |
+| `seconds`      | `10`   | 10 s       |
+| `seconds`      | `500`  | 500 s      |
+| `seconds`      | `1000` | 1000 s     |
 
 ## Digital (Metric)
 
@@ -138,15 +138,15 @@ Formats supported:
 
 | Format         | Data      | Displayed |
 | -------------- | --------- | --------- |
-| `decimalBytes` | `1`       | 1B        |
-| `decimalBytes` | `1000`    | 1kB       |
-| `decimalBytes` | `1000000` | 1MB       |
-| `kilobytes`    | `1`       | 1kB       |
-| `kilobytes`    | `1000`    | 1MB       |
-| `kilobytes`    | `1000000` | 1GB       |
-| `megabytes`    | `1`       | 1MB       |
-| `megabytes`    | `1000`    | 1GB       |
-| `megabytes`    | `1000000` | 1TB       |
+| `decimalBytes` | `1`       | 1 B        |
+| `decimalBytes` | `1000`    | 1 kB       |
+| `decimalBytes` | `1000000` | 1 MB       |
+| `kilobytes`    | `1`       | 1 kB       |
+| `kilobytes`    | `1000`    | 1 MB       |
+| `kilobytes`    | `1000000` | 1 GB       |
+| `megabytes`    | `1`       | 1 MB       |
+| `megabytes`    | `1000`    | 1 GB       |
+| `megabytes`    | `1000000` | 1 TB       |
 
 ## Digital (IEC)
 
@@ -166,12 +166,12 @@ Formats supported:
 
 | Format      | Data          | Displayed |
 | ----------- | ------------- | --------- |
-| `bytes`     | `1`           | 1B        |
-| `bytes`     | `1024`        | 1KiB      |
-| `bytes`     | `1024 * 1024` | 1MiB      |
-| `kibibytes` | `1`           | 1KiB      |
-| `kibibytes` | `1024`        | 1MiB      |
-| `kibibytes` | `1024 * 1024` | 1GiB      |
-| `mebibytes` | `1`           | 1MiB      |
-| `mebibytes` | `1024`        | 1GiB      |
-| `mebibytes` | `1024 * 1024` | 1TiB      |
+| `bytes`     | `1`           | 1 B        |
+| `bytes`     | `1024`        | 1 KiB      |
+| `bytes`     | `1024 * 1024` | 1 MiB      |
+| `kibibytes` | `1`           | 1 KiB      |
+| `kibibytes` | `1024`        | 1 MiB      |
+| `kibibytes` | `1024 * 1024` | 1 GiB      |
+| `mebibytes` | `1`           | 1 MiB      |
+| `mebibytes` | `1024`        | 1 GiB      |
+| `mebibytes` | `1024 * 1024` | 1 TiB      |

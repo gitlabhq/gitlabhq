@@ -49,19 +49,7 @@ RSpec.describe PipelineScheduleWorker, :sidekiq_inline, feature_category: :conti
         end
       end
 
-      shared_examples 'successful scheduling with/without ci_use_run_pipeline_schedule_worker' do
-        it_behaves_like 'successful scheduling'
-
-        context 'when feature flag ci_use_run_pipeline_schedule_worker is disabled' do
-          before do
-            stub_feature_flags(ci_use_run_pipeline_schedule_worker: false)
-          end
-
-          it_behaves_like 'successful scheduling'
-        end
-      end
-
-      it_behaves_like 'successful scheduling with/without ci_use_run_pipeline_schedule_worker'
+      it_behaves_like 'successful scheduling'
 
       context 'when the latest commit contains [ci skip]' do
         before do
@@ -70,7 +58,7 @@ RSpec.describe PipelineScheduleWorker, :sidekiq_inline, feature_category: :conti
             .and_return('some commit [ci skip]')
         end
 
-        it_behaves_like 'successful scheduling with/without ci_use_run_pipeline_schedule_worker'
+        it_behaves_like 'successful scheduling'
       end
     end
 

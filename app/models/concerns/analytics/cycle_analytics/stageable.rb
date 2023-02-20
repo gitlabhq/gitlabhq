@@ -4,7 +4,6 @@ module Analytics
   module CycleAnalytics
     module Stageable
       extend ActiveSupport::Concern
-      include RelativePositioning
       include Gitlab::Utils::StrongMemoize
 
       included do
@@ -90,10 +89,6 @@ module Analytics
         default_stage? &&
           start_event_identifier.to_s.eql?(stage_params[:start_event_identifier].to_s) &&
           end_event_identifier.to_s.eql?(stage_params[:end_event_identifier].to_s)
-      end
-
-      def find_with_same_parent!(id)
-        parent.cycle_analytics_stages.find(id)
       end
 
       private

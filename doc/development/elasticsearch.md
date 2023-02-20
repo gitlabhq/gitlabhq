@@ -276,6 +276,50 @@ class MigrationName < Elastic::Migration
 end
 ```
 
+#### `Elastic::MigrationRemoveFieldsHelper`
+
+Removes specified fields from an index.
+
+Requires the `index_name`, `document_type` methods. If there is one field to remove, add the `field_to_remove` method, otherwise add `fields_to_remove` with an array of fields.
+
+Checks in batches if any documents that match `document_type` have the fields specified in Elasticsearch. If documents exist, uses a Painless script to perform `update_by_query`.
+
+```ruby
+class MigrationName < Elastic::Migration
+  include Elastic::MigrationRemoveFieldsHelper
+
+  batched!
+  throttle_delay 1.minute
+
+  private
+
+  def index_name
+    User.__elasticsearch__.index_name
+  end
+
+  def document_type
+    'user'
+  end
+
+  def fields_to_remove
+    %w[two_factor_enabled has_projects]
+  end
+end
+```
+
+The default batch size is `10_000`. You can override this value by specifying `BATCH_SIZE`:
+
+```ruby
+class MigrationName < Elastic::Migration
+  include Elastic::MigrationRemoveFieldsHelper
+
+  batched!
+  BATCH_SIZE = 100
+
+  ...
+end
+```
+
 #### `Elastic::MigrationObsolete`
 
 Marks a migration as obsolete when it's no longer required.

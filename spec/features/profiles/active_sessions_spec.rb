@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Profile > Active Sessions', :clean_gitlab_redis_shared_state, feature_category: :users do
+RSpec.describe 'Profile > Active Sessions', :clean_gitlab_redis_shared_state, feature_category: :user_profile do
   include Spec::Support::Helpers::ModalHelpers
 
   let(:user) do

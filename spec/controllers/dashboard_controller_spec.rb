@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe DashboardController do
+RSpec.describe DashboardController, feature_category: :code_review_workflow do
   context 'signed in' do
     let_it_be(:user) { create(:user) }
     let_it_be(:project) { create(:project) }
@@ -46,6 +46,64 @@ RSpec.describe DashboardController do
     describe 'GET merge requests' do
       it_behaves_like 'issuables list meta-data', :merge_request, :merge_requests
       it_behaves_like 'issuables requiring filter', :merge_requests
+
+      context 'when an ActiveRecord::QueryCanceled is raised' do
+        before do
+          allow_next_instance_of(Gitlab::IssuableMetadata) do |instance|
+            allow(instance).to receive(:data).and_raise(ActiveRecord::QueryCanceled)
+          end
+        end
+
+        it 'sets :search_timeout_occurred' do
+          get :merge_requests, params: { author_id: user.id }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(assigns(:search_timeout_occurred)).to eq(true)
+        end
+
+        context 'rendering views' do
+          render_views
+
+          it 'shows error message' do
+            get :merge_requests, params: { author_id: user.id }
+
+            expect(response.body).to have_content('Too many results to display. Edit your search or add a filter.')
+          end
+
+          it 'does not display MR counts in nav' do
+            get :merge_requests, params: { author_id: user.id }
+
+            expect(response.body).to have_content('Open Merged Closed All')
+            expect(response.body).not_to have_content('Open 0 Merged 0 Closed 0 All 0')
+          end
+        end
+
+        it 'logs the exception' do
+          expect(Gitlab::ErrorTracking).to receive(:track_exception).and_call_original
+
+          get :merge_requests, params: { author_id: user.id }
+        end
+      end
+
+      context 'when an ActiveRecord::QueryCanceled is not raised' do
+        it 'does not set :search_timeout_occurred' do
+          get :merge_requests, params: { author_id: user.id }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(assigns(:search_timeout_occurred)).to eq(nil)
+        end
+
+        context 'rendering views' do
+          render_views
+
+          it 'displays MR counts in nav' do
+            get :merge_requests, params: { author_id: user.id }
+
+            expect(response.body).to have_content('Open 0 Merged 0 Closed 0 All 0')
+            expect(response.body).not_to have_content('Open Merged Closed All')
+          end
+        end
+      end
     end
   end
 
@@ -53,9 +111,9 @@ RSpec.describe DashboardController do
     include DesignManagementTestHelpers
     render_views
 
-    let(:user) { create(:user) }
-    let(:project) { create(:project, :public, issues_access_level: ProjectFeature::PRIVATE) }
-    let(:other_project) { create(:project, :public) }
+    let_it_be(:user) { create(:user) }
+    let_it_be(:project) { create(:project, :public, issues_access_level: ProjectFeature::PRIVATE) }
+    let_it_be(:other_project) { create(:project, :public) }
 
     before do
       enable_design_management
@@ -76,22 +134,53 @@ RSpec.describe DashboardController do
         other_project.add_developer(user)
       end
 
-      it 'returns count' do
-        get :activity, params: { format: :json }
+      context 'without filter param' do
+        it 'returns only events of the user' do
+          get :activity, params: { format: :json }
 
-        expect(json_response['count']).to eq(6)
+          expect(json_response['count']).to eq(3)
+        end
+      end
+
+      context 'with "projects" filter' do
+        it 'returns events of the user\'s projects' do
+          get :activity, params: { format: :json, filter: :projects }
+
+          expect(json_response['count']).to eq(6)
+        end
+      end
+
+      context 'with "followed" filter' do
+        let_it_be(:followed_user) { create(:user) }
+        let_it_be(:followed_user_private_project) { create(:project, :private) }
+        let_it_be(:followed_user_public_project) { create(:project, :public) }
+
+        before do
+          followed_user_private_project.add_developer(followed_user)
+          followed_user_public_project.add_developer(followed_user)
+          user.follow(followed_user)
+          create(:event, :created, project: followed_user_private_project, target: create(:issue),
+            author: followed_user)
+          create(:event, :created, project: followed_user_public_project, target: create(:issue), author: followed_user)
+        end
+
+        it 'returns public events of the user\'s followed users' do
+          get :activity, params: { format: :json, filter: :followed }
+
+          expect(json_response['count']).to eq(1)
+        end
       end
     end
 
     context 'when user has no permission to see the event' do
       it 'filters out invisible event' do
-        get :activity, params: { format: :json }
+        get :activity, params: { format: :json, filter: :projects }
 
         expect(json_response['html']).to include(_('No activities found'))
       end
 
       it 'filters out invisible event when calculating the count' do
-        get :activity, params: { format: :json }
+        get :activity, params: { format: :json, filter: :projects }
 
         expect(json_response['count']).to eq(0)
       end

@@ -260,7 +260,7 @@ Prerequisites:
 
 To create a thread by replying to a comment:
 
-1. On the top right of the comment, select **Reply to comment** (**{comment}**).
+1. In the upper right of the comment, select **Reply to comment** (**{comment}**).
 
    ![Reply to comment button](img/reply_to_comment_button.png)
 
@@ -308,7 +308,7 @@ To resolve a thread:
 
 1. Go to the thread.
 1. Do one of the following:
-   - In the top right of the original comment, select the **Resolve thread** (**{check-circle}**) icon.
+   - In the upper right of the original comment, select **Resolve thread** (**{check-circle}**).
    - Below the last reply, in the **Reply** field, select **Resolve thread**.
    - Below the last reply, in the **Reply** field, enter text, select the **Resolve thread** checkbox, and select **Add comment now**.
 

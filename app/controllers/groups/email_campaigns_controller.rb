@@ -3,7 +3,7 @@
 class Groups::EmailCampaignsController < Groups::ApplicationController
   EMAIL_CAMPAIGNS_SCHEMA_URL = 'iglu:com.gitlab/email_campaigns/jsonschema/1-0-0'
 
-  feature_category :navigation
+  feature_category :experimentation_activation
   urgency :low
 
   before_action :check_params
@@ -44,7 +44,7 @@ class Groups::EmailCampaignsController < Groups::ApplicationController
     when :team, :team_short
       group_group_members_url(group)
     when :admin_verify
-      project_settings_ci_cd_path(group.projects.first, ci_runner_templates: true, anchor: 'js-runners-settings')
+      project_settings_ci_cd_path(group.projects.first, anchor: 'js-runners-settings')
     end
   end
 

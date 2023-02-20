@@ -29,7 +29,9 @@ module Jira
         end
 
         def map_projects(response)
-          response.map { |v| JIRA::Resource::Project.build(client, v) }.select(&method(:match_query?))
+          response
+            .map { |v| JIRA::Resource::Project.build(client, v) }
+            .select { |jira_project| match_query?(jira_project) }
         end
 
         def match_query?(jira_project)

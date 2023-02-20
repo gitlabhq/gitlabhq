@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ChatNames::AuthorizeUserService, feature_category: :users do
+RSpec.describe ChatNames::AuthorizeUserService, feature_category: :user_profile do
   describe '#execute' do
     let(:result) { subject.execute }
 

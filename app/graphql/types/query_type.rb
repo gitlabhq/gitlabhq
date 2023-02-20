@@ -17,7 +17,8 @@ module Types
     field :ci_variables,
           Types::Ci::InstanceVariableType.connection_type,
           null: true,
-          description: "List of the instance's CI/CD variables."
+          description: "List of the instance's CI/CD variables.",
+          resolver: Resolvers::Ci::VariablesResolver
     field :container_repository, Types::ContainerRepositoryDetailsType,
           null: true,
           description: 'Find a container repository.' do
@@ -40,6 +41,10 @@ module Types
           null: true,
           resolver: Resolvers::GroupResolver,
           description: "Find a group."
+    field :groups, Types::GroupType.connection_type,
+          null: true,
+          resolver: Resolvers::GroupsResolver,
+          description: "Find groups."
     field :issue, Types::IssueType,
           null: true,
           description: 'Find an issue.' do
@@ -50,8 +55,7 @@ module Types
           alpha: { milestone: '15.6' },
           resolver: Resolvers::IssuesResolver,
           description: 'Find issues visible to the current user.' \
-                       ' At least one filter must be provided.' \
-                       ' Returns `null` if the `root_level_issues_query` feature flag is disabled.'
+                       ' At least one filter must be provided.'
     field :jobs,
           ::Types::Ci::JobType.connection_type,
           null: true,
@@ -76,6 +80,15 @@ module Types
           null: true,
           resolver: Resolvers::NamespaceResolver,
           description: "Find a namespace."
+    field :note,
+          ::Types::Notes::NoteType,
+          null: true,
+          description: 'Find a note.',
+          alpha: { milestone: '15.9' } do
+            argument :id, ::Types::GlobalIDType[::Note],
+              required: true,
+              description: 'Global ID of the note.'
+          end
     field :package,
           description: 'Find a package. This field can only be resolved for one query in any single request. Returns `null` if a package has no `default` status.',
           resolver: Resolvers::PackageDetailsResolver
@@ -95,8 +108,10 @@ module Types
           resolver: Resolvers::Ci::RunnerResolver,
           extras: [:lookahead],
           description: "Find a runner."
-    field :runner_platforms, resolver: Resolvers::Ci::RunnerPlatformsResolver
-    field :runner_setup, resolver: Resolvers::Ci::RunnerSetupResolver
+    field :runner_platforms, resolver: Resolvers::Ci::RunnerPlatformsResolver,
+          deprecated: { reason: 'No longer used, use gitlab-runner documentation to learn about supported platforms', milestone: '15.9' }
+    field :runner_setup, resolver: Resolvers::Ci::RunnerSetupResolver,
+          deprecated: { reason: 'No longer used, use gitlab-runner documentation to learn about runner registration commands', milestone: '15.9' }
     field :runners, Types::Ci::RunnerType.connection_type,
           null: true,
           resolver: Resolvers::Ci::RunnersResolver,
@@ -106,6 +121,12 @@ module Types
           null: true,
           resolver: Resolvers::SnippetsResolver,
           description: 'Find Snippets visible to the current user.'
+    field :synthetic_note,
+          Types::Notes::NoteType,
+          null: true,
+          description: 'Find a synthetic note',
+          resolver: ::Resolvers::Notes::SyntheticNoteResolver,
+          alpha: { milestone: '15.9' }
     field :timelogs, Types::TimelogType.connection_type,
           null: true,
           description: 'Find timelogs visible to the current user.',
@@ -145,6 +166,10 @@ module Types
       GitlabSchema.find_by_gid(id)
     end
 
+    def note(id:)
+      GitlabSchema.find_by_gid(id)
+    end
+
     def merge_request(id:)
       GitlabSchema.find_by_gid(id)
     end
@@ -164,12 +189,6 @@ module Types
 
     def ci_application_settings
       application_settings
-    end
-
-    def ci_variables
-      return unless current_user&.can_admin_all_resources?
-
-      ::Ci::InstanceVariable.all
     end
 
     def application_settings

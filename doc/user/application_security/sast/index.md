@@ -62,7 +62,7 @@ To run SAST jobs, by default, you need GitLab Runner with the
 If you're using the shared runners on GitLab.com, this is enabled by default.
 
 WARNING:
-Our SAST jobs require a Linux/amd64 container type. Windows containers are not yet supported.
+GitLab SAST analyzers don't support running on Windows or on any CPU architectures other than amd64.
 
 WARNING:
 If you use your own runners, make sure the Docker version installed
@@ -73,7 +73,7 @@ is **not** `19.03.0`. See [troubleshooting information](#error-response-from-dae
 GitLab SAST supports scanning a variety of programming languages and frameworks.
 Once you [enable SAST](#configuration), the right set of analyzers runs automatically even if your project uses more than one language.
 
-Check the [SAST direction page](https://about.gitlab.com/direction/secure/static-analysis/sast/#language-support) to learn more about our plans for language support in SAST.
+For more information about our plans for language support in SAST, see the [category direction page](https://about.gitlab.com/direction/secure/static-analysis/sast/#language-support).
 
 | Language / framework         | [Analyzer](analyzers.md) used for scanning                                                                   | Minimum supported GitLab version                                                        |
 |------------------------------|--------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------|
@@ -144,12 +144,15 @@ the repository. For details on the Solution format, see the Microsoft reference 
 
 ## False positive detection **(ULTIMATE)**
 
-> Introduced in GitLab 14.2.
+> - Introduced for Ruby in GitLab 14.2.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/378622) for Go in GitLab 15.8.
 
-Vulnerabilities that have been detected and are false positives will be flagged as false positives in the security dashboard.
+GitLab SAST can identify certain types of false positive results in the output of other tools.
+These results are flagged as false positives on the [Vulnerability Report](../vulnerability_report/index.md) and the [Vulnerability Page](../vulnerabilities/index.md).
 
 False positive detection is available in a subset of the [supported languages](#supported-languages-and-frameworks) and [analyzers](analyzers.md):
 
+- Go, in the Semgrep-based analyzer
 - Ruby, in the Brakeman-based analyzer
 
 ![SAST false-positives show in Vulnerability Pages](img/sast_vulnerability_page_fp_detection_v15_2.png)
@@ -168,7 +171,7 @@ GitLab SAST uses an advanced vulnerability tracking algorithm to more accurately
 Advanced vulnerability tracking is available in a subset of the [supported languages](#supported-languages-and-frameworks) and [analyzers](analyzers.md):
 
 - C, in the Semgrep-based analyzer only
-- Go, in the Gosec- and Semgrep-based analyzers
+- Go, in the Semgrep-based analyzer only
 - Java, in the Semgrep-based analyzer only
 - JavaScript, in the Semgrep-based analyzer only
 - Python, in the Semgrep-based analyzer only
@@ -178,9 +181,23 @@ Support for more languages and analyzers is tracked in [this epic](https://gitla
 
 For more information, see the confidential project `https://gitlab.com/gitlab-org/security-products/post-analyzers/tracking-calculator`. The content of this project is available only to GitLab team members.
 
+## Automatic vulnerability resolution
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368284) in GitLab 15.9 [with a project-level flag](../../../administration/feature_flags.md) named `sec_mark_dropped_findings_as_resolved`. Enabled by default on GitLab.com; disabled by default in self-managed. On GitLab.com, [contact Support](https://about.gitlab.com/support/) if you need to disable the flag for your project.
+
+To help you focus on the vulnerabilities that are still relevant, GitLab SAST automatically [resolves](../vulnerabilities/index.md#vulnerability-status-values) vulnerabilities when:
+
+- You [disable a predefined rule](customize_rulesets.md#disable-predefined-rules).
+- We remove a rule from the default ruleset.
+
+Automatic resolution is available only for findings from the [Semgrep-based analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep).
+The Vulnerability Management system leaves a comment on automatically-resolved vulnerabilities so you still have a historical record of the vulnerability.
+
+If you re-enable the rule later, the findings are reopened for triage.
+
 ## Supported distributions
 
-The default scanner images are build off a base Alpine image for size and maintainability.
+The default scanner images are built on a base Alpine image for size and maintainability.
 
 ### FIPS-enabled images
 
@@ -350,13 +367,13 @@ To override the automatic update behavior, set the `SAST_ANALYZER_IMAGE_TAG` CI/
 in your CI/CD configuration file after you include the [`SAST.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/SAST.gitlab-ci.yml).
 
 Only set this variable within a specific job.
-If you set it [at the top level](../../../ci/variables/index.md#define-a-cicd-variable-in-the-gitlab-ciyml-file), the version you set will be used for other SAST analyzers.
+If you set it [at the top level](../../../ci/variables/index.md#define-a-cicd-variable-in-the-gitlab-ciyml-file), the version you set is used for other SAST analyzers.
 
 You can set the tag to:
 
-- A major version, like `3`. Your pipelines will use any minor or patch updates that are released within this major version.
-- A minor version, like `3.7`. Your pipelines will use any patch updates that are released within this minor version.
-- A patch version, like `3.7.0`. Your pipelines won't receive any updates.
+- A major version, like `3`. Your pipelines use any minor or patch updates that are released within this major version.
+- A minor version, like `3.7`. Your pipelines use any patch updates that are released within this minor version.
+- A patch version, like `3.7.0`. Your pipelines don't receive any updates.
 
 This example uses a specific minor version of the `semgrep` analyzer and a specific patch version of the `brakeman` analyzer:
 
@@ -552,7 +569,7 @@ Some analyzers make it possible to filter out vulnerabilities under a given thre
 
 | CI/CD variable               | Default value            | Description                                                                                                                                                                                                                 |
 |------------------------------|--------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `SAST_EXCLUDED_PATHS`        | `spec, test, tests, tmp` | Exclude vulnerabilities from output based on the paths. This is a comma-separated list of patterns. Patterns can be globs (see [`doublestar.Match`](https://pkg.go.dev/github.com/bmatcuk/doublestar/v4@v4.0.2#Match) for supported patterns), or file or folder paths (for example, `doc,spec`). Parent directories also match patterns. You might need to exclude temporary directories used by your build tool as these can generate false positives. To exclude paths, copy and paste the default excluded paths, then **add** your own paths to be excluded. If you don't specify the default excluded paths, you will override the defaults and _only_ paths you specify will be excluded from the SAST scans. |
+| `SAST_EXCLUDED_PATHS`        | `spec, test, tests, tmp` | Exclude vulnerabilities from output based on the paths. This is a comma-separated list of patterns. Patterns can be globs (see [`doublestar.Match`](https://pkg.go.dev/github.com/bmatcuk/doublestar/v4@v4.0.2#Match) for supported patterns), or file or folder paths (for example, `doc,spec`). Parent directories also match patterns. You might need to exclude temporary directories used by your build tool as these can generate false positives. To exclude paths, copy and paste the default excluded paths, then **add** your own paths to be excluded. If you don't specify the default excluded paths, you override the defaults and _only_ paths you specify are excluded from the SAST scans. |
 | `SEARCH_MAX_DEPTH`           | 4                        | SAST searches the repository to detect the programming languages used, and selects the matching analyzers. Set the value of `SEARCH_MAX_DEPTH` to specify how many directory levels the search phase should span. After the analyzers have been selected, the _entire_ repository is analyzed. |
 | `SAST_BANDIT_EXCLUDED_PATHS` |                          | Comma-separated list of paths to exclude from scan. Uses Python's [`fnmatch` syntax](https://docs.python.org/2/library/fnmatch.html); For example: `'*/tests/*, */venv/*'`. [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/352554) in GitLab 15.4. |
 | `SAST_BRAKEMAN_LEVEL`        | 1                        | Ignore Brakeman vulnerabilities under given confidence level. Integer, 1=Low 3=High.                                                                                                                                        |
@@ -787,6 +804,11 @@ GitLab SAST [analyzers](analyzers.md) are released as container images.
 If you're seeing a new error that doesn't appear to be related to [the GitLab-managed SAST CI/CD template](#configure-sast-in-your-cicd-yaml) or changes in your own project, you can try [pinning the affected analyzer to a specific older version](#pinning-to-minor-image-version).
 
 Each [analyzer project](analyzers.md#sast-analyzers) has a `CHANGELOG.md` file listing the changes made in each available version.
+
+### `exec /bin/sh: exec format error` message in job log
+
+GitLab SAST analyzers [only support](#requirements) running on the `amd64` CPU architecture.
+This message indicates that the job is being run on a different architecture, such as `arm`.
 
 ### `Error response from daemon: error processing tar file: docker-tar: relocation error`
 

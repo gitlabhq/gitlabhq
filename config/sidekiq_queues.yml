@@ -67,6 +67,8 @@
   - 2
 - - auto_merge
   - 3
+- - automation_execute_rule
+  - 1
 - - background_migration
   - 1
 - - background_migration_ci_database
@@ -90,6 +92,8 @@
 - - ci_batch_reset_minutes
   - 1
 - - ci_cancel_pipeline
+  - 1
+- - ci_cancel_redundant_pipelines
   - 1
 - - ci_delete_objects
   - 1
@@ -211,6 +215,8 @@
   - 1
 - - gitlab_shell
   - 2
+- - gitlab_subscriptions_refresh_seats
+  - 1
 - - gitlab_subscriptions_trials_apply_trial
   - 1
 - - google_cloud_create_cloudsql_instance
@@ -332,6 +338,8 @@
 - - metrics_dashboard_sync_dashboards
   - 1
 - - migrate_external_diffs
+  - 1
+- - namespaces_free_user_cap_over_limit_notification
   - 1
 - - namespaces_process_sync_events
   - 1
@@ -540,4 +548,6 @@
 - - wikis_git_garbage_collect
   - 1
 - - x509_certificate_revoke
+  - 1
+- - zoekt_indexer
   - 1

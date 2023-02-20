@@ -88,24 +88,19 @@ module Projects
 
       # rubocop: disable CodeReuse/ActiveRecord
       def define_protected_refs
-        @protected_branches = @project.protected_branches.order(:name).page(params[:page])
+        @protected_branches = fetch_protected_branches(@project)
         @protected_tags = @project.protected_tags.order(:name).page(params[:page])
         @protected_branch = @project.protected_branches.new
         @protected_tag = @project.protected_tags.new
 
         @protected_tags_count = @protected_tags.reduce(0) { |sum, tag| sum + tag.matching(@project.repository.tag_names).size }
-
-        if Feature.enabled?(:group_protected_branches)
-          @protected_group_branches = if @project.root_namespace.is_a?(Group)
-                                        @project.root_namespace.protected_branches.order(:name).page(params[:page])
-                                      else
-                                        []
-                                      end
-        end
-
         load_gon_index
       end
       # rubocop: enable CodeReuse/ActiveRecord
+
+      def fetch_protected_branches(project)
+        project.protected_branches.sorted_by_name.page(params[:page])
+      end
 
       def remote_mirror
         @remote_mirror = project.remote_mirrors.first_or_initialize

@@ -13,6 +13,7 @@ end
 module Host
   DEFAULT_OPTIONS = {
     instance_base_url: ENV['CI_SERVER_URL'],
-    mr_id: ENV['CI_MERGE_REQUEST_ID']
+    target_project: ENV['CI_MERGE_REQUEST_PROJECT_ID'],
+    mr_iid: ENV['CI_MERGE_REQUEST_IID']
   }.freeze
 end

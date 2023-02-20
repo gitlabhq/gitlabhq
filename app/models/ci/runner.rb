@@ -15,6 +15,8 @@ module Ci
     include EachBatch
     include Ci::HasRunnerExecutor
 
+    extend ::Gitlab::Utils::Override
+
     add_authentication_token_field :token, encrypted: :optional, expires_at: :compute_token_expiration
 
     enum access_level: {
@@ -27,6 +29,14 @@ module Ci
       group_type: 2,
       project_type: 3
     }
+
+    enum registration_type: {
+      registration_token: 0,
+      authenticated_user: 1
+    }, _suffix: true
+
+    # Prefix assigned to runners created from the UI, instead of registered via the command line
+    CREATED_RUNNER_TOKEN_PREFIX = 'glrt-'
 
     # This `ONLINE_CONTACT_TIMEOUT` needs to be larger than
     #   `RUNNER_QUEUE_EXPIRY_TIME+UPDATE_CONTACT_COLUMN_EVERY`
@@ -179,6 +189,7 @@ module Ci
     validate :tag_constraints
     validates :access_level, presence: true
     validates :runner_type, presence: true
+    validates :registration_type, presence: true
 
     validate :no_projects, unless: :project_type?
     validate :no_groups, unless: :group_type?
@@ -373,7 +384,10 @@ module Ci
     end
 
     def short_sha
-      token[0...8] if token
+      return unless token
+
+      start_index = authenticated_user_registration_type? ? CREATED_RUNNER_TOKEN_PREFIX.length : 0
+      token[start_index..start_index + 8]
     end
 
     def tag_list
@@ -474,6 +488,17 @@ module Ci
       end
     end
 
+    override :format_token
+    def format_token(token)
+      return token if registration_token_registration_type?
+
+      "#{CREATED_RUNNER_TOKEN_PREFIX}#{token}"
+    end
+
+    def ensure_machine(system_xid, &blk)
+      RunnerMachine.safe_find_or_create_by!(runner_id: id, system_xid: system_xid.to_s, &blk) # rubocop: disable Performance/ActiveRecordSubtransactionMethods
+    end
+
     private
 
     scope :with_upgrade_status, ->(upgrade_status) do
@@ -566,6 +591,9 @@ module Ci
       end
     end
 
+    # TODO Remove in 16.0 when runners are known to send a system_id
+    # For now, heartbeats with version updates might result in two Sidekiq jobs being queued if a runner has a system_id
+    # This is not a problem since the jobs are deduplicated on the version
     def schedule_runner_version_update
       return unless version
 

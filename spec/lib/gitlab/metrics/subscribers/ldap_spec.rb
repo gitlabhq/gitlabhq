@@ -101,11 +101,11 @@ RSpec.describe Gitlab::Metrics::Subscribers::Ldap, :request_store, feature_categ
 
     it "tracks LDAP request duration" do
       expect(transaction).to receive(:observe)
-        .with(:gitlab_net_ldap_duration_seconds, 0.321, { name: "open" })
+        .with(:gitlab_net_ldap_duration_seconds, 0.000321, { name: "open" })
       expect(transaction).to receive(:observe)
-        .with(:gitlab_net_ldap_duration_seconds, 0.12, { name: "search" })
+        .with(:gitlab_net_ldap_duration_seconds, 0.00012, { name: "search" })
       expect(transaction).to receive(:observe)
-        .with(:gitlab_net_ldap_duration_seconds, 5.3, { name: "search" })
+        .with(:gitlab_net_ldap_duration_seconds, 0.0053, { name: "search" })
 
       subscriber.observe_event(event_1)
       subscriber.observe_event(event_2)
@@ -118,7 +118,7 @@ RSpec.describe Gitlab::Metrics::Subscribers::Ldap, :request_store, feature_categ
       subscriber.observe_event(event_3)
 
       expect(Gitlab::SafeRequestStore[:net_ldap_count]).to eq(3)
-      expect(Gitlab::SafeRequestStore[:net_ldap_duration_s]).to eq(5.741) # 0.321 + 0.12 + 5.3
+      expect(Gitlab::SafeRequestStore[:net_ldap_duration_s]).to eq(0.005741) # (0.321 + 0.12 + 5.3) / 1000
     end
   end
 end

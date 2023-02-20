@@ -9,20 +9,39 @@ module Ci
       @pipeline_schedules = project.pipeline_schedules
     end
 
-    # rubocop: disable CodeReuse/ActiveRecord
-    def execute(scope: nil)
-      scoped_schedules =
-        case scope
-        when 'active'
-          pipeline_schedules.active
-        when 'inactive'
-          pipeline_schedules.inactive
-        else
-          pipeline_schedules
-        end
+    def execute(scope: nil, ids: nil)
+      items = pipeline_schedules
+      items = by_ids(items, ids)
+      items = by_scope(items, scope)
 
-      scoped_schedules.order(id: :desc)
+      sort_items(items)
     end
-    # rubocop: enable CodeReuse/ActiveRecord
+
+    private
+
+    def by_ids(items, ids)
+      if ids.present?
+        items.id_in(ids)
+      else
+        items
+      end
+    end
+
+    def by_scope(items, scope)
+      case scope
+      when 'active'
+        items.active
+      when 'inactive'
+        items.inactive
+      else
+        items
+      end
+    end
+
+    # rubocop:disable CodeReuse/ActiveRecord
+    def sort_items(items)
+      items.order(id: :desc)
+    end
+    # rubocop:enable CodeReuse/ActiveRecord
   end
 end

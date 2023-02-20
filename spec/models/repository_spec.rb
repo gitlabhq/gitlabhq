@@ -566,16 +566,6 @@ RSpec.describe Repository, feature_category: :source_code_management do
         expect(commit_ids).to include(*expected_commit_ids)
         expect(commit_ids).not_to include('913c66a37b4a45b9769037c55c2d238bd0942d2e')
       end
-
-      context 'when feature flag "commit_search_trailing_spaces" is disabled' do
-        before do
-          stub_feature_flags(commit_search_trailing_spaces: false)
-        end
-
-        it 'returns an empty list' do
-          expect(commit_ids).to be_empty
-        end
-      end
     end
 
     describe 'when storage is broken', :broken_storage do
@@ -1858,6 +1848,8 @@ RSpec.describe Repository, feature_category: :source_code_management do
   end
 
   describe '#expire_root_ref_cache' do
+    let(:project) { create(:project) }
+
     it 'expires the root reference cache' do
       repository.root_ref
 
@@ -1959,6 +1951,40 @@ RSpec.describe Repository, feature_category: :source_code_management do
     end
   end
 
+  describe '#merge_to_branch' do
+    let(:merge_request) do
+      create(:merge_request, source_branch: 'feature', target_branch: project.default_branch, source_project: project)
+    end
+
+    it 'merges two branches and returns the merge commit id' do
+      message = 'New merge commit'
+      merge_commit_id =
+        repository.merge_to_branch(user,
+          source_sha: merge_request.diff_head_sha,
+          target_branch: merge_request.target_branch,
+          target_sha: repository.commit(merge_request.target_branch).sha,
+          message: message)
+
+      expect(repository.commit(merge_commit_id).message).to eq(message)
+      expect(repository.commit(merge_request.target_branch).sha).to eq(merge_commit_id)
+    end
+
+    it 'does not merge if target branch has been changed' do
+      target_sha = project.commit.sha
+
+      repository.create_file(user, 'file.txt', 'CONTENT', message: 'Add file', branch_name: project.default_branch)
+
+      merge_commit_id =
+        repository.merge_to_branch(user,
+          source_sha: merge_request.diff_head_sha,
+          target_branch: merge_request.target_branch,
+          target_sha: target_sha,
+          message: 'New merge commit')
+
+      expect(merge_commit_id).to be_nil
+    end
+  end
+
   describe '#merge_to_ref' do
     let(:merge_request) do
       create(:merge_request, source_branch: 'feature',
@@ -1985,15 +2011,20 @@ RSpec.describe Repository, feature_category: :source_code_management do
   end
 
   describe '#ff_merge' do
+    let(:target_branch) { 'ff-target' }
+    let(:merge_request) do
+      create(:merge_request, source_branch: 'feature', target_branch: target_branch, source_project: project)
+    end
+
     before do
-      repository.add_branch(user, 'ff-target', 'feature~5')
+      repository.add_branch(user, target_branch, 'feature~5')
     end
 
     it 'merges the code and return the commit id' do
-      merge_request = create(:merge_request, source_branch: 'feature', target_branch: 'ff-target', source_project: project)
       merge_commit_id = repository.ff_merge(user,
                                             merge_request.diff_head_sha,
                                             merge_request.target_branch,
+                                            target_sha: repository.commit(merge_request.target_branch).sha,
                                             merge_request: merge_request)
       merge_commit = repository.commit(merge_commit_id)
 
@@ -2002,13 +2033,23 @@ RSpec.describe Repository, feature_category: :source_code_management do
     end
 
     it 'sets the `in_progress_merge_commit_sha` flag for the given merge request' do
-      merge_request = create(:merge_request, source_branch: 'feature', target_branch: 'ff-target', source_project: project)
       merge_commit_id = repository.ff_merge(user,
                                             merge_request.diff_head_sha,
                                             merge_request.target_branch,
+                                            target_sha: repository.commit(merge_request.target_branch).sha,
                                             merge_request: merge_request)
 
       expect(merge_request.in_progress_merge_commit_sha).to eq(merge_commit_id)
+    end
+
+    it 'does not merge if target branch has been changed' do
+      target_sha = project.commit(target_branch).sha
+
+      repository.create_file(user, 'file.txt', 'CONTENT', message: 'Add file', branch_name: target_branch)
+
+      merge_commit_id = repository.ff_merge(user, merge_request.diff_head_sha, target_branch, target_sha: target_sha)
+
+      expect(merge_commit_id).to be_nil
     end
   end
 
@@ -2580,17 +2621,17 @@ RSpec.describe Repository, feature_category: :source_code_management do
 
     it 'returns the first avatar file found in the repository' do
       expect(repository).to receive(:file_on_head)
-        .with(:avatar)
-        .and_return(double(:tree, path: 'logo.png'))
+                              .with(:avatar)
+                              .and_return(double(:tree, path: 'logo.png'))
 
       expect(repository.avatar).to eq('logo.png')
     end
 
     it 'caches the output' do
       expect(repository).to receive(:file_on_head)
-        .with(:avatar)
-        .once
-        .and_return(double(:tree, path: 'logo.png'))
+                              .with(:avatar)
+                              .once
+                              .and_return(double(:tree, path: 'logo.png'))
 
       2.times { expect(repository.avatar).to eq('logo.png') }
     end
@@ -2718,24 +2759,10 @@ RSpec.describe Repository, feature_category: :source_code_management do
         end
 
         it 'caches the response' do
-          expect(repository).to receive(:search_files_by_regexp).and_call_original.once
+          expect(repository.head_tree).to receive(:readme_path).and_call_original.once
 
           2.times do
             expect(repository.readme_path).to eq("README.md")
-          end
-        end
-
-        context 'when "readme_from_gitaly" FF is disabled' do
-          before do
-            stub_feature_flags(readme_from_gitaly: false)
-          end
-
-          it 'caches the response' do
-            expect(repository.head_tree).to receive(:readme_path).and_call_original.once
-
-            2.times do
-              expect(repository.readme_path).to eq("README.md")
-            end
           end
         end
       end
@@ -2803,7 +2830,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
 
     context 'with a non-existing repository' do
       it 'returns nil' do
-        expect(repository).to receive(:head_commit).and_return(nil)
+        expect(repository).to receive(:root_ref).and_return(nil)
 
         expect(repository.head_tree).to be_nil
       end
@@ -2820,7 +2847,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
 
     context 'using a non-existing repository' do
       before do
-        allow(repository).to receive(:head_commit).and_return(nil)
+        allow(repository).to receive(:root_ref).and_return(nil)
       end
 
       it { is_expected.to be_nil }

@@ -24,6 +24,8 @@ class SearchController < ApplicationController
 
   before_action :block_anonymous_global_searches, :check_scope_global_search_enabled, except: :opensearch
   skip_before_action :authenticate_user!
+  skip_before_action :default_cache_headers, only: :count
+
   requires_cross_project_access if: -> do
     search_term_present = params[:search].present? || params[:term].present?
     search_term_present && !params[:project_id].present?
@@ -31,7 +33,7 @@ class SearchController < ApplicationController
   before_action :check_search_rate_limit!, only: search_rate_limited_endpoints
 
   before_action only: :show do
-    push_frontend_feature_flag(:search_page_vertical_nav, current_user)
+    push_frontend_feature_flag(:search_blobs_language_aggregation, current_user)
   end
   before_action only: :show do
     update_scope_for_code_search
@@ -64,6 +66,8 @@ class SearchController < ApplicationController
       @search_objects = @search_service_presenter.search_objects
       @search_highlight = @search_service_presenter.search_highlight
     end
+
+    return if @search_results.respond_to?(:failed?) && @search_results.failed?
 
     Gitlab::Metrics::GlobalSearchSlis.record_apdex(
       elapsed: @global_search_duration_s,

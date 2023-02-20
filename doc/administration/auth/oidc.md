@@ -29,7 +29,9 @@ The OpenID Connect provides you with a client's details and secret for you to us
    sudo -u git -H editor config/gitlab.yml
    ```
 
-1. [Configure initial settings](../../integration/omniauth.md#configure-initial-settings).
+1. Edit the [common configuration file settings](../../integration/omniauth.md#configure-common-settings)
+   to add `openid_connect` as a single sign-on provider. This enables Just-In-Time
+   account provisioning for users who do not have an existing GitLab account.
 
 1. Add the provider configuration.
 
@@ -50,6 +52,7 @@ The OpenID Connect provides you with a client's details and secret for you to us
          client_auth_method: "query",
          uid_field: "<uid_field>",
          send_scope_to_token_endpoint: "false",
+         pkce: true,
          client_options: {
            identifier: "<your_oidc_client_id>",
            secret: "<your_oidc_client_secret>",
@@ -75,6 +78,7 @@ The OpenID Connect provides you with a client's details and secret for you to us
            client_auth_method: 'query',
            uid_field: '<uid_field>',
            send_scope_to_token_endpoint: false,
+           pkce: true,
            client_options: {
              identifier: '<your_oidc_client_id>',
              secret: '<your_oidc_client_secret>',
@@ -118,9 +122,10 @@ The OpenID Connect provides you with a client's details and secret for you to us
      If you do not provide this value, or the field with the configured value is missing
      from the `user_info.raw_attributes` details, `uid` uses the `sub` field.
    - `send_scope_to_token_endpoint` is `true` by default, so the `scope` parameter
-     is normally included in requests to the token endpoint.
+     is usually included in requests to the token endpoint.
      However, if your OpenID Connect provider does not accept the `scope` parameter
      in such requests, set this to `false`.
+   - `pkce` (optional): Enable [Proof Key for Code Exchange](https://www.rfc-editor.org/rfc/rfc766). Available in [GitLab 15.9](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/109557).
    - `client_options` are the OpenID Connect client-specific options. Specifically:
      - `identifier` is the client identifier as configured in the OpenID Connect service provider.
      - `secret` is the client secret as configured in the OpenID Connect service provider. For example,
@@ -170,6 +175,7 @@ gitlab_rails['omniauth_providers'] = [
       client_auth_method: "query",
       discovery: true,
       uid_field: "preferred_username",
+      pkce: true,
       client_options: {
         identifier: "<YOUR PROJECT CLIENT ID>",
         secret: "<YOUR PROJECT CLIENT SECRET>",
@@ -207,6 +213,7 @@ gitlab_rails['omniauth_providers'] = [
       client_auth_method: "query",
       discovery: true,
       uid_field: "preferred_username",
+      pkce: true,
       client_options: {
         identifier: "<YOUR APP CLIENT ID>",
         secret: "<YOUR APP CLIENT SECRET>",
@@ -254,7 +261,7 @@ Azure B2C [offers two ways of defining the business logic for logging in a user]
 Custom policies are required because standard Azure B2C user flows
 [do not send the OpenID `email` claim](https://github.com/MicrosoftDocs/azure-docs/issues/16566).
 Therefore, the standard user flows do not work with the
-[`allow_single_sign_on` or `auto_link_user` parameters](../../integration/omniauth.md#configure-initial-settings).
+[`allow_single_sign_on` or `auto_link_user` parameters](../../integration/omniauth.md#configure-common-settings).
 With a standard Azure B2C policy, GitLab cannot create a new account or
 link to an existing account with an email address.
 
@@ -339,6 +346,7 @@ but `LocalAccounts` authenticates against local Active Directory accounts. Befor
        client_auth_method: "query",
        discovery: true,
        send_scope_to_token_endpoint: true,
+       pkce: true,
        client_options: {
          identifier: "<YOUR APP CLIENT ID>",
          secret: "<YOUR APP CLIENT SECRET>",
@@ -356,7 +364,7 @@ but `LocalAccounts` authenticates against local Active Directory accounts. Befor
   Ensure the payload includes `email` that matches the user's email access.
 - After you enable the custom policy, users might see `Invalid username or password`
   after they try to sign in. This might be a configuration issue with the `IdentityExperienceFramework`
-  app. See [this Microsoft comment](https://learn.microsoft.com/en-us/answers/questions/50355/unable-to-sign-on-using-custom-policy.html?childToView=122370#comment-122370) that suggests you check that the app manifest
+  app. See [this Microsoft comment](https://learn.microsoft.com/en-us/answers/questions/50355/unable-to-sign-on-using-custom-policy?childtoview=122370#comment-122370) that suggests you check that the app manifest
   contains these settings:
 
   - `"accessTokenAcceptedVersion": null`
@@ -393,10 +401,11 @@ gitlab_rails['omniauth_providers'] = [
       name: "openid_connect",
       scope: ["openid", "profile", "email"],
       response_type: "code",
-      issuer:  "https://keycloak.example.com/auth/realms/myrealm",
+      issuer:  "https://keycloak.example.com/realms/myrealm",
       client_auth_method: "query",
       discovery: true,
       uid_field: "preferred_username",
+      pkce: true,
       client_options: {
         identifier: "<YOUR CLIENT ID>",
         secret: "<YOUR CLIENT SECRET>",
@@ -477,6 +486,7 @@ To use symmetric key encryption:
          discovery: true,
          uid_field: "preferred_username",
          jwt_secret_base64: "<YOUR BASE64-ENCODED SECRET>",
+         pkce: true,
          client_options: {
            identifier: "<YOUR CLIENT ID>",
            secret: "<YOUR CLIENT SECRET>",

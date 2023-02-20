@@ -9,8 +9,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13203) in GitLab 12.4.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/42640) from GitLab Ultimate to GitLab Free in 12.8.
 
-GitLab can accept alerts from any source via a webhook receiver. This can be configured
-generically.
+GitLab can accept alerts from any source via a webhook receiver. [Alert notifications](alerts.md)
+can [trigger paging](paging.md#paging) for on-call rotations or be used to [create incidents](manage_incidents.md#from-an-alert).
 
 ## Integrations list
 
@@ -89,7 +89,7 @@ GitLab fields when you [create an HTTP endpoint](#http-endpoints):
 ## Customize the alert payload outside of GitLab
 
 For HTTP Endpoints without [custom mappings](#map-fields-in-custom-alerts), you can customize the payload by sending the following
-parameters. All fields are optional. If the incoming alert does not contain a value for the `Title` field, a default value of `New: Alert` will be applied.
+parameters. All fields are optional. If the incoming alert does not contain a value for the `Title` field, a default value of `New: Alert` is applied.
 
 | Property                  | Type            | Description |
 | ------------------------- | --------------- | ----------- |
@@ -135,6 +135,175 @@ Example payload:
       "baz": 42
     }
   }
+}
+```
+
+### Prometheus endpoint
+
+Prerequisites:
+
+- You must have at least the Maintainer role for the project.
+
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > Monitor**.
+1. Expand the **Alerts** section, and select **Add new integration**.
+1. From the **Select integration type** dropdown list, select **Prometheus**.
+1. Turn on the **Active** toggle.
+1. Enter the **Prometheus API base URL**.
+   You should enter a placeholder URL. The features which use this field are [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/346541) and [scheduled for removal](https://gitlab.com/gitlab-org/gitlab/-/issues/379252) in GitLab 16.0.
+1. Select **Save integration**.
+
+The URL and authorization key for the webhook configuration
+are available in the **View credentials** tab.
+
+Enter the URL and authorization key in your external service.
+You can also send a test alert from your integration's
+[**Send test alert**](#triggering-test-alerts) tab.
+
+#### Add integration credentials to Prometheus Alertmanager
+
+To send Prometheus alert notifications to GitLab, copy the URL and authorization key from
+your [Prometheus integration](#prometheus-endpoint) into the
+[`webhook_configs`](https://prometheus.io/docs/alerting/latest/configuration/#webhook_config)
+section of the Prometheus Alertmanager configuration:
+
+```yaml
+receivers:
+  - name: gitlab
+    webhook_configs:
+      - http_config:
+          authorization:
+            type: Bearer
+            credentials: 1234567890abdcdefg
+        send_resolved: true
+        url: http://IP_ADDRESS:PORT/root/manual_prometheus/prometheus/alerts/notify.json
+        # Rest of configuration omitted
+        # ...
+```
+
+#### Expected request attributes
+
+Alerts are expected to be formatted for a Prometheus [webhook receiver](https://prometheus.io/docs/alerting/latest/configuration/#webhook_config).
+
+Top-level required attributes:
+
+- `alerts`
+- `commonAnnotations`
+- `commonLabels`
+- `externalURL`
+- `groupKey`
+- `groupLabels`
+- `receiver`
+- `status`
+- `version`
+
+From `alerts` in the Prometheus payload, a GitLab alert is created for each item in the array.
+You can alter the nested parameters listed below to configure the GitLab alert.
+
+| Attribute                                                                  | Type     | Required | Description                          |
+| -------------------------------------------------------------------------- | -------- | -------- | ------------------------------------ |
+| One of `annotations/title`, `annotations/summary`, or `labels/alertname`   | String   | Yes      | The title of the alert.              |
+| `startsAt`                                                                 | DateTime | Yes      | The start time of the alert.         |
+| `annotations/description`                                                  | String   | No       | A high-level summary of the problem. |
+| `annotations/gitlab_incident_markdown`                                     | String   | No       | [GitLab Flavored Markdown](../../user/markdown.md) to be appended to any incident created from the alert. |
+| `annotations/runbook`                                                      | String   | No       | Link to documentation or instructions for how to manage this alert. |
+| `endsAt`                                                                   | DateTime | No       | The resolution time of the alert.    |
+| `g0.expr` query parameter in `generatorUrl`                                | String   | No       | Query of associated metric.          |
+| `labels/gitlab_environment_name`                                           | String   | No       | The name of the associated GitLab [environment](../../ci/environments/index.md). Required to [display alerts on a dashboard](../../user/operations_dashboard/index.md#adding-a-project-to-the-dashboard). |
+| `labels/severity`                                                          | String   | No       | Severity of the alert. Should be one of the [Prometheus severity options](#prometheus-severity-options). Defaults to `critical` if missing or value is not in this list. |
+| `status`                                                                   | String   | No       | Status of the alert in Prometheus. If value is 'resolved', the alert is resolved. |
+| One of `annotations/gitlab_y_label`,  `annotations/title`, `annotations/summary`, or `labels/alertname` | String | No | The Y-Axis label to be used when embedding the metrics for this alert in [GitLab Flavored Markdown](../../user/markdown.md). |
+
+Additional attributes included under `annotations` are available on
+the [alert details page](alerts.md#alert-details-page). Any other attributes are ignored.
+
+Attributes aren't limited to primitive types (such as strings or numbers), but
+can be a nested JSON object. For example:
+
+```json
+{
+    "target": {
+        "user": {
+            "id": 42
+        }
+    }
+}
+```
+
+NOTE:
+Ensure your requests are smaller than the
+[payload application limits](../../administration/instance_limits.md#generic-alert-json-payloads).
+
+#### Prometheus severity options
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/50871) in GitLab 13.9
+
+Alerts from Prometheus can provide any of the case-insensitive follow values for [alert severity](../incident_management/alerts.md#alert-severity):
+
+- **Critical**: `critical`, `s1`, `p1`, `emergency`, `fatal`
+- **High**: `high`, `s2`, `p2`, `major`, `page`
+- **Medium**: `medium`, `s3`, `p3`, `error`, `alert`
+- **Low**: `low`, `s4`, `p4`, `warn`, `warning`
+- **Info**: `info`, `s5`, `p5`, `debug`, `information`, `notice`
+
+The severity defaults to `critical` if the value is missing or not in this list.
+
+#### Example Prometheus alert
+
+Example alerting rule:
+
+```yaml
+groups:
+- name: example
+  rules:
+  - alert: ServiceDown
+    expr: up == 0
+    for: 5m
+    labels:
+      severity: high
+    annotations:
+      title: "Example title"
+      runbook: "http://example.com/my-alert-runbook"
+      description: "Service has been down for more than 5 minutes."
+      gitlab_y_label: "y-axis label"
+      foo:
+        bar:
+          baz: 42
+```
+
+Example request payload:
+
+```json
+{
+  "version" : "4",
+  "groupKey": null,
+  "status": "firing",
+  "receiver": "",
+  "groupLabels": {},
+  "commonLabels": {},
+  "commonAnnotations": {},
+  "externalURL": "",
+  "alerts": [{
+    "startsAt": "2022-010-30T11:22:40Z",
+    "generatorURL": "http://host?g0.expr=up",
+    "endsAt": null,
+    "status": "firing",
+    "labels": {
+      "gitlab_environment_name": "production",
+      "severity": "high"
+    },
+    "annotations": {
+      "title": "Example title",
+      "runbook": "http://example.com/my-alert-runbook",
+      "description": "Service has been down for more than 5 minutes.",
+      "gitlab_y_label": "y-axis label",
+      "foo": {
+        "bar": {
+          "baz": 42
+        }
+      }
+    }
+  }]
 }
 ```
 
@@ -244,7 +413,7 @@ If the existing alert is already `resolved`, GitLab creates a new alert instead.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13402) in GitLab 13.4.
 
-The alert in GitLab will be automatically resolved when an HTTP Endpoint
+The alert in GitLab is automatically resolved when an HTTP Endpoint
 receives a payload with the end time of the alert set. For HTTP Endpoints
 without [custom mappings](#map-fields-in-custom-alerts), the expected
 field is `end_time`. With custom mappings, you can select the expected field.

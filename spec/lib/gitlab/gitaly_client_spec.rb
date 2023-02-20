@@ -155,11 +155,41 @@ RSpec.describe Gitlab::GitalyClient, feature_category: :gitaly do
       expect(described_class.stub_creds('default')).to eq(:this_channel_is_insecure)
     end
 
+    it 'returns :this_channel_is_insecure if dns' do
+      address = 'dns:///localhost:9876'
+      stub_repos_storages address
+
+      expect(described_class.stub_creds('default')).to eq(:this_channel_is_insecure)
+    end
+
+    it 'returns :this_channel_is_insecure if dns (short-form)' do
+      address = 'dns:localhost:9876'
+      stub_repos_storages address
+
+      expect(described_class.stub_creds('default')).to eq(:this_channel_is_insecure)
+    end
+
+    it 'returns :this_channel_is_insecure if dns (with authority)' do
+      address = 'dns://1.1.1.1/localhost:9876'
+      stub_repos_storages address
+
+      expect(described_class.stub_creds('default')).to eq(:this_channel_is_insecure)
+    end
+
     it 'returns Credentials object if tls' do
       address = 'tls://localhost:9876'
       stub_repos_storages address
 
       expect(described_class.stub_creds('default')).to be_a(GRPC::Core::ChannelCredentials)
+    end
+
+    it 'raise an exception if the scheme is not supported' do
+      address = 'custom://localhost:9876'
+      stub_repos_storages address
+
+      expect do
+        described_class.stub_creds('default')
+      end.to raise_error(/unsupported Gitaly address/i)
     end
   end
 
@@ -168,7 +198,10 @@ RSpec.describe Gitlab::GitalyClient, feature_category: :gitaly do
       [
         ['default', 'unix:tmp/gitaly.sock', 'unix:tmp/gitaly.sock'],
         ['default', 'tcp://localhost:9876', 'localhost:9876'],
-        ['default', 'tls://localhost:9876', 'localhost:9876']
+        ['default', 'tls://localhost:9876', 'localhost:9876'],
+        ['default', 'dns:///localhost:9876', 'dns:///localhost:9876'],
+        ['default', 'dns:localhost:9876', 'dns:localhost:9876'],
+        ['default', 'dns://1.1.1.1/localhost:9876', 'dns://1.1.1.1/localhost:9876']
       ]
     end
 
@@ -287,6 +320,43 @@ RSpec.describe Gitlab::GitalyClient, feature_category: :gitaly do
         stub_blob = described_class.stub(:blob_service, 'default')
 
         expect(stub_commit).to have_same_channel(stub_blob)
+      end
+    end
+
+    context 'when passed a DNS address' do
+      let(:address) { 'dns:///localhost:9876' }
+
+      before do
+        stub_repos_storages address
+      end
+
+      it 'strips dns:/// prefix before passing it to GRPC::Core::Channel initializer' do
+        expect(Gitaly::CommitService::Stub).to receive(:new).with(
+          address, nil, channel_override: be_a(GRPC::Core::Channel), interceptors: []
+        )
+
+        described_class.stub(:commit_service, 'default')
+      end
+
+      it 'shares the same channel object with other stub' do
+        stub_commit = described_class.stub(:commit_service, 'default')
+        stub_blob = described_class.stub(:blob_service, 'default')
+
+        expect(stub_commit).to have_same_channel(stub_blob)
+      end
+    end
+
+    context 'when passed an unsupported scheme' do
+      let(:address) { 'custom://localhost:9876' }
+
+      before do
+        stub_repos_storages address
+      end
+
+      it 'strips dns:/// prefix before passing it to GRPC::Core::Channel initializer' do
+        expect do
+          described_class.stub(:commit_service, 'default')
+        end.to raise_error(/Unsupported Gitaly address/i)
       end
     end
   end

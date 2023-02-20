@@ -52,6 +52,7 @@ export default () => {
     store,
     provide: {
       showTimelineViewToggle,
+      reportAbusePath: notesDataset.reportAbusePath,
     },
     data() {
       return {

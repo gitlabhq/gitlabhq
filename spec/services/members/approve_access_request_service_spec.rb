@@ -30,6 +30,14 @@ RSpec.describe Members::ApproveAccessRequestService do
       expect(member.requested_at).to be_nil
     end
 
+    it 'calls the method to resolve access request for the approver' do
+      expect_next_instance_of(described_class) do |instance|
+        expect(instance).to receive(:resolve_access_request_todos).with(current_user, access_requester)
+      end
+
+      described_class.new(current_user, params).execute(access_requester, **opts)
+    end
+
     context 'with a custom access level' do
       let(:params) { { access_level: custom_access_level } }
 

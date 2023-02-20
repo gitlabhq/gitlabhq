@@ -3,6 +3,8 @@
 module Projects
   module Ml
     class ExperimentsController < ::Projects::ApplicationController
+      include Projects::Ml::ExperimentsHelper
+
       before_action :check_feature_flag
 
       feature_category :mlops
@@ -11,7 +13,12 @@ module Projects
       MAX_CANDIDATES_PER_PAGE = 30
 
       def index
-        @experiments = ::Ml::Experiment.by_project_id(@project.id).page(params[:page]).per(MAX_EXPERIMENTS_PER_PAGE)
+        paginator = ::Ml::Experiment.by_project_id(@project.id)
+                                    .with_candidate_count
+                                    .keyset_paginate(cursor: params[:cursor], per_page: MAX_EXPERIMENTS_PER_PAGE)
+
+        @experiments = paginator.records
+        @page_info = page_info(paginator)
       end
 
       def show
@@ -19,26 +26,17 @@ module Projects
 
         return redirect_to project_ml_experiments_path(@project) unless @experiment.present?
 
-        page = params[:page].to_i
-        page = 1 if page == 0
+        find_params = params
+                        .transform_keys(&:underscore)
+                        .permit(:name, :order_by, :sort, :order_by_type)
 
-        @candidates = @experiment.candidates
-                                 .including_relationships
-                                 .page(page)
-                                 .per(MAX_CANDIDATES_PER_PAGE)
+        paginator = CandidateFinder
+                        .new(@experiment, find_params)
+                        .execute
+                        .keyset_paginate(cursor: params[:cursor], per_page: MAX_CANDIDATES_PER_PAGE)
 
-        return unless @candidates
-
-        return redirect_to(url_for(page: @candidates.total_pages)) if @candidates.out_of_range?
-
-        @pagination = {
-          page: page,
-          is_last_page: @candidates.last_page?,
-          per_page: MAX_CANDIDATES_PER_PAGE,
-          total_items: @candidates.total_count
-        }
-
-        @candidates.each(&:artifact_lazy)
+        @candidates = paginator.records.each(&:artifact_lazy)
+        @page_info = page_info(paginator)
       end
 
       private

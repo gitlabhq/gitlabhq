@@ -9,6 +9,7 @@
     "version",
     "packageType",
     "project",
+    "publicPackage",
     "tags",
     "pipelines",
     "versions",
@@ -31,13 +32,20 @@
       "type": "string"
     },
     "version": {
-      "type": ["string", "null"]
+      "type": [
+        "string",
+        "null"
+      ]
     },
     "canDestroy": {
-      "type": ["boolean"]
+      "type": [
+        "boolean"
+      ]
     },
     "packageType": {
-      "type": ["string"],
+      "type": [
+        "string"
+      ],
       "enum": [
         "MAVEN",
         "NPM",
@@ -56,66 +64,126 @@
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "count": { "type": "integer" },
-        "pageInfo": { "type": "object" },
-        "edges": { "type": "array" },
-        "nodes": { "type": "array" }
+        "count": {
+          "type": "integer"
+        },
+        "pageInfo": {
+          "type": "object"
+        },
+        "edges": {
+          "type": "array"
+        },
+        "nodes": {
+          "type": "array"
+        }
       }
     },
     "project": {
       "type": "object"
     },
+    "publicPackage": {
+      "type": "boolean"
+    },
     "pipelines": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "pageInfo": { "type": "object" },
-        "count": { "type": "integer" },
-        "edges": { "type": "array" },
-        "nodes": { "type": "array" }
+        "pageInfo": {
+          "type": "object"
+        },
+        "count": {
+          "type": "integer"
+        },
+        "edges": {
+          "type": "array"
+        },
+        "nodes": {
+          "type": "array"
+        }
       }
     },
     "versions": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "count": { "type": "integer" },
-        "pageInfo": { "type": "object" },
-        "edges": { "type": "array" },
-        "nodes": { "type": "array" }
+        "count": {
+          "type": "integer"
+        },
+        "pageInfo": {
+          "type": "object"
+        },
+        "edges": {
+          "type": "array"
+        },
+        "nodes": {
+          "type": "array"
+        }
       }
     },
     "metadata": {
       "anyOf": [
-        { "$ref": "./package_composer_metadata.json" },
-        { "$ref": "./package_conan_metadata.json" },
-        { "$ref": "./package_maven_metadata.json" },
-        { "$ref": "./package_nuget_metadata.json" },
-        { "$ref": "./package_pypi_metadata.json" },
-        { "type": "null" }
+        {
+          "$ref": "./package_composer_metadata.json"
+        },
+        {
+          "$ref": "./package_conan_metadata.json"
+        },
+        {
+          "$ref": "./package_maven_metadata.json"
+        },
+        {
+          "$ref": "./package_nuget_metadata.json"
+        },
+        {
+          "$ref": "./package_pypi_metadata.json"
+        },
+        {
+          "type": "null"
+        }
       ]
     },
     "packageFiles": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "count": { "type": "integer" },
-        "pageInfo": { "type": "object" },
-        "edges": { "type": "array" },
-        "nodes": { "type": "array" }
+        "count": {
+          "type": "integer"
+        },
+        "pageInfo": {
+          "type": "object"
+        },
+        "edges": {
+          "type": "array"
+        },
+        "nodes": {
+          "type": "array"
+        }
       }
     },
     "status": {
-      "type": ["string"],
-      "enum": ["DEFAULT", "HIDDEN", "PROCESSING", "ERROR"]
+      "type": [
+        "string"
+      ],
+      "enum": [
+        "DEFAULT",
+        "HIDDEN",
+        "PROCESSING",
+        "ERROR"
+      ]
     },
     "dependencyLinks": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "pageInfo": { "type": "object" },
-        "edges": { "type": "array" },
-        "count": { "type": "integer" },
+        "pageInfo": {
+          "type": "object"
+        },
+        "edges": {
+          "type": "array"
+        },
+        "count": {
+          "type": "integer"
+        },
         "nodes": {
           "type": "array",
           "items": {
@@ -143,8 +211,12 @@
               },
               "metadata": {
                 "anyOf": [
-                  { "$ref": "./package_nuget_dependency_link_metadata.json" },
-                  { "type": "null" }
+                  {
+                    "$ref": "./package_nuget_dependency_link_metadata.json"
+                  },
+                  {
+                    "type": "null"
+                  }
                 ]
               }
             }
@@ -177,14 +249,20 @@
       "type": "string"
     },
     "lastDownloadedAt": {
-      "type": ["string", "null"]
+      "type": [
+        "string",
+        "null"
+      ]
     },
     "_links": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
         "webPath": {
-          "type": ["string", "null"]
+          "type": [
+            "string",
+            "null"
+          ]
         }
       }
     }

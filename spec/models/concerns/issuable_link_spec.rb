@@ -40,4 +40,18 @@ RSpec.describe IssuableLink do
       end
     end
   end
+
+  describe '.available_link_types' do
+    let(:expected_link_types) do
+      if Gitlab.ee?
+        %w[relates_to blocks is_blocked_by]
+      else
+        %w[relates_to]
+      end
+    end
+
+    subject { test_class.available_link_types }
+
+    it { is_expected.to match_array(expected_link_types) }
+  end
 end

@@ -97,6 +97,9 @@ This problem was discovered in <https://gitlab.com/gitlab-org/gitlab-qa/-/issues
 work-around was suggested in <https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/4717>.
 A feature proposal to segregate access control regarding running pipelines from ability to push/merge was also created at <https://gitlab.com/gitlab-org/gitlab/-/issues/24585>.
 
+For more technical details on CI/CD setup and documentation on adding new test jobs to `package-and-test` pipeline, see
+[`package_and_test` setup documentation](package_and_test_pipeline.md).
+
 #### With merged results pipelines
 
 In a merged results pipeline, the pipeline runs on a new ref that contains the merge result of the source and target branch.
@@ -256,8 +259,7 @@ Learn how to perform [tests that require special setup or consideration to run o
 
 ## How do you write tests?
 
-In order to write new tests, you first need to learn more about GitLab QA
-architecture. See the [documentation about it](https://gitlab.com/gitlab-org/gitlab-qa/blob/master/docs/architecture.md).
+Before you write new tests, review the [GitLab QA architecture](https://gitlab.com/gitlab-org/gitlab-qa/blob/master/docs/architecture.md).
 
 After you've decided where to put [test environment orchestration scenarios](https://gitlab.com/gitlab-org/gitlab-qa/tree/master/lib/gitlab/qa/scenario) and
 [instance-level scenarios](https://gitlab.com/gitlab-org/gitlab-foss/tree/master/qa/qa/specs/features), take a look at the [GitLab QA README](https://gitlab.com/gitlab-org/gitlab/-/tree/master/qa/README.md),

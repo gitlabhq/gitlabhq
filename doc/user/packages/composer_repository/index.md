@@ -308,7 +308,7 @@ used to access them:
 
 ### Caching
 
-To improve performance, Composer caches files related to a package. Note that Composer doesn't remove data by
+To improve performance, Composer caches files related to a package. Composer doesn't remove data by
 itself. The cache grows as new packages are installed. If you encounter issues, clear the cache with
 this command:
 

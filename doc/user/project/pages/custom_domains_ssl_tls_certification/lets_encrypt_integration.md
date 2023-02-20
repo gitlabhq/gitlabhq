@@ -42,11 +42,13 @@ For **self-managed** GitLab instances, make sure your administrator has
 
 Once you've met the requirements, enable Let's Encrypt integration:
 
-1. Navigate to your project's **Settings > Pages** (Note: this may also be
-   located at **Deployments > Pages**, [more information](../index.md#menu-position-test)).
-1. Find your domain and select **Details**.
-1. Select **Edit** in the top-right corner.
-1. Enable Let's Encrypt integration by switching **Automatic certificate management using Let's Encrypt**:
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > Pages**.
+
+   If this path is not visible, select **Deployments > Pages**.
+   [This location is part of an experiment](../index.md#menu-position-test).
+1. Next to the domain name, select **Edit**.
+1. Turn on the **Automatic certificate management using Let's Encrypt** toggle.
 
    ![Enable Let's Encrypt](img/lets_encrypt_integration_v12_1.png)
 
@@ -60,7 +62,7 @@ associated Pages domain. GitLab also renews it automatically.
 > - Issuing the certificate and updating Pages configuration
 >   **can take up to an hour**.
 > - If you already have an SSL certificate in domain settings it
->   continues to work until replaced by the Let's Encrypt's certificate.
+>   continues to work until replaced by the Let's Encrypt certificate.
 
 ## Troubleshooting
 
@@ -70,31 +72,37 @@ associated Pages domain. GitLab also renews it automatically.
 
 If you get an error **Something went wrong while obtaining the Let's Encrypt certificate**, first, make sure that your pages site is set to "Everyone" in your project's **Settings > General > Visibility**. This allows the Let's Encrypt Servers reach your pages site. Once this is confirmed, you can try obtaining the certificate again by following these steps:
 
-1. Go to your project's **Settings > Pages** (Note: this may also be
-   located at **Deployments > Pages**, [more information](../index.md#menu-position-test)).
-1. Select **Edit** on your domain.
-1. Select **Retry**.
-1. If you're still seeing the same error:
-    1. Make sure you have properly set only one `CNAME` or `A` DNS record for your domain.
-    1. Make sure your domain **doesn't have** an `AAAA` DNS record.
-    1. If you have a `CAA` DNS record for your domain or any higher level domains, make sure [it includes `letsencrypt.org`](https://letsencrypt.org/docs/caa/).
-    1. Make sure [your domain is verified](index.md#1-add-a-custom-domain).
-    1. Go to step 1.
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > Pages**.
+
+   If this path is not visible, select **Deployments > Pages**.
+   [This location is part of an experiment](../index.md#menu-position-test).
+1. Next to the domain name, select **Edit**.
+1. In **Verification status**, select **Retry verification** (**{retry}**).
+1. If you're still getting the same error:
+   1. Make sure you have properly set only one `CNAME` or `A` DNS record for your domain.
+   1. Make sure your domain **doesn't have** an `AAAA` DNS record.
+   1. If you have a `CAA` DNS record for your domain or any higher level domains, make sure [it includes `letsencrypt.org`](https://letsencrypt.org/docs/caa/).
+   1. Make sure [your domain is verified](index.md#1-add-a-custom-domain).
+   1. Go to step 1.
 
 ### Message "GitLab is obtaining a Let's Encrypt SSL certificate for this domain. This process can take some time. Please try again later." hangs for more than an hour
 
 If you've enabled Let's Encrypt integration, but a certificate is absent after an hour and you see the message, "GitLab is obtaining a Let's Encrypt SSL certificate for this domain. This process can take some time. Please try again later.", try to remove and add the domain for GitLab Pages again by following these steps:
 
-1. Go to your project's **Settings > Pages** (Note: this may also be
-   located at **Deployments > Pages**, [more information](../index.md#menu-position-test)).
-1. Select **Remove** on your domain.
-1. [Add the domain again and verify it](index.md#1-add-a-custom-domain).
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > Pages**.
+
+   If this path is not visible, select **Deployments > Pages**.
+   [This location is part of an experiment](../index.md#menu-position-test).
+1. Next to the domain name, select **Remove**.
+1. [Add the domain again, and verify it](index.md#1-add-a-custom-domain).
 1. [Enable Let's Encrypt integration for your domain](#enabling-lets-encrypt-integration-for-your-custom-domain).
-1. If you still see the same message after some time:
-    1. Make sure you have properly set only one `CNAME` or `A` DNS record for your domain.
-    1. Make sure your domain **doesn't have** an `AAAA` DNS record.
-    1. If you have a `CAA` DNS record for your domain or any higher level domains, make sure [it includes `letsencrypt.org`](https://letsencrypt.org/docs/caa/).
-    1. Go to step 1.
+1. If you're still getting the same error:
+   1. Make sure you have properly set only one `CNAME` or `A` DNS record for your domain.
+   1. Make sure your domain **doesn't have** an `AAAA` DNS record.
+   1. If you have a `CAA` DNS record for your domain or any higher level domains, make sure [it includes `letsencrypt.org`](https://letsencrypt.org/docs/caa/).
+   1. Go to step 1.
 
 <!-- Include any troubleshooting steps that you can foresee. If you know beforehand what issues
 one might have when setting this up, or when something is changed, or on upgrading, it's

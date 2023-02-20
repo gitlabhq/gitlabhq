@@ -213,8 +213,8 @@ Security training uses content from third-party vendors. You must have an intern
 The vulnerability page may include a training link relevant to the detected vulnerability if security training is enabled.
 The availability of training depends on whether the enabled training vendor has content matching the particular vulnerability.
 Training content is requested based on the [vulnerability identifiers](../../../development/integrations/secure.md#identifiers).
-The identifier given to a vulnerability will vary from one vulnerability to the next. The available training
-content varies between vendors. This means some vulnerabilities will display no training content.
+The identifier given to a vulnerability varies from one vulnerability to the next. The available training
+content varies between vendors. This means some vulnerabilities do not display training content.
 Vulnerabilities with a CWE are most likely to return a training result.
 
 To view the security training for a vulnerability:

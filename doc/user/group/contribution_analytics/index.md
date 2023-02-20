@@ -4,62 +4,65 @@ stage: Plan
 group: Optimize
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
-# Contribution Analytics **(PREMIUM)**
+# Contribution analytics **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3090) in GitLab 12.2 for subgroups.
 
-With Contribution Analytics, you can get an overview of the [contribution events](../../profile/contributions_calendar.md#user-contribution-events) in your
-group.
+Contribution analytics provide an overview of the
+[contribution events](../../profile/contributions_calendar.md#user-contribution-events) made by your group's members.
 
-- Analyze your team's contributions over a period of time.
-- Identify opportunities for improvement with group members who may benefit from additional
-  support.
+Use contribution analytics data visualizations to:
 
-## View Contribution Analytics
+- Analyze your group's contributions over a period of time.
+- Identify group members who are high-performers or may benefit from additional support.
 
-To view Contribution Analytics:
+## View contribution analytics
+
+To view contribution analytics:
 
 1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Analytics > Contribution**.
 
-## Using Contribution Analytics
-
-Three bar graphs illustrate the number of contributions made by each group member:
+Three bar charts and a table illustrate the number of contributions made by each group member:
 
 - Push events
 - Merge requests
 - Closed issues
 
-Hover over each bar to display the number of events for a specific group member.
+### View a member's contributions
+
+You can view the number of events associated with a specific group member.
+
+To do this, hover over the bar with the member's name.
 
 ![Contribution analytics bar graphs](img/group_stats_graph.png)
 
-## Changing the period time
+### Zoom in on a chart
 
-You can choose from the following three periods:
+You can zoom in on a bar chart to display only a subset of group members.
+
+To do this, select the sliders (**{status-paused}**) below the chart and slide them along the axis.
+
+### Sort contributions
+
+Contributions per group member are also displayed in tabular format.
+The table columns include the members' names and the number of contributions for different events.
+
+To sort the table by a column, select the column header or the chevron (**{chevron-lg-down}**
+for descending order, **{chevron-lg-up}** for ascending order).
+
+## Change the time period
+
+You can display contribution analytics over different time periods:
 
 - Last week (default)
 - Last month
 - Last three months
 
-Select the desired period from the calendar dropdown list.
+To change the time period of the contribution analytics, select one of the three tabs
+under **Contribution Analytics**.
 
-![Contribution analytics choose period](img/group_stats_cal.png)
-
-## Sorting by different factors
-
-Contributions per group member are also presented in tabular format. Select a column header to sort the table by that column:
-
-- Member name
-- Number of pushed events
-- Number of opened issues
-- Number of closed issues
-- Number of opened MRs
-- Number of merged MRs
-- Number of closed MRs
-- Number of total contributions
-
-![Contribution analytics contributions table](img/group_stats_table.png)
+The selected time period applies to all charts and the table.
 
 ## Contribution analytics GraphQL API
 

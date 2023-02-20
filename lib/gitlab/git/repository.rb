@@ -465,9 +465,9 @@ module Gitlab
       end
 
       # Returns the SHA of the most recent common ancestor of +from+ and +to+
-      def merge_base(*commits)
+      def merge_base(...)
         wrapped_gitaly_errors do
-          gitaly_repository_client.find_merge_base(*commits)
+          gitaly_repository_client.find_merge_base(...)
         end
       end
 
@@ -652,15 +652,23 @@ module Gitlab
         end
       end
 
-      def merge(user, source_sha, target_branch, message, &block)
+      def merge(user, source_sha:, target_branch:, message:, target_sha: nil, &block)
         wrapped_gitaly_errors do
-          gitaly_operation_client.user_merge_branch(user, source_sha, target_branch, message, &block)
+          gitaly_operation_client.user_merge_branch(user,
+                                                    source_sha: source_sha,
+                                                    target_branch: target_branch,
+                                                    message: message,
+                                                    target_sha: target_sha,
+                                                    &block)
         end
       end
 
-      def ff_merge(user, source_sha, target_branch)
+      def ff_merge(user, source_sha:, target_branch:, target_sha: nil)
         wrapped_gitaly_errors do
-          gitaly_operation_client.user_ff_branch(user, source_sha, target_branch)
+          gitaly_operation_client.user_ff_branch(user,
+                                                 source_sha: source_sha,
+                                                 target_branch: target_branch,
+                                                 target_sha: target_sha)
         end
       end
 
@@ -720,9 +728,9 @@ module Gitlab
         raise DeleteBranchError, e
       end
 
-      def delete_refs(*ref_names)
+      def delete_refs(...)
         wrapped_gitaly_errors do
-          gitaly_delete_refs(*ref_names)
+          gitaly_delete_refs(...)
         end
       end
 
@@ -847,9 +855,10 @@ module Gitlab
         end
       end
 
-      def list_refs(patterns = [Gitlab::Git::BRANCH_REF_PREFIX])
+      # peel_tags slows down the request by a factor of 3-4
+      def list_refs(patterns = [Gitlab::Git::BRANCH_REF_PREFIX], pointing_at_oids: [], peel_tags: false)
         wrapped_gitaly_errors do
-          gitaly_ref_client.list_refs(patterns)
+          gitaly_ref_client.list_refs(patterns, pointing_at_oids: pointing_at_oids, peel_tags: peel_tags)
         end
       end
 

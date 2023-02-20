@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ProtectedBranches::CreateService do
+RSpec.describe ProtectedBranches::CreateService, feature_category: :compliance_management do
   shared_examples 'execute with entity' do
     let(:params) do
       {
@@ -58,6 +58,7 @@ RSpec.describe ProtectedBranches::CreateService do
 
   context 'with entity project' do
     let_it_be_with_reload(:entity) { create(:project) }
+
     let(:user) { entity.first_owner }
 
     it_behaves_like 'execute with entity'

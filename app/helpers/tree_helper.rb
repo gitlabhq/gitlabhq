@@ -14,8 +14,8 @@ module TreeHelper
   end
 
   # Simple shortcut to File.join
-  def tree_join(*args)
-    File.join(*args)
+  def tree_join(...)
+    File.join(...)
   end
 
   def on_top_of_branch?(project = @project, ref = @ref)

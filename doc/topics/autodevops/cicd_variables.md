@@ -94,7 +94,6 @@ Use these variables to disable CI/CD jobs.
 | `bandit-sast`                          | `SAST_DISABLED`                 |                       | If the variable is present, the job isn't created. |
 | `brakeman-sast`                        | `SAST_DISABLED`                 |                       | If the variable is present, the job isn't created. |
 | `canary`                               | `CANARY_ENABLED`                |                       | This manual job is created if the variable is present. |
-| `cluster_image_scanning`               | `CLUSTER_IMAGE_SCANNING_DISABLED` |                     | If the variable is present, the job isn't created. |
 | `code_intelligence`                    | `CODE_INTELLIGENCE_DISABLED`    | From GitLab 13.6      | If the variable is present, the job isn't created. |
 | `code_quality`                         | `CODE_QUALITY_DISABLED`         |                       | If the variable is present, the job isn't created. |
 | `container_scanning`                   | `CONTAINER_SCANNING_DISABLED`   |                       | If the variable is present, the job isn't created. |

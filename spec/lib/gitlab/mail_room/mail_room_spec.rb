@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::MailRoom do
+RSpec.describe Gitlab::MailRoom, feature_category: :build do
   let(:default_port) { 143 }
   let(:log_path) { Rails.root.join('log', 'mail_room_json.log').to_s }
 
@@ -323,6 +323,125 @@ RSpec.describe Gitlab::MailRoom do
               jwt_algorithm: 'HS256',
               jwt_secret_path: '/path/to/secret/file'
             }
+          )
+        )
+      end
+    end
+  end
+
+  describe 'mailroom encrypted configuration' do
+    context "when parsing secrets.yml" do
+      let(:application_secrets_file) { Rails.root.join('spec/fixtures/mail_room/secrets.yml.erb').to_s }
+      let(:encrypted_settings_key_base) { '0123456789abcdef' * 8 }
+
+      before do
+        allow(described_class).to receive(:application_secrets_file).and_return(application_secrets_file)
+        stub_env('KEY', 'an environment variable value')
+        described_class.instance_variable_set(:@application_secrets, nil)
+      end
+
+      after do
+        described_class.instance_variable_set(:@application_secrets, nil)
+      end
+
+      it 'reads in the secrets.yml file as erb and merges shared and test environments' do
+        application_secrets = described_class.send(:application_secrets)
+
+        expect(application_secrets).to match(a_hash_including(
+          a_shared_key: 'this key is shared',
+          an_overriden_shared_key: 'the merge overwrote this key',
+          an_environment_specific_key: 'test environment value',
+          erb_env_key: 'an environment variable value',
+          encrypted_settings_key_base: encrypted_settings_key_base
+        ))
+
+        expect(application_secrets[:an_unread_key]).to be_nil
+      end
+    end
+
+    context "when parsing gitlab.yml" do
+      let(:plain_configs) { configs }
+      let(:shared_path_config) do
+        { shared: { path: '/this/is/my/shared_path' } }.merge(configs)
+      end
+
+      let(:encrypted_settings_config) do
+        {
+          shared: { path: '/this/is/my/shared_path' },
+          encrypted_settings: { path: '/this/is/my_custom_encrypted_path' }
+        }.merge(configs)
+      end
+
+      let(:encrypted_file_config) do
+        configs.deep_merge({
+          incoming_email: { encrypted_secret_file: '/custom_incoming_secret.yaml.enc' },
+          service_desk_email: { encrypted_secret_file: '/custom_service_desk_secret.yaml.enc' }
+        })
+      end
+
+      it 'returns default encrypted_secret_file path' do
+        allow(described_class).to receive(:load_yaml).and_return(plain_configs)
+
+        expect(described_class.send(:encrypted_secret_file, :incoming_email))
+          .to end_with('shared/encrypted_settings/incoming_email.yaml.enc')
+
+        expect(described_class.send(:encrypted_secret_file, :service_desk_email))
+          .to end_with('shared/encrypted_settings/service_desk_email.yaml.enc')
+      end
+
+      it 'returns encrypted_secret_file relative to custom shared path' do
+        allow(described_class).to receive(:load_yaml).and_return(shared_path_config)
+
+        expect(described_class.send(:encrypted_secret_file, :incoming_email))
+          .to eq('/this/is/my/shared_path/encrypted_settings/incoming_email.yaml.enc')
+
+        expect(described_class.send(:encrypted_secret_file, :service_desk_email))
+          .to eq('/this/is/my/shared_path/encrypted_settings/service_desk_email.yaml.enc')
+      end
+
+      it 'returns custom encrypted_secret_file' do
+        allow(described_class).to receive(:load_yaml).and_return(encrypted_file_config)
+
+        expect(described_class.send(:encrypted_secret_file, :incoming_email))
+          .to eq('/custom_incoming_secret.yaml.enc')
+
+        expect(described_class.send(:encrypted_secret_file, :service_desk_email))
+          .to eq('/custom_service_desk_secret.yaml.enc')
+      end
+    end
+
+    context 'when using encrypted secrets' do
+      let(:mail_room_template) { ERB.new(File.read(Rails.root.join("./config/mail_room.yml"))).result }
+      let(:mail_room_yml) { YAML.safe_load(mail_room_template, permitted_classes: [Symbol]) }
+      let(:application_secrets) { { encrypted_settings_key_base: '0123456789abcdef' * 8 } } # gitleaks:allow
+      let(:configs) do
+        {
+          encrypted_settings: { path: 'spec/fixtures/mail_room/encrypted_secrets' }
+        }.merge({
+          incoming_email: incoming_email_config,
+          service_desk_email: service_desk_email_config
+        })
+      end
+
+      before do
+        allow(described_class).to receive(:application_secrets).and_return(application_secrets)
+      end
+
+      it 'renders the encrypted secrets into the configuration correctly' do
+        expect(mail_room_yml[:mailboxes]).to be_an(Array)
+        expect(mail_room_yml[:mailboxes].length).to eq(2)
+
+        expect(mail_room_yml[:mailboxes][0]).to match(
+          a_hash_including(
+            password: 'abc123',
+            email: 'incoming-test-account@gitlab.com'
+          )
+        )
+
+        expect(mail_room_yml[:mailboxes][1]).to match(
+          a_hash_including(
+            password: '123abc',
+            email: 'service-desk-test-account@gitlab.example.com'
           )
         )
       end

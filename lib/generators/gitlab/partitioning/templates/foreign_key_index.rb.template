@@ -1,0 +1,17 @@
+# frozen_string_literal: true
+
+class <%= migration_class_name %> < Gitlab::Database::Migration[<%= Gitlab::Database::Migration.current_version %>]
+  disable_ddl_transaction!
+
+  INDEX_NAME = :index_<%= source_table_name -%>_on_<%= partitioning_column -%>_<%= foreign_key_column %>
+  TABLE_NAME = :<%= source_table_name %>
+  COLUMNS = [:<%= partitioning_column -%>, :<%= foreign_key_column -%>]
+
+  def up
+    add_concurrent_index(TABLE_NAME, COLUMNS, name: INDEX_NAME)
+  end
+
+  def down
+    remove_concurrent_index_by_name(TABLE_NAME, INDEX_NAME)
+  end
+end

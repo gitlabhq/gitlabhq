@@ -32,9 +32,9 @@ module Projects
         raise TransferError, s_("TransferProject|You don't have permission to transfer projects into that namespace.")
       end
 
-      transfer(project)
+      @owner_of_personal_project_before_transfer = project.namespace.owner if project.personal?
 
-      current_user.invalidate_personal_projects_count
+      transfer(project)
 
       true
     rescue Projects::TransferService::TransferError => ex
@@ -121,12 +121,25 @@ module Projects
     # Overridden in EE
     def post_update_hooks(project)
       ensure_personal_project_owner_membership(project)
+      invalidate_personal_projects_counts
 
       publish_event
     end
 
     # Overridden in EE
     def remove_paid_features
+    end
+
+    def invalidate_personal_projects_counts
+      # If the project was moved out of a personal namespace,
+      # the cache of the namespace owner, before the transfer, should be cleared.
+      if @owner_of_personal_project_before_transfer.present?
+        @owner_of_personal_project_before_transfer.invalidate_personal_projects_count
+      end
+
+      # If the project has now moved into a personal namespace,
+      # the cache of the target namespace owner should be cleared.
+      project.invalidate_personal_projects_count_of_owner
     end
 
     def transfer_missing_group_resources(group)
@@ -179,7 +192,6 @@ module Projects
       # the old approach, we still run AuthorizedProjectsWorker
       # but with some delay and lower urgency as a safety net.
       UserProjectAccessChangedService.new(user_ids).execute(
-        blocking: false,
         priority: UserProjectAccessChangedService::LOW_PRIORITY
       )
     end

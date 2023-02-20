@@ -16,7 +16,7 @@ IaC Scanning supports configuration files for Terraform, Ansible, AWS CloudForma
 
 IaC Scanning runs in the `test` stage, which is available by default. If you redefine the stages in the `.gitlab-ci.yml` file, the `test` stage is required.
 
-We recommend a minimum of 4GB RAM to ensure consistent performance.
+We recommend a minimum of 4 GB RAM to ensure consistent performance.
 
 To run IaC Scanning jobs, by default, you need GitLab Runner with the
 [`docker`](https://docs.gitlab.com/runner/executors/docker.html) or
@@ -24,7 +24,7 @@ To run IaC Scanning jobs, by default, you need GitLab Runner with the
 If you're using the shared runners on GitLab.com, this is enabled by default.
 
 WARNING:
-Our IaC Scanning jobs require a Linux/amd64 container type. Windows containers are not supported.
+GitLab IaC Scanning analyzers don't support running on Windows or on any CPU architectures other than amd64.
 
 WARNING:
 If you use your own runners, make sure the Docker version installed
@@ -222,13 +222,13 @@ To override the automatic update behavior, set the `SAST_ANALYZER_IMAGE_TAG` CI/
 in your CI/CD configuration file after you include the [`SAST-IaC.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/SAST-IaC.gitlab-ci.yml).
 
 Only set this variable in a specific job.
-If you set it [at the top level](../../../ci/variables/index.md#define-a-cicd-variable-in-the-gitlab-ciyml-file), the version you set will be used for other SAST analyzers.
+If you set it [at the top level](../../../ci/variables/index.md#define-a-cicd-variable-in-the-gitlab-ciyml-file), the version you set is used for other SAST analyzers.
 
 You can set the tag to:
 
-- A major version, like `3`. Your pipelines will use any minor or patch updates that are released within this major version.
-- A minor version, like `3.7`. Your pipelines will use any patch updates that are released within this minor version.
-- A patch version, like `3.7.0`. Your pipelines won't receive any updates.
+- A major version, like `3`. Your pipelines use any minor or patch updates that are released within this major version.
+- A minor version, like `3.7`. Your pipelines use any patch updates that are released within this minor version.
+- A patch version, like `3.7.0`. Your pipelines don't receive any updates.
 
 This example uses a specific minor version of the `KICS` analyzer:
 
@@ -240,6 +240,19 @@ kics-iac-sast:
   variables:
     SAST_ANALYZER_IMAGE_TAG: "3.1"
 ```
+
+## Automatic vulnerability resolution
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368284) in GitLab 15.9 [with a project-level flag](../../../administration/feature_flags.md) named `sec_mark_dropped_findings_as_resolved`. Enabled by default on GitLab.com; disabled by default in self-managed. On GitLab.com, [contact Support](https://about.gitlab.com/support/) if you need to disable the flag for your project.
+
+To help you focus on the vulnerabilities that are still relevant, GitLab IaC Scanning automatically [resolves](../vulnerabilities/index.md#vulnerability-status-values) vulnerabilities when:
+
+- You [disable a predefined rule](#disable-predefined-analyzer-rules).
+- We remove a rule from the default ruleset.
+
+The Vulnerability Management system leaves a comment on automatically-resolved vulnerabilities so you still have a historical record of the vulnerability.
+
+If you re-enable the rule later, the findings are reopened for triage.
 
 ## Reports JSON format
 
@@ -269,3 +282,8 @@ be ineffective or false positives, and the findings are marked as `No longer det
 
 - In GitLab 15.3, [secret detection in the KICS SAST IaC scanner was disabled](https://gitlab.com/gitlab-org/gitlab/-/issues/346181),
   so IaC findings in the "Passwords and Secrets" family show as `No longer detected`.
+
+### `exec /bin/sh: exec format error` message in job log
+
+The GitLab IaC Scanning analyzer [only supports](#requirements) running on the `amd64` CPU architecture.
+This message indicates that the job is being run on a different architecture, such as `arm`.

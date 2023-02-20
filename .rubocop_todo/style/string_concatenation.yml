@@ -4,7 +4,6 @@ Style/StringConcatenation:
   Exclude:
     - 'app/controllers/projects/labels_controller.rb'
     - 'app/controllers/projects/milestones_controller.rb'
-    - 'app/models/concerns/counter_attribute.rb'
     - 'app/models/concerns/cross_database_modification.rb'
     - 'app/models/concerns/from_set_operator.rb'
     - 'app/models/concerns/routable.rb'
@@ -171,7 +170,6 @@ Style/StringConcatenation:
     - 'spec/helpers/events_helper_spec.rb'
     - 'spec/helpers/search_helper_spec.rb'
     - 'spec/lib/api/helpers/related_resources_helpers_spec.rb'
-    - 'spec/lib/atlassian/jira_connect/client_spec.rb'
     - 'spec/lib/backup/gitaly_backup_spec.rb'
     - 'spec/lib/backup/repositories_spec.rb'
     - 'spec/lib/banzai/filter/color_filter_spec.rb'

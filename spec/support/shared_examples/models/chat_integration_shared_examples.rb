@@ -33,7 +33,7 @@ RSpec.shared_examples "chat integration" do |integration_name|
 
   describe "#execute" do
     let_it_be(:user) { create(:user) }
-    let_it_be_with_reload(:project) { create(:project, :repository) }
+    let_it_be_with_refind(:project) { create(:project, :repository) }
 
     let(:webhook_url) { "https://example.gitlab.com/" }
     let(:webhook_url_regex) { /\A#{webhook_url}.*/ }
@@ -165,7 +165,7 @@ RSpec.shared_examples "chat integration" do |integration_name|
     context "with issue events" do
       let(:opts) { { title: "Awesome issue", description: "please fix" } }
       let(:sample_data) do
-        service = Issues::CreateService.new(project: project, current_user: user, params: opts, spam_params: nil)
+        service = Issues::CreateService.new(container: project, current_user: user, params: opts, spam_params: nil)
         issue = service.execute[:issue]
         service.hook_data(issue, "open")
       end

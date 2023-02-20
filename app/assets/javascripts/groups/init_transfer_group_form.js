@@ -17,6 +17,7 @@ export default () => {
     targetFormId = null,
     buttonText: confirmButtonText = '',
     groupName = '',
+    groupFullPath,
     groupId: resourceId,
     isPaidGroup,
   } = el.dataset;
@@ -35,7 +36,7 @@ export default () => {
         props: {
           isPaidGroup: parseBoolean(isPaidGroup),
           confirmButtonText,
-          confirmationPhrase: groupName,
+          confirmationPhrase: groupFullPath,
         },
         on: {
           confirm: () => {

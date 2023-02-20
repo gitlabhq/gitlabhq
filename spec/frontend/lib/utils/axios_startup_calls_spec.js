@@ -1,6 +1,7 @@
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import setupAxiosStartupCalls from '~/lib/utils/axios_startup_calls';
+import { HTTP_STATUS_BAD_REQUEST, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 
 describe('setupAxiosStartupCalls', () => {
   const AXIOS_RESPONSE = { text: 'AXIOS_RESPONSE' };
@@ -31,9 +32,9 @@ describe('setupAxiosStartupCalls', () => {
   beforeEach(() => {
     window.gl = {};
     mock = new MockAdapter(axios);
-    mock.onGet('/non-startup').reply(200, AXIOS_RESPONSE);
-    mock.onGet('/startup').reply(200, AXIOS_RESPONSE);
-    mock.onGet('/startup-failing').reply(200, AXIOS_RESPONSE);
+    mock.onGet('/non-startup').reply(HTTP_STATUS_OK, AXIOS_RESPONSE);
+    mock.onGet('/startup').reply(HTTP_STATUS_OK, AXIOS_RESPONSE);
+    mock.onGet('/startup-failing').reply(HTTP_STATUS_OK, AXIOS_RESPONSE);
   });
 
   afterEach(() => {
@@ -52,10 +53,10 @@ describe('setupAxiosStartupCalls', () => {
     beforeEach(() => {
       window.gl.startup_calls = {
         '/startup': {
-          fetchCall: mockFetchCall(200),
+          fetchCall: mockFetchCall(HTTP_STATUS_OK),
         },
         '/startup-failing': {
-          fetchCall: mockFetchCall(400),
+          fetchCall: mockFetchCall(HTTP_STATUS_BAD_REQUEST),
         },
       };
       setupAxiosStartupCalls(axios);
@@ -80,7 +81,7 @@ describe('setupAxiosStartupCalls', () => {
       const { headers, data, status, statusText } = await axios.get('/startup');
 
       expect(headers).toEqual({ 'content-type': 'application/json' });
-      expect(status).toBe(200);
+      expect(status).toBe(HTTP_STATUS_OK);
       expect(statusText).toBe('MOCK-FETCH 200');
       expect(data).toEqual(STARTUP_JS_RESPONSE);
       expect(data).not.toEqual(AXIOS_RESPONSE);
@@ -126,7 +127,7 @@ describe('setupAxiosStartupCalls', () => {
     it('removes GitLab Base URL from startup call', async () => {
       window.gl.startup_calls = {
         '/startup': {
-          fetchCall: mockFetchCall(200),
+          fetchCall: mockFetchCall(HTTP_STATUS_OK),
         },
       };
       setupAxiosStartupCalls(axios);
@@ -139,7 +140,7 @@ describe('setupAxiosStartupCalls', () => {
     it('sorts the params in the requested API url', async () => {
       window.gl.startup_calls = {
         '/startup?alpha=true&bravo=true': {
-          fetchCall: mockFetchCall(200),
+          fetchCall: mockFetchCall(HTTP_STATUS_OK),
         },
       };
       setupAxiosStartupCalls(axios);

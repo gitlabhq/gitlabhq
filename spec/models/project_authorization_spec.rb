@@ -94,11 +94,13 @@ RSpec.describe ProjectAuthorization do
     end
   end
 
-  shared_examples_for 'logs the detail' do
+  shared_examples_for 'logs the detail' do |batch_size:|
     it 'logs the detail' do
       expect(Gitlab::AppLogger).to receive(:info).with(
         entire_size: 3,
-        message: 'Project authorizations refresh performed with delay'
+        message: 'Project authorizations refresh performed with delay',
+        total_delay: (3 / batch_size.to_f).ceil * ProjectAuthorization::SLEEP_DELAY,
+        **Gitlab::ApplicationContext.current
       )
 
       execute
@@ -124,7 +126,6 @@ RSpec.describe ProjectAuthorization do
     before do
       # Configure as if a replica database is enabled
       allow(::Gitlab::Database::LoadBalancing).to receive(:primary_only?).and_return(false)
-      stub_feature_flags(enable_minor_delay_during_project_authorizations_refresh: true)
     end
 
     shared_examples_for 'inserts the rows in batches, as per the `per_batch` size, without a delay between each batch' do
@@ -149,7 +150,7 @@ RSpec.describe ProjectAuthorization do
         expect(user.project_authorizations.pluck(:user_id, :project_id, :access_level)).to match_array(attributes.map(&:values))
       end
 
-      it_behaves_like 'logs the detail'
+      it_behaves_like 'logs the detail', batch_size: 2
 
       context 'when the GitLab installation does not have a replica database configured' do
         before do
@@ -190,7 +191,6 @@ RSpec.describe ProjectAuthorization do
     before do
       # Configure as if a replica database is enabled
       allow(::Gitlab::Database::LoadBalancing).to receive(:primary_only?).and_return(false)
-      stub_feature_flags(enable_minor_delay_during_project_authorizations_refresh: true)
     end
 
     before_all do
@@ -221,7 +221,7 @@ RSpec.describe ProjectAuthorization do
         expect(project.project_authorizations.pluck(:user_id)).not_to include(*user_ids)
       end
 
-      it_behaves_like 'logs the detail'
+      it_behaves_like 'logs the detail', batch_size: 2
 
       context 'when the GitLab installation does not have a replica database configured' do
         before do
@@ -262,7 +262,6 @@ RSpec.describe ProjectAuthorization do
     before do
       # Configure as if a replica database is enabled
       allow(::Gitlab::Database::LoadBalancing).to receive(:primary_only?).and_return(false)
-      stub_feature_flags(enable_minor_delay_during_project_authorizations_refresh: true)
     end
 
     before_all do
@@ -293,7 +292,7 @@ RSpec.describe ProjectAuthorization do
         expect(user.project_authorizations.pluck(:project_id)).not_to include(*project_ids)
       end
 
-      it_behaves_like 'logs the detail'
+      it_behaves_like 'logs the detail', batch_size: 2
 
       context 'when the GitLab installation does not have a replica database configured' do
         before do

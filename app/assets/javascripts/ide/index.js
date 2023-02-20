@@ -67,10 +67,8 @@ export const initLegacyWebIDE = (el, options = {}) => {
         forkInfo: el.dataset.forkInfo ? JSON.parse(el.dataset.forkInfo) : null,
       });
       this.init({
-        clientsidePreviewEnabled: parseBoolean(el.dataset.clientsidePreviewEnabled),
         renderWhitespaceInCode: parseBoolean(el.dataset.renderWhitespaceInCode),
         editorTheme: window.gon?.user_color_scheme || DEFAULT_THEME,
-        codesandboxBundlerUrl: el.dataset.codesandboxBundlerUrl,
         environmentsGuidanceAlertDismissed: !parseBoolean(el.dataset.enableEnvironmentsGuidance),
         previewMarkdownPath: el.dataset.previewMarkdownPath,
         userPreferencesPath: el.dataset.userPreferencesPath,

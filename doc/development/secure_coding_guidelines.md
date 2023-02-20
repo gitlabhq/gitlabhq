@@ -266,8 +266,7 @@ value, we **will not** be protected against DNS rebinding.
 
 This is the case with validators such as the `AddressableUrlValidator` (called with `validates :url, addressable_url: {opts}` or `public_url: {opts}`).
 Validation errors are only raised when validations are called, for example when a record is created or saved. If we ignore the value returned by the validation
-when persisting the record, **we need to recheck** its validity before using it. You can learn more about [Time of Check to Time of Use bugs](#time-of-check-to-time-of-use-bugs) in a later section
-of these guidelines.
+when persisting the record, **we need to recheck** its validity before using it. For more information, see [Time of check to time of use bugs](#time-of-check-to-time-of-use-bugs).
 
 #### Feature-specific mitigations
 
@@ -291,7 +290,7 @@ implement.
 - For HTTP connections: Disable redirects or validate the redirect destination
 - To mitigate DNS rebinding attacks, validate and use the first IP address received.
 
-See [`url_blocker_spec.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/lib/gitlab/url_blocker_spec.rb) for examples of SSRF payloads. See [time of check to time of use bugs](#time-of-check-to-time-of-use-bugs) to learn more about DNS rebinding's class of bug.
+See [`url_blocker_spec.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/lib/gitlab/url_blocker_spec.rb) for examples of SSRF payloads. For more information about the DNS-rebinding class of bugs, see [Time of check to time of use bugs](#time-of-check-to-time-of-use-bugs).
 
 Don't rely on methods like `.start_with?` when validating a URL, or make assumptions about which
 part of a string maps to which part of a URL. Use the `URI` class to parse the string, and validate
@@ -1270,7 +1269,7 @@ This sensitive data must be handled carefully to avoid leaks which could lead to
   - The [Gitleaks Git hook](https://gitlab.com/gitlab-com/gl-security/security-research/gitleaks-endpoint-installer) is recommended for preventing credentials from being committed.
 - Never log credentials under any circumstance. Issue [#353857](https://gitlab.com/gitlab-org/gitlab/-/issues/353857) is an example of credential leaks through log file.
 - When credentials are required in a CI/CD job, use [masked variables](../ci/variables/index.md#mask-a-cicd-variable) to help prevent accidental exposure in the job logs. Be aware that when [debug logging](../ci/variables/index.md#enable-debug-logging) is enabled, all masked CI/CD variables are visible in job logs. Also consider using [protected variables](../ci/variables/index.md#protect-a-cicd-variable) when possible so that sensitive CI/CD variables are only available to pipelines running on protected branches or protected tags.
-- Proper scanners must be enabled depending on what data those credentials are protecting. See the [Application Security Inventory Policy](https://about.gitlab.com/handbook/security/security-engineering-and-research/application-security/inventory.html#policies) and our [Data Classification Standards](https://about.gitlab.com/handbook/security/data-classification-standard.html#data-classification-standards).
+- Proper scanners must be enabled depending on what data those credentials are protecting. See the [Application Security Inventory Policy](https://about.gitlab.com/handbook/security/security-engineering/application-security/inventory.html#policies) and our [Data Classification Standards](https://about.gitlab.com/handbook/security/data-classification-standard.html#data-classification-standards).
 - To store and/or share credentials between teams, refer to [1Password for Teams](https://about.gitlab.com/handbook/security/#1password-for-teams) and follow [the 1Password Guidelines](https://about.gitlab.com/handbook/security/#1password-guidelines).
 - If you need to share a secret with a team member, use 1Password. Do not share a secret over email, Slack, or other service on the Internet.
 

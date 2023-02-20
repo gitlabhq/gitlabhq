@@ -15,6 +15,7 @@ module API
         expose :created_at, documentation: { type: 'dateTime', example: '2015-12-24T15:51:21.880Z' }
         expose :started_at, documentation: { type: 'dateTime', example: '2015-12-24T17:54:30.733Z' }
         expose :finished_at, documentation: { type: 'dateTime', example: '2015-12-24T17:54:31.198Z' }
+        expose :erased_at, documentation: { type: 'dateTime', example: '2015-12-24T18:00:29.728Z' }
         expose :duration,
                documentation: { type: 'number', format: 'float', desc: 'Time spent running', example: 0.465 }
         expose :queued_duration,

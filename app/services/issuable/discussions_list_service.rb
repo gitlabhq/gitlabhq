@@ -25,7 +25,7 @@ module Issuable
         paginated_discussions_by_type = paginator.records.group_by(&:table_name)
 
         notes = if paginated_discussions_by_type['notes'].present?
-                  notes.with_discussion_ids(paginated_discussions_by_type['notes'].map(&:discussion_id))
+                  notes.id_in(paginated_discussions_by_type['notes'].flat_map(&:ids))
                 else
                   notes.none
                 end

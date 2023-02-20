@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 
-RSpec.describe 'memory watchdog' do
+RSpec.describe 'memory watchdog', feature_category: :application_performance do
   shared_examples 'starts configured watchdog' do |configure_monitor_method|
     shared_examples 'configures and starts watchdog' do
       it "correctly configures and starts watchdog", :aggregate_failures do
@@ -104,11 +104,7 @@ RSpec.describe 'memory watchdog' do
         allow(Gitlab::Runtime).to receive(:sidekiq?).and_return(true)
       end
 
-      it 'does not register life-cycle hook' do
-        expect(Gitlab::Cluster::LifecycleEvents).not_to receive(:on_worker_start)
-
-        run_initializer
-      end
+      it_behaves_like 'starts configured watchdog', :configure_for_sidekiq
     end
   end
 end

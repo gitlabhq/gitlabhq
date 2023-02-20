@@ -68,12 +68,7 @@ module Gitlab
     private
 
     def cache
-      if Feature.enabled?(:use_primary_and_secondary_stores_for_repository_cache) ||
-          Feature.enabled?(:use_primary_store_as_default_for_repository_cache)
-        Gitlab::Redis::RepositoryCache
-      else
-        Gitlab::Redis::Cache
-      end
+      Gitlab::Redis::RepositoryCache
     end
 
     def with(&blk)

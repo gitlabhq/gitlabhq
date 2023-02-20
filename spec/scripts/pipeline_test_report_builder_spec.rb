@@ -3,12 +3,11 @@
 require 'fast_spec_helper'
 require_relative '../../scripts/pipeline_test_report_builder'
 
-RSpec.describe PipelineTestReportBuilder do
+RSpec.describe PipelineTestReportBuilder, feature_category: :tooling do
   let(:report_file) { 'spec/fixtures/scripts/test_report.json' }
   let(:output_file_path) { 'tmp/previous_test_results/output_file.json' }
-
-  subject do
-    described_class.new(
+  let(:options) do
+    described_class::DEFAULT_OPTIONS.merge(
       target_project: 'gitlab-org/gitlab',
       mr_id: '999',
       instance_base_url: 'https://gitlab.com',
@@ -16,25 +15,27 @@ RSpec.describe PipelineTestReportBuilder do
     )
   end
 
-  let(:failed_pipeline_url) { 'pipeline2_url' }
+  let(:previous_pipeline_url) { '/pipelines/previous' }
 
-  let(:failed_pipeline) do
+  let(:previous_pipeline) do
     {
       'status' => 'failed',
-      'created_at' => (DateTime.now - 5).to_s,
-      'web_url' => failed_pipeline_url
+      'id' => 1,
+      'web_url' => previous_pipeline_url
     }
   end
 
-  let(:current_pipeline) do
+  let(:latest_pipeline_url) { '/pipelines/latest' }
+
+  let(:latest_pipeline) do
     {
       'status' => 'running',
-      'created_at' => DateTime.now.to_s,
-      'web_url' => 'pipeline1_url'
+      'id' => 3,
+      'web_url' => latest_pipeline_url
     }
   end
 
-  let(:mr_pipelines) { [current_pipeline, failed_pipeline] }
+  let(:mr_pipelines) { [latest_pipeline, previous_pipeline] }
 
   let(:failed_build_id) { 9999 }
 
@@ -68,6 +69,8 @@ RSpec.describe PipelineTestReportBuilder do
     }
   end
 
+  subject { described_class.new(options) }
+
   before do
     allow(subject).to receive(:pipelines_for_mr).and_return(mr_pipelines)
     allow(subject).to receive(:failed_builds_for_pipeline).and_return(failed_builds_for_pipeline)
@@ -78,7 +81,7 @@ RSpec.describe PipelineTestReportBuilder do
     let(:fork_pipeline) do
       {
         'status' => 'failed',
-        'created_at' => (DateTime.now - 5).to_s,
+        'id' => 2,
         'web_url' => fork_pipeline_url
       }
     end
@@ -88,7 +91,7 @@ RSpec.describe PipelineTestReportBuilder do
     end
 
     context 'pipeline in a fork project' do
-      let(:mr_pipelines) { [current_pipeline, fork_pipeline] }
+      let(:mr_pipelines) { [latest_pipeline, fork_pipeline] }
 
       it 'returns fork pipeline' do
         expect(subject.previous_pipeline).to eq(fork_pipeline)
@@ -97,124 +100,104 @@ RSpec.describe PipelineTestReportBuilder do
 
     context 'pipeline in target project' do
       it 'returns failed pipeline' do
-        expect(subject.previous_pipeline).to eq(failed_pipeline)
+        expect(subject.previous_pipeline).to eq(previous_pipeline)
       end
     end
   end
 
-  describe '#test_report_for_latest_pipeline' do
-    let(:failed_build_uri) { "#{failed_pipeline_url}/tests/suite.json?build_ids[]=#{failed_build_id}" }
+  describe '#test_report_for_pipeline' do
+    context 'for previous pipeline' do
+      let(:failed_build_uri) { "#{previous_pipeline_url}/tests/suite.json?build_ids[]=#{failed_build_id}" }
 
-    before do
-      allow(subject).to receive(:fetch).with(failed_build_uri).and_return(failed_builds_for_pipeline)
-    end
-
-    it 'fetches builds from pipeline related to MR' do
-      expected = { "suites" => [failed_builds_for_pipeline] }.to_json
-      expect(subject.test_report_for_latest_pipeline).to eq(expected)
-    end
-
-    context 'canonical pipeline' do
-      context 'no previous pipeline' do
-        let(:mr_pipelines) { [] }
-
-        it 'returns empty hash' do
-          expect(subject.test_report_for_latest_pipeline).to eq("{}")
-        end
+      before do
+        allow(subject).to receive(:fetch).with(failed_build_uri).and_return(test_report_for_build)
       end
 
-      context 'first pipeline scenario' do
-        let(:mr_pipelines) do
-          [
-            {
-              'status' => 'running',
-              'created_at' => DateTime.now.to_s
-            }
-          ]
-        end
-
-        it 'returns empty hash' do
-          expect(subject.test_report_for_latest_pipeline).to eq("{}")
-        end
+      it 'fetches builds from pipeline related to MR' do
+        expected = { "suites" => [test_report_for_build.merge('job_url' => "/jobs/#{failed_build_id}")] }.to_json
+        expect(subject.test_report_for_pipeline).to eq(expected)
       end
 
-      context 'no previous failed pipeline' do
-        let(:mr_pipelines) do
-          [
-            {
-              'status' => 'running',
-              'created_at' => DateTime.now.to_s
-            },
-            {
-              'status' => 'success',
-              'created_at' => (DateTime.now - 5).to_s
-            }
-          ]
-        end
+      context 'canonical pipeline' do
+        context 'no previous pipeline' do
+          let(:mr_pipelines) { [] }
 
-        it 'returns empty hash' do
-          expect(subject.test_report_for_latest_pipeline).to eq("{}")
-        end
-      end
-
-      context 'no failed test builds' do
-        let(:failed_builds_for_pipeline) do
-          [
-            {
-              'id' => 9999,
-              'stage' => 'prepare'
-            }
-          ]
-        end
-
-        it 'returns empty hash' do
-          expect(subject.test_report_for_latest_pipeline).to eq("{}")
-        end
-      end
-
-      context 'failed pipeline and failed test builds' do
-        before do
-          allow(subject).to receive(:fetch).with(failed_build_uri).and_return(test_report_for_build)
-        end
-
-        it 'returns populated test list for suites' do
-          actual = subject.test_report_for_latest_pipeline
-          expected = {
-            'suites' => [test_report_for_build]
-          }.to_json
-
-          expect(actual).to eq(expected)
-        end
-      end
-
-      context 'when receiving a server error' do
-        let(:response) { instance_double('Net::HTTPResponse') }
-        let(:error) { Net::HTTPServerException.new('server error', response) }
-        let(:test_report_for_latest_pipeline) { subject.test_report_for_latest_pipeline }
-
-        before do
-          allow(response).to receive(:code).and_return(response_code)
-          allow(subject).to receive(:fetch).with(failed_build_uri).and_raise(error)
-        end
-
-        context 'when response code is 404' do
-          let(:response_code) { 404 }
-
-          it 'continues without the missing reports' do
-            expected = { 'suites' => [] }.to_json
-
-            expect { test_report_for_latest_pipeline }.not_to raise_error
-            expect(test_report_for_latest_pipeline).to eq(expected)
+          it 'returns empty hash' do
+            expect(subject.test_report_for_pipeline).to eq("{}")
           end
         end
 
-        context 'when response code is unexpected' do
-          let(:response_code) { 500 }
+        context 'no failed test builds' do
+          let(:failed_builds_for_pipeline) do
+            [
+              {
+                'id' => 9999,
+                'stage' => 'prepare'
+              }
+            ]
+          end
 
-          it 'raises HTTPServerException' do
-            expect { test_report_for_latest_pipeline }.to raise_error(error)
+          it 'returns a hash with an empty "suites" array' do
+            expect(subject.test_report_for_pipeline).to eq({ suites: [] }.to_json)
           end
         end
+
+        context 'failed pipeline and failed test builds' do
+          before do
+            allow(subject).to receive(:fetch).with(failed_build_uri).and_return(test_report_for_build)
+          end
+
+          it 'returns populated test list for suites' do
+            actual = subject.test_report_for_pipeline
+            expected = {
+              'suites' => [test_report_for_build]
+            }.to_json
+
+            expect(actual).to eq(expected)
+          end
+        end
+
+        context 'when receiving a server error' do
+          let(:response) { instance_double('Net::HTTPResponse') }
+          let(:error) { Net::HTTPServerException.new('server error', response) }
+          let(:test_report_for_pipeline) { subject.test_report_for_pipeline }
+
+          before do
+            allow(response).to receive(:code).and_return(response_code)
+            allow(subject).to receive(:fetch).with(failed_build_uri).and_raise(error)
+          end
+
+          context 'when response code is 404' do
+            let(:response_code) { 404 }
+
+            it 'continues without the missing reports' do
+              expected = { suites: [] }.to_json
+
+              expect { test_report_for_pipeline }.not_to raise_error
+              expect(test_report_for_pipeline).to eq(expected)
+            end
+          end
+
+          context 'when response code is unexpected' do
+            let(:response_code) { 500 }
+
+            it 'raises HTTPServerException' do
+              expect { test_report_for_pipeline }.to raise_error(error)
+            end
+          end
+        end
+      end
+    end
+
+    context 'for latest pipeline' do
+      let(:failed_build_uri) { "#{latest_pipeline_url}/tests/suite.json?build_ids[]=#{failed_build_id}" }
+
+      subject { described_class.new(options.merge(pipeline_index: :latest)) }
+
+      it 'fetches builds from pipeline related to MR' do
+        expect(subject).to receive(:fetch).with(failed_build_uri).and_return(test_report_for_build)
+
+        subject.test_report_for_pipeline
       end
     end
   end

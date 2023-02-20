@@ -2,13 +2,14 @@
 
 require 'spec_helper'
 
-RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
+RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching,
+feature_category: :kubernetes_management do
   include ReactiveCachingHelpers
   include KubernetesHelpers
 
   it_behaves_like 'having unique enum values'
 
-  subject { build(:cluster) }
+  subject(:cluster) { build(:cluster) }
 
   it { is_expected.to include_module(HasEnvironmentScope) }
   it { is_expected.to belong_to(:user) }
@@ -35,14 +36,6 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
 
   it { is_expected.to delegate_method(:status).to(:provider) }
   it { is_expected.to delegate_method(:status_reason).to(:provider) }
-  it { is_expected.to delegate_method(:on_creation?).to(:provider) }
-  it { is_expected.to delegate_method(:knative_pre_installed?).to(:provider) }
-  it { is_expected.to delegate_method(:active?).to(:platform_kubernetes).with_prefix }
-  it { is_expected.to delegate_method(:rbac?).to(:platform_kubernetes).with_prefix }
-  it { is_expected.to delegate_method(:available?).to(:application_helm).with_prefix }
-  it { is_expected.to delegate_method(:available?).to(:application_ingress).with_prefix }
-  it { is_expected.to delegate_method(:available?).to(:application_knative).with_prefix }
-  it { is_expected.to delegate_method(:available?).to(:integration_prometheus).with_prefix }
   it { is_expected.to delegate_method(:external_ip).to(:application_ingress).with_prefix }
   it { is_expected.to delegate_method(:external_hostname).to(:application_ingress).with_prefix }
 
@@ -721,14 +714,13 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
     context 'when all applications are created' do
       let!(:helm) { create(:clusters_applications_helm, cluster: cluster) }
       let!(:ingress) { create(:clusters_applications_ingress, cluster: cluster) }
-      let!(:cert_manager) { create(:clusters_applications_cert_manager, cluster: cluster) }
       let!(:prometheus) { create(:clusters_applications_prometheus, cluster: cluster) }
       let!(:runner) { create(:clusters_applications_runner, cluster: cluster) }
       let!(:jupyter) { create(:clusters_applications_jupyter, cluster: cluster) }
       let!(:knative) { create(:clusters_applications_knative, cluster: cluster) }
 
       it 'returns a list of created applications' do
-        is_expected.to contain_exactly(helm, ingress, cert_manager, prometheus, runner, jupyter, knative)
+        is_expected.to contain_exactly(helm, ingress, prometheus, runner, jupyter, knative)
       end
     end
 
@@ -1414,6 +1406,220 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
 
       it 'raises NotImplementedError' do
         expect { subject }.to raise_error(NotImplementedError)
+      end
+    end
+  end
+
+  describe '#on_creation?' do
+    subject(:on_creation?) { cluster.on_creation? }
+
+    before do
+      allow(cluster).to receive(:provider).and_return(provider)
+    end
+
+    context 'without provider' do
+      let(:provider) {}
+
+      it { is_expected.to eq(false) }
+    end
+
+    context 'with provider' do
+      let(:provider) { instance_double(Clusters::Providers::Gcp, on_creation?: on_creation?) }
+
+      before do
+        allow(cluster).to receive(:provider).and_return(provider)
+      end
+
+      context 'with on_creation? set to true' do
+        let(:on_creation?) { true }
+
+        it { is_expected.to eq(true) }
+      end
+
+      context 'with on_creation? set to false' do
+        let(:on_creation?) { false }
+
+        it { is_expected.to eq(false) }
+      end
+    end
+  end
+
+  describe '#knative_pre_installed?' do
+    subject(:knative_pre_installed?) { cluster.knative_pre_installed? }
+
+    before do
+      allow(cluster).to receive(:provider).and_return(provider)
+    end
+
+    context 'without provider' do
+      let(:provider) {}
+
+      it { is_expected.to eq(false) }
+    end
+
+    context 'with provider' do
+      let(:provider) { instance_double(Clusters::Providers::Aws, knative_pre_installed?: knative_pre_installed?) }
+
+      context 'with knative_pre_installed? set to true' do
+        let(:knative_pre_installed?) { true }
+
+        it { is_expected.to eq(true) }
+      end
+
+      context 'with knative_pre_installed? set to false' do
+        let(:knative_pre_installed?) { false }
+
+        it { is_expected.to eq(false) }
+      end
+    end
+  end
+
+  describe '#platform_kubernetes_active?' do
+    subject(:platform_kubernetes_active?) { cluster.platform_kubernetes_active? }
+
+    before do
+      allow(cluster).to receive(:platform_kubernetes).and_return(platform_kubernetes)
+    end
+
+    context 'without platform_kubernetes' do
+      let(:platform_kubernetes) {}
+
+      it { is_expected.to eq(false) }
+    end
+
+    context 'with platform_kubernetes' do
+      let(:platform_kubernetes) { instance_double(Clusters::Platforms::Kubernetes, active?: active?) }
+
+      context 'with active? set to true' do
+        let(:active?) { true }
+
+        it { is_expected.to eq(true) }
+      end
+
+      context 'with active? set to false' do
+        let(:active?) { false }
+
+        it { is_expected.to eq(false) }
+      end
+    end
+  end
+
+  describe '#platform_kubernetes_rbac?' do
+    subject(:platform_kubernetes_rbac?) { cluster.platform_kubernetes_rbac? }
+
+    before do
+      allow(cluster).to receive(:platform_kubernetes).and_return(platform_kubernetes)
+    end
+
+    context 'without platform_kubernetes' do
+      let(:platform_kubernetes) {}
+
+      it { is_expected.to eq(false) }
+    end
+
+    context 'with platform_kubernetes' do
+      let(:platform_kubernetes) { instance_double(Clusters::Platforms::Kubernetes, rbac?: rbac?) }
+
+      context 'with rbac? set to true' do
+        let(:rbac?) { true }
+
+        it { is_expected.to eq(true) }
+      end
+
+      context 'with rbac? set to false' do
+        let(:rbac?) { false }
+
+        it { is_expected.to eq(false) }
+      end
+    end
+  end
+
+  describe '#application_helm_available?' do
+    subject(:application_helm_available?) { cluster.application_helm_available? }
+
+    before do
+      allow(cluster).to receive(:application_helm).and_return(application_helm)
+    end
+
+    context 'without application_helm' do
+      let(:application_helm) {}
+
+      it { is_expected.to eq(false) }
+    end
+
+    context 'with application_helm' do
+      let(:application_helm) { instance_double(Clusters::Applications::Helm, available?: available?) }
+
+      context 'with available? set to true' do
+        let(:available?) { true }
+
+        it { is_expected.to eq(true) }
+      end
+
+      context 'with available? set to false' do
+        let(:available?) { false }
+
+        it { is_expected.to eq(false) }
+      end
+    end
+  end
+
+  describe '#application_ingress_available?' do
+    subject(:application_ingress_available?) { cluster.application_ingress_available? }
+
+    before do
+      allow(cluster).to receive(:application_ingress).and_return(application_ingress)
+    end
+
+    context 'without application_ingress' do
+      let(:application_ingress) {}
+
+      it { is_expected.to eq(false) }
+    end
+
+    context 'with application_ingress' do
+      let(:application_ingress) { instance_double(Clusters::Applications::Ingress, available?: available?) }
+
+      context 'with available? set to true' do
+        let(:available?) { true }
+
+        it { is_expected.to eq(true) }
+      end
+
+      context 'with available? set to false' do
+        let(:available?) { false }
+
+        it { is_expected.to eq(false) }
+      end
+    end
+  end
+
+  describe '#application_knative_available?' do
+    subject(:application_knative_available?) { cluster.application_knative_available? }
+
+    before do
+      allow(cluster).to receive(:application_knative).and_return(application_knative)
+    end
+
+    context 'without application_knative' do
+      let(:application_knative) {}
+
+      it { is_expected.to eq(false) }
+    end
+
+    context 'with application_knative' do
+      let(:application_knative) { instance_double(Clusters::Applications::Knative, available?: available?) }
+
+      context 'with available? set to true' do
+        let(:available?) { true }
+
+        it { is_expected.to eq(true) }
+      end
+
+      context 'with available? set to false' do
+        let(:available?) { false }
+
+        it { is_expected.to eq(false) }
       end
     end
   end

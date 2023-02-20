@@ -12,6 +12,16 @@ module Security
       end
 
       def execute
+        if project.repository.empty? && !(@params && @params[:initialize_with_sast])
+          docs_link = ActionController::Base.helpers.link_to _('add at least one file to the repository'),
+                              Rails.application.routes.url_helpers.help_page_url('user/project/repository/index.md',
+                                                                                 anchor: 'add-files-to-a-repository'),
+                              target: '_blank',
+                              rel: 'noopener noreferrer'
+          raise Gitlab::Graphql::Errors::MutationError,
+                _(format('You must %s before using Security features.', docs_link.html_safe)).html_safe
+        end
+
         project.repository.add_branch(current_user, branch_name, project.default_branch)
 
         attributes_for_commit = attributes

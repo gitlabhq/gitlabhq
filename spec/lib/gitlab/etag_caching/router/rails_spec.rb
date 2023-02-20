@@ -109,14 +109,20 @@ RSpec.describe Gitlab::EtagCaching::Router::Rails do
   it 'has a valid feature category for every route', :aggregate_failures do
     feature_categories = Gitlab::FeatureCategories.default.categories
 
-    described_class::ROUTES.each do |route|
+    described_class.all_routes.each do |route|
       expect(feature_categories).to include(route.feature_category), "#{route.name} has a category of #{route.feature_category}, which is not valid"
     end
   end
 
   it 'has a caller_id for every route', :aggregate_failures do
-    described_class::ROUTES.each do |route|
+    described_class.all_routes.each do |route|
       expect(route.caller_id).to include('#'), "#{route.name} has caller_id #{route.caller_id}, which is not valid"
+    end
+  end
+
+  it 'has an urgency for every route', :aggregate_failures do
+    described_class.all_routes.each do |route|
+      expect(route.urgency).to be_an_instance_of(Gitlab::EndpointAttributes::Config::RequestUrgency)
     end
   end
 

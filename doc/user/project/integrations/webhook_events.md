@@ -1784,7 +1784,7 @@ Payload example:
     "links": [
       {
         "id": 1,
-        "external": true,
+        "external": true, // deprecated in GitLab 15.9, will be removed in GitLab 16.0.
         "link_type": "other",
         "name": "Changelog",
         "url": "https://example.net/changelog"

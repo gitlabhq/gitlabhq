@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe QueueBackfillUserDetailsFields, feature_category: :users do
+RSpec.describe QueueBackfillUserDetailsFields, feature_category: :user_profile do
   let!(:batched_migration) { described_class::MIGRATION }
 
   it 'schedules a new batched migration' do

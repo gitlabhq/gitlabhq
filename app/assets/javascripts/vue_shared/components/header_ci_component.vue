@@ -4,7 +4,7 @@ import SafeHtml from '~/vue_shared/directives/safe_html';
 import { isGid, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { glEmojiTag } from '~/emoji';
 import { __, sprintf } from '~/locale';
-import CiIconBadge from './ci_badge_link.vue';
+import CiBadgeLink from './ci_badge_link.vue';
 import TimeagoTooltip from './time_ago_tooltip.vue';
 
 /**
@@ -16,7 +16,7 @@ import TimeagoTooltip from './time_ago_tooltip.vue';
  */
 export default {
   components: {
-    CiIconBadge,
+    CiBadgeLink,
     TimeagoTooltip,
     GlButton,
     GlAvatarLink,
@@ -120,7 +120,7 @@ export default {
     data-testid="ci-header-content"
   >
     <section class="header-main-content gl-mr-3">
-      <ci-icon-badge :status="status" />
+      <ci-badge-link class="gl-mr-3" :status="status" />
 
       <strong data-testid="ci-header-item-text">{{ item }}</strong>
 

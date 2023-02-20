@@ -86,3 +86,10 @@
     min-width: 0;
   }
 }
+
+.work-item-notes {
+  .discussion-notes ul.notes li.toggle-replies-widget {
+    // offset for .timeline-content padding + an extra 1px for border width
+    margin: -5px -9px;
+  }
+}

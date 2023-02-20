@@ -21,7 +21,7 @@ You can use the To-Do List to track [actions](#actions-that-create-to-do-items) 
 
 To access your To-Do List:
 
-On the top bar, in the top right, select To-Do List (**{task-done}**).
+On the top bar, in the upper right, select To-Do List (**{task-done}**).
 
 ## Search the To-Do List
 
@@ -117,17 +117,28 @@ Hi, please message @frank :incoming_envelope:
 
 ## Actions that mark a to-do item as done
 
-Any action to an issue, merge request, or epic marks its
+Various actions on the to-do item object (like issue, merge request, or epic) mark its
 corresponding to-do item as done.
 
-Actions that dismiss to-do items include:
+To-do items are marked as done if you:
 
-- Changing the assignee
-- Changing the milestone
-- Closing the issue or merge request
-- Adding or removing a label
-- Commenting on the issue
-- Resolving a [design discussion thread](project/issues/design_management.md#resolve-a-discussion-thread-on-a-design)
+- Add an award emoji to the description or comment.
+- Add or remove a label.
+- Change the assignee.
+- Change the milestone.
+- Close the to-do item's object.
+- Create a comment.
+- Edit the description.
+- Resolve a [design discussion thread](project/issues/design_management.md#resolve-a-discussion-thread-on-a-design).
+- Accept or deny a project or group membership request.
+
+To-do items are **not** marked as done if you:
+
+- Add a linked item (like a [linked issue](project/issues/related_issues.md)).
+- Add a child item (like [child epic](group/epics/manage_epics.md#multi-level-child-epics) or [task](tasks.md)).
+- Add a [time entry](project/time_tracking.md).
+- Assign yourself.
+- Change the [health status](project/issues/managing_issues.md#health-status).
 
 If someone else closes, merges, or takes action on an issue, merge request, or
 epic, your to-do item remains pending.
@@ -147,7 +158,7 @@ There are two ways to do this:
 
 You can mark all your to-do items as done at the same time.
 
-In the To-Do List, in the top right, select **Mark all as done**.
+In the To-Do List, in the upper right, select **Mark all as done**.
 
 ## How a user's To-Do List is affected when their access changes
 

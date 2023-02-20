@@ -7,85 +7,80 @@ RSpec.describe 'User searches for users', :js, :clean_gitlab_redis_rate_limiting
   let_it_be(:user2) { create(:user, username: 'michael_bluth', name: 'Michael Bluth') }
   let_it_be(:user3) { create(:user, username: 'gob_2018', name: 'George Oscar Bluth') }
 
-  where(search_page_vertical_nav_enabled: [true, false])
-  with_them do
+  before do
+    sign_in(user1)
+  end
+
+  include_examples 'search timeouts', 'users' do
     before do
-      stub_feature_flags(search_page_vertical_nav: search_page_vertical_nav_enabled)
-
-      sign_in(user1)
+      visit(search_path)
     end
+  end
 
-    include_examples 'search timeouts', 'users' do
-      before do
-        visit(search_path)
-      end
-    end
+  context 'when on the dashboard' do
+    it 'finds the user' do
+      visit dashboard_projects_path
 
-    context 'when on the dashboard' do
-      it 'finds the user' do
-        visit dashboard_projects_path
+      submit_search('gob')
+      select_search_scope('Users')
 
-        submit_search('gob')
-        select_search_scope('Users')
-
-        page.within('.results') do
-          expect(page).to have_content('Gob Bluth')
-          expect(page).to have_content('@gob_bluth')
-        end
+      page.within('.results') do
+        expect(page).to have_content('Gob Bluth')
+        expect(page).to have_content('@gob_bluth')
       end
     end
+  end
 
-    context 'when on the project page' do
-      let_it_be_with_reload(:project) { create(:project) }
+  context 'when on the project page' do
+    let_it_be_with_reload(:project) { create(:project) }
 
-      before do
-        project.add_developer(user1)
-        project.add_developer(user2)
-      end
-
-      it 'finds the user belonging to the project' do
-        visit project_path(project)
-
-        submit_search('gob')
-        select_search_scope('Users')
-
-        page.within('.results') do
-          expect(page).to have_content('Gob Bluth')
-          expect(page).to have_content('@gob_bluth')
-
-          expect(page).not_to have_content('Michael Bluth')
-          expect(page).not_to have_content('@michael_bluth')
-
-          expect(page).not_to have_content('George Oscar Bluth')
-          expect(page).not_to have_content('@gob_2018')
-        end
-      end
+    before do
+      project.add_developer(user1)
+      project.add_developer(user2)
     end
 
-    context 'when on the group page' do
-      let(:group) { create(:group) }
+    it 'finds the user belonging to the project' do
+      visit project_path(project)
 
-      before do
-        group.add_developer(user1)
-        group.add_developer(user2)
+      submit_search('gob')
+      select_search_scope('Users')
+
+      page.within('.results') do
+        expect(page).to have_content('Gob Bluth')
+        expect(page).to have_content('@gob_bluth')
+
+        expect(page).not_to have_content('Michael Bluth')
+        expect(page).not_to have_content('@michael_bluth')
+
+        expect(page).not_to have_content('George Oscar Bluth')
+        expect(page).not_to have_content('@gob_2018')
       end
+    end
+  end
 
-      it 'finds the user belonging to the group' do
-        visit group_path(group)
+  context 'when on the group page' do
+    let(:group) { create(:group) }
 
-        submit_search('gob')
-        select_search_scope('Users')
+    before do
+      group.add_developer(user1)
+      group.add_developer(user2)
+    end
 
-        page.within('.results') do
-          expect(page).to have_content('Gob Bluth')
-          expect(page).to have_content('@gob_bluth')
+    it 'finds the user belonging to the group' do
+      visit group_path(group)
 
-          expect(page).not_to have_content('Michael Bluth')
-          expect(page).not_to have_content('@michael_bluth')
+      submit_search('gob')
+      select_search_scope('Users')
 
-          expect(page).not_to have_content('George Oscar Bluth')
-          expect(page).not_to have_content('@gob_2018')
-        end
+      page.within('.results') do
+        expect(page).to have_content('Gob Bluth')
+        expect(page).to have_content('@gob_bluth')
+
+        expect(page).not_to have_content('Michael Bluth')
+        expect(page).not_to have_content('@michael_bluth')
+
+        expect(page).not_to have_content('George Oscar Bluth')
+        expect(page).not_to have_content('@gob_2018')
       end
     end
   end

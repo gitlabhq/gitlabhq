@@ -5,7 +5,7 @@ module QA
     describe 'Design Management' do
       let(:issue) { Resource::Issue.fabricate_via_api! }
       let(:design_filename) { 'banana_sample.gif' }
-      let(:design) { File.absolute_path(File.join('qa', 'fixtures', 'designs', design_filename)) }
+      let(:design) { File.join(Runtime::Path.fixtures_path, 'designs', design_filename) }
       let(:annotation) { "This design is great!" }
 
       before do
@@ -13,7 +13,7 @@ module QA
       end
 
       it 'user adds a design and annotates it',
-         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347822' do
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347822' do
         issue.visit!
 
         Page::Project::Issue::Show.perform do |issue|

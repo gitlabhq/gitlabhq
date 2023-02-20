@@ -613,7 +613,7 @@ Remember to run `sudo gitlab-ctl reconfigure` after saving the changes to the `g
 
 The public SSH keys for users allowed to access GitLab are stored in `/var/opt/gitlab/.ssh/authorized_keys`. Typically we'd use shared storage so that all the instances are able to access this file when a user performs a Git action over SSH. Because we do not have shared storage in our setup, we update our configuration to authorize SSH users via indexed lookup in the GitLab database.
 
-Follow the instructions at [Setting up fast lookup via GitLab Shell](../../administration/operations/fast_ssh_key_lookup.md#setting-up-fast-lookup-via-gitlab-shell) to switch from using the `authorized_keys` file to the database.
+Follow the instructions at [Set up fast SSH key lookup](../../administration/operations/fast_ssh_key_lookup.md#set-up-fast-lookup) to switch from using the `authorized_keys` file to the database.
 
 If you do not configure fast lookup, Git actions over SSH results in the following error:
 
@@ -732,8 +732,8 @@ Because our instances are created by the auto scaling group, go back to your ins
 
 Apart from Amazon's Cloudwatch which you can enable on various services,
 GitLab provides its own integrated monitoring solution based on Prometheus.
-For more information on how to set it up, visit the
-[GitLab Prometheus documentation](../../administration/monitoring/prometheus/index.md)
+For more information about how to set it up, see
+[GitLab Prometheus](../../administration/monitoring/prometheus/index.md).
 
 GitLab also has various [health check endpoints](../../user/admin_area/monitoring/health_check.md)
 that you can ping and get reports.

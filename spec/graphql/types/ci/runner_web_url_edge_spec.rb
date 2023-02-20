@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Types::Ci::RunnerWebUrlEdge do
+RSpec.describe Types::Ci::RunnerWebUrlEdge, feature_category: :runner_fleet do
   specify { expect(described_class.graphql_name).to eq('RunnerWebUrlEdge') }
 
   it 'contains URL attributes' do

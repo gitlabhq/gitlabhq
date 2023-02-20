@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 comments: false
 ---
 
-# GitLab integrations **(FREE)**
+# Integrate with GitLab **(FREE)**
 
 You can integrate GitLab with external services for enhanced functionality.
 
@@ -29,7 +29,6 @@ You can integrate GitLab with the following authentication sources:
 - Enable sign-in with [LDAP](../administration/auth/ldap/index.md).
 - Enable creating [OAuth 2.0](oauth_provider.md) applications.
 - Use [OmniAuth](omniauth.md) to enable sign-in through:
-  - Authentiq ID
   - Azure
   - Bitbucket
   - Crowd

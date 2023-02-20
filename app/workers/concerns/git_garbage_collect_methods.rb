@@ -57,7 +57,7 @@ module GitGarbageCollectMethods
   end
 
   def gc?(task)
-    task == :gc || task == :prune
+    %i[gc eager prune].include?(task)
   end
 
   def try_obtain_lease(key)
@@ -87,7 +87,7 @@ module GitGarbageCollectMethods
     if task == :prune
       client.prune_unreachable_objects
     else
-      client.optimize_repository
+      client.optimize_repository(eager: task == :eager)
     end
   rescue GRPC::NotFound => e
     Gitlab::GitLogger.error("#{__method__} failed:\nRepository not found")

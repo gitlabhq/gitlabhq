@@ -16,7 +16,11 @@ module QA
         confidential_note
       ].freeze
 
-      attr_accessor :url, :enable_ssl, :id
+      attr_accessor :url, :enable_ssl
+
+      attribute :disabled_until
+      attribute :id
+      attribute :alert_status
 
       attribute :project do
         Project.fabricate_via_api! do |resource|
@@ -33,7 +37,16 @@ module QA
       def initialize
         @id = nil
         @enable_ssl = false
+        @alert_status = nil
         @url = nil
+      end
+
+      def fabricate_via_api!
+        resource_web_url = super
+
+        @id = api_response[:id]
+
+        resource_web_url
       end
 
       def resource_web_url(resource)
@@ -41,11 +54,11 @@ module QA
       end
 
       def api_get_path
-        "/projects/#{project.id}/hooks"
+        "#{api_post_path}/#{api_response[:id]}"
       end
 
       def api_post_path
-        api_get_path
+        "/projects/#{project.id}/hooks"
       end
 
       def api_post_body

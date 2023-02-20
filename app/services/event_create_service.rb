@@ -229,23 +229,21 @@ class EventCreateService
     track_event(event_action: :pushed, event_target: Project, author_id: current_user.id)
 
     namespace = project.namespace
-    if Feature.enabled?(:route_hll_to_snowplow, namespace)
-      Gitlab::Tracking.event(
-        self.class.to_s,
-        :push,
-        label: 'usage_activity_by_stage_monthly.create.action_monthly_active_users_project_repo',
-        namespace: namespace,
-        user: current_user,
-        project: project,
-        property: 'project_action',
-        context: [Gitlab::Tracking::ServicePingContext.new(data_source: :redis_hll, event: 'project_action').to_context]
-      )
-    end
+    Gitlab::Tracking.event(
+      self.class.to_s,
+      :push,
+      label: 'usage_activity_by_stage_monthly.create.action_monthly_active_users_project_repo',
+      namespace: namespace,
+      user: current_user,
+      project: project,
+      property: 'project_action',
+      context: [Gitlab::Tracking::ServicePingContext.new(data_source: :redis_hll, event: 'project_action').to_context]
+    )
 
     Users::LastPushEventService.new(current_user)
       .cache_last_push_event(event)
 
-    Users::ActivityService.new(current_user).execute
+    Users::ActivityService.new(author: current_user, namespace: namespace, project: project).execute
   end
 
   def create_event(resource_parent, current_user, status, attributes = {})
@@ -275,8 +273,8 @@ class EventCreateService
     { resource_parent_attr => resource_parent.id }
   end
 
-  def track_event(**params)
-    Gitlab::UsageDataCounters::TrackUniqueEvents.track_event(**params)
+  def track_event(...)
+    Gitlab::UsageDataCounters::TrackUniqueEvents.track_event(...)
   end
 
   def track_snowplow_event(action:, project:, user:, label:, property:)

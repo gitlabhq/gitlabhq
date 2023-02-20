@@ -85,7 +85,7 @@ describe('WorkItemLabels component', () => {
   it('focuses token selector on token selector input event', async () => {
     createComponent();
     findTokenSelector().vm.$emit('input', [mockLabels[0]]);
-    await nextTick();
+    await waitForPromises();
 
     expect(findEmptyState().exists()).toBe(false);
     expect(findTokenSelector().element.contains(document.activeElement)).toBe(true);
@@ -189,6 +189,23 @@ describe('WorkItemLabels component', () => {
     );
   });
 
+  it('adds new labels to the end', async () => {
+    const response = workItemResponseFactory({ labels: [mockLabels[1]] });
+    const workItemQueryHandler = jest.fn().mockResolvedValue(response);
+    createComponent({
+      workItemQueryHandler,
+      updateWorkItemMutationHandler: successUpdateWorkItemMutationHandler,
+    });
+    await waitForPromises();
+
+    findTokenSelector().vm.$emit('input', [mockLabels[0]]);
+    await waitForPromises();
+
+    const labels = findTokenSelector().props('selectedTokens');
+    expect(labels[0]).toMatchObject(mockLabels[1]);
+    expect(labels[1]).toMatchObject(mockLabels[0]);
+  });
+
   describe('when clicking outside the token selector', () => {
     it('calls a mutation with correct variables', () => {
       createComponent();
@@ -205,9 +222,7 @@ describe('WorkItemLabels component', () => {
     });
 
     it('emits an error and resets labels if mutation was rejected', async () => {
-      const workItemQueryHandler = jest.fn().mockResolvedValue(workItemResponseFactory());
-
-      createComponent({ updateWorkItemMutationHandler: errorHandler, workItemQueryHandler });
+      createComponent({ updateWorkItemMutationHandler: errorHandler });
 
       await waitForPromises();
 
@@ -222,6 +237,23 @@ describe('WorkItemLabels component', () => {
 
       expect(wrapper.emitted('error')).toEqual([[i18n.updateError]]);
       expect(updatedLabels).toEqual(initialLabels);
+    });
+
+    it('does not make server request if no labels added or removed', async () => {
+      const updateWorkItemMutationHandler = jest
+        .fn()
+        .mockResolvedValue(updateWorkItemMutationResponse);
+
+      createComponent({ updateWorkItemMutationHandler });
+
+      await waitForPromises();
+
+      findTokenSelector().vm.$emit('input', []);
+      findTokenSelector().vm.$emit('blur', new FocusEvent({ relatedTarget: null }));
+
+      await waitForPromises();
+
+      expect(updateWorkItemMutationHandler).not.toHaveBeenCalled();
     });
 
     it('has a subscription', async () => {

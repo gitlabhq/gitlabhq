@@ -40,7 +40,7 @@ can't be terminated and its memory usage grows over time.
 ## Select a version to install
 
 Make sure you view [this installation guide](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/install/installation.md) from the branch (version) of GitLab you would like to install (for example, `11-7-stable`).
-You can select the branch in the version dropdown list in the top left corner of GitLab (below the menu bar).
+You can select the branch in the version dropdown list in the upper-left corner of GitLab (below the menu bar).
 
 If the highest number stable branch is unclear, check the [GitLab blog](https://about.gitlab.com/blog/) for installation guide links by version.
 
@@ -621,9 +621,17 @@ sudo -u git -H editor config/database.yml
 # You can keep the double quotes around the password
 sudo -u git -H editor config/database.yml
 
+# Uncomment the `ci:` sections in config/database.yml.
+# Ensure the `database` value in `ci:` matches the database value in `main:`.
+
 # Make config/database.yml readable to git only
 sudo -u git -H chmod o-rwx config/database.yml
 ```
+
+NOTE:
+From GitLab 15.9, `database.yml` with only a section: `main:` is deprecated.
+In GitLab 15.10 and later, you should have two sections in your `database.yml`, `main:` and `ci:`. The `ci`: connection [must be to the same database](../administration/postgresql/multiple_databases.md).
+In GitLab 17.0 and later, you must have the two `main:` and `ci:` sections in your `database.yml`.
 
 ### Install Gems
 
@@ -1051,7 +1059,7 @@ To use GitLab with HTTPS:
    1. Review the configuration file and consider applying other security and performance enhancing features.
 
 Using a self-signed certificate is discouraged. If you must use one,
-follow the normal directions and generate a self-signed SSL certificate:
+follow the standard directions and generate a self-signed SSL certificate:
 
    ```shell
    mkdir -p /etc/nginx/ssl/

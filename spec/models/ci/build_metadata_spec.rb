@@ -20,6 +20,10 @@ RSpec.describe Ci::BuildMetadata do
 
   it_behaves_like 'having unique enum values'
 
+  it { is_expected.to belong_to(:build) }
+  it { is_expected.to belong_to(:project) }
+  it { is_expected.to belong_to(:runner_machine) }
+
   describe '#update_timeout_state' do
     subject { metadata }
 

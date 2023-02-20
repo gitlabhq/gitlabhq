@@ -59,9 +59,7 @@ module Gitlab
           end
 
           def presents(*target_classes, as: nil)
-            if target_classes.any? { |k| k.is_a?(Symbol) }
-              raise ArgumentError, "Unsupported target class type: #{target_classes}."
-            end
+            raise ArgumentError, "Unsupported target class type: #{target_classes}." if target_classes.any?(Symbol)
 
             if self < ::Gitlab::View::Presenter::Delegated
               target_classes.each { |k| delegator_target(k) }

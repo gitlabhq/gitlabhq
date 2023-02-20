@@ -3,6 +3,7 @@ import { loadHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import waitForPromises from 'helpers/wait_for_promises';
 import '~/lib/utils/common_utils';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { addDelimiter } from '~/lib/utils/text_utility';
 import Todos from '~/pages/dashboard/todos/index/todos';
 
@@ -41,7 +42,7 @@ describe('Todos', () => {
       // Arrange
       mock
         .onDelete(path)
-        .replyOnce(200, { count: TEST_COUNT_BIG, done_count: TEST_DONE_COUNT_BIG });
+        .replyOnce(HTTP_STATUS_OK, { count: TEST_COUNT_BIG, done_count: TEST_DONE_COUNT_BIG });
       onToggleSpy = jest.fn();
       document.addEventListener('todo:toggle', onToggleSpy);
 

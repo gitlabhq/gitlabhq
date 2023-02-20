@@ -1,28 +1,23 @@
 <script>
-import {
-  GlAvatarLabeled,
-  GlDropdown,
-  GlDropdownItem,
-  GlDropdownText,
-  GlSearchBoxByType,
-} from '@gitlab/ui';
+import { GlAvatarLabeled, GlCollapsibleListbox } from '@gitlab/ui';
 import { debounce } from 'lodash';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { s__ } from '~/locale';
 import { getProjects } from '~/rest_api';
 import { SEARCH_DELAY, GROUP_FILTERS } from '../constants';
 
+// We can have GlCollapsibleListbox dropdown panel with full
+// width once we implement
+// https://gitlab.com/gitlab-org/gitlab-ui/-/issues/2133
+// https://gitlab.com/gitlab-org/gitlab/-/issues/390411
 export default {
   name: 'ProjectSelect',
   components: {
     GlAvatarLabeled,
-    GlDropdown,
-    GlDropdownItem,
-    GlDropdownText,
-    GlSearchBoxByType,
+    GlCollapsibleListbox,
   },
   model: {
-    prop: 'selectedProject',
+    prop: 'selectedProjectId',
   },
   props: {
     groupsFilter: {
@@ -41,17 +36,20 @@ export default {
     return {
       isFetching: false,
       projects: [],
-      selectedProject: {},
+      selectedProjectId: '',
       searchTerm: '',
       errorMessage: '',
     };
   },
   computed: {
     selectedProjectName() {
-      return this.selectedProject.name || this.$options.i18n.dropdownText;
+      return this.selectedProject.nameWithNamespace || this.$options.i18n.dropdownText;
     },
     isFetchResultEmpty() {
       return this.projects.length === 0 && !this.isFetching;
+    },
+    selectedProject() {
+      return this.projects.find((prj) => prj.id === this.selectedProjectId) || {};
     },
   },
   watch: {
@@ -70,10 +68,14 @@ export default {
         .then((response) => {
           this.projects = response.data.map((project) => ({
             ...convertObjectPropsToCamelCase(project),
-            name: project.name_with_namespace,
+            text: project.name_with_namespace,
+            value: project.id,
           }));
         })
         .catch(() => {
+          // To be displayed in GlCollapsibleListbox once we implement
+          // https://gitlab.com/gitlab-org/gitlab-ui/-/issues/2132
+          // https://gitlab.com/gitlab-org/gitlab/-/issues/389974
           this.errorMessage = this.$options.i18n.errorFetchingProjects;
         })
         .finally(() => {
@@ -83,9 +85,7 @@ export default {
     fetchProjects() {
       return getProjects(this.searchTerm, this.$options.defaultFetchOptions);
     },
-    selectProject(project) {
-      this.selectedProject = project;
-
+    selectProject() {
       this.$emit('input', this.selectedProject);
     },
   },
@@ -104,40 +104,28 @@ export default {
 };
 </script>
 <template>
-  <div>
-    <gl-dropdown
-      data-testid="project-select-dropdown"
-      :text="selectedProjectName"
-      toggle-class="gl-mb-2"
-      block
-      menu-class="gl-w-full!"
-    >
-      <gl-search-box-by-type
-        v-model="searchTerm"
-        :is-loading="isFetching"
-        :placeholder="$options.i18n.searchPlaceholder"
-        data-qa-selector="project_select_dropdown_search_field"
+  <gl-collapsible-listbox
+    v-model="selectedProjectId"
+    searchable
+    :items="projects"
+    :searching="isFetching"
+    :toggle-text="selectedProjectName"
+    :search-placeholder="$options.i18n.searchPlaceholder"
+    :no-results-text="$options.i18n.emptySearchResult"
+    data-testid="project-select-dropdown"
+    data-qa-selector="project_select_dropdown"
+    class="gl-collapsible-listbox-w-full"
+    @search="searchTerm = $event"
+    @select="selectProject"
+  >
+    <template #list-item="{ item }">
+      <gl-avatar-labeled
+        :label="item.text"
+        :src="item.avatarUrl"
+        :entity-id="item.id"
+        :entity-name="item.name"
+        :size="32"
       />
-      <gl-dropdown-item
-        v-for="project in projects"
-        :key="project.id"
-        :name="project.name"
-        @click="selectProject(project)"
-      >
-        <gl-avatar-labeled
-          :label="project.name"
-          :src="project.avatarUrl"
-          :entity-id="project.id"
-          :entity-name="project.name"
-          :size="32"
-        />
-      </gl-dropdown-item>
-      <gl-dropdown-text v-if="errorMessage" data-testid="error-message">
-        <span class="gl-text-gray-500">{{ errorMessage }}</span>
-      </gl-dropdown-text>
-      <gl-dropdown-text v-else-if="isFetchResultEmpty" data-testid="empty-result-message">
-        <span class="gl-text-gray-500">{{ $options.i18n.emptySearchResult }}</span>
-      </gl-dropdown-text>
-    </gl-dropdown>
-  </div>
+    </template>
+  </gl-collapsible-listbox>
 </template>

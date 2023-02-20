@@ -374,7 +374,7 @@ start. Jobs in the current stage are not stopped and continue to run.
 
 - If a job does not specify a [`stage`](#stage), the job is assigned the `test` stage.
 - If a stage is defined but no jobs use it, the stage is not visible in the pipeline,
-  which can help [compliance pipeline configurations](../../user/group/compliance_frameworks.md#configure-a-compliance-pipeline):
+  which can help [compliance pipeline configurations](../../user/group/compliance_frameworks.md#compliance-pipelines):
   - Stages can be defined in the compliance configuration but remain hidden if not used.
   - The defined stages become visible when developers use them in job definitions.
 
@@ -1002,9 +1002,9 @@ rspec:
 - Combining reports in parent pipelines using [artifacts from child pipelines](#needspipelinejob) is
   not supported. Track progress on adding support in [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/215725).
 - To be able to browse the report output files, include the [`artifacts:paths`](#artifactspaths) keyword. This uploads and stores the artifact twice.
-- The test reports are collected regardless of the job results (success or failure).
-  You can use [`artifacts:expire_in`](#artifactsexpire_in) to set up an expiration
-  date for artifacts reports.
+- Artifacts created for `artifacts: reports` are always uploaded, regardless of the job results (success or failure).
+  You can use [`artifacts:expire_in`](#artifactsexpire_in) to set an expiration
+  date for the artifacts.
 
 #### `artifacts:untracked`
 
@@ -1056,6 +1056,11 @@ job:
   artifacts:
     when: on_failure
 ```
+
+**Additional details**:
+
+- The artifacts created for [`artifacts:reports`](#artifactsreports) are always uploaded,
+  regardless of the job results (success or failure). `artifacts:when` does not change this behavior.
 
 ### `before_script`
 
@@ -1111,8 +1116,15 @@ Caches are:
 - Shared between pipelines and jobs.
 - By default, not shared between [protected](../../user/project/protected_branches.md) and unprotected branches.
 - Restored before [artifacts](#artifacts).
+- Limited to a maximum of four [different caches](../caching/index.md#use-multiple-caches).
 
-Learn more about caches in [Caching in GitLab CI/CD](../caching/index.md).
+You can [disable caching for specific jobs](../caching/index.md#disable-cache-for-specific-jobs),
+for example to override:
+
+- A default cache defined with [`default`](#default).
+- The configuration for a job added with [`include`](#include).
+
+For more information about caches, see [Caching in GitLab CI/CD](../caching/index.md).
 
 #### `cache:paths`
 
@@ -1354,7 +1366,7 @@ cache keys used by protected branches.
 
 - `true` or `false` (default).
 
-**Example of `cache:untracked`**:
+**Example of `cache:unprotect`**:
 
 ```yaml
 rspec:
@@ -1700,7 +1712,7 @@ Use the `action` keyword to specify how the job interacts with the environment.
 |:----------|:----------------|
 | `start`   | Default value. Indicates that the job starts the environment. The deployment is created after the job starts. |
 | `prepare` | Indicates that the job is only preparing the environment. It does not trigger deployments. [Read more about preparing environments](../environments/index.md#access-an-environment-for-preparation-or-verification-purposes). |
-| `stop`    | Indicates that the job stops a deployment. For more detail, read [Stop an environment](../environments/index.md#stop-an-environment). |
+| `stop`    | Indicates that the job stops an environment. [Read more about stopping an environment](../environments/index.md#stop-an-environment). |
 | `verify`  | Indicates that the job is only verifying the environment. It does not trigger deployments. [Read more about verifying environments](../environments/index.md#access-an-environment-for-preparation-or-verification-purposes). |
 | `access`  | Indicates that the job is only accessing the environment. It does not trigger deployments. [Read more about accessing environments](../environments/index.md#access-an-environment-for-preparation-or-verification-purposes). |
 
@@ -1780,9 +1792,7 @@ environment, using the `production`
 **Additional details**:
 
 - Kubernetes configuration is not supported for Kubernetes clusters
-  that are [managed by GitLab](../../user/project/clusters/gitlab_managed_clusters.md).
-  To follow progress on support for GitLab-managed clusters, see the
-  [relevant issue](https://gitlab.com/gitlab-org/gitlab/-/issues/38054).
+  [managed by GitLab](../../user/project/clusters/gitlab_managed_clusters.md).
 
 **Related topics**:
 
@@ -3794,6 +3804,43 @@ job:
 - The `file` keyword is a setting for the CI/CD variable and must be nested under
   the CI/CD variable name, not in the `vault` section.
 
+#### `secrets:token`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/356986) in GitLab 15.8.
+
+Use `secrets:token` to explicitly select a token to use when authenticating with Vault by referencing the token's CI/CD variable.
+
+This keyword has no effect if [**Limit JSON Web Token (JWT) access**](../secrets/id_token_authentication.md#enable-automatic-id-token-authentication)
+is disabled.
+
+**Keyword type**: Job keyword. You can use it only as part of a job.
+
+**Possible inputs**:
+
+- The name of an ID token
+
+**Example of `secrets:token`**:
+
+```yaml
+job:
+  id_tokens:
+    AWS_TOKEN:
+      aud: https://aws.example.com
+    VAULT_TOKEN:
+      aud: https://vault.example.com
+  secrets:
+    DB_PASSWORD:
+      vault: gitlab/production/db
+      token: $VAULT_TOKEN
+```
+
+**Additional details**:
+
+- When the `token` keyword is not set and **Limit JSON Web Token (JWT) access** enabled, the first ID token
+  is used to authenticate.
+- When **Limit JSON Web Token (JWT) access** is disabled, the `token` keyword is ignored and the `CI_JOB_JWT`
+  CI/CD variable is used to authenticate.
+
 ### `services`
 
 Use `services` to specify any additional Docker images that your scripts require to run successfully. The [`services` image](../services/index.md) is linked
@@ -4361,35 +4408,89 @@ deploy_review_job:
 
 #### `variables:description`
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30101) in GitLab 13.7.
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/363660) in GitLab 15.5, `variables:value` can contain an array of values.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30101) in GitLab 13.7.
 
-Use the `description` keyword to define a [pipeline-level (global) variable that is prefilled](../pipelines/index.md#prefill-variables-in-manual-pipelines)
-when [running a pipeline manually](../pipelines/index.md#run-a-pipeline-manually).
-
-If used with `value`, the variable value is also prefilled when running a pipeline manually.
+Use the `description` keyword to define a description for a pipeline-level (global) variable.
+The description displays with [the prefilled variable name when running a pipeline manually](../pipelines/index.md#prefill-variables-in-manual-pipelines).
 
 **Keyword type**: Global keyword. You cannot use it for job-level variables.
 
 **Possible inputs**:
 
 - A string.
-- An array of strings.
 
 **Example of `variables:description`**:
 
 ```yaml
 variables:
-  DEPLOY_ENVIRONMENT:
-    description: "The deployment target. Change this variable to 'canary' or 'production' if needed."
-    value: "staging"
+  DEPLOY_NOTE:
+    description: "The deployment note. Explain the reason for this deployment."
 ```
 
 **Additional details**:
 
-- A global variable defined with `value` but no `description` behaves the same as
-  [`variables`](#variables).
-- `variables:value` can [contain an array of selectable values](../pipelines/index.md#configure-a-list-of-selectable-values-for-a-prefilled-variable).
+- When used without `value`, the variable exists in pipelines that were not triggered manually,
+  and the default value is an empty string (`''`).
+
+#### `variables:value`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30101) in GitLab 13.7.
+
+Use the `value` keyword to define a pipeline-level (global) variable's value. When used with
+[`variables: description`](#variablesdescription), the variable value is [prefilled when running a pipeline manually](../pipelines/index.md#prefill-variables-in-manual-pipelines).
+
+**Keyword type**: Global keyword. You cannot use it for job-level variables.
+
+**Possible inputs**:
+
+- A string.
+
+**Example of `variables:value`**:
+
+```yaml
+variables:
+  DEPLOY_ENVIRONMENT:
+    value: "staging"
+    description: "The deployment target. Change this variable to 'canary' or 'production' if needed."
+```
+
+**Additional details**:
+
+- If used without [`variables: description`](#variablesdescription), the behavior is
+  the same as [`variables`](#variables).
+
+#### `variables:options`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105502) in GitLab 15.7.
+
+Use `variables:options` to define an array of values that are [selectable in the UI when running a pipeline manually](../pipelines/index.md#configure-a-list-of-selectable-prefilled-variable-values).
+
+Must be used with `variables: value`, and the string defined for `value`:
+
+- Must also be one of the strings in the `options` array.
+- Is the default selection.
+
+If there is no [`description`](#variablesdescription),
+this keyword has no effect.
+
+**Keyword type**: Global keyword. You cannot use it for job-level variables.
+
+**Possible inputs**:
+
+- An array of strings.
+
+**Example of `variables:options`**:
+
+```yaml
+variables:
+  DEPLOY_ENVIRONMENT:
+    value: "staging"
+    options:
+      - "production"
+      - "staging"
+      - "canary"
+    description: "The deployment target. Set to 'staging' by default."
+```
 
 #### `variables:expand`
 

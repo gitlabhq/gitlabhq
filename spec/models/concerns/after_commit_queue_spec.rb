@@ -72,7 +72,7 @@ RSpec.describe AfterCommitQueue do
 
     context 'multiple databases - Ci::ApplicationRecord models' do
       before do
-        skip_if_multiple_databases_not_setup
+        skip_if_multiple_databases_not_setup(:ci)
 
         table_sql = <<~SQL
           CREATE TABLE _test_gitlab_ci_after_commit_queue (

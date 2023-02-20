@@ -4,5 +4,5 @@ introduced_by_url:
 rollout_issue_url:
 milestone:
 type: undefined
-group:
+group: group::gitaly
 default_enabled: false

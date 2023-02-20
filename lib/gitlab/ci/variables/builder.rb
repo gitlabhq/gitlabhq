@@ -8,6 +8,7 @@ module Gitlab
 
         def initialize(pipeline)
           @pipeline = pipeline
+          @pipeline_variables_builder = Builder::Pipeline.new(pipeline)
           @instance_variables_builder = Builder::Instance.new
           @project_variables_builder = Builder::Project.new(project)
           @group_variables_builder = Builder::Group.new(project&.group)
@@ -18,7 +19,7 @@ module Gitlab
           Gitlab::Ci::Variables::Collection.new.tap do |variables|
             variables.concat(predefined_variables(job))
             variables.concat(project.predefined_variables)
-            variables.concat(pipeline.predefined_variables)
+            variables.concat(pipeline_variables_builder.predefined_variables)
             variables.concat(job.runner.predefined_variables) if job.runnable? && job.runner
             variables.concat(kubernetes_variables(environment: environment, job: job))
             variables.concat(job.yaml_variables)
@@ -38,7 +39,7 @@ module Gitlab
             break variables unless project
 
             variables.concat(project.predefined_variables)
-            variables.concat(pipeline.predefined_variables)
+            variables.concat(pipeline_variables_builder.predefined_variables)
             variables.concat(secret_instance_variables)
             variables.concat(secret_group_variables(environment: nil))
             variables.concat(secret_project_variables(environment: nil))
@@ -117,6 +118,7 @@ module Gitlab
         private
 
         attr_reader :pipeline
+        attr_reader :pipeline_variables_builder
         attr_reader :instance_variables_builder
         attr_reader :project_variables_builder
         attr_reader :group_variables_builder

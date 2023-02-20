@@ -10,7 +10,10 @@ RSpec.describe 'Database schema', feature_category: :database do
   let(:columns_name_with_jsonb) { retrieve_columns_name_with_jsonb }
 
   IGNORED_INDEXES_ON_FKS = {
-    slack_integrations_scopes: %w[slack_api_scope_id]
+    slack_integrations_scopes: %w[slack_api_scope_id],
+    # Will be removed in https://gitlab.com/gitlab-org/gitlab/-/issues/391312
+    approval_project_rules: %w[scan_result_policy_id],
+    approval_merge_request_rules: %w[scan_result_policy_id]
   }.with_indifferent_access.freeze
 
   TABLE_PARTITIONS = %w[ci_builds_metadata].freeze
@@ -33,26 +36,26 @@ RSpec.describe 'Database schema', feature_category: :database do
     chat_names: %w[chat_id team_id user_id integration_id],
     chat_teams: %w[team_id],
     ci_build_needs: %w[partition_id],
-    ci_build_pending_states: %w[partition_id],
+    ci_build_pending_states: %w[partition_id build_id],
     ci_build_report_results: %w[partition_id],
-    ci_build_trace_chunks: %w[partition_id],
+    ci_build_trace_chunks: %w[partition_id build_id],
     ci_build_trace_metadata: %w[partition_id],
     ci_builds: %w[erased_by_id trigger_request_id partition_id],
-    ci_builds_runner_session: %w[partition_id],
-    p_ci_builds_metadata: %w[partition_id runner_machine_id], # NOTE: FK will be added in follow-up https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108167
+    ci_builds_runner_session: %w[partition_id build_id],
+    p_ci_builds_metadata: %w[partition_id],
     ci_job_artifacts: %w[partition_id],
     ci_job_variables: %w[partition_id],
     ci_namespace_monthly_usages: %w[namespace_id],
     ci_pending_builds: %w[partition_id],
     ci_pipeline_variables: %w[partition_id],
     ci_pipelines: %w[partition_id],
-    ci_resources: %w[partition_id],
+    ci_resources: %w[partition_id build_id],
     ci_runner_projects: %w[runner_id],
     ci_running_builds: %w[partition_id],
     ci_sources_pipelines: %w[partition_id source_partition_id],
     ci_stages: %w[partition_id],
     ci_trigger_requests: %w[commit_id],
-    ci_unit_test_failures: %w[partition_id],
+    ci_unit_test_failures: %w[partition_id build_id],
     cluster_providers_aws: %w[security_group_id vpc_id access_key_id],
     cluster_providers_gcp: %w[gcp_project_id operation_id],
     compliance_management_frameworks: %w[group_id],
@@ -80,6 +83,7 @@ RSpec.describe 'Database schema', feature_category: :database do
     ldap_group_links: %w[group_id],
     members: %w[source_id created_by_id],
     merge_requests: %w[last_edited_by_id state_id],
+    merge_requests_compliance_violations: %w[target_project_id],
     merge_request_diff_commits: %w[commit_author_id committer_id],
     namespaces: %w[owner_id parent_id],
     notes: %w[author_id commit_id noteable_id updated_by_id resolved_by_id confirmed_by_id discussion_id],
@@ -89,6 +93,7 @@ RSpec.describe 'Database schema', feature_category: :database do
     oauth_applications: %w[owner_id],
     product_analytics_events_experimental: %w[event_id txn_id user_id],
     project_build_artifacts_size_refreshes: %w[last_job_artifact_id],
+    project_data_transfers: %w[project_id namespace_id],
     project_error_tracking_settings: %w[sentry_project_id],
     project_group_links: %w[group_id],
     project_statistics: %w[namespace_id],
@@ -185,7 +190,6 @@ RSpec.describe 'Database schema', feature_category: :database do
   # These pre-existing enums have limits > 2 bytes
   IGNORED_LIMIT_ENUMS = {
     'Analytics::CycleAnalytics::Stage' => %w[start_event_identifier end_event_identifier],
-    'Analytics::CycleAnalytics::ProjectStage' => %w[start_event_identifier end_event_identifier],
     'Ci::Bridge' => %w[failure_reason],
     'Ci::Build' => %w[failure_reason],
     'Ci::BuildMetadata' => %w[timeout_source],

@@ -10,10 +10,10 @@ RSpec.describe Gitlab::Analytics::CycleAnalytics::BaseQueryBuilder do
 
   let(:params) { { current_user: user } }
   let(:records) do
-    stage = build(:cycle_analytics_project_stage, {
+    stage = build(:cycle_analytics_stage, {
       start_event_identifier: :merge_request_created,
       end_event_identifier: :merge_request_merged,
-      project: project
+      namespace: project.reload.project_namespace
     })
     described_class.new(stage: stage, params: params).build.to_a
   end
@@ -23,6 +23,14 @@ RSpec.describe Gitlab::Analytics::CycleAnalytics::BaseQueryBuilder do
     mr1.metrics.update!(merged_at: 1.month.ago)
     mr2.metrics.update!(merged_at: Time.now)
     freeze_time
+  end
+
+  context 'when an unknown parent class is given' do
+    it 'raises error' do
+      stage = instance_double('Analytics::CycleAnalytics::Stage', parent: Issue.new)
+
+      expect { described_class.new(stage: stage) }.to raise_error(/unknown parent_class: Issue/)
+    end
   end
 
   describe 'date range parameters' do

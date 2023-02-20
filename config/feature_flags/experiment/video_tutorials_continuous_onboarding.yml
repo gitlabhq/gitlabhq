@@ -1,8 +1,0 @@
----
-name: video_tutorials_continuous_onboarding
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82274
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/351916
-milestone: '14.9'
-type: experiment
-group: group::acquisition
-default_enabled: false

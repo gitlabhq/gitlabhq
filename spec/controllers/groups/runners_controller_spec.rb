@@ -30,7 +30,6 @@ RSpec.describe Groups::RunnersController, feature_category: :runner_fleet do
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to render_template(:index)
-        expect(assigns(:group_runners_limited_count)).to be(2)
       end
 
       it 'tracks the event' do

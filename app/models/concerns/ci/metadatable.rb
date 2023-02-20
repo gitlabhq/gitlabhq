@@ -22,7 +22,7 @@ module Ci
       delegate :set_cancel_gracefully, to: :metadata, prefix: false, allow_nil: false
       delegate :id_tokens, to: :metadata, allow_nil: true
 
-      before_create :ensure_metadata
+      before_validation :ensure_metadata, on: :create
     end
 
     def has_exposed_artifacts?
@@ -34,7 +34,7 @@ module Ci
     end
 
     def ensure_metadata
-      metadata || build_metadata(project: project, partition_id: partition_id)
+      metadata || build_metadata(project: project)
     end
 
     def degenerated?

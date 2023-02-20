@@ -21,14 +21,23 @@
       .key-list-item-dates
         %span.last-used-at.gl-mr-3
           = s_('Profiles|Last used:')
-          = key.last_used_at ? time_ago_with_tooltip(key.last_used_at) : _('Never')
+          -# TODO: Remove this conditional when https://gitlab.com/gitlab-org/gitlab/-/issues/324764 is resolved.
+          - if Feature.enabled?(:disable_ssh_key_used_tracking)
+            = _('Unavailable')
+            = link_to sprite_icon('question-o'), help_page_path('user/ssh.md', anchor: 'view-your-accounts-ssh-keys')
+          - else
+            = key.last_used_at ? time_ago_with_tooltip(key.last_used_at) : _('Never')
         %span.expires.gl-mr-3
           = key.expired? ? s_('Profiles|Expired:') : s_('Profiles|Expires:')
           = key.expires_at ? key.expires_at.to_date : _('Never')
         %span.last-used-at.gl-mr-3
           = s_('Profiles|Usage type:')
           = ssh_key_usage_types.invert[key.usage_type]
-    %span.key-created-at.gl-display-flex.gl-align-items-center
-      - if key.can_delete?
-        .gl-ml-3
-          = render 'shared/ssh_keys/key_delete', icon: true, button_data: ssh_key_delete_modal_data(key, path_to_key(key, is_admin))
+      .gl-display-flex.gl-float-right
+        - if key.can_delete?
+          - if key.signing? && !is_admin && Feature.enabled?(:revoke_ssh_signatures)
+            = render Pajamas::ButtonComponent.new(size: :small, button_options: { class: 'js-confirm-modal-button', data: ssh_key_revoke_modal_data(key, revoke_profile_key_path(key)) }) do
+              = _('Revoke')
+          .gl-pl-3
+            = render Pajamas::ButtonComponent.new(size: :small, button_options: { class: 'js-confirm-modal-button', data: ssh_key_delete_modal_data(key, path_to_key(key, is_admin)) }) do
+              = _('Remove')

@@ -11,6 +11,7 @@ import {
   GlSprintf,
 } from '@gitlab/ui';
 import { createAlert, VARIANT_SUCCESS, VARIANT_WARNING } from '~/flash';
+import { TYPENAME_PACKAGES_PACKAGE } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
 import { objectToQuery } from '~/lib/utils/url_utility';
@@ -23,7 +24,7 @@ import PackageFiles from '~/packages_and_registries/package_registry/components/
 import PackageHistory from '~/packages_and_registries/package_registry/components/details/package_history.vue';
 import PackageTitle from '~/packages_and_registries/package_registry/components/details/package_title.vue';
 import PackageVersionsList from '~/packages_and_registries/package_registry/components/details/package_versions_list.vue';
-import DeletePackage from '~/packages_and_registries/package_registry/components/functional/delete_package.vue';
+import DeletePackages from '~/packages_and_registries/package_registry/components/functional/delete_packages.vue';
 import {
   PACKAGE_TYPE_NUGET,
   PACKAGE_TYPE_COMPOSER,
@@ -71,7 +72,7 @@ export default {
     AdditionalMetadata,
     InstallationCommands,
     PackageFiles,
-    DeletePackage,
+    DeletePackages,
     PackageVersionsList,
   },
   directives: {
@@ -94,6 +95,7 @@ export default {
       deletePackageModalContent: DELETE_MODAL_CONTENT,
       filesToDelete: [],
       mutationLoading: false,
+      versionsMutationLoading: false,
       packageEntity: {},
     };
   },
@@ -132,7 +134,7 @@ export default {
     },
     queryVariables() {
       return {
-        id: convertToGraphQLId('Packages::Package', this.packageId),
+        id: convertToGraphQLId(TYPENAME_PACKAGES_PACKAGE, this.packageId),
         first: GRAPHQL_PAGE_SIZE,
       };
     },
@@ -145,6 +147,9 @@ export default {
     isLoading() {
       return this.$apollo.queries.packageEntity.loading;
     },
+    isVersionsLoading() {
+      return this.isLoading || this.versionsMutationLoading;
+    },
     packageFilesLoading() {
       return this.isLoading || this.mutationLoading;
     },
@@ -155,9 +160,6 @@ export default {
       return {
         category: packageTypeToTrackCategory(this.packageType),
       };
-    },
-    hasVersions() {
-      return this.packageEntity.versions?.nodes?.length > 0;
     },
     versionPageInfo() {
       return this.packageEntity?.versions?.pageInfo ?? {};
@@ -179,6 +181,14 @@ export default {
         PACKAGE_TYPE_NUGET,
         PACKAGE_TYPE_PYPI,
       ].includes(this.packageType);
+    },
+    refetchQueriesData() {
+      return [
+        {
+          query: getPackageDetails,
+          variables: this.queryVariables,
+        },
+      ];
     },
   },
   methods: {
@@ -205,12 +215,7 @@ export default {
             ids,
           },
           awaitRefetchQueries: true,
-          refetchQueries: [
-            {
-              query: getPackageDetails,
-              variables: this.queryVariables,
-            },
-          ],
+          refetchQueries: this.refetchQueriesData,
         });
         if (data?.destroyPackageFiles?.errors[0]) {
           throw data.destroyPackageFiles.errors[0];
@@ -402,27 +407,38 @@ export default {
           }}</gl-badge>
         </template>
 
-        <package-versions-list
-          :is-loading="isLoading"
-          :page-info="versionPageInfo"
-          :versions="packageEntity.versions.nodes"
-          @prev-page="fetchPreviousVersionsPage"
-          @next-page="fetchNextVersionsPage"
+        <delete-packages
+          :refetch-queries="refetchQueriesData"
+          show-success-alert
+          @start="versionsMutationLoading = true"
+          @end="versionsMutationLoading = false"
         >
-          <template #empty-state>
-            <p class="gl-mt-3" data-testid="no-versions-message">
-              {{ s__('PackageRegistry|There are no other versions of this package.') }}
-            </p>
+          <template #default="{ deletePackages }">
+            <package-versions-list
+              :can-destroy="packageEntity.canDestroy"
+              :is-loading="isVersionsLoading"
+              :page-info="versionPageInfo"
+              :versions="packageEntity.versions.nodes"
+              @delete="deletePackages"
+              @prev-page="fetchPreviousVersionsPage"
+              @next-page="fetchNextVersionsPage"
+            >
+              <template #empty-state>
+                <p class="gl-mt-3" data-testid="no-versions-message">
+                  {{ s__('PackageRegistry|There are no other versions of this package.') }}
+                </p>
+              </template>
+            </package-versions-list>
           </template>
-        </package-versions-list>
+        </delete-packages>
       </gl-tab>
     </gl-tabs>
 
-    <delete-package
+    <delete-packages
       @start="track($options.trackingActions.DELETE_PACKAGE_TRACKING_ACTION)"
       @end="navigateToListWithSuccessModal"
     >
-      <template #default="{ deletePackage }">
+      <template #default="{ deletePackages }">
         <gl-modal
           ref="deleteModal"
           size="sm"
@@ -430,7 +446,7 @@ export default {
           data-testid="delete-modal"
           :action-primary="$options.modal.packageDeletePrimaryAction"
           :action-cancel="$options.modal.cancelAction"
-          @primary="deletePackage(packageEntity)"
+          @primary="deletePackages([packageEntity])"
           @hidden="resetDeleteModalContent"
           @canceled="track($options.trackingActions.CANCEL_DELETE_PACKAGE)"
         >
@@ -446,7 +462,7 @@ export default {
           </gl-sprintf>
         </gl-modal>
       </template>
-    </delete-package>
+    </delete-packages>
 
     <gl-modal
       ref="deleteFileModal"

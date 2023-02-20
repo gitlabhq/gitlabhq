@@ -2189,63 +2189,59 @@
   Foo χρῆν
 06_15_00__inlines__textual_content__003: |
   Multiple     spaces
-07_01_00__gitlab_official_specification_markdown__footnotes__001: |
-  footnote reference tag [^fortytwo]
-
-  [^fortytwo]: footnote text
-07_02_00__gitlab_official_specification_markdown__task_list_items__001: |
+07_01_00__gitlab_official_specification_markdown__task_list_items__001: |
   - [ ] incomplete
-07_02_00__gitlab_official_specification_markdown__task_list_items__002: |
+07_01_00__gitlab_official_specification_markdown__task_list_items__002: |
   - [x] completed
-07_02_00__gitlab_official_specification_markdown__task_list_items__003: |
+07_01_00__gitlab_official_specification_markdown__task_list_items__003: |
   - [~] inapplicable
-07_02_00__gitlab_official_specification_markdown__task_list_items__004: |
+07_01_00__gitlab_official_specification_markdown__task_list_items__004: |
   - [~] inapplicable
 
     text in loose list
-07_03_00__gitlab_official_specification_markdown__front_matter__001: |
+07_02_00__gitlab_official_specification_markdown__front_matter__001: |
   ---
   title: YAML front matter
   ---
-07_03_00__gitlab_official_specification_markdown__front_matter__002: |
+07_02_00__gitlab_official_specification_markdown__front_matter__002: |
   +++
   title: TOML front matter
   +++
-07_03_00__gitlab_official_specification_markdown__front_matter__003: |
+07_02_00__gitlab_official_specification_markdown__front_matter__003: |
   ;;;
   {
     "title": "JSON front matter"
   }
   ;;;
-07_03_00__gitlab_official_specification_markdown__front_matter__004: |
+07_02_00__gitlab_official_specification_markdown__front_matter__004: |
   text
 
   ---
   title: YAML front matter
   ---
-07_03_00__gitlab_official_specification_markdown__front_matter__005: |2
+07_02_00__gitlab_official_specification_markdown__front_matter__005: |2
    ---
   title: YAML front matter
   ---
-07_04_00__gitlab_official_specification_markdown__table_of_contents__001: |
+07_03_00__gitlab_official_specification_markdown__table_of_contents__001: |
   [TOC]
 
   # Heading 1
 
   ## Heading 2
-07_04_00__gitlab_official_specification_markdown__table_of_contents__002: |
+07_03_00__gitlab_official_specification_markdown__table_of_contents__002: |
   [[_TOC_]]
 
   # Heading 1
 
   ## Heading 2
-07_04_00__gitlab_official_specification_markdown__table_of_contents__003: |
+07_03_00__gitlab_official_specification_markdown__table_of_contents__003: |
   [[_TOC_]]
   text
 
   text
   [TOC]
-07_04_00__gitlab_official_specification_markdown__table_of_contents__004: |2
+07_03_00__gitlab_official_specification_markdown__table_of_contents__004: |2
      [[_TOC_]]
 
   # Heading 1
@@ -2557,3 +2553,7 @@
   ![](https://gitlab.com/logo.png){ width="100" height="100" }
 08_05_00__gitlab_internal_extension_markdown__image_attributes__005: |
   ![](https://gitlab.com/logo.png) {width="100" height="100"}
+08_06_00__gitlab_internal_extension_markdown__footnotes__001: |
+  footnote reference tag [^fortytwo]
+
+  [^fortytwo]: footnote text

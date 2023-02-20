@@ -1,0 +1,7 @@
+mutation inboundRemoveProjectCIJobTokenScope($projectPath: ID!, $targetProjectPath: ID!) {
+  ciJobTokenScopeRemoveProject(
+    input: { projectPath: $projectPath, targetProjectPath: $targetProjectPath, direction: INBOUND }
+  ) {
+    errors
+  }
+}

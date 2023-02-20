@@ -8,34 +8,32 @@ module Tooling
   class Helm3Client
     CommandFailedError = Class.new(StandardError)
 
-    attr_reader :namespace
-
     RELEASE_JSON_ATTRIBUTES = %w[name revision updated status chart app_version namespace].freeze
     PAGINATION_SIZE = 256 # Default helm list pagination size
 
-    Release = Struct.new(:name, :revision, :last_update, :status, :chart, :app_version, :namespace) do
+    Release = Struct.new(:name, :namespace, :revision, :updated, :status, :chart, :app_version, keyword_init: true) do
       def revision
         @revision ||= self[:revision].to_i
       end
 
       def last_update
-        @last_update ||= self[:last_update] ? Time.parse(self[:last_update]) : nil
+        @last_update ||= self[:updated] ? Time.parse(self[:updated]) : nil
       end
     end
 
     # A single page of data and the corresponding page number.
     Page = Struct.new(:releases, :number)
 
-    def initialize(namespace:)
-      @namespace = namespace
-    end
-
     def releases(args: [])
       each_release(args)
     end
 
-    def delete(release_name:)
-      run_command(['uninstall', release_name])
+    def delete(release_name:, namespace: nil)
+      release_name = Array(release_name)
+
+      release_name.each do |release|
+        run_command(['uninstall', '--namespace', (namespace || release), release])
+      end
     end
 
     private
@@ -66,7 +64,7 @@ module Tooling
       releases = JSON.parse(response) # rubocop:disable Gitlab/Json
 
       releases.map do |release|
-        Release.new(*release.values_at(*RELEASE_JSON_ATTRIBUTES))
+        Release.new(release.slice(*RELEASE_JSON_ATTRIBUTES))
       end
     rescue ::JSON::ParserError => ex
       puts "Ignoring this JSON parsing error: #{ex}\n\nResponse was:\n#{response}" # rubocop:disable Rails/Output

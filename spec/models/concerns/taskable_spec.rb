@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Taskable do
+RSpec.describe Taskable, feature_category: :team_planning do
   using RSpec::Parameterized::TableSyntax
 
   describe '.get_tasks' do
@@ -13,8 +13,18 @@ RSpec.describe Taskable do
         - [x] Second item
         * [x] First item
         * [ ] Second item
+
+        <!-- a comment
+        - [ ] Item in comment, ignore
+         rest of comment -->
+
         + [ ] No-break space (U+00A0)
         + [ ] Figure space (U+2007)
+
+        ```
+        - [ ] Item in code, ignore
+        ```
+
         + [ ] Narrow no-break space (U+202F)
         + [ ] Thin space (U+2009)
       MARKDOWN

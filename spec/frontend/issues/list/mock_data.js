@@ -25,6 +25,7 @@ export const getIssuesQueryResponse = {
       id: '1',
       __typename: 'Project',
       issues: {
+        __persist: true,
         pageInfo: {
           __typename: 'PageInfo',
           hasNextPage: true,
@@ -34,6 +35,7 @@ export const getIssuesQueryResponse = {
         },
         nodes: [
           {
+            __persist: true,
             __typename: 'Issue',
             id: 'gid://gitlab/Issue/123456',
             iid: '789',
@@ -57,6 +59,7 @@ export const getIssuesQueryResponse = {
             assignees: {
               nodes: [
                 {
+                  __persist: true,
                   __typename: 'UserCore',
                   id: 'gid://gitlab/User/234',
                   avatarUrl: 'avatar/url',
@@ -67,6 +70,7 @@ export const getIssuesQueryResponse = {
               ],
             },
             author: {
+              __persist: true,
               __typename: 'UserCore',
               id: 'gid://gitlab/User/456',
               avatarUrl: 'avatar/url',
@@ -77,6 +81,7 @@ export const getIssuesQueryResponse = {
             labels: {
               nodes: [
                 {
+                  __persist: true,
                   id: 'gid://gitlab/ProjectLabel/456',
                   color: '#333',
                   title: 'Label title',
@@ -342,50 +347,4 @@ export const urlParamsWithSpecialValues = {
   epic_id: 'None',
   weight: 'None',
   health_status: 'None',
-};
-
-export const project1 = {
-  id: 'gid://gitlab/Group/26',
-  issuesEnabled: true,
-  name: 'Super Mario Project',
-  nameWithNamespace: 'Mushroom Kingdom / Super Mario Project',
-  webUrl: 'https://127.0.0.1:3000/mushroom-kingdom/super-mario-project',
-};
-
-export const project2 = {
-  id: 'gid://gitlab/Group/59',
-  issuesEnabled: false,
-  name: 'Mario Kart Project',
-  nameWithNamespace: 'Mushroom Kingdom / Mario Kart Project',
-  webUrl: 'https://127.0.0.1:3000/mushroom-kingdom/mario-kart-project',
-};
-
-export const project3 = {
-  id: 'gid://gitlab/Group/103',
-  issuesEnabled: true,
-  name: 'Mario Party Project',
-  nameWithNamespace: 'Mushroom Kingdom / Mario Party Project',
-  webUrl: 'https://127.0.0.1:3000/mushroom-kingdom/mario-party-project',
-};
-
-export const searchProjectsQueryResponse = {
-  data: {
-    group: {
-      id: '1',
-      projects: {
-        nodes: [project1, project2, project3],
-      },
-    },
-  },
-};
-
-export const emptySearchProjectsQueryResponse = {
-  data: {
-    group: {
-      id: '1',
-      projects: {
-        nodes: [],
-      },
-    },
-  },
 };

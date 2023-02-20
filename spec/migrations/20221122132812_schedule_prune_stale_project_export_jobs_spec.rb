@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe SchedulePruneStaleProjectExportJobs, category: :importers do
+RSpec.describe SchedulePruneStaleProjectExportJobs, feature_category: :importers do
   let!(:batched_migration) { described_class::MIGRATION }
 
   it 'schedules a new batched migration' do

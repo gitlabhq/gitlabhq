@@ -47,11 +47,7 @@ export const pushAccessLevelsMockResult = {
   groups: [],
   roles: [
     {
-      __typename: 'PushAccessLevel',
-      accessLevel: 40,
       accessLevelDescription: 'Maintainers',
-      group: null,
-      user: null,
     },
   ],
 };

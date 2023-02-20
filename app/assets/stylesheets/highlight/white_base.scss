@@ -125,13 +125,13 @@ $white-gc-bg: #eaf2f5;
 
 .diff-line-num,
 .diff-line-num a {
-  color: $black-transparent;
+  color: $gray-400;
 }
 
 // Code itself
 pre.code,
 .diff-line-num {
-  border-color: $white-normal;
+  border-color: rgba(0, 0, 0, 0.1);
 }
 
 &,
@@ -173,7 +173,7 @@ pre.code,
       background-color: $line-number-old;
 
       a {
-        color: scale-color($line-number-old, $red: -30%, $green: -30%, $blue: -30%);
+        color: scale-color($gray-300, $red: -30%, $green: -30%, $blue: -30%);
       }
     }
 
@@ -182,7 +182,7 @@ pre.code,
       background-color: $line-number-new;
 
       a {
-        color: scale-color($line-number-new, $red: -30%, $green: -30%, $blue: -30%);
+        color: scale-color($gray-200, $red: -30%, $green: -30%, $blue: -30%);
       }
     }
 
@@ -191,9 +191,9 @@ pre.code,
       @include line-number-hover;
     }
 
-    &.hll:not(.empty-cell) {
-      background-color: $line-number-select;
-      border-color: $line-select-yellow-dark;
+    &.hll {
+      --highlight-border-color: #{$orange-200};
+      background-color: $orange-50;
     }
   }
 
@@ -246,8 +246,9 @@ pre.code,
       @include match-line;
     }
 
-    &.hll:not(.empty-cell) {
-      background-color: $line-select-yellow;
+    &.hll {
+      --highlight-border-color: #{$orange-200};
+      background-color: $orange-50;
     }
   }
 
@@ -267,8 +268,9 @@ pre.code,
       background-color: $line-added;
     }
 
-    &.hll:not(.empty-cell) {
-      background-color: $line-select-yellow;
+    &.hll {
+      --highlight-border-color: #{$orange-200};
+      background-color: $orange-50;
     }
   }
 }

@@ -15,8 +15,8 @@ module Gitlab
       LRU_CACHE_SIZE = 1000
 
       class ObjectBuilder
-        def self.build(*args)
-          new(*args).find
+        def self.build(...)
+          new(...).find
         end
 
         def initialize(klass, attributes)

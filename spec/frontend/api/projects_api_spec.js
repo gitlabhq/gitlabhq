@@ -3,18 +3,22 @@ import getTransferLocationsResponse from 'test_fixtures/api/projects/transfer_lo
 import * as projectsApi from '~/api/projects_api';
 import { DEFAULT_PER_PAGE } from '~/api';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 
 describe('~/api/projects_api.js', () => {
   let mock;
   let originalGon;
 
   const projectId = 1;
+  const setfullPathProjectSearch = (value) => {
+    window.gon.features.fullPathProjectSearch = value;
+  };
 
   beforeEach(() => {
     mock = new MockAdapter(axios);
 
     originalGon = window.gon;
-    window.gon = { api_version: 'v7' };
+    window.gon = { api_version: 'v7', features: { fullPathProjectSearch: true } };
   });
 
   afterEach(() => {
@@ -27,14 +31,53 @@ describe('~/api/projects_api.js', () => {
       jest.spyOn(axios, 'get');
     });
 
-    it('retrieves projects from the correct URL and returns them in the response data', () => {
-      const expectedUrl = '/api/v7/projects.json';
-      const expectedParams = { params: { per_page: 20, search: '', simple: true } };
-      const expectedProjects = [{ name: 'project 1' }];
-      const query = '';
-      const options = {};
+    const expectedUrl = '/api/v7/projects.json';
+    const expectedProjects = [{ name: 'project 1' }];
+    const options = {};
 
-      mock.onGet(expectedUrl).reply(200, { data: expectedProjects });
+    it('retrieves projects from the correct URL and returns them in the response data', () => {
+      const expectedParams = { params: { per_page: 20, search: '', simple: true } };
+      const query = '';
+
+      mock.onGet(expectedUrl).reply(HTTP_STATUS_OK, { data: expectedProjects });
+
+      return projectsApi.getProjects(query, options).then(({ data }) => {
+        expect(axios.get).toHaveBeenCalledWith(expectedUrl, expectedParams);
+        expect(data.data).toEqual(expectedProjects);
+      });
+    });
+
+    it('omits search param if query is undefined', () => {
+      const expectedParams = { params: { per_page: 20, simple: true } };
+
+      mock.onGet(expectedUrl).reply(HTTP_STATUS_OK, { data: expectedProjects });
+
+      return projectsApi.getProjects(undefined, options).then(({ data }) => {
+        expect(axios.get).toHaveBeenCalledWith(expectedUrl, expectedParams);
+        expect(data.data).toEqual(expectedProjects);
+      });
+    });
+
+    it('searches namespaces if query contains a slash', () => {
+      const expectedParams = {
+        params: { per_page: 20, search: 'group/project1', search_namespaces: true, simple: true },
+      };
+      const query = 'group/project1';
+
+      mock.onGet(expectedUrl).reply(HTTP_STATUS_OK, { data: expectedProjects });
+
+      return projectsApi.getProjects(query, options).then(({ data }) => {
+        expect(axios.get).toHaveBeenCalledWith(expectedUrl, expectedParams);
+        expect(data.data).toEqual(expectedProjects);
+      });
+    });
+
+    it('does not search namespaces if fullPathProjectSearch is disabled', () => {
+      setfullPathProjectSearch(false);
+      const expectedParams = { params: { per_page: 20, search: 'group/project1', simple: true } };
+      const query = 'group/project1';
+
+      mock.onGet(expectedUrl).reply(HTTP_STATUS_OK, { data: expectedProjects });
 
       return projectsApi.getProjects(query, options).then(({ data }) => {
         expect(axios.get).toHaveBeenCalledWith(expectedUrl, expectedParams);
@@ -53,7 +96,7 @@ describe('~/api/projects_api.js', () => {
       const expectedUrl = '/api/v7/projects/1/import_project_members/2';
       const expectedMessage = 'Successfully imported';
 
-      mock.onPost(expectedUrl).replyOnce(200, expectedMessage);
+      mock.onPost(expectedUrl).replyOnce(HTTP_STATUS_OK, expectedMessage);
 
       return projectsApi.importProjectMembers(projectId, targetId).then(({ data }) => {
         expect(axios.post).toHaveBeenCalledWith(expectedUrl);
@@ -71,7 +114,7 @@ describe('~/api/projects_api.js', () => {
       const params = { page: 1 };
       const expectedUrl = '/api/v7/projects/1/transfer_locations';
 
-      mock.onGet(expectedUrl).replyOnce(200, { data: getTransferLocationsResponse });
+      mock.onGet(expectedUrl).replyOnce(HTTP_STATUS_OK, { data: getTransferLocationsResponse });
 
       await expect(projectsApi.getTransferLocations(projectId, params)).resolves.toMatchObject({
         data: { data: getTransferLocationsResponse },
@@ -79,6 +122,32 @@ describe('~/api/projects_api.js', () => {
 
       expect(axios.get).toHaveBeenCalledWith(expectedUrl, {
         params: { ...params, per_page: DEFAULT_PER_PAGE },
+      });
+    });
+  });
+
+  describe('getProjectMembers', () => {
+    it('requests members of a project', async () => {
+      const expectedUrl = `/api/v7/projects/1/members`;
+
+      const response = [{ id: 0, username: 'root' }];
+
+      mock.onGet(expectedUrl).replyOnce(HTTP_STATUS_OK, response);
+
+      await expect(projectsApi.getProjectMembers(projectId)).resolves.toMatchObject({
+        data: response,
+      });
+    });
+
+    it('requests inherited members of a project when requested', async () => {
+      const expectedUrl = `/api/v7/projects/1/members/all`;
+
+      const response = [{ id: 0, username: 'root' }];
+
+      mock.onGet(expectedUrl).replyOnce(HTTP_STATUS_OK, response);
+
+      await expect(projectsApi.getProjectMembers(projectId, true)).resolves.toMatchObject({
+        data: response,
       });
     });
   });

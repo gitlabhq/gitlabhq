@@ -19,7 +19,7 @@ Characteristics of Alpha features:
 - Not ready for production use.
 - Unstable and can cause performance and stability issues.
 - Configuration and dependencies are likely to change.
-- Features and functions may be removed.
+- Features and functions may be removed. Breaking changes may occur outside of major releases or with less notice than for Beta or Generally Available features.
 - Data loss can occur (be that through bugs or updates).
 - Documentation reflects the Alpha status.
 - Behind flags that are off by default.
@@ -36,7 +36,7 @@ Closed Beta features are available to selected users only.
 - Not ready for production use.
 - Unstable and can cause performance and stability issues.
 - Configuration and dependencies unlikely to change.
-- Features and functions unlikely to change.
+- Features and functions unlikely to change. However, breaking changes may occur outside of major releases or with less notice than for Generally Available features.
 - Data loss less likely.
 - Behind a feature flag that is off by default and the UI reflects Beta status.
 - Documentation reflects Beta status.
@@ -47,7 +47,7 @@ Closed Beta features are available to selected users only.
 - Not ready for production use.
 - Unstable and can cause performance and stability issues.
 - Configuration and dependencies unlikely to change.
-- Features and functions unlikely to change.
+- Features and functions unlikely to change. However, breaking changes may occur outside of major releases or with less notice than for Generally Available features.
 - Data loss not likely.
 - Support on a commercially-reasonable effort basis.
 - Documentation reflects Beta status.

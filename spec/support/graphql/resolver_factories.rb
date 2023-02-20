@@ -27,8 +27,8 @@ module Graphql
       Class.new(Resolvers::BaseResolver) do
         include ::Gitlab::Graphql::Authorize::AuthorizeResource
 
-        def resolve(**args)
-          authorized_find!(**args)
+        def resolve(...)
+          authorized_find!(...)
         end
 
         define_method :find_object do |**_args|

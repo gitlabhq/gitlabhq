@@ -1,4 +1,4 @@
-import { TYPE_USER } from '~/graphql_shared/constants';
+import { TYPENAME_USER } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import createGqClient, { fetchPolicies } from '~/lib/graphql';
 import axios from '~/lib/utils/axios_utils';
@@ -54,7 +54,7 @@ export default class SidebarService {
     return gqClient.mutate({
       mutation: reviewerRereviewMutation,
       variables: {
-        userId: convertToGraphQLId(TYPE_USER, `${userId}`),
+        userId: convertToGraphQLId(TYPENAME_USER, `${userId}`),
         projectPath: this.fullPath,
         iid: this.iid.toString(),
       },

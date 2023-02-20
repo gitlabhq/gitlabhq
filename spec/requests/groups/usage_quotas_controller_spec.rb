@@ -23,7 +23,7 @@ RSpec.describe Groups::UsageQuotasController, :with_license, feature_category: :
         request
 
         expect(response).to have_gitlab_http_status(:ok)
-        expect(response.body).to match(/Placeholder for usage quotas Vue app/)
+        expect(response.body).to match(/js-usage-quotas-view/)
       end
 
       it 'renders 404 page if subgroup' do

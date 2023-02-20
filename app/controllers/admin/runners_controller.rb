@@ -3,7 +3,11 @@
 class Admin::RunnersController < Admin::ApplicationController
   include RunnerSetupScripts
 
-  before_action :runner, except: [:index, :tag_list, :runner_setup_scripts]
+  before_action :runner, except: [:index, :new, :tag_list, :runner_setup_scripts]
+
+  before_action only: [:index] do
+    push_frontend_feature_flag(:create_runner_workflow, current_user)
+  end
 
   feature_category :runner
   urgency :low
@@ -18,6 +22,10 @@ class Admin::RunnersController < Admin::ApplicationController
     assign_projects
   end
 
+  def new
+    render_404 unless Feature.enabled?(:create_runner_workflow, current_user)
+  end
+
   def update
     if Ci::Runners::UpdateRunnerService.new(@runner).execute(runner_params).success?
       respond_to do |format|
@@ -26,28 +34,6 @@ class Admin::RunnersController < Admin::ApplicationController
     else
       assign_projects
       render 'show'
-    end
-  end
-
-  def destroy
-    Ci::Runners::UnregisterRunnerService.new(@runner, current_user).execute
-
-    redirect_to admin_runners_path, status: :found
-  end
-
-  def resume
-    if Ci::Runners::UpdateRunnerService.new(@runner).execute(active: true).success?
-      redirect_to admin_runners_path, notice: _('Runner was successfully updated.')
-    else
-      redirect_to admin_runners_path, alert: _('Runner was not updated.')
-    end
-  end
-
-  def pause
-    if Ci::Runners::UpdateRunnerService.new(@runner).execute(active: false).success?
-      redirect_to admin_runners_path, notice: _('Runner was successfully updated.')
-    else
-      redirect_to admin_runners_path, alert: _('Runner was not updated.')
     end
   end
 

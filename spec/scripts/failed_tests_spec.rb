@@ -5,121 +5,113 @@ require_relative '../../scripts/failed_tests'
 
 RSpec.describe FailedTests do
   let(:report_file) { 'spec/fixtures/scripts/test_report.json' }
-  let(:output_directory) { 'tmp/previous_test_results' }
-  let(:rspec_pg_regex) { /rspec .+ pg12( .+)?/ }
-  let(:rspec_ee_pg_regex) { /rspec-ee .+ pg12( .+)?/ }
-
-  subject { described_class.new(previous_tests_report_path: report_file, output_directory: output_directory, rspec_pg_regex: rspec_pg_regex, rspec_ee_pg_regex: rspec_ee_pg_regex) }
-
-  describe '#output_failed_test_files' do
-    it 'writes the file for the suite' do
-      expect(File).to receive(:open).with(File.join(output_directory, "rspec_failed_files.txt"), 'w').once
-
-      subject.output_failed_test_files
-    end
+  let(:options) { described_class::DEFAULT_OPTIONS.merge(previous_tests_report_path: report_file) }
+  let(:failure_path) { 'path/to/fail_file_spec.rb' }
+  let(:other_failure_path) { 'path/to/fail_file_spec_2.rb' }
+  let(:file_contents_as_json) do
+    {
+      'suites' => [
+        {
+          'failed_count' => 1,
+          'name' => 'rspec unit pg12 10/12',
+          'test_cases' => [
+            {
+              'status' => 'failed',
+              'file' => failure_path
+            }
+          ]
+        },
+        {
+          'failed_count' => 1,
+          'name' => 'rspec-ee unit pg12',
+          'test_cases' => [
+            {
+              'status' => 'failed',
+              'file' => failure_path
+            }
+          ]
+        },
+        {
+          'failed_count' => 1,
+          'name' => 'rspec unit pg13 10/12',
+          'test_cases' => [
+            {
+              'status' => 'failed',
+              'file' => other_failure_path
+            }
+          ]
+        }
+      ]
+    }
   end
 
-  describe '#failed_files_for_suite_collection' do
-    let(:failure_path) { 'path/to/fail_file_spec.rb' }
-    let(:other_failure_path) { 'path/to/fail_file_spec_2.rb' }
-    let(:file_contents_as_json) do
-      {
-        'suites' => [
-          {
-            'failed_count' => 1,
-            'name' => 'rspec unit pg12 10/12',
-            'test_cases' => [
-              {
-                'status' => 'failed',
-                'file' => failure_path
-              }
-            ]
-          },
-          {
-            'failed_count' => 1,
-            'name' => 'rspec-ee unit pg12',
-            'test_cases' => [
-              {
-                'status' => 'failed',
-                'file' => failure_path
-              }
-            ]
-          },
-          {
-            'failed_count' => 1,
-            'name' => 'rspec unit pg13 10/12',
-            'test_cases' => [
-              {
-                'status' => 'failed',
-                'file' => other_failure_path
-              }
-            ]
-          }
-        ]
-      }
-    end
+  subject { described_class.new(options) }
 
-    before do
-      allow(subject).to receive(:file_contents_as_json).and_return(file_contents_as_json)
-    end
+  describe '#output_failed_tests' do
+    context 'with a valid report file' do
+      before do
+        allow(subject).to receive(:file_contents_as_json).and_return(file_contents_as_json)
+      end
 
-    it 'returns a list of failed file paths for suite collection' do
-      result = subject.failed_files_for_suite_collection
+      it 'writes the file for the suite' do
+        expect(File).to receive(:open)
+          .with(File.join(described_class::DEFAULT_OPTIONS[:output_directory], "rspec_failed_tests.txt"), 'w').once
+        expect(File).to receive(:open)
+        .with(File.join(described_class::DEFAULT_OPTIONS[:output_directory], "rspec_ee_failed_tests.txt"), 'w').once
 
-      expect(result[:rspec].to_a).to match_array(failure_path)
-      expect(result[:rspec_ee].to_a).to match_array(failure_path)
-    end
-  end
+        subject.output_failed_tests
+      end
 
-  describe 'empty report' do
-    let(:file_content) do
-      '{}'
-    end
+      context 'when given a valid format' do
+        subject { described_class.new(options.merge(format: :json)) }
 
-    before do
-      allow(subject).to receive(:file_contents).and_return(file_content)
-    end
+        it 'writes the file for the suite' do
+          expect(File).to receive(:open)
+            .with(File.join(described_class::DEFAULT_OPTIONS[:output_directory], "rspec_failed_tests.json"), 'w').once
+          expect(File).to receive(:open)
+            .with(File.join(described_class::DEFAULT_OPTIONS[:output_directory], "rspec_ee_failed_tests.json"), 'w')
+            .once
 
-    it 'does not fail for output files' do
-      subject.output_failed_test_files
-    end
+          subject.output_failed_tests
+        end
+      end
 
-    it 'returns empty results for suite failures' do
-      result = subject.failed_files_for_suite_collection
+      context 'when given an invalid format' do
+        subject { described_class.new(options.merge(format: :foo)) }
 
-      expect(result.values.flatten).to be_empty
-    end
-  end
+        it 'raises an exception' do
+          expect { subject.output_failed_tests }
+            .to raise_error '[FailedTests] Unsupported format `foo` (allowed formats: `oneline` and `json`)!'
+        end
+      end
 
-  describe 'invalid report' do
-    let(:file_content) do
-      ''
-    end
+      describe 'empty report' do
+        let(:file_contents_as_json) do
+          {}
+        end
 
-    before do
-      allow(subject).to receive(:file_contents).and_return(file_content)
-    end
+        it 'does not fail for output files' do
+          subject.output_failed_tests
+        end
 
-    it 'does not fail for output files' do
-      subject.output_failed_test_files
-    end
+        it 'returns empty results for suite failures' do
+          result = subject.failed_cases_for_suite_collection
 
-    it 'returns empty results for suite failures' do
-      result = subject.failed_files_for_suite_collection
-
-      expect(result.values.flatten).to be_empty
+          expect(result.values.flatten).to be_empty
+        end
+      end
     end
   end
 
   describe 'missing report file' do
-    let(:report_file) { 'unknownfile.json' }
+    subject { described_class.new(options.merge(previous_tests_report_path: 'unknownfile.json')) }
 
     it 'does not fail for output files' do
-      subject.output_failed_test_files
+      subject.output_failed_tests
     end
 
     it 'returns empty results for suite failures' do
-      result = subject.failed_files_for_suite_collection
+      result = subject.failed_cases_for_suite_collection
 
       expect(result.values.flatten).to be_empty
     end

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Banzai::Filter::References::IssueReferenceFilter do
+RSpec.describe Banzai::Filter::References::IssueReferenceFilter, feature_category: :team_planning do
   include FilterSpecHelper
   include DesignManagementTestHelpers
 
@@ -47,57 +47,55 @@ RSpec.describe Banzai::Filter::References::IssueReferenceFilter do
     end
   end
 
-  context 'internal reference' do
-    let(:reference) { "##{issue.iid}" }
-
+  shared_examples 'an internal reference' do
     it_behaves_like 'a reference containing an element node'
 
     it_behaves_like 'a reference with issue type information'
 
     it 'links to a valid reference' do
-      doc = reference_filter("Fixed #{reference}")
+      doc = reference_filter("Fixed #{written_reference}")
 
       expect(doc.css('a').first.attr('href'))
         .to eq issue_url
     end
 
     it 'links with adjacent text' do
-      doc = reference_filter("Fixed (#{reference}.)")
+      doc = reference_filter("Fixed (#{written_reference}.)")
       expect(doc.text).to eql("Fixed (#{reference}.)")
     end
 
     it 'ignores invalid issue IDs' do
-      invalid = invalidate_reference(reference)
+      invalid = invalidate_reference(written_reference)
       exp = act = "Fixed #{invalid}"
 
       expect(reference_filter(act).to_html).to eq exp
     end
 
     it 'includes a title attribute' do
-      doc = reference_filter("Issue #{reference}")
+      doc = reference_filter("Issue #{written_reference}")
       expect(doc.css('a').first.attr('title')).to eq issue.title
     end
 
     it 'escapes the title attribute' do
       issue.update_attribute(:title, %{"></a>whatever<a title="})
 
-      doc = reference_filter("Issue #{reference}")
+      doc = reference_filter("Issue #{written_reference}")
       expect(doc.text).to eq "Issue #{reference}"
     end
 
     it 'renders non-HTML tooltips' do
-      doc = reference_filter("Issue #{reference}")
+      doc = reference_filter("Issue #{written_reference}")
 
       expect(doc.at_css('a')).not_to have_attribute('data-html')
     end
 
     it 'includes default classes' do
-      doc = reference_filter("Issue #{reference}")
+      doc = reference_filter("Issue #{written_reference}")
       expect(doc.css('a').first.attr('class')).to eq 'gfm gfm-issue'
     end
 
     it 'includes a data-project attribute' do
-      doc = reference_filter("Issue #{reference}")
+      doc = reference_filter("Issue #{written_reference}")
       link = doc.css('a').first
 
       expect(link).to have_attribute('data-project')
@@ -105,7 +103,7 @@ RSpec.describe Banzai::Filter::References::IssueReferenceFilter do
     end
 
     it 'includes a data-issue attribute' do
-      doc = reference_filter("See #{reference}")
+      doc = reference_filter("See #{written_reference}")
       link = doc.css('a').first
 
       expect(link).to have_attribute('data-issue')
@@ -113,7 +111,7 @@ RSpec.describe Banzai::Filter::References::IssueReferenceFilter do
     end
 
     it 'includes data attributes for issuable popover' do
-      doc = reference_filter("See #{reference}")
+      doc = reference_filter("See #{written_reference}")
       link = doc.css('a').first
 
       expect(link.attr('data-project-path')).to eq project.full_path
@@ -121,21 +119,21 @@ RSpec.describe Banzai::Filter::References::IssueReferenceFilter do
     end
 
     it 'includes a data-original attribute' do
-      doc = reference_filter("See #{reference}")
+      doc = reference_filter("See #{written_reference}")
       link = doc.css('a').first
 
       expect(link).to have_attribute('data-original')
-      expect(link.attr('data-original')).to eq reference
+      expect(link.attr('data-original')).to eq written_reference
     end
 
     it 'does not escape the data-original attribute' do
       inner_html = 'element <code>node</code> inside'
-      doc = reference_filter(%{<a href="#{reference}">#{inner_html}</a>})
+      doc = reference_filter(%{<a href="#{written_reference}">#{inner_html}</a>})
       expect(doc.children.first.attr('data-original')).to eq inner_html
     end
 
     it 'includes a data-reference-format attribute' do
-      doc = reference_filter("Issue #{reference}+")
+      doc = reference_filter("Issue #{written_reference}+")
       link = doc.css('a').first
 
       expect(link).to have_attribute('data-reference-format')
@@ -153,7 +151,7 @@ RSpec.describe Banzai::Filter::References::IssueReferenceFilter do
     end
 
     it 'supports an :only_path context' do
-      doc = reference_filter("Issue #{reference}", only_path: true)
+      doc = reference_filter("Issue #{written_reference}", only_path: true)
       link = doc.css('a').first.attr('href')
 
       expect(link).not_to match %r(https?://)
@@ -161,12 +159,26 @@ RSpec.describe Banzai::Filter::References::IssueReferenceFilter do
     end
 
     it 'does not process links containing issue numbers followed by text' do
-      href = "#{reference}st"
+      href = "#{written_reference}st"
       doc = reference_filter("<a href='#{href}'></a>")
       link = doc.css('a').first.attr('href')
 
       expect(link).to eq(href)
     end
+  end
+
+  context 'standard internal reference' do
+    let(:written_reference) { "##{issue.iid}" }
+    let(:reference) { "##{issue.iid}" }
+
+    it_behaves_like 'an internal reference'
+  end
+
+  context 'alternative internal_reference' do
+    let(:written_reference) { "GL-#{issue.iid}" }
+    let(:reference) { "##{issue.iid}" }
+
+    it_behaves_like 'an internal reference'
   end
 
   context 'cross-project / cross-namespace complete reference' do

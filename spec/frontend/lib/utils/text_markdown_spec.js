@@ -192,9 +192,10 @@ describe('init markdown', () => {
       });
 
       describe('Continuing markdown lists', () => {
-        const enterEvent = new KeyboardEvent('keydown', { key: 'Enter' });
+        let enterEvent;
 
         beforeEach(() => {
+          enterEvent = new KeyboardEvent('keydown', { key: 'Enter', cancelable: true });
           textArea.addEventListener('keydown', keypressNoteText);
           textArea.addEventListener('compositionstart', compositionStartNoteText);
           textArea.addEventListener('compositionend', compositionEndNoteText);
@@ -256,7 +257,7 @@ describe('init markdown', () => {
           ${'108. item\n109. '}                    | ${'108. item\n'}
           ${'108. item\n     - second\n     - '}   | ${'108. item\n     - second\n'}
           ${'108. item\n     1. second\n     1. '} | ${'108. item\n     1. second\n'}
-        `('adds correct list continuation characters', ({ text, expected }) => {
+        `('remove list continuation characters', ({ text, expected }) => {
           textArea.value = text;
           textArea.setSelectionRange(text.length, text.length);
 
@@ -297,6 +298,37 @@ describe('init markdown', () => {
             textArea.dispatchEvent(enterEvent);
 
             expect(textArea.value).toEqual(expected);
+          },
+        );
+
+        // test that when pressing Enter in the prefix area of a list item,
+        // such as between `2.`, we simply propagate the Enter,
+        // adding a newline.  Since the event doesn't actually get propagated
+        // in the test, check that `defaultPrevented` is false
+        it.each`
+          text                                     | add_at | prevented
+          ${'- one\n- two\n- three'}               | ${6}   | ${false}
+          ${'- one\n- two\n- three'}               | ${7}   | ${false}
+          ${'- one\n- two\n- three'}               | ${8}   | ${true}
+          ${'- [ ] one\n- [ ] two\n- [ ] three'}   | ${10}  | ${false}
+          ${'- [ ] one\n- [ ] two\n- [ ] three'}   | ${15}  | ${false}
+          ${'- [ ] one\n- [ ] two\n- [ ] three'}   | ${16}  | ${true}
+          ${'- [ ] one\n  - [ ] two\n- [ ] three'} | ${10}  | ${false}
+          ${'- [ ] one\n  - [ ] two\n- [ ] three'} | ${11}  | ${false}
+          ${'- [ ] one\n  - [ ] two\n- [ ] three'} | ${17}  | ${false}
+          ${'- [ ] one\n  - [ ] two\n- [ ] three'} | ${18}  | ${true}
+          ${'1. one\n2. two\n3. three'}            | ${7}   | ${false}
+          ${'1. one\n2. two\n3. three'}            | ${9}   | ${false}
+          ${'1. one\n2. two\n3. three'}            | ${10}  | ${true}
+        `(
+          'allows a newline to be added if cursor is inside the list marker prefix area',
+          ({ text, add_at, prevented }) => {
+            textArea.value = text;
+            textArea.setSelectionRange(add_at, add_at);
+
+            textArea.dispatchEvent(enterEvent);
+
+            expect(enterEvent.defaultPrevented).toBe(prevented);
           },
         );
 

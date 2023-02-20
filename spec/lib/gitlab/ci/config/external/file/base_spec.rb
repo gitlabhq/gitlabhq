@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Config::External::File::Base do
+RSpec.describe Gitlab::Ci::Config::External::File::Base, feature_category: :pipeline_authoring do
   let(:variables) {}
   let(:context_params) { { sha: 'HEAD', variables: variables } }
   let(:context) { Gitlab::Ci::Config::External::Context.new(**context_params) }
@@ -51,7 +51,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Base do
 
   describe '#valid?' do
     subject(:valid?) do
-      file.validate!
+      Gitlab::Ci::Config::External::Mapper::Verifier.new(context).process([file])
       file.valid?
     end
 

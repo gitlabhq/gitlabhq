@@ -165,7 +165,19 @@ module Gitlab
         end
 
         def setup_protected_branch_access_level
+          return if root_group_owner?
+          return if @relation_hash['access_level'] == Gitlab::Access::NO_ACCESS
+          return if @relation_hash['access_level'] == Gitlab::Access::MAINTAINER
+
           @relation_hash['access_level'] = Gitlab::Access::MAINTAINER
+        end
+
+        def root_group_owner?
+          root_ancestor = @importable.root_ancestor
+
+          return false unless root_ancestor.is_a?(::Group)
+
+          root_ancestor.max_member_access_for_user(@user) == Gitlab::Access::OWNER
         end
 
         def compute_relative_position

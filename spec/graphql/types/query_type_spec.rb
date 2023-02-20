@@ -2,49 +2,15 @@
 
 require 'spec_helper'
 
-RSpec.describe GitlabSchema.types['Query'] do
+RSpec.describe GitlabSchema.types['Query'], feature_category: :shared do
+  include_context 'with FOSS query type fields'
+
   it 'is called Query' do
     expect(described_class.graphql_name).to eq('Query')
   end
 
   it 'has the expected fields' do
-    expected_fields = [
-      :board_list,
-      :ci_application_settings,
-      :ci_config,
-      :ci_variables,
-      :container_repository,
-      :current_user,
-      :design_management,
-      :echo,
-      :gitpod_enabled,
-      :group,
-      :issue,
-      :issues,
-      :jobs,
-      :merge_request,
-      :metadata,
-      :milestone,
-      :namespace,
-      :package,
-      :project,
-      :projects,
-      :query_complexity,
-      :runner,
-      :runner_platforms,
-      :runner_setup,
-      :runners,
-      :snippets,
-      :timelogs,
-      :todo,
-      :topics,
-      :usage_trends_measurements,
-      :user,
-      :users,
-      :work_item
-    ]
-
-    expect(described_class).to have_graphql_fields(*expected_fields).at_least
+    expect(described_class).to have_graphql_fields(*expected_foss_fields).at_least
   end
 
   describe 'namespace field' do

@@ -50,7 +50,7 @@ Global search only flags with an error any search that includes more than:
 
 ## Perform a search
 
-To start a search, type your search query in the search bar on the top-right of the screen.
+To start a search, type your search query in the search bar in the upper right of the screen.
 You must type at least two characters.
 
 ![search navbar](img/search_navbar_v15_7.png)
@@ -84,6 +84,23 @@ where the results were found.
 
    ![code search results](img/code_search_git_blame_v15_1.png)
 
+## Search for projects by full path
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108906) in GitLab 15.9 [with a flag](../../administration/feature_flags.md) named `full_path_project_search`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available.
+To make it available, ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `full_path_project_search`.
+On GitLab.com, this feature is not available.
+
+You can search for a project by entering its full path (including the namespace it belongs to) in the search box.
+As you type the project path, [autocomplete suggestions](#autocomplete-suggestions) are displayed.
+
+For example, the search query:
+
+- `gitlab-org/gitlab` searches for the `gitlab` project in the `gitlab-org` namespace.
+- `gitlab-org/` displays autocomplete suggestions for projects that belong to the `gitlab-org` namespace.
+
 ## Search for a SHA
 
 You can search for a commit SHA.
@@ -113,7 +130,7 @@ You can filter issues and merge requests by specific terms included in titles or
     issues for `included in titles` is same as `included titles`
   - Search is limited to 4096 characters and 64 terms per query.
   - When searching issues, partial matches are not allowed. For example: searching for `play` will
-    not return issues that have the word `display`. But variations of words will still match, so searching
+    not return issues that have the word `display`. But variations of words match, so searching
     for `displays` also returns issues that have the word `display`.
 
 ## Retrieve search results as feed
@@ -149,7 +166,7 @@ To delete filter tokens one at a time, the <kbd>⌥</kbd> (Mac) / <kbd>Control</
 
 In the search bar, you can view autocomplete suggestions for:
 
-- Projects and groups
+- [Projects](#search-for-projects-by-full-path) and groups
 - Users
 - Various help pages (try and type **API help**)
 - Project feature pages (try and type **milestones**)

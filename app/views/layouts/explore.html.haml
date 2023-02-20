@@ -1,6 +1,6 @@
 - page_title _("Explore")
 
-- if current_user && Feature.enabled?(:your_work_sidebar, current_user)
+- if current_user
   - @left_sidebar = true
   - nav "your_work"
 

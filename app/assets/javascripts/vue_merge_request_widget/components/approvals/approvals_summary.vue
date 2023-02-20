@@ -1,4 +1,5 @@
 <script>
+import { GlSkeletonLoader } from '@gitlab/ui';
 import { toNounSeriesText } from '~/lib/utils/grammar';
 import { n__, sprintf } from '~/locale';
 import {
@@ -7,32 +8,68 @@ import {
   APPROVED_BY_OTHERS,
 } from '~/vue_merge_request_widget/components/approvals/messages';
 import UserAvatarList from '~/vue_shared/components/user_avatar/user_avatar_list.vue';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import { getApprovalRuleNamesLeft } from 'ee_else_ce/vue_merge_request_widget/mappers';
+import approvedByQuery from 'ee_else_ce/vue_merge_request_widget/components/approvals/queries/approved_by.query.graphql';
 
 export default {
+  apollo: {
+    approvalState: {
+      query: approvedByQuery,
+      variables() {
+        return {
+          projectPath: this.projectPath,
+          iid: this.iid,
+        };
+      },
+      update: (data) => data.project.mergeRequest,
+    },
+  },
   components: {
+    GlSkeletonLoader,
     UserAvatarList,
   },
   props: {
-    approved: {
-      type: Boolean,
+    projectPath: {
+      type: String,
       required: true,
     },
-    approvalsLeft: {
+    iid: {
+      type: String,
+      required: true,
+    },
+    updatedCount: {
       type: Number,
-      required: true,
-    },
-    rulesLeft: {
-      type: Array,
       required: false,
-      default: () => [],
+      default: 0,
     },
-    approvers: {
-      type: Array,
+    multipleApprovalRulesAvailable: {
+      type: Boolean,
       required: false,
-      default: () => [],
+      default: false,
     },
   },
+  data() {
+    return {
+      approvalState: {},
+    };
+  },
   computed: {
+    approvers() {
+      return this.approvalState.approvedBy?.nodes || [];
+    },
+    approved() {
+      return this.approvalState.approved || this.approvalState.approvedBy?.nodes.length > 0;
+    },
+    approvalsLeft() {
+      return this.approvalState.approvalsLeft || 0;
+    },
+    rulesLeft() {
+      return getApprovalRuleNamesLeft(
+        this.multipleApprovalRulesAvailable,
+        (this.approvalState.approvalState?.rules || []).filter((r) => !r.approved),
+      );
+    },
     approvalLeftMessage() {
       if (this.rulesLeft.length) {
         return sprintf(
@@ -81,16 +118,25 @@ export default {
       if (!this.currentUserId) {
         return false;
       }
-      return this.approvers.some((approver) => approver.id === this.currentUserId);
+      return this.approvers.some(
+        (approver) => getIdFromGraphQLId(approver.id) === this.currentUserId,
+      );
     },
     approvedByOthers() {
       if (!this.currentUserId) {
         return false;
       }
-      return this.approvers.some((approver) => approver.id !== this.currentUserId);
+      return this.approvers.some(
+        (approver) => getIdFromGraphQLId(approver.id) !== this.currentUserId,
+      );
     },
     currentUserId() {
       return gon.current_user_id;
+    },
+  },
+  watch: {
+    updatedCount() {
+      this.$apollo.queries.approvalState.refetch();
     },
   },
 };
@@ -98,15 +144,27 @@ export default {
 
 <template>
   <div data-qa-selector="approvals_summary_content">
-    <span class="gl-font-weight-bold">{{ approvalLeftMessage }}</span>
-    <template v-if="hasApprovers">
-      <span v-if="approvalLeftMessage">{{ message }}</span>
-      <span v-else class="gl-font-weight-bold">{{ message }}</span>
-      <user-avatar-list
-        class="gl-display-inline-block gl-vertical-align-middle gl-pt-1"
-        :img-size="24"
-        :items="approvers"
-      />
+    <div
+      v-if="$apollo.queries.approvalState.loading"
+      class="gl-display-inline-block gl-vertical-align-middle"
+      style="width: 132px; height: 24px"
+    >
+      <gl-skeleton-loader :width="132" :height="24">
+        <rect width="100" height="24" x="0" y="0" rx="4" />
+        <circle cx="120" cy="12" r="12" />
+      </gl-skeleton-loader>
+    </div>
+    <template v-else>
+      <span class="gl-font-weight-bold">{{ approvalLeftMessage }}</span>
+      <template v-if="hasApprovers">
+        <span v-if="approvalLeftMessage">{{ message }}</span>
+        <span v-else class="gl-font-weight-bold">{{ message }}</span>
+        <user-avatar-list
+          class="gl-display-inline-block gl-vertical-align-middle gl-pt-1"
+          :img-size="24"
+          :items="approvers"
+        />
+      </template>
     </template>
   </div>
 </template>

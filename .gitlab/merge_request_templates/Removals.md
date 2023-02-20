@@ -56,7 +56,7 @@ Please review:
 When the content is ready for review, the Technical Writer and Engineering Manager _must_
 review it. Optional reviewers can include Product Marketing, Product Design, and the Product Leaders
 for this area. Use the
-[Reviewers for Merge Requests](https://docs.gitlab.com/ee/user/project/merge_requests/getting_started#reviewer)
+[reviewers](https://docs.gitlab.com/ee/user/project/merge_requests/reviews/)
 feature for all reviews. Reviewers will `approve` the MR and remove themselves from the reviewers list when their review is complete.
 
 - [ ] (Recommended) PMM

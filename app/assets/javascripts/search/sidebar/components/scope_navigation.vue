@@ -5,6 +5,7 @@ import { s__ } from '~/locale';
 import Tracking from '~/tracking';
 import { NAV_LINK_DEFAULT_CLASSES, NAV_LINK_COUNT_DEFAULT_CLASSES } from '../constants';
 import { formatSearchResultCount } from '../../store/utils';
+import { slugifyWithUnderscore } from '../../../lib/utils/text_utility';
 
 export default {
   name: 'ScopeNavigation',
@@ -46,6 +47,9 @@ export default {
     isActive(scope, index) {
       return this.urlQuery.scope ? this.urlQuery.scope === scope : index === 0;
     },
+    qaSelectorValue(item) {
+      return `${slugifyWithUnderscore(item.label)}_tab`;
+    },
   },
   NAV_LINK_DEFAULT_CLASSES,
   NAV_LINK_COUNT_DEFAULT_CLASSES,
@@ -62,6 +66,7 @@ export default {
         class="gl-mb-1"
         :href="item.link"
         :active="isActive(scope, index)"
+        :data-qa-selector="qaSelectorValue(item)"
         @click="handleClick(scope)"
         ><span>{{ item.label }}</span
         ><span v-if="item.count" :class="countClasses(isActive(scope, index))">

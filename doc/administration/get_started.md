@@ -1,5 +1,5 @@
 ---
-info: For assistance with this TAM Onboarding page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
+info: For assistance with this CSM Onboarding page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
 stage: none
 group: unassigned
 ---
@@ -45,11 +45,11 @@ Get started:
 
 **More resources**
 
-- Learn more about [running multiple Agile teams](https://www.youtube.com/watch?v=VR2r1TJCDew).
-- Sync group memberships [by using LDAP](../administration/auth/ldap/ldap_synchronization.md#group-sync).
+- [Run multiple Agile teams](https://www.youtube.com/watch?v=VR2r1TJCDew).
+- [Sync group memberships by using LDAP](../administration/auth/ldap/ldap_synchronization.md#group-sync).
 - Manage user access with inherited permissions. Use up to 20 levels of subgroups to organize both teams and projects.
-  - Learn more about [inherited permissions](../user/project/members/index.md#inherited-membership).
-  - View an [example](../user/group/subgroups/index.md).
+  - [Inherited membership](../user/project/members/index.md#inherited-membership).
+  - [Example](../user/group/subgroups/index.md).
 
 ## Import projects
 
@@ -241,7 +241,7 @@ You can make changes to your default rate limits from the Admin Area. For more i
 - Review the [rate limit on raw endpoints](../user/admin_area/settings/rate_limits_on_raw_endpoints.md). The default setting is 300 requests per minute for raw file access.
 - Review the [import/export rate limits](../user/admin_area/settings/import_export_rate_limits.md) of the six active defaults.
 
-For more information about API and rate limits, see our [API page](../api/index.md).
+For more information about API and rate limits, see our [API page](../api/rest/index.md).
 
 ## API and rate limits for GitLab SaaS
 
@@ -255,7 +255,7 @@ Rate limits also improve the security of your application.
 You can make changes to your default rate limits from the Admin Area. For more information about configuration, see the [Admin Area page](../security/rate_limits.md#configurable-limits).
 
 - Review the rate limit page.
-- Read our [API page](../api/index.md) for more information about API and rate limiting.
+- Read our [API page](../api/rest/index.md) for more information about API and rate limiting.
 
 ### GitLab SaaS-specific block and error responses
 
@@ -290,5 +290,5 @@ You can learn more about how to administer GitLab.
 
 - Udemy: For a more affordable, guided training option, consider
   [GitLab CI: Pipelines, CI/CD, and DevOps for Beginners](https://www.udemy.com/course/gitlab-ci-pipelines-ci-cd-and-devops-for-beginners/) on Udemy.
-- LinkedIn Learning: Check out [Continuous Delivery with GitLab](https://www.linkedin.com/learning/continuous-delivery-with-gitlab) on LinkedIn Learning
+- LinkedIn Learning: Check out [Continuous Delivery with GitLab](https://www.linkedin.com/learning/continuous-integration-and-continuous-delivery-with-gitlab?replacementOf=continuous-delivery-with-gitlab) on LinkedIn Learning
   for another low-cost, guided training option.

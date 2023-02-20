@@ -46,7 +46,7 @@ RSpec.describe 'Multiple issue updating from issues#index', :js, feature_categor
       click_button 'Edit issues'
       check 'Select all'
       click_update_assignee_button
-      click_link user.username
+      click_button user.username
 
       click_update_issues_button
 
@@ -64,7 +64,7 @@ RSpec.describe 'Multiple issue updating from issues#index', :js, feature_categor
       click_button 'Edit issues'
       check 'Select all'
       click_update_assignee_button
-      click_link 'Unassigned'
+      click_button 'Unassigned'
       click_update_issues_button
 
       expect(find('.issue:first-of-type')).not_to have_link "Assigned to #{user.name}"

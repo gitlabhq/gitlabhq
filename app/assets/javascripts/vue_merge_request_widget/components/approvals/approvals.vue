@@ -2,6 +2,7 @@
 import { GlButton, GlSprintf, GlLink } from '@gitlab/ui';
 import { createAlert } from '~/flash';
 import { BV_SHOW_MODAL } from '~/lib/utils/constants';
+import { HTTP_STATUS_UNAUTHORIZED } from '~/lib/utils/http_status';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { s__, __ } from '~/locale';
 import eventHub from '../../event_hub';
@@ -61,6 +62,7 @@ export default {
       fetchingApprovals: true,
       hasApprovalAuthError: false,
       isApproving: false,
+      updatedCount: 0,
     };
   },
   computed: {
@@ -139,9 +141,11 @@ export default {
         this.fetchingApprovals = false;
       })
       .catch(() =>
-        createAlert({
-          message: FETCH_ERROR,
-        }),
+        this.alerts.push(
+          createAlert({
+            message: FETCH_ERROR,
+          }),
+        ),
       );
   },
   methods: {
@@ -154,22 +158,26 @@ export default {
       this.updateApproval(
         () => this.service.approveMergeRequest(),
         () =>
-          createAlert({
-            message: APPROVE_ERROR,
-          }),
+          this.alerts.push(
+            createAlert({
+              message: APPROVE_ERROR,
+            }),
+          ),
       );
     },
     approveWithAuth(data) {
       this.updateApproval(
         () => this.service.approveMergeRequestWithAuth(data),
         (error) => {
-          if (error && error.response && error.response.status === 401) {
+          if (error && error.response && error.response.status === HTTP_STATUS_UNAUTHORIZED) {
             this.hasApprovalAuthError = true;
             return;
           }
-          createAlert({
-            message: APPROVE_ERROR,
-          });
+          this.alerts.push(
+            createAlert({
+              message: APPROVE_ERROR,
+            }),
+          );
         },
       );
     },
@@ -177,9 +185,11 @@ export default {
       this.updateApproval(
         () => this.service.unapproveMergeRequest(),
         () =>
-          createAlert({
-            message: UNAPPROVE_ERROR,
-          }),
+          this.alerts.push(
+            createAlert({
+              message: UNAPPROVE_ERROR,
+            }),
+          ),
       );
     },
     updateApproval(serviceFn, errFn) {
@@ -188,6 +198,7 @@ export default {
       return serviceFn()
         .then((data) => {
           this.mr.setApprovals(data);
+          this.updatedCount += 1;
 
           if (!window.gon?.features?.realtimeMrStatusChange) {
             eventHub.$emit('MRWidgetUpdateRequested');
@@ -241,10 +252,10 @@ export default {
             />
             <approvals-summary
               v-else
-              :approved="isApproved"
-              :approvals-left="approvals.approvals_left || 0"
-              :rules-left="approvals.approvalRuleNamesLeft"
-              :approvers="approvedBy"
+              :project-path="mr.targetProjectFullPath"
+              :iid="`${mr.iid}`"
+              :updated-count="updatedCount"
+              :multiple-approval-rules-available="mr.multipleApprovalRulesAvailable"
             />
           </div>
           <div v-if="hasInvalidRules" class="gl-text-gray-400 gl-mt-2" data-testid="invalid-rules">

@@ -137,7 +137,7 @@ RSpec.describe ProcessCommitWorker do
 
       context 'when issue has no first_mentioned_in_commit_at set' do
         it 'updates issue metrics' do
-          expect(update_metrics_and_reload)
+          expect { update_metrics_and_reload.call }
             .to change { issue.metrics.first_mentioned_in_commit_at }.to(commit.committed_date)
         end
       end
@@ -148,7 +148,7 @@ RSpec.describe ProcessCommitWorker do
         end
 
         it "doesn't update issue metrics" do
-          expect(update_metrics_and_reload).not_to change { issue.metrics.first_mentioned_in_commit_at }
+          expect {  update_metrics_and_reload.call }.not_to change { issue.metrics.first_mentioned_in_commit_at }
         end
       end
 
@@ -158,7 +158,7 @@ RSpec.describe ProcessCommitWorker do
         end
 
         it "doesn't update issue metrics" do
-          expect(update_metrics_and_reload)
+          expect { update_metrics_and_reload.call }
             .to change { issue.metrics.first_mentioned_in_commit_at }.to(commit.committed_date)
         end
       end

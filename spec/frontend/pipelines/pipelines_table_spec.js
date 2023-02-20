@@ -121,6 +121,14 @@ describe('Pipelines Table', () => {
         expect(findPipelineMiniGraph().props('stages').length).toBe(stagesLength);
       });
 
+      it('should render the latest downstream pipelines only', () => {
+        // component receives two downstream pipelines. one of them is already outdated
+        // because we retried the trigger job, so the mini pipeline graph will only
+        // render the newly created downstream pipeline instead
+        expect(pipeline.triggered).toHaveLength(2);
+        expect(findPipelineMiniGraph().props('downstreamPipelines')).toHaveLength(1);
+      });
+
       describe('when pipeline does not have stages', () => {
         beforeEach(() => {
           pipeline = createMockPipeline();

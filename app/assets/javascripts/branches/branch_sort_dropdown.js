@@ -1,8 +1,9 @@
 import Vue from 'vue';
+import { parseBoolean } from '~/lib/utils/common_utils';
 import SortDropdown from './components/sort_dropdown.vue';
 
 const mountDropdownApp = (el) => {
-  const { mode, projectBranchesFilteredPath, sortOptions } = el.dataset;
+  const { projectBranchesFilteredPath, sortOptions, showDropdown, sortedBy } = el.dataset;
 
   return new Vue({
     el,
@@ -11,9 +12,10 @@ const mountDropdownApp = (el) => {
       SortDropdown,
     },
     provide: {
-      mode,
       projectBranchesFilteredPath,
       sortOptions: JSON.parse(sortOptions),
+      showDropdown: parseBoolean(showDropdown),
+      sortedBy,
     },
     render: (createElement) => createElement(SortDropdown),
   });

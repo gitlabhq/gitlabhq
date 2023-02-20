@@ -9,13 +9,33 @@ RSpec.describe Integrations::BaseChatNotification, feature_category: :integratio
 
   describe 'validations' do
     before do
-      allow(subject).to receive(:activated?).and_return(true)
+      subject.active = active
+
       allow(subject).to receive(:default_channel_placeholder).and_return('placeholder')
       allow(subject).to receive(:webhook_help).and_return('help')
     end
 
-    it { is_expected.to validate_presence_of :webhook }
-    it { is_expected.to validate_inclusion_of(:labels_to_be_notified_behavior).in_array(%w[match_any match_all]).allow_blank }
+    def build_channel_list(count)
+      (1..count).map { |i| "##{i}" }.join(',')
+    end
+
+    context 'when active' do
+      let(:active) { true }
+
+      it { is_expected.to validate_presence_of :webhook }
+      it { is_expected.to validate_inclusion_of(:labels_to_be_notified_behavior).in_array(%w[match_any match_all]).allow_blank }
+      it { is_expected.to allow_value(build_channel_list(10)).for(:push_channel) }
+      it { is_expected.not_to allow_value(build_channel_list(11)).for(:push_channel) }
+    end
+
+    context 'when inactive' do
+      let(:active) { false }
+
+      it { is_expected.not_to validate_presence_of :webhook }
+      it { is_expected.not_to validate_inclusion_of(:labels_to_be_notified_behavior).in_array(%w[match_any match_all]).allow_blank }
+      it { is_expected.to allow_value(build_channel_list(10)).for(:push_channel) }
+      it { is_expected.to allow_value(build_channel_list(11)).for(:push_channel) }
+    end
   end
 
   describe '#execute' do
@@ -308,6 +328,10 @@ RSpec.describe Integrations::BaseChatNotification, feature_category: :integratio
 
     context 'with multiple channel names with spaces specified' do
       it_behaves_like 'with channel specified', 'slack-integration, #slack-test, @UDLP91W0A', ['slack-integration', '#slack-test', '@UDLP91W0A']
+    end
+
+    context 'with duplicate channel names' do
+      it_behaves_like 'with channel specified', '#slack-test,#slack-test,#slack-test-2', ['#slack-test', '#slack-test-2']
     end
   end
 

@@ -6,7 +6,7 @@ module API
       module Debian
         class Distribution < Grape::Entity
           expose :id, documentation: { type: 'integer', example: 1 }
-          expose :codename, documentation: { type: 'string', example: 'unstable' }
+          expose :codename, documentation: { type: 'string', example: 'sid' }
           expose :suite, documentation: { type: 'string', example: 'unstable' }
           expose :origin, documentation: { type: 'string', example: 'Grep' }
           expose :label, documentation: { type: 'string', example: 'grep.be' }

@@ -5,6 +5,7 @@ import {
   GlDropdownSectionHeader,
   GlSearchBoxByType,
 } from '@gitlab/ui';
+import { last } from 'lodash';
 import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -254,7 +255,6 @@ describe('Access Level Dropdown', () => {
 
       createComponent({ preselectedItems });
       await waitForPromises();
-      const spy = jest.spyOn(wrapper.vm, '$emit');
       const dropdownItems = findAllDropdownItems();
       // select new item from each group
       findDropdownItemWithText(dropdownItems, 'role1').trigger('click');
@@ -267,7 +267,7 @@ describe('Access Level Dropdown', () => {
       findDropdownItemWithText(dropdownItems, 'user8').trigger('click');
       findDropdownItemWithText(dropdownItems, 'key11').trigger('click');
 
-      expect(spy).toHaveBeenLastCalledWith('select', [
+      expect(last(wrapper.emitted('select'))[0]).toStrictEqual([
         { access_level: 1 },
         { id: 112, access_level: 2, _destroy: true },
         { id: 113, access_level: 3 },
@@ -347,12 +347,10 @@ describe('Access Level Dropdown', () => {
     });
 
     it('should emit `hidden` event with dropdown selection', () => {
-      jest.spyOn(wrapper.vm, '$emit');
-
       findAllDropdownItems().at(1).trigger('click');
 
       findDropdown().vm.$emit('hidden');
-      expect(wrapper.vm.$emit).toHaveBeenCalledWith('hidden', [{ access_level: 2 }]);
+      expect(wrapper.emitted('hidden')[0][0]).toStrictEqual([{ access_level: 2 }]);
     });
   });
 });

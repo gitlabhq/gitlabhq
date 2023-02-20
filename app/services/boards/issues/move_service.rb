@@ -52,7 +52,7 @@ module Boards
       end
 
       def update(issue, issue_modification_params)
-        ::Issues::UpdateService.new(project: issue.project, current_user: current_user, params: issue_modification_params).execute(issue)
+        ::Issues::UpdateService.new(container: issue.project, current_user: current_user, params: issue_modification_params).execute(issue)
       end
 
       def moving_to_list_items_relation

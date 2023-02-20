@@ -4,7 +4,7 @@ group: Static Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Secure your application **(ULTIMATE)**
+# Application security **(ULTIMATE)**
 
 GitLab can check your application for security vulnerabilities including:
 
@@ -104,10 +104,10 @@ The following vulnerability scanners and their databases are regularly updated:
 | [Container Scanning](container_scanning/index.md)            | A job runs on a daily basis to build new images with the latest vulnerability database updates from the upstream scanner. For more details, see [Vulnerabilities database update](container_scanning/index.md#vulnerabilities-database). |
 | [Dependency Scanning](dependency_scanning/index.md)          | Relies on the [GitLab Advisory Database](https://gitlab.com/gitlab-org/security-products/gemnasium-db). It is updated on a daily basis using [data from NVD, the `ruby-advisory-db` and the GitHub Advisory Database as data sources](https://gitlab.com/gitlab-org/security-products/gemnasium-db/-/blob/master/SOURCES.md). See our [current measurement of time from CVE being issued to our product being updated](https://about.gitlab.com/handbook/engineering/development/performance-indicators/#cve-issue-to-update). |
 | [Dynamic Application Security Testing (DAST)](dast/index.md) | The scanning engine is updated on a periodic basis. See the [version of the underlying tool `zaproxy`](https://gitlab.com/gitlab-org/security-products/dast/blob/main/Dockerfile#L1). The scanning rules are downloaded at scan runtime. |
-| [Static Application Security Testing (SAST)](sast/index.md)  | Relies exclusively on [the tools GitLab wraps](sast/index.md#supported-languages-and-frameworks). The underlying analyzers are updated at least once per month if a relevant update is available. The vulnerabilities database is updated by the upstream tools. |
+| [Static Application Security Testing (SAST)](sast/index.md)  | The source of scan rules depends on which [analyzer](sast/analyzers.md) is used for each [supported programming language](sast/index.md#supported-languages-and-frameworks). GitLab maintains a ruleset for the Semgrep-based analyzer and updates it regularly based on internal research and user feedback. For other analyzers, the ruleset is sourced from the upstream open-source scanner. Each analyzer is updated at least once per month if a relevant update is available. |
 
 In versions of GitLab that use the same major version of the analyzer, you do not have to update
-GitLab to benefit from the latest vulnerabilities definitions. The security tools are released as
+them to benefit from the latest vulnerabilities definitions. The security tools are released as
 Docker images. The vendored job definitions that enable them use major release tags according to
 [semantic versioning](https://semver.org/). Each new release of the tools overrides these tags.
 Although in a major analyzer version you automatically get the latest versions of the scanning
@@ -130,7 +130,7 @@ While you cannot directly customize Auto DevOps, you can [include the Auto DevOp
 
 ## Security scanning without Auto DevOps
 
-To enable all GitLab security scanning tools, with the option of customizing settings, add the
+To enable all GitLab security scanning tools with the option of customizing settings, add the
 GitLab CI/CD templates to your `.gitlab-ci.yml` file.
 
 WARNING:
@@ -164,7 +164,7 @@ variables:
 
 By default, GitLab security scanners use `registry.gitlab.com/security-products` as the
 base address for Docker images. You can override this for most scanners by setting the CI/CD variable
-`SECURE_ANALYZERS_PREFIX` to another location. Note that this affects all scanners at once.
+`SECURE_ANALYZERS_PREFIX` to another location. This affects all scanners at once.
 
 The [Container Scanning](container_scanning/index.md) analyzer is an exception, and it
 does not use the `SECURE_ANALYZERS_PREFIX` variable. To override its Docker image, see
@@ -179,7 +179,7 @@ you must reference the [`latest` templates](../../development/cicd/templates.md)
 
 All `latest` security templates support merge request pipelines.
 
-For example, to run both SAST and Dependency Scanning:
+For example, to run both SAST and Dependency Scanning, the following template is used:
 
 ```yaml
 include:
@@ -205,7 +205,7 @@ that rely on this scan data only show results from pipelines on the default bran
 
 Our language and package manager specific jobs attempt to assess which analyzers they should run for your project so that you can do less configuration.
 
-If you want to override this to increase the pipeline speed you may choose which analyzers to exclude if you know they are not applicable (languages or package managers not contained in your project) by following variable customization directions for that specific tool.
+If you want to override this to increase the pipeline speed, you may choose which analyzers to exclude if you know they are not applicable (languages or package managers not contained in your project) by following variable customization directions for that specific tool.
 
 ### Secure job status
 
@@ -242,7 +242,7 @@ reports are available to download. To download a report, select
 
 A merge request contains a security widget which displays a summary of the new results. New results are determined by comparing the findings of the merge request against the findings of the most recent completed pipeline (`success`, `failed`, `canceled` or `skipped`) for the latest commit in the target branch.
 
-If security scans have not run for the most recent completed pipeline in the target branch there is no base for comparison. The vulnerabilities from the merge request findings will be listed as new in the merge request security widget. We recommend you run a scan of the `default` (target) branch before enabling feature branch scans for your developers.
+If security scans have not run for the most recent completed pipeline in the target branch there is no base for comparison. The vulnerabilities from the merge request findings are listed as new in the merge request security widget. We recommend you run a scan of the `default` (target) branch before enabling feature branch scans for your developers.
 
 The merge request security widget displays only a subset of the vulnerabilities in the generated JSON artifact because it contains both new and existing findings.
 
@@ -280,7 +280,7 @@ security issues:
 
 - A security vulnerability. For more details, read [Scan result policies](policies/scan-result-policies.md).
 - A software license compliance violation. For more details, read
-  [Enabling license approvals within a project](../compliance/license_compliance/index.md#enabling-license-approvals-within-a-project).
+  [Enabling license approvals within a project](../compliance/license_check_rules.md#enabling-license-approvals-within-a-project).
 
 ## Using private Maven repositories
 
@@ -397,7 +397,7 @@ To fix this issue, you can either:
       - echo "custom job"
   ```
 
-Learn more on overriding security jobs:
+For more information about overriding security jobs, see:
 
 - [Overriding SAST jobs](sast/index.md#overriding-sast-jobs).
 - [Overriding Dependency Scanning jobs](dependency_scanning/index.md#overriding-dependency-scanning-jobs).
@@ -443,9 +443,9 @@ You can always find supported and deprecated schema versions in the [source code
 You can interact with the results of the security scanning tools in several locations:
 
 - [Scan information in merge requests](#view-security-scan-information-in-merge-requests)
-- [Project Security Dashboard](security_dashboard/index.md)
+- [Project Security Dashboard](security_dashboard/index.md#view-vulnerabilities-over-time-for-a-project)
 - [Security pipeline tab](security_dashboard/index.md)
-- [Group Security Dashboard](security_dashboard/index.md)
+- [Group Security Dashboard](security_dashboard/index.md#view-vulnerabilities-over-time-for-a-group)
 - [Security Center](security_dashboard/index.md#security-center)
 - [Vulnerability Report](vulnerability_report/index.md)
 - [Vulnerability Pages](vulnerabilities/index.md)
@@ -487,7 +487,7 @@ Security and compliance teams must ensure that security scans:
 
 GitLab provides two methods of accomplishing this, each with advantages and disadvantages.
 
-- [Compliance framework pipelines](../group/compliance_frameworks.md#configure-a-compliance-pipeline)
+- [Compliance framework pipelines](../group/compliance_frameworks.md#compliance-pipelines)
   are recommended when:
 
   - Scan execution enforcement is required for any scanner that uses a GitLab template, such as SAST IaC, DAST, Dependency Scanning,
@@ -516,7 +516,7 @@ Additional details about the differences between the two solutions are outlined 
 | ------ | ------ | ------ |
 | **Flexibility** | Supports anything that can be done in a CI file. | Limited to only the items for which GitLab has explicitly added support. DAST, SAST, Secret Detection, Dependency Scanning, and Container Scanning scans are supported. |
 | **Usability** | Requires knowledge of CI YAML. | Follows a `rules` and `actions`-based YAML structure. |
-| **Inclusion in CI pipeline** | The compliance pipeline is executed instead of the project's `.gitlab-ci.yml` file. To include the project's `.gitlab-ci.yml` file, use an `include` statement. Defined variables aren't allowed to be overwritten by the included project's YAML file. | Forced inclusion of a new job into the CI pipeline. DAST jobs that must be customized on a per-project basis can have project-level Site Profiles and Scan Profiles defined. To ensure separation of duties, these profiles are immutable when referenced in a scan execution policy. All jobs can be customized as part of the security policy itself with the same variables that are normally available to the CI job. |
+| **Inclusion in CI pipeline** | The compliance pipeline is executed instead of the project's `.gitlab-ci.yml` file. To include the project's `.gitlab-ci.yml` file, use an `include` statement. Defined variables aren't allowed to be overwritten by the included project's YAML file. | Forced inclusion of a new job into the CI pipeline. DAST jobs that must be customized on a per-project basis can have project-level Site Profiles and Scan Profiles defined. To ensure separation of duties, these profiles are immutable when referenced in a scan execution policy. All jobs can be customized as part of the security policy itself with the same variables that are usually available to the CI job. |
 | **Schedulable** | Can be scheduled through a scheduled pipeline on the group. | Can be scheduled natively through the policy configuration itself. |
 | **Separation of Duties** | Only group owners can create compliance framework labels. Only project owners can apply compliance framework labels to projects. The ability to make or approve changes to the compliance pipeline definition is limited to individuals who are explicitly given access to the project that contains the compliance pipeline. | Only project owners can define a linked security policy project. The ability to make or approve changes to security policies is limited to individuals who are explicitly given access to the security policy project. |
 | **Ability to apply one standard to multiple projects** | The same compliance framework label can be applied to multiple projects inside a group. | The same security policy project can be used for multiple projects across GitLab with no requirement of being located in the same group. |
@@ -602,7 +602,7 @@ To fix this issue, you must either:
 - [Transition your `only/except` syntax to `rules`](#transitioning-your-onlyexcept-syntax-to-rules).
 - (Temporarily) [Pin your templates to the deprecated versions](#pin-your-templates-to-the-deprecated-versions)
 
-[Learn more on overriding SAST jobs](sast/index.md#overriding-sast-jobs).
+For more information, see [Overriding SAST jobs](sast/index.md#overriding-sast-jobs).
 
 #### Transitioning your `only/except` syntax to `rules`
 
@@ -664,7 +664,7 @@ spotbugs-sast:
     - if: $CI_COMMIT_TAG == null
 ```
 
-[Learn more on the usage of `rules`](../../ci/yaml/index.md#rules).
+For more information, see [`rules`](../../ci/yaml/index.md#rules).
 
 #### Pin your templates to the deprecated versions
 
@@ -702,7 +702,7 @@ The `sast` or `dependency_scanning` stanzas can be used to make changes to all S
 such as changing `variables` or the `stage`, but they cannot be used to define shared `rules`.
 
 There [is an issue open to improve extendability](https://gitlab.com/gitlab-org/gitlab/-/issues/218444).
-Please upvote the issue to help with prioritization, and
+You can upvote the issue to help with prioritization, and
 [contributions are welcomed](https://about.gitlab.com/community/contribute/).
 
 ### Empty Vulnerability Report, Dependency List, License list pages
@@ -710,9 +710,9 @@ Please upvote the issue to help with prioritization, and
 If the pipeline has manual steps with a job that has the `allow_failure: false` option, and this job is not finished,
 GitLab can't populate listed pages with the data from security reports.
 In this case, [the Vulnerability Report](vulnerability_report/index.md), [the Dependency List](dependency_list/index.md),
-and [the License list](../compliance/license_compliance/index.md#license-list) pages will be empty.
+and [the License list](../compliance/license_list.md) pages are empty.
 These security pages can be populated by running the jobs from the manual step of the pipeline.
 
 There is [an issue open to handle this scenario](https://gitlab.com/gitlab-org/gitlab/-/issues/346843).
-Please upvote the issue to help with prioritization, and
+You can upvote the issue to help with prioritization, and
 [contributions are welcomed](https://about.gitlab.com/community/contribute/).

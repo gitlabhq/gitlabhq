@@ -15,6 +15,7 @@ import { isEmpty } from 'lodash';
 import readyToMergeMixin from 'ee_else_ce/vue_merge_request_widget/mixins/ready_to_merge';
 import readyToMergeQuery from 'ee_else_ce/vue_merge_request_widget/queries/states/ready_to_merge.query.graphql';
 import { createAlert } from '~/flash';
+import { TYPENAME_MERGE_REQUEST } from '~/graphql_shared/constants';
 import { secondsToMilliseconds } from '~/lib/utils/datetime_utility';
 import simplePoll from '~/lib/utils/simple_poll';
 import { __, s__, n__ } from '~/locale';
@@ -98,7 +99,7 @@ export default {
         },
         variables() {
           return {
-            issuableId: convertToGraphQLId('MergeRequest', this.mr?.id),
+            issuableId: convertToGraphQLId(TYPENAME_MERGE_REQUEST, this.mr?.id),
           };
         },
         updateQuery(
@@ -524,6 +525,7 @@ export default {
                   v-model="removeSourceBranch"
                   :disabled="isRemoveSourceBranchButtonDisabled"
                   class="js-remove-source-branch-checkbox gl-display-flex gl-align-items-center gl-mr-5 gl-mb-3 gl-md-mb-0"
+                  data-testid="delete-source-branch-checkbox"
                 >
                   {{ __('Delete source branch') }}
                 </gl-form-checkbox>
@@ -634,6 +636,7 @@ export default {
                   v-gl-tooltip.hover.focus="__('Select merge moment')"
                   :disabled="isMergeButtonDisabled"
                   variant="confirm"
+                  data-testid="merge-immediately-dropdown"
                   data-qa-selector="merge_moment_dropdown"
                   toggle-class="btn-icon js-merge-moment"
                 >
@@ -643,7 +646,8 @@ export default {
                   </template>
                   <gl-dropdown-item
                     icon-name="warning"
-                    button-class="accept-merge-request js-merge-immediately-button"
+                    button-class="accept-merge-request"
+                    data-testid="merge-immediately-button"
                     data-qa-selector="merge_immediately_menu_item"
                     @click="handleMergeImmediatelyButtonClick"
                   >
@@ -697,7 +701,11 @@ export default {
                     :merge-commit-path="mr.mergeCommitPath"
                   />
                 </li>
-                <li v-if="mr.state !== 'closed'" class="gl-line-height-normal">
+                <li
+                  v-if="mr.state !== 'closed'"
+                  class="gl-line-height-normal"
+                  data-testid="source-branch-deleted-text"
+                >
                   {{ sourceBranchDeletedText }}
                 </li>
                 <li v-if="mr.relatedLinks" class="gl-line-height-normal">

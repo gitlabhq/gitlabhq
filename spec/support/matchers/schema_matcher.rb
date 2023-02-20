@@ -16,20 +16,8 @@ module SchemaPath
   end
 
   def self.validator(schema_path)
-    unless @schema_cache.key?(schema_path)
-      @schema_cache[schema_path] = JSONSchemer.schema(schema_path, ref_resolver: SchemaPath.file_ref_resolver)
-    end
-
-    @schema_cache[schema_path]
-  end
-
-  def self.file_ref_resolver
-    proc do |uri|
-      file = Rails.root.join(uri.path)
-      raise StandardError, "Ref file #{uri.path} must be json" unless uri.path.ends_with?('.json')
-      raise StandardError, "File #{file.to_path} doesn't exists" unless file.exist?
-
-      Gitlab::Json.parse(File.read(file))
+    @schema_cache.fetch(schema_path) do
+      @schema_cache[schema_path] = JSONSchemer.schema(schema_path)
     end
   end
 end

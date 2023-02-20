@@ -11,6 +11,17 @@ class Settings < Settingslogic
       on_standard_port?(gitlab)
     end
 
+    def build_ci_component_fqdn
+      custom_port = ":#{gitlab.port}" unless on_standard_port?(gitlab)
+
+      [
+        gitlab.host,
+        custom_port,
+        gitlab.relative_url_root,
+        '/'
+      ].join('')
+    end
+
     def host_without_www(url)
       host(url).sub('www.', '')
     end

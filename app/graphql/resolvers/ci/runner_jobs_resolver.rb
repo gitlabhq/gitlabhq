@@ -30,6 +30,7 @@ module Resolvers
           previous_stage_jobs_or_needs: [:needs, :pipeline],
           artifacts: [:job_artifacts],
           pipeline: [:user],
+          project: [{ project: [:route, { namespace: [:route] }] }],
           detailed_status: [
             :metadata,
             { pipeline: [:merge_request] },

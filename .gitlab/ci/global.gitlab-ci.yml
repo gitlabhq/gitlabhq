@@ -21,6 +21,12 @@
     - !reference [.default-utils-before_script, before_script]
     - source scripts/prepare_build.sh
 
+.production:
+  variables:
+    RAILS_ENV: "production"
+    NODE_ENV: "production"
+    GITLAB_ALLOW_SEPARATE_CI_DATABASE: "true"
+
 .ruby-gems-cache: &ruby-gems-cache
   key: "ruby-gems-debian-${DEBIAN_VERSION}-ruby-${RUBY_VERSION}"
   paths:
@@ -257,9 +263,13 @@
     - name: redis:5.0-alpine
     - name: elasticsearch:7.17.6
       command: ["elasticsearch", "-E", "discovery.type=single-node", "-E", "xpack.security.enabled=false"]
+    - name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:zoekt-ci-image-1.0
+      alias: zoekt-ci-image
   variables:
     POSTGRES_HOST_AUTH_METHOD: trust
     PG_VERSION: "11"
+    ZOEKT_INDEX_BASE_URL: http://zoekt-ci-image:6060
+    ZOEKT_SEARCH_BASE_URL: http://zoekt-ci-image:6070
 
 .use-pg12-es7-ee:
   services:
@@ -268,9 +278,13 @@
     - name: redis:6.0-alpine
     - name: elasticsearch:7.17.6
       command: ["elasticsearch", "-E", "discovery.type=single-node", "-E", "xpack.security.enabled=false"]
+    - name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:zoekt-ci-image-1.0
+      alias: zoekt-ci-image
   variables:
     POSTGRES_HOST_AUTH_METHOD: trust
     PG_VERSION: "12"
+    ZOEKT_INDEX_BASE_URL: http://zoekt-ci-image:6060
+    ZOEKT_SEARCH_BASE_URL: http://zoekt-ci-image:6070
 
 .use-pg13-es7-ee:
   services:
@@ -279,9 +293,13 @@
     - name: redis:6.2-alpine
     - name: elasticsearch:7.17.6
       command: ["elasticsearch", "-E", "discovery.type=single-node", "-E", "xpack.security.enabled=false"]
+    - name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:zoekt-ci-image-1.0
+      alias: zoekt-ci-image
   variables:
     POSTGRES_HOST_AUTH_METHOD: trust
     PG_VERSION: "13"
+    ZOEKT_INDEX_BASE_URL: http://zoekt-ci-image:6060
+    ZOEKT_SEARCH_BASE_URL: http://zoekt-ci-image:6070
 
 .use-pg12-es8-ee:
   services:
@@ -289,11 +307,15 @@
       command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off"]
     - name: redis:6.0-alpine
     - name: elasticsearch:8.5.3
+    - name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:zoekt-ci-image-1.0
+      alias: zoekt-ci-image
   variables:
     POSTGRES_HOST_AUTH_METHOD: trust
     PG_VERSION: "12"
     ES_SETTING_DISCOVERY_TYPE: "single-node"
     ES_SETTING_XPACK_SECURITY_ENABLED: "false"
+    ZOEKT_INDEX_BASE_URL: http://zoekt-ci-image:6060
+    ZOEKT_SEARCH_BASE_URL: http://zoekt-ci-image:6070
 
 .use-pg12-opensearch1-ee:
   services:
@@ -303,9 +325,13 @@
     - name: opensearchproject/opensearch:1.3.5
       alias: elasticsearch
       command: ["bin/opensearch", "-E", "discovery.type=single-node", "-E", "plugins.security.disabled=true"]
+    - name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:zoekt-ci-image-1.0
+      alias: zoekt-ci-image
   variables:
     POSTGRES_HOST_AUTH_METHOD: trust
     PG_VERSION: "12"
+    ZOEKT_INDEX_BASE_URL: http://zoekt-ci-image:6060
+    ZOEKT_SEARCH_BASE_URL: http://zoekt-ci-image:6070
 
 .use-pg12-opensearch2-ee:
   services:
@@ -315,9 +341,13 @@
     - name: opensearchproject/opensearch:2.2.1
       alias: elasticsearch
       command: ["bin/opensearch", "-E", "discovery.type=single-node", "-E", "plugins.security.disabled=true"]
+    - name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:zoekt-ci-image-1.0
+      alias: zoekt-ci-image
   variables:
     POSTGRES_HOST_AUTH_METHOD: trust
     PG_VERSION: "12"
+    ZOEKT_INDEX_BASE_URL: http://zoekt-ci-image:6060
+    ZOEKT_SEARCH_BASE_URL: http://zoekt-ci-image:6070
 
 .use-kaniko:
   image:

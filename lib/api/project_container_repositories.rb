@@ -12,7 +12,7 @@ module API
 
     before { authorize_read_container_images! }
 
-    feature_category :package_registry
+    feature_category :container_registry
     urgency :low
 
     params do

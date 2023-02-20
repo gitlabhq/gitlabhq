@@ -19,11 +19,10 @@
 - if mr_action == 'diffs'
   - add_page_startup_api_call @endpoint_diff_batch_url
 
-.merge-request{ data: { mr_action: mr_action, url: merge_request_path(@merge_request, format: :json), project_path: project_path(@merge_request.project), lock_version: @merge_request.lock_version } }
+.merge-request{ data: { mr_action: mr_action, url: merge_request_path(@merge_request, format: :json), project_path: project_path(@merge_request.project), lock_version: @merge_request.lock_version, diffs_batch_cache_key: @diffs_batch_cache_key } }
+  = render "projects/merge_requests/mr_title"
   - if moved_mr_sidebar_enabled?
     #js-merge-sticky-header{ data: { data: sticky_header_data.to_json } }
-  = render "projects/merge_requests/mr_title"
-
   .merge-request-details.issuable-details{ data: { id: @merge_request.project.id } }
     = render "projects/merge_requests/mr_box"
     .merge-request-tabs-holder{ class: "#{'js-tabs-affix' unless ENV['RAILS_ENV'] == 'test'} #{'gl-static' if moved_mr_sidebar_enabled?}" }
@@ -81,7 +80,8 @@
                 target_type: 'merge_request',
                 help_page_path: suggest_changes_help_path,
                 current_user_data: @current_user_data,
-                is_locked: @merge_request.discussion_locked.to_s } }
+                is_locked: @merge_request.discussion_locked.to_s,
+                report_abuse_path: add_category_abuse_reports_path } }
           - if moved_mr_sidebar_enabled?
             = render 'shared/issuable/sidebar', issuable_sidebar: @issuable_sidebar, assignees: @merge_request.assignees, reviewers: @merge_request.reviewers, source_branch: @merge_request.source_branch
 

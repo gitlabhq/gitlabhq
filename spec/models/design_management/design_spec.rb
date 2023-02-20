@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe DesignManagement::Design do
+RSpec.describe DesignManagement::Design, feature_category: :design_management do
   include DesignManagementTestHelpers
 
   let_it_be(:issue) { create(:issue) }

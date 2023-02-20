@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe GitlabSchema.types['User'], feature_category: :users do
+RSpec.describe GitlabSchema.types['User'], feature_category: :user_profile do
   specify { expect(described_class.graphql_name).to eq('User') }
 
   specify do
@@ -46,6 +46,7 @@ RSpec.describe GitlabSchema.types['User'], feature_category: :users do
       preferencesGitpodPath
       profileEnableGitpodPath
       savedReplies
+      savedReply
     ]
 
     expect(described_class).to have_graphql_fields(*expected_fields)

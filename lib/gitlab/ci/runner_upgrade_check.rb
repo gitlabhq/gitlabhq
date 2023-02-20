@@ -42,7 +42,7 @@ module Gitlab
         # Consider update if there's a newer release within the currently deployed GitLab version
         add_available_runner_release(runner_version, suggestions)
 
-        suggestions[runner_version] = :not_available if suggestions.empty?
+        suggestions[runner_version] = :unavailable if suggestions.empty?
 
         suggestions
       end

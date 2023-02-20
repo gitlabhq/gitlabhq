@@ -21,8 +21,11 @@ class Group < Namespace
   include ChronicDurationAttribute
   include RunnerTokenExpirationInterval
   include Todoable
+  include IssueParent
 
   extend ::Gitlab::Utils::Override
+
+  README_PROJECT_PATH = 'gitlab-profile'
 
   def self.sti_name
     'Group'
@@ -43,7 +46,10 @@ class Group < Namespace
   has_many :requesters, -> { where.not(requested_at: nil) }, dependent: :destroy, as: :source, class_name: 'GroupMember' # rubocop:disable Cop/ActiveRecordDependent
   has_many :namespace_requesters, -> { where.not(requested_at: nil).unscope(where: %i[source_id source_type]) },
     foreign_key: :member_namespace_id, inverse_of: :group, class_name: 'GroupMember'
+
   has_many :members_and_requesters, as: :source, class_name: 'GroupMember'
+  has_many :namespace_members_and_requesters, -> { unscope(where: %i[source_id source_type]) },
+    foreign_key: :member_namespace_id, inverse_of: :group, class_name: 'GroupMember'
 
   has_many :milestones
   has_many :integrations
@@ -422,15 +428,14 @@ class Group < Namespace
     )
   end
 
-  def add_member(user, access_level, current_user: nil, expires_at: nil, ldap: false, blocking_refresh: true)
+  def add_member(user, access_level, current_user: nil, expires_at: nil, ldap: false)
     Members::Groups::CreatorService.add_member( # rubocop:disable CodeReuse/ServiceClass
       self,
       user,
       access_level,
       current_user: current_user,
       expires_at: expires_at,
-      ldap: ldap,
-      blocking_refresh: blocking_refresh
+      ldap: ldap
     )
   end
 
@@ -539,7 +544,6 @@ class Group < Namespace
 
   # rubocop: disable CodeReuse/ServiceClass
   def refresh_members_authorized_projects(
-    blocking: true,
     priority: UserProjectAccessChangedService::HIGH_PRIORITY,
     direct_members_only: false
   )
@@ -552,7 +556,7 @@ class Group < Namespace
 
     UserProjectAccessChangedService
       .new(user_ids)
-      .execute(blocking: blocking, priority: priority)
+      .execute(priority: priority)
   end
   # rubocop: enable CodeReuse/ServiceClass
 
@@ -748,7 +752,7 @@ class Group < Namespace
   end
 
   def refresh_project_authorizations
-    refresh_members_authorized_projects(blocking: false)
+    refresh_members_authorized_projects
   end
 
   # each existing group needs to have a `runners_token`.
@@ -915,10 +919,6 @@ class Group < Namespace
     feature_flag_enabled_for_self_or_ancestor?(:work_items_mvc_2)
   end
 
-  def work_items_create_from_markdown_feature_flag_enabled?
-    feature_flag_enabled_for_self_or_ancestor?(:work_items_create_from_markdown)
-  end
-
   def usage_quotas_enabled?
     ::Feature.enabled?(:usage_quotas_for_all_editions, self) && root?
   end
@@ -947,6 +947,16 @@ class Group < Namespace
   def update_two_factor_requirement_for_members
     direct_and_indirect_members.find_each(&:update_two_factor_requirement)
   end
+
+  def readme_project
+    projects.find_by(path: README_PROJECT_PATH)
+  end
+  strong_memoize_attr :readme_project
+
+  def group_readme
+    readme_project&.repository&.readme
+  end
+  strong_memoize_attr :group_readme
 
   private
 

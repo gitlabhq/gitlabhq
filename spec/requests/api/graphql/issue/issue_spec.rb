@@ -154,6 +154,47 @@ RSpec.describe 'Query.issue(id)', feature_category: :team_planning do
     end
   end
 
+  context 'when selecting `related_merge_requests`' do
+    let(:issue_fields) { ['relatedMergeRequests { nodes { id } }'] }
+    let_it_be(:user) { create(:user) }
+    let_it_be(:mr_project) { project }
+    let!(:merge_request) do
+      attributes = {
+        author: user,
+        source_project: mr_project,
+        target_project: mr_project,
+        source_branch: 'master',
+        target_branch: 'test',
+        description: "See #{issue.to_reference}"
+      }
+
+      create(:merge_request, attributes).tap do |merge_request|
+        create(:note, :system, project: issue.project, noteable: issue,
+          author: user, note: merge_request.to_reference(full: true))
+      end
+    end
+
+    before do
+      project.add_developer(current_user)
+
+      post_graphql(query, current_user: current_user)
+    end
+
+    it 'returns the related merge request' do
+      expect(issue_data['relatedMergeRequests']['nodes']).to include a_hash_including({
+        'id' => merge_request.to_global_id.to_s
+      })
+    end
+
+    context 'no permission to related merge request' do
+      let_it_be(:mr_project) { create(:project, :private) }
+
+      it 'does not return the related merge request' do
+        expect(issue_data['relatedMergeRequests']['nodes']).to be_empty
+      end
+    end
+  end
+
   context 'when there is a confidential issue' do
     let!(:confidential_issue) do
       create(:issue, :confidential, project: project)

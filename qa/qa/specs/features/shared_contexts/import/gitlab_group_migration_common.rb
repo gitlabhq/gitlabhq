@@ -32,7 +32,7 @@ module QA
       Resource::Sandbox.fabricate_via_api! do |group|
         group.api_client = source_admin_api_client
         group.path = "source-group-for-import-#{SecureRandom.hex(4)}"
-        group.avatar = File.new("qa/fixtures/designs/tanuki.jpg", "r")
+        group.avatar = File.new(File.join(Runtime::Path.fixtures_path, 'designs', 'tanuki.jpg'), "r")
       end
     end
 

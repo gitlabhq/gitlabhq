@@ -9,7 +9,7 @@ import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/flash';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import { IssuableType } from '~/issues/constants';
+import { TYPE_ISSUE } from '~/issues/constants';
 import { timeFor } from '~/lib/utils/datetime_utility';
 import SidebarDropdown from '~/sidebar/components/sidebar_dropdown.vue';
 import SidebarDropdownWidget from '~/sidebar/components/sidebar_dropdown_widget.vue';
@@ -105,7 +105,7 @@ describe('SidebarDropdownWidget', () => {
           workspacePath: mockIssue.projectPath,
           attrWorkspacePath: mockIssue.projectPath,
           iid: mockIssue.iid,
-          issuableType: IssuableType.Issue,
+          issuableType: TYPE_ISSUE,
           issuableAttribute: IssuableAttributeType.Milestone,
         },
         attachTo: document.body,
@@ -126,7 +126,7 @@ describe('SidebarDropdownWidget', () => {
           workspacePath: '',
           attrWorkspacePath: '',
           iid: '',
-          issuableType: IssuableType.Issue,
+          issuableType: TYPE_ISSUE,
           issuableAttribute: IssuableAttributeType.Milestone,
         },
         mocks: {

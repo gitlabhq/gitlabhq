@@ -2,6 +2,9 @@
 
 class Projects::Ci::PipelineEditorController < Projects::ApplicationController
   before_action :check_can_collaborate!
+  before_action do
+    push_frontend_feature_flag(:ci_job_assistant_drawer, @project)
+  end
 
   feature_category :pipeline_authoring
 

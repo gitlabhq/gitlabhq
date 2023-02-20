@@ -54,6 +54,28 @@ describe('Registry List', () => {
 
       it('exists', () => {
         expect(findSelectAll().exists()).toBe(true);
+        expect(findSelectAll().attributes('aria-label')).toBe('Select all');
+        expect(findSelectAll().attributes('disabled')).toBeUndefined();
+        expect(findSelectAll().attributes('indeterminate')).toBeUndefined();
+      });
+
+      it('sets disabled prop to true when items length is 0', () => {
+        mountComponent({ propsData: { ...defaultPropsData, items: [] } });
+
+        expect(findSelectAll().attributes('disabled')).toBe('true');
+      });
+
+      it('when few are selected, sets indeterminate prop to true', async () => {
+        await findScopedSlotSelectButton(0).trigger('click');
+
+        expect(findSelectAll().attributes('indeterminate')).toBe('true');
+      });
+
+      it('when all are selected, sets the right checkbox label', async () => {
+        findSelectAll().vm.$emit('change', true);
+        await nextTick();
+
+        expect(findSelectAll().attributes('aria-label')).toBe('Unselect all');
       });
 
       it('select and unselect all', async () => {
@@ -63,7 +85,7 @@ describe('Registry List', () => {
         });
 
         // simulate selection
-        findSelectAll().vm.$emit('input', true);
+        findSelectAll().vm.$emit('change', true);
         await nextTick();
 
         // all rows selected
@@ -72,12 +94,12 @@ describe('Registry List', () => {
         });
 
         // simulate de-selection
-        findSelectAll().vm.$emit('input', '');
+        findSelectAll().vm.$emit('change', false);
         await nextTick();
 
         // no row is not selected
         items.forEach((item, index) => {
-          expect(findScopedSlotIsSelectedValue(index).text()).toBe('');
+          expect(findScopedSlotIsSelectedValue(index).text()).toBe('false');
         });
       });
     });

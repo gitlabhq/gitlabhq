@@ -108,6 +108,8 @@ class CommitStatus < Ci::ApplicationRecord
   # These are pages deployments and external statuses.
   #
   before_create unless: :importing? do
+    next if Feature.enabled?(:ci_remove_ensure_stage_service, project)
+
     # rubocop: disable CodeReuse/ServiceClass
     Ci::EnsureStageService.new(project, user).execute(self) do |stage|
       self.run_after_commit { StageUpdateWorker.perform_async(stage.id) }

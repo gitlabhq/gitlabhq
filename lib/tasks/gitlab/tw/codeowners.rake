@@ -14,7 +14,7 @@ namespace :tw do
       end
 
       def directory
-        @directory ||= File.dirname(path)
+        @directory ||= "#{File.dirname(path)}/"
       end
     end
 
@@ -26,9 +26,10 @@ namespace :tw do
       CodeOwnerRule.new('Certify', '@msedlakjakubowski'),
       CodeOwnerRule.new('Code Review', '@aqualls'),
       CodeOwnerRule.new('Compliance', '@eread'),
+      CodeOwnerRule.new('Commerce Integrations', '@drcatherinepope'),
       CodeOwnerRule.new('Composition Analysis', '@rdickenson'),
       CodeOwnerRule.new('Configure', '@phillipwells'),
-      CodeOwnerRule.new('Container Registry', '@claytoncornell'),
+      CodeOwnerRule.new('Container Registry', '@dianalogan'),
       CodeOwnerRule.new('Contributor Experience', '@eread'),
       CodeOwnerRule.new('Conversion', '@kpaizee'),
       CodeOwnerRule.new('Database', '@aqualls'),
@@ -50,15 +51,15 @@ namespace :tw do
       CodeOwnerRule.new('Knowledge', '@aqualls'),
       CodeOwnerRule.new('Application Performance', '@jglassman1'),
       CodeOwnerRule.new('Monitor', '@msedlakjakubowski'),
-      CodeOwnerRule.new('Observability', '@msedlakjakubowski'),
+      CodeOwnerRule.new('Observability', '@drcatherinepope'),
       CodeOwnerRule.new('Optimize', '@lciutacu'),
-      CodeOwnerRule.new('Package Registry', '@claytoncornell'),
+      CodeOwnerRule.new('Package Registry', '@dianalogan'),
       CodeOwnerRule.new('Pipeline Authoring', '@marcel.amirault'),
-      CodeOwnerRule.new('Pipeline Execution', '@marcel.amirault'),
+      CodeOwnerRule.new('Pipeline Execution', '@drcatherinepope'),
       CodeOwnerRule.new('Pipeline Insights', '@marcel.amirault'),
       CodeOwnerRule.new('Portfolio Management', '@msedlakjakubowski'),
       CodeOwnerRule.new('Product Analytics', '@lciutacu'),
-      CodeOwnerRule.new('Product Intelligence', '@claytoncornell'),
+      CodeOwnerRule.new('Product Intelligence', '@dianalogan'),
       CodeOwnerRule.new('Product Planning', '@msedlakjakubowski'),
       CodeOwnerRule.new('Project Management', '@msedlakjakubowski'),
       CodeOwnerRule.new('Provision', '@fneill'),
@@ -69,15 +70,15 @@ namespace :tw do
       CodeOwnerRule.new('Runner', '@fneill'),
       CodeOwnerRule.new('Runner SaaS', '@fneill'),
       CodeOwnerRule.new('Pods', '@jglassman1'),
-      CodeOwnerRule.new('Security Policies', '@claytoncornell'),
+      CodeOwnerRule.new('Security Policies', '@dianalogan'),
       CodeOwnerRule.new('Source Code', '@aqualls'),
       CodeOwnerRule.new('Static Analysis', '@rdickenson'),
       CodeOwnerRule.new('Style Guide', '@sselhorn'),
       CodeOwnerRule.new('Testing', '@eread'),
-      CodeOwnerRule.new('Threat Insights', '@claytoncornell'),
+      CodeOwnerRule.new('Threat Insights', '@dianalogan'),
       CodeOwnerRule.new('Tutorials', '@kpaizee'),
       CodeOwnerRule.new('Utilization', '@fneill'),
-      CodeOwnerRule.new('Vulnerability Research', '@claytoncornell'),
+      CodeOwnerRule.new('Vulnerability Research', '@dianalogan'),
       CodeOwnerRule.new('Organization', '@lciutacu')
     ].freeze
 
@@ -122,15 +123,19 @@ namespace :tw do
       mappings << DocumentOwnerMapping.new(relative_file, writer) if document.has_a_valid_group?
     end
 
-    deduplicated_mappings = Set.new
-
-    mappings.each do |mapping|
+    transformed_mappings = mappings.map do |mapping|
       if mapping.writer_owns_directory?(mappings)
-        deduplicated_mappings.add("#{mapping.directory}/ #{mapping.writer}")
+        DocumentOwnerMapping.new(mapping.directory, mapping.writer)
       else
-        deduplicated_mappings.add("#{mapping.path} #{mapping.writer}")
+        DocumentOwnerMapping.new(mapping.path, mapping.writer)
       end
     end
+
+    deduplicated_mappings = Set.new
+
+    transformed_mappings
+      .reject { |mapping| transformed_mappings.any? { |m| m.path == mapping.directory && m.writer == mapping.writer } }
+      .each { |mapping| deduplicated_mappings.add("#{mapping.path} #{mapping.writer}") }
 
     new_docs_owners = deduplicated_mappings.sort.join("\n")
 

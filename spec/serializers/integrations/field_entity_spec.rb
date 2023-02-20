@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Integrations::FieldEntity do
+RSpec.describe Integrations::FieldEntity, feature_category: :integrations do
   let(:request) { EntityRequest.new(integration: integration) }
 
   subject { described_class.new(field, request: request, integration: integration).as_json }
@@ -23,9 +23,9 @@ RSpec.describe Integrations::FieldEntity do
             section: 'connection',
             type: 'text',
             name: 'username',
-            title: 'Username or Email',
+            title: 'Username or email',
             placeholder: nil,
-            help: 'Use a username for server version and an email for cloud version.',
+            help: 'Username for the server version or an email for the cloud version',
             required: true,
             choices: nil,
             value: 'jira_username',

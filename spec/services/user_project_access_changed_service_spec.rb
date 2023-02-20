@@ -2,33 +2,39 @@
 
 require 'spec_helper'
 
-RSpec.describe UserProjectAccessChangedService do
+RSpec.describe UserProjectAccessChangedService, feature_category: :authentication_and_authorization do
   describe '#execute' do
-    it 'schedules the user IDs' do
-      expect(AuthorizedProjectsWorker).to receive(:bulk_perform_and_wait)
+    it 'permits high-priority operation' do
+      expect(AuthorizedProjectsWorker).to receive(:bulk_perform_async)
         .with([[1], [2]])
 
       described_class.new([1, 2]).execute
     end
 
-    it 'permits non-blocking operation' do
-      expect(AuthorizedProjectsWorker).to receive(:bulk_perform_async)
-        .with([[1], [2]])
+    context 'for low priority operation' do
+      context 'when the feature flag `do_not_run_safety_net_auth_refresh_jobs` is disabled' do
+        before do
+          stub_feature_flags(do_not_run_safety_net_auth_refresh_jobs: false)
+        end
 
-      described_class.new([1, 2]).execute(blocking: false)
-    end
+        it 'permits low-priority operation' do
+          expect(AuthorizedProjectUpdate::UserRefreshFromReplicaWorker).to(
+            receive(:bulk_perform_in).with(
+              described_class::DELAY,
+              [[1], [2]],
+              { batch_delay: 30.seconds, batch_size: 100 }
+            )
+          )
 
-    it 'permits low-priority operation' do
-      expect(AuthorizedProjectUpdate::UserRefreshFromReplicaWorker).to(
-        receive(:bulk_perform_in).with(
-          described_class::DELAY,
-          [[1], [2]],
-          { batch_delay: 30.seconds, batch_size: 100 }
-        )
-      )
+          described_class.new([1, 2]).execute(priority: described_class::LOW_PRIORITY)
+        end
+      end
 
-      described_class.new([1, 2]).execute(blocking: false,
-                                          priority: described_class::LOW_PRIORITY)
+      it 'does not perform low-priority operation' do
+        expect(AuthorizedProjectUpdate::UserRefreshFromReplicaWorker).not_to receive(:bulk_perform_in)
+
+        described_class.new([1, 2]).execute(priority: described_class::LOW_PRIORITY)
+      end
     end
 
     it 'permits medium-priority operation' do
@@ -40,14 +46,12 @@ RSpec.describe UserProjectAccessChangedService do
         )
       )
 
-      described_class.new([1, 2]).execute(blocking: false,
-                                          priority: described_class::MEDIUM_PRIORITY)
+      described_class.new([1, 2]).execute(priority: described_class::MEDIUM_PRIORITY)
     end
 
     it 'sets the current caller_id as related_class in the context of all the enqueued jobs' do
       Gitlab::ApplicationContext.with_context(caller_id: 'Foo') do
-        described_class.new([1, 2]).execute(blocking: false,
-                                            priority: described_class::LOW_PRIORITY)
+        described_class.new([1, 2]).execute(priority: described_class::LOW_PRIORITY)
       end
 
       expect(AuthorizedProjectUpdate::UserRefreshFromReplicaWorker.jobs).to all(
@@ -60,7 +64,7 @@ RSpec.describe UserProjectAccessChangedService do
     let(:service) { UserProjectAccessChangedService.new([1, 2]) }
 
     before do
-      expect(AuthorizedProjectsWorker).to receive(:bulk_perform_and_wait)
+      expect(AuthorizedProjectsWorker).to receive(:bulk_perform_async)
                                             .with([[1], [2]])
                                             .and_return(10)
     end
@@ -79,7 +83,7 @@ RSpec.describe UserProjectAccessChangedService do
 
       service = UserProjectAccessChangedService.new([1, 2, 3, 4, 5])
 
-      allow(AuthorizedProjectsWorker).to receive(:bulk_perform_and_wait)
+      allow(AuthorizedProjectsWorker).to receive(:bulk_perform_async)
                                             .with([[1], [2], [3], [4], [5]])
                                             .and_return(10)
 

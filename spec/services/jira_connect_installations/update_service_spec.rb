@@ -45,8 +45,9 @@ RSpec.describe JiraConnectInstallations::UpdateService, feature_category: :integ
       let_it_be_with_reload(:installation) { create(:jira_connect_installation, instance_url: 'https://other_gitlab.example.com') }
 
       it 'sends an installed event to the instance', :aggregate_failures do
-        expect_next_instance_of(JiraConnectInstallations::ProxyLifecycleEventService, installation, :installed,
-'https://other_gitlab.example.com') do |proxy_lifecycle_events_service|
+        expect_next_instance_of(
+          JiraConnectInstallations::ProxyLifecycleEventService, installation, :installed, 'https://other_gitlab.example.com'
+        ) do |proxy_lifecycle_events_service|
           expect(proxy_lifecycle_events_service).to receive(:execute).and_return(ServiceResponse.new(status: :success))
         end
 
@@ -62,19 +63,19 @@ RSpec.describe JiraConnectInstallations::UpdateService, feature_category: :integ
           stub_request(:post, 'https://other_gitlab.example.com/-/jira_connect/events/uninstalled')
         end
 
-        it 'starts an async worker to send an uninstalled event to the previous instance' do
-          expect(JiraConnect::SendUninstalledHookWorker).to receive(:perform_async).with(installation.id, 'https://other_gitlab.example.com')
-
+        it 'sends an installed event to the instance and updates instance_url' do
           expect(JiraConnectInstallations::ProxyLifecycleEventService)
             .to receive(:execute).with(installation, :installed, 'https://gitlab.example.com')
             .and_return(ServiceResponse.new(status: :success))
+
+          expect(JiraConnect::SendUninstalledHookWorker).not_to receive(:perform_async)
 
           execute_service
 
           expect(installation.instance_url).to eq(update_params[:instance_url])
         end
 
-        context 'and the new instance_url is empty' do
+        context 'and the new instance_url is nil' do
           let(:update_params) { { instance_url: nil } }
 
           it 'starts an async worker to send an uninstalled event to the previous instance' do
@@ -98,8 +99,9 @@ RSpec.describe JiraConnectInstallations::UpdateService, feature_category: :integ
       let(:update_params) { { instance_url: 'https://gitlab.example.com' } }
 
       it 'sends an installed event to the instance and updates instance_url' do
-        expect_next_instance_of(JiraConnectInstallations::ProxyLifecycleEventService, installation, :installed,
-'https://gitlab.example.com') do |proxy_lifecycle_events_service|
+        expect_next_instance_of(
+          JiraConnectInstallations::ProxyLifecycleEventService, installation, :installed, 'https://gitlab.example.com'
+        ) do |proxy_lifecycle_events_service|
           expect(proxy_lifecycle_events_service).to receive(:execute).and_return(ServiceResponse.new(status: :success))
         end
 

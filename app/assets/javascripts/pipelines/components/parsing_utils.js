@@ -170,3 +170,13 @@ export const generateColumnsFromLayersListBare = ({ stages, stagesLookup }, pipe
 };
 
 export const generateColumnsFromLayersListMemoized = memoize(generateColumnsFromLayersListBare);
+
+export const keepLatestDownstreamPipelines = (downstreamPipelines = []) => {
+  return downstreamPipelines.filter((pipeline) => {
+    if (pipeline.source_job) {
+      return !pipeline?.source_job?.retried || false;
+    }
+
+    return !pipeline?.sourceJob?.retried || false;
+  });
+};

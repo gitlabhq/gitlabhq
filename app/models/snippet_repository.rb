@@ -121,7 +121,7 @@ class SnippetRepository < ApplicationRecord
 
   def invalid_signature_error?(err)
     err.is_a?(ArgumentError) &&
-      err.message.downcase.match?(/failed to parse signature/)
+      err.message.downcase.include?('failed to parse signature')
   end
 
   def only_rename_action?(action)

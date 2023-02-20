@@ -195,7 +195,7 @@ module Gitlab
             abort opt.to_s
           end
 
-          opt.on('-m', '--max-concurrency INT', 'Maximum threads to use with Sidekiq (default: 50, 0 to disable)') do |int|
+          opt.on('-m', '--max-concurrency INT', 'Maximum threads to use with Sidekiq (default: 20, 0 to disable)') do |int|
             @max_concurrency = int.to_i
           end
 

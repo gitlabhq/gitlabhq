@@ -1,0 +1,8 @@
+---
+name: set_traversal_ids_on_save
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/104328
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/383217
+milestone: '15.8'
+type: development
+group: group::organization
+default_enabled: false

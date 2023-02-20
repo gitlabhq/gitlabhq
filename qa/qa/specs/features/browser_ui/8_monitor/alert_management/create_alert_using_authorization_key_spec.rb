@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Monitor', product_group: :respond do
+  RSpec.describe 'Monitor', :smoke, product_group: :respond do
     describe 'Alert settings' do
       shared_examples 'sends test alert using authorization key' do |type|
         it 'creates new alert', :aggregate_failures do
@@ -22,7 +22,8 @@ module QA
 
           Page::Project::Menu.perform(&:go_to_monitor_alerts)
           Page::Project::Monitor::Alerts::Index.perform do |index|
-            expect(index).to have_alert_with_title(alert_title)
+            expect { index.has_alert_with_title?(alert_title) }
+              .to eventually_be_truthy.within(max_duration: 60, reload_page: index)
           end
         end
       end
@@ -36,9 +37,14 @@ module QA
 
       let(:alert_title) { Faker::Lorem.word }
 
+      let(:credentials) do
+        Flow::AlertSettings.integration_credentials
+      end
+
       before do
         Flow::Login.sign_in
         project.visit!
+        Flow::AlertSettings.go_to_monitor_settings
       end
 
       context(
@@ -49,8 +55,8 @@ module QA
           { title: alert_title, description: alert_title }
         end
 
-        let(:credentials) do
-          Flow::AlertSettings.setup_http_endpoint(send: false)
+        before do
+          Flow::AlertSettings.setup_http_endpoint_integration
         end
 
         it_behaves_like 'sends test alert using authorization key', 'http'
@@ -87,8 +93,8 @@ module QA
           }
         end
 
-        let(:credentials) do
-          Flow::AlertSettings.setup_prometheus(send: false)
+        before do
+          Flow::AlertSettings.setup_prometheus_integration
         end
 
         it_behaves_like 'sends test alert using authorization key'

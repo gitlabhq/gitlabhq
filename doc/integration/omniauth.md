@@ -20,7 +20,6 @@ GitLab supports the following OmniAuth providers.
 | [AliCloud](alicloud.md)                                             | `alicloud`                 |
 | [Atlassian](../administration/auth/atlassian.md)                    | `atlassian_oauth2`         |
 | [Auth0](auth0.md)                                                   | `auth0`                    |
-| [Authentiq](../administration/auth/authentiq.md)                    | `authentiq`                |
 | [AWS Cognito](../administration/auth/cognito.md)                    | `cognito`                  |
 | [Azure v2](azure.md)                                                | `azure_activedirectory_v2` |
 | [Azure v1](azure.md)                                                | `azure_oauth2`             |
@@ -38,12 +37,12 @@ GitLab supports the following OmniAuth providers.
 | [SAML](saml.md)                                                     | `saml`                     |
 | [Twitter](twitter.md)                                               | `twitter`                  |
 
-## Initial settings
+## Configure common settings
 
 Before you configure the OmniAuth provider,
 configure the settings that are common for all providers.
 
-Omnibus, Docker, and source | Helm chart | Description | Default value
+Linux package, Docker, and self-compiled | Helm chart | Description | Default value
 ----------------------------|------------|-------------|-----------
 `allow_single_sign_on`     | `allowSingleSignOn` | List of providers that automatically create a GitLab account. The provider names are available in the **OmniAuth provider name** column in the [supported providers table](#supported-providers). | `false`, which means that signing in using your OmniAuth provider account without a pre-existing GitLab account is not allowed. You must create a GitLab account first, and then connect it to your OmniAuth provider account through your profile settings.
 `auto_link_ldap_user`      | `autoLinkLdapUser` | Creates an LDAP identity in GitLab for users that are created through an OmniAuth provider. You can enable this setting if you have [LDAP integration](../administration/auth/ldap/index.md) enabled. Requires the `uid` of the user to be the same in both LDAP and the OmniAuth provider. | `false`
@@ -102,6 +101,27 @@ To change the OmniAuth settings:
 
      ```shell
      helm upgrade -f gitlab_values.yaml gitlab gitlab/gitlab
+     ```
+
+  :::TabTitle Docker
+
+  1. Edit `docker-compose.yml`:
+
+     ```yaml
+     version: "3.6"
+     services:
+       gitlab:
+         environment:
+           GITLAB_OMNIBUS_CONFIG: |
+             gitlab_rails['omniauth_allow_single_sign_on'] = ['saml', 'twitter']
+             gitlab_rails['omniauth_auto_link_ldap_user'] = true
+             gitlab_rails['omniauth_block_auto_created_users'] = true
+     ```
+
+  1. Save the file and restart GitLab:
+
+     ```shell
+     docker compose up -d
      ```
 
   :::TabTitle Self-compiled (source)
@@ -214,7 +234,7 @@ created, you can activate an OmniAuth provider. For example, if you originally s
 provider like Twitter.
 
 1. Sign in to GitLab with your GitLab credentials, LDAP, or another OmniAuth provider.
-1. On the top bar, in the top right corner, select your avatar.
+1. On the top bar, in the upper-right corner, select your avatar.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Account**.
 1. In the **Connected Accounts** section, select the OmniAuth provider, such as Twitter.
@@ -503,7 +523,7 @@ There are two methods to update the `extern_uid`:
   Identity.where(extern_uid: 'old-id').update!(extern_uid: 'new-id')`
   ```
 
-## Limitations
+## Known issues
 
 Most supported OmniAuth providers don't support Git over HTTP password authentication.
 As a workaround, you can authenticate using a [personal access token](../user/profile/personal_access_tokens.md).

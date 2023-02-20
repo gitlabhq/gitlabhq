@@ -70,8 +70,8 @@ RSpec.describe Groups::GroupLinks::DestroyService, '#execute' do
 
         it 'updates project authorization once per group' do
           expect(GroupGroupLink).to receive(:delete).and_call_original
-          expect(group).to receive(:refresh_members_authorized_projects).with(direct_members_only: true, blocking: false).once
-          expect(another_group).to receive(:refresh_members_authorized_projects).with(direct_members_only: true, blocking: false).once
+          expect(group).to receive(:refresh_members_authorized_projects).with(direct_members_only: true).once
+          expect(another_group).to receive(:refresh_members_authorized_projects).with(direct_members_only: true).once
 
           subject.execute(links)
         end

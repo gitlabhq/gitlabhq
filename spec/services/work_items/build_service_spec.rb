@@ -13,7 +13,7 @@ RSpec.describe WorkItems::BuildService do
   end
 
   describe '#execute' do
-    subject { described_class.new(project: project, current_user: user, params: {}).execute }
+    subject { described_class.new(container: project, current_user: user, params: {}).execute }
 
     it { is_expected.to be_a(::WorkItem) }
   end

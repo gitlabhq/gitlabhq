@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Invitations, feature_category: :users do
+RSpec.describe API::Invitations, feature_category: :user_profile do
   let_it_be(:maintainer) { create(:user, username: 'maintainer_user') }
   let_it_be(:maintainer2) { create(:user, username: 'user-with-maintainer-role') }
   let_it_be(:developer) { create(:user) }

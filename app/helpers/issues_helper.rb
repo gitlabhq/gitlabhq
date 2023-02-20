@@ -57,7 +57,7 @@ module IssuesHelper
   end
 
   def issue_hidden?(issue)
-    Feature.enabled?(:ban_user_feature_flag) && issue.hidden?
+    issue.hidden?
   end
 
   def hidden_issue_icon(issue)
@@ -195,7 +195,6 @@ module IssuesHelper
       empty_state_svg_path: image_path('illustrations/issues.svg'),
       full_path: namespace.full_path,
       initial_sort: current_user&.user_preference&.issues_sort,
-      is_anonymous_search_disabled: Feature.enabled?(:disable_anonymous_search, type: :ops).to_s,
       is_issue_repositioning_disabled: issue_repositioning_disabled?.to_s,
       is_public_visibility_restricted:
         Gitlab::CurrentSettings.restricted_visibility_levels&.include?(Gitlab::VisibilityLevel::PUBLIC).to_s,

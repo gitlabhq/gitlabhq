@@ -65,17 +65,10 @@ module Gitlab
       # rubocop: disable Metrics/AbcSize
       # rubocop: disable CodeReuse/ActiveRecord
       def system_usage_data
-        issues_created_manually_from_alerts = if Gitlab.com?
-                                                FALLBACK
-                                              else
-                                                count(Issue.with_alert_management_alerts.not_authored_by(::User.alert_bot), start: minimum_id(Issue), finish: maximum_id(Issue))
-                                              end
-
         {
           counts: {
             assignee_lists: count(List.assignee),
             ci_builds: count(::Ci::Build),
-            ci_internal_pipelines: Gitlab.com? ? FALLBACK : count(::Ci::Pipeline.internal),
             ci_external_pipelines: count(::Ci::Pipeline.external),
             ci_pipeline_config_auto_devops: count(::Ci::Pipeline.auto_devops_source),
             ci_pipeline_config_repository: count(::Ci::Pipeline.repository_source),
@@ -116,8 +109,6 @@ module Gitlab
             issues_using_zoom_quick_actions: distinct_count(ZoomMeeting, :issue_id),
             issues_with_embedded_grafana_charts_approx: grafana_embed_usage_data,
             issues_created_from_alerts: total_alert_issues,
-            issues_created_gitlab_alerts: issues_created_manually_from_alerts,
-            issues_created_manually_from_alerts: issues_created_manually_from_alerts,
             incident_issues: count(::Issue.incident, start: minimum_id(Issue), finish: maximum_id(Issue)),
             alert_bot_incident_issues: count(::Issue.authored(::User.alert_bot), start: minimum_id(Issue), finish: maximum_id(Issue)),
             keys: count(Key),
@@ -250,8 +241,8 @@ module Gitlab
           prometheus_enabled: alt_usage_data(fallback: nil) { Gitlab::Prometheus::Internal.prometheus_enabled? },
           prometheus_metrics_enabled: alt_usage_data(fallback: nil) { Gitlab::Metrics.prometheus_metrics_enabled? },
           reply_by_email_enabled: alt_usage_data(fallback: nil) { Gitlab::IncomingEmail.enabled? },
+          web_ide_clientside_preview_enabled: alt_usage_data(fallback: nil) { false },
           signup_enabled: alt_usage_data(fallback: nil) { Gitlab::CurrentSettings.allow_signup? },
-          web_ide_clientside_preview_enabled: alt_usage_data(fallback: nil) { Gitlab::CurrentSettings.web_ide_clientside_preview_enabled? },
           grafana_link_enabled: alt_usage_data(fallback: nil) { Gitlab::CurrentSettings.grafana_enabled? },
           gitpod_enabled: alt_usage_data(fallback: nil) { Gitlab::CurrentSettings.gitpod_enabled? }
         }
@@ -598,8 +589,7 @@ module Gitlab
         {
           action_monthly_active_users_web_ide_edit: redis_usage_data { counter.count_web_ide_edit_actions(**date_range) },
           action_monthly_active_users_sfe_edit: redis_usage_data { counter.count_sfe_edit_actions(**date_range) },
-          action_monthly_active_users_snippet_editor_edit: redis_usage_data { counter.count_snippet_editor_edit_actions(**date_range) },
-          action_monthly_active_users_ide_edit: redis_usage_data { counter.count_edit_using_editor(**date_range) }
+          action_monthly_active_users_snippet_editor_edit: redis_usage_data { counter.count_snippet_editor_edit_actions(**date_range) }
         }
       end
 

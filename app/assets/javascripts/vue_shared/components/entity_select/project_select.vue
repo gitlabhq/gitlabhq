@@ -1,0 +1,168 @@
+<script>
+import { GlAlert } from '@gitlab/ui';
+import * as Sentry from '@sentry/browser';
+import Api from '~/api';
+import SafeHtml from '~/vue_shared/directives/safe_html';
+import {
+  PROJECT_TOGGLE_TEXT,
+  PROJECT_HEADER_TEXT,
+  FETCH_PROJECTS_ERROR,
+  FETCH_PROJECT_ERROR,
+} from './constants';
+import EntitySelector from './entity_select.vue';
+
+export default {
+  components: {
+    GlAlert,
+    EntitySelector,
+  },
+  directives: {
+    SafeHtml,
+  },
+  props: {
+    label: {
+      type: String,
+      required: true,
+    },
+    hasHtmlLabel: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    inputName: {
+      type: String,
+      required: true,
+    },
+    inputId: {
+      type: String,
+      required: true,
+    },
+    groupId: {
+      type: String,
+      required: false,
+      default: null,
+    },
+    userId: {
+      type: String,
+      required: false,
+      default: null,
+    },
+    includeSubgroups: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    membership: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    orderBy: {
+      type: String,
+      required: false,
+      default: 'similarity',
+    },
+    initialSelection: {
+      type: String,
+      required: false,
+      default: null,
+    },
+  },
+  data() {
+    return {
+      errorMessage: '',
+    };
+  },
+  methods: {
+    async fetchProjects(searchString = '') {
+      let projects = [];
+      try {
+        const { data = [] } = await (() => {
+          const commonParams = {
+            order_by: this.orderBy,
+            simple: true,
+          };
+
+          if (this.groupId) {
+            return Api.groupProjects(this.groupId, searchString, {
+              ...commonParams,
+              with_shared: true,
+              include_subgroups: this.includeSubgroups,
+              simple: true,
+            });
+          }
+          // Note: the whole userId handling supports a single project selector that is slated for
+          // removal. Once we have deleted app/views/clusters/clusters/_advanced_settings.html.haml,
+          // we should be able to clean this up.
+          if (this.userId) {
+            return Api.userProjects(
+              this.userId,
+              searchString,
+              {
+                with_shared: true,
+                include_subgroups: this.includeSubgroups,
+              },
+              (res) => ({ data: res }),
+            );
+          }
+          return Api.projects(searchString, {
+            ...commonParams,
+            membership: this.membership,
+          });
+        })();
+        projects = data.map((item) => ({
+          text: item.name_with_namespace || item.name,
+          value: String(item.id),
+        }));
+      } catch (error) {
+        this.handleError({ message: FETCH_PROJECTS_ERROR, error });
+      }
+      return { items: projects, totalPages: 1 };
+    },
+    async fetchProjectName(projectId) {
+      let projectName = '';
+      try {
+        const { data: project } = await Api.project(projectId);
+        projectName = project.name_with_namespace;
+      } catch (error) {
+        this.handleError({ message: FETCH_PROJECT_ERROR, error });
+      }
+      return projectName;
+    },
+    handleError({ message, error }) {
+      Sentry.captureException(error);
+      this.errorMessage = message;
+    },
+    dismissError() {
+      this.errorMessage = '';
+    },
+  },
+  i18n: {
+    searchForProject: PROJECT_TOGGLE_TEXT,
+    selectProject: PROJECT_HEADER_TEXT,
+  },
+};
+</script>
+
+<template>
+  <entity-selector
+    :label="label"
+    :input-name="inputName"
+    :input-id="inputId"
+    :initial-selection="initialSelection"
+    :header-text="$options.i18n.selectProject"
+    :default-toggle-text="$options.i18n.searchForProject"
+    :fetch-items="fetchProjects"
+    :fetch-initial-selection-text="fetchProjectName"
+    clearable
+  >
+    <template v-if="hasHtmlLabel" #label>
+      <span v-safe-html="label"></span>
+    </template>
+    <template #error>
+      <gl-alert v-if="errorMessage" class="gl-mb-3" variant="danger" @dismiss="dismissError">{{
+        errorMessage
+      }}</gl-alert>
+    </template>
+  </entity-selector>
+</template>

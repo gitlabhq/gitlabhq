@@ -130,7 +130,7 @@ RSpec.describe 'Issue Detail', :js, feature_category: :team_planning do
           page.within('[data-testid="issuable-form"]') do
             update_type_select('Issue', 'Incident')
 
-            expect(page).to have_current_path(project_issues_incident_path(project, issue))
+            expect(page).to have_current_path(incident_project_issues_path(project, issue))
           end
         end
       end
@@ -170,7 +170,7 @@ RSpec.describe 'Issue Detail', :js, feature_category: :team_planning do
 
   def update_type_select(from, to)
     click_button from
-    click_button to
+    find('[data-testid="issue-type-list-item"]', text: to).click
     click_button 'Save changes'
 
     wait_for_requests

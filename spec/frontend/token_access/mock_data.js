@@ -105,3 +105,125 @@ export const mockProjects = [
     __typename: 'Project',
   },
 ];
+
+export const mockFields = [
+  {
+    key: 'project',
+    label: 'Project with access',
+  },
+  {
+    key: 'namespace',
+    label: 'Namespace',
+  },
+  {
+    key: 'actions',
+    label: '',
+  },
+];
+
+export const optInJwtQueryResponse = (optInJwt) => ({
+  data: {
+    project: {
+      id: '1',
+      ciCdSettings: {
+        optInJwt,
+        __typename: 'ProjectCiCdSetting',
+      },
+      __typename: 'Project',
+    },
+  },
+});
+
+export const optInJwtMutationResponse = (optInJwt) => ({
+  data: {
+    ciCdSettingsUpdate: {
+      ciCdSettings: {
+        optInJwt,
+        __typename: 'ProjectCiCdSetting',
+      },
+      errors: [],
+      __typename: 'CiCdSettingsUpdatePayload',
+    },
+  },
+});
+
+export const inboundJobTokenScopeEnabledResponse = {
+  data: {
+    project: {
+      id: '1',
+      ciCdSettings: {
+        inboundJobTokenScopeEnabled: true,
+        __typename: 'ProjectCiCdSetting',
+      },
+      __typename: 'Project',
+    },
+  },
+};
+
+export const inboundJobTokenScopeDisabledResponse = {
+  data: {
+    project: {
+      id: '1',
+      ciCdSettings: {
+        inboundJobTokenScopeEnabled: false,
+        __typename: 'ProjectCiCdSetting',
+      },
+      __typename: 'Project',
+    },
+  },
+};
+
+export const inboundProjectsWithScopeResponse = {
+  data: {
+    project: {
+      __typename: 'Project',
+      id: '1',
+      ciJobTokenScope: {
+        __typename: 'CiJobTokenScopeType',
+        inboundAllowlist: {
+          __typename: 'ProjectConnection',
+          nodes: [
+            {
+              __typename: 'Project',
+              fullPath: 'root/ci-project',
+              id: 'gid://gitlab/Project/23',
+              name: 'ci-project',
+              namespace: { id: 'gid://gitlab/Namespaces::UserNamespace/1', fullPath: 'root' },
+            },
+          ],
+        },
+      },
+    },
+  },
+};
+
+export const inboundAddProjectSuccessResponse = {
+  data: {
+    ciJobTokenScopeAddProject: {
+      errors: [],
+      __typename: 'CiJobTokenScopeAddProjectPayload',
+    },
+  },
+};
+
+export const inboundRemoveProjectSuccess = {
+  data: {
+    ciJobTokenScopeRemoveProject: {
+      errors: [],
+      __typename: 'CiJobTokenScopeRemoveProjectPayload',
+    },
+  },
+};
+
+export const inboundUpdateScopeSuccessResponse = {
+  data: {
+    ciCdSettingsUpdate: {
+      ciCdSettings: {
+        inboundJobTokenScopeEnabled: false,
+        __typename: 'ProjectCiCdSetting',
+      },
+      errors: [],
+      __typename: 'CiCdSettingsUpdatePayload',
+    },
+  },
+};

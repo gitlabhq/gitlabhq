@@ -90,13 +90,16 @@ const validateGroupNamespaceDropdown = (e) => {
 
 const checkProjectName = (projectNameInput) => {
   const msg = checkRules(projectNameInput.value);
-  const projectNameError = document.querySelector('#project_name_error');
+  const projectNameError = document.querySelector('#js-project-name-error');
+  const projectNameDescription = document.getElementById('js-project-name-description');
   if (!projectNameError) return;
   if (msg) {
     projectNameError.innerText = msg;
-    projectNameError.classList.remove('hidden');
+    projectNameError.classList.remove('gl-display-none');
+    projectNameDescription.classList.add('gl-display-none');
   } else {
-    projectNameError.classList.add('hidden');
+    projectNameError.classList.add('gl-display-none');
+    projectNameDescription.classList.remove('gl-display-none');
   }
 };
 

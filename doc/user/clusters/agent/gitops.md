@@ -115,10 +115,7 @@ The agent has [default sorting](https://github.com/kubernetes-sigs/cli-utils/blo
 but with annotations, you can fine-tune the order and apply time-value injection.
 
 To provide the GitOps functionality, the GitLab agent for Kubernetes uses the [`cli-utils` library](https://github.com/kubernetes-sigs/cli-utils/),
-a Kubernetes SIG project. You can read more about the available annotations in the [`cli-utils` documentation](https://github.com/kubernetes-sigs/cli-utils/blob/master/README.md#apply-sort-ordering).
-
-- [Learn more about apply sort ordering](https://github.com/kubernetes-sigs/cli-utils#apply-sort-ordering).
-- [Learn more about apply-time mutation](https://github.com/kubernetes-sigs/cli-utils#apply-time-mutation).
+a Kubernetes SIG project. For more information, see the available annotations in the [`cli-utils` documentation](https://github.com/kubernetes-sigs/cli-utils/blob/master/README.md).
 
 ## Automatic drift remediation
 
@@ -183,4 +180,4 @@ update your agent configuration file with the location of these projects.
 WARNING:
 The project with the agent's
 configuration file can be private or public. Other projects with Kubernetes manifests must be public. Support for private manifest projects is tracked
-in [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/283885).
+in [this epic](https://gitlab.com/groups/gitlab-org/-/epics/7704).

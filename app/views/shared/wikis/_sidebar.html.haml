@@ -28,7 +28,8 @@
           = render_wiki_content(@sidebar_page)
         - elsif @sidebar_wiki_entries
           %ul.wiki-pages
-            = render @sidebar_wiki_entries, context: 'sidebar'
+            - @sidebar_wiki_entries.each do |entry|
+              = render partial: entry.to_partial_path, object: entry, locals: { context: 'sidebar' }
       .block.w-100
         - if @sidebar_limited
           = link_to wiki_path(@wiki, action: :pages), class: 'btn gl-button btn-block', data: { qa_selector: 'view_all_pages_button' } do

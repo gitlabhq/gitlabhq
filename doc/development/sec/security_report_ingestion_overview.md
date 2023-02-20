@@ -56,7 +56,7 @@ If there is only a Security Finding, a Vulnerability Finding and a Vulnerability
 
 ### Issue creation
 
-If you select `Create issue`, a Vulnerabilities::Feedback record is created as well. The Feedback has a different `feedback_type` and an `issue_id` that’s not `NULL`.
+If you select `Create issue`, a Vulnerabilities::Feedback record is created as well. The Feedback has a different `feedback_type` and an `issue_id` that's not `NULL`.
 
 NOTE:
 Vulnerabilities::Feedback are in the process of being [deprecated](https://gitlab.com/groups/gitlab-org/-/epics/5629). This will later create a `Vulnerabilities::IssueLink` record.

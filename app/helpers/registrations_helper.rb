@@ -10,6 +10,10 @@ module RegistrationsHelper
       qa_selector: 'new_user_username_field'
     }
   end
+
+  def arkose_labs_challenge_enabled?
+    false
+  end
 end
 
 RegistrationsHelper.prepend_mod_with('RegistrationsHelper')

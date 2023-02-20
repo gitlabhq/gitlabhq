@@ -11,11 +11,11 @@
     "id": { "type": "string" },
     "type": { "type": "string" },
     "y_label": { "type": "string" },
-    "y_axis": { "$ref": "spec/fixtures/lib/gitlab/metrics/dashboard/schemas/axis.json" },
+    "y_axis": { "$ref": "axis.json" },
     "max_value": { "type": "number" },
     "metrics": {
       "type": "array",
-      "items": { "$ref": "spec/fixtures/lib/gitlab/metrics/dashboard/schemas/metrics.json" }
+      "items": { "$ref": "metrics.json" }
     }
   },
   "additionalProperties": false

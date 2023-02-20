@@ -12,5 +12,6 @@
 
     - A new method to bind runners to a GitLab instance leveraging `runnerToken`.
     - A unique system ID saved to the `config.toml`, which will ensure traceability between jobs and runners.
+
     From GitLab 17.0 and later, the methods to register runners introduced by the new GitLab Runner token architecture will be the only supported methods.
-  end_of_support_milestone: "16.0"  # (optional) Use "XX.YY" format. The milestone when support for this feature will end.
+  end_of_support_milestone: "16.6"  # (optional) Use "XX.YY" format. The milestone when support for this feature will end.

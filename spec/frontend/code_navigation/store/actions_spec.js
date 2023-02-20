@@ -4,6 +4,7 @@ import testAction from 'helpers/vuex_action_helper';
 import actions from '~/code_navigation/store/actions';
 import { setCurrentHoverElement, addInteractionClass } from '~/code_navigation/utils';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 
 jest.mock('~/code_navigation/utils');
 
@@ -45,7 +46,7 @@ describe('Code navigation actions', () => {
 
     describe('success', () => {
       beforeEach(() => {
-        mock.onGet(codeNavigationPath).replyOnce(200, [
+        mock.onGet(codeNavigationPath).replyOnce(HTTP_STATUS_OK, [
           {
             start_line: 0,
             start_char: 0,
@@ -124,7 +125,7 @@ describe('Code navigation actions', () => {
 
     describe('error', () => {
       beforeEach(() => {
-        mock.onGet(codeNavigationPath).replyOnce(500);
+        mock.onGet(codeNavigationPath).replyOnce(HTTP_STATUS_INTERNAL_SERVER_ERROR);
       });
 
       it('dispatches requestDataError', () => {

@@ -55,7 +55,7 @@ by the merge request:
 1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Merge requests**, and find your merge request.
 1. Scroll to the merge request reports section, and find the **Merged by** report.
-1. In the top right, select **Cherry-pick**:
+1. In the upper right, select **Cherry-pick**:
 
    ![Cherry-pick merge request](img/cherry_pick_v15_4.png)
 1. In the modal window, select the project and branch to cherry-pick into.
@@ -87,7 +87,7 @@ list of commits included in a merge request:
 1. On the left sidebar, select **Merge requests**, and find your merge request.
 1. In the merge request's secondary menu, select **Commits** to display the commit details page.
 1. Select the title of the commit you want to cherry-pick.
-1. In the top right corner, select **Options > Cherry-pick** to show the cherry-pick modal.
+1. In the upper-right corner, select **Options > Cherry-pick** to show the cherry-pick modal.
 1. In the modal window, select the project and branch to cherry-pick into.
 1. Optional. Select **Start a new merge request with these changes**.
 1. Select **Cherry-pick**.
@@ -101,7 +101,7 @@ when you view that file in your project's Git repository:
 1. On the left sidebar, select **Repository > Files** and go to the file
    changed by the commit.
 1. Select **History**, then select the title of the commit you want to cherry-pick.
-1. In the top right corner, select **Options > Cherry-pick** to show the cherry-pick modal.
+1. In the upper-right corner, select **Options > Cherry-pick** to show the cherry-pick modal.
 1. In the modal window, select the project and branch to cherry-pick into.
 1. Optional. Select **Start a new merge request with these changes**.
 1. Select **Cherry-pick**.
@@ -115,7 +115,7 @@ You can cherry-pick merge requests from the same project, or forks of the same
 project, from the GitLab user interface:
 
 1. In the merge request's secondary menu, select **Commits** to display the commit details page.
-1. In the top right corner, select **Options > Cherry-pick** to show the cherry-pick modal.
+1. In the upper-right corner, select **Options > Cherry-pick** to show the cherry-pick modal.
 1. In **Pick into project** and **Pick into branch**, select the destination project and branch:
    ![Cherry-pick commit](img/cherry_pick_into_project_v13_11.png)
 1. Optional. Select **Start a new merge request** if you're ready to create a merge request.

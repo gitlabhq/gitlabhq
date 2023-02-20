@@ -104,7 +104,7 @@ RSpec.describe PipelineDetailsEntity do
       let(:pipeline) { create(:ci_empty_pipeline) }
 
       before do
-        create(:commit_status, pipeline: pipeline)
+        create(:ci_build, pipeline: pipeline)
       end
 
       it 'contains stages' do
@@ -182,6 +182,7 @@ RSpec.describe PipelineDetailsEntity do
 
         expect(source_jobs[cross_project_pipeline.id][:name]).to eq('cross-project')
         expect(source_jobs[child_pipeline.id][:name]).to eq('child')
+        expect(source_jobs[child_pipeline.id][:retried]).to eq false
       end
     end
   end

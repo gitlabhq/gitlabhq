@@ -1,7 +1,7 @@
 /* https://github.com/richleland/pygments-css/blob/master/monokai.css */
 
 @import '../common';
-@import 'highlight.js/styles/base16/monokai.css';
+@import 'highlight.js/styles/base16/monokai';
 
 /*
 * Monokai Colors
@@ -148,6 +148,11 @@ $monokai-gh: #75715e;
     color: $monokai-line-num-color;
   }
 
+  .diff-grid-row.line_holder.diff-tr .diff-td.commented:not(.hll) {
+    --highlight-border-color: #{$blue-600};
+    background-color: $blue-900;
+  }
+
   // Code itself
   pre.code,
   .diff-line-num {
@@ -179,15 +184,15 @@ $monokai-gh: #75715e;
       @include dark-diff-expansion-line;
     }
 
-    .diff-td.diff-line-num.hll:not(.empty-cell),
-    .diff-td.line-coverage.hll:not(.empty-cell),
-    .diff-td.line-codequality.hll:not(.empty-cell),
-    .diff-td.line_content.hll:not(.empty-cell),
-    td.diff-line-num.hll:not(.empty-cell),
-    td.line-coverage.hll:not(.empty-cell),
-    td.line_content.hll:not(.empty-cell) {
-      background-color: $monokai-line-empty-bg;
-      border-color: $monokai-line-empty-border;
+    .diff-td.diff-line-num.hll,
+    .diff-td.line-coverage.hll,
+    .diff-td.line-codequality.hll,
+    .diff-td.line_content.hll,
+    td.diff-line-num.hll,
+    td.line-coverage.hll,
+    td.line_content.hll {
+      --highlight-border-color: #{$orange-500};
+      background-color: $orange-800;
     }
 
     .line-coverage {
@@ -230,14 +235,14 @@ $monokai-gh: #75715e;
     &:not(.match) .diff-grid-right:hover,
     &.code-search-line:hover {
       .diff-line-num:not(.empty-cell) {
-        @include line-number-hover;
+        @include line-number-hover-dark;
       }
     }
 
     .diff-line-num {
       &.is-over,
       &.hll:not(.empty-cell).is-over {
-        @include line-number-hover;
+        @include line-number-hover-dark;
       }
     }
 

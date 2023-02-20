@@ -27,7 +27,7 @@ GET /projects/:id/protected_branches
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
 | `search` | string | no | Name or part of the name of protected branches to be searched for |
 
 ```shell
@@ -83,7 +83,8 @@ Example response:
 ```
 
 Users on GitLab Premium or higher also see
-the `user_id` and `group_id` parameters:
+the `user_id`, `group_id` and `inherited` parameters. If the `inherited` parameter
+exists, means the setting was inherited from the project's group.
 
 Example response:
 
@@ -111,7 +112,8 @@ Example response:
       }
     ],
     "allow_force_push":false,
-    "code_owner_approval_required": false
+    "code_owner_approval_required": false,
+    "inherited": true
   },
   ...
 ]
@@ -127,7 +129,7 @@ GET /projects/:id/protected_branches/:name
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
 | `name` | string | yes | The name of the branch or wildcard |
 
 ```shell
@@ -206,7 +208,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitla
 
 | Attribute                                    | Type | Required | Description |
 | -------------------------------------------- | ---- | -------- | ----------- |
-| `id`                                         | integer/string | yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`                                         | integer/string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
 | `name`                                       | string         | yes | The name of the branch or wildcard |
 | `push_access_level`                          | integer        | no  | Access levels allowed to push (defaults: `40`, Maintainer role) |
 | `merge_access_level`                         | integer        | no  | Access levels allowed to merge (defaults: `40`, Maintainer role) |
@@ -418,7 +420,7 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://git
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
 | `name` | string | yes | The name of the branch |
 
 ## Update a protected branch
@@ -437,7 +439,7 @@ curl --request PATCH --header "PRIVATE-TOKEN: <your_access_token>" "https://gitl
 
 | Attribute                                    | Type           | Required | Description                                                                                                                          |
 | -------------------------------------------- | ---- | -------- | ----------- |
-| `id`                                         | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user                       |
+| `id`                                         | integer/string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user                       |
 | `name`                                       | string         | yes      | The name of the branch                                                                                                               |
 | `allow_force_push`                           | boolean        | no       | When enabled, members who can push to this branch can also force push.                                                               |
 | `code_owner_approval_required` **(PREMIUM)** | boolean        | no       | Prevent pushes to this branch if it matches an item in the [`CODEOWNERS` file](../user/project/code_owners.md). Defaults to `false`. |

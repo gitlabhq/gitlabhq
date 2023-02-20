@@ -2,6 +2,7 @@
 import BoardAddNewColumnTrigger from '~/boards/components/board_add_new_column_trigger.vue';
 import BoardsSelector from 'ee_else_ce/boards/components/boards_selector.vue';
 import IssueBoardFilteredSearch from 'ee_else_ce/boards/components/issue_board_filtered_search.vue';
+import { getBoardQuery } from 'ee_else_ce/boards/boards_util';
 import ConfigToggle from './config_toggle.vue';
 import NewBoardButton from './new_board_button.vue';
 import ToggleFocus from './toggle_focus.vue';
@@ -19,7 +20,46 @@ export default {
     EpicBoardFilteredSearch: () =>
       import('ee_component/boards/components/epic_filtered_search.vue'),
   },
-  inject: ['swimlanesFeatureAvailable', 'canAdminList', 'isSignedIn', 'isIssueBoard'],
+  inject: [
+    'swimlanesFeatureAvailable',
+    'canAdminList',
+    'isSignedIn',
+    'isIssueBoard',
+    'fullPath',
+    'boardType',
+    'isEpicBoard',
+    'isApolloBoard',
+  ],
+  props: {
+    boardId: {
+      type: String,
+      required: true,
+    },
+  },
+  data() {
+    return {
+      board: {},
+    };
+  },
+  apollo: {
+    board: {
+      query() {
+        return getBoardQuery(this.boardType, this.isEpicBoard);
+      },
+      variables() {
+        return {
+          fullPath: this.fullPath,
+          boardId: this.boardId,
+        };
+      },
+      skip() {
+        return !this.isApolloBoard;
+      },
+      update(data) {
+        return data.workspace.board;
+      },
+    },
+  },
 };
 </script>
 
@@ -31,7 +71,7 @@ export default {
       <div
         class="gl-display-flex gl-flex-direction-column gl-md-flex-direction-row gl-flex-grow-1 gl-lg-mb-0 gl-mb-3 gl-w-full"
       >
-        <boards-selector />
+        <boards-selector :board-apollo="board" @switchBoard="$emit('switchBoard', $event)" />
         <new-board-button />
         <issue-board-filtered-search v-if="isIssueBoard" />
         <epic-board-filtered-search v-else />

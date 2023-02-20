@@ -14,7 +14,7 @@ import { CREATE_DESIGN_TODO_EXISTS_ERROR } from './utils/error_messages';
 
 Vue.use(VueApollo);
 
-const resolvers = {
+export const resolvers = {
   Mutation: {
     updateActiveDiscussion: (_, { id = null, source }, { cache }) => {
       const sourceData = cache.readQuery({ query: activeDiscussionQuery });

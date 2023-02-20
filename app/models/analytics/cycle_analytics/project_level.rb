@@ -33,8 +33,8 @@ module Analytics
       private
 
       def build_stage(stage_name)
-        stage_params = stage_params_by_name(stage_name).merge(project: project)
-        Analytics::CycleAnalytics::ProjectStage.new(stage_params)
+        stage_params = stage_params_by_name(stage_name).merge(namespace: project.project_namespace)
+        Analytics::CycleAnalytics::Stage.new(stage_params)
       end
 
       def stage_params_by_name(name)

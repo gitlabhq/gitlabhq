@@ -20,10 +20,6 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
     :branch_to
   ]
 
-  before_action do
-    push_frontend_feature_flag(:mr_compare_dropdowns, project)
-  end
-
   def new
     define_new_vars
   end
@@ -97,7 +93,7 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
   def target_projects
     projects = MergeRequestTargetProjectFinder
                 .new(current_user: current_user, source_project: @project, project_feature: :repository)
-                .execute(include_routes: true).limit(20).search(params[:search])
+                .execute(include_routes: false, search: params[:search]).limit(20)
 
     render json: ProjectSerializer.new.represent(projects)
   end

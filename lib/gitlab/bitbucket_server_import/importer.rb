@@ -55,7 +55,7 @@ module Gitlab
         handle_errors
         metrics.track_finished_import
 
-        log_info(stage: "complete")
+        log_info(import_stage: "complete")
 
         Gitlab::Cache::Import::Caching.expire(already_imported_cache_key, Gitlab::Cache::Import::Caching::SHORTER_TIMEOUT)
         true
@@ -139,16 +139,16 @@ module Gitlab
       end
 
       def import_repository
-        log_info(stage: 'import_repository', message: 'starting import')
+        log_info(import_stage: 'import_repository', message: 'starting import')
 
         project.repository.import_repository(project.import_url)
         project.repository.fetch_as_mirror(project.import_url, refmap: self.class.refmap)
 
-        log_info(stage: 'import_repository', message: 'finished import')
+        log_info(import_stage: 'import_repository', message: 'finished import')
       rescue ::Gitlab::Git::CommandError => e
         Gitlab::ErrorTracking.log_exception(
           e,
-          stage: 'import_repository', message: 'failed import', error: e.message
+          import_stage: 'import_repository', message: 'failed import', error: e.message
         )
 
         # Expire cache to prevent scenarios such as:
@@ -179,10 +179,10 @@ module Gitlab
       def import_pull_requests
         page = 0
 
-        log_info(stage: 'import_pull_requests', message: "starting")
+        log_info(import_stage: 'import_pull_requests', message: "starting")
 
         loop do
-          log_debug(stage: 'import_pull_requests', message: "importing page #{page} and batch-size #{BATCH_SIZE} from #{page * BATCH_SIZE} to #{(page + 1) * BATCH_SIZE}")
+          log_debug(import_stage: 'import_pull_requests', message: "importing page #{page} and batch-size #{BATCH_SIZE} from #{page * BATCH_SIZE} to #{(page + 1) * BATCH_SIZE}")
 
           pull_requests = client.pull_requests(project_key, repository_slug, page_offset: page, limit: BATCH_SIZE).to_a
 
@@ -196,21 +196,21 @@ module Gitlab
 
           pull_requests.each do |pull_request|
             if already_imported?(pull_request)
-              log_info(stage: 'import_pull_requests', message: 'already imported', iid: pull_request.iid)
+              log_info(import_stage: 'import_pull_requests', message: 'already imported', iid: pull_request.iid)
             else
               import_bitbucket_pull_request(pull_request)
             end
           rescue StandardError => e
             Gitlab::ErrorTracking.log_exception(
               e,
-              stage: 'import_pull_requests', iid: pull_request.iid, error: e.message
+              import_stage: 'import_pull_requests', iid: pull_request.iid, error: e.message
             )
 
             backtrace = Gitlab::BacktraceCleaner.clean_backtrace(e.backtrace)
             errors << { type: :pull_request, iid: pull_request.iid, errors: e.message, backtrace: backtrace.join("\n"), raw_response: pull_request.raw }
           end
 
-          log_debug(stage: 'import_pull_requests', message: "finished page #{page} and batch-size #{BATCH_SIZE}")
+          log_debug(import_stage: 'import_pull_requests', message: "finished page #{page} and batch-size #{BATCH_SIZE}")
           page += 1
         end
       end
@@ -235,7 +235,7 @@ module Gitlab
         rescue BitbucketServer::Connection::ConnectionError => e
           Gitlab::ErrorTracking.log_exception(
             e,
-            stage: 'delete_temp_branches', branch: branch.name, error: e.message
+            import_stage: 'delete_temp_branches', branch: branch.name, error: e.message
           )
 
           @errors << { type: :delete_temp_branches, branch_name: branch.name, errors: e.message }
@@ -243,7 +243,7 @@ module Gitlab
       end
 
       def import_bitbucket_pull_request(pull_request)
-        log_info(stage: 'import_bitbucket_pull_requests', message: 'starting', iid: pull_request.iid)
+        log_info(import_stage: 'import_bitbucket_pull_requests', message: 'starting', iid: pull_request.iid)
 
         description = ''
         description += author_line(pull_request)
@@ -274,12 +274,12 @@ module Gitlab
           metrics.merge_requests_counter.increment
         end
 
-        log_info(stage: 'import_bitbucket_pull_requests', message: 'finished', iid: pull_request.iid)
+        log_info(import_stage: 'import_bitbucket_pull_requests', message: 'finished', iid: pull_request.iid)
         mark_as_imported(pull_request)
       end
 
       def import_pull_request_comments(pull_request, merge_request)
-        log_info(stage: 'import_pull_request_comments', message: 'starting', iid: merge_request.iid)
+        log_info(import_stage: 'import_pull_request_comments', message: 'starting', iid: merge_request.iid)
 
         comments, other_activities = client.activities(project_key, repository_slug, pull_request.iid).partition(&:comment?)
 
@@ -291,7 +291,7 @@ module Gitlab
         import_inline_comments(inline_comments.map(&:comment), merge_request)
         import_standalone_pr_comments(pr_comments.map(&:comment), merge_request)
 
-        log_info(stage: 'import_pull_request_comments', message: 'finished', iid: merge_request.iid,
+        log_info(import_stage: 'import_pull_request_comments', message: 'finished', iid: merge_request.iid,
                  merge_event_found: merge_event.present?,
                  inline_comments_count: inline_comments.count,
                  standalone_pr_comments: pr_comments.count)
@@ -299,7 +299,7 @@ module Gitlab
 
       # rubocop: disable CodeReuse/ActiveRecord
       def import_merge_event(merge_request, merge_event)
-        log_info(stage: 'import_merge_event', message: 'starting', iid: merge_request.iid)
+        log_info(import_stage: 'import_merge_event', message: 'starting', iid: merge_request.iid)
 
         committer = merge_event.committer_email
 
@@ -309,12 +309,12 @@ module Gitlab
         metric = MergeRequest::Metrics.find_or_initialize_by(merge_request: merge_request)
         metric.update(merged_by_id: user_id, merged_at: timestamp)
 
-        log_info(stage: 'import_merge_event', message: 'finished', iid: merge_request.iid)
+        log_info(import_stage: 'import_merge_event', message: 'finished', iid: merge_request.iid)
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
       def import_inline_comments(inline_comments, merge_request)
-        log_info(stage: 'import_inline_comments', message: 'starting', iid: merge_request.iid)
+        log_info(import_stage: 'import_inline_comments', message: 'starting', iid: merge_request.iid)
 
         inline_comments.each do |comment|
           position = build_position(merge_request, comment)
@@ -329,7 +329,7 @@ module Gitlab
           end
         end
 
-        log_info(stage: 'import_inline_comments', message: 'finished', iid: merge_request.iid)
+        log_info(import_stage: 'import_inline_comments', message: 'finished', iid: merge_request.iid)
       end
 
       def create_diff_note(merge_request, comment, position, discussion_id = nil)
@@ -344,7 +344,7 @@ module Gitlab
           return note
         end
 
-        log_info(stage: 'create_diff_note', message: 'creating fallback DiffNote', iid: merge_request.iid)
+        log_info(import_stage: 'create_diff_note', message: 'creating fallback DiffNote', iid: merge_request.iid)
 
         # Bitbucket Server supports the ability to comment on any line, not just the
         # line in the diff. If we can't add the note as a DiffNote, fallback to creating
@@ -353,7 +353,7 @@ module Gitlab
       rescue StandardError => e
         Gitlab::ErrorTracking.log_exception(
           e,
-          stage: 'create_diff_note', comment_id: comment.id, error: e.message
+          import_stage: 'create_diff_note', comment_id: comment.id, error: e.message
         )
 
         errors << { type: :pull_request, id: comment.id, errors: e.message }
@@ -394,7 +394,7 @@ module Gitlab
         rescue StandardError => e
           Gitlab::ErrorTracking.log_exception(
             e,
-            stage: 'import_standalone_pr_comments', merge_request_id: merge_request.id, comment_id: comment.id, error: e.message
+            import_stage: 'import_standalone_pr_comments', merge_request_id: merge_request.id, comment_id: comment.id, error: e.message
           )
 
           errors << { type: :pull_request, comment_id: comment.id, errors: e.message }

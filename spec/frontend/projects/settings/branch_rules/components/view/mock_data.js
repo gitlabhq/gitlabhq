@@ -85,16 +85,8 @@ export const accessLevelsMockResponse = [
     __typename: 'PushAccessLevelEdge',
     node: {
       __typename: 'PushAccessLevel',
-      accessLevel: 40,
-      accessLevelDescription: 'Jona Langworth',
-      group: null,
-      user: {
-        __typename: 'UserCore',
-        id: '123',
-        webUrl: 'test.com',
-        name: 'peter',
-        avatarUrl: 'test.com/user.png',
-      },
+      accessLevel: 30,
+      accessLevelDescription: 'Maintainers',
     },
   },
   {
@@ -102,9 +94,7 @@ export const accessLevelsMockResponse = [
     node: {
       __typename: 'PushAccessLevel',
       accessLevel: 40,
-      accessLevelDescription: 'Maintainers',
-      group: null,
-      user: null,
+      accessLevelDescription: 'Maintainers + Developers',
     },
   },
 ];
@@ -122,10 +112,10 @@ export const branchProtectionsMockResponse = {
           {
             __typename: 'BranchRule',
             name: 'main',
+            matchingBranchesCount,
             branchProtection: {
               __typename: 'BranchProtection',
               allowForcePush: true,
-              codeOwnerApprovalRequired: true,
               mergeAccessLevels: {
                 __typename: 'MergeAccessLevelConnection',
                 edges: accessLevelsMockResponse,
@@ -135,41 +125,23 @@ export const branchProtectionsMockResponse = {
                 edges: accessLevelsMockResponse,
               },
             },
-            approvalRules: {
-              __typename: 'ApprovalProjectRuleConnection',
-              nodes: approvalRulesMock,
-            },
-            externalStatusChecks: {
-              __typename: 'ExternalStatusCheckConnection',
-              nodes: statusChecksRulesMock,
-            },
-            matchingBranchesCount,
           },
           {
             __typename: 'BranchRule',
             name: '*',
+            matchingBranchesCount,
             branchProtection: {
               __typename: 'BranchProtection',
               allowForcePush: true,
-              codeOwnerApprovalRequired: true,
               mergeAccessLevels: {
                 __typename: 'MergeAccessLevelConnection',
-                edges: [],
+                edges: accessLevelsMockResponse,
               },
               pushAccessLevels: {
                 __typename: 'PushAccessLevelConnection',
-                edges: [],
+                edges: accessLevelsMockResponse,
               },
             },
-            approvalRules: {
-              __typename: 'ApprovalProjectRuleConnection',
-              nodes: [],
-            },
-            externalStatusChecks: {
-              __typename: 'ExternalStatusCheckConnection',
-              nodes: [],
-            },
-            matchingBranchesCount,
           },
         ],
       },

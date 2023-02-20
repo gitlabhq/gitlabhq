@@ -19,4 +19,5 @@ export const I18N = {
   lastGroupOwnerCannotBeRemoved: s__(
     'Members|A group must have at least one owner. To remove the member, assign a new owner.',
   ),
+  banMember: s__('Members|Ban member'),
 };

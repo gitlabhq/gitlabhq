@@ -2,19 +2,21 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::ListConfigVariablesService, :use_clean_rails_memory_store_caching do
+RSpec.describe Ci::ListConfigVariablesService,
+:use_clean_rails_memory_store_caching, feature_category: :pipeline_authoring do
   include ReactiveCachingHelpers
 
   let(:ci_config) { {} }
   let(:files) { { '.gitlab-ci.yml' => YAML.dump(ci_config) } }
   let(:project) { create(:project, :custom_repo, :auto_devops_disabled, files: files) }
   let(:user) { project.creator }
-  let(:sha) { project.default_branch }
+  let(:ref) { project.default_branch }
+  let(:sha) { project.commit(ref).sha }
   let(:service) { described_class.new(project, user) }
 
-  subject(:result) { service.execute(sha) }
+  subject(:result) { service.execute(ref) }
 
-  context 'when sending a valid sha' do
+  context 'when sending a valid ref' do
     let(:ci_config) do
       {
         variables: {
@@ -109,8 +111,8 @@ RSpec.describe Ci::ListConfigVariablesService, :use_clean_rails_memory_store_cac
     end
   end
 
-  context 'when sending an invalid sha' do
-    let(:sha) { 'invalid-sha' }
+  context 'when sending an invalid ref' do
+    let(:ref) { 'invalid-ref' }
     let(:ci_config) { nil }
 
     before do

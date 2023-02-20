@@ -2,9 +2,11 @@
 
 require 'spec_helper'
 
-RSpec.describe Ml::Candidate, factory_default: :keep do
-  let_it_be(:candidate) { create(:ml_candidates, :with_metrics_and_params) }
-  let_it_be(:candidate2) { create(:ml_candidates, experiment: candidate.experiment) }
+RSpec.describe Ml::Candidate, factory_default: :keep, feature_category: :mlops do
+  let_it_be(:candidate) { create(:ml_candidates, :with_metrics_and_params, name: 'candidate0') }
+  let_it_be(:candidate2) do
+    create(:ml_candidates, experiment: candidate.experiment, user: create(:user), name: 'candidate2')
+  end
 
   let_it_be(:candidate_artifact) do
     FactoryBot.create(:generic_package,
@@ -109,12 +111,12 @@ RSpec.describe Ml::Candidate, factory_default: :keep do
   end
 
   describe "#latest_metrics" do
-    let_it_be(:candidate2) { create(:ml_candidates, experiment: candidate.experiment) }
-    let!(:metric1) { create(:ml_candidate_metrics, candidate: candidate2) }
-    let!(:metric2) { create(:ml_candidate_metrics, candidate: candidate2 ) }
-    let!(:metric3) { create(:ml_candidate_metrics, name: metric1.name, candidate: candidate2) }
+    let_it_be(:candidate3) { create(:ml_candidates, experiment: candidate.experiment) }
+    let_it_be(:metric1) { create(:ml_candidate_metrics, candidate: candidate3) }
+    let_it_be(:metric2) { create(:ml_candidate_metrics, candidate: candidate3 ) }
+    let_it_be(:metric3) { create(:ml_candidate_metrics, name: metric1.name, candidate: candidate3) }
 
-    subject { candidate2.latest_metrics }
+    subject { candidate3.latest_metrics }
 
     it 'fetches only the last metric for the name' do
       expect(subject).to match_array([metric2, metric3] )
@@ -128,6 +130,57 @@ RSpec.describe Ml::Candidate, factory_default: :keep do
       expect(subject.association_cached?(:latest_metrics)).to be(true)
       expect(subject.association_cached?(:params)).to be(true)
       expect(subject.association_cached?(:user)).to be(true)
+    end
+  end
+
+  describe '#by_name' do
+    let(:name) { candidate.name }
+
+    subject { described_class.by_name(name) }
+
+    context 'when name matches' do
+      it 'gets the correct candidates' do
+        expect(subject).to match_array([candidate])
+      end
+    end
+
+    context 'when name matches partially' do
+      let(:name) { 'andidate' }
+
+      it 'gets the correct candidates' do
+        expect(subject).to match_array([candidate, candidate2])
+      end
+    end
+
+    context 'when name does not match' do
+      let(:name) { non_existing_record_id.to_s }
+
+      it 'does not fetch any candidate' do
+        expect(subject).to match_array([])
+      end
+    end
+  end
+
+  describe '#order_by_metric' do
+    let_it_be(:auc_metrics) do
+      create(:ml_candidate_metrics, name: 'auc', value: 0.4, candidate: candidate)
+      create(:ml_candidate_metrics, name: 'auc', value: 0.8, candidate: candidate2)
+    end
+
+    let(:direction) { 'desc' }
+
+    subject { described_class.order_by_metric('auc', direction) }
+
+    it 'orders correctly' do
+      expect(subject).to eq([candidate2, candidate])
+    end
+
+    context 'when direction is asc' do
+      let(:direction) { 'asc' }
+
+      it 'orders correctly' do
+        expect(subject).to eq([candidate, candidate2])
+      end
     end
   end
 end

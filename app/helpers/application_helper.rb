@@ -232,7 +232,7 @@ module ApplicationHelper
   end
 
   def support_url
-    Gitlab::CurrentSettings.current_application_settings.help_page_support_url.presence || "#{promo_url}/getting-help/"
+    Gitlab::CurrentSettings.current_application_settings.help_page_support_url.presence || "#{promo_url}/get-help/"
   end
 
   def instance_review_permitted?
@@ -282,10 +282,6 @@ module ApplicationHelper
 
   def startup_css_enabled?
     !params.has_key?(:no_startup_css)
-  end
-
-  def use_new_fonts?
-    Feature.enabled?(:new_fonts, current_user) || request.params.has_key?(:new_fonts)
   end
 
   def outdated_browser?
@@ -366,6 +362,12 @@ module ApplicationHelper
     else
       "https://twitter.com/#{name}"
     end
+  end
+
+  def discord_url(user)
+    return '' if user.discord.blank?
+
+    "https://discord.com/users/#{user.discord}"
   end
 
   def collapsed_sidebar?

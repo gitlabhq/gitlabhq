@@ -42,7 +42,7 @@ before the policy changes take effect.
 The [policy editor](index.md#policy-editor) supports YAML mode and rule mode.
 
 NOTE:
-Propagating scan result policies created for groups with a large number of projects will take a while to complete.
+Propagating scan result policies created for groups with a large number of projects take a while to complete.
 
 ## Scan result policies schema
 
@@ -79,9 +79,15 @@ This rule enforces the defined actions based on security scan findings.
 | `scanners`  | `array` of `string` | `sast`, `secret_detection`, `dependency_scanning`, `container_scanning`, `dast`, `coverage_fuzzing`, `api_fuzzing` | The security scanners for this rule to consider. |
 | `vulnerabilities_allowed`  | `integer` | Greater than or equal to zero | Number of vulnerabilities allowed before this rule is considered. |
 | `severity_levels`  | `array` of `string` | `info`, `unknown`, `low`, `medium`, `high`, `critical`| The severity levels for this rule to consider. |
-| `vulnerability_states`  | `array` of `string` | `newly_detected`, `detected`, `confirmed`, `resolved`, `dismissed` | All vulnerabilities fall into two categories:<br><br>**Newly Detected Vulnerabilities** - the `newly_detected` policy option covers vulnerabilities that are both `Detected` or `Dismissed` within the merge request itself where the vulnerabilities do not currently exist on the default branch. This policy option requires a pipeline to complete before the rule is evaluated so that it knows whether vulnerabilities are newly detected or not. Merge requests are blocked until the pipeline, and necessary security scans are complete.<br><br> • Detected<br> • Dismissed<br><br>**Pre-Existing Vulnerabilities** - these policy options are evaluated immediately and do not require a pipeline complete as they consider only vulnerabilities previously detected in the default branch.<br><br> • `Detected` - the policy looks for vulnerabilities in the detected state.<br> • `Confirmed` - the policy looks for vulnerabilities in the confirmed state.<br> • `Dismissed` - the policy looks for vulnerabilities in the dismissed state.<br> • `Resolved` - the policy looks for vulnerabilities in the resolved state. |
+| `vulnerability_states`  | `array` of `string` | `newly_detected`, `detected`, `confirmed`, `resolved`, `dismissed` | All vulnerabilities fall into two categories:<br><br>**Newly Detected Vulnerabilities** - the `newly_detected` policy option covers vulnerabilities identified in the merge request branch itself but that do not currently exist on the default branch. This policy option requires a pipeline to complete before the rule is evaluated so that it knows whether vulnerabilities are newly detected or not. Merge requests are blocked until the pipeline and necessary security scans are complete. The `newly_detected` option considers both of the following statuses:<br><br> • Detected<br> • Dismissed<br><br>**Pre-Existing Vulnerabilities** - these policy options are evaluated immediately and do not require a pipeline complete as they consider only vulnerabilities previously detected in the default branch.<br><br> • `Detected` - the policy looks for vulnerabilities in the detected state.<br> • `Confirmed` - the policy looks for vulnerabilities in the confirmed state.<br> • `Dismissed` - the policy looks for vulnerabilities in the dismissed state.<br> • `Resolved` - the policy looks for vulnerabilities in the resolved state. |
 
 ## `license_finding` rule type
+
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/8092) in GitLab 15.9 [with a flag](../../../administration/feature_flags.md) named `license_scanning_policies`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `license_scanning_policies`.
+On GitLab.com, this feature is not available.
 
 This rule enforces the defined actions based on license findings.
 
@@ -91,7 +97,7 @@ This rule enforces the defined actions based on license findings.
 | `branches` | `array` of `string` | `[]` or the branch's name | Applicable only to protected target branches. An empty array, `[]`, applies the rule to all protected target branches. |
 | `match_on_inclusion` | `boolean` | `true`, `false` | Whether the rule matches inclusion or exclusion of licenses listed in `license_types`. |
 | `license_types` | `array` of `string` | license types | License types to match on, for example `BSD` or `MIT`. |
-| `license_states` | `array` of `string` | `newly_detected`, `detected` | Whether to match newly detected and/or previously detected licenses. |
+| `license_states` | `array` of `string` | `newly_detected`, `detected` | Whether to match newly detected and/or previously detected licenses. The `newly_detected` state triggers approval when either a new package is introduced or when a new license for an existing package is detected. |
 
 ## `require_approval` action type
 
@@ -110,7 +116,7 @@ the defined policy.
 Requirements and limitations:
 
 - You must add the respective [security scanning tools](../index.md#application-coverage).
-  Otherwise, scan result policies won't have any effect.
+  Otherwise, scan result policies do not have any effect.
 - The maximum number of policies is five.
 - Each policy can have a maximum of five rules.
 
@@ -199,7 +205,7 @@ It corresponds to a single object from the previous example:
 
 ## Example situations where scan result policies require additional approval
 
-There are several situations where the scan result policy will require an additional approval step. For example:
+There are several situations where the scan result policy requires an additional approval step. For example:
 
 - The number of security jobs is reduced in the working branch and no longer matches the number of security jobs in the target branch. Users can't skip the Scanning Result Policies by removing scanning jobs from the CI configuration.
 - Someone stops a pipeline security job, and users can't skip the security scan.

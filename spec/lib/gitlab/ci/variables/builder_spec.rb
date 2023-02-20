@@ -166,8 +166,14 @@ RSpec.describe Gitlab::Ci::Variables::Builder, :clean_gitlab_redis_cache, featur
       end
 
       before do
+        pipeline_variables_builder = double(
+          ::Gitlab::Ci::Variables::Builder::Pipeline,
+          predefined_variables: [var('C', 3), var('D', 3)]
+        )
+
         allow(builder).to receive(:predefined_variables) { [var('A', 1), var('B', 1)] }
         allow(pipeline.project).to receive(:predefined_variables) { [var('B', 2), var('C', 2)] }
+        allow(builder).to receive(:pipeline_variables_builder) { pipeline_variables_builder }
         allow(pipeline).to receive(:predefined_variables) { [var('C', 3), var('D', 3)] }
         allow(job).to receive(:runner) { double(predefined_variables: [var('D', 4), var('E', 4)]) }
         allow(builder).to receive(:kubernetes_variables) { [var('E', 5), var('F', 5)] }
@@ -635,8 +641,13 @@ RSpec.describe Gitlab::Ci::Variables::Builder, :clean_gitlab_redis_cache, featur
       end
 
       before do
+        pipeline_variables_builder = double(
+          ::Gitlab::Ci::Variables::Builder::Pipeline,
+          predefined_variables: [var('B', 2), var('C', 2)]
+        )
+
         allow(pipeline.project).to receive(:predefined_variables) { [var('A', 1), var('B', 1)] }
-        allow(pipeline).to receive(:predefined_variables) { [var('B', 2), var('C', 2)] }
+        allow(builder).to receive(:pipeline_variables_builder) { pipeline_variables_builder }
         allow(builder).to receive(:secret_instance_variables) { [var('C', 3), var('D', 3)] }
         allow(builder).to receive(:secret_group_variables) { [var('D', 4), var('E', 4)] }
         allow(builder).to receive(:secret_project_variables) { [var('E', 5), var('F', 5)] }

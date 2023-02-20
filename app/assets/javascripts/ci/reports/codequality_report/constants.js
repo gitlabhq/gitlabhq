@@ -1,10 +1,10 @@
 export const SEVERITY_CLASSES = {
-  info: 'text-primary-400',
-  minor: 'text-warning-200',
-  major: 'text-warning-400',
-  critical: 'text-danger-600',
-  blocker: 'text-danger-800',
-  unknown: 'text-secondary-400',
+  info: 'gl-text-blue-400',
+  minor: 'gl-text-orange-200',
+  major: 'gl-text-orange-400',
+  critical: 'gl-text-red-600',
+  blocker: 'gl-text-red-800',
+  unknown: 'gl-text-gray-400',
 };
 
 export const SEVERITY_ICONS = {

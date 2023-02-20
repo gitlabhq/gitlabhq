@@ -1,5 +1,9 @@
 import { unwrapPipelineData } from '~/pipelines/components/graph/utils';
-import { BUILD_KIND, BRIDGE_KIND } from '~/pipelines/components/graph/constants';
+import {
+  BUILD_KIND,
+  BRIDGE_KIND,
+  RETRY_ACTION_TITLE,
+} from '~/pipelines/components/graph/constants';
 
 export const mockPipelineResponse = {
   data: {
@@ -726,6 +730,7 @@ export const downstream = {
       sourceJob: {
         name: 'test_c',
         id: '71',
+        retried: false,
         __typename: 'CiJob',
       },
       project: {
@@ -756,6 +761,7 @@ export const downstream = {
       sourceJob: {
         id: '73',
         name: 'test_d',
+        retried: true,
         __typename: 'CiJob',
       },
       project: {
@@ -841,6 +847,7 @@ export const wrappedPipelineReturn = {
           sourceJob: {
             name: 'test_c',
             id: '78',
+            retried: false,
             __typename: 'CiJob',
           },
           project: {
@@ -1036,5 +1043,40 @@ export const triggerJob = {
     label: 'passed',
     group: 'success',
     action: null,
+  },
+};
+
+export const triggerJobWithRetryAction = {
+  ...triggerJob,
+  status: {
+    ...triggerJob.status,
+    action: {
+      icon: 'retry',
+      title: RETRY_ACTION_TITLE,
+      path: '/root/ci-mock/builds/4259/retry',
+      method: 'post',
+    },
+  },
+};
+
+export const mockFailedJob = {
+  id: 3999,
+  name: 'failed job',
+  kind: BUILD_KIND,
+  status: {
+    id: 'failed-3999-3999',
+    icon: 'status_failed',
+    tooltip: 'failed - (stuck or timeout failure)',
+    hasDetails: true,
+    detailsPath: '/root/ci-project/-/jobs/3999',
+    group: 'failed',
+    label: 'failed',
+    action: {
+      id: 'Ci::BuildPresenter-failed-3999',
+      buttonTitle: 'Retry this job',
+      icon: 'retry',
+      path: '/root/ci-project/-/jobs/3999/retry',
+      title: 'Retry',
+    },
   },
 };

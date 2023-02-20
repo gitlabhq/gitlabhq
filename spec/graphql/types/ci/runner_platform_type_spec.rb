@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Types::Ci::RunnerPlatformType do
+RSpec.describe Types::Ci::RunnerPlatformType, feature_category: :runner_fleet do
   specify { expect(described_class.graphql_name).to eq('RunnerPlatform') }
 
   it 'exposes the expected fields' do

@@ -4,60 +4,41 @@ group: Organization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Share projects with other groups **(FREE)**
+# Share a project with a group **(FREE)**
 
-You can share projects with other [groups](../../group/index.md). This makes it
-possible to add a group of users to a project with a single action.
+When you want a group to have access to your project,
+you can invite [a group](../../group/index.md) to the project.
+The group's members get access to the project, which becomes a *shared project*.
 
-For example, if `Project A` belongs to `Group 1`, the members of `Group 1` have access to the project.
-If `Project A` already belongs to another `Group 2`, the owner of `Group 2` can share `Project A`
-with `Group 1`, so that both members of `Group 1` and `Group 2` have access to the project.
+## Example
 
-When a project is shared with a group:
+For a project that was created by `Group 1`:
 
-- All group members, including members of subgroups or projects that belong to the group,
-  are assigned the same role in the project.
-  Each member's role is displayed in **Project information > Members**, in the **Max role** column.
-  When sharing a project with a group, a user's assigned **Max role** is the lowest
-  of either:
+- The members of `Group 1` have access to the project.
+- The owner of `Group 1` can invite `Group 2` to the project.
+This way, members of both `Group 1` and `Group 2` have access to the shared project.
 
-  - The role assigned in the group membership.
-  - The maximum role selected when sharing the project with the group.
+## Prerequisites
 
-  Assigning a higher maximum role to the group doesn't give group users higher roles than
-  the roles already assigned to them in the group.
-- The group is listed in the **Groups** tab.
-- The project is listed on the group dashboard.
+To invite a group to a project, you must be at least one of the following:
 
-Be aware of the restrictions that apply when you share projects with:
+- Explicitly defined as a [member](index.md) of the project.
+- Explicitly defined as a member of a group or subgroup that has access to the project.
+- An administrator.
 
-- [Groups with a more restrictive visibility level](#share-projects-with-groups-with-a-more-restrictive-visibility-level).
-- [Restricted sharing](#prevent-project-sharing).
+In addition:
 
-## Share projects with groups with a more restrictive visibility level
+- The group you're inviting must have a more restrictive
+ [visibility level](../../public_access.md#project-and-group-visibility)
+  than the project. For example, you can invite:
+  - A private group to a public project.
+  - An internal group to a public project.
+  - A private group to an internal project.
 
-You can share projects only down the group's organization structure.
-This means you can share a project with a group that has a more restrictive
-[visibility level](../../public_access.md#project-and-group-visibility) than the project,
-but not with a group that has a less restrictive visibility level.
-
-For example, you can share:
-
-- A public project with a private group.
-- A public project with an internal group.
-- An internal project with a private group.
-
-This restriction applies to subgroups as well. For example, `group/subgroup01/project`:
-
-- Can't be shared with `group`.
-- Can be shared with `group/subgroup02` or `group/subgroup01/subgroup03`.
-
-When you share a project with a group that has a more restrictive visibility level than the project:
-
-- The group name is visible to all users that can view the project members page.
-- Owners of the project have access to members of the group when they mention them in issues or merge requests.
-- Project members who are direct or indirect members of the group can see
-group members listed in addition to members of the project.
+- The group or subgroup must be in the project's [namespace](../../namespace/index.md).
+  For example, a project in the namespace `group/subgroup01/project`:
+  - Can be shared with `group/subgroup02` or `group/subgroup01/subgroup03`.
+  - Cannot be shared with `group`.
 
 ## Share a project with a group
 
@@ -68,22 +49,57 @@ group members listed in addition to members of the project.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/352526) in GitLab 14.9.
     [Feature flag `invite_members_group_modal`](https://gitlab.com/gitlab-org/gitlab/-/issues/352526) removed.
 
-You can share a project only with groups:
+You can share a project with a group by inviting that group to the project.
 
-- Where you have an explicitly defined [membership](index.md).
-- That contain a nested subgroup or project you have an explicitly defined role for.
-- You are an administrator of.
-
-To share a project with a group:
+To invite a group to a project:
 
 1. On the top bar, select **Main menu > Projects** and find your project.
-1. In the left navigation menu, select **Project information > Members**.
+1. On the left sidebar, select **Project information > Members**.
 1. Select **Invite a group**.
 1. **Select a group** you want to add to the project.
 1. **Select a role** you want to assign to the group.
 1. Optional. Select an **Access expiration date**.
 1. Select **Invite**.
 
-## Prevent project sharing
+All group members, members of subgroups, and members of other projects the group has access to
+are given access to the project. In addition:
 
-For more information, see [Prevent a project from being shared with groups](../../group/access_and_permissions.md#prevent-a-project-from-being-shared-with-groups).
+- On the group's page, the project is listed on the **Shared projects** tab.
+- On the project's **Members** page, the group is listed on the **Groups** tab.
+- Each user is assigned a maximum role.
+
+## Maximum role
+
+When multiple groups contain the same members, and the groups
+have access to the same project, the group members are
+given the most restrictive role for the project.
+
+This most restrictive role is called the *maximum role*, or **Max role**.
+
+The member's **Max role** is the more restrictive of:
+
+- The role the user is assigned for the group.
+- The role you chose when you invited the group to the project.
+
+### View the member's Max role
+
+To view the maximum role assigned to a member:
+
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, select **Project information > Members**.
+1. In the **Max role** column, view the user's maximum assigned role.
+
+## View a group's shared projects
+
+In a group, a shared project is a project to which the group members gained access through the [**Invite group**](#share-a-project-with-a-group) action.
+
+To view a group's shared projects:
+
+1. On the top bar, select **Main menu > Group** and find your group.
+1. On the group page, select the **Shared projects** tab.
+
+A list of shared projects is displayed.
+
+## Related topics
+
+- [Prevent a project from being shared with groups](../../group/access_and_permissions.md#prevent-a-project-from-being-shared-with-groups).

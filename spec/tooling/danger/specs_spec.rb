@@ -19,14 +19,16 @@ RSpec.describe Tooling::Danger::Specs, feature_category: :tooling do
   let(:file_lines) do
     [
       " describe 'foo' do",
-      " expect(foo).to match(['bar'])",
+      " expect(foo).to match(['bar', 'baz'])",
       " end",
-      " expect(foo).to match(['bar'])", # same line as line 1 above, we expect two different suggestions
+      " expect(foo).to match(['bar', 'baz'])", # same line as line 1 above, we expect two different suggestions
       " ",
-      " expect(foo).to match ['bar']",
-      " expect(foo).to eq(['bar'])",
-      " expect(foo).to eq ['bar']",
-      " expect(foo).to(match(['bar']))",
+      " expect(foo).to match ['bar', 'baz']",
+      " expect(foo).to eq(['bar', 'baz'])",
+      " expect(foo).to eq ['bar', 'baz']",
+      " expect(foo).to(match(['bar', 'baz']))",
+      " expect(foo).to(eq(['bar', 'baz']))",
+      " expect(foo).to(eq([bar, baz]))",
       " expect(foo).to(eq(['bar']))",
       " foo.eq(['bar'])"
     ]
@@ -35,28 +37,30 @@ RSpec.describe Tooling::Danger::Specs, feature_category: :tooling do
   let(:matching_lines) do
     [
       "+ expect(foo).to match(['should not error'])",
-      "+ expect(foo).to match(['bar'])",
-      "+ expect(foo).to match(['bar'])",
-      "+ expect(foo).to match ['bar']",
-      "+ expect(foo).to eq(['bar'])",
-      "+ expect(foo).to eq ['bar']",
-      "+ expect(foo).to(match(['bar']))",
-      "+ expect(foo).to(eq(['bar']))"
+      "+ expect(foo).to match(['bar', 'baz'])",
+      "+ expect(foo).to match(['bar', 'baz'])",
+      "+ expect(foo).to match ['bar', 'baz']",
+      "+ expect(foo).to eq(['bar', 'baz'])",
+      "+ expect(foo).to eq ['bar', 'baz']",
+      "+ expect(foo).to(match(['bar', 'baz']))",
+      "+ expect(foo).to(eq(['bar', 'baz']))",
+      "+ expect(foo).to(eq([bar, baz]))"
     ]
   end
 
   let(:changed_lines) do
     [
-      "  expect(foo).to match(['bar'])",
-      "  expect(foo).to match(['bar'])",
-      "  expect(foo).to match ['bar']",
-      "  expect(foo).to eq(['bar'])",
-      "  expect(foo).to eq ['bar']",
-      "- expect(foo).to match(['bar'])",
-      "- expect(foo).to match(['bar'])",
-      "- expect(foo).to match ['bar']",
-      "- expect(foo).to eq(['bar'])",
-      "- expect(foo).to eq ['bar']",
+      "  expect(foo).to match(['bar', 'baz'])",
+      "  expect(foo).to match(['bar', 'baz'])",
+      "  expect(foo).to match ['bar', 'baz']",
+      "  expect(foo).to eq(['bar', 'baz'])",
+      "  expect(foo).to eq ['bar', 'baz']",
+      "- expect(foo).to match(['bar', 'baz'])",
+      "- expect(foo).to match(['bar', 'baz'])",
+      "- expect(foo).to match ['bar', 'baz']",
+      "- expect(foo).to eq(['bar', 'baz'])",
+      "- expect(foo).to eq ['bar', 'baz']",
+      "- expect(foo).to eq [bar, foo]",
       "+ expect(foo).to eq([])"
     ] + matching_lines
   end
@@ -107,7 +111,7 @@ RSpec.describe Tooling::Danger::Specs, feature_category: :tooling do
 
   describe '#add_suggestions_for_match_with_array' do
     let(:template) do
-      <<~MARKDOWN
+      <<~MARKDOWN.chomp
       ```suggestion
       %<suggested_line>s
       ```
@@ -118,13 +122,14 @@ RSpec.describe Tooling::Danger::Specs, feature_category: :tooling do
 
     it 'adds suggestions at the correct lines' do
       [
-        { suggested_line: " expect(foo).to match_array(['bar'])", number: 2 },
-        { suggested_line: " expect(foo).to match_array(['bar'])", number: 4 },
-        { suggested_line: " expect(foo).to match_array ['bar']", number: 6 },
-        { suggested_line: " expect(foo).to match_array(['bar'])", number: 7 },
-        { suggested_line: " expect(foo).to match_array ['bar']", number: 8 },
-        { suggested_line: " expect(foo).to(match_array(['bar']))", number: 9 },
-        { suggested_line: " expect(foo).to(match_array(['bar']))", number: 10 }
+        { suggested_line: " expect(foo).to match_array(['bar', 'baz'])", number: 2 },
+        { suggested_line: " expect(foo).to match_array(['bar', 'baz'])", number: 4 },
+        { suggested_line: " expect(foo).to match_array ['bar', 'baz']", number: 6 },
+        { suggested_line: " expect(foo).to match_array(['bar', 'baz'])", number: 7 },
+        { suggested_line: " expect(foo).to match_array ['bar', 'baz']", number: 8 },
+        { suggested_line: " expect(foo).to(match_array(['bar', 'baz']))", number: 9 },
+        { suggested_line: " expect(foo).to(match_array(['bar', 'baz']))", number: 10 },
+        { suggested_line: " expect(foo).to(match_array([bar, baz]))", number: 11 }
       ].each do |test_case|
         comment = format(template, suggested_line: test_case[:suggested_line])
         expect(specs).to receive(:markdown).with(comment, file: filename, line: test_case[:number])
@@ -136,7 +141,7 @@ RSpec.describe Tooling::Danger::Specs, feature_category: :tooling do
 
   describe '#add_suggestions_for_project_factory_usage' do
     let(:template) do
-      <<~MARKDOWN
+      <<~MARKDOWN.chomp
       ```suggestion
       %<suggested_line>s
       ```
@@ -220,7 +225,7 @@ RSpec.describe Tooling::Danger::Specs, feature_category: :tooling do
 
   describe '#add_suggestions_for_feature_category' do
     let(:template) do
-      <<~SUGGESTION_MARKDOWN
+      <<~SUGGESTION_MARKDOWN.chomp
       ```suggestion
       %<suggested_line>s
       ```

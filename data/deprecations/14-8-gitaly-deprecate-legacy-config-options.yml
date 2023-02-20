@@ -1,6 +1,6 @@
 - title: "Deprecate legacy Gitaly configuration methods"  # The name of the feature to be deprecated
   announcement_milestone: "14.8"  # The milestone when this feature was first announced as deprecated.
-  removal_milestone: "15.0"  # The milestone when this feature is planned to be removed
+  removal_milestone: "16.0"  # The milestone when this feature is planned to be removed
   breaking_change: true  # If this deprecation is a breaking change, set this value to true
   reporter: mjwood  # GitLab username of the person reporting the deprecation
   body: |  # Do not modify this line, instead modify the lines below.

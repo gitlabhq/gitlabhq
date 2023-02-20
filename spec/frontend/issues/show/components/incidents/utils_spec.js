@@ -3,8 +3,10 @@ import {
   displayAndLogError,
   getEventIcon,
   getUtcShiftedDate,
+  getPreviousEventTags,
 } from '~/issues/show/components/incidents/utils';
 import { createAlert } from '~/flash';
+import { mockTimelineEventTags } from './mock_data';
 
 jest.mock('~/flash');
 
@@ -49,6 +51,22 @@ describe('incident utils', () => {
       const shiftedDate = getUtcShiftedDate();
 
       expect(shiftedDate > date).toBe(true);
+    });
+  });
+
+  describe('getPreviousEventTags', () => {
+    it('should return an empty array, when passed object contains no tags', () => {
+      const nodes = [];
+      const previousTags = getPreviousEventTags(nodes);
+
+      expect(previousTags.length).toBe(0);
+    });
+
+    it('should return an array of strings, when passed object containing tags', () => {
+      const previousTags = getPreviousEventTags(mockTimelineEventTags.nodes);
+      expect(previousTags.length).toBe(2);
+      expect(previousTags).toContain(mockTimelineEventTags.nodes[0].name);
+      expect(previousTags).toContain(mockTimelineEventTags.nodes[1].name);
     });
   });
 });

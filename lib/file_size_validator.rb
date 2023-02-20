@@ -4,7 +4,7 @@ class FileSizeValidator < ActiveModel::EachValidator
   MESSAGES = { is: :wrong_size, minimum: :size_too_small, maximum: :size_too_big }.freeze
   CHECKS   = { is: :==, minimum: :>=, maximum: :<= }.freeze
 
-  DEFAULT_TOKENIZER = -> (value) { value.split(//) }.freeze
+  DEFAULT_TOKENIZER = -> (value) { value.split("") }.freeze
   RESERVED_OPTIONS  = [:minimum, :maximum, :within, :is, :tokenizer, :too_short, :too_long].freeze
 
   def initialize(options)

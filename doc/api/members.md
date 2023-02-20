@@ -29,8 +29,7 @@ In GitLab 14.8 and earlier, projects in personal namespaces have an `access_leve
 
 The `group_saml_identity` attribute is only visible to a group owner for [SSO enabled groups](../user/group/saml_sso/index.md).
 
-The `email` attribute is only visible to group owners when the user was provisioned by the group.
-Users are provisioned by the group when the account was created via [SCIM](../user/group/saml_sso/scim_setup.md) or by first sign-in with [SAML SSO for GitLab.com groups](../user/group/saml_sso/index.md).
+The `email` attribute is only visible to group Owners for any [enterprise user](../user/enterprise_user/index.md).
 
 ## List all members of a group or project
 
@@ -46,7 +45,7 @@ GET /projects/:id/members
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer/string | yes | The ID or [URL-encoded path of the project or group](index.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`      | integer/string | yes | The ID or [URL-encoded path of the project or group](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
 | `query`   | string | no     | A query string to search for members |
 | `user_ids`   | array of integers | no     | Filter the results on the given user IDs |
 | `skip_users`   | array of integers | no     | Filter skipped users out of the results |
@@ -132,7 +131,7 @@ GET /projects/:id/members/all
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer/string | yes | The ID or [URL-encoded path of the project or group](index.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`      | integer/string | yes | The ID or [URL-encoded path of the project or group](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
 | `query`   | string | no     | A query string to search for members |
 | `user_ids`   | array of integers | no     | Filter the results on the given user IDs |
 | `show_seat_info`   | boolean | no     | Show seat information for users |
@@ -226,7 +225,7 @@ GET /projects/:id/members/:user_id
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer/string | yes | The ID or [URL-encoded path of the project or group](index.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`      | integer/string | yes | The ID or [URL-encoded path of the project or group](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
 | `user_id` | integer | yes   | The user ID of the member |
 
 ```shell
@@ -273,7 +272,7 @@ GET /projects/:id/members/all/:user_id
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer/string | yes | The ID or [URL-encoded path of the project or group](index.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`      | integer/string | yes | The ID or [URL-encoded path of the project or group](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
 | `user_id` | integer | yes   | The user ID of the member |
 
 ```shell
@@ -315,7 +314,7 @@ Gets a list of group members that count as billable. The list includes members i
 
 This API endpoint works on top-level groups only. It does not work on subgroups.
 
-This function takes [pagination](index.md#pagination) parameters `page` and `per_page` to restrict the list of users.
+This function takes [pagination](rest/index.md#pagination) parameters `page` and `per_page` to restrict the list of users.
 
 [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/262875) in GitLab 13.7, the `search` and
 `sort` parameters allow you to search for billable group members by name and sort the results,
@@ -327,7 +326,7 @@ GET /groups/:id/billable_members
 
 | Attribute                     | Type            | Required  | Description                                                                                                   |
 | ----------------------------- | --------------- | --------- |-------------------------------------------------------------------------------------------------------------- |
-| `id`                          | integer/string  | yes       | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) owned by the authenticated user  |
+| `id`                          | integer/string  | yes       | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) owned by the authenticated user  |
 | `search`                      | string          | no        | A query string to search for group members by name, username, or public email.                                |
 | `sort`                        | string          | no        | A query string containing parameters that specify the sort attribute and order. See supported values below.   |
 
@@ -412,7 +411,7 @@ This API endpoint works on top-level groups only. It does not work on subgroups.
 
 This API endpoint requires permission to administer memberships for the group.
 
-This API endpoint takes [pagination](index.md#pagination) parameters `page` and `per_page` to restrict the list of memberships.
+This API endpoint takes [pagination](rest/index.md#pagination) parameters `page` and `per_page` to restrict the list of memberships.
 
 ```plaintext
 GET /groups/:id/billable_members/:user_id/memberships
@@ -420,7 +419,7 @@ GET /groups/:id/billable_members/:user_id/memberships
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer/string | yes | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`      | integer/string | yes | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
 | `user_id` | integer        | yes | The user ID of the billable member |
 
 ```shell
@@ -472,7 +471,7 @@ DELETE /groups/:id/billable_members/:user_id
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer/string | yes | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`      | integer/string | yes | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
 | `user_id` | integer | yes   | The user ID of the member |
 
 ```shell
@@ -492,7 +491,7 @@ PUT /groups/:id/members/:user_id/state
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer/string | yes | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`      | integer/string | yes | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `user_id` | integer | yes   | The user ID of the member. |
 | `state`   | string | yes   | The new state for the user. State is either `awaiting` or `active`. |
 
@@ -519,7 +518,7 @@ POST /projects/:id/members
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer/string | yes | The ID or [URL-encoded path of the project or group](index.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`      | integer/string | yes | The ID or [URL-encoded path of the project or group](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
 | `user_id` | integer/string | yes | The user ID of the new member or multiple IDs separated by commas |
 | `access_level` | integer | yes | A valid access level |
 | `expires_at` | string | no | A date string in the format `YEAR-MONTH-DAY` |
@@ -571,10 +570,11 @@ PUT /projects/:id/members/:user_id
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer/string | yes | The ID or [URL-encoded path of the project or group](index.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`      | integer/string | yes | The ID or [URL-encoded path of the project or group](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
 | `user_id` | integer | yes   | The user ID of the member |
 | `access_level` | integer | yes | A valid access level |
 | `expires_at` | string | no | A date string in the format `YEAR-MONTH-DAY` |
+| `member_role_id` | integer | no | The ID of a member role **(ULTIMATE)** |
 
 ```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/:id/members/:user_id?access_level=40"
@@ -620,11 +620,11 @@ POST /groups/:id/members/:user_id/override
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer/string | yes | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`      | integer/string | yes | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
 | `user_id` | integer | yes   | The user ID of the member |
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/:id/members/:user_id/override"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/:id/members/:user_id/override"
 ```
 
 Example response:
@@ -666,7 +666,7 @@ DELETE /groups/:id/members/:user_id/override
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer/string | yes | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`      | integer/string | yes | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
 | `user_id` | integer | yes   | The user ID of the member |
 
 ```shell
@@ -715,7 +715,7 @@ DELETE /projects/:id/members/:user_id
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer/string | yes | The ID or [URL-encoded path of the project or group](index.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`      | integer/string | yes | The ID or [URL-encoded path of the project or group](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
 | `user_id` | integer | yes   | The user ID of the member |
 | `skip_subresources` | boolean | false   | Whether the deletion of direct memberships of the removed member in subgroups and projects should be skipped. Default is `false`. |
 | `unassign_issuables` | boolean | false   | Whether the removed member should be unassigned from any issues or merge requests inside a given group or project. Default is `false`. |
@@ -737,7 +737,7 @@ PUT /groups/:id/members/:member_id/approve
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer/string | yes | The ID or [URL-encoded path of the root group](index.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`      | integer/string | yes | The ID or [URL-encoded path of the root group](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
 | `member_id` | integer | yes   | The ID of the member |
 
 Example request:
@@ -756,7 +756,7 @@ POST /groups/:id/members/approve_all
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer/string | yes | The ID or [URL-encoded path of the root group](index.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`      | integer/string | yes | The ID or [URL-encoded path of the root group](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
 
 Example request:
 
@@ -778,7 +778,7 @@ This API endpoint works on top-level groups only. It does not work on subgroups.
 
 This API endpoint requires permission to administer members for the group.
 
-This API endpoint takes [pagination](index.md#pagination) parameters `page` and `per_page` to restrict the list of members.
+This API endpoint takes [pagination](rest/index.md#pagination) parameters `page` and `per_page` to restrict the list of members.
 
 ```plaintext
 GET /groups/:id/pending_members
@@ -786,7 +786,7 @@ GET /groups/:id/pending_members
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer/string | yes | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`      | integer/string | yes | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/:id/pending_members"

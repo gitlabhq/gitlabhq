@@ -28,6 +28,8 @@ module Environments
       created_environments = merge_request.created_environments
 
       if created_environments.any?
+        # This log message can be removed with https://gitlab.com/gitlab-org/gitlab/-/issues/372965
+        Gitlab::AppJsonLogger.info(message: 'Running new dynamic environment stop logic', project_id: project.id)
         created_environments.each { |env| execute(env) }
       else
         environments_in_head_pipeline = merge_request.environments_in_head_pipeline(deployment_status: :success)

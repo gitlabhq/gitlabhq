@@ -38,3 +38,17 @@ Prerequisites:
 1. On the left sidebar, select **Group information > Members**.
 1. Select the **Banned** tab.
 1. For the account you want to unban, select **Unban**.
+
+## Ban a user
+
+> [Introduced](https://gitlab.com/gitlab-org/modelops/anti-abuse/team-tasks/-/issues/155) in GitLab 15.8.
+
+Prerequisites:
+
+- You must have the Owner role.
+
+To manually ban a user:
+
+1. On the left sidebar, select **Group information > Members**.
+1. Next to the member you want to ban, select the vertical ellipsis (**{ellipsis_v}**).
+1. From the dropdown list, select **Ban member**.

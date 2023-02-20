@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::GitalyClient::OperationService do
+RSpec.describe Gitlab::GitalyClient::OperationService, feature_category: :source_code_management do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, :repository) }
 
@@ -40,21 +40,6 @@ RSpec.describe Gitlab::GitalyClient::OperationService do
 
       expect(subject.name).to eq(branch_name)
       expect(subject.dereferenced_target).to eq(commit)
-    end
-
-    context "when pre_receive_error is present" do
-      let(:response) do
-        Gitaly::UserCreateBranchResponse.new(pre_receive_error: "GitLab: something failed")
-      end
-
-      it "throws a PreReceive exception" do
-        expect_any_instance_of(Gitaly::OperationService::Stub)
-          .to receive(:user_create_branch).with(request, kind_of(Hash))
-          .and_return(response)
-
-        expect { subject }.to raise_error(
-          Gitlab::Git::PreReceiveError, "something failed")
-      end
     end
 
     context 'with structured errors' do
@@ -232,21 +217,6 @@ RSpec.describe Gitlab::GitalyClient::OperationService do
       subject
     end
 
-    context "when pre_receive_error is present" do
-      let(:response) do
-        Gitaly::UserDeleteBranchResponse.new(pre_receive_error: "GitLab: something failed")
-      end
-
-      it "throws a PreReceive exception" do
-        expect_any_instance_of(Gitaly::OperationService::Stub)
-          .to receive(:user_delete_branch).with(request, kind_of(Hash))
-          .and_return(response)
-
-        expect { subject }.to raise_error(
-          Gitlab::Git::PreReceiveError, "something failed")
-      end
-    end
-
     context 'with a custom hook error' do
       let(:stdout) { nil }
       let(:stderr) { nil }
@@ -309,12 +279,39 @@ RSpec.describe Gitlab::GitalyClient::OperationService do
 
   describe '#user_merge_branch' do
     let(:target_branch) { 'master' }
+    let(:target_sha) { repository.commit(target_branch).sha }
     let(:source_sha) { '5937ac0a7beb003549fc5fd26fc247adbce4a52e' }
     let(:message) { 'Merge a branch' }
 
-    subject { client.user_merge_branch(user, source_sha, target_branch, message) {} }
+    subject do
+      client.user_merge_branch(user,
+        source_sha: source_sha,
+        target_branch: target_branch,
+        target_sha: target_sha,
+        message: message
+      ) {}
+    end
 
-    it 'sends a user_merge_branch message' do
+    it 'sends a user_merge_branch message', :freeze_time do
+      first_request =
+        Gitaly::UserMergeBranchRequest.new(
+          repository: repository.gitaly_repository,
+          user: gitaly_user,
+          commit_id: source_sha,
+          branch: target_branch,
+          expected_old_oid: target_sha,
+          message: message,
+          timestamp: Google::Protobuf::Timestamp.new(seconds: Time.now.utc.to_i)
+        )
+
+      second_request = Gitaly::UserMergeBranchRequest.new(apply: true)
+
+      expect_next_instance_of(Gitlab::GitalyClient::QueueEnumerator) do |instance|
+        expect(instance).to receive(:push).with(first_request).and_call_original
+        expect(instance).to receive(:push).with(second_request).and_call_original
+        expect(instance).to receive(:close)
+      end
+
       expect(subject).to be_a(Gitlab::Git::OperationService::BranchUpdate)
       expect(subject.newrev).to be_present
       expect(subject.repo_created).to be(false)
@@ -461,12 +458,14 @@ RSpec.describe Gitlab::GitalyClient::OperationService do
 
   describe '#user_ff_branch' do
     let(:target_branch) { 'my-branch' }
+    let(:target_sha) { '6d394385cf567f80a8fd85055db1ab4c5295806f' }
     let(:source_sha) { 'cfe32cf61b73a0d5e9f13e774abde7ff789b1660' }
     let(:request) do
       Gitaly::UserFFBranchRequest.new(
         repository: repository.gitaly_repository,
         branch: target_branch,
         commit_id: source_sha,
+        expected_old_oid: target_sha,
         user: gitaly_user
       )
     end
@@ -487,7 +486,13 @@ RSpec.describe Gitlab::GitalyClient::OperationService do
         .and_return(response)
     end
 
-    subject { client.user_ff_branch(user, source_sha, target_branch) }
+    subject do
+      client.user_ff_branch(user,
+        source_sha: source_sha,
+        target_branch: target_branch,
+        target_sha: target_sha
+      )
+    end
 
     it 'sends a user_ff_branch message and returns a BranchUpdate object' do
       expect(subject).to be_a(Gitlab::Git::OperationService::BranchUpdate)
@@ -572,16 +577,6 @@ RSpec.describe Gitlab::GitalyClient::OperationService do
         start_branch_name: 'master',
         start_repository: repository
       )
-    end
-
-    context 'when errors are not raised but returned in the response' do
-      before do
-        expect_any_instance_of(Gitaly::OperationService::Stub)
-          .to receive(:user_cherry_pick).with(kind_of(Gitaly::UserCherryPickRequest), kind_of(Hash))
-          .and_return(response)
-      end
-
-      it_behaves_like 'cherry pick and revert errors'
     end
 
     context 'when AccessCheckError is raised' do
@@ -1146,18 +1141,6 @@ RSpec.describe Gitlab::GitalyClient::OperationService do
 
       it 'raises an InvalidRef error' do
         expect { add_tag }.to raise_error(Gitlab::Git::Repository::InvalidRef)
-      end
-    end
-
-    context 'with pre-receive error' do
-      before do
-        expect_any_instance_of(Gitaly::OperationService::Stub)
-          .to receive(:user_create_tag)
-          .and_return(Gitaly::UserCreateTagResponse.new(pre_receive_error: "GitLab: something failed"))
-      end
-
-      it 'raises a PreReceiveError' do
-        expect { add_tag }.to raise_error(Gitlab::Git::PreReceiveError, "something failed")
       end
     end
 

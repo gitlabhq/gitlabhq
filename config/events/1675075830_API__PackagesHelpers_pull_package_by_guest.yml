@@ -1,0 +1,26 @@
+---
+description: "Mirrored Service Ping total metric key_path: counts.package_events_i_package_pull_package_by_guest"
+category: package class
+action: pull_package_by_guest
+label_description: "Mirrored Service Ping total metric key_path: counts.package_events_i_package_pull_package_by_guest"
+property_description:
+value_description:
+extra_properties:
+identifiers:
+- project
+- user
+- namespace
+product_section: dev
+product_stage: package
+product_group: package_registry
+product_category: package_registry
+milestone: "15.9"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111372
+distributions:
+- ce
+- ee
+tiers:
+- free
+- premium
+- ultimate
+

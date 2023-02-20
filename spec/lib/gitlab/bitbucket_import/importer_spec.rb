@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BitbucketImport::Importer do
+RSpec.describe Gitlab::BitbucketImport::Importer, feature_category: :integrations do
   include ImportSpecHelper
 
   before do

@@ -33,8 +33,8 @@ To create a group:
 1. Choose the [visibility level](../public_access.md).
 1. Personalize your GitLab experience by answering the following questions:
    - What is your role?
-   - Who will be using this group?
-   - What will you use this group for?
+   - Who is using this group?
+   - What are you using this group for?
 1. Invite GitLab members or other users to join the group.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
@@ -131,7 +131,7 @@ Filter a group to find members. By default, all members in the group and subgrou
 In lists of group members, entries can display the following badges:
 
 - **SAML**, to indicate the member has a [SAML account](saml_sso/index.md) connected to them.
-- **Enterprise**, to indicate that [SCIM created the account](saml_sso/scim_setup.md).
+- **Enterprise**, to indicate that the member is an [enterprise user](../enterprise_user/index.md).
 
 1. On the top bar, select **Main menu > Groups** and find your group.
 1. Above the list of members, in the **Filter members** box, enter filter criteria.
@@ -155,7 +155,7 @@ You can sort members by **Account**, **Access granted**, **Max role**, or **Last
 
 1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Group information > Members**.
-1. Above the list of members, on the top right, from the **Account** list, select
+1. Above the list of members, in the upper right, from the **Account** list, select
    the criteria to filter by.
 1. To switch the sort between ascending and descending, to the right of the **Account** list, select the
    arrow (**{sort-lowest}** or **{sort-highest}**).
@@ -336,11 +336,14 @@ After sharing the `Frontend` group with the `Engineering` group:
 
 ## Transfer a group
 
-You can transfer groups in the following ways:
+Transferring groups moves them from one place to another in the same GitLab instance. You can:
 
 - Transfer a subgroup to a new parent group.
 - Convert a top-level group into a subgroup by transferring it to the desired group.
 - Convert a subgroup into a top-level group by transferring it out of its current group.
+
+If you need to copy a group to a different GitLab instance,
+[migrate the group by direct transfer](import/index.md#migrate-groups-by-direct-transfer-recommended).
 
 When transferring groups, note:
 
@@ -350,6 +353,7 @@ When transferring groups, note:
 - If the immediate parent group's visibility is lower than the group's current visibility, visibility levels for subgroups and projects change to match the new parent group's visibility.
 - Only explicit group membership is transferred, not inherited membership. If the group's owners have only inherited membership, this leaves the group without an owner. In this case, the user transferring the group becomes the group's owner.
 - Transfers fail if [packages](../packages/index.md) exist in any of the projects in the group, or in any of its subgroups.
+- Top-level groups that have a subscription on GitLab.com cannot be transferred. To make the transfer possible, the top-level group's subscription must be removed first. Then the top-level group can be transferred as a subgroup to another top-level group.
 
 To transfer a group:
 

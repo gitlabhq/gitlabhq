@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Build::AutoRetry do
+RSpec.describe Gitlab::Ci::Build::AutoRetry, feature_category: :pipeline_authoring do
   let(:auto_retry) { described_class.new(build) }
 
   describe '#allowed?' do
@@ -107,6 +107,14 @@ RSpec.describe Gitlab::Ci::Build::AutoRetry do
 
     context 'with integer only config option' do
       let(:build) { create(:ci_build, options: { retry: 1 }) }
+
+      it 'returns always array' do
+        expect(result).to eq ['always']
+      end
+    end
+
+    context 'with retry[:when] set to nil' do
+      let(:build) { create(:ci_build, options: { retry: { when: nil } }) }
 
       it 'returns always array' do
         expect(result).to eq ['always']

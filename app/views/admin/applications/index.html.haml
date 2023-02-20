@@ -43,7 +43,9 @@
             %td= application.redirect_uri
             %td= application.trusted? ? _('Yes'): _('No')
             %td= application.confidential? ? _('Yes'): _('No')
-            %td= link_to 'Edit', edit_admin_application_path(application), class: 'gl-button btn btn-link'
+            %td
+              = render Pajamas::ButtonComponent.new(href: edit_admin_application_path(application), variant: :link) do
+                = _('Edit')
             %td= render 'delete_form', application: application
 
 = paginate @applications, theme: 'gitlab'

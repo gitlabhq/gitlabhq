@@ -16,6 +16,7 @@ import workItemQuery from '~/work_items/graphql/work_item.query.graphql';
 import workItemDescriptionSubscription from '~/work_items/graphql/work_item_description.subscription.graphql';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
+import { autocompleteDataSources, markdownPreviewPath } from '~/work_items/utils';
 import {
   updateWorkItemMutationResponse,
   workItemDescriptionSubscriptionResponse,
@@ -100,6 +101,49 @@ describe('WorkItemDescription', () => {
 
   afterEach(() => {
     wrapper.destroy();
+  });
+
+  describe('editing description with workItemsMvc FF enabled', () => {
+    beforeEach(() => {
+      workItemsMvc = true;
+    });
+
+    it('passes correct autocompletion data and preview markdown sources and enables quick actions', async () => {
+      const {
+        iid,
+        project: { fullPath },
+      } = workItemQueryResponse.data.workItem;
+
+      await createComponent({ isEditing: true });
+
+      expect(findMarkdownEditor().props()).toMatchObject({
+        autocompleteDataSources: autocompleteDataSources(fullPath, iid),
+        supportsQuickActions: true,
+        renderMarkdownPath: markdownPreviewPath(fullPath, iid),
+        quickActionsDocsPath: wrapper.vm.$options.quickActionsDocsPath,
+      });
+    });
+  });
+
+  describe('editing description with workItemsMvc FF disabled', () => {
+    beforeEach(() => {
+      workItemsMvc = false;
+    });
+
+    it('passes correct autocompletion data and preview markdown sources', async () => {
+      const {
+        iid,
+        project: { fullPath },
+      } = workItemQueryResponse.data.workItem;
+
+      await createComponent({ isEditing: true });
+
+      expect(findMarkdownField().props()).toMatchObject({
+        autocompleteDataSources: autocompleteDataSources(fullPath, iid),
+        markdownPreviewPath: markdownPreviewPath(fullPath, iid),
+        quickActionsDocsPath: wrapper.vm.$options.quickActionsDocsPath,
+      });
+    });
   });
 
   describe.each([true, false])(

@@ -1,5 +1,9 @@
 import waitForPromises from 'helpers/wait_for_promises';
-import { successCodes } from '~/lib/utils/http_status';
+import {
+  HTTP_STATUS_INTERNAL_SERVER_ERROR,
+  HTTP_STATUS_OK,
+  successCodes,
+} from '~/lib/utils/http_status';
 import Poll from '~/lib/utils/poll';
 
 describe('Poll', () => {
@@ -51,7 +55,7 @@ describe('Poll', () => {
   });
 
   it('calls the success callback when no header for interval is provided', () => {
-    mockServiceCall({ status: 200 });
+    mockServiceCall({ status: HTTP_STATUS_OK });
     setup();
 
     return waitForAllCallsToFinish(1, () => {
@@ -61,7 +65,7 @@ describe('Poll', () => {
   });
 
   it('calls the error callback when the http request returns an error', () => {
-    mockServiceCall({ status: 500 }, true);
+    mockServiceCall({ status: HTTP_STATUS_INTERNAL_SERVER_ERROR }, true);
     setup();
 
     return waitForAllCallsToFinish(1, () => {
@@ -82,7 +86,7 @@ describe('Poll', () => {
   });
 
   it('should call the success callback when the interval header is -1', () => {
-    mockServiceCall({ status: 200, headers: { 'poll-interval': -1 } });
+    mockServiceCall({ status: HTTP_STATUS_OK, headers: { 'poll-interval': -1 } });
     return setup().then(() => {
       expect(callbacks.success).toHaveBeenCalled();
       expect(callbacks.error).not.toHaveBeenCalled();
@@ -118,7 +122,7 @@ describe('Poll', () => {
 
   describe('with delayed initial request', () => {
     it('delays the first request', async () => {
-      mockServiceCall({ status: 200, headers: { 'poll-interval': 1 } });
+      mockServiceCall({ status: HTTP_STATUS_OK, headers: { 'poll-interval': 1 } });
 
       const Polling = new Poll({
         resource: service,
@@ -147,7 +151,7 @@ describe('Poll', () => {
 
   describe('stop', () => {
     it('stops polling when method is called', () => {
-      mockServiceCall({ status: 200, headers: { 'poll-interval': 1 } });
+      mockServiceCall({ status: HTTP_STATUS_OK, headers: { 'poll-interval': 1 } });
 
       const Polling = new Poll({
         resource: service,
@@ -173,7 +177,7 @@ describe('Poll', () => {
 
   describe('enable', () => {
     it('should enable polling upon a response', () => {
-      mockServiceCall({ status: 200 });
+      mockServiceCall({ status: HTTP_STATUS_OK });
       const Polling = new Poll({
         resource: service,
         method: 'fetch',
@@ -183,7 +187,7 @@ describe('Poll', () => {
 
       Polling.enable({
         data: { page: 4 },
-        response: { status: 200, headers: { 'poll-interval': 1 } },
+        response: { status: HTTP_STATUS_OK, headers: { 'poll-interval': 1 } },
       });
 
       return waitForAllCallsToFinish(1, () => {
@@ -198,7 +202,7 @@ describe('Poll', () => {
 
   describe('restart', () => {
     it('should restart polling when its called', () => {
-      mockServiceCall({ status: 200, headers: { 'poll-interval': 1 } });
+      mockServiceCall({ status: HTTP_STATUS_OK, headers: { 'poll-interval': 1 } });
 
       const Polling = new Poll({
         resource: service,

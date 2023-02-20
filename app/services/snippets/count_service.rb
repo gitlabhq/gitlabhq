@@ -70,7 +70,7 @@ module Snippets
           count(case when visibility_level=#{Snippet::PUBLIC} OR visibility_level=#{Snippet::INTERNAL} then 1 else null end) as are_public_or_internal,
           count(*) as total
         ")
-        .first
+        .take
     end
     # rubocop: enable CodeReuse/ActiveRecord
   end

@@ -36,5 +36,6 @@ export default {
       v-if="paused"
       class="gl-display-inline-block gl-max-w-full gl-text-truncate"
     />
+    <slot :runner="runner" name="runner-job-status-badge"></slot>
   </div>
 </template>

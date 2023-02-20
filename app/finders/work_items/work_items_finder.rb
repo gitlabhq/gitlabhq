@@ -19,7 +19,7 @@ module WorkItems
     end
 
     def by_widgets(items)
-      WorkItems::Type.available_widgets.each do |widget_class|
+      WorkItems::WidgetDefinition.available_widgets.each do |widget_class|
         widget_filter = widget_filter_for(widget_class)
 
         next unless widget_filter

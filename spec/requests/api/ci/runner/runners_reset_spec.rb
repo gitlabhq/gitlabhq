@@ -34,9 +34,10 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
         expect do
           post api("/runners/reset_authentication_token"), params: { token: group_runner.reload.token }
 
+          group_runner.reload
           expect(response).to have_gitlab_http_status(:success)
-          expect(json_response).to eq({ 'token' => group_runner.reload.token, 'token_expires_at' => group_runner.reload.token_expires_at.iso8601(3) })
-          expect(group_runner.reload.token_expires_at).to eq(5.days.from_now)
+          expect(json_response).to eq({ 'token' => group_runner.token, 'token_expires_at' => group_runner.token_expires_at.iso8601(3) })
+          expect(group_runner.token_expires_at).to eq(5.days.from_now)
         end.to change { group_runner.reload.token }
       end
 

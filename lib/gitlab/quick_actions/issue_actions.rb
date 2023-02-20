@@ -320,7 +320,7 @@ module Gitlab
       private
 
       def zoom_link_service
-        ::Issues::ZoomLinkService.new(project: quick_action_target.project, current_user: current_user, params: { issue: quick_action_target })
+        ::Issues::ZoomLinkService.new(container: quick_action_target.project, current_user: current_user, params: { issue: quick_action_target })
       end
 
       def zoom_link_params

@@ -40,7 +40,6 @@ module Gitlab
       gon.sprite_icons           = IconsHelper.sprite_icon_path
       gon.sprite_file_icons      = IconsHelper.sprite_file_icons_path
       gon.emoji_sprites_css_path = ActionController::Base.helpers.stylesheet_path('emoji_sprites')
-      gon.select2_css_path       = ActionController::Base.helpers.stylesheet_path('lazy_bundles/select2.css')
       gon.gridstack_css_path     = ActionController::Base.helpers.stylesheet_path('lazy_bundles/gridstack.css')
       gon.test_env               = Rails.env.test?
       gon.disable_animations     = Gitlab.config.gitlab['disable_animations']
@@ -68,7 +67,7 @@ module Gitlab
       push_frontend_feature_flag(:source_editor_toolbar)
       push_frontend_feature_flag(:vscode_web_ide, current_user)
       push_frontend_feature_flag(:integration_slack_app_notifications)
-      push_frontend_feature_flag(:new_fonts, current_user)
+      push_frontend_feature_flag(:full_path_project_search, current_user)
     end
 
     # Exposes the state of a feature flag to the frontend code.

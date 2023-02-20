@@ -47,7 +47,9 @@ class Gitlab::Ci::Build::AutoRetry
   end
 
   def options_retry_when
-    options_retry.fetch(:when, ['always'])
+    default = ['always']
+
+    options_retry.fetch(:when, default) || default
   end
 
   def retry_on_reason_or_always?

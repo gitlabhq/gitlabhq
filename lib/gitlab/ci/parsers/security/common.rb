@@ -282,7 +282,12 @@ module Gitlab
             return data['name'] if data['name'].present?
 
             identifier = identifiers.find(&:cve?) || identifiers.find(&:cwe?) || identifiers.first
-            "#{identifier.name} in #{location&.fingerprint_path}"
+
+            if location&.fingerprint_path
+              "#{identifier.name} in #{location.fingerprint_path}"
+            else
+              identifier.name.to_s
+            end
           end
 
           def calculate_uuid_v5(primary_identifier, location_fingerprint)

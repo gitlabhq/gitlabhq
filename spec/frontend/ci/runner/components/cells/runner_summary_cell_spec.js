@@ -3,7 +3,6 @@ import { mountExtended } from 'helpers/vue_test_utils_helper';
 import RunnerSummaryCell from '~/ci/runner/components/cells/runner_summary_cell.vue';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import RunnerTags from '~/ci/runner/components/runner_tags.vue';
-import RunnerJobStatusBadge from '~/ci/runner/components/runner_job_status_badge.vue';
 import RunnerSummaryField from '~/ci/runner/components/cells/runner_summary_field.vue';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 
@@ -22,7 +21,6 @@ describe('RunnerTypeCell', () => {
   let wrapper;
 
   const findLockIcon = () => wrapper.findByTestId('lock-icon');
-  const findRunnerJobStatusBadge = () => wrapper.findComponent(RunnerJobStatusBadge);
   const findRunnerTags = () => wrapper.findComponent(RunnerTags);
   const findRunnerSummaryField = (icon) =>
     wrapper.findAllComponents(RunnerSummaryField).filter((w) => w.props('icon') === icon)
@@ -95,10 +93,6 @@ describe('RunnerTypeCell', () => {
     expect(wrapper.text()).toContain(I18N_NO_DESCRIPTION);
   });
 
-  it('Displays job execution status', () => {
-    expect(findRunnerJobStatusBadge().props('jobStatus')).toBe(mockRunner.jobExecutionStatus);
-  });
-
   it('Displays last contact', () => {
     createComponent({
       contactedAt: '2022-01-02',
@@ -166,14 +160,14 @@ describe('RunnerTypeCell', () => {
     expect(findRunnerTags().props('tagList')).toEqual(['shell', 'linux']);
   });
 
-  it.each(['runner-name', 'runner-job-status-badge'])('Displays a custom "%s" slot', (slotName) => {
+  it('Displays a custom runner-name slot', () => {
     const slotContent = 'My custom runner name';
 
     createComponent(
       {},
       {
         slots: {
-          [slotName]: slotContent,
+          'runner-name': slotContent,
         },
       },
     );

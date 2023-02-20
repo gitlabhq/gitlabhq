@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::MergeRequests::CreationsController do
+RSpec.describe Projects::MergeRequests::CreationsController, feature_category: :code_review_workflow do
   let(:project) { create(:project, :repository) }
   let(:user)    { project.first_owner }
   let(:fork_project) { create(:forked_project_with_submodules) }

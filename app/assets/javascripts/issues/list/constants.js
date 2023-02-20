@@ -76,7 +76,6 @@ export const SPECIAL_FILTER = 'specialFilter';
 export const ALTERNATIVE_FILTER = 'alternativeFilter';
 
 export const i18n = {
-  anonymousSearchingMessage: __('You must sign in to search for specific terms.'),
   calendarLabel: __('Subscribe to calendar'),
   closed: __('CLOSED'),
   closedMoved: __('CLOSED (MOVED)'),
@@ -105,6 +104,7 @@ export const i18n = {
   noIssuesDescription: __('Learn more about issues.'),
   noIssuesTitle: __('Use issues to collaborate on ideas, solve problems, and plan work'),
   noIssuesSignedOutButtonText: __('Register / Sign In'),
+  noSearchNoFilterTitle: __('Please select at least one filter to see results'),
   noSearchResultsDescription: __('To widen your search, change or remove filters above'),
   noSearchResultsTitle: __('Sorry, your filter produced no results'),
   relatedMergeRequests: __('Related merge requests'),

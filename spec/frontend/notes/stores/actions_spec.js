@@ -7,6 +7,11 @@ import { createAlert } from '~/flash';
 import toast from '~/vue_shared/plugins/global_toast';
 import { EVENT_ISSUABLE_VUE_APP_CHANGE } from '~/issuable/constants';
 import axios from '~/lib/utils/axios_utils';
+import {
+  HTTP_STATUS_INTERNAL_SERVER_ERROR,
+  HTTP_STATUS_OK,
+  HTTP_STATUS_SERVICE_UNAVAILABLE,
+} from '~/lib/utils/http_status';
 import * as notesConstants from '~/notes/constants';
 import createStore from '~/notes/stores';
 import * as actions from '~/notes/stores/actions';
@@ -175,7 +180,7 @@ describe('Actions Notes Store', () => {
 
   describe('async methods', () => {
     beforeEach(() => {
-      axiosMock.onAny().reply(200, {});
+      axiosMock.onAny().reply(HTTP_STATUS_OK, {});
     });
 
     describe('closeMergeRequest', () => {
@@ -249,8 +254,9 @@ describe('Actions Notes Store', () => {
     const pollResponse = { notes: [], last_fetched_at: '123456' };
     const pollHeaders = { 'poll-interval': `${pollInterval}` };
     const successMock = () =>
-      axiosMock.onGet(notesDataMock.notesPath).reply(200, pollResponse, pollHeaders);
-    const failureMock = () => axiosMock.onGet(notesDataMock.notesPath).reply(500);
+      axiosMock.onGet(notesDataMock.notesPath).reply(HTTP_STATUS_OK, pollResponse, pollHeaders);
+    const failureMock = () =>
+      axiosMock.onGet(notesDataMock.notesPath).reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
     const advanceAndRAF = async (time) => {
       if (time) {
         jest.advanceTimersByTime(time);
@@ -343,11 +349,11 @@ describe('Actions Notes Store', () => {
 
         axiosMock
           .onGet(notesDataMock.notesPath)
-          .replyOnce(500) // cause one error
+          .replyOnce(HTTP_STATUS_INTERNAL_SERVER_ERROR) // cause one error
           .onGet(notesDataMock.notesPath)
-          .replyOnce(200, pollResponse, pollHeaders) // then a success
+          .replyOnce(HTTP_STATUS_OK, pollResponse, pollHeaders) // then a success
           .onGet(notesDataMock.notesPath)
-          .reply(500); // and then more errors
+          .reply(HTTP_STATUS_INTERNAL_SERVER_ERROR); // and then more errors
 
         await startPolling(); // Failure #1
         await advanceXMoreIntervals(1); // Success #1
@@ -398,7 +404,7 @@ describe('Actions Notes Store', () => {
     const endpoint = `${TEST_HOST}/note`;
 
     beforeEach(() => {
-      axiosMock.onDelete(endpoint).replyOnce(200, {});
+      axiosMock.onDelete(endpoint).replyOnce(HTTP_STATUS_OK, {});
 
       document.body.dataset.page = '';
     });
@@ -467,7 +473,7 @@ describe('Actions Notes Store', () => {
     const endpoint = `${TEST_HOST}/note`;
 
     beforeEach(() => {
-      axiosMock.onDelete(endpoint).replyOnce(200, {});
+      axiosMock.onDelete(endpoint).replyOnce(HTTP_STATUS_OK, {});
 
       document.body.dataset.page = '';
     });
@@ -507,7 +513,7 @@ describe('Actions Notes Store', () => {
       };
 
       beforeEach(() => {
-        axiosMock.onAny().reply(200, res);
+        axiosMock.onAny().reply(HTTP_STATUS_OK, res);
       });
 
       it('commits ADD_NEW_NOTE and dispatches updateMergeRequestWidget', () => {
@@ -542,7 +548,7 @@ describe('Actions Notes Store', () => {
       };
 
       beforeEach(() => {
-        axiosMock.onAny().replyOnce(200, res);
+        axiosMock.onAny().replyOnce(HTTP_STATUS_OK, res);
       });
 
       it('does not commit ADD_NEW_NOTE or dispatch updateMergeRequestWidget', () => {
@@ -563,7 +569,7 @@ describe('Actions Notes Store', () => {
     };
 
     beforeEach(() => {
-      axiosMock.onAny().reply(200, res);
+      axiosMock.onAny().reply(HTTP_STATUS_OK, res);
     });
 
     describe('as note', () => {
@@ -754,7 +760,7 @@ describe('Actions Notes Store', () => {
 
     it('updates discussion if response contains disussion', () => {
       const discussion = { notes: [] };
-      axiosMock.onAny().reply(200, { discussion });
+      axiosMock.onAny().reply(HTTP_STATUS_OK, { discussion });
 
       return testAction(
         actions.replyToDiscussion,
@@ -773,7 +779,7 @@ describe('Actions Notes Store', () => {
 
     it('adds a reply to a discussion', () => {
       const res = {};
-      axiosMock.onAny().reply(200, res);
+      axiosMock.onAny().reply(HTTP_STATUS_OK, res);
 
       return testAction(
         actions.replyToDiscussion,
@@ -1186,7 +1192,7 @@ describe('Actions Notes Store', () => {
 
     describe('if response contains no errors', () => {
       it('dispatches requestDeleteDescriptionVersion', () => {
-        axiosMock.onDelete(endpoint).replyOnce(200);
+        axiosMock.onDelete(endpoint).replyOnce(HTTP_STATUS_OK);
         return testAction(
           actions.softDeleteDescriptionVersion,
           payload,
@@ -1208,7 +1214,7 @@ describe('Actions Notes Store', () => {
     describe('if response contains errors', () => {
       const errorMessage = 'Request failed with status code 503';
       it('dispatches receiveDeleteDescriptionVersionError and throws an error', async () => {
-        axiosMock.onDelete(endpoint).replyOnce(503);
+        axiosMock.onDelete(endpoint).replyOnce(HTTP_STATUS_SERVICE_UNAVAILABLE);
         await expect(
           testAction(
             actions.softDeleteDescriptionVersion,
@@ -1438,7 +1444,7 @@ describe('Actions Notes Store', () => {
     });
 
     it('updates the discussions and dispatches `updateResolvableDiscussionsCounts`', () => {
-      axiosMock.onAny().reply(200, { discussion });
+      axiosMock.onAny().reply(HTTP_STATUS_OK, { discussion });
       return testAction(
         actions.fetchDiscussions,
         {},
@@ -1504,7 +1510,7 @@ describe('Actions Notes Store', () => {
     const actionPayload = { config, path: 'test-path', perPage: 20 };
 
     it('updates the discussions and dispatches `updateResolvableDiscussionsCounts if there are no headers', () => {
-      axiosMock.onAny().reply(200, { discussion }, {});
+      axiosMock.onAny().reply(HTTP_STATUS_OK, { discussion }, {});
       return testAction(
         actions.fetchDiscussionsBatch,
         actionPayload,
@@ -1519,7 +1525,7 @@ describe('Actions Notes Store', () => {
     });
 
     it('dispatches itself if there is `x-next-page-cursor` header', () => {
-      axiosMock.onAny().reply(200, { discussion }, { 'x-next-page-cursor': 1 });
+      axiosMock.onAny().reply(HTTP_STATUS_OK, { discussion }, { 'x-next-page-cursor': 1 });
       return testAction(
         actions.fetchDiscussionsBatch,
         actionPayload,

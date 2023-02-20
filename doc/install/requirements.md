@@ -54,12 +54,12 @@ Memory requirements are dependent on the number of users and expected workload. 
 
 The following is the recommended minimum Memory hardware guidance for a handful of example GitLab user base sizes.
 
-- **4GB RAM** is the **required** minimum memory size and supports up to 500 users
+- **4 GB RAM** is the **required** minimum memory size and supports up to 500 users
   - Our [Memory Team](https://about.gitlab.com/handbook/engineering/development/enablement/data_stores/application_performance/) is working to reduce the memory requirement.
-- 8GB RAM supports up to 1000 users
+- 8 GB RAM supports up to 1000 users
 - More users? Consult the [reference architectures page](../administration/reference_architectures/index.md)
 
-In addition to the above, we generally recommend having at least 2GB of swap on your server,
+In addition to the above, we generally recommend having at least 2 GB of swap on your server,
 even if you currently have enough available RAM. Having swap helps to reduce the chance of errors occurring
 if your available memory changes. We also recommend configuring the kernel's swappiness setting
 to a low value like `10` to make the most of your RAM while still having the swap
@@ -154,7 +154,7 @@ of GitLab Support or other GitLab engineers.
 - GitLab may create new schemas as part of Rails database migrations. This happens when performing
   a GitLab upgrade. The GitLab database account requires access to do this.
 
-- GitLab creates and modifies tables during the upgrade process, and also as part of normal
+- GitLab creates and modifies tables during the upgrade process, and also as part of standard
   operations to manage partitioned tables.
 
 - You should not modify the GitLab schema (for example, adding triggers or modifying tables).
@@ -254,10 +254,10 @@ if you must increase the number of Puma workers.
 ## Redis and Sidekiq
 
 Redis stores all user sessions and the background task queue.
-The storage requirements for Redis are minimal, about 25kB per user.
+The storage requirements for Redis are minimal, about 25 kB per user.
 Sidekiq processes the background jobs with a multi-threaded process.
-This process starts with the entire Rails stack (200MB+) but it can grow over time due to memory leaks.
-On a very active server (10,000 billable users) the Sidekiq process can use 1GB+ of memory.
+This process starts with the entire Rails stack (200 MB+) but it can grow over time due to memory leaks.
+On a very active server (10,000 billable users) the Sidekiq process can use 1 GB+ of memory.
 
 ## Prometheus and its exporters
 

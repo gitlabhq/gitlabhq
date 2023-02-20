@@ -36,19 +36,24 @@ GET /projects/:id/releases
 
 | Attribute     | Type           | Required | Description                                                                         |
 | ------------- | -------------- | -------- | ----------------------------------------------------------------------------------- |
-| `id`          | integer/string | yes      | The ID or [URL-encoded path of the project](../index.md#namespaced-path-encoding). |
+| `id`          | integer/string | yes      | The ID or [URL-encoded path of the project](../rest/index.md#namespaced-path-encoding). |
 | `order_by`    | string         | no       | The field to use as order. Either `released_at` (default) or `created_at`. |
 | `sort`        | string         | no       | The direction of the order. Either `desc` (default) for descending order or `asc` for ascending order. |
 | `include_html_description` | boolean        | no       | If `true`, a response includes HTML rendered Markdown of the release description.   |
 
-If successful, returns [`200 OK`](../../api/index.md#status-codes) and the following
+If successful, returns [`200 OK`](../../api/rest/index.md#status-codes) and the following
 response attributes:
 
-| Attribute            | Type    | Description                           |
-|:---------------------|:--------|:------------------------------------- |
-| `[]._links`          | object  | Links of the release.                 |
-| `[]._links.self`     | string  | HTTP URL of the release.              |
-| `[]._links.edit_url` | string  | HTTP URL of the release's edit page.  |
+| Attribute                             | Type   | Description                                      |
+|:--------------------------------------|:-------|:-------------------------------------------------|
+| `[]._links`                           | object | Links of the release.                            |
+| `[]._links.closed_issues_url`         | string | HTTP URL of the release's closed issues.         |
+| `[]._links.closed_merge_requests_url` | string | HTTP URL of the release's closed merge requests. |
+| `[]._links.edit_url`                  | string | HTTP URL of the release's edit page.             |
+| `[]._links.merged_merge_requests_url` | string | HTTP URL of the release's merged merge requests. |
+| `[]._links.opened_issues_url`         | string | HTTP URL of the release's open issues.           |
+| `[]._links.opened_merge_requests_url` | string | HTTP URL of the release's open merge requests.   |
+| `[]._links.self`                      | string | HTTP URL of the release.                         |
 
 Example request:
 
@@ -153,14 +158,14 @@ Example response:
                "id":2,
                "name":"awesome-v0.2.msi",
                "url":"http://192.168.10.15:3000/msi",
-               "external":true,
+               "external":true, // deprecated in GitLab 15.9, will be removed in GitLab 16.0.
                "link_type":"other"
             },
             {
                "id":1,
                "name":"awesome-v0.2.dmg",
                "url":"http://192.168.10.15:3000",
-               "external":true,
+               "external":true, // deprecated in GitLab 15.9, will be removed in GitLab 16.0.
                "link_type":"other"
             }
          ],
@@ -237,8 +242,13 @@ Example response:
         }
       ],
       "_links": {
-         "self": "https://gitlab.example.com/root/awesome-app/-/releases/v0.1",
-         "edit_url": "https://gitlab.example.com/root/awesome-app/-/releases/v0.1/edit"
+         "closed_issues_url": "https://gitlab.example.com/root/awesome-app/-/issues?release_tag=v0.1&scope=all&state=closed",
+         "closed_merge_requests_url": "https://gitlab.example.com/root/awesome-app/-/merge_requests?release_tag=v0.1&scope=all&state=closed",
+         "edit_url": "https://gitlab.example.com/root/awesome-app/-/releases/v0.1/edit",
+         "merged_merge_requests_url": "https://gitlab.example.com/root/awesome-app/-/merge_requests?release_tag=v0.1&scope=all&state=merged",
+         "opened_issues_url": "https://gitlab.example.com/root/awesome-app/-/issues?release_tag=v0.1&scope=all&state=opened",
+         "opened_merge_requests_url": "https://gitlab.example.com/root/awesome-app/-/merge_requests?release_tag=v0.1&scope=all&state=opened",
+         "self": "https://gitlab.example.com/root/awesome-app/-/releases/v0.1"
       }
    }
 ]
@@ -256,18 +266,23 @@ GET /projects/:id/releases/:tag_name
 
 | Attribute                  | Type           | Required | Description                                                                         |
 |----------------------------| -------------- | -------- | ----------------------------------------------------------------------------------- |
-| `id`                       | integer/string | yes      | The ID or [URL-encoded path of the project](../index.md#namespaced-path-encoding).  |
+| `id`                       | integer/string | yes      | The ID or [URL-encoded path of the project](../rest/index.md#namespaced-path-encoding).  |
 | `tag_name`                 | string         | yes      | The Git tag the release is associated with.                                         |
 | `include_html_description` | boolean        | no       | If `true`, a response includes HTML rendered Markdown of the release description.   |
 
-If successful, returns [`200 OK`](../../api/index.md#status-codes) and the following
+If successful, returns [`200 OK`](../../api/rest/index.md#status-codes) and the following
 response attributes:
 
-| Attribute         | Type    | Description                           |
-|:------------------|:--------|:------------------------------------- |
-| `_links`          | object  | Links of the release.                 |
-| `_links.self`     | string  | HTTP URL of the release.              |
-| `_links.edit_url` | string  | HTTP URL of the release's edit page.  |
+| Attribute                             | Type   | Description                                      |
+|:--------------------------------------|:-------|:-------------------------------------------------|
+| `[]._links`                           | object | Links of the release.                            |
+| `[]._links.closed_issues_url`         | string | HTTP URL of the release's closed issues.         |
+| `[]._links.closed_merge_requests_url` | string | HTTP URL of the release's closed merge requests. |
+| `[]._links.edit_url`                  | string | HTTP URL of the release's edit page.             |
+| `[]._links.merged_merge_requests_url` | string | HTTP URL of the release's merged merge requests. |
+| `[]._links.opened_issues_url`         | string | HTTP URL of the release's open issues.           |
+| `[]._links.opened_merge_requests_url` | string | HTTP URL of the release's open merge requests.   |
+| `[]._links.self`                      | string | HTTP URL of the release.                         |
 
 Example request:
 
@@ -371,7 +386,7 @@ Example response:
             "id":3,
             "name":"hoge",
             "url":"https://gitlab.example.com/root/awesome-app/-/tags/v0.11.1/binaries/linux-amd64",
-            "external":true,
+            "external":true, // deprecated in GitLab 15.9, will be removed in GitLab 16.0.
             "link_type":"other"
          }
       ]
@@ -383,8 +398,13 @@ Example response:
        "collected_at": "2019-07-16T14:00:12.256Z"
      },
    "_links": {
-      "self": "https://gitlab.example.com/root/awesome-app/-/releases/v0.1",
-      "edit_url": "https://gitlab.example.com/root/awesome-app/-/releases/v0.1/edit"
+      "closed_issues_url": "https://gitlab.example.com/root/awesome-app/-/issues?release_tag=v0.1&scope=all&state=closed",
+      "closed_merge_requests_url": "https://gitlab.example.com/root/awesome-app/-/merge_requests?release_tag=v0.1&scope=all&state=closed",
+      "edit_url": "https://gitlab.example.com/root/awesome-app/-/releases/v0.1/edit",
+      "merged_merge_requests_url": "https://gitlab.example.com/root/awesome-app/-/merge_requests?release_tag=v0.1&scope=all&state=merged",
+      "opened_issues_url": "https://gitlab.example.com/root/awesome-app/-/issues?release_tag=v0.1&scope=all&state=opened",
+      "opened_merge_requests_url": "https://gitlab.example.com/root/awesome-app/-/merge_requests?release_tag=v0.1&scope=all&state=opened",
+      "self": "https://gitlab.example.com/root/awesome-app/-/releases/v0.1"
     }
   ]
 }
@@ -397,14 +417,15 @@ Example response:
 Download a release asset file by making a request with the following format:
 
 ```plaintext
-GET /projects/:id/releases/:tag_name/downloads/:filepath
+GET /projects/:id/releases/:tag_name/downloads/:direct_asset_path
 ```
 
 | Attribute                  | Type           | Required | Description                                                                         |
 |----------------------------| -------------- | -------- | ----------------------------------------------------------------------------------- |
-| `id`                       | integer/string | yes      | The ID or [URL-encoded path of the project](../index.md#namespaced-path-encoding).  |
+| `id`                       | integer/string | yes      | The ID or [URL-encoded path of the project](../rest/index.md#namespaced-path-encoding).  |
 | `tag_name`                 | string         | yes      | The Git tag the release is associated with.                                         |
-| `filepath`                 | string         | yes      | Path to the release asset file as specified when [creating](links.md#create-a-release-link) or [updating](links.md#update-a-release-link) its link. |
+| `filepath`                 | string         | yes      | Deprecated: Use `direct_asset_path` instead.                                        |
+| `direct_asset_path`        | string         | yes      | Path to the release asset file as specified when [creating](links.md#create-a-release-link) or [updating](links.md#update-a-release-link) its link. |
 
 Example request:
 
@@ -453,7 +474,7 @@ POST /projects/:id/releases
 
 | Attribute          | Type            | Required                    | Description                                                                                                                      |
 | -------------------| --------------- | --------                    | -------------------------------------------------------------------------------------------------------------------------------- |
-| `id`               | integer/string  | yes                         | The ID or [URL-encoded path of the project](../index.md#namespaced-path-encoding).                                              |
+| `id`               | integer/string  | yes                         | The ID or [URL-encoded path of the project](../rest/index.md#namespaced-path-encoding).                                              |
 | `name`             | string          | no                          | The release name.                                                                                                                |
 | `tag_name`         | string          | yes                         | The tag where the release is created from.                                                                                  |
 | `tag_message`      | string          | no                          | Message to use if creating a new annotated tag.                                                                                  |
@@ -463,15 +484,16 @@ POST /projects/:id/releases
 | `assets:links`     | array of hash   | no                          | An array of assets links.                                                                                                        |
 | `assets:links:name`| string          | required by: `assets:links` | The name of the link. Link names must be unique within the release.                                                              |
 | `assets:links:url` | string          | required by: `assets:links` | The URL of the link. Link URLs must be unique within the release.                                                                |
-| `assets:links:filepath` | string     | no | Optional path for a [Direct Asset link](../../user/project/releases/release_fields.md#permanent-links-to-release-assets).
-| `assets:links:link_type` | string     | no | The type of the link: `other`, `runbook`, `image`, `package`. Defaults to `other`.
+| `assets:links:filepath` | string     | no | Deprecated: Use `direct_asset_path` instead. |
+| `assets:links:direct_asset_path` | string     | no | Optional path for a [direct asset link](../../user/project/releases/release_fields.md#permanent-links-to-release-assets). |
+| `assets:links:link_type` | string     | no | The type of the link: `other`, `runbook`, `image`, `package`. Defaults to `other`. |
 | `released_at`      | datetime        | no                          | Date and time for the release. Defaults to the current time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). Only provide this field if creating an [upcoming](../../user/project/releases/index.md#upcoming-releases) or [historical](../../user/project/releases/index.md#historical-releases) release.  |
 
 Example request:
 
 ```shell
 curl --header 'Content-Type: application/json' --header "PRIVATE-TOKEN: <your_access_token>" \
-     --data '{ "name": "New release", "tag_name": "v0.3", "description": "Super nice release", "milestones": ["v1.0", "v1.0-rc"], "assets": { "links": [{ "name": "hoge", "url": "https://google.com", "filepath": "/binaries/linux-amd64", "link_type":"other" }] } }' \
+     --data '{ "name": "New release", "tag_name": "v0.3", "description": "Super nice release", "milestones": ["v1.0", "v1.0-rc"], "assets": { "links": [{ "name": "hoge", "url": "https://google.com", "direct_asset_path": "/binaries/linux-amd64", "link_type":"other" }] } }' \
      --request POST "https://gitlab.example.com/api/v4/projects/24/releases"
 ```
 
@@ -572,7 +594,7 @@ Example response:
             "id":3,
             "name":"hoge",
             "url":"https://gitlab.example.com/root/awesome-app/-/tags/v0.11.1/binaries/linux-amd64",
-            "external":true,
+            "external":true, // deprecated in GitLab 15.9, will be removed in GitLab 16.0.
             "link_type":"other"
          }
       ],
@@ -603,7 +625,7 @@ POST /projects/:id/releases/:tag_name/evidence
 
 | Attribute     | Type           | Required | Description                                                                         |
 | ------------- | -------------- | -------- | ----------------------------------------------------------------------------------- |
-| `id`          | integer/string | yes      | The ID or [URL-encoded path of the project](../index.md#namespaced-path-encoding). |
+| `id`          | integer/string | yes      | The ID or [URL-encoded path of the project](../rest/index.md#namespaced-path-encoding). |
 | `tag_name`    | string         | yes      | The Git tag the release is associated with.                                         |
 
 Example request:
@@ -630,7 +652,7 @@ PUT /projects/:id/releases/:tag_name
 
 | Attribute     | Type            | Required | Description                                                                                                 |
 | ------------- | --------------- | -------- | ----------------------------------------------------------------------------------------------------------- |
-| `id`          | integer/string  | yes      | The ID or [URL-encoded path of the project](../index.md#namespaced-path-encoding).                         |
+| `id`          | integer/string  | yes      | The ID or [URL-encoded path of the project](../rest/index.md#namespaced-path-encoding).                         |
 | `tag_name`    | string          | yes      | The Git tag the release is associated with.                                                                 |
 | `name`        | string          | no       | The release name.                                                                                           |
 | `description` | string          | no       | The description of the release. You can use [Markdown](../../user/markdown.md).                             |
@@ -739,7 +761,7 @@ DELETE /projects/:id/releases/:tag_name
 
 | Attribute     | Type           | Required | Description                                                                         |
 | ------------- | -------------- | -------- | ----------------------------------------------------------------------------------- |
-| `id`          | integer/string | yes      | The ID or [URL-encoded path of the project](../index.md#namespaced-path-encoding). |
+| `id`          | integer/string | yes      | The ID or [URL-encoded path of the project](../rest/index.md#namespaced-path-encoding). |
 | `tag_name`    | string         | yes      | The Git tag the release is associated with.                                         |
 
 Example request:

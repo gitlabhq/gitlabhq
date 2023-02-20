@@ -3,10 +3,11 @@ import { GlIcon, GlBadge, GlIntersectionObserver, GlTooltipDirective } from '@gi
 import Visibility from 'visibilityjs';
 import { createAlert } from '~/flash';
 import {
-  IssuableStatus,
   IssuableStatusText,
+  STATUS_CLOSED,
+  TYPE_EPIC,
+  TYPE_ISSUE,
   WorkspaceType,
-  IssuableType,
 } from '~/issues/constants';
 import Poll from '~/lib/utils/poll';
 import { visitUrl } from '~/lib/utils/url_utility';
@@ -156,7 +157,7 @@ export default {
     issuableType: {
       type: String,
       required: false,
-      default: IssuableType.Issue,
+      default: TYPE_ISSUE,
     },
     canAttachFile: {
       type: Boolean,
@@ -186,6 +187,11 @@ export default {
       default: false,
     },
     issueId: {
+      type: Number,
+      required: false,
+      default: null,
+    },
+    issueIid: {
       type: Number,
       required: false,
       default: null,
@@ -251,7 +257,7 @@ export default {
       return sprintf(__('Error updating %{issuableType}'), { issuableType: this.issuableType });
     },
     isClosed() {
-      return this.issuableStatus === IssuableStatus.Closed;
+      return this.issuableStatus === STATUS_CLOSED;
     },
     pinnedLinkClasses() {
       return this.showTitleBorder
@@ -259,7 +265,7 @@ export default {
         : '';
     },
     statusIcon() {
-      if (this.issuableType === IssuableType.Issue) {
+      if (this.issuableType === TYPE_ISSUE) {
         return this.isClosed ? 'issue-closed' : 'issues';
       }
       return this.isClosed ? 'epic-closed' : 'epic';
@@ -271,7 +277,7 @@ export default {
       return IssuableStatusText[this.issuableStatus];
     },
     shouldShowStickyHeader() {
-      return [IssuableType.Issue, IssuableType.Epic].includes(this.issuableType);
+      return [TYPE_ISSUE, TYPE_EPIC].includes(this.issuableType);
     },
   },
   created() {
@@ -453,7 +459,7 @@ export default {
       }
     },
 
-    handleListItemReorder(description) {
+    handleSaveDescription(description) {
       this.updateFormState();
       this.setFormState({ description });
       this.updateIssuable();
@@ -564,6 +570,7 @@ export default {
       <component
         :is="descriptionComponent"
         :issue-id="issueId"
+        :issue-iid="issueIid"
         :can-update="canUpdate"
         :description-html="state.descriptionHtml"
         :description-text="state.descriptionText"
@@ -573,7 +580,7 @@ export default {
         :update-url="updateEndpoint"
         :lock-version="state.lock_version"
         :is-updating="formState.updateLoading"
-        @listItemReorder="handleListItemReorder"
+        @saveDescription="handleSaveDescription"
         @taskListUpdateStarted="taskListUpdateStarted"
         @taskListUpdateSucceeded="taskListUpdateSucceeded"
         @taskListUpdateFailed="taskListUpdateFailed"

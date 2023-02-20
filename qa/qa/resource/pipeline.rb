@@ -10,9 +10,9 @@ module QA
       end
 
       attributes :id,
-                 :status,
-                 :ref,
-                 :sha
+        :status,
+        :ref,
+        :sha
 
       # array in form
       # [
@@ -47,6 +47,10 @@ module QA
 
       def api_get_path
         "/projects/#{project.id}/pipelines/#{id}"
+      end
+
+      def api_pipeline_jobs_path
+        "#{api_get_path}/jobs"
       end
 
       def api_post_path
@@ -92,6 +96,10 @@ module QA
         result = pipeline_bridges.find { |bridge| bridge[:name] == bridge_name }
 
         result[:downstream_pipeline][:id]
+      end
+
+      def pipeline_jobs
+        parse_body(api_get_from(api_pipeline_jobs_path))
       end
     end
   end

@@ -1,77 +1,12 @@
 import * as Sentry from '@sentry/browser';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
-import {
-  hideFlash,
-  addDismissFlashClickListener,
-  FLASH_CLOSED_EVENT,
-  createAlert,
-  VARIANT_WARNING,
-} from '~/flash';
+import { createAlert, VARIANT_WARNING } from '~/flash';
 
 jest.mock('@sentry/browser');
 
 describe('Flash', () => {
   const findTextContent = (containerSelector = '.flash-container') =>
     document.querySelector(containerSelector).textContent.replace(/\s+/g, ' ').trim();
-
-  describe('hideFlash', () => {
-    let el;
-
-    beforeEach(() => {
-      el = document.createElement('div');
-      el.className = 'js-testing';
-    });
-
-    it('sets transition style', () => {
-      hideFlash(el);
-
-      expect(el.style.transition).toBe('opacity 0.15s');
-    });
-
-    it('sets opacity style', () => {
-      hideFlash(el);
-
-      expect(el.style.opacity).toBe('0');
-    });
-
-    it('does not set styles when fadeTransition is false', () => {
-      hideFlash(el, false);
-
-      expect(el.style.opacity).toBe('');
-      expect(el.style.transition).toHaveLength(0);
-    });
-
-    it('removes element after transitionend', () => {
-      document.body.appendChild(el);
-
-      hideFlash(el);
-      el.dispatchEvent(new Event('transitionend'));
-
-      expect(document.querySelector('.js-testing')).toBeNull();
-    });
-
-    it('calls event listener callback once', () => {
-      jest.spyOn(el, 'remove');
-      document.body.appendChild(el);
-
-      hideFlash(el);
-
-      el.dispatchEvent(new Event('transitionend'));
-      el.dispatchEvent(new Event('transitionend'));
-
-      expect(el.remove.mock.calls.length).toBe(1);
-    });
-
-    it(`dispatches ${FLASH_CLOSED_EVENT} event after transitionend event`, () => {
-      jest.spyOn(el, 'dispatchEvent');
-
-      hideFlash(el);
-
-      el.dispatchEvent(new Event('transitionend'));
-
-      expect(el.dispatchEvent).toHaveBeenCalledWith(new Event(FLASH_CLOSED_EVENT));
-    });
-  });
 
   describe('createAlert', () => {
     const mockMessage = 'a message';
@@ -335,47 +270,6 @@ describe('Flash', () => {
 
           expect(findTextContent()).toBe('message 1 message 2');
         });
-      });
-    });
-  });
-
-  describe('addDismissFlashClickListener', () => {
-    let el;
-
-    describe('with close icon', () => {
-      beforeEach(() => {
-        el = document.createElement('div');
-        el.innerHTML = `
-          <div class="flash-container">
-            <div class="flash">
-              <div class="close-icon js-close-icon"></div>
-            </div>
-          </div>
-        `;
-      });
-
-      it('removes global flash on click', () => {
-        addDismissFlashClickListener(el, false);
-
-        el.querySelector('.js-close-icon').click();
-
-        expect(document.querySelector('.flash')).toBeNull();
-      });
-    });
-
-    describe('without close icon', () => {
-      beforeEach(() => {
-        el = document.createElement('div');
-        el.innerHTML = `
-          <div class="flash-container">
-            <div class="flash">
-            </div>
-          </div>
-        `;
-      });
-
-      it('does not throw', () => {
-        expect(() => addDismissFlashClickListener(el, false)).not.toThrow();
       });
     });
   });

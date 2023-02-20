@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe GitlabSchema.types['Project'] do
   include GraphqlHelpers
+  include ProjectForksHelper
 
   specify { expect(described_class).to expose_permissions_using(Types::PermissionTypes::Project) }
 
@@ -37,7 +38,7 @@ RSpec.describe GitlabSchema.types['Project'] do
       ci_template timelogs merge_commit_template squash_commit_template work_item_types
       recent_issue_boards ci_config_path_or_default packages_cleanup_policy ci_variables
       timelog_categories fork_targets branch_rules ci_config_variables pipeline_schedules languages
-      incident_management_timeline_event_tags
+      incident_management_timeline_event_tags visible_forks
     ]
 
     expect(described_class).to include_graphql_fields(*expected_fields)
@@ -283,6 +284,17 @@ RSpec.describe GitlabSchema.types['Project'] do
             expect(secure_analyzers_prefix).to be_nil
           end
         end
+      end
+    end
+
+    context 'with empty repository' do
+      let_it_be(:project) { create(:project_empty_repo) }
+
+      it 'raises an error' do
+        expect(subject['errors'][0]['message']).to eq('You must <a target="_blank" rel="noopener noreferrer" ' \
+                                                      'href="http://localhost/help/user/project/repository/index.md#' \
+                                                      'add-files-to-a-repository">add at least one file to the ' \
+                                                      'repository</a> before using Security features.')
       end
     end
   end
@@ -845,6 +857,56 @@ RSpec.describe GitlabSchema.types['Project'] do
 
       it 'returns the repository languages' do
         expect(languages).to eq(mock_languages.map(&:stringify_keys))
+      end
+    end
+  end
+
+  describe 'visible_forks' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:project) { create(:project, :public) }
+    let_it_be(:fork_reporter) { fork_project(project, nil, { repository: true }) }
+    let_it_be(:fork_developer) { fork_project(project, nil, { repository: true }) }
+    let_it_be(:fork_group_developer) { fork_project(project, nil, { repository: true }) }
+    let_it_be(:fork_public) { fork_project(project, nil, { repository: true }) }
+    let_it_be(:fork_private) { fork_project(project, nil, { repository: true }) }
+
+    let(:minimum_access_level) { '' }
+    let(:query) do
+      %(
+        query {
+          project(fullPath: "#{project.full_path}") {
+            visibleForks#{minimum_access_level} {
+              nodes {
+                fullPath
+              }
+            }
+          }
+        }
+      )
+    end
+
+    let(:forks) do
+      subject.dig('data', 'project', 'visibleForks', 'nodes')
+    end
+
+    subject { GitlabSchema.execute(query, context: { current_user: user }).as_json }
+
+    before do
+      fork_reporter.add_reporter(user)
+      fork_developer.add_developer(user)
+      fork_group_developer.group.add_developer(user)
+    end
+
+    it 'contains all forks' do
+      expect(forks.count).to eq(5)
+    end
+
+    context 'with minimum_access_level DEVELOPER' do
+      let(:minimum_access_level) { '(minimumAccessLevel: DEVELOPER)' }
+
+      it 'contains forks with developer access' do
+        expect(forks).to contain_exactly(a_hash_including('fullPath' => fork_developer.full_path),
+a_hash_including('fullPath' => fork_group_developer.full_path))
       end
     end
   end

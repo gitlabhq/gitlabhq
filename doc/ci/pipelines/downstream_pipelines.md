@@ -68,8 +68,8 @@ Multi-project pipelines:
 - Are visible in the downstream project's pipeline list.
 - Are independent, so there are no nesting limits.
 
-Learn more in the "Cross-project Pipeline Triggering and Visualization" demo at
-[GitLab@learn](https://about.gitlab.com/learn/), in the Continuous Integration section.
+For more information, see the **Cross-project Pipeline Triggering and Visualization** demo at
+[GitLab@learn](https://about.gitlab.com/learn/) in the **Continuous Integration** section.
 
 If you use a public project to trigger downstream pipelines in a private project,
 make sure there are no confidentiality problems. The upstream project's pipelines page
@@ -473,6 +473,7 @@ a few different methods, based on where the variable is created or defined.
 ### Pass YAML-defined CI/CD variables
 
 You can use the `variables` keyword to pass CI/CD variables to a downstream pipeline.
+These variables are "trigger variables" for [variable precedence](../variables/index.md#cicd-variable-precedence).
 
 For example:
 

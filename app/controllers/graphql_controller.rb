@@ -144,7 +144,8 @@ class GraphqlController < ApplicationController
   def set_user_last_activity
     return unless current_user
 
-    Users::ActivityService.new(current_user).execute
+    # TODO: add namespace & project - https://gitlab.com/gitlab-org/gitlab/-/issues/387951
+    Users::ActivityService.new(author: current_user).execute
   end
 
   def track_vs_code_usage

@@ -208,7 +208,7 @@ CI/CD artifacts are:
 #### LFS objects
 
 [LFS Objects in GitLab](../topics/git/lfs/index.md) implement a similar
-storage pattern using two characters and two-level folders, following Git's own implementation:
+storage pattern using two characters and two-level folders, following the Git implementation:
 
 ```ruby
 "shared/lfs-objects/#{oid[0..1}/#{oid[2..3]}/#{oid[4..-1]}"

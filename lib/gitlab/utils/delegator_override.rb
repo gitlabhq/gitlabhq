@@ -6,7 +6,7 @@ module Gitlab
     # accidentally override important logic on the fabricated object.
     module DelegatorOverride
       def delegator_target(target_class)
-        return unless ENV['STATIC_VERIFICATION']
+        return unless Gitlab::Environment.static_verification?
 
         unless self < ::SimpleDelegator
           raise ArgumentError, "'#{self}' is not a subclass of 'SimpleDelegator' class."
@@ -16,14 +16,14 @@ module Gitlab
       end
 
       def delegator_override(*names)
-        return unless ENV['STATIC_VERIFICATION']
-        raise TypeError unless names.all? { |n| n.is_a?(Symbol) }
+        return unless Gitlab::Environment.static_verification?
+        raise TypeError unless names.all?(Symbol)
 
         DelegatorOverride.validator(self).add_allowlist(names)
       end
 
       def delegator_override_with(mod)
-        return unless ENV['STATIC_VERIFICATION']
+        return unless Gitlab::Environment.static_verification?
         raise TypeError unless mod.is_a?(Module)
 
         DelegatorOverride.validator(self).add_allowlist(mod.instance_methods)

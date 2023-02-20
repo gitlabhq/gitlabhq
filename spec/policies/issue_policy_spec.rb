@@ -425,19 +425,15 @@ RSpec.describe IssuePolicy, feature_category: :team_planning do
     context 'when accounting for notes widget' do
       let(:policy) { described_class.new(reporter, note) }
 
-      before do
-        widgets_per_type = WorkItems::Type::WIDGETS_FOR_TYPE.dup
-        widgets_per_type[:task] = [::WorkItems::Widgets::Description]
-        stub_const('WorkItems::Type::WIDGETS_FOR_TYPE', widgets_per_type)
-      end
-
-      context 'and notes widget is disabled for task' do
-        let(:task) { create(:work_item, :task, project: project) }
+      context 'and notes widget is disabled for issue' do
+        before do
+          WorkItems::Type.default_by_type(:issue).widget_definitions.find_by_widget_type(:notes).update!(disabled: true)
+        end
 
         it 'does not allow accessing notes' do
           # if notes widget is disabled not even maintainer can access notes
-          expect(permissions(maintainer, task)).to be_disallowed(:create_note, :read_note, :mark_note_as_internal, :read_internal_note)
-          expect(permissions(admin, task)).to be_disallowed(:create_note, :read_note, :read_internal_note, :mark_note_as_internal, :set_note_created_at)
+          expect(permissions(maintainer, issue)).to be_disallowed(:create_note, :read_note, :mark_note_as_internal, :read_internal_note)
+          expect(permissions(admin, issue)).to be_disallowed(:create_note, :read_note, :read_internal_note, :mark_note_as_internal, :set_note_created_at)
         end
       end
 

@@ -31,8 +31,8 @@ module QA
 
         # TODO: This class probably needs to be refactored because this method relies on original settings to have been
         # populated sometime in the past and there is no guarantee original settings instance variable is still valid
-        def restore_application_settings(*application_settings_keys)
-          set_application_settings(**@original_application_settings.slice(*application_settings_keys))
+        def restore_application_settings(...)
+          set_application_settings(**@original_application_settings.slice(...))
         end
 
         private

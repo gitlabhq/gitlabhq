@@ -31,13 +31,6 @@ RSpec.describe Packages::Debian::FileEntry, type: :model do
   describe 'validations' do
     it { is_expected.to be_valid }
 
-    context 'with FIPS mode', :fips_mode do
-      it 'raises an error' do
-        expect { subject.validate! }
-          .to raise_error(::Packages::FIPS::DisabledError, 'Debian registry is not FIPS compliant')
-      end
-    end
-
     describe '#filename' do
       it { is_expected.to validate_presence_of(:filename) }
       it { is_expected.not_to allow_value('Hé').for(:filename) }

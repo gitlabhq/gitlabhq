@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe Packages::Debian::ProcessChangesService do
+RSpec.describe Packages::Debian::ProcessChangesService, feature_category: :package_registry do
   describe '#execute' do
     let_it_be(:user) { create(:user) }
-    let_it_be_with_reload(:distribution) { create(:debian_project_distribution, :with_file, codename: 'unstable') }
+    let_it_be_with_reload(:distribution) { create(:debian_project_distribution, :with_file, suite: 'unstable') }
 
     let!(:incoming) { create(:debian_incoming, project: distribution.project) }
 
-    let(:package_file) { incoming.package_files.last }
+    let(:package_file) { incoming.package_files.with_file_name('sample_1.2.3~alpha2_amd64.changes').first }
 
     subject { described_class.new(package_file, user) }
 
@@ -27,11 +27,37 @@ RSpec.describe Packages::Debian::ProcessChangesService do
         expect(created_package.creator).to eq user
       end
 
-      context 'with existing package' do
-        let_it_be_with_reload(:existing_package) { create(:debian_package, name: 'sample', version: '1.2.3~alpha2', project: distribution.project) }
-
+      context 'with non-matching distribution' do
         before do
-          existing_package.update!(debian_distribution: distribution)
+          distribution.update! suite: FFaker::Lorem.word
+        end
+
+        it { expect { subject.execute }.to raise_error(ActiveRecord::RecordNotFound) }
+      end
+
+      context 'with missing field in .changes file' do
+        shared_examples 'raises error with missing field' do |missing_field|
+          before do
+            allow_next_instance_of(::Packages::Debian::ExtractChangesMetadataService) do |extract_changes_metadata_service|
+              expect(extract_changes_metadata_service).to receive(:execute).once.and_wrap_original do |m, *args|
+                metadata = m.call(*args)
+                metadata[:fields].delete(missing_field)
+                metadata
+              end
+            end
+          end
+
+          it { expect { subject.execute }.to raise_error(ArgumentError, "missing #{missing_field} field") }
+        end
+
+        it_behaves_like 'raises error with missing field', 'Source'
+        it_behaves_like 'raises error with missing field', 'Version'
+        it_behaves_like 'raises error with missing field', 'Distribution'
+      end
+
+      context 'with existing package' do
+        let_it_be_with_reload(:existing_package) do
+          create(:debian_package, name: 'sample', version: '1.2.3~alpha2', project: distribution.project, published_in: distribution)
         end
 
         it 'does not create a package and assigns the package_file to the existing package' do

@@ -130,7 +130,7 @@ function disable_sign_ups() {
 
   # Create the root token + Disable sign-ups
   local disable_signup_rb="token = User.find_by_username('root').personal_access_tokens.create(scopes: [:api], name: 'Token to disable sign-ups'); token.set_token('${REVIEW_APPS_ROOT_TOKEN}'); begin; token.save!; rescue(ActiveRecord::RecordNotUnique); end; Gitlab::CurrentSettings.current_application_settings.update!(signup_enabled: false)"
-  if (retry "run_task \"${disable_signup_rb}\""); then
+  if (retry_exponential "run_task \"${disable_signup_rb}\""); then
     echoinfo "Sign-ups have been disabled successfully."
   else
     echoerr "Sign-ups are still enabled!"
@@ -267,10 +267,10 @@ function deploy() {
     sentry_enabled="true"
   fi
 
-  ensure_namespace "${namespace}"
-  label_namespace "${namespace}" "tls=review-apps-tls" # label namespace for kubed to sync tls
+  retry "ensure_namespace \"${namespace}\""
+  retry "label_namespace \"${namespace}\" \"tls=review-apps-tls\"" # label namespace for kubed to sync tls
 
-  create_application_secret
+  retry "create_application_secret"
 
 cat > review_apps.values.yml <<EOF
   gitlab:
@@ -338,7 +338,7 @@ EOF
   echoinfo "Deploying with:"
   echo "${HELM_CMD}" | sed 's/    /\n\t/g'
 
-  run_timed_command "eval \"${HELM_CMD}\""
+  retry "eval \"${HELM_CMD}\""
 }
 
 function verify_deploy() {

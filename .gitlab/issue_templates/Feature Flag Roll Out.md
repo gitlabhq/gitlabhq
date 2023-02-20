@@ -107,6 +107,7 @@ For visibility, all `/chatops` commands that target production should be execute
 - [ ] Leave a comment on [the feature issue][main-issue] announcing estimated time when this feature flag will be enabled on GitLab.com. 
 - [ ] Ensure that any breaking changes have been announced following the [release post process](https://about.gitlab.com/handbook/marketing/blog/release-posts/#deprecations-removals-and-breaking-changes) to ensure GitLab customers are aware.
 - [ ] Notify `#support_gitlab-com` and your team channel ([more guidance when this is necessary in the dev docs](https://docs.gitlab.com/ee/development/feature_flags/controls.html#communicate-the-change)).
+- [ ] Ensure that the feature flag rollout plan is reviewed by another developer familiar with the domain.
 
 ### Global rollout on production
 

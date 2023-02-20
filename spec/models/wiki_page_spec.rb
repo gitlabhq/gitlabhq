@@ -912,7 +912,7 @@ RSpec.describe WikiPage do
 
   describe '#to_partial_path' do
     it 'returns the relative path to the partial to be used' do
-      expect(build_wiki_page(container).to_partial_path).to eq('../shared/wikis/wiki_page')
+      expect(build_wiki_page(container).to_partial_path).to eq('shared/wikis/wiki_page')
     end
   end
 

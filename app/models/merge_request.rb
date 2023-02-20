@@ -194,9 +194,7 @@ class MergeRequest < ApplicationRecord
     end
 
     before_transition any => :merged do |merge_request|
-      if ::Feature.enabled?(:reset_merge_error_on_transition, merge_request.project)
-        merge_request.merge_error = nil
-      end
+      merge_request.merge_error = nil
     end
 
     after_transition any => :opened do |merge_request|
@@ -289,7 +287,7 @@ class MergeRequest < ApplicationRecord
   validates :merge_user, presence: true, if: :auto_merge_enabled?, unless: :importing?
   validate :validate_branches, unless: [:allow_broken, :importing?, :closed_or_merged_without_fork?]
   validate :validate_fork, unless: :closed_or_merged_without_fork?
-  validate :validate_target_project, on: :create
+  validate :validate_target_project, on: :create, unless: :importing?
   validate :validate_reviewer_size_length, unless: :importing?
 
   scope :by_source_or_target_branch, ->(branch_name) do
@@ -394,6 +392,7 @@ class MergeRequest < ApplicationRecord
   scope :order_closed_at_desc, -> { order_by_metric(:latest_closed_at, 'DESC') }
   scope :preload_source_project, -> { preload(:source_project) }
   scope :preload_target_project, -> { preload(:target_project) }
+  scope :preload_target_project_with_namespace, -> { preload(target_project: [:namespace]) }
   scope :preload_routables, -> do
     preload(target_project: [:route, { namespace: :route }],
             source_project: [:route, { namespace: :route }])
@@ -1017,7 +1016,6 @@ class MergeRequest < ApplicationRecord
   end
 
   def validate_reviewer_size_length
-    return true unless Feature.enabled?(:limit_reviewer_and_assignee_size)
     return true unless reviewers.size > MAX_NUMBER_OF_ASSIGNEES_OR_REVIEWERS
 
     errors.add :reviewers,
@@ -2019,6 +2017,18 @@ class MergeRequest < ApplicationRecord
     Feature.enabled?(:hide_merge_requests_from_banned_users) && author&.banned?
   end
 
+  def diffs_batch_cache_with_max_age?
+    Feature.enabled?(:diffs_batch_cache_with_max_age, project)
+  end
+
+  def prepared?
+    prepared_at.present?
+  end
+
+  def prepare
+    NewMergeRequestWorker.perform_async(id, author_id)
+  end
+
   private
 
   attr_accessor :skip_fetch_ref
@@ -2070,7 +2080,11 @@ class MergeRequest < ApplicationRecord
   end
 
   def report_type_enabled?(report_type)
-    !!actual_head_pipeline&.batch_lookup_report_artifact_for_file_type(report_type)
+    if report_type == :license_scanning
+      ::Gitlab::LicenseScanning.scanner_for_pipeline(project, actual_head_pipeline).has_data?
+    else
+      !!actual_head_pipeline&.batch_lookup_report_artifact_for_file_type(report_type)
+    end
   end
 end
 

@@ -4,14 +4,14 @@ group: Import
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab Migrations (Bulk Imports) API **(FREE)**
+# Group migration by direct transfer API **(FREE)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/64335) in GitLab 14.1.
 
-With the GitLab Migrations API, you can view the progress of migrations initiated with
-[GitLab Group Migration](../user/group/import/index.md).
+With the group migration by direct transfer API, you can start and view the progress of migrations initiated with
+[group migration by direct transfer](../user/group/import/index.md#migrate-groups-by-direct-transfer-recommended).
 
-## Start a new GitLab migration
+## Start a new group migration
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/66353) in GitLab 14.2.
 
@@ -54,7 +54,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitla
 { "id": 1, "status": "created", "source_type": "gitlab", "created_at": "2021-06-18T09:45:55.358Z", "updated_at": "2021-06-18T09:46:27.003Z" }
 ```
 
-## List all GitLab migrations
+## List all group migrations
 
 ```plaintext
 GET /bulk_imports
@@ -97,7 +97,7 @@ curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab
 ]
 ```
 
-## List all GitLab migrations' entities
+## List all group migrations' entities
 
 ```plaintext
 GET /bulk_imports/entities
@@ -165,7 +165,7 @@ curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab
 ]
 ```
 
-## Get GitLab migration details
+## Get group migration details
 
 ```plaintext
 GET /bulk_imports/:id
@@ -185,7 +185,7 @@ curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab
 }
 ```
 
-## List GitLab migration entities
+## List group migration entities
 
 ```plaintext
 GET /bulk_imports/:id/entities
@@ -221,7 +221,7 @@ curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab
 ]
 ```
 
-## Get GitLab migration entity details
+## Get group migration entity details
 
 ```plaintext
 GET /bulk_imports/:id/entities/:entity_id

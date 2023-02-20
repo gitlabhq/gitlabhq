@@ -126,6 +126,12 @@ RSpec.describe Projects::TransferService do
       expect(project.namespace).to eq(user.namespace)
     end
 
+    it 'invalidates personal_project_count cache of the the owner of the personal namespace' do
+      expect(user).to receive(:invalidate_personal_projects_count)
+
+      execute_transfer
+    end
+
     context 'the owner of the namespace does not have a direct membership in the project residing in the group' do
       it 'creates a project membership record for the owner of the namespace, with OWNER access level, after the transfer' do
         execute_transfer
@@ -158,6 +164,17 @@ RSpec.describe Projects::TransferService do
           expect(project.members.owners.find_by(user_id: user.id)).to be_present
         end
       end
+    end
+  end
+
+  context 'personal namespace -> group', :enable_admin_mode do
+    let(:executor) { create(:admin) }
+
+    it 'invalidates personal_project_count cache of the the owner of the personal namespace' \
+       'that previously held the project' do
+      expect(user).to receive(:invalidate_personal_projects_count)
+
+      execute_transfer
     end
   end
 
@@ -645,6 +662,8 @@ RSpec.describe Projects::TransferService do
     end
 
     it 'calls AuthorizedProjectUpdate::UserRefreshFromReplicaWorker with a delay to update project authorizations' do
+      stub_feature_flags(do_not_run_safety_net_auth_refresh_jobs: false)
+
       user_ids = [user.id, member_of_old_group.id, member_of_new_group.id].map { |id| [id] }
 
       expect(AuthorizedProjectUpdate::UserRefreshFromReplicaWorker).to(

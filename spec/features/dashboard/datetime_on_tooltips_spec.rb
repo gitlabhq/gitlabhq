@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Tooltips on .timeago dates', :js, feature_category: :users do
+RSpec.describe 'Tooltips on .timeago dates', :js, feature_category: :user_profile do
   let_it_be(:user)      { create(:user) }
   let_it_be(:project)   { create(:project, name: 'test', namespace: user.namespace) }
 
@@ -10,6 +10,10 @@ RSpec.describe 'Tooltips on .timeago dates', :js, feature_category: :users do
 
   before_all do
     project.add_maintainer(user)
+  end
+
+  before do
+    stub_feature_flags(profile_tabs_vue: false)
   end
 
   context 'on the activity tab' do
@@ -40,7 +44,7 @@ RSpec.describe 'Tooltips on .timeago dates', :js, feature_category: :users do
       wait_for_requests
     end
 
-    it 'has the datetime formated correctly' do
+    it 'has the datetime formated correctly', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/334481' do
       expect(page).to have_selector('[data-testid=snippet-created-at] .js-timeago', text: '1 day ago')
 
       page.find('[data-testid=snippet-created-at] .js-timeago').hover

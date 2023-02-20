@@ -68,7 +68,7 @@ In a self-managed instance, users can access all API endpoints, including those 
 
 On GitLab SaaS:
 
-- SaaS users have access to all of the [API endpoints](../../api/index.md) except those that require instance `admin` permissions.
+- SaaS users have access to all of the [API endpoints](../../api/rest/index.md) except those that require instance `admin` permissions.
 - Only authorized GitLab engineers have administrative access.
 
 ## Authentication

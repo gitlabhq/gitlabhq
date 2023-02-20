@@ -58,19 +58,21 @@ export const integrationTriggerEvents = {
 export const integrationTriggerEventTitles = {
   [integrationTriggerEvents.PUSH]: s__('IntegrationEvents|A push is made to the repository'),
   [integrationTriggerEvents.ISSUE]: s__(
-    'IntegrationEvents|An issue is created, updated, or closed',
+    'IntegrationEvents|An issue is created, closed, or reopened',
   ),
   [integrationTriggerEvents.CONFIDENTIAL_ISSUE]: s__(
-    'IntegrationEvents|A confidential issue is created, updated, or closed',
+    'IntegrationEvents|A confidential issue is created, closed, or reopened',
   ),
   [integrationTriggerEvents.MERGE_REQUEST]: s__(
-    'IntegrationEvents|A merge request is created, updated, or merged',
+    'IntegrationEvents|A merge request is created, merged, closed, or reopened',
   ),
-  [integrationTriggerEvents.NOTE]: s__('IntegrationEvents|A comment is added on an issue'),
+  [integrationTriggerEvents.NOTE]: s__('IntegrationEvents|A comment is added'),
   [integrationTriggerEvents.CONFIDENTIAL_NOTE]: s__(
-    'IntegrationEvents|A comment is added on a confidential issue',
+    'IntegrationEvents|An internal note or comment on a confidential issue is added',
   ),
-  [integrationTriggerEvents.TAG_PUSH]: s__('IntegrationEvents|A tag is pushed to the repository'),
+  [integrationTriggerEvents.TAG_PUSH]: s__(
+    'IntegrationEvents|A tag is pushed to the repository or removed',
+  ),
   [integrationTriggerEvents.PIPELINE]: s__('IntegrationEvents|A pipeline status changes'),
   [integrationTriggerEvents.WIKI_PAGE]: s__('IntegrationEvents|A wiki page is created or updated'),
   [integrationTriggerEvents.DEPLOYMENT]: s__(
@@ -88,7 +90,7 @@ export const billingPlanNames = {
   [billingPlans.ULTIMATE]: s__('BillingPlans|Ultimate'),
 };
 
-const INTEGRATION_TYPE_SLACK = 'slack';
+export const INTEGRATION_TYPE_SLACK = 'slack';
 const INTEGRATION_TYPE_SLACK_APPLICATION = 'gitlab_slack_application';
 const INTEGRATION_TYPE_MATTERMOST = 'mattermost';
 

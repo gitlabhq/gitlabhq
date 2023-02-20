@@ -39,17 +39,5 @@ RSpec.describe 'Root explore', feature_category: :not_owned do
 
       expect(has_language_dropdown?).to eq(true)
     end
-
-    context 'with project_language_search ff disabled' do
-      before do
-        stub_feature_flags(project_language_search: false)
-      end
-
-      it 'is conditionally rendered' do
-        visit explore_projects_path
-
-        expect(has_language_dropdown?).to eq(false)
-      end
-    end
   end
 end

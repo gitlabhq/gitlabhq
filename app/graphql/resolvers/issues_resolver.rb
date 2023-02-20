@@ -17,6 +17,7 @@ module Resolvers
     before_connection_authorization do |nodes, current_user|
       projects = nodes.map(&:project)
       ::Preloaders::UserMaxAccessLevelInProjectsPreloader.new(projects, current_user).execute
+      ::Preloaders::GroupPolicyPreloader.new(projects.filter_map(&:group), current_user).execute
     end
 
     def ready?(**args)
@@ -28,8 +29,6 @@ module Resolvers
     end
 
     def resolve_with_lookahead(**args)
-      return unless Feature.enabled?(:root_level_issues_query)
-
       issues = apply_lookahead(
         IssuesFinder.new(current_user, prepare_finder_params(args)).execute
       )

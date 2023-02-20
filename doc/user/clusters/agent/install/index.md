@@ -22,7 +22,7 @@ Before you can install the agent in your cluster, you need:
   - [Digital Ocean](https://docs.digitalocean.com/products/kubernetes/quickstart/)
 - On self-managed GitLab instances, a GitLab administrator must set up the
   [agent server](../../../../administration/clusters/kas.md).
-  Then it will be available by default at `wss://gitlab.example.com/-/kubernetes-agent/`.
+  Then it is available by default at `wss://gitlab.example.com/-/kubernetes-agent/`.
   On GitLab.com, the agent server is available at `wss://kas.gitlab.com`.
 
 ## Installation steps
@@ -154,6 +154,10 @@ helm upgrade --install gitlab-agent gitlab/gitlab-agent \
   --set extraEnv[0].value=https://example.com/proxy \
   ...
 ```
+
+NOTE:
+DNS rebind protection is disabled when either the HTTP_PROXY or the HTTPS_PROXY environment variable is set,
+and the domain DNS can't be resolved.
 
 #### Advanced installation method
 

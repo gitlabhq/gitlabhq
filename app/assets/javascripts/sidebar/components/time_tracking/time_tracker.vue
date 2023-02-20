@@ -8,7 +8,7 @@ import {
   GlLoadingIcon,
   GlTooltipDirective,
 } from '@gitlab/ui';
-import { IssuableType } from '~/issues/constants';
+import { IssuableType, TYPE_ISSUE } from '~/issues/constants';
 import { BV_SHOW_MODAL } from '~/lib/utils/constants';
 import { s__, __ } from '~/locale';
 
@@ -173,10 +173,7 @@ export default {
       return Boolean(this.showHelp);
     },
     isTimeReportSupported() {
-      return (
-        [IssuableType.Issue, IssuableType.MergeRequest].includes(this.issuableType) &&
-        this.issuableId
-      );
+      return [TYPE_ISSUE, IssuableType.MergeRequest].includes(this.issuableType) && this.issuableId;
     },
     timeTrackingIconTitle() {
       return this.showHelpState ? '' : HOW_TO_TRACK_TIME;

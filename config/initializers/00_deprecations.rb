@@ -1,33 +1,50 @@
 # frozen_string_literal: true
 
-# Disallowed deprecation warnings are silenced in production. For performance
-# reasons we even skip the definition of disallowed warnings in production.
-#
-# See
-# * https://gitlab.com/gitlab-org/gitlab/-/issues/368379 for a follow-up
-# * https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92557#note_1032212676
-#   for benchmarks
-#
-# In Rails 7 we will use `config.active_support.report_deprecations = false`
-# instead of this early return.
 if Rails.env.production?
-  ActiveSupport::Deprecation.silenced = true
-  return
+  ActiveSupport::Deprecation.silenced = !Gitlab::Utils.to_boolean(ENV['GITLAB_LOG_DEPRECATIONS'])
+  ActiveSupport::Deprecation.behavior = :notify
+  # Disallowed deprecation warnings are silenced in production. For performance
+  # reasons we even skip the definition of `ActiveSupport::Deprecation.disallowed_warnings`
+  # in production.
+  # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92557#note_1032212676 for benchmarks.
+  ActiveSupport::Deprecation.disallowed_behavior = :silence
+else
+  ActiveSupport::Deprecation.silenced = false
+  ActiveSupport::Deprecation.behavior = [:stderr, :notify]
+  ActiveSupport::Deprecation.disallowed_behavior = :raise
+
+  rails7_deprecation_warnings = [
+    # https://gitlab.com/gitlab-org/gitlab/-/issues/366910
+    /no longer takes non-deterministic result/,
+    # https://gitlab.com/gitlab-org/gitlab/-/issues/339739
+    /ActiveModel::Errors/,
+    # https://gitlab.com/gitlab-org/gitlab/-/issues/342492
+    /Rendering actions with '\.' in the name is deprecated/,
+    # https://gitlab.com/gitlab-org/gitlab/-/issues/333086
+    /default_hash is deprecated/,
+    # https://gitlab.com/gitlab-org/gitlab/-/issues/369970
+    /Passing an Active Record object to `\w+` directly is deprecated/
+  ]
+
+  ActiveSupport::Deprecation.disallowed_warnings = rails7_deprecation_warnings
 end
 
-# Ban the following deprecation warnings and turn them into runtime errors
-# in `development` and `test` environments.
-#
-# This way we prevent already fixed warnings from sneaking back into the codebase silently.
-rails7_deprecation_warnings = [
-  # https://gitlab.com/gitlab-org/gitlab/-/issues/339739
-  /ActiveModel::Errors#keys is deprecated/,
-  # https://gitlab.com/gitlab-org/gitlab/-/issues/342492
-  /Rendering actions with '\.' in the name is deprecated/,
-  # https://gitlab.com/gitlab-org/gitlab/-/issues/333086
-  /default_hash is deprecated/,
-  # https://gitlab.com/gitlab-org/gitlab/-/issues/369970
-  /Passing an Active Record object to `\w+` directly is deprecated/
-]
+unless ActiveSupport::Deprecation.silenced
+  # Log deprecation warnings emitted through Kernel#warn, such as from gems or
+  # the Ruby VM.
+  actions = {
+    /is deprecated/ => ->(warning) do
+      Gitlab::DeprecationJsonLogger.info(message: warning.strip, source: 'ruby')
+      # Returning :default means we continue emitting this to stderr as well.
+      :default
+    end
+  }
 
-ActiveSupport::Deprecation.disallowed_warnings.concat rails7_deprecation_warnings
+  # Use `warning` gem to intercept Ruby warnings and add our own action hook.
+  Warning.process('', actions)
+
+  # Log deprecation warnings emitted from Rails (see ActiveSupport::Deprecation).
+  ActiveSupport::Notifications.subscribe('deprecation.rails') do |_name, _start, _finish, _id, payload|
+    Gitlab::DeprecationJsonLogger.info(message: payload[:message].strip, source: 'rails')
+  end
+end

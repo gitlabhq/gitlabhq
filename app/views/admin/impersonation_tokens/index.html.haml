@@ -18,6 +18,6 @@
         impersonation: true,
         token: @impersonation_token,
         scopes: @scopes,
-        help_path: help_page_path('api/index', anchor: 'impersonation-tokens')
+        help_path: help_page_path('api/rest/index', anchor: 'impersonation-tokens')
 
     #js-access-token-table-app{ data: { access_token_type: type, access_token_type_plural: type_plural, initial_active_access_tokens: @active_impersonation_tokens.to_json, information: _("To see all the user's personal access tokens you must impersonate them first.") } }

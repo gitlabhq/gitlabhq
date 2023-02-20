@@ -8,6 +8,7 @@ import deployKeysApp from '~/deploy_keys/components/app.vue';
 import ConfirmModal from '~/deploy_keys/components/confirm_modal.vue';
 import eventHub from '~/deploy_keys/eventhub';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 
 const TEST_ENDPOINT = `${TEST_HOST}/dummy/`;
 
@@ -28,7 +29,7 @@ describe('Deploy keys app component', () => {
 
   beforeEach(() => {
     mock = new MockAdapter(axios);
-    mock.onGet(TEST_ENDPOINT).reply(200, data);
+    mock.onGet(TEST_ENDPOINT).reply(HTTP_STATUS_OK, data);
   });
 
   afterEach(() => {
@@ -67,7 +68,7 @@ describe('Deploy keys app component', () => {
   });
 
   it('does not render key panels when keys object is empty', () => {
-    mock.onGet(TEST_ENDPOINT).reply(200, []);
+    mock.onGet(TEST_ENDPOINT).reply(HTTP_STATUS_OK, []);
 
     return mountComponent().then(() => {
       expect(findKeyPanels().length).toBe(0);

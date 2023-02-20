@@ -10,5 +10,4 @@ Gitlab/DeprecateTrackRedisHLLEvent:
     - 'ee/app/controllers/groups/analytics/ci_cd_analytics_controller.rb'
     - 'ee/app/controllers/groups/audit_events_controller.rb'
     - 'ee/app/controllers/groups/epic_boards_controller.rb'
-    - 'ee/app/controllers/groups/security/compliance_dashboards_controller.rb'
     - 'spec/controllers/concerns/redis_tracking_spec.rb'

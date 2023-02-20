@@ -11,7 +11,7 @@ module QA
             end
 
             def has_alert_with_title?(title)
-              has_link?(title)
+              has_link?(title, wait: 5)
             end
           end
         end

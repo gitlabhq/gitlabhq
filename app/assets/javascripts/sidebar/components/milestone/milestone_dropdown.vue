@@ -1,8 +1,8 @@
 <script>
 import { GlDropdownItem } from '@gitlab/ui';
-import { TYPE_MILESTONE } from '~/graphql_shared/constants';
+import { TYPENAME_MILESTONE } from '~/graphql_shared/constants';
 import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
-import { IssuableType, WorkspaceType } from '~/issues/constants';
+import { IssuableType, TYPE_ISSUE, WorkspaceType } from '~/issues/constants';
 import { __ } from '~/locale';
 import { IssuableAttributeType } from '../../constants';
 import SidebarDropdown from '../sidebar_dropdown.vue';
@@ -37,7 +37,7 @@ export default {
       type: String,
       required: true,
       validator(value) {
-        return [IssuableType.Issue, IssuableType.MergeRequest].includes(value);
+        return [TYPE_ISSUE, IssuableType.MergeRequest].includes(value);
       },
     },
     inputName: {
@@ -71,7 +71,10 @@ export default {
   data() {
     return {
       milestone: this.milestoneId
-        ? { id: convertToGraphQLId(TYPE_MILESTONE, this.milestoneId), title: this.milestoneTitle }
+        ? {
+            id: convertToGraphQLId(TYPENAME_MILESTONE, this.milestoneId),
+            title: this.milestoneTitle,
+          }
         : placeholderMilestone,
     };
   },

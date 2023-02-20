@@ -9,7 +9,7 @@ class ApproveBlockedPendingApprovalUsersWorker
 
   idempotent!
 
-  feature_category :users
+  feature_category :user_profile
 
   def perform(current_user_id)
     current_user = User.find(current_user_id)

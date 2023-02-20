@@ -4,7 +4,13 @@ group: Integrations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Slack notifications integration **(FREE)**
+# Slack notifications **(FREE)**
+
+WARNING:
+This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/372411) on GitLab.com
+in GitLab 15.9 and is [planned for removal](https://gitlab.com/groups/gitlab-org/-/epics/8673).
+For GitLab.com, use the [GitLab for Slack app](gitlab_slack_application.md) instead.
+For self-managed GitLab instances, you can continue to use this feature.
 
 The Slack notifications integration enables your GitLab project to send events
 (such as issue creation) to your existing Slack team as notifications. Setting up
@@ -21,6 +27,8 @@ to control GitLab from Slack. Slash commands are configured separately.
 1. Copy the **Webhook URL** to use later when you configure GitLab.
 
 ## Configure GitLab
+
+> [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106760) in GitLab 15.9 to limit Slack channels to 10 per event.
 
 1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > Integrations**.
@@ -58,13 +66,13 @@ The following triggers are available for Slack notifications:
 | Trigger name                                                             | Trigger event                                        |
 |--------------------------------------------------------------------------|------------------------------------------------------|
 | **Push**                                                                 | A push to the repository.                            |
-| **Issue**                                                                | An issue is created, updated, or closed.             |
-| **Incident**                                                             | An incident is created, updated, or closed.          |
-| **Confidential issue**                                                   | A confidential issue is created, updated, or closed. |
-| **Merge request**                                                        | A merge request is created, updated, or merged.      |
+| **Issue**                                                                | An issue is created, closed, or reopened.            |
+| **Incident**                                                             | An incident is created, closed, or reopened.         |
+| **Confidential issue**                                                   | A confidential issue is created, closed, or reopened.|
+| **Merge request**                                                        | A merge request is created, merged, closed, or reopened.|
 | **Note**                                                                 | A comment is added.                                  |
-| **Confidential note**                                                    | A confidential note is added.                        |
-| **Tag push**                                                             | A new tag is pushed to the repository.               |
+| **Confidential note**                                                    | An internal note or comment on a confidential issue is added.|
+| **Tag push**                                                             | A new tag is pushed to the repository or removed.    |
 | **Pipeline**                                                             | A pipeline status changed.                           |
 | **Wiki page**                                                            | A wiki page is created or updated.                   |
 | **Deployment**                                                           | A deployment starts or finishes.                     |

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'User edit profile', feature_category: :users do
+RSpec.describe 'User edit profile', feature_category: :user_profile do
   include Spec::Support::Helpers::Features::NotesHelpers
 
   let_it_be(:user) { create(:user) }

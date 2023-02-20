@@ -1,6 +1,7 @@
 import { uniqueId } from 'lodash';
 import { __ } from '~/locale';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_NO_CONTENT } from '~/lib/utils/http_status';
 import TestCaseDetails from '~/pipelines/components/test_reports/test_case_details.vue';
 import { EXTENSION_ICONS } from '../../constants';
 import {
@@ -74,7 +75,7 @@ export default {
         text: this.$options.i18n.fullReport,
         href: `${this.pipeline.path}/test_report`,
         target: '_blank',
-        fullReport: true,
+        trackFullReportClicked: true,
         testId: 'full-report-link',
       });
 
@@ -91,7 +92,7 @@ export default {
           ...response,
           data: {
             hasSuiteError: suites.some((suite) => suite.status === ERROR_STATUS),
-            parsingInProgress: status === 204,
+            parsingInProgress: status === HTTP_STATUS_NO_CONTENT,
             ...data,
             summary: {
               recentlyFailed: countRecentlyFailedTests(suites),

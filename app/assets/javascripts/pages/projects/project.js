@@ -9,7 +9,6 @@ import axios from '~/lib/utils/axios_utils';
 import { serializeForm } from '~/lib/utils/forms';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
-import projectSelect from '~/project_select';
 
 const BRANCH_REF_TYPE = 'heads';
 const TAG_REF_TYPE = 'tags';
@@ -44,13 +43,6 @@ export default class Project {
       $(this).parents('.auto-devops-implicitly-enabled-banner').remove();
       return e.preventDefault();
     });
-
-    Project.projectSelectDropdown();
-  }
-
-  static projectSelectDropdown() {
-    projectSelect();
-    $('.project-item-select').on('click', (e) => Project.changeProject($(e.currentTarget).val()));
   }
 
   static changeProject(url) {

@@ -60,8 +60,8 @@ RSpec.describe Ci::RunnersFinder, feature_category: :runner_fleet do
               create(:ci_runner_version, version: 'a', status: :recommended)
             end
 
-            let_it_be(:runner_version_not_available) do
-              create(:ci_runner_version, version: 'b', status: :not_available)
+            let_it_be(:runner_version_unavailable) do
+              create(:ci_runner_version, version: 'b', status: :unavailable)
             end
 
             let_it_be(:runner_version_available) do
@@ -77,7 +77,7 @@ RSpec.describe Ci::RunnersFinder, feature_category: :runner_fleet do
                 let(:upgrade_status) { status }
 
                 it "calls with_upgrade_status scope with corresponding :#{status} status" do
-                  if [:available, :not_available, :recommended].include?(status)
+                  if [:available, :unavailable, :recommended].include?(status)
                     expected_result = Ci::Runner.with_upgrade_status(status)
                   end
 

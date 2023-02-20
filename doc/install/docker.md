@@ -7,8 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # GitLab Docker images **(FREE SELF)**
 
 The GitLab Docker images are monolithic images of GitLab running all the
-necessary services in a single container. If you instead want to install GitLab
-on Kubernetes, see [GitLab Helm Charts](https://docs.gitlab.com/charts/).
+necessary services in a single container.
 
 Find the GitLab official Docker image at:
 
@@ -22,6 +21,11 @@ the MTA after every upgrade or restart.
 
 In the following examples, if you want to use the latest RC image, use
 `gitlab/gitlab-ee:rc` instead.
+
+You should not deploy the GitLab Docker image in Kubernetes as it creates a
+single point of failure. If you want to deploy GitLab in Kubernetes, the
+[GitLab Helm Chart](https://docs.gitlab.com/charts/) or [GitLab Operator](https://docs.gitlab.com/operator/)
+should be used instead.
 
 WARNING:
 Docker for Windows is not officially supported. There are known issues with volume
@@ -341,7 +345,7 @@ sudo docker run --detach \
   gitlab/gitlab-ee:latest
 ```
 
-Note that every time you execute a `docker run` command, you need to provide
+Every time you execute a `docker run` command, you need to provide
 the `GITLAB_OMNIBUS_CONFIG` option. The content of `GITLAB_OMNIBUS_CONFIG` is
 _not_ preserved between subsequent runs.
 
@@ -619,7 +623,7 @@ sudo docker exec -it gitlab /bin/bash
 ```
 
 From within the container you can administer the GitLab container as you would
-normally administer an
+usually administer an
 [Omnibus installation](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/README.md)
 
 ### 500 Internal Error
@@ -698,7 +702,7 @@ variety of statistics on the health and performance of GitLab. The files
 required for this gets written to a temporary file system (like `/run` or
 `/dev/shm`).
 
-By default, Docker allocates 64MB to the shared memory directory (mounted at
+By default, Docker allocates 64 MB to the shared memory directory (mounted at
 `/dev/shm`). This is insufficient to hold all the Prometheus metrics related
 files generated, and will generate error logs like the following:
 
@@ -713,7 +717,7 @@ writing value to /dev/shm/gitlab/sidekiq/histogram_sidekiq_0-0.db failed with un
 ```
 
 Other than disabling the Prometheus Metrics from the Admin Area, the recommended
-solution to fix this problem is to increase the size of shared memory to at least 256MB.
+solution to fix this problem is to increase the size of shared memory to at least 256 MB.
 If using `docker run`, this can be done by passing the flag `--shm-size 256m`.
 If using a `docker-compose.yml` file, the `shm_size` key can be used for this
 purpose.

@@ -20,7 +20,7 @@ module Mutations
         work_item = authorized_find!(id: id)
 
         result = ::WorkItems::DeleteService.new(
-          project: work_item.project,
+          container: work_item.project,
           current_user: current_user
         ).execute(work_item)
 

@@ -50,4 +50,4 @@ _NOTE: This section is optional, but can be used for easy access to any relevant
 
 
 
-/label ~"group::pipeline authoring" ~"Category:Pipeline Authoring" ~"section::ops" ~"devops::verify" ~"workflow::planning breakdown"
+/label ~"group::pipeline authoring" ~"Category:Pipeline Composition" ~"section::ops" ~"devops::verify" ~"workflow::planning breakdown"

@@ -16,7 +16,7 @@ module IncidentManagement
 
       def execute
         create_result = Issues::CreateService.new(
-          project: project,
+          container: project,
           current_user: current_user,
           params: {
             title: title,

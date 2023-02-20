@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Profile > Notifications > User changes notified_of_own_activity setting', :js,
-feature_category: :users do
+feature_category: :user_profile do
   let(:user) { create(:user) }
 
   before do

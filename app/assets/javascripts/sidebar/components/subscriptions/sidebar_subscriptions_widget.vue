@@ -1,7 +1,7 @@
 <script>
 import { GlDropdownForm, GlIcon, GlLoadingIcon, GlToggle, GlTooltipDirective } from '@gitlab/ui';
 import { createAlert } from '~/flash';
-import { IssuableType } from '~/issues/constants';
+import { IssuableType, TYPE_EPIC } from '~/issues/constants';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import { __, sprintf } from '~/locale';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -105,7 +105,7 @@ export default {
       return ICON_ON;
     },
     parentIsGroup() {
-      return this.issuableType === IssuableType.Epic;
+      return this.issuableType === TYPE_EPIC;
     },
     subscribeDisabledDescription() {
       return sprintf(__('Disabled by %{parent} owner'), {

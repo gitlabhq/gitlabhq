@@ -116,7 +116,7 @@ For each attribute:
 1. Select the required settings.
 1. Select **Ok**.
 
-If your SAML configuration differs from [the recommended SAML settings](index.md#azure-setup-notes), select the mapping
+If your SAML configuration differs from [the recommended SAML settings](index.md#set-up-azure), select the mapping
 attributes and modify them accordingly. In particular, the `objectId` source attribute must map to the `externalId`
 target attribute.
 
@@ -133,13 +133,13 @@ Prerequisites:
   product tier is required to use SCIM on Okta.
 - [GitLab is configured](#configure-gitlab).
 - SAML application for [Okta](https://developer.okta.com/docs/guides/build-sso-integration/saml2/main/) set up as
-  described in the [Okta setup notes](index.md#okta-setup-notes).
+  described in the [Okta setup notes](index.md#set-up-okta).
 - Your Okta SAML setup matches the [configuration steps exactly](index.md), especially the NameID configuration.
 
 To configure Okta for SCIM:
 
 1. Sign in to Okta.
-1. Ensure you are in the Admin Area by selecting the **Admin** button located in the top right. The button is not visible from the Admin Area.
+1. Ensure you are in the Admin Area by selecting the **Admin** button located in the upper right. The button is not visible from the Admin Area.
 1. In the **Application** tab, select **Browse App Catalog**.
 1. Search for **GitLab**, find and select the **GitLab** application.
 1. On the GitLab application overview page, select **Add**.
@@ -170,7 +170,7 @@ encounter issues.
 
 ## User access
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/325712) in GitLab 14.0, GitLab users created by [SAML SSO](index.md#user-access-and-management) or SCIM provisioning are displayed with an **Enterprise** badge in the **Members** view.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/325712) in GitLab 14.0, GitLab users created by [SAML SSO](index.md#user-access-and-management) or SCIM provisioning are displayed with an [**Enterprise**](../../enterprise_user/index.md) badge in the **Members** view.
 
 During the synchronization process, all new users:
 

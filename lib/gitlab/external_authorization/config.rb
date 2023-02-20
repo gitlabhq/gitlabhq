@@ -37,6 +37,12 @@ module Gitlab
         client_cert.present? && client_key.present?
       end
 
+      def allow_deploy_tokens_and_deploy_keys?
+        return true unless enabled?
+
+        service_url.blank? && application_settings.allow_deploy_tokens_and_keys_with_external_authn?
+      end
+
       private
 
       def application_settings

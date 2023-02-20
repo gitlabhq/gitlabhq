@@ -58,7 +58,7 @@ module PerformanceMonitoring
     rescue Gitlab::Metrics::Dashboard::Errors::LayoutError => e
       [e.message]
     rescue ActiveModel::ValidationError => e
-      e.model.errors.map { |attr, error| "#{attr}: #{error}" }
+      e.model.errors.map { |error| "#{error.attribute}: #{error.message}" }
     end
 
     private

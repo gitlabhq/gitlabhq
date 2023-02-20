@@ -275,13 +275,67 @@ RSpec.describe API::Helpers::PackagesHelpers, feature_category: :package_registr
       let(:category) { described_class.name }
       let(:namespace) { project.namespace }
       let(:user) { project.creator }
-      let(:feature_flag_name) { nil }
       let(:label) { 'redis_hll_counters.user_packages.user_packages_total_unique_counts_monthly' }
       let(:property) { 'i_package_terraform_module_user' }
 
       subject(:package_action) do
         args = { category: category, namespace: namespace, user: user, project: project }
         helper.track_package_event(action, scope, **args)
+      end
+    end
+
+    context 'when using deploy token and action is push package' do
+      let(:user) { create(:deploy_token, write_registry: true, projects: [project]) }
+      let(:scope) { :rubygems }
+      let(:category) { 'API::RubygemPackages' }
+      let(:namespace) { project.namespace }
+      let(:label) { 'counts.package_events_i_package_push_package_by_deploy_token' }
+      let(:property) { 'i_package_push_package_by_deploy_token' }
+      let(:service_ping_context) do
+        [Gitlab::Tracking::ServicePingContext.new(data_source: :redis, key_path: 'counts.package_events_i_package_push_package_by_deploy_token').to_h]
+      end
+
+      it 'logs a snowplow event' do
+        args = { category: category, namespace: namespace, project: project }
+        helper.track_package_event('push_package', scope, **args)
+
+        expect_snowplow_event(
+          category: category,
+          action: 'push_package_by_deploy_token',
+          context: service_ping_context,
+          label: label,
+          namespace: namespace,
+          property: property,
+          project: project
+        )
+      end
+    end
+
+    context 'when guest and action is pull package' do
+      let(:user) { nil }
+      let(:scope) { :rubygems }
+      let(:category) { 'API::RubygemPackages' }
+      let(:namespace) { project.namespace }
+      let(:label) { 'counts.package_events_i_package_pull_package_by_guest' }
+      let(:property) { 'i_package_pull_package_by_guest' }
+      let(:service_ping_context) do
+        [Gitlab::Tracking::ServicePingContext.new(data_source: :redis, key_path: 'counts.package_events_i_package_pull_package_by_guest').to_h]
+      end
+
+      it 'logs a snowplow event' do
+        allow(helper).to receive(:current_user).and_return(nil)
+        args = { category: category, namespace: namespace, project: project }
+        helper.track_package_event('pull_package', scope, **args)
+
+        expect_snowplow_event(
+          category: category,
+          action: 'pull_package_by_guest',
+          context: service_ping_context,
+          label: label,
+          namespace: namespace,
+          property: property,
+          project: project
+        )
       end
     end
   end

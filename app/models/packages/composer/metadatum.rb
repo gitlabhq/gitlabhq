@@ -10,8 +10,18 @@ module Packages
 
       validates :package, :target_sha, :composer_json, presence: true
 
+      validate :composer_package_type
+
       scope :for_package, ->(name, project_id) { joins(:package).where(packages_packages: { name: name, project_id: project_id, package_type: Packages::Package.package_types[:composer] }) }
       scope :locked_for_update, -> { lock('FOR UPDATE') }
+
+      private
+
+      def composer_package_type
+        return if package&.composer?
+
+        errors.add(:base, _('Package type must be Composer'))
+      end
     end
   end
 end

@@ -3,8 +3,13 @@ stage: Monitor
 group: Respond
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
+<!--- start_remove The following content will be removed on remove_date: '2023-08-22' -->
+# Embed Grafana panels in Markdown (deprecated) **(FREE)**
 
-# Embed Grafana panels in Markdown **(FREE)**
+WARNING:
+This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110290) in GitLab 15.9
+and is planned for removal in 16.0. We intend to replace this feature with the ability to [embed charts](https://gitlab.com/groups/gitlab-org/opstrace/-/epics/33) with the [GitLab Observability UI](https://gitlab.com/gitlab-org/opstrace/opstrace-ui).
+This change is a breaking change.
 
 Grafana panels can be embedded in [GitLab Flavored Markdown](../../user/markdown.md). You can
 embed Grafana panels using either:
@@ -72,7 +77,7 @@ To generate a link to a panel:
 
    If you select the dashboard's share button instead, GitLab attempts to embed the first supported
    panel on the dashboard (if available).
-1. If your Prometheus queries use Grafana's custom template variables, ensure the
+1. If your Prometheus queries use the Grafana custom template variables, ensure the
    **Template variables** option is set to on. Only the Grafana global template variables
    `$__interval`, `$__from`, and `$__to` are supported.
 1. Set the **Current time range** option to on, to specify the time range of the panel. Otherwise,
@@ -83,3 +88,4 @@ To generate a link to a panel:
 See the following example of a rendered panel.
 
 ![GitLab Rendered Grafana Panel](img/rendered_grafana_embed_v12_5.png)
+<!--- end_remove -->

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BulkImports::Groups::Loaders::GroupLoader do
+RSpec.describe BulkImports::Groups::Loaders::GroupLoader, feature_category: :importers do
   describe '#load' do
     let_it_be(:user) { create(:user) }
     let_it_be(:bulk_import) { create(:bulk_import, user: user) }
@@ -29,19 +29,9 @@ RSpec.describe BulkImports::Groups::Loaders::GroupLoader do
       end
     end
 
-    context 'when group exists' do
-      it 'raises an error' do
-        group1 = create(:group)
-        group2 = create(:group, parent: group1)
-        entity.update!(destination_namespace: group1.full_path)
-        data = { 'path' => group2.path }
-
-        expect { subject.load(context, data) }.to raise_error(described_class::GroupCreationError, 'Group exists')
-      end
-    end
-
     context 'when there are other group errors' do
       it 'raises an error with those errors' do
+        entity.update!(destination_namespace: '')
         group = ::Group.new
         group.validate
         expected_errors = group.errors.full_messages.to_sentence

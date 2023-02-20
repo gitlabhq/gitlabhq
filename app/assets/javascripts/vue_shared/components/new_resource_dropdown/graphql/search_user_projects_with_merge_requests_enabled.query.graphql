@@ -1,0 +1,15 @@
+query searchUserProjectsWithMergeRequestsEnabled($search: String) {
+  projects(
+    search: $search
+    membership: true
+    withMergeRequestsEnabled: true
+    sort: "latest_activity_desc"
+  ) {
+    nodes {
+      id
+      name
+      nameWithNamespace
+      webUrl
+    }
+  }
+}

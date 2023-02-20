@@ -2,22 +2,24 @@
 
 require "spec_helper"
 
-RSpec.describe ProductAnalyticsTracking, :snowplow do
+RSpec.describe ProductAnalyticsTracking, :snowplow, feature_category: :product_analytics do
   include TrackingHelpers
   include SnowplowHelpers
 
   let(:user) { create(:user) }
+  let(:event_name) { 'an_event' }
   let!(:group) { create(:group) }
 
   before do
     allow(Gitlab::UsageDataCounters::HLLRedisCounter).to receive(:track_event)
+    stub_const("#{described_class}::MIGRATED_EVENTS", ['an_event'])
   end
 
   controller(ApplicationController) do
     include ProductAnalyticsTracking
 
     skip_before_action :authenticate_user!, only: :show
-    track_event(:index, :show, name: 'g_analytics_valuestream', destinations: [:redis_hll, :snowplow],
+    track_event(:index, :show, name: 'an_event', destinations: [:redis_hll, :snowplow],
                                conditions: [:custom_condition_one?, :custom_condition_two?]) { |controller| controller.get_custom_id }
 
     def index
@@ -53,16 +55,16 @@ RSpec.describe ProductAnalyticsTracking, :snowplow do
 
   def expect_redis_hll_tracking
     expect(Gitlab::UsageDataCounters::HLLRedisCounter).to have_received(:track_event)
-                                                            .with('g_analytics_valuestream', values: instance_of(String))
+                                                            .with(event_name, values: instance_of(String))
   end
 
   def expect_snowplow_tracking(user)
-    context = Gitlab::Tracking::ServicePingContext.new(data_source: :redis_hll, event: 'g_analytics_valuestream')
+    context = Gitlab::Tracking::ServicePingContext.new(data_source: :redis_hll, event: event_name)
                                                   .to_context.to_json
 
     expect_snowplow_event(
       category: anything,
-      action: 'g_analytics_valuestream',
+      action: event_name,
       namespace: group,
       user: user,
       context: [context]
@@ -89,7 +91,9 @@ RSpec.describe ProductAnalyticsTracking, :snowplow do
 
     context 'when FF is disabled' do
       before do
-        stub_feature_flags(route_hll_to_snowplow: false)
+        stub_const("#{described_class}::MIGRATED_EVENTS", [])
+        allow(Feature).to receive(:enabled?).and_call_original
+        allow(Feature).to receive(:enabled?).with('route_hll_to_snowplow', anything).and_return(false)
       end
 
       it 'doesnt track snowplow event' do

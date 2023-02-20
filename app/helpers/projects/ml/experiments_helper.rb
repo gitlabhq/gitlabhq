@@ -5,6 +5,25 @@ module Projects
       require 'json'
       include ActionView::Helpers::NumberHelper
 
+      def show_candidate_view_model(candidate)
+        data = {
+          candidate: {
+            params: candidate.params,
+            metrics: candidate.latest_metrics,
+            info: {
+              iid: candidate.iid,
+              path_to_artifact: link_to_artifact(candidate),
+              experiment_name: candidate.experiment.name,
+              path_to_experiment: link_to_experiment(candidate.project, candidate.experiment),
+              status: candidate.status
+            },
+            metadata: candidate.metadata
+          }
+        }
+
+        Gitlab::Json.generate(data)
+      end
+
       def candidates_table_items(candidates)
         items = candidates.map do |candidate|
           {
@@ -25,24 +44,30 @@ module Projects
         Gitlab::Json.generate(candidates.flat_map(&selector).map(&:name).uniq)
       end
 
-      def candidate_as_data(candidate)
-        data = {
-          params: candidate.params,
-          metrics: candidate.latest_metrics,
-          info: {
-            iid: candidate.iid,
-            path_to_artifact: link_to_artifact(candidate),
-            experiment_name: candidate.experiment.name,
-            path_to_experiment: link_to_experiment(candidate),
-            status: candidate.status
-          },
-          metadata: candidate.metadata
-        }
+      def experiments_as_data(project, experiments)
+        data = experiments.map do |exp|
+          {
+            name: exp.name,
+            path: link_to_experiment(project, exp),
+            candidate_count: exp.candidate_count
+          }
+        end
 
         Gitlab::Json.generate(data)
       end
 
-      private
+      def page_info(paginator)
+        {
+          has_next_page: paginator.has_next_page?,
+          has_previous_page: paginator.has_previous_page?,
+          start_cursor: paginator.cursor_for_previous_page,
+          end_cursor: paginator.cursor_for_next_page
+        }
+      end
+
+      def formatted_page_info(page_info)
+        Gitlab::Json.generate(page_info)
+      end
 
       def link_to_artifact(candidate)
         artifact = candidate.artifact
@@ -56,10 +81,8 @@ module Projects
         project_ml_candidate_path(candidate.project, candidate.iid)
       end
 
-      def link_to_experiment(candidate)
-        experiment = candidate.experiment
-
-        project_ml_experiment_path(experiment.project, experiment.iid)
+      def link_to_experiment(project, experiment)
+        project_ml_experiment_path(project, experiment.iid)
       end
 
       def user_info(candidate)

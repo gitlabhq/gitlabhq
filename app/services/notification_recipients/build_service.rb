@@ -17,24 +17,24 @@ module NotificationRecipients
       ::NotificationRecipients::Builder::Default.new(target, current_user, **args).notification_recipients
     end
 
-    def self.build_new_note_recipients(*args)
-      ::NotificationRecipients::Builder::NewNote.new(*args).notification_recipients
+    def self.build_new_note_recipients(...)
+      ::NotificationRecipients::Builder::NewNote.new(...).notification_recipients
     end
 
-    def self.build_merge_request_unmergeable_recipients(*args)
-      ::NotificationRecipients::Builder::MergeRequestUnmergeable.new(*args).notification_recipients
+    def self.build_merge_request_unmergeable_recipients(...)
+      ::NotificationRecipients::Builder::MergeRequestUnmergeable.new(...).notification_recipients
     end
 
     def self.build_project_maintainers_recipients(target, **args)
       ::NotificationRecipients::Builder::ProjectMaintainers.new(target, **args).notification_recipients
     end
 
-    def self.build_new_review_recipients(*args)
-      ::NotificationRecipients::Builder::NewReview.new(*args).notification_recipients
+    def self.build_new_review_recipients(...)
+      ::NotificationRecipients::Builder::NewReview.new(...).notification_recipients
     end
 
-    def self.build_requested_review_recipients(*args)
-      ::NotificationRecipients::Builder::RequestReview.new(*args).notification_recipients
+    def self.build_requested_review_recipients(...)
+      ::NotificationRecipients::Builder::RequestReview.new(...).notification_recipients
     end
   end
 end

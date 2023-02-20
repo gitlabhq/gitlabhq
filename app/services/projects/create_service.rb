@@ -125,7 +125,7 @@ module Projects
 
       setup_authorizations
 
-      current_user.invalidate_personal_projects_count
+      project.invalidate_personal_projects_count_of_owner
 
       Projects::PostCreationWorker.perform_async(@project.id)
 
@@ -160,7 +160,6 @@ module Projects
         # AuthorizedProjectsWorker but with some delay and lower urgency as a
         # safety net.
         @project.group.refresh_members_authorized_projects(
-          blocking: false,
           priority: UserProjectAccessChangedService::LOW_PRIORITY
         )
       else
@@ -198,7 +197,7 @@ module Projects
     end
 
     def create_sast_commit
-      ::Security::CiConfiguration::SastCreateService.new(@project, current_user, {}, commit_on_default: true).execute
+      ::Security::CiConfiguration::SastCreateService.new(@project, current_user, { initialize_with_sast: true }, commit_on_default: true).execute
     end
 
     def readme_content

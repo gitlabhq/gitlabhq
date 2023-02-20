@@ -1,8 +1,0 @@
----
-name: admin_emails_vue
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106358
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/386976
-milestone: '15.8'
-type: development
-group: group::workspace
-default_enabled: false

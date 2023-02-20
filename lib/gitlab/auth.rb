@@ -32,7 +32,7 @@ module Gitlab
     # Scopes used for GitLab as admin
     SUDO_SCOPE = :sudo
     ADMIN_MODE_SCOPE = :admin_mode
-    ADMIN_SCOPES = [SUDO_SCOPE].freeze
+    ADMIN_SCOPES = [SUDO_SCOPE, ADMIN_MODE_SCOPE].freeze
 
     # Default scopes for OAuth applications that don't define their own
     DEFAULT_SCOPES = [API_SCOPE].freeze
@@ -366,7 +366,10 @@ module Gitlab
 
       def available_scopes_for(current_user)
         scopes = non_admin_available_scopes
-        scopes += ADMIN_SCOPES if current_user.admin?
+
+        if current_user.admin? # rubocop: disable Cop/UserAdmin
+          scopes += Feature.enabled?(:admin_mode_for_api) ? ADMIN_SCOPES : [SUDO_SCOPE]
+        end
 
         scopes
       end

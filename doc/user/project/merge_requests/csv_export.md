@@ -14,7 +14,7 @@ To export merge requests to a CSV file:
 
 1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Merge requests** .
-1. Add any searches or filters. This can help you keep the size of the CSV file under the 15MB limit. The limit ensures
+1. Add any searches or filters. This can help you keep the size of the CSV file under the 15 MB limit. The limit ensures
    the file can be emailed to a variety of email providers.
 1. Select **Export as CSV** (**{export}**).
 1. Confirm the correct number of merge requests are to be exported.

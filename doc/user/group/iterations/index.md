@@ -33,7 +33,7 @@ In GitLab, iterations are similar to milestones, with a few differences:
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5077) in GitLab 14.1 [with a flag](../../../administration/feature_flags.md), named `iteration_cadences`. Disabled by default.
 > - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/354977) in GitLab 15.0: All scheduled iterations must start on the same day of the week as the cadence start day. Start date of cadence cannot be edited after the first iteration starts.
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/354878) in GitLab 15.0.
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/367493) in GitLab 15.4: A new automation start date can be selected for cadence. Upcoming iterations will be scheduled to start on the same day of the week as the changed start date. Iteration cadences can be manually managed by turning off the automatic scheduling feature.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/367493) in GitLab 15.4: A new automation start date can be selected for cadence. Upcoming iterations are scheduled to start on the same day of the week as the changed start date. Iteration cadences can be manually managed by turning off the automatic scheduling feature.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/354878) in GitLab 15.5. Feature flag `iteration_cadences` removed.
 
 Iteration cadences are containers for iterations and can be used to automate iteration scheduling.
@@ -56,7 +56,7 @@ To create an iteration cadence:
 1. Enter the title and description of the iteration cadence.
 1. To manually manage the iteration cadence, clear the **Enable automatic scheduling** checkbox and skip the next step.
 1. Complete the required fields to use automatic scheduling.
-   - Select the automation start date of the iteration cadence. Iterations will be scheduled to
+   - Select the automation start date of the iteration cadence. Iterations are scheduled to
      begin on the same day of the week as the day of the week of the start date.
    - From the **Duration** dropdown list, select how many weeks each iteration should last.
    - From the **Upcoming iterations** dropdown list, select how many upcoming iterations should be
@@ -77,8 +77,7 @@ From there you can create a new iteration or select an iteration to get a more d
 NOTE:
 If a project has issue tracking
 [turned off](../../project/settings/index.md#configure-project-visibility-features-and-permissions),
-you can view the iterations list
-by going to its URL. To do so, add: `/-/cadences` to your project or group URL.
+to view the iterations list, enter its URL. To do so, add: `/-/cadences` to your project or group URL.
 For example `https://gitlab.com/gitlab-org/sample-data-templates/sample-gitlab-project/-/cadences`.
 This is tracked in [issue 339009](https://gitlab.com/gitlab-org/gitlab/-/issues/339009).
 

@@ -77,9 +77,9 @@ RSpec.describe 'Group merge requests page', feature_category: :code_review_workf
     end
 
     it 'shows projects only with merge requests feature enabled', :js do
-      find('.js-new-project-item-link').click
+      click_button 'Select project to create merge request'
 
-      page.within('.select2-results') do
+      page.within('[data-testid="new-resource-dropdown"]') do
         expect(page).to have_content(project.name_with_namespace)
         expect(page).not_to have_content(project_with_merge_requests_disabled.name_with_namespace)
       end
@@ -95,7 +95,7 @@ RSpec.describe 'Group merge requests page', feature_category: :code_review_workf
       visit path
 
       expect(page).to have_selector('.empty-state')
-      expect(page).to have_link('Select project to create merge request')
+      expect(page).to have_button('Select project to create merge request')
       expect(page).to have_selector('.issues-filters')
     end
 
@@ -105,7 +105,7 @@ RSpec.describe 'Group merge requests page', feature_category: :code_review_workf
         visit path
 
         expect(page).to have_selector('.empty-state')
-        expect(page).to have_link('Select project to create merge request')
+        expect(page).to have_button('Select project to create merge request')
         expect(page).to have_selector('.issues-filters')
       end
     end

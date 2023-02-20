@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Package defaults **(FREE SELF)**
 
 Unless configuration is specified in the `/etc/gitlab/gitlab.rb` file,
-the package will assume the defaults as noted below.
+the package assumes the defaults as noted below.
 
 ## Ports
 
@@ -49,7 +49,7 @@ by default:
 |      PgBouncer       |      No       |       Port       |      X      |                    6432                    |
 |        Consul        |      No       |       Port       |      X      | 8300, 8301(UDP), 8500, 8600[^Consul-notes] |
 |       Patroni        |      No       |       Port       |      X      |                    8008                    |
-|      GitLab KAS      |      No       |       Port       |      X      |                    8150                    |
+|      GitLab KAS      |      Yes       |       Port       |      X      |                    8150                    |
 |        Gitaly        |      No       |       Port       |      X      |                    8075                    |
 
 Legend:
@@ -63,13 +63,13 @@ Legend:
 GitLab also expects a file system to be ready for the storage of Git repositories
 and various other files.
 
-Note that if you are using NFS (Network File System), files will be carried
-over a network which will require, based on implementation, ports `111` and
+If you are using NFS (Network File System), files are carried
+over a network which requires, based on implementation, ports `111` and
 `2049` to be open.
 
 NOTE:
-In some cases, the GitLab Registry will be automatically enabled by default. See [our documentation](../packages/container_registry.md) for more details.
+In some cases, the GitLab Registry is automatically enabled by default. See [our documentation](../packages/container_registry.md) for more details.
 
  [^Consul-notes]: If using additional Consul functionality, more ports may need to be opened. See the [official documentation](https://developer.hashicorp.com/consul/docs/install/ports#ports-table) for the list.
 
- [^Sidekiq-health]: If Sidekiq health check settings are not set, they will default to the Sidekiq metrics exporter settings. This default is deprecated and is set to be removed in [GitLab 15.0](https://gitlab.com/gitlab-org/gitlab/-/issues/347509).
+ [^Sidekiq-health]: If Sidekiq health check settings are not set, they default to the Sidekiq metrics exporter settings. This default is deprecated and is set to be removed in [GitLab 15.0](https://gitlab.com/gitlab-org/gitlab/-/issues/347509).

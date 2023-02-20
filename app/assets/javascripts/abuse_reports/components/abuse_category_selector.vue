@@ -18,14 +18,17 @@ export default {
     reportAbusePath: {
       default: '',
     },
-    reportedUserId: {
-      default: '',
-    },
-    reportedFromUrl: {
-      default: '',
-    },
   },
   props: {
+    reportedUserId: {
+      type: Number,
+      required: true,
+    },
+    reportedFromUrl: {
+      type: String,
+      required: false,
+      default: '',
+    },
     showDrawer: {
       type: Boolean,
       required: true,
@@ -39,8 +42,8 @@ export default {
   },
   categoryOptions: [
     { value: 'spam', text: s__("ReportAbuse|They're posting spam.") },
-    { value: 'offensive', text: s__("ReportAbuse|They're being offsensive or abusive.") },
-    { value: 'phishing', text: s__("ReportAbuse|They're phising.") },
+    { value: 'offensive', text: s__("ReportAbuse|They're being offensive or abusive.") },
+    { value: 'phishing', text: s__("ReportAbuse|They're phishing.") },
     { value: 'crypto', text: s__("ReportAbuse|They're crypto mining.") },
     {
       value: 'credentials',
@@ -53,12 +56,21 @@ export default {
   data() {
     return {
       selected: '',
+      mounted: false,
     };
   },
   computed: {
     drawerOffsetTop() {
+      // avoid calculating this in advance because it causes layout thrashing
+      // https://gitlab.com/gitlab-org/gitlab/-/issues/331172#note_1269378396
+      if (!this.showDrawer) return '0';
       return getContentWrapperHeight('.content-wrapper');
     },
+  },
+  mounted() {
+    // this is required for the component to properly animate
+    // when it is shown with v-if
+    this.mounted = true;
   },
   methods: {
     closeDrawer() {
@@ -71,7 +83,7 @@ export default {
   <gl-drawer
     :header-height="drawerOffsetTop"
     :z-index="300"
-    :open="showDrawer"
+    :open="showDrawer && mounted"
     @close="closeDrawer"
   >
     <template #title>
@@ -94,7 +106,7 @@ export default {
           data-testid="input-referer"
         />
 
-        <gl-form-group :label="$options.i18n.label">
+        <gl-form-group :label="$options.i18n.label" label-class="gl-text-black-normal">
           <gl-form-radio-group
             v-model="selected"
             :options="$options.categoryOptions"

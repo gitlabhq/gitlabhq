@@ -75,9 +75,9 @@ The base image used in the pipeline is built by the
 This image contains a set of Bash utility scripts to support [Helm v3 releases](https://helm.sh/docs/intro/using_helm/#three-big-concepts).
 
 If you are on a self-managed instance of GitLab, you must modify the `.gitlab-ci.yml` file.
-Specifically, the section that starts with the comment `Automatic package upgrades` will not
+Specifically, the section that starts with the comment `Automatic package upgrades` does not
 work on a self-managed instance, because the `include` refers to a GitLab.com project.
-If you remove everything below this comment, the pipeline will succeed.
+If you remove everything below this comment, the pipeline succeeds.
 
 ### The main `helmfile.yml` file
 

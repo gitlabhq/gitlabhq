@@ -8,7 +8,7 @@
 - group_attributes = @group&.attributes&.slice('id', 'name')&.merge(full_name: @group&.full_name)
 - project_attributes = @project&.attributes&.slice('id', 'namespace_id', 'name')&.merge(name_with_namespace: @project&.name_with_namespace)
 
-- if @search_results
+- if @search_results && !(@search_results.respond_to?(:failed?) && @search_results.failed?)
   - if @search_service_presenter.without_count?
     - page_description(_("%{scope} results for term '%{term}'") % { scope: @scope, term: @search_term })
   - else
@@ -22,6 +22,4 @@
 .gl-mt-3
   #js-search-topbar{ data: { "group-initial-json": group_attributes.to_json, "project-initial-json": project_attributes.to_json, "elasticsearch-enabled": @search_service_presenter.advanced_search_enabled?.to_s, "default-branch-name": @project&.default_branch } }
 - if @search_term
-  - if Feature.disabled?(:search_page_vertical_nav, current_user)
-    = render 'search/category'
   = render 'search/results'

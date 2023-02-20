@@ -2,8 +2,12 @@
   - @left_sidebar = true
 .layout-page.hide-when-top-nav-responsive-open{ class: page_with_sidebar_class }
   - if show_super_sidebar?
-    - sidebar_data = super_sidebar_context(current_user).to_json
+    - sidebar_data = super_sidebar_context(current_user, group: @group, project: @project).to_json
     %aside.js-super-sidebar.nav-sidebar{ data: { root_path: root_path, sidebar: sidebar_data, toggle_new_nav_endpoint: profile_preferences_url } }
+
+    - if display_whats_new?
+      #whats-new-app{ data: { version_digest: whats_new_version_digest } }
+
   - elsif defined?(nav) && nav
     = render "layouts/nav/sidebar/#{nav}"
   .content-wrapper.content-wrapper-margin{ class: "#{@content_wrapper_class}" }

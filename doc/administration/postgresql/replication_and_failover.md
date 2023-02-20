@@ -26,7 +26,7 @@ replication failover requires:
 - A minimum of three PgBouncer nodes that track and handle primary database reads and writes.
   - An internal load balancer (TCP) to balance requests between the PgBouncer nodes.
 - [Database Load Balancing](database_load_balancing.md) enabled.
-  - A local PgBouncer service configured on each PostgreSQL node. Note that this is separate from the main PgBouncer cluster that tracks the primary.
+  - A local PgBouncer service configured on each PostgreSQL node. This is separate from the main PgBouncer cluster that tracks the primary.
 
 ```plantuml
 @startuml
@@ -356,7 +356,7 @@ If you enable Monitoring, it must be enabled on **all** database servers.
 
 #### Enable TLS support for the Patroni API
 
-By default, Patroni's [REST API](https://patroni.readthedocs.io/en/latest/rest_api.html#rest-api) is served over HTTP.
+By default, the Patroni [REST API](https://patroni.readthedocs.io/en/latest/rest_api.html#rest-api) is served over HTTP.
 You have the option to enable TLS and use HTTPS over the same [port](../package_information/defaults.md).
 
 To enable TLS, you need PEM-formatted certificate and private key files. Both files must be readable by the PostgreSQL user (`gitlab-psql` by default, or the one set by `postgresql['username']`):
@@ -1009,7 +1009,7 @@ Here are a few key facts that you must consider before upgrading PostgreSQL:
   GitLab deployment is down for the duration of database upgrade or, at least, as long as your leader
   node is upgraded. This can be **a significant downtime depending on the size of your database**.
 
-- Upgrading PostgreSQL creates a new data directory with a new control data. From Patroni's perspective this is a new cluster that needs to be bootstrapped again. Therefore, as part of the upgrade procedure, the cluster state (stored in Consul) is wiped out. After the upgrade is complete, Patroni bootstraps a new cluster. **This changes your _cluster ID_**.
+- Upgrading PostgreSQL creates a new data directory with a new control data. From the perspective of Petroni, this is a new cluster that needs to be bootstrapped again. Therefore, as part of the upgrade procedure, the cluster state (stored in Consul) is wiped out. After the upgrade is complete, Patroni bootstraps a new cluster. **This changes your _cluster ID_**.
 
 - The procedures for upgrading leader and replicas are not the same. That is why it is important to use the right procedure on each node.
 
@@ -1017,7 +1017,7 @@ Here are a few key facts that you must consider before upgrading PostgreSQL:
   configured replication method (`pg_basebackup` is the only available option). It might take some
   time for replica to catch up with the leader, depending on the size of your database.
 
-- An overview of the upgrade procedure is outlined in [Patroni's documentation](https://patroni.readthedocs.io/en/latest/existing_data.html#major-upgrade-of-postgresql-version).
+- An overview of the upgrade procedure is outlined in [the Patroni documentation](https://patroni.readthedocs.io/en/latest/existing_data.html#major-upgrade-of-postgresql-version).
   You can still use `gitlab-ctl pg-upgrade` which implements this procedure with a few adjustments.
 
 Considering these, you should carefully plan your PostgreSQL upgrade:
@@ -1322,7 +1322,7 @@ If a replica cannot start or rejoin the cluster, or when it lags behind and cann
    +-------------------------------------+--------------+---------+--------------+----+-----------+
    ```
 
-1. Sign in to the broken server and reinitialize the database and replication. Patroni will shut
+1. Sign in to the broken server and reinitialize the database and replication. Patroni shuts
    down PostgreSQL on that server, remove the data directory, and reinitialize it from scratch:
 
    ```shell
@@ -1330,7 +1330,7 @@ If a replica cannot start or rejoin the cluster, or when it lags behind and cann
    ```
 
    This can be run on any Patroni node, but be aware that `sudo gitlab-ctl patroni
-   reinitialize-replica` without `--member` will reinitialize the server it is run on.
+   reinitialize-replica` without `--member` restarts the server it is run on.
    It is recommended to run it locally on the broken server to reduce the risk of
    unintended data loss.
 1. Monitor the logs:

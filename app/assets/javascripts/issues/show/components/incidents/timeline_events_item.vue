@@ -32,15 +32,18 @@ export default {
       type: String,
       required: true,
     },
-    eventTag: {
-      type: String,
+    eventTags: {
+      type: Array,
       required: false,
-      default: null,
+      default: () => [],
     },
   },
   computed: {
     time() {
       return formatDate(this.occurredAt, 'HH:MM', true);
+    },
+    canEditEvent() {
+      return this.action === 'comment';
     },
   },
   methods: {
@@ -51,19 +54,24 @@ export default {
 <template>
   <div class="timeline-event gl-display-grid">
     <div
-      class="gl-display-flex gl-align-items-center gl-justify-content-center gl-bg-white gl-text-gray-200 gl-border-gray-100 gl-border-1 gl-border-solid gl-rounded-full gl-mt-2 gl-mr-3 gl-w-8 gl-h-8 gl-p-3 gl-z-index-1"
+      class="gl-display-flex gl-align-items-center gl-justify-content-center gl-bg-white gl-text-gray-200 gl-border-gray-100 gl-border-1 gl-border-solid gl-rounded-full gl-mt-2 gl-w-8 gl-h-8 gl-p-3 gl-z-index-1"
     >
       <gl-icon :name="getEventIcon(action)" class="note-icon" />
     </div>
     <div class="timeline-event-note timeline-event-border" data-testid="event-text-container">
-      <div class="gl-display-flex gl-align-items-center gl-mb-3">
-        <strong class="gl-font-lg" data-testid="event-time">
+      <div class="gl-display-flex gl-flex-wrap gl-align-items-center gl-gap-3 gl-mb-2">
+        <h3
+          class="timeline-event-note-date gl-font-weight-bold gl-font-sm gl-my-0"
+          data-testid="event-time"
+        >
           <gl-sprintf :message="$options.i18n.timeUTC">
-            <template #time>{{ time }}</template>
+            <template #time>
+              <span class="gl-font-lg">{{ time }}</span>
+            </template>
           </gl-sprintf>
-        </strong>
-        <gl-badge v-if="eventTag" variant="muted" icon="tag" class="gl-ml-3">
-          {{ eventTag }}
+        </h3>
+        <gl-badge v-for="tag in eventTags" :key="tag.key" variant="muted" icon="tag">
+          {{ tag.name }}
         </gl-badge>
       </div>
       <div v-safe-html="noteHtml" class="md"></div>
@@ -78,7 +86,7 @@ export default {
       category="tertiary"
       no-caret
     >
-      <gl-dropdown-item @click="$emit('edit')">
+      <gl-dropdown-item v-if="canEditEvent" @click="$emit('edit')">
         {{ $options.i18n.edit }}
       </gl-dropdown-item>
       <gl-dropdown-item @click="$emit('delete')">

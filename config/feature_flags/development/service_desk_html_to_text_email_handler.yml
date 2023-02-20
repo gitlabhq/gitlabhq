@@ -1,0 +1,8 @@
+---
+name: service_desk_html_to_text_email_handler
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/109811
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/372301
+milestone: '15.9'
+type: development
+group: group::respond
+default_enabled: false

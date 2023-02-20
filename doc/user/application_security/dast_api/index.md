@@ -5,13 +5,13 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference, howto
 ---
 
-# DAST API **(ULTIMATE)**
+# DAST API analyzer **(ULTIMATE)**
 
 > DAST API analyzer [became the default analyzer for on-demand DAST API scans](https://gitlab.com/groups/gitlab-org/-/epics/4254) in GitLab 15.6.
 
 Perform Dynamic Application Security Testing (DAST) of web APIs to help discover bugs and potential
 security issues that other QA processes may miss. Use DAST API tests in addition to
-[GitLab Secure](../index.md)'s other security scanners and your own test processes. You can run DAST
+other [GitLab Secure](../index.md) security scanners and your own test processes. You can run DAST
 API tests either as part your CI/CD workflow, [on-demand](../dast/proxy-based.md#on-demand-scans), or both.
 
 WARNING:
@@ -1161,7 +1161,7 @@ Example usage for setting a `body-json` override:
 }
 ```
 
-Note that each JSON property name in the object `body-json` is set to a [JSON Path](https://goessner.net/articles/JsonPath/)
+Each JSON property name in the object `body-json` is set to a [JSON Path](https://goessner.net/articles/JsonPath/)
 expression. The JSON Path expression `$.credentials.access-token` identifies the node to be
 overridden with the value `iddqd!42.$`. The override engine uses `body-json` when the request body
 has only [JSON](https://www.json.org/json-en.html) content.
@@ -1200,7 +1200,7 @@ the second entry overrides an XML element:
 }
 ```
 
-Note that each JSON property name in the object `body-xml` is set to an
+Each JSON property name in the object `body-xml` is set to an
 [XPath v2](https://www.w3.org/TR/xpath20/)
 expression. The XPath expression `/credentials/@isEnabled` identifies the attribute node to override
 with the value `true`. The XPath expression `/credentials/access-token/text()` identifies the
@@ -1340,7 +1340,7 @@ By default the output of the overrides command is hidden. If the overrides comma
 
 It is also possible to write messages from your script to a log file that is collected when the job completes or fails. The log file must be created in a specific location and following a naming convention.
 
-Adding some basic logging to your overrides script is useful in case the script fails unexpectedly during normal running of the job. The log file is automatically included as an artifact of the job, allowing you to download it after the job has finished.
+Adding some basic logging to your overrides script is useful in case the script fails unexpectedly during standard running of the job. The log file is automatically included as an artifact of the job, allowing you to download it after the job has finished.
 
 Following our example, we provided `renew_token.py` in the environment variable `DAST_API_OVERRIDES_CMD`. Notice two things in the script:
 
@@ -1449,7 +1449,7 @@ logging.info("Override file has been updated")
 # end
 ```
 
-In the overrides command example, the Python script depends on the `backoff` library. To make sure the library is installed before executing the Python script, the `DAST_API_PRE_SCRIPT` is set to a script that will install the dependencies of your overrides command.
+In the overrides command example, the Python script depends on the `backoff` library. To make sure the library is installed before executing the Python script, the `DAST_API_PRE_SCRIPT` is set to a script that installs the dependencies of your overrides command.
 As for example, the following script `user-pre-scan-set-up.sh`
 
 ```shell
@@ -1495,7 +1495,7 @@ In the previous sample, you could use the script `user-pre-scan-set-up.sh` to al
 
 The request headers feature lets you specify fixed values for the headers during the scan session. For example, you can use the configuration variable `DAST_API_REQUEST_HEADERS` to set a fixed value in the `Cache-Control` header. If the headers you need to set include sensitive values like the `Authorization` header, use the [masked variable](../../../ci/variables/index.md#mask-a-cicd-variable) feature along with the [variable `DAST_API_REQUEST_HEADERS_BASE64`](#base64).
 
-Note that if the `Authorization` header or any other header needs to get updated while the scan is in progress, consider using the [overrides](#overrides) feature.
+If the `Authorization` header or any other header needs to get updated while the scan is in progress, consider using the [overrides](#overrides) feature.
 
 The variable `DAST_API_REQUEST_HEADERS` lets you specify a comma-separated (`,`) list of headers. These headers are included on each request that the scanner performs. Each header entry in the list consists of a name followed by a colon (`:`) and then by its value. Whitespace before the key or value is ignored. For example, to declare a header name `Cache-Control` with the value `max-age=604800`, the header entry is `Cache-Control: max-age=604800`. To use two headers, `Cache-Control: max-age=604800` and `Age: 100`, set `DAST_API_REQUEST_HEADERS` variable to `Cache-Control: max-age=604800, Age: 100`.
 
@@ -1606,7 +1606,7 @@ variables:
 
 While testing an API you may might want to exclude a parameter (query string, header, or body element) from testing. This may be needed because a parameter always causes a failure, slows down testing, or for other reasons. To exclude parameters, you can set one of the following variables: `DAST_API_EXCLUDE_PARAMETER_ENV` or `DAST_API_EXCLUDE_PARAMETER_FILE`.
 
-The `DAST_API_EXCLUDE_PARAMETER_ENV` allows providing a JSON string containing excluded parameters. This is a good option if the JSON is short and will not often change. Another option is the variable `DAST_API_EXCLUDE_PARAMETER_FILE`. This variable is set to a file path that can be checked into the repository, created by another job as an artifact, or generated at runtime with a pre-script using `DAST_API_PRE_SCRIPT`.
+The `DAST_API_EXCLUDE_PARAMETER_ENV` allows providing a JSON string containing excluded parameters. This is a good option if the JSON is short and does not change often. Another option is the variable `DAST_API_EXCLUDE_PARAMETER_FILE`. This variable is set to a file path that can be checked into the repository, created by another job as an artifact, or generated at runtime with a pre-script using `DAST_API_PRE_SCRIPT`.
 
 #### Exclude parameters using a JSON document
 
@@ -1833,7 +1833,7 @@ The `dast-api-exclude-parameters.json` is a JSON document that follows the struc
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/357195) in GitLab 14.10.
 
-As an alternative to excluding by paths, you can filter by any other component in the URL by using the `DAST_API_EXCLUDE_URLS` CI/CD variable. This variable can be set in your `.gitlab-ci.yml` file. The variable can store multiple values, separated by commas (`,`). Each value is a regular expression. Because each entry is a regular expression, an entry like `.*` will exclude all URLs because it is a regular expression that matches everything.
+As an alternative to excluding by paths, you can filter by any other component in the URL by using the `DAST_API_EXCLUDE_URLS` CI/CD variable. This variable can be set in your `.gitlab-ci.yml` file. The variable can store multiple values, separated by commas (`,`). Each value is a regular expression. Because each entry is a regular expression, an entry like `.*` excludes all URLs because it is a regular expression that matches everything.
 
 In your job output you can check if any URLs matched any provided regular expression from `DAST_API_EXCLUDE_URLS`. Matching operations are listed in the **Excluded Operations** section. Operations listed in the **Excluded Operations** should not be listed in the **Tested Operations** section. For example the following portion of a job output:
 
@@ -1888,7 +1888,7 @@ variables:
 
 ##### Excluding two URLs and their child resources
 
-In order to exclude the URLs: `http://target/api/buy` and `http://target/api/sell`, and their child resources. To provide multiple URLs we use the `,` character as follows:
+To exclude the URLs: `http://target/api/buy` and `http://target/api/sell`, and their child resources. To provide multiple URLs we use the `,` character as follows:
 
 ```yaml
 stages:
@@ -1905,7 +1905,7 @@ variables:
 
 ##### Excluding URL using regular expressions
 
-In order to exclude exactly `https://target/api/v1/user/create` and `https://target/api/v2/user/create` or any other version (`v3`,`v4`, and more). We could use `https://target/api/v.*/user/create$`, in the previous regular expression `.` indicates any character and `*` indicates zero or more times, additionally `$` indicates that the URL should end there.
+To exclude exactly `https://target/api/v1/user/create` and `https://target/api/v2/user/create` or any other version (`v3`,`v4`, and more). We could use `https://target/api/v.*/user/create$`, in the previous regular expression `.` indicates any character and `*` indicates zero or more times, additionally `$` indicates that the URL should end there.
 
 ```yaml
 stages:
@@ -1922,7 +1922,7 @@ variables:
 
 ## Running your first scan
 
-When configured correctly, a CI/CD pipeline contains a `dast` stage and an `dast_api` job. The job only fails when an invalid configuration is provided. During normal operation, the job always succeeds even if vulnerabilities are identified during testing.
+When configured correctly, a CI/CD pipeline contains a `dast` stage and an `dast_api` job. The job only fails when an invalid configuration is provided. During typical operation, the job always succeeds even if vulnerabilities are identified during testing.
 
 Vulnerabilities are displayed on the **Security** pipeline tab with the suite name. When testing against the repositories default branch, the DAST API vulnerabilities are also shown on the Security & Compliance's Vulnerability Report page.
 
@@ -1941,7 +1941,7 @@ Follow these steps to view details of a vulnerability:
 
 1. You can view vulnerabilities in a project, or a merge request:
 
-   - In a project, go to the project's **{shield}** **Security & Compliance > Vulnerability Report**
+   - In a project, go to the project's **Security & Compliance > Vulnerability Report**
      page. This page shows all vulnerabilities from the default branch only.
    - In a merge request, go the merge request's **Security** section and select the **Expand**
      button. DAST API vulnerabilities are available in a section labeled
@@ -1957,7 +1957,7 @@ Follow these steps to view details of a vulnerability:
    | Method              | HTTP method used to detect the vulnerability.                                           |
    | URL                 | URL at which the vulnerability was detected.                                            |
    | Request             | The HTTP request that caused the vulnerability.                                         |
-   | Unmodified Response | Response from an unmodified request. This is what a normal working response looks like. |
+   | Unmodified Response | Response from an unmodified request. This is what a typical working response looks like.|
    | Actual Response     | Response received from test request.                                                    |
    | Evidence            | How we determined a vulnerability occurred.                                             |
    | Identifiers         | The DAST API check used to find this vulnerability.                                     |
@@ -2274,7 +2274,7 @@ dast_api_v2:
 
 In the case of one or two slow operations, the team might decide to skip testing the operations, or exclude them from feature branch tests, but include them for default branch tests. Excluding the operation is done using the `DAST_API_EXCLUDE_PATHS` configuration [variable as explained in this section.](#exclude-paths)
 
-In this example, we have an operation that returns a large amount of data. The operation is `GET http://target:7777/api/large_response_json`. To exclude it we provide the `DAST_API_EXCLUDE_PATHS` configuration variable with the path portion of our operation URL `/api/large_response_json`. Our configuration disables the main `dast_api` job and creates two new jobs `dast_api_main` and `dast_api_branch`. The `dast_api_branch` is set up to exclude the long operation and only run on non-default branches (e.g. feature branches). The `dast_api_main` branch is set up to only execute on the default branch (`main` in this example). The `dast_api_branch` jobs run faster, allowing for quick development cycles, while the `dast_api_main` job which only runs on default branch builds, takes longer to run.
+In this example, we have an operation that returns a large amount of data. The operation is `GET http://target:7777/api/large_response_json`. To exclude it we provide the `DAST_API_EXCLUDE_PATHS` configuration variable with the path portion of our operation URL `/api/large_response_json`. Our configuration disables the main `dast_api` job and creates two new jobs `dast_api_main` and `dast_api_branch`. The `dast_api_branch` is set up to exclude the long operation and only run on non-default branches (for example, feature branches). The `dast_api_main` branch is set up to only execute on the default branch (`main` in this example). The `dast_api_branch` jobs run faster, allowing for quick development cycles, while the `dast_api_main` job which only runs on default branch builds, takes longer to run.
 
 To verify the operation is excluded, run the DAST API job and review the job console output. It includes a list of included and excluded operations at the end of the test.
 
@@ -2368,7 +2368,7 @@ The DAST API engine outputs an error message when it cannot establish a connecti
 
 **Solution**
 
-- Remove the `DAST_API_API` variable from the `.gitlab-ci.yml` file. The value will be inherited from the DAST API CI/CD template. We recommend this method instead of manually setting a value.
+- Remove the `DAST_API_API` variable from the `.gitlab-ci.yml` file. The value inherits from the DAST API CI/CD template. We recommend this method instead of manually setting a value.
 - If removing the variable is not possible, check to see if this value has changed in the latest version of the [DAST API CI/CD template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/DAST-API.gitlab-ci.yml). If so, update the value in the `.gitlab-ci.yml` file.
 
 ### `Failed to start session with scanner. Please retry, and if the problem persists reach out to support.`
@@ -2412,9 +2412,9 @@ Once you have confirmed the issue was produced because the port was already take
 
 The DAST API engine outputs an error message when it cannot determine the target API after inspecting the OpenAPI document. This error message is shown when the target API has not been set in the `.gitlab-ci.yml` file, it is not available in the `environment_url.txt` file, and it could not be computed using the OpenAPI document.
 
-There is a order of precedence in which the DAST API engine tries to get the target API when checking the different sources. First, it will try to use the `DAST_API_TARGET_URL`. If the environment variable has not been set, then the DAST API engine will attempt to use the `environment_url.txt` file. If there is no file `environment_url.txt`, then the DAST API engine will use the OpenAPI document contents and the URL provided in `DAST_API_OPENAPI` (if a URL is provided) to try to compute the target API.
+There is a order of precedence in which the DAST API engine tries to get the target API when checking the different sources. First, it tries to use the `DAST_API_TARGET_URL`. If the environment variable has not been set, then the DAST API engine attempts to use the `environment_url.txt` file. If there is no file `environment_url.txt`, then the DAST API engine uses the OpenAPI document contents and the URL provided in `DAST_API_OPENAPI` (if a URL is provided) to try to compute the target API.
 
-The best-suited solution will depend on whether or not your target API changes for each deployment. In static environments, the target API is the same for each deployment, in this case refer to the [static environment solution](#static-environment-solution). If the target API changes for each deployment a [dynamic environment solution](#dynamic-environment-solutions) should be applied.
+The best-suited solution depends on whether or not your target API changes for each deployment. In static environments, the target API is the same for each deployment, in this case refer to the [static environment solution](#static-environment-solution). If the target API changes for each deployment a [dynamic environment solution](#dynamic-environment-solutions) should be applied.
 
 #### Static environment solution
 
@@ -2498,7 +2498,7 @@ variables:
 
 ### `No operation in the OpenAPI document is consuming any supported media type`
 
-DAST API uses the specified media types in the OpenAPI document to generate requests. If no request can be created due to the lack of supported media types, then an error will be thrown.
+DAST API uses the specified media types in the OpenAPI document to generate requests. If no request can be created due to the lack of supported media types, then an error is thrown.
 
 **Error message**
 

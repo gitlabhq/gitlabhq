@@ -395,7 +395,7 @@ class ContainerRepository < ApplicationRecord
   end
 
   def migrated?
-    MIGRATION_PHASE_1_ENDED_AT < self.created_at || import_done?
+    (self.created_at && MIGRATION_PHASE_1_ENDED_AT < self.created_at) || import_done?
   end
 
   def last_import_step_done_at
@@ -497,7 +497,7 @@ class ContainerRepository < ApplicationRecord
 
     digests = tags.map { |tag| tag.digest }.compact.to_set
 
-    digests.map(&method(:delete_tag_by_digest)).all?
+    digests.map { |digest| delete_tag_by_digest(digest) }.all?
   end
 
   def delete_tag_by_digest(digest)

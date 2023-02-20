@@ -6,10 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Deploy tokens **(FREE)**
 
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/199370) from **Settings > Repository** to **Settings > CI/CD** in GitLab 12.9.
-> - [Added](https://gitlab.com/gitlab-org/gitlab/-/issues/22743) `write_registry` scope in GitLab 12.10.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/29280) from **Settings > CI/CD** to **Settings > Repository** in GitLab 12.10.1.
-> - [Added](https://gitlab.com/gitlab-org/gitlab/-/issues/213566) package registry scopes in GitLab 13.0.
+> [Added](https://gitlab.com/gitlab-org/gitlab/-/issues/213566) package registry scopes in GitLab 13.0.
 
 You can use a deploy token to enable authentication of deployment tasks, independent of a user
 account. In most cases you use a deploy token from an external host, like a build server or CI/CD
@@ -41,7 +38,9 @@ You can create deploy tokens at either the project or group level:
 By default, a deploy token does not expire. You can optionally set an expiry date when you create
 it. Expiry occurs at midnight UTC on that date.
 
-Deploy tokens can't be used for Git operations and Package Registry operations if [external authorization](../../admin_area/settings/external_authorization.md) is enabled.
+WARNING:
+You cannot use new or existing deploy tokens for Git operations and Package Registry operations if
+[external authorization](../../admin_area/settings/external_authorization.md) is enabled.
 
 ## Scope
 
@@ -185,7 +184,7 @@ nuget source Add -Name GitLab -Source "https://gitlab.example.com/api/v4/project
 nuget install mypkg.nupkg
 ```
 
-## Push packages to a package repository
+## Push packages to a package registry
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/213566) in GitLab 13.0.
 

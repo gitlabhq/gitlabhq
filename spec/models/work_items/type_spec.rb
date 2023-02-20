@@ -10,6 +10,20 @@ RSpec.describe WorkItems::Type do
   describe 'associations' do
     it { is_expected.to have_many(:work_items).with_foreign_key('work_item_type_id') }
     it { is_expected.to belong_to(:namespace) }
+
+    it 'has many `widget_definitions`' do
+      is_expected.to have_many(:widget_definitions)
+        .class_name('::WorkItems::WidgetDefinition')
+        .with_foreign_key('work_item_type_id')
+    end
+
+    it 'has many `enabled_widget_definitions`' do
+      type = create(:work_item_type)
+      widget1 = create(:widget_definition, work_item_type: type)
+      create(:widget_definition, work_item_type: type, disabled: true)
+
+      expect(type.enabled_widget_definitions).to match_array([widget1])
+    end
   end
 
   describe 'scopes' do
@@ -60,29 +74,14 @@ RSpec.describe WorkItems::Type do
     it { is_expected.not_to allow_value('s' * 256).for(:icon_name) }
   end
 
-  describe '.available_widgets' do
-    subject { described_class.available_widgets }
-
-    it 'returns list of all possible widgets' do
-      is_expected.to include(
-        ::WorkItems::Widgets::Description,
-        ::WorkItems::Widgets::Hierarchy,
-        ::WorkItems::Widgets::Labels,
-        ::WorkItems::Widgets::Assignees,
-        ::WorkItems::Widgets::StartAndDueDate,
-        ::WorkItems::Widgets::Milestone,
-        ::WorkItems::Widgets::Notes
-      )
-    end
-  end
-
   describe '.default_by_type' do
     let(:default_issue_type) { described_class.find_by(namespace_id: nil, base_type: :issue) }
 
     subject { described_class.default_by_type(:issue) }
 
     it 'returns default work item type by base type without calling importer' do
-      expect(Gitlab::DatabaseImporters::WorkItems::BaseTypeImporter).not_to receive(:upsert_types)
+      expect(Gitlab::DatabaseImporters::WorkItems::BaseTypeImporter).not_to receive(:upsert_types).and_call_original
+      expect(Gitlab::DatabaseImporters::WorkItems::BaseTypeImporter).not_to receive(:upsert_widgets)
       expect(Gitlab::DatabaseImporters::WorkItems::HierarchyRestrictionsImporter).not_to receive(:upsert_restrictions)
 
       expect(subject).to eq(default_issue_type)
@@ -94,7 +93,8 @@ RSpec.describe WorkItems::Type do
       end
 
       it 'creates types and restrictions and returns default work item type by base type' do
-        expect(Gitlab::DatabaseImporters::WorkItems::BaseTypeImporter).to receive(:upsert_types)
+        expect(Gitlab::DatabaseImporters::WorkItems::BaseTypeImporter).to receive(:upsert_types).and_call_original
+        expect(Gitlab::DatabaseImporters::WorkItems::BaseTypeImporter).to receive(:upsert_widgets)
         expect(Gitlab::DatabaseImporters::WorkItems::HierarchyRestrictionsImporter).to receive(:upsert_restrictions)
 
         expect(subject).to eq(default_issue_type)
@@ -124,6 +124,43 @@ RSpec.describe WorkItems::Type do
       work_item_type.valid?
 
       expect(work_item_type.name).to eq('label😸')
+    end
+  end
+
+  describe '#supports_assignee?' do
+    let_it_be_with_reload(:work_item_type) { create(:work_item_type) }
+    let_it_be_with_reload(:widget_definition) do
+      create(:widget_definition, work_item_type: work_item_type, widget_type: :assignees)
+    end
+
+    subject(:supports_assignee) { work_item_type.supports_assignee? }
+
+    it { is_expected.to be_truthy }
+
+    context 'when the assignees widget is not supported' do
+      before do
+        widget_definition.update!(disabled: true)
+      end
+
+      it { is_expected.to be_falsey }
+    end
+  end
+
+  describe '#default_issue?' do
+    context 'when work item type is default Issue' do
+      let(:work_item_type) { build(:work_item_type, name: described_class::TYPE_NAMES[:issue]) }
+
+      it 'returns true' do
+        expect(work_item_type.default_issue?).to be(true)
+      end
+    end
+
+    context 'when work item type is not Issue' do
+      let(:work_item_type) { build(:work_item_type) }
+
+      it 'returns false' do
+        expect(work_item_type.default_issue?).to be(false)
+      end
     end
   end
 end

@@ -22,7 +22,7 @@ usage.
 Use these tools and techniques to determine your image's size:
 
 - [Skopeo](https://github.com/containers/skopeo):
-  use Skopeo's `inspect` command to examine layer count and sizes through API calls. You can
+  use the Skopeo `inspect` command to examine layer count and sizes through API calls. You can
   therefore inspect this data prior to running `docker pull IMAGE`.
 
 - Docker in CI: examine and record the image size when using GitLab CI prior to pushing an image
@@ -41,7 +41,7 @@ Use these tools and techniques to determine your image's size:
 ### Use a smaller base image
 
 Consider using a smaller base image, such as [Alpine Linux](https://alpinelinux.org/).
-An Alpine image is around 5MB, which is several times smaller than popular base images such as
+An Alpine image is around 5 MB, which is several times smaller than popular base images such as
 [Debian](https://hub.docker.com/_/debian).
 If your application is distributed as a self-contained static binary, such as for Go applications,
 you can also consider using the Docker [scratch](https://hub.docker.com/_/scratch/)

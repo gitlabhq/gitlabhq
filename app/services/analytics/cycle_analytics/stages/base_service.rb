@@ -37,7 +37,7 @@ module Analytics
         end
 
         def value_stream
-          @value_stream ||= params[:value_stream]
+          @value_stream ||= params.fetch(:value_stream)
         end
       end
     end

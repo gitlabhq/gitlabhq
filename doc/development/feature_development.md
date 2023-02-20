@@ -22,7 +22,7 @@ Consult these topics for information on contributing to specific GitLab features
 - [Software design guides](software_design.md)
 - [GitLab EventStore](event_store.md) to publish/subscribe to domain events
 - [GitLab utilities](utilities.md)
-- [Newlines style guide](newlines_styleguide.md)
+- [Newlines style guide](backend/ruby_style_guide.md#newlines-style-guide)
 - [Logging](logging.md)
 - [Dealing with email/mailers](emails.md)
 - [Kubernetes integration guidelines](kubernetes.md)
@@ -81,7 +81,7 @@ Consult these topics for information on contributing to specific GitLab features
 - [Working with Gitaly](gitaly.md)
 - [Elasticsearch integration docs](elasticsearch.md)
 - [Working with merge request diffs](diffs.md)
-- [Approval Rules](approval_rules.md)
+- [Approval Rules](merge_request_concepts/approval_rules.md)
 - [Repository mirroring](repository_mirroring.md)
 - [Uploads development guide](uploads/index.md)
 - [Auto DevOps development guide](auto_devops.md)

@@ -127,12 +127,6 @@
     :versions: []
     :when: 2017-01-14 20:50:20.037775000 Z
 - - :approve
-  - select2
-  - :who: Matt Lee
-    :why: https://github.com/select2/select2/blob/master/LICENSE.md
-    :versions: []
-    :when: 2017-01-14 20:10:53.909618000 Z
-- - :approve
   - opener
   - :who: Mike Greiling
     :why: https://github.com/domenic/opener/blob/1.4.3/LICENSE.txt

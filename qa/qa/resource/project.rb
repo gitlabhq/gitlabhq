@@ -198,6 +198,10 @@ module QA
         "#{api_get_path}/pipelines"
       end
 
+      def api_latest_pipeline_path
+        "#{api_pipelines_path}/latest"
+      end
+
       def api_pipeline_schedules_path
         "#{api_get_path}/pipeline_schedules"
       end
@@ -400,6 +404,10 @@ module QA
         auto_paginated_response(request_url(api_pipelines_path, per_page: '100'), attempts: attempts)
       end
 
+      def latest_pipeline
+        parse_body(api_get_from(api_latest_pipeline_path))
+      end
+
       def jobs
         response = get(request_url(api_jobs_path))
         parse_body(response)
@@ -450,7 +458,7 @@ module QA
         parse_body(response)
       end
 
-      # Fetch project specific runners
+      # Fetch project runners
       #
       # @param [Hash] **kwargs optional query arguments, see: https://docs.gitlab.com/ee/api/runners.html#list-projects-runners
       # @return [Array]

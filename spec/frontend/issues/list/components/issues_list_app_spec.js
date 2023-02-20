@@ -22,6 +22,7 @@ import {
   urlParams,
 } from 'jest/issues/list/mock_data';
 import { createAlert, VARIANT_INFO } from '~/flash';
+import { TYPENAME_USER } from '~/graphql_shared/constants';
 import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import CsvImportExportButtons from '~/issuable/components/csv_import_export_buttons.vue';
 import IssuableByEmail from '~/issuable/components/issuable_by_email.vue';
@@ -30,7 +31,7 @@ import { IssuableListTabs, IssuableStates } from '~/vue_shared/issuable/list/con
 import EmptyStateWithAnyIssues from '~/issues/list/components/empty_state_with_any_issues.vue';
 import EmptyStateWithoutAnyIssues from '~/issues/list/components/empty_state_without_any_issues.vue';
 import IssuesListApp from '~/issues/list/components/issues_list_app.vue';
-import NewIssueDropdown from '~/issues/list/components/new_issue_dropdown.vue';
+import NewResourceDropdown from '~/vue_shared/components/new_resource_dropdown/new_resource_dropdown.vue';
 import {
   CREATED_DESC,
   RELATIVE_POSITION,
@@ -42,6 +43,7 @@ import eventHub from '~/issues/list/eventhub';
 import setSortPreferenceMutation from '~/issues/list/queries/set_sort_preference.mutation.graphql';
 import { getSortKey, getSortOptions } from '~/issues/list/utils';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_INTERNAL_SERVER_ERROR } from '~/lib/utils/http_status';
 import { scrollUp } from '~/lib/utils/scroll_utils';
 import { joinPaths } from '~/lib/utils/url_utility';
 import {
@@ -51,7 +53,6 @@ import {
   WORK_ITEM_TYPE_ENUM_TEST_CASE,
 } from '~/work_items/constants';
 import {
-  FILTERED_SEARCH_TERM,
   TOKEN_TYPE_ASSIGNEE,
   TOKEN_TYPE_AUTHOR,
   TOKEN_TYPE_CONFIDENTIAL,
@@ -98,7 +99,6 @@ describe('CE IssuesListApp component', () => {
     hasScopedLabelsFeature: true,
     initialEmail: 'email@example.com',
     initialSort: CREATED_DESC,
-    isAnonymousSearchDisabled: false,
     isIssueRepositioningDisabled: false,
     isProject: true,
     isPublicVisibilityRestricted: false,
@@ -129,7 +129,12 @@ describe('CE IssuesListApp component', () => {
   const findGlButtons = () => wrapper.findAllComponents(GlButton);
   const findGlButtonAt = (index) => findGlButtons().at(index);
   const findIssuableList = () => wrapper.findComponent(IssuableList);
-  const findNewIssueDropdown = () => wrapper.findComponent(NewIssueDropdown);
+  const findNewResourceDropdown = () => wrapper.findComponent(NewResourceDropdown);
+
+  const findLabelsToken = () =>
+    findIssuableList()
+      .props('searchTokens')
+      .find((token) => token.type === TOKEN_TYPE_LABEL);
 
   const mountComponent = ({
     provide = {},
@@ -179,7 +184,7 @@ describe('CE IssuesListApp component', () => {
       return waitForPromises();
     });
 
-    it('renders', () => {
+    it('renders', async () => {
       expect(findIssuableList().props()).toMatchObject({
         namespace: defaultProvide.fullPath,
         recentSearchesStorageKey: 'issues',
@@ -314,13 +319,13 @@ describe('CE IssuesListApp component', () => {
       it('does not render in a project context', () => {
         wrapper = mountComponent({ provide: { isProject: true }, mountFn: mount });
 
-        expect(findNewIssueDropdown().exists()).toBe(false);
+        expect(findNewResourceDropdown().exists()).toBe(false);
       });
 
       it('renders in a group context', () => {
         wrapper = mountComponent({ provide: { isProject: false }, mountFn: mount });
 
-        expect(findNewIssueDropdown().exists()).toBe(true);
+        expect(findNewResourceDropdown().exists()).toBe(true);
       });
     });
   });
@@ -425,27 +430,6 @@ describe('CE IssuesListApp component', () => {
         wrapper = mountComponent();
 
         expect(findIssuableList().props('initialFilterValue')).toEqual(filteredTokens);
-      });
-
-      describe('when anonymous searching is performed', () => {
-        beforeEach(() => {
-          setWindowLocation(locationSearch);
-          wrapper = mountComponent({
-            provide: { isAnonymousSearchDisabled: true, isSignedIn: false },
-          });
-        });
-
-        it('is set from url params and removes search terms', () => {
-          const expected = filteredTokens.filter((token) => token.type !== FILTERED_SEARCH_TERM);
-          expect(findIssuableList().props('initialFilterValue')).toEqual(expected);
-        });
-
-        it('shows an alert to tell the user they must be signed in to search', () => {
-          expect(createAlert).toHaveBeenCalledWith({
-            message: IssuesListApp.i18n.anonymousSearchingMessage,
-            variant: VARIANT_INFO,
-          });
-        });
       });
     });
   });
@@ -585,7 +569,7 @@ describe('CE IssuesListApp component', () => {
 
       it('renders all tokens alphabetically', () => {
         const preloadedUsers = [
-          { ...mockCurrentUser, id: convertToGraphQLId('User', mockCurrentUser.id) },
+          { ...mockCurrentUser, id: convertToGraphQLId(TYPENAME_USER, mockCurrentUser.id) },
         ];
 
         expect(findIssuableList().props('searchTokens')).toMatchObject([
@@ -782,7 +766,9 @@ describe('CE IssuesListApp component', () => {
         });
 
         it('displays an error message', async () => {
-          axiosMock.onPut(joinPaths(issueOne.webPath, 'reorder')).reply(500);
+          axiosMock
+            .onPut(joinPaths(issueOne.webPath, 'reorder'))
+            .reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
 
           findIssuableList().vm.$emit('reorder', { oldIndex: 0, newIndex: 1 });
           await waitForPromises();
@@ -903,29 +889,6 @@ describe('CE IssuesListApp component', () => {
           query: expect.objectContaining(urlParams),
         });
       });
-
-      describe('when anonymous searching is performed', () => {
-        beforeEach(() => {
-          wrapper = mountComponent({
-            provide: { isAnonymousSearchDisabled: true, isSignedIn: false },
-          });
-          router.push = jest.fn();
-
-          findIssuableList().vm.$emit('filter', filteredTokens);
-        });
-
-        it('removes search terms', () => {
-          const expected = filteredTokens.filter((token) => token.type !== FILTERED_SEARCH_TERM);
-          expect(findIssuableList().props('initialFilterValue')).toEqual(expected);
-        });
-
-        it('shows an alert to tell the user they must be signed in to search', () => {
-          expect(createAlert).toHaveBeenCalledWith({
-            message: IssuesListApp.i18n.anonymousSearchingMessage,
-            variant: VARIANT_INFO,
-          });
-        });
-      });
     });
 
     describe('when "page-size-change" event is emitted by IssuableList', () => {
@@ -981,6 +944,32 @@ describe('CE IssuesListApp component', () => {
       expect(mockIssuesCountsQueryResponse).toHaveBeenCalledWith(
         expect.objectContaining({ types }),
       );
+    });
+  });
+
+  describe('when providing token for labels', () => {
+    it('passes function to fetchLatestLabels property if frontend caching is enabled', () => {
+      wrapper = mountComponent({
+        provide: {
+          glFeatures: {
+            frontendCaching: true,
+          },
+        },
+      });
+
+      expect(typeof findLabelsToken().fetchLatestLabels).toBe('function');
+    });
+
+    it('passes null to fetchLatestLabels property if frontend caching is disabled', () => {
+      wrapper = mountComponent({
+        provide: {
+          glFeatures: {
+            frontendCaching: false,
+          },
+        },
+      });
+
+      expect(findLabelsToken().fetchLatestLabels).toBe(null);
     });
   });
 });

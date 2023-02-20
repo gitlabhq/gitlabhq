@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::RunnerUpgradeCheck do
+RSpec.describe Gitlab::Ci::RunnerUpgradeCheck, feature_category: :runner_fleet do
   using RSpec::Parameterized::TableSyntax
 
   subject(:instance) { described_class.new(gitlab_version, runner_releases) }
@@ -51,8 +51,8 @@ RSpec.describe Gitlab::Ci::RunnerUpgradeCheck do
           context 'with runner_version from last minor release' do
             let(:runner_version) { 'v14.0.1' }
 
-            it 'returns :not_available' do
-              is_expected.to eq([parsed_runner_version, :not_available])
+            it 'returns :unavailable' do
+              is_expected.to eq([parsed_runner_version, :unavailable])
             end
           end
         end
@@ -85,8 +85,8 @@ RSpec.describe Gitlab::Ci::RunnerUpgradeCheck do
           context 'with a runner_version that is too recent' do
             let(:runner_version) { 'v14.2.0' }
 
-            it 'returns :not_available' do
-              is_expected.to eq([parsed_runner_version, :not_available])
+            it 'returns :unavailable' do
+              is_expected.to eq([parsed_runner_version, :unavailable])
             end
           end
         end
@@ -96,14 +96,14 @@ RSpec.describe Gitlab::Ci::RunnerUpgradeCheck do
 
           context 'with valid params' do
             where(:runner_version, :expected_status, :expected_suggested_version) do
-              'v15.0.0'                      | :not_available | '15.0.0' # not available since the GitLab instance is still on 14.x, a major version might be incompatible, and a patch upgrade is not available
+              'v15.0.0'                      | :unavailable   | '15.0.0' # not available since the GitLab instance is still on 14.x, a major version might be incompatible, and a patch upgrade is not available
               'v14.1.0-rc3'                  | :recommended   | '14.1.1' # recommended since even though the GitLab instance is still on 14.0.x, there is a patch release (14.1.1) available which might contain security fixes
               'v14.1.0~beta.1574.gf6ea9389'  | :recommended   | '14.1.1' # suffixes are correctly handled
               'v14.1.0/1.1.0'                | :recommended   | '14.1.1' # suffixes are correctly handled
               'v14.1.0'                      | :recommended   | '14.1.1' # recommended since even though the GitLab instance is still on 14.0.x, there is a patch release (14.1.1) available which might contain security fixes
               'v14.0.1'                      | :recommended   | '14.0.2' # recommended upgrade since 14.0.2 is available
               'v14.0.2-rc1'                  | :recommended   | '14.0.2' # recommended upgrade since 14.0.2 is available and we'll move out of a release candidate
-              'v14.0.2'                      | :not_available | '14.0.2' # not available since 14.0.2 is the latest 14.0.x release available within the instance's major.minor version
+              'v14.0.2'                      | :unavailable   | '14.0.2' # not available since 14.0.2 is the latest 14.0.x release available within the instance's major.minor version
               'v13.10.1'                     | :available     | '14.0.2' # available upgrade: 14.0.2
               'v13.10.1~beta.1574.gf6ea9389' | :recommended   | '13.10.1' # suffixes are correctly handled, official 13.10.1 is available
               'v13.10.1/1.1.0'               | :recommended   | '13.10.1' # suffixes are correctly handled, official 13.10.1 is available
@@ -125,13 +125,13 @@ RSpec.describe Gitlab::Ci::RunnerUpgradeCheck do
 
           context 'with valid params' do
             where(:runner_version, :expected_status, :expected_suggested_version) do
-              'v14.0.0'                      | :recommended   | '14.0.2'  # recommended upgrade since 14.0.2 is available, even though the GitLab instance is still on 13.x and a major version might be incompatible
-              'v13.10.1'                     | :not_available | '13.10.1' # not available since 13.10.1 is already ahead of GitLab instance version and is the latest patch update for 13.10.x
-              'v13.10.0'                     | :recommended   | '13.10.1' # recommended upgrade since 13.10.1 is available
-              'v13.9.2'                      | :not_available | '13.9.2'  # not_available even though backports are no longer released for this version because the runner is already on the same version as the GitLab version
-              'v13.9.0'                      | :recommended   | '13.9.2'  # recommended upgrade since backports are no longer released for this version
-              'v13.8.1'                      | :recommended   | '13.9.2'  # recommended upgrade since build is too old (missing in records)
-              'v11.4.1'                      | :recommended   | '13.9.2'  # recommended upgrade since build is too old (missing in records)
+              'v14.0.0'                      | :recommended | '14.0.2'  # recommended upgrade since 14.0.2 is available, even though the GitLab instance is still on 13.x and a major version might be incompatible
+              'v13.10.1'                     | :unavailable | '13.10.1' # not available since 13.10.1 is already ahead of GitLab instance version and is the latest patch update for 13.10.x
+              'v13.10.0'                     | :recommended | '13.10.1' # recommended upgrade since 13.10.1 is available
+              'v13.9.2'                      | :unavailable | '13.9.2'  # not available even though backports are no longer released for this version because the runner is already on the same version as the GitLab version
+              'v13.9.0'                      | :recommended | '13.9.2'  # recommended upgrade since backports are no longer released for this version
+              'v13.8.1'                      | :recommended | '13.9.2'  # recommended upgrade since build is too old (missing in records)
+              'v11.4.1'                      | :recommended | '13.9.2'  # recommended upgrade since build is too old (missing in records)
             end
 
             with_them do

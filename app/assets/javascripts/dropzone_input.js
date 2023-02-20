@@ -87,8 +87,8 @@ export default function dropzoneInput(form, config = { parallelUploads: 2 }) {
       const processingFileCount = this.getQueuedFiles().length + this.getUploadingFiles().length;
       const shouldPad = processingFileCount >= 1;
 
+      addFileToForm(response.link.url, header.size);
       pasteText(response.link.markdown, shouldPad);
-      addFileToForm(response.link.url);
     },
     error: (file, errorMessage = __('Attaching the file failed.'), xhr) => {
       // If 'error' event is fired by dropzone, the second parameter is error message.

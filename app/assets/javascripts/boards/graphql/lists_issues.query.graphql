@@ -19,10 +19,8 @@ query BoardListsEE(
           id
           listType
           issues(first: $first, filters: $filters, after: $after) {
-            edges {
-              node {
-                ...Issue
-              }
+            nodes {
+              ...Issue
             }
             pageInfo {
               endCursor
@@ -42,10 +40,8 @@ query BoardListsEE(
           id
           listType
           issues(first: $first, filters: $filters, after: $after) {
-            edges {
-              node {
-                ...Issue
-              }
+            nodes {
+              ...Issue
             }
             pageInfo {
               endCursor

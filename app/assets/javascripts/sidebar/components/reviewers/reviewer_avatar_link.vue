@@ -2,6 +2,7 @@
 // NOTE! For the first iteration, we are simply copying the implementation of Assignees
 // It will soon be overhauled in Issue https://gitlab.com/gitlab-org/gitlab/-/issues/233736
 import { GlTooltipDirective, GlLink } from '@gitlab/ui';
+import { TYPE_ISSUE } from '~/issues/constants';
 import { __, sprintf } from '~/locale';
 import ReviewerAvatar from './reviewer_avatar.vue';
 
@@ -34,7 +35,7 @@ export default {
     },
     issuableType: {
       type: String,
-      default: 'issue',
+      default: TYPE_ISSUE,
       required: false,
     },
   },

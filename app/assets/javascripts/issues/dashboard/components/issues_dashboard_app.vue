@@ -1,12 +1,14 @@
 <script>
-import { GlButton, GlEmptyState, GlTooltipDirective } from '@gitlab/ui';
+import { GlButton, GlEmptyState, GlFilteredSearchToken, GlTooltipDirective } from '@gitlab/ui';
 import * as Sentry from '@sentry/browser';
 import getIssuesQuery from 'ee_else_ce/issues/dashboard/queries/get_issues.query.graphql';
 import IssueCardStatistics from 'ee_else_ce/issues/list/components/issue_card_statistics.vue';
 import IssueCardTimeInfo from 'ee_else_ce/issues/list/components/issue_card_time_info.vue';
-import { IssuableStatus } from '~/issues/constants';
+import { STATUS_CLOSED } from '~/issues/constants';
 import {
   CREATED_DESC,
+  defaultTypeTokenOptions,
+  i18n,
   PAGE_SIZE,
   PARAM_STATE,
   UPDATED_DESC,
@@ -26,21 +28,29 @@ import {
 import axios from '~/lib/utils/axios_utils';
 import { scrollUp } from '~/lib/utils/scroll_utils';
 import { getParameterByName } from '~/lib/utils/url_utility';
-import { __ } from '~/locale';
 import {
+  OPERATORS_IS,
+  OPERATORS_IS_NOT_OR,
   TOKEN_TITLE_ASSIGNEE,
   TOKEN_TITLE_AUTHOR,
+  TOKEN_TITLE_CONFIDENTIAL,
   TOKEN_TITLE_LABEL,
   TOKEN_TITLE_MILESTONE,
   TOKEN_TITLE_MY_REACTION,
+  TOKEN_TITLE_SEARCH_WITHIN,
+  TOKEN_TITLE_TYPE,
   TOKEN_TYPE_ASSIGNEE,
   TOKEN_TYPE_AUTHOR,
+  TOKEN_TYPE_CONFIDENTIAL,
   TOKEN_TYPE_LABEL,
   TOKEN_TYPE_MILESTONE,
   TOKEN_TYPE_MY_REACTION,
+  TOKEN_TYPE_SEARCH_WITHIN,
+  TOKEN_TYPE_TYPE,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
 import { IssuableListTabs, IssuableStates } from '~/vue_shared/issuable/list/constants';
+import getIssuesCountsQuery from '../queries/get_issues_counts.query.graphql';
 import { AutocompleteCache } from '../utils';
 
 const UserToken = () => import('~/vue_shared/components/filtered_search_bar/tokens/user_token.vue');
@@ -52,17 +62,7 @@ const MilestoneToken = () =>
   import('~/vue_shared/components/filtered_search_bar/tokens/milestone_token.vue');
 
 export default {
-  i18n: {
-    calendarButtonText: __('Subscribe to calendar'),
-    closed: __('CLOSED'),
-    closedMoved: __('CLOSED (MOVED)'),
-    emptyStateWithFilterTitle: __('Sorry, your filter produced no results'),
-    emptyStateWithFilterDescription: __('To widen your search, change or remove filters above'),
-    emptyStateWithoutFilterTitle: __('Please select at least one filter to see results'),
-    errorFetchingIssues: __('An error occurred while loading issues'),
-    rssButtonText: __('Subscribe to RSS feed'),
-    searchInputPlaceholder: __('Search or filter results...'),
-  },
+  i18n,
   IssuableListTabs,
   components: {
     GlButton,
@@ -105,6 +105,7 @@ export default {
     return {
       filterTokens: getFilterTokens(window.location.search),
       issues: [],
+      issuesCounts: {},
       issuesError: null,
       pageInfo: {},
       pageParams: getInitialPageParams(),
@@ -116,15 +117,7 @@ export default {
     issues: {
       query: getIssuesQuery,
       variables() {
-        return {
-          hideUsers: this.isPublicVisibilityRestricted && !this.isSignedIn,
-          isSignedIn: this.isSignedIn,
-          search: this.searchQuery,
-          sort: this.sortKey,
-          state: this.state,
-          ...this.pageParams,
-          ...this.apiFilterParams,
-        };
+        return this.queryVariables;
       },
       update(data) {
         return data.issues.nodes ?? [];
@@ -141,13 +134,33 @@ export default {
       },
       debounce: 200,
     },
+    issuesCounts: {
+      query: getIssuesCountsQuery,
+      variables() {
+        return this.queryVariables;
+      },
+      update(data) {
+        return data ?? {};
+      },
+      error(error) {
+        this.issuesError = this.$options.i18n.errorFetchingCounts;
+        Sentry.captureException(error);
+      },
+      skip() {
+        return !this.hasSearch;
+      },
+      debounce: 200,
+      context: {
+        isSingleRequest: true,
+      },
+    },
   },
   computed: {
     apiFilterParams() {
       return convertToApiParams(this.filterTokens);
     },
     emptyStateDescription() {
-      return this.hasSearch ? this.$options.i18n.emptyStateWithFilterDescription : undefined;
+      return this.hasSearch ? this.$options.i18n.noSearchResultsDescription : undefined;
     },
     emptyStateSvgPath() {
       return this.hasSearch
@@ -156,11 +169,22 @@ export default {
     },
     emptyStateTitle() {
       return this.hasSearch
-        ? this.$options.i18n.emptyStateWithFilterTitle
-        : this.$options.i18n.emptyStateWithoutFilterTitle;
+        ? this.$options.i18n.noSearchResultsTitle
+        : this.$options.i18n.noSearchNoFilterTitle;
     },
     hasSearch() {
       return Boolean(this.searchQuery || Object.keys(this.urlFilterParams).length);
+    },
+    queryVariables() {
+      return {
+        hideUsers: this.isPublicVisibilityRestricted && !this.isSignedIn,
+        isSignedIn: this.isSignedIn,
+        search: this.searchQuery,
+        sort: this.sortKey,
+        state: this.state,
+        ...this.pageParams,
+        ...this.apiFilterParams,
+      };
     },
     renderedIssues() {
       return this.hasSearch ? this.issues : [];
@@ -186,6 +210,7 @@ export default {
           title: TOKEN_TITLE_ASSIGNEE,
           icon: 'user',
           token: UserToken,
+          operators: OPERATORS_IS_NOT_OR,
           fetchUsers: this.fetchUsers,
           preloadedUsers,
           recentSuggestionsStorageKey: 'dashboard-issues-recent-tokens-assignee',
@@ -195,6 +220,7 @@ export default {
           title: TOKEN_TITLE_AUTHOR,
           icon: 'pencil',
           token: UserToken,
+          operators: OPERATORS_IS_NOT_OR,
           fetchUsers: this.fetchUsers,
           defaultUsers: [],
           preloadedUsers,
@@ -205,6 +231,7 @@ export default {
           title: TOKEN_TITLE_LABEL,
           icon: 'labels',
           token: LabelToken,
+          operators: OPERATORS_IS_NOT_OR,
           fetchLabels: this.fetchLabels,
           recentSuggestionsStorageKey: 'dashboard-issues-recent-tokens-label',
         },
@@ -217,9 +244,45 @@ export default {
           recentSuggestionsStorageKey: 'dashboard-issues-recent-tokens-milestone',
           shouldSkipSort: true,
         },
+        {
+          type: TOKEN_TYPE_SEARCH_WITHIN,
+          title: TOKEN_TITLE_SEARCH_WITHIN,
+          icon: 'search',
+          token: GlFilteredSearchToken,
+          unique: true,
+          operators: OPERATORS_IS,
+          options: [
+            { icon: 'title', value: 'TITLE', title: this.$options.i18n.titles },
+            {
+              icon: 'text-description',
+              value: 'DESCRIPTION',
+              title: this.$options.i18n.descriptions,
+            },
+          ],
+        },
+        {
+          type: TOKEN_TYPE_TYPE,
+          title: TOKEN_TITLE_TYPE,
+          icon: 'issues',
+          token: GlFilteredSearchToken,
+          options: defaultTypeTokenOptions,
+        },
       ];
 
       if (this.isSignedIn) {
+        tokens.push({
+          type: TOKEN_TYPE_CONFIDENTIAL,
+          title: TOKEN_TITLE_CONFIDENTIAL,
+          icon: 'eye-slash',
+          token: GlFilteredSearchToken,
+          unique: true,
+          operators: OPERATORS_IS,
+          options: [
+            { icon: 'eye-slash', value: 'yes', title: this.$options.i18n.confidentialYes },
+            { icon: 'eye', value: 'no', title: this.$options.i18n.confidentialNo },
+          ],
+        });
+
         tokens.push({
           type: TOKEN_TYPE_MY_REACTION,
           title: TOKEN_TITLE_MY_REACTION,
@@ -247,6 +310,14 @@ export default {
         hasIssuableHealthStatusFeature: this.hasIssuableHealthStatusFeature,
         hasIssueWeightsFeature: this.hasIssueWeightsFeature,
       });
+    },
+    tabCounts() {
+      const { openedIssues, closedIssues, allIssues } = this.issuesCounts;
+      return {
+        [IssuableStates.Opened]: openedIssues?.count,
+        [IssuableStates.Closed]: closedIssues?.count,
+        [IssuableStates.All]: allIssues?.count,
+      };
     },
     urlFilterParams() {
       return convertToUrlParams(this.filterTokens);
@@ -292,10 +363,10 @@ export default {
       return axios.get('/-/autocomplete/users.json', { params: { active: true, search } });
     },
     getStatus(issue) {
-      if (issue.state === IssuableStatus.Closed && issue.moved) {
+      if (issue.state === STATUS_CLOSED && issue.moved) {
         return this.$options.i18n.closedMoved;
       }
-      if (issue.state === IssuableStatus.Closed) {
+      if (issue.state === STATUS_CLOSED) {
         return this.$options.i18n.closed;
       }
       return undefined;
@@ -372,12 +443,14 @@ export default {
     :issuables-loading="$apollo.queries.issues.loading"
     namespace="dashboard"
     recent-searches-storage-key="issues"
-    :search-input-placeholder="$options.i18n.searchInputPlaceholder"
+    :search-input-placeholder="$options.i18n.searchPlaceholder"
     :search-tokens="searchTokens"
     :show-pagination-controls="showPaginationControls"
     show-work-item-type-icon
     :sort-options="sortOptions"
+    :tab-counts="tabCounts"
     :tabs="$options.IssuableListTabs"
+    truncate-counts
     :url-params="urlParams"
     use-keyset-pagination
     @click-tab="handleClickTab"
@@ -389,10 +462,10 @@ export default {
   >
     <template #nav-actions>
       <gl-button :href="rssPath" icon="rss">
-        {{ $options.i18n.rssButtonText }}
+        {{ $options.i18n.rssLabel }}
       </gl-button>
       <gl-button :href="calendarPath" icon="calendar">
-        {{ $options.i18n.calendarButtonText }}
+        {{ $options.i18n.calendarLabel }}
       </gl-button>
     </template>
 

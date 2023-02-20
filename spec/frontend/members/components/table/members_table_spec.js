@@ -5,7 +5,7 @@ import setWindowLocation from 'helpers/set_window_location_helper';
 import { mountExtended, extendedWrapper } from 'helpers/vue_test_utils_helper';
 import CreatedAt from '~/members/components/table/created_at.vue';
 import ExpirationDatepicker from '~/members/components/table/expiration_datepicker.vue';
-import MemberActionButtons from '~/members/components/table/member_action_buttons.vue';
+import MemberActions from '~/members/components/table/member_actions.vue';
 import MemberAvatar from '~/members/components/table/member_avatar.vue';
 import MemberSource from '~/members/components/table/member_source.vue';
 import MemberActivity from '~/members/components/table/member_activity.vue';
@@ -71,7 +71,7 @@ describe('MembersTable', () => {
         'member-avatar',
         'member-source',
         'created-at',
-        'member-action-buttons',
+        'member-actions',
         'role-dropdown',
         'remove-group-link-modal',
         'remove-member-modal',
@@ -181,10 +181,7 @@ describe('MembersTable', () => {
         expect(actionField.exists()).toBe(true);
         expect(actionField.classes('gl-sr-only')).toBe(true);
         expect(
-          wrapper
-            .find(`[data-label="Actions"][role="cell"]`)
-            .findComponent(MemberActionButtons)
-            .exists(),
+          wrapper.find(`[data-label="Actions"][role="cell"]`).findComponent(MemberActions).exists(),
         ).toBe(true);
       });
 

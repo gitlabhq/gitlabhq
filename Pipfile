@@ -6,7 +6,7 @@ verify_ssl = true
 [dev-packages]
 
 [packages]
-docutils = "==0.13.1"
+docutils = "==0.19"
 
 [requires]
-python_version = "3.4"
+python_version = "3.9.6"

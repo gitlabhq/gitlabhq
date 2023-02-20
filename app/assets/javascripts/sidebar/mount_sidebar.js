@@ -1,22 +1,22 @@
-import $ from 'jquery';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import { TYPE_ISSUE, TYPE_MERGE_REQUEST } from '~/graphql_shared/constants';
-import { convertToGraphQLId } from '~/graphql_shared/utils';
+import { TYPENAME_ISSUE, TYPENAME_MERGE_REQUEST } from '~/graphql_shared/constants';
+import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import initInviteMembersModal from '~/invite_members/init_invite_members_modal';
 import initInviteMembersTrigger from '~/invite_members/init_invite_members_trigger';
-import { IssuableType } from '~/issues/constants';
+import { IssuableType, TYPE_ISSUE } from '~/issues/constants';
 import { gqlClient } from '~/issues/list/graphql';
 import {
-  isInIssuePage,
   isInDesignPage,
   isInIncidentPage,
+  isInIssuePage,
   isInMRPage,
   parseBoolean,
 } from '~/lib/utils/common_utils';
 import { __ } from '~/locale';
 import { apolloProvider } from '~/graphql_shared/issuable_client';
 import Translate from '~/vue_shared/translate';
+import UserSelect from '~/vue_shared/components/user_select/user_select.vue';
 import CollapsedAssigneeList from './components/assignees/collapsed_assignee_list.vue';
 import SidebarAssignees from './components/assignees/sidebar_assignees.vue';
 import SidebarAssigneesWidget from './components/assignees/sidebar_assignees_widget.vue';
@@ -34,7 +34,7 @@ import SidebarParticipantsWidget from './components/participants/sidebar_partici
 import SidebarReferenceWidget from './components/copy/sidebar_reference_widget.vue';
 import SidebarReviewers from './components/reviewers/sidebar_reviewers.vue';
 import SidebarReviewersInputs from './components/reviewers/sidebar_reviewers_inputs.vue';
-import SidebarSeverity from './components/severity/sidebar_severity.vue';
+import SidebarSeverityWidget from './components/severity/sidebar_severity_widget.vue';
 import SidebarDropdownWidget from './components/sidebar_dropdown_widget.vue';
 import StatusDropdown from './components/status/status_dropdown.vue';
 import SidebarSubscriptionsWidget from './components/subscriptions/sidebar_subscriptions_widget.vue';
@@ -43,8 +43,8 @@ import SidebarTimeTracking from './components/time_tracking/sidebar_time_trackin
 import SidebarTodoWidget from './components/todo_toggle/sidebar_todo_widget.vue';
 import { IssuableAttributeType } from './constants';
 import CrmContacts from './components/crm_contacts/crm_contacts.vue';
-import SidebarMoveIssue from './lib/sidebar_move_issue';
 import trackShowInviteMemberLink from './track_invite_members';
+import MoveIssueButton from './components/move/move_issue_button.vue';
 
 Vue.use(Translate);
 Vue.use(VueApollo);
@@ -75,12 +75,12 @@ function mountSidebarTodoWidget() {
           fullPath: projectPath,
           issuableId:
             isInIssuePage() || isInIncidentPage() || isInDesignPage()
-              ? convertToGraphQLId(TYPE_ISSUE, id)
-              : convertToGraphQLId(TYPE_MERGE_REQUEST, id),
+              ? convertToGraphQLId(TYPENAME_ISSUE, id)
+              : convertToGraphQLId(TYPENAME_MERGE_REQUEST, id),
           issuableIid: iid,
           issuableType:
             isInIssuePage() || isInIncidentPage() || isInDesignPage()
-              ? IssuableType.Issue
+              ? TYPE_ISSUE
               : IssuableType.MergeRequest,
         },
       }),
@@ -124,7 +124,7 @@ function mountSidebarAssigneesDeprecated(mediator) {
           signedIn: Object.prototype.hasOwnProperty.call(el.dataset, 'signedIn'),
           issuableType:
             isInIssuePage() || isInIncidentPage() || isInDesignPage()
-              ? IssuableType.Issue
+              ? TYPE_ISSUE
               : IssuableType.MergeRequest,
           issuableId: id,
           assigneeAvailabilityStatus,
@@ -142,7 +142,7 @@ function mountSidebarAssigneesWidget() {
 
   const { id, iid, fullPath, editable } = getSidebarOptions();
   const isIssuablePage = isInIssuePage() || isInIncidentPage() || isInDesignPage();
-  const issuableType = isIssuablePage ? IssuableType.Issue : IssuableType.MergeRequest;
+  const issuableType = isIssuablePage ? TYPE_ISSUE : IssuableType.MergeRequest;
   // eslint-disable-next-line no-new
   new Vue({
     el,
@@ -205,7 +205,7 @@ function mountSidebarReviewers(mediator) {
           projectPath: fullPath,
           field: el.dataset.field,
           issuableType:
-            isInIssuePage() || isInDesignPage() ? IssuableType.Issue : IssuableType.MergeRequest,
+            isInIssuePage() || isInDesignPage() ? TYPE_ISSUE : IssuableType.MergeRequest,
         },
       }),
   });
@@ -276,7 +276,7 @@ function mountSidebarMilestoneWidget() {
           workspacePath: projectPath,
           iid: issueIid,
           issuableType:
-            isInIssuePage() || isInDesignPage() ? IssuableType.Issue : IssuableType.MergeRequest,
+            isInIssuePage() || isInDesignPage() ? TYPE_ISSUE : IssuableType.MergeRequest,
           issuableAttribute: IssuableAttributeType.Milestone,
           icon: 'clock',
         },
@@ -313,7 +313,7 @@ export function mountMilestoneDropdown() {
           attrWorkspacePath: fullPath,
           canAdminMilestone,
           inputName,
-          issuableType: isInIssuePage() ? IssuableType.Issue : IssuableType.MergeRequest,
+          issuableType: isInIssuePage() ? TYPE_ISSUE : IssuableType.MergeRequest,
           milestoneId,
           milestoneTitle,
           projectMilestonesPath,
@@ -357,7 +357,7 @@ export function mountSidebarLabelsWidget() {
           variant: DropdownVariant.Sidebar,
           issuableType:
             isInIssuePage() || isInIncidentPage() || isInDesignPage()
-              ? IssuableType.Issue
+              ? TYPE_ISSUE
               : IssuableType.MergeRequest,
           workspaceType: 'project',
           attrWorkspacePath: el.dataset.projectPath,
@@ -397,7 +397,7 @@ function mountSidebarConfidentialityWidget() {
           fullPath,
           issuableType:
             isInIssuePage() || isInIncidentPage() || isInDesignPage()
-              ? IssuableType.Issue
+              ? TYPE_ISSUE
               : IssuableType.MergeRequest,
         },
       }),
@@ -425,7 +425,7 @@ function mountSidebarDueDateWidget() {
         props: {
           iid: String(iid),
           fullPath,
-          issuableType: IssuableType.Issue,
+          issuableType: TYPE_ISSUE,
         },
       }),
   });
@@ -453,7 +453,7 @@ function mountSidebarReferenceWidget() {
         props: {
           issuableType:
             isInIssuePage() || isInIncidentPage() || isInDesignPage()
-              ? IssuableType.Issue
+              ? TYPE_ISSUE
               : IssuableType.MergeRequest,
         },
       }),
@@ -505,7 +505,7 @@ function mountSidebarParticipantsWidget() {
           fullPath,
           issuableType:
             isInIssuePage() || isInIncidentPage() || isInDesignPage()
-              ? IssuableType.Issue
+              ? TYPE_ISSUE
               : IssuableType.MergeRequest,
         },
       }),
@@ -535,7 +535,7 @@ function mountSidebarSubscriptionsWidget() {
           fullPath,
           issuableType:
             isInIssuePage() || isInIncidentPage() || isInDesignPage()
-              ? IssuableType.Issue
+              ? TYPE_ISSUE
               : IssuableType.MergeRequest,
         },
       }),
@@ -576,8 +576,8 @@ function mountSidebarTimeTracking() {
   });
 }
 
-function mountSidebarSeverity() {
-  const el = document.querySelector('.js-sidebar-severity-root');
+function mountSidebarSeverityWidget() {
+  const el = document.querySelector('.js-sidebar-severity-widget-root');
 
   if (!el) {
     return null;
@@ -587,13 +587,13 @@ function mountSidebarSeverity() {
 
   return new Vue({
     el,
-    name: 'SidebarSeverityRoot',
+    name: 'SidebarSeverityWidgetRoot',
     apolloProvider,
     provide: {
       canUpdate: editable,
     },
     render: (createElement) =>
-      createElement(SidebarSeverity, {
+      createElement(SidebarSeverityWidget, {
         props: {
           projectPath: fullPath,
           iid: String(iid),
@@ -701,6 +701,95 @@ export function mountSubscriptionsDropdown() {
   });
 }
 
+export function mountMoveIssueButton() {
+  const el = document.querySelector('.js-sidebar-move-issue-block');
+
+  if (!el) {
+    return null;
+  }
+
+  const { projectsAutocompleteEndpoint } = getSidebarOptions();
+  const { projectFullPath, issueIid } = el.dataset;
+
+  Vue.use(VueApollo);
+
+  return new Vue({
+    el,
+    name: 'MoveIssueDropdownRoot',
+    apolloProvider,
+    provide: {
+      projectsAutocompleteEndpoint,
+      projectFullPath,
+      issueIid,
+    },
+    render: (createElement) => createElement(MoveIssueButton),
+  });
+}
+
+export function mountAssigneesDropdown() {
+  const el = document.querySelector('.js-assignee-dropdown');
+  const assigneeIdsInput = document.querySelector('.js-assignee-ids-input');
+
+  if (!el || !assigneeIdsInput) {
+    return null;
+  }
+
+  const { fullPath } = el.dataset;
+  const currentUser = {
+    id: gon?.current_user_id,
+    username: gon?.current_username,
+    name: gon?.current_user_fullname,
+    avatarUrl: gon?.current_user_avatar_url,
+  };
+
+  return new Vue({
+    el,
+    apolloProvider,
+    data() {
+      return {
+        selectedUserName: '',
+        value: [],
+      };
+    },
+    methods: {
+      onSelectedUnassigned() {
+        assigneeIdsInput.value = 0;
+        this.value = [];
+        this.selectedUserName = __('Unassigned');
+      },
+      onSelected(selected) {
+        assigneeIdsInput.value = selected.map((user) => getIdFromGraphQLId(user.id));
+        this.value = selected;
+        this.selectedUserName = selected.map((user) => user.name).join(', ');
+      },
+    },
+    render(h) {
+      const component = this;
+
+      return h(UserSelect, {
+        props: {
+          text: component.selectedUserName || __('Select assignee'),
+          headerText: __('Assign to'),
+          fullPath,
+          currentUser,
+          value: component.value,
+        },
+        on: {
+          input(selected) {
+            if (!selected.length) {
+              component.onSelectedUnassigned();
+              return;
+            }
+
+            component.onSelected(selected);
+          },
+        },
+        class: 'gl-w-full',
+      });
+    },
+  });
+}
+
 const isAssigneesWidgetShown =
   (isInIssuePage() || isInDesignPage() || isInMRPage()) && gon.features.issueAssigneesWidget;
 
@@ -725,14 +814,9 @@ export function mountSidebar(mediator, store) {
   mountSidebarSubscriptionsWidget();
   mountCopyEmailToClipboard();
   mountSidebarTimeTracking();
-  mountSidebarSeverity();
+  mountSidebarSeverityWidget();
   mountSidebarEscalationStatus();
-
-  new SidebarMoveIssue(
-    mediator,
-    $('.js-move-issue'),
-    $('.js-move-issue-confirmation-button'),
-  ).init();
+  mountMoveIssueButton();
 }
 
 export { getSidebarOptions };

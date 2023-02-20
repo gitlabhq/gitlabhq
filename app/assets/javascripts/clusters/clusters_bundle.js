@@ -3,11 +3,11 @@ import Visibility from 'visibilityjs';
 import Vue from 'vue';
 import { createAlert } from '~/flash';
 import AccessorUtilities from '~/lib/utils/accessor';
-import initProjectSelectDropdown from '~/project_select';
 import Poll from '~/lib/utils/poll';
 import { s__ } from '~/locale';
 import PersistentUserCallout from '~/persistent_user_callout';
 import initSettingsPanels from '~/settings_panels';
+import { initProjectSelects } from '~/vue_shared/components/entity_select/init_project_selects';
 import RemoveClusterConfirmation from './components/remove_cluster_confirmation.vue';
 import ClustersService from './services/clusters_service';
 import ClustersStore from './stores/clusters_store';
@@ -62,7 +62,7 @@ export default class Clusters {
     this.errorReasonContainer = this.errorContainer.querySelector('.js-error-reason');
     this.tokenField = document.querySelector('.js-cluster-token');
 
-    initProjectSelectDropdown();
+    initProjectSelects();
     Clusters.initDismissableCallout();
     initSettingsPanels();
 

@@ -493,9 +493,9 @@ class Integration < ApplicationRecord
 
   def reencrypt_properties
     unless properties.nil? || properties.empty?
-      alg = self.class.encrypted_attributes[:properties][:algorithm]
+      alg = self.class.attr_encrypted_attributes[:properties][:algorithm]
       iv = generate_iv(alg)
-      ep = self.class.encrypt(:properties, properties, { iv: iv })
+      ep = self.class.attr_encrypt(:properties, properties, { iv: iv })
     end
 
     { 'encrypted_properties' => ep, 'encrypted_properties_iv' => iv }

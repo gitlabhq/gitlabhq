@@ -35,12 +35,15 @@ export const removeSubscription = async (removePath) => {
   });
 };
 
-export const fetchGroups = async (groupsPath, { page, perPage, search }) => {
+export const fetchGroups = async (groupsPath, { page, perPage, search }, accessToken = null) => {
   return axiosInstance.get(groupsPath, {
     params: {
       page,
       per_page: perPage,
       search,
+    },
+    headers: {
+      ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
     },
   });
 };

@@ -1,5 +1,6 @@
 import $ from 'jquery';
 import { loadHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
+import { trimText } from 'helpers/text_helper';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import WebAuthnRegister from '~/authentication/webauthn/register';
@@ -52,7 +53,7 @@ describe('WebAuthnRegister', () => {
   const findRetryButton = () => container.find('#js-token-2fa-try-again');
 
   it('shows setup button', () => {
-    expect(findSetupButton().text()).toBe('Set up new device');
+    expect(trimText(findSetupButton().text())).toBe('Set up new device');
   });
 
   describe('when unsupported', () => {

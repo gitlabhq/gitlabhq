@@ -51,6 +51,7 @@ export default {
     'weights',
     'boardType',
     'isGroupBoard',
+    'isApolloBoard',
   ],
   props: {
     throttleDuration: {
@@ -58,15 +59,20 @@ export default {
       default: 200,
       required: false,
     },
+    boardApollo: {
+      type: Object,
+      required: false,
+      default: () => ({}),
+    },
   },
   data() {
     return {
       hasScrollFade: false,
-      loadingBoards: 0,
-      loadingRecentBoards: false,
       scrollFadeInitialized: false,
       boards: [],
       recentBoards: [],
+      loadingBoards: false,
+      loadingRecentBoards: false,
       throttledSetScrollFade: throttle(this.setScrollFade, this.throttleDuration),
       contentClientHeight: 0,
       maxPosition: 0,
@@ -77,11 +83,14 @@ export default {
 
   computed: {
     ...mapState(['board', 'isBoardLoading']),
+    boardToUse() {
+      return this.isApolloBoard ? this.boardApollo : this.board;
+    },
     parentType() {
       return this.boardType;
     },
     loading() {
-      return this.loadingRecentBoards || Boolean(this.loadingBoards);
+      return this.loadingRecentBoards || this.loadingBoards;
     },
     filteredBoards() {
       return this.boards.filter((board) =>
@@ -93,6 +102,9 @@ export default {
     },
     showDelete() {
       return this.boards.length > 1;
+    },
+    showDropdown() {
+      return this.showCreate || this.hasMissingBoards;
     },
     scrollFadeClass() {
       return {
@@ -116,7 +128,7 @@ export default {
       this.scrollFadeInitialized = false;
       this.$nextTick(this.setScrollFade);
     },
-    board(newBoard) {
+    boardToUse(newBoard) {
       document.title = newBoard.name;
     },
   },
@@ -159,8 +171,10 @@ export default {
           return { fullPath: this.fullPath };
         },
         query: this.boardQuery,
-        loadingKey: 'loadingBoards',
         update: (data) => this.boardUpdate(data, 'boards'),
+        watchLoading: (isLoading) => {
+          this.loadingBoards = isLoading;
+        },
       });
 
       this.loadRecentBoards();
@@ -171,8 +185,10 @@ export default {
           return { fullPath: this.fullPath };
         },
         query: this.recentBoardsQuery,
-        loadingKey: 'loadingRecentBoards',
         update: (data) => this.boardUpdate(data, 'recentIssueBoards'),
+        watchLoading: (isLoading) => {
+          this.loadingRecentBoards = isLoading;
+        },
       });
     },
     isScrolledUp() {
@@ -210,9 +226,14 @@ export default {
         boardType: this.boardType,
       });
     },
+    fullBoardId(boardId) {
+      return fullBoardId(boardId);
+    },
     async switchBoard(boardId, e) {
       if (isMetaKey(e)) {
         window.open(`${this.boardBaseUrl}/${boardId}`, '_blank');
+      } else if (this.isApolloBoard) {
+        this.$emit('switchBoard', this.fullBoardId(boardId));
       } else {
         this.unsetActiveId();
         this.fetchCurrentBoard(boardId);
@@ -230,12 +251,13 @@ export default {
   <div class="boards-switcher gl-mr-3" data-testid="boards-selector">
     <span class="boards-selector-wrapper">
       <gl-dropdown
+        v-if="showDropdown"
         data-testid="boards-dropdown"
         data-qa-selector="boards_dropdown"
         toggle-class="dropdown-menu-toggle"
         menu-class="flex-column dropdown-extended-height"
         :loading="isBoardLoading"
-        :text="board.name"
+        :text="boardToUse.name"
         @show="loadBoards"
       >
         <p class="gl-dropdown-header-top" @mousedown.prevent>
@@ -333,7 +355,7 @@ export default {
         :can-admin-board="canAdminBoard"
         :scoped-issue-board-feature-enabled="scopedIssueBoardFeatureEnabled"
         :weights="weights"
-        :current-board="board"
+        :current-board="boardToUse"
         :current-page="currentPage"
         @cancel="cancel"
       />

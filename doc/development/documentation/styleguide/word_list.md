@@ -14,6 +14,7 @@ recommends these word choices. In addition:
   [top misused terms](https://about.gitlab.com/handbook/communication/top-misused-terms/).
 - The documentation [style guide](../styleguide#language) includes details
   about language and capitalization.
+- The GitLab handbook provides guidance on the [use of third-party trademarks](https://about.gitlab.com/handbook/legal/policies/product-third-party-trademarks-guidelines/#process-for-adding-third-party-trademarks-to-gitlab).
 
 For guidance not on this page, we defer to these style guides:
 
@@ -60,7 +61,7 @@ Instead of:
 ## access level
 
 Access levels are different than [roles](#roles) or [permissions](#permissions).
-When you create a user, you choose an access level: **Regular**, **Auditor**, or **Admin**.
+When you create a user, you choose an access level: **Regular**, **Auditor**, or **Administrator**.
 
 Capitalize these words when you refer to the UI. Otherwise use lowercase.
 
@@ -150,6 +151,15 @@ Use uppercase for **Alpha**. For example: **The XYZ feature is in Alpha.** or **
 
 You might also want to link to [this section](../../../policy/alpha-beta-support.md#alpha-features)
 in the handbook when writing about Alpha features.
+
+## analytics
+
+Use lowercase for **analytics** and its variations, like **contribution analytics** and **issue analytics**.
+However, if the UI has different capitalization, make the documentation match the UI.
+
+For example:
+
+- You can view merge request analytics for a project. They are displayed on the Merge Request Analytics dashboard.
 
 ## and/or
 
@@ -306,6 +316,20 @@ Use title case for the GitLab Container Registry.
 Do not use **currently** when talking about the product or its features. The documentation describes the product as it is today.
 ([Vale](../testing.md#vale) rule: [`CurrentStatus.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/CurrentStatus.yml))
 
+## data
+
+Use **data** as a singular noun.
+
+Use:
+
+- Data is collected.
+- The data shows a performance increase.
+
+Instead of:
+
+- Data are collected.
+- The data show a performance increase.
+
 ## default branch
 
 Use **default branch** to refer generically to the primary branch in the repository.
@@ -350,6 +374,12 @@ Use **inactive** or **off** instead. ([Vale](../testing.md#vale) rule: [`Inclusi
 ## disallow
 
 Use **prevent** instead of **disallow**. ([Vale](../testing.md#vale) rule: [`Substitutions.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/Substitutions.yml))
+
+## Docker-in-Docker, `dind`
+
+Use **Docker-in-Docker** when you are describing running a Docker container by using the Docker executor.
+
+Use `dind` in backticks to describe the container name: `docker:dind`. Otherwise, spell it out.
 
 ## downgrade
 
@@ -1046,6 +1076,14 @@ The search results are displayed on a search page.
 
 Searching is different from [filtering](#filter).
 
+## seats
+
+When referring to the subscription billing model:
+
+- For GitLab SaaS, use **seats**. Customers purchase seats. Users occupy seats when they are invited
+to a group, with some [exceptions](../../../subscriptions/gitlab_com/index.md#how-seat-usage-is-determined).
+- For GitLab self-managed, use **users**. Customers purchase subscriptions for a specified number of **users**.
+
 ## section
 
 Use **section** to describe an area on a page. For example, if a page has lines that separate the UI
@@ -1260,7 +1298,7 @@ Do not use **update** for any other case. Instead, use **upgrade**.
 Use **upgrade** for:
 
 - Choosing a higher subscription tier (Premium or Ultimate).
-- Installing a newer **major** (13.0, 14.0) or **minor** (13.8, 14.5) version of GitLab.
+- Installing a newer **major** (13.0) or **minor** (13.2) version of GitLab.
 
 For example:
 
@@ -1273,6 +1311,12 @@ Ensure the surrounding text clarifies whether
 you're talking about the product version or the subscription tier.
 
 See also [downgrade](#downgrade) and [roll back](#roll-back).
+
+## upper left, upper right
+
+Use **upper left** and **upper right** instead of **top left** and **top right**. Hyphenate as adjectives (for example, **upper-left corner**).
+
+For details, see the [Microsoft style guide](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/u/upper-left-upper-right).
 
 ## useful
 
@@ -1342,16 +1386,19 @@ in present tense, active voice.
 
 ## you, your, yours
 
-Use **you**, **your**, and **yours** instead of **the user** and **the user's**.
-Documentation should be from the [point of view](https://design.gitlab.com/content/voice-and-tone#point-of-view) of the reader.
+Use **you** instead of **the user**, **the administrator** or **the customer**.
+Documentation should speak directly to the user, whether that user is someone installing the product,
+configuring it, administering it, or using it.
 
 Use:
 
 - You can configure a pipeline.
+- You can reset a user's password. (In content for an administrator)
 
 Instead of:
 
 - Users can configure a pipeline.
+- Administrators can reset a user's password.
 
 ## you can
 

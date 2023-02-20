@@ -234,8 +234,11 @@ sudo -u git -H bundle exec rake cache:clear RAILS_ENV=production
 Sometimes during version upgrades you might end up with some wrong CSS or
 missing some icons. In that case, try to precompile the assets again.
 
-This only applies to source installations and does not apply to
-Omnibus packages.
+This Rake task only applies to source installations. [Read more](../../update/package/index.md#missing-asset-files)
+about troubleshooting this problem when running the Omnibus GitLab package.
+The guidance for Omnibus GitLab might be applicable for Kubernetes and Docker Omnibus
+deployments of GitLab, though in general, container-based installations
+don't have issues with missing assets.
 
 **Source Installation**
 
@@ -374,7 +377,7 @@ The following index types are not supported:
 
 Optionally, this Rake task sends annotations to a Grafana (4.6 or later) endpoint. Use the following custom environment variables to enable annotations:
 
-1. `GRAFANA_API_URL` - Grafana's base URL, for example `http://some-host:3000`.
+1. `GRAFANA_API_URL` - The base URL for Grafana, for example `http://some-host:3000`.
 1. `GRAFANA_API_KEY` - Grafana API key with at least `Editor role`.
 
 You can also [enable reindexing as a regular cron job](https://docs.gitlab.com/omnibus/settings/database.html#automatic-database-reindexing).

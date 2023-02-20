@@ -22,7 +22,7 @@ RSpec.describe Issues::CloneService do
   let(:with_notes) { false }
 
   subject(:clone_service) do
-    described_class.new(project: old_project, current_user: user)
+    described_class.new(container: old_project, current_user: user)
   end
 
   shared_context 'user can clone issue' do

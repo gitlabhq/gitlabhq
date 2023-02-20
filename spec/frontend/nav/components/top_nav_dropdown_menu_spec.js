@@ -56,6 +56,7 @@ describe('~/nav/components/top_nav_dropdown_menu.vue', () => {
           { id: 'secondary', menuItems: TEST_NAV_DATA.secondary },
         ],
         withTopBorder: false,
+        isPrimarySection: true,
       });
     });
 

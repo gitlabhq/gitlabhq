@@ -48,7 +48,7 @@ module Gitlab
         end
 
         def handler
-          @handler ||= NullHandler.instance
+          @handler ||= Handlers::NullHandler.instance
         end
 
         def event_reporter

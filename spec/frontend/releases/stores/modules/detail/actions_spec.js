@@ -23,6 +23,8 @@ jest.mock('~/api/tags_api');
 
 jest.mock('~/flash');
 
+jest.mock('~/releases/release_notification_service');
+
 jest.mock('~/lib/utils/url_utility', () => ({
   redirectTo: jest.fn(),
   joinPaths: jest.requireActual('~/lib/utils/url_utility').joinPaths,
@@ -41,9 +43,12 @@ describe('Release edit/new actions', () => {
   let releaseResponse;
   let error;
 
+  const projectPath = 'test/project-path';
+
   const setupState = (updates = {}) => {
     state = {
       ...createState({
+        projectPath,
         projectId: '18',
         isExistingRelease: true,
         tagName: releaseResponse.tag_name,

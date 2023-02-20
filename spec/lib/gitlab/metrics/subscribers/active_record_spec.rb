@@ -14,7 +14,7 @@ RSpec.describe Gitlab::Metrics::Subscribers::ActiveRecord do
   describe '.load_balancing_metric_counter_keys' do
     context 'multiple databases' do
       before do
-        skip_if_multiple_databases_not_setup
+        skip_if_multiple_databases_not_setup(:ci)
       end
 
       it 'has expected keys' do
@@ -91,7 +91,7 @@ RSpec.describe Gitlab::Metrics::Subscribers::ActiveRecord do
   describe '.load_balancing_metric_duration_keys' do
     context 'multiple databases' do
       before do
-        skip_if_multiple_databases_not_setup
+        skip_if_multiple_databases_not_setup(:ci)
       end
 
       it 'has expected keys' do

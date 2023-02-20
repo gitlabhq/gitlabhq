@@ -13,18 +13,18 @@ describe('AbuseCategorySelector', () => {
   let wrapper;
 
   const ACTION_PATH = '/abuse_reports/add_category';
-  const USER_ID = '1';
+  const USER_ID = 1;
   const REPORTED_FROM_URL = 'http://example.com';
 
   const createComponent = (props) => {
     wrapper = shallowMountExtended(AbuseCategorySelector, {
       propsData: {
+        reportedUserId: USER_ID,
+        reportedFromUrl: REPORTED_FROM_URL,
         ...props,
       },
       provide: {
         reportAbusePath: ACTION_PATH,
-        reportedUserId: USER_ID,
-        reportedFromUrl: REPORTED_FROM_URL,
       },
     });
   };
@@ -106,7 +106,7 @@ describe('AbuseCategorySelector', () => {
       expect(findUserId().attributes()).toMatchObject({
         type: 'hidden',
         name: 'user_id',
-        value: USER_ID,
+        value: USER_ID.toString(),
       });
     });
 

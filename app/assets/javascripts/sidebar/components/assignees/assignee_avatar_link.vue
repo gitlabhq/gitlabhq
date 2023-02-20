@@ -1,6 +1,6 @@
 <script>
 import { GlTooltipDirective, GlLink } from '@gitlab/ui';
-import { IssuableType } from '~/issues/constants';
+import { IssuableType, TYPE_ISSUE } from '~/issues/constants';
 import { isGid, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { __ } from '~/locale';
 import { isUserBusy } from '~/set_status_modal/utils';
@@ -67,7 +67,7 @@ export default {
     },
     issuableType: {
       type: String,
-      default: 'issue',
+      default: TYPE_ISSUE,
       required: false,
     },
   },

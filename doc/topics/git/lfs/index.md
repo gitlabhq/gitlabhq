@@ -30,7 +30,7 @@ Documentation for GitLab instance administrators is under [LFS administration do
 ## Requirements
 
 - Git LFS must be [enabled in project settings](../../../user/project/settings/index.md#configure-project-visibility-features-and-permissions).
-- [Git LFS client](https://git-lfs.github.com) version 1.0.1 or higher must be installed.
+- [Git LFS client](https://git-lfs.com/) version 1.0.1 or higher must be installed.
 
 ## Known limitations
 
@@ -254,7 +254,7 @@ Git LFS authenticates the user with HTTP Basic Authentication on every push for
 every object, so user HTTPS credentials are required.
 
 By default, Git has support for remembering the credentials for each repository
-you use. To learn more, read the [Git credentials man pages](https://git-scm.com/docs/gitcredentials).
+you use. For more information, see the [official Git documentation](https://git-scm.com/docs/gitcredentials).
 
 For example, you can tell Git to remember the password for a period of time in
 which you expect to push the objects:

@@ -20,7 +20,7 @@ Parameters:
 
 | Attribute    | Type           | Required               | Description                                                               |
 | :----------- | :------------- | :--------------------- | :------------------------------------------------------------------------ |
-| `group_path` | integer/string | **{check-circle}** Yes | ID or [URL-encoded path of the group](../index.md#namespaced-path-encoding) |
+| `group_path` | integer/string | **{check-circle}** Yes | ID or [URL-encoded path of the group](../rest/index.md#namespaced-path-encoding) |
 | `name`       | string         | **{check-circle}** Yes | Name of the custom emoji.                                                 |
 | `file`       | string         | **{check-circle}** Yes | URL of the custom emoji image.                                            |
 

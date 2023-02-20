@@ -36,7 +36,7 @@ To import issues:
 
 1. Go to your project's Issues list page.
 1. Open the import feature, depending if the project has issues:
-   - Existing issues are present: Select the import icon at the top right, next to **Edit issues**.
+   - Existing issues are present: Select the import icon in the upper right, next to **Edit issues**.
    - Project has no issues: Select **Import CSV** in the middle of the page.
 1. Select the file you want to import, and then select **Import issues**.
 
@@ -50,7 +50,7 @@ To import issues, GitLab requires CSV files have a specific format:
 | Element                | Format |
 |------------------------|--------|
 | header row             | CSV files must include the following headers: `title` and `description`. The case of the headers does not matter. |
-| columns                | Data from columns beyond `title` and `description` are not imported. |
+| columns                | Data from columns outside of `title`, `description`, and `due_date` are not imported. |
 | separators             | The column separator is detected from the header row. Supported separator characters are commas (`,`), semicolons (`;`), and tabs (`\t`). The row separator can be either `CRLF` or `LF`. |
 | double-quote character | The double-quote (`"`) character is used to quote fields, enabling the use of the column separator in a field (see the third line in the sample CSV data below). To insert a double-quote (`"`) in a quoted field use two double-quote characters in succession (`""`). |
 | data rows              | After the header row, following rows must use the same column order. The issue title is required, but the description is optional. |
@@ -58,12 +58,16 @@ To import issues, GitLab requires CSV files have a specific format:
 If you have special characters (for example, `,` or `\n`) or multiple lines in a field (for example,
 when using [quick actions](../quick_actions.md)), surround the characters with double quotes (`"`).
 
-When using [quick actions](../quick_actions.md), each action must be on a separate line.
+Also when using [quick actions](../quick_actions.md):
+
+- Each action must be on a separate line.
+- For quick actions like `/label` and `/milestone`, the label or milestone must already exist in the project.
+- The user you assign the issue to must be a member of the project.
 
 Sample CSV data:
 
 ```plaintext
-title,description,due date
+title,description,due_date
 My Issue Title,My Issue Description,2022-06-28
 Another Title,"A description, with a comma",
 "One More Title","One More Description",

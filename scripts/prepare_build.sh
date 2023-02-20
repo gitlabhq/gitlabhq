@@ -17,10 +17,12 @@ else
   cp config/database.yml.postgresql config/database.yml
 fi
 
-# Remove Geo database setting if `ee/` directory does not exist. When it does
-# not exist, it runs the GitLab test suite "as if FOSS", meaning the jobs run
-# in the context of gitlab-org/gitlab-foss where the Geo is not available.
-if [ ! -d "ee/" ] ; then
+# Set up Geo database if the job name matches `rspec-ee` or `geo`.
+# Since Geo is an EE feature, we shouldn't set it up for non-EE tests.
+if [[ "${CI_JOB_NAME}" =~ "rspec-ee" ]] || [[ "${CI_JOB_NAME}" =~ "geo" ]]; then
+  echoinfo "Geo DB will be set up."
+else
+  echoinfo "Geo DB won't be set up."
   sed -i '/geo:/,/^$/d' config/database.yml
 fi
 

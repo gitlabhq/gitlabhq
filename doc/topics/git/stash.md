@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 comments: false
 ---
 
-# Git Stash **(FREE)**
+# Git stash **(FREE)**
 
 We use `git stash` to store our changes when they are not ready to be committed,
 but we must change to a different branch.

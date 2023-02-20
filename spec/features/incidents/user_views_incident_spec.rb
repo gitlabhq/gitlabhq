@@ -19,7 +19,7 @@ RSpec.describe "User views incident", feature_category: :incident_management do
   before do
     sign_in(user)
 
-    visit(project_issues_incident_path(project, incident))
+    visit(incident_project_issues_path(project, incident))
   end
 
   specify do
@@ -75,7 +75,7 @@ RSpec.describe "User views incident", feature_category: :incident_management do
 
   describe 'user status' do
     context 'when showing status of the author of the incident' do
-      subject { visit(project_issues_incident_path(project, incident)) }
+      subject { visit(incident_project_issues_path(project, incident)) }
 
       it_behaves_like 'showing user status' do
         let(:user_with_status) { user }

@@ -3,6 +3,7 @@ import SafeHtml from '~/vue_shared/directives/safe_html';
 import { renderGFM } from '~/behaviors/markdown/render_gfm';
 
 export default {
+  name: 'WorkItemNoteBody',
   directives: {
     SafeHtml,
   },
@@ -12,12 +13,22 @@ export default {
       required: true,
     },
   },
-  mounted() {
-    this.renderGFM();
+  watch: {
+    'note.bodyHtml': {
+      immediate: true,
+      async handler(newVal, oldVal) {
+        if (newVal === oldVal) {
+          return;
+        }
+        await this.$nextTick();
+        this.renderGFM();
+      },
+    },
   },
   methods: {
     renderGFM() {
       renderGFM(this.$refs['note-body']);
+      gl?.lazyLoader?.searchLazyImages();
     },
   },
   safeHtmlConfig: {

@@ -59,16 +59,11 @@ module Gitlab
             config_file_path("redis.#{store_name.underscore}.yml"),
 
             # The current Redis instance may have been split off from another one
-            # (e.g. TraceChunks was split off from SharedState). There are
-            # installations out there where the lowest priority config source
-            # (resque.yml) contains bogus values. In those cases, config_file_name
-            # should resolve to the instance we originated from (the
-            # "config_fallback") rather than resque.yml.
+            # (e.g. TraceChunks was split off from SharedState).
             config_fallback&.config_file_name,
 
             # Global config sources:
-            ENV['GITLAB_REDIS_CONFIG_FILE'],
-            config_file_path('resque.yml')
+            ENV['GITLAB_REDIS_CONFIG_FILE']
           ].compact.first
         end
 
@@ -199,11 +194,17 @@ module Gitlab
       def fetch_config
         redis_yml = read_yaml(self.class.redis_yml_path).fetch(@rails_env, {})
         instance_config_yml = read_yaml(self.class.config_file_name)[@rails_env]
+        resque_yml = read_yaml(self.class.config_file_path('resque.yml'))[@rails_env]
 
         [
           redis_yml[self.class.store_name.underscore],
+          # There are installations out there where the lowest priority config source (resque.yml) contains bogus
+          # values. In those cases, the configuration should be read for the instance we originated from (the
+          # "config_fallback"), either from its specific config file or from redis.yml, before falling back to
+          # resque.yml.
           instance_config_yml,
-          self.class.config_fallback && redis_yml[self.class.config_fallback.store_name.underscore]
+          self.class.config_fallback && redis_yml[self.class.config_fallback.store_name.underscore],
+          resque_yml
         ].compact.first
       end
 

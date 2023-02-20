@@ -20,6 +20,7 @@ namespace :knapsack do
     test_stage_name = args[:stage_name]
     knapsack_reports = ENV["QA_KNAPSACK_REPORTS"]&.split(",")
     ci_token = ENV["QA_GITLAB_CI_TOKEN"]
+    QA::Support::KnapsackReport.configure!
 
     reports = if knapsack_reports
                 knapsack_reports
@@ -43,6 +44,7 @@ namespace :knapsack do
 
   desc "Merge and upload knapsack report"
   task :upload, [:glob] do |_task, args|
+    QA::Support::KnapsackReport.configure!
     QA::Support::KnapsackReport.upload_report(args[:glob])
   end
 

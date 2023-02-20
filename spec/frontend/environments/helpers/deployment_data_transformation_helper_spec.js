@@ -23,7 +23,7 @@ describe('deployment_data_transformation_helper', () => {
     },
   };
 
-  const commitWithourAuthor = {
+  const commitWithoutAuthor = {
     id: 'gid://gitlab/CommitPresenter/02274a949a88c9aef68a29685d99bd9a661a7f9b',
     shortId: '02274a94',
     message: 'Commit message',
@@ -48,6 +48,24 @@ describe('deployment_data_transformation_helper', () => {
       refName: 'main',
       id: 'gid://gitlab/Ci::Build/860',
       webPath: '/gitlab-org/pipelinestest/-/jobs/860',
+      deploymentPipeline: {
+        jobs: {
+          nodes: [
+            {
+              name: 'deploy-staging',
+              playable: true,
+              scheduledAt: '2023-01-17T11:02:41.369Z',
+              webPath: 'https://gdk.test:3000/redeploy',
+            },
+            {
+              name: 'deploy-production',
+              playable: true,
+              scheduledAt: '2023-01-17T11:02:41.369Z',
+              webPath: 'https://gdk.test:3000/redeploy',
+            },
+          ],
+        },
+      },
     },
     commit: commitWithAuthor,
     triggerer: {
@@ -65,8 +83,15 @@ describe('deployment_data_transformation_helper', () => {
     finishedAt: null,
   };
 
+  const environment = {
+    lastDeployment: {
+      job: {
+        name: 'deploy-production',
+      },
+    },
+  };
   describe('getAuthorFromCommit', () => {
-    it.each([commitWithAuthor, commitWithourAuthor])('should be properly converted', (commit) => {
+    it.each([commitWithAuthor, commitWithoutAuthor])('should be properly converted', (commit) => {
       expect(getAuthorFromCommit(commit)).toMatchSnapshot();
     });
   });
@@ -89,7 +114,7 @@ describe('deployment_data_transformation_helper', () => {
     it.each([deploymentNode, deploymentNodeWithEmptyJob, deploymentNodeWithNoJob])(
       'should be converted to proper table row data',
       (node) => {
-        expect(convertToDeploymentTableRow(node)).toMatchSnapshot();
+        expect(convertToDeploymentTableRow(node, environment)).toMatchSnapshot();
       },
     );
   });

@@ -32,11 +32,6 @@ module Types
             null: true,
             description: 'Description or notes for the achievement.'
 
-      field :revokeable,
-            GraphQL::Types::Boolean,
-            null: false,
-            description: 'Revokeability of the achievement.'
-
       field :created_at,
             Types::TimeType,
             null: false,

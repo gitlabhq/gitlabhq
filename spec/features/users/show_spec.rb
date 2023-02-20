@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'User page', feature_category: :users do
+RSpec.describe 'User page', feature_category: :user_profile do
   include ExternalAuthorizationServiceHelpers
 
   let_it_be(:user) { create(:user, bio: '<b>Lorem</b> <i>ipsum</i> dolor sit <a href="https://example.com">amet</a>') }
@@ -16,10 +16,31 @@ RSpec.describe 'User page', feature_category: :users do
   end
 
   context 'with public profile' do
-    it 'shows all the tabs' do
+    context 'with `profile_tabs_vue` feature flag disabled' do
+      before do
+        stub_feature_flags(profile_tabs_vue: false)
+      end
+
+      it 'shows all the tabs' do
+        subject
+
+        page.within '.nav-links' do
+          expect(page).to have_link('Overview')
+          expect(page).to have_link('Activity')
+          expect(page).to have_link('Groups')
+          expect(page).to have_link('Contributed projects')
+          expect(page).to have_link('Personal projects')
+          expect(page).to have_link('Snippets')
+          expect(page).to have_link('Followers')
+          expect(page).to have_link('Following')
+        end
+      end
+    end
+
+    it 'shows all the tabs', :js do
       subject
 
-      page.within '.nav-links' do
+      page.within '[role="tablist"]' do
         expect(page).to have_link('Overview')
         expect(page).to have_link('Activity')
         expect(page).to have_link('Groups')
@@ -189,11 +210,33 @@ RSpec.describe 'User page', feature_category: :users do
       expect(page).to have_content("This user has a private profile")
     end
 
-    it 'shows own tabs' do
+    context 'with `profile_tabs_vue` feature flag disabled' do
+      before do
+        stub_feature_flags(profile_tabs_vue: false)
+      end
+
+      it 'shows own tabs' do
+        sign_in(user)
+        subject
+
+        page.within '.nav-links' do
+          expect(page).to have_link('Overview')
+          expect(page).to have_link('Activity')
+          expect(page).to have_link('Groups')
+          expect(page).to have_link('Contributed projects')
+          expect(page).to have_link('Personal projects')
+          expect(page).to have_link('Snippets')
+          expect(page).to have_link('Followers')
+          expect(page).to have_link('Following')
+        end
+      end
+    end
+
+    it 'shows own tabs', :js do
       sign_in(user)
       subject
 
-      page.within '.nav-links' do
+      page.within '[role="tablist"]' do
         expect(page).to have_link('Overview')
         expect(page).to have_link('Activity')
         expect(page).to have_link('Groups')
@@ -341,6 +384,7 @@ RSpec.describe 'User page', feature_category: :users do
 
       page.within '.navbar-gitlab' do
         expect(page).to have_link('Sign in')
+        expect(page).not_to have_link('Register')
       end
     end
   end
@@ -352,12 +396,17 @@ RSpec.describe 'User page', feature_category: :users do
       subject
 
       page.within '.navbar-gitlab' do
-        expect(page).to have_link('Sign in / Register')
+        expect(page).to have_link(_('Sign in'), exact: true)
+        expect(page).to have_link(_('Register'), exact: true)
       end
     end
   end
 
   context 'most recent activity' do
+    before do
+      stub_feature_flags(profile_tabs_vue: false)
+    end
+
     it 'shows the most recent activity' do
       subject
 
@@ -387,6 +436,10 @@ RSpec.describe 'User page', feature_category: :users do
 
   context 'with a bot user' do
     let_it_be(:user) { create(:user, user_type: :security_bot) }
+
+    before do
+      stub_feature_flags(profile_tabs_vue: false)
+    end
 
     describe 'feature flag enabled' do
       before do

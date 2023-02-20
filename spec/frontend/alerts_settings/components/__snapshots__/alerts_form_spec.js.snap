@@ -89,6 +89,7 @@ exports[`Alert integration settings form default state should match the default 
       optionaltext="(optional)"
     >
       <gl-form-checkbox-stub
+        data-qa-selector="enable_email_notification_checkbox"
         id="3"
       >
         <span>

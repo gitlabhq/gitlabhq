@@ -1,8 +1,0 @@
----
-name: async_merge_request_diff_creation
-introduced_by_url: "https://gitlab.com/gitlab-org/gitlab/-/merge_requests/100390"
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/376759
-milestone: '15.6'
-type: development
-group: group::code review
-default_enabled: false

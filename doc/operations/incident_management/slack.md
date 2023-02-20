@@ -41,7 +41,7 @@ Prerequisites:
    To start the authorization flow, try executing a non-incident [Slack slash command](../../integration/slash_commands.md),
    like `/gitlab <project-alias> issue show <id>`.
    The `<project-alias>` you select must be a project that has the GitLab for Slack app set up.
-   For more context, visit [issue 377548](https://gitlab.com/gitlab-org/gitlab/-/issues/377548).
+   For more information, see [issue 377548](https://gitlab.com/gitlab-org/gitlab/-/issues/377548).
 
 <!-- The below content is commented out until these features are implemented in https://gitlab.com/groups/gitlab-org/-/epics/8545 -->
 <!--

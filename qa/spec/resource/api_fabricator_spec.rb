@@ -90,12 +90,12 @@ RSpec.describe QA::Resource::ApiFabricator do
 
       context 'when creating a resource' do
         before do
-          allow(subject).to receive(:post).with(resource_web_url, subject.api_post_body).and_return(raw_post)
+          allow(subject).to receive(:post).with(resource_web_url, subject.api_post_body, {}).and_return(raw_post)
         end
 
         it 'returns the resource URL' do
           expect(api_request).to receive(:new).with(api_client_instance, subject.api_post_path).and_return(double(url: resource_web_url))
-          expect(subject).to receive(:post).with(resource_web_url, subject.api_post_body).and_return(raw_post)
+          expect(subject).to receive(:post).with(resource_web_url, subject.api_post_body, {}).and_return(raw_post)
 
           expect(subject.fabricate_via_api!).to eq(resource_web_url)
         end
@@ -112,7 +112,7 @@ RSpec.describe QA::Resource::ApiFabricator do
 
           it 'raises a ResourceFabricationFailedError exception' do
             expect(api_request).to receive(:new).with(api_client_instance, subject.api_post_path).and_return(double(url: resource_web_url))
-            expect(subject).to receive(:post).with(resource_web_url, subject.api_post_body).and_return(raw_post)
+            expect(subject).to receive(:post).with(resource_web_url, subject.api_post_body, {}).and_return(raw_post)
 
             expect { subject.fabricate_via_api! }.to raise_error do |error|
               expect(error.class).to eql(described_class::ResourceFabricationFailedError)
@@ -128,7 +128,7 @@ RSpec.describe QA::Resource::ApiFabricator do
             allow(QA::Support::Loglinking).to receive(:logging_environment).and_return(nil)
 
             expect(api_request).to receive(:new).with(api_client_instance, subject.api_post_path).and_return(double(url: resource_web_url))
-            expect(subject).to receive(:post).with(resource_web_url, subject.api_post_body).and_return(response)
+            expect(subject).to receive(:post).with(resource_web_url, subject.api_post_body, {}).and_return(response)
 
             expect { subject.fabricate_via_api! }.to raise_error do |error|
               expect(error.class).to eql(described_class::ResourceFabricationFailedError)
@@ -149,7 +149,7 @@ RSpec.describe QA::Resource::ApiFabricator do
             allow(Time).to receive(:now).and_return(time)
 
             expect(api_request).to receive(:new).with(api_client_instance, subject.api_post_path).and_return(double(url: resource_web_url))
-            expect(subject).to receive(:post).with(resource_web_url, subject.api_post_body).and_return(response)
+            expect(subject).to receive(:post).with(resource_web_url, subject.api_post_body, {}).and_return(response)
 
             expect { subject.fabricate_via_api! }.to raise_error do |error|
               expect(error.class).to eql(described_class::ResourceFabricationFailedError)
@@ -195,7 +195,7 @@ RSpec.describe QA::Resource::ApiFabricator do
         let(:transformed_resource) { { existing: 'foo', new: 'foobar', web_url: resource_web_url } }
 
         it 'transforms the resource' do
-          expect(subject).to receive(:post).with(resource_web_url, subject.api_post_body).and_return(raw_post)
+          expect(subject).to receive(:post).with(resource_web_url, subject.api_post_body, {}).and_return(raw_post)
           expect(subject).to receive(:transform_api_resource).with(response).and_return(transformed_resource)
 
           subject.fabricate_via_api!

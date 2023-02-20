@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::Reflection do
+RSpec.describe Gitlab::Database::Reflection, feature_category: :database do
   let(:database) { described_class.new(ApplicationRecord) }
 
   describe '#username' do

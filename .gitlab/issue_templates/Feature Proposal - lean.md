@@ -48,6 +48,7 @@ Create tracking issue using the Snowplow event tracking template. See https://gi
 
 <!-- Label reminders
 Use the following resources to find the appropriate labels:
+- Use only one tier label choosing the lowest tier this is intended for
 - https://gitlab.com/gitlab-org/gitlab/-/labels
 - https://about.gitlab.com/handbook/product/categories/features/
 -->

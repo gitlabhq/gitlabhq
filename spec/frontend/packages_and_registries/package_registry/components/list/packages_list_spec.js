@@ -167,8 +167,8 @@ describe('packages_list', () => {
         findPackageListDeleteModal().vm.$emit('ok');
       });
 
-      it('emits package:delete when modal confirms', () => {
-        expect(wrapper.emitted('package:delete')[0]).toEqual([firstPackage]);
+      it('emits delete when modal confirms', () => {
+        expect(wrapper.emitted('delete')[0][0]).toEqual([firstPackage]);
       });
 
       it('tracks the right action', () => {

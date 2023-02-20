@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'User views an empty project', feature_category: :projects do
+  include Spec::Support::Helpers::Features::InviteMembersModalHelper
+
   let_it_be(:project) { create(:project, :empty_repo) }
   let_it_be(:user) { create(:user) }
 
@@ -29,7 +31,9 @@ RSpec.describe 'User views an empty project', feature_category: :projects do
 
       click_button 'Invite members'
 
-      expect(page).to have_content("You're inviting members to the")
+      page.within invite_modal_selector do
+        expect(page).to have_content("You're inviting members to the #{project.name} project")
+      end
     end
   end
 

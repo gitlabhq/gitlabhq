@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Banzai::Filter::GollumTagsFilter do
+RSpec.describe Banzai::Filter::GollumTagsFilter, feature_category: :wiki do
   include FilterSpecHelper
 
   let(:project) { create(:project) }

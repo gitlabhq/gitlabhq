@@ -179,11 +179,6 @@
         display: inline-block;
       }
 
-      .project-item-select-holder {
-        margin: 0;
-        width: 100%;
-      }
-
       &.inline {
         display: flex;
         flex-flow: row wrap;
@@ -366,14 +361,4 @@
       overflow: visible;
     }
   }
-}
-
-.project-item-select-holder.btn-group {
-  .new-project-item-select-button {
-    max-width: 32px;
-  }
-}
-
-.empty-state .project-item-select-holder.btn-group {
-  max-width: 320px;
 }

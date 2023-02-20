@@ -5,9 +5,12 @@ require 'spec_helper'
 RSpec.describe AbuseReportsController, feature_category: :insider_threat do
   let(:reporter) { create(:user) }
   let(:user)     { create(:user) }
+  let(:abuse_category) { 'spam' }
+
   let(:attrs) do
     attributes_for(:abuse_report) do |hash|
       hash[:user_id] = user.id
+      hash[:category] = abuse_category
     end
   end
 
@@ -55,8 +58,6 @@ RSpec.describe AbuseReportsController, feature_category: :insider_threat do
   describe 'POST add_category', :aggregate_failures do
     subject(:request) { post add_category_abuse_reports_path, params: request_params }
 
-    let(:abuse_category) { 'spam' }
-
     context 'when user is reported for abuse' do
       let(:ref_url) { 'http://example.com' }
       let(:request_params) do
@@ -78,6 +79,17 @@ RSpec.describe AbuseReportsController, feature_category: :insider_threat do
           user_id: user.id,
           category: abuse_category,
           reported_from_url: ref_url
+        )
+      end
+
+      it 'tracks the snowplow event' do
+        subject
+
+        expect_snowplow_event(
+          category: 'ReportAbuse',
+          action: 'select_abuse_category',
+          property: abuse_category,
+          user: user
         )
       end
     end
@@ -149,14 +161,34 @@ RSpec.describe AbuseReportsController, feature_category: :insider_threat do
 
         expect(response).to redirect_to root_path
       end
+
+      it 'tracks the snowplow event' do
+        post abuse_reports_path(abuse_report: attrs)
+
+        expect_snowplow_event(
+          category: 'ReportAbuse',
+          action: 'submit_form',
+          property: abuse_category,
+          user: user
+        )
+      end
     end
 
     context 'with invalid attributes' do
-      it 'redirects back to root' do
+      before do
         attrs.delete(:user_id)
+      end
+
+      it 'redirects back to root' do
         post abuse_reports_path(abuse_report: attrs)
 
         expect(response).to redirect_to root_path
+      end
+
+      it 'does not track the snowplow event' do
+        post abuse_reports_path(abuse_report: attrs)
+
+        expect_no_snowplow_event
       end
     end
   end

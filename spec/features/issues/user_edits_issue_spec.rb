@@ -26,7 +26,7 @@ RSpec.describe "Issues > User edits issue", :js, feature_category: :team_plannin
         visit edit_project_issue_path(project, issue)
       end
 
-      it "previews content" do
+      it "previews content", quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/391757' do
         form = first(".gfm-form")
 
         page.within(form) do
@@ -433,7 +433,7 @@ RSpec.describe "Issues > User edits issue", :js, feature_category: :team_plannin
             issue.save!
           end
 
-          it 'shows milestone text' do
+          it 'shows milestone text', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/389287' do
             sign_out(:user)
             sign_in(guest)
 

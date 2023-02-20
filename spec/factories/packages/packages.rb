@@ -66,13 +66,13 @@ FactoryBot.define do
     end
 
     factory :debian_package do
-      sequence(:name) { |n| "package-#{n}" }
+      sequence(:name) { |n| "#{FFaker::Lorem.word}#{n}" }
       sequence(:version) { |n| "1.0-#{n}" }
       package_type { :debian }
 
       transient do
         without_package_files { false }
-        file_metadatum_trait { :keep }
+        file_metadatum_trait { processing? ? :unknown : :keep }
         published_in { :create }
       end
 

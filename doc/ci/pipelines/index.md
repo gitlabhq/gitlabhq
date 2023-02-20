@@ -136,7 +136,7 @@ and [view your pipeline status](https://marketplace.visualstudio.com/items?itemN
 
 Pipelines can be manually executed, with predefined or manually-specified [variables](../variables/index.md).
 
-You might do this if the results of a pipeline (for example, a code build) are required outside the normal
+You might do this if the results of a pipeline (for example, a code build) are required outside the standard
 operation of the pipeline.
 
 To execute a pipeline manually:
@@ -145,7 +145,7 @@ To execute a pipeline manually:
 1. On the left sidebar, select **CI/CD > Pipelines**.
 1. Select **Run pipeline**.
 1. In the **Run for branch name or tag** field, select the branch or tag to run the pipeline for.
-1. Enter any [environment variables](../variables/index.md) required for the pipeline to run.
+1. Enter any [CI/CD variables](../variables/index.md) required for the pipeline to run.
    You can set specific variables to have their [values prefilled in the form](#prefill-variables-in-manual-pipelines).
 1. Select **Run pipeline**.
 
@@ -163,32 +163,34 @@ information such as what the variable is used for, and what the acceptable value
 Job-level variables cannot be pre-filled.
 
 In manually-triggered pipelines, the **Run pipeline** page displays all pipeline-level variables
-with a `description` defined in the `.gitlab-ci.yml` file. The description displays
+that have a `description` defined in the `.gitlab-ci.yml` file. The description displays
 below the variable.
 
-You can change the prefilled value, which overrides the value for that single pipeline run.
-If you do not define a `value` for the variable in the configuration file, the variable still displays,
+You can change the prefilled value, which [overrides the value](../variables/index.md#override-a-defined-cicd-variable) for that single pipeline run.
+Any variables overridden by using this process are [expanded](../variables/index.md#prevent-cicd-variable-expansion)
+and not [masked](../variables/index.md#mask-a-cicd-variable).
+If you do not define a `value` for the variable in the configuration file, the variable name is still listed,
 but the value field is blank.
 
 For example:
 
 ```yaml
 variables:
-  TEST_SUITE:
-    description: "The test suite that will run. Valid options are: 'default', 'short', 'full'."
-    value: "default"
+  DEPLOY_CREDENTIALS:
+    description: "The deployment credentials."
   DEPLOY_ENVIRONMENT:
     description: "Select the deployment target. Valid options are: 'canary', 'staging', 'production', or a stable branch of your choice."
+    value: "canary"
 ```
 
 In this example:
 
-- `TEST_SUITE` is pre-filled in the **Run pipeline** page with `default`,
-  and the message explains the other options.
-- `DEPLOY_ENVIRONMENT` is listed in the **Run pipeline** page, but with no value set.
+- `DEPLOY_CREDENTIALS` is listed in the **Run pipeline** page, but with no value set.
   The user is expected to define the value each time the pipeline is run manually.
+- `DEPLOY_ENVIRONMENT` is pre-filled in the **Run pipeline** page with `canary` as the default value,
+  and the message explains the other options.
 
-##### Configure a list of selectable values for a prefilled variable
+#### Configure a list of selectable prefilled variable values
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/363660) in GitLab 15.5 [with a flag](../../administration/feature_flags.md) named `run_pipeline_graphql`. Disabled by default.
 > - The `options` keyword was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105502) in GitLab 15.7.
@@ -425,7 +427,7 @@ You can group the jobs by:
 you visualize the entire pipeline, including all cross-project inter-dependencies.
 
 If a stage contains more than 100 jobs, only the first 100 jobs are listed in the
-pipeline graph. The remaining jobs still run as normal. To see the jobs:
+pipeline graph. The remaining jobs still run as usual. To see the jobs:
 
 - Select the pipeline, and the jobs are listed on the right side of the pipeline details page.
 - On the left sidebar, select **CI/CD > Jobs**.

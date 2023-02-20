@@ -3,13 +3,15 @@
 require 'spec_helper'
 
 RSpec.describe 'Merge request > User selects branches for new MR', :js, feature_category: :code_review_workflow do
+  include ListboxHelpers
+
   let(:project) { create(:project, :public, :repository) }
   let(:user) { project.creator }
 
   def select_source_branch(branch_name)
     find('.js-source-branch', match: :first).click
-    find('.js-source-branch-dropdown .dropdown-input-field').native.send_keys branch_name
-    find('.js-source-branch-dropdown .dropdown-content a', text: branch_name, match: :first).click
+    find('.gl-listbox-search-input').native.send_keys branch_name
+    select_listbox_item(branch_name)
   end
 
   before do
@@ -27,7 +29,7 @@ RSpec.describe 'Merge request > User selects branches for new MR', :js, feature_
     expect(page).to have_content('Target branch')
 
     first('.js-source-branch').click
-    find('.js-source-branch-dropdown .dropdown-content a', match: :first).click
+    find('.gl-new-dropdown-item', match: :first).click
 
     expect(page).to have_content "b83d6e3"
   end
@@ -43,7 +45,8 @@ RSpec.describe 'Merge request > User selects branches for new MR', :js, feature_
     expect(page).to have_content('Target branch')
 
     first('.js-target-branch').click
-    find('.js-target-branch-dropdown .dropdown-content a', text: 'v1.1.0', match: :first).click
+    find('.gl-listbox-search-input').native.send_keys 'v1.1.0'
+    select_listbox_item('v1.1.0')
 
     expect(page).to have_content "b83d6e3"
   end
@@ -66,27 +69,6 @@ RSpec.describe 'Merge request > User selects branches for new MR', :js, feature_
     click_button "Check out branch"
 
     expect(page).to have_content 'git checkout -b \'orphaned-branch\' \'origin/orphaned-branch\''
-  end
-
-  it 'allows filtering multiple dropdowns' do
-    visit project_new_merge_request_path(project)
-
-    first('.js-source-branch').click
-
-    page.within '.js-source-branch-dropdown' do
-      input = find('.dropdown-input-field')
-      input.click
-      input.send_keys('orphaned-branch')
-
-      expect(page).to have_css('.dropdown-content li', count: 1)
-    end
-
-    first('.js-target-branch').click
-
-    find('.js-target-branch-dropdown .dropdown-content li', match: :first)
-    target_items = all('.js-target-branch-dropdown .dropdown-content li')
-
-    expect(target_items.count).to be > 1
   end
 
   context 'when target project cannot be viewed by the current user' do

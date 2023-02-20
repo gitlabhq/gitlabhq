@@ -11,6 +11,7 @@ RSpec.describe 'Blob shortcuts', :js, feature_category: :team_planning do
 
   before do
     project.add_developer(user)
+
     sign_in(user)
   end
 

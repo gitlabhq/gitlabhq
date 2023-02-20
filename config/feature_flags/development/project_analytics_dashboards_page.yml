@@ -1,0 +1,8 @@
+---
+name: project_analytics_dashboards_page
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/109618
+rollout_issue_url:
+milestone: '15.9'
+type: development
+group: group::optimize
+default_enabled: false

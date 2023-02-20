@@ -121,7 +121,7 @@ class ProjectPolicy < BasePolicy
 
   desc "If user is authenticated via CI job token then the target project should be in scope"
   condition(:project_allowed_for_job_token) do
-    !@user&.from_ci_job_token? || @user.ci_job_token_scope.allows?(project)
+    !@user&.from_ci_job_token? || @user.ci_job_token_scope.accessible?(project)
   end
 
   with_scope :subject
@@ -234,6 +234,10 @@ class ProjectPolicy < BasePolicy
     Gitlab.config.packages.enabled
   end
 
+  condition(:create_runner_workflow_enabled) do
+    Feature.enabled?(:create_runner_workflow)
+  end
+
   # `:read_project` may be prevented in EE, but `:read_project_for_iids` should
   # not.
   rule { guest | admin }.enable :read_project_for_iids
@@ -272,6 +276,7 @@ class ProjectPolicy < BasePolicy
     enable :set_warn_about_potentially_unwanted_characters
 
     enable :register_project_runners
+    enable :create_project_runners
     enable :manage_owners
   end
 
@@ -300,6 +305,8 @@ class ProjectPolicy < BasePolicy
   end
 
   rule { can?(:reporter_access) & can?(:create_issue) }.enable :create_incident
+
+  rule { can?(:reporter_access) & can?(:read_environment) }.enable :read_freeze_period
 
   rule { can?(:create_issue) }.enable :create_work_item
 
@@ -344,6 +351,7 @@ class ProjectPolicy < BasePolicy
     enable :read_package
     enable :read_product_analytics
     enable :read_ci_cd_analytics
+    enable :read_external_emails
     enable :read_grafana
   end
 
@@ -469,6 +477,7 @@ class ProjectPolicy < BasePolicy
     enable :update_escalation_status
     enable :read_secure_files
     enable :update_sentry_issue
+    enable :read_airflow_dags
   end
 
   rule { can?(:developer_access) & user_confirmed? }.policy do
@@ -519,6 +528,7 @@ class ProjectPolicy < BasePolicy
     enable :destroy_freeze_period
     enable :admin_feature_flags_client
     enable :register_project_runners
+    enable :create_project_runners
     enable :update_runners_registration_token
     enable :admin_project_google_cloud
     enable :admin_secure_files
@@ -823,6 +833,7 @@ class ProjectPolicy < BasePolicy
 
   rule { ~admin & ~project_runner_registration_allowed }.policy do
     prevent :register_project_runners
+    prevent :create_project_runners
   end
 
   rule { can?(:admin_project_member) }.policy do
@@ -846,6 +857,13 @@ class ProjectPolicy < BasePolicy
   rule { can?(:download_code) }.policy do
     enable :read_code
   end
+
+  rule { ~create_runner_workflow_enabled }.policy do
+    prevent :create_project_runners
+  end
+
+  # Should be matched with GroupPolicy#read_internal_note
+  rule { admin | can?(:reporter_access) }.enable :read_internal_note
 
   private
 

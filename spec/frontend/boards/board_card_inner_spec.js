@@ -1,16 +1,18 @@
 import { GlLabel, GlLoadingIcon, GlTooltip } from '@gitlab/ui';
 import { range } from 'lodash';
 import Vue, { nextTick } from 'vue';
+import VueApollo from 'vue-apollo';
 import Vuex from 'vuex';
+import createMockApollo from 'helpers/mock_apollo_helper';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import IssuableBlockedIcon from '~/vue_shared/components/issuable_blocked_icon/issuable_blocked_icon.vue';
 import BoardCardInner from '~/boards/components/board_card_inner.vue';
 import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
-import { issuableTypes } from '~/boards/constants';
 import eventHub from '~/boards/eventhub';
 import defaultStore from '~/boards/stores';
+import { TYPE_ISSUE } from '~/issues/constants';
 import { updateHistory } from '~/lib/utils/url_utility';
 import { mockLabelList, mockIssue, mockIssueFullPath } from './mock_data';
 
@@ -18,6 +20,7 @@ jest.mock('~/lib/utils/url_utility');
 jest.mock('~/boards/eventhub');
 
 Vue.use(Vuex);
+Vue.use(VueApollo);
 
 describe('Board card component', () => {
   const user = {
@@ -69,6 +72,7 @@ describe('Board card component', () => {
   const createWrapper = ({ props = {}, isEpicBoard = false, isGroupBoard = true } = {}) => {
     wrapper = mountExtended(BoardCardInner, {
       store,
+      apolloProvider: createMockApollo(),
       propsData: {
         list,
         item: issue,
@@ -82,18 +86,11 @@ describe('Board card component', () => {
       directives: {
         GlTooltip: createMockDirective(),
       },
-      mocks: {
-        $apollo: {
-          queries: {
-            blockingIssuables: { loading: false },
-          },
-        },
-      },
       provide: {
         rootPath: '/',
         scopedLabelsAvailable: false,
         isEpicBoard,
-        issuableType: issuableTypes.issue,
+        issuableType: TYPE_ISSUE,
         isGroupBoard,
       },
     });

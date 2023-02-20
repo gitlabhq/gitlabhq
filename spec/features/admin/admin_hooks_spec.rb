@@ -105,8 +105,8 @@ RSpec.describe 'Admin::Hooks', feature_category: :integrations do
       WebMock.stub_request(:post, system_hook.url)
       visit admin_hooks_path
 
-      find('.hook-test-button.dropdown').click
-      click_link 'Push events'
+      click_button 'Test'
+      click_button 'Push events'
     end
 
     it { expect(page).to have_current_path(admin_hooks_path, ignore_query: true) }
@@ -141,8 +141,8 @@ RSpec.describe 'Admin::Hooks', feature_category: :integrations do
         create(:merge_request, source_project: project)
 
         visit admin_hooks_path
-        find('.hook-test-button.dropdown').click
-        click_link 'Merge request events'
+        click_button 'Test'
+        click_button 'Merge request events'
 
         expect(page).to have_content 'Hook executed successfully'
       end

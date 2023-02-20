@@ -92,10 +92,6 @@ describe('app_index.vue', () => {
     queryMock = jest.fn();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   // Finders
   const findLoadingIndicator = () => wrapper.findComponent(ReleaseSkeletonLoader);
   const findEmptyState = () => wrapper.findComponent(ReleasesEmptyState);
@@ -179,12 +175,14 @@ describe('app_index.vue', () => {
           expect(findPagination().exists()).toBe(pagination);
         });
 
-        it('does render the "New release" button', () => {
-          expect(findNewReleaseButton().exists()).toBe(true);
+        it('does render the "New release" button only for non-empty state', () => {
+          const shouldRenderNewReleaseButton = !emptyState;
+          expect(findNewReleaseButton().exists()).toBe(shouldRenderNewReleaseButton);
         });
 
-        it('does render the sort controls', () => {
-          expect(findSort().exists()).toBe(true);
+        it('does render the sort controls only for non-empty state', () => {
+          const shouldRenderControls = !emptyState;
+          expect(findSort().exists()).toBe(shouldRenderControls);
         });
       },
     );

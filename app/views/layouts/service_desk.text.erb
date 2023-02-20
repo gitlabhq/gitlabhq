@@ -1,0 +1,7 @@
+<%= text_header_message %>
+
+<%= yield -%>
+
+<%= @unsubscribe_url %>
+<%# EE-specific start %><%= render_if_exists 'layouts/mailer/additional_text' %><%# EE-specific end %>
+<%= text_footer_message -%>

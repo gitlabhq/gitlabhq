@@ -1,0 +1,10 @@
+- title: 'Embedding Grafana panels in Markdown is deprecated'
+  announcement_milestone: '15.9'
+  removal_milestone: '16.0'
+  breaking_change: true
+  reporter: abellucci
+  body: |
+    The ability to add Grafana panels in GitLab Flavored Markdown is deprecated in 15.9 and will be removed in 16.0.
+    We intend to replace this feature with the ability to [embed charts](https://gitlab.com/groups/gitlab-org/opstrace/-/epics/33) with the [GitLab Observability UI](https://gitlab.com/gitlab-org/opstrace/opstrace-ui).
+  stage: monitor
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/389477

@@ -1,0 +1,10 @@
+---
+table_name: scan_result_policies
+classes:
+- Security::ScanResultPolicyRead
+feature_categories:
+- security_policy_management
+description: Stores rules of a Security Orchestration Policy.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/109624
+milestone: '15.9'
+gitlab_schema: gitlab_main

@@ -27,6 +27,7 @@ export function initJiraConnect() {
     usersPath,
     gitlabUserPath,
     oauthMetadata,
+    publicKeyStorageEnabled,
   } = el.dataset;
   sizeToParent();
 
@@ -42,6 +43,7 @@ export function initJiraConnect() {
       usersPath,
       gitlabUserPath,
       oauthMetadata: oauthMetadata ? JSON.parse(oauthMetadata) : null,
+      publicKeyStorageEnabled,
     },
     render(createElement) {
       return createElement(JiraConnectApp);

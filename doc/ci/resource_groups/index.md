@@ -235,7 +235,7 @@ If the process mode is `oldest_first`, it executes the jobs from the oldest pipe
 
 However, a child pipeline also requires a resource from the `production` resource group.
 Because the child pipeline is newer than the parent pipeline, the child pipeline
-waits until the `deploy` job is finished, something that will never happen.
+waits until the `deploy` job is finished, something that never happens.
 
 In this case, you should specify the `resource_group` keyword in the parent pipeline configuration instead:
 

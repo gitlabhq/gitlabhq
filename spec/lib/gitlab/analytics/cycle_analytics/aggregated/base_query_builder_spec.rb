@@ -17,7 +17,7 @@ RSpec.describe Gitlab::Analytics::CycleAnalytics::Aggregated::BaseQueryBuilder d
   let_it_be(:issue_outside_project) { create(:issue) }
 
   let_it_be(:stage) do
-    create(:cycle_analytics_project_stage,
+    create(:cycle_analytics_stage,
            project: project,
            start_event_identifier: :issue_created,
            end_event_identifier: :issue_deployed_to_production

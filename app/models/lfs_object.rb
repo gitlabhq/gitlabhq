@@ -12,13 +12,16 @@ class LfsObject < ApplicationRecord
   scope :with_files_stored_locally, -> { where(file_store: LfsObjectUploader::Store::LOCAL) }
   scope :with_files_stored_remotely, -> { where(file_store: LfsObjectUploader::Store::REMOTE) }
   scope :for_oids, -> (oids) { where(oid: oids) }
-  scope :for_oid_and_size, -> (oid, size) { find_by(oid: oid, size: size) }
 
   validates :oid, presence: true, uniqueness: true, format: { with: /\A\h{64}\z/ }
 
   mount_file_store_uploader LfsObjectUploader
 
   BATCH_SIZE = 3000
+
+  def self.for_oid_and_size(oid, size)
+    find_by(oid: oid, size: size)
+  end
 
   def self.not_linked_to_project(project)
     where('NOT EXISTS (?)',

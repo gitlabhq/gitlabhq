@@ -4,7 +4,7 @@ group: Integrations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Apple App Store integration **(FREE)**
+# Apple App Store **(FREE)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/104888) in GitLab 15.8 [with a flag](../../../administration/feature_flags.md) named `apple_app_store_integration`. Disabled by default.
 

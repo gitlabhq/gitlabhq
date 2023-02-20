@@ -90,7 +90,6 @@ ci_cd_settings:
   unexposed_attributes:
     - id
     - project_id
-    - group_runners_enabled
     - merge_trains_enabled
     - merge_pipelines_enabled
     - auto_rollback_enabled
@@ -115,6 +114,7 @@ build_import_state: # import_state
     - last_update_at
     - last_successful_update_at
     - correlation_id_value
+    - checksums
   remapped_attributes:
     status: import_status
     last_error: import_error
@@ -161,6 +161,9 @@ project_setting:
     - jitsu_key
     - mirror_branch_regex
     - allow_pipeline_trigger_approve_deployment
+    - emails_enabled
+    - pages_unique_domain_enabled
+    - pages_unique_domain
 
 build_service_desk_setting: # service_desk_setting
   unexposed_attributes:
@@ -168,5 +171,13 @@ build_service_desk_setting: # service_desk_setting
     - issue_template_key
     - file_template_project_id
     - outgoing_name
+    - custom_email_enabled
+    - custom_email
+    - custom_email_smtp_address
+    - custom_email_smtp_port
+    - custom_email_smtp_username
+    - encrypted_custom_email_smtp_password
+    - encrypted_custom_email_smtp_password_iv
+    - custom_email_smtp_password
   remapped_attributes:
     project_key: service_desk_address

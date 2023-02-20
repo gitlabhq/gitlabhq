@@ -42,7 +42,7 @@ RSpec.describe 'User views an SVG design that contains XSS', :js, feature_catego
     }
 
     # With the page loaded, there should be no alert modal
-    expect(run_expectation).to raise_error(
+    expect { run_expectation.call }.to raise_error(
       Capybara::ModalNotFound,
       'Unable to find modal dialog'
     )
@@ -51,6 +51,6 @@ RSpec.describe 'User views an SVG design that contains XSS', :js, feature_catego
     # With an alert modal displaying, the modal should be dismissable.
     execute_script('alert(true)')
 
-    expect(run_expectation).not_to raise_error
+    expect { run_expectation.call }.not_to raise_error
   end
 end

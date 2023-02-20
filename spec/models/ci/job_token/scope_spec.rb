@@ -2,78 +2,171 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::JobToken::Scope, feature_category: :continuous_integration do
-  let_it_be(:source_project) { create(:project, ci_outbound_job_token_scope_enabled: true) }
+RSpec.describe Ci::JobToken::Scope, feature_category: :continuous_integration, factory_default: :keep do
+  include Ci::JobTokenScopeHelpers
+  using RSpec::Parameterized::TableSyntax
 
-  let(:scope) { described_class.new(source_project) }
+  let_it_be(:project) { create_default(:project) }
+  let_it_be(:user) { create_default(:user) }
+  let_it_be(:namespace) { create_default(:namespace) }
 
-  describe '#all_projects' do
-    subject(:all_projects) { scope.all_projects }
+  let_it_be(:source_project) do
+    create(:project,
+      ci_outbound_job_token_scope_enabled: true,
+      ci_inbound_job_token_scope_enabled: true
+    )
+  end
+
+  let(:current_project) { source_project }
+
+  let(:scope) { described_class.new(current_project) }
+
+  describe '#outbound_projects' do
+    subject { scope.outbound_projects }
 
     context 'when no projects are added to the scope' do
       it 'returns the project defining the scope' do
-        expect(all_projects).to contain_exactly(source_project)
+        expect(subject).to contain_exactly(current_project)
       end
     end
 
     context 'when projects are added to the scope' do
-      include_context 'with scoped projects'
+      include_context 'with accessible and inaccessible projects'
 
       it 'returns all projects that can be accessed from a given scope' do
-        expect(subject).to contain_exactly(source_project, outbound_scoped_project)
+        expect(subject).to contain_exactly(current_project, outbound_allowlist_project, fully_accessible_project)
       end
     end
   end
 
-  describe '#allows?' do
-    subject { scope.allows?(includes_project) }
+  describe '#inbound_projects' do
+    subject { scope.inbound_projects }
 
-    context 'without scoped projects' do
-      context 'when self referential' do
-        let(:includes_project) { source_project }
-
-        it { is_expected.to be_truthy }
+    context 'when no projects are added to the scope' do
+      it 'returns the project defining the scope' do
+        expect(subject).to contain_exactly(current_project)
       end
     end
 
-    context 'with scoped projects' do
-      include_context 'with scoped projects'
+    context 'when projects are added to the scope' do
+      include_context 'with accessible and inaccessible projects'
 
-      context 'when project is in outbound scope' do
-        let(:includes_project) { outbound_scoped_project }
+      it 'returns all projects that can be accessed from a given scope' do
+        expect(subject).to contain_exactly(current_project, inbound_allowlist_project)
+      end
+    end
+  end
 
-        it { is_expected.to be_truthy }
+  describe 'add!' do
+    let_it_be(:new_project) { create(:project) }
+
+    subject { scope.add!(new_project, direction: direction, user: user) }
+
+    [:inbound, :outbound].each do |d|
+      let(:direction) { d }
+
+      it 'adds the project' do
+        subject
+
+        expect(scope.send("#{direction}_projects")).to contain_exactly(current_project, new_project)
+      end
+    end
+
+    # Context and before block can go away leaving just the example in 16.0
+    context 'with inbound only enabled' do
+      before do
+        project.ci_cd_settings.update!(job_token_scope_enabled: false)
       end
 
-      context 'when project is in inbound scope' do
-        let(:includes_project) { inbound_scoped_project }
-
-        it { is_expected.to be_falsey }
+      it 'provides access' do
+        expect do
+          scope.add!(new_project, direction: :inbound, user: user)
+        end.to change { described_class.new(new_project).accessible?(current_project) }.from(false).to(true)
       end
+    end
+  end
 
-      context 'when project is linked to a different project' do
-        let(:includes_project) { unscoped_project1 }
+  RSpec.shared_examples 'enforces outbound scope only' do
+    include_context 'with accessible and inaccessible projects'
 
-        it { is_expected.to be_falsey }
-      end
+    where(:accessed_project, :result) do
+      ref(:current_project)            | true
+      ref(:inbound_allowlist_project)  | false
+      ref(:unscoped_project1)          | false
+      ref(:unscoped_project2)          | false
+      ref(:outbound_allowlist_project) | true
+      ref(:inbound_accessible_project) | false
+      ref(:fully_accessible_project)   | true
+    end
 
-      context 'when project is unlinked to a project' do
-        let(:includes_project) { unscoped_project2 }
+    with_them do
+      it { is_expected.to eq(result) }
+    end
+  end
 
-        it { is_expected.to be_falsey }
-      end
+  describe 'accessible?' do
+    subject { scope.accessible?(accessed_project) }
 
-      context 'when project scope setting is disabled' do
-        let(:includes_project) { unscoped_project1 }
+    context 'with inbound and outbound scopes enabled' do
+      context 'when inbound and outbound access setup' do
+        include_context 'with accessible and inaccessible projects'
 
-        before do
-          source_project.ci_outbound_job_token_scope_enabled = false
+        where(:accessed_project, :result) do
+          ref(:current_project)            | true
+          ref(:inbound_allowlist_project)  | false
+          ref(:unscoped_project1)          | false
+          ref(:unscoped_project2)          | false
+          ref(:outbound_allowlist_project) | false
+          ref(:inbound_accessible_project) | false
+          ref(:fully_accessible_project)   | true
         end
 
-        it 'considers any project to be part of the scope' do
-          expect(subject).to be_truthy
+        with_them do
+          it 'allows self and projects allowed from both directions' do
+            is_expected.to eq(result)
+          end
         end
       end
+    end
+
+    context 'with inbound scope enabled and outbound scope disabled' do
+      before do
+        accessed_project.update!(ci_inbound_job_token_scope_enabled: true)
+        current_project.update!(ci_outbound_job_token_scope_enabled: false)
+      end
+
+      include_context 'with accessible and inaccessible projects'
+
+      where(:accessed_project, :result) do
+        ref(:current_project)            | true
+        ref(:inbound_allowlist_project)  | false
+        ref(:unscoped_project1)          | false
+        ref(:unscoped_project2)          | false
+        ref(:outbound_allowlist_project) | false
+        ref(:inbound_accessible_project) | true
+        ref(:fully_accessible_project)   | true
+      end
+
+      with_them do
+        it { is_expected.to eq(result) }
+      end
+    end
+
+    context 'with inbound scope disabled and outbound scope enabled' do
+      before do
+        accessed_project.update!(ci_inbound_job_token_scope_enabled: false)
+        current_project.update!(ci_outbound_job_token_scope_enabled: true)
+      end
+
+      include_examples 'enforces outbound scope only'
+    end
+
+    context 'when inbound scope flag disabled' do
+      before do
+        stub_feature_flags(ci_inbound_job_token_scope: false)
+      end
+
+      include_examples 'enforces outbound scope only'
     end
   end
 end

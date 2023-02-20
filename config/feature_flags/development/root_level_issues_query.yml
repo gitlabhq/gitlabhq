@@ -1,8 +1,0 @@
----
-name: root_level_issues_query
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/102348
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/382250
-milestone: '15.6'
-type: development
-group: group::project management
-default_enabled: false

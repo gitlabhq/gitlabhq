@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe API::Release::Links, feature_category: :release_orchestration do
+  include Ci::JobTokenScopeHelpers
+
   let(:project) { create(:project, :repository, :private) }
   let(:maintainer) { create(:user) }
   let(:developer) { create(:user) }
@@ -51,7 +53,7 @@ RSpec.describe API::Release::Links, feature_category: :release_orchestration do
       end
 
       context 'when using JOB-TOKEN auth' do
-        let(:job) { create(:ci_build, :running, user: maintainer) }
+        let(:job) { create(:ci_build, :running, user: maintainer, project: project) }
 
         it 'returns releases links' do
           get api("/projects/#{project.id}/releases/v0.1/assets/links", job_token: job.token)
@@ -127,7 +129,7 @@ RSpec.describe API::Release::Links, feature_category: :release_orchestration do
     end
 
     context 'when using JOB-TOKEN auth' do
-      let(:job) { create(:ci_build, :running, user: maintainer) }
+      let(:job) { create(:ci_build, :running, user: maintainer, project: project) }
 
       it 'returns releases link' do
         get api("/projects/#{project.id}/releases/v0.1/assets/links/#{release_link.id}", job_token: job.token)
@@ -241,7 +243,7 @@ RSpec.describe API::Release::Links, feature_category: :release_orchestration do
     end
 
     context 'when using JOB-TOKEN auth' do
-      let(:job) { create(:ci_build, :running, user: maintainer) }
+      let(:job) { create(:ci_build, :running, user: maintainer, project: project) }
 
       it 'creates a new release link' do
         expect do
@@ -385,7 +387,7 @@ RSpec.describe API::Release::Links, feature_category: :release_orchestration do
     end
 
     context 'when using JOB-TOKEN auth' do
-      let(:job) { create(:ci_build, :running, user: maintainer) }
+      let(:job) { create(:ci_build, :running, user: maintainer, project: project) }
 
       it 'updates the release link' do
         put api("/projects/#{project.id}/releases/v0.1/assets/links/#{release_link.id}"), params: params.merge(job_token: job.token)
@@ -496,7 +498,7 @@ RSpec.describe API::Release::Links, feature_category: :release_orchestration do
     end
 
     context 'when using JOB-TOKEN auth' do
-      let(:job) { create(:ci_build, :running, user: maintainer) }
+      let(:job) { create(:ci_build, :running, user: maintainer, project: project) }
 
       it 'deletes the release link' do
         expect do

@@ -28,10 +28,6 @@ Secure files can be [downloaded and used by CI/CD jobs](#use-secure-files-in-cic
 by using the [download-secure-files](https://gitlab.com/gitlab-org/incubation-engineering/mobile-devops/download-secure-files)
 tool.
 
-NOTE:
-This feature is in active development and is likely to change, potentially in a breaking way.
-Additional features and capabilities are planned.
-
 ## Add a secure file to a project
 
 To add a secure file to a project:

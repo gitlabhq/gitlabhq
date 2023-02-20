@@ -3,6 +3,7 @@ import { GITLAB_WEB_IDE_FEEDBACK_ISSUE } from '~/ide/constants';
 import { initGitlabWebIDE } from '~/ide/init_gitlab_web_ide';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_action';
 import { createAndSubmitForm } from '~/lib/utils/create_and_submit_form';
+import { handleTracking } from '~/ide/lib/gitlab_web_ide/handle_tracking_event';
 import { TEST_HOST } from 'helpers/test_constants';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -32,6 +33,9 @@ const TEST_START_REMOTE_PARAMS = {
   remotePath: '/test/projects/f oo',
   connectionToken: '123abc',
 };
+const TEST_EDITOR_FONT_SRC_URL = 'http://gitlab.test/assets/jetbrains-mono/JetBrainsMono.woff2';
+const TEST_EDITOR_FONT_FORMAT = 'woff2';
+const TEST_EDITOR_FONT_FAMILY = 'JebBrains Mono';
 
 describe('ide/init_gitlab_web_ide', () => {
   let resolveConfirm;
@@ -49,6 +53,9 @@ describe('ide/init_gitlab_web_ide', () => {
     el.dataset.userPreferencesPath = TEST_USER_PREFERENCES_PATH;
     el.dataset.mergeRequest = TEST_MR_ID;
     el.dataset.filePath = TEST_FILE_PATH;
+    el.dataset.editorFontSrcUrl = TEST_EDITOR_FONT_SRC_URL;
+    el.dataset.editorFontFormat = TEST_EDITOR_FONT_FORMAT;
+    el.dataset.editorFontFamily = TEST_EDITOR_FONT_FAMILY;
 
     document.body.append(el);
   };
@@ -103,7 +110,13 @@ describe('ide/init_gitlab_web_ide', () => {
           userPreferences: TEST_USER_PREFERENCES_PATH,
           feedbackIssue: GITLAB_WEB_IDE_FEEDBACK_ISSUE,
         },
+        editorFont: {
+          srcUrl: TEST_EDITOR_FONT_SRC_URL,
+          fontFamily: TEST_EDITOR_FONT_FAMILY,
+          format: TEST_EDITOR_FONT_FORMAT,
+        },
         handleStartRemote: expect.any(Function),
+        handleTracking,
       });
     });
 

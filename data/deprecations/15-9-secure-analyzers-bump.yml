@@ -1,0 +1,55 @@
+#
+# REQUIRED FIELDS
+#
+- title: "Secure analyzers major version update"  # (required) Clearly explain the change, or planned change. For example, "The `confidential` field for a `Note` is deprecated" or "CI/CD job names will be limited to 250 characters."
+  announcement_milestone: "15.9"  # (required) The milestone when this feature was first announced as deprecated.
+  removal_milestone: "16.0"  # (required) The milestone when this feature is planned to be removed
+  breaking_change: true  # (required) Change to false if this is not a breaking change.
+  reporter: gonzoyumo  # (required) GitLab username of the person reporting the change
+  stage: secure  # (required) String value of the stage that the feature was created in. e.g., Growth
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/390912  # (required) Link to the deprecation issue in GitLab
+  body: | # Do not modify this line, instead modify the lines below.
+    The Secure stage will be bumping the major versions of its analyzers in tandem with the GitLab 16.0 release. This bump will enable a clear delineation for analyzers, between:
+
+    - Those released prior to May 22, 2023
+    - Those released after May 22, 2023
+
+    If you are not using the default included templates, or have pinned your analyzer versions you will need to update your CI/CD job definition to either remove the pinned version or to update the latest major version.
+    Users of GitLab 13.0-15.10 will continue to experience analyzer updates as normal until the release of GitLab 16.0, following which all newly fixed bugs and released features will be released only in the new major version of the analyzers. We do not backport bugs and features to deprecated versions as per our [maintenance policy](https://docs.gitlab.com/ee/policy/maintenance.html). As required, security patches will be backported within the latest 3 minor releases.
+    Specifically, the following are being deprecated and will no longer be updated after 16.0 GitLab release:
+
+    - API Fuzzing: version 2
+    - Container Scanning: version 5
+    - Coverage-guided fuzz testing: version 3
+    - Dependency Scanning: version 3
+    - Dynamic Application Security Testing (DAST): version 3
+    - DAST API: version 2
+    - IaC Scanning: version 3
+    - License Scanning: version 4
+    - Secret Detection: version 4
+    - Static Application Security Testing (SAST): version 3 of [all analyzers](https://docs.gitlab.com/ee/user/application_security/sast/#supported-languages-and-frameworks)
+      - `brakeman`: version 3
+      - `flawfinder`: version 3
+      - `kubesec`: version 3
+      - `mobsf`: version 3
+      - `nodejs-scan`: version 3
+      - `phpcs-security-audit`: version 3
+      - `pmd-apex`: version 3
+      - `security-code-scan`: version 3
+      - `semgrep`: version 3
+      - `sobelow`: version 3
+      - `spotbugs`: version 3
+#
+# OPTIONAL END OF SUPPORT FIELDS
+#
+# If an End of Support period applies, the announcement should be shared with GitLab Support
+# in the `#spt_managers` channel in Slack, and mention `@gitlab-com/support` in this MR.
+#
+  end_of_support_milestone: # (optional) Use "XX.YY" format. The milestone when support for this feature will end.
+  #
+  # OTHER OPTIONAL FIELDS
+  #
+  tiers: [Free, Silver, Gold, Core, Premium, Ultimate] # (optional - may be required in the future) An array of tiers that the feature is available in currently.  e.g., [Free, Silver, Gold, Core, Premium, Ultimate]
+  documentation_url: # (optional) This is a link to the current documentation page
+  image_url: # (optional) This is a link to a thumbnail image depicting the feature
+  video_url: # (optional) Use the youtube thumbnail URL with the structure of https://img.youtube.com/vi/UNIQUEID/hqdefault.jpg

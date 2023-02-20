@@ -94,7 +94,7 @@ module API
       end
       params do
         requires :domain, type: String, desc: 'The domain'
-        # rubocop:disable Scalability/FileUploads
+        # rubocop:todo Scalability/FileUploads
         # TODO: remove rubocop disable - https://gitlab.com/gitlab-org/gitlab/issues/14960
         optional :certificate, types: [File, String], desc: 'The certificate', as: :user_provided_certificate
         optional :key, types: [File, String], desc: 'The key', as: :user_provided_key
@@ -122,7 +122,7 @@ module API
       desc 'Updates a pages domain'
       params do
         requires :domain, type: String, desc: 'The domain'
-        # rubocop:disable Scalability/FileUploads
+        # rubocop:todo Scalability/FileUploads
         # TODO: remove rubocop disable - https://gitlab.com/gitlab-org/gitlab/issues/14960
         optional :certificate, types: [File, String], desc: 'The certificate', as: :user_provided_certificate
         optional :key, types: [File, String], desc: 'The key', as: :user_provided_key

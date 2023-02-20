@@ -9,9 +9,10 @@ class DeployKey < Key
   has_many :deploy_keys_projects, inverse_of: :deploy_key, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :projects, through: :deploy_keys_projects
 
-  has_many :deploy_keys_projects_with_write_access, -> { with_write_access }, class_name: "DeployKeysProject"
+  has_many :deploy_keys_projects_with_write_access, -> { with_write_access }, class_name: "DeployKeysProject", inverse_of: :deploy_key
   has_many :projects_with_write_access, -> { includes(:route) }, class_name: 'Project', through: :deploy_keys_projects_with_write_access, source: :project
-  has_many :protected_branch_push_access_levels, class_name: '::ProtectedBranch::PushAccessLevel'
+  has_many :protected_branch_push_access_levels, class_name: '::ProtectedBranch::PushAccessLevel', inverse_of: :deploy_key
+  has_many :protected_tag_create_access_levels, class_name: '::ProtectedTag::CreateAccessLevel', inverse_of: :deploy_key
 
   scope :in_projects, ->(projects) { joins(:deploy_keys_projects).where(deploy_keys_projects: { project_id: projects }) }
   scope :with_write_access, -> { joins(:deploy_keys_projects).merge(DeployKeysProject.with_write_access) }

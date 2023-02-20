@@ -42,7 +42,7 @@ module Spam
       # Favour the most restrictive result.
       verdict = valid_results.min_by { |v| SUPPORTED_VERDICTS[v][:priority] }
 
-      # The target can override the verdict via the `allow_possible_spam` feature flag
+      # The target can override the verdict via the `allow_possible_spam` application setting
       verdict = OVERRIDE_VIA_ALLOW_POSSIBLE_SPAM if override_via_allow_possible_spam?(verdict: verdict)
 
       logger.info(class: self.class.name,

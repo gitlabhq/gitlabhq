@@ -44,17 +44,17 @@ Any time a new project is created, the shared runners are available.
 As an administrator you can set either a global or namespace-specific
 limit on the number of [CI/CD minutes](../../../ci/pipelines/cicd_minutes.md) you can use.
 
-## Enable a specific runner for multiple projects
+## Enable a project runner for multiple projects
 
-If you have already registered a [specific runner](../../../ci/runners/runners_scope.md#specific-runners)
+If you have already registered a [project runner](../../../ci/runners/runners_scope.md#project-runners)
 you can assign that runner to other projects.
 
-To enable a specific runner for more than one project:
+To enable a project runner for more than one project:
 
 1. On the top bar, select **Main menu > Admin**.
 1. From the left sidebar, select **CI/CD > Runners**.
 1. Select the runner you want to edit.
-1. In the top right, select **Edit** (**{pencil}**).
+1. In the upper right, select **Edit** (**{pencil}**).
 1. Under **Restrict projects for this runner**, search for a project.
 1. To the left of the project, select **Enable**.
 1. Repeat this process for each additional project.
@@ -91,7 +91,7 @@ can be set at:
 
 For the setting on GitLab.com, see [Artifacts maximum size](../../gitlab_com/index.md#gitlab-cicd).
 
-The value is in MB and the default is 100MB per job. To change it at the:
+The value is in MB and the default is 100 MB per job. To change it at the:
 
 - Instance level:
 
@@ -247,7 +247,7 @@ To enable or disable the banner:
 > [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/352316) from GitLab Premium to GitLab Ultimate in 15.0.
 
 NOTE:
-An alternative [compliance solution](../../group/compliance_frameworks.md#configure-a-compliance-pipeline)
+An alternative [compliance solution](../../group/compliance_frameworks.md#compliance-pipelines)
 is available. We recommend this alternative solution because it provides greater flexibility,
 allowing required pipelines to be assigned to specific compliance framework labels.
 
@@ -336,6 +336,8 @@ To set the maximum file size:
 
 GitLab administrators can adjust who is allowed to register runners, by showing and hiding areas of the UI.
 
+When the registration sections are hidden in the UI, members of the project or group must contact administrators to enable runner registration in the group or project. If you plan to prevent registration, ensure users have access to the runners they need to run jobs.
+
 By default, all members of a project and group are able to register runners.
 
 To restrict all users in an instance from registering runners:
@@ -347,8 +349,10 @@ To restrict all users in an instance from registering runners:
    information in the UI for group or project members.
 1. Select **Save changes**.
 
-WARNING:
-When the registration sections are hidden in the UI, members of the project or group that need to register runners must contact the administrators. If you plan to prevent registration, ensure users have access to the runners they need to run jobs.
+NOTE:
+After you disable runner registration by members of a project, the registration
+token automatically rotates. The token is no longer valid and you must
+use the new registration token for the project.
 
 ## Restrict runner registration by all members in a group
 

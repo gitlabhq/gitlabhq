@@ -12,6 +12,8 @@ module BulkImports
           data = Enumerator.new do |enum|
             add_matching_objects(portable.issues, enum)
             add_matching_objects(portable.merge_requests, enum)
+            add_notes(portable.issues, enum)
+            add_notes(portable.merge_requests, enum)
           end
 
           BulkImports::Pipeline::ExtractedData.new(data: data)
@@ -39,9 +41,16 @@ module BulkImports
           collection.each_batch(of: BATCH_SIZE, column: :iid) do |batch|
             batch.each do |object|
               enum << object if object_has_reference?(object)
+            end
+          end
+        end
 
+        def add_notes(collection, enum)
+          collection.each_batch(of: BATCH_SIZE, column: :iid) do |batch|
+            batch.each do |object|
               object.notes.each_batch(of: BATCH_SIZE) do |notes_batch|
                 notes_batch.each do |note|
+                  note.refresh_markdown_cache!
                   enum << note if object_has_reference?(note)
                 end
               end

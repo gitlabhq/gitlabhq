@@ -4,9 +4,9 @@ group: Integrations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Discord Notifications service **(FREE)**
+# Discord Notifications **(FREE)**
 
-The Discord Notifications service sends event notifications from GitLab to the channel for which the webhook was created.
+The Discord Notifications integration sends event notifications from GitLab to the channel for which the webhook was created.
 
 To send GitLab event notifications to a Discord channel, [create a webhook in Discord](https://support.discord.com/hc/en-us/articles/228383668-Intro-to-Webhooks)
 and configure it in GitLab.
@@ -24,7 +24,7 @@ and configure it in GitLab.
 
 ## Configure created webhook in GitLab
 
-With the webhook URL created in the Discord channel, you can set up the Discord Notifications service in GitLab.
+With the webhook URL created in the Discord channel, you can set up the Discord Notifications integration in GitLab.
 
 1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > Integrations**.

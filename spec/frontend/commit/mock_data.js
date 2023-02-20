@@ -1,3 +1,90 @@
+export const mockDownstreamPipelinesGraphql = ({ includeSourceJobRetried = true } = {}) => ({
+  nodes: [
+    {
+      id: 'gid://gitlab/Ci::Pipeline/612',
+      path: '/root/job-log-sections/-/pipelines/612',
+      project: {
+        id: 'gid://gitlab/Project/21',
+        name: 'job-log-sections',
+        __typename: 'Project',
+      },
+      detailedStatus: {
+        id: 'success-612-612',
+        group: 'success',
+        icon: 'status_success',
+        label: 'passed',
+        __typename: 'DetailedStatus',
+      },
+      sourceJob: {
+        id: 'gid://gitlab/Ci::Bridge/532',
+        retried: includeSourceJobRetried ? false : null,
+      },
+      __typename: 'Pipeline',
+    },
+    {
+      id: 'gid://gitlab/Ci::Pipeline/611',
+      path: '/root/job-log-sections/-/pipelines/611',
+      project: {
+        id: 'gid://gitlab/Project/21',
+        name: 'job-log-sections',
+        __typename: 'Project',
+      },
+      detailedStatus: {
+        id: 'success-611-611',
+        group: 'success',
+        icon: 'status_success',
+        label: 'passed',
+        __typename: 'DetailedStatus',
+      },
+      sourceJob: {
+        id: 'gid://gitlab/Ci::Bridge/531',
+        retried: includeSourceJobRetried ? true : null,
+      },
+      __typename: 'Pipeline',
+    },
+    {
+      id: 'gid://gitlab/Ci::Pipeline/609',
+      path: '/root/job-log-sections/-/pipelines/609',
+      project: {
+        id: 'gid://gitlab/Project/21',
+        name: 'job-log-sections',
+        __typename: 'Project',
+      },
+      detailedStatus: {
+        id: 'success-609-609',
+        group: 'success',
+        icon: 'status_success',
+        label: 'passed',
+        __typename: 'DetailedStatus',
+      },
+      sourceJob: {
+        id: 'gid://gitlab/Ci::Bridge/530',
+        retried: includeSourceJobRetried ? true : null,
+      },
+      __typename: 'Pipeline',
+    },
+  ],
+  __typename: 'PipelineConnection',
+});
+
+const upstream = {
+  id: 'gid://gitlab/Ci::Pipeline/610',
+  path: '/root/trigger-downstream/-/pipelines/610',
+  project: {
+    id: 'gid://gitlab/Project/21',
+    name: 'trigger-downstream',
+    __typename: 'Project',
+  },
+  detailedStatus: {
+    id: 'success-610-610',
+    group: 'success',
+    icon: 'status_success',
+    label: 'passed',
+    __typename: 'DetailedStatus',
+  },
+  __typename: 'Pipeline',
+};
+
 export const mockStages = [
   {
     name: 'build',
@@ -74,24 +161,7 @@ export const mockDownstreamQueryResponse = {
       pipeline: {
         path: '/root/ci-project/-/pipelines/790',
         id: 'pipeline-1',
-        downstream: {
-          nodes: [
-            {
-              id: 'gid://gitlab/Ci::Pipeline/612',
-              path: '/root/job-log-sections/-/pipelines/612',
-              project: { id: '1', name: 'job-log-sections', __typename: 'Project' },
-              detailedStatus: {
-                id: 'status-1',
-                group: 'success',
-                icon: 'status_success',
-                label: 'passed',
-                __typename: 'DetailedStatus',
-              },
-              __typename: 'Pipeline',
-            },
-          ],
-          __typename: 'PipelineConnection',
-        },
+        downstream: mockDownstreamPipelinesGraphql(),
         upstream: null,
       },
       __typename: 'Project',
@@ -106,37 +176,8 @@ export const mockUpstreamDownstreamQueryResponse = {
       pipeline: {
         id: 'pipeline-1',
         path: '/root/ci-project/-/pipelines/790',
-        downstream: {
-          nodes: [
-            {
-              id: 'gid://gitlab/Ci::Pipeline/612',
-              path: '/root/job-log-sections/-/pipelines/612',
-              project: { id: '1', name: 'job-log-sections', __typename: 'Project' },
-              detailedStatus: {
-                id: 'status-1',
-                group: 'success',
-                icon: 'status_success',
-                label: 'passed',
-                __typename: 'DetailedStatus',
-              },
-              __typename: 'Pipeline',
-            },
-          ],
-          __typename: 'PipelineConnection',
-        },
-        upstream: {
-          id: 'gid://gitlab/Ci::Pipeline/610',
-          path: '/root/trigger-downstream/-/pipelines/610',
-          project: { id: '1', name: 'trigger-downstream', __typename: 'Project' },
-          detailedStatus: {
-            id: 'status-1',
-            group: 'success',
-            icon: 'status_success',
-            label: 'passed',
-            __typename: 'DetailedStatus',
-          },
-          __typename: 'Pipeline',
-        },
+        downstream: mockDownstreamPipelinesGraphql(),
+        upstream,
       },
       __typename: 'Project',
     },
@@ -154,19 +195,7 @@ export const mockUpstreamQueryResponse = {
           nodes: [],
           __typename: 'PipelineConnection',
         },
-        upstream: {
-          id: 'gid://gitlab/Ci::Pipeline/610',
-          path: '/root/trigger-downstream/-/pipelines/610',
-          project: { id: '1', name: 'trigger-downstream', __typename: 'Project' },
-          detailedStatus: {
-            id: 'status-1',
-            group: 'success',
-            icon: 'status_success',
-            label: 'passed',
-            __typename: 'DetailedStatus',
-          },
-          __typename: 'Pipeline',
-        },
+        upstream,
       },
       __typename: 'Project',
     },

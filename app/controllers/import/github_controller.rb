@@ -79,13 +79,7 @@ class Import::GithubController < Import::BaseController
   def realtime_changes
     Gitlab::PollingInterval.set_header(response, interval: 3_000)
 
-    render json: already_added_projects.map { |project|
-      {
-        id: project.id,
-        import_status: project.import_status,
-        stats: ::Gitlab::GithubImport::ObjectCounter.summary(project)
-      }
-    }
+    render json: Import::GithubRealtimeRepoSerializer.new.represent(already_added_projects)
   end
 
   def cancel
@@ -97,6 +91,23 @@ class Import::GithubController < Import::BaseController
     else
       render json: { errors: result[:message] }, status: result[:http_status]
     end
+  end
+
+  def cancel_all
+    projects_to_cancel = Project.imported_from(provider_name).created_by(current_user).is_importing
+
+    canceled = projects_to_cancel.map do |project|
+      # #reset is called to make sure project was not finished/canceled brefore calling service
+      result = Import::Github::CancelProjectImportService.new(project.reset, current_user).execute
+
+      {
+        id: project.id,
+        status: result[:status],
+        error: result[:message]
+      }.compact
+    end
+
+    render json: canceled
   end
 
   protected

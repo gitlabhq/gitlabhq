@@ -1,0 +1,8 @@
+---
+name: show_group_readme
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/109480
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/390230
+milestone: '15.9'
+type: development
+group: group::organization
+default_enabled: false

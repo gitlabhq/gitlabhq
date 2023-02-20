@@ -113,7 +113,7 @@ module GroupsHelper
   end
 
   def render_setting_to_allow_project_access_token_creation?(group)
-    group.root? && current_user.can?(:admin_setting_to_allow_project_access_token_creation, group)
+    group.root? && current_user.can?(:admin_setting_to_allow_resource_access_token_creation, group)
   end
 
   def show_thanks_for_purchase_alert?(quantity)

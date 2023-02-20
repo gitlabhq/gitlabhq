@@ -69,4 +69,28 @@ RSpec.describe 'Query.ciVariables', feature_category: :pipeline_authoring do
       expect(graphql_data.dig('ciVariables')).to be_nil
     end
   end
+
+  describe 'sorting and pagination' do
+    let_it_be(:current_user) { create(:admin) }
+    let_it_be(:data_path) { [:ci_variables] }
+    let_it_be(:variables) do
+      [
+        create(:ci_instance_variable, key: 'd'),
+        create(:ci_instance_variable, key: 'a'),
+        create(:ci_instance_variable, key: 'c'),
+        create(:ci_instance_variable, key: 'e'),
+        create(:ci_instance_variable, key: 'b')
+      ]
+    end
+
+    def pagination_query(params)
+      graphql_query_for(
+        :ci_variables,
+        params,
+        "#{page_info} nodes { id }"
+      )
+    end
+
+    it_behaves_like 'sorted paginated variables'
+  end
 end

@@ -28,8 +28,8 @@ The following Rake tasks are available for use with GitLab:
 | [General maintenance](../administration/raketasks/maintenance.md) | General maintenance and self-check tasks. |
 | [Geo maintenance](../administration/raketasks/geo.md) | [Geo](../administration/geo/index.md)-related maintenance. |
 | [GitHub import](../administration/raketasks/github_import.md) | Retrieve and import repositories from GitHub. |
-| [Import repositories](import.md)                      | Import bare repositories into your GitLab instance. |
 | [Import large project exports](../development/import_project.md#importing-via-a-rake-task) | Import large GitLab [project exports](../user/project/settings/import_export.md). |
+| [Incoming email](../administration/raketasks/incoming_email.md) | Incoming email-related tasks. |
 | [Integrity checks](../administration/raketasks/check.md) | Check the integrity of repositories, files, LDAP, and more. |
 | [LDAP maintenance](../administration/raketasks/ldap.md) | [LDAP](../administration/auth/ldap/index.md)-related tasks. |
 | [List repositories](list_repos.md)                    | List all GitLab-managed Git repositories on disk. |
@@ -38,6 +38,7 @@ The following Rake tasks are available for use with GitLab:
 | [Project import/export](../administration/raketasks/project_import_export.md) | Prepare for [project exports and imports](../user/project/settings/import_export.md). |
 | [Sample Prometheus data](generate_sample_prometheus_data.md) | Generate sample Prometheus data. |
 | [Sidekiq job migration](../administration/sidekiq/sidekiq_job_migration.md) | Migrate Sidekiq jobs scheduled for future dates to a new queue. |
+| [Service Desk email](../administration/raketasks/service_desk_email.md) | Service Desk email-related tasks. |
 | [SMTP maintenance](../administration/raketasks/smtp.md) | SMTP-related tasks. |
 | [SPDX license list import](spdx.md)                   | Import a local copy of the [SPDX license list](https://spdx.org/licenses/) for matching [License Compliance policies](../user/compliance/license_compliance/index.md). |
 | [Repository storage](../administration/raketasks/storage.md) | List and migrate existing projects and attachments from legacy storage to hashed storage. |

@@ -44,7 +44,12 @@ export default {
             console.log('Hello world');
           },
         },
-        { text: 'Full report', href: this.conflictsDocsPath, target: '_blank', fullReport: true },
+        {
+          text: 'Full report',
+          href: this.conflictsDocsPath,
+          target: '_blank',
+          trackFullReportClicked: true,
+        },
       ];
     },
     shouldCollapse() {

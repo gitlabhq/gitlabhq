@@ -89,7 +89,7 @@ class Account < ActiveRecord::Base
   attr_encrypted :password, key: :password_encryption_key
 
   def encrypting?(attr)
-    encrypted_attributes[attr][:operation] == :encrypting
+    attr_encrypted_attributes[attr][:operation] == :encrypting
   end
 
   def password_encryption_key
@@ -289,14 +289,14 @@ class ActiveRecordTest < Minitest::Test
     @person = PersonWithProcMode.create(email: 'test@example.com', credentials: 'password123')
 
     # Email is :per_attribute_iv_and_salt
-    assert_equal @person.class.encrypted_attributes[:email][:mode].class, Proc
-    assert_equal @person.class.encrypted_attributes[:email][:mode].call, :per_attribute_iv_and_salt
+    assert_equal @person.class.attr_encrypted_attributes[:email][:mode].class, Proc
+    assert_equal @person.class.attr_encrypted_attributes[:email][:mode].call, :per_attribute_iv_and_salt
     refute_nil @person.encrypted_email_salt
     refute_nil @person.encrypted_email_iv
 
     # Credentials is :single_iv_and_salt
-    assert_equal @person.class.encrypted_attributes[:credentials][:mode].class, Proc
-    assert_equal @person.class.encrypted_attributes[:credentials][:mode].call, :single_iv_and_salt
+    assert_equal @person.class.attr_encrypted_attributes[:credentials][:mode].class, Proc
+    assert_equal @person.class.attr_encrypted_attributes[:credentials][:mode].call, :single_iv_and_salt
     assert_nil @person.encrypted_credentials_salt
     assert_nil @person.encrypted_credentials_iv
   end

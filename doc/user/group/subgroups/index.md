@@ -11,7 +11,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 You can organize GitLab [groups](../index.md) into subgroups. You can use subgroups to:
 
 - Separate internal and external organizations. Because every subgroup can have its own
-  [visibility level](../../../development/permissions.md#general-permissions), you can host groups for different
+  [visibility level](../../public_access.md), you can host groups for different
   purposes under the same parent group.
 - Organize large projects. You can use subgroups to give different access to parts of
   the source code.
@@ -85,7 +85,7 @@ You cannot host a GitLab Pages subgroup website with a top-level domain name. Fo
 To create a subgroup:
 
 1. On the top bar, select **Main menu > Groups** and find and select the parent group to add a subgroup to.
-1. On the parent group's overview page, in the top right, select **New subgroup**.
+1. On the parent group's overview page, in the upper right, select **New subgroup**.
 1. Select **Create group**.
 1. Fill in the fields. View a list of [reserved names](../../reserved_names.md) that cannot be used as group names.
 1. Select **Create group**.

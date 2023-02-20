@@ -13,8 +13,9 @@ import { cloneDeep, uniqueId } from 'lodash';
 import { mapActions } from 'vuex';
 import { fetchPolicies } from '~/lib/graphql';
 import { createAlert } from '~/flash';
+import { TYPENAME_CI_BUILD, TYPENAME_COMMIT_STATUS } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
-import { JOB_GRAPHQL_ERRORS, GRAPHQL_ID_TYPES } from '~/jobs/constants';
+import { JOB_GRAPHQL_ERRORS } from '~/jobs/constants';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { redirectTo } from '~/lib/utils/url_utility';
 import { s__ } from '~/locale';
@@ -45,7 +46,7 @@ export default {
       variables() {
         return {
           fullPath: this.projectPath,
-          id: convertToGraphQLId(GRAPHQL_ID_TYPES.commitStatus, this.jobId),
+          id: convertToGraphQLId(TYPENAME_COMMIT_STATUS, this.jobId),
         };
       },
       fetchPolicy: fetchPolicies.CACHE_AND_NETWORK,
@@ -76,13 +77,16 @@ export default {
   i18n: {
     clearInputs: s__('CiVariables|Clear inputs'),
     formHelpText: s__(
-      'CiVariables|Specify variable values to be used in this run. The values specified in %{linkStart}CI/CD settings%{linkEnd} will be used as default',
+      'CiVariables|Specify variable values to be used in this run. The variables specified in the configuration file and %{linkStart}CI/CD settings%{linkEnd} are used by default.',
+    ),
+    overrideNoteText: s__(
+      'CiVariables|Variables specified here are %{boldStart}expanded%{boldEnd} and not %{boldStart}masked.%{boldEnd}',
     ),
     header: s__('CiVariables|Variables'),
     keyLabel: s__('CiVariables|Key'),
     keyPlaceholder: s__('CiVariables|Input variable key'),
     runAgainButtonText: s__('CiVariables|Run job again'),
-    triggerButtonText: s__('CiVariables|Trigger this manual action'),
+    triggerButtonText: s__('CiVariables|Run job'),
     valueLabel: s__('CiVariables|Value'),
     valuePlaceholder: s__('CiVariables|Input variable value'),
   },
@@ -157,7 +161,7 @@ export default {
         const { data } = await this.$apollo.mutate({
           mutation: retryJobWithVariablesMutation,
           variables: {
-            id: convertToGraphQLId(GRAPHQL_ID_TYPES.ciBuild, this.jobId),
+            id: convertToGraphQLId(TYPENAME_CI_BUILD, this.jobId),
             // we need to ensure no empty variables are passed to the API
             variables: this.preparedVariables,
           },
@@ -255,6 +259,15 @@ export default {
             <gl-link :href="variableSettings" target="_blank">
               {{ content }}
             </gl-link>
+          </template>
+        </gl-sprintf>
+      </div>
+      <div class="gl-text-center gl-mt-3">
+        <gl-sprintf :message="$options.i18n.overrideNoteText">
+          <template #bold="{ content }">
+            <strong>
+              {{ content }}
+            </strong>
           </template>
         </gl-sprintf>
       </div>

@@ -12,27 +12,20 @@ RSpec.shared_examples 'misconfigured dashboard service response' do |status_code
 end
 
 RSpec.shared_examples 'valid dashboard service response for schema' do
-  file_ref_resolver = proc do |uri|
-    file = Rails.root.join(uri.path)
-    raise StandardError, "Ref file #{uri.path} must be json" unless uri.path.ends_with?('.json')
-    raise StandardError, "File #{file.to_path} doesn't exists" unless file.exist?
-
-    Gitlab::Json.parse(File.read(file))
-  end
-
   it 'returns a json representation of the dashboard' do
     result = service_call
 
     expect(result.keys).to contain_exactly(:dashboard, :status)
     expect(result[:status]).to eq(:success)
 
-    validator = JSONSchemer.schema(dashboard_schema, ref_resolver: file_ref_resolver)
+    schema_path = Rails.root.join('spec/fixtures', dashboard_schema)
+    validator = JSONSchemer.schema(schema_path)
     expect(validator.valid?(result[:dashboard].with_indifferent_access)).to be true
   end
 end
 
 RSpec.shared_examples 'valid dashboard service response' do
-  let(:dashboard_schema) { Gitlab::Json.parse(fixture_file('lib/gitlab/metrics/dashboard/schemas/dashboard.json')) }
+  let(:dashboard_schema) { 'lib/gitlab/metrics/dashboard/schemas/dashboard.json' }
 
   it_behaves_like 'valid dashboard service response for schema'
 end
@@ -76,7 +69,7 @@ RSpec.shared_examples 'dashboard_version contains SHA256 hash of dashboard file 
 end
 
 RSpec.shared_examples 'valid embedded dashboard service response' do
-  let(:dashboard_schema) { Gitlab::Json.parse(fixture_file('lib/gitlab/metrics/dashboard/schemas/embedded_dashboard.json')) }
+  let(:dashboard_schema) { 'lib/gitlab/metrics/dashboard/schemas/embedded_dashboard.json' }
 
   it_behaves_like 'valid dashboard service response for schema'
 end

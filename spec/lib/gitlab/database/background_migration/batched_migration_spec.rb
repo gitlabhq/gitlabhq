@@ -897,7 +897,7 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
     end
 
     it 'doesn not filter by gitlab schemas available for the connection if the column is nor present' do
-      skip_if_multiple_databases_not_setup
+      skip_if_multiple_databases_not_setup(:ci)
 
       expect(described_class).to receive(:gitlab_schema_column_exists?).and_return(false)
 

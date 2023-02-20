@@ -91,7 +91,7 @@ the default ports for HTTP and HTTPs communication.
 ![Gitaly network architecture diagram](img/gitaly_network_13_9.png)
 
 WARNING:
-Gitaly servers must not be exposed to the public internet as Gitaly's network traffic is unencrypted
+Gitaly servers must not be exposed to the public internet as Gitaly network traffic is unencrypted
 by default. The use of firewall is highly recommended to restrict access to the Gitaly server.
 Another option is to [use TLS](#enable-tls-support).
 
@@ -128,7 +128,7 @@ To configure Gitaly servers, you must:
 
 The `git` user must be able to read, write, and set permissions on the configured storage path.
 
-To avoid downtime while rotating Gitaly's token, you can temporarily disable authentication using the `gitaly['auth_transitioning']` setting. For more information, see the documentation on
+To avoid downtime while rotating the Gitaly token, you can temporarily disable authentication using the `gitaly['auth_transitioning']` setting. For more information, see the documentation on
 [enabling "auth transitioning mode"](#enable-auth-transitioning-mode).
 
 #### Configure authentication
@@ -770,7 +770,7 @@ These RPCs can consume a large amount of resources, which can have a significant
 - Unexpectedly high traffic.
 - Running against [large repositories](../../user/project/repository/managing_large_repositories.md) that don't follow best practices.
 
-You can limit these processes from overwhelming your Gitaly server in these scenarios using the concurrency limits in Gitaly's configuration file. For
+You can limit these processes from overwhelming your Gitaly server in these scenarios using the concurrency limits in the Gitaly configuration file. For
 example:
 
 ```ruby
@@ -778,7 +778,7 @@ example:
 
 gitaly['concurrency'] = [
   {
-    'rpc' => "/gitaly.SmartHTTPService/PostUploadPackWithSidechanel",
+    'rpc' => "/gitaly.SmartHTTPService/PostUploadPackWithSidechannel",
     'max_per_repo' => 20,
     'max_queue_time' => "1s",
     'max_queue_size' => 10

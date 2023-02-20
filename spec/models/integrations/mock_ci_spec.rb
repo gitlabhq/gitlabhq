@@ -14,8 +14,8 @@ RSpec.describe Integrations::MockCi do
   describe '#commit_status' do
     let(:sha) { generate(:sha) }
 
-    def stub_request(*args)
-      WebMock.stub_request(:get, integration.commit_status_path(sha)).to_return(*args)
+    def stub_request(...)
+      WebMock.stub_request(:get, integration.commit_status_path(sha)).to_return(...)
     end
 
     def commit_status

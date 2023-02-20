@@ -9,7 +9,7 @@ describe('ReportAbuseButton', () => {
   let wrapper;
 
   const ACTION_PATH = '/abuse_reports/add_category';
-  const USER_ID = '1';
+  const USER_ID = 1;
   const REPORTED_FROM_URL = 'http://example.com';
 
   const createComponent = (props) => {

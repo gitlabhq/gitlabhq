@@ -32,7 +32,7 @@ module Nav
             id: 'new_project',
             title: _('New project/repository'),
             href: new_project_path(namespace_id: group.id),
-            data: { track_action: 'click_link_new_project_group', track_label: 'plus_menu_dropdown' }
+            data: { track_action: 'click_link_new_project_group', track_label: 'plus_menu_dropdown', track_property: 'navigation_top' }
           )
         )
       end
@@ -43,7 +43,7 @@ module Nav
             id: 'new_subgroup',
             title: _('New subgroup'),
             href: new_group_path(parent_id: group.id, anchor: 'create-group-pane'),
-            data: { track_action: 'click_link_new_subgroup', track_label: 'plus_menu_dropdown' }
+            data: { track_action: 'click_link_new_subgroup', track_label: 'plus_menu_dropdown', track_property: 'navigation_top' }
           )
         )
       end
@@ -59,7 +59,7 @@ module Nav
       end
 
       {
-        title: _('This group'),
+        title: _('In this group'),
         menu_items: menu_items.compact
       }
     end
@@ -74,7 +74,7 @@ module Nav
             id: 'new_issue',
             title: _('New issue'),
             href: new_project_issue_path(project),
-            data: { track_action: 'click_link_new_issue', track_label: 'plus_menu_dropdown', qa_selector: 'new_issue_link' }
+            data: { track_action: 'click_link_new_issue', track_label: 'plus_menu_dropdown', track_property: 'navigation_top', qa_selector: 'new_issue_link' }
           )
         )
       end
@@ -85,7 +85,7 @@ module Nav
             id: 'new_mr',
             title: _('New merge request'),
             href: project_new_merge_request_path(merge_project),
-            data: { track_action: 'click_link_new_mr', track_label: 'plus_menu_dropdown' }
+            data: { track_action: 'click_link_new_mr', track_label: 'plus_menu_dropdown', track_property: 'navigation_top' }
           )
         )
       end
@@ -96,7 +96,7 @@ module Nav
             id: 'new_snippet',
             title: _('New snippet'),
             href: new_project_snippet_path(project),
-            data: { track_action: 'click_link_new_snippet_project', track_label: 'plus_menu_dropdown' }
+            data: { track_action: 'click_link_new_snippet_project', track_label: 'plus_menu_dropdown', track_property: 'navigation_top' }
           )
         )
       end
@@ -110,7 +110,7 @@ module Nav
       end
 
       {
-        title: _('This project'),
+        title: _('In this project'),
         menu_items: menu_items
       }
     end
@@ -124,7 +124,7 @@ module Nav
             id: 'general_new_project',
             title: _('New project/repository'),
             href: new_project_path,
-            data: { track_action: 'click_link_new_project', track_label: 'plus_menu_dropdown', qa_selector: 'global_new_project_link' }
+            data: { track_action: 'click_link_new_project', track_label: 'plus_menu_dropdown', track_property: 'navigation_top', qa_selector: 'global_new_project_link' }
           )
         )
       end
@@ -135,7 +135,7 @@ module Nav
             id: 'general_new_group',
             title: _('New group'),
             href: new_group_path,
-            data: { track_action: 'click_link_new_group', track_label: 'plus_menu_dropdown', qa_selector: 'global_new_group_link' }
+            data: { track_action: 'click_link_new_group', track_label: 'plus_menu_dropdown', track_property: 'navigation_top', qa_selector: 'global_new_group_link' }
           )
         )
       end
@@ -146,13 +146,13 @@ module Nav
             id: 'general_new_snippet',
             title: _('New snippet'),
             href: new_snippet_path,
-            data: { track_action: 'click_link_new_snippet_parent', track_label: 'plus_menu_dropdown', qa_selector: 'global_new_snippet_link' }
+            data: { track_action: 'click_link_new_snippet_parent', track_label: 'plus_menu_dropdown', track_property: 'navigation_top', qa_selector: 'global_new_snippet_link' }
           )
         )
       end
 
       {
-        title: _('GitLab'),
+        title: _('In GitLab'),
         menu_items: menu_items
       }
     end
@@ -165,7 +165,8 @@ module Nav
         href: href,
         data: {
           track_action: 'click_link_invite_members',
-          track_label: 'plus_menu_dropdown'
+          track_label: 'plus_menu_dropdown',
+          track_property: 'navigation_top'
         }
       )
     end

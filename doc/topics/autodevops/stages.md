@@ -63,7 +63,7 @@ For the requirements of other languages and frameworks, read the
 NOTE:
 Auto Test still uses Herokuish, as test suite detection is not
 yet part of the Cloud Native Buildpack specification. For more information, see
-[this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/212689).
+[issue 212689](https://gitlab.com/gitlab-org/gitlab/-/issues/212689).
 
 #### Mount volumes into the build container
 
@@ -89,9 +89,15 @@ buildjob:
 
 Read more about defining volumes in the [`pack build` documentation](https://buildpacks.io/docs/tools/pack/cli/pack_build/).
 
-### Auto Build using Herokuish
+<!--- start_remove The following content will be removed on remove_date: '2024-08-22' -->
+
+### Auto Build using Herokuish (deprecated)
 
 > [Replaced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/63351) with Cloud Native Buildpacks in GitLab 14.0.
+
+WARNING:
+Support for Herokuish was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108234) in GitLab 15.8,
+and is planned for removal in 17.0. Use [Cloud Native Buildpacks](#moving-from-herokuish-to-cloud-native-buildpacks) instead.
 
 Prior to GitLab 14.0, [Herokuish](https://github.com/gliderlabs/herokuish) was
 the default build method for projects without a `Dockerfile`. Herokuish can
@@ -102,6 +108,8 @@ NOTE:
 If Auto Build fails despite the project meeting the buildpack requirements, set
 a project CI/CD variable `TRACE=true` to enable verbose logging, which may help you
 troubleshoot.
+
+<!--- end_remove -->
 
 ### Moving from Herokuish to Cloud Native Buildpacks
 
@@ -118,7 +126,15 @@ Herokuish, with the following caveats:
   Instead, custom commands should be prefixed with `/cnb/lifecycle/launcher`
   to receive the correct execution environment.
 
-## Auto Test
+<!--- start_remove The following content will be removed on remove_date: '2024-08-22' -->
+
+## Auto Test (deprecated)
+
+WARNING:
+Support for Herokuish was
+[deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108234)
+in GitLab 15.8, and is planned for removal in 17.0. Because Auto Test uses
+Herokuish, Auto Test is also deprecated.
 
 Auto Test runs the appropriate tests for your application using
 [Herokuish](https://github.com/gliderlabs/herokuish) and
@@ -140,10 +156,11 @@ Cloud Native Buildpacks, and only buildpacks that implement the
 [Testpack API](https://devcenter.heroku.com/articles/testpack-api) are supported.
 
 <!-- vale gitlab.Spelling = YES -->
+<!--- end_remove -->
 
 ### Currently supported languages
 
-Note that not all buildpacks support Auto Test yet, as it's a relatively new
+Not all buildpacks support Auto Test yet, as it's a relatively new
 enhancement. All of Heroku's
 [officially supported languages](https://devcenter.heroku.com/articles/heroku-ci#supported-languages)
 support Auto Test. The languages supported by Heroku's Herokuish buildpacks all
@@ -193,8 +210,8 @@ After creating the report, it's uploaded as an artifact which you can later
 download and check out. The merge request widget also displays any security
 warnings on [Ultimate](https://about.gitlab.com/pricing/) licenses.
 
-To learn more about [how SAST works](../../user/application_security/sast/index.md),
-see the documentation.
+For more information, see
+[Static Application Security Testing (SAST)](../../user/application_security/sast/index.md).
 
 ## Auto Secret Detection
 
@@ -208,7 +225,7 @@ After creating the report, it's uploaded as an artifact which you can later
 download and evaluate. The merge request widget also displays any security
 warnings on [Ultimate](https://about.gitlab.com/pricing/) licenses.
 
-To learn more, see [Secret Detection](../../user/application_security/secret_detection/index.md).
+For more information, see [Secret Detection](../../user/application_security/secret_detection/index.md).
 
 ## Auto Dependency Scanning **(ULTIMATE)**
 
@@ -220,9 +237,8 @@ The Auto Dependency Scanning stage is skipped on licenses other than
 After creating the report, it's uploaded as an artifact which you can later download and
 check out. The merge request widget displays any security warnings detected,
 
-To learn more about
-[Dependency Scanning](../../user/application_security/dependency_scanning/index.md),
-see the documentation.
+For more information, see
+[Dependency Scanning](../../user/application_security/dependency_scanning/index.md).
 
 ## Auto License Compliance **(ULTIMATE)**
 
@@ -236,9 +252,8 @@ is skipped on licenses other than [Ultimate](https://about.gitlab.com/pricing/).
 After creating the report, it's uploaded as an artifact which you can later download and
 check out. The merge request displays any detected licenses.
 
-To learn more about
-[License Compliance](../../user/compliance/license_compliance/index.md), see the
-documentation.
+For more information, see
+[License Compliance](../../user/compliance/license_compliance/index.md).
 
 ## Auto Container Scanning
 
@@ -249,9 +264,8 @@ skipped on licenses other than [Ultimate](https://about.gitlab.com/pricing/).
 After creating the report, it's uploaded as an artifact which you can later download and
 check out. The merge request displays any detected security issues.
 
-To learn more about
-[Container Scanning](../../user/application_security/container_scanning/index.md),
-see the documentation.
+For more information, see
+[Container Scanning](../../user/application_security/container_scanning/index.md).
 
 ## Auto Review Apps
 
@@ -306,9 +320,8 @@ After the DAST scan completes, any security warnings are displayed
 on the [Security Dashboard](../../user/application_security/security_dashboard/index.md)
 and the merge request widget.
 
-To learn more about
-[Dynamic Application Security Testing](../../user/application_security/dast/index.md),
-see the documentation.
+For more information, see
+[Dynamic Application Security Testing (DAST)](../../user/application_security/dast/index.md).
 
 ### Overriding the DAST target
 
@@ -485,9 +498,9 @@ as a Helm post-install hook. As some applications can't run without a successful
 database initialization step, GitLab deploys the first release without the
 application deployment, and only the database initialization step. After the database
 initialization completes, GitLab deploys a second release with the application
-deployment as normal.
+deployment as standard.
 
-Note that a post-install hook means that if any deploy succeeds,
+A post-install hook means that if any deploy succeeds,
 `DB_INITIALIZE` isn't processed thereafter.
 
 If present, `DB_MIGRATE` is run as a shell command within an application pod as
@@ -502,7 +515,7 @@ For example, in a Rails application in an image built with
 Unless your repository contains a `Dockerfile`, your image is built with
 Cloud Native Buildpacks, and you must prefix commands run in these images with
 `/cnb/lifecycle/launcher`, (or `/bin/herokuish procfile exec` when
-using [Herokuish](#auto-build-using-herokuish))
+using [Herokuish](#auto-build-using-herokuish-deprecated))
 to replicate the environment where your
 application runs.
 

@@ -10,7 +10,6 @@ stages:
 
 include:
   - local: .gitlab/ci/global.gitlab-ci.yml
-  - local: .gitlab/ci/rules.gitlab-ci.yml
   - local: .gitlab/ci/review-apps/rules.gitlab-ci.yml
   - local: .gitlab/ci/review-apps/qa.gitlab-ci.yml
   - local: .gitlab/ci/review-apps/dast.gitlab-ci.yml
@@ -19,7 +18,6 @@ include:
 .base-before_script: &base-before_script
   - source ./scripts/utils.sh
   - source ./scripts/review_apps/review-apps.sh
-  - apt-get update && apt-get install -y jq
 
 dont-interrupt-me:
   extends: .rules:dont-interrupt
@@ -32,7 +30,7 @@ review-build-cng-env:
   extends:
     - .default-retry
     - .review:rules:review-build-cng
-  image: ${GITLAB_DEPENDENCY_PROXY}ruby:${RUBY_VERSION}-alpine3.16
+  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}ruby:${RUBY_VERSION}-alpine3.16
   stage: prepare
   needs:
     # We need this job because we need its `cached-assets-hash.txt` artifact, so that we can pass the assets image tag to the downstream CNG pipeline.
@@ -97,20 +95,21 @@ review-build-cng:
   variables:
     HOST_SUFFIX: "${CI_ENVIRONMENT_SLUG}"
     DOMAIN: "-${CI_ENVIRONMENT_SLUG}.${REVIEW_APPS_DOMAIN}"
-    GITLAB_HELM_CHART_REF: "ed813953079c1d81aa69d4cb8171c69aa9741f01"  # 6.5.4: https://gitlab.com/gitlab-org/charts/gitlab/-/commit/ed813953079c1d81aa69d4cb8171c69aa9741f01
+    GITLAB_HELM_CHART_REF: "afcef7854ac72c5ff958035ef210ba6c68ec800b"  # 6.8.0: https://gitlab.com/gitlab-org/charts/gitlab/-/commit/afcef7854ac72c5ff958035ef210ba6c68ec800b
   environment:
     name: review/${CI_COMMIT_REF_SLUG}${SCHEDULE_TYPE}  # No separator for SCHEDULE_TYPE so it's compatible as before and looks nice without it
     url: https://gitlab-${CI_ENVIRONMENT_SLUG}.${REVIEW_APPS_DOMAIN}
-    on_stop: review-stop
-    auto_stop_in: 6 hours
+    on_stop: trigger-review-stop
 
 review-deploy:
   extends:
     - .review-workflow-base
     - .review:rules:review-deploy
   stage: deploy
-  image: ${GITLAB_DEPENDENCY_PROXY}dtzar/helm-kubectl:3.10.3
-  needs: ["review-build-cng"]
+  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}dtzar/helm-kubectl:3.9.3
+  needs:
+    - review-build-cng
+    - review-delete-deployment # We always want to start from a clean slate (i.e. no helm release, no k8s namespace)
   cache:
     key: "review-deploy-dependencies-charts-${GITLAB_HELM_CHART_REF}-v1"
     paths:
@@ -168,31 +167,35 @@ review-deploy-sample-projects:
   extends: .review-workflow-base
   environment:
     action: stop
-  dependencies: []
   variables:
     # We're cloning the repo instead of downloading the script for now
     # because some repos are private and CI_JOB_TOKEN cannot access files.
     # See https://gitlab.com/gitlab-org/gitlab/issues/191273
     GIT_DEPTH: 1
-  before_script:
-    - source ./scripts/utils.sh
-    - source ./scripts/review_apps/review-apps.sh
-    - !reference [".use-kube-context", before_script]
 
 review-delete-deployment:
   extends:
     - .review-stop-base
     - .review:rules:review-delete-deployment
+  dependencies: []
   stage: prepare
+  before_script:
+    - source ./scripts/utils.sh
+    - source ./scripts/review_apps/review-apps.sh
+    - !reference [".use-kube-context", before_script]
   script:
-    - delete_helm_release
+    - retry delete_helm_release
 
-review-stop:
+trigger-review-stop:
   extends:
     - .review-stop-base
-    - .review:rules:review-stop
-  resource_group: review/${CI_COMMIT_REF_SLUG}${SCHEDULE_TYPE} # CI_ENVIRONMENT_SLUG is not available here and we want this to be the same as the environment
+    - .review:rules:trigger-review-stop
   stage: deploy
   needs: []
+  before_script:
+    - source ./scripts/utils.sh
+    - install_gitlab_gem
   script:
-    - delete_helm_release
+    - review_stop_job_id="$(scripts/api/get_job_id.rb --pipeline-id "${PARENT_PIPELINE_ID}" --job-name "review-stop")"
+    - |
+      curl --request POST --header "Private-Token: ${PROJECT_TOKEN_FOR_CI_SCRIPTS_API_USAGE}" "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/jobs/${review_stop_job_id}/play"

@@ -15,7 +15,7 @@ RSpec.describe BulkImports::Projects::Pipelines::SnippetsRepositoryPipeline do
       project: project,
       bulk_import: bulk_import_configuration.bulk_import,
       source_full_path: 'source/full/path',
-      destination_name: 'My Destination Project',
+      destination_slug: 'My-Destination-Project',
       destination_namespace: project.full_path
     )
   end

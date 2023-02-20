@@ -26,7 +26,7 @@ Note the following changes have been made to the API fuzzing template:
 
 - In GitLab 14.0 and later, you must define a `fuzz` stage in your `.gitlab-ci.yml` file.
 - In GitLab 13.12 and earlier, the API fuzzing template defines `build`, `test`, `deploy`, and
-  `fuzz` stages. The `fuzz` stage runs last by default. The predefined stages were deprecated, and removed from the `API-Fuzzing.latest.gitlab-ci.yml` template. They will be removed in a future GitLab
+  `fuzz` stages. The `fuzz` stage runs last by default. The predefined stages were deprecated, and removed from the `API-Fuzzing.latest.gitlab-ci.yml` template. We plan to remove them in a future GitLab
   version.
 
 If your pipeline is configured to deploy to the same web server on each run, running a
@@ -142,11 +142,11 @@ OpenAPI 2.x lets you specify the accepted media types globally or per operation,
 - In GitLab 14.9 and earlier, the default behavior is to perform testing using all supported media types. This means if two media types are listed (for example, `application/json` and `application/xml`), tests are performed using JSON, and then the same tests using XML.
 
 Testing the same operation (for example, `POST /user`) using different media types (for example, `application/json` and `application/xml`) is not always desirable.
-For example, if the target application executes the same code regardless of the request content type, it will take longer to finish the test session, and it may report duplicate vulnerabilities related to the request body depending on the target app.
+For example, if the target application executes the same code regardless of the request content type, it takes longer to finish the test session, and it may report duplicate vulnerabilities related to the request body depending on the target app.
 
-The environment variable `FUZZAPI_OPENAPI_ALL_MEDIA_TYPES` lets you specify whether or not to use all supported media types instead of one when generating requests for a given operation. When the environmental variable `FUZZAPI_OPENAPI_ALL_MEDIA_TYPES` is set to any value, API Fuzzing will try to generate requests for all supported media types instead of one in a given operation. This will cause testing to take longer as testing is repeated for each provided media type.
+The environment variable `FUZZAPI_OPENAPI_ALL_MEDIA_TYPES` lets you specify whether or not to use all supported media types instead of one when generating requests for a given operation. When the environmental variable `FUZZAPI_OPENAPI_ALL_MEDIA_TYPES` is set to any value, API Fuzzing tries to generate requests for all supported media types instead of one in a given operation. This causes testing to take longer as testing is repeated for each provided media type.
 
-Alternatively, the variable `FUZZAPI_OPENAPI_MEDIA_TYPES` is used to provide a list of media types that will each be tested. Providing more than one media type causes testing to take longer, as testing is performed for each media type selected. When the environment variable `FUZZAPI_OPENAPI_MEDIA_TYPES` is set to a list of media types, only the listed media types are included when creating requests.
+Alternatively, the variable `FUZZAPI_OPENAPI_MEDIA_TYPES` is used to provide a list of media types that each is tested. Providing more than one media type causes testing to take longer, as testing is performed for each media type selected. When the environment variable `FUZZAPI_OPENAPI_MEDIA_TYPES` is set to a list of media types, only the listed media types are included when creating requests.
 
 Multiple media types in `FUZZAPI_OPENAPI_MEDIA_TYPES` must separated by a colon (`:`). For example, to limit request generation to the media types `application/x-www-form-urlencoded` and  `multipart/form-data`, set the environment variable `FUZZAPI_OPENAPI_MEDIA_TYPES` to `application/x-www-form-urlencoded:multipart/form-data`. Only supported media types in this list are included when creating requests, though unsupported media types are always skipped. A media type text may contain different sections. For example, `application/vnd.api+json; charset=UTF-8` is a compound of `type "/" [tree "."] subtype ["+" suffix]* [";" parameter]`. Parameters are not taken into account when filtering media types on request generation.
 
@@ -1390,7 +1390,7 @@ By default the output of the overrides command is hidden. If the overrides comma
 
 It is also possible to write messages from your script to a log file that is collected when the job completes or fails. The log file must be created in a specific location and follow a naming convention.
 
-Adding some basic logging to your overrides script is useful in case the script fails unexpectedly during normal running of the job. The log file is automatically included as an artifact of the job, allowing you to download it after the job has finished.
+Adding some basic logging to your overrides script is useful in case the script fails unexpectedly during typical running of the job. The log file is automatically included as an artifact of the job, allowing you to download it after the job has finished.
 
 Following our example, we provided `renew_token.py` in the environmental variable `FUZZAPI_OVERRIDES_CMD`. Notice two things in the script:
 
@@ -1499,7 +1499,7 @@ logging.info("Override file has been updated")
 # end
 ```
 
-In the overrides command example, the Python script depends on the `backoff` library. To make sure the library is installed before executing the Python script, the `FUZZAPI_PRE_SCRIPT` is set to a script that will install the dependencies of your overrides command.
+In the overrides command example, the Python script depends on the `backoff` library. To make sure the library is installed before executing the Python script, the `FUZZAPI_PRE_SCRIPT` is set to a script that installs the dependencies of your overrides command.
 As for example, the following script `user-pre-scan-set-up.sh`:
 
 ```shell
@@ -1589,7 +1589,7 @@ variables:
 
 While testing an API you may might want to exclude a parameter (query string, header, or body element) from testing. This may be needed because a parameter always causes a failure, slows down testing, or for other reasons. To exclude parameters you can use one of the following variables: `FUZZAPI_EXCLUDE_PARAMETER_ENV` or `FUZZAPI_EXCLUDE_PARAMETER_FILE`.
 
-The `FUZZAPI_EXCLUDE_PARAMETER_ENV` allows providing a JSON string containing excluded parameters. This is a good option if the JSON is short and will not often change. Another option is the variable `FUZZAPI_EXCLUDE_PARAMETER_FILE`. This variable is set to a file path that can be checked into the repository, created by another job as an artifact, or generated at runtime from a pre-script using `FUZZAPI_PRE_SCRIPT`.
+The `FUZZAPI_EXCLUDE_PARAMETER_ENV` allows providing a JSON string containing excluded parameters. This is a good option if the JSON is short and can not often change. Another option is the variable `FUZZAPI_EXCLUDE_PARAMETER_FILE`. This variable is set to a file path that can be checked into the repository, created by another job as an artifact, or generated at runtime from a pre-script using `FUZZAPI_PRE_SCRIPT`.
 
 #### Exclude parameters using a JSON document
 
@@ -1991,7 +1991,7 @@ Repeat this configuration for each profile as needed.
 
 When configured correctly, a CI/CD pipeline contains a `fuzz` stage and an `apifuzzer_fuzz` or
 `apifuzzer_fuzz_dnd` job. The job only fails when an invalid configuration is provided. During
-normal operation, the job always succeeds even if faults are identified during fuzz testing.
+typical operation, the job always succeeds even if faults are identified during fuzz testing.
 
 Faults are displayed on the **Security** pipeline tab with the suite name. When testing against the
 repositories default branch, the fuzzing faults are also shown on the Security & Compliance's
@@ -2026,7 +2026,7 @@ Follow these steps to view details of a fuzzing fault:
 
 1. You can view faults in a project, or a merge request:
 
-   - In a project, go to the project's **{shield}** **Security & Compliance > Vulnerability Report**
+   - In a project, go to the project's **Security & Compliance > Vulnerability Report**
      page. This page shows all vulnerabilities from the default branch only.
    - In a merge request, go the merge request's **Security** section and select the **Expand**
      button. API Fuzzing faults are available in a section labeled
@@ -2042,7 +2042,7 @@ Follow these steps to view details of a fuzzing fault:
    | Method              | HTTP method used to detect the vulnerability.                                           |
    | URL                 | URL at which the vulnerability was detected.                                            |
    | Request             | The HTTP request that caused the fault.                                                 |
-   | Unmodified Response | Response from an unmodified request. This is what a normal working response looks like. |
+   | Unmodified Response | Response from an unmodified request. This is what a typical working response looks like. |
    | Actual Response     | Response received from fuzzed request.                                                  |
    | Evidence            | How we determined a fault occurred.                                                     |
    | Identifiers         | The fuzzing check used to find this fault.                                              |
@@ -2377,7 +2377,7 @@ apifuzzer_v2:
 
 In the case of one or two slow operations, the team might decide to skip testing the operations, or exclude them from feature branch tests, but include them for default branch tests. Excluding the operation is done using the `FUZZAPI_EXCLUDE_PATHS` configuration [variable as explained in this section.](#exclude-paths)
 
-In this example, we have an operation that returns a large amount of data. The operation is `GET http://target:7777/api/large_response_json`. To exclude it we provide the `FUZZAPI_EXCLUDE_PATHS` configuration variable with the path portion of our operation URL `/api/large_response_json`. Our configuration disables the main `apifuzzer_fuzz` job and creates two new jobs `apifuzzer_main` and `apifuzzer_branch`. The `apifuzzer_branch` is set up to exclude the long operation and only run on non-default branches (e.g. feature branches). The `apifuzzer_main` branch is set up to only execute on the default branch (`main` in this example). The `apifuzzer_branch` jobs run faster, allowing for quick development cycles, while the `apifuzzer_main` job which only runs on default branch builds, takes longer to run.
+In this example, we have an operation that returns a large amount of data. The operation is `GET http://target:7777/api/large_response_json`. To exclude it we provide the `FUZZAPI_EXCLUDE_PATHS` configuration variable with the path portion of our operation URL `/api/large_response_json`. Our configuration disables the main `apifuzzer_fuzz` job and creates two new jobs `apifuzzer_main` and `apifuzzer_branch`. The `apifuzzer_branch` is set up to exclude the long operation and only run on non-default branches (for example, feature branches). The `apifuzzer_main` branch is set up to only execute on the default branch (`main` in this example). The `apifuzzer_branch` jobs run faster, allowing for quick development cycles, while the `apifuzzer_main` job which only runs on default branch builds, takes longer to run.
 
 To verify the operation is excluded, run the API Fuzzing job and review the job console output. It includes a list of included and excluded operations at the end of the test.
 
@@ -2538,14 +2538,14 @@ The API Fuzzing engine outputs an error message when it cannot establish a conne
 
 **Solution**
 
-- Remove the `FUZZAPI_API` variable from the `.gitlab-ci.yml` file. The value will be inherited from the API Fuzzing CI/CD template. We recommend this method instead of manually setting a value.
+- Remove the `FUZZAPI_API` variable from the `.gitlab-ci.yml` file. The value is inherited from the API Fuzzing CI/CD template. We recommend this method instead of manually setting a value.
 - If removing the variable is not possible, check to see if this value has changed in the latest version of the [API Fuzzing CI/CD template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/API-Fuzzing.gitlab-ci.yml). If so, update the value in the `.gitlab-ci.yml` file.
 
 ### `Application cannot determine the base URL for the target API`
 
 The API Fuzzing analyzer outputs an error message when it cannot determine the target API after inspecting the OpenAPI document. This error message is shown when the target API has not been set in the `.gitlab-ci.yml`file, it is not available in the `environment_url.txt` file, and it could not be computed using the OpenAPI document.
 
-There is an order of precedence in which the API Fuzzing analyzer tries to get the target API when checking the different sources. First, it will try to use the `FUZZAPI_TARGET_URL`. If the environment variable has not been set, then the API Fuzzing analyzer will attempt to use the `environment_url.txt` file. If there is no file `environment_url.txt`, the API Fuzzing analyzer will then use the OpenAPI document contents and the URL provided in `FUZZAPI_OPENAPI` (if a URL is provided) to try to compute the target API.
+There is an order of precedence in which the API Fuzzing analyzer tries to get the target API when checking the different sources. First, it tries to use the `FUZZAPI_TARGET_URL`. If the environment variable has not been set, then the API Fuzzing analyzer attempts to use the `environment_url.txt` file. If there is no file `environment_url.txt`, the API Fuzzing analyzer now uses the OpenAPI document contents and the URL provided in `FUZZAPI_OPENAPI` (if a URL is provided) to try to compute the target API.
 
 The best-suited solution depends on whether or not your target API changes for each deployment:
 
@@ -2642,7 +2642,7 @@ variables:
 
 ### `No operation in the OpenAPI document is consuming any supported media type`
 
-API Fuzzing uses the specified media types in the OpenAPI document to generate requests. If no request can be created due to the lack of supported media types, then an error will be thrown.
+API Fuzzing uses the specified media types in the OpenAPI document to generate requests. If no request can be created due to the lack of supported media types, then an error is thrown.
 
 **Error message**
 

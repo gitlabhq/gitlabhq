@@ -55,7 +55,6 @@ module Admin
     end
 
     def ban_actions
-      return unless ban_feature_available?
       return if @user.internal?
 
       if @user.banned?

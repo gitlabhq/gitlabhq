@@ -180,6 +180,10 @@ FactoryBot.define do
           provider { 'ldapmain' }
         end
       end
+
+      trait :unconfirmed do
+        confirmed_at { nil }
+      end
     end
 
     factory :atlassian_user do

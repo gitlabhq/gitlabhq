@@ -5,6 +5,7 @@ import Api from '~/api';
 import dismissUserCallout from '~/graphql_shared/mutations/dismiss_user_callout.mutation.graphql';
 import services from '~/ide/services';
 import { query, mutate } from '~/ide/services/gql';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { escapeFileUrl } from '~/lib/utils/url_utility';
 import ciConfig from '~/ci/pipeline_editor/graphql/queries/ci_config.query.graphql';
 import { projectData } from '../mock_data';
@@ -108,7 +109,7 @@ describe('IDE services', () => {
         };
 
         mock = new MockAdapter(axios);
-        mock.onGet(file.rawPath).reply(200, 'raw content');
+        mock.onGet(file.rawPath).reply(HTTP_STATUS_OK, 'raw content');
 
         jest.spyOn(axios, 'get');
       });
@@ -205,7 +206,7 @@ describe('IDE services', () => {
                 filePath,
               )}`,
             )
-            .reply(200, TEST_FILE_CONTENTS);
+            .reply(HTTP_STATUS_OK, TEST_FILE_CONTENTS);
         });
 
         it('fetches file content', () =>
@@ -230,7 +231,7 @@ describe('IDE services', () => {
 
       mock
         .onGet(`${TEST_RELATIVE_URL_ROOT}/${TEST_PROJECT_ID}/-/files/${TEST_COMMIT_SHA}`)
-        .reply(200, [TEST_FILE_PATH]);
+        .reply(HTTP_STATUS_OK, [TEST_FILE_PATH]);
     });
 
     afterEach(() => {
@@ -271,7 +272,7 @@ describe('IDE services', () => {
       const TEST_PROJECT_PATH = 'foo/bar';
       const axiosURL = `${TEST_RELATIVE_URL_ROOT}/${TEST_PROJECT_PATH}/service_ping/web_ide_pipelines_count`;
 
-      mock.onPost(axiosURL).reply(200);
+      mock.onPost(axiosURL).reply(HTTP_STATUS_OK);
 
       return services.pingUsage(TEST_PROJECT_PATH).then(() => {
         expect(axios.post).toHaveBeenCalledWith(axiosURL);

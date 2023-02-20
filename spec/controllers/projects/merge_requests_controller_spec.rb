@@ -68,6 +68,72 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :code_review
       end
     end
 
+    context 'when add_prepared_state_to_mr feature flag on' do
+      before do
+        stub_feature_flags(add_prepared_state_to_mr: true)
+      end
+
+      context 'when the merge request is not prepared' do
+        before do
+          merge_request.update!(prepared_at: nil, created_at: 10.minutes.ago)
+        end
+
+        it 'prepares the merge request' do
+          expect(NewMergeRequestWorker).to receive(:perform_async)
+
+          go
+        end
+
+        context 'when the merge request was created less than 5 minutes ago' do
+          it 'does not prepare the merge request again' do
+            travel_to(4.minutes.from_now) do
+              merge_request.update!(created_at: Time.current - 4.minutes)
+
+              expect(NewMergeRequestWorker).not_to receive(:perform_async)
+
+              go
+            end
+          end
+        end
+
+        context 'when the merge request was created 5 minutes ago' do
+          it 'prepares the merge request' do
+            travel_to(6.minutes.from_now) do
+              merge_request.update!(created_at: Time.current - 6.minutes)
+
+              expect(NewMergeRequestWorker).to receive(:perform_async)
+
+              go
+            end
+          end
+        end
+      end
+
+      context 'when the merge request is prepared' do
+        before do
+          merge_request.update!(prepared_at: Time.current, created_at: 10.minutes.ago)
+        end
+
+        it 'prepares the merge request' do
+          expect(NewMergeRequestWorker).not_to receive(:perform_async)
+
+          go
+        end
+      end
+    end
+
+    context 'when add_prepared_state_to_mr feature flag is off' do
+      before do
+        stub_feature_flags(add_prepared_state_to_mr: false)
+      end
+
+      it 'does not prepare the merge request again' do
+        expect(NewMergeRequestWorker).not_to receive(:perform_async)
+
+        go
+      end
+    end
+
     describe 'as html' do
       it 'sets the endpoint_metadata_url' do
         go
@@ -80,6 +146,61 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :code_review
             diff_head: true,
             view: 'inline',
             w: '0'))
+      end
+
+      context 'when merge_head diff is present' do
+        before do
+          create(:merge_request_diff, :merge_head, merge_request: merge_request)
+        end
+
+        it 'sets the endpoint_diff_batch_url with ck' do
+          go
+
+          expect(assigns["endpoint_diff_batch_url"]).to eq(
+            diffs_batch_project_json_merge_request_path(
+              project,
+              merge_request,
+              'json',
+              diff_head: true,
+              view: 'inline',
+              w: '0',
+              page: '0',
+              per_page: '5',
+              ck: merge_request.merge_head_diff.id))
+        end
+
+        it 'sets diffs_batch_cache_key' do
+          go
+
+          expect(assigns['diffs_batch_cache_key']).to eq(merge_request.merge_head_diff.id)
+        end
+
+        context 'when diffs_batch_cache_with_max_age feature flag is disabled' do
+          before do
+            stub_feature_flags(diffs_batch_cache_with_max_age: false)
+          end
+
+          it 'sets the endpoint_diff_batch_url without ck param' do
+            go
+
+            expect(assigns['endpoint_diff_batch_url']).to eq(
+              diffs_batch_project_json_merge_request_path(
+                project,
+                merge_request,
+                'json',
+                diff_head: true,
+                view: 'inline',
+                w: '0',
+                page: '0',
+                per_page: '5'))
+          end
+
+          it 'does not set diffs_batch_cache_key' do
+            go
+
+            expect(assigns['diffs_batch_cache_key']).to be_nil
+          end
+        end
       end
 
       context 'when diff files were cleaned' do
@@ -333,15 +454,6 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :code_review
 
           expect(assigns(:merge_requests)).to include(merge_request)
         end
-      end
-    end
-
-    it_behaves_like 'issuable list with anonymous search disabled' do
-      let(:params) { { namespace_id: project.namespace, project_id: project } }
-
-      before do
-        sign_out(user)
-        project.update!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
       end
     end
   end
@@ -1856,18 +1968,26 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :code_review
            }
     end
 
-    it 'shows a flash message on success' do
+    it 'displays an flash error message on fail' do
+      allow(MergeRequests::AssignIssuesService).to receive(:new).and_return(double(execute: { count: 0 }))
+
       post_assign_issues
 
-      expect(flash[:notice]).to eq '2 issues have been assigned to you'
+      expect(flash[:alert]).to eq _('Failed to assign you issues related to the merge request.')
     end
 
-    it 'correctly pluralizes flash message on success' do
+    it 'shows a flash message on success' do
       issue2.assignees = [user]
 
       post_assign_issues
 
-      expect(flash[:notice]).to eq '1 issue has been assigned to you'
+      expect(flash[:notice]).to eq n_("An issue has been assigned to you.", "%d issues have been assigned to you.", 1)
+    end
+
+    it 'correctly pluralizes flash message on success' do
+      post_assign_issues
+
+      expect(flash[:notice]).to eq n_("An issue has been assigned to you.", "%d issues have been assigned to you.", 2)
     end
 
     it 'calls MergeRequests::AssignIssuesService' do

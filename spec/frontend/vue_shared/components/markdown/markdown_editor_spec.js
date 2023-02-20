@@ -24,6 +24,7 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
   const formFieldName = 'form[markdown_field]';
   const formFieldPlaceholder = 'Write some markdown';
   const formFieldAriaLabel = 'Edit your content';
+  const autocompleteDataSources = { commands: '/foobar/-/autcomplete_sources' };
   let mock;
 
   const buildWrapper = ({ propsData = {}, attachTo, stubs = {} } = {}) => {
@@ -35,11 +36,14 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
         markdownDocsPath,
         quickActionsDocsPath,
         enableAutocomplete,
+        autocompleteDataSources,
         enablePreview,
-        formFieldId,
-        formFieldName,
-        formFieldPlaceholder,
-        formFieldAriaLabel,
+        formFieldProps: {
+          id: formFieldId,
+          name: formFieldName,
+          placeholder: formFieldPlaceholder,
+          'aria-label': formFieldAriaLabel,
+        },
         ...propsData,
       },
       stubs: {
@@ -66,18 +70,17 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
   it('displays markdown field by default', () => {
     buildWrapper({ propsData: { supportsQuickActions: true } });
 
-    expect(findMarkdownField().props()).toEqual(
-      expect.objectContaining({
-        markdownPreviewPath: renderMarkdownPath,
-        quickActionsDocsPath,
-        canAttachFile: true,
-        enableAutocomplete,
-        textareaValue: value,
-        markdownDocsPath,
-        uploadsPath: window.uploads_path,
-        enablePreview,
-      }),
-    );
+    expect(findMarkdownField().props()).toMatchObject({
+      autocompleteDataSources,
+      markdownPreviewPath: renderMarkdownPath,
+      quickActionsDocsPath,
+      canAttachFile: true,
+      enableAutocomplete,
+      textareaValue: value,
+      markdownDocsPath,
+      uploadsPath: window.uploads_path,
+      enablePreview,
+    });
   });
 
   it('renders markdown field textarea', () => {
@@ -93,6 +96,12 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
     );
 
     expect(findTextarea().element.value).toBe(value);
+  });
+
+  it('fails to render if textarea id and name is not passed', () => {
+    expect(() => {
+      buildWrapper({ propsData: { formFieldProps: {} } });
+    }).toThrow('Invalid prop: custom validator check failed for prop "formFieldProps"');
   });
 
   it(`emits ${EDITING_MODE_CONTENT_EDITOR} event when enableContentEditor emitted from markdown editor`, async () => {

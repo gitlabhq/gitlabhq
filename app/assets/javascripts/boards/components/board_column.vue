@@ -9,16 +9,16 @@ export default {
     BoardListHeader,
     BoardList,
   },
-  inject: {
-    boardId: {
-      default: '',
-    },
-  },
+  inject: ['isApolloBoard'],
   props: {
     list: {
       type: Object,
       default: () => ({}),
       required: false,
+    },
+    boardId: {
+      type: String,
+      required: true,
     },
   },
   computed: {
@@ -28,7 +28,7 @@ export default {
       return this.highlightedLists.includes(this.list.id);
     },
     listItems() {
-      return this.getBoardItemsByList(this.list.id);
+      return this.isApolloBoard ? [] : this.getBoardItemsByList(this.list.id);
     },
     isListDraggable() {
       return isListDraggable(this.list);
@@ -84,7 +84,13 @@ export default {
       :class="{ 'board-column-highlighted': highlighted }"
     >
       <board-list-header :list="list" />
-      <board-list ref="board-list" :board-items="listItems" :list="list" />
+      <board-list
+        ref="board-list"
+        :board-id="boardId"
+        :board-items="listItems"
+        :list="list"
+        :filter-params="filterParams"
+      />
     </div>
   </div>
 </template>

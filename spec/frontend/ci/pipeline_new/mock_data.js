@@ -132,3 +132,4 @@ export const mockEmptyCiConfigVariablesResponse = mockCiConfigVariablesQueryResp
 export const mockCiConfigVariablesResponseWithoutDesc = mockCiConfigVariablesQueryResponse(
   mockYamlVariablesWithoutDesc,
 );
+export const mockNoCachedCiConfigVariablesResponse = mockCiConfigVariablesQueryResponse(null);

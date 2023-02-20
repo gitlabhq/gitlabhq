@@ -11,9 +11,7 @@ module StubbedMember
   module Member
     private
 
-    def refresh_member_authorized_projects(blocking:)
-      return super unless blocking
-
+    def refresh_member_authorized_projects
       AuthorizedProjectsWorker.new.perform(user_id)
     end
   end
@@ -21,7 +19,7 @@ module StubbedMember
   module ProjectMember
     private
 
-    def blocking_project_authorizations_refresh
+    def execute_project_authorizations_refresh
       AuthorizedProjectUpdate::ProjectRecalculatePerUserWorker.new.perform(project.id, user.id)
     end
   end

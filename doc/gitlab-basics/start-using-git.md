@@ -6,7 +6,7 @@ type: howto, tutorial
 description: "Introduction to using Git through the command line."
 ---
 
-# Git on the command line **(FREE)**
+# Command line Git **(FREE)**
 
 [Git](https://git-scm.com/) is an open-source distributed version control system. GitLab is built
 on top of Git.
@@ -37,7 +37,7 @@ prompt, command shell, and command line). Here are some options:
   - [iTerm2](https://iterm2.com/). You can integrate it with [Zsh](https://git-scm.com/book/id/v2/Appendix-A%3A-Git-in-Other-Environments-Git-in-Zsh) and [Oh My Zsh](https://ohmyz.sh/) for color highlighting and other advanced features.
 - For Windows users:
   - Built-in command line. On the Windows taskbar, select the search icon and type `cmd`.
-  - [PowerShell](https://learn.microsoft.com/en-us/powershell/scripting/windows-powershell/install/installing-windows-powershell?view=powershell-7).
+  - [PowerShell](https://learn.microsoft.com/en-us/powershell/scripting/windows-powershell/install/installing-windows-powershell?view=powershell-7.3&viewFallbackFrom=powershell-7).
   - Git Bash. It is built into [Git for Windows](https://gitforwindows.org/).
 - For Linux users:
   - Built-in [Linux Terminal](https://ubuntu.com/tutorials/command-line-for-beginners#3-opening-a-terminal).
@@ -98,7 +98,7 @@ access on GitLab.com or any other GitLab instance.
 To use the repository in the examples on this page:
 
 1. Go to [https://gitlab.com/gitlab-tests/sample-project/](https://gitlab.com/gitlab-tests/sample-project/).
-1. In the top right, select **Fork**.
+1. In the upper right, select **Fork**.
 1. Choose a namespace for your fork.
 
 The project becomes available at `https://gitlab.com/<your-namespace>/sample-project/`.

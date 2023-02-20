@@ -1,13 +1,14 @@
 <script>
-import { GlBadge, GlLink, GlTooltipDirective } from '@gitlab/ui';
+import { GlBadge, GlForm, GlFormCheckbox, GlLink, GlModal, GlTooltipDirective } from '@gitlab/ui';
 import delayedJobMixin from '~/jobs/mixins/delayed_job_mixin';
+import { helpPagePath } from '~/helpers/help_page_helper';
 import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
-import { sprintf, __ } from '~/locale';
+import { __, s__, sprintf } from '~/locale';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
 import { reportToSentry } from '../../utils';
 import ActionComponent from '../jobs_shared/action_component.vue';
 import JobNameComponent from '../jobs_shared/job_name_component.vue';
-import { BRIDGE_KIND, SINGLE_JOB } from './constants';
+import { BRIDGE_KIND, RETRY_ACTION_TITLE, SINGLE_JOB, SKIP_RETRY_MODAL_KEY } from './constants';
 
 /**
  * Renders the badge for the pipeline graph and the job's dropdown.
@@ -35,17 +36,32 @@ import { BRIDGE_KIND, SINGLE_JOB } from './constants';
  */
 
 export default {
+  confirmationModalDocLink: helpPagePath('/ci/pipelines/downstream_pipelines'),
   i18n: {
     bridgeBadgeText: __('Trigger job'),
     unauthorizedTooltip: __('You are not authorized to run this manual job'),
+    confirmationModal: {
+      title: s__('PipelineGraph|Are you sure you want to retry %{jobName}?'),
+      description: s__(
+        'PipelineGraph|Retrying a trigger job will create a new downstream pipeline.',
+      ),
+      linkText: s__('PipelineGraph|What is a downstream pipeline?'),
+      footer: __("Don't show this again"),
+      actionPrimary: { text: __('Retry') },
+      actionCancel: { text: __('Cancel') },
+    },
+    runAgainTooltipText: __('Run again'),
   },
   hoverClass: 'gl-shadow-x0-y0-b3-s1-blue-500',
   components: {
     ActionComponent,
     CiIcon,
-    JobNameComponent,
     GlBadge,
+    GlForm,
+    GlFormCheckbox,
     GlLink,
+    GlModal,
+    JobNameComponent,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -86,6 +102,11 @@ export default {
       required: false,
       default: -1,
     },
+    skipRetryModal: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     sourceJobHovered: {
       type: String,
       required: false,
@@ -102,6 +123,13 @@ export default {
       default: SINGLE_JOB,
     },
   },
+  data() {
+    return {
+      currentSkipModalValue: this.skipRetryModal,
+      showConfirmationModal: false,
+      shouldTriggerActionClick: false,
+    };
+  },
   computed: {
     boundary() {
       return this.dropdownLength === 1 ? 'viewport' : 'scrollParent';
@@ -115,6 +143,12 @@ export default {
     hasDetails() {
       return this.status.hasDetails;
     },
+    hasRetryAction() {
+      return Boolean(this.job?.status?.action?.title === RETRY_ACTION_TITLE);
+    },
+    isRetryableBridge() {
+      return this.isBridge && this.hasRetryAction;
+    },
     isSingleItem() {
       return this.type === SINGLE_JOB;
     },
@@ -126,6 +160,11 @@ export default {
     },
     nameComponent() {
       return this.hasDetails ? 'gl-link' : 'div';
+    },
+    retryTriggerJobWarningText() {
+      return sprintf(this.$options.i18n.confirmationModal.title, {
+        jobName: this.job.name,
+      });
     },
     showStageName() {
       return Boolean(this.stageName);
@@ -205,11 +244,34 @@ export default {
         },
       ];
     },
+    withConfirmationModal() {
+      return this.isRetryableBridge && !this.skipRetryModal;
+    },
+    jobActionTooltipText() {
+      const { group } = this.status;
+      const { title, icon } = this.status.action;
+
+      return icon === 'retry' && group === 'success'
+        ? this.$options.i18n.runAgainTooltipText
+        : title;
+    },
+  },
+  watch: {
+    skipRetryModal(val) {
+      this.currentSkipModalValue = val;
+      this.shouldTriggerActionClick = false;
+    },
   },
   errorCaptured(err, _vm, info) {
     reportToSentry('job_item', `error: ${err}, info: ${info}`);
   },
   methods: {
+    handleConfirmationModalPreferences() {
+      if (this.currentSkipModalValue) {
+        this.$emit('setSkipRetryModal');
+        localStorage.setItem(SKIP_RETRY_MODAL_KEY, String(this.currentSkipModalValue));
+      }
+    },
     hideTooltips() {
       this.$root.$emit(BV_HIDE_TOOLTIP);
     },
@@ -226,6 +288,15 @@ export default {
     },
     pipelineActionRequestComplete() {
       this.$emit('pipelineActionRequestComplete');
+    },
+    executePendingAction() {
+      this.shouldTriggerActionClick = true;
+    },
+    showActionConfirmationModal() {
+      this.showConfirmationModal = true;
+    },
+    toggleSkipRetryModalCheckbox() {
+      this.currentSkipModalValue = !this.currentSkipModalValue;
     },
   },
 };
@@ -272,12 +343,16 @@ export default {
 
     <action-component
       v-if="hasAction"
-      :tooltip-text="status.action.title"
+      :tooltip-text="jobActionTooltipText"
       :link="status.action.path"
       :action-icon="status.action.icon"
       class="gl-mr-1"
+      :should-trigger-click="shouldTriggerActionClick"
+      :with-confirmation-modal="withConfirmationModal"
       data-qa-selector="job_action_button"
+      @actionButtonClicked="handleConfirmationModalPreferences"
       @pipelineActionRequestComplete="pipelineActionRequestComplete"
+      @showActionConfirmationModal="showActionConfirmationModal"
     />
     <action-component
       v-if="hasUnauthorizedManualAction"
@@ -287,5 +362,28 @@ export default {
       :link="`unauthorized-${computedJobId}`"
       class="gl-mr-1"
     />
+    <gl-modal
+      v-if="showConfirmationModal"
+      ref="modal"
+      v-model="showConfirmationModal"
+      modal-id="action-confirmation-modal"
+      :title="retryTriggerJobWarningText"
+      :action-cancel="$options.i18n.confirmationModal.actionCancel"
+      :action-primary="$options.i18n.confirmationModal.actionPrimary"
+      @primary="executePendingAction"
+      @close="handleConfirmationModalPreferences"
+      @hide="handleConfirmationModalPreferences"
+    >
+      <p class="gl-mb-1">{{ $options.i18n.confirmationModal.description }}</p>
+      <gl-link :href="$options.confirmationModalDocLink" target="_blank">{{
+        $options.i18n.confirmationModal.linkText
+      }}</gl-link>
+      <div class="gl-mt-4 gl-display-flex">
+        <gl-form>
+          <gl-form-checkbox class="gl-min-h-0" @input="toggleSkipRetryModalCheckbox" />
+        </gl-form>
+        <p class="gl-m-0">{{ $options.i18n.confirmationModal.footer }}</p>
+      </div>
+    </gl-modal>
   </div>
 </template>

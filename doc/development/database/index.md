@@ -20,6 +20,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 - [explain.depesz.com](https://explain.depesz.com/) or [explain.dalibo.com](https://explain.dalibo.com/) for visualizing the output of `EXPLAIN`
 - [pgFormatter](https://sqlformat.darold.net/) a PostgreSQL SQL syntax beautifier
 - [db:check-migrations job](dbcheck-migrations-job.md)
+- [Database migration pipeline](database_migration_pipeline.md)
 
 ## Migrations
 
@@ -92,6 +93,22 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 - [Standalone PostgreSQL using Omnibus GitLab](../../administration/postgresql/standalone.md)
 - [Troubleshooting PostgreSQL](../../administration/troubleshooting/postgresql.md)
 - [Working with the bundled PgBouncer service](../../administration/postgresql/pgbouncer.md)
+
+## User information for scaling
+
+For GitLab administrators, information about
+[configuring PostgreSQL for scaling](../../administration/postgresql/index.md) is available,
+including the major methods:
+
+- [Standalone PostgreSQL](../../administration/postgresql/standalone.md)
+- [External PostgreSQL instances](../../administration/postgresql/external.md)
+- [Replication and failover](../../administration/postgresql/replication_and_failover.md)
+
+## ClickHouse
+
+- [Introduction](clickhouse/index.md)
+- [Optimizing query execution](clickhouse/optimization.md)
+- [Rebuild GitLab features using ClickHouse 1: Activity data](clickhouse/gitlab_activity_data.md)
 
 ## Miscellaneous
 

@@ -35,7 +35,7 @@ export default {
     :title="$options.i18n.buttonTitle"
     :aria-label="$options.i18n.buttonTitle"
     icon="remove"
-    data-qa-selector="delete_group_access_link"
+    data-qa-selector="remove_group_link_button"
     @click="showRemoveGroupLinkModal(groupLink)"
   />
 </template>

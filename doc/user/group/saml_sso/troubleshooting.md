@@ -58,6 +58,16 @@ You can use one of the following to troubleshoot SAML:
 
 For convenience, we've included some [example resources](../../../user/group/saml_sso/example_saml_config.md) used by our Support Team. While they may help you verify the SAML app configuration, they are not guaranteed to reflect the current state of third-party products.
 
+### Calculate the fingerprint
+
+If you use a `idp_cert_fingerprint`, it must be a SHA1 fingerprint. To calculate a SHA1 fingerprint, download the certificate file and run:
+
+```shell
+openssl x509 -in <filename.crt> -noout -fingerprint -sha1
+```
+
+Replace `filename.crt` with the name of the certificate file.
+
 ## Searching Rails log for a SAML response **(FREE SELF)**
 
 You can find the base64-encoded SAML Response in the [`production_json.log`](../../../administration/logs/index.md#production_jsonlog).
@@ -122,13 +132,17 @@ must be validated using either a fingerprint, a certificate, or a validator.
 
 For this requirement, be sure to take the following into account:
 
-- If a fingerprint is used, it must be the SHA1 fingerprint
+- If you use a fingerprint, it must be the correct SHA1 fingerprint. To confirm that you are using
+  the correct SHA1 fingerprint:
+  1. Re-download the certificate file.
+  1. [Calculate the fingerprint](#calculate-the-fingerprint).
+  1. Compare the fingerprint to the value provided in `idp_cert_fingerprint`. The values should be the same.
 - If no certificate is provided in the settings, a fingerprint or fingerprint
   validator needs to be provided and the response from the server must contain
-  a certificate (`<ds:KeyInfo><ds:X509Data><ds:X509Certificate>`)
+  a certificate (`<ds:KeyInfo><ds:X509Data><ds:X509Certificate>`).
 - If a certificate is provided in the settings, it is no longer necessary for
   the request to contain one. In this case the fingerprint or fingerprint
-  validators are optional
+  validators are optional.
 
 If none of the above described scenarios is valid, the request
 fails with one of the mentioned errors.
@@ -193,7 +207,7 @@ Alternatively, the SAML response may be missing the `InResponseTo` attribute in 
 The identity provider administrator should ensure that the login is
 initiated by the service provider and not only the identity provider.
 
-### Message: "Sign in to GitLab to connect your organization's account" **(PREMIUM SAAS)**
+### Message: "There is already a GitLab account associated with this email address. Sign in with your existing credentials to connect your organization's account" **(PREMIUM SAAS)**
 
 A user can see this message when they are trying to [manually link SAML to their existing GitLab.com account](index.md#linking-saml-to-your-existing-gitlabcom-account).
 
@@ -233,10 +247,17 @@ If you receive a `404` during setup when using "verify configuration", make sure
 If a user is trying to sign in for the first time and the GitLab single sign-on URL has not [been configured](index.md#configure-your-identity-provider), they may see a 404.
 As outlined in the [user access section](index.md#linking-saml-to-your-existing-gitlabcom-account), a group Owner needs to provide the URL to users.
 
-If all users are receiving a `404` after signing in to the identity provider (IdP), verify the `assertion_consumer_service_url`:
+If all users are receiving a `404` after signing in to the identity provider (IdP):
 
-- In the GitLab configuration by [matching it to the HTTPS endpoint of GitLab](../../../integration/saml.md#configure-saml-support-in-gitlab).
-- As the `Assertion Consumer Service URL` or equivalent when setting up the SAML app on your IdP.
+- Verify the `assertion_consumer_service_url`:
+
+  - In the GitLab configuration by [matching it to the HTTPS endpoint of GitLab](../../../integration/saml.md#configure-saml-support-in-gitlab).
+  - As the `Assertion Consumer Service URL` or equivalent when setting up the SAML app on your IdP.
+
+- Verify if the `404` is related to [the user having too many groups assigned to them in their Azure IdP](group_sync.md#user-that-belongs-to-many-saml-groups-automatically-removed-from-gitlab-group) by checking:
+
+  - If the user has group links configured.
+  - Audit events if the user gets added to the group and then immediately removed.
 
 For configuration examples for some of the common providers, see the [example group SAML and SCIM configurations](example_saml_config.md).
 

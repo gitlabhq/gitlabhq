@@ -34,8 +34,9 @@ class IssuableBaseService < ::BaseProjectService
   end
 
   def filter_params(issuable)
+    params.delete(:milestone)
+
     unless can_set_issuable_metadata?(issuable)
-      params.delete(:milestone)
       params.delete(:milestone_id)
       params.delete(:labels)
       params.delete(:add_label_ids)

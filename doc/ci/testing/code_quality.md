@@ -191,13 +191,13 @@ Code Quality now runs in standard Docker mode.
 ## Disable Code Quality
 
 The `code_quality` job doesn't run if the `$CODE_QUALITY_DISABLED` CI/CD variable
-is present. Refer to the CI/CD variables [documentation](../variables/index.md)
-to learn more about how to define one.
+is present. For more information about how to define a variable, see
+[GitLab CI/CD variables](../variables/index.md).
 
 To disable Code Quality, create a custom CI/CD variable named `CODE_QUALITY_DISABLED`, for either:
 
 - [The whole project](../variables/index.md#for-a-project).
-- [A single pipeline](../variables/index.md#override-a-variable-when-running-a-pipeline-manually).
+- [A single pipeline](../pipelines/index.md#run-a-pipeline-manually).
 
 ## Customizing scan settings
 
@@ -432,7 +432,6 @@ include:
 
 code_quality:
   variables:
-    CODE_QUALITY_IMAGE: "$CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX/codequality:0.85.24"
     ## You must add a trailing slash to `$CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX`.
     CODECLIMATE_PREFIX: $CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX/
     CODECLIMATE_REGISTRY_USERNAME: $CI_DEPENDENCY_PROXY_USER
@@ -531,8 +530,6 @@ This can be due to multiple reasons:
 - Your pipeline is not set to run the code quality job on your target branch. If there is no report
   generated from the target branch, your merge request branch reports have nothing to compare to. In this
   situation you get an error stating `Base pipeline codequality artifact not found`.
-- If no [degradation or error is detected](https://docs.codeclimate.com/docs/maintainability#section-checks),
-  nothing is displayed.
 - The [`artifacts:expire_in`](../yaml/index.md#artifactsexpire_in) CI/CD setting can cause the Code
   Quality artifacts to expire faster than desired.
 - The widgets use the pipeline of the latest commit to the target branch. If commits are made to the
@@ -540,12 +537,6 @@ This can be due to multiple reasons:
   have no base report for comparison.
 - If you use the [`REPORT_STDOUT` environment variable](https://gitlab.com/gitlab-org/ci-cd/codequality#environment-variables),
   no report file is generated and nothing displays in the merge request.
-- Large `gl-code-quality-report.json` files (esp. >10 MB) are [known to prevent the report from being displayed](https://gitlab.com/gitlab-org/gitlab/-/issues/2737).
-  As a workaround, try removing [properties](https://github.com/codeclimate/platform/blob/master/spec/analyzers/SPEC.md#data-types)
-  that are [ignored by GitLab](#implement-a-custom-tool). You can:
-  - Configure the Code Quality tool to not output those types.
-  - Use `sed`, `awk` or similar commands in the `.gitlab-ci.yml` script to edit the
-    `gl-code-quality-report.json` before the job completes.
 
 ### Only a single Code Quality report is displayed, but more are defined
 
@@ -614,7 +605,7 @@ variables:
 
 ### Using Code Quality with Kubernetes CI executor
 
-Code Quality requires a Docker in Docker setup to work. The Kubernetes executor already [has support for this](https://docs.gitlab.com/runner/executors/kubernetes.md#using-dockerdind).
+Code Quality requires a Docker in Docker setup to work. The Kubernetes executor already [has support for this](https://docs.gitlab.com/runner/executors/kubernetes.html#using-dockerdind).
 
 To ensure Code Quality jobs can run on a Kubernetes executor:
 

@@ -20,8 +20,8 @@ RSpec.describe 'Create GitLab branches from Jira', :js, feature_category: :integ
     sign_in(alice)
   end
 
-  def within_dropdown(&block)
-    within('.dropdown-menu', &block)
+  def within_project_listbox(&block)
+    within('#project-select', &block)
   end
 
   it 'select project and branch and submit the form' do
@@ -35,16 +35,16 @@ RSpec.describe 'Create GitLab branches from Jira', :js, feature_category: :integ
 
     click_on 'Select a project'
 
-    within_dropdown do
-      expect(page).to have_text('Alice / foo')
-      expect(page).to have_text('Alice / bar')
-      expect(page).not_to have_text('Bob /')
+    within_project_listbox do
+      expect_listbox_item('Alice / foo')
+      expect_listbox_item('Alice / bar')
+      expect_no_listbox_item('Bob /')
 
       fill_in 'Search', with: 'foo'
 
-      expect(page).not_to have_text('Alice / bar')
+      expect_no_listbox_item('Alice / bar')
 
-      find('span', text: 'Alice / foo', match: :first).click
+      select_listbox_item('Alice / foo')
     end
 
     expect(page).to have_field('Branch name', with: 'ACME-123-my-issue-title')
@@ -61,9 +61,9 @@ RSpec.describe 'Create GitLab branches from Jira', :js, feature_category: :integ
 
     find('span', text: 'Alice / foo', match: :first).click
 
-    within_dropdown do
+    within_project_listbox do
       fill_in 'Search', with: ''
-      find('span', text: 'Alice / bar', match: :first).click
+      select_listbox_item('Alice / bar')
     end
 
     click_on 'master'

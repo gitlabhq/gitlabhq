@@ -1,0 +1,8 @@
+---
+name: bulk_update_issues_mutation
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108505
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/388472
+milestone: '15.9'
+type: development
+group: group::project management
+default_enabled: false

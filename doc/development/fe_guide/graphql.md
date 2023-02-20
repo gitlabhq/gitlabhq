@@ -14,7 +14,7 @@ info: "See the Technical Writers assigned to Development Guidelines: https://abo
 **General resources**:
 
 - [📚 Official Introduction to GraphQL](https://graphql.org/learn/)
-- [📚 Official Introduction to Apollo](https://www.apollographql.com/tutorials/fullstack-quickstart/introduction)
+- [📚 Official Introduction to Apollo](https://www.apollographql.com/tutorials/fullstack-quickstart/01-introduction)
 
 **GraphQL at GitLab**:
 
@@ -87,7 +87,7 @@ where needed.
 You can check all existing queries and mutations on the right side
 of GraphiQL in its **Documentation explorer**. You can also
 write queries and mutations directly on the left tab and check
-their execution by clicking **Execute query** button on the top left:
+their execution by selecting **Execute query** in the upper left:
 
 ![GraphiQL interface](img/graphiql_explorer_v12_4.png)
 

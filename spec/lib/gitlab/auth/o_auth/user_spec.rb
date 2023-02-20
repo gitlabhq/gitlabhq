@@ -418,25 +418,54 @@ RSpec.describe Gitlab::Auth::OAuth::User, feature_category: :authentication_and_
             end
 
             context "and LDAP user has an account already" do
-              let!(:existing_user) { create(:omniauth_user, name: 'John Doe', email: 'john@example.com', extern_uid: dn, provider: 'ldapmain', username: 'john') }
+              context 'when sync_name is disabled' do
+                before do
+                  allow(Gitlab.config.ldap).to receive(:sync_name).and_return(false)
+                end
 
-              it "adds the omniauth identity to the LDAP account" do
-                allow(Gitlab::Auth::Ldap::Person).to receive(:find_by_uid).and_return(ldap_user)
+                let!(:existing_user) { create(:omniauth_user, name: 'John Doe', email: 'john@example.com', extern_uid: dn, provider: 'ldapmain', username: 'john') }
 
-                oauth_user.save # rubocop:disable Rails/SaveBang
+                it "adds the omniauth identity to the LDAP account" do
+                  allow(Gitlab::Auth::Ldap::Person).to receive(:find_by_uid).and_return(ldap_user)
 
-                expect(gl_user).to be_valid
-                expect(gl_user.username).to eql 'john'
-                expect(gl_user.name).to eql 'John Doe'
-                expect(gl_user.email).to eql 'john@example.com'
-                expect(gl_user.identities.length).to be 2
-                identities_as_hash = gl_user.identities.map { |id| { provider: id.provider, extern_uid: id.extern_uid } }
-                expect(identities_as_hash).to match_array(
-                  [
-                    { provider: 'ldapmain', extern_uid: dn },
-                    { provider: 'twitter', extern_uid: uid }
-                  ]
-                )
+                  oauth_user.save # rubocop:disable Rails/SaveBang
+
+                  expect(gl_user).to be_valid
+                  expect(gl_user.username).to eql 'john'
+                  expect(gl_user.name).to eql 'John Doe'
+                  expect(gl_user.email).to eql 'john@example.com'
+                  expect(gl_user.identities.length).to be 2
+                  identities_as_hash = gl_user.identities.map { |id| { provider: id.provider, extern_uid: id.extern_uid } }
+                  expect(identities_as_hash).to match_array(
+                    [
+                      { provider: 'ldapmain', extern_uid: dn },
+                      { provider: 'twitter', extern_uid: uid }
+                    ]
+                  )
+                end
+              end
+
+              context 'when sync_name is enabled' do
+                let!(:existing_user) { create(:omniauth_user, name: 'John Swift', email: 'john@example.com', extern_uid: dn, provider: 'ldapmain', username: 'john') }
+
+                it "adds the omniauth identity to the LDAP account" do
+                  allow(Gitlab::Auth::Ldap::Person).to receive(:find_by_uid).and_return(ldap_user)
+
+                  oauth_user.save # rubocop:disable Rails/SaveBang
+
+                  expect(gl_user).to be_valid
+                  expect(gl_user.username).to eql 'john'
+                  expect(gl_user.name).to eql 'John Swift'
+                  expect(gl_user.email).to eql 'john@example.com'
+                  expect(gl_user.identities.length).to be 2
+                  identities_as_hash = gl_user.identities.map { |id| { provider: id.provider, extern_uid: id.extern_uid } }
+                  expect(identities_as_hash).to match_array(
+                    [
+                      { provider: 'ldapmain', extern_uid: dn },
+                      { provider: 'twitter', extern_uid: uid }
+                    ]
+                  )
+                end
               end
             end
 

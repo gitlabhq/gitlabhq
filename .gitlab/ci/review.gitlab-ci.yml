@@ -4,9 +4,12 @@ review-cleanup:
     - .review:rules:review-cleanup
   image: ${REVIEW_APPS_IMAGE}
   stage: prepare
+  needs: []
   environment:
     name: review/regular-cleanup
     action: access
+  variables:
+    GIT_DEPTH: 1
   before_script:
     - source scripts/utils.sh
     - !reference [".use-kube-context", before_script]
@@ -14,6 +17,21 @@ review-cleanup:
     - setup_gcloud
   script:
     - scripts/review_apps/automated_cleanup.rb || (scripts/slack review-apps-monitoring "☠️ \`${CI_JOB_NAME}\` failed! ☠️ See ${CI_JOB_URL} - <https://gitlab.com/gitlab-org/quality/engineering-productivity/team/-/blob/main/runbooks/review-apps.md#review-cleanup-job-failed|📗 RUNBOOK 📕>" warning "GitLab Bot" && exit 1);
+
+review-stop:
+  extends:
+    - review-cleanup
+    - .review:rules:review-stop
+  environment:
+    name: review/${CI_COMMIT_REF_SLUG}${SCHEDULE_TYPE}  # No separator for SCHEDULE_TYPE so it's compatible as before and looks nice without it
+    action: stop
+  resource_group: review/${CI_COMMIT_REF_SLUG}${SCHEDULE_TYPE}  # CI_ENVIRONMENT_SLUG is not available here and we want this to be the same as the environment
+  before_script:
+    - source ./scripts/utils.sh
+    - source ./scripts/review_apps/review-apps.sh
+    - !reference [".use-kube-context", before_script]
+  script:
+    - retry delete_helm_release
 
 .base-review-checks:
   extends:
@@ -58,6 +76,21 @@ start-review-app-pipeline:
     - job: e2e-test-pipeline-generate
     - job: build-assets-image
       artifacts: false
+  # We do not want to have ALL global variables passed as trigger variables,
+  # as they cannot be overridden. See this issue for more context:
+  #
+  # https://gitlab.com/gitlab-org/gitlab/-/issues/387183
+  inherit:
+    variables:
+      - CHROME_VERSION
+      - REGISTRY_GROUP
+      - REGISTRY_HOST
+      - REVIEW_APPS_DOMAIN
+      - REVIEW_APPS_GCP_PROJECT
+      - REVIEW_APPS_GCP_REGION
+      - REVIEW_APPS_IMAGE
+      - RUBY_VERSION
+
   # These variables are set in the pipeline schedules.
   # They need to be explicitly passed on to the child pipeline.
   # https://docs.gitlab.com/ee/ci/pipelines/multi_project_pipelines.html#pass-cicd-variables-to-a-downstream-pipeline-by-using-the-variables-keyword
@@ -72,30 +105,6 @@ start-review-app-pipeline:
     include:
       - artifact: review-app-pipeline.yml
         job: e2e-test-pipeline-generate
-
-# Fetch child pipeline test results and store in parent pipeline
-# workaround until natively implemented: https://gitlab.com/groups/gitlab-org/-/epics/8205
-review-app-test-results:
-  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/debian-bullseye-ruby-${RUBY_VERSION}:bundler-2.3
-  stage: review
-  extends:
-    - .qa-cache
-    - .review:rules:start-review-app-pipeline
-  needs:
-    - start-review-app-pipeline
-  variables:
-    COLORIZED_LOGS: "true"
-    QA_LOG_LEVEL: "debug"
-  before_script:
-    - cd qa && bundle install
-  script:
-    - bundle exec rake "ci:download_test_results[start-review-app-pipeline,e2e-test-report,${CI_PROJECT_DIR}]"
-  when: always
-  allow_failure: true
-  artifacts:
-    when: always
-    reports:
-      junit: qa/tmp/rspec-*.xml
 
 danger-review:
   extends:

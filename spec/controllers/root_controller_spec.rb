@@ -37,16 +37,16 @@ RSpec.describe RootController do
           user.dashboard = 'stars'
         end
 
-        it 'redirects to their specified dashboard' do
+        it 'redirects to their starred projects list' do
           get :index
 
           expect(response).to redirect_to starred_dashboard_projects_path
         end
       end
 
-      context 'who has customized their dashboard setting for project activities' do
+      context 'who has customized their dashboard setting for their own activities' do
         before do
-          user.dashboard = 'project_activity'
+          user.dashboard = 'your_activity'
         end
 
         it 'redirects to the activity list' do
@@ -56,12 +56,24 @@ RSpec.describe RootController do
         end
       end
 
+      context 'who has customized their dashboard setting for project activities' do
+        before do
+          user.dashboard = 'project_activity'
+        end
+
+        it 'redirects to the projects activity list' do
+          get :index
+
+          expect(response).to redirect_to activity_dashboard_path(filter: 'projects')
+        end
+      end
+
       context 'who has customized their dashboard setting for starred project activities' do
         before do
           user.dashboard = 'starred_project_activity'
         end
 
-        it 'redirects to the activity list' do
+        it 'redirects to their starred projects activity list' do
           get :index
 
           expect(response).to redirect_to activity_dashboard_path(filter: 'starred')
@@ -73,7 +85,7 @@ RSpec.describe RootController do
           user.dashboard = 'followed_user_activity'
         end
 
-        it 'redirects to the activity list' do
+        it 'redirects to the followed users activity list' do
           get :index
 
           expect(response).to redirect_to activity_dashboard_path(filter: 'followed')

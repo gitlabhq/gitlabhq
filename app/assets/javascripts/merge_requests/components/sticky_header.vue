@@ -2,7 +2,7 @@
 import { GlIntersectionObserver, GlLink, GlSprintf, GlBadge } from '@gitlab/ui';
 import { mapGetters, mapState } from 'vuex';
 import SafeHtml from '~/vue_shared/directives/safe_html';
-import { TYPE_MERGE_REQUEST } from '~/graphql_shared/constants';
+import { TYPENAME_MERGE_REQUEST } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { isLoggedIn } from '~/lib/utils/common_utils';
@@ -45,7 +45,7 @@ export default {
       doneFetchingBatchDiscussions: (state) => state.notes.doneFetchingBatchDiscussions,
     }),
     issuableId() {
-      return convertToGraphQLId(TYPE_MERGE_REQUEST, this.getNoteableData.id);
+      return convertToGraphQLId(TYPENAME_MERGE_REQUEST, this.getNoteableData.id);
     },
     issuableIid() {
       return `${this.getNoteableData.iid}`;
@@ -77,7 +77,7 @@ export default {
 
 <template>
   <gl-intersection-observer
-    class="gl-relative gl-top-2"
+    class="gl-relative gl-top-n5"
     @appear="setStickyHeaderVisible(false)"
     @disappear="setStickyHeaderVisible(true)"
   >

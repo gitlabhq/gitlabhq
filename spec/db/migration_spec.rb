@@ -9,7 +9,7 @@ RSpec.describe 'Migrations Validation', feature_category: :database do
   let(:all_migration_classes) do
     {
       2022_12_01_02_15_00.. => Gitlab::Database::Migration[2.1],
-      2022_01_26_21_06_58.. => Gitlab::Database::Migration[2.0],
+      2022_01_26_21_06_58..2023_01_11_12_45_12 => Gitlab::Database::Migration[2.0],
       2021_09_01_15_33_24..2022_04_25_12_06_03 => Gitlab::Database::Migration[1.0],
       2021_05_31_05_39_16..2021_09_01_15_33_24 => ActiveRecord::Migration[6.1],
       ..2021_05_31_05_39_16 => ActiveRecord::Migration[6.0]

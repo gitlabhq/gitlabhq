@@ -5,7 +5,6 @@ import { FILTERED_SEARCH } from '~/filtered_search/constants';
 import { initBulkUpdateSidebar, initCsvImportExportButtons, initIssuableByEmail } from '~/issuable';
 import { ISSUABLE_INDEX } from '~/issuable/constants';
 import initFilteredSearch from '~/pages/search/init_filtered_search';
-import UsersSelect from '~/users_select';
 
 initBulkUpdateSidebar(ISSUABLE_INDEX.MERGE_REQUEST);
 
@@ -18,7 +17,6 @@ initFilteredSearch({
   useDefaultState: true,
 });
 
-new UsersSelect(); // eslint-disable-line no-new
 new ShortcutsNavigation(); // eslint-disable-line no-new
 
 initIssuableByEmail();

@@ -45,7 +45,7 @@ export default {
 
         Tracking.event(undefined, 'click_toggle', {
           label: this.enabled ? 'disable_new_nav_beta' : 'enable_new_nav_beta',
-          property: 'navigation',
+          property: this.enabled ? 'navigation' : 'navigation_top',
         });
 
         window.location.reload();

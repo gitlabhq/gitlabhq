@@ -15,7 +15,7 @@ module Gitlab
           resolver_method = "#{name}_resolver".to_sym
           kwargs[:resolver_method] = resolver_method
 
-          kwargs[:description] ||= "The GitLab Flavored Markdown rendering of `#{method_name}`"
+          kwargs[:description] ||= "GitLab Flavored Markdown rendering of `#{method_name}`"
           # Adding complexity to rendered notes since that could cause queries.
           kwargs[:complexity] ||= 5
 

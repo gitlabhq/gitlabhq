@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::Trigger do
+RSpec.describe Ci::Trigger, feature_category: :continuous_integration do
   let(:project) { create :project }
 
   describe 'associations' do
@@ -84,6 +84,42 @@ RSpec.describe Ci::Trigger do
     it_behaves_like 'cleanup by a loose foreign key' do
       let!(:parent) { create(:project) }
       let!(:model) { create(:ci_trigger, project: parent) }
+    end
+  end
+
+  describe 'encrypted_token' do
+    context 'when token is not provided' do
+      it 'encrypts the generated token' do
+        trigger = create(:ci_trigger_without_token, project: project)
+
+        expect(trigger.token).not_to be_nil
+        expect(trigger.encrypted_token).not_to be_nil
+        expect(trigger.encrypted_token_iv).not_to be_nil
+
+        expect(trigger.reload.encrypted_token_tmp).to eq(trigger.token)
+      end
+    end
+
+    context 'when token is provided' do
+      it 'encrypts the given token' do
+        trigger = create(:ci_trigger, project: project)
+
+        expect(trigger.token).not_to be_nil
+        expect(trigger.encrypted_token).not_to be_nil
+        expect(trigger.encrypted_token_iv).not_to be_nil
+
+        expect(trigger.reload.encrypted_token_tmp).to eq(trigger.token)
+      end
+    end
+
+    context 'when token is being updated' do
+      it 'encrypts the given token' do
+        trigger = create(:ci_trigger, project: project, token: "token")
+        expect { trigger.update!(token: "new token") }
+          .to change { trigger.encrypted_token }
+          .and change { trigger.encrypted_token_iv }
+          .and change { trigger.encrypted_token_tmp }.from("token").to("new token")
+      end
     end
   end
 end

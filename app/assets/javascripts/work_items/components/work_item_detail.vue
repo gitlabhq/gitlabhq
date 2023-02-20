@@ -19,7 +19,7 @@ import { getParameterByName, updateHistory, setUrlParams } from '~/lib/utils/url
 import { isPositiveInteger } from '~/lib/utils/number_utils';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
-import { TYPE_WORK_ITEM } from '~/graphql_shared/constants';
+import { TYPENAME_WORK_ITEM } from '~/graphql_shared/constants';
 import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
 import {
   sprintfWorkItem,
@@ -51,6 +51,7 @@ import WorkItemTree from './work_item_links/work_item_tree.vue';
 import WorkItemActions from './work_item_actions.vue';
 import WorkItemState from './work_item_state.vue';
 import WorkItemTitle from './work_item_title.vue';
+import WorkItemCreatedUpdated from './work_item_created_updated.vue';
 import WorkItemDescription from './work_item_description.vue';
 import WorkItemDueDate from './work_item_due_date.vue';
 import WorkItemAssignees from './work_item_assignees.vue';
@@ -74,6 +75,7 @@ export default {
     GlEmptyState,
     WorkItemAssignees,
     WorkItemActions,
+    WorkItemCreatedUpdated,
     WorkItemDescription,
     WorkItemDueDate,
     WorkItemLabels,
@@ -123,8 +125,9 @@ export default {
       workItem: {},
       updateInProgress: false,
       modalWorkItemId: isPositiveInteger(workItemId)
-        ? convertToGraphQLId(TYPE_WORK_ITEM, workItemId)
+        ? convertToGraphQLId(TYPENAME_WORK_ITEM, workItemId)
         : null,
+      modalWorkItemIid: getParameterByName('work_item_iid'),
     };
   },
   apollo: {
@@ -136,7 +139,7 @@ export default {
         return this.queryVariables;
       },
       skip() {
-        return !this.workItemId;
+        return !this.workItemId && !this.workItemIid;
       },
       update(data) {
         const workItem = this.fetchByIid ? data.workspace.workItems.nodes[0] : data.workItem;
@@ -290,7 +293,10 @@ export default {
       return this.isWidgetPresent(WIDGET_TYPE_NOTES);
     },
     fetchByIid() {
-      return this.glFeatures.useIidInWorkItemsPath && parseBoolean(getParameterByName('iid_path'));
+      return (
+        (this.glFeatures.useIidInWorkItemsPath && parseBoolean(getParameterByName('iid_path'))) ||
+        false
+      );
     },
     queryVariables() {
       return this.fetchByIid
@@ -310,8 +316,8 @@ export default {
     },
   },
   mounted() {
-    if (this.modalWorkItemId) {
-      this.openInModal(undefined, { id: this.modalWorkItemId });
+    if (this.modalWorkItemId || this.modalWorkItemIid) {
+      this.openInModal(undefined, { id: this.modalWorkItemId, iid: this.modalWorkItemIid });
     }
   },
   methods: {
@@ -439,24 +445,33 @@ export default {
         Sentry.captureException(error);
       }
     },
-    updateUrl(modalWorkItemId) {
+    updateUrl(modalWorkItem) {
+      const params = this.fetchByIid
+        ? { work_item_iid: modalWorkItem?.iid }
+        : { work_item_id: getIdFromGraphQLId(modalWorkItem?.id) };
+
       updateHistory({
-        url: setUrlParams({ work_item_id: getIdFromGraphQLId(modalWorkItemId) }),
+        url: setUrlParams(params),
         replace: true,
       });
     },
     openInModal(event, modalWorkItem) {
+      if (!this.workItemsMvc2Enabled) {
+        return;
+      }
+
       if (event) {
         event.preventDefault();
 
-        this.updateUrl(modalWorkItem.id);
+        this.updateUrl(modalWorkItem);
       }
 
       if (this.isModal) {
-        this.$emit('update-modal', event, modalWorkItem.id);
+        this.$emit('update-modal', event, modalWorkItem);
         return;
       }
       this.modalWorkItemId = modalWorkItem.id;
+      this.modalWorkItemIid = modalWorkItem.iid;
       this.$refs.modal.show();
     },
   },
@@ -558,6 +573,12 @@ export default {
         :work-item-parent-id="workItemParentId"
         :can-update="canUpdate"
         @error="updateError = $event"
+      />
+      <work-item-created-updated
+        :work-item-id="workItem.id"
+        :work-item-iid="workItemIid"
+        :full-path="fullPath"
+        :fetch-by-iid="fetchByIid"
       />
       <work-item-state
         :work-item="workItem"
@@ -696,6 +717,7 @@ export default {
       v-if="!isModal"
       ref="modal"
       :work-item-id="modalWorkItemId"
+      :work-item-iid="modalWorkItemIid"
       :show="true"
       @close="updateUrl"
     />

@@ -84,9 +84,9 @@ The following features are not found in standard Markdown.
 
 ### Colors
 
-[View this topic in GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#colors).
+Markdown does not support changing text color.
 
-You can write a color in the formats: `HEX`, `RGB`, or `HSL`.
+You can write a color code in the formats: `HEX`, `RGB`, or `HSL`.
 
 - `HEX`: `` `#RGB[A]` `` or `` `#RRGGBB[AA]` ``
 - `RGB`: `` `RGB[A](R, G, B[, A])` ``
@@ -94,7 +94,8 @@ You can write a color in the formats: `HEX`, `RGB`, or `HSL`.
 
 Named colors are not supported.
 
-Colors in backticks are followed by a color indicator:
+In the GitLab application (but not the GitLab documentation) color codes in backticks
+display a color chip next to the color code. For example:
 
 ```markdown
 - `#F00`
@@ -107,6 +108,9 @@ Colors in backticks are followed by a color indicator:
 - `HSL(540,70%,50%)`
 - `HSLA(540,70%,50%,0.3)`
 ```
+
+[View this topic in GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#colors)
+to see the color chips next to the color code:
 
 - `#F00`
 - `#F00A`
@@ -353,7 +357,7 @@ _KaTeX only supports a [subset](https://katex.org/docs/supported.html) of LaTeX.
 This syntax also works for the Asciidoctor `:stem: latexmath`. For details, see
 the [Asciidoctor user manual](https://asciidoctor.org/docs/user-manual/#activating-stem-support).
 
-Math written between dollar signs with backticks (``$`...`$``) or single dollar signs (`$...$`) 
+Math written between dollar signs with backticks (``$`...`$``) or single dollar signs (`$...$`)
 is rendered inline with the text.
 
 Math written between double dollar signs (`$$...$$`) or in a [code block](#code-spans-and-blocks) with
@@ -1007,11 +1011,12 @@ Do not change to a reference style link.
 
 ![alt text](img/markdown_logo.png "Title Text")
 
-#### Change the image dimensions
+#### Change the image or video dimensions
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/28118) in GitLab 15.7.
+> - Support for images [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/28118) in GitLab 15.7.
+> - Support for videos [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/17139) in GitLab 15.9.
 
-You can control the width and height of an image by following the image with
+You can control the width and height of an image or video by following the image with
 an attribute list.
 The value must an integer with a unit of either `px` (default) or `%`.
 

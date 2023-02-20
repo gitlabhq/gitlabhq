@@ -6,14 +6,14 @@ module Banzai
       REGEX = %r{
           #{::Gitlab::Regex.markdown_code_or_html_blocks}
         |
-          (?=(?<=^\n|\A)>>>\ *\n.*\n>>>\ *(?=\n$|\z))(?:
+          (?=(?<=^\n|\A)\ *>>>\ *\n.*\n\ *>>>\ *(?=\n$|\z))(?:
             # Blockquote:
             # >>>
             # Anything, including code and HTML blocks
             # >>>
 
-            (?<=^\n|\A)>>>\ *\n
-            (?<quote>
+            (?<=^\n|\A)(?<indent>\ *)>>>\ *\n
+            (?<blockquote>
               (?:
                   # Any character that doesn't introduce a code or HTML block
                   (?!
@@ -30,7 +30,7 @@ module Banzai
                   \g<html>
               )+?
             )
-            \n>>>\ *(?=\n$|\z)
+            \n\ *>>>\ *(?=\n$|\z)
           )
       }mx.freeze
 
@@ -41,10 +41,11 @@ module Banzai
 
       def call
         @text.gsub(REGEX) do
-          if $~[:quote]
+          if $~[:blockquote]
             # keep the same number of source lines/positions by replacing the
             # fence lines with newlines
-            "\n" + $~[:quote].gsub(/^/, "> ").gsub(/^> $/, ">") + "\n"
+            indent = $~[:indent]
+            "\n" + $~[:blockquote].gsub(/^#{Regexp.quote(indent)}/, "#{indent}> ").gsub(/^> $/, ">") + "\n"
           else
             $~[0]
           end

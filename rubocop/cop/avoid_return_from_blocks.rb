@@ -32,7 +32,7 @@ module RuboCop
         return unless top_block?(node)
 
         block_body.each_node(:return) do |return_node|
-          next if parent_blocks(node, return_node).all?(&method(:whitelisted?))
+          next if parent_blocks(node, return_node).all? { |block_node| whitelisted?(block_node) }
 
           add_offense(return_node)
         end

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe MergeRequestsHelper do
+RSpec.describe MergeRequestsHelper, feature_category: :code_review_workflow do
   include ProjectForksHelper
 
   describe '#format_mr_branch_names' do

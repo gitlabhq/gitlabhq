@@ -46,6 +46,15 @@ class Admin::ApplicationSettings::AppearancesController < Admin::ApplicationCont
     redirect_to admin_application_settings_appearances_path, notice: _('Header logo was successfully removed.')
   end
 
+  def pwa_icon
+    @appearance.remove_pwa_icon!
+
+    @appearance.save
+
+    redirect_to admin_application_settings_appearances_path,
+      notice: _('Progressive Web App (PWA) icon was successfully removed.')
+  end
+
   def favicon
     @appearance.remove_favicon!
     @appearance.save
@@ -68,12 +77,16 @@ class Admin::ApplicationSettings::AppearancesController < Admin::ApplicationCont
   def allowed_appearance_params
     %i[
       title
-      pwa_short_name
       description
+      pwa_name
+      pwa_short_name
+      pwa_description
       logo
       logo_cache
       header_logo
       header_logo_cache
+      pwa_icon
+      pwa_icon_cache
       favicon
       favicon_cache
       new_project_guidelines

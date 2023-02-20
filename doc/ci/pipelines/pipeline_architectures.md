@@ -13,7 +13,7 @@ some of the important concepts related to them.
 You can structure your pipelines with different methods, each with their
 own advantages. These methods can be mixed and matched if needed:
 
-- [Basic](#basic-pipelines): Good for straightforward projects where all the configuration is in one easy to find place.
+- [Basic](#basic-pipelines): Good for straightforward projects where all the configuration is in one easy-to-find place.
 - [Directed Acyclic Graph](#directed-acyclic-graph-pipelines): Good for large, complex projects that need efficient execution.
 - [Parent-child pipelines](#parent-child-pipelines): Good for monorepos and projects with lots of independently defined components.
 

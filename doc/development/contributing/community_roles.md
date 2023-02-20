@@ -1,18 +1,11 @@
 ---
-stage: none
-group: Development
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+redirect_to: 'index.md'
+remove_date: '2023-05-08'
 ---
 
-# Community members & roles
+This document was moved to [another location](index.md).
 
-GitLab community members and their privileges/responsibilities.
-
-| Roles | Responsibilities | Requirements |
-|-------|------------------|--------------|
-| Maintainer | Accepts merge requests on several GitLab projects | Added to the [team page](https://about.gitlab.com/company/team/). An expert on code reviews and knows the product/codebase |
-| Reviewer | Performs code reviews on MRs | Added to the [team page](https://about.gitlab.com/company/team/) |
-| Developer | Has access to GitLab internal infrastructure & issues (for example, HR-related) | GitLab employee or a Core Team member (with an NDA) |
-| Contributor | Can make contributions to all GitLab public projects | Have a GitLab.com account |
-
-[List of current reviewers/maintainers](https://about.gitlab.com/handbook/engineering/projects/#gitlab).
+<!-- This redirect file can be deleted after <2023-05-08>. -->
+<!-- Redirects that point to other docs in the same project expire in three months. -->
+<!-- Redirects that point to docs in a different project or site (for example, link is not relative and starts with `https:`) expire in one year. -->
+<!-- Before deletion, see: https://docs.gitlab.com/ee/development/documentation/redirects.html -->

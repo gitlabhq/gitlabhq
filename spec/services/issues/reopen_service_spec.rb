@@ -12,7 +12,7 @@ RSpec.describe Issues::ReopenService do
         guest = create(:user)
         project.add_guest(guest)
 
-        described_class.new(project: project, current_user: guest).execute(issue)
+        described_class.new(container: project, current_user: guest).execute(issue)
 
         expect(issue).to be_closed
       end
@@ -21,7 +21,7 @@ RSpec.describe Issues::ReopenService do
         it 'does close the issue even if user is not authorized' do
           non_authorized_user = create(:user)
 
-          service = described_class.new(project: project, current_user: non_authorized_user)
+          service = described_class.new(container: project, current_user: non_authorized_user)
 
           expect do
             service.execute(issue, skip_authorization: true)
@@ -33,7 +33,7 @@ RSpec.describe Issues::ReopenService do
     context 'when user is authorized to reopen issue' do
       let(:user) { create(:user) }
 
-      subject(:execute) { described_class.new(project: project, current_user: user).execute(issue) }
+      subject(:execute) { described_class.new(container: project, current_user: user).execute(issue) }
 
       before do
         project.add_maintainer(user)

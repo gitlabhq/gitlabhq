@@ -6,7 +6,7 @@ module MembershipActions
 
   def update
     update_params = params.require(root_params_key).permit(:access_level, :expires_at)
-    member = membershipable.members_and_requesters.find(params[:id])
+    member = members_and_requesters.find(params[:id])
     result = Members::UpdateService
       .new(current_user, update_params)
       .execute(member)
@@ -30,7 +30,7 @@ module MembershipActions
   end
 
   def destroy
-    member = membershipable.members_and_requesters.find(params[:id])
+    member = members_and_requesters.find(params[:id])
     skip_subresources = !ActiveRecord::Type::Boolean.new.cast(params.delete(:remove_sub_memberships))
     # !! is used in case unassign_issuables contains empty string which would result in nil
     unassign_issuables = !!ActiveRecord::Type::Boolean.new.cast(params.delete(:unassign_issuables))
@@ -71,7 +71,7 @@ module MembershipActions
   end
 
   def approve_access_request
-    access_requester = membershipable.requesters.find(params[:id])
+    access_requester = requesters.find(params[:id])
     Members::ApproveAccessRequestService
       .new(current_user, params)
       .execute(access_requester)
@@ -81,7 +81,7 @@ module MembershipActions
 
   # rubocop: disable CodeReuse/ActiveRecord
   def leave
-    member = membershipable.members_and_requesters.find_by!(user_id: current_user.id)
+    member = members_and_requesters.find_by!(user_id: current_user.id)
     Members::DestroyService.new(current_user).execute(member)
 
     notice =
@@ -138,6 +138,14 @@ module MembershipActions
 
   def plain_source_type
     raise NotImplementedError
+  end
+
+  def members_and_requesters
+    membershipable.members_and_requesters
+  end
+
+  def requesters
+    membershipable.requesters
   end
 
   def requested_relations(inherited_permissions = :with_inherited_permissions)

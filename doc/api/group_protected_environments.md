@@ -34,7 +34,7 @@ GET /groups/:id/protected_environments
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) maintained by the authenticated user. |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) maintained by the authenticated user. |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/5/protected_environments/"
@@ -70,7 +70,7 @@ GET /groups/:id/protected_environments/:name
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) maintained by the authenticated user. |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) maintained by the authenticated user. |
 | `name`    | string | yes    | The deployment tier of the protected environment. One of `production`, `staging`, `testing`, `development`, or `other`. Read more about [deployment tiers](../ci/environments/index.md#deployment-tier-of-environments).|
 
 ```shell
@@ -105,7 +105,7 @@ POST /groups/:id/protected_environments
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer/string | yes | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) maintained by the authenticated user. |
+| `id`      | integer/string | yes | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) maintained by the authenticated user. |
 | `name`    | string | yes    | The deployment tier of the protected environment. One of `production`, `staging`, `testing`, `development`, or `other`. Read more about [deployment tiers](../ci/environments/index.md#deployment-tier-of-environments).|
 | `deploy_access_levels`          | array          | yes | Array of access levels allowed to deploy, with each described by a hash. One of `user_id`, `group_id` or `access_level`. They take the form of `{user_id: integer}`, `{group_id: integer}` or `{access_level: integer}` respectively. |
 | `required_approval_count` | integer        | no       | The number of approvals required to deploy to this environment. |
@@ -148,7 +148,7 @@ PUT /groups/:id/protected_environments/:name
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer/string | yes | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) maintained by the authenticated user. |
+| `id`      | integer/string | yes | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) maintained by the authenticated user. |
 | `name`    | string | yes    | The deployment tier of the protected environment. One of `production`, `staging`, `testing`, `development`, or `other`. Read more about [deployment tiers](../ci/environments/index.md#deployment-tier-of-environments).|
 | `deploy_access_levels`          | array          | no | Array of access levels allowed to deploy, with each described by a hash. One of `user_id`, `group_id` or `access_level`. They take the form of `{user_id: integer}`, `{group_id: integer}` or `{access_level: integer}` respectively. |
 | `required_approval_count` | integer        | no       | The number of approvals required to deploy to this environment. |
@@ -314,7 +314,7 @@ DELETE /groups/:id/protected_environments/:name
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) maintained by the authenticated user. |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) maintained by the authenticated user. |
 | `name`    | string | yes    | The deployment tier of the protected environment. One of `production`, `staging`, `testing`, `development`, or `other`. Read more about [deployment tiers](../ci/environments/index.md#deployment-tier-of-environments).|
 
 ```shell

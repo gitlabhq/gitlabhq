@@ -4,7 +4,7 @@ group: Pipeline Authoring
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Configure OpenID Connect in AWS to retrieve temporary credentials
+# Configure OpenID Connect in AWS to retrieve temporary credentials **(FREE)**
 
 In this tutorial, we'll show you how to use a GitLab CI/CD job with a JSON web token (JWT) to retrieve temporary credentials from AWS without needing to store secrets.
 To do this, you must configure OpenID Connect (OIDC) for ID federation between GitLab and AWS. For background and requirements for integrating GitLab using OIDC, see [Connect to cloud services](../index.md).
@@ -30,6 +30,8 @@ Include the following information:
 
 After you create the identity provider, configure a [web identity role](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_create_for-idp_oidc.html) with conditions for limiting access to GitLab resources. Temporary credentials are obtained using [AWS Security Token Service](https://docs.aws.amazon.com/STS/latest/APIReference/welcome.html), so set the `Action` to [sts:AssumeRoleWithWebIdentity](https://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRoleWithWebIdentity.html).
 
+You can create a [custom trust policy](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_create_for-custom.html)
+for the role to limit authorization to a specific group, project, branch, or tag.
 For the full list of supported filtering types, see [Connect to cloud services](../index.md#configure-a-conditional-role-with-oidc-claims).
 
 ```json

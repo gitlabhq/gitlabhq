@@ -3,6 +3,14 @@
 require 'spec_helper'
 
 RSpec.describe ApplicationSettingsHelper do
+  include Devise::Test::ControllerHelpers
+
+  let_it_be(:current_user) { create(:admin) }
+
+  before do
+    allow(helper).to receive(:current_user).and_return(current_user)
+  end
+
   context 'when all protocols in use' do
     before do
       stub_application_setting(enabled_git_access_protocol: '')
@@ -360,13 +368,10 @@ RSpec.describe ApplicationSettingsHelper do
   end
 
   describe '#instance_clusters_enabled?', :request_store do
-    let_it_be(:user) { create(:user) }
-
     subject { helper.instance_clusters_enabled? }
 
     before do
-      allow(helper).to receive(:current_user).and_return(user)
-      allow(helper).to receive(:can?).with(user, :read_cluster, instance_of(Clusters::Instance)).and_return(true)
+      allow(helper).to receive(:can?).with(current_user, :read_cluster, instance_of(Clusters::Instance)).and_return(true)
     end
 
     it { is_expected.to be_truthy }
@@ -377,6 +382,54 @@ RSpec.describe ApplicationSettingsHelper do
       end
 
       it { is_expected.to be_falsey }
+    end
+  end
+
+  describe '#restricted_level_checkboxes' do
+    let_it_be(:application_setting) { create(:application_setting) }
+
+    before do
+      allow(current_user).to receive(:can_admin_all_resources?).and_return(true)
+      stub_application_setting(
+        restricted_visibility_levels: [
+          Gitlab::VisibilityLevel::PUBLIC,
+          Gitlab::VisibilityLevel::INTERNAL,
+          Gitlab::VisibilityLevel::PRIVATE
+        ]
+      )
+    end
+
+    it 'returns restricted level checkboxes with correct label, description, and HTML attributes' do
+      helper.gitlab_ui_form_for(application_setting, url: '/admin/application_settings/general') do |form|
+        result = helper.restricted_level_checkboxes(form)
+
+        expect(result[0]).to have_checked_field(s_('VisibilityLevel|Private'), with: Gitlab::VisibilityLevel::PRIVATE)
+        expect(result[0]).to have_selector('[data-testid="lock-icon"]')
+        expect(result[0]).to have_content(
+          s_(
+            'AdminSettings|If selected, only administrators are able to create private groups, projects, and ' \
+            'snippets.'
+          )
+        )
+
+        expect(result[1]).to have_checked_field(s_('VisibilityLevel|Internal'), with: Gitlab::VisibilityLevel::INTERNAL)
+        expect(result[1]).to have_selector('[data-testid="shield-icon"]')
+        expect(result[1]).to have_content(
+          s_(
+            'AdminSettings|If selected, only administrators are able to create internal groups, projects, and ' \
+            'snippets.'
+          )
+        )
+
+        expect(result[2]).to have_checked_field(s_('VisibilityLevel|Public'), with: Gitlab::VisibilityLevel::PUBLIC)
+        expect(result[2]).to have_selector('[data-testid="earth-icon"]')
+        expect(result[2]).to have_content(
+          s_(
+            'AdminSettings|If selected, only administrators are able to create public groups, projects, ' \
+            'and snippets. Also, profiles are only visible to authenticated users.'
+          )
+        )
+      end
     end
   end
 end

@@ -7,8 +7,9 @@ type: index, reference
 
 # Merge requests **(FREE)**
 
-Merge requests (MRs) are the way you check source code changes into a branch.
-When you open a merge request, you can visualize and collaborate on the code changes before merge.
+To incorporate changes from a source branch to a target branch, you use a *merge request* (MR).
+
+When you open a merge request, you can visualize and collaborate on the changes before merge.
 Merge requests include:
 
 - A description of the request.
@@ -17,7 +18,9 @@ Merge requests include:
 - A comment section for discussion threads.
 - The list of commits.
 
-Read more about [how to get started](getting_started.md).
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For a quick overview of merge requests,
+view [this GitLab Flow video](https://www.youtube.com/watch?v=InKNIvky2KE).
 
 ## Create a merge request
 
@@ -62,7 +65,7 @@ or:
 
 or:
 
-1. On the top bar, on the top right, select **{merge-request-open}** **Merge requests**.
+1. On the top bar, in the upper right, select **{merge-request-open}** **Merge requests**.
 1. From the dropdown list, select **Assigned to you**.
 
 ## Filter the list of merge requests
@@ -205,6 +208,15 @@ To delete a merge request:
 1. Go to the merge request you want to delete, and select **Edit**.
 1. Scroll to the bottom of the page, and select **Delete merge request**.
 
+### Delete the source branch on merge
+
+You can delete the source branch for a merge request:
+
+- When you create a merge request, by selecting **Delete source branch when merge request accepted**.
+- When you merge a merge request, if you have the Maintainer role, by selecting **Delete source branch**.
+
+An administrator can make this option the default in the project's settings.
+
 ### Update merge requests when target branch merges **(FREE SELF)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/320902) in GitLab 13.9.
@@ -243,10 +255,10 @@ like in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87727/diffs?diff_i
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available per project or for your entire instance, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `moved_mr_sidebar`.
-On GitLab.com, this feature is not available.
+On GitLab.com, this feature is enabled in the following projects: `gitlab-org/gitlab`, `gitlab-com/www-gitlab-com`, and `gitlab-org/customers-gitlab-com`.
 
 When this feature flag is enabled, you can find the following actions in
-**Merge request actions** (**{ellipsis_v}**) on the top right:
+**Merge request actions** (**{ellipsis_v}**) in the upper right:
 
 - The [notifications](../../profile/notifications.md#edit-notification-settings-for-issues-merge-requests-and-epics) toggle
 - Mark merge request as ready or [draft](../merge_requests/drafts.md)
@@ -366,5 +378,5 @@ with a backup of the instance ready to be restored, just in case.
 u = User.find_by_username('<username>')
 p = Project.find_by_full_path('<namespace/project>')
 m = p.merge_requests.find_by(iid: <iid>)
-Issuable::DestroyService.new(project: m.project, current_user: u).execute(m)
+Issuable::DestroyService.new(container: m.project, current_user: u).execute(m)
 ```

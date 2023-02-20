@@ -101,7 +101,7 @@ class User < ApplicationRecord
 
   MINIMUM_DAYS_CREATED = 7
 
-  ignore_columns %i[linkedin twitter skype website_url location organization], remove_with: '15.8', remove_after: '2023-01-22'
+  ignore_columns %i[linkedin twitter skype website_url location organization], remove_with: '15.10', remove_after: '2023-02-22'
 
   # Override Devise::Models::Trackable#update_tracked_fields!
   # to limit database writes to at most once every hour
@@ -337,7 +337,7 @@ class User < ApplicationRecord
   enum layout: { fixed: 0, fluid: 1 }
 
   # User's Dashboard preference
-  enum dashboard: { projects: 0, stars: 1, project_activity: 2, starred_project_activity: 3, groups: 4, todos: 5, issues: 6, merge_requests: 7, operations: 8, followed_user_activity: 9 }
+  enum dashboard: { projects: 0, stars: 1, your_activity: 10, project_activity: 2, starred_project_activity: 3, groups: 4, todos: 5, issues: 6, merge_requests: 7, operations: 8, followed_user_activity: 9 }
 
   # User's Project preference
   enum project_view: { readme: 0, activity: 1, files: 2 }
@@ -380,6 +380,7 @@ class User < ApplicationRecord
   delegate :website_url, :website_url=, to: :user_detail, allow_nil: true
   delegate :location, :location=, to: :user_detail, allow_nil: true
   delegate :organization, :organization=, to: :user_detail, allow_nil: true
+  delegate :discord, :discord=, to: :user_detail, allow_nil: true
 
   accepts_nested_attributes_for :user_preference, update_only: true
   accepts_nested_attributes_for :user_detail, update_only: true
@@ -402,6 +403,15 @@ class User < ApplicationRecord
     end
 
     event :ldap_block do
+      transition active: :ldap_blocked
+      transition deactivated: :ldap_blocked
+    end
+
+    # aliasing system_block to set ldap_blocked statuses
+    # ldap_blocked is used for LDAP, SAML, and SCIM blocked users
+    # Issue for improving this naming:
+    # https://gitlab.com/gitlab-org/gitlab/-/issues/388487
+    event :system_block do
       transition active: :ldap_blocked
       transition deactivated: :ldap_blocked
     end
@@ -1025,17 +1035,30 @@ class User < ApplicationRecord
 
   def disable_two_factor!
     transaction do
-      update(
-        otp_required_for_login: false,
-        encrypted_otp_secret: nil,
-        encrypted_otp_secret_iv: nil,
-        encrypted_otp_secret_salt: nil,
-        otp_grace_period_started_at: nil,
-        otp_backup_codes: nil
-      )
-      self.u2f_registrations.destroy_all # rubocop: disable Cop/DestroyAll
-      self.webauthn_registrations.destroy_all # rubocop: disable Cop/DestroyAll
+      self.u2f_registrations.destroy_all # rubocop:disable Cop/DestroyAll
+      self.disable_webauthn!
+      self.disable_two_factor_otp!
+      self.reset_backup_codes!
     end
+  end
+
+  def disable_two_factor_otp!
+    update(
+      otp_required_for_login: false,
+      encrypted_otp_secret: nil,
+      encrypted_otp_secret_iv: nil,
+      encrypted_otp_secret_salt: nil,
+      otp_grace_period_started_at: nil,
+      otp_secret_expires_at: nil
+    )
+  end
+
+  def disable_webauthn!
+    self.webauthn_registrations.destroy_all # rubocop:disable Cop/DestroyAll
+  end
+
+  def reset_backup_codes!
+    update(otp_backup_codes: nil)
   end
 
   def two_factor_enabled?
@@ -1717,12 +1740,6 @@ class User < ApplicationRecord
     else
       owned_and_maintainer_group_hierarchy
     end
-  end
-
-  def manageable_groups_with_routes(include_groups_with_developer_maintainer_access: false)
-    manageable_groups(include_groups_with_developer_maintainer_access: include_groups_with_developer_maintainer_access)
-      .eager_load(:route)
-      .order('routes.path')
   end
 
   def namespaces(owned_only: false)

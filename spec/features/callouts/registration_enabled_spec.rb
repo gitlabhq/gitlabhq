@@ -50,7 +50,7 @@ RSpec.describe 'Registration enabled callout', feature_category: :authentication
           visit root_dashboard_path
         end
 
-        it 'does not display callout' do
+        it 'does not display callout', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/391192' do
           expect(page).not_to have_content callout_title
         end
       end

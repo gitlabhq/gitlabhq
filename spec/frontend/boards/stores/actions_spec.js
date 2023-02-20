@@ -6,7 +6,6 @@ import {
   inactiveId,
   ISSUABLE,
   ListType,
-  issuableTypes,
   BoardType,
   DraggableItemTypes,
 } from 'ee_else_ce/boards/constants';
@@ -27,6 +26,7 @@ import actions from '~/boards/stores/actions';
 import * as types from '~/boards/stores/mutation_types';
 import mutations from '~/boards/stores/mutations';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import { TYPE_ISSUE } from '~/issues/constants';
 
 import projectBoardMilestones from '~/boards/graphql/project_board_milestones.query.graphql';
 import groupBoardMilestones from '~/boards/graphql/group_board_milestones.query.graphql';
@@ -167,7 +167,7 @@ describe('setFilters', () => {
   ])('should commit mutation SET_FILTERS %s', (_, { filters, filterVariables }) => {
     const state = {
       filters: {},
-      issuableType: issuableTypes.issue,
+      issuableType: TYPE_ISSUE,
     };
 
     testAction(
@@ -299,9 +299,9 @@ describe('fetchLists', () => {
   });
 
   it.each`
-    issuableType           | boardType            | fullBoardId               | isGroup  | isProject
-    ${issuableTypes.issue} | ${BoardType.group}   | ${'gid://gitlab/Board/1'} | ${true}  | ${false}
-    ${issuableTypes.issue} | ${BoardType.project} | ${'gid://gitlab/Board/1'} | ${false} | ${true}
+    issuableType  | boardType            | fullBoardId               | isGroup  | isProject
+    ${TYPE_ISSUE} | ${BoardType.group}   | ${'gid://gitlab/Board/1'} | ${true}  | ${false}
+    ${TYPE_ISSUE} | ${BoardType.project} | ${'gid://gitlab/Board/1'} | ${false} | ${true}
   `(
     'calls $issuableType query with correct variables',
     async ({ issuableType, boardType, fullBoardId, isGroup, isProject }) => {
@@ -719,7 +719,7 @@ describe('updateList', () => {
     boardType: 'group',
     disabled: false,
     boardLists: [{ type: 'closed' }],
-    issuableType: issuableTypes.issue,
+    issuableType: TYPE_ISSUE,
     boardItemsByListId,
   });
 
@@ -835,7 +835,7 @@ describe('removeList', () => {
   beforeEach(() => {
     state = {
       boardLists: mockListsById,
-      issuableType: issuableTypes.issue,
+      issuableType: TYPE_ISSUE,
     };
     getters = {
       getListByTitle: jest.fn().mockReturnValue(mockList),
@@ -1747,7 +1747,7 @@ describe('setActiveItemSubscribed', () => {
       [mockActiveIssue.id]: mockActiveIssue,
     },
     fullPath: 'gitlab-org',
-    issuableType: issuableTypes.issue,
+    issuableType: TYPE_ISSUE,
   };
   const getters = { activeBoardItem: mockActiveIssue, isEpicBoard: false };
   const subscribedState = true;
@@ -1800,7 +1800,7 @@ describe('setActiveItemSubscribed', () => {
 describe('setActiveItemTitle', () => {
   const state = {
     boardItems: { [mockIssue.id]: mockIssue },
-    issuableType: issuableTypes.issue,
+    issuableType: TYPE_ISSUE,
     fullPath: 'path/f',
   };
   const getters = { activeBoardItem: mockIssue, isEpicBoard: false };

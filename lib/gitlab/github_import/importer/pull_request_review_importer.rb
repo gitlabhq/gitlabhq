@@ -113,6 +113,9 @@ module Gitlab
             state: ::MergeRequestReviewer.states['reviewed'],
             created_at: submitted_at
           )
+        rescue ActiveRecord::RecordNotUnique
+          # multiple reviews from single person could make a SQL concurrency issue here
+          nil
         end
 
         # rubocop:disable CodeReuse/ActiveRecord

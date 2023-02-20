@@ -4,10 +4,10 @@ module Milestones
   class DestroyService < Milestones::BaseService
     def execute(milestone)
       Milestone.transaction do
-        update_params = { milestone: nil, skip_milestone_email: true }
+        update_params = { milestone_id: nil, skip_milestone_email: true }
 
         milestone.issues.each do |issue|
-          Issues::UpdateService.new(project: parent, current_user: current_user, params: update_params).execute(issue)
+          Issues::UpdateService.new(container: parent, current_user: current_user, params: update_params).execute(issue)
         end
 
         milestone.merge_requests.each do |merge_request|

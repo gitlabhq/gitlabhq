@@ -69,14 +69,14 @@ module Gitlab
         report_file = file_name(report)
         tmp_file_path = File.join(tmp_dir, report_file)
 
-        write_heap_dump_file(report, tmp_file_path)
+        write_compressed_file(report, tmp_file_path)
 
         File.join(@reports_path, report_file).tap do |report_file_path|
           FileUtils.mv(tmp_file_path, report_file_path)
         end
       end
 
-      def write_heap_dump_file(report, path)
+      def write_compressed_file(report, path)
         io_r, io_w = IO.pipe
         err_r, err_w = IO.pipe
         pid = nil

@@ -198,6 +198,23 @@ class TodoService
     current_user.update_todos_count_cache
   end
 
+  def resolve_access_request_todos(current_user, member)
+    return if current_user.nil? || member.nil?
+
+    target = member.source
+
+    finder_params = {
+      state: :pending,
+      author_id: member.user_id,
+      action_id: ::Todo::MEMBER_ACCESS_REQUESTED,
+      type: target.class.polymorphic_name,
+      target: target.id
+    }
+
+    todos = TodosFinder.new(current_user, finder_params).execute
+    resolve_todos(todos, current_user)
+  end
+
   def restore_todos(todos, current_user)
     todos_ids = todos.batch_update(state: :pending)
 

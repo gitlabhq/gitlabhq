@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe FixUpdateImportSourcesOnApplicationSettings, feature_category: :migration do
+RSpec.describe FixUpdateImportSourcesOnApplicationSettings, feature_category: :importers do
   let(:settings) { table(:application_settings) }
   let(:import_sources) { %w[github git bitbucket bitbucket_server] }
 

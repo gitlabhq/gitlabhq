@@ -12,7 +12,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 Import your projects from GitHub to GitLab using the API.
 
-The namespace set in `target_namespace` must exist. The namespace can be your user namespace or an existing group that you have at least the Developer role for.
+The namespace set in `target_namespace` must exist. The namespace can be your user namespace or an existing group that
+you have at least the Maintainer role for. Using the Developer role for this purpose was
+[deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/387891) in GitLab 15.8 and will be removed in GitLab 16.0.
 
 ```plaintext
 POST /import/github

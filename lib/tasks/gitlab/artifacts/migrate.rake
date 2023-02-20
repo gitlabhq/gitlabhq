@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-require 'logger'
-require 'resolv-replace'
-
 desc 'GitLab | Artifacts | Migrate files for artifacts to comply with new storage format'
 namespace :gitlab do
+  require 'logger'
+  require 'resolv-replace'
+
   namespace :artifacts do
     task migrate: :environment do
       logger = Logger.new($stdout)

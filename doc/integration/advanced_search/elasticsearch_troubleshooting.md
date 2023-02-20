@@ -100,8 +100,8 @@ Here are some common pitfalls and how to overcome them.
 
 There are a couple of ways to achieve that:
 
-- Whenever you perform a search there is a link on the search results page
-  in the top right hand corner saying "Advanced search functionality is enabled".
+- When you perform a search, in the upper-right corner of the search results page,
+  **Advanced search functionality is enabled** is displayed.
   This is always correctly identifying whether the current project/namespace
   being searched is using Elasticsearch.
 
@@ -309,26 +309,23 @@ When it comes to Elasticsearch, RAM is the key resource. Elasticsearch themselve
 - Ideally, 64 GB of RAM.
 
 For CPU, Elasticsearch recommends at least 2 CPU cores, but Elasticsearch states common
-setups use up to 8 cores. For more details on server specs, check out
-[Elasticsearch's hardware guide](https://www.elastic.co/guide/en/elasticsearch/guide/current/hardware.html).
+setups use up to 8 cores. For more details on server specs, check out the
+[Elasticsearch hardware guide](https://www.elastic.co/guide/en/elasticsearch/guide/current/hardware.html).
 
 Beyond the obvious, sharding comes into play. Sharding is a core part of Elasticsearch.
 It allows for horizontal scaling of indices, which is helpful when you are dealing with
 a large amount of data.
 
 With the way GitLab does indexing, there is a **huge** amount of documents being
-indexed. By utilizing sharding, you can speed up Elasticsearch's ability to locate
-data, since each shard is a Lucene index.
+indexed. By using sharding, you can speed up the ability of Elasticsearch to locate
+data because each shard is a Lucene index.
 
 If you are not using sharding, you are likely to hit issues when you start using
 Elasticsearch in a production environment.
 
-Keep in mind that an index with only one shard has **no scale factor** and will
-likely encounter issues when called upon with some frequency.
-
-If you need to know how many shards, read
-[Elasticsearch's documentation on capacity planning](https://www.elastic.co/guide/en/elasticsearch/guide/2.x/capacity-planning.html),
-as the answer is not straight forward.
+An index with only one shard has **no scale factor** and is likely
+to encounter issues when called upon with some frequency. See the
+[Elasticsearch documentation on capacity planning](https://www.elastic.co/guide/en/elasticsearch/guide/2.x/capacity-planning.html).
 
 The easiest way to determine if sharding is in use is to check the output of the
 [Elasticsearch Health API](https://www.elastic.co/guide/en/elasticsearch/reference/current/cluster-health.html):

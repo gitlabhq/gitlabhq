@@ -33,8 +33,8 @@ module Gitlab
           users_search(options)
         end
 
-        def user(*args)
-          users(*args).first
+        def user(...)
+          users(...).first
         end
 
         def dn_matches_filter?(dn, filter)

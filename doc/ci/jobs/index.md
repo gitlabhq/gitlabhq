@@ -40,7 +40,8 @@ When you access a pipeline, you can see the related jobs for that pipeline.
 Selecting an individual job shows you its job log, and allows you to:
 
 - Cancel the job.
-- Retry the job.
+- Retry the job, if it failed.
+- Run the job again, if it passed.
 - Erase the job log.
 
 ### View all jobs in a project
@@ -271,9 +272,11 @@ the pipeline view, *not* the play (**{play}**) button.
 
 Define CI/CD variables here when you want to alter the execution of a job that uses
 [CI/CD variables](../variables/index.md).
-Add a variable name (key) and value to [override the value](../variables/index.md#override-a-defined-cicd-variable)
-defined in the UI or `.gitlab-ci.yml`
-for a single run of the manual job.
+
+If you add a variable that is already defined in the CI/CD settings or `.gitlab-ci.yml` file,
+the [variable is overridden](../variables/index.md#override-a-defined-cicd-variable) with the new value.
+Any variables overridden by using this process are [expanded](../variables/index.md#prevent-cicd-variable-expansion)
+and not [masked](../variables/index.md#mask-a-cicd-variable).
 
 ![Manual job variables](img/manual_job_variables_v13_10.png)
 
@@ -336,7 +339,7 @@ In the example above:
 - `date +%s`: The Unix timestamp (for example `1560896352`).
 - `my_first_section`: The name given to the section.
 - `\r\e[0K`: Prevents the section markers from displaying in the rendered (colored)
-  job log, but they are displayed in the raw job log. To see them, in the top right
+  job log, but they are displayed in the raw job log. To see them, in the upper right
   of the job log, select **{doc-text}** (**Show complete raw**).
   - `\r`: carriage return.
   - `\e[0K`: clear line ANSI escape code.

@@ -125,6 +125,7 @@ RSpec.describe Nav::TopNavHelper do
             data: {
               track_action: 'click_dropdown',
               track_label: 'projects_dropdown',
+              track_property: 'navigation_top',
               qa_selector: 'projects_dropdown'
             },
             icon: 'project',
@@ -222,6 +223,7 @@ RSpec.describe Nav::TopNavHelper do
             data: {
               track_action: 'click_dropdown',
               track_label: 'groups_dropdown',
+              track_property: 'navigation_top',
               qa_selector: 'groups_dropdown'
             },
             icon: 'group',
@@ -517,7 +519,7 @@ RSpec.describe Nav::TopNavHelper do
     {
       track_label: "menu_#{label}",
       track_action: 'click_dropdown',
-      track_property: 'navigation'
+      track_property: 'navigation_top'
     }
   end
 end

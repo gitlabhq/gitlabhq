@@ -121,7 +121,7 @@ RSpec.describe 'Merge requests > User mass updates', :js, feature_category: :cod
     within 'aside[aria-label="Bulk update"]' do
       click_button 'Select assignee'
       wait_for_requests
-      click_link text
+      click_button text
     end
     click_update_merge_requests_button
   end

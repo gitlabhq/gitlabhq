@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'admin/application_settings/_jira_connect.html.haml' do
+RSpec.describe 'admin/application_settings/_jira_connect.html.haml', feature_category: :integrations do
   let_it_be(:admin) { create(:admin) }
   let(:application_setting) { build(:application_setting) }
 
@@ -19,5 +19,10 @@ RSpec.describe 'admin/application_settings/_jira_connect.html.haml' do
   it 'renders the asymmetric jwt cdn url field' do
     render
     expect(rendered).to have_field('Jira Connect Proxy URL', type: 'text')
+  end
+
+  it 'renders the enable public key storage checkbox' do
+    render
+    expect(rendered).to have_field('Enable public key storage', type: 'checkbox')
   end
 end

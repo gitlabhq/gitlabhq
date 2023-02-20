@@ -199,7 +199,7 @@ RSpec.describe Atlassian::JiraConnect::Client, feature_category: :integrations d
       let(:request) { instance_double(HTTParty::Request, raw_body: '{ "foo": 1, "bar": 2 }') }
 
       it 'returns the request body' do
-        expect(subject.send(:request_body_schema, response)).to eq({ "foo" => nil, "bar" => nil })
+        expect(subject.send(:request_body_schema, response)).to eq({ "foo" => 1, "bar" => 2 })
       end
     end
 

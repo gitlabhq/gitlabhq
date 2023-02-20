@@ -116,6 +116,24 @@ RSpec.describe ContainerRegistry::Event do
 
     subject { described_class.new(raw_event).track! }
 
+    shared_examples 'tracking event is sent to HLLRedisCounter with event and originator ID' do |originator_type|
+      it 'fetches the event originator based on username' do
+        count.times do
+          expect(User).to receive(:find_by_username).with(originator.username)
+        end
+
+        subject
+      end
+
+      it 'sends a tracking event to HLLRedisCounter' do
+        expect(::Gitlab::UsageDataCounters::HLLRedisCounter)
+        .to receive(:track_event).with("i_container_registry_#{event}_#{originator_type}", values: originator.id)
+        .exactly(count).time
+
+        subject
+      end
+    end
+
     context 'with a respository target' do
       let(:target) do
         {
@@ -162,6 +180,59 @@ RSpec.describe ContainerRegistry::Event do
 
           subject
         end
+      end
+    end
+
+    context 'with a deploy token as the actor' do
+      let!(:originator) { create(:deploy_token, username: 'username', id: 3) }
+      let(:raw_event) do
+        {
+          'action' => 'push',
+          'target' => { 'tag' => 'latest' },
+          'actor' => { 'user_type' => 'deploy_token', 'name' => originator.username }
+        }
+      end
+
+      it 'does not send a tracking event to HLLRedisCounter' do
+        expect(::Gitlab::UsageDataCounters::HLLRedisCounter).not_to receive(:track_event)
+
+        subject
+      end
+    end
+
+    context 'with a user as the actor' do
+      let_it_be(:originator) { create(:user, username: 'username') }
+      let(:raw_event) do
+        {
+          'action' => action,
+          'target' => target,
+          'actor' => { 'user_type' => user_type, 'name' => originator.username }
+        }
+      end
+
+      where(:target, :action, :event, :user_type, :count) do
+        { 'tag' => 'latest' }          | 'push'     | 'push_tag'           |  'personal_access_token'   |  1
+        { 'tag' => 'latest' }          | 'delete'   | 'delete_tag'         |  'personal_access_token'   |  1
+        { 'repository' => 'foo/bar' }  | 'push'     | 'create_repository'  |  'build'                   |  1
+        { 'repository' => 'foo/bar' }  | 'delete'   | 'delete_repository'  |  'gitlab_or_ldap'          |  1
+        { 'repository' => 'foo/bar' }  | 'delete'   | 'delete_repository'  |  'not_a_user'              |  0
+        { 'tag' => 'latest' }          | 'copy'     | ''                   |  nil                       |  0
+        { 'repository' => 'foo/bar' }  | 'copy'     | ''                   |  ''                        |  0
+      end
+
+      with_them do
+        it_behaves_like 'tracking event is sent to HLLRedisCounter with event and originator ID', :user
+      end
+    end
+
+    context 'without an actor name' do
+      let(:raw_event) { { 'action' => 'push', 'target' => {}, 'actor' => { 'user_type' => 'personal_access_token' } } }
+
+      it 'does not send a tracking event to HLLRedisCounter' do
+        expect(User).not_to receive(:find_by_username)
+        expect(::Gitlab::UsageDataCounters::HLLRedisCounter).not_to receive(:track_event)
+
+        subject
       end
     end
   end

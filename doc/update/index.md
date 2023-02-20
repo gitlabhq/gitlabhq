@@ -177,7 +177,6 @@ upgraded to. This is to ensure [compatibility with GitLab versions](https://docs
 ## Upgrade paths
 
 Upgrading across multiple GitLab versions in one go is *only possible by accepting downtime*.
-The following examples assume downtime is acceptable while upgrading.
 If you don't want any downtime, read how to [upgrade with zero downtime](zero_downtime.md).
 
 For a dynamic view of examples of supported upgrade paths, try the [Upgrade Path tool](https://gitlab-com.gitlab.io/support/toolbox/upgrade-path/) maintained by the [GitLab Support team](https://about.gitlab.com/handbook/support/#about-the-support-team). To share feedback and help improve the tool, create an issue or MR in the [upgrade-path project](https://gitlab.com/gitlab-com/support/toolbox/upgrade-path).
@@ -186,7 +185,14 @@ Find where your version sits in the upgrade path below, and upgrade GitLab
 accordingly, while also consulting the
 [version-specific upgrade instructions](#version-specific-upgrading-instructions):
 
-`8.11.Z` -> `8.12.0` -> `8.17.7` -> `9.0.13` -> `9.5.10` -> `10.0.7` -> `10.8.7` -> `11.0.6` -> [`11.11.8`](#1200) -> `12.0.12` -> [`12.1.17`](#1210) -> [`12.10.14`](#12100) -> `13.0.14` -> [`13.1.11`](#1310) -> [`13.8.8`](#1388) -> [`13.12.15`](#13120) -> [`14.0.12`](#1400) -> [`14.3.6`](#1430) -> [`14.9.5`](#1490) -> [`14.10.Z`](#14100) -> [`15.0.Z`](#1500) -> [`15.1.Z`](#1510) (for GitLab instances with multiple web nodes) -> [`15.4.0`](#1540) -> [latest `15.Y.Z`](https://gitlab.com/gitlab-org/gitlab/-/releases)
+- GitLab 8: `8.11.Z` > `8.12.0` > `8.17.7`
+- GitLab 9: `9.0.13` > `9.5.10`
+- GitLab 10: `10.0.7` > `10.8.7`
+- GitLab 11: `11.0.6` > [`11.11.8`](#1200)
+- GitLab 12: `12.0.12` > [`12.1.17`](#1210) > [`12.10.14`](#12100)
+- GitLab 13: `13.0.14` > [`13.1.11`](#1310) > [`13.8.8`](#1388) > [`13.12.15`](#13120)
+- GitLab 14: [`14.0.12`](#1400) > [`14.3.6`](#1430) > [`14.9.5`](#1490) > [`14.10.5`](#14100)
+- GitLab 15: [`15.0.5`](#1500) > [`15.1.6`](#1510) (for GitLab instances with multiple web nodes) > [`15.4.6`](#1540) > [latest `15.Y.Z`](https://gitlab.com/gitlab-org/gitlab/-/releases)
 
 NOTE:
 When not explicitly specified, upgrade GitLab to the latest available patch
@@ -195,23 +201,6 @@ This includes versions you must stop at on the upgrade path as there may
 be fixes for issues relating to the upgrade process.
 Specifically around a [major version](#upgrading-to-a-new-major-version),
 crucial database schema and migration patches are included in the latest patch releases.
-
-The following table, while not exhaustive, shows some examples of the supported
-upgrade paths.
-Additional steps between the mentioned versions are possible. We list the minimally necessary steps only.
-
-| Target version | Your version | Supported upgrade path                                                                                     | Note                                                                                                  |
-| -------------- | ------------ | ---------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
-| `15.1.0`       | `14.6.2`     | `14.6.2` -> `14.9.5` -> `14.10.5` -> `15.0.2` -> `15.1.0`                                                  | Three intermediate versions are required: `14.9`, `14.10`, and `15.0`.                                |
-| `15.0.0`       | `14.6.2`     | `14.6.2` -> `14.9.5` -> `14.10.5` -> `15.0.2`                                                              | Two intermediate versions are required: `14.9` and `14.10`.                                          |
-| `14.6.2`       | `13.10.2`    | `13.10.2` -> `13.12.15` -> `14.0.12` -> `14.3.6` => `14.6.2`                                               | Three intermediate versions are required: `13.12`, `14.0`, and `14.3`.                                |
-| `14.1.8`       | `13.9.2`     | `13.9.2` -> `13.12.15` -> `14.0.12` -> `14.1.8`                                                            | Two intermediate versions are required: `13.12` and `14.0`.                                          |
-| `13.12.15`     | `12.9.2`     | `12.9.2` -> `12.10.14` -> `13.0.14`  -> `13.1.11` -> `13.8.8` -> `13.12.15`                                | Four intermediate versions are required: `12.10`, `13.0`, `13.1`, and `13.8`.                         |
-| `13.2.10`      | `11.5.0`     | `11.5.0` -> `11.11.8` -> `12.0.12` -> `12.1.17` -> `12.10.14` -> `13.0.14` -> `13.1.11` -> `13.2.10`       | Six intermediate versions are required: `11.11`, `12.0`, `12.1`, `12.10`, `13.0`, and `13.1`.         |
-| `12.10.14`     | `11.3.4`     | `11.3.4` -> `11.11.8` -> `12.0.12` -> `12.1.17` -> `12.10.14`                                              | Three intermediate versions are required: `11.11`, `12.0`, and `12.1`.                                |
-| `12.9.5`       | `10.4.5`     | `10.4.5` -> `10.8.7` -> `11.0.6` -> `11.11.8` -> `12.0.12` -> `12.1.17` -> `12.9.5`                        | Five intermediate versions are required: `10.8`, `11.0`, `11.11`, `12.0`, and `12.1`.                 |
-| `12.2.5`       | `9.2.6`      | `9.2.6` -> `9.5.10` -> `10.0.7` -> `10.8.7` -> `11.0.6` -> `11.11.8` -> `12.0.12` -> `12.1.17` -> `12.2.5` | Seven intermediate versions are required: `9.5`, `10.0`, `10.8`, `11.0`, `11.11`, `12.0`, and `12.1`. |
-| `11.3.4`       | `8.13.4`     | `8.13.4` -> `8.17.7` -> `9.0.13` -> `9.5.10` -> `10.0.7` -> `10.8.7` -> `11.0.6` -> `11.3.4`               | Six intermediate versions are required: `8.17`, `9.0`, `9.5`, `10.0`, `10.8`, and `11.0`.             |
 
 ## Upgrading between editions
 
@@ -237,6 +226,8 @@ Edition, follow the guides below based on the installation method:
   GitLab Community Edition to the Enterprise Edition.
 - [Docker CE to EE](../install/docker.md#convert-community-edition-to-enterprise-edition) -
   Follow this guide to update your GitLab Community Edition container to an Enterprise Edition container.
+- [Helm chart (Kubernetes) CE to EE](https://docs.gitlab.com/charts/installation/deployment.html#convert-community-edition-to-enterprise-edition) -
+  Follow this guide to update your GitLab Community Edition Helm deployment to Enterprise Edition.
 
 ### Enterprise to Community Edition
 
@@ -273,17 +264,75 @@ NOTE:
 Specific information that follow related to Ruby and Git versions do not apply to [Omnibus installations](https://docs.gitlab.com/omnibus/)
 and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with appropriate Ruby and Git versions and are not using system binaries for Ruby and Git. There is no need to install Ruby or Git when utilizing these two approaches.
 
+### 15.9.0
+
+- This version removes `SanitizeConfidentialTodos` background migration [added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87908/diffs) in 15.6, which removed any user inaccessible to-do items. Make sure that this migration is finished before upgrading to 15.9.
+- As part of the [CI Partitioning effort](../architecture/blueprints/ci_data_decay/pipeline_partitioning.md), a [new Foreign Key](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107547) was added to `ci_builds_needs`. On GitLab instances with large CI tables, adding this constraint can take longer than usual. Make sure that this migration is finished before upgrading to 15.9.
+
+### 15.8.2
+
+- Geo: We discovered an issue where [replication and verification of projects and wikis was not keeping up](https://gitlab.com/gitlab-org/gitlab/-/issues/387980) on small number of Geo installations. Your installation may be affected if you see some projects and/or wikis persistently in the "Queued" state for verification. This can lead to data loss after a failover.
+  - Impacted versions: GitLab versions 15.6.x, 15.7.x, and 15.8.0 - 15.8.2.
+  - Versions containing fix: GitLab 15.8.3 and later.
+
+### 15.8.1
+
+- Geo: We discovered an issue where [replication and verification of projects and wikis was not keeping up](https://gitlab.com/gitlab-org/gitlab/-/issues/387980) on small number of Geo installations. Your installation may be affected if you see some projects and/or wikis persistently in the "Queued" state for verification. This can lead to data loss after a failover.
+  - Impacted versions: GitLab versions 15.6.x, 15.7.x, and 15.8.0 - 15.8.2.
+  - Versions containing fix: GitLab 15.8.3 and later.
+- Due to [a bug introduced in GitLab 15.4](https://gitlab.com/gitlab-org/gitlab/-/issues/390155), if one or more Git repositories in Gitaly Cluster is [unavailable](../administration/gitaly/recovery.md#unavailable-repositories), then [Repository checks](../administration/repository_checks.md#repository-checks) and [Geo replication and verification](../administration/geo/index.md) stop running for all project or project wiki repositories in the affected Gitaly Cluster. The bug was fixed by [reverting the change in GitLab 15.9.0](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110823). Before upgrading to this version, check if you have any "unavailable" repositories. See [the bug issue](https://gitlab.com/gitlab-org/gitlab/-/issues/390155) for more information.
+
 ### 15.8.0
 
 - Git 2.38.0 and later is required by Gitaly. For installations from source, you should use the [Git version provided by Gitaly](../install/installation.md#git).
+- Due to [a bug introduced in GitLab 15.4](https://gitlab.com/gitlab-org/gitlab/-/issues/390155), if one or more Git repositories in Gitaly Cluster is [unavailable](../administration/gitaly/recovery.md#unavailable-repositories), then [Repository checks](../administration/repository_checks.md#repository-checks) and [Geo replication and verification](../administration/geo/index.md) stop running for all project or project wiki repositories in the affected Gitaly Cluster. The bug was fixed by [reverting the change in GitLab 15.9.0](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110823). Before upgrading to this version, check if you have any "unavailable" repositories. See [the bug issue](https://gitlab.com/gitlab-org/gitlab/-/issues/390155) for more information.
+- Geo: We discovered an issue where [replication and verification of projects and wikis was not keeping up](https://gitlab.com/gitlab-org/gitlab/-/issues/387980) on small number of Geo installations. Your installation may be affected if you see some projects and/or wikis persistently in the "Queued" state for verification. This can lead to data loss after a failover.
+  - Impacted versions: GitLab versions 15.6.x, 15.7.x, and 15.8.0 - 15.8.2.
+  - Versions containing fix: GitLab 15.8.3 and later.
+
+### 15.7.6
+
+- Geo: We discovered an issue where [replication and verification of projects and wikis was not keeping up](https://gitlab.com/gitlab-org/gitlab/-/issues/387980) on small number of Geo installations. Your installation may be affected if you see some projects and/or wikis persistently in the "Queued" state for verification. This can lead to data loss after a failover.
+  - Impacted versions: GitLab versions 15.6.x, 15.7.x, and 15.8.0 - 15.8.2.
+  - Versions containing fix: GitLab 15.8.3 and later.
+- Due to [a bug introduced in GitLab 15.4](https://gitlab.com/gitlab-org/gitlab/-/issues/390155), if one or more Git repositories in Gitaly Cluster is [unavailable](../administration/gitaly/recovery.md#unavailable-repositories), then [Repository checks](../administration/repository_checks.md#repository-checks) and [Geo replication and verification](../administration/geo/index.md) stop running for all project or project wiki repositories in the affected Gitaly Cluster. The bug was fixed by [reverting the change in GitLab 15.9.0](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110823). Before upgrading to this version, check if you have any "unavailable" repositories. See [the bug issue](https://gitlab.com/gitlab-org/gitlab/-/issues/390155) for more information.
+
+### 15.7.5
+
+- Geo: We discovered an issue where [replication and verification of projects and wikis was not keeping up](https://gitlab.com/gitlab-org/gitlab/-/issues/387980) on small number of Geo installations. Your installation may be affected if you see some projects and/or wikis persistently in the "Queued" state for verification. This can lead to data loss after a failover.
+  - Impacted versions: GitLab versions 15.6.x, 15.7.x, and 15.8.0 - 15.8.2.
+  - Versions containing fix: GitLab 15.8.3 and later.
+- Due to [a bug introduced in GitLab 15.4](https://gitlab.com/gitlab-org/gitlab/-/issues/390155), if one or more Git repositories in Gitaly Cluster is [unavailable](../administration/gitaly/recovery.md#unavailable-repositories), then [Repository checks](../administration/repository_checks.md#repository-checks) and [Geo replication and verification](../administration/geo/index.md) stop running for all project or project wiki repositories in the affected Gitaly Cluster. The bug was fixed by [reverting the change in GitLab 15.9.0](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110823). Before upgrading to this version, check if you have any "unavailable" repositories. See [the bug issue](https://gitlab.com/gitlab-org/gitlab/-/issues/390155) for more information.
+
+### 15.7.4
+
+- Geo: We discovered an issue where [replication and verification of projects and wikis was not keeping up](https://gitlab.com/gitlab-org/gitlab/-/issues/387980) on small number of Geo installations. Your installation may be affected if you see some projects and/or wikis persistently in the "Queued" state for verification. This can lead to data loss after a failover.
+  - Impacted versions: GitLab versions 15.6.x, 15.7.x, and 15.8.0 - 15.8.2.
+  - Versions containing fix: GitLab 15.8.3 and later.
+- Due to [a bug introduced in GitLab 15.4](https://gitlab.com/gitlab-org/gitlab/-/issues/390155), if one or more Git repositories in Gitaly Cluster is [unavailable](../administration/gitaly/recovery.md#unavailable-repositories), then [Repository checks](../administration/repository_checks.md#repository-checks) and [Geo replication and verification](../administration/geo/index.md) stop running for all project or project wiki repositories in the affected Gitaly Cluster. The bug was fixed by [reverting the change in GitLab 15.9.0](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110823). Before upgrading to this version, check if you have any "unavailable" repositories. See [the bug issue](https://gitlab.com/gitlab-org/gitlab/-/issues/390155) for more information.
+
+### 15.7.3
+
+- Geo: We discovered an issue where [replication and verification of projects and wikis was not keeping up](https://gitlab.com/gitlab-org/gitlab/-/issues/387980) on small number of Geo installations. Your installation may be affected if you see some projects and/or wikis persistently in the "Queued" state for verification. This can lead to data loss after a failover.
+  - Impacted versions: GitLab versions 15.6.x, 15.7.x, and 15.8.0 - 15.8.2.
+  - Versions containing fix: GitLab 15.8.3 and later.
+- Due to [a bug introduced in GitLab 15.4](https://gitlab.com/gitlab-org/gitlab/-/issues/390155), if one or more Git repositories in Gitaly Cluster is [unavailable](../administration/gitaly/recovery.md#unavailable-repositories), then [Repository checks](../administration/repository_checks.md#repository-checks) and [Geo replication and verification](../administration/geo/index.md) stop running for all project or project wiki repositories in the affected Gitaly Cluster. The bug was fixed by [reverting the change in GitLab 15.9.0](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110823). Before upgrading to this version, check if you have any "unavailable" repositories. See [the bug issue](https://gitlab.com/gitlab-org/gitlab/-/issues/390155) for more information.
 
 ### 15.7.2
 
-- Geo: [Container registry push events are rejected](https://gitlab.com/gitlab-org/gitlab/-/issues/386389) by the `/api/v4/container_registry_event/events` endpoint resulting in Geo secondary sites not being aware of updates to container registry images and subsequently not replicating the updates. Secondary sites may contain out of date container images after a failover as a consequence. This impacts versions 15.6.x and 15.7.0 - 15.7.2. If you're using Geo with container repositories, you are advised to upgrade to GitLab 15.7.3 or 15.8.0 which contain a fix for this issue and avoid potential data loss after a failover.
+- Geo: [Container registry push events are rejected](https://gitlab.com/gitlab-org/gitlab/-/issues/386389) by the `/api/v4/container_registry_event/events` endpoint resulting in Geo secondary sites not being aware of updates to container registry images and subsequently not replicating the updates. Secondary sites may contain out of date container images after a failover as a consequence. This impacts versions 15.6.0 - 15.6.6 and 15.7.0 - 15.7.2. If you're using Geo with container repositories, you are advised to upgrade to GitLab 15.6.7, 15.7.3, or 15.8.0 which contain a fix for this issue and avoid potential data loss after a failover.
+- Geo: We discovered an issue where [replication and verification of projects and wikis was not keeping up](https://gitlab.com/gitlab-org/gitlab/-/issues/387980) on small number of Geo installations. Your installation may be affected if you see some projects and/or wikis persistently in the "Queued" state for verification. This can lead to data loss after a failover.
+  - Impacted versions: GitLab versions 15.6.x, 15.7.x, and 15.8.0 - 15.8.2.
+  - Versions containing fix: GitLab 15.8.3 and later.
+- Due to [a bug introduced in GitLab 15.4](https://gitlab.com/gitlab-org/gitlab/-/issues/390155), if one or more Git repositories in Gitaly Cluster is [unavailable](../administration/gitaly/recovery.md#unavailable-repositories), then [Repository checks](../administration/repository_checks.md#repository-checks) and [Geo replication and verification](../administration/geo/index.md) stop running for all project or project wiki repositories in the affected Gitaly Cluster. The bug was fixed by [reverting the change in GitLab 15.9.0](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110823). Before upgrading to this version, check if you have any "unavailable" repositories. See [the bug issue](https://gitlab.com/gitlab-org/gitlab/-/issues/390155) for more information.
 
 ### 15.7.1
 
-- Geo: [Container registry push events are rejected](https://gitlab.com/gitlab-org/gitlab/-/issues/386389) by the `/api/v4/container_registry_event/events` endpoint resulting in Geo secondary sites not being aware of updates to container registry images and subsequently not replicating the updates. Secondary sites may contain out of date container images after a failover as a consequence. This impacts versions 15.6.x and 15.7.0 - 15.7.2. If you're using Geo with container repositories, you are advised to upgrade to GitLab 15.7.3 or 15.8.0 which contain a fix for this issue and avoid potential data loss after a failover.
+- Geo: [Container registry push events are rejected](https://gitlab.com/gitlab-org/gitlab/-/issues/386389) by the `/api/v4/container_registry_event/events` endpoint resulting in Geo secondary sites not being aware of updates to container registry images and subsequently not replicating the updates. Secondary sites may contain out of date container images after a failover as a consequence. This impacts versions 15.6.0 - 15.6.6 and 15.7.0 - 15.7.2. If you're using Geo with container repositories, you are advised to upgrade to GitLab 15.6.7, 15.7.3, or 15.8.0 which contain a fix for this issue and avoid potential data loss after a failover.
+- Geo: We discovered an issue where [replication and verification of projects and wikis was not keeping up](https://gitlab.com/gitlab-org/gitlab/-/issues/387980) on small number of Geo installations. Your installation may be affected if you see some projects and/or wikis persistently in the "Queued" state for verification. This can lead to data loss after a failover.
+  - Impacted versions: GitLab versions 15.6.x, 15.7.x, and 15.8.0 - 15.8.2.
+  - Versions containing fix: GitLab 15.8.3 and later.
+- Due to [a bug introduced in GitLab 15.4](https://gitlab.com/gitlab-org/gitlab/-/issues/390155), if one or more Git repositories in Gitaly Cluster is [unavailable](../administration/gitaly/recovery.md#unavailable-repositories), then [Repository checks](../administration/repository_checks.md#repository-checks) and [Geo replication and verification](../administration/geo/index.md) stop running for all project or project wiki repositories in the affected Gitaly Cluster. The bug was fixed by [reverting the change in GitLab 15.9.0](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110823). Before upgrading to this version, check if you have any "unavailable" repositories. See [the bug issue](https://gitlab.com/gitlab-org/gitlab/-/issues/390155) for more information.
 
 ### 15.7.0
 
@@ -293,7 +342,7 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
   the `EnsureWorkItemTypeBackfillMigrationFinished` post-deploy migration.
 - GitLab 15.4.0 introduced a [batched background migration](background_migrations.md#batched-background-migrations) to
   [backfill `namespace_id` values on issues table](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91921). This
-  migration might take multiple hours or days to complete on larger GitLab instances. Please make sure the migration
+  migration might take multiple hours or days to complete on larger GitLab instances. Make sure the migration
   has completed successfully before upgrading to 15.7.0.
 - A database constraint is added, specifying that the `namespace_id` column on the issues
   table has no `NULL` values.
@@ -324,23 +373,74 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
 
   Sites that have configured `max_concurrency` will not be affected by this change.
   [Read more about the Sidekiq concurrency setting](../administration/sidekiq/extra_sidekiq_processes.md#concurrency).
-- Geo: [Container registry push events are rejected](https://gitlab.com/gitlab-org/gitlab/-/issues/386389) by the `/api/v4/container_registry_event/events` endpoint resulting in Geo secondary sites not being aware of updates to container registry images and subsequently not replicating the updates. Secondary sites may contain out of date container images after a failover as a consequence. This impacts versions 15.6.x and 15.7.0 - 15.7.2. If you're using Geo with container repositories, you are advised to upgrade to GitLab 15.7.3 or 15.8.0 which contain a fix for this issue and avoid potential data loss after a failover.
+- GitLab Runner 15.7.0 introduced a breaking change that impacts CI/CD jobs: [Correctly handle expansion of job file variables](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/3613).
+  Previously, job-defined variables that referred to
+  [file type variables](../ci/variables/index.md#use-file-type-cicd-variables)
+  were expanded to the value of the file variable (its content). This behavior did not 
+  respect the typical rules of shell variable expansion. There was also the potential
+  that secrets or sensitive information could leak if the file variable and its 
+  contents printed. For example, if they were printed in an echo output. For more information, 
+  see [Understanding the file type variable expansion change in GitLab 15.7](https://about.gitlab.com/blog/2023/02/13/impact-of-the-file-type-variable-change-15-7/).
+- Geo: [Container registry push events are rejected](https://gitlab.com/gitlab-org/gitlab/-/issues/386389) by the `/api/v4/container_registry_event/events` endpoint resulting in Geo secondary sites not being aware of updates to container registry images and subsequently not replicating the updates. Secondary sites may contain out of date container images after a failover as a consequence. This impacts versions 15.6.0 - 15.6.6 and 15.7.0 - 15.7.2. If you're using Geo with container repositories, you are advised to upgrade to GitLab 15.6.7, 15.7.3, or 15.8.0 which contain a fix for this issue and avoid potential data loss after a failover.
+- Due to [a bug introduced in GitLab 15.4](https://gitlab.com/gitlab-org/gitlab/-/issues/390155), if one or more Git repositories in Gitaly Cluster is [unavailable](../administration/gitaly/recovery.md#unavailable-repositories), then [Repository checks](../administration/repository_checks.md#repository-checks) and [Geo replication and verification](../administration/geo/index.md) stop running for all project or project wiki repositories in the affected Gitaly Cluster. The bug was fixed by [reverting the change in GitLab 15.9.0](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110823). Before upgrading to this version, check if you have any "unavailable" repositories. See [the bug issue](https://gitlab.com/gitlab-org/gitlab/-/issues/390155) for more information.
+- Geo: We discovered an issue where [replication and verification of projects and wikis was not keeping up](https://gitlab.com/gitlab-org/gitlab/-/issues/387980) on small number of Geo installations. Your installation may be affected if you see some projects and/or wikis persistently in the "Queued" state for verification. This can lead to data loss after a failover.
+  - Impacted versions: GitLab versions 15.6.x, 15.7.x, and 15.8.0 - 15.8.2.
+  - Versions containing fix: GitLab 15.8.3 and later.
+
+### 15.6.7
+
+- Geo: We discovered an issue where [replication and verification of projects and wikis was not keeping up](https://gitlab.com/gitlab-org/gitlab/-/issues/387980) on small number of Geo installations. Your installation may be affected if you see some projects and/or wikis persistently in the "Queued" state for verification. This can lead to data loss after a failover.
+  - Impacted versions: GitLab versions 15.6.x, 15.7.x, and 15.8.0 - 15.8.2.
+  - Versions containing fix: GitLab 15.8.3 and later.
+- Due to [a bug introduced in GitLab 15.4](https://gitlab.com/gitlab-org/gitlab/-/issues/390155), if one or more Git repositories in Gitaly Cluster is [unavailable](../administration/gitaly/recovery.md#unavailable-repositories), then [Repository checks](../administration/repository_checks.md#repository-checks) and [Geo replication and verification](../administration/geo/index.md) stop running for all project or project wiki repositories in the affected Gitaly Cluster. The bug was fixed by [reverting the change in GitLab 15.9.0](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110823). Before upgrading to this version, check if you have any "unavailable" repositories. See [the bug issue](https://gitlab.com/gitlab-org/gitlab/-/issues/390155) for more information.
+
+### 15.6.6
+
+- Geo: [Container registry push events are rejected](https://gitlab.com/gitlab-org/gitlab/-/issues/386389) by the `/api/v4/container_registry_event/events` endpoint resulting in Geo secondary sites not being aware of updates to container registry images and subsequently not replicating the updates. Secondary sites may contain out of date container images after a failover as a consequence. This impacts versions 15.6.0 - 15.6.6 and 15.7.0 - 15.7.2. If you're using Geo with container repositories, you are advised to upgrade to GitLab 15.6.7, 15.7.3, or 15.8.0 which contain a fix for this issue and avoid potential data loss after a failover.
+- Geo: We discovered an issue where [replication and verification of projects and wikis was not keeping up](https://gitlab.com/gitlab-org/gitlab/-/issues/387980) on small number of Geo installations. Your installation may be affected if you see some projects and/or wikis persistently in the "Queued" state for verification. This can lead to data loss after a failover.
+  - Impacted versions: GitLab versions 15.6.x, 15.7.x, and 15.8.0 - 15.8.2.
+  - Versions containing fix: GitLab 15.8.3 and later.
+- Due to [a bug introduced in GitLab 15.4](https://gitlab.com/gitlab-org/gitlab/-/issues/390155), if one or more Git repositories in Gitaly Cluster is [unavailable](../administration/gitaly/recovery.md#unavailable-repositories), then [Repository checks](../administration/repository_checks.md#repository-checks) and [Geo replication and verification](../administration/geo/index.md) stop running for all project or project wiki repositories in the affected Gitaly Cluster. The bug was fixed by [reverting the change in GitLab 15.9.0](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110823). Before upgrading to this version, check if you have any "unavailable" repositories. See [the bug issue](https://gitlab.com/gitlab-org/gitlab/-/issues/390155) for more information.
+
+### 15.6.5
+
+- Geo: [Container registry push events are rejected](https://gitlab.com/gitlab-org/gitlab/-/issues/386389) by the `/api/v4/container_registry_event/events` endpoint resulting in Geo secondary sites not being aware of updates to container registry images and subsequently not replicating the updates. Secondary sites may contain out of date container images after a failover as a consequence. This impacts versions 15.6.0 - 15.6.6 and 15.7.0 - 15.7.2. If you're using Geo with container repositories, you are advised to upgrade to GitLab 15.6.7, 15.7.3, or 15.8.0 which contain a fix for this issue and avoid potential data loss after a failover.
+- Geo: We discovered an issue where [replication and verification of projects and wikis was not keeping up](https://gitlab.com/gitlab-org/gitlab/-/issues/387980) on small number of Geo installations. Your installation may be affected if you see some projects and/or wikis persistently in the "Queued" state for verification. This can lead to data loss after a failover.
+  - Impacted versions: GitLab versions 15.6.x, 15.7.x, and 15.8.0 - 15.8.2.
+  - Versions containing fix: GitLab 15.8.3 and later.
+- Due to [a bug introduced in GitLab 15.4](https://gitlab.com/gitlab-org/gitlab/-/issues/390155), if one or more Git repositories in Gitaly Cluster is [unavailable](../administration/gitaly/recovery.md#unavailable-repositories), then [Repository checks](../administration/repository_checks.md#repository-checks) and [Geo replication and verification](../administration/geo/index.md) stop running for all project or project wiki repositories in the affected Gitaly Cluster. The bug was fixed by [reverting the change in GitLab 15.9.0](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110823). Before upgrading to this version, check if you have any "unavailable" repositories. See [the bug issue](https://gitlab.com/gitlab-org/gitlab/-/issues/390155) for more information.
 
 ### 15.6.4
 
-- Geo: [Container registry push events are rejected](https://gitlab.com/gitlab-org/gitlab/-/issues/386389) by the `/api/v4/container_registry_event/events` endpoint resulting in Geo secondary sites not being aware of updates to container registry images and subsequently not replicating the updates. Secondary sites may contain out of date container images after a failover as a consequence. This impacts versions 15.6.x and 15.7.0 - 15.7.2. If you're using Geo with container repositories, you are advised to upgrade to GitLab 15.7.3 or 15.8.0 which contain a fix for this issue and avoid potential data loss after a failover.
+- Geo: [Container registry push events are rejected](https://gitlab.com/gitlab-org/gitlab/-/issues/386389) by the `/api/v4/container_registry_event/events` endpoint resulting in Geo secondary sites not being aware of updates to container registry images and subsequently not replicating the updates. Secondary sites may contain out of date container images after a failover as a consequence. This impacts versions 15.6.0 - 15.6.6, and 15.7.0 - 15.7.2. If you're using Geo with container repositories, you are advised to upgrade to GitLab 15.6.7, 15.7.3, or 15.8.0 which contain a fix for this issue and avoid potential data loss after a failover.
+- Geo: We discovered an issue where [replication and verification of projects and wikis was not keeping up](https://gitlab.com/gitlab-org/gitlab/-/issues/387980) on small number of Geo installations. Your installation may be affected if you see some projects and/or wikis persistently in the "Queued" state for verification. This can lead to data loss after a failover.
+  - Impacted versions: GitLab versions 15.6.x, 15.7.x, and 15.8.0 - 15.8.2.
+  - Versions containing fix: GitLab 15.8.3 and later.
+- Due to [a bug introduced in GitLab 15.4](https://gitlab.com/gitlab-org/gitlab/-/issues/390155), if one or more Git repositories in Gitaly Cluster is [unavailable](../administration/gitaly/recovery.md#unavailable-repositories), then [Repository checks](../administration/repository_checks.md#repository-checks) and [Geo replication and verification](../administration/geo/index.md) stop running for all project or project wiki repositories in the affected Gitaly Cluster. The bug was fixed by [reverting the change in GitLab 15.9.0](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110823). Before upgrading to this version, check if you have any "unavailable" repositories. See [the bug issue](https://gitlab.com/gitlab-org/gitlab/-/issues/390155) for more information.
 
 ### 15.6.3
 
-- Geo: [Container registry push events are rejected](https://gitlab.com/gitlab-org/gitlab/-/issues/386389) by the `/api/v4/container_registry_event/events` endpoint resulting in Geo secondary sites not being aware of updates to container registry images and subsequently not replicating the updates. Secondary sites may contain out of date container images after a failover as a consequence. This impacts versions 15.6.x and 15.7.0 - 15.7.2. If you're using Geo with container repositories, you are advised to upgrade to GitLab 15.7.3 or 15.8.0 which contain a fix for this issue and avoid potential data loss after a failover.
+- Geo: [Container registry push events are rejected](https://gitlab.com/gitlab-org/gitlab/-/issues/386389) by the `/api/v4/container_registry_event/events` endpoint resulting in Geo secondary sites not being aware of updates to container registry images and subsequently not replicating the updates. Secondary sites may contain out of date container images after a failover as a consequence. This impacts versions 15.6.0 - 15.6.6 and 15.7.0 - 15.7.2. If you're using Geo with container repositories, you are advised to upgrade to GitLab 15.6.7, 15.7.3, or 15.8.0 which contain a fix for this issue and avoid potential data loss after a failover.
+- Geo: We discovered an issue where [replication and verification of projects and wikis was not keeping up](https://gitlab.com/gitlab-org/gitlab/-/issues/387980) on small number of Geo installations. Your installation may be affected if you see some projects and/or wikis persistently in the "Queued" state for verification. This can lead to data loss after a failover.
+  - Impacted versions: GitLab versions 15.6.x, 15.7.x, and 15.8.0 - 15.8.2.
+  - Versions containing fix: GitLab 15.8.3 and later.
+- Due to [a bug introduced in GitLab 15.4](https://gitlab.com/gitlab-org/gitlab/-/issues/390155), if one or more Git repositories in Gitaly Cluster is [unavailable](../administration/gitaly/recovery.md#unavailable-repositories), then [Repository checks](../administration/repository_checks.md#repository-checks) and [Geo replication and verification](../administration/geo/index.md) stop running for all project or project wiki repositories in the affected Gitaly Cluster. The bug was fixed by [reverting the change in GitLab 15.9.0](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110823). Before upgrading to this version, check if you have any "unavailable" repositories. See [the bug issue](https://gitlab.com/gitlab-org/gitlab/-/issues/390155) for more information.
 
 ### 15.6.2
 
-- Geo: [Container registry push events are rejected](https://gitlab.com/gitlab-org/gitlab/-/issues/386389) by the `/api/v4/container_registry_event/events` endpoint resulting in Geo secondary sites not being aware of updates to container registry images and subsequently not replicating the updates. Secondary sites may contain out of date container images after a failover as a consequence. This impacts versions 15.6.x and 15.7.0 - 15.7.2. If you're using Geo with container repositories, you are advised to upgrade to GitLab 15.7.3 or 15.8.0 which contain a fix for this issue and avoid potential data loss after a failover.
+- Geo: [Container registry push events are rejected](https://gitlab.com/gitlab-org/gitlab/-/issues/386389) by the `/api/v4/container_registry_event/events` endpoint resulting in Geo secondary sites not being aware of updates to container registry images and subsequently not replicating the updates. Secondary sites may contain out of date container images after a failover as a consequence. This impacts versions 15.6.0 - 15.6.6 and 15.7.0 - 15.7.2. If you're using Geo with container repositories, you are advised to upgrade to GitLab 15.6.7, 15.7.3, or 15.8.0 which contain a fix for this issue and avoid potential data loss after a failover.
+- Geo: We discovered an issue where [replication and verification of projects and wikis was not keeping up](https://gitlab.com/gitlab-org/gitlab/-/issues/387980) on small number of Geo installations. Your installation may be affected if you see some projects and/or wikis persistently in the "Queued" state for verification. This can lead to data loss after a failover.
+  - Impacted versions: GitLab versions 15.6.x, 15.7.x, and 15.8.0 - 15.8.2.
+  - Versions containing fix: GitLab 15.8.3 and later.
+- Due to [a bug introduced in GitLab 15.4](https://gitlab.com/gitlab-org/gitlab/-/issues/390155), if one or more Git repositories in Gitaly Cluster is [unavailable](../administration/gitaly/recovery.md#unavailable-repositories), then [Repository checks](../administration/repository_checks.md#repository-checks) and [Geo replication and verification](../administration/geo/index.md) stop running for all project or project wiki repositories in the affected Gitaly Cluster. The bug was fixed by [reverting the change in GitLab 15.9.0](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110823). Before upgrading to this version, check if you have any "unavailable" repositories. See [the bug issue](https://gitlab.com/gitlab-org/gitlab/-/issues/390155) for more information.
 
 ### 15.6.1
 
-- Geo: [Container registry push events are rejected](https://gitlab.com/gitlab-org/gitlab/-/issues/386389) by the `/api/v4/container_registry_event/events` endpoint resulting in Geo secondary sites not being aware of updates to container registry images and subsequently not replicating the updates. Secondary sites may contain out of date container images after a failover as a consequence. This impacts versions 15.6.x and 15.7.0 - 15.7.2. If you're using Geo with container repositories, you are advised to upgrade to GitLab 15.7.3 or 15.8.0 which contain a fix for this issue and avoid potential data loss after a failover.
+- Geo: [Container registry push events are rejected](https://gitlab.com/gitlab-org/gitlab/-/issues/386389) by the `/api/v4/container_registry_event/events` endpoint resulting in Geo secondary sites not being aware of updates to container registry images and subsequently not replicating the updates. Secondary sites may contain out of date container images after a failover as a consequence. This impacts versions 15.6.0 - 15.6.6 and 15.7.0 - 15.7.2. If you're using Geo with container repositories, you are advised to upgrade to GitLab 15.6.7, 15.7.3, or 15.8.0 which contain a fix for this issue and avoid potential data loss after a failover.
+- Geo: We discovered an issue where [replication and verification of projects and wikis was not keeping up](https://gitlab.com/gitlab-org/gitlab/-/issues/387980) on small number of Geo installations. Your installation may be affected if you see some projects and/or wikis persistently in the "Queued" state for verification. This can lead to data loss after a failover.
+  - Impacted versions: GitLab versions 15.6.x, 15.7.x, and 15.8.0 - 15.8.2.
+  - Versions containing fix: GitLab 15.8.3 and later.
+- Due to [a bug introduced in GitLab 15.4](https://gitlab.com/gitlab-org/gitlab/-/issues/390155), if one or more Git repositories in Gitaly Cluster is [unavailable](../administration/gitaly/recovery.md#unavailable-repositories), then [Repository checks](../administration/repository_checks.md#repository-checks) and [Geo replication and verification](../administration/geo/index.md) stop running for all project or project wiki repositories in the affected Gitaly Cluster. The bug was fixed by [reverting the change in GitLab 15.9.0](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110823). Before upgrading to this version, check if you have any "unavailable" repositories. See [the bug issue](https://gitlab.com/gitlab-org/gitlab/-/issues/390155) for more information.
 
 ### 15.6.0
 
@@ -360,7 +460,55 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
   This issue was [fixed in GitLab 15.7](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105375) and backported
   to GitLab 15.6.2. The issue can also be worked around:
   [read about how to create these indexes](https://gitlab.com/gitlab-org/gitlab/-/issues/378343#note_1199863087).
-- Geo: [Container registry push events are rejected](https://gitlab.com/gitlab-org/gitlab/-/issues/386389) by the `/api/v4/container_registry_event/events` endpoint resulting in Geo secondary sites not being aware of updates to container registry images and subsequently not replicating the updates. Secondary sites may contain out of date container images after a failover as a consequence. This impacts versions 15.6.x and 15.7.0 - 15.7.2. If you're using Geo with container repositories, you are advised to upgrade to GitLab 15.7.3 or 15.8.0 which contain a fix for this issue and avoid potential data loss after a failover.
+- Geo: [Container registry push events are rejected](https://gitlab.com/gitlab-org/gitlab/-/issues/386389) by the `/api/v4/container_registry_event/events` endpoint resulting in Geo secondary sites not being aware of updates to container registry images and subsequently not replicating the updates. Secondary sites may contain out of date container images after a failover as a consequence. This impacts versions 15.6.0 - 15.6.6 and 15.7.0 - 15.7.2. If you're using Geo with container repositories, you are advised to upgrade to GitLab 15.6.7, 15.7.3, or 15.8.0 which contain a fix for this issue and avoid potential data loss after a failover.
+- Geo: We discovered an issue where [replication and verification of projects and wikis was not keeping up](https://gitlab.com/gitlab-org/gitlab/-/issues/387980) on small number of Geo installations. Your installation may be affected if you see some projects and/or wikis persistently in the "Queued" state for verification. This can lead to data loss after a failover.
+  - Impacted versions: GitLab versions 15.6.x, 15.7.x, and 15.8.0 - 15.8.2.
+  - Versions containing fix: GitLab 15.8.3 and later.
+- Due to [a bug introduced in GitLab 15.4](https://gitlab.com/gitlab-org/gitlab/-/issues/390155), if one or more Git repositories in Gitaly Cluster is [unavailable](../administration/gitaly/recovery.md#unavailable-repositories), then [Repository checks](../administration/repository_checks.md#repository-checks) and [Geo replication and verification](../administration/geo/index.md) stop running for all project or project wiki repositories in the affected Gitaly Cluster. The bug was fixed by [reverting the change in GitLab 15.9.0](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110823). Before upgrading to this version, check if you have any "unavailable" repositories. See [the bug issue](https://gitlab.com/gitlab-org/gitlab/-/issues/390155) for more information.
+
+### 15.5.5
+
+- Due to [a bug introduced in GitLab 15.4](https://gitlab.com/gitlab-org/gitlab/-/issues/390155), if one or more Git repositories in Gitaly Cluster is [unavailable](../administration/gitaly/recovery.md#unavailable-repositories), then [Repository checks](../administration/repository_checks.md#repository-checks) and [Geo replication and verification](../administration/geo/index.md) stop running for all project or project wiki repositories in the affected Gitaly Cluster. The bug was fixed by [reverting the change in GitLab 15.9.0](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110823). Before upgrading to this version, check if you have any "unavailable" repositories. See [the bug issue](https://gitlab.com/gitlab-org/gitlab/-/issues/390155) for more information.
+
+### 15.5.4
+
+- Due to [a bug introduced in GitLab 15.4](https://gitlab.com/gitlab-org/gitlab/-/issues/390155), if one or more Git repositories in Gitaly Cluster is [unavailable](../administration/gitaly/recovery.md#unavailable-repositories), then [Repository checks](../administration/repository_checks.md#repository-checks) and [Geo replication and verification](../administration/geo/index.md) stop running for all project or project wiki repositories in the affected Gitaly Cluster. The bug was fixed by [reverting the change in GitLab 15.9.0](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110823). Before upgrading to this version, check if you have any "unavailable" repositories. See [the bug issue](https://gitlab.com/gitlab-org/gitlab/-/issues/390155) for more information.
+
+### 15.5.3
+
+- GitLab 15.4.0 introduced a default [Sidekiq routing rule](../administration/sidekiq/extra_sidekiq_routing.md) that routes all jobs to the `default` queue. For instances using [queue selectors](../administration/sidekiq/processing_specific_job_classes.md#queue-selectors), this will cause [performance problems](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/1991) as some Sidekiq processes will be idle.
+  - The default routing rule has been reverted in 15.5.4, so upgrading to that version or later will return to the previous behavior.
+  - If a GitLab instance now listens only to the `default` queue (which is not currently recommended), it will be required to add this routing rule back in `/etc/gitlab/gitlab.rb`:
+
+    ```ruby
+    sidekiq['routing_rules'] = [['*', 'default']]
+    ```
+
+- Due to [a bug introduced in GitLab 15.4](https://gitlab.com/gitlab-org/gitlab/-/issues/390155), if one or more Git repositories in Gitaly Cluster is [unavailable](../administration/gitaly/recovery.md#unavailable-repositories), then [Repository checks](../administration/repository_checks.md#repository-checks) and [Geo replication and verification](../administration/geo/index.md) stop running for all project or project wiki repositories in the affected Gitaly Cluster. The bug was fixed by [reverting the change in GitLab 15.9.0](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110823). Before upgrading to this version, check if you have any "unavailable" repositories. See [the bug issue](https://gitlab.com/gitlab-org/gitlab/-/issues/390155) for more information.
+
+### 15.5.2
+
+- GitLab 15.4.0 introduced a default [Sidekiq routing rule](../administration/sidekiq/extra_sidekiq_routing.md) that routes all jobs to the `default` queue. For instances using [queue selectors](../administration/sidekiq/processing_specific_job_classes.md#queue-selectors), this will cause [performance problems](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/1991) as some Sidekiq processes will be idle.
+  - The default routing rule has been reverted in 15.5.4, so upgrading to that version or later will return to the previous behavior.
+  - If a GitLab instance now listens only to the `default` queue (which is not currently recommended), it will be required to add this routing rule back in `/etc/gitlab/gitlab.rb`:
+
+    ```ruby
+    sidekiq['routing_rules'] = [['*', 'default']]
+    ```
+
+- Due to [a bug introduced in GitLab 15.4](https://gitlab.com/gitlab-org/gitlab/-/issues/390155), if one or more Git repositories in Gitaly Cluster is [unavailable](../administration/gitaly/recovery.md#unavailable-repositories), then [Repository checks](../administration/repository_checks.md#repository-checks) and [Geo replication and verification](../administration/geo/index.md) stop running for all project or project wiki repositories in the affected Gitaly Cluster. The bug was fixed by [reverting the change in GitLab 15.9.0](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110823). Before upgrading to this version, check if you have any "unavailable" repositories. See [the bug issue](https://gitlab.com/gitlab-org/gitlab/-/issues/390155) for more information.
+
+### 15.5.1
+
+- GitLab 15.4.0 introduced a default [Sidekiq routing rule](../administration/sidekiq/extra_sidekiq_routing.md) that routes all jobs to the `default` queue. For instances using [queue selectors](../administration/sidekiq/processing_specific_job_classes.md#queue-selectors), this will cause [performance problems](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/1991) as some Sidekiq processes will be idle.
+  - The default routing rule has been reverted in 15.5.4, so upgrading to that version or later will return to the previous behavior.
+  - If a GitLab instance now listens only to the `default` queue (which is not currently recommended), it will be required to add this routing rule back in `/etc/gitlab/gitlab.rb`:
+
+    ```ruby
+    sidekiq['routing_rules'] = [['*', 'default']]
+    ```
+
+- Due to [a bug introduced in GitLab 15.4](https://gitlab.com/gitlab-org/gitlab/-/issues/390155), if one or more Git repositories in Gitaly Cluster is [unavailable](../administration/gitaly/recovery.md#unavailable-repositories), then [Repository checks](../administration/repository_checks.md#repository-checks) and [Geo replication and verification](../administration/geo/index.md) stop running for all project or project wiki repositories in the affected Gitaly Cluster. The bug was fixed by [reverting the change in GitLab 15.9.0](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110823). Before upgrading to this version, check if you have any "unavailable" repositories. See [the bug issue](https://gitlab.com/gitlab-org/gitlab/-/issues/390155) for more information.
 
 ### 15.5.0
 
@@ -372,15 +520,43 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
     sidekiq['routing_rules'] = [['*', 'default']]
     ```
 
+- Due to [a bug introduced in GitLab 15.4](https://gitlab.com/gitlab-org/gitlab/-/issues/390155), if one or more Git repositories in Gitaly Cluster is [unavailable](../administration/gitaly/recovery.md#unavailable-repositories), then [Repository checks](../administration/repository_checks.md#repository-checks) and [Geo replication and verification](../administration/geo/index.md) stop running for all project or project wiki repositories in the affected Gitaly Cluster. The bug was fixed by [reverting the change in GitLab 15.9.0](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110823). Before upgrading to this version, check if you have any "unavailable" repositories. See [the bug issue](https://gitlab.com/gitlab-org/gitlab/-/issues/390155) for more information.
+
+### 15.4.6
+
+- Due to [a bug introduced in GitLab 15.4](https://gitlab.com/gitlab-org/gitlab/-/issues/390155), if one or more Git repositories in Gitaly Cluster is [unavailable](../administration/gitaly/recovery.md#unavailable-repositories), then [Repository checks](../administration/repository_checks.md#repository-checks) and [Geo replication and verification](../administration/geo/index.md) stop running for all project or project wiki repositories in the affected Gitaly Cluster. The bug was fixed by [reverting the change in GitLab 15.9.0](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110823). Before upgrading to this version, check if you have any "unavailable" repositories. See [the bug issue](https://gitlab.com/gitlab-org/gitlab/-/issues/390155) for more information.
+
+### 15.4.5
+
+- Due to [a bug introduced in GitLab 15.4](https://gitlab.com/gitlab-org/gitlab/-/issues/390155), if one or more Git repositories in Gitaly Cluster is [unavailable](../administration/gitaly/recovery.md#unavailable-repositories), then [Repository checks](../administration/repository_checks.md#repository-checks) and [Geo replication and verification](../administration/geo/index.md) stop running for all project or project wiki repositories in the affected Gitaly Cluster. The bug was fixed by [reverting the change in GitLab 15.9.0](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110823). Before upgrading to this version, check if you have any "unavailable" repositories. See [the bug issue](https://gitlab.com/gitlab-org/gitlab/-/issues/390155) for more information.
+
+### 15.4.4
+
+- Due to [a bug introduced in GitLab 15.4](https://gitlab.com/gitlab-org/gitlab/-/issues/390155), if one or more Git repositories in Gitaly Cluster is [unavailable](../administration/gitaly/recovery.md#unavailable-repositories), then [Repository checks](../administration/repository_checks.md#repository-checks) and [Geo replication and verification](../administration/geo/index.md) stop running for all project or project wiki repositories in the affected Gitaly Cluster. The bug was fixed by [reverting the change in GitLab 15.9.0](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110823). Before upgrading to this version, check if you have any "unavailable" repositories. See [the bug issue](https://gitlab.com/gitlab-org/gitlab/-/issues/390155) for more information.
+
+### 15.4.3
+
+- Due to [a bug introduced in GitLab 15.4](https://gitlab.com/gitlab-org/gitlab/-/issues/390155), if one or more Git repositories in Gitaly Cluster is [unavailable](../administration/gitaly/recovery.md#unavailable-repositories), then [Repository checks](../administration/repository_checks.md#repository-checks) and [Geo replication and verification](../administration/geo/index.md) stop running for all project or project wiki repositories in the affected Gitaly Cluster. The bug was fixed by [reverting the change in GitLab 15.9.0](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110823). Before upgrading to this version, check if you have any "unavailable" repositories. See [the bug issue](https://gitlab.com/gitlab-org/gitlab/-/issues/390155) for more information.
+
+### 15.4.2
+
+- A [license caching issue](https://gitlab.com/gitlab-org/gitlab/-/issues/376706) prevents some premium features of GitLab from working correctly if you add a new license. Workarounds for this issue:
+  - Restart all Rails, Sidekiq and Gitaly nodes after applying a new license. This clears the relevant license caches and allows all premium features to operate correctly.
+  - Upgrade to a version that is not impacted by this issue. The following upgrade paths are available for impacted versions:
+    - 15.2.5 --> 15.3.5
+    - 15.3.0 - 15.3.4 --> 15.3.5
+    - 15.4.1 --> 15.4.3
+- Due to [a bug introduced in GitLab 15.4](https://gitlab.com/gitlab-org/gitlab/-/issues/390155), if one or more Git repositories in Gitaly Cluster is [unavailable](../administration/gitaly/recovery.md#unavailable-repositories), then [Repository checks](../administration/repository_checks.md#repository-checks) and [Geo replication and verification](../administration/geo/index.md) stop running for all project or project wiki repositories in the affected Gitaly Cluster. The bug was fixed by [reverting the change in GitLab 15.9.0](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110823). Before upgrading to this version, check if you have any "unavailable" repositories. See [the bug issue](https://gitlab.com/gitlab-org/gitlab/-/issues/390155) for more information.
+
 ### 15.4.1
 
-A [license caching issue](https://gitlab.com/gitlab-org/gitlab/-/issues/376706) prevents some premium features of GitLab from working correctly if you add a new license. Workarounds for this issue:
-
-- Restart all Rails, Sidekiq and Gitaly nodes after applying a new license. This clears the relevant license caches and allows all premium features to operate correctly.
-- Upgrade to a version that is not impacted by this issue. The following upgrade paths are available for impacted versions:
-  - 15.2.5 --> 15.3.5
-  - 15.3.0 - 15.3.4 --> 15.3.5
-  - 15.4.1 --> 15.4.3
+- A [license caching issue](https://gitlab.com/gitlab-org/gitlab/-/issues/376706) prevents some premium features of GitLab from working correctly if you add a new license. Workarounds for this issue:
+  - Restart all Rails, Sidekiq and Gitaly nodes after applying a new license. This clears the relevant license caches and allows all premium features to operate correctly.
+  - Upgrade to a version that is not impacted by this issue. The following upgrade paths are available for impacted versions:
+    - 15.2.5 --> 15.3.5
+    - 15.3.0 - 15.3.4 --> 15.3.5
+    - 15.4.1 --> 15.4.3
+- Due to [a bug introduced in GitLab 15.4](https://gitlab.com/gitlab-org/gitlab/-/issues/390155), if one or more Git repositories in Gitaly Cluster is [unavailable](../administration/gitaly/recovery.md#unavailable-repositories), then [Repository checks](../administration/repository_checks.md#repository-checks) and [Geo replication and verification](../administration/geo/index.md) stop running for all project or project wiki repositories in the affected Gitaly Cluster. The bug was fixed by [reverting the change in GitLab 15.9.0](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110823). Before upgrading to this version, check if you have any "unavailable" repositories. See [the bug issue](https://gitlab.com/gitlab-org/gitlab/-/issues/390155) for more information.
 
 ### 15.4.0
 
@@ -404,8 +580,9 @@ A [license caching issue](https://gitlab.com/gitlab-org/gitlab/-/issues/376706) 
   `/etc/gitlab/gitlab.rb`, make sure `/etc/gitlab/gitlab-secrets.json` is the same on all nodes.
 - GitLab 15.4.0 introduced a [batched background migration](background_migrations.md#batched-background-migrations) to
   [backfill `namespace_id` values on issues table](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91921). This
-  migration might take multiple hours or days to complete on larger GitLab instances. Please make sure the migration
+  migration might take multiple hours or days to complete on larger GitLab instances. Make sure the migration
   has completed successfully before upgrading to 15.7.0 or later.
+- Due to [a bug introduced in GitLab 15.4](https://gitlab.com/gitlab-org/gitlab/-/issues/390155), if one or more Git repositories in Gitaly Cluster is [unavailable](../administration/gitaly/recovery.md#unavailable-repositories), then [Repository checks](../administration/repository_checks.md#repository-checks) and [Geo replication and verification](../administration/geo/index.md) stop running for all project or project wiki repositories in the affected Gitaly Cluster. The bug was fixed by [reverting the change in GitLab 15.9.0](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110823). Before upgrading to this version, check if you have any "unavailable" repositories. See [the bug issue](https://gitlab.com/gitlab-org/gitlab/-/issues/390155) for more information.
 
 ### 15.3.4
 
@@ -487,7 +664,7 @@ A [license caching issue](https://gitlab.com/gitlab-org/gitlab/-/issues/376706) 
   fork/exec /var/opt/gitlab/gitaly/run/gitaly-<nnnn>/gitaly-git2go-v15: permission denied
   ```
 
-  To resolve this, remove the `noexec` option from the filesystem mount. An alternative is to change the Gitaly runtime directory:
+  To resolve this, remove the `noexec` option from the file system mount. An alternative is to change the Gitaly runtime directory:
 
   1. Add `gitaly['runtime_dir'] = '<PATH_WITH_EXEC_PERM>'` to `/etc/gitlab/gitlab.rb` and specify a location without `noexec` set.
   1. Run `sudo gitlab-ctl reconfigure`.
@@ -509,7 +686,7 @@ A [license caching issue](https://gitlab.com/gitlab-org/gitlab/-/issues/376706) 
   1. [Enable the `active_support_hash_digest_sha256` feature flag](../administration/feature_flags.md#how-to-enable-and-disable-features-behind-flags) to switch `ActiveSupport::Digest` to use SHA256:
   1. Only then, continue to upgrade to later versions of GitLab.
 - Unauthenticated requests to the [`ciConfig` GraphQL field](../api/graphql/reference/index.md#queryciconfig) are no longer supported.
-  Before you upgrade to GitLab 15.1, add an [access token](../api/index.md#authentication) to your requests.
+  Before you upgrade to GitLab 15.1, add an [access token](../api/rest/index.md#authentication) to your requests.
   The user creating the token must have [permission](../user/permissions.md) to create pipelines in the project.
 - [Incorrect deletion of object storage files on Geo secondary sites](https://gitlab.com/gitlab-org/gitlab/-/issues/371397) can occur in certain situations. See [Geo: Incorrect object storage LFS file deletion on secondary site issue in GitLab 15.0.0 to 15.3.2](#geo-incorrect-object-storage-lfs-file-deletion-on-secondary-sites-in-gitlab-1500-to-1532).
 - LFS transfers can [redirect to the primary from secondary site mid-session](https://gitlab.com/gitlab-org/gitlab/-/issues/371571) causing failed pull and clone requests when [Geo proxying](../administration/geo/secondary_proxy/index.md) is enabled. Geo proxying is enabled by default in GitLab 15.1 and later. See [Geo: LFS transfer redirect to primary from secondary site mid-session issue in GitLab 15.1.0 to 15.3.2](#geo-lfs-transfers-redirect-to-primary-from-secondary-site-mid-session-in-gitlab-1510-to-1532) for more details.
@@ -828,7 +1005,7 @@ for how to proceed.
     ```
 
     NOTE:
-    The queued jobs can be monitored using Sidekiq's admin panel, which can be accessed at the `/admin/sidekiq` endpoint URI.
+    The queued jobs can be monitored using the Sidekiq admin panel, which can be accessed at the `/admin/sidekiq` endpoint URI.
 
   - Using a Rails process to run jobs synchronously:
 

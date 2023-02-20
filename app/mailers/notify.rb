@@ -68,14 +68,16 @@ class Notify < ApplicationMailer
   private
 
   # Return an email address that displays the name of the sender.
-  # Only the displayed name changes; the actual email address is always the same.
-  def sender(sender_id, send_from_user_email: false, sender_name: nil)
+  # Override sender_email if you want to hard replace the sender address (e.g. custom email for Service Desk)
+  def sender(sender_id, send_from_user_email: false, sender_name: nil, sender_email: nil)
     return unless sender = User.find(sender_id)
 
     address = default_sender_address
     address.display_name = sender_name.presence || "#{sender.name} (#{sender.to_reference})"
 
-    if send_from_user_email && can_send_from_user_email?(sender)
+    if sender_email
+      address.address = sender_email
+    elsif send_from_user_email && can_send_from_user_email?(sender)
       address.address = sender.email
     end
 

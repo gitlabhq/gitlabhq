@@ -31,7 +31,7 @@ RSpec.describe Ci::RunningBuild, feature_category: :continuous_integration do
       end
     end
 
-    context 'when build has been picked by a specific runner' do
+    context 'when build has been picked by a project runner' do
       let(:runner) { create(:ci_runner, :project) }
 
       it 'raises an error' do

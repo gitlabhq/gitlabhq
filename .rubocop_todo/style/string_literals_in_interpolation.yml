@@ -15,7 +15,6 @@ Style/StringLiteralsInInterpolation:
     - 'app/views/events/_event.atom.builder'
     - 'app/workers/concerns/application_worker.rb'
     - 'config/initializers/validate_database_config.rb'
-    - 'db/post_migrate/20210809123658_orphaned_invite_tokens_cleanup.rb'
     - 'ee/app/helpers/ee/merge_requests_helper.rb'
     - 'ee/app/models/license.rb'
     - 'ee/app/services/epics/tree_reorder_service.rb'

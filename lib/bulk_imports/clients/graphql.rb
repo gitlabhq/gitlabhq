@@ -16,8 +16,15 @@ module BulkImports
             }.to_json
           )
 
+          unless response.success?
+            raise ::BulkImports::NetworkError.new(
+              "Unsuccessful response #{response.code} from #{response.request.path.path}",
+              response: response
+            )
+          end
+
           ::Gitlab::Json.parse(response.body)
-        rescue *Gitlab::HTTP::HTTP_ERRORS => e
+        rescue *Gitlab::HTTP::HTTP_ERRORS, JSON::ParserError => e
           raise ::BulkImports::NetworkError, e
         end
       end
@@ -34,10 +41,10 @@ module BulkImports
         @compatible_instance_version = false
       end
 
-      def execute(*args)
+      def execute(...)
         validate_instance_version!
 
-        client.execute(*args)
+        client.execute(...)
       end
 
       def options(extra = {})

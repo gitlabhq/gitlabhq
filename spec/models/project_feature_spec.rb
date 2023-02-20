@@ -2,13 +2,35 @@
 
 require 'spec_helper'
 
-RSpec.describe ProjectFeature do
+RSpec.describe ProjectFeature, feature_category: :projects do
   using RSpec::Parameterized::TableSyntax
 
   let_it_be_with_reload(:project) { create(:project) }
   let_it_be(:user) { create(:user) }
 
   it { is_expected.to belong_to(:project) }
+
+  describe 'default values' do
+    subject { Project.new.project_feature }
+
+    specify { expect(subject.builds_access_level).to eq(ProjectFeature::ENABLED) }
+    specify { expect(subject.issues_access_level).to eq(ProjectFeature::ENABLED) }
+    specify { expect(subject.forking_access_level).to eq(ProjectFeature::ENABLED) }
+    specify { expect(subject.merge_requests_access_level).to eq(ProjectFeature::ENABLED) }
+    specify { expect(subject.snippets_access_level).to eq(ProjectFeature::ENABLED) }
+    specify { expect(subject.wiki_access_level).to eq(ProjectFeature::ENABLED) }
+    specify { expect(subject.repository_access_level).to eq(ProjectFeature::ENABLED) }
+    specify { expect(subject.metrics_dashboard_access_level).to eq(ProjectFeature::PRIVATE) }
+    specify { expect(subject.operations_access_level).to eq(ProjectFeature::ENABLED) }
+    specify { expect(subject.security_and_compliance_access_level).to eq(ProjectFeature::PRIVATE) }
+    specify { expect(subject.monitor_access_level).to eq(ProjectFeature::ENABLED) }
+    specify { expect(subject.infrastructure_access_level).to eq(ProjectFeature::ENABLED) }
+    specify { expect(subject.feature_flags_access_level).to eq(ProjectFeature::ENABLED) }
+    specify { expect(subject.environments_access_level).to eq(ProjectFeature::ENABLED) }
+    specify { expect(subject.releases_access_level).to eq(ProjectFeature::ENABLED) }
+    specify { expect(subject.package_registry_access_level).to eq(ProjectFeature::ENABLED) }
+    specify { expect(subject.container_registry_access_level).to eq(ProjectFeature::ENABLED) }
+  end
 
   describe 'PRIVATE_FEATURES_MIN_ACCESS_LEVEL_FOR_PRIVATE_PROJECT' do
     it 'has higher level than that of PRIVATE_FEATURES_MIN_ACCESS_LEVEL' do

@@ -30,7 +30,8 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
       branches_anchor_data,
       tags_anchor_data,
       storage_anchor_data,
-      releases_anchor_data
+      releases_anchor_data,
+      environments_anchor_data
     ].compact.select(&:is_link)
   end
 
@@ -43,6 +44,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
       autodevops_anchor_data(show_auto_devops_callout: show_auto_devops_callout),
       kubernetes_cluster_anchor_data,
       gitlab_ci_anchor_data,
+      wiki_anchor_data,
       integrations_anchor_data
     ].compact.reject(&:is_link).sort_by.with_index { |item, idx| [item.class_modifier ? 0 : 1, idx] }
   end
@@ -60,6 +62,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
       changelog_anchor_data,
       contribution_guide_anchor_data,
       gitlab_ci_anchor_data,
+      wiki_anchor_data,
       integrations_anchor_data
     ].compact.reject { |item| item.is_link }
   end
@@ -187,6 +190,22 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
                      strong_end: '</strong>'.html_safe
                    },
                   project_releases_path(project))
+  end
+
+  def environments_anchor_data
+    return unless can?(current_user, :read_environment, project)
+
+    environments_count = project.environments.available.count
+    return if environments_count == 0
+
+    AnchorData.new(true,
+    statistic_icon('environment') +
+                   n_('%{strong_start}%{count}%{strong_end} Environment', '%{strong_start}%{count}%{strong_end} Environments', environments_count).html_safe % {
+                     count: number_with_delimiter(environments_count),
+                     strong_start: '<strong class="project-stat-value">'.html_safe,
+                     strong_end: '</strong>'.html_safe
+                   },
+                   project_environments_path(project))
   end
 
   def commits_anchor_data
@@ -364,6 +383,16 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
     end
   end
 
+  def wiki_anchor_data
+    return unless project.wiki_enabled? && can_read_wiki?
+
+    if project.wiki.has_home_page?
+      AnchorData.new(false, statistic_icon('book') + _('Wiki'), project_wiki_path, 'btn-default', nil, nil)
+    elsif can_create_wiki?
+      AnchorData.new(false, statistic_icon + _('Add Wiki'), project_create_wiki_path, nil, nil, nil)
+    end
+  end
+
   def topics_to_show
     project_topic_list.take(MAX_TOPICS_TO_SHOW) # rubocop: disable CodeReuse/ActiveRecord
   end
@@ -450,8 +479,24 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
   end
 
   # Avoid including ActionView::Helpers::UrlHelper
-  def content_tag(*args)
-    ActionController::Base.helpers.content_tag(*args)
+  def content_tag(...)
+    ActionController::Base.helpers.content_tag(...)
+  end
+
+  def can_create_wiki?
+    current_user && can?(current_user, :create_wiki, project)
+  end
+
+  def can_read_wiki?
+    current_user && can?(current_user, :read_wiki, project)
+  end
+
+  def project_wiki_path
+    wiki_path(project.wiki)
+  end
+
+  def project_create_wiki_path
+    "#{wiki_path(project.wiki)}?view=create"
   end
 end
 

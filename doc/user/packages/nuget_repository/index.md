@@ -283,7 +283,7 @@ To use the [group-level](#use-the-gitlab-endpoint-for-nuget-packages) Package Re
 
 Prerequisite:
 
-- Set up the [source](#https://docs.gitlab.com/ee/user/packages/nuget_repository/#add-the-package-registry-as-a-source-for-nuget-packages) with a [project-level endpoint](#use-the-gitlab-endpoint-for-nuget-packages).
+- Set up the [source](#add-the-package-registry-as-a-source-for-nuget-packages) with a [project-level endpoint](#use-the-gitlab-endpoint-for-nuget-packages).
 
 When publishing packages:
 
@@ -461,9 +461,15 @@ for more details on what other GitLab CI patterns are demonstrated.
 
 ## Troubleshooting
 
+### Clear NuGet cache
+
 To improve performance, NuGet caches files related to a package. If you encounter issues, clear the
 cache with this command:
 
 ```shell
 nuget locals all -clear
 ```
+
+### `Error publishing` or `Invalid Package: Failed metadata extraction error` messages when trying to publish NuGet packages in a Docker-based GitLab installation
+
+Webhook requests to local network addresses are blocked to prevent the exploitation of internal web services. If you get `Error publishing` or `Invalid Package` messages when you try to publish NuGet packages, change your network settings to [allow webhook and service requests to the local network](../../../security/webhooks.md#allow-webhook-and-service-requests-to-local-network).

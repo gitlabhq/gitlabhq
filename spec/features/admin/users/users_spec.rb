@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe 'Admin::Users', feature_category: :user_management do
   include Spec::Support::Helpers::Features::AdminUsersHelpers
   include Spec::Support::Helpers::ModalHelpers
+  include ListboxHelpers
 
   let_it_be(:user, reload: true) { create(:omniauth_user, provider: 'twitter', extern_uid: '123456') }
   let_it_be(:current_user) { create(:admin) }
@@ -608,8 +609,8 @@ RSpec.describe 'Admin::Users', feature_category: :user_management do
 
   def sort_by(option)
     page.within('.filtered-search-block') do
-      find('.gl-dropdown').click
-      find('.gl-dropdown-item', text: option).click
+      find('.gl-new-dropdown').click
+      select_listbox_item(option)
     end
   end
 end

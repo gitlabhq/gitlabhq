@@ -1,16 +1,6 @@
 ---
 Migration/BackgroundMigrations:
   Exclude:
-    - 'db/post_migrate/20210604070207_retry_backfill_traversal_ids.rb'
-    - 'db/post_migrate/20210611080951_fix_missing_traversal_ids.rb'
-    - 'db/post_migrate/20210701111909_backfill_issues_upvotes_count.rb'
-    - 'db/post_migrate/20210708130419_reschedule_merge_request_diff_users_background_migration.rb'
-    - 'db/post_migrate/20210722010101_reschedule_delete_orphaned_deployments.rb'
-    - 'db/post_migrate/20210729163312_re_schedule_latest_pipeline_id_population_with_all_security_related_artifact_types.rb'
-    - 'db/post_migrate/20210730104800_schedule_extract_project_topics_into_separate_table.rb'
-    - 'db/post_migrate/20210730170823_schedule_security_setting_creation.rb'
-    - 'db/post_migrate/20210823113259_steal_merge_request_diff_commit_users_migration.rb'
-    - 'db/post_migrate/20210825193652_backfill_cadence_id_for_boards_scoped_to_iteration.rb'
     - 'db/post_migrate/20210830104800_reschedule_extract_project_topics_into_separate_table.rb'
     - 'db/post_migrate/20210901153324_slice_merge_request_diff_commit_migrations.rb'
     - 'db/post_migrate/20210909104800_reschedule_extract_project_topics_into_separate_table_2.rb'

@@ -16,8 +16,7 @@ To create a blank project:
 1. On the right of the page, select **New project**.
 1. Select **Create blank project**.
 1. Enter the project details:
-   - In the **Project name** field, enter the name of your project. You cannot use special characters at
-     the start or end of a project name.
+   - In the **Project name** field, enter the name of your project. The name must start with a lowercase or uppercase letter (`a-zA-Z`), digit (`0-9`), emoji, or underscore (`_`). It can also contain dots (`.`), pluses (`+`), dashes (`-`), or spaces.
    - In the **Project slug** field, enter the path to your project. The GitLab instance uses the
      slug as the URL path to the project. To change the slug, first enter the project name,
      then change the slug.
@@ -51,8 +50,7 @@ To create a project from a built-in template:
    - To view a preview of the template, select **Preview**.
    - To use a template for the project, select **Use template**.
 1. Enter the project details:
-   - In the **Project name** field, enter the name of your project. You cannot use special characters at
-     the start or end of a project name.
+   - In the **Project name** field, enter the name of your project. The name must start with a lowercase or uppercase letter (`a-zA-Z`), digit (`0-9`), emoji, or underscore (`_`). It can also contain dots (`.`), pluses (`+`), dashes (`-`), or spaces.
    - In the **Project slug** field, enter the path to your project. The GitLab instance uses the
      slug as the URL path to the project. To change the slug, first enter the project name,
      then change the slug.
@@ -60,6 +58,11 @@ To create a project from a built-in template:
    - To modify the project's [viewing and access rights](../public_access.md) for users,
      change the **Visibility Level**.
 1. Select **Create project**.
+
+NOTE:
+A user who creates a project [from a template](#create-a-project-from-a-built-in-template) or [by import](settings/import_export.md#import-a-project-and-its-data) is displayed as the author of the imported objects (such as issues and merge requests), which keep the original timestamp from the template or import.
+Imported objects are labeled as `By <username> on <timestamp> (imported from GitLab)`.
+For this reason, the creation date of imported objects can be older than the creation date of the user's account. This can lead to objects appearing to have been created by a user before they even had an account.
 
 ## Create a project from a custom template **(PREMIUM)**
 
@@ -78,8 +81,7 @@ Custom project templates are available at:
    - To view a preview of the template, select **Preview**.
    - To use a template for the project, select **Use template**.
 1. Enter the project details:
-   - In the **Project name** field, enter the name of your project. You cannot use special characters at
-     the start or end of a project name.
+   - In the **Project name** field, enter the name of your project. The name must start with a lowercase or uppercase letter (`a-zA-Z`), digit (`0-9`), emoji, or underscore (`_`). It can also contain dots (`.`), pluses (`+`), dashes (`-`), or spaces.
    - In the **Project slug** field, enter the path to your project. The GitLab instance uses the
      slug as the URL path to the project. To change the slug, first enter the project name,
      then change the slug.
@@ -105,8 +107,7 @@ To create a project from the HIPAA Audit Protocol template:
    - To view a preview of the template, select **Preview**.
    - To use the template for the project, select **Use template**.
 1. Enter the project details:
-   - In the **Project name** field, enter the name of your project. You cannot use special characters at
-     the start or end of a project name.
+   - In the **Project name** field, enter the name of your project. The name must start with a lowercase or uppercase letter (`a-zA-Z`), digit (`0-9`), emoji, or underscore (`_`). It can also contain dots (`.`), pluses (`+`), dashes (`-`), or spaces.
    - In the **Project slug** field, enter the path to your project. The GitLab instance uses the
      slug as the URL path to the project. To change the slug, first enter the project name,
      then change the slug.

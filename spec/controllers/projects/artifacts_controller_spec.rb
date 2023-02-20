@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::ArtifactsController do
+RSpec.describe Projects::ArtifactsController, feature_category: :build_artifacts do
   include RepoHelpers
 
   let(:user) { project.first_owner }
@@ -37,23 +37,6 @@ RSpec.describe Projects::ArtifactsController do
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to render_template('projects/artifacts/index')
-
-        app = Nokogiri::HTML.parse(response.body).at_css('div#js-artifact-management')
-
-        expect(app.attributes['data-project-path'].value).to eq(project.full_path)
-        expect(app.attributes['data-can-destroy-artifacts'].value).to eq('true')
-      end
-
-      describe 'when user does not have permission to delete artifacts' do
-        let(:user) { create(:user) }
-
-        it 'passes false to the artifacts app' do
-          subject
-
-          app = Nokogiri::HTML.parse(response.body).at_css('div#js-artifact-management')
-
-          expect(app.attributes['data-can-destroy-artifacts'].value).to eq('false')
-        end
       end
     end
 
@@ -127,7 +110,7 @@ RSpec.describe Projects::ArtifactsController do
     end
 
     context 'when no file type is supplied' do
-      let(:filename) { job.artifacts_file.filename }
+      let(:filename) { job.job_artifacts_archive.filename }
 
       it 'sends the artifacts file' do
         expect(controller).to receive(:send_file)
@@ -138,6 +121,38 @@ RSpec.describe Projects::ArtifactsController do
         download_artifact
 
         expect(response.headers['Content-Disposition']).to eq(%Q(attachment; filename="#{filename}"; filename*=UTF-8''#{filename}))
+      end
+    end
+
+    context 'when artifact is set as private' do
+      let(:filename) { job.artifacts_file.filename }
+
+      before do
+        job.job_artifacts.update_all(accessibility: 'private')
+      end
+
+      context 'and user is not authoirized' do
+        let(:user) { create(:user) }
+
+        it 'returns forbidden' do
+          download_artifact(file_type: 'archive')
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+
+      context 'and user has access to project' do
+        it 'downloads' do
+          expect(controller).to receive(:send_file)
+                          .with(
+                            job.artifacts_file.file.path,
+                            hash_including(disposition: 'attachment', filename: filename)).and_call_original
+
+          download_artifact(file_type: 'archive')
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response.headers['Content-Disposition']).to eq(%Q(attachment; filename="#{filename}"; filename*=UTF-8''#{filename}))
+        end
       end
     end
 
@@ -255,10 +270,14 @@ RSpec.describe Projects::ArtifactsController do
       end
 
       context 'when the user has update_build permissions' do
+        let(:filename) { job.job_artifacts_trace.file.filename }
+
         it 'sends the trace' do
           download_artifact(file_type: file_type)
 
           expect(response).to have_gitlab_http_status(:ok)
+          expect(response.headers['Content-Disposition'])
+            .to eq(%Q(attachment; filename="#{filename}"; filename*=UTF-8''#{filename}))
         end
       end
     end

@@ -1,14 +1,5 @@
 - page_title _('Contributors')
-- if Feature.enabled?(:use_ref_type_parameter, @project)
-  - graph_path = project_graph_path(@project, current_ref, ref_type: @ref_type, format: :json)
-  - commits_path = project_commits_path(@project, current_ref, ref_type: @ref_type)
-- else
-  - graph_path = project_graph_path(@project, current_ref, format: :json)
-  - commits_path = project_commits_path(@project, current_ref)
+- graph_path = project_graph_path(@project, current_ref, ref_type: @ref_type, format: :json)
+- commits_path = project_commits_path(@project, current_ref, ref_type: @ref_type)
 
-.sub-header-block.gl-bg-gray-10.gl-p-5
-  .tree-ref-holder.gl-display-inline-block.gl-vertical-align-middle.gl-mr-3>
-    = render 'shared/ref_switcher', destination: 'graphs'
-  = link_to s_('Commits|History'), commits_path, class: 'btn gl-button btn-default'
-
-.js-contributors-graph{ class: container_class, data: { project_graph_path: graph_path, project_branch: current_ref, default_branch: @project.default_branch } }
+.js-contributors-graph{ class: container_class, data: { project_graph_path: graph_path, project_branch: current_ref, default_branch: @project.default_branch, project_id: @project.id, commits_path: commits_path } }

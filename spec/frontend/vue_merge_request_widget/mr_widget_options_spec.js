@@ -11,6 +11,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { securityReportMergeRequestDownloadPathsQueryResponse } from 'jest/vue_shared/security_reports/mock_data';
 import api from '~/api';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_OK, HTTP_STATUS_NO_CONTENT } from '~/lib/utils/http_status';
 import Poll from '~/lib/utils/poll';
 import { setFaviconOverlay } from '~/lib/utils/favicon';
 import notify from '~/lib/utils/notify';
@@ -74,8 +75,10 @@ describe('MrWidgetOptions', () => {
     gon.features = { asyncMrWidget: true };
 
     mock = new MockAdapter(axios);
-    mock.onGet(mockData.merge_request_widget_path).reply(() => [200, { ...mockData }]);
-    mock.onGet(mockData.merge_request_cached_widget_path).reply(() => [200, { ...mockData }]);
+    mock.onGet(mockData.merge_request_widget_path).reply(() => [HTTP_STATUS_OK, { ...mockData }]);
+    mock
+      .onGet(mockData.merge_request_cached_widget_path)
+      .reply(() => [HTTP_STATUS_OK, { ...mockData }]);
   });
 
   afterEach(() => {
@@ -805,8 +808,8 @@ describe('MrWidgetOptions', () => {
 
       // Override top-level mocked requests, which always use a fresh copy of
       // mockData, which always includes the full pipeline object.
-      mock.onGet(mockData.merge_request_widget_path).reply(() => [200, mrData]);
-      mock.onGet(mockData.merge_request_cached_widget_path).reply(() => [200, mrData]);
+      mock.onGet(mockData.merge_request_widget_path).reply(() => [HTTP_STATUS_OK, mrData]);
+      mock.onGet(mockData.merge_request_cached_widget_path).reply(() => [HTTP_STATUS_OK, mrData]);
 
       return createComponent(mrData, {
         apolloMock: [
@@ -837,7 +840,7 @@ describe('MrWidgetOptions', () => {
 
   describe('suggestPipeline', () => {
     beforeEach(() => {
-      mock.onAny().reply(200);
+      mock.onAny().reply(HTTP_STATUS_OK);
     });
 
     describe('given feature flag is enabled', () => {
@@ -986,12 +989,12 @@ describe('MrWidgetOptions', () => {
             () =>
               Promise.resolve({
                 headers: { 'poll-interval': 0 },
-                status: 200,
+                status: HTTP_STATUS_OK,
                 data: { reports: 'parsed' },
               }),
             () =>
               Promise.resolve({
-                status: 200,
+                status: HTTP_STATUS_OK,
                 data: { reports: 'parsed' },
               }),
           ]),
@@ -1009,11 +1012,11 @@ describe('MrWidgetOptions', () => {
             () =>
               Promise.resolve({
                 headers: { 'poll-interval': 1 },
-                status: 204,
+                status: HTTP_STATUS_NO_CONTENT,
               }),
             () =>
               Promise.resolve({
-                status: 200,
+                status: HTTP_STATUS_OK,
                 data: { reports: 'parsed' },
               }),
           ]),

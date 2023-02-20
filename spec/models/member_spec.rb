@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Member do
+RSpec.describe Member, feature_category: :subgroups do
   include ExclusiveLeaseHelpers
 
   using RSpec::Parameterized::TableSyntax
@@ -891,18 +891,8 @@ RSpec.describe Member do
         expect(user.authorized_projects).not_to include(project)
       end
 
-      it 'successfully completes a blocking refresh', :delete do
-        expect(member).to receive(:refresh_member_authorized_projects).with(blocking: true).and_call_original
-
-        member.accept_invite!(user)
-
-        expect(user.authorized_projects.reload).to include(project)
-      end
-
-      it 'successfully completes a non-blocking refresh', :delete, :sidekiq_inline do
-        member.blocking_refresh = false
-
-        expect(member).to receive(:refresh_member_authorized_projects).with(blocking: false).and_call_original
+      it 'successfully completes a refresh', :delete, :sidekiq_inline do
+        expect(member).to receive(:refresh_member_authorized_projects).and_call_original
 
         member.accept_invite!(user)
 

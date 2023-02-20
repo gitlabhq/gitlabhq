@@ -65,7 +65,7 @@ describe('~/nav/components/top_nav_app.vue', () => {
 
       expect(trackingSpy).toHaveBeenCalledWith(undefined, 'click_nav', {
         label: 'hamburger_menu',
-        property: 'top_navigation',
+        property: 'navigation_top',
       });
     });
   });

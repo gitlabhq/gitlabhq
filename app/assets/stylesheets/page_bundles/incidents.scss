@@ -7,7 +7,13 @@
 }
 
 .timeline-event {
-  grid-template-columns: #{$gl-spacing-scale-9} minmax(0, 1fr) #{$gl-spacing-scale-7};
+  grid-template-columns: auto minmax(0, 1fr) #{$gl-spacing-scale-7};
+}
+
+.create-timeline-event,
+.edit-timeline-event,
+.timeline-event {
+  gap: $gl-spacing-scale-5;
 }
 
 /**
@@ -51,8 +57,10 @@
 }
 
 .timeline-entry:not(:last-child) {
+  @include gl-pb-0;
+
   .timeline-event-border {
-    @include gl-pb-5;
+    @include gl-pb-3;
     @include gl-border-gray-50;
     @include gl-border-1;
     @include gl-border-b-solid;
@@ -66,5 +74,15 @@
       @include gl-border-b;
       @include gl-pt-5;
     }
+  }
+}
+
+.timeline-event-note .md p {
+  @include gl-text-gray-700;
+}
+
+.timeline-event-note-date {
+  @media (max-width: $breakpoint-md) {
+    width: 100%;
   }
 }

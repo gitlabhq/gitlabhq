@@ -10,23 +10,23 @@ module Gitlab
           delegate :size, to: :seeds
           delegate :dig, to: :seeds
 
-          attr_reader :attributes
+          def initialize(context, attributes, previous_stages)
+            @context = context
+            @pipeline = context.pipeline
+            @attributes = attributes
+            @previous_stages = previous_stages
 
-          def initialize(context, stage_attributes, previous_stages)
-            pipeline = context.pipeline
-            @attributes = {
-              name: stage_attributes.fetch(:name),
-              position: stage_attributes.fetch(:index),
-              pipeline: pipeline,
-              project: pipeline.project,
-              partition_id: pipeline.partition_id
-            }
-
-            @stage = ::Ci::Stage.new(@attributes)
-
-            @builds = stage_attributes.fetch(:builds).map do |build_attributes|
-              Seed::Build.new(context, build_attributes, previous_stages + [self], @stage)
+            @builds = attributes.fetch(:builds).map do |attributes|
+              Seed::Build.new(context, attributes, previous_stages + [self])
             end
+          end
+
+          def attributes
+            { name: @attributes.fetch(:name),
+              position: @attributes.fetch(:index),
+              pipeline: @pipeline,
+              project: @pipeline.project,
+              partition_id: @pipeline.partition_id }
           end
 
           def seeds
@@ -49,8 +49,9 @@ module Gitlab
           end
 
           def to_resource
-            @stage.statuses = seeds.map(&:to_resource)
-            @stage
+            ::Ci::Stage.new(attributes).tap do |stage|
+              stage.statuses = seeds.map(&:to_resource)
+            end
           end
           strong_memoize_attr :to_resource
         end

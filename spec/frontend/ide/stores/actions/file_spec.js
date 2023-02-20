@@ -7,6 +7,7 @@ import { createStore } from '~/ide/stores';
 import * as actions from '~/ide/stores/actions/file';
 import * as types from '~/ide/stores/mutation_types';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { stubPerformanceWebAPI } from 'helpers/performance';
 import { file, createTriggerRenameAction, createTriggerUpdatePayload } from '../../helpers';
 
@@ -243,7 +244,7 @@ describe('IDE store file actions', () => {
     describe('success', () => {
       beforeEach(() => {
         mock.onGet(`${RELATIVE_URL_ROOT}/test/test/-/7297abc/${localFile.path}`).replyOnce(
-          200,
+          HTTP_STATUS_OK,
           {
             raw_path: 'raw_path',
           },
@@ -320,7 +321,7 @@ describe('IDE store file actions', () => {
         store.state.entries[localFile.path] = localFile;
 
         mock.onGet(`${RELATIVE_URL_ROOT}/test/test/-/7297abc/old-dull-file`).replyOnce(
-          200,
+          HTTP_STATUS_OK,
           {
             raw_path: 'raw_path',
           },
@@ -377,7 +378,7 @@ describe('IDE store file actions', () => {
 
     describe('success', () => {
       beforeEach(() => {
-        mock.onGet(/(.*)/).replyOnce(200, 'raw');
+        mock.onGet(/(.*)/).replyOnce(HTTP_STATUS_OK, 'raw');
       });
 
       it('calls getRawFileData service method', () => {
@@ -470,7 +471,7 @@ describe('IDE store file actions', () => {
 
     describe('return JSON', () => {
       beforeEach(() => {
-        mock.onGet(/(.*)/).replyOnce(200, JSON.stringify({ test: '123' }));
+        mock.onGet(/(.*)/).replyOnce(HTTP_STATUS_OK, JSON.stringify({ test: '123' }));
       });
 
       it('does not parse returned JSON', () => {

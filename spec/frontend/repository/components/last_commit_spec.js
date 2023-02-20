@@ -20,7 +20,7 @@ const findUserAvatarLink = () => wrapper.findComponent(UserAvatarLink);
 const findLastCommitLabel = () => wrapper.findByTestId('last-commit-id-label');
 const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
 const findCommitRowDescription = () => wrapper.find('.commit-row-description');
-const findStatusBox = () => wrapper.find('.gpg-status-box');
+const findStatusBox = () => wrapper.find('.signature-badge');
 const findItemTitle = () => wrapper.find('.item-title');
 
 const defaultPipelineEdges = [
@@ -206,7 +206,7 @@ describe('Repository last commit component', () => {
   it('renders the signature HTML as returned by the backend', async () => {
     createComponent({
       signatureHtml: `<a
-      class="btn gpg-status-box valid"
+      class="btn signature-badge"
       data-content="signature-content"
       data-html="true"
       data-placement="top"
@@ -214,12 +214,12 @@ describe('Repository last commit component', () => {
       data-toggle="popover"
       role="button"
       tabindex="0"
-      >Verified</a>`,
+      ><span class="gl-badge badge badge-pill badge-success md">Verified</span></a>`,
     });
     await waitForPromises();
 
     expect(findStatusBox().html()).toBe(
-      `<a class="btn gpg-status-box valid" data-content="signature-content" data-html="true" data-placement="top" data-title="signature-title" data-toggle="popover" role="button" tabindex="0">Verified</a>`,
+      `<a class="btn signature-badge" data-content="signature-content" data-html="true" data-placement="top" data-title="signature-title" data-toggle="popover" role="button" tabindex="0"><span class="gl-badge badge badge-pill badge-success md">Verified</span></a>`,
     );
   });
 

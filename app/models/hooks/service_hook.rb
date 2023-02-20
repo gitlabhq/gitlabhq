@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
 class ServiceHook < WebHook
+  include WebHooks::Unstoppable
   include Presentable
+
   extend ::Gitlab::Utils::Override
 
   belongs_to :integration
@@ -13,9 +15,4 @@ class ServiceHook < WebHook
 
   override :parent
   delegate :parent, to: :integration
-
-  override :executable?
-  def executable?
-    true
-  end
 end

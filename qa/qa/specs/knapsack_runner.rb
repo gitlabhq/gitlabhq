@@ -4,6 +4,8 @@ module QA
   module Specs
     class KnapsackRunner
       def self.run(args)
+        QA::Support::KnapsackReport.configure!
+
         allocator = Knapsack::AllocatorBuilder.new(Knapsack::Adapters::RSpecAdapter).allocator
 
         Knapsack.logger.info '==== Knapsack specs to execute ====='

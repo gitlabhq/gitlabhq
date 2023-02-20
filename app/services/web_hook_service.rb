@@ -142,6 +142,7 @@ class WebHookService
     log_data = {
       trigger: hook_name,
       url: hook.url,
+      interpolated_url: hook.interpolated_url,
       execution_duration: execution_duration,
       request_headers: build_headers,
       request_data: data,

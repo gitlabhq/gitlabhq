@@ -106,9 +106,9 @@ module Noteable
 
     relations << discussion_notes.select(
       "'notes' AS table_name",
-      'discussion_id',
       'MIN(id) AS id',
-      'MIN(created_at) AS created_at'
+      'MIN(created_at) AS created_at',
+      'ARRAY_AGG(id) AS ids'
     ).with_notes_filter(notes_filter)
      .group(:discussion_id)
 
@@ -116,17 +116,19 @@ module Noteable
       relations += synthetic_note_ids_relations
     end
 
-    Note.from_union(relations, remove_duplicates: false).fresh
+    Note.from_union(relations, remove_duplicates: false)
+      .select(:table_name, :id, :created_at, :ids)
+      .fresh
   end
 
   def capped_notes_count(max)
     notes.limit(max).count
   end
 
-  def grouped_diff_discussions(*args)
+  def grouped_diff_discussions(...)
     # Doesn't use `discussion_notes`, because this may include commit diff notes
     # besides MR diff notes, that we do not want to display on the MR Changes tab.
-    notes.inc_relations_for_view(self).grouped_diff_discussions(*args)
+    notes.inc_relations_for_view(self).grouped_diff_discussions(...)
   end
 
   # rubocop:disable Gitlab/ModuleWithInstanceVariables
@@ -223,15 +225,16 @@ module Noteable
     # currently multiple models include Noteable concern, but not all of them support
     # all resource events, so we check if given model supports given resource event.
     if respond_to?(:resource_label_events)
-      relations << resource_label_events.select("'resource_label_events'", "'NULL'", :id, :created_at)
+      relations << resource_label_events.select("'resource_label_events'", 'MIN(id)', :created_at, 'ARRAY_AGG(id)')
+                     .group(:created_at, :user_id)
     end
 
     if respond_to?(:resource_state_events)
-      relations << resource_state_events.select("'resource_state_events'", "'NULL'", :id, :created_at)
+      relations << resource_state_events.select("'resource_state_events'", :id, :created_at, 'ARRAY_FILL(id, ARRAY[1])')
     end
 
     if respond_to?(:resource_milestone_events)
-      relations << resource_milestone_events.select("'resource_milestone_events'", "'NULL'", :id, :created_at)
+      relations << resource_milestone_events.select("'resource_milestone_events'", :id, :created_at, 'ARRAY_FILL(id, ARRAY[1])')
     end
 
     relations

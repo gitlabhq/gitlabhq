@@ -3,7 +3,6 @@
 class Projects::Analytics::CycleAnalytics::StagesController < Projects::ApplicationController
   include ::Analytics::CycleAnalytics::StageActions
   include Gitlab::Utils::StrongMemoize
-  extend ::Gitlab::Utils::Override
 
   respond_to :json
 
@@ -11,20 +10,14 @@ class Projects::Analytics::CycleAnalytics::StagesController < Projects::Applicat
 
   before_action :authorize_read_cycle_analytics!
   before_action :only_default_value_stream_is_allowed!
-  before_action :authorize_stage!, only: [:median, :count, :average, :records]
 
   urgency :low
 
   private
 
-  override :parent
-  def parent
-    @project
-  end
-
-  override :value_stream_class
-  def value_stream_class
-    Analytics::CycleAnalytics::ProjectValueStream
+  override :namespace
+  def namespace
+    @project.project_namespace
   end
 
   override :cycle_analytics_configuration
@@ -33,7 +26,9 @@ class Projects::Analytics::CycleAnalytics::StagesController < Projects::Applicat
   end
 
   def only_default_value_stream_is_allowed!
-    render_404 if params[:value_stream_id] != Analytics::CycleAnalytics::Stages::BaseService::DEFAULT_VALUE_STREAM_NAME
+    return if requests_default_value_stream?
+
+    render_403
   end
 
   def permitted_stage?(stage)
@@ -42,11 +37,20 @@ class Projects::Analytics::CycleAnalytics::StagesController < Projects::Applicat
 
   def permissions
     strong_memoize(:permissions) do
-      Gitlab::CycleAnalytics::Permissions.new(user: current_user, project: parent).get
+      Gitlab::CycleAnalytics::Permissions.new(user: current_user, project: @project).get
     end
   end
 
-  def authorize_stage!
+  def authorize_stage
     render_403 unless permitted_stage?(stage)
   end
+
+  def requests_default_value_stream?
+    default_name = Analytics::CycleAnalytics::Stages::BaseService::DEFAULT_VALUE_STREAM_NAME
+
+    params[:value_stream_id] == default_name
+  end
 end
+
+mod = 'Projects::Analytics::CycleAnalytics::StagesController'
+Projects::Analytics::CycleAnalytics::StagesController.prepend_mod_with(mod) # rubocop: disable Cop/InjectEnterpriseEditionModule

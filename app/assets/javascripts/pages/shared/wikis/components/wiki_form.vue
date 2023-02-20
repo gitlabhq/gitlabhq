@@ -119,6 +119,12 @@ export default {
       isContentEditorActive: false,
       switchEditingControlDisabled: false,
       isFormDirty: getIsFormDirty(this.pageInfo),
+      formFieldProps: {
+        placeholder: this.$options.i18n.content.placeholder,
+        'aria-label': this.$options.i18n.content.label,
+        id: 'wiki_content',
+        name: 'wiki[content]',
+      },
     };
   },
   computed: {
@@ -338,16 +344,13 @@ export default {
         <gl-form-group>
           <markdown-editor
             v-model="content"
+            :form-field-props="formFieldProps"
             :render-markdown-path="pageInfo.markdownPreviewPath"
             :markdown-docs-path="pageInfo.markdownHelpPath"
             :uploads-path="pageInfo.uploadsPath"
             :enable-content-editor="isMarkdownFormat"
             :enable-preview="isMarkdownFormat"
             :autofocus="pageInfo.persisted"
-            :form-field-placeholder="$options.i18n.content.placeholder"
-            :form-field-aria-label="$options.i18n.content.label"
-            form-field-id="wiki_content"
-            form-field-name="wiki[content]"
             @contentEditor="notifyContentEditorActive"
             @markdownField="notifyContentEditorInactive"
             @keydown.ctrl.enter="submitFormShortcut"

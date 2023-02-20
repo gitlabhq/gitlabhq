@@ -8,6 +8,7 @@ RSpec.describe Issuable::DiscussionsListService do
   let_it_be(:project) { create(:project, :repository, :private, group: group) }
   let_it_be(:milestone) { create(:milestone, project: project) }
   let_it_be(:label) { create(:label, project: project) }
+  let_it_be(:label_2) { create(:label, project: project) }
 
   let(:finder_params_for_issuable) { {} }
 
@@ -22,8 +23,7 @@ RSpec.describe Issuable::DiscussionsListService do
       let_it_be(:issuable) { create(:work_item, :issue, project: project) }
 
       before do
-        stub_const('WorkItems::Type::BASE_TYPES', { issue: { name: 'NoNotesWidget', enum_value: 0 } })
-        stub_const('WorkItems::Type::WIDGETS_FOR_TYPE', { issue: [::WorkItems::Widgets::Description] })
+        WorkItems::Type.default_by_type(:issue).widget_definitions.find_by_widget_type(:notes).update!(disabled: true)
       end
 
       it "returns no notes" do

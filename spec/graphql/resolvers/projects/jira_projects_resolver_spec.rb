@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Resolvers::Projects::JiraProjectsResolver do
+RSpec.describe Resolvers::Projects::JiraProjectsResolver, feature_category: :integrations do
   include GraphqlHelpers
 
   specify do

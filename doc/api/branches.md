@@ -26,8 +26,9 @@ Parameters:
 
 | Attribute | Type           | Required | Description |
 |:----------|:---------------|:---------|:------------|
-| `id`      | integer/string | yes      | ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user.|
+| `id`      | integer/string | yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user.|
 | `search`  | string         | no       | Return list of branches containing the search string. You can use `^term` and `term$` to find branches that begin and end with `term` respectively. |
+| `regex`   | string         | no       | Return list of branches with names matching a [re2](https://github.com/google/re2/wiki/Syntax) regular expression. |
 
 Example request:
 
@@ -83,8 +84,8 @@ Parameters:
 
 | Attribute | Type           | Required | Description                                                                                                  |
 |:----------|:---------------|:---------|:-------------------------------------------------------------------------------------------------------------|
-| `id`      | integer/string | yes      | ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
-| `branch`  | string         | yes      | [URL-encoded name](index.md#namespaced-path-encoding) of the branch.                                                                                          |
+| `id`      | integer/string | yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `branch`  | string         | yes      | [URL-encoded name](rest/index.md#namespaced-path-encoding) of the branch.                                                                                          |
 
 Example request:
 
@@ -144,7 +145,7 @@ Parameters:
 
 | Attribute | Type    | Required | Description                                                                                                  |
 |:----------|:--------|:---------|:-------------------------------------------------------------------------------------------------------------|
-| `id`      | integer | yes      | ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`      | integer | yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `branch`  | string  | yes      | Name of the branch.                                                                                          |
 | `ref`     | string  | yes      | Branch name or commit SHA to create branch from.                                                             |
 
@@ -199,7 +200,7 @@ Parameters:
 
 | Attribute | Type           | Required | Description                                                                                                  |
 |:----------|:---------------|:---------|:-------------------------------------------------------------------------------------------------------------|
-| `id`      | integer/string | yes      | ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`      | integer/string | yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `branch`  | string         | yes      | Name of the branch.                                                                                          |
 
 Example request:
@@ -223,7 +224,7 @@ Parameters:
 
 | Attribute | Type           | Required | Description                                                                                                  |
 |:----------|:---------------|:---------|:-------------------------------------------------------------------------------------------------------------|
-| `id`      | integer/string | yes      | ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`      | integer/string | yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
 
 Example request:
 

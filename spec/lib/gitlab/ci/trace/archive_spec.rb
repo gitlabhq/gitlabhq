@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Trace::Archive do
+RSpec.describe Gitlab::Ci::Trace::Archive, feature_category: :scalability do
   context 'with transactional fixtures' do
     let_it_be_with_reload(:job) { create(:ci_build, :success, :trace_live) }
     let_it_be_with_reload(:trace_metadata) { create(:ci_build_trace_metadata, build: job) }

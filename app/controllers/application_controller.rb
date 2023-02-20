@@ -69,7 +69,7 @@ class ApplicationController < ActionController::Base
     :masked_page_url
 
   def self.endpoint_id_for_action(action_name)
-    "#{self.name}##{action_name}"
+    "#{name}##{action_name}"
   end
 
   rescue_from Encoding::CompatibilityError do |exception|
@@ -510,8 +510,6 @@ class ApplicationController < ActionController::Base
   end
 
   def set_locale(&block)
-    return Gitlab::I18n.with_user_locale(current_user, &block) unless Feature.enabled?(:preferred_language_switcher)
-
     if current_user
       Gitlab::I18n.with_user_locale(current_user, &block)
     else

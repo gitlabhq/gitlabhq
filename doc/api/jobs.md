@@ -10,7 +10,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 Get a list of jobs in a project. Jobs are sorted in descending order of their IDs.
 
-By default, this request returns 20 results at a time because the API results [are paginated](index.md#pagination)
+By default, this request returns 20 results at a time because the API results [are paginated](rest/index.md#pagination)
+
+This endpoint supports both offset-based and [keyset-based](rest/index.md#keyset-based-pagination) pagination. Keyset-based
+pagination is recommended when requesting consecutive pages of results.
 
 ```plaintext
 GET /projects/:id/jobs
@@ -18,7 +21,7 @@ GET /projects/:id/jobs
 
 | Attribute | Type                           | Required               | Description |
 |-----------|--------------------------------|------------------------|-------------|
-| `id`      | integer/string                 | **{check-circle}** Yes | ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`      | integer/string                 | **{check-circle}** Yes | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `scope`   | string **or** array of strings | **{dotted-circle}** No | Scope of jobs to show. Either one of or an array of the following: `created`, `pending`, `running`, `failed`, `success`, `canceled`, `skipped`, `waiting_for_resource`, or `manual`. All jobs are returned if `scope` is not provided. |
 
 ```shell
@@ -44,6 +47,7 @@ Example of response
     "created_at": "2015-12-24T15:51:21.802Z",
     "started_at": "2015-12-24T17:54:27.722Z",
     "finished_at": "2015-12-24T17:54:27.895Z",
+    "erased_at": null,
     "duration": 0.173,
     "queued_duration": 0.010,
     "artifacts_file": {
@@ -112,6 +116,7 @@ Example of response
     "created_at": "2015-12-24T15:51:21.727Z",
     "started_at": "2015-12-24T17:54:24.729Z",
     "finished_at": "2015-12-24T17:54:24.921Z",
+    "erased_at": null,
     "duration": 0.192,
     "queued_duration": 0.023,
     "artifacts_expire_at": "2016-01-23T17:54:24.921Z",
@@ -163,7 +168,7 @@ Example of response
 
 Get a list of jobs for a pipeline.
 
-By default, this request returns 20 results at a time because the API results [are paginated](index.md#pagination)
+By default, this request returns 20 results at a time because the API results [are paginated](rest/index.md#pagination)
 
 ```plaintext
 GET /projects/:id/pipelines/:pipeline_id/jobs
@@ -171,7 +176,7 @@ GET /projects/:id/pipelines/:pipeline_id/jobs
 
 | Attribute         | Type                           | Required               | Description |
 |-------------------|--------------------------------|------------------------|-------------|
-| `id`              | integer/string                 | **{check-circle}** Yes | ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`              | integer/string                 | **{check-circle}** Yes | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `pipeline_id`     | integer                        | **{check-circle}** Yes | ID of a pipeline. Can also be obtained in CI jobs via the [predefined CI variable](../ci/variables/predefined_variables.md) `CI_PIPELINE_ID`. |
 | `scope`           | string **or** array of strings | **{dotted-circle}** No | Scope of jobs to show. Either one of or an array of the following: `created`, `pending`, `running`, `failed`, `success`, `canceled`, `skipped`, `waiting_for_resource`, or `manual`. All jobs are returned if `scope` is not provided. |
 | `include_retried` | boolean                        | **{dotted-circle}** No | Include retried jobs in the response. Defaults to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/272627) in GitLab 13.9. |
@@ -199,6 +204,7 @@ Example of response
     "created_at": "2015-12-24T15:51:21.727Z",
     "started_at": "2015-12-24T17:54:24.729Z",
     "finished_at": "2015-12-24T17:54:24.921Z",
+    "erased_at": null,
     "duration": 0.192,
     "queued_duration": 0.023,
     "artifacts_expire_at": "2016-01-23T17:54:24.921Z",
@@ -258,6 +264,7 @@ Example of response
     "created_at": "2015-12-24T15:51:21.802Z",
     "started_at": "2015-12-24T17:54:27.722Z",
     "finished_at": "2015-12-24T17:54:27.895Z",
+    "erased_at": null,
     "duration": 0.173,
     "queued_duration": 0.023,
     "artifacts_file": {
@@ -334,7 +341,7 @@ GET /projects/:id/pipelines/:pipeline_id/bridges
 
 | Attribute     | Type                           | Required               | Description |
 |---------------|--------------------------------|------------------------|-------------|
-| `id`          | integer/string                 | **{check-circle}** Yes | ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`          | integer/string                 | **{check-circle}** Yes | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `pipeline_id` | integer                        | **{check-circle}** Yes | ID of a pipeline. |
 | `scope`       | string **or** array of strings | **{dotted-circle}** No | Scope of jobs to show. Either one of or an array of the following: `created`, `pending`, `running`, `failed`, `success`, `canceled`, `skipped`, `waiting_for_resource`, or `manual`. All jobs are returned if `scope` is not provided. |
 
@@ -361,6 +368,7 @@ Example of response
     "created_at": "2015-12-24T15:51:21.802Z",
     "started_at": "2015-12-24T17:54:27.722Z",
     "finished_at": "2015-12-24T17:58:27.895Z",
+    "erased_at": null,
     "duration": 240,
     "queued_duration": 0.123,
     "id": 7,
@@ -449,6 +457,7 @@ Example of response
   "created_at": "2015-12-24T15:51:21.880Z",
   "started_at": "2015-12-24T17:54:30.733Z",
   "finished_at": "2015-12-24T17:54:31.198Z",
+  "erased_at": null,
   "duration": 0.465,
   "queued_duration": 0.123,
   "artifacts_expire_at": "2016-01-23T17:54:31.198Z",
@@ -575,7 +584,7 @@ GET /projects/:id/jobs/:job_id
 
 | Attribute | Type           | Required               | Description |
 |-----------|----------------|------------------------|-------------|
-| `id`      | integer/string | **{check-circle}** Yes | ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`      | integer/string | **{check-circle}** Yes | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `job_id`  | integer        | **{check-circle}** Yes | ID of a job. |
 
 ```shell
@@ -600,6 +609,7 @@ Example of response
   "created_at": "2015-12-24T15:51:21.880Z",
   "started_at": "2015-12-24T17:54:30.733Z",
   "finished_at": "2015-12-24T17:54:31.198Z",
+  "erased_at": null,
   "duration": 0.465,
   "queued_duration": 0.010,
   "artifacts_expire_at": "2016-01-23T17:54:31.198Z",
@@ -655,7 +665,7 @@ GET /projects/:id/jobs/:job_id/trace
 
 | Attribute | Type           | Required               | Description |
 |-----------|----------------|------------------------|-------------|
-| `id`      | integer/string | **{check-circle}** Yes | ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`      | integer/string | **{check-circle}** Yes | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `job_id`  | integer        | **{check-circle}** Yes | ID of a job. |
 
 ```shell
@@ -679,7 +689,7 @@ POST /projects/:id/jobs/:job_id/cancel
 
 | Attribute | Type           | Required               | Description |
 |-----------|----------------|------------------------|-------------|
-| `id`      | integer/string | **{check-circle}** Yes | ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`      | integer/string | **{check-circle}** Yes | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `job_id`  | integer        | **{check-circle}** Yes | ID of a job. |
 
 ```shell
@@ -704,6 +714,7 @@ Example of response
   "created_at": "2016-01-11T10:13:33.506Z",
   "started_at": "2016-01-11T10:14:09.526Z",
   "finished_at": null,
+  "erased_at": null,
   "duration": 8,
   "queued_duration": 0.010,
   "id": 1,
@@ -732,7 +743,7 @@ POST /projects/:id/jobs/:job_id/retry
 
 | Attribute | Type           | Required               | Description |
 |-----------|----------------|------------------------|-------------|
-| `id`      | integer/string | **{check-circle}** Yes | ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`      | integer/string | **{check-circle}** Yes | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `job_id`  | integer        | **{check-circle}** Yes | ID of a job. |
 
 ```shell
@@ -757,6 +768,7 @@ Example of response
   "created_at": "2016-01-11T10:13:33.506Z",
   "started_at": null,
   "finished_at": null,
+  "erased_at": null,
   "duration": null,
   "queued_duration": 0.010,
   "id": 1,
@@ -787,7 +799,7 @@ Parameters
 
 | Attribute | Type           | Required               | Description |
 |-----------|----------------|------------------------|-------------|
-| `id`      | integer/string | **{check-circle}** Yes | ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`      | integer/string | **{check-circle}** Yes | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `job_id`  | integer        | **{check-circle}** Yes | ID of a job. |
 
 Example of request
@@ -821,6 +833,7 @@ Example of response
   "created_at": "2016-01-11T10:13:33.506Z",
   "started_at": "2016-01-11T10:13:33.506Z",
   "finished_at": "2016-01-11T10:15:10.506Z",
+  "erased_at": "2016-01-11T11:30:19.914Z",
   "duration": 97.0,
   "queued_duration": 0.010,
   "status": "failed",
@@ -847,7 +860,7 @@ POST /projects/:id/jobs/:job_id/play
 
 | Attribute                  | Type            | Required               | Description |
 |----------------------------|-----------------|------------------------|-------------|
-| `id`                       | integer/string  | **{check-circle}** Yes | ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`                       | integer/string  | **{check-circle}** Yes | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `job_id`                   | integer         | **{check-circle}** Yes | ID of a job. |
 | `job_variables_attributes` | array of hashes | **{dotted-circle}** No | An array containing the custom variables available to the job. [Introduced in](https://gitlab.com/gitlab-org/gitlab/-/issues/37267) GitLab 14.9. |
 
@@ -894,6 +907,7 @@ Example response:
   "created_at": "2016-01-11T10:13:33.506Z",
   "started_at": null,
   "finished_at": null,
+  "erased_at": null,
   "duration": null,
   "queued_duration": 0.010,
   "id": 1,

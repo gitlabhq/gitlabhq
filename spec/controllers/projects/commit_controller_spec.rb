@@ -36,6 +36,7 @@ RSpec.describe Projects::CommitController do
         go(id: commit.id)
 
         expect(response).to be_ok
+        expect(assigns(:ref)).to eq commit.id
       end
 
       context 'when a pipeline job is running' do
@@ -57,6 +58,7 @@ RSpec.describe Projects::CommitController do
         go(id: commit.id.reverse)
 
         expect(response).to be_not_found
+        expect(assigns(:ref)).to be_nil
       end
     end
 

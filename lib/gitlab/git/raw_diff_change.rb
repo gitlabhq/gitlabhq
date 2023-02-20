@@ -38,7 +38,7 @@ module Gitlab
       def extract_paths(file_path)
         case operation
         when :copied, :renamed
-          file_path.split(/\t/)
+          file_path.split("\t")
         when :deleted
           [file_path, nil]
         when :added

@@ -178,6 +178,10 @@ module Types
       field :merge_request_event_type, Types::Ci::PipelineMergeRequestEventTypeEnum, null: true,
                                                                                      description: "Event type of the pipeline associated with a merge request."
 
+      def commit
+        BatchLoader::GraphQL.wrap(object.commit)
+      end
+
       def detailed_status
         object.detailed_status(current_user)
       end

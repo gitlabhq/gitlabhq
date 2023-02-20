@@ -12,9 +12,9 @@ describe('MRWidgetConflicts', () => {
   const findResolveButton = () => wrapper.findByTestId('resolve-conflicts-button');
   const findMergeLocalButton = () => wrapper.findByTestId('merge-locally-button');
 
-  const mergeConflictsText = 'Merge blocked: merge conflicts must be resolved.';
+  const mergeConflictsText = 'merge conflicts must be resolved.';
   const fastForwardMergeText =
-    'Merge blocked: fast-forward merge is not possible. To merge this request, first rebase locally.';
+    'fast-forward merge is not possible. To merge this request, first rebase locally.';
   const userCannotMergeText =
     'Users who can write to the source or target branches can resolve the conflicts.';
   const resolveConflictsBtnText = 'Resolve conflicts';
@@ -76,8 +76,9 @@ describe('MRWidgetConflicts', () => {
     });
 
     it('should tell you about conflicts without bothering other people', () => {
-      expect(wrapper.text()).toContain(mergeConflictsText);
-      expect(wrapper.text()).not.toContain(userCannotMergeText);
+      const text = removeBreakLine(wrapper.text()).trim();
+      expect(text).toContain(mergeConflictsText);
+      expect(text).not.toContain(userCannotMergeText);
     });
 
     it('should not allow you to resolve the conflicts', () => {
@@ -102,8 +103,8 @@ describe('MRWidgetConflicts', () => {
     });
 
     it('should tell you about conflicts', () => {
-      expect(wrapper.text()).toContain(mergeConflictsText);
-      expect(wrapper.text()).toContain(userCannotMergeText);
+      const text = removeBreakLine(wrapper.text()).trim();
+      expect(text).toContain(userCannotMergeText);
     });
 
     it('should allow you to resolve the conflicts', () => {
@@ -129,8 +130,9 @@ describe('MRWidgetConflicts', () => {
     });
 
     it('should tell you about conflicts without bothering other people', () => {
-      expect(wrapper.text()).toContain(mergeConflictsText);
-      expect(wrapper.text()).not.toContain(userCannotMergeText);
+      const text = removeBreakLine(wrapper.text()).trim();
+      expect(text).toContain(mergeConflictsText);
+      expect(text).not.toContain(userCannotMergeText);
     });
 
     it('should allow you to resolve the conflicts', () => {

@@ -21,6 +21,7 @@ RSpec.describe Gitlab::Regex, feature_category: :tooling do
     it_behaves_like 'project/group name chars regex'
     it { is_expected.not_to match('?gitlab') }
     it { is_expected.not_to match("Users's something") }
+    it { is_expected.not_to match('users/something') }
   end
 
   shared_examples_for 'project name regex' do
@@ -28,6 +29,7 @@ RSpec.describe Gitlab::Regex, feature_category: :tooling do
     it { is_expected.to match("Gitlab++") }
     it { is_expected.not_to match('?gitlab') }
     it { is_expected.not_to match("Users's something") }
+    it { is_expected.not_to match('users/something') }
   end
 
   describe '.project_name_regex' do
@@ -72,8 +74,20 @@ RSpec.describe Gitlab::Regex, feature_category: :tooling do
     it { is_expected.to eq("can contain only letters, digits, emojis, '_', '.', dash, space, parenthesis. It must start with letter, digit, emoji or '_'.") }
   end
 
-  describe '.bulk_import_namespace_path_regex' do
-    subject { described_class.bulk_import_namespace_path_regex }
+  describe '.bulk_import_destination_namespace_path_regex_message' do
+    subject { described_class.bulk_import_destination_namespace_path_regex_message }
+
+    it {
+      is_expected
+        .to eq("cannot start with a non-alphanumeric character except for periods or underscores, " \
+               "can contain only alphanumeric characters, forward slashes, periods, and underscores, " \
+               "cannot end with a period or forward slash, and has a relative path structure " \
+               "with no http protocol chars or leading or trailing forward slashes")
+    }
+  end
+
+  describe '.bulk_import_destination_namespace_path_regex' do
+    subject { described_class.bulk_import_destination_namespace_path_regex }
 
     it { is_expected.not_to match('?gitlab') }
     it { is_expected.not_to match("Users's something") }
@@ -87,6 +101,34 @@ RSpec.describe Gitlab::Regex, feature_category: :tooling do
     it { is_expected.not_to match('good_for+you') }
     it { is_expected.not_to match('source/') }
     it { is_expected.not_to match('.source/full./path') }
+
+    it { is_expected.to match('source') }
+    it { is_expected.to match('.source') }
+    it { is_expected.to match('_source') }
+    it { is_expected.to match('source/full') }
+    it { is_expected.to match('source/full/path') }
+    it { is_expected.to match('.source/.full/.path') }
+    it { is_expected.to match('domain_namespace') }
+    it { is_expected.to match('gitlab-migration-test') }
+    it { is_expected.to match('') } # it is possible to pass an empty string for destination_namespace in bulk_import POST request
+  end
+
+  describe '.bulk_import_source_full_path_regex' do
+    subject { described_class.bulk_import_source_full_path_regex }
+
+    it { is_expected.not_to match('?gitlab') }
+    it { is_expected.not_to match("Users's something") }
+    it { is_expected.not_to match('/source') }
+    it { is_expected.not_to match('http:') }
+    it { is_expected.not_to match('https:') }
+    it { is_expected.not_to match('example.com/?stuff=true') }
+    it { is_expected.not_to match('example.com:5000/?stuff=true') }
+    it { is_expected.not_to match('http://gitlab.example/gitlab-org/manage/import/gitlab-migration-test') }
+    it { is_expected.not_to match('_good_for_me!') }
+    it { is_expected.not_to match('good_for+you') }
+    it { is_expected.not_to match('source/') }
+    it { is_expected.not_to match('.source/full./path') }
+    it { is_expected.not_to match('') }
 
     it { is_expected.to match('source') }
     it { is_expected.to match('.source') }
@@ -608,6 +650,7 @@ RSpec.describe Gitlab::Regex, feature_category: :tooling do
       it { is_expected.to match('1.0') }
       it { is_expected.to match('1.0~alpha1') }
       it { is_expected.to match('2:4.9.5+dfsg-5+deb10u1') }
+      it { is_expected.to match('0.0.0-806aa143-f0bf-4f27-be65-8e4fcb745f37') }
     end
 
     context 'dpkg errors' do
@@ -659,6 +702,22 @@ RSpec.describe Gitlab::Regex, feature_category: :tooling do
       it { is_expected.not_to match('1%2e%2e%2f0') }
       it { is_expected.not_to match('1%2e%2e/0') }
     end
+  end
+
+  describe '.debian_direct_upload_filename_regex' do
+    subject { described_class.debian_direct_upload_filename_regex }
+
+    it { is_expected.to match('libsample0_1.2.3~alpha2_amd64.deb') }
+    it { is_expected.to match('sample-dev_1.2.3~binary_amd64.deb') }
+    it { is_expected.to match('sample-udeb_1.2.3~alpha2_amd64.udeb') }
+
+    it { is_expected.not_to match('sample_1.2.3~alpha2_amd64.buildinfo') }
+    it { is_expected.not_to match('sample_1.2.3~alpha2_amd64.changes') }
+    it { is_expected.not_to match('sample_1.2.3~alpha2.dsc') }
+    it { is_expected.not_to match('sample_1.2.3~alpha2.tar.xz') }
+
+    # ensure right anchor
+    it { is_expected.not_to match('libsample0_1.2.3~alpha2_amd64.debu') }
   end
 
   describe '.helm_channel_regex' do
@@ -977,21 +1036,6 @@ RSpec.describe Gitlab::Regex, feature_category: :tooling do
     it { is_expected.not_to match('%2e%2e%2f1.2.3') }
   end
 
-  describe '.saved_reply_name_regex' do
-    subject { described_class.saved_reply_name_regex }
-
-    it { is_expected.to match('test') }
-    it { is_expected.to match('test123') }
-    it { is_expected.to match('test-test') }
-    it { is_expected.to match('test-test_0123') }
-    it { is_expected.not_to match('test test') }
-    it { is_expected.not_to match('test-') }
-    it { is_expected.not_to match('/z/test_') }
-    it { is_expected.not_to match('.xtest_') }
-    it { is_expected.not_to match('.xt.est_') }
-    it { is_expected.not_to match('0test1') }
-  end
-
   describe '.sha256_regex' do
     subject { described_class.sha256_regex }
 
@@ -1044,5 +1088,94 @@ RSpec.describe Gitlab::Regex, feature_category: :tooling do
     it { is_expected.not_to match('CD:CD:CD:CD:CD:CD:CD:CD:CD:CD:CD:CD:CD:CD:CD:CD:CD:CD:CD:GG') }
     it { is_expected.not_to match('random string') }
     it { is_expected.not_to match('12321342545356434523412341245452345623453542345234523453245') }
+  end
+
+  describe 'code, html blocks, or html comment blocks regex' do
+    context 'code blocks' do
+      subject { described_class::MARKDOWN_CODE_BLOCK_REGEX }
+
+      let(:expected) { %(```code\nsome code\n\n>>>\nthat includes a multiline-blockquote\n>>>\n```) }
+      let(:markdown) do
+        <<~MARKDOWN
+        Regular text
+
+        ```code
+        some code
+
+        >>>
+        that includes a multiline-blockquote
+        >>>
+        ```
+        MARKDOWN
+      end
+
+      it { is_expected.to match(%(```ruby\nsomething\n```)) }
+      it { is_expected.not_to match(%(must start in first column ```ruby\nsomething\n```)) }
+      it { is_expected.not_to match(%(```ruby must be multi-line ```)) }
+      it { expect(subject.match(markdown)[:code]).to eq expected }
+    end
+
+    context 'HTML blocks' do
+      subject { described_class::MARKDOWN_HTML_BLOCK_REGEX }
+
+      let(:expected) { %(<section>\n<p>paragraph</p>\n\n>>>\nthat includes a multiline-blockquote\n>>>\n</section>) }
+      let(:markdown) do
+        <<~MARKDOWN
+        Regular text
+
+        <section>
+        <p>paragraph</p>
+
+        >>>
+        that includes a multiline-blockquote
+        >>>
+        </section>
+        MARKDOWN
+      end
+
+      it { is_expected.to match(%(<section>\nsomething\n</section>)) }
+      it { is_expected.not_to match(%(must start in first column <section>\nsomething\n</section>)) }
+      it { is_expected.not_to match(%(<section>must be multi-line</section>)) }
+      it { expect(subject.match(markdown)[:html]).to eq expected }
+    end
+
+    context 'HTML comment lines' do
+      subject { described_class::MARKDOWN_HTML_COMMENT_LINE_REGEX }
+
+      let(:expected) { %(<!-- an HTML comment -->) }
+      let(:markdown) do
+        <<~MARKDOWN
+        Regular text
+
+        <!-- an HTML comment -->
+
+        more text
+        MARKDOWN
+      end
+
+      it { is_expected.to match(%(<!-- single line comment -->)) }
+      it { is_expected.not_to match(%(<!--\nblock comment\n-->)) }
+      it { is_expected.not_to match(%(must start in first column <!-- comment -->)) }
+      it { expect(subject.match(markdown)[:html_comment_line]).to eq expected }
+    end
+
+    context 'HTML comment blocks' do
+      subject { described_class::MARKDOWN_HTML_COMMENT_BLOCK_REGEX }
+
+      let(:expected) { %(<!-- the start of an HTML comment\n- [ ] list item commented out\n-->) }
+      let(:markdown) do
+        <<~MARKDOWN
+        Regular text
+
+        <!-- the start of an HTML comment
+        - [ ] list item commented out
+        -->
+        MARKDOWN
+      end
+
+      it { is_expected.to match(%(<!--\ncomment\n-->)) }
+      it { is_expected.not_to match(%(must start in first column <!--\ncomment\n-->)) }
+      it { expect(subject.match(markdown)[:html_comment_block]).to eq expected }
+    end
   end
 end

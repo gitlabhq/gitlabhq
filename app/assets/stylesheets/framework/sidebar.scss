@@ -741,20 +741,6 @@
   top: calc(#{$header-height} + #{$performance-bar-height});
 }
 
-.sidebar-move-issue-confirmation-button {
-  width: 100%;
-
-  &.is-loading {
-    .sidebar-move-issue-confirmation-loading-icon {
-      display: inline-block;
-    }
-  }
-}
-
-.sidebar-move-issue-confirmation-loading-icon {
-  display: none;
-}
-
 .issuable-show-labels {
   .gl-label {
     margin-bottom: 5px;

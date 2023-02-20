@@ -11,6 +11,9 @@ module API
       params :optional_state_filter_ee do
       end
 
+      params :optional_put_params_ee do
+      end
+
       def find_source(source_type, id)
         public_send("find_#{source_type}!", id) # rubocop:disable GitlabSecurity/PublicSend
       end
@@ -96,6 +99,10 @@ module API
 
       def add_single_member?(user_id)
         user_id.present?
+      end
+
+      def self.member_access_levels
+        Gitlab::Access.all_values
       end
 
       private

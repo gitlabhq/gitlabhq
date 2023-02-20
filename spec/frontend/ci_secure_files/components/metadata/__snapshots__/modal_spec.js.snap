@@ -1,0 +1,386 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Secure File Metadata Modal when a .cer file is supplied matches cer the snapshot 1`] = `
+<div
+  category="primary"
+  hide-footer=""
+>
+  <div
+    data-testid="slot-modal-title"
+  >
+    myfile.cer Metadata
+  </div>
+  <div
+    data-testid="slot-default"
+  >
+     
+    <table
+      aria-busy="false"
+      aria-colcount="2"
+      class="table b-table gl-table"
+      role="table"
+    >
+      <!---->
+      <!---->
+      <thead
+        class=""
+        role="rowgroup"
+      >
+        <!---->
+        <tr
+          class=""
+          role="row"
+        >
+          <th
+            aria-colindex="1"
+            class="hidden"
+            role="columnheader"
+            scope="col"
+          >
+            <div>
+              Item Name
+            </div>
+          </th>
+          <th
+            aria-colindex="2"
+            class="hidden"
+            role="columnheader"
+            scope="col"
+          >
+            <div>
+              Item Data
+            </div>
+          </th>
+        </tr>
+      </thead>
+      <tbody
+        role="rowgroup"
+      >
+        <!---->
+        <tr
+          class=""
+          role="row"
+        >
+          <td
+            aria-colindex="1"
+            class=""
+            role="cell"
+          >
+            <strong>
+              Name
+            </strong>
+          </td>
+          <td
+            aria-colindex="2"
+            class=""
+            role="cell"
+          >
+            
+    Apple Distribution: Team Name (ABC123XYZ)
+  
+          </td>
+        </tr>
+        <tr
+          class=""
+          role="row"
+        >
+          <td
+            aria-colindex="1"
+            class=""
+            role="cell"
+          >
+            <strong>
+              Serial
+            </strong>
+          </td>
+          <td
+            aria-colindex="2"
+            class=""
+            role="cell"
+          >
+            
+    33669367788748363528491290218354043267
+  
+          </td>
+        </tr>
+        <tr
+          class=""
+          role="row"
+        >
+          <td
+            aria-colindex="1"
+            class=""
+            role="cell"
+          >
+            <strong>
+              Team
+            </strong>
+          </td>
+          <td
+            aria-colindex="2"
+            class=""
+            role="cell"
+          >
+            
+    Team Name (ABC123XYZ)
+  
+          </td>
+        </tr>
+        <tr
+          class=""
+          role="row"
+        >
+          <td
+            aria-colindex="1"
+            class=""
+            role="cell"
+          >
+            <strong>
+              Issuer
+            </strong>
+          </td>
+          <td
+            aria-colindex="2"
+            class=""
+            role="cell"
+          >
+            
+    Apple Worldwide Developer Relations Certification Authority - G3
+  
+          </td>
+        </tr>
+        <tr
+          class=""
+          role="row"
+        >
+          <td
+            aria-colindex="1"
+            class=""
+            role="cell"
+          >
+            <strong>
+              Expires at
+            </strong>
+          </td>
+          <td
+            aria-colindex="2"
+            class=""
+            role="cell"
+          >
+            
+    April 26, 2022 at 7:20:40 PM GMT
+  
+          </td>
+        </tr>
+        <!---->
+        <!---->
+      </tbody>
+      <!---->
+    </table>
+  </div>
+</div>
+`;
+
+exports[`Secure File Metadata Modal when a .mobileprovision file is supplied matches the mobileprovision snapshot 1`] = `
+<div
+  category="primary"
+  hide-footer=""
+>
+  <div
+    data-testid="slot-modal-title"
+  >
+    sample.mobileprovision Metadata
+  </div>
+  <div
+    data-testid="slot-default"
+  >
+     
+    <table
+      aria-busy="false"
+      aria-colcount="2"
+      class="table b-table gl-table"
+      role="table"
+    >
+      <!---->
+      <!---->
+      <thead
+        class=""
+        role="rowgroup"
+      >
+        <!---->
+        <tr
+          class=""
+          role="row"
+        >
+          <th
+            aria-colindex="1"
+            class="hidden"
+            role="columnheader"
+            scope="col"
+          >
+            <div>
+              Item Name
+            </div>
+          </th>
+          <th
+            aria-colindex="2"
+            class="hidden"
+            role="columnheader"
+            scope="col"
+          >
+            <div>
+              Item Data
+            </div>
+          </th>
+        </tr>
+      </thead>
+      <tbody
+        role="rowgroup"
+      >
+        <!---->
+        <tr
+          class=""
+          role="row"
+        >
+          <td
+            aria-colindex="1"
+            class=""
+            role="cell"
+          >
+            <strong>
+              UUID
+            </strong>
+          </td>
+          <td
+            aria-colindex="2"
+            class=""
+            role="cell"
+          >
+            
+    6b9fcce1-b9a9-4b37-b2ce-ec4da2044abf
+  
+          </td>
+        </tr>
+        <tr
+          class=""
+          role="row"
+        >
+          <td
+            aria-colindex="1"
+            class=""
+            role="cell"
+          >
+            <strong>
+              Platforms
+            </strong>
+          </td>
+          <td
+            aria-colindex="2"
+            class=""
+            role="cell"
+          >
+            
+    iOS
+  
+          </td>
+        </tr>
+        <tr
+          class=""
+          role="row"
+        >
+          <td
+            aria-colindex="1"
+            class=""
+            role="cell"
+          >
+            <strong>
+              Team
+            </strong>
+          </td>
+          <td
+            aria-colindex="2"
+            class=""
+            role="cell"
+          >
+            
+    Team Name (ABC123XYZ)
+  
+          </td>
+        </tr>
+        <tr
+          class=""
+          role="row"
+        >
+          <td
+            aria-colindex="1"
+            class=""
+            role="cell"
+          >
+            <strong>
+              App
+            </strong>
+          </td>
+          <td
+            aria-colindex="2"
+            class=""
+            role="cell"
+          >
+            
+    iOS Demo - match Development com.gitlab.ios-demo
+  
+          </td>
+        </tr>
+        <tr
+          class=""
+          role="row"
+        >
+          <td
+            aria-colindex="1"
+            class=""
+            role="cell"
+          >
+            <strong>
+              Certificates
+            </strong>
+          </td>
+          <td
+            aria-colindex="2"
+            class=""
+            role="cell"
+          >
+            
+    33669367788748363528491290218354043267
+  
+          </td>
+        </tr>
+        <tr
+          class=""
+          role="row"
+        >
+          <td
+            aria-colindex="1"
+            class=""
+            role="cell"
+          >
+            <strong>
+              Expires at
+            </strong>
+          </td>
+          <td
+            aria-colindex="2"
+            class=""
+            role="cell"
+          >
+            
+    August 1, 2023 at 11:15:13 PM GMT
+  
+          </td>
+        </tr>
+        <!---->
+        <!---->
+      </tbody>
+      <!---->
+    </table>
+  </div>
+</div>
+`;

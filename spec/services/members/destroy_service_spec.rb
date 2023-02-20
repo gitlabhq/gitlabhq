@@ -41,6 +41,14 @@ RSpec.describe Members::DestroyService, feature_category: :subgroups do
           .not_to change { member_user.notification_settings.count }
       end
     end
+
+    it 'resolves the access request todos for the owner' do
+      expect_next_instance_of(described_class) do |instance|
+        expect(instance).to receive(:resolve_access_request_todos).with(current_user, member)
+      end
+
+      described_class.new(current_user).execute(member, **opts)
+    end
   end
 
   shared_examples 'a service destroying a member with access' do
@@ -111,26 +119,6 @@ RSpec.describe Members::DestroyService, feature_category: :subgroups do
 
     subject(:destroy_member) { service_object.execute(member_to_delete, **opts) }
 
-    shared_examples_for 'deletes the member without using a lock' do
-      it 'does not try to perform the delete within a lock' do
-        # `UpdateHighestRole` concern also uses locks to peform work
-        # whenever a Member is committed, so that needs to be accounted for.
-        lock_key_for_update_highest_role = "update_highest_role:#{member_to_delete.user_id}"
-        expect(Gitlab::ExclusiveLease)
-          .to receive(:new).with(lock_key_for_update_highest_role, timeout: 10.minutes.to_i).and_call_original
-
-        # We do not use any locks for member deletion process.
-        expect(Gitlab::ExclusiveLease)
-          .not_to receive(:new).with(lock_key, timeout: timeout)
-
-        destroy_member
-      end
-
-      it 'destroys the membership' do
-        expect { destroy_member }.to change { entity.members.count }.by(-1)
-      end
-    end
-
     context 'for group members' do
       before do
         group.add_owner(current_user)
@@ -171,13 +159,70 @@ RSpec.describe Members::DestroyService, feature_category: :subgroups do
       context 'deleting group members that are not owners' do
         let!(:member_to_delete) { group.add_developer(member_user) }
 
-        it_behaves_like 'deletes the member without using a lock' do
-          let(:entity) { group }
+        it 'does not try to perform the deletion of the member within a lock' do
+          # We need to account for other places involved in the Member deletion process that
+          # uses ExclusiveLease.
+
+          # 1. `UpdateHighestRole` concern uses locks to peform work
+          # whenever a Member is committed, so that needs to be accounted for.
+          lock_key_for_update_highest_role = "update_highest_role:#{member_to_delete.user_id}"
+
+          expect(Gitlab::ExclusiveLease)
+            .to receive(:new).with(lock_key_for_update_highest_role, timeout: 10.minutes.to_i).and_call_original
+
+          # 2. `Users::RefreshAuthorizedProjectsService` also uses locks to perform work,
+          # whenever a user's authorizations has to be refreshed, so that needs to be accounted for as well.
+          lock_key_for_authorizations_refresh = "refresh_authorized_projects:#{member_to_delete.user_id}"
+
+          expect(Gitlab::ExclusiveLease)
+            .to receive(:new).with(lock_key_for_authorizations_refresh, timeout: 1.minute.to_i).and_call_original
+
+          # We do not use any locks for the member deletion process, from within this service.
+          expect(Gitlab::ExclusiveLease)
+            .not_to receive(:new).with(lock_key, timeout: timeout)
+
+          destroy_member
+        end
+
+        it 'destroys the membership' do
+          expect { destroy_member }.to change { group.members.count }.by(-1)
         end
       end
     end
 
     context 'for project members' do
+      shared_examples_for 'deletes the project member without using a lock' do
+        it 'does not try to perform the deletion of a project member within a lock' do
+          # We need to account for other places involved in the Member deletion process that
+          # uses ExclusiveLease.
+
+          # 1. `UpdateHighestRole` concern uses locks to peform work
+          # whenever a Member is committed, so that needs to be accounted for.
+          lock_key_for_update_highest_role = "update_highest_role:#{member_to_delete.user_id}"
+
+          expect(Gitlab::ExclusiveLease)
+            .to receive(:new).with(lock_key_for_update_highest_role, timeout: 10.minutes.to_i).and_call_original
+
+          # 2. `AuthorizedProjectUpdate::ProjectRecalculatePerUserWorker` also uses locks to perform work,
+          # whenever a user's authorizations has to be refreshed, so that needs to be accounted for as well.
+          lock_key_for_authorizations_refresh =
+            "authorized_project_update/project_recalculate_worker/projects/#{member_to_delete.project.id}"
+
+          expect(Gitlab::ExclusiveLease)
+            .to receive(:new).with(lock_key_for_authorizations_refresh, timeout: 10.seconds).and_call_original
+
+          # We do not use any locks for the member deletion process, from within this service.
+          expect(Gitlab::ExclusiveLease)
+            .not_to receive(:new).with(lock_key, timeout: timeout)
+
+          destroy_member
+        end
+
+        it 'destroys the membership' do
+          expect { destroy_member }.to change { entity.members.count }.by(-1)
+        end
+      end
+
       before do
         group_project.add_owner(current_user)
       end
@@ -186,16 +231,16 @@ RSpec.describe Members::DestroyService, feature_category: :subgroups do
         context 'deleting project owners' do
           let!(:member_to_delete) { entity.add_owner(member_user) }
 
-          it_behaves_like 'deletes the member without using a lock' do
+          it_behaves_like 'deletes the project member without using a lock' do
             let(:entity) { group_project }
           end
         end
       end
 
-      context 'deleting project memebrs that are not owners' do
+      context 'deleting project members that are not owners' do
         let!(:member_to_delete) { group_project.add_developer(member_user) }
 
-        it_behaves_like 'deletes the member without using a lock' do
+        it_behaves_like 'deletes the project member without using a lock' do
           let(:entity) { group_project }
         end
       end

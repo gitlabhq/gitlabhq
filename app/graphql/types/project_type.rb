@@ -345,7 +345,7 @@ module Types
           null: true,
           description: "List of the project's CI/CD variables.",
           authorize: :admin_build,
-          method: :variables
+          resolver: Resolvers::Ci::VariablesResolver
 
     field :ci_cd_settings, Types::Ci::CiCdSettingType,
           null: true,
@@ -393,6 +393,10 @@ module Types
 
     field :services, Types::Projects::ServiceType.connection_type,
           null: true,
+          deprecated: {
+            reason: 'This will be renamed to `Project.integrations`',
+            milestone: '15.9'
+          },
           description: 'Project services.',
           resolver: Resolvers::Projects::ServicesResolver
 
@@ -562,6 +566,21 @@ module Types
           resolver: ::Resolvers::Ci::ProjectRunnersResolver,
           description: "Find runners visible to the current user."
 
+    field :data_transfer, Types::DataTransfer::ProjectDataTransferType,
+          null: true, # disallow null once data_transfer_monitoring feature flag is rolled-out!
+          resolver: Resolvers::DataTransferResolver.project,
+          description: 'Data transfer data point for a specific period. This is mocked data under a development feature flag.'
+
+    field :visible_forks, Types::ProjectType.connection_type,
+          null: true,
+          alpha: { milestone: '15.10' },
+          description: "Visible forks of the project." do
+            argument :minimum_access_level,
+              type: ::Types::AccessLevelEnum,
+              required: false,
+              description: 'Minimum access level.'
+          end
+
     def timelog_categories
       object.project_namespace.timelog_categories if Feature.enabled?(:timelog_categories)
     end
@@ -601,7 +620,11 @@ module Types
     end
 
     def open_issues_count
-      object.open_issues_count if object.feature_available?(:issues, context[:current_user])
+      BatchLoader::GraphQL.wrap(object.open_issues_count) if object.feature_available?(:issues, context[:current_user])
+    end
+
+    def forks_count
+      BatchLoader::GraphQL.wrap(object.forks_count)
     end
 
     def statistics
@@ -612,6 +635,8 @@ module Types
       project.container_repositories.size
     end
 
+    # Even if the parameter name is `sha`, it is actually a ref name. We always send `ref` to the endpoint.
+    # See: https://gitlab.com/gitlab-org/gitlab/-/issues/389065
     def ci_config_variables(sha:)
       result = ::Ci::ListConfigVariablesService.new(object, context[:current_user]).execute(sha)
 
@@ -630,6 +655,11 @@ module Types
     def sast_ci_configuration
       return unless Ability.allowed?(current_user, :read_code, object)
 
+      if project.repository.empty?
+        raise Gitlab::Graphql::Errors::MutationError,
+              _(format('You must %s before using Security features.', add_file_docs_link.html_safe)).html_safe
+      end
+
       ::Security::CiConfiguration::SastParserService.new(object).configuration
     end
 
@@ -643,10 +673,27 @@ module Types
       ::Projects::RepositoryLanguagesService.new(project, current_user).execute
     end
 
+    def visible_forks(minimum_access_level: nil)
+      if minimum_access_level.nil?
+        object.forks.public_or_visible_to_user(current_user)
+      else
+        object.forks.visible_to_user_and_access_level(current_user, minimum_access_level)
+      end
+    end
+
     private
 
     def project
       @project ||= object.respond_to?(:sync) ? object.sync : object
+    end
+
+    def add_file_docs_link
+      ActionController::Base.helpers.link_to _('add at least one file to the repository'),
+                                               Rails.application.routes.url_helpers.help_page_url(
+                                                 'user/project/repository/index.md',
+                                                 anchor: 'add-files-to-a-repository'),
+                                               target: '_blank',
+                                               rel: 'noopener noreferrer'
     end
   end
 end

@@ -6,6 +6,7 @@ import * as types from '~/error_tracking_settings/store/mutation_types';
 import defaultState from '~/error_tracking_settings/store/state';
 import axios from '~/lib/utils/axios_utils';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
+import { HTTP_STATUS_BAD_REQUEST, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { refreshCurrentPage } from '~/lib/utils/url_utility';
 import { projectList } from '../mock';
 
@@ -28,7 +29,7 @@ describe('error tracking settings actions', () => {
     });
 
     it('should request and transform the project list', async () => {
-      mock.onGet(TEST_HOST).reply(() => [200, { projects: projectList }]);
+      mock.onGet(TEST_HOST).reply(() => [HTTP_STATUS_OK, { projects: projectList }]);
       await testAction(
         actions.fetchProjects,
         null,
@@ -46,7 +47,7 @@ describe('error tracking settings actions', () => {
     });
 
     it('should handle a server error', async () => {
-      mock.onGet(`${TEST_HOST}.json`).reply(() => [400]);
+      mock.onGet(`${TEST_HOST}.json`).reply(() => [HTTP_STATUS_BAD_REQUEST]);
       await testAction(
         actions.fetchProjects,
         null,
@@ -118,14 +119,14 @@ describe('error tracking settings actions', () => {
     });
 
     it('should save the page', async () => {
-      mock.onPatch(TEST_HOST).reply(200);
+      mock.onPatch(TEST_HOST).reply(HTTP_STATUS_OK);
       await testAction(actions.updateSettings, null, state, [], [{ type: 'requestSettings' }]);
       expect(mock.history.patch.length).toBe(1);
       expect(refreshCurrentPage).toHaveBeenCalled();
     });
 
     it('should handle a server error', async () => {
-      mock.onPatch(TEST_HOST).reply(400);
+      mock.onPatch(TEST_HOST).reply(HTTP_STATUS_BAD_REQUEST);
       await testAction(
         actions.updateSettings,
         null,

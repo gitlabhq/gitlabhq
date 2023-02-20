@@ -7,7 +7,8 @@ RSpec.describe Gitlab::Utils do
 
   delegate :to_boolean, :boolean_to_yes_no, :slugify, :which,
            :ensure_array_from_string, :to_exclusive_sentence, :bytes_to_megabytes,
-           :append_path, :check_path_traversal!, :allowlisted?, :check_allowed_absolute_path!, :decode_path, :ms_to_round_sec, :check_allowed_absolute_path_and_path_traversal!, to: :described_class
+           :append_path, :remove_leading_slashes, :check_path_traversal!, :allowlisted?, :check_allowed_absolute_path!,
+           :decode_path, :ms_to_round_sec, :check_allowed_absolute_path_and_path_traversal!, to: :described_class
 
   describe '.check_path_traversal!' do
     it 'detects path traversal in string without any separators' do
@@ -374,6 +375,23 @@ RSpec.describe Gitlab::Utils do
     with_them do
       it 'makes sure there is only one slash as path separator' do
         expect(append_path(host, path)).to eq(result)
+      end
+    end
+  end
+
+  describe '.remove_leading_slashes' do
+    where(:str, :result) do
+      '/foo/bar'  |  'foo/bar'
+      '//foo/bar' |  'foo/bar'
+      '/foo/bar/' |  'foo/bar/'
+      'foo/bar'   |  'foo/bar'
+      ''          |  ''
+      nil         |  ''
+    end
+
+    with_them do
+      it 'removes leading slashes' do
+        expect(remove_leading_slashes(str)).to eq(result)
       end
     end
   end

@@ -47,12 +47,14 @@ RSpec.describe API::Helpers::Caching, :use_clean_rails_redis_caching do
 
     context 'single object' do
       let_it_be(:presentable) { create(:todo, project: project) }
+      let(:expected_cache_key_prefix) { 'API::Entities::Todo' }
 
       it_behaves_like 'object cache helper'
     end
 
     context 'collection of objects' do
       let_it_be(:presentable) { Array.new(5).map { create(:todo, project: project) } }
+      let(:expected_cache_key_prefix) { 'API::Entities::Todo' }
 
       it_behaves_like 'collection cache helper'
     end

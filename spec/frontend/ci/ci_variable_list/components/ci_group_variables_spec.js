@@ -1,10 +1,9 @@
 import { shallowMount } from '@vue/test-utils';
+import { TYPENAME_GROUP } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 
 import ciGroupVariables from '~/ci/ci_variable_list/components/ci_group_variables.vue';
 import ciVariableShared from '~/ci/ci_variable_list/components/ci_variable_shared.vue';
-
-import { GRAPHQL_GROUP_TYPE } from '~/ci/ci_variable_list/constants';
 
 const mockProvide = {
   glFeatures: {
@@ -36,7 +35,7 @@ describe('Ci Group Variable wrapper', () => {
 
     it('are passed down the correctly to ci_variable_shared', () => {
       expect(findCiShared().props()).toEqual({
-        id: convertToGraphQLId(GRAPHQL_GROUP_TYPE, mockProvide.groupId),
+        id: convertToGraphQLId(TYPENAME_GROUP, mockProvide.groupId),
         areScopedVariablesAvailable: false,
         componentName: 'GroupVariables',
         entity: 'group',

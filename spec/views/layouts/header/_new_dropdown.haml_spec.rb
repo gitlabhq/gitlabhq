@@ -2,10 +2,10 @@
 
 require 'spec_helper'
 
-RSpec.describe 'layouts/header/_new_dropdown' do
-  let_it_be(:user) { create(:user) }
+RSpec.describe 'layouts/header/_new_dropdown', feature_category: :navigation do
+  let_it_be(:user) { create(:user) } # rubocop:disable RSpec/FactoryBot/AvoidCreate
 
-  shared_examples_for 'invite member quick link' do
+  shared_examples_for 'invite member selector' do
     context 'with ability to invite members' do
       it { is_expected.to have_link('Invite members', href: href) }
     end
@@ -17,8 +17,8 @@ RSpec.describe 'layouts/header/_new_dropdown' do
     end
   end
 
-  context 'group-specific links' do
-    let_it_be(:group) { create(:group) }
+  context 'with group-specific links' do
+    let_it_be(:group) { create(:group) } # rubocop:disable RSpec/FactoryBot/AvoidCreate
 
     before do
       stub_current_user(user)
@@ -40,21 +40,19 @@ RSpec.describe 'layouts/header/_new_dropdown' do
       it 'has a "New subgroup" link' do
         render
 
-        expect(rendered).to have_link(
-          'New subgroup',
-          href: new_group_path(parent_id: group.id, anchor: 'create-group-pane')
-        )
+        expect(rendered)
+          .to have_link('New subgroup', href: new_group_path(parent_id: group.id, anchor: 'create-group-pane'))
       end
     end
 
-    describe 'invite members quick link' do
+    describe 'invite members item' do
       let(:href) { group_group_members_path(group) }
       let(:invite_member) { true }
 
       before do
         allow(view).to receive(:can?).with(user, :create_projects, group).and_return(true)
         allow(view).to receive(:can?).with(user, :admin_group_member, group).and_return(invite_member)
-        allow(view).to receive(:can_admin_project_member?).and_return(invite_member)
+        allow(view).to receive(:can_admin_group_member?).and_return(invite_member)
       end
 
       subject do
@@ -63,12 +61,12 @@ RSpec.describe 'layouts/header/_new_dropdown' do
         rendered
       end
 
-      it_behaves_like 'invite member quick link'
+      it_behaves_like 'invite member selector'
     end
   end
 
-  context 'project-specific links' do
-    let_it_be(:project) { create(:project, creator: user, namespace: user.namespace) }
+  context 'with project-specific links' do
+    let_it_be(:project) { create(:project, creator: user, namespace: user.namespace) } # rubocop:disable RSpec/FactoryBot/AvoidCreate
 
     before do
       assign(:project, project)
@@ -99,7 +97,7 @@ RSpec.describe 'layouts/header/_new_dropdown' do
     end
 
     context 'as a Project guest' do
-      let_it_be(:guest) { create(:user) }
+      let_it_be(:guest) { create(:user) } # rubocop:disable RSpec/FactoryBot/AvoidCreate
 
       before do
         stub_current_user(guest)
@@ -119,14 +117,13 @@ RSpec.describe 'layouts/header/_new_dropdown' do
       end
     end
 
-    describe 'invite members quick link' do
+    describe 'invite members item' do
       let(:invite_member) { true }
       let(:href) { project_project_members_path(project) }
 
       before do
         allow(view).to receive(:can_admin_project_member?).and_return(invite_member)
         stub_current_user(user)
-        allow(view).to receive(:experiment_enabled?)
       end
 
       subject do
@@ -135,11 +132,11 @@ RSpec.describe 'layouts/header/_new_dropdown' do
         rendered
       end
 
-      it_behaves_like 'invite member quick link'
+      it_behaves_like 'invite member selector'
     end
   end
 
-  context 'global links' do
+  context 'with global links' do
     before do
       stub_current_user(user)
     end
@@ -163,7 +160,7 @@ RSpec.describe 'layouts/header/_new_dropdown' do
     end
 
     context 'when the user is not allowed to do anything' do
-      let(:user) { create(:user, :external) }
+      let(:user) { create(:user, :external) } # rubocop:disable RSpec/FactoryBot/AvoidCreate
 
       it 'is nil' do
         # We have to use `view.render` because `render` causes issues

@@ -15,7 +15,7 @@ class FeatureFlagStrategiesValidator < ActiveModel::EachValidator
   def validate_each(record, attribute, value)
     return unless value
 
-    if value.is_a?(Array) && value.all? { |s| s.is_a?(Hash) }
+    if value.is_a?(Array) && value.all?(Hash)
       value.each do |strategy|
         strategy_validations(record, attribute, strategy)
       end

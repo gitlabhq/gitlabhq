@@ -10,19 +10,19 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > Moved to GitLab Premium in 13.9.
 
-Use code review analytics to view review metrics per merge request and
-make improvements to your code review process:
+Code review analytics displays a table of open merge requests that have at least one non-author comment.
+The review time is the amount of time since the first comment by a non-author in a merge request.
+
+You can use code review analytics to view review metrics per merge request
+and improve your code review process.
 
 - A high number of comments or commits may indicate:
-  - The code is too complex.
+  - Code that is too complex.
   - Authors who require more training.
 - A long review time may indicate:
   - Types of work that move slower than other types.
   - Opportunities to accelerate your development cycle.
-- Fewer comments and approvers may indicate staffing requirements.
-
-Code review analytics displays a table of open merge requests that have at least one non-author comment.
-The review time is measured from when the first non-author comment was submitted.
+- Few comments and approvers may indicate a lack of available team members.
 
 ## View code review analytics
 
@@ -34,4 +34,18 @@ To view code review analytics:
 
 1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Analytics > Code Review**.
-1. Filter merge requests by milestone and label.
+1. Optional. Filter results:
+   1. Select the filter bar.
+   1. Select a parameter. You can filter merge requests by milestone and label.
+   1. Select a value for the selected parameter.
+
+The table shows up to 20 merge requests in review per page,
+and includes the following information about each merge request:
+
+- Merge request title
+- Review time
+- Author
+- Approvers
+- Comments
+- Commits
+- Line changes

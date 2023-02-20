@@ -18,7 +18,6 @@ RSpec.describe 'Merge request > User sees merge widget', :js, feature_category: 
   end
 
   before do
-    stub_feature_flags(refactor_security_extension: false)
     project.add_maintainer(user)
     project_only_mwps.add_maintainer(user)
     sign_in(user)
@@ -90,12 +89,12 @@ RSpec.describe 'Merge request > User sees merge widget', :js, feature_category: 
         click_button 'master'
       end
 
-      page.within("#{modal_selector} .dropdown-menu") do
-        find('[data-testid="dropdown-search-box"]').set('')
+      page.within("#{modal_selector} [data-testid=\"base-dropdown-menu\"]") do
+        fill_in 'Search branches', with: ''
 
         wait_for_requests
 
-        expect(page.all('[data-testid="dropdown-item"]').size).to be > 1
+        expect(page).to have_selector('[data-testid="listbox-item-master"]', visible: true)
       end
     end
   end
@@ -149,7 +148,7 @@ RSpec.describe 'Merge request > User sees merge widget', :js, feature_category: 
         click_button 'Merge unverified changes'
       end
 
-      expect(find('.media-body h4')).to have_content('Merging!')
+      expect(find('[data-testid="merging-state"]')).to have_content('Merging!')
     end
   end
 

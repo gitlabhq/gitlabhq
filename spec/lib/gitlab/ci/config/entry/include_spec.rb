@@ -44,6 +44,12 @@ RSpec.describe ::Gitlab::Ci::Config::Entry::Include do
         it { is_expected.to be_valid }
       end
 
+      context 'when using "component"' do
+        let(:config) { { component: 'path/to/component@1.0' } }
+
+        it { is_expected.to be_valid }
+      end
+
       context 'when using "artifact"' do
         context 'and specifying "job"' do
           let(:config) { { artifact: 'test.yml', job: 'generator' } }

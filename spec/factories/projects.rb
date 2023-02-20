@@ -253,9 +253,35 @@ FactoryBot.define do
         create_templates { nil }
         create_branch { nil }
         create_tag { nil }
+        lfs { false }
       end
 
       after :create do |project, evaluator|
+        # Specify `lfs: true` to create the LfsObject for the LFS file in the test repo:
+        # https://gitlab.com/gitlab-org/gitlab-test/-/blob/master/files/lfs/lfs_object.iso
+        if evaluator.lfs
+          RSpec::Mocks.with_temporary_scope do
+            # If lfs object store is disabled we need to mock
+            unless Gitlab.config.lfs.object_store.enabled
+              config = Gitlab.config.lfs.object_store.merge('enabled' => true)
+              allow(LfsObjectUploader).to receive(:object_store_options).and_return(config)
+              Fog.mock!
+              Fog::Storage.new(LfsObjectUploader.object_store_credentials).tap do |connection|
+                connection.directories.create(key: config.remote_directory) # rubocop:disable Rails/SaveBang
+
+                # Cleanup remaining files
+                connection.directories.each do |directory|
+                  directory.files.map(&:destroy)
+                end
+              rescue Excon::Error::Conflict
+              end
+            end
+
+            lfs_object = create(:lfs_object, :with_lfs_object_dot_iso_file)
+            create(:lfs_objects_project, project: project, lfs_object: lfs_object)
+          end
+        end
+
         if evaluator.create_templates
           templates_path = "#{evaluator.create_templates}_templates"
 
@@ -286,7 +312,6 @@ FactoryBot.define do
             "README on branch #{evaluator.create_branch}",
             message: 'Add README.md',
             branch_name: evaluator.create_branch)
-
         end
 
         if evaluator.create_tag
@@ -441,7 +466,9 @@ FactoryBot.define do
   trait :with_jira_integration do
     has_external_issue_tracker { true }
 
-    jira_integration
+    after :create do |project|
+      create(:jira_integration, project: project)
+    end
   end
 
   trait :with_prometheus_integration do

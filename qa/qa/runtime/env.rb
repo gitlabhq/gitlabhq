@@ -293,6 +293,18 @@ module QA
         ENV['JIRA_HOSTNAME']
       end
 
+      def slack_workspace
+        ENV['QA_SLACK_WORKSPACE']
+      end
+
+      def slack_email
+        ENV['QA_SLACK_EMAIL']
+      end
+
+      def slack_password
+        ENV['QA_SLACK_PASSWORD']
+      end
+
       def jenkins_admin_username
         ENV.fetch('QA_JENKINS_USER', 'administrator')
       end
@@ -500,6 +512,15 @@ module QA
 
       def chrome_default_download_path
         ENV['DEFAULT_CHROME_DOWNLOAD_PATH'] || Dir.tmpdir
+      end
+
+      def require_slack_env!
+        missing_env = %i[slack_workspace slack_email slack_password].select do |method|
+          ::QA::Runtime::Env.public_send(method).nil?
+        end
+        return unless missing_env.any?
+
+        raise "Missing Slack env: #{missing_env.map(&:upcase).join(', ')}"
       end
 
       private

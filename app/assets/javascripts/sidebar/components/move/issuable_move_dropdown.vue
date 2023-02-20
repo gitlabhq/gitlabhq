@@ -206,7 +206,7 @@ export default {
             category="primary"
             variant="confirm"
             :disabled="!Boolean(selectedProject)"
-            class="gl-text-center! issuable-move-button"
+            class="gl-w-full issuable-move-button"
             @click="handleMoveClick"
             >{{ __('Move') }}</gl-button
           >

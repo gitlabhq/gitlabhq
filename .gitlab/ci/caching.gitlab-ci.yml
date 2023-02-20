@@ -47,16 +47,15 @@ cache-assets:test as-if-foss:
     - .as-if-foss
 
 cache-assets:production:
-  extends: .cache-assets-base
-  variables:
-    NODE_ENV: "production"
-    RAILS_ENV: "production"
+  extends:
+    - .cache-assets-base
+    - .production
 
 packages-cleanup:
   extends:
     - .default-retry
     - .caching:rules:packages-cleanup
-  image: ${GITLAB_DEPENDENCY_PROXY}ruby:${RUBY_VERSION}
+  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}ruby:${RUBY_VERSION}
   stage: prepare
   before_script:
     - source scripts/utils.sh

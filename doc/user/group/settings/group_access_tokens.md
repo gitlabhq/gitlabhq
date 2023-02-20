@@ -14,7 +14,7 @@ With group access tokens, you can use a single token to:
 
 You can use a group access token to authenticate:
 
-- With the [GitLab API](../../../api/index.md#personalprojectgroup-access-tokens).
+- With the [GitLab API](../../../api/rest/index.md#personalprojectgroup-access-tokens).
 - In [GitLab 14.2](https://gitlab.com/gitlab-org/gitlab/-/issues/330718) and later, authenticate with Git over HTTPS.
   Use:
 
@@ -163,7 +163,9 @@ Even when creation is disabled, you can still use and revoke existing group acce
 
 ## Bot users for groups
 
-Each time you create a group access token, a bot user is created and added to the group. These bot users are similar to
+Bot users for groups are [GitLab-created service accounts](../../../subscriptions/self_managed/index.md#billable-users).
+Each time you create a group access token, a bot user is created and added to the group.
+These bot users are similar to
 [bot users for projects](../../project/settings/project_access_tokens.md#bot-users-for-projects), except they are added
 to groups instead of projects. Bot users for groups:
 
@@ -174,5 +176,3 @@ to groups instead of projects. Bot users for groups:
 - Have an email set to `group{group_id}_bot@noreply.{Gitlab.config.gitlab.host}`. For example, `group123_bot@noreply.example.com`.
 
 All other properties are similar to [bot users for projects](../../project/settings/project_access_tokens.md#bot-users-for-projects).
-
-For more information, see [Bot users for projects](../../project/settings/project_access_tokens.md#bot-users-for-projects).

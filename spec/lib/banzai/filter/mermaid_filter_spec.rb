@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Banzai::Filter::MermaidFilter do
+RSpec.describe Banzai::Filter::MermaidFilter, feature_category: :team_planning do
   include FilterSpecHelper
 
   it 'adds `js-render-mermaid` class to the `code` tag' do

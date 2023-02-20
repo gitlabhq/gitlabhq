@@ -3,6 +3,7 @@ import { GlModal } from '@gitlab/ui';
 import { __ } from '~/locale';
 import CommitSection from './components/commit/commit_section.vue';
 import PipelineEditorDrawer from './components/drawer/pipeline_editor_drawer.vue';
+import JobAssistantDrawer from './components/job_assistant_drawer/job_assistant_drawer.vue';
 import PipelineEditorFileNav from './components/file_nav/pipeline_editor_file_nav.vue';
 import PipelineEditorFileTree from './components/file_tree/container.vue';
 import PipelineEditorHeader from './components/header/pipeline_editor_header.vue';
@@ -28,6 +29,7 @@ export default {
     CommitSection,
     GlModal,
     PipelineEditorDrawer,
+    JobAssistantDrawer,
     PipelineEditorFileNav,
     PipelineEditorFileTree,
     PipelineEditorHeader,
@@ -63,6 +65,9 @@ export default {
       scrollToCommitForm: false,
       shouldLoadNewBranch: false,
       showDrawer: false,
+      showJobAssistantDrawer: false,
+      drawerIndex: 200,
+      jobAssistantIndex: 200,
       showFileTree: false,
       showSwitchBranchModal: false,
     };
@@ -85,11 +90,19 @@ export default {
     closeDrawer() {
       this.showDrawer = false;
     },
+    closeJobAssistantDrawer() {
+      this.showJobAssistantDrawer = false;
+    },
     handleConfirmSwitchBranch() {
       this.showSwitchBranchModal = true;
     },
     openDrawer() {
       this.showDrawer = true;
+      this.drawerIndex = this.jobAssistantIndex + 1;
+    },
+    openJobAssistantDrawer() {
+      this.showJobAssistantDrawer = true;
+      this.jobAssistantIndex = this.drawerIndex + 1;
     },
     toggleFileTree() {
       this.showFileTree = !this.showFileTree;
@@ -153,9 +166,12 @@ export default {
           :current-tab="currentTab"
           :is-new-ci-config-file="isNewCiConfigFile"
           :show-drawer="showDrawer"
+          :show-job-assistant-drawer="showJobAssistantDrawer"
           v-on="$listeners"
           @open-drawer="openDrawer"
           @close-drawer="closeDrawer"
+          @open-job-assistant-drawer="openJobAssistantDrawer"
+          @close-job-assistant-drawer="closeJobAssistantDrawer"
           @set-current-tab="setCurrentTab"
           @walkthrough-popover-cta-clicked="setScrollToCommitForm"
         />
@@ -174,8 +190,15 @@ export default {
     />
     <pipeline-editor-drawer
       :is-visible="showDrawer"
+      :z-index="drawerIndex"
       v-on="$listeners"
       @close-drawer="closeDrawer"
+    />
+    <job-assistant-drawer
+      :is-visible="showJobAssistantDrawer"
+      :z-index="jobAssistantIndex"
+      v-on="$listeners"
+      @close-job-assistant-drawer="closeJobAssistantDrawer"
     />
   </div>
 </template>

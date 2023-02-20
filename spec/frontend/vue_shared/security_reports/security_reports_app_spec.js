@@ -16,6 +16,7 @@ import {
 } from 'jest/vue_shared/security_reports/mock_data';
 import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import HelpIcon from '~/vue_shared/security_reports/components/help_icon.vue';
 import SecurityReportDownloadDropdown from '~/vue_shared/security_reports/components/security_report_download_dropdown.vue';
 import {
@@ -187,7 +188,7 @@ describe('Security reports app', () => {
         describe('when loading', () => {
           beforeEach(() => {
             mock = new MockAdapter(axios, { delayResponse: 1 });
-            mock.onGet(path).replyOnce(200, successResponse);
+            mock.onGet(path).replyOnce(HTTP_STATUS_OK, successResponse);
 
             createComponentWithFlagEnabled({
               propsData: {
@@ -209,7 +210,7 @@ describe('Security reports app', () => {
 
         describe('when successfully loaded', () => {
           beforeEach(() => {
-            mock.onGet(path).replyOnce(200, successResponse);
+            mock.onGet(path).replyOnce(HTTP_STATUS_OK, successResponse);
 
             createComponentWithFlagEnabled({
               propsData: {
@@ -231,7 +232,7 @@ describe('Security reports app', () => {
 
         describe('when an error occurs', () => {
           beforeEach(() => {
-            mock.onGet(path).replyOnce(500);
+            mock.onGet(path).replyOnce(HTTP_STATUS_INTERNAL_SERVER_ERROR);
 
             createComponentWithFlagEnabled({
               propsData: {
@@ -253,7 +254,7 @@ describe('Security reports app', () => {
 
         describe('when the comparison endpoint is not provided', () => {
           beforeEach(() => {
-            mock.onGet(path).replyOnce(500);
+            mock.onGet(path).replyOnce(HTTP_STATUS_INTERNAL_SERVER_ERROR);
 
             createComponentWithFlagEnabled();
 

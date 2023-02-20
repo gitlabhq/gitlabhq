@@ -21,12 +21,14 @@ exports[`Design management list item component with notes renders item with mult
   >
     <!---->
      
-    <gl-intersection-observer-stub>
+    <gl-intersection-observer-stub
+      class="gl-flex-grow-1"
+    >
       <!---->
        
       <img
         alt="test"
-        class="gl-display-block gl-mx-auto gl-max-w-full gl-max-h-full design-img"
+        class="gl-display-block gl-mx-auto gl-max-w-full gl-max-h-full gl-w-auto design-img"
         data-qa-filename="test"
         data-qa-selector="design_image"
         data-testid="design-img-1"
@@ -98,12 +100,14 @@ exports[`Design management list item component with notes renders item with sing
   >
     <!---->
      
-    <gl-intersection-observer-stub>
+    <gl-intersection-observer-stub
+      class="gl-flex-grow-1"
+    >
       <!---->
        
       <img
         alt="test"
-        class="gl-display-block gl-mx-auto gl-max-w-full gl-max-h-full design-img"
+        class="gl-display-block gl-mx-auto gl-max-w-full gl-max-h-full gl-w-auto design-img"
         data-qa-filename="test"
         data-qa-selector="design_image"
         data-testid="design-img-1"

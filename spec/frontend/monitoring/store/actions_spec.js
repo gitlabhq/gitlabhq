@@ -7,6 +7,7 @@ import * as commonUtils from '~/lib/utils/common_utils';
 import {
   HTTP_STATUS_BAD_REQUEST,
   HTTP_STATUS_CREATED,
+  HTTP_STATUS_INTERNAL_SERVER_ERROR,
   HTTP_STATUS_OK,
   HTTP_STATUS_UNPROCESSABLE_ENTITY,
 } from '~/lib/utils/http_status';
@@ -205,7 +206,7 @@ describe('Monitoring store actions', () => {
 
     it('on success, dispatches receive and success actions, then fetches dashboard warnings', () => {
       document.body.dataset.page = 'projects:environments:metrics';
-      mock.onGet(state.dashboardEndpoint).reply(200, response);
+      mock.onGet(state.dashboardEndpoint).reply(HTTP_STATUS_OK, response);
 
       return testAction(
         fetchDashboard,
@@ -231,7 +232,9 @@ describe('Monitoring store actions', () => {
           fullDashboardPath: store.getters['monitoringDashboard/fullDashboardPath'],
         };
         result = () => {
-          mock.onGet(state.dashboardEndpoint).replyOnce(500, mockDashboardsErrorResponse);
+          mock
+            .onGet(state.dashboardEndpoint)
+            .replyOnce(HTTP_STATUS_INTERNAL_SERVER_ERROR, mockDashboardsErrorResponse);
           return fetchDashboard({ state, commit, dispatch, getters: localGetters }, params);
         };
       });
@@ -417,7 +420,7 @@ describe('Monitoring store actions', () => {
     });
 
     it('commits result', () => {
-      mock.onGet(prometheusEndpointPath).reply(200, { data }); // One attempt
+      mock.onGet(prometheusEndpointPath).reply(HTTP_STATUS_OK, { data }); // One attempt
 
       return testAction(
         fetchPrometheusMetric,
@@ -450,7 +453,7 @@ describe('Monitoring store actions', () => {
       };
 
       it('uses calculated step', async () => {
-        mock.onGet(prometheusEndpointPath).reply(200, { data }); // One attempt
+        mock.onGet(prometheusEndpointPath).reply(HTTP_STATUS_OK, { data }); // One attempt
 
         await testAction(
           fetchPrometheusMetric,
@@ -489,7 +492,7 @@ describe('Monitoring store actions', () => {
       };
 
       it('uses metric step', async () => {
-        mock.onGet(prometheusEndpointPath).reply(200, { data }); // One attempt
+        mock.onGet(prometheusEndpointPath).reply(HTTP_STATUS_OK, { data }); // One attempt
 
         await testAction(
           fetchPrometheusMetric,
@@ -517,7 +520,7 @@ describe('Monitoring store actions', () => {
     });
 
     it('commits failure, when waiting for results and getting a server error', async () => {
-      mock.onGet(prometheusEndpointPath).reply(500);
+      mock.onGet(prometheusEndpointPath).reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
 
       const error = new Error('Request failed with status code 500');
 
@@ -552,7 +555,7 @@ describe('Monitoring store actions', () => {
   describe('fetchDeploymentsData', () => {
     it('dispatches receiveDeploymentsDataSuccess on success', () => {
       state.deploymentsEndpoint = '/success';
-      mock.onGet(state.deploymentsEndpoint).reply(200, {
+      mock.onGet(state.deploymentsEndpoint).reply(HTTP_STATUS_OK, {
         deployments: deploymentData,
       });
 
@@ -566,7 +569,7 @@ describe('Monitoring store actions', () => {
     });
     it('dispatches receiveDeploymentsDataFailure on error', () => {
       state.deploymentsEndpoint = '/error';
-      mock.onGet(state.deploymentsEndpoint).reply(500);
+      mock.onGet(state.deploymentsEndpoint).reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
 
       return testAction(
         fetchDeploymentsData,
@@ -918,7 +921,7 @@ describe('Monitoring store actions', () => {
 
     it('stars dashboard if it is not starred', () => {
       state.selectedDashboard = unstarredDashboard;
-      mock.onPost(unstarredDashboard.user_starred_path).reply(200);
+      mock.onPost(unstarredDashboard.user_starred_path).reply(HTTP_STATUS_OK);
 
       return testAction(toggleStarredValue, null, state, [
         { type: types.REQUEST_DASHBOARD_STARRING },
@@ -934,7 +937,7 @@ describe('Monitoring store actions', () => {
 
     it('unstars dashboard if it is starred', () => {
       state.selectedDashboard = starredDashboard;
-      mock.onPost(starredDashboard.user_starred_path).reply(200);
+      mock.onPost(starredDashboard.user_starred_path).reply(HTTP_STATUS_OK);
 
       return testAction(toggleStarredValue, null, state, [
         { type: types.REQUEST_DASHBOARD_STARRING },
@@ -1065,7 +1068,7 @@ describe('Monitoring store actions', () => {
         },
       ];
 
-      mock.onGet('/series?match[]=metric_name').reply(200, {
+      mock.onGet('/series?match[]=metric_name').reply(HTTP_STATUS_OK, {
         status: 'success',
         data,
       });
@@ -1085,7 +1088,7 @@ describe('Monitoring store actions', () => {
     });
 
     it('should notify the user that dynamic options were not loaded', () => {
-      mock.onGet('/series?match[]=metric_name').reply(500);
+      mock.onGet('/series?match[]=metric_name').reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
 
       return testAction(fetchVariableMetricLabelValues, { defaultQueryParams }, state, [], []).then(
         () => {
@@ -1150,7 +1153,9 @@ describe('Monitoring store actions', () => {
     });
 
     it('should display a generic error when the backend fails', () => {
-      mock.onPost(panelPreviewEndpoint, { panel_yaml: mockYmlContent }).reply(500);
+      mock
+        .onPost(panelPreviewEndpoint, { panel_yaml: mockYmlContent })
+        .reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
 
       testAction(fetchPanelPreview, mockYmlContent, state, [
         { type: types.SET_PANEL_PREVIEW_IS_SHOWN, payload: true },

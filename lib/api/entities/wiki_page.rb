@@ -25,3 +25,5 @@ module API
     end
   end
 end
+
+API::Entities::WikiPage.prepend_mod

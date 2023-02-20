@@ -39,6 +39,7 @@ export default {
       v-gl-tooltip.hover
       :title="$options.title"
       :aria-label="$options.title"
+      data-qa-selector="approve_access_request_button"
       icon="check"
       type="submit"
     />

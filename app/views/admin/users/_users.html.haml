@@ -32,10 +32,9 @@
       = gl_tab_link_to admin_users_path(filter: "blocked"), { item_active: active_when(params[:filter] == 'blocked'), class: 'gl-border-0!' } do
         = s_('AdminUsers|Blocked')
         = gl_tab_counter_badge(limited_counter_with_delimiter(User.blocked))
-      - if ban_feature_available?
-        = gl_tab_link_to admin_users_path(filter: "banned"), { item_active: active_when(params[:filter] == 'banned'), class: 'gl-border-0!' } do
-          = s_('AdminUsers|Banned')
-          = gl_tab_counter_badge(limited_counter_with_delimiter(User.banned))
+      = gl_tab_link_to admin_users_path(filter: "banned"), { item_active: active_when(params[:filter] == 'banned'), class: 'gl-border-0!' } do
+        = s_('AdminUsers|Banned')
+        = gl_tab_counter_badge(limited_counter_with_delimiter(User.banned))
       = gl_tab_link_to admin_users_path(filter: "blocked_pending_approval"), { item_active: active_when(params[:filter] == 'blocked_pending_approval'), class: 'filter-blocked-pending-approval gl-border-0!', data: { qa_selector: 'pending_approval_tab' } } do
         = s_('AdminUsers|Pending approval')
         = gl_tab_counter_badge(limited_counter_with_delimiter(User.blocked_pending_approval))
@@ -64,7 +63,7 @@
         = button_tag s_('AdminUsers|Search users') if Rails.env.test?
       .dropdown.gl-sm-ml-3
         = label_tag s_('AdminUsers|Sort by')
-        = gl_redirect_listbox_tag admin_users_sort_options(filter: params[:filter], search_query: params[:search_query]), @sort, data: { right: true }
+        = gl_redirect_listbox_tag admin_users_sort_options(filter: params[:filter], search_query: params[:search_query]), @sort, data: { placement: 'right' }
 
 #js-admin-users-app{ data: admin_users_data_attributes(@users) }
   = render Pajamas::SpinnerComponent.new(size: :lg, class: 'gl-my-7')

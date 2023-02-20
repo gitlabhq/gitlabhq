@@ -24,42 +24,37 @@ export const fetchDiffData = (state, endpoint, category) => {
 /**
  * Returns given vulnerability enriched with the corresponding
  * feedback (`dismissal` or `issue` type)
- * @param {Object} vulnerability
- * @param {Array} feedback
+ * @param {Object} vulnerabilityObject
+ * @param {Array} feedbackList
  */
-export const enrichVulnerabilityWithFeedback = (vulnerability, feedback = []) =>
-  feedback
+export const enrichVulnerabilityWithFeedback = (vulnerabilityObject, feedbackList = []) => {
+  const vulnerability = { ...vulnerabilityObject };
+  // Some records may have a null `uuid`, we need to fallback to using `project_fingerprint` in those cases. Once all entries have been fixed, we can remove the fallback.
+  // related epic: https://gitlab.com/groups/gitlab-org/-/epics/2791
+  feedbackList
     .filter((fb) =>
-      // Some records still have a `finding_uuid` with null, we need to fallback to using `project_fingerprint` in those cases. Once all entries have been fixed, we can remove the fallback.
-      // related epic: https://gitlab.com/groups/gitlab-org/-/epics/2791
-      fb.finding_uuid !== null
-        ? fb.finding_uuid === vulnerability.finding_uuid
+      fb.finding_uuid
+        ? fb.finding_uuid === vulnerability.uuid
         : fb.project_fingerprint === vulnerability.project_fingerprint,
     )
-    .reduce((vuln, fb) => {
-      if (fb.feedback_type === FEEDBACK_TYPE_DISMISSAL) {
-        return {
-          ...vuln,
-          isDismissed: true,
-          dismissalFeedback: fb,
-        };
+    .forEach((feedback) => {
+      if (feedback.feedback_type === FEEDBACK_TYPE_DISMISSAL) {
+        vulnerability.isDismissed = true;
+        vulnerability.dismissalFeedback = feedback;
+      } else if (feedback.feedback_type === FEEDBACK_TYPE_ISSUE && feedback.issue_iid) {
+        vulnerability.hasIssue = true;
+        vulnerability.issue_feedback = feedback;
+      } else if (
+        feedback.feedback_type === FEEDBACK_TYPE_MERGE_REQUEST &&
+        feedback.merge_request_iid
+      ) {
+        vulnerability.hasMergeRequest = true;
+        vulnerability.merge_request_feedback = feedback;
       }
-      if (fb.feedback_type === FEEDBACK_TYPE_ISSUE && fb.issue_iid) {
-        return {
-          ...vuln,
-          hasIssue: true,
-          issue_feedback: fb,
-        };
-      }
-      if (fb.feedback_type === FEEDBACK_TYPE_MERGE_REQUEST && fb.merge_request_iid) {
-        return {
-          ...vuln,
-          hasMergeRequest: true,
-          merge_request_feedback: fb,
-        };
-      }
-      return vuln;
-    }, vulnerability);
+    });
+
+  return vulnerability;
+};
 
 /**
  * Generates the added, fixed, and existing vulnerabilities from the API report.

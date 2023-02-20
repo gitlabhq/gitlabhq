@@ -308,8 +308,8 @@ RSpec.describe Gitlab::Pagination::OffsetPagination do
     expect(subject).to receive(:header).with(*args, &block)
   end
 
-  def expect_no_header(*args, &block)
-    expect(subject).not_to receive(:header).with(*args)
+  def expect_no_header(...)
+    expect(subject).not_to receive(:header).with(...)
   end
 
   def expect_message(method)

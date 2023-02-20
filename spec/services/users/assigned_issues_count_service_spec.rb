@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Users::AssignedIssuesCountService, :use_clean_rails_memory_store_caching,
-                                                  feature_category: :project_management do
+  feature_category: :team_planning do
   let_it_be(:user) { create(:user) }
   let_it_be(:max_limit) { 10 }
 

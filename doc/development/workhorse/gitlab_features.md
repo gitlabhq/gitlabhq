@@ -12,7 +12,7 @@ GitLab that would not work efficiently without Workhorse.
 To put the efficiency benefit in context, consider that in 2020Q3 on
 GitLab.com [we see](https://thanos-query.ops.gitlab.net/graph?g0.range_input=1h&g0.max_source_resolution=0s&g0.expr=sum(ruby_process_resident_memory_bytes%7Bapp%3D%22webservice%22%2Cenv%3D%22gprd%22%2Crelease%3D%22gitlab%22%7D)%20%2F%20sum(puma_max_threads%7Bapp%3D%22webservice%22%2Cenv%3D%22gprd%22%2Crelease%3D%22gitlab%22%7D)&g0.tab=1&g1.range_input=1h&g1.max_source_resolution=0s&g1.expr=sum(go_memstats_sys_bytes%7Bapp%3D%22webservice%22%2Cenv%3D%22gprd%22%2Crelease%3D%22gitlab%22%7D)%2Fsum(go_goroutines%7Bapp%3D%22webservice%22%2Cenv%3D%22gprd%22%2Crelease%3D%22gitlab%22%7D)&g1.tab=1)
 Rails application threads using on average
-about 200MB of RSS vs about 200KB for Workhorse goroutines.
+about 200 MB of RSS vs about 200 KB for Workhorse goroutines.
 
 Examples of features that rely on Workhorse:
 
@@ -66,7 +66,6 @@ memory than it costs to have Workhorse look after it.
 - Workhorse does not connect to PostgreSQL, only to Rails and (optionally) Redis.
 - We assume that all requests that reach Workhorse pass through an
   upstream proxy such as NGINX or Apache first.
-- Workhorse does not accept HTTPS connections.
 - Workhorse does not clean up idle client connections.
 - We assume that all requests to Rails pass through Workhorse.
 

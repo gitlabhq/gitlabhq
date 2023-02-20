@@ -29,12 +29,6 @@ tests = [
   },
 
   {
-    explanation: 'Some EE extensions have specs placement that do not follow the recommendation: https://docs.gitlab.com/ee/development/ee_features.html#testing-ee-features-based-on-ce-features. `tff` should still find these misplaced specs.',
-    source: 'ee/app/models/ee/project.rb',
-    expected: ['ee/spec/models/project_spec.rb', 'spec/models/project_spec.rb']
-  },
-
-  {
     explanation: 'EE lib should map to respective spec.',
     source: 'ee/lib/world.rb',
     expected: ['ee/spec/lib/world_spec.rb']
@@ -84,8 +78,8 @@ tests = [
 
   {
     explanation: 'Migration should map to its non-timestamped spec',
-    source: 'db/migrate/20210818220234_add_default_project_approval_rules_vuln_allowed.rb',
-    expected: ['spec/migrations/add_default_project_approval_rules_vuln_allowed_spec.rb']
+    source: 'db/migrate/20221014034338_populate_releases_access_level_from_repository.rb',
+    expected: ['spec/migrations/populate_releases_access_level_from_repository_spec.rb']
   },
 
   {
@@ -127,13 +121,13 @@ tests = [
   {
     explanation: 'FOSS factory should map to factories spec',
     source: 'spec/factories/users.rb',
-    expected: ['spec/models/factories_spec.rb']
+    expected: ['ee/spec/models/factories_spec.rb']
   },
 
   {
     explanation: 'EE factory should map to factories spec',
     source: 'ee/spec/factories/users.rb',
-    expected: ['spec/models/factories_spec.rb']
+    expected: ['ee/spec/models/factories_spec.rb']
   },
 
   {

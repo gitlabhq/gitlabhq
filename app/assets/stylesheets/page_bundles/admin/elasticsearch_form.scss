@@ -1,0 +1,5 @@
+@import '../mixins_and_variables_and_functions';
+
+.index-entities-list {
+  height: calc(#{$gl-spacing-scale-8} * 5.75);
+}

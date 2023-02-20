@@ -276,7 +276,7 @@ RSpec.shared_examples Integrations::SlackMattermostNotifier do |integration_name
 
   describe 'Push events' do
     let_it_be(:user) { create(:user) }
-    let_it_be_with_reload(:project) { create(:project, :repository, creator: user) }
+    let_it_be_with_refind(:project) { create(:project, :repository, creator: user) }
 
     before do
       allow(chat_integration).to receive_messages(
@@ -520,7 +520,7 @@ RSpec.shared_examples Integrations::SlackMattermostNotifier do |integration_name
 
   describe 'Pipeline events' do
     let_it_be(:user) { create(:user) }
-    let_it_be_with_reload(:project) { create(:project, :repository, creator: user) }
+    let_it_be_with_refind(:project) { create(:project, :repository, creator: user) }
     let(:pipeline) do
       create(:ci_pipeline,
              project: project, status: status,
@@ -671,7 +671,7 @@ RSpec.shared_examples Integrations::SlackMattermostNotifier do |integration_name
 
   describe 'Deployment events' do
     let_it_be(:user) { create(:user) }
-    let_it_be_with_reload(:project) { create(:project, :repository, creator: user) }
+    let_it_be_with_refind(:project) { create(:project, :repository, creator: user) }
 
     let_it_be(:deployment) do
       create(:deployment, :success, project: project, sha: project.commit.sha, ref: project.default_branch)

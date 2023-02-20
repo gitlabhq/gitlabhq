@@ -3,48 +3,24 @@
 module Gitlab
   module Database
     module AsyncIndexes
-      class IndexCreator
-        include IndexingExclusiveLeaseGuard
-
-        TIMEOUT_PER_ACTION = 1.day
+      class IndexCreator < AsyncIndexes::IndexBase
         STATEMENT_TIMEOUT = 20.hours
-
-        def initialize(async_index)
-          @async_index = async_index
-        end
-
-        def perform
-          try_obtain_lease do
-            if index_exists?
-              log_index_info('Skipping index creation as the index exists')
-            else
-              log_index_info('Creating async index')
-
-              set_statement_timeout do
-                connection.execute(async_index.definition)
-              end
-
-              log_index_info('Finished creating async index')
-            end
-
-            async_index.destroy
-          end
-        end
 
         private
 
-        attr_reader :async_index
-
-        def index_exists?
-          connection.indexes(async_index.table_name).any? { |index| index.name == async_index.name }
+        override :preconditions_met?
+        def preconditions_met?
+          !index_exists?
         end
 
-        def connection
-          @connection ||= async_index.connection
+        override :action_type
+        def action_type
+          'creation'
         end
 
-        def lease_timeout
-          TIMEOUT_PER_ACTION
+        override :around_execution
+        def around_execution(&block)
+          set_statement_timeout(&block)
         end
 
         def set_statement_timeout
@@ -52,10 +28,6 @@ module Gitlab
           yield
         ensure
           connection.execute('RESET statement_timeout')
-        end
-
-        def log_index_info(message)
-          Gitlab::AppLogger.info(message: message, table_name: async_index.table_name, index_name: async_index.name)
         end
       end
     end

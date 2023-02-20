@@ -1,8 +1,8 @@
 ---
 name: rugged_tree_entries
-introduced_by_url: 
-rollout_issue_url: 
-milestone: 
+introduced_by_url:
+rollout_issue_url:
+milestone:
 type: development
-group: 
+group: group::gitaly
 default_enabled: false

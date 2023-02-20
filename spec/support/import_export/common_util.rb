@@ -51,22 +51,22 @@ module ImportExport
       json
     end
 
-    def restore_then_save_project(project, import_path:, export_path:)
-      project_restorer = get_project_restorer(project, import_path)
-      project_saver = get_project_saver(project, export_path)
+    def restore_then_save_project(project, user, import_path:, export_path:)
+      project_restorer = get_project_restorer(project, user, import_path)
+      project_saver = get_project_saver(project, user, export_path)
 
       project_restorer.restore && project_saver.save
     end
 
-    def get_project_restorer(project, import_path)
+    def get_project_restorer(project, user, import_path)
       Gitlab::ImportExport::Project::TreeRestorer.new(
-        user: project.creator, shared: get_shared_env(path: import_path), project: project
+        user: user, shared: get_shared_env(path: import_path), project: project
       )
     end
 
-    def get_project_saver(project, export_path)
+    def get_project_saver(project, user, export_path)
       Gitlab::ImportExport::Project::TreeSaver.new(
-        project: project, current_user: project.creator, shared: get_shared_env(path: export_path)
+        project: project, current_user: user, shared: get_shared_env(path: export_path)
       )
     end
 

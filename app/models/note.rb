@@ -23,6 +23,9 @@ class Note < ApplicationRecord
   include FromUnion
   include Sortable
   include EachBatch
+  include IgnorableColumns
+
+  ignore_column :id_convert_to_bigint, remove_with: '16.0', remove_after: '2023-05-22'
 
   ISSUE_TASK_SYSTEM_NOTE_PATTERN = /\A.*marked\sthe\stask.+as\s(completed|incomplete).*\z/.freeze
 
@@ -138,8 +141,7 @@ class Note < ApplicationRecord
     relations = [{ project: :group }, { author: :status }, :updated_by, :resolved_by,
       :award_emoji, { system_note_metadata: :description_version }, :suggestions]
 
-    if noteable.nil? || DiffNote.noteable_types.include?(noteable.class.name) ||
-        Feature.disabled?(:skip_notes_diff_include)
+    if noteable.nil? || DiffNote.noteable_types.include?(noteable.class.name)
       relations += [:note_diff_file, :diff_note_positions]
     end
 
@@ -182,6 +184,39 @@ class Note < ApplicationRecord
   after_save :touch_noteable, unless: :importing?
   after_commit :notify_after_create, on: :create
   after_commit :notify_after_destroy, on: :destroy
+
+  after_commit :trigger_note_subscription_create, on: :create
+  after_commit :trigger_note_subscription_update, on: :update
+  after_commit :trigger_note_subscription_destroy, on: :destroy
+
+  def trigger_note_subscription_create
+    return unless trigger_note_subscription?
+
+    GraphqlTriggers.work_item_note_created(noteable.to_work_item_global_id, self)
+  end
+
+  def trigger_note_subscription_update
+    return unless trigger_note_subscription?
+
+    GraphqlTriggers.work_item_note_updated(noteable.to_work_item_global_id, self)
+  end
+
+  def trigger_note_subscription_destroy
+    return unless trigger_note_subscription?
+
+    # when deleting a note, we cannot pass it on as a Note instance, as GitlabSchema.object_from_id
+    # would try to resolve the given Note and fetch it from DB which would raise NotFound exception.
+    # So instead we just pass over the string representations of the note and discussion IDs,
+    # so that the subscriber can identify the discussion and the note.
+    deleted_note_data = {
+      id: self.id,
+      model_name: self.class.name,
+      discussion_id: self.discussion_id,
+      last_discussion_note: discussion.notes == [self]
+    }
+
+    GraphqlTriggers.work_item_note_deleted(noteable.to_work_item_global_id, deleted_note_data)
+  end
 
   class << self
     extend Gitlab::Utils::Override
@@ -711,7 +746,17 @@ class Note < ApplicationRecord
     confidential? ? :read_internal_note : :read_note
   end
 
+  def exportable_record?(user)
+    return true unless system?
+
+    readable_by?(user)
+  end
+
   private
+
+  def trigger_note_subscription?
+    for_issue? && noteable
+  end
 
   def system_note_viewable_by?(user)
     return true unless system_note_metadata

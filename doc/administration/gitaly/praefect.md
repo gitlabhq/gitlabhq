@@ -802,7 +802,7 @@ To complete this section you need:
   These should be dedicated nodes, do not run other services on these nodes.
 
 Every Gitaly server assigned to the Praefect cluster needs to be configured. The
-configuration is the same as a normal [standalone Gitaly server](index.md),
+configuration is the same as a standard [standalone Gitaly server](index.md),
 except:
 
 - The storage names are exposed to Praefect, not GitLab
@@ -1025,7 +1025,7 @@ Particular attention should be shown to:
 
    WARNING:
    If you have existing data stored on the default Gitaly storage,
-   you should [migrate the data your Gitaly Cluster storage](index.md#migrate-to-gitaly-cluster)
+   you should [migrate the data to your Gitaly Cluster storage](index.md#migrate-to-gitaly-cluster)
    first.
 
    ```ruby

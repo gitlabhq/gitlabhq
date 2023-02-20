@@ -19,9 +19,8 @@ module Resolvers
              description: 'Filters applied when getting issue metadata in the board list.'
 
     def resolve(id: nil, issue_filters: {})
-      context.scoped_set!(:issue_filters, item_filters(issue_filters))
-
       Gitlab::Graphql::Lazy.with_value(find_list(id: id)) do |list|
+        context.scoped_set!(:issue_filters, item_filters(issue_filters, list&.board&.resource_parent))
         list if authorized_resource?(list)
       end
     end

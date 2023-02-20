@@ -172,7 +172,7 @@ The jobs are separated into stages:
   are allowed to fail in the test stage:
 
   - The `test` job runs unit and integration tests by detecting the language and
-    framework ([Auto Test](../stages.md#auto-test))
+    framework ([Auto Test](../stages.md#auto-test-deprecated))
   - The `code_quality` job checks the code quality and is allowed to fail
     ([Auto Code Quality](../stages.md#auto-code-quality))
   - The `container_scanning` job checks the Docker container if it has any
@@ -188,7 +188,7 @@ The jobs are separated into stages:
     ([Auto License Compliance](../stages.md#auto-license-compliance))
 
 - **Review** - Pipelines on the default branch include this stage with a `dast_environment_deploy` job.
-  To learn more, see [Dynamic Application Security Testing (DAST)](../../../user/application_security/dast/index.md).
+  For more information, see [Dynamic Application Security Testing (DAST)](../../../user/application_security/dast/index.md).
 
 - **Production** - After the tests and checks finish, the application deploys in
   Kubernetes ([Auto Deploy](../stages.md#auto-deploy)).

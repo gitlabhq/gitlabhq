@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BulkImports::Projects::Pipelines::ReferencesPipeline do
+RSpec.describe BulkImports::Projects::Pipelines::ReferencesPipeline, feature_category: :importers do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project) }
   let_it_be(:bulk_import) { create(:bulk_import, user: user) }
@@ -19,11 +19,44 @@ RSpec.describe BulkImports::Projects::Pipelines::ReferencesPipeline do
 
   let_it_be(:tracker) { create(:bulk_import_tracker, entity: entity) }
   let_it_be(:context) { BulkImports::Pipeline::Context.new(tracker) }
-
   let(:issue) { create(:issue, project: project, description: 'https://my.gitlab.com/source/full/path/-/issues/1') }
-  let(:mr) { create(:merge_request, source_project: project, description: 'https://my.gitlab.com/source/full/path/-/merge_requests/1') }
-  let(:issue_note) { create(:note, project: project, noteable: issue, note: 'https://my.gitlab.com/source/full/path/-/issues/1') }
-  let(:mr_note) { create(:note, project: project, noteable: mr, note: 'https://my.gitlab.com/source/full/path/-/merge_requests/1') }
+  let(:mr) do
+    create(
+      :merge_request,
+      source_project: project,
+      description: 'https://my.gitlab.com/source/full/path/-/merge_requests/1'
+    )
+  end
+
+  let(:issue_note) do
+    create(
+      :note,
+      project: project,
+      noteable: issue,
+      note: 'https://my.gitlab.com/source/full/path/-/issues/1'
+    )
+  end
+
+  let(:mr_note) do
+    create(
+      :note,
+      project: project,
+      noteable: mr,
+      note: 'https://my.gitlab.com/source/full/path/-/merge_requests/1'
+    )
+  end
+
+  let(:old_note_html) { 'old note_html' }
+  let(:system_note) do
+    create(
+      :note,
+      project: project,
+      system: true,
+      noteable: issue,
+      note: "mentioned in merge request !#{mr.iid}",
+      note_html: old_note_html
+    )
+  end
 
   subject(:pipeline) { described_class.new(context) }
 
@@ -32,7 +65,7 @@ RSpec.describe BulkImports::Projects::Pipelines::ReferencesPipeline do
   end
 
   def create_project_data
-    [issue, mr, issue_note, mr_note]
+    [issue, mr, issue_note, mr_note, system_note]
   end
 
   describe '#extract' do
@@ -43,6 +76,10 @@ RSpec.describe BulkImports::Projects::Pipelines::ReferencesPipeline do
 
       expect(extracted_data).to be_instance_of(BulkImports::Pipeline::ExtractedData)
       expect(extracted_data.data).to contain_exactly(issue_note, mr, issue, mr_note)
+      expect(system_note.note_html).not_to eq(old_note_html)
+      expect(system_note.note_html)
+        .to include("class=\"gfm gfm-merge_request\">!#{mr.iid}</a></p>")
+        .and include(project.full_path.to_s)
     end
   end
 
@@ -122,9 +159,11 @@ RSpec.describe BulkImports::Projects::Pipelines::ReferencesPipeline do
       it 'does not save the object' do
         expect(mr).not_to receive(:save!)
         expect(mr_note).not_to receive(:save!)
+        expect(system_note).not_to receive(:save!)
 
         subject.load(context, mr)
         subject.load(context, mr_note)
+        subject.load(context, system_note)
       end
     end
   end

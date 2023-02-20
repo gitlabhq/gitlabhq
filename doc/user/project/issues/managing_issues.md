@@ -22,6 +22,28 @@ To edit an issue:
 1. Edit the available fields.
 1. Select **Save changes**.
 
+### Remove a task list item
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/377307) in GitLab 15.9 [with a flag](../../../administration/feature_flags.md) named `work_items_mvc`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available.
+To make it available, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `work_items_mvc`.
+On GitLab.com, this feature is not available.
+The feature is not ready for production use.
+
+Prerequisites:
+
+- You must have at least the Reporter role for the project, or be the author or assignee of the issue.
+
+In an issue description with task list items:
+
+1. Hover over a task list item and select the options menu (**{ellipsis_v}**).
+1. Select **Delete**.
+
+The task list item is removed from the issue description.
+Any nested task list items are moved up a nested level.
+
 ## Bulk edit issues from a project
 
 > - Assigning epic [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/210470) in GitLab 13.2.
@@ -150,7 +172,7 @@ To do it:
 
    issues.each do |issue|
       if issue.state != "closed" && issue.moved_to.nil?
-         Issues::MoveService.new(project: project, current_user: admin_user).execute(issue, target_project)
+         Issues::MoveService.new(container: project, current_user: admin_user).execute(issue, target_project)
       else
          puts "issue with id: #{issue.id} and title: #{issue.title} was not moved"
       end
@@ -174,10 +196,10 @@ Prerequisites:
 
 To reorder list items, when viewing an issue:
 
-1. Hover over the list item row to make the drag icon (**{drag-vertical}**) visible.
-1. Select and hold the drag icon.
+1. Hover over the list item row to make the grip icon (**{grip}**) visible.
+1. Select and hold the grip icon.
 1. Drag the row to the new position in the list.
-1. Release the drag icon.
+1. Release the grip icon.
 
 ## Close an issue
 
@@ -204,9 +226,11 @@ A reopened issue is no different from any other open issue.
 
 ### Closing issues automatically
 
-You can close issues automatically by using certain words in the commit message or MR description.
+You can close issues automatically by using certain words, called a _closing pattern_,
+in a commit message or merge request description. Administrators of self-managed GitLab instances
+can [change the default closing pattern](../../../administration/issue_closing_pattern.md).
 
-If a commit message or merge request description contains text matching the [defined pattern](#default-closing-pattern),
+If a commit message or merge request description contains text matching the [closing pattern](#default-closing-pattern),
 all issues referenced in the matched text are closed when either:
 
 - The commit is pushed to a project's [**default** branch](../repository/branches/default.md).
@@ -218,7 +242,7 @@ description:
 - Issues `#4` and `#6` are closed automatically when the MR is merged.
 - Issue `#5` is marked as a [related issue](related_issues.md), but it's not closed automatically.
 
-Alternatively, when you [create a merge request from an issue](../merge_requests/getting_started.md#merge-requests-to-close-issues),
+Alternatively, when you [create a merge request from an issue](../merge_requests/creating_merge_requests.md#from-an-issue),
 it inherits the issue's milestone and labels.
 
 For performance reasons, automatic issue closing is disabled for the very first
@@ -382,7 +406,7 @@ To view all issues assigned to you:
 Or:
 
 - To use a [keyboard shortcut](../../shortcuts.md), press <kbd>Shift</kbd> + <kbd>i</kbd>.
-- On the top bar, on the top right, select **{issues}** **Issues**.
+- On the top bar, in the upper right, select **{issues}** **Issues**.
 
 ## Filter the list of issues
 
@@ -413,11 +437,12 @@ GitLab displays the results on-screen, but you can also
 
 > - OR filtering for author and assignee was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23532) in GitLab 15.6 [with a flag](../../../administration/feature_flags.md) named `or_issuable_queries`. Disabled by default.
 > - OR filtering for label was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23532) in GitLab 15.8 [with a flag](../../../administration/feature_flags.md) named `or_issuable_queries`. Disabled by default.
+> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/104292) in GitLab 15.9.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available.
-To make it available, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `or_issuable_queries`.
-The feature is not ready for production use.
+On self-managed GitLab, by default this feature is available.
+To hide the feature, ask an administrator to [disable the feature flag](../../../administration/feature_flags.md) named `or_issuable_queries`.
+On GitLab.com, this feature is available.
 
 When this feature is enabled, you can use the OR operator (**is one of: `||`**)
 when you [filter the list of issues](#filter-the-list-of-issues) by:
@@ -460,7 +485,7 @@ Read more about issue references in [GitLab-Flavored Markdown](../../markdown.md
 You can create a comment in an issue by sending an email.
 Sending an email to this address creates a comment that contains the email body.
 
-To learn more about creating comments by sending an email and the necessary configuration, see
+For more information about creating comments by sending an email and the necessary configuration, see
 [Reply to a comment by sending email](../../discussions/index.md#reply-to-a-comment-by-sending-email).
 
 To copy the issue's email address:

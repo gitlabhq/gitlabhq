@@ -206,7 +206,7 @@ export default {
         this.track('render', { category: 'default', label: ON_SHOW_TRACK_LABEL });
       }
     },
-    onCloseModal(e) {
+    onCancel(e) {
       if (this.preventCancelDefault) {
         e.preventDefault();
       } else {
@@ -224,6 +224,9 @@ export default {
         accessLevel: this.selectedAccessLevel,
         expiresAt: this.selectedDate,
       });
+    },
+    onClose() {
+      this.$emit('close');
     },
   },
   HEADER_CLOSE_LABEL,
@@ -249,7 +252,8 @@ export default {
     :action-cancel="actionCancel"
     @shown="onShowModal"
     @primary="onSubmit"
-    @cancel="onCloseModal"
+    @cancel="onCancel"
+    @close="onClose"
     @hidden="onReset"
   >
     <content-transition
@@ -267,11 +271,12 @@ export default {
                 <strong>{{ content }}</strong>
               </template>
             </gl-sprintf>
+            <slot name="intro-text-after"></slot>
           </p>
-          <slot name="intro-text-after"></slot>
         </div>
 
         <slot name="alert"></slot>
+        <slot name="active-trial-alert"></slot>
 
         <gl-form-group
           :label="labelSearchField"

@@ -28,7 +28,7 @@ On GitLab.com, you cannot override the job timeout for shared runners and must u
 To set the maximum job timeout:
 
 1. In a project, go to **Settings > CI/CD > Runners**.
-1. Select your specific runner to edit the settings.
+1. Select your project runner to edit the settings.
 1. Enter a value under **Maximum job timeout**. Must be 10 minutes or more. If not
    defined, the [project's job timeout setting](../pipelines/settings.md#set-a-limit-for-how-long-jobs-can-run)
    is used.
@@ -89,7 +89,7 @@ To protect or unprotect a runner:
 1. Check the **Protected** option.
 1. Select **Save changes**.
 
-![specific runners edit icon](img/protected_runners_check_box_v14_1.png)
+![Protect project runners checkbox](img/protected_runners_check_box_v14_1.png)
 
 ### Forks
 
@@ -150,7 +150,7 @@ the source of the HTTP requests it makes to GitLab when polling for jobs. The
 IP address is always kept up to date so if the runner IP changes it
 automatically updates in GitLab.
 
-The IP address for shared runners and specific runners can be found in
+The IP address for shared runners and project runners can be found in
 different places.
 
 ### Determine the IP address of a shared runner
@@ -164,16 +164,16 @@ the GitLab instance. To determine this:
 
 ![shared runner IP address](img/shared_runner_ip_address_14_5.png)
 
-### Determine the IP address of a specific runner
+### Determine the IP address of a project runner
 
-To can find the IP address of a runner for a specific project,
+To can find the IP address of a runner for a project project,
 you must have the Owner role for the
 project.
 
 1. Go to the project's **Settings > CI/CD** and expand the **Runners** section.
 1. On the details page you should see a row for **IP Address**.
 
-![specific runner IP address](img/specific_runner_ip_address.png)
+![Project runner IP address](img/project_runner_ip_address.png)
 
 ## Use tags to control which jobs a runner can run
 
@@ -355,7 +355,7 @@ try to preserve worktrees and try to re-use them by default.
 This has limitations when using the [Docker Machine executor](https://docs.gitlab.com/runner/executors/docker_machine.html).
 
 A Git strategy of `none` also re-uses the local working copy, but skips all Git
-operations normally done by GitLab. GitLab Runner pre-clone scripts are also skipped,
+operations usually done by GitLab. GitLab Runner pre-clone scripts are also skipped,
 if present. This strategy could mean you need to add `fetch` and `checkout` commands
 to [your `.gitlab-ci.yml` script](../yaml/index.md#script).
 
@@ -535,14 +535,14 @@ You can set it globally or per-job in the [`variables`](../yaml/index.md#variabl
 
 `GIT_SUBMODULE_UPDATE_FLAGS` accepts all options of the
 [`git submodule update`](https://git-scm.com/docs/git-submodule#Documentation/git-submodule.txt-update--init--remote-N--no-fetch--no-recommend-shallow-f--force--checkout--rebase--merge--referenceltrepositorygt--depthltdepthgt--recursive--jobsltngt--no-single-branch--ltpathgt82308203)
-subcommand. However, note that `GIT_SUBMODULE_UPDATE_FLAGS` flags are appended after a few default flags:
+subcommand. However, `GIT_SUBMODULE_UPDATE_FLAGS` flags are appended after a few default flags:
 
 - `--init`, if [`GIT_SUBMODULE_STRATEGY`](#git-submodule-strategy) was set to `normal` or `recursive`.
 - `--recursive`, if [`GIT_SUBMODULE_STRATEGY`](#git-submodule-strategy) was set to `recursive`.
 - [`GIT_DEPTH`](#shallow-cloning). See the default value below.
 
 Git honors the last occurrence of a flag in the list of arguments, so manually
-providing them in `GIT_SUBMODULE_UPDATE_FLAGS` will also override these default flags.
+providing them in `GIT_SUBMODULE_UPDATE_FLAGS` overrides these default flags.
 
 You can use this variable to fetch the latest remote `HEAD` instead of the commit tracked,
 in the repository, or to speed up the checkout by fetching submodules in multiple parallel jobs:
@@ -668,7 +668,7 @@ variables:
 
 test:
   script:
-    - pwd
+    - pwd -P
 ```
 
 The `$CI_CONCURRENT_PROJECT_ID` should be used in conjunction with `$CI_PROJECT_PATH`
@@ -680,7 +680,7 @@ variables:
 
 test:
   script:
-    - pwd
+    - pwd -P
 ```
 
 #### Nested paths
@@ -779,7 +779,7 @@ variables:
 NOTE:
 Zip archives are the only supported artifact type. Follow [the issue for details](https://gitlab.com/gitlab-org/gitlab/-/issues/367203).
 
-GitLab Runner can generate and produce attestation metadata for all build artifacts. To enable this feature, you must set the `RUNNER_GENERATE_ARTIFACTS_METADATA` environment variable to `true`. This variable can either be set globally or it can be set for individual jobs. The metadata is in rendered in a plain text `.json` file that's stored with the artifact. The file name is as follows: `{ARTIFACT_NAME}-metadata.json` where `ARTIFACT_NAME` is what was defined as the [name for the artifact](../pipelines/job_artifacts.md#use-cicd-variables-to-define-the-artifacts-name) in the CI file. The file name, however, defaults to `artifacts-metadata.json` if no name was given to the build artifacts.
+GitLab Runner can generate and produce attestation metadata for all build artifacts. To enable this feature, you must set the `RUNNER_GENERATE_ARTIFACTS_METADATA` environment variable to `true`. This variable can either be set globally or it can be set for individual jobs. The metadata is in rendered in a plain text `.json` file that's stored with the artifact. The filename is as follows: `{ARTIFACT_NAME}-metadata.json` where `ARTIFACT_NAME` is what was defined as the [name for the artifact](../pipelines/job_artifacts.md#use-cicd-variables-to-define-the-artifacts-name) in the CI file. The filename, however, defaults to `artifacts-metadata.json` if no name was given to the build artifacts.
 
 ### Attestation format
 
@@ -801,7 +801,7 @@ The attestation metadata is generated in the [in-toto attestation format](https:
 | `predicate.invocation.environment.architecture` | The architecture on which the CI job is run. |
 | `predicate.invocation.parameters` | The names of any CI/CD or environment variables that were present when the build command was run. The value is always represented as an empty string to avoid leaking any secrets. |
 | `metadata.buildStartedOn` | The time when the build was started. `RFC3339` formatted. |
-| `metadata.buildEndedOn` | The time when the build ended. Since metadata generation happens during the build this moment in time will be slightly earlier than the one reported in GitLab. `RFC3339` formatted. |
+| `metadata.buildEndedOn` | The time when the build ended. Since metadata generation happens during the build this moment in time is slightly earlier than the one reported in GitLab. `RFC3339` formatted. |
 | `metadata.reproducible` | Whether the build is reproducible by gathering all the generated metadata. Always `false`. |
 | `metadata.completeness.parameters` | Whether the parameters are supplied. Always `true`. |
 | `metadata.completeness.environment` | Whether the builder's environment is reported. Always `true`. |
@@ -893,7 +893,7 @@ sequentially.
 
 To avoid writing to disk and reading the contents back for smaller files, a small buffer per concurrency is used. This setting
 can be controlled with `FASTZIP_ARCHIVER_BUFFER_SIZE`. The default size for this buffer is 2 MiB, therefore, a
-concurrency of 16 will allocate 32 MiB. Data that exceeds the buffer size will be written to and read back from disk.
+concurrency of 16 allocates 32 MiB. Data that exceeds the buffer size is written to and read back from disk.
 Therefore, using no buffer, `FASTZIP_ARCHIVER_BUFFER_SIZE: 0`, and only scratch space is a valid option.
 
 `FASTZIP_ARCHIVER_CONCURRENCY` controls how many files are compressed concurrency. As mentioned above, this setting

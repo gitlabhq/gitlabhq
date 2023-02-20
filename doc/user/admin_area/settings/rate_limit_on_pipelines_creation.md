@@ -16,7 +16,7 @@ the eleventh request is blocked. Access to the endpoint is allowed again after o
 
 This limit is:
 
-- Applied independently per project, user, and commit.
+- Applied to the number of pipelines created for the same combination of project, commit, and user.
 - Not applied per IP address.
 - Disabled by default.
 

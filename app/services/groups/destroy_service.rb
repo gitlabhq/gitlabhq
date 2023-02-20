@@ -42,7 +42,7 @@ module Groups
       if user_ids_for_project_authorizations_refresh.present?
         UserProjectAccessChangedService
           .new(user_ids_for_project_authorizations_refresh)
-          .execute(blocking: true)
+          .execute
       end
 
       publish_event

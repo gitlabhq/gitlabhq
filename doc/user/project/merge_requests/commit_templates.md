@@ -89,7 +89,7 @@ Commit message templates support these variables:
 | `%{approved_by}`   | Line-separated list of the merge request approvers in a `Approved-by` Git commit trailer format. | `Approved-by: Sidney Jones <sjones@example.com>` <br> `Approved-by: Zhang Wei <zwei@example.com>` |
 | `%{merged_by}`     | User who merged the merge request. | `Alex Garcia <agarcia@example.com>` |
 | `%{co_authored_by}` | Names and emails of commit authors in a `Co-authored-by` Git commit trailer format. Limited to authors of 100 most recent commits in merge request. | `Co-authored-by: Zane Doe <zdoe@example.com>` <br> `Co-authored-by: Blake Smith <bsmith@example.com>` |
-| `%{all_commits}`   | Messages from all commits in the merge request. Limited to 100 most recent commits. Skips commit bodies exceeding 100KiB and merge commit messages. | `* Feature introduced` <br><br> `This commit implements feature` <br> `Changelog:added` <br><br> `* Bug fixed` <br><br> `* Documentation improved` <br><br>`This commit introduced better docs.`|
+| `%{all_commits}`   | Messages from all commits in the merge request. Limited to 100 most recent commits. Skips commit bodies exceeding 100 KiB and merge commit messages. | `* Feature introduced` <br><br> `This commit implements feature` <br> `Changelog:added` <br><br> `* Bug fixed` <br><br> `* Documentation improved` <br><br>`This commit introduced better docs.`|
 
 Any line containing only an empty variable is removed. If the line to be removed is both
 preceded and followed by an empty line, the preceding empty line is also removed.

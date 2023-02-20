@@ -2,13 +2,14 @@ import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import FilteredSearchDropdownManager from '~/filtered_search/filtered_search_dropdown_manager';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 
 describe('Filtered Search Dropdown Manager', () => {
   let mock;
 
   beforeEach(() => {
     mock = new MockAdapter(axios);
-    mock.onGet().reply(200);
+    mock.onGet().reply(HTTP_STATUS_OK);
   });
 
   describe('addWordToInput', () => {

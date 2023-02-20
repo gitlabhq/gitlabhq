@@ -20,7 +20,7 @@ RSpec.describe MigrationsHelpers do
 
     context 'ci database configured' do
       before do
-        skip_if_multiple_databases_not_setup
+        skip_if_multiple_databases_not_setup(:ci)
       end
 
       it 'returns the CI base model' do
@@ -30,7 +30,7 @@ RSpec.describe MigrationsHelpers do
 
     context 'ci database not configured' do
       before do
-        skip_if_multiple_databases_are_setup
+        skip_if_multiple_databases_are_setup(:ci)
       end
 
       it 'returns the main base model' do
@@ -51,7 +51,7 @@ RSpec.describe MigrationsHelpers do
 
     context 'ci database configured' do
       before do
-        skip_if_multiple_databases_not_setup
+        skip_if_multiple_databases_not_setup(:ci)
       end
 
       it 'create a class based on the CI base model' do
@@ -62,7 +62,7 @@ RSpec.describe MigrationsHelpers do
 
     context 'ci database not configured' do
       before do
-        skip_if_multiple_databases_are_setup
+        skip_if_multiple_databases_are_setup(:ci)
       end
 
       it 'creates a class based on main base model' do

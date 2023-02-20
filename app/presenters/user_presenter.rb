@@ -29,8 +29,8 @@ class UserPresenter < Gitlab::View::Presenter::Delegated
 
   private
 
-  def can?(*args)
-    user.can?(*args)
+  def can?(...)
+    user.can?(...)
   end
 
   def should_be_private?

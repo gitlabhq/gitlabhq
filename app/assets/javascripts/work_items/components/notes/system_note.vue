@@ -22,6 +22,7 @@ import SafeHtml from '~/vue_shared/directives/safe_html';
 import descriptionVersionHistoryMixin from 'ee_else_ce/notes/mixins/description_version_history';
 import axios from '~/lib/utils/axios_utils';
 import { getLocationHash } from '~/lib/utils/url_utility';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { __ } from '~/locale';
 import NoteHeader from '~/notes/components/note_header.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -87,6 +88,9 @@ export default {
     descriptionVersion() {
       return this.descriptionVersions[this.note.description_version_id];
     },
+    noteId() {
+      return getIdFromGraphQLId(this.note.id);
+    },
   },
   mounted() {
     renderGFM(this.$refs['gfm-content']);
@@ -129,7 +133,7 @@ export default {
         <note-header
           :author="note.author"
           :created-at="note.createdAt"
-          :note-id="note.id"
+          :note-id="noteId"
           :is-system-note="true"
         >
           <span ref="gfm-content" v-safe-html="actionTextHtml"></span>

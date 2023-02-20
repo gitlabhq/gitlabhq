@@ -34,6 +34,7 @@ describe('projects/settings/components/default_branch_selector', () => {
       projectId,
       refType: null,
       state: true,
+      toggleButtonClass: null,
       translations: {
         dropdownHeader: expect.any(String),
         searchPlaceholder: expect.any(String),

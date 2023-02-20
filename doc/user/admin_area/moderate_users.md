@@ -17,7 +17,7 @@ pending approval state because an administrator has enabled any of the following
 
 - [Require administrator approval for new sign-ups](settings/sign_up_restrictions.md#require-administrator-approval-for-new-sign-ups) setting.
 - [User cap](settings/sign_up_restrictions.md#user-cap).
-- [Block auto-created users (OmniAuth)](../../integration/omniauth.md#configure-initial-settings)
+- [Block auto-created users (OmniAuth)](../../integration/omniauth.md#configure-common-settings)
 - [Block auto-created users (LDAP)](../../administration/auth/ldap/index.md#basic-configuration-settings)
 
 When a user registers for an account while this setting is enabled:
@@ -69,7 +69,7 @@ GitLab administrators can block and unblock users.
 
 ### Block a user
 
-In order to completely prevent access of a user to the GitLab instance,
+To completely prevent access of a user to the GitLab instance,
 administrators can choose to block the user.
 
 Users can be blocked [via an abuse report](review_abuse_reports.md#blocking-users),
@@ -129,7 +129,7 @@ GitLab administrators can deactivate and activate users.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/22257) in GitLab 12.4.
 
-In order to temporarily prevent access by a GitLab user that has no recent activity,
+To temporarily prevent access by a GitLab user that has no recent activity,
 administrators can choose to deactivate the user.
 
 Deactivating a user is functionally identical to [blocking a user](#block-and-unblock-users),
@@ -220,7 +220,6 @@ Users can also be activated using the [GitLab API](../../api/users.md#activate-u
 
 FLAG:
 On self-managed GitLab, by default this feature is available.
-To hide the feature, ask an administrator to [disable the feature flag](../../administration/feature_flags.md) named `ban_user_feature_flag`.
 On GitLab.com, this feature is available to GitLab.com administrators only.
 
 GitLab administrators can ban and unban users. Banned users are blocked, and their issues and merge requests are hidden.

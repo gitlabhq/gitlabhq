@@ -272,7 +272,7 @@ control over how the Pages daemon runs and serves content in your environment.
 | `log_verbose`                           | Verbose logging, true/false. |
 | `propagate_correlation_id`              | Set to true (false by default) to re-use existing Correlation ID from the incoming request header `X-Request-ID` if present. If a reverse proxy sets this header, the value is propagated in the request chain. |
 | `max_connections`                       | Limit on the number of concurrent connections to the HTTP, HTTPS or proxy listeners. |
-| `max_uri_length`                        | The maximum length of URIs accepted by GitLab Pages. Set to 0 for unlimited length. [Introduced](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/659) in GitLab 14.5.
+| `max_uri_length`                        | The maximum length of URIs accepted by GitLab Pages. Set to 0 for unlimited length. [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/5729) in GitLab 14.5.
 | `metrics_address`                       | The address to listen on for metrics requests. |
 | `redirect_http`                         | Redirect pages from HTTP to HTTPS, true/false. |
 | `redirects_max_config_size`             | The maximum size of the `_redirects` file, in bytes (default: 65536). |
@@ -719,7 +719,10 @@ To set the maximum size of GitLab Pages site in a project, overriding the inheri
 
 1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > Pages**.
-1. Enter a value under **Maximum size of pages** in MB.
+
+   If this path is not visible, select **Deployments > Pages**.
+   [This location is part of an experiment](../../user/project/pages/index.md#menu-position-test).
+1. In **Maximum size of pages**, enter the size in MB.
 1. Select **Save changes**.
 
 ## Set maximum number of GitLab Pages custom domains for a project

@@ -18,7 +18,7 @@ module API
           } do |link|
           ::Releases::LinkPresenter.new(link).direct_asset_url
         end
-        expose :external?, documentation: { type: 'boolean' }, as: :external
+        expose :external?, documentation: { type: 'boolean' }, as: :external # @deprecated
         expose :link_type, documentation: { type: 'string', example: 'other' }
       end
     end

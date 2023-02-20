@@ -4,7 +4,7 @@ group: Respond
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Prometheus integration **(FREE)**
+# Prometheus **(FREE)**
 
 GitLab offers powerful integration with [Prometheus](https://prometheus.io) for
 monitoring key metrics of your apps, directly in GitLab.

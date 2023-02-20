@@ -4,7 +4,6 @@ module Packages
   module Debian
     class FileEntry
       include ActiveModel::Model
-      include ::Packages::FIPS
 
       DIGESTS = %i[md5 sha1 sha256].freeze
       FILENAME_REGEX = %r{\A[a-zA-Z0-9][a-zA-Z0-9_.~+-]*\z}.freeze
@@ -32,8 +31,6 @@ module Packages
       private
 
       def valid_package_file_digests
-        raise DisabledError, 'Debian registry is not FIPS compliant' if Gitlab::FIPS.enabled?
-
         DIGESTS.each do |digest|
           package_file_digest = package_file["file_#{digest}"]
           sum = public_send("#{digest}sum") # rubocop:disable GitlabSecurity/PublicSend

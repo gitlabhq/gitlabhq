@@ -30,6 +30,7 @@ export default class MergeRequestStore {
     this.machineValue = this.stateMachine.value;
     this.mergeDetailsCollapsed = window.innerWidth < 768;
     this.mergeError = data.mergeError;
+    this.multipleApprovalRulesAvailable = data.multiple_approval_rules_available || false;
     this.id = data.id;
 
     this.setPaths(data);

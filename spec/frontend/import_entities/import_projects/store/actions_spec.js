@@ -21,6 +21,11 @@ import {
 import state from '~/import_entities/import_projects/store/state';
 import axios from '~/lib/utils/axios_utils';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
+import {
+  HTTP_STATUS_INTERNAL_SERVER_ERROR,
+  HTTP_STATUS_OK,
+  HTTP_STATUS_TOO_MANY_REQUESTS,
+} from '~/lib/utils/http_status';
 
 jest.mock('~/flash');
 
@@ -93,7 +98,7 @@ describe('import_projects store actions', () => {
 
     describe('with a successful request', () => {
       it('commits REQUEST_REPOS, SET_PAGE, RECEIVE_REPOS_SUCCESS mutations', () => {
-        mock.onGet(MOCK_ENDPOINT).reply(200, payload);
+        mock.onGet(MOCK_ENDPOINT).reply(HTTP_STATUS_OK, payload);
 
         return testAction(
           fetchRepos,
@@ -117,7 +122,7 @@ describe('import_projects store actions', () => {
         });
 
         it('commits SET_PAGE_CURSORS instead of SET_PAGE', () => {
-          mock.onGet(MOCK_ENDPOINT).reply(200, payload);
+          mock.onGet(MOCK_ENDPOINT).reply(HTTP_STATUS_OK, payload);
 
           return testAction(
             fetchRepos,
@@ -141,7 +146,7 @@ describe('import_projects store actions', () => {
     });
 
     it('commits REQUEST_REPOS, RECEIVE_REPOS_ERROR mutations on an unsuccessful request', () => {
-      mock.onGet(MOCK_ENDPOINT).reply(500);
+      mock.onGet(MOCK_ENDPOINT).reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
 
       return testAction(
         fetchRepos,
@@ -157,7 +162,7 @@ describe('import_projects store actions', () => {
         let requestedUrl;
         mock.onGet().reply((config) => {
           requestedUrl = config.url;
-          return [200, payload];
+          return [HTTP_STATUS_OK, payload];
         });
 
         const localStateWithPage = { ...localState, pageInfo: { page: 2 } };
@@ -182,7 +187,7 @@ describe('import_projects store actions', () => {
           let requestedUrl;
           mock.onGet().reply((config) => {
             requestedUrl = config.url;
-            return [200, payload];
+            return [HTTP_STATUS_OK, payload];
           });
 
           const localStateWithPage = { ...localState, pageInfo: { endCursor: 'endTest' } };
@@ -201,7 +206,7 @@ describe('import_projects store actions', () => {
     });
 
     it('correctly keeps current page on an unsuccessful request', () => {
-      mock.onGet(MOCK_ENDPOINT).reply(500);
+      mock.onGet(MOCK_ENDPOINT).reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
       const CURRENT_PAGE = 5;
 
       return testAction(
@@ -215,7 +220,7 @@ describe('import_projects store actions', () => {
 
     describe('when rate limited', () => {
       it('commits RECEIVE_REPOS_ERROR and shows rate limited error message', async () => {
-        mock.onGet(`${TEST_HOST}/endpoint.json?filter=filter`).reply(429);
+        mock.onGet(`${TEST_HOST}/endpoint.json?filter=filter`).reply(HTTP_STATUS_TOO_MANY_REQUESTS);
 
         await testAction(
           fetchRepos,
@@ -233,7 +238,7 @@ describe('import_projects store actions', () => {
 
     describe('when filtered', () => {
       it('fetches repos with filter applied', () => {
-        mock.onGet(`${TEST_HOST}/endpoint.json?filter=filter`).reply(200, payload);
+        mock.onGet(`${TEST_HOST}/endpoint.json?filter=filter`).reply(HTTP_STATUS_OK, payload);
 
         return testAction(
           fetchRepos,
@@ -264,7 +269,7 @@ describe('import_projects store actions', () => {
 
     it('commits REQUEST_IMPORT and REQUEST_IMPORT_SUCCESS mutations on a successful request', () => {
       const importedProject = { name: 'imported/project' };
-      mock.onPost(MOCK_ENDPOINT).reply(200, importedProject);
+      mock.onPost(MOCK_ENDPOINT).reply(HTTP_STATUS_OK, importedProject);
 
       return testAction(
         fetchImport,
@@ -288,7 +293,7 @@ describe('import_projects store actions', () => {
     });
 
     it('commits REQUEST_IMPORT and RECEIVE_IMPORT_ERROR and shows generic error message on an unsuccessful request', async () => {
-      mock.onPost(MOCK_ENDPOINT).reply(500);
+      mock.onPost(MOCK_ENDPOINT).reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
 
       await testAction(
         fetchImport,
@@ -311,7 +316,9 @@ describe('import_projects store actions', () => {
 
     it('commits REQUEST_IMPORT and RECEIVE_IMPORT_ERROR and shows detailed error message on an unsuccessful request with errors fields in response', async () => {
       const ERROR_MESSAGE = 'dummy';
-      mock.onPost(MOCK_ENDPOINT).reply(500, { errors: ERROR_MESSAGE });
+      mock
+        .onPost(MOCK_ENDPOINT)
+        .reply(HTTP_STATUS_INTERNAL_SERVER_ERROR, { errors: ERROR_MESSAGE });
 
       await testAction(
         fetchImport,
@@ -349,7 +356,7 @@ describe('import_projects store actions', () => {
     afterEach(() => mock.restore());
 
     it('commits RECEIVE_JOBS_SUCCESS mutation on a successful request', async () => {
-      mock.onGet(MOCK_ENDPOINT).reply(200, updatedProjects);
+      mock.onGet(MOCK_ENDPOINT).reply(HTTP_STATUS_OK, updatedProjects);
 
       await testAction(
         fetchJobs,
@@ -371,7 +378,9 @@ describe('import_projects store actions', () => {
       });
 
       it('fetches realtime changes with filter applied', () => {
-        mock.onGet(`${TEST_HOST}/endpoint.json?filter=filter`).reply(200, updatedProjects);
+        mock
+          .onGet(`${TEST_HOST}/endpoint.json?filter=filter`)
+          .reply(HTTP_STATUS_OK, updatedProjects);
 
         return testAction(
           fetchJobs,
@@ -433,7 +442,7 @@ describe('import_projects store actions', () => {
     afterEach(() => mock.restore());
 
     it('commits CANCEL_IMPORT_SUCCESS on success', async () => {
-      mock.onPost(MOCK_ENDPOINT).reply(200);
+      mock.onPost(MOCK_ENDPOINT).reply(HTTP_STATUS_OK);
 
       await testAction(
         cancelImport,
@@ -450,7 +459,7 @@ describe('import_projects store actions', () => {
     });
 
     it('shows generic error message on an unsuccessful request', async () => {
-      mock.onPost(MOCK_ENDPOINT).reply(500);
+      mock.onPost(MOCK_ENDPOINT).reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
 
       await testAction(cancelImport, { repoId: importRepoId }, localState, [], []);
 
@@ -461,7 +470,9 @@ describe('import_projects store actions', () => {
 
     it('shows detailed error message on an unsuccessful request with errors fields in response', async () => {
       const ERROR_MESSAGE = 'dummy';
-      mock.onPost(MOCK_ENDPOINT).reply(500, { errors: ERROR_MESSAGE });
+      mock
+        .onPost(MOCK_ENDPOINT)
+        .reply(HTTP_STATUS_INTERNAL_SERVER_ERROR, { errors: ERROR_MESSAGE });
 
       await testAction(cancelImport, { repoId: importRepoId }, localState, [], []);
 

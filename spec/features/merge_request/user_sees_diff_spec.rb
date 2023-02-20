@@ -32,7 +32,7 @@ RSpec.describe 'Merge request > User sees diff', :js, feature_category: :code_re
         visit "#{diffs_project_merge_request_path(project, merge_request)}#{fragment}"
       end
 
-      it 'shows expanded note' do
+      it 'shows expanded note', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/391239' do
         expect(page).to have_selector(fragment, visible: true)
       end
     end

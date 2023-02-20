@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
 module SortingTitlesValuesHelper
+  SORT_NAME = 'name_asc'
+  SORT_UPDATED_OLDEST = 'updated_asc'
+  SORT_UPDATED_RECENT = 'updated_desc'
+
   # Titles.
   def sort_title_created_date
     s_('SortOptions|Created date')

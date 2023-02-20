@@ -56,31 +56,6 @@ class WebHook < ApplicationRecord
     all_branches: 2
   }, _prefix: true
 
-  scope :executable, -> do
-    where('recent_failures <= ? AND (disabled_until IS NULL OR disabled_until < ?)', FAILURE_THRESHOLD, Time.current)
-  end
-
-  # Inverse of executable
-  scope :disabled, -> do
-    where('recent_failures > ? OR disabled_until >= ?', FAILURE_THRESHOLD, Time.current)
-  end
-
-  def executable?
-    !temporarily_disabled? && !permanently_disabled?
-  end
-
-  def temporarily_disabled?
-    return false if recent_failures <= FAILURE_THRESHOLD
-
-    disabled_until.present? && disabled_until >= Time.current
-  end
-
-  def permanently_disabled?
-    return false if disabled_until.present?
-
-    recent_failures > FAILURE_THRESHOLD
-  end
-
   # rubocop: disable CodeReuse/ServiceClass
   def execute(data, hook_name, force: false)
     # hook.executable? is checked in WebHookService#execute
@@ -112,8 +87,6 @@ class WebHook < ApplicationRecord
   end
 
   def disable!
-    return if permanently_disabled?
-
     update_attribute(:recent_failures, EXCEEDED_FAILURE_THRESHOLD)
   end
 
@@ -127,8 +100,6 @@ class WebHook < ApplicationRecord
   # Don't actually back-off until FAILURE_THRESHOLD failures have been seen
   # we mark the grace-period using the recent_failures counter
   def backoff!
-    return if permanently_disabled? || (backoff_count >= MAX_FAILURES && temporarily_disabled?)
-
     attrs = { recent_failures: next_failure_count }
 
     if recent_failures >= FAILURE_THRESHOLD
@@ -137,7 +108,7 @@ class WebHook < ApplicationRecord
     end
 
     assign_attributes(attrs)
-    save(validate: false)
+    save(validate: false) if changed?
   end
 
   def failed!
@@ -165,16 +136,6 @@ class WebHook < ApplicationRecord
   # Custom attributes to be included in the worker context.
   def application_context
     { related_class: type }
-  end
-
-  def alert_status
-    if temporarily_disabled?
-      :temporarily_disabled
-    elsif permanently_disabled?
-      :disabled
-    else
-      :executable
-    end
   end
 
   # Exclude binary columns by default - they have no sensible JSON encoding

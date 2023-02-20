@@ -113,7 +113,7 @@ While this is possible in some cases, such as SaaS applications, there are some 
   operations team is at full capacity - but you also merge code at other times.
 
 In these cases, you can create a production branch that reflects the deployed code.
-You can deploy a new version by merging `main` into the `production` branch. 
+You can deploy a new version by merging `main` into the `production` branch.
 While not shown in the graph below, the work on the `main` branch works just like in GitHub flow, i.e. with feature-branches being merged into `main`.
 
 ```mermaid
@@ -416,7 +416,7 @@ git commit -m 'Properly escape special characters in XML generation'
 
 An example of a good commit message is: "Combine templates to reduce duplicate code in the user views."
 The words "change," "improve," "fix," and "refactor" don't add much information to a commit message.
-For more information, please see Tim Pope's excellent [note about formatting commit messages](https://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html).
+For more information, see Tim Pope's excellent [note about formatting commit messages](https://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html).
 
 To add more context to a commit message, consider adding information regarding the
 origin of the change. For example, the URL of a GitLab issue, or a Jira issue number,

@@ -3,6 +3,7 @@ import MockAdapter from 'axios-mock-adapter';
 import testAction from 'helpers/vuex_action_helper';
 import Api from '~/api';
 import { createAlert } from '~/flash';
+import { HTTP_STATUS_BAD_REQUEST, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { MISSING_DELETE_PATH_ERROR } from '~/packages_and_registries/infrastructure_registry/list/constants';
 import * as actions from '~/packages_and_registries/infrastructure_registry/list/stores/actions';
 import * as types from '~/packages_and_registries/infrastructure_registry/list/stores/mutation_types';
@@ -182,7 +183,7 @@ describe('Actions Package list store', () => {
       },
     };
     it('should perform a delete operation on _links.delete_api_path', () => {
-      mock.onDelete(payload._links.delete_api_path).replyOnce(200);
+      mock.onDelete(payload._links.delete_api_path).replyOnce(HTTP_STATUS_OK);
       Api.projectPackages = jest.fn().mockResolvedValue({ data: 'foo' });
 
       return testAction(
@@ -198,7 +199,7 @@ describe('Actions Package list store', () => {
     });
 
     it('should stop the loading and call create flash on api error', async () => {
-      mock.onDelete(payload._links.delete_api_path).replyOnce(400);
+      mock.onDelete(payload._links.delete_api_path).replyOnce(HTTP_STATUS_BAD_REQUEST);
       await testAction(
         actions.requestDeletePackage,
         payload,

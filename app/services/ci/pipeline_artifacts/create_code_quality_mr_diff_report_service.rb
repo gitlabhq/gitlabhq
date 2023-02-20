@@ -13,7 +13,7 @@ module Ci
         return if pipeline.has_codequality_mr_diff_report?
         return unless new_errors_introduced?
 
-        pipeline.pipeline_artifacts.create!(**artifact_attributes)
+        Ci::PipelineArtifact.create_or_replace_for_pipeline!(**artifact_attributes)
       end
 
       private
@@ -24,12 +24,10 @@ module Ci
         file = build_carrierwave_file!
 
         {
-          project_id: pipeline.project_id,
+          pipeline: pipeline,
           file_type: :code_quality_mr_diff,
-          file_format: Ci::PipelineArtifact::REPORT_TYPES.fetch(:code_quality_mr_diff),
           size: file["tempfile"].size,
           file: file,
-          expire_at: Ci::PipelineArtifact::EXPIRATION_DATE.from_now,
           locked: pipeline.locked
         }
       end

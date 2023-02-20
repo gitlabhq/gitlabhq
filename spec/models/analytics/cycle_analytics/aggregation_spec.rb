@@ -158,6 +158,16 @@ RSpec.describe Analytics::CycleAnalytics::Aggregation, type: :model, feature_cat
         end.not_to change { described_class.count }
       end
     end
+
+    context 'when the aggregation was disabled for some reason' do
+      it 're-enables the aggregation' do
+        create(:cycle_analytics_aggregation, enabled: false, namespace: group)
+
+        aggregation = described_class.safe_create_for_namespace(group)
+
+        expect(aggregation).to be_enabled
+      end
+    end
   end
 
   describe '#load_batch' do

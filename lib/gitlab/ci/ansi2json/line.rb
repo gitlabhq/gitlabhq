@@ -26,7 +26,7 @@ module Gitlab
             # Without forcing the encoding to UTF-8 and then replacing
             # invalid UTF-8 sequences we can get an error when serializing
             # the Hash to JSON.
-            # Encoding::UndefinedConversionError:
+            # Encoding::UndefinedConversionError (or possibly JSON::GeneratorError in json 2.6.1+):
             #   "\xE2" from ASCII-8BIT to UTF-8
             { text: encode_utf8_no_detect(text) }.tap do |result|
               result[:style] = style.to_s if style.set?

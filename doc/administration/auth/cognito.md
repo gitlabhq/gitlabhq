@@ -17,7 +17,7 @@ To enable AWS Cognito as an authentication provider, complete the following step
 
 1. Sign in to the [AWS console](https://console.aws.amazon.com/console/home).
 1. From the **Services** menu, select **Cognito**.
-1. Select **Manage User Pools** and then select **Create a user pool** in the top right corner.
+1. Select **Manage User Pools** and then in the upper-right corner, select **Create a user pool**.
 1. Enter the user pool name and then select **Step through settings**.
 1. Under **How do you want your end users to sign in?**, select **Email address or phone number** and **Allow email addresses**.
 1. Under **Which standard attributes do you want to require?**, select **email**.
@@ -33,7 +33,7 @@ To enable AWS Cognito as an authentication provider, complete the following step
    - **Enabled Identity Providers** - select all
    - **Callback URL** - `https://<your_gitlab_instance_url>/users/auth/cognito/callback`
    - **Allowed OAuth Flows** - Authorization code grant
-   - **Allowed OAuth2 Scopes** - `email`, `openid`, and `profile`
+   - **Allowed OAuth 2.0 Scopes** - `email`, `openid`, and `profile`
 
 1. Save changes for the app client settings.
 1. Under **Domain name**, include the AWS domain name for your AWS Cognito application.
@@ -41,7 +41,9 @@ To enable AWS Cognito as an authentication provider, complete the following step
 
 ## Configure GitLab
 
-1. See [Configure initial settings](../../integration/omniauth.md#configure-initial-settings) for initial settings.
+1. Edit the [common configuration file settings](../../integration/omniauth.md#configure-common-settings)
+   to add `cognito` as a single sign-on provider. This enables Just-In-Time
+   account provisioning for users who do not have an existing GitLab account.
 1. On your GitLab server, open the configuration file.
 
    **For Omnibus installations**
@@ -95,4 +97,4 @@ Select this option to begin the authentication process.
 AWS Cognito then asks you to sign in and authorize the GitLab application.
 If the authorization is successful, you're redirected and signed in to your GitLab instance.
 
-For more information, see [Configure initial settings](../../integration/omniauth.md#configure-initial-settings).
+For more information, see [Configure common settings](../../integration/omniauth.md#configure-common-settings).

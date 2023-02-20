@@ -33,20 +33,31 @@ RSpec.describe Gitlab::Database do
 
   describe '.has_config?' do
     context 'three tier database config' do
-      before do
-        allow(Gitlab::Application).to receive_message_chain(:config, :database_configuration, :[]).with(Rails.env)
-          .and_return({
-            "primary" => { "adapter" => "postgresql", "database" => "gitlabhq_test" },
-            "ci" => { "adapter" => "postgresql", "database" => "gitlabhq_test_ci" }
-          })
+      it 'returns true for main' do
+        expect(described_class.has_config?(:main)).to eq(true)
       end
 
-      it 'returns true for primary' do
-        expect(described_class.has_config?(:primary)).to eq(true)
-      end
+      context 'ci' do
+        before do
+          # CI config might not be configured
+          allow(ActiveRecord::Base.configurations).to receive(:configs_for)
+            .with(env_name: 'test', name: 'ci', include_replicas: true)
+            .and_return(ci_db_config)
+        end
 
-      it 'returns true for ci' do
-        expect(described_class.has_config?(:ci)).to eq(true)
+        let(:ci_db_config) { instance_double('ActiveRecord::DatabaseConfigurations::HashConfig') }
+
+        it 'returns true for ci' do
+          expect(described_class.has_config?(:ci)).to eq(true)
+        end
+
+        context 'ci database.yml not configured' do
+          let(:ci_db_config) { nil }
+
+          it 'returns false for ci' do
+            expect(described_class.has_config?(:ci)).to eq(false)
+          end
+        end
       end
 
       it 'returns false for non-existent' do
@@ -189,7 +200,7 @@ RSpec.describe Gitlab::Database do
       end
 
       it 'returns the ci_replica for a ci database replica' do
-        skip_if_multiple_databases_not_setup
+        skip_if_multiple_databases_not_setup(:ci)
         replica = Ci::ApplicationRecord.load_balancer.host
         expect(described_class.db_config_name(replica)).to eq('ci_replica')
       end
@@ -256,7 +267,7 @@ RSpec.describe Gitlab::Database do
 
     context "when there's CI connection" do
       before do
-        skip_if_multiple_databases_not_setup
+        skip_if_multiple_databases_not_setup(:ci)
       end
 
       context 'when CI uses database_tasks: false does indicate that ci: is subset of main:' do
@@ -513,6 +524,35 @@ RSpec.describe Gitlab::Database do
         expect(event.payload).to a_hash_including(
           connection: be_a(Gitlab::Database::LoadBalancing::ConnectionProxy)
         )
+      end
+    end
+  end
+
+  describe '.read_minimum_migration_version' do
+    before do
+      allow(Dir).to receive(:open).with(Rails.root.join('db/migrate')).and_return(migration_files)
+    end
+
+    context 'valid migration files exist' do
+      let(:migration_files) do
+        [
+          '20211004170422_init_schema.rb',
+          '20211005182304_add_users.rb'
+        ]
+      end
+
+      let(:valid_schema) { 20211004170422 }
+
+      it 'finds the correct ID' do
+        expect(described_class.read_minimum_migration_version).to eq valid_schema
+      end
+    end
+
+    context 'no valid migration files exist' do
+      let(:migration_files) { ['readme.txt', 'INSTALL'] }
+
+      it 'returns nil' do
+        expect(described_class.read_minimum_migration_version).to be_nil
       end
     end
   end

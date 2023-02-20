@@ -37,7 +37,6 @@ Style/BarePercentLiterals:
     - 'qa/qa/ee/page/project/show.rb'
     - 'qa/qa/ee/page/project/snippet/index.rb'
     - 'qa/qa/ee/page/project/wiki/show.rb'
-    - 'qa/qa/page/component/select2.rb'
     - 'qa/qa/page/element.rb'
     - 'qa/qa/page/file/form.rb'
     - 'qa/qa/page/project/web_ide/edit.rb'

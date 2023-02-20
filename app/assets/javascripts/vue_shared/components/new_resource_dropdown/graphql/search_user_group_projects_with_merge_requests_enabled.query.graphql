@@ -1,0 +1,18 @@
+query searchUserGroupProjectsWithMergeRequestsEnabled($fullPath: ID!, $search: String) {
+  group(fullPath: $fullPath) {
+    id
+    projects(
+      search: $search
+      withMergeRequestsEnabled: true
+      includeSubgroups: true
+      sort: ACTIVITY_DESC
+    ) {
+      nodes {
+        id
+        name
+        nameWithNamespace
+        webUrl
+      }
+    }
+  }
+}

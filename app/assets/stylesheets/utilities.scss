@@ -4,19 +4,6 @@
   to see the available utility classes. If you cannot find the class you need,
   consider adding it to Gitlab UI before adding it here.
 **/
-
-@each $variant, $range in $color-ranges {
-  @each $suffix, $color in $range {
-    #{'.bg-#{$variant}-#{$suffix}'} {
-      background-color: $color;
-    }
-
-    #{'.text-#{$variant}-#{$suffix}'} {
-      color: $color;
-    }
-  }
-}
-
 @each $index, $size in $type-scale {
   #{'.text-#{$index}'} {
     font-size: $size;
@@ -288,11 +275,6 @@ to @gitlab/ui by https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1709
 
 .gl-flex-flow-row-wrap {
   flex-flow: row wrap;
-}
-
-// Will be moved to @gitlab/ui by https://gitlab.com/gitlab-org/gitlab-ui/-/issues/2098
-.gl-max-w-0 {
-  max-width: 0;
 }
 
 .gl-isolate {

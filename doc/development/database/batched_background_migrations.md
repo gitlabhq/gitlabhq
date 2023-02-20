@@ -309,7 +309,7 @@ In the second (filtered) example, we know exactly 100 will be updated with each 
 
 NOTE:
 When applying additional filters, it is important to ensure they are properly covered by an index to optimize `EachBatch` performance.
-In the example above we need an index on `(type, id)` to support the filters. See [the `EachBatch` docs for more information](iterating_tables_in_batches.md).
+In the example above we need an index on `(type, id)` to support the filters. See [the `EachBatch` documentation for more information](iterating_tables_in_batches.md).
 
 ## Example
 
@@ -349,20 +349,35 @@ background migration.
    `BatchedMigrationJob` is initialized with necessary arguments to
    execute the batch, as well as a connection to the tracking database.
 
-1. Add a new trigger to the database to update newly created and updated routes,
-   similar to this example:
+1. Create a database migration that adds a new trigger to the database. Example:
 
    ```ruby
-   execute(<<~SQL)
-     CREATE OR REPLACE FUNCTION example() RETURNS trigger
-     LANGUAGE plpgsql
-     AS $$
-     BEGIN
-       NEW."namespace_id" = NEW."source_id"
-       RETURN NEW;
-     END;
-     $$;
-   SQL
+   class AddTriggerToRoutesToCopySourceIdToNamespaceId < Gitlab::Database::Migration[2.1]
+     FUNCTION_NAME = 'example_function'
+     TRIGGER_NAME = 'example_trigger'
+
+     def up
+       execute(<<~SQL)
+         CREATE OR REPLACE FUNCTION #{FUNCTION_NAME}() RETURNS trigger
+         LANGUAGE plpgsql
+         AS $$
+         BEGIN
+           NEW."namespace_id" = NEW."source_id"
+           RETURN NEW;
+         END;
+         $$;
+
+         CREATE TRIGGER #{TRIGGER_NAME}() AFTER INSERT OR UPDATE
+         ON routes
+         FOR EACH ROW EXECUTE FUNCTION #{FUNCTION_NAME}();
+       SQL
+     end
+
+     def down
+       drop_trigger(TRIGGER_NAME, :routes)
+       drop_function(FUNCTION_NAME)
+     end
+   end
    ```
 
 1. Create a post-deployment migration that queues the migration for existing data:
@@ -398,10 +413,28 @@ background migration.
    `restrict_gitlab_migration gitlab_schema: :gitlab_ci`.
 
    After deployment, our application:
-   - Continues using the data as before.
-   - Ensures that both existing and new data are migrated.
+     - Continues using the data as before.
+     - Ensures that both existing and new data are migrated.
 
-1. In the next release, remove the trigger. We must also add a new post-deployment migration
+1. In the next release, add a database migration to remove the trigger.
+
+   ```ruby
+   class RemoveNamepaceIdTriggerFromRoutes < Gitlab::Database::Migration[2.1]
+     FUNCTION_NAME = 'example_function'
+     TRIGGER_NAME = 'example_trigger'
+
+     def up
+       drop_trigger(TRIGGER_NAME, :routes)
+       drop_function(FUNCTION_NAME)
+     end
+
+     def down
+       # Should reverse the trigger and the function in the up method of the migration that added it
+     end
+   end
+   ```
+
+1. Add a new post-deployment migration
    that checks that the batched background migration is completed. For example:
 
    ```ruby
@@ -502,7 +535,7 @@ end
 ```
 
 NOTE:
-[Additional filters](#additional-filters) defined with `scope_to` will be ignored by `LooseIndexScanBatchingStrategy` and `distinct_each_batch`.
+[Additional filters](#additional-filters) defined with `scope_to` are ignored by `LooseIndexScanBatchingStrategy` and `distinct_each_batch`.
 
 ## Testing
 
@@ -685,6 +718,16 @@ You can view failures in two ways:
       ON transition_logs.batched_background_migration_job_id = jobs.id
       WHERE transition_logs.next_status = '2' AND migration.job_class_name = "CLASS_NAME";
      ```
+
+### Adding indexes to support batched background migrations
+
+Sometimes it is necessary to add a new or temporary index to support a batched background migration.
+To do this, create the index in a post-deployment migration that precedes the post-deployment
+migration that queues the background migration.
+
+See the documentation for [adding database indexes](adding_database_indexes.md#analyzing-a-new-index-before-a-batched-background-migration)
+for additional information about some cases that require special attention to allow the index to be used directly after
+creation.
 
 ## Legacy background migrations
 

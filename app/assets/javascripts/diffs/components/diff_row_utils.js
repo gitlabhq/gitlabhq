@@ -40,19 +40,33 @@ export const lineCode = (line) => {
   return line.line_code || line.left?.line_code || line.right?.line_code;
 };
 
-export const classNameMapCell = ({ line, hll, isLoggedIn, isHover }) => {
-  if (!line) return [];
-  const { type } = line;
+export const classNameMapCell = ({
+  line,
+  highlighted,
+  commented,
+  selectionStart,
+  selectionEnd,
+  isLoggedIn,
+  isHover,
+}) => {
+  const classes = {
+    'highlight-top': highlighted || selectionStart,
+    'highlight-bottom': highlighted || selectionEnd,
+    hll: highlighted,
+    commented,
+  };
 
-  return [
-    type,
-    {
-      hll,
+  if (line) {
+    const { type } = line;
+    Object.assign(classes, {
+      [type]: true,
       [LINE_HOVER_CLASS_NAME]: isLoggedIn && isHover && !isContextLine(type) && !isMetaLine(type),
-      old_line: line.type === 'old',
-      new_line: line.type === 'new',
-    },
-  ];
+      old_line: type === 'old',
+      new_line: type === 'new',
+    });
+  }
+
+  return [classes];
 };
 
 export const addCommentTooltip = (line) => {
@@ -88,14 +102,28 @@ export const addCommentTooltip = (line) => {
   return tooltip;
 };
 
-export const parallelViewLeftLineType = (line, hll) => {
+export const parallelViewLeftLineType = ({
+  line,
+  highlighted,
+  commented,
+  selectionStart,
+  selectionEnd,
+}) => {
   if (line?.right?.type === NEW_NO_NEW_LINE_TYPE) {
     return OLD_NO_NEW_LINE_TYPE;
   }
 
   const lineTypeClass = line?.left ? line.left.type : EMPTY_CELL_TYPE;
 
-  return [lineTypeClass, { hll }];
+  return [
+    lineTypeClass,
+    {
+      hll: highlighted,
+      commented,
+      'highlight-top': highlighted || selectionStart,
+      'highlight-bottom': highlighted || selectionEnd,
+    },
+  ];
 };
 
 export const shouldShowCommentButton = (hover, context, meta, discussions) => {

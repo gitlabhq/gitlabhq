@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.shared_examples "no multiple viewers", feature_category: :source_code_management do |commit_ref|
+RSpec.shared_examples "no multiple viewers" do |commit_ref|
   let(:ref) { commit_ref }
 
   it "does not display multiple diff viewers" do
@@ -10,7 +10,7 @@ RSpec.shared_examples "no multiple viewers", feature_category: :source_code_mana
   end
 end
 
-RSpec.describe 'Multiple view Diffs', :js do
+RSpec.describe 'Multiple view Diffs', :js, feature_category: :source_code_management do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, :repository, visibility_level: Gitlab::VisibilityLevel::PUBLIC) }
 

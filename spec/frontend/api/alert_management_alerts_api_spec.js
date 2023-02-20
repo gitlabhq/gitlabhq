@@ -1,6 +1,11 @@
 import MockAdapter from 'axios-mock-adapter';
 import * as alertManagementAlertsApi from '~/api/alert_management_alerts_api';
 import axios from '~/lib/utils/axios_utils';
+import {
+  HTTP_STATUS_CREATED,
+  HTTP_STATUS_NO_CONTENT,
+  HTTP_STATUS_OK,
+} from '~/lib/utils/http_status';
 
 describe('~/api/alert_management_alerts_api.js', () => {
   let mock;
@@ -33,7 +38,7 @@ describe('~/api/alert_management_alerts_api.js', () => {
       const expectedData = [imageData];
       const options = { alertIid, id: projectId };
 
-      mock.onGet(expectedUrl).reply(200, { data: expectedData });
+      mock.onGet(expectedUrl).reply(HTTP_STATUS_OK, { data: expectedData });
 
       return alertManagementAlertsApi.fetchAlertMetricImages(options).then(({ data }) => {
         expect(axios.get).toHaveBeenCalledWith(expectedUrl);
@@ -60,7 +65,7 @@ describe('~/api/alert_management_alerts_api.js', () => {
       expectedFormData.append('url', url);
       expectedFormData.append('url_text', urlText);
 
-      mock.onPost(expectedUrl).reply(201, { data: expectedData });
+      mock.onPost(expectedUrl).reply(HTTP_STATUS_CREATED, { data: expectedData });
 
       return alertManagementAlertsApi
         .uploadAlertMetricImage({
@@ -96,7 +101,7 @@ describe('~/api/alert_management_alerts_api.js', () => {
       expectedFormData.append('url', url);
       expectedFormData.append('url_text', urlText);
 
-      mock.onPut(expectedUrl).reply(200, { data: expectedData });
+      mock.onPut(expectedUrl).reply(HTTP_STATUS_OK, { data: expectedData });
 
       return alertManagementAlertsApi
         .updateAlertMetricImage({
@@ -123,7 +128,7 @@ describe('~/api/alert_management_alerts_api.js', () => {
       const expectedUrl = `/api/v4/projects/${projectId}/alert_management_alerts/${alertIid}/metric_images/${imageIid}`;
       const expectedData = [imageData];
 
-      mock.onDelete(expectedUrl).reply(204, { data: expectedData });
+      mock.onDelete(expectedUrl).reply(HTTP_STATUS_NO_CONTENT, { data: expectedData });
 
       return alertManagementAlertsApi
         .deleteAlertMetricImage({

@@ -104,7 +104,8 @@ yarn-audit-dependency_scanning:
     - mkdir ~/.aws
     - '[[ -z "${AWS_SIEM_REPORT_INGESTION_CREDENTIALS_FILE}" ]] || mv "${AWS_SIEM_REPORT_INGESTION_CREDENTIALS_FILE}" ~/.aws/credentials'
     - npm install --no-save --ignore-scripts @aws-sdk/client-s3@3.49.0
-    - scripts/ingest-reports-to-siem
+    - scripts/ingest-reports-to-siem || true  # Allow legacy report to fail as we'll remove it in the future anyway
+    - scripts/ingest-reports-to-siem-devo
   artifacts:
     paths:
       - gl-dependency-scanning-report.json

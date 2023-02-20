@@ -23,8 +23,19 @@ RSpec.describe Projects::PipelinesController, '(JavaScript fixtures)', type: :co
   let!(:build_test) { create(:ci_build, pipeline: pipeline, stage: 'test') }
   let!(:build_deploy_failed) { create(:ci_build, status: :failed, pipeline: pipeline, stage: 'deploy') }
 
+  let(:bridge) { create(:ci_bridge, pipeline: pipeline) }
+  let(:retried_bridge) { create(:ci_bridge, :retried, pipeline: pipeline) }
+
+  let(:downstream_pipeline) { create(:ci_pipeline, :with_job) }
+  let(:retried_downstream_pipeline) { create(:ci_pipeline, :with_job) }
+  let!(:ci_sources_pipeline) { create(:ci_sources_pipeline, pipeline: downstream_pipeline, source_job: bridge) }
+  let!(:retried_ci_sources_pipeline) do
+    create(:ci_sources_pipeline, pipeline: retried_downstream_pipeline, source_job: retried_bridge)
+  end
+
   before do
     sign_in(user)
+    project.add_developer(user)
   end
 
   it 'pipelines/pipelines.json' do

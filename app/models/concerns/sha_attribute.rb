@@ -22,7 +22,7 @@ module ShaAttribute
 
   class_methods do
     def sha_attribute(name)
-      return if ENV['STATIC_VERIFICATION']
+      return if Gitlab::Environment.static_verification?
 
       sha_attribute_fields << name
 
@@ -34,7 +34,7 @@ module ShaAttribute
     end
 
     def sha256_attribute(name)
-      return if ENV['STATIC_VERIFICATION']
+      return if Gitlab::Environment.static_verification?
 
       sha256_attribute_fields << name
 

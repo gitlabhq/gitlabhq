@@ -27,6 +27,8 @@ module Gitlab
                                           'not_owned', 'source_code_management',
                                           FEATURE_CATEGORY_DEFAULT].freeze
 
+      REQUEST_URGENCY_KEY = 'gitlab.request_urgency'
+
       def initialize(app)
         @app = app
       end
@@ -125,8 +127,6 @@ module Gitlab
       end
 
       def record_error(urgency, status)
-        return unless Feature.enabled?(:gitlab_metrics_error_rate_sli, type: :development)
-
         Gitlab::Metrics::RailsSlis.request_error_rate.increment(
           labels: labels_from_context.merge(request_urgency: urgency.name),
           error: ::Gitlab::Metrics.server_error?(status)
@@ -142,7 +142,9 @@ module Gitlab
 
       def urgency_for_env(env)
         endpoint_urgency =
-          if env['api.endpoint'].present?
+          if env[REQUEST_URGENCY_KEY].present?
+            env[REQUEST_URGENCY_KEY]
+          elsif env['api.endpoint'].present?
             env['api.endpoint'].options[:for].try(:urgency_for_app, env['api.endpoint'])
           elsif env['action_controller.instance'].present? && env['action_controller.instance'].respond_to?(:urgency)
             env['action_controller.instance'].urgency

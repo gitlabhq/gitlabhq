@@ -214,6 +214,8 @@ The following actions on groups generate group audit events:
   [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/366350) in GitLab 15.3.
 - Group had a security policy project linked, changed, or unlinked.
   [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/377877) in GitLab 15.6.
+- An environment is protected or unprotected.
+  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216164) in GitLab 15.8.
 
 ### Project events
 
@@ -309,6 +311,8 @@ The following actions on projects generate project audit events:
   [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85689) in GitLab 15.0.
 - Project had a security policy project linked, changed, or unlinked.
   [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/377877) in GitLab 15.6.
+- An environment is protected or unprotected.
+  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216164) in GitLab 15.8.
 
 ### Instance events **(PREMIUM SELF)**
 
@@ -354,11 +358,12 @@ Issue [343933](https://gitlab.com/gitlab-org/gitlab/-/issues/343933) proposes to
 
 ## Unsupported events
 
-Some events are not tracked in audit events. The following epics propose support for more events:
+Some events are not tracked in audit events. The following epics and issues propose support for more events:
 
 - [Project settings and activity](https://gitlab.com/groups/gitlab-org/-/epics/474).
 - [Group settings and activity](https://gitlab.com/groups/gitlab-org/-/epics/475).
 - [Instance-level settings and activity](https://gitlab.com/groups/gitlab-org/-/epics/476).
+- [Deployment Approval activity](https://gitlab.com/gitlab-org/gitlab/-/issues/354782).
 
 If you don't see the event you want in any of the epics, you can either:
 

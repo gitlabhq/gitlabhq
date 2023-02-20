@@ -43,9 +43,11 @@ describe('packages_list_row', () => {
   const findPackageLink = () => wrapper.findByTestId('details-link');
   const findWarningIcon = () => wrapper.findByTestId('warning-icon');
   const findLeftSecondaryInfos = () => wrapper.findByTestId('left-secondary-infos');
+  const findPackageVersion = () => findLeftSecondaryInfos().findComponent(GlTruncate);
   const findPublishMethod = () => wrapper.findComponent(PublishMethod);
   const findCreatedDateText = () => wrapper.findByTestId('created-date');
   const findTimeAgoTooltip = () => wrapper.findComponent(TimeagoTooltip);
+  const findListItem = () => wrapper.findComponent(ListItem);
   const findBulkDeleteAction = () => wrapper.findComponent(GlFormCheckbox);
   const findPackageName = () => wrapper.findComponent(GlTruncate);
 
@@ -83,22 +85,13 @@ describe('packages_list_row', () => {
     mountComponent();
 
     expect(findPackageLink().props()).toMatchObject({
-      event: 'click',
       to: { name: 'details', params: { id: getIdFromGraphQLId(packageWithoutTags.id) } },
     });
   });
 
-  it('does not have a link to navigate to the details page', () => {
-    mountComponent({
-      packageEntity: {
-        ...packageWithoutTags,
-        _links: {
-          webPath: null,
-        },
-      },
-    });
+  it('lists the package name', () => {
+    mountComponent();
 
-    expect(findPackageLink().exists()).toBe(false);
     expect(findPackageName().props()).toMatchObject({
       text: '@gitlab-org/package-15',
     });
@@ -155,11 +148,25 @@ describe('packages_list_row', () => {
 
   describe(`when the package is in ${PACKAGE_ERROR_STATUS} status`, () => {
     beforeEach(() => {
-      mountComponent({ packageEntity: { ...packageWithoutTags, status: PACKAGE_ERROR_STATUS } });
+      mountComponent({
+        packageEntity: {
+          ...packageWithoutTags,
+          status: PACKAGE_ERROR_STATUS,
+          _links: {
+            webPath: null,
+          },
+        },
+      });
     });
 
-    it('details link is disabled', () => {
-      expect(findPackageLink().props('event')).toBe('');
+    it('lists the package name', () => {
+      expect(findPackageName().props()).toMatchObject({
+        text: '@gitlab-org/package-15',
+      });
+    });
+
+    it('does not have a link to navigate to the details page', () => {
+      expect(findPackageLink().exists()).toBe(false);
     });
 
     it('has a warning icon', () => {
@@ -206,6 +213,9 @@ describe('packages_list_row', () => {
       });
 
       expect(findBulkDeleteAction().attributes('checked')).toBe('true');
+      expect(findListItem().props()).toMatchObject({
+        selected: true,
+      });
     });
   });
 
@@ -213,7 +223,10 @@ describe('packages_list_row', () => {
     it('has the package version', () => {
       mountComponent();
 
-      expect(findLeftSecondaryInfos().text()).toContain(packageWithoutTags.version);
+      expect(findPackageVersion().props()).toMatchObject({
+        text: packageWithoutTags.version,
+        withTooltip: true,
+      });
     });
 
     it('if the pipeline exists show the author message', () => {

@@ -27,7 +27,7 @@ describe('BoardApp', () => {
     wrapper = shallowMount(BoardApp, {
       store,
       provide: {
-        fullBoardId: 'gid://gitlab/Board/1',
+        initialBoardId: 'gid://gitlab/Board/1',
       },
     });
   };

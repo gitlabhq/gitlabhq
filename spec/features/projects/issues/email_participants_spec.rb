@@ -2,8 +2,9 @@
 
 require 'spec_helper'
 
-RSpec.describe 'viewing an issue', :js, feature_category: :issue_email_participants do
+RSpec.describe 'viewing an issue', :js, feature_category: :service_desk do
   let_it_be(:user) { create(:user) }
+  let_it_be(:non_member) { create(:user) }
   let_it_be(:project) { create(:project, :public) }
   let_it_be_with_refind(:issue) { create(:issue, project: project) }
   let_it_be(:note) { create(:note_on_issue, project: project, noteable: issue) }
@@ -19,19 +20,7 @@ RSpec.describe 'viewing an issue', :js, feature_category: :issue_email_participa
     end
   end
 
-  shared_examples 'no email participants warning' do |selector|
-    it 'does not show email participants warning' do
-      expect(find(selector)).not_to have_content(", and 1 more will be notified of your comment")
-    end
-  end
-
-  context 'when issue is confidential' do
-    before do
-      issue.update!(confidential: true)
-      sign_in(user)
-      visit project_issue_path(project, issue)
-    end
-
+  shared_examples 'email participants warning in all editors' do
     context 'for a new note' do
       it_behaves_like 'email participants warning', '.new-note'
     end
@@ -45,22 +34,49 @@ RSpec.describe 'viewing an issue', :js, feature_category: :issue_email_participa
     end
   end
 
-  context 'when issue is not confidential' do
+  context 'when issue is confidential' do
     before do
+      issue.update!(confidential: true)
       sign_in(user)
       visit project_issue_path(project, issue)
     end
 
-    context 'for a new note' do
-      it_behaves_like 'no email participants warning', '.new-note'
-    end
+    it_behaves_like 'email participants warning in all editors'
+  end
 
-    context 'for a reply form' do
-      before do
-        find('.js-reply-button').click
+  context 'when issue is not confidential' do
+    context 'with signed in user' do
+      context 'when user has no role in project' do
+        before do
+          sign_in(non_member)
+          visit project_issue_path(project, issue)
+        end
+
+        it_behaves_like 'email participants warning in all editors'
       end
 
-      it_behaves_like 'no email participants warning', '.note-edit-form'
+      context 'when user has (at least) reporter role in project' do
+        before do
+          sign_in(user)
+          visit project_issue_path(project, issue)
+        end
+
+        it_behaves_like 'email participants warning in all editors'
+      end
+    end
+  end
+
+  context 'for feature flags' do
+    before do
+      sign_in(user)
+    end
+
+    it 'pushes service_desk_new_note_email_native_attachments feature flag to frontend' do
+      stub_feature_flags(service_desk_new_note_email_native_attachments: true)
+
+      visit project_issue_path(project, issue)
+
+      expect(page).to have_pushed_frontend_feature_flags(serviceDeskNewNoteEmailNativeAttachments: true)
     end
   end
 end

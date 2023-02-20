@@ -17,7 +17,7 @@ GET /projects/:id/deployments
 
 | Attribute         | Type           | Required | Description                                                                                                     |
 |-------------------|----------------|----------|-----------------------------------------------------------------------------------------------------------------|
-| `id`              | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`              | integer/string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `order_by`        | string         | no       | Return deployments ordered by either one of `id`, `iid`, `created_at`, `updated_at`, `finished_at` or `ref` fields. Default is `id`.    |
 | `sort`            | string         | no       | Return deployments sorted in `asc` or `desc` order. Default is `asc`.                                            |
 | `updated_after`   | datetime       | no       | Return deployments updated after the specified date. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
@@ -195,7 +195,7 @@ GET /projects/:id/deployments/:deployment_id
 
 | Attribute | Type    | Required | Description         |
 |-----------|---------|----------|---------------------|
-| `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
 | `deployment_id` | integer | yes      | The ID of the deployment |
 
 ```shell
@@ -354,7 +354,7 @@ POST /projects/:id/deployments
 
 | Attribute     | Type           | Required | Description                                                                                                     |
 |---------------|----------------|----------|-----------------------------------------------------------------------------------------------------------------|
-| `id`          | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user.|
+| `id`          | integer/string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user.|
 | `environment` | string         | yes      | The [name of the environment](../ci/environments/index.md) to create the deployment for.                        |
 | `sha`         | string         | yes      | The SHA of the commit that is deployed.                                                                         |
 | `ref`         | string         | yes      | The name of the branch or tag that is deployed.                                                                 |
@@ -412,7 +412,7 @@ PUT /projects/:id/deployments/:deployment_id
 
 | Attribute        | Type           | Required | Description         |
 |------------------|----------------|----------|---------------------|
-| `id`             | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`             | integer/string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `deployment_id`  | integer        | yes      | The ID of the deployment to update. |
 | `status`         | string         | yes      | The new status of the deployment. One of `running`, `success`, `failed`, or `canceled`.                         |
 
@@ -482,7 +482,7 @@ DELETE /projects/:id/deployments/:deployment_id
 
 | Attribute | Type    | Required | Description         |
 |-----------|---------|----------|---------------------|
-| `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
 | `deployment_id` | integer | yes      | The ID of the deployment |
 
 ```shell
@@ -541,7 +541,7 @@ POST /projects/:id/deployments/:deployment_id/approval
 
 | Attribute       | Type           | Required | Description                                                                                                     |
 |-----------------|----------------|----------|-----------------------------------------------------------------------------------------------------------------|
-| `id`            | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`            | integer/string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `deployment_id` | integer        | yes      | The ID of the deployment.                                                                                       |
 | `status`        | string         | yes      | The status of the approval (either `approved` or `rejected`).                                                   |
 | `comment`       | string         | no       | A comment to go with the approval                                                                               |

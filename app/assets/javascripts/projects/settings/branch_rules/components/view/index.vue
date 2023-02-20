@@ -3,7 +3,7 @@ import { GlSprintf, GlLink, GlLoadingIcon } from '@gitlab/ui';
 import { sprintf, n__ } from '~/locale';
 import { getParameterByName, mergeUrlParams } from '~/lib/utils/url_utility';
 import { helpPagePath } from '~/helpers/help_page_helper';
-import branchRulesQuery from '../../queries/branch_rules_details.query.graphql';
+import branchRulesQuery from 'ee_else_ce/projects/settings/branch_rules/queries/branch_rules_details.query.graphql';
 import { getAccessLevels } from '../../../utils';
 import Protection from './protection.vue';
 import {
@@ -12,34 +12,22 @@ import {
   BRANCH_PARAM_NAME,
   WILDCARDS_HELP_PATH,
   PROTECTED_BRANCHES_HELP_PATH,
-  APPROVALS_HELP_PATH,
-  STATUS_CHECKS_HELP_PATH,
 } from './constants';
 
 const wildcardsHelpDocLink = helpPagePath(WILDCARDS_HELP_PATH);
 const protectedBranchesHelpDocLink = helpPagePath(PROTECTED_BRANCHES_HELP_PATH);
-const approvalsHelpDocLink = helpPagePath(APPROVALS_HELP_PATH);
-const statusChecksHelpDocLink = helpPagePath(STATUS_CHECKS_HELP_PATH);
 
 export default {
   name: 'RuleView',
   i18n: I18N,
   wildcardsHelpDocLink,
   protectedBranchesHelpDocLink,
-  approvalsHelpDocLink,
-  statusChecksHelpDocLink,
   components: { Protection, GlSprintf, GlLink, GlLoadingIcon },
   inject: {
     projectPath: {
       default: '',
     },
     protectedBranchesPath: {
-      default: '',
-    },
-    approvalRulesPath: {
-      default: '',
-    },
-    statusChecksPath: {
       default: '',
     },
     branchesPath: {
@@ -58,7 +46,7 @@ export default {
         const branchRule = branchRules.nodes.find((rule) => rule.name === this.branch);
         this.branchRule = branchRule;
         this.branchProtection = branchRule?.branchProtection;
-        this.approvalRules = branchRule?.approvalRules;
+        this.approvalRules = branchRule?.approvalRules?.nodes || [];
         this.statusChecks = branchRule?.externalStatusChecks?.nodes || [];
         this.matchingBranchesCount = branchRule?.matchingBranchesCount;
       },
@@ -98,20 +86,6 @@ export default {
         total: this.pushAccessLevels?.total || 0,
       });
     },
-    approvalsHeader() {
-      const total = this.approvals.reduce(
-        (sum, { approvalsRequired }) => sum + approvalsRequired,
-        0,
-      );
-      return sprintf(this.$options.i18n.approvalsHeader, {
-        total,
-      });
-    },
-    statusChecksHeader() {
-      return sprintf(this.$options.i18n.statusChecksHeader, {
-        total: this.statusChecks.length,
-      });
-    },
     allBranches() {
       return this.branch === ALL_BRANCHES_WILDCARD;
     },
@@ -131,8 +105,13 @@ export default {
       const subject = n__('branch', 'branches', total);
       return sprintf(this.$options.i18n.matchingBranchesLinkTitle, { total, subject });
     },
-    approvals() {
-      return this.approvalRules?.nodes || [];
+    // needed to override EE component
+    statusChecksHeader() {
+      return '';
+    },
+    // needed to override EE component
+    approvalsHeader() {
+      return '';
     },
   },
   methods: {
@@ -199,40 +178,46 @@ export default {
       :groups="mergeAccessLevels.groups"
     />
 
+    <!-- EE start -->
     <!-- Approvals -->
-    <h4 class="gl-mb-1 gl-mt-5">{{ $options.i18n.approvalsTitle }}</h4>
-    <gl-sprintf :message="$options.i18n.approvalsDescription">
-      <template #link="{ content }">
-        <gl-link :href="$options.approvalsHelpDocLink">
-          {{ content }}
-        </gl-link>
-      </template>
-    </gl-sprintf>
+    <template v-if="approvalsHeader">
+      <h4 class="gl-mb-1 gl-mt-5">{{ $options.i18n.approvalsTitle }}</h4>
+      <gl-sprintf :message="$options.i18n.approvalsDescription">
+        <template #link="{ content }">
+          <gl-link :href="$options.approvalsHelpDocLink">
+            {{ content }}
+          </gl-link>
+        </template>
+      </gl-sprintf>
 
-    <protection
-      class="gl-mt-3"
-      :header="approvalsHeader"
-      :header-link-title="$options.i18n.manageApprovalsLinkTitle"
-      :header-link-href="approvalRulesPath"
-      :approvals="approvals"
-    />
+      <protection
+        class="gl-mt-3"
+        :header="approvalsHeader"
+        :header-link-title="$options.i18n.manageApprovalsLinkTitle"
+        :header-link-href="approvalRulesPath"
+        :approvals="approvalRules"
+      />
+    </template>
 
     <!-- Status checks -->
-    <h4 class="gl-mb-1 gl-mt-5">{{ $options.i18n.statusChecksTitle }}</h4>
-    <gl-sprintf :message="$options.i18n.statusChecksDescription">
-      <template #link="{ content }">
-        <gl-link :href="$options.statusChecksHelpDocLink">
-          {{ content }}
-        </gl-link>
-      </template>
-    </gl-sprintf>
+    <template v-if="statusChecksHeader">
+      <h4 class="gl-mb-1 gl-mt-5">{{ $options.i18n.statusChecksTitle }}</h4>
+      <gl-sprintf :message="$options.i18n.statusChecksDescription">
+        <template #link="{ content }">
+          <gl-link :href="$options.statusChecksHelpDocLink">
+            {{ content }}
+          </gl-link>
+        </template>
+      </gl-sprintf>
 
-    <protection
-      class="gl-mt-3"
-      :header="statusChecksHeader"
-      :header-link-title="$options.i18n.statusChecksLinkTitle"
-      :header-link-href="statusChecksPath"
-      :status-checks="statusChecks"
-    />
+      <protection
+        class="gl-mt-3"
+        :header="statusChecksHeader"
+        :header-link-title="$options.i18n.statusChecksLinkTitle"
+        :header-link-href="statusChecksPath"
+        :status-checks="statusChecks"
+      />
+    </template>
+    <!-- EE end -->
   </div>
 </template>

@@ -16,6 +16,10 @@ module Gitlab
           @parallel = parallel
           @already_imported_cache_key = ALREADY_IMPORTED_CACHE_KEY %
             { project: project.id, collection: collection_method }
+          @job_waiter_cache_key = JOB_WAITER_CACHE_KEY %
+            { project: project.id, collection: collection_method }
+          @job_waiter_remaining_cache_key = JOB_WAITER_REMAINING_CACHE_KEY %
+            { project: project.id, collection: collection_method }
         end
 
         # In single endpoint there is no issue info to which associated related

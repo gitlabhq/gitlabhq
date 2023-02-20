@@ -32,7 +32,7 @@ Auto DevOps supports development during each of the [DevOps stages](stages.md).
 |---------|-------------|
 | Build | [Auto Build](stages.md#auto-build) |
 | Build | [Auto Dependency Scanning](stages.md#auto-dependency-scanning) |
-| Test | [Auto Test](stages.md#auto-test) |
+| Test | [Auto Test](stages.md#auto-test-deprecated) |
 | Test | [Auto Browser Performance Testing](stages.md#auto-browser-performance-testing) |
 | Test | [Auto Code Intelligence](stages.md#auto-code-intelligence) |
 | Test | [Auto Code Quality](stages.md#auto-code-quality) |

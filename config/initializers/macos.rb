@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-if /darwin/ =~ RUBY_PLATFORM
+if RUBY_PLATFORM.include?('darwin')
   Gitlab::Cluster::LifecycleEvents.on_before_fork do
     require 'fiddle'
 

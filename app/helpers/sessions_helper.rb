@@ -45,10 +45,7 @@ module SessionsHelper
   end
 
   def obfuscated_email(email)
-    regex = ::Gitlab::UntrustedRegexp.new('^(..?)(.*)(@.?)(.*)(\..*)$')
-    match = regex.match(email)
-    return email unless match
-
-    match[1] + '*' * (match[2] || '').length + match[3] + '*' * (match[4] || '').length + match[5]
+    # Moved to Gitlab::Utils::Email in 15.9
+    Gitlab::Utils::Email.obfuscated_email(email)
   end
 end

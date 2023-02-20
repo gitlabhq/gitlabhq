@@ -63,6 +63,18 @@ RSpec.describe Gitlab::Email::ReplyParser do
         )
     end
 
+    it "properly renders html-only email with table and blockquote" do
+      expect(test_parse_body(fixture_file("emails/html_table_and_blockquote.eml")))
+        .to eq(
+          <<-BODY.strip_heredoc.chomp
+            Company	Contact	Country
+            Alfreds Futterkiste	Maria Anders	Germany
+            Centro comercial Moctezuma	Francisco Chang	Mexico
+            Words can be like X-rays, if you use them properly—they’ll go through anything. You read and you’re pierced.
+          BODY
+        )
+    end
+
     it "supports a Dutch reply" do
       expect(test_parse_body(fixture_file("emails/dutch.eml"))).to eq("Dit is een antwoord in het Nederlands.")
     end
@@ -174,6 +186,70 @@ RSpec.describe Gitlab::Email::ReplyParser do
             Here's a link http://example.com
           BODY
         )
+    end
+
+    context 'properly renders email reply from gmail web client' do
+      context 'when feature flag is enabled' do
+        it do
+          expect(test_parse_body(fixture_file("emails/html_only.eml")))
+          .to eq(
+            <<-BODY.strip_heredoc.chomp
+              ### This is a reply from standard GMail in Google Chrome.
+
+              The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog.
+
+              Here's some **bold** text, **strong** text and *italic* in Markdown.
+
+              Here's a link http://example.com
+
+              Here's an img ![Miro](http://img.png)<details>
+              <summary>
+              One</summary>
+              Some details</details>
+
+              <details>
+              <summary>
+              Two</summary>
+              Some details</details>
+
+              Test reply.
+
+              First paragraph.
+
+              Second paragraph.
+            BODY
+          )
+        end
+      end
+
+      context 'when feature flag is disabled' do
+        before do
+          stub_feature_flags(service_desk_html_to_text_email_handler: false)
+        end
+
+        it do
+          expect(test_parse_body(fixture_file("emails/html_only.eml")))
+            .to eq(
+              <<-BODY.strip_heredoc.chomp
+                ### This is a reply from standard GMail in Google Chrome.
+
+                The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog.
+
+                Here's some **bold** text, strong text and italic in Markdown.
+
+                Here's a link http://example.com
+
+                Here's an img [Miro]One Some details Two Some details
+
+                Test reply.
+
+                First paragraph.
+
+                Second paragraph.
+              BODY
+            )
+        end
+      end
     end
 
     it "properly renders email reply from iOS default mail client" do

@@ -1,5 +1,6 @@
 import { find } from 'lodash';
-import { inactiveId, issuableTypes } from '../constants';
+import { TYPE_ISSUE } from '~/issues/constants';
+import { inactiveId } from '../constants';
 
 export default {
   isSidebarOpen: (state) => state.activeId !== inactiveId,
@@ -43,7 +44,7 @@ export default {
   },
 
   isIssueBoard: (state) => {
-    return state.issuableType === issuableTypes.issue;
+    return state.issuableType === TYPE_ISSUE;
   },
 
   isEpicBoard: () => {

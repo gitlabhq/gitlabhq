@@ -12,7 +12,7 @@ module Gitlab
           include ::Gitlab::Config::Entry::Configurable
           include ::Gitlab::Config::Entry::Attributable
 
-          ALLOWED_KEYS = %i[local file remote template artifact job project ref rules].freeze
+          ALLOWED_KEYS = %i[local file remote template component artifact job project ref rules].freeze
 
           validations do
             validates :config, hash_or_string: true
@@ -36,8 +36,8 @@ module Gitlab
           end
 
           entry :rules, ::Gitlab::Ci::Config::Entry::Include::Rules,
-              description: 'List of evaluable Rules to determine file inclusion.',
-              inherit: false
+            description: 'List of evaluable Rules to determine file inclusion.',
+            inherit: false
 
           attributes :rules
 

@@ -1,6 +1,6 @@
 <script>
-import { GlAlert, GlEmptyState, GlLink, GlSprintf } from '@gitlab/ui';
-import { createAlert, VARIANT_INFO, VARIANT_SUCCESS, VARIANT_DANGER } from '~/flash';
+import { GlEmptyState, GlLink, GlSprintf } from '@gitlab/ui';
+import { createAlert, VARIANT_INFO } from '~/flash';
 import { historyReplaceState } from '~/lib/utils/common_utils';
 import { s__ } from '~/locale';
 import { SHOW_DELETE_SUCCESS_ALERT } from '~/packages_and_registries/shared/constants';
@@ -9,33 +9,28 @@ import {
   GROUP_RESOURCE_TYPE,
   GRAPHQL_PAGE_SIZE,
   DELETE_PACKAGE_SUCCESS_MESSAGE,
-  DELETE_PACKAGES_ERROR_MESSAGE,
-  DELETE_PACKAGES_SUCCESS_MESSAGE,
   EMPTY_LIST_HELP_URL,
   PACKAGE_HELP_URL,
 } from '~/packages_and_registries/package_registry/constants';
 import getPackagesQuery from '~/packages_and_registries/package_registry/graphql/queries/get_packages.query.graphql';
-import destroyPackagesMutation from '~/packages_and_registries/package_registry/graphql/mutations/destroy_packages.mutation.graphql';
-import DeletePackage from '~/packages_and_registries/package_registry/components/functional/delete_package.vue';
+import DeletePackages from '~/packages_and_registries/package_registry/components/functional/delete_packages.vue';
 import PackageTitle from '~/packages_and_registries/package_registry/components/list/package_title.vue';
 import PackageSearch from '~/packages_and_registries/package_registry/components/list/package_search.vue';
 import PackageList from '~/packages_and_registries/package_registry/components/list/packages_list.vue';
 
 export default {
   components: {
-    GlAlert,
     GlEmptyState,
     GlLink,
     GlSprintf,
     PackageList,
     PackageTitle,
     PackageSearch,
-    DeletePackage,
+    DeletePackages,
   },
   inject: ['emptyListIllustration', 'isGroupPage', 'fullPath'],
   data() {
     return {
-      alertVariables: null,
       packages: {},
       sort: '',
       filters: {},
@@ -114,39 +109,6 @@ export default {
         historyReplaceState(cleanUrl);
       }
     },
-    async deletePackages(packageEntities) {
-      this.mutationLoading = true;
-      try {
-        const { data } = await this.$apollo.mutate({
-          mutation: destroyPackagesMutation,
-          variables: {
-            ids: packageEntities.map((i) => i.id),
-          },
-          awaitRefetchQueries: true,
-          refetchQueries: [
-            {
-              query: getPackagesQuery,
-              variables: { ...this.queryVariables, first: GRAPHQL_PAGE_SIZE },
-            },
-          ],
-        });
-
-        if (data?.destroyPackages?.errors[0]) {
-          throw new Error(data.destroyPackages.errors[0]);
-        }
-        this.showAlert({
-          variant: VARIANT_SUCCESS,
-          message: DELETE_PACKAGES_SUCCESS_MESSAGE,
-        });
-      } catch {
-        this.showAlert({
-          variant: VARIANT_DANGER,
-          message: DELETE_PACKAGES_ERROR_MESSAGE,
-        });
-      } finally {
-        this.mutationLoading = false;
-      }
-    },
     handleSearchUpdate({ sort, filters }) {
       this.sort = sort;
       this.filters = { ...filters };
@@ -180,9 +142,6 @@ export default {
         updateQuery: this.updateQuery,
       });
     },
-    showAlert(obj) {
-      this.alertVariables = { ...obj };
-    },
   },
   i18n: {
     widenFilters: s__('PackageRegistry|To widen your search, change or remove the filters above.'),
@@ -201,32 +160,22 @@ export default {
 
 <template>
   <div>
-    <gl-alert
-      v-if="alertVariables"
-      :variant="alertVariables.variant"
-      class="gl-mt-5"
-      dismissible
-      @dismiss="alertVariables = null"
-    >
-      {{ alertVariables.message }}
-    </gl-alert>
     <package-title :help-url="$options.links.PACKAGE_HELP_URL" :count="packagesCount" />
     <package-search class="gl-mb-5" @update="handleSearchUpdate" />
 
-    <delete-package
+    <delete-packages
       :refetch-queries="refetchQueriesData"
       show-success-alert
       @start="mutationLoading = true"
       @end="mutationLoading = false"
     >
-      <template #default="{ deletePackage }">
+      <template #default="{ deletePackages }">
         <package-list
           :list="packages.nodes"
           :is-loading="isLoading"
           :page-info="pageInfo"
           @prev-page="fetchPreviousPage"
           @next-page="fetchNextPage"
-          @package:delete="deletePackage"
           @delete="deletePackages"
         >
           <template #empty-state>
@@ -245,6 +194,6 @@ export default {
           </template>
         </package-list>
       </template>
-    </delete-package>
+    </delete-packages>
   </div>
 </template>

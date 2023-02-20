@@ -251,16 +251,8 @@ module Gitlab
           !scheduled? && options[:if_deduplicated] == :reschedule_once
         end
 
-        def with_redis
-          if Feature.enabled?(:use_primary_and_secondary_stores_for_duplicate_jobs) ||
-              Feature.enabled?(:use_primary_store_as_default_for_duplicate_jobs)
-            # TODO: Swap for Gitlab::Redis::SharedState after store transition
-            # https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/923
-            Gitlab::Redis::DuplicateJobs.with { |redis| yield redis }
-          else
-            # Keep the old behavior intact if neither feature flag is turned on
-            Sidekiq.redis { |redis| yield redis } # rubocop:disable Cop/SidekiqRedisCall
-          end
+        def with_redis(&block)
+          Sidekiq.redis(&block) # rubocop:disable Cop/SidekiqRedisCall
         end
       end
     end

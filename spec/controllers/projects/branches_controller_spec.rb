@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::BranchesController do
+RSpec.describe Projects::BranchesController, feature_category: :source_code_management do
   let(:project)   { create(:project, :repository) }
   let(:user)      { create(:user) }
   let(:developer) { create(:user) }
@@ -673,6 +673,18 @@ RSpec.describe Projects::BranchesController do
         expect(assigns[:stale_branches].map(&:name)).to eq(
           ["feature", "improve/awesome", "merge-test", "markdown", "feature_conflict", "'test'"]
         )
+      end
+    end
+
+    context 'when state is not supported' do
+      before do
+        get :index, format: :html, params: {
+          namespace_id: project.namespace, project_id: project, state: 'unknown'
+        }
+      end
+
+      it 'returns 404 page' do
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
 

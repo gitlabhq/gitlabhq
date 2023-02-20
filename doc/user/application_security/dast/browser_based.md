@@ -227,13 +227,13 @@ In such cases, we recommend you disable Anti-CSRF tokens when running a full sca
 
 ## Managing scan time
 
-It is expected that running the browser-based crawler results in better coverage for many web applications, when compared to the normal GitLab DAST solution.
+It is expected that running the browser-based crawler results in better coverage for many web applications, when compared to the standard GitLab DAST solution.
 This can come at a cost of increased scan time.
 
 You can manage the trade-off between coverage and scan time with the following measures:
 
 - Limit the number of actions executed by the browser with the [variable](#available-cicd-variables) `DAST_BROWSER_MAX_ACTIONS`. The default is `10,000`.
-- Limit the page depth that the browser-based crawler will check coverage on with the [variable](#available-cicd-variables) `DAST_BROWSER_MAX_DEPTH`. The crawler uses a breadth-first search strategy, so pages with smaller depth are crawled first. The default is `10`.
+- Limit the page depth that the browser-based crawler checks coverage on with the [variable](#available-cicd-variables) `DAST_BROWSER_MAX_DEPTH`. The crawler uses a breadth-first search strategy, so pages with smaller depth are crawled first. The default is `10`.
 - Vertically scale the runner and use a higher number of browsers with [variable](#available-cicd-variables) `DAST_BROWSER_NUMBER_OF_BROWSERS`. The default is `3`.
 
 ## Timeouts

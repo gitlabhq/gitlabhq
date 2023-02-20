@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::CommitsController do
+RSpec.describe Projects::CommitsController, feature_category: :source_code_management do
   let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
 

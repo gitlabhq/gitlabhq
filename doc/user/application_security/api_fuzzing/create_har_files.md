@@ -109,7 +109,7 @@ responses in HAR format.
 have an account, first create an account.
 1. Browse pages that call an API. Fiddler automatically captures the requests.
 1. Select one or more requests, then from the context menu, select **Export > Selected Sessions**.
-1. In the **Choose Format** dropdown list select **HTTP Archive v1.2**.
+1. In the **Choose Format** dropdown list select **HTTPArchive v1.2**.
 1. Enter a filename and select **Save**.
 
 Fiddler shows a popup message confirming the export has succeeded.
@@ -211,7 +211,7 @@ Review the HAR file for any of the following:
 We strongly recommended that you [edit or remove it](#edit-or-remove-sensitive-information) any
 sensitive information.
 
-Use the following as a checklist to start with. Note that it's not an exhaustive list.
+Use the following as a checklist to start with. It's not an exhaustive list.
 
 - Look for secrets. For example: if your application requires authentication, check common locations
   or authentication information:

@@ -266,24 +266,9 @@
   }
 }
 
-.gpg-status-box {
-  padding: 2px 10px;
-
-  &:empty {
-    display: none;
-  }
-
-  &.valid {
-    @include green-status-color;
-  }
-
-  &.invalid {
-    @include status-color($gray-dark, color('gray'), $gray-darkest);
-    border-color: $gray-darkest;
-
-    &:not(span):hover {
-      color: color('gray');
-    }
+.signature-badge {
+  &:hover {
+    @include gl-text-decoration-none;
   }
 }
 
@@ -297,7 +282,7 @@
   }
 }
 
-.gpg-popover-status {
+.signature-popover {
   display: flex;
   align-items: center;
   font-weight: $gl-font-weight-normal;

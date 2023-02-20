@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Profile > Password', feature_category: :users do
+RSpec.describe 'Profile > Password', feature_category: :user_profile do
   let(:user) { create(:user) }
 
   def fill_passwords(password, confirmation)

@@ -22,7 +22,11 @@ describe('Edit Timeline events', () => {
 
   const findTimelineEventsForm = () => wrapper.findComponent(TimelineEventsForm);
 
-  const mockSaveData = { ...fakeEventData, ...mockInputData };
+  const mockSaveData = {
+    ...fakeEventData,
+    ...mockInputData,
+    timelineEventTags: ['Start time', 'End time'],
+  };
 
   describe('editTimelineEvent', () => {
     const saveEventEvent = { 'handle-save-edit': [[mockSaveData, false]] };

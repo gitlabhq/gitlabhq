@@ -353,14 +353,14 @@ RSpec.describe 'New/edit issue', :js, feature_category: :team_planning do
       expect(find('#issue_description').value).to match('description from query parameter')
     end
 
-    it 'fills the description from the issuable_template query parameter' do
+    it 'fills the description from the issuable_template query parameter', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/388728' do
       visit new_project_issue_path(project, issuable_template: 'test_template')
       wait_for_requests
 
       expect(find('#issue_description').value).to match('description from template')
     end
 
-    it 'fills the description from the issuable_template and issue[description] query parameters' do
+    it 'fills the description from the issuable_template and issue[description] query parameters', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/388728' do
       visit new_project_issue_path(project, issuable_template: 'test_template', issue: { description: 'description from query parameter' })
       wait_for_requests
 

@@ -22,7 +22,7 @@ exports[`SecuritySummary component given the message {"countMessage": "%{critica
      
     <span>
       <strong
-        class="text-danger-600 gl-px-2"
+        class="gl-text-red-600 gl-px-2"
       >
         
             1 High
@@ -55,7 +55,7 @@ exports[`SecuritySummary component given the message {"countMessage": "%{critica
   >
     <span>
       <strong
-        class="text-danger-800 gl-pl-4"
+        class="gl-text-red-800 gl-pl-4"
       >
         
             1 Critical
@@ -98,7 +98,7 @@ exports[`SecuritySummary component given the message {"countMessage": "%{critica
   >
     <span>
       <strong
-        class="text-danger-800 gl-pl-4"
+        class="gl-text-red-800 gl-pl-4"
       >
         
             1 Critical
@@ -108,7 +108,7 @@ exports[`SecuritySummary component given the message {"countMessage": "%{critica
      
     <span>
       <strong
-        class="text-danger-600 gl-px-2"
+        class="gl-text-red-600 gl-px-2"
       >
         
             2 High

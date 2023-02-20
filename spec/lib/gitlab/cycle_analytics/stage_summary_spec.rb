@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::CycleAnalytics::StageSummary do
+RSpec.describe Gitlab::CycleAnalytics::StageSummary, feature_category: :devops_reports do
   include CycleAnalyticsHelpers
 
   let_it_be(:project) { create(:project, :repository) }

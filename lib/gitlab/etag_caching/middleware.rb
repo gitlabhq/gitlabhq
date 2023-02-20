@@ -65,12 +65,14 @@ module Gitlab
 
         status_code = Gitlab::PollingInterval.polling_enabled? ? 304 : 429
 
-        add_instrument_for_cache_hit(status_code, route, request)
-
         Gitlab::ApplicationContext.push(
           feature_category: route.feature_category,
-          caller_id: route.caller_id
+          caller_id: route.caller_id,
+          remote_ip: request.remote_ip
         )
+
+        request.env[Gitlab::Metrics::RequestsRackMiddleware::REQUEST_URGENCY_KEY] = route.urgency
+        add_instrument_for_cache_hit(status_code, route, request)
 
         new_headers = {
           'ETag' => etag,
@@ -102,7 +104,10 @@ module Gitlab
           format: request.format.ref,
           method: request.request_method,
           path: request.filtered_path,
-          status: status
+          status: status,
+          metadata: Gitlab::ApplicationContext.current,
+          request_urgency: route.urgency.name,
+          target_duration_s: route.urgency.duration
         }
 
         ActiveSupport::Notifications.instrument(

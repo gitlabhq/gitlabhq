@@ -4,7 +4,7 @@ group: Integrations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Trello Power-Up **(FREE)**
+# Trello Power-Ups **(FREE)**
 
 You can use the Trello Power-Up for GitLab to attach
 GitLab merge requests to Trello cards.

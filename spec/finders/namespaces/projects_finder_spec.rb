@@ -8,8 +8,8 @@ RSpec.describe Namespaces::ProjectsFinder do
   let_it_be(:subgroup) { create(:group, parent: namespace) }
   let_it_be(:project_1) { create(:project, :public, group: namespace, path: 'project', name: 'Project') }
   let_it_be(:project_2) { create(:project, :public, group: namespace, path: 'test-project', name: 'Test Project') }
-  let_it_be(:project_3) { create(:project, :public, path: 'sub-test-project', group: subgroup, name: 'Sub Test Project') }
-  let_it_be(:project_4) { create(:project, :public, path: 'test-project-2', group: namespace, name: 'Test Project 2') }
+  let_it_be(:project_3) { create(:project, :public, :issues_disabled, path: 'sub-test-project', group: subgroup, name: 'Sub Test Project') }
+  let_it_be(:project_4) { create(:project, :public, :merge_requests_disabled, path: 'test-project-2', group: namespace, name: 'Test Project 2') }
 
   let(:params) { {} }
 
@@ -55,6 +55,22 @@ RSpec.describe Namespaces::ProjectsFinder do
         end
       end
 
+      context 'when with_issues_enabled is true' do
+        let(:params) { { with_issues_enabled: true, include_subgroups: true } }
+
+        it 'returns the projects that have issues enabled' do
+          expect(projects).to contain_exactly(project_1, project_2, project_4)
+        end
+      end
+
+      context 'when with_merge_requests_enabled is true' do
+        let(:params) { { with_merge_requests_enabled: true } }
+
+        it 'returns the projects that have merge requests enabled' do
+          expect(projects).to contain_exactly(project_1, project_2)
+        end
+      end
+
       context 'when sort is similarity' do
         let(:params) { { sort: :similarity, search: 'test' } }
 
@@ -76,6 +92,20 @@ RSpec.describe Namespaces::ProjectsFinder do
 
         it 'returns matching projects' do
           expect(projects).to contain_exactly(project_2, project_4)
+        end
+      end
+
+      context 'when sort parameter is ACTIVITY_DESC' do
+        let(:params) { { sort: :latest_activity_desc } }
+
+        before do
+          project_2.update!(last_activity_at: 10.minutes.ago)
+          project_1.update!(last_activity_at: 5.minutes.ago)
+          project_4.update!(last_activity_at: 1.minute.ago)
+        end
+
+        it 'returns projects sorted by latest activity' do
+          expect(projects).to eq([project_4, project_1, project_2])
         end
       end
     end

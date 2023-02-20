@@ -85,6 +85,6 @@ RSpec.describe Issues::ReorderService do
   end
 
   def service(params)
-    described_class.new(project: project, current_user: user, params: params)
+    described_class.new(container: project, current_user: user, params: params)
   end
 end

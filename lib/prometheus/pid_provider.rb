@@ -27,7 +27,7 @@ module Prometheus
     def puma_worker_id
       if matches = process_name.match(/puma.*cluster worker ([0-9]+):/)
         "puma_#{matches[1]}"
-      elsif process_name =~ /puma/
+      elsif process_name.include?('puma')
         "puma_master"
       else
         unknown_process_id

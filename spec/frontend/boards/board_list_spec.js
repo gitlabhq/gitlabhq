@@ -1,6 +1,6 @@
 import Draggable from 'vuedraggable';
 import { nextTick } from 'vue';
-import { DraggableItemTypes } from 'ee_else_ce/boards/constants';
+import { DraggableItemTypes, ListType } from 'ee_else_ce/boards/constants';
 import { useFakeRequestAnimationFrame } from 'helpers/fake_request_animation_frame';
 import waitForPromises from 'helpers/wait_for_promises';
 import createComponent from 'jest/boards/board_list_helper';
@@ -107,6 +107,20 @@ describe('Board list component', () => {
     });
   });
 
+  describe('when ListType is Closed', () => {
+    beforeEach(() => {
+      wrapper = createComponent({
+        listProps: {
+          listType: ListType.closed,
+        },
+      });
+    });
+
+    it('Board card move to position is not visible', () => {
+      expect(findMoveToPositionComponent().exists()).toBe(false);
+    });
+  });
+
   describe('load more issues', () => {
     const actions = {
       fetchItemsForList: jest.fn(),
@@ -159,27 +173,32 @@ describe('Board list component', () => {
     });
 
     describe('when issue count exceeds max issue count', () => {
-      it('sets background to bg-danger-100', async () => {
+      it('sets background to gl-bg-red-100', async () => {
         wrapper.setProps({ list: { issuesCount: 4, maxIssueCount: 3 } });
 
         await nextTick();
-        expect(wrapper.find('.bg-danger-100').exists()).toBe(true);
+        const block = wrapper.find('.gl-bg-red-100');
+
+        expect(block.exists()).toBe(true);
+        expect(block.attributes('class')).toContain(
+          'gl-rounded-bottom-left-base gl-rounded-bottom-right-base',
+        );
       });
     });
 
     describe('when list issue count does NOT exceed list max issue count', () => {
-      it('does not sets background to bg-danger-100', () => {
+      it('does not sets background to gl-bg-red-100', () => {
         wrapper.setProps({ list: { issuesCount: 2, maxIssueCount: 3 } });
 
-        expect(wrapper.find('.bg-danger-100').exists()).toBe(false);
+        expect(wrapper.find('.gl-bg-red-100').exists()).toBe(false);
       });
     });
 
     describe('when list max issue count is 0', () => {
-      it('does not sets background to bg-danger-100', () => {
+      it('does not sets background to gl-bg-red-100', () => {
         wrapper.setProps({ list: { maxIssueCount: 0 } });
 
-        expect(wrapper.find('.bg-danger-100').exists()).toBe(false);
+        expect(wrapper.find('.gl-bg-red-100').exists()).toBe(false);
       });
     });
   });

@@ -5,7 +5,6 @@ module AuthHelper
     alicloud
     atlassian_oauth2
     auth0
-    authentiq
     azure_activedirectory_v2
     azure_oauth2
     bitbucket
@@ -17,7 +16,6 @@ module AuthHelper
     jwt
     openid_connect
     salesforce
-    shibboleth
     twitter
   ).freeze
   LDAP_PROVIDER = /\Aldap/.freeze

@@ -358,6 +358,19 @@ a place to start. The most expensive examples here are in
 shared examples; any reductions generally have a larger impact as
 they are called in multiple places.
 
+#### Top slow tests
+
+We collect information about tests duration in [`rspec_profiling_stats`](https://gitlab.com/gitlab-org/rspec_profiling_stats) project. The data is showed using GitLab Pages in this
+[UI](https://gitlab-org.gitlab.io/rspec_profiling_stats/)
+
+With [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/375983) we defined thresholds for tests duration that can act a guide.
+
+For tests that are not meeting the thresholds it is recommended to create issues and improve the tests duration.
+
+| Date | Feature tests | Controllers and Requests tests | Other |
+| --- | --- | --- | --- |
+| 2023-02-15 | 67.42 seconds | 44.66 seconds | 76.86 seconds |
+
 #### Avoid repeating expensive actions
 
 While isolated examples are very clear, and help serve the purpose of specs as
@@ -415,7 +428,7 @@ results are available, and not just the first failure.
 - Don't assert against the absolute value of a sequence-generated attribute (see
   [Gotchas](../gotchas.md#do-not-assert-against-the-absolute-value-of-a-sequence-generated-attribute)).
 - Avoid using `expect_any_instance_of` or `allow_any_instance_of` (see
-  [Gotchas](../gotchas.md#do-not-assert-against-the-absolute-value-of-a-sequence-generated-attribute)).
+  [Gotchas](../gotchas.md#avoid-using-expect_any_instance_of-or-allow_any_instance_of-in-rspec)).
 - Don't supply the `:each` argument to hooks because it's the default.
 - On `before` and `after` hooks, prefer it scoped to `:context` over `:all`
 - When using `evaluate_script("$('.js-foo').testSomething()")` (or `execute_script`) which acts on a given element,
@@ -431,6 +444,12 @@ results are available, and not just the first failure.
 ### Feature category metadata
 
 You must [set feature category metadata for each RSpec example](../feature_categorization/index.md#rspec-examples).
+
+### Tests depending on EE license
+
+You can use `if: Gitlab.ee?` or `unless: Gitlab.ee?` on context/spec blocks to execute tests depending on whether running with `FOSS_ONLY=1`.
+
+Example: [SchemaValidator reads a different path depending on the license](https://gitlab.com/gitlab-org/gitlab/-/blob/7cdcf9819cfa02c701d6fa9f18c1e7a8972884ed/spec/lib/gitlab/ci/parsers/security/validators/schema_validator_spec.rb#L571)
 
 ### Coverage
 

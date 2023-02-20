@@ -11,6 +11,12 @@ import eventHub from '~/groups/event_hub';
 import GroupsService from '~/groups/service/groups_service';
 import GroupsStore from '~/groups/store/groups_store';
 import axios from '~/lib/utils/axios_utils';
+import {
+  HTTP_STATUS_BAD_REQUEST,
+  HTTP_STATUS_FORBIDDEN,
+  HTTP_STATUS_INTERNAL_SERVER_ERROR,
+  HTTP_STATUS_OK,
+} from '~/lib/utils/http_status';
 import * as urlUtilities from '~/lib/utils/url_utility';
 import setWindowLocation from 'helpers/set_window_location_helper';
 
@@ -66,7 +72,7 @@ describe('AppComponent', () => {
 
   beforeEach(async () => {
     mock = new AxiosMockAdapter(axios);
-    mock.onGet('/dashboard/groups.json').reply(200, mockGroups);
+    mock.onGet('/dashboard/groups.json').reply(HTTP_STATUS_OK, mockGroups);
     Vue.component('GroupFolder', groupFolderComponent);
     Vue.component('GroupItem', groupItemComponent);
     setWindowLocation('?filter=foobar');
@@ -101,7 +107,7 @@ describe('AppComponent', () => {
       });
 
       it('should set headers to store for building pagination info when called with `updatePagination`', () => {
-        mock.onGet('/dashboard/groups.json').reply(200, { headers: mockRawPageInfo });
+        mock.onGet('/dashboard/groups.json').reply(HTTP_STATUS_OK, { headers: mockRawPageInfo });
 
         jest.spyOn(vm, 'updatePagination').mockImplementation(() => {});
 
@@ -112,7 +118,7 @@ describe('AppComponent', () => {
       });
 
       it('should show flash error when request fails', () => {
-        mock.onGet('/dashboard/groups.json').reply(400);
+        mock.onGet('/dashboard/groups.json').reply(HTTP_STATUS_BAD_REQUEST);
 
         jest.spyOn(window, 'scrollTo').mockImplementation(() => {});
         return vm.fetchGroups({}).then(() => {
@@ -145,7 +151,7 @@ describe('AppComponent', () => {
       });
 
       it('should fetch matching set of groups when app is loaded with search query', () => {
-        mock.onGet('/dashboard/groups.json').reply(200, mockSearchedGroups);
+        mock.onGet('/dashboard/groups.json').reply(HTTP_STATUS_OK, mockSearchedGroups);
 
         const fetchPromise = vm.fetchAllGroups();
 
@@ -216,7 +222,7 @@ describe('AppComponent', () => {
       });
 
       it('should fetch children of given group and expand it if group is collapsed and children are not loaded', () => {
-        mock.onGet('/dashboard/groups.json').reply(200, mockRawChildren);
+        mock.onGet('/dashboard/groups.json').reply(HTTP_STATUS_OK, mockRawChildren);
         jest.spyOn(vm, 'fetchGroups');
         jest.spyOn(vm.store, 'setGroupChildren').mockImplementation(() => {});
 
@@ -252,7 +258,7 @@ describe('AppComponent', () => {
       });
 
       it('should set `isChildrenLoading` back to `false` if load request fails', () => {
-        mock.onGet('/dashboard/groups.json').reply(400);
+        mock.onGet('/dashboard/groups.json').reply(HTTP_STATUS_BAD_REQUEST);
 
         vm.toggleChildren(groupItem);
 
@@ -321,7 +327,9 @@ describe('AppComponent', () => {
 
       it('should show error flash message if request failed to leave group', () => {
         const message = 'An error occurred. Please try again.';
-        jest.spyOn(vm.service, 'leaveGroup').mockRejectedValue({ status: 500 });
+        jest
+          .spyOn(vm.service, 'leaveGroup')
+          .mockRejectedValue({ status: HTTP_STATUS_INTERNAL_SERVER_ERROR });
         jest.spyOn(vm.store, 'removeGroup');
         vm.leaveGroup();
 
@@ -336,7 +344,7 @@ describe('AppComponent', () => {
 
       it('should show appropriate error flash message if request forbids to leave group', () => {
         const message = 'Failed to leave the group. Please make sure you are not the only owner.';
-        jest.spyOn(vm.service, 'leaveGroup').mockRejectedValue({ status: 403 });
+        jest.spyOn(vm.service, 'leaveGroup').mockRejectedValue({ status: HTTP_STATUS_FORBIDDEN });
         jest.spyOn(vm.store, 'removeGroup');
         vm.leaveGroup(childGroupItem, groupItem);
 

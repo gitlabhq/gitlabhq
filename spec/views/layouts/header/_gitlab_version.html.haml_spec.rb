@@ -29,8 +29,7 @@ RSpec.describe 'layouts/header/_gitlab_version' do
       )
 
       expect(rendered).to have_selector(
-        'a[data-testid="gitlab-version-container"]' \
-        "[data-track-property=\"#{Gitlab.version_info.major}.#{Gitlab.version_info.minor}\"]"
+        'a[data-testid="gitlab-version-container"][data-track-property="navigation_top"]'
       )
     end
   end

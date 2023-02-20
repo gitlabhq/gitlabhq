@@ -1,13 +1,16 @@
 <script>
-import { GlSkeletonLoader } from '@gitlab/ui';
-import { s__ } from '~/locale';
+import { GlSkeletonLoader, GlModal } from '@gitlab/ui';
+import * as Sentry from '@sentry/browser';
+import { s__, __ } from '~/locale';
+import { TYPENAME_DISCUSSION, TYPENAME_NOTE } from '~/graphql_shared/constants';
 import SystemNote from '~/work_items/components/notes/system_note.vue';
 import ActivityFilter from '~/work_items/components/notes/activity_filter.vue';
 import { i18n, DEFAULT_PAGE_SIZE_NOTES } from '~/work_items/constants';
 import { ASC, DESC } from '~/notes/constants';
 import { getWorkItemNotesQuery } from '~/work_items/utils';
-import WorkItemNote from '~/work_items/components/notes/work_item_note.vue';
-import WorkItemCommentForm from './work_item_comment_form.vue';
+import WorkItemDiscussion from '~/work_items/components/notes/work_item_discussion.vue';
+import deleteNoteMutation from '../graphql/notes/delete_work_item_notes.mutation.graphql';
+import WorkItemAddNote from './notes/work_item_add_note.vue';
 
 export default {
   i18n: {
@@ -20,10 +23,11 @@ export default {
   },
   components: {
     GlSkeletonLoader,
+    GlModal,
     ActivityFilter,
     SystemNote,
-    WorkItemCommentForm,
-    WorkItemNote,
+    WorkItemAddNote,
+    WorkItemDiscussion,
   },
   props: {
     workItemId: {
@@ -50,37 +54,51 @@ export default {
   },
   data() {
     return {
-      notesArray: [],
       isLoadingMore: false,
       perPage: DEFAULT_PAGE_SIZE_NOTES,
       sortOrder: ASC,
-      changeNotesSortOrderAfterLoading: false,
+      noteToDelete: null,
     };
   },
   computed: {
     initialLoading() {
       return this.$apollo.queries.workItemNotes.loading && !this.isLoadingMore;
     },
-    pageInfo() {
-      return this.workItemNotes?.pageInfo;
-    },
     avatarUrl() {
       return window.gon.current_user_avatar_url;
     },
+    pageInfo() {
+      return this.workItemNotes?.pageInfo;
+    },
     hasNextPage() {
       return this.pageInfo?.hasNextPage;
-    },
-    showInitialLoader() {
-      return this.initialLoading || this.changeNotesSortOrderAfterLoading;
-    },
-    showTimeline() {
-      return !this.changeNotesSortOrderAfterLoading;
     },
     showLoadingMoreSkeleton() {
       return this.isLoadingMore && !this.changeNotesSortOrderAfterLoading;
     },
     disableActivityFilter() {
       return this.initialLoading || this.isLoadingMore;
+    },
+    formAtTop() {
+      return this.sortOrder === DESC;
+    },
+    workItemCommentFormProps() {
+      return {
+        queryVariables: this.queryVariables,
+        fullPath: this.fullPath,
+        workItemId: this.workItemId,
+        fetchByIid: this.fetchByIid,
+        workItemType: this.workItemType,
+        sortOrder: this.sortOrder,
+      };
+    },
+    notesArray() {
+      const notes = this.workItemNotes?.nodes || [];
+
+      if (this.sortOrder === DESC) {
+        return [...notes].reverse();
+      }
+      return notes;
     },
   },
   apollo: {
@@ -104,8 +122,6 @@ export default {
           : data.workItem?.widgets;
         const discussionNodes =
           workItemWidgets.find((widget) => widget.type === 'NOTES')?.discussions || [];
-        this.notesArray = discussionNodes?.nodes || [];
-        this.updateSortingOrderIfApplicable();
         return discussionNodes;
       },
       skip() {
@@ -115,6 +131,8 @@ export default {
         this.$emit('error', i18n.fetchError);
       },
       result() {
+        this.updateSortingOrderIfApplicable();
+
         if (this.hasNextPage) {
           this.fetchMoreNotes();
         }
@@ -122,6 +140,11 @@ export default {
     },
   },
   methods: {
+    getDiscussionKey(discussion) {
+      // discussion key is important like this since after first comment changes
+      const discussionId = discussion.notes.nodes[0].id;
+      return discussionId.split('/')[discussionId.split('/').length - 1];
+    },
     isSystemNote(note) {
       return note.notes.nodes[0].system;
     },
@@ -136,17 +159,8 @@ export default {
         this.changeNotesSortOrder(DESC);
       }
     },
-    updateInitialSortedOrder(direction) {
-      this.sortOrder = direction;
-      // when the direction is reverse , we need to load all since the sorting is on the frontend
-      if (direction === DESC) {
-        this.changeNotesSortOrderAfterLoading = true;
-      }
-    },
     changeNotesSortOrder(direction) {
       this.sortOrder = direction;
-      this.notesArray = [...this.notesArray].reverse();
-      this.changeNotesSortOrderAfterLoading = false;
     },
     async fetchMoreNotes() {
       this.isLoadingMore = true;
@@ -163,8 +177,44 @@ export default {
         })
         .catch((error) => this.$emit('error', error.message));
       this.isLoadingMore = false;
-      if (this.changeNotesSortOrderAfterLoading && !this.hasNextPage) {
-        this.changeNotesSortOrder(this.sortOrder);
+    },
+    showDeleteNoteModal(note, discussion) {
+      const isLastNote = discussion.notes.nodes.length === 1;
+      this.$refs.deleteNoteModal.show();
+      this.noteToDelete = { ...note, isLastNote };
+    },
+    cancelDeletingNote() {
+      this.noteToDelete = null;
+    },
+    async deleteNote() {
+      try {
+        const { id, isLastNote, discussion } = this.noteToDelete;
+        await this.$apollo.mutate({
+          mutation: deleteNoteMutation,
+          variables: {
+            input: {
+              id,
+            },
+          },
+          update(cache) {
+            const deletedObject = isLastNote
+              ? { __typename: TYPENAME_DISCUSSION, id: discussion.id }
+              : { __typename: TYPENAME_NOTE, id };
+            cache.modify({
+              id: cache.identify(deletedObject),
+              fields: (_, { DELETE }) => DELETE,
+            });
+          },
+          optimisticResponse: {
+            destroyNote: {
+              note: null,
+              __typename: 'DestroyNotePayload',
+            },
+          },
+        });
+      } catch (error) {
+        this.$emit('error', __('Something went wrong when deleting a comment. Please try again'));
+        Sentry.captureException(error);
       }
     },
   },
@@ -172,7 +222,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-border-t gl-mt-5">
+  <div class="gl-border-t gl-mt-5 work-item-notes">
     <div class="gl-display-flex gl-justify-content-space-between gl-flex-wrap">
       <label class="gl-mb-0">{{ $options.i18n.ACTIVITY_LABEL }}</label>
       <activity-filter
@@ -181,10 +231,10 @@ export default {
         :sort-order="sortOrder"
         :work-item-type="workItemType"
         @changeSortOrder="changeNotesSortOrder"
-        @updateSavedSortOrder="updateInitialSortedOrder"
+        @updateSavedSortOrder="changeNotesSortOrder"
       />
     </div>
-    <div v-if="showInitialLoader" class="gl-mt-5">
+    <div v-if="initialLoading" class="gl-mt-5">
       <gl-skeleton-loader
         v-for="index in $options.loader.repeat"
         :key="index"
@@ -197,22 +247,38 @@ export default {
       </gl-skeleton-loader>
     </div>
     <div v-else class="issuable-discussion gl-mb-5 gl-clearfix!">
-      <template v-if="showTimeline">
+      <template v-if="!initialLoading">
         <ul class="notes main-notes-list timeline gl-clearfix!">
-          <template v-for="note in notesArray">
+          <work-item-add-note
+            v-if="formAtTop"
+            v-bind="workItemCommentFormProps"
+            @error="$emit('error', $event)"
+          />
+
+          <template v-for="discussion in notesArray">
             <system-note
-              v-if="isSystemNote(note)"
-              :key="note.notes.nodes[0].id"
-              :note="note.notes.nodes[0]"
+              v-if="isSystemNote(discussion)"
+              :key="discussion.notes.nodes[0].id"
+              :note="discussion.notes.nodes[0]"
             />
-            <work-item-note v-else :key="note.notes.nodes[0].id" :note="note.notes.nodes[0]" />
+            <template v-else>
+              <work-item-discussion
+                :key="getDiscussionKey(discussion)"
+                :discussion="discussion.notes.nodes"
+                :query-variables="queryVariables"
+                :full-path="fullPath"
+                :work-item-id="workItemId"
+                :fetch-by-iid="fetchByIid"
+                :work-item-type="workItemType"
+                @deleteNote="showDeleteNoteModal($event, discussion)"
+                @error="$emit('error', $event)"
+              />
+            </template>
           </template>
 
-          <work-item-comment-form
-            :query-variables="queryVariables"
-            :full-path="fullPath"
-            :work-item-id="workItemId"
-            :fetch-by-iid="fetchByIid"
+          <work-item-add-note
+            v-if="!formAtTop"
+            v-bind="workItemCommentFormProps"
             @error="$emit('error', $event)"
           />
         </ul>
@@ -231,5 +297,17 @@ export default {
         </gl-skeleton-loader>
       </template>
     </div>
+    <gl-modal
+      ref="deleteNoteModal"
+      modal-id="delete-note-modal"
+      :title="__('Delete comment?')"
+      :ok-title="__('Delete comment')"
+      ok-variant="danger"
+      size="sm"
+      @primary="deleteNote"
+      @canceled="cancelDeletingNote"
+    >
+      {{ __('Are you sure you want to delete this comment?') }}
+    </gl-modal>
   </div>
 </template>

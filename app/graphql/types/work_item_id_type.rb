@@ -37,7 +37,11 @@ module Types
       def suitable?(gid)
         return false if gid&.model_name&.safe_constantize.blank?
 
+        # Using === operation doesn't work for model classes.
+        # See https://github.com/rails/rails/blob/v6.1.6.1/activerecord/lib/active_record/core.rb#L452
+        # rubocop:disable Performance/RedundantEqualityComparisonBlock
         [::WorkItem, ::Issue].any? { |model_class| gid.model_class == model_class }
+        # rubocop:enable Performance/RedundantEqualityComparisonBlock
       end
 
       private

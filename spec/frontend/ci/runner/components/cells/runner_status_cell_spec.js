@@ -10,6 +10,7 @@ import {
   INSTANCE_TYPE,
   STATUS_ONLINE,
   STATUS_OFFLINE,
+  JOB_STATUS_IDLE,
 } from '~/ci/runner/constants';
 
 describe('RunnerStatusCell', () => {
@@ -18,16 +19,18 @@ describe('RunnerStatusCell', () => {
   const findStatusBadge = () => wrapper.findComponent(RunnerStatusBadge);
   const findPausedBadge = () => wrapper.findComponent(RunnerPausedBadge);
 
-  const createComponent = ({ runner = {} } = {}) => {
+  const createComponent = ({ runner = {}, ...options } = {}) => {
     wrapper = mount(RunnerStatusCell, {
       propsData: {
         runner: {
           runnerType: INSTANCE_TYPE,
           active: true,
           status: STATUS_ONLINE,
+          jobExecutionStatus: JOB_STATUS_IDLE,
           ...runner,
         },
       },
+      ...options,
     });
   };
 
@@ -73,5 +76,15 @@ describe('RunnerStatusCell', () => {
     });
 
     expect(wrapper.text()).toBe('');
+  });
+
+  it('Displays "runner-job-status-badge" slot', () => {
+    createComponent({
+      scopedSlots: {
+        'runner-job-status-badge': ({ runner }) => `Job status ${runner.jobExecutionStatus}`,
+      },
+    });
+
+    expect(wrapper.text()).toContain(`Job status ${JOB_STATUS_IDLE}`);
   });
 });

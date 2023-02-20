@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ContainerRepository, :aggregate_failures do
+RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :container_registry do
   using RSpec::Parameterized::TableSyntax
 
   let(:group) { create(:group, name: 'group') }

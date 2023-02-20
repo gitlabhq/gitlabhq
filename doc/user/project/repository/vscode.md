@@ -1,6 +1,6 @@
 ---
 stage: Create
-group: Code Review
+group: Editor
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -15,8 +15,9 @@ do more day-to-day tasks in Visual Studio Code, such as:
   from the Visual Studio Code [command palette](https://code.visualstudio.com/docs/getstarted/userinterface#_command-palette).
 - Create and [review](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow#merge-request-reviews)
   merge requests directly from Visual Studio Code.
-- [Validate your GitLab CI configuration](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow#validate-gitlab-ci-configuration).
+- [Validate your GitLab CI/CD configuration](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow#validate-gitlab-cicd-configuration).
 - [View the status of your pipeline](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow#information-about-your-branch-pipelines-mr-closing-issue).
+- [View the output of CI/CD jobs](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow#view-the-job-output).
 - [Create](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow#create-snippet)
   and paste snippets to, and from, your editor.
 - [Browse repositories](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow#browse-a-repository-without-cloning)

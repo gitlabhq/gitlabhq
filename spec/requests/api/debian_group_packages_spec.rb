@@ -36,6 +36,12 @@ RSpec.describe API::DebianGroupPackages, feature_category: :package_registry do
       it_behaves_like 'Debian packages read endpoint', 'GET', :success, /Description: This is an incomplete Packages file/
     end
 
+    describe 'GET groups/:id/-/packages/debian/dists/*distribution/:component/binary-:architecture/Packages.gz' do
+      let(:url) { "/groups/#{container.id}/-/packages/debian/dists/#{distribution.codename}/#{component.name}/binary-#{architecture.name}/Packages.gz" }
+
+      it_behaves_like 'Debian packages read endpoint', 'GET', :not_found, /Format gz is not supported/
+    end
+
     describe 'GET groups/:id/-/packages/debian/dists/*distribution/:component/binary-:architecture/by-hash/SHA256/:file_sha256' do
       let(:url) { "/groups/#{container.id}/-/packages/debian/dists/#{distribution.codename}/#{component.name}/binary-#{architecture.name}/by-hash/SHA256/#{component_file_older_sha256.file_sha256}" }
 
@@ -58,6 +64,12 @@ RSpec.describe API::DebianGroupPackages, feature_category: :package_registry do
       let(:url) { "/groups/#{container.id}/-/packages/debian/dists/#{distribution.codename}/#{component.name}/debian-installer/binary-#{architecture.name}/Packages" }
 
       it_behaves_like 'Debian packages read endpoint', 'GET', :success, /Description: This is an incomplete D-I Packages file/
+    end
+
+    describe 'GET groups/:id/-/packages/debian/dists/*distribution/:component/debian-installer/binary-:architecture/Packages.gz' do
+      let(:url) { "/groups/#{container.id}/-/packages/debian/dists/#{distribution.codename}/#{component.name}/debian-installer/binary-#{architecture.name}/Packages.gz" }
+
+      it_behaves_like 'Debian packages read endpoint', 'GET', :not_found, /Format gz is not supported/
     end
 
     describe 'GET groups/:id/-/packages/debian/dists/*distribution/:component/debian-installer/binary-:architecture/by-hash/SHA256/:file_sha256' do

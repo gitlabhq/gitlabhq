@@ -144,7 +144,7 @@ In this example, `$CI_REGISTRY_IMAGE` resolves to the address of the registry ti
 to this project. `$CI_COMMIT_REF_NAME` resolves to the branch or tag name, which
 can contain forward slashes. Image tags can't contain forward slashes. Use
 `$CI_COMMIT_REF_SLUG` as the image tag. You can declare the variable, `$IMAGE_TAG`,
-combining `$CI_REGISTRY_IMAGE` and `$CI_REGISTRY_IMAGE` to save some typing in the
+combining `$CI_REGISTRY_IMAGE` and `$CI_COMMIT_REF_NAME` to save some typing in the
 `script` section.
 
 This example splits the tasks into 4 pipeline stages, including two tests that run in parallel. The `build` is stored in the container

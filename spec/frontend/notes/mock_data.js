@@ -1,4 +1,5 @@
 // Copied to ee/spec/frontend/notes/mock_data.js
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { __ } from '~/locale';
 
 export const notesDataMock = {
@@ -655,11 +656,11 @@ export const DISCUSSION_NOTE_RESPONSE_MAP = {
 };
 
 export function getIndividualNoteResponse(config) {
-  return [200, INDIVIDUAL_NOTE_RESPONSE_MAP[config.method.toUpperCase()][config.url]];
+  return [HTTP_STATUS_OK, INDIVIDUAL_NOTE_RESPONSE_MAP[config.method.toUpperCase()][config.url]];
 }
 
 export function getDiscussionNoteResponse(config) {
-  return [200, DISCUSSION_NOTE_RESPONSE_MAP[config.method.toUpperCase()][config.url]];
+  return [HTTP_STATUS_OK, DISCUSSION_NOTE_RESPONSE_MAP[config.method.toUpperCase()][config.url]];
 }
 
 export const notesWithDescriptionChanges = [

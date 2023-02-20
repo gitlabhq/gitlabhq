@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'User visits the profile preferences page', :js, feature_category: :users do
+RSpec.describe 'User visits the profile preferences page', :js, feature_category: :user_profile do
   include ListboxHelpers
 
   let(:user) { create(:user) }

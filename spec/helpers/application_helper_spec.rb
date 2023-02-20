@@ -211,7 +211,7 @@ RSpec.describe ApplicationHelper do
 
   describe '#support_url' do
     context 'when alternate support url is specified' do
-      let(:alternate_url) { 'http://company.example.com/getting-help' }
+      let(:alternate_url) { 'http://company.example.com/get-help' }
 
       it 'returns the alternate support url' do
         stub_application_setting(help_page_support_url: alternate_url)
@@ -222,7 +222,7 @@ RSpec.describe ApplicationHelper do
 
     context 'when alternate support url is not specified' do
       it 'builds the support url from the promo_url' do
-        expect(helper.support_url).to eq(helper.promo_url + '/getting-help/')
+        expect(helper.support_url).to eq(helper.promo_url + '/get-help/')
       end
     end
   end
@@ -540,6 +540,23 @@ RSpec.describe ApplicationHelper do
     end
   end
 
+  describe '#profile_social_links' do
+    context 'when discord is set' do
+      let_it_be(:user) { build(:user) }
+      let(:discord) { discord_url(user) }
+
+      it 'returns an empty string if discord is not set' do
+        expect(discord).to eq('')
+      end
+
+      it 'returns discord url when discord id is set' do
+        user.discord = '1234567890123456789'
+
+        expect(discord).to eq('https://discord.com/users/1234567890123456789')
+      end
+    end
+  end
+
   describe '#gitlab_ui_form_for' do
     let_it_be(:user) { build(:user) }
 
@@ -687,30 +704,6 @@ RSpec.describe ApplicationHelper do
       allow(helper.controller).to receive(:params).and_return({ no_startup_css: '' })
 
       expect(helper.stylesheet_link_tag_defer('test')).to eq( '<link rel="stylesheet" media="screen" href="/stylesheets/test.css" />')
-    end
-  end
-
-  describe '#use_new_fonts?' do
-    subject { helper.use_new_fonts? }
-
-    it { is_expected.to eq true }
-
-    context 'when the feature flag is disabled' do
-      before do
-        stub_feature_flags(new_fonts: false)
-      end
-
-      it { is_expected.to eq false }
-
-      context 'with special request param' do
-        let(:request) { instance_double(ActionController::TestRequest, params: { new_fonts: true }) }
-
-        before do
-          allow(helper).to receive(:request).and_return(request)
-        end
-
-        it { is_expected.to eq true }
-      end
     end
   end
 end

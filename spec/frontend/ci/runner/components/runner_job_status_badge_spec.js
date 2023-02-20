@@ -23,16 +23,25 @@ describe('RunnerTypeBadge', () => {
   };
 
   it.each`
-    jobStatus             | classes                                                                                       | text
-    ${JOB_STATUS_RUNNING} | ${['gl-mr-3', 'gl-bg-transparent!', 'gl-text-blue-600!', 'gl-border', 'gl-border-blue-600!']} | ${I18N_JOB_STATUS_RUNNING}
-    ${JOB_STATUS_IDLE}    | ${['gl-mr-3', 'gl-bg-transparent!', 'gl-text-gray-700!', 'gl-border', 'gl-border-gray-500!']} | ${I18N_JOB_STATUS_IDLE}
+    jobStatus             | classes                                         | text
+    ${JOB_STATUS_RUNNING} | ${['gl-text-blue-600!', 'gl-border-blue-600!']} | ${I18N_JOB_STATUS_RUNNING}
+    ${JOB_STATUS_IDLE}    | ${['gl-text-gray-700!', 'gl-border-gray-500!']} | ${I18N_JOB_STATUS_IDLE}
   `(
     'renders $jobStatus job status with "$text" text and styles',
     ({ jobStatus, classes, text }) => {
       createComponent({ props: { jobStatus } });
 
-      expect(findBadge().props()).toMatchObject({ size: 'sm', variant: 'muted' });
-      expect(findBadge().classes().sort()).toEqual(classes.sort());
+      expect(findBadge().props()).toMatchObject({ size: 'md', variant: 'muted' });
+      expect(findBadge().classes().sort()).toEqual(
+        [
+          ...classes,
+          'gl-border',
+          'gl-display-inline-block',
+          'gl-max-w-full',
+          'gl-text-truncate',
+          'gl-bg-transparent!',
+        ].sort(),
+      );
       expect(findBadge().text()).toBe(text);
     },
   );

@@ -79,7 +79,7 @@ export default {
         :link-href="author.path"
         :img-alt="author.name"
         img-css-classes="gl-mr-0!"
-        :img-src="author.avatar_url"
+        :img-src="author.avatar_url || author.avatarUrl"
         :img-size="24"
         :tooltip-text="author.name"
         tooltip-placement="bottom"
@@ -102,7 +102,10 @@ export default {
           </gl-link>
         </template>
       </gl-sprintf>
-      <time-ago-tooltip :time="lastReply.created_at" tooltip-placement="bottom" />
+      <time-ago-tooltip
+        :time="lastReply.created_at || lastReply.createdAt"
+        tooltip-placement="bottom"
+      />
     </template>
     <gl-button
       v-else

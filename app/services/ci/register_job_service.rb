@@ -6,7 +6,7 @@ module Ci
   class RegisterJobService
     include ::Gitlab::Ci::Artifacts::Logger
 
-    attr_reader :runner, :metrics
+    attr_reader :runner, :runner_machine, :metrics
 
     TEMPORARY_LOCK_TIMEOUT = 3.seconds
 
@@ -18,8 +18,9 @@ module Ci
     # affect 5% of the worst case scenarios.
     MAX_QUEUE_DEPTH = 45
 
-    def initialize(runner)
+    def initialize(runner, runner_machine)
       @runner = runner
+      @runner_machine = runner_machine
       @metrics = ::Gitlab::Ci::Queue::Metrics.new(runner)
     end
 
@@ -243,6 +244,7 @@ module Ci
     def assign_runner!(build, params)
       build.runner_id = runner.id
       build.runner_session_attributes = params[:session] if params[:session].present?
+      build.ensure_metadata.runner_machine = runner_machine if runner_machine
 
       failure_reason, _ = pre_assign_runner_checks.find { |_, check| check.call(build, params) }
 
@@ -260,7 +262,7 @@ module Ci
     end
 
     def acquire_temporary_lock(build_id)
-      return true unless Feature.enabled?(:ci_register_job_temporary_lock, runner)
+      return true if Feature.disabled?(:ci_register_job_temporary_lock, runner, type: :ops)
 
       key = "build/register/#{build_id}"
 

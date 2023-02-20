@@ -2,7 +2,7 @@
 
 module API
   class Avatar < ::API::Base
-    feature_category :users
+    feature_category :user_profile
     urgency :medium
 
     resource :avatar do

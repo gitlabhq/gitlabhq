@@ -45,7 +45,7 @@ RSpec.describe Issues::UpdateService, :mailer do
     end
 
     def update_issue(opts)
-      described_class.new(project: project, current_user: user, params: opts).execute(issue)
+      described_class.new(container: project, current_user: user, params: opts).execute(issue)
     end
 
     it_behaves_like 'issuable update service updating last_edited_at values' do
@@ -106,29 +106,29 @@ RSpec.describe Issues::UpdateService, :mailer do
 
       context 'when updating milestone' do
         before do
-          update_issue({ milestone: nil })
+          update_issue({ milestone_id: nil })
         end
 
         it 'updates issue milestone when passing `milestone` param' do
-          expect { update_issue({ milestone: milestone }) }
+          expect { update_issue({ milestone_id: milestone.id }) }
             .to change(issue, :milestone).to(milestone).from(nil)
         end
 
         it "triggers 'issuableMilestoneUpdated'" do
           expect(GraphqlTriggers).to receive(:issuable_milestone_updated).with(issue).and_call_original
 
-          update_issue({ milestone: milestone })
+          update_issue({ milestone_id: milestone.id })
         end
 
         context 'when milestone remains unchanged' do
           before do
-            update_issue({ title: 'abc', milestone: milestone })
+            update_issue({ title: 'abc', milestone_id: milestone.id })
           end
 
           it "does not trigger 'issuableMilestoneUpdated'" do
             expect(GraphqlTriggers).not_to receive(:issuable_milestone_updated)
 
-            update_issue({ milestone: milestone })
+            update_issue({ milestone_id: milestone.id })
           end
         end
       end
@@ -420,7 +420,7 @@ RSpec.describe Issues::UpdateService, :mailer do
 
           opts[:move_between_ids] = [issue_1.id, issue_2.id]
 
-          described_class.new(project: issue_3.project, current_user: user, params: opts).execute(issue_3)
+          described_class.new(container: issue_3.project, current_user: user, params: opts).execute(issue_3)
           expect(issue_2.relative_position).to be_between(issue_1.relative_position, issue_2.relative_position)
         end
       end
@@ -428,7 +428,7 @@ RSpec.describe Issues::UpdateService, :mailer do
       context 'when current user cannot admin issues in the project' do
         it 'filters out params that cannot be set without the :admin_issue permission' do
           described_class.new(
-            project: project, current_user: guest, params: opts.merge(
+            container: project, current_user: guest, params: opts.merge(
               confidential: true,
               issue_type: 'test_case'
             )
@@ -755,14 +755,14 @@ RSpec.describe Issues::UpdateService, :mailer do
         end
 
         it 'marks todos as done' do
-          update_issue(milestone: create(:milestone, project: project))
+          update_issue(milestone_id: create(:milestone, project: project).id)
 
           expect(todo.reload.done?).to eq true
         end
 
         it 'sends notifications for subscribers of changed milestone', :sidekiq_might_not_need_inline do
           perform_enqueued_jobs do
-            update_issue(milestone: create(:milestone, project: project))
+            update_issue(milestone_id: create(:milestone, project: project).id)
           end
 
           should_email(subscriber)
@@ -779,7 +779,7 @@ RSpec.describe Issues::UpdateService, :mailer do
             expect(service).to receive(:delete_cache).and_call_original
           end
 
-          update_issue(milestone: milestone)
+          update_issue(milestone_id: milestone.id)
         end
       end
 
@@ -803,7 +803,7 @@ RSpec.describe Issues::UpdateService, :mailer do
             expect(service).to receive(:delete_cache).and_call_original
           end
 
-          update_issue(milestone: new_milestone)
+          update_issue(milestone_id: new_milestone.id)
         end
       end
 
@@ -838,7 +838,7 @@ RSpec.describe Issues::UpdateService, :mailer do
         opts = { label_ids: [label.id] }
 
         perform_enqueued_jobs do
-          @issue = described_class.new(project: project, current_user: user, params: opts).execute(issue)
+          @issue = described_class.new(container: project, current_user: user, params: opts).execute(issue)
         end
 
         should_email(subscriber)
@@ -854,7 +854,7 @@ RSpec.describe Issues::UpdateService, :mailer do
           opts = { label_ids: [label.id, label2.id] }
 
           perform_enqueued_jobs do
-            @issue = described_class.new(project: project, current_user: user, params: opts).execute(issue)
+            @issue = described_class.new(container: project, current_user: user, params: opts).execute(issue)
           end
 
           should_not_email(subscriber)
@@ -865,7 +865,7 @@ RSpec.describe Issues::UpdateService, :mailer do
           opts = { label_ids: [label2.id] }
 
           perform_enqueued_jobs do
-            @issue = described_class.new(project: project, current_user: user, params: opts).execute(issue)
+            @issue = described_class.new(container: project, current_user: user, params: opts).execute(issue)
           end
 
           should_not_email(subscriber)
@@ -897,7 +897,7 @@ RSpec.describe Issues::UpdateService, :mailer do
               line_number: 1
             }
           }
-          service = described_class.new(project: project, current_user: user, params: params)
+          service = described_class.new(container: project, current_user: user, params: params)
 
           expect(Spam::SpamActionService).not_to receive(:new)
 
@@ -915,7 +915,7 @@ RSpec.describe Issues::UpdateService, :mailer do
               line_number: 1
             }
           }
-          service = described_class.new(project: project, current_user: user, params: params)
+          service = described_class.new(container: project, current_user: user, params: params)
 
           expect(service).to receive(:after_update).with(issue, {})
 
@@ -991,7 +991,7 @@ RSpec.describe Issues::UpdateService, :mailer do
 
     context 'updating labels' do
       let(:label3) { create(:label, project: project) }
-      let(:result) { described_class.new(project: project, current_user: user, params: params).execute(issue).reload }
+      let(:result) { described_class.new(container: project, current_user: user, params: params).execute(issue).reload }
 
       context 'when add_label_ids and label_ids are passed' do
         let(:params) { { label_ids: [label.id], add_label_ids: [label3.id] } }
@@ -1063,7 +1063,7 @@ RSpec.describe Issues::UpdateService, :mailer do
     end
 
     context 'updating dates' do
-      subject(:result) { described_class.new(project: project, current_user: user, params: params).execute(issue) }
+      subject(:result) { described_class.new(container: project, current_user: user, params: params).execute(issue) }
 
       let(:updated_date) { 1.week.from_now.to_date }
 
@@ -1428,7 +1428,7 @@ RSpec.describe Issues::UpdateService, :mailer do
       it 'raises an error for invalid move ids' do
         opts = { move_between_ids: [9000, non_existing_record_id] }
 
-        expect { described_class.new(project: issue.project, current_user: user, params: opts).execute(issue) }
+        expect { described_class.new(container: issue.project, current_user: user, params: opts).execute(issue) }
             .to raise_error(ActiveRecord::RecordNotFound)
       end
     end
@@ -1473,7 +1473,33 @@ RSpec.describe Issues::UpdateService, :mailer do
 
     it_behaves_like 'issuable record that supports quick actions' do
       let(:existing_issue) { create(:issue, project: project) }
-      let(:issuable) { described_class.new(project: project, current_user: user, params: params).execute(existing_issue) }
+      let(:issuable) { described_class.new(container: project, current_user: user, params: params).execute(existing_issue) }
+    end
+
+    context 'with quick actions' do
+      context 'as work item' do
+        let(:opts) { { description: "/shrug" } }
+
+        context 'when work item type is not the default Issue' do
+          let(:issue) { create(:work_item, :task, description: "") }
+
+          it 'does not apply the quick action' do
+            expect do
+              update_issue(opts)
+            end.to change(issue, :description).to("/shrug")
+          end
+        end
+
+        context 'when work item type is the default Issue' do
+          let(:issue) { create(:work_item, :issue, description: "") }
+
+          it 'does not apply the quick action' do
+            expect do
+              update_issue(opts)
+            end.to change(issue, :description).to(" ¯\\＿(ツ)＿/¯")
+          end
+        end
+      end
     end
   end
 end

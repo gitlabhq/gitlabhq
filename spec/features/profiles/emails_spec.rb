@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Profile > Emails', feature_category: :users do
+RSpec.describe 'Profile > Emails', feature_category: :user_profile do
   let(:user) { create(:user) }
   let(:other_user) { create(:user) }
 

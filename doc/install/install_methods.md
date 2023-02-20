@@ -26,7 +26,7 @@ You can install GitLab on several cloud providers.
 
 | Cloud provider                                                | Description |
 |---------------------------------------------------------------|-------------|
-| [AWS (HA)](aws/index.md)                                      | Install GitLab on AWS using the community AMIs provided by GitLab. |
+| [AWS](aws/index.md)                                           | Install GitLab on AWS using the community AMIs provided by GitLab. |
 | [Google Cloud Platform (GCP)](google_cloud_platform/index.md) | Install GitLab on a VM in GCP. |
 | [Azure](azure/index.md)                                       | Install GitLab from Azure Marketplace. |
 

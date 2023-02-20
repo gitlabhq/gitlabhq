@@ -39,6 +39,7 @@ import {
   I18N_GROUP_TYPE,
   I18N_PROJECT_TYPE,
   INSTANCE_TYPE,
+  JOBS_ROUTE_PATH,
   PARAM_KEY_PAUSED,
   PARAM_KEY_STATUS,
   PARAM_KEY_TAG,
@@ -56,6 +57,7 @@ import {
   allRunnersDataPaginated,
   onlineContactTimeoutSecs,
   staleTimeoutSecs,
+  newRunnerPath,
   emptyPageInfo,
   emptyStateSvgPath,
   emptyStateFilteredSvgPath,
@@ -113,6 +115,7 @@ describe('AdminRunnersApp', () => {
       apolloProvider: createMockApollo(handlers, {}, cacheConfig),
       propsData: {
         registrationToken: mockRegistrationToken,
+        newRunnerPath,
         ...props,
       },
       provide: {
@@ -280,11 +283,14 @@ describe('AdminRunnersApp', () => {
 
     it('Shows job status and links to jobs', () => {
       const badge = wrapper
-        .find('tr [data-testid="td-summary"]')
+        .find('tr [data-testid="td-status"]')
         .findComponent(RunnerJobStatusBadge);
 
       expect(badge.props('jobStatus')).toBe(mockRunners[0].jobExecutionStatus);
-      expect(badge.attributes('href')).toBe(`http://localhost/admin/runners/${id}#/jobs`);
+
+      const badgeHref = new URL(badge.attributes('href'));
+      expect(badgeHref.pathname).toBe(`/admin/runners/${id}`);
+      expect(badgeHref.hash).toBe(`#${JOBS_ROUTE_PATH}`);
     });
 
     it('When runner is paused or unpaused, some data is refetched', async () => {
@@ -443,7 +449,13 @@ describe('AdminRunnersApp', () => {
     });
 
     it('shows an empty state', () => {
-      expect(findRunnerListEmptyState().props('isSearchFiltered')).toBe(false);
+      expect(findRunnerListEmptyState().props()).toEqual({
+        newRunnerPath,
+        isSearchFiltered: false,
+        filteredSvgPath: emptyStateFilteredSvgPath,
+        registrationToken: mockRegistrationToken,
+        svgPath: emptyStateSvgPath,
+      });
     });
 
     describe('when a filter is selected by the user', () => {

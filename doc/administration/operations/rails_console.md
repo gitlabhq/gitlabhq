@@ -158,7 +158,7 @@ sudo -u git -H bundle exec rails runner -e production /path/to/script.rb
 
 Rails Runner does not produce the same output as the console.
 
-If you set a variable on the console, the console will generate useful debug output
+If you set a variable on the console, the console generates useful debug output
 such as the variable contents or properties of referenced entity:
 
 ```ruby
@@ -176,7 +176,7 @@ root
 1
 ```
 
-Some basic knowledge of Ruby will be very useful. Try
+Some basic knowledge of Ruby is very useful. Try
 [this 30-minute tutorial](https://try.ruby-lang.org/) for a quick introduction.
 Rails experience is helpful but not essential.
 
@@ -425,7 +425,7 @@ D, [2020-03-05T17:18:30.406047 #910] DEBUG -- :   User Load (2.6ms)  SELECT "use
 ```
 
 For more on different ways to retrieve data from the database using Active
-Record, please see the [Active Record Query Interface documentation](https://guides.rubyonrails.org/active_record_querying.html).
+Record, see the [Active Record Query Interface documentation](https://guides.rubyonrails.org/active_record_querying.html).
 
 ## Query the database using an Active Record model
 
@@ -547,7 +547,7 @@ be the fastest way to get to the root of the problem.
 
 ### Interacting with Active Record objects
 
-At the end of the day, Active Record objects are just normal Ruby objects. As
+At the end of the day, Active Record objects are just standard Ruby objects. As
 such, we can define methods on them which perform arbitrary actions.
 
 For example, GitLab developers have added some methods which help with

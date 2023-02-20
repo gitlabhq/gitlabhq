@@ -1,6 +1,8 @@
 <script>
 import { GlDrawer } from '@gitlab/ui';
+import { getContentWrapperHeight } from '~/lib/utils/dom_utils';
 import { __ } from '~/locale';
+import { DRAWER_CONTAINER_CLASS } from '../job_assistant_drawer/constants';
 import FirstPipelineCard from './cards/first_pipeline_card.vue';
 import GettingStartedCard from './cards/getting_started_card.vue';
 import PipelineConfigReferenceCard from './cards/pipeline_config_reference_card.vue';
@@ -26,14 +28,15 @@ export default {
       required: false,
       default: false,
     },
+    zIndex: {
+      type: Number,
+      required: false,
+      default: 200,
+    },
   },
   computed: {
-    drawerCardStyles() {
-      return '';
-    },
     drawerHeightOffset() {
-      const wrapperEl = document.querySelector('.content-wrapper');
-      return wrapperEl ? `${wrapperEl.offsetTop}px` : '';
+      return getContentWrapperHeight(DRAWER_CONTAINER_CLASS);
     },
   },
   methods: {
@@ -47,7 +50,7 @@ export default {
   <gl-drawer
     :header-height="drawerHeightOffset"
     :open="isVisible"
-    :z-index="200"
+    :z-index="zIndex"
     @close="closeDrawer"
   >
     <template #title>

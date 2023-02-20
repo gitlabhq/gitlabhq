@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::HasStatus do
+RSpec.describe Ci::HasStatus, feature_category: :continuous_integration do
   describe '.composite_status' do
     using RSpec::Parameterized::TableSyntax
 

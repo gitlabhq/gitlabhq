@@ -134,7 +134,7 @@ lint:
 
 Including a `.golangci.yml` in the root directory of the project allows for
 configuration of `golangci-lint`. All options for `golangci-lint` are listed in
-this [example](https://github.com/golangci/golangci-lint/blob/master/.golangci.example.yml).
+this [example](https://github.com/golangci/golangci-lint/blob/master/.golangci.yml).
 
 Once [recursive includes](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/56836)
 become available, you can share job templates like this

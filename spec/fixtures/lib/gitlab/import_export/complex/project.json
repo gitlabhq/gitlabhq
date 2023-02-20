@@ -18,7 +18,9 @@
       "template": false,
       "description": "",
       "type": "ProjectLabel",
-      "priorities": []
+      "priorities": [
+
+      ]
     },
     {
       "id": 3,
@@ -202,7 +204,9 @@
           "author": {
             "name": "User 4"
           },
-          "events": [],
+          "events": [
+
+          ],
           "award_emoji": [
             {
               "id": 1,
@@ -235,7 +239,9 @@
           "author": {
             "name": "User 3"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 353,
@@ -257,7 +263,9 @@
           "author": {
             "name": "User 0"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 354,
@@ -279,7 +287,9 @@
           "author": {
             "name": "Ottis Schuster II"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 355,
@@ -301,7 +311,9 @@
           "author": {
             "name": "Rhett Emmerich IV"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 356,
@@ -323,7 +335,9 @@
           "author": {
             "name": "Burdette Bernier"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 357,
@@ -345,7 +359,9 @@
           "author": {
             "name": "Ari Wintheiser"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 358,
@@ -367,7 +383,9 @@
           "author": {
             "name": "Administrator"
           },
-          "events": []
+          "events": [
+
+          ]
         }
       ],
       "resource_label_events": [
@@ -448,7 +466,9 @@
       "confidential": false,
       "due_date": null,
       "moved_to_id": null,
-      "issue_assignees": [],
+      "issue_assignees": [
+
+      ],
       "milestone": {
         "id": 1,
         "title": "test milestone",
@@ -493,7 +513,9 @@
           "author": {
             "name": "User 4"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 360,
@@ -515,7 +537,9 @@
           "author": {
             "name": "User 3"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 361,
@@ -537,7 +561,9 @@
           "author": {
             "name": "User 0"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 362,
@@ -559,7 +585,9 @@
           "author": {
             "name": "Ottis Schuster II"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 363,
@@ -581,7 +609,9 @@
           "author": {
             "name": "Rhett Emmerich IV"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 364,
@@ -603,7 +633,9 @@
           "author": {
             "name": "Burdette Bernier"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 365,
@@ -625,7 +657,9 @@
           "author": {
             "name": "Ari Wintheiser"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 366,
@@ -647,7 +681,9 @@
           "author": {
             "name": "Administrator"
           },
-          "events": []
+          "events": [
+
+          ]
         }
       ]
     },
@@ -709,7 +745,9 @@
           "author": {
             "name": "User 4"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 368,
@@ -731,7 +769,9 @@
           "author": {
             "name": "User 3"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 369,
@@ -753,7 +793,9 @@
           "author": {
             "name": "User 0"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 370,
@@ -775,7 +817,9 @@
           "author": {
             "name": "Ottis Schuster II"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 371,
@@ -797,7 +841,9 @@
           "author": {
             "name": "Rhett Emmerich IV"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 372,
@@ -819,7 +865,9 @@
           "author": {
             "name": "Burdette Bernier"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 373,
@@ -841,7 +889,9 @@
           "author": {
             "name": "Ari Wintheiser"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 374,
@@ -863,7 +913,9 @@
           "author": {
             "name": "Administrator"
           },
-          "events": []
+          "events": [
+
+          ]
         }
       ]
     },
@@ -904,7 +956,9 @@
           "author": {
             "name": "User 4"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 376,
@@ -926,7 +980,9 @@
           "author": {
             "name": "User 3"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 377,
@@ -948,7 +1004,9 @@
           "author": {
             "name": "User 0"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 378,
@@ -970,7 +1028,9 @@
           "author": {
             "name": "Ottis Schuster II"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 379,
@@ -992,7 +1052,9 @@
           "author": {
             "name": "Rhett Emmerich IV"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 380,
@@ -1014,7 +1076,9 @@
           "author": {
             "name": "Burdette Bernier"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 381,
@@ -1036,7 +1100,9 @@
           "author": {
             "name": "Ari Wintheiser"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 382,
@@ -1058,7 +1124,9 @@
           "author": {
             "name": "Administrator"
           },
-          "events": []
+          "events": [
+
+          ]
         }
       ]
     },
@@ -1099,7 +1167,9 @@
           "author": {
             "name": "User 4"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 384,
@@ -1121,7 +1191,9 @@
           "author": {
             "name": "User 3"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 385,
@@ -1143,7 +1215,9 @@
           "author": {
             "name": "User 0"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 386,
@@ -1165,7 +1239,9 @@
           "author": {
             "name": "Ottis Schuster II"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 387,
@@ -1187,7 +1263,9 @@
           "author": {
             "name": "Rhett Emmerich IV"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 388,
@@ -1209,7 +1287,9 @@
           "author": {
             "name": "Burdette Bernier"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 389,
@@ -1231,7 +1311,9 @@
           "author": {
             "name": "Ari Wintheiser"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 390,
@@ -1253,7 +1335,9 @@
           "author": {
             "name": "Administrator"
           },
-          "events": []
+          "events": [
+
+          ]
         }
       ]
     },
@@ -1294,7 +1378,9 @@
           "author": {
             "name": "User 4"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 392,
@@ -1316,7 +1402,9 @@
           "author": {
             "name": "User 3"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 393,
@@ -1338,7 +1426,9 @@
           "author": {
             "name": "User 0"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 394,
@@ -1360,7 +1450,9 @@
           "author": {
             "name": "Ottis Schuster II"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 395,
@@ -1382,7 +1474,9 @@
           "author": {
             "name": "Rhett Emmerich IV"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 396,
@@ -1404,7 +1498,9 @@
           "author": {
             "name": "Burdette Bernier"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 397,
@@ -1426,7 +1522,9 @@
           "author": {
             "name": "Ari Wintheiser"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 398,
@@ -1448,7 +1546,9 @@
           "author": {
             "name": "Administrator"
           },
-          "events": []
+          "events": [
+
+          ]
         }
       ]
     },
@@ -1489,7 +1589,9 @@
           "author": {
             "name": "User 4"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 400,
@@ -1511,7 +1613,9 @@
           "author": {
             "name": "User 3"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 401,
@@ -1533,7 +1637,9 @@
           "author": {
             "name": "User 0"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 402,
@@ -1555,7 +1661,9 @@
           "author": {
             "name": "Ottis Schuster II"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 403,
@@ -1577,7 +1685,9 @@
           "author": {
             "name": "Rhett Emmerich IV"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 404,
@@ -1599,7 +1709,9 @@
           "author": {
             "name": "Burdette Bernier"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 405,
@@ -1621,7 +1733,9 @@
           "author": {
             "name": "Ari Wintheiser"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 406,
@@ -1643,7 +1757,9 @@
           "author": {
             "name": "Administrator"
           },
-          "events": []
+          "events": [
+
+          ]
         }
       ]
     },
@@ -1684,7 +1800,9 @@
           "author": {
             "name": "User 4"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 408,
@@ -1706,7 +1824,9 @@
           "author": {
             "name": "User 3"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 409,
@@ -1728,7 +1848,9 @@
           "author": {
             "name": "User 0"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 410,
@@ -1750,7 +1872,9 @@
           "author": {
             "name": "Ottis Schuster II"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 411,
@@ -1772,7 +1896,9 @@
           "author": {
             "name": "Rhett Emmerich IV"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 412,
@@ -1794,7 +1920,9 @@
           "author": {
             "name": "Burdette Bernier"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 413,
@@ -1816,7 +1944,9 @@
           "author": {
             "name": "Ari Wintheiser"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 414,
@@ -1838,7 +1968,9 @@
           "author": {
             "name": "Administrator"
           },
-          "events": []
+          "events": [
+
+          ]
         }
       ]
     },
@@ -1879,7 +2011,9 @@
           "author": {
             "name": "User 4"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 416,
@@ -1901,7 +2035,9 @@
           "author": {
             "name": "User 3"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 417,
@@ -1923,7 +2059,9 @@
           "author": {
             "name": "User 0"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 418,
@@ -1945,7 +2083,9 @@
           "author": {
             "name": "Ottis Schuster II"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 419,
@@ -1967,7 +2107,9 @@
           "author": {
             "name": "Rhett Emmerich IV"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 420,
@@ -1989,7 +2131,9 @@
           "author": {
             "name": "Burdette Bernier"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 421,
@@ -2011,7 +2155,9 @@
           "author": {
             "name": "Ari Wintheiser"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 422,
@@ -2033,7 +2179,9 @@
           "author": {
             "name": "Administrator"
           },
-          "events": []
+          "events": [
+
+          ]
         }
       ]
     },
@@ -2084,7 +2232,9 @@
           "author": {
             "name": "User 4"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 424,
@@ -2106,7 +2256,9 @@
           "author": {
             "name": "User 3"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 425,
@@ -2128,7 +2280,9 @@
           "author": {
             "name": "User 0"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 426,
@@ -2150,7 +2304,9 @@
           "author": {
             "name": "Ottis Schuster II"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 427,
@@ -2172,7 +2328,9 @@
           "author": {
             "name": "Rhett Emmerich IV"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 428,
@@ -2194,7 +2352,9 @@
           "author": {
             "name": "Burdette Bernier"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 429,
@@ -2216,7 +2376,9 @@
           "author": {
             "name": "Ari Wintheiser"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 430,
@@ -2238,7 +2400,9 @@
           "author": {
             "name": "Administrator"
           },
-          "events": []
+          "events": [
+
+          ]
         }
       ]
     }
@@ -2378,7 +2542,9 @@
           "author": {
             "name": "Random name"
           },
-          "events": [],
+          "events": [
+
+          ],
           "award_emoji": [
             {
               "id": 12,
@@ -2652,7 +2818,9 @@
           "author": {
             "name": "User 4"
           },
-          "award_emoji": [],
+          "award_emoji": [
+
+          ],
           "system_note_metadata": {
             "id": 4789,
             "commit_count": 3,
@@ -2660,8 +2828,12 @@
             "created_at": "2020-03-28T12:47:33.461Z",
             "updated_at": "2020-03-28T12:47:33.461Z"
           },
-          "events": [],
-          "suggestions": []
+          "events": [
+
+          ],
+          "suggestions": [
+
+          ]
         },
         {
           "id": 670,
@@ -2691,7 +2863,9 @@
           "author": {
             "name": "User 4"
           },
-          "award_emoji": [],
+          "award_emoji": [
+
+          ],
           "system_note_metadata": {
             "id": 4790,
             "commit_count": null,
@@ -2699,8 +2873,12 @@
             "created_at": "2020-03-28T12:48:36.951Z",
             "updated_at": "2020-03-28T12:48:36.951Z"
           },
-          "events": [],
-          "suggestions": []
+          "events": [
+
+          ],
+          "suggestions": [
+
+          ]
         },
         {
           "id": 671,
@@ -2724,7 +2902,9 @@
           "author": {
             "name": "User 4"
           },
-          "events": [],
+          "events": [
+
+          ],
           "award_emoji": [
             {
               "id": 1,
@@ -2757,7 +2937,9 @@
           "author": {
             "name": "User 3"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 673,
@@ -2779,7 +2961,9 @@
           "author": {
             "name": "User 0"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 674,
@@ -2801,7 +2985,9 @@
           "author": {
             "name": "Ottis Schuster II"
           },
-          "events": [],
+          "events": [
+
+          ],
           "suggestions": [
             {
               "id": 1,
@@ -2837,7 +3023,9 @@
           "author": {
             "name": "Rhett Emmerich IV"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 676,
@@ -2859,7 +3047,9 @@
           "author": {
             "name": "Burdette Bernier"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 677,
@@ -2881,7 +3071,9 @@
           "author": {
             "name": "Ari Wintheiser"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 678,
@@ -2903,7 +3095,9 @@
           "author": {
             "name": "Administrator"
           },
-          "events": []
+          "events": [
+
+          ]
         }
       ],
       "resource_label_events": [
@@ -3332,7 +3526,9 @@
           "author": {
             "name": "User 4"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 680,
@@ -3354,7 +3550,9 @@
           "author": {
             "name": "User 3"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 681,
@@ -3376,7 +3574,9 @@
           "author": {
             "name": "User 0"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 682,
@@ -3398,7 +3598,9 @@
           "author": {
             "name": "Ottis Schuster II"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 683,
@@ -3420,7 +3622,9 @@
           "author": {
             "name": "Rhett Emmerich IV"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 684,
@@ -3442,7 +3646,9 @@
           "author": {
             "name": "Burdette Bernier"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 685,
@@ -3464,7 +3670,9 @@
           "author": {
             "name": "Ari Wintheiser"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 686,
@@ -3486,7 +3694,9 @@
           "author": {
             "name": "Administrator"
           },
-          "events": []
+          "events": [
+
+          ]
         }
       ],
       "merge_request_diff": {
@@ -3553,9 +3763,15 @@
           "author_id": 1
         }
       ],
-      "merge_request_assignees": [],
-      "merge_request_reviewers": [],
-      "approvals": []
+      "merge_request_assignees": [
+
+      ],
+      "merge_request_reviewers": [
+
+      ],
+      "approvals": [
+
+      ]
     },
     {
       "id": 15,
@@ -3602,7 +3818,9 @@
           "author": {
             "name": "User 4"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 778,
@@ -3624,7 +3842,9 @@
           "author": {
             "name": "User 3"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 779,
@@ -3646,7 +3866,9 @@
           "author": {
             "name": "User 0"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 780,
@@ -3668,7 +3890,9 @@
           "author": {
             "name": "Ottis Schuster II"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 781,
@@ -3690,7 +3914,9 @@
           "author": {
             "name": "Rhett Emmerich IV"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 782,
@@ -3712,7 +3938,9 @@
           "author": {
             "name": "Burdette Bernier"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 783,
@@ -3734,7 +3962,9 @@
           "author": {
             "name": "Ari Wintheiser"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 784,
@@ -3756,7 +3986,9 @@
           "author": {
             "name": "Administrator"
           },
-          "events": []
+          "events": [
+
+          ]
         }
       ],
       "merge_request_diff": {
@@ -3869,7 +4101,9 @@
           "author": {
             "name": "User 4"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 786,
@@ -3891,7 +4125,9 @@
           "author": {
             "name": "User 3"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 787,
@@ -3913,7 +4149,9 @@
           "author": {
             "name": "User 0"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 788,
@@ -3935,7 +4173,9 @@
           "author": {
             "name": "Ottis Schuster II"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 789,
@@ -3957,7 +4197,9 @@
           "author": {
             "name": "Rhett Emmerich IV"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 790,
@@ -3979,7 +4221,9 @@
           "author": {
             "name": "Burdette Bernier"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 791,
@@ -4001,7 +4245,9 @@
           "author": {
             "name": "Ari Wintheiser"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 792,
@@ -4023,7 +4269,9 @@
           "author": {
             "name": "Administrator"
           },
-          "events": []
+          "events": [
+
+          ]
         }
       ],
       "merge_request_diff": {
@@ -4656,7 +4904,9 @@
           "author": {
             "name": "User 3"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 795,
@@ -4678,7 +4928,9 @@
           "author": {
             "name": "User 0"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 796,
@@ -4700,7 +4952,9 @@
           "author": {
             "name": "Ottis Schuster II"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 797,
@@ -4722,7 +4976,9 @@
           "author": {
             "name": "Rhett Emmerich IV"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 798,
@@ -4744,7 +5000,9 @@
           "author": {
             "name": "Burdette Bernier"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 799,
@@ -4766,7 +5024,9 @@
           "author": {
             "name": "Ari Wintheiser"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 800,
@@ -4788,7 +5048,9 @@
           "author": {
             "name": "Administrator"
           },
-          "events": []
+          "events": [
+
+          ]
         }
       ],
       "merge_request_diff": {
@@ -5203,7 +5465,9 @@
           "author": {
             "name": "User 4"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 802,
@@ -5225,7 +5489,9 @@
           "author": {
             "name": "User 3"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 803,
@@ -5247,7 +5513,9 @@
           "author": {
             "name": "User 0"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 804,
@@ -5269,7 +5537,9 @@
           "author": {
             "name": "Ottis Schuster II"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 805,
@@ -5291,7 +5561,9 @@
           "author": {
             "name": "Rhett Emmerich IV"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 806,
@@ -5313,7 +5585,9 @@
           "author": {
             "name": "Burdette Bernier"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 807,
@@ -5335,7 +5609,9 @@
           "author": {
             "name": "Ari Wintheiser"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 808,
@@ -5357,7 +5633,9 @@
           "author": {
             "name": "Administrator"
           },
-          "events": []
+          "events": [
+
+          ]
         }
       ],
       "merge_request_diff": {
@@ -5727,7 +6005,9 @@
           "author": {
             "name": "User 4"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 810,
@@ -5749,7 +6029,9 @@
           "author": {
             "name": "User 3"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 811,
@@ -5771,7 +6053,9 @@
           "author": {
             "name": "User 0"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 812,
@@ -5793,7 +6077,9 @@
           "author": {
             "name": "Ottis Schuster II"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 813,
@@ -5815,7 +6101,9 @@
           "author": {
             "name": "Rhett Emmerich IV"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 814,
@@ -5837,7 +6125,9 @@
           "author": {
             "name": "Burdette Bernier"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 815,
@@ -5859,7 +6149,9 @@
           "author": {
             "name": "Ari Wintheiser"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 816,
@@ -5881,14 +6173,20 @@
           "author": {
             "name": "Administrator"
           },
-          "events": []
+          "events": [
+
+          ]
         }
       ],
       "merge_request_diff": {
         "id": 11,
         "state": "empty",
-        "merge_request_diff_commits": [],
-        "merge_request_diff_files": [],
+        "merge_request_diff_commits": [
+
+        ],
+        "merge_request_diff_files": [
+
+        ],
         "merge_request_id": 11,
         "created_at": "2016-06-14T15:02:23.772Z",
         "updated_at": "2016-06-14T15:02:23.833Z",
@@ -5963,7 +6261,9 @@
           "author": {
             "name": "User 4"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 818,
@@ -5985,7 +6285,9 @@
           "author": {
             "name": "User 3"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 819,
@@ -6007,7 +6309,9 @@
           "author": {
             "name": "User 0"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 820,
@@ -6029,7 +6333,9 @@
           "author": {
             "name": "Ottis Schuster II"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 821,
@@ -6051,7 +6357,9 @@
           "author": {
             "name": "Rhett Emmerich IV"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 822,
@@ -6073,7 +6381,9 @@
           "author": {
             "name": "Burdette Bernier"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 823,
@@ -6095,7 +6405,9 @@
           "author": {
             "name": "Ari Wintheiser"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 824,
@@ -6117,7 +6429,9 @@
           "author": {
             "name": "Administrator"
           },
-          "events": []
+          "events": [
+
+          ]
         }
       ],
       "merge_request_diff": {
@@ -6716,7 +7030,9 @@
           "author": {
             "name": "User 4"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 826,
@@ -6738,7 +7054,9 @@
           "author": {
             "name": "User 3"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 827,
@@ -6760,7 +7078,9 @@
           "author": {
             "name": "User 0"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 828,
@@ -6782,7 +7102,9 @@
           "author": {
             "name": "Ottis Schuster II"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 829,
@@ -6804,7 +7126,9 @@
           "author": {
             "name": "Rhett Emmerich IV"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 830,
@@ -6826,7 +7150,9 @@
           "author": {
             "name": "Burdette Bernier"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 831,
@@ -6848,7 +7174,9 @@
           "author": {
             "name": "Ari Wintheiser"
           },
-          "events": []
+          "events": [
+
+          ]
         },
         {
           "id": 832,
@@ -6870,7 +7198,9 @@
           "author": {
             "name": "Administrator"
           },
-          "events": []
+          "events": [
+
+          ]
         }
       ],
       "merge_request_diff": {
@@ -7474,7 +7804,9 @@
       "started_at": null,
       "finished_at": null,
       "duration": null,
-      "stages": []
+      "stages": [
+
+      ]
     },
     {
       "id": 20,
@@ -7492,7 +7824,9 @@
       "started_at": null,
       "finished_at": null,
       "duration": null,
-      "stages": [],
+      "stages": [
+
+      ],
       "source": "external_pull_request_event",
       "external_pull_request": {
         "id": 3,
@@ -7535,8 +7869,12 @@
     "keep_n": 100,
     "enabled": false
   },
-  "deploy_keys": [],
-  "hooks": [],
+  "deploy_keys": [
+
+  ],
+  "hooks": [
+
+  ],
   "protected_branches": [
     {
       "id": 1,
@@ -7791,7 +8129,9 @@
             "description": null,
             "group_id": null,
             "type": "ProjectLabel",
-            "priorities": []
+            "priorities": [
+
+            ]
           }
         },
         {

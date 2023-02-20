@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class ApplicationSetting < ApplicationRecord
+class ApplicationSetting < MainClusterwide::ApplicationRecord
   include CacheableAttributes
   include CacheMarkdownField
   include TokenAuthenticatable
@@ -12,6 +12,8 @@ class ApplicationSetting < ApplicationRecord
   ignore_columns %i[static_objects_external_storage_auth_token], remove_with: '14.9', remove_after: '2022-03-22'
   ignore_column :user_email_lookup_limit, remove_with: '15.0', remove_after: '2022-04-18'
   ignore_column :send_user_confirmation_email, remove_with: '15.8', remove_after: '2022-12-18'
+  ignore_column :web_ide_clientside_preview_enabled, remove_with: '15.11', remove_after: '2023-04-22'
+  ignore_column :clickhouse_connection_string, remove_with: '15.11', remove_after: '2023-04-22'
 
   INSTANCE_REVIEW_MIN_USERS = 50
   GRAFANA_URL_ERROR_MESSAGE = 'Please check your Grafana URL setting in ' \
@@ -415,6 +417,10 @@ class ApplicationSetting < ApplicationRecord
             numericality: { only_integer: true, greater_than_or_equal_to: 90, message: N_("'%{value}' days of inactivity must be greater than or equal to 90") },
             if: :deactivate_dormant_users?
 
+  validates :allow_possible_spam,
+            allow_nil: false,
+            inclusion: { in: [true, false], message: N_('must be a boolean value') }
+
   Gitlab::SSHPublicKey.supported_types.each do |type|
     validates :"#{type}_key_restriction", presence: true, key_restriction: { type: type }
   end
@@ -676,6 +682,7 @@ class ApplicationSetting < ApplicationRecord
   attr_encrypted :jitsu_administrator_password, encryption_options_base_32_aes_256_gcm
   attr_encrypted :telesign_customer_xid, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
   attr_encrypted :telesign_api_key, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
+  attr_encrypted :product_analytics_clickhouse_connection_string, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
 
   validates :disable_feed_token,
             inclusion: { in: [true, false], message: N_('must be a boolean value') }

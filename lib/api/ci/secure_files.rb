@@ -10,7 +10,7 @@ module API
         authorize! :read_secure_files, user_project
       end
 
-      feature_category :pipeline_authoring
+      feature_category :mobile_devops
 
       default_format :json
 

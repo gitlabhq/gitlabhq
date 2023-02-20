@@ -4,6 +4,7 @@ import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import FilteredSearchSpecHelper from 'helpers/filtered_search_spec_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import FilteredSearchVisualTokens from '~/filtered_search/filtered_search_visual_tokens';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { FILTERED_SEARCH_TERM } from '~/vue_shared/components/filtered_search_bar/constants';
 
 describe('Filtered Search Visual Tokens', () => {
@@ -24,7 +25,7 @@ describe('Filtered Search Visual Tokens', () => {
 
   beforeEach(() => {
     mock = new MockAdapter(axios);
-    mock.onGet().reply(200);
+    mock.onGet().reply(HTTP_STATUS_OK);
 
     setHTMLFixture(`
       <ul class="tokens-container">

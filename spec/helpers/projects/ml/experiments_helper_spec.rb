@@ -77,10 +77,10 @@ RSpec.describe Projects::Ml::ExperimentsHelper, feature_category: :mlops do
     end
   end
 
-  describe '#candidate_as_data' do
+  describe '#show_candidate_view_model' do
     let(:candidate) { candidate0 }
 
-    subject { Gitlab::Json.parse(helper.candidate_as_data(candidate)) }
+    subject { Gitlab::Json.parse(helper.show_candidate_view_model(candidate))['candidate'] }
 
     it 'generates the correct params' do
       expect(subject['params']).to include(
@@ -107,6 +107,70 @@ RSpec.describe Projects::Ml::ExperimentsHelper, feature_category: :mlops do
       }
 
       expect(subject['info']).to include(expected_info)
+    end
+  end
+
+  describe '#experiments_as_data' do
+    let(:experiments) { [experiment] }
+
+    subject { Gitlab::Json.parse(helper.experiments_as_data(project, experiments)) }
+
+    before do
+      allow(experiment).to receive(:candidate_count).and_return(2)
+    end
+
+    it 'generates the correct info' do
+      expected_info = {
+        "name" => experiment.name,
+        "path" => "/#{project.full_path}/-/ml/experiments/#{experiment.iid}",
+        "candidate_count" => 2
+      }
+
+      expect(subject[0]).to eq(expected_info)
+    end
+  end
+
+  describe '#page_info' do
+    def paginator(cursor = nil)
+      experiment.candidates.keyset_paginate(cursor: cursor, per_page: 1)
+    end
+
+    let_it_be(:first_page) { paginator }
+    let_it_be(:second_page) { paginator(first_page.cursor_for_next_page) }
+
+    let(:page) { nil }
+
+    subject { helper.page_info(page) }
+
+    context 'when is first page' do
+      let(:page) { first_page }
+
+      it 'generates the correct page_info' do
+        is_expected.to include({
+          has_next_page: true,
+          has_previous_page: false,
+          start_cursor: nil
+        })
+      end
+    end
+
+    context 'when is last page' do
+      let(:page) { second_page }
+
+      it 'generates the correct page_info' do
+        is_expected.to include({
+          has_next_page:  false,
+          has_previous_page: true,
+          start_cursor: second_page.cursor_for_previous_page,
+          end_cursor: nil
+        })
+      end
+    end
+  end
+
+  describe '#formatted_page_info' do
+    it 'formats to json' do
+      expect(helper.formatted_page_info({ a: 1, b: 'c' })).to eq("{\"a\":1,\"b\":\"c\"}")
     end
   end
 end

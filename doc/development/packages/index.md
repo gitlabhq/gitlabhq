@@ -37,3 +37,9 @@ Development and architectural documentation for the container registry
 - [Settings](settings.md)
 - [Structure / Schema](structure.md)
 - [Cleanup policies](cleanup_policies.md)
+
+## Harbor registry development
+
+Development and architectural documentation for the harbor registry
+
+- [Development documentation](harbor_registry_development.md)

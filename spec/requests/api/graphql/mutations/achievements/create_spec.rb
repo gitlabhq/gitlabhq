@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Mutations::Achievements::Create, feature_category: :users do
+RSpec.describe Mutations::Achievements::Create, feature_category: :user_profile do
   include GraphqlHelpers
   include WorkhorseHelpers
 
@@ -13,15 +13,13 @@ RSpec.describe Mutations::Achievements::Create, feature_category: :users do
   let(:mutation) { graphql_mutation(:achievements_create, params) }
   let(:name) { 'Name' }
   let(:description) { 'Description' }
-  let(:revokeable) { false }
   let(:avatar) { fixture_file_upload("spec/fixtures/dk.png") }
   let(:params) do
     {
       namespace_id: group.to_global_id,
       name: name,
       avatar: avatar,
-      description: description,
-      revokeable: revokeable
+      description: description
     }
   end
 
@@ -70,8 +68,7 @@ RSpec.describe Mutations::Achievements::Create, feature_category: :users do
       expect(graphql_data_at(:achievements_create, :achievement)).to match a_hash_including(
         'name' => name,
         'namespace' => a_hash_including('id' => group.to_global_id.to_s),
-        'description' => description,
-        'revokeable' => revokeable
+        'description' => description
       )
     end
   end

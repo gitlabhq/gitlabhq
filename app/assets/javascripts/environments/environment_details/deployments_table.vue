@@ -5,11 +5,13 @@ import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import DeploymentStatusLink from './components/deployment_status_link.vue';
 import DeploymentJob from './components/deployment_job.vue';
 import DeploymentTriggerer from './components/deployment_triggerer.vue';
+import DeploymentActions from './components/deployment_actions.vue';
 import { ENVIRONMENT_DETAILS_TABLE_FIELDS } from './constants';
 
 export default {
   components: {
     DeploymentTriggerer,
+    DeploymentActions,
     DeploymentJob,
     Commit,
     TimeAgoTooltip,
@@ -50,6 +52,9 @@ export default {
     </template>
     <template #cell(deployed)="{ item }">
       <time-ago-tooltip :time="item.deployed" />
+    </template>
+    <template #cell(actions)="{ item }">
+      <deployment-actions :actions="item.actions" />
     </template>
   </gl-table-lite>
 </template>

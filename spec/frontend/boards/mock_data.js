@@ -1,6 +1,7 @@
 import { GlFilteredSearchToken } from '@gitlab/ui';
 import { keyBy } from 'lodash';
 import { ListType } from '~/boards/constants';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import {
   OPERATORS_IS,
   OPERATORS_IS_NOT,
@@ -48,6 +49,26 @@ export const mockBoard = {
     nodes: [{ id: 'gid://gitlab/Label/32', title: 'Deliverable' }],
   },
   weight: 2,
+};
+
+export const mockProjectBoardResponse = {
+  data: {
+    workspace: {
+      id: 'gid://gitlab/Project/114',
+      board: mockBoard,
+      __typename: 'Project',
+    },
+  },
+};
+
+export const mockGroupBoardResponse = {
+  data: {
+    workspace: {
+      id: 'gid://gitlab/Group/114',
+      board: mockBoard,
+      __typename: 'Group',
+    },
+  },
 };
 
 export const mockBoardConfig = {
@@ -440,7 +461,7 @@ export const BoardsMockData = {
 
 export const boardsMockInterceptor = (config) => {
   const body = BoardsMockData[config.method.toUpperCase()][config.url];
-  return [200, body];
+  return [HTTP_STATUS_OK, body];
 };
 
 export const mockList = {

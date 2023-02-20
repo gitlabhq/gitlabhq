@@ -1,9 +1,7 @@
 <script>
 import { GlCollapsibleListbox, GlSearchBoxByClick } from '@gitlab/ui';
-import { mergeUrlParams, visitUrl, getParameterValues } from '~/lib/utils/url_utility';
+import { mergeUrlParams, visitUrl } from '~/lib/utils/url_utility';
 import { s__ } from '~/locale';
-
-const OVERVIEW_MODE = 'overview';
 
 export default {
   i18n: {
@@ -13,17 +11,20 @@ export default {
     GlCollapsibleListbox,
     GlSearchBoxByClick,
   },
-  inject: ['projectBranchesFilteredPath', 'sortOptions', 'mode'],
+  // external parameters
+  inject: [
+    'projectBranchesFilteredPath',
+    'sortOptions', // dropdown choices (value, text) pairs
+    'showDropdown', // if not set, only text filter is shown
+    'sortedBy', // (required) value of choice to sort by
+  ],
+  // own attributes, also in created()
   data() {
     return {
-      selectedKey: 'updated_desc',
       searchTerm: '',
     };
   },
   computed: {
-    shouldShowDropdown() {
-      return this.mode !== OVERVIEW_MODE;
-    },
     selectedSortMethodName() {
       return this.sortOptions[this.selectedKey];
     },
@@ -31,26 +32,16 @@ export default {
       return Object.entries(this.sortOptions).map(([value, text]) => ({ value, text }));
     },
   },
+  // contructor or initialization function
   created() {
-    const sortValue = getParameterValues('sort');
-    const searchValue = getParameterValues('search');
-
-    if (sortValue.length > 0) {
-      [this.selectedKey] = sortValue;
-    }
-
-    if (searchValue.length > 0) {
-      [this.searchTerm] = searchValue;
-    }
+    this.selectedKey = this.sortedBy;
   },
   methods: {
     visitUrlFromOption(sortKey) {
       this.selectedKey = sortKey;
       const urlParams = {};
 
-      if (this.mode !== OVERVIEW_MODE) {
-        urlParams.sort = sortKey;
-      }
+      urlParams.sort = sortKey;
 
       urlParams.search = this.searchTerm.length > 0 ? this.searchTerm : null;
 
@@ -71,7 +62,7 @@ export default {
     />
 
     <gl-collapsible-listbox
-      v-if="shouldShowDropdown"
+      v-if="showDropdown"
       v-model="selectedKey"
       :items="listboxItems"
       :toggle-text="selectedSortMethodName"

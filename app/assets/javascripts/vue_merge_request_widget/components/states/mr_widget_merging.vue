@@ -2,6 +2,7 @@
 import { refreshUserMergeRequestCounts } from '~/commons/nav/user_merge_requests';
 import simplePoll from '~/lib/utils/simple_poll';
 import MergeRequest from '~/merge_request';
+import BoldText from '~/vue_merge_request_widget/components/bold_text.vue';
 import eventHub from '../../event_hub';
 import { MERGE_ACTIVE_STATUS_PHRASES, STATE_MACHINE } from '../../constants';
 import StatusIcon from '../mr_widget_status_icon.vue';
@@ -12,6 +13,7 @@ const { MERGE_FAILURE } = transitions;
 export default {
   name: 'MRWidgetMerging',
   components: {
+    BoldText,
     StatusIcon,
   },
   props: {
@@ -83,11 +85,9 @@ export default {
 <template>
   <div class="mr-widget-body mr-state-locked media">
     <status-icon status="loading" />
-    <div class="media-body">
-      <h4>
-        {{ mergeStatus.message }}
-        <gl-emoji :data-name="mergeStatus.emoji" />
-      </h4>
+    <div class="media-body" data-testid="merging-state">
+      <bold-text :message="mergeStatus.message" />
+      <gl-emoji :data-name="mergeStatus.emoji" />
     </div>
   </div>
 </template>

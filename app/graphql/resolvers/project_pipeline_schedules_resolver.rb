@@ -10,8 +10,13 @@ module Resolvers
              required: false,
              description: 'Filter pipeline schedules by active status.'
 
-    def resolve(status: nil)
-      ::Ci::PipelineSchedulesFinder.new(project).execute(scope: status)
+    argument :ids, [GraphQL::Types::ID],
+             required: false,
+             default_value: nil,
+             description: 'Filter pipeline schedules by IDs.'
+
+    def resolve(status: nil, ids: nil)
+      ::Ci::PipelineSchedulesFinder.new(project).execute(scope: status, ids: ids)
     end
   end
 end

@@ -25,6 +25,7 @@ import RunnerActionsCell from '~/ci/runner/components/cells/runner_actions_cell.
 import RegistrationDropdown from '~/ci/runner/components/registration/registration_dropdown.vue';
 import RunnerPagination from '~/ci/runner/components/runner_pagination.vue';
 import RunnerMembershipToggle from '~/ci/runner/components/runner_membership_toggle.vue';
+import RunnerJobStatusBadge from '~/ci/runner/components/runner_job_status_badge.vue';
 
 import {
   CREATED_ASC,
@@ -35,6 +36,7 @@ import {
   I18N_STATUS_STALE,
   INSTANCE_TYPE,
   GROUP_TYPE,
+  JOBS_ROUTE_PATH,
   PARAM_KEY_PAUSED,
   PARAM_KEY_STATUS,
   PARAM_KEY_TAG,
@@ -112,7 +114,6 @@ describe('GroupRunnersApp', () => {
       propsData: {
         registrationToken: mockRegistrationToken,
         groupFullPath: mockGroupFullPath,
-        groupRunnersLimitedCount: mockGroupRunnersCount,
         ...props,
       },
       provide: {
@@ -254,7 +255,7 @@ describe('GroupRunnersApp', () => {
     let showToast;
 
     const { webUrl, editUrl, node } = mockGroupRunnersEdges[0];
-    const { id: graphqlId, shortSha } = node;
+    const { id: graphqlId, shortSha, jobExecutionStatus } = node;
     const id = getIdFromGraphQLId(graphqlId);
     const COUNT_QUERIES = 6; // Smart queries that display a filtered count of runners
     const FILTERED_COUNT_QUERIES = 6; // Smart queries that display a count of runners in tabs and single stats
@@ -262,6 +263,13 @@ describe('GroupRunnersApp', () => {
     beforeEach(async () => {
       await createComponent({ mountFn: mountExtended });
       showToast = jest.spyOn(wrapper.vm.$root.$toast, 'show');
+    });
+
+    it('Shows job status and links to jobs', () => {
+      const badge = findRunnerRow(id).findByTestId('td-status').findComponent(RunnerJobStatusBadge);
+
+      expect(badge.props('jobStatus')).toBe(jobExecutionStatus);
+      expect(badge.attributes('href')).toBe(`${webUrl}#${JOBS_ROUTE_PATH}`);
     });
 
     it('view link is displayed correctly', () => {
@@ -466,7 +474,6 @@ describe('GroupRunnersApp', () => {
         propsData: {
           registrationToken: mockRegistrationToken,
           groupFullPath: mockGroupFullPath,
-          groupRunnersLimitedCount: mockGroupRunnersCount,
         },
       });
     });
@@ -482,7 +489,6 @@ describe('GroupRunnersApp', () => {
         propsData: {
           registrationToken: null,
           groupFullPath: mockGroupFullPath,
-          groupRunnersLimitedCount: mockGroupRunnersCount,
         },
       });
     });

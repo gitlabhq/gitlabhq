@@ -16,8 +16,8 @@ module Gitlab
       PULL_REF_MATCHER = '%{github_url}/%{import_source}/pull'
 
       class << self
-        def format(*args)
-          new(*args).to_s
+        def format(...)
+          new(...).to_s
         end
 
         # Links like `https://domain.github.com/<namespace>/<project>/pull/<iid>` needs to be converted

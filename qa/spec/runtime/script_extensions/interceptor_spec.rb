@@ -3,7 +3,7 @@
 RSpec.describe 'Interceptor' do
   let(:browser) { Capybara.current_session }
   # need a real host for the js runtime
-  let(:url) { "file://#{__dir__}/../../../qa/fixtures/script_extensions/test.html" }
+  let(:url) { "file://#{File.join(Runtime::Path.fixtures_path, 'script_extensions', 'test.html')}" }
 
   before(:context) do
     skip 'Only can test for chrome' unless QA::Runtime::Env.can_intercept?

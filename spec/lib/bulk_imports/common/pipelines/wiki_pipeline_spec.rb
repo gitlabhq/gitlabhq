@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BulkImports::Common::Pipelines::WikiPipeline do
+RSpec.describe BulkImports::Common::Pipelines::WikiPipeline, feature_category: :importers do
   describe '#run' do
     let_it_be(:user) { create(:user) }
     let_it_be(:bulk_import) { create(:bulk_import, user: user) }
@@ -14,7 +14,7 @@ RSpec.describe BulkImports::Common::Pipelines::WikiPipeline do
         :project_entity,
         bulk_import: bulk_import,
         source_full_path: 'source/full/path',
-        destination_name: 'My Destination Wiki',
+        destination_slug: 'My-Destination-Wiki',
         destination_namespace: parent.full_path,
         project: parent
       )

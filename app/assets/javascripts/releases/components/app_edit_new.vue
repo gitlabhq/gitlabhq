@@ -13,6 +13,7 @@ import { isSameOriginUrl, getParameterByName } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
 import MilestoneCombobox from '~/milestones/components/milestone_combobox.vue';
 import { BACK_URL_PARAM } from '~/releases/constants';
+import { putCreateReleaseNotification } from '~/releases/release_notification_service';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
 import AssetLinksForm from './asset_links_form.vue';
 import ConfirmDeleteModal from './confirm_delete_modal.vue';
@@ -49,6 +50,7 @@ export default {
       'newMilestonePath',
       'manageMilestonesPath',
       'projectId',
+      'projectPath',
       'groupId',
       'groupMilestonesAvailable',
       'tagNotes',
@@ -150,6 +152,7 @@ export default {
     submitForm() {
       if (!this.isFormSubmissionDisabled) {
         this.saveRelease();
+        putCreateReleaseNotification(this.projectPath, this.release.name);
       }
     },
   },
@@ -161,7 +164,7 @@ export default {
       <gl-sprintf
         :message="
           __(
-            'Releases are based on Git tags. We recommend tags that use semantic versioning, for example %{codeStart}v1.0.0%{codeEnd}, %{codeStart}v2.1.0-pre%{codeEnd}.',
+            'Releases are based on Git tags. We recommend tags that use semantic versioning, for example %{codeStart}1.0.0%{codeEnd}, %{codeStart}2.1.0-pre%{codeEnd}.',
           )
         "
       >

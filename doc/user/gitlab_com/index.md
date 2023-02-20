@@ -268,15 +268,18 @@ For more information, see [Runner SaaS](../../ci/runners/index.md).
 GitLab.com runs [Sidekiq](https://sidekiq.org) with arguments `--timeout=4 --concurrency=4`
 and the following environment variables:
 
-| Setting                                | GitLab.com  | Default   |
-|----------------------------------------|-------------|-----------|
-| `SIDEKIQ_DAEMON_MEMORY_KILLER`         | -           | `1`       |
-| `SIDEKIQ_MEMORY_KILLER_MAX_RSS`        | `2000000`   | `2000000` |
-| `SIDEKIQ_MEMORY_KILLER_HARD_LIMIT_RSS` | -           | -         |
-| `SIDEKIQ_MEMORY_KILLER_CHECK_INTERVAL` | -           | `3`       |
-| `SIDEKIQ_MEMORY_KILLER_GRACE_TIME`     | -           | `900`     |
-| `SIDEKIQ_MEMORY_KILLER_SHUTDOWN_WAIT`  | -           | `30`      |
-| `SIDEKIQ_LOG_ARGUMENTS`                | `1`         | `1`       |
+| Setting                                | GitLab.com | Default   |
+|----------------------------------------|------------|-----------|
+| `GITLAB_MEMORY_WATCHDOG_ENABLED`       | -          | `true`    |
+| `SIDEKIQ_MEMORY_KILLER_MAX_RSS`        | -          | `2000000` |
+| `SIDEKIQ_MEMORY_KILLER_HARD_LIMIT_RSS` | -          | -         |
+| `SIDEKIQ_MEMORY_KILLER_CHECK_INTERVAL` | -          | `3`       |
+| `SIDEKIQ_MEMORY_KILLER_GRACE_TIME`     | -          | `900`     |
+| `SIDEKIQ_MEMORY_KILLER_SHUTDOWN_WAIT`  | -          | `30`      |
+| `SIDEKIQ_LOG_ARGUMENTS`                | `1`        | `1`       |
+
+For more information, see how to
+[configure the environment variables](../../administration/sidekiq/sidekiq_memory_killer.md).
 
 NOTE:
 The `SIDEKIQ_MEMORY_KILLER_MAX_RSS` setting is `16000000` on Sidekiq import
@@ -301,7 +304,7 @@ The list of GitLab.com specific settings (and their defaults) is as follows:
 | `autovacuum_vacuum_scale_factor`      | 0.01                                                                | 0.02                                  |
 | `checkpoint_completion_target`        | 0.7                                                                 | 0.9                                   |
 | `checkpoint_segments`                 | 32                                                                  | 10                                    |
-| `effective_cache_size`                | 338688MB                                                            | Based on how much memory is available |
+| `effective_cache_size`                | 338688 MB                                                           | Based on how much memory is available |
 | `hot_standby`                         | on                                                                  | off                                   |
 | `hot_standby_feedback`                | on                                                                  | off                                   |
 | `log_autovacuum_min_duration`         | 0                                                                   | -1                                    |
@@ -309,19 +312,19 @@ The list of GitLab.com specific settings (and their defaults) is as follows:
 | `log_line_prefix`                     | `%t [%p]: [%l-1]`                                                   | empty                                 |
 | `log_min_duration_statement`          | 1000                                                                | -1                                    |
 | `log_temp_files`                      | 0                                                                   | -1                                    |
-| `maintenance_work_mem`                | 2048MB                                                              | 16 MB                                 |
+| `maintenance_work_mem`                | 2048 MB                                                             | 16 MB                                 |
 | `max_replication_slots`               | 5                                                                   | 0                                     |
 | `max_wal_senders`                     | 32                                                                  | 0                                     |
-| `max_wal_size`                        | 5GB                                                                 | 1GB                                   |
-| `shared_buffers`                      | 112896MB                                                            | Based on how much memory is available |
+| `max_wal_size`                        | 5 GB                                                                | 1 GB                                  |
+| `shared_buffers`                      | 112896 MB                                                           | Based on how much memory is available |
 | `shared_preload_libraries`            | `pg_stat_statements`                                                | empty                                 |
 | `shmall`                              | 30146560                                                            | Based on the server's capabilities    |
 | `shmmax`                              | 123480309760                                                        | Based on the server's capabilities    |
-| `wal_buffers`                         | 16MB                                                                | -1                                    |
+| `wal_buffers`                         | 16 MB                                                               | -1                                    |
 | `wal_keep_segments`                   | 512                                                                 | 10                                    |
 | `wal_level`                           | replica                                                             | minimal                               |
-| `statement_timeout`                   | 15s                                                                 | 60s                                   |
-| `idle_in_transaction_session_timeout` | 60s                                                                 | 60s                                   |
+| `statement_timeout`                   | 15 s                                                                | 60 s                                  |
+| `idle_in_transaction_session_timeout` | 60 s                                                                | 60 s                                  |
 
 Some of these settings are in the process being adjusted. For example, the value
 for `shared_buffers` is quite high, and we are
@@ -331,11 +334,15 @@ for `shared_buffers` is quite high, and we are
 
 GitLab.com uses the default of 60 seconds for [Puma request timeouts](../../administration/operations/puma.md#change-the-worker-timeout).
 
-## Merge request reviewer maximum
+## Maximum number of reviewers and assignees
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91406) in GitLab 15.3.
+> - Maximum assignees [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368936) in GitLab 15.6.
+> - Maximum reviewers [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/366485) in GitLab 15.9.
 
-A maximum of 100 reviewers can be assigned to a merge request.
+Merge requests enforce these maximums:
+
+- Maximum assignees: 200
+- Maximum reviewers: 200
 
 ## GitLab.com-specific rate limits
 
@@ -373,9 +380,9 @@ More details are available on the rate limits for
 
 GitLab can rate-limit requests at several layers. The rate limits listed here
 are configured in the application. These limits are the most
-restrictive per IP address. To learn more about the rate limiting
-for GitLab.com, read our runbook page
-[Overview of rate limits for GitLab.com](https://gitlab.com/gitlab-com/runbooks/-/tree/master/docs/rate-limiting).
+restrictive per IP address. For more information about the rate limits
+for GitLab.com, see
+[an overview](https://gitlab.com/gitlab-com/runbooks/-/tree/master/docs/rate-limiting).
 
 ### Rate limiting responses
 
@@ -429,7 +436,7 @@ No response headers are provided.
 
 ### Pagination response headers
 
-For performance reasons, if a query returns more than 10,000 records, [GitLab excludes some headers](../../api/index.md#pagination-response-headers).
+For performance reasons, if a query returns more than 10,000 records, [GitLab excludes some headers](../../api/rest/index.md#pagination-response-headers).
 
 ### Visibility settings
 

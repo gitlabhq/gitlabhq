@@ -7,7 +7,7 @@ class Profiles::EmailsController < Profiles::ApplicationController
   before_action -> { check_rate_limit!(:profile_resend_email_confirmation, scope: current_user, redirect_back: true) },
                 only: [:resend_confirmation_instructions]
 
-  feature_category :users
+  feature_category :user_profile
   urgency :low, [:index]
 
   def index

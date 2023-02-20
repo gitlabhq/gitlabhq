@@ -3,6 +3,11 @@ import { TEST_HOST } from 'helpers/test_constants';
 import testAction from 'helpers/vuex_action_helper';
 import axios from '~/lib/utils/axios_utils';
 import {
+  HTTP_STATUS_INTERNAL_SERVER_ERROR,
+  HTTP_STATUS_NO_CONTENT,
+  HTTP_STATUS_OK,
+} from '~/lib/utils/http_status';
+import {
   setEndpoint,
   requestArtifacts,
   clearEtagPoll,
@@ -61,7 +66,7 @@ describe('Artifacts App Store Actions', () => {
 
     describe('success', () => {
       it('dispatches requestArtifacts and receiveArtifactsSuccess', () => {
-        mock.onGet(`${TEST_HOST}/endpoint.json`).replyOnce(200, [
+        mock.onGet(`${TEST_HOST}/endpoint.json`).replyOnce(HTTP_STATUS_OK, [
           {
             text: 'result.txt',
             url: 'asda',
@@ -89,7 +94,7 @@ describe('Artifacts App Store Actions', () => {
                     job_path: 'asda',
                   },
                 ],
-                status: 200,
+                status: HTTP_STATUS_OK,
               },
               type: 'receiveArtifactsSuccess',
             },
@@ -100,7 +105,7 @@ describe('Artifacts App Store Actions', () => {
 
     describe('error', () => {
       beforeEach(() => {
-        mock.onGet(`${TEST_HOST}/endpoint.json`).reply(500);
+        mock.onGet(`${TEST_HOST}/endpoint.json`).reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
       });
 
       it('dispatches requestArtifacts and receiveArtifactsError', () => {
@@ -126,7 +131,7 @@ describe('Artifacts App Store Actions', () => {
     it('should commit RECEIVE_ARTIFACTS_SUCCESS mutation with 200', () => {
       return testAction(
         receiveArtifactsSuccess,
-        { data: { summary: {} }, status: 200 },
+        { data: { summary: {} }, status: HTTP_STATUS_OK },
         mockedState,
         [{ type: types.RECEIVE_ARTIFACTS_SUCCESS, payload: { summary: {} } }],
         [],
@@ -136,7 +141,7 @@ describe('Artifacts App Store Actions', () => {
     it('should not commit RECEIVE_ARTIFACTS_SUCCESS mutation with 204', () => {
       return testAction(
         receiveArtifactsSuccess,
-        { data: { summary: {} }, status: 204 },
+        { data: { summary: {} }, status: HTTP_STATUS_NO_CONTENT },
         mockedState,
         [],
         [],

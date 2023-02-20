@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import { mapGetters } from 'vuex';
 import errorTrackingStore from '~/error_tracking/store';
+import { apolloProvider } from '~/graphql_shared/issuable_client';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import { scrollToTargetOnResize } from '~/lib/utils/resize_observer';
 import IssueApp from './components/app.vue';
@@ -8,7 +9,6 @@ import HeaderActions from './components/header_actions.vue';
 import IncidentTabs from './components/incidents/incident_tabs.vue';
 import SentryErrorStackTrace from './components/sentry_error_stack_trace.vue';
 import { INCIDENT_TYPE, issueState } from './constants';
-import apolloProvider from './graphql';
 import getIssueStateQuery from './queries/get_issue_state.query.graphql';
 
 const bootstrapApollo = (state = {}) => {
@@ -20,7 +20,7 @@ const bootstrapApollo = (state = {}) => {
   });
 };
 
-export function initIncidentApp(issueData = {}) {
+export function initIncidentApp(issueData = {}, store) {
   const el = document.getElementById('js-issuable-app');
 
   if (!el) {
@@ -49,6 +49,7 @@ export function initIncidentApp(issueData = {}) {
     el,
     name: 'DescriptionRoot',
     apolloProvider,
+    store,
     provide: {
       issueType: INCIDENT_TYPE,
       canCreateIncident,
@@ -62,6 +63,9 @@ export function initIncidentApp(issueData = {}) {
       uploadMetricsFeatureAvailable: parseBoolean(uploadMetricsFeatureAvailable),
       contentEditorOnIssues: gon.features.contentEditorOnIssues,
     },
+    computed: {
+      ...mapGetters(['getNoteableData']),
+    },
     render(createElement) {
       return createElement(IssueApp, {
         props: {
@@ -70,6 +74,7 @@ export function initIncidentApp(issueData = {}) {
           issuableStatus: state,
           descriptionComponent: IncidentTabs,
           showTitleBorder: false,
+          isConfidential: this.getNoteableData?.confidential,
         },
       });
     },
@@ -89,7 +94,12 @@ export function initIssueApp(issueData, store) {
 
   bootstrapApollo({ ...issueState, issueType: el.dataset.issueType });
 
-  const { canCreateIncident, hasIssueWeightsFeature, ...issueProps } = issueData;
+  const {
+    canCreateIncident,
+    hasIssueWeightsFeature,
+    hasIterationsFeature,
+    ...issueProps
+  } = issueData;
 
   return new Vue({
     el,
@@ -102,6 +112,7 @@ export function initIssueApp(issueData, store) {
       registerPath,
       signInPath,
       hasIssueWeightsFeature,
+      hasIterationsFeature,
     },
     computed: {
       ...mapGetters(['getNoteableData']),
@@ -114,6 +125,7 @@ export function initIssueApp(issueData, store) {
           isLocked: this.getNoteableData?.discussion_locked,
           issuableStatus: this.getNoteableData?.state,
           issueId: this.getNoteableData?.id,
+          issueIid: this.getNoteableData?.iid,
         },
       });
     },
@@ -152,7 +164,7 @@ export function initHeaderActions(store, type = '') {
       projectPath: el.dataset.projectPath,
       projectId: el.dataset.projectId,
       reportAbusePath: el.dataset.reportAbusePath,
-      reportedUserId: el.dataset.reportedUserId,
+      reportedUserId: parseInt(el.dataset.reportedUserId, 10),
       reportedFromUrl: el.dataset.reportedFromUrl,
       submitAsSpamPath: el.dataset.submitAsSpamPath,
     },

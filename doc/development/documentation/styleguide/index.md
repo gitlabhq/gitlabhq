@@ -182,6 +182,7 @@ the page is rendered to HTML. There can be only **one** level 1 heading per page
   Heading levels greater than `H5` do not display in the right sidebar navigation.
 - Do not skip a level. For example: `##` > `####`.
 - Leave one blank line before and after the topic title.
+- If you use code in topic titles, ensure the code is in backticks.
 
 ### Backticks in Markdown
 
@@ -320,7 +321,7 @@ You can use these fake tokens as examples:
 | Application ID        | `2fcb195768c39e9a94cec2c2e32c59c0aad7a3365c10892e8116b5d83d4096b6` |
 | Application secret    | `04f294d1eaca42b8692017b426d53bbc8fe75f827734f0260710b83a556082df` |
 | CI/CD variable        | `Li8j-mLUVA3eZYjPfd_H`                                             |
-| Specific runner token | `yrnZW46BrtBFqM7xDzE7dddd`                                         |
+| Project runner token  | `yrnZW46BrtBFqM7xDzE7dddd`                                         |
 | Shared runner token   | `6Vk7ZsosqQyfreAxXTZr`                                             |
 | Trigger token         | `be20d8dcc028677c931e04f3871a9b`                                   |
 | Webhook secret token  | `6XhDroRcYPM5by_h-HLY`                                             |
@@ -943,7 +944,7 @@ To open the Admin Area:
 To select your avatar:
 
 ```markdown
-1. On the top bar, in the top right corner, select your avatar.
+1. On the top bar, in the upper-right corner, select your avatar.
 ```
 
 To save the selection in some dropdown lists:

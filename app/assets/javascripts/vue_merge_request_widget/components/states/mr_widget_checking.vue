@@ -16,8 +16,6 @@ export default {
 </script>
 <template>
   <state-container :mr="mr" status="loading">
-    <span class="gl-font-weight-bold">
-      {{ s__('mrWidget|Checking if merge request can be merged…') }}
-    </span>
+    {{ s__('mrWidget|Checking if merge request can be merged…') }}
   </state-container>
 </template>

@@ -9,7 +9,7 @@ module TabHelper
   # the <gl-tabs/> component. Can be populated by
   # gl_tab_link_to elements.
   #
-  # See more at: https://gitlab-org.gitlab.io/gitlab-ui/?path=/story/base-tabs-tab--default
+  # See more at: https://gitlab-org.gitlab.io/gitlab-ui/?path=/story/base-tabs--default
   def gl_tabs_nav(html_options = {}, &block)
     gl_tabs_classes = %w[nav gl-tabs-nav]
 

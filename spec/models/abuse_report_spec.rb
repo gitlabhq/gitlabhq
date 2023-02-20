@@ -43,6 +43,41 @@ RSpec.describe AbuseReport, feature_category: :insider_threat do
     it { is_expected.not_to allow_value(javascript).for(:reported_from_url) }
     it { is_expected.to allow_value('http://localhost:9000').for(:reported_from_url) }
     it { is_expected.to allow_value('https://gitlab.com').for(:reported_from_url) }
+
+    it { is_expected.to allow_value([]).for(:links_to_spam) }
+    it { is_expected.to allow_value(nil).for(:links_to_spam) }
+    it { is_expected.to allow_value('').for(:links_to_spam) }
+
+    it { is_expected.to allow_value(['https://gitlab.com']).for(:links_to_spam) }
+    it { is_expected.to allow_value(['http://localhost:9000']).for(:links_to_spam) }
+
+    it { is_expected.not_to allow_value(['spam']).for(:links_to_spam) }
+    it { is_expected.not_to allow_value(['http://localhost:9000', 'spam']).for(:links_to_spam) }
+
+    it { is_expected.to allow_value(['https://gitlab.com'] * 20).for(:links_to_spam) }
+    it { is_expected.not_to allow_value(['https://gitlab.com'] * 21).for(:links_to_spam) }
+
+    it {
+      is_expected.to allow_value([
+        "https://gitlab.com/#{SecureRandom.alphanumeric(493)}"
+      ]).for(:links_to_spam)
+    }
+
+    it {
+      is_expected.not_to allow_value([
+        "https://gitlab.com/#{SecureRandom.alphanumeric(494)}"
+      ]).for(:links_to_spam)
+    }
+  end
+
+  describe 'before_validation' do
+    context 'when links to spam contains empty strings' do
+      let(:report) { create(:abuse_report, links_to_spam: ['', 'https://gitlab.com']) }
+
+      it 'removes empty strings' do
+        expect(report.links_to_spam).to match_array(['https://gitlab.com'])
+      end
+    end
   end
 
   describe '#remove_user' do

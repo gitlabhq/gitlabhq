@@ -5,7 +5,6 @@ module QA
     module Project
       module Secure
         class ConfigurationForm < QA::Page::Base
-          include QA::Page::Component::Select2
           include QA::Page::Settings::Common
 
           view 'app/assets/javascripts/security_configuration/components/app.vue' do

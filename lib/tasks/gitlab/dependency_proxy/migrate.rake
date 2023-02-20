@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'logger'
-
 desc "GitLab | Dependency Proxy | Migrate dependency proxy files to remote storage"
 namespace :gitlab do
   namespace :dependency_proxy do

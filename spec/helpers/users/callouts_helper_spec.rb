@@ -61,15 +61,6 @@ RSpec.describe Users::CalloutsHelper do
     end
   end
 
-  describe '.render_flash_user_callout' do
-    it 'renders the flash_user_callout partial' do
-      expect(helper).to receive(:render)
-        .with(/flash_user_callout/, flash_type: :warning, message: 'foo', feature_name: 'bar')
-
-      helper.render_flash_user_callout(:warning, 'foo', 'bar')
-    end
-  end
-
   describe '.show_feature_flags_new_version?' do
     subject { helper.show_feature_flags_new_version? }
 

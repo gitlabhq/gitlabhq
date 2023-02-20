@@ -794,7 +794,7 @@ RSpec.describe API::Ci::Runners, feature_category: :runner_fleet do
           end
         end
 
-        context 'when runner is specific' do
+        context 'when runner is a project runner' do
           it 'return jobs' do
             get api("/runners/#{project_runner.id}/jobs", admin)
 
@@ -947,7 +947,7 @@ RSpec.describe API::Ci::Runners, feature_category: :runner_fleet do
           end
         end
 
-        context 'when runner is specific' do
+        context 'when runner is a project runner' do
           it 'return jobs' do
             get api("/runners/#{project_runner.id}/jobs", user)
 
@@ -1203,7 +1203,7 @@ RSpec.describe API::Ci::Runners, feature_category: :runner_fleet do
     context 'authorized user' do
       let_it_be(:project_runner2) { create(:ci_runner, :project, projects: [project2]) }
 
-      it 'enables specific runner' do
+      it 'enables project runner' do
         expect do
           post api("/projects/#{project.id}/runners", user), params: { runner_id: project_runner2.id }
         end.to change { project.runners.count }.by(+1)
@@ -1243,7 +1243,7 @@ RSpec.describe API::Ci::Runners, feature_category: :runner_fleet do
         context 'when project runner is used' do
           let!(:new_project_runner) { create(:ci_runner, :project) }
 
-          it 'enables any specific runner' do
+          it 'enables any project runner' do
             expect do
               post api("/projects/#{project.id}/runners", admin), params: { runner_id: new_project_runner.id }
             end.to change { project.runners.count }.by(+1)
@@ -1255,7 +1255,7 @@ RSpec.describe API::Ci::Runners, feature_category: :runner_fleet do
               create(:plan_limits, :default_plan, ci_registered_project_runners: 1)
             end
 
-            it 'does not enable specific runner' do
+            it 'does not enable project runner' do
               expect do
                 post api("/projects/#{project.id}/runners", admin), params: { runner_id: new_project_runner.id }
               end.not_to change { project.runners.count }

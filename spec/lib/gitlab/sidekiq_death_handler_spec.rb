@@ -12,7 +12,7 @@ RSpec.describe Gitlab::SidekiqDeathHandler, :clean_gitlab_redis_queues do
           urgency :low
           worker_has_external_dependencies!
           worker_resource_boundary :cpu
-          feature_category :users
+          feature_category :user_profile
         end
       end
 
@@ -25,7 +25,7 @@ RSpec.describe Gitlab::SidekiqDeathHandler, :clean_gitlab_redis_queues do
           .to receive(:increment)
                 .with({ queue: 'test_queue', worker: 'TestWorker',
                         urgency: 'low', external_dependencies: 'yes',
-                        feature_category: 'users', boundary: 'cpu' })
+                        feature_category: 'user_profile', boundary: 'cpu' })
 
         described_class.handler({ 'class' => 'TestWorker', 'queue' => 'test_queue' }, nil)
       end

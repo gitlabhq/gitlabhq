@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'User visits the authentication log', feature_category: :users do
+RSpec.describe 'User visits the authentication log', feature_category: :user_profile do
   let(:user) { create(:user) }
 
   context 'when user signed in' do

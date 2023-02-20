@@ -340,3 +340,147 @@ To fix this error:
    sudo gitlab-ctl hup puma
    sudo gitlab-ctl restart sidekiq
    ```
+
+### Missing asset files
+
+Following an upgrade, GitLab might not be correctly serving up assets such as images, JavaScript, and style sheets.
+It might be generating 500 errors, or the web UI may be failing to render properly.
+
+In a scaled out GitLab environment, if one web server behind the load balancer is demonstrating
+this issue, the problem occurs intermittently.
+
+The [Rake task to recompile](../../administration/raketasks/maintenance.md#precompile-the-assets) the
+assets doesn't apply to an Omnibus installation which serves
+pre-compiled assets from `/opt/gitlab/embedded/service/gitlab-rails/public/assets`.
+
+Potential causes and fixes:
+
+- [Ensure no old processes are running](#old-processes).
+- [Remove duplicate sprockets files](#duplicate-sprockets-files)
+- [The installation is incomplete](#incomplete-installation)
+- [NGINX Gzip support is disabled](#nginx-gzip-support)
+
+#### Old processes
+
+The most likely cause is that an old Puma process is running, instructing clients
+to request asset files from a previous release of GitLab. As the files no longer exist,
+HTTP 404 errors are returned.
+
+A reboot is the best way to ensure these old Puma processes are no longer running.
+
+Alternatively:
+
+1. Stop Puma:
+
+   ```shell
+   gitlab-ctl stop puma
+   ```
+
+1. Check for any remaining Puma processes, and kill them:
+
+   ```shell
+   ps -ef | egrep 'puma[: ]'
+   kill <processid>
+   ```
+
+1. Verify with `ps` that the Puma processes have stopped running.
+
+1. Start Puma
+
+   ```shell
+   gitlab-ctl start puma
+   ```
+
+#### Duplicate sprockets files
+
+The compiled asset files have unique file names in each release. The sprockets files
+provide a mapping from the filenames in the application code to the unique filenames.
+
+```plaintext
+/opt/gitlab/embedded/service/gitlab-rails/public/assets/.sprockets-manifest*.json
+```
+
+Make sure there's only one sprockets file. [Rails uses the first one](https://github.com/rails/sprockets-rails/blob/118ce60b1ffeb7a85640661b014cd2ee3c4e3e56/lib/sprockets/railtie.rb#L201).
+
+A check for duplicate sprockets files runs during Omnibus GitLab upgrades:
+
+```plaintext
+GitLab discovered stale file(s) from the previous install that need to be cleaned up.
+The following files need to be removed:
+
+/opt/gitlab/embedded/service/gitlab-rails/public/assets/.sprockets-manifest-e16fdb7dd73cfdd64ed9c2cc0e35718a.json
+```
+
+Options for resolving this include:
+
+- If you have the output from the package upgrade, remove the specified files. Then restart Puma:
+
+  ```shell
+  gitlab-ctl restart puma
+  ```
+
+- If you don't have the message, perform a reinstall
+  (see [incomplete installation](#incomplete-installation) below for more details)
+  to generate it again.
+
+- Remove all the sprockets files and then follow the instructions for an [incomplete installation](#incomplete-installation).
+
+#### Incomplete installation
+
+An incomplete installation could be the cause of this issue.
+
+Verify the package to determine if this is the problem:
+
+- For Debian distributions:
+
+  ```shell
+  apt-get install debsums
+  debsums -c gitlab-ee
+  ```
+
+- For Red Hat/SUSE (RPM) distributions:
+
+  ```shell
+  rpm -V gitlab-ee
+  ```
+
+To reinstall the package to fix an incomplete installation:
+
+1. Check the installed version
+
+   - For Debian distributions:
+
+     ```shell
+     apt --installed list gitlab-ee
+     ```
+
+   - For Red Hat/SUSE (RPM) distributions:
+
+     ```shell
+     rpm -qa gitlab-ee
+     ```
+
+1. Reinstall the package, specifying the installed version. For example 14.4.0 Enterprise Edition:
+
+   - For Debian distributions:
+
+     ```shell
+     apt-get install --reinstall gitlab-ee=14.4.0-ee.0
+     ```
+
+   - For Red Hat/SUSE (RPM) distributions:
+
+     ```shell
+     yum reinstall gitlab-ee-14.4.0
+     ```
+
+#### NGINX Gzip support
+
+Check whether `nginx['gzip_enabled']` has been disabled:
+
+```shell
+grep gzip /etc/gitlab/gitlab.rb
+```
+
+This might prevent some assets from being served.
+[Read more](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/6087#note_558194395) in one of the related issues.

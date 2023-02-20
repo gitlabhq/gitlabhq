@@ -205,10 +205,13 @@ module Gitlab
         raise ArgumentError, ex
       end
 
-      def list_refs(patterns = [Gitlab::Git::BRANCH_REF_PREFIX])
+      # peel_tags slows down the request by a factor of 3-4
+      def list_refs(patterns = [Gitlab::Git::BRANCH_REF_PREFIX], pointing_at_oids: [], peel_tags: false)
         request = Gitaly::ListRefsRequest.new(
           repository: @gitaly_repo,
-          patterns: patterns
+          patterns: patterns,
+          pointing_at_oids: pointing_at_oids,
+          peel_tags: peel_tags
         )
 
         response = gitaly_client_call(@storage, :ref_service, :list_refs, request, timeout: GitalyClient.fast_timeout)

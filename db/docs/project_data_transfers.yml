@@ -1,0 +1,10 @@
+---
+table_name: project_data_transfers
+classes:
+- Projects::DataTransfer
+feature_categories:
+- source_code_management
+description: Data transfer metrics per project
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107970
+milestone: '15.9'
+gitlab_schema: gitlab_main

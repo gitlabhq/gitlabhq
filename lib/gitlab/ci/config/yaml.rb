@@ -5,12 +5,21 @@ module Gitlab
     class Config
       module Yaml
         AVAILABLE_TAGS = [Config::Yaml::Tags::Reference].freeze
+        MAX_DOCUMENTS = 2
 
         class << self
           def load!(content)
             ensure_custom_tags
 
-            Gitlab::Config::Loader::Yaml.new(content, additional_permitted_classes: AVAILABLE_TAGS).load!
+            if ::Feature.enabled?(:ci_multi_doc_yaml)
+              Gitlab::Config::Loader::MultiDocYaml.new(
+                content,
+                max_documents: MAX_DOCUMENTS,
+                additional_permitted_classes: AVAILABLE_TAGS
+              ).load!.first
+            else
+              Gitlab::Config::Loader::Yaml.new(content, additional_permitted_classes: AVAILABLE_TAGS).load!
+            end
           end
 
           private

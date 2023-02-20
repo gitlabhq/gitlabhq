@@ -1,7 +1,7 @@
 <script>
 import TopNavMenuItem from './top_nav_menu_item.vue';
 
-const BORDER_CLASSES = 'gl-pt-3 gl-border-1 gl-border-t-solid gl-border-gray-50';
+const BORDER_CLASSES = 'gl-pt-3 gl-border-1 gl-border-t-solid';
 
 export default {
   components: {
@@ -13,6 +13,11 @@ export default {
       required: true,
     },
     withTopBorder: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    isPrimarySection: {
       type: Boolean,
       required: false,
       default: false,
@@ -30,8 +35,11 @@ export default {
     getMenuSectionClasses(index) {
       // This is a method instead of a computed so we don't have to incur the cost of
       // creating a whole new array/object.
+      const hasBorder = this.withTopBorder || index > 0;
       return {
-        [BORDER_CLASSES]: this.withTopBorder || index > 0,
+        [BORDER_CLASSES]: hasBorder,
+        'gl-border-gray-100': hasBorder && this.isPrimarySection,
+        'gl-border-gray-50': hasBorder && !this.isPrimarySection,
         'gl-mt-3': index > 0,
       };
     },

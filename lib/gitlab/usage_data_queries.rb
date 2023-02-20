@@ -91,6 +91,14 @@ module Gitlab
         count(Users::InProductMarketingEmail.where(track: track, series: series).where.not(cta_clicked_at: nil))
       end
       # rubocop: enable CodeReuse/ActiveRecord
+
+      def stage_manage_events(time_period)
+        # rubocop: disable CodeReuse/ActiveRecord
+        # rubocop: disable UsageData/LargeTable
+        estimate_batch_distinct_count(::Event.where(time_period), :author_id)
+        # rubocop: enable UsageData/LargeTable
+        # rubocop: enable CodeReuse/ActiveRecord
+      end
     end
   end
 end

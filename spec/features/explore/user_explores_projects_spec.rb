@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'User explores projects', feature_category: :users do
+RSpec.describe 'User explores projects', feature_category: :user_profile do
   context 'when some projects exist' do
     let_it_be(:archived_project) { create(:project, :archived) }
     let_it_be(:internal_project) { create(:project, :internal) }

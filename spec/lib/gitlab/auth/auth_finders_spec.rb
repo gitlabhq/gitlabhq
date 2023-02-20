@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Auth::AuthFinders do
+RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :authentication_and_authorization do
   include described_class
   include HttpBasicAuthHelpers
 
@@ -390,9 +390,9 @@ RSpec.describe Gitlab::Auth::AuthFinders do
       end
     end
 
-    context 'when the external_authorization_service is enabled' do
+    context 'when the the deploy token is restricted with external_authorization' do
       before do
-        stub_application_setting(external_authorization_service_enabled: true)
+        allow(Gitlab::ExternalAuthorization).to receive(:allow_deploy_tokens_and_deploy_keys?).and_return(false)
         set_header(described_class::DEPLOY_TOKEN_HEADER, deploy_token.token)
       end
 
@@ -470,7 +470,7 @@ RSpec.describe Gitlab::Auth::AuthFinders do
       expect { find_user_from_access_token }.to raise_error(Gitlab::Auth::UnauthorizedError)
     end
 
-    context 'no feed, API or archive requests' do
+    context 'no feed, API, archive or download requests' do
       it 'returns nil if the request is not RSS' do
         expect(find_user_from_web_access_token(:rss)).to be_nil
       end
@@ -485,6 +485,10 @@ RSpec.describe Gitlab::Auth::AuthFinders do
 
       it 'returns nil if the request is not ARCHIVE' do
         expect(find_user_from_web_access_token(:archive)).to be_nil
+      end
+
+      it 'returns nil if the request is not DOWNLOAD' do
+        expect(find_user_from_web_access_token(:download)).to be_nil
       end
     end
 
@@ -504,6 +508,12 @@ RSpec.describe Gitlab::Auth::AuthFinders do
       set_header('SCRIPT_NAME', '/-/archive/main.zip')
 
       expect(find_user_from_web_access_token(:archive)).to eq(user)
+    end
+
+    it 'returns the user for DOWNLOAD requests' do
+      set_header('SCRIPT_NAME', '/-/1.0.0/downloads/main.zip')
+
+      expect(find_user_from_web_access_token(:download)).to eq(user)
     end
 
     context 'for API requests' do

@@ -30,7 +30,7 @@ module Ci
         end
 
         result = ::Ci::Runners::ReconcileExistingRunnerVersionsService.new.execute
-        result.payload.each { |key, value| log_extra_metadata_on_done(key, value) }
+        log_hash_metadata_on_done(result.payload)
       end
     end
   end

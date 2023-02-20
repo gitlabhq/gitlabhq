@@ -15,16 +15,12 @@ RSpec.describe IdeHelper, feature_category: :web_ide do
     context 'with vscode_web_ide=true and instance vars set' do
       before do
         stub_feature_flags(vscode_web_ide: true)
-
-        self.instance_variable_set(:@branch, 'master')
-        self.instance_variable_set(:@project, project)
-        self.instance_variable_set(:@path, 'foo/README.md')
-        self.instance_variable_set(:@merge_request, '7')
       end
 
       it 'returns hash' do
-        expect(helper.ide_data)
-          .to eq(
+        expect(helper.ide_data(project: project, branch: 'master', path: 'foo/README.md', merge_request: '7',
+fork_info: nil))
+          .to match(
             'can-use-new-web-ide' => 'true',
             'use-new-web-ide' => 'true',
             'user-preferences-path' => profile_preferences_path,
@@ -35,6 +31,9 @@ RSpec.describe IdeHelper, feature_category: :web_ide do
             'csp-nonce' => 'test-csp-nonce',
             'ide-remote-path' => ide_remote_path(remote_host: ':remote_host', remote_path: ':remote_path'),
             'file-path' => 'foo/README.md',
+            'editor-font-family' => 'JetBrains Mono',
+            'editor-font-format' => 'woff2',
+            'editor-font-src-url' => a_string_matching(%r{jetbrains-mono/JetBrainsMono}),
             'merge-request' => '7',
             'fork-info' => nil
           )
@@ -43,7 +42,8 @@ RSpec.describe IdeHelper, feature_category: :web_ide do
       it 'does not use new web ide if user.use_legacy_web_ide' do
         allow(user).to receive(:use_legacy_web_ide).and_return(true)
 
-        expect(helper.ide_data).to include('use-new-web-ide' => 'false')
+        expect(helper.ide_data(project: project, branch: nil, path: nil, merge_request: nil,
+fork_info: nil)).to include('use-new-web-ide' => 'false')
       end
     end
 
@@ -52,9 +52,9 @@ RSpec.describe IdeHelper, feature_category: :web_ide do
         stub_feature_flags(vscode_web_ide: false)
       end
 
-      context 'when instance vars are not set' do
+      context 'when instance vars and parameters are not set' do
         it 'returns instance data in the hash as nil' do
-          expect(helper.ide_data)
+          expect(helper.ide_data(project: nil, branch: nil, path: nil, merge_request: nil, fork_info: nil))
             .to include(
               'can-use-new-web-ide' => 'false',
               'use-new-web-ide' => 'false',
@@ -73,15 +73,10 @@ RSpec.describe IdeHelper, feature_category: :web_ide do
         it 'returns instance data in the hash' do
           fork_info = { ide_path: '/test/ide/path' }
 
-          self.instance_variable_set(:@branch, 'master')
-          self.instance_variable_set(:@path, 'foo/bar')
-          self.instance_variable_set(:@merge_request, '1')
-          self.instance_variable_set(:@fork_info, fork_info)
-          self.instance_variable_set(:@project, project)
-
           serialized_project = API::Entities::Project.represent(project, current_user: project.creator).to_json
 
-          expect(helper.ide_data)
+          expect(helper.ide_data(project: project, branch: 'master', path: 'foo/bar', merge_request: '1',
+fork_info: fork_info))
             .to include(
               'branch-name' => 'master',
               'file-path' => 'foo/bar',
@@ -96,12 +91,12 @@ RSpec.describe IdeHelper, feature_category: :web_ide do
       context 'environments guidance experiment', :experiment do
         before do
           stub_experiments(in_product_guidance_environments_webide: :candidate)
-          self.instance_variable_set(:@project, project)
         end
 
         context 'when project has no enviornments' do
           it 'enables environment guidance' do
-            expect(helper.ide_data).to include('enable-environments-guidance' => 'true')
+            expect(helper.ide_data(project: project, branch: nil, path: nil, merge_request: nil,
+fork_info: nil)).to include('enable-environments-guidance' => 'true')
           end
 
           context 'and the callout has been dismissed' do
@@ -109,7 +104,8 @@ RSpec.describe IdeHelper, feature_category: :web_ide do
               callout = create(:callout, feature_name: :web_ide_ci_environments_guidance, user: project.creator)
               callout.update!(dismissed_at: Time.now - 1.week)
               allow(helper).to receive(:current_user).and_return(User.find(project.creator.id))
-              expect(helper.ide_data).to include('enable-environments-guidance' => 'false')
+              expect(helper.ide_data(project: project, branch: nil, path: nil, merge_request: nil,
+fork_info: nil)).to include('enable-environments-guidance' => 'false')
             end
           end
         end
@@ -118,7 +114,8 @@ RSpec.describe IdeHelper, feature_category: :web_ide do
           it 'disables environment guidance' do
             create(:environment, project: project)
 
-            expect(helper.ide_data).to include('enable-environments-guidance' => 'false')
+            expect(helper.ide_data(project: project, branch: nil, path: nil, merge_request: nil,
+fork_info: nil)).to include('enable-environments-guidance' => 'false')
           end
         end
       end

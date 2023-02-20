@@ -386,6 +386,7 @@ create_access_levels:
 - user
 - protected_tag
 - group
+- deploy_key
 container_repositories:
 - project
 - name
@@ -486,6 +487,7 @@ project:
 - requesters
 - namespace_members
 - namespace_requesters
+- namespace_members_and_requesters
 - deploy_keys_projects
 - deploy_keys
 - users_star_projects
@@ -669,6 +671,8 @@ project:
 - disable_download_button
 - dependency_list_exports
 - sbom_occurrences
+- analytics_dashboards_configuration_project
+- analytics_dashboards_pointer
 award_emoji:
 - awardable
 - user

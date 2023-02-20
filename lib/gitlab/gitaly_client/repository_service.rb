@@ -24,8 +24,20 @@ module Gitlab
         response.exists
       end
 
-      def optimize_repository
-        request = Gitaly::OptimizeRepositoryRequest.new(repository: @gitaly_repo)
+      # Optimize the repository. By default, this will perform heuristical housekeeping in the repository, which
+      # is the recommended approach and will only optimize what needs to be optimized. If `eager = true`, then
+      # Gitaly will instead be asked to perform eager housekeeping. As a consequence the housekeeping run will take a
+      # _lot_ longer. It is not recommended to use eager housekeeping in general, but only in situations where it is
+      # explicitly required.
+      def optimize_repository(eager: false)
+        strategy = if eager
+                     Gitaly::OptimizeRepositoryRequest::Strategy::STRATEGY_EAGER
+                   else
+                     Gitaly::OptimizeRepositoryRequest::Strategy::STRATEGY_HEURISTICAL
+                   end
+
+        request = Gitaly::OptimizeRepositoryRequest.new(repository: @gitaly_repo,
+                                                        strategy: strategy)
         gitaly_client_call(@storage, :repository_service, :optimize_repository, request, timeout: GitalyClient.long_timeout)
       end
 

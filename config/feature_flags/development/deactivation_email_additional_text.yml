@@ -1,0 +1,8 @@
+---
+name: deactivation_email_additional_text
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110033
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/389538
+milestone: '15.9'
+type: development
+group: group::authentication and authorization
+default_enabled: true

@@ -12,7 +12,7 @@ of GitLab to their liking.
 
 To navigate to your profile's preferences:
 
-1. In the top-right corner, select your avatar.
+1. In the upper-right corner, select your avatar.
 1. Select **Preferences**.
 
 ## Navigation theme
@@ -67,7 +67,7 @@ GitLab uses the [rouge Ruby library](http://rouge.jneen.net/ "Rouge website")
 for syntax highlighting outside of any Editor context. The WebIDE (like Snippets)
 uses [Monaco Editor](https://microsoft.github.io/monaco-editor/) and it's provided
 [Monarch](https://microsoft.github.io/monaco-editor/monarch.html) library for
-syntax highlighting. For a list of supported languages, visit the documentation of
+syntax highlighting. For a list of supported languages, see the documentation of
 the respective libraries.
 
 Changing this setting allows you to customize the color theme when viewing any
@@ -120,20 +120,8 @@ While `1280px` is the standard max width when using fixed layout, some pages sti
 
 For users who have access to a large number of projects but only keep up with a
 select few, the amount of activity on the your dashboard can be
-overwhelming. Changing this setting allows you to redefine what is displayed by default.
-
-You can include the following options for your default dashboard view:
-
-- Your projects (default)
-- Starred projects
-- Your projects' activity
-- Starred projects' activity
-- Followed Users' Activity
-- Your groups
-- Your [To-Do List](../todos.md)
-- Assigned Issues
-- Assigned Merge Requests
-- [Operations Dashboard](../operations_dashboard/index.md)
+overwhelming. From the **Dashboard** dropdown list, select what you'd like displayed on your
+personal dashboard.
 
 ### Group overview content
 

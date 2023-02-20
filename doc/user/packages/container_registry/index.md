@@ -72,7 +72,7 @@ NOTE:
 You must [authenticate with the container registry](authenticate_with_container_registry.md) to download
 container images from a private repository.
 
-For more information on running container images, visit the [Docker documentation](https://docs.docker.com/get-started/).
+For more information on running container images, see the [Docker documentation](https://docs.docker.com/get-started/).
 
 ## Naming convention for your container images
 
@@ -165,3 +165,9 @@ this setting. However, disabling the Container Registry disables all Container R
 | Private project with Container Registry visibility <br/> set to **Everyone With Access** (UI) or `enabled` (API)  | View Container Registry <br/> and pull images | No                                   | No    | Yes                                    |
 | Private project with Container Registry visibility <br/> set to **Only Project Members** (UI) or `private` (API)  | View Container Registry <br/> and pull images | No                                   | No    | Yes                                    |
 | Any project with Container Registry `disabled`                                                                    | All operations on Container Registry          | No                                   | No    | No                                     |
+
+## Supported image types
+
+The Container Registry supports [Docker V2](https://docs.docker.com/registry/spec/manifest-v2-2/) and [Open Container Initiative (OCI)](https://github.com/opencontainers/image-spec/blob/main/spec.md) image formats.
+
+OCI support means that you can host OCI-based image formats in the registry, such as [Helm 3+ chart packages](https://helm.sh/docs/topics/registries/). There is no distinction between image formats in the GitLab [API](../../../api/container_registry.md) and the UI. [Issue 38047](https://gitlab.com/gitlab-org/gitlab/-/issues/38047) addresses this distinction, starting with Helm.

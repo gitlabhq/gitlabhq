@@ -10,6 +10,7 @@ class Packages::Debian::GroupDistribution < ApplicationRecord
   def packages
     Packages::Package
       .for_projects(group.all_projects.public_only)
+      .debian
       .with_debian_codename(codename)
   end
 end

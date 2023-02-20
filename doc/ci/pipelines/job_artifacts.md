@@ -264,7 +264,7 @@ artifacts and log. You must be:
 To delete a job:
 
 1. Go to a job's detail page.
-1. On the top right of the job's log, select **Erase job log** (**{remove}**).
+1. In the upper right of the job's log, select **Erase job log** (**{remove}**).
 1. On the confirmation dialog, select **OK**.
 
 ## Expose job artifacts in the merge request UI
@@ -384,6 +384,10 @@ a project, you can disable this behavior to save space:
 
 You can disable this behavior for all projects on a self-managed instance in the
 [instance's CI/CD settings](../../user/admin_area/settings/continuous_integration.md#keep-the-latest-artifacts-for-all-jobs-in-the-latest-successful-pipelines).
+
+When **Keep artifacts from most recent successful jobs** is enabled, artifacts are always kept for [blocked](../jobs/job_control.md#types-of-manual-jobs)
+pipelines. These artifacts expire only after the blocking job is triggered and the pipeline completes.
+For more information, see [issue 387087](https://gitlab.com/gitlab-org/gitlab/-/issues/387087).
 
 ## Troubleshooting
 

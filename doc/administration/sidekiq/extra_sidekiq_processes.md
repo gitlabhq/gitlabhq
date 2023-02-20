@@ -55,7 +55,7 @@ To view the Sidekiq processes in GitLab:
 
 By default each process defined under `sidekiq` starts with a number of threads
 that equals the number of queues, plus one spare thread, up to a maximum of 50.
-For example, a process that handles all queues will use 50 threads by default.
+For example, a process that handles all queues uses 50 threads by default.
 
 These threads run inside a single Ruby process, and each process can only use a
 single CPU core. The usefulness of threading depends on the work having some
@@ -70,8 +70,9 @@ higher for mixed low-priority work. A reasonable starting range is `15` to `25`
 for a non-specialized deployment.
 
 We only recommend setting explicit concurrency by setting `min_concurrency` and
-`max_concurrency` to the same value. The two values are kept for backwards
-compatibility reasons, but for more predictable results, use the same value.
+`max_concurrency` to the same value. The two distinct settings are kept for
+backwards compatibility reasons, but for more predictable results use the same
+values – otherwise you might run into issues with Sidekiq jobs piling up.
 
 For example, to set the concurrency to `20`:
 
@@ -89,7 +90,8 @@ For example, to set the concurrency to `20`:
    ```
 
 `min_concurrency` and `max_concurrency` are independent; one can be set without
-the other. Setting `min_concurrency` to `0` disables the limit.
+the other. Setting `min_concurrency` to `0` disables the limit. Not explicitly
+setting `min_concurrency` is the same as setting it to `0`.
 
 For each queue group, let `N` be one more than the number of queues. The
 concurrency is set to:
@@ -117,7 +119,7 @@ for more details.
 
 ## Modify the check interval
 
-To modify Sidekiq's health check interval for the additional Sidekiq
+To modify the Sidekiq health check interval for the additional Sidekiq
 processes:
 
 1. Edit `/etc/gitlab/gitlab.rb`:

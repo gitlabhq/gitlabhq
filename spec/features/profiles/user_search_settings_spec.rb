@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'User searches their settings', :js, feature_category: :users do
+RSpec.describe 'User searches their settings', :js, feature_category: :user_profile do
   let_it_be(:user) { create(:user) }
 
   before do

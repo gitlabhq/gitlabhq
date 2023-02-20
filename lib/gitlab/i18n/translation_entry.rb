@@ -65,7 +65,7 @@ module Gitlab
       end
 
       def translations_have_multiple_lines?
-        translation_entries.any? { |translation| translation.is_a?(Array) }
+        translation_entries.any?(Array)
       end
 
       def msgid_contains_unescaped_chars?

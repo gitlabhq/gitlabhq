@@ -1,7 +1,6 @@
 ---
 table_name: ci_builds_metadata
-classes:
-- Ci::BuildMetadata
+classes: []
 feature_categories:
 - continuous_integration
 description: TODO

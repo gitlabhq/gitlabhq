@@ -45,7 +45,14 @@ module Gitlab
       def contextual_cache_key(presenter, object, context)
         return object.cache_key if context.nil?
 
-        [presenter.class.name, object.cache_key, context.call(object)].flatten.join(":")
+        [presenter_class_name(presenter), object.cache_key, context.call(object)].flatten.join(":")
+      end
+
+      def presenter_class_name(presenter)
+        return presenter.class.name if presenter.is_a?(BaseSerializer)
+        return presenter.name if presenter.is_a?(Class) && presenter < Grape::Entity
+
+        raise ArgumentError, "presenter #{presenter} is not supported"
       end
 
       # Used for fetching or rendering a single object

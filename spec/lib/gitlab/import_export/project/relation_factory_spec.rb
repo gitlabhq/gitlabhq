@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::ImportExport::Project::RelationFactory, :use_clean_rails_memory_store_caching do
+RSpec.describe Gitlab::ImportExport::Project::RelationFactory, :use_clean_rails_memory_store_caching, feature_category: :importers do
   let(:group) { create(:group).tap { |g| g.add_maintainer(importer_user) } }
   let(:project) { create(:project, :repository, group: group) }
   let(:members_mapper) { double('members_mapper').as_null_object }
@@ -418,21 +418,73 @@ RSpec.describe Gitlab::ImportExport::Project::RelationFactory, :use_clean_rails_
     end
   end
 
-  context 'merge request access level object' do
-    let(:relation_sym) { :'ProtectedBranch::MergeAccessLevel' }
-    let(:relation_hash) { { 'access_level' => 30, 'created_at' => '2022-03-29T09:53:13.457Z', 'updated_at' => '2022-03-29T09:54:13.457Z' } }
+  describe 'protected branch access levels' do
+    shared_examples 'access levels' do
+      let(:relation_hash) { { 'access_level' => access_level, 'created_at' => '2022-03-29T09:53:13.457Z', 'updated_at' => '2022-03-29T09:54:13.457Z' } }
 
-    it 'sets access level to maintainer' do
-      expect(created_object.access_level).to equal(Gitlab::Access::MAINTAINER)
+      context 'when access level is no one' do
+        let(:access_level) { Gitlab::Access::NO_ACCESS }
+
+        it 'keeps no one access level' do
+          expect(created_object.access_level).to equal(access_level)
+        end
+      end
+
+      context 'when access level is below maintainer' do
+        let(:access_level) { Gitlab::Access::DEVELOPER }
+
+        it 'sets access level to maintainer' do
+          expect(created_object.access_level).to equal(Gitlab::Access::MAINTAINER)
+        end
+      end
+
+      context 'when access level is above maintainer' do
+        let(:access_level) { Gitlab::Access::OWNER }
+
+        it 'sets access level to maintainer' do
+          expect(created_object.access_level).to equal(Gitlab::Access::MAINTAINER)
+        end
+      end
+
+      describe 'root ancestor membership' do
+        let(:access_level) { Gitlab::Access::DEVELOPER }
+
+        context 'when importer user is root group owner' do
+          let(:importer_user) { create(:user) }
+
+          it 'keeps access level as is' do
+            group.add_owner(importer_user)
+
+            expect(created_object.access_level).to equal(access_level)
+          end
+        end
+
+        context 'when user membership in root group is missing' do
+          it 'sets access level to maintainer' do
+            group.members.delete_all
+
+            expect(created_object.access_level).to equal(Gitlab::Access::MAINTAINER)
+          end
+        end
+
+        context 'when root ancestor is not a group' do
+          it 'sets access level to maintainer' do
+            expect(created_object.access_level).to equal(Gitlab::Access::MAINTAINER)
+          end
+        end
+      end
     end
-  end
 
-  context 'push access level object' do
-    let(:relation_sym) { :'ProtectedBranch::PushAccessLevel' }
-    let(:relation_hash) { { 'access_level' => 30, 'created_at' => '2022-03-29T09:53:13.457Z', 'updated_at' => '2022-03-29T09:54:13.457Z' } }
+    describe 'merge access level' do
+      let(:relation_sym) { :'ProtectedBranch::MergeAccessLevel' }
 
-    it 'sets access level to maintainer' do
-      expect(created_object.access_level).to equal(Gitlab::Access::MAINTAINER)
+      include_examples 'access levels'
+    end
+
+    describe 'push access level' do
+      let(:relation_sym) { :'ProtectedBranch::PushAccessLevel' }
+
+      include_examples 'access levels'
     end
   end
 end

@@ -1,10 +1,19 @@
 import { setAttributes } from '~/lib/utils/dom_utils';
 import axios from '~/lib/utils/axios_utils';
+import { getBaseURL, relativePathToAbsolute, joinPaths } from '~/lib/utils/url_utility';
+
+const SANDBOX_FRAME_PATH = '/-/sandbox/swagger';
+
+const getSandboxFrameSrc = () => {
+  const path = joinPaths(gon.relative_url_root || '', SANDBOX_FRAME_PATH);
+  return relativePathToAbsolute(path, getBaseURL());
+};
 
 const createSandbox = () => {
   const iframeEl = document.createElement('iframe');
+
   setAttributes(iframeEl, {
-    src: '/-/sandbox/swagger',
+    src: getSandboxFrameSrc(),
     sandbox: 'allow-scripts allow-popups allow-forms',
     frameBorder: 0,
     width: '100%',

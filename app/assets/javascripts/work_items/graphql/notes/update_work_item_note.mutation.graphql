@@ -1,0 +1,10 @@
+#import "./work_item_note.fragment.graphql"
+
+mutation updateWorkItemNote($input: UpdateNoteInput!) {
+  updateNote(input: $input) {
+    note {
+      ...WorkItemNote
+    }
+    errors
+  }
+}

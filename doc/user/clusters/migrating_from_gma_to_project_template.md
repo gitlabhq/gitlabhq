@@ -77,7 +77,7 @@ See also [video walk-throughs](#video-walk-throughs) with examples.
 
    1. Overwrite `applications/gitlab-runner/values.yaml` with the output of the previous command.
 
-   This safe step will guarantee that no unexpected default values overwrite your currently deployed values.
+   This safe step guarantees that no unexpected default values overwrite your currently deployed values.
    For instance, your GitLab Runner could have its `gitlabUrl` or `runnerRegistrationToken` overwritten by mistake.
 
 1. Some apps require special attention:

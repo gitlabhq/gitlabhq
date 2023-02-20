@@ -1,9 +1,13 @@
 # frozen_string_literal: true
 
-def filter_changed_lines(files)
+data_qa_selectors = /qa_selector|data-qa-selector/
+
+deprecated_qa_selectors = /(?!.*\bdata-qa-)(?=class=.*qa-.*|class: .*qa-.*)/
+
+def filter_changed_lines(files, pattern)
   lines = []
   files.each do |file|
-    qa_selector_changed_lines = helper.changed_lines(file).select { |line| line =~ /qa_selector|data-qa-selector/ }
+    qa_selector_changed_lines = helper.changed_lines(file).select { |line| line =~ pattern }
     next unless qa_selector_changed_lines.any?
 
     lines += ["file `#{file}`:", qa_selector_changed_lines]
@@ -15,9 +19,11 @@ changed_code_files = helper.changed_files(/\.(vue|haml|js|rb)$/)
 
 return if changed_code_files.empty?
 
-lines_with_qa_selectors = filter_changed_lines(changed_code_files)
+lines_with_qa_selectors = filter_changed_lines(changed_code_files, data_qa_selectors)
 
-return if lines_with_qa_selectors.empty?
+deprecated_qa_class = filter_changed_lines(changed_code_files, deprecated_qa_selectors)
+
+return if (lines_with_qa_selectors + deprecated_qa_class).empty?
 
 markdown(<<~MARKDOWN)
   ## QA Selectors
@@ -39,4 +45,19 @@ if lines_with_qa_selectors.any?
   MARKDOWN
 
   warn "This merge request contains lines with QA selectors. Please ensure `e2e:package-and-test` job is run."
+end
+
+if deprecated_qa_class.any?
+  markdown(<<~MARKDOWN)
+    ### Deprecated .qa-selector class
+
+    The following lines in this MR contain deprecated qa class selectors:
+
+    * #{deprecated_qa_class.join("\n* ")}
+
+    Please ensure all deprecated qa class selectors are replaced with data-qa-selectors in accordance with our [Testing Guide](https://docs.gitlab.com/ee/development/testing_guide/end_to_end/page_objects.html#data-qa-selector-vs-qa-selector).
+
+  MARKDOWN
+
+  warn "This merge request contains deprecated .qa-selector CSS class. Please use data-qa-selector attribute instead."
 end

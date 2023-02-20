@@ -9,7 +9,8 @@ description: 'Writing styles, markup, formatting, and other standards for the Gi
 
 REST API resources are documented in Markdown under
 [`/doc/api`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/doc/api). Each
-resource has its own Markdown file, which is linked from `api_resources.md`.
+resource has its own Markdown file, which is linked from
+[`api_resources.md`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/api/api_resources.md).
 
 When modifying the Markdown, also update the corresponding
 [OpenAPI definition](https://gitlab.com/gitlab-org/gitlab/-/tree/master/doc/api/openapi)
@@ -34,6 +35,8 @@ In the Markdown doc for a resource (AKA endpoint):
   attributes, add the appropriate inline [tier badge](styleguide/index.md#product-tier-badges).
   Put the badge in the **Attribute** column, like the
   `**(<tier>)**` code in the following template.
+
+After a new API documentation page is added, [add an entry in the global navigation](site_architecture/global_nav.md#add-a-navigation-entry). [Example](https://gitlab.com/gitlab-org/gitlab-docs/-/merge_requests/3497).
 
 ## API topic template
 
@@ -66,7 +69,7 @@ Supported attributes:
 | `attribute`              | datatype | No       | Detailed description. |
 | `attribute`              | datatype | No       | Detailed description. |
 
-If successful, returns [`<status_code>`](../../api/index.md#status-codes) and the following
+If successful, returns [`<status_code>`](rest/index.md#status-codes) and the following
 response attributes:
 
 | Attribute                | Type     | Description           |
@@ -159,10 +162,10 @@ For information about writing attribute descriptions, see the [GraphQL API descr
 ## Response body description
 
 Start the description with the following sentence, replacing `status code` with the
-relevant [HTTP status code](../../api/index.md#status-codes), for example:
+relevant [HTTP status code](../../api/rest/index.md#status-codes), for example:
 
 ```markdown
-If successful, returns [`200 OK`](../../api/index.md#status-codes) and the
+If successful, returns [`200 OK`](../../api/rest/index.md#status-codes) and the
 following response attributes:
 ```
 

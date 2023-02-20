@@ -114,16 +114,16 @@ module Routing
       end
     end
 
-    def toggle_award_emoji_personal_snippet_path(*args)
-      toggle_award_emoji_snippet_path(*args)
+    def toggle_award_emoji_personal_snippet_path(...)
+      toggle_award_emoji_snippet_path(...)
     end
 
-    def toggle_award_emoji_project_project_snippet_path(*args)
-      toggle_award_emoji_project_snippet_path(*args)
+    def toggle_award_emoji_project_project_snippet_path(...)
+      toggle_award_emoji_project_snippet_path(...)
     end
 
-    def toggle_award_emoji_project_project_snippet_url(*args)
-      toggle_award_emoji_project_snippet_url(*args)
+    def toggle_award_emoji_project_project_snippet_url(...)
+      toggle_award_emoji_project_snippet_url(...)
     end
 
     private

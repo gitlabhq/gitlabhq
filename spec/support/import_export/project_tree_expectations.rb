@@ -59,7 +59,7 @@ module ImportExport
     end
 
     def match_arrays(left_node, right_node, stats, location_stack, failures)
-      has_simple_elements = left_node.none? { |el| Enumerable === el }
+      has_simple_elements = left_node.none?(Enumerable)
       # for simple types, we can do a direct order-less set comparison
       if has_simple_elements && left_node.to_set != right_node.to_set
         stats[:arrays][:direct] += 1

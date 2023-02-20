@@ -162,7 +162,7 @@ RSpec.describe 'Edit group settings', feature_category: :subgroups do
         page.within(confirm_modal) do
           expect(page).to have_text "You are going to transfer #{selected_group.name} to another namespace. Are you ABSOLUTELY sure?"
 
-          fill_in 'confirm_name_input', with: selected_group.name
+          fill_in 'confirm_name_input', with: selected_group.full_path
           click_button 'Confirm'
         end
 

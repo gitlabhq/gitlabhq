@@ -4,12 +4,14 @@ import { mapActions, mapGetters, mapState } from 'vuex';
 import Api from '~/api';
 import resolvedStatusMixin from '~/batch_comments/mixins/resolved_status';
 import { createAlert } from '~/flash';
+import { TYPE_ISSUE } from '~/issues/constants';
 import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
 import { __, sprintf } from '~/locale';
 import eventHub from '~/sidebar/event_hub';
 import UserAccessRoleBadge from '~/vue_shared/components/user_access_role_badge.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { splitCamelCase } from '~/lib/utils/text_utility';
+import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_selector.vue';
 import ReplyButton from './note_actions/reply_button.vue';
 import TimelineEventButton from './note_actions/timeline_event_button.vue';
 
@@ -30,6 +32,7 @@ export default {
     GlDropdownItem,
     UserAccessRoleBadge,
     EmojiPicker: () => import('~/emoji/components/picker.vue'),
+    AbuseCategorySelector,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -57,11 +60,6 @@ export default {
       type: String,
       required: false,
       default: '',
-    },
-    reportAbusePath: {
-      type: String,
-      required: false,
-      default: null,
     },
     isAuthor: {
       type: Boolean,
@@ -135,11 +133,16 @@ export default {
       default: '',
     },
   },
+  data() {
+    return {
+      isReportAbuseDrawerOpen: false,
+    };
+  },
   computed: {
     ...mapState(['isPromoteCommentToTimelineEventInProgress']),
     ...mapGetters(['getUserDataByProp', 'getNoteableData', 'canUserAddIncidentTimelineEvents']),
     shouldShowActionsDropdown() {
-      return this.currentUserId && (this.canEdit || this.canReportAsAbuse);
+      return this.currentUserId;
     },
     showDeleteAction() {
       return this.canDelete && !this.canReportAsAbuse && !this.noteUrl;
@@ -171,7 +174,7 @@ export default {
       return this.getNoteableData.assignees || [];
     },
     isIssue() {
-      return this.targetType === 'issue';
+      return this.targetType === TYPE_ISSUE;
     },
     canAssign() {
       return this.getNoteableData.current_user?.can_set_issue_metadata && this.isIssue;
@@ -233,7 +236,7 @@ export default {
         assignees.push({ id: this.author.id });
       }
 
-      if (this.targetType === 'issue') {
+      if (this.targetType === TYPE_ISSUE) {
         Api.updateIssue(project_id, iid, {
           assignee_ids: assignees.map((assignee) => assignee.id),
         })
@@ -252,6 +255,9 @@ export default {
         awardName,
       });
     },
+    toggleReportAbuseDrawer(isOpen) {
+      this.isReportAbuseDrawerOpen = isOpen;
+    },
   },
 };
 </script>
@@ -261,7 +267,7 @@ export default {
     <user-access-role-badge
       v-if="isAuthor"
       v-gl-tooltip
-      class="gl-mr-3 d-none d-md-inline-block"
+      class="gl-mr-3 gl-display-none gl-sm-display-block"
       :title="displayAuthorBadgeText"
     >
       {{ __('Author') }}
@@ -269,7 +275,7 @@ export default {
     <user-access-role-badge
       v-if="accessLevel"
       v-gl-tooltip
-      class="gl-mr-3"
+      class="gl-mr-3 gl-display-none gl-sm-display-block"
       :title="displayMemberBadgeText"
     >
       {{ accessLevel }}
@@ -277,7 +283,7 @@ export default {
     <user-access-role-badge
       v-else-if="isContributor"
       v-gl-tooltip
-      class="gl-mr-3"
+      class="gl-mr-3 gl-display-none gl-sm-display-block"
       :title="displayContributorBadgeText"
     >
       {{ __('Contributor') }}
@@ -334,7 +340,7 @@ export default {
       :aria-label="$options.i18n.editCommentLabel"
       icon="pencil"
       category="tertiary"
-      class="note-action-button js-note-edit"
+      class="note-action-button js-note-edit gl-display-none gl-sm-display-block"
       data-qa-selector="note_edit_button"
       @click="onEdit"
     />
@@ -362,7 +368,18 @@ export default {
       />
       <!-- eslint-enable @gitlab/vue-no-data-toggle -->
       <ul class="dropdown-menu more-actions-dropdown dropdown-open-left">
-        <gl-dropdown-item v-if="canReportAsAbuse" :href="reportAbusePath">
+        <gl-dropdown-item
+          v-if="canEdit"
+          class="js-note-edit gl-sm-display-none!"
+          @click.prevent="onEdit"
+        >
+          {{ __('Edit comment') }}
+        </gl-dropdown-item>
+        <gl-dropdown-item
+          v-if="canReportAsAbuse"
+          data-testid="report-abuse-button"
+          @click="toggleReportAbuseDrawer(true)"
+        >
           {{ $options.i18n.reportAbuse }}
         </gl-dropdown-item>
         <gl-dropdown-item
@@ -380,5 +397,14 @@ export default {
         </gl-dropdown-item>
       </ul>
     </div>
+    <!-- IMPORTANT: show this component lazily because it causes layout thrashing -->
+    <!-- https://gitlab.com/gitlab-org/gitlab/-/issues/331172#note_1269378396 -->
+    <abuse-category-selector
+      v-if="canReportAsAbuse && isReportAbuseDrawerOpen"
+      :reported-user-id="authorId"
+      :reported-from-url="noteUrl"
+      :show-drawer="isReportAbuseDrawerOpen"
+      @close-drawer="toggleReportAbuseDrawer(false)"
+    />
   </div>
 </template>

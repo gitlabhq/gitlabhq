@@ -29,7 +29,7 @@ the noise (due to constantly failing tests, flaky tests, and so on) so that new 
 - [ ] To ensure a faster turnaround, ask in the `#quality_maintainers` Slack channel for someone to review and merge the merge request, rather than assigning it directly.
 
 <!-- Base labels. -->
-/label ~"Quality" ~"QA" ~"type::maintenance"
+/label ~"Quality" ~"QA" ~"type::maintenance" ~"maintenance::pipelines"
 
 <!--
 Choose the stage that appears in the test path, e.g. ~"devops::create" for

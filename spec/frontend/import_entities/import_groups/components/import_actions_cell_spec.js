@@ -39,7 +39,7 @@ describe('import actions cell', () => {
 
   describe('when group is finished', () => {
     beforeEach(() => {
-      createComponent({ isAvailableForImport: true, isFinished: true });
+      createComponent({ isAvailableForImport: false, isFinished: true });
     });
 
     it('renders re-import button', () => {

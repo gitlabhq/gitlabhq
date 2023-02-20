@@ -156,16 +156,17 @@ Set the limit to `0` to disable it.
 
 ### Search rate limit
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/80631) in GitLab 14.9.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/80631) in GitLab 14.9.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/104208) to include issue, merge request, and epic searches to the rate limit in GitLab 15.9.
 
-This setting limits global search requests as follows:
+This setting limits search requests as follows:
 
 | Limit                   | Default (requests per minute) |
 |-------------------------|-------------------------------|
 | Authenticated user      | 30 |
 | Unauthenticated user    | 10 |
 
-Depending on the number of enabled [scopes](../user/search/index.md#global-search-scopes), a global search request can consume two to seven requests per minute. You may want to disable one or more scopes to use fewer requests. Global search requests that exceed the search rate limit per minute return the following error:
+Depending on the number of enabled [scopes](../user/search/index.md#global-search-scopes), a global search request can consume two to seven requests per minute. You may want to disable one or more scopes to use fewer requests. Search requests that exceed the search rate limit per minute return the following error:
 
 ```plaintext
 This endpoint has been requested too many times. Try again later.
@@ -181,7 +182,7 @@ Read more about [pipeline creation rate limits](../user/admin_area/settings/rate
 
 ## Gitaly concurrency limit
 
-Clone traffic can put a large strain on your Gitaly service. To prevent such workloads from overwhelming your Gitaly server, you can set concurrency limits in Gitaly's configuration file.
+Clone traffic can put a large strain on your Gitaly service. To prevent such workloads from overwhelming your Gitaly server, you can set concurrency limits in the Gitaly configuration file.
 
 Read more about [Gitaly concurrency limits](gitaly/configure_gitaly.md#limit-rpc-concurrency).
 
@@ -379,7 +380,7 @@ and to limit memory consumption.
 When using offset-based pagination in the REST API, there is a limit to the maximum
 requested offset into the set of results. This limit is only applied to endpoints that
 also support keyset-based pagination. More information about pagination options can be
-found in the [API documentation section on pagination](../api/index.md#pagination).
+found in the [API documentation section on pagination](../api/rest/index.md#pagination).
 
 To set this limit for a self-managed installation, run the following in the
 [GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session):
@@ -654,7 +655,6 @@ setting is used:
 | `ci_max_artifact_size_archive`                    | 0             |
 | `ci_max_artifact_size_browser_performance`        | 0             |
 | `ci_max_artifact_size_cluster_applications`       | 0             |
-| `ci_max_artifact_size_cluster_image_scanning`     | 0             |
 | `ci_max_artifact_size_cobertura`                  | 0             |
 | `ci_max_artifact_size_codequality`                | 0             |
 | `ci_max_artifact_size_container_scanning`         | 0             |
@@ -1073,8 +1073,18 @@ varies by file type:
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/320902) in GitLab 13.9.
 
 If a branch is merged while open merge requests still point to it, GitLab can
-retarget merge requests pointing to the now-merged branch. To learn more, read
+retarget merge requests pointing to the now-merged branch. For more information, see
 [Update merge requests when target branch merges](../user/project/merge_requests/index.md#update-merge-requests-when-target-branch-merges).
+
+## Maximum number of assignees and reviewers
+
+> - Maximum assignees [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368936) in GitLab 15.6.
+> - Maximum reviewers [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/366485) in GitLab 15.9.
+
+Issues and merge requests enforce these maximums:
+
+- Maximum assignees: 200
+- Maximum reviewers: 200
 
 ## CDN-based limits on GitLab.com
 

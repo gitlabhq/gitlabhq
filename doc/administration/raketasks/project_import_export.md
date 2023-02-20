@@ -42,7 +42,7 @@ bundle exec rake gitlab:import_export:data RAILS_ENV=production
 Note the following:
 
 - Importing is only possible if the version of the import and export GitLab instances are
-  compatible as described in the [Version history](../../user/project/settings/import_export.md#version-history).
+  [compatible](../../user/project/settings/import_export.md#compatibility).
 - The project import option must be enabled:
 
   1. On the top bar, select **Main menu > Admin**.

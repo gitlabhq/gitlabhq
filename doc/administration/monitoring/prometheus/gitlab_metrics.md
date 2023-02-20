@@ -161,6 +161,8 @@ The following metrics are available:
 | `gitlab_diffs_write_cache_real_duration_seconds` | Histogram | 15.8 | Duration in seconds spent on caching highlighted lines and stats on diffs batch request | `controller`, `action` |
 | `gitlab_diffs_highlight_cache_decorate_real_duration_seconds` | Histogram | 15.8 | Duration in seconds spent on setting highlighted lines from cache on diffs batch request | `controller`, `action` |
 | `gitlab_diffs_render_real_duration_seconds` | Histogram | 15.8 | Duration in seconds spent on serializing and rendering diffs on diffs batch request | `controller`, `action` |
+| `gitlab_memwd_violations_total`                      | Counter | 15.9  | Total number of times a Ruby process violated a memory threshold | |
+| `gitlab_memwd_violations_handled_total`              | Counter | 15.9  | Total number of times Ruby process memory violations were handled | |
 
 ## Metrics controlled by a feature flag
 
@@ -350,6 +352,9 @@ configuration option in `gitlab.yml`. These metrics are served from the
 | `geo_dependency_proxy_manifests_verification_total`  | Gauge   | 15.6  | Number of dependency proxy manifests verifications tried on secondary | `url` |
 | `geo_dependency_proxy_manifests_verified`            | Gauge   | 15.6  | Number of dependency proxy manifests verified on secondary | `url` |
 | `geo_dependency_proxy_manifests_verification_failed` | Gauge   | 15.6  | Number of dependency proxy manifests verifications failed on secondary | `url` |
+| `gitlab_memwd_violations_total`                      | Counter | 15.9    | Total number of times a Sidekiq process violated a memory threshold                                                                                        | |
+| `gitlab_memwd_violations_handled_total`              | Counter | 15.9    | Total number of times Sidekiq process memory violations were handled                                                                                       | |
+| `sidekiq_watchdog_running_jobs_total`                | Counter | 15.9    | Current running jobs when RSS limit was reached                                                                                                            | `worker_class`                                                                                          |
 
 ## Database load balancing metrics **(PREMIUM SELF)**
 

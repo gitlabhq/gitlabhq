@@ -2,10 +2,9 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Ci::SecureFiles, feature_category: :pipeline_authoring do
+RSpec.describe API::Ci::SecureFiles, feature_category: :mobile_devops do
   before do
     stub_ci_secure_file_object_storage
-    stub_feature_flags(ci_secure_files: true)
     stub_feature_flags(ci_secure_files_read_only: false)
   end
 
@@ -128,6 +127,7 @@ RSpec.describe API::Ci::SecureFiles, feature_category: :pipeline_authoring do
         expect(json_response['name']).to eq(secure_file.name)
         expect(json_response['expires_at']).to be nil
         expect(json_response['metadata']).to be nil
+        expect(json_response['file_extension']).to be nil
       end
 
       it 'returns project secure file details with metadata when supported' do
@@ -138,6 +138,7 @@ RSpec.describe API::Ci::SecureFiles, feature_category: :pipeline_authoring do
         expect(json_response['name']).to eq(secure_file_with_metadata.name)
         expect(json_response['expires_at']).to eq('2022-04-26T19:20:40.000Z')
         expect(json_response['metadata'].keys).to match_array(%w[id issuer subject expires_at])
+        expect(json_response['file_extension']).to eq('cer')
       end
 
       it 'responds with 404 Not Found if requesting non-existing secure file' do
@@ -250,6 +251,7 @@ RSpec.describe API::Ci::SecureFiles, feature_category: :pipeline_authoring do
         expect(json_response['name']).to eq('upload-keystore.jks')
         expect(json_response['checksum']).to eq(secure_file.checksum)
         expect(json_response['checksum_algorithm']).to eq('sha256')
+        expect(json_response['file_extension']).to eq('jks')
 
         secure_file = Ci::SecureFile.find(json_response['id'])
         expect(secure_file.checksum).to eq(

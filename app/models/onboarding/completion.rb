@@ -6,13 +6,13 @@ module Onboarding
     include Gitlab::Experiment::Dsl
 
     ACTION_ISSUE_IDS = {
-      pipeline_created: 7,
       trial_started: 2,
       required_mr_approvals_enabled: 11,
       code_owners_enabled: 10
     }.freeze
 
     ACTION_PATHS = [
+      :pipeline_created,
       :issue_created,
       :git_write,
       :merge_request_created,

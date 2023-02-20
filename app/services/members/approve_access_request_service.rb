@@ -15,6 +15,12 @@ module Members
 
     private
 
+    def after_execute(member:, skip_log_audit_event:)
+      super
+
+      resolve_access_request_todos(current_user, member)
+    end
+
     def validate_access!(access_requester)
       raise Gitlab::Access::AccessDeniedError unless can_approve_access_requester?(access_requester)
 

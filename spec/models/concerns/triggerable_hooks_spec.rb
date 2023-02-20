@@ -9,6 +9,8 @@ RSpec.describe TriggerableHooks do
     TestableHook.class_eval do
       include TriggerableHooks # rubocop:disable RSpec/DescribedClass
       triggerable_hooks [:push_hooks]
+
+      scope :executable, -> { all }
     end
   end
 

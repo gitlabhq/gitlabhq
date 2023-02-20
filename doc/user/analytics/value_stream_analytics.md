@@ -214,3 +214,33 @@ as every merge request should be tested.
 stream analytics dashboard shows the calculated median elapsed time for these issues.
 - Value stream analytics identifies production environments based on the
 [deployment tier of environments](../../ci/environments/index.md#deployment-tier-of-environments).
+
+## Troubleshooting
+
+### 100% CPU utilization by Sidekiq `cronjob:analytics_cycle_analytics`
+
+It is possible that Value stream analytics background jobs
+strongly impact performance by monopolizing CPU resources.
+
+To recover from this situation:
+
+1. Disable the feature for all projects in [the Rails console](../../administration/operations/rails_console.md),
+   and remove existing jobs:
+
+   ```ruby
+   Project.find_each do |p|
+     p.analytics_access_level='disabled';
+     p.save!
+   end
+
+   Analytics::CycleAnalytics::GroupStage.delete_all
+   Analytics::CycleAnalytics::Aggregation.delete_all
+   ```
+
+1. Configure a [Sidekiq routing](../../administration/sidekiq/processing_specific_job_classes.md)
+   with for example a single `feature_category=value_stream_management`
+   and multiple `feature_category!=value_stream_management` entries.
+   Find other relevant queue metadata in the
+   [Enterprise Edition list](../../administration/sidekiq/processing_specific_job_classes.md#list-of-available-job-classes).
+1. Enable value stream analytics for one project after another.
+   You might need to tweak the Sidekiq routing further according to your performance requirements.

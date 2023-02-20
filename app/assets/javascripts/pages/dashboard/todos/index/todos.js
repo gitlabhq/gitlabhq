@@ -133,10 +133,10 @@ export default class Todos {
       restoreBtn.classList.add('hidden');
       doneBtn.classList.remove('hidden');
     } else if (target === doneBtn) {
-      row.classList.add('done-reversible', 'gl-bg-gray-50', 'gl-border-gray-100');
+      row.classList.add('done-reversible', 'gl-bg-gray-10', 'gl-border-gray-50');
       restoreBtn.classList.remove('hidden');
     } else if (target === restoreBtn) {
-      row.classList.remove('done-reversible', 'gl-bg-gray-50', 'gl-border-gray-100');
+      row.classList.remove('done-reversible', 'gl-bg-gray-10', 'gl-border-gray-50');
       doneBtn.classList.remove('hidden');
     } else {
       row.parentNode.removeChild(row);
@@ -147,17 +147,17 @@ export default class Todos {
     e.stopPropagation();
     e.preventDefault();
 
-    const target = e.currentTarget;
-    target.setAttribute('disabled', true);
-    target.classList.add('disabled');
+    const { currentTarget } = e;
+    currentTarget.setAttribute('disabled', true);
+    currentTarget.classList.add('disabled');
 
-    target.querySelector('.gl-spinner-container').classList.add('gl-mr-2');
+    currentTarget.querySelector('.gl-spinner-container').classList.add('gl-mr-2');
 
-    axios[target.dataset.method](target.dataset.href, {
+    axios[currentTarget.dataset.method](currentTarget.href, {
       ids: this.todo_ids,
     })
       .then(({ data }) => {
-        this.updateAllState(target, data);
+        this.updateAllState(currentTarget, data);
         this.updateBadges(data);
       })
       .catch(() =>

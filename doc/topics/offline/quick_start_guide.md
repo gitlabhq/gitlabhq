@@ -12,7 +12,7 @@ instance entirely offline.
 ## Installation
 
 NOTE:
-This guide assumes the server is Ubuntu 20.04 using the [Omnibus installation method](https://docs.gitlab.com/omnibus/) and will be running GitLab [Enterprise Edition](https://about.gitlab.com/install/ce-or-ee/). Instructions for other servers may vary.
+This guide assumes the server is Ubuntu 20.04 using the [Omnibus installation method](https://docs.gitlab.com/omnibus/) and is running GitLab [Enterprise Edition](https://about.gitlab.com/install/ce-or-ee/). Instructions for other servers may vary.
 This guide also assumes the server host resolves as `my-host.internal`, which you should replace with your
 server's FQDN, and that you have access to a different server with Internet access to download the required package files.
 
@@ -204,12 +204,11 @@ The Version Check and Service Ping services improve the GitLab user experience a
 users are on the most up-to-date instances of GitLab. These two services can be turned off for offline
 environments so that they do not attempt and fail to reach out to GitLab services.
 
-Learn more about [disabling usage statistics](../../user/admin_area/settings/usage_statistics.md#enable-or-disable-usage-statistics).
+For more information, see [Enable or disable usage statistics](../../user/admin_area/settings/usage_statistics.md#enable-or-disable-usage-statistics).
 
 ### Configure NTP
 
-In GitLab 15.4 and 15.5, Gitaly Cluster doesn't function if `pool.ntp.org` is unreachable.
-[Customize the time server setting](../../administration/gitaly/praefect.md#customize-time-server-setting) on the Gitaly
+In GitLab 15.4 and 15.5, Gitaly Cluster assumes `pool.ntp.org` is accessible. If `pool.ntp.org` is not accessible, [customize the time server setting](../../administration/gitaly/praefect.md#customize-time-server-setting) on the Gitaly
 and Praefect servers so they can use an accessible NTP server.
 
 On offline instances, the [GitLab Geo check Rake task](../../administration/geo/replication/troubleshooting.md#can-geo-detect-the-current-site-correctly)

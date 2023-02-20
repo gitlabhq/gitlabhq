@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Issues::MoveService do
+RSpec.describe Issues::MoveService, feature_category: :team_planning do
   include DesignManagementTestHelpers
 
   let_it_be(:user) { create(:user) }
@@ -20,7 +20,7 @@ RSpec.describe Issues::MoveService do
   end
 
   subject(:move_service) do
-    described_class.new(project: old_project, current_user: user)
+    described_class.new(container: old_project, current_user: user)
   end
 
   shared_context 'user can move issue' do

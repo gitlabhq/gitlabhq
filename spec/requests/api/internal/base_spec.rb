@@ -651,6 +651,12 @@ RSpec.describe API::Internal::Base, feature_category: :authentication_and_author
                   headers: gitlab_shell_internal_api_request_header
                 )
               end
+
+              it "updates user's activity data" do
+                expect(::Users::ActivityService).to receive(:new).with(author: user, namespace: project.namespace, project: project)
+
+                request
+              end
             end
           end
         end

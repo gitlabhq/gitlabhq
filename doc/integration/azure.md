@@ -68,7 +68,9 @@ Alternatively, add the `User.Read.All` application permission.
      sudo -u git -H editor config/gitlab.yml
      ```
 
-1. [Configure the initial settings](omniauth.md#configure-initial-settings).
+1. Edit the [common configuration file settings](omniauth.md#configure-common-settings)
+   to add `azure_oauth2` as a single sign-on provider. This enables Just-In-Time
+   account provisioning for users who do not have an existing GitLab account.
 
 1. Add the provider configuration. Replace `<client_id>`, `<client_secret>`, and `<tenant_id>`
    with the values you got when you registered the Azure application.

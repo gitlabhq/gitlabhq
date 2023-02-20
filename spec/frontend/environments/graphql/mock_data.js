@@ -166,7 +166,7 @@ export const environmentsApp = {
                 title: 'Play',
                 path: '/h5bp/html5-boilerplate/-/jobs/911/play',
                 method: 'post',
-                button_title: 'Trigger this manual action',
+                button_title: 'Run job',
               },
             },
           },
@@ -265,6 +265,7 @@ export const environmentsApp = {
     review_snippet:
       '{"deploy_review"=>{"stage"=>"deploy", "script"=>["echo \\"Deploy a review app\\""], "environment"=>{"name"=>"review/$CI_COMMIT_REF_NAME", "url"=>"https://$CI_ENVIRONMENT_SLUG.example.com"}, "only"=>["branches"]}}',
   },
+  can_stop_stale_environments: true,
   available_count: 4,
   stopped_count: 0,
 };
@@ -373,7 +374,7 @@ export const resolvedEnvironmentsApp = {
                 title: 'Play',
                 path: '/h5bp/html5-boilerplate/-/jobs/911/play',
                 method: 'post',
-                buttonTitle: 'Trigger this manual action',
+                buttonTitle: 'Run job',
               },
             },
           },
@@ -474,6 +475,7 @@ export const resolvedEnvironmentsApp = {
       '{"deploy_review"=>{"stage"=>"deploy", "script"=>["echo \\"Deploy a review app\\""], "environment"=>{"name"=>"review/$CI_COMMIT_REF_NAME", "url"=>"https://$CI_ENVIRONMENT_SLUG.example.com"}, "only"=>["branches"]}}',
     __typename: 'ReviewApp',
   },
+  canStopStaleEnvironments: true,
   stoppedCount: 0,
   __typename: 'LocalEnvironmentApp',
 };
@@ -673,7 +675,7 @@ export const resolvedEnvironment = {
             title: 'Play',
             path: '/h5bp/html5-boilerplate/-/jobs/1015/play',
             method: 'post',
-            buttonTitle: 'Trigger this manual action',
+            buttonTitle: 'Run job',
           },
         },
       },

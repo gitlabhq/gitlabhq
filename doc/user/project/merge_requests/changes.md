@@ -57,7 +57,7 @@ clear your browser's cookies or change this behavior again.
 
 To view one file at a time for all of your merge requests:
 
-1. In the top-right corner, select your avatar.
+1. In the upper-right corner, select your avatar.
 1. Select **Preferences**.
 1. Scroll to the **Behavior** section and select the **Show one file at a time on merge request's Changes tab** checkbox.
 1. Select **Save changes**.

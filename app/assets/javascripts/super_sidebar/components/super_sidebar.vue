@@ -4,7 +4,7 @@ import { context } from '../mock_data';
 import UserBar from './user_bar.vue';
 import ContextSwitcherToggle from './context_switcher_toggle.vue';
 import ContextSwitcher from './context_switcher.vue';
-import BottomBar from './bottom_bar.vue';
+import HelpCenter from './help_center.vue';
 
 export default {
   context,
@@ -13,7 +13,7 @@ export default {
     UserBar,
     ContextSwitcherToggle,
     ContextSwitcher,
-    BottomBar,
+    HelpCenter,
   },
   props: {
     sidebarData: {
@@ -31,7 +31,8 @@ export default {
 
 <template>
   <aside
-    class="super-sidebar gl-fixed gl-bottom-0 gl-left-0 gl-display-flex gl-flex-direction-column gl-bg-gray-10 gl-border-r gl-border-gray-a-08 gl-z-index-9999"
+    id="super-sidebar"
+    class="super-sidebar gl-fixed gl-bottom-0 gl-left-0 gl-display-flex gl-flex-direction-column gl-bg-gray-10 gl-border-r gl-border-gray-a-08"
     data-testid="super-sidebar"
   >
     <user-bar :sidebar-data="sidebarData" />
@@ -42,8 +43,8 @@ export default {
           <context-switcher />
         </gl-collapse>
       </div>
-      <div class="gl-px-3">
-        <bottom-bar />
+      <div class="gl-p-3">
+        <help-center :sidebar-data="sidebarData" />
       </div>
     </div>
   </aside>

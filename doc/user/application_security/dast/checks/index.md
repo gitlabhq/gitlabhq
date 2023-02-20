@@ -8,6 +8,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 The [DAST browser-based crawler](../browser_based.md) provides a number of vulnerability checks that are used to scan for vulnerabilities in the site under test.
 
+## Passive Checks
+
 | ID | Check | Severity | Type |
 |:---|:------|:---------|:-----|
 | [1004.1](1004.1.md) | Sensitive cookie without HttpOnly attribute | Low | Passive |
@@ -126,7 +128,7 @@ The [DAST browser-based crawler](../browser_based.md) provides a number of vulne
 | [798.94](798.94.md) | Exposure of confidential secret or token Private Key | High | Passive |
 | [798.95](798.95.md) | Exposure of confidential secret or token Pulumi API token | High | Passive |
 | [798.96](798.96.md) | Exposure of confidential secret or token PyPI upload token | High | Passive |
-| [798.97](798.97.md) | Exposure of confidential secret or token RubyGem API token | High | Passive |
+| [798.97](798.97.md) | Exposure of confidential secret or token RubyGems API token | High | Passive |
 | [798.98](798.98.md) | Exposure of confidential secret or token RapidAPI Access Token | High | Passive |
 | [798.99](798.99.md) | Exposure of confidential secret or token Sendbird Access ID | High | Passive |
 | [798.100](798.100.md) | Exposure of confidential secret or token Sendbird Access Token | High | Passive |
@@ -160,3 +162,9 @@ The [DAST browser-based crawler](../browser_based.md) provides a number of vulne
 | [798.128](798.128.md) | Exposure of confidential secret or token Zendesk Secret Key | High | Passive |
 | [829.1](829.1.md) | Inclusion of Functionality from Untrusted Control Sphere | Low | Passive |
 | [829.2](829.2.md) | Invalid Sub-Resource Integrity values detected | Medium | Passive |
+
+## Active Checks
+
+| ID | Check | Severity | Type |
+|:---|:------|:---------|:-----|
+| [22.1](22.1.md) | Improper limitation of a pathname to a restricted directory (Path traversal) | High | Active |

@@ -138,7 +138,7 @@ When running Puma in single mode, some features are not supported:
 - [Phased restart](https://gitlab.com/gitlab-org/gitlab/-/issues/300665)
 - [Memory killers](#reducing-memory-use)
 
-To learn more, visit [epic 5303](https://gitlab.com/groups/gitlab-org/-/epics/5303).
+For more information, see [epic 5303](https://gitlab.com/groups/gitlab-org/-/epics/5303).
 
 ## Performance caveat when using Puma with Rugged
 
@@ -223,7 +223,7 @@ from the Linux package and is no longer supported.
 
 Puma has a multi-thread architecture that uses less memory than a multi-process
 application server like Unicorn. On GitLab.com, we saw a 40% reduction in memory
-consumption. Most Rails application requests normally include a proportion of I/O wait time.
+consumption. Most Rails application requests usually include a proportion of I/O wait time.
 
 During I/O wait time, MRI Ruby releases the GVL to other threads.
 Multi-threaded Puma can therefore still serve more requests than a single process.

@@ -6,7 +6,13 @@ import { logError } from '~/lib/logger';
 import { __ } from '~/locale';
 import { GROUPS_LOCAL_STORAGE_KEY, PROJECTS_LOCAL_STORAGE_KEY, SIDEBAR_PARAMS } from './constants';
 import * as types from './mutation_types';
-import { loadDataFromLS, setFrequentItemToLS, mergeById, isSidebarDirty } from './utils';
+import {
+  loadDataFromLS,
+  setFrequentItemToLS,
+  mergeById,
+  isSidebarDirty,
+  getAggregationsUrl,
+} from './utils';
 
 export const fetchGroups = ({ commit }, search) => {
   commit(types.REQUEST_GROUPS);
@@ -95,7 +101,7 @@ export const setQuery = ({ state, commit }, { key, value }) => {
 };
 
 export const applyQuery = ({ state }) => {
-  visitUrl(setUrlParams({ ...state.query, page: null }));
+  visitUrl(setUrlParams({ ...state.query, page: null }, window.location.href, false, true));
 };
 
 export const resetQuery = ({ state }) => {
@@ -116,4 +122,17 @@ export const fetchSidebarCount = ({ commit, state }) => {
     return Promise.resolve();
   });
   return Promise.all(promises);
+};
+
+export const fetchLanguageAggregation = ({ commit }) => {
+  commit(types.REQUEST_AGGREGATIONS);
+  return axios
+    .get(getAggregationsUrl())
+    .then(({ data }) => {
+      commit(types.RECEIVE_AGGREGATIONS_SUCCESS, data);
+    })
+    .catch((e) => {
+      logError(e);
+      commit(types.RECEIVE_AGGREGATIONS_ERROR);
+    });
 };

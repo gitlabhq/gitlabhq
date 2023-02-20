@@ -9,6 +9,8 @@ module MergeRequests
 
       prepare_for_mergeability(merge_request)
       prepare_merge_request(merge_request)
+
+      mark_merge_request_as_prepared(merge_request)
     end
 
     private
@@ -52,6 +54,10 @@ module MergeRequests
       # it'll be a no-op.
       merge_request.mark_as_unchecked
       merge_request.check_mergeability(async: true)
+    end
+
+    def mark_merge_request_as_prepared(merge_request)
+      merge_request.update!(prepared_at: Time.current)
     end
   end
 end

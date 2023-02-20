@@ -38,6 +38,27 @@ RSpec.describe UserDetail do
       it { is_expected.to validate_length_of(:skype).is_at_most(500) }
     end
 
+    describe '#discord' do
+      it { is_expected.to validate_length_of(:discord).is_at_most(500) }
+
+      context 'when discord is set' do
+        let_it_be(:user_detail) { create(:user_detail) }
+
+        it 'accepts a valid discord user id' do
+          user_detail.discord = '1234567890123456789'
+
+          expect(user_detail).to be_valid
+        end
+
+        it 'throws an error when other url format is wrong' do
+          user_detail.discord = '123456789'
+
+          expect(user_detail).not_to be_valid
+          expect(user_detail.errors.full_messages).to match_array([_('Discord must contain only a discord user ID.')])
+        end
+      end
+    end
+
     describe '#location' do
       it { is_expected.to validate_length_of(:location).is_at_most(500) }
     end
@@ -72,11 +93,12 @@ RSpec.describe UserDetail do
     let(:user_detail) do
       create(:user_detail,
              bio: 'bio',
+             discord: '1234567890123456789',
              linkedin: 'linkedin',
-             twitter: 'twitter',
-             skype: 'skype',
              location: 'location',
              organization: 'organization',
+             skype: 'skype',
+             twitter: 'twitter',
              website_url: 'https://example.com')
     end
 
@@ -90,11 +112,12 @@ RSpec.describe UserDetail do
     end
 
     it_behaves_like 'prevents `nil` value', :bio
+    it_behaves_like 'prevents `nil` value', :discord
     it_behaves_like 'prevents `nil` value', :linkedin
-    it_behaves_like 'prevents `nil` value', :twitter
-    it_behaves_like 'prevents `nil` value', :skype
     it_behaves_like 'prevents `nil` value', :location
     it_behaves_like 'prevents `nil` value', :organization
+    it_behaves_like 'prevents `nil` value', :skype
+    it_behaves_like 'prevents `nil` value', :twitter
     it_behaves_like 'prevents `nil` value', :website_url
   end
 

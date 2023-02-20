@@ -115,7 +115,7 @@ export default {
           href: report.job_path,
           text: this.$options.i18n.fullLog,
           target: '_blank',
-          fullReport: true,
+          trackFullReportClicked: true,
         };
         actions.push(action);
       }

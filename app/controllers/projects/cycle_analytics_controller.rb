@@ -48,7 +48,7 @@ class Projects::CycleAnalyticsController < Projects::ApplicationController
   end
 
   def load_value_stream
-    @value_stream = Analytics::CycleAnalytics::ProjectValueStream.build_default_value_stream(@project)
+    @value_stream = Analytics::CycleAnalytics::ValueStream.build_default_value_stream(@project.project_namespace)
   end
 
   def cycle_analytics_json

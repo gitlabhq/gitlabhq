@@ -57,26 +57,28 @@ module ReviewApps
     end
 
     def helm
-      @helm ||= Tooling::Helm3Client.new(namespace: review_apps_namespace)
+      @helm ||= Tooling::Helm3Client.new
     end
 
     def kubernetes
       @kubernetes ||= Tooling::KubernetesClient.new(namespace: review_apps_namespace)
     end
 
-    def perform_gitlab_environment_cleanup!(days_for_stop:, days_for_delete:)
-      puts "Checking for Review Apps not updated in the last #{days_for_stop} days..."
+    def perform_gitlab_environment_cleanup!(days_for_delete:)
+      puts "Checking for Review Apps not updated in the last #{days_for_delete} days..."
 
       checked_environments = []
       delete_threshold = threshold_time(days: days_for_delete)
-      stop_threshold = threshold_time(days: days_for_stop)
       deployments_look_back_threshold = threshold_time(days: days_for_delete * 5)
 
       releases_to_delete = []
 
       # Delete environments via deployments
       gitlab.deployments(project_path, per_page: DEPLOYMENTS_PER_PAGE, sort: 'desc').auto_paginate do |deployment|
-        break if Time.parse(deployment.created_at) < deployments_look_back_threshold
+        last_deploy = deployment.created_at
+        deployed_at = Time.parse(last_deploy)
+
+        break if deployed_at < deployments_look_back_threshold
 
         environment = deployment.environment
 
@@ -84,27 +86,20 @@ module ReviewApps
         next unless environment.name.start_with?(ENVIRONMENT_PREFIX[:review_app])
         next if checked_environments.include?(environment.slug)
 
-        last_deploy = deployment.created_at
-        deployed_at = Time.parse(last_deploy)
-
         if deployed_at < delete_threshold
           deleted_environment = delete_environment(environment, deployment)
+
           if deleted_environment
-            release = Tooling::Helm3Client::Release.new(environment.slug, 1, deployed_at.to_s, nil, nil, environment.slug)
+            release = Tooling::Helm3Client::Release.new(name: environment.slug, namespace: environment.slug, revision: 1)
             releases_to_delete << release
           end
-        elsif deployed_at >= stop_threshold
-          print_release_state(subject: 'Review App', release_name: environment.slug, release_date: last_deploy, action: 'leaving')
-        else
-          environment_state = fetch_environment(environment)&.state
-          stop_environment(environment, deployment) if environment_state && environment_state != 'stopped'
         end
 
         checked_environments << environment.slug
       end
 
       delete_stopped_environments(environment_type: :review_app, checked_environments: checked_environments, last_updated_threshold: delete_threshold) do |environment|
-        releases_to_delete << Tooling::Helm3Client::Release.new(environment.slug, 1, environment.updated_at, nil, nil, environment.slug)
+        releases_to_delete << Tooling::Helm3Client::Release.new(name: environment.slug, namespace: environment.slug, revision: 1, updated: environment.updated_at)
       end
 
       delete_helm_releases(releases_to_delete)
@@ -116,17 +111,20 @@ module ReviewApps
       checked_environments = []
       stop_threshold = threshold_time(days: days_for_stop)
       delete_threshold = threshold_time(days: days_for_delete)
+      deployments_look_back_threshold = threshold_time(days: days_for_delete * 5)
 
       # Delete environments via deployments
       gitlab.deployments(project_path, per_page: DEPLOYMENTS_PER_PAGE, sort: 'desc').auto_paginate do |deployment|
+        last_deploy = deployment.created_at
+        deployed_at = Time.parse(last_deploy)
+
+        break if deployed_at < deployments_look_back_threshold
+
         environment = deployment.environment
 
         next unless environment
         next unless environment.name.start_with?(ENVIRONMENT_PREFIX[:docs_review_app])
         next if checked_environments.include?(environment.slug)
-
-        last_deploy = deployment.created_at
-        deployed_at = Time.parse(last_deploy)
 
         if deployed_at < stop_threshold
           environment_state = fetch_environment(environment)&.state
@@ -150,6 +148,7 @@ module ReviewApps
 
       helm_releases.each do |release|
         # Prevents deleting `dns-gitlab-review-app` releases or other unrelated releases
+        next unless Tooling::KubernetesClient::K8S_ALLOWED_NAMESPACES_REGEX.match?(release.namespace)
         next unless release.name.start_with?('review-')
 
         if release.status == 'failed' || release.last_update < threshold
@@ -228,7 +227,7 @@ module ReviewApps
     end
 
     def helm_releases
-      args = ['--all', '--date']
+      args = ['--all', '--all-namespaces', '--date']
 
       helm.releases(args: args)
     end
@@ -294,10 +293,6 @@ if $PROGRAM_NAME == __FILE__
 
   automated_cleanup = ReviewApps::AutomatedCleanup.new(options: options)
 
-  timed('Review Apps cleanup') do
-    automated_cleanup.perform_gitlab_environment_cleanup!(days_for_stop: 5, days_for_delete: 6)
-  end
-
   timed('Docs Review Apps cleanup') do
     automated_cleanup.perform_gitlab_docs_environment_cleanup!(days_for_stop: 20, days_for_delete: 30)
   end
@@ -305,12 +300,22 @@ if $PROGRAM_NAME == __FILE__
   puts
 
   timed('Helm releases cleanup') do
-    automated_cleanup.perform_helm_releases_cleanup!(days: 7)
+    automated_cleanup.perform_helm_releases_cleanup!(days: 2)
   end
 
-  timed('Stale Namespace cleanup') do
-    automated_cleanup.perform_stale_namespace_cleanup!(days: 14)
+  puts
+
+  timed('Review Apps cleanup') do
+    automated_cleanup.perform_gitlab_environment_cleanup!(days_for_delete: 3)
   end
+
+  puts
+
+  timed('Stale Namespace cleanup') do
+    automated_cleanup.perform_stale_namespace_cleanup!(days: 3)
+  end
+
+  puts
 
   timed('Stale PVC cleanup') do
     automated_cleanup.perform_stale_pvc_cleanup!(days: 30)

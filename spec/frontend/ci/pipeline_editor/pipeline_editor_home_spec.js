@@ -6,6 +6,7 @@ import setWindowLocation from 'helpers/set_window_location_helper';
 import CiEditorHeader from '~/ci/pipeline_editor/components/editor/ci_editor_header.vue';
 import CommitSection from '~/ci/pipeline_editor/components/commit/commit_section.vue';
 import PipelineEditorDrawer from '~/ci/pipeline_editor/components/drawer/pipeline_editor_drawer.vue';
+import JobAssistantDrawer from '~/ci/pipeline_editor/components/job_assistant_drawer/job_assistant_drawer.vue';
 import PipelineEditorFileNav from '~/ci/pipeline_editor/components/file_nav/pipeline_editor_file_nav.vue';
 import PipelineEditorFileTree from '~/ci/pipeline_editor/components/file_tree/container.vue';
 import BranchSwitcher from '~/ci/pipeline_editor/components/file_nav/branch_switcher.vue';
@@ -56,11 +57,13 @@ describe('Pipeline editor home wrapper', () => {
   const findFileNav = () => wrapper.findComponent(PipelineEditorFileNav);
   const findModal = () => wrapper.findComponent(GlModal);
   const findPipelineEditorDrawer = () => wrapper.findComponent(PipelineEditorDrawer);
+  const findJobAssistantDrawer = () => wrapper.findComponent(JobAssistantDrawer);
   const findPipelineEditorFileTree = () => wrapper.findComponent(PipelineEditorFileTree);
   const findPipelineEditorHeader = () => wrapper.findComponent(PipelineEditorHeader);
   const findPipelineEditorTabs = () => wrapper.findComponent(PipelineEditorTabs);
   const findFileTreeBtn = () => wrapper.findByTestId('file-tree-toggle');
   const findHelpBtn = () => wrapper.findByTestId('drawer-toggle');
+  const findJobAssistantBtn = () => wrapper.findByTestId('job-assistant-drawer-toggle');
 
   afterEach(() => {
     localStorage.clear();
@@ -258,6 +261,110 @@ describe('Pipeline editor home wrapper', () => {
       await nextTick();
 
       expect(findPipelineEditorDrawer().props('isVisible')).toBe(false);
+    });
+  });
+
+  describe('job assistant drawer', () => {
+    const clickHelpBtn = async () => {
+      findHelpBtn().vm.$emit('click');
+      await nextTick();
+    };
+    const clickJobAssistantBtn = async () => {
+      findJobAssistantBtn().vm.$emit('click');
+      await nextTick();
+    };
+
+    const stubs = {
+      CiEditorHeader,
+      GlButton,
+      GlDrawer,
+      PipelineEditorTabs,
+      JobAssistantDrawer,
+    };
+
+    it('hides the job assistant drawer by default', () => {
+      createComponent({
+        glFeatures: {
+          ciJobAssistantDrawer: true,
+        },
+      });
+
+      expect(findJobAssistantDrawer().props('isVisible')).toBe(false);
+    });
+
+    it('toggles the job assistant drawer on button click', async () => {
+      createComponent({
+        stubs,
+        glFeatures: {
+          ciJobAssistantDrawer: true,
+        },
+      });
+
+      await clickJobAssistantBtn();
+
+      expect(findJobAssistantDrawer().props('isVisible')).toBe(true);
+
+      await clickJobAssistantBtn();
+
+      expect(findJobAssistantDrawer().props('isVisible')).toBe(false);
+    });
+
+    it("closes the job assistant drawer through the drawer's close button", async () => {
+      createComponent({
+        stubs,
+        glFeatures: {
+          ciJobAssistantDrawer: true,
+        },
+      });
+
+      await clickJobAssistantBtn();
+
+      expect(findJobAssistantDrawer().props('isVisible')).toBe(true);
+
+      findJobAssistantDrawer().findComponent(GlDrawer).vm.$emit('close');
+      await nextTick();
+
+      expect(findJobAssistantDrawer().props('isVisible')).toBe(false);
+    });
+
+    it('covers helper drawer when opened last', async () => {
+      createComponent({
+        stubs: {
+          ...stubs,
+          PipelineEditorDrawer,
+        },
+        glFeatures: {
+          ciJobAssistantDrawer: true,
+        },
+      });
+
+      await clickHelpBtn();
+      await clickJobAssistantBtn();
+
+      const jobAssistantIndex = Number(findJobAssistantDrawer().props().zIndex);
+      const pipelineEditorDrawerIndex = Number(findPipelineEditorDrawer().props().zIndex);
+
+      expect(jobAssistantIndex).toBeGreaterThan(pipelineEditorDrawerIndex);
+    });
+
+    it('covered by helper drawer when opened first', async () => {
+      createComponent({
+        stubs: {
+          ...stubs,
+          PipelineEditorDrawer,
+        },
+        glFeatures: {
+          ciJobAssistantDrawer: true,
+        },
+      });
+
+      await clickJobAssistantBtn();
+      await clickHelpBtn();
+
+      const jobAssistantIndex = Number(findJobAssistantDrawer().props().zIndex);
+      const pipelineEditorDrawerIndex = Number(findPipelineEditorDrawer().props().zIndex);
+
+      expect(jobAssistantIndex).toBeLessThan(pipelineEditorDrawerIndex);
     });
   });
 

@@ -58,7 +58,7 @@ module Clusters
 
           if project_entries
             allowed_projects.where_full_path_in(project_entries.keys).map do |project|
-              { project_id: project.id, config: project_entries[project.full_path] }
+              { project_id: project.id, config: project_entries[project.full_path.downcase] }
             end
           end
         end
@@ -70,7 +70,7 @@ module Clusters
 
           if group_entries
             allowed_groups.where_full_path_in(group_entries.keys).map do |group|
-              { group_id: group.id, config: group_entries[group.full_path] }
+              { group_id: group.id, config: group_entries[group.full_path.downcase] }
             end
           end
         end
@@ -79,7 +79,7 @@ module Clusters
       def extract_config_entries(entity:)
         config.dig('ci_access', entity)
           &.first(AUTHORIZED_ENTITY_LIMIT)
-          &.index_by { |config| config.delete('id') }
+          &.index_by { |config| config.delete('id').downcase }
       end
 
       def allowed_projects

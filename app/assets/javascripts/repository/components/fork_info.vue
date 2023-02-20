@@ -1,5 +1,5 @@
 <script>
-import { GlIcon, GlLink, GlSkeletonLoader } from '@gitlab/ui';
+import { GlIcon, GlLink, GlSkeletonLoader, GlSprintf } from '@gitlab/ui';
 import { s__, sprintf, n__ } from '~/locale';
 import { createAlert } from '~/flash';
 import forkDetailsQuery from '../queries/fork_details.query.graphql';
@@ -9,9 +9,9 @@ export const i18n = {
   inaccessibleProject: s__('ForkedFromProjectPath|Forked from an inaccessible project.'),
   upToDate: s__('ForksDivergence|Up to date with the upstream repository.'),
   unknown: s__('ForksDivergence|This fork has diverged from the upstream repository.'),
-  behind: s__('ForksDivergence|%{behind} %{commit_word} behind'),
-  ahead: s__('ForksDivergence|%{ahead} %{commit_word} ahead of'),
-  behindAndAhead: s__('ForksDivergence|%{messages} the upstream repository.'),
+  behind: s__('ForksDivergence|%{behindLinkStart}%{behind} %{commit_word} behind%{behindLinkEnd}'),
+  ahead: s__('ForksDivergence|%{aheadLinkStart}%{ahead} %{commit_word} ahead%{aheadLinkEnd} of'),
+  behindAhead: s__('ForksDivergence|%{messages} the upstream repository.'),
   error: s__('ForksDivergence|Failed to fetch fork details. Try again later.'),
 };
 
@@ -20,6 +20,7 @@ export default {
   components: {
     GlIcon,
     GlLink,
+    GlSprintf,
     GlSkeletonLoader,
   },
   apollo: {
@@ -28,7 +29,7 @@ export default {
       variables() {
         return {
           projectPath: this.projectPath,
-          ref: this.selectedRef,
+          ref: this.selectedBranch,
         };
       },
       skip() {
@@ -48,7 +49,7 @@ export default {
       type: String,
       required: true,
     },
-    selectedRef: {
+    selectedBranch: {
       type: String,
       required: true,
     },
@@ -58,6 +59,16 @@ export default {
       default: '',
     },
     sourcePath: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    aheadComparePath: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    behindComparePath: {
       type: String,
       required: false,
       default: '',
@@ -116,7 +127,7 @@ export default {
         return this.$options.i18n.unknown;
       }
       if (this.hasBehindAheadMessage) {
-        return sprintf(this.$options.i18n.behindAndAhead, {
+        return sprintf(this.$options.i18n.behindAhead, {
           messages: this.behindAheadMessage,
         });
       }
@@ -134,8 +145,15 @@ export default {
         {{ $options.i18n.forkedFrom }}
         <gl-link data-qa-selector="forked_from_link" :href="sourcePath">{{ sourceName }}</gl-link>
         <gl-skeleton-loader v-if="isLoading" :lines="1" />
-        <div v-else class="gl-text-secondary">
-          {{ forkDivergenceMessage }}
+        <div v-else class="gl-text-secondary" data-testid="divergence-message">
+          <gl-sprintf :message="forkDivergenceMessage">
+            <template #aheadLink="{ content }">
+              <gl-link :href="aheadComparePath">{{ content }}</gl-link>
+            </template>
+            <template #behindLink="{ content }">
+              <gl-link :href="behindComparePath">{{ content }}</gl-link>
+            </template>
+          </gl-sprintf>
         </div>
       </div>
       <div v-else data-testid="inaccessible-project" class="gl-align-items-center gl-display-flex">

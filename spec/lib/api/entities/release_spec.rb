@@ -77,4 +77,16 @@ RSpec.describe API::Entities::Release do
       end
     end
   end
+
+  describe 'links' do
+    subject(:links) { entity.as_json['_links'] }
+
+    before do
+      project.add_developer(user)
+    end
+
+    it 'includes links' do
+      expect(links.keys).to include('closed_issues_url', 'closed_merge_requests_url', 'edit_url', 'merged_merge_requests_url', 'opened_issues_url', 'opened_merge_requests_url', 'self')
+    end
+  end
 end

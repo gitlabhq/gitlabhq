@@ -47,8 +47,13 @@ class Projects::RepositoriesController < Projects::ApplicationController
   end
 
   def set_cache_headers
-    expires_in cache_max_age(archive_metadata['CommitId']), public: Guest.can?(:download_code, project)
-    fresh_when(etag: archive_metadata['ArchivePath'])
+    commit_id = archive_metadata['CommitId']
+
+    expires_in(cache_max_age(commit_id),
+               public: Guest.can?(:download_code, project), must_revalidate: true, stale_if_error: 5.minutes,
+               stale_while_revalidate: 1.minute, 's-maxage': 1.minute)
+
+    fresh_when(strong_etag: [commit_id, archive_metadata['ArchivePath']])
   end
 
   def archive_not_modified?

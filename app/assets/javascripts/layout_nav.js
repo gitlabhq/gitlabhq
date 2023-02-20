@@ -56,7 +56,11 @@ function initDeferred() {
   if (!appEl) return;
 
   setNotification(appEl);
-  document.querySelector('.js-whats-new-trigger').addEventListener('click', () => {
+
+  const triggerEl = document.querySelector('.js-whats-new-trigger');
+  if (!triggerEl) return;
+
+  triggerEl.addEventListener('click', () => {
     import(/* webpackChunkName: 'whatsNewApp' */ '~/whats_new')
       .then(({ default: initWhatsNew }) => {
         initWhatsNew(appEl);

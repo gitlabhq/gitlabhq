@@ -1,7 +1,7 @@
 <script>
 import { GlIcon, GlAlert, GlTooltipDirective } from '@gitlab/ui';
 import { __ } from '~/locale';
-import { IssuableType, WorkspaceType } from '~/issues/constants';
+import { TYPE_EPIC, WorkspaceType } from '~/issues/constants';
 import { confidentialityInfoText } from '~/vue_shared/constants';
 
 export default {
@@ -25,7 +25,7 @@ export default {
   computed: {
     confidentialBodyText() {
       return confidentialityInfoText(
-        this.issuableType === IssuableType.Epic ? WorkspaceType.group : WorkspaceType.project,
+        this.issuableType === TYPE_EPIC ? WorkspaceType.group : WorkspaceType.project,
         this.issuableType,
       );
     },

@@ -26,6 +26,9 @@ RSpec.describe 'initRedirectListboxBehavior', '(JavaScript fixtures)', type: :he
       arbitrary_key: 'qux xyz'
     }]
 
-    @tag = helper.gl_redirect_listbox_tag(items, 'bar', class: %w[test-class-1 test-class-2], data: { right: true })
+    @tag = helper.gl_redirect_listbox_tag(items, 'bar',
+      class: %w[test-class-1 test-class-2],
+      data: { placement: 'right' }
+    )
   end
 end

@@ -23,8 +23,6 @@ describe('WorkItemTree', () => {
   let getWorkItemQueryHandler;
   let wrapper;
 
-  const findToggleButton = () => wrapper.findByTestId('toggle-tree');
-  const findTreeBody = () => wrapper.findByTestId('tree-body');
   const findEmptyState = () => wrapper.findByTestId('tree-empty');
   const findToggleFormSplitButton = () => wrapper.findComponent(OkrActionsSplitButton);
   const findForm = () => wrapper.findComponent(WorkItemLinksForm);
@@ -64,36 +62,25 @@ describe('WorkItemTree', () => {
         projectPath: 'test/project',
       },
     });
+
+    wrapper.vm.$refs.wrapper.show = jest.fn();
   };
 
-  beforeEach(() => {
+  it('displays Add button', () => {
     createComponent();
-  });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
-  it('is expanded by default and displays Add button', () => {
-    expect(findToggleButton().props('icon')).toBe('chevron-lg-up');
-    expect(findTreeBody().exists()).toBe(true);
     expect(findToggleFormSplitButton().exists()).toBe(true);
-  });
-
-  it('collapses on click toggle button', async () => {
-    findToggleButton().vm.$emit('click');
-    await nextTick();
-
-    expect(findToggleButton().props('icon')).toBe('chevron-lg-down');
-    expect(findTreeBody().exists()).toBe(false);
   });
 
   it('displays empty state if there are no children', () => {
     createComponent({ children: [] });
+
     expect(findEmptyState().exists()).toBe(true);
   });
 
   it('renders all hierarchy widget children', () => {
+    createComponent();
+
     const workItemLinkChildren = findWorkItemLinkChildItems();
     expect(workItemLinkChildren).toHaveLength(4);
     expect(workItemLinkChildren.at(0).props().childItem.confidential).toBe(
@@ -102,6 +89,8 @@ describe('WorkItemTree', () => {
   });
 
   it('does not display form by default', () => {
+    createComponent();
+
     expect(findForm().exists()).toBe(false);
   });
 
@@ -114,6 +103,8 @@ describe('WorkItemTree', () => {
   `(
     'when selecting $option from split button, renders the form passing $formType and $childType',
     async ({ event, formType, childType }) => {
+      createComponent();
+
       findToggleFormSplitButton().vm.$emit(event);
       await nextTick();
 
@@ -128,13 +119,16 @@ describe('WorkItemTree', () => {
   );
 
   it('remove event on child triggers `removeChild` event', () => {
+    createComponent();
     const firstChild = findWorkItemLinkChildItems().at(0);
+
     firstChild.vm.$emit('removeChild', 'gid://gitlab/WorkItem/2');
 
     expect(wrapper.emitted('removeChild')).toEqual([['gid://gitlab/WorkItem/2']]);
   });
 
   it('emits `show-modal` on `click` event', () => {
+    createComponent();
     const firstChild = findWorkItemLinkChildItems().at(0);
     const event = {
       childItem: 'gid://gitlab/WorkItem/2',

@@ -74,8 +74,8 @@ export default {
     <user-avatar-link
       v-for="item in visibleItems"
       :key="item.id"
-      :link-href="item.web_url"
-      :img-src="item.avatar_url"
+      :link-href="item.web_url || item.webUrl"
+      :img-src="item.avatar_url || item.avatarUrl"
       :img-alt="item.name"
       :tooltip-text="item.name"
       :img-size="imgSize"

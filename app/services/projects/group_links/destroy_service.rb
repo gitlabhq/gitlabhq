@@ -19,7 +19,6 @@ module Projects
           # the old approach, we still run AuthorizedProjectsWorker
           # but with some delay and lower urgency as a safety net.
           link.group.refresh_members_authorized_projects(
-            blocking: false,
             priority: UserProjectAccessChangedService::LOW_PRIORITY
           )
         end

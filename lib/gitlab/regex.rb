@@ -120,7 +120,8 @@ module Gitlab
         @debian_version_regex ||= %r{
           \A(?:
             (?:([0-9]{1,9}):)?            (?# epoch)
-            ([0-9][0-9a-z\.+~]*-?){1,15}  (?# version-revision)
+            ([0-9][0-9a-z\.+~]*)          (?# version)
+            (-[0-9a-z\.+~]+){0,14}        (?# -revision)
             (?<!-)
             )\z}xi.freeze
       end
@@ -137,6 +138,10 @@ module Gitlab
 
       def debian_component_regex
         @debian_component_regex ||= %r{\A#{::Packages::Debian::COMPONENT_REGEX}\z}o.freeze
+      end
+
+      def debian_direct_upload_filename_regex
+        @debian_direct_upload_filename_regex ||= %r{\A.*\.(deb|udeb)\z}o.freeze
       end
 
       def helm_channel_regex
@@ -251,24 +256,48 @@ module Gitlab
     extend self
     extend Packages
 
-    def bulk_import_namespace_path_regex
-      # This regexp validates the string conforms to rules for a namespace path:
-      # i.e does not start with a non-alphanueric character except for periods or underscores,
+    def bulk_import_destination_namespace_path_regex
+      # This regexp validates the string conforms to rules for a destination_namespace path:
+      # i.e does not start with a non-alphanumeric character except for periods or underscores,
+      # contains only alphanumeric characters, forward slashes, periods, and underscores,
+      # does not end with a period or forward slash, and has a relative path structure
+      # with no http protocol chars or leading or trailing forward slashes
+      # eg 'source/full/path' or 'destination_namespace' not 'https://example.com/destination/namespace/path'
+      # the regex also allows for an empty string ('') to be accepted as this is allowed in
+      # a bulk_import POST request
+      @bulk_import_destination_namespace_path_regex ||= %r/((\A\z)|\A([.]?)[^\W](\/?[.]?[0-9a-z][-_]*)+\z)/i
+    end
+
+    def bulk_import_source_full_path_regex
+      # This regexp validates the string conforms to rules for a source_full_path path:
+      # i.e does not start with a non-alphanumeric character except for periods or underscores,
       # contains only alphanumeric characters, forward slashes, periods, and underscores,
       # does not end with a period or forward slash, and has a relative path structure
       # with no http protocol chars or leading or trailing forward slashes
       # eg 'source/full/path' or 'destination_namespace' not 'https://example.com/source/full/path'
-      @bulk_import_namespace_path_regex ||= %r/^([.]?)[^\W](\/?[.]?[0-9a-z][-_]*)+$/i
+      @bulk_import_source_full_path_regex ||= %r/\A([.]?)[^\W](\/?[.]?[0-9a-z][-_]*)+\z/i
+    end
+
+    def bulk_import_destination_namespace_path_regex_message
+      "cannot start with a non-alphanumeric character except for periods or underscores, " \
+      "can contain only alphanumeric characters, forward slashes, periods, and underscores, " \
+      "cannot end with a period or forward slash, and has a relative path structure " \
+      "with no http protocol chars or leading or trailing forward slashes" \
     end
 
     def group_path_regex
       # This regexp validates the string conforms to rules for a group slug:
-      # i.e does not start with a non-alphanueric character except for periods or underscores,
+      # i.e does not start with a non-alphanumeric character except for periods or underscores,
       # contains only alphanumeric characters, periods, and underscores,
-      # does not end with a period or forward slash, and has a relative path structure
-      # with no http protocol chars or leading or trailing forward slashes
-      # eg 'source/full/path' or 'destination_namespace' not 'https://example.com/source/full/path'
-      @group_path_regex ||= %r/^[.]?[^\W]([.]?[0-9a-z][-_]*)+$/i
+      # does not end with a period or forward slash, and has no leading or trailing forward slashes
+      # eg 'destination-path' or 'destination_pth' not 'example/com/destination/full/path'
+      @group_path_regex ||= %r/\A[.]?[^\W]([.]?[0-9a-z][-_]*)+\z/i
+    end
+
+    def group_path_regex_message
+      "cannot start with a non-alphanumeric character except for periods or underscores, " \
+      "can contain only alphanumeric characters, periods, and underscores, " \
+      "cannot end with a period or forward slash, and has no leading or trailing forward slashes" \
     end
 
     def project_name_regex
@@ -406,30 +435,70 @@ module Gitlab
       }x.freeze
     end
 
+    MARKDOWN_CODE_BLOCK_REGEX = %r{
+      (?<code>
+        # Code blocks:
+        # ```
+        # Anything, including `>>>` blocks which are ignored by this filter
+        # ```
+
+        ^```
+        .+?
+        \n```\ *$
+      )
+    }mx.freeze
+
+    MARKDOWN_HTML_BLOCK_REGEX = %r{
+      (?<html>
+        # HTML block:
+        # <tag>
+        # Anything, including `>>>` blocks which are ignored by this filter
+        # </tag>
+
+        ^<[^>]+?>\ *\n
+        .+?
+        \n<\/[^>]+?>\ *$
+      )
+    }mx.freeze
+
+    MARKDOWN_HTML_COMMENT_LINE_REGEX = %r{
+      (?<html_comment_line>
+        # HTML comment line:
+        # <!-- some commented text -->
+
+        ^<!--\ .*\ -->\ *$
+      )
+    }mx.freeze
+
+    MARKDOWN_HTML_COMMENT_BLOCK_REGEX = %r{
+      (?<html_comment_block>
+        # HTML comment block:
+        # <!-- some commented text
+        # additional text
+        # -->
+
+        ^<!--.*\n
+        .+?
+        \n-->\ *$
+      )
+    }mx.freeze
+
     def markdown_code_or_html_blocks
       @markdown_code_or_html_blocks ||= %r{
-          (?<code>
-            # Code blocks:
-            # ```
-            # Anything, including `>>>` blocks which are ignored by this filter
-            # ```
-
-            ^```
-            .+?
-            \n```\ *$
-          )
+          #{MARKDOWN_CODE_BLOCK_REGEX}
         |
-          (?<html>
-            # HTML block:
-            # <tag>
-            # Anything, including `>>>` blocks which are ignored by this filter
-            # </tag>
+          #{MARKDOWN_HTML_BLOCK_REGEX}
+      }mx.freeze
+    end
 
-            ^<[^>]+?>\ *\n
-            .+?
-            \n<\/[^>]+?>\ *$
-          )
-      }mx
+    def markdown_code_or_html_comments
+      @markdown_code_or_html_comments ||= %r{
+          #{MARKDOWN_CODE_BLOCK_REGEX}
+        |
+          #{MARKDOWN_HTML_COMMENT_LINE_REGEX}
+        |
+          #{MARKDOWN_HTML_COMMENT_BLOCK_REGEX}
+      }mx.freeze
     end
 
     # Based on Jira's project key format
@@ -495,15 +564,6 @@ module Gitlab
     end
 
     def feature_flag_regex_message
-      "can contain only lowercase letters, digits, '_' and '-'. " \
-      "Must start with a letter, and cannot end with '-' or '_'"
-    end
-
-    def saved_reply_name_regex
-      @saved_reply_name_regex ||= /\A[a-z]([a-z0-9\-_]*[a-z0-9])?\z/.freeze
-    end
-
-    def saved_reply_name_regex_message
       "can contain only lowercase letters, digits, '_' and '-'. " \
       "Must start with a letter, and cannot end with '-' or '_'"
     end

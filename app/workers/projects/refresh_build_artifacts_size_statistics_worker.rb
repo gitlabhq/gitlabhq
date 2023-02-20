@@ -19,6 +19,7 @@ module Projects
       refresh = Projects::RefreshBuildArtifactsSizeStatisticsService.new.execute
       return unless refresh
 
+      log_extra_metadata_on_done(:refresh_id, refresh.id)
       log_extra_metadata_on_done(:project_id, refresh.project_id)
       log_extra_metadata_on_done(:last_job_artifact_id, refresh.last_job_artifact_id)
       log_extra_metadata_on_done(:last_batch, refresh.destroyed?)

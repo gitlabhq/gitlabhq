@@ -17,6 +17,14 @@ RSpec.describe UserPresenter do
     it { expect(presenter.web_url).to eq("http://localhost/#{user.username}") }
   end
 
+  describe '#can?' do
+    it 'forwards call to the given user' do
+      expect(user).to receive(:can?).with("a", b: 24)
+
+      presenter.send(:can?, "a", b: 24)
+    end
+  end
+
   context 'Gitpod' do
     let(:gitpod_url) { "https://gitpod.io" }
     let(:gitpod_application_enabled) { true }

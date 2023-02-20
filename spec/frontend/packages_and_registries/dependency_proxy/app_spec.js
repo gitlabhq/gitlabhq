@@ -17,6 +17,7 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { GRAPHQL_PAGE_SIZE } from '~/packages_and_registries/dependency_proxy/constants';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_ACCEPTED } from '~/lib/utils/http_status';
 
 import DependencyProxyApp from '~/packages_and_registries/dependency_proxy/app.vue';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
@@ -92,7 +93,7 @@ describe('DependencyProxyApp', () => {
     window.gon = { ...dummyGon };
 
     mock = new MockAdapter(axios);
-    mock.onDelete(expectedUrl).reply(202, {});
+    mock.onDelete(expectedUrl).reply(HTTP_STATUS_ACCEPTED, {});
   });
 
   afterEach(() => {

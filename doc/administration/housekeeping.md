@@ -119,6 +119,29 @@ background worker asks Gitaly to perform a number of optimizations.
 Housekeeping also [removes unreferenced LFS files](../raketasks/cleanup.md#remove-unreferenced-lfs-files)
 from your project every `200` push, freeing up storage space for your project.
 
+### Prune unreachable objects
+
+Unreachable objects are pruned as part of scheduled housekeeping. However,
+you can trigger manual pruning as well. An example: removing commits that contain sensitive
+information. Triggering housekeeping prunes unreachable objects with a grace period of
+two weeks. When you manually trigger the pruning of unreachable objects, the grace period
+is reduced to 30 minutes.
+
+WARNING:
+If a concurrent process (like `git push`) has created an object but hasn't created
+a reference to the object yet, your repository can become corrupted if a reference
+to the object is added after the object is deleted. The grace period exists to
+reduce the likelihood of such race conditions.
+
+To trigger a manual prune of unreachable objects:
+
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > General**.
+1. Expand **Advanced**.
+1. Select **Run housekeeping**.
+1. Wait 30 minutes for the operation to complete.
+1. Return to the page where you selected **Run housekeeping**, and select **Prune unreachable objects**.
+
 ### Scheduled housekeeping
 
 While GitLab automatically performs housekeeping tasks based on the number of
@@ -130,7 +153,7 @@ strategy.
 Administrators can enable a background job that performs housekeeping in all
 repositories at a customizable interval to remedy this situation. This
 background job processes all repositories hosted by a Gitaly node in a random
-order and eagerly performs housekeeping tasks on them. The Gitaly node will stop
+order and eagerly performs housekeeping tasks on them. The Gitaly node stops
 processing repositories if it takes longer than the configured interval.
 
 #### Configure scheduled housekeeping
@@ -166,7 +189,7 @@ of a repository. When creating the first fork, we:
 
 1. Create an object pool repository that contains all objects of the repository
    that is about to be forked.
-1. Link the repository to this new object pool via Git's alternates mechanism.
+1. Link the repository to this new object pool via the alternates mechanism of Git.
 1. Repack the repository so that it uses objects from the object pool. It thus
    can drop its own copy of the objects.
 
@@ -181,12 +204,12 @@ GitLab needs to perform special housekeeping operations in object pools:
   thus maintain references to unreachable "dangling" objects so that they don't
   ever get deleted.
 - GitLab must update object pools regularly to pull in new objects that have
-  been added in the primary repository. Otherwise, an object pool will become
+  been added in the primary repository. Otherwise, an object pool becomes
   increasingly inefficient at deduplicating objects.
 
 These housekeeping operations are performed by the specialized
 `FetchIntoObjectPool` RPC that handles all of these special tasks while also
-executing the regular housekeeping tasks we execute for normal Git
+executing the regular housekeeping tasks we execute for standard Git
 repositories.
 
 Object pools are getting optimized automatically whenever the primary member is

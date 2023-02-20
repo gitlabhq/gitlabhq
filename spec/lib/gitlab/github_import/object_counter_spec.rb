@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::GithubImport::ObjectCounter, :clean_gitlab_redis_cache do
-  let_it_be(:project) { create(:project, :import_started, import_type: 'github') }
+  let_it_be(:project) { create(:project, :import_started, import_type: 'github', import_url: 'https://github.com/vim/vim.git') }
 
   it 'validates the operation being incremented' do
     expect { described_class.increment(project, :issue, :unknown) }
@@ -56,5 +56,58 @@ RSpec.describe Gitlab::GithubImport::ObjectCounter, :clean_gitlab_redis_cache do
     end
 
     described_class.increment(project, :issue, :fetched)
+  end
+
+  describe '.summary' do
+    context 'when there are cached import statistics' do
+      before do
+        described_class.increment(project, :issue, :fetched, value: 10)
+        described_class.increment(project, :issue, :imported, value: 8)
+      end
+
+      it 'includes cached object counts stats in response' do
+        expect(described_class.summary(project)).to eq(
+          'fetched' => { 'issue' => 10 },
+          'imported' => { 'issue' => 8 }
+        )
+      end
+    end
+
+    context 'when there are no cached import statistics' do
+      context 'when project import is in progress' do
+        it 'includes an empty object counts stats in response' do
+          expect(described_class.summary(project)).to eq(described_class::EMPTY_SUMMARY)
+        end
+      end
+
+      context 'when project import is not in progress' do
+        let(:checksums) do
+          {
+            'fetched' => {
+              "issue" => 2,
+              "label" => 10,
+              "note" => 2,
+              "protected_branch" => 2,
+              "pull_request" => 2
+            },
+            "imported" => {
+              "issue" => 2,
+              "label" => 10,
+              "note" => 2,
+              "protected_branch" => 2,
+              "pull_request" => 2
+            }
+          }
+        end
+
+        before do
+          project.import_state.update_columns(checksums: checksums, status: :finished)
+        end
+
+        it 'includes project import checksums in response' do
+          expect(described_class.summary(project)).to eq(checksums)
+        end
+      end
+    end
   end
 end

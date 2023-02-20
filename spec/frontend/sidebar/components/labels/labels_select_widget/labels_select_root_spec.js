@@ -4,7 +4,7 @@ import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/flash';
-import { IssuableType } from '~/issues/constants';
+import { IssuableType, TYPE_EPIC, TYPE_ISSUE } from '~/issues/constants';
 import SidebarEditableItem from '~/sidebar/components/sidebar_editable_item.vue';
 import DropdownContents from '~/sidebar/components/labels/labels_select_widget/dropdown_contents.vue';
 import DropdownValue from '~/sidebar/components/labels/labels_select_widget/dropdown_value.vue';
@@ -14,6 +14,7 @@ import updateIssueLabelsMutation from '~/boards/graphql/issue_set_labels.mutatio
 import updateMergeRequestLabelsMutation from '~/sidebar/queries/update_merge_request_labels.mutation.graphql';
 import issuableLabelsSubscription from 'ee_else_ce/sidebar/queries/issuable_labels.subscription.graphql';
 import updateEpicLabelsMutation from '~/sidebar/components/labels/labels_select_widget/graphql/epic_update_labels.mutation.graphql';
+import updateTestCaseLabelsMutation from '~/sidebar/components/labels/labels_select_widget/graphql/update_test_case_labels.mutation.graphql';
 import LabelsSelectRoot from '~/sidebar/components/labels/labels_select_widget/labels_select_root.vue';
 import {
   mockConfig,
@@ -34,9 +35,10 @@ const subscriptionHandler = jest.fn().mockResolvedValue(issuableLabelsSubscripti
 const errorQueryHandler = jest.fn().mockRejectedValue('Houston, we have a problem');
 
 const updateLabelsMutation = {
-  [IssuableType.Issue]: updateIssueLabelsMutation,
+  [TYPE_ISSUE]: updateIssueLabelsMutation,
   [IssuableType.MergeRequest]: updateMergeRequestLabelsMutation,
-  [IssuableType.Epic]: updateEpicLabelsMutation,
+  [TYPE_EPIC]: updateEpicLabelsMutation,
+  [IssuableType.TestCase]: updateTestCaseLabelsMutation,
 };
 
 describe('LabelsSelectRoot', () => {
@@ -50,7 +52,7 @@ describe('LabelsSelectRoot', () => {
   const createComponent = ({
     config = mockConfig,
     slots = {},
-    issuableType = IssuableType.Issue,
+    issuableType = TYPE_ISSUE,
     queryHandler = successfulQueryHandler,
     mutationHandler = successfulMutationHandler,
   } = {}) => {
@@ -211,9 +213,10 @@ describe('LabelsSelectRoot', () => {
 
   describe.each`
     issuableType
-    ${IssuableType.Issue}
+    ${TYPE_ISSUE}
     ${IssuableType.MergeRequest}
-    ${IssuableType.Epic}
+    ${TYPE_EPIC}
+    ${IssuableType.TestCase}
   `('when updating labels for $issuableType', ({ issuableType }) => {
     const label = { id: 'gid://gitlab/ProjectLabel/2' };
 
@@ -228,6 +231,7 @@ describe('LabelsSelectRoot', () => {
 
     it('updates labels correctly after successful mutation', async () => {
       createComponent({ issuableType });
+
       await nextTick();
       findDropdownContents().vm.$emit('setLabels', [label]);
       await waitForPromises();

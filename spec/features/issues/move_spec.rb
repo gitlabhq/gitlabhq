@@ -23,7 +23,7 @@ RSpec.describe 'issue move to another project', feature_category: :team_planning
     end
 
     it 'moving issue to another project not allowed' do
-      expect(page).to have_no_selector('.js-sidebar-move-issue-block')
+      expect(page).to have_no_selector('.js-issuable-move-block')
     end
   end
 
@@ -42,10 +42,10 @@ RSpec.describe 'issue move to another project', feature_category: :team_planning
     end
 
     it 'moving issue to another project', :js do
-      find('.js-move-issue').click
+      click_button _('Move issue')
       wait_for_requests
-      all('.js-move-issue-dropdown-item')[0].click
-      find('.js-move-issue-confirmation-button').click
+      all('.gl-dropdown-item')[0].click
+      click_button _('Move')
 
       expect(page).to have_content("Text with #{cross_reference}#{mr.to_reference}")
       expect(page).to have_content("moved from #{cross_reference}#{issue.to_reference}")
@@ -56,11 +56,11 @@ RSpec.describe 'issue move to another project', feature_category: :team_planning
     it 'searching project dropdown', :js do
       new_project_search.add_reporter(user)
 
-      find('.js-move-issue').click
+      click_button _('Move issue')
       wait_for_requests
 
-      page.within '.js-sidebar-move-issue-block' do
-        fill_in('sidebar-move-issue-dropdown-search', with: new_project_search.name)
+      page.within '.js-issuable-move-block' do
+        fill_in(_('Search project'), with: new_project_search.name)
 
         expect(page).to have_content(new_project_search.name)
         expect(page).not_to have_content(new_project.name)
@@ -76,10 +76,10 @@ RSpec.describe 'issue move to another project', feature_category: :team_planning
       end
 
       it 'browsing projects in projects select' do
-        find('.js-move-issue').click
+        click_button _('Move issue')
         wait_for_requests
 
-        page.within '.js-sidebar-move-issue-block' do
+        page.within '.js-issuable-move-block' do
           expect(page).to have_content new_project.full_name
         end
       end
@@ -115,10 +115,10 @@ RSpec.describe 'issue move to another project', feature_category: :team_planning
 
       visit issue_path(service_desk_issue)
 
-      find('.js-move-issue').click
+      click_button _('Move issue')
       wait_for_requests
-      find('.js-move-issue-dropdown-item', text: project_title).click
-      find('.js-move-issue-confirmation-button').click
+      find('.gl-dropdown-item', text: project_title).click
+      click_button _('Move')
     end
 
     it 'shows an alert after being moved' do

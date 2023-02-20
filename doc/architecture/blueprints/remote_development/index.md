@@ -76,7 +76,7 @@ The current production [Web IDE](../../../user/project/web_ide/index.md).
 
 An advanced editor with commit staging that currently supports:
 
-- [Live Preview](../../../user/project/web_ide/index.md#live-preview)
+- [Live Preview](../../../user/project/web_ide/index.md#live-preview-removed)
 - [Interactive Web Terminals](../../../user/project/web_ide/index.md#interactive-web-terminals-for-the-web-ide)
 
 ### Web IDE

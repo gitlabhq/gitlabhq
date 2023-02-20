@@ -17,6 +17,15 @@ module Ci
         Project.from_union(target_projects, remove_duplicates: false)
       end
 
+      def add!(target_project, user:)
+        Ci::JobToken::ProjectScopeLink.create!(
+          source_project: @source_project,
+          direction: @direction,
+          target_project: target_project,
+          added_by: user
+        )
+      end
+
       private
 
       def source_links

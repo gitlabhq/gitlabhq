@@ -108,7 +108,7 @@ module Ci
       raise ArgumentError, 'Offset is out of range' if offset > size || offset < 0
       return if offset == size # Skip the following process as it doesn't affect anything
 
-      self.append(+"", offset)
+      append(+"", offset)
     end
 
     def append(new_data, offset)
@@ -166,7 +166,7 @@ module Ci
         raise FailedToPersistDataError, 'Modifed build trace chunk detected' if has_changes_to_save?
 
         self.class.with_read_consistency(build) do
-          self.reset.then(&:unsafe_persist_data!)
+          reset.then(&:unsafe_persist_data!)
         end
       end
     rescue FailedToObtainLockError
@@ -205,9 +205,9 @@ module Ci
     end
 
     def <=>(other)
-      return unless self.build_id == other.build_id
+      return unless build_id == other.build_id
 
-      self.chunk_index <=> other.chunk_index
+      chunk_index <=> other.chunk_index
     end
 
     protected

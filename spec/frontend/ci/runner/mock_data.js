@@ -304,6 +304,7 @@ export const mockSearchExamples = [
 export const onlineContactTimeoutSecs = 2 * 60 * 60;
 export const staleTimeoutSecs = 7889238; // Ruby's `3.months`
 
+export const newRunnerPath = '/runners/new';
 export const emptyStateSvgPath = 'emptyStateSvgPath.svg';
 export const emptyStateFilteredSvgPath = 'emptyStateFilteredSvgPath.svg';
 

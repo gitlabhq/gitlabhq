@@ -25,44 +25,73 @@ POST /projects/:id/product_analytics/request/load
 POST /projects/:id/product_analytics/request/dry-run
 ```
 
-| Attribute | Type             | Required | Description                                                   |
-| --------- |------------------| -------- |---------------------------------------------------------------|
-| `id`      | integer          | yes      | The ID of a project that the current user has read access to. |
+| Attribute       | Type             | Required | Description                                                                                 |
+|-----------------|------------------| -------- |---------------------------------------------------------------------------------------------|
+| `id`            | integer          | yes      | The ID of a project that the current user has read access to.                               |
+| `include_token` | boolean          | no       | Whether to include the access token in the response. (Only required for funnel generation.) |
 
 ### Request body
 
 The body of the load request must be a valid Cube query.
 
+NOTE:
+When measuring `TrackedEvents`, you must use `TrackedEvents.*` for `dimensions` and `timeDimensions`. The same rule applies when measuring `Sessions`.
+
+#### Tracked events example
+
 ```json
 {
   "query": {
     "measures": [
-      "Jitsu.count"
+      "TrackedEvents.count"
     ],
     "timeDimensions": [
       {
-        "dimension": "Jitsu.utcTime",
+        "dimension": "TrackedEvents.utcTime",
         "dateRange": "This week"
       }
     ],
     "order": [
       [
-        "Jitsu.count",
+        "TrackedEvents.count",
         "desc"
       ],
       [
-        "Jitsu.docPath",
+        "TrackedEvents.docPath",
         "desc"
       ],
       [
-        "Jitsu.utcTime",
+        "TrackedEvents.utcTime",
         "asc"
       ]
     ],
     "dimensions": [
-      "Jitsu.docPath"
+      "TrackedEvents.docPath"
     ],
     "limit": 23
+  },
+  "queryType": "multi"
+}
+```
+
+#### Sessions example
+
+```json
+{
+  "query": {
+    "measures": [
+      "Sessions.count"
+    ],
+    "timeDimensions": [
+      {
+        "dimension": "Sessions.startAt",
+        "granularity": "day"
+      }
+    ],
+    "order": {
+      "Sessions.startAt": "asc"
+    },
+    "limit": 100
   },
   "queryType": "multi"
 }
@@ -79,3 +108,15 @@ GET /projects/:id/product_analytics/request/meta
 | Attribute | Type             | Required | Description                                                   |
 | --------- |------------------| -------- |---------------------------------------------------------------|
 | `id`      | integer          | yes      | The ID of a project that the current user has read access to. |
+
+## List a project's funnels
+
+List all funnels for a project. For example:
+
+```plaintext
+GET /projects/:id/product_analytics/funnels
+```
+
+| Attribute | Type             | Required | Description                                                        |
+| --------- |------------------| -------- |--------------------------------------------------------------------|
+| `id`      | integer          | yes      | The ID of a project that the current user has the Developer role for. |

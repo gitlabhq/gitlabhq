@@ -15,6 +15,15 @@ files or directories in a repository.
 - You can set your merge requests so they must be approved by Code Owners before merge.
 - You can protect a branch and allow only Code Owners to approve changes to the branch.
 
+<div class="video-fallback">
+  Video introduction: <a href="https://www.youtube.com/watch?v=RoyBySTUSB0">Code Owners</a>.
+</div>
+<figure class="video-container">
+  <iframe src="https://www.youtube-nocookie.com/embed/RoyBySTUSB0" frameborder="0" allowfullscreen> </iframe>
+</figure>
+
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+
 Use Code Owners and approvers together with
 [approval rules](merge_requests/approvals/rules.md) to build a flexible approval
 workflow:
@@ -34,18 +43,25 @@ For example:
 | Code Owner approval rule | Frontend: Code Style | `*.css` files | A frontend engineer reviews CSS file changes for adherence to project style standards.              |
 | Code Owner approval rule | Backend: Code Review | `*.rb` files  | A backend engineer reviews the logic and code style of Ruby files.                                  |
 
+## Code Owners file
+
+A `CODEOWNERS` file (with no extension) can specify users or [shared groups](members/share_project_with_groups.md)
+that are responsible for specific files and directories in a repository. Each repository
+can have a single `CODEOWNERS` file, and it must be found one of these three locations:
+
+- In the root directory of the repository.
+- In the `.gitlab/` directory.
+- In the `docs/` directory.
+
+A CODEOWNERS file in any other location is ignored.
+
 ## Set up Code Owners
 
-Create a `CODEOWNERS` file to specify users or [shared groups](members/share_project_with_groups.md)
-that are responsible for specific files and directories in a repository. Each repository
-can have a single `CODEOWNERS` file. To create it:
+1. Create a file named `CODEOWNERS` (with no extension) in one of these locations:
 
-1. Choose the location where you want to specify Code Owners:
-   - In the root directory of the repository
-   - In the `.gitlab/` directory
-   - In the `docs/` directory
-
-1. In that location, create a file named `CODEOWNERS`.
+- In the root directory of the repository
+- In the `.gitlab/` directory
+- In the `docs/` directory
 
 1. In the file, enter text that follows one of these patterns:
 
@@ -154,7 +170,20 @@ README.md @user1
 
 The Code Owner for `README.md` would be `@user2`.
 
-If you use sections, the last user _for each section_ is used.
+If you use sections, the last pattern matching the file for each section is used.
+For example, in a `CODEOWNERS` file using sections:
+
+```plaintext
+[README Owners]
+README.md @user1 @user2
+internal/README.md @user4
+
+[README other owners]
+README.md @user3
+```
+
+The Code Owners for the `README.md` in the root directory are `@user1`, `@user2`,
+and `@user3`. The Code Owners for `internal/README.md` are `@user4` and `@user3`. 
 
 Only one CODEOWNERS pattern can match per file path.
 

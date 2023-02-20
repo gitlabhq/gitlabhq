@@ -4,7 +4,7 @@ require 'spec_helper'
 
 require_migration!
 
-RSpec.describe AddPasswordLastChangedAtToUserDetails, feature_category: :users do
+RSpec.describe AddPasswordLastChangedAtToUserDetails, feature_category: :user_profile do
   let!(:namespace) { table(:namespaces).create!(name: 'user', path: 'user') }
   let!(:users) { table(:users) }
   let!(:user) { create_user! }

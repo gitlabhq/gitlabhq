@@ -13,7 +13,7 @@ if you do not have write access for the repository you want to contribute to, yo
 can create a fork.
 
 A fork is a personal copy of the repository and all its branches, which you create
-in a namespace of your choice. This way you can make changes in your own fork and
+in a namespace of your choice. Make changes in your own fork and
 submit them through a merge request to the repository you don't have access to.
 
 ## Creating a fork
@@ -23,7 +23,7 @@ submit them through a merge request to the repository you don't have access to.
 
 To fork an existing project in GitLab:
 
-1. On the project's home page, in the top right, select **{fork}** **Fork**:
+1. On the project's home page, in the upper right, select **{fork}** **Fork**:
    ![Fork this project](img/forking_workflow_fork_button_v13_10.png)
 1. Optional. Edit the **Project name**.
 1. For **Project URL**, select the [namespace](../../namespace/index.md)
@@ -37,19 +37,82 @@ To fork an existing project in GitLab:
 
 GitLab creates your fork, and redirects you to the new fork's page.
 
-## Repository mirroring
+## Update your fork
 
-You can use [repository mirroring](mirror/index.md) to keep your fork synced with the original repository. You can also use `git remote add upstream` to achieve the same result.
+To copy the latest changes from the upstream repository into your fork, update it
+[from the command line](#from-the-command-line). GitLab Premium and higher tiers can also
+[configure forks as pull mirrors](#with-repository-mirroring)
+of the upstream repository.
 
-The main difference is that with repository mirroring, your remote fork is automatically kept up-to-date.
+### From the command line
 
-Without mirroring, to work locally you must use `git pull` to update your local repository
-with the upstream project, then push the changes back to your fork to update it.
+To update your fork from the command line, first ensure that you have configured
+an `upstream` remote repository for your fork:
+
+1. Clone your fork locally, if you have not already done so. For more information, see
+   [Clone a repository](../../../gitlab-basics/start-using-git.md#clone-a-repository).
+1. View the remotes configured for your fork:
+
+   ```shell
+   git remote -v
+   ```
+
+1. If your fork does not have a remote pointing to the original repository,
+   use one of these examples to configure a remote called `upstream`:
+
+   ```shell
+   # Use this line to set any repository as your upstream after editing <upstream_url>
+   git remote add upstream <upstream_url>
+
+   # Use this line to set the main GitLab repository as your upstream
+   git remote add upstream https://gitlab.com/gitlab-org/gitlab.git
+   ```
+
+   After ensuring your local copy has the extra remote configured, you are ready to update your fork.
+
+1. In your local copy, ensure you have checked out the [default branch](branches/default.md),
+   replacing `main` with the name of your default branch:
+
+   ```shell
+   git checkout main
+   ```
+
+   If Git identifies unstaged changes, commit or stash them before continuing.
+
+1. Fetch the changes to the upstream repository:
+
+   ```shell
+   git fetch upstream
+   ```
+
+1. Pull the changes into your fork, replacing `main` with the name of the branch
+   you are updating:
+
+   ```shell
+   git pull upstream main
+   ```
+
+1. Push the changes to your fork repository on the server (GitLab.com or self-managed):
+
+   ```shell
+   git push origin main
+   ```
+
+### With repository mirroring **(PREMIUM)**
+
+A fork can be configured as a mirror of the upstream if all these conditions are met:
+
+1. Your subscription is **(PREMIUM)** or a higher tier.
+1. You create all changes in branches (not `main`).
+1. You do not work on [merge requests for confidential issues](../merge_requests/confidential.md),
+   which requires changes to `main`.
+
+[Repository mirroring](mirror/index.md) keeps your fork synced with the original repository.
+This method updates your fork once per hour, with no manual `git pull` required.
+For instructions, read [Configure pull mirroring](mirror/pull.md#configure-pull-mirroring).
 
 WARNING:
-With mirroring, before approving a merge request, you are asked to sync. We recommend you automate it.
-
-Read more about [How to keep your fork up to date with its origin](https://about.gitlab.com/blog/2016/12/01/how-to-keep-your-fork-up-to-date-with-its-origin/).
+With mirroring, before approving a merge request, you are asked to sync. You should automate it.
 
 ## Merging upstream
 
@@ -60,7 +123,7 @@ choose your forked project's branch. For **Target branch**, choose the original 
 NOTE:
 When creating a merge request, if the forked project's visibility is more restrictive than the parent project (for example the fork is private, the parent is public), the target branch defaults to the forked project's default branch. This prevents potentially exposing the private code of the forked project.
 
-![Selecting branches](img/forking_workflow_branch_select.png)
+![Selecting branches](img/forking_workflow_branch_select_v15_9.png)
 
 Then you can add labels, a milestone, and assign the merge request to someone who can review
 your changes. Then select **Submit merge request** to conclude the process. When successfully merged, your
@@ -69,3 +132,8 @@ changes are added to the repository and branch you're merging into.
 ## Removing a fork relationship
 
 You can unlink your fork from its upstream project in the [advanced settings](../settings/index.md#remove-a-fork-relationship).
+
+## Related topics
+
+- GitLab blog post: [How to keep your fork up to date with its origin](https://about.gitlab.com/blog/2016/12/01/how-to-keep-your-fork-up-to-date-with-its-origin/).
+- GitLab community forum: [Refreshing a fork](https://forum.gitlab.com/t/refreshing-a-fork/).

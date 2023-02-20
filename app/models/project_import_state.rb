@@ -11,6 +11,7 @@ class ProjectImportState < ApplicationRecord
   belongs_to :project, inverse_of: :import_state
 
   validates :project, presence: true
+  validates :checksums, json_schema: { filename: "project_import_stats" }
 
   alias_attribute :correlation_id, :correlation_id_value
 
@@ -66,6 +67,16 @@ class ProjectImportState < ApplicationRecord
 
     after_transition any => [:canceled, :failed] do |state, _|
       state.project.remove_import_data
+    end
+
+    before_transition started: [:finished, :canceled, :failed] do |state, _|
+      project = state.project
+
+      if project.github_import?
+        import_stats = ::Gitlab::GithubImport::ObjectCounter.summary(state.project)
+
+        state.update_column(:checksums, import_stats)
+      end
     end
 
     after_transition started: :finished do |state, _|

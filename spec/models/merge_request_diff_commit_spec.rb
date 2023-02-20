@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe MergeRequestDiffCommit do
+RSpec.describe MergeRequestDiffCommit, feature_category: :code_review_workflow do
   let(:merge_request) { create(:merge_request) }
   let(:project) { merge_request.project }
 

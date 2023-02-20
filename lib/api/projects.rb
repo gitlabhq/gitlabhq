@@ -9,7 +9,11 @@ module API
 
     before { authenticate_non_get! }
 
-    feature_category :projects, ['/projects/:id/custom_attributes', '/projects/:id/custom_attributes/:key']
+    feature_category :projects, %w[
+      /projects/:id/custom_attributes
+      /projects/:id/custom_attributes/:key
+      /projects/:id/share_locations
+    ]
 
     PROJECT_ATTACHMENT_SIZE_EXEMPT = 1.gigabyte
 
@@ -351,6 +355,20 @@ module API
           render_validation_error!(project)
         end
       end
+
+      desc 'Returns group that can be shared with the given project' do
+        success Entities::Group
+      end
+      params do
+        requires :id, type: Integer, desc: 'The id of the project'
+        optional :search, type: String, desc: 'Return list of groups matching the search criteria'
+      end
+      get ':id/share_locations' do
+        groups = ::Groups::AcceptingProjectSharesFinder.new(current_user, user_project, declared_params(include_missing: false)).execute
+
+        present_groups groups
+      end
+
       # rubocop: enable CodeReuse/ActiveRecord
     end
 
@@ -850,11 +868,23 @@ module API
         ]
         tags %w[projects]
       end
+      params do
+        optional :task, type: Symbol, default: :eager, values: %i[eager prune], desc: '`prune` to trigger manual prune of unreachable objects or `eager` to trigger eager housekeeping.'
+      end
       post ':id/housekeeping', feature_category: :source_code_management do
         authorize_admin_project
 
         begin
-          ::Repositories::HousekeepingService.new(user_project, :gc).execute
+          ::Repositories::HousekeepingService.new(user_project, params[:task]).execute do
+            ::Gitlab::Audit::Auditor.audit(
+              name: 'manually_trigger_housekeeping',
+              author: current_user,
+              scope: user_project,
+              target: user_project,
+              message: "Housekeeping task: #{params[:task]}",
+              created_at: DateTime.current
+            )
+          end
         rescue ::Repositories::HousekeepingService::LeaseTaken => error
           conflict!(error.message)
         end

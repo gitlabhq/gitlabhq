@@ -5,8 +5,8 @@ module Issues
     # NOTE: For Issues::UpdateService, we default the spam_params to nil, because spam_checking is not
     # necessary in many cases, and we don't want to require every caller to explicitly pass it as nil
     # to disable spam checking.
-    def initialize(project:, current_user: nil, params: {}, spam_params: nil)
-      super(project: project, current_user: current_user, params: params)
+    def initialize(container:, current_user: nil, params: {}, spam_params: nil)
+      super(project: container, current_user: current_user, params: params)
       @spam_params = spam_params
     end
 
@@ -96,7 +96,7 @@ module Issues
       canonical_issue = IssuesFinder.new(current_user).find_by(id: canonical_issue_id)
 
       if canonical_issue
-        Issues::DuplicateService.new(project: project, current_user: current_user).execute(issue, canonical_issue)
+        Issues::DuplicateService.new(container: project, current_user: current_user).execute(issue, canonical_issue)
       end
     end
     # rubocop: enable CodeReuse/ActiveRecord
@@ -109,12 +109,29 @@ module Issues
           target_project != issue.project
 
       update(issue)
-      Issues::MoveService.new(project: project, current_user: current_user).execute(issue, target_project)
+      Issues::MoveService.new(container: project, current_user: current_user).execute(issue, target_project)
     end
 
     private
 
     attr_reader :spam_params
+
+    # TODO: remove this once MergeRequests::UpdateService#initialize is changed to take container as named argument.
+    #
+    # Issues::UpdateService is used together with MergeRequests::UpdateService in Mutations::Assignable#assign! method
+    # however MergeRequests::UpdateService#initialize still takes `project` as param and Issues::UpdateService is being
+    # changed to take `container` as param. So we are adding this workaround in the meantime.
+    def self.constructor_container_arg(value)
+      { container: value }
+    end
+
+    def handle_quick_actions(issue)
+      # Do not handle quick actions unless the work item is the default Issue.
+      # The available quick actions for a work item depend on its type and widgets.
+      return unless issue.work_item_type.default_issue?
+
+      super
+    end
 
     def handle_date_changes(issue)
       return unless issue.previous_changes.slice('due_date', 'start_date').any?
@@ -131,7 +148,7 @@ module Issues
 
       # we've pre-empted this from running in #execute, so let's go ahead and update the Issue now.
       update(issue)
-      Issues::CloneService.new(project: project, current_user: current_user).execute(issue, target_project, with_notes: with_notes)
+      Issues::CloneService.new(container: project, current_user: current_user).execute(issue, target_project, with_notes: with_notes)
     end
 
     def create_merge_request_from_quick_action
@@ -181,9 +198,9 @@ module Issues
       return if skip_milestone_email
 
       if issue.milestone.nil?
-        notification_service.async.removed_milestone_issue(issue, current_user)
+        notification_service.async.removed_milestone(issue, current_user)
       else
-        notification_service.async.changed_milestone_issue(issue, issue.milestone, current_user)
+        notification_service.async.changed_milestone(issue, issue.milestone, current_user)
       end
     end
 

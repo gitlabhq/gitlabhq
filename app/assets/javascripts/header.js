@@ -33,6 +33,13 @@ function initStatusTriggers() {
 
   if (setStatusModalTriggerEl) {
     setStatusModalTriggerEl.addEventListener('click', () => {
+      const topNavbar = document.querySelector('.navbar-gitlab');
+      const buttonWithinTopNav = topNavbar && topNavbar.contains(setStatusModalTriggerEl);
+      Tracking.event(undefined, 'click_button', {
+        label: 'user_edit_status',
+        property: buttonWithinTopNav ? 'navigation_top' : undefined,
+      });
+
       import(
         /* webpackChunkName: 'statusModalBundle' */ './set_status_modal/set_status_modal_wrapper.vue'
       )

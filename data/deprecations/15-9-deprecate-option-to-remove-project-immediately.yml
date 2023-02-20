@@ -1,0 +1,13 @@
+- title: "Option to delete projects immediately is deprecated from deletion protection settings"  # (required) Clearly explain the change, or planned change. For example, "The `confidential` field for a `Note` is deprecated" or "CI/CD job names will be limited to 250 characters."
+  announcement_milestone: "15.9"  # (required) The milestone when this feature was first announced as deprecated.
+  removal_milestone: "16.0"  # (required) The milestone when this feature is planned to be removed
+  breaking_change: true  # (required) Change to false if this is not a breaking change.
+  reporter: lohrc  # (required) GitLab username of the person reporting the change
+  stage: manage  # (required) String value of the stage that the feature was created in. e.g., Growth
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/389557  # (required) Link to the deprecation issue in GitLab
+  body: |  # (required) Do not modify this line, instead modify the lines below.
+    The project deletion protection setting in the Admin Area had an option to delete projects immediately. Starting with 16.0, this option will no longer be available, and delayed project deletion will become the default behavior.
+
+    The option will no longer appear as a group setting. Self-managed users will still have the option to define the deletion delay period, and SaaS users have a non-adjustable default retention period of 7 days. Users can still delete the project immediately from the project settings.
+
+    The option to delete projects immediately by default was deprecated to prevent users from accidentally taking this action and permanently losing projects.

@@ -74,7 +74,7 @@ $ ssh-add -L | grep cert | ssh-keygen -L -f -
 ```
 
 Technically that's not strictly true, for example, it could be
-`prod-aearnfjord` if it's a SSH certificate you'd normally sign in to
+`prod-aearnfjord` if it's a SSH certificate you'd usually sign in to
 servers as the `prod-aearnfjord` user, but then you must specify your
 own `AuthorizedPrincipalsCommand` to do that mapping instead of using
 our provided default.
@@ -122,7 +122,7 @@ You can supply as many principals as you want, these are turned
 into multiple lines of `authorized_keys` output, as described in the
 `AuthorizedPrincipalsFile` documentation in `sshd_config(5)`.
 
-Normally when using the `AuthorizedKeysCommand` with OpenSSH the
+Usually when using the `AuthorizedKeysCommand` with OpenSSH the
 principal is some "group" that's allowed to sign in to that
 server. However with GitLab it's only used to appease OpenSSH's
 requirement for it, we effectively only care about the "key ID" being
@@ -145,13 +145,13 @@ authenticate the user, OpenSSH falls back on
 
 Therefore there may still be a reason to use the [Fast lookup of authorized SSH keys in the database](fast_ssh_key_lookup.md) method
 in conjunction with this. Since you are using SSH certificates for
-all your normal users, and relying on the `~/.ssh/authorized_keys`
+all your typical users, and relying on the `~/.ssh/authorized_keys`
 fallback for deploy keys, if you make use of those.
 
 But you may find that there's no reason to do that, since all your
-normal users use the fast `AuthorizedPrincipalsCommand` path, and
+typical users use the fast `AuthorizedPrincipalsCommand` path, and
 only automated deployment key access falls back on
-`~/.ssh/authorized_keys`, or that you have a lot more keys for normal
+`~/.ssh/authorized_keys`, or that you have a lot more keys for typical
 users (especially if they're renewed) than you have deploy keys.
 
 ## Other security caveats

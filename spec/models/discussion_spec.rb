@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Discussion do
+RSpec.describe Discussion, feature_category: :team_planning do
   subject { described_class.new([first_note, second_note, third_note]) }
 
   let(:first_note) { create(:diff_note_on_merge_request) }
@@ -67,6 +67,69 @@ RSpec.describe Discussion do
 
       it 'returns the cache key with resolved at' do
         expect(subject.cache_key).to eq("#{described_class::CACHE_VERSION}:#{subject.id}:#{notes_sha}:#{subject.resolved_at}")
+      end
+    end
+  end
+
+  describe '#to_global_id' do
+    context 'with a single DiffNote discussion' do
+      it 'returns GID on Discussion class' do
+        discussion = described_class.build([first_note], merge_request)
+        discussion_id = discussion.id
+
+        expect(discussion.class.name.to_s).to eq("DiffDiscussion")
+        expect(discussion.to_global_id.to_s).to eq("gid://gitlab/Discussion/#{discussion_id}")
+      end
+    end
+
+    context 'with multiple DiffNotes discussion' do
+      it 'returns GID on Discussion class' do
+        discussion = described_class.build([first_note, second_note], merge_request)
+        discussion_id = discussion.id
+
+        expect(discussion.class.name.to_s).to eq("DiffDiscussion")
+        expect(discussion.to_global_id.to_s).to eq("gid://gitlab/Discussion/#{discussion_id}")
+      end
+    end
+
+    context 'with discussions on issue' do
+      let_it_be(:note_1, refind: true) { create(:note) }
+      let_it_be(:noteable) { note_1.noteable }
+
+      context 'with a single Note' do
+        it 'returns GID on Discussion class' do
+          discussion = described_class.build([note_1], noteable)
+          discussion_id = discussion.id
+
+          expect(discussion.class.name.to_s).to eq("IndividualNoteDiscussion")
+          expect(discussion.to_global_id.to_s).to eq("gid://gitlab/Discussion/#{discussion_id}")
+        end
+      end
+
+      context 'with multiple Notes' do
+        let_it_be(:note_1, refind: true) { create(:note, type: 'DiscussionNote') }
+        let_it_be(:note_2, refind: true) { create(:note, in_reply_to: note_1) }
+
+        it 'returns GID on Discussion class' do
+          discussion = described_class.build([note_1, note_2], noteable)
+          discussion_id = discussion.id
+
+          expect(discussion.class.name.to_s).to eq("Discussion")
+          expect(discussion.to_global_id.to_s).to eq("gid://gitlab/Discussion/#{discussion_id}")
+        end
+      end
+    end
+
+    context 'with system notes' do
+      let_it_be(:system_note, refind: true) { create(:note, system: true) }
+      let_it_be(:noteable) { system_note.noteable }
+
+      it 'returns GID on Discussion class' do
+        discussion = described_class.build([system_note], noteable)
+        discussion_id = discussion.id
+
+        expect(discussion.class.name.to_s).to eq("IndividualNoteDiscussion")
+        expect(discussion.to_global_id.to_s).to eq("gid://gitlab/Discussion/#{discussion_id}")
       end
     end
   end

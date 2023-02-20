@@ -37,10 +37,10 @@ export default {
       return job.detailedStatus?.detailsPath;
     },
     projectName(job) {
-      return job.pipeline?.project?.name;
+      return job.project?.name;
     },
     projectWebUrl(job) {
-      return job.pipeline?.project?.webUrl;
+      return job.project?.webUrl;
     },
     commitShortSha(job) {
       return job.shortSha;

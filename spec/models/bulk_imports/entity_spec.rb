@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BulkImports::Entity, type: :model do
+RSpec.describe BulkImports::Entity, type: :model, feature_category: :importers do
   describe 'associations' do
     it { is_expected.to belong_to(:bulk_import).required }
     it { is_expected.to belong_to(:parent) }
@@ -16,6 +16,38 @@ RSpec.describe BulkImports::Entity, type: :model do
     it { is_expected.to validate_presence_of(:destination_name) }
 
     it { is_expected.to define_enum_for(:source_type).with_values(%i[group_entity project_entity]) }
+
+    context 'when formatting with regexes' do
+      subject { described_class.new(group: Group.new) }
+
+      it { is_expected.to allow_values('namespace', 'parent/namespace', 'parent/group/subgroup', '').for(:destination_namespace) }
+      it { is_expected.not_to allow_values('parent/namespace/', '/namespace', 'parent group/subgroup', '@namespace').for(:destination_namespace) }
+
+      it { is_expected.to allow_values('source', 'source/path', 'source/full/path').for(:source_full_path) }
+      it { is_expected.not_to allow_values('/source', 'http://source/path', 'sou    rce/full/path', '').for(:source_full_path) }
+
+      it { is_expected.to allow_values('destination', 'destination-slug', 'new-destination-slug').for(:destination_slug) }
+
+      # it { is_expected.not_to allow_values('destination/slug', '/destination-slug', 'destination slug').for(:destination_slug) } <-- this test should
+      # succeed but it's failing possibly due to rspec caching. To ensure this case is covered see the more cumbersome test below:
+      context 'when destination_slug is invalid' do
+        let(:invalid_slugs) { ['destination/slug', '/destination-slug', 'destination slug'] }
+        let(:error_message) do
+          'cannot start with a non-alphanumeric character except for periods or underscores, ' \
+            'can contain only alphanumeric characters, periods, and underscores, ' \
+            'cannot end with a period or forward slash, and has no ' \
+            'leading or trailing forward slashes'
+        end
+
+        it 'raises an error' do
+          invalid_slugs.each do |slug|
+            entity = build(:bulk_import_entity, :group_entity, group: build(:group), project: nil, destination_slug: slug)
+            expect(entity).not_to be_valid
+            expect(entity.errors.errors[0].message).to include(error_message)
+          end
+        end
+      end
+    end
 
     context 'when associated with a group and project' do
       it 'is invalid' do
@@ -43,6 +75,21 @@ RSpec.describe BulkImports::Entity, type: :model do
       it 'is valid when destination_namespace is empty' do
         entity = build(:bulk_import_entity, :group_entity, group: build(:group), project: nil, destination_namespace: '')
         expect(entity).to be_valid
+      end
+
+      it 'is invalid when destination_namespace is nil' do
+        entity = build(:bulk_import_entity, :group_entity, group: build(:group), project: nil, destination_namespace: nil)
+        expect(entity).not_to be_valid
+      end
+
+      it 'is invalid when destination_slug is empty' do
+        entity = build(:bulk_import_entity, :group_entity, group: build(:group), project: nil, destination_slug: '')
+        expect(entity).not_to be_valid
+      end
+
+      it 'is invalid when destination_slug is nil' do
+        entity = build(:bulk_import_entity, :group_entity, group: build(:group), project: nil, destination_slug: nil)
+        expect(entity).not_to be_valid
       end
 
       it 'is invalid as a project_entity' do
@@ -343,6 +390,26 @@ RSpec.describe BulkImports::Entity, type: :model do
       entity = build(:bulk_import_entity, group: nil, project: nil)
 
       expect(entity.full_path).to eq(nil)
+    end
+  end
+
+  describe '#default_visibility_level' do
+    context 'when entity is a group' do
+      it 'returns default group visibility' do
+        stub_application_setting(default_group_visibility: Gitlab::VisibilityLevel::PUBLIC)
+        entity = build(:bulk_import_entity, :group_entity, group: build(:group))
+
+        expect(entity.default_visibility_level).to eq(Gitlab::VisibilityLevel::PUBLIC)
+      end
+    end
+
+    context 'when entity is a project' do
+      it 'returns default project visibility' do
+        stub_application_setting(default_project_visibility: Gitlab::VisibilityLevel::INTERNAL)
+        entity = build(:bulk_import_entity, :project_entity, group: build(:group))
+
+        expect(entity.default_visibility_level).to eq(Gitlab::VisibilityLevel::INTERNAL)
+      end
     end
   end
 end

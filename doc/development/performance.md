@@ -154,7 +154,7 @@ allowing you to profile which code is running on CPU in detail.
 It's important to note that profiling an application *alters its performance*.
 Different profiling strategies have different overheads. Stackprof is a sampling
 profiler. It samples stack traces from running threads at a configurable
-frequency (for example, 100hz, that is 100 stacks per second). This type of profiling
+frequency (for example, 100 hz, that is 100 stacks per second). This type of profiling
 has quite a low (albeit non-zero) overhead and is generally considered to be
 safe for production.
 
@@ -234,7 +234,7 @@ The following configuration options can be configured:
 - `STACKPROF_INTERVAL`: Sampling interval. Unit semantics depend on `STACKPROF_MODE`.
   For `object` mode this is a per-event interval (every `nth` event is sampled)
   and defaults to `100`.
-  For other modes such as `cpu` this is a frequency interval and defaults to `10100` μs (99hz).
+  For other modes such as `cpu` this is a frequency interval and defaults to `10100` μs (99 hz).
 - `STACKPROF_FILE_PREFIX`: File path prefix where profiles are stored. Defaults
   to `$TMPDIR` (often corresponds to `/tmp`).
 - `STACKPROF_TIMEOUT_S`: Profiling timeout in seconds. Profiling will
@@ -477,7 +477,7 @@ The `mem_*` values represent different aspects of how objects and memory are all
   => {:mem_objects=>1002, :mem_bytes=>32000, :mem_mallocs=>1000}
   ```
 
-- The following example will allocate over 40kB of data, and perform only a single memory allocation.
+- The following example will allocate over 40 kB of data, and perform only a single memory allocation.
    The existing object will be reallocated/resized on subsequent iterations:
 
   ```ruby
@@ -583,8 +583,8 @@ You may find the results:
   **Metrics Reports** [dropdown list](../ci/testing/metrics_reports.md).
 - In the `memory-on-boot` artifacts for a full report and a dependency breakdown.
 
-`derailed_benchmarks` also provides other methods to investigate memory. To learn more,
-refer to the [gem documentation](https://github.com/zombocom/derailed_benchmarks#running-derailed-exec).
+`derailed_benchmarks` also provides other methods to investigate memory. For more information, see
+the [gem documentation](https://github.com/zombocom/derailed_benchmarks#running-derailed-exec).
 Most of the methods (`derailed exec perf:*`) attempt to boot your Rails app in a
 `production` environment and run benchmarks against it.
 It is possible both in GDK and GCK:
@@ -730,7 +730,7 @@ test = +"hello"
 test += " world"
 ```
 
-When adding new Ruby files, please check that you can add the above header,
+When adding new Ruby files, check that you can add the above header,
 as omitting it may lead to style check failures.
 
 ## Banzai pipelines and filters
@@ -825,7 +825,7 @@ source into memory, memory use grows by _at least_ the size of the data source.
 In the case of `readlines`, it grows even further, due to extra bookkeeping
 the Ruby VM has to perform to represent each line.
 
-Consider the following program, which reads a text file that is 750MB on disk:
+Consider the following program, which reads a text file that is 750 MB on disk:
 
 ```ruby
 File.readlines('large_file.txt').each do |line|
@@ -859,7 +859,7 @@ We can see that `heap_live_slots` (the number of reachable objects) jumped to ~2
 which is roughly two orders of magnitude more compared to reading the file line by
 line instead. It was not just the raw memory usage that increased, but also how the garbage collector (GC)
 responded to this change in anticipation of future memory use. We can see that `malloc_increase_bytes` jumped
-to ~30MB, which compares to just ~4kB for a "fresh" Ruby program. This figure specifies how
+to ~30 MB, which compares to just ~4 kB for a "fresh" Ruby program. This figure specifies how
 much additional heap space the Ruby GC claims from the operating system next time it runs out of memory.
 Not only did we occupy more memory, we also changed the behavior of the application
 to increase memory use at a faster rate.

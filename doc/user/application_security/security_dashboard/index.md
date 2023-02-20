@@ -21,12 +21,18 @@ To use the Security Dashboards, you must:
 
 ## When Security Dashboards are updated
 
-The Security Dashboards show results of the most recent security scan on the
+The Security Dashboards show results of scans from the most recent completed pipeline on the
 [default branch](../../project/repository/branches/default.md).
-Security scans run only when the default branch updates, so
-information on the Security Dashboard might not reflect newly-discovered vulnerabilities.
+Dashboards are updated with the result of completed pipelines run on the default branch; they do not include vulnerabilities discovered in pipelines from other un-merged branches.
 
-To run a daily security scan,
+If you use manual jobs, for example gate deployments, in the default branch's pipeline,
+the results of any scans are only updated when the job has been successfully run.
+If manual jobs are skipped regularly, you should to define the job as optional,
+using the [`allow_failure`](../../../ci/jobs/job_control.md#types-of-manual-jobs) attribute.
+
+To ensure regular security scans (even on infrequently developed projects),
+you should use [scan execution policies](../../../user/application_security/policies/scan-execution-policies.md).
+Alternatively, you can
 [configure a scheduled pipeline](../../../ci/pipelines/schedules.md).
 
 ## Reduce false negatives in dependency scans
@@ -51,7 +57,7 @@ To reduce false negatives in [dependency scans](../../../user/application_securi
 The project Security Dashboard shows the total number of vulnerabilities
 over time, with up to 365 days of historical data. Data refresh begins daily at 01:15 UTC via a scheduled job.
 Each refresh captures a snapshot of open vulnerabilities. Data is not backported to prior days
-so vulnerabilities opened after the job has already run for the day will not be reflected in the
+so vulnerabilities opened after the job has already run for the day cannot be reflected in the
 counts until the following day's refresh job.
 Project Security Dashboards show statistics for all vulnerabilities with a current status of `Needs triage` or `Confirmed` .
 
@@ -99,7 +105,7 @@ To view project security status for a group:
 1. Select **Security > Security Dashboard**.
 
 Each project is assigned a letter [grade](#project-vulnerability-grades) according to the highest-severity open vulnerability.
-Dismissed or resolved vulnerabilities are excluded. Each project can receive only one letter grade and will appear only once
+Dismissed or resolved vulnerabilities are excluded. Each project can receive only one letter grade and appears only once
 in the Project security status report.
 
 To view vulnerabilities, go to the group's [vulnerability report](../vulnerability_report/index.md).

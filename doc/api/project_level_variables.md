@@ -17,7 +17,7 @@ GET /projects/:id/variables
 
 | Attribute | Type           | Required | Description                                                                                                                                   |
 | --------- | -------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
-| `id`      | integer/string | yes      | The ID of a project or [URL-encoded NAMESPACE/PROJECT_NAME of the project](index.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`      | integer/string | yes      | The ID of a project or [URL-encoded NAMESPACE/PROJECT_NAME of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/variables"
@@ -57,7 +57,7 @@ GET /projects/:id/variables/:key
 
 | Attribute | Type           | Required | Description                                                                                                                                   |
 | --------- | -------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
-| `id`      | integer/string | yes      | The ID of a project or [URL-encoded NAMESPACE/PROJECT_NAME of the project](index.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`      | integer/string | yes      | The ID of a project or [URL-encoded NAMESPACE/PROJECT_NAME of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
 | `key`     | string         | yes      | The `key` of a variable                                                                                                                       |
 | `filter`  | hash           | no       | Available filters: `[environment_scope]`. See the [`filter` parameter details](#the-filter-parameter).                                        |
 
@@ -89,13 +89,13 @@ POST /projects/:id/variables
 
 | Attribute           | Type           | Required | Description                                                                                                                                   |
 | ------------------- | -------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
-| `id`                | integer/string | yes      | The ID of a project or [URL-encoded NAMESPACE/PROJECT_NAME of the project](index.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`                | integer/string | yes      | The ID of a project or [URL-encoded NAMESPACE/PROJECT_NAME of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
 | `key`               | string         | yes      | The `key` of a variable; must have no more than 255 characters; only `A-Z`, `a-z`, `0-9`, and `_` are allowed                                 |
 | `value`             | string         | yes      | The `value` of a variable                                                                                                                     |
 | `variable_type`     | string         | no       | The type of a variable. Available types are: `env_var` (default) and `file`                                                                   |
 | `protected`         | boolean        | no       | Whether the variable is protected. Default: `false`                                                                                           |
 | `masked`            | boolean        | no       | Whether the variable is masked. Default: `false`                                                                                              |
-| `raw`               | boolean        | no       | Whether the variable is expandable. Default: `false`                                                                                          |
+| `raw`               | boolean        | no       | Whether the variable is treated as a raw string. Default: `false`. When `true`, variables in the value are not [expanded](../ci/variables/index.md#prevent-cicd-variable-expansion). |
 | `environment_scope` | string         | no       | The `environment_scope` of the variable. Default: `*`                                                                                         |
 
 ```shell
@@ -126,13 +126,13 @@ PUT /projects/:id/variables/:key
 
 | Attribute           | Type           | Required | Description                                                                                                                                   |
 | ------------------- | -------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
-| `id`                | integer/string | yes      | The ID of a project or [URL-encoded NAMESPACE/PROJECT_NAME of the project](index.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`                | integer/string | yes      | The ID of a project or [URL-encoded NAMESPACE/PROJECT_NAME of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
 | `key`               | string         | yes      | The `key` of a variable                                                                                                                       |
 | `value`             | string         | yes      | The `value` of a variable                                                                                                                     |
 | `variable_type`     | string         | no       | The type of a variable. Available types are: `env_var` (default) and `file`                                                                   |
 | `protected`         | boolean        | no       | Whether the variable is protected                                                                                                             |
 | `masked`            | boolean        | no       | Whether the variable is masked                                                                                                                |
-| `raw`               | boolean        | no       | Whether the variable is expandable. Default: `false`                                                                                          |
+| `raw`               | boolean        | no       | Whether the variable is treated as a raw string. Default: `false`. When `true`, variables in the value are not [expanded](../ci/variables/index.md#prevent-cicd-variable-expansion). |
 | `environment_scope` | string         | no       | The `environment_scope` of the variable                                                                                                       |
 | `filter`            | hash           | no       | Available filters: `[environment_scope]`. See the [`filter` parameter details](#the-filter-parameter).                                        |
 
@@ -164,7 +164,7 @@ DELETE /projects/:id/variables/:key
 
 | Attribute | Type           | Required | Description                                                                                                                                   |
 | --------- | -------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
-| `id`      | integer/string | yes      | The ID of a project or [URL-encoded NAMESPACE/PROJECT_NAME of the project](index.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`      | integer/string | yes      | The ID of a project or [URL-encoded NAMESPACE/PROJECT_NAME of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
 | `key`     | string         | yes      | The `key` of a variable                                                                                                                       |
 | `filter`  | hash           | no       | Available filters: `[environment_scope]`. See the [`filter` parameter details](#the-filter-parameter).                                        |
 

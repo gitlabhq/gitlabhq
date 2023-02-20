@@ -40,7 +40,7 @@ RSpec.describe FinderWithGroupHierarchy do
   let_it_be(:private_group) { create(:group, :private) }
   let_it_be(:private_subgroup) { create(:group, :private, parent: private_group) }
 
-  let(:user) { create(:user) }
+  let!(:user) { create(:user) }
 
   context 'when specifying group' do
     it 'returns only the group by default' do
@@ -107,6 +107,102 @@ RSpec.describe FinderWithGroupHierarchy do
       finder = finder_class.new(user, group: private_group, include_descendant_groups: true)
 
       expect(finder.execute(skip_authorization: true)).to match_array([private_group.id, private_subgroup.id])
+    end
+  end
+
+  context 'with N+1 query check' do
+    def run_query(group)
+      finder_class
+        .new(user, group: group, include_descendant_groups: true)
+        .execute
+        .to_a
+
+      RequestStore.clear!
+    end
+
+    it 'does not produce N+1 query', :request_store do
+      private_group.add_developer(user)
+
+      run_query(private_subgroup) # warmup
+      control = ActiveRecord::QueryRecorder.new { run_query(private_subgroup) }
+
+      expect { run_query(private_group) }.not_to exceed_query_limit(control)
+    end
+  end
+
+  context 'when preload_max_access_levels_for_labels_finder is disabled' do
+    # All test cases were copied from above, these will be removed once the FF is removed.
+
+    before do
+      stub_feature_flags(preload_max_access_levels_for_labels_finder: false)
+    end
+
+    context 'when specifying group' do
+      it 'returns only the group by default' do
+        finder = finder_class.new(user, group: group)
+
+        expect(finder.execute).to match_array([group.id])
+      end
+    end
+
+    context 'when specifying group_id' do
+      it 'returns only the group by default' do
+        finder = finder_class.new(user, group_id: group.id)
+
+        expect(finder.execute).to match_array([group.id])
+      end
+    end
+
+    context 'when including items from group ancestors' do
+      before do
+        private_subgroup.add_developer(user)
+      end
+
+      it 'returns group and its ancestors' do
+        private_group.add_developer(user)
+
+        finder = finder_class.new(user, group: private_subgroup, include_ancestor_groups: true)
+
+        expect(finder.execute).to match_array([private_group.id, private_subgroup.id])
+      end
+
+      it 'ignores groups which user can not read' do
+        finder = finder_class.new(user, group: private_subgroup, include_ancestor_groups: true)
+
+        expect(finder.execute).to match_array([private_subgroup.id])
+      end
+
+      it 'returns them all when skip_authorization is true' do
+        finder = finder_class.new(user, group: private_subgroup, include_ancestor_groups: true)
+
+        expect(finder.execute(skip_authorization: true)).to match_array([private_group.id, private_subgroup.id])
+      end
+    end
+
+    context 'when including items from group descendants' do
+      before do
+        private_subgroup.add_developer(user)
+      end
+
+      it 'returns items from group and its descendants' do
+        private_group.add_developer(user)
+
+        finder = finder_class.new(user, group: private_group, include_descendant_groups: true)
+
+        expect(finder.execute).to match_array([private_group.id, private_subgroup.id])
+      end
+
+      it 'ignores items from groups which user can not read' do
+        finder = finder_class.new(user, group: private_group, include_descendant_groups: true)
+
+        expect(finder.execute).to match_array([private_subgroup.id])
+      end
+
+      it 'returns them all when skip_authorization is true' do
+        finder = finder_class.new(user, group: private_group, include_descendant_groups: true)
+
+        expect(finder.execute(skip_authorization: true)).to match_array([private_group.id, private_subgroup.id])
+      end
     end
   end
 end

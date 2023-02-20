@@ -93,7 +93,7 @@ module CounterAttribute
     run_after_commit_or_now do
       new_value = counter(attribute).increment(increment)
 
-      log_increment_counter(attribute, increment.amount, new_value)
+      log_increment_counter(attribute, increment, new_value)
     end
   end
 
@@ -101,7 +101,7 @@ module CounterAttribute
     run_after_commit_or_now do
       new_value = counter(attribute).bulk_increment(increments)
 
-      log_increment_counter(attribute, increments.sum(&:amount), new_value)
+      log_bulk_increment_counter(attribute, increments, new_value)
     end
   end
 
@@ -198,12 +198,23 @@ module CounterAttribute
       message: 'Increment counter attribute',
       attribute: attribute,
       project_id: project_id,
-      increment: increment,
+      increment: increment.amount,
+      ref: increment.ref,
       new_counter_value: new_value,
       current_db_value: read_attribute(attribute)
     )
 
     Gitlab::AppLogger.info(payload)
+  end
+
+  def log_bulk_increment_counter(attribute, increments, new_value)
+    if Feature.enabled?(:split_log_bulk_increment_counter, type: :ops)
+      increments.each do |increment|
+        log_increment_counter(attribute, increment, new_value)
+      end
+    else
+      log_increment_counter(attribute, Gitlab::Counters::Increment.new(amount: increments.sum(&:amount)), new_value)
+    end
   end
 
   def log_clear_counter(attribute)

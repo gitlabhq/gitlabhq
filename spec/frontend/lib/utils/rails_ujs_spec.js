@@ -1,5 +1,6 @@
 import { setHTMLFixture } from 'helpers/fixtures';
 import waitForPromises from 'helpers/wait_for_promises';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 
 beforeAll(async () => {
   // @rails/ujs expects jQuery.ajaxPrefilter to exist if jQuery exists at
@@ -20,7 +21,7 @@ function mockXHRResponse({ responseText, responseContentType } = {}) {
   jest.spyOn(global.XMLHttpRequest.prototype, 'send').mockImplementation(function send() {
     Object.defineProperties(this, {
       readyState: { value: XMLHttpRequest.DONE },
-      status: { value: 200 },
+      status: { value: HTTP_STATUS_OK },
       response: { value: responseText },
     });
     this.onreadystatechange();

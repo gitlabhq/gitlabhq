@@ -72,12 +72,19 @@ export default {
     },
     setBaseImageSize() {
       const { contentImg } = this.$refs;
-      if (!contentImg || contentImg.offsetHeight === 0 || contentImg.offsetWidth === 0) return;
+      if (!contentImg) return;
+      if (contentImg.offsetHeight === 0 || contentImg.offsetWidth === 0) {
+        this.baseImageSize = {
+          height: contentImg.naturalHeight,
+          width: contentImg.naturalWidth,
+        };
+      } else {
+        this.baseImageSize = {
+          height: contentImg.offsetHeight,
+          width: contentImg.offsetWidth,
+        };
+      }
 
-      this.baseImageSize = {
-        height: contentImg.offsetHeight,
-        width: contentImg.offsetWidth,
-      };
       this.onResize({ width: this.baseImageSize.width, height: this.baseImageSize.height });
     },
     setImageNaturalScale() {
@@ -95,6 +102,11 @@ export default {
       }
 
       const { height, width } = this.baseImageSize;
+
+      this.imageStyle = {
+        width: `${width}px`,
+        height: `${height}px`,
+      };
 
       this.$parent.$emit(
         'setMaxScale',

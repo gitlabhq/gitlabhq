@@ -25,12 +25,13 @@ Your caret can stop touching a `rawReference` can happen in a variety of ways:
 */
 import { createAlert } from '~/flash';
 import { getIdFromGraphQLId, isGid } from '~/graphql_shared/utils';
+import { TYPE_ISSUE } from '~/issues/constants';
+import { HTTP_STATUS_NOT_FOUND } from '~/lib/utils/http_status';
 import { __ } from '~/locale';
 import {
   relatedIssuesRemoveErrorMap,
   pathIndeterminateErrorMap,
   addRelatedIssueErrorMap,
-  issuableTypesMap,
   PathIdSeparator,
 } from '../constants';
 import RelatedIssuesService from '../services/related_issues_service';
@@ -65,7 +66,7 @@ export default {
     issuableType: {
       type: String,
       required: false,
-      default: issuableTypesMap.ISSUE,
+      default: TYPE_ISSUE,
     },
     allowAutoComplete: {
       type: Boolean,
@@ -142,7 +143,7 @@ export default {
             this.store.setRelatedIssues(data.issuables);
           })
           .catch((res) => {
-            if (res && res.status !== 404) {
+            if (res && res.status !== HTTP_STATUS_NOT_FOUND) {
               createAlert({ message: relatedIssuesRemoveErrorMap[this.issuableType] });
             }
           });

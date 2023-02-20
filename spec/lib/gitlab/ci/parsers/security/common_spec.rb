@@ -203,24 +203,35 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Common do
             end
 
             context 'and name is not provided' do
-              context 'when CVE identifier exists' do
-                it 'combines identifier with location to create name' do
+              context 'when location does not exist' do
+                let(:location) { nil }
+
+                it 'returns only identifier name' do
                   finding = report.findings.find { |x| x.compare_key == 'CVE-2017-11429' }
-                  expect(finding.name).to eq("CVE-2017-11429 in yarn.lock")
+                  expect(finding.name).to eq("CVE-2017-11429")
                 end
               end
 
-              context 'when CWE identifier exists' do
-                it 'combines identifier with location to create name' do
-                  finding = report.findings.find { |x| x.compare_key == 'CWE-2017-11429' }
-                  expect(finding.name).to eq("CWE-2017-11429 in yarn.lock")
+              context 'when location exists' do
+                context 'when CVE identifier exists' do
+                  it 'combines identifier with location to create name' do
+                    finding = report.findings.find { |x| x.compare_key == 'CVE-2017-11429' }
+                    expect(finding.name).to eq("CVE-2017-11429 in yarn.lock")
+                  end
                 end
-              end
 
-              context 'when neither CVE nor CWE identifier exist' do
-                it 'combines identifier with location to create name' do
-                  finding = report.findings.find { |x| x.compare_key == 'OTHER-2017-11429' }
-                  expect(finding.name).to eq("other-2017-11429 in yarn.lock")
+                context 'when CWE identifier exists' do
+                  it 'combines identifier with location to create name' do
+                    finding = report.findings.find { |x| x.compare_key == 'CWE-2017-11429' }
+                    expect(finding.name).to eq("CWE-2017-11429 in yarn.lock")
+                  end
+                end
+
+                context 'when neither CVE nor CWE identifier exist' do
+                  it 'combines identifier with location to create name' do
+                    finding = report.findings.find { |x| x.compare_key == 'OTHER-2017-11429' }
+                    expect(finding.name).to eq("other-2017-11429 in yarn.lock")
+                  end
                 end
               end
             end

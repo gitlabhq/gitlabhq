@@ -65,6 +65,7 @@ module GitalySetup
   def env
     {
       'GEM_PATH' => Gem.path.join(':'),
+      'BUNDLER_SETUP' => nil,
       'BUNDLE_INSTALL_FLAGS' => nil,
       'BUNDLE_IGNORE_CONFIG' => '1',
       'BUNDLE_PATH' => bundle_path,

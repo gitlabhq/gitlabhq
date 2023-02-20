@@ -1,6 +1,6 @@
 <script>
-import { GlFormGroup, GlDropdown, GlDropdownItem, GlIcon } from '@gitlab/ui';
-import { capitalize } from 'lodash';
+import { GlFormGroup, GlIcon, GlListbox } from '@gitlab/ui';
+import { TYPE_ISSUE } from '~/issues/constants';
 import { __ } from '~/locale';
 import { issuableTypes, INCIDENT_TYPE } from '../../constants';
 import getIssueStateQuery from '../../queries/get_issue_state.query.graphql';
@@ -16,34 +16,35 @@ export default {
   components: {
     GlFormGroup,
     GlIcon,
-    GlDropdown,
-    GlDropdownItem,
+    GlListbox,
   },
   inject: {
     canCreateIncident: {
       default: false,
     },
     issueType: {
-      default: 'issue',
+      default: TYPE_ISSUE,
     },
   },
   data() {
     return {
       issueState: {},
+      selectedIssueType: '',
     };
   },
   apollo: {
     issueState: {
       query: getIssueStateQuery,
+      result({
+        data: {
+          issueState: { issueType },
+        },
+      }) {
+        this.selectedIssueType = issueType;
+      },
     },
   },
   computed: {
-    dropdownText() {
-      const {
-        issueState: { issueType },
-      } = this;
-      return issuableTypes.find((type) => type.value === issueType)?.text || capitalize(issueType);
-    },
     shouldShowIncident() {
       return this.issueType === INCIDENT_TYPE || this.canCreateIncident;
     },
@@ -72,25 +73,21 @@ export default {
     label-for="issuable-type"
     class="mb-2 mb-md-0"
   >
-    <gl-dropdown
-      id="issuable-type"
-      :aria-labelledby="$options.i18n.label"
-      :text="dropdownText"
+    <gl-listbox
+      v-model="selectedIssueType"
+      toggle-class="gl-mb-0"
+      :items="$options.issuableTypes"
       :header-text="$options.i18n.label"
-      class="gl-w-full"
-      toggle-class="dropdown-menu-toggle"
+      :list-aria-labelled-by="$options.i18n.label"
+      block
+      @select="updateIssueType"
     >
-      <gl-dropdown-item
-        v-for="type in $options.issuableTypes"
-        v-show="isShown(type)"
-        :key="type.value"
-        :is-checked="issueState.issueType === type.value"
-        is-check-item
-        @click="updateIssueType(type.value)"
-      >
-        <gl-icon :name="type.icon" />
-        {{ type.text }}
-      </gl-dropdown-item>
-    </gl-dropdown>
+      <template #list-item="{ item }">
+        <span v-show="isShown(item)" data-testid="issue-type-list-item">
+          <gl-icon :name="item.icon" />
+          {{ item.text }}
+        </span>
+      </template>
+    </gl-listbox>
   </gl-form-group>
 </template>

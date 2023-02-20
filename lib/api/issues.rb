@@ -115,7 +115,6 @@ module API
     end
     get '/issues_statistics' do
       authenticate! unless params[:scope] == 'all'
-      validate_anonymous_search_access! if params[:search].present?
       validate_search_rate_limit! if declared_params[:search].present?
 
       present issues_statistics, with: Grape::Presenters::Presenter
@@ -134,7 +133,6 @@ module API
       end
       get do
         authenticate! unless params[:scope] == 'all'
-        validate_anonymous_search_access! if params[:search].present?
         validate_search_rate_limit! if declared_params[:search].present?
         issues = paginate(find_issues)
 
@@ -174,7 +172,6 @@ module API
         optional :non_archived, type: Boolean, desc: 'Return issues from non archived projects', default: true
       end
       get ":id/issues" do
-        validate_anonymous_search_access! if declared_params[:search].present?
         validate_search_rate_limit! if declared_params[:search].present?
         issues = paginate(find_issues(group_id: user_group.id, include_subgroups: true))
 
@@ -194,7 +191,6 @@ module API
         use :issues_stats_params
       end
       get ":id/issues_statistics" do
-        validate_anonymous_search_access! if declared_params[:search].present?
         validate_search_rate_limit! if declared_params[:search].present?
 
         present issues_statistics(group_id: user_group.id, include_subgroups: true), with: Grape::Presenters::Presenter
@@ -214,7 +210,6 @@ module API
         use :issues_params
       end
       get ":id/issues" do
-        validate_anonymous_search_access! if declared_params[:search].present?
         validate_search_rate_limit! if declared_params[:search].present?
         issues = paginate(find_issues(project_id: user_project.id))
 
@@ -234,7 +229,6 @@ module API
         use :issues_stats_params
       end
       get ":id/issues_statistics" do
-        validate_anonymous_search_access! if declared_params[:search].present?
         validate_search_rate_limit! if declared_params[:search].present?
 
         present issues_statistics(project_id: user_project.id), with: Grape::Presenters::Presenter
@@ -278,7 +272,7 @@ module API
 
         begin
           spam_params = ::Spam::SpamParams.new_from_request(request: request)
-          result = ::Issues::CreateService.new(project: user_project,
+          result = ::Issues::CreateService.new(container: user_project,
                                                current_user: current_user,
                                                params: issue_params,
                                                spam_params: spam_params).execute
@@ -325,7 +319,7 @@ module API
         update_params = convert_parameters_from_legacy_format(update_params)
 
         spam_params = ::Spam::SpamParams.new_from_request(request: request)
-        issue = ::Issues::UpdateService.new(project: user_project,
+        issue = ::Issues::UpdateService.new(container: user_project,
                                             current_user: current_user,
                                             params: update_params,
                                             spam_params: spam_params).execute(issue)
@@ -356,7 +350,7 @@ module API
 
         authorize! :update_issue, issue
 
-        if ::Issues::ReorderService.new(project: user_project, current_user: current_user, params: params).execute(issue)
+        if ::Issues::ReorderService.new(container: user_project, current_user: current_user, params: params).execute(issue)
           present issue, with: Entities::Issue, current_user: current_user, project: user_project
         else
           render_api_error!({ error: 'Unprocessable Entity' }, 422)
@@ -382,7 +376,7 @@ module API
         not_found!('Project') unless new_project
 
         begin
-          issue = ::Issues::MoveService.new(project: user_project, current_user: current_user).execute(issue, new_project)
+          issue = ::Issues::MoveService.new(container: user_project, current_user: current_user).execute(issue, new_project)
           present issue, with: Entities::Issue, current_user: current_user, project: user_project
         rescue ::Issues::MoveService::MoveError => error
           render_api_error!(error.message, 400)
@@ -409,7 +403,7 @@ module API
         not_found!('Project') unless target_project
 
         begin
-          issue = ::Issues::CloneService.new(project: user_project, current_user: current_user)
+          issue = ::Issues::CloneService.new(container: user_project, current_user: current_user)
             .execute(issue, target_project, with_notes: params[:with_notes])
           present issue, with: Entities::Issue, current_user: current_user, project: target_project
         rescue ::Issues::CloneService::CloneError => error
@@ -430,7 +424,7 @@ module API
         authorize!(:destroy_issue, issue)
 
         destroy_conditionally!(issue) do |issue|
-          Issuable::DestroyService.new(project: user_project, current_user: current_user).execute(issue)
+          Issuable::DestroyService.new(container: user_project, current_user: current_user).execute(issue)
         end
       end
       # rubocop: enable CodeReuse/ActiveRecord
@@ -444,9 +438,10 @@ module API
       get ':id/issues/:issue_iid/related_merge_requests' do
         issue = find_project_issue(params[:issue_iid])
 
-        merge_requests = ::Issues::ReferencedMergeRequestsService.new(project: user_project, current_user: current_user)
-          .execute(issue)
-          .first
+        merge_requests = ::Issues::ReferencedMergeRequestsService
+                           .new(container: user_project, current_user: current_user)
+                           .execute(issue)
+                           .first
 
         present paginate(::Kaminari.paginate_array(merge_requests)),
           with: Entities::MergeRequest,

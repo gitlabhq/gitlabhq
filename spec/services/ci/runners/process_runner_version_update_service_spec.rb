@@ -53,14 +53,14 @@ RSpec.describe Ci::Runners::ProcessRunnerVersionUpdateService, feature_category:
       end
 
       context 'with existing ci_runner_version record' do
-        let!(:runner_version) { create(:ci_runner_version, version: '1.0.0', status: :not_available) }
+        let!(:runner_version) { create(:ci_runner_version, version: '1.0.0', status: :unavailable) }
 
         it 'updates ci_runner_versions record', :aggregate_failures do
           expect do
             expect(execute).to be_success
             expect(execute.http_status).to eq :ok
             expect(execute.payload).to eq({ upgrade_status: 'recommended' })
-          end.to change { runner_version.reload.status }.from('not_available').to('recommended')
+          end.to change { runner_version.reload.status }.from('unavailable').to('recommended')
         end
       end
 

@@ -8,26 +8,29 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 In this section, you are guided through configuring a PostgreSQL database to
 be used with GitLab in one of our [reference architectures](../reference_architectures/index.md).
-There are essentially three setups to choose from.
 
-## Standalone PostgreSQL using Omnibus GitLab
+## Configuration options
+
+Choose one of the following PostgreSQL configuration options:
+
+### Standalone PostgreSQL using Omnibus GitLab
 
 This setup is for when you have installed the
 [Omnibus GitLab packages](https://about.gitlab.com/install/) (CE or EE),
 to use the bundled PostgreSQL having only its service enabled.
 
-[> Read how to set up a standalone PostgreSQL instance using Omnibus GitLab](standalone.md)
+Read how to [set up a standalone PostgreSQL instance](standalone.md) using Omnibus GitLab.
 
-## Provide your own PostgreSQL instance
+### Provide your own PostgreSQL instance
 
 This setup is for when you have installed GitLab using the
 [Omnibus GitLab packages](https://about.gitlab.com/install/) (CE or EE),
 or installed it [from source](../../install/installation.md), but you want to use
 your own external PostgreSQL server.
 
-[> Read how to set up an external PostgreSQL instance](external.md)
+Read how to [set up an external PostgreSQL instance](external.md).
 
-## PostgreSQL replication and failover with Omnibus GitLab **(PREMIUM SELF)**
+### PostgreSQL replication and failover with Omnibus GitLab **(PREMIUM SELF)**
 
 This setup is for when you have installed GitLab using the
 [Omnibus GitLab **Enterprise Edition** (EE) package](https://about.gitlab.com/install/?version=ee).
@@ -35,4 +38,12 @@ This setup is for when you have installed GitLab using the
 All the tools that are needed like PostgreSQL, PgBouncer, and Patroni are bundled in
 the package, so you can use it to set up the whole PostgreSQL infrastructure (primary, replica).
 
-[> Read how to set up PostgreSQL replication and failover using Omnibus GitLab](replication_and_failover.md)
+Read how to [set up PostgreSQL replication and failover](replication_and_failover.md) using Omnibus GitLab.
+
+## Related topics
+
+- [Working with the bundled PgBouncer service](pgbouncer.md)
+- [Database load balancing](database_load_balancing.md)
+- [Moving GitLab databases to a different PostgreSQL instance](moving.md)
+- [Multiple databases](multiple_databases.md)
+- [Database guides for GitLab development](../../development/database/index.md)

@@ -17,6 +17,7 @@ import {
 import { debounce } from 'lodash';
 import { createAlert } from '~/flash';
 import { s__, __, n__, sprintf } from '~/locale';
+import { HTTP_STATUS_TOO_MANY_REQUESTS } from '~/lib/utils/http_status';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import PaginationBar from '~/vue_shared/components/pagination_bar/pagination_bar.vue';
 import HelpPopover from '~/vue_shared/components/help_popover.vue';
@@ -102,8 +103,12 @@ export default {
       perPage: DEFAULT_PAGE_SIZE,
       selectedGroupsIds: [],
       pendingGroupsIds: [],
+      reimportRequests: [],
       importTargets: {},
       unavailableFeaturesAlertVisible: true,
+      helpUrl: helpPagePath('ee/user/group/import', {
+        anchor: 'visibility-rules',
+      }),
     };
   },
 
@@ -177,9 +182,14 @@ export default {
         const importTarget = this.importTargets[group.id];
         const status = this.getStatus(group);
 
+        const isGroupAvailableForImport = isFinished(group)
+          ? this.reimportRequests.includes(group.id)
+          : isAvailableForImport(group) && status !== STATUSES.SCHEDULING;
+
         const flags = {
-          isInvalid: importTarget.validationErrors?.length > 0,
-          isAvailableForImport: isAvailableForImport(group) && status !== STATUSES.SCHEDULING,
+          isInvalid: (importTarget.validationErrors ?? []).filter((e) => !e.nonBlocking).length > 0,
+          isAvailableForImport: isGroupAvailableForImport,
+          isAllowedForReimport: false,
           isFinished: isFinished(group),
         };
 
@@ -355,13 +365,9 @@ export default {
       this.validateImportTarget(newImportTarget);
     },
 
-    async importGroups(importRequests) {
+    async requestGroupsImport(importRequests) {
       const newPendingGroupsIds = importRequests.map((request) => request.sourceGroupId);
       newPendingGroupsIds.forEach((id) => {
-        this.importTargets[id].validationErrors = [
-          { field: NEW_NAME_FIELD, message: i18n.ERROR_IMPORT_COMPLETED },
-        ];
-
         if (!this.pendingGroupsIds.includes(id)) {
           this.pendingGroupsIds.push(id);
         }
@@ -373,15 +379,43 @@ export default {
           variables: { importRequests },
         });
       } catch (error) {
-        createAlert({
-          message: i18n.ERROR_IMPORT,
-          captureError: true,
-          error,
-        });
+        if (error.networkError?.response?.status === HTTP_STATUS_TOO_MANY_REQUESTS) {
+          newPendingGroupsIds.forEach((id) => {
+            this.importTargets[id].validationErrors = [
+              { field: NEW_NAME_FIELD, message: i18n.ERROR_TOO_MANY_REQUESTS, nonBlocking: true },
+            ];
+          });
+        } else {
+          createAlert({
+            message: i18n.ERROR_IMPORT,
+            captureError: true,
+            error,
+          });
+        }
       } finally {
         this.pendingGroupsIds = this.pendingGroupsIds.filter(
           (id) => !newPendingGroupsIds.includes(id),
         );
+      }
+    },
+
+    importGroup({ group, extraArgs, index }) {
+      if (group.flags.isFinished && !this.reimportRequests.includes(group.id)) {
+        this.validateImportTarget(group.importTarget);
+        this.reimportRequests.push(group.id);
+        this.$nextTick(() => {
+          this.$refs[`importTargetCell-${index}`].focusNewName();
+        });
+      } else {
+        this.reimportRequests = this.reimportRequests.filter((id) => id !== group.id);
+        this.requestGroupsImport([
+          {
+            sourceGroupId: group.id,
+            targetNamespace: group.importTarget.targetNamespace.fullPath,
+            newName: group.importTarget.newName,
+            ...extraArgs,
+          },
+        ]);
       }
     },
 
@@ -395,7 +429,7 @@ export default {
           ...extraArgs,
         }));
 
-      this.importGroups(importRequests);
+      this.requestGroupsImport(importRequests);
     },
 
     setPageSize(size) {
@@ -552,6 +586,7 @@ export default {
     </div>
     <gl-alert
       v-if="unavailableFeatures.length > 0 && unavailableFeaturesAlertVisible"
+      data-testid="unavailable-features-alert"
       variant="warning"
       :title="unavailableFeaturesAlertTitle"
       @dismiss="unavailableFeaturesAlertVisible = false"
@@ -579,6 +614,19 @@ export default {
               </gl-sprintf>
             </li>
           </ul>
+        </template>
+      </gl-sprintf>
+    </gl-alert>
+    <gl-alert variant="warning" :dismissible="false" class="mt-3">
+      <gl-sprintf
+        :message="
+          s__(
+            'BulkImport|Be aware of %{linkStart}visibility rules%{linkEnd} when importing groups.',
+          )
+        "
+      >
+        <template #link="{ content }">
+          <gl-link :href="helpUrl" target="_blank">{{ content }}</gl-link>
         </template>
       </gl-sprintf>
     </gl-alert>
@@ -742,8 +790,9 @@ export default {
           <template #cell(webUrl)="{ item: group }">
             <import-source-cell :group="group" />
           </template>
-          <template #cell(importTarget)="{ item: group }">
+          <template #cell(importTarget)="{ item: group, index }">
             <import-target-cell
+              :ref="`importTargetCell-${index}`"
               :group="group"
               :group-path-regex="groupPathRegex"
               @update-target-namespace="updateImportTarget(group, { targetNamespace: $event })"
@@ -753,22 +802,13 @@ export default {
           <template #cell(progress)="{ item: group }">
             <import-status-cell :status="group.visibleStatus" class="gl-line-height-32" />
           </template>
-          <template #cell(actions)="{ item: group }">
+          <template #cell(actions)="{ item: group, index }">
             <import-actions-cell
               :is-projects-import-enabled="isProjectsImportEnabled"
               :is-finished="group.flags.isFinished"
               :is-available-for-import="group.flags.isAvailableForImport"
               :is-invalid="group.flags.isInvalid"
-              @import-group="
-                importGroups([
-                  {
-                    sourceGroupId: group.id,
-                    targetNamespace: group.importTarget.targetNamespace.fullPath,
-                    newName: group.importTarget.newName,
-                    ...$event,
-                  },
-                ])
-              "
+              @import-group="importGroup({ group, extraArgs: $event, index })"
             />
           </template>
         </gl-table>

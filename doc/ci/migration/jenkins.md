@@ -99,7 +99,7 @@ Some high level differences between the products worth mentioning are:
   feature.
 - The [`parallel`](../yaml/index.md#parallel) keyword can automatically parallelize tasks,
   like tests that support parallelization.
-- Normally all jobs in a single stage run in parallel, and all stages run in sequence.
+- Usually all jobs in a single stage run in parallel, and all stages run in sequence.
   Different [pipeline architectures](../pipelines/pipeline_architectures.md) allow you to change this behavior.
 - The new [`rules` syntax](../yaml/index.md#rules) is the recommended method of
   controlling when different jobs run. It is more powerful than the `only/except` syntax.

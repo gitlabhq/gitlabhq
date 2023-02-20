@@ -215,9 +215,9 @@ module MergeRequests
       delete_milestone_total_merge_requests_counter_cache(previous_milestone)
 
       if merge_request.milestone.nil?
-        notification_service.async.removed_milestone_merge_request(merge_request, current_user)
+        notification_service.async.removed_milestone(merge_request, current_user)
       else
-        notification_service.async.changed_milestone_merge_request(merge_request, merge_request.milestone, current_user)
+        notification_service.async.changed_milestone(merge_request, merge_request.milestone, current_user)
 
         delete_milestone_total_merge_requests_counter_cache(merge_request.milestone)
       end

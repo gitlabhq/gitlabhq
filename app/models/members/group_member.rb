@@ -64,7 +64,7 @@ class GroupMember < Member
   private
 
   override :refresh_member_authorized_projects
-  def refresh_member_authorized_projects(blocking:)
+  def refresh_member_authorized_projects
     # Here, `destroyed_by_association` will be present if the
     # GroupMember is being destroyed due to the `dependent: :destroy`
     # callback on Group. In this case, there is no need to refresh the

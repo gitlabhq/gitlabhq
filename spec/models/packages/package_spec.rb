@@ -33,6 +33,26 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
     it { is_expected.to contain_exactly(publication.package) }
   end
 
+  describe '.with_debian_codename_or_suite' do
+    let_it_be(:distribution1) { create(:debian_project_distribution, :with_suite) }
+    let_it_be(:distribution2) { create(:debian_project_distribution, :with_suite) }
+
+    let_it_be(:package1) { create(:debian_package, published_in: distribution1) }
+    let_it_be(:package2) { create(:debian_package, published_in: distribution2) }
+
+    context 'with a codename' do
+      subject { described_class.with_debian_codename_or_suite(distribution1.codename).to_a }
+
+      it { is_expected.to contain_exactly(package1) }
+    end
+
+    context 'with a suite' do
+      subject { described_class.with_debian_codename_or_suite(distribution2.suite).to_a }
+
+      it { is_expected.to contain_exactly(package2) }
+    end
+  end
+
   describe '.with_composer_target' do
     let!(:package1) { create(:composer_package, :with_metadatum, sha: '123') }
     let!(:package2) { create(:composer_package, :with_metadatum, sha: '123') }
@@ -1048,14 +1068,16 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
     let_it_be(:project) { create(:project) }
     let_it_be(:package) { create(:maven_package, project: project) }
     let_it_be(:package2) { create(:maven_package, project: project) }
-    let_it_be(:package3) { create(:maven_package, project: project, name: 'foo') }
+    let_it_be(:package3) { create(:maven_package, :error, project: project) }
+    let_it_be(:package4) { create(:maven_package, project: project, name: 'foo') }
+    let_it_be(:pending_destruction_package) { create(:maven_package, :pending_destruction, project: project) }
 
     it 'returns other package versions of the same package name belonging to the project' do
-      expect(package.versions).to contain_exactly(package2)
+      expect(package.versions).to contain_exactly(package2, package3)
     end
 
     it 'does not return different packages' do
-      expect(package.versions).not_to include(package3)
+      expect(package.versions).not_to include(package4)
     end
   end
 

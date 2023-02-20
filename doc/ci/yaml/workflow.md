@@ -29,7 +29,7 @@ See the [common `if` clauses for `rules`](../jobs/job_control.md#common-if-claus
 In the following example:
 
 - Pipelines run for all `push` events (changes to branches and new tags).
-- Pipelines for push events with `-draft` in the commit message don't run, because
+- Pipelines for push events with commit messages that end with `-draft` don't run, because
   they are set to `when: never`.
 - Pipelines for schedules or merge requests don't run either, because no rules evaluate to true for them.
 

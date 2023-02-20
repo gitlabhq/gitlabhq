@@ -17,7 +17,7 @@ Then, populate it with the following function and parameters:
 - [`PactOptions`](#the-pactoptions-parameter)
 - [`PactFn`](#the-pactfn-parameter)
 
-To learn more about how the contract test directory is structured, see the contract testing [test suite folder structure](index.md#test-suite-folder-structure).
+For more information about how the contract test directory is structured, see [Test suite folder structure](index.md#test-suite-folder-structure).
 
 ### The `pactWith` function
 
@@ -47,7 +47,7 @@ pactWith(
 );
 ```
 
-To learn more about how to name the consumers and providers, see contract testing [naming conventions](index.md#naming-conventions).
+For more information about how to name consumers and providers, see [Naming conventions](index.md#naming-conventions).
 
 ### The `PactFn` parameter
 

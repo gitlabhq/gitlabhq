@@ -293,7 +293,7 @@ export default {
       }
     },
     onClickedAction(action) {
-      if (action.fullReport) {
+      if (action.trackFullReportClicked) {
         this.telemetry?.fullReportClicked();
       }
     },
@@ -323,16 +323,25 @@ export default {
         data-testid="widget-extension-top-level"
       >
         <div
-          class="gl-flex-grow-1 gl-display-flex gl-align-items-center"
+          class="gl-flex-grow-1 gl-display-flex gl-align-items-center gl-flex-wrap"
           data-testid="widget-extension-top-level-summary"
         >
-          <template v-if="isLoadingSummary">{{ widgetLoadingText }}</template>
-          <template v-else-if="hasFetchError">{{ widgetErrorText }}</template>
+          <div v-if="isLoadingSummary" class="gl-w-full gl-line-height-normal">
+            {{ widgetLoadingText }}
+          </div>
+          <div v-else-if="hasFetchError" class="gl-w-full gl-line-height-normal">
+            {{ widgetErrorText }}
+          </div>
           <template v-else>
-            <span v-safe-html="hydratedSummary.subject"></span>
+            <div
+              v-safe-html="hydratedSummary.subject"
+              class="gl-w-full gl-line-height-normal"
+            ></div>
             <template v-if="hydratedSummary.meta">
-              <br />
-              <span v-safe-html="hydratedSummary.meta" class="gl-font-sm"></span>
+              <div
+                v-safe-html="hydratedSummary.meta"
+                class="gl-w-full gl-font-sm gl-line-height-normal"
+              ></div>
             </template>
           </template>
         </div>

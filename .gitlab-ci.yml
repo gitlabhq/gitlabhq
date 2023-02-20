@@ -1,5 +1,6 @@
 stages:
   - sync
+  - preflight
   - prepare
   - build-images
   - fixtures
@@ -24,13 +25,28 @@ default:
   # Default job timeout set to 90m https://gitlab.com/gitlab-com/gl-infra/infrastructure/-/issues/10520
   timeout: 90m
 
+.ruby3-variables: &ruby3-variables
+  RUBY_VERSION: "3.0"
+  OMNIBUS_GITLAB_RUBY3_BUILD: "true"
+  OMNIBUS_GITLAB_CACHE_EDITION: "GITLAB_RUBY3"
+
+.ruby2-variables: &ruby2-variables
+  RUBY_VERSION: "2.7"
+
+.default-branch-incident-variables: &default-branch-incident-variables
+  CREATE_INCIDENT_FOR_PIPELINE_FAILURE: "true"
+  NOTIFY_PIPELINE_FAILURE_CHANNEL: "master-broken"
+  BROKEN_BRANCH_INCIDENTS_PROJECT: "gitlab-org/quality/engineering-productivity/master-broken-incidents"
+  BROKEN_BRANCH_INCIDENTS_PROJECT_TOKEN: "${BROKEN_MASTER_INCIDENTS_PROJECT_TOKEN}"
+
 workflow:
   name: '$PIPELINE_NAME'
   rules:
     # If `$FORCE_GITLAB_CI` is set, create a pipeline.
     - if: '$FORCE_GITLAB_CI'
       variables:
-        RUBY_VERSION: "3.0"
+        <<: *ruby3-variables
+        PIPELINE_NAME: 'Ruby 3 forced pipeline'
     # As part of the process of creating RCs automatically, we update stable
     # branches with the changes of the most recent production deployment. The
     # merge requests used for this merge a branch release-tools/X into a stable
@@ -41,80 +57,79 @@ workflow:
     # For merge requests running exclusively in Ruby 2.7
     - if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-in-ruby2/'
       variables:
-        RUBY_VERSION: "2.7"
+        <<: *ruby2-variables
         PIPELINE_NAME: 'Ruby 2 $CI_MERGE_REQUEST_EVENT_TYPE MR pipeline'
+    - if: '$CI_MERGE_REQUEST_LABELS =~ /Community contribution/'
+      variables:
+        <<: *ruby3-variables
+        GITLAB_DEPENDENCY_PROXY_ADDRESS: ""
+        PIPELINE_NAME: 'Ruby 3 $CI_MERGE_REQUEST_EVENT_TYPE MR pipeline (community contribution)'
     # For (detached) merge request pipelines.
     - if: '$CI_MERGE_REQUEST_IID'
       variables:
-        RUBY_VERSION: "3.0"
-        OMNIBUS_GITLAB_RUBY3_BUILD: "true"
-        OMNIBUS_GITLAB_CACHE_EDITION: "GITLAB_RUBY3"
+        <<: *ruby3-variables
         PIPELINE_NAME: 'Ruby 3 $CI_MERGE_REQUEST_EVENT_TYPE MR pipeline'
     # For the scheduled pipelines, we set specific variables.
     - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "schedule"'
       variables:
-        RUBY_VERSION: "3.0"
-        OMNIBUS_GITLAB_RUBY3_BUILD: "true"
-        OMNIBUS_GITLAB_CACHE_EDITION: "GITLAB_RUBY3"
+        <<: *ruby3-variables
+        <<: *default-branch-incident-variables
         CRYSTALBALL: "true"
-        CREATE_INCIDENT_FOR_PIPELINE_FAILURE: "true"
-        NOTIFY_PIPELINE_FAILURE_CHANNEL: "master-broken"
-        BROKEN_BRANCH_INCIDENTS_PROJECT: "gitlab-org/quality/engineering-productivity/master-broken-incidents"
-        BROKEN_BRANCH_INCIDENTS_PROJECT_TOKEN: "${BROKEN_MASTER_INCIDENTS_PROJECT_TOKEN}"
-        PIPELINE_NAME: 'Scheduled $CI_COMMIT_BRANCH pipeline'
+        PIPELINE_NAME: 'Scheduled Ruby 3 $CI_COMMIT_BRANCH branch pipeline'
     # Run pipelines for ruby2 branch
     - if: '$CI_COMMIT_BRANCH == "ruby2" && $CI_PIPELINE_SOURCE == "schedule"'
       variables:
-        RUBY_VERSION: "2.7"
+        <<: *ruby2-variables
         NOTIFY_PIPELINE_FAILURE_CHANNEL: "f_ruby3"
-        PIPELINE_NAME: 'Scheduled ruby 2 pipeline'
+        PIPELINE_NAME: 'Scheduled Ruby 2 $CI_COMMIT_BRANCH branch pipeline'
     # This work around https://gitlab.com/gitlab-org/gitlab/-/issues/332411 whichs prevents usage of dependency proxy
     # when pipeline is triggered by a project access token.
     - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $GITLAB_USER_LOGIN =~ /project_\d+_bot\d*/'
       variables:
-        RUBY_VERSION: "3.0"
-        OMNIBUS_GITLAB_RUBY3_BUILD: "true"
-        OMNIBUS_GITLAB_CACHE_EDITION: "GITLAB_RUBY3"
+        <<: *ruby3-variables
+        <<: *default-branch-incident-variables
         GITLAB_DEPENDENCY_PROXY_ADDRESS: ""
-        CREATE_INCIDENT_FOR_PIPELINE_FAILURE: "true"
-        NOTIFY_PIPELINE_FAILURE_CHANNEL: "master-broken"
-        BROKEN_BRANCH_INCIDENTS_PROJECT: "gitlab-org/quality/engineering-productivity/master-broken-incidents"
-        BROKEN_BRANCH_INCIDENTS_PROJECT_TOKEN: "${BROKEN_MASTER_INCIDENTS_PROJECT_TOKEN}"
+        PIPELINE_NAME: 'Ruby 3 $CI_COMMIT_BRANCH branch pipeline (triggered by a project token)'
     # For `$CI_DEFAULT_BRANCH` branch, create a pipeline (this includes on schedules, pushes, merges, etc.).
     - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
       variables:
-        RUBY_VERSION: "3.0"
-        OMNIBUS_GITLAB_RUBY3_BUILD: "true"
-        OMNIBUS_GITLAB_CACHE_EDITION: "GITLAB_RUBY3"
-        CREATE_INCIDENT_FOR_PIPELINE_FAILURE: "true"
-        NOTIFY_PIPELINE_FAILURE_CHANNEL: "master-broken"
-        BROKEN_BRANCH_INCIDENTS_PROJECT: "gitlab-org/quality/engineering-productivity/master-broken-incidents"
-        BROKEN_BRANCH_INCIDENTS_PROJECT_TOKEN: "${BROKEN_MASTER_INCIDENTS_PROJECT_TOKEN}"
+        <<: *ruby3-variables
+        <<: *default-branch-incident-variables
+        PIPELINE_NAME: 'Ruby 3 $CI_COMMIT_BRANCH branch pipeline'
     # For tags, create a pipeline.
     - if: '$CI_COMMIT_TAG'
       variables:
-        RUBY_VERSION: "2.7"
+        <<: *ruby2-variables
+        PIPELINE_NAME: 'Ruby 2 $CI_COMMIT_TAG tag pipeline'
     # If `$GITLAB_INTERNAL` isn't set, don't create a pipeline.
     - if: '$GITLAB_INTERNAL == null'
       when: never
-    # For stable, auto-deploy, and security branches, create a pipeline.
-    - if: '$CI_COMMIT_BRANCH =~ /^[\d-]+-stable(-ee)?$/'
+    # For last 3 stable branches, create a pipeline with failure notifications.
+    - if: '$CI_COMMIT_BRANCH =~ /^15-[6|7|8]-stable(-ee)?$/'
       variables:
-        RUBY_VERSION: "2.7"
+        <<: *ruby2-variables
         NOTIFY_PIPELINE_FAILURE_CHANNEL: "releases"
         CREATE_INCIDENT_FOR_PIPELINE_FAILURE: "true"
         BROKEN_BRANCH_INCIDENTS_PROJECT: "gitlab-org/release/tasks"
         BROKEN_BRANCH_INCIDENTS_PROJECT_TOKEN: "${BROKEN_STABLE_INCIDENTS_PROJECT_TOKEN}"
+        PIPELINE_NAME: 'Ruby 2 $CI_COMMIT_BRANCH branch pipeline'
+    # For stable, auto-deploy, and security branches, create a pipeline.
+    - if: '$CI_COMMIT_BRANCH =~ /^[\d-]+-stable(-ee)?$/'
+      variables:
+        <<: *ruby2-variables
+        PIPELINE_NAME: 'Ruby 2 $CI_COMMIT_BRANCH branch pipeline'
     - if: '$CI_COMMIT_BRANCH =~ /^\d+-\d+-auto-deploy-\d+$/'
       variables:
-        RUBY_VERSION: "2.7"
+        <<: *ruby2-variables
+        PIPELINE_NAME: 'Ruby 2 $CI_COMMIT_BRANCH branch pipeline'
     - if: '$CI_COMMIT_BRANCH =~ /^security\//'
       variables:
-        RUBY_VERSION: "2.7"
+        <<: *ruby2-variables
+        PIPELINE_NAME: 'Ruby 2 $CI_COMMIT_BRANCH branch pipeline'
 
 variables:
   PG_VERSION: "12"
-  DEFAULT_CI_IMAGE: "${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/debian-${DEBIAN_VERSION}-ruby-${RUBY_VERSION}.patched-golang-${GO_VERSION}-node-16.14-postgresql-${PG_VERSION}:rubygems-3.2-git-2.36-lfs-2.9-chrome-${CHROME_VERSION}-yarn-1.22-graphicsmagick-1.3.36"
+  DEFAULT_CI_IMAGE: "${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/debian-${DEBIAN_VERSION}-ruby-${RUBY_VERSION}.patched-golang-${GO_VERSION}-rust-${RUST_VERSION}-node-16.14-postgresql-${PG_VERSION}:rubygems-3.2-git-2.36-lfs-2.9-chrome-${CHROME_VERSION}-yarn-1.22-graphicsmagick-1.3.36"
   # We set $GITLAB_DEPENDENCY_PROXY to another variable (since it's set at the group level and has higher precedence than .gitlab-ci.yml)
   # so that we can override $GITLAB_DEPENDENCY_PROXY_ADDRESS in workflow rules.
   GITLAB_DEPENDENCY_PROXY_ADDRESS: "${GITLAB_DEPENDENCY_PROXY}"
@@ -131,10 +146,11 @@ variables:
   GIT_SUBMODULE_STRATEGY: "none"
   GET_SOURCES_ATTEMPTS: "3"
   DEBIAN_VERSION: "bullseye"
-  CHROME_VERSION: "106"
+  CHROME_VERSION: "109"
   DOCKER_VERSION: "20.10.14"
   RUBY_VERSION: "2.7"
   GO_VERSION: "1.18"
+  RUST_VERSION: "1.65"
 
   FLAKY_RSPEC_SUITE_REPORT_PATH: rspec/flaky/report-suite.json
   FRONTEND_FIXTURES_MAPPING_PATH: crystalball/frontend_fixtures_mapping.json
@@ -146,8 +162,9 @@ variables:
   RSPEC_FOSS_IMPACT_PIPELINE_YML: rspec-foss-impact-pipeline.yml
   RSPEC_LAST_RUN_RESULTS_FILE: rspec/rspec_last_run_results.txt
   RSPEC_MATCHING_JS_FILES_PATH: rspec/js_matching_files.txt
-  RSPEC_MATCHING_TESTS_FOSS_PATH: rspec/matching_tests-foss.txt
   RSPEC_MATCHING_TESTS_PATH: rspec/matching_tests.txt
+  RSPEC_MATCHING_TESTS_FOSS_PATH: rspec/matching_tests-foss.txt
+  RSPEC_MATCHING_TESTS_EE_PATH: rspec/matching_tests-ee.txt
   RSPEC_PACKED_TESTS_MAPPING_PATH: crystalball/packed-mapping.json
   RSPEC_PROFILING_FOLDER_PATH: rspec/profiling
   RSPEC_TESTS_MAPPING_PATH: crystalball/mapping.json
@@ -159,7 +176,7 @@ variables:
   CACHE_CLASSES: "true"
   CHECK_PRECOMPILED_ASSETS: "true"
   FF_USE_FASTZIP: "true"
-  SKIP_FLAKY_TESTS_AUTOMATICALLY: "true"
+  SKIP_FLAKY_TESTS_AUTOMATICALLY: "false"
   RETRY_FAILED_TESTS_IN_NEW_PROCESS: "true"
   # Run with decomposed databases by default
   DECOMPOSED_DB: "true"
@@ -181,6 +198,9 @@ variables:
   # Disable useless network connections when installing some NPM packages.
   # See https://gitlab.com/gitlab-com/gl-security/engineering-and-research/inventory/-/issues/827#note_1203181407
   DISABLE_OPENCOLLECTIVE: "true"
+
+  # This is set at the gitlab-org level, but we set it here for forks
+  DANGER_DO_NOT_POST_INVALID_DANGERFILE_ERROR: "1"
 
 include:
   - local: .gitlab/ci/*.gitlab-ci.yml

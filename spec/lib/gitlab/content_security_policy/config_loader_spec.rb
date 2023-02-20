@@ -94,10 +94,28 @@ RSpec.describe Gitlab::ContentSecurityPolicy::ConfigLoader do
 
       it 'adds CDN host to CSP' do
         expect(directives['script_src']).to eq(::Gitlab::ContentSecurityPolicy::Directives.script_src + " https://cdn.example.com")
-        expect(directives['style_src']).to eq("'self' 'unsafe-inline' https://cdn.example.com")
+        expect(directives['style_src']).to eq(::Gitlab::ContentSecurityPolicy::Directives.style_src + " https://cdn.example.com")
         expect(directives['font_src']).to eq("'self' https://cdn.example.com")
         expect(directives['worker_src']).to eq('http://localhost/assets/ blob: data: https://cdn.example.com')
         expect(directives['frame_src']).to eq(::Gitlab::ContentSecurityPolicy::Directives.frame_src + " https://cdn.example.com http://localhost/admin/ http://localhost/assets/ http://localhost/-/speedscope/index.html http://localhost/-/sandbox/")
+      end
+    end
+
+    describe 'Zuora directives' do
+      context 'when is Gitlab.com?' do
+        before do
+          allow(::Gitlab).to receive(:com?).and_return(true)
+        end
+
+        it 'adds Zuora host to CSP' do
+          expect(directives['frame_src']).to include('https://*.zuora.com/apps/PublicHostedPageLite.do')
+        end
+      end
+
+      context 'when is not Gitlab.com?' do
+        it 'does not add Zuora host to CSP' do
+          expect(directives['frame_src']).not_to include('https://*.zuora.com/apps/PublicHostedPageLite.do')
+        end
       end
     end
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Config::External::Context do
+RSpec.describe Gitlab::Ci::Config::External::Context, feature_category: :pipeline_authoring do
   let(:project) { build(:project) }
   let(:user) { double('User') }
   let(:sha) { '12345' }
@@ -14,7 +14,8 @@ RSpec.describe Gitlab::Ci::Config::External::Context do
   describe 'attributes' do
     context 'with values' do
       it { is_expected.to have_attributes(**attributes) }
-      it { expect(subject.expandset).to eq(Set.new) }
+      it { expect(subject.expandset).to eq([]) }
+      it { expect(subject.max_includes).to eq(Gitlab::Ci::Config::External::Context::NEW_MAX_INCLUDES) }
       it { expect(subject.execution_deadline).to eq(0) }
       it { expect(subject.variables).to be_instance_of(Gitlab::Ci::Variables::Collection) }
       it { expect(subject.variables_hash).to be_instance_of(ActiveSupport::HashWithIndifferentAccess) }
@@ -25,10 +26,38 @@ RSpec.describe Gitlab::Ci::Config::External::Context do
       let(:attributes) { { project: nil, user: nil, sha: nil } }
 
       it { is_expected.to have_attributes(**attributes) }
-      it { expect(subject.expandset).to eq(Set.new) }
+      it { expect(subject.expandset).to eq([]) }
+      it { expect(subject.max_includes).to eq(Gitlab::Ci::Config::External::Context::NEW_MAX_INCLUDES) }
       it { expect(subject.execution_deadline).to eq(0) }
       it { expect(subject.variables).to be_instance_of(Gitlab::Ci::Variables::Collection) }
       it { expect(subject.variables_hash).to be_instance_of(ActiveSupport::HashWithIndifferentAccess) }
+    end
+
+    context 'when FF ci_includes_count_duplicates is disabled' do
+      before do
+        stub_feature_flags(ci_includes_count_duplicates: false)
+      end
+
+      context 'with values' do
+        it { is_expected.to have_attributes(**attributes) }
+        it { expect(subject.expandset).to eq(Set.new) }
+        it { expect(subject.max_includes).to eq(Gitlab::Ci::Config::External::Context::MAX_INCLUDES) }
+        it { expect(subject.execution_deadline).to eq(0) }
+        it { expect(subject.variables).to be_instance_of(Gitlab::Ci::Variables::Collection) }
+        it { expect(subject.variables_hash).to be_instance_of(ActiveSupport::HashWithIndifferentAccess) }
+        it { expect(subject.variables_hash).to include('a' => 'b') }
+      end
+
+      context 'without values' do
+        let(:attributes) { { project: nil, user: nil, sha: nil } }
+
+        it { is_expected.to have_attributes(**attributes) }
+        it { expect(subject.expandset).to eq(Set.new) }
+        it { expect(subject.max_includes).to eq(Gitlab::Ci::Config::External::Context::MAX_INCLUDES) }
+        it { expect(subject.execution_deadline).to eq(0) }
+        it { expect(subject.variables).to be_instance_of(Gitlab::Ci::Variables::Collection) }
+        it { expect(subject.variables_hash).to be_instance_of(ActiveSupport::HashWithIndifferentAccess) }
+      end
     end
   end
 

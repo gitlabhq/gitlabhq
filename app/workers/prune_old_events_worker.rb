@@ -10,7 +10,7 @@ class PruneOldEventsWorker # rubocop:disable Scalability/IdempotentWorker
   include CronjobQueue
   # rubocop:enable Scalability/CronWorkerContext
 
-  feature_category :users
+  feature_category :user_profile
 
   DELETE_LIMIT = 10_000
 

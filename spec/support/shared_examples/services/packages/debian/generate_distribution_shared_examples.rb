@@ -4,6 +4,8 @@ RSpec.shared_examples 'Generate Debian Distribution and component files' do
   def check_release_files(expected_release_content)
     distribution.reload
 
+    expect(expected_release_content).not_to include('MD5')
+
     distribution.file.use_file do |file_path|
       expect(File.read(file_path)).to eq(expected_release_content)
     end
@@ -12,8 +14,10 @@ RSpec.shared_examples 'Generate Debian Distribution and component files' do
     expect(distribution.file_signature).to end_with("\n-----END PGP SIGNATURE-----\n")
 
     distribution.signed_file.use_file do |file_path|
-      expect(File.read(file_path)).to start_with("-----BEGIN PGP SIGNED MESSAGE-----\nHash: SHA512\n\n#{expected_release_content}-----BEGIN PGP SIGNATURE-----\n")
-      expect(File.read(file_path)).to end_with("\n-----END PGP SIGNATURE-----\n")
+      signed_file_content = File.read(file_path)
+      expect(signed_file_content).to start_with("-----BEGIN PGP SIGNED MESSAGE-----\nHash:")
+      expect(signed_file_content).to include("\n\n#{expected_release_content}-----BEGIN PGP SIGNATURE-----\n")
+      expect(signed_file_content).to end_with("\n-----END PGP SIGNATURE-----\n")
     end
   end
 
@@ -45,6 +49,7 @@ RSpec.shared_examples 'Generate Debian Distribution and component files' do
       expect(component_file.updated_at).to eq(release_date)
 
       unless expected_content.nil?
+        expect(expected_content).not_to include('MD5')
         component_file.file.use_file do |file_path|
           expect(File.read(file_path)).to eq(expected_content)
         end
@@ -73,9 +78,9 @@ RSpec.shared_examples 'Generate Debian Distribution and component files' do
           .and change { component_file1.reload.updated_at }.to(current_time.round)
 
         package_files = package.package_files.order(id: :asc).preload_debian_file_metadata.to_a
-        pool_prefix = 'pool/unstable'
+        pool_prefix = "pool/#{distribution.codename}"
         pool_prefix += "/#{project.id}" if container_type == :group
-        pool_prefix += "/p/#{package.name}/#{package.version}"
+        pool_prefix += "/#{package.name[0]}/#{package.name}/#{package.version}"
         expected_main_amd64_content = <<~EOF
         Package: libsample0
         Source: #{package.name}
@@ -93,7 +98,6 @@ RSpec.shared_examples 'Generate Debian Distribution and component files' do
         Priority: optional
         Filename: #{pool_prefix}/libsample0_1.2.3~alpha2_amd64.deb
         Size: 409600
-        MD5sum: #{package_files[2].file_md5}
         SHA256: #{package_files[2].file_sha256}
 
         Package: sample-dev
@@ -113,7 +117,6 @@ RSpec.shared_examples 'Generate Debian Distribution and component files' do
         Priority: optional
         Filename: #{pool_prefix}/sample-dev_1.2.3~binary_amd64.deb
         Size: 409600
-        MD5sum: #{package_files[3].file_md5}
         SHA256: #{package_files[3].file_sha256}
         EOF
 
@@ -122,7 +125,6 @@ RSpec.shared_examples 'Generate Debian Distribution and component files' do
         Priority: extra
         Filename: #{pool_prefix}/sample-udeb_1.2.3~alpha2_amd64.udeb
         Size: 409600
-        MD5sum: #{package_files[4].file_md5}
         SHA256: #{package_files[4].file_sha256}
         EOF
 
@@ -171,45 +173,26 @@ RSpec.shared_examples 'Generate Debian Distribution and component files' do
         check_component_file(current_time.round, 'contrib', :sources, nil, nil)
 
         main_amd64_size = expected_main_amd64_content.length
-        main_amd64_md5sum = Digest::MD5.hexdigest(expected_main_amd64_content)
         main_amd64_sha256 = Digest::SHA256.hexdigest(expected_main_amd64_content)
 
         contrib_all_size = component_file1.size
-        contrib_all_md5sum = component_file1.file_md5
         contrib_all_sha256 = component_file1.file_sha256
 
         main_amd64_di_size = expected_main_amd64_di_content.length
-        main_amd64_di_md5sum = Digest::MD5.hexdigest(expected_main_amd64_di_content)
         main_amd64_di_sha256 = Digest::SHA256.hexdigest(expected_main_amd64_di_content)
 
         main_sources_size = expected_main_sources_content.length
-        main_sources_md5sum = Digest::MD5.hexdigest(expected_main_sources_content)
         main_sources_sha256 = Digest::SHA256.hexdigest(expected_main_sources_content)
 
         expected_release_content = <<~EOF
-        Codename: unstable
+        Codename: #{distribution.codename}
         Date: Sat, 25 Jan 2020 15:17:18 +0000
         Valid-Until: Mon, 27 Jan 2020 15:17:18 +0000
         Acquire-By-Hash: yes
         Architectures: all amd64 arm64
         Components: contrib main
-        MD5Sum:
-         #{contrib_all_md5sum}        #{contrib_all_size} contrib/binary-all/Packages
-         d41d8cd98f00b204e9800998ecf8427e        0 contrib/debian-installer/binary-all/Packages
-         d41d8cd98f00b204e9800998ecf8427e        0 contrib/binary-amd64/Packages
-         d41d8cd98f00b204e9800998ecf8427e        0 contrib/debian-installer/binary-amd64/Packages
-         d41d8cd98f00b204e9800998ecf8427e        0 contrib/binary-arm64/Packages
-         d41d8cd98f00b204e9800998ecf8427e        0 contrib/debian-installer/binary-arm64/Packages
-         d41d8cd98f00b204e9800998ecf8427e        0 contrib/source/Sources
-         d41d8cd98f00b204e9800998ecf8427e        0 main/binary-all/Packages
-         d41d8cd98f00b204e9800998ecf8427e        0 main/debian-installer/binary-all/Packages
-         #{main_amd64_md5sum}     #{main_amd64_size} main/binary-amd64/Packages
-         #{main_amd64_di_md5sum}      #{main_amd64_di_size} main/debian-installer/binary-amd64/Packages
-         d41d8cd98f00b204e9800998ecf8427e        0 main/binary-arm64/Packages
-         d41d8cd98f00b204e9800998ecf8427e        0 main/debian-installer/binary-arm64/Packages
-         #{main_sources_md5sum}      #{main_sources_size} main/source/Sources
         SHA256:
-         #{contrib_all_sha256}        #{contrib_all_size} contrib/binary-all/Packages
+         #{contrib_all_sha256} #{contrib_all_size.to_s.rjust(8)} contrib/binary-all/Packages
          e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855        0 contrib/debian-installer/binary-all/Packages
          e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855        0 contrib/binary-amd64/Packages
          e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855        0 contrib/debian-installer/binary-amd64/Packages
@@ -218,12 +201,13 @@ RSpec.shared_examples 'Generate Debian Distribution and component files' do
          e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855        0 contrib/source/Sources
          e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855        0 main/binary-all/Packages
          e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855        0 main/debian-installer/binary-all/Packages
-         #{main_amd64_sha256}     #{main_amd64_size} main/binary-amd64/Packages
-         #{main_amd64_di_sha256}      #{main_amd64_di_size} main/debian-installer/binary-amd64/Packages
+         #{main_amd64_sha256} #{main_amd64_size.to_s.rjust(8)} main/binary-amd64/Packages
+         #{main_amd64_di_sha256} #{main_amd64_di_size.to_s.rjust(8)} main/debian-installer/binary-amd64/Packages
          e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855        0 main/binary-arm64/Packages
          e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855        0 main/debian-installer/binary-arm64/Packages
-         #{main_sources_sha256}      #{main_sources_size} main/source/Sources
+         #{main_sources_sha256} #{main_sources_size.to_s.rjust(8)} main/source/Sources
         EOF
+        expected_release_content = "Suite: #{distribution.suite}\n#{expected_release_content}" if distribution.suite
 
         check_release_files(expected_release_content)
       end
@@ -247,13 +231,13 @@ RSpec.shared_examples 'Generate Debian Distribution and component files' do
           .and not_change { distribution.component_files.reset.count }
 
         expected_release_content = <<~EOF
-        Codename: unstable
+        Codename: #{distribution.codename}
         Date: Sat, 25 Jan 2020 15:17:18 +0000
         Valid-Until: Mon, 27 Jan 2020 15:17:18 +0000
         Acquire-By-Hash: yes
-        MD5Sum:
         SHA256:
         EOF
+        expected_release_content = "Suite: #{distribution.suite}\n#{expected_release_content}" if distribution.suite
 
         check_release_files(expected_release_content)
       end

@@ -1,0 +1,9 @@
+# RuboCop configuration adjustments during the transition time from Ruby 2.7 to
+# Ruby 3.0. This configuration should be removed after the transition has been
+# completed.
+
+# These cops are enabled in Ruby 3.0 (rubocop-30.yml).
+Style/MutableConstant:
+  Enabled: false
+Style/RedundantFreeze:
+  Enabled: false

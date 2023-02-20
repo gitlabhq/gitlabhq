@@ -761,6 +761,9 @@ input {
   color: #ececef;
   background-color: #333238;
 }
+input[type="search"] {
+  appearance: textfield;
+}
 .form-control {
   border-radius: 4px;
   padding: 6px 10px;
@@ -833,9 +836,6 @@ kbd {
 }
 .navbar-gitlab .header-content .navbar-collapse > ul.nav > li:not(.d-none) {
   margin: 0 2px;
-}
-.navbar-gitlab .header-content .header-search-new {
-  max-width: 640px;
 }
 .navbar-gitlab .header-search {
   min-width: 320px;
@@ -984,13 +984,6 @@ kbd {
 .header-user .dropdown-menu,
 .header-new .dropdown-menu {
   margin-top: 4px;
-}
-.btn-sign-in {
-  background-color: #ebebfa;
-  color: #292961;
-  font-weight: 600;
-  line-height: 18px;
-  margin: 4px 0 4px 2px;
 }
 @media (max-width: 575.98px) {
   .navbar-gitlab .container-fluid {
@@ -1638,8 +1631,6 @@ svg.s16 {
   --gray-200: #535158;
   --gray-700: #bfbfc3;
   --gray-900: #ececef;
-  --green-100: #0d532a;
-  --green-700: #91d4a8;
   --gl-text-color: #ececef;
   --border-color: #434248;
   --white: #333238;
@@ -1822,11 +1813,6 @@ body.gl-dark .navbar-gitlab .search form .search-input {
 .gl-display-none {
   display: none;
 }
-@media (min-width: 576px) {
-  .gl-sm-display-none {
-    display: none;
-  }
-}
 .gl-display-flex {
   display: flex;
 }
@@ -1851,8 +1837,14 @@ body.gl-dark .navbar-gitlab .search form .search-input {
 .gl-align-items-stretch {
   align-items: stretch;
 }
+.gl-flex-grow-0\! {
+  flex-grow: 0 !important;
+}
 .gl-flex-grow-1 {
   flex-grow: 1;
+}
+.gl-flex-basis-half\! {
+  flex-basis: 50% !important;
 }
 .gl-justify-content-end {
   justify-content: flex-end;

@@ -6,9 +6,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Web IDE **(FREE)**
 
-The Web Integrated Development Environment (IDE) editor streamlines the process
-to contribute changes to your projects, by providing an advanced editor with
-commit staging.
+The Web IDE is an advanced editor with commit staging.
+You can use the Web IDE to make changes to multiple files directly from the
+GitLab UI. For a more basic implementation, see [Web Editor](../repository/web_editor.md).
 
 NOTE:
 The Web IDE is being updated to use VS Code. For details,
@@ -175,8 +175,8 @@ access to the selected branch, you see a warning, but can still create
 a new branch and start a merge request.
 
 To discard a change in a particular file, select **Discard changes** on that
-file in the changes tab. To discard all the changes, select the trash icon on the
-top-right corner of the changes sidebar.
+file in the changes tab. To discard all the changes, select the trash icon in the
+upper-right corner of the changes sidebar.
 
 ![Commit changes](img/commit_changes_v13_11.png)
 
@@ -238,7 +238,13 @@ There are two ways to preview Markdown content in the Web IDE:
 1. Right-click or use the keyboard shortcut `Command/Control + Shift + P` and
    select **Preview Markdown** to toggle a live Markdown preview panel.
 
-## Live Preview
+<!--- start_remove The following content will be removed on remove_date: '2023-02-01' -->
+
+## Live Preview (removed)
+
+WARNING:
+This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108627) in GitLab 15.8
+and is planned for removal in 15.9. This change is a breaking change.
 
 > [Renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/213853) from _Client Side Evaluation_ to _Live Preview_ in GitLab 13.0.
 
@@ -282,6 +288,8 @@ An example `package.json`:
   }
 }
 ```
+
+<!--- end_remove -->
 
 ## Interactive Web Terminals for the Web IDE
 

@@ -1,4 +1,4 @@
-import { GlButton, GlModal, GlPopover } from '@gitlab/ui';
+import { GlButton, GlLink, GlModal, GlPopover } from '@gitlab/ui';
 import { nextTick } from 'vue';
 
 import ActionsButton from '~/vue_shared/components/actions_button.vue';
@@ -147,6 +147,11 @@ describe('Web IDE link component', () => {
   const findForkConfirmModal = () => wrapper.findComponent(ConfirmForkModal);
   const findUserCalloutDismisser = () => wrapper.findComponent(UserCalloutDismisser);
   const findNewWebIdeCalloutPopover = () => wrapper.findComponent(GlPopover);
+  const findTryItOutLink = () =>
+    wrapper
+      .findAllComponents(GlLink)
+      .filter((link) => link.text().includes('Try it out'))
+      .at(0);
 
   it.each([
     {
@@ -512,6 +517,12 @@ describe('Web IDE link component', () => {
 
       it('dismisses the callout when popover close button is clicked', () => {
         findNewWebIdeCalloutPopover().vm.$emit('close-button-clicked');
+
+        expect(dismiss).toHaveBeenCalled();
+      });
+
+      it('dismisses the callout when try it now link is clicked', () => {
+        findTryItOutLink().vm.$emit('click');
 
         expect(dismiss).toHaveBeenCalled();
       });

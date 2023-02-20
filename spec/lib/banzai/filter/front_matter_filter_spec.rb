@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Banzai::Filter::FrontMatterFilter do
+RSpec.describe Banzai::Filter::FrontMatterFilter, feature_category: :team_planning do
   include FilterSpecHelper
 
   it 'allows for `encoding:` before the front matter' do
@@ -114,7 +114,7 @@ RSpec.describe Banzai::Filter::FrontMatterFilter do
 
         foo: :foo_symbol
 
-        ---  
+        ---
 
 
         # Header

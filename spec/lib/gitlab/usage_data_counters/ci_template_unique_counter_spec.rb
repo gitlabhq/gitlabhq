@@ -30,7 +30,6 @@ RSpec.describe Gitlab::UsageDataCounters::CiTemplateUniqueCounter do
       end
 
       it_behaves_like 'Snowplow event tracking with RedisHLL context' do
-        let(:feature_flag_name) { :route_hll_to_snowplow }
         let(:category) { described_class.to_s }
         let(:action) { 'ci_templates_unique' }
         let(:namespace) { project.namespace }

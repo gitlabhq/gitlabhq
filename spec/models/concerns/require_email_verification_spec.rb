@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe RequireEmailVerification do
+RSpec.describe RequireEmailVerification, feature_category: :insider_threat do
   let_it_be(:model) do
     Class.new(ApplicationRecord) do
       self.table_name = 'users'
@@ -15,11 +15,15 @@ RSpec.describe RequireEmailVerification do
 
   using RSpec::Parameterized::TableSyntax
 
-  where(:feature_flag_enabled, :two_factor_enabled, :overridden) do
-    false | false | false
-    false | true  | false
-    true  | false | true
-    true  | true  | false
+  where(:feature_flag_enabled, :two_factor_enabled, :skipped, :overridden) do
+    false | false | false | false
+    false | false | true  | false
+    false | true  | false | false
+    false | true  | true  | false
+    true  | false | false | true
+    true  | false | true  | false
+    true  | true  | false | false
+    true  | true  | true  | false
   end
 
   with_them do
@@ -29,6 +33,7 @@ RSpec.describe RequireEmailVerification do
     before do
       stub_feature_flags(require_email_verification: feature_flag_enabled ? instance : another_instance)
       allow(instance).to receive(:two_factor_enabled?).and_return(two_factor_enabled)
+      stub_feature_flags(skip_require_email_verification: skipped ? instance : another_instance)
     end
 
     describe '#lock_access!' do

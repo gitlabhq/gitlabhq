@@ -61,19 +61,19 @@ Instance-level protection against accidental deletion of groups and projects.
 
 > [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/352960) in GitLab 15.1.
 
-Groups and projects will remain restorable within a defined retention period. By default this is 7 days but it can be changed.
+Groups and projects remain restorable within a defined retention period. By default this is 7 days but it can be changed.
 Setting the retention period to `0` means that groups and project are removed immediately and cannot be restored.
 
 In GitLab 15.1 and later, the retention period must be between `1` and `90`. If the retention period was `0` before the 15.1 update,
-then it will get automatically changed to `1` while also disabling deletion protection the next time any application setting is changed.
+then it gets automatically changed to `1` while also disabling deletion protection the next time any application setting is changed.
 
 ### Delayed project deletion
 
 > User interface [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/352960) in GitLab 15.1.
 
 Administrators can enable [delayed project deletion](../../project/settings/index.md#delayed-project-deletion) by default for
-newly-created groups. Group owners can choose to disable this and existing groups will retain their existing setting. When enabled
-deleted groups will remain restorable within a retention period.
+newly-created groups. Group owners can choose to disable this. When disabled, existing groups retain their existing setting. When enabled
+deleted groups remain restorable within a retention period.
 
 To configure delayed project deletion:
 
@@ -95,7 +95,7 @@ In GitLab 15.1, and later this setting is enforced on groups when disabled and i
 
 > User interface [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352960) in GitLab 15.1.
 
-Groups will remain restorable if the retention period is `1` or more days.
+Groups remain restorable if the retention period is `1` or more days.
 
 In GitLab 15.1 and later, delayed group deletion can be enabled by setting **Deletion projection** to **Keep deleted**.
 
@@ -155,18 +155,23 @@ For more details on group visibility, see
 
 ## Restrict visibility levels
 
-To restrict visibility levels for projects, snippets, and selected pages:
+To restrict visibility levels for groups, projects, snippets, and selected pages:
 
 1. Sign in to GitLab as a user with Administrator access level.
 1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Settings > General**.
 1. Expand the **Visibility and access controls** section.
 1. In the **Restricted visibility levels** section, select the desired visibility levels to restrict.
-   If you restrict the **Public** level:
-   - User profiles are only visible to authenticated users via the Web interface.
-   - User attributes via the GraphQL API are:
-     - Not visible in [GitLab 15.1 and later](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88020).
-     - Only visible to authenticated users between [GitLab 13.1](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/33195) and GitLab 15.0.
+   - If you restrict the **Public** level:
+      - Only administrators are able to create public groups, projects, and snippets.
+      - User profiles are only visible to authenticated users through the Web interface.
+      - User attributes through the GraphQL API are:
+         - Not visible in [GitLab 15.1 and later](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88020).
+         - Only visible to authenticated users between [GitLab 13.1](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/33195) and GitLab 15.0.
+   - If you restrict the **Internal** level:
+     - Only administrators are able to create internal groups, projects, and snippets.
+   - If you restrict the **Private** level:
+     - Only administrators are able to create private groups, projects, and snippets.
 1. Select **Save changes**.
 
 For more details on project visibility, see
@@ -200,7 +205,9 @@ To enable the export of
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/383268) in GitLab 15.8.
 
-You can enable migration of groups by direct transfer. To also migrate projects with the groups, you must enable the
+You can enable migration of groups by direct transfer using the UI.
+
+To also migrate projects with the groups, you must enable the
 [`bulk_import_projects` feature flag](../../group/import/index.md#migrate-groups-by-direct-transfer-recommended).
 
 To enable migration of groups by direct transfer:
@@ -212,6 +219,10 @@ To enable migration of groups by direct transfer:
 1. Scroll to **Allow migrating GitLab groups and projects by direct transfer**.
 1. Select the **Enabled** checkbox.
 1. Select **Save changes**.
+
+The same setting
+[is available](../../../api/settings.md#list-of-settings-that-can-be-accessed-via-api-calls) in the API as the
+`bulk_import_enabled` attribute.
 
 ## Configure enabled Git access protocols
 

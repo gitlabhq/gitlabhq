@@ -1,6 +1,3 @@
 <%= _("Thank you for your support request! We are tracking your request as ticket #%{issue_iid}, and will respond as soon as we can.") % { issue_iid: @issue.iid } %>
 
 <%= _("To unsubscribe from this issue, please paste the following link into your browser:") %>
-
-<%= @unsubscribe_url %>
-<%# EE-specific start %><%= render_if_exists 'layouts/mailer/additional_text' %><%# EE-specific end %>

@@ -9,23 +9,18 @@ module Gitlab
 
           attr_reader :attributes
 
-          def initialize(pipeline, attributes = {}, build = nil)
+          def initialize(pipeline, attributes = {})
             super(pipeline)
 
-            @build = build
             @attributes = attributes
           end
 
           def variables
-            build.scoped_variables
+            stub_build.scoped_variables
           end
           strong_memoize_attr :variables
 
           private
-
-          def build
-            @build || stub_build
-          end
 
           def stub_build
             # This is a temporary piece of technical debt to allow us access

@@ -1,6 +1,7 @@
 <script>
 import { GlIcon, GlTooltipDirective, GlOutsideDirective as Outside } from '@gitlab/ui';
 import { mapGetters, mapActions } from 'vuex';
+import { TYPE_ISSUE } from '~/issues/constants';
 import { __, sprintf } from '~/locale';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { createAlert } from '~/flash';
@@ -9,7 +10,6 @@ import eventHub from '../../event_hub';
 import EditForm from './edit_form.vue';
 
 export default {
-  issue: 'issue',
   locked: {
     icon: 'lock',
     class: 'value',
@@ -49,7 +49,7 @@ export default {
       return this.getNoteableData.targetType === 'merge_request' && this.glFeatures.movedMrSidebar;
     },
     issuableDisplayName() {
-      const isInIssuePage = this.getNoteableData.targetType === this.$options.issue;
+      const isInIssuePage = this.getNoteableData.targetType === TYPE_ISSUE;
       return isInIssuePage ? __('issue') : __('merge request');
     },
     isLocked() {

@@ -1,4 +1,5 @@
 <script>
+import { mapState } from 'vuex';
 import { GlLoadingIcon, GlPagination, GlAlert, GlSearchBoxByType } from '@gitlab/ui';
 import { fetchGroups } from '~/jira_connect/subscriptions/api';
 import {
@@ -38,6 +39,7 @@ export default {
     showPagination() {
       return this.totalItems > this.$options.DEFAULT_GROUPS_PER_PAGE && this.groups.length > 0;
     },
+    ...mapState(['accessToken']),
   },
   mounted() {
     return this.loadGroups().finally(() => {
@@ -47,11 +49,15 @@ export default {
   methods: {
     loadGroups() {
       this.isLoadingMore = true;
-      return fetchGroups(this.groupsPath, {
-        page: this.page,
-        perPage: this.$options.DEFAULT_GROUPS_PER_PAGE,
-        search: this.searchValue,
-      })
+      return fetchGroups(
+        this.groupsPath,
+        {
+          page: this.page,
+          perPage: this.$options.DEFAULT_GROUPS_PER_PAGE,
+          search: this.searchValue,
+        },
+        this.accessToken,
+      )
         .then((response) => {
           const { page, total } = parseIntPagination(normalizeHeaders(response.headers));
           this.page = page;

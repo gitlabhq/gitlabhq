@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe ChangeDefaultValueOnPasswordLastChangedAtToUserDetails, :migration, feature_category: :users do
+RSpec.describe ChangeDefaultValueOnPasswordLastChangedAtToUserDetails, :migration, feature_category: :user_profile do
   let(:namespace) { table(:namespaces).create!(name: 'user', path: 'user') }
   let(:users) { table(:users) }
   let(:user_details) { table(:user_details) }

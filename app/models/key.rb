@@ -11,6 +11,8 @@ class Key < ApplicationRecord
 
   belongs_to :user
 
+  has_many :ssh_signatures, class_name: 'CommitSignatures::SshSignature'
+
   before_validation :generate_fingerprint
 
   validates :title,
@@ -134,6 +136,10 @@ class Key < ApplicationRecord
     return if self.fingerprint_sha256
 
     save if generate_fingerprint
+  end
+
+  def signing?
+    super || auth_and_signing?
   end
 
   private

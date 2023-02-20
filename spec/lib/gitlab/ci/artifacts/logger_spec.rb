@@ -9,23 +9,27 @@ RSpec.describe Gitlab::Ci::Artifacts::Logger do
 
   describe '.log_created' do
     it 'logs information about created artifact' do
-      artifact = create(:ci_job_artifact, :archive)
+      artifact_1 = create(:ci_job_artifact, :archive)
+      artifact_2 = create(:ci_job_artifact, :metadata)
+      artifacts = [artifact_1, artifact_2]
 
-      expect(Gitlab::AppLogger).to receive(:info).with(
-        hash_including(
-          message: 'Artifact created',
-          job_artifact_id: artifact.id,
-          size: artifact.size,
-          type: artifact.file_type,
-          build_id: artifact.job_id,
-          project_id: artifact.project_id,
-          'correlation_id' => an_instance_of(String),
-          'meta.feature_category' => 'test',
-          'meta.caller_id' => 'caller'
+      artifacts.each do |artifact|
+        expect(Gitlab::AppLogger).to receive(:info).with(
+          hash_including(
+            message: 'Artifact created',
+            job_artifact_id: artifact.id,
+            size: artifact.size,
+            file_type: artifact.file_type,
+            build_id: artifact.job_id,
+            project_id: artifact.project_id,
+            'correlation_id' => an_instance_of(String),
+            'meta.feature_category' => 'test',
+            'meta.caller_id' => 'caller'
+          )
         )
-      )
+      end
 
-      described_class.log_created(artifact)
+      described_class.log_created(artifacts)
     end
   end
 
@@ -43,7 +47,7 @@ RSpec.describe Gitlab::Ci::Artifacts::Logger do
             job_artifact_id: artifact.id,
             expire_at: artifact.expire_at,
             size: artifact.size,
-            type: artifact.file_type,
+            file_type: artifact.file_type,
             build_id: artifact.job_id,
             project_id: artifact.project_id,
             method: method,

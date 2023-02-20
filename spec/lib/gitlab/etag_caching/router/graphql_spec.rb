@@ -18,6 +18,12 @@ RSpec.describe Gitlab::EtagCaching::Router::Graphql do
     end
   end
 
+  it 'applies the default urgency for every route', :aggregate_failures do
+    described_class::ROUTES.each do |route|
+      expect(route.urgency).to be(Gitlab::EndpointAttributes::DEFAULT_URGENCY)
+    end
+  end
+
   def match_route(path, header)
     described_class.match(
       double(path_info: path,

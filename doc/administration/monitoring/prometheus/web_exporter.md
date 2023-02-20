@@ -22,7 +22,7 @@ We provide two mechanisms by which web application metrics can be exported:
   makes metric data available via its own `/-/metrics` endpoint. This is the default,
   and is described in [GitLab Metrics](index.md#gitlab-metrics). We recommend this
   default for small GitLab installations where the amount of metrics collected is small.
-- Through a dedicated metrics server. Enabling this server will cause Puma to launch an
+- Through a dedicated metrics server. Enabling this server causes Puma to launch an
   additional process whose sole responsibility is to serve metrics. This approach leads
   to better fault isolation and performance for very large GitLab installations, but
   comes with additional memory use. We recommend this approach for medium to large
@@ -69,5 +69,5 @@ To serve metrics via HTTPS instead of HTTP, enable TLS in the exporter settings:
 1. Save the file and [reconfigure GitLab](../../restart_gitlab.md#omnibus-gitlab-reconfigure)
    for the changes to take effect.
 
-When TLS is enabled, the same `port` and `address` will be used as described above.
+When TLS is enabled, the same `port` and `address` is used as described above.
 The metrics server cannot serve both HTTP and HTTPS at the same time.

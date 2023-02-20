@@ -746,4 +746,35 @@ Attributes must immediately follow the image markdown.
 <p><img src="https://gitlab.com/logo.png"> {width="100" height="100"}</p>
 ````````````````````````````````
 
+## Footnotes
+
+See
+[the footnotes section of the user-facing documentation for GitLab Flavored Markdown](https://docs.gitlab.com/ee/user/markdown.html#footnotes).
+
+```````````````````````````````` example gitlab
+footnote reference tag [^fortytwo]
+
+[^fortytwo]: footnote text
+.
+<p>
+footnote reference tag
+<sup>
+<a href="#fn-fortytwo-42" id="fnref-fortytwo-42" data-footnote-ref>
+1
+</a>
+</sup>
+</p>
+<section data-footnotes>
+<ol>
+<li id="fn-fortytwo-42">
+<p>
+footnote text
+<a href="#fnref-fortytwo-42" data-footnote-backref>
+</a>
+</p>
+</li>
+</ol>
+</section>
+````````````````````````````````
+
 <!-- END TESTS -->

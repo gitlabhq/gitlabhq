@@ -35,7 +35,11 @@ export default {
     const body = document.querySelector('body');
     const { namespaceId } = body.dataset;
 
-    this.track('click_whats_new_drawer', { label: 'namespace_id', value: namespaceId });
+    this.track('click_whats_new_drawer', {
+      label: 'namespace_id',
+      value: namespaceId,
+      property: 'navigation_top',
+    });
   },
   methods: {
     ...mapActions(['openDrawer', 'closeDrawer', 'fetchItems', 'setDrawerBodyHeight']),

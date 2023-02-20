@@ -22,15 +22,10 @@ module Spec
           end
 
           def select_branch(branch_name)
-            ref_selector = '.ref-selector'
-            find(ref_selector).click
             wait_for_requests
 
-            page.within(ref_selector) do
-              fill_in _('Search by Git revision'), with: branch_name
-              wait_for_requests
-              find('li', text: branch_name, match: :prefer_exact).click
-            end
+            click_button branch_name
+            send_keys branch_name
           end
         end
       end

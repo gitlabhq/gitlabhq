@@ -6,10 +6,10 @@ import {
   issuable2,
   issuable3,
 } from 'jest/issuable/components/related_issuable_mock_data';
+import { TYPE_ISSUE } from '~/issues/constants';
 import RelatedIssuesBlock from '~/related_issues/components/related_issues_block.vue';
 import AddIssuableForm from '~/related_issues/components/add_issuable_form.vue';
 import {
-  issuableTypesMap,
   linkedIssueTypesMap,
   linkedIssueTypesTextMap,
   PathIdSeparator,
@@ -34,7 +34,7 @@ describe('RelatedIssuesBlock', () => {
       wrapper = mountExtended(RelatedIssuesBlock, {
         propsData: {
           pathIdSeparator: PathIdSeparator.Issue,
-          issuableType: issuableTypesMap.ISSUE,
+          issuableType: TYPE_ISSUE,
         },
       });
     });
@@ -237,7 +237,7 @@ describe('RelatedIssuesBlock', () => {
         propsData: {
           pathIdSeparator: PathIdSeparator.Issue,
           relatedIssues: [issuable1, issuable2, issuable3],
-          issuableType: issuableTypesMap.ISSUE,
+          issuableType: TYPE_ISSUE,
         },
       });
     });

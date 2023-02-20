@@ -86,7 +86,7 @@ When creating Geo-Based record sets, GCP applies a nearest match for the source 
 1. Select **Network Services** > **Cloud DNS**.
 1. Select the Zone configured for your domain.
 1. Select **Add Record Set**.
-1. Enter the DNS Name for your Location-aware public URL e.g. `gitlab.example.com`.
+1. Enter the DNS Name for your Location-aware public URL, for example, `gitlab.example.com`.
 1. Select the **Routing Policy**: **Geo-Based**.
 1. Select **Add Managed RRData**.
    1. Select **Source Region**: **us-central1**.

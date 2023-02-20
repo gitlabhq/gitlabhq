@@ -149,7 +149,13 @@ module Gitlab
       end
 
       def valid_type?(context)
-        types.blank? || types.any? { |type| context.quick_action_target.is_a?(type) }
+        types.blank? || types.any? do |type|
+          if context.quick_action_target.is_a?(WorkItem)
+            context.quick_action_target.supported_quick_action_commands.include?(name.to_sym)
+          else
+            context.quick_action_target.is_a?(type)
+          end
+        end
       end
     end
   end

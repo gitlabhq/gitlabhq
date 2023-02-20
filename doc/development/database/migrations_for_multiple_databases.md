@@ -10,8 +10,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 This document describes how to properly write database migrations
 for [the decomposed GitLab application using multiple databases](https://gitlab.com/groups/gitlab-org/-/epics/6168).
-
-Learn more about general multiple databases support in a [separate document](multiple_databases.md).
+For more information, see [Multiple databases](multiple_databases.md).
 
 The design for multiple databases (except for the Geo database) assumes
 that all decomposed databases have **the same structure** (for example, schema), but **the data is different** in each database. This means that some tables do not contain data on each database.

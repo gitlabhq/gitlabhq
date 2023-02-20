@@ -34,18 +34,6 @@ For removal reviewers (Technical Writers only):
   https://about.gitlab.com/handbook/marketing/blog/release-posts/#update-the-removals-doc
 -->
 
-## Removed in 16.0
-
-### Changing merge request approvals with the `/approvals` API endpoint
-
-WARNING:
-This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
-Review the details carefully before upgrading.
-
-To change the approvals required for a merge request, you should no longer use the `/approvals` API endpoint, which was deprecated in GitLab 12.3.
-
-Instead, use the [`/approval_rules` endpoint](https://docs.gitlab.com/ee/api/merge_request_approvals.html#merge-request-level-mr-approvals) to [create](https://docs.gitlab.com/ee/api/merge_request_approvals.html#create-merge-request-level-rule) or [update](https://docs.gitlab.com/ee/api/merge_request_approvals.html#update-merge-request-level-rule) the approval rules for a merge request.
-
 ## Removed in 15.8
 
 ### CiliumNetworkPolicy within the auto deploy Helm chart is removed
@@ -58,6 +46,16 @@ If you want to preserve this functionality, you can follow one of these two path
 1. Set `AUTO_DEPLOY_IMAGE_VERSION` and `DAST_AUTO_DEPLOY_IMAGE_VERSION` to the most recent version of the image that included the CiliumNetworkPolicy
 
 ## Removed in 15.7
+
+### File Type variable expansion in `.gitlab-ci.yml`
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+Prior to this change, variables that referenced or applied alias file variables expanded the value of the `File` type variable. For example, the file contents. This behavior was incorrect because it did not comply with typical shell variable expansion rules. A user could run an $echo command with the variable as an input parameter to leak secrets or sensitive information stored in 'File' type variables.
+
+In 15.7, we are removing file type variable expansion from GitLab. It is essential to check your CI pipelines to confirm if your scripts reference a file variable. If your CI job relies on the previous expansion functionality, that CI job will not work and generate an error as of 15.7.  The new behavior is that variable expansion that reference or apply alias file variables expand to the file name or path of the `File` type variable, instead of its value, such as the file contents.
 
 ### Flowdock integration
 

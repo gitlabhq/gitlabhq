@@ -6,7 +6,6 @@ module QA
       module Settings
         class Main < Page::Base
           include QA::Page::Settings::Common
-          include Component::Select2
           include SubMenus::Project
           include Component::Breadcrumbs
           include Layout::Flash

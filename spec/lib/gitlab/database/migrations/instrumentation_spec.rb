@@ -18,6 +18,7 @@ RSpec.describe Gitlab::Database::Migrations::Instrumentation do
     let(:migration_name) { 'test' }
     let(:migration_version) { '12345' }
     let(:migration_meta) { { 'max_batch_size' => 1, 'total_tuple_count' => 10, 'interval' => 60 } }
+    let(:expected_json_keys) { %w[version name walltime success total_database_size_change query_statistics] }
 
     it 'executes the given block' do
       expect do |b|
@@ -81,7 +82,10 @@ RSpec.describe Gitlab::Database::Migrations::Instrumentation do
         expect(subject.success).to be_truthy
         expect(subject.version).to eq(migration_version)
         expect(subject.name).to eq(migration_name)
-        expect(subject.meta).to eq(migration_meta)
+      end
+
+      it 'transforms observation to expected json' do
+        expect(Gitlab::Json.parse(subject.to_json).keys).to contain_exactly(*expected_json_keys)
       end
     end
 
@@ -114,7 +118,10 @@ RSpec.describe Gitlab::Database::Migrations::Instrumentation do
             expect(subject['success']).to be_falsey
             expect(subject['version']).to eq(migration_version)
             expect(subject['name']).to eq(migration_name)
-            expect(subject['meta']).to include(migration_meta)
+          end
+
+          it 'transforms observation to expected json' do
+            expect(Gitlab::Json.parse(subject.to_json).keys).to contain_exactly(*expected_json_keys)
           end
         end
       end

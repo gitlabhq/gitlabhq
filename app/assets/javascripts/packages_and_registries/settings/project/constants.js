@@ -74,6 +74,12 @@ export const KEEP_N_DUPLICATED_PACKAGE_FILES_LABEL = s__(
 export const KEEP_N_DUPLICATED_PACKAGE_FILES_DESCRIPTION = s__(
   'PackageRegistry|Examples of assets include .pom & .jar files',
 );
+export const TIME_TO_NEXT_CLEANUP_MESSAGE = s__(
+  'PackageRegistry|Packages and assets will not be deleted until cleanup runs in %{nextRunAt}.',
+);
+export const READY_FOR_CLEANUP_MESSAGE = s__(
+  'PackageRegistry|Packages and assets cleanup is ready to be executed when the next cleanup job runs.',
+);
 
 export const KEEP_N_DUPLICATED_PACKAGE_FILES_FIELDNAME = 'keepNDuplicatedPackageFiles';
 

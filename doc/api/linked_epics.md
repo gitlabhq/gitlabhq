@@ -11,7 +11,129 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 If the Related Epics feature is not available in your GitLab plan, a `403` status code is returned.
 
-## List linked epics
+## List related epic links from a group
+
+Get a list of a given group's related epic links within group and sub-groups, filtered according to the user authorizations.
+The user needs to have access to the `source_epic` and `target_epic` to access the related epic link.
+
+```plaintext
+GET /groups/:id/epics/related_epic_links
+```
+
+Supported attributes:
+
+| Attribute  | Type           | Required               | Description                                                               |
+| ---------- | -------------- | ---------------------- | ------------------------------------------------------------------------- |
+| `id`       | integer/string | **{check-circle}** Yes | ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding). |
+| `created_after` | string | no | Return related epic links created on or after the given time. Format: ISO 8601 (`YYYY-MM-DDTHH:MM:SSZ`)  |
+| `created_before` | string | no | Return related epic links created on or before the given time. Format: ISO 8601 (`YYYY-MM-DDTHH:MM:SSZ`) |
+| `updated_after` | string | no | Return related epic links updated on or after the given time. Format: ISO 8601 (`YYYY-MM-DDTHH:MM:SSZ`)  |
+| `updated_before` | string | no | Return related epic links updated on or before the given time. Format: ISO 8601 (`YYYY-MM-DDTHH:MM:SSZ`) |
+
+Example request:
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/:id/related_epic_links"
+```
+
+Example response:
+
+```json
+[
+  {
+    "id": 1,
+    "created_at": "2022-01-31T15:10:44.988Z",
+    "updated_at": "2022-01-31T15:10:44.988Z",
+    "link_type": "relates_to",
+    "source_epic": {
+      "id": 21,
+      "iid": 1,
+      "color": "#1068bf",
+      "text_color": "#FFFFFF",
+      "group_id": 26,
+      "parent_id": null,
+      "parent_iid": null,
+      "title": "Aspernatur recusandae distinctio omnis et qui est iste.",
+      "description": "some description",
+      "confidential": false,
+      "author": {
+        "id": 15,
+        "username": "trina",
+        "name": "Theresia Robel",
+        "state": "active",
+        "avatar_url": "https://www.gravatar.com/avatar/085e28df717e16484cbf6ceca75e9a93?s=80&d=identicon",
+        "web_url": "http://gitlab.example.com/trina"
+      },
+      "start_date": null,
+      "end_date": null,
+      "due_date": null,
+      "state": "opened",
+      "web_url": "http://gitlab.example.com/groups/flightjs/-/epics/1",
+      "references": {
+        "short": "&1",
+        "relative": "&1",
+        "full": "flightjs&1"
+      },
+      "created_at": "2022-01-31T15:10:44.988Z",
+      "updated_at": "2022-03-16T09:32:35.712Z",
+      "closed_at": null,
+      "labels": [],
+      "upvotes": 0,
+      "downvotes": 0,
+      "_links": {
+        "self": "http://gitlab.example.com/api/v4/groups/26/epics/1",
+        "epic_issues": "http://gitlab.example.com/api/v4/groups/26/epics/1/issues",
+        "group": "http://gitlab.example.com/api/v4/groups/26",
+        "parent": null
+      }
+    },
+    "target_epic": {
+      "id": 25,
+      "iid": 5,
+      "color": "#1068bf",
+      "text_color": "#FFFFFF",
+      "group_id": 26,
+      "parent_id": null,
+      "parent_iid": null,
+      "title": "Aut assumenda id nihil distinctio fugiat vel numquam est.",
+      "description": "some description",
+      "confidential": false,
+      "author": {
+        "id": 3,
+        "username": "valerie",
+        "name": "Erika Wolf",
+        "state": "active",
+        "avatar_url": "https://www.gravatar.com/avatar/9ef7666abb101418a4716a8ed4dded80?s=80&d=identicon",
+        "web_url": "http://gitlab.example.com/valerie"
+      },
+      "start_date": null,
+      "end_date": null,
+      "due_date": null,
+      "state": "opened",
+      "web_url": "http://gitlab.example.com/groups/flightjs/-/epics/5",
+      "references": {
+        "short": "&5",
+        "relative": "&5",
+        "full": "flightjs&5"
+      },
+      "created_at": "2022-01-31T15:10:45.080Z",
+      "updated_at": "2022-03-16T09:32:35.842Z",
+      "closed_at": null,
+      "labels": [],
+      "upvotes": 0,
+      "downvotes": 0,
+      "_links": {
+        "self": "http://gitlab.example.com/api/v4/groups/26/epics/5",
+        "epic_issues": "http://gitlab.example.com/api/v4/groups/26/epics/5/issues",
+        "group": "http://gitlab.example.com/api/v4/groups/26",
+        "parent": null
+      }
+    },
+  }
+]
+```
+
+## List linked epics from an epic
 
 Get a list of a given epic's linked epics filtered according to the user authorizations.
 
@@ -24,7 +146,7 @@ Supported attributes:
 | Attribute  | Type           | Required               | Description                                                               |
 | ---------- | -------------- | ---------------------- | ------------------------------------------------------------------------- |
 | `epic_iid` | integer        | **{check-circle}** Yes | Internal ID of a group's epic                                             |
-| `id`       | integer/string | **{check-circle}** Yes | ID or [URL-encoded path of the group](index.md#namespaced-path-encoding). |
+| `id`       | integer/string | **{check-circle}** Yes | ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding). |
 
 Example request:
 
@@ -103,9 +225,9 @@ Supported attributes:
 | Attribute           | Type           | Required                    | Description                           |
 |---------------------|----------------|-----------------------------|---------------------------------------|
 | `epic_iid`          | integer        | **{check-circle}** Yes      | Internal ID of a group's epic.        |
-| `id`                | integer/string | **{check-circle}** Yes      | ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`                | integer/string | **{check-circle}** Yes      | ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `target_epic_iid`   | integer/string | **{check-circle}** Yes      | Internal ID of a target group's epic. |
-| `target_group_id`   | integer/string | **{check-circle}** Yes      | ID or [URL-encoded path of the target group](index.md#namespaced-path-encoding). |
+| `target_group_id`   | integer/string | **{check-circle}** Yes      | ID or [URL-encoded path of the target group](rest/index.md#namespaced-path-encoding). |
 | `link_type`         | string         | **{dotted-circle}** No      | Type of the relation (`relates_to`, `blocks`, `is_blocked_by`), defaults to `relates_to`. |
 
 Example request:
@@ -118,6 +240,10 @@ Example response:
 
 ```json
 {
+  "id": 1,
+  "created_at": "2022-01-31T15:10:44.988Z",
+  "updated_at": "2022-01-31T15:10:44.988Z",
+  "link_type": "relates_to",
   "source_epic": {
     "id": 21,
     "iid": 1,
@@ -202,7 +328,6 @@ Example response:
       "parent": null
     }
   },
-  "link_type": "relates_to"
 }
 ```
 
@@ -222,7 +347,7 @@ Supported attributes:
 | Attribute                | Type           | Required                    | Description                           |
 |--------------------------|----------------|-----------------------------|---------------------------------------|
 | `epic_iid`               | integer        | **{check-circle}** Yes      | Internal ID of a group's epic.        |
-| `id`                     | integer/string | **{check-circle}** Yes      | ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`                     | integer/string | **{check-circle}** Yes      | ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `related_epic_link_id`   | integer/string | **{check-circle}** Yes      | Internal ID of a related epic link. |
 
 Example request:
@@ -235,6 +360,10 @@ Example response:
 
 ```json
 {
+  "id": 1,
+  "created_at": "2022-01-31T15:10:44.988Z",
+  "updated_at": "2022-01-31T15:10:44.988Z",
+  "link_type": "relates_to",
   "source_epic": {
     "id": 21,
     "iid": 1,
@@ -319,6 +448,5 @@ Example response:
       "parent": null
     }
   },
-  "link_type": "relates_to"
 }
 ```

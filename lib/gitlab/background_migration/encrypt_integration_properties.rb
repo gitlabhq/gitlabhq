@@ -31,7 +31,7 @@ module Gitlab
         def encrypt_properties
           data = ::Gitlab::Json.parse(properties)
           iv = generate_iv(ALGORITHM)
-          ep = self.class.encrypt(:encrypted_properties_tmp, data, { iv: iv })
+          ep = self.class.attr_encrypt(:encrypted_properties_tmp, data, { iv: iv })
 
           [ep, iv]
         end

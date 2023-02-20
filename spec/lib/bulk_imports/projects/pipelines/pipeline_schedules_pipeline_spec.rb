@@ -14,7 +14,7 @@ RSpec.describe BulkImports::Projects::Pipelines::PipelineSchedulesPipeline do
       project: project,
       bulk_import: bulk_import,
       source_full_path: 'source/full/path',
-      destination_name: 'My Destination Project',
+      destination_slug: 'My-Destination-Project',
       destination_namespace: group.full_path
     )
   end

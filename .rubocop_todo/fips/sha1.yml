@@ -21,7 +21,6 @@ Fips/SHA1:
     - 'ee/lib/ee/gitlab/background_migration/recalculate_vulnerability_finding_signatures_for_findings.rb'
     - 'ee/spec/factories/vulnerabilities/feedback.rb'
     - 'ee/spec/factories/vulnerabilities/finding_signatures.rb'
-    - 'ee/spec/finders/security/pipeline_vulnerabilities_finder_spec.rb'
     - 'ee/spec/lib/ee/gitlab/alert_management/payload/generic_spec.rb'
     - 'ee/spec/lib/ee/gitlab/background_migration/populate_uuids_for_security_findings_spec.rb'
     - 'ee/spec/lib/ee/gitlab/background_migration/recalculate_vulnerability_finding_signatures_for_findings_spec.rb'

@@ -271,6 +271,10 @@ production: &base
     # Default is '.gitlab_mailroom_secret' relative to Rails.root (i.e. root of the GitLab app).
     # secret_file: /home/git/gitlab/.gitlab_mailroom_secret
 
+    # File location to read encrypted incoming email secrets from
+    # encrypted_secret_file: /mnt/gitlab/smtp.yaml.enc 
+    # Default: shared/encrypted_settings/incoming_email.yaml.enc
+
   ## Consolidated object store config
   ## This will only take effect if the object_store sections are not defined
   ## within the types (e.g. artifacts, lfs, etc.).
@@ -577,6 +581,10 @@ production: &base
     # Periodically update ci_runner_versions table with up-to-date versions and status.
     ci_runner_versions_reconciliation_worker:
       cron: "@daily"
+
+    # Periodically clean up stale runner machines.
+    ci_runners_stale_machines_cleanup_worker:
+      cron: "36 4 * * *"
 
   # GitLab EE only jobs. These jobs are automatically enabled for an EE
   # installation, and ignored for a CE installation.
@@ -1064,16 +1072,6 @@ production: &base
       #             login_url: '/cas/login',
       #             service_validate_url: '/cas/p3/serviceValidate',
       #             logout_url: '/cas/logout' } }
-      # - { name: 'authentiq',
-      #     # for client credentials (client ID and secret), go to https://www.authentiq.com/developers
-      #     app_id: 'YOUR_CLIENT_ID',
-      #     app_secret: 'YOUR_CLIENT_SECRET',
-      #     args: {
-      #             scope: 'aq:name email~rs address aq:push'
-      #             # callback_url parameter is optional except when 'gitlab.host' in this file is set to 'localhost'
-      #             # callback_url: 'YOUR_CALLBACK_URL'
-      #           }
-      #   }
       # - { name: 'github',
       #     app_id: 'YOUR_APP_ID',
       #     app_secret: 'YOUR_APP_SECRET',
@@ -1620,10 +1618,6 @@ test:
             client_id: 'YOUR_AUTH0_CLIENT_ID',
             client_secret: 'YOUR_AUTH0_CLIENT_SECRET',
             namespace: 'YOUR_AUTH0_DOMAIN' } }
-      - { name: 'authentiq',
-          app_id: 'YOUR_CLIENT_ID',
-          app_secret: 'YOUR_CLIENT_SECRET',
-          args: { scope: 'aq:name email~rs address aq:push' } }
       - { name: 'salesforce',
           app_id: 'YOUR_CLIENT_ID',
           app_secret: 'YOUR_CLIENT_SECRET'

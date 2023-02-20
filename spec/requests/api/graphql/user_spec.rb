@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'User', feature_category: :users do
+RSpec.describe 'User', feature_category: :user_profile do
   include GraphqlHelpers
 
   let_it_be(:current_user) { create(:user) }

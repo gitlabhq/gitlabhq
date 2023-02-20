@@ -798,20 +798,19 @@ incoming_email:
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214900) in GitLab 13.11.
 
 GitLab can read incoming email using the Microsoft Graph API instead of
-IMAP. Because [Microsoft is deprecating IMAP usage with Basic Authentication](https://techcommunity.microsoft.com/t5/exchange-team-blog/announcing-oauth-2-0-support-for-imap-and-smtp-auth-protocols-in/ba-p/1330432), the Microsoft Graph API will soon be required for new Microsoft Exchange Online
-mailboxes.
+IMAP. Because [Microsoft is deprecating IMAP usage with Basic Authentication](https://techcommunity.microsoft.com/t5/exchange-team-blog/announcing-oauth-2-0-support-for-imap-and-smtp-auth-protocols-in/ba-p/1330432), the Microsoft Graph API is be required for new Microsoft Exchange Online mailboxes.
 
-To configure GitLab for Microsoft Graph, you will need to register an
-OAuth2 application in your Azure Active Directory that has the
+To configure GitLab for Microsoft Graph, you need to register an
+OAuth 2.0 application in your Azure Active Directory that has the
 `Mail.ReadWrite` permission for all mailboxes. See the [MailRoom step-by-step guide](https://github.com/tpitale/mail_room/#microsoft-graph-configuration)
 and [Microsoft instructions](https://learn.microsoft.com/en-us/azure/active-directory/develop/quickstart-register-app)
 for more details.
 
-Record the following when you configure your OAuth2 application:
+Record the following when you configure your OAuth 2.0 application:
 
 - Tenant ID for your Azure Active Directory
-- Client ID for your OAuth2 application
-- Client secret your OAuth2 application
+- Client ID for your OAuth 2.0 application
+- Client secret your OAuth 2.0 application
 
 ##### Restrict mailbox access
 
@@ -868,3 +867,131 @@ gitlab_rails['incoming_email_inbox_options'] = {
 ```
 
 The Microsoft Graph API is not yet supported in source installations. See [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/326169) for more details.
+
+### Use encrypted credentials
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108279) in GitLab 15.9.
+
+Instead of having the incoming email credentials stored in plaintext in the configuration files, you can optionally
+use an encrypted file for the incoming email credentials.
+
+Prerequisites:
+
+- To use encrypted credentials, you must first enable the
+  [encrypted configuration](encrypted_configuration.md).
+
+The supported configuration items for the encrypted file are:
+
+- `user`
+- `password`
+
+::Tabs
+
+:::TabTitle Linux package (Omnibus)
+
+1. If initially your incoming email configuration in `/etc/gitlab/gitlab.rb` looked like:
+
+   ```ruby
+   gitlab_rails['incoming_email_email'] = "incoming-email@mail.example.com"
+   gitlab_rails['incoming_email_password'] = "examplepassword"
+   ```
+
+1. Edit the encrypted secret:
+
+   ```shell
+   sudo gitlab-rake gitlab:incoming_email:secret:edit EDITOR=vim
+   ```
+
+1. Enter the unencrypted contents of the incoming email secret:
+
+   ```yaml
+   user: 'incoming-email@mail.example.com'
+   password: 'examplepassword'
+   ```
+
+1. Edit `/etc/gitlab/gitlab.rb` and remove the `incoming_email` settings for `email` and `password`.
+1. Save the file and reconfigure GitLab:
+
+   ```shell
+   sudo gitlab-ctl reconfigure
+   ```
+
+:::TabTitle Helm chart (Kubernetes)
+
+Use a Kubernetes secret to store the incoming email password. For more information,
+read about [Helm IMAP secrets](https://docs.gitlab.com/charts/installation/secrets.html#imap-password-for-incoming-emails).
+
+:::TabTitle Docker
+
+1. If initially your incoming email configuration in `docker-compose.yml` looked like:
+
+   ```yaml
+   version: "3.6"
+   services:
+     gitlab:
+       image: 'gitlab/gitlab-ee:latest'
+       restart: always
+       hostname: 'gitlab.example.com'
+       environment:
+         GITLAB_OMNIBUS_CONFIG: |
+           gitlab_rails['incoming_email_email'] = "incoming-email@mail.example.com"
+           gitlab_rails['incoming_email_password'] = "examplepassword"
+   ```
+
+1. Get inside the container, and edit the encrypted secret:
+
+   ```shell
+   sudo docker exec -t <container_name> bash
+   gitlab-rake gitlab:incoming_email:secret:edit EDITOR=editor
+   ```
+
+1. Enter the unencrypted contents of the incoming email secret:
+
+   ```yaml
+   user: 'incoming-email@mail.example.com'
+   password: 'examplepassword'
+   ```
+
+1. Edit `docker-compose.yml` and remove the `incoming_email` settings for `email` and `password`.
+1. Save the file and restart GitLab:
+
+   ```shell
+   docker compose up -d
+   ```
+
+:::TabTitle Self-compiled (source)
+
+1. If initially your incoming email configuration in `/home/git/gitlab/config/gitlab.yml` looked like:
+
+   ```yaml
+   production:
+     incoming_email:
+       user: 'incoming-email@mail.example.com'
+       password: 'examplepassword'
+   ```
+
+1. Edit the encrypted secret:
+
+   ```shell
+   bundle exec rake gitlab:incoming_email:secret:edit EDITOR=vim RAILS_ENVIRONMENT=production
+   ```
+
+1. Enter the unencrypted contents of the incoming email secret:
+
+   ```yaml
+   user: 'incoming-email@mail.example.com'
+   password: 'examplepassword'
+   ```
+
+1. Edit `/home/git/gitlab/config/gitlab.yml` and remove the `incoming_email:` settings for `user` and `password`.
+1. Save the file and restart GitLab and Mailroom
+
+   ```shell
+   # For systems running systemd
+   sudo systemctl restart gitlab.target
+
+   # For systems running SysV init
+   sudo service gitlab restart
+   ```
+
+::EndTabs

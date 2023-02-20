@@ -8,24 +8,23 @@ module Ci
     enum_with_nil status: {
       not_processed: nil,
       invalid_version: -1,
-      not_available: 1,
+      unavailable: 1,
       available: 2,
       recommended: 3
     }
 
     STATUS_DESCRIPTIONS = {
       invalid_version: 'Runner version is not valid.',
-      not_available: 'Upgrade is not available for the runner.',
+      unavailable: 'Upgrade is not available for the runner.',
       available: 'Upgrade is available for the runner.',
       recommended: 'Upgrade is available and recommended for the runner.'
     }.freeze
 
-    # Override auto generated negative scope (from available) so the scope has expected behavior
-    scope :not_available, -> { where(status: :not_available) }
+    has_many :runner_machines, inverse_of: :runner_version, foreign_key: :version, class_name: 'Ci::RunnerMachine'
 
     # This scope returns all versions that might need recalculating. For instance, once a version is considered
     # :recommended, it normally doesn't change status even if the instance is upgraded
-    scope :potentially_outdated, -> { where(status: [nil, :not_available, :available]) }
+    scope :potentially_outdated, -> { where(status: [nil, :unavailable, :available]) }
 
     validates :version, length: { maximum: 2048 }
   end

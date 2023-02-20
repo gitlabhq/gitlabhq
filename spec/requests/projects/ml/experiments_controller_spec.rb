@@ -38,31 +38,74 @@ RSpec.describe Projects::Ml::ExperimentsController, feature_category: :mlops do
   end
 
   describe 'GET index' do
-    before do
-      list_experiments
+    describe 'renderering' do
+      before do
+        list_experiments
+      end
+
+      it 'renders the template' do
+        expect(response).to render_template('projects/ml/experiments/index')
+      end
+
+      it 'does not perform N+1 sql queries' do
+        control_count = ActiveRecord::QueryRecorder.new(skip_cached: false) { list_experiments }
+
+        create_list(:ml_experiments, 2, project: project, user: user)
+
+        expect { list_experiments }.not_to exceed_all_query_limit(control_count)
+      end
     end
 
-    it 'renders the template' do
-      expect(response).to render_template('projects/ml/experiments/index')
-    end
+    describe 'pagination' do
+      let_it_be(:experiments) do
+        create_list(:ml_experiments, 3, project: project_with_feature)
+      end
 
-    it 'does not perform N+1 sql queries' do
-      control_count = ActiveRecord::QueryRecorder.new(skip_cached: false) { list_experiments }
+      let(:params) { basic_params.merge(id: experiment.iid) }
 
-      create_list(:ml_experiments, 2, project: project, user: user)
+      before do
+        stub_const("Projects::Ml::ExperimentsController::MAX_EXPERIMENTS_PER_PAGE", 2)
 
-      expect { list_experiments }.not_to exceed_all_query_limit(control_count)
+        list_experiments
+      end
+
+      it 'fetches only MAX_CANDIDATES_PER_PAGE candidates' do
+        expect(assigns(:experiments).size).to eq(2)
+      end
+
+      it 'paginates', :aggregate_failures do
+        page = assigns(:experiments)
+
+        expect(page.first).to eq(experiments.last)
+        expect(page.last).to eq(experiments[1])
+
+        new_params = params.merge(cursor: assigns(:page_info)[:end_cursor])
+
+        list_experiments(new_params)
+
+        new_page = assigns(:experiments)
+
+        expect(new_page.first).to eq(experiments.first)
+      end
     end
 
     context 'when :ml_experiment_tracking is disabled for the project' do
       let(:project) { project_without_feature }
+
+      before do
+        list_experiments
+      end
 
       it 'responds with a 404' do
         expect(response).to have_gitlab_http_status(:not_found)
       end
     end
 
-    it_behaves_like '404 if feature flag disabled'
+    it_behaves_like '404 if feature flag disabled' do
+      before do
+        list_experiments
+      end
+    end
   end
 
   describe 'GET show' do
@@ -75,36 +118,85 @@ RSpec.describe Projects::Ml::ExperimentsController, feature_category: :mlops do
     end
 
     describe 'pagination' do
-      let_it_be(:candidates) { create_list(:ml_candidates, 5, experiment: experiment) }
+      let_it_be(:candidates) do
+        create_list(:ml_candidates, 5, experiment: experiment).tap do |c|
+          c.first.metrics.create!(name: 'metric1', value: 0.3)
+          c[1].metrics.create!(name: 'metric1', value: 0.2)
+          c.last.metrics.create!(name: 'metric1', value: 0.6)
+        end
+      end
+
+      let(:params) { basic_params.merge(id: experiment.iid) }
 
       before do
         stub_const("Projects::Ml::ExperimentsController::MAX_CANDIDATES_PER_PAGE", 2)
-        candidates
 
         show_experiment
       end
 
-      context 'when out of bounds' do
-        let(:params) { basic_params.merge(id: experiment.iid, page: 10000) }
-
-        it 'redirects to last page' do
-          last_page = (experiment.candidates.size + 1) / 2
-
-          expect(response).to redirect_to(project_ml_experiment_path(project, experiment.iid, page: last_page))
-        end
+      it 'fetches only MAX_CANDIDATES_PER_PAGE candidates' do
+        expect(assigns(:candidates).size).to eq(2)
       end
 
-      context 'when bad page' do
-        let(:params) { basic_params.merge(id: experiment.iid, page: 's') }
+      it 'paginates' do
+        received = assigns(:page_info)
 
-        it 'uses first page' do
-          expect(assigns(:pagination)).to include(
-            page: 1,
-            is_last_page: false,
-            per_page: 2,
-            total_items: experiment.candidates&.size
-          )
+        expect(received).to include({
+          has_next_page: true,
+          has_previous_page: false,
+          start_cursor: nil
+        })
+      end
+
+      context 'when order by metric' do
+        let(:params) do
+          {
+            order_by: "metric1",
+            order_by_type: "metric",
+            sort: "desc"
+          }
         end
+
+        it 'paginates', :aggregate_failures do
+          page = assigns(:candidates)
+
+          expect(page.first).to eq(candidates.last)
+          expect(page.last).to eq(candidates.first)
+
+          new_params = params.merge(cursor: assigns(:page_info)[:end_cursor])
+
+          show_experiment(new_params)
+
+          new_page = assigns(:candidates)
+
+          expect(new_page.first).to eq(candidates[1])
+        end
+      end
+    end
+
+    describe 'search' do
+      let(:params) do
+        basic_params.merge(
+          id: experiment.iid,
+          name: 'some_name',
+          orderBy: 'name',
+          orderByType: 'metric',
+          sort: 'asc',
+          invalid: 'invalid'
+        )
+      end
+
+      it 'formats and filters the parameters' do
+        expect(Projects::Ml::CandidateFinder).to receive(:new).and_call_original do |exp, params|
+          expect(params.to_h).to include({
+            name: 'some_name',
+            order_by: 'name',
+            order_by_type: 'metric',
+            sort: 'asc'
+          })
+        end
+
+        show_experiment
       end
     end
 
@@ -125,11 +217,11 @@ RSpec.describe Projects::Ml::ExperimentsController, feature_category: :mlops do
 
   private
 
-  def show_experiment
-    get project_ml_experiment_path(project, experiment.iid), params: params
+  def show_experiment(new_params = nil)
+    get project_ml_experiment_path(project, experiment.iid), params: new_params || params
   end
 
-  def list_experiments
-    get project_ml_experiments_path(project), params: params
+  def list_experiments(new_params = nil)
+    get project_ml_experiments_path(project), params: new_params || params
   end
 end

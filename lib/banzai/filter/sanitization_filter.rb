@@ -20,6 +20,7 @@ module Banzai
 
         # Allow the 'data-sourcepos' from CommonMark on all elements
         allowlist[:attributes][:all].push('data-sourcepos')
+        allowlist[:attributes][:all].push('data-escaped-char')
 
         # Remove any `style` properties not required for table alignment
         allowlist[:transformers].push(self.class.remove_unsafe_table_style)

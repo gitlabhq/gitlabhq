@@ -1005,6 +1005,7 @@ excluded_attributes:
     - :protected_branch_id
   create_access_levels:
     - :protected_tag_id
+    - :deploy_key_id
   deploy_access_levels:
     - :protected_environment_id
   boards:
@@ -1104,6 +1105,9 @@ methods:
   issues:
     - :state
 
+# Add in this list the nested associations that are used to export the parent
+# association, but are not present in the tree list. In other words, the associations
+# that needs to be preloaded but do not need to be exported.
 preloads:
   issues:
     project: :route
@@ -1112,8 +1116,8 @@ preloads:
     # tags: # needed by tag_list
     project: # deprecated: needed by coverage_regex of Ci::Build
   merge_requests:
-    source_project: # needed by source_branch_sha and diff_head_sha
-    target_project: # needed by target_branch_sha
+    source_project: :route # needed by source_branch_sha and diff_head_sha
+    target_project: :route # needed by target_branch_sha
     assignees: # needed by assigne_id that is implemented by DeprecatedAssignee
 
 # Specify a custom export reordering for a given relationship

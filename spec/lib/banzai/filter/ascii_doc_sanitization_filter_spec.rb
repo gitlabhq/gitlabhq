@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Banzai::Filter::AsciiDocSanitizationFilter do
+RSpec.describe Banzai::Filter::AsciiDocSanitizationFilter, feature_category: :wiki do
   include FilterSpecHelper
 
   it 'preserves footnotes refs' do

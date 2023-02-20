@@ -866,6 +866,19 @@ Depending on your installation method, this file is located at:
 - Omnibus GitLab: `/var/log/gitlab/gitlab-rails/database_load_balancing.log`
 - Installations from source: `/home/git/gitlab/log/database_load_balancing.log`
 
+## `zoekt.log` **(PREMIUM SELF)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110980) in GitLab 15.9.
+
+This file logs information related to the
+[Exact code search](../../user/search/exact_code_search.md) feature which is
+powered by Zoekt.
+
+Depending on your installation method, this file is located at:
+
+- Omnibus GitLab: `/var/log/gitlab/gitlab-rails/zoekt.log`
+- Installations from source: `/home/git/gitlab/log/zoekt.log`
+
 ## `elasticsearch.log` **(PREMIUM SELF)**
 
 > Introduced in GitLab 12.6.

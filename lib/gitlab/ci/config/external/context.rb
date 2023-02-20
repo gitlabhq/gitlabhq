@@ -10,6 +10,7 @@ module Gitlab
           TimeoutError = Class.new(StandardError)
 
           MAX_INCLUDES = 100
+          NEW_MAX_INCLUDES = 150 # Update to MAX_INCLUDES when FF ci_includes_count_duplicates is removed
 
           include ::Gitlab::Utils::StrongMemoize
 
@@ -27,10 +28,10 @@ module Gitlab
             @user = user
             @parent_pipeline = parent_pipeline
             @variables = variables || Ci::Variables::Collection.new
-            @expandset = Set.new
+            @expandset = Feature.enabled?(:ci_includes_count_duplicates, project) ? [] : Set.new
             @execution_deadline = 0
             @logger = logger || Gitlab::Ci::Pipeline::Logger.new(project: project)
-            @max_includes = MAX_INCLUDES
+            @max_includes = Feature.enabled?(:ci_includes_count_duplicates, project) ? NEW_MAX_INCLUDES : MAX_INCLUDES
             yield self if block_given?
           end
 

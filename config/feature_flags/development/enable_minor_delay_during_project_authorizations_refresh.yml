@@ -1,8 +1,0 @@
----
-name: enable_minor_delay_during_project_authorizations_refresh
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/97805
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/373672
-milestone: '15.4'
-type: development
-group: group::workspace
-default_enabled: true

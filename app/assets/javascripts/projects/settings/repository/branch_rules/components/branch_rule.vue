@@ -13,7 +13,7 @@ export const i18n = {
   approvalRules: s__('BranchRules|%{total} approval %{subject}'),
   matchingBranches: s__('BranchRules|%{total} matching %{subject}'),
   pushAccessLevels: s__('BranchRules|Allowed to merge'),
-  mergeAccessLevels: s__('BranchRules|Allowed to push'),
+  mergeAccessLevels: s__('BranchRules|Allowed to push and merge'),
 };
 
 export default {
@@ -106,7 +106,7 @@ export default {
     },
     approvalDetails() {
       const approvalDetails = [];
-      if (this.isWildcard) {
+      if (this.isWildcard || this.matchingBranchesCount > 1) {
         approvalDetails.push(this.matchingBranchesText);
       }
       if (this.branchProtection?.allowForcePush) {

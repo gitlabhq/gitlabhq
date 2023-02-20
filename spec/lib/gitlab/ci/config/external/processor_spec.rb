@@ -52,7 +52,7 @@ RSpec.describe Gitlab::Ci::Config::External::Processor, feature_category: :pipel
       it 'raises an error' do
         expect { processor.perform }.to raise_error(
           described_class::IncludeError,
-          "Local file `/lib/gitlab/ci/templates/non-existent-file.yml` does not exist!"
+          "Local file `lib/gitlab/ci/templates/non-existent-file.yml` does not exist!"
         )
       end
     end
@@ -221,7 +221,7 @@ RSpec.describe Gitlab::Ci::Config::External::Processor, feature_category: :pipel
       it 'raises an error' do
         expect { processor.perform }.to raise_error(
           described_class::IncludeError,
-          "Included file `/lib/gitlab/ci/templates/template.yml` does not have valid YAML syntax!"
+          "Included file `lib/gitlab/ci/templates/template.yml` does not have valid YAML syntax!"
         )
       end
     end
@@ -313,7 +313,7 @@ RSpec.describe Gitlab::Ci::Config::External::Processor, feature_category: :pipel
 
           expect(context.includes).to contain_exactly(
             { type: :local,
-              location: '/local/file.yml',
+              location: 'local/file.yml',
               blob: "http://localhost/#{project.full_path}/-/blob/#{sha}/local/file.yml",
               raw: "http://localhost/#{project.full_path}/-/raw/#{sha}/local/file.yml",
               extra: {},
@@ -334,14 +334,14 @@ RSpec.describe Gitlab::Ci::Config::External::Processor, feature_category: :pipel
               context_project: project.full_path,
               context_sha: sha },
             { type: :file,
-              location: '/templates/my-workflow.yml',
+              location: 'templates/my-workflow.yml',
               blob: "http://localhost/#{another_project.full_path}/-/blob/#{another_project.commit.sha}/templates/my-workflow.yml",
               raw: "http://localhost/#{another_project.full_path}/-/raw/#{another_project.commit.sha}/templates/my-workflow.yml",
               extra: { project: another_project.full_path, ref: 'HEAD' },
               context_project: project.full_path,
               context_sha: sha },
             { type: :local,
-              location: '/templates/my-build.yml',
+              location: 'templates/my-build.yml',
               blob: "http://localhost/#{another_project.full_path}/-/blob/#{another_project.commit.sha}/templates/my-build.yml",
               raw: "http://localhost/#{another_project.full_path}/-/raw/#{another_project.commit.sha}/templates/my-build.yml",
               extra: {},
@@ -396,6 +396,44 @@ RSpec.describe Gitlab::Ci::Config::External::Processor, feature_category: :pipel
 
         it 'returns a reportable configuration error' do
           expect { subject }.to raise_error(described_class::IncludeError, /certificate verify failed/)
+        end
+      end
+    end
+
+    describe 'include:component' do
+      let(:values) do
+        {
+          include: { component: "#{Gitlab.config.gitlab.host}/#{another_project.full_path}/component-x@master" },
+          image: 'image:1.0'
+        }
+      end
+
+      let(:other_project_files) do
+        {
+          '/component-x/template.yml' => <<~YAML
+          component_x_job:
+            script: echo Component X
+          YAML
+        }
+      end
+
+      before do
+        another_project.add_developer(user)
+      end
+
+      it 'appends the file to the values' do
+        output = processor.perform
+        expect(output.keys).to match_array([:image, :component_x_job])
+      end
+
+      context 'when feature flag ci_include_components is disabled' do
+        before do
+          stub_feature_flags(ci_include_components: false)
+        end
+
+        it 'returns an error' do
+          expect { processor.perform }
+            .to raise_error(described_class::IncludeError, /does not have a valid subkey for include./)
         end
       end
     end
@@ -465,7 +503,7 @@ RSpec.describe Gitlab::Ci::Config::External::Processor, feature_category: :pipel
 
         expect(context.includes).to contain_exactly(
           { type: :file,
-            location: '/templates/my-build.yml',
+            location: 'templates/my-build.yml',
             blob: "http://localhost/#{another_project.full_path}/-/blob/#{another_project.commit.sha}/templates/my-build.yml",
             raw: "http://localhost/#{another_project.full_path}/-/raw/#{another_project.commit.sha}/templates/my-build.yml",
             extra: { project: another_project.full_path, ref: 'HEAD' },
@@ -474,7 +512,7 @@ RSpec.describe Gitlab::Ci::Config::External::Processor, feature_category: :pipel
           { type: :file,
             blob: "http://localhost/#{another_project.full_path}/-/blob/#{another_project.commit.sha}/templates/my-test.yml",
             raw: "http://localhost/#{another_project.full_path}/-/raw/#{another_project.commit.sha}/templates/my-test.yml",
-            location: '/templates/my-test.yml',
+            location: 'templates/my-test.yml',
             extra: { project: another_project.full_path, ref: 'HEAD' },
             context_project: project.full_path,
             context_sha: sha }

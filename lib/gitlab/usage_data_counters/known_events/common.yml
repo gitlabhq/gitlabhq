@@ -3,22 +3,18 @@
 - name: g_edit_by_web_ide
   category: ide_edit
   redis_slot: edit
-  expiry: 29
   aggregation: daily
 - name: g_edit_by_sfe
   category: ide_edit
   redis_slot: edit
-  expiry: 29
   aggregation: daily
 - name: g_edit_by_snippet_ide
   category: ide_edit
   redis_slot: edit
-  expiry: 29
   aggregation: daily
 - name: g_edit_by_live_preview
   category: ide_edit
   redis_slot: edit
-  expiry: 29
   aggregation: daily
 - name: i_search_total
   category: search
@@ -216,6 +212,10 @@
   category: issues_edit
   redis_slot: project_management
   aggregation: daily
+- name: g_project_management_issue_design_comments_removed
+  category: issues_edit
+  redis_slot: project_management
+  aggregation: daily
 - name: g_project_management_issue_time_estimate_changed
   category: issues_edit
   redis_slot: project_management
@@ -240,6 +240,11 @@
   category: issues_edit
   redis_slot: project_management
   aggregation: daily
+# Runner group
+- name: g_runner_fleet_read_jobs_statistics
+  category: runner
+  redis_slot: runner
+  aggregation: weekly
 # Secrets Management
 - name: i_snippets_show
   category: snippets
@@ -250,7 +255,7 @@
   category: terraform
   redis_slot: terraform
   aggregation: weekly
-# Pipeline Authoring
+# Pipeline Authoring group
 - name: o_pipeline_authoring_unique_users_committing_ciconfigfile
   category: pipeline_authoring
   redis_slot: pipeline_authoring
@@ -258,6 +263,10 @@
 - name: o_pipeline_authoring_unique_users_pushing_mr_ciconfigfile
   category: pipeline_authoring
   redis_slot: pipeline_authoring
+  aggregation: weekly
+- name: i_ci_secrets_management_id_tokens_build_created
+  category: ci_secrets_management
+  redis_slot: ci_secrets_management
   aggregation: weekly
 # Merge request widgets
 - name: users_expanding_secure_security_report
@@ -297,7 +306,6 @@
 - name: unique_active_user
   category: manage
   aggregation: weekly
-  expiry: 42
 # Environments page
 - name: users_visiting_environments_pages
   category: environments

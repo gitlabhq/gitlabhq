@@ -17,7 +17,7 @@ module Gitlab
       private
 
       def trigger
-        "#{params[:command]} [project name or alias]"
+        params[:command].to_s
       end
 
       def commands

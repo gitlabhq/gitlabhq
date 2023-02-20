@@ -1,6 +1,7 @@
 import VueRouter from 'vue-router';
 import { createAlert } from '~/flash';
 import { __ } from '~/locale';
+import { pipelineTabName } from './constants';
 import { createPipelineHeaderApp } from './pipeline_details_header';
 import { apolloProvider } from './pipeline_shared_client';
 
@@ -37,6 +38,12 @@ export default async function initPipelineDetailsBundle() {
       base: dataset.pipelinePath,
       routes,
     });
+
+    // We handle the shortcut `pipelines/latest` by forwarding the user to the pipeline graph
+    // tab and changing the route to the correct `pipelines/:id`
+    if (window.location.pathname.endsWith('latest')) {
+      router.replace({ name: pipelineTabName });
+    }
 
     try {
       const appOptions = createAppOptions(SELECTORS.PIPELINE_TABS, apolloProvider, router);

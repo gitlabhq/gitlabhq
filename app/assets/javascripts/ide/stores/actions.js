@@ -1,6 +1,7 @@
 import { escape } from 'lodash';
 import Vue from 'vue';
 import { createAlert } from '~/flash';
+import { HTTP_STATUS_NOT_FOUND } from '~/lib/utils/http_status';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { __, sprintf } from '~/locale';
 import {
@@ -278,7 +279,7 @@ export const getBranchData = ({ commit, state }, { projectId, branchId, force = 
           resolve(data);
         })
         .catch((e) => {
-          if (e.response.status === 404) {
+          if (e.response.status === HTTP_STATUS_NOT_FOUND) {
             reject(e);
           } else {
             createAlert({

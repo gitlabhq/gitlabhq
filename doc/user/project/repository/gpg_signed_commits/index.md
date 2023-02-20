@@ -43,7 +43,7 @@ To view a user's public GPG key, you can either:
 
 - Go to `https://gitlab.example.com/<USERNAME>.gpg`. GitLab displays the GPG key,
   if the user has configured one, or a blank page for users without a configured GPG key.
-- Go to the user's profile (such as `https://gitlab.example.com/<USERNAME>`). In the top right
+- Go to the user's profile (such as `https://gitlab.example.com/<USERNAME>`). In the upper right
   of the user's profile, select **View public GPG keys** (**{key}**).
 
 ## Configure commit signing
@@ -119,7 +119,7 @@ If you don't already have a GPG key, create one:
 To add a GPG key to your user settings:
 
 1. Sign in to GitLab.
-1. In the top-right corner, select your avatar.
+1. In the upper-right corner, select your avatar.
 1. Select **Edit profile**.
 1. On the left sidebar, select **GPG Keys** (**{key}**).
 1. In **Key**, paste your _public_ key.
@@ -180,6 +180,47 @@ you can sign individual commits manually, or configure Git to default to signed 
   git config --global commit.gpgsign true
   ```
 
+#### Set signing key conditionally
+
+If you maintain signing keys for separate purposes, such as work and personal
+use, use an `IncludeIf` statement in your `.gitconfig` file to set which key
+you sign commits with.
+
+Prerequisites:
+
+- Requires Git version 2.13 or later.
+
+1. In the same directory as your main `~/.gitconfig` file, create a second file,
+   such as `.gitconfig-gitlab`.
+1. In your main `~/.gitconfig` file, add your Git settings for work in non-GitLab projects.
+1. Append this information to the end of your main `~/.gitconfig` file:
+
+   ```ini
+   # The contents of this file are included only for GitLab.com URLs
+   [includeIf "hasconfig:remote.*.url:https://gitlab.com/**"]
+
+   # Edit this line to point to your alternate configuration file
+   path = ~/.gitconfig-gitlab
+   ```
+
+1. In your alternate `.gitconfig-gitlab` file, add the configuration overrides to
+   use when you're committing to a GitLab repository. All settings from your
+   main `~/.gitconfig` file are retained unless you explicitly override them.
+   In this example,
+
+   ```ini
+   # Alternate ~/.gitconfig-gitlab file
+   # These values are used for repositories matching the string 'gitlab.com',
+   # and override their corresponding values in ~/.gitconfig
+
+   [user]
+   email = you@example.com
+   signingkey = <KEY ID>
+
+   [commit]
+   gpgsign = true
+   ```
+
 ## Verify commits
 
 You can review commits for a merge request, or for an entire project:
@@ -212,7 +253,7 @@ If a GPG key becomes compromised, revoke it. Revoking a key changes both future 
 
 To revoke a GPG key:
 
-1. In the top-right corner, select your avatar.
+1. In the upper-right corner, select your avatar.
 1. Select **Edit profile**.
 1. On the left sidebar, select **GPG Keys** (**{key}**).
 1. Select **Revoke** next to the GPG key you want to delete.
@@ -227,7 +268,7 @@ When you remove a GPG key from your GitLab account:
 
 To remove a GPG key from your account:
 
-1. In the top-right corner, select your avatar.
+1. In the upper-right corner, select your avatar.
 1. Select **Edit profile**.
 1. On the left sidebar, select **GPG Keys** (**{key}**).
 1. Select **Remove** (**{remove}**) next to the GPG key you want to delete.

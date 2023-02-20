@@ -2,6 +2,9 @@ import { GlColumnChart } from '@gitlab/ui/dist/charts';
 import Vue from 'vue';
 import { waitForCSSLoaded } from '~/helpers/startup_css_helper';
 import { __ } from '~/locale';
+import { visitUrl } from '~/lib/utils/url_utility';
+import { REF_TYPE_BRANCHES, REF_TYPE_TAGS } from '~/ref/constants';
+import RefSelector from '~/ref/components/ref_selector.vue';
 import CodeCoverage from '../components/code_coverage.vue';
 import SeriesDataMixin from './series_data_mixin';
 
@@ -13,6 +16,7 @@ waitForCSSLoaded(() => {
   const monthContainer = document.getElementById('js-month-chart');
   const weekdayContainer = document.getElementById('js-weekday-chart');
   const hourContainer = document.getElementById('js-hour-chart');
+  const branchSelector = document.getElementById('js-project-graph-ref-switcher');
   const LANGUAGE_CHART_HEIGHT = 300;
   const reorderWeekDays = (weekDays, firstDayOfWeek = 0) => {
     if (firstDayOfWeek === 0) {
@@ -169,6 +173,40 @@ waitForCSSLoaded(() => {
         },
         attrs: {
           responsive: true,
+        },
+      });
+    },
+  });
+
+  const { projectId, projectBranch, graphPath } = branchSelector.dataset;
+
+  const GRAPHS_PATH_REGEX = /^(.*?)\/-\/graphs/g;
+  const graphsPathPrefix = graphPath.match(GRAPHS_PATH_REGEX)?.[0];
+  if (!graphsPathPrefix) {
+    // eslint-disable-next-line @gitlab/require-i18n-strings
+    throw new Error('Path is not correct');
+  }
+
+  // eslint-disable-next-line no-new
+  new Vue({
+    el: branchSelector,
+    name: 'RefSelector',
+    render(createComponent) {
+      return createComponent(RefSelector, {
+        props: {
+          enabledRefTypes: [REF_TYPE_BRANCHES, REF_TYPE_TAGS],
+          value: projectBranch,
+          translations: {
+            dropdownHeader: __('Switch branch/tag'),
+            searchPlaceholder: __('Search branches and tags'),
+          },
+          projectId,
+        },
+        class: 'gl-w-20',
+        on: {
+          input(selected) {
+            visitUrl(`${graphsPathPrefix}/${encodeURIComponent(selected)}/charts`);
+          },
         },
       });
     },

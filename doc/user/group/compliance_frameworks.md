@@ -11,22 +11,25 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 You can create a compliance framework that is a label to identify that your project has certain compliance
 requirements or needs additional oversight. The label can optionally enforce
-[compliance pipeline configuration](#configure-a-compliance-pipeline) to the projects on which it is
+[compliance pipeline configuration](#compliance-pipelines) to the projects on which it is
 [applied](../project/settings/index.md#add-a-compliance-framework-to-a-project).
 
-Group owners can create, edit, and delete compliance frameworks:
+Compliance frameworks are created on top-level groups. Group owners can create, edit, and delete compliance frameworks:
 
 1. On the top bar, select **Main menu > Groups > View all groups** and find your group.
 1. On the left sidebar, select **Settings** > **General**.
 1. Expand the **Compliance frameworks** section.
 1. Create, edit, or delete compliance frameworks.
 
+Subgroups and projects have access to all compliance frameworks created on their top-level group. However, compliance frameworks cannot be created, edited,
+or deleted at the subgroup or project level. Project owners can choose a framework to apply to their projects.
+
 ## Default compliance frameworks
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/375036) in GitLab 15.6.
 
-Group owners can set a default compliance framework. The default framework is applied to all the new and imported 
-projects that are created within that group. It does not affect the framework applied to the existing projects. The 
+Group owners can set a default compliance framework. The default framework is applied to all the new and imported
+projects that are created in that group. It does not affect the framework applied to the existing projects. The
 default framework cannot be deleted.
 
 A compliance framework that is set to default has a **default** label.
@@ -84,7 +87,7 @@ mutation {
 }
 ```
 
-## Configure a compliance pipeline **(ULTIMATE)**
+## Compliance pipelines **(ULTIMATE)**
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3156) in GitLab 13.9, disabled behind `ff_evaluate_group_level_compliance_pipeline` [feature flag](../../administration/feature_flags.md).
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/300324) in GitLab 13.11.
@@ -102,6 +105,19 @@ However, the compliance pipeline configuration can reference the `.gitlab-ci.yml
 
 See [example configuration](#example-configuration) for help configuring a compliance pipeline that runs jobs from
 labeled project pipeline configuration.
+
+### Effect on labeled projects
+
+Users have no way of knowing that a compliance pipeline has been configured and might be confused why their own
+pipelines are not running at all, or include jobs that they did not define themselves.
+
+When authoring pipelines on a labeled project, there is no indication that a compliance pipeline has been configured.
+The only marker at the project level is the compliance framework label itself, but the label does not say whether the
+framework has a compliance pipeline configured or not.
+
+Therefore, communicate with project users about compliance pipeline configuration to reduce uncertainty and confusion.
+
+### Configure a compliance pipeline
 
 To configure a compliance pipeline:
 
@@ -194,15 +210,21 @@ audit trail:
 include:  # Execute individual project's configuration (if project contains .gitlab-ci.yml)
   project: '$CI_PROJECT_PATH'
   file: '$CI_CONFIG_PATH'
-  ref: '$CI_COMMIT_REF_NAME' # Must be defined or MR pipelines always use the use default branch
+  ref: '$CI_COMMIT_SHA' # Must be defined or MR pipelines always use the use default branch
+  rules:
+    - if: $CI_PROJECT_PATH != "my-group/project-1" # Must be the hardcoded path to the project that hosts this configuration.
 ```
 
-#### CF pipelines in Merge Requests originating in project forks
+The `rules` configuration in the `include` definition avoids circular inclusion in case the compliance pipeline must be able to run in the host project itself.
+You can leave it out if your compliance pipeline only ever runs in labeled projects.
 
-When an MR originates in a fork, the branch to be merged usually only exists in the fork.
-When creating such an MR against a project with CF pipelines, the above snippet will fail with a
+#### Compliance pipelines in merge requests originating in project forks
+
+When a merge request originates in a fork, the branch to be merged usually only exists in the fork.
+When creating such a merge request against a project with compliance pipelines, the above snippet fails with a
 `Project <project-name> reference <branch-name> does not exist!` error message.
-This is because in the context of the target project, `$CI_COMMIT_REF_NAME` evaluates to a non-existing branch name.
+This error occurs because in the context of the target project, `$CI_COMMIT_REF_NAME` evaluates to a non-existing
+branch name.
 
 To get the correct context, use `$CI_MERGE_REQUEST_SOURCE_PROJECT_PATH` instead of `$CI_PROJECT_PATH`.
 This variable is only available in
@@ -241,7 +263,7 @@ Generally, if a value in a compliance job:
 
 Either might be wanted or not depending on your use case.
 
-There are a few best practices for ensuring that these jobs are always run exactly
+The following are a few best practices for ensuring that these jobs are always run exactly
 as you define them and that downstream, project-level pipeline configurations
 cannot change them:
 
@@ -266,7 +288,7 @@ compatibility for combining compliance pipelines, and parent and child pipelines
 Compliance pipelines start on the run of _every_ pipeline in a labeled project. This means that if a pipeline in the labeled project
 triggers a child pipeline, the compliance pipeline runs first. This can trigger the parent pipeline, instead of the child pipeline.
 
-Therefore, in projects with compliance frameworks, we recommend replacing
+Therefore, in projects with compliance frameworks, you should replace
 [parent-child pipelines](../../ci/pipelines/downstream_pipelines.md#parent-child-pipelines) with the following:
 
 - Direct [`include`](../../ci/yaml/index.md#include) statements that provide the parent pipeline with child pipeline configuration.
@@ -274,3 +296,19 @@ Therefore, in projects with compliance frameworks, we recommend replacing
   pipeline feature.
 
 This alternative ensures the compliance pipeline does not re-start the parent pipeline.
+
+## Troubleshooting
+
+### Cannot remove compliance framework from a project
+
+Because of a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/390626), if you move a project, its compliance
+framework becomes orphaned and can't be removed. To manually remove a compliance framework from a project, run the
+following GraphQL mutation with your project's ID:
+
+```graphql
+mutation {
+  projectSetComplianceFramework(input: {projectId: "gid://gitlab/Project/1234567", complianceFrameworkId: null}) {
+    errors
+  }
+}
+```

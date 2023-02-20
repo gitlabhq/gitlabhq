@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe WebHooks::WebHooksHelper do
+RSpec.describe WebHooks::WebHooksHelper, :clean_gitlab_redis_shared_state, feature_category: :integrations do
   let_it_be_with_reload(:project) { create(:project) }
 
   let(:current_user) { nil }
@@ -43,20 +43,12 @@ RSpec.describe WebHooks::WebHooksHelper do
         expect(helper).to be_show_project_hook_failed_callout(project: project)
       end
 
-      it 'caches the DB calls until the TTL', :use_clean_rails_memory_store_caching, :request_store do
+      it 'stores a value' do
+        Gitlab::Redis::SharedState.with do |redis|
+          expect(redis).to receive(:set).with(anything, 'true', ex: 1.hour)
+        end
+
         helper.show_project_hook_failed_callout?(project: project)
-
-        travel_to((described_class::EXPIRY_TTL - 1.second).from_now) do
-          expect do
-            helper.show_project_hook_failed_callout?(project: project)
-          end.not_to exceed_query_limit(0)
-        end
-
-        travel_to((described_class::EXPIRY_TTL + 1.second).from_now) do
-          expect do
-            helper.show_project_hook_failed_callout?(project: project)
-          end.to exceed_query_limit(0)
-        end
       end
     end
 

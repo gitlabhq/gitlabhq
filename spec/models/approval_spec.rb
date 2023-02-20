@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Approval do
+RSpec.describe Approval, feature_category: :code_review_workflow do
   context 'presence validation' do
     it { is_expected.to validate_presence_of(:merge_request_id) }
     it { is_expected.to validate_presence_of(:user_id) }

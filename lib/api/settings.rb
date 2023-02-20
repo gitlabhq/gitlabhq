@@ -191,8 +191,8 @@ module API
       optional :group_runner_token_expiration_interval, type: Integer, desc: 'Token expiration interval for group runners, in seconds'
       optional :project_runner_token_expiration_interval, type: Integer, desc: 'Token expiration interval for project runners, in seconds'
       optional :pipeline_limit_per_project_user_sha, type: Integer, desc: "Maximum number of pipeline creation requests allowed per minute per user and commit. Set to 0 for unlimited requests per minute."
-      optional :jira_connect_application_key, type: String, desc: "Application ID of the OAuth application that should be used to authenticate with the GitLab.com for Jira Cloud app"
-      optional :jira_connect_proxy_url, type: String, desc: "URL of the GitLab instance that should be used as a proxy for the GitLab.com for Jira Cloud app"
+      optional :jira_connect_application_key, type: String, desc: "Application ID of the OAuth application that should be used to authenticate with the GitLab for Jira Cloud app"
+      optional :jira_connect_proxy_url, type: String, desc: "URL of the GitLab instance that should be used as a proxy for the GitLab for Jira Cloud app"
       optional :bulk_import_enabled, type: Boolean, desc: 'Enable migrating GitLab groups and projects by direct transfer'
       optional :allow_runner_registration_token, type: Boolean, desc: 'Allow registering runners using a registration token'
 

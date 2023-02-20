@@ -263,6 +263,7 @@ RSpec.describe API::Namespaces, feature_category: :subgroups do
   describe 'GET /namespaces/:namespace/exists' do
     let_it_be(:namespace1) { create(:group, name: 'Namespace 1', path: 'namespace-1') }
     let_it_be(:namespace2) { create(:group, name: 'Namespace 2', path: 'namespace-2') }
+    let_it_be(:namespace_with_dot) { create(:group, name: 'With Dot', path: 'with.dot') }
     let_it_be(:namespace1sub) { create(:group, name: 'Sub Namespace 1', path: 'sub-namespace-1', parent: namespace1) }
     let_it_be(:namespace2sub) { create(:group, name: 'Sub Namespace 2', path: 'sub-namespace-2', parent: namespace2) }
 
@@ -297,6 +298,14 @@ RSpec.describe API::Namespaces, feature_category: :subgroups do
         get api("/namespaces/#{namespace1.path}/exists", user)
 
         expected_json = { exists: true, suggests: ["#{namespace1.path}1"] }.to_json
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response.body).to eq(expected_json)
+      end
+
+      it 'supports dot in namespace path' do
+        get api("/namespaces/#{namespace_with_dot.path}/exists", user)
+
+        expected_json = { exists: true, suggests: ["#{namespace_with_dot.path}1"] }.to_json
         expect(response).to have_gitlab_http_status(:ok)
         expect(response.body).to eq(expected_json)
       end

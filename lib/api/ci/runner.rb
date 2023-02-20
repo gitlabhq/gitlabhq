@@ -77,15 +77,18 @@ module API
 
         desc 'Validate authentication credentials' do
           summary "Verify authentication for a registered runner"
+          success Entities::Ci::RunnerRegistrationDetails
           http_codes [[200, 'Credentials are valid'], [403, 'Forbidden']]
         end
         params do
           requires :token, type: String, desc: %q(The runner's authentication token)
+          optional :system_id, type: String, desc: %q(The runner's system identifier)
         end
         post '/verify', urgency: :low, feature_category: :runner do
           authenticate_runner!
           status 200
-          body "200"
+
+          present current_runner, with: Entities::Ci::RunnerRegistrationDetails
         end
 
         desc 'Reset runner authentication token with current token' do
@@ -115,6 +118,7 @@ module API
         end
         params do
           requires :token, type: String, desc: %q(Runner's authentication token)
+          optional :system_id, type: String, desc: %q(Runner's system identifier)
           optional :last_update, type: String, desc: %q(Runner's queue last_update token)
           optional :info, type: Hash, desc: %q(Runner's metadata) do
             optional :name, type: String, desc: %q(Runner's name)
@@ -166,7 +170,7 @@ module API
           end
 
           new_update = current_runner.ensure_runner_queue_value
-          result = ::Ci::RegisterJobService.new(current_runner).execute(runner_params)
+          result = ::Ci::RegisterJobService.new(current_runner, current_runner_machine).execute(runner_params)
 
           if result.valid?
             if result.build_json
@@ -192,7 +196,7 @@ module API
                       [403, 'Forbidden']]
         end
         params do
-          requires :token, type: String, desc: %q(Runner's authentication token)
+          requires :token, type: String, desc: %q(Job token)
           requires :id, type: Integer, desc: %q(Job's ID)
           optional :state, type: String, desc: %q(Job's status: success, failed)
           optional :checksum, type: String, desc: %q(Job's trace CRC32 checksum)

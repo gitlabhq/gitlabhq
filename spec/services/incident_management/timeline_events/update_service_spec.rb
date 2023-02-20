@@ -201,20 +201,22 @@ RSpec.describe IncidentManagement::TimelineEvents::UpdateService, feature_catego
             {
               note: 'Updated note',
               occurred_at: occurred_at,
-              timeline_event_tag_names: ['start time', 'end time']
+              timeline_event_tag_names: ['start time', 'end time', 'response initiated']
             }
           end
 
           it 'returns the new tag in response' do
             timeline_event = execute.payload[:timeline_event]
 
-            expect(timeline_event.timeline_event_tags.pluck_names).to contain_exactly('Start time', 'End time')
+            expect(timeline_event.timeline_event_tags.pluck_names).to contain_exactly(
+              'Start time', 'End time', 'Response initiated')
           end
 
           it 'creates the predefined tags on the project' do
             execute
 
-            expect(project.incident_management_timeline_event_tags.pluck_names).to include('Start time', 'End time')
+            expect(project.incident_management_timeline_event_tags.pluck_names).to include(
+              'Start time', 'End time', 'Response initiated')
           end
         end
 

@@ -3,6 +3,7 @@
 class ProtectedBranch < ApplicationRecord
   include ProtectedRef
   include Gitlab::SQL::Pattern
+  include FromUnion
 
   belongs_to :group, foreign_key: :namespace_id, touch: true, inverse_of: :protected_branches
 
@@ -11,6 +12,9 @@ class ProtectedBranch < ApplicationRecord
   scope :requiring_code_owner_approval, -> { where(code_owner_approval_required: true) }
   scope :allowing_force_push, -> { where(allow_force_push: true) }
   scope :sorted_by_name, -> { order(name: :asc) }
+  scope :sorted_by_namespace_and_name, -> { order(:namespace_id, :name) }
+
+  scope :for_group, ->(group) { where(group: group) }
 
   protected_ref_access_levels :merge, :push
 
@@ -43,14 +47,12 @@ class ProtectedBranch < ApplicationRecord
   end
 
   def self.new_cache(project, ref_name, dry_run: true)
-    if Feature.enabled?(:hash_based_cache_for_protected_branches, project)
-      ProtectedBranches::CacheService.new(project).fetch(ref_name, dry_run: dry_run) do # rubocop: disable CodeReuse/ServiceClass
-        self.matching(ref_name, protected_refs: protected_refs(project)).present?
-      end
+    ProtectedBranches::CacheService.new(project).fetch(ref_name, dry_run: dry_run) do # rubocop: disable CodeReuse/ServiceClass
+      self.matching(ref_name, protected_refs: protected_refs(project)).present?
     end
   end
 
-  # Deprecated: https://gitlab.com/gitlab-org/gitlab/-/issues/368279
+  # Deprecated: https://gitlab.com/gitlab-org/gitlab/-/issues/370608
   # ----------------------------------------------------------------
   CACHE_EXPIRE_IN = 1.hour
 
@@ -66,7 +68,19 @@ class ProtectedBranch < ApplicationRecord
   # End of deprecation --------------------------------------------
 
   def self.allow_force_push?(project, ref_name)
-    project.protected_branches.allowing_force_push.matching(ref_name).any?
+    if Feature.enabled?(:group_protected_branches)
+      protected_branches = project.all_protected_branches.matching(ref_name)
+
+      project_protected_branches, group_protected_branches = protected_branches.partition(&:project_id)
+
+      # Group owner can be able to enforce the settings
+      return group_protected_branches.any?(&:allow_force_push) if group_protected_branches.present?
+      return project_protected_branches.any?(&:allow_force_push) if project_protected_branches.present?
+
+      false
+    else
+      project.protected_branches.allowing_force_push.matching(ref_name).any?
+    end
   end
 
   def self.any_protected?(project, ref_names)
@@ -78,7 +92,11 @@ class ProtectedBranch < ApplicationRecord
   end
 
   def self.protected_refs(project)
-    project.protected_branches
+    if Feature.enabled?(:group_protected_branches)
+      project.all_protected_branches
+    else
+      project.protected_branches
+    end
   end
 
   # overridden in EE
@@ -102,6 +120,14 @@ class ProtectedBranch < ApplicationRecord
 
   def default_branch?
     name == project.default_branch
+  end
+
+  def group_level?
+    entity.is_a?(Group)
+  end
+
+  def project_level?
+    entity.is_a?(Project)
   end
 
   def entity

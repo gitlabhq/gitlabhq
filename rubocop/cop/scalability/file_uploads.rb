@@ -26,34 +26,25 @@ module RuboCop
       #   end
       #
       class FileUploads < RuboCop::Cop::Base
-        MSG = 'Do not upload files without workhorse acceleration. Please refer to https://docs.gitlab.com/ee/development/uploads.html'
+        MSG = 'Do not upload files without workhorse acceleration. ' \
+              'Please refer to https://docs.gitlab.com/ee/development/uploads.html'
 
-        def_node_search :file_type_params?, <<~PATTERN
-          (send nil? {:requires :optional} (sym _) (hash <(pair (sym :type)(const nil? :File)) ...>))
+        def_node_matcher :file_in_type, <<~PATTERN
+          (send nil? {:requires :optional}
+            (sym _)
+            (hash
+              {
+                <(pair (sym :types) (array <$(const nil? :File) ...>)) ...>
+                <(pair (sym :type) $(const nil? :File)) ...>
+              }
+            )
+          )
         PATTERN
-
-        def_node_search :file_types_params?, <<~PATTERN
-          (send nil? {:requires :optional} (sym _) (hash <(pair (sym :types)(array <(const nil? :File) ...>)) ...>))
-        PATTERN
-
-        def be_file_param_usage?(node)
-          file_type_params?(node) || file_types_params?(node)
-        end
 
         def on_send(node)
-          return unless be_file_param_usage?(node)
-
-          add_offense(find_file_param(node))
-        end
-
-        private
-
-        def find_file_param(node)
-          node.each_descendant.find { |children| file_node_pattern.match(children) }
-        end
-
-        def file_node_pattern
-          @file_node_pattern ||= RuboCop::NodePattern.new("(const nil? :File)")
+          file_in_type(node) do |file_node|
+            add_offense(file_node)
+          end
         end
       end
     end

@@ -1,0 +1,26 @@
+---
+description: Pipeline created with id_tokens (JWT tokens) defined
+category: Ci::Build
+action: create_id_tokens
+label_description: "Mirrored Service Ping key_path: redis_hll_counters.ci_secrets_management.i_ci_secrets_management_id_tokens_build_created_monthly"
+property_description:
+value_description:
+extra_properties:
+  ultimate_namespace_id: "The ID of the Ultimate Namespace"
+identifiers:
+- user
+- namespace
+product_section: ops
+product_stage: verify
+product_group: pipeline_authoring
+product_category: secrets_management
+milestone: "15.9"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110422
+distributions:
+- ce
+- ee
+tiers: 
+- free
+- premium
+- ultimate
+

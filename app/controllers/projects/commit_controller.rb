@@ -31,6 +31,7 @@ class Projects::CommitController < Projects::ApplicationController
 
     respond_to do |format|
       format.html do
+        @ref = params[:id]
         render locals: { pagination_params: params.permit(:page) }
       end
       format.diff do

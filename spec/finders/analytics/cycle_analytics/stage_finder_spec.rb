@@ -7,7 +7,7 @@ RSpec.describe Analytics::CycleAnalytics::StageFinder do
 
   let(:stage_id) { { id: Gitlab::Analytics::CycleAnalytics::DefaultStages.names.first } }
 
-  subject { described_class.new(parent: project, stage_id: stage_id[:id]).execute }
+  subject { described_class.new(parent: project.project_namespace, stage_id: stage_id[:id]).execute }
 
   context 'when looking up in-memory default stage by name exists' do
     it { expect(subject).not_to be_persisted }

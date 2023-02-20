@@ -16,6 +16,7 @@ import { stubComponent } from 'helpers/stub_component';
 import WorkItemDetail from '~/work_items/components/work_item_detail.vue';
 import WorkItemActions from '~/work_items/components/work_item_actions.vue';
 import WorkItemDescription from '~/work_items/components/work_item_description.vue';
+import WorkItemCreatedUpdated from '~/work_items/components/work_item_created_updated.vue';
 import WorkItemDueDate from '~/work_items/components/work_item_due_date.vue';
 import WorkItemState from '~/work_items/components/work_item_state.vue';
 import WorkItemTitle from '~/work_items/components/work_item_title.vue';
@@ -74,6 +75,7 @@ describe('WorkItemDetail component', () => {
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findWorkItemActions = () => wrapper.findComponent(WorkItemActions);
   const findWorkItemTitle = () => wrapper.findComponent(WorkItemTitle);
+  const findCreatedUpdated = () => wrapper.findComponent(WorkItemCreatedUpdated);
   const findWorkItemState = () => wrapper.findComponent(WorkItemState);
   const findWorkItemDescription = () => wrapper.findComponent(WorkItemDescription);
   const findWorkItemDueDate = () => wrapper.findComponent(WorkItemDueDate);
@@ -92,6 +94,7 @@ describe('WorkItemDetail component', () => {
     isModal = false,
     updateInProgress = false,
     workItemId = workItemQueryResponse.data.workItem.id,
+    workItemIid = '1',
     handler = successHandler,
     subscriptionHandler = titleSubscriptionHandler,
     confidentialityMock = [updateWorkItemMutation, jest.fn()],
@@ -112,7 +115,7 @@ describe('WorkItemDetail component', () => {
 
     wrapper = shallowMount(WorkItemDetail, {
       apolloProvider: createMockApollo(handlers),
-      propsData: { isModal, workItemId, workItemIid: '1' },
+      propsData: { isModal, workItemId, workItemIid },
       data() {
         return {
           updateInProgress,
@@ -150,9 +153,9 @@ describe('WorkItemDetail component', () => {
     setWindowLocation('');
   });
 
-  describe('when there is no `workItemId` prop', () => {
+  describe('when there is no `workItemId` and no `workItemIid` prop', () => {
     beforeEach(() => {
-      createComponent({ workItemId: null });
+      createComponent({ workItemId: null, workItemIid: null });
     });
 
     it('skips the work item query', () => {
@@ -656,6 +659,19 @@ describe('WorkItemDetail component', () => {
     });
   });
 
+  it('calls the IID work item query when `useIidInWorkItemsPath` feature flag is true and `iid_path` route parameter is present and is a modal', async () => {
+    setWindowLocation(`?iid_path=true`);
+
+    createComponent({ fetchByIid: true, iidPathQueryParam: 'true', isModal: true });
+    await waitForPromises();
+
+    expect(successHandler).not.toHaveBeenCalled();
+    expect(successByIidHandler).toHaveBeenCalledWith({
+      fullPath: 'group/project',
+      iid: '1',
+    });
+  });
+
   describe('hierarchy widget', () => {
     it('does not render children tree by default', async () => {
       createComponent();
@@ -686,7 +702,7 @@ describe('WorkItemDetail component', () => {
       });
 
       it('opens the modal with the child when `show-modal` is emitted', async () => {
-        createComponent({ handler });
+        createComponent({ handler, workItemsMvc2Enabled: true });
         await waitForPromises();
 
         const event = {
@@ -707,6 +723,7 @@ describe('WorkItemDetail component', () => {
           createComponent({
             isModal: true,
             handler,
+            workItemsMvc2Enabled: true,
           });
 
           await waitForPromises();
@@ -748,5 +765,12 @@ describe('WorkItemDetail component', () => {
 
       expect(findNotesWidget().exists()).toBe(true);
     });
+  });
+
+  it('renders created/updated', async () => {
+    createComponent();
+    await waitForPromises();
+
+    expect(findCreatedUpdated().exists()).toBe(true);
   });
 });

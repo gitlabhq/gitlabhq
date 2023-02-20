@@ -46,13 +46,6 @@ module Gitlab
       #
       # Ref: https://www.rubydoc.info/github/redis/redis-rb/Redis/Commands
       #
-      ENUMERATOR_CACHE_HIT_VALIDATOR = {
-        scan_each: ->(val) { val.is_a?(Enumerator) && !val.first.nil? },
-        hscan_each: ->(val) { val.is_a?(Enumerator) && !val.first.nil? },
-        sscan_each: ->(val) { val.is_a?(Enumerator) && !val.first.nil? },
-        zscan_each: ->(val) { val.is_a?(Enumerator) && !val.first.nil? }
-      }.freeze
-
       READ_CACHE_HIT_VALIDATOR = {
         exists: ->(val) { val != 0 },
         exists?: ->(val) { val },
@@ -62,13 +55,17 @@ module Gitlab
         hgetall:  ->(val) { val.is_a?(Hash) && !val.empty? },
         hlen: ->(val) { val != 0 },
         hmget: ->(val) { val.is_a?(Array) && !val.compact.empty? },
+        hscan_each: ->(val) { val.is_a?(Enumerator) && !val.first.nil? },
         mapped_hmget: ->(val) { val.is_a?(Hash) && !val.compact.empty? },
         mget: ->(val) { val.is_a?(Array) && !val.compact.empty? },
+        scan_each: ->(val) { val.is_a?(Enumerator) && !val.first.nil? },
         scard: ->(val) { val != 0 },
         sismember: ->(val) { val },
         smembers: ->(val) { val.is_a?(Array) && !val.empty? },
         sscan: ->(val) { val != ['0', []] },
-        ttl: ->(val) { val != 0 && val != -2 }
+        sscan_each: ->(val) { val.is_a?(Enumerator) && !val.first.nil? },
+        ttl: ->(val) { val != 0 && val != -2 }, # ttl returns -2 if the key does not exist. See https://redis.io/commands/ttl/
+        zscan_each: ->(val) { val.is_a?(Enumerator) && !val.first.nil? }
       }.freeze
 
       WRITE_COMMANDS = %i[
@@ -134,20 +131,6 @@ module Gitlab
         end
       end
 
-      ENUMERATOR_CACHE_HIT_VALIDATOR.each_key do |name|
-        define_method(name) do |*args, **kwargs, &block|
-          enumerator = if use_primary_and_secondary_stores?
-                         read_command(name, *args, **kwargs)
-                       else
-                         default_store.send(name, *args, **kwargs)
-                       end
-
-          return enumerator if block.nil?
-
-          enumerator.each(&block)
-        end
-      end
-
       PIPELINED_COMMANDS.each do |name|
         define_method(name) do |*args, **kwargs, &block|
           if use_primary_and_secondary_stores?
@@ -186,11 +169,15 @@ module Gitlab
       end
 
       def use_primary_and_secondary_stores?
-        feature_enabled?("use_primary_and_secondary_stores_for")
+        feature_table_exists? &&
+          Feature.enabled?("use_primary_and_secondary_stores_for_#{instance_name.underscore}") && # rubocop:disable Cop/FeatureFlagUsage
+          !same_redis_store?
       end
 
       def use_primary_store_as_default?
-        feature_enabled?("use_primary_store_as_default_for")
+        feature_table_exists? &&
+          Feature.enabled?("use_primary_store_as_default_for_#{instance_name.underscore}") && # rubocop:disable Cop/FeatureFlagUsage
+          !same_redis_store?
       end
 
       def increment_pipelined_command_error_count(command_name)
@@ -217,6 +204,14 @@ module Gitlab
           extra.merge(command_name: command_name, instance_name: instance_name))
       end
 
+      def default_store
+        use_primary_store_as_default? ? primary_store : secondary_store
+      end
+
+      def fallback_store
+        use_primary_store_as_default? ? secondary_store : primary_store
+      end
+
       def ping(message = nil)
         if use_primary_and_secondary_stores?
           # Both stores have to response success for the ping to be considered success.
@@ -231,21 +226,12 @@ module Gitlab
       private
 
       # @return [Boolean]
-      def feature_enabled?(prefix)
-        feature_table_exists? &&
-          Feature.enabled?("#{prefix}_#{instance_name.underscore}") && # rubocop:disable Cop/FeatureFlagUsage
-          !same_redis_store?
-      end
-
-      # @return [Boolean]
       def feature_table_exists?
+        # Use table_exists? (which uses ActiveRecord's schema cache) instead of Feature.feature_flags_available?
+        # as the latter runs a ';' SQL query which causes a connection to be checked out.
         Feature::FlipperFeature.table_exists?
       rescue StandardError
         false
-      end
-
-      def default_store
-        use_primary_store_as_default? ? primary_store : secondary_store
       end
 
       def log_method_missing(command_name, *_args)
@@ -275,26 +261,26 @@ module Gitlab
 
       def read_one_with_fallback(command_name, *args, **kwargs, &block)
         begin
-          value = send_command(primary_store, command_name, *args, **kwargs, &block)
+          value = send_command(default_store, command_name, *args, **kwargs, &block)
         rescue StandardError => e
           log_error(e, command_name,
             multi_store_error_message: FAILED_TO_READ_ERROR_MESSAGE)
         end
 
-        return value if cache_hit?(command_name, value)
+        return value if block.nil? && cache_hit?(command_name, value)
 
         fallback_read(command_name, *args, **kwargs, &block)
       end
 
       def cache_hit?(command, value)
-        validator = READ_CACHE_HIT_VALIDATOR[command] || ENUMERATOR_CACHE_HIT_VALIDATOR[command]
+        validator = READ_CACHE_HIT_VALIDATOR[command]
         return false unless validator
 
         !value.nil? && validator.call(value)
       end
 
       def fallback_read(command_name, *args, **kwargs, &block)
-        value = send_command(secondary_store, command_name, *args, **kwargs, &block)
+        value = send_command(fallback_store, command_name, *args, **kwargs, &block)
 
         if value
           log_error(ReadFromPrimaryError.new, command_name)

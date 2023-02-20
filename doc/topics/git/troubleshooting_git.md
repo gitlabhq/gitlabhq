@@ -25,7 +25,7 @@ To fix this issue, here are some possible solutions.
 
 ### Increase the POST buffer size in Git
 
-**If you're using Git over HTTP instead of SSH**, you can try increasing the POST buffer size in Git's
+**If you're using Git over HTTP instead of SSH**, you can try increasing the POST buffer size in Git
 configuration.
 
 Example of an error during a clone:
@@ -38,7 +38,7 @@ git config http.postBuffer 52428800
 ```
 
 The value is specified in bytes, so in the above case the buffer size has been
-set to 50MB. The default is 1MB.
+set to 50 MB. The default is 1 MB.
 
 ### RPC failed; curl 92 HTTP/2 stream 0 was not closed cleanly: INTERNAL_ERROR (err 2)
 

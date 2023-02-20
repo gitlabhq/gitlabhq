@@ -1,7 +1,7 @@
 import { GlTable, GlButton } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import TokenProjectsTable from '~/token_access/components/token_projects_table.vue';
-import { mockProjects } from './mock_data';
+import { mockProjects, mockFields } from './mock_data';
 
 describe('Token projects table', () => {
   let wrapper;
@@ -12,6 +12,7 @@ describe('Token projects table', () => {
         fullPath: 'root/ci-project',
       },
       propsData: {
+        tableFields: mockFields,
         projects: mockProjects,
       },
     });
@@ -26,10 +27,6 @@ describe('Token projects table', () => {
 
   beforeEach(() => {
     createComponent();
-  });
-
-  afterEach(() => {
-    wrapper.destroy();
   });
 
   it('displays a table', () => {

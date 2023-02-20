@@ -5,6 +5,7 @@ import {
   convertToGraphQLIds,
   convertFromGraphQLIds,
   convertNodeIdsFromGraphQLIds,
+  getNodesOrDefault,
 } from '~/graphql_shared/utils';
 
 const mockType = 'Group';
@@ -132,5 +133,30 @@ describe('convertNodeIdsFromGraphQLIds', () => {
     expect(() => convertNodeIdsFromGraphQLIds('invalid')).toThrow(
       new TypeError('nodes must be an array; got string'),
     );
+  });
+});
+
+describe('getNodesOrDefault', () => {
+  const mockDataWithNodes = {
+    users: {
+      nodes: [
+        { __typename: 'UserCore', id: 'gid://gitlab/User/44' },
+        { __typename: 'UserCore', id: 'gid://gitlab/User/42' },
+        { __typename: 'UserCore', id: 'gid://gitlab/User/41' },
+      ],
+    },
+  };
+
+  it.each`
+    desc                                     | input                               | expected
+    ${'with nodes child'}                    | ${[mockDataWithNodes.users]}        | ${mockDataWithNodes.users.nodes}
+    ${'with nodes child and "dne" as field'} | ${[mockDataWithNodes.users, 'dne']} | ${[]}
+    ${'with empty data object'}              | ${[{ users: {} }]}                  | ${[]}
+    ${'with empty object'}                   | ${[{}]}                             | ${[]}
+    ${'with falsy value'}                    | ${[undefined]}                      | ${[]}
+  `('$desc', ({ input, expected }) => {
+    const result = getNodesOrDefault(...input);
+
+    expect(result).toEqual(expected);
   });
 });

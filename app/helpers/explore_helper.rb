@@ -15,6 +15,8 @@ module ExploreHelper
       namespace_id: params[:namespace_id]
     }
 
+    exist_opts[:language] = params[:language]
+
     options = exist_opts.merge(options).delete_if { |key, value| value.blank? }
     request_path_with_options(options)
   end

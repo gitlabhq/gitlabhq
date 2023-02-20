@@ -135,6 +135,15 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     let_it_be(:merge_request3) { create(:merge_request, :unique_branches, reviewers: []) }
     let_it_be(:merge_request4) { create(:merge_request, :draft_merge_request) }
 
+    describe '.preload_target_project_with_namespace' do
+      subject(:mr) { described_class.preload_target_project_with_namespace.first }
+
+      it 'returns MR with the target project\'s namespace preloaded' do
+        expect(mr.association(:target_project)).to be_loaded
+        expect(mr.target_project.association(:namespace)).to be_loaded
+      end
+    end
+
     describe '.review_requested' do
       it 'returns MRs that have any review requests' do
         expect(described_class.review_requested).to eq([merge_request1, merge_request2])
@@ -305,13 +314,41 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
         expect(subject).to be_valid
       end
     end
+
+    describe '#validate_target_project' do
+      let(:merge_request) do
+        build(:merge_request, source_project: project, target_project: project, importing: importing)
+      end
+
+      let(:project) { build_stubbed(:project) }
+      let(:importing) { false }
+
+      context 'when projects #merge_requests_enabled? is true' do
+        it { expect(merge_request.valid?(false)).to eq true }
+      end
+
+      context 'when projects #merge_requests_enabled? is false' do
+        let(:project) { build_stubbed(:project, merge_requests_enabled: false) }
+
+        it 'is invalid' do
+          expect(merge_request.valid?(false)).to eq false
+          expect(merge_request.errors.full_messages).to contain_exactly('Target project has disabled merge requests')
+        end
+
+        context 'when #import? is true' do
+          let(:importing) { true }
+
+          it { expect(merge_request.valid?(false)).to eq true }
+        end
+      end
+    end
   end
 
   describe 'callbacks' do
     describe '#ensure_merge_request_diff' do
       let(:merge_request) { build(:merge_request) }
 
-      context 'when async_merge_request_diff_creation is true' do
+      context 'when skip_ensure_merge_request_diff is true' do
         before do
           merge_request.skip_ensure_merge_request_diff = true
         end
@@ -323,7 +360,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
         end
       end
 
-      context 'when async_merge_request_diff_creation is false' do
+      context 'when skip_ensure_merge_request_diff is false' do
         before do
           merge_request.skip_ensure_merge_request_diff = false
         end
@@ -4566,30 +4603,12 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     end
 
     describe 'transition to merged' do
-      context 'when reset_merge_error_on_transition feature flag is on' do
-        before do
-          stub_feature_flags(reset_merge_error_on_transition: true)
-        end
+      it 'resets the merge error' do
+        subject.update!(merge_error: 'temp')
 
-        it 'resets the merge error' do
-          subject.update!(merge_error: 'temp')
-
-          expect { subject.mark_as_merged }.to change { subject.merge_error.present? }
-            .from(true)
-            .to(false)
-        end
-      end
-
-      context 'when reset_merge_error_on_transition feature flag is off' do
-        before do
-          stub_feature_flags(reset_merge_error_on_transition: false)
-        end
-
-        it 'does not reset the merge error' do
-          subject.update!(merge_error: 'temp')
-
-          expect { subject.mark_as_merged }.not_to change { subject.merge_error.present? }
-        end
+        expect { subject.mark_as_merged }.to change { subject.merge_error.present? }
+          .from(true)
+          .to(false)
       end
     end
 
@@ -5524,6 +5543,55 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
 
         it { is_expected.to eq(false) }
       end
+    end
+  end
+
+  describe '#diffs_batch_cache_with_max_age?' do
+    let(:merge_request) { build_stubbed(:merge_request) }
+
+    subject(:diffs_batch_cache_with_max_age?) { merge_request.diffs_batch_cache_with_max_age? }
+
+    it 'returns true' do
+      expect(diffs_batch_cache_with_max_age?).to be_truthy
+    end
+
+    context 'when diffs_batch_cache_with_max_age is disabled' do
+      before do
+        stub_feature_flags(diffs_batch_cache_with_max_age: false)
+      end
+
+      it 'returns false' do
+        expect(diffs_batch_cache_with_max_age?).to be_falsey
+      end
+    end
+  end
+
+  describe '#prepared?' do
+    subject(:merge_request) { build_stubbed(:merge_request, prepared_at: prepared_at) }
+
+    context 'when prepared_at is nil' do
+      let(:prepared_at) { nil }
+
+      it 'returns false' do
+        expect(merge_request.prepared?).to be_falsey
+      end
+    end
+
+    context 'when prepared_at is not nil' do
+      let(:prepared_at) { Time.current }
+
+      it 'returns true' do
+        expect(merge_request.prepared?).to be_truthy
+      end
+    end
+  end
+
+  describe 'prepare' do
+    it 'calls NewMergeRequestWorker' do
+      expect(NewMergeRequestWorker).to receive(:perform_async)
+        .with(subject.id, subject.author_id)
+
+      subject.prepare
     end
   end
 end

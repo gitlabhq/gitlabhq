@@ -1,0 +1,33 @@
+# REQUIRED FIELDS
+#
+- title: "Support for Praefect custom metrics endpoint configuration"
+  announcement_milestone: "15.9"
+  removal_milestone: "16.0"
+  breaking_change: true
+  reporter: mjwood
+  stage: Gitaly
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/390266
+  body: |
+    Support for using the `prometheus_exclude_database_from_default_metrics` configuration value is deprecated in GitLab
+    15.9 and will be removed in GitLab 16.0. We are removing this configuration value because using it is non-performant.
+    This change means the following metrics will become unavailable on `/metrics`:
+
+    - `gitaly_praefect_unavailable_repositories`.
+    - `gitaly_praefect_verification_queue_depth`.
+    - `gitaly_praefect_replication_queue_depth`.
+
+    This may require updating your metrics collection targets to also scrape `/db_metrics`.
+#
+# OPTIONAL END OF SUPPORT FIELDS
+#
+# If an End of Support period applies, the announcement should be shared with GitLab Support
+# in the `#spt_managers` channel in Slack, and mention `@gitlab-com/support` in this MR.
+#
+  end_of_support_milestone:  # (optional) Use "XX.YY" format. The milestone when support for this feature will end.
+  #
+  # OTHER OPTIONAL FIELDS
+  #
+  tiers:  # (optional - may be required in the future) An array of tiers that the feature is available in currently.  e.g., [Free, Silver, Gold, Core, Premium, Ultimate]
+  documentation_url:  # (optional) This is a link to the current documentation page
+  image_url:  # (optional) This is a link to a thumbnail image depicting the feature
+  video_url:  # (optional) Use the youtube thumbnail URL with the structure of https://img.youtube.com/vi/UNIQUEID/hqdefault.jpg

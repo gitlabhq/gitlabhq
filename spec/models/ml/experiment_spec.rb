@@ -57,4 +57,21 @@ RSpec.describe Ml::Experiment do
       it { is_expected.to be_empty }
     end
   end
+
+  describe '#with_candidate_count' do
+    let_it_be(:exp3) do
+      create(:ml_experiments, project: exp.project).tap do |e|
+        create_list(:ml_candidates, 3, experiment: e, user: nil)
+        create(:ml_candidates, experiment: exp2, user: nil)
+      end
+    end
+
+    subject { described_class.with_candidate_count.to_h { |e| [e.id, e.candidate_count] } }
+
+    it 'fetches the candidate count', :aggregate_failures do
+      expect(subject[exp.id]).to eq(0)
+      expect(subject[exp2.id]).to eq(1)
+      expect(subject[exp3.id]).to eq(3)
+    end
+  end
 end

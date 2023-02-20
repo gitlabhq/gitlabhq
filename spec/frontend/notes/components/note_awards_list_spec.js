@@ -2,6 +2,7 @@ import AxiosMockAdapter from 'axios-mock-adapter';
 import Vue from 'vue';
 import { TEST_HOST } from 'helpers/test_constants';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import awardsNote from '~/notes/components/note_awards_list.vue';
 import createStore from '~/notes/stores';
 import { noteableDataMock, notesDataMock } from '../mock_data';
@@ -17,7 +18,7 @@ describe('note_awards_list component', () => {
   beforeEach(() => {
     mock = new AxiosMockAdapter(axios);
 
-    mock.onPost(toggleAwardPath).reply(200, '');
+    mock.onPost(toggleAwardPath).reply(HTTP_STATUS_OK, '');
 
     const Component = Vue.extend(awardsNote);
 

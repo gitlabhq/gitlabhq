@@ -19,8 +19,10 @@ class Projects::BranchesController < Projects::ApplicationController
   def index
     respond_to do |format|
       format.html do
-        @mode = params[:state].presence || 'overview'
-        @sort = sort_value_for_mode
+        @mode = fetch_mode
+        next render_404 unless @mode
+
+        @sort = sort_param || default_sort
         @overview_max_branches = 5
 
         # Fetch branches for the specified mode
@@ -128,11 +130,7 @@ class Projects::BranchesController < Projects::ApplicationController
 
   private
 
-  def sort_value_for_mode
-    custom_sort || default_sort
-  end
-
-  def custom_sort
+  def sort_param
     sort = params[:sort].presence
 
     unless sort.in?(supported_sort_options)
@@ -144,11 +142,11 @@ class Projects::BranchesController < Projects::ApplicationController
   end
 
   def default_sort
-    'stale' == @mode ? sort_value_oldest_updated : sort_value_recently_updated
+    'stale' == @mode ? SORT_UPDATED_OLDEST : SORT_UPDATED_RECENT
   end
 
   def supported_sort_options
-    [nil, sort_value_name, sort_value_oldest_updated, sort_value_recently_updated]
+    [nil, SORT_NAME, SORT_UPDATED_OLDEST, SORT_UPDATED_RECENT]
   end
 
   # It can be expensive to calculate the diverging counts for each
@@ -206,13 +204,21 @@ class Projects::BranchesController < Projects::ApplicationController
     limit = @overview_max_branches + 1
 
     @active_branches =
-      BranchesFinder.new(@repository, { per_page: limit, sort: sort_value_recently_updated })
+      BranchesFinder.new(@repository, { per_page: limit, sort: SORT_UPDATED_RECENT })
         .execute(gitaly_pagination: true).select(&:active?)
     @stale_branches =
-      BranchesFinder.new(@repository, { per_page: limit, sort: sort_value_oldest_updated })
+      BranchesFinder.new(@repository, { per_page: limit, sort: SORT_UPDATED_OLDEST })
         .execute(gitaly_pagination: true).select(&:stale?)
 
     @branches = @active_branches + @stale_branches
+  end
+
+  def fetch_mode
+    state = params[:state].presence
+
+    return 'overview' unless state
+
+    state.presence_in(%w[active stale all overview])
   end
 
   def confidential_issue_project

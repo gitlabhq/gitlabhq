@@ -22,10 +22,6 @@ class MergeRequests::PipelineEntity < Grape::Entity
       pipeline.present.event_type_name
     end
 
-    expose :name do |pipeline| # To be removed in 15.7
-      pipeline.present.event_type_name
-    end
-
     expose :artifacts do |pipeline, options|
       rel = pipeline.downloadable_artifacts
 

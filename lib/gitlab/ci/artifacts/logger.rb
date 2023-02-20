@@ -29,17 +29,19 @@ module Gitlab
           )
         end
 
-        def self.log_created(artifact)
-          payload = Gitlab::ApplicationContext.current.merge(
-            message: 'Artifact created',
-            job_artifact_id: artifact.id,
-            size: artifact.size,
-            type: artifact.file_type,
-            build_id: artifact.job_id,
-            project_id: artifact.project_id
-          )
+        def self.log_created(job_artifacts)
+          Array(job_artifacts).each do |artifact|
+            payload = Gitlab::ApplicationContext.current.merge(
+              message: 'Artifact created',
+              job_artifact_id: artifact.id,
+              size: artifact.size,
+              file_type: artifact.file_type,
+              build_id: artifact.job_id,
+              project_id: artifact.project_id
+            )
 
-          Gitlab::AppLogger.info(payload)
+            Gitlab::AppLogger.info(payload)
+          end
         end
 
         def self.log_deleted(job_artifacts, method)
@@ -49,7 +51,7 @@ module Gitlab
               job_artifact_id: artifact.id,
               expire_at: artifact.expire_at,
               size: artifact.size,
-              type: artifact.file_type,
+              file_type: artifact.file_type,
               build_id: artifact.job_id,
               project_id: artifact.project_id,
               method: method

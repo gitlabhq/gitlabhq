@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::ImportService do
+RSpec.describe Projects::ImportService, feature_category: :importers do
   let!(:project) { create(:project) }
   let(:user) { project.creator }
 

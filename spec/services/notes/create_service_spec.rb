@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Notes::CreateService do
+RSpec.describe Notes::CreateService, feature_category: :team_planning do
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:issue) { create(:issue, project: project) }
   let_it_be(:user) { create(:user) }
@@ -113,6 +113,35 @@ RSpec.describe Notes::CreateService do
           let(:category) { described_class.to_s }
           let(:action) { 'incident_management_incident_comment' }
           let(:label) { 'redis_hll_counters.incident_management.incident_management_total_unique_counts_monthly' }
+        end
+      end
+
+      context 'in a commit', :snowplow do
+        let_it_be(:commit) { create(:commit, project: project) }
+        let(:opts) { { note: 'Awesome comment', noteable_type: 'Commit', commit_id: commit.id } }
+
+        let(:counter) { Gitlab::UsageDataCounters::NoteCounter }
+
+        let(:execute_create_service) { described_class.new(project, user, opts).execute }
+
+        before do
+          stub_feature_flags(notes_create_service_tracking: false)
+        end
+
+        it 'tracks commit comment usage data', :clean_gitlab_redis_shared_state do
+          expect(counter).to receive(:count).with(:create, 'Commit').and_call_original
+
+          expect do
+            execute_create_service
+          end.to change { counter.read(:create, 'Commit') }.by(1)
+        end
+
+        it_behaves_like 'Snowplow event tracking with Redis context' do
+          let(:category) { described_class.name }
+          let(:action) { 'create_commit_comment' }
+          let(:label) { 'counts.commit_comment' }
+          let(:namespace) { project.namespace }
+          let(:feature_flag_name) { :route_hll_to_snowplow_phase4 }
         end
       end
 
@@ -409,7 +438,7 @@ RSpec.describe Notes::CreateService do
           end
         end
 
-        context 'for merge requests' do
+        context 'for merge requests', feature_category: :code_review_workflow do
           let_it_be(:merge_request) { create(:merge_request, source_project: project, labels: [bug_label]) }
 
           let(:issuable) { merge_request }
@@ -483,7 +512,7 @@ RSpec.describe Notes::CreateService do
       end
     end
 
-    context 'personal snippet note' do
+    context 'personal snippet note', feature_category: :source_code_management do
       subject { described_class.new(nil, user, params).execute }
 
       let(:snippet) { create(:personal_snippet) }
@@ -504,7 +533,7 @@ RSpec.describe Notes::CreateService do
       end
     end
 
-    context 'design note' do
+    context 'design note', feature_category: :design_management do
       subject(:service) { described_class.new(project, user, params) }
 
       let_it_be(:design) { create(:design, :with_file) }

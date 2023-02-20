@@ -41,33 +41,25 @@ export default {
       required: false,
       default: true,
     },
-    formFieldId: {
-      type: String,
-      required: true,
-    },
-    formFieldName: {
-      type: String,
-      required: true,
-    },
     enablePreview: {
       type: Boolean,
       required: false,
       default: true,
+    },
+    autocompleteDataSources: {
+      type: Object,
+      required: false,
+      default: () => ({}),
     },
     enableAutocomplete: {
       type: Boolean,
       required: false,
       default: true,
     },
-    formFieldPlaceholder: {
-      type: String,
-      required: false,
-      default: '',
-    },
-    formFieldAriaLabel: {
-      type: String,
-      required: false,
-      default: '',
+    formFieldProps: {
+      type: Object,
+      required: true,
+      validator: (prop) => prop.id && prop.name,
     },
     autofocus: {
       type: Boolean,
@@ -152,6 +144,7 @@ export default {
       :textarea-value="value"
       :markdown-docs-path="markdownDocsPath"
       :quick-actions-docs-path="quickActionsDocsPath"
+      :autocomplete-data-sources="autocompleteDataSources"
       :uploads-path="uploadsPath"
       :enable-preview="enablePreview"
       show-content-editor-switcher
@@ -160,16 +153,13 @@ export default {
     >
       <template #textarea>
         <textarea
-          :id="formFieldId"
+          v-bind="formFieldProps"
           ref="textarea"
           :value="value"
-          :name="formFieldName"
           class="note-textarea js-gfm-input js-autosize markdown-area"
           dir="auto"
           :data-supports-quick-actions="supportsQuickActions"
           data-qa-selector="markdown_editor_form_field"
-          :aria-label="formFieldAriaLabel"
-          :placeholder="formFieldPlaceholder"
           @input="updateMarkdownFromMarkdownField"
           @keydown="$emit('keydown', $event)"
         >
@@ -189,9 +179,8 @@ export default {
         @enableMarkdownEditor="onEditingModeChange('markdownField')"
       />
       <input
-        :id="formFieldId"
+        v-bind="formFieldProps"
         :value="value"
-        :name="formFieldName"
         data-qa-selector="markdown_editor_form_field"
         type="hidden"
       />

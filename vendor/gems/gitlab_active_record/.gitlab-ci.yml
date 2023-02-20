@@ -1,0 +1,28 @@
+workflow:
+  rules:
+    - if: $CI_MERGE_REQUEST_ID
+
+.rspec:
+  cache:
+    key: gitlab_active_record-ruby
+    paths:
+      - vendor/gems/gitlab_active_record/vendor/ruby
+  before_script:
+    - cd vendor/gems/gitlab_active_record
+    - ruby -v                                   # Print out ruby version for debugging
+    - gem install bundler --no-document         # Bundler is not installed with the image
+    - bundle config set --local path 'vendor'   # Install dependencies into ./vendor/ruby
+    - bundle config set with 'development'
+    - bundle config set --local frozen 'true'   # Disallow Gemfile.lock changes on CI
+    - bundle config                             # Show bundler configuration
+    - bundle install -j $(nproc)
+  script:
+    - bundle exec rspec
+
+rspec-2.7:
+  image: "ruby:2.7"
+  extends: .rspec
+
+rspec-3.0:
+  image: "ruby:3.0"
+  extends: .rspec

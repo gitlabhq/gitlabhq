@@ -52,8 +52,8 @@ RSpec.describe 'shared/wikis/_sidebar.html.haml' do
     before do
       assign(:sidebar_wiki_entries, create_list(:wiki_page, 3, wiki: wiki))
       assign(:sidebar_limited, true)
-      stub_template "../shared/wikis/_wiki_pages.html.erb" => "Entries: <%= @sidebar_wiki_entries.size %>"
-      stub_template "../shared/wikis/_wiki_page.html.erb" => 'A WIKI PAGE'
+      stub_template "shared/wikis/_wiki_pages.html.erb" => "Entries: <%= @sidebar_wiki_entries.size %>"
+      stub_template "shared/wikis/_wiki_page.html.erb" => 'A WIKI PAGE'
     end
 
     it 'does not show an alert' do
@@ -66,7 +66,7 @@ RSpec.describe 'shared/wikis/_sidebar.html.haml' do
     it 'renders the wiki content' do
       render
 
-      expect(rendered).to include('A WIKI PAGE' * 3)
+      expect(rendered).to include("A WIKI PAGE\n" * 3)
       expect(rendered).to have_link('View All Pages')
     end
 

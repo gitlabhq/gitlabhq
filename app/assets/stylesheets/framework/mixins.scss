@@ -21,20 +21,6 @@
   }
 }
 
-@keyframes blinking-scroll-button {
-  0% {
-    opacity: 0.2;
-  }
-
-  50% {
-    opacity: 1;
-  }
-
-  100% {
-    opacity: 0.2;
-  }
-}
-
 @mixin str-truncated($max-width: 82%) {
   display: inline-block;
   overflow: hidden;
@@ -307,27 +293,6 @@
     &:last-child {
       margin-right: 0;
     }
-  }
-
-  .btn-scroll.animate {
-    .scroll-arrow {
-      animation: blinking-scroll-button 1.5s ease-in-out infinite;
-    }
-
-    .scroll-dot {
-      animation: blinking-scroll-button 1.5s ease-in-out infinite;
-      animation-delay: 0.3s;
-    }
-
-    &:disabled {
-      opacity: 1;
-    }
-  }
-
-  .btn-scroll:disabled,
-  .btn-refresh:disabled {
-    opacity: 0.35;
-    cursor: not-allowed;
   }
 }
 

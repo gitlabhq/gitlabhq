@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe SearchController do
+RSpec.describe SearchController, feature_category: :global_search do
   include ExternalAuthorizationServiceHelpers
 
   context 'authorized user' do
@@ -359,12 +359,13 @@ RSpec.describe SearchController do
         end.to raise_error(ActionController::ParameterMissing)
       end
 
-      it 'sets private cache control headers' do
+      it 'sets correct cache control headers' do
         get :count, params: { search: 'hello', scope: 'projects' }
 
         expect(response).to have_gitlab_http_status(:ok)
 
         expect(response.headers['Cache-Control']).to eq('max-age=60, private')
+        expect(response.headers['Pragma']).to be_nil
       end
 
       it 'does NOT blow up if search param is NOT a string' do

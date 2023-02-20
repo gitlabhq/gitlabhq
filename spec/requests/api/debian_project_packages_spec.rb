@@ -50,6 +50,12 @@ RSpec.describe API::DebianProjectPackages, feature_category: :package_registry d
       it_behaves_like 'accept GET request on private project with access to package registry for everyone'
     end
 
+    describe 'GET projects/:id/packages/debian/dists/*distribution/:component/binary-:architecture/Packages.gz' do
+      let(:url) { "/projects/#{container.id}/packages/debian/dists/#{distribution.codename}/#{component.name}/binary-#{architecture.name}/Packages.gz" }
+
+      it_behaves_like 'Debian packages read endpoint', 'GET', :not_found, /Format gz is not supported/
+    end
+
     describe 'GET projects/:id/packages/debian/dists/*distribution/:component/binary-:architecture/by-hash/SHA256/:file_sha256' do
       let(:url) { "/projects/#{container.id}/packages/debian/dists/#{distribution.codename}/#{component.name}/binary-#{architecture.name}/by-hash/SHA256/#{component_file_older_sha256.file_sha256}" }
 
@@ -76,6 +82,12 @@ RSpec.describe API::DebianProjectPackages, feature_category: :package_registry d
 
       it_behaves_like 'Debian packages read endpoint', 'GET', :success, /Description: This is an incomplete D-I Packages file/
       it_behaves_like 'accept GET request on private project with access to package registry for everyone'
+    end
+
+    describe 'GET projects/:id/packages/debian/dists/*distribution/:component/debian-installer/binary-:architecture/Packages.gz' do
+      let(:url) { "/projects/#{container.id}/packages/debian/dists/#{distribution.codename}/#{component.name}/debian-installer/binary-#{architecture.name}/Packages.gz" }
+
+      it_behaves_like 'Debian packages read endpoint', 'GET', :not_found, /Format gz is not supported/
     end
 
     describe 'GET projects/:id/packages/debian/dists/*distribution/:component/debian-installer/binary-:architecture/by-hash/SHA256/:file_sha256' do
@@ -124,6 +136,35 @@ RSpec.describe API::DebianProjectPackages, feature_category: :package_registry d
         let(:file_name) { 'libsample0_1.2.3~alpha2_amd64.deb' }
 
         it_behaves_like 'Debian packages write endpoint', 'upload', :created, nil
+
+        context 'with codename and component' do
+          let(:extra_params) { { distribution: distribution.codename, component: 'main' } }
+
+          it_behaves_like 'Debian packages write endpoint', 'upload', :created, nil
+        end
+
+        context 'with codename and without component' do
+          let(:extra_params) { { distribution: distribution.codename } }
+
+          include_context 'Debian repository access', :public, :developer, :basic do
+            it_behaves_like 'Debian packages GET request', :bad_request, /component is missing/
+          end
+        end
+      end
+
+      context 'with a buildinfo' do
+        let(:file_name) { 'sample_1.2.3~alpha2_amd64.buildinfo' }
+
+        include_context 'Debian repository access', :public, :developer, :basic do
+          it_behaves_like "Debian packages upload request", :created, nil
+
+          context 'with codename and component' do
+            let(:extra_params) { { distribution: distribution.codename, component: 'main' } }
+
+            it_behaves_like "Debian packages upload request", :bad_request,
+              /^file_name Only debs and udebs can be directly added to a distribution$/
+          end
+        end
       end
 
       context 'with a changes file' do

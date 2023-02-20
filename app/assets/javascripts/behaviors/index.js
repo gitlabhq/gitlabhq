@@ -7,7 +7,6 @@ import { loadStartupCSS } from './load_startup_css';
 import initCopyAsGFM from './markdown/copy_as_gfm';
 import './quick_submit';
 import './requires_input';
-import initSelect2Dropdowns from './select2';
 import initPageShortcuts from './shortcuts';
 import './toggler_behavior';
 import './preview_markdown';
@@ -21,7 +20,6 @@ initCopyToClipboard();
 
 initPageShortcuts();
 initCollapseSidebarOnWindowResize();
-initSelect2Dropdowns();
 
 window.requestIdleCallback(
   () => {

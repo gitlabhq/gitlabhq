@@ -12,7 +12,9 @@ module Gitlab
             attr_reader :project_name, :ref_name
 
             def initialize(params, context)
-              @location = params[:file]
+              # `Repository#blobs_at` does not support files with the `/` prefix.
+              @location = Gitlab::Utils.remove_leading_slashes(params[:file])
+
               @project_name = get_project_name(params[:project])
               @ref_name = params[:ref] || 'HEAD'
 
@@ -37,8 +39,6 @@ module Gitlab
               )
             end
 
-            private
-
             def validate_context!
               if !can_access_local_content?
                 errors.push("Project `#{masked_project_name}` not found or access denied! Make sure any includes in the pipeline configuration are correctly defined.")
@@ -55,6 +55,8 @@ module Gitlab
               end
             end
 
+            private
+
             def project
               strong_memoize(:project) do
                 ::Project.find_by_full_path(project_name)
@@ -70,19 +72,19 @@ module Gitlab
             end
 
             def fetch_local_content
-              return unless can_access_local_content?
-              return unless sha
-
-              context.logger.instrument(:config_file_fetch_project_content) do
-                project.repository.blob_data_at(sha, location)
+              BatchLoader.for([sha, location])
+                         .batch(key: project) do |locations, loader, args|
+                context.logger.instrument(:config_file_fetch_project_content) do
+                  args[:key].repository.blobs_at(locations).each do |blob|
+                    loader.call([blob.commit_id, blob.path], blob.data)
+                  end
+                end
+              rescue GRPC::NotFound, GRPC::Internal
+                # no-op
               end
-            rescue GRPC::NotFound, GRPC::Internal
-              nil
             end
 
             def sha
-              return unless project
-
               strong_memoize(:sha) do
                 project.commit(ref_name).try(:sha)
               end
@@ -112,7 +114,7 @@ module Gitlab
             end
 
             def masked_blob
-              return unless project
+              return unless valid?
 
               strong_memoize(:masked_blob) do
                 context.mask_variables_from(
@@ -122,7 +124,7 @@ module Gitlab
             end
 
             def masked_raw
-              return unless project
+              return unless valid?
 
               strong_memoize(:masked_raw) do
                 context.mask_variables_from(

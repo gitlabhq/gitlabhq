@@ -60,6 +60,16 @@ export default {
       type: Boolean,
       required: true,
     },
+    isFirstHighlightedLine: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    isLastHighlightedLine: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     fileLineCoverage: {
       type: Function,
       required: true,
@@ -81,12 +91,23 @@ export default {
   ),
   parallelViewLeftLineType: memoize(
     (props) => {
-      return utils.parallelViewLeftLineType(props.line, props.isHighlighted || props.isCommented);
+      return utils.parallelViewLeftLineType({
+        line: props.line,
+        highlighted: props.isHighlighted,
+        commented: props.isCommented,
+        selectionStart: props.isFirstHighlightedLine,
+        selectionEnd: props.isLastHighlightedLine,
+      });
     },
     (props) =>
-      [props.line.left?.type, props.line.right?.type, props.isHighlighted, props.isCommented].join(
-        ':',
-      ),
+      [
+        props.line.left?.type,
+        props.line.right?.type,
+        props.isHighlighted,
+        props.isCommented,
+        props.isFirstHighlightedLine,
+        props.isLastHighlightedLine,
+      ].join(':'),
   ),
   coverageStateLeft: memoize(
     (props) => {
@@ -118,20 +139,40 @@ export default {
   classNameMapCellLeft: memoize(
     (props) => {
       return utils.classNameMapCell({
-        line: props.line.left,
-        hll: props.isHighlighted || props.isCommented,
+        line: props.line?.left,
+        highlighted: props.isHighlighted,
+        commented: props.isCommented,
+        selectionStart: props.isFirstHighlightedLine,
+        selectionEnd: props.isLastHighlightedLine,
       });
     },
-    (props) => [props.line.left.type, props.isHighlighted, props.isCommented].join(':'),
+    (props) =>
+      [
+        props.line?.left?.type,
+        props.isHighlighted,
+        props.isCommented,
+        props.isFirstHighlightedLine,
+        props.isLastHighlightedLine,
+      ].join(':'),
   ),
   classNameMapCellRight: memoize(
     (props) => {
       return utils.classNameMapCell({
-        line: props.line.right,
-        hll: props.isHighlighted || props.isCommented,
+        line: props.line?.right,
+        highlighted: props.isHighlighted,
+        commented: props.isCommented,
+        selectionStart: props.isFirstHighlightedLine,
+        selectionEnd: props.isLastHighlightedLine,
       });
     },
-    (props) => [props.line.right.type, props.isHighlighted, props.isCommented].join(':'),
+    (props) =>
+      [
+        props.line?.right?.type,
+        props.isHighlighted,
+        props.isCommented,
+        props.isFirstHighlightedLine,
+        props.isLastHighlightedLine,
+      ].join(':'),
   ),
   shouldRenderCommentButton: memoize(
     (props) => {
@@ -303,15 +344,24 @@ export default {
           !props.inline || (props.line.left && props.line.left.type === $options.CONFLICT_MARKER)
         "
       >
-        <div data-testid="left-empty-cell" class="diff-td diff-line-num old_line empty-cell">
+        <div
+          data-testid="left-empty-cell"
+          class="diff-td diff-line-num old_line empty-cell"
+          :class="$options.classNameMapCellLeft(props)"
+        >
           &nbsp;
         </div>
-        <div v-if="props.inline" class="diff-td diff-line-num old_line empty-cell"></div>
-        <div class="diff-td line-coverage left-side empty-cell"></div>
-        <div v-if="props.inline" class="diff-td line-codequality left-side empty-cell"></div>
+        <div
+          class="diff-td line-coverage left-side empty-cell"
+          :class="$options.classNameMapCellLeft(props)"
+        ></div>
+        <div
+          class="diff-td line-codequality left-side empty-cell"
+          :class="$options.classNameMapCellLeft(props)"
+        ></div>
         <div
           class="diff-td line_content with-coverage left-side empty-cell"
-          :class="[{ parallel: !props.inline }]"
+          :class="[{ parallel: !props.inline }, ...$options.classNameMapCellLeft(props)]"
         ></div>
       </template>
     </div>
@@ -390,13 +440,13 @@ export default {
           :class="[
             props.line.right.type,
             $options.coverageStateRight(props).class,
-            { hll: props.isHighlighted, hll: props.isCommented },
+            ...$options.classNameMapCellRight(props),
           ]"
           class="diff-td line-coverage right-side has-tooltip"
         ></div>
         <div
           class="diff-td line-codequality right-side"
-          :class="[props.line.right.type, { hll: props.isHighlighted, hll: props.isCommented }]"
+          :class="$options.classNameMapCellRight(props)"
         >
           <component
             :is="$options.CodeQualityGutterIcon"
@@ -414,10 +464,9 @@ export default {
           :class="[
             props.line.right.type,
             {
-              hll: props.isHighlighted,
-              hll: props.isCommented,
               'gl-font-weight-bold': props.line.right.type === $options.CONFLICT_MARKER_THEIR,
             },
+            ...$options.classNameMapCellRight(props),
           ]"
           class="diff-td line_content with-coverage right-side parallel"
           v-html="
@@ -426,10 +475,23 @@ export default {
         ></div>
       </template>
       <template v-else>
-        <div data-testid="right-empty-cell" class="diff-td diff-line-num old_line empty-cell"></div>
-        <div class="diff-td line-coverage right-side empty-cell"></div>
-        <div class="diff-td line-codequality right-side empty-cell"></div>
-        <div class="diff-td line_content with-coverage right-side empty-cell parallel"></div>
+        <div
+          data-testid="right-empty-cell"
+          class="diff-td diff-line-num old_line empty-cell"
+          :class="$options.classNameMapCellRight(props)"
+        ></div>
+        <div
+          class="diff-td line-coverage right-side empty-cell"
+          :class="$options.classNameMapCellRight(props)"
+        ></div>
+        <div
+          class="diff-td line-codequality right-side empty-cell"
+          :class="$options.classNameMapCellRight(props)"
+        ></div>
+        <div
+          class="diff-td line_content with-coverage right-side empty-cell parallel"
+          :class="$options.classNameMapCellRight(props)"
+        ></div>
       </template>
     </div>
   </div>

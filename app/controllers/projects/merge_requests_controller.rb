@@ -28,9 +28,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     :codequality_mr_diff_reports
   ]
   before_action :set_issuables_index, only: [:index]
-  before_action :check_search_rate_limit!, only: [:index], if: -> {
-    params[:search].present? && Feature.enabled?(:rate_limit_issuable_searches)
-  }
+  before_action :check_search_rate_limit!, only: [:index], if: -> { params[:search].present? }
   before_action :authenticate_user!, only: [:assign_related_issues]
   before_action :check_user_can_push_to_source_branch!, only: [:rebase]
 
@@ -40,9 +38,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     push_frontend_feature_flag(:refactor_security_extension, @project)
     push_frontend_feature_flag(:refactor_code_quality_inline_findings, project)
     push_frontend_feature_flag(:moved_mr_sidebar, project)
-    push_frontend_feature_flag(:mr_review_submit_comment, project)
     push_frontend_feature_flag(:mr_experience_survey, project)
-    push_frontend_feature_flag(:realtime_reviewers, project)
     push_frontend_feature_flag(:realtime_mr_status_change, project)
   end
 
@@ -282,11 +278,9 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
     case result[:count]
     when 0
-      flash[:error] = "Failed to assign you issues related to the merge request"
-    when 1
-      flash[:notice] = "1 issue has been assigned to you"
+      flash[:alert] = _("Failed to assign you issues related to the merge request.")
     else
-      flash[:notice] = "#{result[:count]} issues have been assigned to you"
+      flash[:notice] = n_("An issue has been assigned to you.", "%d issues have been assigned to you.", result[:count])
     end
 
     redirect_to(merge_request_path(@merge_request))
@@ -356,9 +350,19 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
   private
 
+  # NOTE: Remove this disable with add_prepared_state_to_mr FF removal
+  # rubocop: disable Metrics/AbcSize
   def show_merge_request
     close_merge_request_if_no_source_project
     @merge_request.check_mergeability(async: true)
+
+    # NOTE: Remove the created_at check when removing the FF check
+    if ::Feature.enabled?(:add_prepared_state_to_mr, @merge_request.project) &&
+        @merge_request.created_at < 5.minutes.ago &&
+        !@merge_request.prepared?
+
+      @merge_request.prepare
+    end
 
     respond_to do |format|
       format.html do
@@ -401,6 +405,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
       end
     end
   end
+  # rubocop: enable Metrics/AbcSize
 
   def render_html_page
     preload_assignees_for_render(@merge_request)
@@ -419,6 +424,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     @update_current_user_path = expose_path(api_v4_user_preferences_path)
     @endpoint_metadata_url = endpoint_metadata_url(@project, @merge_request)
     @endpoint_diff_batch_url = endpoint_diff_batch_url(@project, @merge_request)
+    @diffs_batch_cache_key = @merge_request.merge_head_diff&.id if merge_request.diffs_batch_cache_with_max_age?
 
     set_pipeline_variables
 
@@ -576,6 +582,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   def endpoint_diff_batch_url(project, merge_request)
     per_page = current_user&.view_diffs_file_by_file ? '1' : '5'
     params = request.query_parameters.merge(view: 'inline', diff_head: true, w: show_whitespace, page: '0', per_page: per_page)
+    params[:ck] = merge_request.merge_head_diff&.id if merge_request.diffs_batch_cache_with_max_age?
 
     diffs_batch_project_json_merge_request_path(project, merge_request, 'json', params)
   end

@@ -72,8 +72,8 @@ cluster certificates:
    - **Kubernetes cluster name** - The name you wish to give the cluster.
    - **Environment scope** - The [associated environment](multiple_kubernetes_clusters.md#setting-the-environment-scope) to this cluster.
    - **Google Cloud Platform project** - Choose the project you created in your GCP
-     console to host the Kubernetes cluster. Learn more about
-     [Google Cloud Platform projects](https://cloud.google.com/resource-manager/docs/creating-managing-projects).
+     console to host the Kubernetes cluster. For more information, see
+     [Creating and managing projects](https://cloud.google.com/resource-manager/docs/creating-managing-projects).
    - **Zone** - Choose the [region zone](https://cloud.google.com/compute/docs/regions-zones/)
      under which to create the cluster.
    - **Number of nodes** - Enter the number of nodes you wish the cluster to have.

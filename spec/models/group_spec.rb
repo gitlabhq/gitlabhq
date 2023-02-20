@@ -17,6 +17,7 @@ RSpec.describe Group, feature_category: :subgroups do
     it { is_expected.to have_many(:requesters).dependent(:destroy) }
     it { is_expected.to have_many(:namespace_requesters) }
     it { is_expected.to have_many(:members_and_requesters) }
+    it { is_expected.to have_many(:namespace_members_and_requesters) }
     it { is_expected.to have_many(:project_group_links).dependent(:destroy) }
     it { is_expected.to have_many(:shared_projects).through(:project_group_links) }
     it { is_expected.to have_many(:notification_settings).dependent(:destroy) }
@@ -93,6 +94,34 @@ RSpec.describe Group, feature_category: :subgroups do
       end
     end
 
+    describe '#namespace_members_and_requesters' do
+      let_it_be(:group) { create(:group) }
+      let_it_be(:requester) { create(:user) }
+      let_it_be(:developer) { create(:user) }
+      let_it_be(:invited_member) { create(:group_member, :invited, :owner, group: group) }
+
+      before do
+        group.request_access(requester)
+        group.add_developer(developer)
+      end
+
+      it 'includes the correct users' do
+        expect(group.namespace_members_and_requesters).to include(
+          Member.find_by(user: requester),
+          Member.find_by(user: developer),
+          Member.find(invited_member.id)
+        )
+      end
+
+      it 'is equivalent to #members_and_requesters' do
+        expect(group.namespace_members_and_requesters).to match_array group.members_and_requesters
+      end
+
+      it_behaves_like 'query without source filters' do
+        subject { group.namespace_members_and_requesters }
+      end
+    end
+
     shared_examples 'polymorphic membership relationship' do
       it do
         expect(membership.attributes).to include(
@@ -128,6 +157,24 @@ RSpec.describe Group, feature_category: :subgroups do
       let(:user) { create(:user) }
       let(:membership) do
         group.namespace_requesters.create!(user: user, requested_at: requested_at, access_level: Gitlab::Access::DEVELOPER)
+      end
+
+      it { expect(membership).to be_instance_of(GroupMember) }
+      it { expect(membership.user).to eq user }
+      it { expect(membership.group).to eq group }
+      it { expect(membership.requested_at).to eq requested_at }
+
+      it_behaves_like 'polymorphic membership relationship'
+      it_behaves_like 'member_namespace membership relationship'
+    end
+
+    describe '#namespace_members_and_requesters setters' do
+      let(:requested_at) { Time.current }
+      let(:user) { create(:user) }
+      let(:membership) do
+        group.namespace_members_and_requesters.create!(
+          user: user, requested_at: requested_at, access_level: Gitlab::Access::DEVELOPER
+        )
       end
 
       it { expect(membership).to be_instance_of(GroupMember) }
@@ -422,7 +469,6 @@ RSpec.describe Group, feature_category: :subgroups do
 
       before do
         group.save!
-        group.reload
       end
 
       it { expect(group.traversal_ids).to eq [group.id] }
@@ -434,7 +480,6 @@ RSpec.describe Group, feature_category: :subgroups do
 
       before do
         group.save!
-        reload_models(parent, group)
       end
 
       it { expect(parent.traversal_ids).to eq [parent.id] }
@@ -449,7 +494,6 @@ RSpec.describe Group, feature_category: :subgroups do
       before do
         parent.update!(parent: new_grandparent)
         group.save!
-        reload_models(parent, group)
       end
 
       it 'avoid traversal_ids race condition' do
@@ -487,7 +531,6 @@ RSpec.describe Group, feature_category: :subgroups do
         new_parent.update!(parent: new_grandparent)
 
         group.save!
-        reload_models(parent, group, new_grandparent, new_parent)
       end
 
       it 'avoids traversal_ids race condition' do
@@ -509,14 +552,13 @@ RSpec.describe Group, feature_category: :subgroups do
       end
 
       context 'within the same hierarchy' do
-        let!(:root) { create(:group).reload }
+        let!(:root) { create(:group) }
         let!(:old_parent) { create(:group, parent: root) }
         let!(:new_parent) { create(:group, parent: root) }
 
         context 'with FOR NO KEY UPDATE lock' do
           before do
             subject
-            reload_models(old_parent, new_parent, group)
           end
 
           it 'updates traversal_ids' do
@@ -537,7 +579,6 @@ RSpec.describe Group, feature_category: :subgroups do
 
         before do
           subject
-          reload_models(old_parent, new_parent, group)
         end
 
         it 'updates traversal_ids' do
@@ -567,7 +608,6 @@ RSpec.describe Group, feature_category: :subgroups do
 
         before do
           subject
-          reload_models(old_parent, new_parent, group)
         end
 
         it 'updates traversal_ids' do
@@ -589,7 +629,6 @@ RSpec.describe Group, feature_category: :subgroups do
 
         before do
           subject
-          reload_models(old_parent, new_parent, group)
         end
 
         it 'updates traversal_ids' do
@@ -614,11 +653,12 @@ RSpec.describe Group, feature_category: :subgroups do
 
       before do
         parent_group.update!(parent: new_grandparent)
+        reload_models(parent_group, group)
       end
 
       it 'updates traversal_ids for all descendants' do
-        expect(parent_group.reload.traversal_ids).to eq [new_grandparent.id, parent_group.id]
-        expect(group.reload.traversal_ids).to eq [new_grandparent.id, parent_group.id, group.id]
+        expect(parent_group.traversal_ids).to eq [new_grandparent.id, parent_group.id]
+        expect(group.traversal_ids).to eq [new_grandparent.id, parent_group.id, group.id]
       end
     end
   end
@@ -1006,22 +1046,14 @@ RSpec.describe Group, feature_category: :subgroups do
   describe '#add_user' do
     let(:user) { create(:user) }
 
-    it 'adds the user with a blocking refresh by default' do
+    it 'adds the user' do
       expect_next_instance_of(GroupMember) do |member|
-        expect(member).to receive(:refresh_member_authorized_projects).with(blocking: true)
+        expect(member).to receive(:refresh_member_authorized_projects).and_call_original
       end
 
       group.add_member(user, GroupMember::MAINTAINER)
 
       expect(group.group_members.maintainers.map(&:user)).to include(user)
-    end
-
-    it 'passes the blocking refresh value to member' do
-      expect_next_instance_of(GroupMember) do |member|
-        expect(member).to receive(:refresh_member_authorized_projects).with(blocking: false)
-      end
-
-      group.add_member(user, GroupMember::MAINTAINER, blocking_refresh: false)
     end
   end
 
@@ -2913,6 +2945,22 @@ RSpec.describe Group, feature_category: :subgroups do
     end
   end
 
+  describe "#access_level_roles" do
+    let(:group) { create(:group) }
+
+    it "returns the correct roles" do
+      expect(group.access_level_roles).to eq(
+        {
+          'Guest' => 10,
+          'Reporter' => 20,
+          'Developer' => 30,
+          'Maintainer' => 40,
+          'Owner' => 50
+        }
+      )
+    end
+  end
+
   describe '#membership_locked?' do
     it 'returns false' do
       expect(build(:group)).not_to be_membership_locked
@@ -3557,13 +3605,6 @@ RSpec.describe Group, feature_category: :subgroups do
     end
   end
 
-  describe '#work_items_create_from_markdown_feature_flag_enabled?' do
-    it_behaves_like 'checks self and root ancestor feature flag' do
-      let(:feature_flag) { :work_items_create_from_markdown }
-      let(:feature_flag_method) { :work_items_create_from_markdown_feature_flag_enabled? }
-    end
-  end
-
   describe 'group shares' do
     let!(:sub_group) { create(:group, parent: group) }
     let!(:sub_sub_group) { create(:group, parent: sub_group) }
@@ -3674,6 +3715,30 @@ RSpec.describe Group, feature_category: :subgroups do
       it 'returns the expected result' do
         expect(group.usage_quotas_enabled?).to eq result
       end
+    end
+  end
+
+  describe '#readme_project' do
+    it 'returns groups project containing metadata' do
+      readme_project = create(:project, path: Group::README_PROJECT_PATH, namespace: group)
+      create(:project, namespace: group)
+
+      expect(group.readme_project).to eq(readme_project)
+    end
+  end
+
+  describe '#group_readme' do
+    it 'returns readme from group readme project' do
+      create(:project, :repository, path: Group::README_PROJECT_PATH, namespace: group)
+
+      expect(group.group_readme.name).to eq('README.md')
+      expect(group.group_readme.data).to include('testme')
+    end
+
+    it 'returns nil if no readme project is present' do
+      create(:project, :repository, namespace: group)
+
+      expect(group.group_readme).to be(nil)
     end
   end
 end

@@ -5,13 +5,17 @@ import waitForPromises from 'helpers/wait_for_promises';
 import NewEnvironment from '~/environments/components/new_environment.vue';
 import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_BAD_REQUEST, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { visitUrl } from '~/lib/utils/url_utility';
 
 jest.mock('~/lib/utils/url_utility');
 jest.mock('~/flash');
 
 const DEFAULT_OPTS = {
-  provide: { projectEnvironmentsPath: '/projects/environments' },
+  provide: {
+    projectEnvironmentsPath: '/projects/environments',
+    protectedEnvironmentSettingsPath: '/projects/not_real/settings/ci_cd',
+  },
 };
 
 describe('~/environments/components/new.vue', () => {
@@ -76,7 +80,7 @@ describe('~/environments/components/new.vue', () => {
 
     expect(showsLoading()).toBe(false);
 
-    await submitForm(expected, [200, { path: '/test' }]);
+    await submitForm(expected, [HTTP_STATUS_OK, { path: '/test' }]);
 
     expect(showsLoading()).toBe(true);
   });
@@ -84,7 +88,7 @@ describe('~/environments/components/new.vue', () => {
   it('submits the new environment on submit', async () => {
     const expected = { name: 'test', url: 'https://google.ca' };
 
-    await submitForm(expected, [200, { path: '/test' }]);
+    await submitForm(expected, [HTTP_STATUS_OK, { path: '/test' }]);
 
     expect(visitUrl).toHaveBeenCalledWith('/test');
   });
@@ -92,7 +96,7 @@ describe('~/environments/components/new.vue', () => {
   it('shows errors on error', async () => {
     const expected = { name: 'test', url: 'https://google.ca' };
 
-    await submitForm(expected, [400, { message: ['name taken'] }]);
+    await submitForm(expected, [HTTP_STATUS_BAD_REQUEST, { message: ['name taken'] }]);
 
     expect(createAlert).toHaveBeenCalledWith({ message: 'name taken' });
     expect(showsLoading()).toBe(false);

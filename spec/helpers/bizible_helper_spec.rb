@@ -4,43 +4,43 @@ require "spec_helper"
 
 RSpec.describe BizibleHelper do
   describe '#bizible_enabled?' do
-    before do
-      stub_config(extra: { bizible: SecureRandom.uuid })
-    end
-
-    context 'when bizible is disabled' do
+    context 'when bizible config is not true' do
       before do
-        allow(helper).to receive(:bizible_enabled?).and_return(false)
+        stub_config(extra: { bizible: false })
       end
 
-      it { is_expected.to be_falsey }
+      it { expect(helper.bizible_enabled?).to be_falsy }
     end
 
-    context 'when bizible is enabled' do
+    context 'when bizible config is enabled' do
       before do
-        allow(helper).to receive(:bizible_enabled?).and_return(true)
+        stub_config(extra: { bizible: true })
       end
 
-      it { is_expected.to be_truthy }
-    end
+      it { expect(helper.bizible_enabled?).to be_truthy }
 
-    subject(:bizible_enabled?) { helper.bizible_enabled? }
-
-    context 'with ecomm_instrumentation feature flag disabled' do
-      before do
-        stub_feature_flags(ecomm_instrumentation: false)
-      end
-
-      it { is_expected.to be_falsey }
-    end
-
-    context 'with ecomm_instrumentation feature flag enabled' do
-      context 'when no id is set' do
+      context 'with ecomm_instrumentation feature flag disabled' do
         before do
-          stub_config(extra: {})
+          stub_feature_flags(ecomm_instrumentation: false)
         end
 
-        it { is_expected.to be_falsey }
+        it { expect(helper.bizible_enabled?).to be_falsey }
+      end
+
+      context 'with ecomm_instrumentation feature flag enabled' do
+        before do
+          stub_feature_flags(ecomm_instrumentation: true)
+        end
+
+        it { expect(helper.bizible_enabled?).to be_truthy }
+      end
+
+      context 'with invite_email present' do
+        before do
+          stub_feature_flags(ecomm_instrumentation: true)
+        end
+
+        it { expect(helper.bizible_enabled?('test@test.com')).to be_falsy }
       end
     end
   end

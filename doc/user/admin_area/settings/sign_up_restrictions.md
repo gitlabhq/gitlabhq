@@ -48,7 +48,7 @@ automatically approved in a background job.
 NOTE:
 This setting doesn't apply to LDAP or OmniAuth users. To enforce approvals for new users
 signing up using OmniAuth or LDAP, set `block_auto_created_users` to `true` in the
-[OmniAuth configuration](../../../integration/omniauth.md#configure-initial-settings) or
+[OmniAuth configuration](../../../integration/omniauth.md#configure-common-settings) or
 [LDAP configuration](../../../administration/auth/ldap/index.md#basic-configuration-settings).
 
 ## Require email confirmation
@@ -142,7 +142,7 @@ Existing passwords are unaffected. To change password complexity requirements:
 You can specify an inclusive or exclusive list of email domains which can be used for user sign up.
 
 These restrictions are only applied during sign up from an external user. An administrator can add a
-user through the administrator panel with a disallowed domain. Also, note that the users can change their
+user through the administrator panel with a disallowed domain. The users can also change their
 email addresses to disallowed domains after sign up.
 
 ### Allowlist email domains

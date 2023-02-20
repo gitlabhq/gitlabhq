@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::RunnerInstructions do
+RSpec.describe Gitlab::Ci::RunnerInstructions, feature_category: :runner_fleet do
   using RSpec::Parameterized::TableSyntax
 
   let(:params) { {} }
@@ -29,7 +29,6 @@ RSpec.describe Gitlab::Ci::RunnerInstructions do
       context name do
         it 'has the required fields' do
           expect(subject).to have_key(:human_readable_name)
-          expect(subject).to have_key(:installation_instructions_url)
         end
       end
     end

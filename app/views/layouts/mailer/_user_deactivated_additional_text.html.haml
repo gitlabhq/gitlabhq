@@ -1,0 +1,3 @@
+- return unless Feature.enabled?(:deactivation_email_additional_text) && Gitlab::CurrentSettings.deactivation_email_additional_text.present?
+%p
+  = Gitlab::Utils.nlbr(Gitlab::CurrentSettings.deactivation_email_additional_text)

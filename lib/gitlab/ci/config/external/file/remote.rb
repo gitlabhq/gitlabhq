@@ -28,8 +28,6 @@ module Gitlab
               )
             end
 
-            private
-
             def validate_context!
               # no-op
             end
@@ -41,6 +39,8 @@ module Gitlab
                 errors.push("Remote file `#{masked_location}` does not have a valid address!")
               end
             end
+
+            private
 
             def fetch_remote_content
               begin

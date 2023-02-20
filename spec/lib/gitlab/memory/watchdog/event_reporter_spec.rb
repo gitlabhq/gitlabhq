@@ -106,11 +106,12 @@ RSpec.describe Gitlab::Memory::Watchdog::EventReporter, feature_category: :appli
 
     it 'logs violation' do
       expect(logger).to receive(:warn)
-        .with(
+        .with({
           pid: Process.pid,
           worker_id: 'worker_1',
           memwd_rss_bytes: 1024,
-          message: 'dummy_text')
+          message: 'dummy_text'
+        })
 
       subject
     end

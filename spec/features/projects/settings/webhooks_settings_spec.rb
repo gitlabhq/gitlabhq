@@ -82,8 +82,8 @@ RSpec.describe 'Projects > Settings > Webhook Settings', feature_category: :proj
         WebMock.stub_request(:post, hook.url)
         visit webhooks_path
 
-        find('.hook-test-button.dropdown').click
-        click_link 'Push events'
+        click_button 'Test'
+        click_button 'Push events'
 
         expect(page).to have_current_path(webhooks_path, ignore_query: true)
       end

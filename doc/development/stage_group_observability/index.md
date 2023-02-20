@@ -35,7 +35,7 @@ stage group is comparable to the
 [monthly availability](https://about.gitlab.com/handbook/engineering/infrastructure/performance-indicators/#gitlabcom-availability)
 we calculate for GitLab.com, except it's scoped to the features of a group.
 
-To learn more about how we use error budgets, see the
+For more information about how we use error budgets, see the
 [Engineering Error Budgets](https://about.gitlab.com/handbook/engineering/error-budgets/) handbook page.
 
 By default, the first row of panels on both dashboards shows the

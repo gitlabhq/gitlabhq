@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe WebHookLog do
+RSpec.describe WebHookLog, feature_category: :integrations do
   it { is_expected.to belong_to(:web_hook) }
 
   it { is_expected.to serialize(:request_headers).as(Hash) }
@@ -90,6 +90,35 @@ RSpec.describe WebHookLog do
             }
           ]
         )
+      end
+    end
+  end
+
+  describe 'before_save' do
+    describe '#set_url_hash' do
+      let(:web_hook_log) { build(:web_hook_log, interpolated_url: interpolated_url) }
+
+      subject(:save_web_hook_log) { web_hook_log.save! }
+
+      context 'when interpolated_url is nil' do
+        let(:interpolated_url) { nil }
+
+        it { expect { save_web_hook_log }.not_to change { web_hook_log.url_hash } }
+      end
+
+      context 'when interpolated_url has a blank value' do
+        let(:interpolated_url) { ' ' }
+
+        it { expect { save_web_hook_log }.not_to change { web_hook_log.url_hash } }
+      end
+
+      context 'when interpolated_url has a value' do
+        let(:interpolated_url) { 'example@gitlab.com' }
+        let(:expected_value) { Gitlab::CryptoHelper.sha256(interpolated_url) }
+
+        it 'assigns correct digest value' do
+          expect { save_web_hook_log }.to change { web_hook_log.url_hash }.from(nil).to(expected_value)
+        end
       end
     end
   end

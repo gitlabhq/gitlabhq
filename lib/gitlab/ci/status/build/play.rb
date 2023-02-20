@@ -22,7 +22,7 @@ module Gitlab
           end
 
           def action_button_title
-            _('Trigger this manual action')
+            _('Run job')
           end
 
           def action_path

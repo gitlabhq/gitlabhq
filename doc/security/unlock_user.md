@@ -17,9 +17,7 @@ Users are locked after ten failed sign-in attempts. These users remain locked:
 1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Overview > Users**.
 1. Use the search bar to find the locked user.
-1. From the **User administration** dropdown list select **Unlock**.
-
-![Unlock a user from the Admin Area](img/unlock_user_v14_7.png)
+1. From the **User administration** dropdown list, select **Unlock**.
 
 ## Unlock a user from the command line
 

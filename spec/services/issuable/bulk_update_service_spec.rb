@@ -117,11 +117,37 @@ RSpec.describe Issuable::BulkUpdateService do
     end
   end
 
+  shared_examples 'bulk update service' do
+    it 'result count only includes authorized issuables' do
+      all_issues = issues + [create(:issue, project: create(:project, :private))]
+      result = bulk_update(all_issues, { assignee_ids: [user.id] })
+
+      expect(result[:count]).to eq(issues.count)
+    end
+
+    context 'when issuable_ids are passed as an array' do
+      it 'updates assignees' do
+        expect do
+          described_class.new(
+            parent,
+            user,
+            { issuable_ids: issues.map(&:id), assignee_ids: [user.id] }
+          ).execute('issue')
+
+          issues.each(&:reset)
+        end.to change { issues.flat_map(&:assignee_ids) }.from([]).to([user.id] * 2)
+      end
+    end
+  end
+
   context 'with issuables at a project level' do
+    let_it_be_with_reload(:issues) { create_list(:issue, 2, project: project) }
+
     let(:parent) { project }
 
+    it_behaves_like 'bulk update service'
+
     context 'with unpermitted attributes' do
-      let(:issues) { create_list(:issue, 2, project: project) }
       let(:label) { create(:label, project: project) }
 
       it 'does not update the issues' do
@@ -131,9 +157,23 @@ RSpec.describe Issuable::BulkUpdateService do
       end
     end
 
-    describe 'close issues' do
-      let(:issues) { create_list(:issue, 2, project: project) }
+    context 'when issuable update service raises an ArgumentError' do
+      before do
+        allow_next_instance_of(Issues::UpdateService) do |update_service|
+          allow(update_service).to receive(:execute).and_raise(ArgumentError, 'update error')
+        end
+      end
 
+      it 'returns an error response' do
+        result = bulk_update(issues, add_label_ids: [])
+
+        expect(result).to be_error
+        expect(result.errors).to contain_exactly('update error')
+        expect(result.http_status).to eq(422)
+      end
+    end
+
+    describe 'close issues' do
       it 'succeeds and returns the correct number of issues updated' do
         result = bulk_update(issues, state_event: 'close')
 
@@ -155,24 +195,24 @@ RSpec.describe Issuable::BulkUpdateService do
     end
 
     describe 'reopen issues' do
-      let(:issues) { create_list(:closed_issue, 2, project: project) }
+      let_it_be_with_reload(:closed_issues) { create_list(:closed_issue, 2, project: project) }
 
       it 'succeeds and returns the correct number of issues updated' do
-        result = bulk_update(issues, state_event: 'reopen')
+        result = bulk_update(closed_issues, state_event: 'reopen')
 
         expect(result.success?).to be_truthy
-        expect(result.payload[:count]).to eq(issues.count)
+        expect(result.payload[:count]).to eq(closed_issues.count)
       end
 
       it 'reopens all the issues passed' do
-        bulk_update(issues, state_event: 'reopen')
+        bulk_update(closed_issues, state_event: 'reopen')
 
         expect(project.issues.closed).to be_empty
         expect(project.issues.opened).not_to be_empty
       end
 
       it_behaves_like 'scheduling cached group count clear' do
-        let(:issuables) { issues }
+        let(:issuables) { closed_issues }
         let(:params) { { state_event: 'reopen' } }
       end
     end
@@ -207,10 +247,10 @@ RSpec.describe Issuable::BulkUpdateService do
         end
       end
 
-      context 'when the new assignee ID is not present' do
-        it 'does not unassign' do
+      context 'when the new assignee IDs array is empty' do
+        it 'removes all assignees' do
           expect { bulk_update(merge_request, assignee_ids: []) }
-            .not_to change { merge_request.reload.assignee_ids }
+            .to change(merge_request.assignees, :count).by(-1)
         end
       end
     end
@@ -244,10 +284,10 @@ RSpec.describe Issuable::BulkUpdateService do
         end
       end
 
-      context 'when the new assignee ID is not present' do
-        it 'does not unassign' do
+      context 'when the new assignee IDs array is empty' do
+        it 'removes all assignees' do
           expect { bulk_update(issue, assignee_ids: []) }
-            .not_to change(issue.assignees, :count)
+            .to change(issue.assignees, :count).by(-1)
         end
       end
     end
@@ -321,6 +361,10 @@ RSpec.describe Issuable::BulkUpdateService do
       group.add_reporter(user)
     end
 
+    it_behaves_like 'bulk update service' do
+      let_it_be_with_reload(:issues) { create_list(:issue, 2, project: create(:project, group: group)) }
+    end
+
     describe 'updating milestones' do
       let(:milestone) { create(:milestone, group: group) }
       let(:project)   { create(:project, :repository, group: group) }
@@ -370,6 +414,15 @@ RSpec.describe Issuable::BulkUpdateService do
         expect(issue2.reload.milestone).to be_nil
         expect(issue3.reload.milestone).to eq(milestone)
       end
+    end
+  end
+
+  context 'when no parent is provided' do
+    it 'returns an unscoped update error' do
+      result = described_class.new(nil, user, { assignee_ids: [user.id], issuable_ids: [] }).execute('issue')
+
+      expect(result).to be_error
+      expect(result.errors).to contain_exactly(_('A parent must be provided when bulk updating issuables'))
     end
   end
 end

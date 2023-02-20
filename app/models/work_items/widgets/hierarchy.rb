@@ -8,7 +8,7 @@ module WorkItems
       end
 
       def children
-        work_item.work_item_children_by_created_at
+        work_item.work_item_children_by_relative_position
       end
     end
   end

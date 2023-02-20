@@ -30,6 +30,20 @@ RSpec.describe Projects::Analytics::CycleAnalytics::ValueStreamsController do
 
         expect(json_response.first['name']).to eq('default')
       end
+
+      # testing the authorize method within ValueStreamActions
+      context 'when issues and merge requests are disabled' do
+        it 'renders 404' do
+          project.project_feature.update!(
+            issues_access_level: ProjectFeature::DISABLED,
+            merge_requests_access_level: ProjectFeature::DISABLED
+          )
+
+          get :index, params: params
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
     end
 
     context 'when user is not member of the project' do

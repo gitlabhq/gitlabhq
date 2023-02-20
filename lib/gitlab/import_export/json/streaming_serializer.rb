@@ -85,17 +85,30 @@ module Gitlab
         end
 
         def exportable_json_record(record, options, key)
-          associations = relations_schema[:include_if_exportable]&.dig(key)
-          return Raw.new(record.to_json(options)) unless associations && options[:include]
+          return Raw.new(record.to_json(options)) unless options[:include].any?
 
+          conditional_associations = relations_schema[:include_if_exportable]&.dig(key)
+
+          filtered_options =
+            if conditional_associations.present?
+              filter_conditional_include(record, options, conditional_associations)
+            else
+              options
+            end
+
+          Raw.new(authorized_record_json(record, filtered_options))
+        end
+
+        def filter_conditional_include(record, options, conditional_associations)
           filtered_options = options.deep_dup
-          associations.each do |association|
+
+          conditional_associations.each do |association|
             filtered_options[:include].delete_if do |option|
               !exportable_json_association?(option, record, association.to_sym)
             end
           end
 
-          Raw.new(record.to_json(filtered_options))
+          filtered_options
         end
 
         def exportable_json_association?(option, record, association)
@@ -103,6 +116,34 @@ module Gitlab
           return false unless record.respond_to?(:exportable_association?)
 
           record.exportable_association?(association, current_user: current_user)
+        end
+
+        def authorized_record_json(record, options)
+          include_keys = options[:include].flat_map(&:keys)
+          keys_to_authorize = record.try(:restricted_associations, include_keys)
+          return record.to_json(options) if keys_to_authorize.blank?
+
+          record_hash = record.as_json(options).with_indifferent_access
+          filtered_record_hash(record, keys_to_authorize, record_hash).to_json(options)
+        end
+
+        def filtered_record_hash(record, keys_to_authorize, record_hash)
+          keys_to_authorize.each do |key|
+            next unless record_hash[key].present?
+
+            readable = record.try(:readable_records, key, current_user: current_user)
+            if record.has_many_association?(key)
+              readable_ids = readable.pluck(:id)
+
+              record_hash[key].keep_if do |association_record|
+                readable_ids.include?(association_record[:id])
+              end
+            else
+              record_hash[key] = nil unless readable.present?
+            end
+          end
+
+          record_hash
         end
 
         def batch(relation, key)

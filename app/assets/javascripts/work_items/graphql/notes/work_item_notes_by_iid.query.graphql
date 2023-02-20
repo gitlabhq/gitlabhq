@@ -1,0 +1,32 @@
+#import "~/graphql_shared/fragments/page_info.fragment.graphql"
+#import "./work_item_note.fragment.graphql"
+
+query workItemNotesByIid($fullPath: ID!, $iid: String, $after: String, $pageSize: Int) {
+  workspace: project(fullPath: $fullPath) {
+    id
+    workItems(iid: $iid) {
+      nodes {
+        id
+        iid
+        widgets {
+          ... on WorkItemWidgetNotes {
+            type
+            discussions(first: $pageSize, after: $after, filter: ALL_NOTES) {
+              pageInfo {
+                ...PageInfo
+              }
+              nodes {
+                id
+                notes {
+                  nodes {
+                    ...WorkItemNote
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

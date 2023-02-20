@@ -216,7 +216,7 @@ To ensure the generated archive is transferable by rsync, you can set the `GZIP_
 option. This sets the `--rsyncable` option to `gzip`, which is useful only in
 combination with setting [the Backup filename option](#backup-filename).
 
-Note that the `--rsyncable` option in `gzip` isn't guaranteed to be available
+The `--rsyncable` option in `gzip` isn't guaranteed to be available
 on all distributions. To verify that it's available in your distribution, run
 `gzip --help` or consult the man pages.
 
@@ -240,8 +240,6 @@ You can exclude specific directories from the backup by adding the environment v
 - `pages` (Pages content)
 - `repositories` (Git repositories data)
 - `packages` (Packages)
-
-All wikis are backed up as part of the `repositories` group. Non-existent wikis are skipped during a backup.
 
 NOTE:
 When [backing up and restoring Helm Charts](https://docs.gitlab.com/charts/architecture/backup-restore.html), there is an additional option `packages`, which refers to any packages managed by the GitLab [package registry](../user/packages/package_registry/index.md).
@@ -437,6 +435,8 @@ For Omnibus GitLab packages:
      # 'use_iam_profile' => true
    }
    gitlab_rails['backup_upload_remote_directory'] = 'my.s3.bucket'
+   # Consider using multipart uploads when file size reaches 100MB. Enter a number in bytes.
+   # gitlab_rails['backup_multipart_chunk_size'] = 104857600
    ```
 
 1. [Reconfigure GitLab](../administration/restart_gitlab.md#omnibus-gitlab-reconfigure)
@@ -468,7 +468,7 @@ gitlab_rails['backup_upload_storage_options'] = {
 
 ##### SSE-KMS
 
-To enable SSE-KMS, you'll need the
+To enable SSE-KMS, you need the
 [KMS key via its Amazon Resource Name (ARN) in the `arn:aws:kms:region:acct-id:key/key-id` format](https://docs.aws.amazon.com/AmazonS3/latest/userguide/UsingKMSEncryption.html).
 Under the `backup_upload_storage_options` configuration setting, set:
 

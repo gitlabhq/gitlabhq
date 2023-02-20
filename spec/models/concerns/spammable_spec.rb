@@ -202,5 +202,21 @@ RSpec.describe Spammable do
         expect(issue.submittable_as_spam_by?(nil)).to be_nil
       end
     end
+
+    describe '#allow_possible_spam?' do
+      subject { issue.allow_possible_spam? }
+
+      context 'when the `allow_possible_spam` application setting is turned off' do
+        it { is_expected.to eq(false) }
+      end
+
+      context 'when the `allow_possible_spam` application setting is turned on' do
+        before do
+          stub_application_setting(allow_possible_spam: true)
+        end
+
+        it { is_expected.to eq(true) }
+      end
+    end
   end
 end

@@ -210,7 +210,7 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
       end
     end
 
-    RSpec.shared_examples_for 'fallback read from the secondary store' do
+    RSpec.shared_examples_for 'fallback read from the non-default store' do
       let(:counter) { Gitlab::Metrics::NullMetric.instance }
 
       before do
@@ -218,7 +218,7 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
       end
 
       it 'fallback and execute on secondary instance' do
-        expect(secondary_store).to receive(name).with(*expected_args).and_call_original
+        expect(multi_store.fallback_store).to receive(name).with(*expected_args).and_call_original
 
         subject
       end
@@ -242,7 +242,7 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
 
       context 'when fallback read from the secondary instance raises an exception' do
         before do
-          allow(secondary_store).to receive(name).with(*expected_args).and_raise(StandardError)
+          allow(multi_store.fallback_store).to receive(name).with(*expected_args).and_raise(StandardError)
         end
 
         it 'fails with exception' do
@@ -283,10 +283,12 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
             subject
           end
 
-          it 'does not execute on the secondary store' do
-            expect(secondary_store).not_to receive(name)
+          unless params[:block]
+            it 'does not execute on the secondary store' do
+              expect(secondary_store).not_to receive(name)
 
-            subject
+              subject
+            end
           end
 
           include_examples 'reads correct value'
@@ -294,7 +296,7 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
 
         context 'when reading from primary instance is raising an exception' do
           before do
-            allow(primary_store).to receive(name).with(*expected_args).and_raise(StandardError)
+            allow(multi_store.default_store).to receive(name).with(*expected_args).and_raise(StandardError)
             allow(Gitlab::ErrorTracking).to receive(:log_exception)
           end
 
@@ -305,16 +307,16 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
             subject
           end
 
-          include_examples 'fallback read from the secondary store'
+          include_examples 'fallback read from the non-default store'
         end
 
-        context 'when reading from empty primary instance' do
+        context 'when reading from empty default instance' do
           before do
-            # this ensures a cache miss without having to stub primary store
-            primary_store.flushdb
+            # this ensures a cache miss without having to stub the default store
+            multi_store.default_store.flushdb
           end
 
-          include_examples 'fallback read from the secondary store'
+          include_examples 'fallback read from the non-default store'
         end
 
         context 'when the command is executed within pipelined block' do
@@ -344,8 +346,16 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
           end
 
           context 'when block is provided' do
-            it 'yields to the block' do
+            it 'both stores yields to the block' do
               expect(primary_store).to receive(name).and_yield(value)
+              expect(secondary_store).to receive(name).and_yield(value)
+
+              subject
+            end
+
+            it 'both stores to execute' do
+              expect(primary_store).to receive(name).with(*expected_args).and_call_original
+              expect(secondary_store).to receive(name).with(*expected_args).and_call_original
 
               subject
             end
@@ -412,7 +422,6 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
       multi_store.mget(values) do |v|
         multi_store.sadd(skey, v)
         multi_store.scard(skey)
-        v # mget receiving block returns the last line of the block for cache-hit check
       end
     end
 
@@ -422,9 +431,9 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
         expect(primary_store).to receive(:send).with(:sadd, skey, %w[1 2 3]).and_call_original
         expect(primary_store).to receive(:send).with(:scard, skey).and_call_original
 
-        expect(secondary_store).not_to receive(:send).with(:mget, values).and_call_original
-        expect(secondary_store).not_to receive(:send).with(:sadd, skey, %w[1 2 3]).and_call_original
-        expect(secondary_store).not_to receive(:send).with(:scard, skey).and_call_original
+        expect(secondary_store).to receive(:send).with(:mget, values).and_call_original
+        expect(secondary_store).to receive(:send).with(:sadd, skey, %w[10 20 30]).and_call_original
+        expect(secondary_store).to receive(:send).with(:scard, skey).and_call_original
 
         subject
       end
@@ -451,7 +460,15 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
       end
 
       context 'when primary instance is default store' do
-        it_behaves_like 'primary instance executes block'
+        it 'ensures only primary instance is executing the block' do
+          expect(secondary_store).not_to receive(:send)
+
+          expect(primary_store).to receive(:send).with(:mget, values).and_call_original
+          expect(primary_store).to receive(:send).with(:sadd, skey, %w[1 2 3]).and_call_original
+          expect(primary_store).to receive(:send).with(:scard, skey).and_call_original
+
+          subject
+        end
       end
 
       context 'when secondary instance is default store' do
@@ -464,9 +481,7 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
           expect(secondary_store).to receive(:send).with(:sadd, skey, %w[10 20 30]).and_call_original
           expect(secondary_store).to receive(:send).with(:scard, skey).and_call_original
 
-          expect(primary_store).not_to receive(:send).with(:mget, values).and_call_original
-          expect(primary_store).not_to receive(:send).with(:sadd, skey, %w[10 20 30]).and_call_original
-          expect(primary_store).not_to receive(:send).with(:scard, skey).and_call_original
+          expect(primary_store).not_to receive(:send)
 
           subject
         end
@@ -700,7 +715,7 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
         it 'runs block on correct Redis instance' do
           if both_stores
             expect(primary_store).to receive(name).with(*expected_args).and_call_original
-            expect(secondary_store).not_to receive(name)
+            expect(secondary_store).to receive(name).with(*expected_args).and_call_original
 
             expect(primary_store).to receive(:incr).with(rvalue)
             expect(secondary_store).to receive(:incr).with(rvalue)

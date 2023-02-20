@@ -123,7 +123,7 @@ module QA
             wait_for_enabled_transfer_group_button
             click_element(:transfer_group_button)
 
-            fill_confirmation_text(source_group.path)
+            fill_confirmation_text(source_group.full_path)
             confirm_transfer
           end
 

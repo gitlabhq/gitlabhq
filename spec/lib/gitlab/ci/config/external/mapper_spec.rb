@@ -2,9 +2,7 @@
 
 require 'spec_helper'
 
-# This will be use with the FF ci_refactoring_external_mapper_verifier in the next MR.
-# It can be removed when the FF is removed.
-RSpec.shared_context 'gitlab_ci_config_external_mapper' do
+RSpec.describe Gitlab::Ci::Config::External::Mapper, feature_category: :pipeline_authoring do
   include StubRequests
   include RepoHelpers
 
@@ -124,7 +122,7 @@ RSpec.shared_context 'gitlab_ci_config_external_mapper' do
         end
 
         it 'returns ambigious specification error' do
-          expect { subject }.to raise_error(described_class::AmbigiousSpecificationError, '`{"invalid":"secret-file.yml"}` does not have a valid subkey for include. Valid subkeys are: `local`, `project`, `remote`, `template`, `artifact`')
+          expect { subject }.to raise_error(described_class::AmbigiousSpecificationError, /`{"invalid":"secret-file.yml"}` does not have a valid subkey for include. Valid subkeys are:/)
         end
       end
 
@@ -138,7 +136,7 @@ RSpec.shared_context 'gitlab_ci_config_external_mapper' do
         end
 
         it 'returns ambigious specification error' do
-          expect { subject }.to raise_error(described_class::AmbigiousSpecificationError, 'Each include must use only one of: `local`, `project`, `remote`, `template`, `artifact`')
+          expect { subject }.to raise_error(described_class::AmbigiousSpecificationError, /Each include must use only one of/)
         end
       end
 
@@ -168,7 +166,7 @@ RSpec.shared_context 'gitlab_ci_config_external_mapper' do
             an_instance_of(Gitlab::Ci::Config::External::File::Project))
         end
 
-        it_behaves_like 'logging config file fetch', 'config_file_fetch_project_content_duration_s', 2
+        it_behaves_like 'logging config file fetch', 'config_file_fetch_project_content_duration_s', 1
       end
     end
 
@@ -232,9 +230,20 @@ RSpec.shared_context 'gitlab_ci_config_external_mapper' do
         expect { process }.not_to raise_error
       end
 
-      it 'has expanset with one' do
+      it 'has expanset with two' do
         process
-        expect(context.expandset.size).to eq(1)
+        expect(context.expandset.size).to eq(2)
+      end
+
+      context 'when FF ci_includes_count_duplicates is disabled' do
+        before do
+          stub_feature_flags(ci_includes_count_duplicates: false)
+        end
+
+        it 'has expanset with one' do
+          process
+          expect(context.expandset.size).to eq(1)
+        end
       end
     end
 
@@ -463,8 +472,4 @@ RSpec.shared_context 'gitlab_ci_config_external_mapper' do
       end
     end
   end
-end
-
-RSpec.describe Gitlab::Ci::Config::External::Mapper, feature_category: :pipeline_authoring do
-  it_behaves_like 'gitlab_ci_config_external_mapper'
 end

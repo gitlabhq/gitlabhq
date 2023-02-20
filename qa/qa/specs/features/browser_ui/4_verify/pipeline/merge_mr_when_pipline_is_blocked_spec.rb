@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Verify', :runner, product_group: :pipeline_execution do
-    context 'When pipeline is blocked' do
+    context 'when pipeline is blocked' do
       let(:executor) { "qa-runner-#{Faker::Alphanumeric.alphanumeric(number: 8)}" }
 
       let(:project) do

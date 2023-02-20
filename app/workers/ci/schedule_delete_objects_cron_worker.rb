@@ -14,8 +14,8 @@ module Ci
     feature_category :continuous_integration
     idempotent!
 
-    def perform(*args)
-      Ci::DeleteObjectsWorker.perform_with_capacity(*args)
+    def perform(...)
+      Ci::DeleteObjectsWorker.perform_with_capacity(...)
     end
   end
 end

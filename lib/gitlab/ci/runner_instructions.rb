@@ -47,6 +47,9 @@ module Gitlab
         kubernetes: {
           human_readable_name: "Kubernetes",
           installation_instructions_url: "https://docs.gitlab.com/runner/install/kubernetes.html"
+        },
+        aws: {
+          human_readable_name: "AWS"
         }
       }.freeze
 

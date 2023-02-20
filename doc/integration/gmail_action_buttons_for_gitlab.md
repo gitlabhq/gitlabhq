@@ -4,7 +4,7 @@ group: Integrations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Gmail actions buttons for GitLab **(FREE)**
+# Gmail actions **(FREE)**
 
 GitLab supports [Google actions in email](https://developers.google.com/gmail/markup/actions/actions-overview).
 

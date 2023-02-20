@@ -210,8 +210,7 @@ RSpec.describe API::Notes, feature_category: :team_planning do
         let(:request_path) { "/projects/#{ext_proj.id}/issues/#{ext_issue.iid}/notes" }
 
         before do
-          stub_const('WorkItems::Type::BASE_TYPES', { issue: { name: 'NoNotesWidget', enum_value: 0 } })
-          stub_const('WorkItems::Type::WIDGETS_FOR_TYPE', { issue: [::WorkItems::Widgets::Description] })
+          WorkItems::Type.default_by_type(:issue).widget_definitions.find_by_widget_type(:notes).update!(disabled: true)
         end
 
         it 'does not fetch notes' do

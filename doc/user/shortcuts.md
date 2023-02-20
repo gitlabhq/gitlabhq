@@ -15,7 +15,7 @@ To display a window in GitLab that lists its keyboard shortcuts, use one of the
 following methods:
 
 - Press <kbd>?</kbd>.
-- In the Help menu in the top right of the application, select **Keyboard shortcuts**.
+- In the Help menu in the upper right of the application, select **Keyboard shortcuts**.
 
 Although [global shortcuts](#global-shortcuts) work from any area of GitLab,
 you must be in specific pages for the other shortcuts to be available, as
@@ -331,6 +331,13 @@ To disable keyboard shortcuts:
 
 1. While viewing a page that supports keyboard shortcuts, and outside a text box,
 press <kbd>?</kbd> to display the list of shortcuts.
+1. Select **Toggle shortcuts**.
+
+## Enable keyboard shortcuts
+
+To enable keyboard shortcuts:
+
+1. On the top bar, select the Help menu (**{question}**), then **Keyboard shortcuts**.
 1. Select **Toggle shortcuts**.
 
 ## Troubleshooting

@@ -97,11 +97,11 @@ module Gitlab
           if current_session.use_primary? &&
               !current_session.use_replicas_for_read_queries?
             @load_balancer.read_write do |connection|
-              connection.send(...)
+              connection.public_send(...)
             end
           else
             @load_balancer.read do |connection|
-              connection.send(...)
+              connection.public_send(...)
             end
           end
         end
@@ -117,7 +117,7 @@ module Gitlab
           end
 
           @load_balancer.read_write do |connection|
-            connection.send(...)
+            connection.public_send(...)
           end
         end
 

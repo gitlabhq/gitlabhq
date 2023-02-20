@@ -6,12 +6,16 @@ module ReleaseHighlights
     include ActiveModel::Validations::Callbacks
 
     AVAILABLE_IN = %w(Free Premium Ultimate).freeze
+    HYPHENATED_ATTRIBUTES = [:self_managed, :gitlab_com].freeze
 
     attr_reader :entry
+    attr_accessor :available_in, :description, :gitlab_com, :image_url, :name, :published_at, :release, :self_managed,
+      :stage
 
     validates :name, :description, :stage, presence: true
-    validates :'self-managed', :'gitlab-com', inclusion: { in: [true, false], message: "must be a boolean" }
-    validates :documentation_link, :image_url, public_url: { dns_rebind_protection: true }
+    validates :self_managed, :gitlab_com, inclusion: { in: [true, false], message: "must be a boolean" }
+    validates :documentation_link, public_url: { dns_rebind_protection: true }
+    validates :image_url, public_url: { dns_rebind_protection: true }, allow_nil: true
     validates :release, numericality: true
     validate :validate_published_at
     validate :validate_available_in
@@ -67,11 +71,13 @@ module ReleaseHighlights
       index = entry.children.find_index(node)
 
       next_node = entry.children[index + 1]
+
       next_node&.to_ruby
     end
 
     def find_node(key)
-      entry.children.find { |node| node.try(:value) == key.to_s }
+      formatted_key = key.in?(HYPHENATED_ATTRIBUTES) ? key.to_s.dasherize : key.to_s
+      entry.children.find { |node| node.try(:value) == formatted_key }
     end
   end
 end

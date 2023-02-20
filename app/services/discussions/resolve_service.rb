@@ -16,7 +16,7 @@ module Discussions
     end
 
     def execute
-      discussions.each(&method(:resolve_discussion))
+      discussions.each { |discussion| resolve_discussion(discussion) }
 
       after_resolve_cleanup
     end

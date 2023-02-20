@@ -37,6 +37,8 @@ module Types
       # Life-cycle timestamps:
       field :created_at, Types::TimeType, null: false,
                                           description: "When the job was created."
+      field :erased_at, Types::TimeType, null: true,
+                                          description: "When the job was erased."
       field :finished_at, Types::TimeType, null: true,
                                            description: 'When a job has finished running.'
       field :queued_at, Types::TimeType, null: true,
@@ -96,6 +98,8 @@ module Types
                                                  description: 'Whether the job was triggered.'
       field :web_path, GraphQL::Types::String, null: true,
                                                description: 'Web path of the job.'
+
+      field :project, Types::ProjectType, null: true, description: 'Project that the job belongs to.'
 
       def kind
         return ::Ci::Build unless [::Ci::Build, ::Ci::Bridge].include?(object.class)

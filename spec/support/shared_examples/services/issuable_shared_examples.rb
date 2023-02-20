@@ -11,7 +11,8 @@ end
 RSpec.shared_examples 'updating a single task' do
   def update_issuable(opts)
     issuable = try(:issue) || try(:merge_request)
-    described_class.new(project: project, current_user: user, params: opts).execute(issuable)
+    described_class.new(**described_class.constructor_container_arg(project), current_user: user, params: opts)
+      .execute(issuable)
   end
 
   before do

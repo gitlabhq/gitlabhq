@@ -145,7 +145,7 @@ module MergeRequests
 
       if push_options[:milestone]
         milestone = Milestone.for_projects_and_groups(@project, @project.ancestors_upto)&.find_by_name(push_options[:milestone])
-        params[:milestone] = milestone if milestone
+        params[:milestone_id] = milestone.id if milestone
       end
 
       if params.key?(:description)

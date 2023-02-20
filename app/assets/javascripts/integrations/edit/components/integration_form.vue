@@ -208,6 +208,17 @@ export default {
       data-testid="redirect-to-field"
     />
 
+    <div v-if="shouldUpgradeSlack" class="gl-mb-6">
+      <gl-alert
+        :dismissible="false"
+        :title="$options.slackUpgradeInfo.title"
+        :primary-button-link="customState.upgradeSlackUrl"
+        :primary-button-text="$options.slackUpgradeInfo.btnText"
+        class="gl-mb-5"
+        >{{ $options.slackUpgradeInfo.text }}</gl-alert
+      >
+    </div>
+
     <override-dropdown
       v-if="defaultState !== null"
       :inherit-from-id="defaultState.id"
@@ -240,17 +251,6 @@ export default {
         />
       </div>
     </section>
-
-    <div v-if="shouldUpgradeSlack" class="gl-border-t">
-      <gl-alert
-        :dismissible="false"
-        :title="$options.slackUpgradeInfo.title"
-        :primary-button-link="customState.upgradeSlackUrl"
-        :primary-button-text="$options.slackUpgradeInfo.btnText"
-        class="gl-mb-8 gl-mt-5"
-        >{{ $options.slackUpgradeInfo.text }}</gl-alert
-      >
-    </div>
 
     <template v-if="hasSections">
       <integration-form-section

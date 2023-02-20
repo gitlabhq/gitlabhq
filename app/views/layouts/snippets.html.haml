@@ -2,7 +2,7 @@
 - header_title _("Snippets"), snippets_path
 - snippets_upload_path = snippets_upload_path(@snippet, current_user)
 
-- if current_user && Feature.enabled?(:your_work_sidebar, current_user)
+- if current_user
   - @left_sidebar = true
   - nav "your_work"
 

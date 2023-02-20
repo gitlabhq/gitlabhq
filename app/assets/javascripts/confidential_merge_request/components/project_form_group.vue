@@ -114,7 +114,7 @@ export default {
         v-if="projects.length"
         :projects="projects"
         :selected-project="selectedProject"
-        @click="selectProject"
+        @select="selectProject"
       />
       <p class="gl-text-gray-600 gl-mt-1 gl-mb-0">
         <template v-if="projects.length">

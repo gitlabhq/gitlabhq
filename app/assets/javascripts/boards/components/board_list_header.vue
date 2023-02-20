@@ -125,7 +125,7 @@ export default {
       return this.list.collapsed ? this.$options.i18n.expand : this.$options.i18n.collapse;
     },
     chevronIcon() {
-      return this.list.collapsed ? 'chevron-right' : 'chevron-down';
+      return this.list.collapsed ? 'chevron-lg-right' : 'chevron-lg-down';
     },
     isNewIssueShown() {
       return (this.listType === ListType.backlog || this.showListHeaderButton) && !this.isEpicBoard;
@@ -135,7 +135,9 @@ export default {
     },
     isSettingsShown() {
       return (
-        this.listType !== ListType.backlog && this.showListHeaderButton && !this.list.collapsed
+        this.listType !== ListType.backlog &&
+        this.listType !== ListType.closed &&
+        !this.list.collapsed
       );
     },
     uniqueKey() {
@@ -321,6 +323,7 @@ export default {
           v-if="listType !== 'label'"
           v-gl-tooltip.hover
           :class="{
+            'gl-text-gray-500': list.collapsed,
             'gl-display-block': list.collapsed || listType === 'milestone',
           }"
           :title="listTitle"
@@ -376,7 +379,7 @@ export default {
       <!-- EE end -->
 
       <div
-        class="issue-count-badge gl-display-inline-flex gl-pr-2 no-drag gl-text-secondary"
+        class="gl-font-sm issue-count-badge gl-display-inline-flex gl-pr-2 no-drag gl-text-secondary"
         data-testid="issue-count-badge"
         :class="{
           'gl-display-none!': list.collapsed && isSwimlanesHeader,
@@ -386,7 +389,7 @@ export default {
         <span class="gl-display-inline-flex" :class="{ 'gl-rotate-90': list.collapsed }">
           <gl-tooltip :target="() => $refs.itemCount" :title="itemsTooltipLabel" />
           <span ref="itemCount" class="gl-display-inline-flex gl-align-items-center">
-            <gl-icon class="gl-mr-2" :name="countIcon" :size="16" />
+            <gl-icon class="gl-mr-2" :name="countIcon" :size="14" />
             <item-count
               v-if="!isLoading"
               :items-size="isEpicBoard ? list.epicsCount : boardList.issuesCount"
@@ -397,7 +400,7 @@ export default {
           <template v-if="canShowTotalWeight">
             <gl-tooltip :target="() => $refs.weightTooltip" :title="weightCountToolTip" />
             <span ref="weightTooltip" class="gl-display-inline-flex gl-ml-3" data-testid="weight">
-              <gl-icon class="gl-mr-2" name="weight" />
+              <gl-icon class="gl-mr-2" name="weight" :size="14" />
               {{ totalWeight }}
             </span>
           </template>
@@ -413,6 +416,7 @@ export default {
           :aria-label="$options.i18n.newIssue"
           :title="$options.i18n.newIssue"
           class="no-drag"
+          size="small"
           icon="plus"
           @click="showNewIssueForm"
         />
@@ -424,6 +428,7 @@ export default {
           :aria-label="$options.i18n.newEpic"
           :title="$options.i18n.newEpic"
           class="no-drag"
+          size="small"
           icon="plus"
           @click="showNewEpicForm"
         />
@@ -434,6 +439,7 @@ export default {
           v-gl-tooltip.hover
           :aria-label="$options.i18n.listSettings"
           class="no-drag"
+          size="small"
           :title="$options.i18n.listSettings"
           icon="settings"
           @click="openSidebarSettings"

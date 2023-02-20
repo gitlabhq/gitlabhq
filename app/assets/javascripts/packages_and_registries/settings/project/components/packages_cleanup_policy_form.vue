@@ -1,5 +1,6 @@
 <script>
 import { GlButton } from '@gitlab/ui';
+import { sprintf } from '~/locale';
 import {
   UPDATE_SETTINGS_ERROR_MESSAGE,
   UPDATE_SETTINGS_SUCCESS_MESSAGE,
@@ -7,10 +8,14 @@ import {
   KEEP_N_DUPLICATED_PACKAGE_FILES_FIELDNAME,
   KEEP_N_DUPLICATED_PACKAGE_FILES_LABEL,
   SET_CLEANUP_POLICY_BUTTON,
+  READY_FOR_CLEANUP_MESSAGE,
+  TIME_TO_NEXT_CLEANUP_MESSAGE,
 } from '~/packages_and_registries/settings/project/constants';
+import packagesCleanupPolicyQuery from '~/packages_and_registries/settings/project/graphql/queries/get_packages_cleanup_policy.query.graphql';
 import updatePackagesCleanupPolicyMutation from '~/packages_and_registries/settings/project/graphql/mutations/update_packages_cleanup_policy.mutation.graphql';
 import { formOptionsGenerator } from '~/packages_and_registries/settings/project/utils';
 import Tracking from '~/tracking';
+import { approximateDuration, calculateRemainingMilliseconds } from '~/lib/utils/datetime_utility';
 import ExpirationDropdown from './expiration_dropdown.vue';
 
 export default {
@@ -36,6 +41,8 @@ export default {
     KEEP_N_DUPLICATED_PACKAGE_FILES_LABEL,
     KEEP_N_DUPLICATED_PACKAGE_FILES_DESCRIPTION,
     SET_CLEANUP_POLICY_BUTTON,
+    TIME_TO_NEXT_CLEANUP_MESSAGE,
+    READY_FOR_CLEANUP_MESSAGE,
   },
   data() {
     return {
@@ -69,6 +76,15 @@ export default {
         keepNDuplicatedPackageFiles: this.prefilledForm.keepNDuplicatedPackageFiles,
       };
     },
+    nextCleanupMessage() {
+      const { nextRunAt } = this.value;
+      const difference = calculateRemainingMilliseconds(nextRunAt);
+      return difference
+        ? sprintf(TIME_TO_NEXT_CLEANUP_MESSAGE, {
+            nextRunAt: approximateDuration(difference / 1000),
+          })
+        : READY_FOR_CLEANUP_MESSAGE;
+    },
   },
   methods: {
     findDefaultOption(option) {
@@ -83,6 +99,15 @@ export default {
           variables: {
             input: this.mutationVariables,
           },
+          awaitRefetchQueries: true,
+          refetchQueries: [
+            {
+              query: packagesCleanupPolicyQuery,
+              variables: {
+                projectPath: this.projectPath,
+              },
+            },
+          ],
         })
         .then(({ data }) => {
           const [errorMessage] = data?.updatePackagesCleanupPolicy?.errors ?? [];
@@ -119,6 +144,9 @@ export default {
       data-testid="keep-n-duplicated-package-files-dropdown"
       @input="onModelChange($event, 'keepNDuplicatedPackageFiles')"
     />
+    <p v-if="value.nextRunAt" data-testid="next-run-at">
+      {{ nextCleanupMessage }}
+    </p>
     <div class="gl-mt-7 gl-display-flex gl-align-items-center">
       <gl-button
         data-testid="save-button"

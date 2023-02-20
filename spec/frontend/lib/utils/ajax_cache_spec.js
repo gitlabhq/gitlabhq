@@ -1,6 +1,7 @@
 import MockAdapter from 'axios-mock-adapter';
 import AjaxCache from '~/lib/utils/ajax_cache';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 
 describe('AjaxCache', () => {
   const dummyEndpoint = '/AjaxCache/dummyEndpoint';
@@ -102,7 +103,7 @@ describe('AjaxCache', () => {
     });
 
     it('stores and returns data from Ajax call if cache is empty', () => {
-      mock.onGet(dummyEndpoint).reply(200, dummyResponse);
+      mock.onGet(dummyEndpoint).reply(HTTP_STATUS_OK, dummyResponse);
 
       return AjaxCache.retrieve(dummyEndpoint).then((data) => {
         expect(data).toEqual(dummyResponse);
@@ -111,7 +112,7 @@ describe('AjaxCache', () => {
     });
 
     it('makes no Ajax call if request is pending', () => {
-      mock.onGet(dummyEndpoint).reply(200, dummyResponse);
+      mock.onGet(dummyEndpoint).reply(HTTP_STATUS_OK, dummyResponse);
 
       return Promise.all([
         AjaxCache.retrieve(dummyEndpoint),
@@ -148,7 +149,7 @@ describe('AjaxCache', () => {
 
       AjaxCache.internalStorage[dummyEndpoint] = oldDummyResponse;
 
-      mock.onGet(dummyEndpoint).reply(200, dummyResponse);
+      mock.onGet(dummyEndpoint).reply(HTTP_STATUS_OK, dummyResponse);
 
       return Promise.all([
         AjaxCache.retrieve(dummyEndpoint),

@@ -48,8 +48,8 @@ RSpec.describe Tooling::Danger::ProjectHelper do
       'PROCESS.md'      | [:docs]
       'README.md'       | [:docs]
 
-      'ee/doc/foo'      | [:unknown]
-      'ee/README'       | [:unknown]
+      'ee/doc/foo'      | [:none]
+      'ee/README'       | [:none]
 
       'app/assets/foo'                   | [:frontend]
       'app/views/foo'                    | [:frontend, :backend]
@@ -139,7 +139,7 @@ RSpec.describe Tooling::Danger::ProjectHelper do
       'lib/gitlab/ci/templates/Security/SAST.gitlab-ci.yml'   | [:ci_template]
       'lib/gitlab/ci/templates/dotNET-Core.yml'               | [:ci_template]
 
-      'ee/FOO_VERSION' | [:unknown]
+      'ee/FOO_VERSION' | [:none]
 
       'db/schema.rb'                                              | [:database]
       'db/structure.sql'                                          | [:database]
@@ -170,8 +170,8 @@ RSpec.describe Tooling::Danger::ProjectHelper do
 
       'locale/gitlab.pot' | [:none]
 
-      'FOO'          | [:unknown]
-      'foo'          | [:unknown]
+      'FOO'          | [:none]
+      'foo'          | [:none]
 
       'foo/bar.rb'  | [:backend]
       'foo/bar.js'  | [:frontend]

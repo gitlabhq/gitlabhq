@@ -41,7 +41,7 @@ RSpec.describe 'Query.project(fullPath).ciVariables', feature_category: :pipelin
 
       post_graphql(query, current_user: user)
 
-      expect(graphql_data.dig('project', 'ciVariables', 'limit')).to be(200)
+      expect(graphql_data.dig('project', 'ciVariables', 'limit')).to be(8000)
       expect(graphql_data.dig('project', 'ciVariables', 'nodes')).to contain_exactly({
         'id' => variable.to_global_id.to_s,
         'key' => 'TEST_VAR',
@@ -65,5 +65,33 @@ RSpec.describe 'Query.project(fullPath).ciVariables', feature_category: :pipelin
 
       expect(graphql_data.dig('project', 'ciVariables')).to be_nil
     end
+  end
+
+  describe 'sorting and pagination' do
+    let_it_be(:current_user) { user }
+    let_it_be(:data_path) { [:project, :ci_variables] }
+    let_it_be(:variables) do
+      [
+        create(:ci_variable, project: project, key: 'd'),
+        create(:ci_variable, project: project, key: 'a'),
+        create(:ci_variable, project: project, key: 'c'),
+        create(:ci_variable, project: project, key: 'e'),
+        create(:ci_variable, project: project, key: 'b')
+      ]
+    end
+
+    def pagination_query(params)
+      graphql_query_for(
+        :project,
+        { fullPath: project.full_path },
+        query_graphql_field('ciVariables', params, "#{page_info} nodes { id }")
+      )
+    end
+
+    before do
+      project.add_maintainer(current_user)
+    end
+
+    it_behaves_like 'sorted paginated variables'
   end
 end

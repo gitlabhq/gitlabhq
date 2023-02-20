@@ -28,10 +28,6 @@ RSpec.describe Spam::SpamVerdictService do
     extra_attributes
   end
 
-  before do
-    stub_feature_flags(allow_possible_spam: false)
-  end
-
   shared_examples 'execute spam verdict service' do
     subject { service.execute }
 
@@ -119,9 +115,9 @@ RSpec.describe Spam::SpamVerdictService do
       end
     end
 
-    context 'if allow_possible_spam flag is true' do
+    context 'if allow_possible_spam application setting is true' do
       before do
-        stub_feature_flags(allow_possible_spam: true)
+        stub_application_setting(allow_possible_spam: true)
       end
 
       context 'and a service returns a verdict that should be overridden' do

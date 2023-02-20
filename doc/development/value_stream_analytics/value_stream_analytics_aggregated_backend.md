@@ -31,7 +31,7 @@ for long-term growth.
 Our main database is not prepared for analytical workloads. Executing long-running queries can
 affect the reliability of the application. For large groups, the current
 implementation (old backend) is slow and, in some cases, doesn't even load due to the configured
-statement timeout (15s).
+statement timeout (15 s).
 
 The database queries in the old backend use the core domain models directly through
 `IssuableFinders` classes: ([MergeRequestsFinder](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/finders/merge_requests_finder.rb) and [IssuesFinder](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/finders/issues_finder.rb)).
@@ -62,7 +62,7 @@ different development workflows within the `Test Group` (top-level namespace).
 The first value stream uses standard timestamp-based events for defining the stages. The second
 value stream uses label events.
 
-Each value stream and stage item from the example will be persisted in the database. Notice that
+Each value stream and stage item from the example is persisted in the database. Notice that
 the `Deployment` stage is identical for both value streams; that means that the underlying
 `stage_event_hash_id` is the same for both stages. The `stage_event_hash_id` reduces
 the amount of data the backend collects and plays a vital role in database partitioning.
@@ -111,8 +111,8 @@ the service performs operations in batches and enforces strict application limit
 later.
 - Continue processing data from a specific point.
 
-As of GitLab 14.7, the data loading is done manually. Once the feature is ready, the service will
-be invoked periodically by the system via a cron job (this part is not implemented yet).
+As of GitLab 14.7, the data loading is done manually. Once the feature is ready, the service is
+invoked periodically by the system via a cron job (this part is not implemented yet).
 
 #### Record iteration
 
@@ -193,7 +193,7 @@ aggregated data separated, we use two additional database tables:
 - `analytics_cycle_analytics_merge_request_stage_events`
 
 Both tables are hash partitioned by the `stage_event_hash_id`. Each table uses 32 partitions. It's
-an arbitrary number and it could be changed. Important is to keep the partitions under 100GB in
+an arbitrary number and it could be changed. Important is to keep the partitions under 100 GB in
 size (which gives the feature a lot of headroom).
 
 |Column|Description|

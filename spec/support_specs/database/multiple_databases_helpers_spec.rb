@@ -43,7 +43,7 @@ RSpec.describe 'Database::MultipleDatabasesHelpers' do
 
       context 'on Ci::ApplicationRecord' do
         before do
-          skip_if_multiple_databases_not_setup
+          skip_if_multiple_databases_not_setup(:ci)
         end
 
         it 'raises exception' do
@@ -83,7 +83,7 @@ RSpec.describe 'Database::MultipleDatabasesHelpers' do
   describe '.with_added_ci_connection' do
     context 'when only a single database is setup' do
       before do
-        skip_if_multiple_databases_are_setup
+        skip_if_multiple_databases_are_setup(:ci)
       end
 
       it 'connects Ci::ApplicationRecord to the main database for the duration of the block', :aggregate_failures do
@@ -100,7 +100,7 @@ RSpec.describe 'Database::MultipleDatabasesHelpers' do
 
     context 'when multiple databases are setup' do
       before do
-        skip_if_multiple_databases_not_setup
+        skip_if_multiple_databases_not_setup(:ci)
       end
 
       it 'does not mock the original Ci::ApplicationRecord connection', :aggregate_failures do

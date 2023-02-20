@@ -56,7 +56,7 @@ RSpec.describe 'Abuse reports', :js, feature_category: :insider_threat do
       let_it_be(:incident) { create(:incident, project: project, author: abusive_user) }
 
       before do
-        visit project_issues_incident_path(project, incident)
+        visit incident_project_issues_path(project, incident)
         click_button 'Incident actions'
       end
 
@@ -82,7 +82,7 @@ RSpec.describe 'Abuse reports', :js, feature_category: :insider_threat do
 
         visit user_path(abusive_user)
 
-        fill_and_submit_abuse_category_form("They're being offsensive or abusive.")
+        fill_and_submit_abuse_category_form("They're being offensive or abusive.")
         fill_and_submit_report_abuse_form
 
         expect(page).to have_content 'Thank you for your report'
@@ -136,7 +136,7 @@ RSpec.describe 'Abuse reports', :js, feature_category: :insider_threat do
         click_button 'More actions'
       end
 
-      it_behaves_like 'reports the user without an abuse category'
+      it_behaves_like 'reports the user with an abuse category'
     end
   end
 

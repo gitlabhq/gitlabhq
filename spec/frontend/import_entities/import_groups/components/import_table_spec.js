@@ -1,4 +1,4 @@
-import { GlAlert, GlEmptyState, GlIcon, GlLoadingIcon } from '@gitlab/ui';
+import { GlEmptyState, GlIcon, GlLoadingIcon } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
@@ -7,7 +7,7 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { createAlert } from '~/flash';
-import { HTTP_STATUS_BAD_REQUEST } from '~/lib/utils/http_status';
+import { HTTP_STATUS_OK, HTTP_STATUS_TOO_MANY_REQUESTS } from '~/lib/utils/http_status';
 import axios from '~/lib/utils/axios_utils';
 import { STATUSES } from '~/import_entities/constants';
 import { i18n, ROOT_NAMESPACE } from '~/import_entities/import_groups/constants';
@@ -38,7 +38,9 @@ describe('import table', () => {
   const FAKE_GROUPS = [
     generateFakeEntry({ id: 1, status: STATUSES.NONE }),
     generateFakeEntry({ id: 2, status: STATUSES.FINISHED }),
+    generateFakeEntry({ id: 3, status: STATUSES.NONE }),
   ];
+
   const FAKE_PAGE_INFO = { page: 1, perPage: 20, total: 40, totalPages: 2 };
   const FAKE_VERSION_VALIDATION = {
     features: {
@@ -59,12 +61,14 @@ describe('import table', () => {
   const findPaginationDropdownText = () => findPaginationDropdown().find('button').text();
   const findSelectionCount = () => wrapper.find('[data-test-id="selection-count"]');
   const findNewPathCol = () => wrapper.find('[data-test-id="new-path-col"]');
+  const findUnavailableFeaturesWarning = () =>
+    wrapper.find('[data-testid="unavailable-features-alert"]');
 
   const triggerSelectAllCheckbox = (checked = true) =>
     wrapper.find('thead input[type=checkbox]').setChecked(checked);
 
-  const selectRow = (idx) =>
-    wrapper.findAll('tbody td input[type=checkbox]').at(idx).setChecked(true);
+  const findRowCheckbox = (idx) => wrapper.findAll('tbody td input[type=checkbox]').at(idx);
+  const selectRow = (idx) => findRowCheckbox(idx).setChecked(true);
 
   const createComponent = ({
     bulkImportSourceGroups,
@@ -113,7 +117,7 @@ describe('import table', () => {
 
   beforeEach(() => {
     axiosMock = new MockAdapter(axios);
-    axiosMock.onGet(/.*\/exists$/, () => []).reply(200);
+    axiosMock.onGet(/.*\/exists$/, () => []).reply(HTTP_STATUS_OK, { exists: false });
   });
 
   afterEach(() => {
@@ -268,8 +272,6 @@ describe('import table', () => {
       },
     });
 
-    axiosMock.onPost('/import/bulk_imports.json').reply(HTTP_STATUS_BAD_REQUEST);
-
     await waitForPromises();
     await findImportButtons()[0].trigger('click');
     await waitForPromises();
@@ -279,6 +281,28 @@ describe('import table', () => {
         message: i18n.ERROR_IMPORT,
       }),
     );
+  });
+
+  it('displays inline error if importing group reports rate limit', async () => {
+    createComponent({
+      bulkImportSourceGroups: () => ({
+        nodes: [FAKE_GROUP],
+        pageInfo: FAKE_PAGE_INFO,
+        versionValidation: FAKE_VERSION_VALIDATION,
+      }),
+      importGroups: () => {
+        const error = new Error();
+        error.response = { status: HTTP_STATUS_TOO_MANY_REQUESTS };
+        throw error;
+      },
+    });
+
+    await waitForPromises();
+    await findImportButtons()[0].trigger('click');
+    await waitForPromises();
+
+    expect(createAlert).not.toHaveBeenCalled();
+    expect(wrapper.find('tbody tr').text()).toContain(i18n.ERROR_TOO_MANY_REQUESTS);
   });
 
   describe('pagination', () => {
@@ -587,6 +611,40 @@ describe('import table', () => {
     expect(tooltip.value).toBe('Path of the new group.');
   });
 
+  describe('re-import', () => {
+    it('renders finished row as disabled by default', async () => {
+      createComponent({
+        bulkImportSourceGroups: () => ({
+          nodes: [generateFakeEntry({ id: 5, status: STATUSES.FINISHED })],
+          pageInfo: FAKE_PAGE_INFO,
+          versionValidation: FAKE_VERSION_VALIDATION,
+        }),
+      });
+      await waitForPromises();
+
+      expect(findRowCheckbox(0).attributes('disabled')).toBeDefined();
+    });
+
+    it('enables row after clicking re-import', async () => {
+      createComponent({
+        bulkImportSourceGroups: () => ({
+          nodes: [generateFakeEntry({ id: 5, status: STATUSES.FINISHED })],
+          pageInfo: FAKE_PAGE_INFO,
+          versionValidation: FAKE_VERSION_VALIDATION,
+        }),
+      });
+      await waitForPromises();
+
+      const reimportButton = wrapper
+        .findAll('tbody td button')
+        .wrappers.find((w) => w.text().includes('Re-import'));
+
+      await reimportButton.trigger('click');
+
+      expect(findRowCheckbox(0).attributes('disabled')).toBeUndefined();
+    });
+  });
+
   describe('unavailable features warning', () => {
     it('renders alert when there are unavailable features', async () => {
       createComponent({
@@ -598,8 +656,8 @@ describe('import table', () => {
       });
       await waitForPromises();
 
-      expect(wrapper.findComponent(GlAlert).exists()).toBe(true);
-      expect(wrapper.findComponent(GlAlert).text()).toContain('projects (require v14.8.0)');
+      expect(findUnavailableFeaturesWarning().exists()).toBe(true);
+      expect(findUnavailableFeaturesWarning().text()).toContain('projects (require v14.8.0)');
     });
 
     it('does not renders alert when there are no unavailable features', async () => {
@@ -617,7 +675,7 @@ describe('import table', () => {
       });
       await waitForPromises();
 
-      expect(wrapper.findComponent(GlAlert).exists()).toBe(false);
+      expect(findUnavailableFeaturesWarning().exists()).toBe(false);
     });
   });
 

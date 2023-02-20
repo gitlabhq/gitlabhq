@@ -2,7 +2,9 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Config::External::File::Project do
+RSpec.describe Gitlab::Ci::Config::External::File::Project, feature_category: :pipeline_authoring do
+  include RepoHelpers
+
   let_it_be(:context_project) { create(:project) }
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:user) { create(:user) }
@@ -12,11 +14,12 @@ RSpec.describe Gitlab::Ci::Config::External::File::Project do
   let(:context) { Gitlab::Ci::Config::External::Context.new(**context_params) }
   let(:project_file) { described_class.new(params, context) }
   let(:variables) { project.predefined_variables.to_runner_variables }
+  let(:project_sha) { project.commit.sha }
 
   let(:context_params) do
     {
       project: context_project,
-      sha: '12345',
+      sha: project_sha,
       user: context_user,
       parent_pipeline: parent_pipeline,
       variables: variables
@@ -67,7 +70,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Project do
 
   describe '#valid?' do
     subject(:valid?) do
-      project_file.validate!
+      Gitlab::Ci::Config::External::Mapper::Verifier.new(context).process([project_file])
       project_file.valid?
     end
 
@@ -76,10 +79,10 @@ RSpec.describe Gitlab::Ci::Config::External::File::Project do
         { project: project.full_path, file: '/file.yml' }
       end
 
-      let(:root_ref_sha) { project.repository.root_ref_sha }
-
-      before do
-        stub_project_blob(root_ref_sha, '/file.yml') { 'image: image:1.0' }
+      around do |example|
+        create_and_delete_files(project, { '/file.yml' => 'image: image:1.0' }) do
+          example.run
+        end
       end
 
       it { is_expected.to be_truthy }
@@ -99,10 +102,10 @@ RSpec.describe Gitlab::Ci::Config::External::File::Project do
         { project: project.full_path, ref: 'master', file: '/file.yml' }
       end
 
-      let(:ref_sha) { project.commit('master').sha }
-
-      before do
-        stub_project_blob(ref_sha, '/file.yml') { 'image: image:1.0' }
+      around do |example|
+        create_and_delete_files(project, { '/file.yml' => 'image: image:1.0' }) do
+          example.run
+        end
       end
 
       it { is_expected.to be_truthy }
@@ -114,15 +117,16 @@ RSpec.describe Gitlab::Ci::Config::External::File::Project do
       end
 
       let(:variables) { Gitlab::Ci::Variables::Collection.new([{ 'key' => 'GITLAB_TOKEN', 'value' => 'secret_file', 'masked' => true }]) }
-      let(:root_ref_sha) { project.repository.root_ref_sha }
 
-      before do
-        stub_project_blob(root_ref_sha, '/secret_file.yml') { '' }
+      around do |example|
+        create_and_delete_files(project, { '/secret_file.yml' => '' }) do
+          example.run
+        end
       end
 
       it 'returns false' do
         expect(valid?).to be_falsy
-        expect(project_file.error_message).to include("Project `#{project.full_path}` file `/xxxxxxxxxxx.yml` is empty!")
+        expect(project_file.error_message).to include("Project `#{project.full_path}` file `xxxxxxxxxxx.yml` is empty!")
       end
     end
 
@@ -146,7 +150,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Project do
 
       it 'returns false' do
         expect(valid?).to be_falsy
-        expect(project_file.error_message).to include("Project `#{project.full_path}` file `/xxxxxxxxxxxxxxxxxxx.yml` does not exist!")
+        expect(project_file.error_message).to include("Project `#{project.full_path}` file `xxxxxxxxxxxxxxxxxxx.yml` does not exist!")
       end
     end
 
@@ -157,7 +161,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Project do
 
       it 'returns false' do
         expect(valid?).to be_falsy
-        expect(project_file.error_message).to include('Included file `/invalid-file` does not have YAML extension!')
+        expect(project_file.error_message).to include('Included file `invalid-file` does not have YAML extension!')
       end
     end
 
@@ -200,7 +204,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Project do
       is_expected.to include(
         user: user,
         project: project,
-        sha: project.commit('master').id,
+        sha: project_sha,
         parent_pipeline: parent_pipeline,
         variables: project.predefined_variables.to_runner_variables)
     end
@@ -216,45 +220,43 @@ RSpec.describe Gitlab::Ci::Config::External::File::Project do
     it {
       is_expected.to eq(
         context_project: context_project.full_path,
-        context_sha: '12345',
+        context_sha: project_sha,
         type: :file,
-        location: '/file.yml',
-        blob: "http://localhost/#{project.full_path}/-/blob/#{project.commit('master').id}/file.yml",
-        raw: "http://localhost/#{project.full_path}/-/raw/#{project.commit('master').id}/file.yml",
+        location: 'file.yml',
+        blob: "http://localhost/#{project.full_path}/-/blob/#{project_sha}/file.yml",
+        raw: "http://localhost/#{project.full_path}/-/raw/#{project_sha}/file.yml",
         extra: { project: project.full_path, ref: 'HEAD' }
       )
     }
 
     context 'when project name and ref include masked variables' do
+      let(:project_name) { 'my_project_name' }
+      let(:branch_name) { 'merge-commit-analyze-after' }
+      let(:project) { create(:project, :repository, name: project_name) }
+      let(:namespace_path) { project.namespace.full_path }
+      let(:included_project_sha) { project.commit(branch_name).sha }
+
       let(:variables) do
         Gitlab::Ci::Variables::Collection.new(
           [
-            { key: 'VAR1', value: 'a_secret_variable_value1', masked: true },
-            { key: 'VAR2', value: 'a_secret_variable_value2', masked: true }
+            { key: 'VAR1', value: project_name, masked: true },
+            { key: 'VAR2', value: branch_name, masked: true }
           ])
       end
 
-      let(:params) { { project: 'a_secret_variable_value1', ref: 'a_secret_variable_value2', file: '/file.yml' } }
+      let(:params) { { project: project.full_path, ref: branch_name, file: '/file.yml' } }
 
       it {
         is_expected.to eq(
           context_project: context_project.full_path,
-          context_sha: '12345',
+          context_sha: project_sha,
           type: :file,
-          location: '/file.yml',
-          blob: nil,
-          raw: nil,
-          extra: { project: 'xxxxxxxxxxxxxxxxxxxxxxxx', ref: 'xxxxxxxxxxxxxxxxxxxxxxxx' }
+          location: 'file.yml',
+          blob: "http://localhost/#{namespace_path}/xxxxxxxxxxxxxxx/-/blob/#{included_project_sha}/file.yml",
+          raw: "http://localhost/#{namespace_path}/xxxxxxxxxxxxxxx/-/raw/#{included_project_sha}/file.yml",
+          extra: { project: "#{namespace_path}/xxxxxxxxxxxxxxx", ref: 'xxxxxxxxxxxxxxxxxxxxxxxxxx' }
         )
       }
-    end
-  end
-
-  private
-
-  def stub_project_blob(ref, path)
-    allow_next_instance_of(Repository) do |instance|
-      allow(instance).to receive(:blob_data_at).with(ref, path) { yield }
     end
   end
 end

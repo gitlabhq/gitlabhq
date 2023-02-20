@@ -11,6 +11,12 @@ RSpec.describe WorkItems::Widgets::Labels do
     it { is_expected.to eq(:labels) }
   end
 
+  describe '.quick_action_params' do
+    subject { described_class.quick_action_params }
+
+    it { is_expected.to include(:add_label_ids, :remove_label_ids, :label_ids) }
+  end
+
   describe '#type' do
     subject { described_class.new(work_item).type }
 

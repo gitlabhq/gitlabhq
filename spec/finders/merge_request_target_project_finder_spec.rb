@@ -85,4 +85,28 @@ RSpec.describe MergeRequestTargetProjectFinder do
       expect(finder.execute).to contain_exactly(other_fork, base_project)
     end
   end
+
+  context 'searching' do
+    let(:base_project) { create(:project, :private, path: 'base') }
+    let(:forked_project) { fork_project(base_project, base_project.first_owner) }
+    let(:other_fork) { fork_project(base_project) }
+
+    before do
+      base_project.add_developer(user)
+      forked_project.add_developer(user)
+      other_fork.add_developer(user)
+    end
+
+    it 'returns all projects with empty search' do
+      expect(finder.execute(search: '')).to match_array([base_project, forked_project, other_fork])
+    end
+
+    it 'returns forked project with search string' do
+      expect(finder.execute(search: forked_project.full_path)).to match_array([forked_project])
+    end
+
+    it 'returns no projects with search for project that does no exist' do
+      expect(finder.execute(search: 'root')).to match_array([])
+    end
+  end
 end

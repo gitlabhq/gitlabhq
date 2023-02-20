@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'User Cluster', :js, feature_category: :users do
+RSpec.describe 'User Cluster', :js, feature_category: :user_profile do
   include GoogleApi::CloudPlatformHelpers
 
   let(:group) { create(:group) }

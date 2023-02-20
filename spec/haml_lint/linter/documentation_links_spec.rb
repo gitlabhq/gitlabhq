@@ -6,7 +6,7 @@ require 'haml_lint/spec'
 
 require_relative '../../../haml_lint/linter/documentation_links'
 
-RSpec.describe HamlLint::Linter::DocumentationLinks do
+RSpec.describe HamlLint::Linter::DocumentationLinks, feature_category: :tooling do
   include_context 'linter'
 
   shared_examples 'link validation rules' do |link_pattern|
@@ -95,11 +95,8 @@ RSpec.describe HamlLint::Linter::DocumentationLinks do
     end
   end
 
-  context 'help_page_path' do
-    it_behaves_like 'link validation rules', 'help_page_path'
-  end
-
-  context 'help_page_url' do
-    it_behaves_like 'link validation rules', 'help_page_url'
-  end
+  it_behaves_like 'link validation rules', 'help_page_path'
+  it_behaves_like 'link validation rules', 'help_page_url'
+  it_behaves_like 'link validation rules', 'Rails.application.routes.url_helpers.help_page_url'
+  it_behaves_like 'link validation rules', 'Gitlab::Routing.url_helpers.help_page_url'
 end

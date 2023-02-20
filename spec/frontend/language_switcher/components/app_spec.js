@@ -28,7 +28,7 @@ describe('<LanguageSwitcher />', () => {
     wrapper.destroy();
   });
 
-  const getPreferredLanguage = () => wrapper.find('.gl-dropdown-button-text').text();
+  const getPreferredLanguage = () => wrapper.find('.gl-new-dropdown-button-text').text();
   const findLanguageDropdownItem = (code) => wrapper.findByTestId(`language_switcher_lang_${code}`);
   const findFooter = () => wrapper.findByTestId('footer');
 

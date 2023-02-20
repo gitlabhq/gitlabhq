@@ -1224,6 +1224,24 @@ RSpec.describe TodoService do
     end
   end
 
+  describe '#resolve_access_request_todos' do
+    let_it_be(:source) { create(:group, :public) }
+    let_it_be(:requester) { create(:group_member, :access_request, group: source, user: assignee) }
+
+    it 'marks the todos for request handler as done' do
+      request_handler_todo = create(:todo,
+                                    user: member,
+                                    state: :pending,
+                                    action: Todo::MEMBER_ACCESS_REQUESTED,
+                                    author: requester.user,
+                                    target: source)
+
+      service.resolve_access_request_todos(member, requester)
+
+      expect(request_handler_todo.reload).to be_done
+    end
+  end
+
   describe '#restore_todo' do
     let!(:todo) { create(:todo, :done, user: john_doe) }
 

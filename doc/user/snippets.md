@@ -149,7 +149,7 @@ by a Git repository), through the [Snippets API](../api/snippets.md), and in the
 To add a new file to your snippet through the GitLab UI:
 
 1. Go to your snippet in the GitLab UI.
-1. Select **Edit** in the top right corner.
+1. Select **Edit** in the upper-right corner.
 1. Select **Add another file**.
 1. Add your content to the file in the form fields provided.
 1. Select **Save changes**.
@@ -157,7 +157,7 @@ To add a new file to your snippet through the GitLab UI:
 To delete a file from your snippet through the GitLab UI:
 
 1. Go to your snippet in the GitLab UI.
-1. Select **Edit** in the top right corner.
+1. Select **Edit** in the upper-right corner.
 1. Select **Delete file** alongside the filename of each file you wish to delete.
 1. Select **Save changes**.
 

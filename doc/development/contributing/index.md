@@ -23,62 +23,13 @@ GitLab comes in two flavors:
 
 Throughout this guide you will see references to CE and EE for abbreviation.
 
-To get an overview of GitLab community membership, including those that would review or merge
-your contributions, visit [the community roles page](community_roles.md).
-
-## Security vulnerability disclosure
-
-Report suspected security vulnerabilities by following the
-[disclosure process on the GitLab.com website](https://about.gitlab.com/security/disclosure/).
-
-WARNING:
-Do **not** create publicly viewable issues for suspected security vulnerabilities.
-
 ## Code of conduct
 
 We want to create a welcoming environment for everyone who is interested in contributing.
-Visit our [Code of Conduct page](https://about.gitlab.com/community/contribute/code-of-conduct/) to learn more about our commitment to an open and welcoming environment.
-
-## Closing policy for issues and merge requests
-
-GitLab is a popular open source project and the capacity to deal with issues
-and merge requests is limited. Out of respect for our volunteers, issues and
-merge requests not in line with the guidelines listed in this document may be
-closed without notice.
-
-Treat our volunteers with courtesy and respect, it will go a long way
-towards getting your issue resolved.
+For more information about our commitment to an open and welcoming environment, see our [Code of Conduct page](https://about.gitlab.com/community/contribute/code-of-conduct/).
 
 Issues and merge requests should be in English and contain appropriate language
 for audiences of all ages.
-
-If a contributor is no longer actively working on a submitted merge request,
-we can:
-
-- Decide that the merge request will be finished by one of our
-  [Merge request coaches](https://about.gitlab.com/company/team/).
-- Close the merge request.
-
-We make this decision based on how important the change is for our product vision. If a merge
-request coach is going to finish the merge request, we assign the
-`~coach will finish` label.
-
-When a team member picks up a community contribution,
-we credit the original author by adding a changelog entry crediting the author
-and optionally include the original author on at least one of the commits
-within the MR.
-
-## Closing policy for inactive bugs
-
-GitLab values the time spent by contributors on reporting bugs. However, if a bug remains inactive for a very long period,
-it will qualify for auto-closure. Please refer to the [auto-close inactive bugs](https://about.gitlab.com/handbook/engineering/quality/triage-operations/#auto-close-inactive-bugs) section in our handbook to understand the complete workflow.
-
-## Helping others
-
-Help other GitLab users when you can.
-The methods people use to seek help can be found on the [getting help page](https://about.gitlab.com/get-help/).
-
-Sign up for the mailing list, answer GitLab questions on StackOverflow or respond in the IRC channel.
 
 ## How to contribute
 
@@ -93,26 +44,6 @@ If you would like to contribute to GitLab:
   [best practices](../testing_guide/best_practices.md)
   could speed them up.
 - Consult the [Contribution Flow](#contribution-flow) section to learn the process.
-
-### Communication channels
-
-If you have any questions or need help, visit [Getting Help](https://about.gitlab.com/get-help/) to learn how to
-communicate with the GitLab community. GitLab prefers [asynchronous communication](https://about.gitlab.com/handbook/communication/#internal-communication) over real-time communication.
-
-We do encourage you to connect and hang out with us. GitLab has a Gitter room dedicated for [contributors](https://gitter.im/gitlab/contributors), which is bridged with our
-internal Slack. We actively monitor this channel. There is also a community-run [Discord server](https://discord.gg/gitlab) where you can
-find other contributors in the `#contributors` channel.
-
-Thanks for your contribution!
-
-### GitLab Development Kit
-
-The GitLab Development Kit (GDK) helps contributors run a local GitLab instance with all the
-required dependencies. It can be used to test changes to GitLab and related projects before raising
-a Merge Request.
-
-For more information, see the [`gitlab-development-kit`](https://gitlab.com/gitlab-org/gitlab-development-kit)
-project.
 
 ### Contribution flow
 
@@ -194,7 +125,6 @@ If you are not sure who to mention, the reviewer will do this for you early in t
 
 This [documentation](issue_workflow.md) outlines the current issue workflow:
 
-- [Issue tracker guidelines](issue_workflow.md#issue-tracker-guidelines)
 - [Issue triaging](issue_workflow.md#issue-triaging)
 - [Labels](issue_workflow.md#labels)
 - [Feature proposals](issue_workflow.md#feature-proposals)
@@ -212,21 +142,17 @@ This [documentation](merge_request_workflow.md) outlines the current merge reque
 - [Definition of done](merge_request_workflow.md#definition-of-done)
 - [Dependencies](merge_request_workflow.md#dependencies)
 
-## Style guides
+## Closing policy for issues and merge requests
 
-This [documentation](style_guides.md) outlines the current style guidelines.
-
-## Implement design & UI elements
-
-This [design documentation](design.md) outlines the current process for implementing design and UI
-elements.
-
-## Contribute documentation
-
-For information on how to contribute documentation, see GitLab
-[documentation guidelines](../documentation/index.md).
+- For the criteria for closing issues, see [the Issue Triage handbook page](https://about.gitlab.com/handbook/engineering/quality/issue-triage/#outdated-issues).
+- For the criteria for closing merge requests, see [the Merge Request Workflow](merge_request_workflow.md).
 
 ## Getting an Enterprise Edition License
 
 If you need a license for contributing to an EE-feature, see
 [relevant information](https://about.gitlab.com/handbook/marketing/community-relations/code-contributor-program/operations/#contributing-to-the-gitlab-enterprise-edition-ee).
+
+## Finding help
+
+- [Get help](https://about.gitlab.com/get-help/).
+- Join the community-run [Discord server](https://discord.com/invite/gitlab) and find other contributors in the `#contribute` channel.

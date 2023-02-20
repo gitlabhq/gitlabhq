@@ -137,8 +137,6 @@ module Notes
     end
 
     def invalid_reviewers?(update_params)
-      return false unless Feature.enabled?(:limit_reviewer_and_assignee_size)
-
       if update_params.key?(:reviewer_ids)
         possible_reviewers = update_params[:reviewer_ids]&.uniq&.size
 
@@ -166,6 +164,20 @@ module Notes
 
       if Feature.enabled?(:notes_create_service_tracking, project)
         Gitlab::Tracking.event('Notes::CreateService', 'execute', **tracking_data_for(note))
+      end
+
+      if Feature.enabled?(:route_hll_to_snowplow_phase4, project&.namespace) && note.for_commit?
+        metric_key_path = 'counts.commit_comment'
+
+        Gitlab::Tracking.event(
+          'Notes::CreateService',
+          'create_commit_comment',
+          project: project,
+          namespace: project&.namespace,
+          user: user,
+          label: metric_key_path,
+          context: [Gitlab::Tracking::ServicePingContext.new(data_source: :redis, key_path: metric_key_path).to_context]
+        )
       end
     end
 

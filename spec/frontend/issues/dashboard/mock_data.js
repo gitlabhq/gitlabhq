@@ -86,3 +86,17 @@ export const emptyIssuesQueryResponse = {
     },
   },
 };
+
+export const issuesCountsQueryResponse = {
+  data: {
+    openedIssues: {
+      count: 1,
+    },
+    closedIssues: {
+      count: 2,
+    },
+    allIssues: {
+      count: 3,
+    },
+  },
+};

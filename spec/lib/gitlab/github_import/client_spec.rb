@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::GithubImport::Client, feature_category: :importer do
+RSpec.describe Gitlab::GithubImport::Client, feature_category: :importers do
   subject(:client) { described_class.new('foo', parallel: parallel) }
 
   let(:parallel) { true }

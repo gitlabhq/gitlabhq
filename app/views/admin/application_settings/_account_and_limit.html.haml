@@ -55,7 +55,9 @@
         = f.gitlab_ui_checkbox_component :deactivate_dormant_users, _('Deactivate dormant users after a period of inactivity'), help_text: _('Users can reactivate their account by signing in. %{link_start}Learn more.%{link_end}').html_safe % { link_start: dormant_users_help_link_start, link_end: '</a>'.html_safe }
         .form-group
           = f.label :deactivate_dormant_users_period, _('Days of inactivity before deactivation'), class: 'label-light'
-          = f.number_field :deactivate_dormant_users_period, class: 'form-control gl-form-input', min: '90', step: '1'
+          = f.number_field :deactivate_dormant_users_period, class: 'form-control gl-form-input', min: 90, required: true
+          #application_setting_deactivate_dormant_users_period_error.form-text.gl-text-red-500.gl-display-none
+            = _('Please enter a value of 90 days or more')
           .form-text.text-muted
             = _('Must be 90 days or more.')
 

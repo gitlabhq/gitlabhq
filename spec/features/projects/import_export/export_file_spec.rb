@@ -7,7 +7,6 @@ require 'spec_helper'
 # we'll have to either include it adding the model that includes it to the +safe_list+
 # or make sure the attribute is blacklisted in the +import_export.yml+ configuration
 RSpec.describe 'Import/Export - project export integration test', :js, feature_category: :importers do
-  include Select2Helper
   include ExportFileHelper
 
   let(:user) { create(:admin) }

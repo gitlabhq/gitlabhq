@@ -12,6 +12,12 @@ module Ml
     has_many :candidates, class_name: 'Ml::Candidate'
     has_many :metadata, class_name: 'Ml::ExperimentMetadata'
 
+    scope :with_candidate_count, -> {
+      left_outer_joins(:candidates)
+        .select("ml_experiments.*, count(ml_candidates.id) as candidate_count")
+        .group(:id)
+    }
+
     has_internal_id :iid, scope: :project
 
     class << self

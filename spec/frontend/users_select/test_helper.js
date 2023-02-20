@@ -4,6 +4,7 @@ import usersFixture from 'test_fixtures/autocomplete/users.json';
 import { getFixture } from 'helpers/fixtures';
 import waitForPromises from 'helpers/wait_for_promises';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import UsersSelect from '~/users_select';
 
 // fixtures -------------------------------------------------------------------
@@ -31,7 +32,7 @@ export const createTestContext = ({ fixturePath }) => {
     document.body.appendChild(rootEl);
 
     mock = new MockAdapter(axios);
-    mock.onGet('/-/autocomplete/users.json').reply(200, cloneDeep(getUsersFixture()));
+    mock.onGet('/-/autocomplete/users.json').reply(HTTP_STATUS_OK, cloneDeep(getUsersFixture()));
   };
 
   const teardown = () => {

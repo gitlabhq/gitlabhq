@@ -788,3 +788,22 @@ FATAL: invalid argument
 ```
 
 If a job artifact fails to upload with the above error when using consolidated object storage, make sure you are [using separate buckets](object_storage.md#use-separate-buckets) for each data type.
+
+### Job artifacts fail to upload with `FATAL: invalid argument` when using Windows mount
+
+If you are using a Windows mount with CIFS for job artifacts, you may see an
+`invalid argument` error when the runner attempts to upload artifacts:
+
+```plaintext
+WARNING: Uploading artifacts as "dotenv" to coordinator... POST https://<your-gitlab-instance>/api/v4/jobs/<JOB_ID>/artifacts: 500 Internal Server Error  id=1296 responseStatus=500 Internal Server Error status=500 token=*****
+FATAL: invalid argument
+```
+
+To work around this issue, you can try:
+
+- Switching to an ext4 mount instead of CIFS.
+- Upgrading to at least Linux kernel 5.15 which contains a number of important bug fixes
+  relating to CIFS file leases.
+- For older kernels, using the `nolease` mount option to disable file leasing.
+
+For more information, [see the investigation details](https://gitlab.com/gitlab-org/gitlab/-/issues/389995).

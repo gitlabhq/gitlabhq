@@ -15,17 +15,18 @@ module Spec
     module Helpers
       module Features
         module ReleasesHelpers
+          include ListboxHelpers
+
           def select_new_tag_name(tag_name)
             page.within '[data-testid="tag-name-field"]' do
               find('button').click
-
               wait_for_all_requests
 
               find('input[aria-label="Search or create tag"]').set(tag_name)
-
               wait_for_all_requests
 
               click_button("Create tag #{tag_name}")
+              click_button tag_name
             end
           end
 
@@ -39,7 +40,7 @@ module Spec
 
               wait_for_all_requests
 
-              click_button(branch_name.to_s)
+              select_listbox_item(branch_name.to_s, exact_text: true)
             end
           end
 

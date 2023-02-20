@@ -1,10 +1,9 @@
 import { shallowMount } from '@vue/test-utils';
+import { TYPENAME_PROJECT } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 
 import ciProjectVariables from '~/ci/ci_variable_list/components/ci_project_variables.vue';
 import ciVariableShared from '~/ci/ci_variable_list/components/ci_variable_shared.vue';
-
-import { GRAPHQL_PROJECT_TYPE } from '~/ci/ci_variable_list/constants';
 
 const mockProvide = {
   projectFullPath: '/namespace/project',
@@ -32,7 +31,7 @@ describe('Ci Project Variable wrapper', () => {
 
   it('Passes down the correct props to ci_variable_shared', () => {
     expect(findCiShared().props()).toEqual({
-      id: convertToGraphQLId(GRAPHQL_PROJECT_TYPE, mockProvide.projectId),
+      id: convertToGraphQLId(TYPENAME_PROJECT, mockProvide.projectId),
       areScopedVariablesAvailable: true,
       componentName: 'ProjectVariables',
       entity: 'project',

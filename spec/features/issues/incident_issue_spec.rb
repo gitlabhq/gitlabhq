@@ -29,7 +29,7 @@ RSpec.describe 'Incident Detail', :js, feature_category: :team_planning do
       project.add_developer(user)
       sign_in(user)
 
-      visit project_issues_incident_path(project, incident)
+      visit incident_project_issues_path(project, incident)
       wait_for_requests
     end
 

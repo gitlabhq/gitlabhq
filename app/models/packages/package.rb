@@ -138,10 +138,12 @@ class Packages::Package < ApplicationRecord
     joins(:conan_metadatum).where(packages_conan_metadata: { package_username: package_username })
   end
 
-  scope :with_debian_codename, -> (codename) do
-    debian
-      .joins(:debian_distribution)
-      .where(Packages::Debian::ProjectDistribution.table_name => { codename: codename })
+  scope :with_debian_codename, ->(codename) do
+    joins(:debian_distribution).where(Packages::Debian::ProjectDistribution.table_name => { codename: codename })
+  end
+  scope :with_debian_codename_or_suite, ->(codename_or_suite) do
+    joins(:debian_distribution).where(Packages::Debian::ProjectDistribution.table_name => { codename: codename_or_suite })
+                               .or(where(Packages::Debian::ProjectDistribution.table_name => { suite: codename_or_suite }))
   end
   scope :preload_debian_file_metadata, -> { preload(package_files: :debian_file_metadatum) }
   scope :with_composer_target, -> (target) do
@@ -160,7 +162,8 @@ class Packages::Package < ApplicationRecord
   scope :preload_files, -> { preload(:installable_package_files) }
   scope :preload_nuget_files, -> { preload(:installable_nuget_package_files) }
   scope :preload_pipelines, -> { preload(pipelines: :user) }
-  scope :last_of_each_version, -> { where(id: all.select('MAX(id) AS id').group(:version)) }
+  scope :last_of_each_version, -> { where(id: all.last_of_each_version_ids) }
+  scope :last_of_each_version_ids, -> { select('MAX(id) AS id').unscope(where: :id).group(:version) }
   scope :limit_recent, ->(limit) { order_created_desc.limit(limit) }
   scope :select_distinct_name, -> { select(:name).distinct }
 
@@ -277,6 +280,7 @@ class Packages::Package < ApplicationRecord
     project.packages
            .preload_pipelines
            .including_tags
+           .displayable
            .with_name(name)
            .where.not(version: version)
            .with_package_type(package_type)

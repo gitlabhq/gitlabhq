@@ -70,31 +70,50 @@ module BulkImports
         )
         bulk_import.create_configuration!(credentials.slice(:url, :access_token))
 
-        Array.wrap(params).each do |entity|
-          track_access_level(entity)
+        Array.wrap(params).each do |entity_params|
+          track_access_level(entity_params)
+
+          validate_destination_full_path(entity_params)
 
           BulkImports::Entity.create!(
             bulk_import: bulk_import,
-            source_type: entity[:source_type],
-            source_full_path: entity[:source_full_path],
-            destination_slug: entity[:destination_slug],
-            destination_namespace: entity[:destination_namespace],
-            migrate_projects: Gitlab::Utils.to_boolean(entity[:migrate_projects], default: true)
+            source_type: entity_params[:source_type],
+            source_full_path: entity_params[:source_full_path],
+            destination_slug: entity_params[:destination_slug] || entity_params[:destination_name],
+            destination_namespace: entity_params[:destination_namespace],
+            migrate_projects: Gitlab::Utils.to_boolean(entity_params[:migrate_projects], default: true)
           )
         end
-
         bulk_import
       end
     end
 
-    def track_access_level(entity)
+    def track_access_level(entity_params)
       Gitlab::Tracking.event(
         self.class.name,
         'create',
         label: 'import_access_level',
         user: current_user,
-        extra: { user_role: user_role(entity[:destination_namespace]), import_type: 'bulk_import_group' }
+        extra: { user_role: user_role(entity_params[:destination_namespace]), import_type: 'bulk_import_group' }
       )
+    end
+
+    def validate_destination_full_path(entity_params)
+      source_type = entity_params[:source_type]
+
+      full_path = [
+        entity_params[:destination_namespace],
+        entity_params[:destination_slug] || entity_params[:destination_name]
+      ].reject(&:blank?).join('/')
+
+      case source_type
+      when 'group_entity'
+        return if Namespace.find_by_full_path(full_path).nil?
+      when 'project_entity'
+        return if Project.find_by_full_path(full_path).nil?
+      end
+
+      raise BulkImports::Error.destination_full_path_validation_failure(full_path)
     end
 
     def user_role(destination_namespace)

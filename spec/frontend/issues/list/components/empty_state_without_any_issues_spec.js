@@ -2,7 +2,7 @@ import { GlEmptyState, GlLink } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import CsvImportExportButtons from '~/issuable/components/csv_import_export_buttons.vue';
 import EmptyStateWithoutAnyIssues from '~/issues/list/components/empty_state_without_any_issues.vue';
-import NewIssueDropdown from '~/issues/list/components/new_issue_dropdown.vue';
+import NewResourceDropdown from '~/vue_shared/components/new_resource_dropdown/new_resource_dropdown.vue';
 import { i18n } from '~/issues/list/constants';
 
 describe('EmptyStateWithoutAnyIssues component', () => {
@@ -32,7 +32,7 @@ describe('EmptyStateWithoutAnyIssues component', () => {
     wrapper.findByRole('link', { name: i18n.noIssuesDescription });
   const findJiraDocsLink = () =>
     wrapper.findByRole('link', { name: 'Enable the Jira integration' });
-  const findNewIssueDropdown = () => wrapper.findComponent(NewIssueDropdown);
+  const findNewResourceDropdown = () => wrapper.findComponent(NewResourceDropdown);
   const findNewIssueLink = () => wrapper.findByRole('link', { name: i18n.newIssueLabel });
   const findNewProjectLink = () => wrapper.findByRole('link', { name: i18n.newProjectLabel });
 
@@ -47,7 +47,7 @@ describe('EmptyStateWithoutAnyIssues component', () => {
         ...provide,
       },
       stubs: {
-        NewIssueDropdown: true,
+        NewResourceDropdown: true,
       },
     });
   };
@@ -156,7 +156,7 @@ describe('EmptyStateWithoutAnyIssues component', () => {
             it('renders', () => {
               mountComponent({ props: { showNewIssueDropdown: true } });
 
-              expect(findNewIssueDropdown().exists()).toBe(true);
+              expect(findNewResourceDropdown().exists()).toBe(true);
             });
           });
 
@@ -164,7 +164,7 @@ describe('EmptyStateWithoutAnyIssues component', () => {
             it('does not render', () => {
               mountComponent({ props: { showNewIssueDropdown: false } });
 
-              expect(findNewIssueDropdown().exists()).toBe(false);
+              expect(findNewResourceDropdown().exists()).toBe(false);
             });
           });
         });

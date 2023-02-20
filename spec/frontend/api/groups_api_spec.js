@@ -3,7 +3,7 @@ import getGroupTransferLocationsResponse from 'test_fixtures/api/groups/transfer
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import axios from '~/lib/utils/axios_utils';
 import { DEFAULT_PER_PAGE } from '~/api';
-import { updateGroup, getGroupTransferLocations } from '~/api/groups_api';
+import { updateGroup, getGroupTransferLocations, getGroupMembers } from '~/api/groups_api';
 
 const mockApiVersion = 'v4';
 const mockUrlRoot = '/gitlab';
@@ -55,7 +55,9 @@ describe('GroupsApi', () => {
       const params = { page: 1 };
       const expectedUrl = `${mockUrlRoot}/api/${mockApiVersion}/groups/${mockGroupId}/transfer_locations`;
 
-      mock.onGet(expectedUrl).replyOnce(200, { data: getGroupTransferLocationsResponse });
+      mock
+        .onGet(expectedUrl)
+        .replyOnce(HTTP_STATUS_OK, { data: getGroupTransferLocationsResponse });
 
       await expect(getGroupTransferLocations(mockGroupId, params)).resolves.toMatchObject({
         data: { data: getGroupTransferLocationsResponse },
@@ -63,6 +65,32 @@ describe('GroupsApi', () => {
 
       expect(axios.get).toHaveBeenCalledWith(expectedUrl, {
         params: { ...params, per_page: DEFAULT_PER_PAGE },
+      });
+    });
+  });
+
+  describe('getGroupMembers', () => {
+    it('requests members of a group', async () => {
+      const expectedUrl = `${mockUrlRoot}/api/${mockApiVersion}/groups/${mockGroupId}/members`;
+
+      const response = [{ id: 0, username: 'root' }];
+
+      mock.onGet(expectedUrl).replyOnce(HTTP_STATUS_OK, response);
+
+      await expect(getGroupMembers(mockGroupId)).resolves.toMatchObject({
+        data: response,
+      });
+    });
+
+    it('requests inherited members of a group when requested', async () => {
+      const expectedUrl = `${mockUrlRoot}/api/${mockApiVersion}/groups/${mockGroupId}/members/all`;
+
+      const response = [{ id: 0, username: 'root' }];
+
+      mock.onGet(expectedUrl).replyOnce(HTTP_STATUS_OK, response);
+
+      await expect(getGroupMembers(mockGroupId, true)).resolves.toMatchObject({
+        data: response,
       });
     });
   });

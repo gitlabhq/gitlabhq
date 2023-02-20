@@ -120,6 +120,12 @@ jq 'select(.queue_duration_s > 10000)' <FILE>
 jq -s 'map(select(.gitaly_calls != null)) | sort_by(-.gitaly_calls) | limit(10; .[])' <FILE>
 ```
 
+#### Output a specific time range
+
+```shell
+jq 'select(.time >= "2023-01-10T00:00:00Z" and .time <= "2023-01-10T12:00:00Z")' <FILE>
+```
+
 ### Parsing `gitlab-rails/production_json.log`
 
 #### Print the top three controller methods by request volume and their three longest durations
@@ -166,7 +172,7 @@ jq --raw-output '[.route, .ua] | @tsv' api_json.log | sort | uniq -c | sort -n
 1234 /api/:version/internal/allowed     GitLab-Shell
 ```
 
-This sample response seems normal. A custom tool or script might be causing a high load
+This sample response seems typical. A custom tool or script might be causing a high load
 if the output contains many:
 
 - Third party libraries like `python-requests` or `curl`.

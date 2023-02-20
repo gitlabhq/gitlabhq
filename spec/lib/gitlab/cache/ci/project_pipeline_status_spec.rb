@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Cache::Ci::ProjectPipelineStatus, :clean_gitlab_redis_cache do
+RSpec.describe Gitlab::Cache::Ci::ProjectPipelineStatus, :clean_gitlab_redis_cache, feature_category: :continuous_integration do
   let_it_be(:project) { create(:project, :repository) }
 
   let(:pipeline_status) { described_class.new(project) }

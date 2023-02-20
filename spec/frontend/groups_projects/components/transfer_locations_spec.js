@@ -15,7 +15,7 @@ import { mountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { __ } from '~/locale';
-import TransferLocations from '~/groups_projects/components/transfer_locations.vue';
+import TransferLocations, { i18n } from '~/groups_projects/components/transfer_locations.vue';
 import { getTransferLocations } from '~/api/projects_api';
 import currentUserNamespaceQuery from '~/projects/settings/graphql/queries/current_user_namespace.query.graphql';
 
@@ -372,6 +372,25 @@ describe('TransferLocations', () => {
       createComponent({ propsData: { label } });
 
       expect(wrapper.findByRole('group', { name: label }).exists()).toBe(true);
+    });
+  });
+
+  describe('when there are no results', () => {
+    it('displays no results message', async () => {
+      mockResolvedGetTransferLocations({
+        data: [],
+        page: '1',
+        nextPage: null,
+        total: '0',
+        totalPages: '1',
+        prevPage: null,
+      });
+
+      createComponent({ propsData: { showUserTransferLocations: false } });
+
+      await showDropdown();
+
+      expect(wrapper.findComponent(GlDropdownItem).text()).toBe(i18n.NO_RESULTS_TEXT);
     });
   });
 });

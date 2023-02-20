@@ -3,4 +3,12 @@
 Layout/HashAlignment:
   Details: grace period
   Exclude:
+    - 'config/initializers/rspec_profiling.rb'
     - 'ee/spec/lib/ee/gitlab/usage_data_spec.rb'
+    - 'ee/spec/support/shared_examples/controllers/analytics/cycle_analytics/value_stream_shared_examples.rb'
+    - 'lib/gitlab/redis/multi_store.rb'
+    - 'spec/helpers/projects/ml/experiments_helper_spec.rb'
+    - 'spec/lib/gitlab/metrics/requests_rack_middleware_spec.rb'
+    - 'spec/requests/projects/merge_requests/creations_spec.rb'
+    - 'spec/support/redis/redis_new_instance_shared_examples.rb'
+    - 'spec/support/redis/redis_shared_examples.rb'

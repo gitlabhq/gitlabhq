@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BackgroundMigration::BackfillUpvotesCountOnIssues, schema: 20210701111909 do
+RSpec.describe Gitlab::BackgroundMigration::BackfillUpvotesCountOnIssues, schema: 20210826171758 do
   let(:award_emoji) { table(:award_emoji) }
 
   let!(:namespace) { table(:namespaces).create!(name: 'namespace', path: 'namespace') }

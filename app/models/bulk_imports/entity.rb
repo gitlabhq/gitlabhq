@@ -39,9 +39,28 @@ class BulkImports::Entity < ApplicationRecord
 
   validates :project, absence: true, if: :group
   validates :group, absence: true, if: :project
-  validates :source_type, :source_full_path, :destination_name, presence: true
-  validates :destination_namespace, exclusion: [nil], if: :group
-  validates :destination_namespace, presence: true, if: :project
+  validates :source_type, presence: true
+  validates :source_full_path,
+            presence: true,
+            format: { with: Gitlab::Regex.bulk_import_source_full_path_regex,
+                      message: Gitlab::Regex.bulk_import_destination_namespace_path_regex_message }
+
+  validates :destination_name,
+            presence: true,
+            format: { with: Gitlab::Regex.group_path_regex,
+                      message: Gitlab::Regex.group_path_regex_message }
+
+  validates :destination_namespace,
+            exclusion: [nil],
+            format: { with: Gitlab::Regex.bulk_import_destination_namespace_path_regex,
+                      message: Gitlab::Regex.bulk_import_destination_namespace_path_regex_message },
+            if: :group
+
+  validates :destination_namespace,
+            presence: true,
+            format: { with: Gitlab::Regex.bulk_import_destination_namespace_path_regex,
+                      message: Gitlab::Regex.bulk_import_destination_namespace_path_regex_message },
+            if: :project
 
   validate :validate_parent_is_a_group, if: :parent
   validate :validate_imported_entity_type
@@ -56,6 +75,10 @@ class BulkImports::Entity < ApplicationRecord
   scope :order_by_created_at, ->(direction) { order(created_at: direction) }
 
   alias_attribute :destination_slug, :destination_name
+
+  delegate  :default_project_visibility,
+            :default_group_visibility,
+            to: :'Gitlab::CurrentSettings.current_application_settings'
 
   state_machine :status, initial: :created do
     state :created, value: 0
@@ -154,6 +177,12 @@ class BulkImports::Entity < ApplicationRecord
 
   def full_path
     project? ? project&.full_path : group&.full_path
+  end
+
+  def default_visibility_level
+    return default_group_visibility if group?
+
+    default_project_visibility
   end
 
   private

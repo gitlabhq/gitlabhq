@@ -14,6 +14,9 @@ module Types
 
       JOB_COUNT_LIMIT = 1000
 
+      # Only allow ephemeral_authentication_token to be visible for a short while
+      RUNNER_EPHEMERAL_TOKEN_AVAILABILITY_TIME = 3.hours
+
       alias_method :runner, :object
 
       field :access_level, ::Types::Ci::RunnerAccessLevelEnum, null: false,
@@ -35,6 +38,10 @@ module Types
                                                   description: 'Description of the runner.'
       field :edit_admin_url, GraphQL::Types::String, null: true,
                                                      description: 'Admin form URL of the runner. Only available for administrators.'
+      field :ephemeral_authentication_token, GraphQL::Types::String, null: true,
+            description: 'Ephemeral authentication token used for runner machine registration.',
+            authorize: :read_ephemeral_token,
+            alpha: { milestone: '15.9' }
       field :executor_name, GraphQL::Types::String, null: true,
                                                     description: 'Executor last advertised by the runner.',
                                                     method: :executor_name
@@ -132,6 +139,14 @@ module Types
 
       def edit_admin_url
         Gitlab::Routing.url_helpers.edit_admin_runner_url(runner) if can_admin_runners?
+      end
+
+      def ephemeral_authentication_token
+        return unless runner.authenticated_user_registration_type?
+        return unless runner.created_at > RUNNER_EPHEMERAL_TOKEN_AVAILABILITY_TIME.ago
+        return if runner.runner_machines.any?
+
+        runner.token
       end
 
       def project_count

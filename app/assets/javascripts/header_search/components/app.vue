@@ -171,7 +171,7 @@ export default {
 
         Tracking.event(undefined, 'focus_input', {
           label: 'global_search',
-          property: 'top_navigation',
+          property: 'navigation_top',
         });
       }
     },
@@ -190,7 +190,7 @@ export default {
 
         Tracking.event(undefined, 'blur_input', {
           label: 'global_search',
-          property: 'top_navigation',
+          property: 'navigation_top',
         });
       }, 200);
     },

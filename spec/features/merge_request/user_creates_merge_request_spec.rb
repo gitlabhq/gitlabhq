@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'User creates a merge request', :js, feature_category: :code_review_workflow do
   include ProjectForksHelper
+  include ListboxHelpers
 
   shared_examples 'creates a merge request' do
     specify do
@@ -73,19 +74,9 @@ RSpec.describe 'User creates a merge request', :js, feature_category: :code_revi
 
         expect(page).to have_content('You must select source and target branch')
 
-        first('.js-source-project').click
-        first('.dropdown-source-project a', text: forked_project.full_path)
-
-        first('.js-target-project').click
-        first('.dropdown-target-project li', text: project.full_path)
-
-        first('.js-source-branch').click
-
-        wait_for_requests
-
-        source_branch = 'fix'
-
-        first('.js-source-branch-dropdown .dropdown-content a', text: source_branch).click
+        select_project('.js-source-project', forked_project)
+        select_project('.js-target-project', project)
+        select_branch('.js-source-branch', 'fix')
 
         click_button('Compare branches and continue')
 
@@ -107,7 +98,7 @@ RSpec.describe 'User creates a merge request', :js, feature_category: :code_revi
 
         click_button('Create merge request')
 
-        expect(page).to have_content(title).and have_content("requested to merge #{forked_project.full_path}:#{source_branch} into master")
+        expect(page).to have_content(title).and have_content("requested to merge #{forked_project.full_path}:fix into master")
       end
     end
   end
@@ -153,12 +144,27 @@ RSpec.describe 'User creates a merge request', :js, feature_category: :code_revi
   private
 
   def compare_source_and_target(source_branch, target_branch)
-    find('.js-source-branch').click
-    click_link(source_branch)
-
-    find('.js-target-branch').click
-    click_link(target_branch)
+    select_branch('.js-source-branch', source_branch)
+    select_branch('.js-target-branch', target_branch)
 
     click_button('Compare branches')
+  end
+
+  def select_project(selector, project)
+    first(selector).click
+
+    wait_for_requests
+
+    find('.gl-listbox-search-input').set(project.full_path)
+    select_listbox_item(project.full_path)
+  end
+
+  def select_branch(selector, branch)
+    first(selector).click
+
+    wait_for_requests
+
+    find('.gl-listbox-search-input').set(branch)
+    select_listbox_item(branch, exact_text: true)
   end
 end

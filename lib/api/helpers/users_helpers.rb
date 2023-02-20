@@ -12,10 +12,14 @@ module API
       params :optional_index_params_ee do
       end
 
-      def model_error_messages(model)
-        super.tap do |error_messages|
+      def model_errors(model)
+        super.tap do |errors|
           # Remapping errors from nested associations.
-          error_messages[:bio] = error_messages.delete(:"user_detail.bio") if error_messages.has_key?(:"user_detail.bio")
+          next unless errors.has_key?(:"user_detail.bio")
+
+          errors.delete(:"user_detail.bio").each do |message|
+            errors.add(:bio, message)
+          end
         end
       end
 

@@ -37,6 +37,6 @@ RSpec.describe 'projects/merge_requests/_commits.html.haml', :sidekiq_might_not_
   it 'shows signature verification badge' do
     render
 
-    expect(rendered).to have_css('.gpg-status-box')
+    expect(rendered).to have_css('.js-loading-signature-badge')
   end
 end

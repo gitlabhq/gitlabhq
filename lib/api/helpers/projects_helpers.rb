@@ -32,7 +32,7 @@ module API
         optional :builds_access_level, type: String, values: %w(disabled private enabled), desc: 'Builds access level. One of `disabled`, `private` or `enabled`'
         optional :snippets_access_level, type: String, values: %w(disabled private enabled), desc: 'Snippets access level. One of `disabled`, `private` or `enabled`'
         optional :pages_access_level, type: String, values: %w(disabled private enabled public), desc: 'Pages access level. One of `disabled`, `private`, `enabled` or `public`'
-        optional :operations_access_level, type: String, values: %w(disabled private enabled), desc: 'Operations access level. One of `disabled`, `private` or `enabled`'
+        optional :operations_access_level, type: String, values: %w(disabled private enabled), desc: 'Operations access level. One of `disabled`, `private` or `enabled`. Deprecated in GitLab 15.8, see https://gitlab.com/gitlab-org/gitlab/-/issues/385798.'
         optional :analytics_access_level, type: String, values: %w(disabled private enabled), desc: 'Analytics access level. One of `disabled`, `private` or `enabled`'
         optional :container_registry_access_level, type: String, values: %w(disabled private enabled), desc: 'Controls visibility of the container registry. One of `disabled`, `private` or `enabled`. `private` will make the container registry accessible only to project members (reporter role and above). `enabled` will make the container registry accessible to everyone who has access to the project. `disabled` will disable the container registry'
         optional :security_and_compliance_access_level, type: String, values: %w(disabled private enabled), desc: 'Security and compliance access level. One of `disabled`, `private` or `enabled`'
@@ -48,6 +48,7 @@ module API
         optional :warn_about_potentially_unwanted_characters, type: Boolean, desc: 'Warn about Potentially Unwanted Characters'
         optional :enforce_auth_checks_on_uploads, type: Boolean, desc: 'Enforce auth check on uploads'
         optional :shared_runners_enabled, type: Boolean, desc: 'Flag indication if shared runners are enabled for that project'
+        optional :group_runners_enabled, type: Boolean, desc: 'Flag indication if group runners are enabled for that project'
         optional :resolve_outdated_diff_discussions, type: Boolean, desc: 'Automatically resolve merge request diff threads on lines changed with a push'
         optional :remove_source_branch_after_merge, type: Boolean, desc: 'Remove the source branch by default after merge'
         optional :container_registry_enabled, type: Boolean, desc: 'Deprecated: Use :container_registry_access_level instead. Flag indication if the container registry is enabled for that project'
@@ -170,6 +171,7 @@ module API
           :security_and_compliance_access_level,
           :squash_option,
           :shared_runners_enabled,
+          :group_runners_enabled,
           :snippets_access_level,
           :tag_list,
           :topics,

@@ -15,4 +15,6 @@ class CodequalityDegradationEntity < Grape::Entity
   end
 
   expose :web_url
+
+  expose :engine_name
 end

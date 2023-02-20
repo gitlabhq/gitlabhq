@@ -761,7 +761,9 @@ Backup failed
 
 If this happens, examine the following:
 
-- Confirm there is sufficient disk space for the Gzip operation.
+- Confirm there is sufficient disk space for the Gzip operation. It's not uncommon for backups that
+  use the [default strategy](backup_gitlab.md#backup-strategy-option) to require half the instance size
+  in free disk space during backup creation.
 - If NFS is being used, check if the mount option `timeout` is set. The
   default is `600`, and changing this to smaller values results in this error.
 
@@ -811,7 +813,7 @@ You must truncate the files referenced by the database that are causing the prob
 
 - In the `uploads` table.
 - In the references found. Any reference found from other database tables and columns.
-- On the filesystem.
+- On the file system.
 
 Truncate the filenames in the `uploads` table:
 
@@ -979,7 +981,7 @@ Truncate the filenames in the references found:
 
 1. Replace those long filenames using the new filenames obtained from querying the `uploads` table.
 
-Truncate the filenames on the filesystem. You must manually rename the files in your filesystem to the new filenames obtained from querying the `uploads` table.
+Truncate the filenames on the file system. You must manually rename the files in your file system to the new filenames obtained from querying the `uploads` table.
 
 #### Re-run the backup task
 

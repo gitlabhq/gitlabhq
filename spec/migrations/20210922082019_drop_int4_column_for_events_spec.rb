@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe DropInt4ColumnForEvents, feature_category: :users do
+RSpec.describe DropInt4ColumnForEvents, feature_category: :user_profile do
   let(:events) { table(:events) }
 
   it 'correctly migrates up and down' do

@@ -33,6 +33,7 @@ export default {
         'gl-border-t-transparent': !this.first && !this.selected,
         'gl-border-t-gray-100': this.first && !this.selected,
         'gl-border-b-gray-100': !this.selected,
+        'gl-border-t-transparent!': this.selected && !this.first,
         'gl-bg-blue-50 gl-border-blue-200': this.selected,
       };
     },
@@ -126,10 +127,9 @@ export default {
         <slot name="right-action"></slot>
       </div>
     </div>
-    <div class="gl-display-flex">
+    <div v-if="isDetailsShown" class="gl-display-flex">
       <div class="gl-w-7"></div>
       <div
-        v-if="isDetailsShown"
         class="gl-display-flex gl-flex-direction-column gl-flex-grow-1 gl-bg-gray-10 gl-rounded-base gl-inset-border-1-gray-100 gl-mb-3"
       >
         <div

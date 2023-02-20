@@ -55,13 +55,14 @@ notify-pipeline-failure:
   script:
     - |
       if [[ "${CREATE_INCIDENT_FOR_PIPELINE_FAILURE}" == "true" ]]; then
-        scripts/create-pipeline-failure-incident.rb -p ${INCIDENT_PROJECT} -f ${INCIDENT_JSON} -t ${BROKEN_BRANCH_PROJECT_TOKEN};
+        scripts/create-pipeline-failure-incident.rb -p ${INCIDENT_PROJECT} -f ${INCIDENT_JSON} -t ${BROKEN_BRANCH_PROJECT_TOKEN} ||
+          scripts/slack ${SLACK_CHANNEL} "☠️  Broken pipeline incident creation failed! ☠️  See ${CI_JOB_URL}" ci_failing "Failed pipeline reporter";
         echosuccess "Created incident $(jq '.web_url' ${INCIDENT_JSON})";
       fi
     - |
       scripts/generate-failed-pipeline-slack-message.rb -i ${INCIDENT_JSON} -f ${FAILED_PIPELINE_SLACK_MESSAGE_FILE};
       curl -X POST -H 'Content-Type: application/json' --data @${FAILED_PIPELINE_SLACK_MESSAGE_FILE} "$CI_SLACK_WEBHOOK_URL" ||
-        scripts/slack ${SLACK_CHANNEL} "☠️  Broken pipeline notification failed! ☠️  See ${CI_JOB_URL}" ci_failing "Failed pipeline reporter"
+        scripts/slack ${SLACK_CHANNEL} "☠️  Broken pipeline notification failed! ☠️  See ${CI_JOB_URL}" ci_failing "Failed pipeline reporter";
 
   artifacts:
     paths:

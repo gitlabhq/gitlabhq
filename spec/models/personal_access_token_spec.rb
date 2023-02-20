@@ -216,6 +216,18 @@ RSpec.describe PersonalAccessToken, feature_category: :authentication_and_author
       expect(personal_access_token).to be_valid
     end
 
+    context 'with feature flag disabled' do
+      before do
+        stub_feature_flags(admin_mode_for_api: false)
+      end
+
+      it "allows creating a token with `admin_mode` scope" do
+        personal_access_token.scopes = [:api, :admin_mode]
+
+        expect(personal_access_token).to be_valid
+      end
+    end
+
     context 'when registry is disabled' do
       before do
         stub_container_registry_config(enabled: false)
@@ -353,19 +365,43 @@ RSpec.describe PersonalAccessToken, feature_category: :authentication_and_author
   describe '`admin_mode scope' do
     subject { create(:personal_access_token, user: user, scopes: ['api']) }
 
-    context 'with administrator user' do
-      let_it_be(:user) { create(:user, :admin) }
+    context 'with feature flag enabled' do
+      context 'with administrator user' do
+        let_it_be(:user) { create(:user, :admin) }
 
-      it 'adds `admin_mode` scope before created' do
-        expect(subject.scopes).to contain_exactly('api', 'admin_mode')
+        it 'does not add `admin_mode` scope before created' do
+          expect(subject.scopes).to contain_exactly('api')
+        end
+      end
+
+      context 'with normal user' do
+        let_it_be(:user) { create(:user) }
+
+        it 'does not add `admin_mode` scope before created' do
+          expect(subject.scopes).to contain_exactly('api')
+        end
       end
     end
 
-    context 'with normal user' do
-      let_it_be(:user) { create(:user) }
+    context 'with feature flag disabled' do
+      before do
+        stub_feature_flags(admin_mode_for_api: false)
+      end
 
-      it 'does not add `admin_mode` scope before created' do
-        expect(subject.scopes).to contain_exactly('api')
+      context 'with administrator user' do
+        let_it_be(:user) { create(:user, :admin) }
+
+        it 'adds `admin_mode` scope before created' do
+          expect(subject.scopes).to contain_exactly('api', 'admin_mode')
+        end
+      end
+
+      context 'with normal user' do
+        let_it_be(:user) { create(:user) }
+
+        it 'does not add `admin_mode` scope before created' do
+          expect(subject.scopes).to contain_exactly('api')
+        end
       end
     end
   end

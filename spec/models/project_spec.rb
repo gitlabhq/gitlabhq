@@ -112,6 +112,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
     it { is_expected.to have_many(:uploads) }
     it { is_expected.to have_many(:pipeline_schedules) }
     it { is_expected.to have_many(:members_and_requesters) }
+    it { is_expected.to have_many(:namespace_members_and_requesters) }
     it { is_expected.to have_many(:clusters) }
     it { is_expected.to have_many(:management_clusters).class_name('Clusters::Cluster') }
     it { is_expected.to have_many(:kubernetes_namespaces) }
@@ -121,8 +122,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
     it { is_expected.to have_many(:lfs_file_locks) }
     it { is_expected.to have_many(:project_deploy_tokens) }
     it { is_expected.to have_many(:deploy_tokens).through(:project_deploy_tokens) }
-    it { is_expected.to have_many(:cycle_analytics_stages).inverse_of(:project) }
-    it { is_expected.to have_many(:value_streams).inverse_of(:project) }
     it { is_expected.to have_many(:external_pull_requests) }
     it { is_expected.to have_many(:sourced_pipelines) }
     it { is_expected.to have_many(:source_pipelines) }
@@ -404,6 +403,34 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
       end
     end
 
+    describe '#namespace_members_and_requesters' do
+      let_it_be(:project) { create(:project, :public) }
+      let_it_be(:requester) { create(:user) }
+      let_it_be(:developer) { create(:user) }
+      let_it_be(:invited_member) { create(:project_member, :invited, :owner, project: project) }
+
+      before_all do
+        project.request_access(requester)
+        project.add_developer(developer)
+      end
+
+      it 'includes the correct users' do
+        expect(project.namespace_members_and_requesters).to include(
+          Member.find_by(user: requester),
+          Member.find_by(user: developer),
+          Member.find(invited_member.id)
+        )
+      end
+
+      it 'is equivalent to #project_members' do
+        expect(project.namespace_members_and_requesters).to match_array(project.members_and_requesters)
+      end
+
+      it_behaves_like 'query without source filters' do
+        subject { project.namespace_members_and_requesters }
+      end
+    end
+
     shared_examples 'polymorphic membership relationship' do
       it do
         expect(membership.attributes).to include(
@@ -441,6 +468,25 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
       let_it_be(:user) { create(:user) }
       let_it_be(:membership) do
         project.namespace_requesters.create!(user: user, requested_at: requested_at, access_level: Gitlab::Access::DEVELOPER)
+      end
+
+      it { expect(membership).to be_instance_of(ProjectMember) }
+      it { expect(membership.user).to eq user }
+      it { expect(membership.project).to eq project }
+      it { expect(membership.requested_at).to eq requested_at }
+
+      it_behaves_like 'polymorphic membership relationship'
+      it_behaves_like 'member_namespace membership relationship'
+    end
+
+    describe '#namespace_members_and_requesters setters' do
+      let_it_be(:requested_at) { Time.current }
+      let_it_be(:project) { create(:project) }
+      let_it_be(:user) { create(:user) }
+      let_it_be(:membership) do
+        project.namespace_members_and_requesters.create!(
+          user: user, requested_at: requested_at, access_level: Gitlab::Access::DEVELOPER
+        )
       end
 
       it { expect(membership).to be_instance_of(ProjectMember) }
@@ -917,6 +963,29 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
 
     with_them do
       it { expect(project.personal_namespace_holder?(user)).to eq(result) }
+    end
+  end
+
+  describe '#invalidate_personal_projects_count_of_owner' do
+    context 'for personal projects' do
+      let_it_be(:namespace_user) { create(:user) }
+      let_it_be(:project) { create(:project, namespace: namespace_user.namespace) }
+
+      it 'invalidates personal_project_count cache of the the owner of the personal namespace' do
+        expect(Rails.cache).to receive(:delete).with(['users', namespace_user.id, 'personal_projects_count'])
+
+        project.invalidate_personal_projects_count_of_owner
+      end
+    end
+
+    context 'for projects in groups' do
+      let_it_be(:project) { create(:project, namespace: create(:group)) }
+
+      it 'does not invalidates any cache' do
+        expect(Rails.cache).not_to receive(:delete)
+
+        project.invalidate_personal_projects_count_of_owner
+      end
     end
   end
 
@@ -2320,7 +2389,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
 
     context 'shared runners' do
       let(:project) { create(:project, shared_runners_enabled: shared_runners_enabled) }
-      let(:specific_runner) { create(:ci_runner, :project, :online, projects: [project]) }
+      let(:project_runner) { create(:ci_runner, :project, :online, projects: [project]) }
       let(:shared_runner) { create(:ci_runner, :instance, :online) }
       let(:offline_runner) { create(:ci_runner, :instance) }
 
@@ -2331,8 +2400,8 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
           is_expected.to be_falsey
         end
 
-        it 'has a specific runner' do
-          specific_runner
+        it 'has a project runner' do
+          project_runner
 
           is_expected.to be_truthy
         end
@@ -2343,14 +2412,14 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
           is_expected.to be_falsey
         end
 
-        it 'checks the presence of specific runner' do
-          specific_runner
+        it 'checks the presence of project runner' do
+          project_runner
 
-          expect(project.any_online_runners? { |runner| runner == specific_runner }).to be_truthy
+          expect(project.any_online_runners? { |runner| runner == project_runner }).to be_truthy
         end
 
         it 'returns false if match cannot be found' do
-          specific_runner
+          project_runner
 
           expect(project.any_online_runners? { false }).to be_falsey
         end
@@ -3418,6 +3487,31 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
     end
   end
 
+  describe '#import_checksums' do
+    context 'with import_checksums' do
+      it 'returns the right checksums' do
+        project = create(:project)
+        create(:import_state, project: project, checksums: {
+          'fetched' => {},
+          'imported' => {}
+        })
+
+        expect(project.import_checksums).to eq(
+          'fetched' => {},
+          'imported' => {}
+        )
+      end
+    end
+
+    context 'without import_state' do
+      it 'returns empty hash' do
+        project = create(:project)
+
+        expect(project.import_checksums).to eq({})
+      end
+    end
+  end
+
   describe '#jira_import_status' do
     let_it_be(:project) { create(:project, import_type: 'jira') }
 
@@ -3852,10 +3946,21 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
   end
 
   describe '#emails_enabled?' do
-    let(:project) { build(:project, emails_disabled: false) }
+    context 'without a persisted project_setting object' do
+      let(:project) { build(:project, emails_disabled: false) }
 
-    it "is the opposite of emails_disabled" do
-      expect(project.emails_enabled?).to be_truthy
+      it "is the opposite of emails_disabled" do
+        expect(project.emails_enabled?).to be_truthy
+      end
+    end
+
+    context 'with a persisted project_setting object' do
+      let(:project_settings) { create(:project_setting, emails_enabled: true) }
+      let(:project) { build(:project, emails_disabled: false, project_setting: project_settings) }
+
+      it "is the opposite of emails_disabled" do
+        expect(project.emails_enabled?).to be_truthy
+      end
     end
   end
 
@@ -4693,7 +4798,9 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
     end
 
     context 'with deploy token users' do
-      let_it_be(:private_project) { create(:project, :private) }
+      let_it_be(:private_project) { create(:project, :private, description: 'Match') }
+      let_it_be(:private_project2) { create(:project, :private, description: 'Match') }
+      let_it_be(:private_project3) { create(:project, :private, description: 'Mismatch') }
 
       subject { described_class.all.public_or_visible_to_user(user) }
 
@@ -4703,10 +4810,16 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
         it { is_expected.to eq [] }
       end
 
-      context 'deploy token user with project' do
-        let_it_be(:user) { create(:deploy_token, projects: [private_project]) }
+      context 'deploy token user with projects' do
+        let_it_be(:user) { create(:deploy_token, projects: [private_project, private_project2, private_project3]) }
 
-        it { is_expected.to include(private_project) }
+        it { is_expected.to contain_exactly(private_project, private_project2, private_project3) }
+
+        context 'with chained filter' do
+          subject { described_class.where(description: 'Match').public_or_visible_to_user(user) }
+
+          it { is_expected.to contain_exactly(private_project, private_project2) }
+        end
       end
     end
   end
@@ -5931,6 +6044,18 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
       expect_any_instance_of(ProjectHook).not_to receive(:async_execute).once
 
       project.execute_hooks(data, :push_hooks)
+    end
+
+    it 'executes hooks which were backed off and are no longer backed off' do
+      project = create(:project)
+      hook = create(:project_hook, project: project, push_events: true)
+      WebHook::FAILURE_THRESHOLD.succ.times { hook.backoff! }
+
+      expect_any_instance_of(ProjectHook).to receive(:async_execute).once
+
+      travel_to(hook.disabled_until + 1.second) do
+        project.execute_hooks(data, :push_hooks)
+      end
     end
 
     it 'executes the system hooks with the specified scope' do
@@ -7225,6 +7350,54 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
     end
   end
 
+  describe '#group_protected_branches' do
+    subject { project.group_protected_branches }
+
+    let(:project) { create(:project, group: group) }
+    let(:group) { create(:group) }
+    let(:protected_branch) { create(:protected_branch, group: group, project: nil) }
+
+    it 'returns protected branches of the group' do
+      is_expected.to match_array([protected_branch])
+    end
+
+    context 'when project belongs to namespace' do
+      let(:project) { create(:project) }
+
+      it 'returns empty relation' do
+        is_expected.to be_empty
+      end
+    end
+  end
+
+  describe '#all_protected_branches' do
+    let(:group) { create(:group) }
+    let!(:group_protected_branch) { create(:protected_branch, group: group, project: nil) }
+    let!(:project_protected_branch) { create(:protected_branch, project: subject) }
+
+    subject { create(:project, group: group) }
+
+    context 'when feature flag `group_protected_branches` enabled' do
+      before do
+        stub_feature_flags(group_protected_branches: true)
+      end
+
+      it 'return all protected branches' do
+        expect(subject.all_protected_branches).to match_array([group_protected_branch, project_protected_branch])
+      end
+    end
+
+    context 'when feature flag `group_protected_branches` disabled' do
+      before do
+        stub_feature_flags(group_protected_branches: false)
+      end
+
+      it 'return only project-level protected branches' do
+        expect(subject.all_protected_branches).to match_array([project_protected_branch])
+      end
+    end
+  end
+
   describe '#lfs_objects_oids' do
     let(:project) { create(:project) }
     let(:lfs_object) { create(:lfs_object) }
@@ -8366,16 +8539,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
     end
   end
 
-  describe '#work_items_create_from_markdown_feature_flag_enabled?' do
-    let_it_be(:group_project) { create(:project, :in_subgroup) }
-
-    it_behaves_like 'checks parent group feature flag' do
-      let(:feature_flag_method) { :work_items_create_from_markdown_feature_flag_enabled? }
-      let(:feature_flag) { :work_items_create_from_markdown }
-      let(:subject_project) { group_project }
-    end
-  end
-
   describe 'serialization' do
     let(:object) { build(:project) }
 
@@ -8403,14 +8566,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
 
         project.enqueue_record_project_target_platforms
       end
-    end
-
-    context 'when feature flag is disabled' do
-      before do
-        stub_feature_flags(record_projects_target_platforms: false)
-      end
-
-      it_behaves_like 'does not enqueue a Projects::RecordTargetPlatformsWorker'
     end
 
     context 'when not in gitlab.com' do
@@ -8666,6 +8821,24 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
       subject { described_class.new(remove_source_branch_after_merge: false) }
 
       it { expect(subject.remove_source_branch_after_merge).to be_falsey }
+    end
+  end
+
+  describe '.is_importing' do
+    it 'returns projects that have import in progress' do
+      project_1 = create(:project, :import_scheduled, import_type: 'github')
+      project_2 = create(:project, :import_started, import_type: 'github')
+      create(:project, :import_finished, import_type: 'github')
+
+      expect(described_class.is_importing).to match_array([project_1, project_2])
+    end
+  end
+
+  it_behaves_like 'something that has web-hooks' do
+    let_it_be_with_reload(:object) { create(:project) }
+
+    def create_hook
+      create(:project_hook, project: object)
     end
   end
 

@@ -27,7 +27,7 @@ Fail fast testing is useful when adding new functionality to a project and addin
 new automated tests.
 
 Your project could have hundreds of thousands of tests that take a long time to complete.
-You may be confident that a new test will pass, but you have to wait for all the tests
+You may expect a new test to pass, but you have to wait for all the tests
 to complete to verify it. This could take an hour or more, even when using parallelization.
 
 Fail fast testing gives you a faster feedback loop from the pipeline. It lets you

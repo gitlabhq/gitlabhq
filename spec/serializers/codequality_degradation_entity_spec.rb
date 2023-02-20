@@ -18,6 +18,7 @@ RSpec.describe CodequalityDegradationEntity do
           expect(subject[:file_path]).to eq("file_a.rb")
           expect(subject[:line]).to eq(10)
           expect(subject[:web_url]).to eq("http://localhost/root/test-project/-/blob/f572d396fae9206628714fb2ce00f72e94f2258f/file_a.rb#L10")
+          expect(subject[:engine_name]).to eq('structure')
         end
       end
 
@@ -30,6 +31,7 @@ RSpec.describe CodequalityDegradationEntity do
           expect(subject[:file_path]).to eq("file_b.rb")
           expect(subject[:line]).to eq(10)
           expect(subject[:web_url]).to eq("http://localhost/root/test-project/-/blob/f572d396fae9206628714fb2ce00f72e94f2258f/file_b.rb#L10")
+          expect(subject[:engine_name]).to eq('rubocop')
         end
       end
 
@@ -46,6 +48,7 @@ RSpec.describe CodequalityDegradationEntity do
           expect(subject[:file_path]).to eq("file_b.rb")
           expect(subject[:line]).to eq(10)
           expect(subject[:web_url]).to eq("http://localhost/root/test-project/-/blob/f572d396fae9206628714fb2ce00f72e94f2258f/file_b.rb#L10")
+          expect(subject[:engine_name]).to eq('rubocop')
         end
       end
     end

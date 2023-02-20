@@ -2,6 +2,7 @@
 
 class IssueEmailParticipant < ApplicationRecord
   include BulkInsertSafe
+  include Presentable
 
   belongs_to :issue
 

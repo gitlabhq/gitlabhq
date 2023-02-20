@@ -10,7 +10,7 @@ type: reference, howto
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/31564) in GitLab 13.2.
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/63025) in GitLab 14.0.
 
-When using [Project Import](../user/project/settings/import_export.md), the size of the decompressed project archive is limited to 10Gb.
+When using [Project Import](../user/project/settings/import_export.md), the size of the decompressed project archive is limited to 10 Gb.
 
 If decompressed size exceeds this limit, `Decompressed archive size validation failed` error is returned.
 

@@ -1,8 +1,8 @@
 export const SEVERITY_CLASS_NAME_MAP = {
-  critical: 'text-danger-800',
-  high: 'text-danger-600',
-  medium: 'text-warning-400',
-  low: 'text-warning-200',
-  info: 'text-primary-400',
-  unknown: 'text-secondary-400',
+  critical: 'gl-text-red-800',
+  high: 'gl-text-red-600',
+  medium: 'gl-text-orange-400',
+  low: 'gl-text-orange-200',
+  info: 'gl-text-blue-400',
+  unknown: 'gl-text-gray-400',
 };

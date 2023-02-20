@@ -219,18 +219,15 @@ describe('Merge request widget rebase component', () => {
       it('renders a message explaining user does not have permissions', () => {
         const text = findRebaseMessageText();
 
-        expect(text).toContain(
-          'Merge blocked: the source branch must be rebased onto the target branch.',
-        );
+        expect(text).toContain('Merge blocked:');
         expect(text).toContain('the source branch must be rebased');
       });
 
       it('renders the correct target branch name', () => {
-        const elem = findRebaseMessage();
+        const text = findRebaseMessageText();
 
-        expect(elem.text()).toContain(
-          'Merge blocked: the source branch must be rebased onto the target branch.',
-        );
+        expect(text).toContain('Merge blocked:');
+        expect(text).toContain('the source branch must be rebased onto the target branch.');
       });
     });
 

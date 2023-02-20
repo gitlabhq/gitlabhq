@@ -44,7 +44,7 @@ To update the default branch for an individual [project](../../index.md):
 
 1. On the top bar, select **Main menu > Projects** and find your project.
 1. In the left navigation menu, go to **Settings > Repository**.
-1. Expand **Default branch**. For **Initial default branch name**, select a new default branch.
+1. Expand **Branch defaults**. For **Default branch**, select a new default branch.
 1. Optional. Select the **Auto-close referenced issues on default branch** checkbox to close
    issues when a merge request
    [uses a closing pattern](../../issues/managing_issues.md#closing-issues-automatically).

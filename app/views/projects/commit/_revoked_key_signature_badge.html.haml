@@ -1,0 +1,5 @@
+- title = s_('CommitSignature|Unverified signature')
+- description = s_('CommitSignature|This commit was signed with a key that was revoked.')
+- locals = { signature: signature, title: title, description: description, label: s_('CommitSignature|Unverified'), variant: 'muted' }
+
+= render partial: 'projects/commit/signature_badge', locals: locals

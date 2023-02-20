@@ -21,9 +21,8 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
         .with_foreign_key('work_item_id')
     end
 
-    it 'has many `work_item_children_by_created_at`' do
-      is_expected.to have_many(:work_item_children_by_created_at)
-        .order(created_at: :asc)
+    it 'has many `work_item_children_by_relative_position`' do
+      is_expected.to have_many(:work_item_children_by_relative_position)
         .class_name('WorkItem')
         .with_foreign_key('work_item_id')
     end
@@ -32,6 +31,49 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
       is_expected.to have_many(:child_links)
         .class_name('::WorkItems::ParentLink')
         .with_foreign_key('work_item_parent_id')
+    end
+  end
+
+  describe '.work_item_children_by_relative_position' do
+    subject { parent_item.reload.work_item_children_by_relative_position }
+
+    let_it_be(:parent_item) { create(:work_item, :objective, project: reusable_project) }
+    let_it_be(:oldest_item) { create(:work_item, :objective, created_at: 5.hours.ago, project: reusable_project) }
+    let_it_be(:middle_item) { create(:work_item, :objective, project: reusable_project) }
+    let_it_be(:newest_item) { create(:work_item, :objective, created_at: 5.hours.from_now, project: reusable_project) }
+
+    let_it_be_with_reload(:link_to_oldest_item) do
+      create(:parent_link, work_item_parent: parent_item, work_item: oldest_item)
+    end
+
+    let_it_be_with_reload(:link_to_middle_item) do
+      create(:parent_link, work_item_parent: parent_item, work_item: middle_item)
+    end
+
+    let_it_be_with_reload(:link_to_newest_item) do
+      create(:parent_link, work_item_parent: parent_item, work_item: newest_item)
+    end
+
+    context 'when ordered by relative position and created_at' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:oldest_item_position, :middle_item_position, :newest_item_position, :expected_order) do
+        nil | nil | nil | lazy { [oldest_item, middle_item, newest_item] }
+        nil | nil | 1   | lazy { [newest_item, oldest_item, middle_item] }
+        nil | 1   | 2   | lazy { [middle_item, newest_item, oldest_item] }
+        2   | 3   | 1   | lazy { [newest_item, oldest_item, middle_item] }
+        1   | 2   | 3   | lazy { [oldest_item, middle_item, newest_item] }
+      end
+
+      with_them do
+        before do
+          link_to_oldest_item.update!(relative_position: oldest_item_position)
+          link_to_middle_item.update!(relative_position: middle_item_position)
+          link_to_newest_item.update!(relative_position: newest_item_position)
+        end
+
+        it { is_expected.to eq(expected_order) }
+      end
     end
   end
 
@@ -54,6 +96,70 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
         instance_of(WorkItems::Widgets::Assignees),
         instance_of(WorkItems::Widgets::StartAndDueDate)
       )
+    end
+  end
+
+  describe '#supports_assignee?' do
+    let(:work_item) { build(:work_item, :task) }
+
+    before do
+      allow(work_item.work_item_type).to receive(:supports_assignee?).and_return(false)
+    end
+
+    it 'delegates the call to its work item type' do
+      expect(work_item.supports_assignee?).to be(false)
+    end
+  end
+
+  describe '#supported_quick_action_commands' do
+    let(:work_item) { build(:work_item, :task) }
+
+    subject { work_item.supported_quick_action_commands }
+
+    it 'returns quick action commands supported for all work items' do
+      is_expected.to include(:title, :reopen, :close, :cc, :tableflip, :shrug)
+    end
+
+    context 'when work item supports the assignee widget' do
+      it 'returns assignee related quick action commands' do
+        is_expected.to include(:assign, :unassign, :reassign)
+      end
+    end
+
+    context 'when work item does not the assignee widget' do
+      let(:work_item) { build(:work_item, :incident) }
+
+      it 'omits assignee related quick action commands' do
+        is_expected.not_to include(:assign, :unassign, :reassign)
+      end
+    end
+
+    context 'when work item supports the labels widget' do
+      it 'returns labels related quick action commands' do
+        is_expected.to include(:label, :labels, :relabel, :remove_label, :unlabel)
+      end
+    end
+
+    context 'when work item does not support the labels widget' do
+      let(:work_item) { build(:work_item, :incident) }
+
+      it 'omits labels related quick action commands' do
+        is_expected.not_to include(:label, :labels, :relabel, :remove_label, :unlabel)
+      end
+    end
+
+    context 'when work item supports the start and due date widget' do
+      it 'returns due date related quick action commands' do
+        is_expected.to include(:due, :remove_due_date)
+      end
+    end
+
+    context 'when work item does not support the start and due date widget' do
+      let(:work_item) { build(:work_item, :incident) }
+
+      it 'omits due date related quick action commands' do
+        is_expected.not_to include(:due, :remove_due_date)
+      end
     end
   end
 

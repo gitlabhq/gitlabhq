@@ -166,7 +166,7 @@ specific routes:
 ```ruby
 module API
   class Users < ::API::Base
-    feature_category :users, ['/users/:id/custom_attributes', '/users/:id/custom_attributes/:key']
+    feature_category :user_profile, ['/users/:id/custom_attributes', '/users/:id/custom_attributes/:key']
   end
 end
 ```
@@ -176,7 +176,7 @@ Or the feature category can be specified in the action itself:
 ```ruby
 module API
   class Users < ::API::Base
-    get ':id', feature_category: :users do
+    get ':id', feature_category: :user_profile do
     end
   end
 end
@@ -191,7 +191,7 @@ within that class.
 You must set feature category metadata for each RSpec example. This information is used for flaky test
 issues to identify the group that owns the feature.
 
-The `feature_category` should be a value from [`categories.json`](https://about.gitlab.com/categories.json).
+The `feature_category` should be a value from [`config/feature_categories.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/feature_categories.yml).
 
 The `feature_category` metadata can be set:
 
@@ -208,23 +208,21 @@ Example:
 
 For examples that don't have a `feature_category` set we add a warning when running them in local environment.
 
-In order to disable the warning use `RSPEC_WARN_MISSING_FEATURE_CATEGORY=false` when running RSpec tests:
+To disable the warning use `RSPEC_WARN_MISSING_FEATURE_CATEGORY=false` when running RSpec tests:
 
 ```shell
 RSPEC_WARN_MISSING_FEATURE_CATEGORY=false bin/rspec spec/<test_file>
 ```
 
-### Excluding specs from feature categorization
-
-In the rare case an action cannot be tied to a feature category this
-can be done using the `not_owned` feature category.
-
-```ruby
-RSpec.describe Utils, feature_category: :not_owned do
-```
+Additionally, we flag the offenses via `RSpec/MissingFeatureCategory` RuboCop rule.
 
 ### Tooling feature category
 
 For Engineering Productivity internal tooling we use `feature_category: :tooling`.
 
 For example in [`spec/tooling/danger/specs_spec.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/tooling/danger/specs_spec.rb#L12).
+
+### Shared feature category
+
+For features that support developers and they are not specific to a product group we use `feature_category: :shared`
+For example [`spec/lib/gitlab/job_waiter_spec.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/lib/gitlab/job_waiter_spec.rb)

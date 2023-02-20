@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/98354) in GitLab 15.5.
 
-GitLab provides an SCIM API that both implements [the RFC7644 protocol](https://tools.ietf.org/html/rfc7644)
+GitLab provides an SCIM API that both implements [the RFC7644 protocol](https://www.rfc-editor.org/rfc/rfc7644)
 and provides the `/Users` endpoint. The base URL is `/api/scim/v2/groups/:group_path/Users/`.
 
 To use this API, [Group SSO](../user/group/saml_sso/index.md) must be enabled for the group.
@@ -30,13 +30,14 @@ Supported attributes:
 |:------------------|:--------|:---------|:----------------------|
 | `id`              | integer | Yes      | Return SCIM identities for the given group ID. |
 
-If successful, returns [`200`](index.md#status-codes) and the following
+If successful, returns [`200`](rest/index.md#status-codes) and the following
 response attributes:
 
-| Attribute    | Type   | Description               |
-| ------------ | ------ | ------------------------- |
-| `extern_uid` | string | External UID for the user |
-| `user_id`    | string | ID for the user           |
+| Attribute    | Type    | Description               |
+| ------------ | ------- | ------------------------- |
+| `extern_uid` | string  | External UID for the user |
+| `user_id`    | integer | ID for the user           |
+| `active`     | boolean | Status of the identity    |
 
 Example response:
 
@@ -44,7 +45,8 @@ Example response:
 [
     {
         "extern_uid": "4",
-        "user_id": 48
+        "user_id": 48,
+        "active": true
     }
 ]
 ```
@@ -67,7 +69,7 @@ Fields that can be updated are:
 | `id/externalId` | `extern_uid` |
 
 ```plaintext
-PATCH groups/:groups_id/scim/:uid
+PATCH /groups/:groups_id/scim/:uid
 ```
 
 Parameters:

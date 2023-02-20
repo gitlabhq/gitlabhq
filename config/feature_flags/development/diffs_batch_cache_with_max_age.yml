@@ -1,0 +1,8 @@
+---
+name: diffs_batch_cache_with_max_age
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/109451
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/388778 
+milestone: '15.9'
+type: development
+group: group::code review
+default_enabled: false

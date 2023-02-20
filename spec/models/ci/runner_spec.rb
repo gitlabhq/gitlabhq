@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::Runner, feature_category: :runner do
+RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
   include StubGitlabCalls
 
   it_behaves_like 'having unique enum values'
@@ -85,6 +85,7 @@ RSpec.describe Ci::Runner, feature_category: :runner do
   describe 'validation' do
     it { is_expected.to validate_presence_of(:access_level) }
     it { is_expected.to validate_presence_of(:runner_type) }
+    it { is_expected.to validate_presence_of(:registration_type) }
 
     context 'when runner is not allowed to pick untagged jobs' do
       context 'when runner does not have tags' do
@@ -259,16 +260,16 @@ RSpec.describe Ci::Runner, feature_category: :runner do
   end
 
   describe '.belonging_to_project' do
-    it 'returns the specific project runner' do
+    it 'returns the project runner' do
       # own
-      specific_project = create(:project)
-      specific_runner = create(:ci_runner, :project, projects: [specific_project])
+      own_project = create(:project)
+      own_runner = create(:ci_runner, :project, projects: [own_project])
 
       # other
       other_project = create(:project)
       create(:ci_runner, :project, projects: [other_project])
 
-      expect(described_class.belonging_to_project(specific_project.id)).to eq [specific_runner]
+      expect(described_class.belonging_to_project(own_project.id)).to eq [own_runner]
     end
   end
 
@@ -285,7 +286,7 @@ RSpec.describe Ci::Runner, feature_category: :runner do
 
     subject(:result) { described_class.belonging_to_parent_group_of_project(project_id) }
 
-    it 'returns the specific group runner' do
+    it 'returns the group runner' do
       expect(result).to contain_exactly(runner1)
     end
 
@@ -339,7 +340,7 @@ RSpec.describe Ci::Runner, feature_category: :runner do
     describe '.owned_or_instance_wide' do
       subject { described_class.owned_or_instance_wide(project.id) }
 
-      it 'returns a globally shared, a project specific and a group specific runner' do
+      it 'returns a shared, project and group runner' do
         is_expected.to contain_exactly(group_runner, project_runner, shared_runner)
       end
     end
@@ -352,7 +353,7 @@ RSpec.describe Ci::Runner, feature_category: :runner do
         project_runner
       end
 
-      it 'returns a globally shared and a group specific runner' do
+      it 'returns a globally shared and a group runner' do
         is_expected.to contain_exactly(group_runner, shared_runner)
       end
     end
@@ -382,7 +383,7 @@ RSpec.describe Ci::Runner, feature_category: :runner do
       context 'with group runners disabled' do
         let(:group_runners_enabled) { false }
 
-        it 'returns only the project specific runner' do
+        it 'returns only the project runner' do
           is_expected.to contain_exactly(project_runner)
         end
       end
@@ -390,7 +391,7 @@ RSpec.describe Ci::Runner, feature_category: :runner do
       context 'with group runners enabled' do
         let(:group_runners_enabled) { true }
 
-        it 'returns a project specific and a group specific runner' do
+        it 'returns a project runner and a group runner' do
           is_expected.to contain_exactly(group_runner, project_runner)
         end
       end
@@ -404,7 +405,7 @@ RSpec.describe Ci::Runner, feature_category: :runner do
         project_runner
       end
 
-      it 'returns a group specific runner' do
+      it 'returns a group runner' do
         is_expected.to contain_exactly(group_runner)
       end
     end
@@ -1737,6 +1738,40 @@ RSpec.describe Ci::Runner, feature_category: :runner do
     end
   end
 
+  describe '#short_sha' do
+    subject(:short_sha) { runner.short_sha }
+
+    context 'when registered via command-line' do
+      let(:runner) { create(:ci_runner) }
+
+      specify { expect(runner.token).not_to start_with(described_class::CREATED_RUNNER_TOKEN_PREFIX) }
+      it { is_expected.not_to start_with(described_class::CREATED_RUNNER_TOKEN_PREFIX) }
+    end
+
+    context 'when creating new runner via UI' do
+      let(:runner) { create(:ci_runner, registration_type: :authenticated_user) }
+
+      specify { expect(runner.token).to start_with(described_class::CREATED_RUNNER_TOKEN_PREFIX) }
+      it { is_expected.not_to start_with(described_class::CREATED_RUNNER_TOKEN_PREFIX) }
+    end
+  end
+
+  describe '#token' do
+    subject(:token) { runner.token }
+
+    context 'when runner is registered' do
+      let(:runner) { create(:ci_runner) }
+
+      it { is_expected.not_to start_with('glrt-') }
+    end
+
+    context 'when runner is created via UI' do
+      let(:runner) { create(:ci_runner, registration_type: :authenticated_user) }
+
+      it { is_expected.to start_with('glrt-') }
+    end
+  end
+
   describe '#token_expires_at', :freeze_time do
     shared_examples 'expiring token' do |interval:|
       it 'expires' do
@@ -1915,7 +1950,7 @@ RSpec.describe Ci::Runner, feature_category: :runner do
     end
   end
 
-  describe '#with_upgrade_status' do
+  describe '.with_upgrade_status' do
     subject { described_class.with_upgrade_status(upgrade_status) }
 
     let_it_be(:runner_14_0_0) { create(:ci_runner, version: '14.0.0') }
@@ -1923,12 +1958,12 @@ RSpec.describe Ci::Runner, feature_category: :runner do
     let_it_be(:runner_14_1_1) { create(:ci_runner, version: '14.1.1') }
     let_it_be(:runner_version_14_0_0) { create(:ci_runner_version, version: '14.0.0', status: :available) }
     let_it_be(:runner_version_14_1_0) { create(:ci_runner_version, version: '14.1.0', status: :recommended) }
-    let_it_be(:runner_version_14_1_1) { create(:ci_runner_version, version: '14.1.1', status: :not_available) }
+    let_it_be(:runner_version_14_1_1) { create(:ci_runner_version, version: '14.1.1', status: :unavailable) }
 
-    context ':not_available' do
-      let(:upgrade_status) { :not_available }
+    context ':unavailable' do
+      let(:upgrade_status) { :unavailable }
 
-      it 'returns runners whose version is assigned :not_available' do
+      it 'returns runners whose version is assigned :unavailable' do
         is_expected.to contain_exactly(runner_14_1_1)
       end
     end

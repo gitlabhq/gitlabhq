@@ -10,17 +10,15 @@ module InjectEnterpriseEditionModule
   end
 
   def extend_mod_with(constant_name, namespace: Object)
-    each_extension_for(
-      constant_name,
-      namespace,
-      &method(:extend))
+    each_extension_for(constant_name, namespace) do |constant|
+      extend constant
+    end
   end
 
   def include_mod_with(constant_name, namespace: Object)
-    each_extension_for(
-      constant_name,
-      namespace,
-      &method(:include))
+    each_extension_for(constant_name, namespace) do |constant|
+      include constant
+    end
   end
 
   def prepend_mod(with_descendants: false)

@@ -6,8 +6,8 @@ module Types
       graphql_name 'WorkItemWidgetType'
       description 'Type of a work item widget'
 
-      ::WorkItems::Type.available_widgets.each do |widget|
-        value widget.type.to_s.upcase, value: widget.type, description: "#{widget.type.to_s.titleize} widget."
+      ::WorkItems::WidgetDefinition.widget_classes.each do |cls|
+        value cls.type.to_s.upcase, value: cls.type, description: "#{cls.type.to_s.titleize} widget."
       end
     end
   end

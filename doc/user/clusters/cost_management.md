@@ -19,7 +19,7 @@ On self-managed GitLab, by default this feature is not available. To make it ava
 Cluster cost management provides insights into cluster resource usage. GitLab provides an example
 [`kubecost-cost-model`](https://gitlab.com/gitlab-examples/kubecost-cost-model/)
 project that uses the GitLab Prometheus integration and
-[Kubecost's `cost-model`](https://github.com/kubecost/cost-model) to provide cluster cost
+[OpenCost `cost-model`](https://github.com/opencost/opencost) to provide cluster cost
 insights within GitLab:
 
 ![Example dashboard](img/kubecost_v13_5.png)
@@ -60,8 +60,8 @@ this dashboard.
 ### Customize the cost dashboard
 
 You can customize the cost dashboard by editing the `.gitlab/dashboards/default_costs.yml`
-file or creating similar dashboard configuration files. To learn more, read about
-[customizing dashboards in our documentation](../../operations/metrics/dashboards/index.md).
+file or creating similar dashboard configuration files. For more information, see
+[Custom dashboards](../../operations/metrics/dashboards/index.md).
 
 #### Available metrics
 

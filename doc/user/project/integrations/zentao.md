@@ -4,7 +4,14 @@ group: Integrations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# ZenTao product integration **(PREMIUM)**
+<!--- start_remove The following content will be removed on remove_date: '2023-05-22' -->
+
+# ZenTao (deprecated) **(PREMIUM)**
+
+WARNING:
+This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/377825) in GitLab 15.7
+and is planned for removal in 16.0.
+This change is a breaking change.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/338178) in GitLab 14.5.
 
@@ -47,3 +54,5 @@ Complete these steps in GitLab:
 
 1. To verify the ZenTao connection is working, select **Test settings**.
 1. Select **Save changes**.
+
+<!--- end_remove -->

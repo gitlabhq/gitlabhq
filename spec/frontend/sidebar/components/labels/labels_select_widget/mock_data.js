@@ -174,6 +174,15 @@ export const updateLabelsMutationResponse = {
     updateIssuableLabels: {
       errors: [],
       issuable: {
+        updatedAt: '2023-02-10T22:26:49Z',
+        updatedBy: {
+          id: 'gid://gitlab/User/1',
+          avatarUrl: 'avatar/url',
+          name: 'John Smith',
+          username: 'jsmith',
+          webUrl: 'http://gdk.test:3000/jsmith',
+          __typename: 'UserCore',
+        },
         __typename: 'Issue',
         id: '1',
         labels: {

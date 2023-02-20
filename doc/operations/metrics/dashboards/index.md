@@ -33,7 +33,7 @@ To create a new dashboard from the GitLab user interface:
 1. Sign in to GitLab as a user with Maintainer or Owner
    [permissions](../../../user/permissions.md#project-members-permissions).
 1. Navigate to your dashboard at **Monitor > Metrics**.
-1. In the top-right corner of your dashboard, select the **{ellipsis_v}** **More actions** menu,
+1. In the upper-right corner of your dashboard, select the **{ellipsis_v}** **More actions** menu,
    and select **Create new**:
    ![Monitoring Dashboard actions menu with create new item](img/actions_menu_create_new_dashboard_v13_3.png)
 1. In the modal window, select **Open Repository**, then follow the instructions
@@ -190,7 +190,7 @@ Related links can contain the following attributes:
 - `title`: A phrase describing the link. Optional. If this attribute is not set,
   the full URL is used for the link title.
 - `type`: A string declaring the type of link. Optional. If set to `grafana`, the
-  dashboard's time range values are converted to Grafana's time range format and
+  dashboard's time range values are converted to the Grafana time range format and
   appended to the `url`.
 
 The dashboard's time range is appended to the `url` as URL parameters.

@@ -4,9 +4,9 @@ group: Integrations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Unify Circuit service **(FREE)**
+# Unify Circuit **(FREE)**
 
-The Unify Circuit service sends notifications from GitLab to a Circuit conversation.
+The Unify Circuit integration sends notifications from GitLab to a Circuit conversation.
 
 ## Set up Unify Circuit service
 

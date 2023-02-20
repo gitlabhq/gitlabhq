@@ -44,6 +44,11 @@ module Gitlab
           end
         end
 
+        # in case the connection has been switched with using_connection
+        def connection_pool
+          connection.pool
+        end
+
         private
 
         def overriding_connection

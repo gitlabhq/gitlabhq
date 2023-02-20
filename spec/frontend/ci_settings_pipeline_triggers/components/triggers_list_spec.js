@@ -1,6 +1,6 @@
 import { GlTable, GlBadge } from '@gitlab/ui';
-import { mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
 import TriggersList from '~/ci_settings_pipeline_triggers/components/triggers_list.vue';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
@@ -11,7 +11,7 @@ describe('TriggersList', () => {
   let wrapper;
 
   const createComponent = (props = {}) => {
-    wrapper = mount(TriggersList, {
+    wrapper = mountExtended(TriggersList, {
       propsData: { triggers, ...props },
     });
   };
@@ -25,59 +25,75 @@ describe('TriggersList', () => {
   const findInvalidBadge = (i) => findCell(i, 0).findComponent(GlBadge);
   const findEditBtn = (i) => findRowAt(i).find('[data-testid="edit-btn"]');
   const findRevokeBtn = (i) => findRowAt(i).find('[data-testid="trigger_revoke_button"]');
+  const findRevealHideButton = () => wrapper.findByTestId('reveal-hide-values-button');
 
-  beforeEach(async () => {
-    createComponent();
+  describe('With triggers set', () => {
+    beforeEach(async () => {
+      createComponent();
 
-    await nextTick();
-  });
-
-  it('displays a table with expected headers', () => {
-    const headers = ['Token', 'Description', 'Owner', 'Last Used', ''];
-    headers.forEach((header, i) => {
-      expect(findHeaderAt(i).text()).toBe(header);
+      await nextTick();
     });
-  });
 
-  it('displays a table with rows', () => {
-    expect(findRows()).toHaveLength(triggers.length);
+    it('displays a table with expected headers', () => {
+      const headers = ['Token', 'Description', 'Owner', 'Last Used', ''];
+      headers.forEach((header, i) => {
+        expect(findHeaderAt(i).text()).toBe(header);
+      });
+    });
 
-    const [trigger] = triggers;
+    it('displays a "Reveal/Hide values" button', async () => {
+      const revealHideButton = findRevealHideButton();
 
-    expect(findCell(0, 0).text()).toBe(trigger.token);
-    expect(findCell(0, 1).text()).toBe(trigger.description);
-    expect(findCell(0, 2).text()).toContain(trigger.owner.name);
-  });
+      expect(revealHideButton.exists()).toBe(true);
+      expect(revealHideButton.text()).toBe('Reveal values');
 
-  it('displays a "copy to cliboard" button for exposed tokens', () => {
-    expect(findClipboardBtn(0).exists()).toBe(true);
-    expect(findClipboardBtn(0).props('text')).toBe(triggers[0].token);
+      await revealHideButton.vm.$emit('click');
 
-    expect(findClipboardBtn(1).exists()).toBe(false);
-  });
+      expect(revealHideButton.text()).toBe('Hide values');
+    });
 
-  it('displays an "invalid" label for tokens without access', () => {
-    expect(findInvalidBadge(0).exists()).toBe(false);
+    it('displays a table with rows', async () => {
+      await findRevealHideButton().vm.$emit('click');
 
-    expect(findInvalidBadge(1).exists()).toBe(true);
-  });
+      expect(findRows()).toHaveLength(triggers.length);
 
-  it('displays a time ago label when last used', () => {
-    expect(findCell(0, 3).text()).toBe('Never');
+      const [trigger] = triggers;
 
-    expect(findCell(1, 3).findComponent(TimeAgoTooltip).props('time')).toBe(triggers[1].lastUsed);
-  });
+      expect(findCell(0, 0).text()).toBe(trigger.token);
+      expect(findCell(0, 1).text()).toBe(trigger.description);
+      expect(findCell(0, 2).text()).toContain(trigger.owner.name);
+    });
 
-  it('displays actions in a rows', () => {
-    const [data] = triggers;
-    const confirmWarning =
-      'By revoking a trigger you will break any processes making use of it. Are you sure?';
+    it('displays a "copy to cliboard" button for exposed tokens', () => {
+      expect(findClipboardBtn(0).exists()).toBe(true);
+      expect(findClipboardBtn(0).props('text')).toBe(triggers[0].token);
 
-    expect(findEditBtn(0).attributes('href')).toBe(data.editProjectTriggerPath);
+      expect(findClipboardBtn(1).exists()).toBe(false);
+    });
 
-    expect(findRevokeBtn(0).attributes('href')).toBe(data.projectTriggerPath);
-    expect(findRevokeBtn(0).attributes('data-method')).toBe('delete');
-    expect(findRevokeBtn(0).attributes('data-confirm')).toBe(confirmWarning);
+    it('displays an "invalid" label for tokens without access', () => {
+      expect(findInvalidBadge(0).exists()).toBe(false);
+
+      expect(findInvalidBadge(1).exists()).toBe(true);
+    });
+
+    it('displays a time ago label when last used', () => {
+      expect(findCell(0, 3).text()).toBe('Never');
+
+      expect(findCell(1, 3).findComponent(TimeAgoTooltip).props('time')).toBe(triggers[1].lastUsed);
+    });
+
+    it('displays actions in a rows', () => {
+      const [data] = triggers;
+      const confirmWarning =
+        'By revoking a trigger you will break any processes making use of it. Are you sure?';
+
+      expect(findEditBtn(0).attributes('href')).toBe(data.editProjectTriggerPath);
+
+      expect(findRevokeBtn(0).attributes('href')).toBe(data.projectTriggerPath);
+      expect(findRevokeBtn(0).attributes('data-method')).toBe('delete');
+      expect(findRevokeBtn(0).attributes('data-confirm')).toBe(confirmWarning);
+    });
   });
 
   describe('when there are no triggers set', () => {

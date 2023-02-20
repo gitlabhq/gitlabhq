@@ -1,13 +1,9 @@
 ---
 # Cop supports --autocorrect.
 Performance/StringInclude:
+  Details: grace period
   Exclude:
-    - 'app/models/snippet_repository.rb'
-    - 'config/initializers/macos.rb'
-    - 'config/spring.rb'
-    - 'ee/app/models/ee/container_registry/event.rb'
-    - 'ee/lib/gitlab/auth/smartcard/certificate.rb'
-    - 'lib/kramdown/parser/atlassian_document_format.rb'
-    - 'lib/prometheus/pid_provider.rb'
-    - 'spec/features/projects/jobs_spec.rb'
-    - 'spec/spec_helper.rb'
+    - 'lib/gitlab/github_import/importer/repository_importer.rb'
+    - 'lib/gitlab/legacy_github_import/importer.rb'
+    - 'lib/gitlab/usage_data.rb'
+    - 'rubocop/cop/gitlab/json.rb'

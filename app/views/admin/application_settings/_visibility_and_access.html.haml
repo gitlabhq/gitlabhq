@@ -14,13 +14,15 @@
     .form-group.visibility-level-setting
       = f.label :default_group_visibility, class: 'label-bold'
       = render('shared/visibility_radios', model_method: :default_group_visibility, form: f, selected_level: @application_setting.default_group_visibility, form_model: Group.new)
-    .form-group
-      = f.label :restricted_visibility_levels, class: 'label-bold gl-mb-0'
-      %span.form-text.gl-mt-0.gl-mb-3#restricted-visibility-help
-        = _('Selected levels cannot be used by non-admin users for groups, projects or snippets. If the public level is restricted, user profiles are only visible to logged in users.')
+    %fieldset.form-group.gl-form-group{ data: { testid: 'restricted-visibility-levels' } }
+      %legend.col-form-label
+        = s_('AdminSettings|Restricted visibility levels')
+        %small.form-text.text-gl-muted
+          = s_('AdminSettings|Prevent non-administrators from using the selected visibility levels for groups, projects and snippets.')
       = hidden_field_tag 'application_setting[restricted_visibility_levels][]'
-      - restricted_level_checkboxes(f).each do |level|
-        = level
+      .gl-form-checkbox-group
+        - restricted_level_checkboxes(f).each do |checkbox|
+          = checkbox
     .form-group
       = f.label :import_sources, s_('AdminSettings|Import sources'), class: 'label-bold gl-mb-0'
       %span.form-text.gl-mt-0.gl-mb-3#import-sources-help

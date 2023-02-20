@@ -3,15 +3,15 @@ import AccessRequestActionButtons from '~/members/components/action_buttons/acce
 import GroupActionButtons from '~/members/components/action_buttons/group_action_buttons.vue';
 import InviteActionButtons from '~/members/components/action_buttons/invite_action_buttons.vue';
 import UserActionDropdown from '~/members/components/action_dropdowns/user_action_dropdown.vue';
-import MemberActionButtons from '~/members/components/table/member_action_buttons.vue';
+import MemberActions from '~/members/components/table/member_actions.vue';
 import { MEMBER_TYPES } from '~/members/constants';
 import { member as memberMock, group, invite, accessRequest } from '../../mock_data';
 
-describe('MemberActionButtons', () => {
+describe('MemberActions', () => {
   let wrapper;
 
   const createComponent = (propsData = {}) => {
-    wrapper = shallowMount(MemberActionButtons, {
+    wrapper = shallowMount(MemberActions, {
       propsData: {
         isCurrentUser: false,
         isInvitedUser: false,

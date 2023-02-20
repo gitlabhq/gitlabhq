@@ -8,7 +8,7 @@ RSpec.shared_examples 'filters by paginated notes' do |event_type|
   end
 
   it 'only returns given notes' do
-    paginated_notes = { event_type.to_s.pluralize => [double(id: event.id)] }
+    paginated_notes = { event_type.to_s.pluralize => [double(ids: [event.id])] }
     notes = described_class.new(event.issue, user, paginated_notes: paginated_notes).execute
 
     expect(notes.size).to eq(1)

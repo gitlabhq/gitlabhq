@@ -1,5 +1,4 @@
 import Vue, { nextTick } from 'vue';
-import { GlAlert } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -8,6 +7,8 @@ import setWindowLocation from 'helpers/set_window_location_helper';
 import { stubComponent } from 'helpers/stub_component';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import issueDetailsQuery from 'ee_else_ce/work_items/graphql/get_issue_details.query.graphql';
+import { resolvers } from '~/graphql_shared/issuable_client';
+import WidgetWrapper from '~/work_items/components/widget_wrapper.vue';
 import WorkItemLinks from '~/work_items/components/work_item_links/work_item_links.vue';
 import WorkItemLinkChild from '~/work_items/components/work_item_links/work_item_link_child.vue';
 import WorkItemDetailModal from '~/work_items/components/work_item_detail_modal.vue';
@@ -17,6 +18,7 @@ import changeWorkItemParentMutation from '~/work_items/graphql/update_work_item.
 import getWorkItemLinksQuery from '~/work_items/graphql/work_item_links.query.graphql';
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
 import {
+  getIssueDetailsResponse,
   workItemHierarchyResponse,
   workItemHierarchyEmptyResponse,
   workItemHierarchyNoUpdatePermissionResponse,
@@ -27,39 +29,6 @@ import {
 
 Vue.use(VueApollo);
 
-const issueDetailsResponse = (confidential = false) => ({
-  data: {
-    workspace: {
-      id: 'gid://gitlab/Project/1',
-      issuable: {
-        id: 'gid://gitlab/Issue/4',
-        confidential,
-        iteration: {
-          id: 'gid://gitlab/Iteration/1124',
-          title: null,
-          startDate: '2022-06-22',
-          dueDate: '2022-07-19',
-          webUrl: 'http://127.0.0.1:3000/groups/gitlab-org/-/iterations/1124',
-          iterationCadence: {
-            id: 'gid://gitlab/Iterations::Cadence/1101',
-            title: 'Quod voluptates quidem ea eaque eligendi ex corporis.',
-            __typename: 'IterationCadence',
-          },
-          __typename: 'Iteration',
-        },
-        milestone: {
-          dueDate: null,
-          expired: false,
-          id: 'gid://gitlab/Milestone/28',
-          title: 'v2.0',
-          __typename: 'Milestone',
-        },
-        __typename: 'Issue',
-      },
-      __typename: 'Project',
-    },
-  },
-});
 const showModal = jest.fn();
 
 describe('WorkItemLinks', () => {
@@ -83,7 +52,7 @@ describe('WorkItemLinks', () => {
     data = {},
     fetchHandler = jest.fn().mockResolvedValue(workItemHierarchyResponse),
     mutationHandler = mutationChangeParentHandler,
-    issueDetailsQueryHandler = jest.fn().mockResolvedValue(issueDetailsResponse()),
+    issueDetailsQueryHandler = jest.fn().mockResolvedValue(getIssueDetailsResponse()),
     hasIterationsFeature = false,
     fetchByIid = false,
   } = {}) => {
@@ -95,7 +64,7 @@ describe('WorkItemLinks', () => {
         [issueDetailsQuery, issueDetailsQueryHandler],
         [workItemByIidQuery, childWorkItemByIidHandler],
       ],
-      {},
+      resolvers,
       { addTypename: true },
     );
 
@@ -127,12 +96,12 @@ describe('WorkItemLinks', () => {
       },
     });
 
+    wrapper.vm.$refs.wrapper.show = jest.fn();
+
     await waitForPromises();
   };
 
-  const findAlert = () => wrapper.findComponent(GlAlert);
-  const findToggleButton = () => wrapper.findByTestId('toggle-links');
-  const findLinksBody = () => wrapper.findByTestId('links-body');
+  const findWidgetWrapper = () => wrapper.findComponent(WidgetWrapper);
   const findEmptyState = () => wrapper.findByTestId('links-empty');
   const findToggleFormDropdown = () => wrapper.findByTestId('toggle-form');
   const findToggleAddFormButton = () => wrapper.findByTestId('toggle-add-form');
@@ -142,31 +111,14 @@ describe('WorkItemLinks', () => {
   const findAddLinksForm = () => wrapper.findByTestId('add-links-form');
   const findChildrenCount = () => wrapper.findByTestId('children-count');
 
-  beforeEach(async () => {
-    await createComponent();
-  });
-
   afterEach(() => {
-    wrapper.destroy();
     mockApollo = null;
     setWindowLocation('');
   });
 
-  it('is expanded by default', () => {
-    expect(findToggleButton().props('icon')).toBe('chevron-lg-up');
-    expect(findLinksBody().exists()).toBe(true);
-  });
-
-  it('collapses on click toggle button', async () => {
-    findToggleButton().vm.$emit('click');
-    await nextTick();
-
-    expect(findToggleButton().props('icon')).toBe('chevron-lg-down');
-    expect(findLinksBody().exists()).toBe(false);
-  });
-
   describe('add link form', () => {
     it('displays add work item form on click add dropdown then add existing button and hides form on cancel', async () => {
+      await createComponent();
       findToggleFormDropdown().vm.$emit('click');
       findToggleAddFormButton().vm.$emit('click');
       await nextTick();
@@ -181,6 +133,7 @@ describe('WorkItemLinks', () => {
     });
 
     it('displays create work item form on click add dropdown then create button and hides form on cancel', async () => {
+      await createComponent();
       findToggleFormDropdown().vm.$emit('click');
       findToggleCreateFormButton().vm.$emit('click');
       await nextTick();
@@ -192,6 +145,24 @@ describe('WorkItemLinks', () => {
       await nextTick();
 
       expect(findAddLinksForm().exists()).toBe(false);
+    });
+
+    it('adds work item child from the form', async () => {
+      const workItem = {
+        ...workItemQueryResponse.data.workItem,
+        id: 'gid://gitlab/WorkItem/11',
+      };
+      await createComponent();
+      findToggleFormDropdown().vm.$emit('click');
+      findToggleCreateFormButton().vm.$emit('click');
+      await nextTick();
+
+      expect(findWorkItemLinkChildItems()).toHaveLength(4);
+
+      findAddLinksForm().vm.$emit('addWorkItemChild', workItem);
+      await waitForPromises();
+
+      expect(findWorkItemLinkChildItems()).toHaveLength(5);
     });
   });
 
@@ -207,8 +178,8 @@ describe('WorkItemLinks', () => {
     });
   });
 
-  it('renders all hierarchy widget children', () => {
-    expect(findLinksBody().exists()).toBe(true);
+  it('renders all hierarchy widget children', async () => {
+    await createComponent();
 
     expect(findWorkItemLinkChildItems()).toHaveLength(4);
   });
@@ -219,15 +190,13 @@ describe('WorkItemLinks', () => {
       fetchHandler: jest.fn().mockRejectedValue(new Error(errorMessage)),
     });
 
-    await nextTick();
-
-    expect(findAlert().exists()).toBe(true);
-    expect(findAlert().text()).toBe(errorMessage);
+    expect(findWidgetWrapper().props('error')).toBe(errorMessage);
   });
 
-  it('displays number if children', () => {
-    expect(findChildrenCount().exists()).toBe(true);
+  it('displays number of children', async () => {
+    await createComponent();
 
+    expect(findChildrenCount().exists()).toBe(true);
     expect(findChildrenCount().text()).toContain('4');
   });
 
@@ -294,7 +263,9 @@ describe('WorkItemLinks', () => {
   describe('when parent item is confidential', () => {
     it('passes correct confidentiality status to form', async () => {
       await createComponent({
-        issueDetailsQueryHandler: jest.fn().mockResolvedValue(issueDetailsResponse(true)),
+        issueDetailsQueryHandler: jest
+          .fn()
+          .mockResolvedValue(getIssueDetailsResponse({ confidential: true })),
       });
       findToggleFormDropdown().vm.$emit('click');
       findToggleAddFormButton().vm.$emit('click');

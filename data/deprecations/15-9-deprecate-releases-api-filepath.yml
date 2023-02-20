@@ -1,0 +1,23 @@
+- title: "Filepath field in Releases and Release Links APIs"
+  announcement_milestone: "15.9"
+  announcement_date: "2023-02-22"
+  removal_milestone: "17.0"
+  removal_date: "2024-04-22"
+  breaking_change: true
+  reporter: cbalane
+  body: |
+    Support for specifying a `filepath` for a direct asset link in the [Releases API](https://docs.gitlab.com/ee/api/releases)
+    and [Release Links API](https://docs.gitlab.com/ee/api/releases/links.html) is deprecated in GitLab 15.9 and will be
+    removed in GitLab 17.0. GitLab introduced a new field called `direct_asset_path` in GitLab 15.9 to replace `filepath`
+    until it is finally removed.
+
+    To avoid any disruptions, you should replace `filepath` with `direct_asset_path` in your calls to the following endpoints:
+
+    - Releases API:
+      - [Create a release](https://docs.gitlab.com/ee/api/releases/#create-a-release)
+      - [Download a release asset](https://docs.gitlab.com/ee/api/releases/#download-a-release-asset)
+    - Release Links API:
+      - [Create a release link](https://docs.gitlab.com/ee/api/releases/links.html#create-a-release-link)
+      - [Update a release link](https://docs.gitlab.com/ee/api/releases/links.html#update-a-release-link)
+  stage: Release
+  issue_url: https://gitlab.com/groups/gitlab-org/-/epics/9661

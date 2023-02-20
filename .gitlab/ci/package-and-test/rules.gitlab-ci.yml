@@ -43,9 +43,9 @@
 
 .rules:dont-interrupt:
   rules:
-    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
+    - if: '$CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH && $CI_MERGE_REQUEST_IID == null'
       allow_failure: true
-    - if: $CI_MERGE_REQUEST_IID
+    - if: '$CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached"'
       when: manual
       allow_failure: true
 
@@ -56,6 +56,15 @@
     - when: always
 
 .rules:update-cache:
+  rules:
+    - <<: *not-canonical-project
+      when: never
+    - when: always
+
+# This job requires project access token with api permissions to detect parallel jobs,
+# it is problematic to set for every project that would include this template
+# Because parallel jobs themselves can download knapsack report, skip for non canonical runs
+.rules:download-knapsack:
   rules:
     - <<: *not-canonical-project
       when: never
@@ -80,7 +89,7 @@
 
 # parallel and non parallel rules are used for jobs that require parallel execution and thus need to switch
 # between parallel and non parallel when only certain specs are executed
-.rules:test:qa-non-parallel:
+.rules:test:qa-selective:
   rules:
     # always run parallel with full suite when framework changes present or ff state changed
     - <<: *qa-run-all-tests

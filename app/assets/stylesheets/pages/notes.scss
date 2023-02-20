@@ -70,6 +70,9 @@ $system-note-svg-size: 1rem;
         align-items: center;
         gap: 0 0.25rem;
         flex-wrap: wrap;
+        line-height: $gl-line-height-20;
+        padding-top: $gl-padding-6;
+        padding-bottom: $gl-padding-6;
       }
     }
 
@@ -217,6 +220,9 @@ $system-note-svg-size: 1rem;
       align-items: center;
       gap: 0 0.25rem;
       flex-wrap: wrap;
+      padding-top: $gl-padding-6;
+      padding-bottom: $gl-padding-6;
+      line-height: $gl-line-height-20;
     }
   }
 
@@ -631,6 +637,11 @@ $system-note-svg-size: 1rem;
           &.new {
             border-right-width: 0;
           }
+
+          .note-header {
+            flex-wrap: wrap;
+            align-items: center;
+          }
         }
 
         .notes {
@@ -660,6 +671,7 @@ $system-note-svg-size: 1rem;
   }
 
   .discussion-reply-holder {
+    border-top: 0;
     border-radius: 0 0 $border-radius-default $border-radius-default;
     position: relative;
 
@@ -772,8 +784,7 @@ $system-note-svg-size: 1rem;
 .note-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
+  align-items: flex-start;
 
   > .note-header-info,
   > .note-actions {

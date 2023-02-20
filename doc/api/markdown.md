@@ -20,7 +20,7 @@ To remove the requirement to authenticate, ask an administrator to
 [disable the feature flag](../administration/feature_flags.md) named `authenticate_markdown_api`.
 On GitLab.com, this feature is available.
 
-All API calls to the Markdown API must be [authenticated](index.md#authentication).
+All API calls to the Markdown API must be [authenticated](rest/index.md#authentication).
 
 ## Render an arbitrary Markdown document
 

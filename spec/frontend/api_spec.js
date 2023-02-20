@@ -206,7 +206,7 @@ describe('Api', () => {
         expires_at: undefined,
       };
 
-      mock.onPost(expectedUrl).reply(200, {
+      mock.onPost(expectedUrl).reply(HTTP_STATUS_OK, {
         status: 'success',
       });
 
@@ -478,7 +478,7 @@ describe('Api', () => {
 
       jest.spyOn(axios, 'post');
 
-      mock.onPost(expectedUrl).reply(200, {
+      mock.onPost(expectedUrl).reply(HTTP_STATUS_OK, {
         status: 'success',
       });
 
@@ -494,7 +494,7 @@ describe('Api', () => {
       const projectId = 1;
       const options = { state: 'active' };
       const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/1/milestones`;
-      mock.onGet(expectedUrl).reply(200, [
+      mock.onGet(expectedUrl).reply(HTTP_STATUS_OK, [
         {
           id: 1,
           title: 'milestone1',
@@ -514,7 +514,7 @@ describe('Api', () => {
       const projectId = 1;
       const issueIid = 11;
       const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/1/issues/11/todo`;
-      mock.onPost(expectedUrl).reply(200, {
+      mock.onPost(expectedUrl).reply(HTTP_STATUS_OK, {
         id: 112,
         project: {
           id: 1,
@@ -541,7 +541,7 @@ describe('Api', () => {
         expires_at: undefined,
       };
 
-      mock.onPost(expectedUrl).reply(200, {
+      mock.onPost(expectedUrl).reply(HTTP_STATUS_OK, {
         status: 'success',
       });
 
@@ -625,7 +625,7 @@ describe('Api', () => {
       const query = 'dummy query';
       const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/groups/${groupId}/projects.json`;
 
-      mock.onGet(expectedUrl).reply(500, null);
+      mock.onGet(expectedUrl).reply(HTTP_STATUS_INTERNAL_SERVER_ERROR, null);
       const apiCall = Api.groupProjects(groupId, query, {});
       await expect(apiCall).rejects.toThrow();
     });
@@ -644,7 +644,7 @@ describe('Api', () => {
 
       jest.spyOn(axios, 'post');
 
-      mock.onPost(expectedUrl).reply(200, {
+      mock.onPost(expectedUrl).reply(HTTP_STATUS_OK, {
         status: 'success',
       });
 
@@ -958,7 +958,7 @@ describe('Api', () => {
 
       jest.spyOn(axios, 'post');
 
-      mock.onPost(expectedUrl).replyOnce(200, [
+      mock.onPost(expectedUrl).replyOnce(HTTP_STATUS_OK, [
         {
           id: 'abcdefghijklmnop',
           short_id: 'abcdefg',
@@ -984,7 +984,9 @@ describe('Api', () => {
 
       mock
         .onGet(expectedUrl)
-        .replyOnce(200, [{ id: 'abcdef', short_id: 'abcdefghi', title: 'Dummy commit title' }]);
+        .replyOnce(HTTP_STATUS_OK, [
+          { id: 'abcdef', short_id: 'abcdefghi', title: 'Dummy commit title' },
+        ]);
 
       return Api.allContextCommits(projectPath, mergeRequestId).then(({ data }) => {
         expect(data[0].title).toBe('Dummy commit title');
@@ -1004,7 +1006,7 @@ describe('Api', () => {
 
       jest.spyOn(axios, 'delete');
 
-      mock.onDelete(expectedUrl).replyOnce(204);
+      mock.onDelete(expectedUrl).replyOnce(HTTP_STATUS_NO_CONTENT);
 
       return Api.removeContextCommits(projectPath, mergeRequestId, expectedData).then(() => {
         expect(axios.delete).toHaveBeenCalledWith(expectedUrl, { data: expectedData });

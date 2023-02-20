@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe MergeRequest::CleanupSchedule do
+RSpec.describe MergeRequest::CleanupSchedule, feature_category: :code_review_workflow do
   describe 'associations' do
     it { is_expected.to belong_to(:merge_request) }
   end

@@ -5,7 +5,5 @@ export const IDE_DATASET = {
   pipelinesEmptyStateSvgPath: '/test/pipelines_empty_state.svg',
   promotionSvgPath: '/test/promotion.svg',
   webIDEHelpPagePath: '/test/web_ide_help_page',
-  clientsidePreviewEnabled: 'true',
   renderWhitespaceInCode: 'false',
-  codesandboxBundlerUrl: 'test/codesandbox_bundler',
 };

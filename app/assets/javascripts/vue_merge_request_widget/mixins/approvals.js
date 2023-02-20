@@ -1,14 +1,15 @@
-import { hideFlash } from '~/flash';
-
 export default {
+  data() {
+    return {
+      alerts: [],
+    };
+  },
   methods: {
     clearError() {
       this.$emit('clearError');
       this.hasApprovalAuthError = false;
-      const flashEl = document.querySelector('.flash-alert');
-      if (flashEl) {
-        hideFlash(flashEl);
-      }
+      this.alerts.forEach((alert) => alert.dismiss());
+      this.alerts = [];
     },
     refreshApprovals() {
       return this.service.fetchApprovals().then((data) => {

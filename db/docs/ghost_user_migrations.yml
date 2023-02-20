@@ -3,7 +3,7 @@ table_name: ghost_user_migrations
 classes:
 - Users::GhostUserMigration
 feature_categories:
-- users
+- user_profile
 description: Users records awaiting for their associated records to be migrated to ghost user
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95473
 milestone: '15.4'

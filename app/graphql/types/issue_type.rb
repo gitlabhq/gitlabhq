@@ -54,19 +54,24 @@ module Types
                                                   description: 'Indicates the issue is confidential.'
     field :discussion_locked, GraphQL::Types::Boolean, null: false,
                                                        description: 'Indicates discussion is locked on the issue.'
-    field :due_date, Types::TimeType, null: true,
-                                      description: 'Due date of the issue.'
-    field :hidden, GraphQL::Types::Boolean, null: true, resolver_method: :hidden?,
-                                            description: 'Indicates the issue is hidden because the author has been banned. ' \
-          'Will always return `null` if `ban_user_feature_flag` feature flag is disabled.'
-
     field :downvotes, GraphQL::Types::Int,
           null: false,
           description: 'Number of downvotes the issue has received.',
           resolver: Resolvers::DownVotesCountResolver
+    field :due_date, Types::TimeType, null: true,
+                                      description: 'Due date of the issue.'
+    field :hidden, GraphQL::Types::Boolean, null: true,
+                                            description: 'Indicates the issue is hidden because the author has been banned.', method: :hidden?
     field :merge_requests_count, GraphQL::Types::Int, null: false,
                                                       description: 'Number of merge requests that close the issue on merge.',
                                                       resolver: Resolvers::MergeRequestsCountResolver
+
+    field :related_merge_requests, Types::MergeRequestType.connection_type,
+                                   null: true,
+                                   description: 'Merge requests related to the issue. This field can only be resolved for one issue in any single request.' do
+      extension ::Gitlab::Graphql::Limit::FieldCallCount, limit: 1
+    end
+
     field :relative_position, GraphQL::Types::Int, null: true,
                                                    description: 'Relative position of the issue (used for positioning in epic tree and issue boards).'
     field :upvotes, GraphQL::Types::Int,
@@ -182,16 +187,23 @@ module Types
       Gitlab::Graphql::Loaders::BatchModelLoader.new(Issue, object.duplicated_to_id).find
     end
 
+    def related_merge_requests
+      # rubocop: disable CodeReuse/ActiveRecord
+      MergeRequest.where(
+        id: ::Issues::ReferencedMergeRequestsService.new(container: object.project, current_user: current_user)
+        .execute(object)
+        .first
+        .map(&:id)
+      )
+      # rubocop: enable CodeReuse/ActiveRecord
+    end
+
     def discussion_locked
       !!object.discussion_locked
     end
 
     def create_note_email
       object.creatable_note_email_address(context[:current_user])
-    end
-
-    def hidden?
-      object.hidden? if Feature.enabled?(:ban_user_feature_flag)
     end
 
     def escalation_status

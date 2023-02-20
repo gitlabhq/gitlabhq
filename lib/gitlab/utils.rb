@@ -83,7 +83,11 @@ module Gitlab
 
     # Append path to host, making sure there's one single / in between
     def append_path(host, path)
-      "#{host.to_s.sub(%r{\/+$}, '')}/#{path.to_s.sub(%r{^\/+}, '')}"
+      "#{host.to_s.sub(%r{\/+$}, '')}/#{remove_leading_slashes(path)}"
+    end
+
+    def remove_leading_slashes(str)
+      str.to_s.sub(%r{^/+}, '')
     end
 
     # A slugified version of the string, suitable for inclusion in URLs and

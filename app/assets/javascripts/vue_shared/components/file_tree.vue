@@ -20,11 +20,16 @@ export default {
       return this.file.isHeader ? 0 : this.level + 1;
     },
   },
+  methods: {
+    hasChildren(childFile) {
+      return childFile.tree?.length;
+    },
+  },
 };
 </script>
 
 <template>
-  <div>
+  <div :style="{ '--level': level }">
     <component
       :is="fileRowComponent"
       :level="level"
@@ -39,6 +44,8 @@ export default {
         :file-row-component="fileRowComponent"
         :level="childFilesLevel"
         :file="childFile"
+        :class="{ 'tree-list-parent': hasChildren(childFile) }"
+        class="gl-relative"
         v-bind="$attrs"
         v-on="$listeners"
       />

@@ -3,14 +3,9 @@ import {
   convertObjectPropsToCamelCase,
   convertObjectPropsToSnakeCase,
 } from '~/lib/utils/common_utils';
+import { TYPENAME_CI_VARIABLE, TYPENAME_GROUP, TYPENAME_PROJECT } from '~/graphql_shared/constants';
 import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
-import {
-  GRAPHQL_GROUP_TYPE,
-  GRAPHQL_PROJECT_TYPE,
-  groupString,
-  instanceString,
-  projectString,
-} from '../constants';
+import { groupString, instanceString, projectString } from '../constants';
 import getProjectVariables from './queries/project_variables.query.graphql';
 import getGroupVariables from './queries/group_variables.query.graphql';
 import getAdminVariables from './queries/variables.query.graphql';
@@ -30,7 +25,7 @@ const mapVariableTypes = (variables = [], kind) => {
     return {
       __typename: `Ci${kind}Variable`,
       ...convertObjectPropsToCamelCase(ciVar),
-      id: convertToGraphQLId('Ci::Variable', ciVar.id),
+      id: convertToGraphQLId(TYPENAME_CI_VARIABLE, ciVar.id),
       variableType: ciVar.variable_type ? ciVar.variable_type.toUpperCase() : ciVar.variableType,
     };
   });
@@ -40,10 +35,10 @@ const prepareProjectGraphQLResponse = ({ data, id, errors = [] }) => {
   return {
     errors,
     project: {
-      __typename: GRAPHQL_PROJECT_TYPE,
-      id: convertToGraphQLId(GRAPHQL_PROJECT_TYPE, id),
+      __typename: TYPENAME_PROJECT,
+      id: convertToGraphQLId(TYPENAME_PROJECT, id),
       ciVariables: {
-        __typename: `Ci${GRAPHQL_PROJECT_TYPE}VariableConnection`,
+        __typename: 'CiProjectVariableConnection',
         pageInfo: {
           __typename: 'PageInfo',
           hasNextPage: false,
@@ -61,10 +56,10 @@ const prepareGroupGraphQLResponse = ({ data, id, errors = [] }) => {
   return {
     errors,
     group: {
-      __typename: GRAPHQL_GROUP_TYPE,
-      id: convertToGraphQLId(GRAPHQL_GROUP_TYPE, id),
+      __typename: TYPENAME_GROUP,
+      id: convertToGraphQLId(TYPENAME_GROUP, id),
       ciVariables: {
-        __typename: `Ci${GRAPHQL_GROUP_TYPE}VariableConnection`,
+        __typename: `CiGroupVariableConnection`,
         pageInfo: {
           __typename: 'PageInfo',
           hasNextPage: false,

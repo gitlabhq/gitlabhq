@@ -37,7 +37,7 @@ RSpec.describe Gitlab::Ci::CronParser do
       end
     end
 
-    context 'when slash used' do
+    context 'when */ used' do
       let(:cron) { '*/10 */6 */10 */10 *' }
       let(:cron_timezone) { 'UTC' }
 
@@ -63,8 +63,19 @@ RSpec.describe Gitlab::Ci::CronParser do
       end
     end
 
-    context 'when range and slash used' do
+    context 'when range and / are used' do
       let(:cron) { '3-59/10 * * * *' }
+      let(:cron_timezone) { 'UTC' }
+
+      it_behaves_like returns_time_for_epoch
+
+      it 'returns specific time' do
+        expect(subject.min).to be_in([3, 13, 23, 33, 43, 53])
+      end
+    end
+
+    context 'when / is used' do
+      let(:cron) { '3/10 * * * *' }
       let(:cron_timezone) { 'UTC' }
 
       it_behaves_like returns_time_for_epoch

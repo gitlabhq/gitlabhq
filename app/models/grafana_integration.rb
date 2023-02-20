@@ -45,7 +45,7 @@ class GrafanaIntegration < ApplicationRecord
   end
 
   def token
-    decrypt(:token, encrypted_token)
+    attr_decrypt(:token, encrypted_token)
   end
 
   def check_token_changes

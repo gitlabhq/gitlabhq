@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::Migrations::BatchedMigrationLastId, feature_category: :pipeline_insights do
+RSpec.describe Gitlab::Database::Migrations::BatchedMigrationLastId, feature_category: :database do
   subject(:test_sampling) { described_class.new(connection, base_dir) }
 
   let(:base_dir) { Pathname.new(Dir.mktmpdir) }

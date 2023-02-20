@@ -1,18 +1,18 @@
 # frozen_string_literal: true
 
 module Issues
-  class ExportCsvService < Issuable::ExportCsv::BaseService
+  class ExportCsvService < ExportCsv::BaseService
     include Gitlab::Routing.url_helpers
     include GitlabRoutingHelper
 
-    def initialize(issuables_relation, project, user = nil)
-      super(issuables_relation, project)
+    def initialize(relation, resource_parent, user = nil)
+      super(relation, resource_parent)
 
-      @labels = @issuables.labels_hash.transform_values { |labels| labels.sort.join(',').presence }
+      @labels = objects.labels_hash.transform_values { |labels| labels.sort.join(',').presence }
     end
 
     def email(mail_to_user)
-      Notify.issues_csv_email(mail_to_user, project, csv_data, csv_builder.status).deliver_now
+      Notify.issues_csv_email(mail_to_user, resource_parent, csv_data, csv_builder.status).deliver_now
     end
 
     private
@@ -55,6 +55,10 @@ module Issues
       issue.timelogs.sum(&:time_spent)
     end
     # rubocop: enable CodeReuse/ActiveRecord
+
+    def preload_associations_in_batches?
+      Feature.enabled?(:export_csv_preload_in_batches, resource_parent)
+    end
   end
 end
 

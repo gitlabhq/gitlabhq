@@ -78,7 +78,7 @@ module QA
         end
 
         def update_design(filename)
-          filepath = ::File.join('qa', 'fixtures', 'designs', 'update', filename)
+          filepath = ::File.join(Runtime::Path.fixtures_path, 'designs', 'update', filename)
           add_design(filepath)
         end
 

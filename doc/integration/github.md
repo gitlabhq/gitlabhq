@@ -35,7 +35,9 @@ your website could enable the covert redirect attack.
 
 ## Enable GitHub OAuth in GitLab
 
-1. [Configure the initial settings](omniauth.md#configure-initial-settings) in GitLab.
+1. Edit the [common configuration file settings](omniauth.md#configure-common-settings)
+   to add `github` as a single sign-on provider. This enables Just-In-Time
+   account provisioning for users who do not have an existing GitLab account.
 
 1. Edit the GitLab configuration file using the following information:
 
@@ -231,7 +233,7 @@ and then connect it to your GitHub account
 
 To fix this issue, you must activate GitHub sign-in in GitLab:
 
-1. On the top bar, in the top right corner, select your avatar.
+1. On the top bar, in the upper-right corner, select your avatar.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Account**.
 1. In the **Service sign-in** section, select **Connect to GitHub**.

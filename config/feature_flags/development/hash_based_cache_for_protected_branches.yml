@@ -1,8 +1,0 @@
----
-name: hash_based_cache_for_protected_branches
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92934
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/368279
-milestone: '15.3'
-type: development
-group: group::source code
-default_enabled: true

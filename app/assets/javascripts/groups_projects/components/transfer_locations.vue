@@ -25,6 +25,7 @@ export const i18n = {
     'ProjectTransfer|An error occurred fetching the transfer locations, please refresh the page and try again.',
   ),
   ALERT_DISMISS_LABEL: __('Dismiss'),
+  NO_RESULTS_TEXT: __('No results found.'),
 };
 
 export default {
@@ -90,6 +91,9 @@ export default {
     hasGroupTransferLocations() {
       return this.groupTransferLocations.length;
     },
+    hasAdditionalDropdownItems() {
+      return this.filteredAdditionalDropdownItems.length;
+    },
     selectedText() {
       return this.value?.humanName || this.label;
     },
@@ -98,6 +102,17 @@ export default {
     },
     showAdditionalDropdownItems() {
       return !this.isLoading && this.filteredAdditionalDropdownItems.length;
+    },
+    hasNoResults() {
+      if (this.isLoading || this.isSearchLoading) {
+        return false;
+      }
+
+      return (
+        !this.hasAdditionalDropdownItems &&
+        !this.hasUserTransferLocations &&
+        !this.hasGroupTransferLocations
+      );
     },
   },
   watch: {
@@ -274,6 +289,9 @@ export default {
             >{{ item.humanName }}</gl-dropdown-item
           >
         </div>
+        <gl-dropdown-item v-if="hasNoResults" button-class="gl-text-gray-900!" disabled>{{
+          $options.i18n.NO_RESULTS_TEXT
+        }}</gl-dropdown-item>
         <gl-loading-icon v-if="isLoading" class="gl-mb-3" size="sm" />
         <gl-intersection-observer v-if="hasNextPageOfGroups" @appear="handleLoadMoreGroups" />
       </gl-dropdown>

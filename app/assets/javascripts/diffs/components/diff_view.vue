@@ -59,7 +59,12 @@ export default {
   },
   computed: {
     ...mapGetters('diffs', ['commitId', 'fileLineCoverage']),
-    ...mapState('diffs', ['codequalityDiff', 'highlightedRow', 'coverageLoaded']),
+    ...mapState('diffs', [
+      'codequalityDiff',
+      'highlightedRow',
+      'coverageLoaded',
+      'selectedCommentPosition',
+    ]),
     ...mapState({
       selectedCommentPosition: ({ notes }) => notes.selectedCommentPosition,
       selectedCommentPositionHover: ({ notes }) => notes.selectedCommentPositionHover,
@@ -143,6 +148,14 @@ export default {
         line.left?.line_code ? line.left : line.right,
         false,
       );
+    },
+    isFirstHighlightedLine(line) {
+      const lineCode = line.left?.line_code || line.right?.line_code;
+      return lineCode && lineCode === this.selectedCommentPosition?.start.line_code;
+    },
+    isLastHighlightedLine(line) {
+      const lineCode = line.left?.line_code || line.right?.line_code;
+      return lineCode && lineCode === this.selectedCommentPosition?.end.line_code;
     },
     handleParallelLineMouseDown(e) {
       const line = e.target.closest('.diff-td');
@@ -230,10 +243,14 @@ export default {
         :line="line"
         :is-bottom="index + 1 === diffLinesLength"
         :is-commented="index >= commentedLines.startLine && index <= commentedLines.endLine"
+        :is-highlighted="isHighlighted(line)"
+        :is-first-highlighted-line="
+          isFirstHighlightedLine(line) || index === commentedLines.startLine
+        "
+        :is-last-highlighted-line="isLastHighlightedLine(line) || index === commentedLines.endLine"
         :inline="inline"
         :index="index"
         :code-quality-expanded="codeQualityExpandedLines.includes(getCodeQualityLine(line))"
-        :is-highlighted="isHighlighted(line)"
         :file-line-coverage="fileLineCoverage"
         :coverage-loaded="coverageLoaded"
         @showCommentForm="(code) => singleLineComment(code, line)"

@@ -40,6 +40,7 @@ The following API resources are available in the project context:
 | [Deploy tokens](deploy_tokens.md)                                       | `/projects/:id/deploy_tokens` (also available for groups and standalone)                                                                                                                              |
 | [Deployments](deployments.md)                                           | `/projects/:id/deployments`                                                                                                                                                                           |
 | [Discussions](discussions.md) (threaded comments)                       | `/projects/:id/issues/.../discussions`, `/projects/:id/snippets/.../discussions`, `/projects/:id/merge_requests/.../discussions`, `/projects/:id/commits/.../discussions` (also available for groups) |
+| [Draft Notes](draft_notes.md) (comments)                                            | `/projects/:id/merge_requests/.../draft_notes`
 | [Environments](environments.md)                                         | `/projects/:id/environments`                                                                                                                                                                          |
 | [Error Tracking](error_tracking.md)                                     | `/projects/:id/error_tracking/settings`                                                                                                                                                               |
 | [Events](events.md)                                                     | `/projects/:id/events` (also available for users and standalone)                                                                                                                                      |
@@ -134,6 +135,7 @@ The following API resources are available in the group context:
 | [Issues](issues.md)                                              | `/groups/:id/issues` (also available for projects and standalone) |
 | [Issues Statistics](issues_statistics.md)                        | `/groups/:id/issues_statistics` (also available for projects and standalone) |
 | [Linked epics](linked_epics.md)                  | `/groups/:id/epics/.../related_epics` |
+| [Member Roles](member_roles.md)                                  | `/groups/:id/member_roles` |
 | [Members](members.md)                                            | `/groups/:id/members` (also available for projects) |
 | [Merge requests](merge_requests.md)                              | `/groups/:id/merge_requests` (also available for projects and standalone) |
 | [Notes](notes.md) (comments)                                     | `/groups/:id/epics/.../notes` (also available for projects) |

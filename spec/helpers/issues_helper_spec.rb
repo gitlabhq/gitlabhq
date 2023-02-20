@@ -300,7 +300,6 @@ RSpec.describe IssuesHelper do
         import_csv_issues_path: '#',
         initial_email: project.new_issuable_address(current_user, 'issue'),
         initial_sort: current_user&.user_preference&.issues_sort,
-        is_anonymous_search_disabled: 'true',
         is_issue_repositioning_disabled: 'true',
         is_project: 'true',
         is_public_visibility_restricted: Gitlab::CurrentSettings.restricted_visibility_levels ? 'false' : '',
@@ -323,10 +322,6 @@ RSpec.describe IssuesHelper do
   end
 
   describe '#project_issues_list_data' do
-    before do
-      stub_feature_flags(disable_anonymous_search: true)
-    end
-
     context 'when user is signed in' do
       it_behaves_like 'issues list data' do
         let(:current_user) { double.as_null_object }
@@ -483,20 +478,8 @@ RSpec.describe IssuesHelper do
       let_it_be(:banned_user) { build(:user, :banned) }
       let_it_be(:hidden_issue) { build(:issue, author: banned_user) }
 
-      context 'when `ban_user_feature_flag` feature flag is enabled' do
-        it 'returns `true`' do
-          expect(helper.issue_hidden?(hidden_issue)).to eq(true)
-        end
-      end
-
-      context 'when `ban_user_feature_flag` feature flag is disabled' do
-        before do
-          stub_feature_flags(ban_user_feature_flag: false)
-        end
-
-        it 'returns `false`' do
-          expect(helper.issue_hidden?(hidden_issue)).to eq(false)
-        end
+      it 'returns `true`' do
+        expect(helper.issue_hidden?(hidden_issue)).to eq(true)
       end
     end
 

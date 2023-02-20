@@ -255,6 +255,15 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: cronjob:ci_runners_stale_machines_cleanup_cron
+  :worker_name: Ci::Runners::StaleMachinesCleanupCronWorker
+  :feature_category: :runner_fleet
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: cronjob:ci_schedule_delete_objects_cron
   :worker_name: Ci::ScheduleDeleteObjectsCronWorker
   :feature_category: :continuous_integration
@@ -653,7 +662,7 @@
   :tags: []
 - :name: cronjob:prune_old_events
   :worker_name: PruneOldEventsWorker
-  :feature_category: :users
+  :feature_category: :user_profile
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -806,7 +815,7 @@
   :tags: []
 - :name: cronjob:user_status_cleanup_batch
   :worker_name: UserStatusCleanup::BatchWorker
-  :feature_category: :users
+  :feature_category: :user_profile
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -815,7 +824,7 @@
   :tags: []
 - :name: cronjob:users_create_statistics
   :worker_name: Users::CreateStatisticsWorker
-  :feature_category: :users
+  :feature_category: :user_profile
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -833,7 +842,7 @@
   :tags: []
 - :name: cronjob:users_migrate_records_to_ghost_user_in_batches
   :worker_name: Users::MigrateRecordsToGhostUserInBatchesWorker
-  :feature_category: :users
+  :feature_category: :user_profile
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -2192,7 +2201,7 @@
   :tags: []
 - :name: approve_blocked_pending_approval_users
   :worker_name: ApproveBlockedPendingApprovalUsersWorker
-  :feature_category: :users
+  :feature_category: :user_profile
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -2298,6 +2307,15 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: ci_cancel_redundant_pipelines
+  :worker_name: Ci::CancelRedundantPipelinesWorker
+  :feature_category: :continuous_integration
+  :has_external_dependencies: false
+  :urgency: :high
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: ci_delete_objects
   :worker_name: Ci::DeleteObjectsWorker
   :feature_category: :continuous_integration
@@ -2318,7 +2336,7 @@
   :tags: []
 - :name: ci_parse_secure_file_metadata
   :worker_name: Ci::ParseSecureFileMetadataWorker
-  :feature_category: :mobile_signing_deployment
+  :feature_category: :mobile_devops
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -2917,7 +2935,7 @@
   :urgency: :high
   :resource_boundary: :cpu
   :weight: 2
-  :idempotent: false
+  :idempotent: true
   :tags: []
 - :name: new_note
   :worker_name: NewNoteWorker
@@ -3146,7 +3164,7 @@
   :tags: []
 - :name: projects_record_target_platforms
   :worker_name: Projects::RecordTargetPlatformsWorker
-  :feature_category: :experimentation_activation
+  :feature_category: :projects
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown

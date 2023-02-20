@@ -1,0 +1,26 @@
+---
+hostname: gdk.test
+sshd:
+  additional_config: 'AcceptEnv GIT_PROTOCOL'
+webpack:
+  live_reload: false
+  sourcemaps: false
+  incremental: false
+gdk:
+  ask_to_restart_after_update: false
+  auto_reconfigure: false
+  overwrite_changes: true
+  quiet: false
+gitlab:
+  rails:
+    bootsnap: false
+    hostname: gdk.test
+gitlab_k8s_agent:
+  enabled: false
+gitlab_pages:
+  enabled: false
+prometheus:
+  enabled: false
+tracer:
+  jaeger:
+    enabled: false

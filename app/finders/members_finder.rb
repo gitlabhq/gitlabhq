@@ -22,8 +22,8 @@ class MembersFinder
     filter_members(members)
   end
 
-  def can?(*args)
-    Ability.allowed?(*args)
+  def can?(...)
+    Ability.allowed?(...)
   end
 
   private

@@ -53,7 +53,7 @@ RSpec.describe Integrations::MicrosoftTeams do
     context 'with issue events' do
       let(:opts) { { title: 'Awesome issue', description: 'please fix' } }
       let(:issues_sample_data) do
-        service = Issues::CreateService.new(project: project, current_user: user, params: opts, spam_params: nil)
+        service = Issues::CreateService.new(container: project, current_user: user, params: opts, spam_params: nil)
         issue = service.execute[:issue]
         service.hook_data(issue, 'open')
       end
@@ -194,7 +194,7 @@ RSpec.describe Integrations::MicrosoftTeams do
   end
 
   describe 'Pipeline events' do
-    let_it_be_with_reload(:project) { create(:project, :repository) }
+    let_it_be_with_refind(:project) { create(:project, :repository) }
 
     let(:pipeline) do
       create(:ci_pipeline,

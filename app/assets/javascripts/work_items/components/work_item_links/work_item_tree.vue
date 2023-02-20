@@ -1,9 +1,7 @@
 <script>
-import { GlButton } from '@gitlab/ui';
 import { isEmpty } from 'lodash';
-import { __ } from '~/locale';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
-import { TYPE_WORK_ITEM } from '~/graphql_shared/constants';
+import { TYPENAME_WORK_ITEM } from '~/graphql_shared/constants';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import { getParameterByName } from '~/lib/utils/url_utility';
@@ -19,6 +17,7 @@ import {
 } from '../../constants';
 import workItemQuery from '../../graphql/work_item.query.graphql';
 import workItemByIidQuery from '../../graphql/work_item_by_iid.query.graphql';
+import WidgetWrapper from '../widget_wrapper.vue';
 import OkrActionsSplitButton from './okr_actions_split_button.vue';
 import WorkItemLinksForm from './work_item_links_form.vue';
 import WorkItemLinkChild from './work_item_link_child.vue';
@@ -29,8 +28,8 @@ export default {
   WORK_ITEM_TYPE_ENUM_OBJECTIVE,
   WORK_ITEM_TYPE_ENUM_KEY_RESULT,
   components: {
-    GlButton,
     OkrActionsSplitButton,
+    WidgetWrapper,
     WorkItemLinksForm,
     WorkItemLinkChild,
   },
@@ -72,20 +71,12 @@ export default {
   data() {
     return {
       isShownAddForm: false,
-      isOpen: true,
-      error: null,
       formType: null,
       childType: null,
       prefetchedWorkItem: null,
     };
   },
   computed: {
-    toggleIcon() {
-      return this.isOpen ? 'chevron-lg-up' : 'chevron-lg-down';
-    },
-    toggleLabel() {
-      return this.isOpen ? __('Collapse') : __('Expand');
-    },
     fetchByIid() {
       return this.glFeatures.useIidInWorkItemsPath && parseBoolean(getParameterByName('iid_path'));
     },
@@ -109,7 +100,7 @@ export default {
       } else {
         const workItemId = getParameterByName('work_item_id');
         if (workItemId) {
-          params.id = convertToGraphQLId(TYPE_WORK_ITEM, workItemId);
+          params.id = convertToGraphQLId(TYPENAME_WORK_ITEM, workItemId);
         }
       }
       return params;
@@ -121,11 +112,8 @@ export default {
     }
   },
   methods: {
-    toggle() {
-      this.isOpen = !this.isOpen;
-    },
     showAddForm(formType, childType) {
-      this.isOpen = true;
+      this.$refs.wrapper.show();
       this.isShownAddForm = true;
       this.formType = formType;
       this.childType = childType;
@@ -176,19 +164,11 @@ export default {
 </script>
 
 <template>
-  <div
-    class="gl-rounded-base gl-border-1 gl-border-solid gl-border-gray-100 gl-bg-gray-10 gl-mt-4"
-    data-testid="work-item-tree"
-  >
-    <div
-      class="gl-px-5 gl-py-3 gl-display-flex gl-justify-content-space-between"
-      :class="{ 'gl-border-b-1 gl-border-b-solid gl-border-b-gray-100': isOpen }"
-    >
-      <div class="gl-display-flex gl-flex-grow-1">
-        <h5 class="gl-m-0 gl-line-height-24">
-          {{ $options.WORK_ITEMS_TREE_TEXT_MAP[workItemType].title }}
-        </h5>
-      </div>
+  <widget-wrapper ref="wrapper" data-testid="work-item-tree">
+    <template #header>
+      {{ $options.WORK_ITEMS_TREE_TEXT_MAP[workItemType].title }}
+    </template>
+    <template #header-right>
       <okr-actions-split-button
         @showCreateObjectiveForm="
           showAddForm($options.FORM_TYPES.create, $options.WORK_ITEM_TYPE_ENUM_OBJECTIVE)
@@ -203,24 +183,9 @@ export default {
           showAddForm($options.FORM_TYPES.add, $options.WORK_ITEM_TYPE_ENUM_KEY_RESULT)
         "
       />
-      <div class="gl-border-l-1 gl-border-l-solid gl-border-l-gray-100 gl-pl-3 gl-ml-3">
-        <gl-button
-          category="tertiary"
-          size="small"
-          :icon="toggleIcon"
-          :aria-label="toggleLabel"
-          data-testid="toggle-tree"
-          @click="toggle"
-        />
-      </div>
-    </div>
-    <div
-      v-if="isOpen"
-      class="gl-bg-gray-10 gl-rounded-bottom-left-base gl-rounded-bottom-right-base"
-      :class="{ 'gl-p-5 gl-pb-3': !error }"
-      data-testid="tree-body"
-    >
-      <div v-if="!isShownAddForm && !error && children.length === 0" data-testid="tree-empty">
+    </template>
+    <template #body>
+      <div v-if="!isShownAddForm && children.length === 0" data-testid="tree-empty">
         <p class="gl-mb-3">
           {{ $options.WORK_ITEMS_TREE_TEXT_MAP[workItemType].empty }}
         </p>
@@ -253,6 +218,6 @@ export default {
         @removeChild="$emit('removeChild', $event)"
         @click="$emit('show-modal', $event, $event.childItem || child)"
       />
-    </div>
-  </div>
+    </template>
+  </widget-wrapper>
 </template>

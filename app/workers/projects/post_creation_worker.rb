@@ -38,12 +38,11 @@ module Projects
 
     def create_incident_management_timeline_event_tags(project)
       tags = project.incident_management_timeline_event_tags.pluck_names
-      start_time_name = ::IncidentManagement::TimelineEventTag::START_TIME_TAG_NAME
-      end_time_name = ::IncidentManagement::TimelineEventTag::END_TIME_TAG_NAME
+      predefined_tags = ::IncidentManagement::TimelineEventTag::PREDEFINED_TAGS
 
-      project.incident_management_timeline_event_tags.new(name: start_time_name) unless tags.include?(start_time_name)
-
-      project.incident_management_timeline_event_tags.new(name: end_time_name) unless tags.include?(end_time_name)
+      predefined_tags.each do |tag|
+        project.incident_management_timeline_event_tags.new(name: tag) unless tags.include?(tag)
+      end
 
       project.save!
     rescue StandardError => e

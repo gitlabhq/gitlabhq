@@ -1,0 +1,9 @@
+- title: "Development dependencies reported for PHP and Python"
+  announcement_milestone: "15.9"
+  removal_milestone: "16.0"
+  breaking_change: true
+  reporter: sam.white
+  stage: secure
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/375505
+  body: |
+    In GitLab 16.0 the GitLab Dependency Scanning analyzer will begin reporting development dependencies for both Python/pipenv and PHP/composer projects. Users who do not wish to have these development dependencies reported should set `DS_INCLUDE_DEV_DEPENDENCIES: false` in their CI/CD file.

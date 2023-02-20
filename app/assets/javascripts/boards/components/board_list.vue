@@ -8,7 +8,13 @@ import { sortableStart, sortableEnd } from '~/sortable/utils';
 import Tracking from '~/tracking';
 import listQuery from 'ee_else_ce/boards/graphql/board_lists_deferred.query.graphql';
 import BoardCardMoveToPosition from '~/boards/components/board_card_move_to_position.vue';
-import { toggleFormEventPrefix, DraggableItemTypes } from '../constants';
+import {
+  DEFAULT_BOARD_LIST_ITEMS_SIZE,
+  toggleFormEventPrefix,
+  DraggableItemTypes,
+  listIssuablesQueries,
+  ListType,
+} from 'ee_else_ce/boards/constants';
 import eventHub from '../eventhub';
 import BoardCard from './board_card.vue';
 import BoardNewIssue from './board_new_issue.vue';
@@ -31,10 +37,22 @@ export default {
     BoardCardMoveToPosition,
   },
   mixins: [Tracking.mixin()],
-  inject: ['isEpicBoard', 'disabled'],
+  inject: [
+    'isEpicBoard',
+    'isGroupBoard',
+    'disabled',
+    'fullPath',
+    'boardType',
+    'issuableType',
+    'isApolloBoard',
+  ],
   props: {
     list: {
       type: Object,
+      required: true,
+    },
+    boardId: {
+      type: String,
       required: true,
     },
     boardItems: {
@@ -48,6 +66,8 @@ export default {
       showCount: false,
       showIssueForm: false,
       showEpicForm: false,
+      currentList: null,
+      isLoadingMore: false,
     };
   },
   apollo: {
@@ -66,15 +86,50 @@ export default {
         return this.isEpicBoard;
       },
     },
+    currentList: {
+      query() {
+        return listIssuablesQueries[this.issuableType].query;
+      },
+      variables() {
+        return {
+          id: this.list.id,
+          ...this.listQueryVariables,
+        };
+      },
+      skip() {
+        return !this.isApolloBoard || this.list.collapsed;
+      },
+      update(data) {
+        return data[this.boardType].board.lists.nodes[0];
+      },
+      context: {
+        isSingleRequest: true,
+      },
+    },
   },
   computed: {
     ...mapState(['pageInfoByListId', 'listsFlags', 'filterParams', 'isUpdateIssueOrderInProgress']),
+    boardListItems() {
+      return this.isApolloBoard
+        ? this.currentList?.[`${this.issuableType}s`].nodes || []
+        : this.boardItems;
+    },
+    listQueryVariables() {
+      return {
+        fullPath: this.fullPath,
+        boardId: this.boardId,
+        filters: this.filterParams,
+        isGroup: this.isGroupBoard,
+        isProject: !this.isGroupBoard,
+        first: DEFAULT_BOARD_LIST_ITEMS_SIZE,
+      };
+    },
     listItemsCount() {
       return this.isEpicBoard ? this.list.epicsCount : this.boardList?.issuesCount;
     },
     paginatedIssueText() {
       return sprintf(__('Showing %{pageSize} of %{total} %{issuableType}'), {
-        pageSize: this.boardItems.length,
+        pageSize: this.boardListItems.length,
         total: this.listItemsCount,
         issuableType: this.isEpicBoard ? 'epics' : 'issues',
       });
@@ -86,13 +141,17 @@ export default {
       return this.list.maxIssueCount > 0 && this.listItemsCount > this.list.maxIssueCount;
     },
     hasNextPage() {
-      return this.pageInfoByListId[this.list.id]?.hasNextPage;
+      return this.isApolloBoard
+        ? this.currentList?.[`${this.issuableType}s`].pageInfo?.hasNextPage
+        : this.pageInfoByListId[this.list.id]?.hasNextPage;
     },
     loading() {
-      return this.listsFlags[this.list.id]?.isLoading;
+      return this.isApolloBoard
+        ? this.$apollo.queries.currentList.loading && !this.isLoadingMore
+        : this.listsFlags[this.list.id]?.isLoading;
     },
     loadingMore() {
-      return this.listsFlags[this.list.id]?.isLoadingMore;
+      return this.isApolloBoard ? this.isLoadingMore : this.listsFlags[this.list.id]?.isLoadingMore;
     },
     epicCreateFormVisible() {
       return this.isEpicBoard && this.list.listType !== 'closed' && this.showEpicForm;
@@ -105,7 +164,7 @@ export default {
       return this.canMoveIssue ? this.$refs.list.$el : this.$refs.list;
     },
     showingAllItems() {
-      return this.boardItems.length === this.listItemsCount;
+      return this.boardListItems.length === this.listItemsCount;
     },
     showingAllItemsText() {
       return this.isEpicBoard
@@ -128,7 +187,7 @@ export default {
         tag: 'ul',
         'ghost-class': 'board-card-drag-active',
         'data-list-id': this.list.id,
-        value: this.boardItems,
+        value: this.boardListItems,
         delay: 100,
         delayOnTouchOnly: true,
       };
@@ -138,9 +197,12 @@ export default {
     disableScrollingWhenMutationInProgress() {
       return this.hasNextPage && this.isUpdateIssueOrderInProgress;
     },
+    showMoveToPosition() {
+      return !this.disabled && this.list.listType !== ListType.closed;
+    },
   },
   watch: {
-    boardItems() {
+    boardListItems() {
       this.$nextTick(() => {
         this.showCount = this.scrollHeight() > Math.ceil(this.listHeight());
       });
@@ -165,10 +227,10 @@ export default {
   methods: {
     ...mapActions(['fetchItemsForList', 'moveItem']),
     listHeight() {
-      return this.listRef.getBoundingClientRect().height;
+      return this.listRef?.getBoundingClientRect()?.height || 0;
     },
     scrollHeight() {
-      return this.listRef.scrollHeight;
+      return this.listRef?.scrollHeight || 0;
     },
     scrollTop() {
       return this.listRef.scrollTop + this.listHeight();
@@ -176,8 +238,20 @@ export default {
     scrollToTop() {
       this.listRef.scrollTop = 0;
     },
-    loadNextPage() {
-      this.fetchItemsForList({ listId: this.list.id, fetchNext: true });
+    async loadNextPage() {
+      if (this.isApolloBoard) {
+        this.isLoadingMore = true;
+        await this.$apollo.queries.currentList.fetchMore({
+          variables: {
+            ...this.listQueryVariables,
+            id: this.list.id,
+            after: this.currentList?.[`${this.issuableType}s`].pageInfo.endCursor,
+          },
+        });
+        this.isLoadingMore = false;
+      } else {
+        this.fetchItemsForList({ listId: this.list.id, fetchNext: true });
+      }
     },
     toggleForm() {
       if (this.isEpicBoard) {
@@ -292,7 +366,7 @@ export default {
       :data-board="list.id"
       :data-board-type="list.listType"
       :class="{
-        'bg-danger-100': boardItemsSizeExceedsMax,
+        'gl-bg-red-100 gl-rounded-bottom-left-base gl-rounded-bottom-right-base': boardItemsSizeExceedsMax,
         'gl-overflow-hidden': disableScrollingWhenMutationInProgress,
         'gl-overflow-y-auto': !disableScrollingWhenMutationInProgress,
       }"
@@ -303,7 +377,7 @@ export default {
       @end="handleDragOnEnd"
     >
       <board-card
-        v-for="(item, index) in boardItems"
+        v-for="(item, index) in boardListItems"
         ref="issue"
         :key="item.id"
         :index="index"
@@ -312,13 +386,12 @@ export default {
         :data-draggable-item-type="$options.draggableItemTypes.card"
         :show-work-item-type-icon="!isEpicBoard"
       >
-        <!-- TODO: remove the condition when https://gitlab.com/gitlab-org/gitlab/-/issues/377862 is resolved -->
         <board-card-move-to-position
-          v-if="!isEpicBoard && !disabled"
+          v-if="showMoveToPosition"
           :item="item"
           :index="index"
           :list="list"
-          :list-items-length="boardItems.length"
+          :list-items-length="boardListItems.length"
         />
       </board-card>
       <gl-intersection-observer @appear="onReachingListBottom">

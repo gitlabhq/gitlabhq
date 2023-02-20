@@ -1,6 +1,7 @@
 import { get } from 'lodash';
 import { mockBranches } from 'jest/vue_shared/components/filtered_search_bar/mock_data';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
+import { HTTP_STATUS_INTERNAL_SERVER_ERROR } from '~/lib/utils/http_status';
 import * as types from '~/vue_shared/components/filtered_search_bar/store/modules/filters/mutation_types';
 import mutations from '~/vue_shared/components/filtered_search_bar/store/modules/filters/mutations';
 import initialState from '~/vue_shared/components/filtered_search_bar/store/modules/filters/state';
@@ -16,7 +17,6 @@ const labels = filterLabels.map(convertObjectPropsToCamelCase);
 const filterValue = { value: 'foo' };
 
 describe('Filters mutations', () => {
-  const errorCode = 500;
   beforeEach(() => {
     state = initialState();
   });
@@ -79,35 +79,35 @@ describe('Filters mutations', () => {
     ${types.RECEIVE_BRANCHES_SUCCESS}   | ${'branches'}   | ${'errorCode'} | ${null}
     ${types.RECEIVE_BRANCHES_ERROR}     | ${'branches'}   | ${'isLoading'} | ${false}
     ${types.RECEIVE_BRANCHES_ERROR}     | ${'branches'}   | ${'data'}      | ${[]}
-    ${types.RECEIVE_BRANCHES_ERROR}     | ${'branches'}   | ${'errorCode'} | ${errorCode}
+    ${types.RECEIVE_BRANCHES_ERROR}     | ${'branches'}   | ${'errorCode'} | ${HTTP_STATUS_INTERNAL_SERVER_ERROR}
     ${types.REQUEST_MILESTONES}         | ${'milestones'} | ${'isLoading'} | ${true}
     ${types.RECEIVE_MILESTONES_SUCCESS} | ${'milestones'} | ${'isLoading'} | ${false}
     ${types.RECEIVE_MILESTONES_SUCCESS} | ${'milestones'} | ${'data'}      | ${milestones}
     ${types.RECEIVE_MILESTONES_SUCCESS} | ${'milestones'} | ${'errorCode'} | ${null}
     ${types.RECEIVE_MILESTONES_ERROR}   | ${'milestones'} | ${'isLoading'} | ${false}
     ${types.RECEIVE_MILESTONES_ERROR}   | ${'milestones'} | ${'data'}      | ${[]}
-    ${types.RECEIVE_MILESTONES_ERROR}   | ${'milestones'} | ${'errorCode'} | ${errorCode}
+    ${types.RECEIVE_MILESTONES_ERROR}   | ${'milestones'} | ${'errorCode'} | ${HTTP_STATUS_INTERNAL_SERVER_ERROR}
     ${types.REQUEST_AUTHORS}            | ${'authors'}    | ${'isLoading'} | ${true}
     ${types.RECEIVE_AUTHORS_SUCCESS}    | ${'authors'}    | ${'isLoading'} | ${false}
     ${types.RECEIVE_AUTHORS_SUCCESS}    | ${'authors'}    | ${'data'}      | ${users}
     ${types.RECEIVE_AUTHORS_SUCCESS}    | ${'authors'}    | ${'errorCode'} | ${null}
     ${types.RECEIVE_AUTHORS_ERROR}      | ${'authors'}    | ${'isLoading'} | ${false}
     ${types.RECEIVE_AUTHORS_ERROR}      | ${'authors'}    | ${'data'}      | ${[]}
-    ${types.RECEIVE_AUTHORS_ERROR}      | ${'authors'}    | ${'errorCode'} | ${errorCode}
+    ${types.RECEIVE_AUTHORS_ERROR}      | ${'authors'}    | ${'errorCode'} | ${HTTP_STATUS_INTERNAL_SERVER_ERROR}
     ${types.REQUEST_LABELS}             | ${'labels'}     | ${'isLoading'} | ${true}
     ${types.RECEIVE_LABELS_SUCCESS}     | ${'labels'}     | ${'isLoading'} | ${false}
     ${types.RECEIVE_LABELS_SUCCESS}     | ${'labels'}     | ${'data'}      | ${labels}
     ${types.RECEIVE_LABELS_SUCCESS}     | ${'labels'}     | ${'errorCode'} | ${null}
     ${types.RECEIVE_LABELS_ERROR}       | ${'labels'}     | ${'isLoading'} | ${false}
     ${types.RECEIVE_LABELS_ERROR}       | ${'labels'}     | ${'data'}      | ${[]}
-    ${types.RECEIVE_LABELS_ERROR}       | ${'labels'}     | ${'errorCode'} | ${errorCode}
+    ${types.RECEIVE_LABELS_ERROR}       | ${'labels'}     | ${'errorCode'} | ${HTTP_STATUS_INTERNAL_SERVER_ERROR}
     ${types.REQUEST_ASSIGNEES}          | ${'assignees'}  | ${'isLoading'} | ${true}
     ${types.RECEIVE_ASSIGNEES_SUCCESS}  | ${'assignees'}  | ${'isLoading'} | ${false}
     ${types.RECEIVE_ASSIGNEES_SUCCESS}  | ${'assignees'}  | ${'data'}      | ${users}
     ${types.RECEIVE_ASSIGNEES_SUCCESS}  | ${'assignees'}  | ${'errorCode'} | ${null}
     ${types.RECEIVE_ASSIGNEES_ERROR}    | ${'assignees'}  | ${'isLoading'} | ${false}
     ${types.RECEIVE_ASSIGNEES_ERROR}    | ${'assignees'}  | ${'data'}      | ${[]}
-    ${types.RECEIVE_ASSIGNEES_ERROR}    | ${'assignees'}  | ${'errorCode'} | ${errorCode}
+    ${types.RECEIVE_ASSIGNEES_ERROR}    | ${'assignees'}  | ${'errorCode'} | ${HTTP_STATUS_INTERNAL_SERVER_ERROR}
   `('$mutation will set $stateKey with a given value', ({ mutation, rootKey, stateKey, value }) => {
     mutations[mutation](state, value);
 

@@ -4,7 +4,6 @@ module Projects
   module Settings
     class CiCdController < Projects::ApplicationController
       include RunnerSetupScripts
-      include ZuoraCSP
 
       NUMBER_OF_RUNNERS_PER_PAGE = 20
 
@@ -12,6 +11,10 @@ module Projects
       before_action :authorize_admin_pipeline!
       before_action :check_builds_available!
       before_action :define_variables
+
+      before_action do
+        push_frontend_feature_flag(:ci_inbound_job_token_scope, @project)
+      end
 
       helper_method :highlight_badge
 

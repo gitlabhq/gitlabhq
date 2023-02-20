@@ -14,13 +14,11 @@ module Clusters
     APPLICATIONS = {
       Clusters::Applications::Helm.application_name => Clusters::Applications::Helm,
       Clusters::Applications::Ingress.application_name => Clusters::Applications::Ingress,
-      Clusters::Applications::CertManager.application_name => Clusters::Applications::CertManager,
       Clusters::Applications::Crossplane.application_name => Clusters::Applications::Crossplane,
       Clusters::Applications::Prometheus.application_name => Clusters::Applications::Prometheus,
       Clusters::Applications::Runner.application_name => Clusters::Applications::Runner,
       Clusters::Applications::Jupyter.application_name => Clusters::Applications::Jupyter,
-      Clusters::Applications::Knative.application_name => Clusters::Applications::Knative,
-      Clusters::Applications::Cilium.application_name => Clusters::Applications::Cilium
+      Clusters::Applications::Knative.application_name => Clusters::Applications::Knative
     }.freeze
     DEFAULT_ENVIRONMENT = '*'
     KUBE_INGRESS_BASE_DOMAIN = 'KUBE_INGRESS_BASE_DOMAIN'
@@ -58,13 +56,11 @@ module Clusters
 
     has_one_cluster_application :helm
     has_one_cluster_application :ingress
-    has_one_cluster_application :cert_manager
     has_one_cluster_application :crossplane
     has_one_cluster_application :prometheus
     has_one_cluster_application :runner
     has_one_cluster_application :jupyter
     has_one_cluster_application :knative
-    has_one_cluster_application :cilium
 
     has_many :kubernetes_namespaces
     has_many :metrics_dashboard_annotations, class_name: 'Metrics::Dashboard::Annotation', inverse_of: :cluster
@@ -91,15 +87,7 @@ module Clusters
 
     delegate :status, to: :provider, allow_nil: true
     delegate :status_reason, to: :provider, allow_nil: true
-    delegate :on_creation?, to: :provider, allow_nil: true
-    delegate :knative_pre_installed?, to: :provider, allow_nil: true
 
-    delegate :active?, to: :platform_kubernetes, prefix: true, allow_nil: true
-    delegate :rbac?, to: :platform_kubernetes, prefix: true, allow_nil: true
-    delegate :available?, to: :application_helm, prefix: true, allow_nil: true
-    delegate :available?, to: :application_ingress, prefix: true, allow_nil: true
-    delegate :available?, to: :application_knative, prefix: true, allow_nil: true
-    delegate :available?, to: :integration_prometheus, prefix: true, allow_nil: true
     delegate :external_ip, to: :application_ingress, prefix: true, allow_nil: true
     delegate :external_hostname, to: :application_ingress, prefix: true, allow_nil: true
 
@@ -245,7 +233,7 @@ module Clusters
     end
 
     def persisted_applications
-      APPLICATIONS_ASSOCIATIONS.map(&method(:public_send)).compact
+      APPLICATIONS_ASSOCIATIONS.filter_map { |association_name| public_send(association_name) } # rubocop:disable GitlabSecurity/PublicSend
     end
 
     def applications
@@ -264,6 +252,38 @@ module Clusters
 
     def find_or_build_integration_prometheus
       integration_prometheus || build_integration_prometheus
+    end
+
+    def on_creation?
+      !!provider&.on_creation?
+    end
+
+    def knative_pre_installed?
+      !!provider&.knative_pre_installed?
+    end
+
+    def platform_kubernetes_active?
+      !!platform_kubernetes&.active?
+    end
+
+    def platform_kubernetes_rbac?
+      !!platform_kubernetes&.rbac?
+    end
+
+    def application_helm_available?
+      !!application_helm&.available?
+    end
+
+    def application_ingress_available?
+      !!application_ingress&.available?
+    end
+
+    def application_knative_available?
+      !!application_knative&.available?
+    end
+
+    def integration_prometheus_available?
+      !!integration_prometheus&.available?
     end
 
     def provider

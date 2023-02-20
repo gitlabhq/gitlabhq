@@ -27,38 +27,34 @@ RSpec.shared_examples "redis_new_instance_shared_examples" do |name, fallback_cl
       FileUtils.mkdir_p(File.join(rails_root, 'config'))
     end
 
-    context 'when there is only a resque.yml' do
+    context 'and there is a global env override' do
       before do
-        FileUtils.touch(File.join(rails_root, 'config/resque.yml'))
+        stub_env('GITLAB_REDIS_CONFIG_FILE', 'global override')
       end
 
-      it { expect(subject).to eq("#{rails_root}/config/resque.yml") }
+      it { expect(subject).to eq('global override') }
 
-      context 'and there is a global env override' do
-        before do
-          stub_env('GITLAB_REDIS_CONFIG_FILE', 'global override')
-        end
+      context "and #{fallback_class.name.demodulize} has a different config file" do
+        let(:fallback_config_file) { 'fallback config file' }
 
-        it { expect(subject).to eq('global override') }
-
-        context "and #{fallback_class.name.demodulize} has a different config file" do
-          let(:fallback_config_file) { 'fallback config file' }
-
-          it { expect(subject).to eq('fallback config file') }
-        end
+        it { expect(subject).to eq('fallback config file') }
       end
     end
   end
 
   describe '#fetch_config' do
-    context 'when redis.yml exists' do
-      subject { described_class.new('test').send(:fetch_config) }
+    subject { described_class.new('test').send(:fetch_config) }
 
+    before do
+      FileUtils.mkdir_p(File.join(rails_root, 'config'))
+
+      allow(described_class).to receive(:rails_root).and_return(rails_root)
+    end
+
+    context 'when redis.yml exists' do
       before do
         allow(described_class).to receive(:config_file_name).and_call_original
         allow(described_class).to receive(:redis_yml_path).and_call_original
-        allow(described_class).to receive(:rails_root).and_return(rails_root)
-        FileUtils.mkdir_p(File.join(rails_root, 'config'))
       end
 
       context 'when the fallback has a redis.yml entry' do
@@ -90,6 +86,24 @@ RSpec.shared_examples "redis_new_instance_shared_examples" do |name, fallback_cl
 
             it { expect(subject).to eq({ 'instance redis.yml' => 789 }) }
           end
+        end
+      end
+    end
+
+    context 'when no redis config file exsits' do
+      it 'returns nil' do
+        expect(subject).to eq(nil)
+      end
+
+      context 'when resque.yml exists' do
+        before do
+          File.write(File.join(rails_root, 'config/resque.yml'), {
+            'test' =>  { 'foobar' => 123 }
+          }.to_json)
+        end
+
+        it 'returns the config from resque.yml' do
+          expect(subject).to eq({ 'foobar' => 123 })
         end
       end
     end

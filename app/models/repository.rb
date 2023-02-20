@@ -189,9 +189,7 @@ class Repository
       return []
     end
 
-    query = Feature.enabled?(:commit_search_trailing_spaces) ? query.strip : query
-
-    commits = raw_repository.find_commits_by_message(query, ref, path, limit, offset).map do |c|
+    commits = raw_repository.find_commits_by_message(query.strip, ref, path, limit, offset).map do |c|
       commit(c)
     end
     CommitCollection.new(container, commits, ref)
@@ -633,11 +631,7 @@ class Repository
   end
 
   def readme_path
-    if Feature.enabled?(:readme_from_gitaly)
-      readme_path_gitaly
-    else
-      head_tree&.readme_path
-    end
+    head_tree&.readme_path
   end
   cache_method :readme_path
 
@@ -702,14 +696,14 @@ class Repository
   end
 
   def head_tree(skip_flat_paths: true)
-    if head_commit
-      @head_tree ||= Tree.new(self, head_commit.sha, nil, skip_flat_paths: skip_flat_paths)
-    end
+    return if empty? || root_ref.nil?
+
+    @head_tree ||= Tree.new(self, root_ref, nil, skip_flat_paths: skip_flat_paths)
   end
 
   def tree(sha = :head, path = nil, recursive: false, skip_flat_paths: true, pagination_params: nil)
     if sha == :head
-      return unless head_commit
+      return if empty? || root_ref.nil?
 
       if path.nil?
         return head_tree(skip_flat_paths: skip_flat_paths)
@@ -878,25 +872,45 @@ class Repository
   end
 
   def merge(user, source_sha, merge_request, message)
+    merge_to_branch(user,
+                    source_sha: source_sha,
+                    target_branch: merge_request.target_branch,
+                    message: message) do |commit_id|
+      merge_request.update_and_mark_in_progress_merge_commit_sha(commit_id)
+      nil # Return value does not matter.
+    end
+  end
+
+  def merge_to_branch(user, source_sha:, target_branch:, message:, target_sha: nil)
     with_cache_hooks do
-      raw_repository.merge(user, source_sha, merge_request.target_branch, message) do |commit_id|
-        merge_request.update_and_mark_in_progress_merge_commit_sha(commit_id)
-        nil # Return value does not matter.
+      raw_repository.merge(user,
+        source_sha: source_sha,
+        target_branch: target_branch,
+        message: message,
+        target_sha: target_sha
+      ) do |commit_id|
+        yield commit_id if block_given?
       end
     end
   end
 
-  def delete_refs(*ref_names)
-    raw.delete_refs(*ref_names)
+  def delete_refs(...)
+    raw.delete_refs(...)
   end
 
-  def ff_merge(user, source, target_branch, merge_request: nil)
+  def ff_merge(user, source, target_branch, target_sha: nil, merge_request: nil)
     their_commit_id = commit(source)&.id
     raise 'Invalid merge source' if their_commit_id.nil?
 
     merge_request&.update_and_mark_in_progress_merge_commit_sha(their_commit_id)
 
-    with_cache_hooks { raw.ff_merge(user, their_commit_id, target_branch) }
+    with_cache_hooks do
+      raw.ff_merge(user,
+        source_sha: their_commit_id,
+        target_branch: target_branch,
+        target_sha: target_sha
+      )
+    end
   end
 
   def revert(
@@ -1244,29 +1258,6 @@ class Repository
                                 repo_type.identifier_for_container(container),
                                 container.full_path,
                                 container: container)
-  end
-
-  def readme_path_gitaly
-    return if empty? || root_ref.nil?
-
-    # (?i) to enable case-insensitive mode
-    #
-    # Note: `Gitlab::FileDetector::PATTERNS[:readme]#to_s` won't work because of
-    # incompatibility of regex engines between Rails and Gitaly.
-    regex = "(?i)#{Gitlab::FileDetector::PATTERNS[:readme].source}"
-
-    readmes = search_files_by_regexp(regex, root_ref)
-
-    choose_readme_to_display(readmes)
-  end
-
-  # Extracted from Tree#readme_path
-  def choose_readme_to_display(readmes)
-    previewable_readme = readmes.find { |name| Gitlab::MarkupHelper.previewable?(name) }
-
-    return previewable_readme if previewable_readme
-
-    readmes.find { |name| Gitlab::MarkupHelper.plain?(name) }
   end
 end
 

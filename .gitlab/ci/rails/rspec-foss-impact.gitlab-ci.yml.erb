@@ -42,7 +42,7 @@ rspec foss-impact:
 <% end %>
   script:
     - !reference [.base-script, script]
-    - rspec_paralellized_job "--tag ~quarantine --tag ~level:migration"
+    - rspec_paralellized_job "--tag ~quarantine --tag ~level:migration --tag ~zoekt"
   artifacts:
     expire_in: 7d
     paths:

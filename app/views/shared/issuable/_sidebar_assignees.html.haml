@@ -39,7 +39,7 @@
   - data[:multi_select] = true
   - data['dropdown-title'] = title
   - data['dropdown-header'] = dropdown_options[:data][:'dropdown-header']
-  - data['max-select'] = dropdown_max_select(dropdown_options[:data], nil)
+  - data['max-select'] = dropdown_max_select(dropdown_options[:data])
   - options[:data].merge!(data)
 
   = render 'shared/issuable/sidebar_user_dropdown',

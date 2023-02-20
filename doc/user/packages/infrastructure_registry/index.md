@@ -34,9 +34,8 @@ authenticate with the [`CI_JOB_TOKEN` predefined variable](../../../ci/variables
 
 CI/CD templates, which you can use to get started, are in [this repository](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/ci/templates).
 
-Learn more about using CI/CD to build:
-
-- [Terraform modules](../terraform_module_registry/index.md#publish-a-terraform-module-by-using-cicd)
+For more information about using CI/CD to build Terraform modules,
+see [Publish a Terraform module by using CI/CD](../terraform_module_registry/index.md#publish-a-terraform-module-by-using-cicd).
 
 If you use CI/CD to build a package, you can find extended activity information
 when you view the package details:

@@ -90,7 +90,7 @@ module IssuableActions
   end
 
   def destroy
-    Issuable::DestroyService.new(project: issuable.project, current_user: current_user).execute(issuable)
+    Issuable::DestroyService.new(container: issuable.project, current_user: current_user).execute(issuable)
 
     name = issuable.human_class_name
     flash[:notice] = "The #{name} was successfully deleted."
@@ -246,7 +246,21 @@ module IssuableActions
   end
 
   def bulk_update_params
-    params.require(:update).permit(bulk_update_permitted_keys)
+    clean_bulk_update_params(
+      params.require(:update).permit(bulk_update_permitted_keys)
+    )
+  end
+
+  def clean_bulk_update_params(permitted_params)
+    permitted_params.delete_if do |k, v|
+      next if k == :issuable_ids
+
+      if v.is_a?(Array)
+        v.compact.empty?
+      else
+        v.blank?
+      end
+    end
   end
 
   def bulk_update_permitted_keys
@@ -254,7 +268,6 @@ module IssuableActions
       :issuable_ids,
       :assignee_id,
       :milestone_id,
-      :sprint_id,
       :state_event,
       :subscription_event,
       assignee_ids: [],

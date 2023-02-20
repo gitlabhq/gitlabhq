@@ -23,16 +23,22 @@ module ResourceEvents
         label_hash.merge(label_id: label.id, action: ResourceLabelEvent.actions['remove'])
       end
 
-      ApplicationRecord.legacy_bulk_insert(ResourceLabelEvent.table_name, labels) # rubocop:disable Gitlab/BulkInsert
+      ids = ApplicationRecord.legacy_bulk_insert(ResourceLabelEvent.table_name, labels, return_ids: true) # rubocop:disable Gitlab/BulkInsert
+
+      if resource.is_a?(Issue)
+        events = ResourceLabelEvent.id_in(ids)
+        events.first.trigger_note_subscription_create(events: events.to_a) if events.any?
+      end
 
       create_timeline_events_from(added_labels: added_labels, removed_labels: removed_labels)
-
       resource.expire_note_etag_cache
 
       return unless resource.is_a?(Issue)
 
-      Gitlab::UsageDataCounters::IssueActivityUniqueCounter.track_issue_label_changed_action(author: user,
-                                                                                             project: resource.project)
+      Gitlab::UsageDataCounters::IssueActivityUniqueCounter.track_issue_label_changed_action(
+        author: user, project: resource.project)
+
+      events
     end
 
     private

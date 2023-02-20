@@ -50,7 +50,9 @@ full list of reference architectures, see
     - [Google Cloud Load Balancing](https://cloud.google.com/load-balancing) and [Amazon Elastic Load Balancing](https://aws.amazon.com/elasticloadbalancing/) are known to work.
 4. Should be run on reputable Cloud Provider or Self Managed solutions. More information can be found in the [Configure the object storage](#configure-the-object-storage) section.
 5. Gitaly Cluster provides the benefits of fault tolerance, but comes with additional complexity of setup and management. Review the existing [technical limitations and considerations before deploying Gitaly Cluster](../gitaly/index.md#before-deploying-gitaly-cluster). If you want sharded Gitaly, use the same specs listed above for `Gitaly`.
-6. Gitaly has been designed and tested with repositories of varying sizes that follow best practices. However, large repositories or monorepos that don't follow these practices can significantly impact Gitaly requirements. Refer to the [Large Repositories](#large-repositories) for more info.
+6. Gitaly has been designed and tested with repositories of varying sizes that follow best practices. However, large
+   repositories or monorepos that don't follow these practices can significantly impact Gitaly requirements. Refer to
+   [Large repositories](index.md#large-repositories) for more information.
 <!-- markdownlint-enable MD029 -->
 
 NOTE:
@@ -144,66 +146,7 @@ monitor .[#7FFFD4,norank]u--> elb
 
 ## Requirements
 
-Before starting, you should take note of the following requirements / guidance for this reference architecture.
-
-### Supported CPUs
-
-This reference architecture was built and tested on Google Cloud Platform (GCP) using the
-[Intel Xeon E5 v3 (Haswell)](https://cloud.google.com/compute/docs/cpu-platforms)
-CPU platform as a baseline ([Sysbench benchmark](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Reference-Architectures/GCP-CPU-Benchmarks)).
-
-Newer, similarly sized CPUs are supported and may have improved performance as a result. For Omnibus environments, ARM-based equivalents are also supported.
-
-NOTE:
-Any "burstable" instance types are not recommended due to inconsistent performance.
-
-### Supported infrastructure
-
-As a general guidance, GitLab should run on most infrastructure such as reputable Cloud Providers (AWS, GCP) and their services,
-or self managed (ESXi) that meet both the specs detailed above, as well as any requirements in this section.
-However, this does not constitute a guarantee for every potential permutation.
-
-See [Recommended cloud providers and services](index.md#recommended-cloud-providers-and-services) for more information.
-
-### Additional workloads
-
-The Reference Architectures have been [designed and tested](index.md#validation-and-test-results) for standard GitLab setups with
-good headroom in mind to cover most scenarios. However, if any additional workloads are being added on the nodes,
-such as security software, you may still need to adjust the specs accordingly to compensate.
-
-This also applies for some GitLab features where it's possible to run custom scripts, for example [server hooks](../server_hooks.md).
-
-As a general rule, it's recommended to have robust monitoring in place to measure the impact of
-any additional workloads to inform any changes needed to be made.
-
-### Large repositories
-
-The Reference Architectures were tested with repositories of varying sizes that follow best practices.
-
-However, large repositories or monorepos (several gigabytes or more) can **significantly** impact the performance
-of Git and in turn the environment itself if best practices aren't being followed such as not storing
-binary or blob files in LFS. Repositories are at the core of any environment the consequences can be wide-ranging
-when they are not optimized. Some examples of this impact include [Git packing operations](https://git-scm.com/book/en/v2/Git-Internals-Packfiles)
-taking longer and consuming high CPU / Memory resources or Git checkouts taking longer that affect both users and
-CI pipelines alike.
-
-As such, large repositories come with notable cost and typically will require more resources to handle,
-significantly so in some cases. It's therefore **strongly** recommended then to review large repositories
-to ensure they maintain good health and reduce their size wherever possible.
-
-NOTE:
-If best practices aren't followed and large repositories are present on the environment,
-increased Gitaly specs may be required to ensure stable performance.
-
-Refer to the [Managing large repositories documentation](../../user/project/repository/managing_large_repositories.md)
-for more information and guidance.
-
-### Praefect PostgreSQL
-
-It's worth noting that at this time [Praefect requires its own database server](../gitaly/praefect.md#postgresql) and
-that to achieve full High Availability a third-party PostgreSQL database solution will be required.
-We hope to offer a built in solutions for these restrictions in the future but in the meantime a non HA PostgreSQL server
-can be set up via Omnibus GitLab, which the above specs reflect. Refer to the following issues for more information: [`omnibus-gitlab#5919`](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5919) & [`gitaly#3398`](https://gitlab.com/gitlab-org/gitaly/-/issues/3398).
+Before starting, see the [requirements](index.md#requirements) for reference architectures.
 
 ## Setup components
 
@@ -710,7 +653,7 @@ in the second step, do not supply the `EXTERNAL_URL` value.
 
 PostgreSQL, with Patroni managing its failover, will default to use `pg_rewind` by default to handle conflicts.
 Like most failover handling methods, this has a small chance of leading to data loss.
-Learn more about the various [Patroni replication methods](../postgresql/replication_and_failover.md#selecting-the-appropriate-patroni-replication-method).
+For more information, see the various [Patroni replication methods](../postgresql/replication_and_failover.md#selecting-the-appropriate-patroni-replication-method).
 
 1. Copy the `/etc/gitlab/gitlab-secrets.json` file from the first Omnibus node you configured and add or replace
    the file of the same name on this server. If this is the first Omnibus node you are configuring then you can skip this step.
@@ -1209,18 +1152,25 @@ are supported and can be added if needed.
 
 ## Configure Gitaly Cluster
 
-[Gitaly Cluster](../gitaly/praefect.md) is a GitLab provided and recommended fault tolerant solution for storing Git repositories.
-In this configuration, every Git repository is stored on every Gitaly node in the cluster, with one being designated the primary, and failover occurs automatically if the primary node goes down.
+[Gitaly Cluster](../gitaly/praefect.md) is a GitLab-provided and recommended fault tolerant solution for storing Git
+repositories. In this configuration, every Git repository is stored on every Gitaly node in the cluster, with one being
+designated the primary, and failover occurs automatically if the primary node goes down.
 
-NOTE:
-Gitaly Cluster provides the benefits of fault tolerance, but comes with additional complexity of setup and management. Review the existing [technical limitations and considerations before deploying Gitaly Cluster](../gitaly/index.md#before-deploying-gitaly-cluster).
-For implementations with sharded Gitaly, use the same Gitaly specs. Follow the [separate Gitaly documentation](../gitaly/configure_gitaly.md) instead of this section.
+Gitaly Cluster provides the benefits of fault tolerance, but comes with additional complexity of setup and management.
+Review the existing [technical limitations and considerations before deploying Gitaly Cluster](../gitaly/index.md#before-deploying-gitaly-cluster).
+
+For guidance on:
+
+- Implementing sharded Gitaly instead, follow the [separate Gitaly documentation](../gitaly/configure_gitaly.md)
+  instead of this section. Use the same Gitaly specs.
+- Migrating existing repositories that aren't managed by Gitaly Cluster, see
+  [migrate to Gitaly Cluster](../gitaly/index.md#migrate-to-gitaly-cluster).
 
 NOTE:
 Gitaly has been designed and tested with repositories of varying sizes that follow best practices.
 However, large repositories or monorepos not following these practices can significantly
 impact Gitaly performance and requirements.
-Refer to the [Large Repositories](#large-repositories) for more info.
+Refer to [Large repositories](index.md#large-repositories) for more information.
 
 The recommended cluster setup includes the following components:
 
@@ -1229,9 +1179,9 @@ The recommended cluster setup includes the following components:
 - 1 Praefect PostgreSQL node: Database server for Praefect. A third-party solution
   is required for Praefect database connections to be made highly available.
 - 1 load balancer: A load balancer is required for Praefect. The
-  [internal load balancer](#configure-the-internal-load-balancer) will be used.
+  [internal load balancer](#configure-the-internal-load-balancer) is used.
 
-This section will detail how to configure the recommended standard setup in order.
+This section details how to configure the recommended standard setup in order.
 For more advanced setups refer to the [standalone Gitaly Cluster documentation](../gitaly/praefect.md).
 
 ### Configure Praefect PostgreSQL
@@ -1530,14 +1480,14 @@ requirements that are dependent on data and load.
 
 NOTE:
 Increased specs for Gitaly nodes may be required in some circumstances such as
-significantly large repositories or if any [additional workloads](#additional-workloads),
+significantly large repositories or if any [additional workloads](index.md#additional-workloads),
 such as [server hooks](../server_hooks.md), have been added.
 
 NOTE:
 Gitaly has been designed and tested with repositories of varying sizes that follow best practices.
 However, large repositories or monorepos not following these practices can significantly
 impact Gitaly performance and requirements.
-Refer to the [Large Repositories](#large-repositories) for more info.
+Refer to [large repositories](index.md#large-repositories) for more information.
 
 Due to Gitaly having notable input and output requirements, we strongly
 recommend that all Gitaly nodes use solid-state drives (SSDs). These SSDs
@@ -1756,7 +1706,10 @@ To configure Praefect with TLS:
 
 Sidekiq requires connection to the [Redis](#configure-redis),
 [PostgreSQL](#configure-postgresql) and [Gitaly](#configure-gitaly) instances.
-Because you must use [Object storage](#configure-the-object-storage) instead of NFS for data objects, the following
+It also requires a connection to [Object Storage](#configure-the-object-storage) as recommended.
+
+NOTE:
+[Because it's recommended to use Object storage](../object_storage.md) instead of NFS for data objects, the following
 examples include the Object storage configuration.
 
 - `10.6.0.101`: Sidekiq 1
@@ -1925,7 +1878,13 @@ run [multiple Sidekiq processes](../sidekiq/extra_sidekiq_processes.md).
 ## Configure GitLab Rails
 
 This section describes how to configure the GitLab application (Rails) component.
-Because you must use [Object storage](#configure-the-object-storage) instead of NFS for data objects, the following
+
+Rails requires connections to the [Redis](#configure-redis),
+[PostgreSQL](#configure-postgresql) and [Gitaly](#configure-gitaly) instances.
+It also requires a connection to [Object Storage](#configure-the-object-storage) as recommended.
+
+NOTE:
+[Because it's recommended to use Object storage](../object_storage.md) instead of NFS for data objects, the following
 examples include the Object storage configuration.
 
 The following IPs will be used as an example:
@@ -2065,6 +2024,10 @@ On each node perform the following:
 
 1. Copy the `/etc/gitlab/gitlab-secrets.json` file from the first Omnibus node you configured and add or replace
    the file of the same name on this server. If this is the first Omnibus node you are configuring then you can skip this step.
+1. Copy the SSH host keys (all in the name format `/etc/ssh/ssh_host_*_key*`) from the first Omnibus node you configured and
+   add or replace the files of the same name on this server. This ensures host mismatch errors aren't thrown
+   for your users as they hit the load balanced Rails nodes. If this is the first Omnibus node you are configuring,
+   then you can skip this step.
 1. To ensure database migrations are only run during reconfigure and not automatically on upgrade, run:
 
    ```shell
@@ -2200,16 +2163,10 @@ To configure the Monitoring node:
 
 ## Configure the object storage
 
-GitLab supports using an object storage service for holding numerous types of data.
-
-GitLab has been tested on a number of object storage providers:
-
-- [Amazon S3](https://aws.amazon.com/s3/)
-- [Google Cloud Storage](https://cloud.google.com/storage)
-- [Digital Ocean Spaces](https://www.digitalocean.com/products/spaces)
-- [Oracle Cloud Infrastructure](https://docs.oracle.com/en-us/iaas/Content/Object/Tasks/s3compatibleapi.htm)
-- [OpenStack Swift (S3 compatibility mode)](https://docs.openstack.org/swift/latest/s3_compat.html)
-- MinIO. We have [a guide to deploying this](https://docs.gitlab.com/charts/advanced/external-object-storage/minio.html) within our Helm Chart documentation.
+GitLab supports using an [object storage](../object_storage.md) service for holding numerous types of data.
+It's recommended over [NFS](../nfs.md) for data objects and in general it's better
+in larger setups as object storage is typically much more performant, reliable,
+and scalable.
 
 There are two ways of specifying object storage configuration in GitLab:
 
@@ -2336,7 +2293,9 @@ services where applicable):
     - [Google Cloud Load Balancing](https://cloud.google.com/load-balancing) and [Amazon Elastic Load Balancing](https://aws.amazon.com/elasticloadbalancing/) are known to work.
 4. Should be run on reputable Cloud Provider or Self Managed solutions. More information can be found in the [Configure the object storage](#configure-the-object-storage) section.
 5. Gitaly Cluster provides the benefits of fault tolerance, but comes with additional complexity of setup and management. Review the existing [technical limitations and considerations before deploying Gitaly Cluster](../gitaly/index.md#before-deploying-gitaly-cluster). If you want sharded Gitaly, use the same specs listed above for `Gitaly`.
-6. Gitaly has been designed and tested with repositories of varying sizes that follow best practices. However, large repositories or monorepos that don't follow these practices can significantly impact Gitaly requirements. Refer to the [Large Repositories](#large-repositories) for more info.
+6. Gitaly has been designed and tested with repositories of varying sizes that follow best practices. However, large
+   repositories or monorepos that don't follow these practices can significantly impact Gitaly requirements. Refer to
+   [Large repositories](index.md#large-repositories) for more information.
 <!-- markdownlint-enable MD029 -->
 
 NOTE:

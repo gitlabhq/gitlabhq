@@ -12,7 +12,8 @@ module QA
                     :extern_uid,
                     :expect_fabrication_success,
                     :hard_delete_on_api_removal,
-                    :access_level
+                    :access_level,
+                    :email_domain
 
       attributes :id,
                  :name,
@@ -25,6 +26,7 @@ module QA
         @hard_delete_on_api_removal = false
         @unique_id = SecureRandom.hex(8)
         @expect_fabrication_success = true
+        @email_domain = 'example.com'
       end
 
       def self.default
@@ -63,7 +65,7 @@ module QA
       def email
         @email ||= begin
           api_email = api_resource&.dig(:email)
-          api_email && !api_email.empty? ? api_email : "#{username}@example.com"
+          api_email && !api_email.empty? ? api_email : "#{username}@#{email_domain}"
         end
       end
 

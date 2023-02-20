@@ -1,8 +1,16 @@
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { stubComponent } from 'helpers/stub_component';
+import DeleteModal from '~/packages_and_registries/package_registry/components/delete_modal.vue';
 import PackageVersionsList from '~/packages_and_registries/package_registry/components/details/package_versions_list.vue';
 import PackagesListLoader from '~/packages_and_registries/shared/components/packages_list_loader.vue';
 import RegistryList from '~/packages_and_registries/shared/components/registry_list.vue';
 import VersionRow from '~/packages_and_registries/package_registry/components/details/version_row.vue';
+import Tracking from '~/tracking';
+import {
+  CANCEL_DELETE_PACKAGE_VERSIONS_TRACKING_ACTION,
+  DELETE_PACKAGE_VERSIONS_TRACKING_ACTION,
+  REQUEST_DELETE_PACKAGE_VERSIONS_TRACKING_ACTION,
+} from '~/packages_and_registries/package_registry/constants';
 import { packageData } from '../../mock_data';
 
 describe('PackageVersionsList', () => {
@@ -24,6 +32,7 @@ describe('PackageVersionsList', () => {
     findRegistryList: () => wrapper.findComponent(RegistryList),
     findEmptySlot: () => wrapper.findComponent(EmptySlotStub),
     findListRow: () => wrapper.findAllComponents(VersionRow),
+    findDeletePackagesModal: () => wrapper.findComponent(DeleteModal),
   };
   const mountComponent = (props) => {
     wrapper = shallowMountExtended(PackageVersionsList, {
@@ -35,6 +44,11 @@ describe('PackageVersionsList', () => {
       },
       stubs: {
         RegistryList,
+        DeleteModal: stubComponent(DeleteModal, {
+          methods: {
+            show: jest.fn(),
+          },
+        }),
       },
       slots: {
         'empty-state': EmptySlotStub,
@@ -142,6 +156,82 @@ describe('PackageVersionsList', () => {
       uiElements.findRegistryList().vm.$emit('next-page');
 
       expect(wrapper.emitted('next-page')).toHaveLength(1);
+    });
+  });
+
+  describe('when the user can bulk destroy versions', () => {
+    let eventSpy;
+    const { findDeletePackagesModal, findRegistryList } = uiElements;
+
+    beforeEach(() => {
+      eventSpy = jest.spyOn(Tracking, 'event');
+      mountComponent({ canDestroy: true });
+    });
+
+    it('binds the right props', () => {
+      expect(uiElements.findRegistryList().props()).toMatchObject({
+        items: packageList,
+        pagination: {},
+        isLoading: false,
+        hiddenDelete: false,
+        title: '2 versions',
+      });
+    });
+
+    describe('upon deletion', () => {
+      beforeEach(() => {
+        findRegistryList().vm.$emit('delete', packageList);
+      });
+
+      it('passes itemsToBeDeleted to the modal', () => {
+        expect(findDeletePackagesModal().props('itemsToBeDeleted')).toStrictEqual(packageList);
+        expect(wrapper.emitted('delete')).toBeUndefined();
+      });
+
+      it('requesting delete tracks the right action', () => {
+        expect(eventSpy).toHaveBeenCalledWith(
+          undefined,
+          REQUEST_DELETE_PACKAGE_VERSIONS_TRACKING_ACTION,
+          expect.any(Object),
+        );
+      });
+
+      describe('when modal confirms', () => {
+        beforeEach(() => {
+          findDeletePackagesModal().vm.$emit('confirm');
+        });
+
+        it('emits delete event', () => {
+          expect(wrapper.emitted('delete')[0]).toEqual([packageList]);
+        });
+
+        it('tracks the right action', () => {
+          expect(eventSpy).toHaveBeenCalledWith(
+            undefined,
+            DELETE_PACKAGE_VERSIONS_TRACKING_ACTION,
+            expect.any(Object),
+          );
+        });
+      });
+
+      it.each(['confirm', 'cancel'])(
+        'resets itemsToBeDeleted when modal emits %s',
+        async (event) => {
+          await findDeletePackagesModal().vm.$emit(event);
+
+          expect(findDeletePackagesModal().props('itemsToBeDeleted')).toHaveLength(0);
+        },
+      );
+
+      it('canceling delete tracks the right action', () => {
+        findDeletePackagesModal().vm.$emit('cancel');
+
+        expect(eventSpy).toHaveBeenCalledWith(
+          undefined,
+          CANCEL_DELETE_PACKAGE_VERSIONS_TRACKING_ACTION,
+          expect.any(Object),
+        );
+      });
     });
   });
 });

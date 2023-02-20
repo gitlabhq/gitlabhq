@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/Azure/azure-sdk-for-go/sdk/storage/azblob"
+	"github.com/Azure/azure-sdk-for-go/sdk/storage/azblob/container"
 	"github.com/BurntSushi/toml"
 	"gocloud.dev/blob"
 	"gocloud.dev/blob/azureblob"
@@ -178,12 +179,13 @@ func (creds *AzureCredentials) getURLOpener() (*azureblob.URLOpener, error) {
 		AccountName: creds.AccountName,
 	}
 
-	clientFunc := func(svcURL azureblob.ServiceURL) (*azblob.ServiceClient, error) {
+	clientFunc := func(svcURL azureblob.ServiceURL, containerName azureblob.ContainerName) (*container.Client, error) {
 		sharedKeyCred, err := azblob.NewSharedKeyCredential(creds.AccountName, creds.AccountKey)
 		if err != nil {
 			return nil, fmt.Errorf("error creating Azure credentials: %w", err)
 		}
-		return azblob.NewServiceClientWithSharedKey(string(svcURL), sharedKeyCred, &azblob.ClientOptions{})
+		containerURL := fmt.Sprintf("%s/%s", svcURL, containerName)
+		return container.NewClientWithSharedKeyCredential(containerURL, sharedKeyCred, &container.ClientOptions{})
 	}
 
 	return &azureblob.URLOpener{

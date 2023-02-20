@@ -56,4 +56,24 @@ module EmailHelpers
 
     have_subject [prefix, suffix].compact.join
   end
+
+  def enqueue_mail_with(mailer_class, mail_method_name, *args)
+    args.map! { |arg| arg.is_a?(ActiveRecord::Base) ? arg.id : arg }
+    have_enqueued_mail(mailer_class, mail_method_name).with(*args)
+  end
+
+  def not_enqueue_mail_with(mailer_class, mail_method_name, *args)
+    args.map! { |arg| arg.is_a?(ActiveRecord::Base) ? arg.id : arg }
+    not_enqueue_mail(mailer_class, mail_method_name).with(*args)
+  end
+
+  def have_only_enqueued_mail_with_args(mailer_class, mailer_method, *args)
+    raise ArgumentError, 'You must provide at least one array of mailer arguments' if args.empty?
+
+    count_expectation = have_enqueued_mail(mailer_class, mailer_method).exactly(args.size).times
+
+    args.inject(count_expectation) do |composed_expectation, arguments|
+      composed_expectation.and(have_enqueued_mail(mailer_class, mailer_method).with(*arguments))
+    end
+  end
 end

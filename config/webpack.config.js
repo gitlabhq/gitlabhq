@@ -380,7 +380,19 @@ module.exports = {
       {
         test: /\.svg$/,
         exclude: /icons\.svg$/,
-        loader: 'raw-loader',
+        oneOf: [
+          {
+            resourceQuery: /url/,
+            loader: 'file-loader',
+            options: {
+              name: '[name].[contenthash:8].[ext]',
+              esModule: false,
+            },
+          },
+          {
+            loader: 'raw-loader',
+          },
+        ],
       },
       {
         test: /\.(gif|png|mp4)$/,

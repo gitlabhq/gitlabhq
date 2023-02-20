@@ -102,6 +102,10 @@ module CrossDatabaseModification
         :gitlab_main
       when 'Ci::ApplicationRecord'
         :gitlab_ci
+      when 'MainClusterwide::ApplicationRecord'
+        :gitlab_main_clusterwide
+      when 'PackageMetadata::ApplicationRecord'
+        :gitlab_pm
       else
         Gitlab::Database::GitlabSchema.table_schema(table_name) if table_name
       end

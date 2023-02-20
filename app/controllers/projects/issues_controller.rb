@@ -28,8 +28,7 @@ class Projects::IssuesController < Projects::ApplicationController
     SET_ISSUABLES_INDEX_ONLY_ACTIONS.include?(c.action_name.to_sym) && !index_html_request?
   }
   before_action :check_search_rate_limit!, if: ->(c) {
-    SET_ISSUABLES_INDEX_ONLY_ACTIONS.include?(c.action_name.to_sym) && !index_html_request? &&
-      params[:search].present? && Feature.enabled?(:rate_limit_issuable_searches)
+    SET_ISSUABLES_INDEX_ONLY_ACTIONS.include?(c.action_name.to_sym) && !index_html_request? && params[:search].present?
   }
 
   # Allow write(create) issue
@@ -47,6 +46,7 @@ class Projects::IssuesController < Projects::ApplicationController
   before_action do
     push_frontend_feature_flag(:preserve_unchanged_markdown, project)
     push_frontend_feature_flag(:content_editor_on_issues, project)
+    push_frontend_feature_flag(:service_desk_new_note_email_native_attachments, project)
   end
 
   before_action only: [:index, :show] do
@@ -55,6 +55,7 @@ class Projects::IssuesController < Projects::ApplicationController
 
   before_action only: :index do
     push_frontend_feature_flag(:or_issuable_queries, project)
+    push_frontend_feature_flag(:frontend_caching, project&.group)
   end
 
   before_action only: :show do
@@ -64,7 +65,7 @@ class Projects::IssuesController < Projects::ApplicationController
     push_force_frontend_feature_flag(:work_items_mvc_2, project&.work_items_mvc_2_feature_flag_enabled?)
     push_frontend_feature_flag(:epic_widget_edit_confirmation, project)
     push_frontend_feature_flag(:use_iid_in_work_items_path, project&.group)
-    push_force_frontend_feature_flag(:work_items_create_from_markdown, project&.work_items_create_from_markdown_feature_flag_enabled?)
+    push_frontend_feature_flag(:incident_event_tags, project)
   end
 
   around_action :allow_gitaly_ref_name_caching, only: [:discussions]
@@ -127,7 +128,7 @@ class Projects::IssuesController < Projects::ApplicationController
       discussion_to_resolve: params[:discussion_to_resolve],
       confidential: !!Gitlab::Utils.to_boolean(issue_params[:confidential])
     )
-    service = ::Issues::BuildService.new(project: project, current_user: current_user, params: build_params)
+    service = ::Issues::BuildService.new(container: project, current_user: current_user, params: build_params)
 
     @issue = @noteable = service.execute
 
@@ -155,7 +156,7 @@ class Projects::IssuesController < Projects::ApplicationController
     )
 
     spam_params = ::Spam::SpamParams.new_from_request(request: request)
-    service = ::Issues::CreateService.new(project: project, current_user: current_user, params: create_params, spam_params: spam_params)
+    service = ::Issues::CreateService.new(container: project, current_user: current_user, params: create_params, spam_params: spam_params)
     result = service.execute
 
     # Only irrecoverable errors such as unauthorized user won't contain an issue in the response
@@ -190,7 +191,7 @@ class Projects::IssuesController < Projects::ApplicationController
       new_project = Project.find(params[:move_to_project_id])
       return render_404 unless issue.can_move?(current_user, new_project)
 
-      @issue = ::Issues::MoveService.new(project: project, current_user: current_user).execute(issue, new_project)
+      @issue = ::Issues::MoveService.new(container: project, current_user: current_user).execute(issue, new_project)
     end
 
     respond_to do |format|
@@ -204,7 +205,7 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def reorder
-    service = ::Issues::ReorderService.new(project: project, current_user: current_user, params: reorder_params)
+    service = ::Issues::ReorderService.new(container: project, current_user: current_user, params: reorder_params)
 
     if service.execute(issue)
       head :ok
@@ -215,7 +216,7 @@ class Projects::IssuesController < Projects::ApplicationController
 
   def related_branches
     @related_branches = ::Issues::RelatedBranchesService
-      .new(project: project, current_user: current_user)
+      .new(container: project, current_user: current_user)
       .execute(issue)
       .map { |branch| branch.merge(link: branch_link(branch)) }
 
@@ -370,7 +371,7 @@ class Projects::IssuesController < Projects::ApplicationController
 
   def update_service
     spam_params = ::Spam::SpamParams.new_from_request(request: request)
-    ::Issues::UpdateService.new(project: project, current_user: current_user, params: issue_params, spam_params: spam_params)
+    ::Issues::UpdateService.new(container: project, current_user: current_user, params: issue_params, spam_params: spam_params)
   end
 
   def finder_type

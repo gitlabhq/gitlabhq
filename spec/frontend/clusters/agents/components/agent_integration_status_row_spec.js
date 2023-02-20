@@ -31,7 +31,7 @@ describe('IntegrationStatus', () => {
 
   describe('icon', () => {
     const icon = 'status-success';
-    const iconClass = 'text-success-500';
+    const iconClass = 'gl-text-green-500';
     it.each`
       props                  | iconName         | iconClassName
       ${{ icon, iconClass }} | ${icon}          | ${iconClass}

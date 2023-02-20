@@ -14,7 +14,7 @@ RSpec.describe BulkImports::Pipeline::Context do
     create(
       :bulk_import_entity,
       source_full_path: 'source/full/path',
-      destination_name: 'My Destination Group',
+      destination_slug: 'My-Destination-Group',
       destination_namespace: group.full_path,
       group: group,
       bulk_import: bulk_import

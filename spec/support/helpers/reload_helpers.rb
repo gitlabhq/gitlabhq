@@ -5,8 +5,8 @@ module ReloadHelpers
     models.compact.map(&:reload)
   end
 
-  def subject_and_reload(*models)
+  def subject_and_reload(...)
     subject
-    reload_models(*models)
+    reload_models(...)
   end
 end

@@ -337,7 +337,6 @@ class IssuableFinder
   def by_search(items)
     return items unless search
     return items if items.is_a?(ActiveRecord::NullRelation)
-    return items if Feature.enabled?(:disable_anonymous_search, type: :ops) && current_user.nil?
 
     return filter_by_full_text_search(items) if use_full_text_search?
 

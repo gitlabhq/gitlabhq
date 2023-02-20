@@ -4,14 +4,14 @@
   "patternProperties": {
     "^[a-zA-Z0-9_]*$": {
         "anyOf": [
-          { "$ref": "spec/fixtures/lib/gitlab/metrics/dashboard/schemas/text_variable_full_syntax.json" },
+          { "$ref": "text_variable_full_syntax.json" },
           { "type": "string" },
           {
             "type": "array",
             "items": { "type": "string" }
           },
-          { "$ref": "spec/fixtures/lib/gitlab/metrics/dashboard/schemas/custom_variable_full_syntax.json" },
-          { "$ref": "spec/fixtures/lib/gitlab/metrics/dashboard/schemas/metric_label_values_variable_full_syntax.json" }
+          { "$ref": "custom_variable_full_syntax.json" },
+          { "$ref": "metric_label_values_variable_full_syntax.json" }
         ]
       }
   },

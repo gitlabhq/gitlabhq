@@ -35,6 +35,10 @@ describe('Board Column Component', () => {
       store,
       propsData: {
         list: listMock,
+        boardId: 'gid://gitlab/Board/1',
+      },
+      provide: {
+        isApolloBoard: false,
       },
     });
   };

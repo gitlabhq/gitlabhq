@@ -7,14 +7,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Import your project from GitHub to GitLab **(FREE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/381902) in GitLab 15.8, GitLab no longer automatically creates namespaces or groups that don't exist. GitLab also no longer falls back to using the user's personal namespace if the namespace or group name is taken.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/381902) in GitLab 15.8, GitLab no longer automatically creates namespaces or groups that don't exist. GitLab also no longer falls back to using the user's personal namespace if the namespace or group name is taken.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/378267) in GitLab 15.9, GitLab instances behind proxies no longer require `github.com` and `api.github.com` entries in the [allowlist for local requests](../../../security/webhooks.md#create-an-allowlist-for-local-requests).
 
-You can import your GitHub repositories:
-
-- From either GitHub.com or GitHub Enterprise.
-- To either GitLab.com or a self-managed GitLab instance.
-
-This process does not migrate or import any types of groups or organizations from GitHub to GitLab.
+You can import your GitHub projects from either GitHub.com or GitHub Enterprise. Importing projects does not
+migrate or import any types of groups or organizations from GitHub to GitLab.
 
 The namespace is a user or group in GitLab, such as `gitlab.com/sidney-jones` or
 `gitlab.com/customer-success`. You can use bulk actions in the rails console to move projects to
@@ -23,22 +20,6 @@ different namespaces.
 If you are importing to a self-managed GitLab instance, you can use the
 [GitHub Rake task](../../../administration/raketasks/github_import.md) instead. This allows you to import projects
 without the constraints of a [Sidekiq](../../../development/sidekiq/index.md) worker.
-
-NOTE:
-If you are importing a project using the GitHub Rake task, GitLab still creates namespaces or groups that don't exist.
-
-If you are importing from GitHub Enterprise to a self-managed GitLab instance:
-
-- You must first enable [GitHub integration](../../../integration/github.md).
-- To import projects from GitHub Enterprise to GitLab.com, use the [Import API](../../../api/import.md).
-- If GitLab is behind a HTTP/HTTPS proxy, you must populate the [allowlist for local requests](../../../security/webhooks.md#create-an-allowlist-for-local-requests)
-  with `github.com` and `api.github.com` to solve the hostname. For more information, read the issue
-  [Importing a GitHub project requires DNS resolution even when behind a proxy](https://gitlab.com/gitlab-org/gitlab/-/issues/37941).
-
-If you are importing from GitHub.com to a self-managed GitLab instance:
-
-- Setting up GitHub integration is not required.
-- You can use the [Import API](../../../api/import.md).
 
 When importing projects:
 
@@ -57,24 +38,41 @@ For an overview of the import process, see the video [Migrating from GitHub to G
 
 ## Prerequisites
 
-At least the Maintainer role on the destination group to import to. Using the Developer role for this purpose was
-[deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/387891) in GitLab 15.8 and will be removed in GitLab 16.0.
+To import projects from GitHub:
 
-When issues and pull requests are being imported, the importer attempts to find
-their GitHub authors and assignees in the database of the GitLab instance. Pull requests are called _merge requests_ in
-GitLab.
+- You must have at least the Maintainer role on the destination group to import to. Using the Developer role for this
+  purpose was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/387891) in GitLab 15.8 and will be removed in
+  GitLab 16.0.
+- Each GitHub author and assignee in the repository must have a
+  [public-facing email address](https://docs.github.com/en/account-and-profile/setting-up-and-managing-your-personal-account-on-github/managing-email-preferences/setting-your-commit-email-address)
+  on GitHub that matches their GitLab email address (regardless of how the account was created). If their email address
+  from GitHub is set as their secondary email address in GitLab, they must confirm it.
 
-For this association to succeed, each GitHub author and assignee in the repository
-must have a [public-facing email address](https://docs.github.com/en/account-and-profile/setting-up-and-managing-your-personal-account-on-github/managing-email-preferences/setting-your-commit-email-address)
-on GitHub that matches their GitLab email address (regardless of how the account was created).
-If their email address from GitHub is set as their secondary email address in GitLab, it must be
-confirmed.
+  When issues and pull requests are being imported, the importer attempts to find their GitHub authors and assignees in
+  the database of the GitLab instance. Pull requests are called _merge requests_ in GitLab. For the importer to succeed,
+  matching email addresses are required.
+- GitHub accounts must have a GitHub public-facing email address is populated. This means all comments and contributions
+  are properly mapped to the same user in GitLab. GitHub Enterprise does not require this field to be populated so you
+  may have to add it on existing accounts.
 
-GitLab content imports that use GitHub accounts require that the GitHub public-facing email address is populated. This means
-all comments and contributions are properly mapped to the same user in GitLab. GitHub Enterprise does not require this
-field to be populated so you may have to add it on existing accounts.
+See also [Branch protection rules and project settings](#branch-protection-rules-and-project-settings) for additional
+prerequisites for those imports.
 
-See also [Branch protection rules and project settings](#branch-protection-rules-and-project-settings) for additional prerequisites for those imports.
+### Importing from GitHub Enterprise to self-managed GitLab
+
+If you are importing from GitHub Enterprise to a self-managed GitLab instance:
+
+- You must first enable the [GitHub integration](../../../integration/github.md).
+- For GitLab 15.8 and earlier, you must add `github.com` and `api.github.com` entries in the
+  [allowlist for local requests](../../../security/webhooks.md#create-an-allowlist-for-local-requests).
+
+### Importing from GitHub.com to self-managed GitLab
+
+If you are importing from GitHub.com to a self-managed GitLab instance:
+
+- You don't need to enable the [GitHub integration](../../../integration/github.md).
+- GitHub must be enabled as an import source in the
+  [Admin Area](../../admin_area/settings/visibility_and_access_controls.md#configure-allowed-import-sources).
 
 ## Import your GitHub repository into GitLab
 
@@ -145,7 +143,8 @@ You can choose to import these items, but this could significantly increase impo
 
 ### Select which repositories to import
 
-> Ability to cancel pending or active imports [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/247325) in GitLab 15.7.
+> - Ability to cancel pending or active imports [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/247325) in GitLab 15.7.
+> - Ability to re-import projects [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23905) in GitLab 15.9.
 
 After you have authorized access to your GitHub repositories, you are redirected to the GitHub importer page and
 your GitHub repositories are listed.
@@ -166,6 +165,8 @@ To cancel imports that are pending or in progress, next to the imported project,
 If the import has already started, the imported files are kept.
 
 To open an repository in GitLab URL after it has been imported, select its GitLab path.
+
+Completed imports can be re-imported by selecting **Re-import** and specifying new name. This creates a new copy of the source project.
 
 ![GitHub importer page](img/import_projects_from_github_importer_v12_3.png)
 

@@ -11,7 +11,8 @@ export default {
   components: {
     GlDropdown,
     GlDropdownItem,
-    LdapDropdownItem: () => import('ee_component/members/components/ldap/ldap_dropdown_item.vue'),
+    LdapDropdownItem: () =>
+      import('ee_component/members/components/action_dropdowns/ldap_dropdown_item.vue'),
   },
   inject: ['namespace', 'group'],
   props: {

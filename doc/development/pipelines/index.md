@@ -188,7 +188,7 @@ Note that the merge request also needs to have the `master:broken` or `master:fo
 
 To make your Revert MRs faster, use the [revert MR template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/merge_request_templates/Revert%20To%20Resolve%20Incident.md) **before** you create your merge request. It will apply the `pipeline:expedite` label and others that will expedite the pipelines that run on the merge request.
 
-### The `~pipeline:expedite` label
+### The `pipeline:expedite` label
 
 When this label is assigned, the following steps of the CI/CD pipeline are skipped:
 
@@ -207,83 +207,33 @@ If you want to force all the RSpec jobs to run regardless of your changes, you c
 WARNING:
 Forcing all jobs on docs only related MRs would not have the prerequisite jobs and would lead to errors
 
-### Test suite parallelization
+### End-to-end jobs
 
-Our current RSpec tests parallelization setup is as follows:
+The [`e2e:package-and-test`](../testing_guide/end_to_end/index.md#using-the-package-and-test-job) child pipeline
+runs end-to-end jobs automatically depending on changes, and is manual in other cases.
+See `.qa:rules:package-and-test` in
+[`rules.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/rules.gitlab-ci.yml) for
+the specific list of rules.
 
-1. The `retrieve-tests-metadata` job in the `prepare` stage ensures we have a
-   `knapsack/report-master.json` file:
-   - The `knapsack/report-master.json` file is fetched from the latest `main` pipeline which runs `update-tests-metadata`
-     (for now it's the 2-hourly `maintenance` scheduled master pipeline), if it's not here we initialize the file with `{}`.
-1. Each `[rspec|rspec-ee] [migration|unit|integration|system|geo] n m` job are run with
-   `knapsack rspec` and should have an evenly distributed share of tests:
-   - It works because the jobs have access to the `knapsack/report-master.json`
-     since the "artifacts from all previous stages are passed by default".
-   - the jobs set their own report path to
-     `"knapsack/${TEST_TOOL}_${TEST_LEVEL}_${DATABASE}_${CI_NODE_INDEX}_${CI_NODE_TOTAL}_report.json"`.
-   - if knapsack is doing its job, test files that are run should be listed under
-     `Report specs`, not under `Leftover specs`.
-1. The `update-tests-metadata` job (which only runs on scheduled pipelines for
-   [the canonical project](https://gitlab.com/gitlab-org/gitlab) takes all the
-   `knapsack/rspec*.json` files and merge them all together into a single
-   `knapsack/report-master.json` file that is saved as artifact.
+If you want to force `e2e:package-and-test` to run regardless of your changes, you can add the
+`pipeline:run-all-e2e` label to the merge request.
 
-After that, the next pipeline uses the up-to-date `knapsack/report-master.json` file.
+Consult the [End-to-end Testing](../testing_guide/end_to_end/index.md) dedicated page for more information.
 
-### Flaky tests
+### Review app jobs
 
-#### Automatic skipping of flaky tests
+The [`start-review-app-pipeline`](../testing_guide/review_apps.md) child pipeline deploys a Review App and runs
+end-to-end tests against it automatically depending on changes, and is manual in other cases.
+See `.review:rules:start-review-app-pipeline` in
+[`rules.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/rules.gitlab-ci.yml) for
+the specific list of rules.
 
-Tests that are [known to be flaky](../testing_guide/flaky_tests.md#automatic-retries-and-flaky-tests-detection) are
-skipped unless the `$SKIP_FLAKY_TESTS_AUTOMATICALLY` variable is set to `false` or if the `~"pipeline:run-flaky-tests"`
-label is set on the MR.
-
-See the [experiment issue](https://gitlab.com/gitlab-org/quality/team-tasks/-/issues/1069).
-
-#### Automatic retry of failing tests in a separate process
-
-Unless `$RETRY_FAILED_TESTS_IN_NEW_PROCESS` variable is set to `false` (`true` by default), RSpec tests that failed are automatically retried once in a separate
-RSpec process. The goal is to get rid of most side-effects from previous tests that may lead to a subsequent test failure.
-
-We keep track of retried tests in the `$RETRIED_TESTS_REPORT_FILE` file saved as artifact by the `rspec:flaky-tests-report` job.
-
-See the [experiment issue](https://gitlab.com/gitlab-org/quality/team-tasks/-/issues/1148).
-
-### Compatibility testing
-
-By default, we run all tests with the versions that runs on GitLab.com.
-
-Other versions (usually one back-compatible version, and one forward-compatible version) should be running in nightly scheduled pipelines.
-
-Exceptions to this general guideline should be motivated and documented.
-
-#### Single database testing
-
-By default, all tests run with [multiple databases](../database/multiple_databases.md).
-
-We also run tests with a single database in nightly scheduled pipelines, and in merge requests that touch database-related files.
-
-If you want to force tests to run with a single database, you can add the `pipeline:run-single-db` label to the merge request.
-
-### Monitoring
-
-The GitLab test suite is [monitored](../performance.md#rspec-profiling) for the `main` branch, and any branch
-that includes `rspec-profile` in their name.
-
-### Logging
-
-- Rails logging to `log/test.log` is disabled by default in CI
-  [for performance reasons](https://jtway.co/speed-up-your-rails-test-suite-by-6-in-1-line-13fedb869ec4).
-  To override this setting, provide the
-  `RAILS_ENABLE_TEST_LOG` environment variable.
-
-## Review app jobs
+If you want to force a Review App to be deployed regardless of your changes, you can add the
+`pipeline:run-review-app` label to the merge request.
 
 Consult the [Review Apps](../testing_guide/review_apps.md) dedicated page for more information.
 
-If you want to force a Review App to be deployed regardless of your changes, you can add the `pipeline:run-review-app` label to the merge request.
-
-## As-if-FOSS jobs
+### As-if-FOSS jobs
 
 The `* as-if-foss` jobs run the GitLab test suite "as if FOSS", meaning as if the jobs would run in the context
 of `gitlab-org/gitlab-foss`. These jobs are only created in the following cases:
@@ -297,7 +247,7 @@ set and get the `ee/` folder removed before the tests start running.
 
 The intent is to ensure that a change doesn't introduce a failure after `gitlab-org/gitlab` is synced to `gitlab-org/gitlab-foss`.
 
-## As-if-JH cross project downstream pipeline
+### As-if-JH cross project downstream pipeline
 
 The `start-as-if-jh` job triggers a cross project downstream pipeline which
 runs the GitLab test suite "as if JiHu", meaning as if the pipeline would run
@@ -321,13 +271,13 @@ The intent is to ensure that a change doesn't introduce a failure after
 [GitLab](https://gitlab.com/gitlab-org/gitlab) is synchronized to
 [GitLab JH](https://jihulab.com/gitlab-cn/gitlab).
 
-### When to consider applying `pipeline:run-as-if-jh` label
+#### When to consider applying `pipeline:run-as-if-jh` label
 
 If a Ruby file is renamed and there's a corresponding [`prepend_mod` line](../jh_features_review.md#jh-features-based-on-ce-or-ee-features),
 it's likely that GitLab JH is relying on it and requires a corresponding
 change to rename the module or class it's prepending.
 
-### Corresponding JH branch
+#### Corresponding JH branch
 
 You can create a corresponding JH branch on [GitLab JH](https://jihulab.com/gitlab-cn/gitlab) by
 appending `-jh` to the branch name. If a corresponding JH branch is found,
@@ -344,7 +294,7 @@ it does not include any corresponding JH branch beside the default `main-jh`.
 This is why when we want to fetch corresponding JH branch we should fetch it
 from the main mirror, rather than the validation project.
 
-### How as-if-JH pipeline was configured
+#### How as-if-JH pipeline was configured
 
 The whole process looks like this:
 
@@ -373,14 +323,14 @@ flowchart TD
   JH --"pull mirror with corresponding JH branches"--> Mirror
 ```
 
-#### Tokens set in the project variables
+##### Tokens set in the project variables
 
 - `ADD_JH_FILES_TOKEN`: This is a [GitLab JH mirror](https://gitlab.com/gitlab-org/gitlab-jh-mirrors/gitlab)
   project token with `read_api` permission, to be able to download JiHu files.
 - `AS_IF_JH_TOKEN`: This is a [GitLab JH validation](https://gitlab.com/gitlab-org-sandbox/gitlab-jh-validation)
   project token with `write_repository` permission, to push generated `as-if-jh/*` branch.
 
-#### How we generate the as-if-JH branch
+##### How we generate the as-if-JH branch
 
 First `add-jh-files` job will download the required JiHu files from the
 corresponding JH branch, saving in artifacts. Next `prepare-as-if-jh-branch`
@@ -388,13 +338,13 @@ job will create a new branch from the merge request branch, commit the
 changes, and finally push the branch to the
 [validation project](https://gitlab.com/gitlab-org-sandbox/gitlab-jh-validation).
 
-#### How we trigger and run the as-if-JH pipeline
+##### How we trigger and run the as-if-JH pipeline
 
 After having the `as-if-jh/*` branch, `start-as-if-jh` job will trigger a pipeline
 in the [validation project](https://gitlab.com/gitlab-org-sandbox/gitlab-jh-validation)
 to run the cross-project downstream pipeline.
 
-#### How the GitLab JH mirror project is set up
+##### How the GitLab JH mirror project is set up
 
 The [GitLab JH mirror](https://gitlab.com/gitlab-org/gitlab-jh-mirrors/gitlab) project is private and CI is disabled.
 
@@ -408,7 +358,7 @@ engineering vault.
 
 No password is used from mirroring because GitLab JH is a public project.
 
-#### How the GitLab JH validation project is set up
+##### How the GitLab JH validation project is set up
 
 This [GitLab JH validation](https://gitlab.com/gitlab-org-sandbox/gitlab-jh-validation) project is public and CI is enabled, without any project variables.
 
@@ -432,24 +382,7 @@ running every day, updating cache.
 The default CI/CD configuration file is also set at `jh/.gitlab-ci.yml` so it
 runs exactly like [GitLab JH](https://jihulab.com/gitlab-cn/gitlab/-/blob/main-jh/jh/.gitlab-ci.yml).
 
-## Ruby 2.7 jobs
-
-We're running Ruby 3.0 for the merge requests and the default branch. However,
-we're still running Ruby 2.7 for GitLab.com and there are older versions that
-we need to maintain. We need a way to still try out Ruby 2.7 in merge requests.
-
-You can add the `pipeline:run-in-ruby2` label to the merge request to switch
-the Ruby version used for running the whole test suite to 2.7. When you do
-this, the test suite will no longer run in Ruby 3.0 (default), and an
-additional job `verify-ruby-3.0` will also run and always fail to remind us to
-remove the label and run in Ruby 3.0 before merging the merge request.
-
-This should let us:
-
-- Test changes for Ruby 2.7
-- Make sure it will not break anything when it's merged into the default branch
-
-## `undercover` RSpec test
+### `rspec:undercoverage` job
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/74859) in GitLab 14.6.
 
@@ -463,25 +396,90 @@ In the event of an emergency, or false positive from this job, add the
 `pipeline:skip-undercoverage` label to the merge request to allow this job to
 fail.
 
-### Troubleshooting `rspec:undercoverage` failures
+#### Troubleshooting `rspec:undercoverage` failures
 
 The `rspec:undercoverage` job has [known bugs](https://gitlab.com/groups/gitlab-org/-/epics/8254)
 that can cause false positive failures. You can test coverage locally to determine if it's
-safe to apply `~"pipeline:skip-undercoverage"`. For example, using `<spec>` as the name of the
+safe to apply `pipeline:skip-undercoverage`. For example, using `<spec>` as the name of the
 test causing the failure:
 
 1. Run `SIMPLECOV=1 bundle exec rspec <spec>`.
 1. Run `scripts/undercoverage`.
 
-If these commands return `undercover: ✅ No coverage is missing in latest changes` then you can apply `~"pipeline:skip-undercoverage"` to bypass pipeline failures.
+If these commands return `undercover: ✅ No coverage is missing in latest changes` then you can apply `pipeline:skip-undercoverage` to bypass pipeline failures.
 
-## Ruby versions testing
+## Test suite parallelization
 
-Our test suite runs against Ruby 3 in merge requests and default branch pipelines.
+Our current RSpec tests parallelization setup is as follows:
 
-We also run our test suite against Ruby 2.7 on another 2-hourly scheduled pipelines, as GitLab.com still runs on Ruby 2.7.
+1. The `retrieve-tests-metadata` job in the `prepare` stage ensures we have a
+   `knapsack/report-master.json` file:
+   - The `knapsack/report-master.json` file is fetched from the latest `main` pipeline which runs `update-tests-metadata`
+     (for now it's the 2-hourly `maintenance` scheduled master pipeline), if it's not here we initialize the file with `{}`.
+1. Each `[rspec|rspec-ee] [migration|unit|integration|system|geo] n m` job are run with
+   `knapsack rspec` and should have an evenly distributed share of tests:
+   - It works because the jobs have access to the `knapsack/report-master.json`
+     since the "artifacts from all previous stages are passed by default".
+   - the jobs set their own report path to
+     `"knapsack/${TEST_TOOL}_${TEST_LEVEL}_${DATABASE}_${CI_NODE_INDEX}_${CI_NODE_TOTAL}_report.json"`.
+   - if knapsack is doing its job, test files that are run should be listed under
+     `Report specs`, not under `Leftover specs`.
+1. The `update-tests-metadata` job (which only runs on scheduled pipelines for
+   [the canonical project](https://gitlab.com/gitlab-org/gitlab) takes all the
+   `knapsack/rspec*.json` files and merge them all together into a single
+   `knapsack/report-master.json` file that is saved as artifact.
 
-## PostgreSQL versions testing
+After that, the next pipeline uses the up-to-date `knapsack/report-master.json` file.
+
+## Flaky tests
+
+### Automatic skipping of flaky tests
+
+We used to skip tests that are [known to be flaky](../testing_guide/flaky_tests.md#automatic-retries-and-flaky-tests-detection),
+but we stopped doing so since that could actually lead to actual broken `master`.
+Instead, we proactively quarantine any flaky test reported in `#master-broken` incidents
+so that they're ultimately fixed by their respective group.
+
+The automatic skipping of flaky tests can still be enabled by setting the `$SKIP_FLAKY_TESTS_AUTOMATICALLY` variable to `true`.
+
+See the [experiment issue](https://gitlab.com/gitlab-org/quality/team-tasks/-/issues/1069).
+
+### Automatic retry of failing tests in a separate process
+
+Unless `$RETRY_FAILED_TESTS_IN_NEW_PROCESS` variable is set to `false` (`true` by default), RSpec tests that failed are automatically retried once in a separate
+RSpec process. The goal is to get rid of most side-effects from previous tests that may lead to a subsequent test failure.
+
+We keep track of retried tests in the `$RETRIED_TESTS_REPORT_FILE` file saved as artifact by the `rspec:flaky-tests-report` job.
+
+See the [experiment issue](https://gitlab.com/gitlab-org/quality/team-tasks/-/issues/1148).
+
+## Compatibility testing
+
+By default, we run all tests with the versions that runs on GitLab.com.
+
+Other versions (usually one back-compatible version, and one forward-compatible version) should be running in nightly scheduled pipelines.
+
+Exceptions to this general guideline should be motivated and documented.
+
+### Ruby versions testing
+
+We're running Ruby 3.0 for the merge requests and the default branch. However,
+we're still running Ruby 2.7 for GitLab.com and there are older versions that
+we need to maintain, so we also run our test suite against Ruby 2.7 on a
+dedicated 2-hourly scheduled pipelines.
+
+For merge requests, you can add the `pipeline:run-in-ruby2` label to switch
+the Ruby version used for running the whole test suite to 2.7. When you do
+this, the test suite will no longer run in Ruby 3.0 (default), and an
+additional job `verify-ruby-3.0` will also run and always fail to remind us to
+remove the label and run in Ruby 3.0 before merging the merge request.
+
+This should let us:
+
+- Test changes for Ruby 2.7
+- Make sure it will not break anything when it's merged into the default branch
+
+### PostgreSQL versions testing
 
 Our test suite runs against PG12 as GitLab.com runs on PG12 and
 [Omnibus defaults to PG12 for new installs and upgrades](../../administration/package_information/postgresql_versions.md).
@@ -490,7 +488,7 @@ We do run our test suite against PG11 and PG13 on nightly scheduled pipelines.
 
 We also run our test suite against PG11 upon specific database library changes in MRs and `main` pipelines (with the `rspec db-library-code pg11` job).
 
-### Current versions testing
+#### Current versions testing
 
 | Where?                                                                                         | PostgreSQL version                              | Ruby version |
 |------------------------------------------------------------------------------------------------|-------------------------------------------------|--------------|
@@ -506,16 +504,14 @@ pipeline in `ruby2-sync` branch, which updates the `ruby2` branch with latest
 is triggering a pipeline in `ruby2` 5 minutes after it, which is considered
 the maintenance schedule to run test suites and update cache.
 
-Any changes in `ruby2` are only for running the pipeline. It should
-never be merged back to `master`. Any other Ruby 2.7 changes should go into
-`master` directly, which should be compatible with Ruby 3.
+The `ruby2` branch must not have any changes. The branch is only there to set
+`RUBY_VERSION` to `2.7` in the maintenance pipeline schedule.
 
-Previously, `ruby2-sync` was using a project token stored in `RUBY2_SYNC_TOKEN`
-(now backed up in `RUBY2_SYNC_TOKEN_NOT_USED`), however due to various
-permissions issues, we ended up using an access token from `gitlab-bot` so now
-`RUBY2_SYNC_TOKEN` is actually an access token from `gitlab-bot`.
+The `gitlab` job in the `ruby2-sync` branch uses a `gitlab-org/gitlab` project
+token with `write_repository` scope and `Maintainer` role with no expiration.
+The token is stored in the `RUBY2_SYNC_TOKEN` variable in `gitlab-org/gitlab`.
 
-### Long-term plan
+#### Long-term plan
 
 We follow the [PostgreSQL versions shipped with Omnibus GitLab](../../administration/package_information/postgresql_versions.md):
 
@@ -525,20 +521,40 @@ We follow the [PostgreSQL versions shipped with Omnibus GitLab](../../administra
 | PG11               | `nightly`              | `nightly`              | `nightly`              | `nightly`              | `nightly`              | `nightly`              |
 | PG13               | `nightly`              | `nightly`              | `nightly`              | `nightly`              | `nightly`              | `nightly`              |
 
-## Redis versions testing
+### Redis versions testing
 
 Our test suite runs against Redis 6 as GitLab.com runs on Redis 6 and
 [Omnibus defaults to Redis 6 for new installs and upgrades](https://gitlab.com/gitlab-org/omnibus-gitlab/-/blob/master/config/software/redis.rb).
 
 We do run our test suite against Redis 5 on `nightly` scheduled pipelines, specifically when running backward-compatible and forward-compatible PostgreSQL jobs.
 
-### Current versions testing
+#### Current versions testing
 
 | Where? | Redis version |
 | ------ | ------------------ |
 | MRs    | 6 |
 | `default branch` (non-scheduled pipelines) | 6 |
 | `nightly` scheduled pipelines | 5 |
+
+### Single database testing
+
+By default, all tests run with [multiple databases](../database/multiple_databases.md).
+
+We also run tests with a single database in nightly scheduled pipelines, and in merge requests that touch database-related files.
+
+If you want to force tests to run with a single database, you can add the `pipeline:run-single-db` label to the merge request.
+
+## Monitoring
+
+The GitLab test suite is [monitored](../performance.md#rspec-profiling) for the `main` branch, and any branch
+that includes `rspec-profile` in their name.
+
+## Logging
+
+- Rails logging to `log/test.log` is disabled by default in CI
+  [for performance reasons](https://jtway.co/speed-up-your-rails-test-suite-by-6-in-1-line-13fedb869ec4).
+  To override this setting, provide the
+  `RAILS_ENABLE_TEST_LOG` environment variable.
 
 ## Pipelines types for merge requests
 

@@ -7,18 +7,18 @@ import IssueCardTimeInfo from 'ee_else_ce/issues/list/components/issue_card_time
 import getIssuesQuery from 'ee_else_ce/issues/list/queries/get_issues.query.graphql';
 import getIssuesCountsQuery from 'ee_else_ce/issues/list/queries/get_issues_counts.query.graphql';
 import { createAlert, VARIANT_INFO } from '~/flash';
-import { TYPE_USER } from '~/graphql_shared/constants';
+import { TYPENAME_USER } from '~/graphql_shared/constants';
 import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { ITEM_TYPE } from '~/groups/constants';
 import CsvImportExportButtons from '~/issuable/components/csv_import_export_buttons.vue';
 import IssuableByEmail from '~/issuable/components/issuable_by_email.vue';
-import { IssuableStatus } from '~/issues/constants';
+import { STATUS_CLOSED } from '~/issues/constants';
 import axios from '~/lib/utils/axios_utils';
+import { fetchPolicies } from '~/lib/graphql';
 import { isPositiveInteger } from '~/lib/utils/number_utils';
 import { scrollUp } from '~/lib/utils/scroll_utils';
 import { getParameterByName, joinPaths } from '~/lib/utils/url_utility';
 import {
-  FILTERED_SEARCH_TERM,
   OPERATORS_IS,
   OPERATORS_IS_NOT,
   OPERATORS_IS_NOT_OR,
@@ -48,6 +48,7 @@ import {
 import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
 import { IssuableListTabs, IssuableStates } from '~/vue_shared/issuable/list/constants';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import NewResourceDropdown from '~/vue_shared/components/new_resource_dropdown/new_resource_dropdown.vue';
 import {
   CREATED_DESC,
   defaultTypeTokenOptions,
@@ -82,9 +83,9 @@ import {
   getSortOptions,
   isSortKey,
 } from '../utils';
+import { hasNewIssueDropdown } from '../has_new_issue_dropdown_mixin';
 import EmptyStateWithAnyIssues from './empty_state_with_any_issues.vue';
 import EmptyStateWithoutAnyIssues from './empty_state_without_any_issues.vue';
-import NewIssueDropdown from './new_issue_dropdown.vue';
 
 const UserToken = () => import('~/vue_shared/components/filtered_search_bar/tokens/user_token.vue');
 const EmojiToken = () =>
@@ -112,12 +113,12 @@ export default {
     IssuableList,
     IssueCardStatistics,
     IssueCardTimeInfo,
-    NewIssueDropdown,
+    NewResourceDropdown,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [glFeatureFlagMixin()],
+  mixins: [glFeatureFlagMixin(), hasNewIssueDropdown()],
   inject: [
     'autocompleteAwardEmojisPath',
     'calendarPath',
@@ -134,7 +135,6 @@ export default {
     'hasScopedLabelsFeature',
     'initialEmail',
     'initialSort',
-    'isAnonymousSearchDisabled',
     'isIssueRepositioningDisabled',
     'isProject',
     'isPublicVisibilityRestricted',
@@ -190,8 +190,15 @@ export default {
       update(data) {
         return data[this.namespace]?.issues.nodes ?? [];
       },
+      fetchPolicy: fetchPolicies.CACHE_AND_NETWORK,
+      // We need this for handling loading state when using frontend cache
+      // See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106004#note_1217325202 for details
+      notifyOnNetworkStatusChange: true,
       result({ data }) {
-        this.pageInfo = data?.[this.namespace]?.issues.pageInfo ?? {};
+        if (!data) {
+          return;
+        }
+        this.pageInfo = data[this.namespace]?.issues.pageInfo ?? {};
         this.exportCsvPathWithQuery = this.getExportCsvPathWithQuery();
       },
       error(error) {
@@ -293,7 +300,7 @@ export default {
 
       if (gon.current_user_id) {
         preloadedUsers.push({
-          id: convertToGraphQLId(TYPE_USER, gon.current_user_id),
+          id: convertToGraphQLId(TYPENAME_USER, gon.current_user_id),
           name: gon.current_user_fullname,
           username: gon.current_username,
           avatar_url: gon.current_user_avatar_url,
@@ -354,6 +361,7 @@ export default {
           token: LabelToken,
           operators: this.hasOrFeature ? OPERATORS_IS_NOT_OR : OPERATORS_IS_NOT,
           fetchLabels: this.fetchLabels,
+          fetchLatestLabels: this.glFeatures.frontendCaching ? this.fetchLatestLabels : null,
           recentSuggestionsStorageKey: `${this.fullPath}-issues-recent-tokens-label`,
         },
         {
@@ -473,8 +481,16 @@ export default {
         page_before: this.pageParams.beforeCursor ?? undefined,
       };
     },
-    shouldDisableTextSearch() {
-      return this.isAnonymousSearchDisabled && !this.isSignedIn;
+    // due to the issues with cache-and-network, we need this hack to check if there is any data for the query in the cache.
+    // if we have cached data, we disregard the loading state
+    isLoading() {
+      return (
+        this.$apollo.queries.issues.loading &&
+        !this.$apollo.provider.clients.defaultClient.readQuery({
+          query: getIssuesQuery,
+          variables: this.queryVariables,
+        })
+      );
     },
   },
   watch: {
@@ -514,11 +530,12 @@ export default {
     fetchReleases(search) {
       return this.fetchWithCache(this.releasesPath, 'releases', 'tag', search);
     },
-    fetchLabels(search) {
+    fetchLabelsWithFetchPolicy(search, fetchPolicy = fetchPolicies.CACHE_FIRST) {
       return this.$apollo
         .query({
           query: searchLabelsQuery,
           variables: { fullPath: this.fullPath, search, isProject: this.isProject },
+          fetchPolicy,
         })
         .then(({ data }) => data[this.namespace]?.labels.nodes)
         .then((labels) =>
@@ -526,6 +543,12 @@ export default {
           // https://gitlab.com/gitlab-org/gitlab/-/issues/346353
           labels.filter((label) => label.title.toLowerCase().includes(search.toLowerCase())),
         );
+    },
+    fetchLabels(search) {
+      return this.fetchLabelsWithFetchPolicy(search);
+    },
+    fetchLatestLabels(search) {
+      return this.fetchLabelsWithFetchPolicy(search, fetchPolicies.NETWORK_ONLY);
     },
     fetchMilestones(search) {
       return this.$apollo
@@ -549,10 +572,10 @@ export default {
       return `${this.exportCsvPath}${window.location.search}`;
     },
     getStatus(issue) {
-      if (issue.state === IssuableStatus.Closed && issue.moved) {
+      if (issue.state === STATUS_CLOSED && issue.moved) {
         return this.$options.i18n.closedMoved;
       }
-      if (issue.state === IssuableStatus.Closed) {
+      if (issue.state === STATUS_CLOSED) {
         return this.$options.i18n.closed;
       }
       return undefined;
@@ -568,9 +591,6 @@ export default {
       if (!this.hasInitBulkEdit) {
         const bulkUpdateSidebar = await import('~/issuable');
         bulkUpdateSidebar.initBulkUpdateSidebar('issuable_');
-
-        const UsersSelect = (await import('~/users_select')).default;
-        new UsersSelect(); // eslint-disable-line no-new
 
         this.hasInitBulkEdit = true;
       }
@@ -591,7 +611,7 @@ export default {
       this.issuesError = null;
     },
     handleFilter(tokens) {
-      this.setFilterTokens(tokens);
+      this.filterTokens = tokens;
       this.pageParams = getInitialPageParams(this.pageSize);
 
       this.$router.push({ query: this.urlParams });
@@ -684,24 +704,6 @@ export default {
           Sentry.captureException(error);
         });
     },
-    setFilterTokens(tokens) {
-      this.filterTokens = this.removeDisabledSearchTerms(tokens);
-
-      if (this.filterTokens.length < tokens.length) {
-        this.showAnonymousSearchingMessage();
-      }
-    },
-    removeDisabledSearchTerms(filters) {
-      return this.shouldDisableTextSearch
-        ? filters.filter((token) => !(token.type === FILTERED_SEARCH_TERM && token.value?.data))
-        : filters;
-    },
-    showAnonymousSearchingMessage() {
-      createAlert({
-        message: this.$options.i18n.anonymousSearchingMessage,
-        variant: VARIANT_INFO,
-      });
-    },
     showIssueRepositioningMessage() {
       createAlert({
         message: this.$options.i18n.issueRepositioningMessage,
@@ -737,7 +739,7 @@ export default {
         sortKey = defaultSortKey;
       }
 
-      this.setFilterTokens(getFilterTokens(window.location.search));
+      this.filterTokens = getFilterTokens(window.location.search);
 
       this.exportCsvPathWithQuery = this.getExportCsvPathWithQuery();
       this.pageParams = getInitialPageParams(
@@ -773,7 +775,7 @@ export default {
       :current-tab="state"
       :tab-counts="tabCounts"
       :truncate-counts="!isProject"
-      :issuables-loading="$apollo.queries.issues.loading"
+      :issuables-loading="isLoading"
       :is-manual-ordering="isManualOrdering"
       :show-bulk-edit-sidebar="showBulkEditSidebar"
       :show-pagination-controls="showPaginationControls"
@@ -831,7 +833,12 @@ export default {
           {{ $options.i18n.newIssueLabel }}
         </gl-button>
         <slot name="new-objective-button"></slot>
-        <new-issue-dropdown v-if="showNewIssueDropdown" />
+        <new-resource-dropdown
+          v-if="showNewIssueDropdown"
+          :query="$options.searchProjectsQuery"
+          :query-variables="newIssueDropdownQueryVariables"
+          :extract-projects="extractProjects"
+        />
       </template>
 
       <template #timeframe="{ issuable = {} }">

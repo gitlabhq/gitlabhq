@@ -3,6 +3,7 @@ import { escape } from 'lodash';
 import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { backOff } from '~/lib/utils/common_utils';
+import { HTTP_STATUS_NO_CONTENT } from '~/lib/utils/http_status';
 import { __ } from '~/locale';
 import AUTH_METHOD from './constants';
 
@@ -87,7 +88,7 @@ export default class SSHMirror {
           )}`,
         )
         .then(({ data, status }) => {
-          if (status === 204) {
+          if (status === HTTP_STATUS_NO_CONTENT) {
             this.backOffRequestCounter += 1;
             if (this.backOffRequestCounter < 3) {
               next();

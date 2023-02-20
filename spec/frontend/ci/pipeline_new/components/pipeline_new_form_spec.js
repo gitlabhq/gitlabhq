@@ -14,7 +14,9 @@ import {
   HTTP_STATUS_OK,
 } from '~/lib/utils/http_status';
 import { redirectTo } from '~/lib/utils/url_utility';
-import PipelineNewForm from '~/ci/pipeline_new/components/pipeline_new_form.vue';
+import PipelineNewForm, {
+  POLLING_INTERVAL,
+} from '~/ci/pipeline_new/components/pipeline_new_form.vue';
 import ciConfigVariablesQuery from '~/ci/pipeline_new/graphql/queries/ci_config_variables.graphql';
 import { resolvers } from '~/ci/pipeline_new/graphql/resolvers';
 import RefsDropdown from '~/ci/pipeline_new/components/refs_dropdown.vue';
@@ -24,6 +26,7 @@ import {
   mockCiConfigVariablesResponseWithoutDesc,
   mockEmptyCiConfigVariablesResponse,
   mockError,
+  mockNoCachedCiConfigVariablesResponse,
   mockQueryParams,
   mockPostParams,
   mockProjectId,
@@ -68,6 +71,10 @@ describe('Pipeline New Form', () => {
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findCCAlert = () => wrapper.findComponent(CreditCardValidationRequiredAlert);
   const getFormPostParams = () => JSON.parse(mock.history.post[0].data);
+
+  const advanceToNextFetch = (milliseconds) => {
+    jest.advanceTimersByTime(milliseconds);
+  };
 
   const selectBranch = async (branch) => {
     // Select a branch in the dropdown
@@ -266,17 +273,98 @@ describe('Pipeline New Form', () => {
     });
   });
 
-  describe('when yml defines a variable', () => {
-    it('loading icon is shown when content is requested and hidden when received', async () => {
-      mockCiConfigVariables.mockResolvedValue(mockEmptyCiConfigVariablesResponse);
-      createComponentWithApollo({ props: mockQueryParams, method: mountExtended });
+  describe('When there are no variables in the API cache', () => {
+    beforeEach(async () => {
+      mockCiConfigVariables.mockResolvedValue(mockNoCachedCiConfigVariablesResponse);
+      createComponentWithApollo({ method: mountExtended });
+      await waitForPromises();
+    });
 
+    it('stops polling after CONFIG_VARIABLES_TIMEOUT ms have passed', async () => {
+      advanceToNextFetch(POLLING_INTERVAL);
+      await waitForPromises();
+
+      advanceToNextFetch(POLLING_INTERVAL);
+      await waitForPromises();
+
+      expect(mockCiConfigVariables).toHaveBeenCalledTimes(3);
+
+      advanceToNextFetch(POLLING_INTERVAL);
+      await waitForPromises();
+
+      expect(mockCiConfigVariables).toHaveBeenCalledTimes(3);
+    });
+
+    it('shows loading icon while query polls for updated values', async () => {
+      expect(findLoadingIcon().exists()).toBe(true);
+      expect(mockCiConfigVariables).toHaveBeenCalledTimes(1);
+
+      advanceToNextFetch(POLLING_INTERVAL);
+      await waitForPromises();
+
+      expect(findLoadingIcon().exists()).toBe(true);
+      expect(mockCiConfigVariables).toHaveBeenCalledTimes(2);
+    });
+
+    it('hides loading icon and stops polling after query fetches the updated values', async () => {
+      expect(findLoadingIcon().exists()).toBe(true);
+
+      mockCiConfigVariables.mockResolvedValue(mockCiConfigVariablesResponse);
+      advanceToNextFetch(POLLING_INTERVAL);
+      await waitForPromises();
+
+      expect(findLoadingIcon().exists()).toBe(false);
+      expect(mockCiConfigVariables).toHaveBeenCalledTimes(2);
+
+      advanceToNextFetch(POLLING_INTERVAL);
+      await waitForPromises();
+
+      expect(mockCiConfigVariables).toHaveBeenCalledTimes(2);
+    });
+  });
+
+  const testBehaviorWhenCacheIsPopulated = (queryResponse) => {
+    beforeEach(async () => {
+      mockCiConfigVariables.mockResolvedValue(queryResponse);
+      createComponentWithApollo({ method: mountExtended });
+    });
+
+    it('does not poll for new values', async () => {
+      await waitForPromises();
+
+      expect(mockCiConfigVariables).toHaveBeenCalledTimes(1);
+
+      advanceToNextFetch(POLLING_INTERVAL);
+      await waitForPromises();
+
+      expect(mockCiConfigVariables).toHaveBeenCalledTimes(1);
+    });
+
+    it('loading icon is shown when content is requested and hidden when received', async () => {
       expect(findLoadingIcon().exists()).toBe(true);
 
       await waitForPromises();
 
       expect(findLoadingIcon().exists()).toBe(false);
     });
+  };
+
+  describe('When no variables are defined in the CI configuration and the cache is updated', () => {
+    testBehaviorWhenCacheIsPopulated(mockEmptyCiConfigVariablesResponse);
+
+    it('displays an empty form', async () => {
+      mockCiConfigVariables.mockResolvedValue(mockEmptyCiConfigVariablesResponse);
+      createComponentWithApollo({ method: mountExtended });
+      await waitForPromises();
+
+      expect(findKeyInputs().at(0).element.value).toBe('');
+      expect(findValueInputs().at(0).element.value).toBe('');
+      expect(findVariableTypes().at(0).props('text')).toBe('Variable');
+    });
+  });
+
+  describe('When CI configuration has defined variables and they are stored in the cache', () => {
+    testBehaviorWhenCacheIsPopulated(mockCiConfigVariablesResponse);
 
     describe('with different predefined values', () => {
       beforeEach(async () => {

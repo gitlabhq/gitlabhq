@@ -34,7 +34,7 @@ Every release has a description. You can add any text you like, but we recommend
 including a changelog to describe the content of your release. This helps users
 quickly scan the differences between each release you publish.
 
-[Git's tagging messages](https://git-scm.com/book/en/v2/Git-Basics-Tagging) can
+[Tagging messages in Git](https://git-scm.com/book/en/v2/Git-Basics-Tagging) can
 be included in Release note descriptions by selecting **Include tag message in
 the release notes**.
 

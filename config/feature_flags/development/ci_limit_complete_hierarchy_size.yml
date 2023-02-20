@@ -1,8 +1,0 @@
----
-name: ci_limit_complete_hierarchy_size
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95857
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/373719
-milestone: '15.4'
-type: development
-group: group::pipeline execution
-default_enabled: true

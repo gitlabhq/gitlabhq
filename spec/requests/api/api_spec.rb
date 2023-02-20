@@ -12,7 +12,21 @@ RSpec.describe API::API, feature_category: :authentication_and_authorization do
     let(:user) { create(:user, last_activity_on: Date.yesterday) }
 
     it 'updates the users last_activity_on to the current date' do
+      expect(Users::ActivityService).to receive(:new).with(author: user, project: nil, namespace: nil).and_call_original
+
       expect { get api('/groups', user) }.to change { user.reload.last_activity_on }.to(Date.today)
+    end
+
+    context "with a project-specific path" do
+      let_it_be(:project) { create(:project, :public) }
+      let_it_be(:user) { project.first_owner }
+
+      it "passes correct arguments to ActivityService" do
+        activity_args = { author: user, project: project, namespace: project.group }
+        expect(Users::ActivityService).to receive(:new).with(activity_args).and_call_original
+
+        get(api("/projects/#{project.id}/issues", user))
+      end
     end
   end
 
@@ -171,7 +185,7 @@ RSpec.describe API::API, feature_category: :authentication_and_authorization do
                         'meta.remote_ip' => an_instance_of(String),
                         'meta.client_id' => a_string_matching(%r{\Auser/.+}),
                         'meta.user' => user.username,
-                        'meta.feature_category' => 'users',
+                        'meta.feature_category' => 'user_profile',
                         'route' => '/api/:version/users')
 
           expect(data.stringify_keys).not_to include('meta.caller_id')
@@ -309,6 +323,39 @@ RSpec.describe API::API, feature_category: :authentication_and_authorization do
           expect(response.headers['Content-Security-Policy']).to be_nil
           expect(response.headers['Content-Security-Policy-Report-Only']).to be_nil
         end
+      end
+    end
+  end
+
+  describe 'admin mode support' do
+    let(:admin) { create(:admin) }
+
+    subject do
+      get api("/admin/clusters", personal_access_token: token)
+      response
+    end
+
+    context 'with `admin_mode` scope' do
+      let(:token) { create(:personal_access_token, user: admin, scopes: [:api, :admin_mode]) }
+
+      context 'when admin mode setting is disabled', :do_not_mock_admin_mode_setting do
+        it { is_expected.to have_gitlab_http_status(:ok) }
+      end
+
+      context 'when admin mode setting is enabled' do
+        it { is_expected.to have_gitlab_http_status(:ok) }
+      end
+    end
+
+    context 'without `admin_mode` scope' do
+      let(:token) { create(:personal_access_token, user: admin, scopes: [:api]) }
+
+      context 'when admin mode setting is disabled', :do_not_mock_admin_mode_setting do
+        it { is_expected.to have_gitlab_http_status(:ok) }
+      end
+
+      context 'when admin mode setting is enabled' do
+        it { is_expected.to have_gitlab_http_status(:forbidden) }
       end
     end
   end

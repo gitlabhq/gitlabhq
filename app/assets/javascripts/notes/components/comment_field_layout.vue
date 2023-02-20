@@ -1,14 +1,18 @@
 <script>
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import NoteableWarning from '~/vue_shared/components/notes/noteable_warning.vue';
 import EmailParticipantsWarning from './email_participants_warning.vue';
+import AttachmentsWarning from './attachments_warning.vue';
 
 const DEFAULT_NOTEABLE_TYPE = 'Issue';
 
 export default {
   components: {
+    AttachmentsWarning,
     EmailParticipantsWarning,
     NoteableWarning,
   },
+  mixins: [glFeatureFlagsMixin()],
   props: {
     noteableData: {
       type: Object,
@@ -29,6 +33,11 @@ export default {
       required: false,
       default: false,
     },
+    containsLink: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   computed: {
     isLocked() {
@@ -45,6 +54,13 @@ export default {
     },
     showEmailParticipantsWarning() {
       return this.emailParticipants.length && !this.isInternalNote;
+    },
+    showAttachmentWarning() {
+      return (
+        this.glFeatures.serviceDeskNewNoteEmailNativeAttachments &&
+        this.showEmailParticipantsWarning &&
+        this.containsLink
+      );
     },
   },
 };
@@ -68,6 +84,7 @@ export default {
       :confidential-noteable-docs-path="noteableData.confidential_issues_docs_path"
     />
     <slot></slot>
+    <attachments-warning v-if="showAttachmentWarning" />
     <email-participants-warning
       v-if="showEmailParticipantsWarning"
       class="gl-border-t-1 gl-border-t-solid gl-border-t-gray-100 gl-rounded-base gl-rounded-top-left-none! gl-rounded-top-right-none!"

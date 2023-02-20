@@ -25,7 +25,7 @@ The various GitLab integrations help you:
   with code changes.
 - Scale using a module registry.
 
-Learn more about how GitLab can help you run [Infrastructure as Code](iac/index.md).
+For more information, see how GitLab can help you run [Infrastructure as Code](iac/index.md).
 
 ## Integrated Kubernetes management
 
@@ -34,7 +34,7 @@ cluster applications. With the GitLab agent, you can connect clusters behind a f
 have real-time access to API endpoints, perform pull-based or push-based deployments for production
 and non-production environments, and much more.
 
-Learn more about the [GitLab agent](../clusters/agent/index.md).
+For more information, see the [GitLab agent](../clusters/agent/index.md).
 
 ## Runbooks in GitLab
 

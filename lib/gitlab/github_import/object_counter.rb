@@ -7,6 +7,7 @@ module Gitlab
       OPERATIONS = %w[fetched imported].freeze
       PROJECT_COUNTER_LIST_KEY = 'github-importer/object-counters-list/%{project}/%{operation}'
       PROJECT_COUNTER_KEY = 'github-importer/object-counter/%{project}/%{operation}/%{object_type}'
+      EMPTY_SUMMARY = OPERATIONS.index_with { |operation| {} }
 
       GLOBAL_COUNTER_KEY = 'github_importer_%{operation}_%{object_type}'
       GLOBAL_COUNTER_DESCRIPTION = 'The number of %{operation} Github %{object_type}'
@@ -29,6 +30,18 @@ module Gitlab
         end
 
         def summary(project)
+          cached_summary = cashed_summary(project)
+          # Actual information about objects that have already been imported is stored
+          # in the Redis Cache until Redis key is expired.
+          # After import is completed we store this information in project's import_checksums
+          return cached_summary if cached_summary != EMPTY_SUMMARY || project.import_state.blank?
+
+          project.import_state.in_progress? ? cached_summary : project.import_checksums
+        end
+
+        private
+
+        def cashed_summary(project)
           OPERATIONS.each_with_object({}) do |operation, result|
             result[operation] = {}
 
@@ -41,8 +54,6 @@ module Gitlab
               end
           end
         end
-
-        private
 
         # Global counters are long lived, in Prometheus,
         # and it's used to report the health of the Github Importer

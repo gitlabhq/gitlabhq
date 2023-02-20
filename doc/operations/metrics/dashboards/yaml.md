@@ -149,8 +149,8 @@ This works by converting the value of `label` to lower-case and, if there are mo
 
 To confirm your dashboard definition contains valid YAML syntax:
 
-1. Navigate to **{doc-text}** **Repository > Files**.
-1. Navigate to your dashboard file in your repository.
+1. Go to **Repository > Files**.
+1. Go to your dashboard file in your repository.
 1. Review the information pane about the file, displayed above the file contents.
 
 Files with valid syntax display **Metrics Dashboard YAML definition is valid**,

@@ -13,8 +13,23 @@ for community contributions have the [`Seeking community contributions`](issue_w
 label, but you are free to contribute to any issue you want.
 
 If an issue is marked for the current milestone at any time, even
-when you are working on it, a GitLab Inc. team member may take over the merge request
-to ensure the work is finished before the release date.
+when you are working on it, a GitLab team member may take over the merge request to ensure the work is finished before the release date. 
+
+If a contributor is no longer actively working on a submitted merge request,
+we can:
+
+- Decide that the merge request will be finished by one of our
+  [Merge request coaches](https://about.gitlab.com/company/team/).
+- Close the merge request.
+
+We make this decision based on how important the change is for our product vision. If a merge
+request coach is going to finish the merge request, we assign the
+`~coach will finish` label.
+
+When a team member picks up a community contribution,
+we credit the original author by adding a changelog entry crediting the author
+and optionally include the original author on at least one of the commits
+within the MR.
 
 If you want to add a new feature that is not labeled, it is best to first create
 an issue (if there isn't one already) and leave a comment asking for it
@@ -117,7 +132,7 @@ Commit messages should follow the guidelines below, for reasons explained by Chr
 - The commit subject or body must not contain Emojis.
 - Commits that change 30 or more lines across at least 3 files should
   describe these changes in the commit body.
-- Use issues and merge requests' full URLs instead of short references,
+- Use issues, milestones, and merge requests' full URLs instead of short references,
   as they are displayed as plain text outside of GitLab.
 - The merge request should not contain more than 10 commit messages.
 - The commit subject should contain at least 3 words.
@@ -213,7 +228,7 @@ To reach the definition of done, the merge request must create no regressions an
 
 - Verified as working in production on GitLab.com.
 - Verified as working for self-managed instances.
-- Verified as supporting [Geo](../../administration/geo/index.md) via the [self-service framework](../geo/framework.md). To learn more see [here](../geo/framework.md#geo-is-a-requirement-in-the-definition-of-done).
+- Verified as supporting [Geo](../../administration/geo/index.md) through the [self-service framework](../geo/framework.md). For more information, see [Geo is a requirement in the definition of done](../geo/framework.md#geo-is-a-requirement-in-the-definition-of-done).
 
 If a regression occurs, we prefer you revert the change.
 Your contribution is *incomplete* until you have made sure it meets all of these
@@ -224,8 +239,8 @@ requirements.
 1. Working and clean code that is commented where needed.
 1. The change is evaluated to [limit the impact of far-reaching work](https://about.gitlab.com/handbook/engineering/development/#reducing-the-impact-of-far-reaching-work).
 1. [Performance guidelines](../merge_request_concepts/performance.md) have been followed.
-1. [Secure coding guidelines](https://gitlab.com/gitlab-com/gl-security/security-guidelines) have been followed.
-1. [Application and rate limit guidelines](../merge_request_application_and_rate_limit_guidelines.md) have been followed.
+1. [Secure coding guidelines](../secure_coding_guidelines.md) have been followed.
+1. [Application and rate limit guidelines](../merge_request_concepts/rate_limits.md) have been followed.
 1. [Documented](../documentation/index.md) in the `/doc` directory.
 1. If your MR touches code that executes shell commands, reads or opens files, or
    handles paths to files on disk, make sure it adheres to the

@@ -13,6 +13,9 @@ inherit_from:
     <% end %>
   - '.rubocop_todo.yml'
   <% end %>
+  <% if RUBY_VERSION[/^\d+\.\d+/, 0] == '2.7' %>
+  - ./rubocop/rubocop-ruby27.yml
+  <% end %>
   <% if RUBY_VERSION[/^\d+\.\d+/, 0] == '3.0' %>
   - ./rubocop/rubocop-ruby30.yml
   <% end %>
@@ -386,6 +389,18 @@ Gitlab/EventStoreSubscriber:
     - 'spec/**/*'
     - 'ee/spec/**/*'
 
+Gitlab/DocUrl:
+  Enabled: true
+  Exclude:
+    - danger/**/*
+    - ee/spec/**/*
+    - haml_lint/**/*
+    - qa/**/*
+    - rubocop/**/*
+    - scripts/**/*
+    - spec/**/*
+    - tooling/**/*
+
 GitlabSecurity/PublicSend:
   Enabled: true
   Exclude:
@@ -497,6 +512,11 @@ RSpec/FactoriesInMigrationSpecs:
     - 'spec/lib/ee/gitlab/background_migration/**/*.rb'
     - 'ee/spec/lib/ee/gitlab/background_migration/**/*.rb'
 
+RSpec/MissingFeatureCategory:
+  Enabled: true
+  Exclude:
+    - 'qa/**/*.rb'
+
 RSpec/FactoryBot/AvoidCreate:
   Enabled: true
   Include:
@@ -506,12 +526,14 @@ RSpec/FactoryBot/AvoidCreate:
     - 'spec/views/**/*.rb'
     - 'spec/components/**/*.rb'
     - 'spec/mailers/**/*.rb'
+    - 'spec/routes/directs/*.rb'
     - 'ee/spec/presenters/**/*.rb'
     - 'ee/spec/serializers/**/*.rb'
     - 'ee/spec/helpers/**/*.rb'
     - 'ee/spec/views/**/*.rb'
     - 'ee/spec/components/**/*.rb'
     - 'ee/spec/mailers/**/*.rb'
+    - 'ee/spec/routes/directs/*.rb'
 
 RSpec/FactoryBot/StrategyInCallback:
   Enabled: true
@@ -610,6 +632,19 @@ RSpec/EnvAssignment:
     - 'ee/spec/**/fast_spec_helper.rb'
     - 'spec/**/spec_helper.rb'
     - 'ee/spec/**/spec_helper.rb'
+
+RSpec/EnvMocking:
+  Enable: true
+  Include:
+    - 'spec/**/*.rb'
+    - 'ee/spec/**/*.rb'
+  Exclude:
+    - 'spec/**/fast_spec_helper.rb'
+    - 'ee/spec/**/fast_spec_helper.rb'
+    - 'spec/**/spec_helper.rb'
+    - 'ee/spec/**/spec_helper.rb'
+    - 'spec/support/helpers/stub_env.rb'
+
 RSpec/BeSuccessMatcher:
   Enabled: true
   Include:
@@ -915,6 +950,6 @@ Cop/FeatureFlagUsage:
     - 'lib/gitlab/patch/**/*.rb'
     - 'lib/gitlab/instrumentation/**/*.rb'
 
-# See https://gitlab.com/gitlab-org/gitlab/-/issues/386618
-Layout/HashAlignment:
-  Enabled: false
+Style/ArgumentsForwarding:
+  Enabled: true
+  AllowOnlyRestArgument: false

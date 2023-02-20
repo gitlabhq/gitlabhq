@@ -15,14 +15,14 @@ Your profile also includes settings, which you use to customize your GitLab expe
 
 To access your profile:
 
-1. On the top bar, in the top-right corner, select your avatar.
+1. On the top bar, in the upper-right corner, select your avatar.
 1. Select your name or username.
 
 ## Access your user settings
 
 To access your user settings:
 
-1. On the top bar, in the top-right corner, select your avatar.
+1. On the top bar, in the upper-right corner, select your avatar.
 1. Select **Edit profile**.
 
 ## Change your username
@@ -40,7 +40,7 @@ Prerequisites:
 
 To change your username:
 
-1. On the top bar, in the top-right corner, select your avatar.
+1. On the top bar, in the upper-right corner, select your avatar.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Account**.
 1. In the **Change username** section, enter a new username as the path.
@@ -50,7 +50,7 @@ To change your username:
 
 To add new email to your account:
 
-1. On the top bar, in the top-right corner, select your avatar.
+1. On the top bar, in the upper-right corner, select your avatar.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Emails**.
 1. In the **Email** text box, enter the new email.
@@ -63,7 +63,7 @@ You can make your user profile visible to only you and GitLab administrators.
 
 To make your profile private:
 
-1. On the top bar, in the top-right corner, select your avatar.
+1. On the top bar, in the upper-right corner, select your avatar.
 1. Select **Edit profile**.
 1. Select the **Private profile** checkbox.
 1. Select **Update profile settings**.
@@ -129,11 +129,12 @@ They can help other users connect with you on other platforms.
 
 To add links to other accounts:
 
-1. On the top bar, in the top-right corner, select your avatar.
+1. On the top bar, in the upper-right corner, select your avatar.
 1. Select **Edit profile**.
 1. In the **Main settings** section, add your information from:
-   - Skype
+   - Discord ([User ID](https://support.discord.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID-))
    - LinkedIn
+   - Skype
    - Twitter
 1. Select **Update profile settings**.
 
@@ -143,7 +144,7 @@ In the user contribution calendar graph and recent activity list, you can see yo
 
 To show private contributions:
 
-1. On the top bar, in the top-right corner, select your avatar.
+1. On the top bar, in the upper-right corner, select your avatar.
 1. Select **Edit profile**.
 1. In the **Main settings** section, select the **Include private contributions on my profile** checkbox.
 1. Select **Update profile settings**.
@@ -157,7 +158,7 @@ your name in your profile.
 
 To specify your pronouns:
 
-1. On the top bar, in the top-right corner, select your avatar.
+1. On the top bar, in the upper-right corner, select your avatar.
 1. Select **Edit profile**.
 1. In the **Pronouns** text box, enter your pronouns.
 1. Select **Update profile settings**.
@@ -171,7 +172,7 @@ your name.
 
 To add your name pronunciation:
 
-1. On the top bar, in the top-right corner, select your avatar.
+1. On the top bar, in the upper-right corner, select your avatar.
 1. Select **Edit profile**.
 1. In the **Pronunciation** text box, enter how your name is pronounced.
 1. Select **Update profile settings**.
@@ -187,7 +188,7 @@ Your status is publicly visible even if your [profile is private](#make-your-use
 
 To set your current status:
 
-1. On the top bar, in the top-right corner, select your avatar.
+1. On the top bar, in the upper-right corner, select your avatar.
 1. Select **Set status** or, if you have already set a status, **Edit status**.
 1. Set the desired emoji and status message. Status messages must be plain text and 100 characters or less.
    They can also contain emoji codes like, `I'm on vacation :palm_tree:`.
@@ -210,12 +211,12 @@ To indicate to others that you are busy, you can set an indicator.
 To set the busy status indicator, either:
 
 - Set it directly:
-  1. On the top bar, in the top-right corner, select your avatar.
+  1. On the top bar, in the upper-right corner, select your avatar.
   1. Select **Set status** or, if you have already set a status, **Edit status**.
   1. Select the **Set yourself as busy** checkbox.
 
 - Set it on your profile:
-  1. On the top bar, in the top-right corner, select your avatar.
+  1. On the top bar, in the upper-right corner, select your avatar.
   1. Select **Edit profile**.
   1. In the **Current status** section, select the **Set yourself as busy** checkbox.
 
@@ -249,7 +250,7 @@ You can set your local time zone to:
 
 To set your time zone:
 
-1. On the top bar, in the top-right corner, select your avatar.
+1. On the top bar, in the upper-right corner, select your avatar.
 1. Select **Edit profile**.
 1. In the **Time settings** section, select your time zone from the dropdown list.
 
@@ -262,30 +263,28 @@ Your primary email is used by default.
 
 To change your commit email:
 
-1. In the top-right corner, select your avatar.
+1. In the upper-right corner, select your avatar.
 1. Select **Edit profile**.
 1. In the **Commit email** dropdown list, select an email address.
 1. Select **Update profile settings**.
 
 ## Change your primary email
 
-Your primary email:
-
-- Is the default email address for your login, commit email, and notification email.
-- Must be already [linked to your user profile](#add-emails-to-your-user-profile).
+Your primary email is the default email address for your login, commit email, and notification email.
 
 To change your primary email:
 
-1. In the top-right corner, select your avatar.
+1. In the upper-right corner, select your avatar.
 1. Select **Edit profile**.
 1. In the **Email** field, enter your new email address.
 1. Select **Update profile settings**.
+1. Optional. Select the confirmation email if you have not previously added this email to your GitLab.com account.
 
 ## Set your public email
 
 You can select one of your [configured email addresses](#add-emails-to-your-user-profile) to be displayed on your public profile:
 
-1. In the top-right corner, select your avatar.
+1. In the upper-right corner, select your avatar.
 1. Select **Edit profile**.
 1. In the **Public email** field, select one of the available email addresses.
 1. Select **Update profile settings**.
@@ -297,7 +296,7 @@ so you can keep your email information private.
 
 To use a private commit email:
 
-1. On the top bar, in the top-right corner, select your avatar.
+1. On the top bar, in the upper-right corner, select your avatar.
 1. Select **Edit profile**.
 1. In the **Commit email** dropdown list, select **Use a private email**.
 1. Select **Update profile settings**.
@@ -368,7 +367,7 @@ The `remember_user_token` lifetime of a cookie can now extend beyond the deadlin
 
 GitLab uses both session and persistent cookies:
 
-- Session cookie: Session cookies are normally removed at the end of the browser session when
+- Session cookie: Session cookies are typically removed at the end of the browser session when
   the browser is closed. The `_gitlab_session` cookie has no fixed expiration date. However,
   it expires based on its [`session_expire_delay`](#why-do-you-keep-getting-signed-out).
 - Persistent cookie: The `remember_user_token` is a cookie with an expiration date of two weeks.

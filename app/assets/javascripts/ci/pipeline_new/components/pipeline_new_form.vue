@@ -16,18 +16,29 @@ import {
 import * as Sentry from '@sentry/browser';
 import { uniqueId } from 'lodash';
 import Vue from 'vue';
+import { fetchPolicies } from '~/lib/graphql';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { redirectTo } from '~/lib/utils/url_utility';
 import { s__, __, n__ } from '~/locale';
-import { VARIABLE_TYPE, FILE_TYPE, CC_VALIDATION_REQUIRED_ERROR } from '../constants';
+import {
+  CC_VALIDATION_REQUIRED_ERROR,
+  CONFIG_VARIABLES_TIMEOUT,
+  FILE_TYPE,
+  VARIABLE_TYPE,
+} from '../constants';
 import createPipelineMutation from '../graphql/mutations/create_pipeline.mutation.graphql';
 import ciConfigVariablesQuery from '../graphql/queries/ci_config_variables.graphql';
 import filterVariables from '../utils/filter_variables';
 import RefsDropdown from './refs_dropdown.vue';
 
+let pollTimeout;
+export const POLLING_INTERVAL = 2000;
 const i18n = {
   variablesDescription: s__(
-    'Pipeline|Specify variable values to be used in this run. The values specified in %{linkStart}CI/CD settings%{linkEnd} will be used by default.',
+    'Pipeline|Specify variable values to be used in this run. The variables specified in the configuration file as well as %{linkStart}CI/CD settings%{linkEnd} are used by default.',
+  ),
+  overrideNoteText: s__(
+    'CiVariables|Variables specified here are %{boldStart}expanded%{boldEnd} and not %{boldStart}masked.%{boldEnd}',
   ),
   defaultError: __('Something went wrong on our end. Please try again.'),
   refsLoadingErrorTitle: s__('Pipeline|Branches or tags could not be loaded.'),
@@ -115,10 +126,11 @@ export default {
         // https://gitlab.com/gitlab-org/gitlab/-/issues/287815
         fullName: this.refParam === this.defaultBranch ? `refs/heads/${this.refParam}` : undefined,
       },
+      configVariablesWithDescription: {},
       form: {},
       errorTitle: null,
       error: null,
-      predefinedValueOptions: {},
+      predefinedVariables: null,
       warnings: [],
       totalWarnings: 0,
       isWarningDismissed: false,
@@ -128,6 +140,7 @@ export default {
   },
   apollo: {
     ciConfigVariables: {
+      fetchPolicy: fetchPolicies.NO_CACHE,
       query: ciConfigVariablesQuery,
       // Skip when variables already cached in `form`
       skip() {
@@ -140,46 +153,40 @@ export default {
         };
       },
       update({ project }) {
-        return project?.ciConfigVariables || [];
+        return project?.ciConfigVariables;
       },
       result({ data }) {
-        const predefinedVars = data?.project?.ciConfigVariables || [];
-        const params = {};
-        const descriptions = {};
+        this.predefinedVariables = data?.project?.ciConfigVariables;
 
-        predefinedVars.forEach(({ description, key, value, valueOptions }) => {
-          if (description) {
-            params[key] = value;
-            descriptions[key] = description;
-            this.predefinedValueOptions[key] = valueOptions;
-          }
-        });
-
-        Vue.set(this.form, this.refFullName, { descriptions, variables: [] });
-
-        // Add default variables from yml
-        this.setVariableParams(this.refFullName, VARIABLE_TYPE, params);
-
-        // Add/update variables, e.g. from query string
-        if (this.variableParams) {
-          this.setVariableParams(this.refFullName, VARIABLE_TYPE, this.variableParams);
+        // API cache is empty when predefinedVariables === null, so we need to
+        // poll while cache values are being populated in the backend.
+        // After CONFIG_VARIABLES_TIMEOUT ms have passed, we stop polling
+        // and populate the form regardless.
+        if (this.isFetchingCiConfigVariables && !pollTimeout) {
+          pollTimeout = setTimeout(() => {
+            this.predefinedVariables = [];
+            this.clearPolling();
+            this.populateForm();
+          }, CONFIG_VARIABLES_TIMEOUT);
         }
 
-        if (this.fileParams) {
-          this.setVariableParams(this.refFullName, FILE_TYPE, this.fileParams);
+        if (!this.isFetchingCiConfigVariables) {
+          this.clearPolling();
+          this.populateForm();
         }
-
-        // Adds empty var at the end of the form
-        this.addEmptyVariable(this.refFullName);
       },
       error(error) {
         Sentry.captureException(error);
       },
+      pollInterval: POLLING_INTERVAL,
     },
   },
   computed: {
+    isFetchingCiConfigVariables() {
+      return this.predefinedVariables === null;
+    },
     isLoading() {
-      return this.$apollo.queries.ciConfigVariables.loading;
+      return this.$apollo.queries.ciConfigVariables.loading || this.isFetchingCiConfigVariables;
     },
     overMaxWarningsLimit() {
       return this.totalWarnings > this.maxWarnings;
@@ -228,6 +235,48 @@ export default {
         value: '',
       });
     },
+    clearPolling() {
+      clearTimeout(pollTimeout);
+      this.$apollo.queries.ciConfigVariables.stopPolling();
+    },
+    populateForm() {
+      this.configVariablesWithDescription = this.predefinedVariables.reduce(
+        (accumulator, { description, key, value, valueOptions }) => {
+          if (description) {
+            accumulator.descriptions[key] = description;
+            accumulator.values[key] = value;
+            accumulator.options[key] = valueOptions;
+          }
+
+          return accumulator;
+        },
+        { descriptions: {}, values: {}, options: {} },
+      );
+
+      Vue.set(this.form, this.refFullName, {
+        descriptions: this.configVariablesWithDescription.descriptions,
+        variables: [],
+      });
+
+      // Add default variables from yml
+      this.setVariableParams(
+        this.refFullName,
+        VARIABLE_TYPE,
+        this.configVariablesWithDescription.values,
+      );
+
+      // Add/update variables, e.g. from query string
+      if (this.variableParams) {
+        this.setVariableParams(this.refFullName, VARIABLE_TYPE, this.variableParams);
+      }
+
+      if (this.fileParams) {
+        this.setVariableParams(this.refFullName, FILE_TYPE, this.fileParams);
+      }
+
+      // Adds empty var at the end of the form
+      this.addEmptyVariable(this.refFullName);
+    },
     setVariable(refValue, type, key, value) {
       const { variables } = this.form[refValue];
 
@@ -255,7 +304,7 @@ export default {
       });
     },
     shouldShowValuesDropdown(key) {
-      return this.predefinedValueOptions[key]?.length > 1;
+      return this.configVariablesWithDescription.options[key]?.length > 1;
     },
     removeVariable(index) {
       this.variables.splice(index, 1);
@@ -362,7 +411,7 @@ export default {
 
     <gl-loading-icon v-if="isLoading" class="gl-mb-5" size="lg" />
 
-    <gl-form-group v-else :label="s__('Pipeline|Variables')">
+    <gl-form-group v-else class="gl-mb-3" :label="s__('Pipeline|Variables')">
       <div
         v-for="(variable, index) in variables"
         :key="variable.uniqueId"
@@ -403,13 +452,13 @@ export default {
             data-qa-selector="ci_variable_value_dropdown"
           >
             <gl-dropdown-item
-              v-for="value in predefinedValueOptions[variable.key]"
-              :key="value"
+              v-for="option in configVariablesWithDescription.options[variable.key]"
+              :key="option"
               data-testid="pipeline-form-ci-variable-value-dropdown-items"
               data-qa-selector="ci_variable_value_dropdown_item"
-              @click="setVariableAttribute(variable.key, 'value', value)"
+              @click="setVariableAttribute(variable.key, 'value', option)"
             >
-              {{ value }}
+              {{ option }}
             </gl-dropdown-item>
           </gl-dropdown>
           <gl-form-textarea
@@ -457,6 +506,15 @@ export default {
         </gl-sprintf></template
       >
     </gl-form-group>
+    <div class="gl-mb-4 gl-text-gray-500">
+      <gl-sprintf :message="$options.i18n.overrideNoteText">
+        <template #bold="{ content }">
+          <strong>
+            {{ content }}
+          </strong>
+        </template>
+      </gl-sprintf>
+    </div>
     <div class="gl-pt-5 gl-display-flex">
       <gl-button
         type="submit"

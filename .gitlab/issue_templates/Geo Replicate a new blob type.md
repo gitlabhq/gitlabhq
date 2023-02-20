@@ -482,7 +482,6 @@ That's all of the required database changes.
 
   module Geo
     class CoolWidgetState < ApplicationRecord
-      include EachBatch
       include ::Geo::VerificationStateDefinition
 
       self.primary_key = :cool_widget_id

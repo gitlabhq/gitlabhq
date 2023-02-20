@@ -13,7 +13,7 @@ NOTE:
 [GitLab Premium](https://about.gitlab.com/pricing/) supports read access to a
 HashiCorp Vault, and enables you to
 [use Vault secrets in a CI job](../../secrets/index.md#use-vault-secrets-in-a-ci-job).
-To learn more, read [Using external secrets in CI](../../secrets/index.md).
+For more information, see [Using external secrets in CI](../../secrets/index.md).
 
 ## Requirements
 

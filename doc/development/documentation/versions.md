@@ -13,7 +13,7 @@ including when features were introduced and when they were updated or removed.
 ## View older documentation versions
 
 Previous versions of the documentation are available on `docs.gitlab.com`.
-To view a previous version, select the **Versions** button in the top right.
+To view a previous version, select the **Versions** button in the upper right.
 
 To view versions that are not available on `docs.gitlab.com`:
 
@@ -117,6 +117,22 @@ To deprecate a page or topic:
    ```
 
    You can add any additional context-specific details that might help users.
+
+1. Add the following HTML comments above and below the content.
+   For the `remove_date`, set a date three months after the release where it
+   was deprecated.
+
+   ```markdown
+   <!--- start_remove The following content will be removed on remove_date: 'YYYY-MM-DD' -->
+
+   ## Title (deprecated) **(ULTIMATE SELF)**
+
+   WARNING:
+   This feature was [deprecated](<link-to-issue>) in GitLab 14.8
+   and is planned for removal in 15.4. Use [feature X](<link-to-issue>) instead.
+
+   <!--- end_remove -->
+   ```
 
 1. Open a merge request to add the word `(deprecated)` to the left nav, after the page title.
 

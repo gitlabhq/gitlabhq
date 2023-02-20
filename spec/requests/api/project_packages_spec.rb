@@ -88,7 +88,7 @@ RSpec.describe API::ProjectPackages, feature_category: :package_registry do
         end
 
         context 'with JOB-TOKEN auth' do
-          let(:job) { create(:ci_build, :running, user: user) }
+          let(:job) { create(:ci_build, :running, user: user, project: project) }
 
           subject { get api(url, job_token: job.token) }
 
@@ -130,7 +130,7 @@ RSpec.describe API::ProjectPackages, feature_category: :package_registry do
         end
 
         context 'with JOB-TOKEN auth' do
-          let(:job) { create(:ci_build, :running, user: user) }
+          let(:job) { create(:ci_build, :running, user: user, project: project) }
 
           subject { get api(url, job_token: job.token) }
 
@@ -229,8 +229,8 @@ RSpec.describe API::ProjectPackages, feature_category: :package_registry do
             get api(package_url, user)
           end
 
-          pipeline = create(:ci_pipeline, user: user)
-          create(:ci_build, user: user, pipeline: pipeline)
+          pipeline = create(:ci_pipeline, user: user, project: project)
+          create(:ci_build, user: user, pipeline: pipeline, project: project)
           create(:package_build_info, package: package1, pipeline: pipeline)
 
           expect do
@@ -262,7 +262,7 @@ RSpec.describe API::ProjectPackages, feature_category: :package_registry do
         it_behaves_like 'no destroy url'
 
         context 'with JOB-TOKEN auth' do
-          let(:job) { create(:ci_build, :running, user: user) }
+          let(:job) { create(:ci_build, :running, user: user, project: project) }
 
           subject { get api(package_url, job_token: job.token) }
 
@@ -324,7 +324,7 @@ RSpec.describe API::ProjectPackages, feature_category: :package_registry do
         end
 
         context 'with JOB-TOKEN auth' do
-          let(:job) { create(:ci_build, :running, user: user) }
+          let(:job) { create(:ci_build, :running, user: user, project: project) }
 
           subject { get api(package_url, job_token: job.token) }
 
@@ -430,7 +430,7 @@ RSpec.describe API::ProjectPackages, feature_category: :package_registry do
         end
 
         context 'with JOB-TOKEN auth' do
-          let(:job) { create(:ci_build, :running, user: user) }
+          let(:job) { create(:ci_build, :running, user: user, project: project) }
 
           it 'returns 403 for a user without enough permissions' do
             project.add_developer(user)

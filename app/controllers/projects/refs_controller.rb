@@ -24,17 +24,9 @@ class Projects::RefsController < Projects::ApplicationController
           when "blob"
             project_blob_path(@project, @id)
           when "graph"
-            if Feature.enabled?(:use_ref_type_parameter, @project)
-              project_network_path(@project, @id, ref_type: ref_type)
-            else
-              project_network_path(@project, @id, @options)
-            end
+            project_network_path(@project, @id, ref_type: ref_type)
           when "graphs"
-            if Feature.enabled?(:use_ref_type_parameter, @project)
-              project_graph_path(@project, @id, ref_type: ref_type)
-            else
-              project_graph_path(@project, @id)
-            end
+            project_graph_path(@project, @id, ref_type: ref_type)
           when "find_file"
             project_find_file_path(@project, @id)
           when "graphs_commits"
@@ -42,11 +34,7 @@ class Projects::RefsController < Projects::ApplicationController
           when "badges"
             project_settings_ci_cd_path(@project, ref: @id)
           else
-            if Feature.enabled?(:use_ref_type_parameter, @project)
-              project_commits_path(@project, @id, ref_type: ref_type)
-            else
-              project_commits_path(@project, @id)
-            end
+            project_commits_path(@project, @id, ref_type: ref_type)
           end
 
         redirect_to new_path

@@ -4,6 +4,7 @@ import { TEST_HOST } from 'helpers/test_constants';
 import waitForPromises from 'helpers/wait_for_promises';
 import { sanitize } from '~/lib/dompurify';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import ProjectFindFile from '~/projects/project_find_file';
 
 jest.mock('~/lib/dompurify', () => ({
@@ -60,7 +61,7 @@ describe('ProjectFindFile', () => {
 
     element = $(TEMPLATE);
     mock.onGet(FILE_FIND_URL).replyOnce(
-      200,
+      HTTP_STATUS_OK,
       files.map((x) => x.path),
     );
     getProjectFindFileInstance(); // This triggers a load / axios call + subsequent render in the constructor

@@ -6,11 +6,13 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 description: "GitLab's development guidelines for GitLab Pages"
 ---
 
-# Getting started with development
+# Contribute to GitLab Pages development
+
+Learn how to configure GitLab Pages so you can help develop the feature.
 
 ## Configuring GitLab Pages hostname
 
-GitLab Pages need a hostname or domain, as each different GitLab Pages site is accessed via a
+GitLab Pages needs a hostname or domain, as each different GitLab Pages site is accessed through a
 subdomain. You can set the GitLab Pages hostname:
 
 - [Without wildcard, editing your hosts file](#without-wildcard-editing-your-hosts-file).

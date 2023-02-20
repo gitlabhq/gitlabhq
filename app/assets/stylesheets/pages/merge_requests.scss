@@ -185,14 +185,8 @@ $comparison-empty-state-height: 62px;
     margin-bottom: 0;
   }
 
-  .dropdown-menu-toggle {
-    width: 100%;
-  }
-
-  .dropdown-menu {
-    left: 5px;
-    right: 5px;
-    width: auto;
+  .gl-dropdown-custom-toggle {
+    @include gl-w-full;
   }
 }
 
@@ -384,6 +378,8 @@ $comparison-empty-state-height: 62px;
 }
 
 .mr-compare-dropdown {
+  @include gl-w-full;
+
   .gl-button-text {
     @include gl-w-full;
   }

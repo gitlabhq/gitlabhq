@@ -1,0 +1,10 @@
+---
+table_name: dast_profiles_tags
+classes:
+- Dast::ProfileTag
+feature_categories:
+- dynamic_application_security_testing
+description: Join Table for Runner tags and DAST Profiles
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108371
+milestone: '15.8'
+gitlab_schema: gitlab_main

@@ -1,0 +1,8 @@
+---
+name: free_user_cap_over_user_limit_mails
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/98438
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/378616
+milestone: '15.9'
+type: development
+group: group::acquisition
+default_enabled: false

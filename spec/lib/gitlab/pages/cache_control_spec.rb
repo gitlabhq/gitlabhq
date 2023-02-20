@@ -13,15 +13,23 @@ RSpec.describe Gitlab::Pages::CacheControl, feature_category: :pages do
       end
 
       it 'clears the cache' do
+        cached_keys = [
+          "pages_domain_for_#{type}_1_settings-hash",
+          "pages_domain_for_#{type}_1"
+        ]
+
+        expect(::Gitlab::AppLogger)
+          .to receive(:info)
+          .with(
+            message: 'clear pages cache',
+            pages_keys: cached_keys,
+            pages_type: type,
+            pages_id: 1
+          )
+
         expect(Rails.cache)
           .to receive(:delete_multi)
-          .with(
-            array_including(
-              [
-                "pages_domain_for_#{type}_1",
-                "pages_domain_for_#{type}_1_settings-hash"
-              ]
-            ))
+          .with(cached_keys)
 
         subject.clear_cache
       end
@@ -31,13 +39,13 @@ RSpec.describe Gitlab::Pages::CacheControl, feature_category: :pages do
   describe '.for_namespace' do
     subject(:cache_control) { described_class.for_namespace(1) }
 
-    it_behaves_like 'cache_control', 'namespace'
+    it_behaves_like 'cache_control', :namespace
   end
 
   describe '.for_domain' do
     subject(:cache_control) { described_class.for_domain(1) }
 
-    it_behaves_like 'cache_control', 'domain'
+    it_behaves_like 'cache_control', :domain
   end
 
   describe '#cache_key' do

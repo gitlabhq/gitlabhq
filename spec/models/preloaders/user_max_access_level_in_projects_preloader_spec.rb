@@ -28,7 +28,7 @@ RSpec.describe Preloaders::UserMaxAccessLevelInProjectsPreloader do
     end
   end
 
-  shared_examples '#execute' do
+  describe '#execute', :request_store do
     let(:projects_arg) { projects }
 
     context 'when user is present' do
@@ -68,18 +68,6 @@ RSpec.describe Preloaders::UserMaxAccessLevelInProjectsPreloader do
       it 'does not avoid N+1 queries' do
         expect { query }.to make_queries
       end
-    end
-  end
-
-  describe '#execute', :request_store do
-    include_examples '#execute'
-
-    context 'when projects_preloader_fix is disabled' do
-      before do
-        stub_feature_flags(projects_preloader_fix: false)
-      end
-
-      include_examples '#execute'
     end
   end
 end

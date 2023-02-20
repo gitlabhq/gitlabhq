@@ -4,6 +4,7 @@ import Api from '~/api';
 import { createAlert } from '~/flash';
 import * as logger from '~/lib/logger';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import * as urlUtils from '~/lib/utils/url_utility';
 import * as actions from '~/search/store/actions';
 import {
@@ -27,6 +28,9 @@ import {
   MOCK_NAVIGATION_DATA,
   MOCK_NAVIGATION_ACTION_MUTATION,
   MOCK_ENDPOINT_RESPONSE,
+  MOCK_RECEIVE_AGGREGATIONS_SUCCESS_MUTATION,
+  MOCK_RECEIVE_AGGREGATIONS_ERROR_MUTATION,
+  MOCK_AGGREGATIONS,
 } from '../mock_data';
 
 jest.mock('~/flash');
@@ -59,11 +63,11 @@ describe('Global Search Store Actions', () => {
   });
 
   describe.each`
-    action                   | axiosMock                                             | type         | expectedMutations                                                                                       | flashCallCount
-    ${actions.fetchGroups}   | ${{ method: 'onGet', code: 200, res: MOCK_GROUPS }}   | ${'success'} | ${[{ type: types.REQUEST_GROUPS }, { type: types.RECEIVE_GROUPS_SUCCESS, payload: MOCK_GROUPS }]}       | ${0}
-    ${actions.fetchGroups}   | ${{ method: 'onGet', code: 500, res: null }}          | ${'error'}   | ${[{ type: types.REQUEST_GROUPS }, { type: types.RECEIVE_GROUPS_ERROR }]}                               | ${1}
-    ${actions.fetchProjects} | ${{ method: 'onGet', code: 200, res: MOCK_PROJECTS }} | ${'success'} | ${[{ type: types.REQUEST_PROJECTS }, { type: types.RECEIVE_PROJECTS_SUCCESS, payload: MOCK_PROJECTS }]} | ${0}
-    ${actions.fetchProjects} | ${{ method: 'onGet', code: 500, res: null }}          | ${'error'}   | ${[{ type: types.REQUEST_PROJECTS }, { type: types.RECEIVE_PROJECTS_ERROR }]}                           | ${1}
+    action                   | axiosMock                                                                  | type         | expectedMutations                                                                                       | flashCallCount
+    ${actions.fetchGroups}   | ${{ method: 'onGet', code: HTTP_STATUS_OK, res: MOCK_GROUPS }}             | ${'success'} | ${[{ type: types.REQUEST_GROUPS }, { type: types.RECEIVE_GROUPS_SUCCESS, payload: MOCK_GROUPS }]}       | ${0}
+    ${actions.fetchGroups}   | ${{ method: 'onGet', code: HTTP_STATUS_INTERNAL_SERVER_ERROR, res: null }} | ${'error'}   | ${[{ type: types.REQUEST_GROUPS }, { type: types.RECEIVE_GROUPS_ERROR }]}                               | ${1}
+    ${actions.fetchProjects} | ${{ method: 'onGet', code: HTTP_STATUS_OK, res: MOCK_PROJECTS }}           | ${'success'} | ${[{ type: types.REQUEST_PROJECTS }, { type: types.RECEIVE_PROJECTS_SUCCESS, payload: MOCK_PROJECTS }]} | ${0}
+    ${actions.fetchProjects} | ${{ method: 'onGet', code: HTTP_STATUS_INTERNAL_SERVER_ERROR, res: null }} | ${'error'}   | ${[{ type: types.REQUEST_PROJECTS }, { type: types.RECEIVE_PROJECTS_ERROR }]}                           | ${1}
   `(`axios calls`, ({ action, axiosMock, type, expectedMutations, flashCallCount }) => {
     describe(action.name, () => {
       describe(`on ${type}`, () => {
@@ -80,11 +84,11 @@ describe('Global Search Store Actions', () => {
   });
 
   describe.each`
-    action                          | axiosMock                         | type         | expectedMutations                               | flashCallCount
-    ${actions.loadFrequentGroups}   | ${{ method: 'onGet', code: 200 }} | ${'success'} | ${[PROMISE_ALL_EXPECTED_MUTATIONS.resGroups]}   | ${0}
-    ${actions.loadFrequentGroups}   | ${{ method: 'onGet', code: 500 }} | ${'error'}   | ${[]}                                           | ${1}
-    ${actions.loadFrequentProjects} | ${{ method: 'onGet', code: 200 }} | ${'success'} | ${[PROMISE_ALL_EXPECTED_MUTATIONS.resProjects]} | ${0}
-    ${actions.loadFrequentProjects} | ${{ method: 'onGet', code: 500 }} | ${'error'}   | ${[]}                                           | ${1}
+    action                          | axiosMock                                                       | type         | expectedMutations                               | flashCallCount
+    ${actions.loadFrequentGroups}   | ${{ method: 'onGet', code: HTTP_STATUS_OK }}                    | ${'success'} | ${[PROMISE_ALL_EXPECTED_MUTATIONS.resGroups]}   | ${0}
+    ${actions.loadFrequentGroups}   | ${{ method: 'onGet', code: HTTP_STATUS_INTERNAL_SERVER_ERROR }} | ${'error'}   | ${[]}                                           | ${1}
+    ${actions.loadFrequentProjects} | ${{ method: 'onGet', code: HTTP_STATUS_OK }}                    | ${'success'} | ${[PROMISE_ALL_EXPECTED_MUTATIONS.resProjects]} | ${0}
+    ${actions.loadFrequentProjects} | ${{ method: 'onGet', code: HTTP_STATUS_INTERNAL_SERVER_ERROR }} | ${'error'}   | ${[]}                                           | ${1}
   `('Promise.all calls', ({ action, axiosMock, type, expectedMutations, flashCallCount }) => {
     describe(action.name, () => {
       describe(`on ${type}`, () => {
@@ -269,10 +273,10 @@ describe('Global Search Store Actions', () => {
   });
 
   describe.each`
-    action                       | axiosMock                         | type         | scope         | expectedMutations                    | errorLogs
-    ${actions.fetchSidebarCount} | ${{ method: 'onGet', code: 200 }} | ${'success'} | ${'issues'}   | ${[MOCK_NAVIGATION_ACTION_MUTATION]} | ${0}
-    ${actions.fetchSidebarCount} | ${{ method: null, code: 0 }}      | ${'success'} | ${'projects'} | ${[]}                                | ${0}
-    ${actions.fetchSidebarCount} | ${{ method: 'onGet', code: 500 }} | ${'error'}   | ${'issues'}   | ${[]}                                | ${1}
+    action                       | axiosMock                                                       | type         | scope         | expectedMutations                    | errorLogs
+    ${actions.fetchSidebarCount} | ${{ method: 'onGet', code: HTTP_STATUS_OK }}                    | ${'success'} | ${'issues'}   | ${[MOCK_NAVIGATION_ACTION_MUTATION]} | ${0}
+    ${actions.fetchSidebarCount} | ${{ method: null, code: 0 }}                                    | ${'success'} | ${'projects'} | ${[]}                                | ${0}
+    ${actions.fetchSidebarCount} | ${{ method: 'onGet', code: HTTP_STATUS_INTERNAL_SERVER_ERROR }} | ${'error'}   | ${'issues'}   | ${[]}                                | ${1}
   `('fetchSidebarCount', ({ action, axiosMock, type, expectedMutations, scope, errorLogs }) => {
     describe(`on ${type}`, () => {
       beforeEach(() => {
@@ -289,6 +293,32 @@ describe('Global Search Store Actions', () => {
       it(`should ${expectedMutations.length === 0 ? 'NOT ' : ''}dispatch ${
         expectedMutations.length === 0 ? '' : 'the correct '
       }mutations for ${scope}`, () => {
+        return testAction({ action, state, expectedMutations }).then(() => {
+          expect(logger.logError).toHaveBeenCalledTimes(errorLogs);
+        });
+      });
+    });
+  });
+
+  describe.each`
+    action                              | axiosMock                                                       | type         | expectedMutations                             | errorLogs
+    ${actions.fetchLanguageAggregation} | ${{ method: 'onGet', code: HTTP_STATUS_OK }}                    | ${'success'} | ${MOCK_RECEIVE_AGGREGATIONS_SUCCESS_MUTATION} | ${0}
+    ${actions.fetchLanguageAggregation} | ${{ method: 'onPut', code: 0 }}                                 | ${'error'}   | ${MOCK_RECEIVE_AGGREGATIONS_ERROR_MUTATION}   | ${1}
+    ${actions.fetchLanguageAggregation} | ${{ method: 'onGet', code: HTTP_STATUS_INTERNAL_SERVER_ERROR }} | ${'error'}   | ${MOCK_RECEIVE_AGGREGATIONS_ERROR_MUTATION}   | ${1}
+  `('fetchLanguageAggregation', ({ action, axiosMock, type, expectedMutations, errorLogs }) => {
+    describe(`on ${type}`, () => {
+      beforeEach(() => {
+        if (axiosMock.method) {
+          mock[axiosMock.method]().reply(
+            axiosMock.code,
+            axiosMock.code === HTTP_STATUS_OK ? MOCK_AGGREGATIONS : [],
+          );
+        }
+      });
+
+      it(`should ${type === 'error' ? 'NOT ' : ''}dispatch ${
+        type === 'error' ? '' : 'the correct '
+      }mutations`, () => {
         return testAction({ action, state, expectedMutations }).then(() => {
           expect(logger.logError).toHaveBeenCalledTimes(errorLogs);
         });

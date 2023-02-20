@@ -8,7 +8,7 @@ class CopyCodeButton extends HTMLElement {
     this.for = uniqueId('code-');
 
     const target = this.parentNode.querySelector('pre');
-    if (!target) return;
+    if (!target || this.closest('.suggestions')) return;
 
     target.setAttribute('id', this.for);
 

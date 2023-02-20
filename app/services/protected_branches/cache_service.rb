@@ -81,7 +81,11 @@ module ProtectedBranches
     end
 
     def metrics
-      @metrics ||= Gitlab::Cache::Metrics.new(
+      @metrics ||= Gitlab::Cache::Metrics.new(cache_metadata)
+    end
+
+    def cache_metadata
+      Gitlab::Cache::Metadata.new(
         caller_id: Gitlab::ApplicationContext.current_context_attribute(:caller_id),
         cache_identifier: "#{self.class}#fetch",
         feature_category: :source_code_management,

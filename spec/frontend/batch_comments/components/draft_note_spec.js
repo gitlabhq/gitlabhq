@@ -1,9 +1,8 @@
 import { nextTick } from 'vue';
-import { GlButton, GlBadge } from '@gitlab/ui';
+import { GlBadge } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { stubComponent } from 'helpers/stub_component';
 import DraftNote from '~/batch_comments/components/draft_note.vue';
-import PublishButton from '~/batch_comments/components/publish_button.vue';
 import { createStore } from '~/batch_comments/stores';
 import NoteableNote from '~/notes/components/noteable_note.vue';
 import { createDraft } from '../mock_data';
@@ -29,9 +28,6 @@ describe('Batch comments draft note component', () => {
       line_range: LINE_RANGE,
     },
   };
-
-  const findSubmitReviewButton = () => wrapper.findComponent(PublishButton);
-  const findAddCommentButton = () => wrapper.findComponent(GlButton);
 
   const createComponent = (propsData = { draft }, glFeatures = {}) => {
     wrapper = shallowMount(DraftNote, {
@@ -65,58 +61,6 @@ describe('Batch comments draft note component', () => {
 
     expect(note.exists()).toBe(true);
     expect(note.props().note).toEqual(draft);
-  });
-
-  describe('add comment now', () => {
-    it('dispatches publishSingleDraft when clicking', () => {
-      createComponent();
-      const publishNowButton = findAddCommentButton();
-      publishNowButton.vm.$emit('click');
-
-      expect(wrapper.vm.$store.dispatch).toHaveBeenCalledWith(
-        'batchComments/publishSingleDraft',
-        1,
-      );
-    });
-
-    it('sets as loading when draft is publishing', async () => {
-      createComponent();
-      wrapper.vm.$store.state.batchComments.currentlyPublishingDrafts.push(1);
-
-      await nextTick();
-      const publishNowButton = findAddCommentButton();
-
-      expect(publishNowButton.props().loading).toBe(true);
-    });
-
-    it('sets as disabled when review is publishing', async () => {
-      createComponent();
-      wrapper.vm.$store.state.batchComments.isPublishing = true;
-
-      await nextTick();
-      const publishNowButton = findAddCommentButton();
-
-      expect(publishNowButton.props().disabled).toBe(true);
-      expect(publishNowButton.props().loading).toBe(false);
-    });
-
-    it('hides button when mr_review_submit_comment is enabled', () => {
-      createComponent({ draft }, { mrReviewSubmitComment: true });
-
-      expect(findAddCommentButton().exists()).toBe(false);
-    });
-  });
-
-  describe('submit review', () => {
-    it('sets as disabled when draft is publishing', async () => {
-      createComponent();
-      wrapper.vm.$store.state.batchComments.currentlyPublishingDrafts.push(1);
-
-      await nextTick();
-      const publishNowButton = findSubmitReviewButton();
-
-      expect(publishNowButton.attributes().disabled).toBe('true');
-    });
   });
 
   describe('update', () => {

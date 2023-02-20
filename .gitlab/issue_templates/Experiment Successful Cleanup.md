@@ -10,6 +10,8 @@ The changes need to become an official part of the product.
 - [ ] Determine whether the feature should apply to SaaS and/or self-managed
 - [ ] Determine whether the feature should apply to EE - and which tiers - and/or Core
 - [ ] Determine if tracking should be kept as is, removed, or modified.
+- [ ] Determine if any UX experiences need to be "polished" i.e. updated to further improve the end user experience. This task should be completed by the designated UX counterpart. 
+   - [ ] (placeholder for UX polish work that needs to be completed for this cleanup issue to be considered completed) 
 - [ ] Ensure any relevant documentation has been updated.
 - [ ] Determine whether there are other concerns that need to be considered before removing the feature flag.
    - These are typically captured in the `Experiment Successful Cleanup Concerns` section of the rollout issue.

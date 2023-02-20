@@ -17,7 +17,7 @@ With customer relations management (CRM) you can create a record of contacts
 Contacts and organizations can only be created for root groups.
 
 You can use contacts and organizations to tie work to customers for billing and reporting purposes.
-To read more about what is planned for the future, see [issue 2256](https://gitlab.com/gitlab-org/gitlab/-/issues/2256).
+For more information about what is planned for the future, see [issue 2256](https://gitlab.com/gitlab-org/gitlab/-/issues/2256).
 
 ## Permissions
 

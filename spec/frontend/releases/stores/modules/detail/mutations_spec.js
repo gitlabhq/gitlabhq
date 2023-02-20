@@ -89,6 +89,15 @@ describe('Release edit/new mutations', () => {
 
       expect(state.release.tagName).toBe(newTag);
     });
+
+    it('nulls out existing release', () => {
+      state.release = release;
+      state.existingRelease = release;
+      const newTag = 'updated-tag-name';
+      mutations[types.UPDATE_RELEASE_TAG_NAME](state, newTag);
+
+      expect(state.existingRelease).toBe(null);
+    });
   });
 
   describe(`${types.UPDATE_RELEASE_TAG_MESSAGE}`, () => {
@@ -303,6 +312,17 @@ describe('Release edit/new mutations', () => {
       mutations[types.RECEIVE_TAG_NOTES_ERROR](state, { message });
       expect(state.tagNotes).toBe('');
       expect(state.isFetchingTagNotes).toBe(false);
+    });
+
+    it('nulls out existing release', () => {
+      state.existingRelease = release;
+      const message = 'there was an error';
+      state.isFetchingTagNotes = true;
+      state.tagNotes = 'tag notes';
+
+      mutations[types.RECEIVE_TAG_NOTES_ERROR](state, { message });
+
+      expect(state.existingRelease).toBe(null);
     });
   });
   describe(`${types.UPDATE_INCLUDE_TAG_NOTES}`, () => {

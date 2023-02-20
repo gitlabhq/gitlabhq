@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ProjectsHelper do
+RSpec.describe ProjectsHelper, feature_category: :source_code_management do
   include ProjectForksHelper
   include AfterNextHelpers
 
@@ -582,46 +582,24 @@ RSpec.describe ProjectsHelper do
     end
   end
 
-  describe '#show_merge_request_count' do
+  describe '#show_count?' do
     context 'enabled flag' do
       it 'returns true if compact mode is disabled' do
-        expect(helper.show_merge_request_count?).to be_truthy
+        expect(helper.show_count?).to be_truthy
       end
 
       it 'returns false if compact mode is enabled' do
-        expect(helper.show_merge_request_count?(compact_mode: true)).to be_falsey
+        expect(helper.show_count?(compact_mode: true)).to be_falsey
       end
     end
 
     context 'disabled flag' do
       it 'returns false if disabled flag is true' do
-        expect(helper.show_merge_request_count?(disabled: true)).to be_falsey
+        expect(helper.show_count?(disabled: true)).to be_falsey
       end
 
       it 'returns true if disabled flag is false' do
-        expect(helper.show_merge_request_count?).to be_truthy
-      end
-    end
-  end
-
-  describe '#show_issue_count?' do
-    context 'enabled flag' do
-      it 'returns true if compact mode is disabled' do
-        expect(helper.show_issue_count?).to be_truthy
-      end
-
-      it 'returns false if compact mode is enabled' do
-        expect(helper.show_issue_count?(compact_mode: true)).to be_falsey
-      end
-    end
-
-    context 'disabled flag' do
-      it 'returns false if disabled flag is true' do
-        expect(helper.show_issue_count?(disabled: true)).to be_falsey
-      end
-
-      it 'returns true if disabled flag is false' do
-        expect(helper.show_issue_count?).to be_truthy
+        expect(helper).to be_show_count
       end
     end
   end
@@ -1050,6 +1028,28 @@ RSpec.describe ProjectsHelper do
         end
       end
     end
+
+    describe '#able_to_see_forks_count?' do
+      subject { helper.able_to_see_forks_count?(project, user) }
+
+      where(:can_read_code, :forking_enabled, :expected) do
+        false | false | false
+        true  | false | false
+        false | true  | false
+        true  | true  | true
+      end
+
+      with_them do
+        before do
+          allow(project).to receive(:forking_enabled?).and_return(forking_enabled)
+          allow(helper).to receive(:can?).with(user, :read_code, project).and_return(can_read_code)
+        end
+
+        it 'returns the correct response' do
+          expect(subject).to eq(expected)
+        end
+      end
+    end
   end
 
   describe '#fork_button_disabled_tooltip' do
@@ -1349,6 +1349,32 @@ RSpec.describe ProjectsHelper do
     with_them do
       it 'with correct key' do
         expect(helper.localized_project_human_access(key)).to eq(localized_project_human_access)
+      end
+    end
+  end
+
+  describe '#vue_fork_divergence_data' do
+    it 'returns empty hash when fork source is not available' do
+      expect(helper.vue_fork_divergence_data(project, 'ref')).to eq({})
+    end
+
+    context 'when fork source is available' do
+      it 'returns the data related to fork divergence' do
+        source_project = project_with_repo
+
+        allow(helper).to receive(:visible_fork_source).with(project).and_return(source_project)
+
+        ahead_path =
+          "/#{project.full_path}/-/compare/#{source_project.default_branch}...ref?from_project_id=#{source_project.id}"
+        behind_path =
+          "/#{source_project.full_path}/-/compare/ref...#{source_project.default_branch}?from_project_id=#{project.id}"
+
+        expect(helper.vue_fork_divergence_data(project, 'ref')).to eq({
+          source_name: source_project.full_name,
+          source_path: project_path(source_project),
+          ahead_compare_path: ahead_path,
+          behind_compare_path: behind_path
+        })
       end
     end
   end

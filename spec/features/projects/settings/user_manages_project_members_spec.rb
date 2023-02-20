@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe 'Projects > Settings > User manages project members', feature_category: :projects do
   include Spec::Support::Helpers::Features::MembersHelpers
   include Spec::Support::Helpers::ModalHelpers
+  include ListboxHelpers
 
   let(:group) { create(:group, name: 'OpenSource') }
   let(:project) { create(:project, :with_namespace_settings) }
@@ -46,7 +47,7 @@ RSpec.describe 'Projects > Settings > User manages project members', feature_cat
     click_on 'Select a project'
     wait_for_requests
 
-    click_button project2.name
+    select_listbox_item(project2.name_with_namespace)
     click_button 'Import project members'
     wait_for_requests
 

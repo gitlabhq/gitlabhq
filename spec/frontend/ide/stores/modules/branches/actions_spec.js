@@ -10,6 +10,7 @@ import {
 import * as types from '~/ide/stores/modules/branches/mutation_types';
 import state from '~/ide/stores/modules/branches/state';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { branches, projectData } from '../../../mock_data';
 
 describe('IDE branches actions', () => {
@@ -94,7 +95,9 @@ describe('IDE branches actions', () => {
 
     describe('success', () => {
       beforeEach(() => {
-        mock.onGet(/\/api\/v4\/projects\/\d+\/repository\/branches(.*)$/).replyOnce(200, branches);
+        mock
+          .onGet(/\/api\/v4\/projects\/\d+\/repository\/branches(.*)$/)
+          .replyOnce(HTTP_STATUS_OK, branches);
       });
 
       it('calls API with params', () => {
@@ -124,7 +127,9 @@ describe('IDE branches actions', () => {
 
     describe('error', () => {
       beforeEach(() => {
-        mock.onGet(/\/api\/v4\/projects\/\d+\/repository\/branches(.*)$/).replyOnce(500);
+        mock
+          .onGet(/\/api\/v4\/projects\/\d+\/repository\/branches(.*)$/)
+          .replyOnce(HTTP_STATUS_INTERNAL_SERVER_ERROR);
       });
 
       it('dispatches error', () => {

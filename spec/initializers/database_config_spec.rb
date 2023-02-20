@@ -29,7 +29,7 @@ RSpec.describe 'Database config initializer', :reestablished_active_record_base 
 
   context 'when ci database connection' do
     before do
-      skip_if_multiple_databases_not_setup
+      skip_if_multiple_databases_not_setup(:ci)
     end
 
     let(:database_base_model) { Gitlab::Database.database_base_models[:ci] }

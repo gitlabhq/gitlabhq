@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Entities::Ml::Mlflow::RunInfo do
+RSpec.describe API::Entities::Ml::Mlflow::RunInfo, feature_category: :mlops do
   let_it_be(:candidate) { create(:ml_candidates) }
 
   subject { described_class.new(candidate, packages_url: 'http://example.com').as_json }

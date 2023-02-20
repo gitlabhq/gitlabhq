@@ -1,11 +1,8 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
-require 'prometheus/client'
-require 'sidekiq'
-require_dependency 'gitlab/cluster/lifecycle_events'
+require 'spec_helper'
 
-RSpec.describe Gitlab::Memory::Watchdog::Configurator do
+RSpec.describe Gitlab::Memory::Watchdog::Configurator, feature_category: :application_performance do
   shared_examples 'as configurator' do |handler_class, event_reporter_class, sleep_time_env, sleep_time|
     it 'configures the correct handler' do
       configurator.call(configuration)
@@ -92,7 +89,7 @@ RSpec.describe Gitlab::Memory::Watchdog::Configurator do
     end
 
     it_behaves_like 'as configurator',
-                    Gitlab::Memory::Watchdog::PumaHandler,
+                    Gitlab::Memory::Watchdog::Handlers::PumaHandler,
                     Gitlab::Memory::Watchdog::EventReporter,
                     'GITLAB_MEMWD_SLEEP_TIME_SEC',
                     described_class::DEFAULT_SLEEP_INTERVAL_S
@@ -200,7 +197,7 @@ RSpec.describe Gitlab::Memory::Watchdog::Configurator do
     subject(:configurator) { described_class.configure_for_sidekiq }
 
     it_behaves_like 'as configurator',
-                    Gitlab::Memory::Watchdog::TermProcessHandler,
+                    Gitlab::Memory::Watchdog::Handlers::SidekiqHandler,
                     Gitlab::Memory::Watchdog::SidekiqEventReporter,
                     'SIDEKIQ_MEMORY_KILLER_CHECK_INTERVAL',
                     described_class::DEFAULT_SIDEKIQ_SLEEP_INTERVAL_S

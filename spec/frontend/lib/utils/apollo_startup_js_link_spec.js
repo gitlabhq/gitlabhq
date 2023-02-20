@@ -1,5 +1,6 @@
 import { ApolloLink, Observable } from '@apollo/client/core';
 import { StartupJSLink } from '~/lib/utils/apollo_startup_js_link';
+import { HTTP_STATUS_NOT_FOUND, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 
 describe('StartupJSLink', () => {
   const FORWARDED_RESPONSE = { data: 'FORWARDED_RESPONSE' };
@@ -37,7 +38,7 @@ describe('StartupJSLink', () => {
   let startupLink;
   let link;
 
-  function mockFetchCall(status = 200, response = STARTUP_JS_RESPONSE) {
+  function mockFetchCall(status = HTTP_STATUS_OK, response = STARTUP_JS_RESPONSE) {
     const p = {
       ok: status >= 200 && status < 300,
       status,
@@ -175,7 +176,7 @@ describe('StartupJSLink', () => {
       window.gl = {
         startup_graphql_calls: [
           {
-            fetchCall: mockFetchCall(404),
+            fetchCall: mockFetchCall(HTTP_STATUS_NOT_FOUND),
             query: STARTUP_JS_QUERY,
             variables: { id: 3 },
           },
@@ -209,7 +210,7 @@ describe('StartupJSLink', () => {
       window.gl = {
         startup_graphql_calls: [
           {
-            fetchCall: mockFetchCall(200, ERROR_RESPONSE),
+            fetchCall: mockFetchCall(HTTP_STATUS_OK, ERROR_RESPONSE),
             query: STARTUP_JS_QUERY,
             variables: { id: 3 },
           },
@@ -226,7 +227,7 @@ describe('StartupJSLink', () => {
       window.gl = {
         startup_graphql_calls: [
           {
-            fetchCall: mockFetchCall(200, { 'no-data': 'yay' }),
+            fetchCall: mockFetchCall(HTTP_STATUS_OK, { 'no-data': 'yay' }),
             query: STARTUP_JS_QUERY,
             variables: { id: 3 },
           },
@@ -339,7 +340,7 @@ describe('StartupJSLink', () => {
           variables: { id: 3 },
         },
         {
-          fetchCall: mockFetchCall(200, STARTUP_JS_RESPONSE_TWO),
+          fetchCall: mockFetchCall(HTTP_STATUS_OK, STARTUP_JS_RESPONSE_TWO),
           query: STARTUP_JS_QUERY_TWO,
           variables: { id: 3 },
         },

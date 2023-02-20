@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 description: Learn how to contribute to GitLab Documentation.
 ---
 
-# GitLab documentation
+# Contribute to the GitLab documentation
 
 The GitLab documentation is [intended as the single source of truth (SSOT)](https://about.gitlab.com/handbook/documentation/) for information about how to configure, use, and troubleshoot GitLab. The documentation contains use cases and usage instructions for every GitLab feature, organized by product area and subject. This includes topics and workflows that span multiple GitLab features and the use of GitLab with other applications.
 
@@ -37,7 +37,7 @@ Documentation issues and merge requests are part of their respective repositorie
 
 ### Branch naming
 
-The [CI pipeline for the main GitLab project](../pipelines.md) is configured to automatically
+The [CI pipeline for the main GitLab project](../pipelines/index.md) is configured to automatically
 run only the jobs that match the type of contribution. If your contribution contains
 **only** documentation changes, then only documentation-related jobs run, and
 the pipeline completes much faster than a code contribution.

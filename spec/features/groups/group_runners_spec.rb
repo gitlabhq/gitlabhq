@@ -203,14 +203,23 @@ RSpec.describe "Group Runners", feature_category: :runner_fleet do
   end
 
   describe "Group runner show page", :js do
-    let!(:group_runner) do
+    let_it_be(:group_runner) do
       create(:ci_runner, :group, groups: [group], description: 'runner-foo')
     end
 
-    it 'user views runner details' do
-      visit group_runner_path(group, group_runner)
+    let_it_be(:group_runner_job) { create(:ci_build, runner: group_runner) }
 
+    before do
+      visit group_runner_path(group, group_runner)
+    end
+
+    it 'user views runner details' do
       expect(page).to have_content "#{s_('Runners|Description')} runner-foo"
+    end
+
+    it_behaves_like 'shows runner jobs tab' do
+      let(:job_count) { '1' }
+      let(:job) { group_runner_job }
     end
   end
 

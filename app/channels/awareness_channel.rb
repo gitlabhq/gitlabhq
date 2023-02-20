@@ -15,7 +15,7 @@ class AwarenessChannel < ApplicationCable::Channel # rubocop:disable Gitlab/Name
   private_class_method :refresh_interval
 
   # keep clients updated about session membership
-  periodically every: self.refresh_interval do
+  periodically every: refresh_interval do
     transmit payload
   end
 

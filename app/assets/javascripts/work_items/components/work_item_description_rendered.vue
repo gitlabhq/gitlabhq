@@ -47,6 +47,7 @@ export default {
       await this.$nextTick();
 
       renderGFM(this.$refs['gfm-content']);
+      gl?.lazyLoader?.searchLazyImages();
 
       if (this.canEdit) {
         this.checkboxes = this.$el.querySelectorAll('.task-list-item-checkbox');

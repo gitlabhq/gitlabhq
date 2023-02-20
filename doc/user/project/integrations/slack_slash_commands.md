@@ -6,15 +6,16 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Slack slash commands **(FREE SELF)**
 
+NOTE:
+This feature is only configurable on self-managed GitLab instances.
+For GitLab.com, use the [GitLab for Slack app](gitlab_slack_application.md) instead.
+
 If you want to control and view GitLab content while you're
 working in Slack, you can use Slack slash commands.
 To use Slack slash commands, you must configure both Slack and GitLab.
 
 GitLab can also send events (for example, `issue created`) to Slack as notifications.
 The [Slack notifications service](slack.md) is configured separately.
-
-NOTE:
-For GitLab.com, use the [GitLab for Slack app](gitlab_slack_application.md) instead.
 
 ## Configure GitLab and Slack
 

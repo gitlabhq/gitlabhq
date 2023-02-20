@@ -1,0 +1,35 @@
+# frozen_string_literal: true
+
+class <%= migration_class_name %> < Gitlab::Database::Migration[<%= Gitlab::Database::Migration.current_version %>]
+  disable_ddl_transaction!
+
+  SOURCE_TABLE_NAME = :<%= source_table_name %>
+  TARGET_TABLE_NAME = :<%= target_table_name %>
+  COLUMN = :<%= foreign_key_column %>
+  TARGET_COLUMN = :<%= fk_target_column %>
+  FK_NAME = :<%= foreign_key_name %>
+
+  def up
+    with_lock_retries do
+      remove_foreign_key_if_exists(
+        SOURCE_TABLE_NAME,
+        TARGET_TABLE_NAME,
+        name: FK_NAME,
+        reverse_lock_order: true
+      )
+    end
+  end
+
+  def down
+    add_concurrent_foreign_key(
+      SOURCE_TABLE_NAME,
+      TARGET_TABLE_NAME,
+      column: COLUMN,
+      target_column: TARGET_COLUMN,
+      validate: true,
+      reverse_lock_order: true,
+      on_delete: :<%= fk_on_delete_option %>,
+      name: FK_NAME
+    )
+  end
+end

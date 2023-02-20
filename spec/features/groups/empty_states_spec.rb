@@ -98,13 +98,9 @@ RSpec.describe 'Group empty states', feature_category: :subgroups do
           end
 
           it "the new #{issuable_name} button opens a project dropdown" do
-            click_button 'Toggle project select'
+            click_button "Select project to create #{issuable_name}"
 
-            if issuable == :issue
-              expect(page).to have_button project.name
-            else
-              expect(page).to have_selector('.ajax-project-dropdown')
-            end
+            expect(page).to have_button project.name
           end
         end
       end
