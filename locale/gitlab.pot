@@ -24326,7 +24326,22 @@ msgstr ""
 msgid "JobAssistant|Add job"
 msgstr ""
 
+msgid "JobAssistant|Job Setup"
+msgstr ""
+
 msgid "JobAssistant|Job assistant"
+msgstr ""
+
+msgid "JobAssistant|Job name"
+msgstr ""
+
+msgid "JobAssistant|Script"
+msgstr ""
+
+msgid "JobAssistant|Stage (optional)"
+msgstr ""
+
+msgid "JobAssistant|Tags (optional)"
 msgstr ""
 
 msgid "Jobs"

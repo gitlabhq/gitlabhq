@@ -22,7 +22,7 @@ RSpec.describe API::Applications, :api, feature_category: :authentication_and_au
 
         expect(json_response).to be_a Hash
         expect(json_response['application_id']).to eq application.uid
-        expect(json_response['secret']).to eq application.secret
+        expect(application.secret_matches?(json_response['secret'])).to eq(true)
         expect(json_response['callback_url']).to eq application.redirect_uri
         expect(json_response['confidential']).to eq application.confidential
         expect(application.scopes.to_s).to eq('api')

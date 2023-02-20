@@ -6,6 +6,10 @@ module Issues
     include IncidentManagement::UsageData
     include IssueTypeHelpers
 
+    def initialize(container:, current_user: nil, params: {})
+      super(project: container, current_user: current_user, params: params)
+    end
+
     def hook_data(issue, action, old_associations: {})
       hook_data = issue.to_hook_data(current_user, old_associations: old_associations)
       hook_data[:object_attributes][:action] = action
@@ -32,6 +36,14 @@ module Issues
     end
 
     private
+
+    # overriding this because IssuableBaseService#constructor_container_arg returns { project: value }
+    # Issues::ReopenService constructor signature is different now, it takes container instead of project also
+    # IssuableBaseService#change_state dynamically picks one of the `Issues::ReopenService`, `Epics::ReopenService` or
+    # MergeRequests::ReopenService, so we need this method to return { }container: value } for Issues::ReopenService
+    def self.constructor_container_arg(value)
+      { container: value }
+    end
 
     def find_work_item_type_id(issue_type)
       work_item_type = WorkItems::Type.default_by_type(issue_type)

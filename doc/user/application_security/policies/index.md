@@ -129,19 +129,6 @@ time that the first policy merge request is created.
 
 You can use the [Vulnerability-Check Migration](https://gitlab.com/gitlab-org/gitlab/-/snippets/2328089) script to bulk create policies or associate security policy projects with development projects. For instructions and a demonstration of how to use the Vulnerability-Check Migration script, see [this video](https://youtu.be/biU1N26DfBc).
 
-## Scan execution policies
-
-See [Scan execution policies](scan-execution-policies.md).
-
-## Scan result policy editor
-
-See [Scan result policies](scan-result-policies.md).
-
-## Roadmap
-
-See the [Category Direction page](https://about.gitlab.com/direction/govern/security_policies/security_policy_management/)
-for more information on the product direction of security policies within GitLab.
-
 ## Troubleshooting
 
 ### `Branch name 'update-policy-<timestamp>' does not follow the pattern '<branch_name_regex>'`

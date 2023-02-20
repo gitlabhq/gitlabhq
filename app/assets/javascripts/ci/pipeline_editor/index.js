@@ -12,6 +12,7 @@ import getPipelineEtag from './graphql/queries/client/pipeline_etag.query.graphq
 import { resolvers } from './graphql/resolvers';
 import typeDefs from './graphql/typedefs.graphql';
 import PipelineEditorApp from './pipeline_editor_app.vue';
+import createStore from './store';
 
 export const initPipelineEditor = (selector = '#js-pipeline-editor') => {
   const el = document.querySelector(selector);
@@ -111,8 +112,11 @@ export const initPipelineEditor = (selector = '#js-pipeline-editor') => {
     },
   });
 
+  const store = createStore();
+
   return new Vue({
     el,
+    store,
     apolloProvider,
     provide: {
       ciConfigPath,

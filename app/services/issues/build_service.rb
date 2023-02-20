@@ -4,11 +4,6 @@ module Issues
   class BuildService < Issues::BaseService
     include ResolveDiscussions
 
-    # TODO: this is to be removed once we get to rename the IssuableBaseService project param to container
-    def initialize(container:, current_user: nil, params: {})
-      super(project: container, current_user: current_user, params: params)
-    end
-
     def execute
       filter_resolve_discussion_params
 

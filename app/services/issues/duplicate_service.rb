@@ -2,11 +2,6 @@
 
 module Issues
   class DuplicateService < Issues::BaseService
-    # TODO: this is to be removed once we get to rename the IssuableBaseService project param to container
-    def initialize(container:, current_user: nil, params: {})
-      super(project: container, current_user: current_user, params: params)
-    end
-
     def execute(duplicate_issue, canonical_issue)
       return if canonical_issue == duplicate_issue
       return unless can?(current_user, :update_issue, duplicate_issue)

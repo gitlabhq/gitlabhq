@@ -31,8 +31,12 @@ module QA
         parse_body(api_get_from("#{api_members_path}/all"))
       end
 
-      def find_member(username)
+      def find_direct_member(username)
         list_members.find { |member| member[:username] == username }
+      end
+
+      def find_direct_or_inherited_member(username)
+        list_all_members.find { |member| member[:username] == username }
       end
 
       def invite_group(group, access_level = AccessLevel::GUEST)

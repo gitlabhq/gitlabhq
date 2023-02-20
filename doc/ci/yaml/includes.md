@@ -159,12 +159,18 @@ do not change. This method is called *merging*.
 
 ### Merge method for `include`
 
-For a file containing `include` directives, the included files are read in order (possibly
-recursively), and the configuration in these files is likewise merged in order. If the parameters overlap, the last included file takes precedence. Finally, the directives in the
-file itself are merged with the configuration from the included files.
+The `include` configuration merges with the main configuration file with this process:
+
+- Included files are read in the order defined in the configuration file, and
+  the included configuration is merged together in the same order.
+- If an included file also uses `include`, that nested `include` configuration is merged first (recursively).
+- If parameters overlap, the last included file takes precedence when merging the configuration
+  from the included files.
+- After all configuration added with `include` is merged together, the main configuration
+  is merged with the included configuration.
 
 This merge method is a _deep merge_, where hash maps are merged at any depth in the
-configuration. To merge hash map A (containing the configuration merged so far) and B (the next piece
+configuration. To merge hash map "A" (that contains the configuration merged so far) and "B" (the next piece
 of configuration), the keys and values are processed as follows:
 
 - When the key only exists in A, use the key and value from A.
@@ -172,9 +178,7 @@ of configuration), the keys and values are processed as follows:
 - When the key exists in both A and B, and one of the values is not a hash map, use the value from B.
 - Otherwise, use the key and value from B.
 
-For example:
-
-We have a configuration consisting of two files.
+For example, with a configuration that consists of two files:
 
 - The `.gitlab-ci.yml` file:
 
@@ -211,7 +215,7 @@ We have a configuration consisting of two files.
         dotenv: deploy.env
   ```
 
-The merged result:
+The merged result is:
 
 ```yaml
 variables:

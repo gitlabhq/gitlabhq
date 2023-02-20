@@ -70,6 +70,34 @@ RSpec.describe AbuseReport, feature_category: :insider_threat do
     }
   end
 
+  describe 'scopes' do
+    let!(:reporter) { create(:user, username: 'reporter') }
+    let!(:report1) { create(:abuse_report) }
+    let!(:report2) { create(:abuse_report, :closed, reporter: reporter, category: 'phishing') }
+
+    describe '.open' do
+      subject(:results) { described_class.open }
+
+      it 'returns reports without resolved_at value' do
+        expect(subject).to match_array([report, report1])
+      end
+    end
+
+    describe '.closed' do
+      subject(:results) { described_class.closed }
+
+      it 'returns reports with resolved_at value' do
+        expect(subject).to match_array([report2])
+      end
+    end
+
+    describe '.by_category' do
+      it 'returns abuse reports with the specified category' do
+        expect(described_class.by_category('phishing')).to match_array([report2])
+      end
+    end
+  end
+
   describe 'before_validation' do
     context 'when links to spam contains empty strings' do
       let(:report) { create(:abuse_report, links_to_spam: ['', 'https://gitlab.com']) }

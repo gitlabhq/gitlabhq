@@ -65,7 +65,7 @@ module QA
 
           it 'adds user to the group',
              testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/386792' do
-            found_member = group.reload!.find_member(user.username)
+            found_member = group.reload!.find_direct_member(user.username)
 
             expect(found_member).not_to be_nil
             expect(found_member.fetch(:access_level))
@@ -82,7 +82,7 @@ module QA
 
           it 'does not add user to the group',
              testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/386793' do
-            found_member = group.reload!.find_member(user.username)
+            found_member = group.reload!.find_direct_member(user.username)
 
             expect(found_member).to be_nil
           end

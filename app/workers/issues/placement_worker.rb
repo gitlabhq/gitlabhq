@@ -40,7 +40,7 @@ module Issues
       leftover = to_place.pop if to_place.count > QUERY_LIMIT
 
       Issue.move_nulls_to_end(to_place)
-      Issues::BaseService.new(project: nil).rebalance_if_needed(to_place.max_by(&:relative_position))
+      Issues::BaseService.new(container: nil).rebalance_if_needed(to_place.max_by(&:relative_position))
       Issues::PlacementWorker.perform_async(nil, leftover.project_id) if leftover.present?
     rescue RelativePositioning::NoSpaceLeft => e
       Gitlab::ErrorTracking.log_exception(e, issue_id: issue_id, project_id: project_id)

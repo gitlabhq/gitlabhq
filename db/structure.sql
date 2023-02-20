@@ -10733,6 +10733,8 @@ CREATE TABLE abuse_reports (
     category smallint DEFAULT 1 NOT NULL,
     reported_from_url text DEFAULT ''::text NOT NULL,
     links_to_spam text[] DEFAULT '{}'::text[] NOT NULL,
+    status smallint DEFAULT 1 NOT NULL,
+    resolved_at timestamp with time zone,
     CONSTRAINT abuse_reports_links_to_spam_length_check CHECK ((cardinality(links_to_spam) <= 20)),
     CONSTRAINT check_ab1260fa6c CHECK ((char_length(reported_from_url) <= 512))
 );
@@ -28990,6 +28992,10 @@ CREATE UNIQUE INDEX idx_vulnerability_issue_links_on_vulnerability_id_and_issue_
 CREATE UNIQUE INDEX idx_vulnerability_issue_links_on_vulnerability_id_and_link_type ON vulnerability_issue_links USING btree (vulnerability_id, link_type) WHERE (link_type = 2);
 
 CREATE UNIQUE INDEX idx_work_item_types_on_namespace_id_and_name_null_namespace ON work_item_types USING btree (btrim(lower(name)), ((namespace_id IS NULL))) WHERE (namespace_id IS NULL);
+
+CREATE INDEX index_abuse_reports_on_status_and_id ON abuse_reports USING btree (status, id);
+
+CREATE INDEX index_abuse_reports_on_status_category_and_id ON abuse_reports USING btree (status, category, id);
 
 CREATE INDEX index_abuse_reports_on_user_id ON abuse_reports USING btree (user_id);
 

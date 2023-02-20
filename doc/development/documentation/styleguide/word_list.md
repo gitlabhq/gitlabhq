@@ -1314,7 +1314,10 @@ See also [downgrade](#downgrade) and [roll back](#roll-back).
 
 ## upper left, upper right
 
-Use **upper left** and **upper right** instead of **top left** and **top right**. Hyphenate as adjectives (for example, **upper-left corner**).
+Use **upper-left corner** and **upper-right corner** to provide direction in the UI.
+If the UI element is not in a corner, use **upper left** and **upper right**.
+
+Do not use **top left** and **top right**.
 
 For details, see the [Microsoft style guide](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/u/upper-left-upper-right).
 
