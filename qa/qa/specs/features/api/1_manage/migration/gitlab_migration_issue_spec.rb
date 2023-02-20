@@ -67,11 +67,7 @@ module QA
 
         it(
           'preserves related merge request',
-          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/386305',
-          quarantine: {
-            type: :bug,
-            issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/386308'
-          }
+          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/386305'
         ) do
           expect_project_import_finished_successfully
           expect(imported_related_mrs).to eq([source_mr.iid])

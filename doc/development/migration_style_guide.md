@@ -307,7 +307,7 @@ which is a "versioned" class. For new migrations, the latest version should be u
 can be looked up in `Gitlab::Database::Migration::MIGRATION_CLASSES`) to use the latest version
 of migration helpers.
 
-In this example, we use version 2.0 of the migration class:
+In this example, we use version 2.1 of the migration class:
 
 ```ruby
 class TestMigration < Gitlab::Database::Migration[2.1]
@@ -323,7 +323,7 @@ version of migration helpers automatically.
 Migration helpers and versioning were [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68986)
 in GitLab 14.3.
 For merge requests targeting previous stable branches, use the old format and still inherit from
-`ActiveRecord::Migration[6.1]` instead of `Gitlab::Database::Migration[2.0]`.
+`ActiveRecord::Migration[6.1]` instead of `Gitlab::Database::Migration[2.1]`.
 
 ## Retry mechanism when acquiring database locks
 
