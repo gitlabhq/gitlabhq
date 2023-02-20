@@ -4,11 +4,11 @@
 - header_title  _("Projects"), dashboard_projects_path
 - add_page_specific_style 'page_bundles/new_namespace'
 
-.project-edit-container.gl-mt-5
+.project-edit-container
   .project-edit-errors
     = render 'projects/errors'
 
-  .js-new-project-creation{ data: { is_ci_cd_available: (ci_cd_projects_available? if Gitlab.ee?).to_s, has_errors: @project.errors.any?.to_s, new_project_guidelines: brand_new_project_guidelines, push_to_create_project_command: push_to_create_project_command, working_with_projects_help_path: help_page_path("user/project/working_with_projects") } }
+  .js-new-project-creation{ data: { is_ci_cd_available: (ci_cd_projects_available? if Gitlab.ee?).to_s, has_errors: @project.errors.any?.to_s, new_project_guidelines: brand_new_project_guidelines, push_to_create_project_command: push_to_create_project_command, working_with_projects_help_path: help_page_path("user/project/working_with_projects"), parent_group_url: @project.parent && group_url(@project.parent), parent_group_name: @project.parent&.name } }
 
   .row{ 'v-cloak': true }
     #blank-project-pane.tab-pane.active

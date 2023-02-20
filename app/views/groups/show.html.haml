@@ -14,7 +14,6 @@
         callouts_path: group_callouts_path,
         callouts_feature_id: Users::GroupCalloutsHelper::INVITE_MEMBERS_BANNER,
         group_id: @group.id } }
-  = render 'groups/invite_members_modal', group: @group
 
 = content_for :meta_tags do
   = auto_discovery_link_tag(:atom, group_url(@group, rss_url_options), title: "#{@group.name} activity")

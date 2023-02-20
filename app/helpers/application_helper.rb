@@ -374,6 +374,10 @@ module ApplicationHelper
     cookies["sidebar_collapsed"] == "true"
   end
 
+  def collapsed_super_sidebar?
+    cookies["super_sidebar_collapsed"] == "true"
+  end
+
   def locale_path
     asset_path("locale/#{Gitlab::I18n.locale}/app.js")
   end

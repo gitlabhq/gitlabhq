@@ -1,8 +1,15 @@
 import Vue from 'vue';
+import {
+  bindSuperSidebarCollapsedEvents,
+  initSuperSidebarCollapsedState,
+} from './super_sidebar_collapsed_state_manager';
 import SuperSidebar from './components/super_sidebar.vue';
 
 export const initSuperSidebar = () => {
   const el = document.querySelector('.js-super-sidebar');
+
+  bindSuperSidebarCollapsedEvents();
+  initSuperSidebarCollapsedState();
 
   if (!el) return false;
 

@@ -15,12 +15,16 @@ export function initNewProjectCreation() {
     newProjectGuidelines,
     hasErrors,
     isCiCdAvailable,
+    parentGroupUrl,
+    parentGroupName,
   } = el.dataset;
 
   const props = {
     hasErrors: parseBoolean(hasErrors),
     isCiCdAvailable: parseBoolean(isCiCdAvailable),
     newProjectGuidelines,
+    parentGroupUrl,
+    parentGroupName,
   };
 
   const provide = {

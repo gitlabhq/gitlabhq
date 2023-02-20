@@ -96,12 +96,6 @@ export default {
       return true;
     },
 
-    handleAction({ action }) {
-      if (action) {
-        action();
-      }
-    },
-
     showKeyboardShortcuts() {
       this.$refs.dropdown.close();
       window?.toggleShortcutsHelp();
@@ -140,11 +134,7 @@ export default {
       :group="itemGroups.versionCheck"
     >
       <template #list-item="{ item }">
-        <a
-          :href="item.href"
-          tabindex="-1"
-          class="gl-display-flex gl-flex-direction-column gl-line-height-24 gl-text-gray-900 gl-hover-text-gray-900 gl-hover-text-decoration-none"
-        >
+        <span class="gl-display-flex gl-flex-direction-column gl-line-height-24">
           <span class="gl-font-sm gl-font-weight-bold">
             {{ item.text }}
             <gl-emoji data-name="rocket" />
@@ -153,7 +143,7 @@ export default {
             <span class="gl-mr-2">{{ item.version }}</span>
             <gitlab-version-check-badge v-if="updateSeverity" :status="updateSeverity" size="sm" />
           </span>
-        </a>
+        </span>
       </template>
     </gl-disclosure-dropdown-group>
 
@@ -162,16 +152,15 @@ export default {
       :bordered="sidebarData.show_version_check"
     />
 
-    <gl-disclosure-dropdown-group :group="itemGroups.helpActions" bordered @action="handleAction">
+    <gl-disclosure-dropdown-group :group="itemGroups.helpActions" bordered>
       <template #list-item="{ item }">
-        <button
-          tabindex="-1"
-          class="gl-bg-transparent gl-w-full gl-border-none gl-display-flex gl-justify-content-space-between gl-p-0 gl-text-gray-900"
+        <span
+          class="gl-display-flex gl-justify-content-space-between gl-align-items-center gl-my-n1"
         >
           {{ item.text }}
           <gl-badge v-if="item.count" pill size="sm" variant="info">{{ item.count }}</gl-badge>
           <kbd v-else-if="item.shortcut" class="flat">?</kbd>
-        </button>
+        </span>
       </template>
     </gl-disclosure-dropdown-group>
   </gl-disclosure-dropdown>

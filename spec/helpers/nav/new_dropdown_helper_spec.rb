@@ -11,8 +11,12 @@ RSpec.describe Nav::NewDropdownHelper, feature_category: :navigation do
     let(:with_can_create_project) { false }
     let(:with_can_create_group) { false }
     let(:with_can_create_snippet) { false }
+    let(:with_context) { true }
+    let(:title) { 'Create new...' }
 
-    subject(:view_model) { helper.new_dropdown_view_model(project: current_project, group: current_group) }
+    subject(:view_model) do
+      helper.new_dropdown_view_model(project: current_project, group: current_group, with_context: with_context)
+    end
 
     before do
       allow(helper).to receive(:current_user) { current_user }
@@ -22,7 +26,7 @@ RSpec.describe Nav::NewDropdownHelper, feature_category: :navigation do
       allow(user).to receive(:can?).with(:create_snippet) { with_can_create_snippet }
     end
 
-    shared_examples 'invite member item' do
+    shared_examples 'invite member item' do |partial|
       it 'shows invite member link with emoji' do
         expect(view_model[:menu_sections]).to eq(
           expected_menu_section(
@@ -30,8 +34,9 @@ RSpec.describe Nav::NewDropdownHelper, feature_category: :navigation do
             menu_item: ::Gitlab::Nav::TopNavMenuItem.build(
               id: 'invite',
               title: 'Invite members',
-              emoji: 'shaking_hands',
+              icon: 'shaking_hands',
               href: expected_href,
+              partial: partial,
               data: {
                 track_action: 'click_link_invite_members',
                 track_label: 'plus_menu_dropdown',
@@ -54,8 +59,13 @@ RSpec.describe Nav::NewDropdownHelper, feature_category: :navigation do
     end
 
     context 'when group and project are nil' do
-      it 'has no menu sections' do
-        expect(view_model[:menu_sections]).to eq([])
+      it 'has base results' do
+        results = {
+          title: title,
+          menu_sections: []
+        }
+
+        expect(view_model).to eq(results)
       end
 
       context 'when can create project' do
@@ -145,8 +155,27 @@ RSpec.describe Nav::NewDropdownHelper, feature_category: :navigation do
           .to receive(:can?).with(current_user, :admin_group_member, group) { with_can_admin_in_group }
       end
 
-      it 'has no menu sections' do
-        expect(view_model[:menu_sections]).to eq([])
+      it 'has base results' do
+        results = {
+          title: title,
+          menu_sections: [],
+          context: group
+        }
+
+        expect(view_model).to eq(results)
+      end
+
+      context 'without context' do
+        let(:with_context) { false }
+
+        it 'has base results' do
+          results = {
+            title: title,
+            menu_sections: []
+          }
+
+          expect(view_model).to eq(results)
+        end
       end
 
       context 'when can create projects in group' do
@@ -199,7 +228,7 @@ RSpec.describe Nav::NewDropdownHelper, feature_category: :navigation do
         let(:expected_title) { 'In this group' }
         let(:expected_href) { "/groups/#{group.full_path}/-/group_members" }
 
-        it_behaves_like 'invite member item'
+        it_behaves_like 'invite member item', 'groups/invite_members_top_nav_link'
       end
     end
 
@@ -219,8 +248,27 @@ RSpec.describe Nav::NewDropdownHelper, feature_category: :navigation do
         allow(helper).to receive(:can_admin_project_member?) { with_can_admin_project_member }
       end
 
-      it 'has no menu sections' do
-        expect(view_model[:menu_sections]).to eq([])
+      it 'has base results with context' do
+        results = {
+          title: title,
+          menu_sections: [],
+          context: project
+        }
+
+        expect(view_model).to eq(results)
+      end
+
+      context 'without context' do
+        let(:with_context) { false }
+
+        it 'has base results without context' do
+          results = {
+            title: title,
+            menu_sections: []
+          }
+
+          expect(view_model).to eq(results)
+        end
       end
 
       context 'with show_new_issue_link?' do
@@ -296,7 +344,7 @@ RSpec.describe Nav::NewDropdownHelper, feature_category: :navigation do
         let(:expected_title) { 'In this project' }
         let(:expected_href) { "/#{project.path_with_namespace}/-/project_members" }
 
-        it_behaves_like 'invite member item'
+        it_behaves_like 'invite member item', 'projects/invite_members_top_nav_link'
       end
     end
 
@@ -311,22 +359,36 @@ RSpec.describe Nav::NewDropdownHelper, feature_category: :navigation do
         allow(helper).to receive(:can?).with(current_user, :create_projects, group).and_return(true)
       end
 
-      it 'gives precedence to group over project' do
-        group_section = expected_menu_section(
-          title: 'In this group',
+      it 'gives precedence to project over group' do
+        project_section = expected_menu_section(
+          title: 'In this project',
           menu_item: ::Gitlab::Nav::TopNavMenuItem.build(
-            id: 'new_project',
-            title: 'New project/repository',
-            href: "/projects/new?namespace_id=#{group.id}",
+            id: 'new_issue',
+            title: 'New issue',
+            href: "/#{project.path_with_namespace}/-/issues/new",
             data: {
-              track_action: 'click_link_new_project_group',
+              track_action: 'click_link_new_issue',
               track_label: 'plus_menu_dropdown',
-              track_property: 'navigation_top'
+              track_property: 'navigation_top',
+              qa_selector: 'new_issue_link'
             }
           )
         )
+        results = {
+          title: title,
+          menu_sections: project_section,
+          context: project
+        }
 
-        expect(view_model[:menu_sections]).to eq(group_section)
+        expect(view_model).to eq(results)
+      end
+
+      context 'without context' do
+        let(:with_context) { false }
+
+        it 'does not include context' do
+          expect(view_model.keys).to match_array([:title, :menu_sections])
+        end
       end
     end
 

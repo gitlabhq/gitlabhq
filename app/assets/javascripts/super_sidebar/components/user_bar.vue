@@ -1,9 +1,10 @@
 <script>
-import { GlAvatar, GlDropdown, GlIcon, GlTooltipDirective } from '@gitlab/ui';
+import { GlAvatar, GlButton, GlDropdown, GlIcon, GlTooltipDirective } from '@gitlab/ui';
 import { __ } from '~/locale';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import NewNavToggle from '~/nav/components/new_nav_toggle.vue';
 import logo from '../../../../views/shared/_logo.svg';
+import { toggleSuperSidebarCollapsed } from '../super_sidebar_collapsed_state_manager';
 import CreateMenu from './create_menu.vue';
 import Counter from './counter.vue';
 import MergeRequestMenu from './merge_request_menu.vue';
@@ -12,6 +13,7 @@ export default {
   logo,
   components: {
     GlAvatar,
+    GlButton,
     GlDropdown,
     GlIcon,
     CreateMenu,
@@ -20,6 +22,7 @@ export default {
     MergeRequestMenu,
   },
   i18n: {
+    collapseSidebar: __('Collapse sidebar'),
     createNew: __('Create new...'),
     issues: __('Issues'),
     mergeRequests: __('Merge requests'),
@@ -36,15 +39,27 @@ export default {
       required: true,
     },
   },
+  methods: {
+    collapseSidebar() {
+      toggleSuperSidebarCollapsed(true, true);
+    },
+  },
 };
 </script>
 
 <template>
   <div class="user-bar">
-    <div class="gl-display-flex gl-align-items-center gl-px-3 gl-py-2 gl-gap-3">
+    <div class="gl-display-flex gl-align-items-center gl-px-3 gl-py-2 gl-gap-2">
       <div class="gl-flex-grow-1">
         <a v-safe-html="$options.logo" :href="rootPath"></a>
       </div>
+      <gl-button
+        v-gl-tooltip:super-sidebar.hover.bottom="$options.i18n.collapseSidebar"
+        :aria-label="$options.i18n.collapseSidebar"
+        icon="sidebar"
+        category="tertiary"
+        @click="collapseSidebar"
+      />
       <create-menu :groups="sidebarData.create_new_menu_groups" />
       <button class="gl-border-none">
         <gl-icon name="search" class="gl-vertical-align-middle" />

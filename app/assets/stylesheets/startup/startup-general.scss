@@ -1493,6 +1493,42 @@ kbd {
     display: none;
   }
 }
+.super-sidebar {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  background-color: #fbfafd;
+  border-right: solid 1px #dcdcde;
+  border-color: rgba(31, 30, 36, 0.08);
+  transform: translate3d(0, 0, 0);
+  width: 256px;
+  z-index: 600;
+}
+.super-sidebar.super-sidebar-loading {
+  transform: translate3d(-100%, 0, 0);
+}
+@media (min-width: 1200px) {
+  .super-sidebar.super-sidebar-loading {
+    transform: translate3d(0, 0, 0);
+  }
+}
+.page-with-super-sidebar {
+  padding-left: 0;
+}
+@media (min-width: 1200px) {
+  .page-with-super-sidebar {
+    padding-left: 256px;
+  }
+}
+.page-with-super-sidebar-collapsed .super-sidebar {
+  transform: translate3d(-100%, 0, 0);
+}
+@media (min-width: 1200px) {
+  .page-with-super-sidebar-collapsed {
+    padding-left: 0;
+  }
+}
 input::-moz-placeholder {
   color: #89888d;
   opacity: 1;

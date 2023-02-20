@@ -78,6 +78,8 @@ class ProjectsController < Projects::ApplicationController
     @namespace = Namespace.find_by(id: params[:namespace_id]) if params[:namespace_id]
     return access_denied! if @namespace && !can?(current_user, :create_projects, @namespace)
 
+    @parent_group = Group.find_by(id: params[:namespace_id])
+
     @current_user_group =
       if current_user.manageable_groups(include_groups_with_developer_maintainer_access: true).count == 1
         current_user.manageable_groups(include_groups_with_developer_maintainer_access: true).first

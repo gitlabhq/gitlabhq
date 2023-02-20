@@ -555,7 +555,6 @@ Layout/EmptyLineAfterMagicComment:
     - 'spec/components/previews/pajamas/card_component_preview.rb'
     - 'spec/components/previews/pajamas/spinner_component_preview.rb'
     - 'spec/controllers/application_controller_spec.rb'
-    - 'spec/controllers/concerns/analytics/cycle_analytics/value_stream_actions_spec.rb'
     - 'spec/controllers/projects/jobs_controller_spec.rb'
     - 'spec/controllers/projects/merge_requests/drafts_controller_spec.rb'
     - 'spec/factories/airflow/dags.rb'

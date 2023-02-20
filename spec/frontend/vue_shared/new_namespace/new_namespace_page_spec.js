@@ -14,7 +14,7 @@ describe('Experimental new project creation app', () => {
 
   const DEFAULT_PROPS = {
     title: 'Create something',
-    initialBreadcrumb: 'Something',
+    initialBreadcrumbs: [{ text: 'Something', href: '#' }],
     panels: [
       { name: 'panel1', selector: '#some-selector1' },
       { name: 'panel2', selector: '#some-selector2' },
@@ -46,8 +46,8 @@ describe('Experimental new project creation app', () => {
       expect(findWelcomePage().exists()).toBe(true);
     });
 
-    it('does not render breadcrumbs', () => {
-      expect(findBreadcrumb().exists()).toBe(false);
+    it('renders breadcrumbs', () => {
+      expect(findBreadcrumb().exists()).toBe(true);
     });
   });
 
@@ -75,7 +75,7 @@ describe('Experimental new project creation app', () => {
     it('renders breadcrumbs', () => {
       const breadcrumb = findBreadcrumb();
       expect(breadcrumb.exists()).toBe(true);
-      expect(breadcrumb.props().items[0].text).toBe(DEFAULT_PROPS.initialBreadcrumb);
+      expect(breadcrumb.props().items[0].text).toBe(DEFAULT_PROPS.initialBreadcrumbs[0].text);
     });
   });
 

@@ -422,23 +422,30 @@ A configuration with different pipeline names depending on the pipeline conditio
 
 ```yaml
 variables:
-  PIPELINE_NAME: 'Default pipeline name'  # A default is not required.
+  PROJECT1_PIPELINE_NAME: 'Default pipeline name'  # A default is not required.
 
 workflow:
-  name: '$PIPELINE_NAME'
+  name: '$PROJECT1_PIPELINE_NAME'
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       variables:
-        PIPELINE_NAME: 'MR pipeline: $CI_COMMIT_BRANCH'
+        PROJECT1_PIPELINE_NAME: 'MR pipeline: $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME'
     - if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-in-ruby3/'
       variables:
-        PIPELINE_NAME: 'Ruby 3 pipeline'
+        PROJECT1_PIPELINE_NAME: 'Ruby 3 pipeline'
 ```
 
 **Additional details**:
 
 - If the name is an empty string, the pipeline is not assigned a name. A name consisting
   of only CI/CD variables could evaluate to an empty string if all the variables are also empty.
+- `workflow:rules:variables` become [global variables](#variables) available in all jobs,
+  including [`trigger`](#trigger) jobs which forward variables to downstream pipelines by default.
+  If the downstream pipeline uses the same variable, the [variable is overwritten](../variables/index.md#cicd-variable-precedence)
+  by the upstream variable value. Be sure to either:
+  - Use a unique variable name in every project's pipeline configuration, like `PROJECT1_PIPELINE_NAME`.
+  - Use [`inherit:variables`](#inheritvariables) in the trigger job to select the
+    exact variables to forward to the downstream pipeline.
 
 #### `workflow:rules`
 
@@ -551,6 +558,16 @@ When the branch is something else:
 
 - job1's `DEPLOY_VARIABLE` is `job1-default-deploy`.
 - job2's `DEPLOY_VARIABLE` is `default-deploy`.
+
+**Additional details**:
+
+- `workflow:rules:variables` become [global variables](#variables) available in all jobs,
+  including [`trigger`](#trigger) jobs which forward variables to downstream pipelines by default.
+  If the downstream pipeline uses the same variable, the [variable is overwritten](../variables/index.md#cicd-variable-precedence)
+  by the upstream variable value. Be sure to either:
+  - Use unique variable names in every project's pipeline configuration, like `PROJECT1_VARIABLE_NAME`.
+  - Use [`inherit:variables`](#inheritvariables) in the trigger job to select the
+    exact variables to forward to the downstream pipeline.
 
 ## Job keywords
 

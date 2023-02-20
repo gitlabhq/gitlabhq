@@ -2,23 +2,25 @@
 
 module Nav
   module NewDropdownHelper
-    def new_dropdown_view_model(group:, project:)
+    def new_dropdown_view_model(group:, project:, with_context: false)
       return unless current_user
 
       menu_sections = []
+      data = { title: _('Create new...') }
 
-      if group&.persisted?
-        menu_sections.push(group_menu_section(group))
-      elsif project&.persisted?
+      if project&.persisted?
         menu_sections.push(project_menu_section(project))
+        data[:context] = project if with_context
+      elsif group&.persisted?
+        menu_sections.push(group_menu_section(group))
+        data[:context] = group if with_context
       end
 
       menu_sections.push(general_menu_section)
 
-      {
-        title: _("Create new..."),
-        menu_sections: menu_sections.select { |x| x.fetch(:menu_items).any? }
-      }
+      data[:menu_sections] = menu_sections.select { |x| x.fetch(:menu_items).any? }
+
+      data
     end
 
     private
@@ -53,7 +55,8 @@ module Nav
       if can?(current_user, :admin_group_member, group)
         menu_items.push(
           invite_members_menu_item(
-            href: group_group_members_path(group)
+            href: group_group_members_path(group),
+            partial: 'groups/invite_members_top_nav_link'
           )
         )
       end
@@ -104,7 +107,8 @@ module Nav
       if can_admin_project_member?(project)
         menu_items.push(
           invite_members_menu_item(
-            href: project_project_members_path(project)
+            href: project_project_members_path(project),
+            partial: 'projects/invite_members_top_nav_link'
           )
         )
       end
@@ -157,11 +161,12 @@ module Nav
       }
     end
 
-    def invite_members_menu_item(href:)
+    def invite_members_menu_item(href:, partial:)
       ::Gitlab::Nav::TopNavMenuItem.build(
         id: 'invite',
         title: s_('InviteMember|Invite members'),
-        emoji: 'shaking_hands',
+        icon: 'shaking_hands',
+        partial: partial,
         href: href,
         data: {
           track_action: 'click_link_invite_members',

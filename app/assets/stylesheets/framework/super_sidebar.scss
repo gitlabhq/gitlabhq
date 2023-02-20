@@ -1,7 +1,26 @@
 .super-sidebar {
-  top: 0;
-  width: $contextual-sidebar-width;
+  @include gl-fixed;
+  @include gl-top-0;
+  @include gl-bottom-0;
+  @include gl-left-0;
+  @include gl-bg-gray-10;
+  @include gl-border-r;
+  @include gl-border-gray-a-08;
+  transform: translate3d(0, 0, 0);
+  width: $super-sidebar-width;
   z-index: 600;
+
+  &.super-sidebar-loading {
+    transform: translate3d(-100%, 0, 0);
+
+    @include media-breakpoint-up(xl) {
+      transform: translate3d(0, 0, 0);
+    }
+  }
+
+  &:not(.super-sidebar-loading) {
+    transition: transform $gl-transition-duration-medium;
+  }
 
   .user-bar {
     background-color: $t-gray-a-04;
@@ -57,6 +76,41 @@
         border-color: $gray-50; // Same as the button's hover background color.
       }
     }
+  }
+}
+
+.page-with-super-sidebar {
+  padding-left: 0;
+
+  @include media-breakpoint-up(xl) {
+    padding-left: $contextual-sidebar-width;
+
+    .super-sidebar-toggle {
+      display: none;
+    }
+  }
+}
+
+.page-with-super-sidebar-collapsed {
+  .super-sidebar {
+    transform: translate3d(-100%, 0, 0);
+  }
+
+  @include media-breakpoint-up(xl) {
+    padding-left: 0;
+
+    .super-sidebar-toggle {
+      display: block;
+    }
+  }
+}
+
+.container-limited .super-sidebar-toggle {
+  @media (min-width: $super-sidebar-toggle-position-breakpoint) {
+    position: absolute;
+    left: $gl-spacing-scale-3;
+    top: $gl-spacing-scale-3;
+    margin: 0;
   }
 }
 

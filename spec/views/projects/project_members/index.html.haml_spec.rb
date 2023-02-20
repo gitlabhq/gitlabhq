@@ -28,7 +28,6 @@ RSpec.describe 'projects/project_members/index', :aggregate_failures, feature_ca
         expect(rendered).to have_selector('.js-invite-group-trigger')
         expect(rendered).to have_selector('.js-invite-members-trigger')
         expect(rendered).not_to have_content('Members can be added by project')
-        expect(response).to render_template(partial: 'projects/_invite_members_modal')
       end
 
       context 'when project is not allowed to share with group' do

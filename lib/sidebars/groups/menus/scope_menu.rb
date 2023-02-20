@@ -16,7 +16,7 @@ module Sidebars
 
         override :active_routes
         def active_routes
-          { path: %w[groups#show groups#details] }
+          { path: %w[groups#show groups#details groups#new projects#new] }
         end
 
         override :extra_nav_link_html_options

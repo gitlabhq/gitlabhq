@@ -20441,6 +20441,12 @@ msgstr ""
 msgid "GroupsNew|Importing groups by direct transfer is currently disabled."
 msgstr ""
 
+msgid "GroupsNew|New group"
+msgstr ""
+
+msgid "GroupsNew|New subgroup"
+msgstr ""
+
 msgid "GroupsNew|No import options available"
 msgstr ""
 
@@ -34247,6 +34253,9 @@ msgid "ProjectsNew|Migrate your data from an external source like GitHub, Bitbuc
 msgstr ""
 
 msgid "ProjectsNew|Must start with a lowercase or uppercase letter, digit, emoji, or underscore. Can also contain dots, pluses, dashes, or spaces."
+msgstr ""
+
+msgid "ProjectsNew|New project"
 msgstr ""
 
 msgid "ProjectsNew|No import options available"

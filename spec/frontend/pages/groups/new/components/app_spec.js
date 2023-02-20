@@ -23,7 +23,9 @@ describe('App component', () => {
   it('creates correct component for group creation', () => {
     createComponent();
 
-    expect(findNewNamespacePage().props('initialBreadcrumb')).toBe('New group');
+    expect(findNewNamespacePage().props('initialBreadcrumbs')).toEqual([
+      { href: '#', text: 'New group' },
+    ]);
     expect(findCreateGroupPanel().title).toBe('Create group');
   });
 
@@ -32,7 +34,9 @@ describe('App component', () => {
 
     createComponent(props);
 
-    expect(findNewNamespacePage().props('initialBreadcrumb')).toBe('parent');
+    expect(findNewNamespacePage().props('initialBreadcrumbs')).toEqual([
+      { href: '#', text: 'New group' },
+    ]);
     expect(findCreateGroupPanel().title).toBe('Create subgroup');
     expect(findCreateGroupPanel().detailProps).toEqual(props);
   });

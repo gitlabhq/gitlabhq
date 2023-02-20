@@ -1,8 +1,9 @@
 # frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe Analytics::CycleAnalytics::ValueStreamActions, type: :controller,
-feature_category: :planning_analytics do
+  feature_category: :planning_analytics do
   subject(:controller) do
     Class.new(ApplicationController) do
       include Analytics::CycleAnalytics::ValueStreamActions

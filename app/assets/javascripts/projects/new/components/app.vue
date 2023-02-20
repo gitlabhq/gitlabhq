@@ -59,6 +59,16 @@ export default {
     SafeHtml,
   },
   props: {
+    parentGroupUrl: {
+      type: String,
+      required: false,
+      default: null,
+    },
+    parentGroupName: {
+      type: String,
+      required: false,
+      default: '',
+    },
     hasErrors: {
       type: Boolean,
       required: false,
@@ -77,6 +87,12 @@ export default {
   },
 
   computed: {
+    initialBreadcrumbs() {
+      return [
+        this.parentGroupUrl && { text: this.parentGroupName, href: this.parentGroupUrl },
+        { text: s__('ProjectsNew|New project'), href: '#' },
+      ].filter(Boolean);
+    },
     availablePanels() {
       return this.isCiCdAvailable ? PANELS : PANELS.filter((p) => p.name !== CI_CD_PANEL);
     },
@@ -95,7 +111,7 @@ export default {
 
 <template>
   <new-namespace-page
-    :initial-breadcrumb="__('New project')"
+    :initial-breadcrumbs="initialBreadcrumbs"
     :panels="availablePanels"
     :jump-to-last-persisted-panel="hasErrors"
     :title="s__('ProjectsNew|Create new project')"

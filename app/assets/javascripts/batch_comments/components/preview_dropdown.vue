@@ -55,21 +55,25 @@ export default {
 <template>
   <gl-disclosure-dropdown :items="listItems" dropup data-qa-selector="review_preview_dropdown">
     <template #toggle>
-      <gl-button
-        >{{ __('Pending comments') }} <drafts-count variant="neutral" /><gl-icon
-          class="dropdown-chevron"
-          name="chevron-up"
-      /></gl-button>
+      <gl-button>
+        {{ __('Pending comments') }}
+        <drafts-count variant="neutral" />
+        <gl-icon class="dropdown-chevron" name="chevron-up" />
+      </gl-button>
     </template>
 
     <template #header>
-      <p class="gl-dropdown-header-top">
-        {{ n__('%d pending comment', '%d pending comments', draftsCount) }}
-      </p>
+      <div
+        class="gl-display-flex gl-align-items-center gl-p-4! gl-min-h-8 gl-border-b-1 gl-border-b-solid gl-border-b-gray-200"
+      >
+        <span class="gl-flex-grow-1 gl-font-weight-bold gl-font-sm gl-pr-2">
+          {{ n__('%d pending comment', '%d pending comments', draftsCount) }}
+        </span>
+      </div>
     </template>
 
     <template #list-item="{ item }">
-      <preview-item :draft="item" :is-last="item.last" @click="onClickDraft(item)" />
+      <preview-item :draft="item" :is-last="item.last" />
     </template>
   </gl-disclosure-dropdown>
 </template>

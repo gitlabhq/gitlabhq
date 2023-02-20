@@ -14,7 +14,7 @@ RSpec.describe ::Gitlab::Nav::TopNavMenuItem, feature_category: :navigation do
         view: 'view',
         css_class: 'css_class',
         data: {},
-        emoji: 'smile'
+        partial: 'groups/some_view_partial_file'
       }
 
       expect(described_class.build(**item)).to eq(item.merge(type: :item))

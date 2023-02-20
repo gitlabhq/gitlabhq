@@ -1,4 +1,4 @@
-- view_model = new_dropdown_view_model(project: @project, group: @group)
+- view_model = new_dropdown_view_model(project: @project, group: @group, with_context: true)
 - menu_sections = view_model.fetch(:menu_sections)
 - title = view_model.fetch(:title)
 - show_headers = menu_sections.length > 1
@@ -26,8 +26,16 @@
             = section.fetch(:title)
         - section.fetch(:menu_items).each do |menu_item|
           %li<
-            = link_to menu_item.fetch(:href), class: menu_item.fetch(:css_class), data: menu_item.fetch(:data) do
-              = menu_item.fetch(:title)
-              - if menu_item.fetch(:emoji)
-                -# We need to insert a space between the title and emoji
-                = " #{emoji_icon(menu_item.fetch(:emoji), 'aria-hidden': true, class: 'gl-font-base gl-vertical-align-baseline')}".html_safe
+            - if menu_item.fetch(:partial).present?
+              = render partial: menu_item.fetch(:partial),
+                locals: { context: view_model[:context],
+                          display_text: menu_item.fetch(:title),
+                          icon: menu_item.fetch(:icon),
+                          css_class: menu_item.fetch(:css_class),
+                          href: menu_item.fetch(:href),
+                          data: menu_item.fetch(:data) }
+            - else
+              = link_to menu_item.fetch(:title),
+                menu_item.fetch(:href),
+                class: menu_item.fetch(:css_class),
+                data: menu_item.fetch(:data)

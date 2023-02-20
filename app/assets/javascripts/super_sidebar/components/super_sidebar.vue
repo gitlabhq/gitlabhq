@@ -37,7 +37,7 @@ export default {
 <template>
   <aside
     id="super-sidebar"
-    class="super-sidebar gl-fixed gl-bottom-0 gl-left-0 gl-display-flex gl-flex-direction-column gl-bg-gray-10 gl-border-r gl-border-gray-a-08"
+    class="super-sidebar gl-display-flex gl-flex-direction-column"
     data-testid="super-sidebar"
   >
     <user-bar :sidebar-data="sidebarData" />
