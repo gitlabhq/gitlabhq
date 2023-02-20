@@ -8,20 +8,19 @@ exports[`CiCdAnalyticsAreaChart matches the snapshot 1`] = `
     Some title
   </p>
    
-  <div>
-    <glareachart-stub
-      annotations=""
-      data="[object Object],[object Object]"
-      height="300"
-      legendaveragetext="Avg"
-      legendcurrenttext="Current"
-      legendlayout="inline"
-      legendmaxtext="Max"
-      legendmintext="Min"
-      option="[object Object]"
-      thresholds=""
-      width="0"
-    />
-  </div>
+  <glareachart-stub
+    annotations=""
+    data="[object Object],[object Object]"
+    height="300"
+    legendaveragetext="Avg"
+    legendcurrenttext="Current"
+    legendlayout="inline"
+    legendmaxtext="Max"
+    legendmintext="Min"
+    option="[object Object]"
+    responsive=""
+    thresholds=""
+    width="auto"
+  />
 </div>
 `;

@@ -582,6 +582,10 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, feature_category: :i
             expect(@project.import_failures.size).to eq 0
           end
         end
+
+        it 'restores commit notes' do
+          expect(@project.commit_notes.count).to eq(3)
+        end
       end
     end
 

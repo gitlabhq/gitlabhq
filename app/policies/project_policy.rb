@@ -477,7 +477,6 @@ class ProjectPolicy < BasePolicy
     enable :update_escalation_status
     enable :read_secure_files
     enable :update_sentry_issue
-    enable :read_airflow_dags
   end
 
   rule { can?(:developer_access) & user_confirmed? }.policy do

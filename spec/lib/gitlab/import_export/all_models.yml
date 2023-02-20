@@ -92,6 +92,20 @@ notes:
 - suggestions
 - diff_note_positions
 - review
+commit_notes:
+- award_emoji
+- noteable
+- author
+- updated_by
+- last_edited_by
+- resolved_by
+- todos
+- events
+- system_note_metadata
+- note_diff_file
+- suggestions
+- diff_note_positions
+- review
 label_links:
 - target
 - label

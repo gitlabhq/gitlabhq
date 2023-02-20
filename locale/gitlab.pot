@@ -3705,39 +3705,6 @@ msgstr ""
 msgid "After you've reviewed these contribution guidelines, you'll be all set to"
 msgstr ""
 
-msgid "Airflow"
-msgstr ""
-
-msgid "Airflow|Airflow DAGs"
-msgstr ""
-
-msgid "Airflow|DAG"
-msgstr ""
-
-msgid "Airflow|DAG file location"
-msgstr ""
-
-msgid "Airflow|Either the Airflow instance does not contain DAGs or has yet to be configured"
-msgstr ""
-
-msgid "Airflow|GitLab Airflow integration"
-msgstr ""
-
-msgid "Airflow|Is active"
-msgstr ""
-
-msgid "Airflow|Is paused"
-msgstr ""
-
-msgid "Airflow|Next run"
-msgstr ""
-
-msgid "Airflow|Schedule"
-msgstr ""
-
-msgid "Airflow|There are no DAGs to show"
-msgstr ""
-
 msgid "Akismet"
 msgstr ""
 

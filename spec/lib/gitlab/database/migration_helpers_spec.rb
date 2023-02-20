@@ -1049,6 +1049,8 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
   describe '#foreign_key_exists?' do
     let(:referenced_table_name) { '_test_gitlab_main_referenced' }
     let(:referencing_table_name) { '_test_gitlab_main_referencing' }
+    let(:schema) { 'public' }
+    let(:identifier) { "#{schema}.#{referencing_table_name}" }
 
     before do
       model.connection.execute(<<~SQL)
@@ -1083,6 +1085,10 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
 
       it 'finds existing foreign keys by target table only' do
         expect(model.foreign_key_exists?(referencing_table_name, target_table)).to be_truthy
+      end
+
+      it 'finds existing foreign_keys by identifier' do
+        expect(model.foreign_key_exists?(identifier, target_table)).to be_truthy
       end
 
       it 'compares by column name if given' do

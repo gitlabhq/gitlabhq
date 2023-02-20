@@ -117,6 +117,7 @@ Please update your Git repository remotes as soon as possible.`),
         <input
           :id="$options.inputId"
           v-model="newUsername"
+          data-testid="new-username-input"
           :disabled="isRequestPending"
           class="form-control"
           required="required"

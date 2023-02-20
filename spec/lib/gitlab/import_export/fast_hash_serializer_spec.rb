@@ -141,8 +141,8 @@ RSpec.describe Gitlab::ImportExport::FastHashSerializer, :with_license, feature_
     expect(subject['ci_pipelines']).not_to be_empty
   end
 
-  it 'has ci pipeline notes' do
-    expect(subject['ci_pipelines'].first['notes']).not_to be_empty
+  it 'has commit notes' do
+    expect(subject['commit_notes']).not_to be_empty
   end
 
   it 'has labels with no associations' do

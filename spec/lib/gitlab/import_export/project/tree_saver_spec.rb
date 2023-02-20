@@ -240,10 +240,12 @@ RSpec.describe Gitlab::ImportExport::Project::TreeSaver, :with_license, feature_
 
           expect(count).to eq(1)
         end
+      end
 
-        it 'has ci pipeline notes' do
-          expect(subject.first['notes']).not_to be_empty
-        end
+      context 'with commit_notes' do
+        let(:relation_name) { :commit_notes }
+
+        it { is_expected.not_to be_empty }
       end
 
       context 'with labels' do
@@ -475,6 +477,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeSaver, :with_license, feature_
     end
   end
 
+  # rubocop: disable Metrics/AbcSize
   def setup_project
     release = create(:release)
 
@@ -537,4 +540,5 @@ RSpec.describe Gitlab::ImportExport::Project::TreeSaver, :with_license, feature_
 
     project
   end
+  # rubocop: enable Metrics/AbcSize
 end

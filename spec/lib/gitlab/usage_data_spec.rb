@@ -1097,7 +1097,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
     it 'returns the distinct count of user actions within the specified time period' do
       expect(described_class.action_monthly_active_users(time_period)).to eq(
         {
-          action_monthly_active_users_web_ide_edit: 2,
           action_monthly_active_users_sfe_edit: 2,
           action_monthly_active_users_snippet_editor_edit: 2
         }

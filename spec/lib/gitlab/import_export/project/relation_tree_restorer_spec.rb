@@ -50,6 +50,7 @@ RSpec.describe Gitlab::ImportExport::Project::RelationTreeRestorer, feature_cate
         expect(project.custom_attributes.count).to eq(2)
         expect(project.project_badges.count).to eq(2)
         expect(project.snippets.count).to eq(1)
+        expect(project.commit_notes.count).to eq(3)
       end
     end
   end

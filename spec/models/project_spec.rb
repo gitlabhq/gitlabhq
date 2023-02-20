@@ -939,6 +939,17 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
     end
   end
 
+  describe '#commit_notes' do
+    let_it_be(:project) { create(:project) }
+
+    it "returns project's commit notes" do
+      note_1 = create(:note_on_commit, project: project, commit_id: 'commit_id_1')
+      note_2 = create(:note_on_commit, project: project, commit_id: 'commit_id_2')
+
+      expect(project.commit_notes).to match_array([note_1, note_2])
+    end
+  end
+
   describe '#personal_namespace_holder?' do
     let_it_be(:group) { create(:group) }
     let_it_be(:namespace_user) { create(:user) }

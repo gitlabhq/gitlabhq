@@ -104,6 +104,11 @@ module BulkImports
             pipeline: BulkImports::Projects::Pipelines::CiPipelinesPipeline,
             stage: 5
           },
+          commit_notes: {
+            pipeline: BulkImports::Projects::Pipelines::CommitNotesPipeline,
+            minimum_source_version: '15.10.0',
+            stage: 5
+          },
           wiki: {
             pipeline: BulkImports::Common::Pipelines::WikiPipeline,
             stage: 5

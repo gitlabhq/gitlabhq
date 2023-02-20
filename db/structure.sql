@@ -10827,32 +10827,6 @@ CREATE SEQUENCE agent_project_authorizations_id_seq
 
 ALTER SEQUENCE agent_project_authorizations_id_seq OWNED BY agent_project_authorizations.id;
 
-CREATE TABLE airflow_dags (
-    id bigint NOT NULL,
-    project_id bigint NOT NULL,
-    created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL,
-    next_run timestamp with time zone,
-    has_import_errors boolean,
-    is_active boolean,
-    is_paused boolean,
-    dag_name text NOT NULL,
-    schedule text,
-    fileloc text,
-    CONSTRAINT check_6999a61016 CHECK ((char_length(schedule) <= 255)),
-    CONSTRAINT check_6f52bee3a1 CHECK ((char_length(fileloc) <= 255)),
-    CONSTRAINT check_e10ac15d52 CHECK ((char_length(dag_name) <= 255))
-);
-
-CREATE SEQUENCE airflow_dags_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE airflow_dags_id_seq OWNED BY airflow_dags.id;
-
 CREATE TABLE alert_management_alert_assignees (
     id bigint NOT NULL,
     user_id bigint NOT NULL,
@@ -22955,6 +22929,7 @@ CREATE TABLE user_details (
     password_last_changed_at timestamp with time zone DEFAULT now() NOT NULL,
     onboarding_step_url text,
     discord text DEFAULT ''::text NOT NULL,
+    provisioned_by_group_at timestamp with time zone,
     CONSTRAINT check_245664af82 CHECK ((char_length(webauthn_xid) <= 100)),
     CONSTRAINT check_444573ee52 CHECK ((char_length(skype) <= 500)),
     CONSTRAINT check_466a25be35 CHECK ((char_length(twitter) <= 500)),
@@ -24233,8 +24208,6 @@ ALTER TABLE ONLY agent_activity_events ALTER COLUMN id SET DEFAULT nextval('agen
 ALTER TABLE ONLY agent_group_authorizations ALTER COLUMN id SET DEFAULT nextval('agent_group_authorizations_id_seq'::regclass);
 
 ALTER TABLE ONLY agent_project_authorizations ALTER COLUMN id SET DEFAULT nextval('agent_project_authorizations_id_seq'::regclass);
-
-ALTER TABLE ONLY airflow_dags ALTER COLUMN id SET DEFAULT nextval('airflow_dags_id_seq'::regclass);
 
 ALTER TABLE ONLY alert_management_alert_assignees ALTER COLUMN id SET DEFAULT nextval('alert_management_alert_assignees_id_seq'::regclass);
 
@@ -25914,9 +25887,6 @@ ALTER TABLE ONLY agent_group_authorizations
 
 ALTER TABLE ONLY agent_project_authorizations
     ADD CONSTRAINT agent_project_authorizations_pkey PRIMARY KEY (id);
-
-ALTER TABLE ONLY airflow_dags
-    ADD CONSTRAINT airflow_dags_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY alert_management_alert_assignees
     ADD CONSTRAINT alert_management_alert_assignees_pkey PRIMARY KEY (id);
@@ -29018,8 +28988,6 @@ CREATE INDEX index_agent_group_authorizations_on_group_id ON agent_group_authori
 CREATE UNIQUE INDEX index_agent_project_authorizations_on_agent_id_and_project_id ON agent_project_authorizations USING btree (agent_id, project_id);
 
 CREATE INDEX index_agent_project_authorizations_on_project_id ON agent_project_authorizations USING btree (project_id);
-
-CREATE INDEX index_airflow_dags_on_project_id ON airflow_dags USING btree (project_id);
 
 CREATE INDEX index_alert_assignees_on_alert_id ON alert_management_alert_assignees USING btree (alert_id);
 
@@ -36184,9 +36152,6 @@ ALTER TABLE ONLY gpg_signatures
 
 ALTER TABLE ONLY board_group_recent_visits
     ADD CONSTRAINT fk_rails_ca04c38720 FOREIGN KEY (board_id) REFERENCES boards(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY airflow_dags
-    ADD CONSTRAINT fk_rails_ca3ac0d68c FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY boards_epic_board_positions
     ADD CONSTRAINT fk_rails_cb4563dd6e FOREIGN KEY (epic_board_id) REFERENCES boards_epic_boards(id) ON DELETE CASCADE;

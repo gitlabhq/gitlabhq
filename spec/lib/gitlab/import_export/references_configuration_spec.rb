@@ -9,7 +9,7 @@ require 'spec_helper'
 # or to be blacklisted by using the import_export.yml configuration file.
 # Likewise, new models added to import_export.yml, will need to be added with their correspondent relations
 # to this spec.
-RSpec.describe 'Import/Export Project configuration' do
+RSpec.describe 'Import/Export Project configuration', feature_category: :importers do
   include ConfigurationHelper
 
   where(:relation_path, :relation_name) do

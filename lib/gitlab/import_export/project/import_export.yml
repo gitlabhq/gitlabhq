@@ -89,11 +89,11 @@ tree:
         - :milestone
       - :resource_state_events
     - :external_pull_requests
+    - commit_notes:
+      - :author
+      - events:
+        - :push_event_payload
     - ci_pipelines:
-      - notes:
-        - :author
-        - events:
-          - :push_event_payload
       - stages:
         - :builds
         - :generic_commit_statuses
@@ -132,6 +132,10 @@ tree:
 import_only_tree:
   project:
     - ci_pipelines:
+      - notes:
+        - :author
+        - events:
+          - :push_event_payload
       - stages:
         - :statuses
 
@@ -975,6 +979,9 @@ excluded_attributes:
   notes:
     - :noteable_id
     - :review_id
+  commit_notes:
+    - :noteable_id
+    - :review_id
   label_links:
     - :label_id
     - :target_id
@@ -1099,6 +1106,8 @@ methods:
     - :squash_option
   notes:
     - :type
+  commit_notes:
+    - :type
   labels:
     - :type
   label:
@@ -1120,8 +1129,6 @@ methods:
     - :type
   lists:
     - :list_type
-  ci_pipelines:
-    - :notes
   issues:
     - :state
 

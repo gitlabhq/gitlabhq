@@ -473,10 +473,6 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           resources :experiments, only: [:index, :show], controller: 'experiments'
           resources :candidates, only: [:show], controller: 'candidates', param: :iid
         end
-
-        namespace :airflow do
-          resources :dags, only: [:index, :show], controller: 'dags'
-        end
       end
       # End of the /-/ scope.
 

@@ -12,7 +12,6 @@ module Sidebars
           add_item(error_tracking_menu_item)
           add_item(alert_management_menu_item)
           add_item(incidents_menu_item)
-          add_item(airflow_dashboard_menu_item)
 
           true
         end
@@ -95,20 +94,6 @@ module Sidebars
             link: project_incidents_path(context.project),
             active_routes: { controller: [:incidents, :incident_management] },
             item_id: :incidents
-          )
-        end
-
-        def airflow_dashboard_menu_item
-          unless can?(context.current_user, :read_airflow_dags, context.project) &&
-              Feature.enabled?(:airflow_dags, context.project)
-            return ::Sidebars::NilMenuItem.new(item_id: :airflow)
-          end
-
-          ::Sidebars::MenuItem.new(
-            title: _('Airflow'),
-            link: project_airflow_dags_path(context.project),
-            active_routes: { path: 'airflow/dags#show' },
-            item_id: :airflow_dags
           )
         end
       end

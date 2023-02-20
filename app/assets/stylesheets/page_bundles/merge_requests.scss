@@ -912,7 +912,7 @@ $tabs-holder-z-index: 250;
 
   &:not(:last-child)::before {
     content: '';
-    border-left: 2px solid var(--gray-10, $gray-10);
+    border-left: 2px solid var(--border-color, $border-color);
     position: absolute;
     bottom: -17px;
     left: calc(1rem - 1px);

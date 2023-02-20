@@ -86,6 +86,7 @@ Note:
 - original_discussion_id
 - confidential
 - last_edited_at
+- internal
 LabelLink:
 - id
 - target_type

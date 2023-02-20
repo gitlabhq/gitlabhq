@@ -1314,6 +1314,11 @@ class Project < ApplicationRecord
     super(value&.delete("\0"))
   end
 
+  # Used by Import/Export to export commit notes
+  def commit_notes
+    notes.where(noteable_type: "Commit")
+  end
+
   def import_url=(value)
     if Gitlab::UrlSanitizer.valid?(value)
       import_url = Gitlab::UrlSanitizer.new(value)

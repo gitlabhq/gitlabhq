@@ -1,8 +1,8 @@
 import { GlModal } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import { nextTick } from 'vue';
 import { TEST_HOST } from 'helpers/test_constants';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_BAD_REQUEST, HTTP_STATUS_OK } from '~/lib/utils/http_status';
@@ -21,8 +21,10 @@ describe('UpdateUsername component', () => {
   let wrapper;
   let axiosMock;
 
+  const findNewUsernameInput = () => wrapper.findByTestId('new-username-input');
+
   const createComponent = (props = {}) => {
-    wrapper = shallowMount(UpdateUsername, {
+    wrapper = shallowMountExtended(UpdateUsername, {
       propsData: {
         ...defaultProps,
         ...props,
@@ -80,11 +82,7 @@ describe('UpdateUsername component', () => {
 
     beforeEach(async () => {
       createComponent();
-      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-      // eslint-disable-next-line no-restricted-syntax
-      wrapper.setData({ newUsername });
-
-      await nextTick();
+      await findNewUsernameInput().setValue(newUsername);
     });
 
     it('confirmation modal contains proper header and body', async () => {

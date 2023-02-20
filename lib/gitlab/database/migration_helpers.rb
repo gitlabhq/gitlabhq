@@ -379,7 +379,7 @@ module Gitlab
           end
         end
 
-        fks = Gitlab::Database::PostgresForeignKey.by_constrained_table_name(source)
+        fks = Gitlab::Database::PostgresForeignKey.by_constrained_table_name_or_identifier(source)
 
         fks = fks.by_referenced_table_name(target) if target
         fks = fks.by_name(options[:name]) if options[:name]

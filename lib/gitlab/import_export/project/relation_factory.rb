@@ -5,6 +5,7 @@ module Gitlab
     module Project
       class RelationFactory < Base::RelationFactory
         OVERRIDES = { snippets: :project_snippets,
+                      commit_notes: 'Note',
                       ci_pipelines: 'Ci::Pipeline',
                       pipelines: 'Ci::Pipeline',
                       stages: 'Ci::Stage',
@@ -84,7 +85,7 @@ module Gitlab
         def setup_models
           case @relation_name
           when :merge_request_diff_files then setup_diff
-          when :notes then setup_note
+          when :notes, :Note then setup_note
           when :'Ci::Pipeline' then setup_pipeline
           when *BUILD_MODELS then setup_build
           when :issues then setup_issue

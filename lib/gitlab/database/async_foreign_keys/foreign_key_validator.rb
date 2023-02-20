@@ -33,11 +33,7 @@ module Gitlab
         delegate :connection, :name, :table_name, :connection_db_config, to: :async_validation
 
         def foreign_key_exists?
-          relation = if table_name =~ Gitlab::Database::FULLY_QUALIFIED_IDENTIFIER
-                       Gitlab::Database::PostgresForeignKey.by_constrained_table_identifier(table_name)
-                     else
-                       Gitlab::Database::PostgresForeignKey.by_constrained_table_name(table_name)
-                     end
+          relation = Gitlab::Database::PostgresForeignKey.by_constrained_table_name_or_identifier(table_name)
 
           relation.by_name(name).exists?
         end
