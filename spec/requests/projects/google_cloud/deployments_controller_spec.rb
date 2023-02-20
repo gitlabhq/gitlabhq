@@ -108,66 +108,104 @@ RSpec.describe Projects::GoogleCloud::DeploymentsController, feature_category: :
       end
     end
 
-    it 'redirects to google cloud deployments on enable service error' do
-      get url
-
-      expect(response).to redirect_to(project_google_cloud_deployments_path(project))
-      # since GPC_PROJECT_ID is not set, enable cloud run service should return an error
-      expect_snowplow_event(
-        category: 'Projects::GoogleCloud::DeploymentsController',
-        action: 'error_enable_services',
-        label: nil,
-        project: project,
-        user: user_maintainer
-      )
-    end
-
-    it 'redirects to google cloud deployments with error' do
-      mock_gcp_error = Google::Apis::ClientError.new('some_error')
-
-      allow_next_instance_of(GoogleCloud::EnableCloudRunService) do |service|
-        allow(service).to receive(:execute).and_raise(mock_gcp_error)
+    context 'when enable service fails' do
+      before do
+        allow_next_instance_of(GoogleCloud::EnableCloudRunService) do |service|
+          allow(service)
+            .to receive(:execute)
+            .and_return(
+              status: :error,
+              message: 'No GCP projects found. Configure a service account or GCP_PROJECT_ID ci variable'
+            )
+        end
       end
 
-      get url
-
-      expect(response).to redirect_to(project_google_cloud_deployments_path(project))
-      expect_snowplow_event(
-        category: 'Projects::GoogleCloud::DeploymentsController',
-        action: 'error_google_api',
-        label: nil,
-        project: project,
-        user: user_maintainer
-      )
-    end
-
-    context 'GCP_PROJECT_IDs are defined' do
-      it 'redirects to google_cloud deployments on generate pipeline error' do
-        allow_next_instance_of(GoogleCloud::EnableCloudRunService) do |enable_cloud_run_service|
-          allow(enable_cloud_run_service).to receive(:execute).and_return({ status: :success })
-        end
-
-        allow_next_instance_of(GoogleCloud::GeneratePipelineService) do |generate_pipeline_service|
-          allow(generate_pipeline_service).to receive(:execute).and_return({ status: :error })
-        end
-
+      it 'redirects to google cloud deployments and tracks event on enable service error' do
         get url
 
         expect(response).to redirect_to(project_google_cloud_deployments_path(project))
+        # since GPC_PROJECT_ID is not set, enable cloud run service should return an error
         expect_snowplow_event(
           category: 'Projects::GoogleCloud::DeploymentsController',
-          action: 'error_generate_cloudrun_pipeline',
+          action: 'error_enable_services',
           label: nil,
           project: project,
           user: user_maintainer
         )
       end
 
-      it 'redirects to create merge request form' do
+      it 'shows a flash alert' do
+        get url
+
+        expect(flash[:alert])
+          .to eq('No GCP projects found. Configure a service account or GCP_PROJECT_ID ci variable')
+      end
+    end
+
+    context 'when enable service raises an error' do
+      before do
+        mock_gcp_error = Google::Apis::ClientError.new('some_error')
+
         allow_next_instance_of(GoogleCloud::EnableCloudRunService) do |service|
-          allow(service).to receive(:execute).and_return({ status: :success })
+          allow(service).to receive(:execute).and_raise(mock_gcp_error)
+        end
+      end
+
+      it 'redirects to google cloud deployments with error' do
+        get url
+
+        expect(response).to redirect_to(project_google_cloud_deployments_path(project))
+        expect_snowplow_event(
+          category: 'Projects::GoogleCloud::DeploymentsController',
+          action: 'error_google_api',
+          label: nil,
+          project: project,
+          user: user_maintainer
+        )
+      end
+
+      it 'shows a flash warning' do
+        get url
+
+        expect(flash[:warning]).to eq(format(_('Google Cloud Error - %{error}'), error: 'some_error'))
+      end
+    end
+
+    context 'GCP_PROJECT_IDs are defined' do
+      before do
+        allow_next_instance_of(GoogleCloud::EnableCloudRunService) do |enable_cloud_run_service|
+          allow(enable_cloud_run_service).to receive(:execute).and_return({ status: :success })
+        end
+      end
+
+      context 'when generate pipeline service fails' do
+        before do
+          allow_next_instance_of(GoogleCloud::GeneratePipelineService) do |generate_pipeline_service|
+            allow(generate_pipeline_service).to receive(:execute).and_return({ status: :error })
+          end
         end
 
+        it 'redirects to google_cloud deployments and tracks event on generate pipeline error' do
+          get url
+
+          expect(response).to redirect_to(project_google_cloud_deployments_path(project))
+          expect_snowplow_event(
+            category: 'Projects::GoogleCloud::DeploymentsController',
+            action: 'error_generate_cloudrun_pipeline',
+            label: nil,
+            project: project,
+            user: user_maintainer
+          )
+        end
+
+        it 'shows a flash alert' do
+          get url
+
+          expect(flash[:alert]).to eq('Failed to generate pipeline')
+        end
+      end
+
+      it 'redirects to create merge request form' do
         allow_next_instance_of(GoogleCloud::GeneratePipelineService) do |service|
           allow(service).to receive(:execute).and_return({ status: :success })
         end
