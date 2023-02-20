@@ -133,7 +133,6 @@ Gitlab/NamespacedClass:
     - 'app/models/commit_status.rb'
     - 'app/models/commit_user_mention.rb'
     - 'app/models/compare.rb'
-    - 'app/models/concerns/uniquify.rb'
     - 'app/models/container_expiration_policy.rb'
     - 'app/models/container_repository.rb'
     - 'app/models/context_commits_diff.rb'

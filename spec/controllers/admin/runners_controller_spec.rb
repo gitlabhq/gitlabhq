@@ -61,6 +61,51 @@ RSpec.describe Admin::RunnersController, feature_category: :runner_fleet do
     end
   end
 
+  describe '#register' do
+    subject(:register) { get :register, params: { id: new_runner.id } }
+
+    context 'when create_runner_workflow is enabled' do
+      before do
+        stub_feature_flags(create_runner_workflow: true)
+      end
+
+      context 'when runner can be registered after creation' do
+        let_it_be(:new_runner) { create(:ci_runner, registration_type: :authenticated_user) }
+
+        it 'renders a :register template' do
+          register
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to render_template(:register)
+        end
+      end
+
+      context 'when runner cannot be registered after creation' do
+        let_it_be(:new_runner) { runner }
+
+        it 'returns :not_found' do
+          register
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+    end
+
+    context 'when create_runner_workflow is disabled' do
+      let_it_be(:new_runner) { create(:ci_runner, registration_type: :authenticated_user) }
+
+      before do
+        stub_feature_flags(create_runner_workflow: false)
+      end
+
+      it 'returns :not_found' do
+        register
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+  end
+
   describe '#edit' do
     render_views
 

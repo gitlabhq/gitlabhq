@@ -26,6 +26,10 @@ class Admin::RunnersController < Admin::ApplicationController
     render_404 unless Feature.enabled?(:create_runner_workflow, current_user)
   end
 
+  def register
+    render_404 unless Feature.enabled?(:create_runner_workflow, current_user) && runner.registration_available?
+  end
+
   def update
     if Ci::Runners::UpdateRunnerService.new(@runner).execute(runner_params).success?
       respond_to do |format|

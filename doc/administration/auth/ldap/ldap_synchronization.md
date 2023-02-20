@@ -33,9 +33,6 @@ For more information, see [Bitmask Searches in LDAP](https://ctovswild.com/2009/
 
 <!-- vale gitlab.Spelling = YES -->
 
-The user is set to an `ldap_blocked` state in GitLab if the previous conditions
-fail. This means the user cannot sign in or push or pull code.
-
 The process also updates the following user information:
 
 - Name. Because of a [sync issue](https://gitlab.com/gitlab-org/gitlab/-/issues/342598), `name` is not synchronized if
@@ -43,6 +40,26 @@ The process also updates the following user information:
 - Email address.
 - SSH public keys if `sync_ssh_keys` is set.
 - Kerberos identity if Kerberos is enabled.
+
+### Blocked users
+
+A user is blocked if either the:
+
+- [Access check fails](#user-sync) and that user is set to an `ldap_blocked` state in GitLab.
+- LDAP server is not available when that user signs in.
+
+If a user is blocked, that user cannot sign in or push or pull code.
+
+A blocked user is unblocked when they sign in with LDAP if all of the following are true:
+
+- All the access check conditions are true.
+- The LDAP server is available when the user signs in.
+
+**All users** are blocked if the LDAP server is unavailable when an LDAP user synchronization is run.
+
+NOTE:
+If all users are blocked due to the LDAP server not being available when an LDAP user synchronization is run,
+a subsequent LDAP user synchronization does not automatically unblock those users.
 
 ### Adjust LDAP user sync schedule
 

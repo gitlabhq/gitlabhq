@@ -168,6 +168,7 @@ namespace :admin do
 
   resources :runners, only: [:index, :new, :show, :edit, :update, :destroy] do
     member do
+      get :register
       post :resume
       post :pause
     end

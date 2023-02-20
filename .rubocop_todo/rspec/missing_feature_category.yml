@@ -5954,7 +5954,6 @@ RSpec/MissingFeatureCategory:
     - 'spec/models/concerns/token_authenticatable_strategies/encryption_helper_spec.rb'
     - 'spec/models/concerns/transactions_spec.rb'
     - 'spec/models/concerns/triggerable_hooks_spec.rb'
-    - 'spec/models/concerns/uniquify_spec.rb'
     - 'spec/models/concerns/usage_statistics_spec.rb'
     - 'spec/models/concerns/vulnerability_finding_helpers_spec.rb'
     - 'spec/models/concerns/vulnerability_finding_signature_helpers_spec.rb'

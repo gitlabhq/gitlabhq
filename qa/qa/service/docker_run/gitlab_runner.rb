@@ -16,7 +16,7 @@ module QA
         MSG
 
         def initialize(name)
-          @image = 'gitlab/gitlab-runner:alpine'
+          @image = 'gitlab/gitlab-runner:alpine-v15.8.3'
           @name = name || "qa-runner-#{SecureRandom.hex(4)}"
           @run_untagged = true
           @executor = :shell

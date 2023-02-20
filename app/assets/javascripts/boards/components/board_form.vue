@@ -57,6 +57,9 @@ export default {
     isProjectBoard: {
       default: false,
     },
+    isApolloBoard: {
+      default: false,
+    },
   },
   props: {
     canAdminBoard: {
@@ -213,7 +216,11 @@ export default {
       } else {
         try {
           const board = await this.createOrUpdateBoard();
-          this.setBoard(board);
+          if (this.isApolloBoard) {
+            this.$emit('addBoard', board);
+          } else {
+            this.setBoard(board);
+          }
           this.cancel();
 
           const param = getParameterByName('group_by')
@@ -278,7 +285,7 @@ export default {
     @hide.prevent
   >
     <gl-alert
-      v-if="error"
+      v-if="!isApolloBoard && error"
       class="gl-mb-3"
       variant="danger"
       :dismissible="true"

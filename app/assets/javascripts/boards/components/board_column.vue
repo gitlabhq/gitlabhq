@@ -37,7 +37,7 @@ export default {
   watch: {
     filterParams: {
       handler() {
-        if (this.list.id && !this.list.collapsed) {
+        if (!this.isApolloBoard && this.list.id && !this.list.collapsed) {
           this.fetchItemsForList({ listId: this.list.id });
         }
       },
@@ -46,7 +46,7 @@ export default {
     },
     'list.id': {
       handler(id) {
-        if (id) {
+        if (!this.isApolloBoard && id) {
           this.fetchItemsForList({ listId: this.list.id });
         }
       },

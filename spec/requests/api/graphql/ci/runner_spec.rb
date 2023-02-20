@@ -107,6 +107,8 @@ RSpec.describe 'Query.runner(id)', feature_category: :runner_fleet do
         ),
         project_count: nil,
         admin_url: "http://localhost/admin/runners/#{runner.id}",
+        edit_admin_url: "http://localhost/admin/runners/#{runner.id}/edit",
+        register_admin_url: runner.registration_available? ? "http://localhost/admin/runners/#{runner.id}/register" : nil,
         user_permissions: {
           'readRunner' => true,
           'updateRunner' => true,
@@ -135,7 +137,7 @@ RSpec.describe 'Query.runner(id)', feature_category: :runner_fleet do
       runner_data = graphql_data_at(:runner)
       expect(runner_data).not_to be_nil
 
-      expect(runner_data).to match a_graphql_entity_for(runner, admin_url: nil)
+      expect(runner_data).to match a_graphql_entity_for(runner, admin_url: nil, edit_admin_url: nil)
       expect(runner_data['tagList']).to match_array runner.tag_list
     end
   end
@@ -305,6 +307,24 @@ RSpec.describe 'Query.runner(id)', feature_category: :runner_fleet do
     let(:runner) { inactive_instance_runner }
 
     it_behaves_like 'runner details fetch'
+  end
+
+  describe 'for registration type' do
+    context 'when registered with registration token' do
+      let(:runner) do
+        create(:ci_runner, registration_type: :registration_token)
+      end
+
+      it_behaves_like 'runner details fetch'
+    end
+
+    context 'when registered with authenticated user' do
+      let(:runner) do
+        create(:ci_runner, registration_type: :authenticated_user)
+      end
+
+      it_behaves_like 'runner details fetch'
+    end
   end
 
   describe 'for group runner request' do
@@ -568,14 +588,14 @@ RSpec.describe 'Query.runner(id)', feature_category: :runner_fleet do
       end
     end
 
-    context 'with request made by creator' do
+    context 'with request made by creator', :frozen_time do
       let(:user) { creator }
 
       context 'with runner created in UI' do
         let(:registration_type) { :authenticated_user }
 
-        context 'with runner created in last 3 hours' do
-          let(:created_at) { (3.hours - 1.second).ago }
+        context 'with runner created in last hour' do
+          let(:created_at) { (Ci::Runner::REGISTRATION_AVAILABILITY_TIME - 1.second).ago }
 
           context 'with no runner machine registed yet' do
             it_behaves_like 'an ephemeral_authentication_token'
@@ -589,13 +609,13 @@ RSpec.describe 'Query.runner(id)', feature_category: :runner_fleet do
         end
 
         context 'with runner created almost too long ago' do
-          let(:created_at) { (3.hours - 1.second).ago }
+          let(:created_at) { (Ci::Runner::REGISTRATION_AVAILABILITY_TIME - 1.second).ago }
 
           it_behaves_like 'an ephemeral_authentication_token'
         end
 
         context 'with runner created too long ago' do
-          let(:created_at) { 3.hours.ago }
+          let(:created_at) { Ci::Runner::REGISTRATION_AVAILABILITY_TIME.ago }
 
           it_behaves_like 'a protected ephemeral_authentication_token'
         end
@@ -604,8 +624,8 @@ RSpec.describe 'Query.runner(id)', feature_category: :runner_fleet do
       context 'with runner registered from command line' do
         let(:registration_type) { :registration_token }
 
-        context 'with runner created in last 3 hours' do
-          let(:created_at) { (3.hours - 1.second).ago }
+        context 'with runner created in last 1 hour' do
+          let(:created_at) { (Ci::Runner::REGISTRATION_AVAILABILITY_TIME - 1.second).ago }
 
           it_behaves_like 'a protected ephemeral_authentication_token'
         end

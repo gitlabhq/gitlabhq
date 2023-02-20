@@ -5,7 +5,7 @@ class Admin::SpamLogsController < Admin::ApplicationController
 
   # rubocop: disable CodeReuse/ActiveRecord
   def index
-    @spam_logs = SpamLog.includes(:user).order(id: :desc).page(params[:page])
+    @spam_logs = SpamLog.includes(:user).order(id: :desc).page(params[:page]).without_count
   end
   # rubocop: enable CodeReuse/ActiveRecord
 

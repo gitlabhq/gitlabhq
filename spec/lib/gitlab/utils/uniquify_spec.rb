@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
-RSpec.describe Uniquify do
-  let(:uniquify) { described_class.new }
+RSpec.describe Gitlab::Utils::Uniquify, feature_category: :shared do
+  subject(:uniquify) { described_class.new }
 
   describe "#string" do
     it 'returns the given string if it does not exist' do
-      result = uniquify.string('test_string') { |s| false }
+      result = uniquify.string('test_string') { |_s| false }
 
       expect(result).to eq('test_string')
     end
@@ -34,7 +34,7 @@ RSpec.describe Uniquify do
     end
 
     it 'allows passing in a base function that defines the location of the counter' do
-      result = uniquify.string(-> (counter) { "test_#{counter}_string" }) do |s|
+      result = uniquify.string(->(counter) { "test_#{counter}_string" }) do |s|
         s == 'test__string'
       end
 

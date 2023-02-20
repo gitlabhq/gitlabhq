@@ -85,7 +85,7 @@ module ResourceAccessTokens
     end
 
     def uniquify
-      Uniquify.new
+      Gitlab::Utils::Uniquify.new
     end
 
     def create_personal_access_token(user)

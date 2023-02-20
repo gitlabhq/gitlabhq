@@ -201,3 +201,13 @@ doesn't exist, GitLab returns `The requested URL returned error: 400`.
 
 For example, you might accidentally use `main` for the branch name in a project that
 uses a different branch name for its default branch.
+
+Another possible cause for this error is a rule that prevents creation of the pipelines when `CI_PIPELINE_SOURCE` value is `trigger`, such as:
+
+```yaml
+rules:
+  - if: $CI_PIPELINE_SOURCE == "trigger"
+    when: never
+```
+
+Review your [`workflow:rules`](../yaml/index.md#workflowrules) to ensure a pipeline can be created when `CI_PIPELINE_SOURCE` value is `trigger`.

@@ -37138,6 +37138,9 @@ msgstr ""
 msgid "Runners|Recommended"
 msgstr ""
 
+msgid "Runners|Register"
+msgstr ""
+
 msgid "Runners|Register a group runner"
 msgstr ""
 

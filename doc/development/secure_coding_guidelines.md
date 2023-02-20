@@ -852,6 +852,31 @@ In the example above, the `is_admin?` method is overwritten when passing it to t
 
 Working with archive files like `zip`, `tar`, `jar`, `war`, `cpio`, `apk`, `rar` and `7z` presents an area where potentially critical security vulnerabilities can sneak into an application.
 
+### Utilities for safely working with archive files
+
+There are common utilities that can be used to securely work with archive files.
+
+#### Ruby
+
+| Archive type | Utility     |
+|--------------|-------------|
+| `zip`        | `SafeZip`   |
+
+#### `SafeZip`
+
+SafeZip provides a safe interface to extract specific directories or files within a `zip` archive through the `SafeZip::Extract` class.
+
+Example:
+
+```ruby
+Dir.mktmpdir do |tmp_dir|
+  SafeZip::Extract.new(zip_file_path).extract(files: ['index.html', 'app/index.js'], to: tmp_dir)
+  SafeZip::Extract.new(zip_file_path).extract(directories: ['src/', 'test/'], to: tmp_dir)
+rescue SafeZip::Extract::EntrySizeError
+  raise Error, "Path `#{file_path}` has invalid size in the zip!"
+end
+```
+
 ### Zip Slip
 
 In 2018, the security company Snyk [released a blog post](https://security.snyk.io/research/zip-slip-vulnerability) describing research into a widespread and critical vulnerability present in many libraries and applications which allows an attacker to overwrite arbitrary files on the server file system which, in many cases, can be leveraged to achieve remote code execution. The vulnerability was dubbed Zip Slip.

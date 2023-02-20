@@ -70,8 +70,9 @@ The following information is displayed:
 
 A GitLab SaaS subscription uses a concurrent (_seat_) model. You pay for a
 subscription according to the maximum number of users assigned to the top-level group or its children during the billing period. You can
-add and remove users during the subscription period, as long as the total users
-at any given time doesn't exceed the subscription count.
+add and remove users during the subscription period without incurring additional charges, as long as the total users
+at any given time doesn't exceed the subscription count. If the total users exceeds your subscription count, you will incur an overage
+which must be paid at your next [reconciliation](../quarterly_reconciliation.md).
 
 A top-level group can be [changed](../../user/group/manage.md#change-a-groups-path) like any other group.
 

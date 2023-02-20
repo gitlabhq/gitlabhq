@@ -14,9 +14,6 @@ module Types
 
       JOB_COUNT_LIMIT = 1000
 
-      # Only allow ephemeral_authentication_token to be visible for a short while
-      RUNNER_EPHEMERAL_TOKEN_AVAILABILITY_TIME = 3.hours
-
       alias_method :runner, :object
 
       field :access_level, ::Types::Ci::RunnerAccessLevelEnum, null: false,
@@ -39,7 +36,7 @@ module Types
       field :edit_admin_url, GraphQL::Types::String, null: true,
                                                      description: 'Admin form URL of the runner. Only available for administrators.'
       field :ephemeral_authentication_token, GraphQL::Types::String, null: true,
-            description: 'Ephemeral authentication token used for runner machine registration.',
+            description: 'Ephemeral authentication token used for runner machine registration. Only available for the creator of the runner for a limited time during registration.',
             authorize: :read_ephemeral_token,
             alpha: { milestone: '15.9' }
       field :executor_name, GraphQL::Types::String, null: true,
@@ -84,6 +81,8 @@ module Types
             null: true,
             resolver: ::Resolvers::Ci::RunnerProjectsResolver,
             description: 'Find projects the runner is associated with. For project runners only.'
+      field :register_admin_url, GraphQL::Types::String, null: true,
+                                                         description: 'URL of the temporary registration page of the runner. Only available before the runner is registered. Only available for administrators.'
       field :revision, GraphQL::Types::String, null: true,
                                                description: 'Revision of the runner.'
       field :run_untagged, GraphQL::Types::Boolean, null: false,
@@ -141,12 +140,14 @@ module Types
         Gitlab::Routing.url_helpers.edit_admin_runner_url(runner) if can_admin_runners?
       end
 
-      def ephemeral_authentication_token
-        return unless runner.authenticated_user_registration_type?
-        return unless runner.created_at > RUNNER_EPHEMERAL_TOKEN_AVAILABILITY_TIME.ago
-        return if runner.runner_machines.any?
+      def register_admin_url
+        return unless can_admin_runners? && runner.registration_available?
 
-        runner.token
+        Gitlab::Routing.url_helpers.register_admin_runner_url(runner)
+      end
+
+      def ephemeral_authentication_token
+        runner.token if runner.registration_available?
       end
 
       def project_count

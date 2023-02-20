@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Admin::SpamLogsController do
+RSpec.describe Admin::SpamLogsController, feature_category: :instance_resiliency do
   let(:admin) { create(:admin) }
   let(:user) { create(:user) }
   let!(:first_spam) { create(:spam_log, user: user) }
@@ -13,9 +13,10 @@ RSpec.describe Admin::SpamLogsController do
   end
 
   describe '#index' do
-    it 'lists all spam logs' do
+    it 'lists paginated spam logs' do
       get :index
 
+      expect(assigns(:spam_logs)).to be_kind_of(Kaminari::PaginatableWithoutCount)
       expect(response).to have_gitlab_http_status(:ok)
     end
   end

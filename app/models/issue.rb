@@ -463,7 +463,7 @@ class Issue < ApplicationRecord
       "#{to_branch_name}-#{suffix}"
     end
 
-    Uniquify.new(start_counting_from).string(branch_name_generator) do |suggested_branch_name|
+    Gitlab::Utils::Uniquify.new(start_counting_from).string(branch_name_generator) do |suggested_branch_name|
       project.repository.branch_exists?(suggested_branch_name)
     end
   end

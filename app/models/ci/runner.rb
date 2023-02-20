@@ -54,6 +54,9 @@ module Ci
     # The `STALE_TIMEOUT` constant defines the how far past the last contact or creation date a runner will be considered stale
     STALE_TIMEOUT = 3.months
 
+    # Only allow authentication token to be visible for a short while
+    REGISTRATION_AVAILABILITY_TIME = 1.hour
+
     AVAILABLE_TYPES_LEGACY = %w[specific shared].freeze
     AVAILABLE_TYPES = runner_types.keys.freeze
     AVAILABLE_STATUSES = %w[active paused online offline never_contacted stale].freeze # TODO: Remove in %16.0: active, paused. Relevant issue: https://gitlab.com/gitlab-org/gitlab/-/issues/344648
@@ -497,6 +500,12 @@ module Ci
 
     def ensure_machine(system_xid, &blk)
       RunnerMachine.safe_find_or_create_by!(runner_id: id, system_xid: system_xid.to_s, &blk) # rubocop: disable Performance/ActiveRecordSubtransactionMethods
+    end
+
+    def registration_available?
+      authenticated_user_registration_type? &&
+        created_at > REGISTRATION_AVAILABILITY_TIME.ago &&
+        !runner_machines.any?
     end
 
     private

@@ -8,6 +8,7 @@ import {
   GlDropdownItem,
   GlModalDirective,
 } from '@gitlab/ui';
+import { produce } from 'immer';
 import { throttle } from 'lodash';
 import { mapActions, mapState } from 'vuex';
 
@@ -89,6 +90,9 @@ export default {
     parentType() {
       return this.boardType;
     },
+    boardQuery() {
+      return this.isGroupBoard ? groupBoardsQuery : projectBoardsQuery;
+    },
     loading() {
       return this.loadingRecentBoards || this.loadingBoards;
     },
@@ -155,9 +159,6 @@ export default {
         name: node.name,
       }));
     },
-    boardQuery() {
-      return this.isGroupBoard ? groupBoardsQuery : projectBoardsQuery;
-    },
     recentBoardsQuery() {
       return this.isGroupBoard ? groupRecentBoardsQuery : projectRecentBoardsQuery;
     },
@@ -190,6 +191,29 @@ export default {
           this.loadingRecentBoards = isLoading;
         },
       });
+    },
+    addBoard(board) {
+      const { defaultClient: store } = this.$apollo.provider.clients;
+
+      const sourceData = store.readQuery({
+        query: this.boardQuery,
+        variables: { fullPath: this.fullPath },
+      });
+
+      const newData = produce(sourceData, (draftState) => {
+        draftState[this.parentType].boards.edges = [
+          ...draftState[this.parentType].boards.edges,
+          { node: board },
+        ];
+      });
+
+      store.writeQuery({
+        query: this.boardQuery,
+        variables: { fullPath: this.fullPath },
+        data: newData,
+      });
+
+      this.$emit('switchBoard', board.id);
     },
     isScrolledUp() {
       const { content } = this.$refs;
@@ -226,14 +250,12 @@ export default {
         boardType: this.boardType,
       });
     },
-    fullBoardId(boardId) {
-      return fullBoardId(boardId);
-    },
     async switchBoard(boardId, e) {
       if (isMetaKey(e)) {
         window.open(`${this.boardBaseUrl}/${boardId}`, '_blank');
       } else if (this.isApolloBoard) {
-        this.$emit('switchBoard', this.fullBoardId(boardId));
+        this.$emit('switchBoard', fullBoardId(boardId));
+        updateHistory({ url: `${this.boardBaseUrl}/${boardId}` });
       } else {
         this.unsetActiveId();
         this.fetchCurrentBoard(boardId);
@@ -357,6 +379,7 @@ export default {
         :weights="weights"
         :current-board="boardToUse"
         :current-page="currentPage"
+        @addBoard="addBoard"
         @cancel="cancel"
       />
     </span>
