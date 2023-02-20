@@ -35,4 +35,16 @@ RSpec.describe Ci::RunnerMachineBuild, model: true, feature_category: :runner_fl
       end
     end
   end
+
+  describe 'ci_sliding_list partitioning' do
+    let(:connection) { described_class.connection }
+    let(:partition_manager) { Gitlab::Database::Partitioning::PartitionManager.new(described_class) }
+
+    let(:partitioning_strategy) { described_class.partitioning_strategy }
+
+    it { expect(partitioning_strategy.missing_partitions).to be_empty }
+    it { expect(partitioning_strategy.extra_partitions).to be_empty }
+    it { expect(partitioning_strategy.current_partitions).to include partitioning_strategy.initial_partition }
+    it { expect(partitioning_strategy.active_partition).to be_present }
+  end
 end

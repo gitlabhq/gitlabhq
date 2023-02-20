@@ -11717,6 +11717,7 @@ CREATE TABLE application_settings (
     allow_runner_registration_token boolean DEFAULT true NOT NULL,
     user_defaults_to_private_profile boolean DEFAULT false NOT NULL,
     allow_possible_spam boolean DEFAULT false NOT NULL,
+    default_syntax_highlighting_theme integer DEFAULT 1 NOT NULL,
     encrypted_product_analytics_clickhouse_connection_string bytea,
     encrypted_product_analytics_clickhouse_connection_string_iv bytea,
     search_max_shard_size_gb integer DEFAULT 50 NOT NULL,
@@ -28961,6 +28962,8 @@ CREATE UNIQUE INDEX idx_vulnerability_issue_links_on_vulnerability_id_and_issue_
 
 CREATE UNIQUE INDEX idx_vulnerability_issue_links_on_vulnerability_id_and_link_type ON vulnerability_issue_links USING btree (vulnerability_id, link_type) WHERE (link_type = 2);
 
+CREATE INDEX idx_vulnerability_reads_project_id_scanner_id_vulnerability_id ON vulnerability_reads USING btree (project_id, scanner_id, vulnerability_id);
+
 CREATE UNIQUE INDEX idx_work_item_types_on_namespace_id_and_name_null_namespace ON work_item_types USING btree (btrim(lower(name)), ((namespace_id IS NULL))) WHERE (namespace_id IS NULL);
 
 CREATE INDEX index_abuse_reports_on_status_and_id ON abuse_reports USING btree (status, id);
@@ -32197,6 +32200,8 @@ CREATE UNIQUE INDEX index_vulns_user_mentions_on_vulnerability_id ON vulnerabili
 
 CREATE UNIQUE INDEX index_vulns_user_mentions_on_vulnerability_id_and_note_id ON vulnerability_user_mentions USING btree (vulnerability_id, note_id);
 
+CREATE INDEX index_web_hook_logs_on_web_hook_id_and_created_at ON ONLY web_hook_logs USING btree (web_hook_id, created_at);
+
 CREATE INDEX index_web_hook_logs_part_on_created_at_and_web_hook_id ON ONLY web_hook_logs USING btree (created_at, web_hook_id);
 
 CREATE INDEX index_web_hook_logs_part_on_web_hook_id ON ONLY web_hook_logs USING btree (web_hook_id);
@@ -35191,10 +35196,7 @@ ALTER TABLE ONLY chat_teams
     ADD CONSTRAINT fk_rails_3b543909cb FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY ci_build_needs
-    ADD CONSTRAINT fk_rails_3cf221d4ed FOREIGN KEY (build_id) REFERENCES ci_builds(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY ci_build_needs
-    ADD CONSTRAINT fk_rails_3cf221d4ed_p FOREIGN KEY (partition_id, build_id) REFERENCES ci_builds(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE NOT VALID;
+    ADD CONSTRAINT fk_rails_3cf221d4ed_p FOREIGN KEY (partition_id, build_id) REFERENCES ci_builds(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY cluster_groups
     ADD CONSTRAINT fk_rails_3d28377556 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;

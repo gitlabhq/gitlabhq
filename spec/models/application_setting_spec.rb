@@ -1124,6 +1124,11 @@ RSpec.describe ApplicationSetting, feature_category: :not_owned, type: :model do
       it { is_expected.to allow_value(*Gitlab::I18n.available_locales).for(:default_preferred_language) }
       it { is_expected.not_to allow_value(nil, '', 'invalid_locale').for(:default_preferred_language) }
     end
+
+    context 'for default_syntax_highlighting_theme' do
+      it { is_expected.to allow_value(*Gitlab::ColorSchemes.valid_ids).for(:default_syntax_highlighting_theme) }
+      it { is_expected.not_to allow_value(nil, 0, Gitlab::ColorSchemes.available_schemes.size + 1).for(:default_syntax_highlighting_theme) }
+    end
   end
 
   context 'restrict creating duplicates' do

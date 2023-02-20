@@ -22,6 +22,8 @@ module ContainerRegistry
     REGISTRY_GITLAB_V1_API_FEATURE = 'gitlab_v1_api'
 
     MAX_TAGS_PAGE_SIZE = 1000
+    MAX_REPOSITORIES_PAGE_SIZE = 1000
+    PAGE_SIZE = 1
 
     UnsuccessfulResponseError = Class.new(StandardError)
 
@@ -34,6 +36,21 @@ module ContainerRegistry
     def self.deduplicated_size(path)
       with_dummy_client(token_config: { type: :nested_repositories_token, path: path&.downcase }) do |client|
         client.repository_details(path&.downcase, sizing: :self_with_descendants)['size_bytes']
+      end
+    end
+
+    def self.one_project_with_container_registry_tag(path)
+      with_dummy_client(token_config: { type: :nested_repositories_token, path: path&.downcase }) do |client|
+        page = client.sub_repositories_with_tag(path&.downcase, page_size: PAGE_SIZE)
+        details = page[:response_body]&.first
+
+        break unless details
+
+        path = ContainerRegistry::Path.new(details["path"])
+
+        break unless path.valid?
+
+        ContainerRepository.find_by_path(path)&.project
       end
     end
 
@@ -108,6 +125,37 @@ module ContainerRegistry
       limited_page_size = [page_size, MAX_TAGS_PAGE_SIZE].min
       with_token_faraday do |faraday_client|
         url = "/gitlab/v1/repositories/#{path}/tags/list/"
+        response = faraday_client.get(url) do |req|
+          req.params['n'] = limited_page_size
+          req.params['last'] = last if last
+        end
+
+        unless response.success?
+          Gitlab::ErrorTracking.log_exception(
+            UnsuccessfulResponseError.new,
+            class: self.class.name,
+            url: url,
+            status_code: response.status
+          )
+
+          break {}
+        end
+
+        link_parser = Gitlab::Utils::LinkHeaderParser.new(response.headers['link'])
+
+        {
+          pagination: link_parser.parse,
+          response_body: response_body(response)
+        }
+      end
+    end
+
+    # https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs-gitlab/api.md#list-sub-repositories
+    def sub_repositories_with_tag(path, page_size: 100, last: nil)
+      limited_page_size = [page_size, MAX_REPOSITORIES_PAGE_SIZE].min
+
+      with_token_faraday do |faraday_client|
+        url = "/gitlab/v1/repository-paths/#{path}/repositories/list/"
         response = faraday_client.get(url) do |req|
           req.params['n'] = limited_page_size
           req.params['last'] = last if last

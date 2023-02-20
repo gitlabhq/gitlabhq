@@ -698,6 +698,11 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
             allow_nil: false,
             inclusion: { in: [true, false], message: N_('must be a boolean value') }
 
+  validates :default_syntax_highlighting_theme,
+            allow_nil: false,
+            numericality: { only_integer: true, greater_than: 0 },
+            inclusion: { in: Gitlab::ColorSchemes.valid_ids, message: N_('must be a valid syntax highlighting theme ID') }
+
   before_validation :ensure_uuid!
   before_validation :coerce_repository_storages_weighted, if: :repository_storages_weighted_changed?
   before_validation :normalize_default_branch_name

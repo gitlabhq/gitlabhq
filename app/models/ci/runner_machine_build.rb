@@ -11,8 +11,8 @@ module Ci
     partitionable scope: :build
     partitioned_by :partition_id,
       strategy: :ci_sliding_list,
-      next_partition_if: -> { false },
-      detach_partition_if: -> { false }
+      next_partition_if: proc { false },
+      detach_partition_if: proc { false }
 
     belongs_to :build, inverse_of: :runner_machine_build, class_name: 'Ci::Build'
     belongs_to :runner_machine, inverse_of: :runner_machine_builds, class_name: 'Ci::RunnerMachine'

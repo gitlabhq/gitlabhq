@@ -188,6 +188,7 @@ RSpec.describe User, feature_category: :user_profile do
       it { expect(user.notified_of_own_activity).to be_falsey }
       it { expect(user.preferred_language).to eq(Gitlab::CurrentSettings.default_preferred_language) }
       it { expect(user.theme_id).to eq(described_class.gitlab_config.default_theme) }
+      it { expect(user.color_scheme_id).to eq(Gitlab::CurrentSettings.default_syntax_highlighting_theme) }
     end
 
     describe '#user_detail' do

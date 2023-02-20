@@ -120,7 +120,7 @@ Successful sign-in events are the only audit events available at all tiers. To s
 1. Select your avatar.
 1. Select **Edit profile > Authentication log**.
 
-After upgrading to a paid tier, you can see also see successful sign-in events on audit event pages.
+After upgrading to a paid tier, you can also see successful sign-in events on audit event pages.
 
 ## Filter audit events
 

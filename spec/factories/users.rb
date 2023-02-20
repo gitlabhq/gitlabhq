@@ -10,6 +10,7 @@ FactoryBot.define do
     confirmed_at { Time.now }
     confirmation_token { nil }
     can_create_group { true }
+    color_scheme_id { 1 }
 
     trait :admin do
       admin { true }

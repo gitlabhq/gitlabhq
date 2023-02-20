@@ -286,11 +286,15 @@ class Namespace < ApplicationRecord
   end
 
   def any_project_has_container_registry_tags?
-    all_projects.includes(:container_repositories).any?(&:has_container_registry_tags?)
+    first_project_with_container_registry_tags.present?
   end
 
   def first_project_with_container_registry_tags
-    all_projects.find(&:has_container_registry_tags?)
+    if Gitlab.com? && Feature.enabled?(:use_sub_repositories_api)
+      ContainerRegistry::GitlabApiClient.one_project_with_container_registry_tag(full_path)
+    else
+      all_projects.includes(:container_repositories).find(&:has_container_registry_tags?)
+    end
   end
 
   def send_update_instructions

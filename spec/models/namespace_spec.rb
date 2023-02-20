@@ -713,20 +713,57 @@ RSpec.describe Namespace, feature_category: :subgroups do
     let(:container_repository) { create(:container_repository) }
     let!(:project) { create(:project, namespace: namespace, container_repositories: [container_repository]) }
 
-    before do
-      stub_container_registry_config(enabled: true)
+    context 'not on gitlab.com' do
+      before do
+        stub_container_registry_config(enabled: true)
+        allow(Gitlab).to receive(:com?).and_return(false)
+      end
+
+      it 'returns the project' do
+        stub_container_registry_tags(repository: :any, tags: ['tag'])
+
+        expect(namespace.first_project_with_container_registry_tags).to eq(project)
+      end
+
+      it 'returns no project' do
+        stub_container_registry_tags(repository: :any, tags: nil)
+
+        expect(namespace.first_project_with_container_registry_tags).to be_nil
+      end
     end
 
-    it 'returns the project' do
-      stub_container_registry_tags(repository: :any, tags: ['tag'])
+    context 'on gitlab.com' do
+      before do
+        allow(Gitlab).to receive(:com?).and_return(true)
+        stub_container_registry_config(enabled: true, api_url: 'http://container-registry', key: 'spec/fixtures/x509_certificate_pk.key')
+      end
 
-      expect(namespace.first_project_with_container_registry_tags).to eq(project)
-    end
+      it 'calls and returns GitlabApiClient.one_project_with_container_registry_tag' do
+        expect(ContainerRegistry::GitlabApiClient)
+          .to receive(:one_project_with_container_registry_tag)
+          .with(namespace.full_path)
+          .and_return(project)
 
-    it 'returns no project' do
-      stub_container_registry_tags(repository: :any, tags: nil)
+        expect(namespace.first_project_with_container_registry_tags).to eq(project)
+      end
 
-      expect(namespace.first_project_with_container_registry_tags).to be_nil
+      context 'when the feature flag use_sub_repositories_api is disabled' do
+        before do
+          stub_feature_flags(use_sub_repositories_api: false)
+        end
+
+        it 'returns the project' do
+          stub_container_registry_tags(repository: :any, tags: ['tag'])
+
+          expect(namespace.first_project_with_container_registry_tags).to eq(project)
+        end
+
+        it 'returns no project' do
+          stub_container_registry_tags(repository: :any, tags: nil)
+
+          expect(namespace.first_project_with_container_registry_tags).to be_nil
+        end
+      end
     end
   end
 
@@ -755,6 +792,7 @@ RSpec.describe Namespace, feature_category: :subgroups do
 
       with_them do
         before do
+          allow(ContainerRegistry::GitlabApiClient).to receive(:one_project_with_container_registry_tag).and_return(nil)
           stub_container_registry_config(enabled: true, api_url: 'http://container-registry', key: 'spec/fixtures/x509_certificate_pk.key')
           allow(Gitlab).to receive(:com?).and_return(true)
           allow(ContainerRegistry::GitlabApiClient).to receive(:supports_gitlab_api?).and_return(gitlab_api_supported)

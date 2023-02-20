@@ -71,6 +71,7 @@ class User < ApplicationRecord
   attribute :notified_of_own_activity, default: false
   attribute :preferred_language, default: -> { Gitlab::CurrentSettings.default_preferred_language }
   attribute :theme_id, default: -> { gitlab_config.default_theme }
+  attribute :color_scheme_id, default: -> { Gitlab::CurrentSettings.default_syntax_highlighting_theme }
 
   attr_encrypted :otp_secret,
     key: Gitlab::Application.secrets.otp_key_base,

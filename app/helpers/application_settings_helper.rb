@@ -248,6 +248,7 @@ module ApplicationSettingsHelper
       :default_project_visibility,
       :default_projects_limit,
       :default_snippet_visibility,
+      :default_syntax_highlighting_theme,
       :delete_inactive_projects,
       :disable_admin_oauth_scopes,
       :disable_feed_token,

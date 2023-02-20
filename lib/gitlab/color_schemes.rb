@@ -46,7 +46,7 @@ module Gitlab
     #
     # Returns a Scheme
     def self.default
-      by_id(1)
+      by_id(Gitlab::CurrentSettings.default_syntax_highlighting_theme)
     end
 
     # Iterate through each Scheme

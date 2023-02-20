@@ -45,7 +45,7 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager do
         sync_partitions
       end
 
-      context 'with eplicitly provided connection' do
+      context 'with explicitly provided connection' do
         let(:connection) { Ci::ApplicationRecord.connection }
 
         it 'uses the explicitly provided connection when any' do
@@ -56,6 +56,14 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager do
           expect(connection).to receive(:execute).with(partitions.second.to_sql)
 
           described_class.new(model, connection: connection).sync_partitions
+        end
+      end
+
+      context 'when an ArgumentError occurs during partition management' do
+        it 'raises error' do
+          expect(partitioning_strategy).to receive(:missing_partitions).and_raise(ArgumentError)
+
+          expect { sync_partitions }.to raise_error(ArgumentError)
         end
       end
 

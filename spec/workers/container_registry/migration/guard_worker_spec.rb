@@ -214,6 +214,8 @@ RSpec.describe ContainerRegistry::Migration::GuardWorker, :aggregate_failures do
         let(:stale_migration) { create(:container_repository, :pre_import_done, migration_pre_import_done_at: 11.minutes.ago) }
 
         before do
+          # for the user callback: namespace_move_dir_allowed
+          allow(ContainerRegistry::GitlabApiClient).to receive(:one_project_with_container_registry_tag).and_return(nil)
           allow(::ContainerRegistry::Migration).to receive(:max_step_duration).and_return(5.minutes)
         end
 
@@ -238,6 +240,8 @@ RSpec.describe ContainerRegistry::Migration::GuardWorker, :aggregate_failures do
         let(:import_status) { 'test' }
 
         before do
+          # for the user callback: namespace_move_dir_allowed
+          allow(ContainerRegistry::GitlabApiClient).to receive(:one_project_with_container_registry_tag).and_return(nil)
           allow_next_instance_of(ContainerRegistry::GitlabApiClient) do |client|
             allow(client).to receive(:import_status).and_return(import_status)
           end
