@@ -19,7 +19,7 @@ module QA
           resource.project = project
           resource.name = runner_name
           resource.tags = [runner_name]
-          resource.image = 'gitlab/gitlab-runner:alpine'
+          resource.image = 'gitlab/gitlab-runner:alpine-v15.8.3'
         end
       end
 

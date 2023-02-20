@@ -35,7 +35,7 @@ module QA
         @config = nil
         @run_untagged = nil
         @name = "qa-runner-#{SecureRandom.hex(4)}"
-        @image = 'registry.gitlab.com/gitlab-org/gitlab-runner:alpine'
+        @image = 'registry.gitlab.com/gitlab-org/gitlab-runner:alpine-v15.8.3'
         @executor = :shell
         @executor_image = 'registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-qa-alpine-ruby-2.7'
       end
