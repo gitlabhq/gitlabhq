@@ -1,9 +1,10 @@
 # frozen_string_literal: true
 
 require 'fast_spec_helper'
+require 'addressable'
 require 'rspec-parameterized'
 
-RSpec.describe Gitlab::Sanitizers::ExceptionMessage do
+RSpec.describe Gitlab::Sanitizers::ExceptionMessage, feature_category: :compliance_management do
   describe '.clean' do
     let(:exception_name) { exception.class.name }
     let(:exception_message) { exception.message }

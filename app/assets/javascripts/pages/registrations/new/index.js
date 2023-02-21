@@ -1,7 +1,7 @@
 import { trackNewRegistrations } from '~/google_tag_manager';
 
 import NoEmojiValidator from '~/emoji/no_emoji_validator';
-import LengthValidator from '~/pages/sessions/new/length_validator';
+import LengthValidator from '~/validators/length_validator';
 import UsernameValidator from '~/pages/sessions/new/username_validator';
 import EmailFormatValidator from '~/pages/sessions/new/email_format_validator';
 import { initLanguageSwitcher } from '~/language_switcher';

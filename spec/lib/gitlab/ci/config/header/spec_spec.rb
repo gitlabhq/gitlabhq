@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Config::Header::Spec, feature_category: :pipeline_authoring do
+RSpec.describe Gitlab::Ci::Config::Header::Spec, feature_category: :pipeline_composition do
   let(:factory) { Gitlab::Config::Entry::Factory.new(described_class).value(spec_hash) }
 
   subject(:config) { factory.create!.tap(&:compose!) }

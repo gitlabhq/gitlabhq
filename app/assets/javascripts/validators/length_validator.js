@@ -2,6 +2,16 @@ import InputValidator from '~/validators/input_validator';
 
 const errorMessageClass = 'gl-field-error';
 
+export const isAboveMaxLength = (str, maxLength) => {
+  return str.length > parseInt(maxLength, 10);
+};
+
+export const isBelowMinLength = (value, minLength, allowEmpty) => {
+  const isValueNotAllowedOrNotEmpty = allowEmpty !== 'true' || value.length !== 0;
+  const isValueBelowMinLength = value.length < parseInt(minLength, 10);
+  return isValueBelowMinLength && isValueNotAllowedOrNotEmpty;
+};
+
 export default class LengthValidator extends InputValidator {
   constructor(opts = {}) {
     super();
@@ -26,16 +36,17 @@ export default class LengthValidator extends InputValidator {
       minLengthMessage,
       maxLengthMessage,
       maxLength,
+      allowEmpty,
     } = this.inputDomElement.dataset;
 
     this.invalidInput = false;
 
-    if (value.length > parseInt(maxLength, 10)) {
+    if (isAboveMaxLength(value, maxLength)) {
       this.invalidInput = true;
       this.errorMessage = maxLengthMessage;
     }
 
-    if (value.length < parseInt(minLength, 10)) {
+    if (isBelowMinLength(value, minLength, allowEmpty)) {
       this.invalidInput = true;
       this.errorMessage = minLengthMessage;
     }

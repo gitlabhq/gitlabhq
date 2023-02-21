@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Config::External::File::Component, feature_category: :pipeline_authoring do
+RSpec.describe Gitlab::Ci::Config::External::File::Component, feature_category: :pipeline_composition do
   let_it_be(:context_project) { create(:project, :repository) }
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:user) { create(:user) }

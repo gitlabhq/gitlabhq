@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Config::Entry::Processable, feature_category: :pipeline_authoring do
+RSpec.describe Gitlab::Ci::Config::Entry::Processable, feature_category: :pipeline_composition do
   let(:node_class) do
     Class.new(::Gitlab::Config::Entry::Node) do
       include Gitlab::Ci::Config::Entry::Processable

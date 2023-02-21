@@ -65,7 +65,6 @@ describe('Issuable output', () => {
       propsData: { ...appProps, ...props },
       provide: {
         fullPath: 'gitlab-org/incidents',
-        iid: '19',
         uploadMetricsFeatureAvailable: false,
       },
       stubs: {

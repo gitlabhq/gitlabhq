@@ -76,7 +76,6 @@ describe('WorkItemLinks', () => {
       },
       provide: {
         projectPath: 'project/path',
-        iid: '1',
         hasIterationsFeature,
         glFeatures: {
           useIidInWorkItemsPath: fetchByIid,

@@ -200,7 +200,7 @@ Deploy keys aren't imported. To use deploy keys, you must enable them in your im
 
 ### Import large projects **(FREE SELF)**
 
-If you have a larger project, consider using a Rake task as described in the [developer documentation](../../../development/import_project.md#importing-via-a-rake-task).
+If you have a larger project, consider [using a Rake task](../../../administration/raketasks/project_import_export.md#import-large-projects).
 
 ## Automate group and project import **(PREMIUM)**
 

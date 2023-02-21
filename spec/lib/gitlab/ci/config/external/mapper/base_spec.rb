@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Config::External::Mapper::Base, feature_category: :pipeline_authoring do
+RSpec.describe Gitlab::Ci::Config::External::Mapper::Base, feature_category: :pipeline_composition do
   let(:test_class) do
     Class.new(described_class) do
       def self.name

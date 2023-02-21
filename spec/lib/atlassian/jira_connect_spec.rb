@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'spec_helper'
 
 RSpec.describe Atlassian::JiraConnect, feature_category: :integrations do
   describe '.app_name' do

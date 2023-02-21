@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'spec_helper'
 
-RSpec.describe Gitlab::Metrics::BootTimeTracker do
+RSpec.describe Gitlab::Metrics::BootTimeTracker, feature_category: :metrics do
   let(:logger) { double('logger') }
   let(:gauge) { double('gauge') }
 

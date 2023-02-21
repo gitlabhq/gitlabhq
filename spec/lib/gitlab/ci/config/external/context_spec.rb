@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Config::External::Context, feature_category: :pipeline_authoring do
+RSpec.describe Gitlab::Ci::Config::External::Context, feature_category: :pipeline_composition do
   let(:project) { build(:project) }
   let(:user) { double('User') }
   let(:sha) { '12345' }

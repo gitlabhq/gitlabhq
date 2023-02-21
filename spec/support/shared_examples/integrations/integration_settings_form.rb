@@ -7,7 +7,6 @@ RSpec.shared_examples 'integration settings form' do
   it 'displays all the integrations', feature_category: :integrations do
     aggregate_failures do
       integrations.each do |integration|
-        stub_feature_flags(integration_slack_app_notifications: false)
         navigate_to_integration(integration)
 
         page.within('form.integration-settings-form') do

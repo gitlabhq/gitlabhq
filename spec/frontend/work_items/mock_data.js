@@ -473,23 +473,20 @@ export const workItemResponseFactory = ({
 
 export const getIssueDetailsResponse = ({ confidential = false } = {}) => ({
   data: {
-    workspace: {
-      id: 'gid://gitlab/Project/1',
-      issuable: {
-        id: 'gid://gitlab/Issue/4',
-        confidential,
-        iteration: {
-          id: 'gid://gitlab/Iteration/1124',
-          __typename: 'Iteration',
-        },
-        milestone: {
-          id: 'gid://gitlab/Milestone/28',
-          __typename: 'Milestone',
-        },
-        __typename: 'Issue',
+    issue: {
+      id: 'gid://gitlab/Issue/4',
+      confidential,
+      iteration: {
+        id: 'gid://gitlab/Iteration/1124',
+        __typename: 'Iteration',
       },
-      __typename: 'Project',
+      milestone: {
+        id: 'gid://gitlab/Milestone/28',
+        __typename: 'Milestone',
+      },
+      __typename: 'Issue',
     },
+    __typename: 'Project',
   },
 });
 

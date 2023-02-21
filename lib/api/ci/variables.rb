@@ -8,7 +8,7 @@ module API
       before { authenticate! }
       before { authorize! :admin_build, user_project }
 
-      feature_category :pipeline_authoring
+      feature_category :pipeline_composition
 
       helpers ::API::Helpers::VariablesHelpers
 

@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 require 'fast_spec_helper'
+require 'tmpdir'
 require_relative '../../../../scripts/lib/glfm/shared'
 
-RSpec.describe Glfm::Shared do
+RSpec.describe Glfm::Shared, feature_category: :team_planning do
   let(:instance) do
     Class.new do
       include Glfm::Shared

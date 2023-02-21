@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Config::Entry::Reports, feature_category: :pipeline_authoring do
+RSpec.describe Gitlab::Ci::Config::Entry::Reports, feature_category: :pipeline_composition do
   let(:entry) { described_class.new(config) }
 
   describe 'validates ALLOWED_KEYS' do

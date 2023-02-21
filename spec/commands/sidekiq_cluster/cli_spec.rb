@@ -1,13 +1,12 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
-require 'rspec-parameterized'
+require 'spec_helper'
 
 require_relative '../../support/stub_settings_source'
 require_relative '../../../sidekiq_cluster/cli'
 require_relative '../../support/helpers/next_instance_of'
 
-RSpec.describe Gitlab::SidekiqCluster::CLI, stub_settings_source: true do # rubocop:disable RSpec/FilePath
+RSpec.describe Gitlab::SidekiqCluster::CLI, feature_category: :gitlab_cli, stub_settings_source: true do # rubocop:disable RSpec/FilePath
   include NextInstanceOf
 
   let(:cli) { described_class.new('/dev/null') }

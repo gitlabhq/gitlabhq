@@ -848,6 +848,8 @@ A [license caching issue](https://gitlab.com/gitlab-org/gitlab/-/issues/376706) 
   Gitaly. The previous implementation in GitLab Shell was removed in GitLab 15.0. With this change, global server hooks are stored only inside a subdirectory named after the
   hook type. Global server hooks can no longer be a single hook file in the root of the custom hooks directory. For example, you must use `<custom_hooks_dir>/<hook_name>.d/*` rather
   than `<custom_hooks_dir>/<hook_name>`.
+  - Use `gitaly['custom_hooks_dir']` in `gitlab.rb` ([introduced in 14.3](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/4208))
+    for Omnibus GitLab. This replaces `gitlab_shell['custom_hooks_dir']`.
 - [Incorrect deletion of object storage files on Geo secondary sites](https://gitlab.com/gitlab-org/gitlab/-/issues/371397) can occur in certain situations. See [Geo: Incorrect object storage LFS file deletion on secondary site issue in GitLab 15.0.0 to 15.3.2](#geo-incorrect-object-storage-lfs-file-deletion-on-secondary-sites-in-gitlab-1500-to-1532).
 - The `FF_GITLAB_REGISTRY_HELPER_IMAGE` [feature flag](../administration/feature_flags.md#enable-or-disable-the-feature) is removed and helper images are always pulled from GitLab Registry.
 - The `AES256-GCM-SHA384` SSL cipher is no longer allowed by NGINX.

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Config::External::Mapper, feature_category: :pipeline_authoring do
+RSpec.describe Gitlab::Ci::Config::External::Mapper, feature_category: :pipeline_composition do
   include StubRequests
   include RepoHelpers
 

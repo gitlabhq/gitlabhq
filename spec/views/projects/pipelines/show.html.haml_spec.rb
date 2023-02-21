@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'projects/pipelines/show', feature_category: :pipeline_authoring do
+RSpec.describe 'projects/pipelines/show', feature_category: :pipeline_composition do
   include Devise::Test::ControllerHelpers
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:user) { create(:user) }

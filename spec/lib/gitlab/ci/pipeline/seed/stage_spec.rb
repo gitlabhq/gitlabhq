@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Pipeline::Seed::Stage, feature_category: :pipeline_authoring do
+RSpec.describe Gitlab::Ci::Pipeline::Seed::Stage, feature_category: :pipeline_composition do
   let(:project) { create(:project, :repository) }
   let(:pipeline) { create(:ci_empty_pipeline, project: project) }
   let(:previous_stages) { [] }

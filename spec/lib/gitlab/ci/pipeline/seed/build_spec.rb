@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_authoring do
+RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_composition do
   let_it_be_with_reload(:project) { create(:project, :repository) }
   let_it_be(:head_sha) { project.repository.head_commit.id }
 

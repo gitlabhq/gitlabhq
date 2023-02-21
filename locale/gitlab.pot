@@ -32785,6 +32785,12 @@ msgstr ""
 msgid "Profiles|Disconnect %{provider}"
 msgstr ""
 
+msgid "Profiles|Discord ID is too long (maximum is %{max_length} characters)."
+msgstr ""
+
+msgid "Profiles|Discord ID is too short (minimum is %{min_length} characters)."
+msgstr ""
+
 msgid "Profiles|Do not show on profile"
 msgstr ""
 
@@ -33034,7 +33040,7 @@ msgstr ""
 msgid "Profiles|You must transfer ownership or delete these groups before you can delete your account."
 msgstr ""
 
-msgid "Profiles|Your Discord user ID. Should be between %{min} and %{max} digits long. %{external_accounts_link_start}Learn more.%{external_accounts_link_end}"
+msgid "Profiles|Your Discord user ID. %{external_accounts_link_start}Learn more.%{external_accounts_link_end}"
 msgstr ""
 
 msgid "Profiles|Your LinkedIn profile name from linkedin.com/in/profilename"

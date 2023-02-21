@@ -4,7 +4,7 @@ import { isEmpty } from 'lodash';
 import { s__ } from '~/locale';
 import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
-import { TYPENAME_WORK_ITEM } from '~/graphql_shared/constants';
+import { TYPENAME_ISSUE, TYPENAME_WORK_ITEM } from '~/graphql_shared/constants';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import getIssueDetailsQuery from 'ee_else_ce/work_items/graphql/get_issue_details.query.graphql';
 import { isMetaKey, parseBoolean } from '~/lib/utils/common_utils';
@@ -42,7 +42,7 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   mixins: [glFeatureFlagMixin()],
-  inject: ['projectPath', 'iid'],
+  inject: ['projectPath'],
   props: {
     workItemId: {
       type: String,
@@ -86,13 +86,10 @@ export default {
       query: getIssueDetailsQuery,
       variables() {
         return {
-          fullPath: this.projectPath,
-          iid: String(this.iid),
+          id: convertToGraphQLId(TYPENAME_ISSUE, this.issuableId),
         };
       },
-      update(data) {
-        return data.workspace?.issuable;
-      },
+      update: (data) => data.issue,
     },
   },
   data() {

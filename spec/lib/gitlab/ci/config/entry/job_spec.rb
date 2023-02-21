@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Config::Entry::Job, feature_category: :pipeline_authoring do
+RSpec.describe Gitlab::Ci::Config::Entry::Job, feature_category: :pipeline_composition do
   let(:entry) { described_class.new(config, name: :rspec) }
 
   it_behaves_like 'with inheritable CI config' do

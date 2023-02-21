@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Lint, feature_category: :pipeline_authoring do
+RSpec.describe API::Lint, feature_category: :pipeline_composition do
   describe 'POST /ci/lint' do
     context 'when signup settings are disabled' do
       before do

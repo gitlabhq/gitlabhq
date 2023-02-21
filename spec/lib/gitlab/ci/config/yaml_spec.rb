@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Config::Yaml, feature_category: :pipeline_authoring do
+RSpec.describe Gitlab::Ci::Config::Yaml, feature_category: :pipeline_composition do
   describe '.load!' do
     it 'loads a single-doc YAML file' do
       yaml = <<~YAML

@@ -84,7 +84,6 @@ describe('Description component', () => {
     wrapper = shallowMountExtended(Description, {
       propsData: {
         issueId: 1,
-        issueIid: 1,
         ...initialProps,
         ...props,
       },
@@ -391,11 +390,7 @@ describe('Description component', () => {
         });
 
         it('calls a mutation to create a task', () => {
-          const {
-            confidential,
-            iteration,
-            milestone,
-          } = issueDetailsResponse.data.workspace.issuable;
+          const { confidential, iteration, milestone } = issueDetailsResponse.data.issue;
           expect(createWorkItemMutationHandler).toHaveBeenCalledWith({
             input: {
               confidential,

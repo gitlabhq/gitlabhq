@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
 require 'fast_spec_helper'
+require 'net/http'
 
-RSpec.describe Gitlab::NetHttpAdapter do
+RSpec.describe Gitlab::NetHttpAdapter, feature_category: :api do
   describe '#connect' do
     let(:url) { 'https://example.org' }
     let(:net_http_adapter) { described_class.new(url) }

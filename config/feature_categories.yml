@@ -21,6 +21,7 @@
 - billing_and_payments
 - build
 - build_artifacts
+- capacity_planning
 - cloud_native_installation
 - cluster_cost_management
 - code_quality
@@ -67,6 +68,7 @@
 - geo_replication
 - gitaly
 - gitlab_cli
+- gitlab_docs
 - global_search
 - helm_chart_registry
 - importers
@@ -93,9 +95,8 @@
 - onboarding
 - package_registry
 - pages
-- performance_testing
 - permissions
-- pipeline_authoring
+- pipeline_composition
 - planning_analytics
 - pods
 - portfolio_management

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Config::Loader::Yaml, feature_category: :pipeline_authoring do
+RSpec.describe Gitlab::Config::Loader::Yaml, feature_category: :pipeline_composition do
   let(:loader) { described_class.new(yml) }
 
   let(:yml) do

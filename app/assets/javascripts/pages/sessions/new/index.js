@@ -2,7 +2,7 @@ import $ from 'jquery';
 import initVueAlerts from '~/vue_alerts';
 import NoEmojiValidator from '~/emoji/no_emoji_validator';
 import { initLanguageSwitcher } from '~/language_switcher';
-import LengthValidator from './length_validator';
+import LengthValidator from '~/validators/length_validator';
 import OAuthRememberMe from './oauth_remember_me';
 import preserveUrlFragment from './preserve_url_fragment';
 import SigninTabsMemoizer from './signin_tabs_memoizer';

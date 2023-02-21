@@ -7,7 +7,7 @@ import Vue from 'vue';
 import getIssueDetailsQuery from 'ee_else_ce/work_items/graphql/get_issue_details.query.graphql';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { getIdFromGraphQLId, convertToGraphQLId } from '~/graphql_shared/utils';
-import { TYPENAME_WORK_ITEM } from '~/graphql_shared/constants';
+import { TYPENAME_ISSUE, TYPENAME_WORK_ITEM } from '~/graphql_shared/constants';
 import { createAlert } from '~/flash';
 import { TYPE_ISSUE } from '~/issues/constants';
 import { isMetaKey } from '~/lib/utils/common_utils';
@@ -97,11 +97,6 @@ export default {
       required: false,
       default: null,
     },
-    issueIid: {
-      type: Number,
-      required: false,
-      default: null,
-    },
     isUpdating: {
       type: Boolean,
       required: false,
@@ -129,11 +124,13 @@ export default {
       query: getIssueDetailsQuery,
       variables() {
         return {
-          fullPath: this.fullPath,
-          iid: String(this.issueIid),
+          id: convertToGraphQLId(TYPENAME_ISSUE, this.issueId),
         };
       },
-      update: (data) => data.workspace?.issuable,
+      update: (data) => data.issue,
+      skip() {
+        return !this.issueId;
+      },
     },
     workItem: {
       query: workItemQuery,

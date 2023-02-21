@@ -15,7 +15,6 @@ export default function initWorkItemLinks() {
   const {
     projectPath,
     wiHasIssueWeightsFeature,
-    iid,
     wiHasIterationsFeature,
     wiHasIssuableHealthStatusFeature,
     registerPath,
@@ -32,7 +31,6 @@ export default function initWorkItemLinks() {
     },
     provide: {
       projectPath,
-      iid,
       fullPath: projectPath,
       hasIssueWeightsFeature: wiHasIssueWeightsFeature,
       hasIterationsFeature: wiHasIterationsFeature,

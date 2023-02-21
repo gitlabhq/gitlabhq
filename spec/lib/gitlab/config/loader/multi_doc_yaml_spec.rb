@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Config::Loader::MultiDocYaml, feature_category: :pipeline_authoring do
+RSpec.describe Gitlab::Config::Loader::MultiDocYaml, feature_category: :pipeline_composition do
   let(:loader) { described_class.new(yml, max_documents: 2) }
 
   describe '#load!' do
