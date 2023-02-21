@@ -407,10 +407,6 @@ export const INCIDENT_SEVERITY = {
   },
 };
 
-export const ISSUABLE_TYPES = {
-  INCIDENT: 'incident',
-};
-
 export const MILESTONE_STATE = {
   ACTIVE: 'active',
   CLOSED: 'closed',

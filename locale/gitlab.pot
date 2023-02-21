@@ -8827,6 +8827,9 @@ msgstr ""
 msgid "CiStatus|running"
 msgstr ""
 
+msgid "CiVariables|Cancel"
+msgstr ""
+
 msgid "CiVariables|Cannot use Masked Variable with current value"
 msgstr ""
 
@@ -36811,9 +36814,6 @@ msgstr ""
 msgid "Run job"
 msgstr ""
 
-msgid "Run manual job again"
-msgstr ""
-
 msgid "Run manual or delayed jobs"
 msgstr ""
 
@@ -45311,9 +45311,6 @@ msgid "Trigger cluster reindexing. Only use this with an index that was created 
 msgstr ""
 
 msgid "Trigger job"
-msgstr ""
-
-msgid "Trigger manual job"
 msgstr ""
 
 msgid "Trigger pipelines for mirror updates"

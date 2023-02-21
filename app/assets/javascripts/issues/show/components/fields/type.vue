@@ -1,8 +1,8 @@
 <script>
 import { GlFormGroup, GlIcon, GlListbox } from '@gitlab/ui';
-import { TYPE_ISSUE } from '~/issues/constants';
+import { TYPE_INCIDENT, TYPE_ISSUE } from '~/issues/constants';
 import { __ } from '~/locale';
-import { issuableTypes, INCIDENT_TYPE } from '../../constants';
+import { issuableTypes } from '../../constants';
 import getIssueStateQuery from '../../queries/get_issue_state.query.graphql';
 import updateIssueStateMutation from '../../queries/update_issue_state.mutation.graphql';
 
@@ -46,7 +46,7 @@ export default {
   },
   computed: {
     shouldShowIncident() {
-      return this.issueType === INCIDENT_TYPE || this.canCreateIncident;
+      return this.issueType === TYPE_INCIDENT || this.canCreateIncident;
     },
   },
   methods: {
@@ -60,7 +60,7 @@ export default {
       });
     },
     isShown(type) {
-      return type.value !== INCIDENT_TYPE || this.shouldShowIncident;
+      return type.value !== TYPE_INCIDENT || this.shouldShowIncident;
     },
   },
 };

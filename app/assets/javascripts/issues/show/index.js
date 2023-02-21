@@ -2,13 +2,14 @@ import Vue from 'vue';
 import { mapGetters } from 'vuex';
 import errorTrackingStore from '~/error_tracking/store';
 import { apolloProvider } from '~/graphql_shared/issuable_client';
+import { TYPE_INCIDENT } from '~/issues/constants';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import { scrollToTargetOnResize } from '~/lib/utils/resize_observer';
 import IssueApp from './components/app.vue';
 import HeaderActions from './components/header_actions.vue';
 import IncidentTabs from './components/incidents/incident_tabs.vue';
 import SentryErrorStackTrace from './components/sentry_error_stack_trace.vue';
-import { INCIDENT_TYPE, issueState } from './constants';
+import { issueState } from './constants';
 import getIssueStateQuery from './queries/get_issue_state.query.graphql';
 
 const bootstrapApollo = (state = {}) => {
@@ -51,7 +52,7 @@ export function initIncidentApp(issueData = {}, store) {
     apolloProvider,
     store,
     provide: {
-      issueType: INCIDENT_TYPE,
+      issueType: TYPE_INCIDENT,
       canCreateIncident,
       canUpdateTimelineEvent,
       canUpdate,
@@ -141,7 +142,7 @@ export function initHeaderActions(store, type = '') {
   bootstrapApollo({ ...issueState, issueType: el.dataset.issueType });
 
   const canCreate =
-    type === INCIDENT_TYPE ? el.dataset.canCreateIncident : el.dataset.canCreateIssue;
+    type === TYPE_INCIDENT ? el.dataset.canCreateIncident : el.dataset.canCreateIssue;
 
   return new Vue({
     el,

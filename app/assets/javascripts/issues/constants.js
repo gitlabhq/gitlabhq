@@ -7,6 +7,7 @@ export const STATUS_REOPENED = 'reopened';
 export const TITLE_LENGTH_MAX = 255;
 
 export const TYPE_EPIC = 'epic';
+export const TYPE_INCIDENT = 'incident';
 export const TYPE_ISSUE = 'issue';
 
 export const IssuableStatusText = {

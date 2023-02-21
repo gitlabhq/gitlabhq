@@ -4,7 +4,7 @@ import { shallowMount } from '@vue/test-utils';
 import Vuex from 'vuex';
 import { mockTracking } from 'helpers/tracking_helper';
 import { createAlert, VARIANT_SUCCESS } from '~/flash';
-import { IssueType, STATUS_CLOSED, STATUS_OPEN } from '~/issues/constants';
+import { IssueType, STATUS_CLOSED, STATUS_OPEN, TYPE_INCIDENT } from '~/issues/constants';
 import DeleteIssueModal from '~/issues/show/components/delete_issue_modal.vue';
 import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_selector.vue';
 import HeaderActions from '~/issues/show/components/header_actions.vue';
@@ -119,7 +119,7 @@ describe('HeaderActions component', () => {
   describe.each`
     issueType
     ${IssueType.Issue}
-    ${IssueType.Incident}
+    ${TYPE_INCIDENT}
   `('when issue type is $issueType', ({ issueType }) => {
     describe('close/reopen button', () => {
       describe.each`

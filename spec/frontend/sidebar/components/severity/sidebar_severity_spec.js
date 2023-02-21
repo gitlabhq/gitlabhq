@@ -3,7 +3,8 @@ import { nextTick } from 'vue';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/flash';
-import { INCIDENT_SEVERITY, ISSUABLE_TYPES } from '~/sidebar/constants';
+import { TYPE_INCIDENT } from '~/issues/constants';
+import { INCIDENT_SEVERITY } from '~/sidebar/constants';
 import updateIssuableSeverity from '~/sidebar/queries/update_issuable_severity.mutation.graphql';
 import SeverityToken from '~/sidebar/components/severity/severity.vue';
 import SidebarSeverityWidget from '~/sidebar/components/severity/sidebar_severity_widget.vue';
@@ -22,7 +23,7 @@ describe('SidebarSeverity', () => {
     const propsData = {
       projectPath,
       iid,
-      issuableType: ISSUABLE_TYPES.INCIDENT,
+      issuableType: TYPE_INCIDENT,
       initialSeverity: severity,
       ...props,
     };

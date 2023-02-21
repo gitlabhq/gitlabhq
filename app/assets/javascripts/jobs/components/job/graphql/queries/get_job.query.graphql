@@ -1,16 +1,11 @@
+#import "~/jobs/components/job/graphql/fragments/ci_job.fragment.graphql"
+
 query getJob($fullPath: ID!, $id: JobID!) {
   project(fullPath: $fullPath) {
     id
     job(id: $id) {
-      id
+      ...BaseCiJob
       manualJob
-      manualVariables {
-        nodes {
-          id
-          key
-          value
-        }
-      }
       name
     }
   }

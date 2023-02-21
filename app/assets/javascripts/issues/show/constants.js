@@ -1,6 +1,5 @@
 import { __ } from '~/locale';
 
-export const INCIDENT_TYPE = 'incident';
 export const INCIDENT_TYPE_PATH = 'issues/incident';
 export const ISSUE_STATE_EVENT_CLOSE = 'CLOSE';
 export const ISSUE_STATE_EVENT_REOPEN = 'REOPEN';

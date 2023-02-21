@@ -22,7 +22,7 @@ export const init = ({ dispatch }, { endpoint, logState, pagePath }) => {
     pagePath,
   });
 
-  return Promise.all([dispatch('fetchJob')]);
+  return dispatch('fetchJob');
 };
 
 export const setJobEndpoint = ({ commit }, endpoint) => commit(types.SET_JOB_ENDPOINT, endpoint);
