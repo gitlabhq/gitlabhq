@@ -213,6 +213,23 @@ _ee:quarantine:
   variables:
     QA_RSPEC_TAGS: --tag quarantine
 
+# Temporary test job to support the effort of migrating to Super Sidebar
+# https://gitlab.com/groups/gitlab-org/-/epics/9044
+_ee:super-sidebar-nav:
+  extends:
+    - .qa
+    - .parallel
+  variables:
+    QA_SCENARIO: Test::Instance::Image
+    QA_KNAPSACK_REPORT_NAME: ee-instance
+    QA_TESTS: ""
+    QA_SUPER_SIDEBAR_ENABLED: "true"
+    GITLAB_QA_OPTS: --set-feature-flags super_sidebar_nav=enabled
+  allow_failure: true
+  rules:
+    - if: $CI_MERGE_REQUEST_LABELS =~ /group::foundations/
+    - !reference [.rules:test:manual, rules]
+
 # ------------------------------------------
 # FF changes
 # ------------------------------------------

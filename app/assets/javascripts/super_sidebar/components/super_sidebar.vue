@@ -39,6 +39,7 @@ export default {
     id="super-sidebar"
     class="super-sidebar gl-display-flex gl-flex-direction-column"
     data-testid="super-sidebar"
+    data-qa-selector="navbar"
   >
     <user-bar :sidebar-data="sidebarData" />
     <div class="gl-display-flex gl-flex-direction-column gl-flex-grow-1 gl-overflow-hidden">

@@ -64,9 +64,14 @@ export default {
       <button class="gl-border-none">
         <gl-icon name="search" class="gl-vertical-align-middle" />
       </button>
-      <gl-dropdown data-testid="user-dropdown" variant="link" no-caret>
+      <gl-dropdown data-testid="user-dropdown" data-qa-selector="user_menu" variant="link" no-caret>
         <template #button-content>
-          <gl-avatar :entity-name="sidebarData.name" :src="sidebarData.avatar_url" :size="32" />
+          <gl-avatar
+            :entity-name="sidebarData.name"
+            :src="sidebarData.avatar_url"
+            :size="32"
+            data-qa-selector="user_avatar_content"
+          />
         </template>
         <new-nav-toggle :endpoint="toggleNewNavEndpoint" enabled />
       </gl-dropdown>

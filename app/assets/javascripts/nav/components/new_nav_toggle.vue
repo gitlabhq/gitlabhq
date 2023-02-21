@@ -74,7 +74,12 @@ export default {
       @click.prevent.stop="toggleNav"
     >
       {{ $options.i18n.toggleMenuItemLabel }}
-      <gl-toggle :value="isEnabled" :label="$options.i18n.toggleLabel" label-position="hidden" />
+      <gl-toggle
+        :value="isEnabled"
+        :label="$options.i18n.toggleLabel"
+        label-position="hidden"
+        data-qa-selector="new_navigation_toggle"
+      />
     </div>
   </li>
 </template>

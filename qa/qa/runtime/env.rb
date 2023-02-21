@@ -514,6 +514,10 @@ module QA
         ENV['DEFAULT_CHROME_DOWNLOAD_PATH'] || Dir.tmpdir
       end
 
+      def super_sidebar_enabled?
+        enabled?(ENV['QA_SUPER_SIDEBAR_ENABLED'], default: false)
+      end
+
       def require_slack_env!
         missing_env = %i[slack_workspace slack_email slack_password].select do |method|
           ::QA::Runtime::Env.public_send(method).nil?

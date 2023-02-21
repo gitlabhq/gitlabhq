@@ -12,15 +12,24 @@ module QA
           element :user_profile_link
         end
 
-        view 'app/views/layouts/header/_default.html.haml' do
-          element :navbar, required: true
-          element :canary_badge_link
-          element :user_avatar_content, required: !QA::Runtime::Env.mobile_layout?
-          element :user_menu, required: !QA::Runtime::Env.mobile_layout?
-          element :stop_impersonation_link
-          element :issues_shortcut_button, required: !QA::Runtime::Env.mobile_layout?
-          element :merge_requests_shortcut_button, required: !QA::Runtime::Env.mobile_layout?
-          element :todos_shortcut_button, required: !QA::Runtime::Env.mobile_layout?
+        if QA::Runtime::Env.super_sidebar_enabled?
+          # Define alternative navbar (super sidebar) which does not yet implement all the same elements
+          view 'app/assets/javascripts/super_sidebar/components/super_sidebar.vue' do
+            element :navbar, required: true # TODO: rename to sidebar once it's default implementation
+            element :user_menu, required: !QA::Runtime::Env.mobile_layout?
+            element :user_avatar_content, required: !QA::Runtime::Env.mobile_layout?
+          end
+        else
+          view 'app/views/layouts/header/_default.html.haml' do
+            element :navbar, required: true
+            element :canary_badge_link
+            element :user_avatar_content, required: !QA::Runtime::Env.mobile_layout?
+            element :user_menu, required: !QA::Runtime::Env.mobile_layout?
+            element :stop_impersonation_link
+            element :issues_shortcut_button, required: !QA::Runtime::Env.mobile_layout?
+            element :merge_requests_shortcut_button, required: !QA::Runtime::Env.mobile_layout?
+            element :todos_shortcut_button, required: !QA::Runtime::Env.mobile_layout?
+          end
         end
 
         view 'app/assets/javascripts/nav/components/top_nav_app.vue' do
@@ -62,6 +71,10 @@ module QA
         view 'app/helpers/nav/new_dropdown_helper.rb' do
           element :global_new_group_link
           element :global_new_project_link
+        end
+
+        view 'app/assets/javascripts/nav/components/new_nav_toggle.vue' do
+          element :new_navigation_toggle
         end
 
         def go_to_groups
@@ -209,6 +222,13 @@ module QA
         #   end
         def canary?
           has_element?(:canary_badge_link)
+        end
+
+        def enable_new_navigation
+          Runtime::Logger.info("Enabling super sidebar!")
+          return Runtime::Logger.info("Super sidebar is already enabled") if has_css?('[data-testid="super-sidebar"]')
+
+          within_user_menu { click_element(:new_navigation_toggle) }
         end
 
         private

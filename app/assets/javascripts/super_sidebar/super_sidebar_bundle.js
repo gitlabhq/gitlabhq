@@ -8,10 +8,10 @@ import SuperSidebar from './components/super_sidebar.vue';
 export const initSuperSidebar = () => {
   const el = document.querySelector('.js-super-sidebar');
 
+  if (!el) return false;
+
   bindSuperSidebarCollapsedEvents();
   initSuperSidebarCollapsedState();
-
-  if (!el) return false;
 
   const { rootPath, sidebar, toggleNewNavEndpoint } = el.dataset;
 
