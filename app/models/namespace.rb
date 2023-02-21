@@ -53,6 +53,8 @@ class Namespace < ApplicationRecord
   has_many :namespace_members, foreign_key: :member_namespace_id, inverse_of: :member_namespace, class_name: 'Member'
   has_many :member_roles
 
+  has_one :namespace_ldap_settings, inverse_of: :namespace, class_name: 'Namespaces::LdapSetting', autosave: true
+
   has_many :runner_namespaces, inverse_of: :namespace, class_name: 'Ci::RunnerNamespace'
   has_many :runners, through: :runner_namespaces, source: :runner, class_name: 'Ci::Runner'
   has_many :pending_builds, class_name: 'Ci::PendingBuild'
@@ -97,6 +99,7 @@ class Namespace < ApplicationRecord
   validates :path,
     presence: true,
     length: { maximum: URL_MAX_LENGTH }
+  validate :container_registry_namespace_path_validation
 
   validates :path, namespace_path: true, if: ->(n) { !n.project_namespace? }
   # Project path validator is used for project namespaces for now to assure
@@ -263,6 +266,13 @@ class Namespace < ApplicationRecord
     def top_most
       by_parent(nil)
     end
+  end
+
+  def container_registry_namespace_path_validation
+    return if Feature.disabled?(:restrict_special_characters_in_namespace_path, self)
+    return if !path_changed? || path.match?(Gitlab::Regex.oci_repository_path_regex)
+
+    errors.add(:path, Gitlab::Regex.oci_repository_path_regex_message)
   end
 
   def package_settings

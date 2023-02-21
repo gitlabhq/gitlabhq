@@ -7,8 +7,8 @@ RSpec.describe Ci::RunnerMachine, feature_category: :runner_fleet, type: :model 
 
   it { is_expected.to belong_to(:runner) }
   it { is_expected.to belong_to(:runner_version).with_foreign_key(:version) }
-  it { is_expected.to have_many(:runner_machine_builds) }
-  it { is_expected.to have_many(:builds).through(:runner_machine_builds) }
+  it { is_expected.to have_many(:build_metadata) }
+  it { is_expected.to have_many(:builds).through(:build_metadata) }
 
   describe 'validation' do
     it { is_expected.to validate_presence_of(:runner) }

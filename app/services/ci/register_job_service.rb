@@ -244,7 +244,7 @@ module Ci
     def assign_runner!(build, params)
       build.runner_id = runner.id
       build.runner_session_attributes = params[:session] if params[:session].present?
-      build.runner_machine = runner_machine if runner_machine
+      build.ensure_metadata.runner_machine = runner_machine if runner_machine
 
       failure_reason, _ = pre_assign_runner_checks.find { |_, check| check.call(build, params) }
 

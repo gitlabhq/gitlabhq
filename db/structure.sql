@@ -18405,6 +18405,18 @@ CREATE TABLE namespace_details (
     next_over_limit_check_at timestamp with time zone
 );
 
+CREATE TABLE namespace_ldap_settings (
+    namespace_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    sync_last_start_at timestamp with time zone,
+    sync_last_update_at timestamp with time zone,
+    sync_last_successful_at timestamp with time zone,
+    sync_status smallint DEFAULT 0 NOT NULL,
+    sync_error text,
+    CONSTRAINT check_51a03d26b6 CHECK ((char_length(sync_error) <= 255))
+);
+
 CREATE TABLE namespace_limits (
     additional_purchased_storage_size bigint DEFAULT 0 NOT NULL,
     additional_purchased_storage_ends_on date,
@@ -26962,6 +26974,9 @@ ALTER TABLE ONLY namespace_commit_emails
 
 ALTER TABLE ONLY namespace_details
     ADD CONSTRAINT namespace_details_pkey PRIMARY KEY (namespace_id);
+
+ALTER TABLE ONLY namespace_ldap_settings
+    ADD CONSTRAINT namespace_ldap_settings_pkey PRIMARY KEY (namespace_id);
 
 ALTER TABLE ONLY namespace_limits
     ADD CONSTRAINT namespace_limits_pkey PRIMARY KEY (namespace_id);
@@ -35659,6 +35674,9 @@ ALTER TABLE ONLY approval_merge_request_rules_users
 
 ALTER TABLE ONLY required_code_owners_sections
     ADD CONSTRAINT fk_rails_817708cf2d FOREIGN KEY (protected_branch_id) REFERENCES protected_branches(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY namespace_ldap_settings
+    ADD CONSTRAINT fk_rails_82cd0ad4bb FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY cluster_enabled_grants
     ADD CONSTRAINT fk_rails_8336ce35af FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;

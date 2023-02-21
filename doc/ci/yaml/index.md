@@ -4365,18 +4365,19 @@ child3:
 
 ### `variables`
 
-Use `variables` to define [CI/CD variables](../variables/index.md#define-a-cicd-variable-in-the-gitlab-ciyml-file),
-which are configurable values that are passed to jobs.
-
-Variables are always available in `script`, `before_script`, and `after_script` commands.
-You can also use variables as inputs in some job keywords.
+Use `variables` to define [CI/CD variables](../variables/index.md#define-a-cicd-variable-in-the-gitlab-ciyml-file) for jobs.
 
 **Keyword type**: Global and job keyword. You can use it at the global level,
 and also at the job level.
 
-If you define `variables` at the global level, each variable is copied to
-every job configuration when the pipeline is created. If the job already has that
-variable defined, the [job-level variable takes precedence](../variables/index.md#cicd-variable-precedence).
+If you define `variables` as a [global keyword](#keywords), it behaves like default variables
+for all jobs. Each variable is copied to every job configuration when the pipeline is created.
+If the job already has that variable defined, the [job-level variable takes precedence](../variables/index.md#cicd-variable-precedence).
+
+Variables defined at the global-level cannot be used as inputs for other global keywords
+like [`include`](includes.md#use-variables-with-include). These variables can only
+be used at the job-level, in `script`, `before_script`, and `after_script` sections,
+as well as inputs in some job keywords like [`rules`](../jobs/job_control.md#cicd-variable-expressions).
 
 **Possible inputs**: Variable name and value pairs:
 

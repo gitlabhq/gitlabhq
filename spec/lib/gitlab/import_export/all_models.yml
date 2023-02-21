@@ -396,7 +396,6 @@ builds:
 - job_artifacts_cyclonedx
 - job_artifacts_requirements_v2
 - runner_machine
-- runner_machine_build
 - runner_session
 - trace_metadata
 - terraform_state_versions

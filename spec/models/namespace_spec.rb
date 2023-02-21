@@ -173,15 +173,24 @@ RSpec.describe Namespace, feature_category: :subgroups do
 
       # rubocop:disable Lint/BinaryOperatorWithIdenticalOperands
       where(:namespace_type, :path, :valid) do
-        ref(:project_sti_name)   | 'j'     | true
-        ref(:project_sti_name)   | 'path.' | true
-        ref(:project_sti_name)   | 'blob'  | false
-        ref(:group_sti_name)     | 'j'     | false
-        ref(:group_sti_name)     | 'path.' | false
-        ref(:group_sti_name)     | 'blob'  | true
-        ref(:user_sti_name)      | 'j'     | false
-        ref(:user_sti_name)      | 'path.' | false
-        ref(:user_sti_name)      | 'blob'  | true
+        ref(:project_sti_name)   | 'j'               | true
+        ref(:project_sti_name)   | 'path.'           | false
+        ref(:project_sti_name)   | '.path'           | false
+        ref(:project_sti_name)   | 'path.git'        | false
+        ref(:project_sti_name)   | 'namespace__path' | false
+        ref(:project_sti_name)   | 'blob'            | false
+        ref(:group_sti_name)     | 'j'               | false
+        ref(:group_sti_name)     | 'path.'           | false
+        ref(:group_sti_name)     | '.path'           | false
+        ref(:group_sti_name)     | 'path.git'        | false
+        ref(:group_sti_name)     | 'namespace__path' | false
+        ref(:group_sti_name)     | 'blob'            | true
+        ref(:user_sti_name)      | 'j'               | false
+        ref(:user_sti_name)      | 'path.'           | false
+        ref(:user_sti_name)      | '.path'           | false
+        ref(:user_sti_name)      | 'path.git'        | false
+        ref(:user_sti_name)      | 'namespace__path' | false
+        ref(:user_sti_name)      | 'blob'            | true
       end
       # rubocop:enable Lint/BinaryOperatorWithIdenticalOperands
 
@@ -191,6 +200,26 @@ RSpec.describe Namespace, feature_category: :subgroups do
           namespace = build(:namespace, type: namespace_type, parent: parent_namespace, path: path)
 
           expect(namespace.valid?).to be(valid)
+        end
+      end
+
+      context 'when path starts or ends with a special character' do
+        it 'does not raise validation error for path for existing namespaces' do
+          parent.update_attribute(:path, '_path_')
+
+          expect { parent.update!(name: 'Foo') }.not_to raise_error
+        end
+      end
+
+      context 'when restrict_special_characters_in_namespace_path feature flag is disabled' do
+        before do
+          stub_feature_flags(restrict_special_characters_in_namespace_path: false)
+        end
+
+        it 'allows special character at the start or end of project namespace path' do
+          namespace = build(:namespace, type: project_sti_name, parent: parent, path: '_path_')
+
+          expect(namespace).to be_valid
         end
       end
     end

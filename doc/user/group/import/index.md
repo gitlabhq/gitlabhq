@@ -58,6 +58,12 @@ We invite you to leave your feedback about migrating by direct transfer in
 If you want to move groups instead of copying groups, you can [transfer groups](../manage.md#transfer-a-group) if the
 groups are in the same GitLab instance. Transferring groups is a faster and more complete option.
 
+### Rate limit
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/386452) in GitLab 15.9.
+
+Each user can perform up to six migrations per minute.
+
 ### Visibility rules
 
 After migration:

@@ -5,8 +5,7 @@ Gitlab::Database::Partitioning.register_models(
     AuditEvent,
     WebHookLog,
     LooseForeignKeys::DeletedRecord,
-    Gitlab::Database::BackgroundMigration::BatchedJobTransitionLog,
-    Ci::RunnerMachineBuild
+    Gitlab::Database::BackgroundMigration::BatchedJobTransitionLog
   ])
 
 if Gitlab.ee?

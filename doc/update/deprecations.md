@@ -278,6 +278,28 @@ To be prepared for this change, you should do the following before GitLab 16.0:
 
 <div class="deprecation removal-160 breaking-change">
 
+### Legacy Praefect configuration method
+
+Planned removal: GitLab <span class="removal-milestone">16.0</span> <span class="removal-date"></span>
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+Previously, Praefect configuration keys were scattered throughout the configuration file. Now, these are in a single configuration structure that matches
+Praefect configuration so the previous configuration method is deprecated.
+
+The single configuration structure available from GitLab 15.9, though backwards compatibility is maintained. Once removed, Praefect must be configured using the single
+configuration structure. You should update the configuration of Praefect at your earliest convenience. See
+[GitLab 15.9 upgrade information](https://docs.gitlab.com/ee/update/#1590).
+
+This change brings Praefect configuration in Omnibus GitLab in line with the configuration structure of Praefect. Previously, the hierarchies and configuration keys
+didn't match. The change improves consistency between Omnibus GitLab and source installs and enables us to provide better documentation and tooling for both.
+
+</div>
+
+<div class="deprecation removal-160 breaking-change">
+
 ### Legacy URLs replaced or removed
 
 Planned removal: GitLab <span class="removal-milestone">16.0</span> <span class="removal-date"></span>
