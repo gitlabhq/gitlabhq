@@ -68,11 +68,11 @@ component can have two indicators:
   and
   [Web](https://gitlab.com/gitlab-com/runbooks/-/blob/f22f40b2c2eab37d85e23ccac45e658b2c914445/metrics-catalog/services/web.jsonnet#L154)
   services, that threshold is **5 seconds** when not opted in to the
-  [`rails_requests` SLI](../application_slis/rails_request_apdex.md).
+  [`rails_request` SLI](../application_slis/rails_request.md).
 
   We've made this target configurable in [this project](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/525).
-  To learn how to customize the request Apdex, see
-  [Rails request Apdex SLI](../application_slis/rails_request_apdex.md).
+  To customize the request Apdex, see
+  [Rails request SLIs](../application_slis/rails_request.md).
   This new Apdex measurement is not part of the error budget until you
   [opt in](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/1451).
 

@@ -472,10 +472,11 @@ RSpec.describe 'Git HTTP requests', feature_category: :source_code_management do
         end
 
         context 'when the request is not from gitlab-workhorse' do
-          it 'raises an exception' do
-            expect do
-              get("/#{project.full_path}.git/info/refs?service=git-upload-pack")
-            end.to raise_error(JWT::DecodeError)
+          it 'responds with 403 Forbidden' do
+            get("/#{project.full_path}.git/info/refs?service=git-upload-pack")
+
+            expect(response).to have_gitlab_http_status(:forbidden)
+            expect(response.body).to eq('Nil JSON web token')
           end
         end
 
@@ -1112,10 +1113,11 @@ RSpec.describe 'Git HTTP requests', feature_category: :source_code_management do
         end
 
         context 'when the request is not from gitlab-workhorse' do
-          it 'raises an exception' do
-            expect do
-              get("/#{project.full_path}.git/info/refs?service=git-upload-pack")
-            end.to raise_error(JWT::DecodeError)
+          it 'responds with 403 Forbidden' do
+            get("/#{project.full_path}.git/info/refs?service=git-upload-pack")
+
+            expect(response).to have_gitlab_http_status(:forbidden)
+            expect(response.body).to eq('Nil JSON web token')
           end
         end
 

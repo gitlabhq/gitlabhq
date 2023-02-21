@@ -129,6 +129,10 @@ module Gitlab
           @request_latency_histogram.observe({ storage: storage_key }, duration)
         end
 
+        def log_exception(ex)
+          ::Gitlab::ErrorTracking.log_exception(ex, storage: storage_key)
+        end
+
         private
 
         def request_count_key

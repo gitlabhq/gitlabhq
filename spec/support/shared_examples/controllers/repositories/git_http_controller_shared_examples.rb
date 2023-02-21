@@ -87,14 +87,20 @@ RSpec.shared_examples Repositories::GitHttpController do
   end
 
   describe 'POST #git_upload_pack' do
-    before do
-      allow(controller).to receive(:verify_workhorse_api!).and_return(true)
-    end
-
     it 'returns 200' do
+      allow(controller).to receive(:verify_workhorse_api!).and_return(true)
+
       post :git_upload_pack, params: params
 
       expect(response).to have_gitlab_http_status(:ok)
+    end
+
+    context 'when JWT token is not provided' do
+      it 'returns 403' do
+        post :git_upload_pack, params: params
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
     end
   end
 end

@@ -41,6 +41,7 @@ module Gitlab
         yield
       rescue ::Redis::BaseError => ex
         instrumentation_class.instance_count_exception(ex)
+        instrumentation_class.log_exception(ex)
         raise ex
       ensure
         duration = Gitlab::Metrics::System.monotonic_time - start

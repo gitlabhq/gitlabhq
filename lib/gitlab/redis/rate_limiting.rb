@@ -10,11 +10,7 @@ module Gitlab
         end
 
         def cache_store
-          @cache_store ||= ActiveSupport::Cache::RedisCacheStore.new(
-            redis: pool,
-            namespace: Cache::CACHE_NAMESPACE,
-            error_handler: ::Gitlab::Redis::ERROR_HANDLER
-          )
+          @cache_store ||= ActiveSupport::Cache::RedisCacheStore.new(redis: pool, namespace: Cache::CACHE_NAMESPACE)
         end
 
         private

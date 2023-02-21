@@ -4904,7 +4904,6 @@ RSpec/MissingFeatureCategory:
     - 'spec/lib/gitlab/i18n/metadata_entry_spec.rb'
     - 'spec/lib/gitlab/i18n/po_linter_spec.rb'
     - 'spec/lib/gitlab/i18n/translation_entry_spec.rb'
-    - 'spec/lib/gitlab/i18n_spec.rb'
     - 'spec/lib/gitlab/identifier_spec.rb'
     - 'spec/lib/gitlab/import/database_helpers_spec.rb'
     - 'spec/lib/gitlab/import/import_failure_service_spec.rb'

@@ -591,7 +591,9 @@ RSpec.describe 'Project issue boards', :js, feature_category: :team_planning do
 
   def remove_list
     page.within(find('.board:nth-child(2)')) do
-      find('button[title="List settings"]').click
+      dropdown = first("[data-testid='header-list-actions']")
+      dropdown.click
+      click_button('Edit list settings')
     end
 
     page.within(find('.js-board-settings-sidebar')) do

@@ -118,11 +118,16 @@ module Gitlab
     end
 
     def setup(domain:, default_locale:)
+      custom_pluralization
       setup_repositories(domain)
       setup_default_locale(default_locale)
     end
 
     private
+
+    def custom_pluralization
+      Gitlab::I18n::Pluralization.install_on(FastGettext)
+    end
 
     def setup_repositories(domain)
       translation_repositories = [

@@ -469,7 +469,7 @@ subscriptions.
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110810) in GitLab 15.9.
 
 Custom roles allow group members who are assigned the Owner role to create roles
-specific to the needs of their organization. 
+specific to the needs of their organization.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For a demo of the custom roles feature, see [[Demo] Ultimate Guest can view code on private repositories via custom role](https://www.youtube.com/watch?v=46cp_-Rtxps).

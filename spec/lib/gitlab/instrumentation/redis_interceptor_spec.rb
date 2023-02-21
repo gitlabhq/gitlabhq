@@ -67,6 +67,8 @@ RSpec.describe Gitlab::Instrumentation::RedisInterceptor, :clean_gitlab_redis_sh
     it 'counts exceptions' do
       expect(instrumentation_class).to receive(:instance_count_exception)
         .with(instance_of(Redis::CommandError)).and_call_original
+      expect(instrumentation_class).to receive(:log_exception)
+        .with(instance_of(Redis::CommandError)).and_call_original
       expect(instrumentation_class).to receive(:instance_count_request).and_call_original
 
       expect do

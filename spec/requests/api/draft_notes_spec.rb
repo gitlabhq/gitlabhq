@@ -8,6 +8,11 @@ RSpec.describe API::DraftNotes, feature_category: :code_review_workflow do
   let_it_be(:project) { create(:project, :public) }
   let_it_be(:merge_request) { create(:merge_request, source_project: project, target_project: project, author: user) }
 
+  let_it_be(:private_project) { create(:project, :private) }
+  let_it_be(:private_merge_request) do
+    create(:merge_request, source_project: private_project, target_project: private_project)
+  end
+
   let_it_be(:merge_request_note) { create(:note, noteable: merge_request, project: project, author: user) }
   let!(:draft_note_by_current_user) { create(:draft_note, merge_request: merge_request, author: user) }
   let!(:draft_note_by_random_user) { create(:draft_note, merge_request: merge_request) }
@@ -116,6 +121,97 @@ RSpec.describe API::DraftNotes, feature_category: :code_review_workflow do
         )
 
         expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+  end
+
+  def create_draft_note(params = {}, url = api_stub)
+    post api("#{url}/draft_notes", user), params: params
+  end
+
+  describe "Create a new draft note" do
+    let(:basic_create_params) do
+      {
+        note: "Example body string"
+      }
+    end
+
+    context "when creating a new draft note" do
+      context "with required params" do
+        it "returns 201 Created status" do
+          create_draft_note(basic_create_params)
+
+          expect(response).to have_gitlab_http_status(:created)
+        end
+
+        it "creates a new draft note with the submitted params" do
+          expect { create_draft_note(basic_create_params) }.to change { DraftNote.count }.by(1)
+
+          expect(json_response["note"]).to eq(basic_create_params[:note])
+          expect(json_response["merge_request_id"]).to eq(merge_request.id)
+          expect(json_response["author_id"]).to eq(user.id)
+        end
+      end
+
+      context "without required params" do
+        it "returns 400 Bad Request status" do
+          create_draft_note({})
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+        end
+      end
+
+      context "when providing a non-existing commit_id" do
+        it "returns a 400 Bad Request" do
+          create_draft_note(
+            basic_create_params.merge(
+              commit_id: 'bad SHA'
+            )
+          )
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+        end
+      end
+
+      context "when targeting a merge request the user doesn't have access to" do
+        it "returns a 404 Not Found" do
+          create_draft_note(
+            basic_create_params,
+            "/projects/#{private_project.id}/merge_requests/#{private_merge_request.iid}"
+          )
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+
+      context "when attempting to resolve a disscussion" do
+        context "when providing a non-existant ID" do
+          it "returns a 400 Bad Request" do
+            create_draft_note(
+              basic_create_params.merge(
+                resolve_discussion: true,
+                in_reply_to_discussion_id: non_existing_record_id
+              )
+            )
+
+            expect(response).to have_gitlab_http_status(:bad_request)
+          end
+        end
+
+        context "when not providing an ID" do
+          it "returns a 400 Bad Request" do
+            create_draft_note(basic_create_params.merge(resolve_discussion: true))
+
+            expect(response).to have_gitlab_http_status(:bad_request)
+          end
+
+          it "returns a validation error message" do
+            create_draft_note(basic_create_params.merge(resolve_discussion: true))
+
+            expect(response.body)
+              .to eq("{\"message\":{\"base\":[\"User is not allowed to resolve thread\"]}}")
+          end
+        end
       end
     end
   end

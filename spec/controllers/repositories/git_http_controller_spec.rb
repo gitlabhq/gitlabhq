@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Repositories::GitHttpController do
+RSpec.describe Repositories::GitHttpController, feature_category: :source_code_management do
   let_it_be(:project) { create(:project, :public, :repository) }
   let_it_be(:personal_snippet) { create(:personal_snippet, :public, :repository) }
   let_it_be(:project_snippet) { create(:project_snippet, :public, :repository, project: project) }
@@ -14,7 +14,7 @@ RSpec.describe Repositories::GitHttpController do
       request.headers.merge! auth_env(user.username, user.password, nil)
     end
 
-    context 'when Gitaly is unavailable' do
+    context 'when Gitaly is unavailable', :use_clean_rails_redis_caching do
       it 'responds with a 503 message' do
         expect(Gitlab::GitalyClient).to receive(:call).and_raise(GRPC::Unavailable)
 

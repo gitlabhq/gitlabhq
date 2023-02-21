@@ -58,7 +58,7 @@ WARNING:
 Like any other job artifact, Terraform plan data is viewable by anyone with the Guest role on the repository.
 Neither Terraform nor GitLab encrypts the plan file by default. If your Terraform plan
 includes sensitive data, like passwords, access tokens, or certificates, you should
-encrypt plan output or modify the project visibility settings. We also strongly recommend that you **disable** 
+encrypt plan output or modify the project visibility settings. We also strongly recommend that you **disable**
 [public pipelines](../../../ci/pipelines/settings.md#change-pipeline-visibility-for-non-project-members-in-public-projects)
 by setting the artifact's public flag to false (`public: false`). This setting ensures artifacts are
 accessible only to GitLab Administrators and project members with the Reporter role and above.

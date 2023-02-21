@@ -6958,13 +6958,25 @@ msgstr[1] ""
 msgid "Boards|Collapse"
 msgstr ""
 
+msgid "Boards|Create new epic"
+msgstr ""
+
+msgid "Boards|Create new issue"
+msgstr ""
+
 msgid "Boards|Edit board"
+msgstr ""
+
+msgid "Boards|Edit list settings"
 msgstr ""
 
 msgid "Boards|Expand"
 msgstr ""
 
 msgid "Boards|Failed to fetch blocking %{issuableType}s"
+msgstr ""
+
+msgid "Boards|List actions"
 msgstr ""
 
 msgid "Boards|Move card"
@@ -6977,9 +6989,6 @@ msgid "Boards|Move to start of list"
 msgstr ""
 
 msgid "Boards|New board"
-msgstr ""
-
-msgid "Boards|New epic"
 msgstr ""
 
 msgid "Boards|Retrieving blocking %{issuableType}s"
@@ -32458,16 +32467,31 @@ msgstr ""
 msgid "ProductAnalytics|All pages"
 msgstr ""
 
+msgid "ProductAnalytics|All sessions compared"
+msgstr ""
+
 msgid "ProductAnalytics|An error occured while loading the %{panelTitle} panel."
 msgstr ""
 
 msgid "ProductAnalytics|An error occurred while fetching data. Refresh the page to try again."
 msgstr ""
 
+msgid "ProductAnalytics|Analytics dashboards"
+msgstr ""
+
 msgid "ProductAnalytics|Any Click on elements"
 msgstr ""
 
 msgid "ProductAnalytics|Audience"
+msgstr ""
+
+msgid "ProductAnalytics|Average Session Duration"
+msgstr ""
+
+msgid "ProductAnalytics|Average duration in minutes"
+msgstr ""
+
+msgid "ProductAnalytics|Average per User"
 msgstr ""
 
 msgid "ProductAnalytics|Browser"
@@ -32492,6 +32516,9 @@ msgid "ProductAnalytics|Code"
 msgstr ""
 
 msgid "ProductAnalytics|Compares all events against each other"
+msgstr ""
+
+msgid "ProductAnalytics|Compares all user sessions against each other"
 msgstr ""
 
 msgid "ProductAnalytics|Compares click events against each other"
@@ -32542,6 +32569,12 @@ msgstr ""
 msgid "ProductAnalytics|Host"
 msgstr ""
 
+msgid "ProductAnalytics|How many sessions a user has"
+msgstr ""
+
+msgid "ProductAnalytics|How often sesions are repeated"
+msgstr ""
+
 msgid "ProductAnalytics|Language"
 msgstr ""
 
@@ -32552,6 +32585,12 @@ msgid "ProductAnalytics|Measure All tracked Events"
 msgstr ""
 
 msgid "ProductAnalytics|Measure all or specific Page Views"
+msgstr ""
+
+msgid "ProductAnalytics|Measure all sessions"
+msgstr ""
+
+msgid "ProductAnalytics|Measure by unique users"
 msgstr ""
 
 msgid "ProductAnalytics|Measuring"
@@ -32587,13 +32626,16 @@ msgstr ""
 msgid "ProductAnalytics|Panel"
 msgstr ""
 
-msgid "ProductAnalytics|Product analytics dashboards"
-msgstr ""
-
 msgid "ProductAnalytics|Referer"
 msgstr ""
 
+msgid "ProductAnalytics|Repeat Visit percentage"
+msgstr ""
+
 msgid "ProductAnalytics|Resulting Data"
+msgstr ""
+
+msgid "ProductAnalytics|Sessions"
 msgstr ""
 
 msgid "ProductAnalytics|Single Statistic"
@@ -32606,6 +32648,12 @@ msgid "ProductAnalytics|Track specific features"
 msgstr ""
 
 msgid "ProductAnalytics|URL"
+msgstr ""
+
+msgid "ProductAnalytics|Unique Users"
+msgstr ""
+
+msgid "ProductAnalytics|User Sessions"
 msgstr ""
 
 msgid "ProductAnalytics|User activity"

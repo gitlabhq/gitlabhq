@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::I18n do
+RSpec.describe Gitlab::I18n, feature_category: :internationalization do
   let(:user) { create(:user, preferred_language: :es) }
 
   describe '.selectable_locales' do
@@ -45,6 +45,21 @@ RSpec.describe Gitlab::I18n do
 
       expect(FastGettext.locale).to eq('en')
       expect(::I18n.locale).to eq(:en)
+    end
+  end
+
+  describe '.pluralisation_rule' do
+    context 'when overridden' do
+      before do
+        # Internally, FastGettext sets
+        # Thread.current[:fast_gettext_pluralisation_rule].
+        # Our patch patches `FastGettext.pluralisation_rule` instead.
+        FastGettext.pluralisation_rule = :something
+      end
+
+      it 'returns custom definition regardless' do
+        expect(FastGettext.pluralisation_rule).to eq(Gitlab::I18n::Pluralization)
+      end
     end
   end
 end

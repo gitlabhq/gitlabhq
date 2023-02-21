@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Marketplace partner integration
 
 GitLab supports automation for selected distribution marketplaces to process sales of GitLab products to authorized
-channel partners. Marketplace partners can use the GitLab Marketplace APIs to integrate their systems with GitLab to 
+channel partners. Marketplace partners can use the GitLab Marketplace APIs to integrate their systems with GitLab to
 sell GitLab subscriptions on their site.
 
 This document's target audience is third-party developers for Marketplace partners.

@@ -13,7 +13,7 @@ for community contributions have the [`Seeking community contributions`](issue_w
 label, but you are free to contribute to any issue you want.
 
 If an issue is marked for the current milestone at any time, even
-when you are working on it, a GitLab team member may take over the merge request to ensure the work is finished before the release date. 
+when you are working on it, a GitLab team member may take over the merge request to ensure the work is finished before the release date.
 
 If a contributor is no longer actively working on a submitted merge request,
 we can:

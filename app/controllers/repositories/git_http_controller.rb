@@ -8,6 +8,7 @@ module Repositories
     prepend_before_action :deny_head_requests, only: [:info_refs]
 
     rescue_from Gitlab::GitAccess::ForbiddenError, with: :render_403_with_exception
+    rescue_from JWT::DecodeError, with: :render_403_with_exception
     rescue_from Gitlab::GitAccess::NotFoundError, with: :render_404_with_exception
     rescue_from Gitlab::GitAccessProject::CreationError, with: :render_422_with_exception
     rescue_from Gitlab::GitAccess::TimeoutError, with: :render_503_with_exception

@@ -4,7 +4,7 @@ group: Scalability
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Rails request Apdex SLI
+# Rails request SLIs (service level indicators)
 
 > [Introduced](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/525) in GitLab 14.4
 
@@ -12,21 +12,33 @@ NOTE:
 This SLI is used for service monitoring. But not for [error budgets for stage groups](../stage_group_observability/index.md#error-budget)
 by default. You can [opt in](#error-budget-attribution-and-ownership).
 
-The request Apdex SLI (Service Level Indicator) is [an SLI defined in the application](index.md).
-It measures the duration of successful requests as an indicator for
-application performance. This includes the REST and GraphQL API, and the
-regular controller endpoints. It consists of these counters:
+The request Apdex SLI and the error rate SLI are [SLIs defined in the application](index.md).
 
-1. `gitlab_sli:rails_request_apdex:total`: This counter gets
+The request Apdex measures the duration of successful requests as an indicator for
+application performance. This includes the REST and GraphQL API, and the
+regular controller endpoints.
+
+The error rate measures unsuccessful requests as an indicator for
+server misbehavior. This includes the REST API, and the
+regular controller endpoints.
+
+1. `gitlab_sli_rails_request_apdex_total`: This counter gets
    incremented for every request that did not result in a response
    with a `5xx` status code. It ensures slow failures are not
    counted twice, because the request is already counted in the error SLI.
 
-1. `gitlab_sli:rails_request_apdex:success_total`: This counter gets
+1. `gitlab_sli_rails_request_apdex_success_total`: This counter gets
    incremented for every successful request that performed faster than
    the [defined target duration depending on the endpoint's urgency](#adjusting-request-urgency).
 
-Both these counters are labeled with:
+1. `gitlab_sli_rails_request_error_total`: This counter gets
+   incremented for every request that resulted in a response
+   with a `5xx` status code.
+
+1. `gitlab_sli_rails_request_total`: This counter gets
+   incremented for every request.
+
+These counters are labeled with:
 
 1. `endpoint_id`: The identification of the Rails Controller or the
    Grape-API endpoint.

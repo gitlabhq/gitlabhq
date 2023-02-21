@@ -1353,7 +1353,7 @@ If you have installed GitLab using the Linux package (Omnibus) and have configur
 - `15.6.0`-`15.6.3`
 - `15.7.0`-`15.7.1`
 
-This is due to [a bug introduced in the included version of cURL](https://github.com/curl/curl/issues/10122) shipped with Omnibus GitLab 15.4.6 and later. You are encouraged to upgrade to a later version where this has been [fixed](https://about.gitlab.com/releases/2023/01/09/security-release-gitlab-15-7-2-released/). 
+This is due to [a bug introduced in the included version of cURL](https://github.com/curl/curl/issues/10122) shipped with Omnibus GitLab 15.4.6 and later. You are encouraged to upgrade to a later version where this has been [fixed](https://about.gitlab.com/releases/2023/01/09/security-release-gitlab-15-7-2-released/).
 
 The bug causes all wildcard domains (`.example.com`) to be ignored except for the last on in the `no_proxy` environment variable list. Therefore, if for any reason you cannot upgrade to a newer version, you can work around the issue by moving your wildcard domain to the end of the list:
 
@@ -1368,7 +1368,7 @@ The bug causes all wildcard domains (`.example.com`) to be ignored except for th
 
    ```shell
    sudo gitlab-ctl reconfigure
-   ``` 
+   ```
 
 You can have only one wildcard domain in the `no_proxy` list.
 

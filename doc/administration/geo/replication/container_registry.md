@@ -7,7 +7,7 @@ type: howto
 
 # Container Registry for a secondary site **(PREMIUM SELF)**
 
-You can set up a Container Registry on your **secondary** Geo site that mirrors the one on the **primary** Geo site. 
+You can set up a Container Registry on your **secondary** Geo site that mirrors the one on the **primary** Geo site.
 
 NOTE:
 The Container Registry replication is used only for disaster recovery purposes. We do not recommend

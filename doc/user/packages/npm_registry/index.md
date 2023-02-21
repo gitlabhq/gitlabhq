@@ -266,7 +266,7 @@ The GitLab npm repository supports the following commands for the npm CLI (`npm`
 
 ### `404 Not Found` errors are happening on `npm install` or `yarn`
 
-Using `CI_JOB_TOKEN` to install npm packages with dependencies in another project gives you 404 Not Found errors. A fix for this problem is proposed in [issue 352962](https://gitlab.com/gitlab-org/gitlab/-/issues/352962). 
+Using `CI_JOB_TOKEN` to install npm packages with dependencies in another project gives you 404 Not Found errors. A fix for this problem is proposed in [issue 352962](https://gitlab.com/gitlab-org/gitlab/-/issues/352962).
 
 As a workaround, you can:
 

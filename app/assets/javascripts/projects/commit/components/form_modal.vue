@@ -85,7 +85,6 @@ export default {
     ]),
   },
   mounted() {
-    this.setSelectedProject(this.targetProjectId);
     eventHub.$on(this.openModal, this.show);
   },
   methods: {

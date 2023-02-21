@@ -163,6 +163,9 @@ The following metrics are available:
 | `gitlab_diffs_render_real_duration_seconds` | Histogram | 15.8 | Duration in seconds spent on serializing and rendering diffs on diffs batch request | `controller`, `action` |
 | `gitlab_memwd_violations_total`                      | Counter | 15.9  | Total number of times a Ruby process violated a memory threshold | |
 | `gitlab_memwd_violations_handled_total`              | Counter | 15.9  | Total number of times Ruby process memory violations were handled | |
+| `gitlab_sli_rails_request_apdex_total` | Counter | 14.4 | Total number of request Apdex measurements. For more information, see [Rails request SLIs](../../../development/application_slis/rails_request.md) | `endpoint_id`, `feature_category`, `request_urgency` |
+| `gitlab_sli_rails_request_apdex_success_total` | Counter | 14.4 | Total number of successful requests that met the target duration for their urgency. Divide by `gitlab_sli_rails_requests_apdex_total` to get a success ratio | `endpoint_id`, `feature_category`, `request_urgency` |
+| `gitlab_sli_rails_request_error_total` | Counter | 15.7 | Total number of request error measurements. For more information, see [Rails request SLIs](../../../development/application_slis/rails_request.md) | `endpoint_id`, `feature_category`, `request_urgency`, `error` |
 
 ## Metrics controlled by a feature flag
 
@@ -320,8 +323,6 @@ configuration option in `gitlab.yml`. These metrics are served from the
 | `geo_container_repositories_synced`    | Gauge   | 15.4  | Number of container repositories synced on secondary | `url` |
 | `geo_container_repositories_failed`    | Gauge   | 15.4  | Number of syncable container repositories failed to sync on secondary | `url` |
 | `geo_container_repositories_registry`  | Gauge   | 15.4  | Number of container repositories in the registry | `url` |
-| `gitlab_sli:rails_request_apdex:total` | Counter | 14.4 | The number of request-apdex measurements, [more information the development documentation](../../../development/application_slis/rails_request_apdex.md) | `endpoint_id`, `feature_category`, `request_urgency` |
-| `gitlab_sli:rails_request_apdex:success_total` | Counter | 14.4 | The number of successful requests that met the target duration for their urgency. Divide by `gitlab_sli:rails_requests_apdex:total` to get a success ratio | `endpoint_id`, `feature_category`, `request_urgency` |
 | `geo_ci_secure_files`                            | Gauge   | 15.3  | Number of secure files on primary | `url` |
 | `geo_ci_secure_files_checksum_total`             | Gauge   | 15.3  | Number of secure files tried to checksum on primary | `url` |
 | `geo_ci_secure_files_checksummed`                | Gauge   | 15.3  | Number of secure files successfully checksummed on primary | `url` |

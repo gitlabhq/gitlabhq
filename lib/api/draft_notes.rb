@@ -30,6 +30,18 @@ module API
           .new(merge_request(params: params), current_user)
           .execute(get_draft_note(params: params))
       end
+
+      def authorize_create_note!(params:)
+        access_denied! unless can?(current_user, :create_note, merge_request(params: params))
+      end
+
+      def draft_note_params
+        {
+          note: params[:note],
+          commit_id: params[:commit_id] == 'undefined' ? nil : params[:commit_id],
+          resolve_discussion: params[:resolve_discussion] || false
+        }
+      end
     end
 
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
@@ -68,6 +80,36 @@ module API
           present draft_note, with: Entities::DraftNote
         else
           not_found!("Draft Note")
+        end
+      end
+
+      desc "Create a new draft note" do
+        success Entities::DraftNote
+        failure [
+          { code: 401, message: 'Unauthorized' },
+          { code: 404, message: 'Not found' }
+        ]
+      end
+      params do
+        requires :id,                        type: String,  desc: "The ID of a project."
+        requires :merge_request_iid,         type: Integer, desc: "The ID of a merge request."
+        requires :note,                      type: String,  desc: 'The content of a note.'
+        optional :in_reply_to_discussion_id, type: Integer, desc: 'The ID of a discussion the draft note replies to.'
+        optional :commit_id,                 type: String,  desc: 'The sha of a commit to associate the draft note to.'
+        optional :resolve_discussion,        type: Boolean, desc: 'The associated discussion should be resolved.'
+      end
+      post ":id/merge_requests/:merge_request_iid/draft_notes", feature_category: :code_review_workflow do
+        authorize_create_note!(params: params)
+
+        create_params = draft_note_params.merge(in_reply_to_discussion_id: params[:in_reply_to_discussion_id])
+        create_service = ::DraftNotes::CreateService.new(merge_request(params: params), current_user, create_params)
+
+        draft_note = create_service.execute
+
+        if draft_note.persisted?
+          present draft_note, with: Entities::DraftNote
+        else
+          render_validation_error!(draft_note)
         end
       end
 

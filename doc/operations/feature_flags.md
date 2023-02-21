@@ -151,7 +151,7 @@ Enables the feature for a list of target users. It is implemented
 using the Unleash UserIDs (`userWithId`) activation [strategy](https://docs.getunleash.io/reference/activation-strategies#userids).
 
 Enter user IDs as a comma-separated list of values (for example,
-`user@example.com, user2@example.com`, or `username1,username2,username3`, and so on). 
+`user@example.com, user2@example.com`, or `username1,username2,username3`, and so on).
 User IDs are identifiers for your application users. They do not need to be GitLab users.
 
 WARNING:
