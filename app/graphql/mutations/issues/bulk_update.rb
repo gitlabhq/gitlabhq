@@ -82,7 +82,9 @@ module Mutations
           prepared[argument] = model_ids_from(attributes[argument])
         end
 
-        prepared.transform_keys(param_mappings)
+        # Ruby 3+: This can be simplified to:
+        # prepared.transform_keys(param_mappings)
+        prepared.transform_keys { |key| param_mappings[key] || key }
       end
 
       def param_mappings
