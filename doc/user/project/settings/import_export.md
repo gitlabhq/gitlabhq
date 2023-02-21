@@ -155,7 +155,8 @@ Items that are **not** exported include:
 - Repository size limits
 - Deploy keys allowed to push to protected branches
 - Secure Files
-- [Activity logs for Git-related events](https://gitlab.com/gitlab-org/gitlab/-/issues/214700). For example, pushing and creating tags
+- [Activity logs for Git-related events](https://gitlab.com/gitlab-org/gitlab/-/issues/214700) (for example, pushing and creating tags)
+- Security policies associated with your project
 
 ## Import a project and its data
 

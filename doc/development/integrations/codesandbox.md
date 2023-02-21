@@ -3,12 +3,13 @@ stage: none
 group: Development
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 remove_date: '2023-02-01'
+redirect_to: 'index.md'
 ---
 
 # Set up local CodeSandbox development environment (removed)
 
 WARNING:
-This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108627) in GitLab 15.8 
+This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108627) in GitLab 15.8
 and is planned for removal in 15.9. This change is a breaking change.
 
 This guide walks through setting up a local [CodeSandbox repository](https://github.com/codesandbox/codesandbox-client) and integrating it with a local GitLab instance. CodeSandbox
@@ -122,7 +123,7 @@ npx http-server --proxy http://localhost:3000 -S -C $PATH_TO_CERT_PEM -K $PATH_T
 ### Update `bundler_url` setting in GitLab (removed)
 
 WARNING:
-This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108627) in GitLab 15.8 
+This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108627) in GitLab 15.8
 and is planned for removal in 15.9. This change is a breaking change.
 
 We need to update our `application_setting_implementation.rb` to point to the server that hosts the

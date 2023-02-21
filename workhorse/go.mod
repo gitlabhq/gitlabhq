@@ -7,10 +7,10 @@ require (
 	github.com/BurntSushi/toml v1.2.1
 	github.com/FZambia/sentinel v1.1.1
 	github.com/alecthomas/chroma/v2 v2.5.0
-	github.com/aws/aws-sdk-go v1.44.199
+	github.com/aws/aws-sdk-go v1.44.200
 	github.com/disintegration/imaging v1.6.2
 	github.com/getsentry/raven-go v0.2.0
-	github.com/golang-jwt/jwt/v4 v4.4.3
+	github.com/golang-jwt/jwt/v4 v4.5.0
 	github.com/golang/gddo v0.0.0-20210115222349-20d68f94ee1f
 	github.com/golang/protobuf v1.5.2
 	github.com/gomodule/redigo v2.0.0+incompatible
