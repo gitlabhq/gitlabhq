@@ -2,6 +2,8 @@ import { isEmpty } from 'lodash';
 import { s__ } from '~/locale';
 import { hasContent } from '~/lib/utils/text_utility';
 import { getDuplicateItemsFromArray } from '~/lib/utils/array_utility';
+import { validateTag, ValidationResult } from '~/lib/utils/ref_validator';
+import { i18n } from '~/releases/constants';
 
 /**
  * @param {Object} link The link to test
@@ -35,18 +37,21 @@ export const validationErrors = (state) => {
     assets: {
       links: {},
     },
+    tagNameValidation: new ValidationResult(),
   };
 
   if (!state.release) {
     return errors;
   }
 
-  if (!state.release.tagName?.trim?.().length) {
-    errors.isTagNameEmpty = true;
+  if (!state.release.tagName || typeof state.release.tagName !== 'string') {
+    errors.tagNameValidation.addValidationError(i18n.tagNameIsRequiredMessage);
+  } else {
+    errors.tagNameValidation = validateTag(state.release.tagName);
   }
 
   if (state.existingRelease) {
-    errors.existingRelease = true;
+    errors.tagNameValidation.addValidationError(i18n.tagIsAlredyInUseMessage);
   }
 
   // Each key of this object is a URL, and the value is an

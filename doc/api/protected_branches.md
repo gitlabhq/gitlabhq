@@ -297,6 +297,8 @@ Example response:
 Elements in the `allowed_to_push` / `allowed_to_merge` / `allowed_to_unprotect` array should take the
 form `{user_id: integer}`, `{group_id: integer}`, or `{access_level: integer}`. Each user must have access to the project and each group must [have this project shared](../user/project/members/share_project_with_groups.md). These access levels allow [more granular control over protected branch access](../user/project/protected_branches.md).
 
+For `allowed_to_unprotect` the access level `No access` is unavailable.
+
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/protected_branches?name=*-stable&allowed_to_push%5B%5D%5Buser_id%5D=1"
 ```
@@ -450,6 +452,8 @@ curl --request PATCH --header "PRIVATE-TOKEN: <your_access_token>" "https://gitl
 Elements in the `allowed_to_push`, `allowed_to_merge` and `allowed_to_unprotect` arrays should be one of `user_id`, `group_id` or
 `access_level`, and take the form `{user_id: integer}`, `{group_id: integer}` or
 `{access_level: integer}`.
+
+For `allowed_to_unprotect` the access level `No access` is unavailable.
 
 To update:
 

@@ -10528,7 +10528,19 @@ msgstr ""
 msgid "ComplianceReport|Less than 2 approvers"
 msgstr ""
 
+msgid "ComplianceReport|No framework"
+msgstr ""
+
+msgid "ComplianceReport|No projects found"
+msgstr ""
+
 msgid "ComplianceReport|No violations found"
+msgstr ""
+
+msgid "ComplianceReport|Unable to load the compliance framework report. Refresh the page and try again."
+msgstr ""
+
+msgid "ComplianceReport|Unable to load the compliance violations report. Refresh the page and try again."
 msgstr ""
 
 msgid "Component"
@@ -12071,9 +12083,6 @@ msgid "Created On"
 msgstr ""
 
 msgid "Created a branch and a merge request to resolve this issue."
-msgstr ""
-
-msgid "Created at"
 msgstr ""
 
 msgid "Created branch '%{branch_name}' and a merge request to resolve this issue."
@@ -28506,6 +28515,15 @@ msgstr ""
 msgid "No severity matches the provided parameter"
 msgstr ""
 
+msgid "No slash-separated component can begin with %{sequencePrefixes}"
+msgstr ""
+
+msgid "No slash-separated component can end with %{sequencePostfixes}"
+msgstr ""
+
+msgid "No slash-separated tag name component can be empty"
+msgstr ""
+
 msgid "No source selected"
 msgstr ""
 
@@ -36624,9 +36642,6 @@ msgstr ""
 msgid "Resume"
 msgstr ""
 
-msgid "Retrieving the compliance report failed. Refresh the page and try again."
-msgstr ""
-
 msgid "Retry"
 msgstr ""
 
@@ -42112,7 +42127,25 @@ msgstr ""
 msgid "Tag name"
 msgstr ""
 
+msgid "Tag name cannot be one of the following: %{names}"
+msgstr ""
+
 msgid "Tag name is required."
+msgstr ""
+
+msgid "Tag name should not be empty"
+msgstr ""
+
+msgid "Tag name should not contain any control characters"
+msgstr ""
+
+msgid "Tag name should not contain any of the following: %{substrings}"
+msgstr ""
+
+msgid "Tag name should not end with %{postfixes}"
+msgstr ""
+
+msgid "Tag name should not start with %{prefixes}"
 msgstr ""
 
 msgid "Tag push"

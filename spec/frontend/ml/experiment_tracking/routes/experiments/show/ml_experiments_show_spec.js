@@ -1,80 +1,29 @@
 import { GlAlert, GlTable, GlLink } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
-import MlExperiment from '~/ml/experiment_tracking/components/ml_experiment.vue';
+import MlExperimentsShow from '~/ml/experiment_tracking/routes/experiments/show/ml_experiments_show.vue';
 import RegistrySearch from '~/vue_shared/components/registry/registry_search.vue';
 import Pagination from '~/vue_shared/components/incubation/pagination.vue';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import * as urlHelpers from '~/lib/utils/url_utility';
+import { MOCK_START_CURSOR, MOCK_PAGE_INFO, MOCK_CANDIDATES } from './mock_data';
 
-describe('MlExperiment', () => {
+describe('MlExperimentsShow', () => {
   let wrapper;
-
-  const startCursor = 'eyJpZCI6IjE2In0';
-  const defaultPageInfo = {
-    startCursor,
-    endCursor: 'eyJpZCI6IjIifQ',
-    hasNextPage: true,
-    hasPreviousPage: true,
-  };
 
   const createWrapper = (
     candidates = [],
     metricNames = [],
     paramNames = [],
-    pageInfo = defaultPageInfo,
+    pageInfo = MOCK_PAGE_INFO,
   ) => {
-    wrapper = mountExtended(MlExperiment, {
-      provide: { candidates, metricNames, paramNames, pageInfo },
+    wrapper = mountExtended(MlExperimentsShow, {
+      propsData: { candidates, metricNames, paramNames, pageInfo },
     });
   };
 
-  const candidates = [
-    {
-      rmse: 1,
-      l1_ratio: 0.4,
-      details: 'link_to_candidate1',
-      artifact: 'link_to_artifact',
-      name: 'aCandidate',
-      created_at: '2023-01-05T14:07:02.975Z',
-      user: { username: 'root', path: '/root' },
-    },
-    {
-      auc: 0.3,
-      l1_ratio: 0.5,
-      details: 'link_to_candidate2',
-      created_at: '2023-01-05T14:07:02.975Z',
-      name: null,
-      user: null,
-    },
-    {
-      auc: 0.3,
-      l1_ratio: 0.5,
-      details: 'link_to_candidate3',
-      created_at: '2023-01-05T14:07:02.975Z',
-      name: null,
-      user: null,
-    },
-    {
-      auc: 0.3,
-      l1_ratio: 0.5,
-      details: 'link_to_candidate4',
-      created_at: '2023-01-05T14:07:02.975Z',
-      name: null,
-      user: null,
-    },
-    {
-      auc: 0.3,
-      l1_ratio: 0.5,
-      details: 'link_to_candidate5',
-      created_at: '2023-01-05T14:07:02.975Z',
-      name: null,
-      user: null,
-    },
-  ];
-
-  const createWrapperWithCandidates = (pageInfo = defaultPageInfo) => {
-    createWrapper(candidates, ['rmse', 'auc', 'mae'], ['l1_ratio'], pageInfo);
+  const createWrapperWithCandidates = (pageInfo = MOCK_PAGE_INFO) => {
+    createWrapper(MOCK_CANDIDATES, ['rmse', 'auc', 'mae'], ['l1_ratio'], pageInfo);
   };
 
   const findAlert = () => wrapper.findComponent(GlAlert);
@@ -227,21 +176,21 @@ describe('MlExperiment', () => {
     it('Passes pagination to pagination component', () => {
       createWrapperWithCandidates();
 
-      expect(findPagination().props('startCursor')).toBe(startCursor);
+      expect(findPagination().props('startCursor')).toBe(MOCK_START_CURSOR);
     });
   });
 
   describe('Candidate table', () => {
     const firstCandidateIndex = 0;
     const secondCandidateIndex = 1;
-    const firstCandidate = candidates[firstCandidateIndex];
+    const firstCandidate = MOCK_CANDIDATES[firstCandidateIndex];
 
     beforeEach(() => {
       createWrapperWithCandidates();
     });
 
     it('renders all rows', () => {
-      expect(findTableRows()).toHaveLength(candidates.length);
+      expect(findTableRows()).toHaveLength(MOCK_CANDIDATES.length);
     });
 
     it('sets the correct columns in the table', () => {

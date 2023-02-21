@@ -87,6 +87,10 @@ For example: `https://gitlab.com/gitlab-org/gitlab/-/issues/new?issuable_templat
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89810) in GitLab 15.7.
 
+NOTE:
+This feature is available only for
+[the default template](#set-a-default-template-for-merge-requests-and-issues).
+
 When you save a merge request for the first time, GitLab replaces these variables in
 your merge request template with their values:
 

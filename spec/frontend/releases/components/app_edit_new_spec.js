@@ -16,6 +16,7 @@ import AssetLinksForm from '~/releases/components/asset_links_form.vue';
 import ConfirmDeleteModal from '~/releases/components/confirm_delete_modal.vue';
 import { BACK_URL_PARAM } from '~/releases/constants';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
+import { ValidationResult } from '~/lib/utils/ref_validator';
 
 const originalRelease = originalOneReleaseForEditingQueryResponse.data.project.release;
 const originalMilestones = originalRelease.milestones;
@@ -58,6 +59,7 @@ describe('Release edit/new component', () => {
         assets: {
           links: [],
         },
+        tagNameValidation: new ValidationResult(),
       }),
       formattedReleaseNotes: () => 'these notes are formatted',
     };
@@ -99,11 +101,6 @@ describe('Release edit/new component', () => {
     mock.onGet('/api/v4/projects/8/milestones').reply(HTTP_STATUS_OK, originalMilestones);
 
     release = convertOneReleaseGraphQLResponse(originalOneReleaseForEditingQueryResponse).data;
-  });
-
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
   });
 
   const findSubmitButton = () => wrapper.find('button[type=submit]');

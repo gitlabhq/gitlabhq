@@ -3,21 +3,16 @@ import { GlTable, GlLink, GlTooltipDirective } from '@gitlab/ui';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import RegistrySearch from '~/vue_shared/components/registry/registry_search.vue';
 import { FILTERED_SEARCH_TERM } from '~/vue_shared/components/filtered_search_bar/constants';
-import {
-  LIST_KEY_CREATED_AT,
-  BASE_SORT_FIELDS,
-  METRIC_KEY_PREFIX,
-  FEATURE_NAME,
-  FEATURE_FEEDBACK_ISSUE,
-} from '~/ml/experiment_tracking/constants';
-import { s__ } from '~/locale';
+import { FEATURE_NAME, FEATURE_FEEDBACK_ISSUE } from '~/ml/experiment_tracking/constants';
 import { queryToObject, setUrlParams, visitUrl } from '~/lib/utils/url_utility';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 import KeysetPagination from '~/vue_shared/components/incubation/pagination.vue';
 import IncubationAlert from '~/vue_shared/components/incubation/incubation_alert.vue';
+import { LIST_KEY_CREATED_AT, BASE_SORT_FIELDS, METRIC_KEY_PREFIX } from './constants';
+import * as translations from './translations';
 
 export default {
-  name: 'MlExperiment',
+  name: 'MlExperimentsShow',
   components: {
     GlTable,
     GlLink,
@@ -29,7 +24,24 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  inject: ['candidates', 'metricNames', 'paramNames', 'pageInfo'],
+  props: {
+    candidates: {
+      type: Array,
+      required: true,
+    },
+    metricNames: {
+      type: Array,
+      required: true,
+    },
+    paramNames: {
+      type: Array,
+      required: true,
+    },
+    pageInfo: {
+      type: Object,
+      required: true,
+    },
+  },
   data() {
     const query = queryToObject(window.location.search);
 
@@ -54,9 +66,9 @@ export default {
       if (this.candidates.length === 0) return [];
 
       return [
-        { key: 'name', label: this.$options.i18n.nameLabel },
-        { key: 'created_at', label: this.$options.i18n.createdAtLabel },
-        { key: 'user', label: this.$options.i18n.userLabel },
+        { key: 'name', label: this.$options.i18n.NAME_LABEL },
+        { key: 'created_at', label: this.$options.i18n.CREATED_AT_LABEL },
+        { key: 'user', label: this.$options.i18n.USER_LABEL },
         ...this.paramNames,
         ...this.metricNames,
         { key: 'details', label: '' },
@@ -110,31 +122,23 @@ export default {
       this.submitFilters();
     },
   },
-  i18n: {
-    titleLabel: s__('MlExperimentTracking|Experiment candidates'),
-    emptyStateLabel: s__('MlExperimentTracking|No candidates to display'),
-    artifactsLabel: s__('MlExperimentTracking|Artifacts'),
-    detailsLabel: s__('MlExperimentTracking|Details'),
-    userLabel: s__('MlExperimentTracking|User'),
-    createdAtLabel: s__('MlExperimentTracking|Created at'),
-    nameLabel: s__('MlExperimentTracking|Name'),
-    noDataContent: s__('MlExperimentTracking|-'),
-    filterCandidatesLabel: s__('MlExperimentTracking|Filter candidates'),
+  i18n: translations,
+  constants: {
+    FEATURE_NAME,
+    FEATURE_FEEDBACK_ISSUE,
   },
-  FEATURE_NAME,
-  FEATURE_FEEDBACK_ISSUE,
 };
 </script>
 
 <template>
   <div>
     <incubation-alert
-      :feature-name="$options.FEATURE_NAME"
-      :link-to-feedback-issue="$options.FEATURE_FEEDBACK_ISSUE"
+      :feature-name="$options.constants.FEATURE_NAME"
+      :link-to-feedback-issue="$options.constants.FEATURE_FEEDBACK_ISSUE"
     />
 
     <h3>
-      {{ $options.i18n.titleLabel }}
+      {{ $options.i18n.TITLE_LABEL }}
     </h3>
 
     <registry-search
@@ -150,7 +154,7 @@ export default {
     <gl-table
       :fields="fields"
       :items="candidates"
-      :empty-text="$options.i18n.emptyStateLabel"
+      :empty-text="$options.i18n.EMPTY_STATE_LABEL"
       show-empty
       small
       class="gl-mt-0! ml-candidate-table"
@@ -165,17 +169,17 @@ export default {
           v-gl-tooltip.hover
           :href="data.value"
           target="_blank"
-          :title="$options.i18n.artifactsLabel"
-          >{{ $options.i18n.artifactsLabel }}</gl-link
+          :title="$options.i18n.ARTIFACTS_LABEL"
+          >{{ $options.i18n.ARTIFACTS_LABEL }}</gl-link
         >
-        <div v-else v-gl-tooltip.hover :title="$options.i18n.artifactsLabel">
-          {{ $options.i18n.noDataContent }}
+        <div v-else v-gl-tooltip.hover :title="$options.i18n.ARTIFACTS_LABEL">
+          {{ $options.i18n.NO_DATA_CONTENT }}
         </div>
       </template>
 
       <template #cell(details)="data">
-        <gl-link v-gl-tooltip.hover :href="data.value" :title="$options.i18n.detailsLabel">{{
-          $options.i18n.detailsLabel
+        <gl-link v-gl-tooltip.hover :href="data.value" :title="$options.i18n.DETAILS_LABEL">{{
+          $options.i18n.DETAILS_LABEL
         }}</gl-link>
       </template>
 
@@ -191,7 +195,7 @@ export default {
           :title="data.value.username"
           >@{{ data.value.username }}</gl-link
         >
-        <div v-else>{{ $options.i18n.noDataContent }}</div>
+        <div v-else>{{ $options.i18n.NO_DATA_CONTENT }}</div>
       </template>
     </gl-table>
 

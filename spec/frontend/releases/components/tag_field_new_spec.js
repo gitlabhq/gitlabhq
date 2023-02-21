@@ -9,6 +9,7 @@ import { __ } from '~/locale';
 import TagFieldNew from '~/releases/components/tag_field_new.vue';
 import createStore from '~/releases/stores';
 import createEditNewModule from '~/releases/stores/modules/edit_new';
+import { i18n } from '~/releases/constants';
 
 const TEST_TAG_NAME = 'test-tag-name';
 const TEST_TAG_MESSAGE = 'Test tag message';
@@ -210,9 +211,7 @@ describe('releases/components/tag_field_new', () => {
           store.state.editNew.existingRelease = {};
 
           await expectValidationMessageToBe('shown');
-          expect(findTagNameFormGroup().text()).toContain(
-            __('Selected tag is already in use. Choose another option.'),
-          );
+          expect(findTagNameFormGroup().text()).toContain(i18n.tagIsAlredyInUseMessage);
         });
       });
 
@@ -222,7 +221,7 @@ describe('releases/components/tag_field_new', () => {
           findTagNameDropdown().vm.$emit('hide');
 
           await expectValidationMessageToBe('shown');
-          expect(findTagNameFormGroup().text()).toContain(__('Tag name is required.'));
+          expect(findTagNameFormGroup().text()).toContain(i18n.tagNameIsRequiredMessage);
         });
       });
     });

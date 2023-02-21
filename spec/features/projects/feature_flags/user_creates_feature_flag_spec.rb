@@ -19,9 +19,10 @@ RSpec.describe 'User creates feature flag', :js do
     within_strategy_row(1) do
       select 'User IDs', from: 'Type'
       fill_in 'User IDs', with: 'user1, user2'
-      environment_plus_button.click
+
+      environment_selector.click
       environment_search_input.set('production')
-      environment_search_results.first.click
+      environment_search_results.last.click
     end
     click_button 'Create feature flag'
 
@@ -73,15 +74,15 @@ RSpec.describe 'User creates feature flag', :js do
     fill_in 'Description', with: description
   end
 
-  def environment_plus_button
-    find('.js-new-environments-dropdown')
+  def environment_selector
+    find('[data-testid="new-environment-selector"]')
   end
 
   def environment_search_input
-    find('.js-new-environments-dropdown input')
+    environment_selector.find('input')
   end
 
   def environment_search_results
-    all('.js-new-environments-dropdown button.dropdown-item')
+    environment_selector.all('.dropdown-item')
   end
 end

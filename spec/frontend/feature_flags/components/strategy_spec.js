@@ -189,9 +189,10 @@ describe('Feature flags strategy', () => {
 
       it('should display all selected scopes', async () => {
         const dropdown = wrapper.findComponent(NewEnvironmentsDropdown);
-        dropdown.vm.$emit('add', 'production');
-        dropdown.vm.$emit('add', 'staging');
-        await nextTick();
+
+        await dropdown.vm.$emit('add', 'production');
+        await dropdown.vm.$emit('add', 'staging');
+
         const tokens = wrapper.findAllComponents(GlToken);
         expect(tokens).toHaveLength(2);
         expect(tokens.at(0).text()).toBe('production');
