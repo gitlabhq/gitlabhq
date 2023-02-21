@@ -1,25 +1,23 @@
 <script>
-import { GlAvatar, GlButton, GlDropdown, GlIcon, GlTooltipDirective } from '@gitlab/ui';
+import { GlButton, GlIcon, GlTooltipDirective } from '@gitlab/ui';
 import { __ } from '~/locale';
 import SafeHtml from '~/vue_shared/directives/safe_html';
-import NewNavToggle from '~/nav/components/new_nav_toggle.vue';
 import logo from '../../../../views/shared/_logo.svg';
 import { toggleSuperSidebarCollapsed } from '../super_sidebar_collapsed_state_manager';
 import CreateMenu from './create_menu.vue';
 import Counter from './counter.vue';
 import MergeRequestMenu from './merge_request_menu.vue';
+import UserMenu from './user_menu.vue';
 
 export default {
   logo,
   components: {
-    GlAvatar,
     GlButton,
-    GlDropdown,
     GlIcon,
     CreateMenu,
-    NewNavToggle,
     Counter,
     MergeRequestMenu,
+    UserMenu,
   },
   i18n: {
     collapseSidebar: __('Collapse sidebar'),
@@ -32,7 +30,7 @@ export default {
     GlTooltip: GlTooltipDirective,
     SafeHtml,
   },
-  inject: ['rootPath', 'toggleNewNavEndpoint'],
+  inject: ['rootPath'],
   props: {
     sidebarData: {
       type: Object,
@@ -64,17 +62,7 @@ export default {
       <button class="gl-border-none">
         <gl-icon name="search" class="gl-vertical-align-middle" />
       </button>
-      <gl-dropdown data-testid="user-dropdown" data-qa-selector="user_menu" variant="link" no-caret>
-        <template #button-content>
-          <gl-avatar
-            :entity-name="sidebarData.name"
-            :src="sidebarData.avatar_url"
-            :size="32"
-            data-qa-selector="user_avatar_content"
-          />
-        </template>
-        <new-nav-toggle :endpoint="toggleNewNavEndpoint" enabled />
-      </gl-dropdown>
+      <user-menu :data="sidebarData" />
     </div>
     <div class="gl-display-flex gl-justify-content-space-between gl-px-3 gl-py-2 gl-gap-2">
       <counter

@@ -44,7 +44,7 @@ export default {
         return this.queryVariables;
       },
       update(data) {
-        return data[this.graphqlResource].packages;
+        return data[this.graphqlResource]?.packages ?? {};
       },
       skip() {
         return !this.sort;

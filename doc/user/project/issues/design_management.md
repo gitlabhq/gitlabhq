@@ -227,6 +227,19 @@ New discussion threads get different pin numbers, which you can use to refer to 
 In GitLab 12.5 and later, new discussions are output to the issue activity,
 so that everyone involved can participate in the discussion.
 
+## Delete a comment from a design
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385100) in GitLab 15.9.
+
+Prerequisites:
+
+- You must have at least the Reporter role for the project.
+
+To delete a comment from a design:
+
+1. On the comment you want to delete, select **More actions** **{ellipsis_v}** **> Delete comment**.
+1. On the confirmation dialog box, select **Delete comment**.
+
 ## Resolve a discussion thread on a design
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13049) in GitLab 13.1.

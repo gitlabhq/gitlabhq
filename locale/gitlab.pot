@@ -1231,6 +1231,9 @@ msgstr ""
 msgid "%{user} created an issue: %{issue_link}"
 msgstr ""
 
+msgid "%{user} user’s menu"
+msgstr ""
+
 msgid "%{value} is not included in the list"
 msgstr ""
 
@@ -4712,6 +4715,9 @@ msgid "An unknown error occurred."
 msgstr ""
 
 msgid "Analytics"
+msgstr ""
+
+msgid "Analytics|Analytics dashboards"
 msgstr ""
 
 msgid "Analyze your dependencies for known vulnerabilities."
@@ -14351,10 +14357,13 @@ msgstr ""
 msgid "DesignManagement|Could not create new discussion. Please try again."
 msgstr ""
 
-msgid "DesignManagement|Could not update discussion. Please try again."
+msgid "DesignManagement|Could not delete comment. Please try again."
 msgstr ""
 
-msgid "DesignManagement|Could not update note. Please try again."
+msgid "DesignManagement|Could not update comment. Please try again."
+msgstr ""
+
+msgid "DesignManagement|Could not update discussion. Please try again."
 msgstr ""
 
 msgid "DesignManagement|Deselect all"
@@ -28580,6 +28589,9 @@ msgstr ""
 msgid "NorthstarNavigation|New navigation"
 msgstr ""
 
+msgid "NorthstarNavigation|Provide feedback"
+msgstr ""
+
 msgid "NorthstarNavigation|Toggle new navigation"
 msgstr ""
 
@@ -40467,6 +40479,9 @@ msgid "Something went wrong trying to load issue contacts."
 msgstr ""
 
 msgid "Something went wrong when deleting a comment. Please try again"
+msgstr ""
+
+msgid "Something went wrong when deleting a comment. Please try again."
 msgstr ""
 
 msgid "Something went wrong when reordering designs. Please try again"

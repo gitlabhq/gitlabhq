@@ -370,10 +370,10 @@ scope.
 | GitLab Rails app | `%15.8` | Create database migration to add `config` column to `ci_runner_machines` table. |
 | GitLab Runner    | `%15.9` | Start sending `system_id` value in `POST /jobs/request` request and other follow-up requests that require identifying the unique system. |
 | GitLab Rails app | `%15.9` | Create service similar to `StaleGroupRunnersPruneCronWorker` service to clean up `ci_runner_machines` records instead of `ci_runners` records.<br/>Existing service continues to exist but focuses only on legacy runners. |
-| GitLab Rails app | `%15.9` | Enabled `create_runner_machine` [with a flag](../../../administration/feature_flags.md) named `flag_name`. |
+| GitLab Rails app | `%15.9` | Implement the `create_runner_machine` [feature flag](../../../administration/feature_flags.md). |
 | GitLab Rails app | `%15.9` | Create `ci_runner_machines` record in `POST /runners/verify` request if the runner token is prefixed with `glrt-`. |
 | GitLab Rails app | `%15.9` | Use runner token + `system_id` JSON parameters in `POST /jobs/request` request in the [heartbeat request](https://gitlab.com/gitlab-org/gitlab/blob/c73c96a8ffd515295842d72a3635a8ae873d688c/lib/api/ci/helpers/runner.rb#L14-20) to update the `ci_runner_machines` cache/table. |
-| GitLab Rails app | `%15.9` | Enable runner creation workflow (`create_runner_workflow`) [with a flag](../../../administration/feature_flags.md) named `flag_name`. |
+| GitLab Rails app | `%15.9` | Implement the `create_runner_workflow`  [feature flag](../../../administration/feature_flags.md). |
 | GitLab Rails app | `%15.9` | Implement `create_{instance|group|project}_runner` permissions. |
 | GitLab Rails app | `%15.9` | Rename `ci_runner_machines.machine_xid` column to `system_xid` to be consistent with `system_id` passed in APIs. |
 | GitLab Rails app | `%15.10` | Drop `ci_runner_machines.machine_xid` column. |

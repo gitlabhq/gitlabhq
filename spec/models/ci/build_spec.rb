@@ -5788,12 +5788,6 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       expect(build.token).to be_nil
       expect(build.changes).to be_empty
     end
-
-    it 'does not remove the token when FF is disabled' do
-      stub_feature_flags(remove_job_token_on_completion: false)
-
-      expect { build.remove_token! }.not_to change(build, :token)
-    end
   end
 
   describe 'metadata partitioning', :ci_partitioning do

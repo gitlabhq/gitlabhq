@@ -58,7 +58,7 @@ Button tags requires a `type` attribute according to the [W3C HTML specification
 
 ### Blank target
 
-Arbitrarily opening links in a new tab is not recommended, so refer to the [Pajamas guidelines on links](https://design.gitlab.com/product-foundations/interaction/#links) when considering adding `target="_blank"` to links.
+Arbitrarily opening links in a new tab is not recommended, so refer to the [Pajamas guidelines on links](https://design.gitlab.com/components/link) when considering adding `target="_blank"` to links.
 
 When using `target="_blank"` with `a` tags, you must also add the `rel="noopener noreferrer"` attribute. This prevents a security vulnerability [documented by JitBit](https://www.jitbit.com/alexblog/256-targetblank---the-most-underestimated-vulnerability-ever/).
 

@@ -468,4 +468,14 @@ RSpec.describe UsersHelper do
       expect(data[:paths]).to match_schema('entities/admin_users_data_attributes_paths')
     end
   end
+
+  describe '#trials_link_url' do
+    it 'returns the correct URL' do
+      if Gitlab.ee?
+        expect(trials_link_url).to eq('/-/trial_registrations/new?glm_content=top-right-dropdown&glm_source=gitlab.com')
+      else
+        expect(trials_link_url).to eq('https://about.gitlab.com/free-trial/')
+      end
+    end
+  end
 end

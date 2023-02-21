@@ -1,3 +1,5 @@
+import invalidUrl from '~/lib/utils/invalid_url';
+
 export const createNewMenuGroups = [
   {
     name: 'This group',
@@ -79,4 +81,32 @@ export const sidebarData = {
   show_version_check: false,
   gitlab_version: { major: 16, minor: 0 },
   gitlab_version_check: { severity: 'success' },
+};
+
+export const userMenuMockStatus = {
+  can_update: false,
+  busy: false,
+  customized: false,
+  emoji: 'art',
+  message: 'Working on user menu in super sidebar',
+  availability: 'busy',
+  clear_after: '2023-02-09 20:06:35 UTC',
+};
+
+export const userMenuMockData = {
+  name: 'Orange Fox',
+  username: 'thefox',
+  avatar_url: invalidUrl,
+  has_link_to_profile: true,
+  link_to_profile: '/thefox',
+  status: userMenuMockStatus,
+  trial: {
+    has_start_trial: false,
+  },
+  settings: {
+    profile_path: invalidUrl,
+    profile_preferences_path: invalidUrl,
+  },
+  can_sign_out: false,
+  sign_out_link: invalidUrl,
 };

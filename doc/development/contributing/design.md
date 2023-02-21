@@ -12,7 +12,7 @@ Follow these guidelines when contributing or reviewing design and user interface
 advice and best practices for code review in general.
 
 The basis for most of these guidelines is [Pajamas](https://design.gitlab.com/),
-GitLab design system. We encourage you to [contribute to Pajamas](https://design.gitlab.com/get-started/contribute/)
+GitLab design system. We encourage you to [contribute to Pajamas](https://design.gitlab.com/get-started/contributing/)
 with additions and improvements.
 
 ## Merge request reviews

@@ -198,9 +198,13 @@ describe('PackagesListApp', () => {
     });
   });
 
-  describe('empty state', () => {
+  describe.each`
+    description         | resolverResponse
+    ${'empty response'} | ${packagesListQuery({ extend: { nodes: [] } })}
+    ${'error response'} | ${{ data: { group: null } }}
+  `(`$description renders empty state`, ({ resolverResponse }) => {
     beforeEach(() => {
-      const resolver = jest.fn().mockResolvedValue(packagesListQuery({ extend: { nodes: [] } }));
+      const resolver = jest.fn().mockResolvedValue(resolverResponse);
       mountComponent({ resolver });
 
       return waitForFirstRequest();

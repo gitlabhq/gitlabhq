@@ -756,9 +756,7 @@ module Ci
     end
 
     def remove_token!
-      if Feature.enabled?(:remove_job_token_on_completion, project)
-        update!(token_encrypted: nil)
-      end
+      update!(token_encrypted: nil)
     end
 
     # acts_as_taggable uses this method create/remove tags with contexts

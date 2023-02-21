@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import { initStatusTriggers } from '../header';
 import {
   bindSuperSidebarCollapsedEvents,
   initSuperSidebarCollapsedState,
@@ -31,3 +32,5 @@ export const initSuperSidebar = () => {
     },
   });
 };
+
+requestIdleCallback(initStatusTriggers);

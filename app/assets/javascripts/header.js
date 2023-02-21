@@ -28,7 +28,7 @@ export default function initTodoToggle() {
   });
 }
 
-function initStatusTriggers() {
+export function initStatusTriggers() {
   const setStatusModalTriggerEl = document.querySelector('.js-set-status-modal-trigger');
 
   if (setStatusModalTriggerEl) {

@@ -1,6 +1,6 @@
 import { ApolloMutation } from 'vue-apollo';
 import { nextTick } from 'vue';
-import { GlAvatar, GlAvatarLink } from '@gitlab/ui';
+import { GlAvatar, GlAvatarLink, GlDropdown } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import DesignNote from '~/design_management/components/design_notes/design_note.vue';
 import DesignReplyForm from '~/design_management/components/design_notes/design_reply_form.vue';
@@ -38,6 +38,8 @@ describe('Design note component', () => {
   const findReplyForm = () => wrapper.findComponent(DesignReplyForm);
   const findEditButton = () => wrapper.findByTestId('note-edit');
   const findNoteContent = () => wrapper.findByTestId('note-text');
+  const findDropdown = () => wrapper.findComponent(GlDropdown);
+  const findDeleteNoteButton = () => wrapper.find('[data-testid="delete-note-button"]');
 
   function createComponent(props = {}, data = { isEditing: false }) {
     wrapper = shallowMountExtended(DesignNote, {
@@ -112,6 +114,14 @@ describe('Design note component', () => {
     expect(findEditButton().exists()).toBe(false);
   });
 
+  it('should not display a dropdown if user does not have a permission to delete note', () => {
+    createComponent({
+      note,
+    });
+
+    expect(findDropdown().exists()).toBe(false);
+  });
+
   describe('when user has a permission to edit note', () => {
     it('should open an edit form on edit button click', async () => {
       createComponent({
@@ -168,5 +178,39 @@ describe('Design note component', () => {
         expect(findNoteContent().exists()).toBe(true);
       });
     });
+  });
+
+  describe('when user has a permission to delete note', () => {
+    it('should display a dropdown', () => {
+      createComponent({
+        note: {
+          ...note,
+          userPermissions: {
+            adminNote: true,
+          },
+        },
+      });
+
+      expect(findDropdown().exists()).toBe(true);
+    });
+  });
+
+  it('should emit `delete-note` event with proper payload when delete note button is clicked', async () => {
+    const payload = {
+      ...note,
+      userPermissions: {
+        adminNote: true,
+      },
+    };
+
+    createComponent({
+      note: {
+        ...payload,
+      },
+    });
+
+    findDeleteNoteButton().vm.$emit('click');
+
+    expect(wrapper.emitted()).toEqual({ 'delete-note': [[{ ...payload }]] });
   });
 });

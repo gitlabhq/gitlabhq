@@ -345,7 +345,7 @@ Keep in mind that:
 - When you add `:hover` styles, in most cases you should add `:focus` styles too so that the styling is applied for both mouse **and** keyboard users.
 - If you remove an interactive element's `outline`, make sure you maintain visual focus state in another way such as with `box-shadow`.
 
-See the [Pajamas Keyboard-only page](https://design.gitlab.com/accessibility-audits/keyboard-only/) for more detail.
+See the [Pajamas Keyboard-only page](https://design.gitlab.com/accessibility/keyboard-only) for more detail.
 
 ## `tabindex`
 

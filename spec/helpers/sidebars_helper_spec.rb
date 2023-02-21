@@ -72,6 +72,7 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
 
     before do
       allow(helper).to receive(:current_user) { user }
+      allow(helper).to receive(:can?).and_return(true)
       allow(panel).to receive(:super_sidebar_menu_items).and_return(nil)
       allow(panel).to receive(:super_sidebar_context_header).and_return(nil)
       Rails.cache.write(['users', user.id, 'assigned_open_issues_count'], 1)
@@ -88,6 +89,28 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
         name: user.name,
         username: user.username,
         avatar_url: user.avatar_url,
+        has_link_to_profile: helper.current_user_menu?(:profile),
+        link_to_profile: user_url(user),
+        status: {
+          can_update: helper.can?(user, :update_user_status, user),
+          busy: user.status&.busy?,
+          customized: user.status&.customized?,
+          availability: user.status&.availability.to_s,
+          emoji: user.status&.emoji,
+          message: user.status&.message_html&.html_safe,
+          clear_after: user.status&.clear_status_at.to_s
+        },
+        trial: {
+          has_start_trial: helper.current_user_menu?(:start_trial),
+          url: helper.trials_link_url
+        },
+        settings: {
+          has_settings: helper.current_user_menu?(:settings),
+          profile_path: profile_path,
+          profile_preferences_path: profile_preferences_path
+        },
+        can_sign_out: helper.current_user_menu?(:sign_out),
+        sign_out_link: destroy_user_session_path,
         assigned_open_issues_count: 1,
         todos_pending_count: 3,
         issues_dashboard_path: issues_dashboard_path(assignee_username: user.username),
@@ -145,7 +168,8 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
           items: array_including(
             { href: "/projects/new", text: "New project/repository" },
             { href: "/groups/new#create-group-pane", text: "New subgroup" },
-            { href: "/groups/#{group.full_path}/-/group_members", text: "Invite members" }
+            { href: "/groups/#{group.full_path}/-/group_members",
+              text: "Invite members" }
           )
         ),
         a_hash_including(

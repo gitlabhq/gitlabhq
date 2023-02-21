@@ -1,5 +1,5 @@
 <script>
-import { GlBadge, GlToggle } from '@gitlab/ui';
+import { GlBadge, GlToggle, GlDisclosureDropdownItem } from '@gitlab/ui';
 import axios from '~/lib/utils/axios_utils';
 import { createAlert } from '~/flash';
 import { s__ } from '~/locale';
@@ -18,6 +18,7 @@ export default {
   components: {
     GlBadge,
     GlToggle,
+    GlDisclosureDropdownItem,
   },
   props: {
     enabled: {
@@ -27,6 +28,11 @@ export default {
     endpoint: {
       type: String,
       required: true,
+    },
+    newNavigation: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
   data() {
@@ -61,7 +67,18 @@ export default {
 </script>
 
 <template>
-  <li>
+  <gl-disclosure-dropdown-item v-if="newNavigation" @action="toggleNav">
+    <div class="gl-new-dropdown-item-content">
+      <div
+        class="gl-new-dropdown-item-text-wrapper gl-display-flex! gl-justify-content-space-between gl-align-items-center gl-py-2!"
+      >
+        {{ $options.i18n.toggleMenuItemLabel }}
+        <gl-toggle :value="isEnabled" :label="$options.i18n.toggleLabel" label-position="hidden" />
+      </div>
+    </div>
+  </gl-disclosure-dropdown-item>
+
+  <li v-else>
     <div
       class="gl-px-4 gl-py-2 gl-display-flex gl-justify-content-space-between gl-align-items-center"
     >

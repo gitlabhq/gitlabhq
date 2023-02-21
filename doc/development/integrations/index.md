@@ -306,7 +306,7 @@ When developing a new integration, we also recommend you gate the availability b
 
 You can provide help text in the integration form, including links to off-site documentation,
 as described above in [Customize the frontend form](#customize-the-frontend-form). Refer to
-our [usability guidelines](https://design.gitlab.com/usability/helping-users/) for help text.
+our [usability guidelines](https://design.gitlab.com/usability/contextual-help) for help text.
 
 For more detailed documentation, provide a page in `doc/user/project/integrations`,
 and link it from the [Integrations overview](../../user/project/integrations/index.md).

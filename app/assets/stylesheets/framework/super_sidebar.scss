@@ -1,3 +1,16 @@
+@mixin active-toggle {
+  @include gl-bg-gray-50;
+  mix-blend-mode: multiply;
+
+  .gl-dark & {
+    mix-blend-mode: screen;
+  }
+
+  .notification {
+    border-color: $gray-50;
+  }
+}
+
 .super-sidebar {
   @include gl-fixed;
   @include gl-top-0;
@@ -28,6 +41,30 @@
     .tanuki-logo {
       @include gl-vertical-align-middle;
     }
+
+    .user-bar-item {
+      @include gl-rounded-base;
+      @include gl-p-2;
+      @include gl-bg-transparent;
+      @include gl-border-none;
+
+
+      &:hover,
+      &:focus,
+      &:active {
+        @include active-toggle;
+      }
+
+      &:focus,
+      &:active {
+        @include gl-focus;
+      }
+    }
+
+    .gl-new-dropdown-toggle[aria-expanded='true'],
+    .gl-new-dropdown-custom-toggle[aria-expanded='true'] .user-bar-item {
+      @include active-toggle;
+    }
   }
 
   .counter .gl-icon {
@@ -36,12 +73,16 @@
 
   .counter:hover,
   .counter:focus,
-  .gl-dropdown-custom-toggle:hover .counter,
-  .gl-dropdown-custom-toggle:focus .counter,
-  .gl-dropdown-custom-toggle[aria-expanded='true'] .counter {
+  .gl-new-dropdown-custom-toggle:hover .counter,
+  .gl-new-dropdown-custom-toggle:focus .counter,
+  .gl-new-dropdown-custom-toggle[aria-expanded='true'] .counter {
     background-color: $gray-50;
     border-color: transparent;
     mix-blend-mode: multiply;
+
+    .gl-dark & {
+      mix-blend-mode: screen;
+    }
 
     .gl-icon {
       color: var(--gray-700, $gray-700);
@@ -55,7 +96,6 @@
   }
 
   .btn-with-notification {
-    mix-blend-mode: unset !important; // Our tertiary buttons otherwise use another mix-blend mode, making border-color semi-transparent.
     position: relative;
 
     .notification {
@@ -74,6 +114,18 @@
     &:focus {
       .notification {
         border-color: $gray-50; // Same as the button's hover background color.
+      }
+    }
+  }
+
+  .gl-new-dropdown-custom-toggle {
+    .btn-with-notification {
+      mix-blend-mode: unset; // Our tertiary buttons otherwise use another mix-blend mode, making border-color semi-transparent.
+    }
+
+    &[aria-expanded='true'] {
+      .btn-with-notification {
+        @include active-toggle;
       }
     }
   }
@@ -116,4 +168,14 @@
 
 .with-performance-bar .super-sidebar {
   top: $performance-bar-height;
+}
+
+.gl-dark {
+  .super-sidebar {
+    .gl-new-dropdown-custom-toggle {
+      .btn-with-notification.btn-with-notification {
+        mix-blend-mode: unset;
+      }
+    }
+  }
 }

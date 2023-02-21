@@ -143,8 +143,8 @@ describe('Design management design sidebar component', () => {
       expect(findResolvedCommentsToggle().props('visible')).toBe(true);
     });
 
-    it('sends a mutation to set an active discussion when clicking on a discussion', () => {
-      findFirstDiscussion().trigger('click');
+    it('emits correct event to send a mutation to set an active discussion when clicking on a discussion', () => {
+      findFirstDiscussion().vm.$emit('update-active-discussion');
 
       expect(mutate).toHaveBeenCalledWith(updateActiveDiscussionMutationVariables);
     });

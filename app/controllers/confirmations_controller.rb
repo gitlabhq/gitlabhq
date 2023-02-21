@@ -25,7 +25,7 @@ class ConfirmationsController < Devise::ConfirmationsController
     stored_location_for(resource) || dashboard_projects_path
   end
 
-  def after_confirmation_path_for(resource_name, resource)
+  def after_confirmation_path_for(_resource_name, resource)
     accept_pending_invitations
 
     # incoming resource can either be a :user or an :email
@@ -34,8 +34,12 @@ class ConfirmationsController < Devise::ConfirmationsController
     else
       Gitlab::AppLogger.info("Email Confirmed: username=#{resource.username} email=#{resource.email} ip=#{request.remote_ip}")
       flash[:notice] = flash[:notice] + _(" Please sign in.")
-      new_session_path(:user, anchor: 'login-pane', invite_email: resource.email)
+      sign_in_path(resource)
     end
+  end
+
+  def sign_in_path(user)
+    new_session_path(:user, anchor: 'login-pane', invite_email: resource.email)
   end
 
   def check_recaptcha

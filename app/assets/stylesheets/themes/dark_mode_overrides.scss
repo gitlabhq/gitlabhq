@@ -143,6 +143,17 @@ body.gl-dark {
       background-color: $gray-200;
     }
   }
+
+  .gl-new-dropdown-item {
+    &:active,
+    &:hover,
+    &:focus,
+    &:focus:active {
+      .gl-new-dropdown-item-content {
+        @include gl-bg-gray-10;
+      }
+    }
+  }
 }
 
 // Some hacks and overrides for things that don't properly support dark mode

@@ -69,7 +69,7 @@ banner on top of the component examples indicates that:
 > component.
 
 For example, at the time of writing, this type of warning can be observed for
-[all form components](https://design.gitlab.com/components/form/). It, however,
+all form components, such as the [checkbox](https://design.gitlab.com/components/checkbox). It, however,
 doesn't imply that the component should not be used.
 
 GitLab always asks to use `<gl-*>` components whenever a suitable component exists.

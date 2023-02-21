@@ -174,7 +174,7 @@ Errors return a value of `-1`.
 
 WARNING:
 This functionality estimates a distinct count of a specific ActiveRecord_Relation in a given column,
-which uses the [HyperLogLog](http://algo.inria.fr/flajolet/Publications/FlFuGaMe07.pdf) algorithm.
+which uses the [HyperLogLog](https://static.googleusercontent.com/media/research.google.com/en//pubs/archive/40671.pdf) algorithm.
 As the HyperLogLog algorithm is probabilistic, the **results always include error**.
 The highest encountered error rate is 4.9%.
 

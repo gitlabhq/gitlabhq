@@ -41,6 +41,28 @@ module SidebarsHelper
       name: user.name,
       username: user.username,
       avatar_url: user.avatar_url,
+      has_link_to_profile: current_user_menu?(:profile),
+      link_to_profile: user_url(user),
+      status: {
+        can_update: can?(current_user, :update_user_status, current_user),
+        busy: user.status&.busy?,
+        customized: user.status&.customized?,
+        availability: user.status&.availability.to_s,
+        emoji: user.status&.emoji,
+        message: user.status&.message_html&.html_safe,
+        clear_after: user.status&.clear_status_at.to_s
+      },
+      trial: {
+        has_start_trial: current_user_menu?(:start_trial),
+        url: trials_link_url
+      },
+      settings: {
+        has_settings: current_user_menu?(:settings),
+        profile_path: profile_path,
+        profile_preferences_path: profile_preferences_path
+      },
+      can_sign_out: current_user_menu?(:sign_out),
+      sign_out_link: destroy_user_session_path,
       assigned_open_issues_count: user.assigned_open_issues_count,
       todos_pending_count: user.todos_pending_count,
       issues_dashboard_path: issues_dashboard_path(assignee_username: user.username),

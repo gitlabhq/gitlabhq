@@ -168,6 +168,10 @@ module UsersHelper
     user.public_email.present?
   end
 
+  def trials_link_url
+    'https://about.gitlab.com/free-trial/'
+  end
+
   private
 
   def admin_users_paths
@@ -209,10 +213,6 @@ module UsersHelper
     end
 
     tabs
-  end
-
-  def trials_link_url
-    'https://about.gitlab.com/free-trial/'
   end
 
   def trials_allowed?(user)

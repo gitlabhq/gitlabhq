@@ -39,8 +39,8 @@ Each event is defined in a separate YAML file consisting of the following fields
 | `product_category`     | no       | The [product category](https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/data/categories.yml) for the event.                                                                         |
 | `milestone`            | no       | The milestone when the event is introduced.                                                                                                                                                 |
 | `introduced_by_url`    | no       | The URL to the merge request that introduced the event.                                                                                                                                     |
-| `distributions`        | yes      | The [distributions](https://about.gitlab.com/handbook/marketing/strategic-marketing/tiers/#definitions) where the tracked feature is available. Can be set to one or more of `ce` or `ee`.  |
-| `tiers`                | yes      | The [tiers]( https://about.gitlab.com/handbook/marketing/strategic-marketing/tiers/) where the tracked feature is available. Can be set to one or more of `free`, `premium`, or `ultimate`. |
+| `distributions`        | yes      | The [distributions](https://about.gitlab.com/handbook/marketing/brand-and-product-marketing/product-and-solution-marketing/tiers/#definitions) where the tracked feature is available. Can be set to one or more of `ce` or `ee`.  |
+| `tiers`                | yes      | The [tiers](https://about.gitlab.com/handbook/marketing/brand-and-product-marketing/product-and-solution-marketing/tiers/) where the tracked feature is available. Can be set to one or more of `free`, `premium`, or `ultimate`. |
 
 ### Example event definition
 

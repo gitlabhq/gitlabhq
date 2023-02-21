@@ -41,6 +41,7 @@ import {
   DESIGN_VERSION_NOT_EXIST_ERROR,
   UPDATE_NOTE_ERROR,
   TOGGLE_TODO_ERROR,
+  DELETE_NOTE_ERROR,
   designDeletionError,
 } from '../../utils/error_messages';
 import { trackDesignDetailView, servicePingDesignDetailView } from '../../utils/tracking';
@@ -263,6 +264,9 @@ export default {
     onUpdateNoteError(e) {
       this.onError(UPDATE_NOTE_ERROR, e);
     },
+    onDeleteNoteError(e) {
+      this.onError(DELETE_NOTE_ERROR, e);
+    },
     onDesignDiscussionError(e) {
       this.onError(ADD_DISCUSSION_COMMENT_ERROR, e);
     },
@@ -324,8 +328,8 @@ export default {
       const diffNoteGid = noteId ? toDiffNoteGid(noteId) : undefined;
       return this.updateActiveDiscussion(diffNoteGid, ACTIVE_DISCUSSION_SOURCE_TYPES.url);
     },
-    toggleResolvedComments() {
-      this.resolvedDiscussionsExpanded = !this.resolvedDiscussionsExpanded;
+    toggleResolvedComments(newValue) {
+      this.resolvedDiscussionsExpanded = newValue;
     },
     setMaxScale(event) {
       this.maxScale = 1 / event;
@@ -397,6 +401,7 @@ export default {
       @onDesignDiscussionError="onDesignDiscussionError"
       @onCreateImageDiffNoteError="onCreateImageDiffNoteError"
       @updateNoteError="onUpdateNoteError"
+      @deleteNoteError="onDeleteNoteError"
       @resolveDiscussionError="onResolveDiscussionError"
       @toggleResolvedComments="toggleResolvedComments"
       @todoError="onTodoError"

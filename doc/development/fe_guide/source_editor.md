@@ -35,7 +35,7 @@ Vue component, but the integration of Source Editor is generally straightforward
    const editor = new SourceEditor({
      // Editor Options.
      // The list of all accepted options can be found at
-     // https://microsoft.github.io/monaco-editor/api/enums/monaco.editor.EditorOption.html
+     // https://microsoft.github.io/monaco-editor/docs.html
    });
    ```
 
@@ -61,7 +61,7 @@ An instance of Source Editor accepts the following configuration options:
 ## API
 
 The editor uses the same public API as
-[provided by Monaco editor](https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.IStandaloneCodeEditor.html)
+[provided by Monaco editor](https://microsoft.github.io/monaco-editor/docs.html)
 with additional functions on the instance level:
 
 | Function              | Arguments | Description
