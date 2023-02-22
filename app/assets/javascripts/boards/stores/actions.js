@@ -286,8 +286,8 @@ export default {
         variables,
       })
       .then(({ data }) => {
-        const errors = data[boardType]?.errors;
-        const milestones = data[boardType]?.milestones.nodes;
+        const errors = data.workspace?.errors;
+        const milestones = data.workspace?.milestones.nodes;
 
         if (errors?.[0]) {
           throw new Error(errors[0]);

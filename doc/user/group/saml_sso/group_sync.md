@@ -22,10 +22,7 @@ For a demo of Group Sync using Azure, see [Demo: SAML Group Sync](https://youtu.
 ## Configure SAML Group Sync
 
 NOTE:
-You must include the SAML configuration block on all Sidekiq nodes in addition to Rails application nodes if you:
-
-- Use SAML Group Sync.
-- Have multiple GitLab nodes, for example in a distributed or highly available architecture.
+You must include the SAML configuration block on all Sidekiq nodes in addition to Rails application nodes if you use SAML Group Sync and have multiple GitLab nodes, for example in a distributed or highly available architecture.
 
 NOTE:
 SAML Group Sync is only supported for the [SAML provider named `saml`](../../../integration/saml.md#configure-gitlab-to-use-multiple-saml-idps).

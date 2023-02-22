@@ -5,7 +5,6 @@ import { clearDraft } from '~/lib/utils/autosave';
 import Tracking from '~/tracking';
 import { ASC } from '~/notes/constants';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import { updateCommentState } from '~/work_items/graphql/cache_utils';
 import { getWorkItemQuery } from '../../utils';
 import createNoteMutation from '../../graphql/notes/create_work_item_note.mutation.graphql';
 import { TRACKING_CATEGORY_SHOW, i18n } from '../../constants';
@@ -142,7 +141,6 @@ export default {
     async updateWorkItem(commentText) {
       this.isSubmitting = true;
       this.$emit('replying', commentText);
-      const { queryVariables, fetchByIid } = this;
 
       try {
         this.track('add_work_item_comment');
@@ -160,7 +158,6 @@ export default {
             if (createNoteData.data?.createNote?.errors?.length) {
               throw new Error(createNoteData.data?.createNote?.errors[0]);
             }
-            updateCommentState(store, createNoteData, fetchByIid, queryVariables);
           },
         });
         clearDraft(this.autosaveKey);

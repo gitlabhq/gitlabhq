@@ -13,6 +13,9 @@ import ActivityFilter from '~/work_items/components/notes/activity_filter.vue';
 import workItemNotesQuery from '~/work_items/graphql/notes/work_item_notes.query.graphql';
 import workItemNotesByIidQuery from '~/work_items/graphql/notes/work_item_notes_by_iid.query.graphql';
 import deleteWorkItemNoteMutation from '~/work_items/graphql/notes/delete_work_item_notes.mutation.graphql';
+import workItemNoteCreatedSubscription from '~/work_items/graphql/notes/work_item_note_created.subscription.graphql';
+import workItemNoteUpdatedSubscription from '~/work_items/graphql/notes/work_item_note_updated.subscription.graphql';
+import workItemNoteDeletedSubscription from '~/work_items/graphql/notes/work_item_note_deleted.subscription.graphql';
 import { DEFAULT_PAGE_SIZE_NOTES, WIDGET_TYPE_NOTES } from '~/work_items/constants';
 import { ASC, DESC } from '~/notes/constants';
 import {
@@ -21,6 +24,9 @@ import {
   mockWorkItemNotesByIidResponse,
   mockMoreWorkItemNotesResponse,
   mockWorkItemNotesResponseWithComments,
+  workItemNotesCreateSubscriptionResponse,
+  workItemNotesUpdateSubscriptionResponse,
+  workItemNotesDeleteSubscriptionResponse,
 } from '../mock_data';
 
 const mockWorkItemId = workItemQueryResponse.data.workItem.id;
@@ -73,6 +79,15 @@ describe('WorkItemNotes component', () => {
   const deleteWorkItemNoteMutationSuccessHandler = jest.fn().mockResolvedValue({
     data: { destroyNote: { note: null, __typename: 'DestroyNote' } },
   });
+  const notesCreateSubscriptionHandler = jest
+    .fn()
+    .mockResolvedValue(workItemNotesCreateSubscriptionResponse);
+  const notesUpdateSubscriptionHandler = jest
+    .fn()
+    .mockResolvedValue(workItemNotesUpdateSubscriptionResponse);
+  const notesDeleteSubscriptionHandler = jest
+    .fn()
+    .mockResolvedValue(workItemNotesDeleteSubscriptionResponse);
   const errorHandler = jest.fn().mockRejectedValue('Houston, we have a problem');
 
   const createComponent = ({
@@ -86,6 +101,9 @@ describe('WorkItemNotes component', () => {
         [workItemNotesQuery, defaultWorkItemNotesQueryHandler],
         [workItemNotesByIidQuery, workItemNotesByIidQueryHandler],
         [deleteWorkItemNoteMutation, deleteWINoteMutationHandler],
+        [workItemNoteCreatedSubscription, notesCreateSubscriptionHandler],
+        [workItemNoteUpdatedSubscription, notesUpdateSubscriptionHandler],
+        [workItemNoteDeletedSubscription, notesDeleteSubscriptionHandler],
       ]),
       propsData: {
         workItemId,
@@ -333,5 +351,32 @@ describe('WorkItemNotes component', () => {
     expect(wrapper.emitted('error')).toEqual([
       ['Something went wrong when deleting a comment. Please try again'],
     ]);
+  });
+
+  describe('Notes subscriptions', () => {
+    beforeEach(async () => {
+      createComponent({
+        defaultWorkItemNotesQueryHandler: workItemNotesWithCommentsQueryHandler,
+      });
+      await waitForPromises();
+    });
+
+    it('has create notes subscription', () => {
+      expect(notesCreateSubscriptionHandler).toHaveBeenCalledWith({
+        noteableId: mockWorkItemId,
+      });
+    });
+
+    it('has delete notes subscription', () => {
+      expect(notesDeleteSubscriptionHandler).toHaveBeenCalledWith({
+        noteableId: mockWorkItemId,
+      });
+    });
+
+    it('has update notes subscription', () => {
+      expect(notesUpdateSubscriptionHandler).toHaveBeenCalledWith({
+        noteableId: mockWorkItemId,
+      });
+    });
   });
 });

@@ -43,7 +43,7 @@ Before adding a new cop to enforce a given style, make sure to discuss it with y
 We maintain cops across several Ruby code bases, and not all of them are
 specific to the GitLab application.
 When creating a new cop that could be applied to multiple applications, we encourage you
-to add it to our [`gitlab-styles`](https://gitlab.com/gitlab-org/gitlab-styles) gem.
+to add it to our [`gitlab-styles`](https://gitlab.com/gitlab-org/ruby/gems/gitlab-styles) gem.
 If the cop targets rules that only apply to the main GitLab application,
 it should be added to [GitLab](https://gitlab.com/gitlab-org/gitlab) instead.
 

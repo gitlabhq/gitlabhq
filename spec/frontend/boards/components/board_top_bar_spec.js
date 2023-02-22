@@ -96,6 +96,11 @@ describe('BoardTopBar', () => {
     it('does not render BoardAddNewColumnTrigger component', () => {
       expect(wrapper.findComponent(BoardAddNewColumnTrigger).exists()).toBe(false);
     });
+
+    it('emits setFilters when setFilters is emitted by filtered search', () => {
+      wrapper.findComponent(IssueBoardFilteredSearch).vm.$emit('setFilters');
+      expect(wrapper.emitted('setFilters')).toHaveLength(1);
+    });
   });
 
   describe('when user can admin list', () => {

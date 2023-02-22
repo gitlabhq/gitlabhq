@@ -336,7 +336,7 @@ describe('fetchLists', () => {
 describe('fetchMilestones', () => {
   const queryResponse = {
     data: {
-      project: {
+      workspace: {
         milestones: {
           nodes: mockMilestones,
         },
@@ -346,7 +346,7 @@ describe('fetchMilestones', () => {
 
   const queryErrors = {
     data: {
-      project: {
+      workspace: {
         errors: ['You cannot view these milestones'],
         milestones: {},
       },

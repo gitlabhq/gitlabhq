@@ -76,9 +76,13 @@ export default {
       required: false,
       default: false,
     },
+    filterParams: {
+      type: Object,
+      required: true,
+    },
   },
   computed: {
-    ...mapState(['activeId', 'filterParams', 'boardId']),
+    ...mapState(['activeId', 'boardId']),
     ...mapGetters(['isSwimlanesOn']),
     isLoggedIn() {
       return Boolean(this.currentUserId);

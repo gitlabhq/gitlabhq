@@ -2444,3 +2444,126 @@ export const mockWorkItemNotesResponseWithComments = {
     },
   },
 };
+
+export const workItemNotesCreateSubscriptionResponse = {
+  data: {
+    workItemNoteCreated: {
+      id: 'gid://gitlab/WeightNote/0f2f195ec0d1ef95ee9d5b10446b8e96a7d81864',
+      body: 'changed weight to **89**',
+      bodyHtml: '<p dir="auto">changed weight to <strong>89</strong></p>',
+      systemNoteIconName: 'weight',
+      createdAt: '2022-11-25T07:16:20Z',
+      lastEditedAt: null,
+      lastEditedBy: null,
+      system: true,
+      internal: false,
+      discussion: {
+        id: 'gid://gitlab/Discussion/8bbc4890b6ff0f2cde93a5a0947cd2b8a13d3b6e',
+        notes: {
+          nodes: [
+            {
+              id: 'gid://gitlab/WeightNote/0f2f195ec0d1ef95ee9d5b10446b8e96a9881864',
+              body: 'changed weight to **89**',
+              bodyHtml: '<p dir="auto">changed weight to <strong>89</strong></p>',
+              systemNoteIconName: 'weight',
+              createdAt: '2022-11-25T07:16:20Z',
+              lastEditedAt: null,
+              lastEditedBy: null,
+              system: true,
+              internal: false,
+              discussion: {
+                id: 'gid://gitlab/Discussion/9c17769ca29798eddaed539d010da12723560987',
+              },
+              userPermissions: {
+                adminNote: false,
+                awardEmoji: true,
+                readNote: true,
+                createNote: true,
+                resolveNote: true,
+                repositionNote: true,
+                __typename: 'NotePermissions',
+              },
+              author: {
+                avatarUrl:
+                  'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
+                id: 'gid://gitlab/User/1',
+                name: 'Administrator',
+                username: 'root',
+                webUrl: 'http://127.0.0.1:3000/root',
+                __typename: 'UserCore',
+              },
+              __typename: 'Note',
+            },
+          ],
+        },
+      },
+      userPermissions: {
+        adminNote: false,
+        awardEmoji: true,
+        readNote: true,
+        createNote: true,
+        resolveNote: true,
+        repositionNote: true,
+        __typename: 'NotePermissions',
+      },
+      author: {
+        avatarUrl:
+          'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
+        id: 'gid://gitlab/User/1',
+        name: 'Administrator',
+        username: 'root',
+        webUrl: 'http://127.0.0.1:3000/root',
+        __typename: 'UserCore',
+      },
+      __typename: 'Note',
+    },
+  },
+};
+
+export const workItemNotesUpdateSubscriptionResponse = {
+  data: {
+    workItemNoteUpdated: {
+      id: 'gid://gitlab/Note/0f2f195ec0d1ef95ee9d5b10446b8e96a9883894',
+      body: 'changed title',
+      bodyHtml: '<p dir="auto">changed title<strong>89</strong></p>',
+      systemNoteIconName: 'pencil',
+      createdAt: '2022-11-25T07:16:20Z',
+      lastEditedAt: null,
+      lastEditedBy: null,
+      system: true,
+      internal: false,
+      discussion: {
+        id: 'gid://gitlab/Discussion/9c17769ca29798eddaed539d010da12723560987',
+      },
+      userPermissions: {
+        adminNote: false,
+        awardEmoji: true,
+        readNote: true,
+        createNote: true,
+        resolveNote: true,
+        repositionNote: true,
+        __typename: 'NotePermissions',
+      },
+      author: {
+        avatarUrl:
+          'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
+        id: 'gid://gitlab/User/1',
+        name: 'Administrator',
+        username: 'root',
+        webUrl: 'http://127.0.0.1:3000/root',
+        __typename: 'UserCore',
+      },
+      __typename: 'Note',
+    },
+  },
+};
+
+export const workItemNotesDeleteSubscriptionResponse = {
+  data: {
+    workItemNoteDeleted: {
+      id: 'gid://gitlab/DiscussionNote/235',
+      discussionId: 'gid://gitlab/Discussion/2bb1162fd0d39297d1a68fdd7d4083d3780af0f3',
+      lastDiscussionNote: false,
+    },
+  },
+};

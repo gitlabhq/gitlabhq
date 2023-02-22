@@ -44,6 +44,10 @@ export default {
       type: String,
       required: true,
     },
+    filterParams: {
+      type: Object,
+      required: true,
+    },
   },
   data() {
     return {
@@ -92,7 +96,7 @@ export default {
         }),
         fullPath: this.fullPath,
         boardId: this.boardId,
-        filterParams: this.filterParams,
+        filters: this.filterParams,
       };
     },
     boardListsToUse() {
@@ -176,6 +180,7 @@ export default {
         ref="board"
         :board-id="boardId"
         :list="list"
+        :filters="filterParams"
         :data-draggable-item-type="$options.draggableItemTypes.list"
         :class="{ 'gl-xs-display-none!': addColumnFormVisible }"
       />
@@ -190,6 +195,7 @@ export default {
       ref="swimlanes"
       :lists="boardListsToUse"
       :can-admin-list="canAdminList"
+      :filters="filterParams"
       :style="{ height: boardHeight }"
     />
 

@@ -7,8 +7,7 @@ import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import IssuableBlockedIcon from '~/vue_shared/components/issuable_blocked_icon/issuable_blocked_icon.vue';
 import { blockingIssuablesQueries } from '~/vue_shared/components/issuable_blocked_icon/constants';
-import { issuableTypes } from '~/boards/constants';
-import { TYPE_ISSUE } from '~/issues/constants';
+import { TYPE_EPIC, TYPE_ISSUE } from '~/issues/constants';
 import { truncate } from '~/lib/utils/text_utility';
 import {
   mockIssue,
@@ -121,9 +120,9 @@ describe('IssuableBlockedIcon', () => {
   };
 
   it.each`
-    mockIssuable | issuableType          | expectedIcon
-    ${mockIssue} | ${TYPE_ISSUE}         | ${'issue-block'}
-    ${mockEpic}  | ${issuableTypes.epic} | ${'entity-blocked'}
+    mockIssuable | issuableType  | expectedIcon
+    ${mockIssue} | ${TYPE_ISSUE} | ${'issue-block'}
+    ${mockEpic}  | ${TYPE_EPIC}  | ${'entity-blocked'}
   `(
     'should render blocked icon for $issuableType',
     ({ mockIssuable, issuableType, expectedIcon }) => {
@@ -153,9 +152,9 @@ describe('IssuableBlockedIcon', () => {
 
   describe('on mouseenter on blocked icon', () => {
     it.each`
-      item                 | issuableType          | mockBlockingIssuable  | issuableItem | blockingIssuablesSpy
-      ${mockBlockedIssue1} | ${TYPE_ISSUE}         | ${mockBlockingIssue1} | ${mockIssue} | ${jest.fn().mockResolvedValue(mockBlockingIssuablesResponse1)}
-      ${mockBlockedEpic1}  | ${issuableTypes.epic} | ${mockBlockingEpic1}  | ${mockEpic}  | ${jest.fn().mockResolvedValue(mockBlockingEpicIssuablesResponse1)}
+      item                 | issuableType  | mockBlockingIssuable  | issuableItem | blockingIssuablesSpy
+      ${mockBlockedIssue1} | ${TYPE_ISSUE} | ${mockBlockingIssue1} | ${mockIssue} | ${jest.fn().mockResolvedValue(mockBlockingIssuablesResponse1)}
+      ${mockBlockedEpic1}  | ${TYPE_EPIC}  | ${mockBlockingEpic1}  | ${mockEpic}  | ${jest.fn().mockResolvedValue(mockBlockingEpicIssuablesResponse1)}
     `(
       'should query for blocking issuables and render the result for $issuableType',
       async ({ item, issuableType, issuableItem, mockBlockingIssuable, blockingIssuablesSpy }) => {

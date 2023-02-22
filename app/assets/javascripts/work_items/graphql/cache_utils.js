@@ -1,62 +1,100 @@
 import { produce } from 'immer';
 import { WIDGET_TYPE_NOTES } from '~/work_items/constants';
-import { getWorkItemNotesQuery } from '~/work_items/utils';
+
+const isNotesWidget = (widget) => widget.type === WIDGET_TYPE_NOTES;
+
+const getNotesWidgetFromSourceData = (draftData, fetchByIid) => {
+  return fetchByIid
+    ? draftData.workspace.workItems.nodes[0].widgets.find(isNotesWidget)
+    : draftData.workItem.widgets.find(isNotesWidget);
+};
+
+const updateNotesWidgetDataInDraftData = (draftData, notesWidget, fetchByIid) => {
+  const noteWidgetIndex = fetchByIid
+    ? draftData.workspace.workItems.nodes[0].widgets.findIndex(isNotesWidget)
+    : draftData.workItem.widgets.findIndex(isNotesWidget);
+
+  if (fetchByIid) {
+    draftData.workspace.workItems.nodes[0].widgets[noteWidgetIndex] = notesWidget;
+  } else {
+    draftData.workItem.widgets[noteWidgetIndex] = notesWidget;
+  }
+};
 
 /**
- * Updates the cache manually when adding a main comment
+ * Work Item note create subscription update query callback
  *
- * @param store
- * @param createNoteData
+ * @param currentNotes
+ * @param subscriptionData
  * @param fetchByIid
- * @param queryVariables
- * @param sortOrder
  */
-export const updateCommentState = (store, { data: { createNote } }, fetchByIid, queryVariables) => {
-  const notesQuery = getWorkItemNotesQuery(fetchByIid);
-  const variables = {
-    ...queryVariables,
-    pageSize: 100,
-  };
-  const sourceData = store.readQuery({
-    query: notesQuery,
-    variables,
-  });
 
-  const finalData = produce(sourceData, (draftData) => {
-    const notesWidget = fetchByIid
-      ? draftData.workspace.workItems.nodes[0].widgets.find(
-          (widget) => widget.type === WIDGET_TYPE_NOTES,
-        )
-      : draftData.workItem.widgets.find((widget) => widget.type === WIDGET_TYPE_NOTES);
+export const updateCacheAfterCreatingNote = (currentNotes, subscriptionData, fetchByIid) => {
+  if (!subscriptionData.data?.workItemNoteCreated) {
+    return currentNotes;
+  }
+  const newNote = subscriptionData.data.workItemNoteCreated;
 
-    // as notes are currently sorted/reversed on the frontend rather than in the query
-    // we only ever push.
-    // const arrayPushMethod = sortOrder === ASC ? 'push' : 'unshift';
-    const arrayPushMethod = 'push';
+  return produce(currentNotes, (draftData) => {
+    const notesWidget = getNotesWidgetFromSourceData(draftData, fetchByIid);
 
-    // manual update of cache with a completely new discussion
-    if (createNote.note.discussion.notes.nodes.length === 1) {
-      notesWidget.discussions.nodes[arrayPushMethod]({
-        id: createNote.note.discussion.id,
-        notes: {
-          nodes: createNote.note.discussion.notes.nodes,
-          __typename: 'NoteConnection',
-        },
-        // eslint-disable-next-line @gitlab/require-i18n-strings
-        __typename: 'Discussion',
-      });
+    if (!notesWidget.discussions) {
+      return;
     }
 
-    if (fetchByIid) {
-      draftData.workspace.workItems.nodes[0].widgets[6] = notesWidget;
+    const discussion = notesWidget.discussions.nodes.find((d) => d.id === newNote.discussion.id);
+
+    // handle the case where discussion already exists - we don't need to do anything, update will happen automatically
+    if (discussion) {
+      return;
+    }
+
+    notesWidget.discussions.nodes.push(newNote.discussion);
+    updateNotesWidgetDataInDraftData(draftData, notesWidget, fetchByIid);
+  });
+};
+
+/**
+ * Work Item note delete subscription update query callback
+ *
+ * @param currentNotes
+ * @param subscriptionData
+ * @param fetchByIid
+ */
+
+export const updateCacheAfterDeletingNote = (currentNotes, subscriptionData, fetchByIid) => {
+  if (!subscriptionData.data?.workItemNoteDeleted) {
+    return currentNotes;
+  }
+  const deletedNote = subscriptionData.data.workItemNoteDeleted;
+  const { id, discussionId, lastDiscussionNote } = deletedNote;
+
+  return produce(currentNotes, (draftData) => {
+    const notesWidget = getNotesWidgetFromSourceData(draftData, fetchByIid);
+
+    if (!notesWidget.discussions) {
+      return;
+    }
+
+    const discussionIndex = notesWidget.discussions.nodes.findIndex(
+      (discussion) => discussion.id === discussionId,
+    );
+
+    if (discussionIndex === -1) {
+      return;
+    }
+
+    if (lastDiscussionNote) {
+      notesWidget.discussions.nodes.splice(discussionIndex, 1);
     } else {
-      draftData.workItem.widgets[6] = notesWidget;
+      const deletedThreadDiscussion = notesWidget.discussions.nodes[discussionIndex];
+      const deletedThreadIndex = deletedThreadDiscussion.notes.nodes.findIndex(
+        (note) => note.id === id,
+      );
+      deletedThreadDiscussion.notes.nodes.splice(deletedThreadIndex, 1);
+      notesWidget.discussions.nodes[discussionIndex] = deletedThreadDiscussion;
     }
-  });
 
-  store.writeQuery({
-    query: notesQuery,
-    variables,
-    data: finalData,
+    updateNotesWidgetDataInDraftData(draftData, notesWidget, fetchByIid);
   });
 };

@@ -11,10 +11,11 @@ export default {
     BoardSettingsSidebar,
     BoardTopBar,
   },
-  inject: ['initialBoardId'],
+  inject: ['initialBoardId', 'initialFilterParams'],
   data() {
     return {
       boardId: this.initialBoardId,
+      filterParams: { ...this.initialFilterParams },
     };
   },
   computed: {
@@ -30,14 +31,19 @@ export default {
     switchBoard(id) {
       this.boardId = id;
     },
+    setFilters(filters) {
+      const filterParams = { ...filters };
+      if (filterParams.groupBy) delete filterParams.groupBy;
+      this.filterParams = filterParams;
+    },
   },
 };
 </script>
 
 <template>
   <div class="boards-app gl-relative" :class="{ 'is-compact': isSidebarOpen }">
-    <board-top-bar :board-id="boardId" @switchBoard="switchBoard" />
-    <board-content :board-id="boardId" />
+    <board-top-bar :board-id="boardId" @switchBoard="switchBoard" @setFilters="setFilters" />
+    <board-content :board-id="boardId" :filter-params="filterParams" />
     <board-settings-sidebar />
   </div>
 </template>

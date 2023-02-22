@@ -73,8 +73,11 @@ export default {
       >
         <boards-selector :board-apollo="board" @switchBoard="$emit('switchBoard', $event)" />
         <new-board-button />
-        <issue-board-filtered-search v-if="isIssueBoard" />
-        <epic-board-filtered-search v-else />
+        <issue-board-filtered-search
+          v-if="isIssueBoard"
+          @setFilters="$emit('setFilters', $event)"
+        />
+        <epic-board-filtered-search v-else @setFilters="$emit('setFilters', $event)" />
       </div>
       <div
         class="filter-dropdown-container gl-md-display-flex gl-flex-direction-column gl-md-flex-direction-row gl-align-items-flex-start"

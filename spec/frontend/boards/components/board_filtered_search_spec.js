@@ -55,10 +55,10 @@ describe('BoardFilteredSearch', () => {
     },
   ];
 
-  const createComponent = ({ initialFilterParams = {}, props = {} } = {}) => {
+  const createComponent = ({ initialFilterParams = {}, props = {}, provide = {} } = {}) => {
     store = createStore();
     wrapper = shallowMount(BoardFilteredSearch, {
-      provide: { initialFilterParams, fullPath: '' },
+      provide: { initialFilterParams, fullPath: '', isApolloBoard: false, ...provide },
       store,
       propsData: {
         ...props,
@@ -189,6 +189,26 @@ describe('BoardFilteredSearch', () => {
         { type: TOKEN_TYPE_LABEL, value: { data: 'label', operator: '=' } },
         { type: TOKEN_TYPE_HEALTH, value: { data: 'Any', operator: '=' } },
       ]);
+    });
+  });
+
+  describe('when Apollo boards FF is on', () => {
+    beforeEach(() => {
+      createComponent({ provide: { isApolloBoard: true } });
+    });
+
+    it('emits setFilters and updates URL when onFilter is emitted', () => {
+      jest.spyOn(urlUtility, 'updateHistory');
+
+      findFilteredSearch().vm.$emit('onFilter', [{ value: { data: '' } }]);
+
+      expect(urlUtility.updateHistory).toHaveBeenCalledWith({
+        title: '',
+        replace: true,
+        url: 'http://test.host/',
+      });
+
+      expect(wrapper.emitted('setFilters')).toHaveLength(1);
     });
   });
 });

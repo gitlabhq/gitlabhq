@@ -59,6 +59,10 @@ export default {
       type: Array,
       required: true,
     },
+    filterParams: {
+      type: Object,
+      required: true,
+    },
   },
   data() {
     return {
@@ -108,7 +112,7 @@ export default {
     },
   },
   computed: {
-    ...mapState(['pageInfoByListId', 'listsFlags', 'filterParams', 'isUpdateIssueOrderInProgress']),
+    ...mapState(['pageInfoByListId', 'listsFlags', 'isUpdateIssueOrderInProgress']),
     boardListItems() {
       return this.isApolloBoard
         ? this.currentList?.[`${this.issuableType}s`].nodes || []

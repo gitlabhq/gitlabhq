@@ -51,7 +51,7 @@ RSpec.describe ImportExportUpload do
     let(:after_commit_callbacks) { described_class._commit_callbacks.select { |cb| cb.kind == :after } }
 
     def find_callback(callbacks, key)
-      callbacks.find { |cb| cb.instance_variable_get(:@key) == key }
+      callbacks.find { |cb| cb.filter == key }
     end
 
     it 'export file is stored in after_commit callback' do

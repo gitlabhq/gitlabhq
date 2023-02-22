@@ -1,14 +1,14 @@
 import { cloneDeep, pull, union } from 'lodash';
 import Vue from 'vue';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import { TYPE_EPIC } from '~/issues/constants';
 import { s__, __ } from '~/locale';
 import { formatIssue } from '../boards_util';
-import { issuableTypes } from '../constants';
 import * as mutationTypes from './mutation_types';
 
 const updateListItemsCount = ({ state, listId, value }) => {
   const list = state.boardLists[listId];
-  if (state.issuableType === issuableTypes.epic) {
+  if (state.issuableType === TYPE_EPIC) {
     Vue.set(state.boardLists, listId, { ...list, epicsCount: list.epicsCount + value });
   } else {
     Vue.set(state.boardLists, listId, { ...list });

@@ -68,6 +68,7 @@ describe('Board List Header Component', () => {
       store,
       propsData: {
         list: listMock,
+        filterParams: {},
       },
       provide: {
         boardId,

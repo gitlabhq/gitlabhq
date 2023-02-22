@@ -20,6 +20,10 @@ export default {
       type: String,
       required: true,
     },
+    filters: {
+      type: Object,
+      required: true,
+    },
   },
   computed: {
     ...mapState(['filterParams', 'highlightedLists']),
@@ -32,6 +36,9 @@ export default {
     },
     isListDraggable() {
       return isListDraggable(this.list);
+    },
+    filtersToUse() {
+      return this.isApolloBoard ? this.filters : this.filterParams;
     },
   },
   watch: {
@@ -83,13 +90,13 @@ export default {
       class="board-inner gl-display-flex gl-flex-direction-column gl-relative gl-h-full gl-rounded-base gl-bg-gray-50"
       :class="{ 'board-column-highlighted': highlighted }"
     >
-      <board-list-header :list="list" />
+      <board-list-header :list="list" :filter-params="filtersToUse" />
       <board-list
         ref="board-list"
         :board-id="boardId"
         :board-items="listItems"
         :list="list"
-        :filter-params="filterParams"
+        :filter-params="filtersToUse"
       />
     </div>
   </div>

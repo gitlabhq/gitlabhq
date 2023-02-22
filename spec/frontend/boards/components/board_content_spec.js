@@ -61,6 +61,7 @@ describe('BoardContent', () => {
       apolloProvider: fakeApollo,
       propsData: {
         boardId: 'gid://gitlab/Board/1',
+        filterParams: {},
         ...props,
       },
       provide: {

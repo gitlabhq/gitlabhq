@@ -27,15 +27,11 @@ class UserSyncedAttributesMetadata < ApplicationRecord
 
   class << self
     def syncable_attributes
-      return SYNCABLE_ATTRIBUTES if sync_name?
-
-      SYNCABLE_ATTRIBUTES - %i[name]
-    end
-
-    private
-
-    def sync_name?
-      Gitlab.config.ldap.sync_name
+      if Gitlab.config.ldap.enabled && !Gitlab.config.ldap.sync_name
+        SYNCABLE_ATTRIBUTES - %i[name]
+      else
+        SYNCABLE_ATTRIBUTES
+      end
     end
   end
 

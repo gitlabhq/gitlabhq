@@ -360,10 +360,10 @@ Implemented using Redis methods [PFADD](https://redis.io/commands/pfadd/) and [P
 
 1. Use one of the following methods to track the event:
 
-   - In the controller using the `RedisTracking` module and the following format:
+   - In the controller using the `ProductAnalyticsTracking` module and the following format:
 
      ```ruby
-     track_event(*controller_actions, name:, conditions: nil, destinations: [:redis_hll], &block)
+     track_custom_event(*controller_actions, name:, action:, label:, conditions: nil, destinations: [:redis_hll], &block)
      ```
 
      Arguments:
@@ -371,6 +371,8 @@ Implemented using Redis methods [PFADD](https://redis.io/commands/pfadd/) and [P
      - `controller_actions`: the controller actions to track.
      - `name`: the event name.
      - `conditions`: optional custom conditions. Uses the same format as Rails callbacks.
+     - `action`: optional action name for the triggered event. See [event schema](../snowplow/index.md#event-schema) for more details.
+     - `label`: optional label for the triggered event. See [event schema](../snowplow/index.md#event-schema) for more details.
      - `destinations`: optional list of destinations. Currently supports `:redis_hll` and `:snowplow`. Default: `:redis_hll`.
      - `&block`: optional block that computes and returns the `custom_id` that we want to track. This overrides the `visitor_id`.
 
@@ -379,10 +381,14 @@ Implemented using Redis methods [PFADD](https://redis.io/commands/pfadd/) and [P
      ```ruby
      # controller
      class ProjectsController < Projects::ApplicationController
-       include RedisTracking
+       include ProductAnalyticsTracking
 
        skip_before_action :authenticate_user!, only: :show
-       track_event :index, :show, name: 'users_visiting_projects'
+       track_custom_event :index, :show,
+         name: 'users_visiting_projects',
+         action: 'user_perform_visit',
+         label: 'redis_hll_counters.users_visiting_project_monthly',
+         destinations: %i[redis_hll snowplow]
 
        def index
          render html: 'index'

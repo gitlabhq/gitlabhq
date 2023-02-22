@@ -8,7 +8,14 @@ import ActivityFilter from '~/work_items/components/notes/activity_filter.vue';
 import { i18n, DEFAULT_PAGE_SIZE_NOTES } from '~/work_items/constants';
 import { ASC, DESC } from '~/notes/constants';
 import { getWorkItemNotesQuery } from '~/work_items/utils';
+import {
+  updateCacheAfterCreatingNote,
+  updateCacheAfterDeletingNote,
+} from '~/work_items/graphql/cache_utils';
 import WorkItemDiscussion from '~/work_items/components/notes/work_item_discussion.vue';
+import workItemNoteCreatedSubscription from '~/work_items/graphql/notes/work_item_note_created.subscription.graphql';
+import workItemNoteUpdatedSubscription from '~/work_items/graphql/notes/work_item_note_updated.subscription.graphql';
+import workItemNoteDeletedSubscription from '~/work_items/graphql/notes/work_item_note_deleted.subscription.graphql';
 import deleteNoteMutation from '../graphql/notes/delete_work_item_notes.mutation.graphql';
 import WorkItemAddNote from './notes/work_item_add_note.vue';
 
@@ -137,6 +144,47 @@ export default {
           this.fetchMoreNotes();
         }
       },
+      subscribeToMore: [
+        {
+          document: workItemNoteCreatedSubscription,
+          updateQuery(previousResult, { subscriptionData }) {
+            return updateCacheAfterCreatingNote(previousResult, subscriptionData, this.fetchByIid);
+          },
+          variables() {
+            return {
+              noteableId: this.workItemId,
+            };
+          },
+          skip() {
+            return !this.workItemId || this.hasNextPage;
+          },
+        },
+        {
+          document: workItemNoteDeletedSubscription,
+          updateQuery(previousResult, { subscriptionData }) {
+            return updateCacheAfterDeletingNote(previousResult, subscriptionData, this.fetchByIid);
+          },
+          variables() {
+            return {
+              noteableId: this.workItemId,
+            };
+          },
+          skip() {
+            return !this.workItemId || this.hasNextPage;
+          },
+        },
+        {
+          document: workItemNoteUpdatedSubscription,
+          variables() {
+            return {
+              noteableId: this.workItemId,
+            };
+          },
+          skip() {
+            return !this.workItemId;
+          },
+        },
+      ],
     },
   },
   methods: {

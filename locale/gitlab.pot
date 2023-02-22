@@ -32419,73 +32419,16 @@ msgstr ""
 msgid "Proceed"
 msgstr ""
 
-msgid "Product Analytics|Add the NPM package to your package.json using your preferred package manager:"
-msgstr ""
-
-msgid "Product Analytics|Add the script to the page and assign the client SDK to window:"
-msgstr ""
-
-msgid "Product Analytics|Analyze your product with Product Analytics"
-msgstr ""
-
-msgid "Product Analytics|Back to dashboards"
-msgstr ""
-
-msgid "Product Analytics|Creating your product analytics instance..."
-msgstr ""
-
-msgid "Product Analytics|Details on how to configure product analytics to collect data."
-msgstr ""
-
-msgid "Product Analytics|For the product analytics dashboard to start showing you some data, you need to add the analytics tracking code to your project."
-msgstr ""
-
-msgid "Product Analytics|Identifies the sender of tracking events"
-msgstr ""
-
-msgid "Product Analytics|Import the new package into your JS code:"
-msgstr ""
-
-msgid "Product Analytics|Instrument your application"
-msgstr ""
-
-msgid "Product Analytics|Instrumentation details"
-msgstr ""
-
-msgid "Product Analytics|SDK App ID"
-msgstr ""
-
-msgid "Product Analytics|SDK Host"
-msgstr ""
-
-msgid "Product Analytics|Set up Product Analytics to track how your product is performing. Combine it with your GitLab data to better understand where you can improve your product and development processes."
-msgstr ""
-
-msgid "Product Analytics|Set up product analytics"
-msgstr ""
-
-msgid "Product Analytics|Steps to add product analytics as a CommonJS module"
-msgstr ""
-
-msgid "Product Analytics|Steps to add product analytics as a HTML script tag"
-msgstr ""
-
-msgid "Product Analytics|Steps to add product analytics as an ESM module"
-msgstr ""
-
-msgid "Product Analytics|The host to send all tracking events to"
-msgstr ""
-
-msgid "Product Analytics|This might take a while, feel free to navigate away from this page and come back later."
-msgstr ""
-
-msgid "Product Analytics|To instrument your application, select one of the options below. After an option has been instrumented and data is being collected, this page will progress to the next step."
-msgstr ""
-
 msgid "Product analytics"
 msgstr ""
 
 msgid "ProductAnalytics|Add another dimension"
+msgstr ""
+
+msgid "ProductAnalytics|Add the NPM package to your package.json using your preferred package manager:"
+msgstr ""
+
+msgid "ProductAnalytics|Add the script to the page and assign the client SDK to window:"
 msgstr ""
 
 msgid "ProductAnalytics|Add to Dashboard"
@@ -32515,6 +32458,9 @@ msgstr ""
 msgid "ProductAnalytics|Analytics dashboards"
 msgstr ""
 
+msgid "ProductAnalytics|Analyze your product with Product Analytics"
+msgstr ""
+
 msgid "ProductAnalytics|Any Click on elements"
 msgstr ""
 
@@ -32528,6 +32474,9 @@ msgid "ProductAnalytics|Average duration in minutes"
 msgstr ""
 
 msgid "ProductAnalytics|Average per User"
+msgstr ""
+
+msgid "ProductAnalytics|Back to dashboards"
 msgstr ""
 
 msgid "ProductAnalytics|Browser"
@@ -32566,6 +32515,9 @@ msgstr ""
 msgid "ProductAnalytics|Compares pageviews of all pages against each other"
 msgstr ""
 
+msgid "ProductAnalytics|Creating your product analytics instance..."
+msgstr ""
+
 msgid "ProductAnalytics|Dashboards are created by editing the projects dashboard files."
 msgstr ""
 
@@ -32573,6 +32525,9 @@ msgid "ProductAnalytics|Data"
 msgstr ""
 
 msgid "ProductAnalytics|Data Table"
+msgstr ""
+
+msgid "ProductAnalytics|Details on how to configure product analytics to collect data."
 msgstr ""
 
 msgid "ProductAnalytics|Dimensions"
@@ -32599,6 +32554,9 @@ msgstr ""
 msgid "ProductAnalytics|Feature usage"
 msgstr ""
 
+msgid "ProductAnalytics|For the product analytics dashboard to start showing you some data, you need to add the analytics tracking code to your project."
+msgstr ""
+
 msgid "ProductAnalytics|Go back"
 msgstr ""
 
@@ -32609,6 +32567,18 @@ msgid "ProductAnalytics|How many sessions a user has"
 msgstr ""
 
 msgid "ProductAnalytics|How often sesions are repeated"
+msgstr ""
+
+msgid "ProductAnalytics|Identifies the sender of tracking events"
+msgstr ""
+
+msgid "ProductAnalytics|Import the new package into your JS code:"
+msgstr ""
+
+msgid "ProductAnalytics|Instrument your application"
+msgstr ""
+
+msgid "ProductAnalytics|Instrumentation details"
 msgstr ""
 
 msgid "ProductAnalytics|Language"
@@ -32671,13 +32641,43 @@ msgstr ""
 msgid "ProductAnalytics|Resulting Data"
 msgstr ""
 
+msgid "ProductAnalytics|SDK App ID"
+msgstr ""
+
+msgid "ProductAnalytics|SDK Host"
+msgstr ""
+
 msgid "ProductAnalytics|Sessions"
+msgstr ""
+
+msgid "ProductAnalytics|Set up Product Analytics to track how your product is performing. Combine it with your GitLab data to better understand where you can improve your product and development processes."
+msgstr ""
+
+msgid "ProductAnalytics|Set up product analytics"
 msgstr ""
 
 msgid "ProductAnalytics|Single Statistic"
 msgstr ""
 
+msgid "ProductAnalytics|Steps to add product analytics as a CommonJS module"
+msgstr ""
+
+msgid "ProductAnalytics|Steps to add product analytics as a HTML script tag"
+msgstr ""
+
+msgid "ProductAnalytics|Steps to add product analytics as an ESM module"
+msgstr ""
+
+msgid "ProductAnalytics|The host to send all tracking events to"
+msgstr ""
+
 msgid "ProductAnalytics|There is no data for this type of chart currently. Please see the Setup tab if you have not configured the product analytics tool already."
+msgstr ""
+
+msgid "ProductAnalytics|This might take a while, feel free to navigate away from this page and come back later."
+msgstr ""
+
+msgid "ProductAnalytics|To instrument your application, select one of the options below. After an option has been instrumented and data is being collected, this page will progress to the next step."
 msgstr ""
 
 msgid "ProductAnalytics|Track specific features"
