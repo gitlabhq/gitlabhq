@@ -6,17 +6,9 @@ class DeleteIncorrectlyOnboardedNamespaces < Gitlab::Database::Migration[2.1]
   restrict_gitlab_migration gitlab_schema: :gitlab_main
 
   def up
-    execute(<<~SQL)
-      DELETE
-      FROM onboarding_progresses
-      WHERE onboarding_progresses.id NOT IN
-          (SELECT onboarding_progresses.id
-           FROM onboarding_progresses
-           INNER JOIN namespaces ON namespaces.id = onboarding_progresses.namespace_id
-           INNER JOIN projects ON projects.namespace_id = namespaces.id
-           WHERE projects.name IN ('Learn GitLab',
-                                   'Learn GitLab - Ultimate trial'))
-    SQL
+    # Changed to a no-op, this migration was reverted after
+    # an incident during a deploy to production on gitlab.com
+    # https://gitlab.com/gitlab-com/gl-infra/production/-/issues/8436
   end
 
   def down

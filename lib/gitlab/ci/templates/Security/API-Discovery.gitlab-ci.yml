@@ -1,0 +1,66 @@
+# To contribute improvements to CI/CD templates, please follow the Development guide at:
+# https://docs.gitlab.com/ee/development/cicd/templates.html
+# This specific template is located at:
+# https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/API-Discovery.gitlab-ci.yml
+
+# Read more about this feature here: https://docs.gitlab.com/ee/user/application_security/api_discovery/
+#
+# Configure API Discovery with CI/CD variables (https://docs.gitlab.com/ee/ci/variables/index.html).
+# List of available variables: https://docs.gitlab.com/ee/user/application_security/api_discovery/#available-cicd-variables
+
+variables:
+  API_DISCOVERY_PACKAGES: "$CI_API_V4_URL/projects/42503323/packages"
+  API_DISCOVERY_VERSION: "1"
+
+.api_discovery_java_spring_boot:
+  stage: test
+  allow_failure: true
+  script:
+    #
+    # Check configuration
+    - if [[ -z "$API_DISCOVERY_VERSION" ]]; then echo "Error, API_DISCOVERY_VERSION not provided. Please set this variable and re-run the pipeline."; exit 1; fi
+    #
+    # Check for required commands
+    - requires() { command -v "$1" >/dev/null 2>&1 || { echo "'$1' is required but it's not installed. Add the needed command to the job image and retry." >&2; exit 1; } }
+    - requires 'curl'
+    - requires 'java'
+    #
+    # Set JAVA_HOME if API_DISCOVERY_JAVA_HOME provided
+    - if [[ -n "$API_DISCOVERY_JAVA_HOME" ]]; then export JAVA_HOME="$API_DISCOVERY_JAVA_HOME"; export PATH="$JAVA_HOME/bin:$PATH"; fi
+    #
+    # Download jar file
+    - if [[ -n "$API_DISCOVERY_PACKAGE_TOKEN" ]]; then echo "Using API_DISCOVERY_PACKAGE_TOKEN"; export CURL_AUTH="-H PRIVATE-TOKEN:$API_DISCOVERY_PACKAGE_TOKEN"; else export CURL_AUTH=""; fi
+    - DL_URL="$API_DISCOVERY_PACKAGES/maven/com/gitlab/analyzers/api-discovery/api-discovery_spring-boot/$API_DISCOVERY_VERSION/api-discovery_spring-boot-$API_DISCOVERY_VERSION.jar"
+    - echo "Downloading Discovery jar from '${DL_URL}'"
+    - CURL_CMD="curl -L ${CURL_AUTH} --write-out "%{http_code}" --output api_discovery_java_spring_boot_${API_DISCOVERY_VERSION}.jar ${DL_URL}"
+    - STATUS_CODE=$(${CURL_CMD})
+    - RC=$?
+    - if [[ $RC -ne 0 ]]; then echo "Error connecting to GitLab API, curl exit code was $RC."; echo "To diagnose, see the curl documentation- https://everything.curl.dev/usingcurl/returns"; exit 1; fi
+    - if [[ "$STATUS_CODE" != "200" ]]; then echo "Error, Unable to download api_discovery_java_spring_boot_${API_DISCOVERY_VERSION}.jar"; echo "Error, Status Code was $STATUS_CODE, but wanted 200"; exit 1; fi
+    #
+    # Run API Discovery
+    - java -jar "api_discovery_java_spring_boot_${API_DISCOVERY_VERSION}.jar"
+    #
+    # Check for expected output file
+    - if [[ ! -e "gl-api-discovery-openapi.json" ]]; then echo "Error, Unable to find gl-api-discovery-openapi.json"; exit 1; fi
+    #
+  artifacts:
+    when: always
+    paths:
+      - gl-api-discovery-openapi.json
+      - gl-*.log
+  rules:
+    - if: $API_DISCOVERY_DISABLED
+      when: never
+    - if: $API_DISCOVERY_DISABLED_FOR_DEFAULT_BRANCH &&
+          $CI_DEFAULT_BRANCH == $CI_COMMIT_REF_NAME
+      when: never
+    # Add the job to merge request pipelines if there's an open merge request.
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+
+    # Don't add it to a *branch* pipeline if it's already in a merge request pipeline.
+    - if: $CI_OPEN_MERGE_REQUESTS
+      when: never
+
+    # Add the job to branch pipelines.
+    - if: $CI_COMMIT_BRANCH

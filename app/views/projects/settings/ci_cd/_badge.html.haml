@@ -9,7 +9,7 @@
             = badge.title.capitalize
             &middot;
           = badge.to_html
-        = render 'shared/ref_switcher', destination: 'badges', align_right: true
+        .js-ref-switcher-badge{ id: "js-project-ci-cd-ref-switcher-#{badge.title.parameterize(separator: '-') }", data: { project_id: @project.id, ref: @ref } }
       - c.body do
         .row
           .col-md-2.gl-text-center

@@ -6,6 +6,7 @@ import initDeployFreeze from '~/deploy_freeze';
 import registrySettingsApp from '~/packages_and_registries/settings/project/registry_settings_bundle';
 import { initInstallRunner } from '~/pages/shared/mount_runner_instructions';
 import initSharedRunnersToggle from '~/projects/settings/mount_shared_runners_toggle';
+import initRefSwitcherBadges from '~/projects/settings/mount_ref_switcher_badges';
 import initSettingsPanels from '~/settings_panels';
 import { initTokenAccess } from '~/token_access';
 import { initCiSecureFiles } from '~/ci_secure_files';
@@ -42,6 +43,7 @@ initArtifactsSettings();
 
 initProjectRunners();
 initSharedRunnersToggle();
+initRefSwitcherBadges();
 initInstallRunner();
 initTokenAccess();
 initCiSecureFiles();

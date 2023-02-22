@@ -543,6 +543,8 @@ Additionally, the certificate (or its certificate authority) must be installed o
 - Gitaly servers.
 - Gitaly clients that communicate with it.
 
+If you use a load balancer, it must be able to negotiate HTTP/2 using the ALPN TLS extension.
+
 ### Certificate requirements
 
 - The certificate must specify the address you use to access the Gitaly server. You must add the hostname or IP address as a Subject Alternative Name to the certificate.

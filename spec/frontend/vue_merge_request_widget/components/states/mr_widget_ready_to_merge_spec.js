@@ -256,7 +256,7 @@ describe('ReadyToMerge', () => {
     it('should be disabled if merge is not allowed', () => {
       createComponent({ mr: { preventMerge: true } });
 
-      expect(findMergeButton().exists()).toBe(false);
+      expect(findMergeButton().props('disabled')).toBe(true);
     });
 
     it('should be disabled when making request', async () => {

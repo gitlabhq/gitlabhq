@@ -4215,6 +4215,32 @@ Input type: `MergeRequestUpdateInput`
 | <a id="mutationmergerequestupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationmergerequestupdatemergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | Merge request after mutation. |
 
+### `Mutation.mergeRequestUpdateApprovalRule`
+
+Input type: `MergeRequestUpdateApprovalRuleInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationmergerequestupdateapprovalruleapprovalruleid"></a>`approvalRuleId` | [`Int!`](#int) | ID of an approval rule. |
+| <a id="mutationmergerequestupdateapprovalruleapprovalsrequired"></a>`approvalsRequired` | [`Int!`](#int) | Number of required approvals for a given rule. |
+| <a id="mutationmergerequestupdateapprovalruleclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationmergerequestupdateapprovalrulegroupids"></a>`groupIds` | [`[String!]`](#string) | IDs of groups as approvers. |
+| <a id="mutationmergerequestupdateapprovalruleiid"></a>`iid` | [`String!`](#string) | IID of the merge request to mutate. |
+| <a id="mutationmergerequestupdateapprovalrulename"></a>`name` | [`String!`](#string) | Name of the approval rule. |
+| <a id="mutationmergerequestupdateapprovalruleprojectpath"></a>`projectPath` | [`ID!`](#id) | Project the merge request to mutate is in. |
+| <a id="mutationmergerequestupdateapprovalruleremovehiddengroups"></a>`removeHiddenGroups` | [`[Boolean!]`](#boolean) | Whether hidden groups should be removed. |
+| <a id="mutationmergerequestupdateapprovalruleuserids"></a>`userIds` | [`[String!]`](#string) | IDs of users as approvers. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationmergerequestupdateapprovalruleclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationmergerequestupdateapprovalruleerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationmergerequestupdateapprovalrulemergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | Merge request after mutation. |
+
 ### `Mutation.namespaceBanDestroy`
 
 Input type: `NamespaceBanDestroyInput`

@@ -299,8 +299,6 @@ export default {
       return this.preferredAutoMergeStrategy === MT_MERGE_STRATEGY && this.isPipelineFailed;
     },
     shouldShowMergeControls() {
-      if (this.mr.preventMerge) return false;
-
       return (
         (this.isMergeAllowed || this.isAutoMergeAvailable) &&
         (this.stateData.userPermissions?.canMerge || this.mr.canMerge) &&

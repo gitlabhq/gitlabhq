@@ -243,6 +243,7 @@ module ReviewApps
       unless dry_run
         helm.delete(release_name: releases_names)
         kubernetes.cleanup_by_release(release_name: releases_names, wait: false)
+        kubernetes.delete_namespaces_by_exact_names(resource_names: releases_names, wait: false)
       end
 
     rescue Tooling::Helm3Client::CommandFailedError => ex
