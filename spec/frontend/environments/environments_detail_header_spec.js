@@ -47,7 +47,7 @@ describe('Environments detail header component', () => {
         TimeAgo,
       },
       directives: {
-        GlTooltip: createMockDirective(),
+        GlTooltip: createMockDirective('gl-tooltip'),
       },
       propsData: {
         canAdminEnvironment: false,

@@ -33,7 +33,7 @@ describe('NewMergeRequestOption component', () => {
         },
       },
       directives: {
-        GlTooltip: createMockDirective(),
+        GlTooltip: createMockDirective('gl-tooltip'),
       },
     });
   };

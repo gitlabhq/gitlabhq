@@ -43,7 +43,7 @@ describe('RegistrationTokenResetDropdownItem', () => {
         [runnersRegistrationTokenResetMutation, runnersRegistrationTokenResetMutationHandler],
       ]),
       directives: {
-        GlModal: createMockDirective(),
+        GlModal: createMockDirective('gl-modal'),
       },
     });
 

@@ -140,7 +140,7 @@ describe('SidebarDropdownWidget', () => {
           },
         },
         directives: {
-          GlTooltip: createMockDirective(),
+          GlTooltip: createMockDirective('gl-tooltip'),
         },
         stubs: {
           SidebarEditableItem,

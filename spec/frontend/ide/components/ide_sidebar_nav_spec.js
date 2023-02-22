@@ -37,7 +37,7 @@ describe('ide/components/ide_sidebar_nav', () => {
         ...props,
       },
       directives: {
-        tooltip: createMockDirective(),
+        tooltip: createMockDirective('tooltip'),
       },
     });
   };

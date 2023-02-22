@@ -9,7 +9,7 @@ describe('PackagePath', () => {
     wrapper = shallowMount(PackagePath, {
       propsData,
       directives: {
-        GlTooltip: createMockDirective(),
+        GlTooltip: createMockDirective('gl-tooltip'),
       },
     });
   };

@@ -19,7 +19,7 @@ describe('IDE commit sidebar radio group', () => {
       propsData: config.props,
       slots: config.slots,
       directives: {
-        GlTooltip: createMockDirective(),
+        GlTooltip: createMockDirective('gl-tooltip'),
       },
     });
   };

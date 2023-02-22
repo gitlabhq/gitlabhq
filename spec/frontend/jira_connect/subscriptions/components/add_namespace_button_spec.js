@@ -11,7 +11,7 @@ describe('AddNamespaceButton', () => {
   const createComponent = () => {
     wrapper = shallowMount(AddNamespaceButton, {
       directives: {
-        glModal: createMockDirective(),
+        glModal: createMockDirective('gl-modal'),
       },
     });
   };

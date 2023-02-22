@@ -20,7 +20,7 @@ describe('RemoveAvatar', () => {
         name,
       },
       directives: {
-        GlModal: createMockDirective(),
+        GlModal: createMockDirective('gl-modal'),
       },
       stubs: {
         GlSprintf,

@@ -84,7 +84,7 @@ describe('Board card component', () => {
         BoardCardMoveToPosition: true,
       },
       directives: {
-        GlTooltip: createMockDirective(),
+        GlTooltip: createMockDirective('gl-tooltip'),
       },
       provide: {
         rootPath: '/',

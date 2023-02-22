@@ -27,7 +27,7 @@ const createComponent = (mountFn = shallowMountExtended, stubs = {}) => {
       ...propsDataMock,
     },
     directives: {
-      GlTooltip: createMockDirective(),
+      GlTooltip: createMockDirective('gl-tooltip'),
     },
     stubs,
   });

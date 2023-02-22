@@ -25,7 +25,7 @@ describe('Suggestion Diff component', () => {
         ...props,
       },
       directives: {
-        GlTooltip: createMockDirective(),
+        GlTooltip: createMockDirective('gl-tooltip'),
       },
     });
   };

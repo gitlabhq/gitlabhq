@@ -38,7 +38,7 @@ describe('ApproveAccessRequestButton', () => {
         ...propsData,
       },
       directives: {
-        GlTooltip: createMockDirective(),
+        GlTooltip: createMockDirective('gl-tooltip'),
       },
     });
   };

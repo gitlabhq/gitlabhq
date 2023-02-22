@@ -36,7 +36,7 @@ describe('EnvironmentActions Component', () => {
     wrapper = mountFn(EnvironmentActions, {
       propsData: { actions: [], ...props },
       directives: {
-        GlTooltip: createMockDirective(),
+        GlTooltip: createMockDirective('gl-tooltip'),
       },
       ...options,
     });

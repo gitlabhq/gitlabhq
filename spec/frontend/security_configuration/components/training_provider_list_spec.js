@@ -106,7 +106,7 @@ describe('TrainingProviderList component', () => {
         projectFullPath: testProjectPath,
       },
       directives: {
-        GlTooltip: createMockDirective(),
+        GlTooltip: createMockDirective('gl-tooltip'),
       },
       propsData: {
         securityTrainingEnabled: true,

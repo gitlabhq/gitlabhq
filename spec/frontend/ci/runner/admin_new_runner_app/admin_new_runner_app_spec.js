@@ -29,7 +29,7 @@ describe('AdminNewRunnerApp', () => {
         ...props,
       },
       directives: {
-        GlModal: createMockDirective(),
+        GlModal: createMockDirective('gl-modal'),
       },
       stubs: {
         GlSprintf,

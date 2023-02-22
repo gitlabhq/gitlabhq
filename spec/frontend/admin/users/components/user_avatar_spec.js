@@ -26,7 +26,7 @@ describe('AdminUserAvatar component', () => {
         ...props,
       },
       directives: {
-        GlTooltip: createMockDirective(),
+        GlTooltip: createMockDirective('gl-tooltip'),
       },
       stubs: {
         GlAvatarLabeled,

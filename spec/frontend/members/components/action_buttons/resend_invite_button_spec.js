@@ -38,7 +38,7 @@ describe('ResendInviteButton', () => {
         ...propsData,
       },
       directives: {
-        GlTooltip: createMockDirective(),
+        GlTooltip: createMockDirective('gl-tooltip'),
       },
     });
   };

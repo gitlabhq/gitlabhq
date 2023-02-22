@@ -36,7 +36,7 @@ describe('VersionRow', () => {
         GlTruncate,
       },
       directives: {
-        GlTooltip: createMockDirective(),
+        GlTooltip: createMockDirective('gl-tooltip'),
       },
     });
   }

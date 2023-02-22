@@ -102,7 +102,7 @@ describe('import table', () => {
         defaultTargetNamespace,
       },
       directives: {
-        GlTooltip: createMockDirective(),
+        GlTooltip: createMockDirective('gl-tooltip'),
       },
       provide: {
         glFeatures,

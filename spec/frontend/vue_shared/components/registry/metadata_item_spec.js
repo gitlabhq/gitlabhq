@@ -14,7 +14,7 @@ describe('Metadata Item', () => {
     wrapper = shallowMount(component, {
       propsData,
       directives: {
-        GlTooltip: createMockDirective(),
+        GlTooltip: createMockDirective('gl-tooltip'),
       },
     });
   };

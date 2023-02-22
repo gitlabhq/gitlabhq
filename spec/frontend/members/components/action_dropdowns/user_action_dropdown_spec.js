@@ -24,7 +24,7 @@ describe('UserActionDropdown', () => {
         ...propsData,
       },
       directives: {
-        GlTooltip: createMockDirective(),
+        GlTooltip: createMockDirective('gl-tooltip'),
       },
     });
   };

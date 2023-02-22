@@ -11,7 +11,7 @@ describe('RunnerEditButton', () => {
     wrapper = mountFn(RunnerEditButton, {
       attrs,
       directives: {
-        GlTooltip: createMockDirective(),
+        GlTooltip: createMockDirective('gl-tooltip'),
       },
     });
   };

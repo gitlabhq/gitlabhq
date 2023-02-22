@@ -9,7 +9,7 @@ function createComponent(propsData) {
   wrapper = shallowMount(WorkItemTypeIcon, {
     propsData,
     directives: {
-      GlTooltip: createMockDirective(),
+      GlTooltip: createMockDirective('gl-tooltip'),
     },
   });
 }

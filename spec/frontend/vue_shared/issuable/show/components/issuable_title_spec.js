@@ -22,7 +22,7 @@ const createComponent = (propsData = issuableTitleProps) =>
       'status-badge': 'Open',
     },
     directives: {
-      GlTooltip: createMockDirective(),
+      GlTooltip: createMockDirective('gl-tooltip'),
     },
   });
 

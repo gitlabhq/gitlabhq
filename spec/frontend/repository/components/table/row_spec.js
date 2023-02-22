@@ -28,7 +28,7 @@ function factory(propsData = {}) {
       rowNumber: 123,
     },
     directives: {
-      GlHoverLoad: createMockDirective(),
+      GlHoverLoad: createMockDirective('gl-hover-load'),
     },
     mocks: {
       $router,

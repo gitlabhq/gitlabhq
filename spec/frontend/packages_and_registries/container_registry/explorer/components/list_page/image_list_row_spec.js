@@ -49,7 +49,7 @@ describe('Image List Row', () => {
         config: {},
       },
       directives: {
-        GlTooltip: createMockDirective(),
+        GlTooltip: createMockDirective('gl-tooltip'),
       },
     });
   };

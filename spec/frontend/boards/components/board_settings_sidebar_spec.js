@@ -48,7 +48,7 @@ describe('BoardSettingsSidebar', () => {
           isIssueBoard: true,
         },
         directives: {
-          GlModal: createMockDirective(),
+          GlModal: createMockDirective('gl-modal'),
         },
         stubs: {
           GlDrawer: stubComponent(GlDrawer, {

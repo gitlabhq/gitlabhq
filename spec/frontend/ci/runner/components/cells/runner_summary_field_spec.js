@@ -17,7 +17,7 @@ describe('RunnerSummaryField', () => {
         ...props,
       },
       directives: {
-        GlTooltip: createMockDirective(),
+        GlTooltip: createMockDirective('gl-tooltip'),
       },
       ...options,
     });

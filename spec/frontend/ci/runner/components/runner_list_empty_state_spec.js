@@ -31,7 +31,7 @@ describe('RunnerListEmptyState', () => {
         ...props,
       },
       directives: {
-        GlModal: createMockDirective(),
+        GlModal: createMockDirective('gl-modal'),
       },
       stubs: {
         GlEmptyState,

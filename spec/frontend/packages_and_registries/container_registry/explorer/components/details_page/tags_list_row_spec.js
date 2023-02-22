@@ -50,7 +50,7 @@ describe('tags list row', () => {
       },
       propsData,
       directives: {
-        GlTooltip: createMockDirective(),
+        GlTooltip: createMockDirective('gl-tooltip'),
       },
     });
   };

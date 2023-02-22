@@ -51,7 +51,7 @@ describe('RunnerBulkDelete', () => {
         runners: mockRunners,
       },
       directives: {
-        GlTooltip: createMockDirective(),
+        GlTooltip: createMockDirective('gl-tooltip'),
       },
       stubs: {
         GlSprintf,

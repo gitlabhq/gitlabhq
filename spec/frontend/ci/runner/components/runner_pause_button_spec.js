@@ -46,7 +46,7 @@ describe('RunnerPauseButton', () => {
       },
       apolloProvider: createMockApollo([[runnerToggleActiveMutation, runnerToggleActiveHandler]]),
       directives: {
-        GlTooltip: createMockDirective(),
+        GlTooltip: createMockDirective('gl-tooltip'),
       },
     });
   };

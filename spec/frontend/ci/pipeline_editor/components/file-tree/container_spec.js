@@ -22,7 +22,7 @@ describe('Pipeline editor file nav', () => {
           includes,
         },
         directives: {
-          GlTooltip: createMockDirective(),
+          GlTooltip: createMockDirective('gl-tooltip'),
         },
         stubs,
       }),

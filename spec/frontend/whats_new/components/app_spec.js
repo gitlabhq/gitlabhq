@@ -49,7 +49,7 @@ describe('App', () => {
       store,
       propsData: buildProps(),
       directives: {
-        GlResizeObserver: createMockDirective(),
+        GlResizeObserver: createMockDirective('gl-resize-observer'),
       },
     });
   };

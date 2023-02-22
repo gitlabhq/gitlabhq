@@ -12,7 +12,7 @@ describe('RunnerInstructions component', () => {
   const createComponent = () => {
     wrapper = shallowMountExtended(RunnerInstructions, {
       directives: {
-        GlModal: createMockDirective(),
+        GlModal: createMockDirective('gl-tooltip'),
       },
     });
   };

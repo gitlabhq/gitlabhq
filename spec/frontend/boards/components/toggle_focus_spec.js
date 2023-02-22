@@ -10,7 +10,7 @@ describe('ToggleFocus', () => {
   const createComponent = () => {
     wrapper = shallowMountExtended(ToggleFocus, {
       directives: {
-        GlTooltip: createMockDirective(),
+        GlTooltip: createMockDirective('gl-tooltip'),
       },
       attachTo: document.body,
     });

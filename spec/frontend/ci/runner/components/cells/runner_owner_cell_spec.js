@@ -16,7 +16,7 @@ describe('RunnerOwnerCell', () => {
   const createComponent = ({ runner } = {}) => {
     wrapper = shallowMount(RunnerOwnerCell, {
       directives: {
-        GlTooltip: createMockDirective(),
+        GlTooltip: createMockDirective('gl-tooltip'),
       },
       propsData: {
         runner,

@@ -104,6 +104,12 @@ class BulkImports::Entity < ApplicationRecord
       transition created: :timeout
       transition started: :timeout
     end
+
+    # rubocop:disable Style/SymbolProc
+    after_transition any => [:finished, :failed, :timeout] do |entity|
+      entity.update_has_failures
+    end
+    # rubocop:enable Style/SymbolProc
   end
 
   def self.all_human_statuses
@@ -183,6 +189,13 @@ class BulkImports::Entity < ApplicationRecord
     return default_group_visibility if group?
 
     default_project_visibility
+  end
+
+  def update_has_failures
+    return if has_failures
+    return unless failures.any?
+
+    update!(has_failures: true)
   end
 
   private

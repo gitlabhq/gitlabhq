@@ -25,7 +25,7 @@ describe('IssuableHeaderWarnings', () => {
       store,
       provide,
       directives: {
-        GlTooltip: createMockDirective(),
+        GlTooltip: createMockDirective('gl-tooltip'),
       },
     });
   };

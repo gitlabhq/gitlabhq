@@ -41,7 +41,7 @@ describe('Branch rules app', () => {
       apolloProvider: fakeApollo,
       provide: appProvideMock,
       stubs: { GlModal: stubComponent(GlModal, { template: RENDER_ALL_SLOTS_TEMPLATE }) },
-      directives: { GlModal: createMockDirective() },
+      directives: { GlModal: createMockDirective('gl-modal') },
     });
 
     await waitForPromises();

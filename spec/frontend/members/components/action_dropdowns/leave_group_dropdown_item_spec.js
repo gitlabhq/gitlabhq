@@ -18,7 +18,7 @@ describe('LeaveGroupDropdownItem', () => {
         ...propsData,
       },
       directives: {
-        GlModal: createMockDirective(),
+        GlModal: createMockDirective('gl-modal'),
       },
       slots: {
         default: text,

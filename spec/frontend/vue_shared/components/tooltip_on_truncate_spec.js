@@ -30,8 +30,8 @@ describe('TooltipOnTruncate component', () => {
         default: [MOCK_TITLE],
       },
       directives: {
-        GlTooltip: createMockDirective(),
-        GlResizeObserver: createMockDirective(),
+        GlTooltip: createMockDirective('gl-tooltip'),
+        GlResizeObserver: createMockDirective('gl-resize-observer'),
       },
       ...options,
     });
@@ -42,8 +42,8 @@ describe('TooltipOnTruncate component', () => {
       ...TooltipOnTruncate,
       directives: {
         ...TooltipOnTruncate.directives,
-        GlTooltip: createMockDirective(),
-        GlResizeObserver: createMockDirective(),
+        GlTooltip: createMockDirective('gl-tooltip'),
+        GlResizeObserver: createMockDirective('gl-resize-observer'),
       },
     };
 

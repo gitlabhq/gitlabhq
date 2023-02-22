@@ -19,7 +19,7 @@ describe('DropdownValueCollapsedComponent', () => {
     wrapper = shallowMount(DropdownValueCollapsedComponent, {
       propsData: { ...defaultProps, ...props },
       directives: {
-        GlTooltip: createMockDirective(),
+        GlTooltip: createMockDirective('gl-tooltip'),
       },
     });
   };

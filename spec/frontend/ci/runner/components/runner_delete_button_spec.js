@@ -53,8 +53,8 @@ describe('RunnerDeleteButton', () => {
       },
       apolloProvider,
       directives: {
-        GlTooltip: createMockDirective(),
-        GlModal: createMockDirective(),
+        GlTooltip: createMockDirective('gl-tooltip'),
+        GlModal: createMockDirective('gl-modal'),
       },
     });
   };

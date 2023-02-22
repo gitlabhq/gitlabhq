@@ -29,8 +29,8 @@ describe('RunnerTag', () => {
         ...props,
       },
       directives: {
-        GlTooltip: createMockDirective(),
-        GlResizeObserver: createMockDirective(),
+        GlTooltip: createMockDirective('gl-tooltip'),
+        GlResizeObserver: createMockDirective('gl-resize-observer'),
       },
     });
   };

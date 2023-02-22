@@ -38,7 +38,7 @@ describe('PackageTitle', () => {
       },
       provide,
       directives: {
-        GlResizeObserver: createMockDirective(),
+        GlResizeObserver: createMockDirective('gl-resize-observer'),
       },
     });
     await nextTick();

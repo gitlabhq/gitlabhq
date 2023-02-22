@@ -73,7 +73,7 @@ describe('Details Header', () => {
       apolloProvider,
       propsData,
       directives: {
-        GlTooltip: createMockDirective(),
+        GlTooltip: createMockDirective('gl-tooltip'),
       },
       stubs: {
         TitleArea,

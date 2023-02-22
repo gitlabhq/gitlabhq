@@ -60,7 +60,7 @@ describe('Issuable output', () => {
   const mountComponent = (props = {}, options = {}, data = {}) => {
     wrapper = shallowMountExtended(IssuableApp, {
       directives: {
-        GlTooltip: createMockDirective(),
+        GlTooltip: createMockDirective('gl-tooltip'),
       },
       propsData: { ...appProps, ...props },
       provide: {

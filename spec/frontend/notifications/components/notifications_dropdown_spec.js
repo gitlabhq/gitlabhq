@@ -25,7 +25,7 @@ describe('NotificationsDropdown', () => {
         CustomNotificationsModal,
       },
       directives: {
-        GlTooltip: createMockDirective(),
+        GlTooltip: createMockDirective('gl-tooltip'),
       },
       provide: {
         dropdownItems: mockDropdownItems,

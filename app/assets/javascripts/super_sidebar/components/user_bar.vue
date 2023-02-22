@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlIcon, GlTooltipDirective } from '@gitlab/ui';
+import { GlButton, GlTooltipDirective } from '@gitlab/ui';
 import { __ } from '~/locale';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import logo from '../../../../views/shared/_logo.svg';
@@ -12,10 +12,9 @@ import UserMenu from './user_menu.vue';
 export default {
   logo,
   components: {
-    GlButton,
-    GlIcon,
-    CreateMenu,
     Counter,
+    CreateMenu,
+    GlButton,
     MergeRequestMenu,
     UserMenu,
   },
@@ -24,6 +23,7 @@ export default {
     createNew: __('Create new...'),
     issues: __('Issues'),
     mergeRequests: __('Merge requests'),
+    search: __('Search'),
     todoList: __('To-Do list'),
   },
   directives: {
@@ -59,9 +59,12 @@ export default {
         @click="collapseSidebar"
       />
       <create-menu :groups="sidebarData.create_new_menu_groups" />
-      <button class="gl-border-none">
-        <gl-icon name="search" class="gl-vertical-align-middle" />
-      </button>
+      <gl-button
+        icon="search"
+        :aria-label="$options.i18n.search"
+        category="tertiary"
+        href="/search"
+      />
       <user-menu :data="sidebarData" />
     </div>
     <div class="gl-display-flex gl-justify-content-space-between gl-px-3 gl-py-2 gl-gap-2">

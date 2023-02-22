@@ -67,7 +67,7 @@ describe('packages_list_row', () => {
         selected,
       },
       directives: {
-        GlTooltip: createMockDirective(),
+        GlTooltip: createMockDirective('gl-tooltip'),
       },
     });
   };

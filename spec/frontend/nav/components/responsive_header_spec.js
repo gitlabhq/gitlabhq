@@ -14,7 +14,7 @@ describe('~/nav/components/top_nav_menu_sections.vue', () => {
         default: TEST_SLOT_CONTENT,
       },
       directives: {
-        GlTooltip: createMockDirective(),
+        GlTooltip: createMockDirective('gl-tooltip'),
       },
     });
   };

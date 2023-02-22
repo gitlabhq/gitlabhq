@@ -412,4 +412,30 @@ RSpec.describe BulkImports::Entity, type: :model, feature_category: :importers d
       end
     end
   end
+
+  describe '#update_has_failures' do
+    let(:entity) { create(:bulk_import_entity) }
+
+    context 'when entity has failures' do
+      it 'sets has_failures flag to true' do
+        expect(entity.has_failures).to eq(false)
+
+        create(:bulk_import_failure, entity: entity)
+
+        entity.fail_op!
+
+        expect(entity.has_failures).to eq(true)
+      end
+    end
+
+    context 'when entity does not have failures' do
+      it 'sets has_failures flag to false' do
+        expect(entity.has_failures).to eq(false)
+
+        entity.fail_op!
+
+        expect(entity.has_failures).to eq(false)
+      end
+    end
+  end
 end

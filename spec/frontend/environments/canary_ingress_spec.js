@@ -23,7 +23,7 @@ describe('/environments/components/canary_ingress.vue', () => {
         ...props,
       },
       directives: {
-        GlModal: createMockDirective(),
+        GlModal: createMockDirective('gl-modal'),
       },
       ...options,
     });

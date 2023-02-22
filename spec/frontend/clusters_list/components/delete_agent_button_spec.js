@@ -84,7 +84,7 @@ describe('DeleteAgentButton', () => {
         ...provideData,
       },
       directives: {
-        GlTooltip: createMockDirective(),
+        GlTooltip: createMockDirective('gl-tooltip'),
       },
       propsData,
       mocks: { $toast: { show: toast } },

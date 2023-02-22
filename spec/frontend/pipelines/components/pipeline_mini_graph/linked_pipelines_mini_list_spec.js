@@ -19,7 +19,7 @@ describe('Linked pipeline mini list', () => {
   const createComponent = (props = {}) => {
     wrapper = mount(LinkedPipelinesMiniList, {
       directives: {
-        GlTooltip: createMockDirective(),
+        GlTooltip: createMockDirective('gl-tooltip'),
       },
       propsData: {
         ...props,

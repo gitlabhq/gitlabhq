@@ -21,7 +21,7 @@ describe('CreateTokenButton', () => {
         ...provideData,
       },
       directives: {
-        GlModalDirective: createMockDirective(),
+        GlModalDirective: createMockDirective('gl-modal-directive'),
       },
       stubs: {
         GlTooltip,

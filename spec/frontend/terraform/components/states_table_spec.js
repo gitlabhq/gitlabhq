@@ -127,7 +127,7 @@ describe('StatesTable', () => {
         propsData,
         provide: { projectPath: 'path/to/project' },
         directives: {
-          GlTooltip: createMockDirective(),
+          GlTooltip: createMockDirective('gl-tooltip'),
         },
       }),
     );

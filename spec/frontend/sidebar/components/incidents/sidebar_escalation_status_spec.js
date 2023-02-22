@@ -57,7 +57,7 @@ describe('SidebarEscalationStatus', () => {
         canUpdate: true,
       },
       directives: {
-        GlTooltip: createMockDirective(),
+        GlTooltip: createMockDirective('gl-tooltip'),
       },
       apolloProvider,
     });

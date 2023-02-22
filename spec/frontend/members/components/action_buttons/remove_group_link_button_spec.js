@@ -37,7 +37,7 @@ describe('RemoveGroupLinkButton', () => {
         groupLink: group,
       },
       directives: {
-        GlTooltip: createMockDirective(),
+        GlTooltip: createMockDirective('gl-tooltip'),
       },
     });
   };

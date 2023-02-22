@@ -35,7 +35,7 @@ describe('ClustersActionsComponent', () => {
         ...provideData,
       },
       directives: {
-        GlModalDirective: createMockDirective(),
+        GlModalDirective: createMockDirective('gl-modal-directive'),
       },
     });
   };

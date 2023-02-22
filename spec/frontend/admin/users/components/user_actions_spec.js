@@ -32,7 +32,7 @@ describe('AdminUserActions component', () => {
         showButtonLabels,
       },
       directives: {
-        GlTooltip: createMockDirective(),
+        GlTooltip: createMockDirective('gl-tooltip'),
       },
     });
   };

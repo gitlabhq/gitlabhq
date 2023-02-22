@@ -21,7 +21,7 @@ describe('InputCopyToggleVisibility', () => {
       InputCopyToggleVisibility,
       merge({}, options, {
         directives: {
-          GlTooltip: createMockDirective(),
+          GlTooltip: createMockDirective('gl-tooltip'),
         },
       }),
     );
