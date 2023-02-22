@@ -891,7 +891,6 @@ Style/IfUnlessModifier:
     - 'lib/gitlab/jira_import.rb'
     - 'lib/gitlab/jira_import/base_importer.rb'
     - 'lib/gitlab/legacy_github_import/client.rb'
-    - 'lib/gitlab/legacy_github_import/importer.rb'
     - 'lib/gitlab/legacy_github_import/issuable_formatter.rb'
     - 'lib/gitlab/legacy_github_import/project_creator.rb'
     - 'lib/gitlab/lograge/custom_options.rb'

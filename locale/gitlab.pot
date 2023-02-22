@@ -19373,6 +19373,9 @@ msgstr ""
 msgid "GlobalSearch|Recent merge requests"
 msgstr ""
 
+msgid "GlobalSearch|Reset filters"
+msgstr ""
+
 msgid "GlobalSearch|Result count is over limit."
 msgstr ""
 

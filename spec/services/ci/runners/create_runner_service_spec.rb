@@ -83,6 +83,49 @@ RSpec.describe ::Ci::Runners::CreateRunnerService, "#execute", feature_category:
         expect(runner.authenticated_user_registration_type?).to be_truthy
         expect(runner.runner_type).to eq 'instance_type'
       end
+
+      context 'with a nil paused value' do
+        let(:args) do
+          {
+            paused: nil,
+            description: 'some description',
+            maintenance_note: 'a note',
+            tag_list: %w[tag1 tag2],
+            access_level: 'ref_protected',
+            locked: true,
+            maximum_timeout: 600,
+            run_untagged: false
+          }
+        end
+
+        it { is_expected.to be_success }
+
+        it 'creates runner with active set to true' do
+          expect(runner).to be_an_instance_of(::Ci::Runner)
+          expect(runner.active).to eq true
+        end
+      end
+
+      context 'with no paused value given' do
+        let(:args) do
+          {
+            description: 'some description',
+            maintenance_note: 'a note',
+            tag_list: %w[tag1 tag2],
+            access_level: 'ref_protected',
+            locked: true,
+            maximum_timeout: 600,
+            run_untagged: false
+          }
+        end
+
+        it { is_expected.to be_success }
+
+        it 'creates runner with active set to true' do
+          expect(runner).to be_an_instance_of(::Ci::Runner)
+          expect(runner.active).to eq true
+        end
+      end
     end
   end
 

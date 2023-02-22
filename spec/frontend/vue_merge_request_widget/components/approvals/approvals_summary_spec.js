@@ -1,11 +1,10 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { mount } from '@vue/test-utils';
-import approvedByMultipleUsers from 'test_fixtures/graphql/merge_requests/approvals/approved_by.query.graphql_multiple_users.json';
-import noApprovalsResponse from 'test_fixtures/graphql/merge_requests/approvals/approved_by.query.graphql_no_approvals.json';
-import approvedByCurrentUser from 'test_fixtures/graphql/merge_requests/approvals/approved_by.query.graphql.json';
+import approvedByMultipleUsers from 'test_fixtures/graphql/merge_requests/approvals/approvals.query.graphql_multiple_users.json';
+import noApprovalsResponse from 'test_fixtures/graphql/merge_requests/approvals/approvals.query.graphql_no_approvals.json';
+import approvedByCurrentUser from 'test_fixtures/graphql/merge_requests/approvals/approvals.query.graphql.json';
 import waitForPromises from 'helpers/wait_for_promises';
-import createMockApollo from 'helpers/mock_apollo_helper';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import ApprovalsSummary from '~/vue_merge_request_widget/components/approvals/approvals_summary.vue';
 import {
@@ -14,7 +13,6 @@ import {
   APPROVED_BY_YOU_AND_OTHERS,
 } from '~/vue_merge_request_widget/components/approvals/messages';
 import UserAvatarList from '~/vue_shared/components/user_avatar/user_avatar_list.vue';
-import approvedByQuery from 'ee_else_ce/vue_merge_request_widget/components/approvals/queries/approved_by.query.graphql';
 
 Vue.use(VueApollo);
 
@@ -22,13 +20,11 @@ describe('MRWidget approvals summary', () => {
   const originalUserId = gon.current_user_id;
   let wrapper;
 
-  const createComponent = (response = approvedByCurrentUser) => {
+  const createComponent = (data = approvedByCurrentUser) => {
     wrapper = mount(ApprovalsSummary, {
       propsData: {
-        projectPath: 'gitlab-org/gitlab',
-        iid: '1',
+        approvalState: data.data.project.mergeRequest,
       },
-      apolloProvider: createMockApollo([[approvedByQuery, jest.fn().mockResolvedValue(response)]]),
     });
   };
 

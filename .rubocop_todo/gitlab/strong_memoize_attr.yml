@@ -647,7 +647,6 @@ Gitlab/StrongMemoizeAttr:
     - 'lib/gitlab/git_access_project.rb'
     - 'lib/gitlab/gitaly_client/with_feature_flag_actors.rb'
     - 'lib/gitlab/github_import/client.rb'
-    - 'lib/gitlab/github_import/importer/repository_importer.rb'
     - 'lib/gitlab/github_import/representation/diff_notes/suggestion_formatter.rb'
     - 'lib/gitlab/gl_repository/identifier.rb'
     - 'lib/gitlab/gpg/commit.rb'

@@ -356,12 +356,11 @@ export default class MergeRequestStore {
 
   initApprovals() {
     this.isApproved = this.isApproved || false;
-    this.approvals = this.approvals || null;
   }
 
   setApprovals(data) {
-    this.approvals = data;
     this.isApproved = data.approved || false;
+    this.approvals = true;
 
     this.setState();
   }

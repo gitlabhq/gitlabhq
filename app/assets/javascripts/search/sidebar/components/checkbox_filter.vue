@@ -1,6 +1,6 @@
 <script>
 import { GlFormCheckboxGroup, GlFormCheckbox } from '@gitlab/ui';
-import { mapState, mapActions } from 'vuex';
+import { mapState, mapActions, mapGetters } from 'vuex';
 import { intersection } from 'lodash';
 import { NAV_LINK_COUNT_DEFAULT_CLASSES, LABEL_DEFAULT_CLASSES } from '../constants';
 import { formatSearchResultCount } from '../../store/utils';
@@ -12,31 +12,29 @@ export default {
     GlFormCheckbox,
   },
   props: {
-    filterData: {
+    filtersData: {
       type: Object,
       required: true,
     },
   },
   computed: {
     ...mapState(['query']),
+    ...mapGetters(['queryLangugageFilters']),
     scope() {
       return this.query.scope;
     },
-    queryFilters() {
-      return this.query[this.filterData?.filterParam] || [];
-    },
     dataFilters() {
-      return Object.values(this.filterData?.filters || []);
+      return Object.values(this.filtersData?.filters || []);
     },
     flatDataFilterValues() {
       return this.dataFilters.map(({ value }) => value);
     },
     selectedFilter: {
       get() {
-        return intersection(this.flatDataFilterValues, this.queryFilters);
+        return intersection(this.flatDataFilterValues, this.queryLangugageFilters);
       },
       set(value) {
-        this.setQuery({ key: this.filterData?.filterParam, value });
+        this.setQuery({ key: this.filtersData?.filterParam, value });
       },
     },
     labelCountClasses() {
@@ -56,7 +54,7 @@ export default {
 
 <template>
   <div class="gl-mx-5">
-    <h5 class="gl-mt-0">{{ filterData.header }}</h5>
+    <h5 class="gl-mt-0">{{ filtersData.header }}</h5>
     <gl-form-checkbox-group v-model="selectedFilter">
       <gl-form-checkbox
         v-for="f in dataFilters"

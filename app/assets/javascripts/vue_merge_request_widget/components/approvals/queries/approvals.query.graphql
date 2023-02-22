@@ -1,3 +1,5 @@
+#import "~/graphql_shared/fragments/user.fragment.graphql"
+
 query approvedBy($projectPath: ID!, $iid: String!) {
   project(fullPath: $projectPath) {
     id
@@ -5,11 +7,11 @@ query approvedBy($projectPath: ID!, $iid: String!) {
       id
       approvedBy {
         nodes {
-          id
-          name
-          avatarUrl
-          webUrl
+          ...User
         }
+      }
+      userPermissions {
+        canApprove
       }
     }
   }

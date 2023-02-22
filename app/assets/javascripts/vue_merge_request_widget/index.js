@@ -13,7 +13,18 @@ Vue.use(Translate);
 Vue.use(VueApollo);
 
 const apolloProvider = new VueApollo({
-  defaultClient: createDefaultClient(),
+  defaultClient: createDefaultClient(
+    {},
+    {
+      cacheConfig: {
+        typePolicies: {
+          MergeRequestApprovalState: {
+            merge: true,
+          },
+        },
+      },
+    },
+  ),
 });
 
 export default () => {

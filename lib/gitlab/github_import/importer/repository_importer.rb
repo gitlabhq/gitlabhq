@@ -66,13 +66,10 @@ module Gitlab
 
           true
         rescue ::Gitlab::Git::CommandError => e
-          if e.message !~ /repository not exported/
-            project.create_wiki
+          return true if e.message.include?('repository not exported')
 
-            raise e
-          else
-            true
-          end
+          project.create_wiki
+          raise e
         end
 
         def wiki_url
@@ -89,10 +86,8 @@ module Gitlab
           client_repository[:default_branch]
         end
 
-        def client_repository
-          strong_memoize(:client_repository) do
-            client.repository(project.import_source)
-          end
+        strong_memoize_attr def client_repository
+          client.repository(project.import_source)
         end
       end
     end

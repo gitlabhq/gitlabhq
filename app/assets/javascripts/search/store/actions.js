@@ -4,6 +4,7 @@ import axios from '~/lib/utils/axios_utils';
 import { visitUrl, setUrlParams } from '~/lib/utils/url_utility';
 import { logError } from '~/lib/logger';
 import { __ } from '~/locale';
+import { languageFilterData } from '~/search/sidebar/constants/language_filter_data';
 import { GROUPS_LOCAL_STORAGE_KEY, PROJECTS_LOCAL_STORAGE_KEY, SIDEBAR_PARAMS } from './constants';
 import * as types from './mutation_types';
 import {
@@ -105,7 +106,17 @@ export const applyQuery = ({ state }) => {
 };
 
 export const resetQuery = ({ state }) => {
-  visitUrl(setUrlParams({ ...state.query, page: null, state: null, confidential: null }));
+  visitUrl(
+    setUrlParams({ ...state.query, page: null, state: null, confidential: null }, undefined, true),
+  );
+};
+
+export const resetLanguageQueryWithRedirect = ({ state }) => {
+  visitUrl(setUrlParams({ ...state.query, language: null }, undefined, true));
+};
+
+export const resetLanguageQuery = ({ commit }) => {
+  commit(types.SET_QUERY, { key: languageFilterData?.filterParam, value: [] });
 };
 
 export const fetchSidebarCount = ({ commit, state }) => {

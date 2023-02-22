@@ -1,4 +1,6 @@
+import { has } from 'lodash';
 import { languageFilterData } from '~/search/sidebar/constants/language_filter_data';
+
 import { GROUPS_LOCAL_STORAGE_KEY, PROJECTS_LOCAL_STORAGE_KEY } from './constants';
 
 export const frequentGroups = (state) => {
@@ -16,3 +18,11 @@ export const langugageAggregationBuckets = (state) => {
     )?.buckets || []
   );
 };
+
+export const queryLangugageFilters = (state) => {
+  return state.query[languageFilterData.filterParam] || [];
+};
+
+export const currentUrlQueryHasLanguageFilters = (state) =>
+  has(state.urlQuery, languageFilterData.filterParam) &&
+  state.urlQuery[languageFilterData.filterParam]?.length > 0;

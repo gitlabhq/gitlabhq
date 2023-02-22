@@ -3062,7 +3062,6 @@ Layout/LineLength:
     - 'lib/gitlab/kubernetes/helm/pod.rb'
     - 'lib/gitlab/kubernetes/kubectl_cmd.rb'
     - 'lib/gitlab/kubernetes/pod_cmd.rb'
-    - 'lib/gitlab/legacy_github_import/importer.rb'
     - 'lib/gitlab/legacy_github_import/project_creator.rb'
     - 'lib/gitlab/local_and_remote_storage_migration/base_migrater.rb'
     - 'lib/gitlab/lograge/custom_options.rb'

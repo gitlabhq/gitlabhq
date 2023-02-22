@@ -27,10 +27,15 @@ export default {
     apply: __('Apply'),
     showingMax: sprintf(s__('GlobalSearch|Showing top %{maxItems}'), { maxItems: MAX_ITEM_LENGTH }),
     loadError: s__('GlobalSearch|Aggregations load error.'),
+    reset: s__('GlobalSearch|Reset filters'),
   },
   computed: {
     ...mapState(['aggregations', 'sidebarDirty']),
-    ...mapGetters(['langugageAggregationBuckets']),
+    ...mapGetters([
+      'langugageAggregationBuckets',
+      'currentUrlQueryHasLanguageFilters',
+      'queryLangugageFilters',
+    ]),
     hasBuckets() {
       return this.langugageAggregationBuckets.length > 0;
     },
@@ -55,17 +60,32 @@ export default {
     dividerClasses() {
       return [...HR_DEFAULT_CLASSES, ...ONLY_SHOW_MD];
     },
+    hasQueryFilters() {
+      return this.queryLangugageFilters.length > 0;
+    },
   },
   async created() {
     await this.fetchLanguageAggregation();
   },
   methods: {
-    ...mapActions(['applyQuery', 'fetchLanguageAggregation']),
+    ...mapActions([
+      'applyQuery',
+      'resetLanguageQuery',
+      'resetLanguageQueryWithRedirect',
+      'fetchLanguageAggregation',
+    ]),
     onShowMore() {
       this.showAll = true;
     },
     trimBuckets(length) {
       return this.langugageAggregationBuckets.slice(0, length);
+    },
+    cleanResetFilters() {
+      if (this.currentUrlQueryHasLanguageFilters) {
+        return this.resetLanguageQueryWithRedirect();
+      }
+      this.showAll = false;
+      return this.resetLanguageQuery();
     },
   },
   HR_DEFAULT_CLASSES,
@@ -84,7 +104,7 @@ export default {
       class="gl-overflow-x-hidden gl-overflow-y-auto"
       :class="{ 'language-filter-max-height': showAll }"
     >
-      <checkbox-filter class="gl-px-5" :filter-data="filtersData" />
+      <checkbox-filter :filters-data="filtersData" />
       <span v-if="showAll && hasOverMax" data-testid="has-over-max-text">{{
         $options.i18n.showingMax
       }}</span>
@@ -106,7 +126,9 @@ export default {
     </div>
     <div v-if="!aggregations.error">
       <hr :class="$options.HR_DEFAULT_CLASSES" />
-      <div class="gl-display-flex gl-align-items-center gl-mt-4 gl-mx-5 gl-px-5">
+      <div
+        class="gl-display-flex gl-align-items-center gl-justify-content-space-between gl-mt-4 gl-mx-5"
+      >
         <gl-button
           category="primary"
           variant="confirm"
@@ -115,6 +137,16 @@ export default {
           data-testid="apply-button"
         >
           {{ $options.i18n.apply }}
+        </gl-button>
+        <gl-button
+          category="tertiary"
+          variant="link"
+          size="small"
+          :disabled="!hasQueryFilters && !sidebarDirty"
+          data-testid="reset-button"
+          @click="cleanResetFilters"
+        >
+          {{ $options.i18n.reset }}
         </gl-button>
       </div>
     </div>

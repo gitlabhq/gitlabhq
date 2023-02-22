@@ -6,6 +6,7 @@ import VueApollo from 'vue-apollo';
 import * as Sentry from '@sentry/browser';
 import getStateQueryResponse from 'test_fixtures/graphql/merge_requests/get_state.query.graphql.json';
 import readyToMergeResponse from 'test_fixtures/graphql/merge_requests/states/ready_to_merge.query.graphql.json';
+import approvedByCurrentUser from 'test_fixtures/graphql/merge_requests/approvals/approvals.query.graphql.json';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { securityReportMergeRequestDownloadPathsQueryResponse } from 'jest/vue_shared/security_reports/mock_data';
@@ -28,6 +29,7 @@ import StatusIcon from '~/vue_merge_request_widget/components/extensions/status_
 import securityReportMergeRequestDownloadPathsQuery from '~/vue_shared/security_reports/graphql/queries/security_report_merge_request_download_paths.query.graphql';
 import getStateQuery from '~/vue_merge_request_widget/queries/get_state.query.graphql';
 import readyToMergeQuery from 'ee_else_ce/vue_merge_request_widget/queries/states/ready_to_merge.query.graphql';
+import approvalsQuery from 'ee_else_ce/vue_merge_request_widget/components/approvals/queries/approvals.query.graphql';
 import userPermissionsQuery from '~/vue_merge_request_widget/queries/permissions.query.graphql';
 import conflictsStateQuery from '~/vue_merge_request_widget/queries/states/conflicts.query.graphql';
 import { faviconDataUrl, overlayDataUrl } from '../lib/utils/mock_data';
@@ -100,6 +102,7 @@ describe('MrWidgetOptions', () => {
 
       ...options,
       apolloProvider: createMockApollo([
+        [approvalsQuery, jest.fn().mockResolvedValue(approvedByCurrentUser)],
         [
           getStateQuery,
           jest.fn().mockResolvedValue({

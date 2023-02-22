@@ -226,11 +226,14 @@ describe('Global Search Store Utils', () => {
   });
 
   describe.each`
-    description            | currentQuery                                                          | urlQuery                                                              | isDirty
-    ${'identical'}         | ${{ [SIDEBAR_PARAMS[0]]: 'default', [SIDEBAR_PARAMS[1]]: 'default' }} | ${{ [SIDEBAR_PARAMS[0]]: 'default', [SIDEBAR_PARAMS[1]]: 'default' }} | ${false}
-    ${'different'}         | ${{ [SIDEBAR_PARAMS[0]]: 'default', [SIDEBAR_PARAMS[1]]: 'new' }}     | ${{ [SIDEBAR_PARAMS[0]]: 'default', [SIDEBAR_PARAMS[1]]: 'default' }} | ${true}
-    ${'null/undefined'}    | ${{ [SIDEBAR_PARAMS[0]]: null, [SIDEBAR_PARAMS[1]]: null }}           | ${{ [SIDEBAR_PARAMS[0]]: undefined, [SIDEBAR_PARAMS[1]]: undefined }} | ${false}
-    ${'updated/undefined'} | ${{ [SIDEBAR_PARAMS[0]]: 'new', [SIDEBAR_PARAMS[1]]: 'new' }}         | ${{ [SIDEBAR_PARAMS[0]]: undefined, [SIDEBAR_PARAMS[1]]: undefined }} | ${true}
+    description                             | currentQuery                                                                                           | urlQuery                                                                                               | isDirty
+    ${'identical'}                          | ${{ [SIDEBAR_PARAMS[0]]: 'default', [SIDEBAR_PARAMS[1]]: 'default', [SIDEBAR_PARAMS[2]]: ['a', 'b'] }} | ${{ [SIDEBAR_PARAMS[0]]: 'default', [SIDEBAR_PARAMS[1]]: 'default', [SIDEBAR_PARAMS[2]]: ['a', 'b'] }} | ${false}
+    ${'different'}                          | ${{ [SIDEBAR_PARAMS[0]]: 'default', [SIDEBAR_PARAMS[1]]: 'new', [SIDEBAR_PARAMS[2]]: ['a', 'b'] }}     | ${{ [SIDEBAR_PARAMS[0]]: 'default', [SIDEBAR_PARAMS[1]]: 'default', [SIDEBAR_PARAMS[2]]: ['a', 'c'] }} | ${true}
+    ${'null/undefined'}                     | ${{ [SIDEBAR_PARAMS[0]]: null, [SIDEBAR_PARAMS[1]]: null, [SIDEBAR_PARAMS[2]]: null }}                 | ${{ [SIDEBAR_PARAMS[0]]: undefined, [SIDEBAR_PARAMS[1]]: undefined, [SIDEBAR_PARAMS[2]]: undefined }}  | ${false}
+    ${'updated/undefined'}                  | ${{ [SIDEBAR_PARAMS[0]]: 'new', [SIDEBAR_PARAMS[1]]: 'new', [SIDEBAR_PARAMS[2]]: ['a', 'b'] }}         | ${{ [SIDEBAR_PARAMS[0]]: undefined, [SIDEBAR_PARAMS[1]]: undefined, [SIDEBAR_PARAMS[2]]: [] }}         | ${true}
+    ${'language only no url params'}        | ${{ [SIDEBAR_PARAMS[2]]: ['a', 'b'] }}                                                                 | ${{ [SIDEBAR_PARAMS[2]]: undefined }}                                                                  | ${true}
+    ${'language only url params symetric'}  | ${{ [SIDEBAR_PARAMS[2]]: ['a', 'b'] }}                                                                 | ${{ [SIDEBAR_PARAMS[2]]: ['a', 'b'] }}                                                                 | ${false}
+    ${'language only url params asymetric'} | ${{ [SIDEBAR_PARAMS[2]]: ['a'] }}                                                                      | ${{ [SIDEBAR_PARAMS[2]]: ['a', 'b'] }}                                                                 | ${true}
   `('isSidebarDirty', ({ description, currentQuery, urlQuery, isDirty }) => {
     describe(`with ${description} sidebar query data`, () => {
       let res;

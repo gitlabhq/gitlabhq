@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'yaml'
-
 namespace :tw do
   desc 'Generates a list of codeowners for documentation pages.'
   task :codeowners do

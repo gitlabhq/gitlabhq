@@ -421,6 +421,18 @@ To check an installed Git LFS client's version, run this command:
 git lfs version
 ```
 
+### `Connection refused` errors
+
+If you push or mirror LFS objects and receive errors like the following:
+
+- `dial tcp <IP>:443: connect: connection refused`
+- `Connection refused - connect(2) for \"<target-or-proxy-IP>\" port 443`
+
+a firewall or proxy rule may be terminating the connection.
+
+If connection checks with standard Unix tools or manual Git pushes are successful,
+the rule may be related to the size of the request.
+
 ## Error viewing a PDF file
 
 When LFS has been configured with object storage and `proxy_download` set to

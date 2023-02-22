@@ -23,6 +23,7 @@ describe('GlobalSearchSidebarLanguageFilter', () => {
 
   const getterSpies = {
     langugageAggregationBuckets: jest.fn(() => MOCK_LANGUAGE_AGGREGATIONS_BUCKETS),
+    queryLangugageFilters: jest.fn(() => []),
   };
 
   const createComponent = (initialState) => {
@@ -48,6 +49,7 @@ describe('GlobalSearchSidebarLanguageFilter', () => {
   const findForm = () => wrapper.findComponent(GlForm);
   const findCheckboxFilter = () => wrapper.findComponent(CheckboxFilter);
   const findApplyButton = () => wrapper.findByTestId('apply-button');
+  const findResetButton = () => wrapper.findByTestId('reset-button');
   const findShowMoreButton = () => wrapper.findByTestId('show-more-button');
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findAllCheckboxes = () => wrapper.findAllComponents(GlFormCheckbox);
@@ -81,6 +83,25 @@ describe('GlobalSearchSidebarLanguageFilter', () => {
 
     it("doesn't render Alert", () => {
       expect(findAlert().exists()).toBe(false);
+    });
+  });
+
+  describe('resetButton', () => {
+    describe.each`
+      description                          | sidebarDirty | queryFilters     | isDisabled
+      ${'sidebar dirty only'}              | ${true}      | ${[]}            | ${undefined}
+      ${'query filters only'}              | ${false}     | ${['JSON', 'C']} | ${undefined}
+      ${'sidebar dirty and query filters'} | ${true}      | ${['JSON', 'C']} | ${undefined}
+      ${'no sidebar and no query filters'} | ${false}     | ${[]}            | ${'true'}
+    `('$description', ({ sidebarDirty, queryFilters, isDisabled }) => {
+      beforeEach(() => {
+        getterSpies.queryLangugageFilters = jest.fn(() => queryFilters);
+        createComponent({ sidebarDirty, query: { ...MOCK_QUERY, language: queryFilters } });
+      });
+
+      it(`button is ${isDisabled ? 'enabled' : 'disabled'}`, () => {
+        expect(findResetButton().attributes('disabled')).toBe(isDisabled);
+      });
     });
   });
 

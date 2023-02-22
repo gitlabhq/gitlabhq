@@ -116,7 +116,6 @@ Performance/MapCompact:
     - 'lib/gitlab/jira_import/metadata_collector.rb'
     - 'lib/gitlab/json_cache.rb'
     - 'lib/gitlab/language_detection.rb'
-    - 'lib/gitlab/legacy_github_import/importer.rb'
     - 'lib/gitlab/private_commit_email.rb'
     - 'lib/gitlab/sql/pattern.rb'
     - 'lib/gitlab/url_blocker.rb'

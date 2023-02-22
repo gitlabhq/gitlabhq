@@ -101,23 +101,22 @@ module Gitlab
 
           all_statuses
             .pluck(*columns) # rubocop: disable CodeReuse/ActiveRecord
-            .each(&method(:consume_status))
+            .each do |status_attrs|
+              consume_status(Array.wrap(status_attrs))
+            end
         end
 
-        def consume_status(description)
-          # convert `"status"` into `["status"]`
-          description = Array(description)
-
-          status =
-            if success_with_warnings?(description)
+        def consume_status(status_attrs)
+          status_result =
+            if success_with_warnings?(status_attrs)
               :success_with_warnings
-            elsif ignored_status?(description)
+            elsif ignored_status?(status_attrs)
               :ignored
             else
-              description[@status_key].to_sym
+              status_attrs[@status_key].to_sym
             end
 
-          @status_set.add(status)
+          @status_set.add(status_result)
         end
 
         def success_with_warnings?(status)
@@ -129,7 +128,7 @@ module Gitlab
         def ignored_status?(status)
           @allow_failure_key &&
             status[@allow_failure_key] &&
-            ::Ci::HasStatus::EXCLUDE_IGNORED_STATUSES.include?(status[@status_key])
+            ::Ci::HasStatus::IGNORED_STATUSES.include?(status[@status_key])
         end
       end
     end

@@ -1,3 +1,4 @@
+import { isEqual } from 'lodash';
 import AccessorUtilities from '~/lib/utils/accessor';
 import { formatNumber } from '~/locale';
 import { joinPaths } from '~/lib/utils/url_utility';
@@ -93,6 +94,10 @@ export const isSidebarDirty = (currentQuery, urlQuery) => {
     // userAddParam ensures we don't get a false dirty from null !== undefined
     const userAddedParam = !urlQuery[param] && currentQuery[param];
     const userChangedExistingParam = urlQuery[param] && urlQuery[param] !== currentQuery[param];
+
+    if (Array.isArray(currentQuery[param]) || Array.isArray(urlQuery[param])) {
+      return !isEqual(currentQuery[param], urlQuery[param]);
+    }
 
     return userAddedParam || userChangedExistingParam;
   });

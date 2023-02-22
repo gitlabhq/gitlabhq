@@ -235,8 +235,6 @@ module Namespaces
         # This is a temporary guard and will be removed.
         return if is_a?(Namespaces::ProjectNamespace)
 
-        return unless Feature.enabled?(:set_traversal_ids_on_save, root_ancestor)
-
         self.transient_traversal_ids = if parent_id
                                          parent.traversal_ids + [id]
                                        else

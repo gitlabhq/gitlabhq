@@ -410,7 +410,7 @@ module Gitlab
         end.data
 
         platform = ohai_data['platform']
-        platform = 'raspbian' if ohai_data['platform'] == 'debian' && /armv/.match?(ohai_data['kernel']['machine'])
+        platform = 'raspbian' if ohai_data['platform'] == 'debian' && ohai_data['kernel']['machine']&.include?('armv')
 
         "#{platform}-#{ohai_data['platform_version']}"
       end

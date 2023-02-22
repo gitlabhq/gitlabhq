@@ -237,7 +237,7 @@ amounts at which the alert displays.
 To change the namespace linked to a subscription:
 
 1. Log in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in) with a
-   [linked](../index.md#change-the-linked-account) GitLab.com account.
+   [linked](../index.md#link-a-gitlabcom-account) GitLab.com account.
 1. Go to the **Manage Purchases** page.
 1. Select **Change linked namespace**.
 1. Select the desired group from the **This subscription is for** dropdown list. For a group to appear here, you must have the Owner role for that group.

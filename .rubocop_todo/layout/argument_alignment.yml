@@ -2048,7 +2048,6 @@ Layout/ArgumentAlignment:
     - 'lib/gitlab/import_export/snippets_repo_restorer.rb'
     - 'lib/gitlab/import_export/snippets_repo_saver.rb'
     - 'lib/gitlab/issuable/clone/copy_resource_events_service.rb'
-    - 'lib/gitlab/legacy_github_import/importer.rb'
     - 'lib/gitlab/mail_room.rb'
     - 'lib/gitlab/markdown_cache/redis/store.rb'
     - 'lib/gitlab/memory/reports_uploader.rb'

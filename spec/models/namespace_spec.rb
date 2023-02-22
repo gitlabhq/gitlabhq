@@ -571,17 +571,6 @@ RSpec.describe Namespace, feature_category: :subgroups do
     it { expect(child.traversal_ids).to eq [parent.id, child.id] }
     it { expect(parent.sync_events.count).to eq 1 }
     it { expect(child.sync_events.count).to eq 1 }
-
-    context 'when set_traversal_ids_on_save feature flag is disabled' do
-      before do
-        stub_feature_flags(set_traversal_ids_on_save: false)
-      end
-
-      it 'only sets traversal_ids on reload' do
-        expect { parent.reload }.to change(parent, :traversal_ids).from([]).to([parent.id])
-        expect { child.reload }.to change(child, :traversal_ids).from([]).to([parent.id, child.id])
-      end
-    end
   end
 
   context 'traversal_ids on update' do
@@ -593,18 +582,6 @@ RSpec.describe Namespace, feature_category: :subgroups do
 
       it 'sets the traversal_ids attribute' do
         expect { subject }.to change { namespace1.traversal_ids }.from([namespace1.id]).to([namespace2.id, namespace1.id])
-      end
-
-      context 'when set_traversal_ids_on_save feature flag is disabled' do
-        before do
-          stub_feature_flags(set_traversal_ids_on_save: false)
-        end
-
-        it 'sets traversal_ids after reload' do
-          subject
-
-          expect { namespace1.reload }.to change(namespace1, :traversal_ids).from([]).to([namespace2.id, namespace1.id])
-        end
       end
     end
 

@@ -33,7 +33,7 @@ module Ci
       def normalize_params
         params[:registration_type] = :authenticated_user
         params[:runner_type] = type
-        params[:active] = !params.delete(:paused) if params[:paused].present?
+        params[:active] = !params.delete(:paused) if params.key?(:paused)
         params[:creator] = user
 
         strategy.normalize_params

@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'logger'
-
 desc "GitLab | Terraform | Migrate Terraform states to remote storage"
 namespace :gitlab do
   namespace :terraform_states do

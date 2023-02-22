@@ -5057,7 +5057,6 @@ RSpec/MissingFeatureCategory:
     - 'spec/lib/gitlab/legacy_github_import/branch_formatter_spec.rb'
     - 'spec/lib/gitlab/legacy_github_import/client_spec.rb'
     - 'spec/lib/gitlab/legacy_github_import/comment_formatter_spec.rb'
-    - 'spec/lib/gitlab/legacy_github_import/importer_spec.rb'
     - 'spec/lib/gitlab/legacy_github_import/issuable_formatter_spec.rb'
     - 'spec/lib/gitlab/legacy_github_import/issue_formatter_spec.rb'
     - 'spec/lib/gitlab/legacy_github_import/label_formatter_spec.rb'

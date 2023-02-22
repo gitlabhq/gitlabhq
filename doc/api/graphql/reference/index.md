@@ -4963,6 +4963,37 @@ Input type: `RepositionImageDiffNoteInput`
 | <a id="mutationrepositionimagediffnoteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationrepositionimagediffnotenote"></a>`note` | [`Note`](#note) | Note after mutation. |
 
+### `Mutation.runnerCreate`
+
+WARNING:
+**Introduced** in 15.10.
+This feature is in Alpha. It can be changed or removed at any time.
+
+Input type: `RunnerCreateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationrunnercreateaccesslevel"></a>`accessLevel` | [`CiRunnerAccessLevel`](#cirunneraccesslevel) | Access level of the runner. |
+| <a id="mutationrunnercreateassociatedprojects"></a>`associatedProjects` | [`[ProjectID!]`](#projectid) | Projects associated with the runner. Available only for project runners. |
+| <a id="mutationrunnercreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationrunnercreatedescription"></a>`description` | [`String`](#string) | Description of the runner. |
+| <a id="mutationrunnercreatelocked"></a>`locked` | [`Boolean`](#boolean) | Indicates the runner is locked. |
+| <a id="mutationrunnercreatemaintenancenote"></a>`maintenanceNote` | [`String`](#string) | Runner's maintenance notes. |
+| <a id="mutationrunnercreatemaximumtimeout"></a>`maximumTimeout` | [`Int`](#int) | Maximum timeout (in seconds) for jobs processed by the runner. |
+| <a id="mutationrunnercreatepaused"></a>`paused` | [`Boolean`](#boolean) | Indicates the runner is not allowed to receive jobs. |
+| <a id="mutationrunnercreaterununtagged"></a>`runUntagged` | [`Boolean`](#boolean) | Indicates the runner is able to run untagged jobs. |
+| <a id="mutationrunnercreatetaglist"></a>`tagList` | [`[String!]`](#string) | Tags associated with the runner. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationrunnercreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationrunnercreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationrunnercreaterunner"></a>`runner` | [`CiRunner`](#cirunner) | Runner after mutation. |
+
 ### `Mutation.runnerDelete`
 
 Input type: `RunnerDeleteInput`
