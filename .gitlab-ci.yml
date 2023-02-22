@@ -104,20 +104,15 @@ workflow:
     # If `$GITLAB_INTERNAL` isn't set, don't create a pipeline.
     - if: '$GITLAB_INTERNAL == null'
       when: never
-    # For last 3 stable branches, create a pipeline with failure notifications.
-    - if: '$CI_COMMIT_BRANCH =~ /^15-[6|7|8]-stable(-ee)?$/'
-      variables:
-        <<: *ruby2-variables
-        NOTIFY_PIPELINE_FAILURE_CHANNEL: "releases"
-        CREATE_INCIDENT_FOR_PIPELINE_FAILURE: "true"
-        BROKEN_BRANCH_INCIDENTS_PROJECT: "gitlab-org/release/tasks"
-        BROKEN_BRANCH_INCIDENTS_PROJECT_TOKEN: "${BROKEN_STABLE_INCIDENTS_PROJECT_TOKEN}"
-        PIPELINE_NAME: 'Ruby 2 $CI_COMMIT_BRANCH branch pipeline'
     # For stable, auto-deploy, and security branches, create a pipeline.
     - if: '$CI_COMMIT_BRANCH =~ /^[\d-]+-stable(-ee)?$/'
       variables:
         <<: *ruby2-variables
+        NOTIFY_PIPELINE_FAILURE_CHANNEL: "releases"
         PIPELINE_NAME: 'Ruby 2 $CI_COMMIT_BRANCH branch pipeline'
+        CREATE_INCIDENT_FOR_PIPELINE_FAILURE: "true"
+        BROKEN_BRANCH_INCIDENTS_PROJECT: "gitlab-org/release/tasks"
+        BROKEN_BRANCH_INCIDENTS_PROJECT_TOKEN: "${BROKEN_STABLE_INCIDENTS_PROJECT_TOKEN}"
     - if: '$CI_COMMIT_BRANCH =~ /^\d+-\d+-auto-deploy-\d+$/'
       variables:
         <<: *ruby2-variables
