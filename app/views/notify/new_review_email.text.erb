@@ -4,7 +4,6 @@
 
 --
 <% @notes.each_with_index do |note, index| %>
-  <!-- Get preloaded note discussion-->
   <% discussion = @discussions[note.discussion_id] if note.part_of_discussion?%>
   <% target_url = project_merge_request_url(@project, @merge_request, anchor: "note_#{note.id}") %>
   <%= render 'note_email', note: note, diff_limit: 3, target_url: target_url, discussion: discussion, author: @author %>

@@ -162,6 +162,54 @@ RSpec.describe Banzai::Filter::IssuableReferenceExpansionFilter, feature_categor
 
       expect(doc.css('a').last.text).to eq("#{issue.title} (#{issue.to_reference} - closed)")
     end
+
+    it 'shows title for references with +s' do
+      issue = create_issue(:opened, title: 'Some issue')
+      link = create_link(issue.to_reference, issue: issue.id, reference_type: 'issue', reference_format: '+s')
+      doc = filter(link, context)
+
+      expect(doc.css('a').last.text).to eq("#{issue.title} (#{issue.to_reference}) • Unassigned")
+    end
+
+    context 'when extended summary props are present' do
+      let_it_be(:milestone) { create(:milestone, project: project) }
+      let_it_be(:assignees) { create_list(:user, 3) }
+      let_it_be(:issue) { create_issue(:opened, title: 'Some issue', milestone: milestone, assignees: assignees) }
+      let_it_be(:link) do
+        create_link(issue.to_reference, issue: issue.id, reference_type: 'issue', reference_format: '+s')
+      end
+
+      it 'shows extended summary for references with +s' do
+        doc = filter(link, context)
+
+        expect(doc.css('a').last.text).to eq(
+          "#{issue.title} (#{issue.to_reference}) • #{assignees[0].name}, #{assignees[1].name}+ • #{milestone.title}"
+        )
+      end
+
+      describe 'checking N+1' do
+        let_it_be(:milestone2) { create(:milestone, project: project) }
+        let_it_be(:assignees2) { create_list(:user, 3) }
+
+        it 'does not have N+1 for extended summary', :use_sql_query_cache do
+          issue2 = create_issue(:opened, title: 'Another issue', milestone: milestone2, assignees: assignees2)
+          link2 = create_link(issue2.to_reference, issue: issue2.id, reference_type: 'issue', reference_format: '+s')
+
+          # warm up
+          filter(link, context)
+
+          control_count = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+            filter(link, context)
+          end.count
+
+          expect(control_count).to eq 9
+
+          expect do
+            filter("#{link} #{link2}", context)
+          end.not_to exceed_all_query_limit(control_count)
+        end
+      end
+    end
   end
 
   context 'for merge request references' do
@@ -234,6 +282,81 @@ RSpec.describe Banzai::Filter::IssuableReferenceExpansionFilter, feature_categor
       doc = filter(link, context)
 
       expect(doc.css('a').last.text).to eq("#{merge_request.title} (#{merge_request.to_reference})")
+    end
+
+    it 'shows title for references with +s' do
+      merge_request = create_merge_request(:opened, title: 'Some merge request')
+
+      link = create_link(
+        merge_request.to_reference,
+        merge_request: merge_request.id,
+        reference_type: 'merge_request',
+        reference_format: '+s'
+      )
+
+      doc = filter(link, context)
+
+      expect(doc.css('a').last.text).to eq("#{merge_request.title} (#{merge_request.to_reference}) • Unassigned")
+    end
+
+    context 'when extended summary props are present' do
+      let_it_be(:milestone) { create(:milestone, project: project) }
+      let_it_be(:assignees) { create_list(:user, 2) }
+      let_it_be(:merge_request) do
+        create_merge_request(:opened, title: 'Some merge request', milestone: milestone, assignees: assignees)
+      end
+
+      let_it_be(:link) do
+        create_link(
+          merge_request.to_reference,
+          merge_request: merge_request.id,
+          reference_type: 'merge_request',
+          reference_format: '+s'
+        )
+      end
+
+      it 'shows extended summary for references with +s' do
+        doc = filter(link, context)
+
+        expect(doc.css('a').last.text).to eq(
+          "#{merge_request.title} (#{merge_request.to_reference}) • #{assignees[0].name}, #{assignees[1].name} • " \
+          "#{milestone.title}"
+        )
+      end
+
+      describe 'checking N+1' do
+        let_it_be(:milestone2) { create(:milestone, project: project) }
+        let_it_be(:assignees2) { create_list(:user, 3) }
+
+        it 'does not have N+1 for extended summary', :use_sql_query_cache do
+          merge_request2 = create_merge_request(
+            :closed,
+            title: 'Some merge request',
+            milestone: milestone2,
+            assignees: assignees2
+          )
+
+          link2 = create_link(
+            merge_request2.to_reference,
+            merge_request: merge_request2.id,
+            reference_type: 'merge_request',
+            reference_format: '+s'
+          )
+
+          # warm up
+          filter(link, context)
+
+          control_count = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+            filter(link, context)
+          end.count
+
+          expect(control_count).to eq 10
+
+          expect do
+            filter("#{link} #{link2}", context)
+          end.not_to exceed_all_query_limit(control_count)
+        end
+      end
     end
   end
 end

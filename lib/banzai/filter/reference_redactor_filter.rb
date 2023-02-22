@@ -10,9 +10,9 @@ module Banzai
     class ReferenceRedactorFilter < HTML::Pipeline::Filter
       def call
         unless context[:skip_redaction]
-          context = RenderContext.new(project, current_user)
+          redactor_context = RenderContext.new(project, current_user)
 
-          ReferenceRedactor.new(context).redact([doc])
+          ReferenceRedactor.new(redactor_context).redact([doc])
         end
 
         doc

@@ -33,7 +33,13 @@ const defaultMocks = {
 describe('Incident Tabs component', () => {
   let wrapper;
 
-  const mountComponent = ({ data = {}, options = {}, mount = shallowMountExtended } = {}) => {
+  const mountComponent = ({
+    data = {},
+    options = {},
+    mount = shallowMountExtended,
+    hasLinkedAlerts = false,
+    mocks = {},
+  } = {}) => {
     wrapper = mount(
       IncidentTabs,
       merge(
@@ -54,11 +60,12 @@ describe('Incident Tabs component', () => {
             slaFeatureAvailable: true,
             canUpdate: true,
             canUpdateTimelineEvent: true,
+            hasLinkedAlerts,
           },
           data() {
             return { alert: mockAlert, ...data };
           },
-          mocks: defaultMocks,
+          mocks: { ...defaultMocks, ...mocks },
         },
         options,
       ),
@@ -102,11 +109,13 @@ describe('Incident Tabs component', () => {
     });
 
     it('renders the alert details tab', () => {
+      mountComponent({ hasLinkedAlerts: true });
       expect(findAlertDetailsTab().exists()).toBe(true);
       expect(findAlertDetailsTab().attributes('title')).toBe('Alert details');
     });
 
     it('renders the alert details table with the correct props', () => {
+      mountComponent({ hasLinkedAlerts: true });
       const alert = { iid: mockAlert.iid };
 
       expect(findAlertDetailsComponent().props('alert')).toMatchObject(alert);

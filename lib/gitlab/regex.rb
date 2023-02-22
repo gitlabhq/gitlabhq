@@ -548,11 +548,11 @@ module Gitlab
     end
 
     def issue
-      @issue ||= /(?<issue>\d+)(?<format>\+)?(?=\W|\z)/
+      @issue ||= /(?<issue>\d+)(?<format>\+s{,1})?(?=\W|\z)/
     end
 
     def merge_request
-      @merge_request ||= /(?<merge_request>\d+)(?<format>\+)?/
+      @merge_request ||= /(?<merge_request>\d+)(?<format>\+s{,1})?/
     end
 
     def base64_regex

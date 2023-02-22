@@ -128,6 +128,15 @@ RSpec.describe Banzai::Filter::References::MergeRequestReferenceFilter, feature_
       expect(link.attr('href')).to eq(merge_request_url)
     end
 
+    it 'includes a data-reference-format attribute for extended summary URL references' do
+      doc = reference_filter("Merge #{merge_request_url}+s")
+      link = doc.css('a').first
+
+      expect(link).to have_attribute('data-reference-format')
+      expect(link.attr('data-reference-format')).to eq('+s')
+      expect(link.attr('href')).to eq(merge_request_url)
+    end
+
     it 'supports an :only_path context' do
       doc = reference_filter("Merge #{reference}", only_path: true)
       link = doc.css('a').first.attr('href')

@@ -4,13 +4,14 @@ module Banzai
   # Object storing the current user, project, and other details used when
   # parsing Markdown references.
   class RenderContext
-    attr_reader :current_user
+    attr_reader :current_user, :options
 
     # default_project - The default project to use for all documents, if any.
     # current_user - The user viewing the document, if any.
-    def initialize(default_project = nil, current_user = nil)
+    def initialize(default_project = nil, current_user = nil, options: {})
       @current_user = current_user
       @projects = Hash.new(default_project)
+      @options = options
     end
 
     # Associates an HTML document with a Project.

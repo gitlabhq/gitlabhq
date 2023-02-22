@@ -543,13 +543,6 @@ CREATE TABLE batched_background_migration_job_transition_logs (
 )
 PARTITION BY RANGE (created_at);
 
-CREATE TABLE p_ci_runner_machine_builds (
-    partition_id bigint NOT NULL,
-    build_id bigint NOT NULL,
-    runner_machine_id bigint NOT NULL
-)
-PARTITION BY LIST (partition_id);
-
 CREATE TABLE incident_management_pending_alert_escalations (
     id bigint NOT NULL,
     rule_id bigint NOT NULL,
@@ -11221,8 +11214,8 @@ CREATE TABLE appearances (
     email_header_and_footer_enabled boolean DEFAULT false NOT NULL,
     profile_image_guidelines text,
     profile_image_guidelines_html text,
-    pwa_icon text,
     pwa_short_name text,
+    pwa_icon text,
     pwa_name text,
     pwa_description text,
     CONSTRAINT appearances_profile_image_guidelines CHECK ((char_length(profile_image_guidelines) <= 4096)),
@@ -11718,12 +11711,13 @@ CREATE TABLE application_settings (
     encrypted_telesign_customer_xid_iv bytea,
     encrypted_telesign_api_key bytea,
     encrypted_telesign_api_key_iv bytea,
-    max_terraform_state_size_bytes integer DEFAULT 0 NOT NULL,
     disable_personal_access_tokens boolean DEFAULT false NOT NULL,
+    max_terraform_state_size_bytes integer DEFAULT 0 NOT NULL,
     bulk_import_enabled boolean DEFAULT false NOT NULL,
     allow_runner_registration_token boolean DEFAULT true NOT NULL,
     user_defaults_to_private_profile boolean DEFAULT false NOT NULL,
     allow_possible_spam boolean DEFAULT false NOT NULL,
+    default_syntax_highlighting_theme integer DEFAULT 1 NOT NULL,
     encrypted_product_analytics_clickhouse_connection_string bytea,
     encrypted_product_analytics_clickhouse_connection_string_iv bytea,
     search_max_shard_size_gb integer DEFAULT 50 NOT NULL,
@@ -11732,9 +11726,8 @@ CREATE TABLE application_settings (
     deactivation_email_additional_text text,
     jira_connect_public_key_storage_enabled boolean DEFAULT false NOT NULL,
     git_rate_limit_users_alertlist integer[] DEFAULT '{}'::integer[] NOT NULL,
-    security_policy_global_group_approvers_enabled boolean DEFAULT true NOT NULL,
     allow_deploy_tokens_and_keys_with_external_authn boolean DEFAULT false NOT NULL,
-    default_syntax_highlighting_theme integer DEFAULT 1 NOT NULL,
+    security_policy_global_group_approvers_enabled boolean DEFAULT true NOT NULL,
     CONSTRAINT app_settings_container_reg_cleanup_tags_max_list_size_positive CHECK ((container_registry_cleanup_tags_service_max_list_size >= 0)),
     CONSTRAINT app_settings_container_registry_pre_import_tags_rate_positive CHECK ((container_registry_pre_import_tags_rate >= (0)::numeric)),
     CONSTRAINT app_settings_dep_proxy_ttl_policies_worker_capacity_positive CHECK ((dependency_proxy_ttl_group_policy_worker_capacity >= 0)),
@@ -18977,6 +18970,13 @@ CREATE SEQUENCE operations_user_lists_id_seq
     CACHE 1;
 
 ALTER SEQUENCE operations_user_lists_id_seq OWNED BY operations_user_lists.id;
+
+CREATE TABLE p_ci_runner_machine_builds (
+    partition_id bigint NOT NULL,
+    build_id bigint NOT NULL,
+    runner_machine_id bigint NOT NULL
+)
+PARTITION BY LIST (partition_id);
 
 CREATE TABLE packages_build_infos (
     id bigint NOT NULL,

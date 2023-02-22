@@ -35,7 +35,7 @@ export default {
     IncidentMetricTab: () =>
       import('ee_component/issues/show/components/incidents/incident_metric_tab.vue'),
   },
-  inject: ['fullPath', 'iid', 'uploadMetricsFeatureAvailable'],
+  inject: ['fullPath', 'iid', 'hasLinkedAlerts', 'uploadMetricsFeatureAvailable'],
   i18n: incidentTabsI18n,
   apollo: {
     alert: {
@@ -72,7 +72,7 @@ export default {
       if (this.uploadMetricsFeatureAvailable) {
         availableTabs.push(TAB_NAMES.METRICS);
       }
-      if (this.alert) {
+      if (this.hasLinkedAlerts) {
         availableTabs.push(TAB_NAMES.ALERTS);
       }
 
@@ -153,7 +153,7 @@ export default {
         <incident-metric-tab />
       </gl-tab>
       <gl-tab
-        v-if="alert"
+        v-if="hasLinkedAlerts"
         class="alert-management-details"
         :title="$options.i18n.alertsTitle"
         data-testid="alert-details-tab"

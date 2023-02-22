@@ -295,7 +295,6 @@ Unleash currently [offers many SDKs for various languages and frameworks](https:
 For API content, see:
 
 - [Feature flags API](../api/feature_flags.md)
-- [Feature flag specs API](../api/feature_flag_specs.md) (Deprecated and [scheduled for removal](https://gitlab.com/gitlab-org/gitlab/-/issues/213369) in GitLab 14.0.)
 - [Feature flag user lists API](../api/feature_flag_user_lists.md)
 
 ### Golang application example

@@ -605,6 +605,19 @@ at the end of the reference. For example, a reference like `#123+` is rendered a
 
 URL references like `https://gitlab.com/gitlab-org/gitlab/-/issues/1234+` are also expanded.
 
+### Show the issue or merge request summary in the reference
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/386937) in GitLab 15.10.
+
+To include an extended summary in the rendered link of an issue or merge request, add a `+s`
+at the end of the reference. Summary includes information about **assignees**, **milestone**
+and **health status** of referenced item.
+
+For example, a reference like `#123+s` is rendered as
+`The issue title (#123) • First Assignee, Second Assignee+ • v15.10 • Needs attention`.
+
+URL references like `https://gitlab.com/gitlab-org/gitlab/-/issues/1234+s` are also expanded.
+
 ### Embedding metrics in GitLab Flavored Markdown
 
 Metric charts can be embedded in GitLab Flavored Markdown. Read

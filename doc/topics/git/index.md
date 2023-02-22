@@ -65,7 +65,6 @@ You can do many Git tasks from the command line:
 - [Git add](git_add.md).
 - [Git log](git_log.md).
 - [Git stash](stash.md).
-- [Merge conflicts](merge_conflicts.md).
 - [Rollback commits](rollback_commits.md).
 - [Subtree](subtree.md).
 - [Unstage](unstage.md).

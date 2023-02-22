@@ -658,6 +658,10 @@ module Issuable
 
     { name: name, subject: self }
   end
+
+  def supports_health_status?
+    false
+  end
 end
 
 Issuable.prepend_mod_with('Issuable')
