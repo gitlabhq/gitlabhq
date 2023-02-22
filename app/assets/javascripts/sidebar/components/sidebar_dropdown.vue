@@ -8,7 +8,13 @@ import {
   GlSearchBoxByType,
 } from '@gitlab/ui';
 import { kebabCase, snakeCase } from 'lodash';
-import { IssuableType, TYPE_EPIC, TYPE_ISSUE, WorkspaceType } from '~/issues/constants';
+import {
+  IssuableType,
+  TYPE_EPIC,
+  TYPE_ISSUE,
+  WORKSPACE_GROUP,
+  WORKSPACE_PROJECT,
+} from '~/issues/constants';
 import { __ } from '~/locale';
 import {
   defaultEpicSort,
@@ -76,9 +82,9 @@ export default {
     workspaceType: {
       type: String,
       required: false,
-      default: WorkspaceType.project,
+      default: WORKSPACE_PROJECT,
       validator(value) {
-        return [WorkspaceType.group, WorkspaceType.project].includes(value);
+        return [WORKSPACE_GROUP, WORKSPACE_PROJECT].includes(value);
       },
     },
   },

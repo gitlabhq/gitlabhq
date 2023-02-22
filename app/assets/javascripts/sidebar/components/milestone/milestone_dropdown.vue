@@ -2,7 +2,7 @@
 import { GlDropdownItem } from '@gitlab/ui';
 import { TYPENAME_MILESTONE } from '~/graphql_shared/constants';
 import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
-import { IssuableType, TYPE_ISSUE, WorkspaceType } from '~/issues/constants';
+import { IssuableType, TYPE_ISSUE, WORKSPACE_GROUP, WORKSPACE_PROJECT } from '~/issues/constants';
 import { __ } from '~/locale';
 import { IssuableAttributeType } from '../../constants';
 import SidebarDropdown from '../sidebar_dropdown.vue';
@@ -64,7 +64,7 @@ export default {
       type: String,
       required: true,
       validator(value) {
-        return [WorkspaceType.group, WorkspaceType.project].includes(value);
+        return [WORKSPACE_GROUP, WORKSPACE_PROJECT].includes(value);
       },
     },
   },

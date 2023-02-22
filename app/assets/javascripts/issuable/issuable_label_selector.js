@@ -5,7 +5,7 @@ import {
   DropdownVariant,
   LabelType,
 } from '~/sidebar/components/labels/labels_select_widget/constants';
-import { WorkspaceType } from '~/issues/constants';
+import { WORKSPACE_PROJECT } from '~/issues/constants';
 import IssuableLabelSelector from '~/vue_shared/issuable/create/components/issuable_label_selector.vue';
 
 Vue.use(VueApollo);
@@ -47,7 +47,7 @@ export default () => {
       labelsFilterBasePath,
       labelsManagePath,
       variant: DropdownVariant.Embedded,
-      workspaceType: WorkspaceType.project,
+      workspaceType: WORKSPACE_PROJECT,
     },
     render(createElement) {
       return createElement(IssuableLabelSelector);

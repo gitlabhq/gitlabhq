@@ -10,7 +10,7 @@ import {
   DropdownVariant,
   LabelType,
 } from '~/sidebar/components/labels/labels_select_widget/constants';
-import { WorkspaceType } from '~/issues/constants';
+import { WORKSPACE_PROJECT } from '~/issues/constants';
 import { __ } from '~/locale';
 
 const allowLabelRemove = true;
@@ -22,7 +22,7 @@ const initialLabels = [];
 const issuableType = 'issue';
 const labelType = LabelType.project;
 const variant = DropdownVariant.Embedded;
-const workspaceType = WorkspaceType.project;
+const workspaceType = WORKSPACE_PROJECT;
 
 describe('IssuableLabelSelector', () => {
   let wrapper;

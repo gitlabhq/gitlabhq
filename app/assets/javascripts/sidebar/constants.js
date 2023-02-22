@@ -3,7 +3,13 @@ import { s__, __, sprintf } from '~/locale';
 import updateIssueLabelsMutation from '~/boards/graphql/issue_set_labels.mutation.graphql';
 import userSearchQuery from '~/graphql_shared/queries/users_search.query.graphql';
 import userSearchWithMRPermissionsQuery from '~/graphql_shared/queries/users_search_with_mr_permissions.graphql';
-import { IssuableType, TYPE_EPIC, TYPE_ISSUE, WorkspaceType } from '~/issues/constants';
+import {
+  IssuableType,
+  TYPE_EPIC,
+  TYPE_ISSUE,
+  WORKSPACE_GROUP,
+  WORKSPACE_PROJECT,
+} from '~/issues/constants';
 import updateAlertAssigneesMutation from '~/vue_shared/alert_details/graphql/mutations/alert_set_assignees.mutation.graphql';
 import updateTestCaseLabelsMutation from './components/labels/labels_select_widget/graphql/update_test_case_labels.mutation.graphql';
 import epicLabelsQuery from './components/labels/labels_select_widget/graphql/epic_labels.query.graphql';
@@ -128,10 +134,10 @@ export const referenceQueries = {
 };
 
 export const workspaceLabelsQueries = {
-  [WorkspaceType.project]: {
+  [WORKSPACE_PROJECT]: {
     query: projectLabelsQuery,
   },
-  [WorkspaceType.group]: {
+  [WORKSPACE_GROUP]: {
     query: groupLabelsQuery,
   },
 };
@@ -249,14 +255,14 @@ export const issuableMilestoneQueries = {
 export const milestonesQueries = {
   [TYPE_ISSUE]: {
     query: {
-      [WorkspaceType.group]: groupMilestonesQuery,
-      [WorkspaceType.project]: projectMilestonesQuery,
+      [WORKSPACE_GROUP]: groupMilestonesQuery,
+      [WORKSPACE_PROJECT]: projectMilestonesQuery,
     },
   },
   [IssuableType.MergeRequest]: {
     query: {
-      [WorkspaceType.group]: groupMilestonesQuery,
-      [WorkspaceType.project]: projectMilestonesQuery,
+      [WORKSPACE_GROUP]: groupMilestonesQuery,
+      [WORKSPACE_PROJECT]: projectMilestonesQuery,
     },
   },
 };

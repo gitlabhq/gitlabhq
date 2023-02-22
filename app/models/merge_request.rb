@@ -451,7 +451,12 @@ class MergeRequest < ApplicationRecord
 
   def self.total_time_to_merge
     join_metrics
-      .merge(MergeRequest::Metrics.with_valid_time_to_merge)
+      .where(
+        # Replicating the scope MergeRequest::Metrics.with_valid_time_to_merge
+        MergeRequest::Metrics.arel_table[:merged_at].gt(
+          MergeRequest::Metrics.arel_table[:created_at]
+        )
+      )
       .pick(MergeRequest::Metrics.time_to_merge_expression)
   end
 

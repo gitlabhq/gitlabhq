@@ -8,7 +8,7 @@ import {
   TYPE_EPIC,
   TYPE_INCIDENT,
   TYPE_ISSUE,
-  WorkspaceType,
+  WORKSPACE_PROJECT,
 } from '~/issues/constants';
 import Poll from '~/lib/utils/poll';
 import { visitUrl } from '~/lib/utils/url_utility';
@@ -26,7 +26,7 @@ import PinnedLinks from './pinned_links.vue';
 import TitleComponent from './title.vue';
 
 export default {
-  WorkspaceType,
+  WORKSPACE_PROJECT,
   components: {
     GlIcon,
     GlBadge,
@@ -534,7 +534,7 @@ export default {
               <confidentiality-badge
                 v-if="isConfidential"
                 data-testid="confidential"
-                :workspace-type="$options.WorkspaceType.project"
+                :workspace-type="$options.WORKSPACE_PROJECT"
                 :issuable-type="issuableType"
               />
               <span

@@ -760,6 +760,23 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
         end
       end
 
+      context 'when scoped with :merged_before and :merged_after' do
+        before do
+          mr2.metrics.update!(merged_at: mr1.metrics.merged_at - 1.week)
+          mr3.metrics.update!(merged_at: mr1.metrics.merged_at + 1.week)
+        end
+
+        it 'excludes merge requests outside of the date range' do
+          expect(
+            project.merge_requests.merge(
+              MergeRequest::Metrics
+                .merged_before(mr1.metrics.merged_at + 1.day)
+                .merged_after(mr1.metrics.merged_at - 1.day)
+            ).total_time_to_merge
+          ).to be_within(1).of(expected_total_time([mr1]))
+        end
+      end
+
       def expected_total_time(mrs)
         mrs = mrs.reject { |mr| mr.merged_at.nil? }
         mrs.reduce(0.0) do |sum, mr|

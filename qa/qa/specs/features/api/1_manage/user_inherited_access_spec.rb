@@ -39,11 +39,6 @@ module QA
 
         before do
           parent_group.add_member(parent_group_user)
-
-          # Due to the async nature of project authorization refreshes,
-          # we wait to confirm the user has been added as a member and
-          # their access level has been updated before proceeding with the test
-          wait_for_membership_update(parent_group_user, sub_group_project, Resource::Members::AccessLevel::DEVELOPER)
         end
 
         it(
@@ -180,16 +175,6 @@ module QA
 
         after do
           sub_group_user.remove_via_api!
-        end
-      end
-
-      private
-
-      def wait_for_membership_update(user, project, access_level)
-        Support::Retrier.retry_until(sleep_interval: 1, message: 'Waiting for user membership to be updated') do
-          found_member = project.reload!.find_direct_or_inherited_member(user.username)
-
-          found_member && found_member.fetch(:access_level) == access_level
         end
       end
     end

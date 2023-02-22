@@ -30861,6 +30861,8 @@ CREATE INDEX index_namespaces_on_type_and_id ON namespaces USING btree (type, id
 
 CREATE INDEX index_namespaces_on_type_and_visibility_and_parent_id ON namespaces USING btree (id) WHERE (((type)::text = 'Group'::text) AND (parent_id IS NULL) AND (visibility_level <> 20));
 
+CREATE INDEX index_namespaces_on_updated_at ON namespaces USING btree (updated_at);
+
 CREATE INDEX index_namespaces_public_groups_name_id ON namespaces USING btree (name, id) WHERE (((type)::text = 'Group'::text) AND (visibility_level = 20));
 
 CREATE INDEX index_namespaces_storage_limit_exclusions_on_namespace_id ON namespaces_storage_limit_exclusions USING btree (namespace_id);
@@ -32034,6 +32036,8 @@ CREATE UNIQUE INDEX index_users_on_static_object_token ON users USING btree (sta
 CREATE INDEX index_users_on_unconfirmed_email ON users USING btree (unconfirmed_email) WHERE (unconfirmed_email IS NOT NULL);
 
 CREATE UNIQUE INDEX index_users_on_unlock_token ON users USING btree (unlock_token);
+
+CREATE INDEX index_users_on_updated_at ON users USING btree (updated_at);
 
 CREATE INDEX index_users_on_user_type_and_id ON users USING btree (user_type, id);
 
