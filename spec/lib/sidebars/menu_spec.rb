@@ -4,20 +4,14 @@ require 'spec_helper'
 
 RSpec.describe Sidebars::Menu, feature_category: :navigation do
   let(:menu) { described_class.new(context) }
-  let(:context) do
-    Sidebars::Context.new(current_user: nil, container: nil, route_is_active: ->(x) { x[:controller] == 'fooc' })
-  end
-
-  let(:menu_item) do
-    Sidebars::MenuItem.new(title: 'foo2', link: 'foo2', active_routes: { controller: 'fooc' })
-  end
+  let(:context) { Sidebars::Context.new(current_user: nil, container: nil) }
 
   let(:nil_menu_item) { Sidebars::NilMenuItem.new(item_id: :foo) }
 
   describe '#all_active_routes' do
     it 'gathers all active routes of items and the current menu' do
       menu.add_item(Sidebars::MenuItem.new(title: 'foo1', link: 'foo1', active_routes: { path: %w(bar test) }))
-      menu.add_item(menu_item)
+      menu.add_item(Sidebars::MenuItem.new(title: 'foo2', link: 'foo2', active_routes: { controller: 'fooc' }))
       menu.add_item(Sidebars::MenuItem.new(title: 'foo3', link: 'foo3', active_routes: { controller: 'barc' }))
       menu.add_item(nil_menu_item)
 
@@ -29,39 +23,36 @@ RSpec.describe Sidebars::Menu, feature_category: :navigation do
   end
 
   describe '#serialize_for_super_sidebar' do
-    it 'returns itself and all renderable menu entries' do
-      menu.add_item(menu_item)
-      menu.add_item(Sidebars::MenuItem.new(title: 'foo3', link: 'foo3', active_routes: { controller: 'barc' }))
+    it 'returns a tree-like structure of itself and all menu items' do
+      menu.add_item(Sidebars::MenuItem.new(title: 'Is active', link: 'foo2', active_routes: { controller: 'fooc' }))
+      menu.add_item(Sidebars::MenuItem.new(title: 'Not active', link: 'foo3', active_routes: { controller: 'barc' }))
       menu.add_item(nil_menu_item)
 
+      allow(context).to receive(:route_is_active).and_return(->(x) { x[:controller] == 'fooc' })
       allow(menu).to receive(:title).and_return('Title')
       allow(menu).to receive(:active_routes).and_return({ path: 'foo' })
-      allow(menu).to receive(:object_id).and_return(31)
 
-      expect(menu.serialize_for_super_sidebar).to eq([
+      expect(menu.serialize_for_super_sidebar).to eq(
         {
-          id: 31,
-          parent_id: nil,
           title: "Title",
           icon: nil,
           link: "foo2",
-          is_active: false
-        },
-        {
-          parent_id: 31,
-          title: "foo2",
-          icon: nil,
-          link: "foo2",
-          is_active: true
-        },
-        {
-          parent_id: 31,
-          title: "foo3",
-          icon: nil,
-          link: "foo3",
-          is_active: false
-        }
-      ])
+          is_active: true,
+          items: [
+            {
+              title: "Is active",
+              icon: nil,
+              link: "foo2",
+              is_active: true
+            },
+            {
+              title: "Not active",
+              icon: nil,
+              link: "foo3",
+              is_active: false
+            }
+          ]
+        })
     end
   end
 

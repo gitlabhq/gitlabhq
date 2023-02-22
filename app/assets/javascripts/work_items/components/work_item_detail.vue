@@ -215,6 +215,9 @@ export default {
     workItemType() {
       return this.workItem.workItemType?.name;
     },
+    workItemBreadcrumbReference() {
+      return this.workItemType ? `${this.workItemType} #${this.workItem.iid}` : '';
+    },
     canUpdate() {
       return this.workItem?.userPermissions?.updateWorkItem;
     },
@@ -244,6 +247,9 @@ export default {
     },
     parentWorkItemConfidentiality() {
       return this.parentWorkItem?.confidential;
+    },
+    parentWorkItemReference() {
+      return this.parentWorkItem ? `${this.parentWorkItem.title} #${this.parentWorkItem.iid}` : '';
     },
     parentUrl() {
       // Once more types are moved to have Work Items involved
@@ -510,9 +516,9 @@ export default {
               :icon="parentWorkItemIconName"
               category="tertiary"
               :href="parentUrl"
-              :title="parentWorkItem.title"
+              :title="parentWorkItemReference"
               @click="openInModal($event, parentWorkItem)"
-              >{{ parentWorkItem.title }}</gl-button
+              >{{ parentWorkItemReference }}</gl-button
             >
             <gl-icon name="chevron-right" :size="16" class="gl-flex-shrink-0" />
           </li>
@@ -523,7 +529,7 @@ export default {
               :work-item-icon-name="workItemIconName"
               :work-item-type="workItemType && workItemType.toUpperCase()"
             />
-            {{ workItemType }}
+            {{ workItemBreadcrumbReference }}
           </li>
         </ul>
         <work-item-type-icon

@@ -6,7 +6,7 @@ module Groups
       include OauthApplications
 
       prepend_before_action :authorize_admin_group!
-      before_action :set_application, only: [:show, :edit, :update, :destroy]
+      before_action :set_application, only: [:show, :edit, :update, :renew, :destroy]
       before_action :load_scopes, only: [:index, :create, :edit, :update]
 
       feature_category :authentication_and_authorization
@@ -48,6 +48,17 @@ module Groups
           redirect_to group_settings_application_path(@group, @application), notice: _('Application was successfully updated.')
         else
           render :edit
+        end
+      end
+
+      def renew
+        @application.renew_secret
+
+        if @application.save
+          flash.now[:notice] = s_('AuthorizedApplication|Application secret was successfully updated.')
+          render :show
+        else
+          redirect_to group_settings_application_url(@group, @application)
         end
       end
 

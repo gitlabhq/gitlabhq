@@ -261,7 +261,8 @@ FactoryBot.define do
 
     app_store_issuer_id { 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee' }
     app_store_key_id { 'ABC1' }
-    app_store_private_key { File.read('spec/fixtures/ssl_key.pem') }
+    app_store_private_key_file_name { 'auth_key.p8' }
+    app_store_private_key { File.read('spec/fixtures/auth_key.p8') }
   end
 
   # this is for testing storing values inside properties, which is deprecated and will be removed in

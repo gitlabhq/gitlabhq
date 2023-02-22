@@ -8,6 +8,7 @@ module Integrations
       :app_store_issuer_id,
       :app_store_key_id,
       :app_store_private_key,
+      :app_store_private_key_file_name,
       :active,
       :alert_events,
       :api_key,

@@ -420,6 +420,12 @@ describe('WorkItemDetail component', () => {
         expect(findParentButton().props('icon')).toBe(mockParent.parent.workItemType.iconName);
       });
 
+      it('shows parent title and iid', () => {
+        expect(findParentButton().text()).toBe(
+          `${mockParent.parent.title} #${mockParent.parent.iid}`,
+        );
+      });
+
       it('sets the parent breadcrumb URL pointing to issue page when parent type is `Issue`', () => {
         expect(findParentButton().attributes().href).toBe('../../issues/5');
       });
@@ -440,6 +446,11 @@ describe('WorkItemDetail component', () => {
         await waitForPromises();
 
         expect(findParentButton().attributes().href).toBe(mockParentObjective.parent.webUrl);
+      });
+
+      it('shows work item type and iid', () => {
+        const { iid, workItemType } = workItemQueryResponse.data.workItem;
+        expect(findParent().text()).toContain(`${workItemType.name} #${iid}`);
       });
     });
   });

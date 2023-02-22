@@ -507,30 +507,21 @@ describe('IntegrationForm', () => {
       const dummyHelp = 'Foo Help';
 
       it.each`
-        integration                    | flagIsOn | helpHtml     | sections                   | shouldShowSections | shouldShowHelp
-        ${INTEGRATION_FORM_TYPE_SLACK} | ${false} | ${''}        | ${[]}                      | ${false}           | ${false}
-        ${INTEGRATION_FORM_TYPE_SLACK} | ${false} | ${dummyHelp} | ${[]}                      | ${false}           | ${true}
-        ${INTEGRATION_FORM_TYPE_SLACK} | ${false} | ${undefined} | ${[mockSectionConnection]} | ${false}           | ${false}
-        ${INTEGRATION_FORM_TYPE_SLACK} | ${false} | ${dummyHelp} | ${[mockSectionConnection]} | ${false}           | ${true}
-        ${INTEGRATION_FORM_TYPE_SLACK} | ${true}  | ${''}        | ${[]}                      | ${false}           | ${false}
-        ${INTEGRATION_FORM_TYPE_SLACK} | ${true}  | ${dummyHelp} | ${[]}                      | ${false}           | ${true}
-        ${INTEGRATION_FORM_TYPE_SLACK} | ${true}  | ${undefined} | ${[mockSectionConnection]} | ${true}            | ${false}
-        ${INTEGRATION_FORM_TYPE_SLACK} | ${true}  | ${dummyHelp} | ${[mockSectionConnection]} | ${true}            | ${true}
-        ${'foo'}                       | ${false} | ${''}        | ${[]}                      | ${false}           | ${false}
-        ${'foo'}                       | ${false} | ${dummyHelp} | ${[]}                      | ${false}           | ${true}
-        ${'foo'}                       | ${false} | ${undefined} | ${[mockSectionConnection]} | ${true}            | ${false}
-        ${'foo'}                       | ${false} | ${dummyHelp} | ${[mockSectionConnection]} | ${true}            | ${false}
-        ${'foo'}                       | ${true}  | ${''}        | ${[]}                      | ${false}           | ${false}
-        ${'foo'}                       | ${true}  | ${dummyHelp} | ${[]}                      | ${false}           | ${true}
-        ${'foo'}                       | ${true}  | ${undefined} | ${[mockSectionConnection]} | ${true}            | ${false}
-        ${'foo'}                       | ${true}  | ${dummyHelp} | ${[mockSectionConnection]} | ${true}            | ${false}
+        integration                    | helpHtml     | sections                   | shouldShowSections | shouldShowHelp
+        ${INTEGRATION_FORM_TYPE_SLACK} | ${''}        | ${[]}                      | ${false}           | ${false}
+        ${INTEGRATION_FORM_TYPE_SLACK} | ${dummyHelp} | ${[]}                      | ${false}           | ${true}
+        ${INTEGRATION_FORM_TYPE_SLACK} | ${undefined} | ${[mockSectionConnection]} | ${true}            | ${false}
+        ${INTEGRATION_FORM_TYPE_SLACK} | ${dummyHelp} | ${[mockSectionConnection]} | ${true}            | ${true}
+        ${'foo'}                       | ${''}        | ${[]}                      | ${false}           | ${false}
+        ${'foo'}                       | ${dummyHelp} | ${[]}                      | ${false}           | ${true}
+        ${'foo'}                       | ${undefined} | ${[mockSectionConnection]} | ${true}            | ${false}
+        ${'foo'}                       | ${dummyHelp} | ${[mockSectionConnection]} | ${true}            | ${false}
       `(
-        '$sections sections, and "$helpHtml" helpHtml when the FF is "$flagIsOn" for "$integration" integration',
-        ({ integration, flagIsOn, helpHtml, sections, shouldShowSections, shouldShowHelp }) => {
+        '$sections sections, and "$helpHtml" helpHtml for "$integration" integration',
+        ({ integration, helpHtml, sections, shouldShowSections, shouldShowHelp }) => {
           createComponent({
             provide: {
               helpHtml,
-              glFeatures: { integrationSlackAppNotifications: flagIsOn },
             },
             customStateProps: {
               sections,
@@ -553,20 +544,15 @@ describe('IntegrationForm', () => {
       ${false}    | ${true}                  | ${'When having only the fields without a section'}
     `('$description', ({ hasSections, hasFieldsWithoutSections }) => {
       it.each`
-        prefix        | integration                    | shouldUpgradeSlack | flagIsOn | shouldShowAlert
-        ${'does'}     | ${INTEGRATION_FORM_TYPE_SLACK} | ${true}            | ${true}  | ${true}
-        ${'does not'} | ${INTEGRATION_FORM_TYPE_SLACK} | ${false}           | ${true}  | ${false}
-        ${'does not'} | ${INTEGRATION_FORM_TYPE_SLACK} | ${true}            | ${false} | ${false}
-        ${'does not'} | ${'foo'}                       | ${true}            | ${true}  | ${false}
-        ${'does not'} | ${'foo'}                       | ${false}           | ${true}  | ${false}
-        ${'does not'} | ${'foo'}                       | ${true}            | ${false} | ${false}
+        prefix        | integration                    | shouldUpgradeSlack | shouldShowAlert
+        ${'does'}     | ${INTEGRATION_FORM_TYPE_SLACK} | ${true}            | ${true}
+        ${'does not'} | ${INTEGRATION_FORM_TYPE_SLACK} | ${false}           | ${false}
+        ${'does not'} | ${'foo'}                       | ${true}            | ${false}
+        ${'does not'} | ${'foo'}                       | ${false}           | ${false}
       `(
-        '$prefix render the upgrade warning when we are in "$integration" integration with the flag "$flagIsOn" and Slack-needs-upgrade is "$shouldUpgradeSlack" and have sections',
-        ({ integration, shouldUpgradeSlack, flagIsOn, shouldShowAlert }) => {
+        '$prefix render the upgrade warning when we are in "$integration" integration with Slack-needs-upgrade is "$shouldUpgradeSlack" and have sections',
+        ({ integration, shouldUpgradeSlack, shouldShowAlert }) => {
           createComponent({
-            provide: {
-              glFeatures: { integrationSlackAppNotifications: flagIsOn },
-            },
             customStateProps: {
               shouldUpgradeSlack,
               type: integration,

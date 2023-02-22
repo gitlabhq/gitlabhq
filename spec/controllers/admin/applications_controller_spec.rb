@@ -38,6 +38,30 @@ RSpec.describe Admin::ApplicationsController do
     end
   end
 
+  describe 'PUT #renew' do
+    let(:oauth_params) do
+      {
+        id: application.id
+      }
+    end
+
+    subject { put :renew, params: oauth_params }
+
+    it { is_expected.to have_gitlab_http_status(:ok) }
+    it { expect { subject }.to change { application.reload.secret } }
+
+    context 'when renew fails' do
+      before do
+        allow_next_found_instance_of(Doorkeeper::Application) do |application|
+          allow(application).to receive(:save).and_return(false)
+        end
+      end
+
+      it { expect { subject }.not_to change { application.reload.secret } }
+      it { is_expected.to redirect_to(admin_application_url(application)) }
+    end
+  end
+
   describe 'POST #create' do
     context 'with hash_oauth_secrets flag off' do
       before do

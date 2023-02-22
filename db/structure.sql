@@ -34701,6 +34701,9 @@ ALTER TABLE ONLY ci_sources_pipelines
 ALTER TABLE p_ci_builds_metadata
     ADD CONSTRAINT fk_e20479742e FOREIGN KEY (build_id) REFERENCES ci_builds(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY ci_builds_metadata
+    ADD CONSTRAINT fk_e20479742e_p FOREIGN KEY (partition_id, build_id) REFERENCES ci_builds(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE NOT VALID;
+
 ALTER TABLE ONLY gitlab_subscriptions
     ADD CONSTRAINT fk_e2595d00a1 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 

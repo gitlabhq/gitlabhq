@@ -124,8 +124,11 @@ export default class Shortcuts {
       e.preventDefault();
     });
 
+    const shortcutsModalTriggerEvent = 'click.shortcutsModalTrigger';
     // eslint-disable-next-line @gitlab/no-global-event-off
-    $('.js-shortcuts-modal-trigger').off('click').on('click', this.onToggleHelp);
+    $(document)
+      .off(shortcutsModalTriggerEvent)
+      .on(shortcutsModalTriggerEvent, '.js-shortcuts-modal-trigger', this.onToggleHelp);
 
     if (shouldDisableShortcuts()) {
       disableShortcuts();

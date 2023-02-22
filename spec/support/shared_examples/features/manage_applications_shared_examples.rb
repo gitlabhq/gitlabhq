@@ -36,7 +36,7 @@ RSpec.shared_examples 'manage applications' do
 
       validate_application(application_name_changed, 'No')
       expect(page).not_to have_link('Continue')
-      expect(page).to have_content _('The secret is only available when you first create the application')
+      expect(page).to have_content _('The secret is only available when you create the application or renew the secret.')
 
       visit_applications_path
 

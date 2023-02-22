@@ -2,6 +2,7 @@
 import { GlButton, GlFilteredSearchToken, GlTooltipDirective } from '@gitlab/ui';
 import * as Sentry from '@sentry/browser';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
+import { isEmpty } from 'lodash';
 import IssueCardStatistics from 'ee_else_ce/issues/list/components/issue_card_statistics.vue';
 import IssueCardTimeInfo from 'ee_else_ce/issues/list/components/issue_card_time_info.vue';
 import getIssuesQuery from 'ee_else_ce/issues/list/queries/get_issues.query.graphql';
@@ -206,9 +207,8 @@ export default {
         Sentry.captureException(error);
       },
       skip() {
-        return !this.hasAnyIssues;
+        return !this.hasAnyIssues || isEmpty(this.pageParams);
       },
-      debounce: 200,
     },
     issuesCounts: {
       query: getIssuesCountsQuery,
@@ -223,9 +223,8 @@ export default {
         Sentry.captureException(error);
       },
       skip() {
-        return !this.hasAnyIssues;
+        return !this.hasAnyIssues || isEmpty(this.pageParams);
       },
-      debounce: 200,
       context: {
         isSingleRequest: true,
       },

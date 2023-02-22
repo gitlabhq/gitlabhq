@@ -68,18 +68,23 @@ describe('HelpCenter component', () => {
     });
 
     describe('showKeyboardShortcuts', () => {
+      let button;
+
       beforeEach(() => {
         jest.spyOn(wrapper.vm.$refs.dropdown, 'close');
-        window.toggleShortcutsHelp = jest.fn();
-        findButton('Keyboard shortcuts ?').click();
+
+        button = findButton('Keyboard shortcuts ?');
       });
 
       it('closes the dropdown', () => {
+        button.click();
         expect(wrapper.vm.$refs.dropdown.close).toHaveBeenCalled();
       });
 
       it('shows the keyboard shortcuts modal', () => {
-        expect(window.toggleShortcutsHelp).toHaveBeenCalled();
+        // This relies on the event delegation set up by the Shortcuts class in
+        // ~/behaviors/shortcuts/shortcuts.js.
+        expect(button.classList.contains('js-shortcuts-modal-trigger')).toBe(true);
       });
     });
 

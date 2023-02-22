@@ -74,6 +74,8 @@ Integration.available_integration_names.each do |integration|
           hash.merge!(k => File.read('spec/fixtures/ssl_key.pem'))
         elsif integration == 'apple_app_store' && k == :app_store_key_id
           hash.merge!(k => 'ABC1')
+        elsif integration == 'apple_app_store' && k == :app_store_private_key_file_name
+          hash.merge!(k => 'ssl_key.pem')
         else
           hash.merge!(k => "someword")
         end

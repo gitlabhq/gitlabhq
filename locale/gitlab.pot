@@ -4798,13 +4798,28 @@ msgstr ""
 msgid "Append the comment with %{tableflip}"
 msgstr ""
 
+msgid "AppleAppStore|Drag your Private Key file here or %{linkStart}click to upload%{linkEnd}."
+msgstr ""
+
+msgid "AppleAppStore|Drop your Private Key file to start the upload."
+msgstr ""
+
+msgid "AppleAppStore|Error: You are trying to upload something other than a Private Key file."
+msgstr ""
+
+msgid "AppleAppStore|Leave empty to use your current Private Key."
+msgstr ""
+
 msgid "AppleAppStore|The Apple App Store Connect Issuer ID."
 msgstr ""
 
 msgid "AppleAppStore|The Apple App Store Connect Key ID."
 msgstr ""
 
-msgid "AppleAppStore|The Apple App Store Connect Private Key."
+msgid "AppleAppStore|The Apple App Store Connect Private Key (.p8)"
+msgstr ""
+
+msgid "AppleAppStore|Upload a new Apple App Store Connect Private Key (replace %{currentFileName})"
 msgstr ""
 
 msgid "AppleAppStore|Use GitLab to build and release an app in the Apple App Store."
@@ -5933,7 +5948,16 @@ msgstr ""
 msgid "Authorized applications (%{size})"
 msgstr ""
 
+msgid "AuthorizedApplication|Application secret was successfully updated."
+msgstr ""
+
+msgid "AuthorizedApplication|Are you sure you want to renew this secret? Any applications using the old secret will no longer be able to authenticate with GitLab."
+msgstr ""
+
 msgid "AuthorizedApplication|Are you sure you want to revoke this application?"
+msgstr ""
+
+msgid "AuthorizedApplication|Renew secret"
 msgstr ""
 
 msgid "AuthorizedApplication|Revoke application"
@@ -9642,6 +9666,9 @@ msgid "ClusterAgents|Your instance doesn't have the %{linkStart}GitLab Agent Ser
 msgstr ""
 
 msgid "ClusterAgent|User has insufficient permissions to create a token for this project"
+msgstr ""
+
+msgid "ClusterAgent|User has insufficient permissions to revoke the token for this project"
 msgstr ""
 
 msgid "ClusterAgent|You have insufficient permissions to create a cluster agent for this project"
@@ -22860,10 +22887,13 @@ msgstr ""
 msgid "Integrations|Default settings are inherited from the instance level."
 msgstr ""
 
-msgid "Integrations|Edit project alias"
+msgid "Integrations|Drag your file here or %{linkStart}click to upload%{linkEnd}."
 msgstr ""
 
-msgid "Integrations|Enable GitLab.com slash commands in a Slack workspace."
+msgid "Integrations|Drop your file to start the upload."
+msgstr ""
+
+msgid "Integrations|Edit project alias"
 msgstr ""
 
 msgid "Integrations|Enable SSL verification"
@@ -22879,6 +22909,9 @@ msgid "Integrations|Ensure your instance URL is correct and your instance is con
 msgstr ""
 
 msgid "Integrations|Enter your alias"
+msgstr ""
+
+msgid "Integrations|Error: You are trying to upload something other than an allowed file."
 msgstr ""
 
 msgid "Integrations|Failed to link namespace. Please try again."
@@ -43194,7 +43227,7 @@ msgstr ""
 msgid "The scan has been created."
 msgstr ""
 
-msgid "The secret is only available when you first create the application."
+msgid "The secret is only available when you create the application or renew the secret."
 msgstr ""
 
 msgid "The snippet can be accessed without any authentication."

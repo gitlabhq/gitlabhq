@@ -3,7 +3,7 @@
 class Admin::ApplicationsController < Admin::ApplicationController
   include OauthApplications
 
-  before_action :set_application, only: [:show, :edit, :update, :destroy]
+  before_action :set_application, only: [:show, :edit, :update, :renew, :destroy]
   before_action :load_scopes, only: [:new, :create, :edit, :update]
 
   feature_category :authentication_and_authorization
@@ -48,6 +48,17 @@ class Admin::ApplicationsController < Admin::ApplicationController
       redirect_to admin_application_path(@application), notice: _('Application was successfully updated.')
     else
       render :edit
+    end
+  end
+
+  def renew
+    @application.renew_secret
+
+    if @application.save
+      flash.now[:notice] = s_('AuthorizedApplication|Application secret was successfully updated.')
+      render :show
+    else
+      redirect_to admin_application_url(@application)
     end
   end
 

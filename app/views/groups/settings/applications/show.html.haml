@@ -9,4 +9,5 @@
 = render 'shared/doorkeeper/applications/show',
   edit_path: edit_group_settings_application_path(@group, @application),
   delete_path: group_settings_application_path(@group, @application),
-  index_path: group_settings_applications_path
+  index_path: group_settings_applications_path,
+  renew_path: renew_group_settings_application_path(@group, @application)

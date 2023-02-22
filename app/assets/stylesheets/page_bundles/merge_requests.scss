@@ -270,7 +270,8 @@ $tabs-holder-z-index: 250;
   position: -webkit-sticky;
   position: sticky;
   top: calc(var(--top-pos) + var(--performance-bar-height, 0px));
-  max-height: calc(100vh - var(--top-pos) - var(--system-header-height, 0px) - var(--performance-bar-height, 0px) - var(--review-bar-height, 0px));
+  min-height: 300px;
+  height: calc(100vh - var(--top-pos) - var(--system-header-height, 0px) - var(--performance-bar-height, 0px) - var(--review-bar-height, 0px));
 
   .drag-handle {
     bottom: 16px;

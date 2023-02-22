@@ -188,6 +188,55 @@ RSpec.describe Groups::Settings::ApplicationsController do
     end
   end
 
+  describe 'PUT #renew' do
+    context 'when user is owner' do
+      before do
+        group.add_owner(user)
+      end
+
+      let(:oauth_params) do
+        {
+          group_id: group,
+          id: application.id
+        }
+      end
+
+      subject { put :renew, params: oauth_params }
+
+      it { is_expected.to have_gitlab_http_status(:ok) }
+      it { expect { subject }.to change { application.reload.secret } }
+
+      context 'when renew fails' do
+        before do
+          allow_next_found_instance_of(Doorkeeper::Application) do |application|
+            allow(application).to receive(:save).and_return(false)
+          end
+        end
+
+        it { expect { subject }.not_to change { application.reload.secret } }
+        it { is_expected.to redirect_to(group_settings_application_url(group, application)) }
+      end
+    end
+
+    context 'when user is not owner' do
+      before do
+        group.add_maintainer(user)
+      end
+
+      let(:oauth_params) do
+        {
+          group_id: group,
+          id: application.id
+        }
+      end
+
+      it 'renders a 404' do
+        put :renew, params: oauth_params
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+  end
+
   describe 'PATCH #update' do
     context 'when user is owner' do
       before do

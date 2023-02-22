@@ -15,6 +15,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import {
   getIssuesCountsQueryResponse,
   getIssuesQueryResponse,
+  getIssuesQueryEmptyResponse,
   filteredTokens,
   locationSearch,
   setSortPreferenceMutationResponse,
@@ -154,7 +155,24 @@ describe('CE IssuesListApp component', () => {
     router = new VueRouter({ mode: 'history' });
 
     return mountFn(IssuesListApp, {
-      apolloProvider: createMockApollo(requestHandlers),
+      apolloProvider: createMockApollo(
+        requestHandlers,
+        {},
+        {
+          typePolicies: {
+            Query: {
+              fields: {
+                project: {
+                  merge: true,
+                },
+                group: {
+                  merge: true,
+                },
+              },
+            },
+          },
+        },
+      ),
       router,
       provide: {
         ...defaultProvide,
@@ -180,7 +198,6 @@ describe('CE IssuesListApp component', () => {
   describe('IssuableList', () => {
     beforeEach(() => {
       wrapper = mountComponent();
-      jest.runOnlyPendingTimers();
       return waitForPromises();
     });
 
@@ -247,7 +264,6 @@ describe('CE IssuesListApp component', () => {
             mountFn: mount,
           });
 
-          jest.runOnlyPendingTimers();
           return waitForPromises();
         });
 
@@ -477,7 +493,12 @@ describe('CE IssuesListApp component', () => {
   describe('empty states', () => {
     describe('when there are issues', () => {
       beforeEach(() => {
-        wrapper = mountComponent({ provide: { hasAnyIssues: true }, mountFn: mount });
+        wrapper = mountComponent({
+          provide: { hasAnyIssues: true },
+          mountFn: mount,
+          issuesQueryResponse: getIssuesQueryEmptyResponse,
+        });
+        return waitForPromises();
       });
 
       it('shows EmptyStateWithAnyIssues empty state', () => {
@@ -599,7 +620,6 @@ describe('CE IssuesListApp component', () => {
         wrapper = mountComponent({
           [mountOption]: jest.fn().mockRejectedValue(new Error('ERROR')),
         });
-        jest.runOnlyPendingTimers();
         return waitForPromises();
       });
 
@@ -620,8 +640,9 @@ describe('CE IssuesListApp component', () => {
 
   describe('events', () => {
     describe('when "click-tab" event is emitted by IssuableList', () => {
-      beforeEach(() => {
+      beforeEach(async () => {
         wrapper = mountComponent();
+        await waitForPromises();
         router.push = jest.fn();
 
         findIssuableList().vm.$emit('click-tab', IssuableStates.Closed);
@@ -641,19 +662,25 @@ describe('CE IssuesListApp component', () => {
     describe.each`
       event | params
       ${'next-page'} | ${{
-  page_after: 'endCursor',
+  page_after: 'endcursor',
   page_before: undefined,
   first_page_size: 20,
   last_page_size: undefined,
+  search: undefined,
+  sort: 'created_date',
+  state: 'opened',
 }}
       ${'previous-page'} | ${{
   page_after: undefined,
-  page_before: 'startCursor',
+  page_before: 'startcursor',
   first_page_size: undefined,
   last_page_size: 20,
+  search: undefined,
+  sort: 'created_date',
+  state: 'opened',
 }}
     `('when "$event" event is emitted by IssuableList', ({ event, params }) => {
-      beforeEach(() => {
+      beforeEach(async () => {
         wrapper = mountComponent({
           data: {
             pageInfo: {
@@ -662,6 +689,7 @@ describe('CE IssuesListApp component', () => {
             },
           },
         });
+        await waitForPromises();
         router.push = jest.fn();
 
         findIssuableList().vm.$emit(event);
@@ -735,7 +763,6 @@ describe('CE IssuesListApp component', () => {
                   provide: { isProject },
                   issuesQueryResponse: jest.fn().mockResolvedValue(response(isProject)),
                 });
-                jest.runOnlyPendingTimers();
                 return waitForPromises();
               });
 
@@ -761,7 +788,6 @@ describe('CE IssuesListApp component', () => {
           wrapper = mountComponent({
             issuesQueryResponse: jest.fn().mockResolvedValue(response()),
           });
-          jest.runOnlyPendingTimers();
           return waitForPromises();
         });
 
@@ -793,8 +819,6 @@ describe('CE IssuesListApp component', () => {
           router.push = jest.fn();
 
           findIssuableList().vm.$emit('sort', sortKey);
-          jest.runOnlyPendingTimers();
-          await nextTick();
 
           expect(router.push).toHaveBeenCalledWith({
             query: expect.objectContaining({ sort: urlSortParams[sortKey] }),
@@ -914,13 +938,13 @@ describe('CE IssuesListApp component', () => {
       ${'shows users when public visibility is not restricted and is signed in'}     | ${false}                     | ${true}    | ${false}
       ${'hides users when public visibility is restricted and is not signed in'}     | ${true}                      | ${false}   | ${true}
       ${'shows users when public visibility is restricted and is signed in'}         | ${true}                      | ${true}    | ${false}
-    `('$description', ({ isPublicVisibilityRestricted, isSignedIn, hideUsers }) => {
+    `('$description', async ({ isPublicVisibilityRestricted, isSignedIn, hideUsers }) => {
       const mockQuery = jest.fn().mockResolvedValue(defaultQueryResponse);
       wrapper = mountComponent({
         provide: { isPublicVisibilityRestricted, isSignedIn },
         issuesQueryResponse: mockQuery,
       });
-      jest.runOnlyPendingTimers();
+      await waitForPromises();
 
       expect(mockQuery).toHaveBeenCalledWith(expect.objectContaining({ hideUsers }));
     });
@@ -929,7 +953,6 @@ describe('CE IssuesListApp component', () => {
   describe('fetching issues', () => {
     beforeEach(() => {
       wrapper = mountComponent();
-      jest.runOnlyPendingTimers();
     });
 
     it('fetches issue, incident, test case, and task types', () => {

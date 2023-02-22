@@ -68,9 +68,8 @@ module Ci
     end
 
     class_methods do
-      def partitionable(scope:, through: nil, partitioned: false)
+      def partitionable(scope:, through: nil)
         handle_partitionable_through(through)
-        handle_partitionable_dml(partitioned)
         handle_partitionable_scope(scope)
       end
 
@@ -83,13 +82,6 @@ module Ci
         define_singleton_method(:routing_table_name_flag) { options[:flag] }
 
         include Partitionable::Switch
-      end
-
-      def handle_partitionable_dml(partitioned)
-        define_singleton_method(:partitioned?) { partitioned }
-        return unless partitioned
-
-        include Partitionable::PartitionedFilter
       end
 
       def handle_partitionable_scope(scope)

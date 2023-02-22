@@ -18,7 +18,10 @@ module QA
         end
       end
 
-      context 'when added to parent group' do
+      context 'when added to parent group', quarantine: {
+        issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/392816',
+        type: :investigating
+      } do
         let!(:parent_group_user) do
           Resource::User.fabricate_via_api! do |user|
             user.api_client = admin_api_client

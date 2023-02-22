@@ -191,6 +191,12 @@ module API
               name: :app_store_private_key,
               type: String,
               desc: 'The Apple App Store Connect Private Key'
+            },
+            {
+              required: true,
+              name: :app_store_private_key_file_name,
+              type: String,
+              desc: 'The Apple App Store Connect Private Key File Name'
             }
           ],
           'asana' => [

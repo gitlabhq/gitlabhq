@@ -314,6 +314,15 @@ The following actions on projects generate project audit events:
 - An environment is protected or unprotected.
   [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216164) in GitLab 15.8.
 
+### GitLab agent for Kubernetes events
+
+The following actions on projects generate agent audit events:
+
+- A cluster agent token is created.
+  Introduced in GitLab 15.9
+- A cluster agent token is revoked.
+  Introduced in GitLab 15.9
+
 ### Instance events **(PREMIUM SELF)**
 
 The following user actions on a GitLab instance generate instance audit events:

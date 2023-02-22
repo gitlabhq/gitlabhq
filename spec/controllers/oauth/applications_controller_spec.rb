@@ -71,6 +71,33 @@ RSpec.describe Oauth::ApplicationsController do
       it_behaves_like 'redirects to 2fa setup page when the user requires it'
     end
 
+    describe 'PUT #renew' do
+      let(:oauth_params) do
+        {
+          id: application.id
+        }
+      end
+
+      subject { put :renew, params: oauth_params }
+
+      it { is_expected.to have_gitlab_http_status(:ok) }
+      it { expect { subject }.to change { application.reload.secret } }
+
+      it_behaves_like 'redirects to login page when the user is not signed in'
+      it_behaves_like 'redirects to 2fa setup page when the user requires it'
+
+      context 'when renew fails' do
+        before do
+          allow_next_found_instance_of(Doorkeeper::Application) do |application|
+            allow(application).to receive(:save).and_return(false)
+          end
+        end
+
+        it { expect { subject }.not_to change { application.reload.secret } }
+        it { is_expected.to redirect_to(oauth_application_url(application)) }
+      end
+    end
+
     describe 'GET #show' do
       subject { get :show, params: { id: application.id } }
 

@@ -56,7 +56,9 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
         end
       end
 
-      resources :applications
+      resources :applications do
+        put 'renew', on: :member
+      end
 
       resource :packages_and_registries, only: [:show]
     end

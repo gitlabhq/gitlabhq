@@ -20,19 +20,82 @@ It's the offering of choice for enterprises and organizations in highly regulate
 
 ## Available features
 
-- Authentication: Support for instance-level [SAML OmniAuth](../../integration/saml.md) functionality. GitLab Dedicated acts as the service provider, and you must provide the necessary [configuration](../../integration/saml.md#configure-saml-support-in-gitlab) in order for GitLab to communicate with your IdP. This is provided during onboarding.
-  - SAML [request signing](../../integration/saml.md#sign-saml-authentication-requests-optional), [group sync](../../user/group/saml_sso/group_sync.md#configure-saml-group-sync), and [SAML groups](../../integration/saml.md#configure-users-based-on-saml-group-membership) are supported.
-- Networking:
-  - Public connectivity with support for IP Allowlists. During onboarding, you can optionally specify a list of IP addresses that can access your GitLab Dedicated instance. Subsequently, when an IP not on the allowlist tries to access your instance the connection is refused.
-  - Optional. Private connectivity via [AWS PrivateLink](https://aws.amazon.com/privatelink/).
-    You can specify an AWS IAM Principal and preferred Availability Zones during onboarding to enable this functionality. Both Ingress and Egress PrivateLinks are supported. When connecting to an internal service running in your VPC over HTTPS via PrivateLink, GitLab Dedicated supports the ability to use a private SSL certificate, which can be provided during onboarding.
-- Upgrades:
-  - Monthly upgrades tracking one release behind the latest (n-1), with the latest security release.
-  - Out of band security patches provided for high severity releases.
-- Backups: Regular backups taken and tested.
-- Choice of cloud region: Upon onboarding, choose the cloud region where you want to deploy your instance. Some AWS regions have limited features and as a result, we are not able to deploy production instances to those regions. See below for the [full list of regions](#aws-regions-not-supported) not currently supported.
-- Security: Data encrypted at rest and in transit using latest encryption standards.
-- Application: Self-managed [Ultimate feature set](https://about.gitlab.com/pricing/feature-comparison/) with the exception of the unsupported features [listed below](#features-that-are-not-available).
+### Data residency
+
+GitLab Dedicated allows you to select the cloud region where your data will be stored. Upon [onboarding](../../administration/dedicated/index.md#onboarding), choose the cloud region where you want to deploy your Dedicated instance. Some AWS regions have limited features and as a result, we are not able to deploy production instances to those regions. See below for the [full list of regions](#aws-regions-not-supported) not supported.
+
+### Availability and scalability
+
+GitLab Dedicated leverages the GitLab [Cloud Native Hybrid reference architectures](../../administration/reference_architectures/index.md#cloud-native-hybrid) with high availability enabled. When [onboarding](../../administration/dedicated/index.md#onboarding), GitLab will match you to the closest reference architecture size based on your number of users. Learn about the [current Service Level Objective](https://about.gitlab.com/handbook/engineering/infrastructure/team/gitlab-dedicated/slas/#current-service-level-objective).
+
+#### Disaster Recovery
+
+When [onboarding](../../administration/dedicated/index.md#onboarding) to GitLab Dedicated, you can provide a Secondary AWS region in which your data is stored. This region is used to recover your GitLab Dedicated instance in case of a disaster. Regular backups of all GitLab Dedicated datastores (including Database and Git repositories) are taken and tested regularly and stored in your desired secondary region. GitLab Dedicated also provides the ability to store copies of these backups in a separate cloud region of choice for greater redundancy.
+
+For more information, read about the [recovery plan for GitLab Dedicated](https://about.gitlab.com/handbook/engineering/infrastructure/team/gitlab-dedicated/slas/#disaster-recovery-plan) as well as RPO and RTO targets.
+
+### Security
+
+#### Authentication and authorization
+
+GitLab Dedicated supports instance-level [SAML OmniAuth](../../integration/saml.md) functionality. Your GitLab Dedicated instance acts as the service provider, and you must provide the necessary [configuration](../../integration/saml.md#configure-saml-support-in-gitlab) in order for GitLab to communicate with your IdP. For more information, see how to [configure SAML](../../administration/dedicated/index.md#saml) for your instance.
+
+- SAML [request signing](../../integration/saml.md#sign-saml-authentication-requests-optional), [group sync](../../user/group/saml_sso/group_sync.md#configure-saml-group-sync), and [SAML groups](../../integration/saml.md#configure-users-based-on-saml-group-membership) are supported.
+
+#### Secure networking
+
+GitLab Dedicated offers public connectivity by default with support for IP allowlists. You can [optionally specify a list of IP addresses](../../administration/dedicated/index.md#ip-allowlist) that can access your GitLab Dedicated instance. Subsequently, when an IP not on the allowlist tries to access your instance the connection is refused.
+
+Private connectivity via [AWS PrivateLink](https://aws.amazon.com/privatelink/) is also offered as an option. Both [inbound](../../administration/dedicated/index.md#inbound-private-link) and [outbound](../../administration/dedicated/index.md#outbound-private-link) PrivateLinks are supported. When connecting to an internal service running in your VPC over HTTPS via PrivateLink, GitLab Dedicated supports the ability to use a private SSL certificate, which can be provided when [updating your instance configuration](../../administration/dedicated/index.md#custom-certificates).
+
+#### Encryption
+
+Data is encrypted at rest and in transit using the latest encryption standards.
+
+### Compliance
+
+#### Certifications
+
+GitLab Dedicated offers the following [compliance certifications](https://about.gitlab.com/security/):
+
+- SOC 2 Type 1 Report (Security and Confidentiality criteria) 
+- ISO/IEC 27001:2013
+- ISO/IEC 27017:2015
+- ISO/IEC 27018:2019
+
+#### Isolation
+
+As a single-tenant SaaS service, GitLab Dedicated provides infrastructure-level isolation of your GitLab environment. Your environment is placed into a separate AWS account from other tenants. This AWS account contains all of the underlying infrastructure necessary to host the GitLab application and your data stays within the account boundary. You administer the application while GitLab manages the underlying infrastructure. Tenant environments are also completely isolated from GitLab.com.
+
+#### Access controls
+
+GitLab Dedicated adheres to the [principle of least privilege](https://about.gitlab.com/handbook/security/access-management-policy.html#principle-of-least-privilege) to control access to customer tenant environments. Tenant AWS accounts live under a top-level GitLab Dedicated AWS parent organization. Access to the AWS Organization is restricted to select GitLab team members. All user accounts within the AWS Organization follow the overall GitLab Access Management Policy [outlined here](https://about.gitlab.com/handbook/security/access-management-policy.html). Direct access to customer tenant environments is restricted to a single Hub account. The GitLab Dedicated Control Plane uses the Hub account to perform automated actions over tenant accounts when managing environments. Similarly, GitLab Dedicated engineers do not have direct access to customer tenant environments. In break glass situations, where access to resources in the tenant environment is required to address a high-severity issue, GitLab engineers must go through the Hub account to manage those resources. This is done via an approval process, and after permission is granted, the engineer will assume an IAM role on a temporary basis to access tenant resources through the Hub account. All actions within the hub account and tenant account are logged to CloudTrail.
+
+Inside tenant accounts, GitLab leverages Intrusion Detection and Malware Scanning capabilities from AWS GuardDuty. Infrastructure logs are monitored by the GitLab Security Incident Response Team to detect anomalous events.
+
+#### Audit and observability
+
+GitLab Dedicated provides access to [audit and system logs](../../administration/dedicated/index.md#access-to-application-logs) generated by the application.
+
+### Maintenance
+
+GitLab leverages [weekly maintenance windows](../../administration/dedicated/index.md#maintenance-window) to keep your instance up to date, fix security issues, and ensure the overall reliability and performance of your environment.
+
+#### Upgrades
+
+GitLab performs monthly upgrades to your instance with the latest security release during your preferred [maintenance window](../../administration/dedicated/index.md#maintenance-window) tracking one release behind the latest GitLab release. For example, if the latest version of GitLab available is 15.8, GitLab Dedicated runs on 15.7.
+
+#### Unscheduled maintenance
+
+GitLab may conduct unscheduled maintenance to address high-severity issues affecting the security, availability, or reliability of your instance.
+
+### Application
+
+GitLab Dedicated comes with the self-managed [Ultimate feature set](https://about.gitlab.com/pricing/feature-comparison/) with the exception of the unsupported features [listed below](#features-that-are-not-available).
+
+#### GitLab Runners
+
+With GitLab Dedicated, you must [install the GitLab Runner application](https://docs.gitlab.com/runner/install/index.html) on infrastructure that you own or manage. If hosting GitLab Runners on AWS, you can avoid having requests from the Runner fleet route through the public internet by setting up a secure connection from the Runner VPC to the GitLab Dedicated endpoint via AWS Private Link. Learn more about [networking options](#secure-networking).
 
 ## Features that are not available
 
@@ -53,7 +116,7 @@ The following GitLab application features are not available:
 The following features will not be supported:
 
 - Mattermost
-- Server-side Git hooks
+- Server-side Git hooks. Use [push rules](../../user/project/repository/push_rules.md) instead.
 
 ### GitLab Dedicated service features
 

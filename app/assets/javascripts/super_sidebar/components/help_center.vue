@@ -68,6 +68,9 @@ export default {
             {
               text: this.$options.i18n.shortcuts,
               action: this.showKeyboardShortcuts,
+              extraAttrs: {
+                class: 'js-shortcuts-modal-trigger',
+              },
               shortcut: '?',
             },
             this.sidebarData.display_whats_new && {
@@ -98,7 +101,6 @@ export default {
 
     showKeyboardShortcuts() {
       this.$refs.dropdown.close();
-      window?.toggleShortcutsHelp();
     },
 
     async showWhatsNew() {

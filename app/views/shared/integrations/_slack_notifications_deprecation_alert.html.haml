@@ -1,4 +1,4 @@
-- if Gitlab.com? && Feature.enabled?(:integration_slack_app_notifications)
+- if Gitlab.com?
   = render Pajamas::AlertComponent.new(title: _('Slack notifications integration is deprecated'),
     variant: :warning,
     dismissible: false,

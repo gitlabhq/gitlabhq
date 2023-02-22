@@ -225,9 +225,8 @@ even when not releasing versions in the catalog.
 The version of the component can be (in order of highest priority first):
 
 1. A commit SHA - For example: `gitlab.com/gitlab-org/dast@e3262fdd0914fa823210cdb79a8c421e2cef79d8`
-1. A released tag - For example: `gitlab.com/gitlab-org/dast@1.0`
+1. A tag - For example: `gitlab.com/gitlab-org/dast@1.0`
 1. A special moving target version that points to the most recent released tag - For example: `gitlab.com/gitlab-org/dast@~latest`
-1. An unreleased tag - For example: `gitlab.com/gitlab-org/dast@rc-1.0`
 1. A branch name - For example: `gitlab.com/gitlab-org/dast@master`
 
 If a tag and branch exist with the same name, the tag takes precedence over the branch.
@@ -236,9 +235,14 @@ takes precedence over the tag.
 
 As we want to be able to reference any revisions (even those not released), a component must be defined in a Git repository.
 
-NOTE:
 When referencing a component by local path (for example `./path/to/component`), its version is implicit and matches
 the commit SHA of the current pipeline context.
+
+Only released tags are displayed in the catalog for a given project, because creating a release is an official act of versioning.
+Users can still use branch names, unreleased tags, or commit SHAs to include a component in their CI configuration, but the recommended way is to use the releases.
+
+NOTE:
+The use of `@~latest` returns the latest release (if any). It does not include any unreleased tags.
 
 ## Components project
 

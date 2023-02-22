@@ -30,9 +30,8 @@ module Sidebars
       true
     end
 
-    def serialize_for_super_sidebar(parent_id = nil)
+    def serialize_for_super_sidebar
       {
-        parent_id: parent_id,
         title: title,
         icon: sprite_icon,
         link: link,

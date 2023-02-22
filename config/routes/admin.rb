@@ -44,7 +44,9 @@ namespace :admin do
     end
   end
 
-  resources :applications
+  resources :applications do
+    put 'renew', on: :member
+  end
 
   resources :groups, only: [:index, :new, :create]
 

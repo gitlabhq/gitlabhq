@@ -47,6 +47,19 @@ class Oauth::ApplicationsController < Doorkeeper::ApplicationsController
     end
   end
 
+  def renew
+    set_application
+
+    @application.renew_secret
+
+    if @application.save
+      flash.now[:notice] = s_('AuthorizedApplication|Application secret was successfully updated.')
+      render :show
+    else
+      redirect_to oauth_application_url(@application)
+    end
+  end
+
   private
 
   def verify_user_oauth_applications_enabled

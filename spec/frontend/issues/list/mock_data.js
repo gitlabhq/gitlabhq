@@ -101,6 +101,26 @@ export const getIssuesQueryResponse = {
   },
 };
 
+export const getIssuesQueryEmptyResponse = {
+  data: {
+    project: {
+      id: '1',
+      __typename: 'Project',
+      issues: {
+        __persist: true,
+        pageInfo: {
+          __typename: 'PageInfo',
+          hasNextPage: true,
+          hasPreviousPage: false,
+          startCursor: 'startcursor',
+          endCursor: 'endcursor',
+        },
+        nodes: [],
+      },
+    },
+  },
+};
+
 export const getIssuesCountsQueryResponse = {
   data: {
     project: {

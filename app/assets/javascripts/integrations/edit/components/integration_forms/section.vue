@@ -28,6 +28,10 @@ export default {
       import(
         /* webpackChunkName: 'integrationSectionTrigger' */ '~/integrations/edit/components/sections/trigger.vue'
       ),
+    IntegrationSectionAppleAppStore: () =>
+      import(
+        /* webpackChunkName: 'IntegrationSectionAppleAppStore' */ '~/integrations/edit/components/sections/apple_app_store.vue'
+      ),
   },
   directives: {
     SafeHtml,
