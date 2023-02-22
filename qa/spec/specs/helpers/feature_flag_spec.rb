@@ -151,7 +151,7 @@ RSpec.describe QA::Specs::Helpers::FeatureFlag do
       it_behaves_like 'skips with given feature flag metadata', { name: 'global_ff', scope: :global }
     end
 
-    context 'when run on jh production' do
+    context 'when run on jh production', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/392832' do
       before do
         allow(GitlabEdition).to receive(:jh?).and_return(true)
       end

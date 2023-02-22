@@ -7,4 +7,11 @@
   - content_for :prefetch_asset_tags do
     - webpack_preload_asset_tag('monaco')
 
-= render partial: 'shared/ide_root', locals: { data: ide_data(project: @project, branch: @branch, path: @path, merge_request: @merge_request, fork_info: @fork_info), loading_text: _('Loading the GitLab IDE...') }
+- data = ide_data(project: @project,
+  branch: @branch,
+  path: @path,
+  merge_request: @merge_request,
+  fork_info: @fork_info,
+  learn_gitlab_source: @learn_gitlab_source)
+
+= render partial: 'shared/ide_root', locals: { data: data, loading_text: _('Loading the GitLab IDE...') }

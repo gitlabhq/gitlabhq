@@ -6149,7 +6149,6 @@ RSpec/MissingFeatureCategory:
     - 'spec/models/notification_setting_spec.rb'
     - 'spec/models/oauth_access_grant_spec.rb'
     - 'spec/models/oauth_access_token_spec.rb'
-    - 'spec/models/onboarding/completion_spec.rb'
     - 'spec/models/onboarding/progress_spec.rb'
     - 'spec/models/operations/feature_flag_spec.rb'
     - 'spec/models/operations/feature_flags/strategy_spec.rb'

@@ -93,4 +93,26 @@ RSpec.describe 'Jobs (JavaScript fixtures)' do
       expect_graphql_errors_to_be_empty
     end
   end
+
+  describe 'get_jobs_count.query.graphql', type: :request do
+    let!(:build) { create(:ci_build, :success, name: 'build', pipeline: pipeline) }
+    let!(:cancelable) { create(:ci_build, :cancelable, name: 'cancelable', pipeline: pipeline) }
+    let!(:failed) { create(:ci_build, :failed, name: 'failed', pipeline: pipeline) }
+
+    fixtures_path = 'graphql/jobs/'
+    get_jobs_count_query = 'get_jobs_count.query.graphql'
+    full_path = 'frontend-fixtures/builds-project'
+
+    let_it_be(:query) do
+      get_graphql_query_as_string("jobs/components/table/graphql/queries/#{get_jobs_count_query}")
+    end
+
+    it "#{fixtures_path}#{get_jobs_count_query}.json" do
+      post_graphql(query, current_user: user, variables: {
+        fullPath: full_path
+      })
+
+      expect_graphql_errors_to_be_empty
+    end
+  end
 end

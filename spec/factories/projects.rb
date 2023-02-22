@@ -354,6 +354,18 @@ FactoryBot.define do
       end
     end
 
+    trait :stubbed_commit_count do
+      after(:build) do |project|
+        stub_method(project.repository, :commit_count) { 2 }
+      end
+    end
+
+    trait :stubbed_branch_count do
+      after(:build) do |project|
+        stub_method(project.repository, :branch_count) { 2 }
+      end
+    end
+
     trait :wiki_repo do
       after(:create) do |project|
         stub_feature_flags(main_branch_over_master: false)

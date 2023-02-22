@@ -12603,6 +12603,28 @@ CREATE SEQUENCE broadcast_messages_id_seq
 
 ALTER SEQUENCE broadcast_messages_id_seq OWNED BY broadcast_messages.id;
 
+CREATE TABLE bulk_import_batch_trackers (
+    id bigint NOT NULL,
+    tracker_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    status smallint DEFAULT 0 NOT NULL,
+    batch_number integer DEFAULT 0 NOT NULL,
+    fetched_objects_count integer DEFAULT 0 NOT NULL,
+    imported_objects_count integer DEFAULT 0 NOT NULL,
+    error text,
+    CONSTRAINT check_3d6963a51f CHECK ((char_length(error) <= 255))
+);
+
+CREATE SEQUENCE bulk_import_batch_trackers_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE bulk_import_batch_trackers_id_seq OWNED BY bulk_import_batch_trackers.id;
+
 CREATE TABLE bulk_import_configurations (
     id bigint NOT NULL,
     bulk_import_id integer NOT NULL,
@@ -12655,11 +12677,33 @@ CREATE SEQUENCE bulk_import_entities_id_seq
 
 ALTER SEQUENCE bulk_import_entities_id_seq OWNED BY bulk_import_entities.id;
 
+CREATE TABLE bulk_import_export_batches (
+    id bigint NOT NULL,
+    export_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    status smallint DEFAULT 0 NOT NULL,
+    batch_number integer DEFAULT 0 NOT NULL,
+    objects_count integer DEFAULT 0 NOT NULL,
+    error text,
+    CONSTRAINT check_046dc60dfe CHECK ((char_length(error) <= 255))
+);
+
+CREATE SEQUENCE bulk_import_export_batches_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE bulk_import_export_batches_id_seq OWNED BY bulk_import_export_batches.id;
+
 CREATE TABLE bulk_import_export_uploads (
     id bigint NOT NULL,
     export_id bigint NOT NULL,
     updated_at timestamp with time zone NOT NULL,
     export_file text,
+    batch_id bigint,
     CONSTRAINT check_5add76239d CHECK ((char_length(export_file) <= 255))
 );
 
@@ -12682,6 +12726,9 @@ CREATE TABLE bulk_import_exports (
     relation text NOT NULL,
     jid text,
     error text,
+    batched boolean DEFAULT false NOT NULL,
+    batches_count integer DEFAULT 0 NOT NULL,
+    total_objects_count integer DEFAULT 0 NOT NULL,
     CONSTRAINT check_24cb010672 CHECK ((char_length(relation) <= 255)),
     CONSTRAINT check_8f0f357334 CHECK ((char_length(error) <= 255)),
     CONSTRAINT check_9ee6d14d33 CHECK ((char_length(jid) <= 255))
@@ -12732,6 +12779,7 @@ CREATE TABLE bulk_import_trackers (
     status smallint DEFAULT 0 NOT NULL,
     created_at timestamp with time zone,
     updated_at timestamp with time zone,
+    batched boolean DEFAULT false,
     CONSTRAINT check_2d45cae629 CHECK ((char_length(relation) <= 255)),
     CONSTRAINT check_40aeaa600b CHECK ((char_length(next_page) <= 255)),
     CONSTRAINT check_603f91cb06 CHECK ((char_length(jid) <= 255)),
@@ -24334,9 +24382,13 @@ ALTER TABLE ONLY boards_epic_user_preferences ALTER COLUMN id SET DEFAULT nextva
 
 ALTER TABLE ONLY broadcast_messages ALTER COLUMN id SET DEFAULT nextval('broadcast_messages_id_seq'::regclass);
 
+ALTER TABLE ONLY bulk_import_batch_trackers ALTER COLUMN id SET DEFAULT nextval('bulk_import_batch_trackers_id_seq'::regclass);
+
 ALTER TABLE ONLY bulk_import_configurations ALTER COLUMN id SET DEFAULT nextval('bulk_import_configurations_id_seq'::regclass);
 
 ALTER TABLE ONLY bulk_import_entities ALTER COLUMN id SET DEFAULT nextval('bulk_import_entities_id_seq'::regclass);
+
+ALTER TABLE ONLY bulk_import_export_batches ALTER COLUMN id SET DEFAULT nextval('bulk_import_export_batches_id_seq'::regclass);
 
 ALTER TABLE ONLY bulk_import_export_uploads ALTER COLUMN id SET DEFAULT nextval('bulk_import_export_uploads_id_seq'::regclass);
 
@@ -26087,11 +26139,17 @@ ALTER TABLE ONLY boards
 ALTER TABLE ONLY broadcast_messages
     ADD CONSTRAINT broadcast_messages_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY bulk_import_batch_trackers
+    ADD CONSTRAINT bulk_import_batch_trackers_pkey PRIMARY KEY (id);
+
 ALTER TABLE ONLY bulk_import_configurations
     ADD CONSTRAINT bulk_import_configurations_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY bulk_import_entities
     ADD CONSTRAINT bulk_import_entities_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY bulk_import_export_batches
+    ADD CONSTRAINT bulk_import_export_batches_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY bulk_import_export_uploads
     ADD CONSTRAINT bulk_import_export_uploads_pkey PRIMARY KEY (id);
@@ -28721,6 +28779,8 @@ CREATE UNIQUE INDEX any_approver_project_rule_type_unique_index ON approval_proj
 
 CREATE INDEX approval_mr_rule_index_merge_request_id ON approval_merge_request_rules USING btree (merge_request_id);
 
+CREATE INDEX bulk_import_export_uploads_batch_id ON bulk_import_export_uploads USING btree (batch_id);
+
 CREATE UNIQUE INDEX bulk_import_trackers_uniq_relation_by_entity ON bulk_import_trackers USING btree (bulk_import_entity_id, relation);
 
 CREATE INDEX ca_aggregations_last_consistency_check_updated_at ON analytics_cycle_analytics_aggregations USING btree (last_consistency_check_updated_at NULLS FIRST) WHERE (enabled IS TRUE);
@@ -28764,6 +28824,10 @@ CREATE UNIQUE INDEX finding_link_url_idx ON vulnerability_finding_links USING bt
 CREATE INDEX finding_links_on_vulnerability_occurrence_id ON vulnerability_finding_links USING btree (vulnerability_occurrence_id);
 
 CREATE INDEX i_batched_background_migration_job_transition_logs_on_job_id ON ONLY batched_background_migration_job_transition_logs USING btree (batched_background_migration_job_id);
+
+CREATE UNIQUE INDEX i_bulk_import_export_batches_id_batch_number ON bulk_import_export_batches USING btree (export_id, batch_number);
+
+CREATE UNIQUE INDEX i_bulk_import_trackers_id_batch_number ON bulk_import_batch_trackers USING btree (tracker_id, batch_number);
 
 CREATE INDEX i_compliance_frameworks_on_id_and_created_at ON compliance_management_frameworks USING btree (id, created_at, pipeline_configuration_full_path);
 
@@ -29257,6 +29321,8 @@ CREATE INDEX index_broadcast_messages_on_namespace_id ON broadcast_messages USIN
 
 CREATE INDEX index_btree_namespaces_traversal_ids ON namespaces USING btree (traversal_ids);
 
+CREATE INDEX index_bulk_import_batch_trackers_on_tracker_id ON bulk_import_batch_trackers USING btree (tracker_id);
+
 CREATE INDEX index_bulk_import_configurations_on_bulk_import_id ON bulk_import_configurations USING btree (bulk_import_id);
 
 CREATE INDEX index_bulk_import_entities_on_bulk_import_id_and_status ON bulk_import_entities USING btree (bulk_import_id, status);
@@ -29266,6 +29332,8 @@ CREATE INDEX index_bulk_import_entities_on_namespace_id ON bulk_import_entities 
 CREATE INDEX index_bulk_import_entities_on_parent_id ON bulk_import_entities USING btree (parent_id);
 
 CREATE INDEX index_bulk_import_entities_on_project_id ON bulk_import_entities USING btree (project_id);
+
+CREATE INDEX index_bulk_import_export_batches_on_export_id ON bulk_import_export_batches USING btree (export_id);
 
 CREATE INDEX index_bulk_import_export_uploads_on_export_id ON bulk_import_export_uploads USING btree (export_id);
 
@@ -34080,6 +34148,9 @@ ALTER TABLE ONLY zoekt_indexed_namespaces
 ALTER TABLE ONLY epics
     ADD CONSTRAINT fk_3c1fd1cccc FOREIGN KEY (due_date_sourcing_milestone_id) REFERENCES milestones(id) ON DELETE SET NULL;
 
+ALTER TABLE ONLY bulk_import_export_uploads
+    ADD CONSTRAINT fk_3cbf0b9a2e FOREIGN KEY (batch_id) REFERENCES bulk_import_export_batches(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY ci_pipelines
     ADD CONSTRAINT fk_3d34ab2e06 FOREIGN KEY (pipeline_schedule_id) REFERENCES ci_pipeline_schedules(id) ON DELETE SET NULL;
 
@@ -35139,6 +35210,9 @@ ALTER TABLE ONLY issuable_severities
 ALTER TABLE ONLY saml_providers
     ADD CONSTRAINT fk_rails_306d459be7 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY bulk_import_batch_trackers
+    ADD CONSTRAINT fk_rails_307efb9f32 FOREIGN KEY (tracker_id) REFERENCES bulk_import_trackers(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY pm_package_version_licenses
     ADD CONSTRAINT fk_rails_30ddb7f837 FOREIGN KEY (pm_package_version_id) REFERENCES pm_package_versions(id) ON DELETE CASCADE;
 
@@ -36080,6 +36154,9 @@ ALTER TABLE ONLY elasticsearch_indexed_namespaces
 
 ALTER TABLE ONLY vulnerability_occurrence_identifiers
     ADD CONSTRAINT fk_rails_be2e49e1d0 FOREIGN KEY (identifier_id) REFERENCES vulnerability_identifiers(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY bulk_import_export_batches
+    ADD CONSTRAINT fk_rails_be479792f6 FOREIGN KEY (export_id) REFERENCES bulk_import_exports(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY alert_management_http_integrations
     ADD CONSTRAINT fk_rails_bec49f52cc FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

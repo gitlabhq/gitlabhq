@@ -72,6 +72,7 @@ export const initLegacyWebIDE = (el, options = {}) => {
         environmentsGuidanceAlertDismissed: !parseBoolean(el.dataset.enableEnvironmentsGuidance),
         previewMarkdownPath: el.dataset.previewMarkdownPath,
         userPreferencesPath: el.dataset.userPreferencesPath,
+        learnGitlabSource: parseBoolean(el.dataset.learnGitlabSource),
       });
     },
     beforeDestroy() {

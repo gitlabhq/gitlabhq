@@ -127,7 +127,6 @@ Gitlab/StrongMemoizeAttr:
     - 'app/models/namespaces/traversal/linear.rb'
     - 'app/models/namespaces/traversal/recursive.rb'
     - 'app/models/note.rb'
-    - 'app/models/onboarding/completion.rb'
     - 'app/models/packages/go/module.rb'
     - 'app/models/packages/go/module_version.rb'
     - 'app/models/packages/package.rb'

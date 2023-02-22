@@ -1,3 +1,4 @@
+import mockJobsCount from 'test_fixtures/graphql/jobs/get_jobs_count.query.graphql.json';
 import mockJobsEmpty from 'test_fixtures/graphql/jobs/get_jobs.query.graphql.empty.json';
 import mockJobsPaginated from 'test_fixtures/graphql/jobs/get_jobs.query.graphql.paginated.json';
 import mockJobs from 'test_fixtures/graphql/jobs/get_jobs.query.graphql.json';
@@ -13,6 +14,7 @@ export const mockJobsResponsePaginated = mockJobsPaginated;
 export const mockJobsResponseEmpty = mockJobsEmpty;
 export const mockJobsNodes = mockJobs.data.project.jobs.nodes;
 export const mockJobsNodesAsGuest = mockJobsAsGuest.data.project.jobs.nodes;
+export const mockJobsCountResponse = mockJobsCount;
 
 export const stages = [
   {

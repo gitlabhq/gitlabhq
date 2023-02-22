@@ -6,6 +6,7 @@ import { setUrlParams, updateHistory, queryToObject } from '~/lib/utils/url_util
 import JobsFilteredSearch from '../filtered_search/jobs_filtered_search.vue';
 import { validateQueryString } from '../filtered_search/utils';
 import GetJobs from './graphql/queries/get_jobs.query.graphql';
+import GetJobsCount from './graphql/queries/get_jobs_count.query.graphql';
 import JobsTable from './jobs_table.vue';
 import JobsTableEmptyState from './jobs_table_empty_state.vue';
 import JobsTableTabs from './jobs_table_tabs.vue';
@@ -13,7 +14,8 @@ import { RAW_TEXT_WARNING } from './constants';
 
 export default {
   i18n: {
-    errorMsg: __('There was an error fetching the jobs for your project.'),
+    jobsFetchErrorMsg: __('There was an error fetching the jobs for your project.'),
+    jobsCountErrorMsg: __('There was an error fetching the number of jobs for your project.'),
     loadingAriaLabel: __('Loading'),
   },
   filterSearchBoxStyles:
@@ -43,15 +45,29 @@ export default {
         };
       },
       update(data) {
-        const { jobs: { nodes: list = [], pageInfo = {}, count } = {} } = data.project || {};
+        const { jobs: { nodes: list = [], pageInfo = {} } = {} } = data.project || {};
         return {
           list,
           pageInfo,
-          count,
         };
       },
       error() {
-        this.hasError = true;
+        this.error = this.$options.i18n.jobsFetchErrorMsg;
+      },
+    },
+    jobsCount: {
+      query: GetJobsCount,
+      variables() {
+        return {
+          fullPath: this.fullPath,
+          ...this.validatedQueryString,
+        };
+      },
+      update({ project }) {
+        return project?.jobs?.count || 0;
+      },
+      error() {
+        this.error = this.$options.i18n.jobsCountErrorMsg;
       },
     },
   },
@@ -60,20 +76,17 @@ export default {
       jobs: {
         list: [],
       },
-      hasError: false,
-      isAlertDismissed: false,
+      error: '',
       scope: null,
       infiniteScrollingTriggered: false,
       filterSearchTriggered: false,
+      jobsCount: null,
       count: 0,
     };
   },
   computed: {
     loading() {
       return this.$apollo.queries.jobs.loading;
-    },
-    shouldShowAlert() {
-      return this.hasError && !this.isAlertDismissed;
     },
     // Show when on All tab with no jobs
     // Show only when not loading and filtered search has not been triggered
@@ -94,9 +107,6 @@ export default {
     },
     showFilteredSearch() {
       return !this.scope;
-    },
-    jobsCount() {
-      return this.jobs.count;
     },
     validatedQueryString() {
       const queryStringObject = queryToObject(window.location.search);
@@ -146,6 +156,7 @@ export default {
           });
 
           this.$apollo.queries.jobs.refetch({ statuses: filter.value.data });
+          this.$apollo.queries.jobsCount.refetch({ statuses: filter.value.data });
         }
       });
     },
@@ -168,14 +179,14 @@ export default {
 <template>
   <div>
     <gl-alert
-      v-if="shouldShowAlert"
+      v-if="error"
       class="gl-mt-2"
       variant="danger"
       data-testid="jobs-table-error-alert"
       dismissible
-      @dismiss="isAlertDismissed = true"
+      @dismiss="error = ''"
     >
-      {{ $options.i18n.errorMsg }}
+      {{ error }}
     </gl-alert>
 
     <jobs-table-tabs

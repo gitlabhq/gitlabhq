@@ -9,6 +9,7 @@ module BulkImports
       DEFAULT_PAGE = 1
       DEFAULT_PER_PAGE = 30
       PAT_ENDPOINT_MIN_VERSION = '15.5.0'
+      SIDEKIQ_REQUEST_TIMEOUT = 60
 
       def initialize(url:, token:, page: DEFAULT_PAGE, per_page: DEFAULT_PER_PAGE, api_version: API_VERSION)
         @url = url
@@ -140,7 +141,7 @@ module BulkImports
           follow_redirects: true,
           resend_on_redirect: false,
           limit: 2
-        }
+        }.merge(request_timeout.to_h)
       end
 
       def request_query
@@ -149,6 +150,10 @@ module BulkImports
           per_page: @per_page,
           private_token: @token
         }
+      end
+
+      def request_timeout
+        { timeout: SIDEKIQ_REQUEST_TIMEOUT } if Gitlab::Runtime.sidekiq?
       end
 
       def with_error_handling

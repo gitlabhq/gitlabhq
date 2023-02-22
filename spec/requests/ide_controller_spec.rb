@@ -130,9 +130,26 @@ RSpec.describe IdeController, feature_category: :web_ide do
         expect(assigns(:path)).to be_nil
         expect(assigns(:merge_request)).to be_nil
         expect(assigns(:fork_info)).to be_nil
+        expect(assigns(:learn_gitlab_source)).to be_nil
       end
 
       it_behaves_like 'user access rights check'
+
+      context "/-/ide/project/:project?learn_gitlab_source=true" do
+        let(:route) { "/-/ide/project/#{project.full_path}?learn_gitlab_source=true" }
+
+        it 'instantiates project instance var and returns 200' do
+          subject
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(assigns(:project)).to eq project
+          expect(assigns(:branch)).to be_nil
+          expect(assigns(:path)).to be_nil
+          expect(assigns(:merge_request)).to be_nil
+          expect(assigns(:fork_info)).to be_nil
+          expect(assigns(:learn_gitlab_source)).to eq 'true'
+        end
+      end
 
       %w(edit blob tree).each do |action|
         context "/-/ide/project/:project/#{action}" do
@@ -147,6 +164,7 @@ RSpec.describe IdeController, feature_category: :web_ide do
             expect(assigns(:path)).to be_nil
             expect(assigns(:merge_request)).to be_nil
             expect(assigns(:fork_info)).to be_nil
+            expect(assigns(:learn_gitlab_source)).to be_nil
           end
 
           it_behaves_like 'user access rights check'
@@ -164,6 +182,7 @@ RSpec.describe IdeController, feature_category: :web_ide do
               expect(assigns(:path)).to be_nil
               expect(assigns(:merge_request)).to be_nil
               expect(assigns(:fork_info)).to be_nil
+              expect(assigns(:learn_gitlab_source)).to be_nil
             end
 
             it_behaves_like 'user access rights check'
@@ -181,6 +200,7 @@ RSpec.describe IdeController, feature_category: :web_ide do
                 expect(assigns(:path)).to be_nil
                 expect(assigns(:merge_request)).to be_nil
                 expect(assigns(:fork_info)).to be_nil
+                expect(assigns(:learn_gitlab_source)).to be_nil
               end
 
               it_behaves_like 'user access rights check'
@@ -198,6 +218,7 @@ RSpec.describe IdeController, feature_category: :web_ide do
                   expect(assigns(:path)).to eq 'foo/.bar'
                   expect(assigns(:merge_request)).to be_nil
                   expect(assigns(:fork_info)).to be_nil
+                  expect(assigns(:learn_gitlab_source)).to be_nil
                 end
 
                 it_behaves_like 'user access rights check'
@@ -221,6 +242,7 @@ RSpec.describe IdeController, feature_category: :web_ide do
           expect(assigns(:path)).to be_nil
           expect(assigns(:merge_request)).to eq merge_request.id.to_s
           expect(assigns(:fork_info)).to be_nil
+          expect(assigns(:learn_gitlab_source)).to be_nil
         end
 
         it_behaves_like 'user access rights check'

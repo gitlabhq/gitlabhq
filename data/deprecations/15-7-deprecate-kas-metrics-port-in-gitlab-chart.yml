@@ -2,9 +2,9 @@
   announcement_milestone: "15.7"  # (required) The milestone when this feature was first announced as deprecated.
   removal_milestone: "16.0"  # (required) The milestone when this feature is planned to be removed
   breaking_change: true  # (required) If this deprecation is a breaking change, set this value to true
-  reporter: timofurrer # (required) GitLab username of the person reporting the deprecation
-  stage: Configure # (required) String value of the stage that the feature was created in. e.g., Growth
-  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/383039 # (required) Link to the deprecation issue in GitLab
+  reporter: timofurrer  # (required) GitLab username of the person reporting the deprecation
+  stage: Configure  # (required) String value of the stage that the feature was created in. e.g., Growth
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/383039  # (required) Link to the deprecation issue in GitLab
   body: |  # (required) Do not modify this line, instead modify the lines below.
     The `gitlab.kas.metrics.port` has been deprecated in favor of the new `gitlab.kas.observability.port` configuration field for the [GitLab Helm Chart](https://gitlab.com/gitlab-org/charts/gitlab/-/merge_requests/2839).
     This port is used for much more than just metrics, which warranted this change to avoid confusion in configuration.
@@ -13,7 +13,7 @@
 
   # OTHER OPTIONAL FIELDS
   #
-  tiers: [Core, Premium, Ultimate] # (optional - may be required in the future) An array of tiers that the feature is available in currently.  e.g., [Free, Silver, Gold, Core, Premium, Ultimate]
-  documentation_url: https://docs.gitlab.com/charts/charts/gitlab/kas/index.html # (optional) This is a link to the current documentation page
+  tiers: [Core, Premium, Ultimate]  # (optional - may be required in the future) An array of tiers that the feature is available in currently.  e.g., [Free, Silver, Gold, Core, Premium, Ultimate]
+  documentation_url: https://docs.gitlab.com/charts/charts/gitlab/kas/index.html  # (optional) This is a link to the current documentation page
   image_url:  # (optional) This is a link to a thumbnail image depicting the feature
   video_url:  # (optional) Use the youtube thumbnail URL with the structure of https://img.youtube.com/vi/UNIQUEID/hqdefault.jpg

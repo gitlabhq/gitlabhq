@@ -62,6 +62,23 @@ module BroadcastMessagesHelper
     end.join(', ')
   end
 
+  def admin_broadcast_messages_data(broadcast_messages)
+    broadcast_messages.map do |message|
+      {
+        id: message.id,
+        status: broadcast_message_status(message),
+        preview: broadcast_message(message, preview: true),
+        starts_at: message.starts_at.iso8601,
+        ends_at: message.ends_at.iso8601,
+        target_roles: target_access_levels_display(message.target_access_levels),
+        target_path: message.target_path,
+        type: message.broadcast_type.capitalize,
+        edit_path: edit_admin_broadcast_message_path(message),
+        delete_path: "#{admin_broadcast_message_path(message)}.js"
+      }
+    end.to_json
+  end
+
   private
 
   def current_user_access_level_for_project_or_group

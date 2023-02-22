@@ -39,6 +39,7 @@ class IdeController < ApplicationController
     @branch = params[:branch]
     @path = params[:path]
     @merge_request = params[:merge_request_id]
+    @learn_gitlab_source = params[:learn_gitlab_source]
     @fork_info = fork_info(project, @branch)
   end
 

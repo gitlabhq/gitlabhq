@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module IdeHelper
-  def ide_data(project:, branch:, path:, merge_request:, fork_info:)
+  def ide_data(project:, branch:, path:, merge_request:, fork_info:, learn_gitlab_source:)
     {
       'can-use-new-web-ide' => can_use_new_web_ide?.to_s,
       'use-new-web-ide' => use_new_web_ide?.to_s,
@@ -13,7 +13,8 @@ module IdeHelper
       'editor-font-src-url' => font_url('jetbrains-mono/JetBrainsMono.woff2'),
       'editor-font-family' => 'JetBrains Mono',
       'editor-font-format' => 'woff2',
-      'merge-request' => merge_request
+      'merge-request' => merge_request,
+      'learn-gitlab-source' => (!!learn_gitlab_source).to_s
     }.merge(use_new_web_ide? ? new_ide_data(project: project) : legacy_ide_data(project: project))
   end
 

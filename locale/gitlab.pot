@@ -25074,6 +25074,15 @@ msgstr ""
 msgid "LearnGitLab|%{percentage}%{percentSymbol} completed"
 msgstr ""
 
+msgid "LearnGitLab|1. Add code to your project"
+msgstr ""
+
+msgid "LearnGitLab|2. Build"
+msgstr ""
+
+msgid "LearnGitLab|Add code"
+msgstr ""
+
 msgid "LearnGitLab|Add code owners"
 msgstr ""
 
@@ -25155,6 +25164,9 @@ msgstr ""
 msgid "LearnGitLab|Start a free trial of GitLab Ultimate"
 msgstr ""
 
+msgid "LearnGitLab|Start with the WebIDE"
+msgstr ""
+
 msgid "LearnGitLab|Submit a merge request (MR)"
 msgstr ""
 
@@ -25162,6 +25174,9 @@ msgid "LearnGitLab|Try GitLab Ultimate for free"
 msgstr ""
 
 msgid "LearnGitLab|Try all GitLab features for 30 days, no credit card required."
+msgstr ""
+
+msgid "LearnGitLab|Use the built-in editor to create or upload files."
 msgstr ""
 
 msgid "LearnGitLab|Use your new GitLab workflow to deploy your application, monitor its health, and keep it secure:"
@@ -43573,6 +43588,9 @@ msgid "There was an error fetching the job."
 msgstr ""
 
 msgid "There was an error fetching the jobs for your project."
+msgstr ""
+
+msgid "There was an error fetching the number of jobs for your project."
 msgstr ""
 
 msgid "There was an error fetching the top labels for the selected group"

@@ -10,6 +10,7 @@ RSpec.describe BulkImports::Clients::HTTP, feature_category: :importers do
   let(:resource) { 'resource' }
   let(:version) { "#{BulkImport::MIN_MAJOR_VERSION}.0.0" }
   let(:enterprise) { false }
+  let(:sidekiq_request_timeout) { described_class::SIDEKIQ_REQUEST_TIMEOUT }
   let(:response_double) { double(code: 200, success?: true, parsed_response: {}) }
   let(:metadata_response) do
     double(
@@ -121,6 +122,36 @@ RSpec.describe BulkImports::Clients::HTTP, feature_category: :importers do
         params[:query] = params[:query].merge(query)
 
         allow(Gitlab::HTTP).to receive(:get).with(uri, params).and_return(response)
+      end
+    end
+
+    context 'when the request is asynchronous' do
+      let(:expected_args) do
+        [
+          'http://gitlab.example/api/v4/resource',
+          hash_including(
+            query: {
+              page: described_class::DEFAULT_PAGE,
+              per_page: described_class::DEFAULT_PER_PAGE,
+              private_token: token
+            },
+            headers: {
+              'Content-Type' => 'application/json'
+            },
+            follow_redirects: true,
+            resend_on_redirect: false,
+            limit: 2,
+            timeout: sidekiq_request_timeout
+          )
+        ]
+      end
+
+      it 'sets a timeout that is double the default read timeout' do
+        allow(Gitlab::Runtime).to receive(:sidekiq?).and_return(true)
+
+        expect(Gitlab::HTTP).to receive(method).with(*expected_args).and_return(response_double)
+
+        subject.public_send(method, resource)
       end
     end
   end

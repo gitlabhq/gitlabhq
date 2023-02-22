@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BroadcastMessagesHelper do
+RSpec.describe BroadcastMessagesHelper, feature_category: :onboarding do
   include Gitlab::Routing.url_helpers
 
   let_it_be(:user) { create(:user) }
@@ -68,7 +68,7 @@ RSpec.describe BroadcastMessagesHelper do
     end
   end
 
-  describe 'current_broadcast_notification_message' do
+  describe '#current_broadcast_notification_message' do
     subject { helper.current_broadcast_notification_message }
 
     context 'with available broadcast notification messages' do
@@ -97,7 +97,7 @@ RSpec.describe BroadcastMessagesHelper do
     end
   end
 
-  describe 'current_broadcast_banner_messages' do
+  describe '#current_broadcast_banner_messages' do
     describe 'user access level targeted messages' do
       let_it_be(:message) { create(:broadcast_message, broadcast_type: 'banner', starts_at: Time.now, target_access_levels: [Gitlab::Access::DEVELOPER]) }
 
@@ -107,7 +107,7 @@ RSpec.describe BroadcastMessagesHelper do
     end
   end
 
-  describe 'broadcast_message' do
+  describe '#broadcast_message' do
     let(:current_broadcast_message) { BroadcastMessage.new(message: 'Current Message') }
 
     it 'returns nil when no current message' do
@@ -119,7 +119,7 @@ RSpec.describe BroadcastMessagesHelper do
     end
   end
 
-  describe 'broadcast_message_status' do
+  describe '#broadcast_message_status' do
     it 'returns Active' do
       message = build(:broadcast_message)
 
@@ -136,6 +136,25 @@ RSpec.describe BroadcastMessagesHelper do
       message = build(:broadcast_message, :future)
 
       expect(helper.broadcast_message_status(message)).to eq 'Pending'
+    end
+  end
+
+  describe '#admin_broadcast_messages_data' do
+    let(:starts_at) { 1.day.ago }
+    let(:ends_at) { 1.day.from_now }
+    let(:message) { build(:broadcast_message, id: non_existing_record_id, starts_at: starts_at, ends_at: ends_at) }
+
+    subject(:single_broadcast_message) { Gitlab::Json.parse(admin_broadcast_messages_data([message])).first }
+
+    it 'returns the expected messages data attributes' do
+      keys = %w[id status preview starts_at ends_at target_roles target_path type edit_path delete_path]
+
+      expect(single_broadcast_message.keys).to match(keys)
+    end
+
+    it 'has the correct iso formatted date', time_travel_to: '2020-01-01 00:00:00 +0000' do
+      expect(single_broadcast_message['starts_at']).to eq('2019-12-31T00:00:00Z')
+      expect(single_broadcast_message['ends_at']).to eq('2020-01-02T00:00:00Z')
     end
   end
 end
