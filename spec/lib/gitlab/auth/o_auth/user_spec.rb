@@ -420,6 +420,7 @@ RSpec.describe Gitlab::Auth::OAuth::User, feature_category: :authentication_and_
             context "and LDAP user has an account already" do
               context 'when sync_name is disabled' do
                 before do
+                  allow(Gitlab.config.ldap).to receive(:enabled).and_return(true)
                   allow(Gitlab.config.ldap).to receive(:sync_name).and_return(false)
                 end
 
