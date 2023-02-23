@@ -151,6 +151,15 @@ There is an [issue where support is being discussed](https://gitlab.com/gitlab-o
    ALTER USER gitlab_replicator WITH REPLICATION ENCRYPTED PASSWORD '<replication_password>';
    ```
 
+1. Edit `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+   ## Set this node to have the primary role
+   roles(['geo_primary_role'])
+
+   ## Disable automatic database migrations temporarily
+   gitlab_rails['auto_migrate'] = false
+
 1. Configure PostgreSQL to listen on network interfaces:
 
    For security reasons, PostgreSQL does not listen on any network interfaces

@@ -12,7 +12,8 @@ You can leave feedback on dashboard bugs or functionality in [issue 381787](http
 
 This feature is not ready for production use.
 
-The Value Streams Dashboard is a customizable dashboard to enable decision-makers to identify trends, patterns, and opportunities for digital transformation improvements.
+The Value Streams Dashboard is a customizable dashboard that enables decision-makers to identify trends, patterns, and opportunities for digital transformation improvements.
+The dashboard's basic functionality is available on the Premium tier, but most of the dashboard features (for example DORA metrics) are available only on the Ultimate tier.
 This page is a work in progress, and we're updating the information as we add more features.
 For more information, see the [Value Stream Management category direction page](https://about.gitlab.com/direction/plan/value_stream_management/).
 
@@ -27,7 +28,7 @@ This comparison can help decision-makers understand whether projects and groups 
 The beta version of the Value Streams Dashboard includes the following metrics:
 
 - [DORA metrics](dora_metrics.md)
-- [Value Stream Analytics (VSA) - flow metrics](value_stream_analytics.md)
+- [Value Stream Analytics (VSA) - flow metrics](../group/value_stream_analytics/index.md)
 
 The Value Streams Dashboard allows you to:
 

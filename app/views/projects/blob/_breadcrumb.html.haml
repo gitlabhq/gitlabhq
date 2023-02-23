@@ -2,7 +2,7 @@
 .nav-block
   .tree-ref-container
     .tree-ref-holder
-      = render 'shared/ref_switcher', destination: 'blob'
+      #js-tree-ref-switcher{ data: { project_id: @project.id, project_root_path: project_path(@project), ref: current_ref } }
 
     %ul.breadcrumb.repo-breadcrumb
       %li.breadcrumb-item

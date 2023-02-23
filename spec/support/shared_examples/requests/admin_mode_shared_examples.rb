@@ -14,9 +14,9 @@ RSpec.shared_examples 'POST request permissions for admin mode' do |params|
   it_behaves_like 'POST request permissions for admin mode when admin', params
 end
 
-RSpec.shared_examples 'DELETE request permissions for admin mode' do
+RSpec.shared_examples 'DELETE request permissions for admin mode' do |success_status_code = :no_content|
   it_behaves_like 'DELETE request permissions for admin mode when user'
-  it_behaves_like 'DELETE request permissions for admin mode when admin'
+  it_behaves_like 'DELETE request permissions for admin mode when admin', success_status_code
 end
 
 RSpec.shared_examples 'GET request permissions for admin mode when user' do
@@ -82,12 +82,12 @@ RSpec.shared_examples 'DELETE request permissions for admin mode when user' do
   it_behaves_like 'admin mode on', false, :forbidden
 end
 
-RSpec.shared_examples 'DELETE request permissions for admin mode when admin' do
+RSpec.shared_examples 'DELETE request permissions for admin mode when admin' do |success_status_code|
   subject { delete api(path, current_user, admin_mode: admin_mode) }
 
   let_it_be(:current_user) { create(:admin) }
 
-  it_behaves_like 'admin mode on', true, :no_content
+  it_behaves_like 'admin mode on', true, success_status_code
   it_behaves_like 'admin mode on', false, :forbidden
 end
 

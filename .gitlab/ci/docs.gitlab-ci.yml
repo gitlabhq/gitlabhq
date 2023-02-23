@@ -42,7 +42,7 @@ review-docs-cleanup:
 docs-lint links:
   extends:
     - .docs:rules:docs-lint
-  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-docs/lint-html:alpine-3.16-ruby-3.0.5-869cfc5d
+  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-docs/lint-html:alpine-3.16-ruby-3.0.5-2a7e4d1c
   stage: lint
   needs: []
   script:
@@ -58,7 +58,7 @@ docs-lint links:
 
 .docs-markdown-lint-image:
   # When updating the image version here, update it in /scripts/lint-doc.sh too.
-  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-docs/lint-markdown:alpine-3.16-vale-2.22.0-markdownlint-0.32.2-markdownlint2-0.6.0
+  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-docs/lint-markdown:alpine-3.16-vale-2.23.0-markdownlint-0.33.0-markdownlint2-0.6.0
 
 docs-lint markdown:
   extends:

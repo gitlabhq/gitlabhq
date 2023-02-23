@@ -66,7 +66,8 @@ RSpec.describe Projects::CommitsController, feature_category: :source_code_manag
             "master",
             path: "README.md",
             limit: described_class::COMMITS_DEFAULT_LIMIT,
-            offset: 0
+            offset: 0,
+            include_referenced_by: ["refs/tags/"]
           ).and_call_original
 
           get :show, params: { namespace_id: project.namespace, project_id: project, id: id, limit: "foo" }
@@ -80,7 +81,8 @@ RSpec.describe Projects::CommitsController, feature_category: :source_code_manag
               "master",
               path: "README.md",
               limit: described_class::COMMITS_DEFAULT_LIMIT,
-              offset: 0
+              offset: 0,
+              include_referenced_by: ['refs/tags/']
             ).and_call_original
 
             get :show, params: {
@@ -92,6 +94,22 @@ RSpec.describe Projects::CommitsController, feature_category: :source_code_manag
 
             expect(response).to be_successful
           end
+        end
+      end
+
+      context 'when the show_tags_on_commits_view flag is disabled' do
+        let(:id) { "master/README.md" }
+
+        before do
+          stub_feature_flags(show_tags_on_commits_view: false)
+        end
+
+        it 'does not use the include_referenced_by option' do
+          allow_any_instance_of(Repository).to receive(:commits).and_call_original
+          expect_any_instance_of(Repository).not_to receive(:commits).with(
+            a_hash_including(include_referenced_by: any_args)).and_call_original
+
+          get :show, params: { namespace_id: project.namespace, project_id: project, id: id }
         end
       end
 

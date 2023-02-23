@@ -137,11 +137,13 @@ RSpec.describe 'File blob', :js, feature_category: :projects do
 
     context 'when ref switch' do
       def switch_ref_to(ref_name)
-        first('[data-testid="branches-select"]').click
+        find('.ref-selector').click
+        wait_for_requests
 
-        page.within '.project-refs-form' do
-          click_link ref_name
+        page.within('.ref-selector') do
+          fill_in 'Search by Git revision', with: ref_name
           wait_for_requests
+          find('li', text: ref_name, match: :prefer_exact).click
         end
       end
 

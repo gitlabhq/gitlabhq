@@ -10,10 +10,7 @@ RSpec.describe 'Database schema', feature_category: :database do
   let(:columns_name_with_jsonb) { retrieve_columns_name_with_jsonb }
 
   IGNORED_INDEXES_ON_FKS = {
-    slack_integrations_scopes: %w[slack_api_scope_id],
-    # Will be removed in https://gitlab.com/gitlab-org/gitlab/-/issues/391312
-    approval_project_rules: %w[scan_result_policy_id],
-    approval_merge_request_rules: %w[scan_result_policy_id]
+    slack_integrations_scopes: %w[slack_api_scope_id]
   }.with_indifferent_access.freeze
 
   TABLE_PARTITIONS = %w[ci_builds_metadata].freeze
@@ -37,7 +34,7 @@ RSpec.describe 'Database schema', feature_category: :database do
     chat_teams: %w[team_id],
     ci_build_needs: %w[partition_id build_id],
     ci_build_pending_states: %w[partition_id build_id],
-    ci_build_report_results: %w[partition_id],
+    ci_build_report_results: %w[partition_id build_id],
     ci_build_trace_chunks: %w[partition_id build_id],
     ci_build_trace_metadata: %w[partition_id],
     ci_builds: %w[erased_by_id trigger_request_id partition_id],

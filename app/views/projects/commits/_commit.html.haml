@@ -15,6 +15,7 @@
 - ref               = local_assigns.fetch(:ref) { merge_request&.source_branch }
 - commit            = commit.present(current_user: current_user)
 - commit_status     = commit.detailed_status_for(ref)
+- tags              = commit.tags_for_display
 - collapsible       = local_assigns.fetch(:collapsible, true)
 - link_data_attrs   = local_assigns.fetch(:link_data_attrs, {})
 - link              = commit_path(project, commit, merge_request: merge_request)
@@ -55,6 +56,13 @@
           = preserve(markdown_field(commit, :description))
 
     .commit-actions.flex-row
+      - if tags.present?
+        = gl_badge_tag(variant: :neutral, icon: 'tag', class: 'gl-font-monospace') do
+          - if tags.size > 1
+            = link_to _('%{count} tags') % { count: tags.size } , project_commit_path(project, commit.id)
+          - else
+            = link_to tags.first, project_commits_path(project, tags.first, ref_type: 'tags'), class: 'gl-text-truncate gl-max-w-15'
+
       - if request.xhr?
         = render partial: 'projects/commit/signature', object: commit.signature
       - else

@@ -80,7 +80,7 @@ class MergeRequestDiffCommit < ApplicationRecord
   def self.prepare_commits_for_bulk_insert(commits)
     user_tuples = Set.new
     hashes = commits.map do |commit|
-      hash = commit.to_hash.except(:parent_ids)
+      hash = commit.to_hash.except(:parent_ids, :referenced_by)
 
       TRIM_USER_KEYS.each do |key|
         hash[key] = MergeRequest::DiffCommitUser.prepare(hash[key])

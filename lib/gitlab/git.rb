@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_dependency 'gitlab/encoding_helper'
+require_relative 'encoding_helper'
 
 module Gitlab
   module Git

@@ -6,14 +6,6 @@ RSpec.describe API::Admin::Sidekiq, :clean_gitlab_redis_queues, feature_category
   let_it_be(:admin) { create(:admin) }
 
   describe 'DELETE /admin/sidekiq/queues/:queue_name' do
-    context 'when the user is not an admin' do
-      it 'returns a 403' do
-        delete api("/admin/sidekiq/queues/authorized_projects?user=#{admin.username}", create(:user))
-
-        expect(response).to have_gitlab_http_status(:forbidden)
-      end
-    end
-
     context 'when the user is an admin' do
       around do |example|
         Sidekiq::Queue.new('authorized_projects').clear
@@ -31,14 +23,19 @@ RSpec.describe API::Admin::Sidekiq, :clean_gitlab_redis_queues, feature_category
       end
 
       context 'valid request' do
-        it 'returns info about the deleted jobs' do
+        before do
           add_job(admin, [1])
           add_job(admin, [2])
           add_job(create(:user), [3])
+        end
 
-          delete api("/admin/sidekiq/queues/authorized_projects?user=#{admin.username}&worker_class=AuthorizedProjectsWorker", admin)
+        let_it_be(:path) { "/admin/sidekiq/queues/authorized_projects?user=#{admin.username}&worker_class=AuthorizedProjectsWorker" }
 
-          expect(response).to have_gitlab_http_status(:ok)
+        it_behaves_like 'DELETE request permissions for admin mode', :ok
+
+        it 'returns info about the deleted jobs' do
+          delete api(path, admin, admin_mode: true)
+
           expect(json_response).to eq('completed' => true,
                                       'deleted_jobs' => 2,
                                       'queue_size' => 1)
@@ -47,7 +44,7 @@ RSpec.describe API::Admin::Sidekiq, :clean_gitlab_redis_queues, feature_category
 
       context 'when no required params are provided' do
         it 'returns a 400' do
-          delete api("/admin/sidekiq/queues/authorized_projects?user_2=#{admin.username}", admin)
+          delete api("/admin/sidekiq/queues/authorized_projects?user_2=#{admin.username}", admin, admin_mode: true)
 
           expect(response).to have_gitlab_http_status(:bad_request)
         end
@@ -55,7 +52,7 @@ RSpec.describe API::Admin::Sidekiq, :clean_gitlab_redis_queues, feature_category
 
       context 'when the queue does not exist' do
         it 'returns a 404' do
-          delete api("/admin/sidekiq/queues/authorized_projects_2?user=#{admin.username}", admin)
+          delete api("/admin/sidekiq/queues/authorized_projects_2?user=#{admin.username}", admin, admin_mode: true)
 
           expect(response).to have_gitlab_http_status(:not_found)
         end

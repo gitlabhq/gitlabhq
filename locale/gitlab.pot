@@ -635,6 +635,9 @@ msgstr ""
 msgid "%{count} selected"
 msgstr ""
 
+msgid "%{count} tags"
+msgstr ""
+
 msgid "%{count} total weight"
 msgstr ""
 

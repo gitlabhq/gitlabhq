@@ -3866,7 +3866,6 @@ RSpec/MissingFeatureCategory:
     - 'spec/lib/gitlab/analytics/cycle_analytics/stage_events/merge_request_last_build_started_spec.rb'
     - 'spec/lib/gitlab/analytics/cycle_analytics/stage_events/merge_request_merged_spec.rb'
     - 'spec/lib/gitlab/analytics/cycle_analytics/stage_events/plan_stage_start_spec.rb'
-    - 'spec/lib/gitlab/analytics/cycle_analytics/stage_events/stage_event_spec.rb'
     - 'spec/lib/gitlab/analytics/date_filler_spec.rb'
     - 'spec/lib/gitlab/analytics/usage_trends/workers_argument_builder_spec.rb'
     - 'spec/lib/gitlab/anonymous_session_spec.rb'

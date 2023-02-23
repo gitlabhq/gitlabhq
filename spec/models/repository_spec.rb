@@ -413,6 +413,27 @@ RSpec.describe Repository, feature_category: :source_code_management do
           repository.commits('master', limit: 1)
         end
       end
+
+      context 'when include_referenced_by is passed' do
+        context 'when commit has references' do
+          let(:ref) { '5937ac0a7beb003549fc5fd26fc247adbce4a52e' }
+          let(:include_referenced_by) { ['refs/tags'] }
+
+          subject { repository.commits(ref, limit: 1, include_referenced_by: include_referenced_by).first }
+
+          it 'returns commits with referenced_by excluding that match the patterns' do
+            expect(subject.referenced_by).to match_array(['refs/tags/v1.1.0'])
+          end
+
+          context 'when matching multiple references' do
+            let(:include_referenced_by) { ['refs/tags', 'refs/heads'] }
+
+            it 'returns commits with referenced_by that match the patterns' do
+              expect(subject.referenced_by).to match_array(['refs/tags/v1.1.0', 'refs/heads/improve/awesome', 'refs/heads/merge-test'])
+            end
+          end
+        end
+      end
     end
 
     context "when 'author' is set" do

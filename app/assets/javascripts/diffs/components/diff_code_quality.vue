@@ -28,7 +28,7 @@ export default {
 <template>
   <div
     data-testid="diff-codequality"
-    class="gl-relative codequality-findings-list gl-border-top-1 gl-border-bottom-1 gl-bg-gray-10 gl-pl-5 gl-pt-4 gl-pb-4"
+    class="gl-relative codequality-findings-list gl-border-top-1 gl-border-bottom-1 gl-bg-gray-10 gl-text-black-normal gl-pl-5 gl-pt-4 gl-pb-4"
   >
     <h4
       data-testid="diff-codequality-findings-heading"

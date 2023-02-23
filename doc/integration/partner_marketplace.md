@@ -61,4 +61,4 @@ Interested GitLab Partners should contact their GitLab Partner Manager or email 
 
 ## Marketplace API Specification
 
-OpenAPI specs for the Marketplace APIs are available upon request. The specs will be made public before the end of Q1 2023.
+OpenAPI specs for the Marketplace APIs are available at [Marketplace interactive API documentation](https://customers.staging.gitlab.com/openapi_docs/marketplace).

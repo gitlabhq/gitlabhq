@@ -75,7 +75,7 @@ RSpec.describe ::Gitlab::Seeders::Ci::Runner::RunnerFleetSeeder, feature_categor
 
       it { is_expected.to be_nil }
 
-      it 'creates expected hierarchy', :aggregate_failures do
+      it 'does not change runner count' do
         expect { seed }.not_to change { Ci::Runner.count }
       end
     end
@@ -87,7 +87,7 @@ RSpec.describe ::Gitlab::Seeders::Ci::Runner::RunnerFleetSeeder, feature_categor
 
       it { is_expected.to be_nil }
 
-      it 'creates expected hierarchy', :aggregate_failures do
+      it 'does not change runner count' do
         expect { seed }.not_to change { Ci::Runner.count }
       end
     end

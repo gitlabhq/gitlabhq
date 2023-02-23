@@ -20353,6 +20353,7 @@ SSH signature for a signed commit.
 | ---- | ---- | ----------- |
 | <a id="sshsignaturecommitsha"></a>`commitSha` | [`String`](#string) | SHA of the associated commit. |
 | <a id="sshsignaturekey"></a>`key` | [`Key`](#key) | SSH key used for the signature. |
+| <a id="sshsignaturekeyfingerprintsha256"></a>`keyFingerprintSha256` | [`String`](#string) | Fingerprint of the key. |
 | <a id="sshsignatureproject"></a>`project` | [`Project`](#project) | Project of the associated commit. |
 | <a id="sshsignatureuser"></a>`user` | [`UserCore`](#usercore) | User associated with the key. |
 | <a id="sshsignatureverificationstatus"></a>`verificationStatus` | [`VerificationStatus`](#verificationstatus) | Indicates verification status of the associated key or certificate. |

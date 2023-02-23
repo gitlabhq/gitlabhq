@@ -28848,7 +28848,11 @@ CREATE INDEX idx_analytics_devops_adoption_segments_on_namespace_id ON analytics
 
 CREATE INDEX idx_analytics_devops_adoption_snapshots_finalized ON analytics_devops_adoption_snapshots USING btree (namespace_id, end_time) WHERE (recorded_at >= end_time);
 
+CREATE INDEX idx_approval_merge_request_rules_on_scan_result_policy_id ON approval_merge_request_rules USING btree (scan_result_policy_id);
+
 CREATE INDEX idx_approval_merge_request_rules_on_sec_orchestration_config_id ON approval_merge_request_rules USING btree (security_orchestration_policy_configuration_id);
+
+CREATE INDEX idx_approval_project_rules_on_scan_result_policy_id ON approval_project_rules USING btree (scan_result_policy_id);
 
 CREATE INDEX idx_approval_project_rules_on_sec_orchestration_config_id ON approval_project_rules USING btree (security_orchestration_policy_configuration_id);
 
@@ -35021,10 +35025,7 @@ ALTER TABLE ONLY users_security_dashboard_projects
     ADD CONSTRAINT fk_rails_150cd5682c FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY ci_build_report_results
-    ADD CONSTRAINT fk_rails_16cb1ff064 FOREIGN KEY (build_id) REFERENCES ci_builds(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY ci_build_report_results
-    ADD CONSTRAINT fk_rails_16cb1ff064_p FOREIGN KEY (partition_id, build_id) REFERENCES ci_builds(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE NOT VALID;
+    ADD CONSTRAINT fk_rails_16cb1ff064_p FOREIGN KEY (partition_id, build_id) REFERENCES ci_builds(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY project_deploy_tokens
     ADD CONSTRAINT fk_rails_170e03cbaf FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

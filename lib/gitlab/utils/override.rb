@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require_dependency 'gitlab/utils'
-require_dependency 'gitlab/environment'
+require_relative '../utils'
+require_relative '../environment'
 
 module Gitlab
   module Utils

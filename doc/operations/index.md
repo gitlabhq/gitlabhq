@@ -35,7 +35,7 @@ performance degrades, and manage those alerts - all within GitLab.
 
 GitLab helps reduce alert fatigue for IT responders by providing tools to identify
 issues across multiple systems and aggregate alerts in a centralized place. Your
-team needs a single, central interface where they can easily investigate alerts
+team needs a single, central interface where they can investigate alerts
 and promote the critical alerts to incidents.
 
 Are your alerts too noisy? Alerts configured on GitLab metrics can configured

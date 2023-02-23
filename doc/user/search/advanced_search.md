@@ -29,22 +29,6 @@ You can use Advanced Search in:
 - Commits
 - Project wikis (not [group wikis](../project/wiki/group.md))
 
-For Advanced Search:
-
-- You can only search files smaller than 1 MB.
-  For self-managed GitLab instances, an administrator can
-  [change this limit](../../integration/advanced_search/elasticsearch.md#advanced-search-configuration).
-- You can't use any of the following characters in the search query:
-
-  ```plaintext
-  . , : ; / ` ' = ? $ & ^ | ~ < > ( ) { } [ ] @
-  ```
-
-- Only the default branch of a project is indexed for code search.
-  In a non-default branch, basic search is used.
-- Search results show only the first match in a file,
-  but there might be more results in that file.
-
 ## Enable Advanced Search
 
 - On GitLab.com, Advanced Search is enabled for groups with paid subscriptions.
@@ -89,3 +73,17 @@ Advanced Search uses [Elasticsearch syntax](https://www.elastic.co/guide/en/elas
 | [<code>helper -extension:yml -extension:js</code>](https://gitlab.com/search?group_id=9970&project_id=278964&repository_ref=&scope=blobs&search=helper+-extension%3Ayml+-extension%3Ajs&snippets=)  | Returns `helper` in all files except files with a `.yml` or `.js` extension.                        |
 
 <!-- markdownlint-enable -->
+
+## Known issues
+
+- You can only search files smaller than 1 MB.
+  For self-managed GitLab instances, an administrator can
+  [change this limit](../../integration/advanced_search/elasticsearch.md#advanced-search-configuration).
+- You can only use Advanced Search on the default branch of a project.
+- The search query must not contain any of the following characters:
+
+  ```plaintext
+  . , : ; / ` ' = ? $ & ^ | ~ < > ( ) { } [ ] @
+  ```
+
+- Search results show only the first match in a file.

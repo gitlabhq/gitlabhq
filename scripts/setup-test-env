@@ -4,66 +4,49 @@
 
 require_relative '../config/bundler_setup'
 
+require_relative '../spec/rails_autoload'
+
 require 'request_store'
 require 'rake'
-require 'active_support/dependencies'
-require 'active_support/dependencies/autoload'
-require 'active_support/core_ext/numeric'
-require 'active_support/string_inquirer'
+require 'active_support/all'
 
 ENV['SKIP_RAILS_ENV_IN_RAKE'] = 'true'
-
-module Rails
-  extend self
-
-  def root
-    Pathname.new(File.expand_path('..', __dir__))
-  end
-
-  def env
-    @_env ||= ActiveSupport::StringInquirer.new(ENV["RAILS_ENV"] || ENV["RACK_ENV"] || "test")
-  end
-end
-
-ActiveSupport::Dependencies.autoload_paths << 'lib'
 
 load File.expand_path('../lib/tasks/gitlab/helpers.rake', __dir__)
 load File.expand_path('../lib/tasks/gitlab/gitaly.rake', __dir__)
 
-# Required for config/0_inject_enterprise_edition_module.rb, lib/gitlab/access.rb
-require_dependency File.expand_path('../lib/gitlab', __dir__)
-
-require_dependency File.expand_path('../config/initializers/0_inject_enterprise_edition_module', __dir__)
-
-# Require for lib/gitlab/gitaly_client/storage_settings.rb and config/initializers/1_settings.rb
-require 'active_support/hash_with_indifferent_access'
-
-# Required for lib/gitlab/visibility_level.rb and lib/gitlab/safe_request_store.rb
-require 'active_support/concern'
-require 'active_support/core_ext/module/delegation'
-
 # Required for lib/system_check/helpers.rb
-require_dependency File.expand_path('../lib/gitlab/task_helpers', __dir__)
+require_relative '../lib/gitlab/task_helpers'
 
 # Required for lib/tasks/gitlab/helpers.rake
-require_dependency File.expand_path('../lib/system_check/helpers', __dir__)
+require_relative '../lib/system_check/helpers'
 
 # Required for config/initializers/1_settings.rb
 require 'omniauth'
 require 'omniauth-github'
 require 'etc'
-require_dependency File.expand_path('../lib/gitlab/access', __dir__)
-require_dependency File.expand_path('../lib/gitlab/utils', __dir__)
+require_relative '../lib/gitlab/access'
+require_relative '../lib/gitlab/utils'
 
-require_dependency File.expand_path('../config/initializers/1_settings', __dir__)
+unless defined?(License)
+  # This is needed to allow use of `Gitlab::ImportSources.values` in `1_settings.rb`.
+  # See ee/lib/ee/gitlab/import_sources.rb
+  class License
+    def self.database
+      Struct.new(:cached_table_exists?).new(false)
+    end
+  end
+end
+
+require_relative '../config/initializers/1_settings'
 
 Gitlab.ee do
   load File.expand_path('../ee/lib/tasks/gitlab/indexer.rake', __dir__)
 
-  require_dependency File.expand_path('../ee/lib/gitlab/elastic/indexer', __dir__)
-  require_dependency File.expand_path('../lib/gitlab/utils/override', __dir__)
+  require_relative '../ee/lib/gitlab/elastic/indexer'
+  require_relative '../lib/gitlab/utils/override'
 end
 
-require_dependency File.expand_path('../spec/support/helpers/test_env', __dir__)
+require_relative '../spec/support/helpers/test_env'
 
 TestEnv.init
