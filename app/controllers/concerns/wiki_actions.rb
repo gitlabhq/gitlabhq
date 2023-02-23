@@ -11,6 +11,15 @@ module WikiActions
   RESCUE_GIT_TIMEOUTS_IN = %w[show edit history diff pages].freeze
 
   included do
+    content_security_policy do |p|
+      next if p.directives.blank?
+
+      default_frame_src = p.directives['frame-src'] || p.directives['default-src']
+      frame_src_values = Array.wrap(default_frame_src) | ['https://embed.diagrams.net'].compact
+
+      p.frame_src(*frame_src_values)
+    end
+
     before_action { respond_to :html }
 
     before_action :authorize_read_wiki!

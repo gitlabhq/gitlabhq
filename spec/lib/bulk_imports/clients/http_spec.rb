@@ -284,7 +284,7 @@ RSpec.describe BulkImports::Clients::HTTP, feature_category: :importers do
           stub_request(:get, 'http://gitlab.example/api/v4/metadata?private_token=token')
             .to_return(status: 404, body: "", headers: { 'Content-Type' => 'application/json' })
 
-          expect { subject.instance_version }.to raise_exception(BulkImports::Error, 'Import aborted as it was not possible to connect to the provided GitLab instance URL.')
+          expect { subject.instance_version }.to raise_exception(BulkImports::Error, 'Invalid source URL. Enter only the base URL of the source GitLab instance.')
         end
       end
 

@@ -1,4 +1,4 @@
-import { DOMParser as ProseMirrorDOMParser } from 'prosemirror-model';
+import { DOMParser as ProseMirrorDOMParser } from '@tiptap/pm/model';
 import { replaceCommentsWith } from '~/lib/utils/dom_utils';
 
 export default ({ render }) => {

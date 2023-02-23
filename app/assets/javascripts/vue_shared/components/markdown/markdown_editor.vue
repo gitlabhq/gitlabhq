@@ -76,6 +76,11 @@ export default {
       required: false,
       default: false,
     },
+    drawioEnabled: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -147,6 +152,7 @@ export default {
       :autocomplete-data-sources="autocompleteDataSources"
       :uploads-path="uploadsPath"
       :enable-preview="enablePreview"
+      :drawio-enabled="drawioEnabled"
       show-content-editor-switcher
       class="bordered-box"
       @enableContentEditor="onEditingModeChange('contentEditor')"

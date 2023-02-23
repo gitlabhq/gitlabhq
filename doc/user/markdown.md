@@ -124,8 +124,13 @@ to see the color chips next to the color code:
 
 ### Diagrams and flowcharts
 
-You can generate diagrams and flowcharts from text by using [Mermaid](https://mermaidjs.github.io/) or [PlantUML](https://plantuml.com).
-You can also use [Kroki](https://kroki.io) to create a wide variety of diagrams.
+You can generate diagrams from text by using:
+
+- [Mermaid](https://mermaidjs.github.io/)
+- [PlantUML](https://plantuml.com)
+- [Kroki](https://kroki.io) to create a wide variety of diagrams.
+
+In wikis you can also add diagrams created by using the [diagrams.net online editor](#create-or-edit-diagrams-by-using-diagramsnet-editor).
 
 #### Mermaid
 
@@ -542,6 +547,36 @@ This example links to `<wiki_root>/miscellaneous.md`:
 ```markdown
 [Link to Related Page](/miscellaneous.md)
 ```
+
+#### Create or edit diagrams by using diagrams.net editor
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/322174) in GitLab 15.10.
+
+NOTE:
+Use of the diagrams.net editor is not available on offline environments.
+
+On wikis, you can use the [diagrams.net](https://www.diagrams.net/) editor
+to create diagrams. You can also edit diagrams previously created with the
+editor.
+
+To create a diagram:
+
+1. Select **Insert or edit diagram** in the Markdown editor.
+1. Use the diagrams.net editor to build the diagram.
+1. Select **Save & exit**.
+
+A Markdown image declaration pointing to the diagram is inserted in the wiki content.
+
+To edit a diagram:
+
+1. Place the Markdown editor’s text field cursor in a Markdown image declaration
+that contains the diagram.
+1. Select **Insert or edit diagram** in the Markdown editor.
+1. Use the diagrams.net editor to edit the diagram.
+1. Select **Save & exit**.
+
+A Markdown image declaration pointing to the diagram is inserted in the wiki content,
+replacing the previous diagram.
 
 ## GitLab-specific references
 

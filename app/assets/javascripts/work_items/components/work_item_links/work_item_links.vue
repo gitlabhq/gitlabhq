@@ -63,6 +63,9 @@ export default {
           id: this.issuableGid,
         };
       },
+      context: {
+        isSingleRequest: true,
+      },
       skip() {
         return !this.issuableId;
       },

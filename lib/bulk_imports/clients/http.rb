@@ -85,6 +85,8 @@ module BulkImports
       end
 
       def validate_instance_version!
+        raise ::BulkImports::Error.invalid_url unless instance_version.valid?
+
         return true unless instance_version.major < BulkImport::MIN_MAJOR_VERSION
 
         raise ::BulkImports::Error.unsupported_gitlab_version

@@ -82,6 +82,7 @@ export const workItemQueryResponse = {
       userPermissions: {
         deleteWorkItem: false,
         updateWorkItem: false,
+        __typename: 'WorkItemPermissions',
       },
       widgets: [
         {
@@ -182,6 +183,7 @@ export const updateWorkItemMutationResponse = {
         userPermissions: {
           deleteWorkItem: false,
           updateWorkItem: false,
+          __typename: 'WorkItemPermissions',
         },
         widgets: [
           {
@@ -330,6 +332,7 @@ export const workItemResponseFactory = ({
       userPermissions: {
         deleteWorkItem: canDelete,
         updateWorkItem: canUpdate,
+        __typename: 'WorkItemPermissions',
       },
       widgets: [
         {
@@ -539,6 +542,7 @@ export const createWorkItemMutationResponse = {
         userPermissions: {
           deleteWorkItem: false,
           updateWorkItem: false,
+          __typename: 'WorkItemPermissions',
         },
         widgets: [],
       },
@@ -587,6 +591,7 @@ export const createWorkItemFromTaskMutationResponse = {
         userPermissions: {
           deleteWorkItem: false,
           updateWorkItem: false,
+          __typename: 'WorkItemPermissions',
         },
         widgets: [
           {
@@ -627,6 +632,7 @@ export const createWorkItemFromTaskMutationResponse = {
         userPermissions: {
           deleteWorkItem: false,
           updateWorkItem: false,
+          __typename: 'WorkItemPermissions',
         },
         widgets: [],
       },
@@ -828,15 +834,20 @@ export const workItemHierarchyEmptyResponse = {
   data: {
     workItem: {
       id: 'gid://gitlab/WorkItem/1',
+      iid: 1,
+      state: 'OPEN',
       workItemType: {
-        id: 'gid://gitlab/WorkItems::Type/6',
+        id: 'gid://gitlab/WorkItems::Type/1',
         name: 'Issue',
         iconName: 'issue-type-issue',
         __typename: 'WorkItemType',
       },
       title: 'New title',
+      description: '',
       createdAt: '2022-08-03T12:41:54Z',
+      updatedAt: null,
       closedAt: null,
+      author: mockAssignees[0],
       project: {
         __typename: 'Project',
         id: '1',
@@ -846,13 +857,10 @@ export const workItemHierarchyEmptyResponse = {
       userPermissions: {
         deleteWorkItem: false,
         updateWorkItem: false,
+        __typename: 'WorkItemPermissions',
       },
       confidential: false,
       widgets: [
-        {
-          type: 'DESCRIPTION',
-          __typename: 'WorkItemWidgetDescription',
-        },
         {
           type: 'HIERARCHY',
           parent: null,
@@ -873,6 +881,8 @@ export const workItemHierarchyNoUpdatePermissionResponse = {
   data: {
     workItem: {
       id: 'gid://gitlab/WorkItem/1',
+      iid: 1,
+      state: 'OPEN',
       workItemType: {
         id: 'gid://gitlab/WorkItems::Type/6',
         name: 'Issue',
@@ -880,9 +890,15 @@ export const workItemHierarchyNoUpdatePermissionResponse = {
         __typename: 'WorkItemType',
       },
       title: 'New title',
+      description: '',
+      createdAt: '2022-08-03T12:41:54Z',
+      updatedAt: null,
+      closedAt: null,
+      author: mockAssignees[0],
       userPermissions: {
         deleteWorkItem: false,
         updateWorkItem: false,
+        __typename: 'WorkItemPermissions',
       },
       project: {
         __typename: 'Project',
@@ -892,10 +908,6 @@ export const workItemHierarchyNoUpdatePermissionResponse = {
       },
       confidential: false,
       widgets: [
-        {
-          type: 'DESCRIPTION',
-          __typename: 'WorkItemWidgetDescription',
-        },
         {
           type: 'HIERARCHY',
           parent: null,
@@ -949,6 +961,7 @@ export const workItemTask = {
   confidential: false,
   createdAt: '2022-08-03T12:41:54Z',
   closedAt: null,
+  widgets: [],
   __typename: 'WorkItem',
 };
 
@@ -966,6 +979,7 @@ export const confidentialWorkItemTask = {
   confidential: true,
   createdAt: '2022-08-03T12:41:54Z',
   closedAt: null,
+  widgets: [],
   __typename: 'WorkItem',
 };
 
@@ -983,6 +997,7 @@ export const closedWorkItemTask = {
   confidential: false,
   createdAt: '2022-08-03T12:41:54Z',
   closedAt: '2022-08-12T13:07:52Z',
+  widgets: [],
   __typename: 'WorkItem',
 };
 
@@ -1004,6 +1019,7 @@ export const childrenWorkItems = [
     confidential: false,
     createdAt: '2022-08-03T12:41:54Z',
     closedAt: null,
+    widgets: [],
     __typename: 'WorkItem',
   },
 ];
@@ -1014,15 +1030,19 @@ export const workItemHierarchyResponse = {
       id: 'gid://gitlab/WorkItem/1',
       iid: '1',
       workItemType: {
-        id: 'gid://gitlab/WorkItems::Type/6',
-        name: 'Objective',
-        iconName: 'issue-type-objective',
+        id: 'gid://gitlab/WorkItems::Type/1',
+        name: 'Issue',
+        iconName: 'issue-type-issue',
         __typename: 'WorkItemType',
       },
       title: 'New title',
       userPermissions: {
         deleteWorkItem: true,
         updateWorkItem: true,
+        __typename: 'WorkItemPermissions',
+      },
+      author: {
+        ...mockAssignees[0],
       },
       confidential: false,
       project: {
@@ -1031,11 +1051,12 @@ export const workItemHierarchyResponse = {
         fullPath: 'test-project-path',
         archived: false,
       },
+      description: 'Issue description',
+      state: 'OPEN',
+      createdAt: '2022-08-03T12:41:54Z',
+      updatedAt: null,
+      closedAt: null,
       widgets: [
-        {
-          type: 'DESCRIPTION',
-          __typename: 'WorkItemWidgetDescription',
-        },
         {
           type: 'HIERARCHY',
           parent: null,
@@ -1107,6 +1128,7 @@ export const workItemObjectiveWithChild = {
   userPermissions: {
     deleteWorkItem: true,
     updateWorkItem: true,
+    __typename: 'WorkItemPermissions',
   },
   author: {
     ...mockAssignees[0],
@@ -1173,6 +1195,7 @@ export const workItemHierarchyTreeResponse = {
       userPermissions: {
         deleteWorkItem: true,
         updateWorkItem: true,
+        __typename: 'WorkItemPermissions',
       },
       confidential: false,
       project: {
@@ -1249,6 +1272,7 @@ export const changeWorkItemParentMutationResponse = {
         userPermissions: {
           deleteWorkItem: true,
           updateWorkItem: true,
+          __typename: 'WorkItemPermissions',
         },
         description: null,
         id: 'gid://gitlab/WorkItem/2',
@@ -1621,6 +1645,7 @@ export const projectWorkItemResponse = {
       workItems: {
         nodes: [workItemQueryResponse.data.workItem],
       },
+      __typename: 'Project',
     },
   },
 };

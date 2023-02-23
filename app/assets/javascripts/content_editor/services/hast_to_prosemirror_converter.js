@@ -19,7 +19,7 @@
  * visit-parents documentation: https://github.com/syntax-tree/unist-util-visit-parents
  */
 
-import { Mark } from 'prosemirror-model';
+import { Mark } from '@tiptap/pm/model';
 import { visitParents, SKIP } from 'unist-util-visit-parents';
 import { isFunction, isString, noop, mapValues } from 'lodash';
 

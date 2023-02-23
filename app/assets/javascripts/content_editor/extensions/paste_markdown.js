@@ -1,5 +1,5 @@
 import { Extension } from '@tiptap/core';
-import { Plugin, PluginKey } from 'prosemirror-state';
+import { Plugin, PluginKey } from '@tiptap/pm/state';
 import { __ } from '~/locale';
 import { VARIANT_DANGER } from '~/flash';
 import createMarkdownDeserializer from '../services/gl_api_markdown_deserializer';

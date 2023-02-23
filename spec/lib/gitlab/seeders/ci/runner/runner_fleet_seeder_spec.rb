@@ -67,5 +67,29 @@ RSpec.describe ::Gitlab::Seeders::Ci::Runner::RunnerFleetSeeder, feature_categor
         expect(::Ci::Build.where(runner_id: project[:runner_ids])).to be_empty
       end
     end
+
+    context 'when number of group runners exceeds plan limit' do
+      before do
+        create(:plan_limits, :default_plan, ci_registered_group_runners: 1)
+      end
+
+      it { is_expected.to be_nil }
+
+      it 'creates expected hierarchy', :aggregate_failures do
+        expect { seed }.not_to change { Ci::Runner.count }
+      end
+    end
+
+    context 'when number of project runners exceeds plan limit' do
+      before do
+        create(:plan_limits, :default_plan, ci_registered_project_runners: 1)
+      end
+
+      it { is_expected.to be_nil }
+
+      it 'creates expected hierarchy', :aggregate_failures do
+        expect { seed }.not_to change { Ci::Runner.count }
+      end
+    end
   end
 end

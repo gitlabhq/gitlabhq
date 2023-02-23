@@ -28,10 +28,13 @@ exports[`Snippet Description Edit component rendering matches the snapshot 1`] =
       data-uploads-path=""
     >
       <markdown-header-stub
+        data-testid="markdownHeader"
         enablepreview="true"
         linecontent=""
+        markdownpreviewpath="foo/"
         restrictedtoolbaritems=""
         suggestionstartindex="0"
+        uploadspath=""
       />
        
       <div

@@ -8124,6 +8124,9 @@ msgstr ""
 msgid "Cannot import because issues are not available in this project."
 msgstr ""
 
+msgid "Cannot load the diagram into the draw.io editor"
+msgstr ""
+
 msgid "Cannot make the epic confidential if it contains non-confidential child epics"
 msgstr ""
 
@@ -14709,6 +14712,9 @@ msgid "DevopsReport|Your usage"
 msgstr ""
 
 msgid "Diagram (%{language})"
+msgstr ""
+
+msgid "Diagram saved successfully."
 msgstr ""
 
 msgid "Did not delete the source branch."
@@ -22718,6 +22724,9 @@ msgid "Insert image"
 msgstr ""
 
 msgid "Insert link"
+msgstr ""
+
+msgid "Insert or edit diagram"
 msgstr ""
 
 msgid "Insert row after"
@@ -42962,6 +42971,9 @@ msgstr ""
 msgid "The download link will expire in 24 hours."
 msgstr ""
 
+msgid "The draw.io editor could not be loaded."
+msgstr ""
+
 msgid "The environment tiers must be from %{environment_tiers}."
 msgstr ""
 
@@ -43264,6 +43276,9 @@ msgid "The scan has been created."
 msgstr ""
 
 msgid "The secret is only available when you create the application or renew the secret."
+msgstr ""
+
+msgid "The selected image is not a diagram"
 msgstr ""
 
 msgid "The snippet can be accessed without any authentication."

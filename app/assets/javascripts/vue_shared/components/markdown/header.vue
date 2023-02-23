@@ -15,6 +15,7 @@ import { getSelectedFragment } from '~/lib/utils/common_utils';
 import { s__, __ } from '~/locale';
 import { CopyAsGFM } from '~/behaviors/markdown/copy_as_gfm';
 import ToolbarButton from './toolbar_button.vue';
+import DrawioToolbarButton from './drawio_toolbar_button.vue';
 
 export default {
   components: {
@@ -23,6 +24,7 @@ export default {
     GlButton,
     GlTabs,
     GlTab,
+    DrawioToolbarButton,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -61,6 +63,21 @@ export default {
       type: Array,
       required: false,
       default: () => [],
+    },
+    uploadsPath: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    markdownPreviewPath: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    drawioEnabled: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
   data() {
@@ -369,8 +386,12 @@ export default {
             icon="paperclip"
             @click="handleAttachFile"
           />
+          <drawio-toolbar-button
+            v-if="drawioEnabled"
+            :uploads-path="uploadsPath"
+            :markdown-preview-path="markdownPreviewPath"
+          />
           <toolbar-button
-            v-if="!restrictedToolBarItems.includes('full-screen')"
             class="js-zen-enter"
             :prepend="true"
             :button-title="__('Go full screen')"

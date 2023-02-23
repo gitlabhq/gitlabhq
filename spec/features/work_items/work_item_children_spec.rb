@@ -132,5 +132,48 @@ RSpec.describe 'Work item children', :js, feature_category: :team_planning do
         end
       end
     end
+
+    context 'in work item metadata' do
+      let_it_be(:label) { create(:label, title: 'Label 1', project: project) }
+      let_it_be(:milestone) { create(:milestone, project: project, title: 'v1') }
+      let_it_be(:task) do
+        create(
+          :work_item,
+          :task,
+          project: project,
+          labels: [label],
+          assignees: [user],
+          milestone: milestone
+        )
+      end
+
+      before do
+        visit project_issue_path(project, issue)
+
+        wait_for_requests
+      end
+
+      it 'displays labels, milestone and assignee for work item children', :aggregate_failures do
+        page.within('[data-testid="work-item-links"]') do
+          click_button 'Add'
+          click_button 'Existing task'
+
+          find('[data-testid="work-item-token-select-input"]').set(task.title)
+          wait_for_all_requests
+          click_button task.title
+
+          click_button 'Add task'
+
+          wait_for_all_requests
+        end
+
+        page.within('[data-testid="links-child"]') do
+          expect(page).to have_content(task.title)
+          expect(page).to have_content(label.title)
+          expect(page).to have_link(user.name)
+          expect(page).to have_content(milestone.title)
+        end
+      end
+    end
   end
 end

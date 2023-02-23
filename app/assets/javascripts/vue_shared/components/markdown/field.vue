@@ -132,6 +132,11 @@ export default {
       required: false,
       default: false,
     },
+    drawioEnabled: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -355,6 +360,10 @@ export default {
       :enable-preview="enablePreview"
       :show-suggest-popover="showSuggestPopover"
       :suggestion-start-index="suggestionsStartIndex"
+      :uploads-path="uploadsPath"
+      :markdown-preview-path="markdownPreviewPath"
+      :drawio-enabled="drawioEnabled"
+      data-testid="markdownHeader"
       :restricted-tool-bar-items="restrictedToolBarItems"
       @preview-markdown="showPreviewTab"
       @write-markdown="showWriteTab"

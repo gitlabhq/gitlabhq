@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'user email validation' do
-  let(:email_hint_message) { 'We recommend a work email address.' }
-  let(:email_error_message) { 'Please provide a valid email address.' }
+  let(:email_hint_message) { _('We recommend a work email address.') }
+  let(:email_error_message) { _('Please provide a valid email address.') }
 
   let(:email_warning_message) do
-    'This email address does not look right, are you sure you typed it correctly?'
+    _('This email address does not look right, are you sure you typed it correctly?')
   end
 
   it 'shows an error message until a correct email is entered' do

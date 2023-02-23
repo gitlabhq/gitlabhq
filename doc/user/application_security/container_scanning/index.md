@@ -179,6 +179,8 @@ container_scanning:
 
 include:
   - template: Jobs/Container-Scanning.gitlab-ci.yml
+
+variables: 
     CS_IMAGE: <aws_account_id>.dkr.ecr.<region>.amazonaws.com/<image>:<tag>
     CS_REGISTRY_USER: AWS
     CS_REGISTRY_PASSWORD: "$AWS_ECR_PASSWORD"
