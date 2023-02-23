@@ -39,8 +39,6 @@ module Mutations
       def resolve(full_path:, **args)
         project = authorized_find!(full_path)
 
-        args.delete(:inbound_job_token_scope_enabled) unless Feature.enabled?(:ci_inbound_job_token_scope, project)
-
         settings = project.ci_cd_settings
         settings.update(args)
 

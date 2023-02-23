@@ -2979,7 +2979,7 @@ class Project < ApplicationRecord
   end
 
   def ci_inbound_job_token_scope_enabled?
-    return false unless ci_cd_settings
+    return true unless ci_cd_settings
 
     ci_cd_settings.inbound_job_token_scope_enabled?
   end

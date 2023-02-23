@@ -295,6 +295,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, feature_category: :i
 
         it 'has project labels' do
           expect(ProjectLabel.count).to eq(3)
+          expect(ProjectLabel.pluck(:group_id).compact).to be_empty
         end
 
         it 'has merge request approvals' do

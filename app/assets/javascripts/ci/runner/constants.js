@@ -129,6 +129,8 @@ export const PARAM_KEY_SORT = 'sort';
 export const PARAM_KEY_AFTER = 'after';
 export const PARAM_KEY_BEFORE = 'before';
 
+export const PARAM_KEY_PLATFORM = 'platform';
+
 // CiRunnerType
 
 export const INSTANCE_TYPE = 'INSTANCE_TYPE';

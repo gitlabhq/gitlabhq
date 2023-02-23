@@ -35,6 +35,19 @@ module Tooling
       delete_namespaces_by_exact_names(resource_names: namespaces, wait: wait)
     end
 
+    def delete_namespaces_by_exact_names(resource_names:, wait:)
+      command = [
+        'delete',
+        'namespace',
+        '--now',
+        '--ignore-not-found',
+        %(--wait=#{wait}),
+        resource_names.join(' ')
+      ]
+
+      run_command(command)
+    end
+
     private
 
     def delete_by_selector(release_name:, wait:)
@@ -65,19 +78,6 @@ module Tooling
         'delete',
         resource_type,
         %(--namespace "#{namespace}"),
-        '--now',
-        '--ignore-not-found',
-        %(--wait=#{wait}),
-        resource_names.join(' ')
-      ]
-
-      run_command(command)
-    end
-
-    def delete_namespaces_by_exact_names(resource_names:, wait:)
-      command = [
-        'delete',
-        'namespace',
         '--now',
         '--ignore-not-found',
         %(--wait=#{wait}),

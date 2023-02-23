@@ -160,13 +160,5 @@ RSpec.describe Ci::JobToken::Scope, feature_category: :continuous_integration, f
 
       include_examples 'enforces outbound scope only'
     end
-
-    context 'when inbound scope flag disabled' do
-      before do
-        stub_feature_flags(ci_inbound_job_token_scope: false)
-      end
-
-      include_examples 'enforces outbound scope only'
-    end
   end
 end

@@ -1162,7 +1162,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
     end
 
     describe '#ci_inbound_job_token_scope_enabled?' do
-      it_behaves_like 'a ci_cd_settings predicate method', prefix: 'ci_' do
+      it_behaves_like 'a ci_cd_settings predicate method', prefix: 'ci_', default: true do
         let(:delegated_method) { :inbound_job_token_scope_enabled? }
       end
     end

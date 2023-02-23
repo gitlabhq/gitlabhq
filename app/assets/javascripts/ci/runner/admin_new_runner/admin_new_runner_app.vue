@@ -1,9 +1,13 @@
 <script>
 import { GlSprintf, GlLink, GlModalDirective } from '@gitlab/ui';
+import { createAlert, VARIANT_SUCCESS } from '~/flash';
+import { redirectTo, setUrlParams } from '~/lib/utils/url_utility';
+import { __ } from '~/locale';
 import RunnerInstructionsModal from '~/vue_shared/components/runner_instructions/runner_instructions_modal.vue';
 import RunnerPlatformsRadioGroup from '~/ci/runner/components/runner_platforms_radio_group.vue';
-import RunnerFormFields from '~/ci/runner/components/runner_form_fields.vue';
-import { DEFAULT_PLATFORM, DEFAULT_ACCESS_LEVEL } from '../constants';
+import RunnerCreateForm from '~/ci/runner/components/runner_create_form.vue';
+import { DEFAULT_PLATFORM, PARAM_KEY_PLATFORM } from '../constants';
+import { saveAlertToLocalStorage } from '../local_storage_alert/save_alert_to_local_storage';
 
 export default {
   name: 'AdminNewRunnerApp',
@@ -12,7 +16,7 @@ export default {
     GlSprintf,
     RunnerInstructionsModal,
     RunnerPlatformsRadioGroup,
-    RunnerFormFields,
+    RunnerCreateForm,
   },
   directives: {
     GlModal: GlModalDirective,
@@ -26,16 +30,20 @@ export default {
   data() {
     return {
       platform: DEFAULT_PLATFORM,
-      runner: {
-        description: '',
-        maintenanceNote: '',
-        paused: false,
-        accessLevel: DEFAULT_ACCESS_LEVEL,
-        runUntagged: false,
-        tagList: '',
-        maximumTimeout: ' ',
-      },
     };
+  },
+  methods: {
+    onSaved(runner) {
+      const registerUrl = setUrlParams(
+        { [PARAM_KEY_PLATFORM]: this.platform },
+        runner.registerAdminUrl,
+      );
+      saveAlertToLocalStorage({ message: __('Runner created.'), variant: VARIANT_SUCCESS });
+      redirectTo(registerUrl);
+    },
+    onError(error) {
+      createAlert({ message: error.message });
+    },
   },
   modalId: 'runners-legacy-registration-instructions-modal',
 };
@@ -73,6 +81,6 @@ export default {
 
     <hr aria-hidden="true" />
 
-    <runner-form-fields v-model="runner" />
+    <runner-create-form @saved="onSaved" @error="onError" />
   </div>
 </template>

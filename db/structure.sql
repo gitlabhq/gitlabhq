@@ -11293,7 +11293,6 @@ CREATE TABLE application_settings (
     metrics_packet_size integer DEFAULT 1,
     disabled_oauth_sign_in_sources text,
     health_check_access_token character varying,
-    send_user_confirmation_email boolean DEFAULT false,
     container_registry_token_expire_delay integer DEFAULT 5,
     after_sign_up_text text,
     user_default_external boolean DEFAULT false NOT NULL,

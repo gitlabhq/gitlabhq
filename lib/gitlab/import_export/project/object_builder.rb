@@ -64,6 +64,7 @@ module Gitlab
 
             if label?
               atts['type'] = 'ProjectLabel' # Always create project labels
+              atts.delete('group_id')
             elsif milestone?
               if atts['group_id'] # Transform new group milestones into project ones
                 atts['iid'] = nil

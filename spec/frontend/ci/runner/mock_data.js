@@ -9,6 +9,9 @@ import runnerJobsData from 'test_fixtures/graphql/ci/runner/show/runner_jobs.que
 // Edit runner queries
 import runnerFormData from 'test_fixtures/graphql/ci/runner/edit/runner_form.query.graphql.json';
 
+// New runner queries
+import runnerCreateResult from 'test_fixtures/graphql/ci/runner/new/runner_create.mutation.graphql.json';
+
 // List queries
 import allRunnersData from 'test_fixtures/graphql/ci/runner/list/all_runners.query.graphql.json';
 import allRunnersDataPaginated from 'test_fixtures/graphql/ci/runner/list/all_runners.query.graphql.paginated.json';
@@ -321,4 +324,5 @@ export {
   runnerProjectsData,
   runnerJobsData,
   runnerFormData,
+  runnerCreateResult,
 };

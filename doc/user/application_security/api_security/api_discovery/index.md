@@ -39,16 +39,6 @@ API Discovery is tested with and officially supports LTS versions of the Java ru
 
 Only applications that are built as Spring Boot [executable JARs](https://docs.spring.io/spring-boot/docs/current/reference/html/executable-jar.html#appendix.executable-jar.nested-jars.jar-structure) are supported.
 
-### Example configurations
-
-The following are working example projects:
-
-- [API Discovery configured as a pipeline job](https://gitlab.com/gitlab-org/security-products/demos/api-discovery/spring-boot-pipeline)
-<!--
-- [API Discovery integrated into a Maven build process](http://...TODO)
-- [API Discovery integrated into a Gradle build process](http://...TODO)
--->
-
 ### Configure as pipeline job
 
 The easiest way to run API Discovery is through a pipeline job based on our CI template.

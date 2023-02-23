@@ -101,21 +101,6 @@ RSpec.describe 'ProjectCiCdSettingsUpdate', feature_category: :continuous_integr
         expect(response).to have_gitlab_http_status(:success)
         expect(project.ci_inbound_job_token_scope_enabled).to eq(true)
       end
-
-      context 'when ci_inbound_job_token_scope disabled' do
-        before do
-          stub_feature_flags(ci_inbound_job_token_scope: false)
-        end
-
-        it 'does not update inbound_job_token_scope_enabled' do
-          post_graphql_mutation(mutation, current_user: user)
-
-          project.reload
-
-          expect(response).to have_gitlab_http_status(:success)
-          expect(project.ci_inbound_job_token_scope_enabled).to eq(true)
-        end
-      end
     end
 
     it 'updates ci_opt_in_jwt' do
