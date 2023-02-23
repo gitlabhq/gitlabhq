@@ -33,6 +33,8 @@ export default {
     branchesPath: {
       default: '',
     },
+    showStatusChecks: { default: false },
+    showApprovers: { default: false },
   },
   apollo: {
     project: {
@@ -180,7 +182,7 @@ export default {
 
     <!-- EE start -->
     <!-- Approvals -->
-    <template v-if="approvalsHeader">
+    <template v-if="showApprovers">
       <h4 class="gl-mb-1 gl-mt-5">{{ $options.i18n.approvalsTitle }}</h4>
       <gl-sprintf :message="$options.i18n.approvalsDescription">
         <template #link="{ content }">
@@ -200,7 +202,7 @@ export default {
     </template>
 
     <!-- Status checks -->
-    <template v-if="statusChecksHeader">
+    <template v-if="showStatusChecks">
       <h4 class="gl-mb-1 gl-mt-5">{{ $options.i18n.statusChecksTitle }}</h4>
       <gl-sprintf :message="$options.i18n.statusChecksDescription">
         <template #link="{ content }">

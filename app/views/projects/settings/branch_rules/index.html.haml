@@ -1,6 +1,8 @@
 - add_to_breadcrumbs _('Repository Settings'), project_settings_repository_path(@project)
 - page_title s_('BranchRules|Branch rules details')
+- show_status_checks = @project.licensed_feature_available?(:external_status_checks)
+- show_approvers = @project.licensed_feature_available?(:merge_request_approvers)
 
 %h3.gl-mb-5= s_('BranchRules|Branch rules details')
 
-#js-branch-rules{ data: { project_path: @project.full_path, protected_branches_path: project_settings_repository_path(@project, anchor: 'js-protected-branches-settings'), approval_rules_path: project_settings_merge_requests_path(@project, anchor: 'js-merge-request-approval-settings'), status_checks_path: project_settings_merge_requests_path(@project, anchor: 'js-merge-request-settings'), branches_path: project_branches_path(@project) } }
+#js-branch-rules{ data: { project_path: @project.full_path, protected_branches_path: project_settings_repository_path(@project, anchor: 'js-protected-branches-settings'), approval_rules_path: project_settings_merge_requests_path(@project, anchor: 'js-merge-request-approval-settings'), status_checks_path: project_settings_merge_requests_path(@project, anchor: 'js-merge-request-settings'), branches_path: project_branches_path(@project), show_status_checks: show_status_checks.to_s, show_approvers: show_approvers.to_s } }

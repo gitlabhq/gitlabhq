@@ -151,51 +151,57 @@ RSpec.describe QA::Specs::Helpers::FeatureFlag do
       it_behaves_like 'skips with given feature flag metadata', { name: 'global_ff', scope: :global }
     end
 
-    context 'when run on jh production', skip: 'https://gitlab.com/gitlab-org/gitlab/-/issues/392832' do
+    context 'when run on jh production mainland' do
       before do
         allow(GitlabEdition).to receive(:jh?).and_return(true)
       end
 
-      context 'when on mainland' do
-        before(:context) do
-          QA::Runtime::Scenario.define(:gitlab_address, 'https://jihulab.com')
-        end
+      before(:context) do
+        QA::Runtime::Scenario.define(:gitlab_address, 'https://jihulab.com')
+      end
 
-        context 'when no scope is defined' do
-          it_behaves_like 'skips with given feature flag metadata', { name: 'no_scope_ff' }
+      context 'when no scope is defined' do
+        it_behaves_like 'skips with given feature flag metadata', { name: 'no_scope_ff' }
 
-          context 'for only one test in the example group' do
-            it 'only skips specified test and runs all others' do
-              group = describe_successfully 'Feature flag set for one test' do
-                it('is skipped', feature_flag: { name: 'single_test_ff' }) {}
-                it('passes') {}
-              end
-
-              expect(group.examples[0].execution_result.status).to eq(:pending)
-              expect(group.examples[1].execution_result.status).to eq(:passed)
+        context 'for only one test in the example group' do
+          it 'only skips specified test and runs all others' do
+            group = describe_successfully 'Feature flag set for one test' do
+              it('is skipped', feature_flag: { name: 'single_test_ff' }) {}
+              it('passes') {}
             end
+
+            expect(group.examples[0].execution_result.status).to eq(:pending)
+            expect(group.examples[1].execution_result.status).to eq(:passed)
           end
         end
       end
 
-      context 'when on hk' do
-        before(:context) do
-          QA::Runtime::Scenario.define(:gitlab_address, 'https://jihulab.hk')
-        end
+      it_behaves_like 'skips with given feature flag metadata', { name: 'actor_ff', scope: :project }
 
-        context 'when no scope is defined' do
-          it_behaves_like 'skips with given feature flag metadata', { name: 'no_scope_ff' }
+      it_behaves_like 'skips with given feature flag metadata', { name: 'global_ff', scope: :global }
+    end
 
-          context 'for only one test in the example group' do
-            it 'only skips specified test and runs all others' do
-              group = describe_successfully 'Feature flag set for one test' do
-                it('is skipped', feature_flag: { name: 'single_test_ff' }) {}
-                it('passes') {}
-              end
+    context 'when run on jh production hk' do
+      before do
+        allow(GitlabEdition).to receive(:jh?).and_return(true)
+      end
 
-              expect(group.examples[0].execution_result.status).to eq(:pending)
-              expect(group.examples[1].execution_result.status).to eq(:passed)
+      before(:context) do
+        QA::Runtime::Scenario.define(:gitlab_address, 'https://jihulab.hk')
+      end
+
+      context 'when no scope is defined' do
+        it_behaves_like 'skips with given feature flag metadata', { name: 'no_scope_ff' }
+
+        context 'for only one test in the example group' do
+          it 'only skips specified test and runs all others' do
+            group = describe_successfully 'Feature flag set for one test' do
+              it('is skipped', feature_flag: { name: 'single_test_ff' }) {}
+              it('passes') {}
             end
+
+            expect(group.examples[0].execution_result.status).to eq(:pending)
+            expect(group.examples[1].execution_result.status).to eq(:passed)
           end
         end
       end

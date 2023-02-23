@@ -227,48 +227,16 @@ RSpec.describe Projects::UpdateService do
       let(:user) { project.first_owner }
       let(:forked_project) { fork_project(project) }
 
-      context 'and unlink forks feature flag is off' do
-        before do
-          stub_feature_flags(unlink_fork_network_upon_visibility_decrease: false)
-        end
+      it 'does not change visibility of forks' do
+        opts = { visibility_level: Gitlab::VisibilityLevel::PRIVATE }
 
-        it 'updates forks visibility level when parent set to more restrictive' do
-          opts = { visibility_level: Gitlab::VisibilityLevel::PRIVATE }
+        expect(project).to be_internal
+        expect(forked_project).to be_internal
 
-          expect(project).to be_internal
-          expect(forked_project).to be_internal
+        expect(update_project(project, user, opts)).to eq({ status: :success })
 
-          expect(update_project(project, user, opts)).to eq({ status: :success })
-
-          expect(project).to be_private
-          expect(forked_project.reload).to be_private
-        end
-
-        it 'does not update forks visibility level when parent set to less restrictive' do
-          opts = { visibility_level: Gitlab::VisibilityLevel::PUBLIC }
-
-          expect(project).to be_internal
-          expect(forked_project).to be_internal
-
-          expect(update_project(project, user, opts)).to eq({ status: :success })
-
-          expect(project).to be_public
-          expect(forked_project.reload).to be_internal
-        end
-      end
-
-      context 'and unlink forks feature flag is on' do
-        it 'does not change visibility of forks' do
-          opts = { visibility_level: Gitlab::VisibilityLevel::PRIVATE }
-
-          expect(project).to be_internal
-          expect(forked_project).to be_internal
-
-          expect(update_project(project, user, opts)).to eq({ status: :success })
-
-          expect(project).to be_private
-          expect(forked_project.reload).to be_internal
-        end
+        expect(project).to be_private
+        expect(forked_project.reload).to be_internal
       end
     end
 

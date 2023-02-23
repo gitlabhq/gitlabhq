@@ -36913,9 +36913,6 @@ msgstr ""
 msgid "Runner API"
 msgstr ""
 
-msgid "Runner created."
-msgstr ""
-
 msgid "Runner tokens"
 msgstr ""
 
@@ -37340,6 +37337,9 @@ msgid "Runners|Runner authentication token expiration"
 msgstr ""
 
 msgid "Runners|Runner authentication tokens will expire based on a set interval. They will automatically rotate once expired."
+msgstr ""
+
+msgid "Runners|Runner created."
 msgstr ""
 
 msgid "Runners|Runner description"

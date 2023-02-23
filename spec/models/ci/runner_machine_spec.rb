@@ -54,9 +54,8 @@ RSpec.describe Ci::RunnerMachine, feature_category: :runner_fleet, type: :model 
   end
 
   describe '#heartbeat', :freeze_time do
-    let(:runner_machine) { create(:ci_runner_machine) }
+    let(:runner_machine) { create(:ci_runner_machine, version: '15.0.0') }
     let(:executor) { 'shell' }
-    let(:version) { '15.0.1' }
     let(:values) do
       {
         ip_address: '8.8.8.8',
@@ -76,18 +75,26 @@ RSpec.describe Ci::RunnerMachine, feature_category: :runner_fleet, type: :model 
         runner_machine.contacted_at = Time.current
       end
 
-      it 'schedules version update' do
-        expect(Ci::Runners::ProcessRunnerVersionUpdateWorker).to receive(:perform_async).with(version).once
+      context 'when version is changed' do
+        let(:version) { '15.0.1' }
 
-        heartbeat
+        before do
+          allow(Ci::Runners::ProcessRunnerVersionUpdateWorker).to receive(:perform_async).with(version)
+        end
 
-        expect(runner_machine.runner_version).to be_nil
-      end
+        it 'schedules version information update' do
+          heartbeat
 
-      it 'updates cache' do
-        expect_redis_update
+          expect(Ci::Runners::ProcessRunnerVersionUpdateWorker).to have_received(:perform_async).with(version).once
+        end
 
-        heartbeat
+        it 'updates cache' do
+          expect_redis_update
+
+          heartbeat
+
+          expect(runner_machine.runner_version).to be_nil
+        end
       end
 
       context 'with only ip_address specified' do
@@ -96,12 +103,7 @@ RSpec.describe Ci::RunnerMachine, feature_category: :runner_fleet, type: :model 
         end
 
         it 'updates only ip_address' do
-          attrs = Gitlab::Json.dump(ip_address: '1.1.1.1', contacted_at: Time.current)
-
-          Gitlab::Redis::Cache.with do |redis|
-            redis_key = runner_machine.send(:cache_attribute_key)
-            expect(redis).to receive(:set).with(redis_key, attrs, any_args)
-          end
+          expect_redis_update(values.merge(contacted_at: Time.current))
 
           heartbeat
         end
@@ -112,17 +114,29 @@ RSpec.describe Ci::RunnerMachine, feature_category: :runner_fleet, type: :model 
       before do
         runner_machine.contacted_at = 2.hours.ago
 
-        allow(Ci::Runners::ProcessRunnerVersionUpdateWorker).to receive(:perform_async).with(version).once
+        allow(Ci::Runners::ProcessRunnerVersionUpdateWorker).to receive(:perform_async).with(version)
       end
 
-      context 'with invalid runner_machine' do
-        before do
-          runner_machine.runner = nil
+      context 'when version is changed' do
+        let(:version) { '15.0.1' }
+
+        context 'with invalid runner_machine' do
+          before do
+            runner_machine.runner = nil
+          end
+
+          it 'still updates redis cache and database' do
+            expect(runner_machine).to be_invalid
+
+            expect_redis_update
+            does_db_update
+
+            expect(Ci::Runners::ProcessRunnerVersionUpdateWorker).to have_received(:perform_async)
+              .with(version).once
+          end
         end
 
-        it 'still updates redis cache and database' do
-          expect(runner_machine).to be_invalid
-
+        it 'updates redis cache and database' do
           expect_redis_update
           does_db_update
 
@@ -132,58 +146,52 @@ RSpec.describe Ci::RunnerMachine, feature_category: :runner_fleet, type: :model 
       end
 
       context 'with unchanged runner_machine version' do
-        let(:runner_machine) { create(:ci_runner_machine, version: version) }
+        let(:version) { runner_machine.version }
 
         it 'does not schedule ci_runner_versions update' do
           heartbeat
 
           expect(Ci::Runners::ProcessRunnerVersionUpdateWorker).not_to have_received(:perform_async)
         end
-      end
 
-      it 'updates redis cache and database' do
-        expect_redis_update
-        does_db_update
+        Ci::Runner::EXECUTOR_NAME_TO_TYPES.each_key do |executor|
+          context "with #{executor} executor" do
+            let(:executor) { executor }
 
-        expect(Ci::Runners::ProcessRunnerVersionUpdateWorker).to have_received(:perform_async)
-          .with(version).once
-      end
+            it 'updates with expected executor type' do
+              expect_redis_update
 
-      Ci::Runner::EXECUTOR_NAME_TO_TYPES.each_key do |executor|
-        context "with #{executor} executor" do
-          let(:executor) { executor }
+              heartbeat
 
-          it 'updates with expected executor type' do
+              expect(runner_machine.reload.read_attribute(:executor_type)).to eq(expected_executor_type)
+            end
+
+            def expected_executor_type
+              executor.gsub(/[+-]/, '_')
+            end
+          end
+        end
+
+        context 'with an unknown executor type' do
+          let(:executor) { 'some-unknown-type' }
+
+          it 'updates with unknown executor type' do
             expect_redis_update
 
             heartbeat
 
-            expect(runner_machine.reload.read_attribute(:executor_type)).to eq(expected_executor_type)
+            expect(runner_machine.reload.read_attribute(:executor_type)).to eq('unknown')
           end
-
-          def expected_executor_type
-            executor.gsub(/[+-]/, '_')
-          end
-        end
-      end
-
-      context "with an unknown executor type" do
-        let(:executor) { 'some-unknown-type' }
-
-        it 'updates with unknown executor type' do
-          expect_redis_update
-
-          heartbeat
-
-          expect(runner_machine.reload.read_attribute(:executor_type)).to eq('unknown')
         end
       end
     end
 
-    def expect_redis_update
+    def expect_redis_update(values = anything)
+      values_json = values == anything ? anything : Gitlab::Json.dump(values)
+
       Gitlab::Redis::Cache.with do |redis|
         redis_key = runner_machine.send(:cache_attribute_key)
-        expect(redis).to receive(:set).with(redis_key, anything, any_args).and_call_original
+        expect(redis).to receive(:set).with(redis_key, values_json, any_args).and_call_original
       end
     end
 

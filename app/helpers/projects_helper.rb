@@ -757,7 +757,7 @@ module ProjectsHelper
   end
 
   def show_visibility_confirm_modal?(project)
-    project.unlink_forks_upon_visibility_decrease_enabled? && project.visibility_level > Gitlab::VisibilityLevel::PRIVATE && project.forks_count > 0
+    project.visibility_level > Gitlab::VisibilityLevel::PRIVATE && project.forks_count > 0
   end
 
   def confirm_reduce_visibility_message(project)

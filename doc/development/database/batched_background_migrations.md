@@ -34,10 +34,13 @@ Background migrations can help when:
 - Populating one column based on JSON stored in another column.
 - Migrating data that depends on the output of external services. (For example, an API.)
 
-NOTE:
-If the batched background migration is part of an important upgrade, it must be announced
-in the release post. Discuss with your Project Manager if you're unsure if the migration falls
-into this category.
+### Notes
+
+- If the batched background migration is part of an important upgrade, it must be announced
+  in the release post. Discuss with your Project Manager if you're unsure if the migration falls
+  into this category.
+- You should use the [generator](#generator) to create batched background migrations,
+  so that required files are created by default.
 
 ## Isolation
 
@@ -311,6 +314,22 @@ NOTE:
 When applying additional filters, it is important to ensure they are properly covered by an index to optimize `EachBatch` performance.
 In the example above we need an index on `(type, id)` to support the filters. See [the `EachBatch` documentation for more information](iterating_tables_in_batches.md).
 
+## Generator
+
+The custom generator `batched_background_migration` scaffolds necessary files and
+accepts `table_name`, `column_name`, and `feature_category` as arguments. Usage:
+
+```shell
+bundle exec rails g batched_background_migration my_batched_migration --table_name=<table-name> --column_name=<column-name> --feature_category=<feature-category>
+```
+
+This command creates these files:
+
+- `db/post_migrate/20230214231008_queue_my_batched_migration.rb`
+- `spec/migrations/20230214231008_queue_my_batched_migration_spec.rb`
+- `lib/gitlab/background_migration/my_batched_migration.rb`
+- `spec/lib/gitlab/background_migration/my_batched_migration_spec.rb`
+
 ## Example
 
 The `routes` table has a `source_type` field that's used for a polymorphic relationship.
@@ -319,8 +338,13 @@ the work is migrating data from the `source_id` column into a new singular forei
 Because we intend to delete old rows later, there's no need to update them as part of the
 background migration.
 
-1. Start by defining our migration class, which should inherit
-   from `Gitlab::BackgroundMigration::BatchedMigrationJob`:
+1. Start by using the generator to create batched background migration files:
+
+   ```shell
+   bundle exec rails g batched_background_migration BackfillRouteNamespaceId --table_name=routes --column_name=id --feature_category=source_code_management
+   ```
+
+1. Update the migration job (subclass of `BatchedMigrationJob`) to copy `source_id` values to `namespace_id`:
 
    ```ruby
    class Gitlab::BackgroundMigration::BackfillRouteNamespaceId < BatchedMigrationJob
@@ -344,10 +368,10 @@ background migration.
    ```
 
    NOTE:
-   Job classes must be subclasses of `BatchedMigrationJob` to be
+   Job classes inherit from `BatchedMigrationJob` to ensure they are
    correctly handled by the batched migration framework. Any subclass of
-   `BatchedMigrationJob` is initialized with necessary arguments to
-   execute the batch, as well as a connection to the tracking database.
+   `BatchedMigrationJob` is initialized with the necessary arguments to
+   execute the batch, and a connection to the tracking database.
 
 1. Create a database migration that adds a new trigger to the database. Example:
 
@@ -380,12 +404,14 @@ background migration.
    end
    ```
 
-1. Create a post-deployment migration that queues the migration for existing data:
+1. Update the created post-deployment migration with required delay and batch sizes:
 
    ```ruby
    class QueueBackfillRoutesNamespaceId < Gitlab::Database::Migration[2.1]
      MIGRATION = 'BackfillRouteNamespaceId'
      DELAY_INTERVAL = 2.minutes
+     BATCH_SIZE = 1000
+     SUB_BATCH_SIZE = 100
 
      restrict_gitlab_migration gitlab_schema: :gitlab_main
 
@@ -394,7 +420,9 @@ background migration.
          MIGRATION,
          :routes,
          :id,
-         job_interval: DELAY_INTERVAL
+         job_interval: DELAY_INTERVAL,
+         batch_size: BATCH_SIZE,
+         sub_batch_size: SUB_BATCH_SIZE
        )
      end
 

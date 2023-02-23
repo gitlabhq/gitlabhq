@@ -2,7 +2,7 @@
 import { GlSprintf, GlLink, GlModalDirective } from '@gitlab/ui';
 import { createAlert, VARIANT_SUCCESS } from '~/flash';
 import { redirectTo, setUrlParams } from '~/lib/utils/url_utility';
-import { __ } from '~/locale';
+import { s__ } from '~/locale';
 import RunnerInstructionsModal from '~/vue_shared/components/runner_instructions/runner_instructions_modal.vue';
 import RunnerPlatformsRadioGroup from '~/ci/runner/components/runner_platforms_radio_group.vue';
 import RunnerCreateForm from '~/ci/runner/components/runner_create_form.vue';
@@ -38,7 +38,10 @@ export default {
         { [PARAM_KEY_PLATFORM]: this.platform },
         runner.registerAdminUrl,
       );
-      saveAlertToLocalStorage({ message: __('Runner created.'), variant: VARIANT_SUCCESS });
+      saveAlertToLocalStorage({
+        message: s__('Runners|Runner created.'),
+        variant: VARIANT_SUCCESS,
+      });
       redirectTo(registerUrl);
     },
     onError(error) {

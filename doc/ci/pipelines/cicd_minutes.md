@@ -19,7 +19,7 @@ end-to-end duration of a pipeline.
 
 On GitLab.com:
 
-- CI/CD minutes quotas are enabled for both public and private projects, but public
+- CI/CD minutes quotas are enabled for all projects, but certain
   projects [consume CI/CD minutes at a slower rate](#cost-factor).
 - The base monthly CI/CD minutes quota for a GitLab.com [namespace](../../user/namespace/index.md)
   is determined by its [license tier](https://about.gitlab.com/pricing/).
@@ -201,13 +201,12 @@ can be higher than the end-to-end duration of a pipeline.
 
 The cost factors for jobs running on shared runners on GitLab.com are:
 
-- `1` for internal and private projects.
-- `0.5` for public projects in the [GitLab for Open Source program](../../subscriptions/index.md#gitlab-for-open-source).
-- `0.008` for public forks of public projects in the [GitLab for Open Source program](../../subscriptions/index.md#gitlab-for-open-source). For every 125 minutes of job execution time,
+- `1` for internal, public, and private projects.
+- Exceptions for public projects:
+  - `0.5` for projects in the [GitLab for Open Source program](../../subscriptions/index.md#gitlab-for-open-source).
+  - `0.008` for forks of projects in the [GitLab for Open Source program](../../subscriptions/index.md#gitlab-for-open-source). For every 125 minutes of job execution time,
   you use 1 CI/CD minute.
-- `1` for other public projects, after October 1, 2022 (previously `0.04`).
-  For every 1 minute of job execution time, you use 1 CI/CD minute.
-- Calculated differently for [community contributions to GitLab projects](#cost-factor-for-community-contributions-to-gitlab-projects).
+- Discounted dynamically for [community contributions to GitLab projects](#cost-factor-for-community-contributions-to-gitlab-projects).
 
 The cost factors on self-managed instances are:
 

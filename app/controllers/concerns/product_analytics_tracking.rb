@@ -90,6 +90,7 @@ module ProductAnalyticsTracking
     return true if MIGRATED_EVENTS.include?(event)
 
     events_to_ff = {
+      g_edit_by_sfe: :_phase4,
       g_compliance_dashboard: :_phase4
     }
 

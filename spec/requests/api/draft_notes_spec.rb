@@ -17,7 +17,7 @@ RSpec.describe API::DraftNotes, feature_category: :code_review_workflow do
   let!(:draft_note_by_current_user) { create(:draft_note, merge_request: merge_request, author: user) }
   let!(:draft_note_by_random_user) { create(:draft_note, merge_request: merge_request) }
 
-  let_it_be(:api_stub) { "/projects/#{project.id}/merge_requests/#{merge_request.iid}" }
+  let_it_be(:base_url) { "/projects/#{project.id}/merge_requests/#{merge_request.iid}/draft_notes" }
 
   before do
     project.add_developer(user)
@@ -25,13 +25,13 @@ RSpec.describe API::DraftNotes, feature_category: :code_review_workflow do
 
   describe "Get a list of merge request draft notes" do
     it "returns 200 OK status" do
-      get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/draft_notes", user)
+      get api(base_url, user)
 
       expect(response).to have_gitlab_http_status(:ok)
     end
 
     it "returns only draft notes authored by the current user" do
-      get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/draft_notes", user)
+      get api(base_url, user)
 
       draft_note_ids = json_response.pluck("id")
 
@@ -45,7 +45,7 @@ RSpec.describe API::DraftNotes, feature_category: :code_review_workflow do
     context "when requesting an existing draft note by the user" do
       before do
         get api(
-          "/projects/#{project.id}/merge_requests/#{merge_request.iid}/draft_notes/#{draft_note_by_current_user.id}",
+          "#{base_url}/#{draft_note_by_current_user.id}",
           user
         )
       end
@@ -61,7 +61,7 @@ RSpec.describe API::DraftNotes, feature_category: :code_review_workflow do
       context "when requesting a non-existent draft note" do
         it "returns a 404 Not Found response" do
           get api(
-            "/projects/#{project.id}/merge_requests/#{merge_request.iid}/draft_notes/#{DraftNote.last.id + 1}",
+            "#{base_url}/#{DraftNote.last.id + 1}",
             user
           )
 
@@ -72,7 +72,7 @@ RSpec.describe API::DraftNotes, feature_category: :code_review_workflow do
       context "when requesting an existing draft note by another user" do
         it "returns a 404 Not Found response" do
           get api(
-            "/projects/#{project.id}/merge_requests/#{merge_request.iid}/draft_notes/#{draft_note_by_random_user.id}",
+            "#{base_url}/#{draft_note_by_random_user.id}",
             user
           )
 
@@ -88,7 +88,7 @@ RSpec.describe API::DraftNotes, feature_category: :code_review_workflow do
 
       before do
         delete api(
-          "/projects/#{project.id}/merge_requests/#{merge_request.iid}/draft_notes/#{draft_note_by_current_user.id}",
+          "#{base_url}/#{draft_note_by_current_user.id}",
           user
         )
       end
@@ -105,7 +105,7 @@ RSpec.describe API::DraftNotes, feature_category: :code_review_workflow do
     context "when deleting a non-existent draft note" do
       it "returns a 404 Not Found" do
         delete api(
-          "/projects/#{project.id}/merge_requests/#{merge_request.iid}/draft_notes/#{non_existing_record_id}",
+          "#{base_url}/#{non_existing_record_id}",
           user
         )
 
@@ -116,7 +116,7 @@ RSpec.describe API::DraftNotes, feature_category: :code_review_workflow do
     context "when deleting a draft note by a different user" do
       it "returns a 404 Not Found" do
         delete api(
-          "/projects/#{project.id}/merge_requests/#{merge_request.iid}/draft_notes/#{draft_note_by_random_user.id}",
+          "#{base_url}/#{draft_note_by_random_user.id}",
           user
         )
 
@@ -125,8 +125,8 @@ RSpec.describe API::DraftNotes, feature_category: :code_review_workflow do
     end
   end
 
-  def create_draft_note(params = {}, url = api_stub)
-    post api("#{url}/draft_notes", user), params: params
+  def create_draft_note(params = {}, url = base_url)
+    post api(url, user), params: params
   end
 
   describe "Create a new draft note" do
@@ -219,7 +219,7 @@ RSpec.describe API::DraftNotes, feature_category: :code_review_workflow do
   describe "Publishing a draft note" do
     let(:publish_draft_note) do
       put api(
-        "#{api_stub}/draft_notes/#{draft_note_by_current_user.id}/publish",
+        "#{base_url}/#{draft_note_by_current_user.id}/publish",
         user
       )
     end
@@ -240,7 +240,7 @@ RSpec.describe API::DraftNotes, feature_category: :code_review_workflow do
     context "when publishing a non-existent draft note" do
       it "returns a 404 Not Found" do
         put api(
-          "#{api_stub}/draft_notes/#{non_existing_record_id}/publish",
+          "#{base_url}/#{non_existing_record_id}/publish",
           user
         )
 
@@ -251,7 +251,7 @@ RSpec.describe API::DraftNotes, feature_category: :code_review_workflow do
     context "when publishing a draft note by a different user" do
       it "returns a 404 Not Found" do
         put api(
-          "#{api_stub}/draft_notes/#{draft_note_by_random_user.id}/publish",
+          "#{base_url}/#{draft_note_by_random_user.id}/publish",
           user
         )
 

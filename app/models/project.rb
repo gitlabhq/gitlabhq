@@ -128,7 +128,6 @@ class Project < ApplicationRecord
   after_create -> { create_or_load_association(:pages_metadatum) }
   after_create :set_timestamps_for_create
   after_create :check_repository_absence!
-  after_update :update_forks_visibility_level
   before_destroy :remove_private_deploy_keys
   after_destroy :remove_exports
   after_save :update_project_statistics, if: :saved_change_to_namespace_id?
@@ -1154,10 +1153,6 @@ class Project < ApplicationRecord
     { scope: :project, status: auto_devops&.enabled || Feature.enabled?(:force_autodevops_on_by_default, self) }
   end
 
-  def unlink_forks_upon_visibility_decrease_enabled?
-    Feature.enabled?(:unlink_fork_network_upon_visibility_decrease, self)
-  end
-
   # LFS and hashed repository storage are required for using Design Management.
   def design_management_enabled?
     lfs_enabled? && hashed_storage?(:repository)
@@ -1938,19 +1933,6 @@ class Project < ApplicationRecord
 
   def ensure_repository
     create_repository(force: true) unless repository_exists?
-  end
-
-  # update visibility_level of forks
-  def update_forks_visibility_level
-    return if unlink_forks_upon_visibility_decrease_enabled?
-    return unless visibility_level < visibility_level_before_last_save
-
-    forks.each do |forked_project|
-      if forked_project.visibility_level > visibility_level
-        forked_project.visibility_level = visibility_level
-        forked_project.save!
-      end
-    end
   end
 
   def allowed_to_share_with_group?

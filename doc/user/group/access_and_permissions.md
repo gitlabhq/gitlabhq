@@ -90,8 +90,8 @@ To restrict group access by IP address:
 
 Keep in mind that restricting group access by IP address has the following implications:
 
-- Administrators and group owners can access group settings from any IP address, regardless of IP restriction. However:
-  - Group owners can access the subgroups, but not the projects belonging to the group or subgroups, when accessing from a disallowed IP address.
+- Administrators and group Owners can access group settings from any IP address, regardless of IP restriction. However:
+  - Group Owners can access the subgroups, but not the projects belonging to the group or subgroups, when accessing from a disallowed IP address.
   - Administrators can access projects belonging to the group when accessing from a disallowed IP address.
     Access to projects includes cloning code from them.
   - Users can still see group and project names and hierarchies. Only the following are restricted:
@@ -181,12 +181,12 @@ prevent a project from being shared with other groups:
 1. Select **Projects in `<group_name>` cannot be shared with other groups**.
 1. Select **Save changes**.
 
-This setting applies to all subgroups unless overridden by a group owner. Groups already
+This setting applies to all subgroups unless overridden by a group Owner. Groups already
 added to a project lose access when the setting is enabled.
 
 ## Prevent users from requesting access to a group
 
-As a group owner, you can prevent non-members from requesting access to
+As a group Owner, you can prevent non-members from requesting access to
 your group.
 
 1. On the top bar, **Main menu > Groups** and find your group.
@@ -221,13 +221,13 @@ Existing forks are not removed.
 
 ## Prevent members from being added to projects in a group **(PREMIUM)**
 
-As a group owner, you can prevent any new project membership for all
+As a group Owner, you can prevent any new project membership for all
 projects in a group, allowing tighter control over project membership.
 
 For example, if you want to lock the group for an [Audit Event](../../administration/audit_events.md),
 you can guarantee that project membership cannot be modified during the audit.
 
-If group membership lock is enabled, the group owner can still:
+If group membership lock is enabled, the group Owner can still:
 
 - Invite groups or add members to groups to give them access to projects in the **locked** group.
 - Change the role of group members.

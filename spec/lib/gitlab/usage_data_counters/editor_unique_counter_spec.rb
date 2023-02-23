@@ -25,12 +25,29 @@ RSpec.describe Gitlab::UsageDataCounters::EditorUniqueCounter, :clean_gitlab_red
       end
     end
 
+    it 'track snowplow event' do
+      track_action(author: user1, project: project)
+
+      expect_snowplow_event(
+        category: described_class.name,
+        action: 'ide_edit',
+        label: 'usage_activity_by_stage_monthly.create.action_monthly_active_users_ide_edit',
+        namespace: project.namespace,
+        property: event_name,
+        project: project,
+        user: user1,
+        context: [Gitlab::Tracking::ServicePingContext.new(data_source: :redis_hll, event: event_name).to_h]
+      )
+    end
+
     it 'does not track edit actions if author is not present' do
       expect(track_action(author: nil, project: project)).to be_nil
     end
   end
 
   context 'for web IDE edit actions' do
+    let(:event_name) { described_class::EDIT_BY_WEB_IDE }
+
     it_behaves_like 'tracks and counts action' do
       def track_action(params)
         described_class.track_web_ide_edit_action(**params)
@@ -43,6 +60,8 @@ RSpec.describe Gitlab::UsageDataCounters::EditorUniqueCounter, :clean_gitlab_red
   end
 
   context 'for SFE edit actions' do
+    let(:event_name) { described_class::EDIT_BY_SFE }
+
     it_behaves_like 'tracks and counts action' do
       def track_action(params)
         described_class.track_sfe_edit_action(**params)
@@ -55,6 +74,8 @@ RSpec.describe Gitlab::UsageDataCounters::EditorUniqueCounter, :clean_gitlab_red
   end
 
   context 'for snippet editor edit actions' do
+    let(:event_name) { described_class::EDIT_BY_SNIPPET_EDITOR }
+
     it_behaves_like 'tracks and counts action' do
       def track_action(params)
         described_class.track_snippet_editor_edit_action(**params)

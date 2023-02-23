@@ -10,7 +10,7 @@ class Projects::BlobController < Projects::ApplicationController
   include RedirectsForMissingPathOnTree
   include SourcegraphDecorator
   include DiffHelper
-  include RedisTracking
+  include ProductAnalyticsTracking
   extend ::Gitlab::Utils::Override
 
   prepend_before_action :authenticate_user!, only: [:edit]
@@ -37,7 +37,11 @@ class Projects::BlobController < Projects::ApplicationController
   before_action :validate_diff_params, only: :diff
   before_action :set_last_commit_sha, only: [:edit, :update]
 
-  track_redis_hll_event :create, :update, name: 'g_edit_by_sfe'
+  track_custom_event :create, :update,
+    name: 'g_edit_by_sfe',
+    action: 'perform_sfe_action',
+    label: 'usage_activity_by_stage_monthly.create.action_monthly_active_users_sfe_edit',
+    destinations: [:redis_hll, :snowplow]
 
   feature_category :source_code_management
   urgency :low, [:create, :show, :edit, :update, :diff]
@@ -315,6 +319,12 @@ class Projects::BlobController < Projects::ApplicationController
     file = lfs_object.file
     file = file.cdn_enabled_url(request.remote_ip) if file.respond_to?(:cdn_enabled_url)
     file.url
+  end
+
+  alias_method :tracking_project_source, :project
+
+  def tracking_namespace_source
+    project&.namespace
   end
 end
 

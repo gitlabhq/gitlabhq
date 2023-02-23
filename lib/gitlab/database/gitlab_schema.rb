@@ -121,6 +121,16 @@ module Gitlab
 
           key_name = data['table_name'] || data['view_name']
 
+          # rubocop:disable Gitlab/DocUrl
+          if data['gitlab_schema'].nil?
+            raise(
+              UnknownSchemaError,
+              "#{file_path} must specify a valid gitlab_schema for #{key_name}." \
+              "See https://docs.gitlab.com/ee/development/database/database_dictionary.html"
+            )
+          end
+          # rubocop:enable Gitlab/DocUrl
+
           dic[key_name] = data['gitlab_schema'].to_sym
         end
       end

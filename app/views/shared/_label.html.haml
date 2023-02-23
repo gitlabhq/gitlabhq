@@ -31,14 +31,13 @@
             %ul
               - if label.project_label? && label.project.group && can?(current_user, :admin_label, label.project.group)
                 %li
-                  = render Pajamas::ButtonComponent.new(category: :tertiary,
+                  = render Pajamas::ButtonComponent.new(category: :tertiary, variant: :link,
                     button_options: { class: 'js-promote-project-label-button', data: { url: promote_project_label_path(label.project, label), label_title: label.title, label_color: label.color, label_text_color: label.text_color, group_name: label.project.group.name } }) do
                     = _('Promote to group label')
               %li
-                %span
-                  = render Pajamas::ButtonComponent.new(category: :tertiary,
-                    button_options: { class: 'text-danger js-delete-label-modal-button', data: { label_name: label.name, subject_name: label.subject_name, destroy_path: label.destroy_path } }) do
-                    = _('Delete')
+                = render Pajamas::ButtonComponent.new(category: :tertiary, variant: :link,
+                  button_options: { class: 'text-danger js-delete-label-modal-button', data: { label_name: label.name, subject_name: label.subject_name, destroy_path: label.destroy_path } }) do
+                  = _('Delete')
     - if current_user
       %li.gl-display-inline-block.label-subscription.js-label-subscription.gl-ml-3
         - if label.can_subscribe_to_label_in_different_levels?

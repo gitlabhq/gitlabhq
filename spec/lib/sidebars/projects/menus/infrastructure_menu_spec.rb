@@ -141,6 +141,18 @@ RSpec.describe Sidebars::Projects::Menus::InfrastructureMenu do
           it_behaves_like 'access rights checks'
         end
       end
+
+      context 'when instance is not configured for Google OAuth2' do
+        before do
+          stub_feature_flags(incubation_5mp_google_cloud: true)
+          unconfigured_google_oauth2 = Struct.new(:app_id, :app_secret).new('', '')
+          allow(Gitlab::Auth::OAuth::Provider).to receive(:config_for)
+                                                    .with('google_oauth2')
+                                                    .and_return(unconfigured_google_oauth2)
+        end
+
+        it { is_expected.to be_nil }
+      end
     end
   end
 end

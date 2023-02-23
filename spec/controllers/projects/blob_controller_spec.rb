@@ -345,11 +345,23 @@ RSpec.describe Projects::BlobController do
       end
     end
 
-    it_behaves_like 'tracking unique hll events' do
+    context 'events tracking' do
+      let(:target_event) { 'g_edit_by_sfe' }
+
       subject(:request) { put :update, params: default_params }
 
-      let(:target_event) { 'g_edit_by_sfe' }
-      let(:expected_value) { instance_of(Integer) }
+      it_behaves_like 'tracking unique hll events' do
+        let(:expected_value) { instance_of(Integer) }
+      end
+
+      it_behaves_like 'Snowplow event tracking with RedisHLL context' do
+        let(:action) { 'perform_sfe_action' }
+        let(:category) { described_class.to_s }
+        let(:namespace) { project.namespace.reload }
+        let(:property) { target_event }
+        let(:label) { 'usage_activity_by_stage_monthly.create.action_monthly_active_users_sfe_edit' }
+        let(:feature_flag_name) { 'route_hll_to_snowplow_phase4' }
+      end
     end
   end
 
@@ -477,6 +489,7 @@ RSpec.describe Projects::BlobController do
 
   describe 'POST create' do
     let(:user) { create(:user) }
+    let(:target_event) { 'g_edit_by_sfe' }
     let(:default_params) do
       {
         namespace_id: project.namespace,
@@ -498,8 +511,16 @@ RSpec.describe Projects::BlobController do
     subject(:request) { post :create, params: default_params }
 
     it_behaves_like 'tracking unique hll events' do
-      let(:target_event) { 'g_edit_by_sfe' }
       let(:expected_value) { instance_of(Integer) }
+    end
+
+    it_behaves_like 'Snowplow event tracking with RedisHLL context' do
+      let(:action) { 'perform_sfe_action' }
+      let(:category) { described_class.to_s }
+      let(:namespace) { project.namespace }
+      let(:property) { target_event }
+      let(:label) { 'usage_activity_by_stage_monthly.create.action_monthly_active_users_sfe_edit' }
+      let(:feature_flag_name) { 'route_hll_to_snowplow_phase4' }
     end
 
     it 'redirects to blob' do

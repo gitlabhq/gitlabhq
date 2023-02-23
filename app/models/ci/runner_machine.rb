@@ -57,11 +57,10 @@ module Ci
           values[:executor_type] = Ci::Runner::EXECUTOR_NAME_TO_TYPES.fetch(values.delete(:executor), :unknown)
         end
 
-        version_changed = values.include?(:version) && values[:version] != version
+        new_version = values[:version]
+        schedule_runner_version_update(new_version) if new_version && values[:version] != version
 
         cache_attributes(values)
-
-        schedule_runner_version_update if version_changed
 
         # We save data without validation, it will always change due to `contacted_at`
         update_columns(values) if persist_cached_data?
@@ -79,10 +78,10 @@ module Ci
         (Time.current - real_contacted_at) >= contacted_at_max_age
     end
 
-    def schedule_runner_version_update
-      return unless version
+    def schedule_runner_version_update(new_version)
+      return unless new_version
 
-      Ci::Runners::ProcessRunnerVersionUpdateWorker.perform_async(version)
+      Ci::Runners::ProcessRunnerVersionUpdateWorker.perform_async(new_version)
     end
   end
 end

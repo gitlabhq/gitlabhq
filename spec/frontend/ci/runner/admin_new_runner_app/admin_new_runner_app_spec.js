@@ -1,6 +1,8 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { GlSprintf } from '@gitlab/ui';
+import { s__ } from '~/locale';
+
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { createAlert, VARIANT_SUCCESS } from '~/flash';
@@ -85,7 +87,7 @@ describe('AdminNewRunnerApp', () => {
 
       it('pushes an alert to be shown after redirection', () => {
         expect(saveAlertToLocalStorage).toHaveBeenCalledWith({
-          message: expect.any(String),
+          message: s__('Runners|Runner created.'),
           variant: VARIANT_SUCCESS,
         });
       });

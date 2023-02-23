@@ -86,7 +86,9 @@ module Sidebars
           feature_is_enabled = enabled_for_user || enabled_for_group || enabled_for_project
           user_has_permissions = can?(context.current_user, :admin_project_google_cloud, context.project)
 
-          unless feature_is_enabled && user_has_permissions
+          google_oauth2_configured = google_oauth2_configured?
+
+          unless feature_is_enabled && user_has_permissions && google_oauth2_configured
             return ::Sidebars::NilMenuItem.new(item_id: :incubation_5mp_google_cloud)
           end
 
@@ -102,6 +104,11 @@ module Sidebars
             ] },
             item_id: :google_cloud
           )
+        end
+
+        def google_oauth2_configured?
+          config = Gitlab::Auth::OAuth::Provider.config_for('google_oauth2')
+          config&.present? && config.app_id.present? && config.app_secret.present?
         end
       end
     end

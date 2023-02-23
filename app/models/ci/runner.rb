@@ -450,15 +450,13 @@ module Ci
           values[:executor_type] = EXECUTOR_NAME_TO_TYPES.fetch(values.delete(:executor), :unknown)
         end
 
+        new_version = values[:version]
+        schedule_runner_version_update(new_version) if new_version && values[:version] != version
+
         cache_attributes(values)
 
         # We save data without validation, it will always change due to `contacted_at`
-        if persist_cached_data?
-          version_updated = values.include?(:version) && values[:version] != version
-
-          update_columns(values)
-          schedule_runner_version_update if version_updated
-        end
+        update_columns(values) if persist_cached_data?
       end
     end
 
@@ -603,10 +601,10 @@ module Ci
     # TODO Remove in 16.0 when runners are known to send a system_id
     # For now, heartbeats with version updates might result in two Sidekiq jobs being queued if a runner has a system_id
     # This is not a problem since the jobs are deduplicated on the version
-    def schedule_runner_version_update
-      return unless version
+    def schedule_runner_version_update(new_version)
+      return unless new_version
 
-      Ci::Runners::ProcessRunnerVersionUpdateWorker.perform_async(version)
+      Ci::Runners::ProcessRunnerVersionUpdateWorker.perform_async(new_version)
     end
   end
 end
