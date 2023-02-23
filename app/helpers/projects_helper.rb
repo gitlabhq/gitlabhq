@@ -498,6 +498,10 @@ module ProjectsHelper
     format_cached_count(1000, number)
   end
 
+  def remote_mirror_setting_enabled?
+    false
+  end
+
   private
 
   def localized_access_names

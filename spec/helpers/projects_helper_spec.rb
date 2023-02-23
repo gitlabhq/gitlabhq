@@ -1378,4 +1378,10 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
       end
     end
   end
+
+  describe '#remote_mirror_setting_enabled?' do
+    it 'returns false' do
+      expect(helper.remote_mirror_setting_enabled?).to be_falsy
+    end
+  end
 end

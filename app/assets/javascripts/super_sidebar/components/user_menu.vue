@@ -23,6 +23,7 @@ export default {
       editStatus: s__('SetStatusModal|Edit status'),
       editProfile: s__('CurrentUser|Edit profile'),
       preferences: s__('CurrentUser|Preferences'),
+      gitlabNext: s__('CurrentUser|Switch to GitLab Next'),
     },
     provideFeedback: s__('NorthstarNavigation|Provide feedback'),
     startTrial: s__('CurrentUser|Start an Ultimate trial'),
@@ -80,6 +81,12 @@ export default {
       return {
         text: this.$options.i18n.user.preferences,
         href: this.data.settings.profile_preferences_path,
+      };
+    },
+    gitlabNextItem() {
+      return {
+        text: this.$options.i18n.user.gitlabNext,
+        href: this.data.canary_toggle_com_url,
       };
     },
     feedbackItem() {
@@ -169,6 +176,12 @@ export default {
         <gl-disclosure-dropdown-item :item="editProfileItem" data-testid="edit-profile-item" />
 
         <gl-disclosure-dropdown-item :item="preferencesItem" data-testid="preferences-item" />
+
+        <gl-disclosure-dropdown-item
+          v-if="data.gitlab_com_but_not_canary"
+          :item="gitlabNextItem"
+          data-testid="gitlab-next-item"
+        />
       </gl-disclosure-dropdown-group>
 
       <gl-disclosure-dropdown-group bordered>

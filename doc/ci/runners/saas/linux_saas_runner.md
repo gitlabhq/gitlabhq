@@ -92,8 +92,11 @@ The final disk space your jobs can use is less than 25 GB. Some disk space
 allocated to the instance is occupied by the operating system, the Docker image,
 and a copy of your cloned repository.
 
-## Pre-clone script
+## Pre-clone script (deprecated)
 
+WARNING:
+This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/391896) in GitLab 15.9
+and is planned for removal in 15.11. Use [`pre_get_sources_script`](../../../ci/yaml/index.md#hookspre_get_sources_script) instead. This change is a breaking change.
 With SaaS runners on Linux, you can run commands in a CI/CD
 job before the runner attempts to run `git init` and `git fetch` to
 download a GitLab repository. The

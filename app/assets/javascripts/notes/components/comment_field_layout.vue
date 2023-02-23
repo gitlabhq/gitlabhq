@@ -76,7 +76,7 @@ export default {
     ></div>
     <noteable-warning
       v-if="hasWarning"
-      class="gl-border-b-1 gl-border-b-solid gl-border-b-gray-100 gl-rounded-base gl-rounded-bottom-left-none gl-rounded-bottom-right-none"
+      class="gl-py-4 gl-border-b-1 gl-border-b-solid gl-border-b-gray-100 gl-rounded-base gl-rounded-bottom-left-none gl-rounded-bottom-right-none"
       :is-locked="isLocked"
       :is-confidential="isConfidential"
       :noteable-type="noteableType"

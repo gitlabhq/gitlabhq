@@ -5,6 +5,12 @@ module MergeRequests
     extend ::Gitlab::Utils::Override
     include MergeRequests::AssignsMergeParams
 
+    delegate :repository, to: :project
+
+    def initialize(project:, current_user: nil, params: {})
+      super(container: project, current_user: current_user, params: params)
+    end
+
     def create_note(merge_request, state = merge_request.state)
       SystemNoteService.change_status(merge_request, merge_request.target_project, current_user, state, nil)
     end
@@ -93,6 +99,10 @@ module MergeRequests
     end
 
     private
+
+    def self.constructor_container_arg(value)
+      { project: value }
+    end
 
     def refresh_pipelines_on_merge_requests(merge_request, allow_duplicate: false)
       create_pipeline_for(merge_request, current_user, async: true, allow_duplicate: allow_duplicate)

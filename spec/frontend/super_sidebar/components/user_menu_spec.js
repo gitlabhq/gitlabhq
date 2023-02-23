@@ -176,6 +176,25 @@ describe('UserMenu component', () => {
     });
   });
 
+  describe('GitLab Next item', () => {
+    describe('on gitlab.com', () => {
+      it('should render a link to switch to GitLab Next', () => {
+        createWrapper({ gitlab_com_but_not_canary: true });
+        const item = wrapper.findByTestId('gitlab-next-item');
+        expect(item.text()).toBe(UserMenu.i18n.user.gitlabNext);
+        expect(item.find('a').attributes('href')).toBe(userMenuMockData.canary_toggle_com_url);
+      });
+    });
+
+    describe('anywhere else', () => {
+      it('should not render the GitLab Next link', () => {
+        createWrapper({ gitlab_com_but_not_canary: false });
+        const item = wrapper.findByTestId('gitlab-next-item');
+        expect(item.exists()).toBe(false);
+      });
+    });
+  });
+
   describe('New navigation toggle item', () => {
     it('should render menu item with new navigation toggle', () => {
       createWrapper();

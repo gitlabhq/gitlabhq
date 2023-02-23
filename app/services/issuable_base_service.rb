@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class IssuableBaseService < ::BaseProjectService
+class IssuableBaseService < ::BaseContainerService
   private
 
   def self.constructor_container_arg(value)
@@ -10,13 +10,15 @@ class IssuableBaseService < ::BaseProjectService
     # Follow on issue to address this:
     # https://gitlab.com/gitlab-org/gitlab/-/issues/328438
 
-    { project: value }
+    { container: value }
   end
 
   attr_accessor :params, :skip_milestone_email
 
-  def initialize(project:, current_user: nil, params: {})
-    super
+  def initialize(container:, current_user: nil, params: {})
+    # we need to exclude project params since they may come from external requests. project should always
+    # be passed as part of the service's initializer
+    super(container: container, current_user: current_user, params: params.except(:project, :project_id))
 
     @skip_milestone_email = @params.delete(:skip_milestone_email)
   end

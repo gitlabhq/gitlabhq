@@ -121,7 +121,9 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
         whats_new_version_digest: helper.whats_new_version_digest,
         show_version_check: helper.show_version_check?,
         gitlab_version: Gitlab.version_info,
-        gitlab_version_check: helper.gitlab_version_check
+        gitlab_version_check: helper.gitlab_version_check,
+        gitlab_com_but_not_canary: Gitlab.com_but_not_canary?,
+        canary_toggle_com_url: Gitlab::Saas.canary_toggle_com_url
       })
     end
 

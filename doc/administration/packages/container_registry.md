@@ -627,6 +627,8 @@ storage:
     trimlegacyrootprefix: true
 ```
 
+By default, Azure Storage Driver uses the `core.windows.net` realm. You can set another value for `realm` in the `azure` section (for example, `core.usgovcloudapi.net` for Azure Government Cloud). For more information, see the [Docker documentation](https://docs.docker.com/registry/storage-drivers/azure/).
+
 ### Disable redirect for storage driver
 
 By default, users accessing a registry configured with a remote backend are redirected to the default backend for the storage driver. For example, registries can be configured using the `s3` storage driver, which redirects requests to a remote S3 bucket to alleviate load on the GitLab server.

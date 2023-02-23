@@ -6,10 +6,6 @@ module Issues
     include IncidentManagement::UsageData
     include IssueTypeHelpers
 
-    def initialize(container:, current_user: nil, params: {})
-      super(project: container, current_user: current_user, params: params)
-    end
-
     def hook_data(issue, action, old_associations: {})
       hook_data = issue.to_hook_data(current_user, old_associations: old_associations)
       hook_data[:object_attributes][:action] = action

@@ -1025,7 +1025,7 @@ GEM
     omniauth-twitter (1.4.0)
       omniauth-oauth (~> 1.1)
       rack
-    omniauth_openid_connect (0.6.0)
+    omniauth_openid_connect (0.6.1)
       omniauth (>= 1.9, < 3)
       openid_connect (~> 1.1)
     open4 (1.3.4)
@@ -1781,7 +1781,7 @@ DEPENDENCIES
   omniauth-saml (~> 2.0.0)
   omniauth-twitter (~> 1.4)
   omniauth_crowd (~> 2.4.0)!
-  omniauth_openid_connect (~> 0.6.0)
+  omniauth_openid_connect (~> 0.6.1)
   openid_connect (= 1.3.0)
   openssl (= 2.2.2)
   org-ruby (~> 0.9.12)

@@ -109,4 +109,6 @@ export const userMenuMockData = {
   },
   can_sign_out: false,
   sign_out_link: invalidUrl,
+  gitlab_com_but_not_canary: true,
+  canary_toggle_com_url: 'https://next.gitlab.com',
 };

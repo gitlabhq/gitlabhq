@@ -20,11 +20,11 @@ Each time you run a job that requires tooling or dependencies not available in t
 GitLab SaaS provides macOS build machines on Apple servers with Intel x86-64 processors.
 The expectation is that virtual machines running on the Apple M1 chip will be available in the second half of 2022.
 
-At this time there is only one available machine type offered, `gbc-macos-large`.
+At this time there is only one available machine type offered, `shared-macos-amd64`.
 
 | Instance type | vCPUS | Memory (GB) |
 | --------- | --- | ------- |
-|  `gbc-macos-large` | 4 | 10 |
+|  `shared-macos-amd64` | 4 | 10 |
 
 ## VM images
 

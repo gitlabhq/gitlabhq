@@ -12337,6 +12337,9 @@ msgstr ""
 msgid "CurrentUser|Start an Ultimate trial"
 msgstr ""
 
+msgid "CurrentUser|Switch to GitLab Next"
+msgstr ""
+
 msgid "Currently unable to fetch data for this pipeline."
 msgstr ""
 

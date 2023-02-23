@@ -18,7 +18,7 @@ module Issues
       super(container: container, current_user: current_user, params: params)
       @spam_params = spam_params
       @build_service = build_service ||
-        BuildService.new(container: container, current_user: current_user, params: params)
+        BuildService.new(container: project, current_user: current_user, params: params)
     end
 
     def execute(skip_system_notes: false)
