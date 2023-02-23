@@ -2,7 +2,7 @@
 
 if stable_branch.non_security_stable_branch?
   markdown(<<~MARKDOWN)
-  ### QA `e2e:package-and-test`
+  ## QA `e2e:package-and-test`
 
   **@#{helper.mr_author}, the `package-and-test` job must complete before merging this merge request.***
 

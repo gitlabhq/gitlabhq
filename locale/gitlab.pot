@@ -2385,6 +2385,9 @@ msgstr ""
 msgid "Add new directory"
 msgstr ""
 
+msgid "Add new saved reply"
+msgstr ""
+
 msgid "Add or remove a user."
 msgstr ""
 
@@ -4706,6 +4709,9 @@ msgid "An unexpected error occurred while starting the Web Terminal."
 msgstr ""
 
 msgid "An unexpected error occurred while stopping the Web Terminal."
+msgstr ""
+
+msgid "An unexpected error occurred. Please try again."
 msgstr ""
 
 msgid "An unknown error occurred while loading this graph."
@@ -11213,6 +11219,9 @@ msgid "ContainerRegistry|You are about to remove repository %{title}. Once you c
 msgstr ""
 
 msgid "ContainerRegistry|You can add an image to this registry with the following commands:"
+msgstr ""
+
+msgid "Content"
 msgstr ""
 
 msgid "Content parsed with %{link}."
@@ -31966,6 +31975,9 @@ msgstr ""
 msgid "Please enable and migrate to hashed storage to avoid security issues and ensure data integrity. %{migrate_link}"
 msgstr ""
 
+msgid "Please enter a name for the saved reply."
+msgstr ""
+
 msgid "Please enter a non-negative number"
 msgstr ""
 
@@ -31985,6 +31997,9 @@ msgid "Please enter a valid time interval"
 msgstr ""
 
 msgid "Please enter a value of 90 days or more"
+msgstr ""
+
+msgid "Please enter the saved reply content."
 msgstr ""
 
 msgid "Please enter your current password."
@@ -48847,6 +48862,9 @@ msgid "Write an internal note or drag your files here…"
 msgstr ""
 
 msgid "Write milestone description..."
+msgstr ""
+
+msgid "Write saved reply content here…"
 msgstr ""
 
 msgid "Write your release notes or drag your files here…"

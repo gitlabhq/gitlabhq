@@ -63,11 +63,18 @@ groups are in the same GitLab instance. Transferring groups is a faster and more
 See [epic 6629](https://gitlab.com/groups/gitlab-org/-/epics/6629) for a list of known issues for migrating by direct
 transfer.
 
-### Rate limit
+### Limits
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/386452) in GitLab 15.9.
-
-Each user can perform up to six migrations per minute.
+| Limit       | Description                                                                                                                          |
+|:------------|:-------------------------------------------------------------------------------------------------------------------------------------|
+| 6           | Maximum number of migrations per minute per user. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/386452) in GitLab 15.9. |
+| 5 GB        | Maximum relation size that can be downloaded from the source instance.                                                               |
+| 10 GB       | Maximum size of a decompressed archive.                                                                                              |
+| 210 seconds | Maximum number of seconds to wait for decompressing an archive file.                                                                 |
+| 50 MB       | Maximum length an NDJSON row can have.                                                                                               |
+| 5 minutes   | Maximum number of seconds until an empty export status on source instance is raised.                                                 |
+| 8 hours     | Time until migration times out.                                                                                                      |
+| 90 minutes  | Time the destination is waiting for export to complete.                                                                              |
 
 ### Visibility rules
 
@@ -105,16 +112,15 @@ To migrate groups by direct transfer:
 
 To ensure GitLab maps users and their contributions correctly:
 
-1. Create the required users on the destination GitLab instance. When migrating to GitLab.com, you must create users
-   manually unless [SCIM](../../group/saml_sso/scim_setup.md) is used. Creating users with the API is only available to
-   self-managed instances because it requires administrator access.
-1. Check that users have a public email on the source GitLab instance that matches their primary email on the
-   destination GitLab instance.
-1. Ensure that users confirm their primary email addresses on the destination GitLab instance. Most users receive an
-   email asking them to confirm their email address.
-1. If using an OmniAuth provider like SAML, link GitLab and SAML accounts of users on GitLab. All users on the
-   destination GitLab instance must sign in and verify their account on the destination GitLab instance. If using
-   [SAML SSO for GitLab.com groups](../../group/saml_sso/index.md), users must
+1. Create the required users on the destination GitLab instance. You can create users with the API only on self-managed instances because it requires
+   administrator access. When migrating to GitLab.com or a self-managed GitLab instance you can:
+   - Create users manually.
+   - Set up or use your existing [SAML SSO provider](../saml_sso/index.md) and leverage user synchronization of SAML SSO groups supported through
+     [SCIM](../../group/saml_sso/scim_setup.md). You can
+     [bypass the GitLab user account verification with verified email domains](../saml_sso/index.md#bypass-user-email-confirmation-with-verified-domains).
+   1. Ensure that users have a public email on the source GitLab instance that matches any confirmed email address on the destination GitLab instance. Most
+      users receive an email asking them to confirm their email address.
+   1. If users already exist on the destination instance and you use [SAML SSO for GitLab.com groups](../../group/saml_sso/index.md), all users must
    [link their SAML identity to their GitLab.com account](../../group/saml_sso/index.md#linking-saml-to-your-existing-gitlabcom-account).
 
 ### Connect the source GitLab instance
@@ -175,11 +181,13 @@ for your version of GitLab to see the list of items relevant to you. For example
 Group items that are migrated to the destination GitLab instance include:
 
 - Badges ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/292431) in 13.11)
-- Board Lists
-- Boards
+- Boards ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18938) in GitLab 13.7)
+- Board Lists ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/24863) in GitLab 13.7)
 - Epics ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/250281) in 13.7)
   - Epic resource state events ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/291983) in GitLab 15.4)
-- Finisher
+  - Label associations ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/62074) in GitLab 13.12)
+  - State and State ID ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28203) in GitLab 13.7)
+  - System Note Metadata ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/63551) in GitLab 14.0)
 - Group Labels ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/292429) in 13.9)
 - Iterations ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/292428) in 13.10)
 - Iterations cadences ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96570) in 15.4)
@@ -189,11 +197,11 @@ Group items that are migrated to the destination GitLab instance include:
   - The user has a public email in the source GitLab instance that matches a
     confirmed email in the destination GitLab instance
 - Milestones ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/292427) in 13.10)
-- Namespace Settings
+- Namespace Settings ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85128) in GitLab 14.10)
 - Releases
   - Milestones ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339422) in GitLab 15.0).
-- Subgroups
-- Uploads
+- Subgroups ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18938) in GitLab 13.7)
+- Uploads ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18938) in GitLab 13.7)
 
 Any other items are **not** migrated.
 
@@ -409,7 +417,7 @@ Items that are **not** exported include:
 
 - To preserve the member list and their respective permissions on imported groups, review the users in these groups. Make
 sure these users exist before importing the desired groups.
-- Users must set a public email in the source GitLab instance that matches one of their verified emails in the target GitLab instance.
+- Users must set a public email in the source GitLab instance that matches their confirmed primary email in the destination GitLab instance. Most users receive an email asking them to confirm their email address.
 
 ### Enable export for a group
 

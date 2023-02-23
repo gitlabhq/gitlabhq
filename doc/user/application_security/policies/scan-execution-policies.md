@@ -44,7 +44,7 @@ Most policy changes take effect as soon as the merge request is merged. Any chan
 do not go through a merge request and are committed directly to the default branch may require up to 10 minutes
 before the policy changes take effect.
 
-![Scan Execution Policy Editor Rule Mode](img/scan_execution_policy_rule_mode_v15_5.png)
+![Scan Execution Policy Editor Rule Mode](img/scan_execution_policy_rule_mode_v15_9.png)
 
 ## Scan execution policies schema
 

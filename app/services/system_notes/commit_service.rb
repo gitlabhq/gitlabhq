@@ -2,6 +2,8 @@
 
 module SystemNotes
   class CommitService < ::SystemNotes::BaseService
+    NEW_COMMIT_DISPLAY_LIMIT = 10
+
     # Called when commits are added to a merge request
     #
     # new_commits      - Array of Commits added since last push
@@ -36,25 +38,73 @@ module SystemNotes
       create_note(NoteSummary.new(noteable, project, author, body, action: 'tag'))
     end
 
+    private
+
     # Build an Array of lines detailing each commit added in a merge request
     #
     # new_commits - Array of new Commit objects
     #
     # Returns an Array of Strings
-    def new_commit_summary(new_commits)
+    def new_commits_list(new_commits)
       new_commits.collect do |commit|
         content_tag('li', "#{commit.short_id} - #{commit.title}")
       end
     end
 
-    private
+    # Builds an Array of lines describing each commit and truncate them based on the limit
+    # to avoid creating a note with a large number of commits.
+    #
+    # commits - Array of Commit objects
+    #
+    # Returns an Array of Strings
+    #
+    # rubocop: disable CodeReuse/ActiveRecord
+    def new_commit_summary(commits, start_rev)
+      if commits.size > NEW_COMMIT_DISPLAY_LIMIT
+        no_of_commits_to_truncate = commits.size - NEW_COMMIT_DISPLAY_LIMIT
+        commits_to_truncate = commits.take(no_of_commits_to_truncate)
+        remaining_commits = commits.drop(no_of_commits_to_truncate)
+
+        [truncated_new_commits(commits_to_truncate, start_rev)] + new_commits_list(remaining_commits)
+      else
+        new_commits_list(commits)
+      end
+    end
+    # rubocop: enable CodeReuse/ActiveRecord
+
+    # Builds a summary line that describes given truncated commits.
+    #
+    # commits - Array of Commit objects
+    # start_rev - String SHA of a Commit that will be used as the starting SHA of the range
+    #
+    # Returns a String wrapped in 'li' tag.
+    def truncated_new_commits(commits, start_rev)
+      count = commits.size
+
+      commit_ids = if count == 1
+                     commits.first.short_id
+                   elsif start_rev && !Gitlab::Git.blank_ref?(start_rev)
+                     "#{Commit.truncate_sha(start_rev)}...#{commits.last.short_id}"
+                   else
+                     # This two-dots notation seems to be not functioning as expected, but we should
+                     # fallback to it as start_rev can be empty.
+                     #
+                     # For more information, please see https://gitlab.com/gitlab-org/gitlab/-/issues/391809
+                     "#{commits.first.short_id}..#{commits.last.short_id}"
+                   end
+
+      commits_text = "#{count} earlier commit".pluralize(count)
+
+      content_tag('li', "#{commit_ids} - #{commits_text}")
+    end
 
     # Builds a list of existing and new commits according to existing_commits and
     # new_commits methods.
     # Returns a String wrapped in `ul` and `li` tags.
     def commits_list(noteable, new_commits, existing_commits, oldrev)
       existing_commit_summary = existing_commit_summary(noteable, existing_commits, oldrev)
-      new_commit_summary = new_commit_summary(new_commits).join
+      start_rev = existing_commits.empty? ? oldrev : existing_commits.last.id
+      new_commit_summary = new_commit_summary(new_commits, start_rev).join
 
       content_tag('ul', "#{existing_commit_summary}#{new_commit_summary}".html_safe)
     end

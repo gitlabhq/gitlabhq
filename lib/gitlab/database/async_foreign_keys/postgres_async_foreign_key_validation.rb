@@ -11,7 +11,7 @@ module Gitlab
         MAX_IDENTIFIER_LENGTH = Gitlab::Database::MigrationHelpers::MAX_IDENTIFIER_NAME_LENGTH
         MAX_LAST_ERROR_LENGTH = 10_000
 
-        validates :name, presence: true, uniqueness: true, length: { maximum: MAX_IDENTIFIER_LENGTH }
+        validates :name, presence: true, uniqueness: { scope: :table_name }, length: { maximum: MAX_IDENTIFIER_LENGTH }
         validates :table_name, presence: true, length: { maximum: MAX_IDENTIFIER_LENGTH }
 
         scope :ordered, -> { order(attempts: :asc, id: :asc) }

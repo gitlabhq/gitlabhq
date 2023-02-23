@@ -581,6 +581,14 @@ module Types
               description: 'Minimum access level.'
           end
 
+    field :flow_metrics,
+          ::Types::Analytics::CycleAnalytics::FlowMetrics[:project],
+          null: true,
+          description: 'Flow metrics for value stream analytics.',
+          method: :project_namespace,
+          authorize: :read_cycle_analytics,
+          alpha: { milestone: '15.10' }
+
     def timelog_categories
       object.project_namespace.timelog_categories if Feature.enabled?(:timelog_categories)
     end

@@ -14,7 +14,7 @@ RSpec.describe Gitlab::Database::AsyncForeignKeys::PostgresAsyncForeignKeyValida
     subject { fk_validation }
 
     it { is_expected.to validate_presence_of(:name) }
-    it { is_expected.to validate_uniqueness_of(:name) }
+    it { is_expected.to validate_uniqueness_of(:name).scoped_to(:table_name) }
     it { is_expected.to validate_length_of(:name).is_at_most(identifier_limit) }
     it { is_expected.to validate_presence_of(:table_name) }
     it { is_expected.to validate_length_of(:table_name).is_at_most(identifier_limit) }

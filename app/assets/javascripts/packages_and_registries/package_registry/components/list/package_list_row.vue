@@ -8,9 +8,10 @@ import {
   GlTooltipDirective,
   GlTruncate,
 } from '@gitlab/ui';
-import { s__, __ } from '~/locale';
+import { __ } from '~/locale';
 import ListItem from '~/vue_shared/components/registry/list_item.vue';
 import {
+  DELETE_PACKAGE_TEXT,
   ERRORED_PACKAGE_TEXT,
   ERROR_PUBLISHING,
   PACKAGE_ERROR_STATUS,
@@ -91,7 +92,7 @@ export default {
   i18n: {
     erroredPackageText: ERRORED_PACKAGE_TEXT,
     createdAt: __('Created %{timestamp}'),
-    deletePackage: s__('PackageRegistry|Delete package'),
+    deletePackage: DELETE_PACKAGE_TEXT,
     errorPublishing: ERROR_PUBLISHING,
     warning: WARNING_TEXT,
     moreActions: __('More actions'),

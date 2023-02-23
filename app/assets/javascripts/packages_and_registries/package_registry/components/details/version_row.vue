@@ -1,5 +1,7 @@
 <script>
 import {
+  GlDropdown,
+  GlDropdownItem,
   GlFormCheckbox,
   GlIcon,
   GlLink,
@@ -13,6 +15,7 @@ import PublishMethod from '~/packages_and_registries/shared/components/publish_m
 import ListItem from '~/vue_shared/components/registry/list_item.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import {
+  DELETE_PACKAGE_TEXT,
   ERRORED_PACKAGE_TEXT,
   ERROR_PUBLISHING,
   PACKAGE_ERROR_STATUS,
@@ -22,6 +25,8 @@ import {
 export default {
   name: 'PackageVersionRow',
   components: {
+    GlDropdown,
+    GlDropdownItem,
     GlFormCheckbox,
     GlIcon,
     GlLink,
@@ -58,6 +63,7 @@ export default {
     },
   },
   i18n: {
+    deletePackage: DELETE_PACKAGE_TEXT,
     erroredPackageText: ERRORED_PACKAGE_TEXT,
     errorPublishing: ERROR_PUBLISHING,
     warningText: WARNING_TEXT,
@@ -120,6 +126,20 @@ export default {
           </template>
         </gl-sprintf>
       </span>
+    </template>
+
+    <template v-if="packageEntity.canDestroy" #right-action>
+      <gl-dropdown
+        icon="ellipsis_v"
+        :text="$options.i18n.moreActions"
+        :text-sr-only="true"
+        category="tertiary"
+        no-caret
+      >
+        <gl-dropdown-item variant="danger" @click="$emit('delete')">{{
+          $options.i18n.deletePackage
+        }}</gl-dropdown-item>
+      </gl-dropdown>
     </template>
   </list-item>
 </template>

@@ -1,5 +1,5 @@
 import { GlFormCheckbox, GlSprintf, GlTruncate } from '@gitlab/ui';
-import Vue, { nextTick } from 'vue';
+import Vue from 'vue';
 import VueRouter from 'vue-router';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
@@ -141,7 +141,6 @@ describe('packages_list_row', () => {
 
       findDeleteDropdown().vm.$emit('click');
 
-      await nextTick();
       expect(wrapper.emitted('delete')).toHaveLength(1);
     });
   });

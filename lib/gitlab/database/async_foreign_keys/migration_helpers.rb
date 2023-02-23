@@ -38,7 +38,9 @@ module Gitlab
 
           fk_name = name || concurrent_foreign_key_name(table_name, column_name)
 
-          PostgresAsyncForeignKeyValidation.find_by(name: fk_name).try(&:destroy)
+          PostgresAsyncForeignKeyValidation
+            .find_by(name: fk_name, table_name: table_name)
+            .try(&:destroy!)
         end
 
         def prepare_partitioned_async_foreign_key_validation(table_name, column_name = nil, name: nil)

@@ -13,3 +13,5 @@ module RegistrationsTracking
     params.permit(:glm_source, :glm_content)
   end
 end
+
+RegistrationsTracking.prepend_mod
