@@ -58,15 +58,15 @@
               = c.body do
                 = link_to _('Try the troubleshooting steps here.'), help_page_path('user/profile/account/two_factor_authentication.md', anchor: 'troubleshooting'), target: '_blank', rel: 'noopener noreferrer'
 
-          .form-group
-            = label_tag :pin_code, _('Enter verification code'), class: "label-bold"
-            = text_field_tag :pin_code, nil, autocomplete: 'off', inputmode: 'numeric', class: "form-control gl-form-input", required: true, data: { qa_selector: 'pin_code_field' }
           - if current_password_required?
             .form-group
               = label_tag :current_password, _('Current password'), class: 'label-bold'
               = password_field_tag :current_password, nil, autocomplete: 'current-password', required: true, class: 'form-control gl-form-input', data: { qa_selector: 'current_password_field' }
               %p.form-text.text-muted
                 = _('Your current password is required to register a two-factor authenticator app.')
+          .form-group
+            = label_tag :pin_code, _('Enter verification code'), class: "label-bold"
+            = text_field_tag :pin_code, nil, autocomplete: 'off', inputmode: 'numeric', class: "form-control gl-form-input", required: true, data: { qa_selector: 'pin_code_field' }
           .gl-mt-3
             = submit_tag _('Register with two-factor app'), class: 'gl-button btn btn-confirm', data: { qa_selector: 'register_2fa_app_button' }
 

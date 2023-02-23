@@ -71,14 +71,14 @@ export default {
       required: true,
     },
   },
-  clearBtnSharedClasses: ['gl-flex-grow-0 gl-flex-basis-0'],
+  clearBtnSharedClasses: ['gl-flex-grow-0 gl-flex-basis-0 gl-m-0! gl-ml-3!'],
   inputTypes: {
     key: 'key',
     value: 'value',
   },
   i18n: {
     cancel: s__('CiVariables|Cancel'),
-    clearInputs: s__('CiVariables|Clear inputs'),
+    removeInputs: s__('CiVariables|Remove inputs'),
     formHelpText: s__(
       'CiVariables|Specify variable values to be used in this run. The variables specified in the configuration file and %{linkStart}CI/CD settings%{linkEnd} are used by default.',
     ),
@@ -209,7 +209,7 @@ export default {
       <div
         v-for="(variable, index) in variables"
         :key="variable.id"
-        class="gl-display-flex gl-align-items-center gl-mb-4"
+        class="gl-display-flex gl-align-items-center gl-mb-5"
         data-testid="ci-variable-row"
       >
         <gl-form-input-group class="gl-mr-4 gl-flex-grow-1">
@@ -244,12 +244,11 @@ export default {
         <gl-button
           v-if="canRemove(index)"
           v-gl-tooltip
-          :aria-label="$options.i18n.clearInputs"
-          :title="$options.i18n.clearInputs"
+          :aria-label="$options.i18n.removeInputs"
+          :title="$options.i18n.removeInputs"
           :class="$options.clearBtnSharedClasses"
           category="tertiary"
-          variant="danger"
-          icon="clear"
+          icon="remove"
           data-testid="delete-variable-btn"
           @click="deleteVariable(variable.id)"
         />
@@ -260,8 +259,7 @@ export default {
           :class="$options.clearBtnSharedClasses"
           data-testid="delete-variable-btn-placeholder"
           category="tertiary"
-          variant="danger"
-          icon="clear"
+          icon="remove"
         />
       </div>
 

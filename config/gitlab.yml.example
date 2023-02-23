@@ -495,7 +495,6 @@ production: &base
   ## To switch to a Jira connect development environment
   jira_connect:
     # atlassian_js_url: 'http://localhost:9292/atlassian.js'
-    # enable_public_keys_storage: true
     # enforce_jira_base_url_https: false
     # additional_iframe_ancestors: ['localhost:*']
 

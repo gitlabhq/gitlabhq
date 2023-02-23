@@ -37,6 +37,8 @@ RSpec.describe Projects::NotesController, type: :controller, feature_category: :
       project.add_developer(user)
     end
 
+    specify { expect(get(:index, params: request_params)).to have_request_urgency(:medium) }
+
     it 'passes last_fetched_at from headers to NotesFinder and MergeIntoNotesService' do
       last_fetched_at = Time.zone.at(3.hours.ago.to_i) # remove nanoseconds
 
@@ -243,6 +245,8 @@ RSpec.describe Projects::NotesController, type: :controller, feature_category: :
       project.project_feature.update!(merge_requests_access_level: merge_requests_access_level)
       sign_in(user)
     end
+
+    specify { expect(create!).to have_request_urgency(:low) }
 
     describe 'making the creation request' do
       before do
@@ -732,19 +736,21 @@ RSpec.describe Projects::NotesController, type: :controller, feature_category: :
   end
 
   describe 'PUT update' do
-    context "should update the note with a valid issue" do
-      let(:request_params) do
-        {
-          namespace_id: project.namespace,
-          project_id: project,
-          id: note,
-          format: :json,
-          note: {
-            note: "New comment"
-          }
+    let(:request_params) do
+      {
+        namespace_id: project.namespace,
+        project_id: project,
+        id: note,
+        format: :json,
+        note: {
+          note: "New comment"
         }
-      end
+      }
+    end
 
+    specify { expect(put(:update, params: request_params)).to have_request_urgency(:low) }
+
+    context "should update the note with a valid issue" do
       before do
         sign_in(note.author)
         project.add_developer(note.author)
@@ -790,6 +796,8 @@ RSpec.describe Projects::NotesController, type: :controller, feature_category: :
       }
     end
 
+    specify { expect(delete(:destroy, params: request_params)).to have_request_urgency(:low) }
+
     context 'user is the author of a note' do
       before do
         sign_in(note.author)
@@ -831,6 +839,8 @@ RSpec.describe Projects::NotesController, type: :controller, feature_category: :
 
     let(:emoji_name) { 'thumbsup' }
 
+    it { is_expected.to have_request_urgency(:low) }
+
     it "toggles the award emoji" do
       expect do
         subject
@@ -865,6 +875,8 @@ RSpec.describe Projects::NotesController, type: :controller, feature_category: :
       before do
         sign_in user
       end
+
+      specify { expect(post(:resolve, params: request_params)).to have_request_urgency(:low) }
 
       context "when the user is not authorized to resolve the note" do
         it "returns status 404" do
@@ -928,6 +940,8 @@ RSpec.describe Projects::NotesController, type: :controller, feature_category: :
 
         note.resolve!(user)
       end
+
+      specify { expect(delete(:unresolve, params: request_params)).to have_request_urgency(:low) }
 
       context "when the user is not authorized to resolve the note" do
         it "returns status 404" do
@@ -998,6 +1012,8 @@ RSpec.describe Projects::NotesController, type: :controller, feature_category: :
       expect(json_response.count).to eq(1)
       expect(json_response.first).to include({ "line_text" => "Test" })
     end
+
+    specify { expect(get(:outdated_line_change, params: request_params)).to have_request_urgency(:low) }
   end
 
   # Convert a time to an integer number of microseconds

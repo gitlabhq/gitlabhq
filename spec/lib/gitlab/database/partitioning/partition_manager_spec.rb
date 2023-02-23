@@ -238,23 +238,20 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager do
       expect(pending_drop.drop_after).to eq(Time.current + described_class::RETAIN_DETACHED_PARTITIONS_FOR)
     end
 
-    # Postgres 11 does not support foreign keys to partitioned tables
-    if ApplicationRecord.database.version.to_f >= 12
-      context 'when the model is the target of a foreign key' do
-        before do
-          connection.execute(<<~SQL)
+    context 'when the model is the target of a foreign key' do
+      before do
+        connection.execute(<<~SQL)
         create unique index idx_for_fk ON #{partitioned_table_name}(created_at);
 
         create table _test_gitlab_main_referencing_table (
           id bigserial primary key not null,
           referencing_created_at timestamptz references #{partitioned_table_name}(created_at)
         );
-          SQL
-        end
+        SQL
+      end
 
-        it 'does not detach partitions with a referenced foreign key' do
-          expect { subject }.not_to change { find_partitions(my_model.table_name).size }
-        end
+      it 'does not detach partitions with a referenced foreign key' do
+        expect { subject }.not_to change { find_partitions(my_model.table_name).size }
       end
     end
   end

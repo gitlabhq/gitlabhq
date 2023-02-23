@@ -113,6 +113,8 @@ To disable the inbound job token scope allowlist:
 1. Toggle **Allow access to this project with a CI_JOB_TOKEN** to disabled.
    Enabled by default in new projects.
 
+You can also disable the allowlist [with the API](../../api/graphql/reference/index.md#mutationprojectcicdsettingsupdate).
+
 ### Add a project to the inbound job token scope allowlist
 
 You can add projects to the inbound allowlist for a project. Projects added to the allowlist
@@ -132,6 +134,8 @@ To add a project:
 1. Verify **Allow access to this project with a CI_JOB_TOKEN** is enabled.
 1. Under **Allow CI job tokens from the following projects to access this project**,
    add projects to the allowlist.
+
+You can also add a target project to the allowlist [with the API](../../api/graphql/reference/index.md#mutationcijobtokenscopeaddproject).
 
 ### Limit your project's job token access
 

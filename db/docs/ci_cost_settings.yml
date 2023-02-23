@@ -1,0 +1,10 @@
+---
+table_name: ci_cost_settings
+classes:
+- Ci::Minutes::CostSetting
+feature_categories:
+- continuous_integration
+description: A set of cost factors per runner which are applied to ci job duration based on project type.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111977
+milestone: '15.10'
+gitlab_schema: gitlab_ci

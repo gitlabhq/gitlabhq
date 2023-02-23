@@ -99,7 +99,7 @@ export default {
     >
       <gl-icon name="users" />
       <gl-loading-icon v-if="loading" size="sm" />
-      <span v-else data-testid="collapsed-count" class="gl-pt-2 gl-px-3 gl-font-sm">
+      <span v-else class="gl-pt-2 gl-px-3 gl-font-sm">
         {{ participantCount }}
       </span>
     </div>
@@ -133,7 +133,6 @@ export default {
       <gl-button
         variant="link"
         button-text-classes="gl-text-secondary"
-        data-testid="more-participants"
         @click="toggleMoreParticipants"
         >{{ toggleLabel }}</gl-button
       >

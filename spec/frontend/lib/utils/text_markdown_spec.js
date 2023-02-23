@@ -10,6 +10,7 @@ import {
 } from '~/lib/utils/text_markdown';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import '~/lib/utils/jquery_at_who';
+import { ENTER_KEY } from '~/lib/utils/keys';
 import axios from '~/lib/utils/axios_utils';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 
@@ -208,7 +209,7 @@ describe('init markdown', () => {
         let enterEvent;
 
         beforeEach(() => {
-          enterEvent = new KeyboardEvent('keydown', { key: 'Enter', cancelable: true });
+          enterEvent = new KeyboardEvent('keydown', { key: ENTER_KEY, cancelable: true });
           textArea.addEventListener('keydown', keypressNoteText);
           textArea.addEventListener('compositionstart', compositionStartNoteText);
           textArea.addEventListener('compositionend', compositionEndNoteText);
@@ -483,6 +484,53 @@ describe('init markdown', () => {
         ${new KeyboardEvent('keydown', { key: ']', metaKey: true, ctrlKey: true })}
       `('does not indent if meta is not set', ({ keyEvent }) => {
         const text = '012\n456\n89';
+        textArea.value = text;
+        textArea.setSelectionRange(0, 0);
+
+        textArea.dispatchEvent(keyEvent);
+
+        expect(textArea.value).toEqual(text);
+      });
+    });
+
+    describe('adding a hard break using Shift+Enter', () => {
+      let enterEvent;
+
+      beforeEach(() => {
+        enterEvent = new KeyboardEvent('keydown', { key: ENTER_KEY, shiftKey: true });
+        textArea.addEventListener('keydown', keypressNoteText);
+        textArea.addEventListener('compositionstart', compositionStartNoteText);
+        textArea.addEventListener('compositionend', compositionEndNoteText);
+      });
+
+      it.each`
+        selectionStart | selectionEnd | expected            | expectedSelectionStart
+        ${0}           | ${0}         | ${'\\\n0123456789'} | ${2}
+        ${3}           | ${3}         | ${'012\\\n3456789'} | ${5}
+        ${3}           | ${6}         | ${'012\\\n6789'}    | ${5}
+      `(
+        'adds a hard break',
+        ({ selectionStart, selectionEnd, expected, expectedSelectionStart }) => {
+          const text = '0123456789';
+          textArea.value = text;
+          textArea.setSelectionRange(selectionStart, selectionEnd);
+
+          textArea.dispatchEvent(enterEvent);
+
+          expect(textArea.value).toEqual(expected);
+          expect(textArea.selectionStart).toEqual(expectedSelectionStart);
+          expect(textArea.selectionEnd).toEqual(expectedSelectionStart);
+        },
+      );
+
+      it.each`
+        keyEvent
+        ${new KeyboardEvent('keydown', { key: ENTER_KEY, shiftKey: false })}
+        ${new KeyboardEvent('keydown', { key: ENTER_KEY, shiftKey: true, metaKey: true })}
+        ${new KeyboardEvent('keydown', { key: ENTER_KEY, shiftKey: true, altKey: true })}
+        ${new KeyboardEvent('keydown', { key: ENTER_KEY, shiftKey: true, ctrlKey: true })}
+      `('does not add when shift is pressed with other keys', ({ keyEvent }) => {
+        const text = '0123456789';
         textArea.value = text;
         textArea.setSelectionRange(0, 0);
 

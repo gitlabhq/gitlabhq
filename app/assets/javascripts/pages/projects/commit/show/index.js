@@ -20,7 +20,9 @@ import { initReportAbuse } from '~/projects/report_abuse';
 
 const hasPerfBar = document.querySelector('.with-performance-bar');
 const performanceHeight = hasPerfBar ? 35 : 0;
-initDiffStatsDropdown(document.querySelector('.navbar-gitlab').offsetHeight + performanceHeight);
+initDiffStatsDropdown(
+  (document.querySelector('.navbar-gitlab')?.offsetHeight ?? 0) + performanceHeight,
+);
 new ZenMode();
 new ShortcutsNavigation();
 

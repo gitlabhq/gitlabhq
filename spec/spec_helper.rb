@@ -178,6 +178,8 @@ RSpec.configure do |config|
   config.include RenderedHelpers
   config.include RSpec::Benchmark::Matchers, type: :benchmark
   config.include DetailedErrorHelpers
+  config.include RequestUrgencyMatcher, type: :controller
+  config.include RequestUrgencyMatcher, type: :request
 
   config.include_context 'when rendered has no HTML escapes', type: :view
 

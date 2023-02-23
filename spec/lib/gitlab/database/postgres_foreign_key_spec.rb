@@ -203,10 +203,8 @@ RSpec.describe Gitlab::Database::PostgresForeignKey, type: :model, feature_categ
     end
   end
 
-  context 'when supporting foreign keys to inherited tables in postgres 12' do
+  context 'when supporting foreign keys to inherited tables' do
     before do
-      skip('not supported before postgres 12') if ApplicationRecord.database.version.to_f < 12
-
       ApplicationRecord.connection.execute(<<~SQL)
         create table #{schema_table_name('parent')} (
           id bigserial primary key not null

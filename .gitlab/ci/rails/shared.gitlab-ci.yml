@@ -92,11 +92,6 @@ include:
     - !reference [.base-script, script]
     - rspec_paralellized_job "--tag ~quarantine --tag ~zoekt"
 
-.rspec-base-pg11:
-  extends:
-    - .rspec-base
-    - .use-pg11
-
 .rspec-base-pg12:
   extends:
     - .rspec-base
@@ -118,11 +113,6 @@ include:
   extends:
     - .rspec-base
     - .use-pg13
-
-.rspec-ee-base-pg11:
-  extends:
-    - .rspec-base
-    - .use-pg11-es7-ee
 
 .rspec-ee-base-pg12:
   extends:

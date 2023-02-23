@@ -449,8 +449,6 @@ Settings.mattermost['host'] = nil unless Settings.mattermost.enabled
 Settings['jira_connect'] ||= Settingslogic.new({})
 
 Settings.jira_connect['atlassian_js_url'] ||= 'https://connect-cdn.atl-paas.net/all.js'
-Settings.jira_connect['enable_public_keys_storage'] ||= false
-Settings.jira_connect['enable_public_keys_storage'] = true if Gitlab.com?
 Settings.jira_connect['enforce_jira_base_url_https'] = true if Settings.jira_connect['enforce_jira_base_url_https'].nil?
 Settings.jira_connect['additional_iframe_ancestors'] ||= []
 
@@ -830,7 +828,7 @@ Gitlab.ee do
   Settings.cron_jobs['abandoned_trial_emails']['cron'] ||= "0 1 * * *"
   Settings.cron_jobs['abandoned_trial_emails']['job_class'] = 'Emails::AbandonedTrialEmailsCronWorker'
   Settings.cron_jobs['package_metadata_sync_worker'] ||= Settingslogic.new({})
-  Settings.cron_jobs['package_metadata_sync_worker']['cron'] ||= "0 1 * * *"
+  Settings.cron_jobs['package_metadata_sync_worker']['cron'] ||= "0 * * * *"
   Settings.cron_jobs['package_metadata_sync_worker']['job_class'] = 'PackageMetadata::SyncWorker'
   Gitlab.com do
     Settings.cron_jobs['free_user_cap_backfill_notification_jobs_worker'] ||= Settingslogic.new({})

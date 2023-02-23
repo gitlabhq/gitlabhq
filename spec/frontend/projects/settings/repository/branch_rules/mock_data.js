@@ -74,7 +74,7 @@ export const branchRuleProvideMock = {
 };
 
 export const branchRulePropsMock = {
-  name: 'main',
+  name: 'branch-with-$speci@l-#-chars',
   isDefault: true,
   matchingBranchesCount: 1,
   branchProtection: {

@@ -10,6 +10,60 @@ RSpec.describe SortingHelper do
     allow(self).to receive(:request).and_return(double(path: 'http://test.com', query_parameters: { label_name: option }))
   end
 
+  describe '#issuable_sort_options' do
+    let(:viewing_issues) { false }
+    let(:viewing_merge_requests) { false }
+    let(:params) { {} }
+
+    subject(:options) { helper.issuable_sort_options(viewing_issues, viewing_merge_requests) }
+
+    before do
+      allow(helper).to receive(:params).and_return(params)
+    end
+
+    shared_examples 'with merged date option' do
+      it 'adds merged date option' do
+        expect(options).to include(
+          a_hash_including(
+            value: 'merged_at',
+            text: 'Merged date'
+          )
+        )
+      end
+    end
+
+    shared_examples 'without merged date option' do
+      it 'does not set merged date option' do
+        expect(options).not_to include(
+          a_hash_including(
+            value: 'merged_at',
+            text: 'Merged date'
+          )
+        )
+      end
+    end
+
+    it_behaves_like 'without merged date option'
+
+    context 'when viewing_merge_requests is true' do
+      let(:viewing_merge_requests) { true }
+
+      it_behaves_like 'without merged date option'
+
+      context 'when state param is all' do
+        let(:params) { { state: 'all' } }
+
+        it_behaves_like 'with merged date option'
+      end
+
+      context 'when state param is merged' do
+        let(:params) { { state: 'merged' } }
+
+        it_behaves_like 'with merged date option'
+      end
+    end
+  end
+
   describe '#admin_users_sort_options' do
     it 'returns correct link attributes in array' do
       options = admin_users_sort_options(filter: 'filter', search_query: 'search')

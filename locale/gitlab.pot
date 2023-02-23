@@ -8869,9 +8869,6 @@ msgstr ""
 msgid "CiVariables|Cannot use Masked Variable with current value"
 msgstr ""
 
-msgid "CiVariables|Clear inputs"
-msgstr ""
-
 msgid "CiVariables|Environments"
 msgstr ""
 
@@ -8897,6 +8894,9 @@ msgid "CiVariables|Options"
 msgstr ""
 
 msgid "CiVariables|Protected"
+msgstr ""
+
+msgid "CiVariables|Remove inputs"
 msgstr ""
 
 msgid "CiVariables|Remove variable"

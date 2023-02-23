@@ -16,19 +16,21 @@ RSpec.shared_examples 'validate schema data' do |tables_and_views|
   end
 end
 
-RSpec.describe Gitlab::Database::GitlabSchema do
+RSpec.describe Gitlab::Database::GitlabSchema, feature_category: :database do
   shared_examples 'maps table name to table schema' do
     using RSpec::Parameterized::TableSyntax
 
     where(:name, :classification) do
-      'ci_builds'                       | :gitlab_ci
-      'my_schema.ci_builds'             | :gitlab_ci
-      'information_schema.columns'      | :gitlab_internal
-      'audit_events_part_5fc467ac26'    | :gitlab_main
-      '_test_gitlab_main_table'         | :gitlab_main
-      '_test_gitlab_ci_table'           | :gitlab_ci
-      '_test_my_table'                  | :gitlab_shared
-      'pg_attribute'                    | :gitlab_internal
+      'ci_builds'                              | :gitlab_ci
+      'my_schema.ci_builds'                    | :gitlab_ci
+      'my_schema.ci_runner_machine_builds_100' | :gitlab_ci
+      'my_schema._test_gitlab_main_table'      | :gitlab_main
+      'information_schema.columns'             | :gitlab_internal
+      'audit_events_part_5fc467ac26'           | :gitlab_main
+      '_test_gitlab_main_table'                | :gitlab_main
+      '_test_gitlab_ci_table'                  | :gitlab_ci
+      '_test_my_table'                         | :gitlab_shared
+      'pg_attribute'                           | :gitlab_internal
     end
 
     with_them do

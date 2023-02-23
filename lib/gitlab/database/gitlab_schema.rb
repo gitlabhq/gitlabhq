@@ -45,6 +45,11 @@ module Gitlab
           return gitlab_schema
         end
 
+        # Partitions that belong to the CI domain
+        if table_name.start_with?('ci_') && gitlab_schema = views_and_tables_to_schema["p_#{table_name}"]
+          return gitlab_schema
+        end
+
         # All tables from `information_schema.` are marked as `internal`
         return :gitlab_internal if schema_name == 'information_schema'
 

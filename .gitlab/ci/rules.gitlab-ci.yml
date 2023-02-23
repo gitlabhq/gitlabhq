@@ -85,9 +85,6 @@
 .if-merge-request-labels-run-review-app: &if-merge-request-labels-run-review-app
   if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-review-app/'
 
-.if-merge-request-labels-run-on-pg11: &if-merge-request-labels-run-on-pg11
-  if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-on-pg11/'
-
 .if-merge-request-labels-skip-undercoverage: &if-merge-request-labels-skip-undercoverage
   if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:skip-undercoverage/'
 
@@ -1605,7 +1602,6 @@
     - <<: *if-default-refs
       changes: *db-library-patterns
     - <<: *if-merge-request-labels-run-all-rspec
-    - <<: *if-merge-request-labels-run-on-pg11
 
 .rails:rules:ee-mr-and-default-branch-only:
   rules:
@@ -1694,11 +1690,6 @@
     - <<: *if-merge-request-labels-run-all-rspec
     - <<: *if-merge-request
       changes: *backend-patterns
-
-.rails:rules:rspec-on-pg11:
-  rules:
-    - <<: *if-merge-request-labels-run-on-pg11
-    - !reference [".rails:rules:default-branch-schedule-nightly--code-backstage-default-rules", rules]
 
 .rails:rules:default-branch-schedule-nightly--code-backstage-default-rules:
   rules:

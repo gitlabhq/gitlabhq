@@ -191,16 +191,6 @@ rspec system pg12 praefect:
     - .praefect-with-db
     - .rails:rules:praefect-with-db
 
-# Dedicated job to test DB library code against PG11.
-# Note that these are already tested against PG12 in the `rspec unit pg12` / `rspec-ee unit pg12` jobs.
-rspec db-library-code pg11:
-  extends:
-    - .rspec-base-pg11
-    - .rails:rules:ee-and-foss-db-library-code
-  script:
-    - !reference [.base-script, script]
-    - rspec_db_library_code
-
 rspec fast_spec_helper:
   extends:
     - .rspec-base-pg12
@@ -616,39 +606,6 @@ rspec-ee system pg12 single-db:
 ##########################################
 # EE/FOSS: default branch nightly scheduled jobs #
 
-# PG11
-rspec migration pg11:
-  extends:
-    - .rspec-base-pg11
-    - .rspec-base-migration
-    - .rails:rules:rspec-on-pg11
-    - .rspec-migration-parallel
-
-rspec background_migration pg11:
-  extends:
-    - .rspec-base-pg11
-    - .rspec-base-migration
-    - .rails:rules:rspec-on-pg11
-    - .rspec-background-migration-parallel
-
-rspec unit pg11:
-  extends:
-    - .rspec-base-pg11
-    - .rails:rules:rspec-on-pg11
-    - .rspec-unit-parallel
-
-rspec integration pg11:
-  extends:
-    - .rspec-base-pg11
-    - .rails:rules:rspec-on-pg11
-    - .rspec-integration-parallel
-
-rspec system pg11:
-  extends:
-    - .rspec-base-pg11
-    - .rails:rules:rspec-on-pg11
-    - .rspec-system-parallel
-
 # PG13
 rspec migration pg13:
   extends:
@@ -686,39 +643,6 @@ rspec system pg13:
 
 #####################################
 # EE: default branch nightly scheduled jobs #
-
-# PG11
-rspec-ee migration pg11:
-  extends:
-    - .rspec-ee-base-pg11
-    - .rspec-base-migration
-    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
-    - .rspec-ee-migration-parallel
-
-rspec-ee background_migration pg11:
-  extends:
-    - .rspec-ee-base-pg11
-    - .rspec-base-migration
-    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
-    - .rspec-ee-background-migration-parallel
-
-rspec-ee unit pg11:
-  extends:
-    - .rspec-ee-base-pg11
-    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
-    - .rspec-ee-unit-parallel
-
-rspec-ee integration pg11:
-  extends:
-    - .rspec-ee-base-pg11
-    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
-    - .rspec-ee-integration-parallel
-
-rspec-ee system pg11:
-  extends:
-    - .rspec-ee-base-pg11
-    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
-    - .rspec-ee-system-parallel
 
 # PG12
 rspec-ee unit pg12 opensearch1:

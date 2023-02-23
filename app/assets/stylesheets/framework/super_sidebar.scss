@@ -133,6 +133,7 @@
 
 .page-with-super-sidebar {
   padding-left: 0;
+  transition: padding-left $gl-transition-duration-medium;
 
   @include media-breakpoint-up(xl) {
     padding-left: $contextual-sidebar-width;

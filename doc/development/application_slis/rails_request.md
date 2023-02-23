@@ -207,6 +207,14 @@ class Boards::ListsController < ApplicationController
 end
 ```
 
+A custom RSpec matcher is available to check endpoint's request urgency in the controller specs:
+
+```ruby
+specify do
+   expect(get(:index, params: request_params)).to have_request_urgency(:medium)
+end
+```
+
 ### Grape endpoints
 
 To specify the urgency for an entire API class:
@@ -237,6 +245,15 @@ Or, we can specify the urgency per endpoint:
 ```ruby
 get 'client/features', urgency: :low do
   # endpoint logic
+end
+```
+
+A custom RSpec matcher is also compatible with grape endpoints' specs:
+
+```ruby
+
+specify do
+   expect(get(api('/avatar'), params: { email: 'public@example.com' })).to have_request_urgency(:medium)
 end
 ```
 

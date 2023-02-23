@@ -70,7 +70,7 @@ export default {
       return this.approvalDetails.length;
     },
     detailsPath() {
-      return `${this.branchRulesPath}?branch=${this.name}`;
+      return `${this.branchRulesPath}?branch=${encodeURIComponent(this.name)}`;
     },
     statusChecksText() {
       return sprintf(this.$options.i18n.statusChecks, {

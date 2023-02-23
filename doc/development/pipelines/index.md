@@ -484,19 +484,17 @@ This should let us:
 Our test suite runs against PG12 as GitLab.com runs on PG12 and
 [Omnibus defaults to PG12 for new installs and upgrades](../../administration/package_information/postgresql_versions.md).
 
-We do run our test suite against PG11 and PG13 on nightly scheduled pipelines.
-
-We also run our test suite against PG11 upon specific database library changes in MRs and `main` pipelines (with the `rspec db-library-code pg11` job).
+We do run our test suite against PG13 on nightly scheduled pipelines.
 
 #### Current versions testing
 
-| Where?                                                                                         | PostgreSQL version                              | Ruby version |
-|------------------------------------------------------------------------------------------------|-------------------------------------------------|--------------|
-| Merge requests                                                                                 | 12 (default version), 11 for DB library changes | 3.0 (default version) |
-| `master` branch commits                                                                        | 12 (default version), 11 for DB library changes | 3.0 (default version) |
-| `maintenance` scheduled pipelines for the `master` branch (every even-numbered hour)           | 12 (default version), 11 for DB library changes | 3.0 (default version) |
-| `maintenance` scheduled pipelines for the `ruby2` branch (every odd-numbered hour), see below. | 12 (default version), 11 for DB library changes | 2.7 |
-| `nightly` scheduled pipelines for the `master` branch                                          | 12 (default version), 11, 13                    | 3.0 (default version) |
+| Where?                                                                                         | PostgreSQL version       | Ruby version          |
+|------------------------------------------------------------------------------------------------|--------------------------|-----------------------|
+| Merge requests                                                                                 | 12 (default version)     | 3.0 (default version) |
+| `master` branch commits                                                                        | 12 (default version)     | 3.0 (default version) |
+| `maintenance` scheduled pipelines for the `master` branch (every even-numbered hour)           | 12 (default version)     | 3.0 (default version) |
+| `maintenance` scheduled pipelines for the `ruby2` branch (every odd-numbered hour), see below. | 12 (default version)     | 2.7                   |
+| `nightly` scheduled pipelines for the `master` branch                                          | 12 (default version), 13 | 3.0 (default version) |
 
 There are 2 pipeline schedules used for testing Ruby 2.7. One is triggering a
 pipeline in `ruby2-sync` branch, which updates the `ruby2` branch with latest
@@ -518,7 +516,6 @@ We follow the [PostgreSQL versions shipped with Omnibus GitLab](../../administra
 | PostgreSQL version | 14.1 (July 2021)       | 14.2 (August 2021)     | 14.3 (September 2021)  | 14.4 (October 2021)    | 14.5 (November 2021)   | 14.6 (December 2021)   |
 | -------------------| ---------------------- | ---------------------- | ---------------------- | ---------------------- | ---------------------- | ---------------------- |
 | PG12               | MRs/`2-hour`/`nightly` | MRs/`2-hour`/`nightly` | MRs/`2-hour`/`nightly` | MRs/`2-hour`/`nightly` | MRs/`2-hour`/`nightly` | MRs/`2-hour`/`nightly` |
-| PG11               | `nightly`              | `nightly`              | `nightly`              | `nightly`              | `nightly`              | `nightly`              |
 | PG13               | `nightly`              | `nightly`              | `nightly`              | `nightly`              | `nightly`              | `nightly`              |
 
 ### Redis versions testing

@@ -1,6 +1,7 @@
 <script>
 import { GlCollapse } from '@gitlab/ui';
 import UserBar from './user_bar.vue';
+import SidebarPortalTarget from './sidebar_portal_target.vue';
 import ContextSwitcherToggle from './context_switcher_toggle.vue';
 import ContextSwitcher from './context_switcher.vue';
 import HelpCenter from './help_center.vue';
@@ -14,6 +15,7 @@ export default {
     ContextSwitcher,
     HelpCenter,
     SidebarMenu,
+    SidebarPortalTarget,
   },
   props: {
     sidebarData: {
@@ -53,6 +55,7 @@ export default {
         </gl-collapse>
         <gl-collapse :visible="!contextSwitcherOpened">
           <sidebar-menu :items="menuItems" />
+          <sidebar-portal-target />
         </gl-collapse>
       </div>
       <div class="gl-p-3">

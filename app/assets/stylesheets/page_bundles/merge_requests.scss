@@ -1082,6 +1082,9 @@ $tabs-holder-z-index: 250;
 .merge-request-sticky-header {
   z-index: 204;
   box-shadow: 0 1px 2px $issue-boards-card-shadow;
+}
+
+.page-with-contextual-sidebar .merge-request-sticky-header {
   --width: calc(100% - #{$contextual-sidebar-width});
 
   @include media-breakpoint-down(lg) {
@@ -1091,6 +1094,18 @@ $tabs-holder-z-index: 250;
 
 .page-with-icon-sidebar .issue-sticky-header {
   --width: calc(100% - #{$contextual-sidebar-collapsed-width});
+}
+
+.page-with-super-sidebar .merge-request-sticky-header {
+  @include media-breakpoint-up(xl) {
+    --width: calc(100% - #{$super-sidebar-width});
+  }
+}
+
+.page-with-super-sidebar-collapsed .merge-request-sticky-header {
+  @include media-breakpoint-up(xl) {
+    --width: 100%;
+  }
 }
 
 .merge-request-notification-toggle {

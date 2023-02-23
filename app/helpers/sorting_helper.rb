@@ -227,7 +227,7 @@ module SortingHelper
     options.concat([due_date_option]) if viewing_issues
 
     options.concat([popularity_option, label_priority_option])
-    options.concat([merged_option]) if viewing_merge_requests
+    options.concat([merged_option]) if can_sort_by_merged_date?(viewing_merge_requests)
     options.concat([relative_position_option]) if viewing_issues
 
     options.concat([title_option])
@@ -235,6 +235,10 @@ module SortingHelper
 
   def can_sort_by_issue_weight?(_viewing_issues)
     false
+  end
+
+  def can_sort_by_merged_date?(viewing_merge_requests)
+    viewing_merge_requests && %w[all merged].include?(params[:state])
   end
 
   def due_date_option

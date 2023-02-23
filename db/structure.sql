@@ -543,6 +543,13 @@ CREATE TABLE batched_background_migration_job_transition_logs (
 )
 PARTITION BY RANGE (created_at);
 
+CREATE TABLE p_ci_runner_machine_builds (
+    partition_id bigint NOT NULL,
+    build_id bigint NOT NULL,
+    runner_machine_id bigint NOT NULL
+)
+PARTITION BY LIST (partition_id);
+
 CREATE TABLE incident_management_pending_alert_escalations (
     id bigint NOT NULL,
     rule_id bigint NOT NULL,
@@ -13060,6 +13067,15 @@ CREATE SEQUENCE ci_builds_runner_session_id_seq
 
 ALTER SEQUENCE ci_builds_runner_session_id_seq OWNED BY ci_builds_runner_session.id;
 
+CREATE TABLE ci_cost_settings (
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    runner_id bigint NOT NULL,
+    standard_factor double precision DEFAULT 1.0 NOT NULL,
+    os_contribution_factor double precision DEFAULT 0.008 NOT NULL,
+    os_plan_factor double precision DEFAULT 0.5 NOT NULL
+);
+
 CREATE TABLE ci_daily_build_group_report_results (
     id bigint NOT NULL,
     date date NOT NULL,
@@ -19017,13 +19033,6 @@ CREATE SEQUENCE operations_user_lists_id_seq
     CACHE 1;
 
 ALTER SEQUENCE operations_user_lists_id_seq OWNED BY operations_user_lists.id;
-
-CREATE TABLE p_ci_runner_machine_builds (
-    partition_id bigint NOT NULL,
-    build_id bigint NOT NULL,
-    runner_machine_id bigint NOT NULL
-)
-PARTITION BY LIST (partition_id);
 
 CREATE TABLE packages_build_infos (
     id bigint NOT NULL,
@@ -26218,6 +26227,9 @@ ALTER TABLE ONLY ci_builds
 
 ALTER TABLE ONLY ci_builds_runner_session
     ADD CONSTRAINT ci_builds_runner_session_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY ci_cost_settings
+    ADD CONSTRAINT ci_cost_settings_pkey PRIMARY KEY (runner_id);
 
 ALTER TABLE ONLY ci_daily_build_group_report_results
     ADD CONSTRAINT ci_daily_build_group_report_results_pkey PRIMARY KEY (id);
@@ -35617,6 +35629,9 @@ ALTER TABLE ONLY geo_hashed_storage_migrated_events
 
 ALTER TABLE ONLY plan_limits
     ADD CONSTRAINT fk_rails_69f8b6184f FOREIGN KEY (plan_id) REFERENCES plans(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY ci_cost_settings
+    ADD CONSTRAINT fk_rails_6a70651f75 FOREIGN KEY (runner_id) REFERENCES ci_runners(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY operations_feature_flags_issues
     ADD CONSTRAINT fk_rails_6a8856ca4f FOREIGN KEY (feature_flag_id) REFERENCES operations_feature_flags(id) ON DELETE CASCADE;

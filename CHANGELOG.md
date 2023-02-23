@@ -2,6 +2,13 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 15.9.1 (2023-02-23)
+
+### Fixed (2 changes)
+
+- [Fix Broadcast messages not showing in admin console](gitlab-org/gitlab@f50dfdfe43231b4bb52378eaaa515ee76c918d03) ([merge request](gitlab-org/gitlab!112831))
+- [Fix dependency check in license approval policies](gitlab-org/gitlab@ff5a77036fdb74c4b410fbb954428dbf8736ffd8) ([merge request](gitlab-org/gitlab!112831)) **GitLab Enterprise Edition**
+
 ## 15.9.0 (2023-02-21)
 
 ### Added (223 changes)
