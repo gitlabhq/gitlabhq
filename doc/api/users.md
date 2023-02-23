@@ -41,7 +41,7 @@ GET /users
 
 You can also use `?search=` to search for users by name, username, or public email. For example, `/users?search=John`. When you search for a:
 
-- Public email, you must use the full email address to get an exact match.
+- Public email, you must use the full email address to get an exact match. A search might return a partial match. For example, if you search for the email `on@example.com`, the search can return both `on@example.com` and `jon@example.com`.
 - Name or username, you do not have to get an exact match because this is a fuzzy search.
 
 In addition, you can lookup users by username:

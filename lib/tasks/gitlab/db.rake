@@ -313,6 +313,36 @@ namespace :gitlab do
       end
     end
 
+    namespace :execute_async_fk_validations do
+      each_database(databases) do |database_name|
+        task database_name, [:pick] => :environment do |_, args|
+          args.with_defaults(pick: 2)
+
+          if Feature.disabled?(:database_async_foreign_key_validation, type: :ops)
+            puts <<~NOTE.color(:yellow)
+              Note: database async foreign key validation feature is currently disabled.
+
+              Enable with: Feature.enable(:database_async_foreign_key_validation)
+            NOTE
+            exit
+          end
+
+          Gitlab::Database::EachDatabase.each_database_connection(only: database_name) do
+            Gitlab::Database::AsyncForeignKeys.validate_pending_entries!(how_many: args[:pick].to_i)
+          end
+        end
+      end
+
+      task :all, [:pick] => :environment do |_, args|
+        default_pick = Gitlab.dev_or_test_env? ? 1000 : 2
+        args.with_defaults(pick: default_pick)
+
+        each_database(databases) do |database_name|
+          Rake::Task["gitlab:db:execute_async_fk_validations:#{database_name}"].invoke(args[:pick])
+        end
+      end
+    end
+
     desc 'Check if there have been user additions to the database'
     task active: :environment do
       if ActiveRecord::Base.connection.migration_context.needs_migration?

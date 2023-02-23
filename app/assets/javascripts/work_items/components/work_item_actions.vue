@@ -115,6 +115,7 @@ export default {
         v-if="canDelete"
         v-gl-modal="'work-item-confirm-delete'"
         data-testid="delete-action"
+        variant="danger"
         >{{ i18n.deleteWorkItem }}</gl-dropdown-item
       >
     </gl-dropdown>

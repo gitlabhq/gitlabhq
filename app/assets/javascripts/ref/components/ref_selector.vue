@@ -119,6 +119,7 @@ export default {
           'gl-inset-border-1-red-500!': !this.state,
           'gl-font-monospace': Boolean(this.selectedRef),
         },
+        'gl-mb-0',
       ];
 
       if (Array.isArray(this.toggleButtonClass)) {

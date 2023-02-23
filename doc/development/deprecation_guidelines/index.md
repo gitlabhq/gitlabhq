@@ -62,6 +62,8 @@ A breaking change can be considered major if it affects many users, or represent
 
 Deprecations should be announced on the [Deprecated feature removal schedule](../../update/deprecations.md).
 
+Deprecations should be announced [no later than the third milestone preceding intended removal](https://about.gitlab.com/handbook/product/gitlab-the-product/#process-for-deprecating-and-removing-a-feature).
+
 Do not include the deprecation announcement in the merge request that introduces a code change for the deprecation.
 Use a separate MR to create a deprecation entry. For steps to create a deprecation entry, see
 [Deprecations](https://about.gitlab.com/handbook/marketing/blog/release-posts/#deprecations).
