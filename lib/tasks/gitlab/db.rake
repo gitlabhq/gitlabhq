@@ -131,7 +131,7 @@ namespace :gitlab do
       end
     end
 
-    desc 'This adjusts and cleans db/structure.sql - it runs after db:structure:dump'
+    desc 'This adjusts and cleans db/structure.sql - it runs after db:schema:dump'
     task :clean_structure_sql do |task_name|
       ActiveRecord::Base.configurations.configs_for(env_name: ActiveRecord::Tasks::DatabaseTasks.env).each do |db_config|
         structure_file = ActiveRecord::Tasks::DatabaseTasks.dump_filename(db_config.name)
@@ -147,26 +147,13 @@ namespace :gitlab do
       Rake::Task[task_name].reenable
     end
 
-    # Inform Rake that custom tasks should be run every time rake db:structure:dump is run
-    #
-    # Rails 6.1 deprecates db:structure:dump in favor of db:schema:dump
-    Rake::Task['db:structure:dump'].enhance do
-      Rake::Task['gitlab:db:clean_structure_sql'].invoke
-    end
-
     # Inform Rake that custom tasks should be run every time rake db:schema:dump is run
     Rake::Task['db:schema:dump'].enhance do
       Rake::Task['gitlab:db:clean_structure_sql'].invoke
     end
 
     ActiveRecord::Tasks::DatabaseTasks.for_each(databases) do |name|
-      # Inform Rake that custom tasks should be run every time rake db:structure:dump is run
-      #
-      # Rails 6.1 deprecates db:structure:dump in favor of db:schema:dump
-      Rake::Task["db:structure:dump:#{name}"].enhance do
-        Rake::Task['gitlab:db:clean_structure_sql'].invoke
-      end
-
+      # Inform Rake that custom tasks should be run every time rake db:schema:dump is run
       Rake::Task["db:schema:dump:#{name}"].enhance do
         Rake::Task['gitlab:db:clean_structure_sql'].invoke
       end

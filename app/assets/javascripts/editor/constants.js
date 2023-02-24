@@ -114,7 +114,7 @@ export const EXTENSION_MARKDOWN_BUTTONS = [
   },
   {
     id: 'link',
-    label: sprintf(s__('MarkdownEditor|Add a link (%{modifier_key}K)'), {
+    label: sprintf(s__('MarkdownEditor|Add a link (%{modifierKey}K)'), {
       modifierKey,
     }),
     data: {

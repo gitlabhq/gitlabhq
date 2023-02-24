@@ -36,8 +36,16 @@ include:
   variables:
     DECOMPOSED_DB: "false"
 
+.single-db-ci-connection:
+  extends: .single-db
+  variables:
+    CI_CONNECTION_DB: "true"
+
 .single-db-rspec:
   extends: .single-db
+
+.single-db-ci-connection-rspec:
+  extends: .single-db-ci-connection
 
 .praefect-with-db:
   variables:

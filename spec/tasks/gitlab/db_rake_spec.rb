@@ -16,7 +16,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
   before do
     # Stub out db tasks
     allow(Rake::Task['db:migrate']).to receive(:invoke).and_return(true)
-    allow(Rake::Task['db:structure:load']).to receive(:invoke).and_return(true)
+    allow(Rake::Task['db:schema:load']).to receive(:invoke).and_return(true)
     allow(Rake::Task['db:seed_fu']).to receive(:invoke).and_return(true)
   end
 
@@ -1047,14 +1047,6 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
   context 'with multiple databases', :reestablished_active_record_base do
     before do
       skip_unless_ci_uses_database_tasks
-    end
-
-    describe 'db:structure:dump against a single database' do
-      it 'invokes gitlab:db:clean_structure_sql' do
-        expect(Rake::Task['gitlab:db:clean_structure_sql']).to receive(:invoke).twice.and_return(true)
-
-        expect { run_rake_task('db:structure:dump:main') }.not_to raise_error
-      end
     end
 
     describe 'db:schema:dump against a single database' do

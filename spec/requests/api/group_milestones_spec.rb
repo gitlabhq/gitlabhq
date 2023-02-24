@@ -4,35 +4,41 @@ require 'spec_helper'
 
 RSpec.describe API::GroupMilestones, feature_category: :team_planning do
   let_it_be(:user) { create(:user) }
-  let_it_be(:group) { create(:group, :private) }
+  let_it_be_with_refind(:group) { create(:group, :private) }
   let_it_be(:project) { create(:project, namespace: group) }
   let_it_be(:group_member) { create(:group_member, group: group, user: user) }
-  let_it_be(:closed_milestone) { create(:closed_milestone, group: group, title: 'version1', description: 'closed milestone') }
-  let_it_be(:milestone) { create(:milestone, group: group, title: 'version2', description: 'open milestone') }
+  let_it_be(:closed_milestone) do
+    create(:closed_milestone, group: group, title: 'version1', description: 'closed milestone')
+  end
+
+  let_it_be_with_reload(:milestone) do
+    create(:milestone, group: group, title: 'version2', description: 'open milestone', updated_at: 4.days.ago)
+  end
 
   let(:route) { "/groups/#{group.id}/milestones" }
+
+  shared_examples 'listing all milestones' do
+    it 'returns correct list of milestones' do
+      get api(route, user), params: params
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response.size).to eq(milestones.size)
+      expect(json_response.map { |entry| entry["id"] }).to eq(milestones.map(&:id))
+    end
+  end
 
   it_behaves_like 'group and project milestones', "/groups/:id/milestones"
 
   describe 'GET /groups/:id/milestones' do
+    let_it_be(:ancestor_group) { create(:group, :private) }
+    let_it_be(:ancestor_group_milestone) { create(:milestone, group: ancestor_group, updated_at: 2.days.ago) }
+
+    before_all do
+      group.update!(parent: ancestor_group)
+    end
+
     context 'when include_parent_milestones is true' do
-      let_it_be(:ancestor_group) { create(:group, :private) }
-      let_it_be(:ancestor_group_milestone) { create(:milestone, group: ancestor_group) }
-      let_it_be(:params) { { include_parent_milestones: true } }
-
-      before_all do
-        group.update!(parent: ancestor_group)
-      end
-
-      shared_examples 'listing all milestones' do
-        it 'returns correct list of milestones' do
-          get api(route, user), params: params
-
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(json_response.size).to eq(milestones.size)
-          expect(json_response.map { |entry| entry["id"] }).to eq(milestones.map(&:id))
-        end
-      end
+      let(:params) { { include_parent_milestones: true } }
 
       context 'when user has access to ancestor groups' do
         let(:milestones) { [ancestor_group_milestone, milestone, closed_milestone] }
@@ -45,9 +51,25 @@ RSpec.describe API::GroupMilestones, feature_category: :team_planning do
         it_behaves_like 'listing all milestones'
 
         context 'when iids param is present' do
-          let_it_be(:params) { { include_parent_milestones: true, iids: [milestone.iid] } }
+          let(:params) { { include_parent_milestones: true, iids: [milestone.iid] } }
 
           it_behaves_like 'listing all milestones'
+        end
+
+        context 'when updated_before param is present' do
+          let(:params) { { updated_before: 1.day.ago.iso8601, include_parent_milestones: true } }
+
+          it_behaves_like 'listing all milestones' do
+            let(:milestones) { [ancestor_group_milestone, milestone] }
+          end
+        end
+
+        context 'when updated_after param is present' do
+          let(:params) { { updated_after: 1.day.ago.iso8601, include_parent_milestones: true } }
+
+          it_behaves_like 'listing all milestones' do
+            let(:milestones) { [closed_milestone] }
+          end
         end
       end
 
@@ -61,6 +83,22 @@ RSpec.describe API::GroupMilestones, feature_category: :team_planning do
         it_behaves_like 'listing all milestones' do
           let(:milestones) { [milestone, closed_milestone] }
         end
+      end
+    end
+
+    context 'when updated_before param is present' do
+      let(:params) { { updated_before: 1.day.ago.iso8601 } }
+
+      it_behaves_like 'listing all milestones' do
+        let(:milestones) { [milestone] }
+      end
+    end
+
+    context 'when updated_after param is present' do
+      let(:params) { { updated_after: 1.day.ago.iso8601 } }
+
+      it_behaves_like 'listing all milestones' do
+        let(:milestones) { [closed_milestone] }
       end
     end
   end

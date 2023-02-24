@@ -1238,6 +1238,19 @@
     - <<: *if-merge-request
       changes: *db-patterns
 
+.rails:rules:single-db-ci-connection:
+  rules:
+    - <<: *if-merge-request-labels-run-single-db
+    - <<: *if-merge-request
+      changes: *db-patterns
+    - <<: *if-default-branch-schedule-nightly
+
+.rails:rules:db:check-migrations-single-db-ci-connection:
+  rules:
+    - <<: *if-merge-request-labels-run-single-db
+    - <<: *if-merge-request
+      changes: *db-patterns
+
 .rails:rules:db-backup:
   rules:
     - <<: *if-merge-request-labels-run-all-rspec

@@ -5,6 +5,7 @@ require 'yaml'
 
 rails_env = ENV.fetch('RAILS_ENV')
 database_config = YAML.load_file(File.join(File.expand_path('..', __dir__), 'config', 'database.yml'))[rails_env]
+database_config.reject! { |_k, v| v["database_tasks"] == false }
 
 task = ARGV.shift
 raise ArgumentError, 'You need to pass a task name!' unless task
@@ -14,4 +15,4 @@ cmd = ['bundle', 'exec', 'rake', task, *ARGV]
 
 puts "Running: `#{cmd.join(' ')}`"
 
-system(*cmd)
+exit 1 unless system(*cmd)

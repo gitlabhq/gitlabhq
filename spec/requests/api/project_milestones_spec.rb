@@ -6,8 +6,12 @@ RSpec.describe API::ProjectMilestones, feature_category: :team_planning do
   let_it_be(:user) { create(:user) }
   let_it_be_with_reload(:project) { create(:project, namespace: user.namespace) }
   let_it_be(:closed_milestone) { create(:closed_milestone, project: project, title: 'version1', description: 'closed milestone') }
-  let_it_be(:milestone) { create(:milestone, project: project, title: 'version2', description: 'open milestone') }
   let_it_be(:route) { "/projects/#{project.id}/milestones" }
+  let_it_be(:milestone) do
+    create(:milestone, project: project, title: 'version2', description: 'open milestone', updated_at: 5.days.ago)
+  end
+
+  let(:params) { {} }
 
   before_all do
     project.add_reporter(user)
@@ -15,37 +19,42 @@ RSpec.describe API::ProjectMilestones, feature_category: :team_planning do
 
   it_behaves_like 'group and project milestones', "/projects/:id/milestones"
 
+  shared_examples 'listing all milestones' do
+    it 'returns correct list of milestones' do
+      get api(route, user), params: params
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response.size).to eq(milestones.size)
+      expect(json_response.map { |entry| entry["id"] }).to match_array(milestones.map(&:id))
+    end
+  end
+
   describe 'GET /projects/:id/milestones' do
-    context 'when include_parent_milestones is true' do
-      let_it_be(:ancestor_group) { create(:group, :private) }
-      let_it_be(:group) { create(:group, :private, parent: ancestor_group) }
-      let_it_be(:ancestor_group_milestone) { create(:milestone, group: ancestor_group) }
-      let_it_be(:group_milestone) { create(:milestone, group: group) }
+    let_it_be(:ancestor_group) { create(:group, :private) }
+    let_it_be(:group) { create(:group, :private, parent: ancestor_group) }
+    let_it_be(:ancestor_group_milestone) { create(:milestone, group: ancestor_group, updated_at: 1.day.ago) }
+    let_it_be(:group_milestone) { create(:milestone, group: group, updated_at: 3.days.ago) }
 
-      let(:params) { { include_parent_milestones: true } }
+    context 'when project parent is a namespace' do
+      let(:milestones) { [milestone, closed_milestone] }
 
-      shared_examples 'listing all milestones' do
-        it 'returns correct list of milestones' do
-          get api(route, user), params: params
+      it_behaves_like 'listing all milestones'
 
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(json_response.size).to eq(milestones.size)
-          expect(json_response.map { |entry| entry["id"] }).to eq(milestones.map(&:id))
-        end
+      context 'when include_parent_milestones is true' do
+        let(:params) { { include_parent_milestones: true } }
+
+        it_behaves_like 'listing all milestones'
+      end
+    end
+
+    context 'when project parent is a group' do
+      before_all do
+        project.update!(namespace: group)
       end
 
-      context 'when project parent is a namespace' do
-        it_behaves_like 'listing all milestones' do
-          let(:milestones) { [milestone, closed_milestone] }
-        end
-      end
-
-      context 'when project parent is a group' do
+      context 'when include_parent_milestones is true' do
+        let(:params) { { include_parent_milestones: true } }
         let(:milestones) { [group_milestone, ancestor_group_milestone, milestone, closed_milestone] }
-
-        before_all do
-          project.update!(namespace: group)
-        end
 
         it_behaves_like 'listing all milestones'
 
@@ -63,6 +72,38 @@ RSpec.describe API::ProjectMilestones, feature_category: :team_planning do
 
             expect(response).to have_gitlab_http_status(:not_found)
           end
+        end
+
+        context 'when updated_before param is present' do
+          let(:params) { { updated_before: 12.hours.ago.iso8601, include_parent_milestones: true } }
+
+          it_behaves_like 'listing all milestones' do
+            let(:milestones) { [group_milestone, ancestor_group_milestone, milestone] }
+          end
+        end
+
+        context 'when updated_after param is present' do
+          let(:params) { { updated_after: 2.days.ago.iso8601, include_parent_milestones: true } }
+
+          it_behaves_like 'listing all milestones' do
+            let(:milestones) { [ancestor_group_milestone, closed_milestone] }
+          end
+        end
+      end
+
+      context 'when updated_before param is present' do
+        let(:params) { { updated_before: 12.hours.ago.iso8601 } }
+
+        it_behaves_like 'listing all milestones' do
+          let(:milestones) { [milestone] }
+        end
+      end
+
+      context 'when updated_after param is present' do
+        let(:params) { { updated_after: 2.days.ago.iso8601 } }
+
+        it_behaves_like 'listing all milestones' do
+          let(:milestones) { [closed_milestone] }
         end
       end
     end

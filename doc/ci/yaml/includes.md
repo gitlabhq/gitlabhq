@@ -20,13 +20,6 @@ To include a single configuration file, use either of these syntax options:
   include: '/templates/.after-script-template.yml'
   ```
 
-- `include` with a single file, and you specify the `include` type:
-
-  ```yaml
-  include:
-    remote: 'https://gitlab.com/awesome-project/raw/main/.before-script-template.yml'
-  ```
-
 ## Include an array of configuration files
 
 You can include an array of configuration files:

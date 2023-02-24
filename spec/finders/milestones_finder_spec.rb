@@ -62,9 +62,31 @@ RSpec.describe MilestonesFinder do
   end
 
   context 'with filters' do
-    let_it_be(:milestone_1) { create(:milestone, group: group, state: 'closed', title: 'one test', start_date: now - 1.day, due_date: now) }
-    let_it_be(:milestone_3) { create(:milestone, project: project_1, state: 'closed', start_date: now + 2.days, due_date: now + 3.days) }
+    let_it_be(:milestone_1) do
+      create(
+        :milestone,
+        group: group,
+        state: 'closed',
+        title: 'one test',
+        start_date: now - 1.day,
+        due_date: now,
+        updated_at: now - 3.days
+      )
+    end
 
+    let_it_be(:milestone_3) do
+      create(
+        :milestone,
+        project: project_1,
+        state: 'closed',
+        description: 'three test',
+        start_date: now + 2.days,
+        due_date: now + 3.days,
+        updated_at: now - 5.days
+      )
+    end
+
+    let(:result) { described_class.new(params).execute }
     let(:params) do
       {
         project_ids: [project_1.id, project_2.id],
@@ -76,62 +98,96 @@ RSpec.describe MilestonesFinder do
     it 'filters by id' do
       params[:ids] = [milestone_1.id, milestone_2.id]
 
-      result = described_class.new(params).execute
-
       expect(result).to contain_exactly(milestone_1, milestone_2)
     end
 
     it 'filters by active state' do
       params[:state] = 'active'
-      result = described_class.new(params).execute
 
       expect(result).to contain_exactly(milestone_2, milestone_4)
     end
 
     it 'filters by closed state' do
       params[:state] = 'closed'
-      result = described_class.new(params).execute
 
       expect(result).to contain_exactly(milestone_1, milestone_3)
     end
 
     it 'filters by title' do
-      result = described_class.new(params.merge(title: 'one test')).execute
+      params[:title] = 'one test'
 
-      expect(result.to_a).to contain_exactly(milestone_1)
+      expect(result).to contain_exactly(milestone_1)
     end
 
     it 'filters by search_title' do
-      result = described_class.new(params.merge(search_title: 'one t')).execute
+      params[:search_title] = 'test'
 
-      expect(result.to_a).to contain_exactly(milestone_1)
+      expect(result).to contain_exactly(milestone_1)
+    end
+
+    it 'filters by search (title, description)' do
+      params[:search] = 'test'
+
+      expect(result).to contain_exactly(milestone_1, milestone_3)
     end
 
     context 'by timeframe' do
       it 'returns milestones with start_date and due_date between timeframe' do
         params.merge!(start_date: now - 1.day, end_date: now + 3.days)
 
-        milestones = described_class.new(params).execute
-
-        expect(milestones).to match_array([milestone_1, milestone_2, milestone_3])
+        expect(result).to contain_exactly(milestone_1, milestone_2, milestone_3)
       end
 
       it 'returns milestones which starts before the timeframe' do
         milestone = create(:milestone, project: project_2, start_date: now - 5.days)
         params.merge!(start_date: now - 3.days, end_date: now - 2.days)
 
-        milestones = described_class.new(params).execute
-
-        expect(milestones).to match_array([milestone])
+        expect(result).to contain_exactly(milestone)
       end
 
       it 'returns milestones which ends after the timeframe' do
         milestone = create(:milestone, project: project_2, due_date: now + 6.days)
         params.merge!(start_date: now + 6.days, end_date: now + 7.days)
 
-        milestones = described_class.new(params).execute
+        expect(result).to contain_exactly(milestone)
+      end
+    end
 
-        expect(milestones).to match_array([milestone])
+    context 'by updated_at' do
+      it 'returns milestones updated before a given date' do
+        params[:updated_before] = 4.days.ago.iso8601
+
+        expect(result).to contain_exactly(milestone_3)
+      end
+
+      it 'returns milestones updated after a given date' do
+        params[:updated_after] = 4.days.ago.iso8601
+
+        expect(result).to contain_exactly(milestone_1, milestone_2, milestone_4)
+      end
+
+      it 'returns milestones updated between the given dates' do
+        params.merge!(updated_after: 6.days.ago.iso8601, updated_before: 4.days.ago.iso8601)
+
+        expect(result).to contain_exactly(milestone_3)
+      end
+    end
+
+    context 'by iids' do
+      before do
+        params[:iids] = 1
+      end
+
+      it 'returns milestone for the given iids' do
+        expect(result).to contain_exactly(milestone_2, milestone_3, milestone_4)
+      end
+
+      context 'when include_parent_milestones is true' do
+        it 'ignores the iid filter' do
+          params[:include_parent_milestones] = true
+
+          expect(result).to contain_exactly(milestone_1, milestone_2, milestone_3, milestone_4)
+        end
       end
     end
   end
