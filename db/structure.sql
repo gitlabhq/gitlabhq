@@ -33945,6 +33945,9 @@ ALTER TABLE ONLY service_desk_settings
 ALTER TABLE ONLY design_management_designs_versions
     ADD CONSTRAINT fk_03c671965c FOREIGN KEY (design_id) REFERENCES design_management_designs(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY projects
+    ADD CONSTRAINT fk_03ec10b0d3 FOREIGN KEY (creator_id) REFERENCES users(id) ON DELETE SET NULL NOT VALID;
+
 ALTER TABLE ONLY analytics_dashboards_pointers
     ADD CONSTRAINT fk_05d96922bd FOREIGN KEY (target_project_id) REFERENCES projects(id) ON DELETE CASCADE;
 

@@ -53,12 +53,7 @@ module Nav
       menu_items.push(create_epic_menu_item(group))
 
       if can?(current_user, :admin_group_member, group)
-        menu_items.push(
-          invite_members_menu_item(
-            href: group_group_members_path(group),
-            partial: 'groups/invite_members_top_nav_link'
-          )
-        )
+        menu_items.push(invite_members_menu_item(partial: 'groups/invite_members_top_nav_link'))
       end
 
       {
@@ -105,12 +100,7 @@ module Nav
       end
 
       if can_admin_project_member?(project)
-        menu_items.push(
-          invite_members_menu_item(
-            href: project_project_members_path(project),
-            partial: 'projects/invite_members_top_nav_link'
-          )
-        )
+        menu_items.push(invite_members_menu_item(partial: 'projects/invite_members_top_nav_link'))
       end
 
       {
@@ -161,17 +151,16 @@ module Nav
       }
     end
 
-    def invite_members_menu_item(href:, partial:)
+    def invite_members_menu_item(partial:)
       ::Gitlab::Nav::TopNavMenuItem.build(
         id: 'invite',
         title: s_('InviteMember|Invite members'),
         icon: 'shaking_hands',
         partial: partial,
-        href: href,
+        component: 'invite_members',
         data: {
-          track_action: 'click_link_invite_members',
-          track_label: 'plus_menu_dropdown',
-          track_property: 'navigation_top'
+          trigger_source: 'top-nav',
+          trigger_element: 'text-emoji'
         }
       )
     end

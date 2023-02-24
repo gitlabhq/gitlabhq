@@ -1,6 +1,7 @@
-= link_to local_assigns.fetch(:href), class: local_assigns.fetch(:css_class), data: local_assigns.fetch(:data) do
-  = local_assigns.fetch(:display_text)
-  - if local_assigns.fetch(:icon)
-    = " #{emoji_icon(local_assigns.fetch(:icon), 'aria-hidden': true, class: 'gl-font-base gl-vertical-align-baseline')}".html_safe
+- data = local_assigns.fetch(:data)
+- data[:display_text] = local_assigns.fetch(:display_text)
+- data[:icon] = local_assigns.fetch(:icon)
+
+.js-invite-members-trigger{ data: data }
 
 = render 'groups/invite_members_modal', group: local_assigns.fetch(:context)

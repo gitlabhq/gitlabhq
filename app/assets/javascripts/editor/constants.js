@@ -166,3 +166,4 @@ export const EXTENSION_MARKDOWN_BUTTONS = [
     },
   },
 ];
+export const EXTENSION_SOFTWRAP_ID = 'soft-wrap';

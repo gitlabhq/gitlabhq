@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ResourceAccessTokens::CreateService do
+RSpec.describe ResourceAccessTokens::CreateService, feature_category: :system_access do
   subject { described_class.new(user, resource, params).execute }
 
   let_it_be(:user) { create(:user) }
@@ -98,6 +98,22 @@ RSpec.describe ResourceAccessTokens::CreateService do
           access_token = response.payload[:access_token]
 
           expect(access_token.user.email).to end_with("@noreply.#{Gitlab.config.gitlab.host}")
+        end
+
+        it 'contains SecureRandom part' do
+          expect(SecureRandom).to receive(:hex).at_least(:once).and_return('randomhex')
+          response = subject
+          access_token = response.payload[:access_token]
+
+          expect(access_token.user.email).to include('_randomhex@noreply')
+        end
+
+        it 'email is the same as username' do
+          expect(SecureRandom).to receive(:hex).at_least(:once).and_return('randomhex')
+          response = subject
+          access_token = response.payload[:access_token]
+
+          expect(access_token.user.email).to include(access_token.user.username)
         end
       end
 

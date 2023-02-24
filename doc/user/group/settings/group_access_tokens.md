@@ -84,8 +84,8 @@ or API. However, administrators can use a workaround:
    # Set the group group you want to create a token for. For example, group with ID 109.
    group = Group.find(109)
 
-   # Create the group bot user. For further group access tokens, the username should be group_#{group.id}_bot#{bot_count}. For example, group_109_bot2 and email address group_109_bot2@example.com.
-   bot = Users::CreateService.new(admin, { name: 'group_token', username: "group_#{group.id}_bot", email: "group_#{group.id}_bot@example.com", user_type: :project_bot }).execute
+   # Create the group bot user. For further group access tokens, the username should be group_#{group.id}_bot#{bot_count}. For example, group_109_bot2 and email address group_109_bot_{random_string}@example.com.
+   bot = Users::CreateService.new(admin, { name: 'group_token', username: "group_#{group.id}_bot", email: "group_#{group.id}_bot_4ffca233d8298ea1@example.com", user_type: :project_bot }).execute
 
    # Confirm the group bot.
    bot.confirm
@@ -169,7 +169,11 @@ to groups instead of projects. Bot users for groups:
 - Do not count as licensed seats.
 - Can have a maximum role of Owner for a group. For more information, see
   [Create a group access token](../../../api/group_access_tokens.md#create-a-group-access-token).
-- Have a username set to `group_{group_id}_bot` for the first access token. For example, `group_123_bot`.  
-- Have an email set to `group{group_id}_bot@noreply.{Gitlab.config.gitlab.host}`. For example, `group123_bot@noreply.example.com`.
+- Have a username set to `group_{group_id}_bot_{random_string}`. For example, `group_123_bot_4ffca233d8298ea1`.  
+- Have an email set to `group{group_id}_bot_{random_string}@noreply.{Gitlab.config.gitlab.host}`. For example, `group123_bot_4ffca233d8298ea1@noreply.example.com`.
 
 All other properties are similar to [bot users for projects](../../project/settings/project_access_tokens.md#bot-users-for-projects).
+
+## Token availability
+
+Group access tokens are only available in paid subscriptions, and not available in trial subscriptions. For more information, see the ["What is included" section of the GitLab Trial FAQ](https://about.gitlab.com/free-trial/#what-is-included-in-my-free-trial-what-is-excluded).

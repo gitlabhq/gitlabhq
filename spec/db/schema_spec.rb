@@ -95,7 +95,7 @@ RSpec.describe 'Database schema', feature_category: :database do
     project_error_tracking_settings: %w[sentry_project_id],
     project_group_links: %w[group_id],
     project_statistics: %w[namespace_id],
-    projects: %w[creator_id ci_id mirror_user_id],
+    projects: %w[ci_id mirror_user_id],
     redirect_routes: %w[source_id],
     repository_languages: %w[programming_language_id],
     routes: %w[source_id],

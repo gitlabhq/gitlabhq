@@ -16,9 +16,9 @@ the API itself.
 
 The examples documented here can be run using:
 
-- The command line.
-- GraphiQL.
-- Rails console.
+- [Command line](#command-line).
+- [GraphiQL](#graphiql).
+- [Rails console](#rails-console).
 
 ### Command line
 

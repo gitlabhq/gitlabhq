@@ -1,4 +1,4 @@
-import { GlButton, GlLink, GlIcon } from '@gitlab/ui';
+import { GlButton, GlLink, GlIcon, GlDropdownItem } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import InviteMembersTrigger from '~/invite_members/components/invite_members_trigger.vue';
 import eventHub from '~/invite_members/event_hub';
@@ -6,7 +6,10 @@ import {
   TRIGGER_ELEMENT_BUTTON,
   TRIGGER_ELEMENT_SIDE_NAV,
   TRIGGER_DEFAULT_QA_SELECTOR,
+  TRIGGER_ELEMENT_WITH_EMOJI,
+  TRIGGER_ELEMENT_DROPDOWN_WITH_EMOJI,
 } from '~/invite_members/constants';
+import { GlEmoji } from '../mock_data/member_modal';
 
 jest.mock('~/experimentation/experiment_tracking');
 
@@ -20,6 +23,8 @@ const triggerComponent = {
   button: GlButton,
   anchor: GlLink,
   'side-nav': GlLink,
+  'text-emoji': GlLink,
+  'dropdown-text-emoji': GlDropdownItem,
 };
 
 const createComponent = (props = {}) => {
@@ -28,6 +33,9 @@ const createComponent = (props = {}) => {
       displayText,
       ...triggerProps,
       ...props,
+    },
+    stubs: {
+      GlEmoji,
     },
   });
 };
@@ -42,6 +50,10 @@ const triggerItems = [
   {
     triggerElement: TRIGGER_ELEMENT_SIDE_NAV,
     icon: 'plus',
+  },
+  {
+    triggerElement: TRIGGER_ELEMENT_WITH_EMOJI,
+    icon: 'shaking_hands',
   },
 ];
 
@@ -117,5 +129,27 @@ describe('side-nav with icon', () => {
 
     expect(findIcon().exists()).toBe(true);
     expect(findIcon().props('name')).toBe('plus');
+  });
+});
+
+describe('link with emoji', () => {
+  it('includes the specified icon with correct size when triggerElement is link', () => {
+    const findEmoji = () => wrapper.findComponent(GlEmoji);
+
+    createComponent({ triggerElement: TRIGGER_ELEMENT_WITH_EMOJI, icon: 'shaking_hands' });
+
+    expect(findEmoji().exists()).toBe(true);
+    expect(findEmoji().attributes('data-name')).toBe('shaking_hands');
+  });
+});
+
+describe('dropdown item with emoji', () => {
+  it('includes the specified icon with correct size when triggerElement is link', () => {
+    const findEmoji = () => wrapper.findComponent(GlEmoji);
+
+    createComponent({ triggerElement: TRIGGER_ELEMENT_DROPDOWN_WITH_EMOJI, icon: 'shaking_hands' });
+
+    expect(findEmoji().exists()).toBe(true);
+    expect(findEmoji().attributes('data-name')).toBe('shaking_hands');
   });
 });

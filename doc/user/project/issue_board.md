@@ -417,7 +417,7 @@ To set a WIP limit for a list, in an issue board:
 
 1. On the top of the list you want to edit, select **List actions** (**{ellipsis_v}**) **> Edit list settings**.
    The list settings sidebar opens on the right.
-1. Next to **Work in progress Limit**, select **Edit**.
+1. Next to **Work in progress limit**, select **Edit**.
 1. Enter the maximum number of issues.
 1. Press <kbd>Enter</kbd> to save.
 

@@ -26,15 +26,15 @@
           dismiss_key: @project.id,
           human_access: human_access } }
 
-    .file-buttons.gl-display-flex.gl-align-items-center.gl-justify-content-end
-      - if is_markdown
-        - unless Feature.enabled?(:source_editor_toolbar, current_user)
+    - unless Feature.enabled?(:source_editor_toolbar, current_user)
+      .file-buttons.gl-display-flex.gl-align-items-center.gl-justify-content-end
+        - if is_markdown
           = render 'shared/blob/markdown_buttons', show_fullscreen_button: false, supports_file_upload: false
-      %span.soft-wrap-toggle
-        = render Pajamas::ButtonComponent.new(icon: 'soft-unwrap', button_options: { class: 'no-wrap' }) do
-          = _("No wrap")
-        = render Pajamas::ButtonComponent.new(icon: 'soft-wrap', button_options: { class: 'soft-wrap' }) do
-          = _("Soft wrap")
+        %span.soft-wrap-toggle
+          = render Pajamas::ButtonComponent.new(icon: 'soft-unwrap', button_options: { class: 'no-wrap' }) do
+            = _("No wrap")
+          = render Pajamas::ButtonComponent.new(icon: 'soft-wrap', button_options: { class: 'soft-wrap' }) do
+            = _("Soft wrap")
 
   .file-editor.code
     - if Feature.enabled?(:source_editor_toolbar, current_user)

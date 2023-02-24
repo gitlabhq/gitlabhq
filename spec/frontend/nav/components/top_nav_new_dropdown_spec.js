@@ -1,6 +1,8 @@
 import { GlDropdown } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import TopNavNewDropdown from '~/nav/components/top_nav_new_dropdown.vue';
+import InviteMembersTrigger from '~/invite_members/components/invite_members_trigger.vue';
+import { TOP_NAV_INVITE_MEMBERS_COMPONENT } from '~/invite_members/constants';
 
 const TEST_VIEW_MODEL = {
   title: 'Dropdown',
@@ -18,6 +20,16 @@ const TEST_VIEW_MODEL = {
       menu_items: [
         { id: 'bar-1', title: 'Bar 1', href: '/bar/1' },
         { id: 'bar-2', title: 'Bar 2', href: '/bar/2' },
+        {
+          id: 'invite',
+          title: '_invite members title_',
+          component: TOP_NAV_INVITE_MEMBERS_COMPONENT,
+          icon: '_icon_',
+          data: {
+            trigger_element: '_trigger_element_',
+            trigger_source: '_trigger_source_',
+          },
+        },
       ],
     },
   ],
@@ -36,6 +48,7 @@ describe('~/nav/components/top_nav_menu_sections.vue', () => {
   };
 
   const findDropdown = () => wrapper.findComponent(GlDropdown);
+  const findInviteMembersTrigger = () => wrapper.findComponent(InviteMembersTrigger);
   const findDropdownContents = () =>
     findDropdown()
       .findAll('[data-testid]')
@@ -73,6 +86,10 @@ describe('~/nav/components/top_nav_menu_sections.vue', () => {
     });
 
     it('renders dropdown content', () => {
+      const hrefItems = TEST_VIEW_MODEL.menu_sections[1].menu_items.filter((item) =>
+        Boolean(item.href),
+      );
+
       expect(findDropdownContents()).toEqual([
         {
           type: 'header',
@@ -90,12 +107,18 @@ describe('~/nav/components/top_nav_menu_sections.vue', () => {
           type: 'header',
           text: TEST_VIEW_MODEL.menu_sections[1].title,
         },
-        ...TEST_VIEW_MODEL.menu_sections[1].menu_items.map(({ title, href }) => ({
+        ...hrefItems.map(({ title, href }) => ({
           type: 'item',
           href,
           text: title,
         })),
       ]);
+      expect(findInviteMembersTrigger().props()).toMatchObject({
+        displayText: '_invite members title_',
+        icon: '_icon_',
+        triggerElement: 'dropdown-_trigger_element_',
+        triggerSource: '_trigger_source_',
+      });
     });
   });
 

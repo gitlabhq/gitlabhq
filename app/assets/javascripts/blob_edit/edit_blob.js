@@ -68,9 +68,9 @@ export default class EditBlob {
       blobContent: editorEl.innerText,
     });
     this.editor.use([
+      { definition: ToolbarExtension },
       { definition: SourceEditorExtension },
       { definition: FileTemplateExtension },
-      { definition: ToolbarExtension },
     ]);
 
     fileNameEl.addEventListener('change', () => {

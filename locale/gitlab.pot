@@ -48616,7 +48616,7 @@ msgstr ""
 msgid "Work in progress (open and unassigned)"
 msgstr ""
 
-msgid "Work in progress Limit"
+msgid "Work in progress limit"
 msgstr ""
 
 msgid "WorkItem|%{count} more assignees"

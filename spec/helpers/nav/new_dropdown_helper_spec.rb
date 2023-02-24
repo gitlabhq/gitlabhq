@@ -35,12 +35,11 @@ RSpec.describe Nav::NewDropdownHelper, feature_category: :navigation do
               id: 'invite',
               title: 'Invite members',
               icon: 'shaking_hands',
-              href: expected_href,
               partial: partial,
+              component: 'invite_members',
               data: {
-                track_action: 'click_link_invite_members',
-                track_label: 'plus_menu_dropdown',
-                track_property: 'navigation_top'
+                trigger_source: 'top-nav',
+                trigger_element: 'text-emoji'
               }
             )
           )

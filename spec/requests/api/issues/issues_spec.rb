@@ -1139,6 +1139,15 @@ RSpec.describe API::Issues, feature_category: :team_planning do
       expect(json_response['issue_type']).to eq('issue')
     end
 
+    context 'when confidential is null' do
+      it 'responds with 400 error' do
+        post api("/projects/#{project.id}/issues", user), params: { title: 'issue', confidential: nil }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['error']).to eq('confidential is empty')
+      end
+    end
+
     context 'when issue create service returns an unrecoverable error' do
       before do
         allow_next_instance_of(Issues::CreateService) do |create_service|

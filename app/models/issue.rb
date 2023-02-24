@@ -108,6 +108,7 @@ class Issue < ApplicationRecord
   validates :issue_type, presence: true
   validates :namespace, presence: true
   validates :work_item_type, presence: true
+  validates :confidential, inclusion: { in: [true, false], message: 'must be a boolean' }
 
   validate :allowed_work_item_type_change, on: :update, if: :work_item_type_id_changed?
   validate :due_date_after_start_date

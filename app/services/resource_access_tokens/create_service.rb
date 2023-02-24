@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'securerandom'
+
 module ResourceAccessTokens
   class CreateService < BaseService
     def initialize(current_user, resource, params = {})
@@ -71,21 +73,15 @@ module ResourceAccessTokens
     end
 
     def generate_username
-      base_username = "#{resource_type}_#{resource.id}_bot"
-
-      uniquify.string(base_username) { |s| User.find_by_username(s) }
+      username
     end
 
     def generate_email
-      email_pattern = "#{resource_type}#{resource.id}_bot%s@noreply.#{Gitlab.config.gitlab.host}"
-
-      uniquify.string(-> (n) { Kernel.sprintf(email_pattern, n) }) do |s|
-        User.find_by_email(s)
-      end
+      "#{username}@noreply.#{Gitlab.config.gitlab.host}"
     end
 
-    def uniquify
-      Gitlab::Utils::Uniquify.new
+    def username
+      @username ||= "#{resource_type}_#{resource.id}_bot_#{SecureRandom.hex(8)}"
     end
 
     def create_personal_access_token(user)

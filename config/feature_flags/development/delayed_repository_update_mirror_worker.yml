@@ -1,8 +1,0 @@
----
-name: delayed_repository_update_mirror_worker
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89501
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/362894
-milestone: '15.1'
-type: development
-group: group::source code
-default_enabled: false

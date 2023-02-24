@@ -10,7 +10,7 @@ module Gitlab
       # rubocop: disable Metrics/ParameterLists
       def self.build(
         id:, title:, active: false, icon: '', href: '', view: '',
-        css_class: nil, data: nil, partial: nil
+        css_class: nil, data: nil, partial: nil, component: nil
       )
         {
           id: id,
@@ -22,7 +22,8 @@ module Gitlab
           view: view.to_s,
           css_class: css_class,
           data: data || { qa_selector: 'menu_item_link', qa_title: title },
-          partial: partial
+          partial: partial,
+          component: component
         }
       end
       # rubocop: enable Metrics/ParameterLists

@@ -14,13 +14,13 @@ ENV['IN_MEMORY_APPLICATION_SETTINGS'] = 'true'
 # Enable zero monkey patching mode before loading any other RSpec code.
 RSpec.configure(&:disable_monkey_patching!)
 
+require 'active_support/all'
 require_relative 'rails_autoload'
 
 require_relative '../config/settings'
 require_relative 'support/rspec'
 require_relative '../lib/gitlab/utils'
 require_relative '../lib/gitlab/utils/strong_memoize'
-require 'active_support/all'
 
 require_relative 'simplecov_env'
 SimpleCovEnv.start!

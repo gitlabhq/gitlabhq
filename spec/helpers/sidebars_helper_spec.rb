@@ -170,8 +170,7 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
           items: array_including(
             { href: "/projects/new", text: "New project/repository" },
             { href: "/groups/new#create-group-pane", text: "New subgroup" },
-            { href: "/groups/#{group.full_path}/-/group_members",
-              text: "Invite members" }
+            { href: '', text: "Invite members" }
           )
         ),
         a_hash_including(

@@ -137,3 +137,11 @@ You can unlink your fork from its upstream project in the [advanced settings](..
 
 - GitLab blog post: [How to keep your fork up to date with its origin](https://about.gitlab.com/blog/2016/12/01/how-to-keep-your-fork-up-to-date-with-its-origin/).
 - GitLab community forum: [Refreshing a fork](https://forum.gitlab.com/t/refreshing-a-fork/).
+
+## Troubleshooting
+
+### An error occurred while forking the project. Please try again
+
+This error can be due to a mismatch in shared runner settings between the forked project
+and the new namespace. See [Forks](../../../ci/runners/configure_runners.md#forks)
+in the Runner documentation for more information.

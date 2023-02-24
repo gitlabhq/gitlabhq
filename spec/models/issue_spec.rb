@@ -70,6 +70,11 @@ RSpec.describe Issue, feature_category: :team_planning do
   end
 
   describe 'validations' do
+    it { is_expected.not_to allow_value(nil).for(:confidential) }
+    it { is_expected.to allow_value(true, false).for(:confidential) }
+  end
+
+  describe 'custom validations' do
     subject(:valid?) { issue.valid? }
 
     describe 'due_date_after_start_date' do

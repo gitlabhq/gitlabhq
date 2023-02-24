@@ -31,8 +31,6 @@
                 locals: { context: view_model[:context],
                           display_text: menu_item.fetch(:title),
                           icon: menu_item.fetch(:icon),
-                          css_class: menu_item.fetch(:css_class),
-                          href: menu_item.fetch(:href),
                           data: menu_item.fetch(:data) }
             - else
               = link_to menu_item.fetch(:title),
