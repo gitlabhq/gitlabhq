@@ -46,13 +46,14 @@ module Tooling
       MSG
 
       NEEDS_PACKAGE_AND_TEST_MESSAGE = <<~MSG
-      The `e2e:package-and-test` job is not present or needs to be triggered manually. Please start the `e2e:package-and-test`
-      job and re-run `danger-review`.
+      The `e2e:package-and-test` job is not present or needs to be automatically triggered.
+      Please ensure the job is present in the latest pipeline, if necessary, retry the `danger-review` job.
+      Read the "QA e2e:package-and-test" section for more details.
       MSG
 
       WARN_PACKAGE_AND_TEST_MESSAGE = <<~MSG
-      The `e2e:package-and-test` job needs to succeed or have approval from a Software Engineer in Test. See the section below
-      for more details.
+      **The `e2e:package-and-test` job needs to succeed or have approval from a Software Engineer in Test.**
+      Read the "QA e2e:package-and-test" section for more details.
       MSG
 
       # rubocop:disable Style/SignalException

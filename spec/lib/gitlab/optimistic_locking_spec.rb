@@ -16,6 +16,19 @@ RSpec.describe Gitlab::OptimisticLocking do
   describe '#retry_lock' do
     let(:name) { 'optimistic_locking_spec' }
 
+    it 'does not change current_scope', :aggregate_failures do
+      instance = Class.new { include Gitlab::OptimisticLocking }.new
+      relation = pipeline.cancelable_statuses
+
+      expected_scope = Ci::Build.current_scope&.to_sql
+
+      instance.send(:retry_lock, relation, name: :test) do
+        expect(Ci::Build.current_scope&.to_sql).to eq(expected_scope)
+      end
+
+      expect(Ci::Build.current_scope&.to_sql).to eq(expected_scope)
+    end
+
     context 'when state changed successfully without retries' do
       subject do
         described_class.retry_lock(pipeline, name: name) do |lock_subject|

@@ -395,7 +395,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
       end
     end
 
-    context 'when the dictionary files already exist' do
+    context 'when a new model class is added to the codebase' do
       let(:table_class) do
         Class.new(ApplicationRecord) do
           self.table_name = 'table1'
@@ -410,7 +410,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
 
       table_metadata = {
         'table_name' => 'table1',
-        'classes' => [],
+        'classes' => ['TableClass'],
         'feature_categories' => [],
         'description' => nil,
         'introduced_by_url' => nil,
@@ -418,7 +418,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
       }
       view_metadata = {
         'view_name' => 'view1',
-        'classes' => [],
+        'classes' => ['ViewClass'],
         'feature_categories' => [],
         'description' => nil,
         'introduced_by_url' => nil,
@@ -426,8 +426,8 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
       }
 
       before do
-        stub_const('TableClass', table_class)
-        stub_const('ViewClass', view_class)
+        stub_const('TableClass1', table_class)
+        stub_const('ViewClass1', view_class)
 
         File.write(table_file_path, table_metadata.to_yaml)
         File.write(view_file_path, view_metadata.to_yaml)
@@ -435,14 +435,50 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
         allow(model).to receive(:descendants).and_return([table_class, view_class])
       end
 
-      it 'update the dictionary content' do
+      it 'appends new classes to the dictionary' do
         run_rake_task('gitlab:db:dictionary:generate')
 
         table_metadata = YAML.safe_load(File.read(table_file_path))
-        expect(table_metadata['classes']).to match_array(['TableClass'])
+        expect(table_metadata['classes']).to match_array(%w[TableClass TableClass1])
 
         view_metadata = YAML.safe_load(File.read(view_file_path))
-        expect(view_metadata['classes']).to match_array(['ViewClass'])
+        expect(view_metadata['classes']).to match_array(%w[ViewClass ViewClass1])
+      end
+    end
+
+    context 'when a model class is removed from the codebase' do
+      table_metadata = {
+        'table_name' => 'table1',
+        'classes' => ['TableClass'],
+        'feature_categories' => [],
+        'description' => nil,
+        'introduced_by_url' => nil,
+        'milestone' => 14.3
+      }
+      view_metadata = {
+        'view_name' => 'view1',
+        'classes' => ['ViewClass'],
+        'feature_categories' => [],
+        'description' => nil,
+        'introduced_by_url' => nil,
+        'milestone' => 14.3
+      }
+
+      before do
+        File.write(table_file_path, table_metadata.to_yaml)
+        File.write(view_file_path, view_metadata.to_yaml)
+
+        allow(model).to receive(:descendants).and_return([])
+      end
+
+      it 'keeps the dictionary classes' do
+        run_rake_task('gitlab:db:dictionary:generate')
+
+        table_metadata = YAML.safe_load(File.read(table_file_path))
+        expect(table_metadata['classes']).to match_array(%w[TableClass])
+
+        view_metadata = YAML.safe_load(File.read(view_file_path))
+        expect(view_metadata['classes']).to match_array(%w[ViewClass])
       end
     end
   end

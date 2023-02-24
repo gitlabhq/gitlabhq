@@ -1,5 +1,5 @@
 variables:
-  AUTO_BUILD_IMAGE_VERSION: 'v1.28.0'
+  AUTO_BUILD_IMAGE_VERSION: 'v1.29.0'
 
 build:
   stage: build

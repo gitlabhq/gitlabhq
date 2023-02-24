@@ -37770,6 +37770,12 @@ msgstr ""
 msgid "ScanExecutionPolicy|A pipeline is run"
 msgstr ""
 
+msgid "ScanExecutionPolicy|Add condition"
+msgstr ""
+
+msgid "ScanExecutionPolicy|Conditions"
+msgstr ""
+
 msgid "ScanExecutionPolicy|Ex, tag-name-1, tag-name-2"
 msgstr ""
 
