@@ -762,6 +762,18 @@ RSpec.describe 'Admin updates settings', feature_category: :not_owned do
         expect(current_settings.users_get_by_id_limit_allowlist).to eq(%w[someone someone_else])
       end
 
+      it 'changes Projects API rate limits settings' do
+        visit network_admin_application_settings_path
+
+        page.within('.as-projects-api-limits') do
+          fill_in 'Maximum requests per 10 minutes per IP address', with: 100
+          click_button 'Save changes'
+        end
+
+        expect(page).to have_content "Application settings saved successfully"
+        expect(current_settings.projects_api_rate_limit_unauthenticated).to eq(100)
+      end
+
       shared_examples 'regular throttle rate limit settings' do
         it 'changes rate limit settings' do
           visit network_admin_application_settings_path

@@ -195,6 +195,10 @@ To manually apply the patch that GitLab generated for a vulnerability:
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/6176) in GitLab 14.9.
 
+NOTE:
+Security training is not available in an offline environment because it uses content from
+third-party vendors.
+
 Security training helps your developers learn how to fix vulnerabilities. Developers can view security training from selected educational providers, relevant to the detected vulnerability.
 
 To enable security training for vulnerabilities in your project:
@@ -203,8 +207,6 @@ To enable security training for vulnerabilities in your project:
 1. On the left sidebar, select **Security & Compliance > Configuration**.
 1. On the tab bar, select **Vulnerability Management**.
 1. To enable a security training provider, turn on the toggle.
-
-Security training uses content from third-party vendors. You must have an internet connection to use this feature.
 
 ## View security training for a vulnerability
 

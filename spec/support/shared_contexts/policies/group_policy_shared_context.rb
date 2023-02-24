@@ -59,6 +59,7 @@ RSpec.shared_context 'GroupPolicy context' do
       create_cluster update_cluster admin_cluster add_cluster
       destroy_upload
       admin_achievement
+      award_achievement
     ]
   end
 

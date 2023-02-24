@@ -1,4 +1,7 @@
 - expanded = expanded_by_default?
+- show_code_owners = @project.licensed_feature_available?(:code_owner_approval_required)
+- show_status_checks = @project.licensed_feature_available?(:external_status_checks)
+- show_approvers = @project.licensed_feature_available?(:merge_request_approvers)
 
 %section.settings.no-animate#branch-rules{ class: ('expanded' if expanded) }
   .settings-header
@@ -9,4 +12,4 @@
       = _('Define rules for who can push, merge, and the required approvals for each branch.')
 
   .settings-content.gl-pr-0
-    #js-branch-rules{ data: { project_path: @project.full_path, branch_rules_path: project_settings_repository_branch_rules_path(@project) } }
+    #js-branch-rules{ data: { project_path: @project.full_path, branch_rules_path: project_settings_repository_branch_rules_path(@project), show_code_owners: show_code_owners.to_s, show_status_checks: show_status_checks.to_s, show_approvers: show_approvers.to_s } }

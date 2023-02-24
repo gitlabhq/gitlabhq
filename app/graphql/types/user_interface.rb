@@ -153,6 +153,15 @@ module Types
     field :profile_enable_gitpod_path, GraphQL::Types::String, null: true,
                                                                description: 'Web path to enable Gitpod for the user.'
 
+    field :user_achievements,
+          Types::Achievements::UserAchievementType.connection_type,
+          null: true,
+          alpha: { milestone: '15.10' },
+          description: "Achievements for the user. " \
+                       "Only returns for namespaces where the `achievements` feature flag is enabled.",
+          extras: [:lookahead],
+          resolver: ::Resolvers::Achievements::UserAchievementsResolver
+
     definition_methods do
       def resolve_type(object, context)
         # in the absense of other information, we cannot tell - just default to

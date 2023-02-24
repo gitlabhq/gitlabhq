@@ -249,7 +249,8 @@ module ApplicationSettingImplementation
         can_create_group: true,
         bulk_import_enabled: false,
         allow_runner_registration_token: true,
-        user_defaults_to_private_profile: false
+        user_defaults_to_private_profile: false,
+        projects_api_rate_limit_unauthenticated: 400
       }.tap do |hsh|
         hsh.merge!(non_production_defaults) unless Rails.env.production?
       end

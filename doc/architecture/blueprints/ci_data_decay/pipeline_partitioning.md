@@ -1,7 +1,11 @@
 ---
-stage: none
-group: unassigned
 comments: false
+status: ongoing
+creation-date: "2022-05-31"
+authors: [ "@grzesiek" ]
+coach: [ "@ayufan", "@grzesiek" ]
+approvers: [ "@jreporter", "@cheryl.li" ]
+owning-stage: "~devops::verify"
 description: 'Pipeline data partitioning design'
 ---
 
@@ -803,9 +807,9 @@ DRIs:
 | Role                | Who                                            |
 |---------------------|------------------------------------------------|
 | Author              | Grzegorz Bizon, Principal Engineer             |
-| Recommender         | Kamil Trzciński, Senior Distingiushed Engineer |
-| Product Manager     | James Heimbuck, Senior Product Manager         |
-| Engineering Manager | Scott Hampton, Engineering Manager             |
+| Recommender         | Kamil Trzciński, Senior Distinguished Engineer |
+| Product Leadership     | Jackie Porter, Director of Product Management         |
+| Engineering Leadership | Caroline Simpson, Engineering Manager / Cheryl Li, Senior Engineering Manager  |
 | Lead Engineer       | Marius Bobin, Senior Backend Engineer          |
 
 <!-- vale gitlab.Spelling = YES -->

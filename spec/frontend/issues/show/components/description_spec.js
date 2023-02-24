@@ -1,25 +1,19 @@
 import $ from 'jquery';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlModal } from '@gitlab/ui';
 import getIssueDetailsQuery from 'ee_else_ce/work_items/graphql/get_issue_details.query.graphql';
 import setWindowLocation from 'helpers/set_window_location_helper';
-import { stubComponent } from 'helpers/stub_component';
 import { TEST_HOST } from 'helpers/test_constants';
-import { mockTracking } from 'helpers/tracking_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { createAlert } from '~/flash';
 import Description from '~/issues/show/components/description.vue';
 import eventHub from '~/issues/show/event_hub';
-import { updateHistory } from '~/lib/utils/url_utility';
 import workItemQuery from '~/work_items/graphql/work_item.query.graphql';
 import createWorkItemMutation from '~/work_items/graphql/create_work_item.mutation.graphql';
 import workItemTypesQuery from '~/work_items/graphql/project_work_item_types.query.graphql';
 import TaskList from '~/task_list';
-import WorkItemDetailModal from '~/work_items/components/work_item_detail_modal.vue';
-import { TRACKING_CATEGORY_SHOW } from '~/work_items/constants';
 import { renderGFM } from '~/behaviors/markdown/render_gfm';
 import {
   createWorkItemMutationErrorResponse,
@@ -31,7 +25,6 @@ import {
   descriptionProps as initialProps,
   descriptionHtmlWithList,
   descriptionHtmlWithCheckboxes,
-  descriptionHtmlWithTask,
 } from '../mock_data/mock_data';
 
 jest.mock('~/flash');
@@ -43,9 +36,6 @@ jest.mock('~/task_list');
 jest.mock('~/behaviors/markdown/render_gfm');
 
 const mockSpriteIcons = '/icons.svg';
-const showModal = jest.fn();
-const hideModal = jest.fn();
-const showDetailsModal = jest.fn();
 const $toast = {
   show: jest.fn(),
 };
@@ -70,16 +60,12 @@ describe('Description component', () => {
   const findTextarea = () => wrapper.find('[data-testid="textarea"]');
   const findListItems = () => findGfmContent().findAll('ul > li');
   const findTaskActionButtons = () => wrapper.findAll('.task-list-item-actions');
-  const findTaskLink = () => wrapper.find('a.gfm-issue');
-  const findModal = () => wrapper.findComponent(GlModal);
-  const findWorkItemDetailModal = () => wrapper.findComponent(WorkItemDetailModal);
 
   function createComponent({
     props = {},
     provide,
     issueDetailsQueryHandler = jest.fn().mockResolvedValue(issueDetailsResponse),
     createWorkItemMutationHandler,
-    ...options
   } = {}) {
     wrapper = shallowMountExtended(Description, {
       propsData: {
@@ -101,20 +87,6 @@ describe('Description component', () => {
       mocks: {
         $toast,
       },
-      stubs: {
-        GlModal: stubComponent(GlModal, {
-          methods: {
-            show: showModal,
-            hide: hideModal,
-          },
-        }),
-        WorkItemDetailModal: stubComponent(WorkItemDetailModal, {
-          methods: {
-            show: showDetailsModal,
-          },
-        }),
-      },
-      ...options,
     });
   }
 
@@ -284,7 +256,6 @@ describe('Description component', () => {
         props: {
           descriptionHtml: descriptionHtmlWithList,
         },
-        attachTo: document.body,
       });
       await nextTick();
     });
@@ -336,18 +307,6 @@ describe('Description component', () => {
 
     it('renders a list of hidden buttons corresponding to checkboxes in description HTML', () => {
       expect(findTaskActionButtons()).toHaveLength(3);
-    });
-
-    it('does not show a modal by default', () => {
-      expect(findModal().exists()).toBe(false);
-    });
-
-    it('shows toast after delete success', async () => {
-      const newDesc = 'description';
-      findWorkItemDetailModal().vm.$emit('workItemDeleted', newDesc);
-
-      expect(wrapper.emitted('updateDescription')).toEqual([[newDesc]]);
-      expect($toast.show).toHaveBeenCalledWith('Task deleted');
     });
   });
 
@@ -461,111 +420,6 @@ describe('Description component', () => {
 
         expect(wrapper.emitted('saveDescription')).toEqual([[newDescriptionText]]);
       });
-    });
-  });
-
-  describe('work items detail', () => {
-    describe('when opening and closing', () => {
-      beforeEach(() => {
-        createComponent({
-          props: {
-            descriptionHtml: descriptionHtmlWithTask,
-          },
-        });
-        return nextTick();
-      });
-
-      it('opens when task button is clicked', async () => {
-        await findTaskLink().trigger('click');
-
-        expect(showDetailsModal).toHaveBeenCalled();
-        expect(updateHistory).toHaveBeenCalledWith({
-          url: `${TEST_HOST}/?work_item_id=2`,
-          replace: true,
-        });
-      });
-
-      it('closes from an open state', async () => {
-        await findTaskLink().trigger('click');
-
-        findWorkItemDetailModal().vm.$emit('close');
-        await nextTick();
-
-        expect(updateHistory).toHaveBeenLastCalledWith({
-          url: `${TEST_HOST}/`,
-          replace: true,
-        });
-      });
-
-      it('tracks when opened', async () => {
-        const trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
-
-        await findTaskLink().trigger('click');
-
-        expect(trackingSpy).toHaveBeenCalledWith(
-          TRACKING_CATEGORY_SHOW,
-          'viewed_work_item_from_modal',
-          {
-            category: TRACKING_CATEGORY_SHOW,
-            label: 'work_item_view',
-            property: 'type_task',
-          },
-        );
-      });
-    });
-
-    describe('when url query `work_item_id` exists', () => {
-      it.each`
-        behavior           | workItemId     | modalOpened
-        ${'opens'}         | ${'2'}         | ${1}
-        ${'does not open'} | ${'123'}       | ${0}
-        ${'does not open'} | ${'123e'}      | ${0}
-        ${'does not open'} | ${'12e3'}      | ${0}
-        ${'does not open'} | ${'1e23'}      | ${0}
-        ${'does not open'} | ${'x'}         | ${0}
-        ${'does not open'} | ${'undefined'} | ${0}
-      `(
-        '$behavior when url contains `work_item_id=$workItemId`',
-        async ({ workItemId, modalOpened }) => {
-          setWindowLocation(`?work_item_id=${workItemId}`);
-
-          createComponent({
-            props: { descriptionHtml: descriptionHtmlWithTask },
-          });
-
-          expect(showDetailsModal).toHaveBeenCalledTimes(modalOpened);
-        },
-      );
-    });
-  });
-
-  describe('when hovering task links', () => {
-    beforeEach(() => {
-      createComponent({
-        props: {
-          descriptionHtml: descriptionHtmlWithTask,
-        },
-      });
-      return nextTick();
-    });
-
-    it('prefetches work item detail after work item link is hovered for 150ms', async () => {
-      await findTaskLink().trigger('mouseover');
-      jest.advanceTimersByTime(150);
-      await waitForPromises();
-
-      expect(queryHandler).toHaveBeenCalledWith({
-        id: 'gid://gitlab/WorkItem/2',
-      });
-    });
-
-    it('does not work item detail after work item link is hovered for less than 150ms', async () => {
-      await findTaskLink().trigger('mouseover');
-      await findTaskLink().trigger('mouseout');
-      jest.advanceTimersByTime(150);
-      await waitForPromises();
-
-      expect(queryHandler).not.toHaveBeenCalled();
     });
   });
 });

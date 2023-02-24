@@ -88,6 +88,10 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     Feature.enabled?(:create_runner_workflow)
   end
 
+  condition(:achievements_enabled, scope: :subject) do
+    Feature.enabled?(:achievements, @subject)
+  end
+
   condition(:group_runner_registration_allowed, scope: :subject) do
     Gitlab::CurrentSettings.valid_runner_registrars.include?('group') && @subject.runner_registration_enabled?
   end
@@ -131,7 +135,15 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :read_group_member
     enable :read_custom_emoji
     enable :read_counts
+  end
+
+  rule { can?(:read_group) & achievements_enabled }.policy do
     enable :read_achievement
+  end
+
+  rule { can?(:maintainer_access) & achievements_enabled }.policy do
+    enable :admin_achievement
+    enable :award_achievement
   end
 
   rule { ~public_group & ~has_access }.prevent :read_counts
@@ -156,7 +168,6 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :admin_crm_organization
     enable :admin_crm_contact
     enable :read_cluster
-
     enable :read_group_all_available_runners
   end
 
@@ -191,7 +202,6 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :maintainer_access
     enable :read_upload
     enable :destroy_upload
-    enable :admin_achievement
   end
 
   rule { owner }.policy do

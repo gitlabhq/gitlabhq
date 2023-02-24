@@ -17,7 +17,7 @@ describe('TaskListItemActions component', () => {
     document.body.appendChild(li);
 
     wrapper = shallowMount(TaskListItemActions, {
-      provide: { canUpdate: true, toggleClass: 'task-list-item-actions' },
+      provide: { canUpdate: true },
       attachTo: document.querySelector('div'),
     });
   };

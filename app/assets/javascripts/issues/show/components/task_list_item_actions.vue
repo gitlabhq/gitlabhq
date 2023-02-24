@@ -13,7 +13,7 @@ export default {
     GlDropdown,
     GlDropdownItem,
   },
-  inject: ['canUpdate', 'toggleClass'],
+  inject: ['canUpdate'],
   methods: {
     convertToTask() {
       eventHub.$emit('convert-task-list-item', this.$el.closest('li').dataset.sourcepos);
@@ -35,7 +35,7 @@ export default {
     right
     :text="$options.i18n.taskActions"
     text-sr-only
-    :toggle-class="`task-list-item-actions gl-opacity-0 gl-p-2! ${toggleClass}`"
+    toggle-class="task-list-item-actions gl-opacity-0 gl-p-2!"
   >
     <gl-dropdown-item v-if="canUpdate" @click="convertToTask">
       {{ $options.i18n.convertToTask }}

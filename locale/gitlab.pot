@@ -26304,6 +26304,9 @@ msgstr ""
 msgid "Maximum push size (MB)"
 msgstr ""
 
+msgid "Maximum requests per 10 minutes per IP address"
+msgstr ""
+
 msgid "Maximum requests per 10 minutes per user"
 msgstr ""
 
@@ -34267,6 +34270,9 @@ msgstr ""
 msgid "Projects API"
 msgstr ""
 
+msgid "Projects API rate limit"
+msgstr ""
+
 msgid "Projects Successfully Retrieved"
 msgstr ""
 
@@ -35465,6 +35471,9 @@ msgid "Refine your search criteria (select a %{strong_open}group%{strong_close} 
 msgstr ""
 
 msgid "Refresh the page and try again."
+msgstr ""
+
+msgid "Refresh the page to view sync status"
 msgstr ""
 
 msgid "Refreshing in a second to show the updated status..."
@@ -39743,6 +39752,9 @@ msgid "Set the maximum session time for a web terminal."
 msgstr ""
 
 msgid "Set the milestone to %{milestone_reference}."
+msgstr ""
+
+msgid "Set the per-IP address rate limit applicable to unauthenticated requests for getting a list of projects via the API."
 msgstr ""
 
 msgid "Set the per-user rate limit for getting a user by ID via the API."

@@ -94,6 +94,12 @@ module API
           Gitlab::AppLogger.info({ message: "File exceeds maximum size", file_bytes: file.size, project_id: user_project.id, project_path: user_project.full_path, upload_allowed: allowed })
         end
       end
+
+      def validate_projects_api_rate_limit_for_unauthenticated_users!
+        return unless Feature.enabled?(:rate_limit_for_unauthenticated_projects_api_access)
+
+        check_rate_limit!(:projects_api_rate_limit_unauthenticated, scope: [ip_address]) if current_user.blank?
+      end
     end
 
     helpers do
@@ -266,6 +272,8 @@ module API
       end
       # TODO: Set higher urgency https://gitlab.com/gitlab-org/gitlab/-/issues/211495
       get feature_category: :projects, urgency: :low do
+        validate_projects_api_rate_limit_for_unauthenticated_users!
+
         present_projects load_projects
       end
 

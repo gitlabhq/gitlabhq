@@ -1109,6 +1109,66 @@ RSpec.describe API::Projects, feature_category: :projects do
         end.not_to exceed_query_limit(control)
       end
     end
+
+    context 'rate limiting' do
+      let_it_be(:current_user) { create(:user) }
+
+      shared_examples_for 'does not log request and does not block the request' do
+        specify do
+          request
+          request
+
+          expect(response).not_to have_gitlab_http_status(:too_many_requests)
+          expect(Gitlab::AuthLogger).not_to receive(:error)
+        end
+      end
+
+      before do
+        stub_application_setting(projects_api_rate_limit_unauthenticated: 1)
+      end
+
+      context 'when the user is signed in' do
+        it_behaves_like 'does not log request and does not block the request' do
+          def request
+            get api('/projects', current_user)
+          end
+        end
+      end
+
+      context 'when the user is not signed in' do
+        let_it_be(:current_user) { nil }
+
+        it_behaves_like 'rate limited endpoint', rate_limit_key: :projects_api_rate_limit_unauthenticated do
+          def request
+            get api('/projects', current_user)
+          end
+        end
+      end
+
+      context 'when the feature flag `rate_limit_for_unauthenticated_projects_api_access` is disabled' do
+        before do
+          stub_feature_flags(rate_limit_for_unauthenticated_projects_api_access: false)
+        end
+
+        context 'when the user is not signed in' do
+          let_it_be(:current_user) { nil }
+
+          it_behaves_like 'does not log request and does not block the request' do
+            def request
+              get api('/projects', current_user)
+            end
+          end
+        end
+
+        context 'when the user is signed in' do
+          it_behaves_like 'does not log request and does not block the request' do
+            def request
+              get api('/projects', current_user)
+            end
+          end
+        end
+      end
+    end
   end
 
   describe 'POST /projects' do

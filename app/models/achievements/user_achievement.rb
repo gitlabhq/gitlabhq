@@ -8,7 +8,7 @@ module Achievements
     belongs_to :awarded_by_user,
                 class_name: 'User',
                 inverse_of: :awarded_user_achievements,
-                optional: true
+                optional: false
     belongs_to :revoked_by_user,
                 class_name: 'User',
                 inverse_of: :revoked_user_achievements,

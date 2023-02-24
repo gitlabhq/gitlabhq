@@ -563,14 +563,12 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
     validates :throttle_protected_paths_period_in_seconds
   end
 
-  validates :notes_create_limit,
-            numericality: { only_integer: true, greater_than_or_equal_to: 0 }
-
-  validates :search_rate_limit,
-            numericality: { only_integer: true, greater_than_or_equal_to: 0 }
-
-  validates :search_rate_limit_unauthenticated,
-    numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+  with_options(numericality: { only_integer: true, greater_than_or_equal_to: 0 }) do
+    validates :notes_create_limit
+    validates :search_rate_limit
+    validates :search_rate_limit_unauthenticated
+    validates :projects_api_rate_limit_unauthenticated
+  end
 
   validates :notes_create_limit_allowlist,
             length: { maximum: 100, message: N_('is too long (maximum is 100 entries)') },

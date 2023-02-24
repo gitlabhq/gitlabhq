@@ -1569,4 +1569,22 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
       end
     end
   end
+
+  describe 'achievements' do
+    let(:current_user) { owner }
+
+    specify { is_expected.to be_allowed(:read_achievement) }
+    specify { is_expected.to be_allowed(:admin_achievement) }
+    specify { is_expected.to be_allowed(:award_achievement) }
+
+    context 'with feature flag disabled' do
+      before do
+        stub_feature_flags(achievements: false)
+      end
+
+      specify { is_expected.to be_disallowed(:read_achievement) }
+      specify { is_expected.to be_disallowed(:admin_achievement) }
+      specify { is_expected.to be_disallowed(:award_achievement) }
+    end
+  end
 end

@@ -27,6 +27,9 @@ export default {
     branchRulesPath: {
       default: '',
     },
+    showCodeOwners: { default: false },
+    showStatusChecks: { default: false },
+    showApprovers: { default: false },
   },
   props: {
     name: {
@@ -112,13 +115,13 @@ export default {
       if (this.branchProtection?.allowForcePush) {
         approvalDetails.push(this.$options.i18n.allowForcePush);
       }
-      if (this.branchProtection?.codeOwnerApprovalRequired) {
+      if (this.showCodeOwners && this.branchProtection?.codeOwnerApprovalRequired) {
         approvalDetails.push(this.$options.i18n.codeOwnerApprovalRequired);
       }
-      if (this.statusChecksTotal) {
+      if (this.showStatusChecks && this.statusChecksTotal) {
         approvalDetails.push(this.statusChecksText);
       }
-      if (this.approvalRulesTotal) {
+      if (this.showApprovers && this.approvalRulesTotal) {
         approvalDetails.push(this.approvalRulesText);
       }
       if (this.mergeAccessLevels.total > 0) {
