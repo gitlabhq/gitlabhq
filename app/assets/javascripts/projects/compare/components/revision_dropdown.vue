@@ -149,6 +149,7 @@ export default {
         :key="branch"
         is-check-item
         :is-checked="selectedRevision === branch"
+        data-testid="branches-dropdown-item"
         @click="onClick(branch)"
       >
         {{ branch }}
@@ -161,6 +162,7 @@ export default {
         :key="tag"
         is-check-item
         :is-checked="selectedRevision === tag"
+        data-testid="tags-dropdown-item"
         @click="onClick(tag)"
       >
         {{ tag }}

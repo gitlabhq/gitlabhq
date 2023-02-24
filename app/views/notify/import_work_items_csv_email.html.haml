@@ -1,0 +1,18 @@
+- text_style = 'font-size:16px; text-align:center;  line-height:30px;'
+
+%p{ style: text_style }
+  - project_link = link_to(@project.full_name, project_url(@project), style: "color:#3777b0; text-decoration:none;")
+  = s_('Notify|Your CSV import of work items for project %{project_link} has been completed.').html_safe % { project_link: project_link }
+
+%p{ style: text_style }
+  - work_items = n_('%d work item', '%d work items', @results[:success]) % @results[:success]
+  = s_('Notify|%{work_items} imported.') % { work_items: work_items }
+
+- if @results[:error_lines].present?
+  %p{ style: text_style }
+    = s_('Notify|Errors found on %{singular_or_plural_line}: %{error_lines}. Please check that these lines have the following fields: %{required_headers}.') % { singular_or_plural_line: n_('line', 'lines', @results[:error_lines].size), required_headers: WorkItems::ImportCsvService.required_headers.join(', '),
+      error_lines: @results[:error_lines].join(', ') }
+
+- if @results[:parse_error]
+  %p{ style: text_style }
+    = s_('Notify|Error parsing CSV file. Please make sure it has the correct format: a delimited text file that uses a comma to separate values.')

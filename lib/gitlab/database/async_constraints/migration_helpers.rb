@@ -2,17 +2,17 @@
 
 module Gitlab
   module Database
-    module AsyncForeignKeys
+    module AsyncConstraints
       module MigrationHelpers
         # Prepares a foreign key for asynchronous validation.
         #
-        # Stores the FK information in the postgres_async_foreign_key_validations
+        # Stores the FK information in the postgres_async_constraint_validations
         # table to be executed later.
         #
         def prepare_async_foreign_key_validation(table_name, column_name = nil, name: nil)
           Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas.require_ddl_mode!
 
-          return unless async_fk_validation_available?
+          return unless async_constraint_validation_available?
 
           fk_name = name || concurrent_foreign_key_name(table_name, column_name)
 
@@ -20,7 +20,7 @@ module Gitlab
             raise missing_schema_object_message(table_name, "foreign key", fk_name)
           end
 
-          async_validation = PostgresAsyncForeignKeyValidation
+          async_validation = PostgresAsyncConstraintValidation
             .find_or_create_by!(name: fk_name, table_name: table_name)
 
           Gitlab::AppLogger.info(
@@ -34,11 +34,11 @@ module Gitlab
         def unprepare_async_foreign_key_validation(table_name, column_name = nil, name: nil)
           Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas.require_ddl_mode!
 
-          return unless async_fk_validation_available?
+          return unless async_constraint_validation_available?
 
           fk_name = name || concurrent_foreign_key_name(table_name, column_name)
 
-          PostgresAsyncForeignKeyValidation
+          PostgresAsyncConstraintValidation
             .find_by(name: fk_name, table_name: table_name)
             .try(&:destroy!)
         end
@@ -46,7 +46,7 @@ module Gitlab
         def prepare_partitioned_async_foreign_key_validation(table_name, column_name = nil, name: nil)
           Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas.require_ddl_mode!
 
-          return unless async_fk_validation_available?
+          return unless async_constraint_validation_available?
 
           Gitlab::Database::PostgresPartitionedTable.each_partition(table_name) do |partition|
             prepare_async_foreign_key_validation(partition.identifier, column_name, name: name)
@@ -56,7 +56,7 @@ module Gitlab
         def unprepare_partitioned_async_foreign_key_validation(table_name, column_name = nil, name: nil)
           Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas.require_ddl_mode!
 
-          return unless async_fk_validation_available?
+          return unless async_constraint_validation_available?
 
           Gitlab::Database::PostgresPartitionedTable.each_partition(table_name) do |partition|
             unprepare_async_foreign_key_validation(partition.identifier, column_name, name: name)
@@ -65,8 +65,8 @@ module Gitlab
 
         private
 
-        def async_fk_validation_available?
-          connection.table_exists?(:postgres_async_foreign_key_validations)
+        def async_constraint_validation_available?
+          PostgresAsyncConstraintValidation.table_available?
         end
       end
     end

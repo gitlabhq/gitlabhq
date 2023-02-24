@@ -300,7 +300,7 @@ namespace :gitlab do
       end
     end
 
-    namespace :execute_async_fk_validations do
+    namespace :validate_async_constraints do
       each_database(databases) do |database_name|
         task database_name, [:pick] => :environment do |_, args|
           args.with_defaults(pick: 2)
@@ -315,7 +315,7 @@ namespace :gitlab do
           end
 
           Gitlab::Database::EachDatabase.each_database_connection(only: database_name) do
-            Gitlab::Database::AsyncForeignKeys.validate_pending_entries!(how_many: args[:pick].to_i)
+            Gitlab::Database::AsyncConstraints.validate_pending_entries!(how_many: args[:pick].to_i)
           end
         end
       end
@@ -325,7 +325,7 @@ namespace :gitlab do
         args.with_defaults(pick: default_pick)
 
         each_database(databases) do |database_name|
-          Rake::Task["gitlab:db:execute_async_fk_validations:#{database_name}"].invoke(args[:pick])
+          Rake::Task["gitlab:db:validate_async_constraints:#{database_name}"].invoke(args[:pick])
         end
       end
     end

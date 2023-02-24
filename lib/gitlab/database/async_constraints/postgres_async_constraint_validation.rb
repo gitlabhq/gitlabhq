@@ -2,8 +2,8 @@
 
 module Gitlab
   module Database
-    module AsyncForeignKeys
-      class PostgresAsyncForeignKeyValidation < SharedModel
+    module AsyncConstraints
+      class PostgresAsyncConstraintValidation < SharedModel
         include QueueErrorHandlingConcern
 
         self.table_name = 'postgres_async_foreign_key_validations'
@@ -15,6 +15,10 @@ module Gitlab
         validates :table_name, presence: true, length: { maximum: MAX_IDENTIFIER_LENGTH }
 
         scope :ordered, -> { order(attempts: :asc, id: :asc) }
+
+        def self.table_available?
+          connection.table_exists?(table_name)
+        end
       end
     end
   end

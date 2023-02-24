@@ -218,7 +218,7 @@ configuration option in `gitlab.yml`. These metrics are served from the
 | `geo_lfs_objects_registry`                     | Gauge   | 14.6  | Number of LFS objects in the registry | `url` |
 | `geo_lfs_objects_verified`                     | Gauge   | 14.6  | Number of LFS objects verified on secondary | `url` |
 | `geo_lfs_objects_verification_failed`          | Gauge   | 14.6 | Number of LFS objects' verifications failed on secondary | `url` |
-| `geo_lfs_objects_verification_total`           | Gauge   | 14.6  | Number of LFS objects' verifications tried on secondary | `url` |LFS objects failed to sync on secondary | `url` |
+| `geo_lfs_objects_verification_total`           | Gauge   | 14.6  | Number of LFS objects' verifications tried on secondary | `url` |
 | `geo_attachments`                              | Gauge   | 10.2  | Total number of file attachments available on primary | `url` |
 | `geo_attachments_synced`                       | Gauge   | 10.2  | Number of attachments synced on secondary | `url` |
 | `geo_attachments_failed`                       | Gauge   | 10.2  | Number of attachments failed to sync on secondary | `url` |

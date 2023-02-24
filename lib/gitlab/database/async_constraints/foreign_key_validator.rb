@@ -2,7 +2,7 @@
 
 module Gitlab
   module Database
-    module AsyncForeignKeys
+    module AsyncConstraints
       class ForeignKeyValidator
         include AsyncDdlExclusiveLeaseGuard
 

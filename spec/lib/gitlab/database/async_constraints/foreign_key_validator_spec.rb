@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::AsyncForeignKeys::ForeignKeyValidator, feature_category: :database do
+RSpec.describe Gitlab::Database::AsyncConstraints::ForeignKeyValidator, feature_category: :database do
   include ExclusiveLeaseHelpers
 
   describe '#perform' do
@@ -10,10 +10,10 @@ RSpec.describe Gitlab::Database::AsyncForeignKeys::ForeignKeyValidator, feature_
     let(:lease_key) { "gitlab/database/asyncddl/actions/#{Gitlab::Database::PRIMARY_DATABASE_NAME}" }
     let(:lease_timeout) { described_class::TIMEOUT_PER_ACTION }
 
-    let(:fk_model) { Gitlab::Database::AsyncForeignKeys::PostgresAsyncForeignKeyValidation }
+    let(:fk_model) { Gitlab::Database::AsyncConstraints::PostgresAsyncConstraintValidation }
     let(:table_name) { '_test_async_fks' }
     let(:fk_name) { 'fk_parent_id' }
-    let(:validation) { create(:postgres_async_foreign_key_validation, table_name: table_name, name: fk_name) }
+    let(:validation) { create(:postgres_async_constraint_validation, table_name: table_name, name: fk_name) }
     let(:connection) { validation.connection }
 
     subject { described_class.new(validation) }
@@ -38,7 +38,7 @@ RSpec.describe Gitlab::Database::AsyncForeignKeys::ForeignKeyValidator, feature_
 
     context 'with fully qualified table names' do
       let(:validation) do
-        create(:postgres_async_foreign_key_validation,
+        create(:postgres_async_constraint_validation,
           table_name: "public.#{table_name}",
           name: fk_name
         )

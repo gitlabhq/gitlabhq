@@ -84,6 +84,10 @@ class NotifyPreview < ActionMailer::Preview
     Notify.import_issues_csv_email(user.id, project.id, { success: 3, errors: [5, 6, 7], valid_file: true })
   end
 
+  def import_work_items_csv_email
+    Notify.import_work_items_csv_email(user.id, project.id, { success: 4, error_lines: [2, 3, 4], parse_error: false })
+  end
+
   def issues_csv_email
     Notify.issues_csv_email(user, project, '1997,Ford,E350', { truncated: false, rows_expected: 3, rows_written: 3 }).message
   end

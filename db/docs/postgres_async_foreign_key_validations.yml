@@ -1,7 +1,7 @@
 ---
 table_name: postgres_async_foreign_key_validations
 classes:
-- Gitlab::Database::AsyncForeignKeys::PostgresAsyncForeignKeyValidation
+- Gitlab::Database::AsyncConstraints::PostgresAsyncConstraintValidation
 feature_categories:
 - database
 description: >-

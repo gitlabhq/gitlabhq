@@ -2,6 +2,7 @@ import { GlDropdown, GlDropdownItem, GlSearchBoxByType } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import AxiosMockAdapter from 'axios-mock-adapter';
 import { nextTick } from 'vue';
+import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_NOT_FOUND, HTTP_STATUS_OK } from '~/lib/utils/http_status';
@@ -38,6 +39,10 @@ describe('RevisionDropdown component', () => {
 
   const findGlDropdown = () => wrapper.findComponent(GlDropdown);
   const findSearchBox = () => wrapper.findComponent(GlSearchBoxByType);
+  const findBranchesDropdownItem = () =>
+    wrapper.findAllComponents('[data-testid="branches-dropdown-item"]');
+  const findTagsDropdownItem = () =>
+    wrapper.findAllComponents('[data-testid="tags-dropdown-item"]');
 
   it('sets hidden input', () => {
     createComponent();
@@ -57,17 +62,29 @@ describe('RevisionDropdown component', () => {
 
     createComponent();
 
-    await axios.waitForAll();
-    expect(wrapper.vm.branches).toEqual(Branches);
-    expect(wrapper.vm.tags).toEqual(Tags);
+    expect(findBranchesDropdownItem()).toHaveLength(0);
+    expect(findTagsDropdownItem()).toHaveLength(0);
+
+    await waitForPromises();
+
+    expect(findBranchesDropdownItem()).toHaveLength(Branches.length);
+    expect(findTagsDropdownItem()).toHaveLength(Tags.length);
+
+    Branches.forEach((branch, index) => {
+      expect(findBranchesDropdownItem().at(index).text()).toBe(branch);
+    });
+
+    Tags.forEach((tag, index) => {
+      expect(findTagsDropdownItem().at(index).text()).toBe(tag);
+    });
   });
 
   it('shows flash message on error', async () => {
     axiosMock.onGet('some/invalid/path').replyOnce(HTTP_STATUS_NOT_FOUND);
 
     createComponent();
+    await waitForPromises();
 
-    await wrapper.vm.fetchBranchesAndTags();
     expect(createAlert).toHaveBeenCalled();
   });
 
@@ -83,7 +100,7 @@ describe('RevisionDropdown component', () => {
       refsProjectPath: newRefsProjectPath,
     });
 
-    await axios.waitForAll();
+    await waitForPromises();
     expect(axios.get).toHaveBeenLastCalledWith(newRefsProjectPath);
   });
 
@@ -92,8 +109,8 @@ describe('RevisionDropdown component', () => {
       axiosMock.onGet('some/invalid/path').replyOnce(HTTP_STATUS_NOT_FOUND);
 
       createComponent();
+      await waitForPromises();
 
-      await wrapper.vm.searchBranchesAndTags();
       expect(createAlert).toHaveBeenCalled();
     });
 
@@ -108,7 +125,7 @@ describe('RevisionDropdown component', () => {
       const mockSearchTerm = 'foobar';
       createComponent();
       findSearchBox().vm.$emit('input', mockSearchTerm);
-      await axios.waitForAll();
+      await waitForPromises();
 
       expect(axios.get).toHaveBeenCalledWith(
         defaultProps.refsProjectPath,
@@ -141,8 +158,14 @@ describe('RevisionDropdown component', () => {
   });
 
   it('emits `selectRevision` event when another revision is selected', async () => {
+    jest.spyOn(axios, 'get').mockResolvedValue({
+      data: {
+        Branches: ['some-branch'],
+        Tags: [],
+      },
+    });
+
     createComponent();
-    wrapper.vm.branches = ['some-branch'];
     await nextTick();
 
     findGlDropdown().findAllComponents(GlDropdownItem).at(0).vm.$emit('click');

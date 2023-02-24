@@ -252,7 +252,7 @@ validating a foreign key:
 1. Enable the feature flag by running `Feature.enable(:database_async_foreign_key_validation)`
    in the Rails console.
 1. Run `bundle exec rails db:migrate` so that it creates an entry in the async validation table.
-1. Run `bundle exec rails gitlab:db:execute_async_fk_validations:all` so that the FK is validated
+1. Run `bundle exec rails gitlab:db:validate_async_constraints:all` so that the FK is validated
    asynchronously on all databases.
 1. To verify the foreign key, open the PostgreSQL console using the
    [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/postgresql.md)

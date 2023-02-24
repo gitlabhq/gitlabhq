@@ -17,6 +17,7 @@ RSpec.describe WorkItems::ImportCsvService, feature_category: :team_planning do
   let_it_be(:issue_type) { ::WorkItems::Type.default_issue_type }
 
   let(:work_items) { ::WorkItems::WorkItemsFinder.new(user, project: project).execute }
+  let(:email_method) { :import_work_items_csv_email }
 
   subject { service.execute }
 
@@ -25,6 +26,8 @@ RSpec.describe WorkItems::ImportCsvService, feature_category: :team_planning do
       before do
         project.add_guest(user)
       end
+
+      it_behaves_like 'importer with email notification'
 
       context 'when file is valid' do
         it 'creates the expected number of work items' do
@@ -94,6 +97,16 @@ RSpec.describe WorkItems::ImportCsvService, feature_category: :team_planning do
         expect(result[:error_lines]).to match_array([2, 3])
         expect(result[:parse_error]).to eq(false)
       end
+    end
+  end
+
+  context 'when user does not have permission' do
+    it 'errors on those lines', :aggregate_failures do
+      result = subject
+
+      expect(result[:success]).to eq(0)
+      expect(result[:error_lines]).to eq([2, 3])
+      expect(result[:parse_error]).to eq(false)
     end
   end
 end

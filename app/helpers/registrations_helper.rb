@@ -14,6 +14,10 @@ module RegistrationsHelper
   def arkose_labs_challenge_enabled?
     false
   end
+
+  def signup_box_template
+    'devise/shared/signup_box'
+  end
 end
 
 RegistrationsHelper.prepend_mod_with('RegistrationsHelper')

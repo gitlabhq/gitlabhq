@@ -841,65 +841,65 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
     end
   end
 
-  describe 'execute_async_fk_validations' do
+  describe 'validate_async_constraints' do
     before do
       skip_if_multiple_databases_not_setup
     end
 
-    it 'delegates ci task to Gitlab::Database::AsyncForeignKeys' do
-      expect(Gitlab::Database::AsyncForeignKeys).to receive(:validate_pending_entries!).with(how_many: 2)
+    it 'delegates ci task to Gitlab::Database::AsyncConstraints' do
+      expect(Gitlab::Database::AsyncConstraints).to receive(:validate_pending_entries!).with(how_many: 2)
 
-      run_rake_task('gitlab:db:execute_async_fk_validations:ci')
+      run_rake_task('gitlab:db:validate_async_constraints:ci')
     end
 
-    it 'delegates ci task to Gitlab::Database::AsyncForeignKeys with specified argument' do
-      expect(Gitlab::Database::AsyncForeignKeys).to receive(:validate_pending_entries!).with(how_many: 5)
+    it 'delegates ci task to Gitlab::Database::AsyncConstraints with specified argument' do
+      expect(Gitlab::Database::AsyncConstraints).to receive(:validate_pending_entries!).with(how_many: 5)
 
-      run_rake_task('gitlab:db:execute_async_fk_validations:ci', '[5]')
+      run_rake_task('gitlab:db:validate_async_constraints:ci', '[5]')
     end
 
-    it 'delegates main task to Gitlab::Database::AsyncForeignKeys' do
-      expect(Gitlab::Database::AsyncForeignKeys).to receive(:validate_pending_entries!).with(how_many: 2)
+    it 'delegates main task to Gitlab::Database::AsyncConstraints' do
+      expect(Gitlab::Database::AsyncConstraints).to receive(:validate_pending_entries!).with(how_many: 2)
 
-      run_rake_task('gitlab:db:execute_async_fk_validations:main')
+      run_rake_task('gitlab:db:validate_async_constraints:main')
     end
 
-    it 'delegates main task to Gitlab::Database::AsyncForeignKeys with specified argument' do
-      expect(Gitlab::Database::AsyncForeignKeys).to receive(:validate_pending_entries!).with(how_many: 7)
+    it 'delegates main task to Gitlab::Database::AsyncConstraints with specified argument' do
+      expect(Gitlab::Database::AsyncConstraints).to receive(:validate_pending_entries!).with(how_many: 7)
 
-      run_rake_task('gitlab:db:execute_async_fk_validations:main', '[7]')
+      run_rake_task('gitlab:db:validate_async_constraints:main', '[7]')
     end
 
     it 'delegates all task to every database with higher default for dev' do
-      expect(Rake::Task['gitlab:db:execute_async_fk_validations:ci']).to receive(:invoke).with(1000)
-      expect(Rake::Task['gitlab:db:execute_async_fk_validations:main']).to receive(:invoke).with(1000)
+      expect(Rake::Task['gitlab:db:validate_async_constraints:ci']).to receive(:invoke).with(1000)
+      expect(Rake::Task['gitlab:db:validate_async_constraints:main']).to receive(:invoke).with(1000)
 
-      run_rake_task('gitlab:db:execute_async_fk_validations:all')
+      run_rake_task('gitlab:db:validate_async_constraints:all')
     end
 
     it 'delegates all task to every database with lower default for prod' do
       allow(Gitlab).to receive(:dev_or_test_env?).and_return(false)
 
-      expect(Rake::Task['gitlab:db:execute_async_fk_validations:ci']).to receive(:invoke).with(2)
-      expect(Rake::Task['gitlab:db:execute_async_fk_validations:main']).to receive(:invoke).with(2)
+      expect(Rake::Task['gitlab:db:validate_async_constraints:ci']).to receive(:invoke).with(2)
+      expect(Rake::Task['gitlab:db:validate_async_constraints:main']).to receive(:invoke).with(2)
 
-      run_rake_task('gitlab:db:execute_async_fk_validations:all')
+      run_rake_task('gitlab:db:validate_async_constraints:all')
     end
 
     it 'delegates all task to every database with specified argument' do
-      expect(Rake::Task['gitlab:db:execute_async_fk_validations:ci']).to receive(:invoke).with('50')
-      expect(Rake::Task['gitlab:db:execute_async_fk_validations:main']).to receive(:invoke).with('50')
+      expect(Rake::Task['gitlab:db:validate_async_constraints:ci']).to receive(:invoke).with('50')
+      expect(Rake::Task['gitlab:db:validate_async_constraints:main']).to receive(:invoke).with('50')
 
-      run_rake_task('gitlab:db:execute_async_fk_validations:all', '[50]')
+      run_rake_task('gitlab:db:validate_async_constraints:all', '[50]')
     end
 
     context 'when feature is not enabled' do
       it 'is a no-op' do
         stub_feature_flags(database_async_foreign_key_validation: false)
 
-        expect(Gitlab::Database::AsyncForeignKeys).not_to receive(:validate_pending_entries!)
+        expect(Gitlab::Database::AsyncConstraints).not_to receive(:validate_pending_entries!)
 
-        expect { run_rake_task('gitlab:db:execute_async_fk_validations:main') }.to raise_error(SystemExit)
+        expect { run_rake_task('gitlab:db:validate_async_constraints:main') }.to raise_error(SystemExit)
       end
     end
 
@@ -909,8 +909,8 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
       end
 
       it 'does not create a task for the geo database' do
-        expect { run_rake_task('gitlab:db:execute_async_fk_validations:geo') }
-          .to raise_error(/Don't know how to build task 'gitlab:db:execute_async_fk_validations:geo'/)
+        expect { run_rake_task('gitlab:db:validate_async_constraints:geo') }
+          .to raise_error(/Don't know how to build task 'gitlab:db:validate_async_constraints:geo'/)
       end
     end
   end

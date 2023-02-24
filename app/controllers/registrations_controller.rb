@@ -133,7 +133,10 @@ class RegistrationsController < Devise::RegistrationsController
     # after user confirms and comes back, he will be redirected
     store_location_for(:redirect, after_sign_up_path)
 
-    return identity_verification_redirect_path if custom_confirmation_enabled?
+    if custom_confirmation_enabled?
+      session[:verification_user_id] = resource.id # This is needed to find the user on the identity verification page
+      return identity_verification_redirect_path
+    end
 
     Gitlab::Tracking.event(self.class.name, 'render', user: resource)
     users_almost_there_path(email: resource.email)
@@ -220,13 +223,17 @@ class RegistrationsController < Devise::RegistrationsController
 
   def resource
     @resource ||= Users::RegistrationsBuildService
-                    .new(current_user, sign_up_params.merge({ skip_confirmation: registered_with_invite_email?,
+                    .new(current_user, sign_up_params.merge({ skip_confirmation: skip_confirmation?,
                                                               preferred_language: preferred_language }))
                     .execute
   end
 
   def devise_mapping
     @devise_mapping ||= Devise.mappings[:user]
+  end
+
+  def skip_confirmation?
+    registered_with_invite_email?
   end
 
   def registered_with_invite_email?

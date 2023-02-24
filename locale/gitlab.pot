@@ -466,6 +466,11 @@ msgid_plural "%d warnings found:"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%d work item"
+msgid_plural "%d work items"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%s additional commit has been omitted to prevent performance issues."
 msgid_plural "%s additional commits have been omitted to prevent performance issues."
 msgstr[0] ""
@@ -29011,6 +29016,9 @@ msgstr ""
 msgid "Notify|%{updated_by_user_name} pushed new commits to merge request %{mr_link}"
 msgstr ""
 
+msgid "Notify|%{work_items} imported."
+msgstr ""
+
 msgid "Notify|A new GPG key was added to your account:"
 msgstr ""
 
@@ -29057,6 +29065,9 @@ msgid "Notify|Error parsing CSV file. Please make sure it has the correct format
 msgstr ""
 
 msgid "Notify|Errors found on %{singular_or_plural_line}: %{error_lines}. Please check if these lines have an issue title."
+msgstr ""
+
+msgid "Notify|Errors found on %{singular_or_plural_line}: %{error_lines}. Please check that these lines have the following fields: %{required_headers}."
 msgstr ""
 
 msgid "Notify|Fingerprint: %{fingerprint}"
@@ -29195,6 +29206,9 @@ msgid "Notify|You have been unsubscribed from receiving GitLab administrator not
 msgstr ""
 
 msgid "Notify|Your CSV import for project %{project_link} has been completed."
+msgstr ""
+
+msgid "Notify|Your CSV import of work items for project %{project_link} has been completed."
 msgstr ""
 
 msgid "Notify|Your account has been created successfully."
