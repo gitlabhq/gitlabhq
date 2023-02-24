@@ -3,6 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe AuditEvent do
+  describe 'associations' do
+    it { is_expected.to belong_to(:user).with_foreign_key(:author_id).inverse_of(:audit_events) }
+  end
+
   describe 'validations' do
     include_examples 'validates IP address' do
       let(:attribute) { :ip_address }

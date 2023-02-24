@@ -40,7 +40,19 @@ RSpec.describe Group, feature_category: :subgroups do
     it { is_expected.to have_many(:debian_distributions).class_name('Packages::Debian::GroupDistribution').dependent(:destroy) }
     it { is_expected.to have_many(:daily_build_group_report_results).class_name('Ci::DailyBuildGroupReportResult') }
     it { is_expected.to have_many(:group_callouts).class_name('Users::GroupCallout').with_foreign_key(:group_id) }
+
+    it do
+      is_expected.to have_many(:application_setting)
+        .with_foreign_key(:instance_administrators_group_id).inverse_of(:instance_group)
+    end
+
     it { is_expected.to have_many(:bulk_import_exports).class_name('BulkImports::Export') }
+
+    it do
+      is_expected.to have_many(:bulk_import_entities).class_name('BulkImports::Entity')
+        .with_foreign_key(:namespace_id).inverse_of(:group)
+    end
+
     it { is_expected.to have_many(:contacts).class_name('CustomerRelations::Contact') }
     it { is_expected.to have_many(:organizations).class_name('CustomerRelations::Organization') }
     it { is_expected.to have_many(:protected_branches).inverse_of(:group).with_foreign_key(:namespace_id) }

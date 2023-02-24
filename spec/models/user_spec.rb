@@ -174,6 +174,11 @@ RSpec.describe User, feature_category: :user_profile do
     it { is_expected.to have_many(:revoked_user_achievements).class_name('Achievements::UserAchievement').with_foreign_key('revoked_by_user_id').inverse_of(:revoked_by_user) }
     it { is_expected.to have_many(:achievements).through(:user_achievements).class_name('Achievements::Achievement').inverse_of(:users) }
     it { is_expected.to have_many(:namespace_commit_emails).class_name('Users::NamespaceCommitEmail') }
+    it { is_expected.to have_many(:audit_events).with_foreign_key(:author_id).inverse_of(:user) }
+
+    it do
+      is_expected.to have_many(:alert_assignees).class_name('::AlertManagement::AlertAssignee').inverse_of(:assignee)
+    end
 
     describe 'default values' do
       let(:user) { described_class.new }

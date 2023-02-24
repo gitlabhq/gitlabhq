@@ -26,10 +26,11 @@ class BulkImports::Entity < ApplicationRecord
   belongs_to :parent, class_name: 'BulkImports::Entity', optional: true
 
   belongs_to :project, optional: true
-  belongs_to :group, foreign_key: :namespace_id, optional: true
+  belongs_to :group, foreign_key: :namespace_id, optional: true, inverse_of: :bulk_import_entities
 
   has_many :trackers,
     class_name: 'BulkImports::Tracker',
+    inverse_of: :entity,
     foreign_key: :bulk_import_entity_id
 
   has_many :failures,

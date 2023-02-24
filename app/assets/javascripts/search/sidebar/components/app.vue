@@ -27,7 +27,9 @@ export default {
 </script>
 
 <template>
-  <section class="search-sidebar gl-display-flex gl-flex-direction-column gl-mr-4 gl-mb-6 gl-mt-5">
+  <section
+    class="search-sidebar gl-display-flex gl-flex-direction-column gl-md-mr-5 gl-mb-6 gl-mt-5"
+  >
     <scope-navigation />
     <results-filters v-if="showIssueAndMergeFilters" />
     <language-filter v-if="showBlobFilter" />

@@ -49,30 +49,6 @@ RSpec.describe Gitlab::Observability do
     end
   end
 
-  describe '.group_id_from_url' do
-    it 'returns the group id extracted from the url' do
-      expect(described_class.group_id_from_url('https://observe.gitlab.com/123/explore')).to eq(123)
-      expect(described_class.group_id_from_url('https://observe.gitlab.com/123')).to eq(123)
-      expect(described_class.group_id_from_url('https://observe.gitlab.com/123/')).to eq(123)
-      expect(described_class.group_id_from_url('https://observe.gitlab.com/123/456')).to eq(123)
-    end
-
-    it 'returns nil if the group id is not valid or missing' do
-      expect(described_class.group_id_from_url('https://observe.gitlab.com')).to be_nil
-      expect(described_class.group_id_from_url('https://observe.gitlab.com/')).to be_nil
-      expect(described_class.group_id_from_url('https://observe.gitlab.com/foo')).to be_nil
-      expect(described_class.group_id_from_url('https://observe.gitlab.com/foo/bar')).to be_nil
-      expect(described_class.group_id_from_url('https://observe.gitlab.com/0')).to be_nil
-      expect(described_class.group_id_from_url('https://observe.gitlab.com/-1')).to be_nil
-    end
-
-    it 'returns nil if the url is not a valid' do
-      expect(described_class.group_id_from_url('https://invalid.gitlab.com/123')).to be_nil
-      expect(described_class.group_id_from_url('foo bar')).to be_nil
-      expect(described_class.group_id_from_url('foo@@@@bar/1/')).to be_nil
-    end
-  end
-
   describe '.allowed_for_action?' do
     let_it_be(:group) { build(:user) }
     let_it_be(:user) { build(:group) }

@@ -207,15 +207,12 @@ you can customize the mailbox used by Service Desk. This allows you to have
 a separate email address for Service Desk by also configuring a [custom suffix](#configuring-a-custom-email-address-suffix)
 in project settings.
 
-The `address` must include the `+%{key}` placeholder in the 'user'
-portion of the address, before the `@`. The placeholder is used to identify the project
-where the issue should be created.
+Prerequisites:
 
-NOTE:
-When configuring a custom mailbox, the `service_desk_email` and `incoming_email`
-configurations must always use separate mailboxes. It's important, because
-emails picked from `service_desk_email` mailbox are processed by a different
-worker and it would not recognize `incoming_email` emails.
+- The `address` must include the `+%{key}` placeholder in the `user` portion of the address,
+  before the `@`. The placeholder is used to identify the project where the issue should be created.
+- The `service_desk_email` and `incoming_email` configurations must always use separate mailboxes
+  to make sure Service Desk emails are processed correctly.
 
 To configure a custom mailbox for Service Desk with IMAP, add the following snippets to your configuration file in full:
 

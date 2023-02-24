@@ -645,7 +645,7 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/api/templates/licenses.md @rdickenson
 /doc/api/todos.md @msedlakjakubowski
 /doc/api/topics.md @lciutacu
-/doc/api/usage_data.md @dianalogan
+/doc/api/usage_data.md @lciutacu
 /doc/api/users.md @jglassman1
 /doc/api/version.md @phillipwells
 /doc/api/visual_review_discussions.md @drcatherinepope
@@ -767,8 +767,8 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/development/sec/ @rdickenson
 /doc/development/sec/security_report_ingestion_overview.md @dianalogan
 /doc/development/secure_coding_guidelines.md @sselhorn
-/doc/development/service_ping/ @dianalogan
-/doc/development/snowplow/ @dianalogan
+/doc/development/service_ping/ @lciutacu
+/doc/development/snowplow/ @lciutacu
 /doc/development/spam_protection_and_captcha/ @phillipwells
 /doc/development/sql.md @aqualls
 /doc/development/testing_guide/ @sselhorn
@@ -864,11 +864,12 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/user/admin_area/settings/rate_limit_on_issues_creation.md @msedlakjakubowski
 /doc/user/admin_area/settings/rate_limit_on_notes_creation.md @msedlakjakubowski
 /doc/user/admin_area/settings/rate_limit_on_pipelines_creation.md @drcatherinepope
+/doc/user/admin_area/settings/rate_limit_on_projects_api.md @lciutacu
 /doc/user/admin_area/settings/rate_limit_on_users_api.md @jglassman1
 /doc/user/admin_area/settings/scim_setup.md @jglassman1
 /doc/user/admin_area/settings/terraform_limits.md @phillipwells
 /doc/user/admin_area/settings/third_party_offers.md @lciutacu
-/doc/user/admin_area/settings/usage_statistics.md @dianalogan
+/doc/user/admin_area/settings/usage_statistics.md @lciutacu
 /doc/user/admin_area/settings/visibility_and_access_controls.md @aqualls
 /doc/user/analytics/ @lciutacu
 /doc/user/analytics/ci_cd_analytics.md @rdickenson

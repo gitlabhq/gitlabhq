@@ -45,7 +45,11 @@ RSpec.describe 'Observability rendering', :js, feature_category: :metrics do
     end
   end
 
-  shared_examples 'does not embed observability in issues and MRs' do
+  context 'when feature flag is disabled' do
+    before do
+      stub_feature_flags(observability_group_tab: false)
+    end
+
     context 'when embedding in an issue' do
       let(:issue) do
         create(:issue, project: project, description: observable_url)
@@ -71,19 +75,5 @@ RSpec.describe 'Observability rendering', :js, feature_category: :metrics do
 
       it_behaves_like 'does not embed observability'
     end
-  end
-
-  context 'when user is not a developer of the embeded group' do
-    it_behaves_like 'does not embed observability in issues and MRs' do
-      let_it_be(:observable_url) { "https://observe.gitlab.com/1234/some-dashboard" }
-    end
-  end
-
-  context 'when feature flag is disabled' do
-    before do
-      stub_feature_flags(observability_group_tab: false)
-    end
-
-    it_behaves_like 'does not embed observability in issues and MRs'
   end
 end

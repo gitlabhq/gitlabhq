@@ -19,6 +19,12 @@ module Gitlab
       'https://observe.gitlab.com'
     end
 
+    def enabled?(group = nil)
+      return Feature.enabled?(:observability_group_tab, group) if group
+
+      Feature.enabled?(:observability_group_tab)
+    end
+
     def valid_observability_url?(url)
       uri = URI.parse(url)
       observability_uri = URI.parse(Gitlab::Observability.observability_url)
@@ -29,13 +35,6 @@ module Gitlab
 
     rescue URI::InvalidURIError
       false
-    end
-
-    def group_id_from_url(url)
-      return unless valid_observability_url?(url)
-
-      group_id = URI.parse(url).path.split('/')[1]
-      group_id.to_i unless group_id.to_i <= 0
     end
 
     def allowed_for_action?(user, group, action)

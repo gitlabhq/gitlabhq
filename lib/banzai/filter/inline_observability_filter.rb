@@ -4,7 +4,7 @@ module Banzai
   module Filter
     class InlineObservabilityFilter < ::Banzai::Filter::InlineEmbedsFilter
       def call
-        return doc unless can_view_observability?
+        return doc unless Gitlab::Observability.enabled?(group)
 
         super
       end
@@ -33,10 +33,6 @@ module Banzai
       end
 
       private
-
-      def can_view_observability?
-        Feature.enabled?(:observability_group_tab, group)
-      end
 
       def group
         context[:group] || context[:project]&.group

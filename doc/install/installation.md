@@ -11,8 +11,7 @@ using the source files. To set up a **development installation** or for many
 other installation options, see the [main installation page](index.md).
 It was created for and tested on **Debian/Ubuntu** operating systems.
 Read [requirements.md](requirements.md) for hardware and operating system requirements.
-If you want to install on RHEL/CentOS, we recommend using the
-[Omnibus packages](https://about.gitlab.com/install/).
+If you want to install on RHEL/CentOS, you should use the [Omnibus packages](https://about.gitlab.com/install/).
 
 This guide is long because it covers many cases and includes all commands you
 need, this is [one of the few installation scripts that actually work out of the box](https://twitter.com/robinvdvleuten/status/424163226532986880).

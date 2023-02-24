@@ -617,6 +617,7 @@ Nurtch
 NVMe
 nyc
 OAuth
+OCP
 Octokit
 offboarded
 offboarding
@@ -625,6 +626,7 @@ OIDs
 OKRs
 OKRs
 Okta
+OLM
 OmniAuth
 onboarding
 OpenID
@@ -668,6 +670,7 @@ Pipfile
 Pipfiles
 Piwik
 plaintext
+podman
 Poedit
 polyfill
 polyfills

@@ -508,6 +508,7 @@ project:
 - project_namespace
 - management_clusters
 - boards
+- application_setting
 - last_event
 - integrations
 - push_hooks_integrations

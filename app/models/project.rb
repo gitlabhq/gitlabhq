@@ -167,6 +167,8 @@ class Project < ApplicationRecord
   has_one :last_event, -> { order 'events.created_at DESC' }, class_name: 'Event'
   has_many :boards
 
+  has_many :application_setting, inverse_of: :self_monitoring_project
+
   def self.integration_association_name(name)
     "#{name}_integration"
   end

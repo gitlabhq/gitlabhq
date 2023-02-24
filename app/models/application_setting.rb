@@ -30,11 +30,13 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
   add_authentication_token_field :static_objects_external_storage_auth_token, encrypted: :required
   add_authentication_token_field :error_tracking_access_token, encrypted: :required
 
-  belongs_to :self_monitoring_project, class_name: "Project", foreign_key: 'instance_administration_project_id'
+  belongs_to :self_monitoring_project, class_name: "Project", foreign_key: :instance_administration_project_id,
+    inverse_of: :application_setting
   belongs_to :push_rule
   alias_attribute :self_monitoring_project_id, :instance_administration_project_id
 
-  belongs_to :instance_group, class_name: "Group", foreign_key: 'instance_administrators_group_id'
+  belongs_to :instance_group, class_name: "Group", foreign_key: :instance_administrators_group_id,
+    inverse_of: :application_setting
   alias_attribute :instance_group_id, :instance_administrators_group_id
   alias_attribute :instance_administrators_group, :instance_group
   alias_attribute :housekeeping_optimize_repository_period, :housekeeping_incremental_repack_period

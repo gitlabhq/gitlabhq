@@ -76,6 +76,11 @@ RSpec.describe Packages::MarkPackagesForDestructionService, :sidekiq_inline do
         it 'returns an error ServiceResponse' do
           expect(::Packages::Maven::Metadata::SyncService).not_to receive(:new)
 
+          expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
+            instance_of(StandardError),
+            package_ids: package_ids
+          )
+
           expect { subject }.to not_change { ::Packages::Package.pending_destruction.count }
                                   .and not_change { ::Packages::PackageFile.pending_destruction.count }
 

@@ -36,6 +36,12 @@ RSpec.describe Packages::MarkPackageForDestructionService do
         end
 
         it 'returns an error ServiceResponse' do
+          expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
+            instance_of(StandardError),
+            project_id: package.project_id,
+            package_id: package.id
+          )
+
           response = service.execute
 
           expect(package).not_to receive(:sync_maven_metadata)

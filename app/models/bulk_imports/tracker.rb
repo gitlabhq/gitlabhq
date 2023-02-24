@@ -7,6 +7,7 @@ class BulkImports::Tracker < ApplicationRecord
 
   belongs_to :entity,
     class_name: 'BulkImports::Entity',
+    inverse_of: :trackers,
     foreign_key: :bulk_import_entity_id,
     optional: false
 

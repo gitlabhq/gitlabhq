@@ -24,7 +24,6 @@ class SearchController < ApplicationController
 
   before_action :block_anonymous_global_searches, :check_scope_global_search_enabled, except: :opensearch
   skip_before_action :authenticate_user!
-  skip_before_action :default_cache_headers, only: [:count, :autocomplete]
 
   requires_cross_project_access if: -> do
     search_term_present = params[:search].present? || params[:term].present?

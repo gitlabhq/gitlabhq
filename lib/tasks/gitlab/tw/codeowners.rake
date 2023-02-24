@@ -58,7 +58,7 @@ namespace :tw do
       CodeOwnerRule.new('Pipeline Security', '@marcel.amirault'),
       CodeOwnerRule.new('Portfolio Management', '@msedlakjakubowski'),
       CodeOwnerRule.new('Product Analytics', '@lciutacu'),
-      CodeOwnerRule.new('Product Intelligence', '@dianalogan'),
+      CodeOwnerRule.new('Product Intelligence', '@lciutacu'),
       CodeOwnerRule.new('Product Planning', '@msedlakjakubowski'),
       CodeOwnerRule.new('Project Management', '@msedlakjakubowski'),
       CodeOwnerRule.new('Provision', '@fneill'),

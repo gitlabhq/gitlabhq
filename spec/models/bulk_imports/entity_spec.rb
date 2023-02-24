@@ -6,8 +6,13 @@ RSpec.describe BulkImports::Entity, type: :model, feature_category: :importers d
   describe 'associations' do
     it { is_expected.to belong_to(:bulk_import).required }
     it { is_expected.to belong_to(:parent) }
-    it { is_expected.to belong_to(:group) }
+    it { is_expected.to belong_to(:group).optional.with_foreign_key(:namespace_id).inverse_of(:bulk_import_entities) }
     it { is_expected.to belong_to(:project) }
+
+    it do
+      is_expected.to have_many(:trackers).class_name('BulkImports::Tracker')
+        .with_foreign_key(:bulk_import_entity_id).inverse_of(:entity)
+    end
   end
 
   describe 'validations' do

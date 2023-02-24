@@ -829,7 +829,6 @@ RSpec.describe API::Files, feature_category: :source_code_management do
         expect_to_send_git_blob(api(url, current_user), params)
 
         expect(response.headers['Cache-Control']).to eq('max-age=0, private, must-revalidate, no-store, no-cache')
-        expect(response.headers['Pragma']).to eq('no-cache')
         expect(response.headers['Expires']).to eq('Fri, 01 Jan 1990 00:00:00 GMT')
       end
 
