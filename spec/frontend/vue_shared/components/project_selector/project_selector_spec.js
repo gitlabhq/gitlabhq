@@ -1,7 +1,7 @@
 import { GlSearchBoxByType, GlInfiniteScroll } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import { head } from 'lodash';
-import Vue, { nextTick } from 'vue';
+import { nextTick } from 'vue';
 import mockProjects from 'test_fixtures_static/projects.json';
 import { trimText } from 'helpers/text_helper';
 import ProjectListItem from '~/vue_shared/components/project_selector/project_list_item.vue';
@@ -25,7 +25,7 @@ describe('ProjectSelector component', () => {
   };
 
   beforeEach(() => {
-    wrapper = mount(Vue.extend(ProjectSelector), {
+    wrapper = mount(ProjectSelector, {
       propsData: {
         projectSearchResults: searchResults,
         selectedProjects: selected,

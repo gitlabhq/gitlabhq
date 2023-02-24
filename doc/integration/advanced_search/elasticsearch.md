@@ -862,6 +862,10 @@ However, some larger installations may wish to tune the merge policy settings:
 
 ## Index large instances with dedicated Sidekiq nodes or processes
 
+WARNING:
+Most instances should not need to configure this. The steps below use an advanced setting of Sidekiq called [routing rules](../../administration/sidekiq/processing_specific_job_classes.md#routing-rules).
+Be sure to fully understand about the implication of using routing rules to avoid losing jobs entirely.
+
 Indexing a large instance can be a lengthy and resource-intensive process that has the potential
 of overwhelming Sidekiq nodes and processes. This negatively affects the GitLab performance and
 availability.
@@ -871,18 +875,20 @@ additional process dedicated to indexing a set of queues (or queue group). This 
 ensure that indexing queues always have a dedicated worker, while the rest of the queues have
 another dedicated worker to avoid contention.
 
-For this purpose, use the [queue selectors](../../administration/sidekiq/processing_specific_job_classes.md#queue-selectors)
-option that allows a more general selection of queue groups using a [worker matching query](../../administration/sidekiq/processing_specific_job_classes.md#worker-matching-query).
+For this purpose, use the [routing rules](../../administration/sidekiq/processing_specific_job_classes.md#routing-rules)
+option that allows Sidekiq to route jobs to a specific queue based on [worker matching query](../../administration/sidekiq/processing_specific_job_classes.md#worker-matching-query).
 
-To handle these two queue groups, we generally recommend one of the following two options. You can either:
+To handle this, we generally recommend one of the following two options. You can either:
 
 - [Use two queue groups on one single node](#single-node-two-processes).
 - [Use two queue groups, one on each node](#two-nodes-one-process-for-each).
 
-For the steps below, consider:
+For the steps below, consider the entry of `sidekiq['routing_rules']`:
 
-- `feature_category=global_search` as an indexing queue group with its own Sidekiq process.
-- `feature_category!=global_search` as a non-indexing queue group that has its own Sidekiq process.
+- `["feature_category=global_search", "global_search"]` as all indexing jobs are routed to the `global_search` queue.
+- `["*", "default"]` as all other non-indexing jobs are routed to the `default` queue.
+
+Note that at least one process in `sidekiq['queue_groups']` has to include the `mailers` queue, otherwise mailers jobs are not processed at all.
 
 ### Single node, two processes
 
@@ -892,11 +898,20 @@ To create both an indexing and a non-indexing Sidekiq process in one node:
 
    ```ruby
    sidekiq['enable'] = true
-   sidekiq['queue_selector'] = true
+   sidekiq['queue_selector'] = false
+
+   sidekiq['routing_rules'] = [
+      ["feature_category=global_search", "global_search"],
+      ["*", "default"],
+   ]
+
    sidekiq['queue_groups'] = [
-      "feature_category=global_search",
-      "feature_category!=global_search"
-    ]
+      "global_search", # process that listens to global_search queue
+      "default,mailers" # process that listens to default and mailers queue
+   ]
+
+   sidekiq['min_concurrency'] = 20
+   sidekiq['max_concurrency'] = 20
    ```
 
 1. Save the file and [reconfigure GitLab](../../administration/restart_gitlab.md)
@@ -914,26 +929,42 @@ To handle these queue groups on two nodes:
 
 1. To set up the indexing Sidekiq process, on your indexing Sidekiq node, change the `/etc/gitlab/gitlab.rb` file to:
 
-    ```ruby
-    sidekiq['enable'] = true
-     sidekiq['queue_selector'] = true
-     sidekiq['queue_groups'] = [
-       "feature_category=global_search"
-     ]
-    ```
+   ```ruby
+   sidekiq['enable'] = true
+   sidekiq['queue_selector'] = false
+
+   sidekiq['routing_rules'] = [
+      ["feature_category=global_search", "global_search"],
+      ["*", "default"],
+   ]
+
+   sidekiq['queue_groups'] = [
+     "global_search", # process that listens to global_search queue
+   ]
+
+   sidekiq['min_concurrency'] = 20
+   sidekiq['max_concurrency'] = 20
+   ```
 
 1. Save the file and [reconfigure GitLab](../../administration/restart_gitlab.md)
 for the changes to take effect.
 
 1. To set up the non-indexing Sidekiq process, on your non-indexing Sidekiq node, change the `/etc/gitlab/gitlab.rb` file to:
 
-    ```ruby
-    sidekiq['enable'] = true
-     sidekiq['queue_selector'] = true
-     sidekiq['queue_groups'] = [
-       "feature_category!=global_search"
-     ]
-    ```
+   ```ruby
+   sidekiq['enable'] = true
+   sidekiq['routing_rules'] = [
+      ["feature_category=global_search", "global_search"],
+      ["*", "default"],
+   ]
+
+   sidekiq['queue_groups'] = [
+      "default,mailers" # process that listens to default and mailers queue
+   ]
+
+   sidekiq['min_concurrency'] = 20
+   sidekiq['max_concurrency'] = 20
+   ```
 
     to set up a non-indexing Sidekiq process.
 

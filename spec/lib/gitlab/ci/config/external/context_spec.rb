@@ -170,4 +170,29 @@ RSpec.describe Gitlab::Ci::Config::External::Context, feature_category: :pipelin
   describe '#sentry_payload' do
     it { expect(subject.sentry_payload).to match(a_hash_including(:project, :user)) }
   end
+
+  describe '#contains_internal_include?' do
+    context 'when pipeline_config is provided' do
+      let(:pipeline_config) { instance_double(Gitlab::Ci::ProjectConfig) }
+      let(:attributes) do
+        { project: project, user: user, sha: sha, variables: variables, pipeline_config: pipeline_config }
+      end
+
+      where(:value) { [true, false] }
+
+      with_them do
+        it 'returns the value of .contains_internal_include?' do
+          allow(pipeline_config).to receive(:contains_internal_include?).and_return(value)
+
+          expect(subject.contains_internal_include?).to eq(value)
+        end
+      end
+    end
+
+    context 'when pipeline_config is not provided' do
+      it 'returns false' do
+        expect(subject.contains_internal_include?).to eq(false)
+      end
+    end
+  end
 end

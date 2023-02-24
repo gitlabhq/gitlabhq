@@ -24,6 +24,11 @@ module Gitlab
           raise NotImplementedError
         end
 
+        # Indicates if we are internally injecting an 'include' into the content
+        def contains_internal_include?
+          false
+        end
+
         def source
           raise NotImplementedError
         end

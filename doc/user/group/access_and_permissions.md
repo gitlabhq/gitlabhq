@@ -286,7 +286,15 @@ To create group links via filter:
 LDAP user permissions can be manually overridden by an administrator. To override a user's permissions:
 
 1. On the top bar, select **Main menu > Groups** and find your group.
-1. On the left sidebar, select **Group information > Members**.
+1. On the left sidebar, select **Group information > Members**. If LDAP synchronization
+   has granted a user a role with:
+   - More permissions than the parent group membership, that user is displayed as having
+     [direct membership](../project/members/index.md#display-direct-members) of the group.
+   - The same or fewer permissions than the parent group membership, that user is displayed as having
+     [inherited membership](../project/members/index.md#display-inherited-members) of the group.
+1. Optional. If the user you want to edit is displayed as having inherited membership,
+   [filter the subgroup to show direct members](manage.md#filter-a-group) before
+   overriding LDAP user permissions.
 1. In the row for the user you are editing, select the pencil (**{pencil}**) icon.
 1. Select **Edit permissions** in the modal.
 
@@ -302,3 +310,17 @@ If a user sees a 404 when they would usually expect access, and the problem is l
 - `json.allowed`: `false`
 
 In viewing the log entries, compare `remote.ip` with the list of [allowed IP addresses](#restrict-group-access-by-ip-address) for the group.
+
+### Cannot update permissions for a group member
+
+If a group Owner cannot update permissions for a group member, check which memberships
+are listed. Group Owners can only update direct memberships.
+
+If a parent group membership has the same or higher role than a subgroup, the
+[inherited membership](../project/members/index.md#inherited-membership) is
+listed on the subgroup members page, even if a [direct membership](../project/members/index.md#membership-types)
+on the group exists.
+
+To view and update direct memberships, [filter the group to show direct members](manage.md#filter-a-group).
+
+The need to filter members by type through a redesigned members page that lists both direct and inherited memberships is proposed in [issue 337539](https://gitlab.com/gitlab-org/gitlab/-/issues/337539#note_1277786161).

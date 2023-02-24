@@ -17,6 +17,10 @@ module Gitlab
           end
         end
 
+        def contains_internal_include?
+          true
+        end
+
         def source
           :external_project_source
         end

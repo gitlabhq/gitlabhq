@@ -154,6 +154,13 @@ RSpec.describe Tooling::Danger::StableBranch, feature_category: :delivery do
         it_behaves_like 'with a failure', described_class::BUG_ERROR_MESSAGE
       end
 
+      context 'with only documentation changes and no bug label' do
+        let(:bug_label_present) { false }
+        let(:changes_by_category_response) { { docs: ['foo.md'] } }
+
+        it_behaves_like 'without a failure'
+      end
+
       context 'with a pipeline:expedite label' do
         let(:pipeline_expedite_label_present) { true }
 

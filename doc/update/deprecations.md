@@ -48,6 +48,26 @@ sole discretion of GitLab Inc.
 
 <div class="announcement-milestone">
 
+## Announced in 15.10
+
+<div class="deprecation removal-1700 breaking-change">
+
+### DingTalk OmniAuth provider
+
+Planned removal: GitLab <span class="removal-milestone">17.00</span> <span class="removal-date"></span>
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+The `omniauth-dingtalk` gem that provides GitLab with the DingTalk OmniAuth provider will be removed in our next
+major release, GitLab 17.0. This gem sees very little use and is better suited for JiHu edition.
+
+</div>
+</div>
+
+<div class="announcement-milestone">
+
 ## Announced in 15.9
 
 <div class="deprecation removal-170 breaking-change">

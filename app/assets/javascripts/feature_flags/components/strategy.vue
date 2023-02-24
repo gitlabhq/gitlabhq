@@ -1,13 +1,12 @@
 <script>
-import { GlAlert, GlButton, GlFormSelect, GlFormGroup, GlIcon, GlLink } from '@gitlab/ui';
-import { isNumber, uniqueId } from 'lodash';
+import { GlAlert, GlButton, GlFormSelect, GlFormGroup, GlIcon, GlLink, GlToken } from '@gitlab/ui';
+import { isNumber } from 'lodash';
 import Vue from 'vue';
 import { s__, __ } from '~/locale';
 import {
   EMPTY_PARAMETERS,
   STRATEGY_SELECTIONS,
   ROLLOUT_STRATEGY_PERCENT_ROLLOUT,
-  ALL_ENVIRONMENTS_NAME,
 } from '../constants';
 
 import NewEnvironmentsDropdown from './new_environments_dropdown.vue';
@@ -21,6 +20,7 @@ export default {
     GlFormSelect,
     GlIcon,
     GlLink,
+    GlToken,
     NewEnvironmentsDropdown,
     StrategyParameters,
   },
@@ -79,22 +79,11 @@ export default {
     appliesToAllEnvironments() {
       return (
         this.filteredEnvironments.length === 1 &&
-        this.filteredEnvironments[0].environmentScope === ALL_ENVIRONMENTS_NAME
+        this.filteredEnvironments[0].environmentScope === '*'
       );
     },
     filteredEnvironments() {
       return this.environments.filter((e) => !e.shouldBeDestroyed);
-    },
-    selectableEnvironments() {
-      return this.environments.filter(
-        (e) => !e.shouldBeDestroyed && e.environmentScope !== ALL_ENVIRONMENTS_NAME,
-      );
-    },
-    filteredEnvironmentsOptions() {
-      return this.selectableEnvironments.map(({ id, environmentScope: name }) => ({
-        id: id || uniqueId('env_'),
-        name,
-      }));
     },
     isPercentUserRollout() {
       return this.formStrategy.name === ROLLOUT_STRATEGY_PERCENT_ROLLOUT;
@@ -103,21 +92,12 @@ export default {
   methods: {
     addEnvironment(environment) {
       const allEnvironmentsScope = this.environments.find(
-        (scope) => scope.environmentScope === ALL_ENVIRONMENTS_NAME,
+        (scope) => scope.environmentScope === '*',
       );
       if (allEnvironmentsScope) {
         allEnvironmentsScope.shouldBeDestroyed = true;
       }
-
-      const foundEnv = this.environments.find(
-        ({ environmentScope }) => environmentScope === environment,
-      );
-      if (isNumber(foundEnv?.id)) {
-        Vue.set(foundEnv, 'shouldBeDestroyed', false);
-      } else {
-        this.environments.push({ environmentScope: environment });
-      }
-
+      this.environments.push({ environmentScope: environment });
       this.onStrategyChange({ ...this.formStrategy, scopes: this.environments });
     },
     onStrategyTypeChange(name) {
@@ -131,15 +111,11 @@ export default {
       this.$emit('change', s);
       this.formStrategy = s;
     },
-    removeScope(target) {
-      const environment = this.environments.find(
-        ({ environmentScope }) => environmentScope === target,
-      );
-
-      if (isNumber(environment?.id)) {
+    removeScope(environment) {
+      if (isNumber(environment.id)) {
         Vue.set(environment, 'shouldBeDestroyed', true);
       } else {
-        this.environments = this.environments.filter((e) => e.environmentScope !== target);
+        this.environments = this.environments.filter((e) => e !== environment);
       }
       if (this.filteredEnvironments.length === 0) {
         this.environments.push({ environmentScope: '*' });
@@ -157,7 +133,7 @@ export default {
 
     <div class="gl-border-t-solid gl-border-t-1 gl-border-t-gray-100 gl-py-6">
       <div class="gl-display-flex gl-flex-direction-column gl-md-flex-direction-row flex-md-wrap">
-        <div class="gl-mr-7">
+        <div class="mr-5">
           <gl-form-group :label="$options.i18n.strategyTypeLabel" :label-for="strategyTypeId">
             <template #description>
               {{ $options.i18n.strategyTypeDescription }}
@@ -195,32 +171,39 @@ export default {
         </div>
       </div>
 
-      <gl-form-group :label="$options.i18n.environmentsLabel" :label-for="environmentsDropdownId">
-        <div class="row">
-          <div class="gl-display-flex gl-flex-direction-column gl-md-flex-direction-row gl-w-full">
-            <div class="gl-w-full gl-md-w-auto col-md-4">
-              <new-environments-dropdown
-                :id="environmentsDropdownId"
-                :selected="filteredEnvironmentsOptions"
-                @remove="removeScope"
-                @add="addEnvironment"
-              />
-            </div>
-            <span
-              v-if="appliesToAllEnvironments"
-              class="gl-flex-gl-text-secondary gl-mt-2 gl-pl-5 gl-md-pl-0"
+      <label class="gl-display-block" :for="environmentsDropdownId">{{
+        $options.i18n.environmentsLabel
+      }}</label>
+      <div class="gl-display-flex gl-flex-direction-column">
+        <div
+          class="gl-display-flex gl-flex-direction-column gl-md-flex-direction-row gl-md-align-items-center"
+        >
+          <new-environments-dropdown
+            :id="environmentsDropdownId"
+            class="gl-mr-3"
+            @add="addEnvironment"
+          />
+          <span v-if="appliesToAllEnvironments" class="text-secondary gl-mt-3 mt-md-0 ml-md-3">
+            {{ $options.i18n.allEnvironments }}
+          </span>
+          <div v-else class="gl-display-flex gl-align-items-center gl-flex-wrap">
+            <gl-token
+              v-for="environment in filteredEnvironments"
+              :key="environment.id"
+              class="gl-mt-3 gl-mr-3 gl-mb-3 mt-md-0 mr-md-0 ml-md-2 rounded-pill"
+              @close="removeScope(environment)"
             >
-              {{ $options.i18n.allEnvironments }}
-            </span>
+              {{ environment.environmentScope }}
+            </gl-token>
           </div>
         </div>
-        <template #description>
-          {{ $options.i18n.environmentsSelectDescription }}
-          <gl-link :href="environmentsScopeDocsPath" target="_blank">
-            <gl-icon name="question" />
-          </gl-link>
-        </template>
-      </gl-form-group>
+      </div>
+      <span class="gl-display-inline-block gl-py-3">
+        {{ $options.i18n.environmentsSelectDescription }}
+      </span>
+      <gl-link :href="environmentsScopeDocsPath" target="_blank">
+        <gl-icon name="question" />
+      </gl-link>
     </div>
   </div>
 </template>

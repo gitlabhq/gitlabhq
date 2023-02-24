@@ -14,20 +14,21 @@ module Gitlab
 
           include ::Gitlab::Utils::StrongMemoize
 
-          attr_reader :project, :sha, :user, :parent_pipeline, :variables
+          attr_reader :project, :sha, :user, :parent_pipeline, :variables, :pipeline_config
           attr_reader :expandset, :execution_deadline, :logger, :max_includes
 
           delegate :instrument, to: :logger
 
           def initialize(
             project: nil, sha: nil, user: nil, parent_pipeline: nil, variables: nil,
-            logger: nil
+            pipeline_config: nil, logger: nil
           )
             @project = project
             @sha = sha
             @user = user
             @parent_pipeline = parent_pipeline
             @variables = variables || Ci::Variables::Collection.new
+            @pipeline_config = pipeline_config
             @expandset = Feature.enabled?(:ci_includes_count_duplicates, project) ? [] : Set.new
             @execution_deadline = 0
             @logger = logger || Gitlab::Ci::Pipeline::Logger.new(project: project)
@@ -89,6 +90,12 @@ module Gitlab
 
           def includes
             expandset.map(&:metadata)
+          end
+
+          # Some ProjectConfig sources inject an `include` into the config content. We use this
+          # method to exclude that `include` from the calculation of the total included files.
+          def contains_internal_include?
+            !!pipeline_config&.contains_internal_include?
           end
 
           protected

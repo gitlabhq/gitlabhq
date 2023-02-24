@@ -181,9 +181,6 @@ SSO enforcement for web activity has the following effects when enabled:
 
 - For groups, users cannot share a project in the group outside the top-level
   group, even if the project is forked.
-- For Git activity over SSH and HTTPS, users must have at least one active
-  session signed-in through SSO before they can push to or
-  pull from a GitLab repository.
 - Git activity originating from CI/CD jobs do not have the SSO check enforced.
 - Credentials that are not tied to regular users (for example, project and group
   access tokens, and deploy keys) do not have the SSO check enforced.
@@ -192,7 +189,9 @@ SSO enforcement for web activity has the following effects when enabled:
 - When the **Enforce SSO-only authentication for Git and Dependency Proxy
   activity for this group** option is enabled, any API endpoint that involves
   Git activity is under SSO enforcement. For example, creating or deleting a
-  branch, commit, or tag.
+  branch, commit, or tag. For Git activity over SSH and HTTPS, users must
+  have at least one active session signed-in through SSO before they can push to or
+  pull from a GitLab repository.
 
 When SSO for web activity is enforced, non-SSO group members do not lose access
 immediately. If the user:

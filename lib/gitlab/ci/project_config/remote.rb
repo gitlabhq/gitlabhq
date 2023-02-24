@@ -12,6 +12,10 @@ module Gitlab
           end
         end
 
+        def contains_internal_include?
+          true
+        end
+
         def source
           :remote_source
         end

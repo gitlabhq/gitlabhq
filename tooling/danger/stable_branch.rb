@@ -61,7 +61,7 @@ module Tooling
         return unless non_security_stable_branch?
 
         fail FEATURE_ERROR_MESSAGE if has_feature_label?
-        fail BUG_ERROR_MESSAGE unless has_bug_label?
+        fail BUG_ERROR_MESSAGE unless bug_fixes_only?
 
         warn VERSION_WARNING_MESSAGE unless targeting_patchable_version?
 
@@ -115,6 +115,10 @@ module Tooling
 
       def has_flaky_failure_label?
         helper.mr_has_labels?('failure::flaky-test')
+      end
+
+      def bug_fixes_only?
+        has_bug_label? || has_only_documentation_changes?
       end
 
       def has_only_documentation_changes?

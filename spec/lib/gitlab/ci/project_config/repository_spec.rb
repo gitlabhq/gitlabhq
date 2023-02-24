@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::ProjectConfig::Repository do
+RSpec.describe Gitlab::Ci::ProjectConfig::Repository, feature_category: :continuous_integration do
   let(:project) { create(:project, :custom_repo, files: files) }
   let(:sha) { project.repository.head_commit.sha }
   let(:files) { { 'README.md' => 'hello' } }
@@ -43,5 +43,11 @@ RSpec.describe Gitlab::Ci::ProjectConfig::Repository do
     subject { config.source }
 
     it { is_expected.to eq(:repository_source) }
+  end
+
+  describe '#contains_internal_include?' do
+    subject { config.contains_internal_include? }
+
+    it { is_expected.to eq(true) }
   end
 end
