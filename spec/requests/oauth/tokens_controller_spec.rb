@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Oauth::TokensController, feature_category: :authentication_and_authorization do
+RSpec.describe Oauth::TokensController, feature_category: :system_access do
   let(:cors_request_headers) { { 'Origin' => 'http://notgitlab.com' } }
   let(:other_headers) { {} }
   let(:headers) { cors_request_headers.merge(other_headers) }

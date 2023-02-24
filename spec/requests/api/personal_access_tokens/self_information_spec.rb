@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::PersonalAccessTokens::SelfInformation, feature_category: :authentication_and_authorization do
+RSpec.describe API::PersonalAccessTokens::SelfInformation, feature_category: :system_access do
   let(:path) { '/personal_access_tokens/self' }
   let(:token) { create(:personal_access_token, user: current_user) }
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Settings, feature_category: :authentication_and_authorization do
+RSpec.describe Settings, feature_category: :system_access do
   using RSpec::Parameterized::TableSyntax
 
   describe 'omniauth' do

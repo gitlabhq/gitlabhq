@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe CleanupOAuthAccessTokensWithNullExpiresIn, feature_category: :authentication_and_authorization do
+RSpec.describe CleanupOAuthAccessTokensWithNullExpiresIn, feature_category: :system_access do
   let(:batched_migration) { described_class::MIGRATION }
 
   it 'schedules background jobs for each batch of oauth_access_tokens' do

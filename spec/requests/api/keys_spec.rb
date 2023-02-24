@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Keys, feature_category: :authentication_and_authorization do
+RSpec.describe API::Keys, feature_category: :system_access do
   let_it_be(:user)  { create(:user) }
   let_it_be(:admin) { create(:admin) }
   let_it_be(:email) { create(:email, user: user) }

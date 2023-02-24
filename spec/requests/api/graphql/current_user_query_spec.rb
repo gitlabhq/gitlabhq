@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'getting project information', feature_category: :authentication_and_authorization do
+RSpec.describe 'getting project information', feature_category: :system_access do
   include GraphqlHelpers
 
   let(:fields) do

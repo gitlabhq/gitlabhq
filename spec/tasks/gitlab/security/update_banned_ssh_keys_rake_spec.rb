@@ -7,7 +7,7 @@ require 'rake_helper'
 # is hit in the rake task.
 require 'git'
 
-RSpec.describe 'gitlab:security namespace rake tasks', :silence_stdout, feature_category: :credential_management do
+RSpec.describe 'gitlab:security namespace rake tasks', :silence_stdout, feature_category: :user_management do
   let(:fixture_path) { Rails.root.join('spec/fixtures/tasks/gitlab/security') }
   let(:output_file) { File.join(__dir__, 'tmp/banned_keys_test.yml') }
   let(:git_url) { 'https://github.com/rapid7/ssh-badkeys.git' }

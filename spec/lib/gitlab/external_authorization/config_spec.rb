@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::ExternalAuthorization::Config, feature_category: :authentication_and_authorization do
+RSpec.describe Gitlab::ExternalAuthorization::Config, feature_category: :system_access do
   it 'allows deploy tokens and keys when external authorization is disabled' do
     stub_application_setting(external_authorization_service_enabled: false)
     expect(described_class.allow_deploy_tokens_and_deploy_keys?).to be_eql(true)

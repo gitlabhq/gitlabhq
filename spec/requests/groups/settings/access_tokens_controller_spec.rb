@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Groups::Settings::AccessTokensController, feature_category: :authentication_and_authorization do
+RSpec.describe Groups::Settings::AccessTokensController, feature_category: :system_access do
   let_it_be(:user) { create(:user) }
   let_it_be(:resource) { create(:group) }
   let_it_be(:access_token_user) { create(:user, :project_bot) }

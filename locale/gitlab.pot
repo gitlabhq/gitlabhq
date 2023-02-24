@@ -40337,6 +40337,12 @@ msgstr ""
 msgid "Slack notifications integration is deprecated"
 msgstr ""
 
+msgid "Slack notifications will be brought into the GitLab for Slack app so you can manage both integrations from one place. %{learn_more_link_start}Learn more%{link_end}."
+msgstr ""
+
+msgid "Slack notifications will be deprecated"
+msgstr ""
+
 msgid "SlackIntegration|Are you sure you want to remove this project from the GitLab for Slack app?"
 msgstr ""
 

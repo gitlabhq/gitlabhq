@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Admin > Users > Impersonation Tokens', :js, feature_category: :authentication_and_authorization do
+RSpec.describe 'Admin > Users > Impersonation Tokens', :js, feature_category: :system_access do
   include Spec::Support::Helpers::ModalHelpers
   include Spec::Support::Helpers::AccessTokenHelpers
 

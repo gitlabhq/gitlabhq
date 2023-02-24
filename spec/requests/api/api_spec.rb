@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::API, feature_category: :authentication_and_authorization do
+RSpec.describe API::API, feature_category: :system_access do
   include GroupAPIHelpers
 
   describe 'Record user last activity in after hook' do

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ProjectPolicy, feature_category: :authentication_and_authorization do
+RSpec.describe ProjectPolicy, feature_category: :system_access do
   include ExternalAuthorizationServiceHelpers
   include AdminModeHelper
   include_context 'ProjectPolicy context'

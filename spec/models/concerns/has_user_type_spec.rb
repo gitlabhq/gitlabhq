@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe User, feature_category: :authentication_and_authorization do
+RSpec.describe User, feature_category: :system_access do
   specify 'types consistency checks', :aggregate_failures do
     expect(described_class::USER_TYPES.keys)
       .to match_array(%w[human ghost alert_bot project_bot support_bot service_user security_bot visual_review_bot

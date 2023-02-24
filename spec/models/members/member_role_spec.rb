@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe MemberRole, feature_category: :authentication_and_authorization do
+RSpec.describe MemberRole, feature_category: :system_access do
   describe 'associations' do
     it { is_expected.to belong_to(:namespace) }
     it { is_expected.to have_many(:members) }

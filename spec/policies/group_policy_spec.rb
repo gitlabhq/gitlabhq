@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe GroupPolicy, feature_category: :authentication_and_authorization do
+RSpec.describe GroupPolicy, feature_category: :system_access do
   include AdminModeHelper
   include_context 'GroupPolicy context'
 

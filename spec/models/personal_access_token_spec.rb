@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe PersonalAccessToken, feature_category: :authentication_and_authorization do
+RSpec.describe PersonalAccessToken, feature_category: :system_access do
   subject { described_class }
 
   describe '.build' do

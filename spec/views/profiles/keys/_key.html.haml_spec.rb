@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'profiles/keys/_key.html.haml', feature_category: :authentication_and_authorization do
+RSpec.describe 'profiles/keys/_key.html.haml', feature_category: :system_access do
   let_it_be(:user) { create(:user) }
 
   before do

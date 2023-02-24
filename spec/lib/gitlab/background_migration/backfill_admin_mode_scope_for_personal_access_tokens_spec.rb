@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::BackgroundMigration::BackfillAdminModeScopeForPersonalAccessTokens,
-  :migration, schema: 20221228103133, feature_category: :authentication_and_authorization do
+  :migration, schema: 20221228103133, feature_category: :system_access do
   let(:users) { table(:users) }
   let(:personal_access_tokens) { table(:personal_access_tokens) }
 

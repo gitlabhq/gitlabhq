@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Security::WeakPasswords, feature_category: :authentication_and_authorization do
+RSpec.describe Security::WeakPasswords, feature_category: :system_access do
   describe "#weak_for_user?" do
     using RSpec::Parameterized::TableSyntax
 

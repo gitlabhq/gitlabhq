@@ -139,13 +139,14 @@ You can override cache settings without overwriting the global cache by using
 `policy` for one job:
 
 ```yaml
-cache: &global_cache
-  key: $CI_COMMIT_REF_SLUG
-  paths:
-    - node_modules/
-    - public/
-    - vendor/
-  policy: pull-push
+default:
+  cache: &global_cache
+    key: $CI_COMMIT_REF_SLUG
+    paths:
+      - node_modules/
+      - public/
+      - vendor/
+    policy: pull-push
 
 job:
   cache:

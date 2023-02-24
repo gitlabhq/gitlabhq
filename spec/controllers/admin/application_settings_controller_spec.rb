@@ -400,7 +400,7 @@ RSpec.describe Admin::ApplicationSettingsController, :do_not_mock_admin_mode_set
     end
   end
 
-  describe 'PUT #reset_registration_token', feature_category: :credential_management do
+  describe 'PUT #reset_registration_token', feature_category: :user_management do
     before do
       sign_in(admin)
     end

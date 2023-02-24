@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'devise/shared/_error_messages', feature_category: :authentication_and_authorization do
+RSpec.describe 'devise/shared/_error_messages', feature_category: :system_access do
   describe 'Error messages' do
     let(:resource) do
       instance_spy(User, errors: errors, class: User)
