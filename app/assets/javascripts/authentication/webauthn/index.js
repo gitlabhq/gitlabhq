@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import WebAuthnAuthenticate from './authenticate';
+import WebAuthnAuthenticate from '~/authentication/webauthn/authenticate';
 
 export default () => {
   const webauthnAuthenticate = new WebAuthnAuthenticate(

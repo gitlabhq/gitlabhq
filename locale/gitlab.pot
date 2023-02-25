@@ -14530,6 +14530,9 @@ msgstr ""
 msgid "Developer"
 msgstr ""
 
+msgid "Device name"
+msgstr ""
+
 msgid "Devices (optional)"
 msgstr ""
 
@@ -16890,6 +16893,9 @@ msgid "Except policy:"
 msgstr ""
 
 msgid "Exceptions"
+msgstr ""
+
+msgid "Excluding USB security keys, you should include the browser name together with the device name."
 msgstr ""
 
 msgid "Excluding merge commits. Limited to %{limit} commits."
@@ -25815,6 +25821,9 @@ msgid "MRDiff|Show changes only"
 msgstr ""
 
 msgid "MRDiff|Show full file"
+msgstr ""
+
+msgid "Macbook Touch ID on Edge"
 msgstr ""
 
 msgid "Machine Learning Experiment Tracking is in Incubating Phase"
@@ -49509,6 +49518,9 @@ msgstr ""
 msgid "You must provide your current password in order to change it."
 msgstr ""
 
+msgid "You must save your recovery codes after you first register a two-factor authenticator, so you do not lose access to your account. %{linkStart}See the documentation on managing your WebAuthn device for more information.%{linkEnd}"
+msgstr ""
+
 msgid "You must sign in to search for specific projects."
 msgstr ""
 
@@ -49839,6 +49851,9 @@ msgid "Your comment will be discarded."
 msgstr ""
 
 msgid "Your commit email is used for web based operations, such as edits and merges."
+msgstr ""
+
+msgid "Your current password is required to register a new device."
 msgstr ""
 
 msgid "Your current password is required to register a two-factor authenticator app."

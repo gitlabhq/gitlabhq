@@ -1,4 +1,5 @@
 import { mount2faRegistration } from '~/authentication/mount_2fa';
+import { initWebAuthnRegistration } from '~/authentication/webauthn/registration';
 import { initRecoveryCodes, initManageTwoFactorForm } from '~/authentication/two_factor_auth';
 import { parseBoolean } from '~/lib/utils/common_utils';
 
@@ -15,6 +16,7 @@ if (skippable) {
 }
 
 mount2faRegistration();
+initWebAuthnRegistration();
 
 initRecoveryCodes();
 

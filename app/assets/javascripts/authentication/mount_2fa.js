@@ -1,12 +1,12 @@
 import $ from 'jquery';
 import initU2F from './u2f';
 import U2FRegister from './u2f/register';
-import initWebauthn from './webauthn';
+import initWebauthnAuthentication from './webauthn';
 import WebAuthnRegister from './webauthn/register';
 
 export const mount2faAuthentication = () => {
   if (gon.webauthn) {
-    initWebauthn();
+    initWebauthnAuthentication();
   } else {
     initU2F();
   }
