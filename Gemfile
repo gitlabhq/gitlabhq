@@ -593,3 +593,7 @@ gem 'app_store_connect'
 
 # For phone verification
 gem 'telesignenterprise', '~> 2.2'
+
+# lib/gitlab/buffered_io.rb relies on the old net-protocols internals
+# and fails with >= 0.2.0 due to new rbuf_offset based optimizations
+gem 'net-protocol', '~> 0.1.2'
