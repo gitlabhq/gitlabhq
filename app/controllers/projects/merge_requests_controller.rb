@@ -42,10 +42,6 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     push_frontend_feature_flag(:realtime_mr_status_change, project)
   end
 
-  before_action do
-    push_frontend_feature_flag(:permit_all_shared_groups_for_approval, @project)
-  end
-
   around_action :allow_gitaly_ref_name_caching, only: [:index, :show, :diffs, :discussions]
 
   after_action :log_merge_request_show, only: [:show, :diffs]

@@ -1,8 +1,0 @@
----
-name: permit_all_shared_groups_for_approval
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/80655
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/352766
-milestone: '14.8'
-type: development
-group: group::source code
-default_enabled: false
