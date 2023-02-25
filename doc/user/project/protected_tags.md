@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Protected tags **(FREE)**
 
-Protected tags:
+Protected [tags](repository/tags/index.md):
 
 - Allow control over who has permission to create tags.
 - Prevent accidental update or deletion once created.
@@ -105,6 +105,11 @@ To do this:
 Protected tags can only be deleted by using GitLab either from the UI or API.
 These protections prevent you from accidentally deleting a tag through local
 Git commands or third-party Git clients.
+
+## Related topics
+
+- [Protected Tags API](../../api/protected_tags.md)
+- [Tags API](../../api/tags.md)
 
 <!-- ## Troubleshooting
 

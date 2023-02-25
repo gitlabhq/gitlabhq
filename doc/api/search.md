@@ -407,6 +407,7 @@ Example response:
     "system": false,
     "noteable_id": 22,
     "noteable_type": "Issue",
+    "project_id": 6,
     "noteable_iid": 2
   }
 ]
@@ -796,6 +797,7 @@ Example response:
     "system": false,
     "noteable_id": 22,
     "noteable_type": "Issue",
+    "project_id": 6,
     "noteable_iid": 2
   }
 ]
@@ -1046,6 +1048,7 @@ Example response:
     "system": false,
     "noteable_id": 22,
     "noteable_type": "Issue",
+    "project_id": 6,
     "noteable_iid": 2
   }
 ]

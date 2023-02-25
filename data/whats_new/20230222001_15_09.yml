@@ -69,7 +69,7 @@
   self-managed: false
   gitlab-com: true
   available_in: [Ultimate]
-  documentation_link: https://release-15-9.about.gitlab-review.app/direction/modelops/ai_assisted/code_suggestions/
+  documentation_link: https://about.gitlab.com/releases/2023/02/22/gitlab-15-9-released/#code-suggestions-available-in-closed-beta
   image_url: https://about.gitlab.com/images/15_9/DemoFastApi.gif
   published_at: 2023-02-02  # YYYY-MM-DD
   release: 15.9

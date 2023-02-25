@@ -234,17 +234,6 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper, feature_category: :pipeline
         process
         expect(context.expandset.size).to eq(2)
       end
-
-      context 'when FF ci_includes_count_duplicates is disabled' do
-        before do
-          stub_feature_flags(ci_includes_count_duplicates: false)
-        end
-
-        it 'has expanset with one' do
-          process
-          expect(context.expandset.size).to eq(1)
-        end
-      end
     end
 
     context 'when passing max number of files' do

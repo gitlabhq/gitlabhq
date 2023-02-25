@@ -161,7 +161,7 @@ module Ci
           pipeline_includes_count = observations['pipeline_includes_count']
           next false unless pipeline_includes_count
 
-          pipeline_includes_count.to_i > Gitlab::Ci::Config::External::Context::MAX_INCLUDES
+          pipeline_includes_count.to_i > Gitlab::Ci::Config::External::Context::TEMP_MAX_INCLUDES
         end
       end
     end

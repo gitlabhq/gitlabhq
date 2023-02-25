@@ -115,7 +115,7 @@ To create a [branch](branches/index.md) in the Web Editor:
 
 ## Create a tag
 
-You can create [tags](../../../topics/git/tags.md) to mark milestones such as
+You can create [tags](tags/index.md) to mark milestones such as
 production releases and release candidates. To create a tag in the Web Editor:
 
 1. On the top bar, select **Main menu > Projects** and find your project.

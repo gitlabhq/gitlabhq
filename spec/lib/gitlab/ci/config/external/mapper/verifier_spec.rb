@@ -191,17 +191,6 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper::Verifier, feature_category:
           allow(context).to receive(:max_includes).and_return(2)
           expect { process }.to raise_error(Gitlab::Ci::Config::External::Mapper::TooManyIncludesError)
         end
-
-        context 'when FF ci_includes_count_duplicates is disabled' do
-          before do
-            stub_feature_flags(ci_includes_count_duplicates: false)
-          end
-
-          it 'does not raise error' do
-            allow(context).to receive(:max_includes).and_return(2)
-            expect { process }.not_to raise_error
-          end
-        end
       end
     end
   end

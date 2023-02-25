@@ -43,7 +43,7 @@ The following resources can help you get started with Git:
 - [Git stash](stash.md)
 - [Git file blame](../../user/project/repository/git_blame.md)
 - [Git file history](../../user/project/repository/git_history.md)
-- [Git tags](tags.md)
+- [Git tags](../../user/project/repository/tags/index.md)
 
 ### Concepts
 

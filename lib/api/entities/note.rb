@@ -14,6 +14,7 @@ module API
       expose :created_at, :updated_at
       expose :system?, as: :system
       expose :noteable_id, :noteable_type
+      expose :project_id
       expose :commit_id, if: ->(note, options) { note.noteable_type == "MergeRequest" && note.is_a?(DiffNote) }
 
       expose :position, if: ->(note, options) { note.is_a?(DiffNote) } do |note|

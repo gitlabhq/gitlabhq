@@ -65,6 +65,7 @@ GET /projects/:id/issues/:issue_iid/discussions
         "system": false,
         "noteable_id": 3,
         "noteable_type": "Issue",
+        "project_id": 5,
         "noteable_iid": null
       },
       {
@@ -85,6 +86,7 @@ GET /projects/:id/issues/:issue_iid/discussions
         "system": false,
         "noteable_id": 3,
         "noteable_type": "Issue",
+        "project_id": 5,
         "noteable_iid": null,
         "resolvable": false
       }
@@ -112,6 +114,7 @@ GET /projects/:id/issues/:issue_iid/discussions
         "system": false,
         "noteable_id": 3,
         "noteable_type": "Issue",
+        "project_id": 5,
         "noteable_iid": null,
         "resolvable": false
       }
@@ -279,6 +282,7 @@ GET /projects/:id/snippets/:snippet_id/discussions
         "system": false,
         "noteable_id": 3,
         "noteable_type": "Snippet",
+        "project_id": 5,
         "noteable_iid": null
       },
       {
@@ -299,6 +303,7 @@ GET /projects/:id/snippets/:snippet_id/discussions
         "system": false,
         "noteable_id": 3,
         "noteable_type": "Snippet",
+        "project_id": 5,
         "noteable_iid": null,
         "resolvable": false
       }
@@ -326,6 +331,7 @@ GET /projects/:id/snippets/:snippet_id/discussions
         "system": false,
         "noteable_id": 3,
         "noteable_type": "Snippet",
+        "project_id": 5,
         "noteable_iid": null,
         "resolvable": false
       }
@@ -491,6 +497,7 @@ GET /groups/:id/epics/:epic_id/discussions
         "system": false,
         "noteable_id": 3,
         "noteable_type": "Epic",
+        "project_id": 5,
         "noteable_iid": null,
         "resolvable": false
       },
@@ -512,6 +519,7 @@ GET /groups/:id/epics/:epic_id/discussions
         "system": false,
         "noteable_id": 3,
         "noteable_type": "Epic",
+        "project_id": 5,
         "noteable_iid": null,
         "resolvable": false
       }
@@ -539,6 +547,7 @@ GET /groups/:id/epics/:epic_id/discussions
         "system": false,
         "noteable_id": 3,
         "noteable_type": "Epic",
+        "project_id": 5,
         "noteable_iid": null,
         "resolvable": false
       }
@@ -705,6 +714,7 @@ GET /projects/:id/merge_requests/:merge_request_iid/discussions
         "system": false,
         "noteable_id": 3,
         "noteable_type": "Merge request",
+        "project_id": 5,
         "noteable_iid": null,
         "resolved": false,
         "resolvable": true,
@@ -729,6 +739,7 @@ GET /projects/:id/merge_requests/:merge_request_iid/discussions
         "system": false,
         "noteable_id": 3,
         "noteable_type": "Merge request",
+        "project_id": 5,
         "noteable_iid": null,
         "resolved": false,
         "resolvable": true,
@@ -758,6 +769,7 @@ GET /projects/:id/merge_requests/:merge_request_iid/discussions
         "system": false,
         "noteable_id": 3,
         "noteable_type": "Merge request",
+        "project_id": 5,
         "noteable_iid": null,
         "resolved": false,
         "resolvable": true,
@@ -794,6 +806,7 @@ Diff comments also contain position:
         "system": false,
         "noteable_id": 3,
         "noteable_type": "Merge request",
+        "project_id": 5,
         "noteable_iid": null,
         "commit_id": "4803c71e6b1833ca72b8b26ef2ecd5adc8a38031",
         "position": {
@@ -1137,6 +1150,7 @@ GET /projects/:id/repository/commits/:commit_id/discussions
         "system": false,
         "noteable_id": 3,
         "noteable_type": "Commit",
+        "project_id": 5,
         "noteable_iid": null,
         "resolvable": false
       },
@@ -1158,6 +1172,7 @@ GET /projects/:id/repository/commits/:commit_id/discussions
         "system": false,
         "noteable_id": 3,
         "noteable_type": "Commit",
+        "project_id": 5,
         "noteable_iid": null,
         "resolvable": false
       }
@@ -1185,6 +1200,7 @@ GET /projects/:id/repository/commits/:commit_id/discussions
         "system": false,
         "noteable_id": 3,
         "noteable_type": "Commit",
+        "project_id": 5,
         "noteable_iid": null,
         "resolvable": false
       }
@@ -1219,6 +1235,7 @@ Diff comments contain also position:
         "system": false,
         "noteable_id": 3,
         "noteable_type": "Commit",
+        "project_id": 5,
         "noteable_iid": null,
         "position": {
           "base_sha": "b5d6e7b1613fca24d250fa8e5bc7bcc3dd6002ef",

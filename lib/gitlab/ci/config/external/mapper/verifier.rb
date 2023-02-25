@@ -28,11 +28,7 @@ module Gitlab
                 file.validate_content! if file.valid?
                 file.load_and_validate_expanded_hash! if file.valid?
 
-                if context.expandset.is_a?(Array) # To be removed when FF 'ci_includes_count_duplicates' is removed
-                  context.expandset << file
-                else
-                  context.expandset.add(file)
-                end
+                context.expandset << file
               end
             end
 

@@ -109,7 +109,6 @@ RSpec.describe ResourceAccessTokens::CreateService, feature_category: :system_ac
         end
 
         it 'email is the same as username' do
-          expect(SecureRandom).to receive(:hex).at_least(:once).and_return('randomhex')
           response = subject
           access_token = response.payload[:access_token]
 

@@ -78,6 +78,9 @@
       "noteable_type": {
         "type": "string"
       },
+      "project_id": {
+        "type": "integer"
+      },
       "resolved": {
         "type": "boolean"
       },
