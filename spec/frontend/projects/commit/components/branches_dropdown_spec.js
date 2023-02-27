@@ -12,7 +12,7 @@ describe('BranchesDropdown', () => {
   let store;
   const spyFetchBranches = jest.fn();
 
-  const createComponent = (props, state = { isFetching: false }) => {
+  const createComponent = (props, state = { isFetching: false, branch: '_main_' }) => {
     store = new Vuex.Store({
       getters: {
         joinedBranches: () => ['_main_', '_branch_1_', '_branch_2_'],

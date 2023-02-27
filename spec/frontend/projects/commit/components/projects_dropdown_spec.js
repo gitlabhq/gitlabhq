@@ -1,6 +1,6 @@
 import { GlCollapsibleListbox } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import ProjectsDropdown from '~/projects/commit/components/projects_dropdown.vue';
@@ -48,20 +48,24 @@ describe('ProjectsDropdown', () => {
     });
 
     describe('Custom events', () => {
-      it('should emit selectProject if a project is clicked', () => {
+      it('should emit input if a project is clicked', () => {
         findDropdown().vm.$emit('select', '1');
 
-        expect(wrapper.emitted('selectProject')).toEqual([['1']]);
+        expect(wrapper.emitted('input')).toEqual([['1']]);
       });
     });
   });
 
   describe('Case insensitive for search term', () => {
     beforeEach(() => {
-      createComponent('_PrOjEcT_1_');
+      createComponent('_PrOjEcT_1_', { targetProjectId: '1' });
     });
 
-    it('renders only the project searched for', () => {
+    it('renders only the project searched for', async () => {
+      findDropdown().vm.$emit('search', '_project_1_');
+
+      await nextTick();
+
       expect(findDropdown().props('items')).toEqual([{ text: '_project_1_', value: '1' }]);
     });
   });
