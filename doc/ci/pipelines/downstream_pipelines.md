@@ -604,8 +604,9 @@ the ones defined in the upstream project take precedence.
 
 ### Pass dotenv variables created in a job **(PREMIUM)**
 
-You can pass variables to a downstream pipeline with [`dotenv` variable inheritance](../variables/index.md#pass-an-environment-variable-to-another-job)
-and [`needs:project`](../yaml/index.md#needsproject).
+You can pass variables to a downstream job with [`dotenv` variable inheritance](../variables/index.md#pass-an-environment-variable-to-another-job)
+and [`needs:project`](../yaml/index.md#needsproject). These variables are only available in
+the script of the job and can't be used to configure it, for example with `rules` or `artifact:paths`.
 
 For example, in a [multi-project pipeline](#multi-project-pipelines):
 
