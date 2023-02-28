@@ -1,5 +1,5 @@
 import boardListsQuery from 'ee_else_ce/boards/graphql/board_lists.query.graphql';
-import { TYPE_EPIC, TYPE_ISSUE } from '~/issues/constants';
+import { TYPE_EPIC, TYPE_ISSUE, WORKSPACE_GROUP, WORKSPACE_PROJECT } from '~/issues/constants';
 import { s__, __ } from '~/locale';
 import updateEpicSubscriptionMutation from '~/sidebar/queries/update_epic_subscription.mutation.graphql';
 import updateEpicTitleMutation from '~/sidebar/queries/update_epic_title.mutation.graphql';
@@ -11,11 +11,6 @@ import issueSetTitleMutation from './graphql/issue_set_title.mutation.graphql';
 import groupBoardQuery from './graphql/group_board.query.graphql';
 import projectBoardQuery from './graphql/project_board.query.graphql';
 import listIssuesQuery from './graphql/lists_issues.query.graphql';
-
-export const BoardType = {
-  project: 'project',
-  group: 'group',
-};
 
 export const ListType = {
   assignee: 'assignee',
@@ -56,10 +51,10 @@ export const INCIDENT = 'INCIDENT';
 export const flashAnimationDuration = 2000;
 
 export const boardQuery = {
-  [BoardType.group]: {
+  [WORKSPACE_GROUP]: {
     query: groupBoardQuery,
   },
-  [BoardType.project]: {
+  [WORKSPACE_PROJECT]: {
     query: projectBoardQuery,
   },
 };
@@ -147,7 +142,6 @@ export const MilestoneIDs = {
 };
 
 export default {
-  BoardType,
   ListType,
 };
 

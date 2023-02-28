@@ -260,7 +260,7 @@ It re-instantiates project object for each build, instead of using the same in-m
 In this particular case the workaround is fairly easy:
 
 ```ruby
-ActiveRecord::Associations::Preloader.new.preload(pipeline, [builds: :project])
+ActiveRecord::Associations::Preloader.new(records: pipeline, associations: [builds: :project]).call
 
 pipeline.builds.each do |build|
   build.to_json(only: [:name], include: [project: { only: [:name]}])

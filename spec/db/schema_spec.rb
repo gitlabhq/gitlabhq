@@ -36,7 +36,7 @@ RSpec.describe 'Database schema', feature_category: :database do
     ci_build_pending_states: %w[partition_id build_id],
     ci_build_report_results: %w[partition_id build_id],
     ci_build_trace_chunks: %w[partition_id build_id],
-    ci_build_trace_metadata: %w[partition_id],
+    ci_build_trace_metadata: %w[partition_id build_id],
     ci_builds: %w[erased_by_id trigger_request_id partition_id],
     ci_builds_runner_session: %w[partition_id build_id],
     p_ci_builds_metadata: %w[partition_id],

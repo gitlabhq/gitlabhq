@@ -277,6 +277,7 @@ RSpec.describe Projects::BranchesController, feature_category: :source_code_mana
         create_branch name: "<script>alert('merge');</script>", ref: "<script>alert('ref');</script>"
 
         expect(response).to have_gitlab_http_status(:unprocessable_entity)
+        expect(response.body).to include 'Failed to create branch'
       end
     end
 

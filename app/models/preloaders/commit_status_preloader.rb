@@ -9,10 +9,11 @@ module Preloaders
     end
 
     def execute(relations)
-      preloader = ActiveRecord::Associations::Preloader.new
-
       CLASSES.each do |klass|
-        preloader.preload(objects(klass), associations(klass, relations))
+        ActiveRecord::Associations::Preloader.new(
+          records: objects(klass),
+          associations: associations(klass, relations)
+        ).call
       end
     end
 

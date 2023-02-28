@@ -29,7 +29,6 @@ namespace :tw do
       CodeOwnerRule.new('Configure', '@phillipwells'),
       CodeOwnerRule.new('Container Registry', '@marcel.amirault'),
       CodeOwnerRule.new('Contributor Experience', '@eread'),
-      CodeOwnerRule.new('Conversion', '@kpaizee'),
       CodeOwnerRule.new('Database', '@aqualls'),
       CodeOwnerRule.new('Development', '@sselhorn'),
       CodeOwnerRule.new('Distribution', '@axil'),

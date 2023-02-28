@@ -19,11 +19,20 @@ module Preloaders
     end
 
     def preload_all
-      preloader = ActiveRecord::Associations::Preloader.new
+      ActiveRecord::Associations::Preloader.new(
+        records: labels,
+        associations: { parent_container: :route }
+      ).call
 
-      preloader.preload(labels, parent_container: :route)
-      preloader.preload(labels.select { |l| l.is_a? ProjectLabel }, { project: [:project_feature, namespace: :route] })
-      preloader.preload(labels.select { |l| l.is_a? GroupLabel }, { group: :route })
+      ActiveRecord::Associations::Preloader.new(
+        records: labels.select { |l| l.is_a? ProjectLabel },
+        associations: { project: [:project_feature, namespace: :route] }
+      ).call
+
+      ActiveRecord::Associations::Preloader.new(
+        records: labels.select { |l| l.is_a? GroupLabel },
+        associations: { group: :route }
+      ).call
 
       labels.each do |label|
         label.lazy_subscription(user)

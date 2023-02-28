@@ -5,11 +5,11 @@ import Vuex from 'vuex';
 import waitForPromises from 'helpers/wait_for_promises';
 import { TEST_HOST } from 'spec/test_constants';
 import BoardsSelector from '~/boards/components/boards_selector.vue';
-import { BoardType } from '~/boards/constants';
 import groupBoardsQuery from '~/boards/graphql/group_boards.query.graphql';
 import projectBoardsQuery from '~/boards/graphql/project_boards.query.graphql';
 import groupRecentBoardsQuery from '~/boards/graphql/group_recent_boards.query.graphql';
 import projectRecentBoardsQuery from '~/boards/graphql/project_recent_boards.query.graphql';
+import { WORKSPACE_GROUP, WORKSPACE_PROJECT } from '~/issues/constants';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import {
@@ -228,13 +228,13 @@ describe('BoardsSelector', () => {
   describe('fetching all boards', () => {
     it.each`
       boardType            | queryHandler                        | notCalledHandler
-      ${BoardType.group}   | ${groupBoardsQueryHandlerSuccess}   | ${projectBoardsQueryHandlerSuccess}
-      ${BoardType.project} | ${projectBoardsQueryHandlerSuccess} | ${groupBoardsQueryHandlerSuccess}
+      ${WORKSPACE_GROUP}   | ${groupBoardsQueryHandlerSuccess}   | ${projectBoardsQueryHandlerSuccess}
+      ${WORKSPACE_PROJECT} | ${projectBoardsQueryHandlerSuccess} | ${groupBoardsQueryHandlerSuccess}
     `('fetches $boardType boards', async ({ boardType, queryHandler, notCalledHandler }) => {
       createStore();
       createComponent({
-        isGroupBoard: boardType === BoardType.group,
-        isProjectBoard: boardType === BoardType.project,
+        isGroupBoard: boardType === WORKSPACE_GROUP,
+        isProjectBoard: boardType === WORKSPACE_PROJECT,
       });
 
       await nextTick();

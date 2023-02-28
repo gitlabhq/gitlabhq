@@ -430,7 +430,8 @@ RSpec.describe IssuablesHelper, feature_category: :team_planning do
           action: "show",
           namespace_id: "foo",
           project_id: "bar",
-          id: incident.iid
+          id: incident.iid,
+          incident_tab: 'timeline'
         }).permit!
       end
 
@@ -441,7 +442,9 @@ RSpec.describe IssuablesHelper, feature_category: :team_planning do
         expected_data = {
           issueType: 'incident',
           hasLinkedAlerts: false,
-          canUpdateTimelineEvent: true
+          canUpdateTimelineEvent: true,
+          currentPath: "/foo/bar/-/issues/incident/#{incident.iid}/timeline",
+          currentTab: 'timeline'
         }
 
         expect(helper.issuable_initial_data(incident)).to match(hash_including(expected_data))

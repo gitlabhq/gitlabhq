@@ -2,13 +2,7 @@ import * as Sentry from '@sentry/browser';
 import { cloneDeep } from 'lodash';
 import Vue from 'vue';
 import Vuex from 'vuex';
-import {
-  inactiveId,
-  ISSUABLE,
-  ListType,
-  BoardType,
-  DraggableItemTypes,
-} from 'ee_else_ce/boards/constants';
+import { inactiveId, ISSUABLE, ListType, DraggableItemTypes } from 'ee_else_ce/boards/constants';
 import issueMoveListMutation from 'ee_else_ce/boards/graphql/issue_move_list.mutation.graphql';
 import testAction from 'helpers/vuex_action_helper';
 import {
@@ -26,7 +20,7 @@ import actions from '~/boards/stores/actions';
 import * as types from '~/boards/stores/mutation_types';
 import mutations from '~/boards/stores/mutations';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import { TYPE_ISSUE } from '~/issues/constants';
+import { TYPE_ISSUE, WORKSPACE_GROUP, WORKSPACE_PROJECT } from '~/issues/constants';
 
 import projectBoardMilestones from '~/boards/graphql/project_board_milestones.query.graphql';
 import groupBoardMilestones from '~/boards/graphql/group_board_milestones.query.graphql';
@@ -300,8 +294,8 @@ describe('fetchLists', () => {
 
   it.each`
     issuableType  | boardType            | fullBoardId               | isGroup  | isProject
-    ${TYPE_ISSUE} | ${BoardType.group}   | ${'gid://gitlab/Board/1'} | ${true}  | ${false}
-    ${TYPE_ISSUE} | ${BoardType.project} | ${'gid://gitlab/Board/1'} | ${false} | ${true}
+    ${TYPE_ISSUE} | ${WORKSPACE_GROUP}   | ${'gid://gitlab/Board/1'} | ${true}  | ${false}
+    ${TYPE_ISSUE} | ${WORKSPACE_PROJECT} | ${'gid://gitlab/Board/1'} | ${false} | ${true}
   `(
     'calls $issuableType query with correct variables',
     async ({ issuableType, boardType, fullBoardId, isGroup, isProject }) => {

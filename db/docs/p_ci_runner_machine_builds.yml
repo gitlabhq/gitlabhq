@@ -1,6 +1,6 @@
----
 table_name: p_ci_runner_machine_builds
-classes: []
+classes:
+- Ci::RunnerMachineBuild
 feature_categories:
 - runner_fleet
 description: Relationships between builds and runner machines

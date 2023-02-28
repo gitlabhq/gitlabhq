@@ -19,7 +19,7 @@ module Preloaders
 
       root_ancestors_by_id = root_query.group_by(&:source_id)
 
-      ActiveRecord::Associations::Preloader.new.preload(@projects, :namespace)
+      ActiveRecord::Associations::Preloader.new(records: @projects, associations: :namespace).call
       @projects.each do |project|
         root_ancestor = root_ancestors_by_id[project.id]&.first
         project.namespace.root_ancestor = root_ancestor if root_ancestor.present?

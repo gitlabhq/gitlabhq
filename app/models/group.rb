@@ -817,8 +817,10 @@ class Group < Namespace
   end
 
   def preload_shared_group_links
-    preloader = ActiveRecord::Associations::Preloader.new
-    preloader.preload(self, shared_with_group_links: [shared_with_group: :route])
+    ActiveRecord::Associations::Preloader.new(
+      records: [self],
+      associations: { shared_with_group_links: [shared_with_group: :route] }
+    ).call
   end
 
   def update_shared_runners_setting!(state)

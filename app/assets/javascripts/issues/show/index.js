@@ -11,6 +11,7 @@ import IncidentTabs from './components/incidents/incident_tabs.vue';
 import SentryErrorStackTrace from './components/sentry_error_stack_trace.vue';
 import { issueState } from './constants';
 import getIssueStateQuery from './queries/get_issue_state.query.graphql';
+import createRouter from './components/incidents/router';
 
 const bootstrapApollo = (state = {}) => {
   return apolloProvider.clients.defaultClient.cache.writeQuery({
@@ -36,6 +37,8 @@ export function initIncidentApp(issueData = {}, store) {
     canUpdateTimelineEvent,
     iid,
     issuableId,
+    currentPath,
+    currentTab,
     projectNamespace,
     projectPath,
     projectId,
@@ -46,12 +49,14 @@ export function initIncidentApp(issueData = {}, store) {
   } = issueData;
 
   const fullPath = `${projectNamespace}/${projectPath}`;
+  const router = createRouter(currentPath, currentTab);
 
   return new Vue({
     el,
     name: 'DescriptionRoot',
     apolloProvider,
     store,
+    router,
     provide: {
       issueType: TYPE_INCIDENT,
       canCreateIncident,

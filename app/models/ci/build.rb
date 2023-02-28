@@ -55,7 +55,9 @@ module Ci
       has_one :"job_artifacts_#{key}", -> { where(file_type: value) }, class_name: 'Ci::JobArtifact', foreign_key: :job_id, inverse_of: :job
     end
 
-    has_one :runner_machine, through: :metadata, class_name: 'Ci::RunnerMachine'
+    has_one :runner_machine_build, class_name: 'Ci::RunnerMachineBuild', foreign_key: :build_id, inverse_of: :build,
+      autosave: true
+    has_one :runner_machine, through: :runner_machine_build, class_name: 'Ci::RunnerMachine'
 
     has_one :runner_session, class_name: 'Ci::BuildRunnerSession', validate: true, foreign_key: :build_id, inverse_of: :build
     has_one :trace_metadata, class_name: 'Ci::BuildTraceMetadata', foreign_key: :build_id, inverse_of: :build
@@ -132,7 +134,7 @@ module Ci
 
     scope :eager_load_job_artifacts, -> { includes(:job_artifacts) }
     scope :eager_load_tags, -> { includes(:tags) }
-    scope :eager_load_for_archiving_trace, -> { includes(:project, :pending_state) }
+    scope :eager_load_for_archiving_trace, -> { preload(:project, :pending_state) }
 
     scope :eager_load_everything, -> do
       includes(
@@ -808,7 +810,7 @@ module Ci
       return unless project
       return if user&.blocked?
 
-      ActiveRecord::Associations::Preloader.new.preload([self], { runner: :tags })
+      ActiveRecord::Associations::Preloader.new(records: [self], associations: { runner: :tags }).call
 
       project.execute_hooks(build_data.dup, :job_hooks) if project.has_active_hooks?(:job_hooks)
       project.execute_integrations(build_data.dup, :job_hooks) if project.has_active_integrations?(:job_hooks)

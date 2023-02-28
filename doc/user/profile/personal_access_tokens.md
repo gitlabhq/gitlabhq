@@ -222,7 +222,7 @@ Remember this if you set up an automation pipeline that depends on authenticatio
 
 ### Unrevoke a personal access token **(FREE SELF)**
 
-If a personal access token is revoked accidentally by any method, administrators can unrevoke that token.
+If a personal access token is revoked accidentally by any method, administrators can unrevoke that token. By default, a daily job deletes revoked tokens at 1:00 AM system time.
 
 WARNING:
 Running the following commands changes data directly. This could be damaging if not done correctly, or under the right conditions. You should first run these commands in a test environment with a backup of the instance ready to be restored, just in case.

@@ -10,7 +10,7 @@ RSpec.describe Gitlab::Database::SchemaValidation::Validators::BaseValidator, fe
       expect(all_validators).to eq([
         Gitlab::Database::SchemaValidation::Validators::ExtraIndexes,
         Gitlab::Database::SchemaValidation::Validators::MissingIndexes,
-        Gitlab::Database::SchemaValidation::Validators::WrongIndexes
+        Gitlab::Database::SchemaValidation::Validators::DifferentDefinitionIndexes
       ])
     end
   end

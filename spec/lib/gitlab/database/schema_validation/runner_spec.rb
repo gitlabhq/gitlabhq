@@ -32,7 +32,7 @@ RSpec.describe Gitlab::Database::SchemaValidation::Runner, feature_category: :da
 
       let(:extra_indexes) { class_double(class_name) }
       let(:instace_extra_index) { instance_double(class_name, execute: [inconsistency]) }
-      let(:inconsistency) { instance_double(inconsistency_class_name, name: 'test') }
+      let(:inconsistency) { instance_double(inconsistency_class_name, object_name: 'test') }
 
       let(:validators) { [extra_indexes] }
 
@@ -43,7 +43,7 @@ RSpec.describe Gitlab::Database::SchemaValidation::Runner, feature_category: :da
           expect(validator).not_to receive(:new).with(structure_sql, database)
         end
 
-        expect(inconsistencies.map(&:name)).to eql ['test']
+        expect(inconsistencies.map(&:object_name)).to eql ['test']
       end
     end
   end

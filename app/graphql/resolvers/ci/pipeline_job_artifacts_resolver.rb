@@ -15,7 +15,7 @@ module Resolvers
 
       def find_job_artifacts
         BatchLoader::GraphQL.for(pipeline).batch do |pipelines, loader|
-          ActiveRecord::Associations::Preloader.new.preload(pipelines, :job_artifacts) # rubocop: disable CodeReuse/ActiveRecord
+          ActiveRecord::Associations::Preloader.new(records: pipelines, associations: :job_artifacts).call # rubocop: disable CodeReuse/ActiveRecord
 
           pipelines.each { |pl| loader.call(pl, pl.job_artifacts) }
         end

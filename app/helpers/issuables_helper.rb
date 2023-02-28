@@ -281,7 +281,9 @@ module IssuablesHelper
 
     {
       hasLinkedAlerts: issue.alert_management_alerts.any?,
-      canUpdateTimelineEvent: can?(current_user, :admin_incident_management_timeline_event, issue)
+      canUpdateTimelineEvent: can?(current_user, :admin_incident_management_timeline_event, issue),
+      currentPath: url_for(safe_params),
+      currentTab: safe_params[:incident_tab]
     }
   end
 

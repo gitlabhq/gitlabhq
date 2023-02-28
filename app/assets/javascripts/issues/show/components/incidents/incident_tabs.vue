@@ -59,12 +59,15 @@ export default {
   data() {
     return {
       alert: null,
-      activeTabIndex: 0,
     };
   },
   computed: {
     loading() {
       return this.$apollo.queries.alert.loading;
+    },
+    activeTabIndex() {
+      const { tabId } = this.$route.params;
+      return tabId ? this.tabMapping.tabNamesToIndex[tabId] : 0;
     },
     tabMapping() {
       const availableTabs = [TAB_NAMES.SUMMARY];
@@ -93,20 +96,25 @@ export default {
         return this.activeTabIndex;
       },
       set(index) {
-        this.handleTabChange(index);
-        this.activeTabIndex = index;
+        const newPath = `/${this.tabMapping.tabIndexToName[index]}`;
+        // Only push if the new path differs from the old path.
+        if (newPath !== this.$route.path) {
+          this.$router.push(newPath);
+          this.updateJsIssueWidgets(index);
+        }
       },
     },
   },
   mounted() {
     this.trackPageViews();
+    this.updateJsIssueWidgets(this.activeTabIndex);
   },
   methods: {
     trackPageViews() {
       const { category, action } = trackIncidentDetailsViewsOptions;
       Tracking.event(category, action);
     },
-    handleTabChange(tabIndex) {
+    updateJsIssueWidgets(tabIndex) {
       /**
        * TODO: Implement a solution that does not violate Vue principles in using
        * DOM manipulation directly (#361618)

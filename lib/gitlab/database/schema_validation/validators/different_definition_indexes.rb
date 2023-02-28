@@ -4,7 +4,7 @@ module Gitlab
   module Database
     module SchemaValidation
       module Validators
-        class WrongIndexes < BaseValidator
+        class DifferentDefinitionIndexes < BaseValidator
           def execute
             structure_sql.indexes.filter_map do |structure_sql_index|
               database_index = database.fetch_index_by_name(structure_sql_index.name)
@@ -12,7 +12,7 @@ module Gitlab
               next if database_index.nil?
               next if database_index.statement == structure_sql_index.statement
 
-              build_inconsistency(structure_sql_index)
+              build_inconsistency(self.class, structure_sql_index)
             end
           end
         end

@@ -58,7 +58,7 @@ module Ci
     # rubocop: disable CodeReuse/ActiveRecord
     def all_dependencies
       dependencies = super
-      ActiveRecord::Associations::Preloader.new.preload(dependencies, :job_artifacts_archive)
+      ActiveRecord::Associations::Preloader.new(records: dependencies, associations: :job_artifacts_archive).call
       dependencies
     end
     # rubocop: enable CodeReuse/ActiveRecord

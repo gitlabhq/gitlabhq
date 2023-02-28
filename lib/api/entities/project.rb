@@ -155,7 +155,7 @@ module API
 
       # rubocop: disable CodeReuse/ActiveRecord
       def self.preload_resource(project)
-        ActiveRecord::Associations::Preloader.new.preload(project, project_group_links: { group: :route })
+        ActiveRecord::Associations::Preloader.new(records: [project], associations: { project_group_links: { group: :route } }).call
       end
 
       def self.preload_relation(projects_relation, options = {})

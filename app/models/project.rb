@@ -1079,8 +1079,10 @@ class Project < ApplicationRecord
   end
 
   def preload_protected_branches
-    preloader = ActiveRecord::Associations::Preloader.new
-    preloader.preload(self, protected_branches: [:push_access_levels, :merge_access_levels])
+    ActiveRecord::Associations::Preloader.new(
+      records: [self],
+      associations: { protected_branches: [:push_access_levels, :merge_access_levels] }
+    ).call
   end
 
   # returns all ancestor-groups upto but excluding the given namespace

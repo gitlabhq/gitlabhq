@@ -12,6 +12,8 @@ RSpec.shared_examples "index validators" do |validator, expected_result|
     ]
   end
 
+  let(:inconsistency_type) { validator.name.demodulize.underscore }
+
   let(:database_name) { 'main' }
 
   let(:database_model) { Gitlab::Database.database_base_models[database_name] }
@@ -29,7 +31,8 @@ RSpec.shared_examples "index validators" do |validator, expected_result|
     allow(connection).to receive(:exec_query).and_return(query_result)
   end
 
-  it 'returns extra indexes' do
-    expect(result.map(&:name)).to match_array(expected_result)
+  it 'returns index inconsistencies' do
+    expect(result.map(&:object_name)).to match_array(expected_result)
+    expect(result.map(&:type)).to all(eql inconsistency_type)
   end
 end

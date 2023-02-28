@@ -43,7 +43,10 @@ class Profiles::NotificationsController < Profiles::ApplicationController
       .preload_source_route
 
     projects = project_notifications.map(&:source)
-    ActiveRecord::Associations::Preloader.new.preload(projects, { namespace: [:route, :owner], group: [] })
+    ActiveRecord::Associations::Preloader.new(
+      records: projects,
+      associations: { namespace: [:route, :owner], group: [] }
+    ).call
     Preloaders::UserMaxAccessLevelInProjectsPreloader.new(projects, current_user).execute
 
     project_notifications.select { |notification| current_user.can?(:read_project, notification.source) }

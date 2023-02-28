@@ -15348,6 +15348,9 @@ msgstr ""
 msgid "Edit image description"
 msgstr ""
 
+msgid "Edit image text or link"
+msgstr ""
+
 msgid "Edit in pipeline editor"
 msgstr ""
 

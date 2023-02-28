@@ -14,8 +14,8 @@ module Ci
 
     belongs_to :runner
 
-    has_many :build_metadata, class_name: 'Ci::BuildMetadata'
-    has_many :builds, through: :build_metadata, class_name: 'Ci::Build'
+    has_many :runner_machine_builds, inverse_of: :runner_machine, class_name: 'Ci::RunnerMachineBuild'
+    has_many :builds, through: :runner_machine_builds, class_name: 'Ci::Build'
     belongs_to :runner_version, inverse_of: :runner_machines, primary_key: :version, foreign_key: :version,
                class_name: 'Ci::RunnerVersion'
 

@@ -9,7 +9,7 @@ module Gitlab
             database.indexes.filter_map do |index|
               next if structure_sql.index_exists?(index.name)
 
-              build_inconsistency(index)
+              build_inconsistency(self.class, index)
             end
           end
         end

@@ -108,7 +108,7 @@ class DraftNote < ApplicationRecord
   end
 
   def self.preload_author(draft_notes)
-    ActiveRecord::Associations::Preloader.new.preload(draft_notes, { author: :status })
+    ActiveRecord::Associations::Preloader.new(records: draft_notes, associations: { author: :status }).call
   end
 
   def diff_file
