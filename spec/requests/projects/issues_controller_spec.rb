@@ -39,6 +39,11 @@ RSpec.describe Projects::IssuesController, feature_category: :team_planning do
     describe 'incident tabs' do
       let_it_be(:incident) { create(:incident, project: project) }
 
+      it 'redirects to the issues route for non-incidents' do
+        get incident_issue_project_issue_path(project, issue, 'timeline')
+        expect(response).to redirect_to project_issue_path(project, issue)
+      end
+
       it 'responds with selected tab for incidents' do
         get incident_issue_project_issue_path(project, incident, 'timeline')
         expect(response.body).to match(/&quot;currentTab&quot;:&quot;timeline&quot;/)

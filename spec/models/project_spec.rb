@@ -3594,6 +3594,44 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
     end
   end
 
+  describe '#beautified_import_status_name' do
+    context 'when import not finished' do
+      it 'returns the right beautified import status' do
+        project = create(:project, :import_started)
+
+        expect(project.beautified_import_status_name).to eq('started')
+      end
+    end
+
+    context 'when import is finished' do
+      context 'when import is partially completed' do
+        it 'returns partially completed' do
+          project = create(:project)
+
+          create(:import_state, project: project, status: 'finished', checksums: {
+            'fetched' => { 'labels' => 10 },
+            'imported' => { 'labels' => 9 }
+          })
+
+          expect(project.beautified_import_status_name).to eq('partially completed')
+        end
+      end
+
+      context 'when import is fully completed' do
+        it 'returns completed' do
+          project = create(:project)
+
+          create(:import_state, project: project, status: 'finished', checksums: {
+            'fetched' => { 'labels' => 10 },
+            'imported' => { 'labels' => 10 }
+          })
+
+          expect(project.beautified_import_status_name).to eq('completed')
+        end
+      end
+    end
+  end
+
   describe '#add_import_job' do
     let(:import_jid) { '123' }
 

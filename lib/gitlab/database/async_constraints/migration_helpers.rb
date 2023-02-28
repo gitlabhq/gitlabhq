@@ -21,6 +21,7 @@ module Gitlab
           end
 
           async_validation = PostgresAsyncConstraintValidation
+            .foreign_key_type
             .find_or_create_by!(name: fk_name, table_name: table_name)
 
           Gitlab::AppLogger.info(
@@ -39,6 +40,7 @@ module Gitlab
           fk_name = name || concurrent_foreign_key_name(table_name, column_name)
 
           PostgresAsyncConstraintValidation
+            .foreign_key_type
             .find_by(name: fk_name, table_name: table_name)
             .try(&:destroy!)
         end

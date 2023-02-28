@@ -1636,7 +1636,6 @@ RSpec/ContextWording:
     - 'spec/lib/extracts_ref_spec.rb'
     - 'spec/lib/feature/definition_spec.rb'
     - 'spec/lib/feature_spec.rb'
-    - 'spec/lib/generators/gitlab/snowplow_event_definition_generator_spec.rb'
     - 'spec/lib/gitlab/alert_management/fingerprint_spec.rb'
     - 'spec/lib/gitlab/analytics/cycle_analytics/average_spec.rb'
     - 'spec/lib/gitlab/analytics/cycle_analytics/base_query_builder_spec.rb'

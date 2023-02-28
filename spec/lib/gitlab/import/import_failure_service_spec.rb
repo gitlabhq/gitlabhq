@@ -141,6 +141,7 @@ RSpec.describe Gitlab::Import::ImportFailureService, :aggregate_failures do
           .with("#{project.import_type}_importer", project)
           .and_return(metrics_double)
         expect(metrics_double).to receive(:track_failed_import)
+        expect(metrics_double).to receive(:track_import_state)
 
         service.execute
       end

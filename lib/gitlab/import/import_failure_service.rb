@@ -52,8 +52,8 @@ module Gitlab
         track_exception
         persist_failure
 
-        track_metrics if metrics
         import_state.mark_as_failed(exception.message) if fail_import
+        track_metrics if metrics
       end
 
       private
@@ -89,8 +89,13 @@ module Gitlab
         )
       end
 
+      def import_metrics
+        @import_metrics ||= Gitlab::Import::Metrics.new("#{project.import_type}_importer", project)
+      end
+
       def track_metrics
-        Gitlab::Import::Metrics.new("#{project.import_type}_importer", project).track_failed_import
+        import_metrics.track_failed_import
+        import_metrics.track_import_state
       end
     end
   end

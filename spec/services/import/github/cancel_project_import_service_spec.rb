@@ -14,6 +14,18 @@ RSpec.describe Import::Github::CancelProjectImportService do
         it 'update import state to be canceled' do
           expect(import_cancel.execute).to eq({ status: :success, project: project })
         end
+
+        it 'tracks canceled imports' do
+          metrics_double = instance_double('Gitlab::Import::Metrics')
+
+          expect(Gitlab::Import::Metrics)
+            .to receive(:new)
+            .with(:github_importer, project)
+            .and_return(metrics_double)
+          expect(metrics_double).to receive(:track_import_state)
+
+          import_cancel.execute
+        end
       end
 
       context 'when import is finished' do

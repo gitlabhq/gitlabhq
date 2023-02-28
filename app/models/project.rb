@@ -1272,6 +1272,18 @@ class Project < ApplicationRecord
     import_state&.human_status_name || 'none'
   end
 
+  def beautified_import_status_name
+    if import_finished?
+      return 'completed' unless import_checksums.present?
+
+      fetched = import_checksums['fetched']
+      imported = import_checksums['imported']
+      fetched.keys.any? { |key| fetched[key] != imported[key] } ? 'partially completed' : 'completed'
+    else
+      import_status
+    end
+  end
+
   def add_import_job
     job_id =
       if forked?

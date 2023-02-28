@@ -236,13 +236,17 @@ describe('DiffsStoreActions', () => {
     it('should show no warning on any other status code', async () => {
       mock.onGet(endpointMetadata).reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
 
-      await testAction(
-        diffActions.fetchDiffFilesMeta,
-        {},
-        { endpointMetadata, diffViewType: 'inline', showWhitespace: true },
-        [{ type: types.SET_LOADING, payload: true }],
-        [],
-      );
+      try {
+        await testAction(
+          diffActions.fetchDiffFilesMeta,
+          {},
+          { endpointMetadata, diffViewType: 'inline', showWhitespace: true },
+          [{ type: types.SET_LOADING, payload: true }],
+          [],
+        );
+      } catch (error) {
+        expect(error.response.status).toBe(HTTP_STATUS_INTERNAL_SERVER_ERROR);
+      }
 
       expect(createAlert).not.toHaveBeenCalled();
     });

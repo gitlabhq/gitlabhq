@@ -33,6 +33,7 @@ RSpec.describe Gitlab::Database::AsyncConstraints::MigrationHelpers, feature_cat
         record = constraint_model.find_by(table_name: table_name)
 
         expect(record.name).to start_with('fk_')
+        expect(record).to be_foreign_key
       end
 
       context 'when an explicit name is given' do
@@ -46,6 +47,7 @@ RSpec.describe Gitlab::Database::AsyncConstraints::MigrationHelpers, feature_cat
           record = constraint_model.find_by(name: fk_name)
 
           expect(record.table_name).to eq(table_name)
+          expect(record).to be_foreign_key
         end
       end
 
@@ -81,33 +83,50 @@ RSpec.describe Gitlab::Database::AsyncConstraints::MigrationHelpers, feature_cat
     end
 
     describe '#unprepare_async_foreign_key_validation' do
-      before do
-        migration.prepare_async_foreign_key_validation(table_name, column_name, name: fk_name)
-      end
-
-      it 'destroys the record' do
-        expect do
-          migration.unprepare_async_foreign_key_validation(table_name, column_name)
-        end.to change { constraint_model.where(table_name: table_name).count }.by(-1)
-      end
-
-      context 'when an explicit name is given' do
-        let(:fk_name) { 'my_test_async_fk' }
+      context 'with foreign keys' do
+        before do
+          migration.prepare_async_foreign_key_validation(table_name, column_name, name: fk_name)
+        end
 
         it 'destroys the record' do
           expect do
-            migration.unprepare_async_foreign_key_validation(table_name, name: fk_name)
-          end.to change { constraint_model.where(name: fk_name).count }.by(-1)
+            migration.unprepare_async_foreign_key_validation(table_name, column_name)
+          end.to change { constraint_model.where(table_name: table_name).count }.by(-1)
+        end
+
+        context 'when an explicit name is given' do
+          let(:fk_name) { 'my_test_async_fk' }
+
+          it 'destroys the record' do
+            expect do
+              migration.unprepare_async_foreign_key_validation(table_name, name: fk_name)
+            end.to change { constraint_model.where(name: fk_name).count }.by(-1)
+          end
+        end
+
+        context 'when the async fk validation table does not exist' do
+          it 'does not raise an error' do
+            connection.drop_table(constraint_model.table_name)
+
+            expect(constraint_model).not_to receive(:find_by)
+
+            expect { migration.unprepare_async_foreign_key_validation(table_name, column_name) }.not_to raise_error
+          end
         end
       end
 
-      context 'when the async fk validation table does not exist' do
-        it 'does not raise an error' do
-          connection.drop_table(constraint_model.table_name)
+      context 'with other types of constraints' do
+        let(:name) { 'my_test_async_constraint' }
+        let(:constraint) { create(:postgres_async_constraint_validation, table_name: table_name, name: name) }
 
-          expect(constraint_model).not_to receive(:find_by)
+        it 'does not destroy the record' do
+          constraint.update_column(:constraint_type, 99)
 
-          expect { migration.unprepare_async_foreign_key_validation(table_name, column_name) }.not_to raise_error
+          expect do
+            migration.unprepare_async_foreign_key_validation(table_name, name: name)
+          end.not_to change { constraint_model.where(name: name).count }
+
+          expect(constraint).to be_present
         end
       end
     end

@@ -30,6 +30,24 @@ RSpec.describe Gitlab::Database::AsyncConstraints::PostgresAsyncConstraintValida
 
       it { is_expected.to eq([new_validation, failed_validation]) }
     end
+
+    describe '.foreign_key_type' do
+      before do
+        new_validation.update_column(:constraint_type, 99)
+      end
+
+      subject { described_class.foreign_key_type }
+
+      it { is_expected.to eq([failed_validation]) }
+
+      it 'does not apply the filter if the column is not present' do
+        expect(described_class).to receive(:columns_hash).and_wrap_original do |method|
+          method.call.except('constraint_type')
+        end
+
+        is_expected.to match_array([failed_validation, new_validation])
+      end
+    end
   end
 
   describe '.table_available?' do

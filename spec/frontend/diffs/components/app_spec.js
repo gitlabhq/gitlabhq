@@ -71,12 +71,6 @@ describe('diffs/components/app', () => {
       },
       provide,
       store,
-      stubs: {
-        DynamicScroller: {
-          template: `<div><slot :item="$store.state.diffs.diffFiles[0]"></slot></div>`,
-        },
-        DynamicScrollerItem: true,
-      },
     });
   }
 
@@ -294,13 +288,13 @@ describe('diffs/components/app', () => {
 
     it('does not render empty state when diff files exist', () => {
       createComponent({}, ({ state }) => {
-        state.diffs.diffFiles.push({
-          id: 1,
-        });
+        state.diffs.diffFiles.push({ id: 1 });
       });
 
       expect(wrapper.findComponent(NoChanges).exists()).toBe(false);
-      expect(wrapper.findAllComponents(DiffFile).length).toBe(1);
+      expect(wrapper.findComponent({ name: 'DynamicScroller' }).props('items')).toBe(
+        store.state.diffs.diffFiles,
+      );
     });
   });
 
@@ -581,7 +575,10 @@ describe('diffs/components/app', () => {
         state.diffs.diffFiles.push({ sha: '123' });
       });
 
-      expect(wrapper.findComponent(DiffFile).exists()).toBe(true);
+      expect(wrapper.findComponent({ name: 'DynamicScroller' }).exists()).toBe(true);
+      expect(wrapper.findComponent({ name: 'DynamicScroller' }).props('items')).toBe(
+        store.state.diffs.diffFiles,
+      );
     });
 
     it("doesn't render tree list when no changes exist", () => {

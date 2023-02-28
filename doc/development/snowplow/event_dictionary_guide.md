@@ -79,14 +79,13 @@ tiers:
 Use the dedicated [event definition generator](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/generators/gitlab/snowplow_event_definition_generator.rb)
 to create new event definitions.
 
-The `category` and `action` of each event are included in the filename to enforce uniqueness.
+The `category` and `action` of each event are included in the filename to standardize file naming.
 
 The generator takes three options:
 
 - `--ee`: Indicates if the event is for EE.
 - `--category=CATEGORY`: Indicates the `category` of the event.
 - `--action=ACTION`: Indicates the `action` of the event.
-- `--force`: Overwrites the existing event definition, if one already exists.
 
 ```shell
 bundle exec rails generate gitlab:snowplow_event_definition --category Groups::EmailCampaignsController --action click

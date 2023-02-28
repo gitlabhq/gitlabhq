@@ -21,6 +21,7 @@ import PanelResizer from '~/vue_shared/components/panel_resizer.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 import notesEventHub from '~/notes/event_hub';
+import { DynamicScroller, DynamicScrollerItem } from 'vendor/vue-virtual-scroller';
 import {
   TREE_LIST_WIDTH_STORAGE_KEY,
   INITIAL_TREE_WIDTH,
@@ -53,15 +54,14 @@ import HiddenFilesWarning from './hidden_files_warning.vue';
 import NoChanges from './no_changes.vue';
 import TreeList from './tree_list.vue';
 import VirtualScrollerScrollSync from './virtual_scroller_scroll_sync';
+import PreRenderer from './pre_renderer.vue';
 
 export default {
   name: 'DiffsApp',
   components: {
-    DynamicScroller: () =>
-      import('vendor/vue-virtual-scroller').then(({ DynamicScroller }) => DynamicScroller),
-    DynamicScrollerItem: () =>
-      import('vendor/vue-virtual-scroller').then(({ DynamicScrollerItem }) => DynamicScrollerItem),
-    PreRenderer: () => import('./pre_renderer.vue').then((PreRenderer) => PreRenderer),
+    DynamicScroller,
+    DynamicScrollerItem,
+    PreRenderer,
     VirtualScrollerScrollSync,
     CompareVersions,
     DiffFile,

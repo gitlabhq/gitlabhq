@@ -147,7 +147,6 @@ module Gitlab
         # rubocop: disable CodeReuse/ActiveRecord
         def self_and_downstreams_builds_of_pipeline(pipeline)
           ::Ci::Build
-            .unscoped # Will be removed in https://gitlab.com/gitlab-org/gitlab/-/issues/391186
             .select(:id, :type, :started_at, :finished_at)
             .in_pipelines(
               pipeline.self_and_downstreams.select(:id)

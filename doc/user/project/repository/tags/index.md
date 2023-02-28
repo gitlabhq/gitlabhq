@@ -15,6 +15,25 @@ reference. Git supports two types of tags:
 Many projects combine an annotated release tag with a stable branch. Consider
 setting deployment or release tags automatically.
 
+## View tags for a project
+
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, select **Repository > Tags**.
+
+![Example of a single tag](img/tag-display_v15_9.png)
+
+In the GitLab UI, each tag displays:
+
+- The tag name. (**{tag}**)
+- Optional. If the tag is [protected](../../protected_tags.md), a **protected** badge.
+- The commit SHA (**{commit}**), linked to the commit's contents.
+- The commit's title and creation date.
+- Optional. A link to the release (**{rocket}**).
+- Optional. If a pipeline has been run, the current pipeline status.
+- Download links to the source code and artifacts linked to the tag.
+- A [**Create release**](../../releases/index.md#create-a-release) (**{pencil}**) link.
+- A link to delete the tag.
+
 ## Tags sample workflow
 
 1. Create a lightweight tag.
@@ -22,7 +41,7 @@ setting deployment or release tags automatically.
 1. Push the tags to the remote repository.
 
 ```shell
-git checkout master
+git checkout main
 
 # Lightweight tag
 git tag my_lightweight_tag

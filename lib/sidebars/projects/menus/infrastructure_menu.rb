@@ -32,6 +32,11 @@ module Sidebars
           'cloud-gear'
         end
 
+        override :serialize_as_menu_item_args
+        def serialize_as_menu_item_args
+          nil
+        end
+
         private
 
         def feature_enabled?
@@ -46,6 +51,7 @@ module Sidebars
           ::Sidebars::MenuItem.new(
             title: _('Kubernetes clusters'),
             link: project_clusters_path(context.project),
+            super_sidebar_parent: Sidebars::Projects::SuperSidebarMenus::OperationsMenu,
             active_routes: { controller: [:cluster_agents, :clusters] },
             container_html_options: { class: 'shortcuts-kubernetes' },
             hint_html_options: kubernetes_hint_html_options,
@@ -74,6 +80,7 @@ module Sidebars
           ::Sidebars::MenuItem.new(
             title: _('Terraform'),
             link: project_terraform_index_path(context.project),
+            super_sidebar_parent: Sidebars::Projects::SuperSidebarMenus::OperationsMenu,
             active_routes: { controller: :terraform },
             item_id: :terraform
           )
@@ -95,6 +102,7 @@ module Sidebars
           ::Sidebars::MenuItem.new(
             title: _('Google Cloud'),
             link: project_google_cloud_configuration_path(context.project),
+            super_sidebar_parent: Sidebars::Projects::SuperSidebarMenus::OperationsMenu,
             active_routes: { controller: %w[
               projects/google_cloud/configuration
               projects/google_cloud/service_accounts

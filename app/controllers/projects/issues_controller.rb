@@ -21,6 +21,7 @@ class Projects::IssuesController < Projects::ApplicationController
   before_action :check_issues_available!
   before_action :issue, unless: ->(c) { ISSUES_EXCEPT_ACTIONS.include?(c.action_name.to_sym) }
   before_action :redirect_if_work_item, unless: ->(c) { ISSUES_EXCEPT_ACTIONS.include?(c.action_name.to_sym) }
+  before_action :require_incident_for_incident_routes, only: :show
 
   after_action :log_issue_show, only: :show
 
@@ -448,6 +449,15 @@ class Projects::IssuesController < Projects::ApplicationController
     else
       redirect_to project_work_items_path(project, issue.id, params: request.query_parameters)
     end
+  end
+
+  def require_incident_for_incident_routes
+    return unless params[:incident_tab].present?
+    return if issue.incident?
+
+    # Redirect instead of 404 to gracefully handle
+    # issue type changes
+    redirect_to project_issue_path(project, issue)
   end
 end
 

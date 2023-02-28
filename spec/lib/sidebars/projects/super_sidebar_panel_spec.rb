@@ -30,9 +30,7 @@ RSpec.describe Sidebars::Projects::SuperSidebarPanel, feature_category: :navigat
         Sidebars::Projects::Menus::RepositoryMenu,
         Sidebars::Projects::Menus::CiCdMenu,
         Sidebars::Projects::Menus::SecurityComplianceMenu,
-        Sidebars::Projects::Menus::DeploymentsMenu,
-        Sidebars::Projects::Menus::PackagesRegistriesMenu,
-        Sidebars::Projects::Menus::InfrastructureMenu,
+        Sidebars::Projects::SuperSidebarMenus::OperationsMenu,
         Sidebars::Projects::Menus::MonitorMenu,
         Sidebars::Projects::Menus::AnalyticsMenu,
         Sidebars::UncategorizedMenu,
@@ -41,7 +39,7 @@ RSpec.describe Sidebars::Projects::SuperSidebarPanel, feature_category: :navigat
     end
 
     it "is exposed as a renderable menu" do
-      expect(subject.renderable_menus.map(&:class)).to eq(category_menu)
+      expect(subject.instance_variable_get(:@menus).map(&:class)).to eq(category_menu)
     end
   end
 end

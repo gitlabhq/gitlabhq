@@ -43,19 +43,24 @@ glab mr merge
 
 ## Core commands
 
-- `glab alias`
-- `glab api`
-- `glab auth`
-- `glab ci`
-- `glab issue`
-- `glab label`
-- `glab mr`
-- `glab project`
-- `glab release`
-- `glab snippet`
-- `glab ssh-key`
-- `glab user`
-- `glab variable`
+- [`glab alias`](https://gitlab.com/gitlab-org/cli/-/tree/main/docs/source/alias)
+- [`glab api`](https://gitlab.com/gitlab-org/cli/-/tree/main/docs/source/api)
+- [`glab auth`](https://gitlab.com/gitlab-org/cli/-/tree/main/docs/source/auth)
+- [`glab check-update`](https://gitlab.com/gitlab-org/cli/-/tree/main/docs/source/check-update)
+- [`glab ci`](https://gitlab.com/gitlab-org/cli/-/tree/main/docs/source/ci)
+- [`glab completion`](https://gitlab.com/gitlab-org/cli/-/tree/main/docs/source/completion)
+- [`glab config`](https://gitlab.com/gitlab-org/cli/-/tree/main/docs/source/config)
+- [`glab incident`](https://gitlab.com/gitlab-org/cli/-/tree/main/docs/source/incident)
+- [`glab issue`](https://gitlab.com/gitlab-org/cli/-/tree/main/docs/source/ci)
+- [`glab label`](https://gitlab.com/gitlab-org/cli/-/tree/main/docs/source/label)
+- [`glab mr`](https://gitlab.com/gitlab-org/cli/-/tree/main/docs/source/mr)
+- [`glab release`](https://gitlab.com/gitlab-org/cli/-/tree/main/docs/source/release)
+- [`glab repo`](https://gitlab.com/gitlab-org/cli/-/tree/main/docs/source/repo)
+- [`glab schedule`](https://gitlab.com/gitlab-org/cli/-/tree/main/docs/source/schedule)
+- [`glab snippet`](https://gitlab.com/gitlab-org/cli/-/tree/main/docs/source/snippet)
+- [`glab ssh-key`](https://gitlab.com/gitlab-org/cli/-/tree/main/docs/source/ssh-key)
+- [`glab user`](https://gitlab.com/gitlab-org/cli/-/tree/main/docs/source/user)
+- [`glab variable`](https://gitlab.com/gitlab-org/cli/-/tree/main/docs/source/variable)
 
 ## Install the CLI
 

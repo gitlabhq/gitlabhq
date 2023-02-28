@@ -60,6 +60,41 @@ RSpec.describe Gitlab::Import::Metrics, :aggregate_failures do
     end
   end
 
+  describe '#track_import_state' do
+    context 'when project is not a github import' do
+      it 'does not emit importer metrics' do
+        subject.track_import_state
+
+        expect_no_snowplow_event(
+          category: :test_importer,
+          action: 'create',
+          label: 'github_import_project_state',
+          project: project,
+          extra: { import_type: 'github', state: 'failed' }
+        )
+      end
+    end
+
+    context 'when project is a github import' do
+      before do
+        project.import_type = 'github'
+        allow(project).to receive(:import_status).and_return('failed')
+      end
+
+      it 'emits importer metrics' do
+        subject.track_import_state
+
+        expect_snowplow_event(
+          category: :test_importer,
+          action: 'create',
+          label: 'github_import_project_state',
+          project: project,
+          extra: { import_type: 'github', state: 'failed' }
+        )
+      end
+    end
+  end
+
   describe '#track_finished_import' do
     before do
       allow(Gitlab::Metrics).to receive(:histogram) { histogram }
@@ -92,6 +127,33 @@ RSpec.describe Gitlab::Import::Metrics, :aggregate_failures do
         subject.track_finished_import
 
         expect(histogram).to have_received(:observe).with({ importer: :test_importer }, anything)
+        expect_no_snowplow_event(
+          category: :test_importer,
+          action: 'create',
+          label: 'github_import_project_state',
+          project: project,
+          extra: { import_type: 'github', state: 'completed' }
+        )
+      end
+    end
+
+    context 'when project is a github import' do
+      before do
+        project.import_type = 'github'
+        allow(project).to receive(:import_status).and_return('finished')
+        allow(project).to receive(:import_finished?).and_return(true)
+      end
+
+      it 'emits snowplow metrics' do
+        subject.track_finished_import
+
+        expect_snowplow_event(
+          category: :test_importer,
+          action: 'create',
+          label: 'github_import_project_state',
+          project: project,
+          extra: { import_type: 'github', state: 'completed' }
+        )
       end
     end
   end
