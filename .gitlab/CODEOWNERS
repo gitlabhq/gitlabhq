@@ -715,6 +715,7 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/development/distributed_tracing.md @msedlakjakubowski
 /doc/development/documentation/ @sselhorn
 /doc/development/elasticsearch.md @ashrafkhamis
+/doc/development/search/advanced_search_migration_styleguide.md @ashrafkhamis
 /doc/development/experiment_guide/ @phillipwells
 /doc/development/export_csv.md @eread
 /doc/development/fe_guide/content_editor.md @ashrafkhamis

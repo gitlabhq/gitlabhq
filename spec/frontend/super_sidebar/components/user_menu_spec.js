@@ -1,16 +1,20 @@
-import { GlAvatar } from '@gitlab/ui';
+import { GlAvatar, GlDisclosureDropdown } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import UserMenu from '~/super_sidebar/components/user_menu.vue';
 import UserNameGroup from '~/super_sidebar/components/user_name_group.vue';
 import NewNavToggle from '~/nav/components/new_nav_toggle.vue';
 import invalidUrl from '~/lib/utils/invalid_url';
-import { userMenuMockData, userMenuMockStatus } from '../mock_data';
+import { mockTracking } from 'helpers/tracking_helper';
+import PersistentUserCallout from '~/persistent_user_callout';
+import { userMenuMockData, userMenuMockStatus, userMenuMockPipelineMinutes } from '../mock_data';
 
 describe('UserMenu component', () => {
   let wrapper;
+  let trackingSpy;
 
   const GlEmoji = { template: '<img/>' };
   const toggleNewNavEndpoint = invalidUrl;
+  const showDropdown = () => wrapper.findComponent(GlDisclosureDropdown).vm.$emit('shown');
 
   const createWrapper = (userDataChanges = {}) => {
     wrapper = mountExtended(UserMenu, {
@@ -28,6 +32,8 @@ describe('UserMenu component', () => {
         toggleNewNavEndpoint,
       },
     });
+
+    trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
   };
 
   describe('Toggle button', () => {
@@ -137,21 +143,150 @@ describe('UserMenu component', () => {
     let item;
 
     const setItem = ({ has_start_trial } = {}) => {
-      createWrapper({ status: { ...userMenuMockStatus, has_start_trial } });
+      createWrapper({ trial: { has_start_trial } });
       item = wrapper.findByTestId('start-trial-item');
     };
 
     describe('When Ultimate trial is not suggested for the user', () => {
-      it('does not render the start triel menu item', () => {
+      it('does not render the start trial menu item', () => {
         setItem();
         expect(item.exists()).toBe(false);
       });
     });
 
     describe('When Ultimate trial can be suggested for the user', () => {
-      it('does not render the status menu item', () => {
+      it('does render the start trial menu item', () => {
         setItem({ has_start_trial: true });
+        expect(item.exists()).toBe(true);
+      });
+    });
+  });
+
+  describe('Buy Pipeline Minutes item', () => {
+    let item;
+
+    const setItem = ({
+      show_buy_pipeline_minutes,
+      show_with_subtext,
+      show_notification_dot,
+    } = {}) => {
+      createWrapper({
+        pipeline_minutes: {
+          ...userMenuMockPipelineMinutes,
+          show_buy_pipeline_minutes,
+          show_with_subtext,
+          show_notification_dot,
+        },
+      });
+      item = wrapper.findByTestId('buy-pipeline-minutes-item');
+    };
+
+    describe('When does NOT meet the condition to buy CI minutes', () => {
+      beforeEach(() => {
+        setItem();
+      });
+
+      it('does NOT render the buy pipeline minutes item', () => {
         expect(item.exists()).toBe(false);
+      });
+
+      it('does not track the Sentry event', () => {
+        showDropdown();
+        expect(trackingSpy).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('When does meet the condition to buy CI minutes', () => {
+      it('does render the menu item', () => {
+        setItem({ show_buy_pipeline_minutes: true });
+        expect(item.exists()).toBe(true);
+      });
+
+      it('tracks the Sentry event', () => {
+        setItem({ show_buy_pipeline_minutes: true });
+        showDropdown();
+        expect(trackingSpy).toHaveBeenCalledWith(
+          undefined,
+          userMenuMockPipelineMinutes.tracking_attrs['track-action'],
+          {
+            label: userMenuMockPipelineMinutes.tracking_attrs['track-label'],
+            property: userMenuMockPipelineMinutes.tracking_attrs['track-property'],
+          },
+        );
+      });
+
+      describe('Callout & notification dot', () => {
+        let spyFactory;
+
+        beforeEach(() => {
+          spyFactory = jest.spyOn(PersistentUserCallout, 'factory');
+        });
+
+        describe('When `show_notification_dot` is `false`', () => {
+          beforeEach(() => {
+            setItem({ show_buy_pipeline_minutes: true, show_notification_dot: false });
+            showDropdown();
+          });
+
+          it('does not set callout attributes', () => {
+            expect(item.attributes()).not.toEqual(
+              expect.objectContaining({
+                'data-feature-id': userMenuMockPipelineMinutes.callout_attrs.feature_id,
+                'data-dismiss-endpoint': userMenuMockPipelineMinutes.callout_attrs.dismiss_endpoint,
+              }),
+            );
+          });
+
+          it('does not initialize the Persistent Callout', () => {
+            expect(spyFactory).not.toHaveBeenCalled();
+          });
+
+          it('does not render notification dot', () => {
+            expect(wrapper.findByTestId('buy-pipeline-minutes-notification-dot').exists()).toBe(
+              false,
+            );
+          });
+        });
+
+        describe('When `show_notification_dot` is `true`', () => {
+          beforeEach(() => {
+            setItem({ show_buy_pipeline_minutes: true, show_notification_dot: true });
+            showDropdown();
+          });
+
+          it('sets the callout data attributes', () => {
+            expect(item.attributes()).toEqual(
+              expect.objectContaining({
+                'data-feature-id': userMenuMockPipelineMinutes.callout_attrs.feature_id,
+                'data-dismiss-endpoint': userMenuMockPipelineMinutes.callout_attrs.dismiss_endpoint,
+              }),
+            );
+          });
+
+          it('initializes the Persistent Callout', () => {
+            expect(spyFactory).toHaveBeenCalled();
+          });
+
+          it('renders notification dot', () => {
+            expect(wrapper.findByTestId('buy-pipeline-minutes-notification-dot').exists()).toBe(
+              true,
+            );
+          });
+        });
+      });
+
+      describe('Warning message', () => {
+        it('does not display the warning message when `show_with_subtext` is `false`', () => {
+          setItem({ show_buy_pipeline_minutes: true });
+
+          expect(item.text()).not.toContain(UserMenu.i18n.oneOfGroupsRunningOutOfPipelineMinutes);
+        });
+
+        it('displays the text and warning message when `show_with_subtext` is true', () => {
+          setItem({ show_buy_pipeline_minutes: true, show_with_subtext: true });
+
+          expect(item.text()).toContain(UserMenu.i18n.oneOfGroupsRunningOutOfPipelineMinutes);
+        });
       });
     });
   });
@@ -160,7 +295,7 @@ describe('UserMenu component', () => {
     it('should render a link to the profile page', () => {
       createWrapper();
       const item = wrapper.findByTestId('edit-profile-item');
-      expect(item.text()).toBe(UserMenu.i18n.user.editProfile);
+      expect(item.text()).toBe(UserMenu.i18n.editProfile);
       expect(item.find('a').attributes('href')).toBe(userMenuMockData.settings.profile_path);
     });
   });
@@ -169,7 +304,7 @@ describe('UserMenu component', () => {
     it('should render a link to the profile page', () => {
       createWrapper();
       const item = wrapper.findByTestId('preferences-item');
-      expect(item.text()).toBe(UserMenu.i18n.user.preferences);
+      expect(item.text()).toBe(UserMenu.i18n.preferences);
       expect(item.find('a').attributes('href')).toBe(
         userMenuMockData.settings.profile_preferences_path,
       );
@@ -181,7 +316,7 @@ describe('UserMenu component', () => {
       it('should render a link to switch to GitLab Next', () => {
         createWrapper({ gitlab_com_but_not_canary: true });
         const item = wrapper.findByTestId('gitlab-next-item');
-        expect(item.text()).toBe(UserMenu.i18n.user.gitlabNext);
+        expect(item.text()).toBe(UserMenu.i18n.gitlabNext);
         expect(item.find('a').attributes('href')).toBe(userMenuMockData.canary_toggle_com_url);
       });
     });

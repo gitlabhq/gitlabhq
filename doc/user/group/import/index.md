@@ -173,10 +173,22 @@ To view group import history:
 
 ### Migrated group items
 
-The [`import_export.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/import_export/group/import_export.yml)
-file for groups lists many of the items imported when migrating groups by direct transfer. View this file in the branch
-for your version of GitLab to see the list of items relevant to you. For example,
-[`import_export.yml` on the `14-10-stable-ee` branch](https://gitlab.com/gitlab-org/gitlab/-/blob/14-10-stable-ee/lib/gitlab/import_export/group/import_export.yml).
+The group items that are migrated depend on the version of GitLab you use on the destination. To determine if a
+specific group item is migrated:
+
+1. Check the [`groups/stage.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/bulk_imports/groups/stage.rb)
+   file for all editions and the
+   [`groups/stage.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/ee/bulk_imports/groups/stage.rb) file
+   for Enterprise Edition for your version on the destination. For example, for version 15.9:
+   - <https://gitlab.com/gitlab-org/gitlab/-/blob/15-9-stable-ee/lib/bulk_imports/groups/stage.rb> (all editions).
+   - <https://gitlab.com/gitlab-org/gitlab/-/blob/15-9-stable-ee/ee/lib/ee/bulk_imports/groups/stage.rb> (Enterprise
+     Edition).
+1. Check the
+   [`group/import_export.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/import_export/group/import_export.yml)
+   file for groups for your version on the destination. For example, for version 15.9:
+   <https://gitlab.com/gitlab-org/gitlab/-/blob/15-9-stable-ee/lib/gitlab/import_export/group/import_export.yml>.
+
+Any other group items are **not** migrated.
 
 Group items that are migrated to the destination GitLab instance include:
 
@@ -203,8 +215,6 @@ Group items that are migrated to the destination GitLab instance include:
 - Subgroups ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18938) in GitLab 13.7)
 - Uploads ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18938) in GitLab 13.7)
 
-Any other items are **not** migrated.
-
 ### Migrated project items (beta)
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/267945) in GitLab 14.4 [with a flag](../../feature_flags.md) named `bulk_import_projects`. Disabled by default.
@@ -215,10 +225,22 @@ On self-managed GitLab, migrating project resources when migrating groups is not
 To make it available ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named
 `bulk_import_projects`. On GitLab.com, groups are migrated with all their projects by default.
 
-The [`import_export.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/import_export/project/import_export.yml)
-file for projects lists many of the items imported when migrating projects using group migration. View this file in the branch
-for your version of GitLab to see the list of items relevant to you. For example,
-[`import_export.yml` on the `14-10-stable-ee` branch](https://gitlab.com/gitlab-org/gitlab/-/blob/14-10-stable-ee/lib/gitlab/import_export/project/import_export.yml).
+The project items that are migrated depends on the version of GitLab you use on the destination. To determine if a
+specific project item is migrated:
+
+1. Check the [`projects/stage.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/bulk_imports/projects/stage.rb)
+   file for all editions and the
+   [`projects/stage.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/ee/bulk_imports/projects/stage.rb)
+   file for Enterprise Edition for your version on the destination. For example, for version 15.9:
+   - <https://gitlab.com/gitlab-org/gitlab/-/blob/15-9-stable-ee/lib/bulk_imports/projects/stage.rb> (all editions).
+   - <https://gitlab.com/gitlab-org/gitlab/-/blob/15-9-stable-ee/ee/lib/ee/bulk_imports/projects/stage.rb> (Enterprise
+     Edition).
+1. Check the
+   [`project/import_export.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/import_export/project/import_export.yml)
+   file for projects for your version on the destination. For example, for version 15.9:
+   <https://gitlab.com/gitlab-org/gitlab/-/blob/15-9-stable-ee/lib/gitlab/import_export/project/import_export.yml>.
+
+Any other project items are **not** migrated.
 
 WARNING:
 Migrating projects when migrating groups by direct transfer is in [Beta](../../../policy/alpha-beta-support.md#beta-features)
@@ -390,7 +412,7 @@ For example:
 
 The [`import_export.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/import_export/group/import_export.yml)
 file for groups lists items exported and imported when migrating groups using file exports. View this file in the branch
-for your version of GitLab to see the list of items relevant to you. For example,
+for your version of GitLab to check which items can be imported to the destination GitLab instance. For example,
 [`import_export.yml` on the `14-10-stable-ee` branch](https://gitlab.com/gitlab-org/gitlab/-/blob/14-10-stable-ee/lib/gitlab/import_export/group/import_export.yml).
 
 Group items that are exported include:

@@ -819,7 +819,7 @@ $tabs-holder-z-index: 250;
 
 .mr-widget-body,
 .mr-widget-content {
-  padding: $gl-padding;
+  padding: $gl-padding-12 $gl-padding;
 }
 
 .mr-widget-body-ready-merge {
@@ -838,6 +838,11 @@ $tabs-holder-z-index: 250;
       border-bottom-right-radius: $border-radius-default - 1px;
     }
   }
+}
+
+.mr-widget-grouped-section .report-block-container {
+  border-bottom-left-radius: $border-radius-default;
+  border-bottom-right-radius: $border-radius-default;
 }
 
 .mr-widget-extension {
@@ -916,7 +921,7 @@ $tabs-holder-z-index: 250;
     border-left: 2px solid var(--border-color, $border-color);
     position: absolute;
     bottom: -17px;
-    left: calc(1rem - 1px);
+    left: 26px;
     height: 16px;
   }
 }

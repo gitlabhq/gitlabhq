@@ -4727,6 +4727,30 @@ Input type: `ProjectSetLockedInput`
 | <a id="mutationprojectsetlockederrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationprojectsetlockedproject"></a>`project` | [`Project`](#project) | Project after mutation. |
 
+### `Mutation.projectSyncFork`
+
+WARNING:
+**Introduced** in 15.9.
+This feature is in Alpha. It can be changed or removed at any time.
+
+Input type: `ProjectSyncForkInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationprojectsyncforkclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationprojectsyncforkprojectpath"></a>`projectPath` | [`ID!`](#id) | Full path of the project to initialize. |
+| <a id="mutationprojectsyncforktargetbranch"></a>`targetBranch` | [`String!`](#string) | Ref of the fork to fetch into. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationprojectsyncforkclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationprojectsyncforkdetails"></a>`details` | [`ForkDetails`](#forkdetails) | Updated fork details. |
+| <a id="mutationprojectsyncforkerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+
 ### `Mutation.prometheusIntegrationCreate`
 
 Input type: `PrometheusIntegrationCreateInput`
@@ -13744,6 +13768,8 @@ Details of the fork project compared to its upstream project.
 | ---- | ---- | ----------- |
 | <a id="forkdetailsahead"></a>`ahead` | [`Int`](#int) | Number of commits ahead of upstream. |
 | <a id="forkdetailsbehind"></a>`behind` | [`Int`](#int) | Number of commits behind upstream. |
+| <a id="forkdetailshasconflicts"></a>`hasConflicts` | [`Boolean`](#boolean) | Indicates if the fork conflicts with its upstream project. |
+| <a id="forkdetailsissyncing"></a>`isSyncing` | [`Boolean`](#boolean) | Indicates if there is a synchronization in progress. |
 
 ### `GeoNode`
 

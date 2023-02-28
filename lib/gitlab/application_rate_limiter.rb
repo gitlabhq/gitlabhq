@@ -55,6 +55,7 @@ module Gitlab
           phone_verification_verify_code: { threshold: 10, interval: 10.minutes },
           namespace_exists: { threshold: 20, interval: 1.minute },
           fetch_google_ip_list: { threshold: 10, interval: 1.minute },
+          project_fork_sync: { threshold: 10, interval: 30.minutes },
           jobs_index: { threshold: 600, interval: 1.minute },
           bulk_import: { threshold: 6, interval: 1.minute },
           projects_api_rate_limit_unauthenticated: {

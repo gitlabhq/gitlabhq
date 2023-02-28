@@ -66,7 +66,7 @@ export default {
 <template>
   <div v-if="isFetchingMergeRequests || (!isFetchingMergeRequests && totalCount)">
     <div class="card card-slim gl-mt-5 gl-mb-0">
-      <div class="card-header gl-bg-gray-10">
+      <div class="card-header gl-px-5 gl-py-4 gl-bg-white">
         <div
           class="card-title gl-relative gl-display-flex gl-align-items-center gl-line-height-20 gl-font-weight-bold gl-m-0"
         >
@@ -79,7 +79,7 @@ export default {
             {{ __('Related merge requests') }}
           </h3>
           <template v-if="totalCount">
-            <gl-icon name="merge-request" class="gl-ml-5 gl-mr-2 gl-text-gray-500" />
+            <gl-icon name="merge-request" class="gl-ml-3 gl-mr-2 gl-text-gray-500" />
             <span data-testid="count">{{ totalCount }}</span>
           </template>
         </div>
@@ -90,7 +90,7 @@ export default {
         label="Fetching related merge requests"
         class="gl-py-3"
       />
-      <ul v-else class="content-list related-items-list">
+      <ul v-else class="content-list related-items-list gl-bg-gray-10">
         <li v-for="mr in mergeRequests" :key="mr.id" class="list-item gl-m-0! gl-p-0!">
           <related-issuable-item
             :id-key="mr.id"

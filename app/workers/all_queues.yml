@@ -3108,6 +3108,15 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: projects_forks_sync
+  :worker_name: Projects::Forks::SyncWorker
+  :feature_category: :source_code_management
+  :has_external_dependencies: false
+  :urgency: :high
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: projects_git_garbage_collect
   :worker_name: Projects::GitGarbageCollectWorker
   :feature_category: :gitaly

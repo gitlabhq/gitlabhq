@@ -11,6 +11,18 @@
   }
 }
 
+@mixin notification-dot($color, $size, $top, $left) {
+  background-color: $color;
+  border: 2px solid $gray-10; // Same as the sidebar's background color.
+  position: absolute;
+  height: $size;
+  width: $size;
+  top: $top;
+  left: $left;
+  border-radius: 50%;
+  transition: background-color 100ms linear, border-color 100ms linear;
+}
+
 .super-sidebar {
   @include gl-fixed;
   @include gl-top-0;
@@ -98,16 +110,12 @@
   .btn-with-notification {
     position: relative;
 
-    .notification {
-      background-color: $blue-500;
-      border: 2px solid $gray-10; // Same as the sidebar's background color.
-      position: absolute;
-      height: 9px;
-      width: 9px;
-      top: 5px;
-      left: 22px;
-      border-radius: 50%;
-      transition: background-color 100ms linear, border-color 100ms linear;
+    .notification-dot-info {
+      @include notification-dot($blue-500, 9px, 5px, 22px);
+    }
+
+    .notification-dot-warning {
+      @include notification-dot($orange-300, 12px, 1px, 19px);
     }
 
     &:hover,

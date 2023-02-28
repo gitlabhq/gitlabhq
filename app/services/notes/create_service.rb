@@ -162,10 +162,7 @@ module Notes
       track_note_creation_usage_for_merge_requests(note) if note.for_merge_request?
       track_incident_action(user, note.noteable, 'incident_comment') if note.for_issue?
       track_note_creation_in_ipynb(note)
-
-      if Feature.enabled?(:notes_create_service_tracking, project)
-        Gitlab::Tracking.event('Notes::CreateService', 'execute', **tracking_data_for(note))
-      end
+      track_note_creation_visual_review(note)
 
       if Feature.enabled?(:route_hll_to_snowplow_phase4, project&.namespace) && note.for_commit?
         metric_key_path = 'counts.commit_comment'
@@ -208,6 +205,10 @@ module Notes
       return unless should_track_ipynb_notes?(note)
 
       Gitlab::UsageDataCounters::IpynbDiffActivityCounter.note_created(note)
+    end
+
+    def track_note_creation_visual_review(note)
+      Gitlab::Tracking.event('Notes::CreateService', 'execute', **tracking_data_for(note))
     end
   end
 end

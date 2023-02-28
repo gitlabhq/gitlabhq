@@ -123,10 +123,6 @@ RSpec.describe Notes::CreateService, feature_category: :team_planning do
 
         let(:execute_create_service) { described_class.new(project, user, opts).execute }
 
-        before do
-          stub_feature_flags(notes_create_service_tracking: false)
-        end
-
         it 'tracks commit comment usage data', :clean_gitlab_redis_shared_state do
           expect(counter).to receive(:count).with(:create, 'Commit').and_call_original
 

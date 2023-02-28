@@ -90,6 +90,7 @@ module Types
     mount_mutation Mutations::Notes::Update::ImageDiffNote
     mount_mutation Mutations::Notes::RepositionImageDiffNote
     mount_mutation Mutations::Notes::Destroy
+    mount_mutation Mutations::Projects::SyncFork, calls_gitaly: true, alpha: { milestone: '15.9' }
     mount_mutation Mutations::Releases::Create
     mount_mutation Mutations::Releases::Update
     mount_mutation Mutations::Releases::Delete

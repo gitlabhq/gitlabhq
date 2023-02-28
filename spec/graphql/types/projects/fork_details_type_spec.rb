@@ -9,6 +9,8 @@ RSpec.describe GitlabSchema.types['ForkDetails'], feature_category: :source_code
     fields = %i[
       ahead
       behind
+      isSyncing
+      hasConflicts
     ]
 
     expect(described_class).to have_graphql_fields(*fields)

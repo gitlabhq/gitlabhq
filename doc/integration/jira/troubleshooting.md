@@ -98,9 +98,9 @@ p.each do |project|
 end
 ```
 
-## `500 Whoops` when accessing a Jira issue in GitLab
+## `500 We're sorry` when accessing a Jira issue in GitLab
 
-When accessing a Jira issue in GitLab, you might get a `500 Whoops, something went wrong on our end` error.
+When accessing a Jira issue in GitLab, you might get a `500 We're sorry. Something went wrong on our end` error.
 Check [`production.log`](../../administration/logs/index.md#productionlog) to see if it contains the following exception:
 
 ```plaintext

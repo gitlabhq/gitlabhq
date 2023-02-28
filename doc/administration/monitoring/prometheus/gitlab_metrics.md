@@ -446,6 +446,7 @@ instance. For example, `cache` or `shared_state`.
 | `gitlab_redis_client_exceptions_total`                    | Counter   | 13.2  | Number of Redis client exceptions, broken down by exception class |
 | `gitlab_redis_client_requests_total`                    | Counter   | 13.2  | Number of Redis client requests |
 | `gitlab_redis_client_requests_duration_seconds`                    | Histogram   | 13.2  | Redis request latency, excluding blocking commands |
+| `gitlab_redis_client_redirections_total` | Counter | 15.10 | Number of Redis Cluster MOVED/ASK redirections, broken down by redirection type |
 
 ## Metrics shared directory
 

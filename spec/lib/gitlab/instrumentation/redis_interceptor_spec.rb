@@ -64,18 +64,34 @@ RSpec.describe Gitlab::Instrumentation::RedisInterceptor, :clean_gitlab_redis_sh
       end
     end
 
-    it 'counts exceptions' do
-      expect(instrumentation_class).to receive(:instance_count_exception)
-        .with(instance_of(Redis::CommandError)).and_call_original
-      expect(instrumentation_class).to receive(:log_exception)
-        .with(instance_of(Redis::CommandError)).and_call_original
-      expect(instrumentation_class).to receive(:instance_count_request).and_call_original
+    context 'when encountering exceptions' do
+      where(:case_name, :exception, :exception_counter) do
+        'generic exception' | Redis::CommandError                                 | :instance_count_exception
+        'moved redirection' | Redis::CommandError.new("MOVED 123 127.0.0.1:6380") | :instance_count_cluster_redirection
+        'ask redirection' | Redis::CommandError.new("ASK 123 127.0.0.1:6380") | :instance_count_cluster_redirection
+      end
 
-      expect do
-        Gitlab::Redis::SharedState.with do |redis|
-          redis.call(:auth, 'foo', 'bar')
+      with_them do
+        before do
+          Gitlab::Redis::SharedState.with do |redis|
+            # We need to go 1 layer deeper to stub _client as we monkey-patch Redis::Client
+            # with the interceptor. Stubbing `redis` will skip the instrumentation_class.
+            allow(redis._client).to receive(:process).and_raise(exception)
+          end
         end
-      end.to raise_exception(Redis::CommandError)
+
+        it 'counts exception' do
+          expect(instrumentation_class).to receive(exception_counter)
+                                             .with(instance_of(Redis::CommandError)).and_call_original
+          expect(instrumentation_class).to receive(:log_exception)
+                                             .with(instance_of(Redis::CommandError)).and_call_original
+          expect(instrumentation_class).to receive(:instance_count_request).and_call_original
+
+          expect do
+            Gitlab::Redis::SharedState.with { |redis| redis.call(:auth, 'foo', 'bar') }
+          end.to raise_exception(Redis::CommandError)
+        end
+      end
     end
 
     context 'in production environment' do

@@ -93,6 +93,21 @@ export const userMenuMockStatus = {
   clear_after: '2023-02-09 20:06:35 UTC',
 };
 
+export const userMenuMockPipelineMinutes = {
+  show_buy_pipeline_minutes: false,
+  show_notification_dot: false,
+  callout_attrs: {
+    feature_id: 'pipeline_minutes',
+    dismiss_endpoint: '/-/dismiss',
+  },
+  buy_pipeline_minutes_path: '/buy/pipeline_minutes',
+  tracking_attrs: {
+    'track-action': 'trackAction',
+    'track-label': 'label',
+    'track-property': 'property',
+  },
+};
+
 export const userMenuMockData = {
   name: 'Orange Fox',
   username: 'thefox',
@@ -107,6 +122,7 @@ export const userMenuMockData = {
     profile_path: invalidUrl,
     profile_preferences_path: invalidUrl,
   },
+  pipeline_minutes: userMenuMockPipelineMinutes,
   can_sign_out: false,
   sign_out_link: invalidUrl,
   gitlab_com_but_not_canary: true,

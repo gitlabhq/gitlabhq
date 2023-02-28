@@ -15,7 +15,7 @@ module QA
 
       let(:source_issue_comments) do
         source_issue.comments.map do |note|
-          { **note.except(:id, :noteable_id), author: note[:author].except(:web_url) }
+          { **note.except(:id, :noteable_id, :project_id), author: note[:author].except(:web_url) }
         end
       end
 
@@ -32,7 +32,7 @@ module QA
 
       let(:imported_issue_comments) do
         imported_issue.comments.map do |note|
-          { **note.except(:id, :noteable_id), author: note[:author].except(:web_url) }
+          { **note.except(:id, :noteable_id, :project_id), author: note[:author].except(:web_url) }
         end
       end
 

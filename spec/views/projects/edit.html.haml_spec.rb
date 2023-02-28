@@ -101,4 +101,28 @@ RSpec.describe 'projects/edit' do
       it_behaves_like 'renders registration features prompt', :project_disabled_repository_size_limit
     end
   end
+
+  describe 'pages menu entry callout' do
+    context 'with feature flag disabled' do
+      before do
+        stub_feature_flags(show_pages_in_deployments_menu: false)
+      end
+
+      it 'does not show a callout' do
+        render
+        expect(rendered).not_to have_content('GitLab Pages has moved')
+      end
+    end
+
+    context 'with feature flag enabled' do
+      before do
+        stub_feature_flags(show_pages_in_deployments_menu: true)
+      end
+
+      it 'does show a callout' do
+        render
+        expect(rendered).to have_content('GitLab Pages has moved')
+      end
+    end
+  end
 end

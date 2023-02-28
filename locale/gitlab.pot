@@ -4743,6 +4743,9 @@ msgstr ""
 msgid "Analytics|Analytics dashboards"
 msgstr ""
 
+msgid "Analytics|Dashboards are created by editing the projects dashboard files."
+msgstr ""
+
 msgid "Analyze your dependencies for known vulnerabilities."
 msgstr ""
 
@@ -19001,6 +19004,9 @@ msgstr ""
 msgid "GitLab Pages"
 msgstr ""
 
+msgid "GitLab Pages has moved"
+msgstr ""
+
 msgid "GitLab Shell"
 msgstr ""
 
@@ -32589,9 +32595,6 @@ msgstr ""
 msgid "ProductAnalytics|An error occurred while fetching data. Refresh the page to try again."
 msgstr ""
 
-msgid "ProductAnalytics|Analytics dashboards"
-msgstr ""
-
 msgid "ProductAnalytics|Analyze your product with Product Analytics"
 msgstr ""
 
@@ -32650,9 +32653,6 @@ msgid "ProductAnalytics|Compares pageviews of all pages against each other"
 msgstr ""
 
 msgid "ProductAnalytics|Creating your product analytics instance..."
-msgstr ""
-
-msgid "ProductAnalytics|Dashboards are created by editing the projects dashboard files."
 msgstr ""
 
 msgid "ProductAnalytics|Data"
@@ -37100,6 +37100,9 @@ msgstr ""
 msgid "Runners|Checkbox"
 msgstr ""
 
+msgid "Runners|Choose an executor when prompted by the command line. Executors run builds in different environments. %{linkStart}Not sure which one to select?%{linkEnd}"
+msgstr ""
+
 msgid "Runners|Choose your preferred GitLab Runner"
 msgstr ""
 
@@ -37116,6 +37119,9 @@ msgid "Runners|Configuration"
 msgstr ""
 
 msgid "Runners|Containers"
+msgstr ""
+
+msgid "Runners|Copy and paste the following command into your command line to register the runner."
 msgstr ""
 
 msgid "Runners|Copy instructions"
@@ -37192,6 +37198,12 @@ msgstr ""
 msgid "Runners|Get started with runners"
 msgstr ""
 
+msgid "Runners|GitLab Runner must be installed before you can register a runner. %{linkStart}How do I install GitLab Runner?%{linkEnd}"
+msgstr ""
+
+msgid "Runners|Go to runners page"
+msgstr ""
+
 msgid "Runners|Group"
 msgstr ""
 
@@ -37235,6 +37247,9 @@ msgid "Runners|Locked to this project"
 msgstr ""
 
 msgid "Runners|Maintenance note"
+msgstr ""
+
+msgid "Runners|Manually verify that the runner is available to pick up jobs."
 msgstr ""
 
 msgid "Runners|Maximum amount of time the runner can run before it terminates. If a project has a shorter job timeout period, the job timeout period of the instance runner is used instead."
@@ -37309,6 +37324,9 @@ msgstr ""
 msgid "Runners|Operating systems"
 msgstr ""
 
+msgid "Runners|Optional. Step 3"
+msgstr ""
+
 msgid "Runners|Owner"
 msgstr ""
 
@@ -37344,6 +37362,9 @@ msgstr ""
 msgid "Runners|Register"
 msgstr ""
 
+msgid "Runners|Register \"%{runnerDescription}\" runner"
+msgstr ""
+
 msgid "Runners|Register a group runner"
 msgstr ""
 
@@ -37357,6 +37378,9 @@ msgid "Runners|Register an instance runner"
 msgstr ""
 
 msgid "Runners|Register as many runners as you want. You can register runners as separate users, on separate servers, and on your local machine."
+msgstr ""
+
+msgid "Runners|Register runner"
 msgstr ""
 
 msgid "Runners|Registration token"
@@ -37515,6 +37539,12 @@ msgstr ""
 msgid "Runners|Status"
 msgstr ""
 
+msgid "Runners|Step 1"
+msgstr ""
+
+msgid "Runners|Step 2"
+msgstr ""
+
 msgid "Runners|Stop the runner from accepting new jobs."
 msgstr ""
 
@@ -37522,6 +37552,9 @@ msgid "Runners|Tags"
 msgstr ""
 
 msgid "Runners|Tags control which type of jobs a runner can handle. By tagging a runner, you make sure shared runners only handle the jobs they are equipped to run."
+msgstr ""
+
+msgid "Runners|The %{boldStart}runner token%{boldEnd} %{token} displays %{boldStart}only for a short time%{boldEnd}, and is stored in the %{codeStart}config.toml%{codeEnd} after you create the runner. It will not be visible once the runner is registered."
 msgstr ""
 
 msgid "Runners|The project, group or instance where the runner was registered. Instance runners are always owned by Administrator."
@@ -37539,6 +37572,9 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "Runners|This group currently has no stale runners."
+msgstr ""
+
+msgid "Runners|This may not be needed if you manage your runner as a %{linkStart}system or user service%{linkEnd}."
 msgstr ""
 
 msgid "Runners|This runner has not run any jobs."
@@ -44911,6 +44947,9 @@ msgid "To get started, please enter your Gitea Host URL and a %{link_to_personal
 msgstr ""
 
 msgid "To get started, use the link below to confirm your account."
+msgstr ""
+
+msgid "To go to GitLab Pages, on the left sidebar, select %{pages_link}."
 msgstr ""
 
 msgid "To help improve GitLab, we would like to periodically %{docs_link}. This can be changed at any time in %{settings_link}."

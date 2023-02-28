@@ -419,6 +419,8 @@
   - 1
 - - projects_finalize_project_statistics_refresh
   - 1
+- - projects_forks_sync
+  - 1
 - - projects_git_garbage_collect
   - 1
 - - projects_import_export_parallel_project_export

@@ -187,7 +187,7 @@ export default {
           'gl-border-b-1': isOpen,
           'gl-border-b-0': !isOpen,
         }"
-        class="gl-display-flex gl-justify-content-space-between gl-line-height-24 gl-py-3 gl-px-5 gl-bg-gray-10 gl-border-b-solid gl-border-b-gray-100"
+        class="gl-display-flex gl-justify-content-space-between gl-line-height-24 gl-pl-5 gl-pr-4 gl-py-4 gl-bg-white gl-border-b-solid gl-border-b-gray-100"
       >
         <h3 class="card-title h5 gl-my-0 gl-display-flex gl-align-items-center gl-flex-grow-1">
           <gl-link

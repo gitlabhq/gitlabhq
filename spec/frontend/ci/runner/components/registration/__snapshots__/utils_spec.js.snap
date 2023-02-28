@@ -1,0 +1,61 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`registration utils for "linux" platform commandPrompt matches snapshot 1`] = `"$"`;
+
+exports[`registration utils for "linux" platform commandPrompt matches snapshot 2`] = `"$"`;
+
+exports[`registration utils for "linux" platform registerCommand matches snapshot 1`] = `
+Array [
+  "gitlab-runner register",
+  "  --url http://test.host",
+  "  --registration-token REGISTRATION_TOKEN",
+]
+`;
+
+exports[`registration utils for "linux" platform registerCommand matches snapshot 2`] = `
+Array [
+  "gitlab-runner register",
+  "  --url http://test.host",
+  "  --registration-token REGISTRATION_TOKEN",
+]
+`;
+
+exports[`registration utils for "linux" platform runCommand matches snapshot 1`] = `"gitlab-runner run"`;
+
+exports[`registration utils for "linux" platform runCommand matches snapshot 2`] = `"gitlab-runner run"`;
+
+exports[`registration utils for "null" platform commandPrompt matches snapshot 1`] = `"$"`;
+
+exports[`registration utils for "null" platform registerCommand matches snapshot 1`] = `
+Array [
+  "gitlab-runner register",
+  "  --url http://test.host",
+  "  --registration-token REGISTRATION_TOKEN",
+]
+`;
+
+exports[`registration utils for "null" platform runCommand matches snapshot 1`] = `"gitlab-runner run"`;
+
+exports[`registration utils for "osx" platform commandPrompt matches snapshot 1`] = `"$"`;
+
+exports[`registration utils for "osx" platform registerCommand matches snapshot 1`] = `
+Array [
+  "gitlab-runner register",
+  "  --url http://test.host",
+  "  --registration-token REGISTRATION_TOKEN",
+]
+`;
+
+exports[`registration utils for "osx" platform runCommand matches snapshot 1`] = `"gitlab-runner run"`;
+
+exports[`registration utils for "windows" platform commandPrompt matches snapshot 1`] = `">"`;
+
+exports[`registration utils for "windows" platform registerCommand matches snapshot 1`] = `
+Array [
+  ".\\\\gitlab-runner.exe register",
+  "  --url http://test.host",
+  "  --registration-token REGISTRATION_TOKEN",
+]
+`;
+
+exports[`registration utils for "windows" platform runCommand matches snapshot 1`] = `".\\\\gitlab-runner.exe run"`;

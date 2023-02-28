@@ -1,4 +1,7 @@
-- add_to_breadcrumbs _('Runners'), admin_runners_path
+- runner_name = "##{@runner.id} (#{@runner.short_sha})"
 - breadcrumb_title s_('Runners|Register')
 - page_title s_('Runners|Register'), "##{@runner.id} (#{@runner.short_sha})"
+- add_to_breadcrumbs _('Runners'), admin_runners_path
+- add_to_breadcrumbs runner_name, register_admin_runner_path(@runner)
 
+#js-admin-register-runner{ data: { runner_id: @runner.id, runners_path: admin_runners_path } }

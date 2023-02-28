@@ -34,6 +34,18 @@ For removal reviewers (Technical Writers only):
   https://about.gitlab.com/handbook/marketing/blog/release-posts/#update-the-removals-doc
 -->
 
+## Removed in 16.0
+
+### Embedding Grafana panels in Markdown is removed
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+The ability to add Grafana panels in GitLab Flavored Markdown is removed.
+We intend to replace this feature with the ability to [embed charts](https://gitlab.com/groups/gitlab-org/opstrace/-/epics/33)
+with the [GitLab Observability UI](https://gitlab.com/gitlab-org/opstrace/opstrace-ui).
+
 ## Removed in 15.9
 
 ### Live Preview no longer available in the Web IDE

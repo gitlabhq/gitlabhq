@@ -62,9 +62,9 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
   end
 
   describe '#super_sidebar_context' do
-    let(:user) { build(:user) }
-    let(:group) { build(:group) }
-    let(:panel) { {} }
+    let_it_be(:user) { build(:user) }
+    let_it_be(:group) { build(:group) }
+    let_it_be(:panel) { {} }
 
     subject do
       helper.super_sidebar_context(user, group: group, project: nil, panel: panel)
@@ -75,11 +75,11 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
       allow(helper).to receive(:can?).and_return(true)
       allow(panel).to receive(:super_sidebar_menu_items).and_return(nil)
       allow(panel).to receive(:super_sidebar_context_header).and_return(nil)
-      Rails.cache.write(['users', user.id, 'assigned_open_issues_count'], 1)
-      Rails.cache.write(['users', user.id, 'assigned_open_merge_requests_count'], 4)
-      Rails.cache.write(['users', user.id, 'review_requested_open_merge_requests_count'], 0)
-      Rails.cache.write(['users', user.id, 'todos_pending_count'], 3)
-      Rails.cache.write(['users', user.id, 'total_merge_requests_count'], 4)
+      allow(user).to receive(:assigned_open_issues_count).and_return(1)
+      allow(user).to receive(:assigned_open_merge_requests_count).and_return(4)
+      allow(user).to receive(:review_requested_open_merge_requests_count).and_return(0)
+      allow(user).to receive(:todos_pending_count).and_return(3)
+      allow(user).to receive(:total_merge_requests_count).and_return(4)
     end
 
     it 'returns sidebar values from user', :use_clean_rails_memory_store_caching do
