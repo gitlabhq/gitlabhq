@@ -4,7 +4,7 @@ group: Integrations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Jira integration issue management **(FREE)**
+# Jira issue management **(FREE)**
 
 To integrate issue management with Jira, [configure Jira](index.md#jira-integration)
 and [enable the integration](configure.md) in GitLab.

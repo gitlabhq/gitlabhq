@@ -83,8 +83,28 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
     });
   });
 
+  it('passes down any additional props to markdown field component', () => {
+    const propsData = {
+      line: { text: 'hello world', richText: 'hello world' },
+      lines: [{ text: 'hello world', richText: 'hello world' }],
+      canSuggest: true,
+    };
+
+    buildWrapper({
+      propsData: { ...propsData, myCustomProp: 'myCustomValue', 'data-testid': 'custom id' },
+    });
+
+    expect(findMarkdownField().props()).toMatchObject(propsData);
+    expect(findMarkdownField().vm.$attrs).toMatchObject({
+      myCustomProp: 'myCustomValue',
+
+      // data-testid isn't copied over
+      'data-testid': 'markdown-field',
+    });
+  });
+
   it('renders markdown field textarea', () => {
-    buildWrapper();
+    buildWrapper({ propsData: { supportsQuickActions: true } });
 
     expect(findTextarea().attributes()).toEqual(
       expect.objectContaining({
@@ -92,6 +112,7 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
         name: formFieldName,
         placeholder: formFieldPlaceholder,
         'aria-label': formFieldAriaLabel,
+        'data-supports-quick-actions': 'true',
       }),
     );
 

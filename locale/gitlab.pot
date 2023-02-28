@@ -5237,6 +5237,11 @@ msgstr ""
 msgid "Approve a merge request"
 msgstr ""
 
+msgid "Approve a pending member"
+msgid_plural "Approve %d pending members"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "Approve merge request"
 msgstr ""
 
@@ -5248,6 +5253,16 @@ msgstr ""
 
 msgid "Approved MRs"
 msgstr ""
+
+msgid "Approved members will use an additional seat in your subscription, which may override your user cap."
+msgid_plural "Approved members will use an additional %d seats in your subscription, which may override your user cap."
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Approved members will use an additional seat in your subscription."
+msgid_plural "Approved members will use an additional %d seats in your subscription."
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Approved the current merge request."
 msgstr ""
@@ -5322,9 +5337,6 @@ msgid "Are you sure you want to %{action} %{name}?"
 msgstr ""
 
 msgid "Are you sure you want to approve %{user}?"
-msgstr ""
-
-msgid "Are you sure you want to approve all users?"
 msgstr ""
 
 msgid "Are you sure you want to attempt to merge?"

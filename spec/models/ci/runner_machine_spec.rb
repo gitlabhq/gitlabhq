@@ -107,6 +107,18 @@ RSpec.describe Ci::RunnerMachine, feature_category: :runner_fleet, type: :model 
 
           heartbeat
         end
+
+        context 'with new version having been cached' do
+          let(:version) { '15.0.1' }
+
+          before do
+            runner_machine.cache_attributes(version: version)
+          end
+
+          it 'does not lose cached version value' do
+            expect { heartbeat }.not_to change { runner_machine.version }.from(version)
+          end
+        end
       end
     end
 

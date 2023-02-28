@@ -116,7 +116,6 @@ describe('WikiForm', () => {
       expect.objectContaining({
         value: pageInfoPersisted.content,
         renderMarkdownPath: pageInfoPersisted.markdownPreviewPath,
-        markdownDocsPath: pageInfoPersisted.markdownHelpPath,
         uploadsPath: pageInfoPersisted.uploadsPath,
         autofocus: pageInfoPersisted.persisted,
       }),
@@ -126,6 +125,10 @@ describe('WikiForm', () => {
       id: 'wiki_content',
       name: 'wiki[content]',
     });
+
+    expect(markdownEditor.vm.$attrs['markdown-docs-path']).toEqual(
+      pageInfoPersisted.markdownHelpPath,
+    );
   });
 
   it.each`
@@ -172,7 +175,7 @@ describe('WikiForm', () => {
 
     nextTick();
 
-    expect(findMarkdownEditor().props('enablePreview')).toBe(enabled);
+    expect(findMarkdownEditor().vm.$attrs['enable-preview']).toBe(enabled);
   });
 
   it.each`

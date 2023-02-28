@@ -311,9 +311,9 @@ The following table shows the possible return codes for API requests.
 | Return values            | Description |
 |--------------------------|-------------|
 | `200 OK`                 | The `GET`, `PUT` or `DELETE` request was successful, and the resource itself is returned as JSON. |
+| `201 Created`            | The `POST` request was successful, and the resource is returned as JSON. |
 | `202 Accepted`           | The `GET`, `PUT` or `DELETE` request was successful, and the resource is scheduled for processing. |
 | `204 No Content`         | The server has successfully fulfilled the request, and there is no additional content to send in the response payload body. |
-| `201 Created`            | The `POST` request was successful, and the resource is returned as JSON. |
 | `304 Not Modified`       | The resource hasn't been modified since the last request. |
 | `400 Bad Request`        | A required attribute of the API request is missing. For example, the title of an issue is not given. |
 | `401 Unauthorized`       | The user isn't authenticated. A valid [user token](#authentication) is necessary. |
@@ -321,7 +321,7 @@ The following table shows the possible return codes for API requests.
 | `404 Not Found`          | A resource couldn't be accessed. For example, an ID for a resource couldn't be found. |
 | `405 Method Not Allowed` | The request isn't supported. |
 | `409 Conflict`           | A conflicting resource already exists. For example, creating a project with a name that already exists. |
-| `412`                    | The request was denied. This can happen if the `If-Unmodified-Since` header is provided when trying to delete a resource, which was modified in between. |
+| `412 Precondition Failed`| The request was denied. This can happen if the `If-Unmodified-Since` header is provided when trying to delete a resource, which was modified in between. |
 | `422 Unprocessable`      | The entity couldn't be processed. |
 | `429 Too Many Requests`  | The user exceeded the [application rate limits](../../administration/instance_limits.md#rate-limits). |
 | `500 Server Error`       | While handling the request, something went wrong on the server. |

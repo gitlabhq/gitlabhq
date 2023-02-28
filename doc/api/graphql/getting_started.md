@@ -79,6 +79,7 @@ If you are running GitLab 12.0, enable the `graphql`
 GraphQL queries can be run in a [Rails console session](../../administration/operations/rails_console.md#starting-a-rails-console-session). For example, to search projects:
 
 ```ruby
+current_user = User.find_by_id(1)
 query = <<~EOQ
 query securityGetProjects($search: String!) {
   projects(search: $search) {

@@ -22,36 +22,12 @@ export default {
       type: String,
       required: true,
     },
-    markdownDocsPath: {
-      type: String,
-      required: true,
-    },
-    quickActionsDocsPath: {
-      type: String,
-      required: false,
-      default: '',
-    },
     uploadsPath: {
       type: String,
       required: false,
       default: () => window.uploads_path,
     },
     enableContentEditor: {
-      type: Boolean,
-      required: false,
-      default: true,
-    },
-    enablePreview: {
-      type: Boolean,
-      required: false,
-      default: true,
-    },
-    autocompleteDataSources: {
-      type: Object,
-      required: false,
-      default: () => ({}),
-    },
-    enableAutocomplete: {
       type: Boolean,
       required: false,
       default: true,
@@ -76,14 +52,10 @@ export default {
       required: false,
       default: false,
     },
-    drawioEnabled: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
   },
   data() {
     return {
+      markdown: this.value || '',
       editingMode: EDITING_MODE_MARKDOWN_FIELD,
       autofocused: false,
     };
@@ -97,14 +69,21 @@ export default {
       return this.autofocus && !this.autofocused ? 'end' : false;
     },
   },
+  watch: {
+    value(val) {
+      this.markdown = val;
+    },
+  },
   mounted() {
     this.autofocusTextarea();
   },
   methods: {
     updateMarkdownFromContentEditor({ markdown }) {
+      this.markdown = markdown;
       this.$emit('input', markdown);
     },
     updateMarkdownFromMarkdownField({ target }) {
+      this.markdown = target.value;
       this.$emit('input', target.value);
     },
     renderMarkdown(markdown) {
@@ -143,16 +122,12 @@ export default {
     />
     <markdown-field
       v-if="!isContentEditorActive"
+      v-bind="$attrs"
+      data-testid="markdown-field"
       :markdown-preview-path="renderMarkdownPath"
       can-attach-file
-      :enable-autocomplete="enableAutocomplete"
-      :textarea-value="value"
-      :markdown-docs-path="markdownDocsPath"
-      :quick-actions-docs-path="quickActionsDocsPath"
-      :autocomplete-data-sources="autocompleteDataSources"
+      :textarea-value="markdown"
       :uploads-path="uploadsPath"
-      :enable-preview="enablePreview"
-      :drawio-enabled="drawioEnabled"
       show-content-editor-switcher
       class="bordered-box"
       @enableContentEditor="onEditingModeChange('contentEditor')"
@@ -161,7 +136,7 @@ export default {
         <textarea
           v-bind="formFieldProps"
           ref="textarea"
-          :value="value"
+          :value="markdown"
           class="note-textarea js-gfm-input js-autosize markdown-area"
           dir="auto"
           :data-supports-quick-actions="supportsQuickActions"
@@ -176,7 +151,7 @@ export default {
       <content-editor
         :render-markdown="renderMarkdown"
         :uploads-path="uploadsPath"
-        :markdown="value"
+        :markdown="markdown"
         :autofocus="contentEditorAutofocused"
         :use-bottom-toolbar="useBottomToolbar"
         @initialized="setEditorAsAutofocused"
@@ -186,7 +161,7 @@ export default {
       />
       <input
         v-bind="formFieldProps"
-        :value="value"
+        :value="markdown"
         data-qa-selector="markdown_editor_form_field"
         type="hidden"
       />

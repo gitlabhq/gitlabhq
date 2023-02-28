@@ -10,7 +10,7 @@ module Ci
     ignore_column :machine_xid, remove_with: '15.11', remove_after: '2022-03-22'
 
     # The `UPDATE_CONTACT_COLUMN_EVERY` defines how often the Runner Machine DB entry can be updated
-    UPDATE_CONTACT_COLUMN_EVERY = 40.minutes..55.minutes
+    UPDATE_CONTACT_COLUMN_EVERY = (40.minutes)..(55.minutes)
 
     belongs_to :runner
 
@@ -60,7 +60,7 @@ module Ci
         new_version = values[:version]
         schedule_runner_version_update(new_version) if new_version && values[:version] != version
 
-        cache_attributes(values)
+        merge_cache_attributes(values)
 
         # We save data without validation, it will always change due to `contacted_at`
         update_columns(values) if persist_cached_data?

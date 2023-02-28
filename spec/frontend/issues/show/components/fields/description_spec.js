@@ -80,17 +80,18 @@ describe('Description field component', () => {
     });
 
     it('uses the MarkdownEditor component to edit markdown', () => {
-      expect(findMarkdownEditor().props()).toEqual(
-        expect.objectContaining({
-          value: 'test',
-          renderMarkdownPath: '/',
-          markdownDocsPath: '/',
-          quickActionsDocsPath: expect.any(String),
-          autofocus: true,
-          supportsQuickActions: true,
-          enableAutocomplete: true,
-        }),
-      );
+      expect(findMarkdownEditor().props()).toMatchObject({
+        value: 'test',
+        renderMarkdownPath: '/',
+        autofocus: true,
+        supportsQuickActions: true,
+      });
+
+      expect(findMarkdownEditor().vm.$attrs).toMatchObject({
+        'enable-autocomplete': true,
+        'markdown-docs-path': '/',
+        'quick-actions-docs-path': expect.any(String),
+      });
     });
 
     it('triggers update with meta+enter', () => {

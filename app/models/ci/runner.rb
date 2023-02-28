@@ -453,7 +453,7 @@ module Ci
         new_version = values[:version]
         schedule_runner_version_update(new_version) if new_version && values[:version] != version
 
-        cache_attributes(values)
+        merge_cache_attributes(values)
 
         # We save data without validation, it will always change due to `contacted_at`
         update_columns(values) if persist_cached_data?
