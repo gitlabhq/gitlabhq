@@ -436,6 +436,13 @@ RSpec.describe Projects::NotesController, type: :controller, feature_category: :
             expect(json_response['commands_changes']).to include('emoji_award', 'time_estimate', 'spend_time')
             expect(json_response['commands_changes']).not_to include('target_project', 'title')
           end
+
+          it 'includes command_names' do
+            create!
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response['command_names']).to include('award', 'estimate', 'spend')
+          end
         end
 
         context 'with commands that do not return changes' do
@@ -453,6 +460,13 @@ RSpec.describe Projects::NotesController, type: :controller, feature_category: :
 
             expect(response).to have_gitlab_http_status(:ok)
             expect(json_response['commands_changes']).not_to include('target_project', 'title')
+          end
+
+          it 'includes command_names' do
+            create!
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response['command_names']).to include('move', 'title')
           end
         end
       end

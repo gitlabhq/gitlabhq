@@ -215,6 +215,16 @@ module Namespaces
         hierarchy_order == :desc ? traversal_ids : traversal_ids.reverse
       end
 
+      def parent=(obj)
+        super(obj)
+        set_traversal_ids
+      end
+
+      def parent_id=(id)
+        super(id)
+        set_traversal_ids
+      end
+
       private
 
       attr_accessor :transient_traversal_ids
@@ -232,6 +242,8 @@ module Namespaces
       end
 
       def set_traversal_ids
+        return if id.blank?
+
         # This is a temporary guard and will be removed.
         return if is_a?(Namespaces::ProjectNamespace)
 
@@ -242,7 +254,7 @@ module Namespaces
                                        end
 
         # Clear root_ancestor memo if changed.
-        if read_attribute(traversal_ids)&.first != transient_traversal_ids.first
+        if read_attribute(:traversal_ids)&.first != transient_traversal_ids.first
           clear_memoization(:root_ancestor)
         end
 

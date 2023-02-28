@@ -192,7 +192,7 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
 
     before do
       allow(helper).to receive(:project_sidebar_context_data).and_return(
-        { current_user: nil, container: project, can_view_pipeline_editor: false })
+        { current_user: nil, container: project, can_view_pipeline_editor: false, learn_gitlab_enabled: false })
       allow(helper).to receive(:group_sidebar_context_data).and_return({ current_user: nil, container: group })
 
       allow(group).to receive(:to_global_id).and_return(5)
@@ -204,7 +204,7 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
     end
 
     it 'returns Project Panel for project nav' do
-      expect(helper.super_sidebar_nav_panel(nav: 'project')).to be_a(Sidebars::Projects::Panel)
+      expect(helper.super_sidebar_nav_panel(nav: 'project')).to be_a(Sidebars::Projects::SuperSidebarPanel)
     end
 
     it 'returns Group Panel for group nav' do

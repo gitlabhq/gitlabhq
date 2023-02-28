@@ -4,11 +4,11 @@ module Sidebars
   class MenuItem
     include ::Sidebars::Concerns::LinkWithHtmlOptions
 
-    attr_reader :title, :link, :active_routes, :item_id, :container_html_options, :sprite_icon, :sprite_icon_html_options, :hint_html_options, :has_pill, :pill_count
+    attr_reader :title, :link, :active_routes, :item_id, :container_html_options, :sprite_icon, :sprite_icon_html_options, :hint_html_options, :has_pill, :pill_count, :super_sidebar_parent, :super_sidebar_before
     alias_method :has_pill?, :has_pill
 
     # rubocop: disable Metrics/ParameterLists
-    def initialize(title:, link:, active_routes:, item_id: nil, container_html_options: {}, sprite_icon: nil, sprite_icon_html_options: {}, hint_html_options: {}, has_pill: false, pill_count: nil)
+    def initialize(title:, link:, active_routes:, item_id: nil, container_html_options: {}, sprite_icon: nil, sprite_icon_html_options: {}, hint_html_options: {}, has_pill: false, pill_count: nil, super_sidebar_parent: nil, super_sidebar_before: nil)
       @title = title
       @link = link
       @active_routes = active_routes
@@ -19,6 +19,8 @@ module Sidebars
       @hint_html_options = hint_html_options
       @has_pill = has_pill
       @pill_count = pill_count
+      @super_sidebar_before = super_sidebar_before
+      @super_sidebar_parent = super_sidebar_parent
     end
     # rubocop: enable Metrics/ParameterLists
 

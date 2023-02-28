@@ -1941,12 +1941,9 @@ rspec:
 
 ### `hooks`
 
-> Introduced in GitLab 15.6 [with a flag](../../administration/feature_flags.md) named `ci_hooks_pre_get_sources_script`. Disabled by default.
-
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available,
-ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `ci_hooks_pre_get_sources_script`.
-The feature is not ready for production use.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/381840) in GitLab 15.6 [with a flag](../../administration/feature_flags.md) named `ci_hooks_pre_get_sources_script`. Disabled by default.
+> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/381840) in GitLab 15.9.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/381840-link) in GitLab 15.10. Feature flag `ci_hooks_pre_get_sources_script` removed.
 
 Use `hooks` to specify lists of commands to execute on the runner
 at certain stages of job execution, like before retrieving the Git repository.
@@ -1960,7 +1957,9 @@ at certain stages of job execution, like before retrieving the Git repository.
 
 #### `hooks:pre_get_sources_script`
 
-> Introduced in GitLab 15.6 [with a flag](../../administration/feature_flags.md) named `ci_hooks_pre_get_sources_script`. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/381840) in GitLab 15.6 [with a flag](../../administration/feature_flags.md) named `ci_hooks_pre_get_sources_script`. Disabled by default.
+> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/381840) in GitLab 15.9.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/381840-link) in GitLab 15.10. Feature flag `ci_hooks_pre_get_sources_script` removed.
 
 Use `hooks:pre_get_sources_script` to specify a list of commands to execute on the runner
 before retrieving the Git repository and any submodules. You can use it

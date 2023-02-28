@@ -465,6 +465,14 @@ RSpec.describe Namespace, feature_category: :subgroups do
       end
     end
 
+    context 'when parent is nil' do
+      let(:namespace) { build(:group, parent: nil) }
+
+      it 'returns []' do
+        expect(namespace.traversal_ids).to eq []
+      end
+    end
+
     context 'when made a child group' do
       let!(:namespace) { create(:group) }
       let!(:parent_namespace) { create(:group, children: [namespace]) }
@@ -1959,6 +1967,29 @@ RSpec.describe Namespace, feature_category: :subgroups do
         expect(nested_group.root_ancestor).to eq(root_group)
         expect(deep_nested_group.root_ancestor).to eq(root_group)
         expect(very_deep_nested_group.root_ancestor).to eq(root_group)
+      end
+    end
+
+    context 'when parent is changed' do
+      let(:group) { create(:group) }
+      let(:new_parent) { create(:group) }
+
+      shared_examples 'updates root_ancestor' do
+        it do
+          expect { subject }.to change { group.root_ancestor }.from(group).to(new_parent)
+        end
+      end
+
+      context 'by object' do
+        subject { group.parent = new_parent }
+
+        include_examples 'updates root_ancestor'
+      end
+
+      context 'by id' do
+        subject { group.parent_id = new_parent.id }
+
+        include_examples 'updates root_ancestor'
       end
     end
   end

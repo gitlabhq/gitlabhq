@@ -122,6 +122,17 @@ module Sidebars
       end
     end
 
+    # Sometimes we want to convert a top-level Menu (e.g. Wiki/Snippets)
+    # to a MenuItem. This serializer is used in order to enable that conversion
+    def serialize_as_menu_item_args
+      {
+        title: title,
+        link: link,
+        active_routes: active_routes,
+        container_html_options: container_html_options
+      }
+    end
+
     private
 
     override :index_of

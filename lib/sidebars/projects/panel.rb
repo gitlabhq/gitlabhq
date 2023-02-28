@@ -15,15 +15,6 @@ module Sidebars
         _('Project navigation')
       end
 
-      override :super_sidebar_context_header
-      def super_sidebar_context_header
-        @super_sidebar_context_header ||= {
-          title: context.project.name,
-          avatar: context.project.avatar_url,
-          id: context.project.id
-        }
-      end
-
       private
 
       def add_menus

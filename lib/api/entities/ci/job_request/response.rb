@@ -23,9 +23,7 @@ module API
 
           expose :runner_variables, as: :variables
           expose :steps, using: Entities::Ci::JobRequest::Step
-          expose :runtime_hooks, as: :hooks,
-                                 using: Entities::Ci::JobRequest::Hook,
-                                 if: ->(job) { ::Feature.enabled?(:ci_hooks_pre_get_sources_script, job.project) }
+          expose :runtime_hooks, as: :hooks, using: Entities::Ci::JobRequest::Hook
           expose :image, using: Entities::Ci::JobRequest::Image
           expose :services, using: Entities::Ci::JobRequest::Service
           expose :artifacts, using: Entities::Ci::JobRequest::Artifacts

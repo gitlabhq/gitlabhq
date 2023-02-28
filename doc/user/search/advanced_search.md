@@ -44,6 +44,7 @@ Advanced Search uses [Elasticsearch syntax](https://www.elastic.co/guide/en/elas
 | Syntax        | Description                     | Example                                                                                                                                              |
 |--------------|---------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `"`          | Exact search                    | [`"gem sidekiq"`](https://gitlab.com/search?group_id=9970&project_id=278964&scope=blobs&search=%22gem+sidekiq%22)                                 |
+| `~`          | Fuzzy search                    | [`J~ Doe`](https://gitlab.com/search?scope=users&search=j%7E+doe)                                 |
 | <code>&#124;</code> | Or                       | [<code>display &#124; banner</code>](https://gitlab.com/search?group_id=9970&project_id=278964&scope=blobs&search=display+%7C+banner)                                |
 | `+`          | And                             | [`display +banner`](https://gitlab.com/search?group_id=9970&project_id=278964&repository_ref=&scope=blobs&search=display+%2Bbanner&snippets=)       |
 | `-`          | Exclude                         | [`display -banner`](https://gitlab.com/search?group_id=9970&project_id=278964&scope=blobs&search=display+-banner)                                   |
@@ -51,6 +52,16 @@ Advanced Search uses [Elasticsearch syntax](https://www.elastic.co/guide/en/elas
 | `\`          | Escape                          | [`\*md`](https://gitlab.com/search?snippets=&scope=blobs&repository_ref=&search=%5C*md&group_id=9970&project_id=278964)                  |
 | `#`          | Issue ID                        | [`#23456`](https://gitlab.com/search?snippets=&scope=issues&repository_ref=&search=%2323456&group_id=9970&project_id=278964)               |
 | `!`          | Merge request ID                | [`!23456`](https://gitlab.com/search?snippets=&scope=merge_requests&repository_ref=&search=%2123456&group_id=9970&project_id=278964)       |
+
+### Refining user search
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/388409) in GitLab 15.10 [with a flag](../../administration/feature_flags.md) named `user_search_simple_query_string`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `user_search_simple_query_string`.
+On GitLab.com, this feature is not available.
+
+In user search, a [fuzzy query](https://www.elastic.co/guide/en/elasticsearch/reference/7.2/query-dsl-fuzzy-query.html) is used by default. You can refine your search with [Elasticsearch syntax](#syntax).
 
 ### Code search
 
@@ -83,7 +94,7 @@ Advanced Search uses [Elasticsearch syntax](https://www.elastic.co/guide/en/elas
 - The search query must not contain any of the following characters:
 
   ```plaintext
-  . , : ; / ` ' = ? $ & ^ | ~ < > ( ) { } [ ] @
+  . , : ; / ` ' = ? $ & ^ | < > ( ) { } [ ] @
   ```
 
 - Search results show only the first match in a file.

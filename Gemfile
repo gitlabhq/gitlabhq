@@ -158,7 +158,7 @@ gem 'fog-rackspace', '~> 0.1.1'
 # We may want to update this dependency if this is ever addressed upstream, e.g. via
 # https://github.com/aliyun/aliyun-oss-ruby-sdk/pull/93
 gem 'fog-aliyun', '~> 0.4'
-gem 'gitlab-fog-azure-rm', '~> 1.4.0', require: 'fog/azurerm'
+gem 'gitlab-fog-azure-rm', '~> 1.7.0', require: 'fog/azurerm'
 
 # for Google storage
 gem 'google-cloud-storage', '~> 1.44.0'

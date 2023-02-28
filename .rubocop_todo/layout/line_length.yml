@@ -1582,7 +1582,6 @@ Layout/LineLength:
     - 'ee/spec/features/admin/groups/admin_subscription_alerts_spec.rb'
     - 'ee/spec/features/admin/subscriptions/admin_views_subscription_spec.rb'
     - 'ee/spec/features/billings/billing_plans_spec.rb'
-    - 'ee/spec/features/billings/extend_reactivate_trial_spec.rb'
     - 'ee/spec/features/boards/scoped_issue_board_spec.rb'
     - 'ee/spec/features/boards/sidebar_spec.rb'
     - 'ee/spec/features/boards/swimlanes/epics_swimlanes_drag_drop_spec.rb'

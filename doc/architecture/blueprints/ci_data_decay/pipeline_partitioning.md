@@ -811,5 +811,7 @@ DRIs:
 | Product Leadership     | Jackie Porter, Director of Product Management         |
 | Engineering Leadership | Caroline Simpson, Engineering Manager / Cheryl Li, Senior Engineering Manager  |
 | Lead Engineer       | Marius Bobin, Senior Backend Engineer          |
+| Senior Engineer     | Maxime Orefice, Senior Backend Engineer        |
+| Senior Engineer     | Tianwen Chen, Senior Backend Engineer        |
 
 <!-- vale gitlab.Spelling = YES -->

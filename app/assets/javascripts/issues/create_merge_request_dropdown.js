@@ -569,6 +569,7 @@ export default class CreateMergeRequestDropdown {
       pathReplacement,
     );
 
+    this.wrapperEl.dataset.createBranchPath = this.createBranchPath;
     this.wrapperEl.dataset.createMrPath = this.createMrPath;
   }
 }

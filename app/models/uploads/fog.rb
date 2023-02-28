@@ -21,7 +21,9 @@ module Uploads
     private
 
     def delete_object(key)
-      connection.delete_object(bucket_name, key)
+      return unless available?
+
+      connection.delete_object(bucket_name, object_key(key))
 
     # So far, only GoogleCloudStorage raises an exception when the file is not found.
     # Other providers support idempotent requests and does not raise an error
@@ -35,9 +37,14 @@ module Uploads
     end
 
     def bucket_name
-      return unless available?
-
       object_store.remote_directory
+    end
+
+    def object_key(key)
+      # We allow administrators to create "sub buckets" by setting a prefix.
+      # This makes it possible to deploy GitLab with only one object storage
+      # bucket. This mirrors the implementation in app/uploaders/object_storage.rb.
+      File.join([object_store.bucket_prefix, key].compact)
     end
 
     def connection

@@ -226,7 +226,6 @@
 - './ee/spec/features/analytics/code_analytics_spec.rb'
 - './ee/spec/features/analytics/group_analytics_spec.rb'
 - './ee/spec/features/billings/billing_plans_spec.rb'
-- './ee/spec/features/billings/extend_reactivate_trial_spec.rb'
 - './ee/spec/features/billings/qrtly_reconciliation_alert_spec.rb'
 - './ee/spec/features/boards/board_filters_spec.rb'
 - './ee/spec/features/boards/boards_licensed_features_spec.rb'

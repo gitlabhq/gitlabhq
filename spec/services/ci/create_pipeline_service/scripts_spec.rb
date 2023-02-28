@@ -83,30 +83,5 @@ RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectnes
         options: { script: ["echo 'hello job3 script'"] }
       )
     end
-
-    context 'when the FF ci_hooks_pre_get_sources_script is disabled' do
-      before do
-        stub_feature_flags(ci_hooks_pre_get_sources_script: false)
-      end
-
-      it 'creates jobs without hook data' do
-        expect(pipeline).to be_created_successfully
-        expect(pipeline.builds.find_by(name: 'job1')).to have_attributes(
-          name: 'job1',
-          stage: 'test',
-          options: { script: ["echo 'hello job1 script'"] }
-        )
-        expect(pipeline.builds.find_by(name: 'job2')).to have_attributes(
-          name: 'job2',
-          stage: 'test',
-          options: { script: ["echo 'hello job2 script'"] }
-        )
-        expect(pipeline.builds.find_by(name: 'job3')).to have_attributes(
-          name: 'job3',
-          stage: 'test',
-          options: { script: ["echo 'hello job3 script'"] }
-        )
-      end
-    end
   end
 end

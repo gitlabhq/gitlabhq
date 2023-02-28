@@ -54,6 +54,7 @@ module Notes
       content, update_params, message, command_names = quick_actions_service.execute(note, quick_action_options)
       only_commands = content.empty?
       note.note = content
+      note.command_names = command_names
 
       yield(only_commands)
 

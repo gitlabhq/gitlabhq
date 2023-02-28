@@ -13,6 +13,7 @@ source: /doc/user/search/advanced_search.md
 | Syntax        | Description                     | Example                                                                                                                                              |
 |--------------|---------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `"`          | Exact search                    | [`"gem sidekiq"`](https://gitlab.com/search?group_id=9970&project_id=278964&scope=blobs&search=%22gem+sidekiq%22)                                 |
+| `~`          | Fuzzy search                    | [`J~ Doe`](https://gitlab.com/search?scope=users&search=j%7E+doe)                                 |
 | <code>&#124;</code> | Or                       | [<code>display &#124; banner</code>](https://gitlab.com/search?group_id=9970&project_id=278964&scope=blobs&search=display+%7C+banner)                                |
 | `+`          | And                             | [`display +banner`](https://gitlab.com/search?group_id=9970&project_id=278964&repository_ref=&scope=blobs&search=display+%2Bbanner&snippets=)       |
 | `-`          | Exclude                         | [`display -banner`](https://gitlab.com/search?group_id=9970&project_id=278964&scope=blobs&search=display+-banner)                                   |

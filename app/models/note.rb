@@ -60,6 +60,9 @@ class Note < ApplicationRecord
   # Attribute used to store the attributes that have been changed by quick actions.
   attr_writer :commands_changes
 
+  # Attribute used to store the quick action command names.
+  attr_accessor :command_names
+
   # Attribute used to determine whether keep_around_commits will be skipped for diff notes.
   attr_accessor :skip_keep_around_commits
 

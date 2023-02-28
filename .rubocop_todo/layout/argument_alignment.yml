@@ -1403,7 +1403,6 @@ Layout/ArgumentAlignment:
     - 'ee/spec/features/admin/admin_emails_spec.rb'
     - 'ee/spec/features/admin/admin_settings_spec.rb'
     - 'ee/spec/features/billings/billing_plans_spec.rb'
-    - 'ee/spec/features/billings/extend_reactivate_trial_spec.rb'
     - 'ee/spec/features/boards/boards_spec.rb'
     - 'ee/spec/features/boards/swimlanes/epics_swimlanes_drag_drop_spec.rb'
     - 'ee/spec/features/burndown_charts_spec.rb'

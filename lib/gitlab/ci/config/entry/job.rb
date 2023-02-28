@@ -164,7 +164,7 @@ module Gitlab
               artifacts: artifacts_value,
               release: release_value,
               after_script: after_script_value,
-              hooks: hooks_pre_get_sources_script_enabled? ? hooks_value : nil,
+              hooks: hooks_value,
               ignore: ignored?,
               allow_failure_criteria: allow_failure_criteria,
               needs: needs_defined? ? needs_value : nil,
@@ -193,10 +193,6 @@ module Gitlab
             return false if allow_failure_value.is_a?(Hash)
 
             allow_failure_value
-          end
-
-          def hooks_pre_get_sources_script_enabled?
-            YamlProcessor::FeatureFlags.enabled?(:ci_hooks_pre_get_sources_script)
           end
         end
       end

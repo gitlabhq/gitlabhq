@@ -86,7 +86,7 @@ module SidebarsHelper
     when 'project'
       context = project_sidebar_context(project, user, current_ref, ref_type: ref_type,
         route_is_active: method(:active_nav_link?))
-      Sidebars::Projects::Panel.new(context)
+      Sidebars::Projects::SuperSidebarPanel.new(context)
     when 'group'
       context = group_sidebar_context(group, user, route_is_active: method(:active_nav_link?))
       Sidebars::Groups::Panel.new(context)

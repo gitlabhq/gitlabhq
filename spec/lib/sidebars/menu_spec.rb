@@ -56,6 +56,22 @@ RSpec.describe Sidebars::Menu, feature_category: :navigation do
     end
   end
 
+  describe '#serialize_as_menu_item_args' do
+    it 'returns hash of title, link, active_routes, container_html_options' do
+      allow(menu).to receive(:title).and_return('Title')
+      allow(menu).to receive(:active_routes).and_return({ path: 'foo' })
+      allow(menu).to receive(:container_html_options).and_return({ class: 'foo' })
+      allow(menu).to receive(:link).and_return('/link')
+
+      expect(menu.serialize_as_menu_item_args).to eq({
+        title: 'Title',
+        link: '/link',
+        active_routes: { path: 'foo' },
+        container_html_options: { class: 'foo' }
+      })
+    end
+  end
+
   describe '#render?' do
     context 'when the menus has no items' do
       it 'returns false' do

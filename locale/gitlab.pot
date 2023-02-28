@@ -6628,25 +6628,7 @@ msgstr ""
 msgid "BillingPlan|Upgrade for free"
 msgstr ""
 
-msgid "Billings|%{planName} plan"
-msgstr ""
-
-msgid "Billings|An error occurred while extending your trial."
-msgstr ""
-
-msgid "Billings|An error occurred while reactivating your trial."
-msgstr ""
-
-msgid "Billings|By extending your trial, you will receive an additional 30 days of %{planName}. Your trial can be only extended once."
-msgstr ""
-
-msgid "Billings|By reactivating your trial, you will receive an additional 30 days of %{planName}. Your trial can be only reactivated once."
-msgstr ""
-
 msgid "Billings|Error validating card details"
-msgstr ""
-
-msgid "Billings|Extend trial"
 msgstr ""
 
 msgid "Billings|Free groups are limited to %{number} seats."
@@ -6656,9 +6638,6 @@ msgid "Billings|Free tier and trial groups can invite a maximum of 20 members pe
 msgstr ""
 
 msgid "Billings|In a seat"
-msgstr ""
-
-msgid "Billings|Reactivate trial"
 msgstr ""
 
 msgid "Billings|Seats in use / Seats available"
@@ -33465,6 +33444,9 @@ msgstr ""
 msgid "Project order will not be saved as local storage is not available."
 msgstr ""
 
+msgid "Project overview"
+msgstr ""
+
 msgid "Project path"
 msgstr ""
 
@@ -45859,6 +45841,9 @@ msgid "Unavailable"
 msgstr ""
 
 msgid "Unban"
+msgstr ""
+
+msgid "Uncategorized"
 msgstr ""
 
 msgid "Uncommitted changes will be lost if you change branches. Do you want to continue?"

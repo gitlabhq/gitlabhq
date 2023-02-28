@@ -48,6 +48,7 @@ RSpec.describe Gitlab::Database::Migrations::TestBatchedBackgroundRunner, :freez
     let(:result_dir) { Pathname.new(Dir.mktmpdir) }
     let(:connection) { base_model.connection }
     let(:table_name) { "_test_column_copying" }
+    let(:num_rows_in_table) { 1000 }
     let(:from_id) { 0 }
 
     after do
@@ -61,7 +62,7 @@ RSpec.describe Gitlab::Database::Migrations::TestBatchedBackgroundRunner, :freez
           data bigint default 0
         );
 
-        insert into #{table_name} (id) select i from generate_series(1, 1000) g(i);
+        insert into #{table_name} (id) select i from generate_series(1, #{num_rows_in_table}) g(i);
       SQL
     end
 
@@ -132,6 +133,24 @@ RSpec.describe Gitlab::Database::Migrations::TestBatchedBackgroundRunner, :freez
                             from_id: from_id).run_jobs(for_duration: 3.minutes)
 
         expect(calls).not_to be_empty
+      end
+
+      it 'samples 1 job with a batch size higher than the table size' do
+        calls = []
+        define_background_migration(migration_name) do |*args|
+          travel 1.minute
+          calls << args
+        end
+
+        queue_migration(migration_name, table_name, :id,
+                        job_interval: 5.minutes,
+                        batch_size: num_rows_in_table * 2,
+                        sub_batch_size: num_rows_in_table * 2)
+
+        described_class.new(result_dir: result_dir, connection: connection,
+                            from_id: from_id).run_jobs(for_duration: 3.minutes)
+
+        expect(calls.size).to eq(1)
       end
 
       context 'with multiple jobs to run' do

@@ -39,6 +39,15 @@ module Sidebars
         def render?
           true
         end
+
+        override :serialize_as_menu_item_args
+        def serialize_as_menu_item_args
+          super.merge({
+            title: _('Project overview'),
+            sprite_icon: 'project',
+            super_sidebar_parent: ::Sidebars::StaticMenu
+          })
+        end
       end
     end
   end

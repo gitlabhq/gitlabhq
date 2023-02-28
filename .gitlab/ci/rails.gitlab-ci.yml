@@ -781,13 +781,14 @@ rspec-foss-impact:pipeline-generate:
   extends:
     - .rails:rules:rspec-foss-impact
   stage: prepare
-  needs: ["detect-tests"]
+  needs: ["detect-tests", "retrieve-tests-metadata"]
   script:
-    - scripts/generate-rspec-foss-impact-pipeline "${RSPEC_MATCHING_TESTS_FOSS_PATH}" "${RSPEC_FOSS_IMPACT_PIPELINE_YML}"
+    - scripts/generate_rspec_pipeline.rb -f "${RSPEC_MATCHING_TESTS_FOSS_PATH}" -t "${RSPEC_FOSS_IMPACT_PIPELINE_TEMPLATE_YML}" -k "${KNAPSACK_RSPEC_SUITE_REPORT_PATH}"
+    - cat "${RSPEC_FOSS_IMPACT_PIPELINE_TEMPLATE_YML}.yml"
   artifacts:
     expire_in: 1 day
     paths:
-      - $RSPEC_FOSS_IMPACT_PIPELINE_YML
+      - "${RSPEC_FOSS_IMPACT_PIPELINE_TEMPLATE_YML}.yml"
 
 rspec-foss-impact:trigger:
   extends:
@@ -810,7 +811,7 @@ rspec-foss-impact:trigger:
       yaml_variables: true
       pipeline_variables: true
     include:
-      - artifact: $RSPEC_FOSS_IMPACT_PIPELINE_YML
+      - artifact: "${RSPEC_FOSS_IMPACT_PIPELINE_TEMPLATE_YML}.yml"
         job: rspec-foss-impact:pipeline-generate
 
 fail-pipeline-early:
