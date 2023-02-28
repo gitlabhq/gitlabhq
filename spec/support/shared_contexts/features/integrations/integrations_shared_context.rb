@@ -76,6 +76,10 @@ Integration.available_integration_names.each do |integration|
           hash.merge!(k => 'ABC1')
         elsif integration == 'apple_app_store' && k == :app_store_private_key_file_name
           hash.merge!(k => 'ssl_key.pem')
+        elsif integration == 'google_play' && k == :service_account_key
+          hash.merge!(k => File.read('spec/fixtures/service_account.json'))
+        elsif integration == 'google_play' && k == :service_account_key_file_name
+          hash.merge!(k => 'service_account.json')
         else
           hash.merge!(k => "someword")
         end

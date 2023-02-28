@@ -533,6 +533,7 @@ project:
 - discord_integration
 - drone_ci_integration
 - emails_on_push_integration
+- google_play_integration
 - pipelines_email_integration
 - mattermost_slash_commands_integration
 - shimo_integration

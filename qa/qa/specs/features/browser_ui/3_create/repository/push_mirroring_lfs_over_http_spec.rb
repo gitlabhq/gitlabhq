@@ -1,11 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Create', product_group: :source_code, quarantine: {
-    issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/352525',
-    type: :test_environment,
-    only: { job: 'review-qa-*' }
-  } do
+  RSpec.describe 'Create', product_group: :source_code do
     describe 'Push mirror a repository over HTTP' do
       it 'configures and syncs LFS objects for a (push) mirrored repository', :aggregate_failures, testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347847' do
         Runtime::Browser.visit(:gitlab, Page::Main::Login)

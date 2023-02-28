@@ -49,3 +49,8 @@ export const COMMENT_FORM = {
     'Notes|Attachments are sent by email. Attachments over 10 MB are sent as links to your GitLab instance, and only accessible to project members.',
   ),
 };
+
+export const EDITED_TEXT = {
+  actionWithAuthor: __('%{actionText} by %{author} %{actionDetail}'),
+  actionWithoutAuthor: __('%{actionText} %{actionDetail}'),
+};

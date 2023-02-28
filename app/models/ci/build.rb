@@ -71,6 +71,7 @@ module Ci
     delegate :gitlab_deploy_token, to: :project
     delegate :harbor_integration, to: :project
     delegate :apple_app_store_integration, to: :project
+    delegate :google_play_integration, to: :project
     delegate :trigger_short_token, to: :trigger_request, allow_nil: true
     delegate :ensure_persistent_ref, to: :pipeline
     delegate :enable_debug_trace!, to: :metadata
@@ -599,6 +600,7 @@ module Ci
           .concat(deploy_token_variables)
           .concat(harbor_variables)
           .concat(apple_app_store_variables)
+          .concat(google_play_variables)
       end
     end
 
@@ -647,6 +649,13 @@ module Ci
       return [] unless pipeline.protected_ref?
 
       Gitlab::Ci::Variables::Collection.new(apple_app_store_integration.ci_variables)
+    end
+
+    def google_play_variables
+      return [] unless google_play_integration.try(:activated?)
+      return [] unless pipeline.protected_ref?
+
+      Gitlab::Ci::Variables::Collection.new(google_play_integration.ci_variables)
     end
 
     def features

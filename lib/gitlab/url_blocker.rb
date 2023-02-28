@@ -49,8 +49,13 @@ module Gitlab
           ascii_only: ascii_only
         )
 
-        address_info = get_address_info(uri, dns_rebind_protection)
-        return [uri, nil] unless address_info
+        begin
+          address_info = get_address_info(uri)
+        rescue SocketError
+          return [uri, nil] unless enforce_address_info_retrievable?(uri, dns_rebind_protection)
+
+          raise BlockedUrlError, 'Host cannot be resolved or invalid'
+        end
 
         ip_address = ip_address(address_info)
         return [uri, nil] if domain_allowed?(uri)
@@ -115,29 +120,34 @@ module Gitlab
         validate_unicode_restriction(uri) if ascii_only
       end
 
-      def get_address_info(uri, dns_rebind_protection)
+      # Returns addrinfo object for the URI.
+      #
+      # @param uri [Addressable::URI]
+      #
+      # @raise [Gitlab::UrlBlocker::BlockedUrlError, ArgumentError] - BlockedUrlError raised if host is too long.
+      #
+      # @return [Array<Addrinfo>]
+      def get_address_info(uri)
         Addrinfo.getaddrinfo(uri.hostname, get_port(uri), nil, :STREAM).map do |addr|
           addr.ipv6_v4mapped? ? addr.ipv6_to_ipv4 : addr
         end
-      rescue SocketError
-        # If the dns rebinding protection is not enabled or the domain
-        # is allowed, or HTTP_PROXY is set we avoid the dns rebinding checks
-        return if domain_allowed?(uri) || !dns_rebind_protection || Gitlab.http_proxy_env?
-
-        # In the test suite we use a lot of mocked urls that are either invalid or
-        # don't exist. In order to avoid modifying a ton of tests and factories
-        # we allow invalid urls unless the environment variable RSPEC_ALLOW_INVALID_URLS
-        # is not true
-        return if Rails.env.test? && ENV['RSPEC_ALLOW_INVALID_URLS'] == 'true'
-
-        # If the addr can't be resolved or the url is invalid (i.e http://1.1.1.1.1)
-        # we block the url
-        raise BlockedUrlError, "Host cannot be resolved or invalid"
       rescue ArgumentError => error
         # Addrinfo.getaddrinfo errors if the domain exceeds 1024 characters.
         raise unless error.message.include?('hostname too long')
 
         raise BlockedUrlError, "Host is too long (maximum is 1024 characters)"
+      end
+
+      def enforce_address_info_retrievable?(uri, dns_rebind_protection)
+        return false if !dns_rebind_protection || Gitlab.http_proxy_env? || domain_allowed?(uri)
+
+        # In the test suite we use a lot of mocked urls that are either invalid or
+        # don't exist. In order to avoid modifying a ton of tests and factories
+        # we allow invalid urls unless the environment variable RSPEC_ALLOW_INVALID_URLS
+        # is not true
+        return false if Rails.env.test? && ENV['RSPEC_ALLOW_INVALID_URLS'] == 'true'
+
+        true
       end
 
       def validate_local_request(

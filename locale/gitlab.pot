@@ -476,6 +476,9 @@ msgid_plural "%s additional commits have been omitted to prevent performance iss
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%{actionText} %{actionDetail}"
+msgstr ""
+
 msgid "%{actionText} & %{openOrClose} %{noteable}"
 msgstr ""
 
@@ -483,6 +486,9 @@ msgid "%{actionText} & close %{noteable}"
 msgstr ""
 
 msgid "%{actionText} & reopen %{noteable}"
+msgstr ""
+
+msgid "%{actionText} by %{author} %{actionDetail}"
 msgstr ""
 
 msgid "%{address} is an invalid IP address range"
@@ -3714,6 +3720,9 @@ msgid "After the Apple App Store Connect integration is activated, the following
 msgstr ""
 
 msgid "After the export is complete, download the data file from a notification email or from this page. You can then import the data file from the %{strong_text_start}Create new group%{strong_text_end} page of another GitLab instance."
+msgstr ""
+
+msgid "After you enable the integration, the following protected variable is created for CI/CD use:"
 msgstr ""
 
 msgid "After you've reviewed these contribution guidelines, you'll be all set to"
@@ -19255,13 +19264,13 @@ msgstr ""
 msgid "GithubImporter|GitHub gists with more than 10 files must be manually migrated."
 msgstr ""
 
-msgid "GithubImporter|Issue attachments"
+msgid "GithubImporter|Issue links"
 msgstr ""
 
-msgid "GithubImporter|Merge request attachments"
+msgid "GithubImporter|Merge request links"
 msgstr ""
 
-msgid "GithubImporter|Note attachments"
+msgid "GithubImporter|Note links"
 msgstr ""
 
 msgid "GithubImporter|PR mergers"
@@ -19279,7 +19288,7 @@ msgstr ""
 msgid "GithubImporter|Pull requests"
 msgstr ""
 
-msgid "GithubImporter|Release attachments"
+msgid "GithubImporter|Release links"
 msgstr ""
 
 msgid "GithubImporter|Your import of GitHub gists into GitLab snippets is complete."
@@ -19685,6 +19694,30 @@ msgid "GoogleCloud|Revoke authorizations"
 msgstr ""
 
 msgid "GoogleCloud|Revoke authorizations granted to GitLab. This does not invalidate service accounts."
+msgstr ""
+
+msgid "GooglePlay|Drag your key file here or %{linkStart}click to upload%{linkEnd}."
+msgstr ""
+
+msgid "GooglePlay|Drag your key file to start the upload."
+msgstr ""
+
+msgid "GooglePlay|Error: The file you're trying to upload is not a service account key."
+msgstr ""
+
+msgid "GooglePlay|Google Play"
+msgstr ""
+
+msgid "GooglePlay|Leave empty to use your current service account key."
+msgstr ""
+
+msgid "GooglePlay|Service account key (.json)"
+msgstr ""
+
+msgid "GooglePlay|Upload a new service account key (replace %{currentFileName})"
+msgstr ""
+
+msgid "GooglePlay|Use GitLab to build and release an app in Google Play."
 msgstr ""
 
 msgid "Got it"
@@ -46531,6 +46564,9 @@ msgid "Use the %{strongStart}Test%{strongEnd} option above to create an event."
 msgstr ""
 
 msgid "Use the Apple App Store Connect integration to easily connect to the Apple App Store with Fastlane in CI/CD pipelines."
+msgstr ""
+
+msgid "Use the Google Play integration to connect to Google Play with fastlane in CI/CD pipelines."
 msgstr ""
 
 msgid "Use the link below to confirm your email address (%{email})"

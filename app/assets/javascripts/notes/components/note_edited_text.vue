@@ -1,10 +1,13 @@
 <script>
-/* eslint-disable @gitlab/vue-require-i18n-strings */
+import { GlSprintf, GlLink } from '@gitlab/ui';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
+import { EDITED_TEXT } from '../i18n';
 
 export default {
   name: 'EditedNoteText',
   components: {
+    GlSprintf,
+    GlLink,
     TimeAgoTooltip,
   },
   props: {
@@ -33,19 +36,33 @@ export default {
       default: 'edited-text',
     },
   },
+  i18n: EDITED_TEXT,
 };
 </script>
 
 <template>
   <div :class="className">
-    {{ actionText }}
-    <template v-if="editedBy">
-      by
-      <a :href="editedBy.path" :data-user-id="editedBy.id" class="js-user-link author-link">
-        {{ editedBy.name }}
-      </a>
-    </template>
-    {{ actionDetailText }}
+    <gl-sprintf v-if="editedBy" :message="$options.i18n.actionWithAuthor">
+      <template #actionText>
+        {{ actionText }}
+      </template>
+      <template #author>
+        <gl-link :href="editedBy.path" :data-user-id="editedBy.id" class="js-user-link author-link">
+          {{ editedBy.name }}
+        </gl-link>
+      </template>
+      <template #actionDetail>
+        {{ actionDetailText }}
+      </template>
+    </gl-sprintf>
+    <gl-sprintf v-else :message="$options.i18n.actionWithoutAuthor">
+      <template #actionText>
+        {{ actionText }}
+      </template>
+      <template #actionDetail>
+        {{ actionDetailText }}
+      </template>
+    </gl-sprintf>
     <time-ago-tooltip :time="editedAt" tooltip-placement="bottom" />
   </div>
 </template>

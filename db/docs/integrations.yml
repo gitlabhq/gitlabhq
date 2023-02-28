@@ -26,6 +26,7 @@ classes:
 - Integrations::ExternalWiki
 - Integrations::Github
 - Integrations::GitlabSlackApplication
+- Integrations::GooglePlay
 - Integrations::HangoutsChat
 - Integrations::Harbor
 - Integrations::Irker

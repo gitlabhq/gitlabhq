@@ -189,6 +189,7 @@ class Project < ApplicationRecord
   has_one :emails_on_push_integration, class_name: 'Integrations::EmailsOnPush'
   has_one :ewm_integration, class_name: 'Integrations::Ewm'
   has_one :external_wiki_integration, class_name: 'Integrations::ExternalWiki'
+  has_one :google_play_integration, class_name: 'Integrations::GooglePlay'
   has_one :hangouts_chat_integration, class_name: 'Integrations::HangoutsChat'
   has_one :harbor_integration, class_name: 'Integrations::Harbor'
   has_one :irker_integration, class_name: 'Integrations::Irker'
@@ -1634,6 +1635,7 @@ class Project < ApplicationRecord
   def disabled_integrations
     disabled_integrations = []
     disabled_integrations << 'apple_app_store' unless Feature.enabled?(:apple_app_store_integration, self)
+    disabled_integrations << 'google_play' unless Feature.enabled?(:google_play_integration, self)
     disabled_integrations
   end
 

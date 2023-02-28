@@ -27,7 +27,7 @@ class Integration < ApplicationRecord
   # TODO Shimo is temporary disabled on group and instance-levels.
   # See: https://gitlab.com/gitlab-org/gitlab/-/issues/345677
   PROJECT_SPECIFIC_INTEGRATION_NAMES = %w[
-    apple_app_store jenkins shimo
+    apple_app_store google_play jenkins shimo
   ].freeze
 
   # Fake integrations to help with local development.

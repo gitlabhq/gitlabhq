@@ -18,9 +18,9 @@ module Gitlab
           TEXT
         },
         attachments_import: {
-          label: 'Import Markdown attachments',
+          label: 'Import Markdown attachments (links)',
           details: <<-TEXT.split("\n").map(&:strip).join(' ')
-            Import Markdown attachments from repository comments, release posts, issue descriptions,
+            Import Markdown attachments (links) from repository comments, release posts, issue descriptions,
             and pull request descriptions. These can include images, text, or binary attachments.
             If not imported, links in Markdown to attachments break after you remove the attachments from GitHub.
           TEXT

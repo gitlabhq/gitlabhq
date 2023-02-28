@@ -73,6 +73,8 @@ module Integrations
       :server,
       :server_host,
       :server_port,
+      :service_account_key,
+      :service_account_key_file_name,
       :sound,
       :subdomain,
       :teamcity_url,

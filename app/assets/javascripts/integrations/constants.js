@@ -33,6 +33,7 @@ export const integrationFormSections = {
   JIRA_ISSUES: 'jira_issues',
   TRIGGER: 'trigger',
   APPLE_APP_STORE: 'apple_app_store',
+  GOOGLE_PLAY: 'google_play',
 };
 
 export const integrationFormSectionComponents = {
@@ -42,6 +43,7 @@ export const integrationFormSectionComponents = {
   [integrationFormSections.JIRA_ISSUES]: 'IntegrationSectionJiraIssues',
   [integrationFormSections.TRIGGER]: 'IntegrationSectionTrigger',
   [integrationFormSections.APPLE_APP_STORE]: 'IntegrationSectionAppleAppStore',
+  [integrationFormSections.GOOGLE_PLAY]: 'IntegrationSectionGooglePlay',
 };
 
 export const integrationTriggerEvents = {

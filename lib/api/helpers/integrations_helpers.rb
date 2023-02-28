@@ -453,6 +453,20 @@ module API
               desc: 'The URL of the external wiki'
             }
           ],
+          'google-play' => [
+            {
+              required: true,
+              name: :service_account_key,
+              type: String,
+              desc: 'The Google Play Service Account Key'
+            },
+            {
+              required: true,
+              name: :service_account_key_file_name,
+              type: String,
+              desc: 'The Google Play Service Account Key File Name'
+            }
+          ],
           'hangouts-chat' => [
             {
               required: true,
@@ -924,6 +938,7 @@ module API
           ::Integrations::EmailsOnPush,
           ::Integrations::Ewm,
           ::Integrations::ExternalWiki,
+          ::Integrations::GooglePlay,
           ::Integrations::HangoutsChat,
           ::Integrations::Harbor,
           ::Integrations::Irker,

@@ -3635,6 +3635,46 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       end
     end
 
+    context 'for the google_play integration' do
+      let_it_be(:google_play_integration) { create(:google_play_integration) }
+
+      let(:google_play_variables) do
+        [
+          { key: 'SUPPLY_JSON_KEY_DATA', value: google_play_integration.service_account_key, masked: true, public: false }
+        ]
+      end
+
+      context 'when the google_play integration exists' do
+        context 'when a build is protected' do
+          before do
+            allow(build.pipeline).to receive(:protected_ref?).and_return(true)
+            build.project.update!(google_play_integration: google_play_integration)
+          end
+
+          it 'includes google_play variables' do
+            is_expected.to include(*google_play_variables)
+          end
+        end
+
+        context 'when a build is not protected' do
+          before do
+            allow(build.pipeline).to receive(:protected_ref?).and_return(false)
+            build.project.update!(google_play_integration: google_play_integration)
+          end
+
+          it 'does not include the google_play variable' do
+            expect(subject[:key] == 'SUPPLY_JSON_KEY_DATA').to eq(false)
+          end
+        end
+      end
+
+      context 'when the googel_play integration does not exist' do
+        it 'does not include google_play variable' do
+          expect(subject[:key] == 'SUPPLY_JSON_KEY_DATA').to eq(false)
+        end
+      end
+    end
+
     context 'when build has dependency which has dotenv variable' do
       let!(:prepare) { create(:ci_build, pipeline: pipeline, stage_idx: 0) }
       let!(:build) { create(:ci_build, pipeline: pipeline, stage_idx: 1, options: { dependencies: [prepare.name] }) }

@@ -32,6 +32,10 @@ export default {
       import(
         /* webpackChunkName: 'IntegrationSectionAppleAppStore' */ '~/integrations/edit/components/sections/apple_app_store.vue'
       ),
+    IntegrationSectionGooglePlay: () =>
+      import(
+        /* webpackChunkName: 'IntegrationSectionGooglePlay' */ '~/integrations/edit/components/sections/google_play.vue'
+      ),
   },
   directives: {
     SafeHtml,

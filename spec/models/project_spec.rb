@@ -50,6 +50,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
     it { is_expected.to have_one(:packagist_integration) }
     it { is_expected.to have_one(:pushover_integration) }
     it { is_expected.to have_one(:apple_app_store_integration) }
+    it { is_expected.to have_one(:google_play_integration) }
     it { is_expected.to have_one(:asana_integration) }
     it { is_expected.to have_many(:boards) }
     it { is_expected.to have_one(:campfire_integration) }

@@ -19,7 +19,7 @@ module Gitlab
           return if attachments.blank?
 
           new_text = attachments.reduce(note_text.text) do |text, attachment|
-            new_url = download_attachment(attachment)
+            new_url = gitlab_attachment_link(attachment)
             text.gsub(attachment.url, new_url)
           end
 
@@ -27,6 +27,28 @@ module Gitlab
         end
 
         private
+
+        def gitlab_attachment_link(attachment)
+          project_import_source = project.import_source
+
+          if attachment.part_of_project_blob?(project_import_source)
+            convert_project_content_link(attachment.url, project_import_source)
+          elsif attachment.media? || attachment.doc_belongs_to_project?(project_import_source)
+            download_attachment(attachment)
+          else # url to other GitHub project
+            attachment.url
+          end
+        end
+
+        # From: https://github.com/login/test-import-attachments-source/blob/main/example.md
+        # To: https://gitlab.com/login/test-import-attachments-target/-/blob/main/example.md
+        def convert_project_content_link(attachment_url, import_source)
+          path_without_domain = attachment_url.gsub(::Gitlab::GithubImport::MarkdownText.github_url, '')
+          path_without_import_source = path_without_domain.gsub(import_source, '').delete_prefix('/')
+          path_with_blob_prefix = "/-#{path_without_import_source}"
+
+          ::Gitlab::Routing.url_helpers.project_url(project) + path_with_blob_prefix
+        end
 
         # in: an instance of Gitlab::GithubImport::Markdown::Attachment
         # out: gitlab attachment markdown url

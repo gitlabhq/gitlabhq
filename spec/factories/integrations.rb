@@ -265,6 +265,15 @@ FactoryBot.define do
     app_store_private_key { File.read('spec/fixtures/auth_key.p8') }
   end
 
+  factory :google_play_integration, class: 'Integrations::GooglePlay' do
+    project
+    active { true }
+    type { 'Integrations::GooglePlay' }
+
+    service_account_key_file_name { 'service_account.json' }
+    service_account_key { File.read('spec/fixtures/service_account.json') }
+  end
+
   # this is for testing storing values inside properties, which is deprecated and will be removed in
   # https://gitlab.com/gitlab-org/gitlab/issues/29404
   trait :without_properties_callback do
