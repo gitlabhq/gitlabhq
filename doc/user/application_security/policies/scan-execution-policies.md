@@ -33,7 +33,7 @@ NOTE:
 Only group, subgroup, or project Owners have the [permissions](../../permissions.md#project-members-permissions)
 to select Security Policy Project.
 
-Once your policy is complete, save it by selecting **Create via merge request**
+Once your policy is complete, save it by selecting **Configure with a merge request**
 at the bottom of the editor. You are redirected to the merge request on the project's
 configured security policy project. If one does not link to your project, a security
 policy project is automatically created. Existing policies can also be

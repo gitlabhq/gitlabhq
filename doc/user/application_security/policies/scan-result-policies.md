@@ -29,7 +29,7 @@ NOTE:
 Only project Owners have the [permissions](../../permissions.md#project-members-permissions)
 to select Security Policy Project.
 
-Once your policy is complete, save it by selecting **Create merge request** at the bottom of the
+Once your policy is complete, save it by selecting **Configure with a merge request** at the bottom of the
 editor. This redirects you to the merge request on the project's configured security policy project.
 If a security policy project doesn't link to your project, GitLab creates such a project for you.
 Existing policies can also be removed from the editor interface by selecting **Delete policy** at
