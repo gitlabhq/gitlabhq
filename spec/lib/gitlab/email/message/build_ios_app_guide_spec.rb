@@ -2,12 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Email::Message::BuildIosAppGuide do
+RSpec.describe Gitlab::Email::Message::BuildIosAppGuide, :saas do
   subject(:message) { described_class.new }
-
-  before do
-    allow(Gitlab).to receive(:com?) { true }
-  end
 
   it 'contains the correct message', :aggregate_failures do
     expect(message.subject_line).to eq 'Get set up to build for iOS'

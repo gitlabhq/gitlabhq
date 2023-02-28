@@ -27,11 +27,7 @@ RSpec.describe Gitlab::Email::Message::InProductMarketing::Helper do
 
     subject(:class_with_helper) { dummy_class_with_helper.new(format) }
 
-    context 'gitlab.com' do
-      before do
-        allow(Gitlab).to receive(:com?) { true }
-      end
-
+    context 'for SaaS', :saas do
       context 'format is HTML' do
         it 'returns the correct HTML' do
           message = "If you no longer wish to receive marketing emails from us, " \

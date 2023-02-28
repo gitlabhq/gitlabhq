@@ -59,7 +59,6 @@ describe('InviteMembersBanner', () => {
     });
 
     const trackCategory = undefined;
-    const buttonClickEvent = 'invite_members_banner_button_clicked';
 
     it('sends the displayEvent when the banner is displayed', () => {
       const displayEvent = 'invite_members_banner_displayed';
@@ -78,12 +77,6 @@ describe('InviteMembersBanner', () => {
       it('calls openModal through the eventHub', () => {
         expect(eventHub.$emit).toHaveBeenCalledWith('openModal', {
           source: 'invite_members_banner',
-        });
-      });
-
-      it('sends the buttonClickEvent with correct trackCategory and trackLabel', () => {
-        expect(trackingSpy).toHaveBeenCalledWith(trackCategory, buttonClickEvent, {
-          label: provide.trackLabel,
         });
       });
     });

@@ -1093,9 +1093,7 @@ RSpec.describe Integrations::Jira do
         expect(integration.web_url).to eq('')
       end
 
-      it 'includes Atlassian referrer for gitlab.com' do
-        allow(Gitlab).to receive(:com?).and_return(true)
-
+      it 'includes Atlassian referrer for SaaS', :saas do
         expect(integration.web_url).to eq("http://jira.test.com/path?#{described_class::ATLASSIAN_REFERRER_GITLAB_COM.to_query}")
 
         allow(Gitlab).to receive(:staging?).and_return(true)

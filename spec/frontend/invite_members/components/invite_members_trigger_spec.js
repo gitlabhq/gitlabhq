@@ -103,22 +103,6 @@ describe.each(triggerItems)('with triggerElement as %s', (triggerItem) => {
       });
     });
   });
-
-  describe('tracking', () => {
-    it('does not add tracking attributes', () => {
-      createComponent();
-
-      expect(findButton().attributes('data-track-action')).toBeUndefined();
-      expect(findButton().attributes('data-track-label')).toBeUndefined();
-    });
-
-    it('adds tracking attributes', () => {
-      createComponent({ label: '_label_', event: '_event_' });
-
-      expect(findButton().attributes('data-track-action')).toBe('_event_');
-      expect(findButton().attributes('data-track-label')).toBe('_label_');
-    });
-  });
 });
 
 describe('side-nav with icon', () => {

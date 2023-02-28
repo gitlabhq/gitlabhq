@@ -14,15 +14,13 @@ RSpec.describe GitlabServicePingWorker, :clean_gitlab_redis_shared_state do
     allow(subject).to receive(:sleep)
   end
 
-  it 'does not run for GitLab.com when triggered from cron' do
-    allow(Gitlab).to receive(:com?).and_return(true)
+  it 'does not run for SaaS when triggered from cron', :saas do
     expect(ServicePing::SubmitService).not_to receive(:new)
 
     subject.perform
   end
 
-  it 'runs for GitLab.com when triggered manually' do
-    allow(Gitlab).to receive(:com?).and_return(true)
+  it 'runs for SaaS when triggered manually', :saas do
     expect(ServicePing::SubmitService).to receive(:new)
 
     subject.perform('triggered_from_cron' => false)

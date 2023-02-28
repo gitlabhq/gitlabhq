@@ -42,16 +42,6 @@ export default {
       required: false,
       default: 'button',
     },
-    event: {
-      type: String,
-      required: false,
-      default: '',
-    },
-    label: {
-      type: String,
-      required: false,
-      default: '',
-    },
     qaSelector: {
       type: String,
       required: false,
@@ -60,21 +50,11 @@ export default {
   },
   computed: {
     componentAttributes() {
-      const baseAttributes = {
+      return {
         class: this.classes,
         'data-qa-selector': this.qaSelector,
         'data-test-id': 'invite-members-button',
       };
-
-      if (this.event && this.label) {
-        return {
-          ...baseAttributes,
-          'data-track-action': this.event,
-          'data-track-label': this.label,
-        };
-      }
-
-      return baseAttributes;
     },
   },
   methods: {

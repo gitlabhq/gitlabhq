@@ -1422,11 +1422,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       let(:build) { create(:ci_build, trait, pipeline: pipeline) }
       let(:event) { state }
 
-      context "when transitioning to #{params[:state]}" do
-        before do
-          allow(Gitlab).to receive(:com?).and_return(true)
-        end
-
+      context "when transitioning to #{params[:state]}", :saas do
         it 'increments build_completed_report_type metric' do
           expect(
             ::Gitlab::Ci::Artifacts::Metrics

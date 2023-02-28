@@ -138,6 +138,7 @@ export default {
           name="diff-tree-search"
           class="form-control"
           data-testid="diff-tree-search"
+          data-qa-selector="diff_tree_search"
         />
         <button
           v-show="search"

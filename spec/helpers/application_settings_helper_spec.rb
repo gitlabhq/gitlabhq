@@ -68,11 +68,7 @@ RSpec.describe ApplicationSettingsHelper do
         ))
     end
 
-    context 'when GitLab.com' do
-      before do
-        allow(Gitlab).to receive(:com?).and_return(true)
-      end
-
+    context 'when on SaaS', :saas do
       it 'does not contain :deactivate_dormant_users' do
         expect(helper.visible_attributes).not_to include(:deactivate_dormant_users)
       end

@@ -31,6 +31,7 @@ module QA
 
         view 'app/assets/javascripts/diffs/components/tree_list.vue' do
           element :file_tree_container
+          element :diff_tree_search
         end
 
         view 'app/assets/javascripts/diffs/components/diff_file_header.vue' do
@@ -215,12 +216,23 @@ module QA
 
         def has_file?(file_name)
           open_file_tree
+
+          return true if has_element?(:file_name_content, file_name: file_name)
+
+          # Since the file tree uses virtual scrolling, search for file in case it is outside of viewport
+          search_file_tree(file_name)
           has_element?(:file_name_content, file_name: file_name)
         end
 
         def has_no_file?(file_name)
-          open_file_tree
+          # Since the file tree uses virtual scrolling, search for file to ensure non-existence
+          search_file_tree(file_name)
           has_no_element?(:file_name_content, file_name: file_name)
+        end
+
+        def search_file_tree(file_name)
+          open_file_tree
+          fill_element(:diff_tree_search, file_name)
         end
 
         def open_file_tree

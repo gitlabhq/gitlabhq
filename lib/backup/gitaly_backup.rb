@@ -77,11 +77,7 @@ module Backup
     #
     # @see https://gitlab.com/gitlab-org/gitaly/-/blob/master/doc/gitaly-backup.md
     def schedule_backup_job(repository, always_create:)
-      connection_params = Gitlab::GitalyClient.connection_data(repository.storage)
-
       json_job = {
-        address: connection_params['address'],
-        token: connection_params['token'],
         storage_name: repository.storage,
         relative_path: repository.relative_path,
         gl_project_path: repository.gl_project_path,
@@ -91,10 +87,21 @@ module Backup
       @input_stream.puts(json_job)
     end
 
+    def gitaly_servers
+      Gitlab.config.repositories.storages.keys.index_with do |storage_name|
+        Gitlab::GitalyClient.connection_data(storage_name)
+      end
+    end
+
+    def gitaly_servers_encoded
+      Base64.strict_encode64(Gitlab::Json.dump(gitaly_servers))
+    end
+
     def build_env
       {
         'SSL_CERT_FILE' => Gitlab::X509::Certificate.default_cert_file,
-        'SSL_CERT_DIR' => Gitlab::X509::Certificate.default_cert_dir
+        'SSL_CERT_DIR' => Gitlab::X509::Certificate.default_cert_dir,
+        'GITALY_SERVERS' => gitaly_servers_encoded
       }.merge(ENV)
     end
 

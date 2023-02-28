@@ -384,7 +384,7 @@ RSpec.describe 'Signup', feature_category: :user_profile do
       expect(page.body).not_to match(/#{new_user.password}/)
     end
 
-    context 'with invalid email', :saas, :js do
+    context 'with invalid email', :js do
       it_behaves_like 'user email validation' do
         let(:path) { new_user_registration_path }
       end
