@@ -64,7 +64,7 @@ Project Security Dashboards show statistics for all vulnerabilities with a curre
 To view total number of vulnerabilities over time:
 
 1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Security & Compliance > Security Dashboard**.
+1. On the left sidebar, select **Security and Compliance > Security Dashboard**.
 1. Filter and search for what you need.
    - To filter the chart by severity, select the legend name.
    - To view a specific time frame, use the time range handles (**{scroll-handle}**).
@@ -77,7 +77,7 @@ To view total number of vulnerabilities over time:
 To download an SVG image of the vulnerabilities chart:
 
 1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Security & Compliance > Security dashboard**.
+1. On the left sidebar, select **Security and Compliance > Security dashboard**.
 1. Select **Save chart as an image** (**{download}**).
 
 ## View vulnerabilities over time for a group

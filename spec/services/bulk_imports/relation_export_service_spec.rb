@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BulkImports::RelationExportService do
+RSpec.describe BulkImports::RelationExportService, feature_category: :importers do
   let_it_be(:jid) { 'jid' }
   let_it_be(:relation) { 'labels' }
   let_it_be(:user) { create(:user) }

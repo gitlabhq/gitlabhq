@@ -60,7 +60,7 @@ Additionally, the following project features can have different visibility level
   - Pipelines
 - Analytics
 - Requirements
-- Security & Compliance
+- Security and Compliance
 - Wiki
 - Snippets
 - Pages

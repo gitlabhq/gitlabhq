@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BulkImports::ExportService do
+RSpec.describe BulkImports::ExportService, feature_category: :importers do
   let_it_be(:group) { create(:group) }
   let_it_be(:user) { create(:user) }
 

@@ -17,7 +17,7 @@ module Sidebars
 
         override :title
         def title
-          _('Security & Compliance')
+          _('Security and Compliance')
         end
 
         override :sprite_icon

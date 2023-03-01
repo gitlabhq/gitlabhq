@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BulkImports::LfsObjectsExportService do
+RSpec.describe BulkImports::LfsObjectsExportService, feature_category: :importers do
   let_it_be(:project) { create(:project) }
   let_it_be(:lfs_json_filename) { "#{BulkImports::FileTransfer::ProjectConfig::LFS_OBJECTS_RELATION}.json" }
   let_it_be(:remote_url) { 'http://my-object-storage.local' }

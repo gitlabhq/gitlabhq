@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe AlertManagement::ProcessPrometheusAlertService do
+RSpec.describe AlertManagement::ProcessPrometheusAlertService, feature_category: :incident_management do
   let_it_be(:project, reload: true) { create(:project, :repository) }
 
   let(:service) { described_class.new(project, payload) }

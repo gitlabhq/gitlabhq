@@ -1941,9 +1941,8 @@ rspec:
 
 ### `hooks`
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/381840) in GitLab 15.6 [with a flag](../../administration/feature_flags.md) named `ci_hooks_pre_get_sources_script`. Disabled by default.
-> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/381840) in GitLab 15.9.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/381840-link) in GitLab 15.10. Feature flag `ci_hooks_pre_get_sources_script` removed.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/356850) in GitLab 15.6 [with a flag](../../administration/feature_flags.md) named `ci_hooks_pre_get_sources_script`. Disabled by default.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/381840) in GitLab 15.10. Feature flag `ci_hooks_pre_get_sources_script` removed.
 
 Use `hooks` to specify lists of commands to execute on the runner
 at certain stages of job execution, like before retrieving the Git repository.
@@ -1957,9 +1956,8 @@ at certain stages of job execution, like before retrieving the Git repository.
 
 #### `hooks:pre_get_sources_script`
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/381840) in GitLab 15.6 [with a flag](../../administration/feature_flags.md) named `ci_hooks_pre_get_sources_script`. Disabled by default.
-> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/381840) in GitLab 15.9.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/381840-link) in GitLab 15.10. Feature flag `ci_hooks_pre_get_sources_script` removed.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/356850) in GitLab 15.6 [with a flag](../../administration/feature_flags.md) named `ci_hooks_pre_get_sources_script`. Disabled by default.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/381840) in GitLab 15.10. Feature flag `ci_hooks_pre_get_sources_script` removed.
 
 Use `hooks:pre_get_sources_script` to specify a list of commands to execute on the runner
 before retrieving the Git repository and any submodules. You can use it

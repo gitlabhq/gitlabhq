@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BulkImports::UploadsExportService do
+RSpec.describe BulkImports::UploadsExportService, feature_category: :importers do
   let_it_be(:export_path) { Dir.mktmpdir }
   let_it_be(:project) { create(:project, avatar: fixture_file_upload('spec/fixtures/rails_sample.png', 'image/png')) }
 

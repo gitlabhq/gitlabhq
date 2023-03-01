@@ -41,7 +41,7 @@ all security features are configured by default.
 To view a project's security configuration:
 
 1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Security & Compliance > Configuration**.
+1. On the left sidebar, select **Security and Compliance > Configuration**.
 
 Select **Configuration history** to see the `.gitlab-ci.yml` file's history.
 

@@ -185,7 +185,7 @@ error may occur. In that case, use the [manual](#edit-the-gitlabciyml-file-manua
 To enable Secret Detection automatically:
 
 1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Security & Compliance > Configuration**.
+1. On the left sidebar, select **Security and compliance > Configuration**.
 1. In the **Secret Detection** row, select **Configure with a merge request**.
 1. Optional. Complete the fields.
 1. Select **Create merge request**.

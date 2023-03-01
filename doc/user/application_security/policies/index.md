@@ -13,7 +13,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 Policies in GitLab provide security teams a way to require scans of their choice to be run
 whenever a project pipeline runs according to the configuration specified. Security teams can
 therefore be confident that the scans they set up have not been changed, altered, or disabled. You
-can access these by navigating to your project's **Security & Compliance > Policies** page.
+can access these by navigating to your project's **Security and Compliance > Policies** page.
 
 GitLab supports the following security policies:
 
@@ -59,7 +59,7 @@ As a project owner, take the following steps to create or edit an association be
 project and a project that you would like to designate as the security policy project:
 
 1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Security & Compliance > Policies**.
+1. On the left sidebar, select **Security and Compliance > Policies**.
 1. Select **Edit Policy Project**, and search for and select the
    project you would like to link from the dropdown list.
 1. Select **Save**.
@@ -83,7 +83,7 @@ policy's information (for example, description or enforcement
 status), and create and edit deployed policies:
 
 1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Security & Compliance > Policies**.
+1. On the left sidebar, select **Security and Compliance > Policies**.
 
 ![Policies List Page](img/policies_list_v15_1.png)
 
@@ -94,7 +94,7 @@ status), and create and edit deployed policies:
 You can use the policy editor to create, edit, and delete policies:
 
 1. On the top bar, select **Main menu > Projects** and find your group.
-1. On the left sidebar, select **Security & Compliance > Policies**.
+1. On the left sidebar, select **Security and Compliance > Policies**.
    - To create a new policy, select **New policy** which is located in the **Policies** page's header.
      You can then select which type of policy to create.
    - To edit an existing policy, select **Edit policy** in the selected policy drawer.

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BulkImports::FileDecompressionService do
+RSpec.describe BulkImports::FileDecompressionService, feature_category: :importers do
   let_it_be(:tmpdir) { Dir.mktmpdir }
   let_it_be(:ndjson_filename) { 'labels.ndjson' }
   let_it_be(:ndjson_filepath) { File.join(tmpdir, ndjson_filename) }

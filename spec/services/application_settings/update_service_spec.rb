@@ -110,7 +110,7 @@ RSpec.describe ApplicationSettings::UpdateService do
     end
   end
 
-  describe 'markdown cache invalidators' do
+  describe 'markdown cache invalidators', feature_category: :team_planning do
     shared_examples 'invalidates markdown cache' do |attribute|
       let(:params) { attribute }
 
@@ -144,7 +144,7 @@ RSpec.describe ApplicationSettings::UpdateService do
     end
   end
 
-  describe 'performance bar settings' do
+  describe 'performance bar settings', feature_category: :application_performance do
     using RSpec::Parameterized::TableSyntax
 
     where(:params_performance_bar_enabled,
@@ -247,7 +247,7 @@ RSpec.describe ApplicationSettings::UpdateService do
     end
   end
 
-  context 'when external authorization is enabled' do
+  context 'when external authorization is enabled', feature_category: :system_access do
     before do
       enable_external_authorization_service_check
     end

@@ -310,7 +310,7 @@ RSpec.describe 'layouts/nav/sidebar/_project', feature_category: :navigation do
       it 'top level navigation link is not visible' do
         render
 
-        expect(rendered).not_to have_link('Security & Compliance')
+        expect(rendered).not_to have_link('Security and Compliance')
       end
     end
 
@@ -322,7 +322,7 @@ RSpec.describe 'layouts/nav/sidebar/_project', feature_category: :navigation do
       end
 
       it 'top level navigation link is visible' do
-        expect(rendered).to have_link('Security & Compliance')
+        expect(rendered).to have_link('Security and Compliance')
       end
 
       it 'security configuration link is visible' do

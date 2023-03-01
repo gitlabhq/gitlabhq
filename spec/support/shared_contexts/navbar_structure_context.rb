@@ -5,7 +5,7 @@ RSpec.shared_context 'project navbar structure' do
 
   let(:security_and_compliance_nav_item) do
     {
-      nav_item: _('Security & Compliance'),
+      nav_item: _('Security and Compliance'),
       nav_sub_items: [
         (_('Audit events') if Gitlab.ee?),
         _('Configuration')
@@ -165,7 +165,7 @@ RSpec.shared_context 'group navbar structure' do
 
   let(:security_and_compliance_nav_item) do
     {
-      nav_item: _('Security & Compliance'),
+      nav_item: _('Security and Compliance'),
       nav_sub_items: [
         _('Audit events')
       ]

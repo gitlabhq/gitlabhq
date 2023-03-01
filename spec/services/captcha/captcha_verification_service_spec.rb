@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Captcha::CaptchaVerificationService do
+RSpec.describe Captcha::CaptchaVerificationService, feature_category: :team_planning do
   describe '#execute' do
     let(:captcha_response) { 'abc123' }
     let(:fake_ip) { '1.2.3.4' }

@@ -90,7 +90,7 @@
       = render "projects/merge_requests/tabs/pane", name: "pipelines", id: "pipelines", class: "pipelines" do
         - if @project.builds_enabled?
           = render 'projects/commit/pipelines_list', disable_initialization: true, endpoint: pipelines_project_merge_request_path(@project, @merge_request)
-      - params = request.query_parameters.merge(diff_head: true)
+      - params = request.query_parameters.merge(ck: @diffs_batch_cache_key, diff_head: true)
       = render "projects/merge_requests/tabs/pane", name: "diffs", id: "js-diffs-app", class: "diffs", data: diffs_tab_pane_data(@project, @merge_request, params)
 
     .mr-loading-status

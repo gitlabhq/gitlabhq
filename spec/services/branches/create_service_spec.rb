@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Branches::CreateService, :use_clean_rails_redis_caching do
+RSpec.describe Branches::CreateService, :use_clean_rails_redis_caching, feature_category: :source_code_management do
   subject(:service) { described_class.new(project, user) }
 
   let_it_be(:project) { create(:project_empty_repo) }

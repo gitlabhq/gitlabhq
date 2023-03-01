@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BulkImports::ArchiveExtractionService do
+RSpec.describe BulkImports::ArchiveExtractionService, feature_category: :importers do
   let_it_be(:tmpdir) { Dir.mktmpdir }
   let_it_be(:filename) { 'symlink_export.tar' }
   let_it_be(:filepath) { File.join(tmpdir, filename) }

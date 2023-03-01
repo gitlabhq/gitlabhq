@@ -49,7 +49,7 @@ You can view audit events scoped to a group or project.
 To view a group's audit events:
 
 1. Go to the group.
-1. On the left sidebar, select **Security & Compliance > Audit Events**.
+1. On the left sidebar, select **Security and Compliance > Audit Events**.
 
 Group events do not include project audit events. Group events can also be accessed using the
 [Group Audit Events API](../api/audit_events.md#group-audit-events). Group event queries are limited to a maximum of 30

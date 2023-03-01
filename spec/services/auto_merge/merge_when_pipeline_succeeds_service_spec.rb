@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe AutoMerge::MergeWhenPipelineSucceedsService do
+RSpec.describe AutoMerge::MergeWhenPipelineSucceedsService, feature_category: :code_review_workflow do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, :repository) }
 

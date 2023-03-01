@@ -98,7 +98,7 @@ a YAML snippet that you can paste in your GitLab CI/CD configuration.
 To generate an API Fuzzing configuration snippet:
 
 1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Security & Compliance > Configuration**.
+1. On the left sidebar, select **Security and Compliance > Configuration**.
 1. In the **API Fuzzing** row, select **Enable API Fuzzing**.
 1. Complete the fields. For details see [Available CI/CD variables](#available-cicd-variables).
 1. Select **Generate code snippet**.
@@ -1994,7 +1994,7 @@ When configured correctly, a CI/CD pipeline contains a `fuzz` stage and an `apif
 typical operation, the job always succeeds even if faults are identified during fuzz testing.
 
 Faults are displayed on the **Security** pipeline tab with the suite name. When testing against the
-repositories default branch, the fuzzing faults are also shown on the Security & Compliance's
+repositories default branch, the fuzzing faults are also shown on the Security and Compliance's
 Vulnerability Report page.
 
 To prevent an excessive number of reported faults, the API fuzzing scanner limits the number of
@@ -2026,7 +2026,7 @@ Follow these steps to view details of a fuzzing fault:
 
 1. You can view faults in a project, or a merge request:
 
-   - In a project, go to the project's **Security & Compliance > Vulnerability Report**
+   - In a project, go to the project's **Security and Compliance > Vulnerability Report**
      page. This page shows all vulnerabilities from the default branch only.
    - In a merge request, go the merge request's **Security** section and select the **Expand**
      button. API Fuzzing faults are available in a section labeled

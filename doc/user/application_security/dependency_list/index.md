@@ -13,7 +13,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 Use the dependency list to review your project's dependencies and key
 details about those dependencies, including their known vulnerabilities. It is a collection of dependencies in your project, including existing and new findings.
 
-To see the dependency list, go to your project and select **Security & Compliance > Dependency list**.
+To see the dependency list, go to your project and select **Security and Compliance > Dependency list**.
 
 This information is sometimes referred to as a Software Bill of Materials, SBOM, or BOM.
 
