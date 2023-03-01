@@ -8,7 +8,7 @@ import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import * as actions from '~/pipelines/stores/test_reports/actions';
 import * as types from '~/pipelines/stores/test_reports/mutation_types';
 
-jest.mock('~/flash.js');
+jest.mock('~/flash');
 
 describe('Actions TestReports Store', () => {
   let mock;

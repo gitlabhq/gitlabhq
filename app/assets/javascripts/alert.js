@@ -15,7 +15,7 @@ export const VARIANT_TIP = 'tip';
  *
  * @example
  * // Render a new alert
- * import { createAlert, VARIANT_WARNING } from '~/flash';
+ * import { createAlert, VARIANT_WARNING } from '~/alert';
  *
  * createAlert({ message: 'My error message' });
  * createAlert({ message: 'My warning message', variant: VARIANT_WARNING });

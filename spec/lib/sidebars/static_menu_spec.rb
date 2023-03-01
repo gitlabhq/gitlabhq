@@ -21,13 +21,15 @@ RSpec.describe Sidebars::StaticMenu, feature_category: :navigation do
             title: "Is active",
             icon: nil,
             link: "foo2",
-            is_active: true
+            is_active: true,
+            pill_count: nil
           },
           {
             title: "Not active",
             icon: nil,
             link: "foo3",
-            is_active: false
+            is_active: false,
+            pill_count: nil
           }
         ]
       )

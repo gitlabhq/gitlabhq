@@ -78,6 +78,7 @@ module Sidebars
         icon: sprite_icon,
         link: link,
         is_active: is_active,
+        pill_count: has_pill? ? pill_count : nil,
         items: items
       }
     end

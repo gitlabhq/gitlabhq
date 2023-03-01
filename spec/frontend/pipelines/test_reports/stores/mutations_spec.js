@@ -3,7 +3,7 @@ import * as types from '~/pipelines/stores/test_reports/mutation_types';
 import mutations from '~/pipelines/stores/test_reports/mutations';
 import { createAlert } from '~/flash';
 
-jest.mock('~/flash.js');
+jest.mock('~/flash');
 
 describe('Mutations TestReports Store', () => {
   let mockState;

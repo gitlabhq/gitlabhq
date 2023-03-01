@@ -122,6 +122,7 @@ trigger-omnibus-env:
       echo "OMNIBUS_GITLAB_CACHE_UPDATE=${OMNIBUS_GITLAB_CACHE_UPDATE:-false}" >> $BUILD_ENV
       for version_file in *_VERSION; do echo "$version_file=$(cat $version_file)" >> $BUILD_ENV; done
       echo "OMNIBUS_GITLAB_RUBY3_BUILD=${OMNIBUS_GITLAB_RUBY3_BUILD:-false}" >> $BUILD_ENV
+      echo "OMNIBUS_GITLAB_RUBY2_BUILD=${OMNIBUS_GITLAB_RUBY2_BUILD:-false}" >> $BUILD_ENV
       echo "OMNIBUS_GITLAB_CACHE_EDITION=${OMNIBUS_GITLAB_CACHE_EDITION:-GITLAB}" >> $BUILD_ENV
       echo "GITLAB_ASSETS_TAG=$(assets_image_tag)" >> $BUILD_ENV
       echo "Built environment file for omnibus build:"
@@ -152,6 +153,7 @@ trigger-omnibus:
     SECURITY_SOURCES: $SECURITY_SOURCES
     CACHE_UPDATE: $OMNIBUS_GITLAB_CACHE_UPDATE
     RUBY3_BUILD: $OMNIBUS_GITLAB_RUBY3_BUILD
+    RUBY2_BUILD: $OMNIBUS_GITLAB_RUBY2_BUILD
     CACHE_EDITION: $OMNIBUS_GITLAB_CACHE_EDITION
     SKIP_QA_DOCKER: "true"
     SKIP_QA_TEST: "true"

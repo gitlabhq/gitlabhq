@@ -57,6 +57,7 @@ git push origin --tags
 
 ## Related topics
 
-- [Tagging](https://git-scm.com/book/en/v2/Git-Basics-Tagging) Git reference page
-- [Protected tags](../../protected_tags.md)
-- [Tags API](../../../../api/tags.md)
+- [Tagging](https://git-scm.com/book/en/v2/Git-Basics-Tagging) Git reference page.
+- [Protected tags](../../protected_tags.md).
+- [Tags API](../../../../api/tags.md).
+- [Use `if: $CI_COMMIT_TAG` to run CI/CD pipelines for tags](../../../../ci/jobs/job_control.md#common-if-clauses-for-rules).

@@ -1,6 +1,6 @@
 import * as Sentry from '@sentry/browser';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
-import { createAlert, VARIANT_WARNING } from '~/flash';
+import { createAlert, VARIANT_WARNING } from '~/alert';
 
 jest.mock('@sentry/browser');
 

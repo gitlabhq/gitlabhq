@@ -8,7 +8,7 @@ import * as types from '~/projects/commit/store/mutation_types';
 import getInitialState from '~/projects/commit/store/state';
 import mockData from '../mock_data';
 
-jest.mock('~/flash.js');
+jest.mock('~/flash');
 
 describe('Commit form modal store actions', () => {
   let axiosMock;

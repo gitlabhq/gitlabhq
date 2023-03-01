@@ -6,7 +6,7 @@ import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_BAD_REQUEST, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 
-jest.mock('~/flash.js');
+jest.mock('~/flash');
 
 describe('Contributors store actions', () => {
   describe('fetchChartData', () => {

@@ -7,7 +7,7 @@ import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_BAD_REQUEST, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { visitUrl } from '~/lib/utils/url_utility';
 
-jest.mock('~/flash.js');
+jest.mock('~/flash');
 jest.mock('~/lib/utils/url_utility');
 
 let mock;

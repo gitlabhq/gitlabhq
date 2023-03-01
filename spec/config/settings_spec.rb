@@ -198,4 +198,18 @@ RSpec.describe Settings, feature_category: :system_access do
       end
     end
   end
+
+  describe '.build_sidekiq_routing_rules' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:input_rules, :result) do
+      nil                         | [['*', nil]]
+      []                          | [['*', nil]]
+      [['name=foobar', 'foobar']] | [['name=foobar', 'foobar']]
+    end
+
+    with_them do
+      it { expect(described_class.send(:build_sidekiq_routing_rules, input_rules)).to eq(result) }
+    end
+  end
 end

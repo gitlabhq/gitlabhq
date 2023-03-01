@@ -23,14 +23,23 @@ RSpec.describe Sidebars::Menu, feature_category: :navigation do
   end
 
   describe '#serialize_for_super_sidebar' do
+    before do
+      allow(menu).to receive(:title).and_return('Title')
+      allow(menu).to receive(:active_routes).and_return({ path: 'foo' })
+    end
+
     it 'returns a tree-like structure of itself and all menu items' do
       menu.add_item(Sidebars::MenuItem.new(title: 'Is active', link: 'foo2', active_routes: { controller: 'fooc' }))
-      menu.add_item(Sidebars::MenuItem.new(title: 'Not active', link: 'foo3', active_routes: { controller: 'barc' }))
+      menu.add_item(Sidebars::MenuItem.new(
+        title: 'Not active',
+        link: 'foo3',
+        active_routes: { controller: 'barc' },
+        has_pill: true,
+        pill_count: 10
+      ))
       menu.add_item(nil_menu_item)
 
       allow(context).to receive(:route_is_active).and_return(->(x) { x[:controller] == 'fooc' })
-      allow(menu).to receive(:title).and_return('Title')
-      allow(menu).to receive(:active_routes).and_return({ path: 'foo' })
 
       expect(menu.serialize_for_super_sidebar).to eq(
         {
@@ -38,20 +47,37 @@ RSpec.describe Sidebars::Menu, feature_category: :navigation do
           icon: nil,
           link: "foo2",
           is_active: true,
+          pill_count: nil,
           items: [
             {
               title: "Is active",
               icon: nil,
               link: "foo2",
-              is_active: true
+              is_active: true,
+              pill_count: nil
             },
             {
               title: "Not active",
               icon: nil,
               link: "foo3",
-              is_active: false
+              is_active: false,
+              pill_count: 10
             }
           ]
+        })
+    end
+
+    it 'returns pill data if defined' do
+      allow(menu).to receive(:has_pill?).and_return(true)
+      allow(menu).to receive(:pill_count).and_return('foo')
+      expect(menu.serialize_for_super_sidebar).to eq(
+        {
+          title: "Title",
+          icon: nil,
+          link: nil,
+          is_active: false,
+          pill_count: 'foo',
+          items: []
         })
     end
   end

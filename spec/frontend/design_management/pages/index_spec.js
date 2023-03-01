@@ -41,7 +41,7 @@ import {
   moveDesignMutationResponseWithErrors,
 } from '../mock_data/apollo_mock';
 
-jest.mock('~/flash.js');
+jest.mock('~/flash');
 const mockPageEl = {
   classList: {
     remove: jest.fn(),

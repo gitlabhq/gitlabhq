@@ -102,6 +102,10 @@ module ActiveRecord
       @occurrences ||= @log.group_by(&:to_s).transform_values(&:count)
     end
 
+    def occurrences_starting_with(str)
+      occurrences.select { |query, _count| query.starts_with?(str) }
+    end
+
     def ignorable?(values)
       return true if skip_schema_queries && values[:name]&.include?("SCHEMA")
       return true if values[:name]&.match(/License Load/)

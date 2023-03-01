@@ -12,6 +12,7 @@ stages:
   - post-qa
   - pages
   - notify
+  - release-environments
 
 # always use `gitlab-org` runners, however
 # in cases where jobs require Docker-in-Docker, the job
@@ -32,6 +33,8 @@ default:
 
 .ruby2-variables: &ruby2-variables
   RUBY_VERSION: "2.7"
+  OMNIBUS_GITLAB_RUBY2_BUILD: "true"
+  OMNIBUS_GITLAB_CACHE_EDITION: "GITLAB_RUBY2"
 
 .default-branch-incident-variables: &default-branch-incident-variables
   CREATE_INCIDENT_FOR_PIPELINE_FAILURE: "true"

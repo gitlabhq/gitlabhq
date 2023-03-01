@@ -136,8 +136,6 @@ module AuthenticatesWithTwoFactor
       get_options = WebAuthn::Credential.options_for_get(allow: webauthn_registration_ids,
                                                          user_verification: 'discouraged',
                                                          extensions: { appid: WebAuthn.configuration.origin })
-
-      session[:credentialRequestOptions] = get_options
       session[:challenge] = get_options.challenge
       gon.push(webauthn: { options: Gitlab::Json.dump(get_options) })
     end

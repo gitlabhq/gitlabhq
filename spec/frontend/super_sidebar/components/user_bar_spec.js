@@ -1,3 +1,4 @@
+import { GlBadge } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { __ } from '~/locale';
 import CreateMenu from '~/super_sidebar/components/create_menu.vue';
@@ -13,11 +14,10 @@ describe('UserBar component', () => {
   const findCounter = (at) => wrapper.findAllComponents(Counter).at(at);
   const findMergeRequestMenu = () => wrapper.findComponent(MergeRequestMenu);
 
-  const createWrapper = (props = {}) => {
+  const createWrapper = (extraSidebarData = {}) => {
     wrapper = shallowMountExtended(UserBar, {
       propsData: {
-        sidebarData,
-        ...props,
+        sidebarData: { ...sidebarData, ...extraSidebarData },
       },
       provide: {
         rootPath: '/',
@@ -54,6 +54,25 @@ describe('UserBar component', () => {
       expect(findCounter(2).props('count')).toBe(sidebarData.todos_pending_count);
       expect(findCounter(2).props('href')).toBe('/dashboard/todos');
       expect(findCounter(2).props('label')).toBe(__('To-Do list'));
+    });
+  });
+
+  describe('GitLab Next badge', () => {
+    describe('when on canary', () => {
+      it('should render a badge to switch off GitLab Next', () => {
+        createWrapper({ gitlab_com_and_canary: true });
+        const badge = wrapper.findComponent(GlBadge);
+        expect(badge.text()).toBe('Next');
+        expect(badge.attributes('href')).toBe(sidebarData.canary_toggle_com_url);
+      });
+    });
+
+    describe('when not on canary', () => {
+      it('should not render the GitLab Next badge', () => {
+        createWrapper({ gitlab_com_and_canary: false });
+        const badge = wrapper.findComponent(GlBadge);
+        expect(badge.exists()).toBe(false);
+      });
     });
   });
 });

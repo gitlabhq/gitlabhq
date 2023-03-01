@@ -851,7 +851,7 @@ end
 #
 Settings['sidekiq'] ||= Settingslogic.new({})
 Settings['sidekiq']['log_format'] ||= 'default'
-Settings['sidekiq']['routing_rules'] ||= []
+Settings['sidekiq']['routing_rules'] = Settings.build_sidekiq_routing_rules(Settings['sidekiq']['routing_rules'])
 
 #
 # GitLab Shell

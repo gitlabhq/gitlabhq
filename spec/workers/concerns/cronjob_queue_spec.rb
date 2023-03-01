@@ -40,10 +40,6 @@ RSpec.describe CronjobQueue do
     stub_const("AnotherWorker", another_worker)
   end
 
-  it 'sets the queue name of a worker' do
-    expect(worker.sidekiq_options['queue'].to_s).to eq('cronjob:dummy')
-  end
-
   it 'disables retrying of failed jobs' do
     expect(worker.sidekiq_options['retry']).to eq(false)
   end

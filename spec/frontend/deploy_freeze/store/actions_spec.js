@@ -11,7 +11,7 @@ import { freezePeriodsFixture } from '../helpers';
 import { timezoneDataFixture } from '../../vue_shared/components/timezone_dropdown/helpers';
 
 jest.mock('~/api.js');
-jest.mock('~/flash.js');
+jest.mock('~/flash');
 
 describe('deploy freeze store actions', () => {
   const freezePeriodFixture = freezePeriodsFixture[0];

@@ -180,6 +180,9 @@ const alias = {
     ROOT_PATH,
     'app/assets/javascripts/sentry/sentry_browser_wrapper.js',
   ),
+  // temporary alias until we replace all `flash` imports for `alert`
+  // https://gitlab.com/gitlab-org/gitlab/-/merge_requests/109449
+  '~/flash': path.join(ROOT_PATH, 'app/assets/javascripts/alert.js'),
   '~': path.join(ROOT_PATH, 'app/assets/javascripts'),
   emojis: path.join(ROOT_PATH, 'fixtures/emojis'),
   empty_states: path.join(ROOT_PATH, 'app/views/shared/empty_states'),

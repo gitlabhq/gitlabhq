@@ -15,7 +15,8 @@ module Gitlab
               # `Repository#blobs_at` does not support files with the `/` prefix.
               @location = Gitlab::Utils.remove_leading_slashes(params[:file])
 
-              @project_name = get_project_name(params[:project])
+              # We are using the same downcase in the `project` method.
+              @project_name = get_project_name(params[:project]).to_s.downcase
               @ref_name = params[:ref] || 'HEAD'
 
               super
@@ -39,6 +40,15 @@ module Gitlab
               )
             end
 
+            def preload_context
+              #
+              # calling these methods lazily loads them via BatchLoader
+              #
+              project
+              can_access_local_content?
+              sha
+            end
+
             def validate_context!
               if !can_access_local_content?
                 errors.push("Project `#{masked_project_name}` not found or access denied! Make sure any includes in the pipeline configuration are correctly defined.")
@@ -58,21 +68,45 @@ module Gitlab
             private
 
             def project
-              strong_memoize(:project) do
-                ::Project.find_by_full_path(project_name)
+              return legacy_project if ::Feature.disabled?(:ci_batch_project_includes_context, context.project)
+
+              BatchLoader.for(project_name).batch do |project_names, loader|
+                ::Project.where_full_path_in(project_names.uniq).each do |project|
+                  # We are using the same downcase in the `initialize` method.
+                  loader.call(project.full_path.downcase, project)
+                end
               end
             end
 
             def can_access_local_content?
-              strong_memoize(:can_access_local_content) do
-                context.logger.instrument(:config_file_project_validate_access) do
-                  Ability.allowed?(context.user, :download_code, project)
+              if ::Feature.disabled?(:ci_batch_project_includes_context, context.project)
+                return legacy_can_access_local_content?
+              end
+
+              context.logger.instrument(:config_file_project_validate_access) do
+                BatchLoader.for(project_name)
+                          .batch(key: context.user) do |project_names, loader, args|
+                  project_names.uniq.each do |project_name|
+                    context.logger.instrument(:config_file_project_validate_access) do
+                      loader.call(project_name, Ability.allowed?(args[:key], :download_code, project))
+                    end
+                  end
+                end
+              end
+            end
+
+            def sha
+              return legacy_sha if ::Feature.disabled?(:ci_batch_project_includes_context, context.project)
+
+              BatchLoader.for([project_name, ref_name]).batch do |project_name_ref_pairs, loader|
+                project_name_ref_pairs.uniq.each do |project_name, ref_name|
+                  loader.call([project_name, ref_name], project.commit(ref_name).try(:sha))
                 end
               end
             end
 
             def fetch_local_content
-              BatchLoader.for([sha, location])
+              BatchLoader.for([sha.to_s, location])
                          .batch(key: project) do |locations, loader, args|
                 context.logger.instrument(:config_file_fetch_project_content) do
                   args[:key].repository.blobs_at(locations).each do |blob|
@@ -84,8 +118,22 @@ module Gitlab
               end
             end
 
-            def sha
-              strong_memoize(:sha) do
+            def legacy_project
+              strong_memoize(:legacy_project) do
+                ::Project.find_by_full_path(project_name)
+              end
+            end
+
+            def legacy_can_access_local_content?
+              strong_memoize(:legacy_can_access_local_content) do
+                context.logger.instrument(:config_file_project_validate_access) do
+                  Ability.allowed?(context.user, :download_code, project)
+                end
+              end
+            end
+
+            def legacy_sha
+              strong_memoize(:legacy_sha) do
                 project.commit(ref_name).try(:sha)
               end
             end
@@ -94,7 +142,7 @@ module Gitlab
             def expand_context_attrs
               {
                 project: project,
-                sha: sha,
+                sha: sha.to_s, # we need to use `.to_s` to load the value from the BatchLoader
                 user: context.user,
                 parent_pipeline: context.parent_pipeline,
                 variables: context.variables

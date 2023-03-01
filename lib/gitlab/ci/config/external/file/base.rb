@@ -73,6 +73,18 @@ module Gitlab
               validate_hash!
             end
 
+            # This method is overridden to load context into the memoized result
+            # or to lazily load context via BatchLoader
+            def preload_context
+              # no-op
+            end
+
+            def preload_content
+              # calling the `content` method either loads content into the memoized result
+              # or lazily loads it via BatchLoader
+              content
+            end
+
             def validate_location!
               if invalid_location_type?
                 errors.push("Included file `#{masked_location}` needs to be a string")

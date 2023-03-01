@@ -15,7 +15,7 @@ import {
 } from '~/packages_and_registries/shared/constants';
 import { npmPackage as packageEntity } from '../../mock_data';
 
-jest.mock('~/flash.js');
+jest.mock('~/flash');
 jest.mock('~/api.js');
 
 describe('Actions Package details store', () => {

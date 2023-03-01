@@ -1,11 +1,12 @@
 <script>
-import { GlCollapse, GlIcon } from '@gitlab/ui';
+import { GlCollapse, GlIcon, GlBadge } from '@gitlab/ui';
 
 export default {
   name: 'NavItem',
   components: {
     GlCollapse,
     GlIcon,
+    GlBadge,
   },
   props: {
     item: {
@@ -24,6 +25,15 @@ export default {
     },
     isSection() {
       return Boolean(this.item?.items?.length);
+    },
+    pillData() {
+      return this.item.pill_count;
+    },
+    hasPill() {
+      return (
+        Number.isFinite(this.pillData) ||
+        (typeof this.pillData === 'string' && this.pillData !== '')
+      );
     },
     isActive() {
       if (this.isSection) {
@@ -84,8 +94,11 @@ export default {
           {{ item.subtitle }}
         </div>
       </div>
-      <span v-if="isSection" class="gl-flex-grow-1 gl-text-right gl-mr-3">
-        <gl-icon :name="collapseIcon" />
+      <span v-if="isSection || hasPill" class="gl-flex-grow-1 gl-text-right gl-mr-3">
+        <gl-badge v-if="hasPill" size="sm" variant="info">
+          {{ pillData }}
+        </gl-badge>
+        <gl-icon v-else-if="isSection" :name="collapseIcon" />
       </span>
     </a>
     <gl-collapse v-if="isSection" :id="item.title" v-model="expanded">

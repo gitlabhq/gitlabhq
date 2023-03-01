@@ -89,6 +89,9 @@ e2e:package-and-test:
       - DOCKER_VERSION
       - REGISTRY_GROUP
       - REGISTRY_HOST
+      - OMNIBUS_GITLAB_CACHE_EDITION
+      - OMNIBUS_GITLAB_RUBY3_BUILD
+      - OMNIBUS_GITLAB_RUBY2_BUILD
   trigger:
     strategy: depend
     forward:

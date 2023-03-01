@@ -11,7 +11,7 @@ import { HTTP_STATUS_BAD_REQUEST, HTTP_STATUS_OK } from '~/lib/utils/http_status
 import Poll from '~/lib/utils/poll';
 import { apiData } from '../mock_data';
 
-jest.mock('~/flash.js');
+jest.mock('~/flash');
 
 describe('Clusters store actions', () => {
   let captureException;

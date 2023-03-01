@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlTooltipDirective } from '@gitlab/ui';
+import { GlBadge, GlButton, GlTooltipDirective } from '@gitlab/ui';
 import { __ } from '~/locale';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import logo from '../../../../views/shared/_logo.svg';
@@ -10,10 +10,14 @@ import MergeRequestMenu from './merge_request_menu.vue';
 import UserMenu from './user_menu.vue';
 
 export default {
+  // "GitLab Next" is a proper noun, so don't translate "Next"
+  /* eslint-disable-next-line @gitlab/require-i18n-strings */
+  NEXT_LABEL: 'Next',
   logo,
   components: {
     Counter,
     CreateMenu,
+    GlBadge,
     GlButton,
     MergeRequestMenu,
     UserMenu,
@@ -48,9 +52,15 @@ export default {
 <template>
   <div class="user-bar">
     <div class="gl-display-flex gl-align-items-center gl-px-3 gl-py-2 gl-gap-2">
-      <div class="gl-flex-grow-1">
-        <a v-safe-html="$options.logo" :href="rootPath"></a>
-      </div>
+      <a v-safe-html="$options.logo" :href="rootPath"></a>
+      <gl-badge
+        v-if="sidebarData.gitlab_com_and_canary"
+        variant="success"
+        :href="sidebarData.canary_toggle_com_url"
+        size="sm"
+        >{{ $options.NEXT_LABEL }}</gl-badge
+      >
+      <div class="gl-flex-grow-1"></div>
       <gl-button
         v-gl-tooltip:super-sidebar.hover.bottom="$options.i18n.collapseSidebar"
         :aria-label="$options.i18n.collapseSidebar"

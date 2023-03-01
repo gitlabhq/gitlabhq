@@ -13,7 +13,7 @@ import {
 import { createAlert } from '~/flash';
 import design from '../mock_data/design';
 
-jest.mock('~/flash.js');
+jest.mock('~/flash');
 
 describe('Design Management cache update', () => {
   const mockErrors = ['code red!'];

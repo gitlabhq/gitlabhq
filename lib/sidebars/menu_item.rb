@@ -37,7 +37,8 @@ module Sidebars
         title: title,
         icon: sprite_icon,
         link: link,
-        active_routes: active_routes
+        active_routes: active_routes,
+        pill_count: has_pill ? pill_count : nil
         # Check whether support is needed for the following properties,
         # in order to get feature parity with the HAML renderer
         # https://gitlab.com/gitlab-org/gitlab/-/issues/391864
@@ -47,9 +48,6 @@ module Sidebars
         # nav_link_html_options
         #
         # item_id
-        #
-        # has_pill
-        # pill_count
       }
     end
 

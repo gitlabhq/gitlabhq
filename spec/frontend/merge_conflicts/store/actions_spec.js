@@ -10,7 +10,7 @@ import * as actions from '~/merge_conflicts/store/actions';
 import * as types from '~/merge_conflicts/store/mutation_types';
 import { restoreFileLinesState, markLine, decorateFiles } from '~/merge_conflicts/utils';
 
-jest.mock('~/flash.js');
+jest.mock('~/flash');
 jest.mock('~/merge_conflicts/utils');
 jest.mock('~/lib/utils/cookies');
 

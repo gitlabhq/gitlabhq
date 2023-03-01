@@ -1,0 +1,22 @@
+---
+start-release-environments-pipeline:
+  allow_failure: true
+  extends:
+    - .release-environments:rules:start-release-environments-pipeline
+  stage: release-environments
+  # We do not want to have ALL global variables passed as trigger variables,
+  # as they cannot be overridden. See this issue for more context:
+  #
+  # https://gitlab.com/gitlab-org/gitlab/-/issues/387183
+  inherit:
+    variables: false
+
+  # These variables are set in the pipeline schedules.
+  # They need to be explicitly passed on to the child pipeline.
+  # https://docs.gitlab.com/ee/ci/pipelines/multi_project_pipelines.html#pass-cicd-variables-to-a-downstream-pipeline-by-using-the-variables-keyword
+  variables:
+    # This is needed by `release-environments-build-cng-env` (`.gitlab/ci/release-environments/main.gitlab-ci.yml`).
+    PARENT_PIPELINE_ID: $CI_PIPELINE_ID
+  trigger:
+    strategy: depend
+    include: .gitlab/ci/release-environments/main.gitlab-ci.yml

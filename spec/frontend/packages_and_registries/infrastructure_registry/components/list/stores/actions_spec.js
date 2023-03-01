@@ -9,7 +9,7 @@ import * as actions from '~/packages_and_registries/infrastructure_registry/list
 import * as types from '~/packages_and_registries/infrastructure_registry/list/stores/mutation_types';
 import { DELETE_PACKAGE_ERROR_MESSAGE } from '~/packages_and_registries/shared/constants';
 
-jest.mock('~/flash.js');
+jest.mock('~/flash');
 jest.mock('~/api.js');
 
 describe('Actions Package list store', () => {

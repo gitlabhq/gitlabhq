@@ -123,6 +123,7 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
         gitlab_version: Gitlab.version_info,
         gitlab_version_check: helper.gitlab_version_check,
         gitlab_com_but_not_canary: Gitlab.com_but_not_canary?,
+        gitlab_com_and_canary: Gitlab.com_and_canary?,
         canary_toggle_com_url: Gitlab::Saas.canary_toggle_com_url
       })
     end

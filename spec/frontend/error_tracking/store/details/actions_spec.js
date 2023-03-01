@@ -14,7 +14,7 @@ import Poll from '~/lib/utils/poll';
 let mockedAdapter;
 let mockedRestart;
 
-jest.mock('~/flash.js');
+jest.mock('~/flash');
 jest.mock('~/lib/utils/url_utility');
 
 describe('Sentry error details store actions', () => {
