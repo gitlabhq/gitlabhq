@@ -148,15 +148,6 @@ RSpec.describe NotesFinder do
         expect(notes.count).to eq(1)
       end
 
-      it 'finds notes on personal snippets' do
-        note = create(:note_on_personal_snippet)
-        params = { project: project, target_type: 'personal_snippet', target_id: note.noteable_id }
-
-        notes = described_class.new(user, params).execute
-
-        expect(notes.count).to eq(1)
-      end
-
       it 'raises an exception for an invalid target_type' do
         params[:target_type] = 'invalid'
         expect { described_class.new(user, params).execute }.to raise_error("invalid target_type '#{params[:target_type]}'")
@@ -188,6 +179,44 @@ RSpec.describe NotesFinder do
           project.add_guest(user)
 
           expect { described_class.new(user, params).execute }.to raise_error(ActiveRecord::RecordNotFound)
+        end
+      end
+
+      context 'when targeting personal_snippet' do
+        using RSpec::Parameterized::TableSyntax
+
+        let(:author) { create(:user) }
+        let(:user) { create(:user, email: 'foo@baz.com') }
+        let(:admin) { create(:admin) }
+
+        where(:snippet_visibility, :current_user, :access) do
+          Snippet::PRIVATE | ref(:author) |  true
+          Snippet::PRIVATE | ref(:admin)  |  true
+          Snippet::PRIVATE | ref(:user)   |  false
+          Snippet::PUBLIC  | ref(:author) |  true
+          Snippet::PUBLIC  | ref(:user)   |  true
+        end
+
+        with_them do
+          let(:personal_snippet) { create(:personal_snippet, author: author, visibility_level: snippet_visibility) }
+          let(:note) { create(:note, noteable: personal_snippet) }
+          let(:params) { { project: project, target_type: 'personal_snippet', target_id: note.noteable.id } }
+
+          subject(:notes) do
+            described_class.new(current_user, params).execute
+          end
+
+          before do
+            allow(admin).to receive(:can_read_all_resources?).and_return(true)
+          end
+
+          it 'returns the proper access' do
+            if access
+              expect(notes.count).to eq(1)
+            else
+              expect { notes }.to raise_error(::ActiveRecord::RecordNotFound)
+            end
+          end
         end
       end
     end
