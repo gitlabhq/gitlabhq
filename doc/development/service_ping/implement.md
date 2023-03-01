@@ -330,7 +330,6 @@ Implemented using Redis methods [PFADD](https://redis.io/commands/pfadd/) and [P
 
    ```yaml
    - name: users_creating_epics
-     category: epics_usage
      redis_slot: users
      aggregation: weekly
    ```
@@ -343,12 +342,8 @@ Implemented using Redis methods [PFADD](https://redis.io/commands/pfadd/) and [P
 
      [See Metric name](metrics_dictionary.md#metric-name) for a complete guide on metric naming suggestion.
 
-     Consider including in the event's name the Redis slot to be able to count totals for a specific category.
-
      Example names: `users_creating_epics`, `users_triggering_security_scans`.
 
-   - `category`: event category. Used for getting total counts for events in a category, for easier
-     access to a group of events.
    - `redis_slot`: optional Redis slot. Default value: event name. Only event data that is stored in the same slot
      can be aggregated. Ensure keys are in the same slot. For example:
      `users_creating_epics` with `redis_slot: 'users'` builds Redis key
@@ -533,16 +528,6 @@ For each event we add metrics for the weekly and monthly time frames, and totals
 - `#{event_name}_weekly`: Data for 7 days for daily [aggregation](#add-new-events) events and data for the last complete week for weekly [aggregation](#add-new-events) events.
 - `#{event_name}_monthly`: Data for 28 days for daily [aggregation](#add-new-events) events and data for the last 4 complete weeks for weekly [aggregation](#add-new-events) events.
 
-Redis HLL implementation calculates total metrics when both of these conditions are met:
-
-- The category is manually included in [CATEGORIES_FOR_TOTALS](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data_counters/hll_redis_counter.rb#L21).
-- There is more than one metric for the same category, aggregation, and Redis slot.
-
-We add total unique counts for the weekly and monthly time frames where applicable:
-
-- `#{category}_total_unique_counts_weekly`: Total unique counts for events in the same category for the last 7 days or the last complete week, if events are in the same Redis slot and we have more than one metric.
-- `#{category}_total_unique_counts_monthly`: Total unique counts for events in same category for the last 28 days or the last 4 complete weeks, if events are in the same Redis slot and we have more than one metric.
-
 Example of `redis_hll_counters` data:
 
 ```ruby
@@ -567,6 +552,7 @@ Example of `redis_hll_counters` data:
      "ide_edit_total_unique_counts_weekly"=>0,
      "ide_edit_total_unique_counts_monthly"=>0}
  }
+}
 ```
 
 Example:

@@ -2,8 +2,6 @@
 
 module WebHooks
   module HasWebHooks
-    extend ActiveSupport::Concern
-
     WEB_HOOK_CACHE_EXPIRY = 1.hour
 
     def any_hook_failed?
@@ -15,7 +13,7 @@ module WebHooks
     end
 
     def last_failure_redis_key
-      "web_hooks:last_failure:project-#{id}"
+      "web_hooks:last_failure:#{self.class.name.underscore}-#{id}"
     end
 
     def get_web_hook_failure
@@ -41,6 +39,14 @@ module WebHooks
 
         state
       end
+    end
+
+    def last_webhook_failure
+      last_failure = Gitlab::Redis::SharedState.with do |redis|
+        redis.get(last_failure_redis_key)
+      end
+
+      DateTime.parse(last_failure) if last_failure
     end
   end
 end

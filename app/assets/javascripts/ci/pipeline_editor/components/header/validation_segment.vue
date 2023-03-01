@@ -112,13 +112,11 @@ export default {
       {{ $options.i18n.loading }}
     </template>
     <span v-else data-testid="validation-segment">
-      <span class="gl-max-w-full">
+      <span class="gl-max-w-full" data-qa-selector="validation_message_content">
         <gl-icon :name="icon" />
         <gl-sprintf :message="message">
           <template v-if="hasLink" #link="{ content }">
-            <gl-link data-qa-selector="validation_message_content" :href="helpPath">{{
-              content
-            }}</gl-link>
+            <gl-link :href="helpPath">{{ content }}</gl-link>
           </template>
         </gl-sprintf>
       </span>

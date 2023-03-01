@@ -1,46 +1,35 @@
 ---
 # Ecosystem category
 - name: i_ecosystem_jira_service_close_issue
-  category: ecosystem
   redis_slot: ecosystem
   aggregation: weekly
 - name: i_ecosystem_jira_service_cross_reference
-  category: ecosystem
   redis_slot: ecosystem
   aggregation: weekly
 - name: i_ecosystem_slack_service_issue_notification
-  category: ecosystem
   redis_slot: ecosystem
   aggregation: weekly
 - name: i_ecosystem_slack_service_push_notification
-  category: ecosystem
   redis_slot: ecosystem
   aggregation: weekly
 - name: i_ecosystem_slack_service_deployment_notification
-  category: ecosystem
   redis_slot: ecosystem
   aggregation: weekly
 - name: i_ecosystem_slack_service_wiki_page_notification
-  category: ecosystem
   redis_slot: ecosystem
   aggregation: weekly
 - name: i_ecosystem_slack_service_merge_request_notification
-  category: ecosystem
   redis_slot: ecosystem
   aggregation: weekly
 - name: i_ecosystem_slack_service_note_notification
-  category: ecosystem
   redis_slot: ecosystem
   aggregation: weekly
 - name: i_ecosystem_slack_service_tag_push_notification
-  category: ecosystem
   redis_slot: ecosystem
   aggregation: weekly
 - name: i_ecosystem_slack_service_confidential_note_notification
-  category: ecosystem
   redis_slot: ecosystem
   aggregation: weekly
 - name: i_ecosystem_slack_service_confidential_issue_notification
-  category: ecosystem
   redis_slot: ecosystem
   aggregation: weekly

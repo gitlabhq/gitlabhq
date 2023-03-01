@@ -19,6 +19,7 @@ class Project < ApplicationRecord
   include Presentable
   include HasRepository
   include HasWiki
+  include WebHooks::HasWebHooks
   include CanMoveRepositoryStorage
   include Routable
   include GroupDescendant
@@ -41,7 +42,6 @@ class Project < ApplicationRecord
   include BlocksUnsafeSerialization
   include Subquery
   include IssueParent
-  include WebHooks::HasWebHooks
 
   extend Gitlab::Cache::RequestCache
   extend Gitlab::Utils::Override

@@ -1,43 +1,51 @@
 <script>
 import { GlKeysetPagination, GlLoadingIcon, GlSprintf } from '@gitlab/ui';
-import savedRepliesQuery from '../queries/saved_replies.query.graphql';
 import ListItem from './list_item.vue';
 
 export default {
-  apollo: {
-    savedReplies: {
-      query: savedRepliesQuery,
-      update: (r) => r.currentUser?.savedReplies?.nodes,
-      result({ data }) {
-        const pageInfo = data.currentUser?.savedReplies?.pageInfo;
-
-        this.count = data.currentUser?.savedReplies?.count;
-
-        if (pageInfo) {
-          this.pageInfo = pageInfo;
-        }
-      },
-    },
-  },
   components: {
     GlLoadingIcon,
     GlKeysetPagination,
     GlSprintf,
     ListItem,
   },
-  data() {
-    return {
-      savedReplies: [],
-      count: 0,
-      pageInfo: {},
-    };
+  props: {
+    loading: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    savedReplies: {
+      type: Array,
+      required: true,
+    },
+    pageInfo: {
+      type: Object,
+      required: true,
+    },
+    count: {
+      type: Number,
+      required: true,
+    },
+  },
+  methods: {
+    prevPage() {
+      this.$emit('input', {
+        before: this.pageInfo.beforeCursor,
+      });
+    },
+    nextPage() {
+      this.$emit('input', {
+        after: this.pageInfo.endCursor,
+      });
+    },
   },
 };
 </script>
 
 <template>
   <div>
-    <gl-loading-icon v-if="$apollo.queries.savedReplies.loading" size="lg" />
+    <gl-loading-icon v-if="loading" size="lg" />
     <template v-else>
       <h5 class="gl-font-lg" data-testid="title">
         <gl-sprintf :message="__('My saved replies (%{count})')">
@@ -51,6 +59,8 @@ export default {
         v-if="pageInfo.hasPreviousPage || pageInfo.hasNextPage"
         v-bind="pageInfo"
         class="gl-mt-4"
+        @prev="prevPage"
+        @next="nextPage"
       />
     </template>
   </div>

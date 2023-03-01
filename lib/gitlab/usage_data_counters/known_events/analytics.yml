@@ -1,52 +1,39 @@
 - name: users_viewing_analytics_group_devops_adoption
-  category: analytics
   redis_slot: analytics
   aggregation: weekly
 - name: i_analytics_dev_ops_adoption
-  category: analytics
   redis_slot: analytics
   aggregation: weekly
 - name: i_analytics_dev_ops_score
-  category: analytics
   redis_slot: analytics
   aggregation: weekly
 - name: i_analytics_instance_statistics
-  category: analytics
   redis_slot: analytics
   aggregation: weekly
 - name: p_analytics_pipelines
-  category: analytics
   redis_slot: analytics
   aggregation: weekly
 - name: p_analytics_valuestream
-  category: analytics
   redis_slot: analytics
   aggregation: weekly
 - name: p_analytics_repo
-  category: analytics
   redis_slot: analytics
   aggregation: weekly
 - name: i_analytics_cohorts
-  category: analytics
   redis_slot: analytics
   aggregation: weekly
 - name: p_analytics_ci_cd_pipelines
-  category: analytics
   redis_slot: analytics
   aggregation: weekly
 - name: p_analytics_ci_cd_deployment_frequency
-  category: analytics
   redis_slot: analytics
   aggregation: weekly
 - name: p_analytics_ci_cd_lead_time
-  category: analytics
   redis_slot: analytics
   aggregation: weekly
 - name: p_analytics_ci_cd_time_to_restore_service
-  category: analytics
   redis_slot: analytics
   aggregation: weekly
 - name: p_analytics_ci_cd_change_failure_rate
-  category: analytics
   redis_slot: analytics
   aggregation: weekly

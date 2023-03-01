@@ -531,7 +531,6 @@ class ProjectPolicy < BasePolicy
     enable :update_runners_registration_token
     enable :admin_project_google_cloud
     enable :admin_secure_files
-    enable :read_web_hooks
     enable :read_upload
     enable :destroy_upload
     enable :admin_incident_management_timeline_event_tag

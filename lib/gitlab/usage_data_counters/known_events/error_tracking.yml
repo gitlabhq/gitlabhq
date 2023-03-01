@@ -1,9 +1,7 @@
 ---
 - name: error_tracking_view_details
-  category: error_tracking
   redis_slot: error_tracking
   aggregation: weekly
 - name: error_tracking_view_list
-  category: error_tracking
   redis_slot: error_tracking
   aggregation: weekly

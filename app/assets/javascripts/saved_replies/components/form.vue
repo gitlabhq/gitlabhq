@@ -1,11 +1,9 @@
 <script>
 import { GlButton, GlForm, GlFormGroup, GlFormInput, GlAlert } from '@gitlab/ui';
-import { produce } from 'immer';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { logError } from '~/lib/logger';
 import { __ } from '~/locale';
-import savedRepliesQuery from '../queries/saved_replies.query.graphql';
 import createSavedReplyMutation from '../queries/create_saved_reply.mutation.graphql';
 
 export default {
@@ -63,25 +61,7 @@ export default {
             if (savedReplyMutation.errors.length) {
               this.errors = savedReplyMutation.errors.map((e) => e);
             } else {
-              const sourceData = store.readQuery({ query: savedRepliesQuery });
-              const newData = produce(sourceData, (draftState) => {
-                if (draftState) {
-                  draftState.currentUser?.savedReplies?.nodes.unshift(
-                    savedReplyMutation.savedReply,
-                  );
-                  if (draftState.currentUser?.savedReplies?.count !== null) {
-                    draftState.currentUser.savedReplies.count += 1;
-                  }
-                }
-              });
-
-              if (newData) {
-                store.writeQuery({
-                  query: savedRepliesQuery,
-                  data: newData,
-                });
-              }
-
+              this.$emit('saved');
               this.updateSavedReply = { name: '', content: '' };
               this.showValidation = false;
             }

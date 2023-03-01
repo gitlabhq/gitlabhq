@@ -49,7 +49,6 @@ namespace :gitlab do
             events_definition = Packages::Event.unique_counters_for(event_scope, event_type, originator_type).map do |event_name|
               {
                 "name" => event_name,
-                "category" => "#{originator_type}_packages",
                 "aggregation" => "weekly",
                 "redis_slot" => "package"
               }

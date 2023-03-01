@@ -48218,6 +48218,9 @@ msgstr ""
 msgid "Webhooks|A subgroup is created or removed."
 msgstr ""
 
+msgid "Webhooks|A webhook in this group was automatically disabled after being retried multiple times."
+msgstr ""
+
 msgid "Webhooks|A webhook in this project was automatically disabled after being retried multiple times."
 msgstr ""
 

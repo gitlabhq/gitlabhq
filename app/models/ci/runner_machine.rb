@@ -5,9 +5,6 @@ module Ci
     include FromUnion
     include RedisCacheable
     include Ci::HasRunnerExecutor
-    include IgnorableColumns
-
-    ignore_column :machine_xid, remove_with: '15.11', remove_after: '2022-03-22'
 
     # The `UPDATE_CONTACT_COLUMN_EVERY` defines how often the Runner Machine DB entry can be updated
     UPDATE_CONTACT_COLUMN_EVERY = (40.minutes)..(55.minutes)

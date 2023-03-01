@@ -1,8 +1,6 @@
 - name: ci_users_executing_deployment_job
-  category: ci_users
   redis_slot: ci_users
   aggregation: weekly
 - name: ci_users_executing_verify_environment_job
-  category: ci_users
   redis_slot: ci_users
   aggregation: weekly

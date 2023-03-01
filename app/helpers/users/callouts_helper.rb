@@ -60,17 +60,10 @@ module Users
         !user_dismissed?(SECURITY_NEWSLETTER_CALLOUT)
     end
 
-    def web_hook_disabled_dismissed?(project)
-      return false unless project
+    def web_hook_disabled_dismissed?(object)
+      return false unless object.class < WebHooks::HasWebHooks
 
-      last_failure = Gitlab::Redis::SharedState.with do |redis|
-        key = "web_hooks:last_failure:project-#{project.id}"
-        redis.get(key)
-      end
-
-      last_failure = DateTime.parse(last_failure) if last_failure
-
-      user_dismissed?(WEB_HOOK_DISABLED, last_failure, project: project)
+      user_dismissed?(WEB_HOOK_DISABLED, object.last_webhook_failure, object: object)
     end
 
     def show_merge_request_settings_callout?(project)
@@ -84,21 +77,25 @@ module Users
     def ultimate_feature_removal_banner_dismissed?(project)
       return false unless project
 
-      user_dismissed?(ULTIMATE_FEATURE_REMOVAL_BANNER, project: project)
+      user_dismissed?(ULTIMATE_FEATURE_REMOVAL_BANNER, object: project)
     end
 
     private
 
-    def user_dismissed?(feature_name, ignore_dismissal_earlier_than = nil, project: nil)
+    def user_dismissed?(feature_name, ignore_dismissal_earlier_than = nil, object: nil)
       return false unless current_user
 
       query = { feature_name: feature_name, ignore_dismissal_earlier_than: ignore_dismissal_earlier_than }
 
-      if project
-        current_user.dismissed_callout_for_project?(project: project, **query)
+      if object
+        dismissed_callout?(object, query)
       else
         current_user.dismissed_callout?(**query)
       end
+    end
+
+    def dismissed_callout?(object, query)
+      current_user.dismissed_callout_for_project?(project: object, **query)
     end
   end
 end

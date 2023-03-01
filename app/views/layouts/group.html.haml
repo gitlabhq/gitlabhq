@@ -16,6 +16,7 @@
       :plain
         window.uploads_path = "#{group_uploads_path(@group)}";
 
+= dispensable_render_if_exists "shared/web_hooks/group_web_hook_disabled_alert"
 = dispensable_render_if_exists "shared/free_user_cap_alert", source: @group
 
 = render template: base_layout || "layouts/application"

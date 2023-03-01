@@ -12,18 +12,10 @@ module Gitlab
       UnknownAggregation = Class.new(EventError)
       AggregationMismatch = Class.new(EventError)
       SlotMismatch = Class.new(EventError)
-      CategoryMismatch = Class.new(EventError)
       InvalidContext = Class.new(EventError)
 
       KNOWN_EVENTS_PATH = File.expand_path('known_events/*.yml', __dir__)
       ALLOWED_AGGREGATIONS = %i(daily weekly).freeze
-
-      CATEGORIES_FOR_TOTALS = %w[
-        compliance
-        error_tracking
-        ide_edit
-        pipeline_authoring
-      ].freeze
 
       # Track event on entity_id
       # Increment a Redis HLL counter for unique event_name and entity_id
@@ -34,7 +26,6 @@ module Gitlab
       #
       # - name: g_compliance_dashboard # Unique event name
       #   redis_slot: compliance       # Optional slot name, if not defined it will use name as a slot, used for totals
-      #   category: compliance         # Group events in categories
       #   aggregation: daily           # Aggregation level, keys are stored daily or weekly
       #   feature_flag:                # The event feature flag
       #
@@ -77,20 +68,9 @@ module Gitlab
         def unique_events(event_names:, start_date:, end_date:, context: '')
           count_unique_events(event_names: event_names, start_date: start_date, end_date: end_date, context: context) do |events|
             raise SlotMismatch, events unless events_in_same_slot?(events)
-            raise CategoryMismatch, events unless events_in_same_category?(events)
             raise AggregationMismatch, events unless events_same_aggregation?(events)
             raise InvalidContext if context.present? && !context.in?(valid_context_list)
           end
-        end
-
-        def categories
-          @categories ||= known_events.map { |event| event[:category] }.uniq
-        end
-
-        # @param category [String] the category name
-        # @return [Array<String>] list of event names for given category
-        def events_for_category(category)
-          known_events.select { |event| event[:category] == category.to_s }.map { |event| event[:name] }
         end
 
         def known_event?(event_name)
@@ -151,15 +131,6 @@ module Gitlab
           Feature.enabled?(event[:feature_flag]) && Feature.enabled?(:redis_hll_tracking, type: :ops)
         end
 
-        # Allow to add totals for events that are in the same redis slot, category and have the same aggregation level
-        # and if there are more than 1 event
-        def eligible_for_totals?(events_names)
-          return false if events_names.size <= 1
-
-          events = events_for(events_names)
-          events_in_same_slot?(events) && events_in_same_category?(events) && events_same_aggregation?(events)
-        end
-
         def keys_for_aggregation(aggregation, events:, start_date:, end_date:, context: '')
           if aggregation.to_sym == :daily
             daily_redis_keys(events: events, start_date: start_date, end_date: end_date, context: context)
@@ -189,11 +160,6 @@ module Gitlab
 
           slot = events.first[:redis_slot]
           events.all? { |event| event[:redis_slot].present? && event[:redis_slot] == slot }
-        end
-
-        def events_in_same_category?(events)
-          category = events.first[:category]
-          events.all? { |event| event[:category] == category }
         end
 
         def events_same_aggregation?(events)

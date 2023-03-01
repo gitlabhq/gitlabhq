@@ -23,39 +23,6 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
     described_class.clear_memoization(:known_events)
   end
 
-  describe '.categories' do
-    it 'gets CE unique category names' do
-      expect(described_class.categories).to include(
-        'analytics',
-        'ci_templates',
-        'ci_users',
-        'code_review',
-        'deploy_token_packages',
-        'ecosystem',
-        'environments',
-        'error_tracking',
-        'geo',
-        'ide_edit',
-        'importer',
-        'incident_management_alerts',
-        'incident_management',
-        'issues_edit',
-        'kubernetes_agent',
-        'manage',
-        'pipeline_authoring',
-        'quickactions',
-        'search',
-        'secure',
-        'snippets',
-        'source_code',
-        'terraform',
-        'testing',
-        'user_packages',
-        'work_items'
-      )
-    end
-  end
-
   describe '.known_events' do
     let(:ce_temp_dir) { Dir.mktmpdir }
     let(:ce_temp_file) { Tempfile.new(%w[common .yml], ce_temp_dir) }
@@ -63,7 +30,6 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
       {
         "name" => "ce_event",
         "redis_slot" => "analytics",
-        "category" => "analytics",
         "aggregation" => "weekly"
       }
     end
@@ -105,13 +71,13 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
 
     let(:known_events) do
       [
-        { name: weekly_event, redis_slot: "analytics", category: analytics_category, aggregation: "weekly", feature_flag: feature },
-        { name: daily_event, redis_slot: "analytics", category: analytics_category, aggregation: "daily" },
-        { name: category_productivity_event, redis_slot: "analytics", category: productivity_category, aggregation: "weekly" },
-        { name: compliance_slot_event, redis_slot: "compliance", category: compliance_category, aggregation: "weekly" },
-        { name: no_slot, category: global_category, aggregation: "daily" },
-        { name: different_aggregation, category: global_category, aggregation: "monthly" },
-        { name: context_event, category: other_category, aggregation: 'weekly' }
+        { name: weekly_event, redis_slot: "analytics", aggregation: "weekly", feature_flag: feature },
+        { name: daily_event, redis_slot: "analytics", aggregation: "daily" },
+        { name: category_productivity_event, redis_slot: "analytics", aggregation: "weekly" },
+        { name: compliance_slot_event, redis_slot: "compliance", aggregation: "weekly" },
+        { name: no_slot, aggregation: "daily" },
+        { name: different_aggregation, aggregation: "monthly" },
+        { name: context_event, aggregation: 'weekly' }
       ].map(&:with_indifferent_access)
     end
 
@@ -119,12 +85,6 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
       skip_feature_flags_yaml_validation
       skip_default_enabled_yaml_check
       allow(described_class).to receive(:known_events).and_return(known_events)
-    end
-
-    describe '.events_for_category' do
-      it 'gets the event names for given category' do
-        expect(described_class.events_for_category(:analytics)).to contain_exactly(weekly_event, daily_event)
-      end
     end
 
     describe '.track_event' do
@@ -344,12 +304,6 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
         expect do
           described_class.unique_events(event_names: [compliance_slot_event, analytics_slot_event], start_date: 4.weeks.ago, end_date: Date.current)
         end.to raise_error(Gitlab::UsageDataCounters::HLLRedisCounter::SlotMismatch)
-      end
-
-      it 'raise error if metrics are not in the same category' do
-        expect do
-          described_class.unique_events(event_names: [category_analytics_event, category_productivity_event], start_date: 4.weeks.ago, end_date: Date.current)
-        end.to raise_error(Gitlab::UsageDataCounters::HLLRedisCounter::CategoryMismatch)
       end
 
       it "raise error if metrics don't have same aggregation" do

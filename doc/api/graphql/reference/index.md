@@ -19514,6 +19514,7 @@ Protected Environments of the environment.
 | <a id="protectedenvironmentgroup"></a>`group` | [`Group`](#group) | Group details. Present if it's group-level protected environment. |
 | <a id="protectedenvironmentname"></a>`name` | [`String`](#string) | Name of the environment if it's a project-level protected environment. Tier of the environment if it's a group-level protected environment. |
 | <a id="protectedenvironmentproject"></a>`project` | [`Project`](#project) | Project details. Present if it's project-level protected environment. |
+| <a id="protectedenvironmentrequiredapprovalcount"></a>`requiredApprovalCount` | [`Int`](#int) | Required approval count for Unified Approval Setting. |
 
 ### `ProtectedEnvironmentApprovalRule`
 

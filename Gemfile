@@ -566,7 +566,7 @@ gem 'oj-introspect', '~> 0.7'
 gem 'multi_json', '~> 1.14.1'
 gem 'yajl-ruby', '~> 1.4.3', require: 'yajl'
 
-gem 'webauthn', '~> 3.0'
+gem 'webauthn', '~> 2.3'
 
 # IPAddress utilities
 gem 'ipaddress', '~> 0.8.3'
