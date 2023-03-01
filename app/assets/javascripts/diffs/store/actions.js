@@ -819,20 +819,20 @@ export function moveToNeighboringCommit({ dispatch, state }, { direction }) {
   }
 }
 
-export const setCurrentDiffFileIdFromNote = ({ commit, state, rootGetters }, noteId) => {
+export const setCurrentDiffFileIdFromNote = ({ commit, getters, rootGetters }, noteId) => {
   const note = rootGetters.notesById[noteId];
 
   if (!note) return;
 
   const fileHash = rootGetters.getDiscussion(note.discussion_id).diff_file?.file_hash;
 
-  if (fileHash && state.diffFiles.some((f) => f.file_hash === fileHash)) {
+  if (fileHash && getters.flatBlobsList.some((f) => f.fileHash === fileHash)) {
     commit(types.SET_CURRENT_DIFF_FILE, fileHash);
   }
 };
 
-export const navigateToDiffFileIndex = ({ commit, state }, index) => {
-  const fileHash = state.diffFiles[index].file_hash;
+export const navigateToDiffFileIndex = ({ commit, getters }, index) => {
+  const { fileHash } = getters.flatBlobsList[index];
   document.location.hash = fileHash;
 
   commit(types.SET_CURRENT_DIFF_FILE, fileHash);

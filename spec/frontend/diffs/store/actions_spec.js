@@ -393,7 +393,7 @@ describe('DiffsStoreActions', () => {
       return testAction(
         diffActions.assignDiscussionsToDiff,
         [],
-        { diffFiles: [] },
+        { diffFiles: [], flatBlobsList: [] },
         [],
         [{ type: 'setCurrentDiffFileIdFromNote', payload: '123' }],
       );
@@ -1397,39 +1397,38 @@ describe('DiffsStoreActions', () => {
   describe('setCurrentDiffFileIdFromNote', () => {
     it('commits SET_CURRENT_DIFF_FILE', () => {
       const commit = jest.fn();
-      const state = { diffFiles: [{ file_hash: '123' }] };
+      const getters = { flatBlobsList: [{ fileHash: '123' }] };
       const rootGetters = {
         getDiscussion: () => ({ diff_file: { file_hash: '123' } }),
         notesById: { 1: { discussion_id: '2' } },
       };
 
-      diffActions.setCurrentDiffFileIdFromNote({ commit, state, rootGetters }, '1');
+      diffActions.setCurrentDiffFileIdFromNote({ commit, getters, rootGetters }, '1');
 
       expect(commit).toHaveBeenCalledWith(types.SET_CURRENT_DIFF_FILE, '123');
     });
 
     it('does not commit SET_CURRENT_DIFF_FILE when discussion has no diff_file', () => {
       const commit = jest.fn();
-      const state = { diffFiles: [{ file_hash: '123' }] };
       const rootGetters = {
         getDiscussion: () => ({ id: '1' }),
         notesById: { 1: { discussion_id: '2' } },
       };
 
-      diffActions.setCurrentDiffFileIdFromNote({ commit, state, rootGetters }, '1');
+      diffActions.setCurrentDiffFileIdFromNote({ commit, rootGetters }, '1');
 
       expect(commit).not.toHaveBeenCalled();
     });
 
     it('does not commit SET_CURRENT_DIFF_FILE when diff file does not exist', () => {
       const commit = jest.fn();
-      const state = { diffFiles: [{ file_hash: '123' }] };
+      const getters = { flatBlobsList: [{ fileHash: '123' }] };
       const rootGetters = {
         getDiscussion: () => ({ diff_file: { file_hash: '124' } }),
         notesById: { 1: { discussion_id: '2' } },
       };
 
-      diffActions.setCurrentDiffFileIdFromNote({ commit, state, rootGetters }, '1');
+      diffActions.setCurrentDiffFileIdFromNote({ commit, getters, rootGetters }, '1');
 
       expect(commit).not.toHaveBeenCalled();
     });
@@ -1440,7 +1439,7 @@ describe('DiffsStoreActions', () => {
       return testAction(
         diffActions.navigateToDiffFileIndex,
         0,
-        { diffFiles: [{ file_hash: '123' }] },
+        { flatBlobsList: [{ fileHash: '123' }] },
         [{ type: types.SET_CURRENT_DIFF_FILE, payload: '123' }],
         [],
       );

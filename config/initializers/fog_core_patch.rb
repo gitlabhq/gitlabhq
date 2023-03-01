@@ -27,12 +27,11 @@
 # closed:
 #
 # fog-google: https://github.com/fog/fog-google/issues/421
-# fog-rackspace: https://github.com/fog/fog-rackspace/issues/29
 # fog-aliyun: https://github.com/fog/fog-aliyun/issues/23
 module Fog
   module ServicesMixin
     # Gems that have not yet updated with the new fog-core namespace
-    LEGACY_FOG_PROVIDERS = %w(google rackspace aliyun).freeze
+    LEGACY_FOG_PROVIDERS = %w(google aliyun).freeze
 
     # rubocop:disable Gitlab/ConstGetInheritFalse
     def service_provider_constant(service_name, provider_name)

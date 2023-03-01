@@ -428,7 +428,7 @@ sync to run once every two hours at the top of the hour.
 1. Edit `/etc/gitlab/gitlab.rb`:
 
    ```ruby
-   gitlab_rails['ldap_group_sync_worker_cron'] = "0 */2 * * * *"
+   gitlab_rails['ldap_group_sync_worker_cron'] = "0 */2 * * *"
    ```
 
 1. Save the file and reconfigure GitLab:
@@ -471,7 +471,7 @@ sync to run once every two hours at the top of the hour.
      gitlab:
        environment:
          GITLAB_OMNIBUS_CONFIG: |
-           gitlab_rails['ldap_group_sync_worker_cron'] = "0 */2 * * * *"
+           gitlab_rails['ldap_group_sync_worker_cron'] = "0 */2 * * *"
    ```
 
 1. Save the file and restart GitLab:

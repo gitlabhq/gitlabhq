@@ -28289,9 +28289,6 @@ msgstr ""
 msgid "New password"
 msgstr ""
 
-msgid "New pipelines cause older pending or running pipelines on the same branch to be cancelled."
-msgstr ""
-
 msgid "New project"
 msgstr ""
 
@@ -31474,6 +31471,9 @@ msgid "Pipelines"
 msgstr ""
 
 msgid "Pipelines charts"
+msgstr ""
+
+msgid "Pipelines for new changes cause older pending or running pipelines on the same branch to be cancelled."
 msgstr ""
 
 msgid "Pipelines settings for '%{project_name}' were successfully updated."

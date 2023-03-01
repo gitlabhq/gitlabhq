@@ -148,7 +148,7 @@ export const fileLineCodequality = () => () => {
 export const currentDiffIndex = (state) =>
   Math.max(
     0,
-    state.diffFiles.findIndex((diff) => diff.file_hash === state.currentDiffFileId),
+    flatBlobsList(state).findIndex((diff) => diff.fileHash === state.currentDiffFileId),
   );
 
 export const diffLines = (state) => (file) => {

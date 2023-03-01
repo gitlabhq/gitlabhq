@@ -43,7 +43,7 @@ module CarrierWave
         end
 
         def authenticated_url(options = {})
-          if %w[AWS Google Rackspace OpenStack AzureRM].include?(@uploader.fog_credentials[:provider])
+          if %w[AWS Google AzureRM].include?(@uploader.fog_credentials[:provider])
             # avoid a get by using local references
             local_directory = connection.directories.new(key: @uploader.fog_directory)
             local_file = local_directory.files.new(key: path)
@@ -51,10 +51,6 @@ module CarrierWave
             case @uploader.fog_credentials[:provider]
             when 'AWS', 'Google', 'AzureRM'
               local_file.url(expire_at, options)
-            when 'Rackspace'
-              connection.get_object_https_url(@uploader.fog_directory, path, expire_at, options)
-            when 'OpenStack'
-              connection.get_object_https_url(@uploader.fog_directory, path, expire_at)
             else
               local_file.url(expire_at)
             end

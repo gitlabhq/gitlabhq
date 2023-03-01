@@ -184,8 +184,6 @@
 {"name":"fog-google","version":"1.19.0","platform":"ruby","checksum":"3c909a230837fe84117fffdfd927b523821b88f61d3aeab531e1417a9810f488"},
 {"name":"fog-json","version":"1.2.0","platform":"ruby","checksum":"dd4f5ab362dbc72b687240bba9d2dd841d5dfe888a285797533f85c03ea548fe"},
 {"name":"fog-local","version":"0.8.0","platform":"ruby","checksum":"263b2d09e54c69d1b87ad7f235a1a1e53c8a674edcedf7512c1715765ad7ef79"},
-{"name":"fog-openstack","version":"1.0.8","platform":"ruby","checksum":"8f174ab5e5b1bc107c7da90cc7c47a24930e1566cd88ab4df447026ea8b63d9c"},
-{"name":"fog-rackspace","version":"0.1.1","platform":"ruby","checksum":"4a8c7a2432dd32321958c869f3b1b8190cf4eac292024e6ea267bc6040a44b78"},
 {"name":"fog-xml","version":"0.1.3","platform":"ruby","checksum":"5604c42649ebb0d8a31bd973aa000c2dd0127f1c1c4c174b69266a2e78e37410"},
 {"name":"formatador","version":"0.2.5","platform":"ruby","checksum":"80821869ddacb79e72870ff4bb1531efacd278c04f2df26bc6b4529ee13582bd"},
 {"name":"fugit","version":"1.8.1","platform":"ruby","checksum":"18ffb26813869610f71bb0b7d568c3624d2b3025aeebb6600a18df0c77a6a2b2"},

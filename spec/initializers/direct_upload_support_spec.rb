@@ -69,7 +69,7 @@ RSpec.describe 'Direct upload support' do
         end
 
         context 'when other provider is used' do
-          let(:provider) { 'Rackspace' }
+          let(:provider) { 'Aliyun' }
 
           it 'raises an error' do
             expect { subject }.to raise_error /Object storage provider '#{provider}' is not supported when 'direct_upload' is used for '#{config_name}'/
@@ -103,7 +103,7 @@ RSpec.describe 'Direct upload support' do
     context 'when object storage is disabled' do
       let(:enabled) { false }
       let(:direct_upload) { false }
-      let(:provider) { 'Rackspace' }
+      let(:provider) { 'Aliyun' }
 
       it 'succeeds' do
         expect { subject }.not_to raise_error

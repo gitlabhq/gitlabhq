@@ -17,7 +17,7 @@
 #
 - title: "DingTalk OmniAuth provider"  # (required) Clearly explain the change, or planned change. For example, "The `confidential` field for a `Note` is deprecated" or "CI/CD job names will be limited to 250 characters."
   announcement_milestone: "15.10"  # (required) The milestone when this feature was first announced as deprecated.
-  removal_milestone: "17.00"  # (required) The milestone when this feature is planned to be removed
+  removal_milestone: "17.0"  # (required) The milestone when this feature is planned to be removed
   breaking_change: true  # (required) Change to false if this is not a breaking change.
   reporter: ifarkas  # (required) GitLab username of the person reporting the change
   stage: manage  # (required) String value of the stage that the feature was created in. e.g., Growth

@@ -148,7 +148,10 @@ label {
       width: $input-short-md-width;
     }
   }
+}
 
+.form-control,
+[contenteditable=true] {
   &:focus {
     border-color: $gray-400;
     @include gl-focus;

@@ -18,7 +18,7 @@
             _("Auto-cancel redundant pipelines"),
             checked_value: 'enabled',
             unchecked_value: 'disabled',
-            help_text: (_('New pipelines cause older pending or running pipelines on the same branch to be cancelled.') + ' ' + help_link_auto_canceling).html_safe
+            help_text: (_('Pipelines for new changes cause older pending or running pipelines on the same branch to be cancelled.') + ' ' + help_link_auto_canceling).html_safe
 
         .form-group
           = f.fields_for :ci_cd_settings_attributes, @project.ci_cd_settings do |form|

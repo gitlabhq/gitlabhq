@@ -328,7 +328,11 @@ describe('Diffs Module Getters', () => {
 
   describe('currentDiffIndex', () => {
     it('returns index of currently selected diff in diffList', () => {
-      localState.diffFiles = [{ file_hash: '111' }, { file_hash: '222' }, { file_hash: '333' }];
+      localState.treeEntries = [
+        { type: 'blob', fileHash: '111' },
+        { type: 'blob', fileHash: '222' },
+        { type: 'blob', fileHash: '333' },
+      ];
       localState.currentDiffFileId = '222';
 
       expect(getters.currentDiffIndex(localState)).toEqual(1);
@@ -339,7 +343,11 @@ describe('Diffs Module Getters', () => {
     });
 
     it('returns 0 if no diff is selected yet or diff is not found', () => {
-      localState.diffFiles = [{ file_hash: '111' }, { file_hash: '222' }, { file_hash: '333' }];
+      localState.treeEntries = [
+        { type: 'blob', fileHash: '111' },
+        { type: 'blob', fileHash: '222' },
+        { type: 'blob', fileHash: '333' },
+      ];
       localState.currentDiffFileId = '';
 
       expect(getters.currentDiffIndex(localState)).toEqual(0);

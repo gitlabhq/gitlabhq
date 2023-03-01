@@ -444,8 +444,8 @@ workflow:
   If the downstream pipeline uses the same variable, the [variable is overwritten](../variables/index.md#cicd-variable-precedence)
   by the upstream variable value. Be sure to either:
   - Use a unique variable name in every project's pipeline configuration, like `PROJECT1_PIPELINE_NAME`.
-  - Use [`inherit:variables`](#inheritvariables) in the trigger job to select the
-    exact variables to forward to the downstream pipeline.
+  - Use [`inherit:variables`](#inheritvariables) in the trigger job and list the
+    exact variables you want to forward to the downstream pipeline.
 
 #### `workflow:rules`
 
@@ -566,8 +566,8 @@ When the branch is something else:
   If the downstream pipeline uses the same variable, the [variable is overwritten](../variables/index.md#cicd-variable-precedence)
   by the upstream variable value. Be sure to either:
   - Use unique variable names in every project's pipeline configuration, like `PROJECT1_VARIABLE_NAME`.
-  - Use [`inherit:variables`](#inheritvariables) in the trigger job to select the
-    exact variables to forward to the downstream pipeline.
+  - Use [`inherit:variables`](#inheritvariables) in the trigger job and list the
+    exact variables you want to forward to the downstream pipeline.
 
 ## Job keywords
 

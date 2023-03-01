@@ -149,8 +149,6 @@ gem 'fog-aws', '~> 3.18'
 gem 'fog-core', '= 2.1.0'
 gem 'fog-google', '~> 1.19', require: 'fog/google'
 gem 'fog-local', '~> 0.8'
-gem 'fog-openstack', '~> 1.0'
-gem 'fog-rackspace', '~> 0.1.1'
 # NOTE:
 # the fog-aliyun gem since v0.4 pulls in aliyun-sdk transitively, which monkey-patches
 # the rest-client gem to drop the Content-Length header field for chunked transfers,
