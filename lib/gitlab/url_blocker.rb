@@ -121,8 +121,8 @@ module Gitlab
         end
       rescue SocketError
         # If the dns rebinding protection is not enabled or the domain
-        # is allowed, or HTTP_PROXY is set we avoid the dns rebinding checks
-        return if domain_allowed?(uri) || !dns_rebind_protection || Gitlab.http_proxy_env?
+        # is allowed we avoid the dns rebinding checks
+        return if domain_allowed?(uri) || !dns_rebind_protection
 
         # In the test suite we use a lot of mocked urls that are either invalid or
         # don't exist. In order to avoid modifying a ton of tests and factories

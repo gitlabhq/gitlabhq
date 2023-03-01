@@ -59,6 +59,8 @@ module Gitlab
     end
 
     def dns_rebind_protection?
+      return false if Gitlab.http_proxy_env?
+
       Gitlab::CurrentSettings.dns_rebinding_protection_enabled?
     end
 

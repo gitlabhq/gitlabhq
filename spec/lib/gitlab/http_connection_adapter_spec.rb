@@ -111,6 +111,20 @@ RSpec.describe Gitlab::HTTPConnectionAdapter do
       end
     end
 
+    context 'when http(s) environment variable is set' do
+      before do
+        stub_env('https_proxy' => 'https://my.proxy')
+      end
+
+      it 'sets up the connection' do
+        expect(connection).to be_a(Gitlab::NetHttpAdapter)
+        expect(connection.address).to eq('example.org')
+        expect(connection.hostname_override).to eq(nil)
+        expect(connection.addr_port).to eq('example.org')
+        expect(connection.port).to eq(443)
+      end
+    end
+
     context 'when URL scheme is not HTTP/HTTPS' do
       let(:uri) { URI('ssh://example.org') }
 
