@@ -51,6 +51,7 @@ module Groups
       publish_event(old_root_ancestor_id)
     end
 
+    # Overridden in EE
     def ensure_allowed_transfer
       raise_transfer_error(:group_is_already_root) if group_is_already_root?
       raise_transfer_error(:same_parent_as_current) if same_parent?
@@ -208,6 +209,7 @@ module Groups
       raise TransferError, localized_error_messages[message]
     end
 
+    # Overridden in EE
     def localized_error_messages
       {
         database_not_supported: s_('TransferGroup|Database is not supported.'),

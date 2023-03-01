@@ -239,6 +239,7 @@ RSpec.describe Integrations::Prometheus, :use_clean_rails_memory_store_caching, 
 
     context 'behind IAP' do
       let(:manual_configuration) { true }
+      let(:google_iap_service_account_json) { Gitlab::Json.generate(google_iap_service_account) }
 
       let(:google_iap_service_account) do
         {
@@ -259,7 +260,7 @@ RSpec.describe Integrations::Prometheus, :use_clean_rails_memory_store_caching, 
       end
 
       def stub_iap_request
-        integration.google_iap_service_account_json = Gitlab::Json.generate(google_iap_service_account)
+        integration.google_iap_service_account_json = google_iap_service_account_json
         integration.google_iap_audience_client_id = 'IAP_CLIENT_ID.apps.googleusercontent.com'
 
         stub_request(:post, 'https://oauth2.googleapis.com/token')
@@ -276,6 +277,17 @@ RSpec.describe Integrations::Prometheus, :use_clean_rails_memory_store_caching, 
         expect(integration.prometheus_client).not_to be_nil
         expect(integration.prometheus_client.send(:options)).to have_key(:headers)
         expect(integration.prometheus_client.send(:options)[:headers]).to eq(authorization: "Bearer FOO")
+      end
+
+      context 'with invalid IAP JSON' do
+        let(:google_iap_service_account_json) { 'invalid json' }
+
+        it 'does not include authorization header' do
+          stub_iap_request
+
+          expect(integration.prometheus_client).not_to be_nil
+          expect(integration.prometheus_client.send(:options)).not_to have_key(:headers)
+        end
       end
 
       context 'when passed with token_credential_uri', issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/284819' do
@@ -474,6 +486,47 @@ RSpec.describe Integrations::Prometheus, :use_clean_rails_memory_store_caching, 
 
       it 'remains editable' do
         expect(integration.editable?).to be(true)
+      end
+    end
+  end
+
+  describe '#google_iap_service_account_json' do
+    subject(:iap_details) { integration.google_iap_service_account_json }
+
+    before do
+      integration.google_iap_service_account_json = value
+    end
+
+    context 'with valid JSON' do
+      let(:masked_value) { described_class::MASKED_VALUE }
+      let(:json) { Gitlab::Json.parse(iap_details) }
+
+      let(:value) do
+        Gitlab::Json.generate({
+          type: 'service_account',
+          private_key: 'SECRET',
+          foo: 'secret',
+          nested: {
+            key: 'value'
+          }
+        })
+      end
+
+      it 'masks all JSON values', issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/384580' do
+        expect(json).to eq(
+          'type' => masked_value,
+          'private_key' => masked_value,
+          'foo' => masked_value,
+          'nested' => masked_value
+        )
+      end
+    end
+
+    context 'with invalid JSON' do
+      where(:value) { [nil, '', ' ', 'invalid json'] }
+
+      with_them do
+        it { is_expected.to eq(value) }
       end
     end
   end
