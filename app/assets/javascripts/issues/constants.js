@@ -9,6 +9,7 @@ export const TITLE_LENGTH_MAX = 255;
 export const TYPE_EPIC = 'epic';
 export const TYPE_INCIDENT = 'incident';
 export const TYPE_ISSUE = 'issue';
+export const TYPE_MERGE_REQUEST = 'merge_request';
 
 export const WORKSPACE_GROUP = 'group';
 export const WORKSPACE_PROJECT = 'project';

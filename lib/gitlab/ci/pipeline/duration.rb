@@ -93,12 +93,7 @@ module Gitlab
         # rubocop: disable CodeReuse/ActiveRecord
         def from_pipeline(pipeline)
           builds =
-            if Feature.enabled?(:ci_use_downstream_pipeline_duration_for_calculation, pipeline.project)
-              self_and_downstreams_builds_of_pipeline(pipeline)
-            else
-              pipeline.processables.latest
-                .with_status(STATUSES).where.not(started_at: nil).order(:started_at)
-            end
+            self_and_downstreams_builds_of_pipeline(pipeline)
 
           from_builds(builds)
         end

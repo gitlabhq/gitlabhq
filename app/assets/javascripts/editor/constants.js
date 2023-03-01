@@ -21,9 +21,6 @@ export const EDITOR_TOOLBAR_RIGHT_GROUP = 'right';
 export const SOURCE_EDITOR_INSTANCE_ERROR_NO_EL = s__(
   'SourceEditor|"el" parameter is required for createInstance()',
 );
-export const ERROR_INSTANCE_REQUIRED_FOR_EXTENSION = s__(
-  'SourceEditor|Source Editor instance is required to set up an extension.',
-);
 export const EDITOR_EXTENSION_DEFINITION_ERROR = s__(
   'SourceEditor|Extension definition should be either a class or a function',
 );

@@ -5,7 +5,7 @@ import { parseBoolean } from '~/lib/utils/common_utils';
 import CiAdminVariables from './components/ci_admin_variables.vue';
 import CiGroupVariables from './components/ci_group_variables.vue';
 import CiProjectVariables from './components/ci_project_variables.vue';
-import { cacheConfig, resolvers } from './graphql/settings';
+import { generateCacheConfig, resolvers } from './graphql/settings';
 
 const mountCiVariableListApp = (containerEl) => {
   const {
@@ -42,8 +42,13 @@ const mountCiVariableListApp = (containerEl) => {
 
   Vue.use(VueApollo);
 
+  // If the feature flag `ci_variables_pages` is enabled,
+  // we are using the default cache config with pages.
   const apolloProvider = new VueApollo({
-    defaultClient: createDefaultClient(resolvers, cacheConfig),
+    defaultClient: createDefaultClient(
+      resolvers,
+      generateCacheConfig(window.gon?.features?.ciVariablesPages),
+    ),
   });
 
   return new Vue({

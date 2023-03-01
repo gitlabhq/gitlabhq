@@ -2,7 +2,7 @@
 import { GlDropdownItem } from '@gitlab/ui';
 import Vue from 'vue';
 import { createAlert } from '~/flash';
-import { IssuableType, TYPE_ISSUE } from '~/issues/constants';
+import { IssuableType, TYPE_ISSUE, TYPE_MERGE_REQUEST } from '~/issues/constants';
 import { __, n__ } from '~/locale';
 import UserSelect from '~/vue_shared/components/user_select/user_select.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -60,7 +60,7 @@ export default {
       required: false,
       default: TYPE_ISSUE,
       validator(value) {
-        return [TYPE_ISSUE, IssuableType.MergeRequest, IssuableType.Alert].includes(value);
+        return [TYPE_ISSUE, TYPE_MERGE_REQUEST, IssuableType.Alert].includes(value);
       },
     },
     issuableId: {

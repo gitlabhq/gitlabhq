@@ -9,9 +9,9 @@ import {
 } from '@gitlab/ui';
 import { kebabCase, snakeCase } from 'lodash';
 import {
-  IssuableType,
   TYPE_EPIC,
   TYPE_ISSUE,
+  TYPE_MERGE_REQUEST,
   WORKSPACE_GROUP,
   WORKSPACE_PROJECT,
 } from '~/issues/constants';
@@ -76,7 +76,7 @@ export default {
       type: String,
       required: true,
       validator(value) {
-        return [TYPE_ISSUE, IssuableType.MergeRequest].includes(value);
+        return [TYPE_ISSUE, TYPE_MERGE_REQUEST].includes(value);
       },
     },
     workspaceType: {

@@ -11,7 +11,5 @@ Rake/Require:
     - 'lib/tasks/gitlab/packages/migrate.rake'
     - 'lib/tasks/gitlab/pages.rake'
     - 'lib/tasks/gitlab/refresh_project_statistics_build_artifacts_size.rake'
-    - 'lib/tasks/gitlab/x509/update.rake'
-    - 'lib/tasks/import.rake'
     - 'lib/tasks/tokens.rake'
     - 'qa/tasks/webdrivers.rake'

@@ -38,6 +38,10 @@ export default {
       required: false,
       default: 0,
     },
+    pageInfo: {
+      type: Object,
+      required: true,
+    },
     variables: {
       type: Array,
       required: true,
@@ -87,8 +91,12 @@ export default {
         :entity="entity"
         :is-loading="isLoading"
         :max-variable-limit="maxVariableLimit"
+        :page-info="pageInfo"
         :variables="variables"
+        @handle-prev-page="$emit('handle-prev-page')"
+        @handle-next-page="$emit('handle-next-page')"
         @set-selected-variable="setSelectedVariable"
+        @sort-changed="(val) => $emit('sort-changed', val)"
       />
       <ci-variable-modal
         v-if="showModal"

@@ -75,8 +75,6 @@ export const timeRanges = [
 /* eslint-enable @gitlab/require-i18n-strings */
 
 export const defaultTimeRange = timeRanges.find((tr) => tr.default);
-export const getTimeWindow = (timeWindowName) =>
-  timeRanges.find((tr) => tr.name === timeWindowName);
 
 export const AVATAR_SHAPE_OPTION_CIRCLE = 'circle';
 export const AVATAR_SHAPE_OPTION_RECT = 'rect';

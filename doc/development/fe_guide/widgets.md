@@ -62,11 +62,11 @@ Because we need different GraphQL queries and mutations for different sidebars, 
 
 ```javascript
 export const assigneesQueries = {
-  [IssuableType.Issue]: {
+  [TYPE_ISSUE]: {
     query: getIssueParticipants,
     mutation: updateAssigneesMutation,
   },
-  [IssuableType.MergeRequest]: {
+  [TYPE_MERGE_REQUEST]: {
     query: getMergeRequestParticipants,
     mutation: updateMergeRequestParticipantsMutation,
   },

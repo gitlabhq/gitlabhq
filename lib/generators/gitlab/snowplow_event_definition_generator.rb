@@ -59,8 +59,10 @@ module Gitlab
       File.join(EE_DIR, file_name)
     end
 
+    # Example of file name
+    # 20230227000018_project_management_issue_title_changed.yml
     def file_name
-      name = remove_special_chars("#{Time.current.to_i}_#{event_category}_#{event_action}")
+      name = remove_special_chars("#{Time.now.utc.strftime('%Y%m%d%H%M%S')}_#{event_category}_#{event_action}")
       "#{name[0..95]}.yml" # max 100 chars, see https://gitlab.com/gitlab-com/gl-infra/delivery/-/issues/2030#note_679501200
     end
 

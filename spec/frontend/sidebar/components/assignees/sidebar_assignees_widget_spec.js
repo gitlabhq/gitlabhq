@@ -6,7 +6,7 @@ import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/flash';
-import { IssuableType } from '~/issues/constants';
+import { TYPE_MERGE_REQUEST } from '~/issues/constants';
 import SidebarAssigneesRealtime from '~/sidebar/components/assignees/assignees_realtime.vue';
 import IssuableAssignees from '~/sidebar/components/assignees/issuable_assignees.vue';
 import SidebarAssigneesWidget from '~/sidebar/components/assignees/sidebar_assignees_widget.vue';
@@ -397,7 +397,7 @@ describe('Sidebar assignees widget', () => {
   });
 
   it('does not render invite members link on non-issue sidebar', async () => {
-    createComponent({ props: { issuableType: IssuableType.MergeRequest } });
+    createComponent({ props: { issuableType: TYPE_MERGE_REQUEST } });
     await waitForPromises();
     expect(findInviteMembersLink().exists()).toBe(false);
   });

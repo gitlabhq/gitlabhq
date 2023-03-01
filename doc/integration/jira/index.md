@@ -37,7 +37,7 @@ displays in the [development panel](https://support.atlassian.com/jira-software-
 
 To set up the Jira development panel integration, use the GitLab for Jira Cloud app
 or the Jira DVCS (distributed version control system) connector,
-[depending on your installation](development_panel.md#configure-the-integration).
+[depending on your installation](development_panel.md#configure-the-panel).
 
 ### Direct feature comparison
 

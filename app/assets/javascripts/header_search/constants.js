@@ -12,10 +12,6 @@ export const MSG_MR_IVE_CREATED = s__("GlobalSearch|Merge requests I've created"
 
 export const MSG_IN_ALL_GITLAB = s__('GlobalSearch|all GitLab');
 
-export const MSG_IN_GROUP = s__('GlobalSearch|group');
-
-export const MSG_IN_PROJECT = s__('GlobalSearch|project');
-
 export const ICON_PROJECT = 'project';
 
 export const ICON_GROUP = 'group';

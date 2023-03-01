@@ -1,7 +1,6 @@
 import { s__, __ } from '~/locale';
 
 /* Error constants */
-export const POST_FAILURE = 'post_failure';
 export const DEFAULT = 'default';
 export const RAW_TEXT_WARNING = s__(
   'Jobs|Raw text search is not currently supported for the jobs filtered search feature. Please use the available search tokens.',

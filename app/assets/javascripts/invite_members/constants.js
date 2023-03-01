@@ -79,7 +79,6 @@ export const READ_MORE_TEXT = s__(
 export const INVITE_BUTTON_TEXT = s__('InviteMembersModal|Invite');
 export const INVITE_BUTTON_TEXT_DISABLED = s__('InviteMembersModal|Manage members');
 export const CANCEL_BUTTON_TEXT = s__('InviteMembersModal|Cancel');
-export const CANCEL_BUTTON_TEXT_DISABLED = s__('InviteMembersModal|Explore paid plans');
 export const HEADER_CLOSE_LABEL = s__('InviteMembersModal|Close invite team members');
 export const MEMBER_ERROR_LIST_TEXT = s__(
   'InviteMembersModal|Review the invite errors and try again:',

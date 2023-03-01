@@ -1,6 +1,6 @@
 import { GlAvatarLabeled, GlIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import { IssuableType, TYPE_ISSUE } from '~/issues/constants';
+import { TYPE_ISSUE, TYPE_MERGE_REQUEST } from '~/issues/constants';
 import SidebarParticipant from '~/sidebar/components/assignees/sidebar_participant.vue';
 
 const user = {
@@ -56,13 +56,13 @@ describe('Sidebar participant component', () => {
 
   describe('when on merge request sidebar', () => {
     it('when project member cannot merge', () => {
-      createComponent({ issuableType: IssuableType.MergeRequest });
+      createComponent({ issuableType: TYPE_MERGE_REQUEST });
 
       expect(findIcon().exists()).toBe(true);
     });
 
     it('when project member can merge', () => {
-      createComponent({ issuableType: IssuableType.MergeRequest, canMerge: true });
+      createComponent({ issuableType: TYPE_MERGE_REQUEST, canMerge: true });
 
       expect(findIcon().exists()).toBe(false);
     });

@@ -1,8 +1,0 @@
----
-name: ci_use_downstream_pipeline_duration_for_calculation
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/109445
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/388776
-milestone: '15.9'
-type: development
-group: group::pipeline execution
-default_enabled: false

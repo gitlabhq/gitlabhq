@@ -210,31 +210,6 @@ RSpec.describe Gitlab::Ci::Pipeline::Duration, feature_category: :continuous_int
         end
       end
 
-      context 'when feature flag ci_use_downstream_pipeline_duration_for_calculation is disabled' do
-        before do
-          stub_feature_flags(ci_use_downstream_pipeline_duration_for_calculation: false)
-        end
-
-        it 'returns the duration of the running build' do
-          travel_to(current) do
-            expect(described_class.from_pipeline(pipeline)).to eq 1000.seconds
-          end
-        end
-
-        context 'when there is no running build' do
-          let!(:running_build) { nil }
-
-          it 'returns the duration for builds and bridges' do
-            travel_to(current) do
-              # 260 = 160 (see above)
-              #     + success bridge build (60) + failed (60) + canceled (30)
-              #     - overlapping (success & failed) (20) - overlapping (failed & canceled) (30)
-              expect(described_class.from_pipeline(pipeline)).to eq 260.seconds
-            end
-          end
-        end
-      end
-
       # rubocop:disable RSpec/MultipleMemoizedHelpers
       context 'when there are downstream bridge jobs' do
         let_it_be(:success_direct_bridge) do
@@ -279,29 +254,6 @@ RSpec.describe Gitlab::Ci::Pipeline::Duration, feature_category: :continuous_int
               # 241 = 220 (see above)
               #     + success downstream build (6) + failed (7) + canceled (8)
               expect(described_class.from_pipeline(pipeline)).to eq 241.seconds
-            end
-          end
-        end
-
-        context 'when feature flag ci_use_downstream_pipeline_duration_for_calculation is disabled' do
-          before do
-            stub_feature_flags(ci_use_downstream_pipeline_duration_for_calculation: false)
-          end
-
-          it 'returns the duration of the running build' do
-            travel_to(current) do
-              expect(described_class.from_pipeline(pipeline)).to eq 1000.seconds
-            end
-          end
-
-          context 'when there is no running build' do
-            let!(:running_build) { nil }
-
-            it 'returns the duration for builds and bridges' do
-              travel_to(current) do
-                # 380 = 260 (see above) + success direct bridge (120)
-                expect(described_class.from_pipeline(pipeline)).to eq 380.seconds
-              end
             end
           end
         end

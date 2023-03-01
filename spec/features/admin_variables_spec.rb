@@ -12,9 +12,21 @@ RSpec.describe 'Instance variables', :js, feature_category: :pipeline_compositio
     stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
     sign_in(admin)
     gitlab_enable_admin_mode_sign_in(admin)
+
     visit page_path
     wait_for_requests
   end
 
-  it_behaves_like 'variable list', isAdmin: true
+  context 'when ci_variables_pages FF is enabled' do
+    it_behaves_like 'variable list', is_admin: true
+    it_behaves_like 'variable list pagination', :ci_instance_variable
+  end
+
+  context 'when ci_variables_pages FF is disabled' do
+    before do
+      stub_feature_flags(ci_variables_pages: false)
+    end
+
+    it_behaves_like 'variable list', is_admin: true
+  end
 end

@@ -16,7 +16,18 @@ RSpec.describe 'Project variables', :js, feature_category: :pipeline_composition
     wait_for_requests
   end
 
-  it_behaves_like 'variable list'
+  context 'when ci_variables_pages FF is enabled' do
+    it_behaves_like 'variable list'
+    it_behaves_like 'variable list pagination', :ci_variable
+  end
+
+  context 'when ci_variables_pages FF is disabled' do
+    before do
+      stub_feature_flags(ci_variables_pages: false)
+    end
+
+    it_behaves_like 'variable list'
+  end
 
   it 'adds a new variable with an environment scope' do
     click_button('Add variable')

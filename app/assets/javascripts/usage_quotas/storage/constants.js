@@ -26,7 +26,6 @@ export const uploadsPopoverContent = s__(
   'NamespaceStorage|Uploads are not counted in namespace storage quotas.',
 );
 
-export const PROJECT_TABLE_LABEL_PROJECT = __('Project');
 export const PROJECT_TABLE_LABEL_STORAGE_TYPE = s__('UsageQuota|Storage type');
 export const PROJECT_TABLE_LABEL_USAGE = s__('UsageQuota|Usage');
 

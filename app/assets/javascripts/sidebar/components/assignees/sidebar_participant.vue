@@ -1,6 +1,6 @@
 <script>
 import { GlAvatarLabeled, GlIcon } from '@gitlab/ui';
-import { IssuableType, TYPE_ISSUE } from '~/issues/constants';
+import { TYPE_ISSUE, TYPE_MERGE_REQUEST } from '~/issues/constants';
 import { s__, sprintf } from '~/locale';
 
 const AVAILABILITY_STATUS = {
@@ -39,7 +39,7 @@ export default {
       );
     },
     hasCannotMergeIcon() {
-      return this.issuableType === IssuableType.MergeRequest && !this.user.canMerge;
+      return this.issuableType === TYPE_MERGE_REQUEST && !this.user.canMerge;
     },
   },
 };

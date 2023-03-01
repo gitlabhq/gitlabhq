@@ -32,11 +32,6 @@ export const I18N_VSA_ERROR_SELECTED_STAGE = __(
   'There was an error fetching data for the selected stage',
 );
 
-export const OVERVIEW_METRICS = {
-  TIME_SUMMARY: 'TIME_SUMMARY',
-  RECENT_ACTIVITY: 'RECENT_ACTIVITY',
-};
-
 export const SUMMARY_METRICS_REQUEST = [
   { endpoint: METRIC_TYPE_SUMMARY, name: __('recent activity'), request: getValueStreamMetrics },
 ];

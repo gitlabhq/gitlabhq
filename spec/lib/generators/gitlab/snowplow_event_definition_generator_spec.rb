@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::SnowplowEventDefinitionGenerator, :silence_stdout, feature_category: :product_analytics do
   let(:ce_temp_dir) { Dir.mktmpdir }
   let(:ee_temp_dir) { Dir.mktmpdir }
-  let(:timestamp) { Time.current.to_i }
+  let(:timestamp) { Time.now.utc.strftime('%Y%m%d%H%M%S') }
   let(:generator_options) { { 'category' => 'Groups::EmailCampaignsController', 'action' => 'click' } }
 
   before do

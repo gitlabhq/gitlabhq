@@ -4,7 +4,7 @@ import Vue from 'vue';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { fetchPolicies } from '~/lib/graphql';
 import { __ } from '~/locale';
-import { IssuableType, TYPE_ISSUE } from '~/issues/constants';
+import { TYPE_ISSUE, TYPE_MERGE_REQUEST } from '~/issues/constants';
 import { IssuableStates } from '~/vue_shared/issuable/list/constants';
 
 export const badgeState = Vue.observable({
@@ -76,7 +76,7 @@ export default {
       return [
         CLASSES[this.state],
         {
-          'gl-vertical-align-bottom': this.issuableType === IssuableType.MergeRequest,
+          'gl-vertical-align-bottom': this.issuableType === TYPE_MERGE_REQUEST,
         },
       ];
     },
@@ -84,7 +84,7 @@ export default {
       if (this.state === IssuableStates.Opened) {
         return 'success';
       } else if (this.state === IssuableStates.Closed) {
-        return this.issuableType === IssuableType.MergeRequest ? 'danger' : 'info';
+        return this.issuableType === TYPE_MERGE_REQUEST ? 'danger' : 'info';
       }
       return 'info';
     },

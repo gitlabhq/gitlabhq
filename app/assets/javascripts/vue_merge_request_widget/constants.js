@@ -163,9 +163,6 @@ export const EXTENSION_ICON_CLASS = {
   severityUnknown: 'gl-text-gray-400',
 };
 
-export const EXTENSION_SUMMARY_FAILED_CLASS = 'gl-text-red-500';
-export const EXTENSION_SUMMARY_NEUTRAL_CLASS = 'gl-text-gray-700';
-
 export const TELEMETRY_WIDGET_VIEWED = 'WIDGET_VIEWED';
 export const TELEMETRY_WIDGET_EXPANDED = 'WIDGET_EXPANDED';
 export const TELEMETRY_WIDGET_FULL_REPORT_CLICKED = 'WIDGET_FULL_REPORT_CLICKED';

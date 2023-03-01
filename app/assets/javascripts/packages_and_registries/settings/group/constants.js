@@ -78,8 +78,4 @@ export const MAVEN_FORWARDING_FIELDS = {
 
 // Parameters
 
-export const PACKAGES_DOCS_PATH = helpPagePath('user/packages/index');
-export const MAVEN_DUPLICATES_ALLOWED = 'mavenDuplicatesAllowed';
-export const MAVEN_DUPLICATE_EXCEPTION_REGEX = 'mavenDuplicateExceptionRegex';
-
 export const DEPENDENCY_PROXY_DOCS_PATH = helpPagePath('user/packages/dependency_proxy/index');

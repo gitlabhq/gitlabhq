@@ -7,7 +7,7 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import searchUsersQuery from '~/graphql_shared/queries/users_search.query.graphql';
 import searchUsersQueryOnMR from '~/graphql_shared/queries/users_search_with_mr_permissions.graphql';
-import { IssuableType } from '~/issues/constants';
+import { TYPE_MERGE_REQUEST } from '~/issues/constants';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import SidebarParticipant from '~/sidebar/components/assignees/sidebar_participant.vue';
 import getIssueParticipantsQuery from '~/sidebar/queries/get_issue_participants.query.graphql';
@@ -409,7 +409,7 @@ describe('User select dropdown', () => {
 
   describe('when on merge request sidebar', () => {
     beforeEach(() => {
-      createComponent({ props: { issuableType: IssuableType.MergeRequest, issuableId: 1 } });
+      createComponent({ props: { issuableType: TYPE_MERGE_REQUEST, issuableId: 1 } });
       return waitForPromises();
     });
 

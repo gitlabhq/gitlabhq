@@ -174,6 +174,23 @@ RSpec.describe API::Search, feature_category: :global_search do
       end
     end
 
+    context 'when there is a search error' do
+      let(:results) { instance_double('Gitlab::SearchResults', failed?: true, error: 'failed to parse query') }
+
+      before do
+        allow_next_instance_of(SearchService) do |service|
+          allow(service).to receive(:search_objects).and_return([])
+          allow(service).to receive(:search_results).and_return(results)
+        end
+      end
+
+      it 'returns 400 error' do
+        get api(endpoint, user), params: { scope: 'issues', search: 'expected to fail' }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+      end
+    end
+
     context 'with correct params' do
       context 'for projects scope' do
         before do

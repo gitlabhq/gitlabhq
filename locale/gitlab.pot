@@ -19471,13 +19471,7 @@ msgstr ""
 msgid "GlobalSearch|all GitLab"
 msgstr ""
 
-msgid "GlobalSearch|group"
-msgstr ""
-
 msgid "GlobalSearch|in %{scope}"
-msgstr ""
-
-msgid "GlobalSearch|project"
 msgstr ""
 
 msgid "GlobalShortcuts|Copied source branch name to clipboard."
@@ -23400,9 +23394,6 @@ msgid "InviteMembersModal|Create issues for your new team member to work on (opt
 msgstr ""
 
 msgid "InviteMembersModal|During your trial, you can invite as many members to %{groupName} as you like. When the trial ends, you'll have a maximum of %{dashboardLimit} members on the Free tier. To get more members, %{linkStart}upgrade to a paid plan%{linkEnd}."
-msgstr ""
-
-msgid "InviteMembersModal|Explore paid plans"
 msgstr ""
 
 msgid "InviteMembersModal|GitLab is better with colleagues!"
@@ -32508,6 +32499,9 @@ msgstr ""
 msgid "Preview payload"
 msgstr ""
 
+msgid "Previous"
+msgstr ""
+
 msgid "Previous Artifacts"
 msgstr ""
 
@@ -41150,9 +41144,6 @@ msgid "SourceEditor|Name conflict for \"%{prop}()\" method."
 msgstr ""
 
 msgid "SourceEditor|No extension for unuse has been specified."
-msgstr ""
-
-msgid "SourceEditor|Source Editor instance is required to set up an extension."
 msgstr ""
 
 msgid "SourceEditor|`definition` property is expected on the extension."

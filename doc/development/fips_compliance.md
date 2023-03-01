@@ -274,104 +274,55 @@ all:
     gitlab_charts_custom_config_file: '/path/to/gitlab-environment-toolkit/ansible/environments/gitlab-10k/inventory/charts.yml'
 ```
 
-Now create `charts.yml` in the location specified above and specify tags with a `-fips` suffix. For example:
+Now create `charts.yml` in the location specified above and specify tags with a `-fips` suffix.
 
-```yaml
-global:
-  image:
-    pullPolicy: Always
-  certificates:
-    image:
-      tag: master-fips
-  kubectl:
-    image:
-      tag: master-fips
-
-gitlab:
-  gitaly:
-    image:
-      tag: master-fips
-  gitlab-exporter:
-    image:
-      tag: master-fips
-  gitlab-shell:
-    image:
-      tag: main-fips # The default branch is main, not master
-  gitlab-mailroom:
-    image:
-      tag: master-fips
-  gitlab-pages:
-    image:
-      tag: master-fips
-  migrations:
-    image:
-      tag: master-fips
-  sidekiq:
-    image:
-      tag: master-fips
-  toolbox:
-    image:
-      tag: master-fips
-  webservice:
-    image:
-      tag: master-fips
-    workhorse:
-      tag: master-fips
-
-nginx-ingress:
-  controller:
-    image:
-      repository: registry.gitlab.com/gitlab-org/cloud-native/charts/gitlab-ingress-nginx/controller
-      tag: v1.2.1-fips
-      pullPolicy: Always
-      digest: sha256:c4222b7ab3836b9be2a7649cff4b2e6ead34286dfdf3a7b04eb34fdd3abb0334
-```
-
-The above example shows a FIPS-enabled [`nginx-ingress`](https://github.com/kubernetes/ingress-nginx) image.
-See our [Charts documentation on FIPS](https://docs.gitlab.com/charts/advanced/fips/index.html) for more details.
+See our [Charts documentation on FIPS](https://docs.gitlab.com/charts/advanced/fips/index.html) for more details, including
+an [example values file](https://gitlab.com/gitlab-org/charts/gitlab/blob/master/examples/fips/values.yaml) as a reference.
 
 You can also use release tags, but the versioning is tricky because each
 component may use its own versioning scheme. For example, for GitLab v15.2:
 
 ```yaml
 global:
+  image:
+    tagSuffix: -fips
   certificates:
     image:
-      tag: 20211220-r0-fips
+      tag: 20211220-r0
   kubectl:
     image:
-      tag: 1.18.20-fips
+      tag: 1.18.20
 
 gitlab:
   gitaly:
     image:
-      tag: v15.2.0-fips
+      tag: v15.2.0
   gitlab-exporter:
     image:
-      tag: 11.17.1-fips
+      tag: 11.17.1
   gitlab-shell:
     image:
-      tag: v14.9.0-fips
+      tag: v14.9.0
   gitlab-mailroom:
     image:
-      tag: v15.2.0-fips
+      tag: v15.2.0
   gitlab-pages:
     image:
-      tag: v1.61.0-fips
+      tag: v1.61.0
   migrations:
     image:
-      tag: v15.2.0-fips
+      tag: v15.2.0
   sidekiq:
     image:
-      tag: v15.2.0-fips
+      tag: v15.2.0
   toolbox:
     image:
-      tag: v15.2.0-fips
+      tag: v15.2.0
   webservice:
     image:
-      tag: v15.2.0-fips
+      tag: v15.2.0
     workhorse:
-      tag: v15.2.0-fips
+      tag: v15.2.0
 ```
 
 ## FIPS Performance Benchmarking

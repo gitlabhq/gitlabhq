@@ -65,7 +65,6 @@ export const DAST_PROFILES_NAME = __('DAST profiles');
 export const DAST_PROFILES_DESCRIPTION = s__(
   'SecurityConfiguration|Manage profiles for use by DAST scans.',
 );
-export const DAST_PROFILES_HELP_PATH = helpPagePath('user/application_security/dast/index');
 export const DAST_PROFILES_CONFIG_TEXT = s__('SecurityConfiguration|Manage profiles');
 
 export const SECRET_DETECTION_NAME = __('Secret Detection');

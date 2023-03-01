@@ -11,7 +11,7 @@ import {
 } from '@gitlab/ui';
 import { __ } from '~/locale';
 import SidebarParticipant from '~/sidebar/components/assignees/sidebar_participant.vue';
-import { IssuableType, TYPE_ISSUE } from '~/issues/constants';
+import { TYPE_ISSUE, TYPE_MERGE_REQUEST } from '~/issues/constants';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { participantsQueries, userSearchQueries } from '~/sidebar/constants';
 import { TYPENAME_MERGE_REQUEST } from '~/graphql_shared/constants';
@@ -149,7 +149,7 @@ export default {
   },
   computed: {
     isMergeRequest() {
-      return this.issuableType === IssuableType.MergeRequest;
+      return this.issuableType === TYPE_MERGE_REQUEST;
     },
     searchUsersVariables() {
       const variables = {

@@ -105,7 +105,6 @@ export const I18N_JOBS = s__('Runners|Jobs');
 export const I18N_ASSIGNED_PROJECTS = s__('Runners|Assigned Projects (%{projectCount})');
 export const I18N_FILTER_PROJECTS = s__('Runners|Filter projects');
 export const I18N_CLEAR_FILTER_PROJECTS = __('Clear');
-export const I18N_NONE = __('None');
 export const I18N_NO_JOBS_FOUND = s__('Runners|This runner has not run any jobs.');
 export const I18N_NO_PROJECTS_FOUND = __('No projects found');
 

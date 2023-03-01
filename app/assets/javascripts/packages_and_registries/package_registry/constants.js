@@ -27,15 +27,7 @@ export const PACKAGE_TYPE_DEBIAN = 'DEBIAN';
 export const PACKAGE_TYPE_HELM = 'HELM';
 
 export const TRACKING_LABEL_CODE_INSTRUCTION = 'code_instruction';
-export const TRACKING_LABEL_CONAN_INSTALLATION = 'conan_installation';
 export const TRACKING_LABEL_MAVEN_INSTALLATION = 'maven_installation';
-export const TRACKING_LABEL_NPM_INSTALLATION = 'npm_installation';
-export const TRACKING_LABEL_NUGET_INSTALLATION = 'nuget_installation';
-export const TRACKING_LABEL_PYPI_INSTALLATION = 'pypi_installation';
-export const TRACKING_LABEL_COMPOSER_INSTALLATION = 'composer_installation';
-
-export const TRACKING_ACTION_INSTALLATION = 'installation';
-export const TRACKING_ACTION_REGISTRY_SETUP = 'registry_setup';
 
 export const TRACKING_ACTION_COPY_CONAN_COMMAND = 'copy_conan_command';
 export const TRACKING_ACTION_COPY_CONAN_SETUP_COMMAND = 'copy_conan_setup_command';
@@ -68,7 +60,6 @@ export const TRACKING_ACTION_COPY_COMPOSER_PACKAGE_INCLUDE_COMMAND =
 
 export const TRACKING_LABEL_PACKAGE_ASSET = 'package_assets';
 
-export const TRACKING_ACTION_DOWNLOAD_PACKAGE_ASSET = 'download_package_asset';
 export const TRACKING_ACTION_EXPAND_PACKAGE_ASSET = 'expand_package_asset';
 export const TRACKING_ACTION_COPY_PACKAGE_ASSET_SHA = 'copy_package_asset_sha';
 
@@ -147,8 +138,6 @@ export const PACKAGE_REGISTRY_TITLE = __('Package Registry');
 
 export const PACKAGE_ERROR_STATUS = 'ERROR';
 export const PACKAGE_DEFAULT_STATUS = 'DEFAULT';
-export const PACKAGE_HIDDEN_STATUS = 'HIDDEN';
-export const PACKAGE_PROCESSING_STATUS = 'PROCESSING';
 
 export const NPM_PACKAGE_MANAGER = 'npm';
 export const YARN_PACKAGE_MANAGER = 'yarn';

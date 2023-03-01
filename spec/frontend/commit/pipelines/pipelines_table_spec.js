@@ -4,6 +4,7 @@ import MockAdapter from 'axios-mock-adapter';
 import { nextTick } from 'vue';
 import fixture from 'test_fixtures/pipelines/pipelines.json';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
+import { stubComponent } from 'helpers/stub_component';
 import waitForPromises from 'helpers/wait_for_promises';
 import Api from '~/api';
 import PipelinesTable from '~/commit/pipelines/pipelines_table.vue';
@@ -27,6 +28,7 @@ describe('Pipelines table in Commits and Merge requests', () => {
   let wrapper;
   let pipeline;
   let mock;
+  const showMock = jest.fn();
 
   const findRunPipelineBtn = () => wrapper.findByTestId('run_pipeline_button');
   const findRunPipelineBtnMobile = () => wrapper.findByTestId('run_pipeline_button_mobile');
@@ -38,7 +40,7 @@ describe('Pipelines table in Commits and Merge requests', () => {
   const findModal = () => wrapper.findComponent(GlModal);
   const findMrPipelinesDocsLink = () => wrapper.findByTestId('mr-pipelines-docs-link');
 
-  const createComponent = (props = {}) => {
+  const createComponent = ({ props = {} } = {}) => {
     wrapper = extendedWrapper(
       mount(PipelinesTable, {
         propsData: {
@@ -50,6 +52,12 @@ describe('Pipelines table in Commits and Merge requests', () => {
         mocks: {
           $toast,
         },
+        stubs: {
+          GlModal: stubComponent(GlModal, {
+            template: '<div />',
+            methods: { show: showMock },
+          }),
+        },
       }),
     );
   };
@@ -60,11 +68,6 @@ describe('Pipelines table in Commits and Merge requests', () => {
     const { pipelines } = fixture;
 
     pipeline = pipelines.find((p) => p.user !== null && p.commit !== null);
-  });
-
-  afterEach(() => {
-    wrapper.destroy();
-    mock.restore();
   });
 
   describe('successful request', () => {
@@ -95,6 +98,35 @@ describe('Pipelines table in Commits and Merge requests', () => {
       });
     });
 
+    describe('with pagination', () => {
+      beforeEach(async () => {
+        mock.onGet('endpoint.json').reply(HTTP_STATUS_OK, [pipeline], {
+          'X-TOTAL': 10,
+          'X-PER-PAGE': 2,
+          'X-PAGE': 1,
+          'X-TOTAL-PAGES': 5,
+          'X-NEXT-PAGE': 2,
+          'X-PREV-PAGE': 2,
+        });
+
+        createComponent();
+
+        await waitForPromises();
+      });
+
+      it('should make an API request when using pagination', async () => {
+        expect(mock.history.get).toHaveLength(1);
+        expect(mock.history.get[0].params.page).toBe('1');
+
+        wrapper.find('.next-page-item').trigger('click');
+
+        await waitForPromises();
+
+        expect(mock.history.get).toHaveLength(2);
+        expect(mock.history.get[1].params.page).toBe('2');
+      });
+    });
+
     describe('with pipelines', () => {
       beforeEach(async () => {
         mock.onGet('endpoint.json').reply(HTTP_STATUS_OK, [pipeline], { 'x-total': 10 });
@@ -109,32 +141,6 @@ describe('Pipelines table in Commits and Merge requests', () => {
         expect(findTableRows()).toHaveLength(1);
         expect(findLoadingState().exists()).toBe(false);
         expect(findErrorEmptyState().exists()).toBe(false);
-      });
-
-      describe('with pagination', () => {
-        it('should make an API request when using pagination', async () => {
-          jest.spyOn(wrapper.vm, 'updateContent').mockImplementation(() => {});
-
-          // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-          // eslint-disable-next-line no-restricted-syntax
-          await wrapper.setData({
-            store: {
-              state: {
-                pageInfo: {
-                  page: 1,
-                  total: 10,
-                  perPage: 2,
-                  nextPage: 2,
-                  totalPages: 5,
-                },
-              },
-            },
-          });
-
-          wrapper.find('.next-page-item').trigger('click');
-
-          expect(wrapper.vm.updateContent).toHaveBeenCalledWith({ page: '2' });
-        });
       });
 
       describe('pipeline badge counts', () => {
@@ -203,16 +209,18 @@ describe('Pipelines table in Commits and Merge requests', () => {
         mock.onGet('endpoint.json').reply(HTTP_STATUS_OK, [pipelineCopy]);
 
         createComponent({
-          canRunPipeline: true,
-          projectId: '5',
-          mergeRequestId: 3,
+          props: {
+            canRunPipeline: true,
+            projectId: '5',
+            mergeRequestId: 3,
+          },
         });
 
         await waitForPromises();
       });
       describe('success', () => {
         beforeEach(() => {
-          jest.spyOn(Api, 'postMergeRequestPipeline').mockReturnValue(Promise.resolve());
+          jest.spyOn(Api, 'postMergeRequestPipeline').mockResolvedValue();
         });
         it('displays a toast message during pipeline creation', async () => {
           await findRunPipelineBtn().trigger('click');
@@ -255,9 +263,7 @@ describe('Pipelines table in Commits and Merge requests', () => {
         `('displays permissions error message', async ({ status, message }) => {
           const response = { response: { status } };
 
-          jest
-            .spyOn(Api, 'postMergeRequestPipeline')
-            .mockImplementation(() => Promise.reject(response));
+          jest.spyOn(Api, 'postMergeRequestPipeline').mockRejectedValue(response);
 
           await findRunPipelineBtn().trigger('click');
 
@@ -281,14 +287,16 @@ describe('Pipelines table in Commits and Merge requests', () => {
         mock.onGet('endpoint.json').reply(HTTP_STATUS_OK, [pipelineCopy]);
 
         createComponent({
-          projectId: '5',
-          mergeRequestId: 3,
-          canCreatePipelineInTargetProject: true,
-          sourceProjectFullPath: 'test/parent-project',
-          targetProjectFullPath: 'test/fork-project',
+          props: {
+            projectId: '5',
+            mergeRequestId: 3,
+            canCreatePipelineInTargetProject: true,
+            sourceProjectFullPath: 'test/parent-project',
+            targetProjectFullPath: 'test/fork-project',
+          },
         });
 
-        jest.spyOn(Api, 'postMergeRequestPipeline').mockReturnValue(Promise.resolve());
+        jest.spyOn(Api, 'postMergeRequestPipeline').mockResolvedValue();
 
         await waitForPromises();
       });
@@ -313,14 +321,14 @@ describe('Pipelines table in Commits and Merge requests', () => {
         mock.onGet('endpoint.json').reply(HTTP_STATUS_OK, []);
 
         createComponent({
-          projectId: '5',
-          mergeRequestId: 3,
-          canCreatePipelineInTargetProject: true,
-          sourceProjectFullPath: 'test/parent-project',
-          targetProjectFullPath: 'test/fork-project',
+          props: {
+            projectId: '5',
+            mergeRequestId: 3,
+            canCreatePipelineInTargetProject: true,
+            sourceProjectFullPath: 'test/parent-project',
+            targetProjectFullPath: 'test/fork-project',
+          },
         });
-
-        jest.spyOn(findModal().vm, 'show').mockReturnValue();
 
         await waitForPromises();
       });
@@ -331,7 +339,7 @@ describe('Pipelines table in Commits and Merge requests', () => {
 
         findRunPipelineBtn().trigger('click');
 
-        expect(findModal().vm.show).toHaveBeenCalled();
+        expect(showMock).toHaveBeenCalled();
       });
     });
   });

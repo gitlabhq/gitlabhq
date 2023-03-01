@@ -36,11 +36,12 @@ default:
   OMNIBUS_GITLAB_RUBY2_BUILD: "true"
   OMNIBUS_GITLAB_CACHE_EDITION: "GITLAB_RUBY2"
 
-.default-branch-incident-variables: &default-branch-incident-variables
+.default-branch-pipeline-failure-variables: &default-branch-pipeline-failure-variables
   CREATE_INCIDENT_FOR_PIPELINE_FAILURE: "true"
   NOTIFY_PIPELINE_FAILURE_CHANNEL: "master-broken"
   BROKEN_BRANCH_INCIDENTS_PROJECT: "gitlab-org/quality/engineering-productivity/master-broken-incidents"
   BROKEN_BRANCH_INCIDENTS_PROJECT_TOKEN: "${BROKEN_MASTER_INCIDENTS_PROJECT_TOKEN}"
+  CREATE_ISSUES_FOR_FAILING_TESTS: "true"
 
 workflow:
   name: '$PIPELINE_NAME'
@@ -76,7 +77,7 @@ workflow:
     - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "schedule"'
       variables:
         <<: *ruby3-variables
-        <<: *default-branch-incident-variables
+        <<: *default-branch-pipeline-failure-variables
         CRYSTALBALL: "true"
         PIPELINE_NAME: 'Scheduled Ruby 3 $CI_COMMIT_BRANCH branch pipeline'
     # Run pipelines for ruby2 branch
@@ -90,14 +91,14 @@ workflow:
     - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $GITLAB_USER_LOGIN =~ /project_\d+_bot\d*/'
       variables:
         <<: *ruby3-variables
-        <<: *default-branch-incident-variables
+        <<: *default-branch-pipeline-failure-variables
         GITLAB_DEPENDENCY_PROXY_ADDRESS: ""
         PIPELINE_NAME: 'Ruby 3 $CI_COMMIT_BRANCH branch pipeline (triggered by a project token)'
     # For `$CI_DEFAULT_BRANCH` branch, create a pipeline (this includes on schedules, pushes, merges, etc.).
     - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
       variables:
         <<: *ruby3-variables
-        <<: *default-branch-incident-variables
+        <<: *default-branch-pipeline-failure-variables
         PIPELINE_NAME: 'Ruby 3 $CI_COMMIT_BRANCH branch pipeline'
     # For tags, create a pipeline.
     - if: '$CI_COMMIT_TAG'
