@@ -93,6 +93,7 @@ Integration.available_integration_names.each do |integration|
 
     def initialize_integration(integration, attrs = {})
       record = project.find_or_initialize_integration(integration)
+      record.reset_updated_properties if integration == 'datadog'
       record.attributes = attrs
       record.properties = integration_attrs
       record.save!

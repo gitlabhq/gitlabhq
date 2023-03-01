@@ -15,6 +15,7 @@ module Integrations
     TAG_KEY_VALUE_RE = %r{\A [\w-]+ : .*\S.* \z}x.freeze
 
     field :datadog_site,
+      exposes_secrets: true,
       placeholder: DEFAULT_DOMAIN,
       help: -> do
         ERB::Util.html_escape(

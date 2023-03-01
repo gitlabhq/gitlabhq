@@ -3,7 +3,7 @@ require 'securerandom'
 
 require 'spec_helper'
 
-RSpec.describe Integrations::Datadog do
+RSpec.describe Integrations::Datadog, feature_category: :integrations do
   let_it_be(:project) { create(:project) }
   let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
   let_it_be(:build) { create(:ci_build, pipeline: pipeline) }

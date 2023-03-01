@@ -44,7 +44,7 @@ RSpec.describe Gitlab::HTTPConnectionAdapter do
         it 'raises error' do
           expect { subject }.to raise_error(
             Gitlab::HTTP::BlockedUrlError,
-            "URL 'http://172.16.0.0/12' is blocked: Requests to the local network are not allowed"
+            "URL is blocked: Requests to the local network are not allowed"
           )
         end
 
@@ -67,7 +67,7 @@ RSpec.describe Gitlab::HTTPConnectionAdapter do
         it 'raises error' do
           expect { subject }.to raise_error(
             Gitlab::HTTP::BlockedUrlError,
-            "URL 'http://127.0.0.1' is blocked: Requests to localhost are not allowed"
+            "URL is blocked: Requests to localhost are not allowed"
           )
         end
 
@@ -131,7 +131,7 @@ RSpec.describe Gitlab::HTTPConnectionAdapter do
       it 'raises error' do
         expect { subject }.to raise_error(
           Gitlab::HTTP::BlockedUrlError,
-          "URL 'ssh://example.org' is blocked: Only allowed schemes are http, https"
+          "URL is blocked: Only allowed schemes are http, https"
         )
       end
     end
