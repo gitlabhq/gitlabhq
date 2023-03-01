@@ -125,7 +125,7 @@ module ResourceAccessTokens
 
     def do_not_allow_owner_access_level_for_project_bot?(access_level)
       resource.is_a?(Project) &&
-        access_level == Gitlab::Access::OWNER &&
+        access_level.to_i == Gitlab::Access::OWNER &&
         !current_user.can?(:manage_owners, resource)
     end
   end
