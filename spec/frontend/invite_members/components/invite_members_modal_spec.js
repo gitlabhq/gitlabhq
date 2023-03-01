@@ -134,10 +134,15 @@ describe('InviteMembersModal', () => {
     `${Object.keys(invitationsApiResponse.EXPANDED_RESTRICTED.message)[element]}: ${
       Object.values(invitationsApiResponse.EXPANDED_RESTRICTED.message)[element]
     }`;
-  const emitEventFromModal = (eventName) => () =>
-    findModal().vm.$emit(eventName, { preventDefault: jest.fn() });
-  const clickInviteButton = emitEventFromModal('primary');
-  const clickCancelButton = emitEventFromModal('cancel');
+  const findActionButton = () => wrapper.findByTestId('invite-modal-submit');
+  const findCancelButton = () => wrapper.findByTestId('invite-modal-cancel');
+
+  const emitClickFromModal = (findButton) => () =>
+    findButton().vm.$emit('click', { preventDefault: jest.fn() });
+
+  const clickInviteButton = emitClickFromModal(findActionButton);
+  const clickCancelButton = emitClickFromModal(findCancelButton);
+
   const findMembersFormGroup = () => wrapper.findByTestId('members-form-group');
   const membersFormGroupInvalidFeedback = () =>
     findMembersFormGroup().attributes('invalid-feedback');
@@ -368,13 +373,11 @@ describe('InviteMembersModal', () => {
           it('tracks actions', async () => {
             trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
 
-            const mockEvent = { preventDefault: jest.fn() };
-
             await triggerOpenModal({ mode: 'celebrate', source: ON_CELEBRATION_TRACK_LABEL });
 
             expectTracking('render', ON_CELEBRATION_TRACK_LABEL);
 
-            findModal().vm.$emit('cancel', mockEvent);
+            clickCancelButton();
             expectTracking('click_cancel', ON_CELEBRATION_TRACK_LABEL);
 
             findModal().vm.$emit('close');
@@ -411,13 +414,11 @@ describe('InviteMembersModal', () => {
 
         trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
 
-        const mockEvent = { preventDefault: jest.fn() };
-
         await triggerOpenModal(source);
 
         expectTracking('render', label);
 
-        findModal().vm.$emit('cancel', mockEvent);
+        clickCancelButton();
         expectTracking('click_cancel', label);
 
         findModal().vm.$emit('close');
@@ -734,7 +735,7 @@ describe('InviteMembersModal', () => {
 
           expect(membersFormGroupInvalidFeedback()).toBe(expectedSyntaxError);
           expect(findMembersSelect().props('exceptionState')).toBe(false);
-          expect(findModal().props('actionPrimary').attributes.loading).toBe(false);
+          expect(findActionButton().props('loading')).toBe(false);
         });
 
         it('clears the error when the modal is hidden', async () => {
@@ -746,7 +747,7 @@ describe('InviteMembersModal', () => {
 
           expect(membersFormGroupInvalidFeedback()).toBe(expectedSyntaxError);
           expect(findMembersSelect().props('exceptionState')).toBe(false);
-          expect(findModal().props('actionPrimary').attributes.loading).toBe(false);
+          expect(findActionButton().props('loading')).toBe(false);
 
           findModal().vm.$emit('hidden');
 
@@ -768,7 +769,7 @@ describe('InviteMembersModal', () => {
           expect(findMemberErrorAlert().text()).toContain(expectedEmailRestrictedError);
           expect(membersFormGroupInvalidFeedback()).toBe('');
           expect(findMembersSelect().props('exceptionState')).not.toBe(false);
-          expect(findModal().props('actionPrimary').attributes.loading).toBe(false);
+          expect(findActionButton().props('loading')).toBe(false);
         });
 
         it('displays all errors when there are multiple emails that return a restricted error message', async () => {

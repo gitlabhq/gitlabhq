@@ -14,6 +14,8 @@ module Clusters
         return error_no_permissions unless current_user.can?(:create_cluster, token.agent.project)
 
         if token.update(status: token.class.statuses[:revoked])
+          log_activity_event(token)
+
           ServiceResponse.success
         else
           ServiceResponse.error(message: token.errors.full_messages)
@@ -25,6 +27,17 @@ module Clusters
       def error_no_permissions
         ServiceResponse.error(
           message: s_('ClusterAgent|User has insufficient permissions to revoke the token for this project'))
+      end
+
+      def log_activity_event(token)
+        Clusters::Agents::CreateActivityEventService.new(
+          token.agent,
+          kind: :token_revoked,
+          level: :info,
+          recorded_at: token.updated_at,
+          user: current_user,
+          agent_token: token
+        ).execute
       end
     end
   end

@@ -59,6 +59,7 @@ describe('diffs/components/app', () => {
         endpoint: TEST_ENDPOINT,
         endpointMetadata: `${TEST_HOST}/diff/endpointMetadata`,
         endpointBatch: `${TEST_HOST}/diff/endpointBatch`,
+        endpointDiffForPath: TEST_ENDPOINT,
         endpointCoverage: `${TEST_HOST}/diff/endpointCoverage`,
         endpointCodequality: '',
         projectPath: 'namespace/project',

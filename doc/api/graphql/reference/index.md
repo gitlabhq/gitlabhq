@@ -3673,12 +3673,18 @@ Input type: `IssuesBulkUpdateInput`
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="mutationissuesbulkupdateaddlabelids"></a>`addLabelIds` | [`[LabelID!]`](#labelid) | Global ID array of the labels that will be added to the issues. |
 | <a id="mutationissuesbulkupdateassigneeids"></a>`assigneeIds` | [`[UserID!]`](#userid) | Global ID array of the users that will be assigned to the given issues. Existing assignees will be replaced with the ones on this list. |
 | <a id="mutationissuesbulkupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationissuesbulkupdateepicid"></a>`epicId` | [`EpicID`](#epicid) | Global ID of the epic that will be assigned to the issues. |
+| <a id="mutationissuesbulkupdatehealthstatus"></a>`healthStatus` | [`HealthStatus`](#healthstatus) | Health status that will be assigned to the issues. |
 | <a id="mutationissuesbulkupdateids"></a>`ids` | [`[IssueID!]!`](#issueid) | Global ID array of the issues that will be updated. IDs that the user can't update will be ignored. A max of 100 can be provided. |
 | <a id="mutationissuesbulkupdateiterationid"></a>`iterationId` | [`IterationID`](#iterationid) | Global ID of the iteration that will be assigned to the issues. |
 | <a id="mutationissuesbulkupdatemilestoneid"></a>`milestoneId` | [`MilestoneID`](#milestoneid) | Global ID of the milestone that will be assigned to the issues. |
-| <a id="mutationissuesbulkupdateparentid"></a>`parentId` | [`IssueParentID!`](#issueparentid) | Global ID of the parent that the bulk update will be scoped to . Example `IssueParentID` are `"gid://gitlab/Project/1"` and `"gid://gitlab/Group/1"`. |
+| <a id="mutationissuesbulkupdateparentid"></a>`parentId` | [`IssueParentID!`](#issueparentid) | Global ID of the parent to which the bulk update will be scoped. The parent can be a project **(FREE)** or a group **(PREMIUM)**. Example `IssueParentID` are `"gid://gitlab/Project/1"` and `"gid://gitlab/Group/1"`. |
+| <a id="mutationissuesbulkupdateremovelabelids"></a>`removeLabelIds` | [`[LabelID!]`](#labelid) | Global ID array of the labels that will be removed from the issues. |
+| <a id="mutationissuesbulkupdatestateevent"></a>`stateEvent` | [`IssueStateEvent`](#issuestateevent) | Close or reopen an issue. |
+| <a id="mutationissuesbulkupdatesubscriptionevent"></a>`subscriptionEvent` | [`IssuableSubscriptionEvent`](#issuablesubscriptionevent) | Subscribe to or unsubscribe from issue notifications. |
 
 #### Fields
 
@@ -23034,6 +23040,15 @@ State of a GitLab issue or merge request.
 | <a id="issuablestateclosed"></a>`closed` | In closed state. |
 | <a id="issuablestatelocked"></a>`locked` | Discussion has been locked. |
 | <a id="issuablestateopened"></a>`opened` | In open state. |
+
+### `IssuableSubscriptionEvent`
+
+Values for subscribing and unsubscribing from issuables.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="issuablesubscriptioneventsubscribe"></a>`SUBSCRIBE` | Subscribe to an issuable. |
+| <a id="issuablesubscriptioneventunsubscribe"></a>`UNSUBSCRIBE` | Unsubscribe from an issuable. |
 
 ### `IssueCreationIterationWildcardId`
 

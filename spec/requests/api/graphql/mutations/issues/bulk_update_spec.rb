@@ -8,7 +8,9 @@ RSpec.describe 'Bulk update issues', feature_category: :team_planning do
   let_it_be(:developer) { create(:user) }
   let_it_be(:group) { create(:group).tap { |group| group.add_developer(developer) } }
   let_it_be(:project) { create(:project, group: group) }
-  let_it_be(:updatable_issues, reload: true) { create_list(:issue, 2, project: project) }
+  let_it_be(:label1) { create(:group_label, group: group) }
+  let_it_be(:label2) { create(:group_label, group: group) }
+  let_it_be(:updatable_issues, reload: true) { create_list(:issue, 2, project: project, label_ids: [label1.id]) }
   let_it_be(:milestone) { create(:milestone, group: group) }
 
   let(:parent) { project }
@@ -21,8 +23,34 @@ RSpec.describe 'Bulk update issues', feature_category: :team_planning do
   let(:additional_arguments) do
     {
       assignee_ids: [current_user.to_gid.to_s],
-      milestone_id: milestone.to_gid.to_s
+      milestone_id: milestone.to_gid.to_s,
+      state_event: :CLOSE,
+      add_label_ids: [label2.to_gid.to_s],
+      remove_label_ids: [label1.to_gid.to_s],
+      subscription_event: :UNSUBSCRIBE
     }
+  end
+
+  before_all do
+    updatable_issues.each { |i| i.subscribe(developer, project) }
+  end
+
+  context 'when Gitlab is FOSS only' do
+    unless Gitlab.ee?
+      context 'when parent is a group' do
+        let(:parent) { group }
+
+        it 'does not allow bulk updating issues at the group level' do
+          post_graphql_mutation(mutation, current_user: current_user)
+
+          expect(graphql_errors).to contain_exactly(
+            hash_including(
+              'message' => match(/does not represent an instance of IssueParent/)
+            )
+          )
+        end
+      end
+    end
   end
 
   context 'when the `bulk_update_issues_mutation` feature flag is disabled' do
@@ -67,6 +95,11 @@ RSpec.describe 'Bulk update issues', feature_category: :team_planning do
         updatable_issues.each(&:reload)
       end.to change { updatable_issues.flat_map(&:assignee_ids) }.from([]).to([current_user.id] * 2)
         .and(change { updatable_issues.map(&:milestone_id) }.from([nil] * 2).to([milestone.id] * 2))
+        .and(change { updatable_issues.map(&:state) }.from(['opened'] * 2).to(['closed'] * 2))
+        .and(change { updatable_issues.flat_map(&:label_ids) }.from([label1.id] * 2).to([label2.id] * 2))
+        .and(
+          change { updatable_issues.map { |i| i.subscribed?(developer, project) } }.from([true] * 2).to([false] * 2)
+        )
 
       expect(mutation_response).to include(
         'updatedIssueCount' => updatable_issues.count
@@ -85,37 +118,6 @@ RSpec.describe 'Bulk update issues', feature_category: :team_planning do
                          'permission to perform this action'
           )
         )
-      end
-    end
-
-    context 'when scoping to a parent group' do
-      let(:parent) { group }
-
-      it 'updates all issues' do
-        expect do
-          post_graphql_mutation(mutation, current_user: current_user)
-          updatable_issues.each(&:reload)
-        end.to change { updatable_issues.flat_map(&:assignee_ids) }.from([]).to([current_user.id] * 2)
-          .and(change { updatable_issues.map(&:milestone_id) }.from([nil] * 2).to([milestone.id] * 2))
-
-        expect(mutation_response).to include(
-          'updatedIssueCount' => updatable_issues.count
-        )
-      end
-
-      context 'when current user cannot read the specified group' do
-        let(:parent) { create(:group, :private) }
-
-        it 'returns a resource not found error' do
-          post_graphql_mutation(mutation, current_user: current_user)
-
-          expect(graphql_errors).to contain_exactly(
-            hash_including(
-              'message' => "The resource that you are attempting to access does not exist or you don't have " \
-                           'permission to perform this action'
-            )
-          )
-        end
       end
     end
 

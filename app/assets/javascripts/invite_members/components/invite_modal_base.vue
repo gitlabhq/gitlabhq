@@ -1,5 +1,14 @@
 <script>
-import { GlFormGroup, GlFormSelect, GlModal, GlDatepicker, GlLink, GlSprintf } from '@gitlab/ui';
+import {
+  GlFormGroup,
+  GlFormSelect,
+  GlModal,
+  GlDatepicker,
+  GlLink,
+  GlSprintf,
+  GlButton,
+} from '@gitlab/ui';
+
 import Tracking from '~/tracking';
 import { sprintf } from '~/locale';
 import ContentTransition from '~/vue_shared/components/content_transition.vue';
@@ -33,6 +42,7 @@ export default {
     GlLink,
     GlModal,
     GlSprintf,
+    GlButton,
     ContentTransition,
   },
   mixins: [Tracking.mixin()],
@@ -246,13 +256,10 @@ export default {
     data-qa-selector="invite_members_modal_content"
     data-testid="invite-modal"
     size="sm"
+    dialog-class="gl-mx-5"
     :title="modalTitle"
     :header-close-label="$options.HEADER_CLOSE_LABEL"
-    :action-primary="actionPrimary"
-    :action-cancel="actionCancel"
     @shown="onShowModal"
-    @primary="onSubmit"
-    @cancel="onCancel"
     @close="onClose"
     @hidden="onReset"
   >
@@ -330,5 +337,29 @@ export default {
         <slot :name="key"></slot>
       </template>
     </content-transition>
+
+    <template #modal-footer>
+      <div
+        class="gl-m-0 gl-xs-w-full gl-display-flex gl-xs-flex-direction-column! gl-flex-direction-row-reverse"
+      >
+        <gl-button
+          class="gl-xs-w-full gl-xs-mb-3! gl-sm-ml-3!"
+          data-testid="invite-modal-submit"
+          v-bind="actionPrimary.attributes"
+          @click="onSubmit"
+        >
+          {{ actionPrimary.text }}
+        </gl-button>
+
+        <gl-button
+          class="gl-xs-w-full"
+          data-testid="invite-modal-cancel"
+          v-bind="actionCancel.attributes"
+          @click="onCancel"
+        >
+          {{ actionCancel.text }}
+        </gl-button>
+      </div>
+    </template>
   </gl-modal>
 </template>

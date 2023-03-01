@@ -3,7 +3,7 @@ import { darkModeEnabled } from '~/lib/utils/color_utils';
 import { setUrlParams } from '~/lib/utils/url_utility';
 
 export function getFrameSrc(url) {
-  return `${setUrlParams({ theme: darkModeEnabled() ? 'dark' : 'light' }, url)}&kiosk`;
+  return `${setUrlParams({ theme: darkModeEnabled() ? 'dark' : 'light' }, url)}&kiosk=inline-embed`;
 }
 
 const mountVueComponent = (element) => {

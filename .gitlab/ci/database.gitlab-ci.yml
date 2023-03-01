@@ -36,8 +36,8 @@ db:rollback:
     - .db-job-base
     - .rails:rules:db-rollback
   script:
-    - scripts/db_tasks db:migrate VERSION=20220502173045  # 14.10 (last 14.x version)
-    - scripts/db_tasks db:migrate
+    - bundle exec rake db:migrate VERSION=20220502173045  # 14.10 (last 14.x version)
+    - bundle exec rake db:migrate
 
 db:rollback single-db:
   extends:
@@ -61,8 +61,7 @@ db:check-schema:
     - .db-job-base
     - .rails:rules:ee-mr-and-default-branch-only
   script:
-    - run_timed_command "bundle exec rake db:drop db:create"
-    - run_timed_command "scripts/db_tasks db:migrate"
+    - run_timed_command "bundle exec rake db:drop db:create db:migrate"
 
 db:check-schema-single-db:
   extends:

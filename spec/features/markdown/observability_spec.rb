@@ -9,7 +9,7 @@ RSpec.describe 'Observability rendering', :js, feature_category: :metrics do
   let_it_be(:observable_url) { "https://observe.gitlab.com/#{group.id}/some-dashboard" }
 
   let_it_be(:expected) do
-    %(<iframe src="#{observable_url}?theme=light&amp;kiosk" frameborder="0")
+    %(<iframe src="#{observable_url}?theme=light&amp;kiosk=inline-embed" frameborder="0")
   end
 
   before do

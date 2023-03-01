@@ -3,7 +3,9 @@ import * as ColorUtils from '~/lib/utils/color_utils';
 
 describe('Observability iframe renderer', () => {
   const findObservabilityIframes = (theme = 'light') =>
-    document.querySelectorAll(`iframe[src="https://observe.gitlab.com/?theme=${theme}&kiosk"]`);
+    document.querySelectorAll(
+      `iframe[src="https://observe.gitlab.com/?theme=${theme}&kiosk=inline-embed"]`,
+    );
 
   const renderEmbeddedObservability = () => {
     renderObservability([...document.querySelectorAll('.js-render-observability')]);

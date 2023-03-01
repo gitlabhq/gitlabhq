@@ -19,7 +19,7 @@ module Clusters
         token = ::Clusters::AgentToken.new(filtered_params.merge(agent_id: agent.id, created_by_user: current_user))
 
         if token.save
-          log_activity_event!(token)
+          log_activity_event(token)
 
           ServiceResponse.success(payload: { secret: token.token, token: token })
         else
@@ -37,7 +37,7 @@ module Clusters
         params.slice(*ALLOWED_PARAMS)
       end
 
-      def log_activity_event!(token)
+      def log_activity_event(token)
         Clusters::Agents::CreateActivityEventService.new(
           token.agent,
           kind: :token_created,

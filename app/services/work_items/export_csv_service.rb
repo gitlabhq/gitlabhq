@@ -11,7 +11,7 @@ module WorkItems
     end
 
     def email(mail_to_user)
-      # TODO - will be implemented as part of https://gitlab.com/gitlab-org/gitlab/-/issues/379082
+      Notify.export_work_items_csv_email(mail_to_user, resource_parent, csv_data, csv_builder.status).deliver_now
     end
 
     private

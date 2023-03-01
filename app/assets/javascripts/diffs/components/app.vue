@@ -95,6 +95,10 @@ export default {
       type: String,
       required: true,
     },
+    endpointDiffForPath: {
+      type: String,
+      required: true,
+    },
     endpointCoverage: {
       type: String,
       required: false,
@@ -322,6 +326,7 @@ export default {
       endpoint: this.endpoint,
       endpointMetadata: this.endpointMetadata,
       endpointBatch: this.endpointBatch,
+      endpointDiffForPath: this.endpointDiffForPath,
       endpointCoverage: this.endpointCoverage,
       endpointUpdateUser: this.endpointUpdateUser,
       projectPath: this.projectPath,

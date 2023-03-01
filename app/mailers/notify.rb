@@ -7,6 +7,7 @@ class Notify < ApplicationMailer
   include ReminderEmailsHelper
   include IssuablesHelper
 
+  include Emails::Shared
   include Emails::Issues
   include Emails::MergeRequests
   include Emails::Notes

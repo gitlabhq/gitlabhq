@@ -1,6 +1,8 @@
+- type = type.to_s.humanize.downcase
+
 %p{ style: 'font-size:18px; text-align:center;  line-height:30px;' }
   - project_link = link_to(@project.full_name, project_url(@project), style: "color:#3777b0; text-decoration:none; display:block;")
-  = _('Your CSV export of %{count} from project %{project_link} has been added to this email as an attachment.').html_safe % { count: pluralize(@written_count, type.to_s.titleize.downcase), project_link: project_link }
+  = _('Your CSV export of %{count} from project %{project_link} has been added to this email as an attachment.').html_safe % { count: pluralize(@written_count, type.titleize.downcase), project_link: project_link }
   - if @truncated
     %p
-      = _('This attachment has been truncated to avoid exceeding the maximum allowed attachment size of %{size_limit}. %{written_count} of %{count} %{issuables} have been included. Consider re-exporting with a narrower selection of %{issuables}.') % { written_count: @written_count, count: @count, issuables: type.to_s.pluralize, size_limit: @size_limit }
+      = _('This attachment has been truncated to avoid exceeding the maximum allowed attachment size of %{size_limit}. %{written_count} of %{count} %{issuables} have been included. Consider re-exporting with a narrower selection of %{issuables}.') % { written_count: @written_count, count: @count, issuables: type.pluralize, size_limit: @size_limit }

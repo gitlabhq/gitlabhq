@@ -69,6 +69,7 @@ describe('DiffsStoreActions', () => {
       const endpoint = '/diffs/set/endpoint';
       const endpointMetadata = '/diffs/set/endpoint/metadata';
       const endpointBatch = '/diffs/set/endpoint/batch';
+      const endpointDiffForPath = '/diffs/set/endpoint/path';
       const endpointCoverage = '/diffs/set/coverage_reports';
       const projectPath = '/root/project';
       const dismissEndpoint = '/-/user_callouts';
@@ -83,6 +84,7 @@ describe('DiffsStoreActions', () => {
         {
           endpoint,
           endpointBatch,
+          endpointDiffForPath,
           endpointMetadata,
           endpointCoverage,
           projectPath,
@@ -93,6 +95,7 @@ describe('DiffsStoreActions', () => {
         {
           endpoint: '',
           endpointBatch: '',
+          endpointDiffForPath: '',
           endpointMetadata: '',
           endpointCoverage: '',
           projectPath: '',
@@ -106,6 +109,7 @@ describe('DiffsStoreActions', () => {
               endpoint,
               endpointMetadata,
               endpointBatch,
+              endpointDiffForPath,
               endpointCoverage,
               projectPath,
               dismissEndpoint,

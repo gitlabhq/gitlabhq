@@ -35,6 +35,30 @@ RSpec.describe MemberRole, feature_category: :system_access do
       end
     end
 
+    context 'for max_count_per_group_hierarchy' do
+      let_it_be(:group) { create(:group) }
+
+      subject(:member_role) { build(:member_role, namespace: group) }
+
+      context 'when number of member roles is below limit' do
+        it 'is valid' do
+          is_expected.to be_valid
+        end
+      end
+
+      context 'when number of member roles is above limit' do
+        before do
+          stub_const('MemberRole::MAX_COUNT_PER_GROUP_HIERARCHY', 1)
+          create(:member_role, namespace: group)
+          group.reload
+        end
+
+        it 'is invalid' do
+          is_expected.to be_invalid
+        end
+      end
+    end
+
     context 'when for namespace' do
       let_it_be(:root_group) { create(:group) }
 

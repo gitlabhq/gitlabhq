@@ -8,9 +8,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > - Introduced in GitLab 15.4 as an [Alpha](../../policy/alpha-beta-support.md#alpha-features) feature [with a flag](../../administration/feature_flags.md) named `cube_api_proxy`. Disabled by default.
 > - `cube_api_proxy` revised to only reference the [Product Analytics API](../../api/product_analytics.md) in GitLab 15.6.
+> - `cube_api_proxy` removed and replaced with `product_analytics_internal_preview` in GitLab 15.10.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available per project or for your entire instance, ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `cube_api_proxy`.
+On self-managed GitLab, by default this feature is not available. To make it available per project or for your entire instance, ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `product_analytics_internal_preview`.
 On GitLab.com, this feature is not available.
 This feature is not ready for production use.
 
@@ -50,6 +51,7 @@ Product Analytics uses several tools:
 
 > - Introduced in GitLab 15.6 behind the [feature flag](../../administration/feature_flags.md) named `cube_api_proxy`. Disabled by default.
 > - Moved to be behind the [feature flag](../../administration/feature_flags.md) named `product_analytics_admin_settings` in GitLab 15.7. Disabled by default.
+> - `cube_api_proxy` removed and replaced with `product_analytics_internal_preview` in GitLab 15.10.
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available per project or for your entire instance, ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `product_analytics_admin_settings`.

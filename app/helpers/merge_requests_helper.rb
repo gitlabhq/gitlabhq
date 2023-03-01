@@ -185,6 +185,7 @@ module MergeRequestsHelper
       endpoint_metadata: @endpoint_metadata_url,
       endpoint_batch: diffs_batch_project_json_merge_request_path(project, merge_request, 'json', params),
       endpoint_coverage: @coverage_path,
+      endpoint_diff_for_path: diff_for_path_namespace_project_merge_request_path(format: 'json', id: merge_request.iid, namespace_id: project.namespace.path, project_id: project.path),
       help_page_path: help_page_path('user/project/merge_requests/reviews/suggestions.md'),
       current_user_data: @current_user_data,
       update_current_user_path: @update_current_user_path,
