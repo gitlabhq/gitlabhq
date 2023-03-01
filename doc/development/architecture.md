@@ -1101,11 +1101,28 @@ PostgreSQL:
 GitLab has configuration files located in `/home/git/gitlab/config/*`. Commonly referenced
 configuration files include:
 
-- `gitlab.yml`: GitLab configuration
+- `gitlab.yml`: GitLab Rails configuration
 - `puma.rb`: Puma web server settings
 - `database.yml`: Database connection settings
 
 GitLab Shell has a configuration file at `/home/git/gitlab-shell/config.yml`.
+
+#### Adding a new setting in GitLab Rails
+
+Settings which belong in `gitlab.yml` include those related to:
+
+- How the application is wired together across multiple services. For example, Gitaly addresses, Redis addresses, Postgres addresses, and Consul addresses.
+- Distributed Tracing configuration, and some observability configurations. For example, histogram bucket boundaries.
+- Anything that needs to be configured during Rails initialization, possibly before the Postgres connection has been established.
+
+Many other settings are better placed in the app itself, in `ApplicationSetting`. Managing settings in UI is usually a better user experience compared to managing configuration files. With respect to development cost, modifying `gitlab.yml` often seems like a faster iteration, but when you consider all the deployment methods below, it may be a poor tradeoff.
+
+When adding a setting to `gitlab.yml`:
+
+1. Ensure that it is also
+  [added to Omnibus](https://docs.gitlab.com/omnibus/settings/gitlab.yml#adding-a-new-setting-to-gitlabyml).
+1. Ensure that it is also [added to Charts](https://docs.gitlab.com/charts/development/style_guide.html), if needed.
+1. Ensure that it is also [added to GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/support/templates/gitlab/config/gitlab.yml.erb).
 
 ### Maintenance tasks
 

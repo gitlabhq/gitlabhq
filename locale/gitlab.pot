@@ -31248,6 +31248,9 @@ msgstr ""
 msgid "PipelineGraph|Are you sure you want to retry %{jobName}?"
 msgstr ""
 
+msgid "PipelineGraph|Downstream pipeline might not display in the graph while the new downstream pipeline is being created."
+msgstr ""
+
 msgid "PipelineGraph|Retrying a trigger job will create a new downstream pipeline."
 msgstr ""
 
@@ -31569,6 +31572,9 @@ msgstr ""
 msgid "Pipelines|GitLab Runner is an application that works with GitLab CI/CD to run jobs in a pipeline. There are active runners available to run your jobs right now. If you prefer, you can %{settingsLinkStart}configure your runners%{settingsLinkEnd} or %{docsLinkStart}learn more%{docsLinkEnd} about runners."
 msgstr ""
 
+msgid "Pipelines|If you are unsure, ask a project maintainer to review it for you."
+msgstr ""
+
 msgid "Pipelines|If you are unsure, please ask a project maintainer to review it for you."
 msgstr ""
 
@@ -31627,6 +31633,9 @@ msgid "Pipelines|Project cache successfully reset."
 msgstr ""
 
 msgid "Pipelines|Ready to set up CI/CD for your project?"
+msgstr ""
+
+msgid "Pipelines|Rebasing creates a pipeline that runs code originating from a forked project merge request. Consequently there are potential security implications, such as the exposure of CI variables."
 msgstr ""
 
 msgid "Pipelines|Revoke trigger"
@@ -31735,6 +31744,9 @@ msgid "Pipelines|We'll walk you through how to deploy to iOS in two easy steps."
 msgstr ""
 
 msgid "Pipelines|You have runners available to run your job now. No need to do anything else."
+msgstr ""
+
+msgid "Pipelines|You should review the code thoroughly before running this pipeline with the parent project's CI/CD resources."
 msgstr ""
 
 msgid "Pipelines|Your changes have been successfully committed. Now redirecting to the new merge request page."
@@ -38922,7 +38934,7 @@ msgstr ""
 msgid "SecurityOrchestration|Update scan policies"
 msgstr ""
 
-msgid "SecurityOrchestration|Use a scan execution policy to create rules which enforce security scans for particular branches at a certain time. Supported types are SAST, DAST, Secret detection, Container scanning, and Dependency scanning."
+msgid "SecurityOrchestration|Use a scan execution policy to create rules which enforce security scans for particular branches at a certain time. Supported types are SAST, SAST IaC, DAST, Secret detection, Container scanning, and Dependency scanning."
 msgstr ""
 
 msgid "SecurityOrchestration|Use a scan result policy to create rules that check for security vulnerabilities and license compliance before merging a merge request."
@@ -50655,9 +50667,6 @@ msgstr ""
 msgid "ciReport|Generic Report"
 msgstr ""
 
-msgid "ciReport|IaC Scanning"
-msgstr ""
-
 msgid "ciReport|Investigate this vulnerability by creating an issue"
 msgstr ""
 
@@ -50721,6 +50730,9 @@ msgid "ciReport|Resolve with merge request"
 msgstr ""
 
 msgid "ciReport|SAST"
+msgstr ""
+
+msgid "ciReport|SAST IaC"
 msgstr ""
 
 msgid "ciReport|Secret Detection"
@@ -51544,6 +51556,9 @@ msgid "mrWidget|Approved by you"
 msgstr ""
 
 msgid "mrWidget|Approved by you and others"
+msgstr ""
+
+msgid "mrWidget|Are you sure you want to rebase?"
 msgstr ""
 
 msgid "mrWidget|Assign yourself to these issues"

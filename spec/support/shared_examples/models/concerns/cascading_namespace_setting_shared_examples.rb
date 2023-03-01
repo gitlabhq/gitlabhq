@@ -181,6 +181,7 @@ RSpec.shared_examples 'a cascading namespace setting boolean attribute' do
       true  | true  |  false  | false
       true  | true  | "false" | false
       false | nil   |  false  | nil
+      false | nil   |  true   | true
       false | true  |  false  | false
       false | false |  true   | true
     end
@@ -209,15 +210,19 @@ RSpec.shared_examples 'a cascading namespace setting boolean attribute' do
           .to eq(expected_subgroup_value_after_update)
       end
 
-      it 'does not save the value locally when it matches cascaded value and is mass assigned', :aggregate_failures do
-        subgroup_settings.attributes =
-          { settings_attribute_name => new_subgroup_value, "lock_#{settings_attribute_name}" => false }
+      context 'when mass assigned' do
+        before do
+          subgroup_settings.attributes =
+            { settings_attribute_name => new_subgroup_value, "lock_#{settings_attribute_name}" => false }
+        end
 
-        subgroup_settings.save!
+        it 'does not save the value locally when it matches cascaded value', :aggregate_failures do
+          subgroup_settings.save!
 
-        # Verify persisted value
-        expect(subgroup_settings.reload.read_attribute(settings_attribute_name))
-          .to eq(expected_subgroup_value_after_update)
+          # Verify persisted value
+          expect(subgroup_settings.reload.read_attribute(settings_attribute_name))
+            .to eq(expected_subgroup_value_after_update)
+        end
       end
     end
   end

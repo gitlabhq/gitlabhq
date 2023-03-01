@@ -39,6 +39,9 @@ export default {
   confirmationModalDocLink: helpPagePath('/ci/pipelines/downstream_pipelines'),
   i18n: {
     bridgeBadgeText: __('Trigger job'),
+    bridgeRetryText: s__(
+      'PipelineGraph|Downstream pipeline might not display in the graph while the new downstream pipeline is being created.',
+    ),
     unauthorizedTooltip: __('You are not authorized to run this manual job'),
     confirmationModal: {
       title: s__('PipelineGraph|Are you sure you want to retry %{jobName}?'),
@@ -288,6 +291,10 @@ export default {
     },
     pipelineActionRequestComplete() {
       this.$emit('pipelineActionRequestComplete');
+
+      if (this.isBridge) {
+        this.$toast.show(this.$options.i18n.bridgeRetryText);
+      }
     },
     executePendingAction() {
       this.shouldTriggerActionClick = true;

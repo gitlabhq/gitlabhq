@@ -2,11 +2,13 @@ import Vue from 'vue';
 import VueRouter from 'vue-router';
 import Vuex from 'vuex';
 import VueApollo from 'vue-apollo';
+import { GlToast } from '@gitlab/ui';
 import PipelineTabs from 'ee_else_ce/pipelines/components/pipeline_tabs.vue';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import createTestReportsStore from './stores/test_reports';
 import { getPipelineDefaultTab, reportToSentry } from './utils';
 
+Vue.use(GlToast);
 Vue.use(VueApollo);
 Vue.use(VueRouter);
 Vue.use(Vuex);

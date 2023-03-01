@@ -35,7 +35,7 @@ export const SAST_CONFIG_HELP_PATH = helpPagePath('user/application_security/sas
 });
 
 export const SAST_IAC_NAME = __('Infrastructure as Code (IaC) Scanning');
-export const SAST_IAC_SHORT_NAME = s__('ciReport|IaC Scanning');
+export const SAST_IAC_SHORT_NAME = s__('ciReport|SAST IaC');
 export const SAST_IAC_DESCRIPTION = __(
   'Analyze your infrastructure as code configuration files for known vulnerabilities.',
 );

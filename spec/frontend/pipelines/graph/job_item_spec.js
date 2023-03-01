@@ -1,10 +1,11 @@
 import MockAdapter from 'axios-mock-adapter';
-import { mount } from '@vue/test-utils';
-import { nextTick } from 'vue';
-import { GlBadge, GlModal } from '@gitlab/ui';
+import { shallowMount, mount } from '@vue/test-utils';
+import Vue, { nextTick } from 'vue';
+import { GlBadge, GlModal, GlToast } from '@gitlab/ui';
 import JobItem from '~/pipelines/components/graph/job_item.vue';
 import axios from '~/lib/utils/axios_utils';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
+import ActionComponent from '~/pipelines/components/jobs_shared/action_component.vue';
 
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import {
@@ -19,12 +20,14 @@ import {
 
 describe('pipeline graph job item', () => {
   useLocalStorageSpy();
+  Vue.use(GlToast);
 
   let wrapper;
   let mockAxios;
 
   const findJobWithoutLink = () => wrapper.findByTestId('job-without-link');
   const findJobWithLink = () => wrapper.findByTestId('job-with-link');
+  const findActionVueComponent = () => wrapper.findComponent(ActionComponent);
   const findActionComponent = () => wrapper.findByTestId('ci-action-component');
   const findBadge = () => wrapper.findComponent(GlBadge);
   const findJobLink = () => wrapper.findByTestId('job-with-link');
@@ -41,9 +44,9 @@ describe('pipeline graph job item', () => {
     job: mockJob,
   };
 
-  const createWrapper = ({ props, data } = {}) => {
+  const createWrapper = ({ props, data, mountFn = mount, mocks = {} } = {}) => {
     wrapper = extendedWrapper(
-      mount(JobItem, {
+      mountFn(JobItem, {
         data() {
           return {
             ...data,
@@ -52,6 +55,9 @@ describe('pipeline graph job item', () => {
         propsData: {
           ...defaultProps,
           ...props,
+        },
+        mocks: {
+          ...mocks,
         },
       }),
     );
@@ -235,6 +241,37 @@ describe('pipeline graph job item', () => {
 
       it('applies a rounded corner style instead of the usual pill shape', () => {
         expect(findJobWithoutLink().classes()).toContain('gl-rounded-lg');
+      });
+    });
+
+    describe('when retrying', () => {
+      const mockToastShow = jest.fn();
+
+      beforeEach(async () => {
+        createWrapper({
+          mountFn: shallowMount,
+          data: {
+            currentSkipModalValue: true,
+          },
+          props: {
+            skipRetryModal: true,
+            job: triggerJobWithRetryAction,
+          },
+          mocks: {
+            $toast: {
+              show: mockToastShow,
+            },
+          },
+        });
+
+        jest.spyOn(wrapper.vm.$toast, 'show');
+
+        await findActionVueComponent().vm.$emit('pipelineActionRequestComplete');
+        await nextTick();
+      });
+
+      it('shows a toast message that the downstream is being created', () => {
+        expect(mockToastShow).toHaveBeenCalledTimes(1);
       });
     });
 

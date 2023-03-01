@@ -49,10 +49,22 @@ module API
       end
 
       def content_sha
-        Rails.cache.fetch("blob_content_sha256:#{user_project.full_path}:#{@blob.id}") do
+        cache_client.fetch("blob_content_sha256:#{user_project.full_path}:#{@blob.id}") do
           @blob.load_all_data!
 
           Digest::SHA256.hexdigest(@blob.data)
+        end
+      end
+
+      def cache_client
+        if Feature.enabled?(:cache_client_with_metrics, user_project)
+          Gitlab::Cache::Client.build_with_metadata(
+            cache_identifier: "#{self.class}#content_sha",
+            feature_category: :source_code_management,
+            backing_resource: :gitaly
+          )
+        else
+          Rails.cache
         end
       end
 

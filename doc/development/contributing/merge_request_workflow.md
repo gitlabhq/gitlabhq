@@ -190,7 +190,11 @@ Example commit message template that can be used on your machine that embodies t
 To make sure that your merge request can be approved, please ensure that it meets
 the contribution acceptance criteria below:
 
-1. The change is as small as possible.
+1. The change is as small as possible. 
+1. If the merge request contains more than 500 changes:
+   - Explain the reason
+   - Mention a maintainer
+1. Mention any major [breaking changes](../deprecation_guidelines/index.md).
 1. Include proper tests and make all tests pass (unless it contains a test
    exposing a bug in existing code). Every new class should have corresponding
    unit tests, even if the class is exercised at a higher level, such as a feature test.

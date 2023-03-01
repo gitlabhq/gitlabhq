@@ -151,6 +151,9 @@ To add projects to the Security Center:
 After you add projects, the security dashboard and vulnerability report show the vulnerabilities
 found in those projects' default branches.
 
+You can add a maximum of 1,000 projects, however the **Project** filter in the **Vulnerability
+Report** is limited to 100 projects.
+
 <!-- ## Troubleshooting
 
 Include any troubleshooting steps that you can foresee. If you know beforehand what issues

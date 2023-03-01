@@ -136,6 +136,8 @@ RSpec.describe API::Files, feature_category: :source_code_management do
       it 'caches sha256 of the content', :use_clean_rails_redis_caching do
         head api(route(file_path), current_user, **options), params: params
 
+        expect(Gitlab::Cache::Client).to receive(:build_with_metadata).and_call_original
+
         expect(Rails.cache.fetch("blob_content_sha256:#{project.full_path}:#{response.headers['X-Gitlab-Blob-Id']}"))
           .to eq(content_sha256)
 
@@ -144,6 +146,27 @@ RSpec.describe API::Files, feature_category: :source_code_management do
         end
 
         head api(route(file_path), current_user, **options), params: params
+      end
+
+      context 'when feature flag "cache_client_with_metrics" is disabled' do
+        before do
+          stub_feature_flags(cache_client_with_metrics: false)
+        end
+
+        it 'caches sha256 of the content', :use_clean_rails_redis_caching do
+          head api(route(file_path), current_user, **options), params: params
+
+          expect(Gitlab::Cache::Client).not_to receive(:build_with_metadata)
+
+          expect(Rails.cache.fetch("blob_content_sha256:#{project.full_path}:#{response.headers['X-Gitlab-Blob-Id']}"))
+            .to eq(content_sha256)
+
+          expect_next_instance_of(Gitlab::Git::Blob) do |instance|
+            expect(instance).not_to receive(:load_all_data!)
+          end
+
+          head api(route(file_path), current_user, **options), params: params
+        end
       end
 
       it 'returns file by commit sha' do

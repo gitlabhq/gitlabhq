@@ -107,20 +107,6 @@ your code has multiple disciplines, you may mention multiple merge request coach
 GitLab receives a lot of community contributions. If your code has not been reviewed within two
 working days of its initial submission, you can ask for help with `@gitlab-bot help`.
 
-#### Addition of external libraries
-
-When submitting code to GitLab, you may feel that your contribution requires the aid of an external
-library. If your code includes an external library, please provide a link to the library, as well as
-reasons for including it.
-
-Mention a maintainer in merge requests that contain:
-
-- More than 500 changes.
-- Any major [breaking changes](../deprecation_guidelines/index.md).
-- External libraries.
-
-If you are not sure who to mention, the reviewer will do this for you early in the merge request process.
-
 #### Issues workflow
 
 This [documentation](issue_workflow.md) outlines the current issue workflow:
