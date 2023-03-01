@@ -1,8 +1,0 @@
----
-name: rely_on_protected_branches_cache
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92937
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/370608
-milestone: '15.4'
-type: development
-group: group::source code
-default_enabled: false

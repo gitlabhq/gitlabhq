@@ -14,7 +14,7 @@ other.
 After pushing your changes to a new branch, you can:
 
 - Create a [merge request](../../merge_requests/index.md). You can streamline this process
-  by following [branch naming patterns](#naming).
+  by following [branch naming patterns](#prefix-branch-names-with-issue-numbers).
 - Perform inline code review.
 - [Discuss](../../../discussions/index.md) your implementation with your team.
 - Preview changes submitted to a new branch with [Review Apps](../../../../ci/review_apps/index.md).
@@ -30,7 +30,6 @@ For more information on managing branches using the GitLab UI, see:
 - [Create a branch](../web_editor.md#create-a-branch)
 - [Protected branches](../../protected_branches.md#protected-branches)
 - [Delete merged branches](#delete-merged-branches)
-- [Branch filter search box](#branch-filter-search-box)
 
 You can also manage branches using the
 [command line](../../../../gitlab-basics/start-using-git.md#create-a-branch).
@@ -43,29 +42,36 @@ See also:
 - [GitLab Flow](../../../../topics/gitlab_flow.md) documentation.
 - [Getting started with Git](../../../../topics/git/index.md) and GitLab.
 
-## Naming
+## Prefix branch names with issue numbers
 
-Prefix a branch name with an issue number to streamline merge request creation.
-When you create a merge request for a branch with a name beginning with an issue
-number, GitLab:
+To streamline the creation of merge requests, start your branch name with an
+issue number. GitLab uses the issue number to import data into the merge request:
 
-- Marks the issue as related. If your project is configured with a
+- The issue is marked as related. The issue and merge request display links to each other.
+- If your project is configured with a
   [default closing pattern](../../issues/managing_issues.md#default-closing-pattern),
-  merging this merge request [also closes](../../issues/managing_issues.md#closing-issues-automatically)
+  merging the merge request [also closes](../../issues/managing_issues.md#closing-issues-automatically)
   the related issue.
-- Copies label and milestone metadata from the issue.
+- The issue milestone and labels are copied to the merge request.
 
-## Compare
+## Compare branches
+
+> - Repository filter search box [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/52967) in GitLab 13.10.
+> - Revision swapping [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/60491) in GitLab 13.12.
 
 To compare branches in a repository:
 
-1. Navigate to your project's repository.
-1. Select **Repository > Compare** in the sidebar.
-1. Select the target repository to compare with the [repository filter search box](#repository-filter-search-box).
-1. Select branches to compare using the [branch filter search box](#branch-filter-search-box).
-1. Select **Compare** to view the changes inline:
-
-   ![compare branches](img/compare_branches_v13_12.png)
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, select **Repository > Compare**.
+1. Select the **Source** branch to search for your desired branch. Exact matches are
+   shown first. You can refine your search with operators:
+   - `^` matches the beginning of the branch name: `^feat` matches `feat/user-authentication`.
+   - `$` matches the end of the branch name: `widget$` matches `feat/search-box-widget`.
+   - `*` matches using a wildcard: `branch*cache*` matches `fix/branch-search-cache-expiration`.
+   - You can combine operators: `^chore/*migration$` matches `chore/user-data-migration`.
+1. Select the **Target** repository and branch. Exact matches are shown first.
+1. Select **Compare** to show the list of commits, and changed files. To reverse
+   the **Source** and **Target**, select **Swap revisions**.
 
 ## Delete merged branches
 
@@ -78,46 +84,6 @@ this operation.
 
 It's particularly useful to clean up old branches that were not deleted
 automatically when a merge request was merged.
-
-## Repository filter search box
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/52967) in GitLab 13.10.
-
-This feature allows you to search and select a repository quickly when [comparing branches](#compare).
-
-![Repository filter search box](img/repository_filter_search_box_v13_12.png)
-
-Search results appear in the following order:
-
-- Repositories with names exactly matching the search terms.
-- Other repositories with names that include search terms, sorted alphabetically.
-
-## Branch filter search box
-
-![Branch filter search box](img/branch_filter_search_box_v13_12.png)
-
-This feature allows you to search and select branches quickly. Search results appear in the following order:
-
-- Branches with names that matched search terms exactly.
-- Other branches with names that include search terms, sorted alphabetically.
-
-Sometimes when you have hundreds of branches you may want a more flexible matching pattern. In such cases you can use the following operators:
-
-- `^` matches beginning of branch name, for example `^feat` would match `feat/user-authentication`
-- `$` matches end of branch name, for example `widget$` would match `feat/search-box-widget`
-- `*` wildcard matcher, for example `branch*cache*` would match `fix/branch-search-cache-expiration`
-
-These operators can be mixed, for example `^chore/*migration$` would match `chore/user-data-migration`
-
-## Swap revisions
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/60491) in GitLab 13.12.
-
-![Before swap revisions](img/swap_revisions_before_v13_12.png)
-
-The Swap revisions feature allows you to swap the Source and Target revisions. When the Swap revisions button is selected, the selected revisions for Source and Target is swapped.
-
-![After swap revisions](img/swap_revisions_after_v13_12.png)
 
 ## View branches with configured protections **(FREE SELF)**
 
@@ -142,6 +108,12 @@ To view the **Branch rules overview** list:
    - [Branch protections](../../protected_branches.md).
    - [Approval rules](../../merge_requests/approvals/rules.md).
    - [Status checks](../../merge_requests/status_checks.md).
+
+## Related topics
+
+- [Protected branches](../../protected_branches.md) user documentation
+- [Branches API](../../../../api/branches.md)
+- [Protected Branches API](../../../../api/protected_branches.md)
 
 ## Troubleshooting
 

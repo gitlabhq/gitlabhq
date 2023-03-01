@@ -11,9 +11,15 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `limit_unique_project_downloads_per_namespace_user`. On GitLab.com, this feature is available.
 
-Git abuse rate limiting is a feature to automatically ban users who download or clone more than a specified number of repositories in a group or any of its subgroups within a given time frame. Banned users cannot access the main group or any of its non-public subgroups via HTTP or SSH. Access to unrelated groups is unaffected.
+This is the group-level documentation. For self-managed instances, see the [administration documentation](../../admin_area/reporting/git_abuse_rate_limit.md).
 
-If the `limit_unique_project_downloads_per_namespace_user` feature flag is enabled, selected users receive an email when a user is about to be banned.
+Git abuse rate limiting is a feature to automatically [ban users](#unban-a-user) who download or clone more than a specified number of repositories of a group in a given time frame. Banned users cannot access the top-level group or any of its non-public subgroups via HTTP or SSH. Access to unrelated groups is unaffected. The rate limit also applies to users who authenticate with a [personal](../../../user/profile/personal_access_tokens.md) or [group access token](../../../user/group/settings/group_access_tokens.md). Access to unrelated groups is unaffected.
+
+Git abuse rate limiting does not apply to top-level group owners, [deploy tokens](../../../user/project/deploy_tokens/index.md), or [deploy keys](../../../user/project/deploy_keys/index.md).
+
+## Automatic ban notifications
+
+If the `git_abuse_rate_limit_feature_flag` feature flag is enabled, selected users receive an email when a user is about to be banned.
 
 If automatic banning is disabled, a user is not banned automatically when they exceed the limit. However, notifications are still sent. You can use this setup to determine the correct values of the rate limit settings before enabling automatic banning.
 

@@ -31524,9 +31524,6 @@ msgstr ""
 msgid "Pipelines|Clear runner caches"
 msgstr ""
 
-msgid "Pipelines|Configuration validation currently not available."
-msgstr ""
-
 msgid "Pipelines|Configure pipeline"
 msgstr ""
 
@@ -31623,7 +31620,7 @@ msgstr ""
 msgid "Pipelines|Pipeline Editor"
 msgstr ""
 
-msgid "Pipelines|Pipeline syntax is correct."
+msgid "Pipelines|Pipeline syntax is correct. %{linkStart}Learn more%{linkEnd}"
 msgstr ""
 
 msgid "Pipelines|Project cache successfully reset."
@@ -31668,13 +31665,13 @@ msgstr ""
 msgid "Pipelines|There was an error fetching the pipelines. Try again in a few moments or contact your support team."
 msgstr ""
 
-msgid "Pipelines|This GitLab CI configuration is invalid."
+msgid "Pipelines|This GitLab CI configuration is invalid. %{linkStart}Learn more%{linkEnd}"
 msgstr ""
 
 msgid "Pipelines|This GitLab CI configuration is invalid:"
 msgstr ""
 
-msgid "Pipelines|This GitLab CI configuration is invalid: %{reason}."
+msgid "Pipelines|This GitLab CI configuration is invalid: %{reason}. %{linkStart}Learn more%{linkEnd}"
 msgstr ""
 
 msgid "Pipelines|This GitLab CI configuration is valid."
@@ -31704,6 +31701,9 @@ msgstr ""
 msgid "Pipelines|Try test template"
 msgstr ""
 
+msgid "Pipelines|Unable to validate CI/CD configuration. See the %{linkStart}GitLab CI/CD troubleshooting guide%{linkEnd} for more details."
+msgstr ""
+
 msgid "Pipelines|Use a sample %{codeStart}.gitlab-ci.yml%{codeEnd} template file to explore how CI/CD works."
 msgstr ""
 
@@ -31723,6 +31723,9 @@ msgid "Pipelines|View merged YAML"
 msgstr ""
 
 msgid "Pipelines|Visualize"
+msgstr ""
+
+msgid "Pipelines|We'll continuously validate your pipeline configuration. The validation results will appear here."
 msgstr ""
 
 msgid "Pipelines|We'll guide you through a simple pipeline set-up."
@@ -48048,9 +48051,6 @@ msgid "We will notify %{inviter} that you declined their invitation to join GitL
 msgstr ""
 
 msgid "We would like to inform you that your subscription GitLab Enterprise Edition %{plan_name} is nearing its user limit. You have %{active_user_count} active users, which is almost at the user limit of %{maximum_user_count}."
-msgstr ""
-
-msgid "We'll continuously validate your pipeline configuration. The validation results will appear here."
 msgstr ""
 
 msgid "We'll use this to help surface the right features and information to you."

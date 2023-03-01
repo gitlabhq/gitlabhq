@@ -1,4 +1,4 @@
-import { GlAlert, GlButton, GlLoadingIcon } from '@gitlab/ui';
+import { GlAlert, GlButton, GlLoadingIcon, GlSprintf } from '@gitlab/ui';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -358,7 +358,9 @@ describe('Pipeline editor app component', () => {
       });
 
       it('shows that the lint service is down', () => {
-        expect(findValidationSegment().text()).toContain(
+        const validationMessage = findValidationSegment().findComponent(GlSprintf);
+
+        expect(validationMessage.attributes('message')).toContain(
           validationSegmenti18n.unavailableValidation,
         );
       });
