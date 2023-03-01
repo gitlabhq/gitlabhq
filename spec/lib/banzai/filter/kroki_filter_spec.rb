@@ -54,4 +54,11 @@ RSpec.describe Banzai::Filter::KrokiFilter do
 
     expect(doc.to_s).to start_with '<img src="http://localhost:8000/nomnoml/svg/eNqLDsgsSixJrUmtTHXOL80rsVLwzCupKUrMTNHQtC7IzMlJTE_V0KyJyVNQiE5KTSxKidXVjS5ILCrKL4lFFrSyi07LL81RyM0vLckAysRGjxo8avCowaMGjxo8avCowaMGU8lgAE7mIdc=" hidden="" class="js-render-kroki" data-diagram="nomnoml" data-diagram-src="data:text/plain;base64,W1BpcmF0ZXxleWVDb3VudDog'
   end
+
+  it 'verifies diagram type to avoid possible XSS' do
+    stub_application_setting(kroki_enabled: true, kroki_url: "http://localhost:8000")
+    doc = filter(%(<a><pre lang='f/" onerror=alert(1) onload=alert(1) '><code lang="wavedrom">xss</code></pre></a>))
+
+    expect(doc.to_s).to eq %(<a><pre lang='f/" onerror=alert(1) onload=alert(1) '><code lang="wavedrom">xss</code></pre></a>)
+  end
 end

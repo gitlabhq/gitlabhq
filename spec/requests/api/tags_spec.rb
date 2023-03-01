@@ -111,6 +111,22 @@ RSpec.describe API::Tags, feature_category: :source_code_management do
       let(:project) { create(:project, :public, :repository) }
 
       it_behaves_like 'repository tags'
+
+      context 'and releases are private' do
+        before do
+          create(:release, project: project, tag: tag_name)
+          project.project_feature.update!(releases_access_level: ProjectFeature::PRIVATE)
+        end
+
+        it 'returns the repository tags without release information' do
+          get api(route, current_user)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to match_response_schema('public_api/v4/tags')
+          expect(response).to include_pagination_headers
+          expect(json_response.map { |r| r.has_key?('release') }).to all(be_falsey)
+        end
+      end
     end
 
     context 'when unauthenticated', 'and project is private' do
@@ -251,6 +267,21 @@ RSpec.describe API::Tags, feature_category: :source_code_management do
 
         it_behaves_like "cache expired"
       end
+
+      context 'when user is not allowed to :read_release' do
+        before do
+          project.update!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
+          project.project_feature.update!(releases_access_level: ProjectFeature::PRIVATE)
+
+          get api(route, user) # Cache as a user allowed to :read_release
+        end
+
+        it "isn't cached" do
+          expect(API::Entities::Tag).to receive(:represent).exactly(3).times
+
+          get api(route, nil)
+        end
+      end
     end
 
     context 'when gitaly is unavailable' do
@@ -302,6 +333,21 @@ RSpec.describe API::Tags, feature_category: :source_code_management do
       let(:project) { create(:project, :public, :repository) }
 
       it_behaves_like 'repository tag'
+
+      context 'and releases are private' do
+        before do
+          create(:release, project: project, tag: tag_name)
+          project.project_feature.update!(releases_access_level: ProjectFeature::PRIVATE)
+        end
+
+        it 'returns the repository tags without release information' do
+          get api(route, current_user)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to match_response_schema('public_api/v4/tag')
+          expect(json_response.has_key?('release')).to be_falsey
+        end
+      end
     end
 
     context 'when unauthenticated', 'and project is private' do
@@ -326,6 +372,24 @@ RSpec.describe API::Tags, feature_category: :source_code_management do
     context 'when authenticated', 'as a guest' do
       it_behaves_like '403 response' do
         let(:request) { get api(route, guest) }
+      end
+    end
+
+    context 'with releases' do
+      let(:description) { 'Awesome release!' }
+
+      before do
+        create(:release, project: project, tag: tag_name, description: description)
+      end
+
+      it 'returns release information' do
+        get api(route, user)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to match_response_schema('public_api/v4/tag')
+
+        expect(json_response['message']).to eq(tag_message)
+        expect(json_response.dig('release', 'description')).to eq(description)
       end
     end
   end
