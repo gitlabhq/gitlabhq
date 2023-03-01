@@ -3,6 +3,7 @@
 module Integrations
   class Prometheus < BaseMonitoring
     include PrometheusAdapter
+    include Gitlab::Utils::StrongMemoize
 
     field :manual_configuration,
       type: 'checkbox',
@@ -81,7 +82,7 @@ module Integrations
         allow_local_requests: allow_local_api_url?
       )
 
-      if behind_iap?
+      if behind_iap? && iap_client
         # Adds the Authorization header
         options[:headers] = iap_client.apply({})
       end
@@ -104,6 +105,22 @@ module Integrations
 
     def configured?
       should_return_client?
+    end
+
+    alias_method :google_iap_service_account_json_raw, :google_iap_service_account_json
+    private :google_iap_service_account_json_raw
+
+    MASKED_VALUE = '*' * 8
+
+    def google_iap_service_account_json
+      json = google_iap_service_account_json_raw
+      return json unless json.present?
+
+      Gitlab::Json.parse(json)
+        .then { |hash| hash.transform_values { MASKED_VALUE } }
+        .then { |hash| Gitlab::Json.generate(hash) }
+    rescue Gitlab::Json.parser_error
+      json
     end
 
     private
@@ -155,17 +172,21 @@ module Integrations
     end
 
     def clean_google_iap_service_account
-      return unless google_iap_service_account_json
+      json = google_iap_service_account_json_raw
+      return unless json.present?
 
-      google_iap_service_account_json
-        .then { |json| Gitlab::Json.parse(json) }
-        .except('token_credential_uri')
+      Gitlab::Json.parse(json).except('token_credential_uri')
+    rescue Gitlab::Json.parser_error
+      {}
     end
 
     def iap_client
       @iap_client ||= Google::Auth::Credentials
         .new(clean_google_iap_service_account, target_audience: google_iap_audience_client_id)
         .client
+    rescue StandardError
+      nil
     end
+    strong_memoize_attr :iap_client
   end
 end
