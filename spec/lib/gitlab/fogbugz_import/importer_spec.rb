@@ -72,7 +72,7 @@ RSpec.describe Gitlab::FogbugzImport::Importer do
         expect { subject.execute }
           .to raise_error(
             ::Gitlab::HTTP::BlockedUrlError,
-            "URL 'https://localhost:3000/api.asp' is blocked: Requests to localhost are not allowed"
+            "URL is blocked: Requests to localhost are not allowed"
           )
       end
     end
@@ -84,7 +84,7 @@ RSpec.describe Gitlab::FogbugzImport::Importer do
         expect { subject.execute }
           .to raise_error(
             ::Gitlab::HTTP::BlockedUrlError,
-            "URL 'http://192.168.0.1/api.asp' is blocked: Requests to the local network are not allowed"
+            "URL is blocked: Requests to the local network are not allowed"
           )
       end
     end

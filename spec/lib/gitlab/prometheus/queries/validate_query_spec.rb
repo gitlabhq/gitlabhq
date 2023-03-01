@@ -43,10 +43,7 @@ RSpec.describe Gitlab::Prometheus::Queries::ValidateQuery do
     context 'Gitlab::HTTP::BlockedUrlError' do
       let(:api_url) { 'http://192.168.1.1' }
 
-      let(:message) do
-        "URL 'http://192.168.1.1/api/v1/query?query=avg%28metric%29&time=#{Time.now.to_f}'" \
-        " is blocked: Requests to the local network are not allowed"
-      end
+      let(:message) { "URL is blocked: Requests to the local network are not allowed" }
 
       before do
         stub_application_setting(allow_local_requests_from_web_hooks_and_services: false)
