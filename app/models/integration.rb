@@ -510,7 +510,7 @@ class Integration < ApplicationRecord
   end
 
   def api_field_names
-    fields.reject { _1[:type] == 'password' || _1[:name] == 'webhook' }.pluck(:name)
+    fields.reject { _1[:type] == 'password' }.pluck(:name)
   end
 
   def form_fields

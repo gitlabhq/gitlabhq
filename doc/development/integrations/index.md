@@ -249,15 +249,6 @@ To expose the integration in the [REST API](../../api/integrations.md):
 
 You can also refer to our [REST API style guide](../api_styleguide.md).
 
-Sensitive fields are not exposed over the API. Sensitive fields are those fields that contain any of the following in their name:
-
-- `key`
-- `passphrase`
-- `password`
-- `secret`
-- `token`
-- `webhook`
-
 #### GraphQL API
 
 Integrations use the `Types::Projects::ServiceType` type by default,

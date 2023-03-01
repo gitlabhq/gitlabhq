@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Integration, feature_category: :integrations do
+RSpec.describe Integration do
   using RSpec::Parameterized::TableSyntax
 
   let_it_be(:group) { create(:group) }
@@ -854,7 +854,6 @@ RSpec.describe Integration, feature_category: :integrations do
               { name: 'api_key', type: 'password' },
               { name: 'password', type: 'password' },
               { name: 'password_field', type: 'password' },
-              { name: 'webhook' },
               { name: 'some_safe_field' },
               { name: 'safe_field' },
               { name: 'url' },
@@ -882,7 +881,6 @@ RSpec.describe Integration, feature_category: :integrations do
           field :api_key, type: 'password'
           field :password, type: 'password'
           field :password_field, type: 'password'
-          field :webhook
           field :some_safe_field
           field :safe_field
           field :url
@@ -1092,8 +1090,6 @@ RSpec.describe Integration, feature_category: :integrations do
         field :bar, type: 'password'
         field :password
 
-        field :webhook
-
         field :with_help, help: -> { 'help' }
         field :select, type: 'select'
         field :boolean, type: 'checkbox'
@@ -1144,7 +1140,7 @@ RSpec.describe Integration, feature_category: :integrations do
 
     it 'registers fields in the fields list' do
       expect(integration.fields.pluck(:name)).to match_array %w[
-        foo foo_p foo_dt bar password with_help select boolean webhook
+        foo foo_p foo_dt bar password with_help select boolean
       ]
 
       expect(integration.api_field_names).to match_array %w[
@@ -1159,7 +1155,6 @@ RSpec.describe Integration, feature_category: :integrations do
         have_attributes(name: 'foo_dt', type: 'text'),
         have_attributes(name: 'bar', type: 'password'),
         have_attributes(name: 'password', type: 'password'),
-        have_attributes(name: 'webhook', type: 'text'),
         have_attributes(name: 'with_help', help: 'help'),
         have_attributes(name: 'select', type: 'select'),
         have_attributes(name: 'boolean', type: 'checkbox')
