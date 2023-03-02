@@ -14,6 +14,7 @@ import { sortMilestonesByDueDate } from '~/milestones/utils';
 
 import { DEFAULT_MILESTONES } from '~/vue_shared/components/filtered_search_bar/constants';
 import MilestoneToken from '~/vue_shared/components/filtered_search_bar/tokens/milestone_token.vue';
+import BaseToken from '~/vue_shared/components/filtered_search_bar/tokens/base_token.vue';
 
 import { mockMilestoneToken, mockMilestones, mockRegularMilestone } from '../mock_data';
 
@@ -57,6 +58,12 @@ describe('MilestoneToken', () => {
   let mock;
   let wrapper;
 
+  const findBaseToken = () => wrapper.findComponent(BaseToken);
+  const triggerFetchMilestones = (searchTerm = null) => {
+    findBaseToken().vm.$emit('fetch-suggestions', searchTerm);
+    return waitForPromises();
+  };
+
   beforeEach(() => {
     mock = new MockAdapter(axios);
     wrapper = createComponent();
@@ -64,73 +71,77 @@ describe('MilestoneToken', () => {
 
   afterEach(() => {
     mock.restore();
-    wrapper.destroy();
   });
 
   describe('methods', () => {
     describe('fetchMilestones', () => {
-      describe('when config.shouldSkipSort is true', () => {
-        beforeEach(() => {
-          wrapper.vm.config.shouldSkipSort = true;
+      it('sets loading state', async () => {
+        wrapper = createComponent({
+          config: {
+            fetchMilestones: jest.fn().mockResolvedValue(new Promise(() => {})),
+          },
         });
+        await nextTick();
 
-        afterEach(() => {
-          wrapper.vm.config.shouldSkipSort = false;
-        });
+        expect(findBaseToken().props('suggestionsLoading')).toBe(true);
+      });
+
+      describe('when config.shouldSkipSort is true', () => {
         it('does not call sortMilestonesByDueDate', async () => {
-          jest.spyOn(wrapper.vm.config, 'fetchMilestones').mockResolvedValue({
-            data: mockMilestones,
+          wrapper = createComponent({
+            config: {
+              shouldSkipSort: true,
+              fetchMilestones: jest.fn().mockResolvedValue({ data: mockMilestones }),
+            },
           });
 
-          wrapper.vm.fetchMilestones();
-
-          await waitForPromises();
+          await triggerFetchMilestones();
 
           expect(sortMilestonesByDueDate).toHaveBeenCalledTimes(0);
         });
       });
 
-      it('calls `config.fetchMilestones` with provided searchTerm param', () => {
-        jest.spyOn(wrapper.vm.config, 'fetchMilestones');
+      describe('when request is successful', () => {
+        const searchTerm = 'foo';
 
-        wrapper.vm.fetchMilestones('foo');
-
-        expect(wrapper.vm.config.fetchMilestones).toHaveBeenCalledWith('foo');
-      });
-
-      it('sets response to `milestones` when request is successful', () => {
-        wrapper.vm.config.shouldSkipSort = false;
-
-        jest.spyOn(wrapper.vm.config, 'fetchMilestones').mockResolvedValue({
-          data: mockMilestones,
+        beforeEach(() => {
+          wrapper = createComponent({
+            config: {
+              shouldSkipSort: false,
+              fetchMilestones: jest.fn().mockResolvedValue({ data: mockMilestones }),
+            },
+          });
+          return triggerFetchMilestones(searchTerm);
         });
-        wrapper.vm.fetchMilestones();
 
-        return waitForPromises().then(() => {
-          expect(wrapper.vm.milestones).toEqual(mockMilestones);
+        it('calls `config.fetchMilestones` with provided searchTerm param', () => {
+          expect(findBaseToken().props('config').fetchMilestones).toHaveBeenCalledWith(searchTerm);
+        });
+
+        it('sets response to `milestones`', () => {
           expect(sortMilestonesByDueDate).toHaveBeenCalled();
+          expect(findBaseToken().props('suggestions')).toEqual(mockMilestones);
         });
       });
 
-      it('calls `createAlert` with flash error message when request fails', () => {
-        jest.spyOn(wrapper.vm.config, 'fetchMilestones').mockRejectedValue({});
+      describe('when request fails', () => {
+        beforeEach(() => {
+          wrapper = createComponent({
+            config: {
+              fetchMilestones: jest.fn().mockRejectedValue({}),
+            },
+          });
+          return triggerFetchMilestones();
+        });
 
-        wrapper.vm.fetchMilestones('foo');
-
-        return waitForPromises().then(() => {
+        it('calls `createAlert` with flash error message', () => {
           expect(createAlert).toHaveBeenCalledWith({
             message: 'There was a problem fetching milestones.',
           });
         });
-      });
 
-      it('sets `loading` to false when request completes', () => {
-        jest.spyOn(wrapper.vm.config, 'fetchMilestones').mockRejectedValue({});
-
-        wrapper.vm.fetchMilestones('foo');
-
-        return waitForPromises().then(() => {
-          expect(wrapper.vm.loading).toBe(false);
+        it('sets `loading` to false when request completes', () => {
+          expect(findBaseToken().props('suggestionsLoading')).toBe(false);
         });
       });
     });
@@ -143,15 +154,12 @@ describe('MilestoneToken', () => {
     ];
 
     beforeEach(async () => {
-      wrapper = createComponent({ value: { data: `"${mockRegularMilestone.title}"` } });
-
-      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-      // eslint-disable-next-line no-restricted-syntax
-      wrapper.setData({
-        milestones: mockMilestones,
+      wrapper = createComponent({
+        value: { data: `"${mockRegularMilestone.title}"` },
+        config: {
+          initialMilestones: mockMilestones,
+        },
       });
-
-      await nextTick();
     });
 
     it('renders gl-filtered-search-token component', () => {
@@ -228,7 +236,7 @@ describe('MilestoneToken', () => {
 
       it('finds the correct value from the activeToken', () => {
         DEFAULT_MILESTONES.forEach(({ value, title }) => {
-          const activeToken = wrapper.vm.getActiveMilestone([], value);
+          const activeToken = findBaseToken().props('getActiveTokenValue')([], value);
 
           expect(activeToken.title).toEqual(title);
         });

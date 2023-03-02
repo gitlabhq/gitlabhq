@@ -171,7 +171,7 @@ the time limit to resolve all files is 30 seconds.
 
 #### `include:local`
 
-Use `include:local` to include a file that is in the same repository as the project running the pipeline.
+Use `include:local` to include a file that is in the same repository as the configuration file containing the `include` keyword.
 Use `include:local` instead of symbolic links.
 
 **Keyword type**: Global keyword.
@@ -201,8 +201,8 @@ include: '.gitlab-ci-production.yml'
 
 - The `.gitlab-ci.yml` file and the local file must be on the same branch.
 - You can't include local files through Git submodules paths.
-- All [nested includes](includes.md#use-nested-includes) are executed in the scope of the same project,
-  so you can use local, project, remote, or template includes.
+- All [nested includes](includes.md#use-nested-includes) are executed in the scope of the project containing the configuration file with the `include` keyword, not the project running the pipeline.
+  You can use local, project, remote, or template includes.
 
 #### `include:project`
 
@@ -252,8 +252,8 @@ include:
 
 **Additional details**:
 
-- All [nested includes](includes.md#use-nested-includes) are executed in the scope of the target project.
-  You can use `local` (relative to the target project), `project`, `remote`, or `template` includes.
+- All [nested includes](includes.md#use-nested-includes) are executed in the scope of the project containing the configuration file with the nested `include` keyword.
+  You can use `local` (relative to the project containing the configuration file with the `include` keyword), `project`, `remote`, or `template` includes.
 - When the pipeline starts, the `.gitlab-ci.yml` file configuration included by all methods is evaluated.
   The configuration is a snapshot in time and persists in the database. GitLab does not reflect any changes to
   the referenced `.gitlab-ci.yml` file configuration until the next pipeline starts.

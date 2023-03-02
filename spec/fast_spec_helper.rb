@@ -27,11 +27,5 @@ SimpleCovEnv.start!
 
 ActiveSupport::XmlMini.backend = 'Nokogiri'
 
-RSpec.configure do |config|
-  # Makes diffs show entire non-truncated values.
-  config.before(:each, unlimited_max_formatted_output_length: true) do |_example|
-    config.expect_with :rspec do |c|
-      c.max_formatted_output_length = nil
-    end
-  end
-end
+# Consider tweaking configuration in `spec/support/rspec.rb` which is also
+# used by `spec/spec_helper.rb`.

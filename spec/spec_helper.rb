@@ -540,13 +540,6 @@ RSpec.configure do |config|
     end
   end
 
-  # Makes diffs show entire non-truncated values.
-  config.before(:each, unlimited_max_formatted_output_length: true) do |_example|
-    config.expect_with :rspec do |c|
-      c.max_formatted_output_length = nil
-    end
-  end
-
   # Ensures that any Javascript script that tries to make the external VersionCheck API call skips it and returns a response
   config.before(:each, :js) do
     allow_any_instance_of(VersionCheck).to receive(:response).and_return({ "severity" => "success" })
