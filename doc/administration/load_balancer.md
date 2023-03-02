@@ -37,7 +37,7 @@ for details on managing SSL certificates and configuring NGINX.
 ### Load Balancers terminate SSL without backend SSL
 
 Configure your load balancers to use the `HTTP(S)` protocol rather than `TCP`.
-The load balancers is be responsible for managing SSL certificates and
+The load balancers are responsible for managing SSL certificates and
 terminating SSL.
 
 Because communication between the load balancers and GitLab isn't secure,

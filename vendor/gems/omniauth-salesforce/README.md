@@ -13,13 +13,7 @@ should be used in favor of this vendored fork.
 
 [OmniAuth](https://github.com/intridea/omniauth) Strategy for [salesforce.com](salesforce.com).
 
-Note: This is a fork of the [original](https://github.com/richardvanhook/omniauth-salesforce) project and is now the main repository for the omniauth-salesforce gem.
-
-## See it in action
-
-[http://omniauth-salesforce-example.herokuapp.com](http://omniauth-salesforce-example.herokuapp.com)
-
-[Source for above app](https://github.com/richardvanhook/omniauth-salesforce-example)
+Note: This is a fork of the [original](https://github.com/richardvanhook/omniauth-salesforce) project and is now the main repository for the omniauth-salesforce gem for consumption within GitLab.
 
 ## Basic Usage
 

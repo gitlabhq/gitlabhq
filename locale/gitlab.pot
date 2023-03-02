@@ -12447,7 +12447,7 @@ msgstr ""
 msgid "CycleAnalyticsEvent|Issue first associated with a milestone"
 msgstr ""
 
-msgid "CycleAnalyticsEvent|Issue first associated with a milestone or issue first added to a board"
+msgid "CycleAnalyticsEvent|Issue first associated with a milestone or first added to a board"
 msgstr ""
 
 msgid "CycleAnalyticsEvent|Issue first mentioned in a commit"
@@ -47244,6 +47244,9 @@ msgid "ValueStreamAnalytics|View details"
 msgstr ""
 
 msgid "ValueStreamEvent|Items in stage"
+msgstr ""
+
+msgid "ValueStreamEvent|Only items that reached their stop event."
 msgstr ""
 
 msgid "ValueStreamEvent|Stage time (median)"

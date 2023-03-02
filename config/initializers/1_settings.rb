@@ -774,7 +774,7 @@ Gitlab.ee do
   Settings.cron_jobs['elastic_remove_expired_namespace_subscriptions_from_index_cron_worker']['cron'] ||= '10 3 * * *'
   Settings.cron_jobs['elastic_remove_expired_namespace_subscriptions_from_index_cron_worker']['job_class'] ||= 'ElasticRemoveExpiredNamespaceSubscriptionsFromIndexCronWorker'
   Settings.cron_jobs['elastic_migration_worker'] ||= Settingslogic.new({})
-  Settings.cron_jobs['elastic_migration_worker']['cron'] ||= '*/30 * * * *'
+  Settings.cron_jobs['elastic_migration_worker']['cron'] ||= '*/5 * * * *'
   Settings.cron_jobs['elastic_migration_worker']['job_class'] ||= 'Elastic::MigrationWorker'
   Settings.cron_jobs['search_index_curation_worker'] ||= Settingslogic.new({})
   Settings.cron_jobs['search_index_curation_worker']['cron'] ||= '*/1 * * * *'

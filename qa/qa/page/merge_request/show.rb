@@ -398,6 +398,7 @@ module QA
             click_element(:dropdown_button)
             click_element(:edit_in_ide_button)
           end
+          page.driver.browser.switch_to.window(page.driver.browser.window_handles.last)
         end
 
         def add_suggestion_to_diff(suggestion, line)

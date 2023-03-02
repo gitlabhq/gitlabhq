@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Integrations::Campfire do
+RSpec.describe Integrations::Campfire, feature_category: :integrations do
   include StubRequests
 
   it_behaves_like Integrations::ResetSecretFields do
@@ -86,6 +86,16 @@ RSpec.describe Integrations::Campfire do
 
       expect(WebMock).to have_requested(:get, 'https://8.8.8.9/rooms.json').once
       expect(WebMock).not_to have_requested(:post, '*/room/.*/speak.json')
+    end
+  end
+
+  describe '#log_error' do
+    subject { described_class.new.log_error('error') }
+
+    it 'logs an error' do
+      expect(Gitlab::IntegrationsLogger).to receive(:error).with(anything).and_call_original
+
+      is_expected.to be_truthy
     end
   end
 end

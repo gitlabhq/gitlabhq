@@ -184,9 +184,9 @@ end
   `migrate` method which uses this setting. Default value is 1000 documents.
 
 - `throttle_delay` - Sets the wait time in between batch runs. This time should be set high enough to allow each migration batch
-  enough time to finish. Additionally, the time should be less than 30 minutes because that is how often the
+  enough time to finish. Additionally, the time should be less than 5 minutes because that is how often the
   [`Elastic::MigrationWorker`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/workers/elastic/migration_worker.rb)
-  cron worker runs. Default value is 5 minutes.
+  cron worker runs. The default value is 3 minutes.
 
 - `pause_indexing!` - Pause indexing while the migration runs. This setting records the indexing setting before
   the migration runs and set it back to that value when the migration is completed.
@@ -240,11 +240,10 @@ defer it to another release if there is risk of important data loss.
 
 Follow these best practices for best results:
 
-- When working in batches, keep the batch size under 9,000 documents
-  and `throttle_delay` for at least 3 minutes. The bulk indexer is set to run
-  every 1 minute and process a batch of 10,000 documents. These limits
-  allow the bulk indexer time to process records before another migration
-  batch is attempted.
+- When working in batches, keep the batch size under 9,000 documents.
+  The bulk indexer is set to run every minute and process a batch
+  of 10,000 documents. This way, the bulk indexer has time to
+  process records before another migration batch is attempted.
 - To ensure that document counts are up to date, you should refresh
   the index before checking if a migration is completed.
 - Add logging statements to each migration when the migration starts, when a

@@ -94,7 +94,8 @@ mutation {
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/331231) in GitLab 14.2.
 
 Group owners can configure a compliance pipeline in a project separate to other projects. By default, the compliance
-pipeline configuration (`.gitlab-ci.yml` file) is run instead of the pipeline configuration of labeled projects.
+pipeline configuration (for example, `.compliance-gitlab-ci.yml`) is run instead of the pipeline configuration (for example, `.gitlab-ci.yml`) of labeled
+projects.
 
 However, the compliance pipeline configuration can reference the `.gitlab-ci.yml` file of the labeled projects so that:
 

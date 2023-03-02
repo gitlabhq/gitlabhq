@@ -422,6 +422,14 @@ Example:
 Additional instructions here.
 -->
 
+### 15.9.0
+
+With the addition of `gitlab-sshd` the Kerberos headers are needed to build GitLab Shell.
+
+```shell
+sudo apt install libkrb5-dev
+```
+
 ### 15.0.0
 
 Support for more than one database has been added to GitLab. [As part of this](https://gitlab.com/gitlab-org/gitlab/-/issues/338182),

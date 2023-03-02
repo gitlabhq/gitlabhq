@@ -54,7 +54,7 @@ Geo secondary sites have a [Geo tracking database](https://gitlab.com/gitlab-org
   ```ruby
   # frozen_string_literal: true
 
-  class CreateCoolWidgetRegistry < Gitlab::Database::Migration[2.0]
+  class CreateCoolWidgetRegistry < Gitlab::Database::Migration[2.1]
     def change
       create_table :cool_widget_registry, id: :bigserial, force: :cascade do |t|
         t.bigint :cool_widget_id, null: false
@@ -80,11 +80,19 @@ Geo secondary sites have a [Geo tracking database](https://gitlab.com/gitlab-org
         t.index :retry_at
         t.index :state
         # To optimize performance of CoolWidgetRegistry.verification_failed_batch
-        t.index :verification_retry_at, name: :cool_widget_registry_failed_verification, order: "NULLS FIRST", where: "((state = 2) AND (verification_state = 3))"
+        t.index :verification_retry_at,
+          name: :cool_widget_registry_failed_verification,
+          order: "NULLS FIRST",
+          where: "((state = 2) AND (verification_state = 3))"
         # To optimize performance of CoolWidgetRegistry.needs_verification_count
-        t.index :verification_state, name: :cool_widget_registry_needs_verification, where: "((state = 2) AND (verification_state = ANY (ARRAY[0, 3])))"
+        t.index :verification_state,
+          name: :cool_widget_registry_needs_verification,
+          where: "((state = 2) AND (verification_state = ANY (ARRAY[0, 3])))"
         # To optimize performance of CoolWidgetRegistry.verification_pending_batch
-        t.index :verified_at, name: :cool_widget_registry_pending_verification, order: "NULLS FIRST", where: "((state = 2) AND (verification_state = 0))"
+        t.index :verified_at,
+          name: :cool_widget_registry_pending_verification,
+          order: "NULLS FIRST",
+          where: "((state = 2) AND (verification_state = 0))"
       end
     end
   end
@@ -129,7 +137,7 @@ The Geo primary site needs to checksum every replicable so secondaries can verif
   ```ruby
   # frozen_string_literal: true
 
-  class CreateCoolWidgetStates < Gitlab::Database::Migration[2.0]
+  class CreateCoolWidgetStates < Gitlab::Database::Migration[2.1]
     VERIFICATION_STATE_INDEX_NAME = "index_cool_widget_states_on_verification_state"
     PENDING_VERIFICATION_INDEX_NAME = "index_cool_widget_states_pending_verification"
     FAILED_VERIFICATION_INDEX_NAME = "index_cool_widget_states_failed_verification"
@@ -149,9 +157,17 @@ The Geo primary site needs to checksum every replicable so secondaries can verif
         t.text :verification_failure, limit: 255
 
         t.index :verification_state, name: VERIFICATION_STATE_INDEX_NAME
-        t.index :verified_at, where: "(verification_state = 0)", order: { verified_at: 'ASC NULLS FIRST' }, name: PENDING_VERIFICATION_INDEX_NAME
-        t.index :verification_retry_at, where: "(verification_state = 3)", order: { verification_retry_at: 'ASC NULLS FIRST' }, name: FAILED_VERIFICATION_INDEX_NAME
-        t.index :verification_state, where: "(verification_state = 0 OR verification_state = 3)", name: NEEDS_VERIFICATION_INDEX_NAME
+        t.index :verified_at,
+          where: "(verification_state = 0)",
+          order: { verified_at: 'ASC NULLS FIRST' },
+          name: PENDING_VERIFICATION_INDEX_NAME
+        t.index :verification_retry_at,
+          where: "(verification_state = 3)",
+          order: { verification_retry_at: 'ASC NULLS FIRST' },
+          name: FAILED_VERIFICATION_INDEX_NAME
+        t.index :verification_state,
+          where: "(verification_state = 0 OR verification_state = 3)",
+          name: NEEDS_VERIFICATION_INDEX_NAME
       end
     end
 
@@ -229,8 +245,6 @@ That's all of the required database changes.
     delegate(*::Geo::VerificationState::VERIFICATION_METHODS, to: :cool_widget_state)
 
     with_replicator Geo::CoolWidgetReplicator
-
-    mount_uploader :file, CoolWidgetUploader
 
     has_one :cool_widget_state, autosave: false, inverse_of: :cool_widget, class_name: 'Geo::CoolWidgetState'
 
@@ -491,17 +505,21 @@ That's all of the required database changes.
 - [ ] Add the following to `ee/spec/factories/cool_widgets.rb`:
 
   ```ruby
-  FactoryBot.modify do
-    trait :verification_succeeded do
-        with_file
-        verification_checksum { 'abc' }
-        verification_state { CoolWidget.verification_state_value(:verification_succeeded) }
-    end
+  # frozen_string_literal: true
 
-    trait :verification_failed do
-        with_file
-        verification_failure { 'Could not calculate the checksum' }
-        verification_state { CoolWidget.verification_state_value(:verification_failed) }
+  FactoryBot.modify do
+    factory :cool_widget do
+      trait :verification_succeeded do
+          with_file
+          verification_checksum { 'abc' }
+          verification_state { CoolWidget.verification_state_value(:verification_succeeded) }
+      end
+
+      trait :verification_failed do
+          with_file
+          verification_failure { 'Could not calculate the checksum' }
+          verification_state { CoolWidget.verification_state_value(:verification_failed) }
+      end
     end
   end
   ```
@@ -573,15 +591,15 @@ Metrics are gathered by `Geo::MetricsUpdateWorker`, persisted in `GeoNodeStatus`
 - [ ] Add the following fields to the `Sidekiq metrics` table in `doc/administration/monitoring/prometheus/gitlab_metrics.md`:
   ```markdown
   | `geo_cool_widgets` | Gauge | XX.Y | Number of Cool Widgets on primary | `url` |
-  | `geo_cool_widgets_checksum_total` | Gauge | XX.Y | Number of Cool Widgets checksummed successfully on primary | `url` |
-  | `geo_cool_widgets_checksummed` | Gauge | XX.Y | Number of Cool Widgets failed to calculate the checksum on primary | `url` |
-  | `geo_cool_widgets_checksum_failed` | Gauge | XX.Y | Number of Cool Widgets tried to checksum on primary | `url` |
+  | `geo_cool_widgets_checksum_total` | Gauge | XX.Y | Number of Cool Widgets to checksum on primary | `url` |
+  | `geo_cool_widgets_checksummed` | Gauge | XX.Y | Number of Cool Widgets that successfully calculated the checksum on primary | `url` |
+  | `geo_cool_widgets_checksum_failed` | Gauge | XX.Y | Number of Cool Widgets that failed to calculate the checksum on primary | `url` |
   | `geo_cool_widgets_synced` | Gauge | XX.Y | Number of syncable Cool Widgets synced on secondary | `url` |
   | `geo_cool_widgets_failed` | Gauge | XX.Y | Number of syncable Cool Widgets failed to sync on secondary | `url` |
   | `geo_cool_widgets_registry` | Gauge | XX.Y | Number of Cool Widgets in the registry | `url` |
-  | `geo_cool_widgets_verification_total` | Gauge | XX.Y | Number of Cool Widgets verified on secondary | `url` |
-  | `geo_cool_widgets_verified` | Gauge | XX.Y | Number of Cool Widgets' verifications failed on secondary | `url` |
-  | `geo_cool_widgets_verification_failed` | Gauge | XX.Y | Number of Cool Widgets' verifications tried on secondary | `url` |
+  | `geo_cool_widgets_verification_total` | Gauge | XX.Y | Number of Cool Widgets to attempt to verify on secondary | `url` |
+  | `geo_cool_widgets_verified` | Gauge | XX.Y | Number of Cool Widgets successfully verified on secondary | `url` |
+  | `geo_cool_widgets_verification_failed` | Gauge | XX.Y | Number of Cool Widgets that failed verification on secondary | `url` |
   ```
 
 Cool Widget replication and verification metrics should now be available in the API, the `Admin > Geo > Nodes` view, and Prometheus.

@@ -1,9 +1,8 @@
 # frozen_string_literal: true
 
+# TODO: remove this test when 'vscode_web_ide' feature flag is default enabled
 module QA
-  RSpec.describe 'Create', product_group: :editor,
-    feature_flag: { name: 'vscode_web_ide', scope: :global },
-    quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/387032', type: :stale } do
+  RSpec.describe 'Create', :skip_live_env, product_group: :editor do
     describe 'Upload a file in Web IDE' do
       let(:file_path) { File.join(Runtime::Path.fixtures_path, 'web_ide', file_name) }
 
@@ -15,15 +14,10 @@ module QA
       end
 
       before do
-        Runtime::Feature.disable(:vscode_web_ide)
         Flow::Login.sign_in
 
         project.visit!
         Page::Project::Show.perform(&:open_web_ide!)
-      end
-
-      after do
-        Runtime::Feature.enable(:vscode_web_ide)
       end
 
       context 'when a file with the same name already exists' do

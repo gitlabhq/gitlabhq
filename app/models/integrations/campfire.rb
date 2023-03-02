@@ -68,7 +68,7 @@ module Integrations
     def execute(data)
       return unless supported_events.include?(data[:object_kind])
 
-      message = build_message(data)
+      message = create_message(data)
       speak(self.room, message, auth)
     end
 
@@ -116,7 +116,7 @@ module Integrations
       res.code == 200 ? res["rooms"] : []
     end
 
-    def build_message(push)
+    def create_message(push)
       ref = Gitlab::Git.ref_name(push[:ref])
       before = push[:before]
       after = push[:after]
