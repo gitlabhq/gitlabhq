@@ -27,6 +27,13 @@ RSpec.describe ResourceAccessTokens::CreateService do
       end
     end
 
+    shared_examples 'correct error message' do
+      it 'returns correct error message' do
+        expect(subject.error?).to be true
+        expect(subject.errors).to include(error_message)
+      end
+    end
+
     shared_examples 'allows creation of bot with valid params' do
       it { expect { subject }.to change { User.count }.by(1) }
 
@@ -200,16 +207,11 @@ RSpec.describe ResourceAccessTokens::CreateService do
           end
 
           context 'when invalid scope is passed' do
+            let(:error_message) { 'Scopes can only contain available scopes' }
             let_it_be(:params) { { scopes: [:invalid_scope] } }
 
             it_behaves_like 'token creation fails'
-
-            it 'returns the scope error message' do
-              response = subject
-
-              expect(response.error?).to be true
-              expect(response.errors).to include("Scopes can only contain available scopes")
-            end
+            it_behaves_like 'correct error message'
           end
         end
 
@@ -217,6 +219,7 @@ RSpec.describe ResourceAccessTokens::CreateService do
           let_it_be(:bot_user) { create(:user, :project_bot) }
 
           let(:unpersisted_member) { build(:project_member, source: resource, user: bot_user) }
+          let(:error_message) { 'Could not provision maintainer access to project access token' }
 
           before do
             allow_next_instance_of(ResourceAccessTokens::CreateService) do |service|
@@ -226,13 +229,7 @@ RSpec.describe ResourceAccessTokens::CreateService do
           end
 
           it_behaves_like 'token creation fails'
-
-          it 'returns the provisioning error message' do
-            response = subject
-
-            expect(response.error?).to be true
-            expect(response.errors).to include("Could not provision maintainer access to project access token")
-          end
+          it_behaves_like 'correct error message'
         end
       end
 
@@ -246,14 +243,10 @@ RSpec.describe ResourceAccessTokens::CreateService do
     end
 
     shared_examples 'when user does not have permission to create a resource bot' do
+      let(:error_message) { "User does not have permission to create #{resource_type} access token" }
+
       it_behaves_like 'token creation fails'
-
-      it 'returns the permission error message' do
-        response = subject
-
-        expect(response.error?).to be true
-        expect(response.errors).to include("User does not have permission to create #{resource_type} access token")
-      end
+      it_behaves_like 'correct error message'
     end
 
     context 'when resource is a project' do
@@ -273,11 +266,19 @@ RSpec.describe ResourceAccessTokens::CreateService do
           let_it_be(:params) { { access_level: Gitlab::Access::OWNER } }
 
           context 'when the executor is a MAINTAINER' do
-            it 'does not add the bot user with the specified access level in the resource' do
-              response = subject
+            let(:error_message) { 'Could not provision owner access to project access token' }
 
-              expect(response.error?).to be true
-              expect(response.errors).to include('Could not provision owner access to project access token')
+            context 'with OWNER access_level, in integer format' do
+              it_behaves_like 'token creation fails'
+              it_behaves_like 'correct error message'
+            end
+
+            context 'with OWNER access_level, in string format' do
+              let(:error_message) { 'Could not provision owner access to project access token' }
+              let_it_be(:params) { { access_level: Gitlab::Access::OWNER.to_s } }
+
+              it_behaves_like 'token creation fails'
+              it_behaves_like 'correct error message'
             end
           end
 

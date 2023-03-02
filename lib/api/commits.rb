@@ -86,11 +86,15 @@ module API
       get ':id/repository/commits', urgency: :low do
         not_found! 'Repository' unless user_project.repository_exists?
 
+        page = params[:page] > 0 ? params[:page] : 1
+        per_page = params[:per_page] > 0 ? params[:per_page] : Kaminari.config.default_per_page
+        limit = [per_page, Kaminari.config.max_per_page].min
+        offset = (page - 1) * limit
+
         path = params[:path]
         before = params[:until]
         after = params[:since]
         ref = params[:ref_name].presence || user_project.default_branch unless params[:all]
-        offset = (params[:page] - 1) * params[:per_page]
         all = params[:all]
         with_stats = params[:with_stats]
         first_parent = params[:first_parent]
@@ -98,7 +102,7 @@ module API
 
         commits = user_project.repository.commits(ref,
                                                   path: path,
-                                                  limit: params[:per_page],
+                                                  limit: limit,
                                                   offset: offset,
                                                   before: before,
                                                   after: after,
