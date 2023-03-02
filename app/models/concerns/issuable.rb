@@ -640,10 +640,6 @@ module Issuable
     false
   end
 
-  def ensure_metrics
-    self.metrics || create_metrics
-  end
-
   ##
   # Overridden in MergeRequest
   #

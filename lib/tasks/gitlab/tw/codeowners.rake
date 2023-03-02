@@ -3,6 +3,8 @@
 namespace :tw do
   desc 'Generates a list of codeowners for documentation pages.'
   task :codeowners do
+    require 'yaml'
+
     CodeOwnerRule = Struct.new(:category, :writer)
     DocumentOwnerMapping = Struct.new(:path, :writer) do
       def writer_owns_directory?(mappings)

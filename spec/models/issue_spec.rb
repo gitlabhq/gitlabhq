@@ -220,7 +220,7 @@ RSpec.describe Issue, feature_category: :team_planning do
   subject { create(:issue, project: reusable_project) }
 
   describe 'callbacks' do
-    describe '#ensure_metrics' do
+    describe '#ensure_metrics!' do
       it 'creates metrics after saving' do
         expect(subject.metrics).to be_persisted
         expect(Issue::Metrics.count).to eq(1)

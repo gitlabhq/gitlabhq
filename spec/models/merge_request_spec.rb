@@ -393,8 +393,8 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
         instance1 = MergeRequest.find(merge_request.id)
         instance2 = MergeRequest.find(merge_request.id)
 
-        instance1.ensure_metrics
-        instance2.ensure_metrics
+        instance1.ensure_metrics!
+        instance2.ensure_metrics!
 
         metrics_records = MergeRequest::Metrics.where(merge_request_id: merge_request.id)
         expect(metrics_records.size).to eq(1)

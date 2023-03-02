@@ -9,6 +9,7 @@ RSpec.describe PipelineTestReportBuilder, feature_category: :tooling do
   let(:options) do
     described_class::DEFAULT_OPTIONS.merge(
       target_project: 'gitlab-org/gitlab',
+      current_pipeline_id: '42',
       mr_id: '999',
       instance_base_url: 'https://gitlab.com',
       output_file_path: output_file_path
@@ -191,10 +192,14 @@ RSpec.describe PipelineTestReportBuilder, feature_category: :tooling do
 
     context 'for latest pipeline' do
       let(:failed_build_uri) { "#{latest_pipeline_url}/tests/suite.json?build_ids[]=#{failed_build_id}" }
+      let(:current_pipeline_uri) do
+        "#{options[:api_endpoint]}/projects/#{options[:target_project]}/pipelines/#{options[:current_pipeline_id]}"
+      end
 
       subject { described_class.new(options.merge(pipeline_index: :latest)) }
 
       it 'fetches builds from pipeline related to MR' do
+        expect(subject).to receive(:fetch).with(current_pipeline_uri).and_return(mr_pipelines[0])
         expect(subject).to receive(:fetch).with(failed_build_uri).and_return(test_report_for_build)
 
         subject.test_report_for_pipeline

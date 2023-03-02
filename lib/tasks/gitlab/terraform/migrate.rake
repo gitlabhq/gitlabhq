@@ -4,6 +4,8 @@ desc "GitLab | Terraform | Migrate Terraform states to remote storage"
 namespace :gitlab do
   namespace :terraform_states do
     task migrate: :environment do
+      require 'logger'
+
       logger = Logger.new($stdout)
       logger.info('Starting transfer of Terraform states to object storage')
 

@@ -10,3 +10,5 @@ module Users
     validates :user_id, uniqueness: { message: N_("banned user already exists") }
   end
 end
+
+Users::BannedUser.prepend_mod_with('Users::BannedUser')

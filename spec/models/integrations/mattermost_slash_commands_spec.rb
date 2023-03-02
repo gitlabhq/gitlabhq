@@ -123,12 +123,5 @@ RSpec.describe Integrations::MattermostSlashCommands do
         end
       end
     end
-
-    describe '#chat_responder' do
-      it 'returns the responder to use for Mattermost' do
-        expect(described_class.new.chat_responder)
-          .to eq(Gitlab::Chat::Responder::Mattermost)
-      end
-    end
   end
 end

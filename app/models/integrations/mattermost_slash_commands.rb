@@ -37,10 +37,6 @@ module Integrations
       [[], e.message]
     end
 
-    def chat_responder
-      ::Gitlab::Chat::Responder::Mattermost
-    end
-
     private
 
     def command(params)

@@ -141,7 +141,7 @@ class MergeRequest < ApplicationRecord
   after_update :clear_memoized_shas
   after_update :reload_diff_if_branch_changed
   after_save :keep_around_commit, unless: :importing?
-  after_commit :ensure_metrics, on: [:create, :update], unless: :importing?
+  after_commit :ensure_metrics!, on: [:create, :update], unless: :importing?
   after_commit :expire_etag_cache, unless: :importing?
 
   # When this attribute is true some MR validation is ignored
@@ -1948,8 +1948,7 @@ class MergeRequest < ApplicationRecord
     super.merge(label_url_method: :project_merge_requests_url)
   end
 
-  override :ensure_metrics
-  def ensure_metrics
+  def ensure_metrics!
     MergeRequest::Metrics.record!(self)
   end
 

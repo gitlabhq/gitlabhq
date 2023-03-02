@@ -90,7 +90,7 @@ describe('TooltipOnTruncate component', () => {
 
     it('renders tooltip', async () => {
       expect(hasHorizontalOverflow).toHaveBeenLastCalledWith(wrapper.element);
-      expect(getTooltipValue()).toMatchObject({
+      expect(getTooltipValue()).toStrictEqual({
         title: MOCK_TITLE,
         placement: 'top',
         disabled: false,
@@ -144,7 +144,7 @@ describe('TooltipOnTruncate component', () => {
 
       await nextTick();
 
-      expect(getTooltipValue()).toMatchObject({
+      expect(getTooltipValue()).toStrictEqual({
         title: MOCK_TITLE,
         placement: 'top',
         disabled: false,
@@ -194,20 +194,22 @@ describe('TooltipOnTruncate component', () => {
     });
   });
 
-  describe('placement', () => {
-    it('sets placement when tooltip is rendered', () => {
-      const mockPlacement = 'bottom';
-
+  describe('tooltip customization', () => {
+    it.each`
+      property       | mockValue
+      ${'placement'} | ${'bottom'}
+      ${'boundary'}  | ${'viewport'}
+    `('sets $property when the tooltip is rendered', ({ property, mockValue }) => {
       hasHorizontalOverflow.mockReturnValueOnce(true);
       createComponent({
         propsData: {
-          placement: mockPlacement,
+          [property]: mockValue,
         },
       });
 
       expect(hasHorizontalOverflow).toHaveBeenLastCalledWith(wrapper.element);
       expect(getTooltipValue()).toMatchObject({
-        placement: mockPlacement,
+        [property]: mockValue,
       });
     });
   });

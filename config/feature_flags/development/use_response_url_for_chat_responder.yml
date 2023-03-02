@@ -1,8 +1,0 @@
----
-name: use_response_url_for_chat_responder
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110625
-rollout_issue_url:
-milestone: '15.9'
-type: development
-group: group::integrations
-default_enabled: false

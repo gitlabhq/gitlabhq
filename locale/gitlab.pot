@@ -8015,6 +8015,15 @@ msgstr ""
 msgid "Can't be empty"
 msgstr ""
 
+msgid "Can't contain %{chars}"
+msgstr ""
+
+msgid "Can't contain spaces"
+msgstr ""
+
+msgid "Can't contain spaces, %{chars}"
+msgstr ""
+
 msgid "Can't create snippet: %{err}"
 msgstr ""
 

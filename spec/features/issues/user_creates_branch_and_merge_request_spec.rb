@@ -113,6 +113,26 @@ RSpec.describe 'User creates branch and merge request on issue page', :js, featu
           expect(page).to have_current_path project_tree_path(project, branch_name), ignore_query: true
         end
       end
+
+      context 'when branch name is invalid' do
+        shared_examples 'has error message' do |dropdown|
+          it 'has error message' do
+            select_dropdown_option(dropdown, 'custom-branch-name w~th ^bad chars?')
+
+            wait_for_requests
+
+            expect(page).to have_text("Can't contain spaces, ~, ^, ?")
+          end
+        end
+
+        context 'when creating a merge request', :sidekiq_might_not_need_inline do
+          it_behaves_like 'has error message', 'create-mr'
+        end
+
+        context 'when creating a branch', :sidekiq_might_not_need_inline do
+          it_behaves_like 'has error message', 'create-branch'
+        end
+      end
     end
 
     context "when there is a referenced merge request" do

@@ -140,14 +140,7 @@ the parent project. Additionally, if you do not trust the fork project's runner,
 running the pipeline in the parent project uses the parent project's trusted runners.
 
 WARNING:
-Fork merge requests can contain malicious code that tries to steal secrets in the
-parent project when the pipeline runs, even before merge. As a reviewer, carefully
-check the changes in the merge request before triggering the pipeline. If you trigger
-the pipeline by selecting **Run pipeline** or applying a suggestion, GitLab shows
-a warning that you must accept before the pipeline runs. If you trigger the pipeline
-by using any other method, including the API, [`/rebase` quick action](../../user/project/quick_actions.md#issues-merge-requests-and-epics),
-or [**Rebase** option](../../user/project/merge_requests/methods/index.md#rebasing-in-semi-linear-merge-methods),
-**no warning displays**.
+Fork merge requests can contain malicious code that tries to steal secrets in the parent project when the pipeline runs, even before merge. As a reviewer, carefully check the changes in the merge request before triggering the pipeline. Unless you trigger the pipeline through the API or the [`/rebase` quick action](../../user/project/quick_actions.md#issues-merge-requests-and-epics), GitLab shows a warning that you must accept before the pipeline runs. Otherwise, **no warning displays**.
 
 Prerequisites:
 
