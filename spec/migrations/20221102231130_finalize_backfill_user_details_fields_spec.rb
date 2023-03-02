@@ -58,6 +58,22 @@ RSpec.describe FinalizeBackfillUserDetailsFields, :migration, feature_category: 
         end
       end
 
+      context 'when users.linkedin column has already been dropped' do
+        before do
+          table(:users).create!(id: 1, email: 'author@example.com', username: 'author', projects_limit: 10)
+          ActiveRecord::Base.connection.execute("ALTER TABLE users DROP COLUMN linkedin")
+          migration_record.update_column(:status, 1)
+        end
+
+        after do
+          ActiveRecord::Base.connection.execute("ALTER TABLE users ADD COLUMN linkedin text DEFAULT '' NOT NULL")
+        end
+
+        it 'does not raise exception' do
+          expect { migrate! }.not_to raise_error
+        end
+      end
+
       context 'with different migration statuses', :redis do
         using RSpec::Parameterized::TableSyntax
 

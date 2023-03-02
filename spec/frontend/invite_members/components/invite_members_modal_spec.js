@@ -73,6 +73,7 @@ describe('InviteMembersModal', () => {
     wrapper = shallowMountExtended(InviteMembersModal, {
       provide: {
         newProjectPath,
+        name: propsData.name,
       },
       propsData: {
         usersLimitDataset: {},

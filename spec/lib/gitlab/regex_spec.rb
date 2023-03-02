@@ -110,6 +110,8 @@ RSpec.describe Gitlab::Regex, feature_category: :tooling do
     it { is_expected.to match('.source/.full/.path') }
     it { is_expected.to match('domain_namespace') }
     it { is_expected.to match('gitlab-migration-test') }
+    it { is_expected.to match('1-project-path') }
+    it { is_expected.to match('e-project-path') }
     it { is_expected.to match('') } # it is possible to pass an empty string for destination_namespace in bulk_import POST request
   end
 

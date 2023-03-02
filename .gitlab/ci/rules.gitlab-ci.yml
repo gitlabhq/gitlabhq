@@ -989,6 +989,20 @@
     - <<: *if-merge-request
       changes: *frontend-patterns-for-as-if-foss
 
+.frontend:rules:upload-frontend-fixtures:
+  rules:
+    # The new strategy to upload fixtures as generic packages is experimental and can be disabled by removing the `REUSE_FRONTEND_FIXTURES_ENABLED` variable
+    - if: '$REUSE_FRONTEND_FIXTURES_ENABLED != "true"'
+      when: never
+    - <<: *if-dot-com-gitlab-org-default-branch
+      changes: *code-backstage-patterns
+    - <<: *if-dot-com-gitlab-org-merge-request
+      changes:
+        - ".gitlab/ci/frontend.gitlab-ci.yml"
+        - "scripts/gitlab_component_helpers.sh"
+      when: manual
+      allow_failure: true
+
 .frontend:rules:jest:
   rules:
     - <<: *if-fork-merge-request

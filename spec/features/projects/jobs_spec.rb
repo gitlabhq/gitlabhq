@@ -1071,7 +1071,7 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state, feature_category: :proj
         create(:ci_job_artifact, :archive, file: artifacts_file, job: job2)
       end
 
-      it do
+      it 'receive 404 from download request', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/391632' do
         requests = inspect_requests { visit other_job_download_path }
 
         request = requests.find { |request| request.url == other_job_download_path }

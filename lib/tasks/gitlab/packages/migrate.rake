@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-require 'logger'
-
 desc "GitLab | Packages | Migrate packages files to remote storage"
 namespace :gitlab do
   namespace :packages do
     task migrate: :environment do
+      require 'logger'
+
       logger = Logger.new($stdout)
       logger.info('Starting transfer of package files to object storage')
 

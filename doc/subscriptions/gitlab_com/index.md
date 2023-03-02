@@ -171,13 +171,13 @@ The user must not be assigned any other role, anywhere in the instance.
 - If your project is public, all users, including those with the Guest role
   can access your project.
 
-### Add users to your subscription
+### Add seats to your subscription
 
 Your subscription cost is based on the maximum number of seats you use during the billing period.
 Even if you reach the number of seats in your subscription, you can continue to add users.
 GitLab [bills you for the overage](../quarterly_reconciliation.md).
 
-To add users to a subscription:
+To add seats to a subscription:
 
 1. Log in to the [Customers Portal](https://customers.gitlab.com/).
 1. Navigate to the **Manage Purchases** page.

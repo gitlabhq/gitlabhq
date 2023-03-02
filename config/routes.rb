@@ -88,6 +88,7 @@ InitializerConnections.raise_if_new_database_connection do
 
     # JSON Web Token
     get 'jwt/auth' => 'jwt#auth'
+    post 'jwt/auth', to: proc { [404, {}, ['']] }
 
     # Health check
     get 'health_check(/:checks)' => 'health_check#index', as: :health_check

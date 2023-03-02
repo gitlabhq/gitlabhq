@@ -39,32 +39,12 @@ feature_category: :build_artifacts do
           second_artifact
         end
 
-        context 'with ci_destroy_unlocked_job_artifacts feature flag disabled' do
-          before do
-            stub_feature_flags(ci_destroy_unlocked_job_artifacts: false)
-          end
+        it 'performs a consistent number of queries' do
+          control = ActiveRecord::QueryRecorder.new { service.execute }
 
-          it 'performs a consistent number of queries' do
-            control = ActiveRecord::QueryRecorder.new { service.execute }
+          more_artifacts
 
-            more_artifacts
-
-            expect { subject }.not_to exceed_query_limit(control.count)
-          end
-        end
-
-        context 'with ci_destroy_unlocked_job_artifacts feature flag enabled' do
-          before do
-            stub_feature_flags(ci_destroy_unlocked_job_artifacts: true)
-          end
-
-          it 'performs a consistent number of queries' do
-            control = ActiveRecord::QueryRecorder.new { service.execute }
-
-            more_artifacts
-
-            expect { subject }.not_to exceed_query_limit(control.count)
-          end
+          expect { subject }.not_to exceed_query_limit(control.count)
         end
       end
 

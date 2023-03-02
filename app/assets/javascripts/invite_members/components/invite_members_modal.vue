@@ -51,6 +51,8 @@ export default {
     MembersTokenSelect,
     ModalConfetti,
     UserLimitNotification,
+    ActiveTrialNotification: () =>
+      import('ee_component/invite_members/components/active_trial_notification.vue'),
   },
   mixins: [Tracking.mixin({ category: INVITE_MEMBER_MODAL_TRACKING_CATEGORY })],
   inject: ['newProjectPath'],
@@ -421,7 +423,6 @@ export default {
     :new-users-to-invite="newUsersToInvite"
     :root-group-id="rootId"
     :users-limit-dataset="usersLimitDataset"
-    :active-trial-dataset="activeTrialDataset"
     :full-path="fullPath"
     @close="onClose"
     @cancel="onCancel"
@@ -502,6 +503,10 @@ export default {
           :users-limit-dataset="usersLimitDataset"
         />
       </div>
+    </template>
+
+    <template #active-trial-alert>
+      <active-trial-notification v-if="!isCelebration" :active-trial-dataset="activeTrialDataset" />
     </template>
 
     <template #select="{ exceptionState, inputId }">

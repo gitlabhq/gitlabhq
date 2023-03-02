@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-require 'logger'
-
 namespace :gitlab do
   namespace :pages do
     namespace :deployments do
       task migrate_to_object_storage: :gitlab_environment do
+        require 'logger'
+
         logger = Logger.new($stdout)
 
         helper = Gitlab::LocalAndRemoteStorageMigration::PagesDeploymentMigrater.new(logger)

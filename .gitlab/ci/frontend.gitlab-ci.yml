@@ -141,6 +141,19 @@ rspec-all frontend_fixture as-if-foss:
     - !reference [.frontend-fixtures-base, needs]
     - "compile-test-assets as-if-foss"
 
+upload-frontend-fixtures:
+  extends:
+    - .frontend-fixtures-base
+    - .frontend:rules:upload-frontend-fixtures
+  stage: fixtures
+  needs: ["rspec-all frontend_fixture"]
+  script:
+    - source scripts/gitlab_component_helpers.sh
+    - 'fixtures_archive_doesnt_exist || { echoinfo "INFO: Exiting early as package exists."; exit 0; }'
+    - run_timed_command "create_fixtures_package"
+    - run_timed_command "upload_fixtures_package"
+  artifacts: {}
+
 graphql-schema-dump:
   variables:
     SETUP_DB: "false"

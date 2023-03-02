@@ -4,5 +4,5 @@ introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105719
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/384334
 milestone: '15.7'
 type: development
-group: group::release
+group: group::configure
 default_enabled: false

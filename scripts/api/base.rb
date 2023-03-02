@@ -8,7 +8,7 @@ class Base
     @project = options.fetch(:project)
 
     # If api_token is nil, it's set to '' to allow unauthenticated requests (for forks).
-    api_token = options.fetch(:api_token, '')
+    api_token = options[:api_token] || ''
 
     warn "No API token given." if api_token.empty?
 

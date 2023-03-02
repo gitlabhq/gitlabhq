@@ -117,7 +117,7 @@ Jira apps can only link to one URL per marketplace listing. The official listing
 If your instance doesn't meet the prerequisites or you don't want to use the official marketplace listing, you can
 [install the app manually](#install-the-gitlab-for-jira-cloud-app-manually).
 
-It's not possible to create branches from Jira for self-managed instances.
+It's not possible to create branches from Jira for self-managed instances. For more information, see [issue 391432](https://gitlab.com/gitlab-org/gitlab/-/issues/391432).
 
 ### Set up your instance
 

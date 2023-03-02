@@ -265,7 +265,7 @@ module Gitlab
       # eg 'source/full/path' or 'destination_namespace' not 'https://example.com/destination/namespace/path'
       # the regex also allows for an empty string ('') to be accepted as this is allowed in
       # a bulk_import POST request
-      @bulk_import_destination_namespace_path_regex ||= %r/((\A\z)|\A([.]?)[^\W](\/?[.]?[0-9a-z][-_]*)+\z)/i
+      @bulk_import_destination_namespace_path_regex ||= %r/((\A\z)|\A([.]?)\w*([0-9a-z][-_]*)(\/?[.]?[0-9a-z][-_]*)+\z)/i
     end
 
     def bulk_import_source_full_path_regex

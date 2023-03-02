@@ -51,6 +51,24 @@ export GITLAB_ASSETS_HASH="${GITLAB_ASSETS_HASH:-"NO_HASH"}"
 export GITLAB_ASSETS_PACKAGE="assets-${NODE_ENV}-${GITLAB_EDITION}-${GITLAB_ASSETS_HASH}-${GITLAB_ASSETS_PACKAGE_VERSION}.tar.gz"
 export GITLAB_ASSETS_PACKAGE_URL="${API_PACKAGES_BASE_URL}/assets/${NODE_ENV}-${GITLAB_EDITION}-${GITLAB_ASSETS_HASH}/${GITLAB_ASSETS_PACKAGE}"
 
+# Fixtures constants
+
+# Export the SHA variable for updating/downloading fixture packages, using the following order of precedence:
+# 1. If MERGE_BASE_SHA is defined, use its value.
+# 2. If CI_MERGE_REQUEST_SOURCE_BRANCH_SHA is defined, use its value for merge request pipelines.
+# 3. Otherwise, use the value of CI_COMMIT_SHA for default branch pipelines or merge requests with detached pipelines.
+if [ -n "${MERGE_BASE_SHA:-}" ]; then
+  export FIXTURES_SHA="${MERGE_BASE_SHA}"
+elif [ -n "${CI_MERGE_REQUEST_SOURCE_BRANCH_SHA:-}" ]; then
+  export FIXTURES_SHA="${CI_MERGE_REQUEST_SOURCE_BRANCH_SHA}"
+else
+  export FIXTURES_SHA="${CI_COMMIT_SHA}"
+fi
+
+export FIXTURES_PATH="tmp/tests/frontend/**/*"
+export FIXTURES_PACKAGE="fixtures-${FIXTURES_SHA}.tar.gz"
+export FIXTURES_PACKAGE_URL="${API_PACKAGES_BASE_URL}/fixtures/${FIXTURES_SHA}/${FIXTURES_PACKAGE}"
+
 # Generic helper functions
 function archive_doesnt_exist() {
   local package_url="${1}"
@@ -146,4 +164,17 @@ function create_gitlab_assets_package() {
 
 function upload_gitlab_assets_package() {
   upload_package "${GITLAB_ASSETS_PACKAGE}" "${GITLAB_ASSETS_PACKAGE_URL}"
+}
+
+# Fixtures functions
+function fixtures_archive_doesnt_exist() {
+  archive_doesnt_exist "${FIXTURES_PACKAGE_URL}"
+}
+
+function create_fixtures_package() {
+  create_package "${FIXTURES_PACKAGE}" "${FIXTURES_PATH}"
+}
+
+function upload_fixtures_package() {
+  upload_package "${FIXTURES_PACKAGE}" "${FIXTURES_PACKAGE_URL}"
 }
