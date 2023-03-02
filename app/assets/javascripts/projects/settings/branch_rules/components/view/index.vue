@@ -1,5 +1,5 @@
 <script>
-import { GlSprintf, GlLink, GlLoadingIcon } from '@gitlab/ui';
+import { GlSprintf, GlLink, GlLoadingIcon, GlIcon } from '@gitlab/ui';
 import { sprintf, n__ } from '~/locale';
 import { getParameterByName, mergeUrlParams } from '~/lib/utils/url_utility';
 import { helpPagePath } from '~/helpers/help_page_helper';
@@ -12,6 +12,10 @@ import {
   BRANCH_PARAM_NAME,
   WILDCARDS_HELP_PATH,
   PROTECTED_BRANCHES_HELP_PATH,
+  REQUIRED_ICON,
+  NOT_REQUIRED_ICON,
+  REQUIRED_ICON_CLASS,
+  NOT_REQUIRED_ICON_CLASS,
 } from './constants';
 
 const wildcardsHelpDocLink = helpPagePath(WILDCARDS_HELP_PATH);
@@ -22,7 +26,7 @@ export default {
   i18n: I18N,
   wildcardsHelpDocLink,
   protectedBranchesHelpDocLink,
-  components: { Protection, GlSprintf, GlLink, GlLoadingIcon },
+  components: { Protection, GlSprintf, GlLink, GlLoadingIcon, GlIcon },
   inject: {
     projectPath: {
       default: '',
@@ -35,6 +39,7 @@ export default {
     },
     showStatusChecks: { default: false },
     showApprovers: { default: false },
+    showCodeOwners: { default: false },
   },
   apollo: {
     project: {
@@ -69,6 +74,19 @@ export default {
       return this.branchProtection?.allowForcePush
         ? this.$options.i18n.allowForcePushDescription
         : this.$options.i18n.disallowForcePushDescription;
+    },
+    codeOwnersApprovalAttributes() {
+      const { codeOwnerApprovalRequired } = this.branchProtection;
+      const icon = codeOwnerApprovalRequired ? REQUIRED_ICON : NOT_REQUIRED_ICON;
+      const iconClass = codeOwnerApprovalRequired ? REQUIRED_ICON_CLASS : NOT_REQUIRED_ICON_CLASS;
+      const title = codeOwnerApprovalRequired
+        ? this.$options.i18n.requiresCodeOwnerApprovalTitle
+        : this.$options.i18n.doesNotRequireCodeOwnerApprovalTitle;
+      const description = codeOwnerApprovalRequired
+        ? this.$options.i18n.requiresCodeOwnerApprovalDescription
+        : this.$options.i18n.doesNotRequireCodeOwnerApprovalDescription;
+
+      return { icon, iconClass, title, description };
     },
     mergeAccessLevels() {
       const { mergeAccessLevels } = this.branchProtection || {};
@@ -181,6 +199,20 @@ export default {
     />
 
     <!-- EE start -->
+    <!-- Code Owners -->
+    <div v-if="showCodeOwners">
+      <div class="gl-display-flex gl-align-items-center">
+        <gl-icon
+          :size="14"
+          :name="codeOwnersApprovalAttributes.icon"
+          :class="codeOwnersApprovalAttributes.iconClass"
+        />
+        <strong class="gl-ml-2">{{ codeOwnersApprovalAttributes.title }}</strong>
+      </div>
+
+      <div class="gl-text-gray-400">{{ codeOwnersApprovalAttributes.description }}</div>
+    </div>
+
     <!-- Approvals -->
     <template v-if="showApprovers">
       <h4 class="gl-mb-1 gl-mt-5">{{ $options.i18n.approvalsTitle }}</h4>

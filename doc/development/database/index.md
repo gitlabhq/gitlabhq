@@ -109,6 +109,8 @@ including the major methods:
 - [Introduction](clickhouse/index.md)
 - [Optimizing query execution](clickhouse/optimization.md)
 - [Rebuild GitLab features using ClickHouse 1: Activity data](clickhouse/gitlab_activity_data.md)
+- [Rebuild GitLab features using ClickHouse 2: Merge Request analytics](clickhouse/merge_request_analytics.md)
+- [Tiered Storage in ClickHouse](clickhouse/tiered_storage.md)
 
 ## Miscellaneous
 

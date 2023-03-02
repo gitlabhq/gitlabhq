@@ -2,7 +2,6 @@
 import $ from 'jquery';
 import Shortcuts from '~/behaviors/shortcuts/shortcuts';
 import { insertText } from '~/lib/utils/common_utils';
-import { ENTER_KEY } from '~/lib/utils/keys';
 import axios from '~/lib/utils/axios_utils';
 
 const LINK_TAG_PATTERN = '[{text}](url)';
@@ -521,7 +520,7 @@ function continueOlText(listLineMatch, nextLineMatch) {
 
 function handleContinueList(e, textArea) {
   if (!gon.markdown_automatic_lists) return;
-  if (!(e.key === ENTER_KEY)) return;
+  if (!(e.key === 'Enter')) return;
   if (e.altKey || e.ctrlKey || e.metaKey || e.shiftKey) return;
   if (textArea.selectionStart !== textArea.selectionEnd) return;
 
@@ -578,25 +577,6 @@ function handleContinueList(e, textArea) {
   }
 }
 
-/**
- * Adds a Markdown hard break when `Shift+Enter` is pressed
- *
- * @param {Object} e - the event
- * @param {Object} textArea - the targeted text area
- */
-function handleHardBreak(e, textArea) {
-  if (!(e.key === ENTER_KEY)) return;
-  if (!e.shiftKey) return;
-  if (e.altKey || e.ctrlKey || e.metaKey) return;
-
-  // prevent unintended line breaks inserted using Japanese IME on MacOS
-  if (compositioningNoteText) return;
-
-  e.preventDefault();
-
-  insertText(textArea, '\\\n');
-}
-
 export function keypressNoteText(e) {
   const textArea = this;
 
@@ -604,7 +584,6 @@ export function keypressNoteText(e) {
 
   handleContinueList(e, textArea);
   handleSurroundSelectedText(e, textArea);
-  handleHardBreak(e, textArea);
 }
 
 export function compositionStartNoteText() {

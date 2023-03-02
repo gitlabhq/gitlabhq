@@ -127,7 +127,7 @@ At any moment, but usually _during_ or _after_ the design's implementation:
 
 - Contribute [issues to Pajamas](https://design.gitlab.com/get-started/contributing#contribute-an-issue)
   for additions or enhancements to the design system.
-- Create issues with the [`~UX debt`](issue_workflow.md#technical-and-ux-debt)
+- Create issues with the [`~UX debt`](../labels/index.md#technical-and-ux-debt)
   label for intentional deviations from the agreed-upon UX requirements due to
   time or feasibility challenges, linking back to the corresponding issues or
   merge requests.

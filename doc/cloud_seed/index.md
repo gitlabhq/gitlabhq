@@ -1,5 +1,5 @@
 ---
-stage: Release
+stage: Configure
 group: Incubation
 info: Cloud Seed (formerly 5mp) is a GitLab Incubation Engineering program. No technical writer assigned to this group.
 ---

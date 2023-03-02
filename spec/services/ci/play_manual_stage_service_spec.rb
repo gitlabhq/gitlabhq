@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::PlayManualStageService, '#execute' do
+RSpec.describe Ci::PlayManualStageService, '#execute', feature_category: :continuous_integration do
   let(:current_user) { create(:user) }
   let(:pipeline) { create(:ci_pipeline, user: current_user) }
   let(:project) { pipeline.project }

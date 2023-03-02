@@ -83,16 +83,16 @@ If you are a member of the GitLab Slack workspace, you can request help in `#doc
 
 When you author an issue or merge request, you must add these labels:
 
-- A [type label](../contributing/issue_workflow.md#type-labels), either `~"type::feature"` or `~"type::maintenance"`.
-- A [stage label](../contributing/issue_workflow.md#stage-labels) and [group label](../contributing/issue_workflow.md#group-labels).
+- A [type label](../labels/index.md#type-labels), either `~"type::feature"` or `~"type::maintenance"`.
+- A [stage label](../labels/index.md#stage-labels) and [group label](../labels/index.md#group-labels).
   For example, `~devops::create` and `~group::source code`.
-- A `~documentation` [specialization label](../contributing/issue_workflow.md#specialization-labels).
+- A `~documentation` [specialization label](../labels/index.md#specialization-labels).
 
 A member of the Technical Writing team adds these labels:
 
 - A [documentation scoped label](../../user/project/labels.md#scoped-labels) with the
   `docs::` prefix. For example, `~docs::improvement`.
-- The [`~Technical Writing` team label](../contributing/issue_workflow.md#team-labels).
+- The [`~Technical Writing` team label](../labels/index.md#team-labels).
 
 ## Reviewing and merging
 

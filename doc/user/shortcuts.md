@@ -39,9 +39,9 @@ These shortcuts are available in most areas of GitLab:
 | <kbd>Shift</kbd> + <kbd>m</kbd>    | Go to your [Merge requests](project/merge_requests/index.md) page. |
 | <kbd>Shift</kbd> + <kbd>r</kbd>    | Go to your Review requests page. |
 | <kbd>Shift</kbd> + <kbd>t</kbd>    | Go to your To-Do List page. |
-| <kbd>p</kbd>, then <kbd>b</kbd>    | Show or hide the Performance Bar. |
+| <kbd>p</kbd>, then <kbd>b</kbd>     | Show or hide the Performance Bar. |
 | <kbd>Escape</kbd>                  | Hide tooltips or popovers. |
-| <kbd>g</kbd>, then <kbd>x</kbd>    | Toggle between [GitLab](https://gitlab.com/) and [GitLab Next](https://next.gitlab.com/) (GitLab SaaS only). |
+| <kbd>g</kbd>, then <kbd>x</kbd>     | Toggle between [GitLab](https://gitlab.com/) and [GitLab Next](https://next.gitlab.com/) (GitLab SaaS only). |
 | <kbd>.</kbd>                       | Open the [Web IDE](project/web_ide/index.md). |
 
 Additionally, the following shortcuts are available when editing text in text
@@ -55,10 +55,9 @@ descriptions):
 | <kbd>Command</kbd> + <kbd>b</kbd>       | <kbd>Control</kbd> + <kbd>b</kbd> | Bold the selected text (surround it with `**`). |
 | <kbd>Command</kbd> + <kbd>i</kbd>       | <kbd>Control</kbd> + <kbd>i</kbd> | Italicize the selected text (surround it with `_`). |
 | <kbd>Command</kbd> + <kbd>Shift</kbd> + <kbd>x</kbd> | <kbd>Control</kbd> + <kbd>Shift</kbd> + <kbd>x</kbd> | Strike through the selected text (surround it with `~~`). |
-| <kbd>Command</kbd> + <kbd>k</kbd>       | <kbd>Control</kbd> + <kbd>k</kbd>     | Add a link (surround the selected text with `[]()`). |
-| <kbd>Command</kbd> + <kbd>&#93;</kbd>   | <kbd>Control</kbd> + <kbd>&#93;</kbd> | Indent list item. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/351924) in GitLab 15.3. |
-| <kbd>Command</kbd> + <kbd>&#91;</kbd>   | <kbd>Control</kbd> + <kbd>&#91;</kbd> | Outdent list item. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/351924) in GitLab 15.3. |
-| <kbd>Shift</kbd> + <kbd>Enter</kbd>     | <kbd>Shift</kbd> + <kbd>Enter</kbd>   | Add a [line break](markdown.md#newlines). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/21916) in GitLab 15.10. |
+| <kbd>Command</kbd> + <kbd>k</kbd>       | <kbd>Control</kbd> + <kbd>k</kbd> | Add a link (surround the selected text with `[]()`). |
+| <kbd>Command</kbd> + <kbd>&#93;</kbd> | <kbd>Control</kbd> + <kbd>&#93;</kbd> |  Indent list item. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/351924) in GitLab 15.3. |
+| <kbd>Command</kbd> + <kbd>&#91;</kbd> | <kbd>Control</kbd> + <kbd>&#91;</kbd> |  Outdent list item. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/351924) in GitLab 15.3. |
 
 The shortcuts for editing in text fields are always enabled, even if other
 keyboard shortcuts are disabled.
@@ -113,7 +112,7 @@ These shortcuts are available when viewing [merge requests](project/merge_reques
 | macOS shortcut                    | Windows shortcut    | Description |
 |-----------------------------------|---------------------|-------------|
 | <kbd>]</kbd> or <kbd>j</kbd>      |                     | Move to next file. |
-| <kbd>&#91;</kbd> or <kbd>k</kbd>  |                     | Move to previous file. |
+| <kbd>&#91;</kbd> or <kbd>k</kbd>     |                     | Move to previous file. |
 | <kbd>Command</kbd> + <kbd>p</kbd> | <kbd>Control</kbd> + <kbd>p</kbd> | Search for, and then jump to a file for review. |
 | <kbd>n</kbd>                      |                     | Move to next unresolved discussion. |
 | <kbd>p</kbd>                      |                     | Move to previous unresolved discussion. |
@@ -278,7 +277,7 @@ These shortcuts are available when editing a file with the
 | <kbd>Command</kbd> + <kbd>Shift</kbd> + <kbd>h</kbd> | <kbd>Control</kbd> + <kbd>Shift</kbd> + <kbd>h</kbd> | Highlight |
 | <kbd>Command</kbd> + <kbd>,</kbd> | <kbd>Control</kbd> + <kbd>,</kbd> | Subscript |
 | <kbd>Command</kbd> + <kbd>.</kbd> | <kbd>Control</kbd> + <kbd>.</kbd> | Superscript |
-| <kbd>Tab</kbd>                    | <kbd>Tab</kbd>                    | Indent list |
+| <kbd>Tab</kbd> | <kbd>Tab</kbd> | Indent list |
 | <kbd>Shift</kbd> + <kbd>Tab</kbd> | <kbd>Shift</kbd> + <kbd>Tab</kbd> | Outdent list |
 
 #### Text selection

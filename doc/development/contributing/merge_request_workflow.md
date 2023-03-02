@@ -9,7 +9,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 We welcome merge requests from everyone, with fixes and improvements
 to GitLab code, tests, and documentation. The issues that are specifically suitable
-for community contributions have the [`Seeking community contributions`](issue_workflow.md#label-for-community-contributors)
+for community contributions have the
+[`Seeking community contributions`](../labels/index.md#label-for-community-contributors)
 label, but you are free to contribute to any issue you want.
 
 ## Working from issues

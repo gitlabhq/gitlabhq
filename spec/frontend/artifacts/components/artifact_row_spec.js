@@ -28,10 +28,6 @@ describe('ArtifactRow component', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('artifact details', () => {
     beforeEach(async () => {
       createComponent();

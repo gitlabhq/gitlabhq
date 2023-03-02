@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::DeleteUnitTestsService do
+RSpec.describe Ci::DeleteUnitTestsService, feature_category: :continuous_integration do
   describe '#execute' do
     let!(:unit_test_1) { create(:ci_unit_test) }
     let!(:unit_test_2) { create(:ci_unit_test) }

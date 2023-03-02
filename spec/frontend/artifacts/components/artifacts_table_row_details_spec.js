@@ -47,10 +47,6 @@ describe('ArtifactsTableRowDetails component', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('passes correct props', () => {
     beforeEach(() => {
       createComponent();

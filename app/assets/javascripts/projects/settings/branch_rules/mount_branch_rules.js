@@ -23,6 +23,7 @@ export default function mountBranchRules(el) {
     branchesPath,
     showStatusChecks,
     showApprovers,
+    showCodeOwners,
   } = el.dataset;
 
   return new Vue({
@@ -36,6 +37,7 @@ export default function mountBranchRules(el) {
       branchesPath,
       showStatusChecks: parseBoolean(showStatusChecks),
       showApprovers: parseBoolean(showApprovers),
+      showCodeOwners: parseBoolean(showCodeOwners),
     },
     render(h) {
       return h(View);

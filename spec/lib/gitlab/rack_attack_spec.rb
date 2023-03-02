@@ -320,18 +320,4 @@ RSpec.describe Gitlab::RackAttack, :aggregate_failures do
       end
     end
   end
-
-  describe '.cache_store' do
-    subject { described_class.cache_store }
-
-    it { expect(subject).to be_a(Gitlab::RackAttack::InstrumentedCacheStore) }
-
-    context 'when GITLAB_RACK_ATTACK_NEW_STORE is set' do
-      before do
-        stub_env('GITLAB_RACK_ATTACK_NEW_STORE', '1')
-      end
-
-      it { expect(subject).to be_a(Gitlab::RackAttack::Store) }
-    end
-  end
 end

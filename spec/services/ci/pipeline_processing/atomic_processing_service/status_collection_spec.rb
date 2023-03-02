@@ -2,7 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::PipelineProcessing::AtomicProcessingService::StatusCollection do
+RSpec.describe Ci::PipelineProcessing::AtomicProcessingService::StatusCollection,
+  feature_category: :continuous_integration do
   using RSpec::Parameterized::TableSyntax
 
   let_it_be(:pipeline) { create(:ci_pipeline) }

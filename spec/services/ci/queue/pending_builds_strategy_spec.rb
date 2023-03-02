@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::Queue::PendingBuildsStrategy do
+RSpec.describe Ci::Queue::PendingBuildsStrategy, feature_category: :continuous_integration do
   let_it_be(:group) { create(:group) }
   let_it_be(:group_runner) { create(:ci_runner, :group, groups: [group]) }
   let_it_be(:project) { create(:project, group: group) }

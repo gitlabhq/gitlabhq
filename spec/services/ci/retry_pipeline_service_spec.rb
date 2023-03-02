@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::RetryPipelineService, '#execute' do
+RSpec.describe Ci::RetryPipelineService, '#execute', feature_category: :continuous_integration do
   include ProjectForksHelper
 
   let_it_be_with_refind(:user) { create(:user) }

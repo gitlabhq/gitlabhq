@@ -64,6 +64,20 @@ The `omniauth-dingtalk` gem that provides GitLab with the DingTalk OmniAuth prov
 major release, GitLab 17.0. This gem sees very little use and is better suited for JiHu edition.
 
 </div>
+
+<div class="deprecation removal-160 breaking-change">
+
+### Environment search query requires at least three characters
+
+Planned removal: GitLab <span class="removal-milestone">16.0</span> <span class="removal-date"></span>
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+From GitLab 16.0, when you search for environments with the API, you must use at least three characters. This change helps us ensure the scalability of the search operation.
+
+</div>
 </div>
 
 <div class="announcement-milestone">

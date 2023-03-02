@@ -36,7 +36,7 @@ for audiences of all ages.
 If you would like to contribute to GitLab:
 
 - Issues with the
-  [`~Seeking community contributions` label](issue_workflow.md#label-for-community-contributors)
+  [`~Seeking community contributions` label](../labels/index.md#label-for-community-contributors)
   are a great place to start.
 - Optimizing our tests is another great opportunity to contribute. You can use
   [RSpec profiling statistics](https://gitlab-org.gitlab.io/rspec_profiling_stats/) to identify
@@ -112,11 +112,11 @@ working days of its initial submission, you can ask for help with `@gitlab-bot h
 This [documentation](issue_workflow.md) outlines the current issue workflow:
 
 - [Issue triaging](issue_workflow.md#issue-triaging)
-- [Labels](issue_workflow.md#labels)
+- [Labels](../labels/index.md)
 - [Feature proposals](issue_workflow.md#feature-proposals)
 - [Issue weight](issue_workflow.md#issue-weight)
 - [Regression issues](issue_workflow.md#regression-issues)
-- [Technical and UX debt](issue_workflow.md#technical-and-ux-debt)
+- [Technical and UX debt](../labels/index.md#technical-and-ux-debt)
 - [Technical debt in follow-up issues](issue_workflow.md#technical-debt-in-follow-up-issues)
 
 #### Merge requests workflow

@@ -114,9 +114,12 @@ export default {
       <div
         v-for="participant in visibleParticipants"
         :key="participant.id"
-        class="participants-author gl-display-inline-block gl-pr-3 gl-pb-3"
+        class="participants-author gl-display-inline-block gl-mr-3 gl-mb-3"
       >
-        <a :href="participant.web_url || participant.webUrl" class="author-link">
+        <a
+          :href="participant.web_url || participant.webUrl"
+          class="author-link gl-display-inline-block gl-rounded-full"
+        >
           <user-avatar-image
             :lazy="lazy"
             :img-src="participant.avatar_url || participant.avatarUrl"

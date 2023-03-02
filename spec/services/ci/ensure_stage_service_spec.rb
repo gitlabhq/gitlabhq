@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::EnsureStageService, '#execute' do
+RSpec.describe Ci::EnsureStageService, '#execute', feature_category: :continuous_integration do
   let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user) }
 

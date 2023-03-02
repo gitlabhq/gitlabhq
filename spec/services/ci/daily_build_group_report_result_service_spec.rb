@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::DailyBuildGroupReportResultService, '#execute' do
+RSpec.describe Ci::DailyBuildGroupReportResultService, '#execute', feature_category: :continuous_integration do
   let_it_be(:group) { create(:group, :private) }
   let_it_be(:pipeline) { create(:ci_pipeline, project: create(:project, group: group), created_at: '2020-02-06 00:01:10') }
   let_it_be(:rspec_job) { create(:ci_build, pipeline: pipeline, name: 'rspec 3/3', coverage: 80) }

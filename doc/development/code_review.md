@@ -237,7 +237,7 @@ See the [test engineering process](https://about.gitlab.com/handbook/engineering
 
 ##### Compliance
 
-1. You have confirmed that the correct [MR type label](contributing/issue_workflow.md#type-labels) has been applied.
+1. You have confirmed that the correct [MR type label](labels/index.md) has been applied.
 
 ### The responsibility of the merge request author
 
@@ -532,7 +532,7 @@ WARNING:
 Before taking the decision to merge:
 
 - Set the milestone.
-- Confirm that the correct [MR type label](contributing/issue_workflow.md#type-labels) is applied.
+- Confirm that the correct [MR type label](labels/index.md#type-labels) is applied.
 - Consider warnings and errors from danger bot, code quality, and other reports.
   Unless a strong case can be made for the violation, these should be resolved
   before merging. A comment must be posted if the MR is merged with any failed job.

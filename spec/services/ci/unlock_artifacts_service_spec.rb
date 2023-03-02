@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::UnlockArtifactsService do
+RSpec.describe Ci::UnlockArtifactsService, feature_category: :continuous_integration do
   using RSpec::Parameterized::TableSyntax
 
   where(:tag) do

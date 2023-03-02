@@ -19,20 +19,12 @@ module Gitlab
         [429, { 'Content-Type' => 'text/plain' }.merge(throttled_headers), [Gitlab::Throttle.rate_limiting_response_text]]
       end
 
-      rack_attack.cache.store = cache_store
+      rack_attack.cache.store = Gitlab::RackAttack::Store.new
 
       # Configure the throttles
       configure_throttles(rack_attack)
 
       configure_user_allowlist
-    end
-
-    def self.cache_store
-      if ENV['GITLAB_RACK_ATTACK_NEW_STORE'] == '1'
-        Gitlab::RackAttack::Store.new
-      else
-        Gitlab::RackAttack::InstrumentedCacheStore.new
-      end
     end
 
     # Rate Limit HTTP headers are not standardized anywhere. This is the latest

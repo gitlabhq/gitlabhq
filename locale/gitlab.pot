@@ -7173,6 +7173,12 @@ msgstr ""
 msgid "BranchRules|Allowed to push and merge (%{total})"
 msgstr ""
 
+msgid "BranchRules|Also accepts code pushes that change files listed in CODEOWNERS file."
+msgstr ""
+
+msgid "BranchRules|Also rejects code pushes that change files listed in CODEOWNERS file."
+msgstr ""
+
 msgid "BranchRules|An error occurred while fetching branches."
 msgstr ""
 
@@ -7201,6 +7207,9 @@ msgid "BranchRules|Create wildcard: %{searchTerm}"
 msgstr ""
 
 msgid "BranchRules|Details"
+msgstr ""
+
+msgid "BranchRules|Does not require approval from code owners"
 msgstr ""
 
 msgid "BranchRules|Force push"
@@ -7246,6 +7255,9 @@ msgid "BranchRules|Required approvals (%{total})"
 msgstr ""
 
 msgid "BranchRules|Requires CODEOWNERS approval"
+msgstr ""
+
+msgid "BranchRules|Requires approval from code owners"
 msgstr ""
 
 msgid "BranchRules|Roles"
@@ -35585,6 +35597,9 @@ msgstr ""
 msgid "Register a one-time password authenticator"
 msgstr ""
 
+msgid "Register a one-time password authenticator or a WebAuthn device first."
+msgstr ""
+
 msgid "Register a universal two-factor (U2F) device"
 msgstr ""
 
@@ -46639,6 +46654,9 @@ msgid "Use the public cloud instance URL (%{kroki_public_url}) or %{install_link
 msgstr ""
 
 msgid "Use the search bar on the top of this page"
+msgstr ""
+
+msgid "Use this section to disable your one-time password authenticator and WebAuthn devices. You can also generate new recovery codes."
 msgstr ""
 
 msgid "Use this token to validate received payloads."

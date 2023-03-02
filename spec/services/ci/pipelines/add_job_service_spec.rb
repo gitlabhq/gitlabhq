@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::Pipelines::AddJobService do
+RSpec.describe Ci::Pipelines::AddJobService, feature_category: :continuous_integration do
   include ExclusiveLeaseHelpers
 
   let_it_be_with_reload(:pipeline) { create(:ci_pipeline) }

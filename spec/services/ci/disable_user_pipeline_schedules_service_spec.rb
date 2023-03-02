@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::DisableUserPipelineSchedulesService do
+RSpec.describe Ci::DisableUserPipelineSchedulesService, feature_category: :continuous_integration do
   describe '#execute' do
     let(:user) { create(:user) }
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::GenerateTerraformReportsService do
+RSpec.describe Ci::GenerateTerraformReportsService, feature_category: :infrastructure_as_code do
   let_it_be(:project) { create(:project, :repository) }
 
   describe '#execute' do

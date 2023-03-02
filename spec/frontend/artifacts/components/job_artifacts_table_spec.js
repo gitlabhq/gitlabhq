@@ -12,7 +12,12 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import getJobArtifactsQuery from '~/artifacts/graphql/queries/get_job_artifacts.query.graphql';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import { ARCHIVE_FILE_TYPE, JOBS_PER_PAGE, I18N_FETCH_ERROR } from '~/artifacts/constants';
+import {
+  ARCHIVE_FILE_TYPE,
+  JOBS_PER_PAGE,
+  I18N_FETCH_ERROR,
+  INITIAL_CURRENT_PAGE,
+} from '~/artifacts/constants';
 import { totalArtifactsSizeForJob } from '~/artifacts/utils';
 import { createAlert } from '~/flash';
 
@@ -99,10 +104,6 @@ describe('JobArtifactsTable component', () => {
       },
     });
   };
-
-  afterEach(() => {
-    wrapper.destroy();
-  });
 
   it('renders feedback banner', () => {
     createComponent();
@@ -316,11 +317,12 @@ describe('JobArtifactsTable component', () => {
 
   describe('pagination', () => {
     const { pageInfo } = getJobArtifactsResponse.data.project.jobs;
+    const query = jest.fn().mockResolvedValue(getJobArtifactsResponseThatPaginates);
 
     beforeEach(async () => {
       createComponent(
         {
-          getJobArtifactsQuery: jest.fn().mockResolvedValue(getJobArtifactsResponseThatPaginates),
+          getJobArtifactsQuery: query,
         },
         {
           count: enoughJobsToPaginate.length,
@@ -332,32 +334,44 @@ describe('JobArtifactsTable component', () => {
     });
 
     it('renders pagination and passes page props', () => {
-      expect(findPagination().exists()).toBe(true);
       expect(findPagination().props()).toMatchObject({
-        value: wrapper.vm.pagination.currentPage,
-        prevPage: wrapper.vm.prevPage,
-        nextPage: wrapper.vm.nextPage,
+        value: INITIAL_CURRENT_PAGE,
+        prevPage: Number(pageInfo.hasPreviousPage),
+        nextPage: Number(pageInfo.hasNextPage),
+      });
+
+      expect(query).toHaveBeenCalledWith({
+        projectPath: 'project/path',
+        firstPageSize: JOBS_PER_PAGE,
+        lastPageSize: null,
+        nextPageCursor: '',
+        prevPageCursor: '',
       });
     });
 
-    it('updates query variables when going to previous page', () => {
-      return setPage(1).then(() => {
-        expect(wrapper.vm.queryVariables).toMatchObject({
-          projectPath: 'project/path',
-          nextPageCursor: undefined,
-          prevPageCursor: pageInfo.startCursor,
-        });
+    it('updates query variables when going to previous page', async () => {
+      await setPage(1);
+
+      expect(query).toHaveBeenLastCalledWith({
+        projectPath: 'project/path',
+        firstPageSize: null,
+        lastPageSize: JOBS_PER_PAGE,
+        prevPageCursor: pageInfo.startCursor,
       });
+      expect(findPagination().props('value')).toEqual(1);
     });
 
-    it('updates query variables when going to next page', () => {
-      return setPage(2).then(() => {
-        expect(wrapper.vm.queryVariables).toMatchObject({
-          lastPageSize: null,
-          nextPageCursor: pageInfo.endCursor,
-          prevPageCursor: '',
-        });
+    it('updates query variables when going to next page', async () => {
+      await setPage(2);
+
+      expect(query).toHaveBeenLastCalledWith({
+        projectPath: 'project/path',
+        firstPageSize: JOBS_PER_PAGE,
+        lastPageSize: null,
+        prevPageCursor: '',
+        nextPageCursor: pageInfo.endCursor,
       });
+      expect(findPagination().props('value')).toEqual(2);
     });
   });
 });

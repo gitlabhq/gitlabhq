@@ -22,11 +22,6 @@ module Gitlab
           }
         end
 
-        def redis(event)
-          self.class.payload[:rack_attack_redis_count] += 1
-          self.class.payload[:rack_attack_redis_duration_s] += event.duration.to_f / 1000
-        end
-
         def safelist(event)
           req = event.payload[:request]
           Gitlab::Instrumentation::Throttle.safelist = req.env['rack.attack.matched']

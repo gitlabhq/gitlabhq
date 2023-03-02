@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::ResourceGroups::AssignResourceFromResourceGroupService do
+RSpec.describe Ci::ResourceGroups::AssignResourceFromResourceGroupService, feature_category: :continuous_integration do
   include ConcurrentHelpers
 
   let_it_be(:project) { create(:project) }

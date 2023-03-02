@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::PrometheusMetrics::ObserveHistogramsService do
+RSpec.describe Ci::PrometheusMetrics::ObserveHistogramsService, feature_category: :continuous_integration do
   let_it_be(:project) { create(:project) }
 
   let(:params) { {} }
