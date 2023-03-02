@@ -45053,6 +45053,9 @@ msgstr ""
 msgid "TransferGroup|Group is already associated to the parent group."
 msgstr ""
 
+msgid "TransferGroup|SAML Provider or SCIM Token is configured for this group."
+msgstr ""
+
 msgid "TransferGroup|The parent group already has a subgroup or a project with the same path."
 msgstr ""
 

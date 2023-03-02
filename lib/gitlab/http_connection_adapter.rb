@@ -47,7 +47,7 @@ module Gitlab
                                         dns_rebind_protection: dns_rebind_protection?,
                                         schemes: %w[http https])
     rescue Gitlab::UrlBlocker::BlockedUrlError => e
-      raise Gitlab::HTTP::BlockedUrlError, "URL '#{url}' is blocked: #{e.message}"
+      raise Gitlab::HTTP::BlockedUrlError, "URL is blocked: #{e.message}"
     end
 
     def allow_local_requests?

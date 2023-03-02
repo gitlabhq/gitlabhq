@@ -8,6 +8,8 @@ class Oauth::JiraDvcs::AuthorizationsController < ApplicationController
   skip_before_action :authenticate_user!
   skip_before_action :verify_authenticity_token
 
+  before_action :validate_redirect_uri, only: :new
+
   feature_category :integrations
 
   # 1. Rewire Jira OAuth initial request to our stablished OAuth authorization URL.
@@ -55,5 +57,16 @@ class Oauth::JiraDvcs::AuthorizationsController < ApplicationController
   # this doesn't exist in GitLab but we can map it to our "api" scope.
   def normalize_scope(scope)
     scope == 'repo' ? 'api' : scope
+  end
+
+  def validate_redirect_uri
+    client = Doorkeeper::OAuth::Client.find(params[:client_id])
+    return render_404 unless client
+
+    return true if Doorkeeper::OAuth::Helpers::URIChecker.valid_for_authorization?(
+      params['redirect_uri'], client.redirect_uri
+    )
+
+    render_403
   end
 end

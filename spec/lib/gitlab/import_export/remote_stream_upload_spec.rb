@@ -88,7 +88,7 @@ RSpec.describe Gitlab::ImportExport::RemoteStreamUpload do
       it 'raises error' do
         expect { subject.execute }.to raise_error(
           Gitlab::HTTP::BlockedUrlError,
-          "URL 'http://127.0.0.1/file.txt' is blocked: Requests to localhost are not allowed"
+          "URL is blocked: Requests to localhost are not allowed"
         )
       end
 
@@ -114,7 +114,7 @@ RSpec.describe Gitlab::ImportExport::RemoteStreamUpload do
       it 'raises error' do
         expect { subject.execute }.to raise_error(
           Gitlab::HTTP::BlockedUrlError,
-          "URL 'http://172.16.0.0/file.txt' is blocked: Requests to the local network are not allowed"
+          "URL is blocked: Requests to the local network are not allowed"
         )
       end
 
@@ -142,7 +142,7 @@ RSpec.describe Gitlab::ImportExport::RemoteStreamUpload do
 
         expect { subject.execute }.to raise_error(
           Gitlab::HTTP::BlockedUrlError,
-          "URL 'http://127.0.0.1/file.txt' is blocked: Requests to localhost are not allowed"
+          "URL is blocked: Requests to localhost are not allowed"
         )
       end
 
@@ -168,7 +168,7 @@ RSpec.describe Gitlab::ImportExport::RemoteStreamUpload do
       it 'raises error' do
         expect { subject.execute }.to raise_error(
           Gitlab::HTTP::BlockedUrlError,
-          "URL 'http://172.16.0.0/file.txt' is blocked: Requests to the local network are not allowed"
+          "URL is blocked: Requests to the local network are not allowed"
         )
       end
 
@@ -192,7 +192,7 @@ RSpec.describe Gitlab::ImportExport::RemoteStreamUpload do
 
         expect { subject.execute }.to raise_error(
           Gitlab::HTTP::BlockedUrlError,
-          "URL 'http://example.com/file.txt' is blocked: Requests to localhost are not allowed"
+          "URL is blocked: Requests to localhost are not allowed"
         )
       end
     end

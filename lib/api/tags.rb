@@ -45,7 +45,13 @@ module API
 
         paginated_tags = Gitlab::Pagination::GitalyKeysetPager.new(self, user_project).paginate(tags_finder)
 
-        present_cached paginated_tags, with: Entities::Tag, project: user_project, cache_context: -> (_tag) { user_project.cache_key }
+        present_cached paginated_tags,
+                       with: Entities::Tag,
+                       project: user_project,
+                       current_user: current_user,
+                       cache_context: -> (_tag) do
+                         [user_project.cache_key, can?(current_user, :read_release, user_project)].join(':')
+                       end
 
       rescue Gitlab::Git::InvalidPageToken => e
         unprocessable_entity!(e.message)
@@ -68,7 +74,7 @@ module API
         tag = user_project.repository.find_tag(params[:tag_name])
         not_found!('Tag') unless tag
 
-        present tag, with: Entities::Tag, project: user_project
+        present tag, with: Entities::Tag, project: user_project, current_user: current_user
       end
 
       desc 'Create a new repository tag' do

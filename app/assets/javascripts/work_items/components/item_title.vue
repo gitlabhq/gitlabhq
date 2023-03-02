@@ -29,6 +29,11 @@ export default {
     handleSubmit() {
       this.$refs.titleEl.blur();
     },
+    handlePaste(e) {
+      e.preventDefault();
+      const text = e.clipboardData.getData('text');
+      this.$refs.titleEl.innerText = text;
+    },
   },
 };
 </script>
@@ -48,6 +53,7 @@ export default {
       :contenteditable="!disabled"
       class="gl-px-4 gl-py-3 gl-ml-n4 gl-border gl-border-white gl-rounded-base gl-display-block"
       :class="{ 'gl-hover-border-gray-200 gl-pseudo-placeholder': !disabled }"
+      @paste="handlePaste"
       @blur="handleBlur"
       @keyup="handleInput"
       @keydown.enter.exact="handleSubmit"

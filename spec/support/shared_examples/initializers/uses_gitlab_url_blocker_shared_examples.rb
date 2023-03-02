@@ -33,7 +33,7 @@ RSpec.shared_examples 'a request using Gitlab::UrlBlocker' do
 
       expect { make_request('https://example.com') }
         .to raise_error(url_blocked_error_class,
-                        "URL 'https://example.com' is blocked: Requests to the local network are not allowed")
+                        "URL is blocked: Requests to the local network are not allowed")
     end
 
     it 'raises error when it is a request that resolves to a localhost address' do
@@ -41,19 +41,19 @@ RSpec.shared_examples 'a request using Gitlab::UrlBlocker' do
 
       expect { make_request('https://example.com') }
         .to raise_error(url_blocked_error_class,
-                        "URL 'https://example.com' is blocked: Requests to localhost are not allowed")
+                        "URL is blocked: Requests to localhost are not allowed")
     end
 
     it 'raises error when it is a request to local address' do
       expect { make_request('http://172.16.0.0') }
         .to raise_error(url_blocked_error_class,
-                        "URL 'http://172.16.0.0' is blocked: Requests to the local network are not allowed")
+                        "URL is blocked: Requests to the local network are not allowed")
     end
 
     it 'raises error when it is a request to localhost address' do
       expect { make_request('http://127.0.0.1') }
         .to raise_error(url_blocked_error_class,
-                        "URL 'http://127.0.0.1' is blocked: Requests to localhost are not allowed")
+                        "URL is blocked: Requests to localhost are not allowed")
     end
   end
 
@@ -69,13 +69,13 @@ RSpec.shared_examples 'a request using Gitlab::UrlBlocker' do
     it 'raises error when it is a request to local address' do
       expect { make_request('https://172.16.0.0:8080') }
         .to raise_error(url_blocked_error_class,
-                        "URL 'https://172.16.0.0:8080' is blocked: Requests to the local network are not allowed")
+                        "URL is blocked: Requests to the local network are not allowed")
     end
 
     it 'raises error when it is a request to localhost address' do
       expect { make_request('https://127.0.0.1:8080') }
         .to raise_error(url_blocked_error_class,
-                        "URL 'https://127.0.0.1:8080' is blocked: Requests to localhost are not allowed")
+                        "URL is blocked: Requests to localhost are not allowed")
     end
   end
 

@@ -2,6 +2,23 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 15.9.2 (2023-03-02)
+
+### Security (12 changes)
+
+- [Using builds metadata to determine debug_mode](gitlab-org/security/gitlab@e19fcea675071d005eb72c7e100ff0b357f43508) ([merge request](gitlab-org/security/gitlab!3022))
+- [Fix pagination limits for Commits API](gitlab-org/security/gitlab@f71e2650b44e306c8291a8fa5f8557ff4ae4f5d7) ([merge request](gitlab-org/security/gitlab!3071))
+- [Mask Google IAP account details in Prometheus integration](gitlab-org/security/gitlab@8cad41d16614f7eb6a0f1693046ae1981ff413d5) ([merge request](gitlab-org/security/gitlab!3081))
+- [Stop Group Transfer Service if SAML Provider or SCIM token is present](gitlab-org/security/gitlab@e7ebbc1d37372c147392a3854186f4bb7fd15db5) ([merge request](gitlab-org/security/gitlab!3095))
+- [Protect Datadog API key by changing Datadog site](gitlab-org/security/gitlab@abe3343d6cd0397a6b1b491878a9e8dfc5774a2f) ([merge request](gitlab-org/security/gitlab!3093))
+- [Protect integrations' sensitive information exposed via API](gitlab-org/security/gitlab@0036ee57dd9f37858ca09746be20fa254347a7ef) ([merge request](gitlab-org/security/gitlab!3087))
+- [Disallow maintainer to create an owner access token](gitlab-org/security/gitlab@820d02055d2a958462da3be5587d460a905d157f) ([merge request](gitlab-org/security/gitlab!3090))
+- [Paste only text content in work items title](gitlab-org/security/gitlab@5ef125158ceaf0220260423d67cf6a0e1c973e63) ([merge request](gitlab-org/security/gitlab!3074))
+- [Jira DVCS OAuth Open Redirect Vulnerability](gitlab-org/security/gitlab@d6295e117531bc9cde690ba49a456be6883fcd21) ([merge request](gitlab-org/security/gitlab!3077))
+- [Block private personal snippet from unauthorized users](gitlab-org/security/gitlab@1471002b48fba676367397bdffa63a1b50c375bd) ([merge request](gitlab-org/security/gitlab!3079))
+- [Verify Kroki diagram type](gitlab-org/security/gitlab@c76ccc6be3115ded496bbd1bde7da6e4a7dd19ba) ([merge request](gitlab-org/security/gitlab!3056))
+- [Check read_release permission before showing releases in Tags API](gitlab-org/security/gitlab@e176a4eb4d266cf774a06ff021c3789a2cb830d9) ([merge request](gitlab-org/security/gitlab!3060))
+
 ## 15.9.1 (2023-02-23)
 
 ### Fixed (2 changes)
