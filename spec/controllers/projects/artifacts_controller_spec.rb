@@ -209,7 +209,9 @@ RSpec.describe Projects::ArtifactsController do
       let(:job) { create(:ci_build, :success, :trace_artifact, pipeline: pipeline) }
 
       before do
-        create(:ci_job_variable, key: 'CI_DEBUG_TRACE', value: 'true', job: job)
+        allow_next_found_instance_of(Ci::Build) do |build|
+          allow(build).to receive(:debug_mode?).and_return(true)
+        end
       end
 
       context 'when the user does not have update_build permissions' do
