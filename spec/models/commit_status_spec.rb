@@ -422,29 +422,6 @@ RSpec.describe CommitStatus do
     end
   end
 
-  describe '.exclude_ignored' do
-    subject { described_class.exclude_ignored.order(:id) }
-
-    let(:statuses) do
-      [create_status(when: 'manual', status: 'skipped'),
-       create_status(when: 'manual', status: 'success'),
-       create_status(when: 'manual', status: 'failed'),
-       create_status(when: 'on_failure', status: 'skipped'),
-       create_status(when: 'on_failure', status: 'success'),
-       create_status(when: 'on_failure', status: 'failed'),
-       create_status(allow_failure: true, status: 'success'),
-       create_status(allow_failure: true, status: 'failed'),
-       create_status(allow_failure: false, status: 'success'),
-       create_status(allow_failure: false, status: 'failed'),
-       create_status(allow_failure: true, status: 'manual'),
-       create_status(allow_failure: false, status: 'manual')]
-    end
-
-    it 'returns statuses without what we want to ignore' do
-      is_expected.to eq(statuses.values_at(0, 1, 2, 3, 4, 5, 6, 8, 9, 11))
-    end
-  end
-
   describe '.failed_but_allowed' do
     subject { described_class.failed_but_allowed.order(:id) }
 

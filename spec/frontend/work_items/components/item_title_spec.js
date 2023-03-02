@@ -1,7 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
+import { escape } from 'lodash';
 import ItemTitle from '~/work_items/components/item_title.vue';
-
-jest.mock('lodash/escape', () => jest.fn((fn) => fn));
 
 const createComponent = ({ title = 'Sample title', disabled = false } = {}) =>
   shallowMount(ItemTitle, {
@@ -50,5 +49,26 @@ describe('ItemTitle', () => {
     await findInputEl().trigger(sourceEvent);
 
     expect(wrapper.emitted(eventName)).toBeDefined();
+  });
+
+  it('renders only the text content from clipboard', async () => {
+    const htmlContent = '<strong>bold text</strong>';
+    const buildClipboardData = (data = {}) => ({
+      clipboardData: {
+        getData(mimeType) {
+          return data[mimeType];
+        },
+        types: Object.keys(data),
+      },
+    });
+
+    findInputEl().trigger(
+      'paste',
+      buildClipboardData({
+        html: htmlContent,
+        text: htmlContent,
+      }),
+    );
+    expect(findInputEl().element.innerHTML).toBe(escape(htmlContent));
   });
 });

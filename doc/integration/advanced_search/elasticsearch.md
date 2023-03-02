@@ -7,8 +7,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Elasticsearch **(PREMIUM SELF)**
 
-This page describes how to enable Advanced Search. When enabled,
-Advanced Search provides faster search response times and [improved search features](../../user/search/advanced_search.md).
+This page describes how to enable advanced search. When enabled,
+advanced search provides faster search response times and [improved search features](../../user/search/advanced_search.md).
 
 ## Version requirements
 
@@ -16,7 +16,7 @@ Advanced Search provides faster search response times and [improved search featu
 
 > Support for Elasticsearch 6.8 was [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/350275) in GitLab 15.0.
 
-Advanced Search works with the following versions of Elasticsearch.
+Advanced search works with the following versions of Elasticsearch.
 
 | GitLab version        | Elasticsearch version    |
 |-----------------------|--------------------------|
@@ -25,7 +25,7 @@ Advanced Search works with the following versions of Elasticsearch.
 | GitLab 13.3 - 13.8    | Elasticsearch 6.4 - 7.x  |
 | GitLab 12.7 - 13.2    | Elasticsearch 6.x - 7.x  |
 
-Advanced Search follows the [Elasticsearch end-of-life policy](https://www.elastic.co/support/eol).
+Advanced search follows the [Elasticsearch end-of-life policy](https://www.elastic.co/support/eol).
 When we change Elasticsearch supported versions in GitLab, we announce them in [deprecation notes](https://about.gitlab.com/handbook/marketing/blog/release-posts/#deprecations) in monthly release posts
 before we remove them.
 
@@ -46,7 +46,7 @@ If you are using a compatible version and after connecting to OpenSearch, you ge
 Elasticsearch requires additional resources to those documented in the
 [GitLab system requirements](../../install/requirements.md).
 
-Memory, CPU, and storage resource amounts vary depending on the amount of data you index into the Elasticsearch cluster. Heavily used Elasticsearch clusters may require more resources. The [`estimate_cluster_size`](#gitlab-advanced-search-rake-tasks) Rake task ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/221177) in GitLab 13.10) uses the total repository size to estimate the Advanced Search storage requirements.
+Memory, CPU, and storage resource amounts vary depending on the amount of data you index into the Elasticsearch cluster. Heavily used Elasticsearch clusters may require more resources. The [`estimate_cluster_size`](#gitlab-advanced-search-rake-tasks) Rake task ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/221177) in GitLab 13.10) uses the total repository size to estimate the advanced search storage requirements.
 
 ## Install Elasticsearch
 
@@ -163,20 +163,20 @@ Errors from the [GitLab Elasticsearch Indexer](https://gitlab.com/gitlab-org/git
 the [`elasticsearch.log`](../../administration/logs/index.md#elasticsearchlog) file and the [`sidekiq.log`](../../administration/logs/index.md#sidekiqlog) file with a `json.exception.class` of `Gitlab::Elastic::Indexer::Error`.
 These errors may occur when indexing Git repository data.
 
-## Enable Advanced Search
+## Enable advanced search
 
 For GitLab instances with more than 50 GB repository data you can follow the instructions for [how to index large instances efficiently](#how-to-index-large-instances-efficiently) below.
 
-To enable Advanced Search, you must have administrator access to GitLab:
+To enable advanced search, you must have administrator access to GitLab:
 
 1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Settings > Advanced Search**.
 
    NOTE:
-   To see the Advanced Search section, you need an active GitLab Premium
+   To see the **Advanced Search** section, you need an active GitLab Premium
    [license](../../user/admin_area/license.md).
 
-1. Configure the [Advanced Search settings](#advanced-search-configuration) for
+1. Configure the [advanced search settings](#advanced-search-configuration) for
    your Elasticsearch cluster. Do not enable **Search with Elasticsearch enabled**
    yet.
 1. Enable **Elasticsearch indexing** and select **Save changes**. This creates
@@ -202,7 +202,7 @@ you might have problems updating documents such as issues because your
 instance queues a job to index the change, but cannot find a valid
 Elasticsearch cluster.
 
-### Advanced Search configuration
+### Advanced search configuration
 
 The following Elasticsearch settings are available:
 
@@ -294,16 +294,16 @@ For more information, see [Identity and Access Management in Amazon OpenSearch S
 
 When using fine-grained access control with a user in the internal database, you should use HTTP basic
 authentication to connect to OpenSearch. You can provide the master username and password as part of the
-OpenSearch URL or in the **Username** and **Password** text boxes in the Advanced Search settings. See
+OpenSearch URL or in the **Username** and **Password** text boxes in the advanced search settings. See
 [Tutorial: Internal user database and HTTP basic authentication](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/fgac-walkthrough-basic.html) for details.
 
 ##### Connecting with an IAM user
 
-When using fine-grained access control with IAM credentials, you can provide the credentials in the **AWS OpenSearch IAM credentials** section in the Advanced Search settings.
+When using fine-grained access control with IAM credentials, you can provide the credentials in the **AWS OpenSearch IAM credentials** section in the advanced search settings.
 
 ##### Permissions for fine-grained access control
 
-The following permissions are required for Advanced Search. See [Creating roles](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/fgac.html#fgac-roles) for details.
+The following permissions are required for advanced search. See [Creating roles](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/fgac.html#fgac-roles) for details.
 
 ```json
 {
@@ -338,7 +338,7 @@ The following permissions are required for Advanced Search. See [Creating roles]
 }
 ```
 
-The index pattern `*` requires a few permissions for Advanced Search to work.
+The index pattern `*` requires a few permissions for advanced search to work.
 
 ### Limit the number of namespaces and projects that can be indexed
 
@@ -350,14 +350,14 @@ under **Elasticsearch indexing restrictions** more options become available.
 You can select namespaces and projects to index exclusively. If the namespace is a group, it includes
 any subgroups and projects belonging to those subgroups to be indexed as well.
 
-Advanced Search only provides cross-group code/commit search (global) if all name-spaces are indexed. In this particular scenario where only a subset of namespaces are indexed, a global search does not provide a code or commit scope. This is possible only in the scope of an indexed namespace. There is no way to code/commit search in multiple indexed namespaces (when only a subset of namespaces has been indexed). For example if two groups are indexed, there is no way to run a single code search on both. You can only run a code search on the first group and then on the second.
+Advanced search only provides cross-group code/commit search (global) if all name-spaces are indexed. In this particular scenario where only a subset of namespaces are indexed, a global search does not provide a code or commit scope. This is possible only in the scope of an indexed namespace. There is no way to code/commit search in multiple indexed namespaces (when only a subset of namespaces has been indexed). For example if two groups are indexed, there is no way to run a single code search on both. You can only run a code search on the first group and then on the second.
 
 You can filter the selection dropdown list by writing part of the namespace or project name you're interested in.
 
 ![limit namespace filter](img/limit_namespace_filter.png)
 
 NOTE:
-If no namespaces or projects are selected, no Advanced Search indexing takes place.
+If no namespaces or projects are selected, no advanced search indexing takes place.
 
 WARNING:
 If you have already indexed your instance, you must regenerate the index to delete all existing data
@@ -385,11 +385,11 @@ For guidance on what to install, see the following Elasticsearch language plugin
 | Parameter                                             | Description |
 |-------------------------------------------------------|-------------|
 | `Enable Chinese (smartcn) custom analyzer: Indexing`   | Enables or disables Chinese language support using [`smartcn`](https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-smartcn.html) custom analyzer for newly created indices.|
-| `Enable Chinese (smartcn) custom analyzer: Search`   | Enables or disables using [`smartcn`](https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-smartcn.html) fields for Advanced Search. Only enable this after [installing the plugin](https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-smartcn.html), enabling custom analyzer indexing and recreating the index.|
+| `Enable Chinese (smartcn) custom analyzer: Search`   | Enables or disables using [`smartcn`](https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-smartcn.html) fields for advanced search. Only enable this after [installing the plugin](https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-smartcn.html), enabling custom analyzer indexing and recreating the index.|
 | `Enable Japanese (kuromoji) custom analyzer: Indexing`   | Enables or disables Japanese language support using [`kuromoji`](https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-kuromoji.html) custom analyzer for newly created indices.|
-| `Enable Japanese (kuromoji) custom analyzer: Search`  | Enables or disables using [`kuromoji`](https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-kuromoji.html) fields for Advanced Search. Only enable this after [installing the plugin](https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-kuromoji.html), enabling custom analyzer indexing and recreating the index.|
+| `Enable Japanese (kuromoji) custom analyzer: Search`  | Enables or disables using [`kuromoji`](https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-kuromoji.html) fields for advanced search. Only enable this after [installing the plugin](https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-kuromoji.html), enabling custom analyzer indexing and recreating the index.|
 
-## Disable Advanced Search
+## Disable advanced search
 
 To disable the Elasticsearch integration:
 
@@ -423,7 +423,7 @@ the writes to the `primary` index. Then, we create another index and invoke the 
 index data onto the new index. After the reindexing job is complete, we switch to the new index by connecting the
 index alias to it which becomes the new `primary` index. At the end, we resume the writes and typical operation resumes.
 
-### Trigger the reindex via the Advanced Search administration
+### Trigger the reindex via the advanced search administration
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/34069) in GitLab 13.2.
 > - A scheduled index deletion and the ability to cancel it was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/38914) in GitLab 13.3.
@@ -502,15 +502,15 @@ Sometimes, you might want to abandon the unfinished reindex job and resume the i
 1. Expand **Advanced Search**.
 1. Clear the **Pause Elasticsearch indexing** checkbox.
 
-## Advanced Search migrations
+## Advanced search migrations
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/234046) in GitLab 13.6.
 
 With reindex migrations running in the background, there's no need for a manual
 intervention. This usually happens in situations where new features are added to
-Advanced Search, which means adding or changing the way content is indexed.
+advanced search, which means adding or changing the way content is indexed.
 
-To confirm that the Advanced Search migrations ran, you can check with:
+To confirm that the advanced search migrations ran, you can check with:
 
 ```shell
 curl "$CLUSTER_URL/gitlab-production-migrations/_search?q=*" | jq .
@@ -554,7 +554,7 @@ To debug issues with the migrations you can check the [`elasticsearch.log` file]
 ### Retry a halted migration
 
 Some migrations are built with a retry limit. If the migration cannot finish within the retry limit,
-it is halted and a notification is displayed in the Advanced Search integration settings.
+it is halted and a notification is displayed in the advanced search integration settings.
 It is recommended to check the [`elasticsearch.log` file](../../administration/logs/index.md#elasticsearchlog) to
 debug why the migration was halted and make any changes before retrying the migration. Once you believe you've
 fixed the cause of the failure, select "Retry migration", and the migration is scheduled to be retried
@@ -575,7 +575,7 @@ version. If you have halted migrations, these need to be resolved and
 [retried](#retry-a-halted-migration) before proceeding with a major version
 upgrade. Read more about [upgrading to a new major version](../../update/index.md#upgrading-to-a-new-major-version).
 
-## GitLab Advanced Search Rake tasks
+## GitLab advanced search Rake tasks
 
 Rake tasks are available to:
 
@@ -587,7 +587,7 @@ The following are some available Rake tasks:
 
 | Task                                                                                                                                                    | Description                                                                                                                                                                               |
 |:--------------------------------------------------------------------------------------------------------------------------------------------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| [`sudo gitlab-rake gitlab:elastic:info`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                            | Outputs debugging information for the Advanced Search integration. |
+| [`sudo gitlab-rake gitlab:elastic:info`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                            | Outputs debugging information for the advanced search integration. |
 | [`sudo gitlab-rake gitlab:elastic:index`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                            | Enables Elasticsearch indexing and run `gitlab:elastic:create_empty_index`, `gitlab:elastic:clear_index_status`, `gitlab:elastic:index_projects`, `gitlab:elastic:index_snippets`, and `gitlab:elastic:index_users`.                          |
 | [`sudo gitlab-rake gitlab:elastic:pause_indexing`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                            | Pauses Elasticsearch indexing. Changes are still tracked. Useful for cluster/index migrations. |
 | [`sudo gitlab-rake gitlab:elastic:resume_indexing`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                            | Resumes Elasticsearch indexing. |
@@ -604,7 +604,7 @@ The following are some available Rake tasks:
 | [`sudo gitlab-rake gitlab:elastic:mark_reindex_failed`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)              | Mark the most recent re-index job as failed. |
 | [`sudo gitlab-rake gitlab:elastic:list_pending_migrations`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)          | List pending migrations. Pending migrations include those that have not yet started, have started but not finished, and those that are halted. |
 | [`sudo gitlab-rake gitlab:elastic:estimate_cluster_size`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)            | Get an estimate of cluster size based on the total repository size. |
-| [`sudo gitlab-rake gitlab:elastic:enable_search_with_elasticsearch`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)            | Enable advanced search with Elasticsearch. |
+| [`sudo gitlab-rake gitlab:elastic:enable_search_with_elasticsearch`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)            | Enables advanced search with Elasticsearch. |
 | [`sudo gitlab-rake gitlab:elastic:disable_search_with_elasticsearch`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)            | Disables advanced search with Elasticsearch. |
 
 ### Environment variables
@@ -633,7 +633,7 @@ Indexing project repositories...I, [2019-03-04T21:27:03.083410 #3384]  INFO -- :
 I, [2019-03-04T21:27:05.215266 #3384]  INFO -- : Indexing GitLab User / test (ID=33) is done!
 ```
 
-## Advanced Search index scopes
+## Advanced search index scopes
 
 When performing a search, the GitLab index uses the following scopes:
 
@@ -671,7 +671,7 @@ For basic guidance on choosing a cluster configuration you may refer to [Elastic
 - `refresh_interval` is a per index setting. You may want to adjust that from default `1s` to a bigger value if you don't need data in real-time. This changes how soon you see fresh results. If that's important for you, you should leave it as close as possible to the default value.
 - You might want to raise [`indices.memory.index_buffer_size`](https://www.elastic.co/guide/en/elasticsearch/reference/current/indexing-buffer.html) to 30% or 40% if you have a lot of heavy indexing operations.
 
-### Advanced Search integration settings guidance
+### Advanced search integration settings guidance
 
 - The `Number of Elasticsearch shards` setting usually corresponds with the number of CPUs available in your cluster. For example, if you have a 3-node cluster with 4 cores each, this means you benefit from having at least 3*4=12 shards in the cluster. It's only possible to change the shards number by using [Split index API](https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-split-index.html) or by reindexing to a different index with a changed number of shards.
 - The `Number of Elasticsearch replicas` setting should most of the time be equal to `1` (each shard has 1 replica). Using `0` is not recommended, because losing one node corrupts the index.
@@ -976,7 +976,7 @@ for the changes to take effect.
 Sometimes there may be issues with your Elasticsearch index data and as such
 GitLab allows you to revert to "basic search" when there are no search
 results and assuming that basic search is supported in that scope. This "basic
-search" behaves as though you don't have Advanced Search enabled at all for
+search" behaves as though you don't have advanced search enabled at all for
 your instance and search using other data sources (such as PostgreSQL data and Git
 data).
 

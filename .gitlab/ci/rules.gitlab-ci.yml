@@ -1359,6 +1359,8 @@
     - !reference [".rails:rules:ee-and-foss-default-rules", rules]
     - <<: *if-default-refs
       changes: *backend-patterns
+    - <<: *if-default-refs
+      changes: *backstage-patterns
 
 .rails:rules:ee-and-foss-unit:predictive:
   rules:
@@ -1368,6 +1370,8 @@
     - !reference [".rails:rules:unit-integration:predictive-default-rules", rules]
     - <<: *if-merge-request
       changes: *backend-patterns
+    - <<: *if-merge-request
+      changes: *backstage-patterns
 
 .rails:rules:ee-and-foss-integration:
   rules:

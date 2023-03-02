@@ -57,13 +57,6 @@ Possible version history entries are:
 > - [Generally available](issue-link) in GitLab X.Y. Feature flag `flag_name` removed.
 ```
 
-You can combine entries if they happened in the same release:
-
-```markdown
-> - Introduced in GitLab 14.2 [with a flag](../../administration/feature_flags.md) named `ci_include_rules`. Disabled by default.
-> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/337507) in GitLab 14.3.
-```
-
 ## Use a note to describe the state of the feature flag
 
 Information about feature flags should be in a `FLAG` note at the start of the topic (just below the version history).
@@ -144,3 +137,41 @@ And, when the feature is done and fully available to all users:
 > - [Enabled on GitLab.com](https://gitlab.com/issue/etc) in GitLab 13.9.
 > - [Generally available](issue-link) in GitLab 14.0. Feature flag `forti_token_cloud` removed.
 ```
+
+## Simplify long version history
+
+The version history can get long, but you can sometimes simplify or remove entries.
+
+Combine entries if they happened in the same release:
+
+- Before:
+
+  ```markdown
+  > - [Introduced](issue-link) in GitLab 14.2 [with a flag](../../administration/feature_flags.md) named `ci_include_rules`. Disabled by default.
+  > - [Enabled on GitLab.com](issue-link) in GitLab 14.3.
+  > - [Enabled on self-managed](issue-link) in GitLab 14.3.
+  ```
+
+- After:
+
+  ```markdown
+  > - [Introduced](issue-link) in GitLab 14.2 [with a flag](../../administration/feature_flags.md) named `ci_include_rules`. Disabled by default.
+  > - [Enabled on GitLab.com and self-managed](issue-link) in GitLab 14.3.
+  ```
+
+Remove `Enabled on GitLab.com` entries when the feature is enabled by default for both GitLab.com and self-managed:
+
+- Before:
+
+  ```markdown
+  > - [Introduced](issue-link) in GitLab 15.6 [with a flag](../../administration/feature_flags.md) named `ci_hooks_pre_get_sources_script`. Disabled by default.
+  > - [Enabled on GitLab.com](issue-link) in GitLab 15.9.
+  > - [Generally available](issue-link) in GitLab 15.10. Feature flag `ci_hooks_pre_get_sources_script` removed.
+  ```
+
+- After:
+
+  ```markdown
+  > - [Introduced](issue-link) in GitLab 15.6 [with a flag](../../administration/feature_flags.md) named `ci_hooks_pre_get_sources_script`. Disabled by default.
+  > - [Generally available](issue-link) in GitLab 15.10. Feature flag `ci_hooks_pre_get_sources_script` removed.
+  ```

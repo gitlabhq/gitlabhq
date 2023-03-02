@@ -922,7 +922,7 @@ Reports that go over the 20 MB limit aren't loaded. Affected reports:
 - [CI/CD parameter `artifacts:expose_as`](../ci/yaml/index.md#artifactsexpose_as)
 - [Unit test reports](../ci/testing/unit_test_reports.md)
 
-## Advanced Search limits
+## Advanced search limits
 
 ### Maximum file size indexed
 
@@ -945,7 +945,7 @@ is pre-allocated during indexing.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/201826) in GitLab 12.8.
 
-You can set a limit on the content of text fields indexed for Advanced Search.
+You can set a limit on the content of text fields indexed for advanced search.
 Setting a maximum helps to reduce the load of the indexing processes. If any
 text field exceeds this limit, then the text is truncated to this number of
 characters. The rest of the text is not indexed, and not searchable.

@@ -249,6 +249,18 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
               end
             end
 
+            context 'when per_page is over 100' do
+              let(:per_page) { 101 }
+
+              it 'returns 100 commits (maximum)' do
+                expect(Gitlab::Git::Commit).to receive(:where).with(
+                  hash_including(ref: ref_name, limit: 100, offset: 0)
+                )
+
+                request
+              end
+            end
+
             context 'when pagination params are invalid' do
               let_it_be(:project) { create(:project, :repository) }
 
@@ -279,7 +291,7 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
 
                 where(:page, :per_page, :error_message, :status) do
                   0   | nil  | nil                               | :success
-                  -10 | nil  | nil                               | :internal_server_error
+                  -10 | nil  | nil                               | :success
                   'a' | nil | 'page is invalid'                  | :bad_request
                   nil | 0   | 'per_page has a value not allowed' | :bad_request
                   nil | -1  | nil                                | :success
@@ -295,6 +307,18 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
                     if error_message
                       expect(json_response['error']).to eq(error_message)
                     end
+                  end
+                end
+
+                context 'when per_page is below 0' do
+                  let(:per_page) { -100 }
+
+                  it 'returns 20 commits (default)' do
+                    expect(Gitlab::Git::Commit).to receive(:where).with(
+                      hash_including(ref: ref_name, limit: 20, offset: 0)
+                    )
+
+                    request
                   end
                 end
               end

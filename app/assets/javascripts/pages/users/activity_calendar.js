@@ -58,7 +58,7 @@ export const getLevelFromContributions = (count) => {
 };
 
 export default class ActivityCalendar {
-  constructor(
+  constructor({
     container,
     activitiesContainer,
     timestamps,
@@ -66,7 +66,8 @@ export default class ActivityCalendar {
     utcOffset = 0,
     firstDayOfWeek = firstDayOfWeekChoices.sunday,
     monthsAgo = 12,
-  ) {
+    onClickDay,
+  }) {
     this.calendarActivitiesPath = calendarActivitiesPath;
     this.clickDay = this.clickDay.bind(this);
     this.currentSelectedDate = '';
@@ -91,6 +92,7 @@ export default class ActivityCalendar {
     this.firstDayOfWeek = firstDayOfWeek;
     this.activitiesContainer = activitiesContainer;
     this.container = container;
+    this.onClickDay = onClickDay;
 
     // Loop through the timestamps to create a group of objects
     // The group of objects will be grouped based on the day of the week they are
@@ -152,7 +154,8 @@ export default class ActivityCalendar {
       .append('svg')
       .attr('width', width)
       .attr('height', 169)
-      .attr('class', 'contrib-calendar');
+      .attr('class', 'contrib-calendar')
+      .attr('data-testid', 'contrib-calendar');
   }
 
   dayYPos(day) {
@@ -280,6 +283,12 @@ export default class ActivityCalendar {
         this.currentSelectedDate.getMonth() + 1,
         this.currentSelectedDate.getDate(),
       ].join('-');
+
+      if (this.onClickDay) {
+        this.onClickDay(date);
+
+        return;
+      }
 
       $(this.activitiesContainer)
         .empty()

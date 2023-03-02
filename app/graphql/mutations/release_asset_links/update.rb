@@ -46,11 +46,15 @@ module Mutations
       def resolve(id:, **link_attrs)
         link = authorized_find!(id)
 
-        unless link.update(link_attrs)
-          return { link: nil, errors: link.errors.full_messages }
-        end
+        result = ::Releases::Links::UpdateService
+          .new(link.release, current_user, link_attrs)
+          .execute(link)
 
-        { link: link, errors: [] }
+        if result.success?
+          { link: result.payload[:link], errors: [] }
+        else
+          { link: nil, errors: result.message }
+        end
       end
 
       def find_object(id)

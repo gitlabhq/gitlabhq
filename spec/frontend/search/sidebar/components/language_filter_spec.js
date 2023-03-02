@@ -22,8 +22,8 @@ describe('GlobalSearchSidebarLanguageFilter', () => {
   };
 
   const getterSpies = {
-    langugageAggregationBuckets: jest.fn(() => MOCK_LANGUAGE_AGGREGATIONS_BUCKETS),
-    queryLangugageFilters: jest.fn(() => []),
+    languageAggregationBuckets: jest.fn(() => MOCK_LANGUAGE_AGGREGATIONS_BUCKETS),
+    queryLanguageFilters: jest.fn(() => []),
   };
 
   const createComponent = (initialState) => {
@@ -95,7 +95,7 @@ describe('GlobalSearchSidebarLanguageFilter', () => {
       ${'no sidebar and no query filters'} | ${false}     | ${[]}            | ${'true'}
     `('$description', ({ sidebarDirty, queryFilters, isDisabled }) => {
       beforeEach(() => {
-        getterSpies.queryLangugageFilters = jest.fn(() => queryFilters);
+        getterSpies.queryLanguageFilters = jest.fn(() => queryFilters);
         createComponent({ sidebarDirty, query: { ...MOCK_QUERY, language: queryFilters } });
       });
 
@@ -156,8 +156,8 @@ describe('GlobalSearchSidebarLanguageFilter', () => {
       createComponent({});
     });
 
-    it('uses getter langugageAggregationBuckets', () => {
-      expect(getterSpies.langugageAggregationBuckets).toHaveBeenCalled();
+    it('uses getter languageAggregationBuckets', () => {
+      expect(getterSpies.languageAggregationBuckets).toHaveBeenCalled();
     });
 
     it('uses action fetchLanguageAggregation', () => {

@@ -1,15 +1,14 @@
 import { GlAlert } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
-import { ApolloMutation } from 'vue-apollo';
 import VueRouter from 'vue-router';
 import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import Api from '~/api';
 import DesignPresentation from '~/design_management/components/design_presentation.vue';
 import DesignSidebar from '~/design_management/components/design_sidebar.vue';
 import { DESIGN_DETAIL_LAYOUT_CLASSLIST } from '~/design_management/constants';
-import createImageDiffNoteMutation from '~/design_management/graphql/mutations/create_image_diff_note.mutation.graphql';
 import updateActiveDiscussion from '~/design_management/graphql/mutations/update_active_discussion.mutation.graphql';
+import getDesignQuery from '~/design_management/graphql/queries/get_design.query.graphql';
 import DesignIndex from '~/design_management/pages/design/index.vue';
 import createRouter from '~/design_management/router';
 import { DESIGNS_ROUTE_NAME, DESIGN_ROUTE_NAME } from '~/design_management/router/constants';
@@ -17,6 +16,7 @@ import * as utils from '~/design_management/utils/design_management_utils';
 import {
   DESIGN_NOT_FOUND_ERROR,
   DESIGN_VERSION_NOT_EXIST_ERROR,
+  ADD_IMAGE_DIFF_NOTE_ERROR,
 } from '~/design_management/utils/error_messages';
 import {
   DESIGN_TRACKING_PAGE_NAME,
@@ -24,15 +24,22 @@ import {
   DESIGN_SERVICE_PING_EVENT_TYPES,
 } from '~/design_management/utils/tracking';
 import { createAlert } from '~/flash';
+import * as cacheUpdate from '~/design_management/utils/cache_update';
 import mockAllVersions from '../../mock_data/all_versions';
 import design from '../../mock_data/design';
+import mockProject from '../../mock_data/project';
 import mockResponseWithDesigns from '../../mock_data/designs';
 import mockResponseNoDesigns from '../../mock_data/no_designs';
+import { mockCreateImageNoteDiffResponse } from '../../mock_data/apollo_mock';
 
 jest.mock('~/flash');
 jest.mock('~/api.js');
 
 const focusInput = jest.fn();
+const mockCacheObject = {
+  readQuery: jest.fn().mockReturnValue(mockProject),
+  writeQuery: jest.fn(),
+};
 const mutate = jest.fn().mockResolvedValue();
 const mockPageLayoutElement = {
   classList: {
@@ -52,31 +59,12 @@ const mockDesignNoDiscussions = {
     nodes: [],
   },
 };
-const newComment = 'new comment';
+
 const annotationCoordinates = {
   x: 10,
   y: 10,
   width: 100,
   height: 100,
-};
-const createDiscussionMutationVariables = {
-  mutation: createImageDiffNoteMutation,
-  update: expect.anything(),
-  variables: {
-    input: {
-      body: newComment,
-      noteableId: design.id,
-      position: {
-        headSha: 'headSha',
-        baseSha: 'baseSha',
-        startSha: 'startSha',
-        paths: {
-          newPath: 'full-design-path',
-        },
-        ...annotationCoordinates,
-      },
-    },
-  },
 };
 
 Vue.use(VueRouter);
@@ -85,8 +73,9 @@ describe('Design management design index page', () => {
   let wrapper;
   let router;
 
-  const findDiscussionForm = () => wrapper.findComponent(DesignReplyForm);
+  const findDesignReplyForm = () => wrapper.findComponent(DesignReplyForm);
   const findSidebar = () => wrapper.findComponent(DesignSidebar);
+  const findAlert = () => wrapper.findComponent(GlAlert);
   const findDesignPresentation = () => wrapper.findComponent(DesignPresentation);
 
   function createComponent(
@@ -95,7 +84,7 @@ describe('Design management design index page', () => {
       data = {},
       intialRouteOptions = {},
       provide = {},
-      stubs = { ApolloMutation, DesignSidebar, DesignReplyForm },
+      stubs = { DesignSidebar, DesignReplyForm },
     } = {},
   ) {
     const $apollo = {
@@ -105,6 +94,11 @@ describe('Design management design index page', () => {
         },
       },
       mutate,
+      getClient() {
+        return {
+          cache: mockCacheObject,
+        };
+      },
     };
 
     router = createRouter();
@@ -216,7 +210,7 @@ describe('Design management design index page', () => {
     findDesignPresentation().vm.$emit('openCommentForm', { x: 0, y: 0 });
 
     await nextTick();
-    expect(findDiscussionForm().exists()).toBe(true);
+    expect(findDesignReplyForm().exists()).toBe(true);
   });
 
   it('keeps new discussion form focused', () => {
@@ -235,24 +229,53 @@ describe('Design management design index page', () => {
     expect(focusInput).toHaveBeenCalled();
   });
 
-  it('sends a mutation on submitting form and closes form', async () => {
+  it('sends a update and closes the form when mutation is completed', async () => {
     createComponent(
       { loading: false },
       {
         data: {
           design,
           annotationCoordinates,
-          comment: newComment,
         },
       },
     );
 
-    findDiscussionForm().vm.$emit('submit-form');
-    expect(mutate).toHaveBeenCalledWith(createDiscussionMutationVariables);
+    const addImageDiffNoteToStore = jest.spyOn(cacheUpdate, 'updateStoreAfterAddImageDiffNote');
+
+    const mockDesignVariables = {
+      fullPath: 'project-path',
+      iid: '1',
+      filenames: ['gid::/gitlab/Design/1'],
+      atVersion: null,
+    };
+
+    findDesignReplyForm().vm.$emit('note-submit-complete', mockCreateImageNoteDiffResponse);
 
     await nextTick();
-    await mutate({ variables: createDiscussionMutationVariables });
-    expect(findDiscussionForm().exists()).toBe(false);
+    expect(addImageDiffNoteToStore).toHaveBeenCalledWith(
+      mockCacheObject,
+      mockCreateImageNoteDiffResponse.data.createImageDiffNote,
+      getDesignQuery,
+      mockDesignVariables,
+    );
+    expect(findDesignReplyForm().exists()).toBe(false);
+  });
+
+  it('sets error message when form submission fails', async () => {
+    createComponent(
+      { loading: false },
+      {
+        data: {
+          design,
+          annotationCoordinates,
+        },
+      },
+    );
+
+    findDesignReplyForm().vm.$emit('note-submit-failure');
+
+    await nextTick();
+    expect(findAlert().text()).toBe(ADD_IMAGE_DIFF_NOTE_ERROR);
   });
 
   it('closes the form and clears the comment on canceling form', async () => {
@@ -262,17 +285,14 @@ describe('Design management design index page', () => {
         data: {
           design,
           annotationCoordinates,
-          comment: newComment,
         },
       },
     );
 
-    findDiscussionForm().vm.$emit('cancel-form');
-
-    expect(wrapper.vm.comment).toBe('');
+    findDesignReplyForm().vm.$emit('cancel-form');
 
     await nextTick();
-    expect(findDiscussionForm().exists()).toBe(false);
+    expect(findDesignReplyForm().exists()).toBe(false);
   });
 
   describe('with error', () => {

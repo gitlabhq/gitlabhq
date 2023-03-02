@@ -36,13 +36,15 @@ module Mutations
           raise_resource_not_available_error!
         end
 
-        new_link = release.links.create(link_attrs)
+        result = ::Releases::Links::CreateService
+          .new(release, current_user, link_attrs)
+          .execute
 
-        unless new_link.persisted?
-          return { link: nil, errors: new_link.errors.full_messages }
+        if result.success?
+          { link: result.payload[:link], errors: [] }
+        else
+          { link: nil, errors: result.message }
         end
-
-        { link: new_link, errors: [] }
       end
     end
   end

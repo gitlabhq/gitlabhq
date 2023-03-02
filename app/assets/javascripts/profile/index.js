@@ -7,8 +7,14 @@ export const initProfileTabs = () => {
 
   if (!el) return false;
 
+  const { userCalendarPath, utcOffset } = el.dataset;
+
   return new Vue({
     el,
+    provide: {
+      userCalendarPath,
+      utcOffset,
+    },
     render(createElement) {
       return createElement(ProfileTabs);
     },

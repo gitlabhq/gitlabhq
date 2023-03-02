@@ -106,7 +106,7 @@ the tiers are no longer mentioned in GitLab documentation:
 - Search:
   - [Filtering merge requests](../user/project/merge_requests/index.md#filter-the-list-of-merge-requests) by approvers
   - [Filtering merge requests](../user/project/merge_requests/index.md#filter-the-list-of-merge-requests) by "approved by"
-  - [Advanced Search (Elasticsearch)](../user/search/advanced_search.md)
+  - [Advanced search (Elasticsearch)](../user/search/advanced_search.md)
 - [Service Desk](../user/project/service_desk.md)
 - [Storage usage statistics](../user/usage_quotas.md#storage-usage-statistics)
 
@@ -128,7 +128,7 @@ Bronze-level subscribers:
   - [Group iterations API](../api/group_iterations.md)
   - Project milestones API: [Get all burndown chart events for a single milestone](../api/milestones.md#get-all-burndown-chart-events-for-a-single-milestone)
   - [Project iterations API](../api/iterations.md)
-  - Fields in the [Search API](../api/search.md) available only to [Advanced Search (Elasticsearch)](../integration/advanced_search/elasticsearch.md) users
+  - Fields in the [Search API](../api/search.md) available only to [advanced search (Elasticsearch)](../integration/advanced_search/elasticsearch.md) users
   - Fields in the [Merge requests API](../api/merge_requests.md) for [merge request approvals](../user/project/merge_requests/approvals/index.md)
   - Fields in the [Protected branches API](../api/protected_branches.md) that specify users or groups allowed to merge
   - [Merge request approvals API](../api/merge_request_approvals.md)

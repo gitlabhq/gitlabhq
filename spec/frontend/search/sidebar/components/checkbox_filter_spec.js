@@ -18,7 +18,7 @@ describe('CheckboxFilter', () => {
   };
 
   const getterSpies = {
-    queryLangugageFilters: jest.fn(() => []),
+    queryLanguageFilters: jest.fn(() => []),
   };
 
   const defaultProps = {

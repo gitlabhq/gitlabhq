@@ -101,12 +101,12 @@ Here are some common pitfalls and how to overcome them.
 There are a couple of ways to achieve that:
 
 - When you perform a search, in the upper-right corner of the search results page,
-  **Advanced search functionality is enabled** is displayed.
+  **Advanced search is enabled** is displayed.
   This is always correctly identifying whether the current project/namespace
   being searched is using Elasticsearch.
 
 - From the Admin Area under **Settings > Advanced Search** check that the
-  Advanced Search settings are checked.
+  advanced search settings are checked.
 
   Those same settings there can be obtained from the Rails console if necessary:
 
@@ -212,7 +212,7 @@ More [complex Elasticsearch API calls](https://www.elastic.co/guide/en/elasticse
 
 If the results:
 
-- Sync up, check that you are using [supported syntax](../../user/search/advanced_search.md#syntax). Advanced Search does not support [exact substring matching](https://gitlab.com/gitlab-org/gitlab/-/issues/325234).
+- Sync up, check that you are using [supported syntax](../../user/search/advanced_search.md#syntax). Advanced search does not support [exact substring matching](https://gitlab.com/gitlab-org/gitlab/-/issues/325234).
 - Do not match up, this indicates a problem with the documents generated from the project. It is best to [re-index that project](../advanced_search/elasticsearch.md#indexing-a-range-of-projects-or-a-specific-project).
 
 NOTE:
@@ -247,7 +247,7 @@ sudo gitlab-rake gitlab:elastic:clear_locked_projects
 
 If `ElasticCommitIndexerWorker` Sidekiq workers are failing with this error during indexing, it usually means that Elasticsearch is unable to keep up with the concurrency of indexing request. To address change the following settings:
 
-- To decrease the indexing throughput you can decrease `Bulk request concurrency` (see [Advanced Search settings](elasticsearch.md#advanced-search-configuration)). This is set to `10` by default, but you change it to as low as 1 to reduce the number of concurrent indexing operations.
+- To decrease the indexing throughput you can decrease `Bulk request concurrency` (see [Advanced search settings](elasticsearch.md#advanced-search-configuration)). This is set to `10` by default, but you change it to as low as 1 to reduce the number of concurrent indexing operations.
 - If changing `Bulk request concurrency` didn't help, you can use the [routing rules](../../administration/sidekiq/processing_specific_job_classes.md#routing-rules) option to [limit indexing jobs only to specific Sidekiq nodes](elasticsearch.md#index-large-instances-with-dedicated-sidekiq-nodes-or-processes), which should reduce the number of indexing requests.
 
 ### Indexing is very slow or fails with `rejected execution of coordinating operation` messages
@@ -437,11 +437,11 @@ Improvements to the `code_analyzer` pattern and filters are being discussed in [
 
 In GitLab 13.9, a change was made where [binary file names are being indexed](https://gitlab.com/gitlab-org/gitlab/-/issues/301083). However, without indexing all projects' data from scratch, only binary files that are added or updated after the GitLab 13.9 release are searchable.
 
-## How does Advanced Search handle private projects?
+## How does advanced search handle private projects?
 
-Advanced Search stores all the projects in the same Elasticsearch indices,
+Advanced search stores all the projects in the same Elasticsearch indices,
 however, searches only surface results that can be viewed by the user.
-Advanced Search honors all permission checks in the application by
+Advanced search honors all permission checks in the application by
 filtering out projects that a user does not have access to at search time.
 
 ### Role mapping when using fine-grained access control with AWS Elasticsearch or OpenSearch

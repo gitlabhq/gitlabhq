@@ -4,9 +4,9 @@ group: Global Search
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Advanced Search migration style guide
+# Advanced search migration style guide
 
-## Creating a new Advanced Search migration
+## Creating a new advanced search migration
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/234046) in GitLab 13.6.
 
@@ -217,13 +217,13 @@ end
 
 ### Multi-version compatibility
 
-These Advanced Search migrations, like any other GitLab changes, need to support the case where
+These advanced search migrations, like any other GitLab changes, need to support the case where
 [multiple versions of the application are running at the same time](../multi_version_compatibility.md).
 
 Depending on the order of deployment, it's possible that the migration
 has started or finished and there's still a server running the application code from before the
 migration. We need to take this into consideration until we can
-[ensure all Advanced Search migrations start after the deployment has finished](https://gitlab.com/gitlab-org/gitlab/-/issues/321619).
+[ensure all advanced search migrations start after the deployment has finished](https://gitlab.com/gitlab-org/gitlab/-/issues/321619).
 
 ### Reverting a migration
 
@@ -236,7 +236,7 @@ some data is moved) to a later merge request after the migrations have
 completed successfully. To be safe, for self-managed customers we should also
 defer it to another release if there is risk of important data loss.
 
-### Best practices for Advanced Search migrations
+### Best practices for advanced search migrations
 
 Follow these best practices for best results:
 
@@ -253,9 +253,9 @@ Follow these best practices for best results:
 - Consider adding a retry limit if there is potential for the migration to fail.
   This ensures that migrations can be halted if an issue occurs.
 
-## Deleting Advanced Search migrations in a major version upgrade
+## Deleting advanced search migrations in a major version upgrade
 
-Because our Advanced Search migrations usually require us to support multiple
+Because our advanced search migrations usually require us to support multiple
 code paths for a long period of time, it's important to clean those up when we
 safely can.
 
@@ -265,7 +265,7 @@ backwards compatibility for indices that have not been fully migrated. We
 We also choose to replace the migration code with the halted migration
 and remove tests so that:
 
-- We don't need to maintain any code that is called from our Advanced Search
+- We don't need to maintain any code that is called from our advanced search
   migrations.
 - We don't waste CI time running tests for migrations that we don't support
   anymore.
@@ -281,7 +281,7 @@ GitLab.com to `%14.0` before the migrations in `%13.12` were finished. Because
 our deployments to GitLab.com are automated and we don't have
 automated checks to prevent this, the extra precaution is warranted.
 Additionally, even if we did have automated checks to prevent it, we wouldn't
-actually want to hold up GitLab.com deployments on Advanced Search migrations,
+actually want to hold up GitLab.com deployments on advanced search migrations,
 as they may still have another week to go, and that's too long to block
 deployments.
 

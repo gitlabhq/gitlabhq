@@ -2,7 +2,6 @@
 import { GlAlert } from '@gitlab/ui';
 import { isNull } from 'lodash';
 import Mousetrap from 'mousetrap';
-import { ApolloMutation } from 'vue-apollo';
 import { keysFor, ISSUE_CLOSE_DESIGN } from '~/behaviors/shortcuts/keybindings';
 import { createAlert } from '~/flash';
 import { fetchPolicies } from '~/lib/graphql';
@@ -51,7 +50,6 @@ const DEFAULT_MAX_SCALE = 2;
 
 export default {
   components: {
-    ApolloMutation,
     DesignReplyForm,
     DesignPresentation,
     DesignScaler,
@@ -91,7 +89,6 @@ export default {
   data() {
     return {
       design: {},
-      comment: '',
       annotationCoordinates: null,
       errorMessage: '',
       scale: DEFAULT_SCALE,
@@ -130,9 +127,6 @@ export default {
     markdownPreviewPath() {
       return `/${this.projectPath}/preview_markdown?target_type=Issue`;
     },
-    isSubmitButtonDisabled() {
-      return this.comment.trim().length === 0;
-    },
     designVariables() {
       return {
         fullPath: this.projectPath,
@@ -141,11 +135,10 @@ export default {
         atVersion: this.designsVersion,
       };
     },
-    mutationPayload() {
+    mutationVariables() {
       const { x, y, width, height } = this.annotationCoordinates;
       return {
         noteableId: this.design.id,
-        body: this.comment,
         position: {
           headSha: this.design.diffRefs.headSha,
           baseSha: this.design.diffRefs.baseSha,
@@ -197,13 +190,23 @@ export default {
     Mousetrap.unbind(keysFor(ISSUE_CLOSE_DESIGN));
   },
   methods: {
-    addImageDiffNoteToStore(store, { data: { createImageDiffNote } }) {
+    addImageDiffNoteToStore({ data }) {
+      const { createImageDiffNote } = data;
+      /**
+       * https://gitlab.com/gitlab-org/gitlab/-/issues/388314
+       *
+       * The getClient method is not documented. In future,
+       * need to check for any alternative.
+       */
+      const { cache } = this.$apollo.getClient();
+
       updateStoreAfterAddImageDiffNote(
-        store,
+        cache,
         createImageDiffNote,
         getDesignQuery,
         this.designVariables,
       );
+      this.closeCommentForm(data);
     },
     updateImageDiffNoteInStore(store, { data: { repositionImageDiffNote } }) {
       return updateStoreAfterRepositionImageDiffNote(
@@ -289,7 +292,6 @@ export default {
       }
     },
     closeCommentForm(data) {
-      this.comment = '';
       this.annotationCoordinates = null;
 
       if (data?.data && !isNull(this.prevCurrentUserTodos)) {
@@ -407,27 +409,18 @@ export default {
       @todoError="onTodoError"
     >
       <template #reply-form>
-        <apollo-mutation
+        <design-reply-form
           v-if="isAnnotating"
-          #default="{ mutate, loading }"
-          :mutation="$options.createImageDiffNoteMutation"
-          :variables="{
-            input: mutationPayload,
-          }"
-          :update="addImageDiffNoteToStore"
-          @done="closeCommentForm"
-          @error="onCreateImageDiffNoteError"
-        >
-          <design-reply-form
-            ref="newDiscussionForm"
-            v-model="comment"
-            :is-saving="loading"
-            :markdown-preview-path="markdownPreviewPath"
-            :noteable-id="design.id"
-            @submit-form="mutate"
-            @cancel-form="closeCommentForm"
-          /> </apollo-mutation
-      ></template>
+          ref="newDiscussionForm"
+          :design-note-mutation="$options.createImageDiffNoteMutation"
+          :mutation-variables="mutationVariables"
+          :markdown-preview-path="markdownPreviewPath"
+          :noteable-id="design.id"
+          @note-submit-complete="addImageDiffNoteToStore"
+          @note-submit-failure="onCreateImageDiffNoteError"
+          @cancel-form="closeCommentForm"
+        />
+      </template>
     </design-sidebar>
   </div>
 </template>

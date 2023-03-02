@@ -168,14 +168,20 @@ describe('Design note component', () => {
         expect(findNoteContent().exists()).toBe(true);
       });
 
-      it('calls a mutation on submit-form event and hides a form', async () => {
-        findReplyForm().vm.$emit('submit-form');
-        expect(mutate).toHaveBeenCalled();
+      it('hides a form after update mutation is completed', async () => {
+        findReplyForm().vm.$emit('note-submit-complete', { data: { updateNote: { errors: [] } } });
 
-        await mutate();
         await nextTick();
         expect(findReplyForm().exists()).toBe(false);
         expect(findNoteContent().exists()).toBe(true);
+      });
+
+      it('emits error on failure', async () => {
+        const mockError = 'error';
+        findReplyForm().vm.$emit('note-submit-failure', mockError);
+
+        await nextTick();
+        expect(wrapper.emitted('error')).toEqual([[mockError]]);
       });
     });
   });

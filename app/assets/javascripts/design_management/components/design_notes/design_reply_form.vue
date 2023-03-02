@@ -25,18 +25,19 @@ export default {
     GlButton,
   },
   props: {
+    designNoteMutation: {
+      type: Object,
+      required: true,
+    },
+    mutationVariables: {
+      type: Object,
+      required: false,
+      default: null,
+    },
     markdownPreviewPath: {
       type: String,
       required: false,
       default: '',
-    },
-    value: {
-      type: String,
-      required: true,
-    },
-    isSaving: {
-      type: Boolean,
-      required: true,
     },
     isNewComment: {
       type: Boolean,
@@ -52,16 +53,23 @@ export default {
       required: false,
       default: 'new',
     },
+    value: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   data() {
     return {
-      formText: this.value,
+      noteText: this.value,
+      saving: false,
+      noteUpdateDirty: false,
       isLoggedIn: isLoggedIn(),
     };
   },
   computed: {
     hasValue() {
-      return this.value.trim().length > 0;
+      return this.noteText.length > 0;
     },
     buttonText() {
       return this.isNewComment
@@ -75,18 +83,63 @@ export default {
   mounted() {
     this.focusInput();
   },
+  beforeDestroy() {
+    /**
+     * https://gitlab.com/gitlab-org/gitlab/-/issues/388314
+     * Reply form closes and component destroys
+     * only when comment submission was successful,
+     * so we're safe to clear autosave data here conditionally.
+     */
+    this.$nextTick(() => {
+      if (!this.noteUpdateDirty) {
+        this.autosaveDiscussion.reset();
+      }
+    });
+  },
   methods: {
+    handleInput() {
+      /**
+       * While the form is saving using ctrl+enter
+       * Do not mark it as dirty.
+       *
+       */
+      if (!this.saving) {
+        this.noteUpdateDirty = true;
+      }
+    },
     submitForm() {
       if (this.hasValue) {
-        this.$emit('submit-form');
-        this.autosaveDiscussion.reset();
+        this.saving = true;
+        this.$apollo
+          .mutate({
+            mutation: this.designNoteMutation,
+            variables: {
+              input: {
+                ...this.mutationVariables,
+                body: this.noteText,
+              },
+            },
+            update: () => {
+              this.noteUpdateDirty = false;
+            },
+          })
+          .then((response) => {
+            this.$emit('note-submit-complete', response);
+          })
+          .catch((errors) => {
+            this.$emit('note-submit-failure', errors);
+          })
+          .finally(() => {
+            this.saving = false;
+          });
       }
     },
     cancelComment() {
-      if (this.hasValue && this.formText !== this.value) {
+      if (this.hasValue && this.noteUpdateDirty) {
         this.confirmCancelCommentModal();
       } else {
         this.$emit('cancel-form');
+        this.noteUpdateDirty = false;
       }
     },
     async confirmCancelCommentModal() {
@@ -133,21 +186,21 @@ export default {
     <markdown-field
       :markdown-preview-path="markdownPreviewPath"
       :enable-autocomplete="true"
-      :textarea-value="value"
+      :textarea-value="noteText"
       :markdown-docs-path="$options.markdownDocsPath"
       class="bordered-box"
     >
       <template #textarea>
         <textarea
           ref="textarea"
-          :value="value"
+          v-model.trim="noteText"
           class="note-textarea js-gfm-input js-autosize markdown-area"
           dir="auto"
           data-supports-quick-actions="false"
           data-qa-selector="note_textarea"
           :aria-label="__('Description')"
           :placeholder="__('Write a comment…')"
-          @input="$emit('input', $event.target.value)"
+          @input="handleInput"
           @keydown.meta.enter="submitForm"
           @keydown.ctrl.enter="submitForm"
           @keyup.esc.stop="cancelComment"
@@ -159,7 +212,8 @@ export default {
     <div class="note-form-actions gl-display-flex">
       <gl-button
         ref="submitButton"
-        :disabled="!hasValue || isSaving"
+        :disabled="!hasValue"
+        :loading="saving"
         class="gl-mr-3 gl-w-auto!"
         category="primary"
         variant="confirm"

@@ -82,6 +82,11 @@ If you can add the phrase "by zombies" to the phrase,
 the construction is passive. For example, `The button is selected by zombies`
 is passive. `Zombies select the button` is active.
 
+## Admin Area
+
+Use title case for **Admin Area** to refer to the area of the UI that you access when you select **Main menu > Admin**.
+This area of the UI says **Admin Area** at the top of the page and on the menu.
+
 ## administrator
 
 Use **administrator access** instead of **admin** when talking about a user's access level.
@@ -99,10 +104,9 @@ Instead of:
 
 - To do this thing, you must have the Admin role.
 
-## Admin Area
+## advanced search
 
-Use title case **Admin Area** to refer to the area of the UI that you access when you select **Main menu > Admin**.
-This area of the UI says **Admin Area** at the top of the page and on the menu.
+Use lowercase for **advanced search** to refer to the faster, more efficient search across the entire GitLab instance.
 
 ## agent
 
@@ -113,7 +117,7 @@ For example:
 - Install the agent in your cluster.
 - Select an agent from the list.
 
-Do not use title case **GitLab Agent** or **GitLab Agent for Kubernetes**.
+Do not use title case for **GitLab Agent** or **GitLab Agent for Kubernetes**.
 
 ## agent access token
 

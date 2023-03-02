@@ -4,7 +4,7 @@ group: Editor
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab Pages domain names, URLs, and base URLs **(FREE)**
+# GitLab Pages default domain names and URLs **(FREE)**
 
 On this document, learn how to name your project for GitLab Pages
 according to your intended website's URL.

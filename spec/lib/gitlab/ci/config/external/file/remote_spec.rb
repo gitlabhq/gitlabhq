@@ -184,7 +184,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Remote, feature_category: :pi
       let(:location) { 'http://127.0.0.1/some/path/to/config.yaml' }
 
       it 'includes details about blocked URL' do
-        expect(subject).to eq "Remote file could not be fetched because URL '#{location}' " \
+        expect(subject).to eq "Remote file could not be fetched because URL " \
                               'is blocked: Requests to localhost are not allowed!'
       end
     end

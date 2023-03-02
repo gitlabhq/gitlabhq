@@ -19,7 +19,7 @@ export default {
   },
   computed: {
     ...mapState(['query']),
-    ...mapGetters(['queryLangugageFilters']),
+    ...mapGetters(['queryLanguageFilters']),
     scope() {
       return this.query.scope;
     },
@@ -31,7 +31,7 @@ export default {
     },
     selectedFilter: {
       get() {
-        return intersection(this.flatDataFilterValues, this.queryLangugageFilters);
+        return intersection(this.flatDataFilterValues, this.queryLanguageFilters);
       },
       set(value) {
         this.setQuery({ key: this.filtersData?.filterParam, value });

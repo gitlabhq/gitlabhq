@@ -139,7 +139,7 @@ module Gitlab
       end
 
       def enforce_address_info_retrievable?(uri, dns_rebind_protection)
-        return false if !dns_rebind_protection || Gitlab.http_proxy_env? || domain_allowed?(uri)
+        return false if !dns_rebind_protection || domain_allowed?(uri)
 
         # In the test suite we use a lot of mocked urls that are either invalid or
         # don't exist. In order to avoid modifying a ton of tests and factories

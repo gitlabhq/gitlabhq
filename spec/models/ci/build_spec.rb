@@ -1922,62 +1922,6 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     end
   end
 
-  describe '#failed_but_allowed?' do
-    subject { build.failed_but_allowed? }
-
-    context 'when build is not allowed to fail' do
-      before do
-        build.allow_failure = false
-      end
-
-      context 'and build.status is success' do
-        before do
-          build.status = 'success'
-        end
-
-        it { is_expected.to be_falsey }
-      end
-
-      context 'and build.status is failed' do
-        before do
-          build.status = 'failed'
-        end
-
-        it { is_expected.to be_falsey }
-      end
-    end
-
-    context 'when build is allowed to fail' do
-      before do
-        build.allow_failure = true
-      end
-
-      context 'and build.status is success' do
-        before do
-          build.status = 'success'
-        end
-
-        it { is_expected.to be_falsey }
-      end
-
-      context 'and build status is failed' do
-        before do
-          build.status = 'failed'
-        end
-
-        it { is_expected.to be_truthy }
-      end
-
-      context 'when build is a manual action' do
-        before do
-          build.status = 'manual'
-        end
-
-        it { is_expected.to be_falsey }
-      end
-    end
-  end
-
   describe 'flags' do
     describe '#cancelable?' do
       subject { build }
@@ -5198,52 +5142,42 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     subject { build.debug_mode? }
 
     context 'when CI_DEBUG_TRACE=true is in variables' do
-      context 'when in instance variables' do
-        before do
-          create(:ci_instance_variable, key: 'CI_DEBUG_TRACE', value: 'true')
+      ['true', 1, 'y'].each do |value|
+        it 'reflects instance variables' do
+          create(:ci_instance_variable, key: 'CI_DEBUG_TRACE', value: value)
+
+          is_expected.to eq true
         end
 
-        it { is_expected.to eq true }
-      end
+        it 'reflects group variables' do
+          create(:ci_group_variable, key: 'CI_DEBUG_TRACE', value: value, group: project.group)
 
-      context 'when in group variables' do
-        before do
-          create(:ci_group_variable, key: 'CI_DEBUG_TRACE', value: 'true', group: project.group)
+          is_expected.to eq true
         end
 
-        it { is_expected.to eq true }
-      end
+        it 'reflects pipeline variables' do
+          create(:ci_pipeline_variable, key: 'CI_DEBUG_TRACE', value: value, pipeline: pipeline)
 
-      context 'when in pipeline variables' do
-        before do
-          create(:ci_pipeline_variable, key: 'CI_DEBUG_TRACE', value: 'true', pipeline: pipeline)
+          is_expected.to eq true
         end
 
-        it { is_expected.to eq true }
-      end
+        it 'reflects project variables' do
+          create(:ci_variable, key: 'CI_DEBUG_TRACE', value: value, project: project)
 
-      context 'when in project variables' do
-        before do
-          create(:ci_variable, key: 'CI_DEBUG_TRACE', value: 'true', project: project)
+          is_expected.to eq true
         end
 
-        it { is_expected.to eq true }
-      end
+        it 'reflects job variables' do
+          create(:ci_job_variable, key: 'CI_DEBUG_TRACE', value: value, job: build)
 
-      context 'when in job variables' do
-        before do
-          create(:ci_job_variable, key: 'CI_DEBUG_TRACE', value: 'true', job: build)
+          is_expected.to eq true
         end
 
-        it { is_expected.to eq true }
-      end
+        it 'when in yaml variables' do
+          build.update!(yaml_variables: [{ key: :CI_DEBUG_TRACE, value: value.to_s }])
 
-      context 'when in yaml variables' do
-        before do
-          build.update!(yaml_variables: [{ key: :CI_DEBUG_TRACE, value: 'true' }])
+          is_expected.to eq true
         end
-
-        it { is_expected.to eq true }
       end
     end
 
@@ -5252,56 +5186,62 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     end
 
     context 'when CI_DEBUG_SERVICES=true is in variables' do
-      context 'when in instance variables' do
-        before do
-          create(:ci_instance_variable, key: 'CI_DEBUG_SERVICES', value: 'true')
+      ['true', 1, 'y'].each do |value|
+        it 'reflects instance variables' do
+          create(:ci_instance_variable, key: 'CI_DEBUG_SERVICES', value: value)
+
+          is_expected.to eq true
         end
 
-        it { is_expected.to eq true }
-      end
+        it 'reflects group variables' do
+          create(:ci_group_variable, key: 'CI_DEBUG_SERVICES', value: value, group: project.group)
 
-      context 'when in group variables' do
-        before do
-          create(:ci_group_variable, key: 'CI_DEBUG_SERVICES', value: 'true', group: project.group)
+          is_expected.to eq true
         end
 
-        it { is_expected.to eq true }
-      end
+        it 'reflects pipeline variables' do
+          create(:ci_pipeline_variable, key: 'CI_DEBUG_SERVICES', value: value, pipeline: pipeline)
 
-      context 'when in pipeline variables' do
-        before do
-          create(:ci_pipeline_variable, key: 'CI_DEBUG_SERVICES', value: 'true', pipeline: pipeline)
+          is_expected.to eq true
         end
 
-        it { is_expected.to eq true }
-      end
+        it 'reflects project variables' do
+          create(:ci_variable, key: 'CI_DEBUG_SERVICES', value: value, project: project)
 
-      context 'when in project variables' do
-        before do
-          create(:ci_variable, key: 'CI_DEBUG_SERVICES', value: 'true', project: project)
+          is_expected.to eq true
         end
 
-        it { is_expected.to eq true }
-      end
+        it 'reflects job variables' do
+          create(:ci_job_variable, key: 'CI_DEBUG_SERVICES', value: value, job: build)
 
-      context 'when in job variables' do
-        before do
-          create(:ci_job_variable, key: 'CI_DEBUG_SERVICES', value: 'true', job: build)
+          is_expected.to eq true
         end
 
-        it { is_expected.to eq true }
-      end
+        it 'when in yaml variables' do
+          build.update!(yaml_variables: [{ key: :CI_DEBUG_SERVICES, value: value.to_s }])
 
-      context 'when in yaml variables' do
-        before do
-          build.update!(yaml_variables: [{ key: :CI_DEBUG_SERVICES, value: 'true' }])
+          is_expected.to eq true
         end
-
-        it { is_expected.to eq true }
       end
     end
 
     context 'when CI_DEBUG_SERVICES is not in variables' do
+      it { is_expected.to eq false }
+    end
+
+    context 'when metadata has debug_trace_enabled true' do
+      before do
+        build.metadata.update!(debug_trace_enabled: true)
+      end
+
+      it { is_expected.to eq true }
+    end
+
+    context 'when metadata has debug_trace_enabled false' do
+      before do
+        build.metadata.update!(debug_trace_enabled: false)
+      end
+
       it { is_expected.to eq false }
     end
   end

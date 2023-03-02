@@ -107,11 +107,11 @@ To address the above two scenarios, it is advised to do the following prior to u
    as your GitLab version. Both versions [should be the same](https://docs.gitlab.com/runner/#gitlab-runner-versions).
 1. Unpause your runners and unblock new jobs from starting by reverting the previous `/etc/gitlab/gitlab.rb` change.
 
-## Checking for pending Advanced Search migrations **(PREMIUM SELF)**
+## Checking for pending advanced search migrations **(PREMIUM SELF)**
 
 This section is only applicable if you have enabled the [Elasticsearch integration](../integration/advanced_search/elasticsearch.md) **(PREMIUM SELF)**.
 
-Major releases require all [Advanced Search migrations](../integration/advanced_search/elasticsearch.md#advanced-search-migrations)
+Major releases require all [advanced search migrations](../integration/advanced_search/elasticsearch.md#advanced-search-migrations)
 to be finished from the most recent minor release in your current version
 before the major version upgrade. You can find pending migrations by
 running the following command:
@@ -129,16 +129,16 @@ cd /home/git/gitlab
 sudo -u git -H bundle exec rake gitlab:elastic:list_pending_migrations
 ```
 
-### What do you do if your Advanced Search migrations are stuck?
+### What do you do if your advanced search migrations are stuck?
 
-In GitLab 15.0, an Advanced Search migration named `DeleteOrphanedCommit` can be permanently stuck
+In GitLab 15.0, an advanced search migration named `DeleteOrphanedCommit` can be permanently stuck
 in a pending state across upgrades. This issue
 [is corrected in GitLab 15.1](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89539).
 
-If you are a self-managed customer who uses GitLab 15.0 with Advanced Search, you will experience performance degradation.
+If you are a self-managed customer who uses GitLab 15.0 with advanced search, you will experience performance degradation.
 To clean up the migration, upgrade to 15.1 or later.
 
-For other Advanced Search migrations stuck in pending, see [how to retry a halted migration](../integration/advanced_search/elasticsearch.md#retry-a-halted-migration).
+For other advanced search migrations stuck in pending, see [how to retry a halted migration](../integration/advanced_search/elasticsearch.md#retry-a-halted-migration).
 
 ### What do you do for the error `Elasticsearch version not compatible`
 
@@ -166,7 +166,7 @@ It's also important to ensure that any [background migrations have been fully co
 before upgrading to a new major version.
 
 If you have enabled the [Elasticsearch integration](../integration/advanced_search/elasticsearch.md) **(PREMIUM SELF)**, then
-[ensure all Advanced Search migrations are completed](#checking-for-pending-advanced-search-migrations) in the last minor version in
+[ensure all advanced search migrations are completed](#checking-for-pending-advanced-search-migrations) in the last minor version in
 your current version
 before proceeding with the major version upgrade.
 

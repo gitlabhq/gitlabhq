@@ -1,5 +1,5 @@
 <script>
-import { mapState } from 'vuex';
+import { mapState, mapGetters } from 'vuex';
 import ScopeNavigation from '~/search/sidebar/components/scope_navigation.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { SCOPE_ISSUES, SCOPE_MERGE_REQUESTS, SCOPE_BLOB } from '../constants';
@@ -16,11 +16,12 @@ export default {
   mixins: [glFeatureFlagsMixin()],
   computed: {
     ...mapState(['urlQuery']),
+    ...mapGetters(['currentScope']),
     showIssueAndMergeFilters() {
-      return this.urlQuery.scope === SCOPE_ISSUES || this.urlQuery.scope === SCOPE_MERGE_REQUESTS;
+      return this.currentScope === SCOPE_ISSUES || this.currentScope === SCOPE_MERGE_REQUESTS;
     },
     showBlobFilter() {
-      return this.urlQuery.scope === SCOPE_BLOB && this.glFeatures.searchBlobsLanguageAggregation;
+      return this.currentScope === SCOPE_BLOB && this.glFeatures.searchBlobsLanguageAggregation;
     },
   },
 };

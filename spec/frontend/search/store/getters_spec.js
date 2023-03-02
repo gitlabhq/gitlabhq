@@ -9,6 +9,7 @@ import {
   MOCK_AGGREGATIONS,
   MOCK_LANGUAGE_AGGREGATIONS_BUCKETS,
   TEST_FILTER_DATA,
+  MOCK_NAVIGATION,
 } from '../mock_data';
 
 describe('Global Search Store Getters', () => {
@@ -33,19 +34,26 @@ describe('Global Search Store Getters', () => {
     });
   });
 
-  describe('langugageAggregationBuckets', () => {
+  describe('languageAggregationBuckets', () => {
     it('returns the correct data', () => {
       state.aggregations.data = MOCK_AGGREGATIONS;
-      expect(getters.langugageAggregationBuckets(state)).toStrictEqual(
+      expect(getters.languageAggregationBuckets(state)).toStrictEqual(
         MOCK_LANGUAGE_AGGREGATIONS_BUCKETS,
       );
     });
   });
 
-  describe('queryLangugageFilters', () => {
+  describe('queryLanguageFilters', () => {
     it('returns the correct data', () => {
       state.query.language = Object.keys(TEST_FILTER_DATA.filters);
-      expect(getters.queryLangugageFilters(state)).toStrictEqual(state.query.language);
+      expect(getters.queryLanguageFilters(state)).toStrictEqual(state.query.language);
+    });
+  });
+
+  describe('currentScope', () => {
+    it('returns the correct scope name', () => {
+      state.navigation = MOCK_NAVIGATION;
+      expect(getters.currentScope(state)).toBe('issues');
     });
   });
 

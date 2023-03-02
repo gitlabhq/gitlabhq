@@ -8,7 +8,6 @@ import {
   GlLink,
   GlTooltipDirective,
 } from '@gitlab/ui';
-import { ApolloMutation } from 'vue-apollo';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { __ } from '~/locale';
@@ -26,7 +25,6 @@ export default {
     deleteCommentText: __('Delete comment'),
   },
   components: {
-    ApolloMutation,
     DesignReplyForm,
     GlAvatar,
     GlAvatarLink,
@@ -58,7 +56,6 @@ export default {
   },
   data() {
     return {
-      noteText: this.note.body,
       isEditing: false,
       isError: true,
     };
@@ -76,10 +73,9 @@ export default {
     isNoteLinked() {
       return extractDesignNoteId(this.$route.hash) === this.noteAnchorId;
     },
-    mutationPayload() {
+    mutationVariables() {
       return {
         id: this.note.id,
-        body: this.noteText,
       };
     },
     isEditButtonVisible() {
@@ -95,7 +91,6 @@ export default {
   methods: {
     hideForm() {
       this.isEditing = false;
-      this.noteText = this.note.body;
     },
     onDone({ data }) {
       this.hideForm();
@@ -186,26 +181,18 @@ export default {
       ></div>
       <slot name="resolved-status"></slot>
     </template>
-    <apollo-mutation
+    <design-reply-form
       v-else
-      #default="{ mutate, loading }"
-      :mutation="$options.updateNoteMutation"
-      :variables="{
-        input: mutationPayload,
-      }"
-      @error="$emit('error', $event)"
-      @done="onDone"
-    >
-      <design-reply-form
-        v-model="noteText"
-        :is-saving="loading"
-        :markdown-preview-path="markdownPreviewPath"
-        :is-new-comment="false"
-        :noteable-id="noteableId"
-        class="gl-mt-5"
-        @submit-form="mutate"
-        @cancel-form="hideForm"
-      />
-    </apollo-mutation>
+      :markdown-preview-path="markdownPreviewPath"
+      :design-note-mutation="$options.updateNoteMutation"
+      :mutation-variables="mutationVariables"
+      :value="note.body"
+      :is-new-comment="false"
+      :noteable-id="noteableId"
+      class="gl-mt-5"
+      @note-submit-failure="$emit('error', $event)"
+      @note-submit-complete="onDone"
+      @cancel-form="hideForm"
+    />
   </timeline-entry-item>
 </template>

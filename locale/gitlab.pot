@@ -25547,6 +25547,9 @@ msgstr ""
 msgid "Link copied"
 msgstr ""
 
+msgid "Link does not exist"
+msgstr ""
+
 msgid "Link text"
 msgstr ""
 
@@ -34993,6 +34996,9 @@ msgid "ProtectedEnvironment|All environments specified with the deployment tiers
 msgstr ""
 
 msgid "ProtectedEnvironment|Allowed to deploy"
+msgstr ""
+
+msgid "ProtectedEnvironment|Allowed to deploy and approve"
 msgstr ""
 
 msgid "ProtectedEnvironment|Allowed to deploy to %{project} / %{environment}"
@@ -45449,6 +45455,9 @@ msgid "TransferGroup|Group is already a root group."
 msgstr ""
 
 msgid "TransferGroup|Group is already associated to the parent group."
+msgstr ""
+
+msgid "TransferGroup|SAML Provider or SCIM Token is configured for this group."
 msgstr ""
 
 msgid "TransferGroup|The parent group already has a subgroup or a project with the same path."

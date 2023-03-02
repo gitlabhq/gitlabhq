@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Mutations::ReleaseAssetLinks::Update do
+RSpec.describe Mutations::ReleaseAssetLinks::Update, feature_category: :release_orchestration do
   include GraphqlHelpers
 
   let_it_be(:project) { create(:project, :private, :repository) }

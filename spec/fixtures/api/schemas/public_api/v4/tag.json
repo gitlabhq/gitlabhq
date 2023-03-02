@@ -3,8 +3,7 @@
   "required" : [
     "name",
     "message",
-    "commit",
-    "release"
+    "commit"
   ],
   "properties" : {
     "name": { "type": "string" },

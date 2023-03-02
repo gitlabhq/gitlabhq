@@ -172,7 +172,7 @@ If you have Kubernetes clusters connected with GitLab, [upgrade your GitLab agen
 
 #### Elasticsearch
 
-Before updating GitLab, confirm Advanced Search migrations are complete by
+Before updating GitLab, confirm advanced search migrations are complete by
 [checking for pending advanced search migrations](background_migrations.md).
 
 After updating GitLab, you may have to upgrade

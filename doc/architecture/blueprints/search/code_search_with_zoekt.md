@@ -57,7 +57,7 @@ customers that wish to participate in the trial.
 The main goals of this integration will be to implement the following highly
 requested improvements to code search:
 
-1. [Exact match (substring match) code searches in Advanced Search](https://gitlab.com/gitlab-org/gitlab/-/issues/325234)
+1. [Exact match (substring match) code searches in advanced search](https://gitlab.com/gitlab-org/gitlab/-/issues/325234)
 1. [Support regular expressions with Advanced Global Search](https://gitlab.com/gitlab-org/gitlab/-/issues/4175)
 1. [Support multiple line matches in the same file](https://gitlab.com/gitlab-org/gitlab/-/issues/668)
 

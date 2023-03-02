@@ -13,124 +13,58 @@ RSpec.describe Gitlab::FileFinder, feature_category: :global_search do
       let(:expected_file_by_content) { 'CHANGELOG' }
     end
 
-    context 'when code_basic_search_files_by_regexp is enabled' do
-      before do
-        stub_feature_flags(code_basic_search_files_by_regexp: true)
+    context 'with inclusive filters' do
+      it 'filters by filename' do
+        results = subject.find('files filename:wm.svg')
+
+        expect(results.count).to eq(1)
       end
 
-      context 'with inclusive filters' do
-        it 'filters by filename' do
-          results = subject.find('files filename:wm.svg')
+      it 'filters by path' do
+        results = subject.find('white path:images')
 
-          expect(results.count).to eq(1)
-        end
-
-        it 'filters by path' do
-          results = subject.find('white path:images')
-
-          expect(results.count).to eq(2)
-        end
-
-        it 'filters by extension' do
-          results = subject.find('files extension:md')
-
-          expect(results.count).to eq(4)
-        end
+        expect(results.count).to eq(2)
       end
 
-      context 'with exclusive filters' do
-        it 'filters by filename' do
-          results = subject.find('files -filename:wm.svg')
+      it 'filters by extension' do
+        results = subject.find('files extension:md')
 
-          expect(results.count).to eq(26)
-        end
-
-        it 'filters by path' do
-          results = subject.find('white -path:images')
-
-          expect(results.count).to eq(5)
-        end
-
-        it 'filters by extension' do
-          results = subject.find('files -extension:md')
-
-          expect(results.count).to eq(23)
-        end
-      end
-
-      context 'with white space in the path' do
-        it 'filters by path correctly' do
-          results = subject.find('directory path:"with space/README.md"')
-
-          expect(results.count).to eq(1)
-        end
-      end
-
-      it 'does not cause N+1 query' do
-        expect(Gitlab::GitalyClient).to receive(:call).at_most(10).times.and_call_original
-
-        subject.find(': filename:wm.svg')
+        expect(results.count).to eq(4)
       end
     end
 
-    context 'when code_basic_search_files_by_regexp is disabled' do
-      before do
-        stub_feature_flags(code_basic_search_files_by_regexp: false)
+    context 'with exclusive filters' do
+      it 'filters by filename' do
+        results = subject.find('files -filename:wm.svg')
+
+        expect(results.count).to eq(26)
       end
 
-      context 'with inclusive filters' do
-        it 'filters by filename' do
-          results = subject.find('files filename:wm.svg')
+      it 'filters by path' do
+        results = subject.find('white -path:images')
 
-          expect(results.count).to eq(1)
-        end
-
-        it 'filters by path' do
-          results = subject.find('white path:images')
-
-          expect(results.count).to eq(1)
-        end
-
-        it 'filters by extension' do
-          results = subject.find('files extension:md')
-
-          expect(results.count).to eq(4)
-        end
+        expect(results.count).to eq(5)
       end
 
-      context 'with exclusive filters' do
-        it 'filters by filename' do
-          results = subject.find('files -filename:wm.svg')
+      it 'filters by extension' do
+        results = subject.find('files -extension:md')
 
-          expect(results.count).to eq(26)
-        end
-
-        it 'filters by path' do
-          results = subject.find('white -path:images')
-
-          expect(results.count).to eq(4)
-        end
-
-        it 'filters by extension' do
-          results = subject.find('files -extension:md')
-
-          expect(results.count).to eq(23)
-        end
+        expect(results.count).to eq(23)
       end
+    end
 
-      context 'with white space in the path' do
-        it 'filters by path correctly' do
-          results = subject.find('directory path:"with space/README.md"')
+    context 'with white space in the path' do
+      it 'filters by path correctly' do
+        results = subject.find('directory path:"with space/README.md"')
 
-          expect(results.count).to eq(1)
-        end
+        expect(results.count).to eq(1)
       end
+    end
 
-      it 'does not cause N+1 query' do
-        expect(Gitlab::GitalyClient).to receive(:call).at_most(10).times.and_call_original
+    it 'does not cause N+1 query' do
+      expect(Gitlab::GitalyClient).to receive(:call).at_most(10).times.and_call_original
 
-        subject.find(': filename:wm.svg')
-      end
+      subject.find(': filename:wm.svg')
     end
   end
 end

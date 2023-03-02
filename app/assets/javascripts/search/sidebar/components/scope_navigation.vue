@@ -44,9 +44,6 @@ export default {
         isHighlighted ? 'gl-text-gray-900' : 'gl-text-gray-500',
       ];
     },
-    isActive(scope, index) {
-      return this.urlQuery.scope ? this.urlQuery.scope === scope : index === 0;
-    },
     qaSelectorValue(item) {
       return `${slugifyWithUnderscore(item.label)}_tab`;
     },
@@ -60,16 +57,17 @@ export default {
   <nav data-testid="search-filter">
     <gl-nav vertical pills>
       <gl-nav-item
-        v-for="(item, scope, index) in navigation"
+        v-for="(item, scope) in navigation"
         :key="scope"
-        :link-classes="linkClasses(isActive(scope, index))"
+        :link-classes="linkClasses(item.active)"
         class="gl-mb-1"
         :href="item.link"
-        :active="isActive(scope, index)"
+        :active="item.active"
         :data-qa-selector="qaSelectorValue(item)"
+        :data-testid="qaSelectorValue(item)"
         @click="handleClick(scope)"
-        ><span>{{ item.label }}</span
-        ><span v-if="item.count" :class="countClasses(isActive(scope, index))">
+        ><span data-testid="label">{{ item.label }}</span
+        ><span v-if="item.count" data-testid="count" :class="countClasses(item.active)">
           {{ showFormatedCount(item.count)
           }}<gl-icon
             v-if="isCountOverLimit(item.count)"

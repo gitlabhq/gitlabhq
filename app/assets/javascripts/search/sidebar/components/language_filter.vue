@@ -32,19 +32,19 @@ export default {
   computed: {
     ...mapState(['aggregations', 'sidebarDirty']),
     ...mapGetters([
-      'langugageAggregationBuckets',
+      'languageAggregationBuckets',
       'currentUrlQueryHasLanguageFilters',
-      'queryLangugageFilters',
+      'queryLanguageFilters',
     ]),
     hasBuckets() {
-      return this.langugageAggregationBuckets.length > 0;
+      return this.languageAggregationBuckets.length > 0;
     },
     filtersData() {
       return convertFiltersData(this.shortenedLanguageFilters);
     },
     shortenedLanguageFilters() {
       if (!this.hasShowMore) {
-        return this.langugageAggregationBuckets;
+        return this.languageAggregationBuckets;
       }
       if (this.showAll) {
         return this.trimBuckets(MAX_ITEM_LENGTH);
@@ -52,16 +52,16 @@ export default {
       return this.trimBuckets(DEFAULT_ITEM_LENGTH);
     },
     hasShowMore() {
-      return this.langugageAggregationBuckets.length > DEFAULT_ITEM_LENGTH;
+      return this.languageAggregationBuckets.length > DEFAULT_ITEM_LENGTH;
     },
     hasOverMax() {
-      return this.langugageAggregationBuckets.length > MAX_ITEM_LENGTH;
+      return this.languageAggregationBuckets.length > MAX_ITEM_LENGTH;
     },
     dividerClasses() {
       return [...HR_DEFAULT_CLASSES, ...ONLY_SHOW_MD];
     },
     hasQueryFilters() {
-      return this.queryLangugageFilters.length > 0;
+      return this.queryLanguageFilters.length > 0;
     },
   },
   async created() {
@@ -78,7 +78,7 @@ export default {
       this.showAll = true;
     },
     trimBuckets(length) {
-      return this.langugageAggregationBuckets.slice(0, length);
+      return this.languageAggregationBuckets.slice(0, length);
     },
     cleanResetFilters() {
       if (this.currentUrlQueryHasLanguageFilters) {

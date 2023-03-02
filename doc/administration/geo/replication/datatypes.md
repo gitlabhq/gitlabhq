@@ -139,7 +139,7 @@ We use PostgreSQL's own replication functionality to replicate data from the **p
 We use Redis both as a cache store and to hold persistent data for our background jobs system. Because both
 use-cases have data that are exclusive to the same Geo site, we don't replicate it between sites.
 
-Elasticsearch is an optional database that for advanced searching capabilities. It can improve search
+Elasticsearch is an optional database for advanced search. It can improve search
 in both source-code level, and user generated content in issues, merge requests, and discussions.
 Elasticsearch is not supported in Geo.
 

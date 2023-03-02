@@ -52,6 +52,10 @@ Private connectivity via [AWS PrivateLink](https://aws.amazon.com/privatelink/) 
 
 Data is encrypted at rest and in transit using the latest encryption standards.
 
+#### Bring your own key encryption
+
+During onboarding, you can specify an AWS KMS encryption key stored in your own AWS account that GitLab uses to encrypt the data for your Dedicated instance. This gives you full control over the data you store in GitLab.
+
 ### Compliance
 
 #### Certifications
@@ -97,6 +101,17 @@ GitLab Dedicated comes with the self-managed [Ultimate feature set](https://abou
 
 With GitLab Dedicated, you must [install the GitLab Runner application](https://docs.gitlab.com/runner/install/index.html) on infrastructure that you own or manage. If hosting GitLab Runners on AWS, you can avoid having requests from the Runner fleet route through the public internet by setting up a secure connection from the Runner VPC to the GitLab Dedicated endpoint via AWS Private Link. Learn more about [networking options](#secure-networking).
 
+#### Migration
+
+To help you migrate your data to GitLab Dedicated, you can choose from the following options:
+
+1. When migrating from another GitLab instance, you can either:
+    - Use the UI, including [group import](../../user/group/import/index.md) and [project import](../../user/project/settings/import_export.md).
+    - Use APIs, including the [group import API](../../api/group_import_export.md) and [project import API](../../api/project_import_export.md).
+    - Note: Import functionality behind a feature flag (such as `bulk_import_project`) is not supported in GitLab Dedicated.
+1. When migrating from third-party services, you can use [the GitLab importers](../../user/project/import/index.md#available-project-importers).
+1. You can perform a fully-automated migration through the [Congregate Automation Tool](../../user/project/import/index.md#automate-group-and-project-import), which supports migrating from existing GitLab instances as well as third-party services.
+
 ## Features that are not available
 
 ### GitLab application features
@@ -105,7 +120,7 @@ The following GitLab application features are not available:
 
 - LDAP, Smartcard, or Kerberos authentication
 - Multiple login providers
-- Advanced Search
+- Advanced search
 - GitLab Pages
 - FortiAuthenticator, or FortiToken 2FA
 - Reply-by email
@@ -123,7 +138,6 @@ The following features will not be supported:
 The following operational features are not available:
 
 - Custom domains
-- Bring Your Own Key (BYOK) encryption
 - Multiple Geo secondaries (Geo replicas) beyond the secondary site included by default
 - Self-serve purchasing and configuration
 - Multiple login providers

@@ -172,6 +172,13 @@ module UsersHelper
     'https://about.gitlab.com/free-trial/'
   end
 
+  def user_profile_tabs_app_data(user)
+    {
+      user_calendar_path: user_calendar_path(user, :json),
+      utc_offset: local_timezone_instance(user.timezone).now.utc_offset
+    }
+  end
+
   private
 
   def admin_users_paths

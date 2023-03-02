@@ -43,14 +43,6 @@ class CommitStatus < Ci::ApplicationRecord
 
   scope :order_id_desc, -> { order(id: :desc) }
 
-  scope :exclude_ignored, -> do
-    # We want to ignore failed but allowed to fail jobs.
-    #
-    # TODO, we also skip ignored optional manual actions.
-    where("allow_failure = ? OR status IN (?)",
-      false, all_state_names - [:failed, :canceled, :manual])
-  end
-
   scope :latest, -> { where(retried: [false, nil]) }
   scope :retried, -> { where(retried: true) }
   scope :ordered, -> { order(:name) }
@@ -237,10 +229,6 @@ class CommitStatus < Ci::ApplicationRecord
     regex = %r{([\b\s:]+((\[.*\])|(\d+[\s:\/\\]+\d+))){1,3}\s*\z}
 
     name.to_s.sub(regex, '').strip
-  end
-
-  def failed_but_allowed?
-    allow_failure? && (failed? || canceled?)
   end
 
   # Time spent running.

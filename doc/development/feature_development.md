@@ -79,7 +79,7 @@ Consult these topics for information on contributing to specific GitLab features
   - [Adding a new Redis instance](redis/new_redis_instance.md)
 - [Sidekiq guidelines](sidekiq/index.md) for working with Sidekiq workers
 - [Working with Gitaly](gitaly.md)
-- [Advanced Search integration docs](advanced_search.md)
+- [Advanced search integration docs](advanced_search.md)
 - [Working with merge request diffs](diffs.md)
 - [Approval Rules](merge_request_concepts/approval_rules.md)
 - [Repository mirroring](repository_mirroring.md)

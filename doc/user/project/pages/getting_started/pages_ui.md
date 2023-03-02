@@ -4,7 +4,7 @@ group: Incubation
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Create a Pages deployment for your static site **(FREE)**
+# Create a GitLab Pages deployment for a static site **(FREE)**
 
 If you already have a GitLab project that contains your static site or framework,
 you can generate a GitLab Pages website from it.

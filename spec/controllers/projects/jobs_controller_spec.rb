@@ -630,40 +630,12 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, featu
         expect(json_response['lines'].count).to be_positive
       end
 
-      context 'when CI_DEBUG_TRACE enabled' do
-        let!(:variable) { create(:ci_instance_variable, key: 'CI_DEBUG_TRACE', value: 'true') }
-
-        context 'with proper permissions on a project' do
-          let(:user) { developer }
-
-          before do
-            sign_in(user)
-          end
-
-          it 'returns response ok' do
-            get_trace
-
-            expect(response).to have_gitlab_http_status(:ok)
+      context 'when debug_mode? is enabled' do
+        before do
+          allow_next_found_instance_of(Ci::Build) do |build|
+            allow(build).to receive(:debug_mode?).and_return(true)
           end
         end
-
-        context 'without proper permissions for debug logging' do
-          let(:user) { guest }
-
-          before do
-            sign_in(user)
-          end
-
-          it 'returns response forbidden' do
-            get_trace
-
-            expect(response).to have_gitlab_http_status(:forbidden)
-          end
-        end
-      end
-
-      context 'when CI_DEBUG_SERVICES enabled' do
-        let!(:variable) { create(:ci_instance_variable, key: 'CI_DEBUG_SERVICES', value: 'true') }
 
         context 'with proper permissions on a project' do
           let(:user) { developer }
@@ -1242,10 +1214,10 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, featu
       context 'when CI_DEBUG_TRACE and/or CI_DEBUG_SERVICES are enabled' do
         using RSpec::Parameterized::TableSyntax
         where(:ci_debug_trace, :ci_debug_services) do
-          'true'  | 'true'
-          'true'  | 'false'
-          'false' | 'true'
-          'false' | 'false'
+          true  | true
+          true  | false
+          false | true
+          false | false
         end
 
         with_them do
@@ -1278,7 +1250,7 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, featu
             it 'returns response forbidden if dev mode enabled' do
               response = subject
 
-              if ci_debug_trace == 'true' || ci_debug_services == 'true'
+              if ci_debug_trace || ci_debug_services
                 expect(response).to have_gitlab_http_status(:forbidden)
               else
                 expect(response).to have_gitlab_http_status(:ok)

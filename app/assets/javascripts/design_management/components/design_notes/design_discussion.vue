@@ -1,6 +1,5 @@
 <script>
 import { GlButton, GlLink, GlTooltipDirective } from '@gitlab/ui';
-import { ApolloMutation } from 'vue-apollo';
 import * as Sentry from '@sentry/browser';
 import { createAlert } from '~/flash';
 import { __, s__ } from '~/locale';
@@ -35,7 +34,6 @@ export default {
     },
   },
   components: {
-    ApolloMutation,
     DesignNote,
     DesignNotePin,
     DesignNoteSignedOut,
@@ -108,7 +106,6 @@ export default {
   },
   data() {
     return {
-      discussionComment: '',
       isFormRendered: false,
       activeDiscussion: {},
       noteToDelete: null,
@@ -119,10 +116,9 @@ export default {
     };
   },
   computed: {
-    mutationPayload() {
+    mutationVariables() {
       return {
         noteableId: this.noteableId,
-        body: this.discussionComment,
         discussionId: this.discussion.id,
       };
     },
@@ -168,9 +164,15 @@ export default {
     onDone({ data: { createNote } }) {
       if (hasErrors(createNote)) {
         createAlert({ message: ADD_DISCUSSION_COMMENT_ERROR });
+      } else {
+        /**
+         * https://gitlab.com/gitlab-org/gitlab/-/issues/388314
+         *
+         * Hide the form once the create note mutation is completed.
+         */
+        this.hideForm();
       }
-      this.discussionComment = '';
-      this.hideForm();
+
       if (this.shouldChangeResolvedStatus) {
         this.toggleResolvedStatus();
       }
@@ -180,7 +182,6 @@ export default {
     },
     hideForm() {
       this.isFormRendered = false;
-      this.discussionComment = '';
     },
     showForm() {
       this.$emit('open-form', this.discussion.id);
@@ -362,33 +363,24 @@ export default {
             :placeholder-text="__('Reply…')"
             @focus="showForm"
           />
-          <apollo-mutation
+          <design-reply-form
             v-else
-            #default="{ mutate, loading }"
-            :mutation="$options.createNoteMutation"
-            :variables="{
-              input: mutationPayload,
-            }"
-            @done="onDone"
-            @error="onCreateNoteError"
+            :design-note-mutation="$options.createNoteMutation"
+            :mutation-variables="mutationVariables"
+            :markdown-preview-path="markdownPreviewPath"
+            :noteable-id="noteableId"
+            :discussion-id="discussion.id"
+            @note-submit-complete="onDone"
+            @note-submit-failure="onCreateNoteError"
+            @cancel-form="hideForm"
           >
-            <design-reply-form
-              v-model="discussionComment"
-              :is-saving="loading"
-              :markdown-preview-path="markdownPreviewPath"
-              :noteable-id="noteableId"
-              :discussion-id="discussion.id"
-              @submit-form="mutate"
-              @cancel-form="hideForm"
-            >
-              <template v-if="discussion.resolvable" #resolve-checkbox>
-                <label data-testid="resolve-checkbox">
-                  <input v-model="shouldChangeResolvedStatus" type="checkbox" />
-                  {{ resolveCheckboxText }}
-                </label>
-              </template>
-            </design-reply-form>
-          </apollo-mutation>
+            <template v-if="discussion.resolvable" #resolve-checkbox>
+              <label data-testid="resolve-checkbox">
+                <input v-model="shouldChangeResolvedStatus" type="checkbox" />
+                {{ resolveCheckboxText }}
+              </label>
+            </template>
+          </design-reply-form>
         </template>
       </li>
     </ul>

@@ -5,18 +5,18 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 type: reference
 ---
 
-# Advanced Search **(PREMIUM)**
+# Advanced search **(PREMIUM)**
 
 > Moved to GitLab Premium in 13.9.
 
-You can use Advanced Search for faster, more efficient search across the entire GitLab
-instance. Advanced Search is based on Elasticsearch, a purpose-built full-text search
+You can use advanced search for faster, more efficient search across the entire GitLab
+instance. Advanced search is based on Elasticsearch, a purpose-built full-text search
 engine you can horizontally scale to get results in up to a second in most cases.
 
 You can find code you want to update in all projects at once to save
 maintenance time and promote innersourcing.
 
-You can use Advanced Search in:
+You can use advanced search in:
 
 - Projects
 - Issues
@@ -29,15 +29,15 @@ You can use Advanced Search in:
 - Commits
 - Project wikis (not [group wikis](../project/wiki/group.md))
 
-## Enable Advanced Search
+## Enable advanced search
 
-- On GitLab.com, Advanced Search is enabled for groups with paid subscriptions.
+- On GitLab.com, advanced search is enabled for groups with paid subscriptions.
 - For self-managed GitLab instances, an administrator must
-  [enable Advanced Search](../../integration/advanced_search/elasticsearch.md#enable-advanced-search).
+  [enable advanced search](../../integration/advanced_search/elasticsearch.md#enable-advanced-search).
 
 ## Syntax
 
-Advanced Search uses [Elasticsearch syntax](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-simple-query-string-query.html#simple-query-string-syntax). The syntax supports both exact and fuzzy search queries.
+Advanced search uses [Elasticsearch syntax](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-simple-query-string-query.html#simple-query-string-syntax). The syntax supports both exact and fuzzy search queries.
 
 <!-- markdownlint-disable -->
 
@@ -90,7 +90,7 @@ In user search, a [fuzzy query](https://www.elastic.co/guide/en/elasticsearch/re
 - You can only search files smaller than 1 MB.
   For self-managed GitLab instances, an administrator can
   [change this limit](../../integration/advanced_search/elasticsearch.md#advanced-search-configuration).
-- You can only use Advanced Search on the default branch of a project.
+- You can only use advanced search on the default branch of a project.
 - The search query must not contain any of the following characters:
 
   ```plaintext

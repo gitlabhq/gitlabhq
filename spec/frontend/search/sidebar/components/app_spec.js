@@ -17,6 +17,10 @@ describe('GlobalSearchSidebar', () => {
     resetQuery: jest.fn(),
   };
 
+  const getterSpies = {
+    currentScope: jest.fn(() => 'issues'),
+  };
+
   const createComponent = (initialState, featureFlags) => {
     const store = new Vuex.Store({
       state: {
@@ -24,6 +28,7 @@ describe('GlobalSearchSidebar', () => {
         ...initialState,
       },
       actions: actionSpies,
+      getters: getterSpies,
     });
 
     wrapper = shallowMount(GlobalSearchSidebar, {
@@ -59,6 +64,7 @@ describe('GlobalSearchSidebar', () => {
       ${'blobs'}          | ${false}    | ${true}
     `('sidebar scope: $scope', ({ scope, showFilters, ShowsLanguage }) => {
       beforeEach(() => {
+        getterSpies.currentScope = jest.fn(() => scope);
         createComponent({ urlQuery: { scope } }, { searchBlobsLanguageAggregation: true });
       });
 
