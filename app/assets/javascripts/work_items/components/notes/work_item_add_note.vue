@@ -114,10 +114,18 @@ export default {
         this.workItemType
       }`;
     },
+    isLockedOutOrSignedOut() {
+      return !this.signedIn || !this.canUpdate;
+    },
+    lockedOutUserWarningInReplies() {
+      return this.addPadding && this.isLockedOutOrSignedOut;
+    },
     timelineEntryClass() {
       return {
         'timeline-entry gl-mb-3': true,
-        'gl-p-4': this.addPadding,
+        'gl-p-2 gl-pl-3 gl-mt-5': this.addPadding,
+        'gl-bg-gray-10 gl-rounded-bottom-left-base gl-rounded-bottom-right-base gl-p-5! gl-mx-n3 gl-mb-n2!': this
+          .lockedOutUserWarningInReplies,
       };
     },
     isProjectArchived() {
@@ -191,7 +199,7 @@ export default {
       <work-item-comment-form
         v-if="isEditing"
         :work-item-type="workItemType"
-        :aria-label="__('Add a comment')"
+        :aria-label="__('Add a reply')"
         :is-submitting="isSubmitting"
         :autosave-key="autosaveKey"
         @submitForm="updateWorkItem"
@@ -201,7 +209,7 @@ export default {
         v-else
         class="gl-flex-grow-1 gl-justify-content-start! gl-text-secondary!"
         @click="isEditing = true"
-        >{{ __('Add a comment') }}</gl-button
+        >{{ __('Add a reply') }}</gl-button
       >
     </div>
   </li>

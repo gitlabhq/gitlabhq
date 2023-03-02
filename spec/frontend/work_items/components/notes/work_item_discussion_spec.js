@@ -89,11 +89,15 @@ describe('Work Item Discussion', () => {
     });
 
     it('the number of threads should be equal to the response length', async () => {
-      findToggleRepliesWidget().vm.$emit('toggle');
-      await nextTick();
       expect(findAllThreads()).toHaveLength(
         mockWorkItemNotesWidgetResponseWithComments.discussions.nodes[0].notes.nodes.length,
       );
+    });
+
+    it('should collapse when we click on toggle replies widget', async () => {
+      findToggleRepliesWidget().vm.$emit('toggle');
+      await nextTick();
+      expect(findAllThreads()).toHaveLength(1);
     });
 
     it('should autofocus when we click expand replies', async () => {

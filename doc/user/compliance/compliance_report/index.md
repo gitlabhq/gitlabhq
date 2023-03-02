@@ -8,20 +8,27 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Compliance report **(ULTIMATE)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/36524) in GitLab 12.8 as Compliance Dashboard.
+> - Compliance violation drawer [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/299357) in GitLab 14.1.
 > - [Renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/299360) to compliance report in GitLab 14.2.
 > - [Replaced](https://gitlab.com/groups/gitlab-org/-/epics/5237) by merge request violations in GitLab 14.6 [with a flag](../../../administration/feature_flags.md) named `compliance_violations_report`. Disabled by default.
 > - GraphQL API [introduced](https://gitlab.com/groups/gitlab-org/-/epics/7222) in GitLab 14.9.
 > - [Generally available](https://gitlab.com/groups/gitlab-org/-/epics/5237) in GitLab 14.10. [Feature flag `compliance_violations_report`](https://gitlab.com/gitlab-org/gitlab/-/issues/346266) removed.
 
-Compliance report gives you the ability to see a group's merge request activity. It provides a
-high-level view for all projects in the group. For example, code approved for merging into
-production.
+With a compliance report, you can:
 
-You can use the report to get:
+- List compliance violations from all merge requests merged in projects in a group.
+- See the reason and severity of each compliance violation.
 
-- A list of compliance violations from all merged merge requests within the group.
-- The reason and severity of each compliance violation.
-- A link to the merge request that caused each compliance violation.
+When you select a row in the compliance report, a drawer appears that provides:
+
+- The project name and [compliance framework label](../../project/settings/index.md#add-a-compliance-framework-to-a-project),
+  if the project has one assigned.
+- A link to the merge request that introduced the violation.
+- The merge request's branch path in the format `[source] into [target]`.
+- A list of users that committed changes to the merge request.
+- A list of users that commented on the merge request.
+- A list of users that approved the merge request.
+- The user that merged the merge request.
 
 ## View the compliance report for a group
 
@@ -34,9 +41,19 @@ To view the compliance report:
 1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Security and Compliance > Compliance report**.
 
-### Severity levels scale
+You can sort the compliance report on:
 
-The following is a list of available violation severity levels, ranked from most to least severe:
+- Severity level.
+- Type of violation.
+- Merge request title.
+
+Select a row to see details of the compliance violation.
+
+### Severity levels
+
+Each compliance violation has one of the following severities.
+
+<!-- vale gitlab.SubstitutionWarning = NO -->
 
 | Icon                                          | Severity level |
 |:----------------------------------------------|:---------------|
@@ -46,49 +63,41 @@ The following is a list of available violation severity levels, ranked from most
 | **{severity-low, 18, gl-fill-orange-300}**    | Low            |
 | **{severity-info, 18, gl-fill-blue-400}**     | Info           |
 
+<!-- vale gitlab.SubstitutionWarning = YES -->
+
 ### Violation types
 
-The following is a list of violations that are either:
+From [GitLab 14.10](https://gitlab.com/groups/gitlab-org/-/epics/6870), these are the available compliance violations.
 
-- Already available.
-- Aren't available, but which we are tracking in issues.
+| Violation                         | Severity level | Category                                      | Description                                                                                                                                                                                                                                            |
+|:----------------------------------|:---------------|:----------------------------------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Author approved merge request     | High           | [Separation of duties](#separation-of-duties) | Author of the merge request approved their own merge request. For more information, see [Prevent approval by author](../../project/merge_requests/approvals/settings.md#prevent-approval-by-author).                                                   |
+| Committers approved merge request | High           | [Separation of duties](#separation-of-duties) | Committers of the merge request approved the merge request they contributed to. For more information, see [Prevent approvals by users who add commits](../../project/merge_requests/approvals/settings.md#prevent-approvals-by-users-who-add-commits). |
+| Fewer than two approvals          | High           | [Separation of duties](#separation-of-duties) | Merge request was merged with fewer than two approvals. For more information, see [Merge request approval rules](../../project/merge_requests/approvals/rules.md).                                                                                     |
 
-| Violation                            | Severity level  | Category                                                                               | Description                                                                                                                                                                                      | Availability                                                                    |
-|:-------------------------------------|:----------------|:---------------------------------------------------------------------------------------|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:--------------------------------------------------------------------------------|
-| Author approved merge request        | High            | [Separation of duties](#separation-of-duties)                                          | The author of the merge request approved their own merge request. For more information, see [Prevent approval by author](../../project/merge_requests/approvals/settings.md#prevent-approval-by-author).                                   | [Available in GitLab 14.10](https://gitlab.com/groups/gitlab-org/-/epics/6870)  |
-| Committers approved merge request    | High            | [Separation of duties](#separation-of-duties)                                          | The committers of the merge request approved the merge request they contributed to. For more information, see [Prevent approvals by users who add commits](../../project/merge_requests/approvals/settings.md#prevent-approvals-by-users-who-add-commits). | [Available in GitLab 14.10](https://gitlab.com/groups/gitlab-org/-/epics/6870)  |
-| Fewer than two approvals             | High            | [Separation of duties](#separation-of-duties)                                          | The merge request was merged with fewer than two approvals. For more information, see [Merge request approval rules](../../project/merge_requests/approvals/rules.md).                                                                       | [Available in GitLab 14.10](https://gitlab.com/groups/gitlab-org/-/epics/6870) |
-| Pipeline failed                      | Medium          | [Pipeline results](../../../ci/pipelines/index.md)                                     | The merge requests pipeline failed and was merged.                                                                                                                                               | [Unavailable](https://gitlab.com/gitlab-org/gitlab/-/issues/346011)             |
-| Pipeline passed with warnings        | Info            | [Pipeline results](../../../ci/pipelines/index.md)                                     | The merge request pipeline passed with warnings and was merged.                                                                                                                                  | [Unavailable](https://gitlab.com/gitlab-org/gitlab/-/issues/346011)             |
-| Code coverage down more than 10%     | High            | [Code coverage](../../../ci/pipelines/settings.md#merge-request-test-coverage-results) | The code coverage report for the merge request indicates a reduction in coverage of more than 10%.                                                                                               | [Unavailable](https://gitlab.com/gitlab-org/gitlab/-/issues/346011)             |
-| Code coverage down between 5% to 10% | Medium          | [Code coverage](../../../ci/pipelines/settings.md#merge-request-test-coverage-results) | The code coverage report for the merge request indicates a reduction in coverage of between 5% to 10%.                                                                                           | [Unavailable](https://gitlab.com/gitlab-org/gitlab/-/issues/346011)             |
-| Code coverage down between 1% to 5%  | Low             | [Code coverage](../../../ci/pipelines/settings.md#merge-request-test-coverage-results) | The code coverage report for the merge request indicates a reduction in coverage of between 1% to 5%.                                                                                            | [Unavailable](https://gitlab.com/gitlab-org/gitlab/-/issues/346011)             |
-| Code coverage down less than 1%      | Info            | [Code coverage](../../../ci/pipelines/settings.md#merge-request-test-coverage-results) | The code coverage report for the merge request indicates a reduction in coverage of less than 1%.                                                                                                | [Unavailable](https://gitlab.com/gitlab-org/gitlab/-/issues/346011)             |
+The following are unavailable compliance violations that are tracked in [issue 346011](https://gitlab.com/gitlab-org/gitlab/-/issues/346011).
 
-## Merge request drawer
+<!-- vale gitlab.SubstitutionWarning = NO -->
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/299357) in GitLab 14.1.
+| Violation                            | Severity level | Category                                                                               | Description                                                                                        |
+|:-------------------------------------|:---------------|:---------------------------------------------------------------------------------------|:---------------------------------------------------------------------------------------------------|
+| Pipeline failed                      | Medium         | [Pipeline results](../../../ci/pipelines/index.md)                                     | Merge requests pipeline failed and was merged.                                                     |
+| Pipeline passed with warnings        | Info           | [Pipeline results](../../../ci/pipelines/index.md)                                     | Merge request pipeline passed with warnings and was merged.                                        |
+| Code coverage down more than 10%     | High           | [Code coverage](../../../ci/pipelines/settings.md#merge-request-test-coverage-results) | Code coverage report for the merge request indicates a reduction in coverage of more than 10%.     |
+| Code coverage down between 5% to 10% | Medium         | [Code coverage](../../../ci/pipelines/settings.md#merge-request-test-coverage-results) | Code coverage report for the merge request indicates a reduction in coverage of between 5% to 10%. |
+| Code coverage down between 1% to 5%  | Low            | [Code coverage](../../../ci/pipelines/settings.md#merge-request-test-coverage-results) | Code coverage report for the merge request indicates a reduction in coverage of between 1% to 5%.  |
+| Code coverage down less than 1%      | Info           | [Code coverage](../../../ci/pipelines/settings.md#merge-request-test-coverage-results) | Code coverage report for the merge request indicates a reduction in coverage of less than 1%.      |
 
-When you select a row, a drawer is shown that provides further details about the merge
-request:
+<!-- vale gitlab.SubstitutionWarning = YES -->
 
-- Project name and [compliance framework label](../../project/settings/index.md#add-a-compliance-framework-to-a-project),
-  if the project has one assigned.
-- Link to the merge request.
-- The merge request's branch path in the format `[source] into [target]`.
-- A list of users that committed changes to the merge request.
-- A list of users that commented on the merge request.
-- A list of users that approved the merge request.
-- The user that merged the merge request.
+#### Separation of duties
 
-## Separation of duties
+GitLab supports a separation of duties policy between users who create and approve merge requests. Our criteria for the
+separation of duties is:
 
-We support a separation of duties policy between users who create and approve merge requests.
-Our criteria for the separation of duties is as follows:
-
-- [A merge request author is **not** allowed to approve their merge request](../../project/merge_requests/approvals/settings.md#prevent-approval-by-author)
-- [A merge request committer is **not** allowed to approve a merge request they have added commits to](../../project/merge_requests/approvals/settings.md#prevent-approvals-by-users-who-add-commits)
-- [The minimum number of approvals required to merge a merge request is **at least** two](../../project/merge_requests/approvals/rules.md)
+- [A merge request author is **not** allowed to approve their merge request](../../project/merge_requests/approvals/settings.md#prevent-approval-by-author).
+- [A merge request committer is **not** allowed to approve a merge request they have added commits to](../../project/merge_requests/approvals/settings.md#prevent-approvals-by-users-who-add-commits).
+- [The minimum number of approvals required to merge a merge request is **at least** two](../../project/merge_requests/approvals/rules.md).
 
 ## Chain of Custody report
 
@@ -98,16 +107,25 @@ Our criteria for the separation of duties is as follows:
 > - Chain of Custody report includes all commits (instead of just merge commits) [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/267601) in GitLab 15.9 with a flag named `all_commits_compliance_report`. Disabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112092) in GitLab 15.9. Feature flag `all_commits_compliance_report` removed.
 
-The Chain of Custody report provides a 1 month trailing window of any commit into a project under the group.
+The Chain of Custody report provides a 1 month trailing window of all commits to a project under the group.
 
 To generate the report for all commits, GitLab:
 
 1. Fetches all projects under the group.
-1. For each project, fetches the last 1 month of commits. Each project is capped at 1024 commits. If there are more than 1024 commits in the 1-month window, they
-   are truncated.
-1. Writes the commits to a CSV file. The file is truncated at 15 MB because the report is emailed as an attachment.
+1. For each project, fetches the last 1 month of commits. Each project is capped at 1024 commits. If there are more than
+   1024 commits in the 1-month window, they are truncated.
+1. Writes the commits to a CSV file. The file is truncated at 15 MB because the report is emailed as an attachment
+   (GitLab 15.5 and later).
 
-The report includes the commit SHA, commit author, committer, date committed, the group, and the project.
+The report includes:
+
+- Commit SHA.
+- Commit author.
+- Committer.
+- Date committed.
+- Group.
+- Project.
+
 If the commit has a related merge commit, then the following are also included:
 
 - Merge commit SHA.
@@ -117,39 +135,33 @@ If the commit has a related merge commit, then the following are also included:
 - Pipeline ID.
 - Merge request approvers.
 
+### Generate Chain of Custody report
+
 To generate the Chain of Custody report:
 
 1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Security and Compliance > Compliance report**.
 1. Select **List of all merge commits**.
 
-The Chain of Custody report is either:
+Depending on your version of GitLab, the Chain of Custody report is either sent through email or available for download.
 
-- Available for download.
-- Sent through email. Requires GitLab 15.5 and later.
-
-### Commit-specific Chain of Custody report
+### Generate commit-specific Chain of Custody report
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/267629) in GitLab 13.6.
 
-Authenticated group owners can generate a commit-specific Chain of Custody report for a given commit SHA, either:
+You can generate a commit-specific Chain of Custody report for a given merge commit SHA. This report provides only the
+details for the provided merge commit SHA. Issue [393446](https://gitlab.com/gitlab-org/gitlab/-/issues/393446) proposes
+to extend the commit SHA filtering to work with all commits instead of only merge commits.
 
-- Using the GitLab UI:
+To generate a commit-specific Chain of Custody report:
 
-  1. On the top bar, select **Main menu > Groups** and find your group.
-  1. On the left sidebar, select **Security and Compliance > Compliance report**.
-  1. At the top of the compliance report, to the right of **List of all merge commits**, select the down arrow (**{chevron-lg-down}**).
-  1. Enter the merge commit SHA, and then select **Export commit custody report**.
-     SHA and then select **Export commit custody report**.
+1. On the top bar, select **Main menu > Groups** and find your group.
+1. On the left sidebar, select **Security and Compliance > Compliance report**.
+1. At the top of the compliance report, to the right of **List of all merge commits**, select the down arrow
+   (**{chevron-lg-down}**).
+1. Enter the merge commit SHA, and then select **Export commit custody report**.
 
-The Chain of Custody report is either:
+Depending on your version of GitLab, the Chain of Custody report is either sent through email or available for download.
 
-- Available for download.
-- Sent through email. Requires GitLab 15.5 and later.
-
-- Using a direct link: `https://gitlab.com/groups/<group-name>/-/security/merge_commit_reports.csv?commit_sha={optional_commit_sha}`, passing in an optional value to the
-  `commit_sha` query parameter.
-
-NOTE:
-The Chain of Custody report download is a CSV file, with a maximum size of 15 MB.
-The remaining records are truncated when this limit is reached.
+Alternatively, use a direct link: `https://gitlab.com/groups/<group-name>/-/security/merge_commit_reports.csv?commit_sha={optional_commit_sha}`,
+passing in an optional value to the `commit_sha` query parameter.

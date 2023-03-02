@@ -76,7 +76,7 @@ export default {
         v-for="author in uniqueAuthors"
         :key="author.username"
         class="gl-mr-3 reply-author-avatar"
-        :link-href="author.path"
+        :link-href="author.path || author.webUrl"
         :img-alt="author.name"
         img-css-classes="gl-mr-0!"
         :img-src="author.avatar_url || author.avatarUrl"
@@ -95,7 +95,7 @@ export default {
       <gl-sprintf :message="$options.i18n.lastReplyBy">
         <template #name>
           <gl-link
-            :href="lastReply.author.path"
+            :href="lastReply.author.path || lastReply.author.webUrl"
             class="gl-text-body! gl-text-decoration-none! gl-mx-2"
           >
             {{ lastReply.author.name }}

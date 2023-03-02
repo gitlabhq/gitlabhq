@@ -2,7 +2,7 @@ require './spec/support/sidekiq_middleware'
 
 Sidekiq::Testing.inline! do
   Gitlab::Seeder.quiet do
-    User.not_mass_generated.sample(10).each do |user|
+    User.humans.not_mass_generated.sample(10).each do |user|
       source_project = Project.not_mass_generated.public_only.sample
 
       ##

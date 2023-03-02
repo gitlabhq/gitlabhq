@@ -17,21 +17,81 @@ To scale GitLab, you can configure GitLab to use multiple application databases.
 
 Due to [known issues](#known-issues), configuring GitLab with multiple databases is in [**Alpha**](../../policy/alpha-beta-support.md#alpha-features).
 
+After you have set up multiple databases, GitLab uses a second application database for
+[CI/CD features](../../ci/index.md), referred to as the `ci` database.
+
+All tables have exactly the same structure in both the `main`, and `ci`
+databases. Some examples:
+
+- When multiple databases are configured, the `ci_pipelines` table exists in
+  both the `main` and `ci` databases, but GitLab reads and writes only to the
+  `ci_pipelines` table in the `ci` database.
+- Similarly, the `projects` table exists in
+  both the `main` and `ci` databases, but GitLab reads and writes only to the
+  `projects` table in the `main` database.
+- For some tables (such as `loose_foreign_keys_deleted_records`) GitLab reads and writes to both the `main` and `ci` databases. See the
+  [development documentation](../../development/database/multiple_databases.md#gitlab-schema)
+
 ## Known issues
 
-- Migrating data from the `main` database to the `ci` database is not supported or documented yet.
 - Once data is migrated to the `ci` database, you cannot migrate it back.
+
+## Migrate existing installations
+
+To migrate existing data from the `main` database to the `ci` database, you can
+copy the database across.
+
+### Existing source installation
+
+1. Stop GitLab, except for PostgreSQL:
+
+   ```shell
+   sudo service gitlab stop
+   sudo service postgresql start
+   ```
+
+1. Dump the `main` database:
+
+   ```shell
+   sudo -u git pg_dump -f gitlabhq_production.sql gitlabhq_production
+   ```
+
+1. Create the `ci` database, and copy the data from the previous dump:
+
+   ```shell
+   sudo -u postgres psql -d template1 -c "CREATE DATABASE gitlabhq_production_ci OWNER git;"
+   sudo -u git psql -f gitlabhq_production.sql gitlabhq_production_ci
+   ```
+
+1. Configure GitLab to [use multiple databases](#set-up-multiple-databases).
+
+### Existing Omnibus installation
+
+1. Stop GitLab, except for PostgreSQL:
+
+   ```shell
+   sudo gitlab-ctl stop
+   sudo gitlab-ctl start postgresql
+   ```
+
+1. Dump the `main` database:
+
+   ```shell
+   sudo -u gitlab-psql /opt/gitlab/embedded/bin/pg_dump -h /var/opt/gitlab/postgresql -f gitlabhq_production.sql gitlabhq_production
+   ```
+
+1. Create the `ci` database, and copy the data from the previous dump:
+
+   ```shell
+   sudo -u gitlab-psql /opt/gitlab/embedded/bin/psql -h /var/opt/gitlab/postgresql -d template1 -c "CREATE DATABASE gitlabhq_production_ci OWNER gitlab;"
+   sudo -u gitlab-psql  /opt/gitlab/embedded/bin/psql -h /var/opt/gitlab/postgresql -f gitlabhq_production.sql gitlabhq_production_ci
+   ```
+
+1. Configure GitLab to [use multiple databases](#set-up-multiple-databases).
 
 ## Set up multiple databases
 
-Use the following content to set up multiple databases with a new GitLab installation.
-
-There is no documentation for existing GitLab installations yet.
-
-After you have set up multiple databases, GitLab uses a second application database for
-[CI/CD features](../../ci/index.md), referred to as the `ci` database. For
-example, GitLab reads and writes to the `ci_pipelines` table in the `ci`
-database.
+To configure GitLab to use multiple application databases, follow the instructions below for your installation type.
 
 WARNING:
 You must stop GitLab before setting up multiple databases. This prevents
@@ -39,6 +99,9 @@ split-brain situations, where `main` data is written to the `ci` database, and
 the other way around.
 
 ### Installations from source
+
+1. For existing installations,
+   [migrate the data](#migrate-existing-installations) first.
 
 1. [Back up GitLab](../../raketasks/backup_restore.md)
    in case of unforeseen issues.
@@ -70,7 +133,7 @@ the other way around.
 1. Update the service files to set the `GITLAB_ALLOW_SEPARATE_CI_DATABASE`
    environment variable to `true`.
 
-1. Create the `gitlabhq_production_ci` database:
+1. For new installations only. Create the `gitlabhq_production_ci` database:
 
    ```shell
    sudo -u postgres psql -d template1 -c "CREATE DATABASE gitlabhq_production OWNER git;"
@@ -90,6 +153,9 @@ the other way around.
    ```
 
 ### Omnibus GitLab installations
+
+1. For existing installations,
+   [migrate the data](#migrate-existing-installations) first.
 
 1. [Back up GitLab](../../raketasks/backup_restore.md)
    in case of unforeseen issues.
@@ -116,7 +182,8 @@ the other way around.
    sudo gitlab-ctl reconfigure
    ```
 
-1. Optional. Reconfiguring GitLab should create the `gitlabhq_production_ci`. If it did not, manually create the `gitlabhq_production_ci`:
+1. Optional, for new installations only. Reconfiguring GitLab should create the
+   `gitlabhq_production_ci` database if it does not exist. If the database is not created automatically, create it manually:
 
    ```shell
    sudo gitlab-ctl start postgresql

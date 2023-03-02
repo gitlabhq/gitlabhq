@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Clusters::Cleanup::ProjectNamespaceService do
+RSpec.describe Clusters::Cleanup::ProjectNamespaceService, feature_category: :kubernetes_management do
   describe '#execute' do
     subject { service.execute }
 

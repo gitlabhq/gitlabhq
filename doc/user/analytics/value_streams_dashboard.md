@@ -4,7 +4,7 @@ group: Optimize
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Value Streams Dashboard **(PREMIUM)**
+# Value Streams Dashboard **(ULTIMATE)**
 
 > Introduced in GitLab 15.8 as a Closed [Beta](../../policy/alpha-beta-support.md#beta-features) feature.
 
@@ -13,7 +13,6 @@ You can leave feedback on dashboard bugs or functionality in [issue 381787](http
 This feature is not ready for production use.
 
 The Value Streams Dashboard is a customizable dashboard that enables decision-makers to identify trends, patterns, and opportunities for digital transformation improvements.
-The dashboard's basic functionality is available on the Premium tier, but most of the dashboard features (for example DORA metrics) are available only on the Ultimate tier.
 This page is a work in progress, and we're updating the information as we add more features.
 For more information, see the [Value Stream Management category direction page](https://about.gitlab.com/direction/plan/value_stream_management/).
 

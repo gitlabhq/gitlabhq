@@ -2288,9 +2288,9 @@ RSpec.describe API::Projects, feature_category: :projects do
   end
 
   describe 'GET /project/:id/share_locations' do
-    let_it_be(:root_group) { create(:group, :public, name: 'root group') }
-    let_it_be(:project_group1) { create(:group, :public, parent: root_group, name: 'group1') }
-    let_it_be(:project_group2) { create(:group, :public, parent: root_group, name: 'group2') }
+    let_it_be(:root_group) { create(:group, :public, name: 'root group', path: 'root-group-path') }
+    let_it_be(:project_group1) { create(:group, :public, parent: root_group, name: 'group1', path: 'group-1-path') }
+    let_it_be(:project_group2) { create(:group, :public, parent: root_group, name: 'group2', path: 'group-2-path') }
     let_it_be(:project) { create(:project, :private, group: project_group1) }
 
     shared_examples_for 'successful groups response' do
@@ -2340,10 +2340,22 @@ RSpec.describe API::Projects, feature_category: :projects do
         end
 
         context 'when searching by group name' do
-          let(:params) { { search: 'group1' } }
+          context 'searching by group name' do
+            it_behaves_like 'successful groups response' do
+              let(:params) { { search: 'group1' } }
+              let(:expected_groups) { [project_group1] }
+            end
+          end
 
-          it_behaves_like 'successful groups response' do
-            let(:expected_groups) { [project_group1] }
+          context 'searching by full group path' do
+            let_it_be(:project_group2_subgroup) do
+              create(:group, :public, parent: project_group2, name: 'subgroup', path: 'subgroup-path')
+            end
+
+            it_behaves_like 'successful groups response' do
+              let(:params) { { search: 'root-group-path/group-2-path/subgroup-path' } }
+              let(:expected_groups) { [project_group2_subgroup] }
+            end
           end
         end
       end

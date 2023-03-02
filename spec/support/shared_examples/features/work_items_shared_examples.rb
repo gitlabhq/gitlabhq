@@ -19,7 +19,7 @@ RSpec.shared_examples 'work items comments' do
   let(:form_selector) { '[data-testid="work-item-add-comment"]' }
 
   it 'successfully creates and shows comments' do
-    click_button 'Add a comment'
+    click_button 'Add a reply'
 
     find(form_selector).fill_in(with: "Test comment")
     click_button "Comment"

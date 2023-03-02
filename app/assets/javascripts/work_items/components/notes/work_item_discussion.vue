@@ -53,10 +53,11 @@ export default {
   },
   data() {
     return {
-      isExpanded: false,
+      isExpanded: true,
       autofocus: false,
       isReplying: false,
       replyingText: '',
+      showForm: false,
     };
   },
   computed: {
@@ -70,7 +71,7 @@ export default {
       return `note_${this.note.id}`;
     },
     hasReplies() {
-      return this.replies?.length;
+      return Boolean(this.replies?.length);
     },
     replies() {
       if (this.discussion?.length > 1) {
@@ -81,9 +82,13 @@ export default {
     discussionId() {
       return this.discussion[0]?.discussion?.id || '';
     },
+    shouldShowReplyForm() {
+      return this.showForm || this.hasReplies;
+    },
   },
   methods: {
     showReplyForm() {
+      this.showForm = true;
       this.isExpanded = true;
       this.autofocus = true;
     },
@@ -93,7 +98,6 @@ export default {
     },
     toggleDiscussion() {
       this.isExpanded = !this.isExpanded;
-      this.autofocus = this.isExpanded;
     },
     threadKey(note) {
       /* eslint-disable @gitlab/require-i18n-strings */
@@ -139,8 +143,9 @@ export default {
                 :is-first-note="true"
                 :note="note"
                 :discussion-id="discussionId"
+                :has-replies="hasReplies"
                 :work-item-type="workItemType"
-                :class="{ 'gl-mb-5': hasReplies }"
+                :class="{ 'gl-mb-4': hasReplies }"
                 @startReplying="showReplyForm"
                 @deleteNote="$emit('deleteNote', note)"
                 @error="$emit('error', $event)"
@@ -166,6 +171,7 @@ export default {
                   </template>
                   <work-item-note-replying v-if="isReplying" :body="replyingText" />
                   <work-item-add-note
+                    v-if="shouldShowReplyForm"
                     :autofocus="autofocus"
                     :query-variables="queryVariables"
                     :full-path="fullPath"

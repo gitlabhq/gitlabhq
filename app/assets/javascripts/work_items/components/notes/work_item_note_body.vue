@@ -12,6 +12,19 @@ export default {
       type: Object,
       required: true,
     },
+    hasReplies: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+  },
+  computed: {
+    noteBodyClass() {
+      return {
+        'note-body gl-pb-0!': true,
+        'gl-mb-2': this.hasReplies,
+      };
+    },
   },
   watch: {
     'note.bodyHtml': {
@@ -38,7 +51,7 @@ export default {
 </script>
 
 <template>
-  <div ref="note-body" class="note-body">
+  <div ref="note-body" :class="noteBodyClass">
     <div
       v-safe-html:[$options.safeHtmlConfig]="note.bodyHtml"
       class="note-text md"

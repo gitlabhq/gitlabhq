@@ -273,9 +273,7 @@ project or group from there:
    the backed-up instance from which you want to restore.
 1. [Restore the backup](#restore-gitlab) into this new instance, then
    export your [project](../user/project/settings/import_export.md)
-   or [group](../user/group/settings/import_export.md). Be sure to read the
-   **Important Notes** on either export feature's documentation to understand
-   what is and isn't exported.
+   or [group](../user/group/import/index.md#migrate-groups-by-uploading-an-export-file-deprecated). For more information about what is and isn't exported, see the export feature's documentation.
 1. After the export is complete, go to the old instance and then import it.
 1. After importing the projects or groups that you wanted is complete, you may
    delete the new, temporary GitLab instance.

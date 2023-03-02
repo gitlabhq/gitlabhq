@@ -68,6 +68,7 @@ DECLARE
   resolved_on_default_branch boolean;
   present_on_default_branch boolean;
   namespace_id bigint;
+  has_issues boolean;
 BEGIN
   IF (NEW.vulnerability_id IS NULL AND (TG_OP = 'INSERT' OR TG_OP = 'UPDATE')) THEN
     RETURN NULL;
@@ -82,7 +83,7 @@ BEGIN
   INTO
     severity, state, report_type, resolved_on_default_branch, present_on_default_branch
   FROM
-     vulnerabilities
+    vulnerabilities
   WHERE
     vulnerabilities.id = NEW.vulnerability_id;
 
@@ -99,8 +100,13 @@ BEGIN
   WHERE
     projects.id = NEW.project_id;
 
-  INSERT INTO vulnerability_reads (vulnerability_id, namespace_id, project_id, scanner_id, report_type, severity, state, resolved_on_default_branch, uuid, location_image, cluster_agent_id, casted_cluster_agent_id)
-    VALUES (NEW.vulnerability_id, namespace_id, NEW.project_id, NEW.scanner_id, report_type, severity, state, resolved_on_default_branch, NEW.uuid::uuid, NEW.location->>'image', NEW.location->'kubernetes_resource'->>'agent_id', CAST(NEW.location->'kubernetes_resource'->>'agent_id' AS bigint))
+  SELECT
+    EXISTS (SELECT 1 FROM vulnerability_issue_links WHERE vulnerability_issue_links.vulnerability_id = NEW.vulnerability_id)
+  INTO
+    has_issues;
+
+  INSERT INTO vulnerability_reads (vulnerability_id, namespace_id, project_id, scanner_id, report_type, severity, state, resolved_on_default_branch, uuid, location_image, cluster_agent_id, casted_cluster_agent_id, has_issues)
+    VALUES (NEW.vulnerability_id, namespace_id, NEW.project_id, NEW.scanner_id, report_type, severity, state, resolved_on_default_branch, NEW.uuid::uuid, NEW.location->>'image', NEW.location->'kubernetes_resource'->>'agent_id', CAST(NEW.location->'kubernetes_resource'->>'agent_id' AS bigint), has_issues)
     ON CONFLICT(vulnerability_id) DO NOTHING;
   RETURN NULL;
 END
@@ -127,6 +133,7 @@ DECLARE
   cluster_agent_id text;
   casted_cluster_agent_id bigint;
   namespace_id bigint;
+  has_issues boolean;
 BEGIN
   SELECT
     v_o.scanner_id, v_o.uuid, v_o.location->>'image', v_o.location->'kubernetes_resource'->>'agent_id', CAST(v_o.location->'kubernetes_resource'->>'agent_id' AS bigint), projects.namespace_id
@@ -139,8 +146,13 @@ BEGIN
     v_o.vulnerability_id = NEW.id
   LIMIT 1;
 
-  INSERT INTO vulnerability_reads (vulnerability_id, namespace_id, project_id, scanner_id, report_type, severity, state, resolved_on_default_branch, uuid, location_image, cluster_agent_id, casted_cluster_agent_id)
-    VALUES (NEW.id, namespace_id, NEW.project_id, scanner_id, NEW.report_type, NEW.severity, NEW.state, NEW.resolved_on_default_branch, uuid::uuid, location_image, cluster_agent_id, casted_cluster_agent_id)
+  SELECT
+    EXISTS (SELECT 1 FROM vulnerability_issue_links WHERE vulnerability_issue_links.vulnerability_id = NEW.id)
+  INTO
+    has_issues;
+
+  INSERT INTO vulnerability_reads (vulnerability_id, namespace_id, project_id, scanner_id, report_type, severity, state, resolved_on_default_branch, uuid, location_image, cluster_agent_id, casted_cluster_agent_id, has_issues)
+    VALUES (NEW.id, namespace_id, NEW.project_id, scanner_id, NEW.report_type, NEW.severity, NEW.state, NEW.resolved_on_default_branch, uuid::uuid, location_image, cluster_agent_id, casted_cluster_agent_id, has_issues)
     ON CONFLICT(vulnerability_id) DO NOTHING;
   RETURN NULL;
 END

@@ -89,7 +89,15 @@
 
 .work-item-notes {
   .discussion-notes ul.notes li.toggle-replies-widget {
+    // top to be zero , we don't need extra spacing there
     // offset for .timeline-content padding + an extra 1px for border width
-    margin: -5px -9px;
+    margin: 0 -9px -5px;
+  }
+}
+
+// sticky error placement for errors in modals , by default it is 83px for full view
+#work-item-detail-modal {
+  .flash-container.flash-container-page.sticky {
+    top: -8px;
   }
 }

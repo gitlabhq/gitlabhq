@@ -167,7 +167,7 @@ export default {
         <a
           ref="authorUsernameLink"
           class="author-username-link"
-          :href="author.path"
+          :href="authorHref"
           @mouseenter="handleUsernameMouseEnter"
           @mouseleave="handleUsernameMouseLeave"
           ><span class="note-headline-light">@{{ author.username }}</span>

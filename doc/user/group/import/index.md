@@ -38,10 +38,11 @@ this feature, ask an administrator to [enable the feature flag](../../../adminis
 Migrating groups by direct transfer copies the groups from one place to another. You can:
 
 - Copy many groups at once.
-- Copy top-level groups to:
+- In the GitLab UI, copy top-level groups to:
   - Another top-level group.
   - The subgroup of any existing top-level group.
   - Another GitLab instance, including GitLab.com.
+- In the [API](../../../api/bulk_imports.md), copy top-level groups and subgroups to these locations.
 - Copy groups with projects (in [beta](../../../policy/alpha-beta-support.md#beta-features) and not ready for production
   use) or without projects. Copying projects with groups is available:
   - On GitLab.com by default.

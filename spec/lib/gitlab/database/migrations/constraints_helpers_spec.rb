@@ -23,43 +23,46 @@ RSpec.describe Gitlab::Database::Migrations::ConstraintsHelpers do
     end
   end
 
-  describe '#check_constraint_exists?' do
+  describe '#check_constraint_exists?', :aggregate_failures do
     before do
-      ActiveRecord::Migration.connection.execute(
-        'ALTER TABLE projects ADD CONSTRAINT check_1 CHECK (char_length(path) <= 5) NOT VALID'
-      )
-
-      ActiveRecord::Migration.connection.execute(
-        'CREATE SCHEMA new_test_schema'
-      )
-
-      ActiveRecord::Migration.connection.execute(
-        'CREATE TABLE new_test_schema.projects (id integer, name character varying)'
-      )
-
-      ActiveRecord::Migration.connection.execute(
-        'ALTER TABLE new_test_schema.projects ADD CONSTRAINT check_2 CHECK (char_length(name) <= 5)'
-      )
+      ActiveRecord::Migration.connection.execute(<<~SQL)
+        ALTER TABLE projects ADD CONSTRAINT check_1 CHECK (char_length(path) <= 5) NOT VALID;
+        CREATE SCHEMA new_test_schema;
+        CREATE TABLE new_test_schema.projects (id integer, name character varying);
+        ALTER TABLE new_test_schema.projects ADD CONSTRAINT check_2 CHECK (char_length(name) <= 5);
+      SQL
     end
 
     it 'returns true if a constraint exists' do
       expect(model)
         .to be_check_constraint_exists(:projects, 'check_1')
+
+      expect(described_class)
+        .to be_check_constraint_exists(:projects, 'check_1', connection: model.connection)
     end
 
     it 'returns false if a constraint does not exist' do
       expect(model)
         .not_to be_check_constraint_exists(:projects, 'this_does_not_exist')
+
+      expect(described_class)
+        .not_to be_check_constraint_exists(:projects, 'this_does_not_exist', connection: model.connection)
     end
 
     it 'returns false if a constraint with the same name exists in another table' do
       expect(model)
         .not_to be_check_constraint_exists(:users, 'check_1')
+
+      expect(described_class)
+        .not_to be_check_constraint_exists(:users, 'check_1', connection: model.connection)
     end
 
     it 'returns false if a constraint with the same name exists for the same table in another schema' do
       expect(model)
         .not_to be_check_constraint_exists(:projects, 'check_2')
+
+      expect(described_class)
+        .not_to be_check_constraint_exists(:projects, 'check_2', connection: model.connection)
     end
   end
 

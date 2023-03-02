@@ -43,6 +43,11 @@ export default {
       required: false,
       default: false,
     },
+    hasReplies: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     workItemType: {
       type: String,
       required: true,
@@ -59,12 +64,18 @@ export default {
     },
     entryClass() {
       return {
-        'note note-wrapper note-comment': true,
-        'gl-p-4': !this.isFirstNote,
+        'note note-wrapper note-comment gl-mb-4': true,
+        'gl-p-2 gl-mt-3 gl-pl-3': !this.isFirstNote,
       };
     },
     showReply() {
       return this.note.userPermissions.createNote && this.isFirstNote;
+    },
+    noteHeaderClass() {
+      return {
+        'note-header': true,
+        'gl-pt-2': !this.isFirstNote,
+      };
     },
     autosaveKey() {
       // eslint-disable-next-line @gitlab/require-i18n-strings
@@ -142,37 +153,41 @@ export default {
       @submitForm="updateNote"
     />
     <div v-else class="timeline-content-inner" data-testid="note-wrapper">
-      <div class="note-header">
-        <note-header :author="author" :created-at="note.createdAt" :note-id="note.id" />
-        <note-actions
-          :show-reply="showReply"
-          :show-edit="hasAdminPermission"
-          @startReplying="showReplyForm"
-          @startEditing="startEditing"
-        />
-        <!-- v-if condition should be moved to "delete" dropdown item as soon as we implement copying the link -->
-        <gl-dropdown
-          v-if="hasAdminPermission"
-          v-gl-tooltip
-          icon="ellipsis_v"
-          text-sr-only
-          right
-          :text="$options.i18n.moreActionsText"
-          :title="$options.i18n.moreActionsText"
-          category="tertiary"
-          no-caret
-        >
-          <gl-dropdown-item
-            variant="danger"
-            data-testid="delete-note-action"
-            @click="$emit('deleteNote')"
+      <div :class="noteHeaderClass">
+        <note-header :author="author" :created-at="note.createdAt" :note-id="note.id">
+          <span v-if="note.createdAt" class="d-none d-sm-inline">&middot;</span>
+        </note-header>
+        <div class="gl-display-inline-flex">
+          <note-actions
+            :show-reply="showReply"
+            :show-edit="hasAdminPermission"
+            @startReplying="showReplyForm"
+            @startEditing="startEditing"
+          />
+          <!-- v-if condition should be moved to "delete" dropdown item as soon as we implement copying the link -->
+          <gl-dropdown
+            v-if="hasAdminPermission"
+            v-gl-tooltip
+            icon="ellipsis_v"
+            text-sr-only
+            right
+            :text="$options.i18n.moreActionsText"
+            :title="$options.i18n.moreActionsText"
+            category="tertiary"
+            no-caret
           >
-            {{ $options.i18n.deleteNoteText }}
-          </gl-dropdown-item>
-        </gl-dropdown>
+            <gl-dropdown-item
+              variant="danger"
+              data-testid="delete-note-action"
+              @click="$emit('deleteNote')"
+            >
+              {{ $options.i18n.deleteNoteText }}
+            </gl-dropdown-item>
+          </gl-dropdown>
+        </div>
       </div>
       <div class="timeline-discussion-body">
-        <note-body ref="noteBody" :note="note" />
+        <note-body ref="noteBody" :note="note" :has-replies="hasReplies" />
       </div>
       <edited-at
         v-if="note.lastEditedBy"
