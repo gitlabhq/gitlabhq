@@ -279,139 +279,9 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
   unavailable repositories in the metrics and `praefect dataloss` sub-command because of the replica records being removed. If you encounter such repositories, remove
   the repository using `praefect remove-repository` to remove the repository's remaining records.
 
-  You can find repositories with invalid metadata records prior in GitLab 15.0 and later by searching for the log records outputted by the verifier. You can find an example log record [here](../administration/gitaly/praefect.md#repository-verification).
-- Praefect configuration structure in Omnibus GitLab [has changed](https://gitlab.com/gitlab-org/gitaly/-/issues/4467) to be consistent with the Praefect configuration structure
-  used in source installs. Praefect configuration is now under `praefect['configuration']` as a single hash. There are still other top-level keys in `praefect` used by
-  Omnibus GitLab.
-
-  Migrate by moving your existing configuration under the new structure. Below is the new structure with the old keys described in a comment above the key. Replace the
-  `...` with the value from the old key. Default values are the same. If you haven't configured a value previously, you don't need to configure it. Remove the old keys
-  from the configuration once migrated.
-
-  ```ruby
-  praefect['configuration'] = {
-    # praefect['listen_addr']
-    listen_addr: ...,
-    # praefect['socket_path']
-    socket_path: ...,
-    # praefect['prometheus_listen_addr']
-    prometheus_listen_addr: ...,
-    # praefect['tls_listen_addr']
-    tls_listen_addr: ...,
-    # praefect['separate_database_metrics']
-    prometheus_exclude_database_from_default_metrics: ...,
-    auth: {
-      # praefect['auth_token']
-      token: ...,
-      # praefect['auth_transitioning']
-      transitioning: ...,
-    },
-    logging: {
-      # praefect['logging_format']
-      format: ...,
-      # praefect['logging_level']
-      level: ...,
-    },
-    failover: {
-      # praefect['failover_enabled']
-      enabled: ...,
-    },
-    background_verification: {
-      # praefect['background_verification_delete_invalid_records']
-      delete_invalid_records: ...
-      # praefect['background_verification_verification_interval']
-      verification_interval: ...,
-    },
-    reconciliation: {
-      # praefect['reconciliation_scheduling_interval']
-      scheduling_interval: ...,
-      # praefect['reconciliation_histogram_buckets']. The old value was configured as a string
-      # such as '[0, 1, 2]'. The new value must be an array like [0, 1, 2].
-      histogram_buckets: ...,
-    },
-    tls: {
-      # praefect['certificate_path']
-      certificate_path: ...,
-      # praefect['key_path']
-      key_path: ...,
-    },
-    database: {
-      # praefect['database_host']
-      host: ...,
-      # praefect['database_port']
-      port: ...,
-      # praefect['database_user']
-      user: ...,
-      # praefect['database_password']
-      password: ...,
-      # praefect['database_dbname']
-      dbname: ...,
-      # praefect['database_sslmode']
-      sslmode: ...,
-      # praefect['database_sslcert']
-      sslcert: ...,
-      # praefect['database_sslkey']
-      sslkey: ...,
-      # praefect['database_sslrootcert']
-      sslrootcert: ...,
-      session_pooled: {
-        # praefect['database_direct_host']
-        host: ...,
-        # praefect['database_direct_port']
-        port: ...,
-        # praefect['database_direct_user']
-        user: ...,
-        # praefect['database_direct_password']
-        password: ...,
-        # praefect['database_direct_dbname']
-        dbname: ...,
-        # praefect['database_direct_sslmode']
-        sslmode: ...,
-        # praefect['database_direct_sslcert']
-        sslcert: ...,
-        # praefect['database_direct_sslkey']
-        sslkey: ...,
-        # praefect['database_direct_sslrootcert']
-        sslrootcert: ...,
-      }
-    },
-    sentry: {
-      # praefect['sentry_dsn']
-      sentry_dsn: ...,
-      # praefect['sentry_environment']
-      sentry_environment: ...,
-    },
-    prometheus: {
-      # praefect['prometheus_grpc_latency_buckets']. The old value was configured as a string
-      # such as '[0, 1, 2]'. The new value must be an array like [0, 1, 2].
-      grpc_latency_buckets: ...,
-    },
-    # praefect['graceful_stop_timeout']
-    graceful_stop_timeout: ...,
-
-    # praefect['virtual_storages']. The old value was a hash map but the new value is an array.
-    virtual_storage: [
-      {
-        # praefect['virtual_storages'][VIRTUAL_STORAGE_NAME]. The name was previously the key in
-        # the 'virtual_storages' hash.
-        name: ...,
-        # praefect['virtual_storages'][VIRTUAL_STORAGE_NAME]['nodes'][NODE_NAME]. The old value was a hash map
-        # but the new value is an array.
-        node: [
-          {
-            # praefect['virtual_storages'][VIRTUAL_STORAGE_NAME]['nodes'][NODE_NAME]. Use NODE_NAME key as the
-            # storage.
-            storage: ...,
-            # praefect['virtual_storages'][VIRTUAL_STORAGE_NAME]['nodes'][NODE_NAME]['address'].
-            address: ...,
-            # praefect['virtual_storages'][VIRTUAL_STORAGE_NAME]['nodes'][NODE_NAME]['token'].
-            token: ...
-          },
-        ],
-      }
-    ]
-  }
-  ```
+  You can find repositories with invalid metadata records prior in GitLab 15.0 and later by searching for the log records outputted by the verifier. [Read more about repository verification, and to see an example log entry](../administration/gitaly/praefect.md#repository-verification).
+- Praefect configuration changes significantly in Omnibus GitLab 16.0. You can begin migrating to the new structure in Omnibus GitLab 15.9 while backwards compatibility is
+  maintained in the lead up to Omnibus GitLab 16.0. [Read more about this change](#praefect-omnibus-gitlab-configuration-structure-change).
 
 ### 15.8.2
 
@@ -1631,6 +1501,157 @@ This issue is resolved in GitLab 15.3.3, so customers with the following configu
 - LFS is enabled.
 - LFS objects are being replicated across Geo sites.
 - Repositories are being pulled by using a Geo secondary site.
+
+### Praefect: Omnibus GitLab configuration structure change
+
+Praefect configuration structure in Omnibus GitLab [changes](https://gitlab.com/gitlab-org/gitaly/-/issues/4467) in GitLab 16.0 to be consistent with the Praefect configuration
+structure used in source installs.
+
+As a result of this change, a single hash under `praefect['configuration']` holds most Praefect
+configuration. Some `praefect['..']` configuration options will continue to be used by Omnibus GitLab 16.0 and later:
+
+- `enable`
+- `dir`
+- `log_directory`
+- `env_directory`
+- `env`
+- `wrapper_path`
+- `auto_migrate`
+- `consul_service_name`
+
+Migrate by moving your existing configuration under the new structure. The new structure is supported from Omnibus GitLab 15.9.
+
+The new structure is documented below with the old keys described in a comment above the new keys. When applying the new structure to your configuration:
+
+1. Replace the `...` with the value from the old key.
+1. Skip any keys you haven't configured a value for previously.
+1. Remove the old keys from the configuration once migrated.
+1. Optional but recommended. Include a trailing comma for all hash keys so the hash remains valid when keys are re-ordered or additional keys are added.
+
+```ruby
+praefect['configuration'] = {
+  # praefect['listen_addr']
+  listen_addr: ...,
+  # praefect['socket_path']
+  socket_path: ...,
+  # praefect['prometheus_listen_addr']
+  prometheus_listen_addr: ...,
+  # praefect['tls_listen_addr']
+  tls_listen_addr: ...,
+  # praefect['separate_database_metrics']
+  prometheus_exclude_database_from_default_metrics: ...,
+  auth: {
+    # praefect['auth_token']
+    token: ...,
+    # praefect['auth_transitioning']
+    transitioning: ...,
+  },
+  logging: {
+    # praefect['logging_format']
+    format: ...,
+    # praefect['logging_level']
+    level: ...,
+  },
+  failover: {
+    # praefect['failover_enabled']
+    enabled: ...,
+  },
+  background_verification: {
+    # praefect['background_verification_delete_invalid_records']
+    delete_invalid_records: ...,
+    # praefect['background_verification_verification_interval']
+    verification_interval: ...,
+  },
+  reconciliation: {
+    # praefect['reconciliation_scheduling_interval']
+    scheduling_interval: ...,
+    # praefect['reconciliation_histogram_buckets']. The old value was configured as a string
+    # such as '[0, 1, 2]'. The new value must be an array like [0, 1, 2].
+    histogram_buckets: ...,
+  },
+  tls: {
+    # praefect['certificate_path']
+    certificate_path: ...,
+    # praefect['key_path']
+    key_path: ...,
+  },
+  database: {
+    # praefect['database_host']
+    host: ...,
+    # praefect['database_port']
+    port: ...,
+    # praefect['database_user']
+    user: ...,
+    # praefect['database_password']
+    password: ...,
+    # praefect['database_dbname']
+    dbname: ...,
+    # praefect['database_sslmode']
+    sslmode: ...,
+    # praefect['database_sslcert']
+    sslcert: ...,
+    # praefect['database_sslkey']
+    sslkey: ...,
+    # praefect['database_sslrootcert']
+    sslrootcert: ...,
+    session_pooled: {
+      # praefect['database_direct_host']
+      host: ...,
+      # praefect['database_direct_port']
+      port: ...,
+      # praefect['database_direct_user']
+      user: ...,
+      # praefect['database_direct_password']
+      password: ...,
+      # praefect['database_direct_dbname']
+      dbname: ...,
+      # praefect['database_direct_sslmode']
+      sslmode: ...,
+      # praefect['database_direct_sslcert']
+      sslcert: ...,
+      # praefect['database_direct_sslkey']
+      sslkey: ...,
+      # praefect['database_direct_sslrootcert']
+      sslrootcert: ...,
+    }
+  },
+  sentry: {
+    # praefect['sentry_dsn']
+    sentry_dsn: ...,
+    # praefect['sentry_environment']
+    sentry_environment: ...,
+  },
+  prometheus: {
+    # praefect['prometheus_grpc_latency_buckets']. The old value was configured as a string
+    # such as '[0, 1, 2]'. The new value must be an array like [0, 1, 2].
+    grpc_latency_buckets: ...,
+  },
+  # praefect['graceful_stop_timeout']
+  graceful_stop_timeout: ...,
+
+  # praefect['virtual_storages']. The old value was a hash map but the new value is an array.
+  virtual_storage: [
+    {
+      # praefect['virtual_storages'][VIRTUAL_STORAGE_NAME]. The name was previously the key in
+      # the 'virtual_storages' hash.
+      name: ...,
+      # praefect['virtual_storages'][VIRTUAL_STORAGE_NAME]['nodes'][NODE_NAME]. The old value was a hash map
+      # but the new value is an array.
+      node: [
+        {
+          # praefect['virtual_storages'][VIRTUAL_STORAGE_NAME]['nodes'][NODE_NAME]. Use NODE_NAME key as the
+          # storage.
+          storage: ...,
+          # praefect['virtual_storages'][VIRTUAL_STORAGE_NAME]['nodes'][NODE_NAME]['address'].
+          address: ...,
+          # praefect['virtual_storages'][VIRTUAL_STORAGE_NAME]['nodes'][NODE_NAME]['token'].
+          token: ...,
+        },
+      ],
+    }
+  ]
+}
+```
 
 ## Miscellaneous
 

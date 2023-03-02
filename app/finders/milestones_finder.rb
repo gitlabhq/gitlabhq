@@ -15,6 +15,7 @@
 class MilestonesFinder
   include FinderMethods
   include TimeFrameFilter
+  include UpdatedAtFilter
 
   attr_reader :params
 
@@ -92,12 +93,6 @@ class MilestonesFinder
 
   def sort_by_expired_last?(sort_by)
     EXPIRED_LAST_SORTS.include?(sort_by)
-  end
-
-  def by_updated_at(items)
-    items = items.updated_before(params[:updated_before]) if params[:updated_before].present?
-    items = items.updated_after(params[:updated_after]) if params[:updated_after].present?
-    items
   end
 
   def by_iids(items)

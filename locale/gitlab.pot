@@ -17699,9 +17699,6 @@ msgstr ""
 msgid "February"
 msgstr ""
 
-msgid "Feedback and Updates"
-msgstr ""
-
 msgid "Fetch and check out this merge request's feature branch:"
 msgstr ""
 
@@ -19050,9 +19047,6 @@ msgid "GitLab for Jira Cloud"
 msgstr ""
 
 msgid "GitLab group: %{source_link}"
-msgstr ""
-
-msgid "GitLab incubates features to explore new use cases. These features are updated regularly, and support is limited"
 msgstr ""
 
 msgid "GitLab informs you if a new version is available. %{link_start}What information does GitLab Inc. collect?%{link_end}"
@@ -25848,9 +25842,6 @@ msgid "MRDiff|Show full file"
 msgstr ""
 
 msgid "Macbook Touch ID on Edge"
-msgstr ""
-
-msgid "Machine Learning Experiment Tracking is in Incubating Phase"
 msgstr ""
 
 msgid "Made this %{type} confidential."

@@ -1282,7 +1282,7 @@ module Ci
       types_to_collect = report_types.empty? ? ::Ci::JobArtifact::SECURITY_REPORT_FILE_TYPES : report_types
 
       ::Gitlab::Ci::Reports::Security::Reports.new(self).tap do |security_reports|
-        latest_report_builds(reports_scope).each do |build|
+        latest_report_builds_in_self_and_project_descendants(reports_scope).each do |build|
           build.collect_security_reports!(security_reports, report_types: types_to_collect)
         end
       end
