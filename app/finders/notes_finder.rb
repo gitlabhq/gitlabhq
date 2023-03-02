@@ -117,7 +117,7 @@ class NotesFinder
     when "snippet", "project_snippet"
       SnippetsFinder.new(@current_user, project: @project).execute # rubocop: disable CodeReuse/Finder
     when "personal_snippet"
-      PersonalSnippet.all
+      SnippetsFinder.new(@current_user, only_personal: true).execute # rubocop: disable CodeReuse/Finder
     else
       raise "invalid target_type '#{noteable_type}'"
     end
