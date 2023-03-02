@@ -72,6 +72,7 @@ module Ci
     delegate :trigger_short_token, to: :trigger_request, allow_nil: true
     delegate :ensure_persistent_ref, to: :pipeline
     delegate :enable_debug_trace!, to: :metadata
+    delegate :debug_trace_enabled?, to: :metadata
 
     serialize :options # rubocop:disable Cop/ActiveRecordSerialize
     serialize :yaml_variables, Gitlab::Serializer::Ci::Variables # rubocop:disable Cop/ActiveRecordSerialize
@@ -1059,11 +1060,10 @@ module Ci
     end
 
     def debug_mode?
-      # TODO: Have `debug_mode?` check against data on sent back from runner
-      # to capture all the ways that variables can be set.
-      # See (https://gitlab.com/gitlab-org/gitlab/-/issues/290955)
-      variables['CI_DEBUG_TRACE']&.value&.casecmp('true') == 0 ||
-        variables['CI_DEBUG_SERVICES']&.value&.casecmp('true') == 0
+      # perform the check on both sides in case the runner version is old
+      debug_trace_enabled? ||
+        Gitlab::Utils.to_boolean(variables['CI_DEBUG_SERVICES']&.value, default: false) ||
+        Gitlab::Utils.to_boolean(variables['CI_DEBUG_TRACE']&.value, default: false)
     end
 
     def drop_with_exit_code!(failure_reason, exit_code)
