@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Dashboard shortcuts', :js, feature_category: :not_owned do
+RSpec.describe 'Dashboard shortcuts', :js, feature_category: :shared do
   context 'logged in' do
     let(:user) { create(:user) }
     let(:project) { create(:project) }

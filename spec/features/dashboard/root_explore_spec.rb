@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Root explore', :saas, feature_category: :not_owned do
+RSpec.describe 'Root explore', :saas, feature_category: :shared do
   let_it_be(:public_project) { create(:project, :public) }
   let_it_be(:archived_project) { create(:project, :archived) }
   let_it_be(:internal_project) { create(:project, :internal) }

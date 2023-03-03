@@ -13,6 +13,9 @@ module DesignManagement
     include RelativePositioning
     include Todoable
     include Participable
+    include CacheMarkdownField
+
+    cache_markdown_field :description
 
     belongs_to :project, inverse_of: :designs
     belongs_to :issue
@@ -34,6 +37,7 @@ module DesignManagement
     validates :project, :filename, presence: true
     validates :issue, presence: true, unless: :importing?
     validates :filename, uniqueness: { scope: :issue_id }, length: { maximum: 255 }
+    validates :description, length: { maximum: Gitlab::Database::MAX_TEXT_SIZE_LIMIT }
     validate :validate_file_is_image
 
     alias_attribute :title, :filename
@@ -180,10 +184,6 @@ module DesignManagement
 
     def self.build_full_path(issue, design)
       File.join(DesignManagement.designs_directory, "issue-#{issue.iid}", design.filename)
-    end
-
-    def description
-      ''
     end
 
     def new_design?

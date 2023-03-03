@@ -50,7 +50,7 @@ module SidebarsHelper
         availability: user.status&.availability.to_s,
         emoji: user.status&.emoji,
         message: user.status&.message_html&.html_safe,
-        clear_after: user.status&.clear_status_at.to_s
+        clear_after: user_clear_status_at(user)
       },
       trial: {
         has_start_trial: current_user_menu?(:start_trial),

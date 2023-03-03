@@ -53,7 +53,9 @@
           = status_form.hidden_field :emoji, data: { js_name: 'emoji' }
           = status_form.hidden_field :message, data: { js_name: 'message' }
           = status_form.hidden_field :availability, data: { js_name: 'availability' }
-          = status_form.hidden_field :clear_status_after, value: @user.status&.clear_status_at&.to_s(:iso8601), data: { js_name: 'clearStatusAfter' }
+          = status_form.hidden_field :clear_status_after,
+            value: user_clear_status_at(@user),
+            data: { js_name: 'clearStatusAfter' }
     .col-lg-12
       %hr
   .row.user-time-preferences.js-search-settings-section

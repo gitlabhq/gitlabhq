@@ -865,9 +865,6 @@ msgstr ""
 msgid "%{message} showing first %{warnings_displayed}"
 msgstr ""
 
-msgid "%{message}. Your attention request was removed."
-msgstr ""
-
 msgid "%{milestone} (expired)"
 msgstr ""
 
@@ -34960,7 +34957,13 @@ msgstr ""
 msgid "ProtectedBranch|default"
 msgstr ""
 
+msgid "ProtectedEnvironments|Add approval rules"
+msgstr ""
+
 msgid "ProtectedEnvironments|Add deployment rules"
+msgstr ""
+
+msgid "ProtectedEnvironments|Allowed to approve"
 msgstr ""
 
 msgid "ProtectedEnvironments|Allowed to deploy"
@@ -34972,16 +34975,31 @@ msgstr ""
 msgid "ProtectedEnvironments|Approval rules"
 msgstr ""
 
+msgid "ProtectedEnvironments|Approvals required"
+msgstr ""
+
+msgid "ProtectedEnvironments|Create approval rule"
+msgstr ""
+
 msgid "ProtectedEnvironments|Create deployment rule"
 msgstr ""
 
-msgid "ProtectedEnvironments|Delete deployment rule"
+msgid "ProtectedEnvironments|Delete approver rule"
+msgstr ""
+
+msgid "ProtectedEnvironments|Delete deployer rule"
+msgstr ""
+
+msgid "ProtectedEnvironments|Edit"
 msgstr ""
 
 msgid "ProtectedEnvironments|List of protected environments (%{protectedEnvironmentsCount})"
 msgstr ""
 
 msgid "ProtectedEnvironments|Number of approvals must be between 1 and 5"
+msgstr ""
+
+msgid "ProtectedEnvironments|Save"
 msgstr ""
 
 msgid "ProtectedEnvironments|Set which groups, access levels or users are required to approve."

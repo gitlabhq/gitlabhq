@@ -167,3 +167,5 @@ export const expandAllDiscussions = ({ dispatch, state }) =>
 export const toggleResolveDiscussion = ({ commit }, draftId) => {
   commit(types.TOGGLE_RESOLVE_DISCUSSION, draftId);
 };
+
+export const clearDrafts = ({ commit }) => commit(types.CLEAR_DRAFTS);

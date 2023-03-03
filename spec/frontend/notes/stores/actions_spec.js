@@ -906,6 +906,20 @@ describe('Actions Notes Store', () => {
         expect(data).toBe(res);
         expect(createAlert).not.toHaveBeenCalled();
       });
+
+      it('dispatches clearDrafts is command names contains submit_review', async () => {
+        const response = { command_names: ['submit_review'], valid: true };
+        dispatch = jest.fn().mockResolvedValue(response);
+        await actions.saveNote(
+          {
+            commit() {},
+            dispatch,
+          },
+          payload,
+        );
+
+        expect(dispatch).toHaveBeenCalledWith('batchComments/clearDrafts');
+      });
     });
   });
 

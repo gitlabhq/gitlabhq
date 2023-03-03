@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 GitLab provides a variety of tools to help operate and maintain
 your applications.
 
-## Measure reliability and stability with metrics (DEPRECATED)
+## Measure reliability and stability with metrics (deprecated)
 
 > [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/346541) in GitLab 14.7.
 
@@ -42,7 +42,7 @@ Are your alerts too noisy? Alerts configured on GitLab metrics can configured
 and fine-tuned in GitLab immediately following a fire-fight.
 
 - [Manage alerts and incidents](incident_management/index.md) in GitLab.
-- [Configure alerts for metrics](metrics/alerts.md) in GitLab. (DEPRECATED)
+- [Configure alerts for metrics](metrics/alerts.md) in GitLab. (deprecated)
 - Create a [status page](incident_management/status_page.md)
   to communicate efficiently to your users during an incident.
 

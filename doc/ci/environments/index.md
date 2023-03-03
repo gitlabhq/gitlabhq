@@ -220,7 +220,7 @@ The `when: manual` action:
 
 You can find the play button in the pipelines, environments, deployments, and jobs views.
 
-## Configure Kubernetes deployments (DEPRECATED)
+## Configure Kubernetes deployments (deprecated)
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/27630) in GitLab 12.6.
 > - [Deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
@@ -879,7 +879,7 @@ It may take a minute or two for data to appear after initial deployment.
 
 Metric charts can be embedded in GitLab Flavored Markdown. See [Embedding Metrics in GitLab Flavored Markdown](../../operations/metrics/embed.md) for more details.
 
-### Web terminals (DEPRECATED)
+### Web terminals (deprecated)
 
 > [Deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
 

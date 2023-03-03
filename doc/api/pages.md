@@ -10,9 +10,13 @@ Endpoints for managing [GitLab Pages](https://about.gitlab.com/stages-devops-lif
 
 The GitLab Pages feature must be enabled to use these endpoints. Find out more about [administering](../administration/pages/index.md) and [using](../user/project/pages/index.md) the feature.
 
-## Unpublish pages
+## Unpublish Pages
 
-Remove pages. The user must have administrator access.
+Prerequisite:
+
+- You must have administrator access to the instance.
+
+Remove Pages.
 
 ```plaintext
 DELETE /projects/:id/pages

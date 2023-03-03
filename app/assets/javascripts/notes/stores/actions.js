@@ -19,7 +19,6 @@ import { mergeUrlParams } from '~/lib/utils/url_utility';
 import sidebarTimeTrackingEventHub from '~/sidebar/event_hub';
 import TaskList from '~/task_list';
 import mrWidgetEventHub from '~/vue_merge_request_widget/event_hub';
-import SidebarStore from '~/sidebar/stores/sidebar_store';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { TYPENAME_NOTE } from '~/graphql_shared/constants';
 import notesEventHub from '../event_hub';
@@ -467,12 +466,17 @@ export const saveNote = ({ commit, dispatch }, noteData) => {
 
   const processQuickActions = (res) => {
     const {
-      errors: { commands_only: commandsOnly, command_names: commandNames } = {
+      errors: { commands_only: commandsOnly } = {
         commands_only: null,
         command_names: [],
       },
+      command_names: commandNames,
     } = res;
-    let message = commandsOnly;
+    const message = commandsOnly;
+
+    if (commandNames?.indexOf('submit_review') >= 0) {
+      dispatch('batchComments/clearDrafts');
+    }
 
     /*
      The following reply means that quick actions have been successfully applied:
@@ -489,13 +493,6 @@ export const saveNote = ({ commit, dispatch }, noteData) => {
         message.some((m) => m.includes('Made this issue confidential'))
       ) {
         confidentialWidget.setConfidentiality();
-      }
-
-      const commands = ['approve', 'merge', 'assign_reviewer', 'assign'];
-      const commandUpdatesAttentionRequest = commandNames[0].some((c) => commands.includes(c));
-
-      if (commandUpdatesAttentionRequest && SidebarStore.singleton.currentUserHasAttention) {
-        message = sprintf(__('%{message}. Your attention request was removed.'), { message });
       }
 
       $('.js-gfm-input').trigger('clear-commands-cache.atwho');

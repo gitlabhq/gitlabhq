@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_relative '../../../provider/helpers/contract_source_helper'
 
-RSpec.describe Provider::ContractSourceHelper, feature_category: :not_owned do
+RSpec.describe Provider::ContractSourceHelper, feature_category: :shared do
   let(:pact_helper_path) { 'pact_helpers/project/pipelines/new/post_create_pipeline_helper.rb' }
   let(:split_pact_helper_path) { %w[pipelines new post_create_pipeline] }
   let(:provider_url_path) { 'POST%20create%20pipeline' }

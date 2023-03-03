@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Breadcrumbs schema markup', :aggregate_failures, feature_category: :not_owned do
+RSpec.describe 'Breadcrumbs schema markup', :aggregate_failures, feature_category: :shared do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, :public, namespace: user.namespace) }
   let_it_be(:issue) { create(:issue, project: project) }

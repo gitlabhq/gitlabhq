@@ -130,7 +130,6 @@ module Gitlab
 
               new(
                 id: entry[:oid],
-                root_id: root_tree.oid,
                 name: entry[:name],
                 type: entry[:type],
                 mode: entry[:filemode].to_s(8),

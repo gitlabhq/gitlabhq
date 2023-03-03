@@ -88,9 +88,9 @@ name and permissions.
 
 Prerequisites:
 
-- You must have administrator access.
-- [Generate an SSH key pair](../../ssh.md#generate-an-ssh-key-pair). Put the private SSH
-  key on the host that requires access to the repository.
+- You must have administrator access to the instance.
+- You must [generate an SSH key pair](../../ssh.md#generate-an-ssh-key-pair).
+- You must put the private SSH key on the host that requires access to the repository.
 
 To create a public deploy key:
 

@@ -3,7 +3,7 @@
 require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/lint/last_keyword_argument'
 
-RSpec.describe RuboCop::Cop::Lint::LastKeywordArgument, :ruby27, feature_category: :not_owned do
+RSpec.describe RuboCop::Cop::Lint::LastKeywordArgument, :ruby27, feature_category: :shared do
   before do
     described_class.instance_variable_set(:@keyword_warnings, nil)
     allow(Dir).to receive(:glob).and_call_original

@@ -426,7 +426,7 @@ like this example:
 }
 ```
 
-## `kubernetes.log` (DEPRECATED)
+## `kubernetes.log` (deprecated)
 
 > [Deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
 

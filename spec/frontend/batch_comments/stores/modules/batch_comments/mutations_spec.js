@@ -104,4 +104,14 @@ describe('Batch comments mutations', () => {
       ]);
     });
   });
+
+  describe(types.CLEAR_DRAFTS, () => {
+    it('clears drafts array', () => {
+      state.drafts.push({ id: 1 });
+
+      mutations[types.CLEAR_DRAFTS](state);
+
+      expect(state.drafts).toEqual([]);
+    });
+  });
 });

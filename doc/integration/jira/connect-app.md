@@ -27,8 +27,8 @@ at least the Maintainer role in the GitLab.com namespace.
 This integration method supports [Smart Commits](dvcs/index.md#smart-commits).
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For a walkthrough of the integration with GitLab for Jira Cloud app, watch
-[Configure GitLab.com Jira Could Integration using Marketplace App](https://youtu.be/SwR-g1s1zTo) on YouTube.
+For an overview, see
+[Configure the GitLab for Jira Cloud app from the Atlassian Marketplace](https://youtu.be/SwR-g1s1zTo).
 
 To install the GitLab for Jira Cloud app:
 

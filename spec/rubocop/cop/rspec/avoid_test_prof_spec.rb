@@ -5,7 +5,7 @@ require 'rspec-parameterized'
 
 require_relative '../../../../rubocop/cop/rspec/avoid_test_prof'
 
-RSpec.describe RuboCop::Cop::RSpec::AvoidTestProf, feature_category: :not_owned do
+RSpec.describe RuboCop::Cop::RSpec::AvoidTestProf, feature_category: :shared do
   using RSpec::Parameterized::TableSyntax
 
   context 'when there are offenses' do

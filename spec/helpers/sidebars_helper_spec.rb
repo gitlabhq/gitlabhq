@@ -98,7 +98,7 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
           availability: user.status&.availability.to_s,
           emoji: user.status&.emoji,
           message: user.status&.message_html&.html_safe,
-          clear_after: user.status&.clear_status_at.to_s
+          clear_after: nil
         },
         trial: {
           has_start_trial: helper.current_user_menu?(:start_trial),

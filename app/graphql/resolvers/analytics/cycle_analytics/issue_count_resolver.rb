@@ -31,12 +31,10 @@ module Resolvers
           description: 'Issues created before the date.'
 
         def resolve(**args)
-          scope = IssuesFinder
+          value = IssuesFinder
             .new(current_user, process_params(args))
             .execute
-
-          scope = scope.in_projects(args[:project_ids]) if args[:project_ids]
-          value = scope.count
+            .count
 
           {
             value: value,
@@ -53,6 +51,7 @@ module Resolvers
           params[:label_name] = params.delete(:label_names) if params[:label_names]
           params[:created_after] = params.delete(:from)
           params[:created_before] = params.delete(:to)
+          params[:projects] = params[:project_ids] if params[:project_ids]
 
           params.merge(finder_params)
         end

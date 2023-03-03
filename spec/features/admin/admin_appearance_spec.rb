@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Admin Appearance', feature_category: :not_owned do
+RSpec.describe 'Admin Appearance', feature_category: :shared do
   let!(:appearance) { create(:appearance) }
   let(:admin) { create(:admin) }
 

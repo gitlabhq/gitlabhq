@@ -5,7 +5,7 @@ group: Security Policies
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# License Check Policies (DEPRECATED) **(ULTIMATE)**
+# License Check Policies (deprecated) **(ULTIMATE)**
 
 > [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/390417) in GitLab 15.9.
 

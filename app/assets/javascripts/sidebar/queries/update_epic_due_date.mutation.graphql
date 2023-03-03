@@ -4,6 +4,7 @@ mutation updateEpicDueDate($input: UpdateEpicInput!) {
       id
       dueDateIsFixed
       dueDateFixed
+      dueDate
       dueDateFromMilestones
     }
     errors

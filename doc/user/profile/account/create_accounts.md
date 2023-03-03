@@ -16,9 +16,9 @@ You can create users:
 
 ## Create users on sign-in page
 
-Prerequisites:
+Prerequisite:
 
-- [Sign-up enabled](../../admin_area/settings/sign_up_restrictions.md)
+- [Sign-up must be enabled](../../admin_area/settings/sign_up_restrictions.md).
 
 Users can create their own accounts by either:
 
@@ -27,9 +27,9 @@ Users can create their own accounts by either:
 
 ## Create users in Admin Area
 
-Prerequisites:
+Prerequisite:
 
-- You must have administrator access for the instance.
+- You must have administrator access to the instance.
 
 To create a user manually:
 

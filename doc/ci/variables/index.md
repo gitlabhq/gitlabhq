@@ -195,7 +195,7 @@ You can make a CI/CD variable available to all projects and groups in a GitLab i
 
 Prerequisite:
 
-- You must have administrator access.
+- You must have administrator access to the instance.
 
 To add an instance variable:
 

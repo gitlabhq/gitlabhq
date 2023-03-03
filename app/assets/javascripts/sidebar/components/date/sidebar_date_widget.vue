@@ -54,6 +54,16 @@ export default {
       type: Boolean,
       default: false,
     },
+    minDate: {
+      required: false,
+      type: Date,
+      default: null,
+    },
+    maxDate: {
+      required: false,
+      type: Date,
+      default: null,
+    },
   },
   data() {
     return {
@@ -292,6 +302,8 @@ export default {
         v-if="!isLoading"
         ref="datePicker"
         class="gl-relative"
+        :min-date="minDate"
+        :max-date="maxDate"
         :default-date="parsedDate"
         :first-day="firstDay"
         show-clear-button

@@ -8,7 +8,7 @@ RSpec.configure do |config|
   config.include RSpec::Benchmark::Matchers
 end
 
-RSpec.describe Gitlab::Utils::StrongMemoize, feature_category: :not_owned do
+RSpec.describe Gitlab::Utils::StrongMemoize, feature_category: :shared do
   let(:klass) do
     strong_memoize_class = described_class
 

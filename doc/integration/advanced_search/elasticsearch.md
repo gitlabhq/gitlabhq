@@ -165,9 +165,11 @@ These errors may occur when indexing Git repository data.
 
 ## Enable advanced search
 
-For GitLab instances with more than 50 GB repository data you can follow the instructions for [how to index large instances efficiently](#how-to-index-large-instances-efficiently) below.
+Prerequisite:
 
-To enable advanced search, you must have administrator access to GitLab:
+- You must have administrator access to the instance.
+
+To enable advanced search:
 
 1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Settings > Advanced Search**.
@@ -201,6 +203,8 @@ When your Elasticsearch cluster is down while Elasticsearch is enabled,
 you might have problems updating documents such as issues because your
 instance queues a job to index the change, but cannot find a valid
 Elasticsearch cluster.
+
+For GitLab instances with more than 50 GB of repository data, see [How to index large instances efficiently](#how-to-index-large-instances-efficiently).
 
 ### Advanced search configuration
 

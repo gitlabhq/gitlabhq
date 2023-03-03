@@ -76,7 +76,7 @@ To configure the Jira development panel on GitLab.com:
 
 Prerequisites:
 
-- You must have administrator access for the instance.
+- You must have administrator access to the instance.
 - Your GitLab installation must not use a [relative URL](https://docs.gitlab.com/omnibus/settings/configuration.html#configure-a-relative-url-for-gitlab)
   (for example, `https://example.com/gitlab`).
 

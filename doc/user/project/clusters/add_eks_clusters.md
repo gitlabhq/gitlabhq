@@ -4,7 +4,7 @@ group: Configure
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Connect EKS clusters through cluster certificates (DEPRECATED) **(FREE)**
+# Connect EKS clusters through cluster certificates (deprecated) **(FREE)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/22392) in GitLab 12.5.
 > - [Deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
@@ -25,7 +25,7 @@ use the [GitLab agent](../../clusters/agent/index.md).
 
 To create a new cluster from GitLab, use [Infrastructure as Code](../../infrastructure/iac/index.md).
 
-### How to create a new cluster on EKS through cluster certificates (DEPRECATED)
+### How to create a new cluster on EKS through cluster certificates (deprecated)
 
 > [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/327908) in GitLab 14.0.
 

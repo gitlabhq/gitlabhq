@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe "Admin::AbuseReports", :js, feature_category: :not_owned do
+RSpec.describe "Admin::AbuseReports", :js, feature_category: :shared do
   let(:user) { create(:user) }
 
   context 'as an admin' do

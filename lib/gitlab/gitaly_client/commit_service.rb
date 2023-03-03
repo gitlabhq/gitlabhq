@@ -146,7 +146,6 @@ module Gitlab
           message.entries.map do |gitaly_tree_entry|
             Gitlab::Git::Tree.new(
               id: gitaly_tree_entry.oid,
-              root_id: gitaly_tree_entry.root_oid,
               type: gitaly_tree_entry.type.downcase,
               mode: gitaly_tree_entry.mode.to_s(8),
               name: File.basename(gitaly_tree_entry.path),

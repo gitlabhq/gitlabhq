@@ -91,7 +91,7 @@ export const designUploadMutationUpdatedResponse = {
   },
 };
 
-export const permissionsQueryResponse = {
+export const getPermissionsQueryResponse = (createDesign = true) => ({
   data: {
     project: {
       __typename: 'Project',
@@ -99,11 +99,11 @@ export const permissionsQueryResponse = {
       issue: {
         __typename: 'Issue',
         id: 'issue-1',
-        userPermissions: { __typename: 'UserPermissions', createDesign: true },
+        userPermissions: { __typename: 'UserPermissions', createDesign },
       },
     },
   },
-};
+});
 
 export const reorderedDesigns = [
   {

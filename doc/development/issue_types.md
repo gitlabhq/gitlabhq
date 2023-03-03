@@ -4,7 +4,7 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Issue Types (DEPRECATED)
+# Issue Types (deprecated)
 
 WARNING:
 We are deprecating Issue Types as of GitLab 14.2 in favor of [Work Items and Work Item Types](work_items.md).

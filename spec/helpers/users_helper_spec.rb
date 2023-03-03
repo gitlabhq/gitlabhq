@@ -37,6 +37,35 @@ RSpec.describe UsersHelper do
     end
   end
 
+  describe '#user_clear_status_at' do
+    context 'when status exists' do
+      context 'with clear_status_at set' do
+        it 'has the correct iso formatted date', time_travel_to: '2020-01-01 00:00:00 +0000' do
+          clear_status_at = 1.day.from_now
+          status = build_stubbed(:user_status, clear_status_at: clear_status_at)
+
+          expect(user_clear_status_at(status.user)).to eq('2020-01-02T00:00:00Z')
+        end
+      end
+
+      context 'without clear_status_at set' do
+        it 'returns nil' do
+          status = build_stubbed(:user_status, clear_status_at: nil)
+
+          expect(user_clear_status_at(status.user)).to be_nil
+        end
+      end
+    end
+
+    context 'without status' do
+      it 'returns nil' do
+        user = build_stubbed(:user)
+
+        expect(user_clear_status_at(user)).to be_nil
+      end
+    end
+  end
+
   describe '#profile_tabs' do
     subject(:tabs) { helper.profile_tabs }
 

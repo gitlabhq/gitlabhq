@@ -4150,7 +4150,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
           set_user_status
 
           expect(response).to have_gitlab_http_status(:success)
-          expect(user_with_status.status).to be_nil
+          expect(user_with_status.reset.status).to be_nil
         end
       end
     end
@@ -4178,7 +4178,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
           set_user_status
 
           expect(response).to have_gitlab_http_status(:success)
-          expect(user_with_status.status.clear_status_at).to be_nil
+          expect(user_with_status.reset.status.clear_status_at).to be_nil
         end
       end
 
@@ -4217,7 +4217,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
           set_user_status
 
           expect(response).to have_gitlab_http_status(:success)
-          expect(user_with_status.status).to be_nil
+          expect(user_with_status.reset.status).to be_nil
         end
       end
 
@@ -4229,7 +4229,7 @@ RSpec.describe API::Users, feature_category: :user_profile do
           set_user_status
 
           expect(response).to have_gitlab_http_status(:success)
-          expect(user_with_status.status.clear_status_at).to be_nil
+          expect(user_with_status.reset.status.clear_status_at).to be_nil
         end
       end
     end

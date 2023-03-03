@@ -35,7 +35,7 @@ import {
   designListQueryResponse,
   designUploadMutationCreatedResponse,
   designUploadMutationUpdatedResponse,
-  permissionsQueryResponse,
+  getPermissionsQueryResponse,
   moveDesignMutationResponse,
   reorderedDesigns,
   moveDesignMutationResponseWithErrors,
@@ -181,7 +181,7 @@ describe('Design management index page', () => {
 
     const requestHandlers = [
       [getDesignListQuery, jest.fn().mockResolvedValue(designListQueryResponse)],
-      [permissionsQuery, jest.fn().mockResolvedValue(permissionsQueryResponse)],
+      [permissionsQuery, jest.fn().mockResolvedValue(getPermissionsQueryResponse())],
       [moveDesignMutation, moveDesignHandler],
     ];
 

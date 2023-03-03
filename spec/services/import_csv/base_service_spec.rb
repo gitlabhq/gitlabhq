@@ -55,42 +55,34 @@ RSpec.describe ImportCsv::BaseService, feature_category: :importers do
     subject { service.execute }
 
     it_behaves_like 'correctly handles invalid files'
-  end
 
-  describe '#detect_col_sep' do
-    context 'when header contains invalid separators' do
-      it 'raises error' do
-        header = 'Name&email'
+    describe '#detect_col_sep' do
+      using RSpec::Parameterized::TableSyntax
 
-        expect { subject.send(:detect_col_sep, header) }.to raise_error(CSV::MalformedCSVError)
+      let(:file) { double }
+
+      before do
+        allow(service).to receive_message_chain('csv_data.lines.first').and_return(header)
       end
-    end
 
-    context 'when header is valid' do
-      shared_examples 'header with valid separators' do
-        let(:header) { "Name#{separator}email" }
+      where(:sep_character, :valid) do
+        '&' | false
+        '?' | false
+        ';' | true
+        ',' | true
+        "\t" | true
+      end
 
-        it 'returns separator value' do
-          expect(subject.send(:detect_col_sep, header)).to eq(separator)
+      with_them do
+        let(:header) { "Name#{sep_character}email" }
+
+        it 'responds appropriately' do
+          if valid
+            expect(service.send(:detect_col_sep)).to eq sep_character
+          else
+            expect { service.send(:detect_col_sep) }.to raise_error(CSV::MalformedCSVError)
+          end
         end
-      end
-
-      context 'when separator is ;' do
-        let(:separator) { ';' }
-
-        it_behaves_like 'header with valid separators'
-      end
-
-      context 'when separator is \t' do
-        let(:separator) { "\t" }
-
-        it_behaves_like 'header with valid separators'
-      end
-
-      context 'when separator is ,' do
-        let(:separator) { ',' }
-
-        it_behaves_like 'header with valid separators'
       end
     end
   end

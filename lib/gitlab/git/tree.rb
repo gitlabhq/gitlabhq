@@ -6,7 +6,7 @@ module Gitlab
       include Gitlab::EncodingHelper
       extend Gitlab::Git::WrapsGitalyErrors
 
-      attr_accessor :id, :root_id, :type, :mode, :commit_id, :submodule_url
+      attr_accessor :id, :type, :mode, :commit_id, :submodule_url
       attr_writer :name, :path, :flat_path
 
       class << self
@@ -61,7 +61,7 @@ module Gitlab
       end
 
       def initialize(options)
-        %w(id root_id name path flat_path type mode commit_id).each do |key|
+        %w(id name path flat_path type mode commit_id).each do |key|
           self.send("#{key}=", options[key.to_sym]) # rubocop:disable GitlabSecurity/PublicSend
         end
       end

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ApplicationSetting, feature_category: :not_owned, type: :model do
+RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
   using RSpec::Parameterized::TableSyntax
 
   subject(:setting) { described_class.create_from_defaults }

@@ -5,7 +5,7 @@ group: Composition Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# License compliance (DEPRECATED) **(ULTIMATE)**
+# License compliance (deprecated) **(ULTIMATE)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5483) in GitLab 11.0.
 > - [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/387561) in GitLab 15.9.

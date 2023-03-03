@@ -26,7 +26,7 @@ for the Files API. No other new features are provided by this override.
 
 Prerequisite:
 
-- You must have administrator access for your instance.
+- You must have administrator access to the instance.
 
 To override the general user and IP rate limits for requests to the Repository files API:
 

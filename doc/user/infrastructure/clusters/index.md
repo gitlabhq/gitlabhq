@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 To connect clusters to GitLab, use the [GitLab agent](../../clusters/agent/index.md).
 
-## Certificate-based Kubernetes integration (DEPRECATED)
+## Certificate-based Kubernetes integration (deprecated)
 
 WARNING:
 In GitLab 14.5, the certificate-based method to connect Kubernetes clusters

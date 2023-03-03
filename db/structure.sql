@@ -15289,7 +15289,11 @@ CREATE TABLE design_management_designs (
     filename character varying NOT NULL,
     relative_position integer,
     iid integer,
+    cached_markdown_version integer,
+    description text,
+    description_html text,
     CONSTRAINT check_07155e2715 CHECK ((char_length((filename)::text) <= 255)),
+    CONSTRAINT check_aaf9fa6ae5 CHECK ((char_length(description) <= 1000000)),
     CONSTRAINT check_cfb92df01a CHECK ((iid IS NOT NULL))
 );
 
@@ -32092,6 +32096,10 @@ CREATE UNIQUE INDEX index_user_details_on_phone ON user_details USING btree (pho
 COMMENT ON INDEX index_user_details_on_phone IS 'JiHu-specific index';
 
 CREATE UNIQUE INDEX index_user_details_on_user_id ON user_details USING btree (user_id);
+
+CREATE INDEX index_user_details_on_user_id_for_enterprise_users_with_date ON user_details USING btree (user_id) WHERE ((provisioned_by_group_id IS NOT NULL) AND (provisioned_by_group_at IS NOT NULL));
+
+CREATE INDEX index_user_details_on_user_id_for_enterprise_users_without_date ON user_details USING btree (user_id) WHERE ((provisioned_by_group_id IS NOT NULL) AND (provisioned_by_group_at IS NULL));
 
 CREATE INDEX index_user_group_callouts_on_group_id ON user_group_callouts USING btree (group_id);
 
