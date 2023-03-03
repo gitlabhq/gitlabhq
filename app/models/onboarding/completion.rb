@@ -5,14 +5,11 @@ module Onboarding
     include Gitlab::Utils::StrongMemoize
     include Gitlab::Experiment::Dsl
 
-    ACTION_ISSUE_IDS = {
-      trial_started: 2,
-      required_mr_approvals_enabled: 11,
-      code_owners_enabled: 10
-    }.freeze
-
     ACTION_PATHS = [
       :pipeline_created,
+      :trial_started,
+      :required_mr_approvals_enabled,
+      :code_owners_enabled,
       :issue_created,
       :git_write,
       :merge_request_created,
@@ -66,7 +63,7 @@ module Onboarding
     strong_memoize_attr :action_columns
 
     def tracked_actions
-      ACTION_ISSUE_IDS.keys + ACTION_PATHS + deploy_section_tracked_actions
+      ACTION_PATHS + deploy_section_tracked_actions
     end
 
     def deploy_section_tracked_actions

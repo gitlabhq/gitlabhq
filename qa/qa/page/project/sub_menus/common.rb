@@ -29,7 +29,7 @@ module QA
           private
 
           def sidebar_element
-            :project_sidebar
+            QA::Runtime::Env.super_sidebar_enabled? ? :navbar : :project_sidebar
           end
         end
       end

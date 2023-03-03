@@ -6,8 +6,6 @@ module Integrations
   class BaseSlashCommands < Integration
     attribute :category, default: 'chat'
 
-    has_many :chat_names, foreign_key: :integration_id, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
-
     def valid_token?(token)
       self.respond_to?(:token) &&
         self.token.present? &&

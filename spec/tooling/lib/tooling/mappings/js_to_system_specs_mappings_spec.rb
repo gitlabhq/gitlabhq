@@ -129,6 +129,20 @@ RSpec.describe Tooling::Mappings::JsToSystemSpecsMappings, feature_category: :to
     it 'returns a singularized keyword based on the first folder the file is in' do
       expect(subject).to eq(%w[board query])
     end
+
+    context 'when the files are under the pages folder' do
+      let(:js_files) do
+        %w[
+          app/assets/javascripts/pages/boards/issue_board_filters.js
+          ee/app/assets/javascripts/pages2/queries/epic_due_date.query.graphql
+          ee/app/assets/javascripts/queries/epic_due_date.query.graphql
+        ]
+      end
+
+      it 'captures the second folder' do
+        expect(subject).to eq(%w[board pages2 query])
+      end
+    end
   end
 
   describe '#system_specs_for_edition' do

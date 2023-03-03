@@ -229,7 +229,6 @@ _ee:super-sidebar-nav:
     GITLAB_QA_OPTS: --set-feature-flags super_sidebar_nav=enabled
   allow_failure: true
   rules:
-    - if: $CI_MERGE_REQUEST_LABELS =~ /group::foundations/
     - !reference [.rules:test:manual, rules]
 
 # ------------------------------------------

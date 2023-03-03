@@ -3,8 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Profile > Chat', feature_category: :user_profile do
-  let(:user) { create(:user) }
-  let(:integration) { create(:integration) }
+  let_it_be(:user) { create(:user) }
 
   before do
     sign_in(user)
@@ -60,7 +59,7 @@ RSpec.describe 'Profile > Chat', feature_category: :user_profile do
   end
 
   describe 'visits chat accounts' do
-    let!(:chat_name) { create(:chat_name, user: user, integration: integration) }
+    let_it_be(:chat_name) { create(:chat_name, user: user) }
 
     before do
       visit profile_chat_names_path

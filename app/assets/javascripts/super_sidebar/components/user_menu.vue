@@ -78,6 +78,9 @@ export default {
       return {
         text: this.$options.i18n.editProfile,
         href: this.data.settings.profile_path,
+        extraAttrs: {
+          'data-qa-selector': 'edit_profile_link',
+        },
       };
     },
     preferencesItem() {
@@ -122,6 +125,7 @@ export default {
             href: this.data.sign_out_link,
             extraAttrs: {
               'data-method': 'post',
+              'data-qa-selector': 'sign_out_link',
               class: 'sign-out-link',
             },
           },

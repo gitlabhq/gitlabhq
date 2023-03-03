@@ -6316,6 +6316,7 @@ Input type: `VulnerabilityRevertToDetectedInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationvulnerabilityreverttodetectedclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationvulnerabilityreverttodetectedcomment"></a>`comment` | [`String`](#string) | Comment why vulnerability was reverted to detected (max. 50 000 characters). |
 | <a id="mutationvulnerabilityreverttodetectedid"></a>`id` | [`VulnerabilityID!`](#vulnerabilityid) | ID of the vulnerability to be reverted. |
 
 #### Fields

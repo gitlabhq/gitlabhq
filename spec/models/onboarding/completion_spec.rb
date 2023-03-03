@@ -11,11 +11,9 @@ RSpec.describe Onboarding::Completion, feature_category: :onboarding do
 
   describe '#percentage' do
     let(:tracked_action_columns) do
-      [
-        *described_class::ACTION_ISSUE_IDS.keys,
-        *described_class::ACTION_PATHS,
-        :security_scan_enabled
-      ].map { |key| ::Onboarding::Progress.column_name(key) }
+      [*described_class::ACTION_PATHS, :security_scan_enabled].map do |key|
+        ::Onboarding::Progress.column_name(key)
+      end
     end
 
     subject(:percentage) { described_class.new(project).percentage }

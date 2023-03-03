@@ -7326,20 +7326,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
     end
   end
 
-  describe 'with integrations and chat names' do
-    subject { create(:project) }
-
-    let(:integration) { create(:integration, project: subject) }
-
-    before do
-      create_list(:chat_name, 5, integration: integration)
-    end
-
-    it 'does not remove chat names on removal' do
-      expect { subject.destroy! }.not_to change { ChatName.count }
-    end
-  end
-
   describe 'with_issues_or_mrs_available_for_user' do
     before do
       Project.delete_all
