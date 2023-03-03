@@ -7,11 +7,13 @@ export const initProfileTabs = () => {
 
   if (!el) return false;
 
-  const { userCalendarPath, utcOffset } = el.dataset;
+  const { followees, followers, userCalendarPath, utcOffset } = el.dataset;
 
   return new Vue({
     el,
     provide: {
+      followees: parseInt(followers, 10),
+      followers: parseInt(followees, 10),
       userCalendarPath,
       utcOffset,
     },

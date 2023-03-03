@@ -19,7 +19,7 @@ Git abuse rate limiting does not apply to top-level group owners, [deploy tokens
 
 ## Automatic ban notifications
 
-If the `git_abuse_rate_limit_feature_flag` feature flag is enabled, selected users receive an email when a user is about to be banned.
+If the `limit_unique_project_downloads_per_namespace_user` feature flag is enabled, selected users receive an email when a user is about to be banned.
 
 If automatic banning is disabled, a user is not banned automatically when they exceed the limit. However, notifications are still sent. You can use this setup to determine the correct values of the rate limit settings before enabling automatic banning.
 

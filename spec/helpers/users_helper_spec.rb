@@ -482,10 +482,14 @@ RSpec.describe UsersHelper do
   describe '#user_profile_tabs_app_data' do
     before do
       allow(helper).to receive(:user_calendar_path).with(user, :json).and_return('/users/root/calendar.json')
+      allow(user).to receive_message_chain(:followers, :count).and_return(2)
+      allow(user).to receive_message_chain(:followees, :count).and_return(3)
     end
 
     it 'returns expected hash' do
       expect(helper.user_profile_tabs_app_data(user)).to eq({
+        followees: 3,
+        followers: 2,
         user_calendar_path: '/users/root/calendar.json',
         utc_offset: 0
       })

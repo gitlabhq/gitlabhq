@@ -46,7 +46,7 @@ module Tooling
       MSG
 
       NEEDS_PACKAGE_AND_TEST_MESSAGE = <<~MSG
-      The `e2e:package-and-test` job is not present or needs to be automatically triggered.
+      The `e2e:package-and-test` job is not present, has been canceled, or needs to be automatically triggered.
       Please ensure the job is present in the latest pipeline, if necessary, retry the `danger-review` job.
       Read the "QA e2e:package-and-test" section for more details.
       MSG
@@ -89,12 +89,11 @@ module Tooling
         mr_head_pipeline_id = gitlab.mr_json.dig('head_pipeline', 'id')
         return unless mr_head_pipeline_id
 
-        pipeline_bridges = gitlab.api.pipeline_bridges(helper.mr_target_project_id, mr_head_pipeline_id)
-        package_and_test_pipeline = pipeline_bridges&.find { |j| j['name'] == 'e2e:package-and-test' }
+        pipeline = package_and_test_pipeline(mr_head_pipeline_id)
 
-        return unless package_and_test_pipeline
+        return unless pipeline
 
-        package_and_test_pipeline['status']
+        pipeline['status']
       end
 
       def stable_target_branch
@@ -196,6 +195,17 @@ module Tooling
 
       def version_to_minor_string(version)
         "#{version[:major]}.#{version[:minor]}"
+      end
+
+      def package_and_test_pipeline(mr_head_pipeline_id)
+        package_and_test_bridge = gitlab
+          .api
+          .pipeline_bridges(helper.mr_target_project_id, mr_head_pipeline_id)
+          &.find { |bridge| bridge['name'] == 'e2e:package-and-test' }
+
+        return unless package_and_test_bridge
+
+        package_and_test_bridge['downstream_pipeline']
       end
     end
   end

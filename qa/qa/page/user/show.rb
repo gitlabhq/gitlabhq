@@ -6,7 +6,7 @@ module QA
       class Show < Page::Base
         view 'app/views/users/show.html.haml' do
           element :follow_user_link
-          element :following_link
+          element :following_tab
         end
 
         view 'app/views/shared/users/_user.html.haml' do
@@ -21,8 +21,8 @@ module QA
           click_element(:follow_user_link)
         end
 
-        def click_following_link
-          click_element(:following_link)
+        def click_following_tab
+          click_element(:following_tab)
         end
 
         def click_user_link(username)

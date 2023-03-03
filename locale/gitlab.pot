@@ -1526,11 +1526,6 @@ msgid_plural "%d deploy keys"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "1 follower"
-msgid_plural "%{count} followers"
-msgstr[0] ""
-msgstr[1] ""
-
 msgid "1 group"
 msgid_plural "%d groups"
 msgstr[0] ""
@@ -51070,9 +51065,6 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "finding is not found or is already attached to a vulnerability"
-msgstr ""
-
-msgid "following"
 msgstr ""
 
 msgid "for"

@@ -36,6 +36,8 @@ module QA
             use_ci_variable(name: 'PERSONAL_ACCESS_TOKEN', value: personal_access_token, project: package_project)
             use_ci_variable(name: 'PERSONAL_ACCESS_TOKEN', value: personal_access_token, project: client_project)
           when :ci_job_token
+            package_project_inbound_job_token_disabled
+            client_project_inbound_job_token_disabled
             '${CI_JOB_TOKEN}'
           when :project_deploy_token
             use_ci_variable(name: 'PROJECT_DEPLOY_TOKEN', value: project_deploy_token.token, project: package_project)
@@ -43,10 +45,7 @@ module QA
           end
         end
 
-        it "pushes and pulls a helm chart", testcase: params[:testcase], quarantine: {
-          type: :stale,
-          issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/391649'
-        } do
+        it "pushes and pulls a helm chart", testcase: params[:testcase] do
           Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2) do
             Resource::Repository::Commit.fabricate_via_api! do |commit|
               helm_upload_yaml = ERB.new(read_fixture('package_managers/helm', 'helm_upload_package.yaml.erb')).result(binding)

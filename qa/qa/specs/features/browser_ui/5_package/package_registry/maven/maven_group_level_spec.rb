@@ -41,11 +41,7 @@ module QA
             'using a ci job token' => {
               authentication_token_type: :ci_job_token,
               maven_header_name: 'Job-Token',
-              testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347579',
-              quarantine: {
-                issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/373189',
-                type: :stale
-              }
+              testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347579'
             }
           }
         end
@@ -57,6 +53,8 @@ module QA
               use_ci_variable(name: 'PERSONAL_ACCESS_TOKEN', value: personal_access_token, project: package_project)
               use_ci_variable(name: 'PERSONAL_ACCESS_TOKEN', value: personal_access_token, project: client_project)
             when :ci_job_token
+              package_project_inbound_job_token_disabled
+              client_project_inbound_job_token_disabled
               '${CI_JOB_TOKEN}'
             when :project_deploy_token
               use_ci_variable(name: 'GROUP_DEPLOY_TOKEN', value: group_deploy_token.token, project: package_project)
@@ -64,7 +62,7 @@ module QA
             end
           end
 
-          it 'pushes and pulls a maven package', testcase: params[:testcase], quarantine: params[:quarantine] do
+          it 'pushes and pulls a maven package', testcase: params[:testcase] do
             Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2) do
               Resource::Repository::Commit.fabricate_via_api! do |commit|
                 gitlab_ci_yaml = ERB.new(read_fixture('package_managers/maven/group/producer', 'gitlab_ci.yaml.erb')).result(binding)

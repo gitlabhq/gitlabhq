@@ -41,3 +41,4 @@ events or touches Snowplow related files.
 - If needed, check that the events are firing locally using one of the
 [testing tools](implementation.md#develop-and-test-snowplow) available.
 - Approve the MR, and relabel the MR with `~"product intelligence::approved"`.
+- If the snowplow event mirrors a RedisHLL event, then tag @mdrussell to review if the payload is usable for this purpose.

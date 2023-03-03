@@ -1,12 +1,5 @@
 import { __, sprintf } from '~/locale';
-import { TYPE_EPIC, TYPE_INCIDENT, TYPE_ISSUE } from '~/issues/constants';
-
-export const issuableTypesMap = {
-  ISSUE: 'issue',
-  INCIDENT: 'incident',
-  EPIC: 'epic',
-  MERGE_REQUEST: 'merge_request',
-};
+import { TYPE_EPIC, TYPE_INCIDENT, TYPE_ISSUE, TYPE_MERGE_REQUEST } from '~/issues/constants';
 
 export const linkedIssueTypesMap = {
   BLOCKS: 'blocks',
@@ -37,7 +30,7 @@ export const autoCompleteTextMap = {
       { emphasisStart: '<', emphasisEnd: '>' },
       false,
     ),
-    [issuableTypesMap.MERGE_REQUEST]: sprintf(
+    [TYPE_MERGE_REQUEST]: sprintf(
       __(' or %{emphasisStart}!merge request id%{emphasisEnd}'),
       { emphasisStart: '<', emphasisEnd: '>' },
       false,
@@ -46,7 +39,7 @@ export const autoCompleteTextMap = {
   false: {
     [TYPE_ISSUE]: '',
     [TYPE_EPIC]: '',
-    [issuableTypesMap.MERGE_REQUEST]: __(' or references'),
+    [TYPE_MERGE_REQUEST]: __(' or references'),
   },
 };
 
@@ -54,13 +47,13 @@ export const inputPlaceholderTextMap = {
   [TYPE_ISSUE]: __('Paste issue link'),
   [TYPE_INCIDENT]: __('Paste link'),
   [TYPE_EPIC]: __('Paste epic link'),
-  [issuableTypesMap.MERGE_REQUEST]: __('Enter merge request URLs'),
+  [TYPE_MERGE_REQUEST]: __('Enter merge request URLs'),
 };
 
 export const inputPlaceholderConfidentialTextMap = {
   [TYPE_ISSUE]: __('Paste confidential issue link'),
   [TYPE_EPIC]: __('Paste confidential epic link'),
-  [issuableTypesMap.MERGE_REQUEST]: __('Enter merge request URLs'),
+  [TYPE_MERGE_REQUEST]: __('Enter merge request URLs'),
 };
 
 export const relatedIssuesRemoveErrorMap = {

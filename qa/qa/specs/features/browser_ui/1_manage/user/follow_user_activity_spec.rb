@@ -82,7 +82,7 @@ module QA
 
         Page::Main::Menu.perform(&:click_user_profile_link)
         Page::User::Show.perform do |show|
-          show.click_following_link
+          show.click_following_tab
           show.click_user_link(followed_user.username)
 
           aggregate_failures do

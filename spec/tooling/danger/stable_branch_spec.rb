@@ -92,10 +92,18 @@ RSpec.describe Tooling::Danger::StableBranch, feature_category: :delivery do
 
       let(:pipeline_bridges_response) do
         [
-          { 'name' => 'e2e:package-and-test',
-            'status' => 'success' }
+          {
+            'name' => 'e2e:package-and-test',
+            'status' => 'success',
+            'downstream_pipeline' => {
+              'id' => '123',
+              'status' => package_and_qa_state
+            }
+          }
         ]
       end
+
+      let(:package_and_qa_state) { 'success' }
 
       let(:parsed_response) do
         [
@@ -176,28 +184,23 @@ RSpec.describe Tooling::Danger::StableBranch, feature_category: :delivery do
       end
 
       context 'when package-and-test job is in manual state' do
-        described_class::FAILING_PACKAGE_AND_TEST_STATUSES.each do |status|
-          let(:pipeline_bridges_response) do
-            [
-              { 'name' => 'e2e:package-and-test',
-                'status' => status }
-            ]
-          end
+        let(:package_and_qa_state) { 'manual' }
 
-          it_behaves_like 'with a failure', described_class::NEEDS_PACKAGE_AND_TEST_MESSAGE
-          it_behaves_like 'bypassing when flaky test or docs only'
-        end
+        it_behaves_like 'with a failure', described_class::NEEDS_PACKAGE_AND_TEST_MESSAGE
+        it_behaves_like 'bypassing when flaky test or docs only'
       end
 
       context 'when package-and-test job is in a non-successful state' do
-        let(:pipeline_bridges_response) do
-          [
-            { 'name' => 'e2e:package-and-test',
-              'status' => 'running' }
-          ]
-        end
+        let(:package_and_qa_state) { 'running' }
 
         it_behaves_like 'with a warning', described_class::WARN_PACKAGE_AND_TEST_MESSAGE
+        it_behaves_like 'bypassing when flaky test or docs only'
+      end
+
+      context 'when package-and-test job is canceled' do
+        let(:package_and_qa_state) { 'canceled' }
+
+        it_behaves_like 'with a failure', described_class::NEEDS_PACKAGE_AND_TEST_MESSAGE
         it_behaves_like 'bypassing when flaky test or docs only'
       end
 

@@ -113,16 +113,6 @@
             - if display_public_email?(@user)
               = render 'middle_dot_divider', stacking: true do
                 = link_to @user.public_email, "mailto:#{@user.public_email}", itemprop: 'email'
-          .gl-text-gray-900
-            = sprite_icon('users', css_class: 'gl-vertical-align-middle gl-text-gray-500')
-            = render 'middle_dot_divider' do
-              = link_to user_followers_path do
-                - count = @user.followers.count
-                = n_('1 follower', '%{count} followers', count) % { count: count }
-            = render 'middle_dot_divider' do
-              = link_to user_following_path, data: { qa_selector: 'following_link' } do
-                = @user.followees.count
-                = _('following')
         - if @user.bio.present?
           .gl-text-gray-900
             .profile-user-bio
@@ -166,10 +156,12 @@
               %li.js-followers-tab
                 = link_to user_followers_path, data: { target: 'div#followers', action: 'followers', toggle: 'tab', endpoint: user_followers_path(format: :json) } do
                   = s_('UserProfile|Followers')
+                  = gl_badge_tag @user.followers.count, size: :sm
             - if profile_tab?(:following)
               %li.js-following-tab
-                = link_to user_following_path, data: { target: 'div#following', action: 'following', toggle: 'tab', endpoint: user_following_path(format: :json) } do
+                = link_to user_following_path, data: { target: 'div#following', action: 'following', toggle: 'tab', endpoint: user_following_path(format: :json), qa_selector: 'following_tab' } do
                   = s_('UserProfile|Following')
+                  = gl_badge_tag @user.followees.count, size: :sm
   - if !profile_tabs.empty? && Feature.enabled?(:profile_tabs_vue, current_user)
     #js-profile-tabs{ data: user_profile_tabs_app_data(@user) }
   %div{ class: container_class }

@@ -50,6 +50,20 @@ module QA
         end
       end
 
+      let(:package_project_inbound_job_token_disabled) do
+        Resource::CICDSettings.fabricate_via_api! do |settings|
+          settings.project_path = project.full_path
+          settings.inbound_job_token_scope_enabled = false
+        end
+      end
+
+      let(:client_project_inbound_job_token_disabled) do
+        Resource::CICDSettings.fabricate_via_api! do |settings|
+          settings.project_path = another_project.full_path
+          settings.inbound_job_token_scope_enabled = false
+        end
+      end
+
       let!(:runner) do
         Resource::GroupRunner.fabricate! do |runner|
           runner.name = "qa-runner-#{Time.now.to_i}"
@@ -79,6 +93,8 @@ module QA
             use_ci_variable(name: 'PERSONAL_ACCESS_TOKEN', value: personal_access_token.token, project: project)
             use_ci_variable(name: 'PERSONAL_ACCESS_TOKEN', value: personal_access_token.token, project: another_project)
           when :ci_job_token
+            package_project_inbound_job_token_disabled
+            client_project_inbound_job_token_disabled
             '${CI_JOB_TOKEN}'
           when :group_deploy_token
             use_ci_variable(name: 'GROUP_DEPLOY_TOKEN', value: group_deploy_token.token, project: project)
@@ -97,10 +113,7 @@ module QA
           end
         end
 
-        it 'publishes a nuget package at the project endpoint and installs it from the group endpoint', testcase: params[:testcase], quarantine: {
-          type: :stale,
-          issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/391648'
-        } do
+        it 'publishes a nuget package at the project endpoint and installs it from the group endpoint', testcase: params[:testcase] do
           Flow::Login.sign_in
 
           Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2) do
