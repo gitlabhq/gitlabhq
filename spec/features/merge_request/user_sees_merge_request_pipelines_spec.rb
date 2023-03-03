@@ -145,7 +145,7 @@ RSpec.describe 'Merge request > User sees pipelines triggered by merge request',
     context 'when a user merges a merge request in the parent project', :sidekiq_might_not_need_inline do
       before do
         click_link 'Overview'
-        click_button 'Merge when pipeline succeeds'
+        click_button 'Set auto-merge'
 
         wait_for_requests
       end
@@ -358,10 +358,10 @@ RSpec.describe 'Merge request > User sees pipelines triggered by merge request',
             project.update!(only_allow_merge_if_pipeline_succeeds: true)
           end
 
-          it 'shows MWPS button' do
+          it 'shows set auto-merge button' do
             visit project_merge_request_path(project, merge_request)
 
-            expect(page).to have_button('Merge when pipeline succeeds')
+            expect(page).to have_button('Set auto-merge')
           end
         end
       end
@@ -371,7 +371,7 @@ RSpec.describe 'Merge request > User sees pipelines triggered by merge request',
       before do
         click_link("Overview")
 
-        click_button 'Merge when pipeline succeeds'
+        click_button 'Set auto-merge'
 
         wait_for_requests
       end

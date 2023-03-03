@@ -15,12 +15,12 @@ module Gitlab
     end
 
     def changes
-      @changes ||= @raw_changes.map do |change|
+      @changes ||= @raw_changes.filter_map do |change|
         next if change.blank?
 
         oldrev, newrev, ref = change.strip.split(' ')
         { oldrev: oldrev, newrev: newrev, ref: ref }
-      end.compact
+      end
     end
   end
 end

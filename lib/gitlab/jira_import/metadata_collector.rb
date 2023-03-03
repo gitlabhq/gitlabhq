@@ -45,7 +45,7 @@ module Gitlab
       def add_versions
         return if fields['fixVersions'].blank? || !fields['fixVersions'].is_a?(Array)
 
-        versions = fields['fixVersions'].map { |version| version['name'] }.compact.join(', ')
+        versions = fields['fixVersions'].filter_map { |version| version['name'] }.join(', ')
         metadata << "- Fix versions: #{versions}"
       end
 

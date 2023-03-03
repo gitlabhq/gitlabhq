@@ -10,6 +10,7 @@ import {
   GlLink,
   GlTooltipDirective,
   GlSkeletonLoader,
+  GlPopover,
 } from '@gitlab/ui';
 import { isEmpty } from 'lodash';
 import readyToMergeMixin from 'ee_else_ce/vue_merge_request_widget/mixins/ready_to_merge';
@@ -25,7 +26,6 @@ import { convertToGraphQLId } from '~/graphql_shared/utils';
 import readyToMergeSubscription from '~/vue_merge_request_widget/queries/states/ready_to_merge.subscription.graphql';
 import {
   AUTO_MERGE_STRATEGIES,
-  WARNING,
   MT_MERGE_STRATEGY,
   PIPELINE_FAILED_STATE,
   STATE_MACHINE,
@@ -40,7 +40,6 @@ import CommitMessageDropdown from './commit_message_dropdown.vue';
 import SquashBeforeMerge from './squash_before_merge.vue';
 import MergeFailedPipelineConfirmationDialog from './merge_failed_pipeline_confirmation_dialog.vue';
 
-const PIPELINE_RUNNING_STATE = 'running';
 const PIPELINE_PENDING_STATE = 'pending';
 const PIPELINE_SUCCESS_STATE = 'success';
 
@@ -130,9 +129,8 @@ export default {
     GlDropdownItem,
     GlFormCheckbox,
     GlSkeletonLoader,
+    GlPopover,
     MergeFailedPipelineConfirmationDialog,
-    MergeTrainHelperIcon: () =>
-      import('ee_component/vue_merge_request_widget/components/merge_train_helper_icon.vue'),
     MergeImmediatelyConfirmationDialog: () =>
       import(
         'ee_component/vue_merge_request_widget/components/merge_immediately_confirmation_dialog.vue'
@@ -241,22 +239,6 @@ export default {
 
       return PIPELINE_SUCCESS_STATE;
     },
-    iconClass() {
-      if (this.shouldRenderMergeTrainHelperIcon && !this.mr.preventMerge) {
-        return PIPELINE_RUNNING_STATE;
-      }
-
-      if (
-        this.status === PIPELINE_FAILED_STATE ||
-        !this.commitMessage.length ||
-        !this.isMergeAllowed ||
-        this.mr.preventMerge
-      ) {
-        return WARNING;
-      }
-
-      return PIPELINE_SUCCESS_STATE;
-    },
     mergeButtonText() {
       if (this.isMergingImmediately) {
         return __('Merge in progress');
@@ -304,6 +286,12 @@ export default {
         (this.stateData.userPermissions?.canMerge || this.mr.canMerge) &&
         !this.mr.mergeOngoing &&
         !this.mr.autoMergeEnabled
+      );
+    },
+    showAutoMergeHelperText() {
+      return (
+        !(this.status === PIPELINE_FAILED_STATE || this.isPipelineFailed) &&
+        this.isAutoMergeAvailable
       );
     },
     sourceBranchDeletedText() {
@@ -490,6 +478,7 @@ export default {
     sourceDivergedFromTargetText: s__('mrWidget|The source branch is %{link} the target branch'),
     divergedCommits: (count) => n__('%d commit behind', '%d commits behind', count),
   },
+  mergeStrategyPopoverId: 'mergeStrategyPopover',
 };
 </script>
 
@@ -670,7 +659,37 @@ export default {
                   @cancel="isPipelineFailedModalVisibleNormalMerge = false"
                 />
               </gl-button-group>
-              <merge-train-helper-icon v-if="shouldRenderMergeTrainHelperIcon" class="gl-mx-3" />
+              <template v-if="showAutoMergeHelperText">
+                <div
+                  class="gl-ml-4 gl-text-gray-500 gl-font-sm"
+                  data-testid="auto-merge-helper-text"
+                  data-qa-selector="auto_merge_helper_text"
+                >
+                  {{ autoMergeHelperText }}
+                </div>
+                <gl-icon
+                  :id="$options.mergeStrategyPopoverId"
+                  class="gl-ml-2 gl-text-blue-500"
+                  name="question-o"
+                  data-testid="auto-merge-helper-icon"
+                />
+                <gl-popover :target="$options.mergeStrategyPopoverId" :css-classes="['gl-font-sm']">
+                  <template #title>
+                    {{ autoMergePopoverSettings.title }}
+                  </template>
+                  <gl-sprintf :message="autoMergePopoverSettings.bodyText">
+                    <template #link="{ content }">
+                      <gl-link
+                        :href="autoMergePopoverSettings.helpLink"
+                        target="_blank"
+                        class="gl-font-sm"
+                      >
+                        {{ content }}
+                      </gl-link>
+                    </template>
+                  </gl-sprintf>
+                </gl-popover>
+              </template>
             </template>
             <div
               v-else

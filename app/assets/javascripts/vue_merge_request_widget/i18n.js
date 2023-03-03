@@ -21,11 +21,6 @@ export const I18N_SHA_MISMATCH = {
   actionButtonLabel: __('Review changes'),
 };
 
-export const MERGE_TRAIN_BUTTON_TEXT = {
-  failed: __('Start merge train...'),
-  passed: __('Start merge train'),
-};
-
 export const MR_WIDGET_CLOSED_REOPEN = __('Reopen');
 export const MR_WIDGET_CLOSED_REOPENING = __('Reopening...');
 export const MR_WIDGET_CLOSED_RELOADING = __('Refreshing...');

@@ -374,14 +374,11 @@ $search-input-field-x-min-width: 200px;
     display: flex;
     align-items: center;
     position: relative;
+    min-width: 0;
     padding: 2px 0;
 
     &:not(:last-child) {
       padding-right: 20px;
-
-      &:not(.dropdown) {
-        overflow: hidden;
-      }
     }
 
     &:last-child {

@@ -36,13 +36,13 @@ module Gitlab
       # any of the new revisions.
       def commits
         strong_memoize(:commits) do
-          newrevs = @changes.map do |change|
+          newrevs = @changes.filter_map do |change|
             newrev = change[:newrev]
 
             next if blank_rev?(newrev)
 
             newrev
-          end.compact
+          end
 
           next [] if newrevs.empty?
 

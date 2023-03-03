@@ -69,9 +69,9 @@ module Gitlab
 
         def copy_events(table_name, events_to_copy)
           events_to_copy.find_in_batches do |batch|
-            events = batch.map do |event|
+            events = batch.filter_map do |event|
               yield(event)
-            end.compact
+            end
 
             ApplicationRecord.legacy_bulk_insert(table_name, events) # rubocop:disable Gitlab/BulkInsert
           end

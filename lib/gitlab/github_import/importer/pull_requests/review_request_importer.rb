@@ -20,7 +20,7 @@ module Gitlab
           attr_reader :review_request, :user_finder
 
           def build_reviewers
-            reviewer_ids = review_request.users.map { |user| user_finder.user_id_for(user) }.compact
+            reviewer_ids = review_request.users.filter_map { |user| user_finder.user_id_for(user) }
 
             reviewer_ids.map do |reviewer_id|
               MergeRequestReviewer.new(

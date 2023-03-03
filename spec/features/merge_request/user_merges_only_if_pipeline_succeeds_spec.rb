@@ -43,7 +43,7 @@ RSpec.describe 'Merge request > User merges only if pipeline succeeds', :js, fea
 
           wait_for_requests
 
-          expect(page).to have_button 'Merge when pipeline succeeds'
+          expect(page).to have_button 'Set auto-merge'
           expect(page).not_to have_button '.js-merge-moment'
         end
       end
@@ -112,7 +112,7 @@ RSpec.describe 'Merge request > User merges only if pipeline succeeds', :js, fea
 
           wait_for_requests
 
-          expect(page).to have_button 'Merge when pipeline succeeds'
+          expect(page).to have_button 'Set auto-merge'
 
           page.find('.js-merge-moment').click
           expect(page).to have_content 'Merge immediately'

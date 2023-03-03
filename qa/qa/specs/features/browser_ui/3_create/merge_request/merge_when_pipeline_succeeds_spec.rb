@@ -79,7 +79,7 @@ module QA
 
               mr.retry_until(reload: true, message: 'Wait until ready to click MWPS') do
                 # Click the MWPS button if we can
-                break mr.merge_when_pipeline_succeeds! if mr.has_element?(:merge_button, text: 'Merge when pipeline succeeds')
+                break mr.merge_when_pipeline_succeeds! if mr.has_element?(:merge_button, text: 'Set auto-merge')
 
                 # But fail if the button is missing because the pipeline is complete
                 raise "The pipeline already finished before we could click MWPS" if mr.wait_until { project.pipelines.first }[:status] == 'success'

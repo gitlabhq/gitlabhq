@@ -58,11 +58,11 @@ module Gitlab
         end
 
         ip_address = ip_address(address_info)
-        return [uri, nil] if domain_allowed?(uri)
+        return [uri, nil] if domain_in_allow_list?(uri)
 
         protected_uri_with_hostname = enforce_uri_hostname(ip_address, uri, dns_rebind_protection)
 
-        return protected_uri_with_hostname if ip_allowed?(ip_address, port: get_port(uri))
+        return protected_uri_with_hostname if ip_in_allow_list?(ip_address, port: get_port(uri))
 
         # Allow url from the GitLab instance itself but only for the configured hostname and ports
         return protected_uri_with_hostname if internal?(uri)
@@ -139,7 +139,7 @@ module Gitlab
       end
 
       def enforce_address_info_retrievable?(uri, dns_rebind_protection)
-        return false if !dns_rebind_protection || domain_allowed?(uri)
+        return false if !dns_rebind_protection || domain_in_allow_list?(uri)
 
         # In the test suite we use a lot of mocked urls that are either invalid or
         # don't exist. In order to avoid modifying a ton of tests and factories
@@ -322,11 +322,11 @@ module Gitlab
         end
       end
 
-      def domain_allowed?(uri)
+      def domain_in_allow_list?(uri)
         Gitlab::UrlBlockers::UrlAllowlist.domain_allowed?(uri.normalized_host, port: get_port(uri))
       end
 
-      def ip_allowed?(ip_address, port: nil)
+      def ip_in_allow_list?(ip_address, port: nil)
         Gitlab::UrlBlockers::UrlAllowlist.ip_allowed?(ip_address, port: port)
       end
 

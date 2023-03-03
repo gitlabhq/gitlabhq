@@ -180,26 +180,6 @@ describe('ReadyToMerge', () => {
         expect(wrapper.vm.status).toEqual('failed');
       });
     });
-
-    describe('status icon', () => {
-      it('defaults to tick icon', () => {
-        createComponent({ mr: { mergeable: true } });
-
-        expect(wrapper.vm.iconClass).toEqual('success');
-      });
-
-      it('shows tick for success status', () => {
-        createComponent({ mr: { pipeline: { status: 'SUCCESS' }, mergeable: true } });
-
-        expect(wrapper.vm.iconClass).toEqual('success');
-      });
-
-      it('shows tick for pending status', () => {
-        createComponent({ mr: { pipeline: { active: true }, mergeable: true } });
-
-        expect(wrapper.vm.iconClass).toEqual('success');
-      });
-    });
   });
 
   describe('merge button text', () => {
@@ -209,18 +189,18 @@ describe('ReadyToMerge', () => {
       expect(findMergeButton().text()).toBe('Merge');
     });
 
-    it('should return "Merge when pipeline succeeds" when the MWPS auto merge strategy is available', () => {
+    it('should return "Set auto-merge" when the MWPS auto merge strategy is available', () => {
       createComponent({
         mr: { preferredAutoMergeStrategy: MWPS_MERGE_STRATEGY },
       });
 
-      expect(findMergeButton().text()).toBe('Merge when pipeline succeeds');
+      expect(findMergeButton().text()).toBe('Set auto-merge');
     });
 
-    it('should return Merge when pipeline succeeds', () => {
+    it('should return set auto-merge', () => {
       createComponent({ mr: { preferredAutoMergeStrategy: MWPS_MERGE_STRATEGY } });
 
-      expect(findMergeButton().text()).toBe('Merge when pipeline succeeds');
+      expect(findMergeButton().text()).toBe('Set auto-merge');
     });
   });
 

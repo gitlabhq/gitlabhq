@@ -34,7 +34,7 @@ module Gitlab
       private
 
       def run_batch_for(batch)
-        batch.map { |upload| verify(upload) }.compact.to_h
+        batch.filter_map { |upload| verify(upload) }.to_h
       end
 
       def verify(object)

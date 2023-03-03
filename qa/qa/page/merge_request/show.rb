@@ -82,6 +82,7 @@ module QA
           element :merge_moment_dropdown
           element :merge_immediately_menu_item
           element :merged_status_content
+          element :auto_merge_helper_text
         end
 
         view 'app/assets/javascripts/vue_merge_request_widget/components/states/sha_mismatch.vue' do
@@ -279,7 +280,7 @@ module QA
         def merge_when_pipeline_succeeds!
           wait_until_ready_to_merge
 
-          click_element(:merge_button, text: 'Merge when pipeline succeeds')
+          click_element(:merge_button, text: 'Set auto-merge')
         end
 
         def merged?
@@ -365,7 +366,7 @@ module QA
           # Revisit after merge page re-architect is done https://gitlab.com/gitlab-org/gitlab/-/issues/300042
           # To remove page refresh logic if possible
           wait_until_ready_to_merge
-          wait_until { !find_element(:merge_button).text.include?('when pipeline succeeds') } # rubocop:disable Rails/NegateInclude
+          wait_until { !has_element?(:auto_merge_helper_text) || !find_element(:auto_merge_helper_text).text.include?('when pipeline succeeds') } # rubocop:disable Rails/NegateInclude
 
           click_element(:merge_button)
         end
