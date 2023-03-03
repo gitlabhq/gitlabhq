@@ -17,9 +17,3 @@ has_milestone = !gitlab.mr_json["milestone"].nil?
 unless has_milestone || (helper.security_mr? && helper.mr_target_branch == default_branch)
   warn "This merge request does not refer to an existing milestone.", sticky: false
 end
-
-has_pick_into_stable_label = helper.mr_labels.find { |label| label.start_with?('Pick into') }
-
-if helper.mr_target_branch != default_branch && !has_pick_into_stable_label && !helper.security_mr?
-  warn "Most of the time, merge requests should target `#{default_branch}`. Otherwise, please set the relevant `Pick into X.Y` label."
-end

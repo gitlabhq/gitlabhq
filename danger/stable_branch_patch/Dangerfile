@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-if stable_branch.non_security_stable_branch?
+if stable_branch.encourage_package_and_qa_execution?
   markdown(<<~MARKDOWN)
-  ### QA `e2e:package-and-test`
+  ## QA `e2e:package-and-test`
 
   **@#{helper.mr_author}, the `package-and-test` job must complete before merging this merge request.***
 

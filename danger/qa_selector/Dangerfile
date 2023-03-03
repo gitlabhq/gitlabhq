@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+return if helper.stable_branch?
+
 data_qa_selectors = /qa_selector|data-qa-selector/
 
 deprecated_qa_selectors = /(?!.*\bdata-qa-)(?=class=.*qa-.*|class: .*qa-.*)/

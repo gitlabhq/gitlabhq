@@ -46,21 +46,22 @@ module Tooling
       MSG
 
       NEEDS_PACKAGE_AND_TEST_MESSAGE = <<~MSG
-      The `e2e:package-and-test` job is not present or needs to be triggered manually. Please start the `e2e:package-and-test`
-      job and re-run `danger-review`.
+      The `e2e:package-and-test` job is not present, has been canceled, or needs to be automatically triggered.
+      Please ensure the job is present in the latest pipeline, if necessary, retry the `danger-review` job.
+      Read the "QA e2e:package-and-test" section for more details.
       MSG
 
       WARN_PACKAGE_AND_TEST_MESSAGE = <<~MSG
-      The `e2e:package-and-test` job needs to succeed or have approval from a Software Engineer in Test. See the section below
-      for more details.
+      **The `e2e:package-and-test` job needs to succeed or have approval from a Software Engineer in Test.**
+      Read the "QA e2e:package-and-test" section for more details.
       MSG
 
       # rubocop:disable Style/SignalException
       def check!
-        return unless non_security_stable_branch?
+        return unless valid_stable_branch?
 
         fail FEATURE_ERROR_MESSAGE if has_feature_label?
-        fail BUG_ERROR_MESSAGE unless has_bug_label?
+        fail BUG_ERROR_MESSAGE unless bug_fixes_only?
 
         warn VERSION_WARNING_MESSAGE unless targeting_patchable_version?
 
@@ -78,22 +79,27 @@ module Tooling
       end
       # rubocop:enable Style/SignalException
 
-      def non_security_stable_branch?
-        !!stable_target_branch && !helper.security_mr?
+      def encourage_package_and_qa_execution?
+        valid_stable_branch? &&
+          !has_only_documentation_changes? &&
+          !has_flaky_failure_label?
       end
 
       private
+
+      def valid_stable_branch?
+        !!stable_target_branch && !helper.security_mr?
+      end
 
       def package_and_test_status
         mr_head_pipeline_id = gitlab.mr_json.dig('head_pipeline', 'id')
         return unless mr_head_pipeline_id
 
-        pipeline_bridges = gitlab.api.pipeline_bridges(helper.mr_target_project_id, mr_head_pipeline_id)
-        package_and_test_pipeline = pipeline_bridges&.find { |j| j['name'] == 'e2e:package-and-test' }
+        pipeline = package_and_test_pipeline(mr_head_pipeline_id)
 
-        return unless package_and_test_pipeline
+        return unless pipeline
 
-        package_and_test_pipeline['status']
+        pipeline['status']
       end
 
       def stable_target_branch
@@ -114,6 +120,10 @@ module Tooling
 
       def has_flaky_failure_label?
         helper.mr_has_labels?('failure::flaky-test')
+      end
+
+      def bug_fixes_only?
+        has_bug_label? || has_only_documentation_changes?
       end
 
       def has_only_documentation_changes?
@@ -191,6 +201,17 @@ module Tooling
 
       def version_to_minor_string(version)
         "#{version[:major]}.#{version[:minor]}"
+      end
+
+      def package_and_test_pipeline(mr_head_pipeline_id)
+        package_and_test_bridge = gitlab
+          .api
+          .pipeline_bridges(helper.mr_target_project_id, mr_head_pipeline_id)
+          &.find { |bridge| bridge['name'] == 'e2e:package-and-test' }
+
+        return unless package_and_test_bridge
+
+        package_and_test_bridge['downstream_pipeline']
       end
     end
   end
