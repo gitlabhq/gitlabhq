@@ -1,16 +1,14 @@
 import { mount } from '@vue/test-utils';
-import Vue, { nextTick } from 'vue';
+import { nextTick } from 'vue';
 import json from 'test_fixtures/blob/notebook/basic.json';
 import jsonWithWorksheet from 'test_fixtures/blob/notebook/worksheets.json';
 import Notebook from '~/notebook/index.vue';
-
-const Component = Vue.extend(Notebook);
 
 describe('Notebook component', () => {
   let vm;
 
   function buildComponent(notebook) {
-    return mount(Component, {
+    return mount(Notebook, {
       propsData: { notebook },
       provide: { relativeRawPath: '' },
     }).vm;

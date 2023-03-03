@@ -4,6 +4,8 @@ import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import Draggable from 'vuedraggable';
 import Vuex from 'vuex';
+
+import eventHub from '~/boards/eventhub';
 import waitForPromises from 'helpers/wait_for_promises';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import EpicsSwimlanes from 'ee_component/boards/components/epics_swimlanes.vue';
@@ -203,6 +205,15 @@ describe('BoardContent', () => {
 
     it('renders BoardContentSidebar', () => {
       expect(wrapper.findComponent(BoardContentSidebar).exists()).toBe(true);
+    });
+
+    it('refetches lists when updateBoard event is received', async () => {
+      jest.spyOn(eventHub, '$on').mockImplementation(() => {});
+
+      createComponent({ isApolloBoard: true });
+      await waitForPromises();
+
+      expect(eventHub.$on).toHaveBeenCalledWith('updateBoard', wrapper.vm.refetchLists);
     });
   });
 });

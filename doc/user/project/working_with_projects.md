@@ -241,15 +241,15 @@ Configure Git to either:
 
 - Embed credentials in the request URL:
 
-    ```shell
-    git config --global url."https://${user}:${personal_access_token}@gitlab.example.com".insteadOf "https://gitlab.example.com"
-    ```
+  ```shell
+  git config --global url."https://${user}:${personal_access_token}@gitlab.example.com".insteadOf "https://gitlab.example.com"
+  ```
 
 - Use SSH instead of HTTPS:
 
-    ```shell
-    git config --global url."git@gitlab.example.com:".insteadOf "https://gitlab.example.com/"
-    ```
+  ```shell
+  git config --global url."git@gitlab.example.com:".insteadOf "https://gitlab.example.com/"
+  ```
 
 ### Disable Go module fetching for private projects
 
@@ -263,8 +263,8 @@ the [environment variables](../../development/go_guide/dependencies.md#proxies):
 To disable fetching:
 
 1. Disable `GOPRIVATE`:
-    - To disable queries for one project, disable `GOPRIVATE=gitlab.example.com/my/private/project`.
-    - To disable queries for all projects on GitLab.com, disable `GOPRIVATE=gitlab.example.com`.
+   - To disable queries for one project, disable `GOPRIVATE=gitlab.example.com/my/private/project`.
+   - To disable queries for all projects on GitLab.com, disable `GOPRIVATE=gitlab.example.com`.
 1. Disable proxy queries in `GONOPROXY`.
 1. Disable checksum queries in `GONOSUMDB`.
 
@@ -291,8 +291,8 @@ To access the Geo secondary server with SSH:
    git config --global url."git@gitlab-secondary.example.com".insteadOf "http://gitlab.example.com"
    ```
 
-    - For `gitlab.example.com`, use the primary site domain name.
-    - For `gitlab-secondary.example.com`, use the secondary site domain name.
+   - For `gitlab.example.com`, use the primary site domain name.
+   - For `gitlab-secondary.example.com`, use the secondary site domain name.
 
 1. Ensure the client is set up for SSH access to GitLab repositories. You can test this on the primary,
    and GitLab replicates the public key to the secondary.

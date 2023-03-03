@@ -42,45 +42,45 @@ Here is an example setup that creates a `success` deployment record in GitLab wh
 
 1. Create a new webhook. You can save the following manifest file and apply it by `kubectl apply -n argocd -f <manifiest-file-path>`:
 
-    ```yaml
-    apiVersion: v1
-    kind: ConfigMap
-    metadata:
-      name: argocd-notifications-cm
-    data:
-      trigger.on-deployed: |
-        - description: Application is synced and healthy. Triggered once per commit.
-          oncePer: app.status.sync.revision
-          send:
-          - gitlab-deployment-status
-          when: app.status.operationState.phase in ['Succeeded'] and app.status.health.status == 'Healthy'
-      template.gitlab-deployment-status: |
-        webhook:
-          gitlab:
-            method: POST
-            path: /projects/<your-project-id>/deployments
-            body: |
-              {
-                "status": "success",
-                "environment": "production",
-                "sha": "{{.app.status.operationState.operation.sync.revision}}",
-                "ref": "main",
-                "tag": "false"
-              }
-      service.webhook.gitlab: |
-        url: https://gitlab.com/api/v4
-        headers:
-        - name: PRIVATE-TOKEN
-          value: <your-access-token>
-        - name: Content-type
-          value: application/json
-    ```
+   ```yaml
+   apiVersion: v1
+   kind: ConfigMap
+   metadata:
+     name: argocd-notifications-cm
+   data:
+     trigger.on-deployed: |
+       - description: Application is synced and healthy. Triggered once per commit.
+         oncePer: app.status.sync.revision
+         send:
+         - gitlab-deployment-status
+         when: app.status.operationState.phase in ['Succeeded'] and app.status.health.status == 'Healthy'
+     template.gitlab-deployment-status: |
+       webhook:
+         gitlab:
+           method: POST
+           path: /projects/<your-project-id>/deployments
+           body: |
+             {
+               "status": "success",
+               "environment": "production",
+               "sha": "{{.app.status.operationState.operation.sync.revision}}",
+               "ref": "main",
+               "tag": "false"
+             }
+     service.webhook.gitlab: |
+       url: https://gitlab.com/api/v4
+       headers:
+       - name: PRIVATE-TOKEN
+         value: <your-access-token>
+       - name: Content-type
+         value: application/json
+   ```
 
 1. Create a new subscription in your application:
 
-    ```shell
-    kubectl patch app <your-app-name> -n argocd -p '{"metadata": {"annotations": {"notifications.argoproj.io/subscribe.on-deployed.gitlab":""}}}' --type merge
-    ```
+   ```shell
+   kubectl patch app <your-app-name> -n argocd -p '{"metadata": {"annotations": {"notifications.argoproj.io/subscribe.on-deployed.gitlab":""}}}' --type merge
+   ```
 
 NOTE:
 If a deployment wasn't created as expected, you can troubleshoot with [`argocd-notifications` tool](https://argocd-notifications.readthedocs.io/en/stable/troubleshooting/).

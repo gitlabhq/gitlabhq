@@ -48,41 +48,41 @@ reduce the repository size for another import attempt:
 
 1. Create a temporary working directory from the export:
 
-    ```shell
-    EXPORT=<filename-without-extension>
+   ```shell
+   EXPORT=<filename-without-extension>
 
-    mkdir "$EXPORT"
-    tar -xf "$EXPORT".tar.gz --directory="$EXPORT"/
-    cd "$EXPORT"/
-    git clone project.bundle
+   mkdir "$EXPORT"
+   tar -xf "$EXPORT".tar.gz --directory="$EXPORT"/
+   cd "$EXPORT"/
+   git clone project.bundle
 
-    # Prevent interference with recreating an importable file later
-    mv project.bundle ../"$EXPORT"-original.bundle
-    mv ../"$EXPORT".tar.gz ../"$EXPORT"-original.tar.gz
+   # Prevent interference with recreating an importable file later
+   mv project.bundle ../"$EXPORT"-original.bundle
+   mv ../"$EXPORT".tar.gz ../"$EXPORT"-original.tar.gz
 
-    git switch --create smaller-tmp-main
-    ```
+   git switch --create smaller-tmp-main
+   ```
 
 1. To reduce the repository size, work on this `smaller-tmp-main` branch:
    [identify and remove large files](../repository/reducing_the_repo_size_using_git.md)
    or [interactively rebase and fixup](../../../topics/git/git_rebase.md#interactive-rebase)
    to reduce the number of commits.
 
-    ```shell
-    # Reduce the .git/objects/pack/ file size
-    cd project
-    git reflog expire --expire=now --all
-    git gc --prune=now --aggressive
+   ```shell
+   # Reduce the .git/objects/pack/ file size
+   cd project
+   git reflog expire --expire=now --all
+   git gc --prune=now --aggressive
 
-    # Prepare recreating an importable file
-    git bundle create ../project.bundle <default-branch-name>
-    cd ..
-    mv project/ ../"$EXPORT"-project
-    cd ..
+   # Prepare recreating an importable file
+   git bundle create ../project.bundle <default-branch-name>
+   cd ..
+   mv project/ ../"$EXPORT"-project
+   cd ..
 
-    # Recreate an importable file
-    tar -czf "$EXPORT"-smaller.tar.gz --directory="$EXPORT"/ .
-    ```
+   # Recreate an importable file
+   tar -czf "$EXPORT"-smaller.tar.gz --directory="$EXPORT"/ .
+   ```
 
 1. Import this new, smaller file into GitLab.
 1. In a full clone of the original repository,
@@ -265,12 +265,12 @@ Marked stuck import jobs as failed. JIDs: xyz
 | Problem | Possible solutions |
 | -------- | -------- |
 | [Slow JSON](https://gitlab.com/gitlab-org/gitlab/-/issues/25251) loading/dumping models from the database | [split the worker](https://gitlab.com/gitlab-org/gitlab/-/issues/25252) |
-| | Batch export
-| | Optimize SQL
-| | Move away from `ActiveRecord` callbacks (difficult)
-| High memory usage (see also some [analysis](https://gitlab.com/gitlab-org/gitlab/-/issues/18857) | DB Commit sweet spot that uses less memory |
+| | Batch export |
+| | Optimize SQL |
+| | Move away from `ActiveRecord` callbacks (difficult) |
+| High memory usage (see also some [analysis](https://gitlab.com/gitlab-org/gitlab/-/issues/18857)) | DB Commit sweet spot that uses less memory |
 | | [Netflix Fast JSON API](https://github.com/Netflix/fast_jsonapi) may help |
-| | Batch reading/writing to disk and any SQL
+| | Batch reading/writing to disk and any SQL |
 
 ### Temporary solutions
 

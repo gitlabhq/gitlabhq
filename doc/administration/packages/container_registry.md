@@ -610,7 +610,7 @@ registry['storage'] = {
     'accountkey' => 'base64encodedaccountkey',
     'container' => 'containername',
     'rootdirectory' => '/azure/virtual/container',
-    'trimlegacyrootprefix' => 'true'
+    'trimlegacyrootprefix' => true
   }
 }
 ```

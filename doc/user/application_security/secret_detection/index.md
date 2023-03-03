@@ -414,18 +414,16 @@ In the following example `secret-detection-ruleset.toml` file, rules are matched
 
 ### Synthesize a custom configuration
 
-To create a custom configuration, you can use passthrough chains. Passthroughs can also be chained
-to build more complex configurations. For more details, see
-[SAST Customize ruleset](../sast/customize_rulesets.md).
+You can use passthroughs to override the default Secret Detection ruleset. The
+following passthrough types are supported by the `secrets` analyzer:
 
-Only the following passthrough types are supported by the `secrets` analyzer:
-
-- `file`
 - `raw`
+- `file`
 
-In the `secret-detection-ruleset.toml` file, do one of the following:
+To define a passthrough, add _one_ of the following to the
+`secret-detection-ruleset.toml` file:
 
-- Define a custom ruleset, for example:
+- Using an inline (`raw`) value:
 
   ```toml
   [secrets]
@@ -443,7 +441,7 @@ In the `secret-detection-ruleset.toml` file, do one of the following:
   """
   ```
 
-- Provide the name of the file containing a custom ruleset, for example:
+- Using an external `file` committed to the current repository:
 
   ```toml
   [secrets]
@@ -454,6 +452,10 @@ In the `secret-detection-ruleset.toml` file, do one of the following:
       target = "gitleaks.toml"
       value = "config/gitleaks.toml"
   ```
+
+For more information on the syntax of passthroughs, see the
+[passthroughs section on the SAST customize rulesets](../sast/customize_rulesets.md#the-analyzerpassthrough-section)
+page.
 
 ## Running Secret Detection in an offline environment **(PREMIUM SELF)**
 

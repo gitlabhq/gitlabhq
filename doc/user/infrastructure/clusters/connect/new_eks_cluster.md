@@ -67,42 +67,42 @@ Set up your AWS credentials when you want to authenticate AWS with GitLab.
 1. Create an [IAM User](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_users.html) or [IAM Role](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html).
 1. Make sure that your IAM user or role has the appropriate permissions for your project. For this example project, you must have the permissions shown below. You can expand this when you set up your own project.
 
-    ```json
-    // IAM custom Policy definition
-    {
-      "Version": "2012-10-17",
-      "Statement": [
-          {
-              "Sid": "VisualEditor0",
-              "Effect": "Allow",
-              "Action": [
-                  "ec2:*",
-                  "eks:*",
-                  "elasticloadbalancing:*",
-                  "autoscaling:*",
-                  "cloudwatch:*",
-                  "logs:*",
-                  "kms:DescribeKey",
-                  "iam:AddRoleToInstanceProfile",
-                  "iam:AttachRolePolicy",
-                  "iam:CreateInstanceProfile",
-                  "iam:CreateRole",
-                  "iam:CreateServiceLinkedRole",
-                  "iam:GetRole",
-                  "iam:ListAttachedRolePolicies",
-                  "iam:ListRolePolicies",
-                  "iam:ListRoles",
-                  "iam:PassRole",
-                  // required for destroy step
-                  "iam:DetachRolePolicy",
-                  "iam:ListInstanceProfilesForRole",
-                  "iam:DeleteRole"
-              ],
-              "Resource": "*"
-          }
-      ]
-    }
-    ```
+   ```json
+   // IAM custom Policy definition
+   {
+     "Version": "2012-10-17",
+     "Statement": [
+         {
+             "Sid": "VisualEditor0",
+             "Effect": "Allow",
+             "Action": [
+                 "ec2:*",
+                 "eks:*",
+                 "elasticloadbalancing:*",
+                 "autoscaling:*",
+                 "cloudwatch:*",
+                 "logs:*",
+                 "kms:DescribeKey",
+                 "iam:AddRoleToInstanceProfile",
+                 "iam:AttachRolePolicy",
+                 "iam:CreateInstanceProfile",
+                 "iam:CreateRole",
+                 "iam:CreateServiceLinkedRole",
+                 "iam:GetRole",
+                 "iam:ListAttachedRolePolicies",
+                 "iam:ListRolePolicies",
+                 "iam:ListRoles",
+                 "iam:PassRole",
+                 // required for destroy step
+                 "iam:DetachRolePolicy",
+                 "iam:ListInstanceProfilesForRole",
+                 "iam:DeleteRole"
+             ],
+             "Resource": "*"
+         }
+     ]
+   }
+   ```
 
 1. [Create an access key for the user or role](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html).
 1. Save your access key and secret. You need these to authenticate AWS with GitLab.
@@ -165,19 +165,19 @@ To remove all resources:
 
 1. Add the following to your `.gitlab-ci.yml` file:
 
-    ```yaml
-    stages:
-      - init
-      - validate
-      - test
-      - build
-      - deploy
-      - cleanup
+   ```yaml
+   stages:
+     - init
+     - validate
+     - test
+     - build
+     - deploy
+     - cleanup
 
-    destroy:
-      extends: .terraform:destroy
-      needs: []
-    ```
+   destroy:
+     extends: .terraform:destroy
+     needs: []
+   ```
 
 1. On the left sidebar, select **CI/CD > Pipelines** and select the most recent pipeline.
 1. For the `destroy` job, select **Play** (**{play}**).

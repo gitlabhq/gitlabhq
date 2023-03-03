@@ -50,9 +50,9 @@ To deploy containers from the GitLab Container Registry, you must configure the 
 1. Generate a GitLab token with at least `read-registry` rights. The token can be either a Personal or a Project Access Token.
 1. Create a Kubernetes secret manifest YAML file. Update the values as needed:
 
-    ```shell
-    kubectl create secret docker-registry gitlab-credentials --docker-server=registry.gitlab.example.com --docker-username=<gitlab-username> --docker-password=<gitlab-token> --docker-email=<gitlab-user-email> -n <namespace> --dry-run=client -o yaml > gitlab-credentials.yaml
-    ```
+   ```shell
+   kubectl create secret docker-registry gitlab-credentials --docker-server=registry.gitlab.example.com --docker-username=<gitlab-username> --docker-password=<gitlab-token> --docker-email=<gitlab-user-email> -n <namespace> --dry-run=client -o yaml > gitlab-credentials.yaml
+   ```
 
 1. Encrypt the secret into a `SealedSecret` manifest:
 

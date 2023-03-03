@@ -88,7 +88,7 @@ In most other cases, the `identifiers` collection is unordered, where the remain
 Any time the primary identifier changes and a project pipeline is re-run, ingestion of the new report will "orphan" the previous DB record.
 Because our processing logic relies on generating a delta of two different vulnerabilities, it can end up looking rather confusing. For example:
 
-[!Screenshot of primary identifier mismatch in MR widget](img/primary_identifier_changed_v15_6.png)
+![Screenshot of primary identifier mismatch in MR widget](img/primary_identifier_changed_v15_6.png)
 
 After being [merged](../integrations/secure.md#tracking-and-merging-vulnerabilities), the previous vulnerability is listed as "remediated" and the introduced as ["detected"](../../user/application_security/vulnerabilities/index.md#vulnerability-status-values).
 

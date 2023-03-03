@@ -27698,9 +27698,6 @@ msgstr ""
 msgid "MlExperimentTracking|User"
 msgstr ""
 
-msgid "MlExperimentsEmptyState|No Experiments to Show"
-msgstr ""
-
 msgid "Modal updated"
 msgstr ""
 

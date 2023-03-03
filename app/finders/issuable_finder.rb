@@ -43,6 +43,7 @@ class IssuableFinder
   include FinderMethods
   include CreatedAtFilter
   include Gitlab::Utils::StrongMemoize
+  include UpdatedAtFilter
 
   requires_cross_project_access unless: -> { params.project? }
 
@@ -288,13 +289,6 @@ class IssuableFinder
     end
   end
   # rubocop: enable CodeReuse/ActiveRecord
-
-  def by_updated_at(items)
-    items = items.updated_after(params[:updated_after]) if params[:updated_after].present?
-    items = items.updated_before(params[:updated_before]) if params[:updated_before].present?
-
-    items
-  end
 
   def by_closed_at(items)
     items = items.closed_after(params[:closed_after]) if params[:closed_after].present?

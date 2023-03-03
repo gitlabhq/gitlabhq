@@ -46,6 +46,13 @@ export default {
   },
   components: { BoardFilteredSearch },
   inject: ['isSignedIn', 'releasesFetchPath', 'fullPath', 'isGroupBoard'],
+  props: {
+    board: {
+      type: Object,
+      required: false,
+      default: () => {},
+    },
+  },
   computed: {
     tokensCE() {
       const { issue, incident } = this.$options.i18n;
@@ -195,6 +202,7 @@ export default {
   <board-filtered-search
     data-testid="issue-board-filtered-search"
     :tokens="tokens"
+    :board="board"
     @setFilters="$emit('setFilters', $event)"
   />
 </template>

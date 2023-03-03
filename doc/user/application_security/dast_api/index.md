@@ -264,6 +264,8 @@ This example is a minimal configuration for DAST API. From here you can:
 
 #### DAST API scanning with a GraphQL Schema file
 
+DAST API can use a GraphQL schema file to understand and test a GraphQL endpoint that has introspection disabled. To use a GraphQL schema file, it must be in the introspection JSON format. A GraphQL schema can be converted to a the introspection JSON format using an online 3rd party tool: [https://transform.tools/graphql-to-introspection-json](https://transform.tools/graphql-to-introspection-json).
+
 To configure DAST API to use a GraphQL schema file that provides information about the target API to test:
 
 1. [Include](../../../ci/yaml/index.md#includetemplate)

@@ -48,77 +48,77 @@ When running in this method, you provide a container image that has the required
 1. In a job in the `build` stage, build your application and configure the resulting Spring Boot executable JAR as a job artifact.
 1. Include the API Discovery template in your `.gitlab-ci.yml` file.
 
-    ```yaml
-    include:
-        - template: API-Discovery.gitlab-ci.yml
-    ```
+   ```yaml
+   include:
+       - template: API-Discovery.gitlab-ci.yml
+   ```
 
-    Only a single `include` statement is allowed per `.gitlab-ci.yml` file. If you are including other files, combine them into a single `include` statement.
+   Only a single `include` statement is allowed per `.gitlab-ci.yml` file. If you are including other files, combine them into a single `include` statement.
 
-    ```yaml
-    include:
-        - template: API-Discovery.gitlab-ci.yml
-        - template: DAST-API.gitlab-ci.yml
-    ```
+   ```yaml
+   include:
+       - template: API-Discovery.gitlab-ci.yml
+       - template: DAST-API.gitlab-ci.yml
+   ```
 
 1. Create a new job that extends from `.api_discovery_java_spring_boot`. The default stage is `test` which can be optionally changed to any value.
 
-    ```yaml
-    api_discovery:
-        extends: .api_discovery_java_spring_boot
-    ```
+   ```yaml
+   api_discovery:
+       extends: .api_discovery_java_spring_boot
+   ```
 
 1. Configure the `image` for the job.
 
-    ```yaml
-    api_discovery:
-        extends: .api_discovery_java_spring_boot
-        image: openjdk:11-jre-slim
-    ```
+   ```yaml
+   api_discovery:
+       extends: .api_discovery_java_spring_boot
+       image: openjdk:11-jre-slim
+   ```
 
 1. Provide the Java classpath needed by your application. This includes your compatible build artifact from step 2, along with any additional dependencies. For this example, the build artifact is `build/libs/spring-boot-app-0.0.0.jar` and contains all needed dependencies. The variable `API_DISCOVERY_JAVA_CLASSPATH` is used to provide the classpath.
 
-    ```yaml
-    api_discovery:
-        extends: .api_discovery_java_spring_boot
-        image: openjdk:11-jre-slim
-        variables:
-            API_DISCOVERY_JAVA_CLASSPATH: build/libs/spring-boot-app-0.0.0.jar
-    ```
+   ```yaml
+   api_discovery:
+       extends: .api_discovery_java_spring_boot
+       image: openjdk:11-jre-slim
+       variables:
+           API_DISCOVERY_JAVA_CLASSPATH: build/libs/spring-boot-app-0.0.0.jar
+   ```
 
 1. [Optional] If the image provided is missing a dependency needed by API Discovery, it can be added using a `before_script`. In this example, the `openjdk:11-jre-slim` container doesn't include `curl` which is required by API Discovery. The dependency can be installed using the Debian package manager `apt` as shown below.
 
-    ```yaml
-    api_discovery:
-        extends: .api_discovery_java_spring_boot
-        image: openjdk:11-jre-slim
-        variables:
-            API_DISCOVERY_JAVA_CLASSPATH: build/libs/spring-boot-app-0.0.0.jar
-        before_script:
-            - apt-get update && apt-get install -y curl
-    ```
+   ```yaml
+   api_discovery:
+       extends: .api_discovery_java_spring_boot
+       image: openjdk:11-jre-slim
+       variables:
+           API_DISCOVERY_JAVA_CLASSPATH: build/libs/spring-boot-app-0.0.0.jar
+       before_script:
+           - apt-get update && apt-get install -y curl
+   ```
 
 1. [Optional] If the image provided doesn't automatically set the `JAVA_HOME` environment variable, or include `java` in the path, the `API_DISCOVERY_JAVA_HOME` variable can be used.
 
-    ```yaml
-    api_discovery:
-        extends: .api_discovery_java_spring_boot
-        image: openjdk:11-jre-slim
-        variables:
-            API_DISCOVERY_JAVA_CLASSPATH: build/libs/spring-boot-app-0.0.0.jar
-            API_DISCOVERY_JAVA_HOME: /opt/java
-    ```
+   ```yaml
+   api_discovery:
+       extends: .api_discovery_java_spring_boot
+       image: openjdk:11-jre-slim
+       variables:
+           API_DISCOVERY_JAVA_CLASSPATH: build/libs/spring-boot-app-0.0.0.jar
+           API_DISCOVERY_JAVA_HOME: /opt/java
+   ```
 
 1. [Optional] If the package registry at `API_DISCOVERY_PACKAGES` is not public, provide a token that has read access to the GitLab API and registry using the `API_DISCOVERY_PACKAGE_TOKEN` variable. This is not required if you are using `gitlab.com` and have not customized the `API_DISCOVERY_PACKAGES` variable. This example uses a [custom CI/CD variable](../../../../ci/variables/index.md#define-a-cicd-variable-in-the-ui) named `GITLAB_READ_TOKEN` to store the token.
 
-    ```yaml
-    api_discovery:
-        extends: .api_discovery_java_spring_boot
-        image: openjdk:8-jre-alpine
-        variables:
-            API_DISCOVERY_JAVA_CLASSPATH: build/libs/spring-boot-app-0.0.0.jar
-            API_DISCOVERY_PACKAGE_TOKEN: $GITLAB_READ_TOKEN
-    ```
+   ```yaml
+   api_discovery:
+       extends: .api_discovery_java_spring_boot
+       image: openjdk:8-jre-alpine
+       variables:
+           API_DISCOVERY_JAVA_CLASSPATH: build/libs/spring-boot-app-0.0.0.jar
+           API_DISCOVERY_PACKAGE_TOKEN: $GITLAB_READ_TOKEN
+   ```
 
 #### Image requirements
 

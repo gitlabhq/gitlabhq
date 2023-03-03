@@ -1,6 +1,8 @@
 - add_to_breadcrumbs _("Experiments"), project_ml_experiments_path(@project)
 - breadcrumb_title @experiment.name
 - page_title @experiment.name
+- add_page_specific_style 'page_bundles/ml_experiment_tracking'
+
 - items = candidates_table_items(@candidates)
 - metrics = unique_logged_names(@candidates, &:latest_metrics)
 - params = unique_logged_names(@candidates, &:params)

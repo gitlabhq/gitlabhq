@@ -6,6 +6,7 @@ import Draggable from 'vuedraggable';
 import { mapState, mapGetters, mapActions } from 'vuex';
 import { contentTop } from '~/lib/utils/common_utils';
 import { s__ } from '~/locale';
+import eventHub from '~/boards/eventhub';
 import { formatBoardLists } from 'ee_else_ce/boards/boards_util';
 import BoardAddNewColumn from 'ee_else_ce/boards/components/board_add_new_column.vue';
 import { defaultSortableOptions } from '~/sortable/constants';
@@ -130,6 +131,12 @@ export default {
       return this.isApolloBoard ? this.apolloError : this.error;
     },
   },
+  created() {
+    eventHub.$on('updateBoard', this.refetchLists);
+  },
+  beforeDestroy() {
+    eventHub.$off('updateBoard', this.refetchLists);
+  },
   mounted() {
     this.setBoardHeight();
 
@@ -155,6 +162,9 @@ export default {
       } else {
         this.boardHeight = `${window.innerHeight - this.$el.getBoundingClientRect().top}px`;
       }
+    },
+    refetchLists() {
+      this.$apollo.queries.boardListsApollo.refetch();
     },
   },
 };

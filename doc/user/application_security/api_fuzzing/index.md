@@ -330,6 +330,8 @@ This example is a minimal configuration for API Fuzzing. From here you can:
 
 #### API Fuzzing with a GraphQL Schema file
 
+API Fuzzing can use a GraphQL schema file to understand and test a GraphQL endpoint that has introspection disabled. To use a GraphQL schema file, it must be in the introspection JSON format. A GraphQL schema can be converted to a the introspection JSON format using an online 3rd party tool: [https://transform.tools/graphql-to-introspection-json](https://transform.tools/graphql-to-introspection-json).
+
 To configure API Fuzzing to use a GraphQl schema file that provides information about the target API to test:
 
 1. [Include](../../../ci/yaml/index.md#includetemplate)

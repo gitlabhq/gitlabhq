@@ -10,12 +10,14 @@ import { formType } from '~/boards/constants';
 import createBoardMutation from '~/boards/graphql/board_create.mutation.graphql';
 import destroyBoardMutation from '~/boards/graphql/board_destroy.mutation.graphql';
 import updateBoardMutation from '~/boards/graphql/board_update.mutation.graphql';
+import eventHub from '~/boards/eventhub';
 import { visitUrl } from '~/lib/utils/url_utility';
 
 jest.mock('~/lib/utils/url_utility', () => ({
   ...jest.requireActual('~/lib/utils/url_utility'),
   visitUrl: jest.fn().mockName('visitUrlMock'),
 }));
+jest.mock('~/boards/eventhub');
 
 Vue.use(Vuex);
 
@@ -207,7 +209,7 @@ describe('BoardForm', () => {
       });
 
       describe('when Apollo boards FF is on', () => {
-        it('calls a correct GraphQL mutation and emits addBoard event', async () => {
+        it('calls a correct GraphQL mutation and emits addBoard event when creating a board', async () => {
           createComponent(
             { canAdminBoard: true, currentPage: formType.new },
             { isApolloBoard: true },
@@ -327,6 +329,41 @@ describe('BoardForm', () => {
       await waitForPromises();
       expect(setBoardMock).not.toHaveBeenCalled();
       expect(setErrorMock).toHaveBeenCalled();
+    });
+
+    describe('when Apollo boards FF is on', () => {
+      it('calls a correct GraphQL mutation and emits updateBoard event when updating a board', async () => {
+        mutate = jest.fn().mockResolvedValue({
+          data: {
+            updateBoard: { board: { id: 'gid://gitlab/Board/321', webPath: 'test-path' } },
+          },
+        });
+        setWindowLocation('https://test/boards/1');
+
+        createComponent(
+          { canAdminBoard: true, currentPage: formType.edit },
+          { isApolloBoard: true },
+        );
+        findInput().trigger('keyup.enter', { metaKey: true });
+
+        await waitForPromises();
+
+        expect(mutate).toHaveBeenCalledWith({
+          mutation: updateBoardMutation,
+          variables: {
+            input: expect.objectContaining({
+              id: currentBoard.id,
+            }),
+          },
+        });
+
+        await waitForPromises();
+        expect(eventHub.$emit).toHaveBeenCalledTimes(1);
+        expect(eventHub.$emit).toHaveBeenCalledWith('updateBoard', {
+          id: 'gid://gitlab/Board/321',
+          webPath: 'test-path',
+        });
+      });
     });
   });
 

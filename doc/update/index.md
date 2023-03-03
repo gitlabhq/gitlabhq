@@ -819,13 +819,13 @@ A [license caching issue](https://gitlab.com/gitlab-org/gitlab/-/issues/376706) 
 [background migration `PopulateTopicsNonPrivateProjectsCount`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/79140)
 that may remain stuck permanently in a **pending** state.
 
-    To clean up this stuck job, run the following in the [GitLab Rails Console](../administration/operations/rails_console.md):
+  To clean up this stuck job, run the following in the [GitLab Rails Console](../administration/operations/rails_console.md):
 
-    ```ruby
-        Gitlab::Database::BackgroundMigrationJob.pending.where(class_name: "PopulateTopicsNonPrivateProjectsCount").find_each do |job|
-          puts Gitlab::Database::BackgroundMigrationJob.mark_all_as_succeeded("PopulateTopicsNonPrivateProjectsCount", job.arguments)
-        end
-    ```
+  ```ruby
+  Gitlab::Database::BackgroundMigrationJob.pending.where(class_name: "PopulateTopicsNonPrivateProjectsCount").find_each do |job|
+    puts Gitlab::Database::BackgroundMigrationJob.mark_all_as_succeeded("PopulateTopicsNonPrivateProjectsCount", job.arguments)
+  end
+  ```
 
 - If upgrading from a version earlier than 14.3.0, to avoid
   [an issue with job retries](https://gitlab.com/gitlab-org/gitlab/-/issues/357822), first upgrade
@@ -898,11 +898,11 @@ or [init scripts](upgrading_from_source.md#configure-sysv-init-script) by [follo
 
   To clean up this stuck job, run the following in the [GitLab Rails Console](../administration/operations/rails_console.md):
 
-    ```ruby
-        Gitlab::Database::BackgroundMigrationJob.pending.where(class_name: "UpdateVulnerabilityOccurrencesLocation").find_each do |job|
-          puts Gitlab::Database::BackgroundMigrationJob.mark_all_as_succeeded("UpdateVulnerabilityOccurrencesLocation", job.arguments)
-        end
-    ```
+  ```ruby
+  Gitlab::Database::BackgroundMigrationJob.pending.where(class_name: "UpdateVulnerabilityOccurrencesLocation").find_each do |job|
+    puts Gitlab::Database::BackgroundMigrationJob.mark_all_as_succeeded("UpdateVulnerabilityOccurrencesLocation", job.arguments)
+  end
+  ```
 
 - Upgrading to 14.5 (or later) [might encounter a one hour timeout](https://gitlab.com/gitlab-org/gitlab/-/issues/354211)
   owing to a long running database data change.
@@ -943,13 +943,13 @@ or [init scripts](upgrading_from_source.md#configure-sysv-init-script) by [follo
 [background migration `PopulateTopicsTotalProjectsCountCache`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/71033)
 that may remain stuck permanently in a **pending** state when the instance lacks records that match the migration's target.
 
-    To clean up this stuck job, run the following in the [GitLab Rails Console](../administration/operations/rails_console.md):
+  To clean up this stuck job, run the following in the [GitLab Rails Console](../administration/operations/rails_console.md):
 
-    ```ruby
-        Gitlab::Database::BackgroundMigrationJob.pending.where(class_name: "PopulateTopicsTotalProjectsCountCache").find_each do |job|
-          puts Gitlab::Database::BackgroundMigrationJob.mark_all_as_succeeded("PopulateTopicsTotalProjectsCountCache", job.arguments)
-        end
-    ```
+  ```ruby
+  Gitlab::Database::BackgroundMigrationJob.pending.where(class_name: "PopulateTopicsTotalProjectsCountCache").find_each do |job|
+    puts Gitlab::Database::BackgroundMigrationJob.mark_all_as_succeeded("PopulateTopicsTotalProjectsCountCache", job.arguments)
+  end
+  ```
 
 ### 14.3.0
 

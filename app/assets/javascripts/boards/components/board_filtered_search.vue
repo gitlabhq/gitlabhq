@@ -351,6 +351,7 @@ export default {
     eventHub.$on('updateTokens', this.updateTokens);
     if (!isEmpty(this.eeFilters)) {
       this.filterParams = this.eeFilters;
+      this.$emit('setFilters', this.formattedFilterParams);
     }
   },
   beforeDestroy() {
@@ -361,6 +362,7 @@ export default {
     updateTokens() {
       const rawFilterParams = queryToObject(window.location.search, { gatherArrays: true });
       this.filterParams = convertObjectPropsToCamelCase(rawFilterParams, {});
+      this.$emit('setFilters', this.formattedFilterParams);
       this.filteredSearchKey += 1;
     },
     handleFilter(filters) {

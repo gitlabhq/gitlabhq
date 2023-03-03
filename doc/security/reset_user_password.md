@@ -96,7 +96,7 @@ If you know the username, user ID, or email address, you can use the Rails conso
    user.password = new_password
    user.password_confirmation = new_password
    ```
-  
+
    To set a specific value for the new password:
 
    ```ruby
@@ -113,9 +113,9 @@ If you know the username, user ID, or email address, you can use the Rails conso
 
 1. Save the changes:
 
-    ```ruby
-    user.save!
-    ```
+   ```ruby
+   user.save!
+   ```
 
 1. Exit the console:
 
@@ -145,10 +145,10 @@ attempt to fix this issue in a Rails console. For example, if a new `root` passw
 1. Start a [Rails console](../administration/operations/rails_console.md).
 1. Find the user and skip reconfirmation:
 
-    ```ruby
-    user = User.find(1)
-    user.skip_reconfirmation!
-    ```
+   ```ruby
+   user = User.find(1)
+   user.skip_reconfirmation!
+   ```
 
 1. Attempt to sign in again.
 
