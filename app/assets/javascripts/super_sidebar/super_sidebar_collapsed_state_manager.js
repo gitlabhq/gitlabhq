@@ -7,9 +7,10 @@ export const SIDEBAR_COLLAPSED_COOKIE = 'super_sidebar_collapsed';
 export const SIDEBAR_COLLAPSED_COOKIE_EXPIRATION = 365 * 10;
 
 export const findPage = () => document.querySelector('.page-with-super-sidebar');
-export const findToggle = () => document.querySelector('.js-super-sidebar-toggle');
+export const findSidebar = () => document.querySelector('.super-sidebar');
+export const findToggles = () => document.querySelectorAll('.js-super-sidebar-toggle');
 
-const isCollapsed = () => findPage().classList.contains(SIDEBAR_COLLAPSED_CLASS);
+export const isCollapsed = () => findPage().classList.contains(SIDEBAR_COLLAPSED_CLASS);
 
 // See documentation: https://design.gitlab.com/patterns/navigation#left-sidebar
 // NOTE: at 1200px nav sidebar should not overlap the content
@@ -19,6 +20,12 @@ export const isDesktopBreakpoint = () => bp.windowWidth() >= breakpoints.xl;
 export const getCollapsedCookie = () => getCookie(SIDEBAR_COLLAPSED_COOKIE) === 'true';
 
 export const toggleSuperSidebarCollapsed = (collapsed, saveCookie) => {
+  const sidebar = findSidebar();
+  sidebar.ariaHidden = collapsed;
+  sidebar.inert = collapsed;
+
+  if (!collapsed) sidebar.focus();
+
   findPage().classList.toggle(SIDEBAR_COLLAPSED_CLASS, collapsed);
 
   if (saveCookie && isDesktopBreakpoint()) {
@@ -34,12 +41,11 @@ export const initSuperSidebarCollapsedState = () => {
 };
 
 export const bindSuperSidebarCollapsedEvents = () => {
-  if (findToggle()) {
-    findToggle().addEventListener('click', () => {
-      const value = !isCollapsed();
-      toggleSuperSidebarCollapsed(value, true);
+  findToggles().forEach((elem) => {
+    elem.addEventListener('click', () => {
+      toggleSuperSidebarCollapsed(!isCollapsed(), true);
     });
-  }
+  });
 
   window.addEventListener('resize', debounce(initSuperSidebarCollapsedState, 100));
 };

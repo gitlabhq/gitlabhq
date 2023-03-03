@@ -129,7 +129,7 @@ export default {
       };
     },
     listItemsCount() {
-      return this.isEpicBoard ? this.list.epicsCount : this.boardList?.issuesCount;
+      return this.isEpicBoard ? this.list.metadata.epicsCount : this.boardList?.issuesCount;
     },
     paginatedIssueText() {
       return sprintf(__('Showing %{pageSize} of %{total} %{issuableType}'), {

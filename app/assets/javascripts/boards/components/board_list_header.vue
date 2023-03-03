@@ -90,6 +90,9 @@ export default {
     listType() {
       return this.list.listType;
     },
+    itemsCount() {
+      return this.isEpicBoard ? this.list.metadata.epicsCount : this.boardList?.issuesCount;
+    },
     listAssignee() {
       return this.list?.assignee?.username || '';
     },
@@ -452,7 +455,7 @@ export default {
             <gl-icon class="gl-mr-2" :name="countIcon" :size="14" />
             <item-count
               v-if="!isLoading"
-              :items-size="isEpicBoard ? list.epicsCount : boardList.issuesCount"
+              :items-size="itemsCount"
               :max-issue-count="list.maxIssueCount"
             />
           </span>

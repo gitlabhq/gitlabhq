@@ -19,7 +19,7 @@ require_relative 'api/default_options'
 # Push into expected format for failed tests
 class PipelineTestReportBuilder
   DEFAULT_OPTIONS = {
-    target_project: Host::DEFAULT_OPTIONS[:target_project],
+    target_project: Host::DEFAULT_OPTIONS[:target_project] || API::DEFAULT_OPTIONS[:project],
     current_pipeline_id: API::DEFAULT_OPTIONS[:pipeline_id],
     mr_iid: Host::DEFAULT_OPTIONS[:mr_iid],
     api_endpoint: API::DEFAULT_OPTIONS[:endpoint],

@@ -477,6 +477,9 @@ export const mockList = {
   loading: false,
   issuesCount: 1,
   maxIssueCount: 0,
+  metadata: {
+    epicsCount: 1,
+  },
   __typename: 'BoardList',
 };
 

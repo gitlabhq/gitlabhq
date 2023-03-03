@@ -2,7 +2,7 @@
 import { GlBadge, GlButton, GlTooltipDirective } from '@gitlab/ui';
 import { __ } from '~/locale';
 import SafeHtml from '~/vue_shared/directives/safe_html';
-import logo from '../../../../views/shared/_logo.svg';
+import logo from '../../../../views/shared/_logo.svg?raw';
 import { toggleSuperSidebarCollapsed } from '../super_sidebar_collapsed_state_manager';
 import CreateMenu from './create_menu.vue';
 import Counter from './counter.vue';
@@ -93,7 +93,6 @@ export default {
         <counter
           v-gl-tooltip:super-sidebar.hover.bottom="$options.i18n.mergeRequests"
           class="gl-w-full"
-          tabindex="-1"
           icon="merge-request-open"
           :count="sidebarData.total_merge_requests_count"
           :label="$options.i18n.mergeRequests"

@@ -1,6 +1,7 @@
 - user_email = "(#{params[:email]})" if Devise.email_regexp.match?(params[:email])
 - request_link_start = '<a href="%{new_user_confirmation_path}">'.html_safe % { new_user_confirmation_path: new_user_confirmation_path }
-- request_link_end = '</a>'.html_safe
+- registration_link_start = '<a href="%{new_user_registration_path}">'.html_safe % { new_user_registration_path: new_user_registration_path }
+- link_end = '</a>'.html_safe
 - content_for :page_specific_javascripts do
   = render "layouts/google_tag_manager_head"
   = render "layouts/one_trust"
@@ -12,9 +13,11 @@
     = _("Almost there...")
   %p{ class: 'gl-mb-6 gl-font-lg!' }
     = _('Please check your email %{email} to confirm your account') % { email: user_email }
+    %br
+    = _('If the email address is incorrect, you can %{registration_link_start}register again with a different email%{registration_link_end}.').html_safe % { registration_link_start: registration_link_start, registration_link_end: link_end }
   %hr
 - if Gitlab::CurrentSettings.after_sign_up_text.present?
   .well-confirmation.gl-text-center
     = markdown_field(Gitlab::CurrentSettings, :after_sign_up_text)
 %p.gl-text-center
-  = _("No confirmation email received? Check your spam folder or %{request_link_start}request new confirmation email%{request_link_end}.").html_safe % { request_link_start: request_link_start, request_link_end: request_link_end }
+  = _("No confirmation email received? Check your spam folder or %{request_link_start}request new confirmation email%{request_link_end}.").html_safe % { request_link_start: request_link_start, request_link_end: link_end }

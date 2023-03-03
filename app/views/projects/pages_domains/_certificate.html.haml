@@ -30,10 +30,10 @@
   - if has_user_defined_certificate
     .row
       .col-sm-10.offset-sm-2
-        .card
-          .card-header
-            = _('Certificate')
-          .d-flex.justify-content-between.align-items-center.p-3
+        = render Pajamas::CardComponent.new(body_options: { class: 'gl-display-flex gl-align-items-center gl-justify-content-space-between gl-p-5' }) do |c|
+          - c.header do
+            = s_('Certificate')
+          - c.body do
             %span
               = domain_presenter.pages_domain.subject || _('missing')
             = link_to _('Remove'),

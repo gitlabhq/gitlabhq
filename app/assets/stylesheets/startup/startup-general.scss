@@ -1494,13 +1494,14 @@ kbd {
   }
 }
 .super-sidebar {
+  display: flex;
+  flex-direction: column;
   position: fixed;
   top: 0;
   bottom: 0;
   left: 0;
-  background-color: #fbfafd;
-  border-right: solid 1px #dcdcde;
-  border-color: rgba(31, 30, 36, 0.08);
+  background-color: var(--gray-10, #fbfafd);
+  border-right: 1px solid rgba(31, 30, 36, 0.08);
   transform: translate3d(0, 0, 0);
   width: 256px;
   z-index: 600;
