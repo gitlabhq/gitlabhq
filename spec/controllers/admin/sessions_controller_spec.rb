@@ -268,16 +268,6 @@ RSpec.describe Admin::SessionsController, :do_not_mock_admin_mode do
         end
       end
 
-      context 'when using two-factor authentication via U2F' do
-        it_behaves_like 'when using two-factor authentication via hardware device' do
-          let(:user) { create(:admin, :two_factor_via_u2f) }
-
-          before do
-            stub_feature_flags(webauthn: false)
-          end
-        end
-      end
-
       context 'when using two-factor authentication via WebAuthn' do
         it_behaves_like 'when using two-factor authentication via hardware device' do
           let(:user) { create(:admin, :two_factor_via_webauthn) }

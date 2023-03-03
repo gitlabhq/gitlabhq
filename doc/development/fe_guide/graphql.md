@@ -63,17 +63,17 @@ the GraphQL extension, follow these steps:
 1. Add an `apollo.config.js` file to the root of your `gitlab` local directory.
 1. Populate the file with the following content:
 
-    ```javascript
-    module.exports = {
-      client: {
-        includes: ['./app/assets/javascripts/**/*.graphql', './ee/app/assets/javascripts/**/*.graphql'],
-        service: {
-          name: 'GitLab',
-          localSchemaFile: './tmp/tests/graphql/gitlab_schema.graphql',
-        },
-      },
-    };
-    ```
+   ```javascript
+   module.exports = {
+     client: {
+       includes: ['./app/assets/javascripts/**/*.graphql', './ee/app/assets/javascripts/**/*.graphql'],
+       service: {
+         name: 'GitLab',
+         localSchemaFile: './tmp/tests/graphql/gitlab_schema.graphql',
+       },
+     },
+   };
+   ```
 
 1. Restart VS Code.
 

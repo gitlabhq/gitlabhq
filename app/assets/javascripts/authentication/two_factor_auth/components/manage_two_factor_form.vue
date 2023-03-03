@@ -6,10 +6,8 @@ import { __ } from '~/locale';
 export const i18n = {
   currentPassword: __('Current password'),
   confirmTitle: __('Are you sure?'),
-  confirmWebAuthn: __(
-    'This will invalidate your registered applications and U2F / WebAuthn devices.',
-  ),
-  confirm: __('This will invalidate your registered applications and U2F devices.'),
+  confirmWebAuthn: __('This will invalidate your registered applications and WebAuthn devices.'),
+  confirm: __('This will invalidate your registered applications and WebAuthn devices.'),
   disableTwoFactor: __('Disable two-factor authentication'),
   disable: __('Disable'),
   cancel: __('Cancel'),

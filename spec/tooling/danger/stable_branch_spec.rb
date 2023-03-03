@@ -276,23 +276,54 @@ RSpec.describe Tooling::Danger::StableBranch, feature_category: :delivery do
     end
   end
 
-  describe '#non_security_stable_branch?' do
-    subject { stable_branch.non_security_stable_branch? }
+  describe '#encourage_package_and_qa_execution?' do
+    subject { stable_branch.encourage_package_and_qa_execution? }
 
-    where(:stable_branch?, :security_mr?, :expected_result) do
-      true  | true  | false
-      false | true  | false
-      true  | false | true
-      false | false | false
+    where(:stable_branch?, :security_mr?, :documentation?, :flaky?, :result) do
+      # security merge requests
+      true  | true  | true  | true  | false
+      true  | true  | true  | false | false
+      true  | true  | false | true  | false
+      true  | true  | false | false | false
+      # canonical merge requests with doc and flaky changes only
+      true  | false | true  | true  | false
+      true  | false | true  | false | false
+      true  | false | false | true  | false
+      # canonical merge requests with app code
+      true  | false | false | false | true
     end
 
     with_them do
       before do
-        allow(fake_helper).to receive(:mr_target_branch).and_return(stable_branch? ? '15-1-stable-ee' : 'main')
-        allow(fake_helper).to receive(:security_mr?).and_return(security_mr?)
+        allow(fake_helper)
+          .to receive(:mr_target_branch)
+          .and_return(stable_branch? ? '15-1-stable-ee' : 'main')
+
+        allow(fake_helper)
+          .to receive(:security_mr?)
+          .and_return(security_mr?)
+
+        allow(fake_helper)
+          .to receive(:has_only_documentation_changes?)
+          .and_return(documentation?)
+
+        changes_by_category =
+          if documentation?
+            { docs: ['foo.md'] }
+          else
+            { graphql: ['bar.rb'] }
+          end
+
+        allow(fake_helper)
+          .to receive(:changes_by_category)
+          .and_return(changes_by_category)
+
+        allow(fake_helper)
+          .to receive(:mr_has_labels?)
+          .and_return(flaky?)
       end
 
-      it { is_expected.to eq(expected_result) }
+      it { is_expected.to eq(result) }
     end
   end
 end

@@ -119,8 +119,7 @@ module Gitlab
       def expand_config(config)
         build_config(config)
 
-      rescue Gitlab::Config::Loader::Yaml::DataTooLargeError,
-        Gitlab::Config::Loader::MultiDocYaml::DataTooLargeError => e
+      rescue Gitlab::Config::Loader::Yaml::DataTooLargeError => e
         track_and_raise_for_dev_exception(e)
         raise Config::ConfigError, e.message
 

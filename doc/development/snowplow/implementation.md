@@ -150,89 +150,89 @@ To implement Vue component tracking:
 
 1. Import the `Tracking` library and call the `mixin` method:
 
-    ```javascript
-    import Tracking from '~/tracking';
+   ```javascript
+   import Tracking from '~/tracking';
 
-    const trackingMixin = Tracking.mixin();
+   const trackingMixin = Tracking.mixin();
 
-    // Optionally provide default properties
-    // const trackingMixin = Tracking.mixin({ label: 'right_sidebar' });
-    ```
+   // Optionally provide default properties
+   // const trackingMixin = Tracking.mixin({ label: 'right_sidebar' });
+   ```
 
 1. Use the mixin in the component:
 
-    ```javascript
-    export default {
-      mixins: [trackingMixin],
-      // Or
-      // mixins: [Tracking.mixin()],
-      // mixins: [Tracking.mixin({ label: 'right_sidebar' })],
+   ```javascript
+   export default {
+     mixins: [trackingMixin],
+     // Or
+     // mixins: [Tracking.mixin()],
+     // mixins: [Tracking.mixin({ label: 'right_sidebar' })],
 
-      data() {
-        return {
-          expanded: false,
-        };
-      },
-    };
-    ```
+     data() {
+       return {
+         expanded: false,
+       };
+     },
+   };
+   ```
 
 1. You can specify tracking options in by creating a `tracking` data object
 or computed property:
 
-      ```javascript
-      export default {
-        name: 'RightSidebar',
+   ```javascript
+   export default {
+     name: 'RightSidebar',
 
-        mixins: [Tracking.mixin()],
+     mixins: [Tracking.mixin()],
 
-        data() {
-          return {
-            expanded: false,
-            variant: '',
-            tracking: {
-              label: 'right_sidebar',
-              // property: '',
-              // value: '',
-              // experiment: '',
-              // extra: {},
-            },
-          };
-        },
+     data() {
+       return {
+         expanded: false,
+         variant: '',
+         tracking: {
+           label: 'right_sidebar',
+           // property: '',
+           // value: '',
+           // experiment: '',
+           // extra: {},
+         },
+       };
+     },
 
-        // Or
-        // computed: {
-        //   tracking() {
-        //     return {
-        //       property: this.variant,
-        //       extra: { expanded: this.expanded },
-        //     };
-        //   },
-        // },
-      };
-      ```
+     // Or
+     // computed: {
+     //   tracking() {
+     //     return {
+     //       property: this.variant,
+     //       extra: { expanded: this.expanded },
+     //     };
+     //   },
+     // },
+   };
+   ```
 
 1. Call the `track` method. Tracking options can be passed as the second parameter:
 
-    ```javascript
-    this.track('click_button', {
-      label: 'right_sidebar',
-    });
-    ```
+   ```javascript
+   this.track('click_button', {
+     label: 'right_sidebar',
+   });
+   ```
 
-    Or use the `track` method in the template:
+   Or use the `track` method in the template:
 
-    ```html
-    <template>
-      <div>
-        <button data-testid="toggle" @click="toggle">Toggle</button>
+   ```html
+   <template>
+     <div>
+       <button data-testid="toggle" @click="toggle">Toggle</button>
 
-        <div v-if="expanded">
-          <p>Hello world!</p>
-          <button @click="track('click_button')">Track another event</button>
-        </div>
-      </div>
-    </template>
-    ```
+       <div v-if="expanded">
+         <p>Hello world!</p>
+         <button @click="track('click_button')">Track another event</button>
+       </div>
+     </div>
+   </template>
+   ```
 
 #### Testing example
 

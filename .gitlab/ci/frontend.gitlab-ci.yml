@@ -141,6 +141,8 @@ rspec-all frontend_fixture as-if-foss:
     - !reference [.frontend-fixtures-base, needs]
     - "compile-test-assets as-if-foss"
 
+# Uploads EE fixtures in the EE project.
+# Uploads FOSS fixtures in the FOSS project.
 upload-frontend-fixtures:
   extends:
     - .frontend-fixtures-base

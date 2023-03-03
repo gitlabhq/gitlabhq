@@ -14741,6 +14741,7 @@ CREATE TABLE dast_pre_scan_verification_steps (
     updated_at timestamp with time zone NOT NULL,
     name text,
     verification_errors text[] DEFAULT '{}'::text[] NOT NULL,
+    check_type smallint DEFAULT 0 NOT NULL,
     CONSTRAINT check_cd216b95e4 CHECK ((char_length(name) <= 255))
 );
 

@@ -42,7 +42,7 @@ export default {
 </script>
 
 <template>
-  <div>
+  <div data-testid="packages-and-registries-project-settings">
     <gl-alert
       v-if="showAlert"
       variant="success"

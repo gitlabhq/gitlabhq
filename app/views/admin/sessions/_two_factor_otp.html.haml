@@ -1,4 +1,4 @@
-= form_tag(admin_session_path, { method: :post, class: "edit_user gl-show-field-errors js-2fa-form #{'hidden' if current_user.two_factor_webauthn_u2f_enabled?}" }) do
+= form_tag(admin_session_path, { method: :post, class: "edit_user gl-show-field-errors js-2fa-form #{'hidden' if current_user.two_factor_webauthn_enabled?}" }) do
   .form-group
     = label_tag :user_otp_attempt, _('Enter verification code')
     = text_field_tag 'user[otp_attempt]', nil, class: 'form-control', required: true, autofocus: true, autocomplete: 'off', inputmode: 'numeric', title: _('This field is required.')

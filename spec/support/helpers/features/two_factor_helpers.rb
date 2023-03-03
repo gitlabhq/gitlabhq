@@ -20,16 +20,6 @@ module Spec
             wait_for_requests
           end
 
-          def register_u2f_device(u2f_device = nil, name: 'My device')
-            u2f_device ||= FakeU2fDevice.new(page, name)
-            u2f_device.respond_to_u2f_registration
-            click_on 'Set up new device'
-            expect(page).to have_content('Your device was successfully set up')
-            fill_in "Pick a name", with: name
-            click_on 'Register device'
-            u2f_device
-          end
-
           # Registers webauthn device via UI
           def register_webauthn_device(webauthn_device = nil, name: 'My device')
             webauthn_device ||= FakeWebauthnDevice.new(page, name)

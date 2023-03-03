@@ -470,6 +470,7 @@ group :test do
   gem 'test-prof', '~> 1.0.7'
   gem 'rspec_junit_formatter'
   gem 'guard-rspec'
+  gem 'axe-core-rspec'
 
   # Moved in `test` because https://gitlab.com/gitlab-org/gitlab/-/issues/217527
   gem 'derailed_benchmarks', require: false

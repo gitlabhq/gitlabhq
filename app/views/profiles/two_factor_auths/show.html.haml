@@ -64,39 +64,27 @@
   .row.gl-mt-3
     .col-lg-4
       %h4.gl-mt-0
-        - if webauthn_enabled
-          = _('Register a WebAuthn device')
-        - else
-          = _('Register a universal two-factor (U2F) device')
+        = _('Register a WebAuthn device')
       %p
         = _('Set up a hardware device to enable two-factor authentication (2FA).')
       %p
         - if webauthn_enabled && Feature.enabled?(:webauthn_without_totp)
           = _("Not all browsers support WebAuthn. You must save your recovery codes after you first register a two-factor authenticator to be able to sign in, even from an unsupported browser.")
-        - elsif webauthn_enabled
-          = _("Not all browsers support WebAuthn. Therefore, we require that you set up a two-factor authentication app first. That way you'll always be able to sign in - even from an unsupported browser.")
         - else
-          = _("Not all browsers support U2F devices. Therefore, we require that you set up a two-factor authentication app first. That way you'll always be able to sign in - even when you're using an unsupported browser.")
+          = _("Not all browsers support WebAuthn. Therefore, we require that you set up a two-factor authentication app first. That way you'll always be able to sign in, even from an unsupported browser.")
     .col-lg-8
-      - registration = webauthn_enabled ? @webauthn_registration : @u2f_registration
-      - if registration.errors.present?
-        = form_errors(registration)
-      - if webauthn_enabled
-        = render "authentication/register", target_path: create_webauthn_profile_two_factor_auth_path
-      - else
-        = render "authentication/register", target_path: create_u2f_profile_two_factor_auth_path
+      - if @webauthn_registration.errors.present?
+        = form_errors(@webauthn_registration)
+      = render "authentication/register", target_path: create_webauthn_profile_two_factor_auth_path
 
       %hr
 
       %h5
-        - if webauthn_enabled
-          = _('WebAuthn Devices (%{length})') % { length: @registrations.length }
-        - else
-          = _('U2F Devices (%{length})') % { length: @registrations.length }
+        = _('WebAuthn Devices (%{length})') % { length: @registrations.length }
 
       - if @registrations.present?
         .table-responsive
-          %table.table.table-bordered.u2f-registrations
+          %table.table
             %colgroup
               %col{ width: "50%" }
               %col{ width: "30%" }
@@ -125,11 +113,7 @@
 
       - else
         .settings-message.text-center
-          - if webauthn_enabled
-            = _("You don't have any WebAuthn devices registered yet.")
-          - else
-            = _("You don't have any U2F devices registered yet.")
-
+          = _("You don't have any WebAuthn devices registered yet.")
 
   %hr
 

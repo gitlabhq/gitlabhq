@@ -109,6 +109,41 @@ RSpec.describe GraphqlController, feature_category: :integrations do
           ])
       end
 
+      it 'executes a multiplexed queries with variables with no errors' do
+        query = <<~GQL
+          mutation($a: String!, $b: String!) {
+            echoCreate(input: { messages: [$a, $b] }) { echoes }
+          }
+        GQL
+        multiplex = [
+          { query: query, variables: { a: 'A', b: 'B' } },
+          { query: query, variables: { a: 'a', b: 'b' } }
+        ]
+
+        post :execute, params: { _json: multiplex }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to eq(
+          [
+            { 'data' => { 'echoCreate' => { 'echoes' => %w[A B] } } },
+            { 'data' => { 'echoCreate' => { 'echoes' => %w[a b] } } }
+          ])
+      end
+
+      it 'does not allow string as _json parameter' do
+        post :execute, params: { _json: 'bad' }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to eq({
+          "errors" => [
+            {
+              "message" => "Unexpected end of document",
+              "locations" => []
+            }
+          ]
+        })
+      end
+
       it 'sets a limit on the total query size' do
         graphql_query = "{#{(['__typename'] * 1000).join(' ')}}"
 

@@ -97,8 +97,6 @@ The environment variables `DAST_API_OPENAPI_ALL_MEDIA_TYPES` and `DAST_API_OPENA
 
 #### Configure DAST API with an OpenAPI Specification
 
-To configure DAST API scanning with an OpenAPI specification:
-
 To configure DAST API scanning with an OpenAPI Specification:
 
 1. [Include](../../../ci/yaml/index.md#includetemplate)

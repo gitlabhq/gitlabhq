@@ -142,21 +142,21 @@ To use the Vue performance plugin:
 
 1. Import the plugin:
 
-    ```javascript
-    import PerformancePlugin from '~/performance/vue_performance_plugin';
-    ```
+   ```javascript
+   import PerformancePlugin from '~/performance/vue_performance_plugin';
+   ```
 
 1. Use it before initializing your Vue application:
 
-    ```javascript
-    Vue.use(PerformancePlugin, {
-      components: [
-        'IdeTreeList',
-        'FileTree',
-        'RepoEditor',
-      ]
-    });
-    ```
+   ```javascript
+   Vue.use(PerformancePlugin, {
+     components: [
+       'IdeTreeList',
+       'FileTree',
+       'RepoEditor',
+     ]
+   });
+   ```
 
 The plugin accepts the list of components, performance of which should be measured. The components
 should be specified by their `name` option.

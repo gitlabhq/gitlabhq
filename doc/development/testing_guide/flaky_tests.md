@@ -251,9 +251,9 @@ which would give us the minimal test combination to reproduce the failure:
    for the list under `Knapsack node specs:` in the CI job output log.
 1. Save the list of specs as a file, and run:
 
-    ```shell
-    cat knapsack_specs.txt | xargs scripts/rspec_bisect_flaky
-    ```
+   ```shell
+   cat knapsack_specs.txt | xargs scripts/rspec_bisect_flaky
+   ```
 
 If there is an order-dependency issue, the script above will print the minimal
 reproduction.

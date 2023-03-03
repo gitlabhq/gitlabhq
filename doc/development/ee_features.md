@@ -74,9 +74,9 @@ To guard your licensed feature:
 1. Optional. If your global feature is also available to namespaces with a paid plan, combine two
 feature identifiers to allow both administrators and group users. For example:
 
-    ```ruby
-    License.feature_available?(:my_feature_name) || group.licensed_feature_available?(:my_feature_name_for_namespace) # Both admins and group members can see this EE feature
-    ```
+   ```ruby
+   License.feature_available?(:my_feature_name) || group.licensed_feature_available?(:my_feature_name_for_namespace) # Both admins and group members can see this EE feature
+   ```
 
 ### Simulate a CE instance when unlicensed
 
@@ -100,15 +100,15 @@ To simulate a CE instance without deleting the license in a GDK:
 
 1. Create an `env.runit` file in the root of your GDK with the line:
 
-    ```shell
-    export FOSS_ONLY=1
-    ```
+   ```shell
+   export FOSS_ONLY=1
+   ```
 
 1. Then restart the GDK:
 
-    ```shell
-    gdk restart rails && gdk restart webpack
-    ```
+   ```shell
+   gdk restart rails && gdk restart webpack
+   ```
 
 Remove the line in `env.runit` if you want to revert back to an EE
 installation, and repeat step 2.

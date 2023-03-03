@@ -58,7 +58,7 @@ module Tooling
 
       # rubocop:disable Style/SignalException
       def check!
-        return unless non_security_stable_branch?
+        return unless valid_stable_branch?
 
         fail FEATURE_ERROR_MESSAGE if has_feature_label?
         fail BUG_ERROR_MESSAGE unless bug_fixes_only?
@@ -79,11 +79,17 @@ module Tooling
       end
       # rubocop:enable Style/SignalException
 
-      def non_security_stable_branch?
-        !!stable_target_branch && !helper.security_mr?
+      def encourage_package_and_qa_execution?
+        valid_stable_branch? &&
+          !has_only_documentation_changes? &&
+          !has_flaky_failure_label?
       end
 
       private
+
+      def valid_stable_branch?
+        !!stable_target_branch && !helper.security_mr?
+      end
 
       def package_and_test_status
         mr_head_pipeline_id = gitlab.mr_json.dig('head_pipeline', 'id')

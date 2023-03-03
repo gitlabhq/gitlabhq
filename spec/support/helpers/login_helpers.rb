@@ -139,11 +139,6 @@ module LoginHelpers
     click_link_or_button "oauth-login-#{provider}"
   end
 
-  def fake_successful_u2f_authentication
-    allow(U2fRegistration).to receive(:authenticate).and_return(true)
-    FakeU2fDevice.new(page, nil).fake_u2f_authentication
-  end
-
   def fake_successful_webauthn_authentication
     allow_any_instance_of(Webauthn::AuthenticateService).to receive(:execute).and_return(true)
     FakeWebauthnDevice.new(page, nil).fake_webauthn_authentication

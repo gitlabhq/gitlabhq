@@ -34,9 +34,13 @@ If you do not want to update the namespace, you can create a new user or group a
 
 Prerequisites:
 
-- Your namespace cannot contain a project with [Container Registry](../packages/container_registry/index.md) tags.
-- Your namespace cannot have a project that hosts [GitLab Pages](../project/pages/index.md). For more information,
-  see [this procedure in the GitLab Team Handbook](https://about.gitlab.com/handbook/tools-and-tips/#change-your-username-at-gitlabcom).
+- Your namespace must not:
+  - Contain a project with [Container Registry](../packages/container_registry/index.md) tags.
+  - Have a project that hosts [GitLab Pages](../project/pages/index.md). For more information,
+  see [changing your username in the GitLab Team Handbook](https://about.gitlab.com/handbook/tools-and-tips/#change-your-username-at-gitlabcom).
+- Your username must be between 2 and 255 characters in length, and must not:
+  - Contain special characters or emojis.
+  - End with `.<reserved file extension>`, for example `jon.png`. However, `jonpng` is valid.
 
 To change your username:
 

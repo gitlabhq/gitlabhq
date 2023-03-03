@@ -223,7 +223,12 @@ export default {
           @clear="clearStartDatePicker"
           @close="handleStartDateInput"
         />
-        <gl-button v-if="showStartDateButton" category="tertiary" @click="clickShowStartDate">
+        <gl-button
+          v-if="showStartDateButton"
+          category="tertiary"
+          class="gl-text-gray-500!"
+          @click="clickShowStartDate"
+        >
           {{ $options.i18n.addStartDate }}
         </gl-button>
       </gl-form-group>
@@ -250,7 +255,12 @@ export default {
           @clear="clearDueDatePicker"
           @close="updateDates"
         />
-        <gl-button v-if="showDueDateButton" category="tertiary" @click="clickShowDueDate">
+        <gl-button
+          v-if="showDueDateButton"
+          category="tertiary"
+          class="gl-text-gray-500!"
+          @click="clickShowDueDate"
+        >
           {{ $options.i18n.addDueDate }}
         </gl-button>
       </gl-form-group>

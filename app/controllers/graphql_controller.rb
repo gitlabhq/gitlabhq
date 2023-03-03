@@ -102,6 +102,10 @@ class GraphqlController < ApplicationController
 
   private
 
+  def permitted_params
+    params.permit(_json: [:query, :operationName, { variables: {} }])
+  end
+
   def disallow_mutations_for_get
     return unless request.get? || request.head?
     return unless any_mutating_query?
@@ -111,7 +115,7 @@ class GraphqlController < ApplicationController
 
   def limit_query_size
     total_size = if multiplex?
-                   params[:_json].sum { _1[:query].size }
+                   multiplex_param.sum { _1[:query].size }
                  else
                    query.size
                  end
@@ -178,8 +182,12 @@ class GraphqlController < ApplicationController
     params.fetch(:query, '')
   end
 
+  def multiplex_param
+    permitted_params[:_json]
+  end
+
   def multiplex_queries
-    params[:_json].map do |single_query_info|
+    multiplex_param.map do |single_query_info|
       {
         query: single_query_info[:query],
         variables: build_variables(single_query_info[:variables]),
@@ -207,7 +215,7 @@ class GraphqlController < ApplicationController
   end
 
   def multiplex?
-    params[:_json].present?
+    multiplex_param.present?
   end
 
   def authorize_access_api!

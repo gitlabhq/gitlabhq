@@ -1063,7 +1063,7 @@ class User < ApplicationRecord
   end
 
   def two_factor_enabled?
-    two_factor_otp_enabled? || two_factor_webauthn_u2f_enabled?
+    two_factor_otp_enabled? || two_factor_webauthn_enabled?
   end
 
   def two_factor_otp_enabled?
@@ -1080,10 +1080,6 @@ class User < ApplicationRecord
     else
       u2f_registrations.exists?
     end
-  end
-
-  def two_factor_webauthn_u2f_enabled?
-    two_factor_u2f_enabled? || two_factor_webauthn_enabled?
   end
 
   def two_factor_webauthn_enabled?

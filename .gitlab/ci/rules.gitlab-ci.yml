@@ -124,6 +124,9 @@
 .if-foss-schedule: &if-foss-schedule
   if: '$CI_PROJECT_PATH == "gitlab-org/gitlab-foss" && $CI_PIPELINE_SOURCE == "schedule"'
 
+.if-foss-default-branch: &if-foss-default-branch
+  if: '$CI_PROJECT_PATH == "gitlab-org/gitlab-foss" && $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH'
+
 .if-dot-com-gitlab-org-schedule: &if-dot-com-gitlab-org-schedule
   if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE == "gitlab-org" && $CI_PIPELINE_SOURCE == "schedule"'
 
@@ -995,6 +998,8 @@
     - if: '$REUSE_FRONTEND_FIXTURES_ENABLED != "true"'
       when: never
     - <<: *if-dot-com-gitlab-org-default-branch
+      changes: *code-backstage-patterns
+    - <<: *if-foss-default-branch
       changes: *code-backstage-patterns
     - <<: *if-dot-com-gitlab-org-merge-request
       changes:

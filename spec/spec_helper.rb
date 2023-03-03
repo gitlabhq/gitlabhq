@@ -38,6 +38,7 @@ require 'test_prof/recipes/rspec/let_it_be'
 require 'test_prof/factory_default'
 require 'test_prof/factory_prof/nate_heckler'
 require 'parslet/rig/rspec'
+require 'axe-rspec'
 
 rspec_profiling_is_configured =
   ENV['RSPEC_PROFILING_POSTGRES_URL'].present? ||

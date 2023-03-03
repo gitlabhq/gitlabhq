@@ -56,6 +56,14 @@ RSpec.describe 'Group Package and registry settings', feature_category: :package
       expect(sidebar).to have_link _('Packages and registries')
     end
 
+    it 'passes axe automated accessibility testing', :js do
+      visit_settings_page
+
+      wait_for_requests
+
+      expect(page).to be_axe_clean.within '[data-testid="packages-and-registries-group-settings"]'
+    end
+
     it 'has a Duplicate packages section', :js do
       visit_settings_page
 

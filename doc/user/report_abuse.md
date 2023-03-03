@@ -34,6 +34,8 @@ To report abuse from a user's profile page:
 
 ## Report abuse from a user's comment
 
+> Reporting abuse from comments in epics [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/389992) in GitLab 15.10.
+
 To report abuse from a user's comment:
 
 1. In the comment, in the upper-right corner, select **More actions** (**{ellipsis_v}**).

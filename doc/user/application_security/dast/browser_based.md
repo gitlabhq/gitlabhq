@@ -42,10 +42,10 @@ To crawl a navigation path, DAST opens a browser window and instructs it to perf
 When the browser has finished loading the result of the final action, DAST inspects the page for actions a user might take,
 creates a new navigation for each found, and adds them to the navigation path to form new navigation paths. For example:
 
-- DAST processes navigation path `LoadURL[https://example.com]`.
-- DAST finds two user actions, `LeftClick[class=menu]` and `LeftClick[id=users]`.
-- DAST creates two new navigation paths, `LoadURL[https://example.com] -> LeftClick[class=menu]` and `LoadURL[https://example.com] -> LeftClick[id=users]`.
-- Crawling begins on the two new navigation paths.
+1. DAST processes navigation path `LoadURL[https://example.com]`.
+1. DAST finds two user actions, `LeftClick[class=menu]` and `LeftClick[id=users]`.
+1. DAST creates two new navigation paths, `LoadURL[https://example.com] -> LeftClick[class=menu]` and `LoadURL[https://example.com] -> LeftClick[id=users]`.
+1. Crawling begins on the two new navigation paths.
 
 It's common for an HTML element to exist in multiple places in an application, such as a menu visible on every page.
 Duplicate elements can cause crawlers to crawl the same pages again or become stuck in a loop.

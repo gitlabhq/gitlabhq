@@ -61,49 +61,49 @@ To efficiently and quickly find which Rails change caused the spec failure you c
 
 1. Clone the `rails` project in a folder of your choice. For example, it might be the GDK root dir:
 
-    ```shell
-    cd <GDK_FOLDER>
-    git clone https://github.com/rails/rails.git
-    ```
+   ```shell
+   cd <GDK_FOLDER>
+   git clone https://github.com/rails/rails.git
+   ```
 
 1. Replace the `gem 'rails'` line in GitLab `Gemfile` with:
 
-    ```ruby
-    gem 'rails', ENV['RAILS_VERSION'], path: ENV['RAILS_FOLDER']
-    ```
+   ```ruby
+   gem 'rails', ENV['RAILS_VERSION'], path: ENV['RAILS_FOLDER']
+   ```
 
 1. Set the `RAILS_FOLDER` environment variable with the folder you cloned Rails into:
 
-    ```shell
-    export RAILS_FOLDER="<GDK_FOLDER>/rails"
-    ```
+   ```shell
+   export RAILS_FOLDER="<GDK_FOLDER>/rails"
+   ```
 
 1. Change the directory to `RAILS_FOLDER` and set the range for the `git bisect` command:
 
-    ```shell
-    cd $RAILS_FOLDER
-    git bisect start <NEW_VERSION_TAG> <OLD_VERSION_TAG>
-    ```
+   ```shell
+   cd $RAILS_FOLDER
+   git bisect start <NEW_VERSION_TAG> <OLD_VERSION_TAG>
+   ```
 
-    Where `<NEW_VERSION_TAG>` is the tag where the spec is red and `<OLD_VERSION_TAG>` is the one with the green spec.
-    For example, `git bisect start v6.1.4.1 v6.1.3.2` if we're upgrading from version 6.1.3.2 to 6.1.4.1.
-    Replace `<NEW_VERSION_TAG>` with the tag where the spec is red and `<OLD_VERSION_TAG>` with the one with the green spec. For example, `git bisect start v6.1.4.1 v6.1.3.2` if we're upgrading from version 6.1.3.2 to 6.1.4.1.
-    In the output, you can see how many steps approximately it takes to find the commit.
+   Where `<NEW_VERSION_TAG>` is the tag where the spec is red and `<OLD_VERSION_TAG>` is the one with the green spec.
+   For example, `git bisect start v6.1.4.1 v6.1.3.2` if we're upgrading from version 6.1.3.2 to 6.1.4.1.
+   Replace `<NEW_VERSION_TAG>` with the tag where the spec is red and `<OLD_VERSION_TAG>` with the one with the green spec. For example, `git bisect start v6.1.4.1 v6.1.3.2` if we're upgrading from version 6.1.3.2 to 6.1.4.1.
+   In the output, you can see how many steps approximately it takes to find the commit.
 1. Start the `git bisect` process and pass spec's filenames to `scripts/rails-update-bisect` as arguments. It can be faster to pick only one example instead of an entire spec file.
 
-    ```shell
-    git bisect run <GDK_FOLDER>/gitlab/scripts/rails-update-bisect spec/models/ability_spec.rb
-    # OR
-    git bisect run <GDK_FOLDER>/gitlab/scripts/rails-update-bisect spec/models/ability_spec.rb:7
-    ```
+   ```shell
+   git bisect run <GDK_FOLDER>/gitlab/scripts/rails-update-bisect spec/models/ability_spec.rb
+   # OR
+   git bisect run <GDK_FOLDER>/gitlab/scripts/rails-update-bisect spec/models/ability_spec.rb:7
+   ```
 
 1. When the process is completed, `git bisect` prints the commit hash, which you can use to find the corresponding MR in the [`rails/rails`](https://github.com/rails/rails) repository.
 1. Execute `git bisect reset` to exit the `bisect` mode.
 1. Revert the changes to `Gemfile`:
 
-    ```shell
-    git checkout -- Gemfile
-    ```
+   ```shell
+   git checkout -- Gemfile
+   ```
 
 ### Follow-up reading material
 

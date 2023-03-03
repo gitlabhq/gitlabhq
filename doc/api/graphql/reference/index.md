@@ -12328,8 +12328,9 @@ Represents a DAST Pre Scan Verification Step.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="dastprescanverificationstepchecktype"></a>`checkType` | [`DastPreScanVerificationCheckType`](#dastprescanverificationchecktype) | Type of the pre scan verification check. |
 | <a id="dastprescanverificationsteperrors"></a>`errors` | [`[String!]`](#string) | Errors that occurred in the pre scan verification step. |
-| <a id="dastprescanverificationstepname"></a>`name` | [`String`](#string) | Name of the pre scan verification step. |
+| <a id="dastprescanverificationstepname"></a>`name` **{warning-solid}** | [`String`](#string) | **Deprecated** in 15.10. This was renamed. Use: [`DastPreScanVerificationStep.checkType`](#dastprescanverificationstepchecktype). |
 | <a id="dastprescanverificationstepsuccess"></a>`success` | [`Boolean!`](#boolean) | Whether or not the pre scan verification step has errors. |
 
 ### `DastProfile`
@@ -22618,6 +22619,16 @@ Values for sorting tags.
 | <a id="customerrelationsorganizationstateactive"></a>`active` | Active organizations. |
 | <a id="customerrelationsorganizationstateall"></a>`all` | All available organizations. |
 | <a id="customerrelationsorganizationstateinactive"></a>`inactive` | Inactive organizations. |
+
+### `DastPreScanVerificationCheckType`
+
+Check type of the pre scan verification step.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="dastprescanverificationchecktypeauthentication"></a>`AUTHENTICATION` | Authentication check. |
+| <a id="dastprescanverificationchecktypeconnection"></a>`CONNECTION` | Connection check. |
+| <a id="dastprescanverificationchecktypecrawling"></a>`CRAWLING` | Crawling check. |
 
 ### `DastPreScanVerificationStatus`
 

@@ -6,22 +6,117 @@ RSpec.describe Gitlab::Config::Loader::MultiDocYaml, feature_category: :pipeline
   let(:loader) { described_class.new(yml, max_documents: 2) }
 
   describe '#load!' do
-    let(:yml) do
-      <<~YAML
-      spec:
-        inputs:
-          test_input:
-      ---
-      test_job:
-        script: echo "$[[ inputs.test_input ]]"
-      YAML
+    context 'when a simple single delimiter is being used' do
+      let(:yml) do
+        <<~YAML
+        spec:
+          inputs:
+            env:
+        ---
+        test:
+          script: echo "$[[ inputs.env ]]"
+        YAML
+      end
+
+      it 'returns the loaded YAML with all keys as symbols' do
+        expect(loader.load!).to contain_exactly(
+          { spec: { inputs: { env: nil } } },
+          { test: { script: 'echo "$[[ inputs.env ]]"' } }
+        )
+      end
     end
 
-    it 'returns the loaded YAML with all keys as symbols' do
-      expect(loader.load!).to eq([
-        { spec: { inputs: { test_input: nil } } },
-        { test_job: { script: 'echo "$[[ inputs.test_input ]]"' } }
-      ])
+    context 'when the delimiter has a trailing configuration' do
+      let(:yml) do
+        <<~YAML
+        spec:
+          inputs:
+            test_input:
+        --- !test/content
+        test_job:
+          script: echo "$[[ inputs.test_input ]]"
+        YAML
+      end
+
+      it 'returns the loaded YAML with all keys as symbols' do
+        expect(loader.load!).to contain_exactly(
+          { spec: { inputs: { test_input: nil } } },
+          { test_job: { script: 'echo "$[[ inputs.test_input ]]"' } }
+        )
+      end
+    end
+
+    context 'when the YAML file has a leading delimiter' do
+      let(:yml) do
+        <<~YAML
+        ---
+        spec:
+          inputs:
+            test_input:
+        --- !test/content
+        test_job:
+          script: echo "$[[ inputs.test_input ]]"
+        YAML
+      end
+
+      it 'returns the loaded YAML with all keys as symbols' do
+        expect(loader.load!).to contain_exactly(
+          { spec: { inputs: { test_input: nil } } },
+          { test_job: { script: 'echo "$[[ inputs.test_input ]]"' } }
+        )
+      end
+    end
+
+    context 'when the delimiter is followed by content on the same line' do
+      let(:yml) do
+        <<~YAML
+        --- a: 1
+        --- b: 2
+        YAML
+      end
+
+      it 'loads the content as part of the document' do
+        expect(loader.load!).to contain_exactly({ a: 1 }, { b: 2 })
+      end
+    end
+
+    context 'when the delimiter does not have trailing whitespace' do
+      let(:yml) do
+        <<~YAML
+        --- a: 1
+        ---b: 2
+        YAML
+      end
+
+      it 'is not a valid delimiter' do
+        expect(loader.load!).to contain_exactly({ :'---b' => 2, a: 1 }) # rubocop:disable Style/HashSyntax
+      end
+    end
+
+    context 'when the YAML file has whitespace preceding the content' do
+      let(:yml) do
+        <<-EOYML
+          variables:
+            SUPPORTED: "parsed"
+
+          workflow:
+            rules:
+              - if: $VAR == "value"
+
+          hello:
+            script: echo world
+        EOYML
+      end
+
+      it 'loads everything correctly' do
+        expect(loader.load!).to contain_exactly(
+          {
+            variables: { SUPPORTED: 'parsed' },
+            workflow: { rules: [{ if: '$VAR == "value"' }] },
+            hello: { script: 'echo world' }
+          }
+        )
+      end
     end
 
     context 'when the YAML file is empty' do
@@ -32,67 +127,68 @@ RSpec.describe Gitlab::Config::Loader::MultiDocYaml, feature_category: :pipeline
       end
     end
 
-    context 'when the parsed YAML is too big' do
+    context 'when there are more than the maximum number of documents' do
       let(:yml) do
         <<~YAML
-        a: &a ["lol","lol","lol","lol","lol","lol","lol","lol","lol"]
-        b: &b [*a,*a,*a,*a,*a,*a,*a,*a,*a]
-        c: &c [*b,*b,*b,*b,*b,*b,*b,*b,*b]
-        d: &d [*c,*c,*c,*c,*c,*c,*c,*c,*c]
-        e: &e [*d,*d,*d,*d,*d,*d,*d,*d,*d]
-        f: &f [*e,*e,*e,*e,*e,*e,*e,*e,*e]
-        g: &g [*f,*f,*f,*f,*f,*f,*f,*f,*f]
-        h: &h [*g,*g,*g,*g,*g,*g,*g,*g,*g]
-        i: &i [*h,*h,*h,*h,*h,*h,*h,*h,*h]
-        ---
-        a: &a ["lol","lol","lol","lol","lol","lol","lol","lol","lol"]
-        b: &b [*a,*a,*a,*a,*a,*a,*a,*a,*a]
-        c: &c [*b,*b,*b,*b,*b,*b,*b,*b,*b]
-        d: &d [*c,*c,*c,*c,*c,*c,*c,*c,*c]
-        e: &e [*d,*d,*d,*d,*d,*d,*d,*d,*d]
-        f: &f [*e,*e,*e,*e,*e,*e,*e,*e,*e]
-        g: &g [*f,*f,*f,*f,*f,*f,*f,*f,*f]
-        h: &h [*g,*g,*g,*g,*g,*g,*g,*g,*g]
-        i: &i [*h,*h,*h,*h,*h,*h,*h,*h,*h]
+        --- a: 1
+        --- b: 2
+        --- c: 3
+        --- d: 4
         YAML
       end
 
-      it 'raises a DataTooLargeError' do
-        expect { loader.load! }.to raise_error(described_class::DataTooLargeError, 'The parsed YAML is too big')
+      it 'stops splitting documents after the maximum number' do
+        expect(loader.load!).to contain_exactly({ a: 1 }, { b: 2 })
       end
     end
+  end
 
-    context 'when a document is not a hash' do
+  describe '#load_raw!' do
+    let(:yml) do
+      <<~YAML
+      spec:
+        inputs:
+          test_input:
+      --- !test/content
+      test_job:
+        script: echo "$[[ inputs.test_input ]]"
+      YAML
+    end
+
+    it 'returns the loaded YAML with all keys as strings' do
+      expect(loader.load_raw!).to contain_exactly(
+        { 'spec' => { 'inputs' => { 'test_input' => nil } } },
+        { 'test_job' => { 'script' => 'echo "$[[ inputs.test_input ]]"' } }
+      )
+    end
+  end
+
+  describe '#valid?' do
+    context 'when a document is invalid' do
       let(:yml) do
         <<~YAML
-        not_a_hash
+        a: b
         ---
-        test_job:
-          script: echo "$[[ inputs.test_input ]]"
+        c
         YAML
       end
 
-      it 'raises a NotHashError' do
-        expect { loader.load! }.to raise_error(described_class::NotHashError, 'Invalid configuration format')
+      it 'returns false' do
+        expect(loader).not_to be_valid
       end
     end
 
-    context 'when there are too many documents' do
+    context 'when the number of documents is below the maximum and all documents are valid' do
       let(:yml) do
         <<~YAML
         a: b
         ---
         c: d
-        ---
-        e: f
         YAML
       end
 
-      it 'raises a TooManyDocumentsError' do
-        expect { loader.load! }.to raise_error(
-          described_class::TooManyDocumentsError,
-          'The parsed YAML has too many documents'
-        )
+      it 'returns true' do
+        expect(loader).to be_valid
       end
     end
   end

@@ -22,6 +22,8 @@ export const IGNORE_ERRORS = [
   'EBCallBackMessageReceived',
   // See http://toolbar.conduit.com/Developer/HtmlAndGadget/Methods/JSInjection.aspx
   'conduitPage',
+  // Exclude errors from polling when navigating away from a page
+  'TypeError: Failed to fetch',
 ];
 
 export const DENY_URLS = [

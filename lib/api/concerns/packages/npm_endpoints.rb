@@ -163,8 +163,13 @@ module API
           route_setting :authentication, job_token_allowed: true, deploy_token_allowed: true
           get '*package_name', format: false, requirements: ::API::Helpers::Packages::Npm::NPM_ENDPOINT_REQUIREMENTS do
             package_name = params[:package_name]
-            packages = ::Packages::Npm::PackageFinder.new(package_name, project: project_or_nil)
-                                                     .execute
+            packages =
+              if Feature.enabled?(:npm_allow_packages_in_multiple_projects)
+                finder_for_endpoint_scope(package_name).execute
+              else
+                ::Packages::Npm::PackageFinder.new(package_name, project: project_or_nil)
+                                              .execute
+              end
 
             redirect_request = project_or_nil.blank? || packages.empty?
 
