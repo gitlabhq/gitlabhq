@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Git::TagPushService do
+RSpec.describe Git::TagPushService, feature_category: :source_code_management do
   include RepoHelpers
 
   let(:user) { create(:user) }

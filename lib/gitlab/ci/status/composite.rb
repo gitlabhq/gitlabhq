@@ -7,6 +7,7 @@ module Gitlab
         include Gitlab::Utils::StrongMemoize
 
         # This class accepts an array of arrays/hashes/or objects
+        # `with_allow_failure` will be removed when deleting ci_remove_ensure_stage_service
         def initialize(all_statuses, with_allow_failure: true, dag: false)
           unless all_statuses.respond_to?(:pluck)
             raise ArgumentError, "all_statuses needs to respond to `.pluck`"
@@ -26,6 +27,12 @@ module Gitlab
         # 2. In other cases we assume that status is of that type
         #    based on what statuses are no longer valid based on the
         #    data set that we have
+        #
+        # This method is used for two cases:
+        # 1. When it is called for a stage or a pipeline (with `all_statuses` from all jobs in a stage or a pipeline),
+        #    then, the returned status is assigned to the stage or pipeline.
+        # 2. When it is called for a job (with `all_statuses` from all previous jobs or all needed jobs),
+        #    then, the returned status is used to determine if the job is processed or not.
         # rubocop: disable Metrics/CyclomaticComplexity
         # rubocop: disable Metrics/PerceivedComplexity
         def status

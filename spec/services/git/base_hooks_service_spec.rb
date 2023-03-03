@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Git::BaseHooksService do
+RSpec.describe Git::BaseHooksService, feature_category: :source_code_management do
   include RepoHelpers
 
   let_it_be(:user) { create(:user) }

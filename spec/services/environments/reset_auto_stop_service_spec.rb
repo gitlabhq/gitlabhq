@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Environments::ResetAutoStopService do
+RSpec.describe Environments::ResetAutoStopService, feature_category: :continuous_delivery do
   let_it_be(:project) { create(:project) }
   let_it_be(:developer) { create(:user).tap { |user| project.add_developer(user) } }
   let_it_be(:reporter) { create(:user).tap { |user| project.add_reporter(user) } }

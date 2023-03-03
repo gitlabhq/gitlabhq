@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe DesignManagement::DesignUserNotesCountService, :use_clean_rails_memory_store_caching do
+RSpec.describe DesignManagement::DesignUserNotesCountService, :use_clean_rails_memory_store_caching, feature_category: :design_management do
   let_it_be(:design) { create(:design, :with_file) }
 
   subject { described_class.new(design) }

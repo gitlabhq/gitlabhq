@@ -373,7 +373,6 @@ class Project < ApplicationRecord
           inverse_of: :project
   has_many :stages, class_name: 'Ci::Stage', inverse_of: :project
   has_many :ci_refs, class_name: 'Ci::Ref', inverse_of: :project
-
   has_many :pipeline_metadata, class_name: 'Ci::PipelineMetadata', inverse_of: :project
   has_many :pending_builds, class_name: 'Ci::PendingBuild'
   has_many :builds, class_name: 'Ci::Build', inverse_of: :project

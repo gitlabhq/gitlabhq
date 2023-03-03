@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Events::RenderService do
+RSpec.describe Events::RenderService, feature_category: :user_profile do
   describe '#execute' do
     let!(:note) { build(:note) }
     let!(:event) { build(:event, target: note, project: note.project) }

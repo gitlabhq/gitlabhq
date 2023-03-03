@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe GoogleCloud::EnableCloudsqlService do
+RSpec.describe GoogleCloud::EnableCloudsqlService, feature_category: :deployment_management do
   let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user) }
   let_it_be(:params) do

@@ -6,8 +6,6 @@ module Integrations
   class BaseSlashCommands < Integration
     attribute :category, default: 'chat'
 
-    prop_accessor :token
-
     has_many :chat_names, foreign_key: :integration_id, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
     def valid_token?(token)
@@ -22,18 +20,6 @@ module Integrations
 
     def testable?
       false
-    end
-
-    def fields
-      [
-        {
-          type: 'password',
-          name: 'token',
-          non_empty_password_title: s_('ProjectService|Enter new token'),
-          non_empty_password_help: s_('ProjectService|Leave blank to use your current token.'),
-          placeholder: 'XXxxXXxxXXxxXXxxXXxxXXxx'
-        }
-      ]
     end
 
     def trigger(params)

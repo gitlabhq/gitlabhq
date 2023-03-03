@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Integrations::MattermostSlashCommands do
+RSpec.describe Integrations::MattermostSlashCommands, feature_category: :integrations do
   it_behaves_like Integrations::BaseSlashCommands
 
   describe 'Mattermost API' do

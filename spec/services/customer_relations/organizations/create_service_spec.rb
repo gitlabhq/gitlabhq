@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe CustomerRelations::Organizations::CreateService do
+RSpec.describe CustomerRelations::Organizations::CreateService, feature_category: :service_desk do
   describe '#execute' do
     let_it_be(:user) { create(:user) }
 

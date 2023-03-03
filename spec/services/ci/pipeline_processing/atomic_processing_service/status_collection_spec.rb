@@ -36,7 +36,7 @@ RSpec.describe Ci::PipelineProcessing::AtomicProcessingService::StatusCollection
     it 'does update existing status of processable' do
       collection.set_processable_status(test_a.id, 'success', 100)
 
-      expect(collection.status_for_names(['test-a'], dag: false)).to eq('success')
+      expect(collection.status_of_processables(['test-a'], dag: false)).to eq('success')
     end
 
     it 'ignores a missing processable' do
@@ -50,7 +50,7 @@ RSpec.describe Ci::PipelineProcessing::AtomicProcessingService::StatusCollection
     end
   end
 
-  describe '#status_for_names' do
+  describe '#status_of_processables' do
     where(:names, :status, :dag) do
       %w[build-a]         | 'success' | false
       %w[build-a build-b] | 'failed'  | false
@@ -62,12 +62,12 @@ RSpec.describe Ci::PipelineProcessing::AtomicProcessingService::StatusCollection
 
     with_them do
       it 'returns composite status of given names' do
-        expect(collection.status_for_names(names, dag: dag)).to eq(status)
+        expect(collection.status_of_processables(names, dag: dag)).to eq(status)
       end
     end
   end
 
-  describe '#status_for_prior_stage_position' do
+  describe '#status_of_processables_prior_to_stage' do
     where(:stage, :status) do
       0 | 'success'
       1 | 'failed'
@@ -76,12 +76,12 @@ RSpec.describe Ci::PipelineProcessing::AtomicProcessingService::StatusCollection
 
     with_them do
       it 'returns composite status for processables in prior stages' do
-        expect(collection.status_for_prior_stage_position(stage)).to eq(status)
+        expect(collection.status_of_processables_prior_to_stage(stage)).to eq(status)
       end
     end
   end
 
-  describe '#status_for_stage_position' do
+  describe '#status_of_stage' do
     where(:stage, :status) do
       0 | 'failed'
       1 | 'running'
@@ -90,16 +90,16 @@ RSpec.describe Ci::PipelineProcessing::AtomicProcessingService::StatusCollection
 
     with_them do
       it 'returns composite status for processables at a given stages' do
-        expect(collection.status_for_stage_position(stage)).to eq(status)
+        expect(collection.status_of_stage(stage)).to eq(status)
       end
     end
   end
 
-  describe '#created_processable_ids_for_stage_position' do
+  describe '#created_processable_ids_in_stage' do
     it 'returns IDs of processables at a given stage position' do
-      expect(collection.created_processable_ids_for_stage_position(0)).to be_empty
-      expect(collection.created_processable_ids_for_stage_position(1)).to be_empty
-      expect(collection.created_processable_ids_for_stage_position(2)).to contain_exactly(deploy.id)
+      expect(collection.created_processable_ids_in_stage(0)).to be_empty
+      expect(collection.created_processable_ids_in_stage(1)).to be_empty
+      expect(collection.created_processable_ids_in_stage(2)).to contain_exactly(deploy.id)
     end
   end
 

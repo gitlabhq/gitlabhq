@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe DependencyProxy::FindCachedManifestService do
+RSpec.describe DependencyProxy::FindCachedManifestService, feature_category: :dependency_proxy do
   include DependencyProxyHelpers
 
   let_it_be(:image) { 'alpine' }

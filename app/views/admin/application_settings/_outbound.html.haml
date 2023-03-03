@@ -1,25 +1,37 @@
+- deny_all_requests = Feature.enabled?(:deny_all_requests) && @application_setting.deny_all_requests
+
 = gitlab_ui_form_for @application_setting, url: network_admin_application_settings_path(anchor: 'js-outbound-settings'), html: { class: 'fieldset-form' } do |f|
   = form_errors(@application_setting)
 
   %fieldset
     .form-group
+      - if Feature.enabled?(:deny_all_requests)
+        = f.gitlab_ui_checkbox_component :deny_all_requests,
+            s_('OutboundRequests|Block all requests, except for IP addresses, IP ranges, and domain names defined in the allowlist'),
+            checkbox_options: { class: 'js-deny-all-requests' }
+        = render Pajamas::AlertComponent.new(variant: :warning,
+          dismissible: false,
+          alert_options: { class: "gl-mb-3 js-deny-all-requests-warning #{'gl-display-none' unless deny_all_requests}" }) do |c|
+          = c.body do
+            = s_('OutboundRequests|Webhooks and integrations might not work properly.')
       = f.gitlab_ui_checkbox_component :allow_local_requests_from_web_hooks_and_services,
-          s_('OutboundRequests|Allow requests to the local network from web hooks and services'),
-          checkbox_options: { data: { qa_selector: 'allow_requests_from_services_checkbox' } }
+          s_('OutboundRequests|Allow requests to the local network from webhooks and integrations'),
+          checkbox_options: { disabled: deny_all_requests, class: 'js-allow-local-requests', data: { qa_selector: 'allow_requests_from_services_checkbox' } }
       = f.gitlab_ui_checkbox_component :allow_local_requests_from_system_hooks,
-          s_('OutboundRequests|Allow requests to the local network from system hooks')
+          s_('OutboundRequests|Allow requests to the local network from system hooks'),
+          checkbox_options: { disabled: deny_all_requests, class: 'js-allow-local-requests' }
 
     .form-group
       = f.label :outbound_local_requests_allowlist_raw, class: 'label-bold' do
-        = s_('OutboundRequests|Local IP addresses and domain names that hooks and services may access')
+        = s_('OutboundRequests|Local IP addresses and domain names that hooks and integrations can access')
       = f.text_area :outbound_local_requests_allowlist_raw, placeholder: "example.com, 192.168.1.1, xn--itlab-j1a.com", class: 'form-control gl-form-input', rows: 8
       %span.form-text.text-muted
-        = s_('OutboundRequests|Requests to these domains and IP addresses are accessible to both system hooks and web hooks even when local requests are not allowed. IP ranges such as 1:0:0:0:0:0:0:0/124 and 127.0.0.0/28 are supported. Domain wildcards are not supported. To separate entries use commas, semicolons, or newlines. The allowlist can hold a maximum of 1000 entries. Domains must be IDNA encoded.')
+        = s_('OutboundRequests|Requests can be made to these IP addresses and domains even when local requests are not allowed. IP ranges such as %{code_start}1:0:0:0:0:0:0:0/124%{code_end} and %{code_start}127.0.0.0/28%{code_end} are supported. Domain wildcards are not supported. To separate entries, use commas, semicolons, or newlines. The allowlist can have a maximum of 1000 entries. Domains must be IDNA-encoded.').html_safe % { code_start: '<code>'.html_safe, code_end: '</code>'.html_safe }
         = link_to _('Learn more.'), help_page_path('security/webhooks.md', anchor: 'create-an-allowlist-for-local-requests'), target: '_blank', rel: 'noopener noreferrer'
 
     .form-group
       = f.gitlab_ui_checkbox_component :dns_rebinding_protection_enabled,
-          s_('OutboundRequests|Enforce DNS rebinding attack protection'),
-          help_text: s_('OutboundRequests|Resolve IP addresses once and uses them to submit requests.')
+          s_('OutboundRequests|Enforce DNS-rebinding attack protection'),
+          help_text: s_('OutboundRequests|Resolve IP addresses for outbound requests to prevent DNS-rebinding attacks.')
 
   = f.submit _('Save changes'), pajamas_button: true, data: { qa_selector: 'save_changes_button' }

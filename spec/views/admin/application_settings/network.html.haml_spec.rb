@@ -7,6 +7,7 @@ RSpec.describe 'admin/application_settings/network.html.haml', feature_category:
   let_it_be(:application_setting) { build(:application_setting) }
 
   before do
+    stub_feature_flags(deny_all_requests: false)
     assign(:application_setting, application_setting)
     allow(view).to receive(:current_user) { admin }
   end

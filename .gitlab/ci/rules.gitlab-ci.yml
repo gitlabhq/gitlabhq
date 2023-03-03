@@ -968,6 +968,7 @@
 .frontend:rules:default-frontend-jobs:
   rules:
     - <<: *if-merge-request-labels-run-all-rspec
+    - <<: *if-merge-request-labels-frontend-and-feature-flag
     - <<: *if-default-refs
       changes: *code-backstage-patterns
 
@@ -2278,6 +2279,7 @@
     - <<: *if-default-refs
       changes: *workhorse-patterns
     - <<: *if-merge-request-labels-run-all-rspec
+    - <<: *if-merge-request-labels-frontend-and-feature-flag
 
 .test-metadata:rules:update-tests-metadata:
   rules:

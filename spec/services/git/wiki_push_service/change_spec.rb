@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Git::WikiPushService::Change do
+RSpec.describe Git::WikiPushService::Change, feature_category: :source_code_management do
   subject { described_class.new(project_wiki, change, raw_change) }
 
   let(:project_wiki) { double('ProjectWiki') }

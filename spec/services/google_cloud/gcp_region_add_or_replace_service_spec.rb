@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe GoogleCloud::GcpRegionAddOrReplaceService do
+RSpec.describe GoogleCloud::GcpRegionAddOrReplaceService, feature_category: :deployment_management do
   it 'adds and replaces GCP region vars' do
     project = create(:project, :public)
     service = described_class.new(project)

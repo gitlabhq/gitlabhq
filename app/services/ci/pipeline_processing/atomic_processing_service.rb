@@ -48,10 +48,10 @@ module Ci
       def update_stage!(stage)
         # Update processables for a given stage in bulk/slices
         @collection
-          .created_processable_ids_for_stage_position(stage.position)
+          .created_processable_ids_in_stage(stage.position)
           .in_groups_of(BATCH_SIZE, false) { |ids| update_processables!(ids) }
 
-        status = @collection.status_for_stage_position(stage.position)
+        status = @collection.status_of_stage(stage.position)
         stage.set_status(status)
       end
 
@@ -79,29 +79,27 @@ module Ci
       end
 
       def update_processable!(processable)
-        status = processable_status(processable)
-        return unless Ci::HasStatus::COMPLETED_STATUSES.include?(status)
+        previous_status = status_of_previous_processables(processable)
+        # We do not continue to process the processable if the previous status is not completed
+        return unless Ci::HasStatus::COMPLETED_STATUSES.include?(previous_status)
 
-        # transition status if possible
         Gitlab::OptimisticLocking.retry_lock(processable, name: 'atomic_processing_update_processable') do |subject|
           Ci::ProcessBuildService.new(project, subject.user)
-            .execute(subject, status)
+            .execute(subject, previous_status)
 
           # update internal representation of status
-          # to make the status change of processable
-          # to be taken into account during further processing
-          @collection.set_processable_status(
-            processable.id, processable.status, processable.lock_version)
+          # to make the status change of processable to be taken into account during further processing
+          @collection.set_processable_status(processable.id, processable.status, processable.lock_version)
         end
       end
 
-      def processable_status(processable)
+      def status_of_previous_processables(processable)
         if processable.scheduling_type_dag?
           # Processable uses DAG, get status of all dependent needs
-          @collection.status_for_names(processable.aggregated_needs_names.to_a, dag: true)
+          @collection.status_of_processables(processable.aggregated_needs_names.to_a, dag: true)
         else
           # Processable uses Stages, get status of prior stage
-          @collection.status_for_prior_stage_position(processable.stage_idx.to_i)
+          @collection.status_of_processables_prior_to_stage(processable.stage_idx.to_i)
         end
       end
 

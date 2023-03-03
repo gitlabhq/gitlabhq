@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# This will be scheduled to be removed after removing the FF ci_remove_ensure_stage_service
 class StageUpdateWorker
   include ApplicationWorker
 

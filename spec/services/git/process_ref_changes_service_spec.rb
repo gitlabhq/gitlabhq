@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Git::ProcessRefChangesService do
+RSpec.describe Git::ProcessRefChangesService, feature_category: :source_code_management do
   let(:project) { create(:project, :repository) }
   let(:user) { project.first_owner }
   let(:params) { { changes: git_changes } }

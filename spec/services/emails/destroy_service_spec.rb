@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Emails::DestroyService do
+RSpec.describe Emails::DestroyService, feature_category: :user_management do
   let!(:user) { create(:user) }
   let!(:email) { create(:email, user: user) }
 

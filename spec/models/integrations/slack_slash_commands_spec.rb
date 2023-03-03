@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Integrations::SlackSlashCommands do
+RSpec.describe Integrations::SlackSlashCommands, feature_category: :integrations do
   it_behaves_like Integrations::BaseSlashCommands
 
   describe '#trigger' do

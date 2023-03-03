@@ -130,7 +130,7 @@ The **Network** settings contain:
   - [Search rate limits](../../../administration/instance_limits.md#search-rate-limit) - Configure global search request rate limits for authenticated and unauthenticated users.
   - [Deprecated API Rate Limits](deprecated_api_rate_limits.md) - Configure specific limits
     for deprecated API requests that supersede the user and IP rate limits.
-- [Outbound requests](../../../security/webhooks.md) - Allow requests to the local network from hooks and services.
+- [Outbound requests](../../../security/webhooks.md) - Allow requests to the local network from webhooks and integrations.
 - [Protected Paths](protected_paths.md) - Configure paths to be protected by Rack Attack.
 - [Incident Management Limits](../../../operations/incident_management/index.md) - Limit the
   number of inbound alerts that can be sent to a project.

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe GoogleCloud::ServiceAccountsService do
+RSpec.describe GoogleCloud::ServiceAccountsService, feature_category: :deployment_management do
   let(:service) { described_class.new(project) }
 
   describe 'find_for_project' do

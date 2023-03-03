@@ -2,40 +2,40 @@
 
 module Ci
   class ProcessBuildService < BaseService
-    def execute(build, current_status)
-      if valid_statuses_for_build(build).include?(current_status)
-        process(build)
+    def execute(processable, current_status)
+      if valid_statuses_for_processable(processable).include?(current_status)
+        process(processable)
         true
       else
-        build.skip
+        processable.skip
         false
       end
     end
 
     private
 
-    def process(build)
-      return enqueue(build) if build.enqueue_immediately?
+    def process(processable)
+      return enqueue(processable) if processable.enqueue_immediately?
 
-      if build.schedulable?
-        build.schedule
-      elsif build.action?
-        build.actionize
+      if processable.schedulable?
+        processable.schedule
+      elsif processable.action?
+        processable.actionize
       else
-        enqueue(build)
+        enqueue(processable)
       end
     end
 
-    def enqueue(build)
-      return build.drop!(:failed_outdated_deployment_job) if build.outdated_deployment?
+    def enqueue(processable)
+      return processable.drop!(:failed_outdated_deployment_job) if processable.outdated_deployment?
 
-      build.enqueue
+      processable.enqueue
     end
 
-    def valid_statuses_for_build(build)
-      case build.when
+    def valid_statuses_for_processable(processable)
+      case processable.when
       when 'on_success', 'manual', 'delayed'
-        build.scheduling_type_dag? ? %w[success] : %w[success skipped]
+        processable.scheduling_type_dag? ? %w[success] : %w[success skipped]
       when 'on_failure'
         %w[failed]
       when 'always'

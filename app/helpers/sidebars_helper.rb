@@ -83,17 +83,16 @@ module SidebarsHelper
   end
 
   def super_sidebar_nav_panel(nav: nil, project: nil, user: nil, group: nil, current_ref: nil, ref_type: nil)
+    context_adds = { route_is_active: method(:active_nav_link?), is_super_sidebar: true }
     case nav
     when 'project'
-      context = project_sidebar_context(project, user, current_ref, ref_type: ref_type,
-        route_is_active: method(:active_nav_link?))
+      context = project_sidebar_context(project, user, current_ref, ref_type: ref_type, **context_adds)
       Sidebars::Projects::SuperSidebarPanel.new(context)
     when 'group'
-      context = group_sidebar_context(group, user, route_is_active: method(:active_nav_link?))
+      context = group_sidebar_context(group, user, **context_adds)
       Sidebars::Groups::Panel.new(context)
     else
-      Sidebars::YourWork::Panel.new(Sidebars::Context.new(current_user: user, container: nil,
-        route_is_active: method(:active_nav_link?)))
+      Sidebars::YourWork::Panel.new(Sidebars::Context.new(current_user: user, container: nil, **context_adds))
     end
   end
 

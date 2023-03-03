@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe CustomerRelations::Contacts::CreateService do
+RSpec.describe CustomerRelations::Contacts::CreateService, feature_category: :service_desk do
   describe '#execute' do
     let_it_be(:user) { create(:user) }
     let_it_be(:not_found_or_does_not_belong) { 'The specified organization was not found or does not belong to this group' }

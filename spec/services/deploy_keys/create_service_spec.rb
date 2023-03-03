@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe DeployKeys::CreateService do
+RSpec.describe DeployKeys::CreateService, feature_category: :continuous_delivery do
   let(:user) { create(:user) }
   let(:params) { attributes_for(:deploy_key) }
 

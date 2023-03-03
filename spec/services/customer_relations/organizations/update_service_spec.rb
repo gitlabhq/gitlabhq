@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe CustomerRelations::Organizations::UpdateService do
+RSpec.describe CustomerRelations::Organizations::UpdateService, feature_category: :service_desk do
   let_it_be(:user) { create(:user) }
 
   let(:organization) { create(:organization, name: 'Test', group: group, state: 'active') }

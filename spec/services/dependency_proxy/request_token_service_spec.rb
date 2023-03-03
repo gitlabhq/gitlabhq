@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe DependencyProxy::RequestTokenService do
+RSpec.describe DependencyProxy::RequestTokenService, feature_category: :dependency_proxy do
   include DependencyProxyHelpers
 
   let(:image) { 'alpine:3.9' }

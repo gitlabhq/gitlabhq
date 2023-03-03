@@ -69,9 +69,10 @@ module Ci
     end
 
     class_methods do
-      def partitionable(scope:, through: nil)
+      def partitionable(scope:, through: nil, partitioned: false)
         handle_partitionable_through(through)
         handle_partitionable_scope(scope)
+        handle_partitionable_ddl(partitioned)
       end
 
       private
@@ -94,6 +95,17 @@ module Ci
             record.respond_to?(:partition_id) ? record.partition_id : record
           end
         end
+      end
+
+      def handle_partitionable_ddl(partitioned)
+        return unless partitioned
+
+        include ::PartitionedTable
+
+        partitioned_by :partition_id,
+          strategy: :ci_sliding_list,
+          next_partition_if: proc { false },
+          detach_partition_if: proc { false }
       end
     end
   end

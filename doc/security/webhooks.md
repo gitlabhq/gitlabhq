@@ -45,7 +45,7 @@ To allow access to these addresses:
 1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Settings > Network**.
 1. Expand **Outbound requests**.
-1. Select the **Allow requests to the local network from web hooks and services** checkbox.
+1. Select the **Allow requests to the local network from webhooks and integrations** checkbox.
 
 ## Prevent system hook requests to local network
 

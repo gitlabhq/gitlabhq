@@ -6374,6 +6374,9 @@ msgstr ""
 msgid "Be careful. Renaming a project's repository can have unintended side effects."
 msgstr ""
 
+msgid "Because you are over the %{free_user_limit} user limit, your top-level group, including any subgroups and projects, will be placed in a %{readonly_link_start}read-only state%{link_end} soon. To retain write access, reduce the number of users of your top-level group to %{free_user_limit} or less, or purchase a paid tier. To minimize the impact to your operations, GitLab is offering a %{promotion_link_start}one-time discount%{link_end} for a new purchase of a one-year subscription of GitLab Premium SaaS."
+msgstr ""
+
 msgid "Because you enabled auto-banning, we have also automatically banned this user from %{scope}. If this is a mistake, you can %{link_start}unban them%{link_end}."
 msgstr ""
 
@@ -19110,11 +19113,6 @@ msgstr ""
 msgid "GitLab will create a branch in your fork and start a merge request."
 msgstr ""
 
-msgid "GitLab will enforce this limit in the future. If you are over %{free_user_limit} user when enforcement begins, your top-level group, including any subgroups and projects, will be placed in a %{link_start}read-only%{link_end} state. To avoid being placed in a read-only state, reduce your top-level group to %{free_user_limit} user or less or purchase a paid tier."
-msgid_plural "GitLab will enforce this limit in the future. If you are over %{free_user_limit} users when enforcement begins, your top-level group, including any subgroups and projects, will be placed in a %{link_start}read-only%{link_end} state. To avoid being placed in a read-only state, reduce your top-level group to %{free_user_limit} users or less or purchase a paid tier."
-msgstr[0] ""
-msgstr[1] ""
-
 msgid "GitLab.com (SaaS)"
 msgstr ""
 
@@ -30041,28 +30039,34 @@ msgstr ""
 msgid "Out-of-compliance with this project's policies and should be removed"
 msgstr ""
 
-msgid "OutboundRequests|Allow requests to the local network from hooks and services."
+msgid "OutboundRequests|Allow requests to the local network from hooks and integrations."
 msgstr ""
 
 msgid "OutboundRequests|Allow requests to the local network from system hooks"
 msgstr ""
 
-msgid "OutboundRequests|Allow requests to the local network from web hooks and services"
+msgid "OutboundRequests|Allow requests to the local network from webhooks and integrations"
 msgstr ""
 
-msgid "OutboundRequests|Enforce DNS rebinding attack protection"
+msgid "OutboundRequests|Block all requests, except for IP addresses, IP ranges, and domain names defined in the allowlist"
 msgstr ""
 
-msgid "OutboundRequests|Local IP addresses and domain names that hooks and services may access"
+msgid "OutboundRequests|Enforce DNS-rebinding attack protection"
+msgstr ""
+
+msgid "OutboundRequests|Local IP addresses and domain names that hooks and integrations can access"
 msgstr ""
 
 msgid "OutboundRequests|Outbound requests"
 msgstr ""
 
-msgid "OutboundRequests|Requests to these domains and IP addresses are accessible to both system hooks and web hooks even when local requests are not allowed. IP ranges such as 1:0:0:0:0:0:0:0/124 and 127.0.0.0/28 are supported. Domain wildcards are not supported. To separate entries use commas, semicolons, or newlines. The allowlist can hold a maximum of 1000 entries. Domains must be IDNA encoded."
+msgid "OutboundRequests|Requests can be made to these IP addresses and domains even when local requests are not allowed. IP ranges such as %{code_start}1:0:0:0:0:0:0:0/124%{code_end} and %{code_start}127.0.0.0/28%{code_end} are supported. Domain wildcards are not supported. To separate entries, use commas, semicolons, or newlines. The allowlist can have a maximum of 1000 entries. Domains must be IDNA-encoded."
 msgstr ""
 
-msgid "OutboundRequests|Resolve IP addresses once and uses them to submit requests."
+msgid "OutboundRequests|Resolve IP addresses for outbound requests to prevent DNS-rebinding attacks."
+msgstr ""
+
+msgid "OutboundRequests|Webhooks and integrations might not work properly."
 msgstr ""
 
 msgid "OutdatedBrowser|GitLab may not work properly, because you are using an outdated web browser."
@@ -32671,7 +32675,13 @@ msgstr ""
 msgid "ProductAnalytics|Compares pageviews of all pages against each other"
 msgstr ""
 
+msgid "ProductAnalytics|Configure Dashboard Project"
+msgstr ""
+
 msgid "ProductAnalytics|Creating your product analytics instance..."
+msgstr ""
+
+msgid "ProductAnalytics|Custom dashboards"
 msgstr ""
 
 msgid "ProductAnalytics|Data"
@@ -32705,6 +32715,9 @@ msgid "ProductAnalytics|Feature Usage"
 msgstr ""
 
 msgid "ProductAnalytics|Feature usage"
+msgstr ""
+
+msgid "ProductAnalytics|For being able to create your own dashboards please configure a special project to store your dashboards."
 msgstr ""
 
 msgid "ProductAnalytics|For the product analytics dashboard to start showing you some data, you need to add the analytics tracking code to your project."
@@ -46270,6 +46283,9 @@ msgstr ""
 msgid "Usage statistics"
 msgstr ""
 
+msgid "UsageQuotas|An error occurred loading the transfer data. Please refresh the page to try again."
+msgstr ""
+
 msgid "UsageQuotas|The project-level storage statistics for the Container Registry are directional only and do not include savings for instance-wide deduplication."
 msgstr ""
 
@@ -46439,6 +46455,9 @@ msgid "UsageQuota|This namespace has no projects which used shared runners in th
 msgstr ""
 
 msgid "UsageQuota|This table omits projects that used 0 CI/CD minutes or 0 shared runners duration"
+msgstr ""
+
+msgid "UsageQuota|Transfer"
 msgstr ""
 
 msgid "UsageQuota|Uploads"
@@ -50129,6 +50148,9 @@ msgid "Your top-level group %{namespace_name} is over the %{free_limit} user lim
 msgstr ""
 
 msgid "Your top-level group %{namespace_name} is over the %{free_user_limit} user limit"
+msgstr ""
+
+msgid "Your top-level group %{namespace_name} will move to a read-only state soon"
 msgstr ""
 
 msgid "Your top-level group is over the user and storage limits and has been placed in a read-only state."

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ErrorTracking::BaseService do
+RSpec.describe ErrorTracking::BaseService, feature_category: :error_tracking do
   describe '#compose_response' do
     let(:project) { build_stubbed(:project) }
     let(:user) { build_stubbed(:user, id: non_existing_record_id) }

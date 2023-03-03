@@ -5,9 +5,11 @@ module Gitlab
     module Partitioning
       class CiSlidingListStrategy < SlidingListStrategy
         def initial_partition
-          partition_name = [table_name.to_s.delete_prefix('p_'), 100].join('_')
+          partition_for(100)
+        end
 
-          SingleNumericListPartition.new(table_name, 100, partition_name: partition_name)
+        def next_partition
+          partition_for(active_partition.value + 1)
         end
 
         def validate_and_fix; end
@@ -21,6 +23,17 @@ module Gitlab
         private
 
         def ensure_partitioning_column_ignored_or_readonly!; end
+
+        def partition_for(value)
+          SingleNumericListPartition.new(table_name, value, partition_name: partition_name(value))
+        end
+
+        def partition_name(value)
+          [
+            table_name.to_s.delete_prefix('p_'),
+            value
+          ].join('_')
+        end
       end
     end
   end

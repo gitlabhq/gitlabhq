@@ -662,15 +662,19 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
     end
 
     context 'Network page' do
+      before do
+        stub_feature_flags(deny_all_requests: false)
+      end
+
       it 'changes Outbound requests settings' do
         visit network_admin_application_settings_path
 
         page.within('.as-outbound') do
-          check 'Allow requests to the local network from web hooks and services'
+          check 'Allow requests to the local network from webhooks and integrations'
           # Enabled by default
           uncheck 'Allow requests to the local network from system hooks'
           # Enabled by default
-          uncheck 'Enforce DNS rebinding attack protection'
+          uncheck 'Enforce DNS-rebinding attack protection'
           click_button 'Save changes'
         end
 

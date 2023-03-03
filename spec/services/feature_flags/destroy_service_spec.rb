@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe FeatureFlags::DestroyService do
+RSpec.describe FeatureFlags::DestroyService, feature_category: :feature_flags do
   include FeatureFlagHelpers
 
   let_it_be(:project) { create(:project) }

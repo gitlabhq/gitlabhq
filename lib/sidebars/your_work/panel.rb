@@ -41,3 +41,4 @@ module Sidebars
     end
   end
 end
+Sidebars::YourWork::Panel.prepend_mod_with('Sidebars::YourWork::Panel')

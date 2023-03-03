@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Environments::StopService do
+RSpec.describe Environments::StopService, feature_category: :continuous_delivery do
   include CreateEnvironmentsHelpers
 
   let(:project) { create(:project, :private, :repository) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Git::TagHooksService, :service do
+RSpec.describe Git::TagHooksService, :service, feature_category: :source_code_management do
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository) }
 

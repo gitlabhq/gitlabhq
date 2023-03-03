@@ -118,6 +118,7 @@ module Ci
       end
     end
 
+    # This will be removed with ci_remove_ensure_stage_service
     def update_legacy_status
       set_status(latest_stage_status.to_s)
     end
@@ -151,6 +152,7 @@ module Ci
       blocked? || skipped?
     end
 
+    # This will be removed with ci_remove_ensure_stage_service
     def latest_stage_status
       statuses.latest.composite_status || 'skipped'
     end
