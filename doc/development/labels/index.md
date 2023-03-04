@@ -158,6 +158,29 @@ Examples of feature labels are `~wiki`, `~ldap`, `~api`, `~issues`, and `~"merge
 
 Feature labels are all-lowercase.
 
+## Workflow labels
+
+Issues use the following workflow labels to specify the current issue status:
+
+- `~"workflow::awaiting security release"`
+- `~"workflow::blocked"`
+- `~"workflow::complete"`
+- `~"workflow::design"`
+- `~"workflow::feature-flagged"`
+- `~"workflow::in dev"`
+- `~"workflow::in review"`
+- `~"workflow::planning breakdown"`
+- `~"workflow::problem validation"`
+- `~"workflow::production"`
+- `~"workflow::ready for design"`
+- `~"workflow::ready for development"`
+- `~"workflow::refinement"`
+- `~"workflow::scheduling"`
+- `~"workflow::solution validation"`
+- `~"workflow::start"`
+- `~"workflow::validation backlog"`
+- `~"workflow::verification"`
+
 ## Facet labels
 
 To track additional information or context about created issues, developers may

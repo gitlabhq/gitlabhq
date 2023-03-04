@@ -534,9 +534,12 @@ Use title case for **Geo**.
 
 Do not make **GitLab** possessive (GitLab's). This guidance follows [GitLab Trademark Guidelines](https://about.gitlab.com/handbook/marketing/brand-and-product-marketing/brand/brand-activation/trademark-guidelines/).
 
-## GitLab.com
+## GitLab Flavored Markdown
 
-**GitLab.com** refers to the GitLab instance managed by GitLab itself.
+When possible, spell out [**GitLab Flavored Markdown**](../../../user/markdown.md).
+([Vale](../testing.md#vale) rule: [`GLFM.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/SubstitutionSuggestions.yml))
+
+If you must abbreviate, do not use **GFM**. Use **GLFM** instead.
 
 ## GitLab Helm chart, GitLab chart
 
@@ -549,25 +552,29 @@ Do not use **the `gitlab` chart**, **the GitLab Chart**, or **the cloud-native c
 
 You use the **GitLab Helm chart** to deploy **cloud-native GitLab** in a Kubernetes cluster.
 
-## GitLab Flavored Markdown
+## GitLab Pages
 
-When possible, spell out [**GitLab Flavored Markdown**](../../../user/markdown.md).
-([Vale](../testing.md#vale) rule: [`GLFM.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/SubstitutionSuggestions.yml))
+For consistency and branding, use **GitLab Pages** rather than **Pages**.
 
-If you must abbreviate, do not use **GFM**. Use **GLFM** instead.
+However, if you use **GitLab Pages** for the first mention on a page or in the UI,
+you can use **Pages** thereafter.
+
+## GitLab Runner
+
+Use title case for **GitLab Runner**. This is the product you install. See also [runners](#runner-runners) and [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/233529).
 
 ## GitLab SaaS
 
 **GitLab SaaS** refers to the product license that provides access to GitLab.com. It does not refer to the
 GitLab instance managed by GitLab itself.
 
-## GitLab Runner
-
-Use title case for **GitLab Runner**. This is the product you install. See also [runners](#runner-runners) and [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/233529).
-
 ## GitLab self-managed
 
 Use **GitLab self-managed** to refer to the product license for GitLab instances managed by customers themselves.
+
+## GitLab.com
+
+**GitLab.com** refers to the GitLab instance managed by GitLab itself.
 
 ## guide
 
