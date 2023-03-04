@@ -125,20 +125,21 @@ Host gitlab.com
 
 ## GitLab Pages
 
-Below are the settings for [GitLab Pages](https://about.gitlab.com/stages-devops-lifecycle/pages/).
+Some settings for [GitLab Pages](../project/pages/index.md) differ from the
+[defaults for self-managed instances](../../administration/pages/index.md):
 
-| Setting                   | GitLab.com             | Default                |
-|---------------------------|------------------------|------------------------|
-| Domain name               | `gitlab.io`            | -                      |
-| IP address                | `35.185.44.232`        | -                      |
-| Custom domains support    | **{check-circle}** Yes | **{dotted-circle}** No |
-| TLS certificates support  | **{check-circle}** Yes | **{dotted-circle}** No |
-| [Maximum size](../../administration/pages/index.md#set-global-maximum-size-of-each-gitlab-pages-site) (compressed) | 1 GB                   | 100 MB                 |
+| Setting                      | GitLab.com             |
+|------------------------------|------------------------|
+| Domain name                  | `gitlab.io`            |
+| IP address                   | `35.185.44.232`        |
+| Support for custom domains   | **{check-circle}** Yes |
+| Support for TLS certificates | **{check-circle}** Yes |
+| Maximum site size            | 1 GB                   |
 
-The maximum size of your Pages site is also regulated by the artifacts maximum size,
+The maximum size of your Pages site depends on the maximum artifact size,
 which is part of [GitLab CI/CD](#gitlab-cicd).
 
-There are also [rate limits set for GitLab Pages](#gitlabcom-specific-rate-limits).
+[Rate limits](#gitlabcom-specific-rate-limits) also exist for GitLab Pages.
 
 ## GitLab CI/CD
 

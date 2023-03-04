@@ -16,7 +16,6 @@ import SidebarSeverityWidget from '~/sidebar/components/severity/sidebar_severit
 import SidebarSubscriptionsWidget from '~/sidebar/components/subscriptions/sidebar_subscriptions_widget.vue';
 import SidebarTodoWidget from '~/sidebar/components/todo_toggle/sidebar_todo_widget.vue';
 import SidebarLabelsWidget from '~/sidebar/components/labels/labels_select_widget/labels_select_root.vue';
-import { LabelType } from '~/sidebar/components/labels/labels_select_widget/constants';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 export default {
@@ -114,7 +113,7 @@ export default {
       return this.isGroupBoard ? this.groupPathForActiveIssue : this.projectPathForActiveIssue;
     },
     labelType() {
-      return this.isGroupBoard ? LabelType.group : LabelType.project;
+      return this.isGroupBoard ? WORKSPACE_GROUP : WORKSPACE_PROJECT;
     },
     labelsFilterPath() {
       return this.isGroupBoard

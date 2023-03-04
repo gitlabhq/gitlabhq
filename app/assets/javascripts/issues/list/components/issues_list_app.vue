@@ -10,10 +10,9 @@ import getIssuesCountsQuery from 'ee_else_ce/issues/list/queries/get_issues_coun
 import { createAlert, VARIANT_INFO } from '~/flash';
 import { TYPENAME_USER } from '~/graphql_shared/constants';
 import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
-import { ITEM_TYPE } from '~/groups/constants';
 import CsvImportExportButtons from '~/issuable/components/csv_import_export_buttons.vue';
 import IssuableByEmail from '~/issuable/components/issuable_by_email.vue';
-import { STATUS_CLOSED } from '~/issues/constants';
+import { STATUS_CLOSED, WORKSPACE_GROUP, WORKSPACE_PROJECT } from '~/issues/constants';
 import axios from '~/lib/utils/axios_utils';
 import { fetchPolicies } from '~/lib/graphql';
 import { isPositiveInteger } from '~/lib/utils/number_utils';
@@ -248,7 +247,7 @@ export default {
       };
     },
     namespace() {
-      return this.isProject ? ITEM_TYPE.PROJECT : ITEM_TYPE.GROUP;
+      return this.isProject ? WORKSPACE_PROJECT : WORKSPACE_GROUP;
     },
     defaultWorkItemTypes() {
       return [...defaultWorkItemTypes, ...this.eeWorkItemTypes];

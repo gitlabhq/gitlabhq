@@ -4,7 +4,7 @@ import { TYPENAME_ISSUE, TYPENAME_MERGE_REQUEST } from '~/graphql_shared/constan
 import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import initInviteMembersModal from '~/invite_members/init_invite_members_modal';
 import initInviteMembersTrigger from '~/invite_members/init_invite_members_trigger';
-import { TYPE_ISSUE, TYPE_MERGE_REQUEST } from '~/issues/constants';
+import { TYPE_ISSUE, TYPE_MERGE_REQUEST, WORKSPACE_PROJECT } from '~/issues/constants';
 import { gqlClient } from '~/issues/list/graphql';
 import {
   isInDesignPage,
@@ -25,7 +25,6 @@ import CopyEmailToClipboard from './components/copy/copy_email_to_clipboard.vue'
 import SidebarDueDateWidget from './components/date/sidebar_date_widget.vue';
 import SidebarEscalationStatus from './components/incidents/sidebar_escalation_status.vue';
 import { DropdownVariant } from './components/labels/labels_select_vue/constants';
-import { LabelType } from './components/labels/labels_select_widget/constants';
 import LabelsSelectWidget from './components/labels/labels_select_widget/labels_select_root.vue';
 import IssuableLockForm from './components/lock/issuable_lock_form.vue';
 import MilestoneDropdown from './components/milestone/milestone_dropdown.vue';
@@ -359,7 +358,7 @@ export function mountSidebarLabelsWidget() {
               : TYPE_MERGE_REQUEST,
           workspaceType: 'project',
           attrWorkspacePath: el.dataset.projectPath,
-          labelCreateType: LabelType.project,
+          labelCreateType: WORKSPACE_PROJECT,
         },
         class: ['block labels js-labels-block'],
         scopedSlots: {

@@ -9,10 +9,10 @@ import {
 } from '@gitlab/ui';
 import produce from 'immer';
 import { createAlert } from '~/flash';
+import { WORKSPACE_GROUP } from '~/issues/constants';
 import { __ } from '~/locale';
 import { workspaceLabelsQueries } from '../../../constants';
 import createLabelMutation from './graphql/create_label.mutation.graphql';
-import { LabelType } from './constants';
 
 const errorMessage = __('Error creating label.');
 
@@ -62,7 +62,7 @@ export default {
       return Object.keys(colorsMap).map((color) => ({ [color]: colorsMap[color] }));
     },
     mutationVariables() {
-      const attributePath = this.labelCreateType === LabelType.group ? 'groupPath' : 'projectPath';
+      const attributePath = this.labelCreateType === WORKSPACE_GROUP ? 'groupPath' : 'projectPath';
 
       return {
         title: this.labelTitle,

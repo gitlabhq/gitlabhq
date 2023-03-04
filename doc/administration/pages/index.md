@@ -664,7 +664,7 @@ To set the global maximum pages size for a project:
 1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Settings > Preferences**.
 1. Expand **Pages**.
-1. Enter a value under **Maximum size of pages**.
+1. In **Maximum size of pages**, enter a value. The default is `100`.
 1. Select **Save changes**.
 
 ## Set maximum size of each GitLab Pages site in a group **(PREMIUM SELF)**
