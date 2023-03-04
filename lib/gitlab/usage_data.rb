@@ -385,13 +385,11 @@ module Gitlab
       end
 
       def merge_requests_users(time_period)
-        counter = Gitlab::UsageDataCounters::TrackUniqueEvents
-
         redis_usage_data do
-          counter.count_unique_events(
-            event_action: Gitlab::UsageDataCounters::TrackUniqueEvents::MERGE_REQUEST_ACTION,
-            date_from: time_period[:created_at].first,
-            date_to: time_period[:created_at].last
+          Gitlab::UsageDataCounters::HLLRedisCounter.unique_events(
+            event_names: :merge_request_action,
+            start_date: time_period[:created_at].first,
+            end_date: time_period[:created_at].last
           )
         end
       end

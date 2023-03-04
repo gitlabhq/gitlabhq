@@ -28,7 +28,7 @@ class EventCreateService
 
   def open_mr(merge_request, current_user)
     create_record_event(merge_request, current_user, :created).tap do
-      track_event(event_action: :created, event_target: MergeRequest, author_id: current_user.id)
+      Gitlab::UsageDataCounters::HLLRedisCounter.track_event(:merge_request_action, values: current_user.id)
       track_snowplow_event(
         action: :created,
         project: merge_request.project,
@@ -41,7 +41,7 @@ class EventCreateService
 
   def close_mr(merge_request, current_user)
     create_record_event(merge_request, current_user, :closed).tap do
-      track_event(event_action: :closed, event_target: MergeRequest, author_id: current_user.id)
+      Gitlab::UsageDataCounters::HLLRedisCounter.track_event(:merge_request_action, values: current_user.id)
       track_snowplow_event(
         action: :closed,
         project: merge_request.project,
@@ -58,7 +58,7 @@ class EventCreateService
 
   def merge_mr(merge_request, current_user)
     create_record_event(merge_request, current_user, :merged).tap do
-      track_event(event_action: :merged, event_target: MergeRequest, author_id: current_user.id)
+      Gitlab::UsageDataCounters::HLLRedisCounter.track_event(:merge_request_action, values: current_user.id)
       track_snowplow_event(
         action: :merged,
         project: merge_request.project,
@@ -88,7 +88,7 @@ class EventCreateService
   def leave_note(note, current_user)
     create_record_event(note, current_user, :commented).tap do
       if note.is_a?(DiffNote) && note.for_merge_request?
-        track_event(event_action: :commented, event_target: MergeRequest, author_id: current_user.id)
+        Gitlab::UsageDataCounters::HLLRedisCounter.track_event(:merge_request_action, values: current_user.id)
         track_snowplow_event(
           action: :commented,
           project: note.project,
@@ -128,12 +128,17 @@ class EventCreateService
     records = create.zip([:created].cycle) + update.zip([:updated].cycle)
     return [] if records.empty?
 
-    event_meta = { user: current_user, label: DEGIGN_EVENT_LABEL, property: Gitlab::UsageDataCounters::TrackUniqueEvents::DESIGN_ACTION }
+    event_meta = { user: current_user, label: DEGIGN_EVENT_LABEL, property: :design_action }
     track_snowplow_event(action: :create, project: create.first.project, **event_meta) if create.any?
 
     track_snowplow_event(action: :update, project: update.first.project, **event_meta) if update.any?
 
-    create_record_events(records, current_user)
+    inserted_events = create_record_events(records, current_user)
+
+    Gitlab::UsageDataCounters::HLLRedisCounter.track_event(:design_action, values: current_user.id)
+    Gitlab::UsageDataCounters::HLLRedisCounter.track_event(:git_write_action, values: current_user.id)
+
+    inserted_events
   end
 
   def destroy_designs(designs, current_user)
@@ -144,9 +149,15 @@ class EventCreateService
       project: designs.first.project,
       user: current_user,
       label: DEGIGN_EVENT_LABEL,
-      property: Gitlab::UsageDataCounters::TrackUniqueEvents::DESIGN_ACTION
+      property: :design_action
     )
-    create_record_events(designs.zip([:destroyed].cycle), current_user)
+
+    inserted_events = create_record_events(designs.zip([:destroyed].cycle), current_user)
+
+    Gitlab::UsageDataCounters::HLLRedisCounter.track_event(:design_action, values: current_user.id)
+    Gitlab::UsageDataCounters::HLLRedisCounter.track_event(:git_write_action, values: current_user.id)
+
+    inserted_events
   end
 
   # Create a new wiki page event
@@ -163,7 +174,8 @@ class EventCreateService
   def wiki_event(wiki_page_meta, author, action, fingerprint)
     raise IllegalActionError, action unless Event::WIKI_ACTIONS.include?(action)
 
-    track_event(event_action: action, event_target: wiki_page_meta.class, author_id: author.id)
+    Gitlab::UsageDataCounters::HLLRedisCounter.track_event(:wiki_action, values: author.id)
+    Gitlab::UsageDataCounters::HLLRedisCounter.track_event(:git_write_action, values: author.id)
 
     duplicate = Event.for_wiki_meta(wiki_page_meta).for_fingerprint(fingerprint).first
     return duplicate if duplicate.present?
@@ -205,13 +217,7 @@ class EventCreateService
         .merge(action: action, fingerprint: fingerprint, target_id: record.id, target_type: record.class.name)
     end
 
-    result = Event.insert_all(attribute_sets, returning: %w[id])
-
-    tuples.each do |record, status, _|
-      track_event(event_action: status, event_target: record.class, author_id: current_user.id)
-    end
-
-    result
+    Event.insert_all(attribute_sets, returning: %w[id])
   end
 
   def create_push_event(service_class, project, current_user, push_data)
@@ -226,7 +232,8 @@ class EventCreateService
       new_event
     end
 
-    track_event(event_action: :pushed, event_target: Project, author_id: current_user.id)
+    Gitlab::UsageDataCounters::HLLRedisCounter.track_event(:project_action, values: current_user.id)
+    Gitlab::UsageDataCounters::HLLRedisCounter.track_event(:git_write_action, values: current_user.id)
 
     namespace = project.namespace
     Gitlab::Tracking.event(
@@ -271,10 +278,6 @@ class EventCreateService
     return {} unless resource_parent_attr
 
     { resource_parent_attr => resource_parent.id }
-  end
-
-  def track_event(...)
-    Gitlab::UsageDataCounters::TrackUniqueEvents.track_event(...)
   end
 
   def track_snowplow_event(action:, project:, user:, label:, property:)

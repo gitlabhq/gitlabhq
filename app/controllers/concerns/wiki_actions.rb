@@ -46,9 +46,7 @@ module WikiActions
       end
     end
 
-    # NOTE: We want to include wiki page views in the same counter as the other
-    # Event-based wiki actions tracked through TrackUniqueEvents, so we use the same event name.
-    track_redis_hll_event :show, name: Gitlab::UsageDataCounters::TrackUniqueEvents::WIKI_ACTION.to_s
+    track_redis_hll_event :show, name: 'wiki_action'
 
     helper_method :view_file_button, :diff_file_html_data
 

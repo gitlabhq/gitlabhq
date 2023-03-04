@@ -22,7 +22,7 @@ To host the GitLab product documentation, you can use:
 - GitLab Pages
 - Your own web server
 
-After you create a website by using one of these methods, you redirect the UI links
+After you create a website by using one of these methods, redirect the UI links
 in the product to point to your website.
 
 NOTE:
@@ -41,7 +41,7 @@ In the following example, we expose this on the host under the same port.
 Make sure you either:
 
 - Allow port `4000` in your firewall.
-- Use a different port. In following examples, replace the leftmost `4000` with the port different port.
+- Use a different port. In following examples, replace the leftmost `4000` with a different port number.
 
 To run the GitLab product documentation website in a Docker container:
 
@@ -74,7 +74,7 @@ To run the GitLab product documentation website in a Docker container:
      docker-compose up -d
      ```
 
-1. Visit `http://0.0.0.0:4000` to view the documentation website and verify
+1. Visit `http://0.0.0.0:4000` to view the documentation website and verify that 
    it works.
 1. [Redirect the help links to the new Docs site](#redirect-the-help-links-to-the-new-docs-site).
 
@@ -84,7 +84,7 @@ You can use GitLab Pages to host the GitLab product documentation.
 
 Prerequisite:
 
-- Ensure the Pages site URL does not use a subfolder. Because of how the docs
+- Ensure the Pages site URL does not use a subfolder. Because of the way the docs
   site is pre-compiled, the CSS and JavaScript files are relative to the
   main domain or subdomain. For example, URLs like `https://example.com/docs/`
   are not supported.
@@ -177,7 +177,11 @@ documentation URL requests as needed. For example, if your GitLab version is
 - When you select the link, you are redirected to
 `http://0.0.0.0:4000/14.5/ee/user/admin_area/settings/help_page/#destination-requirements`.
 
-To test the setting, select a **Learn more** link in the GitLab application.
+To test the setting, in GitLab, select a **Learn more** link. For example:
+
+1. On the top bar, in the upper-right corner, select your avatar.
+1. Select **Preferences**.
+1. In the **Syntax highlighting theme** section, select **Learn more**.
 
 ## Upgrade the product documentation to a later version
 
@@ -187,7 +191,7 @@ Upgrading the Docs site to a later version requires downloading the newer Docker
 
 To upgrade to a later version [using Docker](#self-host-the-product-documentation-with-docker):
 
-- If you use plain Docker:
+- If you use Docker:
 
   1. Stop the running container:
 
@@ -207,7 +211,7 @@ To upgrade to a later version [using Docker](#self-host-the-product-documentatio
      docker run --detach --name gitlab_docs -it --rm -p 4000:4000 registry.gitlab.com/gitlab-org/gitlab-docs:14.6
      ```
 
-- If you use Docker compose:
+- If you use Docker Compose:
 
   1. Change the version in `docker-compose.yaml`, for example 14.6:
 
@@ -231,7 +235,7 @@ To upgrade to a later version [using Docker](#self-host-the-product-documentatio
 
 To upgrade to a later version [using GitLab Pages](#self-host-the-product-documentation-with-gitlab-pages):
 
-1. Edit your existing `.gitlab-ci.yml` file, and replace the `image`'s version number:
+1. Edit your existing `.gitlab-ci.yml` file, and replace the `image` version number:
 
    ```yaml
    image: registry.gitlab.com/gitlab-org/gitlab-docs:14.5

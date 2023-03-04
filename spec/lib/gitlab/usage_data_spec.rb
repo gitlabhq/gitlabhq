@@ -1044,16 +1044,12 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
     let(:time) { Time.current }
 
     before do
-      counter = Gitlab::UsageDataCounters::TrackUniqueEvents
-      merge_request = Event::TARGET_TYPES[:merge_request]
-      design = Event::TARGET_TYPES[:design]
-
-      counter.track_event(event_action: :commented, event_target: merge_request, author_id: 1, time: time)
-      counter.track_event(event_action: :opened, event_target: merge_request, author_id: 1, time: time)
-      counter.track_event(event_action: :merged, event_target: merge_request, author_id: 2, time: time)
-      counter.track_event(event_action: :closed, event_target: merge_request, author_id: 3, time: time)
-      counter.track_event(event_action: :opened, event_target: merge_request, author_id: 4, time: time - 3.days)
-      counter.track_event(event_action: :created, event_target: design, author_id: 5, time: time)
+      Gitlab::UsageDataCounters::HLLRedisCounter.track_event(:merge_request_action, values: 1, time: time)
+      Gitlab::UsageDataCounters::HLLRedisCounter.track_event(:merge_request_action, values: 1, time: time)
+      Gitlab::UsageDataCounters::HLLRedisCounter.track_event(:merge_request_action, values: 2, time: time)
+      Gitlab::UsageDataCounters::HLLRedisCounter.track_event(:merge_request_action, values: 3, time: time)
+      Gitlab::UsageDataCounters::HLLRedisCounter.track_event(:merge_request_action, values: 4, time: time - 3.days)
+      Gitlab::UsageDataCounters::HLLRedisCounter.track_event(:design_action, values: 5, time: time)
     end
 
     it 'returns the distinct count of users using merge requests (via events table) within the specified time period' do
