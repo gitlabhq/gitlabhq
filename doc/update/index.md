@@ -381,6 +381,7 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
   consistent in our documentation and product defaults.
 
   For example, previously:
+  
   - Omnibus GitLab default (`sidekiq['max_concurrency']`): 50
   - From source installation default: 50
   - Helm chart default (`gitlab.sidekiq.concurrency`): 25
