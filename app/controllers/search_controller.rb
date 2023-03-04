@@ -32,9 +32,6 @@ class SearchController < ApplicationController
   before_action :check_search_rate_limit!, only: search_rate_limited_endpoints
 
   before_action only: :show do
-    push_frontend_feature_flag(:search_blobs_language_aggregation, current_user)
-  end
-  before_action only: :show do
     update_scope_for_code_search
   end
   rescue_from ActiveRecord::QueryCanceled, with: :render_timeout

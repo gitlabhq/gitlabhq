@@ -21,7 +21,7 @@ export default {
       return this.currentScope === SCOPE_ISSUES || this.currentScope === SCOPE_MERGE_REQUESTS;
     },
     showBlobFilter() {
-      return this.currentScope === SCOPE_BLOB && this.glFeatures.searchBlobsLanguageAggregation;
+      return this.currentScope === SCOPE_BLOB;
     },
   },
 };

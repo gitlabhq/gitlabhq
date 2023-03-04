@@ -57,23 +57,23 @@ describe('GlobalSearchSidebar', () => {
     });
 
     describe.each`
-      scope               | showFilters | ShowsLanguage
+      scope               | showFilters | showsLanguage
       ${'issues'}         | ${true}     | ${false}
       ${'merge_requests'} | ${true}     | ${false}
       ${'projects'}       | ${false}    | ${false}
       ${'blobs'}          | ${false}    | ${true}
-    `('sidebar scope: $scope', ({ scope, showFilters, ShowsLanguage }) => {
+    `('sidebar scope: $scope', ({ scope, showFilters, showsLanguage }) => {
       beforeEach(() => {
         getterSpies.currentScope = jest.fn(() => scope);
-        createComponent({ urlQuery: { scope } }, { searchBlobsLanguageAggregation: true });
+        createComponent({ urlQuery: { scope } });
       });
 
       it(`${!showFilters ? "doesn't" : ''} shows filters`, () => {
         expect(findFilters().exists()).toBe(showFilters);
       });
 
-      it(`${!ShowsLanguage ? "doesn't" : ''} shows language filters`, () => {
-        expect(findLanguageAggregation().exists()).toBe(ShowsLanguage);
+      it(`${!showsLanguage ? "doesn't" : ''} shows language filters`, () => {
+        expect(findLanguageAggregation().exists()).toBe(showsLanguage);
       });
     });
 
@@ -84,24 +84,6 @@ describe('GlobalSearchSidebar', () => {
       it('shows the vertical navigation', () => {
         expect(findSidebarNavigation().exists()).toBe(true);
       });
-    });
-  });
-
-  describe('when search_blobs_language_aggregation is enabled', () => {
-    beforeEach(() => {
-      createComponent({ urlQuery: { scope: 'blobs' } }, { searchBlobsLanguageAggregation: true });
-    });
-    it('shows the language filter', () => {
-      expect(findLanguageAggregation().exists()).toBe(true);
-    });
-  });
-
-  describe('when search_blobs_language_aggregation is disabled', () => {
-    beforeEach(() => {
-      createComponent({ urlQuery: { scope: 'blobs' } }, { searchBlobsLanguageAggregation: false });
-    });
-    it('hides the language filter', () => {
-      expect(findLanguageAggregation().exists()).toBe(false);
     });
   });
 });

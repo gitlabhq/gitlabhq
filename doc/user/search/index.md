@@ -82,7 +82,16 @@ where the results were found.
 1. From the code search result, hover over the line number.
 1. On the left, select **View blame**.
 
-   ![code search results](img/code_search_git_blame_v15_1.png)
+![code search results](img/code_search_git_blame_v15_1.png)
+
+### Filter code search results by language
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/342651) in GitLab 15.10.
+
+To filter code search results by one or more languages:
+
+1. On the code search page, on the left sidebar, select one or more languages.
+1. On the left sidebar, select **Apply**.
 
 ## Search for projects by full path
 
