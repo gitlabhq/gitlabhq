@@ -262,6 +262,11 @@ For installations from source:
 sudo -u git -H bundle exec rake gitlab:backup:create SKIP=db,uploads RAILS_ENV=production
 ```
 
+`SKIP=` is also used to:
+
+- [Skip creation of the tar file](#skipping-tar-creation) (`SKIP=tar`).
+- [Skip uploading the backup to remote storage](#skip-uploading-backups-to-remote-storage) (`SKIP=remote`).
+
 ### Skipping tar creation
 
 NOTE:

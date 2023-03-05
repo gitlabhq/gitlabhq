@@ -543,6 +543,7 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
 
 ### 15.4.6
 
+- Due to a [bug introduced in curl in GitLab 15.4.6](https://github.com/curl/curl/issues/10122), the [`no_proxy` environment variable may not work properly](../administration/geo/replication/troubleshooting.md#secondary-site-returns-received-http-code-403-from-proxy-after-connect). Either downgrade to GitLab 15.4.5, or upgrade to GitLab 15.5.7 or a later version.
 - Due to [a bug introduced in GitLab 15.4](https://gitlab.com/gitlab-org/gitlab/-/issues/390155), if one or more Git repositories in Gitaly Cluster is [unavailable](../administration/gitaly/recovery.md#unavailable-repositories), then [Repository checks](../administration/repository_checks.md#repository-checks) and [Geo replication and verification](../administration/geo/index.md) stop running for all project or project wiki repositories in the affected Gitaly Cluster. The bug was fixed by [reverting the change in GitLab 15.9.0](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110823). Before upgrading to this version, check if you have any "unavailable" repositories. See [the bug issue](https://gitlab.com/gitlab-org/gitlab/-/issues/390155) for more information.
 
 ### 15.4.5
@@ -1675,7 +1676,7 @@ If your organization uses these fields either wait for the bug fix to be release
 
 Organizations that are already running earlier patch levels of GitLab 15.6, 15.7, or 15.8 can proceed with steps 2 and 3.
 
-If you have already upgraded to GitLab 15.9 following these instructions, your instance will not be affected by this bug, and you don't need to apply the 15.9.x patch when it is released. 
+If you have already upgraded to GitLab 15.9 following these instructions, your instance will not be affected by this bug, and you don't need to apply the 15.9.x patch when it is released.
 
 See [issue 393216](https://gitlab.com/gitlab-org/gitlab/-/issues/393216) for more information.
 

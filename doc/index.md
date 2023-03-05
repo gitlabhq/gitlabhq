@@ -28,7 +28,7 @@ Welcome to the GitLab documentation!
 | [**New to Git and GitLab?**](tutorials/index.md)<br/>Start learning about Git and GitLab. | [**Contribute to GitLab development**](#contributing-to-gitlab)<br/>Create new GitLab functionality and documentation. |
 | [**Coming to GitLab from another platform?**](#coming-to-gitlab-from-another-platform)<br/>Learn how to move to GitLab. | [**Build an integration with GitLab**](#build-an-integration-with-gitlab)<br/>Integrate with Jira and other common applications. |
 | [**Choose a subscription**](subscriptions/index.md)<br/>Determine which subscription tier makes sense for you. | [**Install GitLab**](https://about.gitlab.com/install/)<br/>Install GitLab on different platforms. |
-| [**Reference architectures**](administration/reference_architectures/index.md)<br/>View recommended deployments at scale. | [**Update GitLab**](update/index.md)<br/>Update your GitLab self-managed instance to the latest version. |
+| [**Reference architectures**](administration/reference_architectures/index.md)<br/>View recommended deployments at scale. | [**Upgrade GitLab**](update/index.md)<br/>Upgrade your GitLab self-managed instance to the latest version. |
 | [**GitLab releases**](https://about.gitlab.com/releases/)<br/>See what's new in GitLab. |  |
 
 ## Popular topics
