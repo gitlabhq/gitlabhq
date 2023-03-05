@@ -215,29 +215,28 @@ If you have any questions on configuring the SAML app, contact your provider's s
 
 ### Set up Azure
 
-Follow the Azure documentation on [configuring single sign-on to applications](https://learn.microsoft.com/en-us/azure/active-directory/manage-apps/add-application-portal-setup-sso), and use the following notes when needed.
+1. [Use Azure to configure SSO for an application](https://learn.microsoft.com/en-us/azure/active-directory/manage-apps/add-application-portal-setup-sso). The following GitLab settings correspond to the Azure fields.
+
+   | GitLab setting                       | Azure field                                |
+   | ------------------------------------ | ------------------------------------------ |
+   | Identifier                           | Identifier (Entity ID)                     |
+   | Assertion consumer service URL       | Reply URL (Assertion Consumer Service URL) |
+   | GitLab single sign-on URL            | Sign on URL                                |
+   | Identity provider single sign-on URL | Login URL                                  |
+   | Certificate fingerprint              | Thumbprint                                 |
+
+1. Set the following attributes:
+   - **Unique User Identifier (Name identifier)** to `user.objectID`.
+   - **nameid-format** to persistent.
+   - **Additional claims** to [supported attributes](#user-attributes).
+
+1. Optional. If you use [Group Sync](group_sync.md), customize the name of the group
+   claim to match the required attribute.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For a demo of the Azure SAML setup including SCIM, see [SCIM Provisioning on Azure Using SAML SSO for Groups Demo](https://youtu.be/24-ZxmTeEBU).
-The video is outdated in regard to objectID mapping and you should follow the [SCIM documentation](scim_setup.md#configure-azure-active-directory).
+View a demo of [SCIM provisioning on Azure using SAML SSO for groups](https://youtu.be/24-ZxmTeEBU). The `objectID` mapping is outdated in this video. Follow the [SCIM documentation](scim_setup.md#configure-azure-active-directory) instead.
 
-| GitLab Setting                       | Azure Field                                |
-| ------------------------------------ | ------------------------------------------ |
-| Identifier                           | Identifier (Entity ID)                     |
-| Assertion consumer service URL       | Reply URL (Assertion Consumer Service URL) |
-| GitLab single sign-on URL            | Sign on URL                                |
-| Identity provider single sign-on URL | Login URL                                  |
-| Certificate fingerprint              | Thumbprint                                 |
-
-You should set the following attributes:
-
-- **Unique User Identifier (Name identifier)** to `user.objectID`.
-- **nameid-format** to persistent.
-- Additional claims to [supported attributes](#user-attributes).
-
-If using [Group Sync](#group-sync), customize the name of the group claim to match the required attribute.
-
-See our [example configuration page](example_saml_config.md#azure-active-directory).
+View an [example configuration page](example_saml_config.md#azure-active-directory).
 
 ### Set up Google Workspace
 
@@ -316,34 +315,45 @@ OneLogin supports its own [GitLab (SaaS) application](https://onelogin.service-n
 
 1. For **NameID**, use `OneLogin ID`.
 
-### Change the SAML app
+## Manage your identity provider
 
-To change the SAML app used for sign in:
+After you have configured your identity provider, you can:
 
-- If the NameID is not identical in both the existing and new SAML apps, users must:
+- Change the identity provider users sign in with.
+- Migrate to a different identity provider.
+- Change email domains.
+
+### Change the identity provider
+
+To change the identity provider:
+
+- If the `NameID` is not identical in the existing and new identity providers,
+   tell users to:
   1. [Unlink the current SAML identity](#unlinking-accounts).
-  1. [Link their identity](#user-access-and-management) to the new SAML app.
-- If the NameID is identical, no change is required.
+  1. [Link their identity](#user-access-and-management) to the new identity provider.
+- If the `NameID` is identical, users do not have to make any changes.
 
-### Migrate to a different SAML provider
+### Migrate to a different identity provider
 
-You can migrate to a different SAML provider. During the migration process users will not be able to access any of the SAML groups.
-To mitigate this, you can disable [SSO enforcement](#sso-enforcement).
+You can migrate to a different identity provider. During the migration process,
+users cannot access any of the SAML groups. To mitigate this, you can disable
+[SSO enforcement](#sso-enforcement).
 
-To migrate SAML providers:
+To migrate identity providers:
 
-1. [Configure](#configure-your-identity-provider) the group with the new identity provider SAML app.
-1. Ask users to [unlink their account from the group](#unlinking-accounts).
-1. Ask users to [link their account to the new SAML app](#linking-saml-to-your-existing-gitlabcom-account).
+1. [Configure](#configure-your-identity-provider) the group with the new identity provider.
+1. Tell users to:
+   1. [Unlink their account from the group](#unlinking-accounts).
+   1. [Link their account to the new SAML app](#linking-saml-to-your-existing-gitlabcom-account).
 
 ### Change email domains
 
-To migrate users to a new email domain, users must:
+To migrate users to a new email domain, tell users to:
 
 1. Add their new email as the primary email to their accounts and verify it.
 1. [Unlink their account from the group](#unlinking-accounts).
 1. [Link their account to the group](#linking-saml-to-your-existing-gitlabcom-account).
-1. (Optional) Remove their old email from the account.
+1. Optional. Remove their old email from the account.
 
 ## User access and management
 
