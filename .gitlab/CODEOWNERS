@@ -1431,5 +1431,5 @@ ee/lib/ee/api/entities/project.rb @gitlab-org/manage/manage-workspace/backend-ap
 /ee/app/assets/javascripts/usage_quotas/storage/ @fulfillment-group/utilization-group/fe
 
 [Manage::Foundations]
-/lib/sidebars/ @gitlab/ @gitlab-org/manage/foundations/engineering
+/lib/sidebars/ @gitlab-org/manage/foundations/engineering
 /ee/lib/sidebars/ @gitlab-org/manage/foundations/engineering

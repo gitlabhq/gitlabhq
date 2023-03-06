@@ -31033,6 +31033,8 @@ CREATE INDEX index_ns_root_stor_stats_on_registry_size_estimated ON namespace_ro
 
 CREATE UNIQUE INDEX index_ns_user_callouts_feature ON user_namespace_callouts USING btree (user_id, feature_name, namespace_id);
 
+CREATE INDEX index_oauth_access_grants_on_application_id ON oauth_access_grants USING btree (application_id);
+
 CREATE INDEX index_oauth_access_grants_on_resource_owner_id ON oauth_access_grants USING btree (resource_owner_id, application_id, created_at);
 
 CREATE UNIQUE INDEX index_oauth_access_grants_on_token ON oauth_access_grants USING btree (token);
