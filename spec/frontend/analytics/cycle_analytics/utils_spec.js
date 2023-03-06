@@ -164,7 +164,7 @@ describe('Value stream analytics utils', () => {
           ...rawData,
           gon: { licensed_features: fakeFeatures },
         });
-        expect(res.features).toEqual(fakeFeatures);
+        expect(res.features).toMatchObject(fakeFeatures);
       });
     });
   });

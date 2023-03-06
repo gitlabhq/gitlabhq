@@ -157,6 +157,10 @@ describe('Value stream analytics component', () => {
     expect(findPagination().exists()).toBe(true);
   });
 
+  it('does not render a link to the value streams dashboard', () => {
+    expect(findOverviewMetrics().props('dashboardsPath')).toBeNull();
+  });
+
   describe('with `cycleAnalyticsForGroups=true` license', () => {
     beforeEach(() => {
       wrapper = createComponent({ initialState: { features: { cycleAnalyticsForGroups: true } } });
@@ -164,6 +168,23 @@ describe('Value stream analytics component', () => {
 
     it('passes requests prop to the metrics component', () => {
       hasMetricsRequests(['time summary', 'recent activity']);
+    });
+  });
+
+  describe('with `groupAnalyticsDashboardsPage=true` and `cycleAnalyticsForGroups=true` license', () => {
+    beforeEach(() => {
+      wrapper = createComponent({
+        initialState: {
+          features: { groupAnalyticsDashboardsPage: true, cycleAnalyticsForGroups: true },
+        },
+      });
+    });
+
+    it('renders a link to the value streams dashboard', () => {
+      expect(findOverviewMetrics().props('dashboardsPath')).toBeDefined();
+      expect(findOverviewMetrics().props('dashboardsPath')).toBe(
+        '/groups/foo/-/analytics/dashboards?query=full/path/to/foo',
+      );
     });
   });
 

@@ -35719,6 +35719,9 @@ msgstr ""
 msgid "Relate to %{issuable_type} %{add_related_issue_link}"
 msgstr ""
 
+msgid "Related"
+msgstr ""
+
 msgid "Related feature flags"
 msgstr ""
 
@@ -47180,6 +47183,9 @@ msgid "Value Stream Analytics can help you determine your team’s velocity"
 msgstr ""
 
 msgid "Value Streams Dashboard (Beta)"
+msgstr ""
+
+msgid "Value Streams Dashboard | DORA"
 msgstr ""
 
 msgid "Value might contain a variable reference"

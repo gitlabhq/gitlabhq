@@ -78,6 +78,7 @@ export const filterStagesByHiddenStatus = (stages = [], isHidden = true) =>
 
 const extractFeatures = (gon) => ({
   cycleAnalyticsForGroups: Boolean(gon?.licensed_features?.cycleAnalyticsForGroups),
+  groupAnalyticsDashboardsPage: Boolean(gon?.features?.groupAnalyticsDashboardsPage),
 });
 
 /**
