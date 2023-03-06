@@ -13,18 +13,10 @@ module Gitlab
         def repos(search_text, options)
           return { repos: filtered(client.repos, search_text) } if use_legacy?
 
-          if use_graphql?
-            fetch_repos_via_graphql(search_text, options)
-          else
-            fetch_repos_via_rest(search_text, options)
-          end
+          fetch_repos_via_graphql(search_text, options)
         end
 
         private
-
-        def fetch_repos_via_rest(search_text, options)
-          { repos: client.search_repos_by_name(search_text, options)[:items] }
-        end
 
         def fetch_repos_via_graphql(search_text, options)
           response = client.search_repos_by_name_graphql(search_text, options)
@@ -48,10 +40,6 @@ module Gitlab
 
         def use_legacy?
           Feature.disabled?(:remove_legacy_github_client)
-        end
-
-        def use_graphql?
-          Feature.enabled?(:github_client_fetch_repos_via_graphql)
         end
       end
     end

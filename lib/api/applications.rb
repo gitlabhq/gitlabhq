@@ -5,7 +5,7 @@ module API
   class Applications < ::API::Base
     before { authenticated_as_admin! }
 
-    feature_category :authentication_and_authorization
+    feature_category :system_access
 
     resource :applications do
       desc 'Create a new application' do

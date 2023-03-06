@@ -161,9 +161,7 @@ RSpec.describe Import::GithubController, feature_category: :importers do
     let(:provider_repos) { [] }
     let(:expected_filter) { '' }
     let(:expected_options) do
-      pagination_params.merge(relation_params).merge(
-        first: 25, page: 1, per_page: 25
-      )
+      pagination_params.merge(relation_params).merge(first: 25)
     end
 
     before do
@@ -279,22 +277,12 @@ RSpec.describe Import::GithubController, feature_category: :importers do
 
         it_behaves_like 'calls repos through Clients::Proxy with expected args'
       end
-
-      context 'when page is specified' do
-        let(:pagination_params) { { before: nil, after: nil, page: 2 } }
-        let(:params) { pagination_params }
-        let(:expected_options) do
-          pagination_params.merge(relation_params).merge(first: 25, page: 2, per_page: 25)
-        end
-
-        it_behaves_like 'calls repos through Clients::Proxy with expected args'
-      end
     end
 
     context 'when relation type params present' do
       let(:organization_login) { 'test-login' }
       let(:params) { pagination_params.merge(relation_type: 'organization', organization_login: organization_login) }
-      let(:pagination_defaults) { { first: 25, page: 1, per_page: 25 } }
+      let(:pagination_defaults) { { first: 25 } }
       let(:expected_options) do
         pagination_defaults.merge(pagination_params).merge(
           relation_type: 'organization', organization_login: organization_login

@@ -8,7 +8,7 @@ module API
 
     helpers ::API::Helpers::MembersHelpers
 
-    feature_category :authentication_and_authorization
+    feature_category :system_access
 
     %w[group project].each do |source_type|
       params do

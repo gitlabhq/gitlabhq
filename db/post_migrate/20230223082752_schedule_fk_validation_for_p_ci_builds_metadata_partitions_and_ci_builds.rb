@@ -1,14 +1,17 @@
 # frozen_string_literal: true
 
 class ScheduleFkValidationForPCiBuildsMetadataPartitionsAndCiBuilds < Gitlab::Database::Migration[2.1]
-  TABLE_NAME = :p_ci_builds_metadata
-  FK_NAME = :fk_e20479742e_p
+  # This migration was used to validate the foreign keys on partitions introduced by
+  # db/post_migrate/20230221125148_add_fk_to_p_ci_builds_metadata_partitions_on_partition_id_and_build_id.rb
+  # but executing the rollback of
+  # db/post_migrate/20230306072532_add_partitioned_fk_to_p_ci_builds_metadata_on_partition_id_and_build_id.rb
+  # would also remove the FKs on partitions and this would errors out.
 
   def up
-    prepare_partitioned_async_foreign_key_validation TABLE_NAME, name: FK_NAME
+    # No-op
   end
 
   def down
-    unprepare_partitioned_async_foreign_key_validation TABLE_NAME, name: FK_NAME
+    # No-op
   end
 end

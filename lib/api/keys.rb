@@ -5,7 +5,7 @@ module API
   class Keys < ::API::Base
     before { authenticate! }
 
-    feature_category :authentication_and_authorization
+    feature_category :system_access
 
     resource :keys do
       desc 'Get single ssh key by id. Only available to admin users' do

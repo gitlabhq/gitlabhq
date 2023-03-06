@@ -2740,9 +2740,9 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
   end
 
   describe 'create_project_runners' do
-    context 'create_runner_workflow_for_admin flag enabled' do
+    context 'create_runner_workflow_for_namespace flag enabled' do
       before do
-        stub_feature_flags(create_runner_workflow_for_admin: true)
+        stub_feature_flags(create_runner_workflow_for_namespace: [project.namespace])
       end
 
       context 'admin' do
@@ -2810,9 +2810,9 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
       end
     end
 
-    context 'create_runner_workflow_for_admin flag disabled' do
+    context 'create_runner_workflow_for_namespace flag disabled' do
       before do
-        stub_feature_flags(create_runner_workflow_for_admin: false)
+        stub_feature_flags(create_runner_workflow_for_namespace: [group])
       end
 
       context 'admin' do

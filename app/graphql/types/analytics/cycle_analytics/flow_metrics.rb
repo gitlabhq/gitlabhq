@@ -14,6 +14,11 @@ module Types
               null: true,
               description: 'Number of issues opened in the given period.',
               resolver: Resolvers::Analytics::CycleAnalytics::IssueCountResolver[context]
+            field :deployment_count,
+              Types::Analytics::CycleAnalytics::MetricType,
+              null: true,
+              description: 'Number of production deployments in the given period.',
+              resolver: Resolvers::Analytics::CycleAnalytics::DeploymentCountResolver[context]
           end
         end
       end

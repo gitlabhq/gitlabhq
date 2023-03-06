@@ -9,7 +9,7 @@ module Groups
 
     idempotent!
 
-    feature_category :authentication_and_authorization
+    feature_category :system_access
 
     def perform(group_id)
       group = Group.find_by_id(group_id)

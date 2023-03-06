@@ -43,80 +43,82 @@
               = _('Follow')
 
     .profile-header{ class: [('with-no-profile-tabs' if profile_tabs.empty?)] }
-      .avatar-holder
-        = link_to avatar_icon_for_user(@user, 400, current_user: current_user), target: '_blank', rel: 'noopener noreferrer' do
-          = render Pajamas::AvatarComponent.new(@user, alt: "", size: 96, avatar_options: { itemprop: "image" })
-
-      - if @user.blocked? || !@user.confirmed?
-        .user-info
-          %h1.cover-title
-            = user_display_name(@user)
-        = render "users/profile_basic_info"
-      - else
-        .user-info
-          %h1.cover-title{ itemprop: 'name' }
-            = @user.name
-            - if @user.pronouns.present?
-              %span.gl-font-base.gl-text-gray-500.gl-vertical-align-middle
-                = "(#{@user.pronouns})"
-            - if @user.status&.busy?
-              %span.gl-font-base.gl-text-gray-500.gl-vertical-align-middle= s_("UserProfile|(Busy)")
-
-          - if @user.pronunciation.present?
-            .gl-align-items-center
-              %p.gl-mb-4.gl-text-gray-500.gl-max-w-80.gl-mx-auto= s_("UserProfile|Pronounced as: %{pronunciation}") % { pronunciation: @user.pronunciation }
-
-          - if @user.status&.customized?
-            .cover-status.gl-display-inline-flex.gl-align-items-center
-              = emoji_icon(@user.status.emoji, class: 'gl-mr-2')
-              = markdown_field(@user.status, :message)
+      .gl-display-inline-block.gl-mx-8.gl-vertical-align-top
+        .avatar-holder
+          = link_to avatar_icon_for_user(@user, 400, current_user: current_user), target: '_blank', rel: 'noopener noreferrer' do
+            = render Pajamas::AvatarComponent.new(@user, alt: "", size: 96, avatar_options: { itemprop: "image" })
+      .gl-display-inline-block.gl-vertical-align-top.gl-text-left
+        - if @user.blocked? || !@user.confirmed?
+          .user-info
+            %h1.cover-title.gl-my-0
+              = user_display_name(@user)
           = render "users/profile_basic_info"
-          .gl-text-gray-900.mb-1.mb-sm-2
-            - unless @user.location.blank?
-              = render 'middle_dot_divider', stacking: true, itemprop: 'address', itemscope: true, itemtype: 'https://schema.org/PostalAddress' do
-                = sprite_icon('location', css_class: 'fgray')
-                %span{ itemprop: 'addressLocality' }
-                  = @user.location
+        - else
+          .user-info
+            %h1.cover-title.gl-my-0{ itemprop: 'name' }
+              = @user.name
+              - if @user.pronouns.present?
+                %span.gl-font-base.gl-text-gray-500.gl-vertical-align-middle
+                  = "(#{@user.pronouns})"
+              - if @user.status&.busy?
+                %span.gl-font-base.gl-text-gray-500.gl-vertical-align-middle= s_("UserProfile|(Busy)")
+
+            - if @user.pronunciation.present?
+              .gl-align-items-center
+                %p.gl-mb-4.gl-text-gray-500.gl-max-w-80.gl-mx-auto= s_("UserProfile|Pronounced as: %{pronunciation}") % { pronunciation: @user.pronunciation }
+
+            - if @user.status&.customized?
+              .cover-status.gl-display-inline-flex.gl-align-items-center.gl-mb-3
+                = emoji_icon(@user.status.emoji, class: 'gl-mr-2')
+                = markdown_field(@user.status, :message)
+            = render "users/profile_basic_info"
             - user_local_time = local_time(@user.timezone)
-            - unless user_local_time.nil?
-              = render 'middle_dot_divider', stacking: true, data: { testid: 'user-local-time' } do
-                = sprite_icon('clock', css_class: 'fgray')
-                %span
-                  = user_local_time
-            - unless work_information(@user).blank?
-              = render 'middle_dot_divider', stacking: true do
-                = sprite_icon('work', css_class: 'fgray')
-                %span
-                  = work_information(@user, with_schema_markup: true)
-          .gl-text-gray-900
-            - unless @user.skype.blank?
-              = render 'middle_dot_divider' do
-                = link_to "skype:#{@user.skype}", class: 'gl-hover-text-decoration-none', title: "Skype" do
-                  = sprite_icon('skype', css_class: 'skype-icon')
-            - unless @user.linkedin.blank?
-              = render 'middle_dot_divider' do
-                = link_to linkedin_url(@user), class: 'gl-hover-text-decoration-none', title: "LinkedIn", target: '_blank', rel: 'noopener noreferrer nofollow' do
-                  = sprite_icon('linkedin', css_class: 'linkedin-icon')
-            - unless @user.twitter.blank?
-              = render 'middle_dot_divider', breakpoint: 'sm' do
-                = link_to twitter_url(@user), class: 'gl-hover-text-decoration-none', title: "Twitter", target: '_blank', rel: 'noopener noreferrer nofollow' do
-                  = sprite_icon('twitter', css_class: 'twitter-icon')
-            - unless @user.discord.blank?
-              = render 'middle_dot_divider', breakpoint: 'sm' do
-                = link_to discord_url(@user), class: 'gl-hover-text-decoration-none', title: "Discord", target: '_blank', rel: 'noopener noreferrer nofollow' do
-                  = sprite_icon('discord', css_class: 'discord-icon')
-            - unless @user.website_url.blank?
-              = render 'middle_dot_divider', stacking: true do
-                - if Feature.enabled?(:security_auto_fix) && @user.bot?
-                  = sprite_icon('question', css_class: 'gl-text-blue-600')
-                = link_to @user.short_website_url, @user.full_website_url, target: '_blank', rel: 'me noopener noreferrer nofollow', itemprop: 'url'
-            - if display_public_email?(@user)
-              = render 'middle_dot_divider', stacking: true do
-                = link_to @user.public_email, "mailto:#{@user.public_email}", itemprop: 'email'
-        - if @user.bio.present?
-          .gl-text-gray-900
-            .profile-user-bio
-              = @user.bio
+            - if @user.location.present? || user_local_time.present? || work_information(@user).present?
+              .gl-text-gray-900
+                - if @user.location.present?
+                  = render 'middle_dot_divider', stacking: true, itemprop: 'address', itemscope: true, itemtype: 'https://schema.org/PostalAddress' do
+                    = sprite_icon('location', css_class: 'fgray')
+                    %span{ itemprop: 'addressLocality' }
+                      = @user.location
+                - if user_local_time.present?
+                  = render 'middle_dot_divider', stacking: true, data: { testid: 'user-local-time' } do
+                    = sprite_icon('clock', css_class: 'fgray')
+                    %span
+                      = user_local_time
+                - if work_information(@user).present?
+                  = render 'middle_dot_divider', stacking: true do
+                    = sprite_icon('work', css_class: 'fgray')
+                    %span
+                      = work_information(@user, with_schema_markup: true)
+            .gl-text-gray-900
+              - if @user.skype.present?
+                = render 'middle_dot_divider' do
+                  = link_to "skype:#{@user.skype}", class: 'gl-hover-text-decoration-none', title: "Skype" do
+                    = sprite_icon('skype', css_class: 'skype-icon')
+              - if @user.linkedin.present?
+                = render 'middle_dot_divider' do
+                  = link_to linkedin_url(@user), class: 'gl-hover-text-decoration-none', title: "LinkedIn", target: '_blank', rel: 'noopener noreferrer nofollow' do
+                    = sprite_icon('linkedin', css_class: 'linkedin-icon')
+              - if @user.twitter.present?
+                = render 'middle_dot_divider', breakpoint: 'sm' do
+                  = link_to twitter_url(@user), class: 'gl-hover-text-decoration-none', title: "Twitter", target: '_blank', rel: 'noopener noreferrer nofollow' do
+                    = sprite_icon('twitter', css_class: 'twitter-icon')
+              - if @user.discord.present?
+                = render 'middle_dot_divider', breakpoint: 'sm' do
+                  = link_to discord_url(@user), class: 'gl-hover-text-decoration-none', title: "Discord", target: '_blank', rel: 'noopener noreferrer nofollow' do
+                    = sprite_icon('discord', css_class: 'discord-icon')
+              - if @user.website_url.present?
+                = render 'middle_dot_divider', stacking: true do
+                  - if Feature.enabled?(:security_auto_fix) && @user.bot?
+                    = sprite_icon('question', css_class: 'gl-text-blue-600')
+                  = link_to @user.short_website_url, @user.full_website_url, target: '_blank', rel: 'me noopener noreferrer nofollow', itemprop: 'url'
+              - if display_public_email?(@user)
+                = render 'middle_dot_divider', stacking: true do
+                  = link_to @user.public_email, "mailto:#{@user.public_email}", itemprop: 'email'
+    - if @user.bio.present? && @user.confirmed? && !@user.blocked?
+      .gl-text-gray-900.gl-mx-5
+        .profile-user-bio.gl-text-left
+          = @user.bio
 
     - if !profile_tabs.empty? && !Feature.enabled?(:profile_tabs_vue, current_user)
       .scrolling-tabs-container

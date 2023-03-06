@@ -4,7 +4,7 @@ classes:
 - ProjectAuthorization
 feature_categories:
 - projects
-- authentication_and_authorization
+- system_access
 description: Stores maximal access to the project per user
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/6839
 milestone: '8.14'

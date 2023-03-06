@@ -10,6 +10,7 @@
   %meta{ 'http-equiv' => 'X-UA-Compatible', content: 'IE=edge' }
 
   = render 'layouts/startup_js'
+  = yield :startup_js
 
   - if page_canonical_link
     %link{ rel: 'canonical', href: page_canonical_link }

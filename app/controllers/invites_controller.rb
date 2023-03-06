@@ -13,7 +13,7 @@ class InvitesController < ApplicationController
 
   respond_to :html
 
-  feature_category :authentication_and_authorization
+  feature_category :system_access
 
   def show
     accept if skip_invitation_prompt?

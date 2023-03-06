@@ -6781,6 +6781,9 @@ msgstr ""
 msgid "Blame"
 msgstr ""
 
+msgid "Blame could not be loaded as a single page."
+msgstr ""
+
 msgid "BlobViewer|View on %{environmentName}"
 msgstr ""
 
@@ -18006,9 +18009,6 @@ msgstr ""
 msgid "For example, the application using the token or the purpose of the token. Do not give sensitive information for the name of the token, as it will be visible to all %{resource_type} members."
 msgstr ""
 
-msgid "For faster browsing, not all history is shown."
-msgstr ""
-
 msgid "For files larger than this limit, only index the file name. The file content is neither indexed nor searchable."
 msgstr ""
 
@@ -25706,6 +25706,9 @@ msgid "Loading contribution stats for group members"
 msgstr ""
 
 msgid "Loading files, directories, and submodules in the path %{path} for commit reference %{ref}"
+msgstr ""
+
+msgid "Loading full blame..."
 msgstr ""
 
 msgid "Loading more"
@@ -40219,6 +40222,9 @@ msgstr ""
 msgid "Show filters"
 msgstr ""
 
+msgid "Show full blame"
+msgstr ""
+
 msgid "Show group milestones"
 msgstr ""
 
@@ -47461,6 +47467,9 @@ msgstr ""
 msgid "View blame"
 msgstr ""
 
+msgid "View blame as separate pages"
+msgstr ""
+
 msgid "View blame prior to this change"
 msgstr ""
 
@@ -47488,9 +47497,6 @@ msgid "View documentation"
 msgstr ""
 
 msgid "View eligible approvers"
-msgstr ""
-
-msgid "View entire blame"
 msgstr ""
 
 msgid "View exposed artifact"
@@ -47693,6 +47699,21 @@ msgid "VulnerabilityChart|%{formattedStartDate} to today"
 msgstr ""
 
 msgid "VulnerabilityChart|Severity"
+msgstr ""
+
+msgid "VulnerabilityDismissalReasons|Acceptable risk"
+msgstr ""
+
+msgid "VulnerabilityDismissalReasons|False positive"
+msgstr ""
+
+msgid "VulnerabilityDismissalReasons|Mitigating control"
+msgstr ""
+
+msgid "VulnerabilityDismissalReasons|Not applicable"
+msgstr ""
+
+msgid "VulnerabilityDismissalReasons|Used in tests"
 msgstr ""
 
 msgid "VulnerabilityManagement|%{statusStart}Confirmed%{statusEnd} %{timeago} by %{user}"

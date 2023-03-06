@@ -7,7 +7,7 @@ module Projects
       include AccessTokensActions
 
       layout 'project_settings'
-      feature_category :authentication_and_authorization
+      feature_category :system_access
 
       alias_method :resource, :project
 

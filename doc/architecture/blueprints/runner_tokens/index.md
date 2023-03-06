@@ -393,7 +393,7 @@ scope.
 | GitLab Rails app | `%15.9` | Implement new GraphQL user-authenticated API to create a new runner. |
 | GitLab Rails app | `%15.10` | Return token and runner ID information from `/runners/verify` REST endpoint. |
 | GitLab Runner    | `%15.10` | [Modify register command to allow new flow with glrt- prefixed authentication tokens](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/29613). |
-| GitLab Rails app | `%15.11` | Define feature flag and policies for "New Runner creation workflow" for groups and projects. |
+| GitLab Rails app | `%15.10` | Define feature flag and policies for "New Runner creation workflow" for groups and projects. |
 | GitLab Rails app | `%15.11` | Update service and mutation to accept groups and projects. |
 | GitLab Rails app | `%15.11` | Implement UI to create new runner. |
 | GitLab Rails app | `%15.11` | GraphQL changes to `CiRunner` type. (?) |

@@ -7,7 +7,7 @@ class RemoveExpiredMembersWorker # rubocop:disable Scalability/IdempotentWorker
 
   include CronjobQueue
 
-  feature_category :authentication_and_authorization
+  feature_category :system_access
   worker_resource_boundary :cpu
 
   # rubocop: disable CodeReuse/ActiveRecord

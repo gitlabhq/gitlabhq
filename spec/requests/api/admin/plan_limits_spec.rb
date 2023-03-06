@@ -84,7 +84,9 @@ RSpec.describe API::Admin::PlanLimits, 'PlanLimits', feature_category: :shared d
   end
 
   describe 'PUT /application/plan_limits' do
-    it_behaves_like 'PUT request permissions for admin mode', { 'plan_name': 'default' }
+    it_behaves_like 'PUT request permissions for admin mode' do
+      let(:params) { { 'plan_name': 'default' } }
+    end
 
     context 'as an admin user' do
       context 'correct params' do

@@ -4,14 +4,14 @@ RSpec.shared_examples 'GET request permissions for admin mode' do
   it_behaves_like 'GET request permissions for admin mode when admin'
 end
 
-RSpec.shared_examples 'PUT request permissions for admin mode' do |params|
-  it_behaves_like 'PUT request permissions for admin mode when user', params
-  it_behaves_like 'PUT request permissions for admin mode when admin', params
+RSpec.shared_examples 'PUT request permissions for admin mode' do
+  it_behaves_like 'PUT request permissions for admin mode when user'
+  it_behaves_like 'PUT request permissions for admin mode when admin'
 end
 
-RSpec.shared_examples 'POST request permissions for admin mode' do |params|
-  it_behaves_like 'POST request permissions for admin mode when user', params
-  it_behaves_like 'POST request permissions for admin mode when admin', params
+RSpec.shared_examples 'POST request permissions for admin mode' do
+  it_behaves_like 'POST request permissions for admin mode when user'
+  it_behaves_like 'POST request permissions for admin mode when admin'
 end
 
 RSpec.shared_examples 'DELETE request permissions for admin mode' do |success_status_code = :no_content|
@@ -37,7 +37,7 @@ RSpec.shared_examples 'GET request permissions for admin mode when admin' do
   it_behaves_like 'admin mode on', false, :forbidden
 end
 
-RSpec.shared_examples 'PUT request permissions for admin mode when user' do |params|
+RSpec.shared_examples 'PUT request permissions for admin mode when user' do
   subject { put api(path, current_user, admin_mode: admin_mode), params: params }
 
   let_it_be(:current_user) { create(:user) }
@@ -46,7 +46,7 @@ RSpec.shared_examples 'PUT request permissions for admin mode when user' do |par
   it_behaves_like 'admin mode on', false, :forbidden
 end
 
-RSpec.shared_examples 'PUT request permissions for admin mode when admin' do |params|
+RSpec.shared_examples 'PUT request permissions for admin mode when admin' do
   subject { put api(path, current_user, admin_mode: admin_mode), params: params }
 
   let_it_be(:current_user) { create(:admin) }
@@ -55,7 +55,7 @@ RSpec.shared_examples 'PUT request permissions for admin mode when admin' do |pa
   it_behaves_like 'admin mode on', false, :forbidden
 end
 
-RSpec.shared_examples 'POST request permissions for admin mode when user' do |params|
+RSpec.shared_examples 'POST request permissions for admin mode when user' do
   subject { post api(path, current_user, admin_mode: admin_mode), params: params }
 
   let_it_be(:current_user) { create(:user) }
@@ -64,7 +64,7 @@ RSpec.shared_examples 'POST request permissions for admin mode when user' do |pa
   it_behaves_like 'admin mode on', false, :forbidden
 end
 
-RSpec.shared_examples 'POST request permissions for admin mode when admin' do |params|
+RSpec.shared_examples 'POST request permissions for admin mode when admin' do
   subject { post api(path, current_user, admin_mode: admin_mode), params: params }
 
   let_it_be(:current_user) { create(:admin) }

@@ -17,7 +17,7 @@ class ProfilesController < Profiles::ApplicationController
   feature_category :user_profile, [:show, :update, :reset_incoming_email_token, :reset_feed_token,
                             :reset_static_object_token, :update_username]
 
-  feature_category :authentication_and_authorization, [:audit_log]
+  feature_category :system_access, [:audit_log]
   urgency :low, [:show, :update]
 
   def show

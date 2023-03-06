@@ -3,7 +3,7 @@ table_name: personal_access_tokens
 classes:
 - PersonalAccessToken
 feature_categories:
-- authentication_and_authorization
+- system_access
 description: TODO
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/3a609038748055a27c7e01cf4b55d8249709c9cc
 milestone: '8.9'

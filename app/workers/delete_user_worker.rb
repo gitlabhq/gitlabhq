@@ -7,7 +7,7 @@ class DeleteUserWorker # rubocop:disable Scalability/IdempotentWorker
 
   sidekiq_options retry: 3
 
-  feature_category :authentication_and_authorization
+  feature_category :user_management
   loggable_arguments 2
 
   def perform(current_user_id, delete_user_id, options = {})

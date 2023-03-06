@@ -16,7 +16,7 @@ module AuthorizedProjectUpdate
 
     sidekiq_options retry: 3
 
-    feature_category :authentication_and_authorization
+    feature_category :system_access
     urgency :low
     queue_namespace :authorized_project_update
 

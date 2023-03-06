@@ -235,7 +235,7 @@ class ProjectPolicy < BasePolicy
   end
 
   condition(:create_runner_workflow_enabled) do
-    Feature.enabled?(:create_runner_workflow_for_admin)
+    Feature.enabled?(:create_runner_workflow_for_namespace, project.namespace)
   end
 
   # `:read_project` may be prevented in EE, but `:read_project_for_iids` should

@@ -47,6 +47,7 @@ Rails.application.configure do
   config.lookbook.page_paths = ["#{config.root}/spec/components/docs"]
   config.lookbook.preview_params_options_eval = true
   config.lookbook.preview_display_options = {
+    layout: %w[fixed fluid],
     theme: ["light", "dark (alpha)"]
   }
 

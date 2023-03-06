@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Manage' do
-    describe 'Group access tokens', product_group: :authentication_and_authorization do
+    describe 'Group access tokens', product_group: :system_access do
       let(:group_access_token) { QA::Resource::GroupAccessToken.fabricate_via_browser_ui! }
 
       it(

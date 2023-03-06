@@ -21,3 +21,5 @@ module ProtectedBranches
     end
   end
 end
+
+ProtectedBranches::BaseService.prepend_mod

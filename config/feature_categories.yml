@@ -15,7 +15,6 @@
 - application_performance
 - attack_emulation
 - audit_events
-- authentication_and_authorization
 - auto_devops
 - backup_restore
 - billing_and_payments
@@ -36,7 +35,6 @@
 - continuous_delivery
 - continuous_integration
 - continuous_verification
-- credential_management
 - customersdot_application
 - database
 - dataops
@@ -95,7 +93,6 @@
 - onboarding
 - package_registry
 - pages
-- permissions
 - pipeline_composition
 - planning_analytics
 - pods

@@ -13,14 +13,6 @@ module Gitlab
           end
         end
 
-        def search_repos_by_name(name, options = {})
-          search_query = search_repos_query(name, options)
-
-          with_retry do
-            octokit.search_repositories(search_query, options).to_h
-          end
-        end
-
         private
 
         def graphql_search_repos_body(name, options)

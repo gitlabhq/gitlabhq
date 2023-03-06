@@ -11,7 +11,7 @@ module MembersDestroyer
     ENTITY_TYPES = %w(Group Project).freeze
 
     queue_namespace :unassign_issuables
-    feature_category :authentication_and_authorization
+    feature_category :user_management
 
     idempotent!
 

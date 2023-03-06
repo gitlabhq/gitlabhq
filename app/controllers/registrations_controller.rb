@@ -27,7 +27,7 @@ class RegistrationsController < Devise::RegistrationsController
     push_frontend_feature_flag(:gitlab_gtm_datalayer, type: :ops)
   end
 
-  feature_category :authentication_and_authorization
+  feature_category :user_management
 
   def new
     @resource = build_resource

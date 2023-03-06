@@ -15073,6 +15073,20 @@ Exposes aggregated value stream flow metrics.
 
 #### Fields with arguments
 
+##### `GroupValueStreamAnalyticsFlowMetrics.deploymentCount`
+
+Number of production deployments in the given period.
+
+Returns [`ValueStreamAnalyticsMetric`](#valuestreamanalyticsmetric).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="groupvaluestreamanalyticsflowmetricsdeploymentcountfrom"></a>`from` | [`Time!`](#time) | Deployments finished after the date. |
+| <a id="groupvaluestreamanalyticsflowmetricsdeploymentcountprojectids"></a>`projectIds` | [`[ID!]`](#id) | Project IDs within the group hierarchy. |
+| <a id="groupvaluestreamanalyticsflowmetricsdeploymentcountto"></a>`to` | [`Time!`](#time) | Deployments finished before the date. |
+
 ##### `GroupValueStreamAnalyticsFlowMetrics.issueCount`
 
 Number of issues opened in the given period.
@@ -19508,6 +19522,19 @@ Represents the source of a security policy belonging to a project.
 Exposes aggregated value stream flow metrics.
 
 #### Fields with arguments
+
+##### `ProjectValueStreamAnalyticsFlowMetrics.deploymentCount`
+
+Number of production deployments in the given period.
+
+Returns [`ValueStreamAnalyticsMetric`](#valuestreamanalyticsmetric).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectvaluestreamanalyticsflowmetricsdeploymentcountfrom"></a>`from` | [`Time!`](#time) | Deployments finished after the date. |
+| <a id="projectvaluestreamanalyticsflowmetricsdeploymentcountto"></a>`to` | [`Time!`](#time) | Deployments finished before the date. |
 
 ##### `ProjectValueStreamAnalyticsFlowMetrics.issueCount`
 

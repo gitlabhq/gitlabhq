@@ -3,7 +3,7 @@ table_name: term_agreements
 classes:
 - TermAgreement
 feature_categories:
-- authentication_and_authorization
+- system_access
 description: TODO
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/82eeb72c8c03727540b902d40e7e657d0a5ecb4c
 milestone: '10.8'

@@ -181,20 +181,9 @@ RSpec.describe ::API::Admin::InstanceClusters, feature_category: :kubernetes_man
       }
     end
 
-    it_behaves_like 'POST request permissions for admin mode',
-    {
-      name: 'test-instance-cluster',
-      domain: 'domain.example.com',
-      managed: false,
-      enabled: false,
-      namespace_per_environment: false,
-      clusterable: Clusters::Instance.new,
-      platform_kubernetes_attributes: {
-        api_url: 'https://example.com',
-        token: 'sample-token',
-        authorization_type: 'rbac'
-      }
-    }
+    it_behaves_like 'POST request permissions for admin mode' do
+      let(:params) { cluster_params }
+    end
 
     include_examples ':certificate_based_clusters feature flag API responses' do
       let(:subject) { post api(path, admin_user, admin_mode: true), params: cluster_params }
@@ -319,7 +308,9 @@ RSpec.describe ::API::Admin::InstanceClusters, feature_category: :kubernetes_man
 
     let(:path) { "/admin/clusters/#{cluster.id}" }
 
-    it_behaves_like 'PUT request permissions for admin mode'
+    it_behaves_like 'PUT request permissions for admin mode' do
+      let(:params) { update_params }
+    end
 
     include_examples ':certificate_based_clusters feature flag API responses' do
       let(:subject) { put api(path, admin_user, admin_mode: true), params: update_params }

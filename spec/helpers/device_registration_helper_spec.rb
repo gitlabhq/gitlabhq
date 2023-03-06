@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe DeviceRegistrationHelper, feature_category: :authentication_and_authorization do
+RSpec.describe DeviceRegistrationHelper, feature_category: :system_access do
   describe "#device_registration_data" do
     it "returns a hash with device registration properties without initial error" do
       device_registration_data = helper.device_registration_data(

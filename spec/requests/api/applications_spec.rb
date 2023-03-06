@@ -10,7 +10,9 @@ RSpec.describe API::Applications, :api, feature_category: :system_access do
   let!(:application) { create(:application, name: 'another_application', owner: nil, redirect_uri: 'http://other_application.url', scopes: scopes) }
 
   describe 'POST /applications' do
-    it_behaves_like 'POST request permissions for admin mode', { name: 'application_name', redirect_uri: 'http://application.url', scopes: 'api' }
+    it_behaves_like 'POST request permissions for admin mode' do
+      let(:params) { { name: 'application_name', redirect_uri: 'http://application.url', scopes: 'api' } }
+    end
 
     context 'authenticated and authorized user' do
       it 'creates and returns an OAuth application' do

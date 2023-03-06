@@ -9,7 +9,7 @@ module Groups
       before_action :set_application, only: [:show, :edit, :update, :renew, :destroy]
       before_action :load_scopes, only: [:index, :create, :edit, :update]
 
-      feature_category :authentication_and_authorization
+      feature_category :system_access
 
       def index
         set_index_vars

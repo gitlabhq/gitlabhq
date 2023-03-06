@@ -3,7 +3,7 @@ table_name: user_synced_attributes_metadata
 classes:
 - UserSyncedAttributesMetadata
 feature_categories:
-- authentication_and_authorization
+- system_access
 description: TODO
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/4df54f260751a832ebf0b8c18524020d6604994b
 milestone: '10.0'

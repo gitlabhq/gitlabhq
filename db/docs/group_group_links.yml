@@ -3,7 +3,7 @@ table_name: group_group_links
 classes:
 - GroupGroupLink
 feature_categories:
-- authentication_and_authorization
+- system_access
 description: TODO
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/17117
 milestone: '12.5'

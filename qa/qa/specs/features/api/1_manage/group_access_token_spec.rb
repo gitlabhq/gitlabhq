@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Manage' do
-    describe 'Group access token', product_group: :authentication_and_authorization do
+    describe 'Group access token', product_group: :system_access do
       let(:group_access_token) { QA::Resource::GroupAccessToken.fabricate_via_api! }
       let(:api_client) { Runtime::API::Client.new(:gitlab, personal_access_token: group_access_token.token) }
       let(:project) do

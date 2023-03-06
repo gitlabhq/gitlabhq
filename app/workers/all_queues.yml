@@ -5,7 +5,7 @@
 ---
 - :name: authorized_project_update:authorized_project_update_project_recalculate
   :worker_name: AuthorizedProjectUpdate::ProjectRecalculateWorker
-  :feature_category: :authentication_and_authorization
+  :feature_category: :system_access
   :has_external_dependencies: false
   :urgency: :high
   :resource_boundary: :unknown
@@ -14,7 +14,7 @@
   :tags: []
 - :name: authorized_project_update:authorized_project_update_project_recalculate_per_user
   :worker_name: AuthorizedProjectUpdate::ProjectRecalculatePerUserWorker
-  :feature_category: :authentication_and_authorization
+  :feature_category: :system_access
   :has_external_dependencies: false
   :urgency: :high
   :resource_boundary: :unknown
@@ -23,7 +23,7 @@
   :tags: []
 - :name: authorized_project_update:authorized_project_update_user_refresh_from_replica
   :worker_name: AuthorizedProjectUpdate::UserRefreshFromReplicaWorker
-  :feature_category: :authentication_and_authorization
+  :feature_category: :system_access
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -32,7 +32,7 @@
   :tags: []
 - :name: authorized_project_update:authorized_project_update_user_refresh_over_user_range
   :worker_name: AuthorizedProjectUpdate::UserRefreshOverUserRangeWorker
-  :feature_category: :authentication_and_authorization
+  :feature_category: :system_access
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -41,7 +41,7 @@
   :tags: []
 - :name: authorized_project_update:authorized_project_update_user_refresh_with_low_urgency
   :worker_name: AuthorizedProjectUpdate::UserRefreshWithLowUrgencyWorker
-  :feature_category: :authentication_and_authorization
+  :feature_category: :system_access
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -617,7 +617,7 @@
   :tags: []
 - :name: cronjob:personal_access_tokens_expired_notification
   :worker_name: PersonalAccessTokens::ExpiredNotificationWorker
-  :feature_category: :authentication_and_authorization
+  :feature_category: :system_access
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -626,7 +626,7 @@
   :tags: []
 - :name: cronjob:personal_access_tokens_expiring
   :worker_name: PersonalAccessTokens::ExpiringWorker
-  :feature_category: :authentication_and_authorization
+  :feature_category: :system_access
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -680,7 +680,7 @@
   :tags: []
 - :name: cronjob:remove_expired_group_links
   :worker_name: RemoveExpiredGroupLinksWorker
-  :feature_category: :authentication_and_authorization
+  :feature_category: :system_access
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -689,7 +689,7 @@
   :tags: []
 - :name: cronjob:remove_expired_members
   :worker_name: RemoveExpiredMembersWorker
-  :feature_category: :authentication_and_authorization
+  :feature_category: :system_access
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :cpu
@@ -698,7 +698,7 @@
   :tags: []
 - :name: cronjob:remove_unaccepted_member_invites
   :worker_name: RemoveUnacceptedMemberInvitesWorker
-  :feature_category: :authentication_and_authorization
+  :feature_category: :system_access
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -2165,7 +2165,7 @@
   :tags: []
 - :name: unassign_issuables:members_destroyer_unassign_issuables
   :worker_name: MembersDestroyer::UnassignIssuablesWorker
-  :feature_category: :authentication_and_authorization
+  :feature_category: :user_management
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -2219,7 +2219,7 @@
   :tags: []
 - :name: authorized_projects
   :worker_name: AuthorizedProjectsWorker
-  :feature_category: :authentication_and_authorization
+  :feature_category: :system_access
   :has_external_dependencies: false
   :urgency: :high
   :resource_boundary: :unknown
@@ -2417,7 +2417,7 @@
   :tags: []
 - :name: delete_user
   :worker_name: DeleteUserWorker
-  :feature_category: :authentication_and_authorization
+  :feature_category: :user_management
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -2642,7 +2642,7 @@
   :tags: []
 - :name: groups_update_two_factor_requirement_for_members
   :worker_name: Groups::UpdateTwoFactorRequirementForMembersWorker
-  :feature_category: :authentication_and_authorization
+  :feature_category: :system_access
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown

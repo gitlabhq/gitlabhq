@@ -12,7 +12,7 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
     push_frontend_feature_flag(:webauthn)
   end
 
-  feature_category :authentication_and_authorization
+  feature_category :system_access
 
   def show
     setup_show_page

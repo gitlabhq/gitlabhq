@@ -8,7 +8,7 @@ module API
 
     before { authenticate! }
 
-    feature_category :authentication_and_authorization
+    feature_category :system_access
 
     %w[project group].each do |source_type|
       resource source_type.pluralize, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do

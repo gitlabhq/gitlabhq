@@ -7,6 +7,8 @@ type: reference, api
 
 # Keys API **(FREE)**
 
+If using a SHA256 fingerprint in an API call, you should URL-encode the fingerprint.
+
 ## Get SSH key with user by ID of an SSH key
 
 Get SSH key with user by ID of an SSH key. Note only administrators can lookup SSH key with user by ID of an SSH key.
@@ -22,7 +24,8 @@ GET /keys/:id
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/keys/1"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  "https://gitlab.example.com/api/v4/keys/1"
 ```
 
 ```json
@@ -82,15 +85,8 @@ GET /keys
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/keys?fingerprint=ba:81:59:68:d7:6c:cd:02:02:bf:6a:9b:55:4e:af:d1"
-```
-
-If using sha256 fingerprint API calls, make sure that the fingerprint is URL-encoded.
-
-For example, `/` is represented by `%2F` and `:` is represented by`%3A`:
-
-```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/keys?fingerprint=SHA256%3AnUhzNyftwADy8AH3wFY31tAKs7HufskYTte2aXo%2FlCg"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  "https://gitlab.example.com/api/v4/keys?fingerprint=ba:81:59:68:d7:6c:cd:02:02:bf:6a:9b:55:4e:af:d1"
 ```
 
 Example response:
@@ -142,15 +138,21 @@ Example response:
 
 ## Get user by deploy key fingerprint
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/119209) in GitLab 12.7.
+Deploy keys are bound to the creating user. If you query with a deploy key
+fingerprint, you get additional information about the projects using that key.
 
-Deploy keys are bound to the creating user, so if you query with a deploy key
-fingerprint you get additional information about the projects using that key.
-
-Example request:
+Example request with an MD5 fingerprint:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/keys?fingerprint=SHA256%3AnUhzNyftwADy8AH3wFY31tAKs7HufskYTte2aXo%2FlCg"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  "https://gitlab.example.com/api/v4/keys?fingerprint=ba:81:59:68:d7:6c:cd:02:02:bf:6a:9b:55:4e:af:d1"
+```
+
+In this SHA256 example, `/` is represented by `%2F` and `:` is represented by`%3A`:
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  "https://gitlab.example.com/api/v4/keys?fingerprint=SHA256%3AnUhzNyftwADy8AH3wFY31tAKs7HufskYTte2aXo%2FlCg"
 ```
 
 Example response:

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Profiles::U2fRegistrationsController < Profiles::ApplicationController
-  feature_category :authentication_and_authorization
+  feature_category :system_access
 
   def destroy
     u2f_registration = current_user.u2f_registrations.find(params[:id])

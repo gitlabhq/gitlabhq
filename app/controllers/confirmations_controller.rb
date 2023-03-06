@@ -10,7 +10,7 @@ class ConfirmationsController < Devise::ConfirmationsController
   prepend_before_action :check_recaptcha, only: :create
   before_action :load_recaptcha, only: :new
 
-  feature_category :authentication_and_authorization
+  feature_category :user_management
 
   def almost_there
     flash[:notice] = nil

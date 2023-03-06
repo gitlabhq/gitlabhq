@@ -3,7 +3,7 @@ table_name: namespace_ldap_settings
 classes:
   - Namespaces::LdapSetting
 feature_categories:
-  - authentication_and_authorization
+  - system_access
 description: Used to store LDAP settings for namespaces
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108908
 milestone: '15.10'

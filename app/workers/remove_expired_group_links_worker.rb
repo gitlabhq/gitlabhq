@@ -7,7 +7,7 @@ class RemoveExpiredGroupLinksWorker # rubocop:disable Scalability/IdempotentWork
 
   include CronjobQueue # rubocop:disable Scalability/CronWorkerContext
 
-  feature_category :authentication_and_authorization
+  feature_category :system_access
 
   def perform
     ProjectGroupLink.expired.find_each do |link|

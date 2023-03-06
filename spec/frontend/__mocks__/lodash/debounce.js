@@ -9,9 +9,22 @@
 // Further reference: https://github.com/facebook/jest/issues/3465
 
 export default (fn) => {
-  const debouncedFn = jest.fn().mockImplementation(fn);
-  debouncedFn.cancel = jest.fn();
-  debouncedFn.flush = jest.fn().mockImplementation(() => {
+  let id;
+  const debouncedFn = jest.fn(function run(...args) {
+    // this is calculated in runtime so beforeAll hook works in tests
+    const timeout = global.JEST_DEBOUNCE_THROTTLE_TIMEOUT;
+    if (timeout) {
+      id = setTimeout(() => {
+        fn.apply(this, args);
+      }, timeout);
+    } else {
+      fn.apply(this, args);
+    }
+  });
+  debouncedFn.cancel = jest.fn(() => {
+    clearTimeout(id);
+  });
+  debouncedFn.flush = jest.fn(() => {
     const errorMessage =
       "The .flush() method returned by lodash.debounce is not yet implemented/mocked by the mock in 'spec/frontend/__mocks__/lodash/debounce.js'.";
 

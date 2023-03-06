@@ -10,7 +10,8 @@ RSpec.describe 'Database schema', feature_category: :database do
   let(:columns_name_with_jsonb) { retrieve_columns_name_with_jsonb }
 
   IGNORED_INDEXES_ON_FKS = {
-    slack_integrations_scopes: %w[slack_api_scope_id]
+    slack_integrations_scopes: %w[slack_api_scope_id],
+    p_ci_builds_metadata: %w[partition_id] # composable FK, the columns are reversed in the index definition
   }.with_indifferent_access.freeze
 
   TABLE_PARTITIONS = %w[ci_builds_metadata].freeze
@@ -39,7 +40,7 @@ RSpec.describe 'Database schema', feature_category: :database do
     ci_build_trace_metadata: %w[partition_id build_id],
     ci_builds: %w[erased_by_id trigger_request_id partition_id],
     ci_builds_runner_session: %w[partition_id build_id],
-    p_ci_builds_metadata: %w[partition_id],
+    p_ci_builds_metadata: %w[partition_id build_id],
     ci_job_artifacts: %w[partition_id job_id],
     ci_job_variables: %w[partition_id job_id],
     ci_namespace_monthly_usages: %w[namespace_id],

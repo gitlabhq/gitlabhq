@@ -3,7 +3,7 @@
 class Profiles::PersonalAccessTokensController < Profiles::ApplicationController
   include RenderAccessTokens
 
-  feature_category :authentication_and_authorization
+  feature_category :system_access
 
   before_action :check_personal_access_tokens_enabled
 

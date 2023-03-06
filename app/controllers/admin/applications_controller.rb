@@ -6,7 +6,7 @@ class Admin::ApplicationsController < Admin::ApplicationController
   before_action :set_application, only: [:show, :edit, :update, :renew, :destroy]
   before_action :load_scopes, only: [:new, :create, :edit, :update]
 
-  feature_category :authentication_and_authorization
+  feature_category :system_access
 
   def index
     applications = ApplicationsFinder.new.execute

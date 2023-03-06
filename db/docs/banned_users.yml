@@ -3,7 +3,7 @@ table_name: banned_users
 classes:
 - Users::BannedUser
 feature_categories:
-- authentication_and_authorization
+- system_access
 description: TODO
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/64728
 milestone: '14.2'

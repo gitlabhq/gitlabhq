@@ -245,11 +245,7 @@ class Import::GithubController < Import::BaseController
     {
       before: params[:before].presence,
       after: params[:after].presence,
-      first: PAGE_LENGTH,
-      # TODO: remove after rollout FF github_client_fetch_repos_via_graphql
-      # https://gitlab.com/gitlab-org/gitlab/-/issues/385649
-      page: [1, params[:page].to_i].max,
-      per_page: PAGE_LENGTH
+      first: PAGE_LENGTH
     }
   end
 

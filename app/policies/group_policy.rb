@@ -85,7 +85,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
   condition(:crm_enabled, score: 0, scope: :subject) { @subject.crm_enabled? }
 
   condition(:create_runner_workflow_enabled) do
-    Feature.enabled?(:create_runner_workflow_for_admin)
+    Feature.enabled?(:create_runner_workflow_for_namespace, group)
   end
 
   condition(:achievements_enabled, scope: :subject) do

@@ -1,4 +1,5 @@
 /* Common setup for both unit and integration test environments */
+import { ReadableStream, WritableStream } from 'node:stream/web';
 import * as jqueryMatchers from 'custom-jquery-matchers';
 import Vue from 'vue';
 import { enableAutoDestroy } from '@vue/test-utils';
@@ -12,6 +13,9 @@ import * as customMatchers from './matchers';
 import './dom_shims';
 import './jquery';
 import '~/commons/bootstrap';
+
+global.ReadableStream = ReadableStream;
+global.WritableStream = WritableStream;
 
 enableAutoDestroy(afterEach);
 

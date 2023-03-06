@@ -51,7 +51,9 @@ RSpec.describe ::API::Admin::Ci::Variables do
   end
 
   describe 'POST /admin/ci/variables' do
-    it_behaves_like 'POST request permissions for admin mode', { key: 'KEY', value: 'VALUE' }
+    it_behaves_like 'POST request permissions for admin mode' do
+      let(:params) { { key: 'KEY', value: 'VALUE' } }
+    end
 
     context 'authorized user with proper permissions' do
       it 'creates variable for admins', :aggregate_failures do
@@ -137,19 +139,21 @@ RSpec.describe ::API::Admin::Ci::Variables do
 
   describe 'PUT /admin/ci/variables/:key' do
     let_it_be(:path) { "/admin/ci/variables/#{variable.key}" }
+    let_it_be(:params) do
+      {
+        variable_type: 'file',
+        value: 'VALUE_1_UP',
+        protected: true,
+        masked: true,
+        raw: true
+      }
+    end
 
     it_behaves_like 'PUT request permissions for admin mode'
 
     context 'authorized user with proper permissions' do
       it 'updates variable data', :aggregate_failures do
-        put api(path, admin, admin_mode: true),
-          params: {
-            variable_type: 'file',
-            value: 'VALUE_1_UP',
-            protected: true,
-            masked: true,
-            raw: true
-          }
+        put api(path, admin, admin_mode: true), params: params
 
         expect(variable.reload.value).to eq('VALUE_1_UP')
         expect(variable.reload).to be_protected

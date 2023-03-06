@@ -56,7 +56,7 @@ class SessionsController < Devise::SessionsController
   # token mismatch.
   protect_from_forgery with: :exception, prepend: true, except: :destroy
 
-  feature_category :authentication_and_authorization
+  feature_category :system_access
   urgency :low
 
   CAPTCHA_HEADER = 'X-GitLab-Show-Login-Captcha'
