@@ -112,7 +112,7 @@ spec:
 
 Congratulations! You now have a manifest repository, a deploy token, and a secret generated directly on your cluster.
 
-### Configure Flux to sync your manifests
+## Configure Flux to sync your manifests
 
 Next, tell `flux-config` to sync with the `web-app-manifests` repository.
 

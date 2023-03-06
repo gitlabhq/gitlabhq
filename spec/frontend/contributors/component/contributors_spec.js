@@ -1,5 +1,5 @@
 import MockAdapter from 'axios-mock-adapter';
-import Vue, { nextTick } from 'vue';
+import { nextTick } from 'vue';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import ContributorsCharts from '~/contributors/components/contributors.vue';
 import { createStore } from '~/contributors/stores';
@@ -16,7 +16,6 @@ jest.mock('~/lib/utils/url_utility', () => ({
 let wrapper;
 let mock;
 let store;
-const Component = Vue.extend(ContributorsCharts);
 const endpoint = 'contributors/-/graphs';
 const branch = 'main';
 const chartData = [
@@ -32,7 +31,7 @@ function factory() {
   mock.onGet().reply(HTTP_STATUS_OK, chartData);
   store = createStore();
 
-  wrapper = mountExtended(Component, {
+  wrapper = mountExtended(ContributorsCharts, {
     propsData: {
       endpoint,
       branch,

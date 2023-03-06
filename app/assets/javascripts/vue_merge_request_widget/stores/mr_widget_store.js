@@ -294,6 +294,9 @@ export default class MergeRequestStore {
     // Security reports
     this.sastComparisonPath = data.sast_comparison_path;
     this.secretDetectionComparisonPath = data.secret_detection_comparison_path;
+
+    this.sastComparisonPathV2 = data.new_sast_comparison_path;
+    this.secretDetectionComparisonPathV2 = data.new_secret_detection_comparison_path;
   }
 
   get isNothingToMergeState() {

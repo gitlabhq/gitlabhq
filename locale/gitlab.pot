@@ -20923,6 +20923,9 @@ msgstr ""
 msgid "Helps reduce request volume for protected paths."
 msgstr ""
 
+msgid "Hi %{user_name} (%{user_username})!"
+msgstr ""
+
 msgid "Hi %{username}!"
 msgstr ""
 
@@ -32871,6 +32874,9 @@ msgid "ProductAnalytics|Users"
 msgstr ""
 
 msgid "ProductAnalytics|Viewport"
+msgstr ""
+
+msgid "ProductAnalytics|Visualization Designer"
 msgstr ""
 
 msgid "ProductAnalytics|Visualization Type"

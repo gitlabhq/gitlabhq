@@ -85,7 +85,7 @@ export default {
       return this.expanded ? 'chevron-up' : 'chevron-down';
     },
     noteTimestampLink() {
-      return this.noteId ? `#note_${this.noteId}` : undefined;
+      return this.noteId ? `#note_${getIdFromGraphQLId(this.noteId)}` : undefined;
     },
     hasAuthor() {
       return this.author && Object.keys(this.author).length;

@@ -402,6 +402,12 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
         end
       end
 
+      let(:migration_table_class) do
+        Class.new(Gitlab::Database::Migration[1.0]::MigrationRecord) do
+          self.table_name = 'table1'
+        end
+      end
+
       let(:view_class) do
         Class.new(ApplicationRecord) do
           self.table_name = 'view1'
@@ -427,12 +433,13 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
 
       before do
         stub_const('TableClass1', table_class)
+        stub_const('MIgrationTableClass1', migration_table_class)
         stub_const('ViewClass1', view_class)
 
         File.write(table_file_path, table_metadata.to_yaml)
         File.write(view_file_path, view_metadata.to_yaml)
 
-        allow(model).to receive(:descendants).and_return([table_class, view_class])
+        allow(model).to receive(:descendants).and_return([table_class, migration_table_class, view_class])
       end
 
       it 'appends new classes to the dictionary' do

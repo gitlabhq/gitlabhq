@@ -476,6 +476,7 @@ namespace :gitlab do
             .reject(&:abstract_class)
             .reject { |c| c.name =~ /^(?:EE::)?Gitlab::(?:BackgroundMigration|DatabaseImporters)::/ }
             .reject { |c| c.name =~ /^HABTM_/ }
+            .reject { |c| c < Gitlab::Database::Migration[1.0]::MigrationRecord }
             .each { |c| classes[c.table_name] << c.name if classes.has_key?(c.table_name) }
 
           sources.each do |source_name|

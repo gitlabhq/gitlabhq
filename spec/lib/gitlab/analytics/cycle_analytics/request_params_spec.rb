@@ -6,7 +6,7 @@ RSpec.describe Gitlab::Analytics::CycleAnalytics::RequestParams, feature_categor
   it_behaves_like 'unlicensed cycle analytics request params' do
     let_it_be(:user) { create(:user) }
     let_it_be(:root_group) { create(:group) }
-    let_it_be(:project) { create(:project, group: root_group) }
+    let_it_be_with_refind(:project) { create(:project, group: root_group) }
 
     let(:namespace) { project.project_namespace }
 
@@ -17,8 +17,7 @@ RSpec.describe Gitlab::Analytics::CycleAnalytics::RequestParams, feature_categor
         expect(attributes).to match(hash_including({
           namespace: {
             name: project.name,
-            full_path: project.full_path,
-            avatar_url: project.avatar_url
+            full_path: project.full_path
           }
         }))
       end

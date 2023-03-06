@@ -122,6 +122,6 @@ RSpec.shared_examples 'unlicensed cycle analytics request params' do
   describe 'enable_tasks_by_type_chart data attribute' do
     subject(:value) { described_class.new(params).to_data_attributes[:enable_tasks_by_type_chart] }
 
-    it { is_expected.to eq(false) }
+    it { is_expected.to eq('false') }
   end
 end

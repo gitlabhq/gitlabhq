@@ -1,7 +1,6 @@
-import { GlLoadingIcon } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import NotebookViewer from '~/repository/components/blob_viewers/notebook_viewer.vue';
-import notebookLoader from '~/blob/notebook';
+import Notebook from '~/blob/notebook/notebook_viewer.vue';
 
 jest.mock('~/blob/notebook');
 
@@ -17,24 +16,11 @@ describe('Notebook Viewer', () => {
     });
   };
 
-  const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
-  const findNotebookWrapper = () => wrapper.findByTestId('notebook');
+  const findNotebook = () => wrapper.findComponent(Notebook);
 
   beforeEach(() => createComponent());
 
-  it('calls the notebook loader', () => {
-    expect(notebookLoader).toHaveBeenCalledWith({
-      el: wrapper.vm.$refs.viewer,
-      relativeRawPath: ROOT_RELATIVE_PATH,
-    });
-  });
-
-  it('renders a loading icon component', () => {
-    expect(findLoadingIcon().props('size')).toBe('lg');
-  });
-
-  it('renders the notebook wrapper', () => {
-    expect(findNotebookWrapper().exists()).toBe(true);
-    expect(findNotebookWrapper().attributes('data-endpoint')).toBe(DEFAULT_BLOB_DATA.rawPath);
+  it('renders a Notebook component', () => {
+    expect(findNotebook().props('endpoint')).toBe(DEFAULT_BLOB_DATA.rawPath);
   });
 });

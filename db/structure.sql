@@ -29397,7 +29397,7 @@ CREATE INDEX index_bulk_import_failures_on_correlation_id_value ON bulk_import_f
 
 CREATE INDEX index_bulk_imports_on_user_id ON bulk_imports USING btree (user_id);
 
-CREATE INDEX index_catalog_resources_on_project_id ON catalog_resources USING btree (project_id);
+CREATE UNIQUE INDEX index_catalog_resources_on_project_id ON catalog_resources USING btree (project_id);
 
 CREATE INDEX index_chat_names_on_team_id_and_chat_id ON chat_names USING btree (team_id, chat_id);
 

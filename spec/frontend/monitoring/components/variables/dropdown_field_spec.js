@@ -1,6 +1,5 @@
 import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import { nextTick } from 'vue';
 import DropdownField from '~/monitoring/components/variables/dropdown_field.vue';
 
 describe('Custom variable component', () => {
@@ -56,11 +55,8 @@ describe('Custom variable component', () => {
 
   it('changing dropdown items triggers update', async () => {
     createShallowWrapper();
-    jest.spyOn(wrapper.vm, '$emit');
-
     findDropdownItems().at(1).vm.$emit('click');
 
-    await nextTick();
-    expect(wrapper.vm.$emit).toHaveBeenCalledWith('input', 'canary');
+    expect(wrapper.emitted('input')).toEqual([['canary']]);
   });
 });

@@ -92,7 +92,7 @@ module Gitlab
             attrs[:direction] = direction if direction.present?
             attrs[:stage] = stage_data_attributes.to_json if stage_id.present?
             attrs[:namespace] = namespace_attributes
-            attrs[:enable_tasks_by_type_chart] = false
+            attrs[:enable_tasks_by_type_chart] = 'false'
             attrs[:default_stages] = Gitlab::Analytics::CycleAnalytics::DefaultStages.all.map do |stage_params|
               ::Analytics::CycleAnalytics::StagePresenter.new(stage_params)
             end.to_json
@@ -141,13 +141,11 @@ module Gitlab
         end
 
         def namespace_attributes
-          container = project || namespace
-          return {} unless container
+          return {} unless project
 
           {
-            name: container.name,
-            full_path: container.full_path,
-            avatar_url: container.avatar_url
+            name: project.name,
+            full_path: project.full_path
           }
         end
 
