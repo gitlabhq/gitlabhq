@@ -21,6 +21,12 @@ API Discovery runs as a standalone job in your pipeline. The resulting OpenAPI d
 
 API Discovery runs in the `test` stage by default. The `test` stage was chosen as it typically executes before the stages used by other API Security features such as DAST API and API Fuzzing.
 
+## Example API Discovery configurations
+
+The following projects demonstrate API Discovery:
+
+- [Example Java Spring Boot v2 Pet Store](https://gitlab.com/gitlab-org/security-products/demos/api-discovery/java-spring-boot-v2-petstore)
+
 ## Java Spring-Boot
 
 [Spring Boot](https://spring.io/projects/spring-boot) is a popular framework for creating stand-alone, production-grade Spring-based applications.
@@ -35,7 +41,7 @@ API Discovery supports Spring Boot major version 2, minor versions 1 and higher.
 
 Major version 3 is planned to be supported in the future. Support for major version 1 is not planned.
 
-API Discovery is tested with and officially supports LTS versions of the Java runtime. Other versions will likely work also, and bug reports from non-LTS versions are welcome.
+API Discovery is tested with and officially supports LTS versions of the Java runtime. Other versions may work also, and bug reports from non-LTS versions are welcome.
 
 Only applications that are built as Spring Boot [executable JARs](https://docs.spring.io/spring-boot/docs/current/reference/html/executable-jar.html#appendix.executable-jar.nested-jars.jar-structure) are supported.
 
@@ -48,18 +54,18 @@ When running in this method, you provide a container image that has the required
 1. In a job in the `build` stage, build your application and configure the resulting Spring Boot executable JAR as a job artifact.
 1. Include the API Discovery template in your `.gitlab-ci.yml` file.
 
-   ```yaml
-   include:
-       - template: API-Discovery.gitlab-ci.yml
-   ```
+    ```yaml
+    include:
+       - template: Security/API-Discovery.gitlab-ci.yml
+    ```
 
    Only a single `include` statement is allowed per `.gitlab-ci.yml` file. If you are including other files, combine them into a single `include` statement.
 
-   ```yaml
-   include:
-       - template: API-Discovery.gitlab-ci.yml
-       - template: DAST-API.gitlab-ci.yml
-   ```
+    ```yaml
+    include:
+       - template: Security/API-Discovery.gitlab-ci.yml
+       - template: Security/DAST-API.gitlab-ci.yml
+    ```
 
 1. Create a new job that extends from `.api_discovery_java_spring_boot`. The default stage is `test` which can be optionally changed to any value.
 
@@ -120,22 +126,14 @@ When running in this method, you provide a container image that has the required
            API_DISCOVERY_PACKAGE_TOKEN: $GITLAB_READ_TOKEN
    ```
 
+After the API Discovery job has successfully run, the OpenAPI document is available as a job artifact called `gl-api-discovery-openapi.json`.
+
 #### Image requirements
 
 - Linux container image.
 - Java versions 11 or 17 are officially supported, but other versions are likely compatible as well.
 - The `curl` command.
 - A shell at `/bin/sh` (like busybox sh or bash).
-
-<!--
-### Configure integrated into a Maven project
-
-TODO
-
-### Configure integrated into a Gradle project
-
-TODO
--->
 
 ### Available CI/CD variables
 

@@ -48,6 +48,7 @@ The following projects demonstrate DAST API scanning:
 - [Example Postman Collection project](https://gitlab.com/gitlab-org/security-products/demos/api-dast/postman-example)
 - [Example GraphQL project](https://gitlab.com/gitlab-org/security-products/demos/api-dast/graphql-example)
 - [Example SOAP project](https://gitlab.com/gitlab-org/security-products/demos/api-dast/soap-example)
+- [Authentication Token using Selenium](https://gitlab.com/gitlab-org/security-products/demos/api-dast/auth-token-selenium)
 
 ## Targeting API for DAST scanning
 

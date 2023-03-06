@@ -365,6 +365,50 @@ Streamed audit events have a predictable schema in the body of the response.
 | `target_id`      | ID of the audit event's target                             |                                                                                   |
 | `target_type`    | String representation of the target's type                 |                                                                                   |
 
+### JSON payload schema
+
+```json
+{
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "author_id": {
+      "type": "integer"
+    },
+    "author_name": {
+      "type": "string"
+    },
+    "details": {},
+    "ip_address": {
+      "type": "string"
+    },
+    "entity_id": {
+      "type": "integer"
+    },
+    "entity_path": {
+      "type": "string"
+    },
+    "entity_type": {
+      "type": "string"
+    },
+    "event_type": {
+      "type": "string"
+    },
+    "target_id": {
+      "type": "integer"
+    },
+    "target_type": {
+      "type": "string"
+    },
+    "target_details": {
+      "type": "string"
+    },
+  },
+  "type": "object"
+}
+```
+
 ## Audit event streaming on Git operations
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/332747) in GitLab 14.9 [with a flag](../administration/feature_flags.md) named `audit_event_streaming_git_operations`. Disabled by default.

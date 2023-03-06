@@ -34,6 +34,10 @@ default framework cannot be deleted.
 
 A compliance framework that is set to default has a **default** label.
 
+NOTE:
+Because of a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/394630), only group owners can apply the default compliance framework when creating
+new projects or importing projects.
+
 ### Set and remove as default
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/375038) in GitLab 15.7.
