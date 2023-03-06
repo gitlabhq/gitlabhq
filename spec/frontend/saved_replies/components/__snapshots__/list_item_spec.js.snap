@@ -10,6 +10,21 @@ exports[`Saved replies list item component renders list item 1`] = `
     <strong>
       test
     </strong>
+     
+    <div
+      class="gl-ml-auto"
+    >
+      <gl-button-stub
+        aria-label="Delete"
+        buttontextclasses=""
+        category="secondary"
+        data-testid="saved-reply-delete-btn"
+        icon="remove"
+        size="medium"
+        title="Delete"
+        variant="danger"
+      />
+    </div>
   </div>
    
   <div
@@ -17,5 +32,21 @@ exports[`Saved replies list item component renders list item 1`] = `
   >
     /assign_reviewer
   </div>
+   
+  <gl-modal-stub
+    actionprimary="[object Object]"
+    actionsecondary="[object Object]"
+    arialabel=""
+    dismisslabel="Close"
+    modalclass=""
+    modalid="delete-saved-reply-2"
+    size="sm"
+    title="Delete saved reply"
+    titletag="h4"
+  >
+    <gl-sprintf-stub
+      message="Are you sure you want to delete %{name}? This action cannot be undone."
+    />
+  </gl-modal-stub>
 </li>
 `;

@@ -72,7 +72,19 @@ class UsersController < ApplicationController
 
       format.json do
         load_events
-        pager_json("events/_events", @events.count, events: @events)
+
+        if Feature.enabled?(:profile_tabs_vue, current_user)
+          @events = if user.include_private_contributions?
+                      @events
+                    else
+                      @events.select { |event| event.visible_to_user?(current_user) }
+                    end
+
+          render json: ::Profile::EventSerializer.new(current_user: current_user, target_user: user)
+                                                 .represent(@events)
+        else
+          pager_json("events/_events", @events.count, events: @events)
+        end
       end
     end
   end

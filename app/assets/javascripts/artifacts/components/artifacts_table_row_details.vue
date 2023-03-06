@@ -1,5 +1,5 @@
 <script>
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { DynamicScroller, DynamicScrollerItem } from 'vendor/vue-virtual-scroller';
 import getJobArtifactsQuery from '../graphql/queries/get_job_artifacts.query.graphql';
 import destroyArtifactMutation from '../graphql/mutations/destroy_artifact.mutation.graphql';

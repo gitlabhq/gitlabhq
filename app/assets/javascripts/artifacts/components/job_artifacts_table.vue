@@ -9,7 +9,7 @@ import {
   GlIcon,
   GlPagination,
 } from '@gitlab/ui';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';

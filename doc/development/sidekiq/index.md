@@ -4,7 +4,7 @@ group: unassigned
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Sidekiq guides
+# Sidekiq development guidelines
 
 We use [Sidekiq](https://github.com/mperham/sidekiq) as our background
 job processor. These guides are for writing jobs that works well on

@@ -4,7 +4,7 @@ group: unassigned
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# JSON Guidelines
+# JSON development guidelines
 
 At GitLab we handle a lot of JSON data. To best ensure we remain performant
 when handling large JSON encodes or decodes, we use our own JSON class

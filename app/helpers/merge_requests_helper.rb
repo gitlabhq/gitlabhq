@@ -2,6 +2,7 @@
 
 module MergeRequestsHelper
   include Gitlab::Utils::StrongMemoize
+  include CompareHelper
 
   def create_mr_button_from_event?(event)
     create_mr_button?(from: event.branch_name, source_project: event.project)

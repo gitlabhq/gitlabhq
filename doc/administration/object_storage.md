@@ -116,42 +116,42 @@ The following example uses AWS S3 to enable object storage for all supported ser
 1. Edit `/etc/gitlab/gitlab.rb` and add the following lines, substituting
    the values you want:
 
-    ```ruby
-    # Consolidated object storage configuration
-    gitlab_rails['object_store']['enabled'] = true
-    gitlab_rails['object_store']['proxy_download'] = true
-    gitlab_rails['object_store']['connection'] = {
-      'provider' => 'AWS',
-      'region' => 'eu-central-1',
-      'aws_access_key_id' => '<AWS_ACCESS_KEY_ID>',
-      'aws_secret_access_key' => '<AWS_SECRET_ACCESS_KEY>'
-    }
-    # OPTIONAL: The following lines are only needed if server side encryption is required
-    gitlab_rails['object_store']['storage_options'] = {
-      'server_side_encryption' => '<AES256 or aws:kms>',
-      'server_side_encryption_kms_key_id' => '<arn:aws:kms:xxx>'
-    }
-    gitlab_rails['object_store']['objects']['artifacts']['bucket'] = 'gitlab-artifacts'
-    gitlab_rails['object_store']['objects']['external_diffs']['bucket'] = 'gitlab-mr-diffs'
-    gitlab_rails['object_store']['objects']['lfs']['bucket'] = 'gitlab-lfs'
-    gitlab_rails['object_store']['objects']['uploads']['bucket'] = 'gitlab-uploads'
-    gitlab_rails['object_store']['objects']['packages']['bucket'] = 'gitlab-packages'
-    gitlab_rails['object_store']['objects']['dependency_proxy']['bucket'] = 'gitlab-dependency-proxy'
-    gitlab_rails['object_store']['objects']['terraform_state']['bucket'] = 'gitlab-terraform-state'
-    gitlab_rails['object_store']['objects']['ci_secure_files']['bucket'] = 'gitlab-ci-secure-files'
-    gitlab_rails['object_store']['objects']['pages']['bucket'] = 'gitlab-pages'
-    ```
+   ```ruby
+   # Consolidated object storage configuration
+   gitlab_rails['object_store']['enabled'] = true
+   gitlab_rails['object_store']['proxy_download'] = true
+   gitlab_rails['object_store']['connection'] = {
+     'provider' => 'AWS',
+     'region' => 'eu-central-1',
+     'aws_access_key_id' => '<AWS_ACCESS_KEY_ID>',
+     'aws_secret_access_key' => '<AWS_SECRET_ACCESS_KEY>'
+   }
+   # OPTIONAL: The following lines are only needed if server side encryption is required
+   gitlab_rails['object_store']['storage_options'] = {
+     'server_side_encryption' => '<AES256 or aws:kms>',
+     'server_side_encryption_kms_key_id' => '<arn:aws:kms:xxx>'
+   }
+   gitlab_rails['object_store']['objects']['artifacts']['bucket'] = 'gitlab-artifacts'
+   gitlab_rails['object_store']['objects']['external_diffs']['bucket'] = 'gitlab-mr-diffs'
+   gitlab_rails['object_store']['objects']['lfs']['bucket'] = 'gitlab-lfs'
+   gitlab_rails['object_store']['objects']['uploads']['bucket'] = 'gitlab-uploads'
+   gitlab_rails['object_store']['objects']['packages']['bucket'] = 'gitlab-packages'
+   gitlab_rails['object_store']['objects']['dependency_proxy']['bucket'] = 'gitlab-dependency-proxy'
+   gitlab_rails['object_store']['objects']['terraform_state']['bucket'] = 'gitlab-terraform-state'
+   gitlab_rails['object_store']['objects']['ci_secure_files']['bucket'] = 'gitlab-ci-secure-files'
+   gitlab_rails['object_store']['objects']['pages']['bucket'] = 'gitlab-pages'
+   ```
 
-    If you’re using [AWS IAM profiles](#using-amazon-instance-profiles), omit
-    the AWS access key and secret access key/value pairs. For example:
+   If you're using [AWS IAM profiles](#using-amazon-instance-profiles), omit
+   the AWS access key and secret access key/value pairs. For example:
 
-    ```ruby
-    gitlab_rails['object_store']['connection'] = {
-      'provider' => 'AWS',
-      'region' => 'eu-central-1',
-      'use_iam_profile' => true
-    }
-    ```
+   ```ruby
+   gitlab_rails['object_store']['connection'] = {
+     'provider' => 'AWS',
+     'region' => 'eu-central-1',
+     'use_iam_profile' => true
+   }
+   ```
 
 1. Save the file and reconfigure GitLab:
 
@@ -171,7 +171,7 @@ The following example uses AWS S3 to enable object storage for all supported ser
    aws_secret_access_key: <AWS_SECRET_ACCESS_KEY>
    ```
 
-   If you’re using [AWS IAM profiles](#using-amazon-instance-profiles), omit
+   If you're using [AWS IAM profiles](#using-amazon-instance-profiles), omit
    the AWS access key and secret access key/value pairs. For example:
 
    ```yaml
@@ -293,7 +293,7 @@ The following example uses AWS S3 to enable object storage for all supported ser
            gitlab_rails['object_store']['objects']['pages']['bucket'] = 'gitlab-pages'
    ```
 
-   If you’re using [AWS IAM profiles](#using-amazon-instance-profiles), omit
+   If you're using [AWS IAM profiles](#using-amazon-instance-profiles), omit
    the AWS access key and secret access key/value pairs. For example:
 
    ```ruby
@@ -348,7 +348,7 @@ The following example uses AWS S3 to enable object storage for all supported ser
            bucket: gitlab-pages
    ```
 
-   If you’re using [AWS IAM profiles](#using-amazon-instance-profiles), omit
+   If you're using [AWS IAM profiles](#using-amazon-instance-profiles), omit
    the AWS access key and secret access key/value pairs. For example:
 
    ```yaml
@@ -369,7 +369,7 @@ The following example uses AWS S3 to enable object storage for all supported ser
      aws_secret_access_key = "<AWS_SECRET_ACCESS_KEY>"
    ```
 
-   If you’re using [AWS IAM profiles](#using-amazon-instance-profiles), omit
+   If you're using [AWS IAM profiles](#using-amazon-instance-profiles), omit
    the AWS access key and secret access key/value pairs. For example:
 
    ```yaml

@@ -23,6 +23,12 @@ Project and Group packages are supported.
 For documentation of the specific API endpoints that Debian package manager
 clients use, see the [Debian API documentation](../../../api/packages/debian.md).
 
+Prerequisites:
+
+- The `dpkg-deb` binary must be installed on the GitLab instance.
+  This binary is usually provided by the [`dpkg` package](https://wiki.debian.org/Teams/Dpkg/Downstream),
+  installed by default on Debian and derivatives.
+
 ## Enable the Debian API **(FREE SELF)**
 
 Debian repository support is still a work in progress. It's gated behind a feature flag that's

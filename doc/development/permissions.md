@@ -4,7 +4,7 @@ group: Authentication and Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Implementing permissions
+# Permission development guidelines
 
 There are multiple types of permissions across GitLab, and when implementing
 anything that deals with permissions, all of them should be considered.

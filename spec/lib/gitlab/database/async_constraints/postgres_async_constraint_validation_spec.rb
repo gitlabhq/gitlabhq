@@ -48,6 +48,16 @@ RSpec.describe Gitlab::Database::AsyncConstraints::PostgresAsyncConstraintValida
         is_expected.to match_array([failed_validation, new_validation])
       end
     end
+
+    describe '.check_constraint_type' do
+      before do
+        new_validation.update!(constraint_type: :check_constraint)
+      end
+
+      subject { described_class.check_constraint_type }
+
+      it { is_expected.to eq([new_validation]) }
+    end
   end
 
   describe '.table_available?' do

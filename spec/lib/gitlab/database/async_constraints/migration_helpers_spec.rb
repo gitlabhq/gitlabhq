@@ -10,7 +10,7 @@ RSpec.describe Gitlab::Database::AsyncConstraints::MigrationHelpers, feature_cat
   let(:column_name) { 'parent_id' }
   let(:fk_name) { nil }
 
-  context 'with regular tables' do
+  context 'with async FK validation on regular tables' do
     before do
       allow(migration).to receive(:puts)
       allow(migration.connection).to receive(:transaction_open?).and_return(false)
@@ -180,6 +180,108 @@ RSpec.describe Gitlab::Database::AsyncConstraints::MigrationHelpers, feature_cat
           .with(partition2_name, column_name, name: fk_name)
 
         migration.unprepare_partitioned_async_foreign_key_validation(table_name, column_name, name: fk_name)
+      end
+    end
+  end
+
+  context 'with async check constraint validations' do
+    let(:table_name) { '_test_async_check_constraints' }
+    let(:check_name) { 'partitioning_constraint' }
+
+    before do
+      allow(migration).to receive(:puts)
+      allow(migration.connection).to receive(:transaction_open?).and_return(false)
+
+      connection.create_table(table_name) do |t|
+        t.integer column_name
+      end
+
+      migration.add_check_constraint(
+        table_name, "#{column_name} = 1",
+        check_name, validate: false)
+    end
+
+    describe '#prepare_async_check_constraint_validation' do
+      it 'creates the record for async validation' do
+        expect do
+          migration.prepare_async_check_constraint_validation(table_name, name: check_name)
+        end.to change { constraint_model.where(name: check_name).count }.by(1)
+
+        record = constraint_model.find_by(name: check_name)
+
+        expect(record.table_name).to eq(table_name)
+        expect(record).to be_check_constraint
+      end
+
+      context 'when the check constraint does not exist' do
+        it 'returns an error' do
+          expect do
+            migration.prepare_async_check_constraint_validation(table_name, name: 'missing')
+          end.to raise_error RuntimeError, /Could not find check constraint "missing" on table "#{table_name}"/
+        end
+      end
+
+      context 'when the record already exists' do
+        it 'does attempt to create the record' do
+          create(:postgres_async_constraint_validation,
+            table_name: table_name,
+            name: check_name,
+            constraint_type: :check_constraint)
+
+          expect do
+            migration.prepare_async_check_constraint_validation(table_name, name: check_name)
+          end.not_to change { constraint_model.where(name: check_name).count }
+        end
+      end
+
+      context 'when the async validation table does not exist' do
+        it 'does not raise an error' do
+          connection.drop_table(constraint_model.table_name)
+
+          expect(constraint_model).not_to receive(:safe_find_or_create_by!)
+
+          expect { migration.prepare_async_check_constraint_validation(table_name, name: check_name) }
+            .not_to raise_error
+        end
+      end
+    end
+
+    describe '#unprepare_async_check_constraint_validation' do
+      context 'with check constraints' do
+        before do
+          migration.prepare_async_check_constraint_validation(table_name, name: check_name)
+        end
+
+        it 'destroys the record' do
+          expect do
+            migration.unprepare_async_check_constraint_validation(table_name, name: check_name)
+          end.to change { constraint_model.where(name: check_name).count }.by(-1)
+        end
+
+        context 'when the async validation table does not exist' do
+          it 'does not raise an error' do
+            connection.drop_table(constraint_model.table_name)
+
+            expect(constraint_model).not_to receive(:find_by)
+
+            expect { migration.unprepare_async_check_constraint_validation(table_name, name: check_name) }
+              .not_to raise_error
+          end
+        end
+      end
+
+      context 'with other types of constraints' do
+        let(:constraint) { create(:postgres_async_constraint_validation, table_name: table_name, name: check_name) }
+
+        it 'does not destroy the record' do
+          constraint.update_column(:constraint_type, 99)
+
+          expect do
+            migration.unprepare_async_check_constraint_validation(table_name, name: check_name)
+          end.not_to change { constraint_model.where(name: check_name).count }
+
+          expect(constraint).to be_present
+        end
       end
     end
   end

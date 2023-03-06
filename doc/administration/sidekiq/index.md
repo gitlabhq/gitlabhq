@@ -325,7 +325,7 @@ To enable LDAP with the synchronization worker for Sidekiq:
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
-    ```ruby
+   ```ruby
    gitlab_rails['ldap_enabled'] = true
    gitlab_rails['prevent_ldap_sign_in'] = false
    gitlab_rails['ldap_servers'] = {

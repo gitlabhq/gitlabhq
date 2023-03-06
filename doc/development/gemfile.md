@@ -4,7 +4,7 @@ group: unassigned
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Gemfile guidelines
+# Gemfile development guidelines
 
 When adding a new entry to `Gemfile`, or upgrading an existing dependency pay
 attention to the following rules.

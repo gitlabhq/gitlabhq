@@ -4,16 +4,16 @@ group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Create: Source Code Backend
+# Create: Source Code backend
 
-The Create:Source Code BE team focuses on the GitLab suite of Source Code Management
+The Create: Source Code backend (BE) team focuses on the GitLab suite of Source Code Management
 (SCM) tools. It is responsible for all backend aspects of the product categories
 that fall under the [Source Code group](https://about.gitlab.com/handbook/product/categories/#source-code-group)
 of the [Create stage](https://about.gitlab.com/handbook/product/categories/#create-stage)
 of the [DevOps lifecycle](https://about.gitlab.com/handbook/product/categories/#devops-stages).
 
 We interface with the Gitaly and Code Review teams, and work closely with the
-[Create:Source Code Frontend team](https://about.gitlab.com/handbook/engineering/development/dev/create/create-source-code-fe/). The features
+[Create: Source Code frontend team](https://about.gitlab.com/handbook/engineering/development/dev/create/create-source-code-fe/). The features
 we work with are listed on the
 [Features by Group Page](https://about.gitlab.com/handbook/product/categories/features/#createsource-code-group).
 

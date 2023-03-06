@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: index, concepts, howto
 ---
 
-# CI/CD development documentation
+# CI/CD development guidelines
 
 Development guides that are specific to CI/CD are listed here:
 

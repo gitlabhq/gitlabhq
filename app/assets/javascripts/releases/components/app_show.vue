@@ -1,5 +1,5 @@
 <script>
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { s__ } from '~/locale';
 import { popCreateReleaseNotification } from '~/releases/release_notification_service';
 import oneReleaseQuery from '../graphql/queries/one_release.query.graphql';

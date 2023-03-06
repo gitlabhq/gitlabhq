@@ -174,39 +174,95 @@ RSpec.describe UsersController, feature_category: :user_management do
     end
 
     context 'requested in json format' do
-      let(:project) { create(:project) }
+      context 'when profile_tabs_vue feature flag is turned OFF' do
+        let(:project) { create(:project) }
 
-      before do
-        project.add_developer(user)
-        Gitlab::DataBuilder::Push.build_sample(project, user)
+        before do
+          project.add_developer(user)
+          Gitlab::DataBuilder::Push.build_sample(project, user)
+          stub_feature_flags(profile_tabs_vue: false)
+          sign_in(user)
+        end
 
-        sign_in(user)
+        it 'loads events' do
+          get user_activity_url user.username, format: :json
+
+          expect(response.media_type).to eq('application/json')
+          expect(Gitlab::Json.parse(response.body)['count']).to eq(1)
+        end
+
+        it 'hides events if the user cannot read cross project' do
+          allow(Ability).to receive(:allowed?).and_call_original
+          expect(Ability).to receive(:allowed?).with(user, :read_cross_project) { false }
+
+          get user_activity_url user.username, format: :json
+
+          expect(response.media_type).to eq('application/json')
+          expect(Gitlab::Json.parse(response.body)['count']).to eq(0)
+        end
+
+        it 'hides events if the user has a private profile' do
+          Gitlab::DataBuilder::Push.build_sample(project, private_user)
+
+          get user_activity_url private_user.username, format: :json
+
+          expect(response.media_type).to eq('application/json')
+          expect(Gitlab::Json.parse(response.body)['count']).to eq(0)
+        end
       end
 
-      it 'loads events' do
-        get user_activity_url user.username, format: :json
+      context 'when profile_tabs_vue feature flag is turned ON' do
+        let(:project) { create(:project) }
 
-        expect(response.media_type).to eq('application/json')
-        expect(Gitlab::Json.parse(response.body)['count']).to eq(1)
-      end
+        before do
+          project.add_developer(user)
+          Gitlab::DataBuilder::Push.build_sample(project, user)
+          stub_feature_flags(profile_tabs_vue: true)
+          sign_in(user)
+        end
 
-      it 'hides events if the user cannot read cross project' do
-        allow(Ability).to receive(:allowed?).and_call_original
-        expect(Ability).to receive(:allowed?).with(user, :read_cross_project) { false }
+        it 'loads events' do
+          get user_activity_url user.username, format: :json
 
-        get user_activity_url user.username, format: :json
+          expect(response.media_type).to eq('application/json')
+          expect(Gitlab::Json.parse(response.body).count).to eq(1)
+        end
 
-        expect(response.media_type).to eq('application/json')
-        expect(Gitlab::Json.parse(response.body)['count']).to eq(0)
-      end
+        it 'hides events if the user cannot read cross project' do
+          allow(Ability).to receive(:allowed?).and_call_original
+          expect(Ability).to receive(:allowed?).with(user, :read_cross_project) { false }
 
-      it 'hides events if the user has a private profile' do
-        Gitlab::DataBuilder::Push.build_sample(project, private_user)
+          get user_activity_url user.username, format: :json
 
-        get user_activity_url private_user.username, format: :json
+          expect(response.media_type).to eq('application/json')
+          expect(Gitlab::Json.parse(response.body).count).to eq(0)
+        end
 
-        expect(response.media_type).to eq('application/json')
-        expect(Gitlab::Json.parse(response.body)['count']).to eq(0)
+        it 'hides events if the user has a private profile' do
+          Gitlab::DataBuilder::Push.build_sample(project, private_user)
+
+          get user_activity_url private_user.username, format: :json
+
+          expect(response.media_type).to eq('application/json')
+          expect(Gitlab::Json.parse(response.body).count).to eq(0)
+        end
+
+        it 'hides events if the user has a private profile' do
+          project = create(:project, :private)
+          private_event_user = create(:user, include_private_contributions: true)
+          push_data = Gitlab::DataBuilder::Push.build_sample(project, private_event_user)
+          EventCreateService.new.push(project, private_event_user, push_data)
+
+          get user_activity_url private_event_user.username, format: :json
+
+          response_body = Gitlab::Json.parse(response.body)
+          event = response_body.first
+          expect(response.media_type).to eq('application/json')
+          expect(response_body.count).to eq(1)
+          expect(event).to include('created_at', 'author', 'action')
+          expect(event['action']).to eq('private')
+          expect(event).not_to include('ref', 'commit', 'target', 'resource_parent')
+        end
       end
     end
   end

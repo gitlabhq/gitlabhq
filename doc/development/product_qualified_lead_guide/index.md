@@ -4,7 +4,7 @@ group: Acquisition
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Product Qualified Lead (PQL) development guide
+# Product Qualified Lead (PQL) development guidelines
 
 The Product Qualified Lead (PQL) funnel connects our users with our team members. Read more about [PQL product principles](https://about.gitlab.com/handbook/product/product-principles/#product-qualified-leads-pqls).
 

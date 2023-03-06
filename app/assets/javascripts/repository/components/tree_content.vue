@@ -1,6 +1,6 @@
 <script>
 import paginatedTreeQuery from 'shared_queries/repository/paginated_tree.query.graphql';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import {
   TREE_PAGE_SIZE,

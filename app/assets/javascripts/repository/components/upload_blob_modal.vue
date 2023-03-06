@@ -9,7 +9,7 @@ import {
   GlButton,
   GlAlert,
 } from '@gitlab/ui';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { ContentTypeMultipartFormData } from '~/lib/utils/headers';
 import { numberToHumanSize } from '~/lib/utils/number_utils';

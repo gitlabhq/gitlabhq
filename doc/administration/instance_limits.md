@@ -723,22 +723,23 @@ GitLab checks these limits against runners that have been active in the last 3 m
 A runner's registration fails if it exceeds the limit for the scope determined by the runner registration token.
 If the limit value is set to zero, the limit is disabled.
 
-- GitLab SaaS subscribers have different limits defined per plan, affecting all projects using that plan.
-- Self-managed GitLab Premium and Ultimate limits are defined by a default plan that affects all projects:
+GitLab SaaS subscribers have different limits defined per plan, affecting all projects using that plan.
 
-    | Runner scope                                | Default value |
-    |---------------------------------------------|---------------|
-    | `ci_registered_group_runners`               | 1000          |
-    | `ci_registered_project_runners`             | 1000          |
+Self-managed GitLab Premium and Ultimate limits are defined by a default plan that affects all projects:
 
-    To update these limits, run the following in the
-    [GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session):
+| Runner scope                                | Default value |
+|---------------------------------------------|---------------|
+| `ci_registered_group_runners`               | 1000          |
+| `ci_registered_project_runners`             | 1000          |
 
-    ```ruby
-    # Use ci_registered_group_runners or ci_registered_project_runners
-    # depending on desired scope
-    Plan.default.actual_limits.update!(ci_registered_project_runners: 100)
-    ```
+To update these limits, run the following in the
+[GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session):
+
+```ruby
+# Use ci_registered_group_runners or ci_registered_project_runners
+# depending on desired scope
+Plan.default.actual_limits.update!(ci_registered_project_runners: 100)
+```
 
 ### Maximum file size for job logs
 

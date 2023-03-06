@@ -1,5 +1,5 @@
 import { getTag } from '~/rest_api';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { redirectTo } from '~/lib/utils/url_utility';
 import { s__ } from '~/locale';
 import createReleaseMutation from '~/releases/graphql/mutations/create_release.mutation.graphql';

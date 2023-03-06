@@ -5,7 +5,7 @@ group: Development
 info: "See the Technical Writers assigned to Development Guidelines: https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-development-guidelines"
 ---
 
-# Secure Coding Guidelines
+# Secure coding development guidelines
 
 This document contains descriptions and guidelines for addressing security
 vulnerabilities commonly identified in the GitLab codebase. They are intended

@@ -110,11 +110,11 @@ To enable the PROXY protocol:
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
-    ```ruby
-    gitlab_sshd['proxy_protocol'] = true
-    # # Proxy protocol policy ("use", "require", "reject", "ignore"), "use" is the default value
-    gitlab_sshd['proxy_policy'] = "use"
-    ```
+   ```ruby
+   gitlab_sshd['proxy_protocol'] = true
+   # # Proxy protocol policy ("use", "require", "reject", "ignore"), "use" is the default value
+   gitlab_sshd['proxy_policy'] = "use"
+   ```
 
 1. Save the file and reconfigure GitLab:
 

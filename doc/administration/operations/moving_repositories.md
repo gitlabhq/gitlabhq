@@ -139,14 +139,14 @@ To move all snippets by using the API:
 To move all groups by using the API:
 
 1. [Schedule repository storage moves for all groups on a storage shard](../../api/group_repository_storage_moves.md#schedule-repository-storage-moves-for-all-groups-on-a-storage-shard).
-    For example:
+   For example:
 
-    ```shell
-    curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
-         --header "Content-Type: application/json" \
-         --data '{"source_storage_name":"<original_storage_name>","destination_storage_name":"<cluster_storage_name>"}' \
-         "https://gitlab.example.com/api/v4/group_repository_storage_moves"
-    ```
+   ```shell
+   curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
+        --header "Content-Type: application/json" \
+        --data '{"source_storage_name":"<original_storage_name>","destination_storage_name":"<cluster_storage_name>"}' \
+        "https://gitlab.example.com/api/v4/group_repository_storage_moves"
+   ```
 
 1. [Query the most recent repository moves](../../api/group_repository_storage_moves.md#retrieve-all-group-repository-storage-moves).
    The response indicates either:

@@ -4,7 +4,7 @@ group: Optimize
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Value stream analytics development guide
+# Value stream analytics development guidelines
 
 For information on how to configure value stream analytics (VSA) in GitLab, see our [analytics documentation](../user/analytics/value_stream_analytics.md).
 

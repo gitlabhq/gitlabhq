@@ -1,4 +1,4 @@
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import Poll from '~/lib/utils/poll';
 import { __ } from '~/locale';
 import Service from '../../services';

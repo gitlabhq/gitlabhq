@@ -1,7 +1,7 @@
 <script>
 import { GlIcon, GlLink, GlSkeletonLoader, GlSprintf } from '@gitlab/ui';
 import { s__, sprintf, n__ } from '~/locale';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import forkDetailsQuery from '../queries/fork_details.query.graphql';
 
 export const i18n = {

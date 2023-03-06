@@ -4,7 +4,7 @@ import { uniqueId } from 'lodash';
 import BlobContent from '~/blob/components/blob_content.vue';
 import BlobHeader from '~/blob/components/blob_header.vue';
 import { SIMPLE_BLOB_VIEWER, RICH_BLOB_VIEWER } from '~/blob/components/constants';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { isLoggedIn, handleLocationHash } from '~/lib/utils/common_utils';
 import { __ } from '~/locale';

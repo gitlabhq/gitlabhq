@@ -14760,6 +14760,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="groupprojectscomplianceframeworkfilters"></a>`complianceFrameworkFilters` | [`ComplianceFrameworkFilters`](#complianceframeworkfilters) | Filters applied when selecting a compliance framework. |
 | <a id="groupprojectshascodecoverage"></a>`hasCodeCoverage` | [`Boolean`](#boolean) | Returns only the projects which have code coverage. |
 | <a id="groupprojectshasvulnerabilities"></a>`hasVulnerabilities` | [`Boolean`](#boolean) | Returns only the projects which have vulnerabilities. |
 | <a id="groupprojectsids"></a>`ids` | [`[ID!]`](#id) | Filter projects by IDs. |
@@ -17080,6 +17081,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="namespaceprojectscomplianceframeworkfilters"></a>`complianceFrameworkFilters` | [`ComplianceFrameworkFilters`](#complianceframeworkfilters) | Filters applied when selecting a compliance framework. |
 | <a id="namespaceprojectshascodecoverage"></a>`hasCodeCoverage` | [`Boolean`](#boolean) | Returns only the projects which have code coverage. |
 | <a id="namespaceprojectshasvulnerabilities"></a>`hasVulnerabilities` | [`Boolean`](#boolean) | Returns only the projects which have vulnerabilities. |
 | <a id="namespaceprojectsids"></a>`ids` | [`[ID!]`](#id) | Filter projects by IDs. |
@@ -25741,6 +25743,14 @@ Attributes for defining a CI/CD variable.
 | <a id="commitactionfilepath"></a>`filePath` | [`String!`](#string) | Full path to the file. |
 | <a id="commitactionlastcommitid"></a>`lastCommitId` | [`String`](#string) | Last known file commit ID. |
 | <a id="commitactionpreviouspath"></a>`previousPath` | [`String`](#string) | Original full path to the file being moved. |
+
+### `ComplianceFrameworkFilters`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="complianceframeworkfiltersid"></a>`id` | [`ComplianceManagementFrameworkID`](#compliancemanagementframeworkid) | ID of the compliance framework. |
 
 ### `ComplianceFrameworkInput`
 

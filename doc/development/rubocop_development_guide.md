@@ -5,7 +5,7 @@ group: Development
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# RuboCop rule development guide
+# RuboCop rule development guidelines
 
 Our codebase style is defined and enforced by [RuboCop](https://github.com/rubocop-hq/rubocop).
 

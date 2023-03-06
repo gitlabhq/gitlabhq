@@ -1,6 +1,6 @@
 <script>
 import { GlButton } from '@gitlab/ui';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { historyPushState } from '~/lib/utils/common_utils';
 import { scrollUp } from '~/lib/utils/scroll_utils';
 import { setUrlParams, getParameterByName } from '~/lib/utils/url_utility';
