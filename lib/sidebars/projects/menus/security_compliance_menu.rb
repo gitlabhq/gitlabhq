@@ -33,7 +33,7 @@ module Sidebars
           end
 
           ::Sidebars::MenuItem.new(
-            title: _('Configuration'),
+            title: _('Security configuration'),
             link: project_security_configuration_path(context.project),
             active_routes: { path: configuration_menu_item_paths },
             item_id: :configuration

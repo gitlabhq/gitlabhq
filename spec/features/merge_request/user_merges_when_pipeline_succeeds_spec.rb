@@ -30,10 +30,10 @@ RSpec.describe 'Merge request > User merges when pipeline succeeds', :js, featur
       visit project_merge_request_path(project, merge_request)
     end
 
-    describe 'enabling set auto-merge' do
-      shared_examples 'auto-merge activator' do
-        it 'activates the set auto-merge feature' do
-          click_button "Set auto-merge"
+    describe 'enabling Merge when pipeline succeeds' do
+      shared_examples 'Merge when pipeline succeeds activator' do
+        it 'activates the Merge when pipeline succeeds feature' do
+          click_button "Merge when pipeline succeeds"
 
           expect(page).to have_content "Set by #{user.name} to be merged automatically when the pipeline succeeds"
           expect(page).to have_content "Source branch will not be deleted"
@@ -44,7 +44,7 @@ RSpec.describe 'Merge request > User merges when pipeline succeeds', :js, featur
       end
 
       context "when enabled immediately" do
-        it_behaves_like 'auto-merge activator'
+        it_behaves_like 'Merge when pipeline succeeds activator'
       end
 
       context 'when enabled after pipeline status changed', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/258667' do
@@ -58,12 +58,12 @@ RSpec.describe 'Merge request > User merges when pipeline succeeds', :js, featur
           expect(page).to have_content "Pipeline ##{pipeline.id} running"
         end
 
-        it_behaves_like 'auto-merge activator'
+        it_behaves_like 'Merge when pipeline succeeds activator'
       end
 
       context 'when enabled after it was previously canceled' do
         before do
-          click_button "Set auto-merge"
+          click_button "Merge when pipeline succeeds"
 
           wait_for_requests
 
@@ -71,10 +71,10 @@ RSpec.describe 'Merge request > User merges when pipeline succeeds', :js, featur
 
           wait_for_requests
 
-          expect(page).to have_content 'Set auto-merge'
+          expect(page).to have_content 'Merge when pipeline succeeds'
         end
 
-        it_behaves_like 'auto-merge activator'
+        it_behaves_like 'Merge when pipeline succeeds activator'
       end
 
       context 'when it was enabled and then canceled' do
@@ -93,12 +93,12 @@ RSpec.describe 'Merge request > User merges when pipeline succeeds', :js, featur
           click_button "Cancel auto-merge"
         end
 
-        it_behaves_like 'auto-merge activator'
+        it_behaves_like 'Merge when pipeline succeeds activator'
       end
     end
   end
 
-  context 'when set auto-merge is enabled' do
+  context 'when merge when pipeline succeeds is enabled' do
     let(:merge_request) do
       create(:merge_request_with_diffs, :simple, :merge_when_pipeline_succeeds,
         source_project: project,
@@ -119,7 +119,7 @@ RSpec.describe 'Merge request > User merges when pipeline succeeds', :js, featur
     it 'allows to cancel the automatic merge' do
       click_button "Cancel auto-merge"
 
-      expect(page).to have_button "Set auto-merge"
+      expect(page).to have_button "Merge when pipeline succeeds"
 
       refresh
 
@@ -138,7 +138,7 @@ RSpec.describe 'Merge request > User merges when pipeline succeeds', :js, featur
       end
     end
 
-    context 'view merge request with set auto-merge enabled but automatically merge fails' do
+    context 'view merge request with MWPS enabled but automatically merge fails' do
       before do
         merge_request.update!(
           merge_user: merge_request.author,
@@ -157,7 +157,7 @@ RSpec.describe 'Merge request > User merges when pipeline succeeds', :js, featur
       end
     end
 
-    context 'view merge request with set auto-merge enabled but automatically merge fails' do
+    context 'view merge request with MWPS enabled but automatically merge fails' do
       before do
         merge_request.update!(
           merge_user: merge_request.author,
@@ -181,7 +181,7 @@ RSpec.describe 'Merge request > User merges when pipeline succeeds', :js, featur
     it 'does not allow to enable merge when pipeline succeeds' do
       visit project_merge_request_path(project, merge_request)
 
-      expect(page).not_to have_link 'Set auto-merge'
+      expect(page).not_to have_link 'Merge when pipeline succeeds'
     end
   end
 end

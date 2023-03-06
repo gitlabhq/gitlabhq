@@ -250,6 +250,7 @@ module ApplicationSettingsHelper
       :default_snippet_visibility,
       :default_syntax_highlighting_theme,
       :delete_inactive_projects,
+      :deny_all_requests_except_allowed,
       :disable_admin_oauth_scopes,
       :disable_feed_token,
       :disabled_oauth_sign_in_sources,

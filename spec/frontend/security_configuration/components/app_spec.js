@@ -141,7 +141,7 @@ describe('App component', () => {
     it('renders main-heading with correct text', () => {
       const mainHeading = findMainHeading();
       expect(mainHeading.exists()).toBe(true);
-      expect(mainHeading.text()).toContain('Security Configuration');
+      expect(mainHeading.text()).toContain('Security configuration');
     });
 
     describe('tabs', () => {

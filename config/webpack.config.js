@@ -16,7 +16,7 @@ const VueLoaderPlugin = require('vue-loader/lib/plugin');
 const VUE_LOADER_VERSION = require('vue-loader/package.json').version;
 const VUE_VERSION = require('vue/package.json').version;
 
-const { ESBuildMinifyPlugin } = require('esbuild-loader');
+const { EsbuildPlugin } = require('esbuild-loader');
 
 const webpack = require('webpack');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
@@ -531,9 +531,7 @@ module.exports = {
         },
       },
     },
-    ...(WEBPACK_USE_ESBUILD_LOADER
-      ? { minimizer: [new ESBuildMinifyPlugin(esbuildConfiguration)] }
-      : {}),
+    ...(WEBPACK_USE_ESBUILD_LOADER ? { minimizer: [new EsbuildPlugin(esbuildConfiguration)] } : {}),
   },
 
   plugins: [

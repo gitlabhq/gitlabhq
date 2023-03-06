@@ -15,9 +15,10 @@ const PROVIDE = { protectedEnvironmentSettingsPath: '/projects/not_real/settings
 describe('~/environments/components/form.vue', () => {
   let wrapper;
 
-  const createWrapper = (propsData = {}) =>
+  const createWrapper = (propsData = {}, options = {}) =>
     mountExtended(EnvironmentForm, {
       provide: PROVIDE,
+      ...options,
       propsData: {
         ...DEFAULT_PROPS,
         ...propsData,
@@ -105,6 +106,7 @@ describe('~/environments/components/form.vue', () => {
     wrapper = createWrapper({ loading: true });
     expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
   });
+
   describe('when a new environment is being created', () => {
     beforeEach(() => {
       wrapper = createWrapper({
@@ -126,6 +128,18 @@ describe('~/environments/components/form.vue', () => {
       const urlInput = wrapper.findByLabelText('External URL');
 
       expect(urlInput.element.value).toBe('');
+    });
+
+    it('does not show protected environment documentation', () => {
+      expect(wrapper.findByRole('link', { name: 'Protected environments' }).exists()).toBe(false);
+    });
+  });
+
+  describe('when no protected environment link is provided', () => {
+    beforeEach(() => {
+      wrapper = createWrapper({
+        provide: {},
+      });
     });
 
     it('does not show protected environment documentation', () => {

@@ -26,7 +26,7 @@ export const i18n = {
      scanner will not be reflected as such until the pipeline has been
      successfully executed and it has generated valid artifacts.`,
   ),
-  securityConfiguration: __('Security Configuration'),
+  securityConfiguration: __('Security configuration'),
   vulnerabilityManagement: s__('SecurityConfiguration|Vulnerability Management'),
   securityTraining: s__('SecurityConfiguration|Security training'),
   securityTrainingDescription: s__(

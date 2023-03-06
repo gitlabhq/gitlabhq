@@ -326,7 +326,7 @@ RSpec.describe 'layouts/nav/sidebar/_project', feature_category: :navigation do
       end
 
       it 'security configuration link is visible' do
-        expect(rendered).to have_link('Configuration', href: project_security_configuration_path(project))
+        expect(rendered).to have_link('Security configuration', href: project_security_configuration_path(project))
       end
     end
   end

@@ -69,6 +69,8 @@ module Gitlab
 
         return protected_uri_with_hostname if allow_object_storage && object_storage_endpoint?(uri)
 
+        validate_deny_all_requests_except_allowed!
+
         validate_local_request(
           address_info: address_info,
           allow_localhost: allow_localhost,
@@ -139,7 +141,14 @@ module Gitlab
       end
 
       def enforce_address_info_retrievable?(uri, dns_rebind_protection)
-        return false if !dns_rebind_protection || domain_in_allow_list?(uri)
+        # Do not enforce if URI is in the allow list
+        return false if domain_in_allow_list?(uri)
+
+        # Enforce if the instance should block requests
+        return true if deny_all_requests_except_allowed?
+
+        # Do not enforce unless DNS rebinding protection is enabled
+        return false unless dns_rebind_protection
 
         # In the test suite we use a lot of mocked urls that are either invalid or
         # don't exist. In order to avoid modifying a ton of tests and factories
@@ -270,6 +279,15 @@ module Gitlab
         raise BlockedUrlError, "Requests to the link local network are not allowed"
       end
 
+      # Raises a BlockedUrlError if the instance is configured to deny all requests.
+      #
+      # This should only be called after allow list checks have been made.
+      def validate_deny_all_requests_except_allowed!
+        return unless deny_all_requests_except_allowed?
+
+        raise BlockedUrlError, "Requests to hosts and IP addresses not on the Allow List are denied"
+      end
+
       # Raises a BlockedUrlError if any IP in `addrs_info` is the limited
       # broadcast address.
       # https://datatracker.ietf.org/doc/html/rfc919#section-7
@@ -310,6 +328,12 @@ module Gitlab
 
           object_store_setting.dig('connection', 'endpoint')
         end.compact.uniq
+      end
+
+      def deny_all_requests_except_allowed?
+        Feature.enabled?(:deny_all_requests_except_allowed) &&
+          Gitlab::CurrentSettings.current_application_settings? &&
+          Gitlab::CurrentSettings.deny_all_requests_except_allowed?
       end
 
       def object_storage_endpoint?(uri)

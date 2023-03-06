@@ -1659,9 +1659,6 @@ msgstr ""
 msgid "A %{incident_docs_start}modified issue%{incident_docs_end} to guide the resolution of incidents."
 msgstr ""
 
-msgid "A %{linkStart}merge train%{linkEnd} is a queued list of merge requests, each waiting to be merged into the target branch."
-msgstr ""
-
 msgid "A .NET Core console application template, customizable for any .NET Core project"
 msgstr ""
 
@@ -1828,9 +1825,6 @@ msgid "API"
 msgstr ""
 
 msgid "API Fuzzing"
-msgstr ""
-
-msgid "API Fuzzing Configuration"
 msgstr ""
 
 msgid "API Help"
@@ -10639,9 +10633,6 @@ msgstr ""
 msgid "Confidentiality"
 msgstr ""
 
-msgid "Configuration"
-msgstr ""
-
 msgid "Configuration help"
 msgstr ""
 
@@ -12640,9 +12631,6 @@ msgid "CycleAnalytics|the assigned object is not supported"
 msgstr ""
 
 msgid "DAG visualization requires at least 3 dependent jobs."
-msgstr ""
-
-msgid "DAST Configuration"
 msgstr ""
 
 msgid "DAST configuration not found"
@@ -14916,9 +14904,6 @@ msgid "DiscordService|Discord Notifications"
 msgstr ""
 
 msgid "DiscordService|Send notifications about project events to a Discord channel."
-msgstr ""
-
-msgid "Discover"
 msgstr ""
 
 msgid "Discover GitLab Geo"
@@ -26762,9 +26747,6 @@ msgstr ""
 msgid "Merge requests can't be merged if the status checks did not succeed or are still running."
 msgstr ""
 
-msgid "Merge trains"
-msgstr ""
-
 msgid "Merge unverified changes"
 msgstr ""
 
@@ -37807,9 +37789,6 @@ msgstr ""
 msgid "SAML|Your organization's SSO has been connected to your GitLab account"
 msgstr ""
 
-msgid "SAST Configuration"
-msgstr ""
-
 msgid "SCIM|SCIM Token"
 msgstr ""
 
@@ -38444,9 +38423,6 @@ msgstr ""
 msgid "Security"
 msgstr ""
 
-msgid "Security Configuration"
-msgstr ""
-
 msgid "Security Dashboard"
 msgstr ""
 
@@ -38454,6 +38430,12 @@ msgid "Security Finding not found"
 msgstr ""
 
 msgid "Security and Compliance"
+msgstr ""
+
+msgid "Security capabilities"
+msgstr ""
+
+msgid "Security configuration"
 msgstr ""
 
 msgid "Security dashboard"
@@ -38588,7 +38570,7 @@ msgstr ""
 msgid "SecurityConfiguration|SAST Analyzers"
 msgstr ""
 
-msgid "SecurityConfiguration|SAST Configuration"
+msgid "SecurityConfiguration|SAST configuration"
 msgstr ""
 
 msgid "SecurityConfiguration|Secure your project"
@@ -39858,9 +39840,6 @@ msgid "Set a password on your account to pull or push via %{protocol}."
 msgstr ""
 
 msgid "Set any rate limit to %{code_open}0%{code_close} to disable the limit."
-msgstr ""
-
-msgid "Set auto-merge"
 msgstr ""
 
 msgid "Set due date"
@@ -41404,6 +41383,12 @@ msgid "Start internal thread"
 msgstr ""
 
 msgid "Start merge train"
+msgstr ""
+
+msgid "Start merge train when pipeline succeeds"
+msgstr ""
+
+msgid "Start merge train..."
 msgstr ""
 
 msgid "Start remote connection"
@@ -48553,9 +48538,6 @@ msgstr ""
 msgid "When merge requests and commits in the default branch close, any issues they reference also close."
 msgstr ""
 
-msgid "When the pipeline for this merge request succeeds, it will %{linkStart}automatically merge%{linkEnd}."
-msgstr ""
-
 msgid "When this merge request is accepted"
 msgid_plural "When these merge requests are accepted"
 msgstr[0] ""
@@ -51602,6 +51584,9 @@ msgstr ""
 msgid "mrWidget|%{metricsLinkStart} Memory %{metricsLinkEnd} usage is %{emphasisStart} unchanged %{emphasisEnd} at %{memoryFrom}MB"
 msgstr ""
 
+msgid "mrWidget|A merge train is a queued list of merge requests waiting to be merged into the target branch. The changes in each merge request are combined with the changes in earlier merge requests and tested before merge."
+msgstr ""
+
 msgid "mrWidget|A new merge train has started and this merge request is the first of the queue."
 msgstr ""
 
@@ -51712,6 +51697,9 @@ msgstr ""
 msgid "mrWidget|Jump to first unresolved thread"
 msgstr ""
 
+msgid "mrWidget|Learn more"
+msgstr ""
+
 msgid "mrWidget|Loading deployment statistics"
 msgstr ""
 
@@ -51733,6 +51721,9 @@ msgid "mrWidget|Merge failed."
 msgstr ""
 
 msgid "mrWidget|Merged by"
+msgstr ""
+
+msgid "mrWidget|More information"
 msgstr ""
 
 msgid "mrWidget|No users match the rule's criteria."
@@ -51808,6 +51799,9 @@ msgid "mrWidget|To change this default message, edit the template for merge comm
 msgstr ""
 
 msgid "mrWidget|To change this default message, edit the template for squash commit messages. %{linkStart}Learn more.%{linkEnd}"
+msgstr ""
+
+msgid "mrWidget|What is a merge train?"
 msgstr ""
 
 msgid "mrWidget|Your password"

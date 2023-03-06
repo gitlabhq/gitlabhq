@@ -1,4 +1,3 @@
-import { helpPagePath } from '~/helpers/help_page_helper';
 import { __ } from '~/locale';
 
 export const MERGE_DISABLED_TEXT = __('You can only merge once the items above are resolved.');
@@ -33,24 +32,15 @@ export default {
     },
     autoMergeText() {
       // MWPS is currently the only auto merge strategy available in CE
-      return __('Set auto-merge');
-    },
-    autoMergeHelperText() {
       return __('Merge when pipeline succeeds');
-    },
-    autoMergePopoverSettings() {
-      return {
-        helpLink: helpPagePath('/user/project/merge_requests/merge_when_pipeline_succeeds.html'),
-        bodyText: __(
-          'When the pipeline for this merge request succeeds, it will %{linkStart}automatically merge%{linkEnd}.',
-        ),
-        title: __('Merge when pipeline succeeds'),
-      };
     },
     shouldShowMergeImmediatelyDropdown() {
       return this.isPipelineActive && !this.stateData.onlyAllowMergeIfPipelineSucceeds;
     },
     isMergeImmediatelyDangerous() {
+      return false;
+    },
+    shouldRenderMergeTrainHelperIcon() {
       return false;
     },
     pipelineId() {

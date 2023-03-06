@@ -99,7 +99,7 @@ a YAML snippet that you can paste in your GitLab CI/CD configuration.
 To generate an API Fuzzing configuration snippet:
 
 1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Security and Compliance > Configuration**.
+1. On the left sidebar, select **Security and Compliance > Security configuration**.
 1. In the **API Fuzzing** row, select **Enable API Fuzzing**.
 1. Complete the fields. For details see [Available CI/CD variables](#available-cicd-variables).
 1. Select **Generate code snippet**.

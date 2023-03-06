@@ -12,7 +12,7 @@ describe('initNetworkOutbound', () => {
 
   const createFixture = (denyAll = false) => {
     setHTMLFixture(`
-      <input class="js-deny-all-requests" type="checkbox" name="application_setting[deny_all_requests]" ${
+      <input class="js-deny-all-requests" type="checkbox" name="application_setting[deny_all_requests_except_allowed]" ${
         denyAll ? 'checked="checked"' : ''
       }/>
       <div class="js-deny-all-requests-warning ${denyAll ? '' : 'gl-display-none'}"></div>

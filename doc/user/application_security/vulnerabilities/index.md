@@ -204,7 +204,7 @@ Security training helps your developers learn how to fix vulnerabilities. Develo
 To enable security training for vulnerabilities in your project:
 
 1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Security and Compliance > Configuration**.
+1. On the left sidebar, select **Security and Compliance > Security configuration**.
 1. On the tab bar, select **Vulnerability Management**.
 1. To enable a security training provider, turn on the toggle.
 

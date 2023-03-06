@@ -5,7 +5,7 @@ group: Static Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Security Configuration **(FREE)**
+# Security configuration **(FREE)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20711) in GitLab 12.6.
 > - SAST configuration was [enabled](https://gitlab.com/groups/gitlab-org/-/epics/3659) in 13.3 and [improved](https://gitlab.com/gitlab-org/gitlab/-/issues/232862) in 13.4.
@@ -13,7 +13,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - A simplified version was made [available in all tiers](https://gitlab.com/gitlab-org/gitlab/-/issues/294076) in GitLab 13.10.
 > - [Redesigned](https://gitlab.com/gitlab-org/gitlab/-/issues/326926) in 14.2.
 
-The Security Configuration page lists the following for the security testing and compliance tools:
+The **Security configuration** page lists the following for the security testing and compliance tools:
 
 - Name, description, and a documentation link.
 - Whether or not it is available.
@@ -41,7 +41,7 @@ all security features are configured by default.
 To view a project's security configuration:
 
 1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Security and Compliance > Configuration**.
+1. On the left sidebar, select **Security and Compliance > Security configuration**.
 
 Select **Configuration history** to see the `.gitlab-ci.yml` file's history.
 

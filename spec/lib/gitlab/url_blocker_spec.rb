@@ -19,6 +19,46 @@ RSpec.describe Gitlab::UrlBlocker, :stub_invalid_dns_only do
       end
     end
 
+    shared_examples 'a URI denied by `deny_all_requests_except_allowed`' do
+      context 'when `deny_all_requests_except_allowed` is enabled' do
+        before do
+          allow(Gitlab::CurrentSettings).to receive(:current_application_settings?).and_return(true)
+          stub_application_setting(deny_all_requests_except_allowed: true)
+        end
+
+        it 'blocks the request' do
+          expect { subject }.to raise_error(described_class::BlockedUrlError)
+        end
+
+        context 'when the flag is disabled' do
+          before do
+            stub_feature_flags(deny_all_requests_except_allowed: false)
+          end
+
+          it 'does not block the request' do
+            expect { subject }.not_to raise_error
+          end
+        end
+      end
+
+      context 'when `deny_all_requests_except_allowed` is not enabled' do
+        it 'does not block the request' do
+          expect { subject }.not_to raise_error
+        end
+      end
+    end
+
+    shared_examples 'a URI exempt from `deny_all_requests_except_allowed`' do
+      before do
+        allow(Gitlab::CurrentSettings).to receive(:current_application_settings?).and_return(true)
+        stub_application_setting(deny_all_requests_except_allowed: true)
+      end
+
+      it 'does not block the request' do
+        expect { subject }.not_to raise_error
+      end
+    end
+
     context 'when URI is nil' do
       let(:import_url) { nil }
 
@@ -26,6 +66,8 @@ RSpec.describe Gitlab::UrlBlocker, :stub_invalid_dns_only do
         let(:expected_uri) { nil }
         let(:expected_hostname) { nil }
       end
+
+      it_behaves_like 'a URI exempt from `deny_all_requests_except_allowed`'
     end
 
     context 'when URI is internal' do
@@ -39,6 +81,8 @@ RSpec.describe Gitlab::UrlBlocker, :stub_invalid_dns_only do
         let(:expected_uri) { 'http://127.0.0.1' }
         let(:expected_hostname) { 'localhost' }
       end
+
+      it_behaves_like 'a URI exempt from `deny_all_requests_except_allowed`'
     end
 
     context 'when URI is for a local object storage' do
@@ -74,6 +118,8 @@ RSpec.describe Gitlab::UrlBlocker, :stub_invalid_dns_only do
             let(:expected_uri) { 'http://127.0.0.1:9000/external-diffs/merge_request_diffs/mr-1/diff-1' }
             let(:expected_hostname) { 'review-minio-svc.svc' }
           end
+
+          it_behaves_like 'a URI exempt from `deny_all_requests_except_allowed`'
         end
 
         context 'with an IP address' do
@@ -83,6 +129,8 @@ RSpec.describe Gitlab::UrlBlocker, :stub_invalid_dns_only do
             let(:expected_uri) { 'http://127.0.0.1:9000/external-diffs/merge_request_diffs/mr-1/diff-1' }
             let(:expected_hostname) { nil }
           end
+
+          it_behaves_like 'a URI exempt from `deny_all_requests_except_allowed`'
         end
 
         context 'when LFS object storage is enabled' do
@@ -164,6 +212,8 @@ RSpec.describe Gitlab::UrlBlocker, :stub_invalid_dns_only do
           let(:expected_uri) { 'https://93.184.216.34' }
           let(:expected_hostname) { 'example.org' }
         end
+
+        it_behaves_like 'a URI denied by `deny_all_requests_except_allowed`'
       end
 
       context 'when domain cannot be resolved' do
@@ -193,6 +243,8 @@ RSpec.describe Gitlab::UrlBlocker, :stub_invalid_dns_only do
         let(:expected_hostname) { nil }
       end
 
+      it_behaves_like 'a URI denied by `deny_all_requests_except_allowed`'
+
       context 'when the address is invalid' do
         let(:import_url) { 'http://1.1.1.1.1' }
 
@@ -217,6 +269,8 @@ RSpec.describe Gitlab::UrlBlocker, :stub_invalid_dns_only do
         let(:expected_uri) { 'http://192.168.0.120:9121/scrape?target=unix:///var/opt/gitlab/redis/redis.socket&amp;check-keys=*' }
         let(:expected_hostname) { 'a.192.168.0.120.3times.127.0.0.1.1time.repeat.rebind.network' }
       end
+
+      it_behaves_like 'a URI exempt from `deny_all_requests_except_allowed`'
     end
 
     context 'disabled DNS rebinding protection' do
@@ -229,6 +283,8 @@ RSpec.describe Gitlab::UrlBlocker, :stub_invalid_dns_only do
           let(:expected_uri) { import_url }
           let(:expected_hostname) { nil }
         end
+
+        it_behaves_like 'a URI exempt from `deny_all_requests_except_allowed`'
       end
 
       context 'when the URL hostname is a domain' do
@@ -243,6 +299,8 @@ RSpec.describe Gitlab::UrlBlocker, :stub_invalid_dns_only do
             let(:expected_uri) { import_url }
             let(:expected_hostname) { nil }
           end
+
+          it_behaves_like 'a URI denied by `deny_all_requests_except_allowed`'
         end
 
         context 'when domain cannot be resolved' do
@@ -252,6 +310,8 @@ RSpec.describe Gitlab::UrlBlocker, :stub_invalid_dns_only do
             let(:expected_uri) { import_url }
             let(:expected_hostname) { nil }
           end
+
+          it_behaves_like 'a URI denied by `deny_all_requests_except_allowed`'
         end
       end
 
@@ -263,6 +323,8 @@ RSpec.describe Gitlab::UrlBlocker, :stub_invalid_dns_only do
           let(:expected_hostname) { nil }
         end
 
+        it_behaves_like 'a URI denied by `deny_all_requests_except_allowed`'
+
         context 'when it is invalid' do
           let(:import_url) { 'http://1.1.1.1.1' }
 
@@ -270,6 +332,8 @@ RSpec.describe Gitlab::UrlBlocker, :stub_invalid_dns_only do
             let(:expected_uri) { import_url }
             let(:expected_hostname) { nil }
           end
+
+          it_behaves_like 'a URI denied by `deny_all_requests_except_allowed`'
         end
       end
     end

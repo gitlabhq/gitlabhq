@@ -56,4 +56,10 @@ module.exports = {
     'class-field': false,
   },
   implementation: esbuild,
+  /**
+   * It's necessary to tell esbuild to use the 'js' loader
+   * because esbuild cannot auto-detect which loader to use
+   * based on the .vue extension.
+   */
+  loader: 'js',
 };

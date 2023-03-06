@@ -278,7 +278,7 @@ export default {
           />
         </template>
         <div v-if="!shouldShowTokenBody && !isFormVisible" data-testid="related-items-empty">
-          <p class="gl-my-5 gl-px-5">
+          <p class="gl-my-5 gl-px-5 gl-text-gray-500">
             {{ emptyStateMessage }}
             <gl-link
               v-if="hasHelpPath"

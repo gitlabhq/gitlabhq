@@ -1,12 +1,12 @@
-- deny_all_requests = Feature.enabled?(:deny_all_requests) && @application_setting.deny_all_requests
+- deny_all_requests = Feature.enabled?(:deny_all_requests_except_allowed) && @application_setting.deny_all_requests_except_allowed
 
 = gitlab_ui_form_for @application_setting, url: network_admin_application_settings_path(anchor: 'js-outbound-settings'), html: { class: 'fieldset-form' } do |f|
   = form_errors(@application_setting)
 
   %fieldset
     .form-group
-      - if Feature.enabled?(:deny_all_requests)
-        = f.gitlab_ui_checkbox_component :deny_all_requests,
+      - if Feature.enabled?(:deny_all_requests_except_allowed)
+        = f.gitlab_ui_checkbox_component :deny_all_requests_except_allowed,
             s_('OutboundRequests|Block all requests, except for IP addresses, IP ranges, and domain names defined in the allowlist'),
             checkbox_options: { class: 'js-deny-all-requests' }
         = render Pajamas::AlertComponent.new(variant: :warning,
