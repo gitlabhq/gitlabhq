@@ -32,6 +32,27 @@ RSpec.describe Ci::JobArtifacts::DestroyBatchService, feature_category: :build_a
   describe '#execute' do
     subject(:execute) { service.execute }
 
+    context 'with skip_trace_artifacts false' do
+      let(:service) do
+        described_class.new(
+          artifacts,
+          pick_up_at: Time.current,
+          skip_projects_on_refresh: skip_projects_on_refresh,
+          skip_trace_artifacts: false
+        )
+      end
+
+      subject(:execute) { service.execute }
+
+      it 'deletes trace artifacts' do
+        expect { subject }
+                .to change { Ci::JobArtifact.exists?(trace_artifact.id) }.from(true).to(false)
+
+        expected_destroyed_ids = [artifact_with_file.id, artifact_without_file.id, trace_artifact.id]
+        is_expected.to include(destroyed_artifacts_count: 3, destroyed_ids: expected_destroyed_ids)
+      end
+    end
+
     it 'creates a deleted object for artifact with attached file' do
       expect { subject }.to change { Ci::DeletedObject.count }.by(1)
     end
@@ -287,7 +308,7 @@ RSpec.describe Ci::JobArtifacts::DestroyBatchService, feature_category: :build_a
       end
 
       it 'reports the number of destroyed artifacts' do
-        is_expected.to eq(destroyed_artifacts_count: 0, statistics_updates: {}, status: :success)
+        is_expected.to eq(destroyed_artifacts_count: 0, destroyed_ids: [], statistics_updates: {}, status: :success)
       end
     end
   end

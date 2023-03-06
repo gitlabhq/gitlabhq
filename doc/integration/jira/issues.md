@@ -47,12 +47,11 @@ You can [disable comments](#disable-comments-on-jira-issues) on issues.
 
 ### Require associated Jira issue for merge requests to be merged **(ULTIMATE)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/280766) in GitLab 13.12, disabled behind `jira_issue_association_on_merge_request` [feature flag](../../administration/feature_flags.md).
-> - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/61722) in GitLab 14.1.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/335280) in GitLab 14.2.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/280766) in GitLab 13.12 [with a flag](../../administration/feature_flags.md) named `jira_issue_association_on_merge_request`. Disabled by default.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/335280) in GitLab 14.2. Feature flag `jira_issue_association_on_merge_request` removed.
 
-You can prevent merge requests from being merged if they do not refer to a Jira issue.
-To enforce this:
+With this integration, you can prevent merge requests from being merged if they do not refer to a Jira issue.
+To enable this feature:
 
 1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > Merge requests**.

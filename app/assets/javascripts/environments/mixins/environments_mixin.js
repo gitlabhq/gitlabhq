@@ -3,7 +3,7 @@
  */
 import { isEqual, isFunction, omitBy } from 'lodash';
 import Visibility from 'visibilityjs';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import Poll from '~/lib/utils/poll';
 import { getParameterByName } from '~/lib/utils/url_utility';
 import { s__, __ } from '~/locale';

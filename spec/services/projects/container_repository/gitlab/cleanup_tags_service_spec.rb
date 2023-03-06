@@ -11,11 +11,13 @@ RSpec.describe Projects::ContainerRepository::Gitlab::CleanupTagsService do
   let_it_be(:user) { create(:user) }
   let_it_be(:project, reload: true) { create(:project, :private) }
 
-  let(:repository) { create(:container_repository, :root, :import_done, project: project) }
+  let(:repository) { create(:container_repository, :root, project: project) }
   let(:service) { described_class.new(container_repository: repository, current_user: user, params: params) }
   let(:tags) { %w[latest A Ba Bb C D E] }
 
   before do
+    allow(repository).to receive(:migrated?).and_return(true)
+
     project.add_maintainer(user) if user
 
     stub_container_registry_config(enabled: true)

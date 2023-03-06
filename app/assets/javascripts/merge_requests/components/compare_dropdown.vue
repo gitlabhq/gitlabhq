@@ -1,7 +1,7 @@
 <script>
 import { GlListbox } from '@gitlab/ui';
 import { debounce } from 'lodash';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { __ } from '~/locale';
 import axios from '~/lib/utils/axios_utils';
 

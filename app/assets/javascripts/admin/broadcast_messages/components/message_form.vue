@@ -12,7 +12,7 @@ import {
 } from '@gitlab/ui';
 import axios from '~/lib/utils/axios_utils';
 import { s__ } from '~/locale';
-import { createAlert, VARIANT_DANGER } from '~/flash';
+import { createAlert, VARIANT_DANGER } from '~/alert';
 import { redirectTo } from '~/lib/utils/url_utility';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { BROADCAST_MESSAGES_PATH, THEMES, TYPES, TYPE_BANNER } from '../constants';

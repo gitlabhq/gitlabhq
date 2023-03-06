@@ -62,9 +62,9 @@ RSpec.describe 'RunnerCreate', feature_category: :runner_fleet do
   context 'when user has permissions', :enable_admin_mode do
     let(:current_user) { admin }
 
-    context 'when :create_runner_workflow feature flag is disabled' do
+    context 'when :create_runner_workflow_for_admin feature flag is disabled' do
       before do
-        stub_feature_flags(create_runner_workflow: false)
+        stub_feature_flags(create_runner_workflow_for_admin: false)
       end
 
       it 'returns an error' do
@@ -72,7 +72,7 @@ RSpec.describe 'RunnerCreate', feature_category: :runner_fleet do
 
         expect(graphql_errors).not_to be_empty
         expect(graphql_errors[0]['message'])
-          .to eq("`create_runner_workflow` feature flag is disabled.")
+          .to eq("`create_runner_workflow_for_admin` feature flag is disabled.")
       end
     end
 

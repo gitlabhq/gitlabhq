@@ -1,5 +1,5 @@
 import VueRouter from 'vue-router';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { __ } from '~/locale';
 import { pipelineTabName } from './constants';
 import { createPipelineHeaderApp } from './pipeline_details_header';

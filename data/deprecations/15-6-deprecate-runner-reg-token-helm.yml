@@ -1,6 +1,7 @@
 - title: "`runnerRegistrationToken` parameter for GitLab Runner Helm Chart"  # (required) The name of the feature to be deprecated
   announcement_milestone: "15.6"  # (required) The milestone when this feature was first announced as deprecated.
   removal_milestone: "17.0"  # (required) The milestone when this feature is planned to be removed
+  removal_date: "2024-04-22"
   breaking_change: true  # (required) If this deprecation is a breaking change, set this value to true
   reporter: pedropombeiro  # (required) GitLab username of the person reporting the deprecation
   stage: Verify  # (required) String value of the stage that the feature was created in. e.g., Growth
@@ -8,10 +9,9 @@
   body: |  # (required) Do not modify this line, instead modify the lines below.
     The [`runnerRegistrationToken`](https://docs.gitlab.com/runner/install/kubernetes.html#required-configuration) parameter to use the GitLab Helm Chart to install a runner on Kubernetes is deprecated.
 
-    As part of the new [GitLab Runner token architecture](https://docs.gitlab.com/ee/architecture/blueprints/runner_tokens/), in GitLab 15.8 we plan to introduce:
-
-    - A new method to bind runners to a GitLab instance leveraging `runnerToken`.
-    - A unique system ID saved to the `config.toml`, which will ensure traceability between jobs and runners.
+    We plan to implement a new method to bind runners to a GitLab instance leveraging `runnerToken`
+    as part of the new [GitLab Runner token architecture](https://docs.gitlab.com/ee/architecture/blueprints/runner_tokens/).
+    The work is planned in [this epic](https://gitlab.com/groups/gitlab-org/-/epics/7633).
 
     From GitLab 17.0 and later, the methods to register runners introduced by the new GitLab Runner token architecture will be the only supported methods.
-  end_of_support_milestone: "16.6"  # (optional) Use "XX.YY" format. The milestone when support for this feature will end.
+  end_of_support_milestone: "17.0"  # (optional) Use "XX.YY" format. The milestone when support for this feature will end.

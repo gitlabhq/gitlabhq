@@ -169,6 +169,28 @@ Resources:
 - [Elasticsearch mapping - avoiding type gotchas](https://www.elastic.co/guide/en/elasticsearch/guide/current/mapping.html#_avoiding_type_gotchas)
 - [Elasticsearch mapping types]( https://www.elastic.co/guide/en/elasticsearch/reference/current/mapping-types.html)
 
+#### Include a class attribute
+
+Structured logs should always include a `class` attribute to make all entries logged from a particular place in the code findable.
+To automatically add the `class` attribute, you can include the
+[`Gitlab::Loggable` module](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/loggable.rb) and use the `build_structured_payload` method.
+
+```ruby
+class MyClass
+  include ::Gitlab::Loggable
+
+  def my_method
+    logger.info(build_structured_payload(message: 'log message', project_id: project_id))
+  end
+
+  private
+
+  def logger
+    @logger ||= Gitlab::AppJsonLogger.build
+  end
+end
+```
+
 #### Logging durations
 
 Similar to timezones, choosing the right time unit to log can impose avoidable overhead. So, whenever

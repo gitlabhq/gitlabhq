@@ -1192,6 +1192,31 @@ Input type: `BoardListUpdateLimitMetricsInput`
 | <a id="mutationboardlistupdatelimitmetricserrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationboardlistupdatelimitmetricslist"></a>`list` | [`BoardList`](#boardlist) | Updated list. |
 
+### `Mutation.bulkDestroyJobArtifacts`
+
+WARNING:
+**Introduced** in 15.10.
+This feature is in Alpha. It can be changed or removed at any time.
+
+Input type: `BulkDestroyJobArtifactsInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationbulkdestroyjobartifactsclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationbulkdestroyjobartifactsids"></a>`ids` | [`[CiJobArtifactID!]!`](#cijobartifactid) | Global IDs of the job artifacts to destroy. |
+| <a id="mutationbulkdestroyjobartifactsprojectid"></a>`projectId` | [`ProjectID!`](#projectid) | Global Project ID of the job artifacts to destroy. Incompatible with projectPath. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationbulkdestroyjobartifactsclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationbulkdestroyjobartifactsdestroyedcount"></a>`destroyedCount` | [`Int`](#int) | Number of job artifacts deleted. |
+| <a id="mutationbulkdestroyjobartifactsdestroyedids"></a>`destroyedIds` | [`[CiJobArtifactID!]`](#cijobartifactid) | IDs of job artifacts that were deleted. |
+| <a id="mutationbulkdestroyjobartifactserrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+
 ### `Mutation.bulkEnableDevopsAdoptionNamespaces`
 
 **BETA** This endpoint is subject to change without notice.

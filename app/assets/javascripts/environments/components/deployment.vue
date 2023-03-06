@@ -10,7 +10,7 @@ import {
 import { __, s__ } from '~/locale';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import deploymentDetails from '../graphql/queries/deployment_details.query.graphql';
 import DeploymentStatusBadge from './deployment_status_badge.vue';
 import Commit from './commit.vue';

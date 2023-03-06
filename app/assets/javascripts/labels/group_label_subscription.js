@@ -1,7 +1,7 @@
 import $ from 'jquery';
 import { __ } from '~/locale';
 import { fixTitle, hide } from '~/tooltips';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 
 const tooltipTitles = {

@@ -1,5 +1,5 @@
 import Api from '~/api';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { logError } from '~/lib/logger';
 import { __ } from '~/locale';
 import * as types from './mutation_types';

@@ -62,11 +62,11 @@ describe('RunnerListEmptyState', () => {
         expect(findEmptyState().text()).toMatchInterpolatedText(`${title} ${desc}`);
       });
 
-      describe('when create_runner_workflow is enabled', () => {
+      describe('when create_runner_workflow_for_admin is enabled', () => {
         beforeEach(() => {
           createComponent({
             provide: {
-              glFeatures: { createRunnerWorkflow: true },
+              glFeatures: { createRunnerWorkflowForAdmin: true },
             },
           });
         });
@@ -76,14 +76,14 @@ describe('RunnerListEmptyState', () => {
         });
       });
 
-      describe('when create_runner_workflow is enabled and newRunnerPath not defined', () => {
+      describe('when create_runner_workflow_for_admin is enabled and newRunnerPath not defined', () => {
         beforeEach(() => {
           createComponent({
             props: {
               newRunnerPath: null,
             },
             provide: {
-              glFeatures: { createRunnerWorkflow: true },
+              glFeatures: { createRunnerWorkflowForAdmin: true },
             },
           });
         });
@@ -95,11 +95,11 @@ describe('RunnerListEmptyState', () => {
         });
       });
 
-      describe('when create_runner_workflow is disabled', () => {
+      describe('when create_runner_workflow_for_admin is disabled', () => {
         beforeEach(() => {
           createComponent({
             provide: {
-              glFeatures: { createRunnerWorkflow: false },
+              glFeatures: { createRunnerWorkflowForAdmin: false },
             },
           });
         });

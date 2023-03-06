@@ -23,8 +23,6 @@ RSpec.describe "Admin Runners", feature_category: :runner_fleet do
 
     describe "runners creation" do
       before do
-        stub_feature_flags(create_runner_workflow: true)
-
         visit admin_runners_path
       end
 
@@ -35,7 +33,7 @@ RSpec.describe "Admin Runners", feature_category: :runner_fleet do
 
     describe "runners registration" do
       before do
-        stub_feature_flags(create_runner_workflow: false)
+        stub_feature_flags(create_runner_workflow_for_admin: false)
 
         visit admin_runners_path
       end

@@ -16,9 +16,9 @@ module Mutations
           description: 'Runner after mutation.'
 
         def resolve(**args)
-          if Feature.disabled?(:create_runner_workflow)
+          if Feature.disabled?(:create_runner_workflow_for_admin, current_user)
             raise Gitlab::Graphql::Errors::ResourceNotAvailable,
-              '`create_runner_workflow` feature flag is disabled.'
+              '`create_runner_workflow_for_admin` feature flag is disabled.'
           end
 
           create_runner(args)

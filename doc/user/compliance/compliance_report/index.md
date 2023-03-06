@@ -5,7 +5,11 @@ group: Compliance
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Compliance report **(ULTIMATE)**
+# Compliance reports **(ULTIMATE)**
+
+See reports about compliance violations and compliance frameworks for the group.
+
+## Compliance violations report
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/36524) in GitLab 12.8 as Compliance Dashboard.
 > - Compliance violation drawer [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/299357) in GitLab 14.1.
@@ -13,11 +17,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - [Replaced](https://gitlab.com/groups/gitlab-org/-/epics/5237) by merge request violations in GitLab 14.6 [with a flag](../../../administration/feature_flags.md) named `compliance_violations_report`. Disabled by default.
 > - GraphQL API [introduced](https://gitlab.com/groups/gitlab-org/-/epics/7222) in GitLab 14.9.
 > - [Generally available](https://gitlab.com/groups/gitlab-org/-/epics/5237) in GitLab 14.10. [Feature flag `compliance_violations_report`](https://gitlab.com/gitlab-org/gitlab/-/issues/346266) removed.
+> - [Renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112111) to compliance violations report in GitLab 15.9.
 
-With a compliance report, you can:
-
-- List compliance violations from all merge requests merged in projects in a group.
-- See the reason and severity of each compliance violation.
+With compliance violations report, you can see a high-level view of merge request activity for all projects in the group.
 
 When you select a row in the compliance report, a drawer appears that provides:
 
@@ -30,13 +32,13 @@ When you select a row in the compliance report, a drawer appears that provides:
 - A list of users that approved the merge request.
 - The user that merged the merge request.
 
-## View the compliance report for a group
+### View the compliance violations report for a group
 
 Prerequisites:
 
 - You must be an administrator or have the Owner role for the group.
 
-To view the compliance report:
+To view the compliance violations report:
 
 1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Security and Compliance > Compliance report**.
@@ -49,7 +51,7 @@ You can sort the compliance report on:
 
 Select a row to see details of the compliance violation.
 
-### Severity levels
+#### Severity levels
 
 Each compliance violation has one of the following severities.
 
@@ -65,7 +67,7 @@ Each compliance violation has one of the following severities.
 
 <!-- vale gitlab.SubstitutionWarning = YES -->
 
-### Violation types
+#### Violation types
 
 From [GitLab 14.10](https://gitlab.com/groups/gitlab-org/-/epics/6870), these are the available compliance violations.
 
@@ -90,7 +92,7 @@ The following are unavailable compliance violations that are tracked in [issue 3
 
 <!-- vale gitlab.SubstitutionWarning = YES -->
 
-#### Separation of duties
+##### Separation of duties
 
 GitLab supports a separation of duties policy between users who create and approve merge requests. Our criteria for the
 separation of duties is:
@@ -99,7 +101,7 @@ separation of duties is:
 - [A merge request committer is **not** allowed to approve a merge request they have added commits to](../../project/merge_requests/approvals/settings.md#prevent-approvals-by-users-who-add-commits).
 - [The minimum number of approvals required to merge a merge request is **at least** two](../../project/merge_requests/approvals/rules.md).
 
-## Chain of Custody report
+### Chain of Custody report
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/213364) in GitLab 13.3.
 > - Chain of Custody reports sent using email [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/342594) in GitLab 15.3 with a flag named `async_chain_of_custody_report`. Disabled by default.
@@ -135,7 +137,7 @@ If the commit has a related merge commit, then the following are also included:
 - Pipeline ID.
 - Merge request approvers.
 
-### Generate Chain of Custody report
+#### Generate Chain of Custody report
 
 To generate the Chain of Custody report:
 
@@ -145,7 +147,7 @@ To generate the Chain of Custody report:
 
 Depending on your version of GitLab, the Chain of Custody report is either sent through email or available for download.
 
-### Generate commit-specific Chain of Custody report
+#### Generate commit-specific Chain of Custody report
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/267629) in GitLab 13.6.
 
@@ -165,3 +167,31 @@ Depending on your version of GitLab, the Chain of Custody report is either sent 
 
 Alternatively, use a direct link: `https://gitlab.com/groups/<group-name>/-/security/merge_commit_reports.csv?commit_sha={optional_commit_sha}`,
 passing in an optional value to the `commit_sha` query parameter.
+
+## Compliance frameworks report
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/387910) in GitLab 15.10 with a flag named `compliance_frameworks_report`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `compliance_frameworks_report`.
+On GitLab.com, this feature is not available.
+
+With compliance frameworks report, you can see the compliance frameworks that are applied to projects in a group. Each row of the report shows:
+
+- Project name.
+- Project path.
+- Compliance framework label if the project has one assigned.
+
+The default framework for the group has a **default** badge.
+
+### View the compliance frameworks report for a group
+
+Prerequisites:
+
+- You must be an administrator or have the Owner role for the group.
+
+To view the compliance frameworks report:
+
+1. On the top bar, select **Main menu > Groups** and find your group.
+1. On the left sidebar, select **Security & Compliance > Compliance report**.
+1. On the page, select the **Frameworks** tab.

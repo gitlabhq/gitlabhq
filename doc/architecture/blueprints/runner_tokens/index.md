@@ -376,7 +376,7 @@ scope.
 | GitLab Rails app | `%15.9` | Implement the `create_runner_machine` [feature flag](../../../administration/feature_flags.md). |
 | GitLab Rails app | `%15.9` | Create `ci_runner_machines` record in `POST /runners/verify` request if the runner token is prefixed with `glrt-`. |
 | GitLab Rails app | `%15.9` | Use runner token + `system_id` JSON parameters in `POST /jobs/request` request in the [heartbeat request](https://gitlab.com/gitlab-org/gitlab/blob/c73c96a8ffd515295842d72a3635a8ae873d688c/lib/api/ci/helpers/runner.rb#L14-20) to update the `ci_runner_machines` cache/table. |
-| GitLab Rails app | `%15.9` | Implement the `create_runner_workflow`  [feature flag](../../../administration/feature_flags.md). |
+| GitLab Rails app | `%15.9` | Implement the `create_runner_workflow_for_admin`  [feature flag](../../../administration/feature_flags.md). |
 | GitLab Rails app | `%15.9` | Implement `create_{instance|group|project}_runner` permissions. |
 | GitLab Rails app | `%15.9` | Rename `ci_runner_machines.machine_xid` column to `system_xid` to be consistent with `system_id` passed in APIs. |
 | GitLab Rails app | `%15.10` | Remove the ignore rule for `ci_runner_machines.machine_xid` column. |
@@ -503,7 +503,7 @@ gitlab-runner register
     --executor "shell" \
     --url "https://gitlab.com/" \
     --non-interactive \
-    --registration-token="grlt-2CR8_eVxiioB1QmzPZwa"
+    --registration-token="glrt-2CR8_eVxiioB1QmzPZwa"
 ```
 
 ### How does this change impact auto-scaling scenarios?

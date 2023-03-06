@@ -1,7 +1,7 @@
 import { GlToast } from '@gitlab/ui';
 import Visibility from 'visibilityjs';
 import Vue from 'vue';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import AccessorUtilities from '~/lib/utils/accessor';
 import Poll from '~/lib/utils/poll';
 import { s__ } from '~/locale';

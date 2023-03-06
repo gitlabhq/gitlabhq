@@ -1,6 +1,6 @@
 <script>
 import { GlTooltipDirective, GlModal } from '@gitlab/ui';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { __, s__, sprintf } from '~/locale';
 import eventHub from '../event_hub';
 import deleteEnvironmentMutation from '../graphql/mutations/delete_environment.mutation.graphql';

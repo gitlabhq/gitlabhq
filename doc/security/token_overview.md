@@ -77,7 +77,7 @@ Project maintainers and owners can add or enable a deploy key for a project repo
 ## Runner registration tokens (deprecated)
 
 WARNING:
-The ability to pass a runner registration token was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/380872) in GitLab 15.6 and is
+The ability to pass a runner registration token has been [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/380872) and is
 planned for removal in 17.0, along with support for certain configuration arguments. This change is a breaking change. GitLab plans to introduce a new
 [GitLab Runner token architecture](../architecture/blueprints/runner_tokens/index.md), which introduces
 a new method for registering runners and eliminates the

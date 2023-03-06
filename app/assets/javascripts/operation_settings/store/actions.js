@@ -1,4 +1,4 @@
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { refreshCurrentPage } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
@@ -26,7 +26,7 @@ export const saveChanges = ({ state, dispatch }) =>
 export const receiveSaveChangesSuccess = () => {
   /**
    * The operations_controller currently handles successful requests
-   * by creating a flash banner messsage to notify the user.
+   * by creating a alert banner messsage to notify the user.
    */
   refreshCurrentPage();
 };

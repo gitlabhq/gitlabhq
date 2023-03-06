@@ -1,7 +1,7 @@
 <script>
 import { GlIntersectionObserver, GlLoadingIcon, GlSkeletonLoader } from '@gitlab/ui';
 import produce from 'immer';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { __ } from '~/locale';
 import eventHub from '~/jobs/components/table/event_hub';
 import JobsTable from '~/jobs/components/table/jobs_table.vue';

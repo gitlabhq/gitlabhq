@@ -2,7 +2,7 @@
 import { GlPagination } from '@gitlab/ui';
 import { redirectTo } from '~/lib/utils/url_utility';
 import { buildUrlWithCurrentLocation } from '~/lib/utils/common_utils';
-import { createAlert, VARIANT_DANGER } from '~/flash';
+import { createAlert, VARIANT_DANGER } from '~/alert';
 import { s__ } from '~/locale';
 import axios from '~/lib/utils/axios_utils';
 import { NEW_BROADCAST_MESSAGE } from '../constants';

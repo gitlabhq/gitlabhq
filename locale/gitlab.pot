@@ -10489,6 +10489,9 @@ msgstr ""
 msgid "Compliance report"
 msgstr ""
 
+msgid "Compliance violations and compliance frameworks for the group."
+msgstr ""
+
 msgid "ComplianceFrameworks|Add framework"
 msgstr ""
 
@@ -10604,6 +10607,9 @@ msgid "ComplianceReport|No projects found"
 msgstr ""
 
 msgid "ComplianceReport|No violations found"
+msgstr ""
+
+msgid "ComplianceReport|Retrieving the compliance framework report failed. Refresh the page and try again."
 msgstr ""
 
 msgid "ComplianceReport|Unable to load the compliance framework report. Refresh the page and try again."
@@ -43096,9 +43102,6 @@ msgid "The comparison view may be inaccurate due to merge conflicts."
 msgstr ""
 
 msgid "The complete DevOps platform. One application with endless possibilities. Organizations rely on GitLab’s source code management, CI/CD, security, and more to deliver software rapidly."
-msgstr ""
-
-msgid "The compliance report shows the merge request violations merged in protected environments."
 msgstr ""
 
 msgid "The connection will time out after %{timeout}. For repositories that take longer, use a clone/push combination."

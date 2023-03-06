@@ -1,9 +1,6 @@
 export function supported() {
   return Boolean(
-    navigator.credentials &&
-      navigator.credentials.create &&
-      navigator.credentials.get &&
-      window.PublicKeyCredential,
+    navigator.credentials?.create && navigator.credentials?.get && window.PublicKeyCredential,
   );
 }
 

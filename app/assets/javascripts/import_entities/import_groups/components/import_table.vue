@@ -106,7 +106,7 @@ export default {
       reimportRequests: [],
       importTargets: {},
       unavailableFeaturesAlertVisible: true,
-      helpUrl: helpPagePath('ee/user/group/import', {
+      helpUrl: helpPagePath('user/group/import', {
         anchor: 'visibility-rules',
       }),
     };

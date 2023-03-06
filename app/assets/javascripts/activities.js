@@ -2,7 +2,7 @@
 
 import $ from 'jquery';
 import { setCookie } from '~/lib/utils/common_utils';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { s__ } from '~/locale';
 import { localTimeAgo } from './lib/utils/datetime_utility';
 import Pager from './pager';

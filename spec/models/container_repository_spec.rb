@@ -531,6 +531,10 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
   describe '#each_tags_page' do
     let(:page_size) { 100 }
 
+    before do
+      allow(repository).to receive(:migrated?).and_return(true)
+    end
+
     shared_examples 'iterating through a page' do |expected_tags: true|
       it 'iterates through one page' do
         expect(repository.gitlab_api_client).to receive(:tags)
@@ -663,7 +667,7 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
 
     context 'calling on a non migrated repository' do
       before do
-        repository.update!(created_at: described_class::MIGRATION_PHASE_1_ENDED_AT - 3.days)
+        allow(repository).to receive(:migrated?).and_return(false)
       end
 
       it 'raises an Argument error' do
@@ -1564,22 +1568,20 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
   describe '#migrated?' do
     subject { repository.migrated? }
 
-    it { is_expected.to eq(true) }
-
-    context 'with a created_at older than phase 1 ends' do
+    context 'on gitlab.com' do
       before do
-        repository.update!(created_at: described_class::MIGRATION_PHASE_1_ENDED_AT - 3.days)
+        allow(::Gitlab).to receive(:com?).and_return(true)
+      end
+
+      it { is_expected.to eq(true) }
+    end
+
+    context 'not on gitlab.com' do
+      before do
+        allow(::Gitlab).to receive(:com?).and_return(false)
       end
 
       it { is_expected.to eq(false) }
-
-      context 'with migration state set to import_done' do
-        before do
-          repository.update!(migration_state: 'import_done')
-        end
-
-        it { is_expected.to eq(true) }
-      end
     end
   end
 

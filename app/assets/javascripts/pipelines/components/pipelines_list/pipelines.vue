@@ -1,7 +1,7 @@
 <script>
 import { GlEmptyState, GlIcon, GlLoadingIcon, GlCollapsibleListbox } from '@gitlab/ui';
 import { isEqual } from 'lodash';
-import { createAlert, VARIANT_INFO, VARIANT_WARNING } from '~/flash';
+import { createAlert, VARIANT_INFO, VARIANT_WARNING } from '~/alert';
 import { getParameterByName } from '~/lib/utils/url_utility';
 import { __, s__ } from '~/locale';
 import Tracking from '~/tracking';

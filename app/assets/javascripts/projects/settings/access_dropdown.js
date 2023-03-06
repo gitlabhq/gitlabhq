@@ -1,7 +1,7 @@
 /* eslint-disable no-underscore-dangle, class-methods-use-this */
 import { escape, find, countBy } from 'lodash';
 import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { n__, s__, __, sprintf } from '~/locale';
 import { getUsers, getGroups, getDeployKeys } from './api/access_dropdown_api';
 import { LEVEL_TYPES, LEVEL_ID_PROP, ACCESS_LEVELS, ACCESS_LEVEL_NONE } from './constants';

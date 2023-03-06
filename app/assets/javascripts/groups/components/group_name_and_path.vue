@@ -18,7 +18,7 @@ import { debounce } from 'lodash';
 
 import { s__, __ } from '~/locale';
 import { getGroupPathAvailability } from '~/rest_api';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { slugify } from '~/lib/utils/text_utility';
 import axios from '~/lib/utils/axios_utils';
 import { helpPagePath } from '~/helpers/help_page_helper';

@@ -35,22 +35,16 @@ RSpec.describe Admin::RunnersController, feature_category: :runner_fleet do
   end
 
   describe '#new' do
-    context 'when create_runner_workflow is enabled' do
-      before do
-        stub_feature_flags(create_runner_workflow: true)
-      end
+    it 'renders a :new template' do
+      get :new
 
-      it 'renders a :new template' do
-        get :new
-
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(response).to render_template(:new)
-      end
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(response).to render_template(:new)
     end
 
-    context 'when create_runner_workflow is disabled' do
+    context 'when create_runner_workflow_for_admin is disabled' do
       before do
-        stub_feature_flags(create_runner_workflow: false)
+        stub_feature_flags(create_runner_workflow_for_admin: false)
       end
 
       it 'returns :not_found' do
@@ -64,38 +58,32 @@ RSpec.describe Admin::RunnersController, feature_category: :runner_fleet do
   describe '#register' do
     subject(:register) { get :register, params: { id: new_runner.id } }
 
-    context 'when create_runner_workflow is enabled' do
-      before do
-        stub_feature_flags(create_runner_workflow: true)
-      end
+    context 'when runner can be registered after creation' do
+      let_it_be(:new_runner) { create(:ci_runner, registration_type: :authenticated_user) }
 
-      context 'when runner can be registered after creation' do
-        let_it_be(:new_runner) { create(:ci_runner, registration_type: :authenticated_user) }
+      it 'renders a :register template' do
+        register
 
-        it 'renders a :register template' do
-          register
-
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(response).to render_template(:register)
-        end
-      end
-
-      context 'when runner cannot be registered after creation' do
-        let_it_be(:new_runner) { runner }
-
-        it 'returns :not_found' do
-          register
-
-          expect(response).to have_gitlab_http_status(:not_found)
-        end
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to render_template(:register)
       end
     end
 
-    context 'when create_runner_workflow is disabled' do
+    context 'when runner cannot be registered after creation' do
+      let_it_be(:new_runner) { runner }
+
+      it 'returns :not_found' do
+        register
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'when create_runner_workflow_for_admin is disabled' do
       let_it_be(:new_runner) { create(:ci_runner, registration_type: :authenticated_user) }
 
       before do
-        stub_feature_flags(create_runner_workflow: false)
+        stub_feature_flags(create_runner_workflow_for_admin: false)
       end
 
       it 'returns :not_found' do

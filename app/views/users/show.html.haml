@@ -64,7 +64,7 @@
 
           - if @user.pronunciation.present?
             .gl-align-items-center
-              %p.gl-mb-4.gl-text-gray-500= s_("UserProfile|Pronounced as: %{pronunciation}") % { pronunciation: @user.pronunciation }
+              %p.gl-mb-4.gl-text-gray-500.gl-max-w-80.gl-mx-auto= s_("UserProfile|Pronounced as: %{pronunciation}") % { pronunciation: @user.pronunciation }
 
           - if @user.status&.customized?
             .cover-status.gl-display-inline-flex.gl-align-items-center

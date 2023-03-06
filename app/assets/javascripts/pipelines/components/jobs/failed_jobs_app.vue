@@ -1,7 +1,7 @@
 <script>
 import { GlLoadingIcon } from '@gitlab/ui';
 import { s__ } from '~/locale';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import GetFailedJobsQuery from '../../graphql/queries/get_failed_jobs.query.graphql';
 import { prepareFailedJobs } from './utils';

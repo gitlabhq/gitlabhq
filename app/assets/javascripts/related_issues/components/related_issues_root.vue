@@ -23,7 +23,7 @@ Your caret can stop touching a `rawReference` can happen in a variety of ways:
    and hide the `AddIssuableForm` area.
 
 */
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { getIdFromGraphQLId, isGid } from '~/graphql_shared/utils';
 import { TYPE_ISSUE } from '~/issues/constants';
 import { HTTP_STATUS_NOT_FOUND } from '~/lib/utils/http_status';

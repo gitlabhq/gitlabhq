@@ -1,6 +1,6 @@
 <script>
 import { GlSprintf, GlLink, GlModalDirective } from '@gitlab/ui';
-import { createAlert, VARIANT_SUCCESS } from '~/flash';
+import { createAlert, VARIANT_SUCCESS } from '~/alert';
 import { redirectTo, setUrlParams } from '~/lib/utils/url_utility';
 import { s__ } from '~/locale';
 import RunnerInstructionsModal from '~/vue_shared/components/runner_instructions/runner_instructions_modal.vue';

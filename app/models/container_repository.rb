@@ -395,7 +395,7 @@ class ContainerRepository < ApplicationRecord
   end
 
   def migrated?
-    (self.created_at && MIGRATION_PHASE_1_ENDED_AT < self.created_at) || import_done?
+    Gitlab.com?
   end
 
   def last_import_step_done_at

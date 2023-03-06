@@ -1297,9 +1297,9 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
       end
     end
 
-    context 'create_runner_workflow flag enabled' do
+    context 'create_runner_workflow_for_admin flag enabled' do
       before do
-        stub_feature_flags(create_runner_workflow: true)
+        stub_feature_flags(create_runner_workflow_for_admin: true)
       end
 
       context 'admin' do
@@ -1380,9 +1380,9 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
       end
     end
 
-    context 'with create_runner_workflow flag disabled' do
+    context 'with create_runner_workflow_for_admin flag disabled' do
       before do
-        stub_feature_flags(create_runner_workflow: false)
+        stub_feature_flags(create_runner_workflow_for_admin: false)
       end
 
       context 'admin' do
