@@ -69,7 +69,7 @@ module Tooling
 
         fail PIPELINE_EXPEDITE_ERROR_MESSAGE if has_pipeline_expedite_label?
 
-        status = package_and_test_status
+        status = package_and_test_bridge_and_pipeline_status
 
         if status.nil? || FAILING_PACKAGE_AND_TEST_STATUSES.include?(status) # rubocop:disable Style/GuardClause
           fail NEEDS_PACKAGE_AND_TEST_MESSAGE
@@ -91,15 +91,26 @@ module Tooling
         !!stable_target_branch && !helper.security_mr?
       end
 
-      def package_and_test_status
+      def package_and_test_bridge_and_pipeline_status
         mr_head_pipeline_id = gitlab.mr_json.dig('head_pipeline', 'id')
         return unless mr_head_pipeline_id
 
-        pipeline = package_and_test_pipeline(mr_head_pipeline_id)
+        bridge = package_and_test_bridge(mr_head_pipeline_id)
 
-        return unless pipeline
+        return unless bridge
 
-        pipeline['status']
+        if bridge['status'] == 'created'
+          bridge['status']
+        else
+          bridge.fetch('downstream_pipeline').fetch('status')
+        end
+      end
+
+      def package_and_test_bridge(mr_head_pipeline_id)
+        gitlab
+          .api
+          .pipeline_bridges(helper.mr_target_project_id, mr_head_pipeline_id)
+          &.find { |bridge| bridge['name'] == 'e2e:package-and-test' }
       end
 
       def stable_target_branch
@@ -201,17 +212,6 @@ module Tooling
 
       def version_to_minor_string(version)
         "#{version[:major]}.#{version[:minor]}"
-      end
-
-      def package_and_test_pipeline(mr_head_pipeline_id)
-        package_and_test_bridge = gitlab
-          .api
-          .pipeline_bridges(helper.mr_target_project_id, mr_head_pipeline_id)
-          &.find { |bridge| bridge['name'] == 'e2e:package-and-test' }
-
-        return unless package_and_test_bridge
-
-        package_and_test_bridge['downstream_pipeline']
       end
     end
   end
