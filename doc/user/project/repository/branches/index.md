@@ -62,7 +62,7 @@ issue number. GitLab uses the issue number to import data into the merge request
 To compare branches in a repository:
 
 1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Repository > Compare**.
+1. On the left sidebar, select **Repository > Compare revisions**.
 1. Select the **Source** branch to search for your desired branch. Exact matches are
    shown first. You can refine your search with operators:
    - `^` matches the beginning of the branch name: `^feat` matches `feat/user-authentication`.

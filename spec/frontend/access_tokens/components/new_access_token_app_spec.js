@@ -4,12 +4,12 @@ import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import NewAccessTokenApp from '~/access_tokens/components/new_access_token_app.vue';
 import { EVENT_ERROR, EVENT_SUCCESS, FORM_SELECTOR } from '~/access_tokens/components/constants';
-import { createAlert, VARIANT_INFO } from '~/flash';
+import { createAlert, VARIANT_INFO } from '~/alert';
 import { __, sprintf } from '~/locale';
 import DomElementListener from '~/vue_shared/components/dom_element_listener.vue';
 import InputCopyToggleVisibility from '~/vue_shared/components/form/input_copy_toggle_visibility.vue';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 describe('~/access_tokens/components/new_access_token_app', () => {
   let wrapper;

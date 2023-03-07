@@ -70,6 +70,7 @@ module Types
     mount_mutation Mutations::Issues::BulkUpdate, alpha: { milestone: '15.9' }
     mount_mutation Mutations::Labels::Create
     mount_mutation Mutations::Members::Groups::BulkUpdate
+    mount_mutation Mutations::Members::Projects::BulkUpdate
     mount_mutation Mutations::MergeRequests::Accept
     mount_mutation Mutations::MergeRequests::Create
     mount_mutation Mutations::MergeRequests::Update

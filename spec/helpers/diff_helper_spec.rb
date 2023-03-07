@@ -47,6 +47,12 @@ RSpec.describe DiffHelper do
   end
 
   describe 'diff_options' do
+    let(:large_notebooks_enabled) { false }
+
+    before do
+      stub_feature_flags(large_ipynb_diffs: large_notebooks_enabled)
+    end
+
     it 'returns no collapse false' do
       expect(diff_options).to include(expanded: false)
     end
@@ -56,21 +62,48 @@ RSpec.describe DiffHelper do
       expect(diff_options).to include(expanded: true)
     end
 
-    it 'returns no collapse true if action name diff_for_path' do
-      allow(controller).to receive(:action_name) { 'diff_for_path' }
-      expect(diff_options).to include(expanded: true)
-    end
+    context 'when action name is diff_for_path' do
+      before do
+        allow(controller).to receive(:action_name) { 'diff_for_path' }
+      end
 
-    it 'returns paths if action name diff_for_path and param old path' do
-      allow(controller).to receive(:params) { { old_path: 'lib/wadus.rb' } }
-      allow(controller).to receive(:action_name) { 'diff_for_path' }
-      expect(diff_options[:paths]).to include('lib/wadus.rb')
-    end
+      it 'returns expanded true' do
+        expect(diff_options).to include(expanded: true)
+      end
 
-    it 'returns paths if action name diff_for_path and param new path' do
-      allow(controller).to receive(:params) { { new_path: 'lib/wadus.rb' } }
-      allow(controller).to receive(:action_name) { 'diff_for_path' }
-      expect(diff_options[:paths]).to include('lib/wadus.rb')
+      it 'returns paths if param old path' do
+        allow(controller).to receive(:params) { { old_path: 'lib/wadus.rb' } }
+        expect(diff_options[:paths]).to include('lib/wadus.rb')
+      end
+
+      it 'returns paths if param new path' do
+        allow(controller).to receive(:params) { { new_path: 'lib/wadus.rb' } }
+        expect(diff_options[:paths]).to include('lib/wadus.rb')
+      end
+
+      it 'does not set max_patch_bytes_for_file_extension' do
+        expect(diff_options[:max_patch_bytes_for_file_extension]).to be_nil
+      end
+
+      context 'when file_identifier include .ipynb' do
+        before do
+          allow(controller).to receive(:params) { { file_identifier: 'something.ipynb' } }
+        end
+
+        context 'when large_ipynb_diffs is disabled' do
+          it 'does not set max_patch_bytes_for_file_extension' do
+            expect(diff_options[:max_patch_bytes_for_file_extension]).to be_nil
+          end
+        end
+
+        context 'when large_ipynb_diffs is enabled' do
+          let(:large_notebooks_enabled) { true }
+
+          it 'sets max_patch_bytes_for_file_extension' do
+            expect(diff_options[:max_patch_bytes_for_file_extension]).to eq({ '.ipynb' => 1.megabyte })
+          end
+        end
+      end
     end
   end
 

@@ -6,7 +6,7 @@ import approvedByCurrentUser from 'test_fixtures/graphql/merge_requests/approval
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import Approvals from '~/vue_merge_request_widget/components/approvals/approvals.vue';
 import ApprovalsSummary from '~/vue_merge_request_widget/components/approvals/approvals_summary.vue';
 import ApprovalsSummaryOptional from '~/vue_merge_request_widget/components/approvals/approvals_summary_optional.vue';
@@ -21,7 +21,7 @@ import { createCanApproveResponse } from 'jest/approvals/mock_data';
 Vue.use(VueApollo);
 
 const mockAlertDismiss = jest.fn();
-jest.mock('~/flash', () => ({
+jest.mock('~/alert', () => ({
   createAlert: jest.fn().mockImplementation(() => ({
     dismiss: mockAlertDismiss,
   })),
@@ -295,7 +295,7 @@ describe('MRWidget approvals', () => {
             return nextTick();
           });
 
-          it('flashes error message', () => {
+          it('alerts error message', () => {
             expect(createAlert).toHaveBeenCalledWith({ message: UNAPPROVE_ERROR });
           });
         });

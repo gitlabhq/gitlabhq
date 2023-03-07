@@ -15,6 +15,10 @@ export default function syntaxHighlight($els = null) {
 
   const els = $els.get ? $els.get() : $els;
   const handler = (el) => {
+    if (el.classList === undefined) {
+      return el;
+    }
+
     if (el.classList.contains('js-syntax-highlight')) {
       // Given the element itself, apply highlighting
       return el.classList.add(gon.user_color_scheme);

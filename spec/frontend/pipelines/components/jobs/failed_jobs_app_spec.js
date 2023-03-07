@@ -4,7 +4,7 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import FailedJobsApp from '~/pipelines/components/jobs/failed_jobs_app.vue';
 import FailedJobsTable from '~/pipelines/components/jobs/failed_jobs_table.vue';
 import GetFailedJobsQuery from '~/pipelines/graphql/queries/get_failed_jobs.query.graphql';
@@ -12,7 +12,7 @@ import { mockFailedJobsQueryResponse, mockFailedJobsSummaryData } from '../../mo
 
 Vue.use(VueApollo);
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 describe('Failed Jobs App', () => {
   let wrapper;

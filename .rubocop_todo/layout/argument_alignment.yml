@@ -108,7 +108,6 @@ Layout/ArgumentAlignment:
     - 'app/graphql/mutations/jira_import/import_users.rb'
     - 'app/graphql/mutations/jira_import/start.rb'
     - 'app/graphql/mutations/labels/create.rb'
-    - 'app/graphql/mutations/members/groups/bulk_update.rb'
     - 'app/graphql/mutations/merge_requests/accept.rb'
     - 'app/graphql/mutations/merge_requests/base.rb'
     - 'app/graphql/mutations/merge_requests/create.rb'

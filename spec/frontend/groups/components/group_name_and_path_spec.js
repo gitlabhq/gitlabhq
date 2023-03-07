@@ -7,11 +7,11 @@ import waitForPromises from 'helpers/wait_for_promises';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import GroupNameAndPath from '~/groups/components/group_name_and_path.vue';
 import { getGroupPathAvailability } from '~/rest_api';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import searchGroupsWhereUserCanCreateSubgroups from '~/groups/queries/search_groups_where_user_can_create_subgroups.query.graphql';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 jest.mock('~/rest_api', () => ({
   getGroupPathAvailability: jest.fn(),
 }));

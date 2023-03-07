@@ -221,7 +221,7 @@ To view the user who locked the file (if it was not you), hover over the button.
 To view and remove file locks:
 
 1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Repository > Locked Files**.
+1. On the left sidebar, select **Repository > Locked files**.
 
 This list shows all the files locked either through LFS or GitLab UI.
 

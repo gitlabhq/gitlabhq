@@ -5,11 +5,11 @@ import FilteredSearchSpecHelper from 'helpers/filtered_search_spec_helper';
 import { TEST_HOST } from 'helpers/test_constants';
 import DropdownUtils from '~/filtered_search/dropdown_utils';
 import VisualTokenValue from '~/filtered_search/visual_token_value';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import AjaxCache from '~/lib/utils/ajax_cache';
 import UsersCache from '~/lib/utils/users_cache';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 describe('Filtered Search Visual Tokens', () => {
   const findElements = (tokenElement) => {

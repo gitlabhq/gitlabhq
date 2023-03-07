@@ -3185,7 +3185,7 @@ Input type: `GroupMemberBulkUpdateInput`
 | <a id="mutationgroupmemberbulkupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationgroupmemberbulkupdateexpiresat"></a>`expiresAt` | [`Time`](#time) | Date and time the membership expires. |
 | <a id="mutationgroupmemberbulkupdategroupid"></a>`groupId` | [`GroupID!`](#groupid) | Global ID of the group. |
-| <a id="mutationgroupmemberbulkupdateuserids"></a>`userIds` | [`[UserID!]!`](#userid) | Global IDs of the group members. |
+| <a id="mutationgroupmemberbulkupdateuserids"></a>`userIds` | [`[UserID!]!`](#userid) | Global IDs of the members. |
 
 #### Fields
 
@@ -4714,6 +4714,28 @@ Input type: `ProjectInitializeProductAnalyticsInput`
 | <a id="mutationprojectinitializeproductanalyticsclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationprojectinitializeproductanalyticserrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationprojectinitializeproductanalyticsproject"></a>`project` | [`Project`](#project) | Project on which the initialization took place. |
+
+### `Mutation.projectMemberBulkUpdate`
+
+Input type: `ProjectMemberBulkUpdateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationprojectmemberbulkupdateaccesslevel"></a>`accessLevel` | [`MemberAccessLevel!`](#memberaccesslevel) | Access level to update the members to. |
+| <a id="mutationprojectmemberbulkupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationprojectmemberbulkupdateexpiresat"></a>`expiresAt` | [`Time`](#time) | Date and time the membership expires. |
+| <a id="mutationprojectmemberbulkupdateprojectid"></a>`projectId` | [`ProjectID!`](#projectid) | Global ID of the project. |
+| <a id="mutationprojectmemberbulkupdateuserids"></a>`userIds` | [`[UserID!]!`](#userid) | Global IDs of the members. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationprojectmemberbulkupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationprojectmemberbulkupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationprojectmemberbulkupdateprojectmembers"></a>`projectMembers` | [`[ProjectMember!]`](#projectmember) | Project members after mutation. |
 
 ### `Mutation.projectSetComplianceFramework`
 

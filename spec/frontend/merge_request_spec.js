@@ -3,12 +3,12 @@ import $ from 'jquery';
 import { loadHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import { TEST_HOST } from 'spec/test_constants';
 import waitForPromises from 'helpers/wait_for_promises';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_CONFLICT, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import MergeRequest from '~/merge_request';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 describe('MergeRequest', () => {
   const test = {};

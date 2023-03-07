@@ -10390,9 +10390,6 @@ msgstr ""
 msgid "Compare GitLab plans"
 msgstr ""
 
-msgid "Compare Revisions"
-msgstr ""
-
 msgid "Compare branches and continue"
 msgstr ""
 
@@ -10403,6 +10400,9 @@ msgid "Compare changes with the last commit"
 msgstr ""
 
 msgid "Compare changes with the merge request target branch"
+msgstr ""
+
+msgid "Compare revisions"
 msgstr ""
 
 msgid "Compare submodule commit revisions"
@@ -11401,7 +11401,7 @@ msgstr ""
 msgid "Contributor"
 msgstr ""
 
-msgid "Contributors"
+msgid "Contributor statistics"
 msgstr ""
 
 msgid "Control emails linked to your account"
@@ -25754,9 +25754,6 @@ msgid "Lock to current projects"
 msgstr ""
 
 msgid "Locked"
-msgstr ""
-
-msgid "Locked Files"
 msgstr ""
 
 msgid "Locked by %{fileLockUserName}"

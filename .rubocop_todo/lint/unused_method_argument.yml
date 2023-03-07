@@ -19,7 +19,6 @@ Lint/UnusedMethodArgument:
     - 'app/graphql/mutations/base_mutation.rb'
     - 'app/graphql/mutations/ci/runner/delete.rb'
     - 'app/graphql/mutations/concerns/mutations/assignable.rb'
-    - 'app/graphql/mutations/members/groups/bulk_update.rb'
     - 'app/graphql/mutations/notes/create/base.rb'
     - 'app/graphql/mutations/notes/create/diff_note.rb'
     - 'app/graphql/mutations/notes/create/image_diff_note.rb'

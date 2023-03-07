@@ -8,11 +8,11 @@ import IssuableFilteredSearchTokenKeys from '~/filtered_search/issuable_filtered
 import RecentSearchesRoot from '~/filtered_search/recent_searches_root';
 import RecentSearchesService from '~/filtered_search/services/recent_searches_service';
 import RecentSearchesServiceError from '~/filtered_search/services/recent_searches_service_error';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { BACKSPACE_KEY_CODE, DELETE_KEY_CODE } from '~/lib/utils/keycodes';
 import { visitUrl, getParameterByName } from '~/lib/utils/url_utility';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 jest.mock('~/lib/utils/url_utility', () => ({
   ...jest.requireActual('~/lib/utils/url_utility'),
   getParameterByName: jest.fn(),

@@ -3,7 +3,7 @@ import AxiosMockAdapter from 'axios-mock-adapter';
 import Vue, { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import appComponent from '~/groups/components/app.vue';
 import groupFolderComponent from '~/groups/components/group_folder.vue';
 import groupItemComponent from '~/groups/components/group_item.vue';
@@ -34,7 +34,7 @@ import {
 const $toast = {
   show: jest.fn(),
 };
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 describe('AppComponent', () => {
   let wrapper;
@@ -117,7 +117,7 @@ describe('AppComponent', () => {
         });
       });
 
-      it('should show flash error when request fails', () => {
+      it('should show alert error when request fails', () => {
         mock.onGet('/dashboard/groups.json').reply(HTTP_STATUS_BAD_REQUEST);
 
         jest.spyOn(window, 'scrollTo').mockImplementation(() => {});
@@ -325,7 +325,7 @@ describe('AppComponent', () => {
         });
       });
 
-      it('should show error flash message if request failed to leave group', () => {
+      it('should show error alert message if request failed to leave group', () => {
         const message = 'An error occurred. Please try again.';
         jest
           .spyOn(vm.service, 'leaveGroup')
@@ -342,7 +342,7 @@ describe('AppComponent', () => {
         });
       });
 
-      it('should show appropriate error flash message if request forbids to leave group', () => {
+      it('should show appropriate error alert message if request forbids to leave group', () => {
         const message = 'Failed to leave the group. Please make sure you are not the only owner.';
         jest.spyOn(vm.service, 'leaveGroup').mockRejectedValue({ status: HTTP_STATUS_FORBIDDEN });
         jest.spyOn(vm.store, 'removeGroup');

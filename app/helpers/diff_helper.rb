@@ -34,6 +34,12 @@ module DiffHelper
       options[:expanded] = true
       options[:paths] = params.values_at(:old_path, :new_path)
       options[:use_extra_viewer_as_main] = false
+
+      if Feature.enabled?(:large_ipynb_diffs, @project) && params[:file_identifier]&.include?('.ipynb')
+        options[:max_patch_bytes_for_file_extension] = {
+          '.ipynb' => 1.megabyte
+        }
+      end
     end
 
     options

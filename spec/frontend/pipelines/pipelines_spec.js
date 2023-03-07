@@ -11,7 +11,7 @@ import { mockTracking } from 'helpers/tracking_helper';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import Api from '~/api';
-import { createAlert, VARIANT_WARNING } from '~/flash';
+import { createAlert, VARIANT_WARNING } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import NavigationControls from '~/pipelines/components/pipelines_list/nav_controls.vue';
@@ -25,7 +25,7 @@ import TablePagination from '~/vue_shared/components/pagination/table_pagination
 
 import { stageReply, users, mockSearch, branches } from './mock_data';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 const mockProjectPath = 'twitter/flight';
 const mockProjectId = '21';
