@@ -8,6 +8,7 @@ import DescriptionItem from '~/content_editor/extensions/description_item';
 import DescriptionList from '~/content_editor/extensions/description_list';
 import Details from '~/content_editor/extensions/details';
 import DetailsContent from '~/content_editor/extensions/details_content';
+import DrawioDiagram from '~/content_editor/extensions/drawio_diagram';
 import Emoji from '~/content_editor/extensions/emoji';
 import Figure from '~/content_editor/extensions/figure';
 import FigureCaption from '~/content_editor/extensions/figure_caption';
@@ -57,6 +58,7 @@ const {
     div,
     descriptionItem,
     descriptionList,
+    drawioDiagram,
     emoji,
     footnoteDefinition,
     footnoteReference,
@@ -96,6 +98,7 @@ const {
     detailsContent: { nodeType: DetailsContent.name },
     descriptionItem: { nodeType: DescriptionItem.name },
     descriptionList: { nodeType: DescriptionList.name },
+    drawioDiagram: { nodeType: DrawioDiagram.name },
     emoji: { markType: Emoji.name },
     figure: { nodeType: Figure.name },
     figureCaption: { nodeType: FigureCaption.name },
@@ -395,6 +398,12 @@ this is not really json:table but just trying out whether this case works or not
     expect(serialize(paragraph(image({ src: 'img.jpg', alt: 'foo bar' })))).toBe(
       '![foo bar](img.jpg)',
     );
+  });
+
+  it('correctly serializes a drawio_diagram', () => {
+    expect(
+      serialize(paragraph(drawioDiagram({ src: 'diagram.drawio.svg', alt: 'Draw.io Diagram' }))),
+    ).toBe('![Draw.io Diagram](diagram.drawio.svg)');
   });
 
   it.each`

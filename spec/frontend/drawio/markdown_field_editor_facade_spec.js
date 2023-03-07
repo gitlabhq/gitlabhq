@@ -57,6 +57,7 @@ describe('drawio/textareaMarkdownEditor', () => {
         );
 
         expect(diagram).toEqual({
+          diagramURL: imageURL,
           diagramMarkdown,
           filename,
           diagramSvg,

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe PackagesHelper do
+RSpec.describe PackagesHelper, feature_category: :package_registry do
   using RSpec::Parameterized::TableSyntax
 
   let_it_be_with_reload(:project) { create(:project) }
@@ -38,11 +38,18 @@ RSpec.describe PackagesHelper do
 
   describe '#pypi_registry_url' do
     let_it_be(:base_url_with_token) { base_url.sub('://', '://__token__:<your_personal_token>@') }
+    let_it_be(:public_project) { create(:project, :public) }
 
-    it 'returns the pypi registry url' do
-      url = helper.pypi_registry_url(1)
+    it 'returns the pypi registry url with token when project is private' do
+      url = helper.pypi_registry_url(project)
 
-      expect(url).to eq("#{base_url_with_token}projects/1/packages/pypi/simple")
+      expect(url).to eq("#{base_url_with_token}projects/#{project.id}/packages/pypi/simple")
+    end
+
+    it 'returns the pypi registry url without token when project is public' do
+      url = helper.pypi_registry_url(public_project)
+
+      expect(url).to eq("#{base_url}projects/#{public_project.id}/packages/pypi/simple")
     end
   end
 

@@ -16,6 +16,7 @@ import DescriptionList from '../extensions/description_list';
 import Details from '../extensions/details';
 import DetailsContent from '../extensions/details_content';
 import Diagram from '../extensions/diagram';
+import DrawioDiagram from '../extensions/drawio_diagram';
 import Document from '../extensions/document';
 import Dropcursor from '../extensions/dropcursor';
 import Emoji from '../extensions/emoji';
@@ -109,6 +110,7 @@ export const createContentEditor = ({
     DetailsContent,
     Document,
     Diagram,
+    DrawioDiagram.configure({ uploadsPath, renderMarkdown }),
     Dropcursor,
     Emoji,
     Figure,

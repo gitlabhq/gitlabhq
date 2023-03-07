@@ -2,6 +2,7 @@ import { mount } from '@vue/test-utils';
 import Vue from 'vue';
 import Vuex from 'vuex';
 import Log from '~/jobs/components/log/log.vue';
+import LogLineHeader from '~/jobs/components/log/line_header.vue';
 import { logLinesParser } from '~/jobs/store/utils';
 import { jobLog } from './mock_data';
 
@@ -10,6 +11,7 @@ describe('Job Log', () => {
   let actions;
   let state;
   let store;
+  let toggleCollapsibleLineMock;
 
   Vue.use(Vuex);
 
@@ -20,8 +22,9 @@ describe('Job Log', () => {
   };
 
   beforeEach(() => {
+    toggleCollapsibleLineMock = jest.fn();
     actions = {
-      toggleCollapsibleLine: () => {},
+      toggleCollapsibleLine: toggleCollapsibleLineMock,
     };
 
     state = {
@@ -37,11 +40,7 @@ describe('Job Log', () => {
     createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
-  const findCollapsibleLine = () => wrapper.find('.collapsible-line');
+  const findCollapsibleLine = () => wrapper.findComponent(LogLineHeader);
 
   describe('line numbers', () => {
     it('renders a line number for each open line', () => {
@@ -68,11 +67,9 @@ describe('Job Log', () => {
 
     describe('on click header section', () => {
       it('calls toggleCollapsibleLine', () => {
-        jest.spyOn(wrapper.vm, 'toggleCollapsibleLine');
-
         findCollapsibleLine().trigger('click');
 
-        expect(wrapper.vm.toggleCollapsibleLine).toHaveBeenCalled();
+        expect(toggleCollapsibleLineMock).toHaveBeenCalled();
       });
     });
   });

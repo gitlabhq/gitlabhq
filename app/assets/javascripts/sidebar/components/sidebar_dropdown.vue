@@ -27,7 +27,7 @@ import {
   LocalizedIssuableAttributeType,
   noAttributeId,
 } from 'ee_else_ce/sidebar/constants';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { PathIdSeparator } from '~/related_issues/constants';
 
 export default {

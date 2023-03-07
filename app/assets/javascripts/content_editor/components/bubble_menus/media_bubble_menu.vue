@@ -11,23 +11,26 @@ import {
 } from '@gitlab/ui';
 import { __ } from '~/locale';
 import Audio from '../../extensions/audio';
+import DrawioDiagram from '../../extensions/drawio_diagram';
 import Image from '../../extensions/image';
 import Video from '../../extensions/video';
 import EditorStateObserver from '../editor_state_observer.vue';
 import { acceptedMimes } from '../../services/upload_helpers';
 import BubbleMenu from './bubble_menu.vue';
 
-const MEDIA_TYPES = [Audio.name, Image.name, Video.name];
+const MEDIA_TYPES = [Audio.name, Image.name, Video.name, DrawioDiagram.name];
 
 export default {
   i18n: {
     copySourceLabels: {
       [Audio.name]: __('Copy audio URL'),
+      [DrawioDiagram.name]: __('Copy diagram URL'),
       [Image.name]: __('Copy image URL'),
       [Video.name]: __('Copy video URL'),
     },
     editLabels: {
       [Audio.name]: __('Edit audio description'),
+      [DrawioDiagram.name]: __('Edit diagram description'),
       [Image.name]: __('Edit image description'),
       [Video.name]: __('Edit video description'),
     },
@@ -38,6 +41,7 @@ export default {
     },
     deleteLabels: {
       [Audio.name]: __('Delete audio'),
+      [DrawioDiagram.name]: __('Delete diagram'),
       [Image.name]: __('Delete image'),
       [Video.name]: __('Delete video'),
     },
@@ -85,6 +89,9 @@ export default {
     },
     showProgressIndicator() {
       return this.isUploading || this.isUpdating;
+    },
+    isDrawioDiagram() {
+      return this.mediaType === DrawioDiagram.name;
     },
   },
   methods: {
@@ -156,8 +163,19 @@ export default {
       this.isUpdating = false;
     },
 
+    resetMediaInfo() {
+      this.mediaTitle = null;
+      this.mediaAlt = null;
+      this.mediaCanonicalSrc = null;
+      this.isUploading = false;
+    },
+
     replaceMedia() {
       this.$refs.fileSelector.click();
+    },
+
+    editDiagram() {
+      this.tiptapEditor.chain().focus().createOrEditDiagram().run();
     },
 
     onFileSelect(e) {
@@ -191,6 +209,8 @@ export default {
     class="gl-shadow gl-rounded-base gl-bg-white"
     plugin-key="bubbleMenuMedia"
     :should-show="shouldShow"
+    @show="updateMediaInfoToState"
+    @hidden="resetMediaInfo"
   >
     <editor-state-observer @transaction="updateMediaInfoToState">
       <gl-button-group v-if="!isEditing" class="gl-display-flex gl-align-items-center">
@@ -240,6 +260,19 @@ export default {
           @click="startEditingMedia"
         />
         <gl-button
+          v-if="isDrawioDiagram"
+          v-gl-tooltip
+          variant="default"
+          category="tertiary"
+          size="medium"
+          data-testid="edit-diagram"
+          :aria-label="replaceLabel"
+          title="Edit diagram"
+          icon="diagram"
+          @click="editDiagram"
+        />
+        <gl-button
+          v-else
           v-gl-tooltip
           variant="default"
           category="tertiary"

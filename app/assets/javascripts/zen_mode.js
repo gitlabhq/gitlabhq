@@ -5,6 +5,7 @@
 /*= provides zen_mode:enter */
 /*= provides zen_mode:leave */
 
+import autosize from 'autosize';
 import Dropzone from 'dropzone';
 import $ from 'jquery';
 import Mousetrap from 'mousetrap';
@@ -39,6 +40,7 @@ export default class ZenMode {
   constructor() {
     this.active_backdrop = null;
     this.active_textarea = null;
+    this.storedStyle = null;
     $(document).on('click', '.js-zen-enter', (e) => {
       e.preventDefault();
       return $(e.currentTarget).trigger('zen_mode:enter');
@@ -68,6 +70,7 @@ export default class ZenMode {
     this.active_backdrop.addClass('fullscreen');
     this.active_textarea = this.active_backdrop.find('textarea');
     // Prevent a user-resized textarea from persisting to fullscreen
+    this.storedStyle = this.active_textarea.attr('style');
     this.active_textarea.removeAttr('style');
     this.active_textarea.focus();
   }
@@ -77,6 +80,11 @@ export default class ZenMode {
       Mousetrap.unpause();
       this.active_textarea.closest('.zen-backdrop').removeClass('fullscreen');
       scrollToElement(this.active_textarea, { duration: 0, offset: -100 });
+      this.active_textarea.attr('style', this.storedStyle);
+
+      autosize(this.active_textarea);
+      autosize.update(this.active_textarea);
+
       this.active_textarea = null;
       this.active_backdrop = null;
 

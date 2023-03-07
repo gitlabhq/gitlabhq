@@ -52,29 +52,28 @@ If you have any questions on configuring the SAML app, contact your provider's s
 
 ### Set up Azure
 
-Follow the Azure documentation on [configuring single sign-on to applications](https://learn.microsoft.com/en-us/azure/active-directory/manage-apps/add-application-portal-setup-sso), and use the following notes when needed.
+1. [Use Azure to configure SSO for an application](https://learn.microsoft.com/en-us/azure/active-directory/manage-apps/add-application-portal-setup-sso). The following GitLab settings correspond to the Azure fields.
+
+   | GitLab setting                       | Azure field                                |
+   | ------------------------------------ | ------------------------------------------ |
+   | Identifier                           | Identifier (Entity ID)                     |
+   | Assertion consumer service URL       | Reply URL (Assertion Consumer Service URL) |
+   | GitLab single sign-on URL            | Sign on URL                                |
+   | Identity provider single sign-on URL | Login URL                                  |
+   | Certificate fingerprint              | Thumbprint                                 |
+
+1. You should set the following attributes:
+   - **Unique User Identifier (Name identifier)** to `user.objectID`.
+   - **nameid-format** to persistent.
+   - **Additional claims** to [supported attributes](#user-attributes).
+
+1. Optional. If you use [Group Sync](#group-sync), customize the name of the
+   group claim to match the required attribute.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For a demo of the Azure SAML setup including SCIM, see [SCIM Provisioning on Azure Using SAML SSO for Groups Demo](https://youtu.be/24-ZxmTeEBU).
-The video is outdated in regard to objectID mapping and you should follow the [SCIM documentation](scim_setup.md#configure-azure-active-directory).
+View a demo of [SCIM provisioning on Azure using SAML SSO for groups](https://youtu.be/24-ZxmTeEBU). The `objectID` mapping is outdated in this video. Follow the [SCIM documentation](scim_setup.md#configure-azure-active-directory) instead.
 
-| GitLab Setting                       | Azure Field                                |
-| ------------------------------------ | ------------------------------------------ |
-| Identifier                           | Identifier (Entity ID)                     |
-| Assertion consumer service URL       | Reply URL (Assertion Consumer Service URL) |
-| GitLab single sign-on URL            | Sign on URL                                |
-| Identity provider single sign-on URL | Login URL                                  |
-| Certificate fingerprint              | Thumbprint                                 |
-
-You should set the following attributes:
-
-- **Unique User Identifier (Name identifier)** to `user.objectID`.
-- **nameid-format** to persistent.
-- Additional claims to [supported attributes](#user-attributes).
-
-If using [Group Sync](#group-sync), customize the name of the group claim to match the required attribute.
-
-See our [example configuration page](example_saml_config.md#azure-active-directory).
+View an [example configuration page](example_saml_config.md#azure-active-directory).
 
 ### Set up Google Workspace
 

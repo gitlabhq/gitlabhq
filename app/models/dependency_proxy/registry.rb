@@ -33,3 +33,5 @@ class DependencyProxy::Registry
     end
   end
 end
+
+::DependencyProxy::Registry.prepend_mod

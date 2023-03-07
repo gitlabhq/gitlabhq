@@ -1,7 +1,7 @@
 <script>
 import { GlLoadingIcon } from '@gitlab/ui';
 import BlobHeaderEdit from '~/blob/components/blob_edit_header.vue';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { getBaseURL, joinPaths } from '~/lib/utils/url_utility';
 import { sprintf } from '~/locale';
@@ -60,9 +60,9 @@ export default {
         .then((res) => {
           this.notifyAboutUpdates({ content: res.data });
         })
-        .catch((e) => this.flashAPIFailure(e));
+        .catch((e) => this.alertAPIFailure(e));
     },
-    flashAPIFailure(err) {
+    alertAPIFailure(err) {
       createAlert({ message: sprintf(SNIPPET_BLOB_CONTENT_FETCH_ERROR, { err }) });
     },
   },

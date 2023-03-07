@@ -393,12 +393,15 @@ scope.
 | GitLab Rails app | `%15.9` | Implement new GraphQL user-authenticated API to create a new runner. |
 | GitLab Rails app | `%15.10` | Return token and runner ID information from `/runners/verify` REST endpoint. |
 | GitLab Runner    | `%15.10` | [Modify register command to allow new flow with glrt- prefixed authentication tokens](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/29613). |
+| GitLab Runner    | `%15.10` | Make the `gitlab-runner register` command happen in a single operation. |
 | GitLab Rails app | `%15.10` | Define feature flag and policies for "New Runner creation workflow" for groups and projects. |
+| GitLab Rails app | `%15.11` | Only update runner `contacted_at` and `status` when polled for jobs. |
 | GitLab Rails app | `%15.11` | Update service and mutation to accept groups and projects. |
 | GitLab Rails app | `%15.11` | Implement UI to create new runner. |
 | GitLab Rails app | `%15.11` | GraphQL changes to `CiRunner` type. (?) |
 | GitLab Rails app | `%15.11` | UI changes to runner details view (listing of platform, architecture, IP address, etc.) (?) |
-| GitLab Rails app | `%15.11` | Adapt `POST /api/v4/runners` REST endpoint to accept a request from an authorized user with a scope instead of a registration token. || GitLab Rails app | `%15.9` | Implement new GraphQL user-authenticated API to create a new runner. |
+| GitLab Rails app | `%15.11` | Adapt `POST /api/v4/runners` REST endpoint to accept a request from an authorized user with a scope instead of a registration token. |
+| GitLab Runner    | `%15.11` | Handle glrt- runner tokens in `unregister` command. |
 
 ### Stage 5 - Optional disabling of registration token
 

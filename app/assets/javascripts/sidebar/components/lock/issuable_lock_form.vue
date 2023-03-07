@@ -4,7 +4,7 @@ import { mapGetters, mapActions } from 'vuex';
 import { TYPE_ISSUE } from '~/issues/constants';
 import { __, sprintf } from '~/locale';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import toast from '~/vue_shared/plugins/global_toast';
 import eventHub from '../../event_hub';
 import EditForm from './edit_form.vue';
@@ -92,11 +92,11 @@ export default {
           }
         })
         .catch(() => {
-          const flashMessage = __(
+          const alertMessage = __(
             'Something went wrong trying to change the locked state of this %{issuableDisplayName}',
           );
           createAlert({
-            message: sprintf(flashMessage, { issuableDisplayName: this.issuableDisplayName }),
+            message: sprintf(alertMessage, { issuableDisplayName: this.issuableDisplayName }),
           });
         })
         .finally(() => {

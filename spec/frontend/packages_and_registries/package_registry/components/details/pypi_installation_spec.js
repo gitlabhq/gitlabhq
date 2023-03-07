@@ -29,10 +29,13 @@ password = <your personal access token>`;
   const findInstallationTitle = () => wrapper.findComponent(InstallationTitle);
   const findSetupDocsLink = () => wrapper.findByTestId('pypi-docs-link');
 
-  function createComponent() {
+  function createComponent(props = {}) {
     wrapper = mountExtended(PypiInstallation, {
       propsData: {
-        packageEntity,
+        packageEntity: {
+          ...packageEntity,
+          ...props,
+        },
       },
       stubs: {
         GlSprintf,
@@ -84,6 +87,12 @@ password = <your personal access token>`;
       expect(findAccessTokenLink().attributes()).toMatchObject({
         href: PERSONAL_ACCESS_TOKEN_HELP_URL,
       });
+    });
+
+    it('does not have a link to personal access token docs when package is public', () => {
+      createComponent({ publicPackage: true });
+
+      expect(findAccessTokenLink().exists()).toBe(false);
     });
 
     it('has a link to the docs', () => {

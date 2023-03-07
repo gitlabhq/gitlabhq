@@ -339,8 +339,6 @@ GEM
       html-pipeline
     declarative (0.0.20)
     declarative_policy (1.1.0)
-    default_value_for (3.4.0)
-      activerecord (>= 3.2.0, < 7.0)
     deprecation_toolkit (1.5.1)
       activesupport (>= 4.2)
     derailed_benchmarks (2.1.2)
@@ -1645,7 +1643,6 @@ DEPENDENCIES
   database_cleaner (~> 1.7.0)
   deckar01-task_list (= 2.3.2)
   declarative_policy (~> 1.1.0)
-  default_value_for (~> 3.4.0)
   deprecation_toolkit (~> 1.5.1)
   derailed_benchmarks
   device_detector

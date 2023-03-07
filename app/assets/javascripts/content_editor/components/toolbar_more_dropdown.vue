@@ -54,6 +54,10 @@ export default {
           action: () => this.insert('diagram', { language: 'plantuml' }),
         },
         {
+          text: __('Create or edit diagram'),
+          action: () => this.execute('createOrEditDiagram', 'drawioDiagram'),
+        },
+        {
           text: __('Table of contents'),
           action: () => this.execute('insertTableOfContents', 'tableOfContents'),
         },

@@ -8,7 +8,7 @@ import {
   GlLoadingIcon,
 } from '@gitlab/ui';
 import produce from 'immer';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { WORKSPACE_GROUP } from '~/issues/constants';
 import { __ } from '~/locale';
 import { workspaceLabelsQueries } from '../../../constants';

@@ -1,5 +1,5 @@
 import { Image } from '@tiptap/extension-image';
-import { PARSE_HTML_PRIORITY_HIGHEST } from '../constants';
+import { PARSE_HTML_PRIORITY_HIGH } from '../constants';
 
 const resolveImageEl = (element) =>
   element.nodeName === 'IMG' ? element : element.querySelector('img');
@@ -77,7 +77,7 @@ export default Image.extend({
   parseHTML() {
     return [
       {
-        priority: PARSE_HTML_PRIORITY_HIGHEST,
+        priority: PARSE_HTML_PRIORITY_HIGH,
         tag: 'a.no-attachment-icon',
       },
       {

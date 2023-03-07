@@ -71,7 +71,7 @@ export default {
   },
   computed: {
     forcePushAttributes() {
-      const { allowForcePush } = this.branchProtection;
+      const { allowForcePush } = this.branchProtection || {};
       const icon = allowForcePush ? REQUIRED_ICON : NOT_REQUIRED_ICON;
       const iconClass = allowForcePush ? REQUIRED_ICON_CLASS : NOT_REQUIRED_ICON_CLASS;
       const title = allowForcePush
@@ -81,7 +81,7 @@ export default {
       return { icon, iconClass, title };
     },
     codeOwnersApprovalAttributes() {
-      const { codeOwnerApprovalRequired } = this.branchProtection;
+      const { codeOwnerApprovalRequired } = this.branchProtection || {};
       const icon = codeOwnerApprovalRequired ? REQUIRED_ICON : NOT_REQUIRED_ICON;
       const iconClass = codeOwnerApprovalRequired ? REQUIRED_ICON_CLASS : NOT_REQUIRED_ICON_CLASS;
       const title = codeOwnerApprovalRequired

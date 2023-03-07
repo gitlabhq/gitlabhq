@@ -559,24 +559,44 @@ On wikis, you can use the [diagrams.net](https://www.diagrams.net/) editor
 to create diagrams. You can also edit diagrams previously created with the
 editor.
 
-To create a diagram:
+To create a diagram in the Markdown editor:
 
-1. Select **Insert or edit diagram** in the Markdown editor.
+1. Select **Insert or edit diagram** (**{diagram}**) in the editor's toolbar.
 1. Use the diagrams.net editor to build the diagram.
 1. Select **Save & exit**.
 
 A Markdown image declaration pointing to the diagram is inserted in the wiki content.
 
-To edit a diagram:
+To edit a diagram in the Markdown editor:
 
 1. Place the Markdown editor’s text field cursor in a Markdown image declaration
 that contains the diagram.
-1. Select **Insert or edit diagram** in the Markdown editor.
+1. Select **Insert or edit diagram** (**{diagram}**) in the Markdown editor.
 1. Use the diagrams.net editor to edit the diagram.
 1. Select **Save & exit**.
 
 A Markdown image declaration pointing to the diagram is inserted in the wiki content,
 replacing the previous diagram.
+
+You can also create and edit diagrams when editing Markdown in the Content Editor.
+
+To create a diagram in the Content Editor:
+
+1. Select **More options** (**{plus}**) in the editor’s toolbar.
+1. Select **Create or edit diagram** in the dropdown menu.
+1. Use the diagrams.net editor to build the diagram.
+1. Select **Save & exit**.
+
+The diagram as visualized in the diagrams.net editor is inserted in the wiki content.
+
+To edit a diagram in the Content Editor:
+
+1. Select the diagram that you want to edit.
+1. Select **Edit diagram** (**{diagram}**) in the floating toolbar.
+1. Use the diagrams.net editor to edit the diagram.
+1. Select **Save & exit**.
+
+The selected diagram is replaced with an updated version.
 
 ## GitLab-specific references
 

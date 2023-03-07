@@ -1,7 +1,7 @@
 <script>
 import { GlModal, GlSprintf, GlIcon } from '@gitlab/ui';
+import { TYPE_ISSUE } from '~/issues/constants';
 import { __, n__ } from '~/locale';
-import { ISSUABLE_TYPE } from '../constants';
 
 export default {
   actionCancel: {
@@ -19,7 +19,7 @@ export default {
   },
   inject: {
     issuableType: {
-      default: ISSUABLE_TYPE.issues,
+      default: TYPE_ISSUE,
     },
     email: {
       default: '',
@@ -47,14 +47,17 @@ export default {
           href: this.exportCsvPath,
           variant: 'confirm',
           'data-method': 'post',
-          'data-qa-selector': `export_${this.issuableType}_button`,
+          'data-qa-selector': `export_issues_button`,
           'data-track-action': 'click_button',
-          'data-track-label': `export_${this.issuableType}_csv`,
+          'data-track-label': this.dataTrackLabel,
         },
       };
     },
     isIssue() {
-      return this.issuableType === ISSUABLE_TYPE.issues;
+      return this.issuableType === TYPE_ISSUE;
+    },
+    dataTrackLabel() {
+      return this.isIssue ? 'export_issues_csv' : 'export_merge-requests_csv';
     },
     exportText() {
       return this.isIssue ? __('Export issues') : __('Export merge requests');

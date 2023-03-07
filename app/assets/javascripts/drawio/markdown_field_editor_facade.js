@@ -32,6 +32,7 @@ export const create = ({ textArea, markdownPreviewPath, uploadsPath }) => ({
     const contentType = response.headers['content-type'];
 
     return {
+      diagramURL: imageURL,
       diagramMarkdown: imageMarkdown,
       filename,
       diagramSvg,

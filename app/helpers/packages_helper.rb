@@ -27,9 +27,14 @@ module PackagesHelper
     presenter.detail_view.to_json
   end
 
-  def pypi_registry_url(project_id)
-    full_url = expose_url(api_v4_projects_packages_pypi_simple_package_name_path({ id: project_id, package_name: '' }, true))
-    full_url.sub!('://', '://__token__:<your_personal_token>@')
+  def pypi_registry_url(project)
+    full_url = expose_url(api_v4_projects_packages_pypi_simple_package_name_path({ id: project.id, package_name: '' }, true))
+
+    if project.project_feature.public_packages?
+      full_url
+    else
+      full_url.sub!('://', '://__token__:<your_personal_token>@')
+    end
   end
 
   def composer_registry_url(group_id)

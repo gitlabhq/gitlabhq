@@ -15,6 +15,8 @@ describe('ZenMode', () => {
   let dropzoneForElementSpy;
   const fixtureName = 'snippets/show.html';
 
+  const getTextarea = () => $('.notes-form textarea');
+
   function enterZen() {
     $('.notes-form .js-zen-enter').click();
   }
@@ -24,7 +26,7 @@ describe('ZenMode', () => {
   }
 
   function escapeKeydown() {
-    $('.notes-form textarea').trigger(
+    getTextarea().trigger(
       $.Event('keydown', {
         keyCode: 27,
       }),
@@ -50,6 +52,12 @@ describe('ZenMode', () => {
   });
 
   afterEach(() => {
+    $(document).off('click', '.js-zen-enter');
+    $(document).off('click', '.js-zen-leave');
+    $(document).off('zen_mode:enter');
+    $(document).off('zen_mode:leave');
+    $(document).off('keydown');
+
     resetHTMLFixture();
   });
 
@@ -62,14 +70,14 @@ describe('ZenMode', () => {
       $('.div-dropzone').addClass('js-invalid-dropzone');
       exitZen();
 
-      expect(dropzoneForElementSpy.mock.calls.length).toEqual(0);
+      expect(dropzoneForElementSpy).not.toHaveBeenCalled();
     });
 
     it('should call dropzone if element is dropzone valid', () => {
       $('.div-dropzone').removeClass('js-invalid-dropzone');
       exitZen();
 
-      expect(dropzoneForElementSpy.mock.calls.length).toEqual(2);
+      expect(dropzoneForElementSpy).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -82,10 +90,10 @@ describe('ZenMode', () => {
     });
 
     it('removes textarea styling', () => {
-      $('.notes-form textarea').attr('style', 'height: 400px');
+      getTextarea().attr('style', 'height: 400px');
       enterZen();
 
-      expect($('.notes-form textarea')).not.toHaveAttr('style');
+      expect(getTextarea()).not.toHaveAttr('style');
     });
   });
 
@@ -115,5 +123,16 @@ describe('ZenMode', () => {
 
       expect(utils.scrollToElement).toHaveBeenCalled();
     });
+  });
+
+  it('restores textarea style', () => {
+    const style = 'color: red; overflow-y: hidden;';
+    getTextarea().attr('style', style);
+    expect(getTextarea()).toHaveAttr('style', style);
+
+    enterZen();
+    exitZen();
+
+    expect(getTextarea()).toHaveAttr('style', style);
   });
 });

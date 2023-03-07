@@ -82,4 +82,14 @@ describe('content_editor/services/create_content_editor', () => {
       renderMarkdown,
     });
   });
+
+  it('provides uploadsPath and renderMarkdown function to DrawioDiagram extension', () => {
+    expect(
+      editor.tiptapEditor.extensionManager.extensions.find((e) => e.name === 'drawioDiagram')
+        .options,
+    ).toMatchObject({
+      uploadsPath,
+      renderMarkdown,
+    });
+  });
 });

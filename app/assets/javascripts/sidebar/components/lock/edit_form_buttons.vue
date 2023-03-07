@@ -2,7 +2,7 @@
 import { GlButton } from '@gitlab/ui';
 import $ from 'jquery';
 import { mapActions } from 'vuex';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { __, sprintf } from '~/locale';
 import eventHub from '../../event_hub';
 
@@ -49,11 +49,11 @@ export default {
         fullPath: this.fullPath,
       })
         .catch(() => {
-          const flashMessage = __(
+          const alertMessage = __(
             'Something went wrong trying to change the locked state of this %{issuableDisplayName}',
           );
           createAlert({
-            message: sprintf(flashMessage, { issuableDisplayName: this.issuableDisplayName }),
+            message: sprintf(alertMessage, { issuableDisplayName: this.issuableDisplayName }),
           });
         })
         .finally(() => {

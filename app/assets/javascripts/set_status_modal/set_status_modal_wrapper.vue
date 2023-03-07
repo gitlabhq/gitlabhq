@@ -1,7 +1,7 @@
 <script>
 import { GlToast, GlTooltipDirective, GlModal } from '@gitlab/ui';
 import Vue from 'vue';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { BV_SHOW_MODAL, BV_HIDE_MODAL } from '~/lib/utils/constants';
 import { s__ } from '~/locale';
 import { updateUserStatus } from '~/rest_api';

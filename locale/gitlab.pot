@@ -8151,7 +8151,7 @@ msgstr ""
 msgid "Cannot import because issues are not available in this project."
 msgstr ""
 
-msgid "Cannot load the diagram into the draw.io editor"
+msgid "Cannot load the diagram into the diagrams.net editor"
 msgstr ""
 
 msgid "Cannot make the epic confidential if it contains non-confidential child epics"
@@ -11473,6 +11473,9 @@ msgstr ""
 msgid "Copy commit SHA"
 msgstr ""
 
+msgid "Copy diagram URL"
+msgstr ""
+
 msgid "Copy environment"
 msgstr ""
 
@@ -11906,6 +11909,9 @@ msgid "Create one"
 msgstr ""
 
 msgid "Create or close an issue."
+msgstr ""
+
+msgid "Create or edit diagram"
 msgstr ""
 
 msgid "Create or import your first project"
@@ -13542,6 +13548,9 @@ msgid "Delete corpus"
 msgstr ""
 
 msgid "Delete deploy key"
+msgstr ""
+
+msgid "Delete diagram"
 msgstr ""
 
 msgid "Delete epic"
@@ -15341,6 +15350,9 @@ msgid "Edit deploy key"
 msgstr ""
 
 msgid "Edit description"
+msgstr ""
+
+msgid "Edit diagram description"
 msgstr ""
 
 msgid "Edit environment"
@@ -43170,6 +43182,9 @@ msgstr ""
 msgid "The deployment of this job to %{environmentLink} did not succeed."
 msgstr ""
 
+msgid "The diagrams.net editor could not be loaded."
+msgstr ""
+
 msgid "The directory has been successfully created."
 msgstr ""
 
@@ -43180,9 +43195,6 @@ msgid "The domain you entered is not allowed."
 msgstr ""
 
 msgid "The download link will expire in 24 hours."
-msgstr ""
-
-msgid "The draw.io editor could not be loaded."
 msgstr ""
 
 msgid "The environment tiers must be from %{environment_tiers}."
@@ -43489,7 +43501,13 @@ msgstr ""
 msgid "The secret is only available when you create the application or renew the secret."
 msgstr ""
 
-msgid "The selected image is not a diagram"
+msgid "The selected image is not a valid SVG diagram"
+msgstr ""
+
+msgid "The selected image is not an asset uploaded in the application"
+msgstr ""
+
+msgid "The selected image is too large."
 msgstr ""
 
 msgid "The snippet can be accessed without any authentication."

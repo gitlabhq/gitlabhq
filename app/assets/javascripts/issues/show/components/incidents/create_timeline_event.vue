@@ -113,7 +113,7 @@ export default {
   >
     <div
       v-if="hasTimelineEvents"
-      class="gl-display-flex gl-align-items-center gl-justify-content-center gl-align-self-start gl-bg-white gl-text-gray-200 gl-border-gray-100 gl-border-1 gl-border-solid gl-rounded-full gl-mt-2 gl-w-8 gl-h-8 gl-z-index-1"
+      class="gl-display-flex gl-align-items-center gl-justify-content-center gl-align-self-start gl-bg-white gl-text-gray-200 gl-border-gray-100 gl-border-1 gl-border-solid gl-rounded-full gl-mt-2 gl-w-8 gl-h-8 gl-flex-shrink-0 gl-p-3 gl-z-index-1"
     >
       <gl-icon name="comment" class="note-icon" />
     </div>

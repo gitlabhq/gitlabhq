@@ -4,17 +4,27 @@ import { __ } from '~/locale';
 import { extractFilename, readFileAsDataURL } from './utils';
 
 export const acceptedMimes = {
-  image: ['image/jpeg', 'image/png', 'image/gif', 'image/jpg'],
-  audio: [
-    'audio/basic',
-    'audio/mid',
-    'audio/mpeg',
-    'audio/x-aiff',
-    'audio/ogg',
-    'audio/vorbis',
-    'audio/vnd.wav',
-  ],
-  video: ['video/mp4', 'video/quicktime'],
+  drawioDiagram: {
+    mimes: ['image/svg+xml'],
+    ext: 'drawio.svg',
+  },
+  image: {
+    mimes: ['image/jpeg', 'image/png', 'image/gif', 'image/jpg'],
+  },
+  audio: {
+    mimes: [
+      'audio/basic',
+      'audio/mid',
+      'audio/mpeg',
+      'audio/x-aiff',
+      'audio/ogg',
+      'audio/vorbis',
+      'audio/vnd.wav',
+    ],
+  },
+  video: {
+    mimes: ['video/mp4', 'video/quicktime'],
+  },
 };
 
 const extractAttachmentLinkUrl = (html) => {
@@ -128,8 +138,8 @@ const uploadAttachment = async ({ editor, file, uploadsPath, renderMarkdown, eve
 export const handleFileEvent = ({ editor, file, uploadsPath, renderMarkdown, eventHub }) => {
   if (!file) return false;
 
-  for (const [type, mimes] of Object.entries(acceptedMimes)) {
-    if (mimes.includes(file?.type)) {
+  for (const [type, { mimes, ext }] of Object.entries(acceptedMimes)) {
+    if (mimes.includes(file?.type) && (!ext || file?.name.endsWith(ext))) {
       uploadContent({ type, editor, file, uploadsPath, renderMarkdown, eventHub });
 
       return true;

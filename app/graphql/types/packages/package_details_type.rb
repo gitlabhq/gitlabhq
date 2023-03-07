@@ -63,11 +63,11 @@ module Types
       end
 
       def pypi_url
-        pypi_registry_url(object.project.id)
+        pypi_registry_url(object.project)
       end
 
       def public_package
-        object.project.public? || object.project.project_feature.package_registry_access_level == ProjectFeature::PUBLIC
+        object.project.project_feature.public_packages?
       end
     end
   end

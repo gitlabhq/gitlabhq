@@ -20,6 +20,12 @@ export const PROJECT_WIKI_ATTACHMENT_AUDIO_HTML = `<p data-sourcepos="3:1-3:74" 
   </span>
 </p>`;
 
+export const PROJECT_WIKI_ATTACHMENT_DRAWIO_DIAGRAM_HTML = `<p data-sourcepos="1:1-1:27" dir="auto">
+  <a class="no-attachment-icon" href="/group1/project1/-/wikis/test-file.drawio.svg" target="_blank" rel="noopener noreferrer" data-canonical-src="test-file.drawio.svg">
+    <img alt="test-file" class="lazy" data-src="/group1/project1/-/wikis/test-file.drawio.svg" data-canonical-src="test-file.drawio.svg">
+  </a>
+</p>`;
+
 export const PROJECT_WIKI_ATTACHMENT_LINK_HTML = `<p data-sourcepos="1:1-1:26" dir="auto">
   <a href="/group1/project1/-/wikis/test-file.zip" data-canonical-src="test-file.zip">test-file</a>
 </p>`;

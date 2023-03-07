@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ErrorTracking::ProjectErrorTrackingSetting do
+RSpec.describe ErrorTracking::ProjectErrorTrackingSetting, feature_category: :error_tracking do
   include ReactiveCachingHelpers
   include Gitlab::Routing
 
@@ -352,7 +352,7 @@ RSpec.describe ErrorTracking::ProjectErrorTrackingSetting do
 
     context 'when sentry response is successful' do
       before do
-        allow(sentry_client).to receive(:update_issue).with(opts).and_return(true)
+        allow(sentry_client).to receive(:update_issue).with(**opts).and_return(true)
       end
 
       it 'returns the successful response' do
@@ -362,7 +362,7 @@ RSpec.describe ErrorTracking::ProjectErrorTrackingSetting do
 
     context 'when sentry raises an error' do
       before do
-        allow(sentry_client).to receive(:update_issue).with(opts).and_raise(StandardError)
+        allow(sentry_client).to receive(:update_issue).with(**opts).and_raise(StandardError)
       end
 
       it 'returns the successful response' do
@@ -391,7 +391,7 @@ RSpec.describe ErrorTracking::ProjectErrorTrackingSetting do
           setting.update!(sentry_project_id: nil)
 
           allow(sentry_client).to receive(:projects).and_return(sentry_projects)
-          allow(sentry_client).to receive(:update_issue).with(opts).and_return(true)
+          allow(sentry_client).to receive(:update_issue).with(**opts).and_return(true)
         end
 
         it 'tries to backfill it from sentry API' do

@@ -11,3 +11,5 @@ export const DARK_BACKGROUND_COLOR = '#202020';
 export const DIAGRAM_BACKGROUND_COLOR = '#ffffff';
 
 export const DRAWIO_IFRAME_TIMEOUT = 4000;
+
+export const DIAGRAM_MAX_SIZE = 10 * 1024 * 1024; // 1MB

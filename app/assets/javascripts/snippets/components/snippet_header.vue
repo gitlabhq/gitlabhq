@@ -19,7 +19,7 @@ import axios from '~/lib/utils/axios_utils';
 import { joinPaths } from '~/lib/utils/url_utility';
 import { __, s__, sprintf } from '~/locale';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
-import { createAlert, VARIANT_DANGER, VARIANT_SUCCESS } from '~/flash';
+import { createAlert, VARIANT_DANGER, VARIANT_SUCCESS } from '~/alert';
 
 import DeleteSnippetMutation from '../mutations/delete_snippet.mutation.graphql';
 

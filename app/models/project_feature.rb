@@ -162,6 +162,12 @@ class ProjectFeature < ApplicationRecord
     end
   end
 
+  def public_packages?
+    return false unless Gitlab.config.packages.enabled
+
+    package_registry_access_level == PUBLIC || project.public?
+  end
+
   private
 
   def set_pages_access_level

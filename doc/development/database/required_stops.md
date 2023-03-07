@@ -11,6 +11,36 @@ disruptive effect on customers. Before adding a required stop, consider if any
 alternative approaches exist to avoid a required stop. Sometimes a required
 stop is unavoidable. In those cases, follow the instructions below.
 
+## Common scenarios that require stops
+
+### Long running migrations being finalized
+
+If a migration takes a long time, it could cause a large number of customers to encounter timeouts
+during upgrades. The increased support volume may cause us to introduce a required stop. While any
+background migration may cause these issues with particularly large customers, we typically only
+introduce stops when the impact is widespread.
+
+- **Cause:** When an upgrade takes more than an hour, omnibus times out.
+- **Mitigation:** Schedule finalization for the first minor version after the next required stop.
+
+### Improperly finalized background migrations
+
+You may need to introduce a required stop for mitigation when:
+
+- A background migration is not finalized, and
+- A migration is written that depends on that background migration.
+
+- **Cause:** The dependent migration may fail if the background migration is incomplete.
+- **Mitigation:** Ensure that all background migrations are finalized before authoring dependent migrations.
+
+### Bugs in migration related tooling
+
+In a few circumstances, bugs in migration related tooling has required us to introduce stops. While we aim
+to prevent these in testing, sometimes they happen.
+
+- **Cause:** There have been a few different causes where we recognized these too late.
+- **Mitigation:** Typically we try to backport fixes for migrations, but in some cases this is not possible.
+
 ## Before the required stop is released
 
 Before releasing a known required stop, complete these steps. If the required stop

@@ -195,3 +195,20 @@ ul.wiki-pages-list.content-list {
     display: none;
   }
 }
+
+.drawio-editor {
+  position: fixed;
+  top: calc(var(--header-height, 48px));
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: calc(100% - var(--header-height, 48px));
+  border: 0;
+  z-index: 1100;
+  visibility: hidden;
+}
+
+.with-performance-bar .drawio-editor {
+  top: calc(var(--header-height, 48px) + 35px);
+  height: calc(100% - var(--header-height, 48px) - 35px);
+}

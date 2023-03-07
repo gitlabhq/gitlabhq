@@ -104,7 +104,6 @@
 {"name":"deckar01-task_list","version":"2.3.2","platform":"ruby","checksum":"5a19092548d24309d8b2c2704d64cdc08a4a615823c9a722f4142edec1de8805"},
 {"name":"declarative","version":"0.0.20","platform":"ruby","checksum":"8021dd6cb17ab2b61233c56903d3f5a259c5cf43c80ff332d447d395b17d9ff9"},
 {"name":"declarative_policy","version":"1.1.0","platform":"ruby","checksum":"9af4cf299ade03f2bbf63908f2ce6a117d132fc714c39a128596667fb13331cb"},
-{"name":"default_value_for","version":"3.4.0","platform":"ruby","checksum":"35d2dc51675a6bedfa875778628d44b823e0d7336da9432519477174ebb0f40f"},
 {"name":"deprecation_toolkit","version":"1.5.1","platform":"ruby","checksum":"a8a1ab1a19ae40ea12560b65010e099f3459ebde390b76621ef0c21c516a04ba"},
 {"name":"derailed_benchmarks","version":"2.1.2","platform":"ruby","checksum":"eaadc6206ceeb5538ff8f5e04a0023d54ebdd95d04f33e8960fb95a5f189a14f"},
 {"name":"descendants_tracker","version":"0.0.4","platform":"ruby","checksum":"e9c41dd4cfbb85829a9301ea7e7c48c2a03b26f09319db230e6479ccdc780897"},

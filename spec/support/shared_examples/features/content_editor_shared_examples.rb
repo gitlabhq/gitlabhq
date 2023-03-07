@@ -40,6 +40,16 @@ RSpec.shared_examples 'edits content using the content editor' do
     expect(page).to have_field('wiki[content]', with: value, type: 'hidden')
   end
 
+  def display_media_bubble_menu(media_element_selector, fixture_file)
+    upload_asset fixture_file
+
+    wait_for_requests
+
+    expect(page).to have_css(media_element_selector)
+
+    page.find(media_element_selector).click
+  end
+
   it 'saves page content in local storage if the user navigates away' do
     switch_to_content_editor
 
@@ -92,25 +102,45 @@ RSpec.shared_examples 'edits content using the content editor' do
       open_insert_media_dropdown
     end
 
-    def test_displays_media_bubble_menu(media_element_selector, fixture_file)
-      upload_asset fixture_file
-
-      wait_for_requests
-
-      expect(page).to have_css(media_element_selector)
-
-      page.find(media_element_selector).click
+    it 'displays correct media bubble menu for images', :js do
+      display_media_bubble_menu '[data-testid="content_editor_editablebox"] img[src]', 'dk.png'
 
       expect_formatting_menu_to_be_hidden
       expect_media_bubble_menu_to_be_visible
     end
 
-    it 'displays correct media bubble menu for images', :js do
-      test_displays_media_bubble_menu '[data-testid="content_editor_editablebox"] img[src]', 'dk.png'
+    it 'displays correct media bubble menu for video', :js do
+      display_media_bubble_menu '[data-testid="content_editor_editablebox"] video', 'video_sample.mp4'
+
+      expect_formatting_menu_to_be_hidden
+      expect_media_bubble_menu_to_be_visible
+    end
+  end
+
+  describe 'diagrams.net editor' do
+    def click_edit_diagram_button
+      page.find('[data-testid="edit-diagram"]').click
     end
 
-    it 'displays correct media bubble menu for video', :js do
-      test_displays_media_bubble_menu '[data-testid="content_editor_editablebox"] video', 'video_sample.mp4'
+    def expect_drawio_editor_is_opened
+      expect(page).to have_css('#drawio-frame', visible: :hidden)
+    end
+
+    before do
+      switch_to_content_editor
+
+      open_insert_media_dropdown
+    end
+
+    it 'displays correct media bubble menu with edit diagram button' do
+      display_media_bubble_menu '[data-testid="content_editor_editablebox"] img[src]', 'diagram.drawio.svg'
+
+      expect_formatting_menu_to_be_hidden
+      expect_media_bubble_menu_to_be_visible
+
+      click_edit_diagram_button
+
+      expect_drawio_editor_is_opened
     end
   end
 

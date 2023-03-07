@@ -7,6 +7,7 @@ import Heading from '../../extensions/heading';
 import Audio from '../../extensions/audio';
 import Video from '../../extensions/video';
 import Image from '../../extensions/image';
+import DrawioDiagram from '../../extensions/drawio_diagram';
 import ToolbarButton from '../toolbar_button.vue';
 import BubbleMenu from './bubble_menu.vue';
 
@@ -26,7 +27,7 @@ export default {
       if (from === to) return false;
 
       const includes = [Paragraph.name, Heading.name];
-      const excludes = [Image.name, Audio.name, Video.name];
+      const excludes = [Image.name, Audio.name, Video.name, DrawioDiagram.name];
 
       return (
         includes.some((type) => editor.isActive(type)) &&

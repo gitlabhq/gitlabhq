@@ -94,7 +94,7 @@ RSpec.describe Tooling::Danger::StableBranch, feature_category: :delivery do
         [
           {
             'name' => 'e2e:package-and-test',
-            'status' => 'success',
+            'status' => pipeline_bridge_state,
             'downstream_pipeline' => {
               'id' => '123',
               'status' => package_and_qa_state
@@ -103,6 +103,7 @@ RSpec.describe Tooling::Danger::StableBranch, feature_category: :delivery do
         ]
       end
 
+      let(:pipeline_bridge_state) { 'running' }
       let(:package_and_qa_state) { 'success' }
 
       let(:parsed_response) do
@@ -183,10 +184,10 @@ RSpec.describe Tooling::Danger::StableBranch, feature_category: :delivery do
         it_behaves_like 'bypassing when flaky test or docs only'
       end
 
-      context 'when package-and-test job is in manual state' do
-        let(:package_and_qa_state) { 'manual' }
+      context 'when package-and-test job is being created' do
+        let(:pipeline_bridge_state) { 'created' }
 
-        it_behaves_like 'with a failure', described_class::NEEDS_PACKAGE_AND_TEST_MESSAGE
+        it_behaves_like 'with a warning', described_class::WARN_PACKAGE_AND_TEST_MESSAGE
         it_behaves_like 'bypassing when flaky test or docs only'
       end
 
@@ -194,6 +195,13 @@ RSpec.describe Tooling::Danger::StableBranch, feature_category: :delivery do
         let(:package_and_qa_state) { 'running' }
 
         it_behaves_like 'with a warning', described_class::WARN_PACKAGE_AND_TEST_MESSAGE
+        it_behaves_like 'bypassing when flaky test or docs only'
+      end
+
+      context 'when package-and-test job is in manual state' do
+        let(:package_and_qa_state) { 'manual' }
+
+        it_behaves_like 'with a failure', described_class::NEEDS_PACKAGE_AND_TEST_MESSAGE
         it_behaves_like 'bypassing when flaky test or docs only'
       end
 

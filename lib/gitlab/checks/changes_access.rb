@@ -89,7 +89,7 @@ module Gitlab
         @single_changes_accesses ||=
           changes.map do |change|
             commits =
-              if blank_rev?(change[:newrev])
+              if !commitish_ref?(change[:ref]) || blank_rev?(change[:newrev])
                 []
               else
                 Gitlab::Lazy.new { commits_for(change[:oldrev], change[:newrev]) }
@@ -121,6 +121,14 @@ module Gitlab
 
       def blank_rev?(rev)
         rev.blank? || Gitlab::Git.blank_ref?(rev)
+      end
+
+      # refs/notes/commits contains commits added via `git-notes`. We currently
+      # have no features that check notes so we can skip them. To future-proof
+      # we are skipping anything that isn't a branch or tag ref as those are
+      # the only refs that can contain commits.
+      def commitish_ref?(ref)
+        Gitlab::Git.branch_ref?(ref) || Gitlab::Git.tag_ref?(ref)
       end
     end
   end

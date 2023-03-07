@@ -40,16 +40,17 @@ describe('content_editor/components/toolbar_more_dropdown', () => {
   });
 
   describe.each`
-    name                   | contentType          | command                    | params
-    ${'Code block'}        | ${'codeBlock'}       | ${'setNode'}               | ${['codeBlock']}
-    ${'Details block'}     | ${'details'}         | ${'toggleList'}            | ${['details', 'detailsContent']}
-    ${'Bullet list'}       | ${'bulletList'}      | ${'toggleList'}            | ${['bulletList', 'listItem']}
-    ${'Ordered list'}      | ${'orderedList'}     | ${'toggleList'}            | ${['orderedList', 'listItem']}
-    ${'Task list'}         | ${'taskList'}        | ${'toggleList'}            | ${['taskList', 'taskItem']}
-    ${'Mermaid diagram'}   | ${'diagram'}         | ${'setNode'}               | ${['diagram', { language: 'mermaid' }]}
-    ${'PlantUML diagram'}  | ${'diagram'}         | ${'setNode'}               | ${['diagram', { language: 'plantuml' }]}
-    ${'Table of contents'} | ${'tableOfContents'} | ${'insertTableOfContents'} | ${[]}
-    ${'Horizontal rule'}   | ${'horizontalRule'}  | ${'setHorizontalRule'}     | ${[]}
+    name                        | contentType          | command                    | params
+    ${'Code block'}             | ${'codeBlock'}       | ${'setNode'}               | ${['codeBlock']}
+    ${'Details block'}          | ${'details'}         | ${'toggleList'}            | ${['details', 'detailsContent']}
+    ${'Bullet list'}            | ${'bulletList'}      | ${'toggleList'}            | ${['bulletList', 'listItem']}
+    ${'Ordered list'}           | ${'orderedList'}     | ${'toggleList'}            | ${['orderedList', 'listItem']}
+    ${'Task list'}              | ${'taskList'}        | ${'toggleList'}            | ${['taskList', 'taskItem']}
+    ${'Mermaid diagram'}        | ${'diagram'}         | ${'setNode'}               | ${['diagram', { language: 'mermaid' }]}
+    ${'PlantUML diagram'}       | ${'diagram'}         | ${'setNode'}               | ${['diagram', { language: 'plantuml' }]}
+    ${'Table of contents'}      | ${'tableOfContents'} | ${'insertTableOfContents'} | ${[]}
+    ${'Horizontal rule'}        | ${'horizontalRule'}  | ${'setHorizontalRule'}     | ${[]}
+    ${'Create or edit diagram'} | ${'drawioDiagram'}   | ${'createOrEditDiagram'}   | ${[]}
   `('when option $name is clicked', ({ name, command, contentType, params }) => {
     let commands;
     let btn;

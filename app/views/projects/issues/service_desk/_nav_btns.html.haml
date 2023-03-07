@@ -1,7 +1,7 @@
 - show_feed_buttons = local_assigns.fetch(:show_feed_buttons, true)
 - show_import_button = local_assigns.fetch(:show_import_button, true) && can?(current_user, :import_issues, @project)
 - show_export_button = local_assigns.fetch(:show_export_button, true)
-- issuable_type = 'issues'
+- issuable_type = 'issue'
 - can_edit = can?(current_user, :admin_project, @project)
 - notification_email = @current_user.present? ? @current_user.notification_email_or_default : nil
 

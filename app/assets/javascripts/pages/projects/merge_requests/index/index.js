@@ -3,10 +3,9 @@ import ShortcutsNavigation from '~/behaviors/shortcuts/shortcuts_navigation';
 import IssuableFilteredSearchTokenKeys from '~/filtered_search/issuable_filtered_search_token_keys';
 import { FILTERED_SEARCH } from '~/filtered_search/constants';
 import { initBulkUpdateSidebar, initCsvImportExportButtons, initIssuableByEmail } from '~/issuable';
-import { ISSUABLE_INDEX } from '~/issuable/constants';
 import initFilteredSearch from '~/pages/search/init_filtered_search';
 
-initBulkUpdateSidebar(ISSUABLE_INDEX.MERGE_REQUEST);
+initBulkUpdateSidebar('merge_request_');
 
 addExtraTokensForMergeRequests(IssuableFilteredSearchTokenKeys);
 IssuableFilteredSearchTokenKeys.removeTokensForKeys('iteration');

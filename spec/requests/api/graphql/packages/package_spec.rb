@@ -270,6 +270,31 @@ RSpec.describe 'package details', feature_category: :package_registry do
       it 'returns composer_config_repository_url correctly' do
         expect(graphql_data_at(:package, :composer_config_repository_url)).to eq("localhost/#{group.id}")
       end
+
+      context 'with access to package registry for everyone' do
+        before do
+          project.project_feature.update!(package_registry_access_level: ProjectFeature::PUBLIC)
+          subject
+        end
+
+        it 'returns pypi_url correctly' do
+          expect(graphql_data_at(:package, :pypi_url)).to eq("http://__token__:<your_personal_token>@localhost/api/v4/projects/#{project.id}/packages/pypi/simple")
+        end
+      end
+
+      context 'when project is public' do
+        let_it_be(:public_project) { create(:project, :public, group: group) }
+        let_it_be(:composer_package) { create(:composer_package, project: public_project) }
+        let(:package_global_id) { global_id_of(composer_package) }
+
+        before do
+          subject
+        end
+
+        it 'returns pypi_url correctly' do
+          expect(graphql_data_at(:package, :pypi_url)).to eq("http://localhost/api/v4/projects/#{public_project.id}/packages/pypi/simple")
+        end
+      end
     end
 
     context 'web_path' do

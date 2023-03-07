@@ -314,6 +314,40 @@ RSpec.describe ProjectFeature, feature_category: :projects do
     end
   end
 
+  describe '#public_packages?' do
+    let_it_be(:public_project) { create(:project, :public) }
+
+    context 'with packages config enabled' do
+      context 'when project is private' do
+        it 'returns false' do
+          expect(project.project_feature.public_packages?).to eq(false)
+        end
+
+        context 'with package_registry_access_level set to public' do
+          before do
+            project.project_feature.update!(package_registry_access_level: ProjectFeature::PUBLIC)
+          end
+
+          it 'returns true' do
+            expect(project.project_feature.public_packages?).to eq(true)
+          end
+        end
+      end
+
+      context 'when project is public' do
+        it 'returns true' do
+          expect(public_project.project_feature.public_packages?).to eq(true)
+        end
+      end
+    end
+
+    it 'returns false if packages config is not enabled' do
+      stub_config(packages: { enabled: false })
+
+      expect(public_project.project_feature.public_packages?).to eq(false)
+    end
+  end
+
   # rubocop:disable Gitlab/FeatureAvailableUsage
   describe '#feature_available?' do
     let(:features) { ProjectFeature::FEATURES }

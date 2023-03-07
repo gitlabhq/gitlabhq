@@ -231,37 +231,43 @@ configuration for jobs that use the Windows runner, like scripts, use <code>&#92
 
 ### Run child pipelines with merge request pipelines
 
-To trigger a child pipeline as a [merge request pipeline](merge_request_pipelines.md):
+Pipelines, including child pipelines, run as branch pipelines by default when not using
+[`rules`](../yaml/index.md#rules) or [`workflow:rules`](../yaml/index.md#workflowrules).
+To configure child pipelines to run when triggered from a [merge request (parent) pipeline](merge_request_pipelines.md), use `rules` or `workflow:rules`.
+For example, using `rules`:
 
-1. Set the trigger job to run on merge requests in the parent pipeline's configuration file:
+1. Set the parent pipeline's trigger job to run on merge requests:
 
    ```yaml
-   microservice_a:
+   trigger-child-pipeline-job:
      trigger:
-       include: path/to/microservice_a.yml
+       include: path/to/child-pipeline-configuration.yml
      rules:
        - if: $CI_PIPELINE_SOURCE == "merge_request_event"
    ```
 
-1. Configure the child pipeline jobs to run in merge request pipelines with [`rules`](../yaml/index.md#rules)
-   or [`workflow:rules`](../yaml/index.md#workflowrules).
-   For example, with `rules` in a child pipeline's configuration file:
+1. Use `rules` to configure the child pipeline jobs to run when triggered by the parent pipeline:
 
    ```yaml
    job1:
-     script: echo "Child pipeline job 1"
+     script: echo "This child pipeline job runs any time the parent pipeline triggers it."
      rules:
-       - if: $CI_MERGE_REQUEST_ID
+       - if: $CI_PIPELINE_SOURCE == "parent_pipeline"
 
    job2:
-     script: echo "Child pipeline job 2"
+     script: echo "This child pipeline job runs only when the parent pipeline is a merge request pipeline"
      rules:
        - if: $CI_MERGE_REQUEST_ID
    ```
 
-   In child pipelines, `$CI_PIPELINE_SOURCE` always has a value of `parent_pipeline`
-   and cannot be used to identify merge request pipelines. Use `$CI_MERGE_REQUEST_ID`
-   instead, which is always present in merge request pipelines.
+In child pipelines, `$CI_PIPELINE_SOURCE` always has a value of `parent_pipeline`, so:
+
+- You can use `if: $CI_PIPELINE_SOURCE == "parent_pipeline"` to ensure child pipeline jobs always run.
+- You _can't_ use `if: $CI_PIPELINE_SOURCE == "merge_request_event"` to configure child pipeline
+  jobs to run for merge request pipelines. Instead, use `if: $CI_MERGE_REQUEST_ID`
+  to set child pipeline jobs to run only when the parent pipeline is a merge request pipeline. The parent pipeline's
+  [`CI_MERGE_REQUEST_*` predefined variables](../variables/predefined_variables.md#predefined-variables-for-merge-request-pipelines)
+  are passed to the child pipeline jobs.
 
 ### Specify a branch for multi-project pipelines
 
@@ -656,6 +662,16 @@ With multi-project pipelines, the trigger job fails and does not create the down
 - The downstream pipeline targets a protected branch and the user does not have permission
   to run pipelines against the protected branch. See [pipeline security for protected branches](index.md#pipeline-security-on-protected-branches)
   for more information.
+
+### Job in child pipeline is not created when the pipeline runs
+
+If the parent pipeline is a [merge request pipeline](merge_request_pipelines.md),
+the child pipeline must [use `workflow:rules` or `rules` to ensure the jobs run](#run-child-pipelines-with-merge-request-pipelines).
+
+If no jobs in the child pipeline can run due to missing or incorrect `rules` configuration:
+
+- The child pipeline fails to start.
+- The parent pipeline's trigger job fails with: `downstream pipeline can not be creaed, Pipeline will not run for the selected trigger. The rules configuration prevented any jobs from being added to the pipeline.`
 
 ### `Ref is ambiguous`
 

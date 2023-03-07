@@ -10,6 +10,10 @@ module Gitlab
       }.freeze
 
       def validate!
+        # git-notes stores notes history as commits in refs/notes/commits (by
+        # default but is configurable) so we restrict the diff checks to tag
+        # and branch refs
+        return unless tag_ref? || branch_ref?
         return if deletion?
         return unless should_run_validations?
         return if commits.empty?

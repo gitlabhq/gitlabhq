@@ -4,6 +4,7 @@ import {
   DRAWIO_FRAME_ID,
   DIAGRAM_BACKGROUND_COLOR,
   DRAWIO_IFRAME_TIMEOUT,
+  DIAGRAM_MAX_SIZE,
 } from '~/drawio/constants';
 import { createAlert, VARIANT_SUCCESS } from '~/alert';
 
@@ -14,8 +15,10 @@ jest.useFakeTimers();
 describe('drawio/drawio_editor', () => {
   let editorFacade;
   let drawioIFrameReceivedMessages;
+  const diagramURL = `${window.location.origin}/uploads/diagram.drawio.svg`;
   const testSvg = '<svg></svg>';
   const testEncodedSvg = `data:image/svg+xml;base64,${btoa(testSvg)}`;
+  const filename = 'diagram.drawio.svg';
 
   const findDrawioIframe = () => document.getElementById(DRAWIO_FRAME_ID);
   const waitForDrawioIFrameMessage = ({ messageNumber = 1 } = {}) =>
@@ -71,6 +74,10 @@ describe('drawio/drawio_editor', () => {
     it('creates the drawio editor iframe and attaches it to the body', () => {
       expect(findDrawioIframe().getAttribute('src')).toBe(DRAWIO_EDITOR_URL);
     });
+
+    it('sets drawio-editor classname to the iframe', () => {
+      expect(findDrawioIframe().classList).toContain('drawio-editor');
+    });
   });
 
   describe(`when parent window does not receive configure event after ${DRAWIO_IFRAME_TIMEOUT} ms`, () => {
@@ -88,7 +95,7 @@ describe('drawio/drawio_editor', () => {
       jest.runAllTimers();
 
       expect(createAlert).toHaveBeenCalledWith({
-        message: 'The draw.io editor could not be loaded.',
+        message: 'The diagrams.net editor could not be loaded.',
       });
     });
   });
@@ -149,10 +156,10 @@ describe('drawio/drawio_editor', () => {
 
     describe('when there is a diagram selected', () => {
       const diagramSvg = '<svg></svg>';
-      const filename = 'diagram.drawio.svg';
 
       beforeEach(() => {
         editorFacade.getDiagram.mockResolvedValueOnce({
+          diagramURL,
           diagramSvg,
           filename,
           contentType: 'image/svg+xml',
@@ -177,14 +184,43 @@ describe('drawio/drawio_editor', () => {
           },
         });
       });
+
+      it('sets the drawio iframe as visible and resets cursor', async () => {
+        await waitForDrawioIFrameMessage();
+
+        expect(findDrawioIframe().style.visibility).toBe('visible');
+        expect(findDrawioIframe().style.cursor).toBe('');
+      });
+
+      it('scrolls window to the top', async () => {
+        await waitForDrawioIFrameMessage();
+
+        expect(window.scrollX).toBe(0);
+      });
     });
 
-    describe('when there is an image selected that is not a diagram', () => {
+    describe.each`
+      description | errorMessage | diagram
+      ${'when there is an image selected that is not an svg file'} | ${'The selected image is not a valid SVG diagram'} | ${{
+  diagramURL,
+  contentType: 'image/png',
+  filename: 'image.png',
+}}
+      ${'when the selected image is not an asset upload'} | ${'The selected image is not an asset uploaded in the application'} | ${{
+  diagramSvg: '<svg></svg>',
+  filename,
+  contentType: 'image/svg+xml',
+  diagramURL: 'https://example.com/image.drawio.svg',
+}}
+      ${'when the selected image is too large'} | ${'The selected image is too large.'} | ${{
+  diagramSvg: 'x'.repeat(DIAGRAM_MAX_SIZE + 1),
+  filename,
+  contentType: 'image/svg+xml',
+  diagramURL,
+}}
+    `('$description', ({ errorMessage, diagram }) => {
       beforeEach(() => {
-        editorFacade.getDiagram.mockResolvedValueOnce({
-          contentType: 'image/png',
-          filename: 'image.png',
-        });
+        editorFacade.getDiagram.mockResolvedValueOnce(diagram);
 
         launchDrawioEditor({ editorFacade });
 
@@ -193,7 +229,7 @@ describe('drawio/drawio_editor', () => {
 
       it('displays an error alert indicating that the image is not a diagram', async () => {
         expect(createAlert).toHaveBeenCalledWith({
-          message: 'The selected image is not a diagram',
+          message: errorMessage,
           error: expect.any(Error),
         });
       });
@@ -214,7 +250,7 @@ describe('drawio/drawio_editor', () => {
 
       it('displays an error alert indicating the failure', async () => {
         expect(createAlert).toHaveBeenCalledWith({
-          message: 'Cannot load the diagram into the draw.io editor',
+          message: 'Cannot load the diagram into the diagrams.net editor',
           error: expect.any(Error),
         });
       });
