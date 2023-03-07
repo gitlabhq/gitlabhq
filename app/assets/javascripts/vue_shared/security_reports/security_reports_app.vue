@@ -1,6 +1,6 @@
 <script>
 import { mapActions, mapGetters } from 'vuex';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { s__ } from '~/locale';
 import ReportSection from '~/ci/reports/components/report_section.vue';
 import { ERROR, SLOT_SUCCESS, SLOT_LOADING, SLOT_ERROR } from '~/ci/reports/constants';

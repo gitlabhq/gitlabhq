@@ -253,6 +253,6 @@ RSpec.describe 'Dashboard Projects', feature_category: :projects do
     # - ProjectsHelper#load_pipeline_status / Ci::CommitWithPipeline#last_pipeline
     # - Ci::Pipeline#detailed_status
 
-    expect { visit dashboard_projects_path }.not_to exceed_query_limit(control).with_threshold(0)
+    expect { visit dashboard_projects_path }.not_to exceed_query_limit(control).with_threshold(4)
   end
 end

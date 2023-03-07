@@ -17,6 +17,7 @@ export function initNewProjectCreation() {
     isCiCdAvailable,
     parentGroupUrl,
     parentGroupName,
+    projectsUrl,
   } = el.dataset;
 
   const props = {
@@ -25,6 +26,7 @@ export function initNewProjectCreation() {
     newProjectGuidelines,
     parentGroupUrl,
     parentGroupName,
+    projectsUrl,
   };
 
   const provide = {

@@ -7,7 +7,7 @@ import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_help
 import runnerToggleActiveMutation from '~/ci/runner/graphql/shared/runner_toggle_active.mutation.graphql';
 import waitForPromises from 'helpers/wait_for_promises';
 import { captureException } from '~/ci/runner/sentry_utils';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import {
   I18N_PAUSE,
   I18N_PAUSE_TOOLTIP,
@@ -22,7 +22,7 @@ const mockRunner = allRunnersData.data.runners.nodes[0];
 
 Vue.use(VueApollo);
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 jest.mock('~/ci/runner/sentry_utils');
 
 describe('RunnerPauseButton', () => {

@@ -3,7 +3,7 @@ import { produce } from 'immer';
 import { sortBy } from 'lodash';
 import { GlIcon } from '@gitlab/ui';
 import { sprintf } from '~/locale';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { TYPENAME_ISSUE } from '~/graphql_shared/constants';
 import { timelineFormI18n } from './constants';

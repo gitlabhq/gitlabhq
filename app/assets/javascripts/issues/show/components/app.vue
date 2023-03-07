@@ -1,7 +1,7 @@
 <script>
 import { GlIcon, GlBadge, GlIntersectionObserver, GlTooltipDirective } from '@gitlab/ui';
 import Visibility from 'visibilityjs';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import {
   IssuableStatusText,
   STATUS_CLOSED,
@@ -277,7 +277,7 @@ export default {
     },
   },
   created() {
-    this.flashContainer = null;
+    this.alert = null;
     this.service = new Service(this.endpoint);
     this.poll = new Poll({
       resource: this.service,
@@ -395,7 +395,7 @@ export default {
         ? { ...formState, issue_type: issueState.issueType }
         : formState;
 
-      this.clearFlash();
+      this.alert?.dismiss();
 
       return this.service
         .updateIssuable(issuablePayload)
@@ -431,7 +431,7 @@ export default {
             errMsg += `. ${message}`;
           }
 
-          this.flashContainer = createAlert({
+          this.alert = createAlert({
             message: errMsg,
           });
         })
@@ -446,13 +446,6 @@ export default {
 
     showStickyHeader() {
       this.isStickyHeaderShowing = true;
-    },
-
-    clearFlash() {
-      if (this.flashContainer) {
-        this.flashContainer.close();
-        this.flashContainer = null;
-      }
     },
 
     handleSaveDescription(description) {

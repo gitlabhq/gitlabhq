@@ -21,6 +21,23 @@ RSpec.shared_examples '400 response' do
   end
 end
 
+RSpec.shared_examples '401 response' do
+  let(:message) { nil }
+
+  before do
+    # Fires the request
+    request
+  end
+
+  it 'returns 401' do
+    expect(response).to have_gitlab_http_status(:unauthorized)
+
+    if message.present?
+      expect(json_response['message']).to eq(message)
+    end
+  end
+end
+
 RSpec.shared_examples '403 response' do
   before do
     # Fires the request

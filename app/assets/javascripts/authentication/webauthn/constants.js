@@ -38,6 +38,8 @@ export const STATE_SUCCESS = 'success';
 export const STATE_UNSUPPORTED = 'unsupported';
 export const STATE_WAITING = 'waiting';
 
+export const WEBAUTHN_AUTHENTICATE = 'authenticate';
+export const WEBAUTHN_REGISTER = 'register';
 export const WEBAUTHN_DOCUMENTATION_PATH = helpPagePath(
   'user/profile/account/two_factor_authentication',
   { anchor: 'set-up-a-webauthn-device' },

@@ -20,6 +20,8 @@ module API
       end
 
       def authorize_push_to_branch!(branch)
+        authenticate!
+
         unless user_access.can_push_to_branch?(branch)
           forbidden!("You are not allowed to push into this branch")
         end
@@ -127,6 +129,8 @@ module API
         tags %w[commits]
         failure [
           { code: 400, message: 'Bad request' },
+          { code: 401, message: 'Unauthorized' },
+          { code: 403, message: 'Forbidden' },
           { code: 404, message: 'Not found' }
         ]
         detail 'This feature was introduced in GitLab 8.13'

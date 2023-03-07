@@ -4,7 +4,7 @@ import VueApollo from 'vue-apollo';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import RunnerJobs from '~/ci/runner/components/runner_jobs.vue';
 import RunnerJobsTable from '~/ci/runner/components/runner_jobs_table.vue';
 import RunnerPagination from '~/ci/runner/components/runner_pagination.vue';
@@ -15,7 +15,7 @@ import runnerJobsQuery from '~/ci/runner/graphql/show/runner_jobs.query.graphql'
 
 import { runnerData, runnerJobsData } from '../mock_data';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 jest.mock('~/ci/runner/sentry_utils');
 
 const mockRunner = runnerData.data.runner;

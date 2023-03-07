@@ -8,7 +8,7 @@ import Audio from '~/content_editor/extensions/audio';
 import Video from '~/content_editor/extensions/video';
 import Link from '~/content_editor/extensions/link';
 import Loading from '~/content_editor/extensions/loading';
-import { VARIANT_DANGER } from '~/flash';
+import { VARIANT_DANGER } from '~/alert';
 import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import eventHubFactory from '~/helpers/event_hub_factory';
 import { createTestEditor, createDocBuilder } from '../test_utils';

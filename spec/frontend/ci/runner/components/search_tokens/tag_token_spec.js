@@ -3,14 +3,14 @@ import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import { nextTick } from 'vue';
 import waitForPromises from 'helpers/wait_for_promises';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import TagToken, { TAG_SUGGESTIONS_PATH } from '~/ci/runner/components/search_tokens/tag_token.vue';
 import { OPERATORS_IS } from '~/vue_shared/components/filtered_search_bar/constants';
 import { getRecentlyUsedSuggestions } from '~/vue_shared/components/filtered_search_bar/filtered_search_utils';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 jest.mock('~/vue_shared/components/filtered_search_bar/filtered_search_utils', () => ({
   ...jest.requireActual('~/vue_shared/components/filtered_search_bar/filtered_search_utils'),

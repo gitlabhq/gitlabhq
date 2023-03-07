@@ -184,6 +184,7 @@ export default class ActivityCalendar {
         });
         return `translate(${this.daySizeWithSpace * i + 1 + this.daySizeWithSpace}, 18)`;
       })
+      .attr('data-testid', 'user-contrib-cell-group')
       .selectAll('rect')
       .data((stamp) => stamp)
       .enter()
@@ -195,6 +196,7 @@ export default class ActivityCalendar {
       .attr('data-level', (stamp) => getLevelFromContributions(stamp.count))
       .attr('title', (stamp) => formatTooltipText(stamp))
       .attr('class', 'user-contrib-cell has-tooltip')
+      .attr('data-testid', 'user-contrib-cell')
       .attr('data-html', true)
       .attr('data-container', 'body')
       .on('click', this.clickDay);

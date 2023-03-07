@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe GitlabSchema.types['DesignAtVersion'] do
+RSpec.describe GitlabSchema.types['DesignAtVersion'], feature_category: :portfolio_management do
   it_behaves_like 'a GraphQL type with design fields' do
     let(:extra_design_fields) { %i[version design] }
     let_it_be(:design) { create(:design, :with_versions) }

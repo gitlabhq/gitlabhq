@@ -7,7 +7,7 @@ import {
 import confidentialMergeRequestState from '~/confidential_merge_request/state';
 import DropLab from '~/filtered_search/droplab/drop_lab_deprecated';
 import ISetter from '~/filtered_search/droplab/plugins/input_setter';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { __, sprintf } from '~/locale';
 import { mergeUrlParams } from '~/lib/utils/url_utility';

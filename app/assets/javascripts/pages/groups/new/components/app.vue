@@ -11,6 +11,10 @@ export default {
     NewNamespacePage,
   },
   props: {
+    groupsUrl: {
+      type: String,
+      required: true,
+    },
     parentGroupUrl: {
       type: String,
       required: false,
@@ -39,7 +43,10 @@ export default {
             { text: this.parentGroupName, href: this.parentGroupUrl },
             { text: s__('GroupsNew|New subgroup'), href: '#' },
           ]
-        : [{ text: s__('GroupsNew|New group'), href: '#' }];
+        : [
+            { text: s__('GroupsNew|Groups'), href: this.groupsUrl },
+            { text: s__('GroupsNew|New group'), href: '#' },
+          ];
     },
     panels() {
       return [

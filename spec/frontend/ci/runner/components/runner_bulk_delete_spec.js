@@ -2,7 +2,7 @@ import Vue from 'vue';
 import { makeVar } from '@apollo/client/core';
 import { GlModal, GlSprintf } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { s__ } from '~/locale';
@@ -15,7 +15,7 @@ import { allRunnersData } from '../mock_data';
 
 Vue.use(VueApollo);
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 describe('RunnerBulkDelete', () => {
   let wrapper;

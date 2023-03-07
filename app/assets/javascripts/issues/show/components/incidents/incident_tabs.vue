@@ -1,6 +1,6 @@
 <script>
 import { GlTab, GlTabs } from '@gitlab/ui';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { trackIncidentDetailsViewsOptions } from '~/incidents/constants';
 import { s__ } from '~/locale';
 import Tracking from '~/tracking';

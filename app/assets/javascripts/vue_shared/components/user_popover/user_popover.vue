@@ -10,7 +10,7 @@ import {
 } from '@gitlab/ui';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { glEmojiTag } from '~/emoji';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { followUser, unfollowUser } from '~/rest_api';
 import { isUserBusy } from '~/set_status_modal/utils';
 import Tracking from '~/tracking';

@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-require 'securerandom'
-
 module ResourceAccessTokens
   class CreateService < BaseService
+    include Gitlab::Utils::StrongMemoize
+
     def initialize(current_user, resource, params = {})
       @resource_type = resource.class.name.downcase
       @resource = resource
@@ -45,6 +45,14 @@ module ResourceAccessTokens
 
     attr_reader :resource_type, :resource
 
+    def username_and_email_generator
+      Gitlab::Utils::UsernameAndEmailGenerator.new(
+        username_prefix: "#{resource_type}_#{resource.id}_bot",
+        email_domain: "noreply.#{Gitlab.config.gitlab.host}"
+      )
+    end
+    strong_memoize_attr :username_and_email_generator
+
     def has_permission_to_create?
       %w(project group).include?(resource_type) && can?(current_user, :create_resource_access_tokens, resource)
     end
@@ -65,23 +73,11 @@ module ResourceAccessTokens
     def default_user_params
       {
         name: params[:name] || "#{resource.name.to_s.humanize} bot",
-        email: generate_email,
-        username: generate_username,
+        email: username_and_email_generator.email,
+        username: username_and_email_generator.username,
         user_type: :project_bot,
         skip_confirmation: true # Bot users should always have their emails confirmed.
       }
-    end
-
-    def generate_username
-      username
-    end
-
-    def generate_email
-      "#{username}@noreply.#{Gitlab.config.gitlab.host}"
-    end
-
-    def username
-      @username ||= "#{resource_type}_#{resource.id}_bot_#{SecureRandom.hex(8)}"
     end
 
     def create_personal_access_token(user)

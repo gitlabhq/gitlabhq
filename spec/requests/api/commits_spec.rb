@@ -425,6 +425,27 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
   describe "POST /projects/:id/repository/commits" do
     let!(:url) { "/projects/#{project_id}/repository/commits" }
 
+    context 'when unauthenticated', 'and project is public' do
+      let_it_be(:project) { create(:project, :public, :repository) }
+      let(:params) do
+        {
+          branch: 'master',
+          commit_message: 'message',
+          actions: [
+            {
+              action: 'create',
+              file_path: '/test.rb',
+              content: 'puts 8'
+            }
+          ]
+        }
+      end
+
+      it_behaves_like '401 response' do
+        let(:request) { post api(url), params: params }
+      end
+    end
+
     it 'returns a 403 unauthorized for user without permissions' do
       post api(url, guest)
 
@@ -1775,7 +1796,7 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
     context 'when unauthenticated', 'and project is public' do
       let_it_be(:project) { create(:project, :public, :repository) }
 
-      it_behaves_like '403 response' do
+      it_behaves_like '401 response' do
         let(:request) { post api(route), params: { branch: 'master' } }
       end
     end
@@ -1955,7 +1976,7 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
     context 'when unauthenticated', 'and project is public' do
       let_it_be(:project) { create(:project, :public, :repository) }
 
-      it_behaves_like '403 response' do
+      it_behaves_like '401 response' do
         let(:request) { post api(route), params: { branch: branch } }
       end
     end

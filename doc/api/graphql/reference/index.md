@@ -2450,6 +2450,26 @@ Input type: `DesignManagementMoveInput`
 | <a id="mutationdesignmanagementmovedesigncollection"></a>`designCollection` | [`DesignCollection`](#designcollection) | Current state of the collection. |
 | <a id="mutationdesignmanagementmoveerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
+### `Mutation.designManagementUpdate`
+
+Input type: `DesignManagementUpdateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationdesignmanagementupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationdesignmanagementupdatedescription"></a>`description` | [`String`](#string) | Description of the design. |
+| <a id="mutationdesignmanagementupdateid"></a>`id` | [`DesignManagementDesignID!`](#designmanagementdesignid) | ID of the design to update. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationdesignmanagementupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationdesignmanagementupdatedesign"></a>`design` | [`Design!`](#design) | Updated design. |
+| <a id="mutationdesignmanagementupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+
 ### `Mutation.designManagementUpload`
 
 Input type: `DesignManagementUploadInput`
@@ -12755,6 +12775,8 @@ A single design.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="designcommenters"></a>`commenters` | [`UserCoreConnection!`](#usercoreconnection) | All commenters on this noteable. (see [Connections](#connections)) |
+| <a id="designdescription"></a>`description` | [`String`](#string) | Description of the design. |
+| <a id="designdescriptionhtml"></a>`descriptionHtml` | [`String`](#string) | GitLab Flavored Markdown rendering of `description`. |
 | <a id="designdiffrefs"></a>`diffRefs` | [`DiffRefs!`](#diffrefs) | Diff refs for this design. |
 | <a id="designdiscussions"></a>`discussions` | [`DiscussionConnection!`](#discussionconnection) | All discussions on this noteable. (see [Connections](#connections)) |
 | <a id="designevent"></a>`event` | [`DesignVersionEvent!`](#designversionevent) | How this design was changed in the current version. |

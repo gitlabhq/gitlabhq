@@ -7,7 +7,7 @@ import IssueCardStatistics from 'ee_else_ce/issues/list/components/issue_card_st
 import IssueCardTimeInfo from 'ee_else_ce/issues/list/components/issue_card_time_info.vue';
 import getIssuesQuery from 'ee_else_ce/issues/list/queries/get_issues.query.graphql';
 import getIssuesCountsQuery from 'ee_else_ce/issues/list/queries/get_issues_counts.query.graphql';
-import { createAlert, VARIANT_INFO } from '~/flash';
+import { createAlert, VARIANT_INFO } from '~/alert';
 import { TYPENAME_USER } from '~/graphql_shared/constants';
 import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import CsvImportExportButtons from '~/issuable/components/csv_import_export_buttons.vue';

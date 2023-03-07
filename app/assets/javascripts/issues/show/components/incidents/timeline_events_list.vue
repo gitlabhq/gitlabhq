@@ -1,6 +1,6 @@
 <script>
 import { formatDate } from '~/lib/utils/datetime_utility';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { sprintf } from '~/locale';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import { ignoreWhilePending } from '~/lib/utils/ignore_while_pending';

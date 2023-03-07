@@ -9,3 +9,4 @@ Example:
         spec/migrations/20230213215230_queue_my_batched_migration_spec.rb
         lib/gitlab/background_migration/my_batched_migration.rb
         spec/lib/gitlab/background_migration/my_batched_migration_spec.rb
+        db/docs/batched_background_migrations/my_batched_migration.yml

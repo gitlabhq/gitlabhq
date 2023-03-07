@@ -8581,7 +8581,7 @@ msgstr ""
 msgid "Checkout|Coupon code (optional)"
 msgstr ""
 
-msgid "Checkout|Coupon has been applied to your purchase"
+msgid "Checkout|Coupon has been applied and by continuing with your purchase, you accept and agree to the %{linkStart}Coupon Terms%{linkEnd}."
 msgstr ""
 
 msgid "Checkout|Create a new group"
@@ -20538,6 +20538,9 @@ msgstr ""
 msgid "GroupsNew|GitLab source instance URL"
 msgstr ""
 
+msgid "GroupsNew|Groups"
+msgstr ""
+
 msgid "GroupsNew|Groups can also be nested by creating %{linkStart}subgroups%{linkEnd}."
 msgstr ""
 
@@ -25286,9 +25289,6 @@ msgid "LearnGitlab|Contact your administrator to enable this action."
 msgstr ""
 
 msgid "LearnGitlab|Contact your administrator to start a free Ultimate trial."
-msgstr ""
-
-msgid "LearnGitlab|Creating your onboarding experience..."
 msgstr ""
 
 msgid "LearnGitlab|Ok, let's go"
@@ -34530,6 +34530,9 @@ msgid "ProjectsNew|Project Configuration"
 msgstr ""
 
 msgid "ProjectsNew|Project description %{tag_start}(optional)%{tag_end}"
+msgstr ""
+
+msgid "ProjectsNew|Projects"
 msgstr ""
 
 msgid "ProjectsNew|Recommended if you're new to GitLab"

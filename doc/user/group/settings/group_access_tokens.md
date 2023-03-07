@@ -85,7 +85,7 @@ or API. However, administrators can use a workaround:
    group = Group.find(109)
 
    # Create the group bot user. For further group access tokens, the username should be `group_{group_id}_bot_{random_string}` and email address `group_{group_id}_bot_{random_string}@noreply.{Gitlab.config.gitlab.host}`.
-   random_string = SecureRandom.hex(8)
+   random_string = SecureRandom.hex(16)
    bot = Users::CreateService.new(admin, { name: 'group_token', username: "group_#{group.id}_bot_#{random_string}", email: "group_#{group.id}_bot_#{random_string}@noreply.#{Gitlab.config.gitlab.host}", user_type: :project_bot }).execute
 
    # Confirm the group bot.

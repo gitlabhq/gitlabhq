@@ -7,7 +7,7 @@ import getIssueDetailsQuery from 'ee_else_ce/work_items/graphql/get_issue_detail
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { TYPENAME_ISSUE, TYPENAME_WORK_ITEM } from '~/graphql_shared/constants';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { TYPE_ISSUE } from '~/issues/constants';
 import { __, s__, sprintf } from '~/locale';
 import { getSortableDefaultOptions, isDragging } from '~/sortable/utils';

@@ -4,7 +4,7 @@ import Vue from 'vue';
 import loadAwardsHandler from '~/awards_handler';
 import ShortcutsNavigation from '~/behaviors/shortcuts/shortcuts_navigation';
 import Diff from '~/diff';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import initDeprecatedNotes from '~/init_deprecated_notes';
 import { initDiffStatsDropdown } from '~/init_diff_stats_dropdown';
 import axios from '~/lib/utils/axios_utils';

@@ -13,6 +13,10 @@ module QA
             def has_alert_with_title?(title)
               has_link?(title, wait: 5)
             end
+
+            def go_to_alert(title)
+              click_link_with_text(title)
+            end
           end
         end
       end

@@ -30,10 +30,10 @@ import {
   STATE_UNSUPPORTED,
   STATE_WAITING,
   WEBAUTHN_DOCUMENTATION_PATH,
+  WEBAUTHN_REGISTER,
 } from '~/authentication/webauthn/constants';
 import WebAuthnError from '~/authentication/webauthn/error';
 import {
-  FLOW_REGISTER,
   convertCreateParams,
   convertCreateResponse,
   isHTTPS,
@@ -123,7 +123,7 @@ export default {
         this.credentials = JSON.stringify(convertCreateResponse(credentials));
         this.state = STATE_SUCCESS;
       } catch (error) {
-        this.errorMessage = new WebAuthnError(error, FLOW_REGISTER).message();
+        this.errorMessage = new WebAuthnError(error, WEBAUTHN_REGISTER).message();
         this.state = STATE_ERROR;
       }
     },

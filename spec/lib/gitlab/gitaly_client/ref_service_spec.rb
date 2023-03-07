@@ -213,8 +213,13 @@ RSpec.describe Gitlab::GitalyClient::RefService, feature_category: :gitaly do
         client.local_branches(sort_by: 'name_asc')
       end
 
-      it 'raises an argument error if an invalid sort_by parameter is passed' do
-        expect { client.local_branches(sort_by: 'invalid_sort') }.to raise_error(ArgumentError)
+      it 'uses default sort by name' do
+        expect_any_instance_of(Gitaly::RefService::Stub)
+          .to receive(:find_local_branches)
+                .with(gitaly_request_with_params(sort_by: :NAME), kind_of(Hash))
+                .and_return([])
+
+        client.local_branches(sort_by: 'invalid')
       end
     end
 
@@ -268,6 +273,17 @@ RSpec.describe Gitlab::GitalyClient::RefService, feature_category: :gitaly do
             .and_return([])
 
           client.tags(sort_by: 'version_asc')
+        end
+      end
+
+      context 'when sorting option is invalid' do
+        it 'uses default sort by name' do
+          expect_any_instance_of(Gitaly::RefService::Stub)
+            .to receive(:find_all_tags)
+                  .with(gitaly_request_with_params(sort_by: nil), kind_of(Hash))
+                  .and_return([])
+
+          client.tags(sort_by: 'invalid')
         end
       end
     end

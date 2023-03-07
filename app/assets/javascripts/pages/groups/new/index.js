@@ -22,6 +22,7 @@ initFilePickers();
 function initNewGroupCreation(el) {
   const {
     hasErrors,
+    groupsUrl,
     parentGroupUrl,
     parentGroupName,
     importExistingGroupPath,
@@ -31,6 +32,7 @@ function initNewGroupCreation(el) {
   } = el.dataset;
 
   const props = {
+    groupsUrl,
     parentGroupUrl,
     parentGroupName,
     importExistingGroupPath,

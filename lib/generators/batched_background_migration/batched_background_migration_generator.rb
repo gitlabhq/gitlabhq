@@ -40,6 +40,13 @@ module BatchedBackgroundMigration
       )
     end
 
+    def create_dictionary_file
+      template(
+        "batched_background_migration_dictionary.template",
+        File.join("db/docs/batched_background_migrations/#{file_name}.yml")
+      )
+    end
+
     def db_migrate_path
       super.sub("migrate", "post_migrate")
     end

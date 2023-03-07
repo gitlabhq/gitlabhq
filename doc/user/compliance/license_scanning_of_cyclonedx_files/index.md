@@ -20,8 +20,8 @@ This method of scanning is also capable of parsing and identifying over 500 diff
 Licenses not in the SPDX list are reported as "Unknown". License information can also be extracted from packages that are dual-licensed, or have multiple different licenses that apply.
 
 To enable license detection using Dependency Scanning in a project,
-include the `Jobs/Dependency-Scanning.yml` template in its CI configuration,
-but do not include the `Jobs/License-Scanning.yml` template.
+include the `Jobs/Dependency-Scanning.gitlab-ci.yml` template in its CI configuration,
+but do not include the `Jobs/License-Scanning.gitlab-ci.yml` template.
 
 ## Requirements
 

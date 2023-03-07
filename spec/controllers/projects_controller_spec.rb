@@ -1231,6 +1231,19 @@ RSpec.describe ProjectsController, feature_category: :projects do
         expect(response).to have_gitlab_http_status(:success)
       end
     end
+
+    context 'when sort param is invalid' do
+      let(:request) { get :refs, params: { namespace_id: project.namespace, id: project, sort: 'invalid' } }
+
+      it 'uses default sort by name' do
+        request
+
+        expect(response).to have_gitlab_http_status(:success)
+        expect(json_response['Branches']).to include('master')
+        expect(json_response['Tags']).to include('v1.0.0')
+        expect(json_response['Commits']).to be_nil
+      end
+    end
   end
 
   describe 'POST #preview_markdown' do

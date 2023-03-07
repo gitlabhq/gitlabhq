@@ -17,12 +17,15 @@ import {
   STATE_SUCCESS,
   STATE_UNSUPPORTED,
   STATE_WAITING,
+  WEBAUTHN_REGISTER,
 } from '~/authentication/webauthn/constants';
 import * as WebAuthnUtils from '~/authentication/webauthn/util';
+import WebAuthnError from '~/authentication/webauthn/error';
 
 const csrfToken = 'mock-csrf-token';
 jest.mock('~/lib/utils/csrf', () => ({ token: csrfToken }));
 jest.mock('~/authentication/webauthn/util');
+jest.mock('~/authentication/webauthn/error');
 
 describe('Registration', () => {
   const initialError = null;
@@ -221,10 +224,12 @@ describe('Registration', () => {
 
       it('shows an error message and a retry button', async () => {
         createComponent();
-        mockCreate.mockRejectedValueOnce(new Error());
+        const error = new Error();
+        mockCreate.mockRejectedValueOnce(error);
 
         await setupDevice();
 
+        expect(WebAuthnError).toHaveBeenCalledWith(error, WEBAUTHN_REGISTER);
         expect(wrapper.findComponent(GlAlert).props()).toMatchObject({
           variant: 'danger',
           secondaryButtonText: I18N_BUTTON_TRY_AGAIN,

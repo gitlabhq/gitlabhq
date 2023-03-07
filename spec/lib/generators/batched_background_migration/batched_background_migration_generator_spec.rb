@@ -25,6 +25,7 @@ RSpec.describe BatchedBackgroundMigration::BatchedBackgroundMigrationGenerator, 
     let(:expected_migration_spec_file) { load_expected_file('queue_my_batched_migration_spec.txt') }
     let(:expected_migration_job_file) { load_expected_file('my_batched_migration.txt') }
     let(:expected_migration_job_spec_file) { load_expected_file('my_batched_migration_spec_matcher.txt') }
+    let(:expected_migration_dictionary) { load_expected_file('my_batched_migration_dictionary.txt') }
 
     it 'generates expected files' do
       run_generator %w[my_batched_migration --table_name=projects --column_name=id --feature_category=database]
@@ -44,6 +45,10 @@ RSpec.describe BatchedBackgroundMigration::BatchedBackgroundMigrationGenerator, 
       assert_file('spec/lib/gitlab/background_migration/my_batched_migration_spec.rb') do |migration_job_spec_file|
         # Regex is used to match the dynamic schema: <version> in the specs
         expect(migration_job_spec_file).to match(/#{expected_migration_job_spec_file}/)
+      end
+
+      assert_file('db/docs/batched_background_migrations/my_batched_migration.yml') do |migration_dictionary|
+        expect(migration_dictionary).to eq(expected_migration_dictionary)
       end
     end
   end

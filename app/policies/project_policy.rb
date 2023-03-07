@@ -464,6 +464,7 @@ class ProjectPolicy < BasePolicy
     enable :read_alert_management_alert
     enable :update_alert_management_alert
     enable :create_design
+    enable :update_design
     enable :move_design
     enable :destroy_design
     enable :read_terraform_state
@@ -750,6 +751,7 @@ class ProjectPolicy < BasePolicy
     prevent :read_design
     prevent :read_design_activity
     prevent :create_design
+    prevent :update_design
     prevent :destroy_design
     prevent :move_design
   end

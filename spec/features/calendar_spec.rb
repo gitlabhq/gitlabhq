@@ -44,6 +44,14 @@ RSpec.describe 'Contributions Calendar', :js, feature_category: :user_profile do
     "#{get_cell_level_selector(contributions)}[title='#{contribution_text}<br /><span class=\"gl-text-gray-300\">#{date}</span>']"
   end
 
+  def get_days_of_week
+    page.all('[data-testid="user-contrib-cell-group"]')[1]
+      .all('[data-testid="user-contrib-cell"]')
+      .map do |node|
+        node[:title].match(/(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)/)[0]
+      end
+  end
+
   def push_code_contribution
     event = create(:push_event, project: contributed_project, author: user)
 
@@ -237,6 +245,32 @@ RSpec.describe 'Contributions Calendar', :js, feature_category: :user_profile do
         it_behaves_like 'hidden activity calendar'
       end
     end
+
+    describe 'first_day_of_week setting' do
+      context 'when first day of the week is set to Monday' do
+        before do
+          stub_application_setting(first_day_of_week: 1)
+        end
+
+        include_context 'when user page is visited'
+
+        it 'shows calendar with Monday as the first day of the week' do
+          expect(get_days_of_week).to eq(%w[Monday Tuesday Wednesday Thursday Friday Saturday Sunday])
+        end
+      end
+
+      context 'when first day of the week is set to Sunday' do
+        before do
+          stub_application_setting(first_day_of_week: 0)
+        end
+
+        include_context 'when user page is visited'
+
+        it 'shows calendar with Sunday as the first day of the week' do
+          expect(get_days_of_week).to eq(%w[Sunday Monday Tuesday Wednesday Thursday Friday Saturday])
+        end
+      end
+    end
   end
 
   context 'with `profile_tabs_vue` feature flag enabled' do
@@ -344,6 +378,32 @@ RSpec.describe 'Contributions Calendar', :js, feature_category: :user_profile do
         end
 
         it_behaves_like 'hidden activity calendar'
+      end
+    end
+
+    describe 'first_day_of_week setting' do
+      context 'when first day of the week is set to Monday' do
+        before do
+          stub_application_setting(first_day_of_week: 1)
+        end
+
+        include_context 'when user page is visited'
+
+        it 'shows calendar with Monday as the first day of the week' do
+          expect(get_days_of_week).to eq(%w[Monday Tuesday Wednesday Thursday Friday Saturday Sunday])
+        end
+      end
+
+      context 'when first day of the week is set to Sunday' do
+        before do
+          stub_application_setting(first_day_of_week: 0)
+        end
+
+        include_context 'when user page is visited'
+
+        it 'shows calendar with Sunday as the first day of the week' do
+          expect(get_days_of_week).to eq(%w[Sunday Monday Tuesday Wednesday Thursday Friday Saturday])
+        end
       end
     end
   end

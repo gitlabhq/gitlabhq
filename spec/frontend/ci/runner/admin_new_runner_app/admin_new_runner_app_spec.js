@@ -5,7 +5,7 @@ import { s__ } from '~/locale';
 
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
-import { createAlert, VARIANT_SUCCESS } from '~/flash';
+import { createAlert, VARIANT_SUCCESS } from '~/alert';
 
 import AdminNewRunnerApp from '~/ci/runner/admin_new_runner/admin_new_runner_app.vue';
 import { saveAlertToLocalStorage } from '~/ci/runner/local_storage_alert/save_alert_to_local_storage';
@@ -21,7 +21,7 @@ const mockLegacyRegistrationToken = 'LEGACY_REGISTRATION_TOKEN';
 Vue.use(VueApollo);
 
 jest.mock('~/ci/runner/local_storage_alert/save_alert_to_local_storage');
-jest.mock('~/flash');
+jest.mock('~/alert');
 jest.mock('~/lib/utils/url_utility', () => ({
   ...jest.requireActual('~/lib/utils/url_utility'),
   redirectTo: jest.fn(),

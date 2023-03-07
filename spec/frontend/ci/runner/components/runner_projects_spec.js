@@ -4,7 +4,7 @@ import VueApollo from 'vue-apollo';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { sprintf } from '~/locale';
 import {
   I18N_ASSIGNED_PROJECTS,
@@ -22,7 +22,7 @@ import runnerProjectsQuery from '~/ci/runner/graphql/show/runner_projects.query.
 
 import { runnerData, runnerProjectsData } from '../mock_data';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 jest.mock('~/ci/runner/sentry_utils');
 
 const mockRunner = runnerData.data.runner;

@@ -253,7 +253,7 @@ export default class UserTabs {
       timestamps: data,
       calendarActivitiesPath,
       utcOffset,
-      firstDayOfTheWeek: gon.first_day_of_week,
+      firstDayOfWeek: gon.first_day_of_week,
       monthsAgo,
     });
   }

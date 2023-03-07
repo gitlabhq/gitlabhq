@@ -3,7 +3,7 @@ import CodeBlockHighlight from '~/content_editor/extensions/code_block_highlight
 import Diagram from '~/content_editor/extensions/diagram';
 import Frontmatter from '~/content_editor/extensions/frontmatter';
 import Bold from '~/content_editor/extensions/bold';
-import { VARIANT_DANGER } from '~/flash';
+import { VARIANT_DANGER } from '~/alert';
 import eventHubFactory from '~/helpers/event_hub_factory';
 import { ALERT_EVENT } from '~/content_editor/constants';
 import waitForPromises from 'helpers/wait_for_promises';

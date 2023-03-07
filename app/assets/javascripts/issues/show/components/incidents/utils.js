@@ -1,4 +1,4 @@
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { s__ } from '~/locale';
 
 export const displayAndLogError = (error) =>

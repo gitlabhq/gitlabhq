@@ -10,7 +10,7 @@ import {
   GlTooltipDirective,
 } from '@gitlab/ui';
 import { mapActions, mapGetters, mapState } from 'vuex';
-import { createAlert, VARIANT_SUCCESS } from '~/flash';
+import { createAlert, VARIANT_SUCCESS } from '~/alert';
 import { EVENT_ISSUABLE_VUE_APP_CHANGE } from '~/issuable/constants';
 import { STATUS_CLOSED, TYPE_INCIDENT, TYPE_ISSUE } from '~/issues/constants';
 import { ISSUE_STATE_EVENT_CLOSE, ISSUE_STATE_EVENT_REOPEN } from '~/issues/show/constants';
