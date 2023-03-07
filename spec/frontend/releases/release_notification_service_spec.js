@@ -2,9 +2,9 @@ import {
   popCreateReleaseNotification,
   putCreateReleaseNotification,
 } from '~/releases/release_notification_service';
-import { createAlert, VARIANT_SUCCESS } from '~/flash';
+import { createAlert, VARIANT_SUCCESS } from '~/alert';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 describe('~/releases/release_notification_service', () => {
   const projectPath = 'test-project-path';
@@ -35,7 +35,7 @@ describe('~/releases/release_notification_service', () => {
         expect(item).toBe(null);
       });
 
-      it('should create a flash message', () => {
+      it('should create an alert message', () => {
         expect(createAlert).toHaveBeenCalledTimes(1);
         expect(createAlert).toHaveBeenCalledWith({
           message: `Release ${releaseName} has been successfully created.`,
@@ -49,7 +49,7 @@ describe('~/releases/release_notification_service', () => {
         popCreateReleaseNotification(projectPath);
       });
 
-      it('should not create a flash message', () => {
+      it('should not create an alert message', () => {
         expect(createAlert).toHaveBeenCalledTimes(0);
       });
     });

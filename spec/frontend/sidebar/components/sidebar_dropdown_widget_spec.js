@@ -7,7 +7,7 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { TYPE_ISSUE } from '~/issues/constants';
 import { timeFor } from '~/lib/utils/datetime_utility';
@@ -27,7 +27,7 @@ import {
   mockMilestone2,
 } from '../mock_data';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 describe('SidebarDropdownWidget', () => {
   let wrapper;

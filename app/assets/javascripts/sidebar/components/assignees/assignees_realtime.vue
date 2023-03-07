@@ -1,6 +1,5 @@
 <script>
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import { IssuableType } from '~/issues/constants';
 import { assigneesQueries } from '../../constants';
 
 export default {
@@ -22,9 +21,6 @@ export default {
     },
   },
   computed: {
-    issuableClass() {
-      return Object.keys(IssuableType).find((key) => IssuableType[key] === this.issuableType);
-    },
     issuableId() {
       return this.issuable?.id;
     },

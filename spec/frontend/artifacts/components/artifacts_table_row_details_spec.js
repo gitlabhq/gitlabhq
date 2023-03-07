@@ -10,9 +10,9 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import destroyArtifactMutation from '~/artifacts/graphql/mutations/destroy_artifact.mutation.graphql';
 import { I18N_DESTROY_ERROR, I18N_MODAL_TITLE } from '~/artifacts/constants';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 const { artifacts } = getJobArtifactsResponse.data.project.jobs.nodes[0];
 const refetchArtifacts = jest.fn();
@@ -88,7 +88,7 @@ describe('ArtifactsTableRowDetails component', () => {
       });
     });
 
-    it('displays a flash message and refetches artifacts when the mutation fails', async () => {
+    it('displays an alert message and refetches artifacts when the mutation fails', async () => {
       createComponent({
         destroyArtifactMutation: jest.fn().mockRejectedValue(new Error('Error!')),
       });

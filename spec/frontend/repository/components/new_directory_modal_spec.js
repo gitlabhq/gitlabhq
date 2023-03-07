@@ -4,12 +4,12 @@ import { nextTick } from 'vue';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import waitForPromises from 'helpers/wait_for_promises';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { visitUrl } from '~/lib/utils/url_utility';
 import NewDirectoryModal from '~/repository/components/new_directory_modal.vue';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 jest.mock('~/lib/utils/url_utility', () => ({
   visitUrl: jest.fn(),
 }));
@@ -188,7 +188,7 @@ describe('NewDirectoryModal', () => {
         expect(findModal().props('actionPrimary').attributes[0].disabled).toBe(true);
       });
 
-      it('creates a flash error', async () => {
+      it('creates an alert error', async () => {
         mock.onPost(initialProps.path).timeout();
 
         await fillForm({ dirName: 'foo', branchName: 'master', commitMessage: 'foo' });

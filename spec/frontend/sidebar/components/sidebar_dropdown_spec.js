@@ -10,7 +10,7 @@ import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { TYPE_ISSUE } from '~/issues/constants';
 import SidebarDropdown from '~/sidebar/components/sidebar_dropdown.vue';
 import { IssuableAttributeType } from '~/sidebar/constants';
@@ -23,7 +23,7 @@ import {
   noCurrentMilestoneResponse,
 } from '../mock_data';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 describe('SidebarDropdown component', () => {
   let wrapper;

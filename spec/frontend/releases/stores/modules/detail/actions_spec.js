@@ -2,7 +2,7 @@ import { cloneDeep } from 'lodash';
 import originalOneReleaseForEditingQueryResponse from 'test_fixtures/graphql/releases/graphql/queries/one_release_for_editing.query.graphql.json';
 import testAction from 'helpers/vuex_action_helper';
 import { getTag } from '~/api/tags_api';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { redirectTo } from '~/lib/utils/url_utility';
 import { s__ } from '~/locale';
 import { ASSET_LINK_TYPE } from '~/releases/constants';
@@ -21,7 +21,7 @@ import {
 
 jest.mock('~/api/tags_api');
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 jest.mock('~/releases/release_notification_service');
 
@@ -154,7 +154,7 @@ describe('Release edit/new actions', () => {
           ]);
         });
 
-        it(`shows a flash message`, () => {
+        it(`shows an alert message`, () => {
           return actions.fetchRelease({ commit: jest.fn(), state, rootState: state }).then(() => {
             expect(createAlert).toHaveBeenCalledTimes(1);
             expect(createAlert).toHaveBeenCalledWith({
@@ -380,7 +380,7 @@ describe('Release edit/new actions', () => {
           ]);
         });
 
-        it(`shows a flash message`, () => {
+        it(`shows an alert message`, () => {
           return actions
             .createRelease({ commit: jest.fn(), dispatch: jest.fn(), state, getters: {} })
             .then(() => {
@@ -406,7 +406,7 @@ describe('Release edit/new actions', () => {
           ]);
         });
 
-        it(`shows a flash message`, () => {
+        it(`shows an alert message`, () => {
           return actions
             .createRelease({ commit: jest.fn(), dispatch: jest.fn(), state, getters: {} })
             .then(() => {
@@ -538,7 +538,7 @@ describe('Release edit/new actions', () => {
           expect(commit.mock.calls).toEqual([[types.RECEIVE_SAVE_RELEASE_ERROR, error]]);
         });
 
-        it('shows a flash message', async () => {
+        it('shows an alert message', async () => {
           await actions.updateRelease({ commit, dispatch, state, getters });
 
           expect(createAlert).toHaveBeenCalledTimes(1);
@@ -558,7 +558,7 @@ describe('Release edit/new actions', () => {
             ]);
           });
 
-          it('shows a flash message', async () => {
+          it('shows an alert message', async () => {
             await actions.updateRelease({ commit, dispatch, state, getters });
 
             expect(createAlert).toHaveBeenCalledTimes(1);
@@ -711,7 +711,7 @@ describe('Release edit/new actions', () => {
         expect(commit.mock.calls).toContainEqual([types.RECEIVE_SAVE_RELEASE_ERROR, error]);
       });
 
-      it('shows a flash message', async () => {
+      it('shows an alert message', async () => {
         await actions.deleteRelease({ commit, dispatch, state, getters });
 
         expect(createAlert).toHaveBeenCalledTimes(1);
@@ -747,7 +747,7 @@ describe('Release edit/new actions', () => {
         ]);
       });
 
-      it('shows a flash message', async () => {
+      it('shows an alert message', async () => {
         await actions.deleteRelease({ commit, dispatch, state, getters });
 
         expect(createAlert).toHaveBeenCalledTimes(1);
@@ -778,7 +778,7 @@ describe('Release edit/new actions', () => {
 
       expect(getTag).toHaveBeenCalledWith(state.projectId, tagName);
     });
-    it('creates a flash on error', async () => {
+    it('creates an alert on error', async () => {
       error = new Error();
       getTag.mockRejectedValue(error);
 

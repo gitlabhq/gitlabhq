@@ -6,7 +6,7 @@ import FileTable from '~/repository/components/table/index.vue';
 import TreeContent from 'jh_else_ce/repository/components/tree_content.vue';
 import { loadCommits, isRequested, resetRequestedCommits } from '~/repository/commits_service';
 import waitForPromises from 'helpers/wait_for_promises';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { i18n } from '~/repository/constants';
 import { graphQLErrors } from '../mock_data';
 
@@ -15,7 +15,7 @@ jest.mock('~/repository/commits_service', () => ({
   isRequested: jest.fn(),
   resetRequestedCommits: jest.fn(),
 }));
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 let vm;
 let $apollo;

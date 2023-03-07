@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Parsers::Security::Common do
+RSpec.describe Gitlab::Ci::Parsers::Security::Common, feature_category: :vulnerability_management do
   describe '#parse!' do
     let_it_be(:scanner_data) do
       {
@@ -408,6 +408,12 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Common do
               expect(finding_uuids).to match_array(expected_uuids)
             end
           end
+        end
+
+        describe 'setting the `found_by_pipeline` attribute' do
+          subject { report.findings.map(&:found_by_pipeline).uniq }
+
+          it { is_expected.to eq([pipeline]) }
         end
 
         describe 'parsing tracking' do

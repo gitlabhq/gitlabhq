@@ -5,13 +5,13 @@ import { useFakeDate } from 'helpers/fake_date';
 import { initEmojiMock, clearEmojiMock } from 'helpers/emoji';
 import * as UserApi from '~/api/user_api';
 import EmojiPicker from '~/emoji/components/picker.vue';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import stubChildren from 'helpers/stub_children';
 import SetStatusModalWrapper from '~/set_status_modal/set_status_modal_wrapper.vue';
 import { AVAILABILITY_STATUS } from '~/set_status_modal/constants';
 import SetStatusForm from '~/set_status_modal/set_status_form.vue';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 describe('SetStatusModalWrapper', () => {
   let wrapper;
@@ -244,7 +244,7 @@ describe('SetStatusModalWrapper', () => {
         return initModal({ mockOnUpdateFailure: false });
       });
 
-      it('flashes an error message', async () => {
+      it('alerts an error message', async () => {
         findModal().vm.$emit('primary');
         await nextTick();
 

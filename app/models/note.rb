@@ -333,6 +333,10 @@ class Note < ApplicationRecord
     noteable_type == "Issue"
   end
 
+  def for_work_item?
+    noteable.is_a?(WorkItem)
+  end
+
   def for_merge_request?
     noteable_type == "MergeRequest"
   end

@@ -29,7 +29,11 @@ export default {
     GlLink,
     GlSprintf,
   },
-  inject: ['issuableType'],
+  inject: {
+    issuableType: {
+      default: null,
+    },
+  },
   props: {
     issuableId: {
       type: String,

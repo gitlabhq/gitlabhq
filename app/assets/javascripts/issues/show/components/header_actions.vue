@@ -12,7 +12,7 @@ import {
 import { mapActions, mapGetters, mapState } from 'vuex';
 import { createAlert, VARIANT_SUCCESS } from '~/flash';
 import { EVENT_ISSUABLE_VUE_APP_CHANGE } from '~/issuable/constants';
-import { IssueType, STATUS_CLOSED, TYPE_INCIDENT } from '~/issues/constants';
+import { STATUS_CLOSED, TYPE_INCIDENT, TYPE_ISSUE } from '~/issues/constants';
 import { ISSUE_STATE_EVENT_CLOSE, ISSUE_STATE_EVENT_REOPEN } from '~/issues/show/constants';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 import { visitUrl } from '~/lib/utils/url_utility';
@@ -87,7 +87,7 @@ export default {
       default: '',
     },
     issueType: {
-      default: IssueType.Issue,
+      default: TYPE_ISSUE,
     },
     newIssuePath: {
       default: '',
@@ -118,7 +118,7 @@ export default {
     },
     issueTypeText() {
       const issueTypeTexts = {
-        [IssueType.Issue]: s__('HeaderAction|issue'),
+        [TYPE_ISSUE]: s__('HeaderAction|issue'),
         [TYPE_INCIDENT]: s__('HeaderAction|incident'),
       };
 

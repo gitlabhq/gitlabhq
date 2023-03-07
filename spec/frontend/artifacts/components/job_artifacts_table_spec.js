@@ -19,9 +19,9 @@ import {
   INITIAL_CURRENT_PAGE,
 } from '~/artifacts/constants';
 import { totalArtifactsSizeForJob } from '~/artifacts/utils';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 Vue.use(VueApollo);
 

@@ -10775,7 +10775,6 @@ CREATE TABLE achievements (
     name text NOT NULL,
     avatar text,
     description text,
-    revokeable boolean DEFAULT false NOT NULL,
     CONSTRAINT check_5171b03f22 CHECK ((char_length(name) <= 255)),
     CONSTRAINT check_a7a7b84a80 CHECK ((char_length(description) <= 1024)),
     CONSTRAINT check_e174e93a9e CHECK ((char_length(avatar) <= 255))

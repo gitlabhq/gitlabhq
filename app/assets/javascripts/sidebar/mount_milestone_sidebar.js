@@ -1,5 +1,4 @@
 import Vue from 'vue';
-import { IssuableType } from '~/issues/constants';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import TimeTracker from './components/time_tracking/time_tracker.vue';
 
@@ -24,9 +23,6 @@ export default class SidebarMilestone {
       name: 'SidebarMilestoneRoot',
       components: {
         TimeTracker,
-      },
-      provide: {
-        issuableType: IssuableType.Milestone,
       },
       render: (createElement) =>
         createElement('time-tracker', {

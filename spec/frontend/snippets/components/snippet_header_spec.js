@@ -10,9 +10,9 @@ import { differenceInMilliseconds } from '~/lib/utils/datetime_utility';
 import SnippetHeader, { i18n } from '~/snippets/components/snippet_header.vue';
 import DeleteSnippetMutation from '~/snippets/mutations/delete_snippet.mutation.graphql';
 import axios from '~/lib/utils/axios_utils';
-import { createAlert, VARIANT_DANGER, VARIANT_SUCCESS } from '~/flash';
+import { createAlert, VARIANT_DANGER, VARIANT_SUCCESS } from '~/alert';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 describe('Snippet header component', () => {
   let wrapper;
@@ -271,7 +271,7 @@ describe('Snippet header component', () => {
       ${200}  | ${VARIANT_SUCCESS} | ${i18n.snippetSpamSuccess}
       ${500}  | ${VARIANT_DANGER}  | ${i18n.snippetSpamFailure}
     `(
-      'renders a "$variant" flash message with "$text" message for a request with a "$request" response',
+      'renders a "$variant" alert message with "$text" message for a request with a "$request" response',
       async ({ request, variant, text }) => {
         const submitAsSpamBtn = findButtons().at(2);
         mock.onPost(reportAbusePath).reply(request);

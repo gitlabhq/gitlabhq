@@ -85,6 +85,26 @@ class WorkItem < Issue
     COMMON_QUICK_ACTIONS_COMMANDS + commands_for_widgets
   end
 
+  # Widgets have a set of quick action params that they must process.
+  # Map them to widget_params so they can be picked up by widget services.
+  def transform_quick_action_params(command_params)
+    common_params = command_params.deep_dup
+    widget_params = {}
+
+    work_item_type.widgets
+          .filter { |widget| widget.respond_to?(:quick_action_params) }
+          .each do |widget|
+            widget.quick_action_params
+              .filter { |param_name| common_params.key?(param_name) }
+              .each do |param_name|
+                widget_params[widget.api_symbol] ||= {}
+                widget_params[widget.api_symbol][param_name] = common_params.delete(param_name)
+              end
+          end
+
+    { common: common_params, widgets: widget_params }
+  end
+
   private
 
   override :parent_link_confidentiality

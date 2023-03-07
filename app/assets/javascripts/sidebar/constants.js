@@ -4,10 +4,11 @@ import updateIssueLabelsMutation from '~/boards/graphql/issue_set_labels.mutatio
 import userSearchQuery from '~/graphql_shared/queries/users_search.query.graphql';
 import userSearchWithMRPermissionsQuery from '~/graphql_shared/queries/users_search_with_mr_permissions.graphql';
 import {
-  IssuableType,
+  TYPE_ALERT,
   TYPE_EPIC,
   TYPE_ISSUE,
   TYPE_MERGE_REQUEST,
+  TYPE_TEST_CASE,
   WORKSPACE_GROUP,
   WORKSPACE_PROJECT,
 } from '~/issues/constants';
@@ -80,7 +81,7 @@ export const assigneesQueries = {
     query: getMergeRequestAssignees,
     mutation: updateMergeRequestAssigneesMutation,
   },
-  [IssuableType.Alert]: {
+  [TYPE_ALERT]: {
     query: getAlertAssignees,
     mutation: updateAlertAssigneesMutation,
   },
@@ -96,7 +97,7 @@ export const participantsQueries = {
   [TYPE_EPIC]: {
     query: epicParticipantsQuery,
   },
-  [IssuableType.Alert]: {
+  [TYPE_ALERT]: {
     query: '',
     skipQuery: true,
   },
@@ -159,7 +160,7 @@ export const issuableLabelsQueries = {
     mutation: updateEpicLabelsMutation,
     mutationName: 'updateEpic',
   },
-  [IssuableType.TestCase]: {
+  [TYPE_TEST_CASE]: {
     issuableQuery: issueLabelsQuery,
     mutation: updateTestCaseLabelsMutation,
     mutationName: 'updateTestCaseLabels',

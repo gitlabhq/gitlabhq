@@ -30,7 +30,7 @@ import {
   INTEGRATION_INACTIVE_PAYLOAD_TEST_ERROR,
   DELETE_INTEGRATION_ERROR,
 } from '~/alerts_settings/utils/error_messages';
-import { createAlert, VARIANT_SUCCESS } from '~/flash';
+import { createAlert, VARIANT_SUCCESS } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_FORBIDDEN, HTTP_STATUS_UNPROCESSABLE_ENTITY } from '~/lib/utils/http_status';
 import {
@@ -48,7 +48,7 @@ import {
 } from './mocks/apollo_mock';
 import mockIntegrations from './mocks/integrations.json';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 describe('AlertsSettingsWrapper', () => {
   let wrapper;
@@ -478,7 +478,7 @@ describe('AlertsSettingsWrapper', () => {
       expect(destroyIntegrationHandler).toHaveBeenCalled();
     });
 
-    it('displays flash if mutation had a recoverable error', async () => {
+    it('displays alert if mutation had a recoverable error', async () => {
       createComponentWithApollo({
         destroyHandler: jest.fn().mockResolvedValue(destroyIntegrationResponseWithErrors),
       });
@@ -489,7 +489,7 @@ describe('AlertsSettingsWrapper', () => {
       expect(createAlert).toHaveBeenCalledWith({ message: 'Houston, we have a problem' });
     });
 
-    it('displays flash if mutation had a non-recoverable error', async () => {
+    it('displays alert if mutation had a non-recoverable error', async () => {
       createComponentWithApollo({
         destroyHandler: jest.fn().mockRejectedValue('Error'),
       });

@@ -1100,6 +1100,16 @@ RSpec.describe Note do
     end
   end
 
+  describe '#for_work_item?' do
+    it 'returns true for a work item' do
+      expect(build(:note_on_work_item).for_work_item?).to be true
+    end
+
+    it 'returns false for an issue' do
+      expect(build(:note_on_issue).for_work_item?).to be false
+    end
+  end
+
   describe '#for_project_snippet?' do
     it 'returns true for a project snippet note' do
       expect(build(:note_on_project_snippet).for_project_snippet?).to be true

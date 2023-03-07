@@ -18,11 +18,11 @@ import {
   trackErrorDetailsViewsOptions,
   trackErrorStatusUpdateOptions,
 } from '~/error_tracking/utils';
-import { createAlert, VARIANT_WARNING } from '~/flash';
+import { createAlert, VARIANT_WARNING } from '~/alert';
 import { __ } from '~/locale';
 import Tracking from '~/tracking';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 Vue.use(Vuex);
 
@@ -148,7 +148,7 @@ describe('ErrorDetails', () => {
       expect(mocks.$apollo.queries.error.stopPolling).not.toHaveBeenCalled();
     });
 
-    it('when timeout is hit and no apollo result, stops loading and shows flash', async () => {
+    it('when timeout is hit and no apollo result, stops loading and shows alert', async () => {
       Date.now.mockReturnValue(endTime + 1);
 
       wrapper.vm.onNoApolloResult();

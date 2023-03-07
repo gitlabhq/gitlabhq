@@ -4,14 +4,14 @@ import VueApollo from 'vue-apollo';
 import oneReleaseQueryResponse from 'test_fixtures/graphql/releases/graphql/queries/one_release.query.graphql.json';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { popCreateReleaseNotification } from '~/releases/release_notification_service';
 import ReleaseShowApp from '~/releases/components/app_show.vue';
 import ReleaseBlock from '~/releases/components/release_block.vue';
 import ReleaseSkeletonLoader from '~/releases/components/release_skeleton_loader.vue';
 import oneReleaseQuery from '~/releases/graphql/queries/one_release.query.graphql';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 jest.mock('~/releases/release_notification_service');
 
 Vue.use(VueApollo);
@@ -54,13 +54,13 @@ describe('Release show component', () => {
   };
 
   const expectNoFlash = () => {
-    it('does not show a flash message', () => {
+    it('does not show an alert message', () => {
       expect(createAlert).not.toHaveBeenCalled();
     });
   };
 
   const expectFlashWithMessage = (message) => {
-    it(`shows a flash message that reads "${message}"`, () => {
+    it(`shows an alert message that reads "${message}"`, () => {
       expect(createAlert).toHaveBeenCalledWith({
         message,
         captureError: true,
@@ -152,7 +152,7 @@ describe('Release show component', () => {
     beforeEach(async () => {
       // As we return a release as `null`, Apollo also throws an error to the console
       // about the missing field. We need to suppress console.error in order to check
-      // that flash message was called
+      // that alert message was called
 
       // eslint-disable-next-line no-console
       console.error = jest.fn();

@@ -139,6 +139,7 @@ module Gitlab
                 details: data['details'] || {},
                 signatures: signatures,
                 project_id: @project.id,
+                found_by_pipeline: report.pipeline,
                 vulnerability_finding_signatures_enabled: @signatures_enabled))
           end
 

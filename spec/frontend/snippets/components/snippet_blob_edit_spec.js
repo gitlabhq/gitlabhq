@@ -4,14 +4,14 @@ import AxiosMockAdapter from 'axios-mock-adapter';
 import { TEST_HOST } from 'helpers/test_constants';
 import waitForPromises from 'helpers/wait_for_promises';
 import BlobHeaderEdit from '~/blob/components/blob_edit_header.vue';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { joinPaths } from '~/lib/utils/url_utility';
 import SnippetBlobEdit from '~/snippets/components/snippet_blob_edit.vue';
 import SourceEditor from '~/vue_shared/components/source_editor.vue';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 const TEST_ID = 'blob_local_7';
 const TEST_PATH = 'foo/bar/test.md';
@@ -123,7 +123,7 @@ describe('Snippet Blob Edit component', () => {
       createComponent();
     });
 
-    it('should call flash', async () => {
+    it('should call alert', async () => {
       await waitForPromises();
 
       expect(createAlert).toHaveBeenCalledWith({

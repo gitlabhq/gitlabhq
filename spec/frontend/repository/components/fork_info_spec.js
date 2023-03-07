@@ -4,13 +4,13 @@ import { GlSkeletonLoader, GlIcon, GlLink, GlSprintf } from '@gitlab/ui';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 
 import ForkInfo, { i18n } from '~/repository/components/fork_info.vue';
 import forkDetailsQuery from '~/repository/queries/fork_details.query.graphql';
 import { propsForkInfo } from '../mock_data';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 describe('ForkInfo component', () => {
   let wrapper;

@@ -6,6 +6,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Import API **(FREE)**
 
+Use the Import API to import repositories from GitHub or Bitbucket Server.
+
 ## Import repository from GitHub
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/381902) in GitLab 15.8, GitLab no longer automatically creates namespaces or groups if the namespace or group name specified in `target_namespace` doesn't exist. GitLab also no longer falls back to using the user's personal namespace if the namespace or group name is taken or `target_namespace` is blank.
@@ -77,7 +79,7 @@ token:
 - The GitLab project inherits the original project's visibility settings. As a result, the project is publicly accessible if the original project is public.
 - If the `path` or `target_namespace` does not exist, the project import fails.
 
-## Cancel GitHub project import
+### Cancel GitHub project import
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/364783) in GitLab 15.5.
 
@@ -122,7 +124,7 @@ Returns the following status codes:
 - `400 Bad Request`: the project import cannot be canceled.
 - `404 Not Found`: the project associated with `project_id` does not exist.
 
-## Import GitHub gists into GitLab snippets
+### Import GitHub gists into GitLab snippets
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/371099) in GitLab 15.8 [with a flag](../administration/feature_flags.md) named `github_import_gists`. Disabled by default. Enabled on GitLab.com.
 
