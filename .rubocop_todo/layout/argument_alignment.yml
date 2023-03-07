@@ -2371,7 +2371,6 @@ Layout/ArgumentAlignment:
     - 'spec/helpers/avatars_helper_spec.rb'
     - 'spec/helpers/emoji_helper_spec.rb'
     - 'spec/helpers/feature_flags_helper_spec.rb'
-    - 'spec/helpers/ide_helper_spec.rb'
     - 'spec/helpers/namespaces_helper_spec.rb'
     - 'spec/helpers/notify_helper_spec.rb'
     - 'spec/helpers/page_layout_helper_spec.rb'

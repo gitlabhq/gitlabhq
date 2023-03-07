@@ -11,11 +11,10 @@ RSpec.describe Nav::NewDropdownHelper, feature_category: :navigation do
     let(:with_can_create_project) { false }
     let(:with_can_create_group) { false }
     let(:with_can_create_snippet) { false }
-    let(:with_context) { true }
     let(:title) { 'Create new...' }
 
     subject(:view_model) do
-      helper.new_dropdown_view_model(project: current_project, group: current_group, with_context: with_context)
+      helper.new_dropdown_view_model(project: current_project, group: current_group)
     end
 
     before do
@@ -157,24 +156,10 @@ RSpec.describe Nav::NewDropdownHelper, feature_category: :navigation do
       it 'has base results' do
         results = {
           title: title,
-          menu_sections: [],
-          context: group
+          menu_sections: []
         }
 
         expect(view_model).to eq(results)
-      end
-
-      context 'without context' do
-        let(:with_context) { false }
-
-        it 'has base results' do
-          results = {
-            title: title,
-            menu_sections: []
-          }
-
-          expect(view_model).to eq(results)
-        end
       end
 
       context 'when can create projects in group' do
@@ -247,27 +232,13 @@ RSpec.describe Nav::NewDropdownHelper, feature_category: :navigation do
         allow(helper).to receive(:can_admin_project_member?) { with_can_admin_project_member }
       end
 
-      it 'has base results with context' do
+      it 'has base results' do
         results = {
           title: title,
-          menu_sections: [],
-          context: project
+          menu_sections: []
         }
 
         expect(view_model).to eq(results)
-      end
-
-      context 'without context' do
-        let(:with_context) { false }
-
-        it 'has base results without context' do
-          results = {
-            title: title,
-            menu_sections: []
-          }
-
-          expect(view_model).to eq(results)
-        end
       end
 
       context 'with show_new_issue_link?' do
@@ -375,19 +346,10 @@ RSpec.describe Nav::NewDropdownHelper, feature_category: :navigation do
         )
         results = {
           title: title,
-          menu_sections: project_section,
-          context: project
+          menu_sections: project_section
         }
 
         expect(view_model).to eq(results)
-      end
-
-      context 'without context' do
-        let(:with_context) { false }
-
-        it 'does not include context' do
-          expect(view_model.keys).to match_array([:title, :menu_sections])
-        end
       end
     end
 

@@ -74,7 +74,14 @@ describe('JobArtifactsTable component', () => {
     ];
   }
   const getJobArtifactsResponseThatPaginates = {
-    data: { project: { jobs: { nodes: enoughJobsToPaginate } } },
+    data: {
+      project: {
+        jobs: {
+          nodes: enoughJobsToPaginate,
+          pageInfo: { ...getJobArtifactsResponse.data.project.jobs.pageInfo, hasNextPage: true },
+        },
+      },
+    },
   };
 
   const job = getJobArtifactsResponse.data.project.jobs.nodes[0];
@@ -316,7 +323,7 @@ describe('JobArtifactsTable component', () => {
   });
 
   describe('pagination', () => {
-    const { pageInfo } = getJobArtifactsResponse.data.project.jobs;
+    const { pageInfo } = getJobArtifactsResponseThatPaginates.data.project.jobs;
     const query = jest.fn().mockResolvedValue(getJobArtifactsResponseThatPaginates);
 
     beforeEach(async () => {
@@ -324,10 +331,7 @@ describe('JobArtifactsTable component', () => {
         {
           getJobArtifactsQuery: query,
         },
-        {
-          count: enoughJobsToPaginate.length,
-          pageInfo,
-        },
+        { pageInfo },
       );
 
       await waitForPromises();

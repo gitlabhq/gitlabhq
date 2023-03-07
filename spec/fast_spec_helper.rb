@@ -15,6 +15,7 @@ ENV['IN_MEMORY_APPLICATION_SETTINGS'] = 'true'
 RSpec.configure(&:disable_monkey_patching!)
 
 require 'active_support/all'
+require 'pry'
 require_relative 'rails_autoload'
 
 require_relative '../config/settings'

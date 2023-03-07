@@ -2,6 +2,10 @@
 
 module Releases
   module Links
+    REASON_BAD_REQUEST = :bad_request
+    REASON_NOT_FOUND = :not_found
+    REASON_FORBIDDEN = :forbidden
+
     class BaseService
       attr_accessor :release, :current_user, :params
 

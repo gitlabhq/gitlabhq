@@ -1,11 +1,17 @@
 <script>
 import { GlSkeletonLoader, GlModal } from '@gitlab/ui';
 import * as Sentry from '@sentry/browser';
-import { s__, __ } from '~/locale';
+import { __ } from '~/locale';
 import { TYPENAME_DISCUSSION, TYPENAME_NOTE } from '~/graphql_shared/constants';
 import SystemNote from '~/work_items/components/notes/system_note.vue';
-import ActivityFilter from '~/work_items/components/notes/activity_filter.vue';
-import { i18n, DEFAULT_PAGE_SIZE_NOTES } from '~/work_items/constants';
+import WorkItemNotesActivityHeader from '~/work_items/components/notes/work_item_notes_activity_header.vue';
+import {
+  i18n,
+  DEFAULT_PAGE_SIZE_NOTES,
+  WORK_ITEM_NOTES_FILTER_ALL_NOTES,
+  WORK_ITEM_NOTES_FILTER_ONLY_COMMENTS,
+  WORK_ITEM_NOTES_FILTER_ONLY_HISTORY,
+} from '~/work_items/constants';
 import { ASC, DESC } from '~/notes/constants';
 import { getWorkItemNotesQuery } from '~/work_items/utils';
 import {
@@ -13,6 +19,7 @@ import {
   updateCacheAfterDeletingNote,
 } from '~/work_items/graphql/cache_utils';
 import WorkItemDiscussion from '~/work_items/components/notes/work_item_discussion.vue';
+import WorkItemHistoryOnlyFilterNote from '~/work_items/components/notes/work_item_history_only_filter_note.vue';
 import workItemNoteCreatedSubscription from '~/work_items/graphql/notes/work_item_note_created.subscription.graphql';
 import workItemNoteUpdatedSubscription from '~/work_items/graphql/notes/work_item_note_updated.subscription.graphql';
 import workItemNoteDeletedSubscription from '~/work_items/graphql/notes/work_item_note_deleted.subscription.graphql';
@@ -20,9 +27,6 @@ import deleteNoteMutation from '../graphql/notes/delete_work_item_notes.mutation
 import WorkItemAddNote from './notes/work_item_add_note.vue';
 
 export default {
-  i18n: {
-    ACTIVITY_LABEL: s__('WorkItem|Activity'),
-  },
   loader: {
     repeat: 10,
     width: 1000,
@@ -31,10 +35,11 @@ export default {
   components: {
     GlSkeletonLoader,
     GlModal,
-    ActivityFilter,
     SystemNote,
     WorkItemAddNote,
     WorkItemDiscussion,
+    WorkItemNotesActivityHeader,
+    WorkItemHistoryOnlyFilterNote,
   },
   props: {
     workItemId: {
@@ -65,6 +70,7 @@ export default {
       perPage: DEFAULT_PAGE_SIZE_NOTES,
       sortOrder: ASC,
       noteToDelete: null,
+      discussionFilter: WORK_ITEM_NOTES_FILTER_ALL_NOTES,
     };
   },
   computed: {
@@ -83,7 +89,7 @@ export default {
     showLoadingMoreSkeleton() {
       return this.isLoadingMore && !this.changeNotesSortOrderAfterLoading;
     },
-    disableActivityFilter() {
+    disableActivityFilterSort() {
       return this.initialLoading || this.isLoadingMore;
     },
     formAtTop() {
@@ -102,10 +108,27 @@ export default {
     notesArray() {
       const notes = this.workItemNotes?.nodes || [];
 
+      const visibleNotes = notes.filter((note) => {
+        const isSystemNote = this.isSystemNote(note);
+
+        if (this.discussionFilter === WORK_ITEM_NOTES_FILTER_ONLY_COMMENTS && isSystemNote) {
+          return false;
+        }
+
+        if (this.discussionFilter === WORK_ITEM_NOTES_FILTER_ONLY_HISTORY && !isSystemNote) {
+          return false;
+        }
+
+        return true;
+      });
+
       if (this.sortOrder === DESC) {
-        return [...notes].reverse();
+        return [...visibleNotes].reverse();
       }
-      return notes;
+      return visibleNotes;
+    },
+    commentsDisabled() {
+      return this.discussionFilter === WORK_ITEM_NOTES_FILTER_ONLY_HISTORY;
     },
   },
   apollo: {
@@ -210,6 +233,9 @@ export default {
     changeNotesSortOrder(direction) {
       this.sortOrder = direction;
     },
+    filterDiscussions(filterValue) {
+      this.discussionFilter = filterValue;
+    },
     async fetchMoreNotes() {
       this.isLoadingMore = true;
       // copied from discussions batch logic - every fetchMore call has a higher
@@ -271,17 +297,14 @@ export default {
 
 <template>
   <div class="gl-border-t gl-mt-5 work-item-notes">
-    <div class="gl-display-flex gl-justify-content-space-between gl-flex-wrap">
-      <label class="gl-mb-0">{{ $options.i18n.ACTIVITY_LABEL }}</label>
-      <activity-filter
-        class="gl-min-h-5 gl-pb-3"
-        :loading="disableActivityFilter"
-        :sort-order="sortOrder"
-        :work-item-type="workItemType"
-        @changeSortOrder="changeNotesSortOrder"
-        @updateSavedSortOrder="changeNotesSortOrder"
-      />
-    </div>
+    <work-item-notes-activity-header
+      :sort-order="sortOrder"
+      :disable-activity-filter-sort="disableActivityFilterSort"
+      :work-item-type="workItemType"
+      :discussion-filter="discussionFilter"
+      @changeSort="changeNotesSortOrder"
+      @changeFilter="filterDiscussions"
+    />
     <div v-if="initialLoading" class="gl-mt-5">
       <gl-skeleton-loader
         v-for="index in $options.loader.repeat"
@@ -298,7 +321,7 @@ export default {
       <template v-if="!initialLoading">
         <ul class="notes main-notes-list timeline gl-clearfix!">
           <work-item-add-note
-            v-if="formAtTop"
+            v-if="formAtTop && !commentsDisabled"
             v-bind="workItemCommentFormProps"
             @error="$emit('error', $event)"
           />
@@ -325,9 +348,13 @@ export default {
           </template>
 
           <work-item-add-note
-            v-if="!formAtTop"
+            v-if="!formAtTop && !commentsDisabled"
             v-bind="workItemCommentFormProps"
             @error="$emit('error', $event)"
+          />
+          <work-item-history-only-filter-note
+            v-if="commentsDisabled"
+            @changeFilter="filterDiscussions"
           />
         </ul>
       </template>

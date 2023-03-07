@@ -60,6 +60,14 @@ class NotifyPreview < ActionMailer::Preview
     end
   end
 
+  def access_token_created_email
+    Notify.access_token_created_email(user, 'token_name').message
+  end
+
+  def access_token_revoked_email
+    Notify.access_token_revoked_email(user, 'token_name').message
+  end
+
   def new_mention_in_merge_request_email
     Notify.new_mention_in_merge_request_email(user.id, merge_request.id, user.id).message
   end

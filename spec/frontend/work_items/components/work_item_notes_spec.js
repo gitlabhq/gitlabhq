@@ -9,7 +9,7 @@ import SystemNote from '~/work_items/components/notes/system_note.vue';
 import WorkItemNotes from '~/work_items/components/work_item_notes.vue';
 import WorkItemDiscussion from '~/work_items/components/notes/work_item_discussion.vue';
 import WorkItemAddNote from '~/work_items/components/notes/work_item_add_note.vue';
-import ActivityFilter from '~/work_items/components/notes/activity_filter.vue';
+import WorkItemNotesActivityHeader from '~/work_items/components/notes/work_item_notes_activity_header.vue';
 import workItemNotesQuery from '~/work_items/graphql/notes/work_item_notes.query.graphql';
 import workItemNotesByIidQuery from '~/work_items/graphql/notes/work_item_notes_by_iid.query.graphql';
 import deleteWorkItemNoteMutation from '~/work_items/graphql/notes/delete_work_item_notes.mutation.graphql';
@@ -59,10 +59,9 @@ describe('WorkItemNotes component', () => {
 
   const findAllSystemNotes = () => wrapper.findAllComponents(SystemNote);
   const findAllListItems = () => wrapper.findAll('ul.timeline > *');
-  const findActivityLabel = () => wrapper.find('label');
   const findWorkItemAddNote = () => wrapper.findComponent(WorkItemAddNote);
   const findSkeletonLoader = () => wrapper.findComponent(GlSkeletonLoader);
-  const findSortingFilter = () => wrapper.findComponent(ActivityFilter);
+  const findActivityHeader = () => wrapper.findComponent(WorkItemNotesActivityHeader);
   const findSystemNoteAtIndex = (index) => findAllSystemNotes().at(index);
   const findAllWorkItemCommentNotes = () => wrapper.findAllComponents(WorkItemDiscussion);
   const findWorkItemCommentNoteAtIndex = (index) => findAllWorkItemCommentNotes().at(index);
@@ -129,8 +128,8 @@ describe('WorkItemNotes component', () => {
     createComponent();
   });
 
-  it('renders activity label', () => {
-    expect(findActivityLabel().exists()).toBe(true);
+  it('has the work item note activity header', () => {
+    expect(findActivityHeader().exists()).toBe(true);
   });
 
   it('passes correct props to comment form component', async () => {
@@ -221,26 +220,22 @@ describe('WorkItemNotes component', () => {
       await waitForPromises();
     });
 
-    it('filter exists', () => {
-      expect(findSortingFilter().exists()).toBe(true);
-    });
-
-    it('sorts the list when the `changeSortOrder` event is emitted', async () => {
+    it('sorts the list when the `changeSort` event is emitted', async () => {
       expect(findSystemNoteAtIndex(0).props('note').id).toEqual(firstSystemNodeId);
 
-      await findSortingFilter().vm.$emit('changeSortOrder', DESC);
+      await findActivityHeader().vm.$emit('changeSort', DESC);
 
       expect(findSystemNoteAtIndex(0).props('note').id).not.toEqual(firstSystemNodeId);
     });
 
     it('puts form at start of list in when sorting by newest first', async () => {
-      await findSortingFilter().vm.$emit('changeSortOrder', DESC);
+      await findActivityHeader().vm.$emit('changeSort', DESC);
 
       expect(findAllListItems().at(0).is(WorkItemAddNote)).toEqual(true);
     });
 
     it('puts form at end of list in when sorting by oldest first', async () => {
-      await findSortingFilter().vm.$emit('changeSortOrder', ASC);
+      await findActivityHeader().vm.$emit('changeSort', ASC);
 
       expect(findAllListItems().at(-1).is(WorkItemAddNote)).toEqual(true);
     });

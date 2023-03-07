@@ -35,7 +35,7 @@ module Ci
 
       def destroy_unlocked_job_artifacts
         loop_until(timeout: LOOP_TIMEOUT, limit: LOOP_LIMIT) do
-          artifacts = Ci::JobArtifact.expired_before(@start_at).artifact_unlocked.limit(BATCH_SIZE)
+          artifacts = Ci::JobArtifact.expired_before(@start_at).non_trace.artifact_unlocked.limit(BATCH_SIZE)
           service_response = destroy_batch(artifacts)
           @removed_artifacts_count += service_response[:destroyed_artifacts_count]
         end

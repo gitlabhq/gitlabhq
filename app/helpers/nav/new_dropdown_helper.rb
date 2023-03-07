@@ -2,7 +2,7 @@
 
 module Nav
   module NewDropdownHelper
-    def new_dropdown_view_model(group:, project:, with_context: false)
+    def new_dropdown_view_model(group:, project:)
       return unless current_user
 
       menu_sections = []
@@ -10,10 +10,8 @@ module Nav
 
       if project&.persisted?
         menu_sections.push(project_menu_section(project))
-        data[:context] = project if with_context
       elsif group&.persisted?
         menu_sections.push(group_menu_section(group))
-        data[:context] = group if with_context
       end
 
       menu_sections.push(general_menu_section)

@@ -44,6 +44,7 @@ RSpec.describe Releases::Links::CreateService, feature_category: :release_orches
 
         is_expected.to be_error
         expect(execute.message).to include('Access Denied')
+        expect(execute.reason).to eq(:forbidden)
       end
     end
 
@@ -55,6 +56,7 @@ RSpec.describe Releases::Links::CreateService, feature_category: :release_orches
 
         is_expected.to be_error
         expect(execute.message[0]).to include('Url is blocked')
+        expect(execute.reason).to eq(:bad_request)
       end
     end
 

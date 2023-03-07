@@ -56,6 +56,14 @@ although [new versions have been released](https://about.gitlab.com/releases/cat
 of the [Linux package install guide](https://about.gitlab.com/install/#content).
 Future GitLab upgrades are fetched according to your upgraded OS.
 
+## Update both GitLab and the operating system
+
+To upgrade both the operating system (OS) and GitLab:
+
+1. Upgrade the OS.
+1. Check if it's necessary to [update the GitLab package sources](#update-gitlab-package-sources-after-upgrading-the-os).
+1. [Upgrade GitLab](../../update/index.md).
+
 ## Packages for ARM64
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-omnibus-builder/-/issues/27) in GitLab 13.4.

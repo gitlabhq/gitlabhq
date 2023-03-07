@@ -1,7 +1,7 @@
 ---
-info: For assistance with this CSM Onboarding page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
+info: For assistance with this tutorial, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
 stage: none
-group: unassigned
+group: Tutorials
 ---
 
 # Get started administering GitLab **(FREE)**

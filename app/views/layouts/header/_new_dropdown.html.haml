@@ -1,4 +1,4 @@
-- view_model = new_dropdown_view_model(project: @project, group: @group, with_context: true)
+- view_model = new_dropdown_view_model(project: @project, group: @group)
 - menu_sections = view_model.fetch(:menu_sections)
 - title = view_model.fetch(:title)
 - show_headers = menu_sections.length > 1
@@ -28,8 +28,7 @@
           %li<
             - if menu_item.fetch(:partial).present?
               = render partial: menu_item.fetch(:partial),
-                locals: { context: view_model[:context],
-                          display_text: menu_item.fetch(:title),
+                locals: { display_text: menu_item.fetch(:title),
                           icon: menu_item.fetch(:icon),
                           data: menu_item.fetch(:data) }
             - else

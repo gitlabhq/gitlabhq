@@ -17,11 +17,10 @@ module Ci
       # +pick_up_at+:: When to pick up for deletion of files
       # Returns:
       # +Hash+:: A hash with status and destroyed_artifacts_count keys
-      def initialize(job_artifacts, pick_up_at: nil, skip_projects_on_refresh: false, skip_trace_artifacts: true)
+      def initialize(job_artifacts, pick_up_at: nil, skip_projects_on_refresh: false)
         @job_artifacts = job_artifacts.with_destroy_preloads.to_a
         @pick_up_at = pick_up_at
         @skip_projects_on_refresh = skip_projects_on_refresh
-        @skip_trace_artifacts = skip_trace_artifacts
         @destroyed_ids = []
       end
 
@@ -32,8 +31,6 @@ module Ci
         else
           track_artifacts_undergoing_stats_refresh
         end
-
-        exclude_trace_artifacts if @skip_trace_artifacts
 
         if @job_artifacts.empty?
           return success(destroyed_ids: @destroyed_ids, destroyed_artifacts_count: 0, statistics_updates: {})
@@ -117,11 +114,6 @@ module Ci
         strong_memoize(:artifacts_bytes) do
           @job_artifacts.sum { |artifact| artifact.try(:size) || 0 }
         end
-      end
-
-      # Traces should never be destroyed.
-      def exclude_trace_artifacts
-        _trace_artifacts, @job_artifacts = @job_artifacts.partition(&:trace?)
       end
 
       def track_artifacts_undergoing_stats_refresh

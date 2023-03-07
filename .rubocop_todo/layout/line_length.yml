@@ -4927,7 +4927,6 @@ Layout/LineLength:
     - 'spec/requests/groups/milestones_controller_spec.rb'
     - 'spec/requests/groups/settings/access_tokens_controller_spec.rb'
     - 'spec/requests/groups_controller_spec.rb'
-    - 'spec/requests/ide_controller_spec.rb'
     - 'spec/requests/jwt_controller_spec.rb'
     - 'spec/requests/lfs_http_spec.rb'
     - 'spec/requests/oauth/tokens_controller_spec.rb'

@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Ci::JobArtifacts::DestroyBatchService, feature_category: :build_artifacts do
-  let(:artifacts) { Ci::JobArtifact.where(id: [artifact_with_file.id, artifact_without_file.id, trace_artifact.id]) }
+  let(:artifacts) { Ci::JobArtifact.where(id: [artifact_with_file.id, artifact_without_file.id]) }
   let(:skip_projects_on_refresh) { false }
   let(:service) do
     described_class.new(
@@ -25,33 +25,8 @@ RSpec.describe Ci::JobArtifacts::DestroyBatchService, feature_category: :build_a
     create(:ci_job_artifact)
   end
 
-  let_it_be(:trace_artifact, refind: true) do
-    create(:ci_job_artifact, :trace, :expired)
-  end
-
   describe '#execute' do
     subject(:execute) { service.execute }
-
-    context 'with skip_trace_artifacts false' do
-      let(:service) do
-        described_class.new(
-          artifacts,
-          pick_up_at: Time.current,
-          skip_projects_on_refresh: skip_projects_on_refresh,
-          skip_trace_artifacts: false
-        )
-      end
-
-      subject(:execute) { service.execute }
-
-      it 'deletes trace artifacts' do
-        expect { subject }
-                .to change { Ci::JobArtifact.exists?(trace_artifact.id) }.from(true).to(false)
-
-        expected_destroyed_ids = [artifact_with_file.id, artifact_without_file.id, trace_artifact.id]
-        is_expected.to include(destroyed_artifacts_count: 3, destroyed_ids: expected_destroyed_ids)
-      end
-    end
 
     it 'creates a deleted object for artifact with attached file' do
       expect { subject }.to change { Ci::DeletedObject.count }.by(1)
@@ -79,11 +54,6 @@ RSpec.describe Ci::JobArtifacts::DestroyBatchService, feature_category: :build_a
       end
 
       execute
-    end
-
-    it 'preserves trace artifacts' do
-      expect { subject }
-        .to not_change { Ci::JobArtifact.exists?(trace_artifact.id) }
     end
 
     context 'when artifact belongs to a project that is undergoing stats refresh' do

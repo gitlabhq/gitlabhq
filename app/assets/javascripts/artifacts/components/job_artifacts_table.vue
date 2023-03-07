@@ -68,9 +68,8 @@ export default {
       variables() {
         return this.queryVariables;
       },
-      update({ project: { jobs: { nodes = [], pageInfo = {}, count = 0 } = {} } }) {
+      update({ project: { jobs: { nodes = [], pageInfo = {} } = {} } }) {
         this.pageInfo = pageInfo;
-        this.count = count;
         return nodes
           .map(mapArchivesToJobNodes)
           .map(mapBooleansToJobNodes)
@@ -93,7 +92,6 @@ export default {
   data() {
     return {
       jobArtifacts: [],
-      count: 0,
       pageInfo: {},
       expandedJobs: [],
       pagination: INITIAL_PAGINATION_STATE,
@@ -110,7 +108,9 @@ export default {
       };
     },
     showPagination() {
-      return this.count > JOBS_PER_PAGE;
+      const { hasNextPage, hasPreviousPage } = this.pageInfo;
+
+      return hasNextPage || hasPreviousPage;
     },
     prevPage() {
       return Number(this.pageInfo.hasPreviousPage);

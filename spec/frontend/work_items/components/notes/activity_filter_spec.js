@@ -1,25 +1,33 @@
 import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
-import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import ActivityFilter from '~/work_items/components/notes/activity_filter.vue';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
-import { ASC, DESC } from '~/notes/constants';
+import {
+  WORK_ITEM_NOTES_FILTER_ALL_NOTES,
+  WORK_ITEM_NOTES_FILTER_ONLY_HISTORY,
+  WORK_ITEM_NOTES_FILTER_ONLY_COMMENTS,
+  TRACKING_CATEGORY_SHOW,
+} from '~/work_items/constants';
 
 import { mockTracking } from 'helpers/tracking_helper';
-import { TRACKING_CATEGORY_SHOW } from '~/work_items/constants';
 
-describe('Activity Filter', () => {
+describe('Work Item Activity/Discussions Filtering', () => {
   let wrapper;
 
   const findLocalStorageSync = () => wrapper.findComponent(LocalStorageSync);
   const findDropdown = () => wrapper.findComponent(GlDropdown);
   const findAllDropdownItems = () => wrapper.findAllComponents(GlDropdownItem);
-  const findNewestFirstItem = () => wrapper.findByTestId('js-newest-first');
+  const findOnlyCommentsItem = () => wrapper.findByTestId('comments-activity');
+  const findOnlyHistoryItem = () => wrapper.findByTestId('history-activity');
 
-  const createComponent = ({ sortOrder = ASC, loading = false, workItemType = 'Task' } = {}) => {
+  const createComponent = ({
+    discussionFilter = WORK_ITEM_NOTES_FILTER_ALL_NOTES,
+    loading = false,
+    workItemType = 'Task',
+  } = {}) => {
     wrapper = shallowMountExtended(ActivityFilter, {
       propsData: {
-        sortOrder,
+        discussionFilter,
         loading,
         workItemType,
       },
@@ -30,45 +38,46 @@ describe('Activity Filter', () => {
     createComponent();
   });
 
-  describe('default', () => {
-    it('has a dropdown with 2 options', () => {
+  describe('Default', () => {
+    it('has a dropdown with 3 options', () => {
       expect(findDropdown().exists()).toBe(true);
-      expect(findAllDropdownItems()).toHaveLength(ActivityFilter.SORT_OPTIONS.length);
+      expect(findAllDropdownItems()).toHaveLength(ActivityFilter.filterOptions.length);
     });
 
     it('has local storage sync with the correct props', () => {
       expect(findLocalStorageSync().props('asString')).toBe(true);
     });
 
-    it('emits `updateSavedSortOrder` event when update is emitted', async () => {
-      findLocalStorageSync().vm.$emit('input', ASC);
+    it('emits `changeFilter` event when local storage input is emitted', () => {
+      findLocalStorageSync().vm.$emit('input', WORK_ITEM_NOTES_FILTER_ONLY_HISTORY);
 
-      await nextTick();
-      expect(wrapper.emitted('updateSavedSortOrder')).toHaveLength(1);
-      expect(wrapper.emitted('updateSavedSortOrder')).toEqual([[ASC]]);
+      expect(wrapper.emitted('changeFilter')).toEqual([[WORK_ITEM_NOTES_FILTER_ONLY_HISTORY]]);
     });
   });
 
-  describe('when asc', () => {
-    describe('when the dropdown is clicked', () => {
-      it('calls the right actions', async () => {
+  describe('Changing filter value', () => {
+    it.each`
+      dropdownLabel      | filterValue                             | dropdownItem
+      ${'Comments only'} | ${WORK_ITEM_NOTES_FILTER_ONLY_COMMENTS} | ${findOnlyCommentsItem}
+      ${'History only'}  | ${WORK_ITEM_NOTES_FILTER_ONLY_HISTORY}  | ${findOnlyHistoryItem}
+    `(
+      'when `$dropdownLabel` is clicked it emits `$filterValue` with tracking info',
+      ({ dropdownItem, filterValue }) => {
         const trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
-        findNewestFirstItem().vm.$emit('click');
-        await nextTick();
+        dropdownItem().vm.$emit('click');
 
-        expect(wrapper.emitted('changeSortOrder')).toHaveLength(1);
-        expect(wrapper.emitted('changeSortOrder')).toEqual([[DESC]]);
+        expect(wrapper.emitted('changeFilter')).toEqual([[filterValue]]);
 
         expect(trackingSpy).toHaveBeenCalledWith(
           TRACKING_CATEGORY_SHOW,
-          'notes_sort_order_changed',
+          'work_item_notes_filter_changed',
           {
             category: TRACKING_CATEGORY_SHOW,
-            label: 'item_track_notes_sorting',
+            label: 'item_track_notes_filtering',
             property: 'type_Task',
           },
         );
-      });
-    });
+      },
+    );
   });
 });

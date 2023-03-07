@@ -40,6 +40,7 @@ RSpec.describe Releases::Links::DestroyService, feature_category: :release_orche
 
         is_expected.to be_error
         expect(execute.message).to include('Access Denied')
+        expect(execute.reason).to eq(:forbidden)
       end
     end
 
@@ -51,6 +52,7 @@ RSpec.describe Releases::Links::DestroyService, feature_category: :release_orche
 
         is_expected.to be_error
         expect(execute.message).to eq('Link does not exist')
+        expect(execute.reason).to eq(:not_found)
       end
     end
 
@@ -63,6 +65,7 @@ RSpec.describe Releases::Links::DestroyService, feature_category: :release_orche
         expect { execute }.not_to change { release.links.count }
 
         is_expected.to be_error
+        expect(execute.reason).to eq(:bad_request)
       end
     end
   end

@@ -993,7 +993,6 @@ Style/PercentLiteralDelimiters:
     - 'spec/requests/api/unleash_spec.rb'
     - 'spec/requests/api/users_spec.rb'
     - 'spec/requests/api/wikis_spec.rb'
-    - 'spec/requests/ide_controller_spec.rb'
     - 'spec/requests/jwt_controller_spec.rb'
     - 'spec/requests/lfs_locks_api_spec.rb'
     - 'spec/requests/users_controller_spec.rb'

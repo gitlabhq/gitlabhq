@@ -30,10 +30,7 @@ module Ci
           return ServiceResponse.error(message: 'Not all artifacts belong to requested project')
         end
 
-        result = Ci::JobArtifacts::DestroyBatchService.new(
-          job_artifact_scope,
-          skip_trace_artifacts: false
-        ).execute
+        result = Ci::JobArtifacts::DestroyBatchService.new(job_artifact_scope).execute
 
         destroyed_artifacts_count = result.fetch(:destroyed_artifacts_count)
         destroyed_ids = result.fetch(:destroyed_ids)

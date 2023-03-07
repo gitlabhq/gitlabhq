@@ -177,6 +177,8 @@ module Ci
       where(file_type: self.erasable_file_types)
     end
 
+    scope :non_trace, -> { where.not(file_type: [:trace]) }
+
     scope :downloadable, -> { where(file_type: DOWNLOADABLE_TYPES) }
     scope :unlocked, -> { joins(job: :pipeline).merge(::Ci::Pipeline.unlocked) }
     scope :order_expired_asc, -> { order(expire_at: :asc) }

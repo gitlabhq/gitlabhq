@@ -176,3 +176,9 @@ export const DEFAULT_PAGE_SIZE_ASSIGNEES = 10;
 export const DEFAULT_PAGE_SIZE_NOTES = 30;
 
 export const WORK_ITEM_NOTES_SORT_ORDER_KEY = 'sort_direction_work_item';
+
+export const WORK_ITEM_NOTES_FILTER_ALL_NOTES = 'ALL_NOTES';
+export const WORK_ITEM_NOTES_FILTER_ONLY_COMMENTS = 'ONLY_COMMENTS';
+export const WORK_ITEM_NOTES_FILTER_ONLY_HISTORY = 'ONLY_HISTORY';
+
+export const WORK_ITEM_NOTES_FILTER_KEY = 'filter_key_work_item';

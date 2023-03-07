@@ -156,7 +156,7 @@ module IssuablesHelper
     end
 
     output << content_tag(:strong) do
-      author_output = link_to_member(project, issuable.author, size: 24, mobile_classes: "d-none d-sm-inline")
+      author_output = link_to_member(project, issuable.author, size: 24, mobile_classes: "d-none d-sm-inline-block")
       author_output << link_to_member(project, issuable.author, size: 24, by_username: true, avatar: false, mobile_classes: "d-inline d-sm-none")
 
       author_output << issuable_meta_author_slot(issuable.author, css_class: 'ml-1')

@@ -8,14 +8,12 @@ RSpec.describe 'layouts/header/_new_dropdown', feature_category: :navigation do
   shared_examples_for 'invite member selector' do
     context 'with ability to invite members' do
       it { is_expected.to have_selector('.js-invite-members-trigger') }
-      it { is_expected.to have_selector('.js-invite-members-modal') }
     end
 
     context 'without ability to invite members' do
       let(:invite_member) { false }
 
       it { is_expected.not_to have_selector('.js-invite-members-trigger') }
-      it { is_expected.not_to have_selector('.js-invite-members-modal') }
     end
   end
 

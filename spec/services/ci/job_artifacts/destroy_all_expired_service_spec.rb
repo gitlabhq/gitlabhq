@@ -231,6 +231,16 @@ feature_category: :build_artifacts do
       end
     end
 
+    context 'when some artifacts are trace' do
+      let!(:artifact) { create(:ci_job_artifact, :expired, job: job, locked: job.pipeline.locked) }
+      let!(:trace_artifact) { create(:ci_job_artifact, :trace, :expired, job: job, locked: job.pipeline.locked) }
+
+      it 'destroys only non trace artifacts' do
+        expect { subject }.to change { Ci::JobArtifact.count }.by(-1)
+        expect(trace_artifact).to be_persisted
+      end
+    end
+
     context 'when all artifacts are locked' do
       let!(:artifact) { create(:ci_job_artifact, :expired, job: locked_job, locked: locked_job.pipeline.locked) }
 
