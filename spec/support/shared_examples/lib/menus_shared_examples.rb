@@ -37,3 +37,27 @@ RSpec.shared_examples_for 'pill_count formatted results' do
     expect(pill_count).to eq('112.6k')
   end
 end
+
+RSpec.shared_examples_for 'serializable as super_sidebar_menu_args' do
+  let(:extra_attrs) { raise NotImplementedError }
+
+  it 'returns hash with provided attributes' do
+    expect(menu.serialize_as_menu_item_args).to eq({
+      title: menu.title,
+      link: menu.link,
+      active_routes: menu.active_routes,
+      container_html_options: menu.container_html_options,
+      **extra_attrs
+    })
+  end
+
+  it 'returns hash with an item_id' do
+    expect(menu.serialize_as_menu_item_args[:item_id]).not_to be_nil
+  end
+end
+
+RSpec.shared_examples_for 'not serializable as super_sidebar_menu_args' do
+  it 'returns nil' do
+    expect(menu.serialize_as_menu_item_args).to be_nil
+  end
+end

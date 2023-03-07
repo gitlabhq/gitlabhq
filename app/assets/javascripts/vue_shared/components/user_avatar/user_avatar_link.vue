@@ -105,7 +105,7 @@ export default {
       v-gl-tooltip
       :title="tooltipText"
       :tooltip-placement="tooltipPlacement"
-      class="gl-ml-3"
+      class="gl-ml-1"
       data-testid="user-avatar-link-username"
     >
       {{ username }}

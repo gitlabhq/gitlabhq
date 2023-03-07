@@ -1,6 +1,6 @@
 <script>
 import { GlDropdown, GlDropdownItem, GlTooltip, GlSprintf } from '@gitlab/ui';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { TYPE_INCIDENT } from '~/issues/constants';
 import SidebarEditableItem from '~/sidebar/components/sidebar_editable_item.vue';
 import updateIssuableSeverity from '../../queries/update_issuable_severity.mutation.graphql';

@@ -14,15 +14,18 @@ module Sidebars
 
         add_menu(Sidebars::StaticMenu.new(context))
         add_menu(Sidebars::Projects::SuperSidebarMenus::PlanMenu.new(context))
-        # "Develop" menu
-        pick_from_old_menus(old_menus, Sidebars::Projects::Menus::RepositoryMenu)
-        pick_from_old_menus(old_menus, Sidebars::Projects::Menus::CiCdMenu)
-        pick_from_old_menus(old_menus, Sidebars::Projects::Menus::SecurityComplianceMenu)
-        add_menu(Sidebars::Projects::SuperSidebarMenus::OperationsMenu.new(context))
-        pick_from_old_menus(old_menus, Sidebars::Projects::Menus::MonitorMenu)
-        pick_from_old_menus(old_menus, Sidebars::Projects::Menus::AnalyticsMenu)
-        add_menu(Sidebars::UncategorizedMenu.new(context))
-        pick_from_old_menus(old_menus, Sidebars::Projects::Menus::SettingsMenu)
+
+        pick_from_old_menus(old_menus)
+
+        insert_menu_before(
+          Sidebars::Projects::Menus::MonitorMenu,
+          Sidebars::Projects::SuperSidebarMenus::OperationsMenu.new(context)
+        )
+
+        insert_menu_before(
+          Sidebars::Projects::Menus::SettingsMenu,
+          Sidebars::UncategorizedMenu.new(context)
+        )
 
         transform_old_menus(@menus, @scope_menu, *old_menus)
       end

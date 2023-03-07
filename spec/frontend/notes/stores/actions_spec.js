@@ -3,7 +3,7 @@ import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import testAction from 'helpers/vuex_action_helper';
 import { TEST_HOST } from 'spec/test_constants';
 import Api from '~/api';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import toast from '~/vue_shared/plugins/global_toast';
 import { EVENT_ISSUABLE_VUE_APP_CHANGE } from '~/issuable/constants';
 import axios from '~/lib/utils/axios_utils';
@@ -36,7 +36,7 @@ import {
 
 const TEST_ERROR_MESSAGE = 'Test error message';
 const mockAlertDismiss = jest.fn();
-jest.mock('~/flash', () => ({
+jest.mock('~/alert', () => ({
   createAlert: jest.fn().mockImplementation(() => ({
     dismiss: mockAlertDismiss,
   })),
@@ -876,7 +876,7 @@ describe('Actions Notes Store', () => {
       const res = { errors: { base: ['something went wrong'] } };
       const error = { message: 'Unprocessable entity', response: { data: res } };
 
-      it('sets flash alert using errors.base message', async () => {
+      it('sets an alert using errors.base message', async () => {
         const resp = await actions.saveNote(
           {
             commit() {},
@@ -960,7 +960,7 @@ describe('Actions Notes Store', () => {
       });
     });
 
-    it('when service fails, flashes error message', () => {
+    it('when service fails, creates an alert with error message', () => {
       const response = { response: { data: { message: TEST_ERROR_MESSAGE } } };
 
       Api.applySuggestion.mockReturnValue(Promise.reject(response));

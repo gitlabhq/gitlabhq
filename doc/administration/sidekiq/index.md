@@ -170,7 +170,7 @@ Updates to example must be made at:
 
    # Replace <database_host> and <database_password>
    gitlab_rails['db_host'] = '<database_host>'
-   gitlab_rails['db_port'] = '5432'
+   gitlab_rails['db_port'] = 5432
    gitlab_rails['db_password'] = '<database_password>'
    ## Prevent database migrations from running on upgrade automatically
    gitlab_rails['auto_migrate'] = false
@@ -257,7 +257,7 @@ To configure the metrics server:
    ```ruby
    sidekiq['metrics_enabled'] = true
    sidekiq['listen_address'] = "localhost"
-   sidekiq['listen_port'] = "8082"
+   sidekiq['listen_port'] = 8082
 
    # Optionally log all the metrics server logs to log/sidekiq_exporter.log
    sidekiq['exporter_log_enabled'] = true
@@ -299,7 +299,7 @@ To make health checks available from `localhost:8092`:
    ```ruby
    sidekiq['health_checks_enabled'] = true
    sidekiq['health_checks_listen_address'] = "localhost"
-   sidekiq['health_checks_listen_port'] = "8092"
+   sidekiq['health_checks_listen_port'] = 8092
    ```
 
 1. Reconfigure GitLab:

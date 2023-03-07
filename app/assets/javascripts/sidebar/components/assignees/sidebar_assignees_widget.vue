@@ -1,7 +1,7 @@
 <script>
 import { GlDropdownItem } from '@gitlab/ui';
 import Vue from 'vue';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { TYPE_ALERT, TYPE_ISSUE, TYPE_MERGE_REQUEST } from '~/issues/constants';
 import { __, n__ } from '~/locale';
 import UserSelect from '~/vue_shared/components/user_select/user_select.vue';

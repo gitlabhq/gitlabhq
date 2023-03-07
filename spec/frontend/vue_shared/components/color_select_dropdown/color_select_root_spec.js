@@ -3,7 +3,7 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import SidebarEditableItem from '~/sidebar/components/sidebar_editable_item.vue';
 import DropdownContents from '~/vue_shared/components/color_select_dropdown/dropdown_contents.vue';
 import DropdownValue from '~/vue_shared/components/color_select_dropdown/dropdown_value.vue';
@@ -13,7 +13,7 @@ import ColorSelectRoot from '~/vue_shared/components/color_select_dropdown/color
 import { DROPDOWN_VARIANT } from '~/vue_shared/components/color_select_dropdown/constants';
 import { colorQueryResponse, updateColorMutationResponse, color } from './mock_data';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 Vue.use(VueApollo);
 
@@ -145,7 +145,7 @@ describe('LabelsSelectRoot', () => {
       await waitForPromises();
     });
 
-    it('creates flash with error message', () => {
+    it('creates alert with error message', () => {
       expect(createAlert).toHaveBeenCalledWith({
         captureError: true,
         message: 'Error fetching epic color.',

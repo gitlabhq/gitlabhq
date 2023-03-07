@@ -118,7 +118,6 @@
   redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_security_api_discovery
-  category: ci_templates
   redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_security_fortify_fod_sast
@@ -452,10 +451,8 @@
   redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_terraform_module_base
-  category: ci_templates
   redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_terraform_module
-  category: ci_templates
   redis_slot: ci_templates
   aggregation: weekly

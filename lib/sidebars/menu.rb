@@ -96,6 +96,10 @@ module Sidebars
       end
     end
 
+    def pick_into_super_sidebar?
+      false
+    end
+
     # Returns whether the menu has any renderable menu item
     def has_renderable_items?
       renderable_items.any?

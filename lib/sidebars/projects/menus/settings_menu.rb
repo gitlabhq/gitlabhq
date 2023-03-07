@@ -44,6 +44,11 @@ module Sidebars
           'settings'
         end
 
+        override :pick_into_super_sidebar?
+        def pick_into_super_sidebar?
+          true
+        end
+
         private
 
         def general_menu_item

@@ -12,7 +12,7 @@ import { s__ } from '~/locale';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { TEST_HOST } from 'spec/test_constants';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import getJobsQuery from '~/jobs/components/table/graphql/queries/get_jobs.query.graphql';
 import getJobsCountQuery from '~/jobs/components/table/graphql/queries/get_jobs_count.query.graphql';
 import JobsTable from '~/jobs/components/table/jobs_table.vue';
@@ -30,7 +30,7 @@ import {
 const projectPath = 'gitlab-org/gitlab';
 Vue.use(VueApollo);
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 describe('Job table app', () => {
   let wrapper;

@@ -2,10 +2,14 @@
 
 require 'spec_helper'
 
-RSpec.describe Sidebars::Projects::Menus::InfrastructureMenu do
+RSpec.describe Sidebars::Projects::Menus::InfrastructureMenu, feature_category: :navigation do
   let(:project) { build(:project) }
   let(:user) { project.first_owner }
   let(:context) { Sidebars::Projects::Context.new(current_user: user, container: project, show_cluster_hint: false) }
+
+  it_behaves_like 'not serializable as super_sidebar_menu_args' do
+    let(:menu) { described_class.new(context) }
+  end
 
   describe '#render?' do
     subject { described_class.new(context) }

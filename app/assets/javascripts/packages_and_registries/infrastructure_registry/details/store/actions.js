@@ -1,5 +1,5 @@
 import Api from '~/api';
-import { createAlert, VARIANT_SUCCESS, VARIANT_WARNING } from '~/flash';
+import { createAlert, VARIANT_SUCCESS, VARIANT_WARNING } from '~/alert';
 import {
   DELETE_PACKAGE_ERROR_MESSAGE,
   DELETE_PACKAGE_FILE_ERROR_MESSAGE,

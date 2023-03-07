@@ -389,9 +389,9 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
 
     let(:known_events) do
       [
-        { name: 'event_name_1', redis_slot: 'event', category: 'category1', aggregation: "weekly" },
-        { name: 'event_name_2', redis_slot: 'event', category: 'category1', aggregation: "weekly" },
-        { name: 'event_name_3', redis_slot: 'event', category: 'category1', aggregation: "weekly" }
+        { name: 'event_name_1', redis_slot: 'event', aggregation: "weekly" },
+        { name: 'event_name_2', redis_slot: 'event', aggregation: "weekly" },
+        { name: 'event_name_3', redis_slot: 'event', aggregation: "weekly" }
       ].map(&:with_indifferent_access)
     end
 
@@ -430,11 +430,11 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
     let(:time_range) { { start_date: 7.days.ago, end_date: DateTime.current } }
     let(:known_events) do
       [
-        { name: 'event1_slot', redis_slot: "slot", category: 'category1', aggregation: "weekly" },
-        { name: 'event2_slot', redis_slot: "slot", category: 'category2', aggregation: "weekly" },
-        { name: 'event3_slot', redis_slot: "slot", category: 'category3', aggregation: "weekly" },
-        { name: 'event5_slot', redis_slot: "slot", category: 'category4', aggregation: "daily" },
-        { name: 'event4', category: 'category2', aggregation: "weekly" }
+        { name: 'event1_slot', redis_slot: "slot", aggregation: "weekly" },
+        { name: 'event2_slot', redis_slot: "slot", aggregation: "weekly" },
+        { name: 'event3_slot', redis_slot: "slot", aggregation: "weekly" },
+        { name: 'event5_slot', redis_slot: "slot", aggregation: "daily" },
+        { name: 'event4', aggregation: "weekly" }
       ].map(&:with_indifferent_access)
     end
 

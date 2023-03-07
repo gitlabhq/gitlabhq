@@ -88,7 +88,6 @@ namespace :gitlab do
     def ci_template_event(event_name)
       {
         'name' => event_name,
-        'category' => 'ci_templates',
         'redis_slot' => Gitlab::UsageDataCounters::CiTemplateUniqueCounter::REDIS_SLOT,
         'aggregation' => 'weekly'
       }

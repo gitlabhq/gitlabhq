@@ -4,12 +4,12 @@ import Vue, { nextTick } from 'vue';
 import waitForPromises from 'helpers/wait_for_promises';
 import { TEST_HOST } from 'helpers/test_constants';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_BAD_REQUEST, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import UpdateUsername from '~/profile/account/components/update_username.vue';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 describe('UpdateUsername component', () => {
   const rootUrl = TEST_HOST;

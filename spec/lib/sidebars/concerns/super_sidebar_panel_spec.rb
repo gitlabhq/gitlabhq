@@ -11,6 +11,10 @@ RSpec.describe Sidebars::Concerns::SuperSidebarPanel, feature_category: :navigat
       def title
         "Bar"
       end
+
+      def pick_into_super_sidebar?
+        true
+      end
     end
   end
 
@@ -28,22 +32,16 @@ RSpec.describe Sidebars::Concerns::SuperSidebarPanel, feature_category: :navigat
   end
 
   describe '#pick_from_old_menus' do
-    it 'removes element of a given class from a list and adds it to menus' do
+    it 'removes items with #pick_into_super_sidebar? from a list and adds them to the panel menus' do
       old_menus = [menu_foo, menu_bar]
 
-      subject.pick_from_old_menus(old_menus, menu_class_foo)
+      subject.pick_from_old_menus(old_menus)
 
-      expect(old_menus).not_to include(menu_foo)
-      expect(subject.renderable_menus).to include(menu_foo)
-    end
+      expect(old_menus).to include(menu_foo)
+      expect(subject.renderable_menus).not_to include(menu_foo)
 
-    it 'is a noop, if the list does not contain an element of the wanted class' do
-      old_menus = [menu_foo]
-
-      subject.pick_from_old_menus(old_menus, menu_class_bar)
-
-      expect(old_menus).to eq([menu_foo])
-      expect(subject.renderable_menus).to eq([])
+      expect(old_menus).not_to include(menu_bar)
+      expect(subject.renderable_menus).to include(menu_bar)
     end
   end
 

@@ -8903,6 +8903,32 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
     end
   end
 
+  describe 'deprecated project attributes' do
+    where(:project_attr, :project_method, :project_feature_attr) do
+      :wiki_enabled | :wiki_enabled? | :wiki_access_level
+      :builds_enabled | :builds_enabled? | :builds_access_level
+      :merge_requests_enabled | :merge_requests_enabled? | :merge_requests_access_level
+      :issues_enabled | :issues_enabled? | :issues_access_level
+      :snippets_enabled | :snippets_enabled? | :snippets_access_level
+    end
+
+    with_them do
+      it 'delegates the attributes to project feature' do
+        project = Project.new(project_attr => false)
+
+        expect(project.public_send(project_method)).to eq(false)
+        expect(project.project_feature.public_send(project_feature_attr)).to eq(ProjectFeature::DISABLED)
+      end
+
+      it 'sets the default value' do
+        project = Project.new
+
+        expect(project.public_send(project_method)).to eq(true)
+        expect(project.project_feature.public_send(project_feature_attr)).to eq(ProjectFeature::ENABLED)
+      end
+    end
+  end
+
   private
 
   def finish_job(export_job)

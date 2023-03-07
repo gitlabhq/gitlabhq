@@ -32,6 +32,16 @@ module Sidebars
         def render?
           true
         end
+
+        override :serialize_as_menu_item_args
+        def serialize_as_menu_item_args
+          super.merge({
+            title: _('Group overview'),
+            sprite_icon: 'group',
+            super_sidebar_parent: ::Sidebars::StaticMenu,
+            item_id: :group_overview
+          })
+        end
       end
     end
   end

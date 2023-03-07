@@ -13,11 +13,11 @@ import {
   I18N_ERROR_UNFOLLOW,
 } from '~/vue_shared/components/user_popover/constants';
 import axios from '~/lib/utils/axios_utils';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { followUser, unfollowUser } from '~/api/user_api';
 import { mockTracking } from 'helpers/tracking_helper';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 jest.mock('~/api/user_api', () => ({
   followUser: jest.fn(),
   unfollowUser: jest.fn(),

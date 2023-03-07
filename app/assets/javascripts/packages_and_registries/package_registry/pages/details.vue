@@ -10,7 +10,7 @@ import {
   GlTabs,
   GlSprintf,
 } from '@gitlab/ui';
-import { createAlert, VARIANT_SUCCESS, VARIANT_WARNING } from '~/flash';
+import { createAlert, VARIANT_SUCCESS, VARIANT_WARNING } from '~/alert';
 import { TYPENAME_PACKAGES_PACKAGE } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { numberToHumanSize } from '~/lib/utils/number_utils';

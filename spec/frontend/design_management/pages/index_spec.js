@@ -29,7 +29,7 @@ import {
   DESIGN_TRACKING_PAGE_NAME,
   DESIGN_SNOWPLOW_EVENT_TYPES,
 } from '~/design_management/utils/tracking';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import DesignDropzone from '~/vue_shared/components/upload_dropzone/upload_dropzone.vue';
 import {
   designListQueryResponse,
@@ -41,7 +41,7 @@ import {
   moveDesignMutationResponseWithErrors,
 } from '../mock_data/apollo_mock';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 const mockPageEl = {
   classList: {
     remove: jest.fn(),
@@ -800,7 +800,7 @@ describe('Design management index page', () => {
       expect(draggableAttributes().disabled).toBe(false);
     });
 
-    it('displays flash if mutation had a recoverable error', async () => {
+    it('displays alert if mutation had a recoverable error', async () => {
       createComponentWithApollo({
         moveHandler: jest.fn().mockResolvedValue(moveDesignMutationResponseWithErrors),
       });

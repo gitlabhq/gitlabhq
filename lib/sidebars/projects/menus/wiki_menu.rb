@@ -39,7 +39,8 @@ module Sidebars
         override :serialize_as_menu_item_args
         def serialize_as_menu_item_args
           super.merge({
-            super_sidebar_parent: ::Sidebars::Projects::SuperSidebarMenus::PlanMenu
+            super_sidebar_parent: ::Sidebars::Projects::SuperSidebarMenus::PlanMenu,
+            item_id: :project_wiki
           })
         end
       end

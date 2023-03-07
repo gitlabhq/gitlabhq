@@ -41,6 +41,11 @@ module Sidebars
           'chart'
         end
 
+        override :pick_into_super_sidebar?
+        def pick_into_super_sidebar?
+          true
+        end
+
         private
 
         def ci_cd_analytics_menu_item

@@ -24,15 +24,6 @@ module Sidebars
         context.group.subgroup? ? _('Subgroup navigation') : _('Group navigation')
       end
 
-      override :super_sidebar_context_header
-      def super_sidebar_context_header
-        @super_sidebar_context_header ||= {
-          title: context.group.name,
-          avatar: context.group.avatar_url,
-          id: context.group.id
-        }
-      end
-
       private
 
       def add_invite_members_menu

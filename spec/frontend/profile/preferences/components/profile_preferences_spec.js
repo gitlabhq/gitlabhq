@@ -3,7 +3,7 @@ import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
-import { createAlert, VARIANT_DANGER, VARIANT_INFO } from '~/flash';
+import { createAlert, VARIANT_DANGER, VARIANT_INFO } from '~/alert';
 import IntegrationView from '~/profile/preferences/components/integration_view.vue';
 import ProfilePreferences from '~/profile/preferences/components/profile_preferences.vue';
 import { i18n } from '~/profile/preferences/constants';
@@ -17,7 +17,7 @@ import {
   lightModeThemeId2,
 } from '../mock_data';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 const expectedUrl = '/foo';
 
 useMockLocationHelper();

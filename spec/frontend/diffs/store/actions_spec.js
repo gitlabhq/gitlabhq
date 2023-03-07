@@ -13,7 +13,7 @@ import * as diffActions from '~/diffs/store/actions';
 import * as types from '~/diffs/store/mutation_types';
 import * as utils from '~/diffs/store/utils';
 import * as treeWorkerUtils from '~/diffs/utils/tree_worker_utils';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import * as commonUtils from '~/lib/utils/common_utils';
 import {
@@ -26,7 +26,7 @@ import { mergeUrlParams } from '~/lib/utils/url_utility';
 import eventHub from '~/notes/event_hub';
 import { diffMetadata } from '../mock_data/diff_metadata';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 describe('DiffsStoreActions', () => {
   let mock;
@@ -273,7 +273,7 @@ describe('DiffsStoreActions', () => {
       );
     });
 
-    it('should show flash on API error', async () => {
+    it('should show alert on API error', async () => {
       mock.onGet(endpointCoverage).reply(HTTP_STATUS_BAD_REQUEST);
 
       await testAction(diffActions.fetchCoverageFiles, {}, { endpointCoverage }, [], []);

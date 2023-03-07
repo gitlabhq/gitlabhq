@@ -40,7 +40,8 @@ module Sidebars
         def serialize_as_menu_item_args
           super.deep_merge({
             super_sidebar_parent: ::Sidebars::Projects::Menus::RepositoryMenu,
-            super_sidebar_before: :contributors
+            super_sidebar_before: :contributors,
+            item_id: :project_snippets
           })
         end
       end

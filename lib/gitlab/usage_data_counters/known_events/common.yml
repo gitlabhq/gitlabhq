@@ -182,7 +182,6 @@
   aggregation: daily
 # Runner group
 - name: g_runner_fleet_read_jobs_statistics
-  category: runner
   redis_slot: runner
   aggregation: weekly
 # Secrets Management

@@ -45,7 +45,8 @@ module Sidebars
           super.merge({
             title: _('Project overview'),
             sprite_icon: 'project',
-            super_sidebar_parent: ::Sidebars::StaticMenu
+            super_sidebar_parent: ::Sidebars::StaticMenu,
+            item_id: :project_overview
           })
         end
       end

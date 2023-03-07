@@ -21,7 +21,7 @@ import getPackagesQuery from '~/packages_and_registries/package_registry/graphql
 import destroyPackagesMutation from '~/packages_and_registries/package_registry/graphql/mutations/destroy_packages.mutation.graphql';
 import { packagesListQuery, packageData, pagination } from '../mock_data';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 describe('PackagesListApp', () => {
   let wrapper;

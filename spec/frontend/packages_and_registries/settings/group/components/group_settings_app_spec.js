@@ -19,7 +19,7 @@ import {
   dependencyProxyImageTtlPolicy,
 } from '../mock_data';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 describe('Group Settings App', () => {
   let wrapper;

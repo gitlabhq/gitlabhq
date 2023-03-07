@@ -23,7 +23,7 @@ import {
   DESIGN_SNOWPLOW_EVENT_TYPES,
   DESIGN_SERVICE_PING_EVENT_TYPES,
 } from '~/design_management/utils/tracking';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import * as cacheUpdate from '~/design_management/utils/cache_update';
 import mockAllVersions from '../../mock_data/all_versions';
 import design from '../../mock_data/design';
@@ -32,7 +32,7 @@ import mockResponseWithDesigns from '../../mock_data/designs';
 import mockResponseNoDesigns from '../../mock_data/no_designs';
 import { mockCreateImageNoteDiffResponse } from '../../mock_data/apollo_mock';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 jest.mock('~/api.js');
 
 const focusInput = jest.fn();

@@ -7150,9 +7150,6 @@ msgstr ""
 msgid "BranchRules|All branches"
 msgstr ""
 
-msgid "BranchRules|All users with push access are allowed to force push."
-msgstr ""
-
 msgid "BranchRules|Allow all users with push access to %{linkStart}force push%{linkEnd}."
 msgstr ""
 
@@ -7169,6 +7166,9 @@ msgid "BranchRules|Allowed to push and merge"
 msgstr ""
 
 msgid "BranchRules|Allowed to push and merge (%{total})"
+msgstr ""
+
+msgid "BranchRules|Allows force push"
 msgstr ""
 
 msgid "BranchRules|Also accepts code pushes that change files listed in CODEOWNERS file."
@@ -7207,13 +7207,13 @@ msgstr ""
 msgid "BranchRules|Details"
 msgstr ""
 
+msgid "BranchRules|Does not allow force push"
+msgstr ""
+
 msgid "BranchRules|Does not require approval from code owners"
 msgstr ""
 
-msgid "BranchRules|Force push"
-msgstr ""
-
-msgid "BranchRules|Force push is not allowed."
+msgid "BranchRules|From users with push access."
 msgstr ""
 
 msgid "BranchRules|Groups"
@@ -16210,6 +16210,9 @@ msgstr ""
 msgid "Epic actions"
 msgstr ""
 
+msgid "Epic boards"
+msgstr ""
+
 msgid "Epic cannot be found."
 msgstr ""
 
@@ -19906,6 +19909,9 @@ msgid "Group name (your organization)"
 msgstr ""
 
 msgid "Group navigation"
+msgstr ""
+
+msgid "Group overview"
 msgstr ""
 
 msgid "Group overview content"
@@ -23674,6 +23680,12 @@ msgid "Issue Type"
 msgstr ""
 
 msgid "Issue already promoted to epic."
+msgstr ""
+
+msgid "Issue board"
+msgstr ""
+
+msgid "Issue boards"
 msgstr ""
 
 msgid "Issue cannot be found."

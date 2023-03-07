@@ -3,7 +3,7 @@ import VueApollo from 'vue-apollo';
 import waitForPromises from 'helpers/wait_for_promises';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
-import { createAlert, VARIANT_SUCCESS, VARIANT_WARNING } from '~/flash';
+import { createAlert, VARIANT_SUCCESS, VARIANT_WARNING } from '~/alert';
 import DeletePackages from '~/packages_and_registries/package_registry/components/functional/delete_packages.vue';
 
 import destroyPackagesMutation from '~/packages_and_registries/package_registry/graphql/mutations/destroy_packages.mutation.graphql';
@@ -14,7 +14,7 @@ import {
   packagesListQuery,
 } from '../../mock_data';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 describe('DeletePackages', () => {
   let wrapper;

@@ -36,7 +36,7 @@ include:
   - template: Terraform.latest.gitlab-ci.yml
 
 deploy:
-  envrionment:
+  environment:
     name: $TF_STATE_NAME
     action: start
     on_stop: destroy
@@ -65,7 +65,7 @@ build:
     - when: on_success
 
 deploy:
-  envrionment:
+  environment:
     name: $TF_STATE_NAME
     action: start
     on_stop: destroy

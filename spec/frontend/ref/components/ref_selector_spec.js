@@ -33,6 +33,8 @@ describe('Ref selector component', () => {
   const fixtures = { branches, tags, commit };
 
   const projectId = '8';
+  const totalBranchesCount = 123;
+  const totalTagsCount = 456;
 
   let wrapper;
   let branchesApiCallSpy;
@@ -69,10 +71,14 @@ describe('Ref selector component', () => {
 
     branchesApiCallSpy = jest
       .fn()
-      .mockReturnValue([HTTP_STATUS_OK, fixtures.branches, { [X_TOTAL_HEADER]: '123' }]);
+      .mockReturnValue([
+        HTTP_STATUS_OK,
+        fixtures.branches,
+        { [X_TOTAL_HEADER]: totalBranchesCount },
+      ]);
     tagsApiCallSpy = jest
       .fn()
-      .mockReturnValue([HTTP_STATUS_OK, fixtures.tags, { [X_TOTAL_HEADER]: '456' }]);
+      .mockReturnValue([HTTP_STATUS_OK, fixtures.tags, { [X_TOTAL_HEADER]: totalTagsCount }]);
     commitApiCallSpy = jest.fn().mockReturnValue([HTTP_STATUS_OK, fixtures.commit]);
     requestSpies = { branchesApiCallSpy, tagsApiCallSpy, commitApiCallSpy };
 
@@ -690,7 +696,46 @@ describe('Ref selector component', () => {
       // is updated. For the sake of this test, we'll just test the last call, which
       // represents the final state of the slot props.
       const lastCallProps = last(createFooter.mock.calls)[0];
-      expect(lastCallProps).toMatchSnapshot();
+      expect(lastCallProps.isLoading).toBe(false);
+      expect(lastCallProps.query).toBe('abcd1234');
+
+      const branchesList = fixtures.branches.map((branch) => {
+        return {
+          default: branch.default,
+          name: branch.name,
+        };
+      });
+
+      const commitsList = [
+        {
+          name: fixtures.commit.short_id,
+          subtitle: fixtures.commit.title,
+          value: fixtures.commit.id,
+        },
+      ];
+
+      const tagsList = fixtures.tags.map((tag) => {
+        return {
+          name: tag.name,
+        };
+      });
+
+      const expectedMatches = {
+        branches: {
+          list: branchesList,
+          totalCount: totalBranchesCount,
+        },
+        commits: {
+          list: commitsList,
+          totalCount: 1,
+        },
+        tags: {
+          list: tagsList,
+          totalCount: totalTagsCount,
+        },
+      };
+
+      expect(lastCallProps.matches).toMatchObject(expectedMatches);
     });
   });
 });

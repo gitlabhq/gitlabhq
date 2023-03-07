@@ -90,7 +90,7 @@ module SidebarsHelper
       Sidebars::Projects::SuperSidebarPanel.new(context)
     when 'group'
       context = group_sidebar_context(group, user, **context_adds)
-      Sidebars::Groups::Panel.new(context)
+      Sidebars::Groups::SuperSidebarPanel.new(context)
     else
       Sidebars::YourWork::Panel.new(Sidebars::Context.new(current_user: user, container: nil, **context_adds))
     end

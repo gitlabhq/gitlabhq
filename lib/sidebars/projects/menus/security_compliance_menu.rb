@@ -25,6 +25,11 @@ module Sidebars
           'shield'
         end
 
+        override :pick_into_super_sidebar?
+        def pick_into_super_sidebar?
+          true
+        end
+
         private
 
         def configuration_menu_item

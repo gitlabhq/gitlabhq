@@ -6,7 +6,7 @@ import {
   expectedDownloadDropdownPropsWithTitle,
   securityReportMergeRequestDownloadPathsQueryResponse,
 } from 'jest/vue_shared/security_reports/mock_data';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import Component from '~/vue_shared/security_reports/components/artifact_downloads/merge_request_artifact_download.vue';
 import SecurityReportDownloadDropdown from '~/vue_shared/security_reports/components/security_report_download_dropdown.vue';
 import {
@@ -15,7 +15,7 @@ import {
 } from '~/vue_shared/security_reports/constants';
 import securityReportMergeRequestDownloadPathsQuery from '~/vue_shared/security_reports/graphql/queries/security_report_merge_request_download_paths.query.graphql';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 describe('Merge request artifact Download', () => {
   let wrapper;

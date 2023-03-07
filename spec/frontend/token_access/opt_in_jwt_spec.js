@@ -4,7 +4,7 @@ import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { OPT_IN_JWT_HELP_LINK } from '~/token_access/constants';
 import OptInJwt from '~/token_access/components/opt_in_jwt.vue';
 import getOptInJwtSettingQuery from '~/token_access/graphql/queries/get_opt_in_jwt_setting.query.graphql';
@@ -16,7 +16,7 @@ const error = new Error(errorMessage);
 
 Vue.use(VueApollo);
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 describe('OptInJwt component', () => {
   let wrapper;

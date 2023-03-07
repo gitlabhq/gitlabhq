@@ -3,7 +3,7 @@ import { GlButton, GlDropdownItem, GlLink, GlModal } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vuex from 'vuex';
 import { mockTracking } from 'helpers/tracking_helper';
-import { createAlert, VARIANT_SUCCESS } from '~/flash';
+import { createAlert, VARIANT_SUCCESS } from '~/alert';
 import { STATUS_CLOSED, STATUS_OPEN, TYPE_INCIDENT, TYPE_ISSUE } from '~/issues/constants';
 import DeleteIssueModal from '~/issues/show/components/delete_issue_modal.vue';
 import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_selector.vue';
@@ -14,7 +14,7 @@ import * as urlUtility from '~/lib/utils/url_utility';
 import eventHub from '~/notes/event_hub';
 import createStore from '~/notes/stores';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 describe('HeaderActions component', () => {
   let dispatchEventSpy;

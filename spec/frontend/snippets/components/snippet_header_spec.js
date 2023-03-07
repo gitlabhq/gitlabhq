@@ -1,8 +1,9 @@
-import { GlButton, GlModal, GlDropdown } from '@gitlab/ui';
+import { GlModal, GlButton, GlDropdown } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
-import { ApolloMutation } from 'vue-apollo';
+import VueApollo from 'vue-apollo';
 import MockAdapter from 'axios-mock-adapter';
-import { nextTick } from 'vue';
+import Vue, { nextTick } from 'vue';
+import createMockApollo from 'helpers/mock_apollo_helper';
 import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { Blob, BinaryBlob } from 'jest/blob/components/mock_data';
@@ -11,18 +12,28 @@ import SnippetHeader, { i18n } from '~/snippets/components/snippet_header.vue';
 import DeleteSnippetMutation from '~/snippets/mutations/delete_snippet.mutation.graphql';
 import axios from '~/lib/utils/axios_utils';
 import { createAlert, VARIANT_DANGER, VARIANT_SUCCESS } from '~/alert';
+import CanCreateProjectSnippet from 'shared_queries/snippet/project_permissions.query.graphql';
+import CanCreatePersonalSnippet from 'shared_queries/snippet/user_permissions.query.graphql';
+import { getCanCreateProjectSnippetMock, getCanCreatePersonalSnippetMock } from '../mock_data';
+
+const ERROR_MSG = 'Foo bar';
+const ERR = { message: ERROR_MSG };
+
+const MUTATION_TYPES = {
+  RESOLVE: jest.fn().mockResolvedValue({ data: { destroySnippet: { errors: [] } } }),
+  REJECT: jest.fn().mockRejectedValue(ERR),
+};
 
 jest.mock('~/alert');
+
+Vue.use(VueApollo);
 
 describe('Snippet header component', () => {
   let wrapper;
   let snippet;
-  let mutationTypes;
-  let mutationVariables;
   let mock;
+  let mockApollo;
 
-  let errorMsg;
-  let err;
   const originalRelativeUrlRoot = gon.relative_url_root;
   const reportAbusePath = '/-/snippets/42/mark_as_spam';
   const canReportSpam = true;
@@ -30,11 +41,12 @@ describe('Snippet header component', () => {
   const GlEmoji = { template: '<img/>' };
 
   function createComponent({
-    loading = false,
     permissions = {},
-    mutationRes = mutationTypes.RESOLVE,
     snippetProps = {},
     provide = {},
+    canCreateProjectSnippetMock = jest.fn().mockResolvedValue(getCanCreateProjectSnippetMock()),
+    canCreatePersonalSnippetMock = jest.fn().mockResolvedValue(getCanCreatePersonalSnippetMock()),
+    deleteSnippetMock = MUTATION_TYPES.RESOLVE,
   } = {}) {
     const defaultProps = Object.assign(snippet, snippetProps);
     if (permissions) {
@@ -42,17 +54,14 @@ describe('Snippet header component', () => {
         ...permissions,
       });
     }
-    const $apollo = {
-      queries: {
-        canCreateSnippet: {
-          loading,
-        },
-      },
-      mutate: mutationRes,
-    };
+
+    mockApollo = createMockApollo([
+      [CanCreateProjectSnippet, canCreateProjectSnippetMock],
+      [CanCreatePersonalSnippet, canCreatePersonalSnippetMock],
+      [DeleteSnippetMutation, deleteSnippetMock],
+    ]);
 
     wrapper = mount(SnippetHeader, {
-      mocks: { $apollo },
       provide: {
         reportAbusePath,
         canReportSpam,
@@ -64,9 +73,9 @@ describe('Snippet header component', () => {
         },
       },
       stubs: {
-        ApolloMutation,
         GlEmoji,
       },
+      apolloProvider: mockApollo,
     });
   }
 
@@ -91,6 +100,7 @@ describe('Snippet header component', () => {
       title: x.attributes('title'),
       text: x.text(),
     }));
+  const findDeleteModal = () => wrapper.findComponent(GlModal);
 
   beforeEach(() => {
     gon.relative_url_root = '/foo/';
@@ -113,26 +123,11 @@ describe('Snippet header component', () => {
       createdAt: new Date(differenceInMilliseconds(32 * 24 * 3600 * 1000)).toISOString(),
     };
 
-    mutationVariables = {
-      mutation: DeleteSnippetMutation,
-      variables: {
-        id: snippet.id,
-      },
-    };
-
-    errorMsg = 'Foo bar';
-    err = { message: errorMsg };
-
-    mutationTypes = {
-      RESOLVE: jest.fn(() => Promise.resolve({ data: { destroySnippet: { errors: [] } } })),
-      REJECT: jest.fn(() => Promise.reject(err)),
-    };
-
     mock = new MockAdapter(axios);
   });
 
   afterEach(() => {
-    wrapper.destroy();
+    mockApollo = null;
     mock.restore();
     gon.relative_url_root = originalRelativeUrlRoot;
   });
@@ -238,15 +233,16 @@ describe('Snippet header component', () => {
   });
 
   it('with canCreateSnippet permission, renders create button', async () => {
-    createComponent();
+    createComponent({
+      canCreateProjectSnippetMock: jest
+        .fn()
+        .mockResolvedValue(getCanCreateProjectSnippetMock(true)),
+      canCreatePersonalSnippetMock: jest
+        .fn()
+        .mockResolvedValue(getCanCreatePersonalSnippetMock(true)),
+    });
 
-    // TODO: we should avoid `wrapper.setData` since they
-    // are component internals. Let's use the apollo mock helpers
-    // in a follow-up.
-    // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-    // eslint-disable-next-line no-restricted-syntax
-    wrapper.setData({ canCreateSnippet: true });
-    await nextTick();
+    await waitForPromises();
 
     expect(findButtonsAsModel()).toEqual(
       expect.arrayContaining([
@@ -329,21 +325,37 @@ describe('Snippet header component', () => {
   });
 
   describe('Delete mutation', () => {
-    it('dispatches a mutation to delete the snippet with correct variables', () => {
+    const deleteSnippet = async () => {
+      // Click delete action
+      findButtons().at(1).trigger('click');
+      await nextTick();
+
+      expect(findDeleteModal().props().visible).toBe(true);
+
+      // Click delete button in delete modal
+      document.querySelector('[data-testid="delete-snippet"').click();
+      await waitForPromises();
+    };
+
+    it('dispatches a mutation to delete the snippet with correct variables', async () => {
       createComponent();
-      wrapper.vm.deleteSnippet();
-      expect(mutationTypes.RESOLVE).toHaveBeenCalledWith(mutationVariables);
+
+      await deleteSnippet();
+
+      expect(MUTATION_TYPES.RESOLVE).toHaveBeenCalledWith({
+        id: snippet.id,
+      });
     });
 
     it('sets error message if mutation fails', async () => {
-      createComponent({ mutationRes: mutationTypes.REJECT });
+      createComponent({ deleteSnippetMock: MUTATION_TYPES.REJECT });
       expect(Boolean(wrapper.vm.errorMessage)).toBe(false);
 
-      wrapper.vm.deleteSnippet();
+      await deleteSnippet();
 
-      await waitForPromises();
-
-      expect(wrapper.vm.errorMessage).toEqual(errorMsg);
+      expect(document.querySelector('[data-testid="delete-alert"').textContent.trim()).toBe(
+        ERROR_MSG,
+      );
     });
 
     describe('in case of successful mutation, closes modal and redirects to correct listing', () => {
@@ -353,15 +365,16 @@ describe('Snippet header component', () => {
         createComponent({
           snippetProps,
         });
-        wrapper.vm.closeDeleteModal = jest.fn();
 
-        wrapper.vm.deleteSnippet();
-        await nextTick();
+        await deleteSnippet();
       };
 
       it('redirects to dashboard/snippets for personal snippet', async () => {
         await createDeleteSnippet();
-        expect(wrapper.vm.closeDeleteModal).toHaveBeenCalled();
+
+        // Check that the modal is hidden after deleting the snippet
+        expect(findDeleteModal().props().visible).toBe(false);
+
         expect(window.location.pathname).toBe(`${gon.relative_url_root}dashboard/snippets`);
       });
 
@@ -372,7 +385,10 @@ describe('Snippet header component', () => {
             fullPath,
           },
         });
-        expect(wrapper.vm.closeDeleteModal).toHaveBeenCalled();
+
+        // Check that the modal is hidden after deleting the snippet
+        expect(findDeleteModal().props().visible).toBe(false);
+
         expect(window.location.pathname).toBe(`${fullPath}/-/snippets`);
       });
     });

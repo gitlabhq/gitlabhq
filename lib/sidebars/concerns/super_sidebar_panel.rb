@@ -5,10 +5,15 @@ module Sidebars
     # Contains helper methods aid conversion of a "normal" panel
     # into a Super Sidebar Panel
     module SuperSidebarPanel
-      # Picks an element from the given list and adds it to the current menus
-      # Used for menus which behave the same in the old nav and Supersidebar
-      def pick_from_old_menus(old_menus, element)
-        add_menu(remove_element(old_menus, element))
+      # Picks menus from a list and adds them to the current menu list
+      # if they should be picked into the super sidebar
+      def pick_from_old_menus(old_menus)
+        old_menus.select! do |menu|
+          next true unless menu.pick_into_super_sidebar?
+
+          add_menu(menu)
+          false
+        end
       end
 
       def transform_old_menus(current_menus, *old_menus)

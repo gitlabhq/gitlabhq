@@ -1,6 +1,6 @@
 import testAction from 'helpers/vuex_action_helper';
 import Api from '~/api';
-import { createAlert, VARIANT_SUCCESS, VARIANT_WARNING } from '~/flash';
+import { createAlert, VARIANT_SUCCESS, VARIANT_WARNING } from '~/alert';
 import { FETCH_PACKAGE_VERSIONS_ERROR } from '~/packages_and_registries/infrastructure_registry/details/constants';
 import {
   fetchPackageVersions,
@@ -15,7 +15,7 @@ import {
 } from '~/packages_and_registries/shared/constants';
 import { npmPackage as packageEntity } from '../../mock_data';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 jest.mock('~/api.js');
 
 describe('Actions Package details store', () => {
@@ -53,7 +53,7 @@ describe('Actions Package details store', () => {
       expect(Api.projectPackage).toHaveBeenCalledWith(packageEntity.project_id, packageEntity.id);
     });
 
-    it('should create flash on API error', async () => {
+    it('should create alert on API error', async () => {
       Api.projectPackage = jest.fn().mockRejectedValue();
 
       await testAction(
@@ -83,7 +83,7 @@ describe('Actions Package details store', () => {
         packageEntity.id,
       );
     });
-    it('should create flash on API error', async () => {
+    it('should create alert on API error', async () => {
       Api.deleteProjectPackage = jest.fn().mockRejectedValue();
 
       await testAction(deletePackage, undefined, { packageEntity }, [], []);
@@ -118,7 +118,7 @@ describe('Actions Package details store', () => {
       });
     });
 
-    it('should create flash on API error', async () => {
+    it('should create alert on API error', async () => {
       Api.deleteProjectPackageFile = jest.fn().mockRejectedValue();
       await testAction(deletePackageFile, fileId, { packageEntity }, [], []);
       expect(createAlert).toHaveBeenCalledWith({

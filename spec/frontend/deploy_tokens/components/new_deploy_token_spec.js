@@ -7,20 +7,12 @@ import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/h
 import { TEST_HOST } from 'helpers/test_constants';
 import NewDeployToken from '~/deploy_tokens/components/new_deploy_token.vue';
 import waitForPromises from 'helpers/wait_for_promises';
-import { createAlert, VARIANT_INFO } from '~/flash';
+import { createAlert, VARIANT_INFO } from '~/alert';
 
 const createNewTokenPath = `${TEST_HOST}/create`;
 const deployTokensHelpUrl = `${TEST_HOST}/help`;
 
-jest.mock('~/flash', () => {
-  const original = jest.requireActual('~/flash');
-
-  return {
-    __esModule: true,
-    ...original,
-    createAlert: jest.fn(),
-  };
-});
+jest.mock('~/alert');
 
 describe('New Deploy Token', () => {
   let wrapper;
@@ -91,7 +83,7 @@ describe('New Deploy Token', () => {
         });
     }
 
-    it('should flash error message if token creation fails', async () => {
+    it('should alert error message if token creation fails', async () => {
       const mockAxios = new MockAdapter(axios);
 
       const date = new Date();

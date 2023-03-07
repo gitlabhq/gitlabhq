@@ -2,7 +2,7 @@ import { GlSprintf, GlLink } from '@gitlab/ui';
 import { createLocalVue } from '@vue/test-utils';
 import VueApollo from 'vue-apollo';
 import { nextTick } from 'vue';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { TYPENAME_CI_BUILD } from '~/graphql_shared/constants';
@@ -23,7 +23,7 @@ import {
 } from './mock_data';
 
 const localVue = createLocalVue();
-jest.mock('~/flash');
+jest.mock('~/alert');
 localVue.use(VueApollo);
 
 jest.mock('~/lib/utils/url_utility', () => ({

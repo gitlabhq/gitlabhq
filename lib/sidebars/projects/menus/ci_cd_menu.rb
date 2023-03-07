@@ -39,6 +39,11 @@ module Sidebars
           'rocket'
         end
 
+        override :pick_into_super_sidebar?
+        def pick_into_super_sidebar?
+          true
+        end
+
         private
 
         def pipelines_menu_item

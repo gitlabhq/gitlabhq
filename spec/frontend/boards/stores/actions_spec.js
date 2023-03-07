@@ -43,7 +43,7 @@ import {
   mockMilestones,
 } from '../mock_data';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 // We need this helper to make sure projectPath is including
 // subgroups when the movIssue action is called.

@@ -28,6 +28,11 @@ module Sidebars
           Gitlab::Observability.allowed_for_action?(context.current_user, context.group, :explore)
         end
 
+        override :pick_into_super_sidebar?
+        def pick_into_super_sidebar?
+          true
+        end
+
         private
 
         def dashboards_menu_item

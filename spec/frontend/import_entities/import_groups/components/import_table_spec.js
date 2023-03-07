@@ -6,7 +6,7 @@ import MockAdapter from 'axios-mock-adapter';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { HTTP_STATUS_OK, HTTP_STATUS_TOO_MANY_REQUESTS } from '~/lib/utils/http_status';
 import axios from '~/lib/utils/axios_utils';
 import { STATUSES } from '~/import_entities/constants';
@@ -23,7 +23,7 @@ import {
   generateFakeEntry,
 } from '../graphql/fixtures';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 jest.mock('~/import_entities/import_groups/services/status_poller');
 
 Vue.use(VueApollo);

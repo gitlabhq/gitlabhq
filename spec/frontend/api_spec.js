@@ -10,8 +10,6 @@ import {
   HTTP_STATUS_OK,
 } from '~/lib/utils/http_status';
 
-jest.mock('~/flash');
-
 describe('Api', () => {
   const dummyApiVersion = 'v3000';
   const dummyUrlRoot = '/gitlab';

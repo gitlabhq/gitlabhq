@@ -7,10 +7,10 @@ import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/h
 import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
 import NewNavToggle from '~/nav/components/new_nav_toggle.vue';
 import waitForPromises from 'helpers/wait_for_promises';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { s__ } from '~/locale';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 const TEST_ENDPONT = 'https://example.com/toggle';
 

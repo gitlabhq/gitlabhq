@@ -5,9 +5,9 @@ import {
   DIAGRAM_BACKGROUND_COLOR,
   DRAWIO_IFRAME_TIMEOUT,
 } from '~/drawio/constants';
-import { createAlert, VARIANT_SUCCESS } from '~/flash';
+import { createAlert, VARIANT_SUCCESS } from '~/alert';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 jest.useFakeTimers();
 

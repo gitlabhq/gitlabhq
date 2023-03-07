@@ -9,7 +9,7 @@ import MockAdapter from 'axios-mock-adapter';
 import { nextTick } from 'vue';
 import waitForPromises from 'helpers/wait_for_promises';
 
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { OPTIONS_NONE_ANY } from '~/vue_shared/components/filtered_search_bar/constants';
 import BranchToken from '~/vue_shared/components/filtered_search_bar/tokens/branch_token.vue';
@@ -17,7 +17,7 @@ import BaseToken from '~/vue_shared/components/filtered_search_bar/tokens/base_t
 
 import { mockBranches, mockBranchToken } from '../mock_data';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 const defaultStubs = {
   Portal: true,
   GlFilteredSearchSuggestionList: {
@@ -120,7 +120,7 @@ describe('BranchToken', () => {
           });
         });
 
-        it('calls `createAlert` with flash error message when request fails', async () => {
+        it('calls `createAlert` with alert error message when request fails', async () => {
           await triggerFetchBranches();
 
           expect(createAlert).toHaveBeenCalledWith({

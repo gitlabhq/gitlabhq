@@ -3,8 +3,6 @@ import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import UploadDropzone from '~/vue_shared/components/upload_dropzone/upload_dropzone.vue';
 
-jest.mock('~/flash');
-
 describe('Upload dropzone component', () => {
   let wrapper;
 

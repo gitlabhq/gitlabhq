@@ -8,7 +8,7 @@ import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import Autosave from '~/autosave';
 import batchComments from '~/batch_comments/stores/modules/batch_comments';
 import { refreshUserMergeRequestCounts } from '~/commons/nav/user_merge_requests';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_UNPROCESSABLE_ENTITY } from '~/lib/utils/http_status';
 import CommentForm from '~/notes/components/comment_form.vue';
@@ -21,7 +21,7 @@ import { loggedOutnoteableData, notesDataMock, userDataMock, noteableDataMock } 
 
 jest.mock('autosize');
 jest.mock('~/commons/nav/user_merge_requests');
-jest.mock('~/flash');
+jest.mock('~/alert');
 jest.mock('~/autosave');
 
 Vue.use(Vuex);

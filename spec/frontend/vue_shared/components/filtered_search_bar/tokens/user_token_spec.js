@@ -8,7 +8,7 @@ import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import { nextTick } from 'vue';
 import waitForPromises from 'helpers/wait_for_promises';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 
 import { OPTIONS_NONE_ANY } from '~/vue_shared/components/filtered_search_bar/constants';
@@ -17,7 +17,7 @@ import BaseToken from '~/vue_shared/components/filtered_search_bar/tokens/base_t
 
 import { mockAuthorToken, mockUsers } from '../mock_data';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 const defaultStubs = {
   Portal: true,
   GlFilteredSearchSuggestionList: {
@@ -136,7 +136,7 @@ describe('UserToken', () => {
           return triggerFetchUsers();
         });
 
-        it('calls `createAlert` with flash error message', () => {
+        it('calls `createAlert` with alert error message', () => {
           expect(createAlert).toHaveBeenCalledWith({
             message: 'There was a problem fetching users.',
           });

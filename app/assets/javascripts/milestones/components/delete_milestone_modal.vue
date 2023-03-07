@@ -1,6 +1,6 @@
 <script>
 import { GlSprintf, GlModal } from '@gitlab/ui';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_NOT_FOUND } from '~/lib/utils/http_status';
 import { redirectTo } from '~/lib/utils/url_utility';

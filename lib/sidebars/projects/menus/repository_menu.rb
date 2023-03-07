@@ -44,6 +44,11 @@ module Sidebars
           'doc-text'
         end
 
+        override :pick_into_super_sidebar?
+        def pick_into_super_sidebar?
+          true
+        end
+
         private
 
         def files_menu_item

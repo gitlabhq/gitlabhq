@@ -1,7 +1,7 @@
 import MockAdapter from 'axios-mock-adapter';
 import { TEST_HOST } from 'helpers/test_constants';
 import testAction from 'helpers/vuex_action_helper';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { STATUSES, PROVIDERS } from '~/import_entities/constants';
 import actionsFactory from '~/import_entities/import_projects/store/actions';
 import { getImportTarget } from '~/import_entities/import_projects/store/getters';
@@ -27,7 +27,7 @@ import {
   HTTP_STATUS_TOO_MANY_REQUESTS,
 } from '~/lib/utils/http_status';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 const MOCK_ENDPOINT = `${TEST_HOST}/endpoint.json`;
 const endpoints = {

@@ -70,10 +70,15 @@ export default {
     };
   },
   computed: {
-    forcePushDescription() {
-      return this.branchProtection?.allowForcePush
-        ? this.$options.i18n.allowForcePushDescription
-        : this.$options.i18n.disallowForcePushDescription;
+    forcePushAttributes() {
+      const { allowForcePush } = this.branchProtection;
+      const icon = allowForcePush ? REQUIRED_ICON : NOT_REQUIRED_ICON;
+      const iconClass = allowForcePush ? REQUIRED_ICON_CLASS : NOT_REQUIRED_ICON_CLASS;
+      const title = allowForcePush
+        ? this.$options.i18n.allowForcePushTitle
+        : this.$options.i18n.doesNotAllowForcePushTitle;
+
+      return { icon, iconClass, title };
     },
     codeOwnersApprovalAttributes() {
       const { codeOwnerApprovalRequired } = this.branchProtection;
@@ -184,10 +189,6 @@ export default {
       :groups="pushAccessLevels.groups"
     />
 
-    <!-- Force push -->
-    <strong>{{ $options.i18n.forcePushTitle }}</strong>
-    <p>{{ forcePushDescription }}</p>
-
     <!-- Allowed to merge -->
     <protection
       :header="allowedToMergeHeader"
@@ -198,11 +199,25 @@ export default {
       :groups="mergeAccessLevels.groups"
     />
 
+    <!-- Force push -->
+    <div class="gl-display-flex gl-align-items-center">
+      <gl-icon
+        :size="14"
+        data-testid="force-push-icon"
+        :name="forcePushAttributes.icon"
+        :class="forcePushAttributes.iconClass"
+      />
+      <strong class="gl-ml-2">{{ forcePushAttributes.title }}</strong>
+    </div>
+
+    <div class="gl-text-gray-400 gl-mb-2">{{ $options.i18n.forcePushDescription }}</div>
+
     <!-- EE start -->
     <!-- Code Owners -->
     <div v-if="showCodeOwners">
       <div class="gl-display-flex gl-align-items-center">
         <gl-icon
+          data-testid="code-owners-icon"
           :size="14"
           :name="codeOwnersApprovalAttributes.icon"
           :class="codeOwnersApprovalAttributes.iconClass"

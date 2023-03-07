@@ -5,13 +5,13 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { MAX_REQUESTS } from '~/clusters_list/constants';
 import * as actions from '~/clusters_list/store/actions';
 import * as types from '~/clusters_list/store/mutation_types';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_BAD_REQUEST, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import Poll from '~/lib/utils/poll';
 import { apiData } from '../mock_data';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 describe('Clusters store actions', () => {
   let captureException;
@@ -81,7 +81,7 @@ describe('Clusters store actions', () => {
       );
     });
 
-    it('should show flash on API error', async () => {
+    it('should show alert on API error', async () => {
       mock.onGet().reply(HTTP_STATUS_BAD_REQUEST, 'Not Found');
 
       await testAction(

@@ -11,7 +11,7 @@ import {
   mockRegularLabel,
   mockLabels,
 } from 'jest/sidebar/components/labels/labels_select_vue/mock_data';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 
 import { OPTIONS_NONE_ANY } from '~/vue_shared/components/filtered_search_bar/constants';
@@ -20,7 +20,7 @@ import LabelToken from '~/vue_shared/components/filtered_search_bar/tokens/label
 
 import { mockLabelToken } from '../mock_data';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 const defaultStubs = {
   Portal: true,
   BaseToken,
@@ -152,7 +152,7 @@ describe('LabelToken', () => {
           await triggerFetchLabels();
         });
 
-        it('calls `createAlert` with flash error message', () => {
+        it('calls `createAlert` with alert error message', () => {
           expect(createAlert).toHaveBeenCalledWith({
             message: 'There was a problem fetching labels.',
           });

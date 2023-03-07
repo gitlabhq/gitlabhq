@@ -89,6 +89,14 @@ class Project < ApplicationRecord
 
   DEFAULT_SQUASH_COMMIT_TEMPLATE = '%{title}'
 
+  PROJECT_FEATURES_DEFAULTS = {
+    issues: gitlab_config_features.issues,
+    merge_requests: gitlab_config_features.merge_requests,
+    builds: gitlab_config_features.builds,
+    wiki: gitlab_config_features.wiki,
+    snippets: gitlab_config_features.snippets
+  }.freeze
+
   cache_markdown_field :description, pipeline: :description
 
   attribute :packages_enabled, default: true
@@ -101,18 +109,13 @@ class Project < ApplicationRecord
   attribute :autoclose_referenced_issues, default: true
   attribute :ci_config_path, default: -> { Gitlab::CurrentSettings.default_ci_config_path }
 
-  default_value_for :issues_enabled, gitlab_config_features.issues
-  default_value_for :merge_requests_enabled, gitlab_config_features.merge_requests
-  default_value_for :builds_enabled, gitlab_config_features.builds
-  default_value_for :wiki_enabled, gitlab_config_features.wiki
-  default_value_for :snippets_enabled, gitlab_config_features.snippets
-
   add_authentication_token_field :runners_token,
                                  encrypted: -> { Feature.enabled?(:projects_tokens_optional_encryption) ? :optional : :required },
                                  prefix: RunnersTokenPrefixable::RUNNERS_TOKEN_PREFIX
 
   # Storage specific hooks
   after_initialize :use_hashed_storage
+  after_initialize :set_project_feature_defaults, if: :new_record?
   before_validation :mark_remote_mirrors_for_removal, if: -> { RemoteMirror.table_exists? }
 
   before_validation :ensure_project_namespace_in_sync
@@ -951,25 +954,33 @@ class Project < ApplicationRecord
         .where(pending_delete: false)
         .where(archived: false)
     end
+
+    def project_features_defaults
+      PROJECT_FEATURES_DEFAULTS
+    end
   end
 
   def initialize(attributes = nil)
-    # We can't use default_value_for because the database has a default
-    # value of 0 for visibility_level. If someone attempts to create a
-    # private project, default_value_for will assume that the
-    # visibility_level hasn't changed and will use the application
-    # setting default, which could be internal or public. For projects
-    # inside a private group, those levels are invalid.
-    #
-    # To fix the problem, we assign the actual default in the application if
-    # no explicit visibility has been initialized.
+    # We assign the actual snippet default if no explicit visibility has been initialized.
     attributes ||= {}
 
     unless visibility_attribute_present?(attributes)
       attributes[:visibility_level] = Gitlab::CurrentSettings.default_project_visibility
     end
 
+    @init_attributes = attributes
+
     super
+  end
+
+  # Remove along with ProjectFeaturesCompatibility module
+  def set_project_feature_defaults
+    self.class.project_features_defaults.each do |attr, value|
+      # If the deprecated _enabled or the accepted _access_level attribute is specified, we don't need to set the default
+      next unless @init_attributes[:"#{attr}_enabled"].nil? && @init_attributes[:"#{attr}_access_level"].nil?
+
+      public_send("#{attr}_enabled=", value) # rubocop:disable GitlabSecurity/PublicSend
+    end
   end
 
   def parent_loaded?
@@ -1173,15 +1184,6 @@ class Project < ApplicationRecord
   def design_repository
     strong_memoize(:design_repository) do
       Gitlab::GlRepository::DESIGN.repository_for(self)
-    end
-  end
-
-  # Because we use default_value_for we need to be sure
-  # packages_enabled= method does exist even if we rollback migration.
-  # Otherwise many tests from spec/migrations will fail.
-  def packages_enabled=(value)
-    if has_attribute?(:packages_enabled)
-      write_attribute(:packages_enabled, value)
     end
   end
 

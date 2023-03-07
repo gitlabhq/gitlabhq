@@ -12,7 +12,7 @@ import {
   dockerPushCommand,
   dockerLoginCommand,
 } from '~/packages_and_registries/harbor_registry/utils';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import {
   SORT_FIELDS,
   CONNECTION_ERROR_TITLE,

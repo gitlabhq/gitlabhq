@@ -1,6 +1,6 @@
 <script>
 import { GlEmptyState } from '@gitlab/ui';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { n__ } from '~/locale';
 import { joinPaths } from '~/lib/utils/url_utility';
 import RegistryList from '~/packages_and_registries/shared/components/registry_list.vue';

@@ -8,7 +8,7 @@ import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import { nextTick } from 'vue';
 import waitForPromises from 'helpers/wait_for_promises';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { sortMilestonesByDueDate } from '~/milestones/utils';
 
@@ -18,7 +18,7 @@ import BaseToken from '~/vue_shared/components/filtered_search_bar/tokens/base_t
 
 import { mockMilestoneToken, mockMilestones, mockRegularMilestone } from '../mock_data';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 jest.mock('~/milestones/utils');
 
 const defaultStubs = {
@@ -134,7 +134,7 @@ describe('MilestoneToken', () => {
           return triggerFetchMilestones();
         });
 
-        it('calls `createAlert` with flash error message', () => {
+        it('calls `createAlert` with alert error message', () => {
           expect(createAlert).toHaveBeenCalledWith({
             message: 'There was a problem fetching milestones.',
           });

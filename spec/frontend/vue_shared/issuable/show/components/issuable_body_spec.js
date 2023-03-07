@@ -13,7 +13,7 @@ import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import { mockIssuableShowProps, mockIssuable } from '../mock_data';
 
 jest.mock('~/autosave');
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 const issuableBodyProps = {
   ...mockIssuableShowProps,

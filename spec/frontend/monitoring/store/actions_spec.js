@@ -1,7 +1,7 @@
 import MockAdapter from 'axios-mock-adapter';
 import { backoffMockImplementation } from 'helpers/backoff_helper';
 import testAction from 'helpers/vuex_action_helper';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import * as commonUtils from '~/lib/utils/common_utils';
 import {
@@ -61,7 +61,7 @@ import {
   mockDashboardsErrorResponse,
 } from '../mock_data';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 describe('Monitoring store actions', () => {
   const { convertObjectPropsToCamelCase } = commonUtils;
@@ -263,7 +263,7 @@ describe('Monitoring store actions', () => {
         });
       });
 
-      it('does not show a flash error when showErrorBanner is disabled', async () => {
+      it('does not show an alert error when showErrorBanner is disabled', async () => {
         state.showErrorBanner = false;
 
         await result();
