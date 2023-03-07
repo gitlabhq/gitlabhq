@@ -13,7 +13,7 @@
           %label.label-bold
             = _('Clone with SSH')
           .input-group.btn-group
-            = text_field_tag :ssh_project_clone, project.ssh_url_to_repo, class: "js-select-on-focus form-control", readonly: true, aria: { label: _('Repository clone URL') }, data: { qa_selector: 'ssh_clone_url_content' }
+            = text_field_tag :ssh_project_clone, ssh_clone_url_to_repo(project), class: "js-select-on-focus form-control", readonly: true, aria: { label: _('Repository clone URL') }, data: { qa_selector: 'ssh_clone_url_content' }
             .input-group-append
               = clipboard_button(target: '#ssh_project_clone', title: _("Copy URL"), class: "input-group-text gl-button btn btn-icon btn-default")
               = render_if_exists 'projects/buttons/geo'
@@ -22,7 +22,7 @@
           %label.label-bold
             = _('Clone with %{http_label}') % { http_label: gitlab_config.protocol.upcase }
           .input-group.btn-group
-            = text_field_tag :http_project_clone, project.http_url_to_repo, class: "js-select-on-focus form-control", readonly: true, aria: { label: _('Repository clone URL') }, data: { qa_selector: 'http_clone_url_content' }
+            = text_field_tag :http_project_clone, http_clone_url_to_repo(project), class: "js-select-on-focus form-control", readonly: true, aria: { label: _('Repository clone URL') }, data: { qa_selector: 'http_clone_url_content' }
             .input-group-append
               = clipboard_button(target: '#http_project_clone', title: _("Copy URL"), class: "input-group-text gl-button btn btn-icon btn-default")
               = render_if_exists 'projects/buttons/geo'
@@ -32,12 +32,12 @@
         %label.label-bold{ class: 'gl-px-4!' }
           = _('Open in your IDE')
         - if ssh_enabled?
-          - escaped_ssh_url_to_repo = CGI.escape(project.ssh_url_to_repo)
+          - escaped_ssh_url_to_repo = CGI.escape(ssh_clone_url_to_repo(project))
           %a.dropdown-item.open-with-link{ href: 'vscode://vscode.git/clone?url=' + escaped_ssh_url_to_repo }
             .gl-dropdown-item-text-wrapper
               = _('Visual Studio Code (SSH)')
         - if http_enabled?
-          - escaped_http_url_to_repo = CGI.escape(project.http_url_to_repo)
+          - escaped_http_url_to_repo = CGI.escape(http_clone_url_to_repo(project))
           %a.dropdown-item.open-with-link{ href: 'vscode://vscode.git/clone?url=' + escaped_http_url_to_repo }
             .gl-dropdown-item-text-wrapper
               = _('Visual Studio Code (HTTPS)')

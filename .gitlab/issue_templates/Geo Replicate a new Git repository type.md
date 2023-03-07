@@ -100,7 +100,7 @@ Geo secondary sites have a [Geo tracking database](https://gitlab.com/gitlab-org
 
 - [ ] If deviating from the above example, then be sure to order columns according to [our guidelines](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/development/ordering_table_columns.md).
 
-- [ ] Add the new table to the [database dictionary](database_dictionary.md) defined in [`ee/db/docs/`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/ee/db/docs):
+- [ ] Add the new table to the [database dictionary](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/development/database/database_dictionary.md) defined in [`ee/db/docs/`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/ee/db/docs):
 
   ```yaml
   table_name: cool_widget_registry
@@ -179,17 +179,20 @@ The Geo primary site needs to checksum every replicable so secondaries can verif
 
 - [ ] If deviating from the above example, then be sure to order columns according to [our guidelines](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/development/ordering_table_columns.md).
 
-- [ ] Add the new table to the [database dictionary](database_dictionary.md) defined in [`db/docs/`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/db/docs):
+- [ ] If `cool_widgets` is a high-traffic table, follow [the database documentation to use `with_lock_retries`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/development/migration_style_guide.md#when-to-use-the-helper-method)
+
+- [ ] Add the new table to the [database dictionary](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/development/database/database_dictionary.md) defined in [`db/docs/`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/db/docs):
 
   ```yaml
+  ---
   table_name: cool_widget_states
-  description: Description example
-  introduced_by_url: Merge request link
-  milestone: Milestone example
+  description: Separate table for cool widget verification states
+  introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/XXXXX
+  milestone: 'XX.Y'
   feature_categories:
-   - Feature category example
+   - geo_replication
   classes:
-   - Class example
+   - Geo::CoolWidgetState
   gitlab_schema: gitlab_main
   ```
 
@@ -200,20 +203,6 @@ The Geo primary site needs to checksum every replicable so secondaries can verif
   ```
 
 - [ ] Be sure to commit the relevant changes in `db/structure.sql` and the file under `db/schema_migrations`
-
-- [ ] Add an entry for the state table in `db/docs/cool_widget_states.yml`
-
-  ```yaml
-  ---
-  table_name: cool_widget_states
-  classes:
-    - Geo::CoolWidgetState
-  feature_categories:
-    - geo_replication
-  description: Separate table for cool widget verification states
-  introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/XXXXX
-  milestone: 'XX.Y'
-  ```
 
 That's all of the required database changes.
 
@@ -250,16 +239,25 @@ That's all of the required database changes.
 
     after_save :save_verification_details
 
-    scope :with_verification_state, ->(state) { joins(:cool_widget_state).where(cool_widget_states: { verification_state: verification_state_value(state) }) }
-    scope :checksummed, -> { joins(:cool_widget_state).where.not(cool_widget_states: { verification_checksum: nil } ) }
-    scope :not_checksummed, -> { joins(:cool_widget_state).where(cool_widget_states: { verification_checksum: nil } ) }
-
-    scope :available_verifiables, -> { joins(:cool_widget_state) }
-
     # Override the `all` default if not all records can be replicated. For an
     # example of an existing Model that needs to do this, see
     # `EE::MergeRequestDiff`.
     # scope :available_replicables, -> { all }
+
+    scope :available_verifiables, -> { joins(:cool_widget_state) }
+
+    scope :checksummed, -> {
+      joins(:cool_widget_state).where.not(cool_widget_states: { verification_checksum: nil })
+    }
+
+    scope :not_checksummed, -> {
+      joins(:cool_widget_state).where(cool_widget_states: { verification_checksum: nil })
+    }
+
+    scope :with_verification_state, ->(state) {
+      joins(:cool_widget_state)
+        .where(cool_widget_states: { verification_state: verification_state_value(state) })
+    }
 
     def verification_state_object
       cool_widget_state
@@ -271,7 +269,8 @@ That's all of the required database changes.
       ...
 
       # @param primary_key_in [Range, CoolWidget] arg to pass to primary_key_in scope
-      # @return [ActiveRecord::Relation<CoolWidget>] everything that should be synced to this node, restricted by primary key
+      # @return [ActiveRecord::Relation<CoolWidget>] everything that should be synced
+      #         to this node, restricted by primary key
       def replicables_for_current_secondary(primary_key_in)
         # This issue template does not help you write this method.
         #
@@ -279,7 +278,8 @@ That's all of the required database changes.
         # we want to know which records to replicate. This is not easy to automate
         # because for example:
         #
-        # * The "selective sync" feature allows admins to choose which namespaces #   to replicate, per secondary site. Most Models are scoped to a
+        # * The "selective sync" feature allows admins to choose which namespaces
+        #   to replicate, per secondary site. Most Models are scoped to a
         #   namespace, but the nature of the relationship to a namespace varies
         #   between Models.
         # * The "selective sync" feature allows admins to choose which shards to
@@ -318,8 +318,8 @@ That's all of the required database changes.
 
   ```ruby
     include_examples 'a replicable model with a separate table for verification state' do
-      let(:verifiable_model_record) { build(:cool_widget) } # add extra params if needed to make sure the record is included in `available_verifiables`
-      let(:unverifiable_model_record) { build(:cool_widget) } # add extra params if needed to make sure the record is NOT included in `available_verifiables`
+      let(:verifiable_model_record) { build(:cool_widget) } # add extra params if needed to make sure the record is in `Geo::ReplicableModel.verifiables` scope
+      let(:unverifiable_model_record) { build(:cool_widget) } # add extra params if needed to make sure the record is NOT included in `Geo::ReplicableModel.verifiables` scope
     end
   ```
 
@@ -335,10 +335,6 @@ That's all of the required database changes.
 
       def self.model
         ::CoolWidget
-      end
-
-      def repository
-        model_record.repository
       end
 
       def self.git_access_class
@@ -366,6 +362,10 @@ That's all of the required database changes.
         # before running the housekeeping override the `before_housekeeping` method
         # (see `RepositoryReplicatorStrategy#before_housekeeping`)
         false
+      end
+
+      def repository
+        model_record.repository
       end
     end
   end
@@ -416,7 +416,7 @@ That's all of the required database changes.
 
   require 'spec_helper'
 
-  RSpec.describe Geo::CoolWidgetReplicator do
+  RSpec.describe Geo::CoolWidgetReplicator, feature_category: :geo_replication do
     let(:model_record) { build(:cool_widget) }
 
     include_examples 'a repository replicator'
@@ -490,7 +490,7 @@ That's all of the required database changes.
 
   require 'spec_helper'
 
-  RSpec.describe Geo::CoolWidgetRegistry, :geo, type: :model do
+  RSpec.describe Geo::CoolWidgetRegistry, :geo, type: :model, feature_category: :geo_replication do
     let_it_be(:registry) { create(:geo_cool_widget_registry) }
 
     specify 'factory is valid' do
@@ -567,7 +567,7 @@ That's all of the required database changes.
   end
   ```
 
-- [ ] Add `[:cool_widget, :remote_store]` and `[:geo_cool_widget_state, any]` to `skipped` in `spec/models/factories_spec.rb`
+- [ ] Add `[:geo_cool_widget_state, any]` to `skipped` in `spec/models/factories_spec.rb`
 
 #### Step 2. Implement metrics gathering
 
@@ -602,7 +602,7 @@ Metrics are gathered by `Geo::MetricsUpdateWorker`, persisted in `GeoNodeStatus`
   | `geo_cool_widgets_verification_failed` | Gauge | XX.Y | Number of Cool Widgets that failed verification on secondary | `url` |
   ```
 
-Cool Widget replication and verification metrics should now be available in the API, the `Admin > Geo > Nodes` view, and Prometheus.
+Cool Widget replication and verification metrics should now be available in the API, the `Admin > Geo > Sites` view, and Prometheus.
 
 #### Step 3. Implement the GraphQL API
 
@@ -643,7 +643,7 @@ The GraphQL API is used by `Admin > Geo > Replication Details` views, and is dir
 
   require 'spec_helper'
 
-  RSpec.describe Resolvers::Geo::CoolWidgetRegistriesResolver do
+  RSpec.describe Resolvers::Geo::CoolWidgetRegistriesResolver, feature_category: :geo_replication do
     it_behaves_like 'a Geo registries resolver', :geo_cool_widget_registry
   end
   ```
@@ -667,7 +667,7 @@ The GraphQL API is used by `Admin > Geo > Replication Details` views, and is dir
 
   require 'spec_helper'
 
-  RSpec.describe Geo::CoolWidgetRegistryFinder do
+  RSpec.describe Geo::CoolWidgetRegistryFinder, feature_category: :geo_replication do
     it_behaves_like 'a framework registry finder', :geo_cool_widget_registry
   end
   ```
@@ -701,7 +701,7 @@ The GraphQL API is used by `Admin > Geo > Replication Details` views, and is dir
 
   require 'spec_helper'
 
-  RSpec.describe GitlabSchema.types['CoolWidgetRegistry'] do
+  RSpec.describe GitlabSchema.types['CoolWidgetRegistry'], feature_category: :geo_replication do
     it_behaves_like 'a Geo registry type'
 
     it 'has the expected fields (other than those included in RegistryType)' do

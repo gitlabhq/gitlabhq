@@ -108,13 +108,13 @@ rspec background_migration pg12 single-db:
 rspec migration pg12 single-db-ci-connection:
   extends:
     - rspec migration pg12
-    - .single-db-rspec
+    - .single-db-ci-connection-rspec
     - .rails:rules:single-db-ci-connection
 
 rspec background_migration pg12 single-db-ci-connection:
   extends:
     - rspec background_migration pg12
-    - .single-db-rspec
+    - .single-db-ci-connection-rspec
     - .rails:rules:single-db-ci-connection
 
 rspec migration pg12 praefect:
@@ -443,13 +443,13 @@ rspec background_migration pg12-as-if-foss single-db:
 rspec migration pg12-as-if-foss single-db-ci-connection:
   extends:
     - rspec migration pg12-as-if-foss
-    - .single-db-rspec
+    - .single-db-ci-connection-rspec
     - .rails:rules:single-db-ci-connection
 
 rspec background_migration pg12-as-if-foss single-db-ci-connection:
   extends:
     - rspec background_migration pg12-as-if-foss
-    - .single-db-rspec
+    - .single-db-ci-connection-rspec
     - .rails:rules:single-db-ci-connection
 
 rspec unit pg12-as-if-foss:
@@ -547,13 +547,13 @@ rspec-ee background_migration pg12 single-db:
 rspec-ee migration pg12 single-db-ci-connection:
   extends:
     - rspec-ee migration pg12
-    - .single-db-rspec
+    - .single-db-ci-connection-rspec
     - .rails:rules:single-db-ci-connection
 
 rspec-ee background_migration pg12 single-db-ci-connection:
   extends:
     - rspec-ee background_migration pg12
-    - .single-db-rspec
+    - .single-db-ci-connection-rspec
     - .rails:rules:single-db-ci-connection
 
 rspec-ee migration pg12 praefect:

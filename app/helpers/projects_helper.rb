@@ -502,6 +502,14 @@ module ProjectsHelper
     false
   end
 
+  def http_clone_url_to_repo(project)
+    project.http_url_to_repo
+  end
+
+  def ssh_clone_url_to_repo(project)
+    project.ssh_url_to_repo
+  end
+
   private
 
   def localized_access_names

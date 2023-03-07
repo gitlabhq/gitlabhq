@@ -1384,4 +1384,24 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
       expect(helper.remote_mirror_setting_enabled?).to be_falsy
     end
   end
+
+  describe '#http_clone_url_to_repo' do
+    before do
+      allow(project).to receive(:http_url_to_repo).and_return('http_url_to_repo')
+    end
+
+    subject { helper.http_clone_url_to_repo(project) }
+
+    it { expect(subject).to eq('http_url_to_repo') }
+  end
+
+  describe '#ssh_clone_url_to_repo' do
+    before do
+      allow(project).to receive(:ssh_url_to_repo).and_return('ssh_url_to_repo')
+    end
+
+    subject { helper.ssh_clone_url_to_repo(project) }
+
+    it { expect(subject).to eq('ssh_url_to_repo') }
+  end
 end

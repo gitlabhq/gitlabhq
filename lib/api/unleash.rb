@@ -33,13 +33,11 @@ module API
             present_feature_flags
           end
 
-          # We decrease the urgency of this endpoint until the maxmemory issue of redis-cache has been resolved.
-          # See https://gitlab.com/gitlab-org/gitlab/-/issues/365575#note_1033611872 for more information.
           desc 'Get a list of features' do
             is_array true
             tags unleash_tags
           end
-          get 'client/features', urgency: :low do
+          get 'client/features', urgency: :medium do
             present_feature_flags
           end
 

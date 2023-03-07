@@ -91,7 +91,10 @@ module ProductAnalyticsTracking
 
     events_to_ff = {
       g_edit_by_sfe: :_phase4,
-      g_compliance_dashboard: :_phase4
+      g_compliance_dashboard: :_phase4,
+      g_compliance_audit_events: :_phase4,
+      i_compliance_audit_events: :_phase4,
+      i_compliance_credential_inventory: :_phase4
     }
 
     Feature.enabled?("route_hll_to_snowplow#{events_to_ff[event.to_sym]}", tracking_namespace_source)
