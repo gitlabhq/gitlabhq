@@ -25,7 +25,10 @@ class Profiles::PersonalAccessTokensController < Profiles::ApplicationController
 
   def create
     result = ::PersonalAccessTokens::CreateService.new(
-      current_user: current_user, target_user: current_user, params: personal_access_token_params
+      current_user: current_user,
+      target_user: current_user,
+      params: personal_access_token_params,
+      concatenate_errors: false
     ).execute
 
     @personal_access_token = result.payload[:personal_access_token]

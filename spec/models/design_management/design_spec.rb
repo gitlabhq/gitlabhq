@@ -513,11 +513,11 @@ RSpec.describe DesignManagement::Design, feature_category: :design_management do
   end
 
   describe '#to_reference' do
+    let(:filename)  { 'homescreen.jpg' }
     let(:namespace) { build(:namespace, id: non_existing_record_id, path: 'sample-namespace') }
     let(:project)   { build(:project, name: 'sample-project', namespace: namespace) }
-    let(:group)     { create(:group, name: 'Group', path: 'sample-group') }
+    let(:group)     { build(:group, name: 'Group', path: 'sample-group') }
     let(:issue)     { build(:issue, iid: 1, project: project) }
-    let(:filename)  { 'homescreen.jpg' }
     let(:design)    { build(:design, filename: filename, issue: issue, project: project) }
 
     context 'when nil argument' do

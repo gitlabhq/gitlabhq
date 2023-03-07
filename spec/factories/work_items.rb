@@ -37,5 +37,12 @@ FactoryBot.define do
       issue_type { :key_result }
       association :work_item_type, :default, :key_result
     end
+
+    before(:create, :build) do |work_item, evaluator|
+      if evaluator.namespace.present?
+        work_item.project = nil
+        work_item.namespace = evaluator.namespace
+      end
+    end
   end
 end

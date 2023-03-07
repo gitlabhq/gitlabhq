@@ -563,7 +563,7 @@ class MergeRequest < ApplicationRecord
   end
 
   def self.link_reference_pattern
-    @link_reference_pattern ||= super("merge_requests", Gitlab::Regex.merge_request)
+    @link_reference_pattern ||= compose_link_reference_pattern('merge_requests', Gitlab::Regex.merge_request)
   end
 
   def self.reference_valid?(reference)

@@ -3,11 +3,12 @@
 require 'spec_helper'
 
 RSpec.describe AbuseReportsFinder, '#execute' do
+  let_it_be(:user1) { create(:user) }
+  let_it_be(:user2) { create(:user) }
+  let_it_be(:abuse_report_1) { create(:abuse_report, category: 'spam', user: user1) }
+  let_it_be(:abuse_report_2) { create(:abuse_report, :closed, category: 'phishing', user: user2) }
+
   let(:params) { {} }
-  let!(:user1) { create(:user) }
-  let!(:user2) { create(:user) }
-  let!(:abuse_report_1) { create(:abuse_report, category: 'spam', user: user1, reporter: user2) }
-  let!(:abuse_report_2) { create(:abuse_report, :closed, category: 'phishing', user: user2) }
 
   subject { described_class.new(params).execute }
 
@@ -22,6 +23,27 @@ RSpec.describe AbuseReportsFinder, '#execute' do
 
     it 'returns abuse reports for the specified user' do
       expect(subject).to match_array([abuse_report_2])
+    end
+  end
+
+  context 'when params[:user] is present' do
+    let(:params) { { user: abuse_report_1.user.username } }
+
+    it 'returns abuse reports for the specified user' do
+      expect(subject).to match_array([abuse_report_1])
+    end
+
+    context 'when no user has username = params[:user]' do
+      before do
+        allow(User).to receive_message_chain(:by_username, :pick)
+          .with(params[:user])
+          .with(:id)
+          .and_return(nil)
+      end
+
+      it 'returns all abuse reports' do
+        expect(subject).to match_array([abuse_report_1, abuse_report_2])
+      end
     end
   end
 

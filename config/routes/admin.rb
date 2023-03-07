@@ -123,6 +123,10 @@ namespace :admin do
       member do
         put :transfer
         post :repository_check
+        get :edit, action: :edit
+        get '/', action: :show
+        patch '/', action: :update
+        put '/', action: :update
       end
 
       resources :runner_projects, only: [:create, :destroy]

@@ -580,38 +580,38 @@ RSpec.describe Issue, feature_category: :team_planning do
   end
 
   describe '#to_reference' do
-    let(:namespace) { build(:namespace, path: 'sample-namespace') }
-    let(:project)   { build(:project, name: 'sample-project', namespace: namespace) }
-    let(:issue)     { build(:issue, iid: 1, project: project) }
+    let_it_be(:namespace) { create(:namespace, path: 'sample-namespace') }
+    let_it_be(:project)   { create(:project, name: 'sample-project', namespace: namespace) }
+    let_it_be(:issue)     { create(:issue, project: project) }
 
     context 'when nil argument' do
       it 'returns issue id' do
-        expect(issue.to_reference).to eq "#1"
+        expect(issue.to_reference).to eq "##{issue.iid}"
       end
 
       it 'returns complete path to the issue with full: true' do
-        expect(issue.to_reference(full: true)).to eq 'sample-namespace/sample-project#1'
+        expect(issue.to_reference(full: true)).to eq "#{project.full_path}##{issue.iid}"
       end
     end
 
     context 'when argument is a project' do
       context 'when same project' do
         it 'returns issue id' do
-          expect(issue.to_reference(project)).to eq("#1")
+          expect(issue.to_reference(project)).to eq("##{issue.iid}")
         end
 
         it 'returns full reference with full: true' do
-          expect(issue.to_reference(project, full: true)).to eq 'sample-namespace/sample-project#1'
+          expect(issue.to_reference(project, full: true)).to eq "#{project.full_path}##{issue.iid}"
         end
       end
 
       context 'when cross-project in same namespace' do
         let(:another_project) do
-          build(:project, name: 'another-project', namespace: project.namespace)
+          create(:project, name: 'another-project', namespace: project.namespace)
         end
 
         it 'returns a cross-project reference' do
-          expect(issue.to_reference(another_project)).to eq "sample-project#1"
+          expect(issue.to_reference(another_project)).to eq "sample-project##{issue.iid}"
         end
       end
 
@@ -620,7 +620,7 @@ RSpec.describe Issue, feature_category: :team_planning do
         let(:another_namespace_project) { build(:project, path: 'another-project', namespace: another_namespace) }
 
         it 'returns complete path to the issue' do
-          expect(issue.to_reference(another_namespace_project)).to eq 'sample-namespace/sample-project#1'
+          expect(issue.to_reference(another_namespace_project)).to eq "#{project.full_path}##{issue.iid}"
         end
       end
     end
@@ -628,11 +628,11 @@ RSpec.describe Issue, feature_category: :team_planning do
     context 'when argument is a namespace' do
       context 'when same as issue' do
         it 'returns path to the issue with the project name' do
-          expect(issue.to_reference(namespace)).to eq 'sample-project#1'
+          expect(issue.to_reference(namespace)).to eq "sample-project##{issue.iid}"
         end
 
         it 'returns full reference with full: true' do
-          expect(issue.to_reference(namespace, full: true)).to eq 'sample-namespace/sample-project#1'
+          expect(issue.to_reference(namespace, full: true)).to eq "#{project.full_path}##{issue.iid}"
         end
       end
 
@@ -640,8 +640,107 @@ RSpec.describe Issue, feature_category: :team_planning do
         let(:group) { build(:group, name: 'Group', path: 'sample-group') }
 
         it 'returns full path to the issue with full: true' do
-          expect(issue.to_reference(group)).to eq 'sample-namespace/sample-project#1'
+          expect(issue.to_reference(group)).to eq "#{project.full_path}##{issue.iid}"
         end
+      end
+    end
+  end
+
+  describe '#to_reference with table syntax' do
+    using RSpec::Parameterized::TableSyntax
+
+    let_it_be(:user) { create(:user) }
+    let_it_be(:user_namespace) { user.namespace }
+
+    let_it_be(:parent) { create(:group) }
+    let_it_be(:group) { create(:group, parent: parent) }
+    let_it_be(:another_group) { create(:group) }
+
+    let_it_be(:project) { create(:project, namespace: group) }
+    let_it_be(:project_namespace) { project.project_namespace }
+    let_it_be(:same_namespace_project) { create(:project, namespace: group) }
+    let_it_be(:same_namespace_project_namespace) { same_namespace_project.project_namespace }
+
+    let_it_be(:another_namespace_project) { create(:project) }
+    let_it_be(:another_namespace_project_namespace) { another_namespace_project.project_namespace }
+
+    let_it_be(:project_issue) { build(:issue, project: project, iid: 123) }
+    let_it_be(:project_issue_full_reference) { "#{project.full_path}##{project_issue.iid}" }
+
+    let_it_be(:group_issue) { build(:issue, namespace: group, iid: 123) }
+    let_it_be(:group_issue_full_reference) { "#{group.full_path}##{group_issue.iid}" }
+
+    # this one is just theoretically possible, not smth to be supported for real
+    let_it_be(:user_issue) { build(:issue, namespace: user_namespace, iid: 123) }
+    let_it_be(:user_issue_full_reference) { "#{user_namespace.full_path}##{user_issue.iid}" }
+
+    # namespace would be group, project namespace or user namespace
+    where(:issue, :full, :from, :result) do
+      ref(:project_issue) | false | nil                                       | lazy { "##{issue.iid}" }
+      ref(:project_issue) | true  | nil                                       | ref(:project_issue_full_reference)
+      ref(:project_issue) | false | ref(:group)                               | lazy { "#{project.path}##{issue.iid}" }
+      ref(:project_issue) | true  | ref(:group)                               | ref(:project_issue_full_reference)
+      ref(:project_issue) | false | ref(:parent)                              | ref(:project_issue_full_reference)
+      ref(:project_issue) | true  | ref(:parent)                              | ref(:project_issue_full_reference)
+      ref(:project_issue) | false | ref(:project)                             | lazy { "##{issue.iid}" }
+      ref(:project_issue) | true  | ref(:project)                             | ref(:project_issue_full_reference)
+      ref(:project_issue) | false | ref(:project_namespace)                   | lazy { "##{issue.iid}" }
+      ref(:project_issue) | true  | ref(:project_namespace)                   | ref(:project_issue_full_reference)
+      ref(:project_issue) | false | ref(:same_namespace_project)              | lazy { "#{project.path}##{issue.iid}" }
+      ref(:project_issue) | true  | ref(:same_namespace_project)              | ref(:project_issue_full_reference)
+      ref(:project_issue) | false | ref(:same_namespace_project_namespace)    | lazy { "#{project.path}##{issue.iid}" }
+      ref(:project_issue) | true  | ref(:same_namespace_project_namespace)    | ref(:project_issue_full_reference)
+      ref(:project_issue) | false | ref(:another_group)                       | ref(:project_issue_full_reference)
+      ref(:project_issue) | true  | ref(:another_group)                       | ref(:project_issue_full_reference)
+      ref(:project_issue) | false | ref(:another_namespace_project)           | ref(:project_issue_full_reference)
+      ref(:project_issue) | true  | ref(:another_namespace_project)           | ref(:project_issue_full_reference)
+      ref(:project_issue) | false | ref(:another_namespace_project_namespace) | ref(:project_issue_full_reference)
+      ref(:project_issue) | true  | ref(:another_namespace_project_namespace) | ref(:project_issue_full_reference)
+      ref(:project_issue) | false | ref(:user_namespace)                      | ref(:project_issue_full_reference)
+      ref(:project_issue) | true  | ref(:user_namespace)                      | ref(:project_issue_full_reference)
+
+      ref(:group_issue) | false | nil                                         | lazy { "##{issue.iid}" }
+      ref(:group_issue) | true  | nil                                         | ref(:group_issue_full_reference)
+      ref(:group_issue) | false | ref(:user_namespace)                        | ref(:group_issue_full_reference)
+      ref(:group_issue) | true  | ref(:user_namespace)                        | ref(:group_issue_full_reference)
+      ref(:group_issue) | false | ref(:group)                                 | lazy { "##{issue.iid}" }
+      ref(:group_issue) | true  | ref(:group)                                 | ref(:group_issue_full_reference)
+      ref(:group_issue) | false | ref(:parent)                                | lazy { "#{group.path}##{issue.iid}" }
+      ref(:group_issue) | true  | ref(:parent)                                | ref(:group_issue_full_reference)
+      ref(:group_issue) | false | ref(:project)                               | lazy { "#{group.path}##{issue.iid}" }
+      ref(:group_issue) | true  | ref(:project)                               | ref(:group_issue_full_reference)
+      ref(:group_issue) | false | ref(:project_namespace)                     | lazy { "#{group.path}##{issue.iid}" }
+      ref(:group_issue) | true  | ref(:project_namespace)                     | ref(:group_issue_full_reference)
+      ref(:group_issue) | false | ref(:another_group)                         | ref(:group_issue_full_reference)
+      ref(:group_issue) | true  | ref(:another_group)                         | ref(:group_issue_full_reference)
+      ref(:group_issue) | false | ref(:another_namespace_project)             | ref(:group_issue_full_reference)
+      ref(:group_issue) | true  | ref(:another_namespace_project)             | ref(:group_issue_full_reference)
+      ref(:group_issue) | false | ref(:another_namespace_project_namespace)   | ref(:group_issue_full_reference)
+      ref(:group_issue) | true  | ref(:another_namespace_project_namespace)   | ref(:group_issue_full_reference)
+
+      ref(:user_issue) | false | nil                                          | lazy { "##{issue.iid}" }
+      ref(:user_issue) | true  | nil                                          | ref(:user_issue_full_reference)
+      ref(:user_issue) | false | ref(:user_namespace)                         | lazy { "##{issue.iid}" }
+      ref(:user_issue) | true  | ref(:user_namespace)                         | ref(:user_issue_full_reference)
+      ref(:user_issue) | false | ref(:group)                                  | ref(:user_issue_full_reference)
+      ref(:user_issue) | true  | ref(:group)                                  | ref(:user_issue_full_reference)
+      ref(:user_issue) | false | ref(:parent)                                 | ref(:user_issue_full_reference)
+      ref(:user_issue) | true  | ref(:parent)                                 | ref(:user_issue_full_reference)
+      ref(:user_issue) | false | ref(:project)                                | ref(:user_issue_full_reference)
+      ref(:user_issue) | true  | ref(:project)                                | ref(:user_issue_full_reference)
+      ref(:user_issue) | false | ref(:project_namespace)                      | ref(:user_issue_full_reference)
+      ref(:user_issue) | true  | ref(:project_namespace)                      | ref(:user_issue_full_reference)
+      ref(:user_issue) | false | ref(:another_group)                          | ref(:user_issue_full_reference)
+      ref(:user_issue) | true  | ref(:another_group)                          | ref(:user_issue_full_reference)
+      ref(:user_issue) | false | ref(:another_namespace_project)              | ref(:user_issue_full_reference)
+      ref(:user_issue) | true  | ref(:another_namespace_project)              | ref(:user_issue_full_reference)
+      ref(:user_issue) | false | ref(:another_namespace_project_namespace)    | ref(:user_issue_full_reference)
+      ref(:user_issue) | true  | ref(:another_namespace_project_namespace)    | ref(:user_issue_full_reference)
+    end
+
+    with_them do
+      it 'returns correct reference' do
+        expect(issue.to_reference(from, full: full)).to eq(result)
       end
     end
   end

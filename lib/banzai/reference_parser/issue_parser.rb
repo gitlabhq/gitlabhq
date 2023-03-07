@@ -58,6 +58,7 @@ module Banzai
 
       def records_for_nodes(nodes)
         node_includes = [
+          :namespace,
           :author,
           :assignees,
           {

@@ -51,6 +51,6 @@ export const COMMENT_FORM = {
 };
 
 export const EDITED_TEXT = {
-  actionWithAuthor: __('%{actionText} by %{author} %{actionDetail}'),
+  actionWithAuthor: __('%{actionText} %{actionDetail} %{timeago} by %{author}'),
   actionWithoutAuthor: __('%{actionText} %{actionDetail}'),
 };

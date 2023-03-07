@@ -200,7 +200,7 @@ module ApplicationHelper
 
       if !exclude_author && object.last_edited_by
         output << content_tag(:span, ' by ')
-        output << link_to_member(object.project, object.last_edited_by, avatar: false, author_class: nil)
+        output << link_to_member(object.project, object.last_edited_by, avatar: false, extra_class: 'gl-hover-text-decoration-underline', author_class: nil)
       end
 
       output

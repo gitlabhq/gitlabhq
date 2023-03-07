@@ -3,7 +3,7 @@ import { GlAlert } from '@gitlab/ui';
 import { isNull } from 'lodash';
 import Mousetrap from 'mousetrap';
 import { keysFor, ISSUE_CLOSE_DESIGN } from '~/behaviors/shortcuts/keybindings';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { fetchPolicies } from '~/lib/graphql';
 import { updateGlobalTodoCount } from '~/sidebar/utils';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -253,7 +253,7 @@ export default {
     },
     onQueryError(message) {
       // because we redirect user to /designs (the issue page),
-      // we want to create these flashes on the issue page
+      // we want to create these alerts on the issue page
       createAlert({ message });
       this.$router.push({ name: this.$options.DESIGNS_ROUTE_NAME });
     },

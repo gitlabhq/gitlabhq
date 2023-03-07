@@ -3,10 +3,10 @@
 class Admin::ProjectsController < Admin::ApplicationController
   include MembersPresentation
 
-  before_action :project, only: [:show, :transfer, :repository_check, :destroy]
+  before_action :project, only: [:show, :transfer, :repository_check, :destroy, :edit, :update]
   before_action :group, only: [:show, :transfer]
 
-  feature_category :projects, [:index, :show, :transfer, :destroy]
+  feature_category :projects, [:index, :show, :transfer, :destroy, :edit, :update]
   feature_category :source_code_management, [:repository_check]
 
   def index
@@ -62,6 +62,18 @@ class Admin::ProjectsController < Admin::ApplicationController
   end
   # rubocop: enable CodeReuse/ActiveRecord
 
+  def edit; end
+
+  def update
+    result = ::Projects::UpdateService.new(@project, current_user, project_params).execute
+
+    if result[:status] == :success
+      redirect_to [:admin, @project], notice: format(_("Project '%{project_name}' was successfully updated."), project_name: @project.name)
+    else
+      render "edit"
+    end
+  end
+
   def repository_check
     RepositoryCheck::SingleRepositoryWorker.perform_async(@project.id) # rubocop:disable CodeReuse/Worker
 
@@ -82,6 +94,17 @@ class Admin::ProjectsController < Admin::ApplicationController
 
   def group
     @group ||= @project.group
+  end
+
+  def project_params
+    params.require(:project).permit(allowed_project_params)
+  end
+
+  def allowed_project_params
+    [
+      :description,
+      :name
+    ]
   end
 end
 

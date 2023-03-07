@@ -479,6 +479,9 @@ msgstr[1] ""
 msgid "%{actionText} %{actionDetail}"
 msgstr ""
 
+msgid "%{actionText} %{actionDetail} %{timeago} by %{author}"
+msgstr ""
+
 msgid "%{actionText} & %{openOrClose} %{noteable}"
 msgstr ""
 
@@ -486,9 +489,6 @@ msgid "%{actionText} & close %{noteable}"
 msgstr ""
 
 msgid "%{actionText} & reopen %{noteable}"
-msgstr ""
-
-msgid "%{actionText} by %{author} %{actionDetail}"
 msgstr ""
 
 msgid "%{address} is an invalid IP address range"
@@ -15388,6 +15388,9 @@ msgstr ""
 msgid "Edit merge requests"
 msgstr ""
 
+msgid "Edit project: %{project_name}"
+msgstr ""
+
 msgid "Edit public deploy key"
 msgstr ""
 
@@ -28037,6 +28040,9 @@ msgstr ""
 msgid "Namespaces to index"
 msgstr ""
 
+msgid "Naming"
+msgstr ""
+
 msgid "Naming, topics, avatar"
 msgstr ""
 
@@ -29136,9 +29142,6 @@ msgid "Notify|Logs may contain sensitive data. Please consider before forwarding
 msgstr ""
 
 msgid "Notify|Merge request %{merge_request} can no longer be merged due to conflict."
-msgstr ""
-
-msgid "Notify|Merge request %{merge_request} was %{mr_status}"
 msgstr ""
 
 msgid "Notify|Merge request %{merge_request} was %{mr_status} by %{updated_by}"
@@ -41517,6 +41520,9 @@ msgstr ""
 msgid "StatusCheck|Service name"
 msgstr ""
 
+msgid "StatusCheck|Status Check ID"
+msgstr ""
+
 msgid "StatusCheck|Status checks"
 msgstr ""
 
@@ -46164,6 +46170,9 @@ msgid "Update your bookmarked URLs as filtered/sorted branches URL has been chan
 msgstr ""
 
 msgid "Update your group name, description, avatar, and visibility."
+msgstr ""
+
+msgid "Update your project name and description."
 msgstr ""
 
 msgid "Update your project name, topics, description, and avatar."

@@ -50,7 +50,7 @@ class CommitRange
   end
 
   def self.link_reference_pattern
-    @link_reference_pattern ||= super("compare", /(?<commit_range>#{PATTERN})/o)
+    @link_reference_pattern ||= compose_link_reference_pattern('compare', /(?<commit_range>#{PATTERN})/o)
   end
 
   # Initialize a CommitRange

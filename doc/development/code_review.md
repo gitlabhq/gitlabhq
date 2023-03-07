@@ -68,7 +68,7 @@ When a suitable [domain expert](#domain-experts) isn't available, you can choose
 
 To find a domain expert:
 
-- In the Merge Request approvals widget, select [**View eligible approvers**](../user/project/merge_requests/approvals/rules.md#eligible-approvers).
+- In the Merge Request approvals widget, select [View eligible approvers](../user/project/merge_requests/approvals/rules.md#eligible-approvers).
   This widget shows recommended and required approvals per area of the codebase.
   These rules are defined in [Code Owners](../user/project/merge_requests/approvals/rules.md#code-owners-as-eligible-approvers).
 - View the list of team members who work in the [stage or group](https://about.gitlab.com/handbook/product/categories/#devops-stages) related to the merge request.

@@ -22,7 +22,7 @@ module Banzai
         end
 
         def parent_records(parent, ids)
-          parent.issues.where(iid: ids.to_a)
+          parent.issues.where(iid: ids.to_a).includes(:project, :namespace)
         end
 
         def object_link_text_extras(issue, matches)

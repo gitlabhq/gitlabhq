@@ -32,11 +32,6 @@ export default {
     GlTruncate,
   },
   props: {
-    groupId: {
-      type: Number,
-      required: false,
-      default: null,
-    },
     groupNamespace: {
       type: String,
       required: true,

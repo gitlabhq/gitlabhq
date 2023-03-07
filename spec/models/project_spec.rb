@@ -1392,6 +1392,60 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
     end
   end
 
+  describe '#to_reference_base' do
+    using RSpec::Parameterized::TableSyntax
+
+    let_it_be(:user) { create(:user) }
+    let_it_be(:user_namespace) { user.namespace }
+
+    let_it_be(:parent) { create(:group) }
+    let_it_be(:group) { create(:group, parent: parent) }
+    let_it_be(:another_group) { create(:group) }
+
+    let_it_be(:project1) { create(:project, namespace: group) }
+    let_it_be(:project_namespace) { project1.project_namespace }
+
+    # different project same group
+    let_it_be(:project2) { create(:project, namespace: group) }
+    let_it_be(:project_namespace2) { project2.project_namespace }
+
+    # different project from different group
+    let_it_be(:project3) { create(:project) }
+    let_it_be(:project_namespace3) { project3.project_namespace }
+
+    # testing references with namespace being: group, project namespace and user namespace
+    where(:project, :full, :from, :result) do
+      ref(:project1) | false | nil                       | nil
+      ref(:project1) | true  | nil                       | lazy { project.full_path }
+      ref(:project1) | false | ref(:group)               | lazy { project.path }
+      ref(:project1) | true  | ref(:group)               | lazy { project.full_path }
+      ref(:project1) | false | ref(:parent)              | lazy { project.full_path }
+      ref(:project1) | true  | ref(:parent)              | lazy { project.full_path }
+      ref(:project1) | false | ref(:project1)            | nil
+      ref(:project1) | true  | ref(:project1)            | lazy { project.full_path }
+      ref(:project1) | false | ref(:project_namespace)   | nil
+      ref(:project1) | true  | ref(:project_namespace)   | lazy { project.full_path }
+      ref(:project1) | false | ref(:project2)            | lazy { project.path }
+      ref(:project1) | true  | ref(:project2)            | lazy { project.full_path }
+      ref(:project1) | false | ref(:project_namespace2)  | lazy { project.path }
+      ref(:project1) | true  | ref(:project_namespace2)  | lazy { project.full_path }
+      ref(:project1) | false | ref(:another_group)       | lazy { project.full_path }
+      ref(:project1) | true  | ref(:another_group)       | lazy { project.full_path }
+      ref(:project1) | false | ref(:project3)            | lazy { project.full_path }
+      ref(:project1) | true  | ref(:project3)            | lazy { project.full_path }
+      ref(:project1) | false | ref(:project_namespace3)  | lazy { project.full_path }
+      ref(:project1) | true  | ref(:project_namespace3)  | lazy { project.full_path }
+      ref(:project1) | false | ref(:user_namespace)      | lazy { project.full_path }
+      ref(:project1) | true  | ref(:user_namespace)      | lazy { project.full_path }
+    end
+
+    with_them do
+      it 'returns correct path' do
+        expect(project.to_reference_base(from, full: full)).to eq(result)
+      end
+    end
+  end
+
   describe '#merge_method' do
     where(:ff, :rebase, :method) do
       true  | true  | :ff

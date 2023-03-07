@@ -46,13 +46,20 @@ export default {
       <template #actionText>
         {{ actionText }}
       </template>
-      <template #author>
-        <gl-link :href="editedBy.path" :data-user-id="editedBy.id" class="js-user-link author-link">
-          {{ editedBy.name }}
-        </gl-link>
-      </template>
       <template #actionDetail>
         {{ actionDetailText }}
+      </template>
+      <template #timeago>
+        <time-ago-tooltip :time="editedAt" tooltip-placement="bottom" />
+      </template>
+      <template #author>
+        <gl-link
+          :href="editedBy.path"
+          :data-user-id="editedBy.id"
+          class="js-user-link author-link gl-hover-text-decoration-underline"
+        >
+          {{ editedBy.name }}
+        </gl-link>
       </template>
     </gl-sprintf>
     <gl-sprintf v-else :message="$options.i18n.actionWithoutAuthor">
@@ -62,7 +69,9 @@ export default {
       <template #actionDetail>
         {{ actionDetailText }}
       </template>
+      <template #timeago>
+        <time-ago-tooltip :time="editedAt" tooltip-placement="bottom" />
+      </template>
     </gl-sprintf>
-    <time-ago-tooltip :time="editedAt" tooltip-placement="bottom" />
   </div>
 </template>

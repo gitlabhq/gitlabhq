@@ -202,7 +202,7 @@ RSpec.describe Banzai::Filter::IssuableReferenceExpansionFilter, feature_categor
             filter(link, context)
           end.count
 
-          expect(control_count).to eq 9
+          expect(control_count).to eq 10
 
           expect do
             filter("#{link} #{link2}", context)

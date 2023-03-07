@@ -76,7 +76,11 @@ module Referable
       true
     end
 
-    def link_reference_pattern(route, pattern)
+    def link_reference_pattern
+      raise NotImplementedError, "#{self} does not implement #{__method__}"
+    end
+
+    def compose_link_reference_pattern(route, pattern)
       %r{
         (?<url>
           #{Regexp.escape(Gitlab.config.gitlab.url)}

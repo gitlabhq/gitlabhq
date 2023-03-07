@@ -24,7 +24,7 @@
             = render_if_exists 'admin/projects/archived', project: project
 
           .controls.gl-flex-shrink-0.gl-ml-5
-            = render Pajamas::ButtonComponent.new(href: edit_project_path(project), button_options: { id: dom_id(project, :edit) }) do
+            = render Pajamas::ButtonComponent.new(href: edit_admin_namespace_project_path({ id: project.to_param, namespace_id: project.namespace.to_param }), button_options: { id: dom_id(project) }) do
               = _('Edit')
             = render Pajamas::ButtonComponent.new(variant: :danger, button_options: { class: 'delete-project-button', data: { delete_project_url: admin_project_path(project), project_name: project.name } }) do
               = s_('AdminProjects|Delete')

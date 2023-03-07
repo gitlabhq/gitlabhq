@@ -16,7 +16,7 @@ import $ from 'jquery';
 import { escape, uniqueId } from 'lodash';
 import Vue from 'vue';
 import { renderGFM } from '~/behaviors/markdown/render_gfm';
-import { createAlert, VARIANT_INFO } from '~/flash';
+import { createAlert, VARIANT_INFO } from '~/alert';
 import { sanitize } from '~/lib/dompurify';
 import '~/lib/utils/jquery_at_who';
 import AjaxCache from '~/lib/utils/ajax_cache';

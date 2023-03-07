@@ -71,9 +71,8 @@ RSpec.describe AbuseReport, feature_category: :insider_threat do
   end
 
   describe 'scopes' do
-    let!(:reporter) { create(:user, username: 'reporter') }
-    let!(:report1) { create(:abuse_report) }
-    let!(:report2) { create(:abuse_report, :closed, reporter: reporter, category: 'phishing') }
+    let_it_be(:report1) { create(:abuse_report) }
+    let_it_be(:report2) { create(:abuse_report, :closed, category: 'phishing') }
 
     describe '.open' do
       subject(:results) { described_class.open }

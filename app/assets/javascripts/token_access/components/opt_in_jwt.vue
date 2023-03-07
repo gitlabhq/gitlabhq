@@ -1,7 +1,7 @@
 <script>
 import { GlLink, GlLoadingIcon, GlSprintf, GlToggle } from '@gitlab/ui';
 import CodeInstruction from '~/vue_shared/components/registry/code_instruction.vue';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { __, s__ } from '~/locale';
 import updateOptInJwtMutation from '../graphql/mutations/update_opt_in_jwt.mutation.graphql';
 import getOptInJwtSettingQuery from '../graphql/queries/get_opt_in_jwt_setting.query.graphql';

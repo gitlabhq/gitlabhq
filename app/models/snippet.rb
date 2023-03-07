@@ -183,7 +183,7 @@ class Snippet < ApplicationRecord
     end
 
     def link_reference_pattern
-      @link_reference_pattern ||= super("snippets", /(?<snippet>\d+)/)
+      @link_reference_pattern ||= compose_link_reference_pattern('snippets', /(?<snippet>\d+)/)
     end
 
     def find_by_id_and_project(id:, project:)

@@ -76,8 +76,7 @@ RSpec.describe Banzai::Filter::References::ReferenceCache, feature_category: :te
         cache_single.load_records_per_parent
       end.count
 
-      expect(control_count).to eq 1
-
+      expect(control_count).to eq 2
       # Since this is an issue filter that is not batching issue queries
       # across projects, we have to account for that.
       # 1 for original issue, 2 for second route/project, 1 for other issue

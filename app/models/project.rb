@@ -3243,6 +3243,8 @@ class Project < ApplicationRecord
     case from
     when Project
       namespace_id != from.namespace_id
+    when Namespaces::ProjectNamespace
+      namespace_id != from.parent_id
     when Namespace
       namespace != from
     when User
@@ -3252,9 +3254,14 @@ class Project < ApplicationRecord
 
   # Check if a reference is being done cross-project
   def cross_project_reference?(from)
-    return true if from.is_a?(Namespace)
-
-    from && self != from
+    case from
+    when Namespaces::ProjectNamespace
+      project_namespace_id != from.id
+    when Namespace
+      true
+    else
+      from && self != from
+    end
   end
 
   def update_project_statistics

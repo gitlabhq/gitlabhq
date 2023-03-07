@@ -21,6 +21,7 @@ class AbuseReportsFinder
   def filter_reports
     filter_by_user_id
 
+    filter_by_user
     filter_by_status
     filter_by_category
   end
@@ -40,6 +41,15 @@ class AbuseReportsFinder
     return unless params[:category].present?
 
     @reports = @reports.by_category(params[:category])
+  end
+
+  def filter_by_user
+    return unless params[:user].present?
+
+    user_id = User.by_username(params[:user]).pick(:id)
+    return unless user_id
+
+    @reports = @reports.by_user_id(user_id)
   end
 
   def filter_by_user_id

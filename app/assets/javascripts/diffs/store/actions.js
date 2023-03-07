@@ -5,7 +5,7 @@ import {
   historyPushState,
   scrollToElement,
 } from '~/lib/utils/common_utils';
-import { createAlert, VARIANT_WARNING } from '~/flash';
+import { createAlert, VARIANT_WARNING } from '~/alert';
 import { diffViewerModes } from '~/ide/constants';
 import axios from '~/lib/utils/axios_utils';
 

@@ -55,6 +55,7 @@ module Gitlab
 
             record = record_class.new(id: db_id, iid: iid)
             record.project = project
+            record.namespace = project.project_namespace if record.respond_to?(:namespace)
             record.readonly!
             record
           end

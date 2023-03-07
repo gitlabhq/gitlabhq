@@ -163,15 +163,15 @@ class Issue < ApplicationRecord
   scope :order_closed_at_desc, -> { reorder(arel_table[:closed_at].desc.nulls_last) }
 
   scope :preload_associated_models, -> { preload(:assignees, :labels, project: :namespace) }
-  scope :with_web_entity_associations, -> { preload(:author, project: [:project_feature, :route, namespace: :route]) }
+  scope :with_web_entity_associations, -> { preload(:author, :namespace, project: [:project_feature, :route, namespace: :route]) }
   scope :preload_awardable, -> { preload(:award_emoji) }
   scope :with_alert_management_alerts, -> { joins(:alert_management_alert) }
   scope :with_prometheus_alert_events, -> { joins(:issues_prometheus_alert_events) }
   scope :with_self_managed_prometheus_alert_events, -> { joins(:issues_self_managed_prometheus_alert_events) }
   scope :with_api_entity_associations, -> {
-    preload(:timelogs, :closed_by, :assignees, :author, :labels, :issuable_severity,
+    preload(:timelogs, :closed_by, :assignees, :author, :labels, :issuable_severity, namespace: [{ parent: :route }, :route],
       milestone: { project: [:route, { namespace: :route }] },
-      project: [:project_feature, :route, { namespace: :route }],
+      project: [:project_namespace, :project_feature, :route, { group: :route }, { namespace: :route }],
       duplicated_to: { project: [:project_feature] })
   }
   scope :with_issue_type, ->(types) { where(issue_type: types) }
@@ -346,7 +346,7 @@ class Issue < ApplicationRecord
   end
 
   def self.link_reference_pattern
-    @link_reference_pattern ||= super(%r{issues(?:\/incident)?}, Gitlab::Regex.issue)
+    @link_reference_pattern ||= compose_link_reference_pattern(%r{issues(?:\/incident)?}, Gitlab::Regex.issue)
   end
 
   def self.reference_valid?(reference)
@@ -451,7 +451,7 @@ class Issue < ApplicationRecord
   def to_reference(from = nil, full: false)
     reference = "#{self.class.reference_prefix}#{iid}"
 
-    "#{project.to_reference_base(from, full: full)}#{reference}"
+    "#{namespace.to_reference_base(from, full: full)}#{reference}"
   end
 
   def suggested_branch_name

@@ -1,7 +1,7 @@
 import { memoize } from 'lodash';
 import Vue from 'vue';
 import { __ } from '~/locale';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 
 // Async import component since we might not need it...
 const JSONTable = memoize(() =>

@@ -169,6 +169,7 @@ module Noteable
   def expire_note_etag_cache
     return unless discussions_rendered_on_frontend?
     return unless etag_caching_enabled?
+    return unless project.present?
 
     Gitlab::EtagCaching::Store.new.touch(note_etag_key)
   end

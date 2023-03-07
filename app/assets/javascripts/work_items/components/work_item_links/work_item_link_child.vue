@@ -2,7 +2,7 @@
 import { GlButton, GlLink, GlIcon, GlTooltipDirective } from '@gitlab/ui';
 
 import { __, s__ } from '~/locale';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import RichTimestampTooltip from '~/vue_shared/components/rich_timestamp_tooltip.vue';
 import WorkItemLinkChildMetadata from 'ee_else_ce/work_items/components/work_item_links/work_item_link_child_metadata.vue';

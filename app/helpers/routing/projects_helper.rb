@@ -43,6 +43,11 @@ module Routing
     end
 
     def work_item_url(entity, *args)
+      # TODO: we do not have a route to access group level work items yet.
+      # That is to be done as part of view group level work item issue:
+      # see https://gitlab.com/gitlab-org/gitlab/-/work_items/393987?iid_path=true
+      return unless entity.project.present?
+
       unless Feature.enabled?(:use_iid_in_work_items_path, entity.project.group)
         return project_work_items_url(entity.project, entity.id, *args)
       end

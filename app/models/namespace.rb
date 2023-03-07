@@ -16,6 +16,7 @@ class Namespace < ApplicationRecord
   include EachBatch
   include BlocksUnsafeSerialization
   include Ci::NamespaceSettings
+  include Referable
 
   # Tells ActiveRecord not to store the full class name, in order to save some space
   # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/69794
@@ -266,6 +267,23 @@ class Namespace < ApplicationRecord
     def top_most
       by_parent(nil)
     end
+
+    def reference_prefix
+      User.reference_prefix
+    end
+
+    def reference_pattern
+      User.reference_pattern
+    end
+  end
+
+  def to_reference_base(from = nil, full: false)
+    return full_path if full || cross_namespace_reference?(from)
+    return path if cross_project_reference?(from)
+  end
+
+  def to_reference(*)
+    "#{self.class.reference_prefix}#{full_path}"
   end
 
   def container_registry_namespace_path_validation
@@ -618,6 +636,33 @@ class Namespace < ApplicationRecord
   end
 
   private
+
+  def cross_namespace_reference?(from)
+    return false if from == self
+
+    comparable_namespace_id = project_namespace? ? parent_id : id
+
+    case from
+    when Project
+      from.namespace_id != comparable_namespace_id
+    when Namespaces::ProjectNamespace
+      from.parent_id != comparable_namespace_id
+    when Namespace
+      parent != from
+    when User
+      true
+    end
+  end
+
+  # Check if a reference is being done cross-project
+  def cross_project_reference?(from)
+    case from
+    when Project
+      from.project_namespace_id != id
+    else
+      from && self != from
+    end
+  end
 
   def update_new_emails_created_column
     return if namespace_settings.nil?

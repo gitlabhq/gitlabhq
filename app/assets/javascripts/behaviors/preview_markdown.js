@@ -2,7 +2,7 @@
 
 import $ from 'jquery';
 import { renderGFM } from '~/behaviors/markdown/render_gfm';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { __ } from '~/locale';
 

@@ -7,7 +7,6 @@ class Group < Namespace
   include AfterCommitQueue
   include AccessRequestable
   include Avatarable
-  include Referable
   include SelectForProjectAuthorization
   include LoadedInGroupList
   include GroupDescendant
@@ -242,14 +241,6 @@ class Group < Namespace
       end
     end
 
-    def reference_prefix
-      User.reference_prefix
-    end
-
-    def reference_pattern
-      User.reference_pattern
-    end
-
     # WARNING: This method should never be used on its own
     # please do make sure the number of rows you are filtering is small
     # enough for this query
@@ -364,10 +355,6 @@ class Group < Namespace
     # Finds the closest notification_setting with a `notification_email`
     notification_settings = notification_settings_for(user, hierarchy_order: :asc)
     notification_settings.find { |n| n.notification_email.present? }&.notification_email
-  end
-
-  def to_reference(_from = nil, target_project: nil, full: nil)
-    "#{self.class.reference_prefix}#{full_path}"
   end
 
   def web_url(only_path: nil)

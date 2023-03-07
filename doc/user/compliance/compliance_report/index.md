@@ -77,7 +77,7 @@ From [GitLab 14.10](https://gitlab.com/groups/gitlab-org/-/epics/6870), these ar
 | Committers approved merge request | High           | [Separation of duties](#separation-of-duties) | Committers of the merge request approved the merge request they contributed to. For more information, see [Prevent approvals by users who add commits](../../project/merge_requests/approvals/settings.md#prevent-approvals-by-users-who-add-commits). |
 | Fewer than two approvals          | High           | [Separation of duties](#separation-of-duties) | Merge request was merged with fewer than two approvals. For more information, see [Merge request approval rules](../../project/merge_requests/approvals/rules.md).                                                                                     |
 
-The following are unavailable compliance violations that are tracked in [issue 346011](https://gitlab.com/gitlab-org/gitlab/-/issues/346011).
+The following are unavailable compliance violations that are tracked in [epic 5237](https://gitlab.com/groups/gitlab-org/-/epics/5237).
 
 <!-- vale gitlab.SubstitutionWarning = NO -->
 

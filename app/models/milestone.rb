@@ -114,7 +114,7 @@ class Milestone < ApplicationRecord
   end
 
   def self.link_reference_pattern
-    @link_reference_pattern ||= super("milestones", /(?<milestone>\d+)/)
+    @link_reference_pattern ||= compose_link_reference_pattern('milestones', /(?<milestone>\d+)/)
   end
 
   def self.upcoming_ids(projects, groups)

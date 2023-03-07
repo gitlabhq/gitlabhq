@@ -266,6 +266,117 @@ RSpec.describe Namespace, feature_category: :subgroups do
     end
   end
 
+  describe "ReferencePatternValidation" do
+    subject { described_class.reference_pattern }
+
+    it { is_expected.to match("@group1") }
+    it { is_expected.to match("@group1/group2/group3") }
+    it { is_expected.to match("@1234/1234/1234") }
+    it { is_expected.to match("@.q-w_e") }
+  end
+
+  describe '#to_reference_base' do
+    using RSpec::Parameterized::TableSyntax
+
+    let_it_be(:user) { create(:user) }
+    let_it_be(:user_namespace) { user.namespace }
+
+    let_it_be(:parent) { create(:group) }
+    let_it_be(:group) { create(:group, parent: parent) }
+    let_it_be(:another_group) { create(:group) }
+
+    let_it_be(:project) { create(:project, namespace: group) }
+    let_it_be(:project_namespace) { project.project_namespace }
+
+    let_it_be(:another_namespace_project) { create(:project) }
+    let_it_be(:another_namespace_project_namespace) { another_namespace_project.project_namespace }
+
+    # testing references with namespace being: group, project namespace and user namespace
+    where(:namespace, :full, :from, :result) do
+      ref(:parent)             | false | nil                                       | nil
+      ref(:parent)             | true  | nil                                       | lazy { parent.full_path }
+      ref(:parent)             | false | ref(:group)                               | lazy { parent.path }
+      ref(:parent)             | true  | ref(:group)                               | lazy { parent.full_path }
+      ref(:parent)             | false | ref(:parent)                              | nil
+      ref(:parent)             | true  | ref(:parent)                              | lazy { parent.full_path }
+      ref(:parent)             | false | ref(:project)                             | lazy { parent.path }
+      ref(:parent)             | true  | ref(:project)                             | lazy { parent.full_path }
+      ref(:parent)             | false | ref(:project_namespace)                   | lazy { parent.path }
+      ref(:parent)             | true  | ref(:project_namespace)                   | lazy { parent.full_path }
+      ref(:parent)             | false | ref(:another_group)                       | lazy { parent.full_path }
+      ref(:parent)             | true  | ref(:another_group)                       | lazy { parent.full_path }
+      ref(:parent)             | false | ref(:another_namespace_project)           | lazy { parent.full_path }
+      ref(:parent)             | true  | ref(:another_namespace_project)           | lazy { parent.full_path }
+      ref(:parent)             | false | ref(:another_namespace_project_namespace) | lazy { parent.full_path }
+      ref(:parent)             | true  | ref(:another_namespace_project_namespace) | lazy { parent.full_path }
+      ref(:parent)             | false | ref(:user_namespace)                      | lazy { parent.full_path }
+      ref(:parent)             | true  | ref(:user_namespace)                      | lazy { parent.full_path }
+
+      ref(:group)             | false | nil                                       | nil
+      ref(:group)             | true  | nil                                       | lazy { group.full_path }
+      ref(:group)             | false | ref(:group)                               | nil
+      ref(:group)             | true  | ref(:group)                               | lazy { group.full_path }
+      ref(:group)             | false | ref(:parent)                              | lazy { group.path }
+      ref(:group)             | true  | ref(:parent)                              | lazy { group.full_path }
+      ref(:group)             | false | ref(:project)                             | lazy { group.path }
+      ref(:group)             | true  | ref(:project)                             | lazy { group.full_path }
+      ref(:group)             | false | ref(:project_namespace)                   | lazy { group.path }
+      ref(:group)             | true  | ref(:project_namespace)                   | lazy { group.full_path }
+      ref(:group)             | false | ref(:another_group)                       | lazy { group.full_path }
+      ref(:group)             | true  | ref(:another_group)                       | lazy { group.full_path }
+      ref(:group)             | false | ref(:another_namespace_project)           | lazy { group.full_path }
+      ref(:group)             | true  | ref(:another_namespace_project)           | lazy { group.full_path }
+      ref(:group)             | false | ref(:another_namespace_project_namespace) | lazy { group.full_path }
+      ref(:group)             | true  | ref(:another_namespace_project_namespace) | lazy { group.full_path }
+      ref(:group)             | false | ref(:user_namespace)                      | lazy { group.full_path }
+      ref(:group)             | true  | ref(:user_namespace)                      | lazy { group.full_path }
+
+      ref(:project_namespace) | false | nil                                       | nil
+      ref(:project_namespace) | true  | nil                                       | lazy { project_namespace.full_path }
+      ref(:project_namespace) | false | ref(:group)                               | lazy { project_namespace.path }
+      ref(:project_namespace) | true  | ref(:group)                               | lazy { project_namespace.full_path }
+      ref(:project_namespace) | false | ref(:parent)                              | lazy { project_namespace.full_path }
+      ref(:project_namespace) | true  | ref(:parent)                              | lazy { project_namespace.full_path }
+      ref(:project_namespace) | false | ref(:project)                             | nil
+      ref(:project_namespace) | true  | ref(:project)                             | lazy { project_namespace.full_path }
+      ref(:project_namespace) | false | ref(:project_namespace)                   | nil
+      ref(:project_namespace) | true  | ref(:project_namespace)                   | lazy { project_namespace.full_path }
+      ref(:project_namespace) | false | ref(:another_group)                       | lazy { project_namespace.full_path }
+      ref(:project_namespace) | true  | ref(:another_group)                       | lazy { project_namespace.full_path }
+      ref(:project_namespace) | false | ref(:another_namespace_project)           | lazy { project_namespace.full_path }
+      ref(:project_namespace) | true  | ref(:another_namespace_project)           | lazy { project_namespace.full_path }
+      ref(:project_namespace) | false | ref(:another_namespace_project_namespace) | lazy { project_namespace.full_path }
+      ref(:project_namespace) | true  | ref(:another_namespace_project_namespace) | lazy { project_namespace.full_path }
+      ref(:project_namespace) | false | ref(:user_namespace)                      | lazy { project_namespace.full_path }
+      ref(:project_namespace) | true  | ref(:user_namespace)                      | lazy { project_namespace.full_path }
+
+      ref(:user_namespace)    | false | nil                                       | nil
+      ref(:user_namespace)    | true  | nil                                       | lazy { user_namespace.full_path }
+      ref(:user_namespace)    | false | ref(:user_namespace)                      | nil
+      ref(:user_namespace)    | true  | ref(:user_namespace)                      | lazy { user_namespace.full_path }
+      ref(:user_namespace)    | false | ref(:group)                               | lazy { user_namespace.full_path }
+      ref(:user_namespace)    | true  | ref(:group)                               | lazy { user_namespace.full_path }
+      ref(:user_namespace)    | false | ref(:parent)                              | lazy { user_namespace.full_path }
+      ref(:user_namespace)    | true  | ref(:parent)                              | lazy { user_namespace.full_path }
+      ref(:user_namespace)    | false | ref(:project)                             | lazy { user_namespace.full_path }
+      ref(:user_namespace)    | true  | ref(:project)                             | lazy { user_namespace.full_path }
+      ref(:user_namespace)    | false | ref(:project_namespace)                   | lazy { user_namespace.full_path }
+      ref(:user_namespace)    | true  | ref(:project_namespace)                   | lazy { user_namespace.full_path }
+      ref(:user_namespace)    | false | ref(:another_group)                       | lazy { user_namespace.full_path }
+      ref(:user_namespace)    | true  | ref(:another_group)                       | lazy { user_namespace.full_path }
+      ref(:user_namespace)    | false | ref(:another_namespace_project)           | lazy { user_namespace.full_path }
+      ref(:user_namespace)    | true  | ref(:another_namespace_project)           | lazy { user_namespace.full_path }
+      ref(:user_namespace)    | false | ref(:another_namespace_project_namespace) | lazy { user_namespace.full_path }
+      ref(:user_namespace)    | true  | ref(:another_namespace_project_namespace) | lazy { user_namespace.full_path }
+    end
+
+    with_them do
+      it 'returns correct path' do
+        expect(namespace.to_reference_base(from, full: full)).to eq(result)
+      end
+    end
+  end
+
   describe 'handling STI', :aggregate_failures do
     let(:namespace_type) { nil }
     let(:parent) { nil }

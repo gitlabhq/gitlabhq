@@ -9,7 +9,7 @@ import {
   GlSprintf,
   GlLink,
 } from '@gitlab/ui';
-import { createAlert, VARIANT_INFO } from '~/flash';
+import { createAlert, VARIANT_INFO } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { formatDate } from '~/lib/utils/datetime_utility';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';

@@ -15,7 +15,7 @@ import {
   GlTooltipDirective,
 } from '@gitlab/ui';
 import { debounce } from 'lodash';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { s__, __, n__, sprintf } from '~/locale';
 import { HTTP_STATUS_TOO_MANY_REQUESTS } from '~/lib/utils/http_status';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
