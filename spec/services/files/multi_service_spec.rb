@@ -19,6 +19,10 @@ RSpec.describe Files::MultiService, feature_category: :source_code_management do
     Gitlab::Git::Commit.last_for_path(project.repository, branch_name, original_file_path).sha
   end
 
+  let(:branch_commit_id) do
+    Gitlab::Git::Commit.find(project.repository, branch_name).sha
+  end
+
   let(:default_action) do
     {
       action: action,
@@ -75,6 +79,16 @@ RSpec.describe Files::MultiService, feature_category: :source_code_management do
 
           expect(results[:status]).to eq(:error)
           expect(results[:message]).to match(new_file_path)
+        end
+      end
+
+      context 'when file not changed, but later commit id is used' do
+        let(:actions) { [default_action.merge(last_commit_id: branch_commit_id)] }
+
+        it 'accepts the commit' do
+          results = subject.execute
+
+          expect(results[:status]).to eq(:success)
         end
       end
 
