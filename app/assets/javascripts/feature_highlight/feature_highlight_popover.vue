@@ -1,5 +1,5 @@
 <script>
-import clusterPopover from '@gitlab/svgs/dist/illustrations/cluster_popover.svg?raw';
+import clusterPopover from '@gitlab/svgs/dist/illustrations/cluster_popover.svg';
 import { GlPopover, GlSprintf, GlLink, GlButton } from '@gitlab/ui';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { __ } from '~/locale';

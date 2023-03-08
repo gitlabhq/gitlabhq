@@ -14,6 +14,17 @@ module Spec
     module Helpers
       module Features
         module TwoFactorHelpers
+          def copy_recovery_codes
+            click_on _('Copy codes')
+            click_on _('Proceed')
+          end
+
+          def enable_two_factor_authentication
+            click_on _('Enable two-factor authentication')
+            expect(page).to have_content(_('Set up new device'))
+            wait_for_requests
+          end
+
           def manage_two_factor_authentication
             click_on 'Manage two-factor authentication'
             expect(page).to have_content("Set up new device")
@@ -21,6 +32,7 @@ module Spec
           end
 
           # Registers webauthn device via UI
+          # Remove after `webauthn_without_totp` feature flag is deleted.
           def register_webauthn_device(webauthn_device = nil, name: 'My device')
             webauthn_device ||= FakeWebauthnDevice.new(page, name)
             webauthn_device.respond_to_webauthn_registration
@@ -29,6 +41,25 @@ module Spec
             fill_in 'Pick a name', with: name
             click_on 'Register device'
             webauthn_device
+          end
+
+          def webauthn_device_registration(webauthn_device: nil, name: 'My device', password: 'fake')
+            webauthn_device ||= FakeWebauthnDevice.new(page, name)
+            webauthn_device.respond_to_webauthn_registration
+            click_on _('Set up new device')
+            webauthn_fill_form_and_submit(name: name, password: password)
+            webauthn_device
+          end
+
+          def webauthn_fill_form_and_submit(name: 'My device', password: 'fake')
+            expect(page).to have_content(
+              _('Your device was successfully set up! Give it a name and register it with the GitLab server.')
+            )
+            within '[data-testid="create-webauthn"]' do
+              fill_in _('Device name'), with: name
+              fill_in _('Current password'), with: password
+              click_on _('Register device')
+            end
           end
 
           # Adds webauthn device directly via database

@@ -18,11 +18,11 @@ import {
 } from '~/sidebar/constants';
 import waitForPromises from 'helpers/wait_for_promises';
 import EscalationStatus from 'ee_else_ce/sidebar/components/incidents/escalation_status.vue';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { logError } from '~/lib/logger';
 
 jest.mock('~/lib/logger');
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 Vue.use(VueApollo);
 

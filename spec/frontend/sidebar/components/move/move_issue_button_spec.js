@@ -4,14 +4,14 @@ import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { visitUrl } from '~/lib/utils/url_utility';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import ProjectSelect from '~/sidebar/components/move/issuable_move_dropdown.vue';
 import MoveIssueButton from '~/sidebar/components/move/move_issue_button.vue';
 import moveIssueMutation from '~/sidebar/queries/move_issue.mutation.graphql';
 
 Vue.use(VueApollo);
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 jest.mock('~/lib/utils/url_utility', () => ({
   visitUrl: jest.fn(),
 }));
@@ -118,7 +118,7 @@ describe('MoveIssueButton', () => {
       expect(findProjectSelect().props('moveInProgress')).toBe(false);
     });
 
-    it('creates a flash and logs errors when a mutation returns errors', async () => {
+    it('creates an alert and logs errors when a mutation returns errors', async () => {
       createComponent(resolvedMutationWithErrorsMock);
       emitProjectSelectEvent();
 

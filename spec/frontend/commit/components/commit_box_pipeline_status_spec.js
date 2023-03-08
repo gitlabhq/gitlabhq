@@ -4,7 +4,7 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
 import CommitBoxPipelineStatus from '~/projects/commit_box/info/components/commit_box_pipeline_status.vue';
 import {
@@ -23,7 +23,7 @@ const mockProvide = {
 
 Vue.use(VueApollo);
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 describe('Commit box pipeline status', () => {
   let wrapper;

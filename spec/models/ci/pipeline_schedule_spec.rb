@@ -10,7 +10,7 @@ RSpec.describe Ci::PipelineSchedule, feature_category: :continuous_integration d
   it { is_expected.to belong_to(:project) }
   it { is_expected.to belong_to(:owner) }
 
-  it { is_expected.to have_many(:pipelines) }
+  it { is_expected.to have_many(:pipelines).dependent(:nullify) }
   it { is_expected.to have_many(:variables) }
 
   it { is_expected.to respond_to(:ref) }
@@ -279,6 +279,21 @@ RSpec.describe Ci::PipelineSchedule, feature_category: :continuous_integration d
     it_behaves_like 'cleanup by a loose foreign key' do
       let!(:parent) { create(:project) }
       let!(:model) { create(:ci_pipeline_schedule, project: parent) }
+    end
+  end
+
+  describe 'before_destroy' do
+    let_it_be_with_reload(:pipeline_schedule) { create(:ci_pipeline_schedule, cron: ' 0 0 * * *   ') }
+    let_it_be_with_reload(:pipeline) { create(:ci_pipeline, pipeline_schedule: pipeline_schedule) }
+
+    it 'nullifys associated pipelines' do
+      expect(pipeline_schedule).to receive(:nullify_dependent_associations_in_batches).and_call_original
+
+      result = pipeline_schedule.destroy
+
+      expect(result).to be_truthy
+      expect(pipeline.reload.pipeline_schedule).to be_nil
+      expect(described_class.find_by(id: pipeline_schedule.id)).to be_nil
     end
   end
 end

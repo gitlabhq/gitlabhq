@@ -393,7 +393,6 @@ module.exports = {
             },
           },
           {
-            resourceQuery: /raw/,
             loader: 'raw-loader',
           },
         ],

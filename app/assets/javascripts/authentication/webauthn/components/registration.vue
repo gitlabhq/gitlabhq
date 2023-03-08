@@ -101,7 +101,7 @@ export default {
       return;
     }
 
-    if (isHTTPS() && supported()) {
+    if (supported()) {
       this.state = STATE_READY;
       return;
     }

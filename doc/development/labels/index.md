@@ -287,8 +287,8 @@ We do not automatically add this label, because it requires human evaluation.
 
 We recommend people that have never contributed to any open source project to
 look for issues labeled `~"Seeking community contributions"` with a
-[weight of 1](https://gitlab.com/groups/gitlab-org/-/issues?sort=created_date&state=opened&label_name[]=Seeking+community+contributions&assignee_id=None&weight=1) or the `~"good for new contributors"`
-[label](https://gitlab.com/gitlab-org/gitlab/-/issues?scope=all&state=opened&label_name[]=good%20for%20new%20contributors&assignee_id=None)
+[weight of 1](https://gitlab.com/groups/gitlab-org/-/issues?sort=created_date&state=opened&label_name[]=Seeking+community+contributions&assignee_id=None&weight=1) or the `~"quick win"`
+[label](https://gitlab.com/gitlab-org/gitlab/-/issues?scope=all&state=opened&label_name[]=quick%20win&assignee_id=None)
 attached to it.
 More experienced contributors are very welcome to tackle
 [any of them](https://gitlab.com/groups/gitlab-org/-/issues?sort=created_date&state=opened&label_name[]=Seeking+community+contributions&assignee_id=None).

@@ -3,7 +3,7 @@ import VueApollo from 'vue-apollo';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import CrmContacts from '~/sidebar/components/crm_contacts/crm_contacts.vue';
 import getIssueCrmContactsQuery from '~/sidebar/queries/get_issue_crm_contacts.query.graphql';
 import issueCrmContactsSubscription from '~/sidebar/queries/issue_crm_contacts.subscription.graphql';
@@ -13,7 +13,7 @@ import {
   issueCrmContactsUpdateNullResponse,
 } from '../mock_data';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 describe('Issue crm contacts component', () => {
   Vue.use(VueApollo);

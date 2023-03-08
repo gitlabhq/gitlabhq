@@ -47,9 +47,6 @@ module.exports = (path, options = {}) => {
     // temporary alias until we replace all `flash` imports for `alert`
     // https://gitlab.com/gitlab-org/gitlab/-/merge_requests/109449
     '^~/flash$': '<rootDir>/app/assets/javascripts/alert',
-    [TEST_FIXTURES_PATTERN]: '<rootDir>/tmp/tests/frontend/fixtures$1',
-    '^test_fixtures_static(/.*)$': '<rootDir>/spec/frontend/fixtures/static$1',
-    '\\.(jpg|jpeg|png|svg|css)(\\?\\w+)?$': '<rootDir>/spec/frontend/__mocks__/file_mock.js',
     '^~(/.*)\\?(worker|raw)$': '<rootDir>/app/assets/javascripts$1',
     '^(.*)\\?(worker|raw)$': '$1',
     '^~(/.*)$': '<rootDir>/app/assets/javascripts$1',
@@ -63,6 +60,10 @@ module.exports = (path, options = {}) => {
     '^any_else_ce(/.*)$': '<rootDir>/app/assets/javascripts$1',
     '^helpers(/.*)$': '<rootDir>/spec/frontend/__helpers__$1',
     '^vendor(/.*)$': '<rootDir>/vendor/assets/javascripts$1',
+    [TEST_FIXTURES_PATTERN]: '<rootDir>/tmp/tests/frontend/fixtures$1',
+    '^test_fixtures_static(/.*)$': '<rootDir>/spec/frontend/fixtures/static$1',
+    '\\.(jpg|jpeg|png|svg|css)$': '<rootDir>/spec/frontend/__mocks__/file_mock.js',
+    '\\.svg\\?url$': '<rootDir>/spec/frontend/__mocks__/file_mock.js',
     '^public(/.*)$': '<rootDir>/public$1',
     'emojis(/.*).json': '<rootDir>/fixtures/emojis$1.json',
     '^spec/test_constants$': '<rootDir>/spec/frontend/__helpers__/test_constants',

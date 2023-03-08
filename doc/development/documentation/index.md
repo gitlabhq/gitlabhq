@@ -107,8 +107,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 ---
 ```
 
-If you need help determining the correct stage, read [Ask for help](workflow.md#ask-for-help).
-
 ### Redirection metadata
 
 The following metadata should be added when a page is moved to another location:

@@ -3,7 +3,7 @@ import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { TYPE_EPIC, TYPE_ISSUE, TYPE_MERGE_REQUEST, TYPE_TEST_CASE } from '~/issues/constants';
 import SidebarEditableItem from '~/sidebar/components/sidebar_editable_item.vue';
 import DropdownContents from '~/sidebar/components/labels/labels_select_widget/dropdown_contents.vue';
@@ -25,7 +25,7 @@ import {
   mockRegularLabel,
 } from './mock_data';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 Vue.use(VueApollo);
 
@@ -150,7 +150,7 @@ describe('LabelsSelectRoot', () => {
       });
     });
 
-    it('creates flash with error message when query is rejected', async () => {
+    it('creates alert with error message when query is rejected', async () => {
       createComponent({ queryHandler: errorQueryHandler });
       await waitForPromises();
       expect(createAlert).toHaveBeenCalledWith({ message: 'Error fetching labels.' });

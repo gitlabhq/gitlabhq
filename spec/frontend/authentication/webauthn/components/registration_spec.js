@@ -43,8 +43,9 @@ describe('Registration', () => {
 
   describe(`when ${STATE_UNSUPPORTED} state`, () => {
     it('shows an error if using unsecure scheme (HTTP)', () => {
+      // `supported` function returns false for HTTP because `navigator.credentials` is undefined.
+      WebAuthnUtils.supported.mockReturnValue(false);
       WebAuthnUtils.isHTTPS.mockReturnValue(false);
-      WebAuthnUtils.supported.mockReturnValue(true);
       createComponent();
 
       const alert = wrapper.findComponent(GlAlert);
@@ -53,8 +54,8 @@ describe('Registration', () => {
     });
 
     it('shows an error if using unsupported browser', () => {
-      WebAuthnUtils.isHTTPS.mockReturnValue(true);
       WebAuthnUtils.supported.mockReturnValue(false);
+      WebAuthnUtils.isHTTPS.mockReturnValue(true);
       createComponent();
 
       const alert = wrapper.findComponent(GlAlert);

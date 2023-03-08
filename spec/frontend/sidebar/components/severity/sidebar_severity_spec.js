@@ -2,14 +2,14 @@ import { GlDropdown, GlDropdownItem, GlLoadingIcon, GlTooltip, GlSprintf } from 
 import { nextTick } from 'vue';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { TYPE_INCIDENT } from '~/issues/constants';
 import { INCIDENT_SEVERITY } from '~/sidebar/constants';
 import updateIssuableSeverity from '~/sidebar/queries/update_issuable_severity.mutation.graphql';
 import SeverityToken from '~/sidebar/components/severity/severity.vue';
 import SidebarSeverityWidget from '~/sidebar/components/severity/sidebar_severity_widget.vue';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 describe('SidebarSeverity', () => {
   let wrapper;

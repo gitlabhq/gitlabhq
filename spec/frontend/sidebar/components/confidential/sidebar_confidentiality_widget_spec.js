@@ -4,7 +4,7 @@ import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import SidebarConfidentialityContent from '~/sidebar/components/confidential/sidebar_confidentiality_content.vue';
 import SidebarConfidentialityForm from '~/sidebar/components/confidential/sidebar_confidentiality_form.vue';
 import SidebarConfidentialityWidget, {
@@ -14,7 +14,7 @@ import SidebarEditableItem from '~/sidebar/components/sidebar_editable_item.vue'
 import issueConfidentialQuery from '~/sidebar/queries/issue_confidential.query.graphql';
 import { issueConfidentialityResponse } from '../../mock_data';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 Vue.use(VueApollo);
 
@@ -120,7 +120,7 @@ describe('Sidebar Confidentiality Widget', () => {
     });
   });
 
-  it('displays a flash message when query is rejected', async () => {
+  it('displays an alert message when query is rejected', async () => {
     createComponent({
       confidentialQueryHandler: jest.fn().mockRejectedValue('Houston, we have a problem'),
     });

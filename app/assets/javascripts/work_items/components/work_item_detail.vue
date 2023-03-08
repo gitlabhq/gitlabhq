@@ -11,7 +11,7 @@ import {
   GlTooltipDirective,
   GlEmptyState,
 } from '@gitlab/ui';
-import noAccessSvg from '@gitlab/svgs/dist/illustrations/analytics/no-access.svg?raw';
+import noAccessSvg from '@gitlab/svgs/dist/illustrations/analytics/no-access.svg';
 import * as Sentry from '@sentry/browser';
 import { s__ } from '~/locale';
 import { parseBoolean } from '~/lib/utils/common_utils';

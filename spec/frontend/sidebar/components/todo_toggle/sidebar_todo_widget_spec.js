@@ -4,13 +4,13 @@ import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import SidebarTodoWidget from '~/sidebar/components/todo_toggle/sidebar_todo_widget.vue';
 import epicTodoQuery from '~/sidebar/queries/epic_todo.query.graphql';
 import TodoButton from '~/sidebar/components/todo_toggle/todo_button.vue';
 import { todosResponse, noTodosResponse } from '../../mock_data';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 Vue.use(VueApollo);
 
@@ -77,7 +77,7 @@ describe('Sidebar Todo Widget', () => {
     });
   });
 
-  it('displays a flash message when query is rejected', async () => {
+  it('displays an alert message when query is rejected', async () => {
     createComponent({
       todosQueryHandler: jest.fn().mockRejectedValue('Houston, we have a problem'),
     });

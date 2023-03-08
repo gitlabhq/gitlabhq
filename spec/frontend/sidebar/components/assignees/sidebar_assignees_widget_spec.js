@@ -5,7 +5,7 @@ import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { TYPE_MERGE_REQUEST } from '~/issues/constants';
 import SidebarAssigneesRealtime from '~/sidebar/components/assignees/assignees_realtime.vue';
 import IssuableAssignees from '~/sidebar/components/assignees/issuable_assignees.vue';
@@ -17,7 +17,7 @@ import updateIssueAssigneesMutation from '~/sidebar/queries/update_issue_assigne
 import UserSelect from '~/vue_shared/components/user_select/user_select.vue';
 import { issuableQueryResponse, updateIssueAssigneesMutationResponse } from '../../mock_data';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 const updateIssueAssigneesMutationSuccess = jest
   .fn()

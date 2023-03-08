@@ -2,7 +2,7 @@
 import { GlBadge, GlButton, GlTooltipDirective } from '@gitlab/ui';
 import { __ } from '~/locale';
 import SafeHtml from '~/vue_shared/directives/safe_html';
-import logo from '../../../../views/shared/_logo.svg?raw';
+import logo from '../../../../views/shared/_logo.svg';
 import { toggleSuperSidebarCollapsed } from '../super_sidebar_collapsed_state_manager';
 import CreateMenu from './create_menu.vue';
 import Counter from './counter.vue';

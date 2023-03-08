@@ -8,6 +8,7 @@ module Ci
     include CronSchedulable
     include Limitable
     include EachBatch
+    include BatchNullifyDependentAssociations
 
     self.limit_name = 'ci_pipeline_schedules'
     self.limit_scope = :project
@@ -15,7 +16,7 @@ module Ci
     belongs_to :project
     belongs_to :owner, class_name: 'User'
     has_one :last_pipeline, -> { order(id: :desc) }, class_name: 'Ci::Pipeline'
-    has_many :pipelines
+    has_many :pipelines, dependent: :nullify # rubocop:disable Cop/ActiveRecordDependent
     has_many :variables, class_name: 'Ci::PipelineScheduleVariable'
 
     validates :cron, unless: :importing?, cron: true, presence: { unless: :importing? }
@@ -30,6 +31,8 @@ module Ci
     scope :inactive, -> { where(active: false) }
     scope :preloaded, -> { preload(:owner, project: [:route]) }
     scope :owned_by, ->(user) { where(owner: user) }
+
+    before_destroy :nullify_dependent_associations_in_batches
 
     accepts_nested_attributes_for :variables, allow_destroy: true
 
