@@ -248,7 +248,7 @@ The limit varies depending on your plan and the number of seats in your subscrip
 
 | Setting              | Default for GitLab.com  |
 |----------------------|-------------------------|
-| Number of webhooks   | `100` per project, `50` per group |
+| Number of webhooks   | `100` per project, `50` per group (subgroup webhooks are not counted towards parent group limits ) |
 | Maximum payload size | 25 MB                   |
 | Timeout              | 10 seconds              |
 

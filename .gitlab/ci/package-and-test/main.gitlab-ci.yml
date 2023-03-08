@@ -225,9 +225,11 @@ _ee:super-sidebar-nav:
     QA_KNAPSACK_REPORT_NAME: ee-instance
     QA_TESTS: ""
     QA_SUPER_SIDEBAR_ENABLED: "true"
+    QA_ALLURE_RESULTS_DIRECTORY: tmp/allure-results-super-sidebar
     GITLAB_QA_OPTS: --set-feature-flags super_sidebar_nav=enabled
   allow_failure: true
   rules:
+    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
     - !reference [.rules:test:manual, rules]
 
 # ------------------------------------------
@@ -642,6 +644,22 @@ e2e-test-report:
     ALLURE_PROJECT_PATH: $CI_PROJECT_PATH
     ALLURE_MERGE_REQUEST_IID: $CI_MERGE_REQUEST_IID
     GIT_STRATEGY: none
+
+# Temporary separate test report for super-sidebar test job
+# TODO: remove once super-sidebar is on by default and enabled in tests
+# https://gitlab.com/groups/gitlab-org/-/epics/9044
+e2e-test-report-super-sidebar:
+  extends:
+    - .generate-allure-report-base
+  stage: report
+  needs:
+    - _ee:super-sidebar-nav
+  variables:
+    ALLURE_JOB_NAME: e2e-super-sidebar
+    ALLURE_RESULTS_GLOB: gitlab-qa-run-*/**/allure-results-super-sidebar
+  rules:
+    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
+    - !reference [.rules:test:manual, rules]
 
 upload-knapsack-report:
   extends:

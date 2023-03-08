@@ -6485,9 +6485,6 @@ msgstr ""
 msgid "BillingPlans|Includes free static websites"
 msgstr ""
 
-msgid "BillingPlans|Learn more"
-msgstr ""
-
 msgid "BillingPlans|Learn more about each plan by reading our %{faq_link}, or start a free 30-day trial of GitLab.com Ultimate."
 msgstr ""
 
@@ -14347,6 +14344,9 @@ msgid "Deployment|success"
 msgstr ""
 
 msgid "Deprecated API rate limits"
+msgstr ""
+
+msgid "Deprecation notice"
 msgstr ""
 
 msgid "Deprecations|For information on a possible replacement %{epicStart} learn more about Opstrace %{epicEnd}."
@@ -37948,10 +37948,10 @@ msgstr ""
 msgid "ScanExecutionPolicy|%{rules} actions for the %{scopes} %{branches} %{agents} %{namespaces}"
 msgstr ""
 
-msgid "ScanExecutionPolicy|%{thenLabelStart}Then%{thenLabelEnd} Require a %{scan} scan to run with site profile %{siteProfile} and scanner profile %{scannerProfile} with tags %{tags}"
+msgid "ScanExecutionPolicy|%{thenLabelStart}Then%{thenLabelEnd} Require a %{scan} scan on runner that %{tags}"
 msgstr ""
 
-msgid "ScanExecutionPolicy|%{thenLabelStart}Then%{thenLabelEnd} Require a %{scan} scan to run with tags %{tags}"
+msgid "ScanExecutionPolicy|%{thenLabelStart}Then%{thenLabelEnd} Require a %{scan} scan to run with site profile %{siteProfile} and scanner profile %{scannerProfile} on runner that %{tags}"
 msgstr ""
 
 msgid "ScanExecutionPolicy|A pipeline is run"
@@ -38002,7 +38002,13 @@ msgstr ""
 msgid "ScanExecutionPolicy|branch"
 msgstr ""
 
+msgid "ScanExecutionPolicy|has specific tag"
+msgstr ""
+
 msgid "ScanExecutionPolicy|in namespaces"
+msgstr ""
+
+msgid "ScanExecutionPolicy|selected automatically"
 msgstr ""
 
 msgid "ScanResultPolicy|%{count} licenses"
@@ -39687,6 +39693,9 @@ msgid "Self-monitoring project has been successfully deleted"
 msgstr ""
 
 msgid "Self-monitoring project was not deleted. Please check logs for any error messages"
+msgstr ""
+
+msgid "Self-monitoring was %{deprecation}deprecated%{link_end} in GitLab 14.9, and is %{removal}scheduled for removal%{link_end} in GitLab 16.0. For information on a possible replacement, %{opstrace}learn more about Opstrace%{link_end}."
 msgstr ""
 
 msgid "SelfMonitoring|Activate or deactivate instance self-monitoring."
