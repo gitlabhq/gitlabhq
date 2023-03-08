@@ -66,7 +66,8 @@ module Resolvers
         parent: :work_item_parent,
         children: { work_item_children_by_relative_position: [:author, { project: :project_feature }] },
         labels: :labels,
-        milestone: { milestone: [:project, :group] }
+        milestone: { milestone: [:project, :group] },
+        subscribed: [:assignees, :award_emoji, { notes: [:author, :award_emoji] }]
       }
     end
 

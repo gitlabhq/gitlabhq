@@ -2275,6 +2275,12 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
   describe 'infrastructure feature' do
     using RSpec::Parameterized::TableSyntax
 
+    before do
+      # assuming the default setting terraform_state.enabled=true
+      # the terraform_state permissions should follow the same logic as the other features
+      stub_config(terraform_state: { enabled: true })
+    end
+
     let(:guest_permissions) { [] }
 
     let(:developer_permissions) do
@@ -2334,6 +2340,31 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
         if allowed
           expect_allowed(*permissions_abilities(role))
         else
+          expect_disallowed(*permissions_abilities(role))
+        end
+      end
+    end
+
+    context 'when terraform state management is disabled' do
+      before do
+        stub_config(terraform_state: { enabled: false })
+      end
+
+      with_them do
+        let(:current_user) { user_subject(role) }
+        let(:project) { project_subject(project_visibility) }
+
+        let(:developer_permissions) do
+          [:read_terraform_state]
+        end
+
+        let(:maintainer_permissions) do
+          developer_permissions + [:admin_terraform_state]
+        end
+
+        it 'always disallows the terraform_state feature' do
+          project.project_feature.update!(infrastructure_access_level: access_level)
+
           expect_disallowed(*permissions_abilities(role))
         end
       end

@@ -234,6 +234,10 @@ class ProjectPolicy < BasePolicy
     Gitlab.config.packages.enabled
   end
 
+  condition :terraform_state_disabled do
+    !Gitlab.config.terraform_state.enabled
+  end
+
   condition(:create_runner_workflow_enabled) do
     Feature.enabled?(:create_runner_workflow_for_namespace, project.namespace)
   end
@@ -404,11 +408,14 @@ class ProjectPolicy < BasePolicy
   end
 
   rule { infrastructure_disabled }.policy do
-    prevent(*create_read_update_admin_destroy(:terraform_state))
     prevent(*create_read_update_admin_destroy(:cluster))
     prevent(:read_pod_logs)
     prevent(:read_prometheus)
     prevent(:admin_project_google_cloud)
+  end
+
+  rule { infrastructure_disabled | terraform_state_disabled }.policy do
+    prevent(*create_read_update_admin_destroy(:terraform_state))
   end
 
   rule { can?(:metrics_dashboard) }.policy do
@@ -458,9 +465,7 @@ class ProjectPolicy < BasePolicy
     enable :create_release
     enable :update_release
     enable :destroy_release
-    enable :create_metrics_dashboard_annotation
-    enable :delete_metrics_dashboard_annotation
-    enable :update_metrics_dashboard_annotation
+    enable :admin_metrics_dashboard_annotation
     enable :read_alert_management_alert
     enable :update_alert_management_alert
     enable :create_design

@@ -19,7 +19,7 @@ RSpec.describe Mutations::Metrics::Dashboard::Annotations::Create, feature_categ
     graphql_mutation_response(:create_annotation)
   end
 
-  specify { expect(described_class).to require_graphql_authorizations(:create_metrics_dashboard_annotation) }
+  specify { expect(described_class).to require_graphql_authorizations(:admin_metrics_dashboard_annotation) }
 
   context 'when annotation source is environment' do
     let(:mutation) do

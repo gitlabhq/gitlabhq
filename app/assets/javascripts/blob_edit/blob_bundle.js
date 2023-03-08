@@ -2,7 +2,7 @@
 
 import $ from 'jquery';
 import initPopover from '~/blob/suggest_gitlab_ci_yml';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { setCookie } from '~/lib/utils/common_utils';
 import Tracking from '~/tracking';
 import NewCommitForm from '../new_commit_form';

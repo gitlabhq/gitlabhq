@@ -456,7 +456,6 @@ module.exports = {
         },
       },
       {
-        test: /\.(yml|yaml)$/,
         resourceQuery: /raw/,
         loader: 'raw-loader',
       },

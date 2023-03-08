@@ -1,7 +1,7 @@
 <script>
 import { GlButton, GlTooltipDirective } from '@gitlab/ui';
 import runnerToggleActiveMutation from '~/ci/runner/graphql/shared/runner_toggle_active.mutation.graphql';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { captureException } from '~/ci/runner/sentry_utils';
 import { I18N_PAUSE, I18N_PAUSE_TOOLTIP, I18N_RESUME, I18N_RESUME_TOOLTIP } from '../constants';
 

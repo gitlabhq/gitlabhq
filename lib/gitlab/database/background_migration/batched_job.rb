@@ -100,8 +100,6 @@ module Gitlab
         delegate :job_class, :table_name, :column_name, :job_arguments, :job_class_name,
           to: :batched_migration, prefix: :migration
 
-        attribute :pause_ms, :integer, default: 100
-
         def time_efficiency
           return unless succeeded?
           return unless finished_at && started_at

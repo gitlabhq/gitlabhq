@@ -10,7 +10,7 @@ module Mutations
           ANNOTATION_SOURCE_ARGUMENT_ERROR = 'Either a cluster or environment global id is required'
           INVALID_ANNOTATION_SOURCE_ERROR = 'Invalid cluster or environment id'
 
-          authorize :create_metrics_dashboard_annotation
+          authorize :admin_metrics_dashboard_annotation
 
           field :annotation,
             Types::Metrics::Dashboards::AnnotationType,

@@ -14,9 +14,7 @@ RSpec.describe Metrics::Dashboard::AnnotationPolicy, :models do
       end
 
       it { expect(policy).to be_disallowed :read_metrics_dashboard_annotation }
-      it { expect(policy).to be_disallowed :create_metrics_dashboard_annotation }
-      it { expect(policy).to be_disallowed :update_metrics_dashboard_annotation }
-      it { expect(policy).to be_disallowed :delete_metrics_dashboard_annotation }
+      it { expect(policy).to be_disallowed :admin_metrics_dashboard_annotation }
     end
 
     context 'when reporter' do
@@ -25,9 +23,7 @@ RSpec.describe Metrics::Dashboard::AnnotationPolicy, :models do
       end
 
       it { expect(policy).to be_allowed :read_metrics_dashboard_annotation }
-      it { expect(policy).to be_disallowed :create_metrics_dashboard_annotation }
-      it { expect(policy).to be_disallowed :update_metrics_dashboard_annotation }
-      it { expect(policy).to be_disallowed :delete_metrics_dashboard_annotation }
+      it { expect(policy).to be_disallowed :admin_metrics_dashboard_annotation }
     end
 
     context 'when developer' do
@@ -36,9 +32,7 @@ RSpec.describe Metrics::Dashboard::AnnotationPolicy, :models do
       end
 
       it { expect(policy).to be_allowed :read_metrics_dashboard_annotation }
-      it { expect(policy).to be_allowed :create_metrics_dashboard_annotation }
-      it { expect(policy).to be_allowed :update_metrics_dashboard_annotation }
-      it { expect(policy).to be_allowed :delete_metrics_dashboard_annotation }
+      it { expect(policy).to be_allowed :admin_metrics_dashboard_annotation }
     end
 
     context 'when maintainer' do
@@ -47,9 +41,7 @@ RSpec.describe Metrics::Dashboard::AnnotationPolicy, :models do
       end
 
       it { expect(policy).to be_allowed :read_metrics_dashboard_annotation }
-      it { expect(policy).to be_allowed :create_metrics_dashboard_annotation }
-      it { expect(policy).to be_allowed :update_metrics_dashboard_annotation }
-      it { expect(policy).to be_allowed :delete_metrics_dashboard_annotation }
+      it { expect(policy).to be_allowed :admin_metrics_dashboard_annotation }
     end
   end
 

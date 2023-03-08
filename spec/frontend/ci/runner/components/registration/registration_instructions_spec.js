@@ -1,11 +1,15 @@
-import { GlSprintf, GlLink, GlSkeletonLoader } from '@gitlab/ui';
+import { GlSprintf, GlSkeletonLoader } from '@gitlab/ui';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
-import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { extendedWrapper, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { TEST_HOST } from 'helpers/test_constants';
 
 import RegistrationInstructions from '~/ci/runner/components/registration/registration_instructions.vue';
 import CliCommand from '~/ci/runner/components/registration/cli_command.vue';
-import { DEFAULT_PLATFORM, INSTALL_HELP_URL, EXECUTORS_HELP_URL } from '~/ci/runner/constants';
+import {
+  DEFAULT_PLATFORM,
+  EXECUTORS_HELP_URL,
+  SERVICE_COMMANDS_HELP_URL,
+} from '~/ci/runner/constants';
 
 const REGISTRATION_TOKEN = 'REGISTRATION_TOKEN';
 const DUMMY_GON = {
@@ -16,9 +20,8 @@ describe('RegistrationInstructions', () => {
   let wrapper;
   let originalGon;
 
-  const findStepAt = (i) => wrapper.findAll('section').at(i);
-  const findLink = (href, container = wrapper) =>
-    container.findAllComponents(GlLink).filter((w) => w.attributes('href') === href);
+  const findStepAt = (i) => extendedWrapper(wrapper.findAll('section').at(i));
+  const findByText = (text, container = wrapper) => container.findByText(text);
 
   const createComponent = (props) => {
     wrapper = shallowMountExtended(RegistrationInstructions, {
@@ -47,7 +50,9 @@ describe('RegistrationInstructions', () => {
   });
 
   it('renders legacy instructions', () => {
-    expect(findLink(INSTALL_HELP_URL).exists()).toBe(true);
+    findByText('How do I install GitLab Runner?').vm.$emit('click');
+
+    expect(wrapper.emitted('toggleDrawer')).toHaveLength(1);
   });
 
   it('renders step 1', () => {
@@ -80,7 +85,9 @@ describe('RegistrationInstructions', () => {
   it('renders step 2', () => {
     const step2 = findStepAt(1);
 
-    expect(findLink(EXECUTORS_HELP_URL, step2).exists()).toBe(true);
+    expect(findByText('Not sure which one to select?', step2).attributes('href')).toBe(
+      EXECUTORS_HELP_URL,
+    );
   });
 
   it('renders step 3', () => {
@@ -90,5 +97,9 @@ describe('RegistrationInstructions', () => {
       command: 'gitlab-runner run',
       prompt: '$',
     });
+
+    expect(findByText('system or user service', step3).attributes('href')).toBe(
+      SERVICE_COMMANDS_HELP_URL,
+    );
   });
 });

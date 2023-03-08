@@ -1,7 +1,7 @@
 <script>
 import { EditorContent as TiptapEditorContent } from '@tiptap/vue-2';
 import { __ } from '~/locale';
-import { VARIANT_DANGER } from '~/flash';
+import { VARIANT_DANGER } from '~/alert';
 import { createContentEditor } from '../services/create_content_editor';
 import { ALERT_EVENT, TIPTAP_AUTOFOCUS_OPTIONS } from '../constants';
 import ContentEditorAlert from './content_editor_alert.vue';

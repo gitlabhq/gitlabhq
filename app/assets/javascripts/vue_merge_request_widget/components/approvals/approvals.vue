@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlSprintf, GlLink } from '@gitlab/ui';
+import { GlButton, GlSprintf } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import { BV_SHOW_MODAL } from '~/lib/utils/constants';
 import { HTTP_STATUS_UNAUTHORIZED } from '~/lib/utils/http_status';
@@ -14,7 +14,6 @@ import { INVALID_RULES_DOCS_PATH } from '../../constants';
 import ApprovalsSummary from './approvals_summary.vue';
 import ApprovalsSummaryOptional from './approvals_summary_optional.vue';
 import { FETCH_LOADING, APPROVE_ERROR, UNAPPROVE_ERROR } from './messages';
-import { humanizeInvalidApproversRules } from './humanized_text';
 
 export default {
   name: 'MRWidgetApprovals',
@@ -25,7 +24,6 @@ export default {
     ApprovalsSummaryOptional,
     GlButton,
     GlSprintf,
-    GlLink,
   },
   mixins: [approvalsMixin, glFeatureFlagsMixin()],
   props: {
@@ -84,7 +82,7 @@ export default {
       return this.mr.mergeRequestApproversAvailable && this.invalidRules.length;
     },
     invalidRulesText() {
-      return humanizeInvalidApproversRules(this.invalidRules);
+      return this.invalidRules.length;
     },
     approvedBy() {
       return this.approvals.approvedBy?.nodes || [];
@@ -200,10 +198,10 @@ export default {
   linkToInvalidRules: INVALID_RULES_DOCS_PATH,
   i18n: {
     invalidRuleSingular: s__(
-      'mrWidget|Approval rule %{rules} is invalid. GitLab has approved this rule automatically to unblock the merge request. %{link}',
+      'mrWidget|%{rules} invalid rule has been approved automatically, as no one can approve it.',
     ),
     invalidRulesPlural: s__(
-      'mrWidget|Approval rules %{rules} are invalid. GitLab has approved these rules automatically to unblock the merge request. %{link}',
+      'mrWidget|%{rules} invalid rules have been approved automatically, as no one can approve them.',
     ),
     learnMore: __('Learn more.'),
   },
@@ -241,14 +239,7 @@ export default {
           </div>
           <div v-if="hasInvalidRules" class="gl-text-gray-400 gl-mt-2" data-testid="invalid-rules">
             <gl-sprintf :message="pluralizedRuleText">
-              <template #rules>
-                {{ invalidRulesText }}
-              </template>
-              <template #link>
-                <gl-link :href="$options.linkToInvalidRules" target="_blank">
-                  {{ $options.i18n.learnMore }}
-                </gl-link>
-              </template>
+              <template #rules>{{ invalidRulesText }}</template>
             </gl-sprintf>
           </div>
         </div>

@@ -1,6 +1,7 @@
 ---
 table_name: work_item_types
 classes:
+- AddNotificationsWorkItemWidget::WorkItemType
 - AddWidgetsForWorkItemTypes::WorkItemType
 - WorkItems::Type
 feature_categories:

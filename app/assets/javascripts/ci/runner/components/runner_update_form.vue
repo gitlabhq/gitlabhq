@@ -13,7 +13,7 @@ import {
   modelToUpdateMutationVariables,
   runnerToModel,
 } from 'ee_else_ce/ci/runner/runner_update_form_utils';
-import { createAlert, VARIANT_SUCCESS } from '~/flash';
+import { createAlert, VARIANT_SUCCESS } from '~/alert';
 import { redirectTo } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
 import { captureException } from '~/ci/runner/sentry_utils';

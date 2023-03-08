@@ -1,4 +1,4 @@
-import { VARIANT_DANGER } from '~/flash';
+import { VARIANT_DANGER } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { __ } from '~/locale';
 import { extractFilename, readFileAsDataURL } from './utils';

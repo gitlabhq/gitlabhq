@@ -22,9 +22,23 @@ Use [external object storage](https://docs.gitlab.com/charts/advanced/external-o
 
 ## Disabling Terraform state
 
-To disable terraform state site-wide, follow the steps below.
-A GitLab administrator may want to disable Terraform state to reduce disk space or if Terraform is not used in your instance.
-To do so, follow the steps below according to your installation's type.
+You can disable Terraform state across the entire instance. You might want to disable Terraform to reduce disk space,
+or because your instance doesn't use Terraform.
+
+When Terraform state administration is disabled:
+
+- On the left sidebar, you cannot select **Infrastructure > Terraform**.
+- Any CI/CD jobs that access the Terraform state fail with this error:
+
+    ```shell
+    Error refreshing state: HTTP remote state endpoint invalid auth
+    ```
+
+To disable Terraform administration, follow the steps below according to your installation.
+
+Prerequisite:
+
+- You must be an administrator.
 
 **In Omnibus installations:**
 

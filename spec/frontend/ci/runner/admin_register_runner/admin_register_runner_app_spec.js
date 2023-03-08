@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import { GlButton } from '@gitlab/ui';
 
@@ -7,12 +7,15 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import setWindowLocation from 'helpers/set_window_location_helper';
+import { TEST_HOST } from 'helpers/test_constants';
 
 import { s__ } from '~/locale';
+import { updateHistory } from '~/lib/utils/url_utility';
 import runnerForRegistrationQuery from '~/ci/runner/graphql/register/runner_for_registration.query.graphql';
 import { PARAM_KEY_PLATFORM, DEFAULT_PLATFORM, WINDOWS_PLATFORM } from '~/ci/runner/constants';
 import AdminRegisterRunnerApp from '~/ci/runner/admin_register_runner/admin_register_runner_app.vue';
 import RegistrationInstructions from '~/ci/runner/components/registration/registration_instructions.vue';
+import PlatformsDrawer from '~/ci/runner/components/registration/platforms_drawer.vue';
 import { runnerForRegistration } from '../mock_data';
 
 const mockRunner = runnerForRegistration.data.runner;
@@ -22,11 +25,17 @@ const MOCK_TOKEN = 'MOCK_TOKEN';
 
 Vue.use(VueApollo);
 
+jest.mock('~/lib/utils/url_utility', () => ({
+  ...jest.requireActual('~/lib/utils/url_utility'),
+  updateHistory: jest.fn(),
+}));
+
 describe('AdminRegisterRunnerApp', () => {
   let wrapper;
   let mockRunnerQuery;
 
   const findRegistrationInstructions = () => wrapper.findComponent(RegistrationInstructions);
+  const findPlatformsDrawer = () => wrapper.findComponent(PlatformsDrawer);
   const findBtn = () => wrapper.findComponent(GlButton);
 
   const createComponent = () => {
@@ -69,6 +78,13 @@ describe('AdminRegisterRunnerApp', () => {
       });
     });
 
+    it('configures platform drawer', () => {
+      expect(findPlatformsDrawer().props()).toEqual({
+        open: false,
+        platform: DEFAULT_PLATFORM,
+      });
+    });
+
     it('shows runner list button', () => {
       expect(findBtn().attributes('href')).toEqual(mockRunnersPath);
       expect(findBtn().props('variant')).toEqual('confirm');
@@ -85,6 +101,52 @@ describe('AdminRegisterRunnerApp', () => {
 
     it('shows registration instructions for the platform', () => {
       expect(findRegistrationInstructions().props('platform')).toEqual(WINDOWS_PLATFORM);
+    });
+  });
+
+  describe('When opening install instructions', () => {
+    beforeEach(async () => {
+      createComponent();
+      await waitForPromises();
+
+      findRegistrationInstructions().vm.$emit('toggleDrawer');
+      await nextTick();
+    });
+
+    it('opens platform drawer', () => {
+      expect(findPlatformsDrawer().props('open')).toEqual(true);
+    });
+
+    it('closes platform drawer', async () => {
+      findRegistrationInstructions().vm.$emit('toggleDrawer');
+      await nextTick();
+
+      expect(findPlatformsDrawer().props('open')).toEqual(false);
+    });
+
+    it('closes platform drawer from drawer', async () => {
+      findPlatformsDrawer().vm.$emit('close');
+      await nextTick();
+
+      expect(findPlatformsDrawer().props('open')).toEqual(false);
+    });
+
+    describe('when selecting a platform', () => {
+      beforeEach(async () => {
+        findPlatformsDrawer().vm.$emit('selectPlatform', WINDOWS_PLATFORM);
+        await nextTick();
+      });
+
+      it('updates the url', () => {
+        expect(updateHistory).toHaveBeenCalledTimes(1);
+        expect(updateHistory).toHaveBeenCalledWith({
+          url: `${TEST_HOST}/?${PARAM_KEY_PLATFORM}=${WINDOWS_PLATFORM}`,
+        });
+      });
+
+      it('updates the registration instructions', () => {
+        expect(findRegistrationInstructions().props('platform')).toBe(WINDOWS_PLATFORM);
+      });
     });
   });
 

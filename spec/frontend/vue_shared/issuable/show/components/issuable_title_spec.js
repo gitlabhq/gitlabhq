@@ -29,28 +29,28 @@ const createComponent = (propsData = issuableTitleProps) =>
 describe('IssuableTitle', () => {
   let wrapper;
 
+  const findStickyHeader = () => wrapper.findComponent('[data-testid="header"]');
+
   beforeEach(() => {
     wrapper = createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('methods', () => {
     describe('handleTitleAppear', () => {
-      it('sets value of `stickyTitleVisible` prop to false', () => {
+      it('sets value of `stickyTitleVisible` prop to false', async () => {
         wrapper.findComponent(GlIntersectionObserver).vm.$emit('appear');
+        await nextTick();
 
-        expect(wrapper.vm.stickyTitleVisible).toBe(false);
+        expect(findStickyHeader().exists()).toBe(false);
       });
     });
 
     describe('handleTitleDisappear', () => {
-      it('sets value of `stickyTitleVisible` prop to true', () => {
+      it('sets value of `stickyTitleVisible` prop to true', async () => {
         wrapper.findComponent(GlIntersectionObserver).vm.$emit('disappear');
+        await nextTick();
 
-        expect(wrapper.vm.stickyTitleVisible).toBe(true);
+        expect(findStickyHeader().exists()).toBe(true);
       });
     });
   });
@@ -87,14 +87,10 @@ describe('IssuableTitle', () => {
     });
 
     it('renders sticky header when `stickyTitleVisible` prop is true', async () => {
-      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-      // eslint-disable-next-line no-restricted-syntax
-      wrapper.setData({
-        stickyTitleVisible: true,
-      });
-
+      wrapper.findComponent(GlIntersectionObserver).vm.$emit('disappear');
       await nextTick();
-      const stickyHeaderEl = wrapper.find('[data-testid="header"]');
+
+      const stickyHeaderEl = findStickyHeader();
 
       expect(stickyHeaderEl.exists()).toBe(true);
       expect(stickyHeaderEl.findComponent(GlBadge).props('variant')).toBe('success');

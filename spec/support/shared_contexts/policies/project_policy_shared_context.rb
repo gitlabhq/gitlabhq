@@ -52,12 +52,11 @@ RSpec.shared_context 'ProjectPolicy context' do
       admin_merge_request admin_tag create_build
       create_commit_status create_container_image create_deployment
       create_environment create_merge_request_from
-      create_metrics_dashboard_annotation create_pipeline create_release
-      create_wiki delete_metrics_dashboard_annotation
-      destroy_container_image push_code read_pod_logs read_terraform_state
-      resolve_note update_build update_commit_status update_container_image
-      update_deployment update_environment update_merge_request
-      update_metrics_dashboard_annotation update_pipeline update_release destroy_release
+      admin_metrics_dashboard_annotation create_pipeline create_release
+      create_wiki destroy_container_image push_code read_pod_logs
+      read_terraform_state resolve_note update_build update_commit_status
+      update_container_image update_deployment update_environment
+      update_merge_request update_pipeline update_release destroy_release
       read_resource_group update_resource_group update_escalation_status
     ]
   end

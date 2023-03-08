@@ -152,6 +152,7 @@
     "WorkItemWidgetLabels",
     "WorkItemWidgetMilestone",
     "WorkItemWidgetNotes",
+    "WorkItemWidgetNotifications",
     "WorkItemWidgetProgress",
     "WorkItemWidgetRequirementLegacy",
     "WorkItemWidgetStartAndDueDate",

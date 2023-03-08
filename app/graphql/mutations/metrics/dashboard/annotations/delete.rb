@@ -7,7 +7,7 @@ module Mutations
         class Delete < Base
           graphql_name 'DeleteAnnotation'
 
-          authorize :delete_metrics_dashboard_annotation
+          authorize :admin_metrics_dashboard_annotation
 
           argument :id, ::Types::GlobalIDType[::Metrics::Dashboard::Annotation],
                   required: true,

@@ -2,12 +2,13 @@
 import { GlButton } from '@gitlab/ui';
 import { s__, sprintf } from '~/locale';
 import { createAlert } from '~/flash';
-import { getParameterByName } from '~/lib/utils/url_utility';
+import { getParameterByName, updateHistory, mergeUrlParams } from '~/lib/utils/url_utility';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { TYPENAME_CI_RUNNER } from '~/graphql_shared/constants';
 import runnerForRegistrationQuery from '../graphql/register/runner_for_registration.query.graphql';
 import { I18N_FETCH_ERROR, PARAM_KEY_PLATFORM, DEFAULT_PLATFORM } from '../constants';
 import RegistrationInstructions from '../components/registration/registration_instructions.vue';
+import PlatformsDrawer from '../components/registration/platforms_drawer.vue';
 import { captureException } from '../sentry_utils';
 
 export default {
@@ -15,6 +16,7 @@ export default {
   components: {
     GlButton,
     RegistrationInstructions,
+    PlatformsDrawer,
   },
   props: {
     runnerId: {
@@ -30,6 +32,7 @@ export default {
     return {
       platform: getParameterByName(PARAM_KEY_PLATFORM) || DEFAULT_PLATFORM,
       runner: null,
+      isDrawerOpen: false,
     };
   },
   apollo: {
@@ -62,6 +65,21 @@ export default {
       return this.runner?.ephemeralAuthenticationToken;
     },
   },
+  watch: {
+    platform(platform) {
+      updateHistory({
+        url: mergeUrlParams({ [PARAM_KEY_PLATFORM]: platform }, window.location.href),
+      });
+    },
+  },
+  methods: {
+    onSelectPlatform(platform) {
+      this.platform = platform;
+    },
+    onToggleDrawer(val = !this.isDrawerOpen) {
+      this.isDrawerOpen = val;
+    },
+  },
 };
 </script>
 <template>
@@ -72,6 +90,14 @@ export default {
       :loading="$apollo.queries.runner.loading"
       :platform="platform"
       :token="ephemeralAuthenticationToken"
+      @toggleDrawer="onToggleDrawer"
+    />
+
+    <platforms-drawer
+      :platform="platform"
+      :open="isDrawerOpen"
+      @selectPlatform="onSelectPlatform"
+      @close="onToggleDrawer(false)"
     />
 
     <gl-button :href="runnersPath" variant="confirm">{{

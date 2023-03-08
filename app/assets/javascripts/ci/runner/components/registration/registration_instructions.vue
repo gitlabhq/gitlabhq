@@ -2,7 +2,7 @@
 import { GlIcon, GlLink, GlSprintf, GlSkeletonLoader } from '@gitlab/ui';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 
-import { INSTALL_HELP_URL, EXECUTORS_HELP_URL, SERVICE_COMMANDS_HELP_URL } from '../../constants';
+import { EXECUTORS_HELP_URL, SERVICE_COMMANDS_HELP_URL } from '../../constants';
 import CliCommand from './cli_command.vue';
 import { commandPrompt, registerCommand, runCommand } from './utils';
 
@@ -42,7 +42,11 @@ export default {
       return runCommand({ platform: this.platform });
     },
   },
-  INSTALL_HELP_URL,
+  methods: {
+    toggleDrawer(val) {
+      this.$emit('toggleDrawer', val);
+    },
+  },
   EXECUTORS_HELP_URL,
   SERVICE_COMMANDS_HELP_URL,
 };
@@ -58,7 +62,7 @@ export default {
         "
       >
         <template #link="{ content }">
-          <gl-link :href="$options.INSTALL_HELP_URL">{{ content }}</gl-link>
+          <gl-link @click="toggleDrawer()">{{ content }}</gl-link>
         </template>
       </gl-sprintf>
     </p>

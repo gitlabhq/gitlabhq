@@ -850,6 +850,9 @@ msgstr ""
 msgid "%{linkStart} Learn more%{linkEnd}."
 msgstr ""
 
+msgid "%{linkStart}Approval settings%{linkEnd} prevent approvals by its eligible approvers."
+msgstr ""
+
 msgid "%{listToShow}, and %{awardsListLength} more"
 msgstr ""
 
@@ -23302,7 +23305,7 @@ msgstr ""
 msgid "Invalid repository path"
 msgstr ""
 
-msgid "Invalid rule"
+msgid "Invalid rules are automatically approved to unblock the merge request."
 msgstr ""
 
 msgid "Invalid server response"
@@ -23929,6 +23932,9 @@ msgid "Issues|There was an error while moving the issues."
 msgstr ""
 
 msgid "Issue|Title"
+msgstr ""
+
+msgid "It doesn't have any %{linkStart}eligible approvers%{linkEnd}."
 msgstr ""
 
 msgid "It looks like you're attempting to activate your subscription. Use %{a_start}the Subscription page%{a_end} instead."
@@ -35003,6 +35009,16 @@ msgstr ""
 msgid "ProtectedBranch|default"
 msgstr ""
 
+msgid "ProtectedEnvironments|%d Approval Rule"
+msgid_plural "ProtectedEnvironments|%d Approval Rules"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "ProtectedEnvironments|%d Deployment Rule"
+msgid_plural "ProtectedEnvironments|%d Deployment Rules"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "ProtectedEnvironments|Add approval rules"
 msgstr ""
 
@@ -37278,6 +37294,9 @@ msgstr ""
 msgid "Runners|Enter the number of seconds. This timeout takes precedence over lower timeouts set for the project."
 msgstr ""
 
+msgid "Runners|Environment"
+msgstr ""
+
 msgid "Runners|Executor"
 msgstr ""
 
@@ -37312,6 +37331,9 @@ msgid "Runners|Idle"
 msgstr ""
 
 msgid "Runners|If both settings are disabled, new runners cannot be registered."
+msgstr ""
+
+msgid "Runners|Install GitLab Runner"
 msgstr ""
 
 msgid "Runners|Install a runner"
@@ -37595,7 +37617,13 @@ msgstr ""
 msgid "Runners|Security or compatibility upgrades are recommended."
 msgstr ""
 
+msgid "Runners|See more %{linkStart}installation methods and architectures%{linkEnd}."
+msgstr ""
+
 msgid "Runners|Select all"
+msgstr ""
+
+msgid "Runners|Select platform specifications to install GitLab Runner."
 msgstr ""
 
 msgid "Runners|Select projects to assign to this runner"
@@ -44554,6 +44582,9 @@ msgstr ""
 msgid "This repository was last checked %{last_check_timestamp}. The check passed."
 msgstr ""
 
+msgid "This rule is invalid because no one can approve it for one or more of these reasons:"
+msgstr ""
+
 msgid "This runner will only run on pipelines triggered on protected branches"
 msgstr ""
 
@@ -48635,6 +48666,9 @@ msgstr ""
 msgid "Why are you signing up? (optional)"
 msgstr ""
 
+msgid "Why is this rule invalid?"
+msgstr ""
+
 msgid "Wiki"
 msgstr ""
 
@@ -51644,6 +51678,12 @@ msgstr ""
 msgid "mrWidget|%{metricsLinkStart} Memory %{metricsLinkEnd} usage is %{emphasisStart} unchanged %{emphasisEnd} at %{memoryFrom}MB"
 msgstr ""
 
+msgid "mrWidget|%{rules} invalid rule has been approved automatically, as no one can approve it."
+msgstr ""
+
+msgid "mrWidget|%{rules} invalid rules have been approved automatically, as no one can approve them."
+msgstr ""
+
 msgid "mrWidget|A merge train is a queued list of merge requests waiting to be merged into the target branch. The changes in each merge request are combined with the changes in earlier merge requests and tested before merge."
 msgstr ""
 
@@ -51669,12 +51709,6 @@ msgid "mrWidget|Approval is optional"
 msgstr ""
 
 msgid "mrWidget|Approval password is invalid."
-msgstr ""
-
-msgid "mrWidget|Approval rule %{rules} is invalid. GitLab has approved this rule automatically to unblock the merge request. %{link}"
-msgstr ""
-
-msgid "mrWidget|Approval rules %{rules} are invalid. GitLab has approved these rules automatically to unblock the merge request. %{link}"
 msgstr ""
 
 msgid "mrWidget|Approve"
@@ -51784,9 +51818,6 @@ msgid "mrWidget|Merged by"
 msgstr ""
 
 msgid "mrWidget|More information"
-msgstr ""
-
-msgid "mrWidget|No users match the rule's criteria."
 msgstr ""
 
 msgid "mrWidget|Please restore it or use a different %{type} branch."

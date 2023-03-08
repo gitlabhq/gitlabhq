@@ -1,4 +1,4 @@
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import AccessorUtilities from '~/lib/utils/accessor';
 
 import { TOAST_MESSAGE_LOCALSTORAGE_KEY, TOAST_MESSAGE_SUCCESSFUL } from '../constants';

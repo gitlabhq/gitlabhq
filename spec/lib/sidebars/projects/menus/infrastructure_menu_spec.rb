@@ -107,6 +107,22 @@ RSpec.describe Sidebars::Projects::Menus::InfrastructureMenu, feature_category: 
       let(:item_id) { :terraform }
 
       it_behaves_like 'access rights checks'
+
+      context 'if terraform_state.enabled=true' do
+        before do
+          stub_config(terraform_state: { enabled: true })
+        end
+
+        it_behaves_like 'access rights checks'
+      end
+
+      context 'if terraform_state.enabled=false' do
+        before do
+          stub_config(terraform_state: { enabled: false })
+        end
+
+        it { is_expected.to be_nil }
+      end
     end
 
     describe 'Google Cloud' do

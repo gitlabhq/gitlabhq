@@ -18,14 +18,14 @@ describe('Blob Header Viewer Switcher', () => {
     });
   }
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
+  const findSimpleViewerButton = () => wrapper.findComponent('[data-viewer="simple"]');
+  const findRichViewerButton = () => wrapper.findComponent('[data-viewer="rich"]');
 
   describe('intiialization', () => {
     it('is initialized with simple viewer as active', () => {
       createComponent();
-      expect(wrapper.vm.value).toBe(SIMPLE_BLOB_VIEWER);
+      expect(findSimpleViewerButton().props('selected')).toBe(true);
+      expect(findRichViewerButton().props('selected')).toBe(false);
     });
   });
 
@@ -52,45 +52,34 @@ describe('Blob Header Viewer Switcher', () => {
   });
 
   describe('viewer changes', () => {
-    let buttons;
-    let simpleBtn;
-    let richBtn;
+    it('does not switch the viewer if the selected one is already active', async () => {
+      createComponent();
+      expect(findSimpleViewerButton().props('selected')).toBe(true);
 
-    function factory(propsData = {}) {
-      createComponent(propsData);
-      buttons = wrapper.findAllComponents(GlButton);
-      simpleBtn = buttons.at(0);
-      richBtn = buttons.at(1);
+      findSimpleViewerButton().vm.$emit('click');
+      await nextTick();
 
-      jest.spyOn(wrapper.vm, '$emit');
-    }
-
-    it('does not switch the viewer if the selected one is already active', () => {
-      factory();
-      expect(wrapper.vm.value).toBe(SIMPLE_BLOB_VIEWER);
-      simpleBtn.vm.$emit('click');
-      expect(wrapper.vm.value).toBe(SIMPLE_BLOB_VIEWER);
-      expect(wrapper.vm.$emit).not.toHaveBeenCalled();
+      expect(findSimpleViewerButton().props('selected')).toBe(true);
+      expect(wrapper.emitted('input')).toBe(undefined);
     });
 
     it('emits an event when a Rich Viewer button is clicked', async () => {
-      factory();
-      expect(wrapper.vm.value).toBe(SIMPLE_BLOB_VIEWER);
+      createComponent();
+      expect(findSimpleViewerButton().props('selected')).toBe(true);
 
-      richBtn.vm.$emit('click');
-
+      findRichViewerButton().vm.$emit('click');
       await nextTick();
-      expect(wrapper.vm.$emit).toHaveBeenCalledWith('input', RICH_BLOB_VIEWER);
+
+      expect(wrapper.emitted('input')).toEqual([[RICH_BLOB_VIEWER]]);
     });
 
     it('emits an event when a Simple Viewer button is clicked', async () => {
-      factory({
-        value: RICH_BLOB_VIEWER,
-      });
-      simpleBtn.vm.$emit('click');
+      createComponent({ value: RICH_BLOB_VIEWER });
 
+      findSimpleViewerButton().vm.$emit('click');
       await nextTick();
-      expect(wrapper.vm.$emit).toHaveBeenCalledWith('input', SIMPLE_BLOB_VIEWER);
+
+      expect(wrapper.emitted('input')).toEqual([[SIMPLE_BLOB_VIEWER]]);
     });
   });
 });
