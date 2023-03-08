@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ::Import::GitlabProjects::CreateProjectService, :aggregate_failures do
+RSpec.describe ::Import::GitlabProjects::CreateProjectService, :aggregate_failures, feature_category: :importers do
   let(:fake_file_acquisition_strategy) do
     Class.new do
       attr_reader :errors

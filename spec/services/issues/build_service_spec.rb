@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Issues::BuildService do
+RSpec.describe Issues::BuildService, feature_category: :team_planning do
   using RSpec::Parameterized::TableSyntax
 
   let_it_be(:project) { create(:project, :repository) }

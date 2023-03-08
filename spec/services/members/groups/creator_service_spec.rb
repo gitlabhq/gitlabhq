@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Members::Groups::CreatorService do
+RSpec.describe Members::Groups::CreatorService, feature_category: :subgroups do
   let_it_be(:source, reload: true) { create(:group, :public) }
   let_it_be(:user) { create(:user) }
 

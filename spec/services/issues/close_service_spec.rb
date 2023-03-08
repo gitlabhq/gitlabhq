@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Issues::CloseService do
+RSpec.describe Issues::CloseService, feature_category: :team_planning do
   let(:project) { create(:project, :repository) }
   let(:user) { create(:user, email: "user@example.com") }
   let(:user2) { create(:user, email: "user2@example.com") }

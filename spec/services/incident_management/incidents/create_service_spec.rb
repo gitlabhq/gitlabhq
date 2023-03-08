@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe IncidentManagement::Incidents::CreateService do
+RSpec.describe IncidentManagement::Incidents::CreateService, feature_category: :incident_management do
   let_it_be(:project) { create(:project) }
   let_it_be(:user) { User.alert_bot }
 

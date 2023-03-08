@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe JiraConnect::SyncService do
+RSpec.describe JiraConnect::SyncService, feature_category: :integrations do
   include AfterNextHelpers
 
   describe '#execute' do

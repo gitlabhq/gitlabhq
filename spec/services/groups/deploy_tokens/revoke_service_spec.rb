@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Groups::DeployTokens::RevokeService do
+RSpec.describe Groups::DeployTokens::RevokeService, feature_category: :deployment_management do
   let_it_be(:entity) { create(:group) }
   let_it_be(:deploy_token) { create(:deploy_token, :group, groups: [entity]) }
   let_it_be(:user) { create(:user) }

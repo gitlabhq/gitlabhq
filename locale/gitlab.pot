@@ -28231,9 +28231,6 @@ msgstr ""
 msgid "New Snippet"
 msgstr ""
 
-msgid "New Test Case"
-msgstr ""
-
 msgid "New User"
 msgstr ""
 
@@ -42867,10 +42864,10 @@ msgstr ""
 msgid "Test"
 msgstr ""
 
-msgid "Test Cases"
+msgid "Test case"
 msgstr ""
 
-msgid "Test case"
+msgid "Test cases"
 msgstr ""
 
 msgid "Test coverage value for this pipeline was calculated by the coverage value of %d job."
@@ -42890,9 +42887,6 @@ msgid "TestCases|Move test case"
 msgstr ""
 
 msgid "TestCases|Moving test case"
-msgstr ""
-
-msgid "TestCases|New Test Case"
 msgstr ""
 
 msgid "TestCases|New test case"

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Groups::ImportExport::ImportService do
+RSpec.describe Groups::ImportExport::ImportService, feature_category: :importers do
   describe '#async_execute' do
     let_it_be(:user) { create(:user) }
     let_it_be(:group) { create(:group) }

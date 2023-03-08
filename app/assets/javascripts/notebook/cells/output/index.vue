@@ -4,8 +4,10 @@ import HtmlOutput from './html.vue';
 import ImageOutput from './image.vue';
 import LatexOutput from './latex.vue';
 import MarkdownOutput from './markdown.vue';
+import ErrorOutput from './error.vue';
 
 const TEXT_MARKDOWN = 'text/markdown';
+const ERROR_OUTPUT_TYPE = 'error';
 
 export default {
   props: {
@@ -28,6 +30,8 @@ export default {
     outputType(output) {
       if (output.text) {
         return 'text/plain';
+      } else if (output.output_type === ERROR_OUTPUT_TYPE) {
+        return 'error';
       } else if (output.data['image/png']) {
         return 'image/png';
       } else if (output.data['image/jpeg']) {
@@ -56,6 +60,8 @@ export default {
     getComponent(output) {
       if (output.text) {
         return CodeOutput;
+      } else if (output.output_type === ERROR_OUTPUT_TYPE) {
+        return ErrorOutput;
       } else if (output.data['image/png']) {
         return ImageOutput;
       } else if (output.data['image/jpeg']) {
@@ -78,6 +84,10 @@ export default {
           return output.text;
         }
         return output.text.join('');
+      }
+
+      if (output.output_type === ERROR_OUTPUT_TYPE) {
+        return output.traceback;
       }
 
       return this.dataForType(output, this.outputType(output));

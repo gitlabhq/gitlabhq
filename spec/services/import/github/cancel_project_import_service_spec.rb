@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Import::Github::CancelProjectImportService do
+RSpec.describe Import::Github::CancelProjectImportService, feature_category: :importers do
   subject(:import_cancel) { described_class.new(project, project.owner) }
 
   let_it_be(:user) { create(:user) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Members::Projects::CreatorService do
+RSpec.describe Members::Projects::CreatorService, feature_category: :projects do
   let_it_be(:source, reload: true) { create(:project, :public) }
   let_it_be(:user) { create(:user) }
 

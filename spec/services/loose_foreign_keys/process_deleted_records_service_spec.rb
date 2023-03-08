@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe LooseForeignKeys::ProcessDeletedRecordsService do
+RSpec.describe LooseForeignKeys::ProcessDeletedRecordsService, feature_category: :database do
   include MigrationsHelpers
 
   def create_table_structure

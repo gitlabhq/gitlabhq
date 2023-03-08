@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Issues::ReopenService do
+RSpec.describe Issues::ReopenService, feature_category: :team_planning do
   let(:project) { create(:project) }
   let(:issue) { create(:issue, :closed, project: project) }
 

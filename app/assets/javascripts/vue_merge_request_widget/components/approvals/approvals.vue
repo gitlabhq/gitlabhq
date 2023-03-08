@@ -1,6 +1,6 @@
 <script>
 import { GlButton, GlSprintf, GlLink } from '@gitlab/ui';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { BV_SHOW_MODAL } from '~/lib/utils/constants';
 import { HTTP_STATUS_UNAUTHORIZED } from '~/lib/utils/http_status';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';

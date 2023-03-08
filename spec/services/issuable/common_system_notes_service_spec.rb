@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Issuable::CommonSystemNotesService do
+RSpec.describe Issuable::CommonSystemNotesService, feature_category: :team_planning do
   let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user) }
 

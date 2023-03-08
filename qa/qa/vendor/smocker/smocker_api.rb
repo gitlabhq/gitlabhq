@@ -113,6 +113,14 @@ module QA
           end
         end
 
+        # Returns a stringfied version of the Smocker history
+        #
+        # @param session_name [String] the session name for the mock
+        # @return [String] stringified event payloads
+        def stringified_history(session_name = nil)
+          history(session_name).map(&:payload).join("\n")
+        end
+
         private
 
         attr_reader :host, :public_port, :admin_port, :scheme

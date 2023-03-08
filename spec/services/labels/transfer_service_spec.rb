@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Labels::TransferService do
+RSpec.describe Labels::TransferService, feature_category: :team_planning do
   shared_examples 'transfer labels' do
     describe '#execute' do
       let_it_be(:user) { create(:user) }

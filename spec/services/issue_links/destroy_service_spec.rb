@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe IssueLinks::DestroyService do
+RSpec.describe IssueLinks::DestroyService, feature_category: :team_planning do
   describe '#execute' do
     let_it_be(:project) { create(:project_empty_repo, :private) }
     let_it_be(:user) { create(:user) }

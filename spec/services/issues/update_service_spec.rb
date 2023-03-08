@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Issues::UpdateService, :mailer do
+RSpec.describe Issues::UpdateService, :mailer, feature_category: :team_planning do
   let_it_be(:user) { create(:user) }
   let_it_be(:user2) { create(:user) }
   let_it_be(:user3) { create(:user) }

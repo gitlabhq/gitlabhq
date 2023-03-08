@@ -14,7 +14,7 @@ import {
 import { isEmpty } from 'lodash';
 import readyToMergeMixin from 'ee_else_ce/vue_merge_request_widget/mixins/ready_to_merge';
 import readyToMergeQuery from 'ee_else_ce/vue_merge_request_widget/queries/states/ready_to_merge.query.graphql';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { TYPENAME_MERGE_REQUEST } from '~/graphql_shared/constants';
 import { secondsToMilliseconds } from '~/lib/utils/datetime_utility';
 import simplePoll from '~/lib/utils/simple_poll';

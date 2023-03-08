@@ -1,4 +1,4 @@
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { __ } from '~/locale';
 import service from '../services/contributors_service';
 import * as types from './mutation_types';

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Issues::ResolveDiscussions do
+RSpec.describe Issues::ResolveDiscussions, feature_category: :team_planning do
   let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
 

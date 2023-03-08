@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe Groups::AutoDevopsService, '#execute' do
+RSpec.describe Groups::AutoDevopsService, '#execute', feature_category: :auto_devops do
   let_it_be(:group) { create(:group) }
   let_it_be(:user) { create(:user) }
 

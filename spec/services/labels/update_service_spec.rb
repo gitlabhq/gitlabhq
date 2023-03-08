@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Labels::UpdateService do
+RSpec.describe Labels::UpdateService, feature_category: :team_planning do
   describe '#execute' do
     let(:project) { create(:project) }
 

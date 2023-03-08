@@ -1,7 +1,7 @@
 <script>
 import { GlButton, GlLink, GlModal, GlSkeletonLoader } from '@gitlab/ui';
 import { helpPagePath } from '~/helpers/help_page_helper';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { __, s__ } from '~/locale';
 import toast from '~/vue_shared/plugins/global_toast';
 import simplePoll from '~/lib/utils/simple_poll';

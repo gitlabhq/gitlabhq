@@ -450,6 +450,8 @@ namespace :gitlab do
 
       desc 'Generate database docs yaml'
       task generate: :environment do
+        next if Gitlab.jh?
+
         FileUtils.mkdir_p(DB_DOCS_PATH)
         FileUtils.mkdir_p(EE_DICTIONARY_PATH) if Gitlab.ee?
 

@@ -1,5 +1,5 @@
 import Api from '~/api';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { visitUrl, setUrlParams } from '~/lib/utils/url_utility';
 import { logError } from '~/lib/logger';

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Groups::NestedCreateService do
+RSpec.describe Groups::NestedCreateService, feature_category: :subgroups do
   let(:user) { create(:user) }
 
   subject(:service) { described_class.new(user, params) }

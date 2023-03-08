@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Keys::LastUsedService do
+RSpec.describe Keys::LastUsedService, feature_category: :source_code_management do
   describe '#execute', :clean_gitlab_redis_shared_state do
     it 'updates the key when it has not been used recently' do
       key = create(:key, last_used_at: 1.year.ago)
