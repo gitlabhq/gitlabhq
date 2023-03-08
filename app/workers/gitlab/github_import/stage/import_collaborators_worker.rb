@@ -3,7 +3,7 @@
 module Gitlab
   module GithubImport
     module Stage
-      class ImportPullRequestsWorker # rubocop:disable Scalability/IdempotentWorker
+      class ImportCollaboratorsWorker # rubocop:disable Scalability/IdempotentWorker
         include ApplicationWorker
 
         data_consistency :always
@@ -15,8 +15,8 @@ module Gitlab
         # client - An instance of Gitlab::GithubImport::Client.
         # project - An instance of Project.
         def import(client, project)
-          info(project.id, message: "starting importer", importer: 'Importer::PullRequestsImporter')
-          waiter = Importer::PullRequestsImporter
+          info(project.id, message: "starting importer", importer: 'Importer::CollaboratorsImporter')
+          waiter = Importer::CollaboratorsImporter
             .new(project, client)
             .execute
 
@@ -25,7 +25,7 @@ module Gitlab
           AdvanceStageWorker.perform_async(
             project.id,
             { waiter.key => waiter.jobs_remaining },
-            :collaborators
+            :pull_requests_merged_by
           )
         rescue StandardError => e
           Gitlab::Import::ImportFailureService.track(

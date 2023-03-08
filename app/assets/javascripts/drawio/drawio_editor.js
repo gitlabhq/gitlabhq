@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { createAlert, VARIANT_SUCCESS } from '~/flash';
+import { createAlert, VARIANT_SUCCESS } from '~/alert';
 import { darkModeEnabled } from '~/lib/utils/color_utils';
 import { __ } from '~/locale';
 import { setAttributes } from '~/lib/utils/dom_utils';

@@ -1,7 +1,7 @@
 <script>
 import { GlButton, GlLink, GlTooltipDirective } from '@gitlab/ui';
 import * as Sentry from '@sentry/browser';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { __, s__ } from '~/locale';
 import ReplyPlaceholder from '~/notes/components/discussion_reply_placeholder.vue';
 import { updateGlobalTodoCount } from '~/sidebar/utils';

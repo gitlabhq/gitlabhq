@@ -14558,6 +14558,18 @@ CREATE SEQUENCE container_repositories_id_seq
 
 ALTER SEQUENCE container_repositories_id_seq OWNED BY container_repositories.id;
 
+CREATE TABLE container_repository_states (
+    verification_started_at timestamp with time zone,
+    verification_retry_at timestamp with time zone,
+    verified_at timestamp with time zone,
+    container_repository_id bigint NOT NULL,
+    verification_state smallint DEFAULT 0 NOT NULL,
+    verification_retry_count smallint DEFAULT 0 NOT NULL,
+    verification_checksum bytea,
+    verification_failure text,
+    CONSTRAINT check_c96417dbc5 CHECK ((char_length(verification_failure) <= 255))
+);
+
 CREATE TABLE content_blocked_states (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -26480,6 +26492,9 @@ ALTER TABLE ONLY container_expiration_policies
 ALTER TABLE ONLY container_repositories
     ADD CONSTRAINT container_repositories_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY container_repository_states
+    ADD CONSTRAINT container_repository_states_pkey PRIMARY KEY (container_repository_id);
+
 ALTER TABLE ONLY content_blocked_states
     ADD CONSTRAINT content_blocked_states_pkey PRIMARY KEY (id);
 
@@ -29868,6 +29883,14 @@ CREATE UNIQUE INDEX index_container_repositories_on_project_id_and_name ON conta
 CREATE INDEX index_container_repositories_on_status_and_id ON container_repositories USING btree (status, id) WHERE (status IS NOT NULL);
 
 CREATE INDEX index_container_repository_on_name_trigram ON container_repositories USING gin (name gin_trgm_ops);
+
+CREATE INDEX index_container_repository_states_failed_verification ON container_repository_states USING btree (verification_retry_at NULLS FIRST) WHERE (verification_state = 3);
+
+CREATE INDEX index_container_repository_states_needs_verification ON container_repository_states USING btree (verification_state) WHERE ((verification_state = 0) OR (verification_state = 3));
+
+CREATE INDEX index_container_repository_states_on_verification_state ON container_repository_states USING btree (verification_state);
+
+CREATE INDEX index_container_repository_states_pending_verification ON container_repository_states USING btree (verified_at NULLS FIRST) WHERE (verification_state = 0);
 
 CREATE UNIQUE INDEX index_content_blocked_states_on_container_id_commit_sha_path ON content_blocked_states USING btree (container_identifier, commit_sha, path);
 
@@ -35615,6 +35638,9 @@ ALTER TABLE ONLY sbom_component_versions
 
 ALTER TABLE ONLY status_page_published_incidents
     ADD CONSTRAINT fk_rails_61e5493940 FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY container_repository_states
+    ADD CONSTRAINT fk_rails_63436c99ce FOREIGN KEY (container_repository_id) REFERENCES container_repositories(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY deployment_clusters
     ADD CONSTRAINT fk_rails_6359a164df FOREIGN KEY (deployment_id) REFERENCES deployments(id) ON DELETE CASCADE;

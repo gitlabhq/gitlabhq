@@ -1,5 +1,5 @@
 import * as Sentry from '@sentry/browser';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { convertToFixedRange } from '~/lib/utils/datetime_range';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';

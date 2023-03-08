@@ -1,7 +1,7 @@
 <script>
 import { GlBadge, GlToggle, GlDisclosureDropdownItem } from '@gitlab/ui';
 import axios from '~/lib/utils/axios_utils';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { s__ } from '~/locale';
 import Tracking from '~/tracking';
 

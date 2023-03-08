@@ -323,6 +323,12 @@ configuration option in `gitlab.yml`. These metrics are served from the
 | `geo_container_repositories_synced`    | Gauge   | 15.4  | Number of container repositories synced on secondary | `url` |
 | `geo_container_repositories_failed`    | Gauge   | 15.4  | Number of syncable container repositories failed to sync on secondary | `url` |
 | `geo_container_repositories_registry`  | Gauge   | 15.4  | Number of container repositories in the registry | `url` |
+| `geo_container_repositories_checksum_total`           | Gauge   | 15.10  | Number of container repositories checksummed successfully on primary | `url` |
+| `geo_container_repositories_checksummed`    | Gauge   | 15.10  | Number of container repositories tried to checksum on primary | `url` |
+| `geo_container_repositories_checksum_failed`    | Gauge   | 15.10  | Number of container repositories failed to calculate the checksum on primary | `url` |
+| `geo_container_repositories_verification_total`  | Gauge   | 15.10  | Number of container repositories' verifications tried on secondary | `url` |
+| `geo_container_repositories_verified`    | Gauge   | 15.10  | Number of container repositories verified on secondary | `url` |
+| `geo_container_repositories_verification_failed`    | Gauge   | 15.10  | Number of container repositories' failed verifications on secondary | `url` |
 | `geo_ci_secure_files`                            | Gauge   | 15.3  | Number of secure files on primary | `url` |
 | `geo_ci_secure_files_checksum_total`             | Gauge   | 15.3  | Number of secure files to checksum on primary | `url` |
 | `geo_ci_secure_files_checksummed`                | Gauge   | 15.3  | Number of secure files that successfully calculated the checksum on primary | `url` |

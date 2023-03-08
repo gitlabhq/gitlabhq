@@ -19,6 +19,8 @@ module Gitlab
         worker_has_external_dependencies!
       end
 
+      NotRetriableError = Class.new(StandardError)
+
       # project - An instance of `Project` to import the data into.
       # client - An instance of `Gitlab::GithubImport::Client`
       # hash - A Hash containing the details of the object to import.
@@ -47,7 +49,7 @@ module Gitlab
         # Representation is created but the developer forgot to add a
         # `:github_identifiers` field.
         track_and_raise_exception(project, e, fail_import: true)
-      rescue ActiveRecord::RecordInvalid => e
+      rescue ActiveRecord::RecordInvalid, NotRetriableError => e
         # We do not raise exception to prevent job retry
         track_exception(project, e)
       rescue StandardError => e

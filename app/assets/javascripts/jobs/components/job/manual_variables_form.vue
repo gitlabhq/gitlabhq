@@ -11,7 +11,7 @@ import {
 } from '@gitlab/ui';
 import { cloneDeep, uniqueId } from 'lodash';
 import { fetchPolicies } from '~/lib/graphql';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { TYPENAME_CI_BUILD, TYPENAME_COMMIT_STATUS } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { JOB_GRAPHQL_ERRORS } from '~/jobs/constants';

@@ -1,6 +1,6 @@
 import { propertyOf } from 'lodash';
 import getDesignListQuery from 'shared_queries/design_management/get_design_list.query.graphql';
-import { createAlert, VARIANT_WARNING } from '~/flash';
+import { createAlert, VARIANT_WARNING } from '~/alert';
 import { s__ } from '~/locale';
 import { DESIGNS_ROUTE_NAME } from '../router/constants';
 import allVersionsMixin from './all_versions';

@@ -472,7 +472,7 @@ for _, val := range s1 {
 **Do:**
 
 ```golang
-s2 := make([]string, 0, size)
+s2 := make([]string, 0, len(s1))
 for _, val := range s1 {
     s2 = append(s2, val)
 }

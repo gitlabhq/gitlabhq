@@ -16,6 +16,7 @@ const STATISTIC_ITEMS = {
   note: __('Notes'),
   note_attachment: s__('GithubImporter|Note links'),
   protected_branch: __('Protected branches'),
+  collaborator: s__('GithubImporter|Collaborators'),
   pull_request: s__('GithubImporter|Pull requests'),
   pull_request_merged_by: s__('GithubImporter|PR mergers'),
   pull_request_review: s__('GithubImporter|PR reviews'),

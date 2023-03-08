@@ -2,7 +2,7 @@
 import { GlIcon } from '@gitlab/ui';
 import $ from 'jquery';
 import { debounce, unescape } from 'lodash';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import GLForm from '~/gl_form';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import axios from '~/lib/utils/axios_utils';

@@ -209,6 +209,7 @@ The following items of a project are imported:
 - Repository description.
 - Git repository data.
 - Branch protection rules. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/22650) in GitLab 15.4.
+- Collaborators (members). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/388716) in GitLab 15.10.
 - Issues.
 - Pull requests.
 - Wiki pages.
@@ -266,6 +267,24 @@ Mapping GitHub rule **Require status checks to pass before merging** to
 [370948](https://gitlab.com/gitlab-org/gitlab/-/issues/370948). However, this rule is not imported during project import
 into GitLab due to technical difficulties. You can still create [external status checks](../merge_requests/status_checks.md)
 manually.
+
+### Collaborators (members)
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/388716) in GitLab 15.10.
+
+These GitHub collaborator roles are mapped to these GitLab [member roles](../../permissions.md#roles):
+
+| GitHub role | Mapped GitLab role |
+|:------------|:-------------------|
+| Read        | Guest              |
+| Triage      | Reporter           |
+| Write       | Developer          |
+| Maintain    | Maintainer         |
+| Admin       | Owner              |
+
+GitHub Enterprise Cloud has
+[custom repository roles](https://docs.github.com/en/enterprise-cloud@latest/organizations/managing-peoples-access-to-your-organization-with-roles/about-custom-repository-roles).
+These roles aren't supported and cause partial imports.
 
 ## Alternative way to import notes and diff notes
 

@@ -1,7 +1,7 @@
 <script>
 import { GlAlert, GlSkeletonLoader, GlIntersectionObserver, GlLoadingIcon } from '@gitlab/ui';
 import { __ } from '~/locale';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { setUrlParams, updateHistory, queryToObject } from '~/lib/utils/url_utility';
 import JobsFilteredSearch from '../filtered_search/jobs_filtered_search.vue';
 import { validateQueryString } from '../filtered_search/utils';

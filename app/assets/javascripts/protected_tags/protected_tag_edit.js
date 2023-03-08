@@ -1,4 +1,4 @@
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import axios from '../lib/utils/axios_utils';
 import { FAILED_TO_UPDATE_TAG_MESSAGE } from './constants';
 import ProtectedTagAccessDropdown from './protected_tag_access_dropdown';

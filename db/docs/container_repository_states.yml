@@ -1,0 +1,11 @@
+---
+table_name: container_repository_states
+description: Checksum states of container repositories for Geo verification
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111077
+milestone: 15.10
+classes:
+- Geo::ContainerRepositoryState
+feature_categories:
+- geo_replication
+gitlab_schema: gitlab_main
+
