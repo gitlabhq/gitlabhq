@@ -4,7 +4,7 @@ import $ from 'jquery';
 import { getGroups } from '~/api/groups_api';
 import { getProjects } from '~/api/projects_api';
 import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { addDelimiter } from '~/lib/utils/text_utility';
 import { __ } from '~/locale';

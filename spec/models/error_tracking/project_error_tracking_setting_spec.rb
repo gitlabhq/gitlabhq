@@ -341,12 +341,13 @@ RSpec.describe ErrorTracking::ProjectErrorTrackingSetting, feature_category: :er
 
   describe '#update_issue' do
     let(:result) { subject.update_issue(**opts) }
-    let(:opts) { { issue_id: 1, params: {} } }
+    let(:issue_id) { 1 }
+    let(:opts) { { issue_id: issue_id, params: {} } }
 
     before do
       allow(subject).to receive(:sentry_client).and_return(sentry_client)
       allow(sentry_client).to receive(:issue_details)
-        .with({ issue_id: 1 })
+        .with({ issue_id: issue_id })
         .and_return(Gitlab::ErrorTracking::DetailedError.new(project_id: sentry_project_id))
     end
 
@@ -417,6 +418,25 @@ RSpec.describe ErrorTracking::ProjectErrorTrackingSetting, feature_category: :er
 
           expect { result }.to raise_error(/The Sentry issue appers to be outside/)
         end
+      end
+    end
+
+    describe 'passing parameters to sentry client' do
+      include SentryClientHelpers
+
+      let(:sentry_url) { 'https://sentrytest.gitlab.com/api/0' }
+      let(:sentry_request_url) { "#{sentry_url}/issues/#{issue_id}/" }
+      let(:token) { 'test-token' }
+      let(:sentry_client) { ErrorTracking::SentryClient.new(sentry_url, token) }
+
+      before do
+        stub_sentry_request(sentry_request_url, :put, body: true)
+
+        allow(sentry_client).to receive(:update_issue).and_call_original
+      end
+
+      it 'returns the successful response' do
+        expect(result).to eq(updated: true)
       end
     end
   end

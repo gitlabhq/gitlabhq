@@ -10,7 +10,7 @@ import {
 } from '@gitlab/ui';
 
 import { s__, __ } from '~/locale';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { parseIntPagination, normalizeHeaders } from '~/lib/utils/common_utils';
 import { joinPaths } from '~/lib/utils/url_utility';
 import { getBulkImportsHistory } from '~/rest_api';

@@ -7,13 +7,28 @@ exports[`Saved replies list item component renders list item 1`] = `
   <div
     class="gl-display-flex gl-align-items-center"
   >
-    <strong>
+    <strong
+      data-testid="saved-reply-name"
+    >
       test
     </strong>
      
     <div
       class="gl-ml-auto"
     >
+      <gl-button-stub
+        aria-label="Edit"
+        buttontextclasses=""
+        category="primary"
+        class="gl-mr-3"
+        data-testid="saved-reply-edit-btn"
+        icon="pencil"
+        size="medium"
+        title="Edit"
+        to="[object Object]"
+        variant="default"
+      />
+       
       <gl-button-stub
         aria-label="Delete"
         buttontextclasses=""

@@ -177,6 +177,8 @@
   - 1
 - - elastic_namespace_rollout
   - 1
+- - elastic_namespace_update
+  - 1
 - - elastic_project_transfer
   - 1
 - - email_receiver

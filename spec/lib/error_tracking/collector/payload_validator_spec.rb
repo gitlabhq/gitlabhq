@@ -24,7 +24,7 @@ RSpec.describe ErrorTracking::Collector::PayloadValidator do
       end
 
       with_them do
-        let(:payload) { Gitlab::Json.parse(fixture_file(event_fixture)) }
+        let(:payload) { Gitlab::Json.parse(File.read(event_fixture)) }
 
         it_behaves_like 'valid payload'
       end

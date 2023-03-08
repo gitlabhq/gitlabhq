@@ -24,8 +24,8 @@ module Gitlab
           raise NotImplementedError
         end
 
-        # Indicates if we are internally injecting an 'include' into the content
-        def contains_internal_include?
+        # Indicates if we are prepending the content with an "internal" `include`
+        def internal_include_prepended?
           false
         end
 

@@ -8,24 +8,33 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import Form from '~/saved_replies/components/form.vue';
 import createSavedReplyMutation from '~/saved_replies/queries/create_saved_reply.mutation.graphql';
+import updateSavedReplyMutation from '~/saved_replies/queries/update_saved_reply.mutation.graphql';
 
 let wrapper;
 let createSavedReplyResponseSpy;
+let updateSavedReplyResponseSpy;
 
 function createMockApolloProvider(response) {
   Vue.use(VueApollo);
 
   createSavedReplyResponseSpy = jest.fn().mockResolvedValue(response);
+  updateSavedReplyResponseSpy = jest.fn().mockResolvedValue(response);
 
-  const requestHandlers = [[createSavedReplyMutation, createSavedReplyResponseSpy]];
+  const requestHandlers = [
+    [createSavedReplyMutation, createSavedReplyResponseSpy],
+    [updateSavedReplyMutation, updateSavedReplyResponseSpy],
+  ];
 
   return createMockApollo(requestHandlers);
 }
 
-function createComponent(response = createdSavedReplyResponse) {
+function createComponent(id = null, response = createdSavedReplyResponse) {
   const mockApollo = createMockApolloProvider(response);
 
   return mount(Form, {
+    propsData: {
+      id,
+    },
     apolloProvider: mockApollo,
   });
 }
@@ -52,6 +61,7 @@ describe('Saved replies form component', () => {
       await waitForPromises();
 
       expect(createSavedReplyResponseSpy).toHaveBeenCalledWith({
+        id: null,
         content: 'Test content',
         name: 'Test',
       });
@@ -72,7 +82,7 @@ describe('Saved replies form component', () => {
       ${findSavedReplyNameFormGroup}    | ${findSavedReplyContentInput} | ${'name'}
       ${findSavedReplyContentFormGroup} | ${findSavedReplyNameInput}    | ${'content'}
     `('shows errors for empty $fieldName input', async ({ findFormGroup, findInput }) => {
-      wrapper = createComponent(createdSavedReplyErrorResponse);
+      wrapper = createComponent(null, createdSavedReplyErrorResponse);
 
       findInput().setValue('Test');
       findSavedReplyFrom().trigger('submit');
@@ -83,7 +93,7 @@ describe('Saved replies form component', () => {
     });
 
     it('displays errors when mutation fails', async () => {
-      wrapper = createComponent(createdSavedReplyErrorResponse);
+      wrapper = createComponent(null, createdSavedReplyErrorResponse);
 
       findSavedReplyNameInput().setValue('Test');
       findSavedReplyContentInput().setValue('Test content');
@@ -111,6 +121,24 @@ describe('Saved replies form component', () => {
       await waitForPromises();
 
       expect(findSubmitBtn().props('loading')).toBe(false);
+    });
+  });
+
+  describe('updates saved reply', () => {
+    it('calls apollo mutation', async () => {
+      wrapper = createComponent('1');
+
+      findSavedReplyNameInput().setValue('Test');
+      findSavedReplyContentInput().setValue('Test content');
+      findSavedReplyFrom().trigger('submit');
+
+      await waitForPromises();
+
+      expect(updateSavedReplyResponseSpy).toHaveBeenCalledWith({
+        id: '1',
+        content: 'Test content',
+        name: 'Test',
+      });
     });
   });
 });

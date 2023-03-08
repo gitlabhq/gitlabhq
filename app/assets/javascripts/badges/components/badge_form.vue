@@ -3,7 +3,7 @@ import { GlLoadingIcon, GlFormInput, GlFormGroup, GlButton } from '@gitlab/ui';
 import { escape, debounce } from 'lodash';
 import { mapActions, mapState } from 'vuex';
 import SafeHtml from '~/vue_shared/directives/safe_html';
-import { createAlert, VARIANT_INFO } from '~/flash';
+import { createAlert, VARIANT_INFO } from '~/alert';
 import { s__, sprintf } from '~/locale';
 import createEmptyBadge from '../empty_badge';
 import { PLACEHOLDERS } from '../constants';

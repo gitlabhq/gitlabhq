@@ -45,8 +45,8 @@ RSpec.describe Gitlab::Ci::ProjectConfig::Repository, feature_category: :continu
     it { is_expected.to eq(:repository_source) }
   end
 
-  describe '#contains_internal_include?' do
-    subject { config.contains_internal_include? }
+  describe '#internal_include_prepended?' do
+    subject { config.internal_include_prepended? }
 
     it { is_expected.to eq(true) }
   end

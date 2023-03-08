@@ -92,10 +92,11 @@ module Gitlab
             expandset.map(&:metadata)
           end
 
-          # Some ProjectConfig sources inject an `include` into the config content. We use this
-          # method to exclude that `include` from the calculation of the total included files.
-          def contains_internal_include?
-            !!pipeline_config&.contains_internal_include?
+          # Some Ci::ProjectConfig sources prepend the config content with an "internal" `include`, which becomes
+          # the first included file. When running a pipeline, we pass pipeline_config into the context of the first
+          # included file, which we use in this method to determine if the file is an "internal" one.
+          def internal_include?
+            !!pipeline_config&.internal_include_prepended?
           end
 
           protected

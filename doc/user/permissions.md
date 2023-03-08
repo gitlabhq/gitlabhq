@@ -271,8 +271,7 @@ More details about the permissions for some project-level features follow.
 | View and download artifacts                                                                                               | ✓ (1)    | ✓ (2) | ✓        | ✓         | ✓          | ✓     |
 | View [environments](../ci/environments/index.md)                                                                          | ✓ (3)    | ✓ (3) | ✓        | ✓         | ✓          | ✓     |
 | View job logs and job details page                                                                                        | ✓ (1)    | ✓ (2) | ✓        | ✓         | ✓          | ✓     |
-| View pipeline details page                                                                                                | ✓ (1)    | ✓ (2) | ✓        | ✓         | ✓          | ✓     |
-| View pipelines page                                                                                                       | ✓ (1)    | ✓ (2) | ✓        | ✓         | ✓          | ✓     |
+| View pipelines and pipeline details pages                                                                                 | ✓ (1)    | ✓ (2) | ✓        | ✓         | ✓          | ✓     |
 | View pipelines tab in MR                                                                                                  | ✓ (3)    | ✓ (3) | ✓        | ✓         | ✓          | ✓     |
 | [View vulnerabilities in a pipeline](application_security/vulnerability_report/pipeline.md#view-vulnerabilities-in-a-pipeline) |       | ✓ (2) | ✓        | ✓         | ✓          | ✓     |
 | View and download project-level [Secure Files](../api/secure_files.md)                                                    |            |         |          | ✓         | ✓          | ✓     |

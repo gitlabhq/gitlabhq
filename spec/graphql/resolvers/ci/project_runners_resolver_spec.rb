@@ -67,7 +67,7 @@ RSpec.describe Resolvers::Ci::ProjectRunnersResolver, feature_category: :runner_
           status_status: 'active',
           type_type: :group_type,
           tag_name: ['active_runner'],
-          preload: { tag_name: false },
+          preload: false,
           search: 'abc',
           sort: 'contacted_asc',
           project: project

@@ -17,7 +17,7 @@ module Gitlab
           end
         end
 
-        def contains_internal_include?
+        def internal_include_prepended?
           true
         end
 

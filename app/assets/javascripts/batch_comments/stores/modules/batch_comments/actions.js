@@ -1,5 +1,5 @@
 import { isEmpty } from 'lodash';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { scrollToElement } from '~/lib/utils/common_utils';
 import { __ } from '~/locale';
 import { CHANGES_TAB, DISCUSSION_TAB, SHOW_TAB } from '../../../constants';

@@ -41,7 +41,7 @@ module Ci
         remove_duplicates: false).where(created_some_time_ago)
     end
 
-    def heartbeat(values)
+    def heartbeat(values, update_contacted_at: true)
       ##
       # We can safely ignore writes performed by a runner heartbeat. We do
       # not want to upgrade database connection proxy to use the primary
@@ -49,7 +49,7 @@ module Ci
       #
       ::Gitlab::Database::LoadBalancing::Session.without_sticky_writes do
         values = values&.slice(:version, :revision, :platform, :architecture, :ip_address, :config, :executor) || {}
-        values[:contacted_at] = Time.current
+        values[:contacted_at] = Time.current if update_contacted_at
         if values.include?(:executor)
           values[:executor_type] = Ci::Runner::EXECUTOR_NAME_TO_TYPES.fetch(values.delete(:executor), :unknown)
         end

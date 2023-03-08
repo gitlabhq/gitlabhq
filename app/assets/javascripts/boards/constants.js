@@ -130,6 +130,7 @@ export const MilestoneFilterType = {
   started: 'Started',
   upcoming: 'Upcoming',
 };
+/* eslint-enable @gitlab/require-i18n-strings */
 
 export const DraggableItemTypes = {
   card: 'card',

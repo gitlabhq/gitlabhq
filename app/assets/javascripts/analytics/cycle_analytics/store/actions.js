@@ -6,7 +6,7 @@ import {
   getValueStreamStageCounts,
 } from '~/api/analytics_api';
 import { normalizeHeaders, parseIntPagination } from '~/lib/utils/common_utils';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { __ } from '~/locale';
 import { DEFAULT_VALUE_STREAM, I18N_VSA_ERROR_STAGE_MEDIAN } from '../constants';
 import * as types from './mutation_types';

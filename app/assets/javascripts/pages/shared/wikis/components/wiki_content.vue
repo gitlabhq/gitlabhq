@@ -1,7 +1,7 @@
 <script>
 import { GlSkeletonLoader, GlAlert } from '@gitlab/ui';
 import SafeHtml from '~/vue_shared/directives/safe_html';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { __ } from '~/locale';
 import axios from '~/lib/utils/axios_utils';
 import { handleLocationHash } from '~/lib/utils/common_utils';

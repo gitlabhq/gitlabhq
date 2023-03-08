@@ -1,5 +1,5 @@
 import { s__ } from '~/locale';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 
 if (window.gon.features?.profileTabsVue) {
   import('~/profile')

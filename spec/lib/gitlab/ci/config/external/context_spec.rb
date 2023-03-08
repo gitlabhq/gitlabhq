@@ -7,7 +7,16 @@ RSpec.describe Gitlab::Ci::Config::External::Context, feature_category: :pipelin
   let(:user) { double('User') }
   let(:sha) { '12345' }
   let(:variables) { Gitlab::Ci::Variables::Collection.new([{ 'key' => 'a', 'value' => 'b' }]) }
-  let(:attributes) { { project: project, user: user, sha: sha, variables: variables } }
+  let(:pipeline_config) { instance_double(Gitlab::Ci::ProjectConfig) }
+  let(:attributes) do
+    {
+      project: project,
+      user: user,
+      sha: sha,
+      variables: variables,
+      pipeline_config: pipeline_config
+    }
+  end
 
   subject(:subject) { described_class.new(**attributes) }
 
@@ -20,6 +29,7 @@ RSpec.describe Gitlab::Ci::Config::External::Context, feature_category: :pipelin
       it { expect(subject.variables).to be_instance_of(Gitlab::Ci::Variables::Collection) }
       it { expect(subject.variables_hash).to be_instance_of(ActiveSupport::HashWithIndifferentAccess) }
       it { expect(subject.variables_hash).to include('a' => 'b') }
+      it { expect(subject.pipeline_config).to eq(pipeline_config) }
     end
 
     context 'without values' do
@@ -31,6 +41,7 @@ RSpec.describe Gitlab::Ci::Config::External::Context, feature_category: :pipelin
       it { expect(subject.execution_deadline).to eq(0) }
       it { expect(subject.variables).to be_instance_of(Gitlab::Ci::Variables::Collection) }
       it { expect(subject.variables_hash).to be_instance_of(ActiveSupport::HashWithIndifferentAccess) }
+      it { expect(subject.pipeline_config).to be_nil }
     end
   end
 
@@ -144,27 +155,24 @@ RSpec.describe Gitlab::Ci::Config::External::Context, feature_category: :pipelin
     it { expect(subject.sentry_payload).to match(a_hash_including(:project, :user)) }
   end
 
-  describe '#contains_internal_include?' do
+  describe '#internal_include?' do
     context 'when pipeline_config is provided' do
-      let(:pipeline_config) { instance_double(Gitlab::Ci::ProjectConfig) }
-      let(:attributes) do
-        { project: project, user: user, sha: sha, variables: variables, pipeline_config: pipeline_config }
-      end
-
       where(:value) { [true, false] }
 
       with_them do
-        it 'returns the value of .contains_internal_include?' do
-          allow(pipeline_config).to receive(:contains_internal_include?).and_return(value)
+        it 'returns the value of .internal_include_prepended?' do
+          allow(pipeline_config).to receive(:internal_include_prepended?).and_return(value)
 
-          expect(subject.contains_internal_include?).to eq(value)
+          expect(subject.internal_include?).to eq(value)
         end
       end
     end
 
     context 'when pipeline_config is not provided' do
+      let(:pipeline_config) { nil }
+
       it 'returns false' do
-        expect(subject.contains_internal_include?).to eq(false)
+        expect(subject.internal_include?).to eq(false)
       end
     end
   end

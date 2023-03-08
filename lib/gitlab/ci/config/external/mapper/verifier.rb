@@ -9,12 +9,20 @@ module Gitlab
           class Verifier < Base
             private
 
+            # rubocop: disable Metrics/CyclomaticComplexity
             def process_without_instrumentation(files)
               if ::Feature.disabled?(:ci_batch_project_includes_context, context.project)
                 return legacy_process_without_instrumentation(files)
               end
 
               files.each do |file|
+                if YamlProcessor::FeatureFlags.enabled?(:ci_fix_max_includes)
+                  # When running a pipeline, some Ci::ProjectConfig sources prepend the config content with an
+                  # "internal" `include`. We use this condition to exclude that `include` from the included file set.
+                  context.expandset << file unless context.internal_include?
+                  verify_max_includes!
+                end
+
                 verify_execution_time!
 
                 file.validate_location!
@@ -31,19 +39,26 @@ module Gitlab
 
               # We do not combine the loops because we need to load the content of all files via `BatchLoader`.
               files.each do |file| # rubocop:disable Style/CombinableLoops
-                # Checking the max includes will be changed with https://gitlab.com/gitlab-org/gitlab/-/issues/367150
-                verify_max_includes!
+                verify_max_includes! unless YamlProcessor::FeatureFlags.enabled?(:ci_fix_max_includes)
                 verify_execution_time!
 
                 file.validate_content! if file.valid?
                 file.load_and_validate_expanded_hash! if file.valid?
 
-                context.expandset << file
+                context.expandset << file unless YamlProcessor::FeatureFlags.enabled?(:ci_fix_max_includes)
               end
             end
+            # rubocop: enable Metrics/CyclomaticComplexity
 
             def legacy_process_without_instrumentation(files)
               files.each do |file|
+                if YamlProcessor::FeatureFlags.enabled?(:ci_fix_max_includes)
+                  # When running a pipeline, some Ci::ProjectConfig sources prepend the config content with an
+                  # "internal" `include`. We use this condition to exclude that `include` from the included file set.
+                  context.expandset << file unless context.internal_include?
+                  verify_max_includes!
+                end
+
                 verify_execution_time!
 
                 file.validate_location!
@@ -54,19 +69,22 @@ module Gitlab
               # We do not combine the loops because we need to load the content of all files before continuing
               # to call `BatchLoader` for all locations.
               files.each do |file| # rubocop:disable Style/CombinableLoops
-                # Checking the max includes will be changed with https://gitlab.com/gitlab-org/gitlab/-/issues/367150
-                verify_max_includes!
+                verify_max_includes! unless YamlProcessor::FeatureFlags.enabled?(:ci_fix_max_includes)
                 verify_execution_time!
 
                 file.validate_content! if file.valid?
                 file.load_and_validate_expanded_hash! if file.valid?
 
-                context.expandset << file
+                context.expandset << file unless YamlProcessor::FeatureFlags.enabled?(:ci_fix_max_includes)
               end
             end
 
             def verify_max_includes!
-              return if context.expandset.count < context.max_includes
+              if YamlProcessor::FeatureFlags.enabled?(:ci_fix_max_includes)
+                return if context.expandset.count <= context.max_includes
+              else
+                return if context.expandset.count < context.max_includes # rubocop:disable Style/IfInsideElse
+              end
 
               raise Mapper::TooManyIncludesError, "Maximum of #{context.max_includes} nested includes are allowed!"
             end

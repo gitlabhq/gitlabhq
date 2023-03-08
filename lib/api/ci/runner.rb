@@ -85,7 +85,11 @@ module API
           optional :system_id, type: String, desc: %q(The runner's system identifier)
         end
         post '/verify', urgency: :low, feature_category: :runner do
-          authenticate_runner!
+          # For runners that were created in the UI, we want to update the contacted_at value
+          # only when it starts polling for jobs
+          registering_created_runner = params[:token].start_with?(::Ci::Runner::CREATED_RUNNER_TOKEN_PREFIX)
+
+          authenticate_runner!(update_contacted_at: !registering_created_runner)
           status 200
 
           present current_runner, with: Entities::Ci::RunnerRegistrationDetails

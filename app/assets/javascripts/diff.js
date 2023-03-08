@@ -1,6 +1,6 @@
 import $ from 'jquery';
 import { merge } from 'lodash';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { __ } from '~/locale';
 import FilesCommentButton from './files_comment_button';

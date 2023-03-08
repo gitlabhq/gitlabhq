@@ -6,11 +6,13 @@ RSpec.describe 'Query.runner(id)', feature_category: :runner_fleet do
   include GraphqlHelpers
 
   let_it_be(:user) { create(:user, :admin) }
+  let_it_be(:another_admin) { create(:user, :admin) }
   let_it_be(:group) { create(:group) }
 
   let_it_be(:active_instance_runner) do
     create(:ci_runner, :instance,
       description: 'Runner 1',
+      creator: user,
       contacted_at: 2.hours.ago,
       active: true,
       version: 'adfe156',
@@ -28,6 +30,7 @@ RSpec.describe 'Query.runner(id)', feature_category: :runner_fleet do
   let_it_be(:inactive_instance_runner) do
     create(:ci_runner, :instance,
       description: 'Runner 2',
+      creator: another_admin,
       contacted_at: 1.day.ago,
       active: false,
       version: 'adfe157',
@@ -77,6 +80,7 @@ RSpec.describe 'Query.runner(id)', feature_category: :runner_fleet do
       expect(runner_data).to match a_graphql_entity_for(
         runner,
         description: runner.description,
+        created_by: runner.creator ? a_graphql_entity_for(runner.creator) : nil,
         created_at: runner.created_at&.iso8601,
         contacted_at: runner.contacted_at&.iso8601,
         version: runner.version,
@@ -117,6 +121,23 @@ RSpec.describe 'Query.runner(id)', feature_category: :runner_fleet do
         }
       )
       expect(runner_data['tagList']).to match_array runner.tag_list
+    end
+
+    it 'does not execute more queries per runner', :aggregate_failures do
+      # warm-up license cache and so on:
+      personal_access_token = create(:personal_access_token, user: user)
+      args = { current_user: user, token: { personal_access_token: personal_access_token } }
+      post_graphql(query, **args)
+      expect(graphql_data_at(:runner)).not_to be_nil
+
+      personal_access_token = create(:personal_access_token, user: another_admin)
+      args = { current_user: another_admin, token: { personal_access_token: personal_access_token } }
+      control = ActiveRecord::QueryRecorder.new { post_graphql(query, **args) }
+
+      create(:ci_runner, :instance, version: '14.0.0', tag_list: %w[tag5 tag6], creator: another_admin)
+      create(:ci_runner, :project, version: '14.0.1', projects: [project1], tag_list: %w[tag3 tag8], creator: another_admin)
+
+      expect { post_graphql(query, **args) }.not_to exceed_query_limit(control)
     end
   end
 
@@ -648,6 +669,12 @@ RSpec.describe 'Query.runner(id)', feature_category: :runner_fleet do
       <<~SINGLE
         runner(id: "#{runner.to_global_id}") {
           #{all_graphql_fields_for('CiRunner', excluded: excluded_fields)}
+          createdBy {
+            id
+            username
+            webPath
+            webUrl
+          }
           groups {
             nodes {
               id
@@ -678,7 +705,7 @@ RSpec.describe 'Query.runner(id)', feature_category: :runner_fleet do
     let(:active_group_runner2) { create(:ci_runner, :group) }
 
     # Exclude fields that are already hardcoded above
-    let(:excluded_fields) { %w[jobs groups projects ownerProject] }
+    let(:excluded_fields) { %w[createdBy jobs groups projects ownerProject] }
 
     let(:single_query) do
       <<~QUERY
@@ -711,6 +738,8 @@ RSpec.describe 'Query.runner(id)', feature_category: :runner_fleet do
 
       control = ActiveRecord::QueryRecorder.new { post_graphql(single_query, **args) }
 
+      personal_access_token = create(:personal_access_token, user: another_admin)
+      args = { current_user: another_admin, token: { personal_access_token: personal_access_token } }
       expect { post_graphql(double_query, **args) }.not_to exceed_query_limit(control)
 
       expect(graphql_data.count).to eq 6

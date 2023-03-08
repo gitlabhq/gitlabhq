@@ -2030,4 +2030,13 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
       end
     end
   end
+
+  describe '.with_creator' do
+    subject { described_class.with_creator }
+
+    let!(:user) { create(:admin) }
+    let!(:runner) { create(:ci_runner, creator: user) }
+
+    it { is_expected.to contain_exactly(runner) }
+  end
 end

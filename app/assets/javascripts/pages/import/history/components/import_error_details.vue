@@ -1,7 +1,7 @@
 <script>
 import { GlLoadingIcon } from '@gitlab/ui';
 import API from '~/api';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { DEFAULT_ERROR } from '../utils/error_messages';
 
 export default {

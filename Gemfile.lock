@@ -314,7 +314,7 @@ GEM
     creole (0.5.0)
     crystalball (0.7.0)
       git
-    css_parser (1.12.0)
+    css_parser (1.14.0)
       addressable
     cvss-suite (3.0.1)
     danger (8.6.1)

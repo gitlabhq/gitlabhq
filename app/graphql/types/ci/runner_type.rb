@@ -31,6 +31,9 @@ module Types
                                             method: :contacted_at
       field :created_at, Types::TimeType, null: true,
                                           description: 'Timestamp of creation of this runner.'
+      field :created_by, Types::UserType, null: true,
+                                          description: 'User that created this runner.',
+                                          method: :creator
       field :description, GraphQL::Types::String, null: true,
                                                   description: 'Description of the runner.'
       field :edit_admin_url, GraphQL::Types::String, null: true,

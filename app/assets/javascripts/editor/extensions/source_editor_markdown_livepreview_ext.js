@@ -1,7 +1,7 @@
 import { KeyMod, KeyCode, Emitter } from 'monaco-editor';
 import { debounce } from 'lodash';
 import { BLOB_PREVIEW_ERROR } from '~/blob_edit/constants';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { sanitize } from '~/lib/dompurify';
 import axios from '~/lib/utils/axios_utils';
 import syntaxHighlight from '~/syntax_highlight';

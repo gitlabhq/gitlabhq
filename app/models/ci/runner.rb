@@ -188,6 +188,7 @@ module Ci
     scope :order_token_expires_at_asc, -> { order(token_expires_at: :asc) }
     scope :order_token_expires_at_desc, -> { order(token_expires_at: :desc) }
     scope :with_tags, -> { preload(:tags) }
+    scope :with_creator, -> { preload(:creator) }
 
     validate :tag_constraints
     validates :access_level, presence: true
@@ -437,7 +438,7 @@ module Ci
       ensure_runner_queue_value == value if value.present?
     end
 
-    def heartbeat(values)
+    def heartbeat(values, update_contacted_at: true)
       ##
       # We can safely ignore writes performed by a runner heartbeat. We do
       # not want to upgrade database connection proxy to use the primary
@@ -445,7 +446,7 @@ module Ci
       #
       ::Gitlab::Database::LoadBalancing::Session.without_sticky_writes do
         values = values&.slice(:version, :revision, :platform, :architecture, :ip_address, :config, :executor) || {}
-        values[:contacted_at] = Time.current
+        values[:contacted_at] = Time.current if update_contacted_at
         if values.include?(:executor)
           values[:executor_type] = EXECUTOR_NAME_TO_TYPES.fetch(values.delete(:executor), :unknown)
         end

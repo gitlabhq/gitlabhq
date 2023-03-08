@@ -318,7 +318,7 @@ The following table shows the possible return codes for API requests.
 | `400 Bad Request`        | A required attribute of the API request is missing. For example, the title of an issue is not given. |
 | `401 Unauthorized`       | The user isn't authenticated. A valid [user token](#authentication) is necessary. |
 | `403 Forbidden`          | The request isn't allowed. For example, the user isn't allowed to delete a project. |
-| `404 Not Found`          | A resource couldn't be accessed. For example, an ID for a resource couldn't be found. |
+| `404 Not Found`          | A resource couldn't be accessed. For example, an ID for a resource couldn't be found, or the user isn't authorized to access the resource. |
 | `405 Method Not Allowed` | The request isn't supported. |
 | `409 Conflict`           | A conflicting resource already exists. For example, creating a project with a name that already exists. |
 | `412 Precondition Failed`| The request was denied. This can happen if the `If-Unmodified-Since` header is provided when trying to delete a resource, which was modified in between. |

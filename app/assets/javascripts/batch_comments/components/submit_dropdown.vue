@@ -9,7 +9,7 @@ import {
   GlFormCheckbox,
 } from '@gitlab/ui';
 import { mapGetters, mapActions } from 'vuex';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
 import { scrollToElement } from '~/lib/utils/common_utils';
 import Autosave from '~/autosave';

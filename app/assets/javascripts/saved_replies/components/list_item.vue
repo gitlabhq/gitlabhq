@@ -2,6 +2,7 @@
 import { uniqueId } from 'lodash';
 import { GlButton, GlModal, GlModalDirective, GlSprintf, GlTooltipDirective } from '@gitlab/ui';
 import { __ } from '~/locale';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import deleteSavedReplyMutation from '../queries/delete_saved_reply.mutation.graphql';
 
 export default {
@@ -25,6 +26,11 @@ export default {
       isDeleting: false,
       modalId: uniqueId('delete-saved-reply-'),
     };
+  },
+  computed: {
+    id() {
+      return getIdFromGraphQLId(this.reply.id);
+    },
   },
   methods: {
     onDelete() {
@@ -50,8 +56,17 @@ export default {
 <template>
   <li class="gl-mb-5">
     <div class="gl-display-flex gl-align-items-center">
-      <strong>{{ reply.name }}</strong>
+      <strong data-testid="saved-reply-name">{{ reply.name }}</strong>
       <div class="gl-ml-auto">
+        <gl-button
+          v-gl-tooltip
+          :to="{ name: 'edit', params: { id: id } }"
+          icon="pencil"
+          :title="__('Edit')"
+          :aria-label="__('Edit')"
+          class="gl-mr-3"
+          data-testid="saved-reply-edit-btn"
+        />
         <gl-button
           v-gl-modal="modalId"
           v-gl-tooltip

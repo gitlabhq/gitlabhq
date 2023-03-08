@@ -83,7 +83,7 @@ RSpec.describe Resolvers::Ci::RunnersResolver, feature_category: :runner_fleet d
             upgrade_status: 'recommended',
             type_type: :instance_type,
             tag_name: ['active_runner'],
-            preload: { tag_name: false },
+            preload: false,
             search: 'abc',
             sort: 'contacted_asc'
           }
@@ -108,7 +108,7 @@ RSpec.describe Resolvers::Ci::RunnersResolver, feature_category: :runner_fleet d
         let(:expected_params) do
           {
             active: false,
-            preload: { tag_name: false }
+            preload: false
           }
         end
 
@@ -128,7 +128,7 @@ RSpec.describe Resolvers::Ci::RunnersResolver, feature_category: :runner_fleet d
         let(:expected_params) do
           {
             active: false,
-            preload: { tag_name: false }
+            preload: false
           }
         end
 
@@ -146,9 +146,7 @@ RSpec.describe Resolvers::Ci::RunnersResolver, feature_category: :runner_fleet d
         end
 
         let(:expected_params) do
-          {
-            preload: { tag_name: false }
-          }
+          { preload: false }
         end
 
         it 'calls RunnersFinder with expected arguments' do

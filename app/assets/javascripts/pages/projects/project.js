@@ -4,7 +4,7 @@ import $ from 'jquery';
 import { setCookie } from '~/lib/utils/common_utils';
 import initClonePanel from '~/clone_panel';
 import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { serializeForm } from '~/lib/utils/forms';
 import { mergeUrlParams } from '~/lib/utils/url_utility';

@@ -17,7 +17,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
   end
 
   describe '/api/v4/runners' do
-    describe 'POST /api/v4/runners/verify' do
+    describe 'POST /api/v4/runners/verify', :freeze_time do
       let_it_be_with_reload(:runner) { create(:ci_runner, token_expires_at: 3.days.from_now) }
 
       let(:params) {}
@@ -50,6 +50,30 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
             stub_feature_flags(create_runner_machine: true)
           end
 
+          context 'with glrt-prefixed token' do
+            let_it_be(:registration_token) { 'glrt-abcdefg123456' }
+            let_it_be(:registration_type) { :authenticated_user }
+            let_it_be(:runner) do
+              create(:ci_runner, registration_type: registration_type,
+                token: registration_token, token_expires_at: 3.days.from_now)
+            end
+
+            it 'verifies Runner credentials' do
+              verify
+
+              expect(response).to have_gitlab_http_status(:ok)
+              expect(json_response).to eq({
+                'id' => runner.id,
+                'token' => runner.token,
+                'token_expires_at' => runner.token_expires_at.iso8601(3)
+              })
+            end
+
+            it 'does not update contacted_at' do
+              expect { verify }.not_to change { runner.reload.contacted_at }.from(nil)
+            end
+          end
+
           it 'verifies Runner credentials' do
             verify
 
@@ -59,6 +83,10 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
               'token' => runner.token,
               'token_expires_at' => runner.token_expires_at.iso8601(3)
             })
+          end
+
+          it 'updates contacted_at' do
+            expect { verify }.to change { runner.reload.contacted_at }.from(nil).to(Time.current)
           end
 
           context 'with non-expiring runner token' do

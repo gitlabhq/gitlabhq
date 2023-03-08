@@ -5,6 +5,7 @@ import { helpPagePath } from '~/helpers/help_page_helper';
 import { logError } from '~/lib/logger';
 import { __ } from '~/locale';
 import createSavedReplyMutation from '../queries/create_saved_reply.mutation.graphql';
+import updateSavedReplyMutation from '../queries/update_saved_reply.mutation.graphql';
 
 export default {
   components: {
@@ -15,14 +16,31 @@ export default {
     GlAlert,
     MarkdownField,
   },
+  props: {
+    id: {
+      type: String,
+      required: false,
+      default: null,
+    },
+    name: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    content: {
+      type: String,
+      required: false,
+      default: '',
+    },
+  },
   data() {
     return {
       errors: [],
       saving: false,
       showValidation: false,
       updateSavedReply: {
-        name: '',
-        content: '',
+        name: this.name,
+        content: this.content,
       },
     };
   },
@@ -52,8 +70,9 @@ export default {
 
       this.$apollo
         .mutate({
-          mutation: createSavedReplyMutation,
+          mutation: this.id ? updateSavedReplyMutation : createSavedReplyMutation,
           variables: {
+            id: this.id,
             name: this.updateSavedReply.name,
             content: this.updateSavedReply.content,
           },
@@ -158,5 +177,6 @@ export default {
     >
       {{ __('Save') }}
     </gl-button>
+    <gl-button v-if="id" :to="{ path: '/' }">{{ __('Cancel') }}</gl-button>
   </gl-form>
 </template>

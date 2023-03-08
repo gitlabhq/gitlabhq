@@ -11,16 +11,24 @@ RSpec.describe 'Query.runners', feature_category: :runner_fleet do
     let_it_be(:instance_runner) { create(:ci_runner, :instance, version: 'abc', revision: '123', description: 'Instance runner', ip_address: '127.0.0.1') }
     let_it_be(:project_runner) { create(:ci_runner, :project, active: false, version: 'def', revision: '456', description: 'Project runner', projects: [project], ip_address: '127.0.0.1') }
 
-    let(:runners_graphql_data) { graphql_data['runners'] }
+    let(:runners_graphql_data) { graphql_data_at(:runners) }
 
     let(:params) { {} }
 
     let(:fields) do
       <<~QUERY
         nodes {
-          #{all_graphql_fields_for('CiRunner', excluded: %w[ownerProject])}
+          #{all_graphql_fields_for('CiRunner', excluded: %w[createdBy ownerProject])}
+          createdBy {
+            username
+            webPath
+            webUrl
+          }
           ownerProject {
             id
+            path
+            fullPath
+            webUrl
           }
         }
       QUERY
@@ -49,6 +57,25 @@ RSpec.describe 'Query.runners', feature_category: :runner_fleet do
 
       it 'returns expected runner' do
         expect(runners_graphql_data['nodes']).to contain_exactly(a_graphql_entity_for(expected_runner))
+      end
+
+      it 'does not execute more queries per runner', :aggregate_failures do
+        # warm-up license cache and so on:
+        personal_access_token = create(:personal_access_token, user: current_user)
+        args = { current_user: current_user, token: { personal_access_token: personal_access_token } }
+        post_graphql(query, **args)
+        expect(graphql_data_at(:runners, :nodes)).not_to be_empty
+
+        admin2 = create(:admin)
+        personal_access_token = create(:personal_access_token, user: admin2)
+        args = { current_user: admin2, token: { personal_access_token: personal_access_token } }
+        control = ActiveRecord::QueryRecorder.new { post_graphql(query, **args) }
+
+        create(:ci_runner, :instance, version: '14.0.0', tag_list: %w[tag5 tag6], creator: admin2)
+        create(:ci_runner, :project, version: '14.0.1', projects: [project], tag_list: %w[tag3 tag8],
+          creator: current_user)
+
+        expect { post_graphql(query, **args) }.not_to exceed_query_limit(control)
       end
     end
 

@@ -21,9 +21,9 @@ RSpec.describe Gitlab::Ci::ProjectConfig::Source, feature_category: :continuous_
     it { expect { source }.to raise_error(NotImplementedError) }
   end
 
-  describe '#contains_internal_include?' do
-    subject(:contains_internal_include) { custom_config.contains_internal_include? }
+  describe '#internal_include_prepended?' do
+    subject(:internal_include_prepended) { custom_config.internal_include_prepended? }
 
-    it { expect(contains_internal_include).to eq(false) }
+    it { expect(internal_include_prepended).to eq(false) }
   end
 end

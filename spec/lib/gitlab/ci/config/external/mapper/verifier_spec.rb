@@ -209,7 +209,30 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper::Verifier, feature_category:
       end
     end
 
-    context 'when total file count exceeds max_includes' do
+    describe 'max includes detection' do
+      shared_examples 'verifies max includes' do
+        context 'when total file count is equal to max_includes' do
+          before do
+            allow(context).to receive(:max_includes).and_return(expected_total_file_count)
+          end
+
+          it 'adds the expected number of files to expandset' do
+            expect { process }.not_to raise_error
+            expect(context.expandset.count).to eq(expected_total_file_count)
+          end
+        end
+
+        context 'when total file count exceeds max_includes' do
+          before do
+            allow(context).to receive(:max_includes).and_return(expected_total_file_count - 1)
+          end
+
+          it 'raises error' do
+            expect { process }.to raise_error(expected_error_class)
+          end
+        end
+      end
+
       context 'when files are nested' do
         let(:files) do
           [
@@ -217,9 +240,21 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper::Verifier, feature_category:
           ]
         end
 
-        it 'raises Processor::IncludeError' do
-          allow(context).to receive(:max_includes).and_return(1)
-          expect { process }.to raise_error(Gitlab::Ci::Config::External::Processor::IncludeError)
+        let(:expected_total_file_count) { 4 } # Includes nested_configs.yml + 3 nested files
+        let(:expected_error_class) { Gitlab::Ci::Config::External::Processor::IncludeError }
+
+        it_behaves_like 'verifies max includes'
+
+        context 'when duplicate files are included' do
+          let(:expected_total_file_count) { 8 } # 2 x (Includes nested_configs.yml + 3 nested files)
+          let(:files) do
+            [
+              Gitlab::Ci::Config::External::File::Local.new({ local: 'nested_configs.yml' }, context),
+              Gitlab::Ci::Config::External::File::Local.new({ local: 'nested_configs.yml' }, context)
+            ]
+          end
+
+          it_behaves_like 'verifies max includes'
         end
       end
 
@@ -231,24 +266,163 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper::Verifier, feature_category:
           ]
         end
 
-        it 'raises Mapper::TooManyIncludesError' do
-          allow(context).to receive(:max_includes).and_return(1)
-          expect { process }.to raise_error(Gitlab::Ci::Config::External::Mapper::TooManyIncludesError)
+        let(:expected_total_file_count) { files.count }
+        let(:expected_error_class) { Gitlab::Ci::Config::External::Mapper::TooManyIncludesError }
+
+        it_behaves_like 'verifies max includes'
+
+        context 'when duplicate files are included' do
+          let(:files) do
+            [
+              Gitlab::Ci::Config::External::File::Local.new({ local: 'myfolder/file1.yml' }, context),
+              Gitlab::Ci::Config::External::File::Local.new({ local: 'myfolder/file2.yml' }, context),
+              Gitlab::Ci::Config::External::File::Local.new({ local: 'myfolder/file2.yml' }, context)
+            ]
+          end
+
+          let(:expected_total_file_count) { files.count }
+
+          it_behaves_like 'verifies max includes'
         end
       end
 
-      context 'when files are duplicates' do
+      context 'when there is a circular include' do
+        let(:project_files) do
+          {
+            'myfolder/file1.yml' => <<~YAML
+              include: myfolder/file1.yml
+            YAML
+          }
+        end
+
         let(:files) do
           [
-            Gitlab::Ci::Config::External::File::Local.new({ local: 'myfolder/file1.yml' }, context),
-            Gitlab::Ci::Config::External::File::Local.new({ local: 'myfolder/file1.yml' }, context),
             Gitlab::Ci::Config::External::File::Local.new({ local: 'myfolder/file1.yml' }, context)
           ]
         end
 
+        before do
+          allow(context).to receive(:max_includes).and_return(10)
+        end
+
         it 'raises error' do
-          allow(context).to receive(:max_includes).and_return(2)
-          expect { process }.to raise_error(Gitlab::Ci::Config::External::Mapper::TooManyIncludesError)
+          expect { process }.to raise_error(Gitlab::Ci::Config::External::Processor::IncludeError)
+        end
+      end
+
+      context 'when a file is an internal include' do
+        let(:project_files) do
+          {
+            'myfolder/file1.yml' => <<~YAML,
+              my_build:
+                script: echo Hello World
+            YAML
+            '.internal-include.yml' => <<~YAML
+              include:
+                - local: myfolder/file1.yml
+            YAML
+          }
+        end
+
+        let(:files) do
+          [
+            Gitlab::Ci::Config::External::File::Local.new({ local: '.internal-include.yml' }, context)
+          ]
+        end
+
+        let(:total_file_count) { 2 } # Includes .internal-include.yml + myfolder/file1.yml
+        let(:pipeline_config) { instance_double(Gitlab::Ci::ProjectConfig) }
+
+        let(:context) do
+          Gitlab::Ci::Config::External::Context.new(
+            project: project,
+            user: user,
+            sha: project.commit.id,
+            pipeline_config: pipeline_config
+          )
+        end
+
+        before do
+          allow(pipeline_config).to receive(:internal_include_prepended?).and_return(true)
+          allow(context).to receive(:max_includes).and_return(1)
+        end
+
+        context 'when total file count excluding internal include is equal to max_includes' do
+          it 'does not add the internal include to expandset' do
+            expect { process }.not_to raise_error
+            expect(context.expandset.count).to eq(total_file_count - 1)
+            expect(context.expandset.first.location).to eq('myfolder/file1.yml')
+          end
+        end
+
+        context 'when total file count excluding internal include exceeds max_includes' do
+          let(:project_files) do
+            {
+              'myfolder/file1.yml' => <<~YAML,
+                my_build:
+                  script: echo Hello World
+              YAML
+              '.internal-include.yml' => <<~YAML
+                include:
+                  - local: myfolder/file1.yml
+                  - local: myfolder/file1.yml
+              YAML
+            }
+          end
+
+          it 'raises error' do
+            expect { process }.to raise_error(Gitlab::Ci::Config::External::Processor::IncludeError)
+          end
+        end
+      end
+    end
+
+    context 'when FF ci_fix_max_includes is disabled' do
+      before do
+        stub_feature_flags(ci_fix_max_includes: false)
+      end
+
+      context 'when total file count exceeds max_includes' do
+        context 'when files are nested' do
+          let(:files) do
+            [
+              Gitlab::Ci::Config::External::File::Local.new({ local: 'nested_configs.yml' }, context)
+            ]
+          end
+
+          it 'raises Processor::IncludeError' do
+            allow(context).to receive(:max_includes).and_return(1)
+            expect { process }.to raise_error(Gitlab::Ci::Config::External::Processor::IncludeError)
+          end
+        end
+
+        context 'when files are not nested' do
+          let(:files) do
+            [
+              Gitlab::Ci::Config::External::File::Local.new({ local: 'myfolder/file1.yml' }, context),
+              Gitlab::Ci::Config::External::File::Local.new({ local: 'myfolder/file2.yml' }, context)
+            ]
+          end
+
+          it 'raises Mapper::TooManyIncludesError' do
+            allow(context).to receive(:max_includes).and_return(1)
+            expect { process }.to raise_error(Gitlab::Ci::Config::External::Mapper::TooManyIncludesError)
+          end
+        end
+
+        context 'when files are duplicates' do
+          let(:files) do
+            [
+              Gitlab::Ci::Config::External::File::Local.new({ local: 'myfolder/file1.yml' }, context),
+              Gitlab::Ci::Config::External::File::Local.new({ local: 'myfolder/file1.yml' }, context),
+              Gitlab::Ci::Config::External::File::Local.new({ local: 'myfolder/file1.yml' }, context)
+            ]
+          end
+
+          it 'raises error' do
+            allow(context).to receive(:max_includes).and_return(2)
+            expect { process }.to raise_error(Gitlab::Ci::Config::External::Mapper::TooManyIncludesError)
+          end
         end
       end
     end

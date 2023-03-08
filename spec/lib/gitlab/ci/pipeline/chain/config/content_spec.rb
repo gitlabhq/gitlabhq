@@ -26,7 +26,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Config::Content, feature_category: :
 
         expect(pipeline.config_source).to eq 'bridge_source'
         expect(command.config_content).to eq 'the-yaml'
-        expect(command.pipeline_config.contains_internal_include?).to eq(false)
+        expect(command.pipeline_config.internal_include_prepended?).to eq(false)
       end
     end
 
@@ -53,7 +53,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Config::Content, feature_category: :
         expect(pipeline.config_source).to eq 'repository_source'
         expect(pipeline.pipeline_config.content).to eq(config_content_result)
         expect(command.config_content).to eq(config_content_result)
-        expect(command.pipeline_config.contains_internal_include?).to eq(true)
+        expect(command.pipeline_config.internal_include_prepended?).to eq(true)
       end
     end
 
@@ -73,7 +73,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Config::Content, feature_category: :
         expect(pipeline.config_source).to eq 'remote_source'
         expect(pipeline.pipeline_config.content).to eq(config_content_result)
         expect(command.config_content).to eq(config_content_result)
-        expect(command.pipeline_config.contains_internal_include?).to eq(true)
+        expect(command.pipeline_config.internal_include_prepended?).to eq(true)
       end
     end
 
@@ -94,7 +94,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Config::Content, feature_category: :
         expect(pipeline.config_source).to eq 'external_project_source'
         expect(pipeline.pipeline_config.content).to eq(config_content_result)
         expect(command.config_content).to eq(config_content_result)
-        expect(command.pipeline_config.contains_internal_include?).to eq(true)
+        expect(command.pipeline_config.internal_include_prepended?).to eq(true)
       end
 
       context 'when path specifies a refname' do
@@ -115,7 +115,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Config::Content, feature_category: :
           expect(pipeline.config_source).to eq 'external_project_source'
           expect(pipeline.pipeline_config.content).to eq(config_content_result)
           expect(command.config_content).to eq(config_content_result)
-          expect(command.pipeline_config.contains_internal_include?).to eq(true)
+          expect(command.pipeline_config.internal_include_prepended?).to eq(true)
         end
       end
     end
@@ -143,7 +143,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Config::Content, feature_category: :
         expect(pipeline.config_source).to eq 'repository_source'
         expect(pipeline.pipeline_config.content).to eq(config_content_result)
         expect(command.config_content).to eq(config_content_result)
-        expect(command.pipeline_config.contains_internal_include?).to eq(true)
+        expect(command.pipeline_config.internal_include_prepended?).to eq(true)
       end
     end
 
@@ -167,7 +167,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Config::Content, feature_category: :
         expect(pipeline.config_source).to eq 'auto_devops_source'
         expect(pipeline.pipeline_config.content).to eq(config_content_result)
         expect(command.config_content).to eq(config_content_result)
-        expect(command.pipeline_config.contains_internal_include?).to eq(true)
+        expect(command.pipeline_config.internal_include_prepended?).to eq(true)
       end
     end
 
@@ -188,7 +188,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Config::Content, feature_category: :
         expect(pipeline.config_source).to eq 'parameter_source'
         expect(pipeline.pipeline_config.content).to eq(content)
         expect(command.config_content).to eq(content)
-        expect(command.pipeline_config.contains_internal_include?).to eq(false)
+        expect(command.pipeline_config.internal_include_prepended?).to eq(false)
       end
     end
 

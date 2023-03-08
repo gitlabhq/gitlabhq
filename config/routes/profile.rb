@@ -39,7 +39,7 @@ resource :profile, only: [:show, :update] do
     end
     resource :preferences, only: [:show, :update]
 
-    resources :saved_replies, only: [:index], action: :index
+    resources :saved_replies, only: [:index, :show], action: :index
 
     resources :keys, only: [:index, :show, :create, :destroy] do
       member do
