@@ -1,7 +1,10 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Manage', product_group: :import do
+  RSpec.describe 'Manage', product_group: :import, quarantine: {
+    type: :stale,
+    issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/394994'
+  } do
     describe 'GitHub import' do
       include_context 'with github import'
 

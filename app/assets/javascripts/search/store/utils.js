@@ -1,13 +1,16 @@
-import { isEqual } from 'lodash';
+import { isEqual, orderBy } from 'lodash';
 import AccessorUtilities from '~/lib/utils/accessor';
 import { formatNumber } from '~/locale';
 import { joinPaths } from '~/lib/utils/url_utility';
+import { languageFilterData } from '~/search/sidebar/constants/language_filter_data';
 import {
   MAX_FREQUENT_ITEMS,
   MAX_FREQUENCY,
   SIDEBAR_PARAMS,
   NUMBER_FORMATING_OPTIONS,
 } from './constants';
+
+const LANGUAGE_AGGREGATION_NAME = languageFilterData.filterParam;
 
 function extractKeys(object, keyList) {
   return Object.fromEntries(keyList.map((key) => [key, object[key]]));
@@ -117,3 +120,27 @@ export const getAggregationsUrl = () => {
   currentUrl.pathname = joinPaths('/search', 'aggregations');
   return currentUrl.toString();
 };
+
+const sortLanguages = (state, entries) => {
+  const queriedLanguages = state.query?.[LANGUAGE_AGGREGATION_NAME] || [];
+
+  if (!Array.isArray(queriedLanguages) || !queriedLanguages.length) {
+    return entries;
+  }
+
+  const queriedLanguagesSet = new Set(queriedLanguages);
+
+  return orderBy(entries, [({ key }) => queriedLanguagesSet.has(key), 'count'], ['desc', 'desc']);
+};
+
+export const prepareSearchAggregations = (state, aggregationData) =>
+  aggregationData.map((item) => {
+    if (item?.name === LANGUAGE_AGGREGATION_NAME) {
+      return {
+        ...item,
+        buckets: sortLanguages(state, item.buckets),
+      };
+    }
+
+    return item;
+  });

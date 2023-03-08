@@ -13,6 +13,7 @@ import {
   mergeById,
   isSidebarDirty,
   getAggregationsUrl,
+  prepareSearchAggregations,
 } from './utils';
 
 export const fetchGroups = ({ commit }, search) => {
@@ -135,12 +136,12 @@ export const fetchSidebarCount = ({ commit, state }) => {
   return Promise.all(promises);
 };
 
-export const fetchLanguageAggregation = ({ commit }) => {
+export const fetchLanguageAggregation = ({ commit, state }) => {
   commit(types.REQUEST_AGGREGATIONS);
   return axios
     .get(getAggregationsUrl())
     .then(({ data }) => {
-      commit(types.RECEIVE_AGGREGATIONS_SUCCESS, data);
+      commit(types.RECEIVE_AGGREGATIONS_SUCCESS, prepareSearchAggregations(state, data));
     })
     .catch((e) => {
       logError(e);

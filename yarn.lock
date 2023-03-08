@@ -1226,14 +1226,14 @@
   resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-3.24.0.tgz#bc8265919aa04b06cd08be91637471bad195936d"
   integrity sha512-R4s5qJUFUIbPflknpw1aI/PchiNq65vY7LVsJZnQkY+vi+AgmsETdut/AdferbGWmeWMU0q2wuVu9phE8lDUgA==
 
-"@gitlab/ui@56.2.0":
-  version "56.2.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-56.2.0.tgz#7163dbb161b995fe69b5c4436c85fd3dbd127f12"
-  integrity sha512-dhhtgK2oq69zVkMnKj8SS/zqVy3VBdT2kT+Y+iTPxtHLmqr8SRgUvG0Yf247h/Inza5Facaa5qzweCXEK062Gw==
+"@gitlab/ui@56.2.1":
+  version "56.2.1"
+  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-56.2.1.tgz#ca503f5b70a912c98da6bb30f9e22b6fff710d72"
+  integrity sha512-WeTNZT+Bo3jZ2gv7efuTyu4fm5Ks6KbpBLaJmyFtDMe38+o0RpgRgMjc+Zh0nLP3RuejhBUPkYsK9WxhdVmiog==
   dependencies:
     "@popperjs/core" "^2.11.2"
     bootstrap-vue "2.20.1"
-    dompurify "^2.4.4"
+    dompurify "^2.4.5"
     echarts "^5.3.2"
     iframe-resizer "^4.3.2"
     lodash "^4.17.20"

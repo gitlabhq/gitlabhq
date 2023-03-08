@@ -29713,6 +29713,9 @@ msgstr ""
 msgid "OnDemandScans|Only project owners and maintainers can select runner tags."
 msgstr ""
 
+msgid "OnDemandScans|Pre-scan verification for %{profile_name} completed with"
+msgstr ""
+
 msgid "OnDemandScans|Repeats"
 msgstr ""
 
@@ -48999,6 +49002,9 @@ msgid "WorkItem|Due date"
 msgstr ""
 
 msgid "WorkItem|Existing task"
+msgstr ""
+
+msgid "WorkItem|Failed to award emoji"
 msgstr ""
 
 msgid "WorkItem|Health status"

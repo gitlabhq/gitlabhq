@@ -30,6 +30,7 @@ inherit_mode:
   merge:
     - Include
     - Exclude
+    - AllowedPatterns
 
 AllCops:
   # Target the current Ruby version. For example, "2.7" or "3.0".
@@ -96,6 +97,9 @@ InternalAffairs/DeprecateCopHelper:
   Enabled: true
   Include:
     - spec/rubocop/**/*.rb
+
+Layout/LineLength:
+  AllowedPatterns: ['^RSpec\.describe\s.*\sdo']
 
 Lint/LastKeywordArgument:
   Safe: false

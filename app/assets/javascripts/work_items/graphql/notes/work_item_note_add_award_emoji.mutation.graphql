@@ -1,0 +1,17 @@
+#import "~/graphql_shared/fragments/user.fragment.graphql"
+
+mutation workItemNoteAddAwardEmoji($awardableId: AwardableID!, $name: String!) {
+  awardEmojiAdd(input: { awardableId: $awardableId, name: $name }) {
+    awardEmoji {
+      name
+      description
+      unicode
+      emoji
+      unicodeVersion
+      user {
+        ...User
+      }
+    }
+    errors
+  }
+}

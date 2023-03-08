@@ -87,6 +87,9 @@ export default {
     hasAdminPermission() {
       return this.note.userPermissions.adminNote;
     },
+    hasAwardEmojiPermission() {
+      return this.note.userPermissions.awardEmoji;
+    },
   },
   methods: {
     showReplyForm() {
@@ -159,10 +162,13 @@ export default {
         </note-header>
         <div class="gl-display-inline-flex">
           <note-actions
+            :show-award-emoji="hasAwardEmojiPermission"
             :show-reply="showReply"
             :show-edit="hasAdminPermission"
+            :note-id="note.id"
             @startReplying="showReplyForm"
             @startEditing="startEditing"
+            @error="($event) => $emit('error', $event)"
           />
           <!-- v-if condition should be moved to "delete" dropdown item as soon as we implement copying the link -->
           <gl-dropdown
