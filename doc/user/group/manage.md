@@ -549,6 +549,77 @@ To enable group file templates:
 1. Choose a project to act as the template repository.
 1. Select **Save changes**.
 
+## Group merge checks settings **(PREMIUM)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/372040) in GitLab 15.9 [with a flag](../../administration/feature_flags.md) name `support_group_level_merge_checks_setting`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to
+[enable the feature flag](../../administration/feature_flags.md) named `support_group_level_merge_checks_setting`. On GitLab.com, this feature is not
+available.
+
+Group owners can set up merge request checks on a top-level group, which apply to all subgroups and projects.
+
+If the settings are inherited by a subgroup or project, they cannot be changed in the subgroup or project
+that inherited them.
+
+### Require a successful pipeline for merge
+
+You can configure all child projects in your group to require a complete and successful pipeline before
+merge.
+
+See also [the project-level setting](../project/merge_requests/merge_when_pipeline_succeeds.md#require-a-successful-pipeline-for-merge).
+
+Prerequisites:
+
+- You must be the owner of the group.
+
+To enable this setting:
+
+1. On the top bar, select **Main menu > Groups** and find your group.
+1. On the left sidebar, select **Settings > General**.
+1. Expand **Merge requests**.
+1. Under **Merge checks**, select **Pipelines must succeed**.
+   This setting also prevents merge requests from being merged if there is no pipeline.
+1. Select **Save changes**.
+
+#### Allow merge after skipped pipelines
+
+You can configure [skipped pipelines](../../ci/pipelines/index.md#skip-a-pipeline) from preventing merge requests from being merged.
+
+See also [the project-level setting](../project/merge_requests/merge_when_pipeline_succeeds.md#allow-merge-after-skipped-pipelines).
+
+Prerequisite:
+
+- You must be the owner of the group.
+
+To change this behavior:
+
+1. On the top bar, select **Main menu > Groups** and find your group.
+1. On the left sidebar, select **Settings > General**.
+1. Expand **Merge requests**.
+1. Under **Merge checks**:
+   - Select **Pipelines must succeed**.
+   - Select **Skipped pipelines are considered successful**.
+1. Select **Save changes**.
+
+### Prevent merge unless all threads are resolved
+
+You can prevent merge requests from being merged until all threads are resolved. When this setting is enabled, for all child projects in your group, the
+**Unresolved threads** count in a merge request is shown in orange when at least one thread remains unresolved.
+
+Prerequisite:
+
+- You must be the owner of the group.
+
+To enable this setting:
+
+1. On the top bar, select **Main menu > Groups** and find your group.
+1. On the left sidebar, select **Settings > General**.
+1. Expand **Merge requests**.
+1. Under **Merge checks**, select **All threads must be resolved**.
+1. Select **Save changes**.
+
 ## Group merge request approval settings **(PREMIUM)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/285458) in GitLab 13.9. [Deployed behind the `group_merge_request_approval_settings_feature_flag` flag](../../administration/feature_flags.md), disabled by default.

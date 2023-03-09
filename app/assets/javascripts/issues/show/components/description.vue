@@ -143,7 +143,7 @@ export default {
         };
       },
       skip() {
-        return !this.workItemId || !this.workItemsMvcEnabled;
+        return !this.workItemId;
       },
     },
     workItemTypes: {
@@ -156,15 +156,9 @@ export default {
       update(data) {
         return data.workspace?.workItemTypes?.nodes;
       },
-      skip() {
-        return !this.workItemsMvcEnabled;
-      },
     },
   },
   computed: {
-    workItemsMvcEnabled() {
-      return this.glFeatures.workItemsMvc;
-    },
     taskWorkItemType() {
       return this.workItemTypes.find((type) => type.name === TASK_TYPE_NAME)?.id;
     },
@@ -194,8 +188,7 @@ export default {
 
     this.renderGFM();
     this.updateTaskStatusText();
-
-    if (this.workItemId && this.workItemsMvcEnabled) {
+    if (this.workItemId) {
       const taskLink = this.$el.querySelector(
         `.gfm-issue[data-issue="${getIdFromGraphQLId(this.workItemId)}"]`,
       );
@@ -228,9 +221,7 @@ export default {
 
         this.renderSortableLists();
 
-        if (this.workItemsMvcEnabled) {
-          this.renderTaskListItemActions();
-        }
+        this.renderTaskListItemActions();
       }
     },
     renderSortableLists() {

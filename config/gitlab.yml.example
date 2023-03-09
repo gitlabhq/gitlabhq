@@ -628,9 +628,14 @@ production: &base
     geo_secondary_registry_consistency_worker:
       cron: "* * * * *"
 
-    # GitLab Geo registry sync worker (for backfilling)
+    # GitLab Geo blob registry sync worker (for backfilling)
     # NOTE: This will only take effect if Geo is enabled (secondary nodes only)
     geo_registry_sync_worker:
+      cron: "*/1 * * * *"
+
+    # GitLab Geo repository registry sync worker (for backfilling)
+    # NOTE: This will only take effect if Geo is enabled (secondary nodes only)
+    geo_repository_registry_sync_worker:
       cron: "*/1 * * * *"
 
     # Elasticsearch bulk updater for incremental updates.

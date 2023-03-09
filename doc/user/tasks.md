@@ -58,15 +58,9 @@ To create a task:
 1. Enter the task title.
 1. Select **Create task**.
 
-### Create a task from a task list item
+### From a task list item
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/377307) in GitLab 15.9 [with a flag](../administration/feature_flags.md) named `work_items_mvc`. Disabled by default.
-
-FLAG:
-On self-managed GitLab, by default this feature is not available.
-To make it available, ask an administrator to [enable the feature flag](../administration/feature_flags.md) named `work_items_mvc`.
-On GitLab.com, this feature is not available.
-The feature is not ready for production use.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/377307) in GitLab 15.9.
 
 Prerequisites:
 

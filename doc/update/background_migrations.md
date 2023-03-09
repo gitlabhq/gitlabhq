@@ -266,7 +266,7 @@ arguments until the status query returns no rows.
 
 1. Run a reconfigure:
 
-     ```plaintext
+   ```plaintext
    sudo gitlab-ctl reconfigure
    ```
 
@@ -323,6 +323,37 @@ The results from the query can be plugged into the command:
 
 ```shell
 sudo gitlab-rake gitlab:background_migrations:finalize[CopyColumnUsingBackgroundMigrationJob,events,id,'[["id"]\, ["id_convert_to_bigint"]]']
+```
+
+#### Mark a batched migration finished
+
+There can be cases where the background migration fails: when jumping too many version upgrades,
+or backward-incompatible database schema changes. (For an example, see [issue 393216](https://gitlab.com/gitlab-org/gitlab/-/issues/393216)).
+Failed background migrations prevent further application upgrades.
+
+When the background migration is determined to be "safe" to skip, the migration can be manually marked finished:
+
+WARNING:
+Make sure you create a backup before proceeding.
+
+```ruby
+# Start the rails console
+
+connection = ApplicationRecord.connection # or Ci::ApplicationRecord.connection, depending on which DB was the migration scheduled
+
+Gitlab::Database::SharedModel.using_connection(connection) do
+  migration = Gitlab::Database::BackgroundMigration::BatchedMigration.find_for_configuration(
+    Gitlab::Database.gitlab_schemas_for_connection(connection),
+    'BackfillUserDetailsFields',
+    :users,
+    :id,
+    []
+  )
+
+  # mark all jobs completed
+  migration.batched_jobs.update_all(status: Gitlab::Database::BackgroundMigration::BatchedJob.state_machine.states['succeeded'].value)
+  migration.update_attribute(:status, Gitlab::Database::BackgroundMigration::BatchedMigration.state_machine.states[:finished].value)
+end
 ```
 
 ### The `BackfillNamespaceIdForNamespaceRoute` batched migration job fails

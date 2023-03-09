@@ -15,7 +15,7 @@ module StubObjectStorage
         direct_upload: false,
         cdn: {}
   )
-
+    old_config = Settingslogic.new(config.deep_stringify_keys)
     new_config = config.to_h.deep_symbolize_keys.merge({
       enabled: enabled,
       proxy_download: proxy_download,
@@ -37,7 +37,7 @@ module StubObjectStorage
     return unless enabled
 
     stub_object_storage(connection_params: uploader.object_store_credentials,
-                        remote_directory: config.remote_directory)
+                        remote_directory: old_config.remote_directory)
   end
 
   def stub_object_storage(connection_params:, remote_directory:)

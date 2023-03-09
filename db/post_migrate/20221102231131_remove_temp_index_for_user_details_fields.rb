@@ -1,13 +1,11 @@
 # frozen_string_literal: true
 
 class RemoveTempIndexForUserDetailsFields < Gitlab::Database::Migration[2.0]
-  BACKFILL_MIGRATION = 'BackfillUserDetailsFields'
   INDEX_NAME = 'tmp_idx_where_user_details_fields_filled'
 
   disable_ddl_transaction!
 
   def up
-    finalize_background_migration BACKFILL_MIGRATION
     remove_concurrent_index_by_name :users, INDEX_NAME
   end
 

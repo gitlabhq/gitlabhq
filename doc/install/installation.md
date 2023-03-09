@@ -117,19 +117,13 @@ Install the required packages (needed to compile Ruby and native extensions to R
 ```shell
 sudo apt-get install -y build-essential zlib1g-dev libyaml-dev libssl-dev libgdbm-dev libre2-dev \
   libreadline-dev libncurses5-dev libffi-dev curl openssh-server libxml2-dev libxslt-dev \
-  libcurl4-openssl-dev libicu-dev logrotate rsync python3-docutils pkg-config cmake runit-systemd
+  libcurl4-openssl-dev libicu-dev libkrb5-dev logrotate rsync python3-docutils pkg-config cmake \
+  runit-systemd
 ```
 
 NOTE:
 GitLab requires OpenSSL version 1.1. If your Linux distribution includes a different version of OpenSSL,
 you might have to install 1.1 manually.
-
-If you want to use Kerberos for user authentication, install `libkrb5-dev`
-(if you don't know what Kerberos is, you can assume you don't need it):
-
-```shell
-sudo apt-get install libkrb5-dev
-```
 
 ### Git
 
