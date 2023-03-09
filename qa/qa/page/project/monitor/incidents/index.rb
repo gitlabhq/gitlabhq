@@ -15,8 +15,16 @@ module QA
               click_element :create_incident_button
             end
 
-            def has_incident?(wait: Support::Repeater::DEFAULT_MAX_WAIT_TIME)
-              wait_until(max_duration: wait) { has_element?(:incident_link) }
+            def has_incident?(wait: Support::Repeater::DEFAULT_MAX_WAIT_TIME, title: nil)
+              wait_until(max_duration: wait) { has_element?(:incident_link, text: title) }
+            end
+
+            def has_no_incident?(title: nil)
+              has_no_element?(:incident_link, text: title)
+            end
+
+            def go_to_tab(tab)
+              click_link_with_text(tab)
             end
           end
         end

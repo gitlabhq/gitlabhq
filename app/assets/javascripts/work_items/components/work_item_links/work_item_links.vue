@@ -143,7 +143,7 @@ export default {
       return this.isLoading && this.children.length === 0 ? '...' : this.children.length;
     },
     fetchByIid() {
-      return this.glFeatures.useIidInWorkItemsPath && parseBoolean(getParameterByName('iid_path'));
+      return parseBoolean(getParameterByName('iid_path'));
     },
     childUrlParams() {
       const params = {};

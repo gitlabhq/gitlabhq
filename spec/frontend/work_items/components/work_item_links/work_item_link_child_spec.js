@@ -109,7 +109,9 @@ describe('WorkItemLinkChild', () => {
     });
 
     it('renders item title', () => {
-      expect(titleEl.attributes('href')).toBe('/gitlab-org/gitlab-test/-/work_items/4');
+      expect(titleEl.attributes('href')).toBe(
+        '/gitlab-org/gitlab-test/-/work_items/4?iid_path=true',
+      );
       expect(titleEl.text()).toBe(workItemTask.title);
     });
 

@@ -101,7 +101,6 @@ describe('WorkItemDetail component', () => {
     error = undefined,
     workItemsMvcEnabled = false,
     workItemsMvc2Enabled = false,
-    fetchByIid = false,
   } = {}) => {
     const handlers = [
       [workItemQuery, handler],
@@ -126,7 +125,6 @@ describe('WorkItemDetail component', () => {
         glFeatures: {
           workItemsMvc: workItemsMvcEnabled,
           workItemsMvc2: workItemsMvc2Enabled,
-          useIidInWorkItemsPath: fetchByIid,
         },
         hasIssueWeightsFeature: true,
         hasIterationsFeature: true,
@@ -637,7 +635,7 @@ describe('WorkItemDetail component', () => {
     });
   });
 
-  it('calls the global ID work item query when `useIidInWorkItemsPath` feature flag is false', async () => {
+  it('calls the global ID work item query when there is no `iid_path` parameter in URL', async () => {
     createComponent();
     await waitForPromises();
 
@@ -647,20 +645,10 @@ describe('WorkItemDetail component', () => {
     expect(successByIidHandler).not.toHaveBeenCalled();
   });
 
-  it('calls the global ID work item query when `useIidInWorkItemsPath` feature flag is true but there is no `iid_path` parameter in URL', async () => {
-    createComponent({ fetchByIid: true });
-    await waitForPromises();
-
-    expect(successHandler).toHaveBeenCalledWith({
-      id: workItemQueryResponse.data.workItem.id,
-    });
-    expect(successByIidHandler).not.toHaveBeenCalled();
-  });
-
-  it('calls the IID work item query when `useIidInWorkItemsPath` feature flag is true and `iid_path` route parameter is present', async () => {
+  it('calls the IID work item query when `iid_path` route parameter is present', async () => {
     setWindowLocation(`?iid_path=true`);
 
-    createComponent({ fetchByIid: true, iidPathQueryParam: 'true' });
+    createComponent();
     await waitForPromises();
 
     expect(successHandler).not.toHaveBeenCalled();
@@ -670,10 +658,10 @@ describe('WorkItemDetail component', () => {
     });
   });
 
-  it('calls the IID work item query when `useIidInWorkItemsPath` feature flag is true and `iid_path` route parameter is present and is a modal', async () => {
+  it('calls the IID work item query when `iid_path` route parameter is present and is a modal', async () => {
     setWindowLocation(`?iid_path=true`);
 
-    createComponent({ fetchByIid: true, iidPathQueryParam: 'true', isModal: true });
+    createComponent({ isModal: true });
     await waitForPromises();
 
     expect(successHandler).not.toHaveBeenCalled();

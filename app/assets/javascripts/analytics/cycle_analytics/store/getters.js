@@ -19,7 +19,7 @@ export const requestParams = (state) => {
     selectedValueStream: { id: valueStreamId },
     selectedStage: { id: stageId = null },
   } = state;
-  return { requestPath: fullPath, valueStreamId, stageId };
+  return { namespacePath: fullPath, valueStreamId, stageId };
 };
 
 export const paginationParams = ({ pagination: { page, sort, direction } }) => ({

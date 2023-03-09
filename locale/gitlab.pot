@@ -34727,9 +34727,6 @@ msgstr ""
 msgid "Promotions|Contact your Administrator to upgrade your license."
 msgstr ""
 
-msgid "Promotions|Description templates allow you to define context-specific templates for issue and merge request description fields for your project."
-msgstr ""
-
 msgid "Promotions|Dismiss Service Desk promotion"
 msgstr ""
 
@@ -34836,12 +34833,6 @@ msgid "Promotions|When you have a lot of issues, it can be hard to get an overvi
 msgstr ""
 
 msgid "Promotions|You can restrict access to protected branches by choosing a role (Maintainers, Developers) as well as certain users."
-msgstr ""
-
-msgid "Promotions|description templates"
-msgstr ""
-
-msgid "Promotions|to help your contributors communicate effectively!"
 msgstr ""
 
 msgid "Prompt users to upload SSH keys"

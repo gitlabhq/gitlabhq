@@ -28,7 +28,8 @@ RSpec.describe ::Gitlab::Seeders::Ci::Runner::RunnerFleetPipelineSeeder, feature
     context 'with job_count specified' do
       let(:job_count) { 20 }
 
-      it 'creates expected jobs', :aggregate_failures do
+      it 'creates expected jobs', :aggregate_failures,
+        quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/394721' do
         expect { seeder.seed }.to change { Ci::Build.count }.by(job_count)
           .and change { Ci::Pipeline.count }.by(4)
 

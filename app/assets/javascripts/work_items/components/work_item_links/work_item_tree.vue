@@ -78,7 +78,7 @@ export default {
   },
   computed: {
     fetchByIid() {
-      return this.glFeatures.useIidInWorkItemsPath && parseBoolean(getParameterByName('iid_path'));
+      return parseBoolean(getParameterByName('iid_path'));
     },
     childrenIds() {
       return this.children.map((c) => c.id);

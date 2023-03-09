@@ -3,13 +3,13 @@ import { shallowMount } from '@vue/test-utils';
 import AxiosMockAdapter from 'axios-mock-adapter';
 import { nextTick } from 'vue';
 import waitForPromises from 'helpers/wait_for_promises';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_NOT_FOUND, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import RevisionDropdown from '~/projects/compare/components/revision_dropdown.vue';
 import { revisionDropdownDefaultProps as defaultProps } from './mock_data';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 describe('RevisionDropdown component', () => {
   let wrapper;
@@ -79,7 +79,7 @@ describe('RevisionDropdown component', () => {
     });
   });
 
-  it('shows flash message on error', async () => {
+  it('shows alert message on error', async () => {
     axiosMock.onGet('some/invalid/path').replyOnce(HTTP_STATUS_NOT_FOUND);
 
     createComponent();
@@ -105,7 +105,7 @@ describe('RevisionDropdown component', () => {
   });
 
   describe('search', () => {
-    it('shows flash message on error', async () => {
+    it('shows alert message on error', async () => {
       axiosMock.onGet('some/invalid/path').replyOnce(HTTP_STATUS_NOT_FOUND);
 
       createComponent();

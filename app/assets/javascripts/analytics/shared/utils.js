@@ -133,7 +133,7 @@ export const generateValueStreamsDashboardLink = (groupPath, projectPaths = []) 
   if (groupPath.length) {
     const query = projectPaths.length ? `?query=${projectPaths.join(',')}` : '';
     const dashboardsSlug = '/-/analytics/dashboards';
-    const segments = [gon.relative_url_root || '', '/groups', groupPath, dashboardsSlug];
+    const segments = [gon.relative_url_root || '', '/', groupPath, dashboardsSlug];
     return joinPaths(...segments).concat(query);
   }
   return '';

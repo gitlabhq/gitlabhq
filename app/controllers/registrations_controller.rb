@@ -29,6 +29,8 @@ class RegistrationsController < Devise::RegistrationsController
 
   feature_category :user_management
 
+  helper_method :arkose_labs_enabled?
+
   def new
     @resource = build_resource
     set_invite_params
@@ -298,6 +300,10 @@ class RegistrationsController < Devise::RegistrationsController
 
   def send_custom_confirmation_instructions
     # overridden by EE module
+  end
+
+  def arkose_labs_enabled?
+    false
   end
 end
 

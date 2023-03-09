@@ -164,7 +164,6 @@ export default {
   <div>
     <h3>{{ $options.i18n.pageTitle }}</h3>
     <value-stream-filters
-      :group-id="endpoints.groupId"
       :group-path="endpoints.groupPath"
       :has-project-filter="false"
       :start-date="createdAfter"

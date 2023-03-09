@@ -91,7 +91,6 @@ describe('Value stream analytics utils', () => {
     const projectId = '5';
     const createdAfter = '2021-09-01';
     const createdBefore = '2021-11-06';
-    const groupId = '146';
     const groupPath = 'fake-group';
     const fullPath = 'fake-group/fake-project';
     const labelsPath = '/fake-group/fake-project/-/labels.json';
@@ -106,7 +105,6 @@ describe('Value stream analytics utils', () => {
       requestPath,
       labelsPath,
       milestonesPath,
-      groupId,
       groupPath,
     };
 
@@ -130,8 +128,7 @@ describe('Value stream analytics utils', () => {
         expect(endpoints.requestPath).toBe(requestPath);
         expect(endpoints.labelsPath).toBe(labelsPath);
         expect(endpoints.milestonesPath).toBe(milestonesPath);
-        expect(endpoints.groupId).toBe(parseInt(groupId, 10));
-        expect(endpoints.groupPath).toBe(groupPath);
+        expect(endpoints.groupPath).toBe(`groups/${groupPath}`);
       });
 
       it('returns null when there is no stage', () => {

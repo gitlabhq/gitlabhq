@@ -31,10 +31,6 @@ export default {
       required: false,
       default: true,
     },
-    groupId: {
-      type: Number,
-      required: true,
-    },
     groupPath: {
       type: String,
       required: true,

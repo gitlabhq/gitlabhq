@@ -7,7 +7,7 @@ import { mountExtended } from 'helpers/vue_test_utils_helper';
 import BranchRules from '~/projects/settings/repository/branch_rules/app.vue';
 import BranchRule from '~/projects/settings/repository/branch_rules/components/branch_rule.vue';
 import branchRulesQuery from 'ee_else_ce/projects/settings/repository/branch_rules/graphql/queries/branch_rules.query.graphql';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import {
   branchRulesMockResponse,
   appProvideMock,
@@ -22,7 +22,7 @@ import { expandSection } from '~/settings_panels';
 import { scrollToElement } from '~/lib/utils/common_utils';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 jest.mock('~/settings_panels');
 jest.mock('~/lib/utils/common_utils');
 

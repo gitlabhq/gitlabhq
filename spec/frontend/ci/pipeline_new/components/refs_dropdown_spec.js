@@ -13,7 +13,7 @@ const projectRefsEndpoint = '/root/project/refs';
 const refShortName = 'main';
 const refFullName = 'refs/heads/main';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 describe('Pipeline New Form', () => {
   let wrapper;

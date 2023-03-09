@@ -47,16 +47,6 @@ RSpec.describe LinkedProjectIssueEntity do
     context 'when related issue is a task' do
       let_it_be(:issue_link) { create(:issue_link, target: create(:issue, :task)) }
 
-      context 'when use_iid_in_work_items_path feature flag is disabled' do
-        before do
-          stub_feature_flags(use_iid_in_work_items_path: false)
-        end
-
-        it 'returns a work items path' do
-          expect(serialized_entity).to include(path: project_work_items_path(related_issue.project, related_issue.id))
-        end
-      end
-
       it 'returns a work items path using iid' do
         expect(serialized_entity).to include(
           path: project_work_items_path(related_issue.project, related_issue.iid, iid_path: true)

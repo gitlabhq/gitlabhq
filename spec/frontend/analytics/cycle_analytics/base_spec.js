@@ -31,13 +31,14 @@ Vue.use(Vuex);
 
 let wrapper;
 
-const { id: groupId, path: groupPath } = currentGroup;
+const { path } = currentGroup;
+const groupPath = `groups/${path}`;
 const defaultState = {
   currentGroup,
   createdBefore,
   createdAfter,
   stageCounts,
-  endpoints: { fullPath, groupId, groupPath },
+  endpoints: { fullPath, groupPath },
 };
 
 function createStore({ initialState = {}, initialGetters = {} }) {
@@ -139,7 +140,6 @@ describe('Value stream analytics component', () => {
 
   it('passes the paths to the filter bar', () => {
     expect(findFilters().props()).toEqual({
-      groupId,
       groupPath,
       endDate: createdBefore,
       hasDateRangeFilter: true,

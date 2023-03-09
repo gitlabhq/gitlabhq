@@ -57,16 +57,6 @@ RSpec.describe IssueBoardEntity do
     context 'when issue is of type task' do
       let(:resource) { create(:issue, :task, project: project) }
 
-      context 'when the use_iid_in_work_items_path feature flag is disabled' do
-        before do
-          stub_feature_flags(use_iid_in_work_items_path: false)
-        end
-
-        it 'has a work item path' do
-          expect(subject[:real_path]).to eq(project_work_items_path(project, resource.id))
-        end
-      end
-
       it 'has a work item path with iid' do
         expect(subject[:real_path]).to eq(project_work_items_path(project, resource.iid, iid_path: true))
       end

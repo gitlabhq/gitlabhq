@@ -270,7 +270,7 @@ $system-note-svg-size: 1rem;
     }
 
     &.is-editing {
-      .note-header,
+      .note-actions,
       .note-text,
       .edited-text {
         display: none;

@@ -671,7 +671,7 @@ the child pipeline must [use `workflow:rules` or `rules` to ensure the jobs run]
 If no jobs in the child pipeline can run due to missing or incorrect `rules` configuration:
 
 - The child pipeline fails to start.
-- The parent pipeline's trigger job fails with: `downstream pipeline can not be creaed, Pipeline will not run for the selected trigger. The rules configuration prevented any jobs from being added to the pipeline.`
+- The parent pipeline's trigger job fails with: `downstream pipeline can not be created, Pipeline will not run for the selected trigger. The rules configuration prevented any jobs from being added to the pipeline.`
 
 ### `Ref is ambiguous`
 

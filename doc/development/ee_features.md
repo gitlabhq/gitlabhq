@@ -580,11 +580,11 @@ Resolving an EE template path that is relative to the CE view path doesn't work.
 For `render` and `render_if_exists`, they search for the EE partial first,
 and then CE partial. They would only render a particular partial, not all
 partials with the same name. We could take the advantage of this, so that
-the same partial path (for example, `shared/issuable/form/default_templates`) could
+the same partial path (for example, `projects/settings/archive`) could
 be referring to the CE partial in CE (that is,
-`app/views/shared/issuable/form/_default_templates.html.haml`), while EE
+`app/views/projects/settings/_archive.html.haml`), while EE
 partial in EE (that is,
-`ee/app/views/shared/issuable/form/_default_templates.html.haml`). This way,
+`ee/app/views/projects/settings/_archive.html.haml`). This way,
 we could show different things between CE and EE.
 
 However sometimes we would also want to reuse the CE partial in EE partial
@@ -594,21 +594,19 @@ would be tedious to do so.
 
 In this case, we could as well just use `render_ce` which would ignore any EE
 partials. One example would be
-`ee/app/views/shared/issuable/form/_default_templates.html.haml`:
+`ee/app/views/projects/settings/_archive.html.haml`:
 
 ```haml
-- if @project.feature_available?(:issuable_default_templates)
-  = render_ce 'shared/issuable/form/default_templates'
-- elsif show_promotions?
-  = render 'shared/promotions/promote_issue_templates'
+- return if @project.marked_for_deletion?
+= render_ce 'projects/settings/archive'
 ```
 
 In the above example, we can't use
-`render 'shared/issuable/form/default_templates'` because it would find the
+`render 'projects/settings/archive'` because it would find the
 same EE partial, causing infinite recursion. Instead, we could use `render_ce`
 so it ignores any partials in `ee/` and then it would render the CE partial
-(that is, `app/views/shared/issuable/form/_default_templates.html.haml`)
-for the same path (that is, `shared/issuable/form/default_templates`). This way
+(that is, `app/views/projects/settings/_archive.html.haml`)
+for the same path (that is, `projects/settings/archive`). This way
 we could easily wrap around the CE partial.
 
 ### Code in `lib/gitlab/background_migration/`

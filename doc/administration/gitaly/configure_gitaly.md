@@ -863,7 +863,8 @@ When these limits are reached, performance may be reduced and users may be disco
 
 ### Configure repository cgroups (new method)
 
-> This method of configuring repository cgroups was introduced in GitLab 15.1.
+> - This method of configuring repository cgroups was introduced in GitLab 15.1.
+> - `cpu_quota_us`[introduced](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/5422) in GitLab 15.10.
 
 To configure repository cgroups in Gitaly using the new method, use the following settings for the new configuration method
 to `gitaly['cgroups']` in `/etc/gitlab/gitlab.rb`:
@@ -878,6 +879,10 @@ to `gitaly['cgroups']` in `/etc/gitlab/gitlab.rb`:
 - `cgroups_cpu_shares` is the CPU limit that is imposed collectively on all Git
    processes that Gitaly spawns. 0 implies no limit. The maximum is 1024 shares,
    which represents 100% of CPU.
+- `cgroups_cpu_quota_us` is the
+  [`cfs_quota_us`](https://docs.kernel.org/scheduler/sched-bwc.html#management)
+  to throttle the cgroups' processes if they exceed this quota value. We set
+  `cfs_period_us` to `100ms` so 1 core is `100000`. 0 implies no limit.
 - `cgroups_repositories_count` is the number of cgroups in the cgroups pool. Each time a new Git
   command is spawned, Gitaly assigns it to one of these cgroups based
   on the repository the command is for. A circular hashing algorithm assigns
@@ -888,18 +893,30 @@ to `gitaly['cgroups']` in `/etc/gitlab/gitlab.rb`:
 - `cgroups_repositories_cpu_shares` is the CPU limit that is imposed on all Git processes contained in a repository cgroup.
   0 implies no limit. The maximum is 1024 shares, which represents 100% of CPU.
   This value cannot exceed that of the top level`cgroups_cpu_shares`.
+- `cgroups_repositories_cpu_quota_us` is the
+  [`cfs_quota_us`](https://docs.kernel.org/scheduler/sched-bwc.html#management)
+  that is imposed on all Git processes contained in a repository cgroup. A Git
+  process can't use more then the given quota. We set
+  `cfs_period_us` to `100ms` so 1 core is `100000`. 0 implies no limit.
 
 For example:
 
 ```ruby
 # in /etc/gitlab/gitlab.rb
-gitaly['cgroups_mountpoint'] = "/sys/fs/cgroup"
-gitaly['cgroups_hierarchy_root'] => "gitaly"
-gitaly['cgroups_memory_bytes'] = 64424509440,  # 60gb
-gitaly['cgroups_cpu_shares'] = 1024
-gitaly['cgroups_repositories_count'] => 1000,
-gitaly['cgroups_repositories_memory_bytes'] => 32212254720 # 20gb
-gitaly['cgroups_repositories_cpu_shares'] => 512
+gitaly['configuration'] = {
+  cgroups: {
+    mountpoint: '/sys/fs/cgroup',
+    hierarchy_root: 'gitaly',
+    memory_bytes: 64424509440,  # 60gb,
+    cpu_quota_us: 400000 # 4 cores
+    repositories: {
+      count: 1000,
+      memory_bytes: 32212254720 # 20gb,
+      cpu_shares: 512,
+      cpu_quota_us: 200000 # 2 cores
+    },
+  },
+}
 ```
 
 ### Configure repository cgroups (legacy method)

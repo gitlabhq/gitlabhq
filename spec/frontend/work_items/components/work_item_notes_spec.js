@@ -113,11 +113,6 @@ describe('WorkItemNotes component', () => {
         fetchByIid,
         workItemType: 'task',
       },
-      provide: {
-        glFeatures: {
-          useIidInWorkItemsPath: fetchByIid,
-        },
-      },
       stubs: {
         GlModal: stubComponent(GlModal, { methods: { show: showModal } }),
       },

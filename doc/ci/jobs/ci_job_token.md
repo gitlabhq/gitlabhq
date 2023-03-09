@@ -78,14 +78,14 @@ see [epic 3559](https://gitlab.com/groups/gitlab-org/-/epics/3559).
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/346298/) in GitLab 15.9. [Deployed behind the `:inbound_ci_scoped_job_token` feature flag](../../user/feature_flags.md), enabled by default.
 
-Control your project's job token scope by creating an **inbound** allowlist of projects which can
-access your project through its `CI_JOB_TOKEN`.
+Create an **inbound** allowlist of projects which can access your project through
+their `CI_JOB_TOKEN`.
 
-For example, you can add project `B` to the inbound allowlist for project `A`. Jobs
-in the pipeline for "allowed project" `B` can now use the CI/CD job token to authenticate
-API calls to access project `A`.
+For example, project `A` can add project `B` to the inbound allowlist. CI/CD jobs
+in project `B` (the "allowed project") can now use their CI/CD job token to
+authenticate API calls to access project `A`.
 
-By default the allowlist includes your current project.
+By default the inbound allowlist of any project only includes itself.
 
 It is a security risk to disable this feature, so project maintainers or owners should
 keep this setting enabled at all times. Add projects to the allowlist only when cross-project

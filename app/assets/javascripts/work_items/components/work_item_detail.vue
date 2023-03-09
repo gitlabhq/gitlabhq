@@ -299,10 +299,7 @@ export default {
       return this.isWidgetPresent(WIDGET_TYPE_NOTES);
     },
     fetchByIid() {
-      return (
-        (this.glFeatures.useIidInWorkItemsPath && parseBoolean(getParameterByName('iid_path'))) ||
-        false
-      );
+      return parseBoolean(getParameterByName('iid_path'));
     },
     queryVariables() {
       return this.fetchByIid

@@ -65,7 +65,6 @@ class Projects::IssuesController < Projects::ApplicationController
     push_force_frontend_feature_flag(:work_items_mvc, project&.work_items_mvc_feature_flag_enabled?)
     push_force_frontend_feature_flag(:work_items_mvc_2, project&.work_items_mvc_2_feature_flag_enabled?)
     push_frontend_feature_flag(:epic_widget_edit_confirmation, project)
-    push_frontend_feature_flag(:use_iid_in_work_items_path, project&.group)
     push_frontend_feature_flag(:incident_event_tags, project)
   end
 
@@ -444,11 +443,7 @@ class Projects::IssuesController < Projects::ApplicationController
   def redirect_if_work_item
     return unless use_work_items_path?(issue)
 
-    if Feature.enabled?(:use_iid_in_work_items_path, project.group)
-      redirect_to project_work_items_path(project, issue.iid, params: request.query_parameters.merge(iid_path: true))
-    else
-      redirect_to project_work_items_path(project, issue.id, params: request.query_parameters)
-    end
+    redirect_to project_work_items_path(project, issue.iid, params: request.query_parameters.merge(iid_path: true))
   end
 
   def require_incident_for_incident_routes

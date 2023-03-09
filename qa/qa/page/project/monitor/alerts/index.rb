@@ -17,6 +17,14 @@ module QA
             def go_to_alert(title)
               click_link_with_text(title)
             end
+
+            def has_no_alert_with_title?(title)
+              has_no_link?(title, wait: 5)
+            end
+
+            def go_to_tab(name)
+              click_link_with_text(name)
+            end
           end
         end
       end

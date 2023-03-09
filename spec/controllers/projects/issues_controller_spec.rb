@@ -183,18 +183,6 @@ RSpec.describe Projects::IssuesController, feature_category: :team_planning do
       let_it_be(:task) { create(:issue, :task, project: project) }
 
       shared_examples 'redirects to show work item page' do
-        context 'when use_iid_in_work_items_path feature flag is disabled' do
-          before do
-            stub_feature_flags(use_iid_in_work_items_path: false)
-          end
-
-          it 'redirects to work item page' do
-            make_request
-
-            expect(response).to redirect_to(project_work_items_path(project, task.id, query))
-          end
-        end
-
         it 'redirects to work item page using iid' do
           make_request
 
