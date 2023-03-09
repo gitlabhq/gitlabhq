@@ -8,7 +8,7 @@ module Emails
       @results = results
 
       email_with_layout(
-        to: @user.notification_email_for(@project),
+        to: @user.notification_email_for(@project.group),
         subject: subject('Imported work items'))
     end
 

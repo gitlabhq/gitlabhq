@@ -5,6 +5,7 @@ import NavItem from '~/super_sidebar/components/nav_item.vue';
 describe('NavItem component', () => {
   let wrapper;
 
+  const findLink = () => wrapper.findByTestId('nav-item-link');
   const findPill = () => wrapper.findComponent(GlBadge);
   const createWrapper = (item, props = {}) => {
     wrapper = shallowMountExtended(NavItem, {
@@ -30,5 +31,19 @@ describe('NavItem component', () => {
         expect(findPill().exists()).toEqual(false);
       },
     );
+  });
+
+  it('applies custom link classes', () => {
+    const customClass = 'customClass';
+    createWrapper(
+      { title: 'Foo' },
+      {
+        linkClasses: {
+          [customClass]: true,
+        },
+      },
+    );
+
+    expect(findLink().attributes('class')).toContain(customClass);
   });
 });

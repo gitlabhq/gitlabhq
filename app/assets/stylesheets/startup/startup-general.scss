@@ -132,10 +132,6 @@ kbd kbd {
 }
 @media (prefers-reduced-motion: reduce) {
 }
-.form-control:-moz-focusring {
-  color: transparent;
-  text-shadow: 0 0 0 #333238;
-}
 .form-control::placeholder {
   color: #626168;
   opacity: 1;

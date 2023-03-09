@@ -1,0 +1,8 @@
+---
+name: abuse_reports_list
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110205
+rollout_issue_url:
+milestone: '15.10'
+type: development
+group: group::anti-abuse
+default_enabled: false

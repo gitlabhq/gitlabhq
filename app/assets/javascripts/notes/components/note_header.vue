@@ -159,9 +159,7 @@ export default {
         :data-user-id="authorId"
         :data-username="author.username"
       >
-        <span class="note-header-author-name gl-font-weight-bold">
-          {{ authorName }}
-        </span>
+        <span class="note-header-author-name gl-font-weight-bold" v-text="authorName"></span>
       </a>
       <span v-if="!isSystemNote" class="text-nowrap author-username">
         <a

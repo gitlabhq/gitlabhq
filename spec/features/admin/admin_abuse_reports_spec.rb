@@ -7,6 +7,8 @@ RSpec.describe "Admin::AbuseReports", :js, feature_category: :shared do
 
   context 'as an admin' do
     before do
+      stub_feature_flags(abuse_reports_list: false)
+
       admin = create(:admin)
       sign_in(admin)
       gitlab_enable_admin_mode_sign_in(admin)

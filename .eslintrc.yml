@@ -178,8 +178,7 @@ overrides:
       - '@graphql-eslint'
     parserOptions:
       parser: '@graphql-eslint/eslint-plugin'
-      operations:
-        - '{,ee/,jh/}app/**/*.graphql'
+      operations: '{,ee/,jh/}app/**/*.graphql'
       schema: './tmp/tests/graphql/gitlab_schema_apollo.graphql'
     rules:
       filenames/match-regex: off

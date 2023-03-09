@@ -6,6 +6,7 @@ import $ from 'jquery';
 import { escape, template, uniqBy } from 'lodash';
 import { AJAX_USERS_SELECT_PARAMS_MAP } from 'ee_else_ce/users_select/constants';
 import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
+import { TYPE_MERGE_REQUEST } from '~/issues/constants';
 import { isUserBusy } from '~/set_status_modal/utils';
 import { fixTitle, dispose } from '~/tooltips';
 import axios from '~/lib/utils/axios_utils';
@@ -647,7 +648,7 @@ UsersSelect.prototype.users = function (query, options, callback) {
     ...getAjaxUsersSelectParams(options, AJAX_USERS_SELECT_PARAMS_MAP),
   };
 
-  const isMergeRequest = options.issuableType === 'merge_request';
+  const isMergeRequest = options.issuableType === TYPE_MERGE_REQUEST;
   const isEditMergeRequest = !options.issuableType && options.iid && options.targetBranch;
   const isNewMergeRequest = !options.issuableType && !options.iid && options.targetBranch;
 
@@ -684,7 +685,7 @@ UsersSelect.prototype.renderRow = function (
   img,
   elsClassName,
 ) {
-  const tooltip = issuableType === 'merge_request' && !user.can_merge ? __('Cannot merge') : '';
+  const tooltip = issuableType === TYPE_MERGE_REQUEST && !user.can_merge ? __('Cannot merge') : '';
   const tooltipClass = tooltip ? `has-tooltip` : '';
   const selectedClass = selected === true ? 'is-active' : '';
   const linkClasses = `${selectedClass} ${tooltipClass}`;
@@ -725,7 +726,7 @@ UsersSelect.prototype.renderRowAvatar = function (issuableType, user, img) {
   }
 
   const mergeIcon =
-    issuableType === 'merge_request' && !user.can_merge
+    issuableType === TYPE_MERGE_REQUEST && !user.can_merge
       ? spriteIcon('warning-solid', 's12 merge-icon')
       : '';
 

@@ -2,7 +2,7 @@
 import { GlIcon, GlTooltipDirective } from '@gitlab/ui';
 import { mapGetters } from 'vuex';
 import { sprintf, __ } from '~/locale';
-import { TYPE_ISSUE, WORKSPACE_PROJECT } from '~/issues/constants';
+import { TYPE_ISSUE, TYPE_MERGE_REQUEST, WORKSPACE_PROJECT } from '~/issues/constants';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import ConfidentialityBadge from '~/vue_shared/components/confidentiality_badge.vue';
 
@@ -32,7 +32,7 @@ export default {
       return this.getNoteableData.confidential;
     },
     isMergeRequest() {
-      return this.getNoteableData.targetType === 'merge_request';
+      return this.getNoteableData.targetType === TYPE_MERGE_REQUEST;
     },
     warningIconsMeta() {
       return [

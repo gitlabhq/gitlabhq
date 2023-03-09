@@ -42,7 +42,7 @@ export default {
         <p class="highlight">
           {{ s__('mrWidgetNothingToMerge|This merge request contains no changes.') }}
         </p>
-        <p>
+        <p data-testid="nothing-to-merge-body">
           <gl-sprintf
             :message="
               s__(

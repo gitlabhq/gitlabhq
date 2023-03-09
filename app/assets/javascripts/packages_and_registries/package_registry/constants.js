@@ -28,6 +28,7 @@ export const PACKAGE_TYPE_HELM = 'HELM';
 
 export const TRACKING_LABEL_CODE_INSTRUCTION = 'code_instruction';
 export const TRACKING_LABEL_MAVEN_INSTALLATION = 'maven_installation';
+export const MAVEN_INSTALLATION_COMMAND = 'mvn install';
 
 export const TRACKING_ACTION_COPY_CONAN_COMMAND = 'copy_conan_command';
 export const TRACKING_ACTION_COPY_CONAN_SETUP_COMMAND = 'copy_conan_setup_command';

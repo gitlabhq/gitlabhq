@@ -1001,6 +1001,9 @@ msgstr ""
 msgid "%{reportType} detected no new vulnerabilities."
 msgstr ""
 
+msgid "%{reported} reported for %{category} by %{reporter}"
+msgstr ""
+
 msgid "%{requireStart}Require%{requireEnd} %{approvalsRequired} %{approvalStart}approval%{approvalEnd} from:"
 msgid_plural "%{requireStart}Require%{requireEnd} %{approvalsRequired} %{approvalStart}approvals%{approvalEnd} from:"
 msgstr[0] ""
@@ -17958,6 +17961,9 @@ msgstr ""
 msgid "Filter pipelines"
 msgstr ""
 
+msgid "Filter reports"
+msgstr ""
+
 msgid "Filter results"
 msgstr ""
 
@@ -25666,6 +25672,11 @@ msgstr ""
 msgid "Limiting mode"
 msgstr ""
 
+msgid "Line"
+msgid_plural "Lines"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "Line changes"
 msgstr ""
 
@@ -28223,10 +28234,16 @@ msgstr ""
 msgid "Navigation|Context navigation"
 msgstr ""
 
-msgid "Navigation|Recent groups"
+msgid "Navigation|FREQUENT GROUPS"
 msgstr ""
 
-msgid "Navigation|Recent projects"
+msgid "Navigation|FREQUENT PROJECTS"
+msgstr ""
+
+msgid "Navigation|Groups you visit often will appear here."
+msgstr ""
+
+msgid "Navigation|Projects you visit often will appear here."
 msgstr ""
 
 msgid "Navigation|Switch to..."
@@ -29183,13 +29200,22 @@ msgstr ""
 msgid "Notify|%{project_link_start}Download%{project_link_end} the project export."
 msgstr ""
 
+msgid "Notify|%{singular_or_plural_line} %{error_lines}: Work item type cannot be found or is not supported."
+msgstr ""
+
+msgid "Notify|%{singular_or_plural_line} %{error_lines}: Work item type is empty."
+msgstr ""
+
+msgid "Notify|%{singular_or_plural_line} %{error_lines}: Work item type is not available. Please check your license and permissions."
+msgstr ""
+
 msgid "Notify|%{update_at_start} Last update at %{update_at_mid} %{last_update_at} %{update_at_end}"
 msgstr ""
 
 msgid "Notify|%{updated_by_user_name} pushed new commits to merge request %{mr_link}"
 msgstr ""
 
-msgid "Notify|%{work_items} imported."
+msgid "Notify|%{work_items} successfully imported."
 msgstr ""
 
 msgid "Notify|A new GPG key was added to your account:"
@@ -29244,6 +29270,12 @@ msgid "Notify|Errors found on %{singular_or_plural_line}: %{error_lines}. Please
 msgstr ""
 
 msgid "Notify|Fingerprint: %{fingerprint}"
+msgstr ""
+
+msgid "Notify|Here are the results for your CSV import for %{project_link}."
+msgstr ""
+
+msgid "Notify|Here are the results for your CSV import for %{project_name} (%{project_link})."
 msgstr ""
 
 msgid "Notify|Hi %{username}!"
@@ -29309,6 +29341,9 @@ msgstr ""
 msgid "Notify|No preview for this file type"
 msgstr ""
 
+msgid "Notify|No work items have been imported."
+msgstr ""
+
 msgid "Notify|Pipeline #%{pipeline_id} has failed!"
 msgstr ""
 
@@ -29316,6 +29351,9 @@ msgid "Notify|Pipeline %{pipeline_link} triggered by"
 msgstr ""
 
 msgid "Notify|Pipeline has been fixed and #%{pipeline_id} has passed!"
+msgstr ""
+
+msgid "Notify|Please fix the lines with errors and try the CSV import again."
 msgstr ""
 
 msgid "Notify|Project %{old_path_with_namespace} was moved to another location."
@@ -29328,6 +29366,9 @@ msgid "Notify|Project %{project_name} was exported successfully."
 msgstr ""
 
 msgid "Notify|Remote mirror"
+msgstr ""
+
+msgid "Notify|Some values in the \"type\" column could not be matched with supported work item types:"
 msgstr ""
 
 msgid "Notify|The Administrator created an account for you. Now you are a member of the company GitLab application."
@@ -29376,9 +29417,6 @@ msgid "Notify|You have been unsubscribed from receiving GitLab administrator not
 msgstr ""
 
 msgid "Notify|Your CSV import for project %{project_link} has been completed."
-msgstr ""
-
-msgid "Notify|Your CSV import of work items for project %{project_link} has been completed."
 msgstr ""
 
 msgid "Notify|Your account has been created successfully."

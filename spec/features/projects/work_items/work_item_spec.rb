@@ -12,15 +12,32 @@ RSpec.describe 'Work item', :js, feature_category: :team_planning do
       project.add_developer(user)
 
       sign_in(user)
-
-      visit project_work_items_path(project, work_items_path: work_item.id)
     end
 
-    it_behaves_like 'work items status'
-    it_behaves_like 'work items assignees'
-    it_behaves_like 'work items labels'
-    it_behaves_like 'work items comments'
-    it_behaves_like 'work items description'
+    context 'with internal id' do
+      before do
+        visit project_work_items_path(project, work_items_path: work_item.iid, iid_path: true)
+      end
+
+      it_behaves_like 'work items status'
+      it_behaves_like 'work items assignees'
+      it_behaves_like 'work items labels'
+      it_behaves_like 'work items comments'
+      it_behaves_like 'work items description'
+    end
+
+    context 'with global id' do
+      before do
+        stub_feature_flags(use_iid_in_work_items_path: false)
+        visit project_work_items_path(project, work_items_path: work_item.id)
+      end
+
+      it_behaves_like 'work items status'
+      it_behaves_like 'work items assignees'
+      it_behaves_like 'work items labels'
+      it_behaves_like 'work items comments'
+      it_behaves_like 'work items description'
+    end
   end
 
   context 'for signed in owner' do

@@ -205,10 +205,6 @@ hr {
 }
 @media (prefers-reduced-motion: reduce) {
 }
-.form-control:-moz-focusring {
-  color: transparent;
-  text-shadow: 0 0 0 #333238;
-}
 .form-control::placeholder {
   color: #626168;
   opacity: 1;
@@ -262,7 +258,7 @@ input.btn-block[type="button"] {
   display: block;
   min-height: 1.5rem;
   padding-left: 1.5rem;
-  color-adjust: exact;
+  print-color-adjust: exact;
 }
 .custom-control-input {
   position: absolute;
@@ -303,7 +299,7 @@ input.btn-block[type="button"] {
   pointer-events: none;
   content: "";
   background-color: #fff;
-  border: #737278 solid 1px;
+  border: 1px solid #737278;
 }
 .custom-control-label::after {
   position: absolute;
@@ -313,7 +309,7 @@ input.btn-block[type="button"] {
   width: 1rem;
   height: 1rem;
   content: "";
-  background: no-repeat 50% / 50% 50%;
+  background: 50% / 50% 50% no-repeat;
 }
 .custom-checkbox .custom-control-label::before {
   border-radius: 0.25rem;

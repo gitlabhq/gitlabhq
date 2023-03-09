@@ -63,7 +63,11 @@ export default {
             :expanded="contextSwitcherOpened"
           />
           <gl-collapse id="context-switcher" v-model="contextSwitcherOpened">
-            <context-switcher />
+            <context-switcher
+              :username="sidebarData.username"
+              :projects-path="sidebarData.projects_path"
+              :groups-path="sidebarData.groups_path"
+            />
           </gl-collapse>
           <gl-collapse :visible="!contextSwitcherOpened">
             <sidebar-menu :items="menuItems" />

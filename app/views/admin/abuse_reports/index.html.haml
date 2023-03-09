@@ -2,31 +2,35 @@
 
 %h1.page-title.gl-font-size-h-display= _('Abuse Reports')
 
-.row-content-block.second-block
-  = form_tag admin_abuse_reports_path, method: :get, class: 'filter-form' do
-    .filter-categories.flex-fill
-      .filter-item.inline
-        = dropdown_tag(user_dropdown_label(params[:user_id], 'User'),
-          options: { toggle_class: 'js-filter-submit js-user-search',
-          title: _('Filter by user'), filter: true, filterInput: 'input#user-search',
-          dropdown_class: 'dropdown-menu-selectable dropdown-menu-user js-filter-submit',
-          placeholder: _('Search users'),
-          data: { current_user: true, field_name: 'user_id' }})
+- if Feature.enabled?(:abuse_reports_list)
+  #js-abuse-reports-list-app{ data: abuse_reports_list_data(@abuse_reports) }
+    = gl_loading_icon(css_class: 'gl-my-5', size: 'md')
+- else
+  .row-content-block.second-block
+    = form_tag admin_abuse_reports_path, method: :get, class: 'filter-form' do
+      .filter-categories.flex-fill
+        .filter-item.inline
+          = dropdown_tag(user_dropdown_label(params[:user_id], 'User'),
+            options: { toggle_class: 'js-filter-submit js-user-search',
+            title: _('Filter by user'), filter: true, filterInput: 'input#user-search',
+            dropdown_class: 'dropdown-menu-selectable dropdown-menu-user js-filter-submit',
+            placeholder: _('Search users'),
+            data: { current_user: true, field_name: 'user_id' }})
 
-.abuse-reports
-  - if @abuse_reports.present?
-    .table-holder
-      %table.table.responsive-table
-        %thead.d-none.d-md-table-header-group
-          %tr
-            %th= _('User')
-            %th= _('Reported by')
-            %th.wide= _('Message')
-            %th= _('Action')
-        = render @abuse_reports
-    = paginate @abuse_reports, theme: 'gitlab'
-  - else
-    .empty-state
-      .text-center
-        %h4= _("There are no abuse reports!")
-        %h3= emoji_icon('tada')
+  .abuse-reports
+    - if @abuse_reports.present?
+      .table-holder
+        %table.table.responsive-table
+          %thead.d-none.d-md-table-header-group
+            %tr
+              %th= _('User')
+              %th= _('Reported by')
+              %th.wide= _('Message')
+              %th= _('Action')
+          = render @abuse_reports
+      = paginate @abuse_reports, theme: 'gitlab'
+    - else
+      .empty-state
+        .text-center
+          %h4= _("There are no abuse reports!")
+          %h3= emoji_icon('tada')

@@ -252,16 +252,16 @@ to @gitlab/ui by https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1709
   }
 }
 
-/* End gitlab-ui#1709 */
+.gl-font-xs {
+  font-size: px-to-rem(10px);
+}
 
-/*
- * The below style will be moved to @gitlab/ui by
- * https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1751
- */
-.gl-filter-blur-1 {
-  backdrop-filter: blur(2px);
-  /* stylelint-disable property-no-vendor-prefix */
-  -webkit-backdrop-filter: blur(2px); // still required by Safari
+.gl-line-height-12 {
+  line-height: px-to-rem(12px);
+}
+
+.gl-letter-spacing-06em {
+  letter-spacing: 0.06em;
 }
 
 .gl-flex-flow-row-wrap {

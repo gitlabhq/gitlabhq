@@ -3,6 +3,8 @@
 class Admin::AbuseReportsController < Admin::ApplicationController
   feature_category :insider_threat
 
+  before_action :set_status_param, only: :index, if: -> { Feature.enabled?(:abuse_reports_list) }
+
   def index
     @abuse_reports = AbuseReportsFinder.new(params).execute
   end
@@ -14,5 +16,11 @@ class Admin::AbuseReportsController < Admin::ApplicationController
     abuse_report.destroy
 
     head :ok
+  end
+
+  private
+
+  def set_status_param
+    params[:status] ||= 'open'
   end
 end

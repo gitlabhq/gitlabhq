@@ -1,7 +1,7 @@
 <script>
 import { GlIcon, GlTooltipDirective, GlOutsideDirective as Outside } from '@gitlab/ui';
 import { mapGetters, mapActions } from 'vuex';
-import { TYPE_ISSUE } from '~/issues/constants';
+import { TYPE_ISSUE, TYPE_MERGE_REQUEST } from '~/issues/constants';
 import { __, sprintf } from '~/locale';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { createAlert } from '~/alert';
@@ -46,7 +46,9 @@ export default {
   computed: {
     ...mapGetters(['getNoteableData']),
     isMergeRequest() {
-      return this.getNoteableData.targetType === 'merge_request' && this.glFeatures.movedMrSidebar;
+      return (
+        this.getNoteableData.targetType === TYPE_MERGE_REQUEST && this.glFeatures.movedMrSidebar
+      );
     },
     issuableDisplayName() {
       const isInIssuePage = this.getNoteableData.targetType === TYPE_ISSUE;

@@ -28,7 +28,7 @@ describe('GroupSelect', () => {
 
   const findSearchBoxByType = () => wrapper.findComponent(GlSearchBoxByType);
   const findDropdown = () => wrapper.findComponent(GlDropdown);
-  const findDropdownToggle = () => findDropdown().find('button[aria-haspopup="true"]');
+  const findDropdownToggle = () => findDropdown().find('button[aria-haspopup="menu"]');
   const findAvatarByLabel = (text) =>
     wrapper
       .findAllComponents(GlAvatarLabeled)

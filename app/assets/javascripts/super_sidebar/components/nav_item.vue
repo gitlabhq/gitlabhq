@@ -13,6 +13,11 @@ export default {
       type: Object,
       required: true,
     },
+    linkClasses: {
+      type: Object,
+      required: false,
+      default: () => ({}),
+    },
   },
   data() {
     return {
@@ -49,13 +54,15 @@ export default {
         };
       }
       return {
+        ...this.$attrs,
         href: this.item.link,
         'aria-current': this.isActive ? 'page' : null,
       };
     },
-    linkClasses() {
+    computedLinkClasses() {
       return {
         'gl-bg-t-gray-a-08': this.isActive,
+        ...this.linkClasses,
       };
     },
   },
@@ -74,9 +81,10 @@ export default {
   <li>
     <a
       v-bind="linkProps"
-      class="gl-rounded-base gl-relative gl-display-flex gl-py-3 gl-px-0 gl-line-height-normal gl-text-black-normal! gl-hover-bg-t-gray-a-08 gl-text-decoration-none!"
-      :class="linkClasses"
+      class="gl-rounded-base gl-relative gl-display-flex gl-align-items-center gl-py-3 gl-px-0 gl-line-height-normal gl-text-black-normal! gl-hover-bg-t-gray-a-08 gl-text-decoration-none!"
+      :class="computedLinkClasses"
       data-qa-selector="sidebar_menu_link"
+      data-testid="nav-item-link"
       :data-qa-menu-item="item.title"
       @click="click"
     >
@@ -91,9 +99,9 @@ export default {
           <gl-icon v-if="item.icon" :name="item.icon" class="gl-ml-2" />
         </slot>
       </div>
-      <div class="gl-pr-3">
+      <div class="gl-pr-3 gl-text-gray-900">
         {{ item.title }}
-        <div v-if="item.subtitle" class="gl-font-sm gl-text-gray-500 gl-mt-1">
+        <div v-if="item.subtitle" class="gl-font-sm gl-text-gray-500">
           {{ item.subtitle }}
         </div>
       </div>

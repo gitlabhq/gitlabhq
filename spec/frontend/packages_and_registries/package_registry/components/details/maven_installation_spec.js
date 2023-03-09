@@ -35,7 +35,7 @@ describe('MavenInstallation', () => {
   <artifactId>appName</artifactId>
   <version>appVersion</version>
 </dependency>`;
-  const mavenCommandStr = 'mvn dependency:get -Dartifact=appGroup:appName:appVersion';
+  const mavenCommandStr = 'mvn install';
   const mavenSetupXml = `<repositories>
   <repository>
     <id>gitlab-maven</id>

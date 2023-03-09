@@ -1,32 +1,37 @@
 <script>
-import { GlAvatar, GlSearchBoxByType } from '@gitlab/ui';
+import { GlSearchBoxByType } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import { contextSwitcherItems } from '../mock_data';
 import NavItem from './nav_item.vue';
+import FrequentProjectsList from './frequent_projects_list.vue';
+import FrequentGroupsList from './frequent_groups_list.vue';
 
 export default {
-  components: {
-    GlAvatar,
-    GlSearchBoxByType,
-    NavItem,
-  },
   i18n: {
     contextNavigation: s__('Navigation|Context navigation'),
     switchTo: s__('Navigation|Switch to...'),
-    recentProjects: s__('Navigation|Recent projects'),
-    recentGroups: s__('Navigation|Recent groups'),
+  },
+  components: {
+    GlSearchBoxByType,
+    NavItem,
+    FrequentProjectsList,
+    FrequentGroupsList,
+  },
+  props: {
+    username: {
+      type: String,
+      required: true,
+    },
+    projectsPath: {
+      type: String,
+      required: true,
+    },
+    groupsPath: {
+      type: String,
+      required: true,
+    },
   },
   contextSwitcherItems,
-  viewAllProjectsItem: {
-    title: s__('Navigation|View all projects'),
-    link: '/projects',
-    icon: 'project',
-  },
-  viewAllGroupsItem: {
-    title: s__('Navigation|View all groups'),
-    link: '/groups',
-    icon: 'group',
-  },
 };
 </script>
 
@@ -43,40 +48,8 @@ export default {
             <nav-item :item="$options.contextSwitcherItems.yourWork" />
           </ul>
         </li>
-        <li>
-          <div aria-hidden="true" class="gl-font-weight-bold gl-px-3 gl-py-3">
-            {{ $options.i18n.recentProjects }}
-          </div>
-          <ul :aria-label="$options.i18n.recentProjects" class="gl-p-0">
-            <nav-item
-              v-for="project in $options.contextSwitcherItems.recentProjects"
-              :key="project.title"
-              :item="project"
-            >
-              <template #icon>
-                <gl-avatar shape="rect" :size="24" :src="project.avatar" />
-              </template>
-            </nav-item>
-            <nav-item :item="$options.viewAllProjectsItem" />
-          </ul>
-        </li>
-        <li>
-          <div aria-hidden="true" class="gl-font-weight-bold gl-px-3 gl-py-3">
-            {{ $options.i18n.recentGroups }}
-          </div>
-          <ul :aria-label="$options.i18n.recentGroups" class="gl-p-0">
-            <nav-item
-              v-for="project in $options.contextSwitcherItems.recentGroups"
-              :key="project.title"
-              :item="project"
-            >
-              <template #icon>
-                <gl-avatar shape="rect" :size="24" :src="project.avatar" />
-              </template>
-            </nav-item>
-            <nav-item :item="$options.viewAllGroupsItem" />
-          </ul>
-        </li>
+        <frequent-projects-list :username="username" :view-all-link="projectsPath" />
+        <frequent-groups-list :username="username" :view-all-link="groupsPath" />
       </ul>
     </nav>
   </div>
