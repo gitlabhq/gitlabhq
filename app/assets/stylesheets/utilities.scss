@@ -252,19 +252,6 @@ to @gitlab/ui by https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1709
   }
 }
 
-
-.gl-gap-2 {
-  gap: $gl-spacing-scale-2;
-}
-
-.gl-bg-t-gray-a-08 {
-  background-color: $t-gray-a-08;
-}
-
-.gl-hover-bg-t-gray-a-08:hover {
-  background-color: $t-gray-a-08;
-}
-
 /* End gitlab-ui#1709 */
 
 /*
@@ -283,4 +270,28 @@ to @gitlab/ui by https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1709
 
 .gl-isolate {
   isolation: isolate;
+}
+
+/*
+ * The below style will be moved to @gitlab/ui by
+ * https://gitlab.com/gitlab-org/gitlab-ui/-/issues/2177
+ */
+.gl-gap-2 {
+  gap: $gl-spacing-scale-2;
+}
+
+.gl-bg-t-gray-a-08 {
+  background-color: $t-gray-a-08;
+}
+
+.gl-hover-bg-t-gray-a-08:hover {
+  background-color: $t-gray-a-08;
+}
+
+.gl-inset-border-1-gray-a-08 {
+  box-shadow: inset 0 0 0 $gl-border-size-1 $t-gray-a-08;
+}
+
+.gl-line-height-1 {
+  line-height: 1;
 }

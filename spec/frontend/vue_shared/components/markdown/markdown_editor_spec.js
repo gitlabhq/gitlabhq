@@ -9,10 +9,13 @@ import BubbleMenu from '~/content_editor/components/bubble_menus/bubble_menu.vue
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
 import { stubComponent } from 'helpers/stub_component';
+import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 
 jest.mock('~/emoji');
 
 describe('vue_shared/component/markdown/markdown_editor', () => {
+  useLocalStorageSpy();
+
   let wrapper;
   const value = 'test markdown';
   const renderMarkdownPath = '/api/markdown';
@@ -64,6 +67,8 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
 
   afterEach(() => {
     mock.restore();
+
+    localStorage.clear();
   });
 
   it('displays markdown field by default', () => {
@@ -99,6 +104,42 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
 
       // data-testid isn't copied over
       'data-testid': 'markdown-field',
+    });
+  });
+
+  describe('autosave', () => {
+    it('automatically saves the textarea value to local storage if autosaveKey is defined', () => {
+      buildWrapper({ propsData: { autosaveKey: 'issue/1234', value: 'This is **markdown**' } });
+
+      expect(localStorage.getItem('autosave/issue/1234')).toBe('This is **markdown**');
+    });
+
+    it("loads value from local storage if autosaveKey is defined, and value isn't", () => {
+      localStorage.setItem('autosave/issue/1234', 'This is **markdown**');
+
+      buildWrapper({ propsData: { autosaveKey: 'issue/1234', value: '' } });
+
+      expect(findTextarea().element.value).toBe('This is **markdown**');
+    });
+
+    it("doesn't load value from local storage if autosaveKey is defined, and value is", () => {
+      localStorage.setItem('autosave/issue/1234', 'This is **markdown**');
+
+      buildWrapper({ propsData: { autosaveKey: 'issue/1234' } });
+
+      expect(findTextarea().element.value).toBe('test markdown');
+    });
+
+    it('does not save the textarea value to local storage if autosaveKey is not defined', () => {
+      buildWrapper({ propsData: { value: 'This is **markdown**' } });
+
+      expect(localStorage.setItem).not.toHaveBeenCalled();
+    });
+
+    it('does not save the textarea value to local storage if value is empty', () => {
+      buildWrapper({ propsData: { autosaveKey: 'issue/1234', value: '' } });
+
+      expect(localStorage.setItem).not.toHaveBeenCalled();
     });
   });
 
@@ -156,6 +197,16 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
       await findTextarea().setValue(newValue);
 
       expect(wrapper.emitted('input')).toEqual([[newValue]]);
+    });
+
+    it('autosaves the markdown value to local storage', async () => {
+      buildWrapper({ propsData: { autosaveKey: 'issue/1234' } });
+
+      const newValue = 'new value';
+
+      await findTextarea().setValue(newValue);
+
+      expect(localStorage.getItem('autosave/issue/1234')).toBe(newValue);
     });
 
     describe('when autofocus is true', () => {
@@ -219,7 +270,7 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
 
   describe(`when editingMode is ${EDITING_MODE_CONTENT_EDITOR}`, () => {
     beforeEach(() => {
-      buildWrapper();
+      buildWrapper({ propsData: { autosaveKey: 'issue/1234' } });
       findMarkdownField().vm.$emit('enableContentEditor');
     });
 
@@ -242,6 +293,14 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
       await findContentEditor().vm.$emit('change', { markdown: newValue });
 
       expect(wrapper.emitted('input')).toEqual([[newValue]]);
+    });
+
+    it('autosaves the content editor value to local storage', async () => {
+      const newValue = 'new value';
+
+      await findContentEditor().vm.$emit('change', { markdown: newValue });
+
+      expect(localStorage.getItem('autosave/issue/1234')).toBe(newValue);
     });
 
     it('bubbles up keydown event', () => {

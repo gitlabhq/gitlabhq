@@ -1,6 +1,7 @@
 <script>
 import axios from '~/lib/utils/axios_utils';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
+import { updateDraft, clearDraft, getDraft } from '~/lib/utils/autosave';
 import { EDITING_MODE_MARKDOWN_FIELD, EDITING_MODE_CONTENT_EDITOR } from '../../constants';
 import MarkdownField from './field.vue';
 
@@ -52,10 +53,15 @@ export default {
       required: false,
       default: false,
     },
+    autosaveKey: {
+      type: String,
+      required: false,
+      default: null,
+    },
   },
   data() {
     return {
-      markdown: this.value || '',
+      markdown: this.value || (this.autosaveKey ? getDraft(this.autosaveKey) : '') || '',
       editingMode: EDITING_MODE_MARKDOWN_FIELD,
       autofocused: false,
     };
@@ -72,19 +78,27 @@ export default {
   watch: {
     value(val) {
       this.markdown = val;
+
+      this.saveDraft();
     },
   },
   mounted() {
     this.autofocusTextarea();
+
+    this.saveDraft();
   },
   methods: {
     updateMarkdownFromContentEditor({ markdown }) {
       this.markdown = markdown;
       this.$emit('input', markdown);
+
+      this.saveDraft();
     },
     updateMarkdownFromMarkdownField({ target }) {
       this.markdown = target.value;
       this.$emit('input', target.value);
+
+      this.saveDraft();
     },
     renderMarkdown(markdown) {
       return axios.post(this.renderMarkdownPath, { text: markdown }).then(({ data }) => data.body);
@@ -109,6 +123,11 @@ export default {
     },
     setEditorAsAutofocused() {
       this.autofocused = true;
+    },
+    saveDraft() {
+      if (!this.autosaveKey) return;
+      if (this.markdown) updateDraft(this.autosaveKey, this.markdown);
+      else clearDraft(this.autosaveKey);
     },
   },
 };

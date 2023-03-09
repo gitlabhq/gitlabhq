@@ -3,9 +3,8 @@
 module Ci
   class RunnerVersion < Ci::ApplicationRecord
     include EachBatch
-    include EnumWithNil
 
-    enum_with_nil status: {
+    enum status: {
       not_processed: nil,
       invalid_version: -1,
       unavailable: 1,

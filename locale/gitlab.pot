@@ -4735,10 +4735,103 @@ msgstr ""
 msgid "Analytics"
 msgstr ""
 
+msgid "Analytics|Add to Dashboard"
+msgstr ""
+
+msgid "Analytics|An error occurred while loading the %{visualizationTitle} visualization."
+msgstr ""
+
 msgid "Analytics|Analytics dashboards"
 msgstr ""
 
+msgid "Analytics|Browser"
+msgstr ""
+
+msgid "Analytics|Browser Family"
+msgstr ""
+
+msgid "Analytics|Choose a chart type on the right"
+msgstr ""
+
+msgid "Analytics|Choose a measurement to start"
+msgstr ""
+
+msgid "Analytics|Code"
+msgstr ""
+
+msgid "Analytics|Configure Dashboard Project"
+msgstr ""
+
+msgid "Analytics|Custom dashboards"
+msgstr ""
+
 msgid "Analytics|Dashboards are created by editing the projects dashboard files."
+msgstr ""
+
+msgid "Analytics|Data"
+msgstr ""
+
+msgid "Analytics|Data Table"
+msgstr ""
+
+msgid "Analytics|For being able to create your own dashboards please configure a special project to store your dashboards."
+msgstr ""
+
+msgid "Analytics|Host"
+msgstr ""
+
+msgid "Analytics|Language"
+msgstr ""
+
+msgid "Analytics|Line Chart"
+msgstr ""
+
+msgid "Analytics|New Analytics Visualization Title"
+msgstr ""
+
+msgid "Analytics|OS"
+msgstr ""
+
+msgid "Analytics|OS Version"
+msgstr ""
+
+msgid "Analytics|Page Language"
+msgstr ""
+
+msgid "Analytics|Page Path"
+msgstr ""
+
+msgid "Analytics|Page Title"
+msgstr ""
+
+msgid "Analytics|Pages"
+msgstr ""
+
+msgid "Analytics|Referer"
+msgstr ""
+
+msgid "Analytics|Resulting Data"
+msgstr ""
+
+msgid "Analytics|Single Statistic"
+msgstr ""
+
+msgid "Analytics|URL"
+msgstr ""
+
+msgid "Analytics|Users"
+msgstr ""
+
+msgid "Analytics|Viewport"
+msgstr ""
+
+msgid "Analytics|Visualization"
+msgstr ""
+
+msgid "Analytics|Visualization Designer"
+msgstr ""
+
+msgid "Analytics|Visualization Type"
 msgstr ""
 
 msgid "Analyze your dependencies for known vulnerabilities."
@@ -32639,22 +32732,19 @@ msgstr ""
 msgid "ProductAnalytics|Add the script to the page and assign the client SDK to window:"
 msgstr ""
 
-msgid "ProductAnalytics|Add to Dashboard"
+msgid "ProductAnalytics|All Clicks Compared"
 msgstr ""
 
-msgid "ProductAnalytics|All clicks compared"
+msgid "ProductAnalytics|All Events Compared"
 msgstr ""
 
-msgid "ProductAnalytics|All events compared"
+msgid "ProductAnalytics|All Features"
 msgstr ""
 
-msgid "ProductAnalytics|All features"
+msgid "ProductAnalytics|All Pages"
 msgstr ""
 
-msgid "ProductAnalytics|All pages"
-msgstr ""
-
-msgid "ProductAnalytics|All sessions compared"
+msgid "ProductAnalytics|All Sessions Compared"
 msgstr ""
 
 msgid "ProductAnalytics|An error occured while loading the %{panelTitle} panel."
@@ -32672,31 +32762,19 @@ msgstr ""
 msgid "ProductAnalytics|Audience"
 msgstr ""
 
+msgid "ProductAnalytics|Average Per User"
+msgstr ""
+
 msgid "ProductAnalytics|Average Session Duration"
 msgstr ""
 
 msgid "ProductAnalytics|Average duration in minutes"
 msgstr ""
 
-msgid "ProductAnalytics|Average per User"
-msgstr ""
-
 msgid "ProductAnalytics|Back to dashboards"
 msgstr ""
 
-msgid "ProductAnalytics|Browser"
-msgstr ""
-
-msgid "ProductAnalytics|Browser Family"
-msgstr ""
-
 msgid "ProductAnalytics|Cancel Edit"
-msgstr ""
-
-msgid "ProductAnalytics|Choose a chart type on the right"
-msgstr ""
-
-msgid "ProductAnalytics|Choose a measurement to start"
 msgstr ""
 
 msgid "ProductAnalytics|Click Events"
@@ -32717,22 +32795,10 @@ msgstr ""
 msgid "ProductAnalytics|Compares feature usage of all features against each other"
 msgstr ""
 
-msgid "ProductAnalytics|Compares pageviews of all pages against each other"
-msgstr ""
-
-msgid "ProductAnalytics|Configure Dashboard Project"
+msgid "ProductAnalytics|Compares page views of all pages against each other"
 msgstr ""
 
 msgid "ProductAnalytics|Creating your product analytics instance..."
-msgstr ""
-
-msgid "ProductAnalytics|Custom dashboards"
-msgstr ""
-
-msgid "ProductAnalytics|Data"
-msgstr ""
-
-msgid "ProductAnalytics|Data Table"
 msgstr ""
 
 msgid "ProductAnalytics|Details on how to configure product analytics to collect data."
@@ -32756,13 +32822,7 @@ msgstr ""
 msgid "ProductAnalytics|Events over time"
 msgstr ""
 
-msgid "ProductAnalytics|Feature Usage"
-msgstr ""
-
-msgid "ProductAnalytics|Feature usage"
-msgstr ""
-
-msgid "ProductAnalytics|For being able to create your own dashboards please configure a special project to store your dashboards."
+msgid "ProductAnalytics|Feature Usages"
 msgstr ""
 
 msgid "ProductAnalytics|For the product analytics dashboard to start showing you some data, you need to add the analytics tracking code to your project."
@@ -32771,13 +32831,10 @@ msgstr ""
 msgid "ProductAnalytics|Go back"
 msgstr ""
 
-msgid "ProductAnalytics|Host"
-msgstr ""
-
 msgid "ProductAnalytics|How many sessions a user has"
 msgstr ""
 
-msgid "ProductAnalytics|How often sesions are repeated"
+msgid "ProductAnalytics|How often sessions are repeated"
 msgstr ""
 
 msgid "ProductAnalytics|Identifies the sender of tracking events"
@@ -32790,12 +32847,6 @@ msgid "ProductAnalytics|Instrument your application"
 msgstr ""
 
 msgid "ProductAnalytics|Instrumentation details"
-msgstr ""
-
-msgid "ProductAnalytics|Language"
-msgstr ""
-
-msgid "ProductAnalytics|Line Chart"
 msgstr ""
 
 msgid "ProductAnalytics|Measure All tracked Events"
@@ -32813,43 +32864,13 @@ msgstr ""
 msgid "ProductAnalytics|Measuring"
 msgstr ""
 
-msgid "ProductAnalytics|New Analytics Panel Title"
-msgstr ""
-
-msgid "ProductAnalytics|OS"
-msgstr ""
-
-msgid "ProductAnalytics|OS Version"
-msgstr ""
-
 msgid "ProductAnalytics|On what do you want to get insights?"
-msgstr ""
-
-msgid "ProductAnalytics|Page Language"
-msgstr ""
-
-msgid "ProductAnalytics|Page Path"
-msgstr ""
-
-msgid "ProductAnalytics|Page Title"
 msgstr ""
 
 msgid "ProductAnalytics|Page Views"
 msgstr ""
 
-msgid "ProductAnalytics|Pages"
-msgstr ""
-
-msgid "ProductAnalytics|Panel"
-msgstr ""
-
-msgid "ProductAnalytics|Referer"
-msgstr ""
-
-msgid "ProductAnalytics|Repeat Visit percentage"
-msgstr ""
-
-msgid "ProductAnalytics|Resulting Data"
+msgid "ProductAnalytics|Repeat Visit Percentage"
 msgstr ""
 
 msgid "ProductAnalytics|SDK App ID"
@@ -32865,9 +32886,6 @@ msgid "ProductAnalytics|Set up Product Analytics to track how your product is pe
 msgstr ""
 
 msgid "ProductAnalytics|Set up product analytics"
-msgstr ""
-
-msgid "ProductAnalytics|Single Statistic"
 msgstr ""
 
 msgid "ProductAnalytics|Steps to add product analytics as a CommonJS module"
@@ -32894,9 +32912,6 @@ msgstr ""
 msgid "ProductAnalytics|Track specific features"
 msgstr ""
 
-msgid "ProductAnalytics|URL"
-msgstr ""
-
 msgid "ProductAnalytics|Unique Users"
 msgstr ""
 
@@ -32907,15 +32922,6 @@ msgid "ProductAnalytics|User activity"
 msgstr ""
 
 msgid "ProductAnalytics|Users"
-msgstr ""
-
-msgid "ProductAnalytics|Viewport"
-msgstr ""
-
-msgid "ProductAnalytics|Visualization Designer"
-msgstr ""
-
-msgid "ProductAnalytics|Visualization Type"
 msgstr ""
 
 msgid "ProductAnalytics|What do you want to measure?"
@@ -46107,6 +46113,15 @@ msgstr ""
 msgid "Unlimited"
 msgstr ""
 
+msgid "UnlimitedMembersDuringTrialAlert|During your trial, invite as many members as you like to %{group} to collaborate with you."
+msgstr ""
+
+msgid "UnlimitedMembersDuringTrialAlert|Explore paid plans"
+msgstr ""
+
+msgid "UnlimitedMembersDuringTrialAlert|Get the most out of your trial with space for more members"
+msgstr ""
+
 msgid "Unlink"
 msgstr ""
 
@@ -48700,6 +48715,11 @@ msgstr ""
 msgid "When you transfer your project to a group, you can easily manage multiple projects, view usage quotas for storage, pipeline minutes, and users, and start a trial or upgrade to a paid tier."
 msgstr ""
 
+msgid "When your trial ends, you'll have a maximum of %d member on the Free tier, or you can get more by upgrading to a paid tier."
+msgid_plural "When your trial ends, you'll have a maximum of %d members on the Free tier, or you can get more by upgrading to a paid tier."
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "When your trial ends, you'll move to the Free tier, which has a limit of %{free_user_limit} seat. %{free_user_limit} seat will remain active, and members not occupying a seat will have the %{link_start}Over limit status%{link_end} and lose access to this group."
 msgid_plural "When your trial ends, you'll move to the Free tier, which has a limit of %{free_user_limit} seats. %{free_user_limit} seats will remain active, and members not occupying a seat will have the %{link_start}Over limit status%{link_end} and lose access to this group."
 msgstr[0] ""
@@ -51009,6 +51029,9 @@ msgid "ciReport|Showing %{fetchedItems} of %{totalItems} items"
 msgstr ""
 
 msgid "ciReport|Solution"
+msgstr ""
+
+msgid "ciReport|Something went wrong while fetching the finding. Please try again later."
 msgstr ""
 
 msgid "ciReport|Static Application Security Testing (SAST)"

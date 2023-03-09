@@ -872,6 +872,26 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
         expect(pipeline).to be_valid
       end
     end
+
+    context 'when source is unknown' do
+      subject(:pipeline) { create(:ci_empty_pipeline, :created) }
+
+      let(:attr) { :source }
+      let(:attr_value) { :unknown }
+
+      it_behaves_like 'having enum with nil value'
+    end
+  end
+
+  describe '#config_source' do
+    context 'when source is unknown' do
+      subject(:pipeline) { create(:ci_empty_pipeline, :created) }
+
+      let(:attr) { :config_source }
+      let(:attr_value) { :unknown_source }
+
+      it_behaves_like 'having enum with nil value'
+    end
   end
 
   describe '#block' do

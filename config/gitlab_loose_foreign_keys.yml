@@ -244,6 +244,10 @@ p_ci_builds_metadata:
   - table: projects
     column: project_id
     on_delete: async_delete
+p_ci_runner_machine_builds:
+  - table: ci_runner_machines
+    column: runner_machine_id
+    on_delete: async_delete
 packages_build_infos:
   - table: ci_pipelines
     column: pipeline_id

@@ -47,4 +47,11 @@ RSpec.describe Ci::RunnerMachineBuild, model: true, feature_category: :runner_fl
     it { expect(partitioning_strategy.current_partitions).to include partitioning_strategy.initial_partition }
     it { expect(partitioning_strategy.active_partition).to be_present }
   end
+
+  context 'loose foreign key on p_ci_runner_machine_builds.runner_machine_id' do # rubocop:disable RSpec/ContextWording
+    it_behaves_like 'cleanup by a loose foreign key' do
+      let!(:parent) { create(:ci_runner_machine) }
+      let!(:model) { create(:ci_runner_machine_build, runner_machine: parent) }
+    end
+  end
 end

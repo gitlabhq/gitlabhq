@@ -115,10 +115,9 @@
               - if display_public_email?(@user)
                 = render 'middle_dot_divider', stacking: true do
                   = link_to @user.public_email, "mailto:#{@user.public_email}", itemprop: 'email'
-    - if @user.bio.present? && @user.confirmed? && !@user.blocked?
-      .gl-text-gray-900.gl-mx-5
-        .profile-user-bio.gl-text-left
-          = @user.bio
+              - if @user.bio.present? && @user.confirmed? && !@user.blocked?
+                %p.profile-user-bio.gl-mb-3
+                  = @user.bio
 
     - if !profile_tabs.empty? && !Feature.enabled?(:profile_tabs_vue, current_user)
       .scrolling-tabs-container

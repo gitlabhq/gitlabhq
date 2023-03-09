@@ -11,7 +11,6 @@ module Ci
     include Gitlab::OptimisticLocking
     include Gitlab::Utils::StrongMemoize
     include AtomicInternalId
-    include EnumWithNil
     include Ci::HasRef
     include ShaAttribute
     include FromUnion
@@ -143,9 +142,9 @@ module Ci
 
     # We use `Enums::Ci::Pipeline.sources` here so that EE can more easily extend
     # this `Hash` with new values.
-    enum_with_nil source: Enums::Ci::Pipeline.sources
+    enum source: Enums::Ci::Pipeline.sources
 
-    enum_with_nil config_source: Enums::Ci::Pipeline.config_sources
+    enum config_source: Enums::Ci::Pipeline.config_sources
 
     # We use `Enums::Ci::Pipeline.failure_reasons` here so that EE can more easily
     # extend this `Hash` with new values.

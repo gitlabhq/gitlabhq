@@ -91,6 +91,7 @@
   .gl-new-dropdown-custom-toggle[aria-expanded='true'] .counter {
     background-color: $gray-50;
     border-color: transparent;
+    box-shadow: none;
     mix-blend-mode: multiply;
 
     .gl-dark & {

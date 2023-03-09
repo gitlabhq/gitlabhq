@@ -65,6 +65,9 @@ module Types
                                                          resolver: ::Resolvers::Ci::RunnerJobsResolver
       field :locked, GraphQL::Types::Boolean, null: true,
                                               description: 'Indicates the runner is locked.'
+      field :machines, ::Types::Ci::RunnerMachineType.connection_type, null: true,
+            description: 'Machines associated with the runner configuration.',
+            method: :runner_machines
       field :maintenance_note, GraphQL::Types::String, null: true,
                                                        description: 'Runner\'s maintenance notes.'
       field :maximum_timeout, GraphQL::Types::Int, null: true,

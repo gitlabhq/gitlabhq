@@ -541,9 +541,9 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
   describe '.stale', :freeze_time do
     subject { described_class.stale }
 
-    let!(:runner1) { create(:ci_runner, :instance, created_at: 4.months.ago, contacted_at: 3.months.ago + 10.seconds) }
-    let!(:runner2) { create(:ci_runner, :instance, created_at: 4.months.ago, contacted_at: 3.months.ago - 1.second) }
-    let!(:runner3) { create(:ci_runner, :instance, created_at: 3.months.ago - 1.second, contacted_at: nil) }
+    let!(:runner1) { create(:ci_runner, :instance, created_at: 4.months.ago, contacted_at: 3.months.ago + 1.second) }
+    let!(:runner2) { create(:ci_runner, :instance, created_at: 4.months.ago, contacted_at: 3.months.ago) }
+    let!(:runner3) { create(:ci_runner, :instance, created_at: 3.months.ago, contacted_at: nil) }
     let!(:runner4) { create(:ci_runner, :instance, created_at: 2.months.ago, contacted_at: nil) }
 
     it 'returns stale runners' do
@@ -551,7 +551,7 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
     end
   end
 
-  describe '#stale?', :clean_gitlab_redis_cache do
+  describe '#stale?', :clean_gitlab_redis_cache, :freeze_time do
     let(:runner) { build(:ci_runner, :instance) }
 
     subject { runner.stale? }
@@ -570,11 +570,11 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
       using RSpec::Parameterized::TableSyntax
 
       where(:created_at, :contacted_at, :expected_stale?) do
-        nil                       | nil                          | false
-        3.months.ago - 1.second   | 3.months.ago - 0.001.seconds | true
-        3.months.ago - 1.second   | 3.months.ago + 1.hour        | false
-        3.months.ago - 1.second   | nil                          | true
-        3.months.ago + 1.hour     | nil                          | false
+        nil                     | nil                     | false
+        3.months.ago            | 3.months.ago            | true
+        3.months.ago            | (3.months - 1.hour).ago | false
+        3.months.ago            | nil                     | true
+        (3.months - 1.hour).ago | nil                     | false
       end
 
       with_them do
@@ -588,9 +588,7 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
             runner.contacted_at = contacted_at
           end
 
-          specify do
-            is_expected.to eq(expected_stale?)
-          end
+          it { is_expected.to eq(expected_stale?) }
         end
 
         context 'with cache value' do
@@ -599,9 +597,7 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
             stub_redis_runner_contacted_at(contacted_at.to_s)
           end
 
-          specify do
-            is_expected.to eq(expected_stale?)
-          end
+          it { is_expected.to eq(expected_stale?) }
         end
 
         def stub_redis_runner_contacted_at(value)
@@ -617,7 +613,7 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
     end
   end
 
-  describe '.online' do
+  describe '.online', :freeze_time do
     subject { described_class.online }
 
     let!(:runner1) { create(:ci_runner, :instance, contacted_at: 2.hours.ago) }
@@ -626,7 +622,7 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
     it { is_expected.to match_array([runner2]) }
   end
 
-  describe '#online?', :clean_gitlab_redis_cache do
+  describe '#online?', :clean_gitlab_redis_cache, :freeze_time do
     let(:runner) { build(:ci_runner, :instance) }
 
     subject { runner.online? }
@@ -891,8 +887,8 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
     end
   end
 
-  describe '#status' do
-    let(:runner) { build(:ci_runner, :instance, created_at: 4.months.ago) }
+  describe '#status', :freeze_time do
+    let(:runner) { build(:ci_runner, :instance, created_at: 3.months.ago) }
     let(:legacy_mode) {}
 
     subject { runner.status(legacy_mode) }
@@ -948,7 +944,7 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
 
     context 'contacted recently' do
       before do
-        runner.contacted_at = (3.months - 1.hour).ago
+        runner.contacted_at = (3.months - 1.second).ago
       end
 
       it { is_expected.to eq(:offline) }
@@ -956,7 +952,7 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
 
     context 'contacted long time ago' do
       before do
-        runner.contacted_at = (3.months + 1.second).ago
+        runner.contacted_at = 3.months.ago
       end
 
       context 'with legacy_mode enabled' do
@@ -971,7 +967,7 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
     end
   end
 
-  describe '#deprecated_rest_status' do
+  describe '#deprecated_rest_status', :freeze_time do
     let(:runner) { create(:ci_runner, :instance, contacted_at: 1.second.ago) }
 
     subject { runner.deprecated_rest_status }
@@ -994,8 +990,8 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
 
     context 'contacted long time ago' do
       before do
-        runner.created_at = 1.year.ago
-        runner.contacted_at = 1.year.ago
+        runner.created_at = 3.months.ago
+        runner.contacted_at = 3.months.ago
       end
 
       it { is_expected.to eq(:stale) }

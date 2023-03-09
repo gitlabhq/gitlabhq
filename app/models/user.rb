@@ -1722,11 +1722,7 @@ class User < ApplicationRecord
   end
 
   def manageable_groups(include_groups_with_developer_maintainer_access: false)
-    owned_and_maintainer_group_hierarchy = if Feature.enabled?(:linear_user_manageable_groups, self)
-                                             owned_or_maintainers_groups.self_and_descendants
-                                           else
-                                             Gitlab::ObjectHierarchy.new(owned_or_maintainers_groups).base_and_descendants
-                                           end
+    owned_and_maintainer_group_hierarchy = owned_or_maintainers_groups.self_and_descendants
 
     if include_groups_with_developer_maintainer_access
       union_sql = ::Gitlab::SQL::Union.new(

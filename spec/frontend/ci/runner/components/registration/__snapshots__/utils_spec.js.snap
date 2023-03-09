@@ -76,6 +76,7 @@ Array [
   "gitlab-runner register",
   "  --url http://test.host",
   "  --registration-token REGISTRATION_TOKEN",
+  "  --description 'RUNNER'",
 ]
 `;
 
@@ -130,6 +131,7 @@ Array [
   "gitlab-runner register",
   "  --url http://test.host",
   "  --registration-token REGISTRATION_TOKEN",
+  "  --description 'RUNNER'",
 ]
 `;
 
@@ -188,6 +190,7 @@ Array [
   ".\\\\gitlab-runner.exe register",
   "  --url http://test.host",
   "  --registration-token REGISTRATION_TOKEN",
+  "  --description 'RUNNER'",
 ]
 `;
 

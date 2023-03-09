@@ -7305,6 +7305,30 @@ The edge type for [`CiRunner`](#cirunner).
 | <a id="cirunneredgenode"></a>`node` | [`CiRunner`](#cirunner) | The item at the end of the edge. |
 | <a id="cirunneredgeweburl"></a>`webUrl` | [`String`](#string) | Web URL of the runner. The value depends on where you put this field in the query. You can use it for projects or groups. |
 
+#### `CiRunnerMachineConnection`
+
+The connection type for [`CiRunnerMachine`](#cirunnermachine).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cirunnermachineconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
+| <a id="cirunnermachineconnectionedges"></a>`edges` | [`[CiRunnerMachineEdge]`](#cirunnermachineedge) | A list of edges. |
+| <a id="cirunnermachineconnectionnodes"></a>`nodes` | [`[CiRunnerMachine]`](#cirunnermachine) | A list of nodes. |
+| <a id="cirunnermachineconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `CiRunnerMachineEdge`
+
+The edge type for [`CiRunnerMachine`](#cirunnermachine).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cirunnermachineedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="cirunnermachineedgenode"></a>`node` | [`CiRunnerMachine`](#cirunnermachine) | The item at the end of the edge. |
+
 #### `CiSecureFileRegistryConnection`
 
 The connection type for [`CiSecureFileRegistry`](#cisecurefileregistry).
@@ -11809,6 +11833,7 @@ CI/CD variables for a project.
 | <a id="cirunnerjobcount"></a>`jobCount` | [`Int`](#int) | Number of jobs processed by the runner (limited to 1000, plus one to indicate that more items exist). |
 | <a id="cirunnerjobexecutionstatus"></a>`jobExecutionStatus` **{warning-solid}** | [`CiRunnerJobExecutionStatus`](#cirunnerjobexecutionstatus) | **Introduced** in 15.7. This feature is in Alpha. It can be changed or removed at any time. Job execution status of the runner. |
 | <a id="cirunnerlocked"></a>`locked` | [`Boolean`](#boolean) | Indicates the runner is locked. |
+| <a id="cirunnermachines"></a>`machines` | [`CiRunnerMachineConnection`](#cirunnermachineconnection) | Machines associated with the runner configuration. (see [Connections](#connections)) |
 | <a id="cirunnermaintenancenote"></a>`maintenanceNote` | [`String`](#string) | Runner's maintenance notes. |
 | <a id="cirunnermaintenancenotehtml"></a>`maintenanceNoteHtml` | [`String`](#string) | GitLab Flavored Markdown rendering of `maintenance_note`. |
 | <a id="cirunnermaximumtimeout"></a>`maximumTimeout` | [`Int`](#int) | Maximum timeout (in seconds) for jobs processed by the runner. |
@@ -11878,6 +11903,24 @@ Returns [`CiRunnerStatus!`](#cirunnerstatus).
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="cirunnerstatuslegacymode"></a>`legacyMode` **{warning-solid}** | [`String`](#string) | **Deprecated** in 15.0. Will be removed in 17.0. In GitLab 16.0 and later, the field will act as if `legacyMode` is null. |
+
+### `CiRunnerMachine`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cirunnermachinearchitecturename"></a>`architectureName` | [`String`](#string) | Architecture provided by the runner machine. |
+| <a id="cirunnermachinecontactedat"></a>`contactedAt` | [`Time`](#time) | Timestamp of last contact from the runner machine. |
+| <a id="cirunnermachinecreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp of creation of the runner machine. |
+| <a id="cirunnermachineexecutorname"></a>`executorName` | [`String`](#string) | Executor last advertised by the runner. |
+| <a id="cirunnermachineid"></a>`id` | [`CiRunnerMachineID!`](#cirunnermachineid) | ID of the runner machine. |
+| <a id="cirunnermachineipaddress"></a>`ipAddress` | [`String`](#string) | IP address of the runner machine. |
+| <a id="cirunnermachineplatformname"></a>`platformName` | [`String`](#string) | Platform provided by the runner machine. |
+| <a id="cirunnermachinerevision"></a>`revision` | [`String`](#string) | Revision of the runner. |
+| <a id="cirunnermachinerunner"></a>`runner` | [`CiRunner`](#cirunner) | Runner configuration for the runner machine. |
+| <a id="cirunnermachinestatus"></a>`status` | [`CiRunnerStatus!`](#cirunnerstatus) | Status of the runner machine. |
+| <a id="cirunnermachineversion"></a>`version` | [`String`](#string) | Version of the runner. |
 
 ### `CiSecureFileRegistry`
 
@@ -24573,6 +24616,12 @@ An example `CiPipelineScheduleID` is: `"gid://gitlab/Ci::PipelineSchedule/1"`.
 A `CiRunnerID` is a global ID. It is encoded as a string.
 
 An example `CiRunnerID` is: `"gid://gitlab/Ci::Runner/1"`.
+
+### `CiRunnerMachineID`
+
+A `CiRunnerMachineID` is a global ID. It is encoded as a string.
+
+An example `CiRunnerMachineID` is: `"gid://gitlab/Ci::RunnerMachine/1"`.
 
 ### `ClustersAgentID`
 

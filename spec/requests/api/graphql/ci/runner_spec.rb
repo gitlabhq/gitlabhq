@@ -10,7 +10,7 @@ RSpec.describe 'Query.runner(id)', feature_category: :runner_fleet do
   let_it_be(:group) { create(:group) }
 
   let_it_be(:active_instance_runner) do
-    create(:ci_runner, :instance,
+    create(:ci_runner, :instance, :with_runner_machine,
       description: 'Runner 1',
       creator: user,
       contacted_at: 2.hours.ago,
@@ -58,7 +58,9 @@ RSpec.describe 'Query.runner(id)', feature_category: :runner_fleet do
   end
 
   let_it_be(:project1) { create(:project) }
-  let_it_be(:active_project_runner) { create(:ci_runner, :project, projects: [project1]) }
+  let_it_be(:active_project_runner) do
+    create(:ci_runner, :project, :with_runner_machine, projects: [project1])
+  end
 
   shared_examples 'runner details fetch' do
     let(:query) do
@@ -118,7 +120,12 @@ RSpec.describe 'Query.runner(id)', feature_category: :runner_fleet do
           'updateRunner' => true,
           'deleteRunner' => true,
           'assignRunner' => true
-        }
+        },
+        machines: a_hash_including(
+          "count" => runner.runner_machines.count,
+          "nodes" => an_instance_of(Array),
+          "pageInfo" => anything
+        )
       )
       expect(runner_data['tagList']).to match_array runner.tag_list
     end

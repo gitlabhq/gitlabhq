@@ -1039,4 +1039,13 @@ RSpec.describe CommitStatus do
       end
     end
   end
+
+  describe '#failure_reason' do
+    subject(:status) { commit_status }
+
+    let(:attr) { :failure_reason }
+    let(:attr_value) { :unknown_failure }
+
+    it_behaves_like 'having enum with nil value'
+  end
 end

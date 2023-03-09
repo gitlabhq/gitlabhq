@@ -930,4 +930,13 @@ RSpec.describe Clusters::Platforms::Kubernetes do
       end
     end
   end
+
+  describe '#authorization_type' do
+    subject(:kubernetes) { create(:cluster_platform_kubernetes) }
+
+    let(:attr) { :authorization_type }
+    let(:attr_value) { :unknown_authorization }
+
+    it_behaves_like 'having enum with nil value'
+  end
 end

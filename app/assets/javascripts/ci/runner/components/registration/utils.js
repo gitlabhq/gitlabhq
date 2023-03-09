@@ -12,17 +12,34 @@ import windowsInstall from './scripts/windows/install.ps1?raw';
 
 const OS = {
   [LINUX_PLATFORM]: {
+    shell: 'bash',
     commandPrompt: '$',
     executable: 'gitlab-runner',
   },
   [MACOS_PLATFORM]: {
+    shell: 'bash',
     commandPrompt: '$',
     executable: 'gitlab-runner',
   },
   [WINDOWS_PLATFORM]: {
+    shell: 'powershell',
     commandPrompt: '>',
     executable: '.\\gitlab-runner.exe',
   },
+};
+
+const escapedParam = (param, shell = 'bash') => {
+  let escaped;
+  if (shell === 'bash') {
+    // replace single-quotes by the sequence '\''
+    escaped = param.replaceAll("'", "'\\''");
+  } else if (shell === 'powershell') {
+    // replace single-quotes by the sequence ''
+    // https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_quoting_rules?view=powershell-7.3
+    escaped = param.replaceAll("'", "''");
+  }
+  // surround with single quotes.
+  return `'${escaped}'`;
 };
 
 export const commandPrompt = ({ platform }) => {
@@ -33,12 +50,28 @@ export const executable = ({ platform }) => {
   return (OS[platform] || OS[DEFAULT_PLATFORM]).executable;
 };
 
-export const registerCommand = ({ platform, url = gon.gitlab_url, registrationToken }) => {
-  return [
-    `${executable({ platform })} register`,
-    `  --url ${url}`,
-    ...(registrationToken ? [`  --registration-token ${registrationToken}`] : []),
-  ];
+const shell = ({ platform }) => {
+  return (OS[platform] || OS[DEFAULT_PLATFORM]).shell;
+};
+
+export const registerCommand = ({
+  platform,
+  url = gon.gitlab_url,
+  registrationToken,
+  description,
+}) => {
+  const lines = [`${executable({ platform })} register`];
+  if (url) {
+    lines.push(`  --url ${url}`);
+  }
+  if (registrationToken) {
+    lines.push(`  --registration-token ${registrationToken}`);
+  }
+  if (description) {
+    const escapedDescription = escapedParam(description, shell({ platform }));
+    lines.push(`  --description ${escapedDescription}`);
+  }
+  return lines;
 };
 
 export const runCommand = ({ platform }) => {

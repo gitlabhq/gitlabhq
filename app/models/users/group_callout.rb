@@ -25,7 +25,8 @@ module Users
       usage_quota_trial_alert: 14, # EE-only
       preview_usage_quota_free_plan_alert: 15, # EE-only
       enforcement_at_limit_alert: 16, # EE-only
-      web_hook_disabled: 17 # EE-only
+      web_hook_disabled: 17, # EE-only
+      unlimited_members_during_trial_alert: 18 # EE-only
     }
 
     validates :group, presence: true

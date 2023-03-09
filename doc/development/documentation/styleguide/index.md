@@ -779,14 +779,18 @@ As much as possible, use text that follows one of these patterns:
 
 For example:
 
-- `For more information, see [merge requests](../../../user/project/merge_requests/index.md).`
-- `To create a review app, see [review apps](../../../ci/review_apps/index.md).`
+- `For more information, see [merge requests](LINK).`
+- `To create a review app, see [review apps](LINK).`
 
 You can expand on this text by using phrases like
 `For more information about this feature, see...`
 
-Do not to use alternate phrases, like `Learn more about...` or
-`To read more...`.
+Do not to use the following constructions:
+
+- `Learn more about...`
+- `To read more...`.
+- `For more information, see the [Merge requests](LINK) page.`
+- `For more information, see the [Merge requests](LINK) documentation.`
 
 #### Descriptive text rather than `here`
 

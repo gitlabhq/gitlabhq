@@ -5,6 +5,10 @@ require 'spec_helper'
 RSpec.describe Ci::RunnerMachine, feature_category: :runner_fleet, type: :model do
   it_behaves_like 'having unique enum values'
 
+  it_behaves_like 'it has loose foreign keys' do
+    let(:factory_name) { :ci_runner_machine }
+  end
+
   it { is_expected.to belong_to(:runner) }
   it { is_expected.to belong_to(:runner_version).with_foreign_key(:version) }
   it { is_expected.to have_many(:runner_machine_builds) }
@@ -50,6 +54,64 @@ RSpec.describe Ci::RunnerMachine, feature_category: :runner_fleet, type: :model 
 
     it 'returns stale runner machines' do
       is_expected.to match_array([runner_machine1.id, runner_machine2.id])
+    end
+  end
+
+  describe '.online_contact_time_deadline', :freeze_time do
+    subject { described_class.online_contact_time_deadline }
+
+    it { is_expected.to eq(2.hours.ago) }
+  end
+
+  describe '.stale_deadline', :freeze_time do
+    subject { described_class.stale_deadline }
+
+    it { is_expected.to eq(7.days.ago) }
+  end
+
+  describe '#status', :freeze_time do
+    let(:runner_machine) { build(:ci_runner_machine, created_at: 8.days.ago) }
+
+    subject { runner_machine.status }
+
+    context 'if never connected' do
+      before do
+        runner_machine.contacted_at = nil
+      end
+
+      it { is_expected.to eq(:stale) }
+
+      context 'if created recently' do
+        before do
+          runner_machine.created_at = 1.day.ago
+        end
+
+        it { is_expected.to eq(:never_contacted) }
+      end
+    end
+
+    context 'if contacted 1s ago' do
+      before do
+        runner_machine.contacted_at = 1.second.ago
+      end
+
+      it { is_expected.to eq(:online) }
+    end
+
+    context 'if contacted recently' do
+      before do
+        runner_machine.contacted_at = 2.hours.ago
+      end
+
+      it { is_expected.to eq(:offline) }
+    end
+
+    context 'if contacted long time ago' do
+      before do
+        runner_machine.contacted_at = 7.days.ago
+      end
+
+      it { is_expected.to eq(:stale) }
     end
   end
 

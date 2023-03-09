@@ -41,6 +41,14 @@ module Ci
         remove_duplicates: false).where(created_some_time_ago)
     end
 
+    def self.online_contact_time_deadline
+      Ci::Runner.online_contact_time_deadline
+    end
+
+    def self.stale_deadline
+      STALE_TIMEOUT.ago
+    end
+
     def heartbeat(values, update_contacted_at: true)
       ##
       # We can safely ignore writes performed by a runner heartbeat. We do
@@ -64,7 +72,24 @@ module Ci
       end
     end
 
+    def status
+      return :stale if stale?
+      return :never_contacted unless contacted_at
+
+      online? ? :online : :offline
+    end
+
     private
+
+    def online?
+      contacted_at && contacted_at > self.class.online_contact_time_deadline
+    end
+
+    def stale?
+      return false unless created_at
+
+      [created_at, contacted_at].compact.max <= self.class.stale_deadline
+    end
 
     def persist_cached_data?
       # Use a random threshold to prevent beating DB updates.

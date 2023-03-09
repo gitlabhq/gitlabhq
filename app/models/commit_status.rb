@@ -6,7 +6,6 @@ class CommitStatus < Ci::ApplicationRecord
   include Importable
   include AfterCommitQueue
   include Presentable
-  include EnumWithNil
   include BulkInsertableAssociations
   include TaggableQueries
 
@@ -26,7 +25,7 @@ class CommitStatus < Ci::ApplicationRecord
   enum scheduling_type: { stage: 0, dag: 1 }, _prefix: true
   # We use `Enums::Ci::CommitStatus.failure_reasons` here so that EE can more easily
   # extend this `Hash` with new values.
-  enum_with_nil failure_reason: Enums::Ci::CommitStatus.failure_reasons
+  enum failure_reason: Enums::Ci::CommitStatus.failure_reasons
 
   delegate :commit, to: :pipeline
   delegate :sha, :short_sha, :before_sha, to: :pipeline

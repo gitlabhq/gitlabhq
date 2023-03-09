@@ -1,6 +1,5 @@
 <script>
 import { GlButton } from '@gitlab/ui';
-import { s__, sprintf } from '~/locale';
 import { createAlert } from '~/flash';
 import { getParameterByName, updateHistory, mergeUrlParams } from '~/lib/utils/url_utility';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
@@ -49,22 +48,6 @@ export default {
       },
     },
   },
-  computed: {
-    description() {
-      return this.runner?.description;
-    },
-    heading() {
-      if (this.description) {
-        return sprintf(s__('Runners|Register "%{runnerDescription}" runner'), {
-          runnerDescription: this.description,
-        });
-      }
-      return s__('Runners|Register runner');
-    },
-    ephemeralAuthenticationToken() {
-      return this.runner?.ephemeralAuthenticationToken;
-    },
-  },
   watch: {
     platform(platform) {
       updateHistory({
@@ -84,12 +67,10 @@ export default {
 </script>
 <template>
   <div>
-    <h1 class="gl-font-size-h1">{{ heading }}</h1>
-
     <registration-instructions
-      :loading="$apollo.queries.runner.loading"
+      :runner="runner"
       :platform="platform"
-      :token="ephemeralAuthenticationToken"
+      :loading="$apollo.queries.runner.loading"
       @toggleDrawer="onToggleDrawer"
     />
 

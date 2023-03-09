@@ -2402,14 +2402,6 @@ RSpec.describe User, feature_category: :user_profile do
         end
 
         it_behaves_like 'manageable groups examples'
-
-        context 'when feature flag :linear_user_manageable_groups is disabled' do
-          before do
-            stub_feature_flags(linear_user_manageable_groups: false)
-          end
-
-          it_behaves_like 'manageable groups examples'
-        end
       end
     end
   end

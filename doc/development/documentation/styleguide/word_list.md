@@ -944,6 +944,17 @@ An Owner is the highest role a user can have.
 
 Use title case for the GitLab Package Registry.
 
+## page
+
+If you write a phrase like, "On the **Issues** page," ensure steps for how to get to the page are nearby. Otherwise, people might not know what the **Issues** page is.
+
+The page name should be visible in the UI at the top of the page.
+If it is not, you should be able to get the name from the breadcrumb.
+
+The docs should match the case in the UI, and the page name should be bold. For example:
+
+- On the **Test cases** page, ...
+
 ## permissions
 
 Do not use [**roles**](#roles) and **permissions** interchangeably. Each user is assigned a role. Each role includes a set of permissions.

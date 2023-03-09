@@ -84,8 +84,13 @@ module Ci
     scope :active, -> (value = true) { where(active: value) }
     scope :paused, -> { active(false) }
     scope :online, -> { where('contacted_at > ?', online_contact_time_deadline) }
-    scope :recent, -> { where('ci_runners.created_at >= :date OR ci_runners.contacted_at >= :date', date: stale_deadline) }
-    scope :stale, -> { where('ci_runners.created_at < :date AND (ci_runners.contacted_at IS NULL OR ci_runners.contacted_at < :date)', date: stale_deadline) }
+    scope :recent, -> do
+      where('ci_runners.created_at >= :datetime OR ci_runners.contacted_at >= :datetime', datetime: stale_deadline)
+    end
+    scope :stale, -> do
+      where('ci_runners.created_at <= :datetime AND ' \
+            '(ci_runners.contacted_at IS NULL OR ci_runners.contacted_at <= :datetime)', datetime: stale_deadline)
+    end
     scope :offline, -> { where(arel_table[:contacted_at].lteq(online_contact_time_deadline)) }
     scope :never_contacted, -> { where(contacted_at: nil) }
     scope :ordered, -> { order(id: :desc) }
@@ -336,7 +341,7 @@ module Ci
     def stale?
       return false unless created_at
 
-      [created_at, contacted_at].compact.max < self.class.stale_deadline
+      [created_at, contacted_at].compact.max <= self.class.stale_deadline
     end
 
     def status(legacy_mode = nil)

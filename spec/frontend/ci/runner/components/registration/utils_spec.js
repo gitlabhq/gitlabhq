@@ -15,6 +15,7 @@ import {
 } from '~/ci/runner/components/registration/utils';
 
 const REGISTRATION_TOKEN = 'REGISTRATION_TOKEN';
+const DESCRIPTION = 'RUNNER';
 const DUMMY_GON = {
   gitlab_url: TEST_HOST,
 };
@@ -37,18 +38,44 @@ describe('registration utils', () => {
       it('commandPrompt is correct', () => {
         expect(commandPrompt({ platform })).toMatchSnapshot();
       });
+
       it('registerCommand is correct', () => {
         expect(
-          registerCommand({ platform, registrationToken: REGISTRATION_TOKEN }),
+          registerCommand({
+            platform,
+            registrationToken: REGISTRATION_TOKEN,
+            description: DESCRIPTION,
+          }),
         ).toMatchSnapshot();
 
         expect(registerCommand({ platform })).toMatchSnapshot();
       });
+
       it('runCommand is correct', () => {
         expect(runCommand({ platform })).toMatchSnapshot();
       });
     },
   );
+
+  describe.each([LINUX_PLATFORM, MACOS_PLATFORM])('for "%s" platform', (platform) => {
+    it.each`
+      description       | parameter
+      ${'my runner'}    | ${"'my runner'"}
+      ${"bob's runner"} | ${"'bob'\\''s runner'"}
+    `('registerCommand escapes description `$description`', ({ description, parameter }) => {
+      expect(registerCommand({ platform, description })[2]).toBe(`  --description ${parameter}`);
+    });
+  });
+
+  describe.each([WINDOWS_PLATFORM])('for "%s" platform', (platform) => {
+    it.each`
+      description       | parameter
+      ${'my runner'}    | ${"'my runner'"}
+      ${"bob's runner"} | ${"'bob''s runner'"}
+    `('registerCommand escapes description `$description`', ({ description, parameter }) => {
+      expect(registerCommand({ platform, description })[2]).toBe(`  --description ${parameter}`);
+    });
+  });
 
   describe('for missing platform', () => {
     it('commandPrompt uses the default', () => {

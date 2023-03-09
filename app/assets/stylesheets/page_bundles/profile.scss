@@ -135,10 +135,9 @@
   }
 }
 
+// Limits the width of the user bio for readability.
 .profile-user-bio {
-  // Limits the width of the user bio for readability.
   max-width: 600px;
-  margin: 10px auto;
 }
 
 .user-calendar {

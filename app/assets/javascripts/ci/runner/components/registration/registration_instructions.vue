@@ -1,6 +1,7 @@
 <script>
 import { GlIcon, GlLink, GlSprintf, GlSkeletonLoader } from '@gitlab/ui';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
+import { s__, sprintf } from '~/locale';
 
 import { EXECUTORS_HELP_URL, SERVICE_COMMANDS_HELP_URL } from '../../constants';
 import CliCommand from './cli_command.vue';
@@ -16,6 +17,11 @@ export default {
     CliCommand,
   },
   props: {
+    runner: {
+      type: Object,
+      required: false,
+      default: null,
+    },
     platform: {
       type: String,
       required: true,
@@ -25,26 +31,43 @@ export default {
       required: false,
       default: false,
     },
-    token: {
-      type: String,
-      required: false,
-      default: null,
-    },
   },
   computed: {
+    description() {
+      return this.runner?.description;
+    },
+    heading() {
+      if (this.description) {
+        return sprintf(
+          s__('Runners|Register "%{runnerDescription}" runner'),
+          {
+            runnerDescription: this.description,
+          },
+          false,
+        );
+      }
+      return s__('Runners|Register runner');
+    },
+    token() {
+      return this.runner?.ephemeralAuthenticationToken;
+    },
     commandPrompt() {
       return commandPrompt({ platform: this.platform });
     },
     registerCommand() {
-      return registerCommand({ platform: this.platform, registrationToken: this.token });
+      return registerCommand({
+        platform: this.platform,
+        registrationToken: this.token,
+        description: this.description,
+      });
     },
     runCommand() {
       return runCommand({ platform: this.platform });
     },
   },
   methods: {
-    toggleDrawer(val) {
-      this.$emit('toggleDrawer', val);
+    toggleDrawer() {
+      this.$emit('toggleDrawer');
     },
   },
   EXECUTORS_HELP_URL,
@@ -53,6 +76,8 @@ export default {
 </script>
 <template>
   <div>
+    <h1 class="gl-font-size-h1">{{ heading }}</h1>
+
     <p>
       <gl-sprintf
         :message="
@@ -62,7 +87,7 @@ export default {
         "
       >
         <template #link="{ content }">
-          <gl-link @click="toggleDrawer()">{{ content }}</gl-link>
+          <gl-link @click="toggleDrawer">{{ content }}</gl-link>
         </template>
       </gl-sprintf>
     </p>
