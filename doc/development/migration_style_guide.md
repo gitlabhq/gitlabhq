@@ -345,7 +345,7 @@ on the `users` table once it has been enqueued.
 
 More information about PostgreSQL locks: [Explicit Locking](https://www.postgresql.org/docs/current/explicit-locking.html)
 
-For stability reasons, GitLab.com has a specific [`statement_timeout`](../user/gitlab_com/index.md#postgresql)
+For stability reasons, GitLab.com has a short `statement_timeout`
 set. When the migration is invoked, any database query has
 a fixed time to execute. In a worst-case scenario, the request sits in the
 lock queue, blocking other queries for the duration of the configured statement timeout,

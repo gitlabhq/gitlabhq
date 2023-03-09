@@ -5954,9 +5954,6 @@ msgstr ""
 msgid "Authorization code:"
 msgstr ""
 
-msgid "Authorization required"
-msgstr ""
-
 msgid "Authorization token duration (minutes)"
 msgstr ""
 
@@ -5967,9 +5964,6 @@ msgid "Authorize"
 msgstr ""
 
 msgid "Authorize %{link_to_client} to use your account?"
-msgstr ""
-
-msgid "Authorize %{user} to use your account?"
 msgstr ""
 
 msgid "Authorized %{new_chat_name}"
@@ -31616,6 +31610,9 @@ msgstr ""
 msgid "Pipelines|GitLab Runner is an application that works with GitLab CI/CD to run jobs in a pipeline. There are active runners available to run your jobs right now. If you prefer, you can %{settingsLinkStart}configure your runners%{settingsLinkEnd} or %{docsLinkStart}learn more%{docsLinkEnd} about runners."
 msgstr ""
 
+msgid "Pipelines|Go to the pipeline editor"
+msgstr ""
+
 msgid "Pipelines|If you are unsure, ask a project maintainer to review it for you."
 msgstr ""
 
@@ -31752,6 +31749,9 @@ msgid "Pipelines|Trigger user has insufficient permissions to project"
 msgstr ""
 
 msgid "Pipelines|Try test template"
+msgstr ""
+
+msgid "Pipelines|Unable to create pipeline"
 msgstr ""
 
 msgid "Pipelines|Unable to validate CI/CD configuration. See the %{linkStart}GitLab CI/CD troubleshooting guide%{linkEnd} for more details."
@@ -40594,13 +40594,22 @@ msgstr ""
 msgid "Slack notifications will be deprecated"
 msgstr ""
 
+msgid "SlackIntegration|An application called GitLab for Slack app is requesting access to your GitLab account. This application was created by GitLab Inc."
+msgstr ""
+
 msgid "SlackIntegration|Are you sure you want to remove this project from the GitLab for Slack app?"
+msgstr ""
+
+msgid "SlackIntegration|Authorize GitLab for Slack app (%{user}) to use your account?"
 msgstr ""
 
 msgid "SlackIntegration|Client ID"
 msgstr ""
 
 msgid "SlackIntegration|Client secret"
+msgstr ""
+
+msgid "SlackIntegration|Create and read issue data and comments."
 msgstr ""
 
 msgid "SlackIntegration|GitLab for Slack"
@@ -40612,6 +40621,9 @@ msgstr ""
 msgid "SlackIntegration|Install GitLab for Slack app"
 msgstr ""
 
+msgid "SlackIntegration|Perform deployments."
+msgstr ""
+
 msgid "SlackIntegration|Project alias"
 msgstr ""
 
@@ -40619,6 +40631,9 @@ msgid "SlackIntegration|Reinstall GitLab for Slack app"
 msgstr ""
 
 msgid "SlackIntegration|Remove project"
+msgstr ""
+
+msgid "SlackIntegration|Run ChatOps jobs."
 msgstr ""
 
 msgid "SlackIntegration|See the list of available commands in Slack after setting up this integration by entering"
@@ -40652,6 +40667,9 @@ msgid "SlackIntegration|Verification token"
 msgstr ""
 
 msgid "SlackIntegration|You can now close this window and go to your Slack workspace."
+msgstr ""
+
+msgid "SlackIntegration|You don't have to reauthorize this application if the permission scope changes in future releases."
 msgstr ""
 
 msgid "SlackIntegration|You may need to reinstall the GitLab for Slack app when we %{linkStart}make updates or change permissions%{linkEnd}."

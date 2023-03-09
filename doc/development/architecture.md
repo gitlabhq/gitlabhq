@@ -695,7 +695,7 @@ Prometheus exporter for PgBouncer. Exports metrics at 9127/metrics.
   - [Source](../install/installation.md#6-database)
 - Layer: Core Service (Data)
 - Process: `postgresql`
-- GitLab.com: [PostgreSQL](../user/gitlab_com/index.md#postgresql)
+- GitLab.com: [PostgreSQL](https://about.gitlab.com/handbook/engineering/infrastructure/database/)
 
 GitLab packages the popular Database to provide storage for Application meta data and user information.
 

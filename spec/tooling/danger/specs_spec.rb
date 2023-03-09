@@ -259,6 +259,10 @@ RSpec.describe Tooling::Danger::Specs, feature_category: :tooling do
         "  ee: true do",
         "\n",
         "RSpec.describe Issues :aggregate_failures,",
+        "  feature_category: :team_planning do",
+        "\n",
+        "RSpec.describe MergeRequest :aggregate_failures,",
+        "  :js,",
         "  feature_category: :team_planning do"
       ]
     end
@@ -275,7 +279,11 @@ RSpec.describe Tooling::Danger::Specs, feature_category: :tooling do
         "+  feature_category: planning_analytics do",
         "+RSpec.describe Epics :aggregate_failures,",
         "+  ee: true do",
-        "+RSpec.describe Issues :aggregate_failures,"
+        "+RSpec.describe Issues :aggregate_failures,",
+        "+RSpec.describe MergeRequest :aggregate_failures,",
+        "+  :js,",
+        "+  feature_category: :team_planning do",
+        "+RSpec.describe 'line in commit diff but no longer in working copy' do"
       ]
     end
 

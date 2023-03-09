@@ -32,6 +32,7 @@ import {
   mockProjectId,
   mockRefs,
   mockYamlVariables,
+  mockPipelineConfigButtonText,
 } from '../mock_data';
 
 Vue.use(VueApollo);
@@ -42,6 +43,7 @@ jest.mock('~/lib/utils/url_utility', () => ({
 
 const projectRefsEndpoint = '/root/project/refs';
 const pipelinesPath = '/root/project/-/pipelines';
+const pipelinesEditorPath = '/root/project/-/ci/editor';
 const projectPath = '/root/project/-/pipelines/config_variables';
 const newPipelinePostResponse = { id: 1 };
 const defaultBranch = 'main';
@@ -65,6 +67,7 @@ describe('Pipeline New Form', () => {
     wrapper.findAllByTestId('pipeline-form-ci-variable-value-dropdown');
   const findValueDropdownItems = (dropdown) => dropdown.findAllComponents(GlDropdownItem);
   const findErrorAlert = () => wrapper.findByTestId('run-pipeline-error-alert');
+  const findPipelineConfigButton = () => wrapper.findByTestId('ci-cd-pipeline-configuration');
   const findWarningAlert = () => wrapper.findByTestId('run-pipeline-warning-alert');
   const findWarningAlertSummary = () => findWarningAlert().findComponent(GlSprintf);
   const findWarnings = () => wrapper.findAllByTestId('run-pipeline-warning');
@@ -106,6 +109,8 @@ describe('Pipeline New Form', () => {
       propsData: {
         projectId: mockProjectId,
         pipelinesPath,
+        pipelinesEditorPath,
+        canViewPipelineEditor: true,
         projectPath,
         defaultBranch,
         refParam: defaultBranch,
@@ -498,6 +503,17 @@ describe('Pipeline New Form', () => {
 
       it('re-enables the submit button', () => {
         expect(findSubmitButton().props('disabled')).toBe(false);
+      });
+
+      it('shows pipeline configuration button for user who can view', () => {
+        expect(findPipelineConfigButton().exists()).toBe(true);
+        expect(findPipelineConfigButton().text()).toBe(mockPipelineConfigButtonText);
+      });
+
+      it('does not show pipeline configuration button for user who can not view', () => {
+        createComponentWithApollo({ props: { canViewPipelineEditor: false } });
+
+        expect(findPipelineConfigButton().exists()).toBe(false);
       });
 
       it('does not show the credit card validation required alert', () => {

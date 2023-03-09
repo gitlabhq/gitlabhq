@@ -43,6 +43,7 @@ const i18n = {
   defaultError: __('Something went wrong on our end. Please try again.'),
   refsLoadingErrorTitle: s__('Pipeline|Branches or tags could not be loaded.'),
   submitErrorTitle: s__('Pipeline|Pipeline cannot be run.'),
+  configButtonTitle: s__('Pipelines|Go to the pipeline editor'),
   warningTitle: __('The form contains the following warning:'),
   maxWarningsSummary: __('%{total} warnings found: showing first %{warningsDisplayed}'),
   removeVariableLabel: s__('CiVariables|Remove variable'),
@@ -79,6 +80,14 @@ export default {
   props: {
     pipelinesPath: {
       type: String,
+      required: true,
+    },
+    pipelinesEditorPath: {
+      type: String,
+      required: true,
+    },
+    canViewPipelineEditor: {
+      type: Boolean,
       required: true,
     },
     defaultBranch: {
@@ -373,9 +382,18 @@ export default {
       :dismissible="false"
       variant="danger"
       class="gl-mb-4"
-      data-testid="run-pipeline-error-alert"
     >
-      <span v-safe-html="error"></span>
+      <span v-safe-html="error" data-testid="run-pipeline-error-alert" class="block"></span>
+      <gl-button
+        v-if="canViewPipelineEditor"
+        class="gl-my-3"
+        data-testid="ci-cd-pipeline-configuration"
+        variant="confirm"
+        :aria-label="$options.i18n.configButtonTitle"
+        :href="pipelinesEditorPath"
+      >
+        {{ $options.i18n.configButtonTitle }}
+      </gl-button>
     </gl-alert>
     <gl-alert
       v-if="shouldShowWarning"

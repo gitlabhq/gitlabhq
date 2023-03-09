@@ -133,3 +133,5 @@ export const mockCiConfigVariablesResponseWithoutDesc = mockCiConfigVariablesQue
   mockYamlVariablesWithoutDesc,
 );
 export const mockNoCachedCiConfigVariablesResponse = mockCiConfigVariablesQueryResponse(null);
+
+export const mockPipelineConfigButtonText = 'Go to the pipeline editor';

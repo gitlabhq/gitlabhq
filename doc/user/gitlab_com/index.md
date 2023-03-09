@@ -264,73 +264,6 @@ Runner SaaS is the hosted, secure, and managed build environment you can use to 
 
 For more information, see [Runner SaaS](../../ci/runners/index.md).
 
-## Sidekiq
-
-GitLab.com runs [Sidekiq](https://sidekiq.org) with arguments `--timeout=4 --concurrency=4`
-and the following environment variables:
-
-| Setting                                | GitLab.com | Default   |
-|----------------------------------------|------------|-----------|
-| `GITLAB_MEMORY_WATCHDOG_ENABLED`       | -          | `true`    |
-| `SIDEKIQ_MEMORY_KILLER_MAX_RSS`        | -          | `2000000` |
-| `SIDEKIQ_MEMORY_KILLER_HARD_LIMIT_RSS` | -          | -         |
-| `SIDEKIQ_MEMORY_KILLER_CHECK_INTERVAL` | -          | `3`       |
-| `SIDEKIQ_MEMORY_KILLER_GRACE_TIME`     | -          | `900`     |
-| `SIDEKIQ_MEMORY_KILLER_SHUTDOWN_WAIT`  | -          | `30`      |
-| `SIDEKIQ_LOG_ARGUMENTS`                | `1`        | `1`       |
-
-For more information, see how to
-[configure the environment variables](../../administration/sidekiq/sidekiq_memory_killer.md).
-
-NOTE:
-The `SIDEKIQ_MEMORY_KILLER_MAX_RSS` setting is `16000000` on Sidekiq import
-nodes and Sidekiq export nodes.
-
-## PostgreSQL
-
-GitLab.com being a fairly large installation of GitLab means we have changed
-various PostgreSQL settings to better suit our needs. For example, we use
-streaming replication and servers in hot-standby mode to balance queries across
-different database servers.
-
-The list of GitLab.com specific settings (and their defaults) is as follows:
-
-| Setting                               | GitLab.com                                                          | Default                               |
-|:--------------------------------------|:--------------------------------------------------------------------|:--------------------------------------|
-| `archive_command`                     | `/usr/bin/envdir /etc/wal-e.d/env /opt/wal-e/bin/wal-e wal-push %p` | empty                                 |
-| `archive_mode`                        | on                                                                  | off                                   |
-| `autovacuum_analyze_scale_factor`     | 0.01                                                                | 0.01                                  |
-| `autovacuum_max_workers`              | 6                                                                   | 3                                     |
-| `autovacuum_vacuum_cost_limit`        | 1000                                                                | -1                                    |
-| `autovacuum_vacuum_scale_factor`      | 0.01                                                                | 0.02                                  |
-| `checkpoint_completion_target`        | 0.7                                                                 | 0.9                                   |
-| `checkpoint_segments`                 | 32                                                                  | 10                                    |
-| `effective_cache_size`                | 338688 MB                                                           | Based on how much memory is available |
-| `hot_standby`                         | on                                                                  | off                                   |
-| `hot_standby_feedback`                | on                                                                  | off                                   |
-| `log_autovacuum_min_duration`         | 0                                                                   | -1                                    |
-| `log_checkpoints`                     | on                                                                  | off                                   |
-| `log_line_prefix`                     | `%t [%p]: [%l-1]`                                                   | empty                                 |
-| `log_min_duration_statement`          | 1000                                                                | -1                                    |
-| `log_temp_files`                      | 0                                                                   | -1                                    |
-| `maintenance_work_mem`                | 2048 MB                                                             | 16 MB                                 |
-| `max_replication_slots`               | 5                                                                   | 0                                     |
-| `max_wal_senders`                     | 32                                                                  | 0                                     |
-| `max_wal_size`                        | 5 GB                                                                | 1 GB                                  |
-| `shared_buffers`                      | 112896 MB                                                           | Based on how much memory is available |
-| `shared_preload_libraries`            | `pg_stat_statements`                                                | empty                                 |
-| `shmall`                              | 30146560                                                            | Based on the server's capabilities    |
-| `shmmax`                              | 123480309760                                                        | Based on the server's capabilities    |
-| `wal_buffers`                         | 16 MB                                                               | -1                                    |
-| `wal_keep_segments`                   | 512                                                                 | 10                                    |
-| `wal_level`                           | replica                                                             | minimal                               |
-| `statement_timeout`                   | 15 s                                                                | 60 s                                  |
-| `idle_in_transaction_session_timeout` | 60 s                                                                | 60 s                                  |
-
-Some of these settings are in the process being adjusted. For example, the value
-for `shared_buffers` is quite high, and we are
-[considering adjusting it](https://gitlab.com/gitlab-com/gl-infra/reliability/-/issues/4985).
-
 ## Puma
 
 GitLab.com uses the default of 60 seconds for [Puma request timeouts](../../administration/operations/puma.md#change-the-worker-timeout).
@@ -498,7 +431,8 @@ and can't be configured on GitLab.com to expire. You can erase job logs
 
 In addition to the GitLab Enterprise Edition Omnibus install, GitLab.com uses
 the following applications and settings to achieve scale. All settings are
-publicly available at [chef cookbooks](https://gitlab.com/gitlab-cookbooks).
+publicly available, as [Kubernetes configuration](https://gitlab.com/gitlab-com/gl-infra/k8s-workloads/gitlab-com)
+or [Chef cookbooks](https://gitlab.com/gitlab-cookbooks).
 
 ### Elastic cluster
 
@@ -542,3 +476,10 @@ Service discovery:
 High Performance TCP/HTTP Load Balancer:
 
 - [`gitlab-cookbooks` / `gitlab-haproxy` · GitLab](https://gitlab.com/gitlab-cookbooks/gitlab-haproxy)
+
+## Sidekiq
+
+GitLab.com runs [Sidekiq](https://sidekiq.org) as an [external process](../../administration/sidekiq/index.md)
+for Ruby job scheduling.
+
+The current settings are in the [GitLab.com Kubernetes pod configuration](https://gitlab.com/gitlab-com/gl-infra/k8s-workloads/gitlab-com/-/blob/master/releases/gitlab/values/gprd.yaml.gotmpl).
