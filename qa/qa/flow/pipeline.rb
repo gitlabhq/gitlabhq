@@ -24,6 +24,14 @@ module QA
           index.wait_for_latest_pipeline(status: status, wait: wait)
         end
       end
+
+      def visit_pipeline_job_page(job_name:, pipeline: nil)
+        pipeline.visit! unless pipeline.nil?
+
+        Page::Project::Pipeline::Show.perform do |pipeline|
+          pipeline.click_job(job_name)
+        end
+      end
     end
   end
 end

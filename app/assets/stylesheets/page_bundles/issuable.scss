@@ -182,3 +182,13 @@
     border: 0;
   }
 }
+
+.saved-replies-dropdown {
+  .gl-new-dropdown-panel {
+    width: 350px;
+  }
+
+  .gl-new-dropdown-item-check-icon {
+    display: none;
+  }
+}

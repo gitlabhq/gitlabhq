@@ -68,6 +68,14 @@ module QA
             end
           end
 
+          def has_locked_artifact?
+            has_text?('will not be deleted')
+          end
+
+          def has_unlocked_artifact?
+            has_text?('will be removed')
+          end
+
           private
 
           def loaded?(wait: 60)

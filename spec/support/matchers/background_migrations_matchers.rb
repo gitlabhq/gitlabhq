@@ -100,3 +100,17 @@ RSpec::Matchers.define :be_finalize_background_migration_of do |migration|
     end
   end
 end
+
+RSpec::Matchers.define :ensure_bacthed_background_migration_is_finished_for do |migration_arguments|
+  define_method :matches? do |klass|
+    expect_next_instance_of(klass) do |instance|
+      expect(instance).to receive(:ensure_batched_background_migration_is_finished).with(migration_arguments)
+    end
+  end
+
+  define_method :does_not_match? do |klass|
+    expect_next_instance_of(klass) do |instance|
+      expect(instance).not_to receive(:ensure_batched_background_migration_is_finished).with(migration_arguments)
+    end
+  end
+end

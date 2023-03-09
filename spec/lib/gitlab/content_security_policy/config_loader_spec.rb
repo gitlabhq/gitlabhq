@@ -178,6 +178,53 @@ RSpec.describe Gitlab::ContentSecurityPolicy::ConfigLoader do
       end
     end
 
+    context 'when KAS is configured' do
+      before do
+        stub_config_setting(host: 'gitlab.example.com')
+        allow(::Gitlab::Kas).to receive(:enabled?).and_return true
+      end
+
+      context 'when user access feature flag is disabled' do
+        before do
+          stub_feature_flags(kas_user_access: false)
+        end
+
+        it 'does not add KAS url to CSP' do
+          expect(directives['connect_src']).not_to eq("'self' ws://gitlab.example.com #{::Gitlab::Kas.tunnel_url}")
+        end
+      end
+
+      context 'when user access feature flag is enabled' do
+        before do
+          stub_feature_flags(kas_user_access: true)
+        end
+
+        context 'when KAS is on same domain as rails' do
+          let_it_be(:kas_tunnel_url) { "ws://gitlab.example.com/-/k8s-proxy/" }
+
+          before do
+            allow(::Gitlab::Kas).to receive(:tunnel_url).and_return(kas_tunnel_url)
+          end
+
+          it 'does not add KAS url to CSP' do
+            expect(directives['connect_src']).not_to eq("'self' ws://gitlab.example.com #{::Gitlab::Kas.tunnel_url}")
+          end
+        end
+
+        context 'when KAS is on subdomain' do
+          let_it_be(:kas_tunnel_url) { "ws://kas.gitlab.example.com/k8s-proxy/" }
+
+          before do
+            allow(::Gitlab::Kas).to receive(:tunnel_url).and_return(kas_tunnel_url)
+          end
+
+          it 'does add KAS url to CSP' do
+            expect(directives['connect_src']).to eq("'self' ws://gitlab.example.com #{kas_tunnel_url}")
+          end
+        end
+      end
+    end
+
     context 'when CUSTOMER_PORTAL_URL is set' do
       let(:customer_portal_url) { 'https://customers.example.com' }
 

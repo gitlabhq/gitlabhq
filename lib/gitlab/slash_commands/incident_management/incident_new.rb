@@ -8,8 +8,8 @@ module Gitlab
           'incident declare'
         end
 
-        def self.allowed?(project, user)
-          Feature.enabled?(:incident_declare_slash_command, user) && can?(user, :create_incident, project)
+        def self.allowed?(_project, _user)
+          Feature.enabled?(:incident_declare_slash_command)
         end
 
         def self.match(text)

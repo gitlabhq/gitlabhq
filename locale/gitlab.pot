@@ -2265,6 +2265,9 @@ msgstr ""
 msgid "Add a new issue"
 msgstr ""
 
+msgid "Add a new saved reply"
+msgstr ""
+
 msgid "Add a numbered list"
 msgstr ""
 
@@ -22812,6 +22815,9 @@ msgid "Insert row after"
 msgstr ""
 
 msgid "Insert row before"
+msgstr ""
+
+msgid "Insert saved reply"
 msgstr ""
 
 msgid "Insert suggestion"

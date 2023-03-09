@@ -22743,10 +22743,10 @@ CREATE TABLE timelogs (
     issue_id integer,
     merge_request_id integer,
     spent_at timestamp without time zone DEFAULT now(),
-    note_id integer,
+    note_id_convert_to_bigint integer,
     project_id integer,
     summary text,
-    note_id_convert_to_bigint bigint,
+    note_id bigint,
     CONSTRAINT check_271d321699 CHECK ((char_length(summary) <= 255))
 );
 

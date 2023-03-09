@@ -10,12 +10,14 @@ import {
   INDENT_LINE,
   OUTDENT_LINE,
 } from '~/behaviors/shortcuts/keybindings';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { getModifierKey } from '~/constants';
 import { getSelectedFragment } from '~/lib/utils/common_utils';
 import { s__, __ } from '~/locale';
 import { CopyAsGFM } from '~/behaviors/markdown/copy_as_gfm';
 import ToolbarButton from './toolbar_button.vue';
 import DrawioToolbarButton from './drawio_toolbar_button.vue';
+import SavedRepliesDropdown from './saved_replies_dropdown.vue';
 
 export default {
   components: {
@@ -25,9 +27,16 @@ export default {
     GlTabs,
     GlTab,
     DrawioToolbarButton,
+    SavedRepliesDropdown,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
+  },
+  mixins: [glFeatureFlagsMixin()],
+  inject: {
+    newSavedRepliesPath: {
+      default: null,
+    },
   },
   props: {
     previewMarkdown: {
@@ -390,6 +399,10 @@ export default {
             v-if="drawioEnabled"
             :uploads-path="uploadsPath"
             :markdown-preview-path="markdownPreviewPath"
+          />
+          <saved-replies-dropdown
+            v-if="newSavedRepliesPath && glFeatures.savedReplies"
+            :new-saved-replies-path="newSavedRepliesPath"
           />
           <toolbar-button
             class="js-zen-enter"

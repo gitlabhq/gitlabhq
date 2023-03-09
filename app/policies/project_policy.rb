@@ -462,6 +462,7 @@ class ProjectPolicy < BasePolicy
     enable :create_deployment
     enable :update_deployment
     enable :read_cluster
+    enable :use_k8s_proxies
     enable :create_release
     enable :update_release
     enable :destroy_release

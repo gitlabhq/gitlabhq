@@ -81,7 +81,8 @@
                 help_page_path: suggest_changes_help_path,
                 current_user_data: @current_user_data,
                 is_locked: @merge_request.discussion_locked.to_s,
-                report_abuse_path: add_category_abuse_reports_path } }
+                report_abuse_path: add_category_abuse_reports_path,
+                saved_replies_new_path: profile_saved_replies_path } }
           - if moved_mr_sidebar_enabled?
             = render 'shared/issuable/sidebar', issuable_sidebar: @issuable_sidebar, assignees: @merge_request.assignees, reviewers: @merge_request.reviewers, source_branch: @merge_request.source_branch
 

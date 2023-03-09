@@ -626,11 +626,11 @@ export function addMarkdownListeners(form) {
       Shortcuts.initMarkdownEditorShortcuts($(this), updateTextForToolbarBtn);
     });
 
-  // eslint-disable-next-line @gitlab/no-global-event-off
-  const $allToolbarBtns = $('.js-md', form)
-    .off('click')
-    .on('click', function () {
-      const $toolbarBtn = $(this);
+  const $allToolbarBtns = $(form)
+    .off('click', '.js-md, .saved-replies-dropdown li')
+    .on('click', '.js-md, .saved-replies-dropdown li', function () {
+      const $savedReplyContent = $('.js-saved-reply-content', this);
+      const $toolbarBtn = $savedReplyContent.length ? $savedReplyContent : $(this);
 
       return updateTextForToolbarBtn($toolbarBtn);
     });

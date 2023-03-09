@@ -167,6 +167,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :admin_crm_contact
     enable :read_cluster
     enable :read_group_all_available_runners
+    enable :use_k8s_proxies
   end
 
   rule { reporter }.policy do

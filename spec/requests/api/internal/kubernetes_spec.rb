@@ -306,4 +306,151 @@ RSpec.describe API::Internal::Kubernetes, feature_category: :kubernetes_manageme
       end
     end
   end
+
+  describe 'POST /internal/kubernetes/authorize_proxy_user', :clean_gitlab_redis_sessions do
+    include SessionHelpers
+
+    def send_request(headers: {}, params: {})
+      post api('/internal/kubernetes/authorize_proxy_user'), params: params, headers: headers.reverse_merge(jwt_auth_headers)
+    end
+
+    def stub_user_session(user, csrf_token)
+      stub_session(
+        {
+          'warden.user.user.key' => [[user.id], user.authenticatable_salt],
+          '_csrf_token' => csrf_token
+        }
+      )
+    end
+
+    def stub_user_session_with_no_user_id(user, csrf_token)
+      stub_session(
+        {
+          'warden.user.user.key' => [[nil], user.authenticatable_salt],
+          '_csrf_token' => csrf_token
+        }
+      )
+    end
+
+    def mask_token(encoded_token)
+      controller = ActionController::Base.new
+      raw_token = controller.send(:decode_csrf_token, encoded_token)
+      controller.send(:mask_token, raw_token)
+    end
+
+    def new_token
+      ActionController::Base.new.send(:generate_csrf_token)
+    end
+
+    let_it_be(:project) { create(:project) }
+    let_it_be(:group) { create(:group) }
+    let_it_be(:user_access_config) do
+      {
+        'user_access' => {
+          'access_as' => { 'agent' => {} },
+          'projects' => [{ 'id' => project.full_path }],
+          'groups' => [{ 'id' => group.full_path }]
+        }
+      }
+    end
+
+    let_it_be(:configuration_project) do
+      create(
+        :project, :custom_repo,
+        files: {
+          ".gitlab/agents/the-agent/config.yaml" => user_access_config.to_yaml
+        }
+      )
+    end
+
+    let_it_be(:agent) { create(:cluster_agent, name: 'the-agent', project: configuration_project) }
+    let_it_be(:another_agent) { create(:cluster_agent) }
+
+    let(:user) { create(:user) }
+
+    before do
+      allow(::Gitlab::Kas).to receive(:enabled?).and_return true
+    end
+
+    it 'returns 400 when cookie is invalid' do
+      send_request(params: { agent_id: agent.id, access_type: 'session_cookie', access_key: '123', csrf_token: mask_token(new_token) })
+
+      expect(response).to have_gitlab_http_status(:bad_request)
+    end
+
+    it 'returns 401 when session is not found' do
+      access_key = Gitlab::Kas::UserAccess.encrypt_public_session_id('abc')
+      send_request(params: { agent_id: agent.id, access_type: 'session_cookie', access_key: access_key, csrf_token: mask_token(new_token) })
+
+      expect(response).to have_gitlab_http_status(:unauthorized)
+    end
+
+    it 'returns 401 when CSRF token does not match' do
+      public_id = stub_user_session(user, new_token)
+      access_key = Gitlab::Kas::UserAccess.encrypt_public_session_id(public_id)
+      send_request(params: { agent_id: agent.id, access_type: 'session_cookie', access_key: access_key, csrf_token: mask_token(new_token) })
+
+      expect(response).to have_gitlab_http_status(:unauthorized)
+    end
+
+    it 'returns 404 for non-existent agent' do
+      token = new_token
+      public_id = stub_user_session(user, token)
+      access_key = Gitlab::Kas::UserAccess.encrypt_public_session_id(public_id)
+      send_request(params: { agent_id: non_existing_record_id, access_type: 'session_cookie', access_key: access_key, csrf_token: mask_token(token) })
+
+      expect(response).to have_gitlab_http_status(:not_found)
+    end
+
+    it 'returns 403 when user has no access' do
+      token = new_token
+      public_id = stub_user_session(user, token)
+      access_key = Gitlab::Kas::UserAccess.encrypt_public_session_id(public_id)
+      send_request(params: { agent_id: agent.id, access_type: 'session_cookie', access_key: access_key, csrf_token: mask_token(token) })
+
+      expect(response).to have_gitlab_http_status(:forbidden)
+    end
+
+    it 'returns 200 when user has access' do
+      project.add_member(user, :developer)
+      token = new_token
+      public_id = stub_user_session(user, token)
+      access_key = Gitlab::Kas::UserAccess.encrypt_public_session_id(public_id)
+      send_request(params: { agent_id: agent.id, access_type: 'session_cookie', access_key: access_key, csrf_token: mask_token(token) })
+
+      expect(response).to have_gitlab_http_status(:success)
+    end
+
+    it 'returns 401 when user has valid KAS cookie and CSRF token but has no access to requested agent' do
+      project.add_member(user, :developer)
+      token = new_token
+      public_id = stub_user_session(user, token)
+      access_key = Gitlab::Kas::UserAccess.encrypt_public_session_id(public_id)
+      send_request(params: { agent_id: another_agent.id, access_type: 'session_cookie', access_key: access_key, csrf_token: mask_token(token) })
+
+      expect(response).to have_gitlab_http_status(:forbidden)
+    end
+
+    it 'returns 401 when global flag is disabled' do
+      stub_feature_flags(kas_user_access: false)
+
+      project.add_member(user, :developer)
+      token = new_token
+      public_id = stub_user_session(user, token)
+      access_key = Gitlab::Kas::UserAccess.encrypt_public_session_id(public_id)
+      send_request(params: { agent_id: agent.id, access_type: 'session_cookie', access_key: access_key, csrf_token: mask_token(token) })
+
+      expect(response).to have_gitlab_http_status(:unauthorized)
+    end
+
+    it 'returns 401 when user id is not found in session' do
+      project.add_member(user, :developer)
+      token = new_token
+      public_id = stub_user_session_with_no_user_id(user, token)
+      access_key = Gitlab::Kas::UserAccess.encrypt_public_session_id(public_id)
+      send_request(params: { agent_id: agent.id, access_type: 'session_cookie', access_key: access_key, csrf_token: mask_token(token) })
+
+      expect(response).to have_gitlab_http_status(:unauthorized)
+    end
+  end
 end

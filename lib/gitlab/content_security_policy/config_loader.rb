@@ -50,6 +50,7 @@ module Gitlab
         allow_sentry(directives) if Gitlab::CurrentSettings.try(:sentry_enabled) && Gitlab::CurrentSettings.try(:sentry_clientside_dsn)
         allow_framed_gitlab_paths(directives)
         allow_customersdot(directives) if ENV['CUSTOMER_PORTAL_URL'].present?
+        allow_kas(directives)
         allow_review_apps(directives) if ENV['REVIEW_APPS_ENABLED']
 
         # The follow section contains workarounds to patch Safari's lack of support for CSP Level 3
@@ -145,6 +146,17 @@ module Gitlab
         customersdot_host = ENV['CUSTOMER_PORTAL_URL']
 
         append_to_directive(directives, 'frame_src', customersdot_host)
+      end
+
+      def self.allow_kas(directives)
+        return unless ::Gitlab::Kas::UserAccess.enabled?
+
+        kas_url = ::Gitlab::Kas.tunnel_url
+        return if URI(kas_url).host == ::Gitlab.config.gitlab.host # already allowed, no need for exception
+
+        kas_url += '/' unless kas_url.end_with?('/')
+
+        append_to_directive(directives, 'connect_src', kas_url)
       end
 
       def self.allow_legacy_sentry(directives)

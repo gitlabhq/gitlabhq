@@ -121,3 +121,18 @@ in [this epic](https://gitlab.com/groups/gitlab-org/-/epics/6571).
 ## Blocking merge requests based on detected licenses
 
 Users can require approval for merge requests based on the licenses that are detected by configuring a [license approval policy](../license_approval_policies.md).
+
+## Troubleshooting
+
+### A CycloneDX file is not being scanned and appears to provide no results
+
+Ensure that the CycloneDX file adheres to the [CycloneDX JSON specification](https://cyclonedx.org/docs/latest/json). This specification does [not permit duplicate entries](https://cyclonedx.org/docs/latest/json/#components). Projects that contain multiple SBOM files should either report each SBOM file up as individual CI report artifacts or they should ensure that duplicates are removed if the SBOMs are merged as part of the CI pipeline.
+
+You can validate CycloneDX SBOM files against the `CycloneDX JSON specification` as follows:
+
+```shell
+$ docker run -it --rm -v "$PWD:/my-cyclonedx-sboms" -w /my-cyclonedx-sboms cyclonedx/cyclonedx-cli:latest cyclonedx validate --input-version v1_4 --input-file gl-sbom-all.cdx.json
+
+Validating JSON BOM...
+BOM validated successfully.
+```

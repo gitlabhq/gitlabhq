@@ -935,6 +935,9 @@ merge cyclonedx sboms:
       - gl-sbom-all.cdx.json
 ```
 
+NOTE:
+Merging CycloneDX SBOM files may cause [License Scanning of CycloneDX Files](../../compliance/license_scanning_of_cyclonedx_files/index.md) to not work as the [cyclonedx-cli](https://github.com/CycloneDX/cyclonedx-cli) tool [does not remove duplicates](https://github.com/CycloneDX/cyclonedx-cli/issues/188). This causes the CycloneDX file to become invalid as duplicates are not allowed within the [official CycloneDX JSON specification](https://cyclonedx.org/docs/latest/json/#components).
+
 GitLab uses [CycloneDX Properties](https://cyclonedx.org/use-cases/#properties--name-value-store)
 to store implementation-specific details in the metadata of each CycloneDX SBOM,
 such as the location of build and lock files. If multiple CycloneDX SBOMs are merged together,

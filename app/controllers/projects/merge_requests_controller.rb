@@ -40,6 +40,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     push_frontend_feature_flag(:moved_mr_sidebar, project)
     push_frontend_feature_flag(:mr_experience_survey, project)
     push_frontend_feature_flag(:realtime_mr_status_change, project)
+    push_frontend_feature_flag(:saved_replies, current_user)
   end
 
   around_action :allow_gitaly_ref_name_caching, only: [:index, :show, :diffs, :discussions]
