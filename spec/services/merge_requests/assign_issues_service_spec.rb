@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe MergeRequests::AssignIssuesService do
+RSpec.describe MergeRequests::AssignIssuesService, feature_category: :code_review_workflow do
   let(:user) { create(:user) }
   let(:project) { create(:project, :public, :repository) }
   let(:issue) { create(:issue, project: project) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Notes::PostProcessService do
+RSpec.describe Notes::PostProcessService, feature_category: :team_planning do
   let(:project) { create(:project) }
   let(:issue) { create(:issue, project: project) }
   let(:user) { create(:user) }

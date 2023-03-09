@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe Packages::CreateDependencyService do
+RSpec.describe Packages::CreateDependencyService, feature_category: :package_registry do
   describe '#execute' do
     let_it_be(:namespace) { create(:namespace) }
     let_it_be(:version) { '1.0.1' }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ::Namespaces::PackageSettings::UpdateService do
+RSpec.describe ::Namespaces::PackageSettings::UpdateService, feature_category: :package_registry do
   using RSpec::Parameterized::TableSyntax
 
   let_it_be_with_reload(:namespace) { create(:group) }

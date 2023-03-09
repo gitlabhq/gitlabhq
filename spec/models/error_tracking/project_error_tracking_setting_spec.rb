@@ -93,9 +93,7 @@ RSpec.describe ErrorTracking::ProjectErrorTrackingSetting, feature_category: :er
         end
 
         context 'with sentry backend' do
-          before do
-            subject.integrated = false
-          end
+          subject { build(:project_error_tracking_setting, project: project) }
 
           it 'does not create a new client key' do
             expect { subject.save! }.not_to change { ErrorTracking::ClientKey.count }

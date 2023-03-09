@@ -6227,6 +6227,7 @@ Input type: `VulnerabilityConfirmInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationvulnerabilityconfirmclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationvulnerabilityconfirmcomment"></a>`comment` | [`String`](#string) | Comment why vulnerability was marked as confirmed (max. 50 000 characters). |
 | <a id="mutationvulnerabilityconfirmid"></a>`id` | [`VulnerabilityID!`](#vulnerabilityid) | ID of the vulnerability to be confirmed. |
 
 #### Fields

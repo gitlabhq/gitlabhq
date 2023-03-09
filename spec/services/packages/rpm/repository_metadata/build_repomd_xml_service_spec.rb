@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe Packages::Rpm::RepositoryMetadata::BuildRepomdXmlService do
+RSpec.describe Packages::Rpm::RepositoryMetadata::BuildRepomdXmlService, feature_category: :package_registry do
   describe '#execute' do
     subject { described_class.new(data).execute }
 

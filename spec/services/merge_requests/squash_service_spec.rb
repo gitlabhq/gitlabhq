@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe MergeRequests::SquashService do
+RSpec.describe MergeRequests::SquashService, feature_category: :source_code_management do
   let(:service) { described_class.new(project: project, current_user: user, params: { merge_request: merge_request }) }
   let(:user) { project.first_owner }
   let(:project) { create(:project, :repository) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Namespaces::InProductMarketingEmailsService, '#execute' do
+RSpec.describe Namespaces::InProductMarketingEmailsService, '#execute', feature_category: :purchase do
   subject(:execute_service) { described_class.new(track, interval).execute }
 
   let(:track) { :create }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Notes::RenderService do
+RSpec.describe Notes::RenderService, feature_category: :team_planning do
   describe '#execute' do
     it 'renders a Note' do
       note = double(:note)

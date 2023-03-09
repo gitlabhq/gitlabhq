@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::HooksController do
+RSpec.describe Projects::HooksController, feature_category: :integrations do
   include AfterNextHelpers
 
   let_it_be(:project) { create(:project) }

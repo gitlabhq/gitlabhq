@@ -1,6 +1,6 @@
 import MockAdapter from 'axios-mock-adapter';
 import testAction from 'helpers/vuex_action_helper';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import * as actions from '~/ide/stores/modules/terminal/actions/session_controls';
 import { STARTING, PENDING, STOPPING, STOPPED } from '~/ide/stores/modules/terminal/constants';
 import * as messages from '~/ide/stores/modules/terminal/messages';
@@ -13,7 +13,7 @@ import {
   HTTP_STATUS_UNPROCESSABLE_ENTITY,
 } from '~/lib/utils/http_status';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 const TEST_PROJECT_PATH = 'lorem/root';
 const TEST_BRANCH_ID = 'main';
@@ -91,7 +91,7 @@ describe('IDE store terminal session controls actions', () => {
   });
 
   describe('receiveStartSessionError', () => {
-    it('flashes message', () => {
+    it('alerts message', () => {
       actions.receiveStartSessionError({ dispatch });
 
       expect(createAlert).toHaveBeenCalledWith({
@@ -165,7 +165,7 @@ describe('IDE store terminal session controls actions', () => {
   });
 
   describe('receiveStopSessionError', () => {
-    it('flashes message', () => {
+    it('alerts message', () => {
       actions.receiveStopSessionError({ dispatch });
 
       expect(createAlert).toHaveBeenCalledWith({

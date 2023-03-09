@@ -14,7 +14,7 @@ import {
   HTTP_STATUS_OK,
   HTTP_STATUS_UNAUTHORIZED,
 } from '~/lib/utils/http_status';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { TOAST_MESSAGE } from '~/pipelines/constants';
 import axios from '~/lib/utils/axios_utils';
 
@@ -22,7 +22,7 @@ const $toast = {
   show: jest.fn(),
 };
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 describe('Pipelines table in Commits and Merge requests', () => {
   let wrapper;

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ::Ml::ExperimentTracking::CandidateRepository do
+RSpec.describe ::Ml::ExperimentTracking::CandidateRepository, feature_category: :experimentation_activation do
   let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user) }
   let_it_be(:experiment) { create(:ml_experiments, user: user, project: project) }

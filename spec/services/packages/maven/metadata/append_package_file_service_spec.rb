@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ::Packages::Maven::Metadata::AppendPackageFileService do
+RSpec.describe ::Packages::Maven::Metadata::AppendPackageFileService, feature_category: :package_registry do
   let_it_be(:package) { create(:maven_package, version: nil) }
 
   let(:service) { described_class.new(package: package, metadata_content: content) }

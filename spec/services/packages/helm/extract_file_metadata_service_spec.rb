@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe Packages::Helm::ExtractFileMetadataService do
+RSpec.describe Packages::Helm::ExtractFileMetadataService, feature_category: :package_registry do
   let_it_be(:package_file) { create(:helm_package_file) }
 
   let(:service) { described_class.new(package_file) }

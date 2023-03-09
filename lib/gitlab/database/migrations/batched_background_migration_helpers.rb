@@ -12,6 +12,7 @@ module Gitlab
       # For now, these migrations are not considered ready for general use, for more information see the tracking epic:
       # https://gitlab.com/groups/gitlab-org/-/epics/6751
       module BatchedBackgroundMigrationHelpers
+        NonExistentMigrationError = Class.new(StandardError)
         BATCH_SIZE = 1_000 # Number of rows to process per job
         SUB_BATCH_SIZE = 100 # Number of rows to process per sub-batch
         BATCH_CLASS_NAME = 'PrimaryKeyBatchingStrategy' # Default batch class for batched migrations
@@ -212,6 +213,10 @@ module Gitlab
             column_name: column_name,
             job_arguments: job_arguments
           }
+
+          if ENV['DBLAB_ENVIRONMENT'] && migration.nil?
+            raise NonExistentMigrationError, 'called ensure_batched_background_migration_is_finished with non-existent migration name'
+          end
 
           return Gitlab::AppLogger.warn "Could not find batched background migration for the given configuration: #{configuration}" if migration.nil?
 

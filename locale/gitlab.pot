@@ -6470,6 +6470,9 @@ msgstr ""
 msgid "BillingPlans|Faster code reviews"
 msgstr ""
 
+msgid "BillingPlans|Free"
+msgstr ""
+
 msgid "BillingPlans|Free forever features for individual users"
 msgstr ""
 
@@ -18154,9 +18157,6 @@ msgid "Format: %{dateFormat}"
 msgstr ""
 
 msgid "Framework successfully deleted"
-msgstr ""
-
-msgid "Free"
 msgstr ""
 
 msgid "Free Trial of GitLab.com Ultimate"
@@ -47802,6 +47802,54 @@ msgid "VulnerabilityDismissalReasons|Not applicable"
 msgstr ""
 
 msgid "VulnerabilityDismissalReasons|Used in tests"
+msgstr ""
+
+msgid "VulnerabilityExport|Activity"
+msgstr ""
+
+msgid "VulnerabilityExport|Additional Info"
+msgstr ""
+
+msgid "VulnerabilityExport|CVE"
+msgstr ""
+
+msgid "VulnerabilityExport|CWE"
+msgstr ""
+
+msgid "VulnerabilityExport|Comments"
+msgstr ""
+
+msgid "VulnerabilityExport|Details"
+msgstr ""
+
+msgid "VulnerabilityExport|Detected At"
+msgstr ""
+
+msgid "VulnerabilityExport|Group Name"
+msgstr ""
+
+msgid "VulnerabilityExport|Location"
+msgstr ""
+
+msgid "VulnerabilityExport|Other Identifiers"
+msgstr ""
+
+msgid "VulnerabilityExport|Project Name"
+msgstr ""
+
+msgid "VulnerabilityExport|Scanner Name"
+msgstr ""
+
+msgid "VulnerabilityExport|Severity"
+msgstr ""
+
+msgid "VulnerabilityExport|Status"
+msgstr ""
+
+msgid "VulnerabilityExport|Tool"
+msgstr ""
+
+msgid "VulnerabilityExport|Vulnerability"
 msgstr ""
 
 msgid "VulnerabilityManagement|%{statusStart}Confirmed%{statusEnd} %{timeago} by %{user}"

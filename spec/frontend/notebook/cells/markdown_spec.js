@@ -1,18 +1,16 @@
 import { mount } from '@vue/test-utils';
 import katex from 'katex';
-import Vue, { nextTick } from 'vue';
+import { nextTick } from 'vue';
 import markdownTableJson from 'test_fixtures/blob/notebook/markdown-table.json';
 import basicJson from 'test_fixtures/blob/notebook/basic.json';
 import mathJson from 'test_fixtures/blob/notebook/math.json';
 import MarkdownComponent from '~/notebook/cells/markdown.vue';
 import Prompt from '~/notebook/cells/prompt.vue';
 
-const Component = Vue.extend(MarkdownComponent);
-
 window.katex = katex;
 
 function buildCellComponent(cell, relativePath = '', hidePrompt) {
-  return mount(Component, {
+  return mount(MarkdownComponent, {
     propsData: {
       cell,
       hidePrompt,

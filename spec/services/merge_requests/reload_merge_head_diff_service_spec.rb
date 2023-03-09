@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe MergeRequests::ReloadMergeHeadDiffService do
+RSpec.describe MergeRequests::ReloadMergeHeadDiffService, feature_category: :code_review_workflow do
   let(:merge_request) { create(:merge_request) }
 
   subject { described_class.new(merge_request).execute }

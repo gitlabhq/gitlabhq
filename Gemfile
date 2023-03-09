@@ -358,6 +358,9 @@ gem 'batch-loader', '~> 2.0.1'
 # Perf bar
 gem 'peek', '~> 1.1'
 
+# Google Cloud Profiler support
+gem 'cloud_profiler_agent', '~> 0.0.0', path: 'vendor/gems/cloud_profiler_agent', require: false
+
 # Snowplow events tracking
 gem 'snowplow-tracker', '~> 0.8.0'
 

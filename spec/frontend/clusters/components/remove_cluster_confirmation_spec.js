@@ -6,6 +6,7 @@ import RemoveClusterConfirmation from '~/clusters/components/remove_cluster_conf
 
 describe('Remove cluster confirmation modal', () => {
   let wrapper;
+  const showMock = jest.fn();
 
   const createComponent = ({ props = {}, stubs = {} } = {}) => {
     wrapper = mount(RemoveClusterConfirmation, {
@@ -33,9 +34,13 @@ describe('Remove cluster confirmation modal', () => {
     beforeEach(() => {
       createComponent({
         props: { clusterName: 'my-test-cluster' },
-        stubs: { GlSprintf, GlModal: stubComponent(GlModal) },
+        stubs: {
+          GlSprintf,
+          GlModal: stubComponent(GlModal, {
+            methods: { show: showMock },
+          }),
+        },
       });
-      jest.spyOn(findModal().vm, 'show').mockReturnValue();
     });
 
     it('open modal with "cleanup" option', async () => {
@@ -43,8 +48,8 @@ describe('Remove cluster confirmation modal', () => {
 
       await nextTick();
 
-      expect(findModal().vm.show).toHaveBeenCalled();
-      expect(wrapper.vm.confirmCleanup).toEqual(true);
+      expect(showMock).toHaveBeenCalled();
+      expect(wrapper.element).toMatchSnapshot();
       expect(findModal().html()).toContain(
         '<strong>To remove your integration and resources, type <code>my-test-cluster</code> to confirm:</strong>',
       );
@@ -55,8 +60,8 @@ describe('Remove cluster confirmation modal', () => {
 
       await nextTick();
 
-      expect(findModal().vm.show).toHaveBeenCalled();
-      expect(wrapper.vm.confirmCleanup).toEqual(false);
+      expect(showMock).toHaveBeenCalled();
+      expect(wrapper.element).toMatchSnapshot();
       expect(findModal().html()).toContain(
         '<strong>To remove your integration, type <code>my-test-cluster</code> to confirm:</strong>',
       );

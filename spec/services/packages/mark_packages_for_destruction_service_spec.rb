@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Packages::MarkPackagesForDestructionService, :sidekiq_inline do
+RSpec.describe Packages::MarkPackagesForDestructionService, :sidekiq_inline, feature_category: :package_registry do
   let_it_be(:project) { create(:project) }
   let_it_be_with_reload(:packages) { create_list(:npm_package, 3, project: project) }
 

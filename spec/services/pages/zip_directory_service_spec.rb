@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Pages::ZipDirectoryService do
+RSpec.describe Pages::ZipDirectoryService, feature_category: :pages do
   around do |example|
     Dir.mktmpdir do |dir|
       @work_dir = dir

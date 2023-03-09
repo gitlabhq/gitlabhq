@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Metrics::Dashboard::GrafanaMetricEmbedService do
+RSpec.describe Metrics::Dashboard::GrafanaMetricEmbedService, feature_category: :metrics do
   include MetricsDashboardHelpers
   include ReactiveCachingHelpers
   include GrafanaApiHelpers

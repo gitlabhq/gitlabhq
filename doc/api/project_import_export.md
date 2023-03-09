@@ -4,12 +4,17 @@ group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Project import/export API **(FREE)**
+# Project import and export API **(FREE)**
 
-See also:
+Use the project import and export API to import and export projects using file transfers.
 
-- [Project import/export documentation](../user/project/settings/import_export.md).
-- [Project import/export administration Rake tasks](../administration/raketasks/project_import_export.md). **(FREE SELF)**
+For more information, see:
+
+- [Migrating projects using file exports](../user/project/settings/import_export.md)
+- [Project import and export Rake tasks](../administration/raketasks/project_import_export.md)
+
+Before using the project import and export API, you might want to use the
+[group import and export API](group_import_export.md).
 
 ## Schedule an export
 

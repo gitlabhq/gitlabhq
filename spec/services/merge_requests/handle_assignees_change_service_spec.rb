@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe MergeRequests::HandleAssigneesChangeService do
+RSpec.describe MergeRequests::HandleAssigneesChangeService, feature_category: :code_review_workflow do
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:user) { create(:user) }
   let_it_be(:assignee) { create(:user) }

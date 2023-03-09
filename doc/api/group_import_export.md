@@ -4,12 +4,12 @@ group: Import
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Group import/export API **(FREE)**
+# Group import and export API **(FREE)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20353) in GitLab 12.8.
 
-Group Import/Export allows you to export group structure and import it to a new location.
-When used with [Project Import/Export](project_import_export.md), you can preserve connections with
+Use the group import and export API to export a group structure and import it to a new location.
+When you use the group import and export API with the [project import and export API](project_import_export.md), you can preserve connections with
 group-level relationships, such as connections between project issues and group epics.
 
 Group exports include the following:
@@ -21,6 +21,13 @@ Group exports include the following:
 - Group members
 - Subgroups. Each subgroup includes all data above
 - Group wikis **(PREMIUM SELF)**
+
+To preserve group-level relationships from imported projects, you should run group import and export first. This way, you can import project exports into the desired group structure.
+
+Imported groups have a `private` visibility level unless you import them into a parent group.
+If you import groups into a parent group, the subgroups inherit by default a similar level of visibility.
+
+To preserve the member list and their respective permissions on imported groups, review the users in these groups. Make sure these users exist before importing the desired groups.
 
 ## Schedule new export
 
@@ -103,14 +110,3 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
 NOTE:
 The maximum import file size can be set by the Administrator, default is `0` (unlimited).
 As an administrator, you can modify the maximum import file size. To do so, use the `max_import_size` option in the [Application settings API](settings.md#change-application-settings) or the [Admin Area](../user/admin_area/settings/account_and_limit_settings.md). Default [modified](https://gitlab.com/gitlab-org/gitlab/-/issues/251106) from 50 MB to 0 in GitLab 13.8.
-
-## Important notes
-
-Note the following:
-
-- To preserve group-level relationships from imported projects, run Group Import/Export first,
-  to allow project imports into the desired group structure.
-- Imported groups are given a `private` visibility level, unless imported into a parent group.
-- If imported into a parent group, subgroups inherit a similar level of visibility, unless otherwise restricted.
-- To preserve the member list and their respective permissions on imported groups,
-  review the users in these groups. Make sure these users exist before importing the desired groups.

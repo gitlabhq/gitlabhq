@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe MergeRequests::GetUrlsService do
+RSpec.describe MergeRequests::GetUrlsService, feature_category: :code_review_workflow do
   include ProjectForksHelper
 
   let(:project) { create(:project, :public, :repository) }

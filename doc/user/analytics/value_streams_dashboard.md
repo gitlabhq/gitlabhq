@@ -6,11 +6,13 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Value Streams Dashboard **(ULTIMATE)**
 
-> Introduced in GitLab 15.8 as a Closed [Beta](../../policy/alpha-beta-support.md#beta-features) feature.
+> Introduced in GitLab 15.8 as a Closed [Beta](../../policy/alpha-beta-support.md#beta-features) feature [with a flag](../../administration/feature_flags.md) named `group_analytics_dashboards_page`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `group_analytics_dashboards_page`.
+On GitLab.com, this feature is not available. This feature is not ready for production use.
 
 You can leave feedback on dashboard bugs or functionality in [issue 381787](https://gitlab.com/gitlab-org/gitlab/-/issues/381787).
-
-This feature is not ready for production use.
 
 The Value Streams Dashboard is a customizable dashboard that enables decision-makers to identify trends, patterns, and opportunities for digital transformation improvements.
 This page is a work in progress, and we're updating the information as we add more features.

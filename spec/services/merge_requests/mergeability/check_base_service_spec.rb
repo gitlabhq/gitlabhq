@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe MergeRequests::Mergeability::CheckBaseService do
+RSpec.describe MergeRequests::Mergeability::CheckBaseService, feature_category: :code_review_workflow do
   subject(:check_base_service) { described_class.new(merge_request: merge_request, params: params) }
 
   let(:merge_request) { double }

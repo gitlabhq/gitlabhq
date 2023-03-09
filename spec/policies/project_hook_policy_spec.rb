@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ProjectHookPolicy do
+RSpec.describe ProjectHookPolicy, feature_category: :integrations do
   let_it_be(:user) { create(:user) }
 
   let(:hook) { create(:project_hook) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe PersonalAccessTokens::LastUsedService do
+RSpec.describe PersonalAccessTokens::LastUsedService, feature_category: :system_access do
   describe '#execute' do
     subject { described_class.new(personal_access_token).execute }
 

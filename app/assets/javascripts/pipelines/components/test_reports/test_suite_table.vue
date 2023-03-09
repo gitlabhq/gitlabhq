@@ -100,7 +100,7 @@ export default {
           {{ __('Duration') }}
         </div>
         <div role="rowheader" class="table-section section-10">
-          {{ __('Details'), }}
+          {{ __('Details') }}
         </div>
       </div>
 
@@ -162,7 +162,7 @@ export default {
         </div>
 
         <div class="table-section section-10 section-wrap">
-          <div role="rowheader" class="table-mobile-header">{{ __('Details'), }}</div>
+          <div role="rowheader" class="table-mobile-header">{{ __('Details') }}</div>
           <div class="table-mobile-content">
             <gl-button v-gl-modal-directive="`test-case-details-${index}`">{{
               __('View details')

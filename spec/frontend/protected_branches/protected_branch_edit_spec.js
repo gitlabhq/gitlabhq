@@ -2,12 +2,12 @@ import MockAdapter from 'axios-mock-adapter';
 import $ from 'jquery';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import { TEST_HOST } from 'helpers/test_constants';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import ProtectedBranchEdit from '~/protected_branches/protected_branch_edit';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 const TEST_URL = `${TEST_HOST}/url`;
 const FORCE_PUSH_TOGGLE_TESTID = 'force-push-toggle';
@@ -149,7 +149,7 @@ describe('ProtectedBranchEdit', () => {
         toggle.click();
       });
 
-      it('flashes error', async () => {
+      it('alerts error', async () => {
         await axios.waitForAll();
 
         expect(createAlert).toHaveBeenCalled();

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe Packages::TerraformModule::CreatePackageService do
+RSpec.describe Packages::TerraformModule::CreatePackageService, feature_category: :package_registry do
   let_it_be(:namespace) { create(:namespace) }
   let_it_be(:project) { create(:project, namespace: namespace) }
   let_it_be(:user) { create(:user) }

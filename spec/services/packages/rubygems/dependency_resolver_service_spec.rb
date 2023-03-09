@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe Packages::Rubygems::DependencyResolverService do
+RSpec.describe Packages::Rubygems::DependencyResolverService, feature_category: :package_registry do
   let_it_be(:project) { create(:project, :private) }
   let_it_be(:package) { create(:package, project: project) }
   let_it_be(:user) { create(:user) }

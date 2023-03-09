@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe PersonalAccessTokens::RevokeService do
+RSpec.describe PersonalAccessTokens::RevokeService, feature_category: :system_access do
   shared_examples_for 'a successfully revoked token' do
     it { expect(subject.success?).to be true }
     it { expect(service.token.revoked?).to be true }

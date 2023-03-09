@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Packages::CreateTemporaryPackageService do
+RSpec.describe Packages::CreateTemporaryPackageService, feature_category: :package_registry do
   let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user) }
   let_it_be(:params) { {} }

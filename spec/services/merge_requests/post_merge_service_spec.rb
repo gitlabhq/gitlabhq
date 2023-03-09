@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe MergeRequests::PostMergeService do
+RSpec.describe MergeRequests::PostMergeService, feature_category: :code_review_workflow do
   include ProjectForksHelper
 
   let_it_be(:user) { create(:user) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ::Packages::Maven::Metadata::SyncService do
+RSpec.describe ::Packages::Maven::Metadata::SyncService, feature_category: :package_registry do
   using RSpec::Parameterized::TableSyntax
 
   let_it_be(:project) { create(:project) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe MergeRequests::MigrateExternalDiffsService do
+RSpec.describe MergeRequests::MigrateExternalDiffsService, feature_category: :code_review_workflow do
   let(:merge_request) { create(:merge_request) }
   let(:diff) { merge_request.merge_request_diff }
 

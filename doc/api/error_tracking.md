@@ -39,6 +39,45 @@ Example response:
 }
 ```
 
+### Create Error Tracking settings
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/393035/) in GitLab 15.10.
+The API allows you to create Error Tracking settings for a project. Only for users with Maintainer role for
+the project.
+
+NOTE:
+This API is only available when used with [integrated error tracking](../operations/error_tracking.md#integrated-error-tracking).
+
+```plaintext
+PUT /projects/:id/error_tracking/settings
+```
+
+Supported attributes:
+
+| Attribute    | Type    | Required | Description                                                                                                                                                     |
+| ------------ | ------- |----------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `id`         | integer | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user.                                            |
+| `active`     | boolean | yes      | Pass `true` to enable the error tracking setting configuration or `false` to disable it.                                                                        |
+| `integrated` | boolean | yes      | Pass `true` to enable the integrated error tracking backend. [Available in](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68260) GitLab 14.2 and later. |
+
+Example request:
+
+```shell
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/error_tracking/settings?active=true&integrated=true"
+```
+
+Example response:
+
+```json
+{
+  "active": true,
+  "project_name": null,
+  "sentry_external_url": null,
+  "api_url": null,
+  "integrated": true
+}
+```
+
 ### Enable or disable the Error Tracking project settings
 
 The API allows you to enable or disable the Error Tracking settings for a project. Only for users with the
@@ -55,7 +94,7 @@ PATCH /projects/:id/error_tracking/settings
 | `integrated` | boolean | no       | Pass `true` to enable the integrated error tracking backend. [Available in](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68260) GitLab 14.2 and later. |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/error_tracking/settings?active=true"
+curl --request PATCH --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/error_tracking/settings?active=true"
 ```
 
 Example response:

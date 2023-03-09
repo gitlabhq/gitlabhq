@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe MergeRequests::Mergeability::CheckDiscussionsStatusService do
+RSpec.describe MergeRequests::Mergeability::CheckDiscussionsStatusService, feature_category: :code_review_workflow do
   subject(:check_discussions_status) { described_class.new(merge_request: merge_request, params: params) }
 
   let(:merge_request) { build(:merge_request) }

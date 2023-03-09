@@ -534,6 +534,27 @@ RSpec.describe MarkupHelper do
           helper.first_line_in_markdown(object, attribute, 100, is_todo: true, project: project)
         end.not_to change { Gitlab::GitalyClient.get_request_count }
       end
+
+      it 'strips non-user links' do
+        html = 'This a cool [website](https://gitlab.com/).'
+
+        object = create_object(html)
+        result = helper.first_line_in_markdown(object, attribute, 100, is_todo: true, project: project)
+
+        expect(result).to include('This a cool website.')
+      end
+
+      it 'styles the current user link', :aggregate_failures do
+        another_user = create(:user)
+        html = "Please have a look, @#{user.username} @#{another_user.username}!"
+
+        object = create_object(html)
+        result = helper.first_line_in_markdown(object, attribute, 100, is_todo: true, project: project)
+        links = Nokogiri::HTML.parse(result).css('//a')
+
+        expect(links[0].classes).to include('current-user')
+        expect(links[1].classes).not_to include('current-user')
+      end
     end
 
     context 'when the asked attribute can be redacted' do

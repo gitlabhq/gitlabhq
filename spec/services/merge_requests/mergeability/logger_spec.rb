@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe MergeRequests::Mergeability::Logger, :request_store do
+RSpec.describe MergeRequests::Mergeability::Logger, :request_store, feature_category: :code_review_workflow do
   let_it_be(:merge_request) { create(:merge_request) }
 
   subject(:logger) { described_class.new(merge_request: merge_request) }

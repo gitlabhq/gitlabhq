@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe Packages::Pypi::CreatePackageService, :aggregate_failures do
+RSpec.describe Packages::Pypi::CreatePackageService, :aggregate_failures, feature_category: :package_registry do
   include PackagesManagerApiSpecHelpers
 
   let_it_be(:project) { create(:project) }

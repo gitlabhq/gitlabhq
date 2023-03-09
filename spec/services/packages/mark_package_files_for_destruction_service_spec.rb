@@ -2,7 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe Packages::MarkPackageFilesForDestructionService, :aggregate_failures do
+RSpec.describe Packages::MarkPackageFilesForDestructionService, :aggregate_failures,
+  feature_category: :package_registry do
   let(:service) { described_class.new(package_files) }
 
   describe '#execute', :aggregate_failures do
