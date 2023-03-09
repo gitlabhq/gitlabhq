@@ -55,10 +55,6 @@ describe('Group Settings App', () => {
     show = jest.fn();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findPackageSettings = () => wrapper.findComponent(PackagesSettings);
   const findPackageForwardingSettings = () => wrapper.findComponent(PackagesForwardingSettings);

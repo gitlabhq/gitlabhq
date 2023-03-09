@@ -39,10 +39,6 @@ describe('Storage Counter usage graph component', () => {
     mountComponent(data);
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders the legend in order', () => {
     const types = wrapper.findAll('[data-testid="storage-type-legend"]');
 

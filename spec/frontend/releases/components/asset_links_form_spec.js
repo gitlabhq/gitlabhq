@@ -60,11 +60,6 @@ describe('Release edit component', () => {
     release = commonUtils.convertObjectPropsToCamelCase(originalRelease, { deep: true });
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   describe('with a basic store state', () => {
     beforeEach(() => {
       factory();

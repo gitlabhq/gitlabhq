@@ -28,7 +28,6 @@ describe('~/vue_merge_request_widget/components/deployment/deployment_list.vue',
 
   afterEach(() => {
     wrapper?.destroy?.();
-    wrapper = null;
   });
 
   describe('with few deployments', () => {

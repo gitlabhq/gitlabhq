@@ -76,7 +76,6 @@ describe('OverviewTabs', () => {
   });
 
   afterEach(() => {
-    wrapper.destroy();
     axiosMock.restore();
   });
 

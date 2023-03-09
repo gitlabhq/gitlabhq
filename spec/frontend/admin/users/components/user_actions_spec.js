@@ -37,11 +37,6 @@ describe('AdminUserActions component', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   describe('edit button', () => {
     describe('when the user has an edit action attached', () => {
       beforeEach(() => {

@@ -98,8 +98,6 @@ describe('Sidebar assignees widget', () => {
   });
 
   afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
     fakeApollo = null;
     delete gon.current_username;
   });

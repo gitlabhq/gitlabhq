@@ -114,7 +114,6 @@ const createComponent = async (data = {}) => {
 };
 
 afterEach(() => {
-  wrapper.destroy();
   mockResolver = null;
 });
 

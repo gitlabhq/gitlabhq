@@ -57,11 +57,6 @@ describe('UploadBlobModal', () => {
   const cancelButtonDisabledState = () => findModal().props('actionCancel').attributes[0].disabled;
   const actionButtonLoadingState = () => findModal().props('actionPrimary').attributes[0].loading;
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   describe.each`
     canPushCode | displayBranchName | displayForkedBranchMessage
     ${true}     | ${true}           | ${false}

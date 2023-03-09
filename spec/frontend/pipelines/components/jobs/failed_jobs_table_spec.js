@@ -45,10 +45,6 @@ describe('Failed Jobs Table', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('displays the failed jobs table', () => {
     createComponent();
 

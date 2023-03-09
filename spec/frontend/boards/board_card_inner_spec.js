@@ -110,8 +110,6 @@ describe('Board card component', () => {
   });
 
   afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
     store = null;
     jest.clearAllMocks();
   });

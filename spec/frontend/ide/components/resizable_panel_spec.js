@@ -19,11 +19,6 @@ describe('~/ide/components/resizable_panel', () => {
     jest.spyOn(store, 'dispatch').mockImplementation();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   const createComponent = (props = {}) => {
     wrapper = shallowMount(ResizablePanel, {
       propsData: {

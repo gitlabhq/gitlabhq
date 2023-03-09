@@ -26,10 +26,6 @@ describe('Pipeline schedules table', () => {
     createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('displays table', () => {
     expect(findTable().exists()).toBe(true);
   });

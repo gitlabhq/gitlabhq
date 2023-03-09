@@ -25,10 +25,6 @@ describe('MemberList', () => {
     createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders link to group', () => {
     const link = wrapper.findComponent(GlAvatarLink);
 

@@ -21,10 +21,6 @@ describe('RunnerInstructions component', () => {
     createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('should show the "Show runner installation instructions" button', () => {
     expect(findModalButton().text()).toBe('Show runner installation instructions');
   });

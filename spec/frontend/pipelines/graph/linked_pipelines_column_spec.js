@@ -65,10 +65,6 @@ describe('Linked Pipelines Column', () => {
     createComponent({ apolloProvider, mountFn, props });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('it renders correctly', () => {
     beforeEach(() => {
       createComponentWithApollo();

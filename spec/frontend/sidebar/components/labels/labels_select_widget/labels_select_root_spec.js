@@ -83,10 +83,6 @@ describe('LabelsSelectRoot', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders component with classes `labels-select-wrapper gl-relative`', () => {
     createComponent();
     expect(wrapper.classes()).toEqual(['labels-select-wrapper', 'gl-relative']);

@@ -39,10 +39,6 @@ describe('Release block', () => {
     release = convertOneReleaseGraphQLResponse(originalOneReleaseQueryResponse).data;
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('with default props', () => {
     beforeEach(() => factory(release));
 

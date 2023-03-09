@@ -38,10 +38,6 @@ describe('Sidebar Confidentiality Form', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('emits a `closeForm` event when Cancel button is clicked', () => {
     createComponent();
     findCancelButton().vm.$emit('click');

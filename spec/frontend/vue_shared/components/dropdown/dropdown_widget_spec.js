@@ -38,11 +38,6 @@ describe('DropdownWidget component', () => {
     createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   it('passes default selectText prop to dropdown', () => {
     expect(findDropdown().props('text')).toBe('Select');
   });

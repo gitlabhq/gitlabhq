@@ -19,10 +19,6 @@ describe('Job Log Collapsible Section', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('with closed section', () => {
     beforeEach(() => {
       createComponent({

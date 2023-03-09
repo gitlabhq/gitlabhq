@@ -24,11 +24,6 @@ describe('Edit Form Dropdown', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   describe.each`
     pageType
     ${ISSUABLE_TYPE_ISSUE} | ${ISSUABLE_TYPE_MR}

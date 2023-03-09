@@ -78,10 +78,6 @@ describe('PackagesListApp', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const waitForFirstRequest = async () => {
     // emit a search update so the query is executed
     findSearch().vm.$emit('update', { sort: 'NAME_DESC', filters: [] });

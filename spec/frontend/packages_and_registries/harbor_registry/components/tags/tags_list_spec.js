@@ -24,10 +24,6 @@ describe('Harbor Tags List', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('when isLoading is true', () => {
     beforeEach(() => {
       mountComponent({

@@ -116,7 +116,6 @@ describe('BoardsSelector', () => {
   };
 
   afterEach(() => {
-    wrapper.destroy();
     fakeApollo = null;
   });
 

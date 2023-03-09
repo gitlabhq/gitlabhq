@@ -39,10 +39,6 @@ describe('Sidebar Reference Widget', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('when reference is loading', () => {
     it('sets CopyableField `is-loading` prop to `true`', () => {
       createComponent({ referenceQueryHandler: jest.fn().mockReturnValue(new Promise(() => {})) });

@@ -55,10 +55,6 @@ describe('content/components/wrappers/code_block', () => {
     codeBlockLanguageLoader.findOrCreateLanguageBySyntax.mockReturnValue({ syntax: language });
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders a node-view-wrapper as a pre element', () => {
     createWrapper();
 

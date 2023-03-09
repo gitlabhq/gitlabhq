@@ -131,10 +131,6 @@ describe('PackagesApp', () => {
   const findDeletePackageModal = () => wrapper.findAllComponents(DeletePackages).at(1);
   const findDeletePackages = () => wrapper.findComponent(DeletePackages);
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders an empty state component', async () => {
     createComponent({ resolver: jest.fn().mockResolvedValue(emptyPackageDetailsQuery) });
 

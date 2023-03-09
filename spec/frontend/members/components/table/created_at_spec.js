@@ -20,10 +20,6 @@ describe('CreatedAt', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('created at text', () => {
     beforeEach(() => {
       createComponent();

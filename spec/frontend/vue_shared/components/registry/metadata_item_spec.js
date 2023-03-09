@@ -19,11 +19,6 @@ describe('Metadata Item', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   const findIcon = () => wrapper.findComponent(GlIcon);
   const findLink = (w = wrapper) => w.findComponent(GlLink);
   const findText = () => wrapper.find('[data-testid="metadata-item-text"]');

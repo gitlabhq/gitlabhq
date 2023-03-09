@@ -30,10 +30,6 @@ describe('IDE review mode', () => {
     });
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders list of files', () => {
     expect(wrapper.text()).toContain('fileName');
   });

@@ -30,11 +30,6 @@ describe('IssuableHeaderWarnings', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   describe.each`
     issuableType
     ${ISSUABLE_TYPE_ISSUE} | ${ISSUABLE_TYPE_MR}

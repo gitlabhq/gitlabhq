@@ -21,10 +21,6 @@ describe('MetricTile', () => {
   const findSingleStat = () => wrapper.findComponent(GlSingleStat);
   const findPopover = () => wrapper.findComponent(MetricPopover);
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('template', () => {
     describe('links', () => {
       it('when the metric has links, it redirects the user on click', () => {

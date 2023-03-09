@@ -30,10 +30,6 @@ describe('Inline edit form component', () => {
     projectNamespace: '/',
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const createComponent = (props) => {
     wrapper = shallowMount(formComponent, {
       propsData: {

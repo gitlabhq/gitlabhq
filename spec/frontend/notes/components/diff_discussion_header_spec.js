@@ -22,10 +22,6 @@ describe('diff_discussion_header component', () => {
     });
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('Avatar', () => {
     const firstNoteAuthor = discussionMock.notes[0].author;
     const findAvatarLink = () => wrapper.findComponent(GlAvatarLink);

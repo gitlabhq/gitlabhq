@@ -33,11 +33,6 @@ describe('Release show component', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   const findLoadingSkeleton = () => wrapper.findComponent(ReleaseSkeletonLoader);
   const findReleaseBlock = () => wrapper.findComponent(ReleaseBlock);
 

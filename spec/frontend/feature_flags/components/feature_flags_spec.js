@@ -65,8 +65,6 @@ describe('Feature flags', () => {
 
   afterEach(() => {
     mock.restore();
-    wrapper.destroy();
-    wrapper = null;
   });
 
   describe('when limit exceeded', () => {

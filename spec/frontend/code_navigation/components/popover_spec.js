@@ -61,10 +61,6 @@ function factory({ position, data, definitionPathPrefix, blobPath = 'index.js' }
 }
 
 describe('Code navigation popover component', () => {
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders popover', () => {
     factory({
       position: { x: 0, y: 0, height: 0 },

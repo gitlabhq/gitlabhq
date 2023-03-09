@@ -198,7 +198,9 @@ export default {
           />
           <slot name="header-text">{{ headerText }}</slot>
 
-          <div class="js-related-issues-header-issue-count gl-display-inline-flex gl-mx-3">
+          <div
+            class="js-related-issues-header-issue-count gl-display-inline-flex gl-mx-3 gl-text-gray-500"
+          >
             <span class="gl-display-inline-flex gl-align-items-center">
               <gl-icon :name="issuableTypeIcon" class="gl-mr-2 gl-text-gray-500" />
               {{ badgeLabel }}

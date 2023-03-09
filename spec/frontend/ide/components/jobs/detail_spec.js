@@ -34,10 +34,6 @@ describe('IDE jobs detail view', () => {
     createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('mounted', () => {
     const findJobOutput = () => wrapper.find('.bash');
     const findBuildLoaderAnimation = () => wrapper.find('.build-loader-animation');

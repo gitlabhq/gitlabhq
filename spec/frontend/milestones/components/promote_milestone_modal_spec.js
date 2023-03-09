@@ -33,10 +33,6 @@ describe('Promote milestone modal', () => {
     wrapper = shallowMount(PromoteMilestoneModal);
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('Modal opener button', () => {
     it('button gets disabled when the modal opens', () => {
       expect(promoteButton().disabled).toBe(false);

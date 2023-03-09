@@ -19,10 +19,6 @@ describe('IntegrationsTable', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe.each([true, false])('when `showUpdatedAt` is %p', (showUpdatedAt) => {
     beforeEach(() => {
       createComponent({ showUpdatedAt });

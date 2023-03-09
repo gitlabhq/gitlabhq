@@ -143,7 +143,6 @@ describe('AdminRunnersApp', () => {
     mockRunnersHandler.mockReset();
     mockRunnersCountHandler.mockReset();
     showToast.mockReset();
-    wrapper.destroy();
   });
 
   it('shows the runner setup instructions', () => {

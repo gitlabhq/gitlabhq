@@ -94,11 +94,6 @@ describe('Value stream analytics component', () => {
     wrapper = createComponent({ initialState: { selectedStage, selectedStageEvents, pagination } });
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   it('renders the path navigation component', () => {
     expect(findPathNavigation().exists()).toBe(true);
   });

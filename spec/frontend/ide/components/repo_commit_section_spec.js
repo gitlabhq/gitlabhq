@@ -63,11 +63,6 @@ describe('RepoCommitSection', () => {
     jest.spyOn(router, 'push').mockImplementation();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   describe('empty state', () => {
     beforeEach(() => {
       store.state.noChangesStateSvgPath = TEST_NO_CHANGES_SVG;

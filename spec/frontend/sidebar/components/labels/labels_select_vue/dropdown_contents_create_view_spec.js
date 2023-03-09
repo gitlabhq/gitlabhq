@@ -32,10 +32,6 @@ describe('DropdownContentsCreateView', () => {
     wrapper = createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('computed', () => {
     describe('disableCreate', () => {
       it('returns `true` when label title and color is not defined', () => {

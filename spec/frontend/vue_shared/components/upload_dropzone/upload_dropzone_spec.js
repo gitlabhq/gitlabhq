@@ -32,11 +32,6 @@ describe('Upload dropzone component', () => {
     });
   }
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   describe('when slot provided', () => {
     it('renders dropzone with slot content', () => {
       createComponent({

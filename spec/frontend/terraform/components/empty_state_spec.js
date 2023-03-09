@@ -16,10 +16,6 @@ describe('EmptyStateComponent', () => {
     wrapper = shallowMount(EmptyState, { propsData });
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('should render content', () => {
     expect(findEmptyState().props('title')).toBe(
       "Your project doesn't have any Terraform state files",

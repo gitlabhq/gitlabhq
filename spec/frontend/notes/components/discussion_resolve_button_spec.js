@@ -23,10 +23,6 @@ describe('resolveDiscussionButton', () => {
     });
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('should emit a onClick event on button click', async () => {
     const button = wrapper.findComponent(GlButton);
 

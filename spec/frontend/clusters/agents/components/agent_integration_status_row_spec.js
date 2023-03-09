@@ -25,10 +25,6 @@ describe('IntegrationStatus', () => {
   const findIcon = () => wrapper.findComponent(GlIcon);
   const findBadge = () => wrapper.findComponent(GlBadge);
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('icon', () => {
     const icon = 'status-success';
     const iconClass = 'gl-text-green-500';

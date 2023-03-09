@@ -21,10 +21,6 @@ describe('StatisticsList', () => {
     });
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('displays the counts data with labels', () => {
     expect(wrapper.element).toMatchSnapshot();
   });

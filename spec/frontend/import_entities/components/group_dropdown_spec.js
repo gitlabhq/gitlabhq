@@ -64,10 +64,6 @@ describe('Import entities group dropdown component', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('passes namespaces from graphql query to default slot', async () => {
     createComponent();
     jest.advanceTimersByTime(DEBOUNCE_DELAY);

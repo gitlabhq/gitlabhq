@@ -79,7 +79,6 @@ describe('new file modal component', () => {
 
   afterEach(() => {
     store = null;
-    wrapper.destroy();
     document.body.innerHTML = '';
   });
 

@@ -26,10 +26,6 @@ describe('Harbor Tags Header', () => {
     totalPages: 1,
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   beforeEach(() => {
     mountComponent({
       propsData: { artifactDetail: mockArtifactDetail, pageInfo: mockPageInfo, tagsLoading: false },

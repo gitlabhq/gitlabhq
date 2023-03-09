@@ -40,10 +40,6 @@ describe('CI Lint Results', () => {
   const findAfterScripts = findAllByTestId('after-script');
   const filterEmptyScripts = (property) => mockJobs.filter((job) => job[property].length !== 0);
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('Empty results', () => {
     it('renders with no jobs, errors or warnings defined', () => {
       createComponent({ jobs: undefined, errors: undefined, warnings: undefined }, shallowMount);

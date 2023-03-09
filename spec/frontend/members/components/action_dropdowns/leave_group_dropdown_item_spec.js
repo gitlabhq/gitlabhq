@@ -32,10 +32,6 @@ describe('LeaveGroupDropdownItem', () => {
     createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders a slot with red text', () => {
     expect(findDropdownItem().html()).toContain(`<span class="gl-text-red-500">${text}</span>`);
   });

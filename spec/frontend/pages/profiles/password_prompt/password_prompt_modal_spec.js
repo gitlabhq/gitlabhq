@@ -41,10 +41,6 @@ describe('Password prompt modal', () => {
     });
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders the password field', () => {
     expect(findField().exists()).toBe(true);
   });

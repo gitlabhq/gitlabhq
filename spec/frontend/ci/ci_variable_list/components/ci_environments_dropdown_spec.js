@@ -27,10 +27,6 @@ describe('Ci environments dropdown', () => {
     findListbox().vm.$emit('search', searchTerm);
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('No environments found', () => {
     beforeEach(() => {
       createComponent({ searchTerm: 'stable' });

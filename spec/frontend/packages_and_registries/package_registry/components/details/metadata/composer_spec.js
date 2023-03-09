@@ -18,11 +18,6 @@ describe('Composer Metadata', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   const findComposerTargetSha = () => wrapper.findByTestId('composer-target-sha');
   const findComposerTargetShaCopyButton = () => wrapper.findComponent(ClipboardButton);
   const findComposerJson = () => wrapper.findByTestId('composer-json');

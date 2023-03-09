@@ -24,10 +24,6 @@ describe('PipelineWizard', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('mounts without error', () => {
     const consoleSpy = jest.spyOn(console, 'error');
 

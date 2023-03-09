@@ -42,10 +42,6 @@ describe('Confirm Danger Modal', () => {
     });
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders the default warning message', () => {
     expect(findDefaultWarning().text()).toBe(CONFIRM_DANGER_WARNING);
   });

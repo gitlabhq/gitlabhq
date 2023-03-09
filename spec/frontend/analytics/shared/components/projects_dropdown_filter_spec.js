@@ -70,10 +70,6 @@ describe('ProjectsDropdownFilter component', () => {
     return waitForPromises();
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findHighlightedItems = () => wrapper.findByTestId('vsa-highlighted-items');
   const findUnhighlightedItems = () => wrapper.findByTestId('vsa-default-items');
   const findClearAllButton = () => wrapper.findByText('Clear all');

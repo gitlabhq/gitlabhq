@@ -71,10 +71,6 @@ describe('issue_note', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('mutiline comments', () => {
     beforeEach(() => {
       createWrapper();

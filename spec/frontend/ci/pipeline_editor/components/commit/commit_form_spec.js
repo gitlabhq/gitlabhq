@@ -33,10 +33,6 @@ describe('Pipeline Editor | Commit Form', () => {
   const findSubmitBtn = () => wrapper.find('[type="submit"]');
   const findCancelBtn = () => wrapper.find('[type="reset"]');
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('when the form is displayed', () => {
     beforeEach(async () => {
       createComponent();

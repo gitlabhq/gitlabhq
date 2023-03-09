@@ -30,11 +30,6 @@ describe('Timeago component', () => {
     );
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   const duration = () => wrapper.find('.duration');
   const finishedAt = () => wrapper.find('.finished-at');
   const findInProgress = () => wrapper.findByTestId('pipeline-in-progress');

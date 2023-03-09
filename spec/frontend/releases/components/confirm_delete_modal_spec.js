@@ -42,10 +42,6 @@ describe('~/releases/components/confirm_delete_modal.vue', () => {
     factory();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('button', () => {
     it('should open the modal on click', async () => {
       await wrapper.findByRole('button', { name: 'Delete' }).trigger('click');

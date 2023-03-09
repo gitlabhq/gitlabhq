@@ -99,7 +99,6 @@ describe('Create Timeline events', () => {
 
   afterEach(() => {
     createAlert.mockReset();
-    wrapper.destroy();
   });
 
   describe('createIncidentTimelineEvent', () => {

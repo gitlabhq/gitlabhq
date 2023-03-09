@@ -159,6 +159,7 @@ There is an [issue where support is being discussed](https://gitlab.com/gitlab-o
 
    ## Disable automatic database migrations temporarily
    gitlab_rails['auto_migrate'] = false
+   ```
 
 1. Configure PostgreSQL to listen on network interfaces:
 

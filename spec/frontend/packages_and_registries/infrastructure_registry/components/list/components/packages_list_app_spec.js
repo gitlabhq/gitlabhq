@@ -72,10 +72,6 @@ describe('packages_list_app', () => {
     mountComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders', () => {
     createStore({ packageCount: 1 });
     mountComponent();

@@ -49,10 +49,6 @@ describe('ProjectsPipelinesChartsApp', () => {
     );
   }
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findGlTabs = () => wrapper.findComponent(GlTabs);
   const findAllGlTabs = () => wrapper.findAllComponents(GlTab);
   const findGlTabAtIndex = (index) => findAllGlTabs().at(index);

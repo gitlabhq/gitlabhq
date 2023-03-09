@@ -33,7 +33,6 @@ describe('Experimental new project creation app', () => {
   };
 
   afterEach(() => {
-    wrapper.destroy();
     window.location.hash = '';
   });
 

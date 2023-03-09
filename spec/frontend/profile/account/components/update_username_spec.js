@@ -42,7 +42,6 @@ describe('UpdateUsername component', () => {
   });
 
   afterEach(() => {
-    wrapper.destroy();
     axiosMock.restore();
     Vue.config.errorHandler = null;
   });

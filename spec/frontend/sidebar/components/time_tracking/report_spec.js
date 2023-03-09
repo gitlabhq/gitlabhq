@@ -51,7 +51,6 @@ describe('Issuable Time Tracking Report', () => {
   };
 
   afterEach(() => {
-    wrapper.destroy();
     fakeApollo = null;
   });
 

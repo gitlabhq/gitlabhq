@@ -49,10 +49,6 @@ describe('monitoring/pages/panel_new_page', () => {
     mountComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('back to dashboard button', () => {
     it('is rendered', () => {
       expect(findBackButton().exists()).toBe(true);

@@ -162,8 +162,6 @@ describe('RepoEditor', () => {
     // create a new model each time, otherwise tests conflict with each other
     // because of same model being used in multiple tests
     monacoEditor.getModels().forEach((model) => model.dispose());
-    wrapper.destroy();
-    wrapper = null;
   });
 
   describe('default', () => {

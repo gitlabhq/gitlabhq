@@ -65,11 +65,6 @@ describe('Package Additional metadata', () => {
     jest.spyOn(Sentry, 'captureException').mockImplementation();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   const findTitle = () => wrapper.findByTestId('title');
   const findMainArea = () => wrapper.findByTestId('main');
   const findComponentIs = () => wrapper.findByTestId('component-is');

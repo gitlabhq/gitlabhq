@@ -86,10 +86,6 @@ describe('PackagesApp', () => {
   const findTerraformInstallation = () => wrapper.findComponent(TerraformInstallation);
   const findPackageFiles = () => wrapper.findComponent(PackageFiles);
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders the app and displays the package title', async () => {
     createComponent();
 

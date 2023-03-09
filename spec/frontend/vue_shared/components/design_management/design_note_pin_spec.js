@@ -16,10 +16,6 @@ describe('Design note pin component', () => {
     });
   }
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('should match the snapshot of note without index', () => {
     createComponent();
     expect(wrapper.element).toMatchSnapshot();

@@ -46,10 +46,6 @@ describe('HeaderSearchAutocompleteItems', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findDropdownItems = () => wrapper.findAllComponents(GlDropdownItem);
   const findGlDropdownDividers = () => wrapper.findAllComponents(GlDropdownDivider);
   const findFirstDropdownItem = () => findDropdownItems().at(0);

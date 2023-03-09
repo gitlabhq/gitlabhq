@@ -21,10 +21,6 @@ describe('UnresolvedDiscussions', () => {
     wrapper = createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('triggers the correct notes event when the jump to first unresolved discussion button is clicked', () => {
     jest.spyOn(notesEventHub, '$emit');
 
@@ -36,10 +32,6 @@ describe('UnresolvedDiscussions', () => {
   describe('with threads path', () => {
     beforeEach(() => {
       wrapper = createComponent({ path: TEST_HOST });
-    });
-
-    afterEach(() => {
-      wrapper.destroy();
     });
 
     it('should have correct elements', () => {

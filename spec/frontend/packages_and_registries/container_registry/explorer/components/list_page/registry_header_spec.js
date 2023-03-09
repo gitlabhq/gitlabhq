@@ -35,11 +35,6 @@ describe('registry_header', () => {
     await nextTick();
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   describe('header', () => {
     it('has a title', () => {
       mountComponent({ metadataLoading: true });

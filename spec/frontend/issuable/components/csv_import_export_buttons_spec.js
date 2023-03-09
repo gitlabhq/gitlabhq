@@ -33,10 +33,6 @@ describe('CsvImportExportButtons', () => {
     });
   }
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findExportCsvButton = () => wrapper.findComponent(GlButton);
   const findImportDropdown = () => wrapper.findComponent(GlDropdown);
   const findImportCsvButton = () => wrapper.findByRole('menuitem', { name: 'Import CSV' });

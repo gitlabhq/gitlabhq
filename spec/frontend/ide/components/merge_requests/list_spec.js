@@ -48,11 +48,6 @@ describe('IDE merge requests list', () => {
     fetchMergeRequestsMock = jest.fn();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   it('calls fetch on mounted', () => {
     createComponent();
     expect(fetchMergeRequestsMock).toHaveBeenCalledWith(expect.any(Object), {

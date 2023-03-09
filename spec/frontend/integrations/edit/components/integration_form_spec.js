@@ -84,7 +84,6 @@ describe('IntegrationForm', () => {
   });
 
   afterEach(() => {
-    wrapper.destroy();
     mockAxios.restore();
   });
 

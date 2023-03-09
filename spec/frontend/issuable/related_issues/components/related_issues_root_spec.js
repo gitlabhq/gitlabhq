@@ -34,7 +34,6 @@ describe('RelatedIssuesRoot', () => {
 
   afterEach(() => {
     mock.restore();
-    wrapper.destroy();
   });
 
   const createComponent = ({ props = {}, data = {} } = {}) => {

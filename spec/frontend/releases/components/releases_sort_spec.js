@@ -17,10 +17,6 @@ describe('releases_sort.vue', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findSorting = () => wrapper.findComponent(GlSorting);
   const findSortingItems = () => wrapper.findAllComponents(GlSortingItem);
   const findReleasedDateItem = () =>

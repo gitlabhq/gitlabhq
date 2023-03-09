@@ -39,10 +39,6 @@ describe('Markdown field header component', () => {
     createWrapper();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('markdown header buttons', () => {
     it('renders the buttons with the correct title', () => {
       const buttons = [

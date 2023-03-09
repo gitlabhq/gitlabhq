@@ -58,10 +58,6 @@ describe('ExpirationDatepicker', () => {
   const findInput = () => wrapper.find('input');
   const findDatepicker = () => wrapper.findComponent(GlDatepicker);
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('datepicker input', () => {
     it('sets `member.expiresAt` as initial date', async () => {
       createComponent({ member: { ...member, expiresAt: '2020-03-17T00:00:00Z' } });

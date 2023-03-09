@@ -22,10 +22,6 @@ describe('Daterange component', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findDaterangePicker = () => wrapper.findComponent(GlDaterangePicker);
   const findDateRangeIndicator = () => wrapper.findByTestId('daterange-picker-indicator');
 

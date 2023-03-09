@@ -79,10 +79,6 @@ describe('ClusterAgentShow', () => {
   const findActivity = () => wrapper.findComponent(ActivityEvents);
   const findIntegrationStatus = () => wrapper.findComponent(IntegrationStatus);
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('default behaviour', () => {
     beforeEach(async () => {
       createWrapper({ clusterAgent: defaultClusterAgent });

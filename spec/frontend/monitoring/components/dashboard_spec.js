@@ -75,7 +75,6 @@ describe('Dashboard', () => {
     if (store.dispatch.mockReset) {
       store.dispatch.mockReset();
     }
-    wrapper.destroy();
   });
 
   describe('request information to the server', () => {

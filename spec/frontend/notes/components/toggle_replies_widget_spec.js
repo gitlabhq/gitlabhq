@@ -30,10 +30,6 @@ describe('toggle replies widget for notes', () => {
   const mountComponent = ({ collapsed = false }) =>
     mountExtended(ToggleRepliesWidget, { propsData: { replies, collapsed } });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('collapsed state', () => {
     beforeEach(() => {
       wrapper = mountComponent({ collapsed: true });

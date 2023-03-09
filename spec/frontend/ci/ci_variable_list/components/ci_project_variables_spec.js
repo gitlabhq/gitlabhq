@@ -25,10 +25,6 @@ describe('Ci Project Variable wrapper', () => {
     createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('Passes down the correct props to ci_variable_shared', () => {
     expect(findCiShared().props()).toEqual({
       id: convertToGraphQLId(TYPENAME_PROJECT, mockProvide.projectId),

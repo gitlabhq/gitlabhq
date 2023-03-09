@@ -26,10 +26,6 @@ describe('Harbor artifacts list', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('when isLoading is true', () => {
     beforeEach(() => {
       mountComponent({

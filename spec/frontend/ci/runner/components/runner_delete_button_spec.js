@@ -83,10 +83,6 @@ describe('RunnerDeleteButton', () => {
     createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('Displays a delete button without an icon', () => {
     expect(findBtn().props()).toMatchObject({
       loading: false,

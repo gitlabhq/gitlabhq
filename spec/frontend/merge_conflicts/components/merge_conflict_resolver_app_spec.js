@@ -37,10 +37,6 @@ describe('Merge Conflict Resolver App', () => {
     store.dispatch('setConflictsData', conflictsMock);
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findLoadingSpinner = () => wrapper.findByTestId('loading-spinner');
   const findConflictsCount = () => wrapper.findByTestId('conflicts-count');
   const findFiles = () => wrapper.findAllByTestId('files');

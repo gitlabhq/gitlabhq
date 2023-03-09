@@ -44,7 +44,6 @@ describe('confirmAction', () => {
     resetHTMLFixture();
     Vue.prototype.$mount.mockRestore();
     modalWrapper?.destroy();
-    modalWrapper = null;
     modal?.destroy();
     modal = null;
   });

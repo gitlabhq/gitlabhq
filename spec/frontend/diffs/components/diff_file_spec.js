@@ -129,8 +129,6 @@ describe('DiffFile', () => {
   });
 
   afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
     axiosMock.restore();
   });
 

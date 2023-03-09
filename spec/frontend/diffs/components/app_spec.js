@@ -393,10 +393,6 @@ describe('diffs/components/app', () => {
       spy = jest.spyOn(store, 'dispatch');
     });
 
-    afterEach(() => {
-      wrapper.destroy();
-    });
-
     it('jumps to next and previous files in the list', async () => {
       await nextTick();
 

@@ -21,11 +21,6 @@ describe('Source Editor Toolbar button', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   describe('default', () => {
     const defaultProps = {
       category: 'primary',

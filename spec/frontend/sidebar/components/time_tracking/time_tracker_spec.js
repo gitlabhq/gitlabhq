@@ -53,10 +53,6 @@ describe('Issuable Time Tracker', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('Initialization', () => {
     beforeEach(() => {
       wrapper = mountComponent();

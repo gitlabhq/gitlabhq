@@ -96,10 +96,6 @@ describe('Diffs tree list component', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('default', () => {
     beforeEach(() => {
       createComponent();

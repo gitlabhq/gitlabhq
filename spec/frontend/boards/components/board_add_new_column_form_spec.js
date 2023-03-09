@@ -55,10 +55,6 @@ describe('Board card layout', () => {
     );
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const formTitle = () => wrapper.findByTestId('board-add-column-form-title').text();
   const findSearchInput = () => wrapper.findComponent(GlSearchBoxByType);
   const findSearchLabelFormGroup = () => wrapper.findComponent(GlFormGroup);

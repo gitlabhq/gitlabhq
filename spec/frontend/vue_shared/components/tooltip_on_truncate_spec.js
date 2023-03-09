@@ -78,10 +78,6 @@ describe('TooltipOnTruncate component', () => {
     await nextTick();
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('when truncated', () => {
     beforeEach(async () => {
       hasHorizontalOverflow.mockReturnValueOnce(true);

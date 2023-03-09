@@ -26,10 +26,6 @@ describe('UserAvatar', () => {
 
   const findStatusEmoji = (emoji) => wrapper.find(`gl-emoji[data-name="${emoji}"]`);
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it("renders link to user's profile", () => {
     createComponent();
 

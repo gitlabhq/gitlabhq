@@ -15,10 +15,6 @@ describe('MrWidgetIcon', () => {
     });
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders icon and container', () => {
     expect(wrapper.element.className).toContain('circle-icon-container');
     expect(wrapper.findComponent(GlIcon).props('name')).toEqual(TEST_ICON);

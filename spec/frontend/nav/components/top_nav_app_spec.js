@@ -28,10 +28,6 @@ describe('~/nav/components/top_nav_app.vue', () => {
   const findNavItemDropdowToggle = () => findNavItemDropdown().find('.js-top-nav-dropdown-toggle');
   const findMenu = () => wrapper.findComponent(TopNavDropdownMenu);
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('default', () => {
     beforeEach(() => {
       createComponentShallow();

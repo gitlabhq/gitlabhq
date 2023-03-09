@@ -20,10 +20,6 @@ describe('Harbor Details Header', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('artifact name', () => {
     describe('missing image name', () => {
       beforeEach(() => {

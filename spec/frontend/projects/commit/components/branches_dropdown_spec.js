@@ -41,8 +41,6 @@ describe('BranchesDropdown', () => {
   });
 
   afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
     spyFetchBranches.mockReset();
   });
 

@@ -18,10 +18,6 @@ describe('Blob Content Error component', () => {
     });
   }
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('collapsed and too large blobs', () => {
     it.each`
       error                                   | reason                           | options

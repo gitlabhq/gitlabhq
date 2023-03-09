@@ -56,7 +56,6 @@ describe('RunnerProjects', () => {
 
   afterEach(() => {
     mockRunnerProjectsQuery.mockReset();
-    wrapper.destroy();
   });
 
   it('Requests runner projects', async () => {

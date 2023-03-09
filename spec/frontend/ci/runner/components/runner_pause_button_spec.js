@@ -74,10 +74,6 @@ describe('RunnerPauseButton', () => {
     createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('Pause/Resume action', () => {
     describe.each`
       runnerState | icon       | content        | tooltip                | isActive | newActiveValue

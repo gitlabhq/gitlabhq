@@ -79,7 +79,6 @@ describe('RoleDropdown', () => {
 
   afterEach(() => {
     window.gon = originalGon;
-    wrapper.destroy();
   });
 
   describe('when dropdown is open', () => {

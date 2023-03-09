@@ -71,10 +71,6 @@ describe('content_editor/components/bubble_menus/link_bubble_menu', () => {
       .run();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders bubble menu component', async () => {
     await buildWrapperAndDisplayMenu();
 

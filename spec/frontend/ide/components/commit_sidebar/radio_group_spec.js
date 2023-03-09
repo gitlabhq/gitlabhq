@@ -24,10 +24,6 @@ describe('IDE commit sidebar radio group', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('without input', () => {
     const props = {
       value: '1',

@@ -30,11 +30,6 @@ describe('code quality issue body issue body', () => {
     );
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   describe('severity rating', () => {
     it.each`
       severity      | iconClass               | iconName

@@ -41,7 +41,6 @@ describe('Sidebar Todo Widget', () => {
   };
 
   afterEach(() => {
-    wrapper.destroy();
     fakeApollo = null;
   });
 

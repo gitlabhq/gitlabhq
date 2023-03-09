@@ -30,11 +30,6 @@ describe('Issue placeholder note component', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   it('matches snapshot', () => {
     createComponent();
 

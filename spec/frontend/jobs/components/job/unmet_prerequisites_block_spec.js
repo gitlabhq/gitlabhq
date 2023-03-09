@@ -18,10 +18,6 @@ describe('Unmet Prerequisites Block Job component', () => {
     createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders an alert with the correct message', () => {
     const container = wrapper.findComponent(GlAlert);
     const alertMessage =

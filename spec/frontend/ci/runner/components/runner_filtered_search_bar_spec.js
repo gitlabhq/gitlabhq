@@ -65,10 +65,6 @@ describe('RunnerList', () => {
     createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('binds a namespace to the filtered search', () => {
     expect(findFilteredSearch().props('namespace')).toBe('runners');
   });

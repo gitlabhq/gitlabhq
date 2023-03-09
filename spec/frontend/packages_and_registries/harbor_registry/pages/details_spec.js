@@ -74,10 +74,6 @@ describe('Harbor Details Page', () => {
     });
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('when isLoading is true', () => {
     it('shows the loader', () => {
       mountComponent();

@@ -30,10 +30,6 @@ describe('Jobs Table', () => {
     createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('displays the jobs table', () => {
     expect(findTable().exists()).toBe(true);
   });

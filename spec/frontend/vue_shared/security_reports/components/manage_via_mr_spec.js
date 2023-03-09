@@ -56,10 +56,6 @@ describe('ManageViaMr component', () => {
     );
   }
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   // This component supports different report types/mutations depending on
   // whether it's in a CE or EE context. This makes sure we are only testing
   // the ones available in the current test context.

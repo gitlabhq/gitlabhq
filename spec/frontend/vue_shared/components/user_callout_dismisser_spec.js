@@ -28,8 +28,6 @@ const initialSlotProps = (changes = {}) => ({
 });
 
 describe('UserCalloutDismisser', () => {
-  let wrapper;
-
   const MOCK_FEATURE_NAME = 'mock_feature_name';
 
   // Query handlers
@@ -52,7 +50,7 @@ describe('UserCalloutDismisser', () => {
   const callDismissSlotProp = () => defaultScopedSlotSpy.mock.calls[0][0].dismiss();
 
   const createComponent = ({ queryHandler, mutationHandler, ...options }) => {
-    wrapper = mount(
+    mount(
       UserCalloutDismisser,
       merge(
         {
@@ -71,10 +69,6 @@ describe('UserCalloutDismisser', () => {
       ),
     );
   };
-
-  afterEach(() => {
-    wrapper.destroy();
-  });
 
   describe('when loading', () => {
     beforeEach(() => {

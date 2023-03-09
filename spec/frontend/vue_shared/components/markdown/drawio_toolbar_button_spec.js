@@ -30,7 +30,6 @@ describe('vue_shared/components/markdown/drawio_toolbar_button', () => {
 
   afterEach(() => {
     textArea.remove();
-    wrapper.destroy();
   });
 
   describe('default', () => {

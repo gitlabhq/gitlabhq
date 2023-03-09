@@ -87,10 +87,6 @@ describe('DropdownContentsCreateView', () => {
     gon.suggested_label_colors = mockSuggestedColors;
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders a palette of 21 colors', () => {
     createComponent();
     expect(findAllColors()).toHaveLength(21);

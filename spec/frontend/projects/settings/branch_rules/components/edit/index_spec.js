@@ -24,10 +24,6 @@ describe('Edit branch rule', () => {
 
   beforeEach(() => createComponent());
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('gets the branch param from url', () => {
     expect(getParameterByName).toHaveBeenCalledWith('branch');
   });

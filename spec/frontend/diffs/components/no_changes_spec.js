@@ -34,11 +34,6 @@ describe('Diff no changes empty state', () => {
     store.state.diffs.mergeRequestDiffs = diffsMockData;
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   const findMessage = () => wrapper.find('[data-testid="no-changes-message"]');
 
   it('prevents XSS', () => {

@@ -26,10 +26,6 @@ describe('SubscriptionsPage', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('template', () => {
     describe.each`
       scenario                        | subscriptionsLoading | hasSubscriptions | expectSubscriptionsList | expectEmptyState

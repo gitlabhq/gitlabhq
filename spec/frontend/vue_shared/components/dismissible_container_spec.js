@@ -11,10 +11,6 @@ describe('DismissibleContainer', () => {
     featureId: 'some-feature-id',
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('template', () => {
     const findBtn = () => wrapper.find('[data-testid="close"]');
     let mockAxios;

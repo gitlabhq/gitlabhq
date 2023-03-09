@@ -38,10 +38,6 @@ describe('Ci variable table', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('props passing', () => {
     it('passes props down correctly to the ci table', () => {
       createComponent();

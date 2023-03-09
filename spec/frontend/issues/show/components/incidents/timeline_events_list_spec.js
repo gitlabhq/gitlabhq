@@ -77,10 +77,6 @@ describe('IncidentTimelineEventList', () => {
     mountComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('template', () => {
     it('groups items correctly', () => {
       expect(findTimelineEventGroups()).toHaveLength(2);

@@ -96,7 +96,6 @@ describe('StatesTableActions', () => {
     toast = null;
     unlockResponse = null;
     updateStateResponse = null;
-    wrapper.destroy();
   });
 
   describe('when the state is loading', () => {

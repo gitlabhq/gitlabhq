@@ -25,10 +25,6 @@ describe('Deployment action button', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('when passed only icon via props', () => {
     beforeEach(() => {
       factory({

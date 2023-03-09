@@ -11,10 +11,6 @@ describe('content_editor/components/loading_indicator', () => {
     wrapper = shallowMountExtended(LoadingIndicator);
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('when loading content', () => {
     beforeEach(() => {
       createWrapper();

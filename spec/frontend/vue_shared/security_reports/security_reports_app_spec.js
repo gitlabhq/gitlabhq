@@ -74,10 +74,6 @@ describe('Security reports app', () => {
   const findDownloadDropdown = () => wrapper.findComponent(SecurityReportDownloadDropdown);
   const findHelpIconComponent = () => wrapper.findComponent(HelpIcon);
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('given the artifacts query is loading', () => {
     beforeEach(() => {
       createComponent({

@@ -19,10 +19,6 @@ describe('projects/settings/components/default_branch_selector', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   beforeEach(() => {
     buildWrapper();
   });

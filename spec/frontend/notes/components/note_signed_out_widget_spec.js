@@ -12,10 +12,6 @@ describe('NoteSignedOutWidget component', () => {
     wrapper = shallowMount(NoteSignedOutWidget, { store });
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders sign in link provided in the store', () => {
     expect(wrapper.find(`a[href="${notesDataMock.newSessionPath}"]`).text()).toBe('sign in');
   });

@@ -12,11 +12,6 @@ describe('DiffsColorsPreview component', () => {
     createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   it('renders diff colors preview', () => {
     expect(wrapper.element).toMatchSnapshot();
   });

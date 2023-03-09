@@ -21,10 +21,6 @@ describe('Commits header component', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findHeaderWrapper = () => wrapper.find('.js-mr-widget-commits-count');
   const findCommitToggle = () => wrapper.find('.commit-edit-toggle');
   const findTargetBranchMessage = () => wrapper.find('.label-branch');

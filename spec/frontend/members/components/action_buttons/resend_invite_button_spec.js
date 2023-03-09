@@ -50,10 +50,6 @@ describe('ResendInviteButton', () => {
     createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('displays a tooltip', () => {
     expect(getBinding(findButton().element, 'gl-tooltip')).not.toBeUndefined();
     expect(findButton().attributes('title')).toBe('Resend invite');

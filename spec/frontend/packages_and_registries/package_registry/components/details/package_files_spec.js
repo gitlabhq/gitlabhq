@@ -48,10 +48,6 @@ describe('Package Files', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('rows', () => {
     it('renders a single file for an npm package', () => {
       createComponent();

@@ -79,10 +79,6 @@ describe('MavenInstallation', () => {
     });
   }
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('install command switch', () => {
     it('has the installation title component', () => {
       createComponent();

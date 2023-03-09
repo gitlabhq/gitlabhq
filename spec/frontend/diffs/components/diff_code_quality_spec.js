@@ -11,10 +11,6 @@ const findIcon = () => wrapper.findComponent(GlIcon);
 const findHeading = () => wrapper.findByTestId(`diff-codequality-findings-heading`);
 
 describe('DiffCodeQuality', () => {
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const createWrapper = (codeQuality, mountFunction = mountExtended) => {
     return mountFunction(DiffCodeQuality, {
       propsData: {

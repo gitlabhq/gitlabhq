@@ -47,7 +47,6 @@ describe('RunnerJobs', () => {
 
   afterEach(() => {
     mockRunnerJobsQuery.mockReset();
-    wrapper.destroy();
   });
 
   it('Requests runner jobs', async () => {

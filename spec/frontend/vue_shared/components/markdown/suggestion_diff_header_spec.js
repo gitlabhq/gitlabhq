@@ -34,10 +34,6 @@ describe('Suggestion Diff component', () => {
     window.gon.current_user_id = 1;
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findApplyButton = () => wrapper.findComponent(ApplySuggestion);
   const findApplyBatchButton = () => wrapper.find('.js-apply-batch-btn');
   const findAddToBatchButton = () => wrapper.find('.js-add-to-batch-btn');

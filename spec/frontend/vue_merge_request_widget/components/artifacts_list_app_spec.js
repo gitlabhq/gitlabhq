@@ -26,7 +26,6 @@ describe('Merge Requests Artifacts list app', () => {
   });
 
   afterEach(() => {
-    wrapper.destroy();
     mock.restore();
   });
 

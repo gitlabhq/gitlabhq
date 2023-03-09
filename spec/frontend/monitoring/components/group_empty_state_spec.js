@@ -23,10 +23,6 @@ function createComponent(props) {
 describe('GroupEmptyState', () => {
   let wrapper;
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe.each([
     metricStates.NO_DATA,
     metricStates.TIMEOUT,

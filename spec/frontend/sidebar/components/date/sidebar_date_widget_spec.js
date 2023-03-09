@@ -62,7 +62,6 @@ describe('Sidebar date Widget', () => {
   };
 
   afterEach(() => {
-    wrapper.destroy();
     fakeApollo = null;
   });
 

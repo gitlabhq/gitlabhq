@@ -36,10 +36,6 @@ describe('Registry List', () => {
   const findScopedSlotFirstValue = (index) => findScopedSlots().at(index).find('span');
   const findScopedSlotIsSelectedValue = (index) => findScopedSlots().at(index).find('p');
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('header', () => {
     it('renders the title passed in the prop', () => {
       mountComponent();

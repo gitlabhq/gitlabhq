@@ -103,8 +103,6 @@ describe('WikiForm', () => {
 
   afterEach(() => {
     mock.restore();
-    wrapper.destroy();
-    wrapper = null;
   });
 
   it('displays markdown editor', () => {

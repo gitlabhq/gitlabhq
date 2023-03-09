@@ -65,10 +65,6 @@ describe('Design note component', () => {
     });
   }
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('should match the snapshot', () => {
     createComponent({
       note,

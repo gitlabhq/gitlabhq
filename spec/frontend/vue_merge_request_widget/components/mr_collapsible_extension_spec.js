@@ -25,10 +25,6 @@ describe('Merge Request Collapsible Extension', () => {
   const findErrorMessage = () => wrapper.find('.js-error-state');
   const findIcon = () => wrapper.findComponent(GlIcon);
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('while collapsed', () => {
     beforeEach(() => {
       mountComponent(data);

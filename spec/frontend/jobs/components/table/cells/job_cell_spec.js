@@ -39,10 +39,6 @@ describe('Job Cell', () => {
     );
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('Job Id', () => {
     it('displays the job id and links to the job', () => {
       createComponent();

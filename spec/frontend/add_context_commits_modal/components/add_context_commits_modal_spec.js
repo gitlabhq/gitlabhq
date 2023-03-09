@@ -55,10 +55,6 @@ describe('AddContextCommitsModal', () => {
     wrapper = createWrapper();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders modal with 2 tabs', () => {
     expect(wrapper.element).toMatchSnapshot();
   });

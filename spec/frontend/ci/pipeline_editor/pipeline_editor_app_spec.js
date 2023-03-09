@@ -165,10 +165,6 @@ describe('Pipeline editor app component', () => {
     mockPipelineQuery = jest.fn();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('loading state', () => {
     it('displays a loading icon if the blob query is loading', () => {
       createComponent({ blobLoading: true });

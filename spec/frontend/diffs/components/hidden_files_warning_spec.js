@@ -23,10 +23,6 @@ describe('HiddenFilesWarning', () => {
     createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('has a correct plain diff URL', () => {
     const plainDiffLink = wrapper.findAllComponents(GlButton).at(0);
 

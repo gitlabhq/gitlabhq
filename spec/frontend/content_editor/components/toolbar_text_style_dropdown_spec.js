@@ -39,10 +39,6 @@ describe('content_editor/components/toolbar_text_style_dropdown', () => {
     buildEditor();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders all text styles as dropdown items', () => {
     buildWrapper();
 

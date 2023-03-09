@@ -36,11 +36,6 @@ describe('The DAG graph', () => {
     createComponent({ graphData: parsedData });
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   describe('in the basic case', () => {
     beforeEach(() => {
       /*

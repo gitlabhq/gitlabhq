@@ -21,10 +21,6 @@ describe('File row component', () => {
     });
   }
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders name', () => {
     const fileName = 't4';
     createComponent({

@@ -49,10 +49,6 @@ describe('DeleteBlobModal', () => {
     await findCommitTextarea().vm.$emit('input', commitText);
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders Modal component', () => {
     createComponent();
 

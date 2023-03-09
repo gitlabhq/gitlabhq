@@ -37,10 +37,6 @@ describe('MergeFailedPipelineConfirmationDialog', () => {
     createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('should render informational text explaining why merging immediately can be dangerous', () => {
     expect(trimText(wrapper.text())).toContain(
       'The latest pipeline for this merge request did not succeed. The latest changes are unverified. Are you sure you want to attempt to merge?',

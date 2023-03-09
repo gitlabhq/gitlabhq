@@ -36,10 +36,6 @@ describe('Diffs image diff overlay component', () => {
     });
   }
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders comment badges', () => {
     createComponent();
 

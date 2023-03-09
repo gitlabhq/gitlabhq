@@ -10,10 +10,6 @@ const TEST_BUTTON_TEXT = 'Fork text';
 describe('ide/components/cannot_push_code_alert', () => {
   let wrapper;
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const createComponent = (props = {}) => {
     wrapper = shallowMount(CannotPushCodeAlert, {
       propsData: {

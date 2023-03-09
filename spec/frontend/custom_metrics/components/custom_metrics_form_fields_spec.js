@@ -42,7 +42,6 @@ describe('custom metrics form fields component', () => {
   });
 
   afterEach(() => {
-    wrapper.destroy();
     mockAxios.restore();
   });
 

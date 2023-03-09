@@ -15,10 +15,6 @@ describe('IDE job log scroll button', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe.each`
     direction | icon             | title
     ${'up'}   | ${'scroll_up'}   | ${'Scroll to top'}

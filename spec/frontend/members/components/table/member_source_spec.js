@@ -30,10 +30,6 @@ describe('MemberSource', () => {
 
   const getTooltipDirective = (elementWrapper) => getBinding(elementWrapper.element, 'gl-tooltip');
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('direct member', () => {
     describe('when created by is available', () => {
       it('displays "Direct member by <user name>"', () => {

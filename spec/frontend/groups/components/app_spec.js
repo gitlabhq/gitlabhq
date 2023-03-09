@@ -65,11 +65,6 @@ describe('AppComponent', () => {
     vm = wrapper.vm;
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   beforeEach(async () => {
     mock = new AxiosMockAdapter(axios);
     mock.onGet('/dashboard/groups.json').reply(HTTP_STATUS_OK, mockGroups);

@@ -50,10 +50,6 @@ describe('UserAvatarList', () => {
     props = { imgSize: TEST_IMAGE_SIZE };
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('empty text', () => {
     it('shows when items are empty', () => {
       factory({ propsData: { items: [] } });

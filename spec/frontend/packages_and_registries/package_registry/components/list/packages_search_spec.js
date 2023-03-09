@@ -46,10 +46,6 @@ describe('Package Search', () => {
     extractFilterAndSorting.mockReturnValue(defaultQueryParamsMock);
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('has a registry search component', async () => {
     mountComponent();
 

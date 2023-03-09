@@ -40,10 +40,6 @@ describe('LabelsSelectRoot', () => {
     store = new Vuex.Store(labelsSelectModule());
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('methods', () => {
     describe('handleVuexActionDispatch', () => {
       const touchedLabels = [

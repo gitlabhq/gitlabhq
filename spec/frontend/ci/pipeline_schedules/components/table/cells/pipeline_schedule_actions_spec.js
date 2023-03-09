@@ -29,10 +29,6 @@ describe('Pipeline schedule actions', () => {
   const findTakeOwnershipBtn = () => wrapper.findByTestId('take-ownership-pipeline-schedule-btn');
   const findPlayScheduleBtn = () => wrapper.findByTestId('play-pipeline-schedule-btn');
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('displays buttons when user is the owner of schedule and has adminPipelineSchedule permissions', () => {
     createComponent();
 

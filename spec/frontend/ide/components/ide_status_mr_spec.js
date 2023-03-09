@@ -17,10 +17,6 @@ describe('ide/components/ide_status_mr', () => {
   const findIcon = () => wrapper.findComponent(GlIcon);
   const findLink = () => wrapper.findComponent(GlLink);
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('when mounted', () => {
     beforeEach(() => {
       createComponent({

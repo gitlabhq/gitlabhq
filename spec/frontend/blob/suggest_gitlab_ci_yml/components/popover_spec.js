@@ -36,11 +36,6 @@ describe('Suggest gitlab-ci.yml Popover', () => {
     });
   }
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   describe('when no dismiss cookie is set', () => {
     beforeEach(() => {
       createWrapper(defaultTrackLabel);

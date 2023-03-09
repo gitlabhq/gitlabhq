@@ -54,10 +54,6 @@ describe('~/nav/components/top_nav_menu_sections.vue', () => {
       menuItems: findMenuItemModels(x),
     }));
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('default', () => {
     beforeEach(() => {
       createComponent();

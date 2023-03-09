@@ -39,10 +39,6 @@ describe('RunnerTag', () => {
     createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('Displays tag text', () => {
     expect(wrapper.text()).toBe(mockTag);
   });

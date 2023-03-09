@@ -30,10 +30,6 @@ describe('Pipeline label component', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('should not render tags when flags are not set', () => {
     createComponent();
 

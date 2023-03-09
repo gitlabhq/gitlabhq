@@ -13,10 +13,6 @@ describe('File row header component', () => {
     });
   }
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders file path', () => {
     const path = 'app/assets';
     createComponent(path);

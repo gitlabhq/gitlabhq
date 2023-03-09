@@ -73,10 +73,6 @@ describe('IDE commit form', () => {
     });
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   // Notes:
   // - When there are no changes, there is no commit button so there's nothing to test :)
   describe.each`

@@ -41,7 +41,6 @@ describe('BroadcastMessagesBase', () => {
 
   afterEach(() => {
     axiosMock.restore();
-    wrapper.destroy();
   });
 
   it('renders the table and pagination when there are existing messages', () => {

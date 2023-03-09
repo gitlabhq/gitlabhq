@@ -26,10 +26,6 @@ describe('Commits edit component', () => {
     createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findTextarea = () => wrapper.find('.form-control');
 
   it('has a correct label', () => {

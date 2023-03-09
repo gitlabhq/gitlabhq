@@ -62,8 +62,6 @@ describe('Snippet Blob Edit component', () => {
   });
 
   afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
     axiosMock.restore();
   });
 

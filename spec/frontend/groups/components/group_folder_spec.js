@@ -20,10 +20,6 @@ describe('GroupFolder component', () => {
       },
     });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('does not render more children stats link when children count of group is under limit', () => {
     wrapper = createComponent();
 

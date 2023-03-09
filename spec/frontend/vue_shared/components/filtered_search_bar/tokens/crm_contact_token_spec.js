@@ -79,7 +79,6 @@ describe('CrmContactToken', () => {
   };
 
   afterEach(() => {
-    wrapper.destroy();
     fakeApollo = null;
   });
 

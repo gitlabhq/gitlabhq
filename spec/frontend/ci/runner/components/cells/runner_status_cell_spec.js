@@ -34,10 +34,6 @@ describe('RunnerStatusCell', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('Displays online status', () => {
     createComponent();
 

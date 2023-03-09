@@ -51,10 +51,6 @@ describe('DropdownContentsLabelsView', () => {
     createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findDropdownContent = () => wrapper.find('[data-testid="dropdown-content"]');
   const findDropdownTitle = () => wrapper.find('[data-testid="dropdown-title"]');
   const findDropdownFooter = () => wrapper.find('[data-testid="dropdown-footer"]');

@@ -78,7 +78,6 @@ describe('FeatureCard component', () => {
   };
 
   afterEach(() => {
-    wrapper.destroy();
     feature = undefined;
   });
 

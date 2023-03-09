@@ -54,7 +54,6 @@ describe('Author Select', () => {
   });
 
   afterEach(() => {
-    wrapper.destroy();
     resetHTMLFixture();
   });
 

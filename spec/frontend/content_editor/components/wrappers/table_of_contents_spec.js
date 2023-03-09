@@ -70,10 +70,6 @@ describe('content/components/wrappers/table_of_contents', () => {
     await nextTick();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders a node-view-wrapper as a ul element', () => {
     expect(wrapper.findComponent(NodeViewWrapper).props().as).toBe('ul');
   });

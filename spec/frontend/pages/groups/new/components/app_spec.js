@@ -16,10 +16,6 @@ describe('App component', () => {
       .props('panels')
       .find((panel) => panel.name === 'create-group-pane');
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('creates correct component for group creation', () => {
     createComponent();
 

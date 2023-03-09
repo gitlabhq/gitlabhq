@@ -52,11 +52,6 @@ describe('Pipeline Trigger Author Token', () => {
     createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   it('passes config correctly', () => {
     expect(findFilteredSearchToken().props('config')).toEqual(defaultProps.config);
   });

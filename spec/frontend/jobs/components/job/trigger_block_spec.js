@@ -20,10 +20,6 @@ describe('Trigger block', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('with short token and no variables', () => {
     it('renders short token', () => {
       createComponent({

@@ -47,10 +47,6 @@ describe('vue_shared/components/confirm_modal', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findModal = () => wrapper.findComponent(GlModalStub);
   const findForm = () => wrapper.find('form');
   const findFormData = () =>

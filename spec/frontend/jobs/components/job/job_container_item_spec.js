@@ -24,11 +24,6 @@ describe('JobContainerItem', () => {
     });
   }
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   describe('when a job is not active and not retried', () => {
     beforeEach(() => {
       createComponent(job);

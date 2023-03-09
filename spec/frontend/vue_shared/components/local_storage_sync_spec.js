@@ -17,7 +17,6 @@ describe('Local Storage Sync', () => {
   const getStorageValue = (value) => localStorage.getItem(STORAGE_KEY, value);
 
   afterEach(() => {
-    wrapper.destroy();
     localStorage.clear();
   });
 

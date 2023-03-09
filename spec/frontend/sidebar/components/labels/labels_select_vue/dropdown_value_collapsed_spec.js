@@ -24,10 +24,6 @@ describe('DropdownValueCollapsedComponent', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findGlIcon = () => wrapper.findComponent(GlIcon);
   const getTooltip = () => getBinding(wrapper.element, 'gl-tooltip');
 

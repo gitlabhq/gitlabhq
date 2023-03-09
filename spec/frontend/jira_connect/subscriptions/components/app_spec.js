@@ -41,10 +41,6 @@ describe('JiraConnectApp', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('template', () => {
     describe.each`
       scenario                   | usersPath    | shouldRenderSignInPage | shouldRenderSubscriptionsPage

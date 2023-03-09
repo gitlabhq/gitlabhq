@@ -43,7 +43,6 @@ describe('content_editor/components/toolbar_link_button', () => {
 
   afterEach(() => {
     editor.destroy();
-    wrapper.destroy();
   });
 
   it('renders dropdown component', () => {

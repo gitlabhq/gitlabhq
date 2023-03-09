@@ -18,10 +18,6 @@ describe('RunnerMembershipToggle', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('Displays text', () => {
     createComponent({ mountFn: mount });
 

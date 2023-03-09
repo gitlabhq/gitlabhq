@@ -34,11 +34,6 @@ describe('Linked pipeline mini list', () => {
       });
     });
 
-    afterEach(() => {
-      wrapper.destroy();
-      wrapper = null;
-    });
-
     it('should render one linked pipeline item', () => {
       expect(findLinkedPipelineMiniItem().exists()).toBe(true);
     });
@@ -100,11 +95,6 @@ describe('Linked pipeline mini list', () => {
         triggered: mockData.triggered,
         pipelinePath: 'my/pipeline/path',
       });
-    });
-
-    afterEach(() => {
-      wrapper.destroy();
-      wrapper = null;
     });
 
     it('should render three linked pipeline items', () => {

@@ -48,10 +48,6 @@ describe('Transfer group form', () => {
   const findTransferLocations = () => wrapper.findComponent(TransferLocations);
   const findHiddenInput = () => wrapper.find('[name="new_parent_group_id"]');
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('default', () => {
     beforeEach(() => {
       createComponent();

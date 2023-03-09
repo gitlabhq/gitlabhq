@@ -38,10 +38,6 @@ describe('BlobButtonGroup component', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findDeleteBlobModal = () => wrapper.findComponent(DeleteBlobModal);
   const findUploadBlobModal = () => wrapper.findComponent(UploadBlobModal);
   const findDeleteButton = () => wrapper.findByTestId('delete');

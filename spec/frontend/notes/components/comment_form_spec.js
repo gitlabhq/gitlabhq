@@ -127,7 +127,6 @@ describe('issue_comment_form component', () => {
 
   afterEach(() => {
     axiosMock.restore();
-    wrapper.destroy();
   });
 
   describe('user is logged in', () => {

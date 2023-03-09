@@ -19,10 +19,6 @@ describe('LabelItem', () => {
     wrapper = createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('template', () => {
     it('renders label color element', () => {
       const colorEl = wrapper.find('[data-testid="label-color-box"]');

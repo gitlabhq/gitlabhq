@@ -41,8 +41,6 @@ describe('projects/settings/components/shared_runners', () => {
   });
 
   afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
     mockAxios.restore();
   });
 

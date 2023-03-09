@@ -11,10 +11,6 @@ describe('Pipeline editor drawer', () => {
     wrapper = shallowMount(PipelineEditorDrawer);
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('emits close event when closing the drawer', () => {
     createComponent();
 

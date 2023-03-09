@@ -21,10 +21,6 @@ describe('Section Layout component', () => {
   const findHeading = () => wrapper.find('h2');
   const findLoader = () => wrapper.findComponent(SectionLoader);
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('basic structure', () => {
     beforeEach(() => {
       createComponent({ heading: 'testheading' });

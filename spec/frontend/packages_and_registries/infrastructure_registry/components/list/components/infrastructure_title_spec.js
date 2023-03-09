@@ -22,11 +22,6 @@ describe('Infrastructure Title', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   describe('title area', () => {
     beforeEach(() => {
       mountComponent();

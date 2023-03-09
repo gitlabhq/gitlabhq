@@ -48,10 +48,6 @@ describe('IssuableBody', () => {
     wrapper = createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('computed', () => {
     describe('isUpdated', () => {
       it.each`

@@ -50,10 +50,6 @@ describe('ApproveAccessRequestButton', () => {
     createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('displays a tooltip', () => {
     const button = findButton();
 

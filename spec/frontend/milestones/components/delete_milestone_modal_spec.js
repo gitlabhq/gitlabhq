@@ -39,10 +39,6 @@ describe('Delete milestone modal', () => {
     createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('onSubmit', () => {
     beforeEach(() => {
       jest.spyOn(eventHub, '$emit').mockImplementation(() => {});

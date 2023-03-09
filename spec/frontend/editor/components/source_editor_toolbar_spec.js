@@ -40,7 +40,6 @@ describe('Source Editor Toolbar', () => {
   };
 
   afterEach(() => {
-    wrapper.destroy();
     mockApollo = null;
   });
 

@@ -59,7 +59,6 @@ describe('Contributors charts', () => {
 
   afterEach(() => {
     mock.restore();
-    wrapper.destroy();
   });
 
   it('should fetch chart data when mounted', () => {

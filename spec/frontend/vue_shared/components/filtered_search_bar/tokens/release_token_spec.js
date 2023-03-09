@@ -27,10 +27,6 @@ describe('ReleaseToken', () => {
       },
     });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders release value', async () => {
     wrapper = createComponent({ value: { data: id } });
     await nextTick();

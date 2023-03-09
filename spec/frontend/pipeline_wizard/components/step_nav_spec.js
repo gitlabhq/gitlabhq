@@ -19,10 +19,6 @@ describe('Pipeline Wizard - Step Navigation Component', () => {
     nextButton = wrapper.findByTestId('next-button');
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it.each`
     scenario                       | showBackButton | showNextButton
     ${'does not show prev button'} | ${false}       | ${false}

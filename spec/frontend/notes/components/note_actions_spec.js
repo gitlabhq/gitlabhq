@@ -77,7 +77,6 @@ describe('noteActions', () => {
   });
 
   afterEach(() => {
-    wrapper.destroy();
     axiosMock.restore();
   });
 
@@ -203,7 +202,6 @@ describe('noteActions', () => {
     });
 
     afterEach(() => {
-      wrapper.destroy();
       axiosMock.restore();
     });
 
@@ -226,7 +224,6 @@ describe('noteActions', () => {
     });
 
     afterEach(() => {
-      wrapper.destroy();
       axiosMock.restore();
     });
 
@@ -246,10 +243,6 @@ describe('noteActions', () => {
       wrapper = mountNoteActions(props, {
         targetType: () => 'issue',
       });
-    });
-
-    afterEach(() => {
-      wrapper.destroy();
     });
 
     it('should not be possible to assign the comment author', testButtonDoesNotRender);

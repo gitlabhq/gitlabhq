@@ -48,10 +48,6 @@ describe('Observability root app', () => {
   const dispatchMessageEvent = (message) =>
     window.dispatchEvent(new MessageEvent('message', message));
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('iframe src', () => {
     const TEST_USERNAME = 'test-user';
 

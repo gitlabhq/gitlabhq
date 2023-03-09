@@ -25,10 +25,6 @@ describe('~/nav/components/top_nav_menu_sections.vue', () => {
     createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders slot', () => {
     expect(wrapper.text()).toBe(TEST_SLOT_CONTENT);
   });

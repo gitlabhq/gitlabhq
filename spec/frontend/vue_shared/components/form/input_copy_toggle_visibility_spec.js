@@ -10,10 +10,6 @@ import { mountExtended } from 'helpers/vue_test_utils_helper';
 describe('InputCopyToggleVisibility', () => {
   let wrapper;
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const valueProp = 'hR8x1fuJbzwu5uFKLf9e';
 
   const createComponent = (options = {}) => {

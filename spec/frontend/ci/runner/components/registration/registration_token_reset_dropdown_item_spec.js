@@ -63,10 +63,6 @@ describe('RegistrationTokenResetDropdownItem', () => {
     createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('Displays reset button', () => {
     expect(findDropdownItem().exists()).toBe(true);
   });

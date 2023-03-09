@@ -128,10 +128,6 @@ describe('AlertsSettingsWrapper', () => {
     });
   }
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('template', () => {
     beforeEach(() => {
       createComponent({

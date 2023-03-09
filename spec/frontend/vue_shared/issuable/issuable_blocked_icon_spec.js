@@ -48,11 +48,6 @@ describe('IssuableBlockedIcon', () => {
     await waitForApollo();
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   const createWrapperWithApollo = ({
     item = mockBlockedIssue1,
     blockingIssuablesSpy = jest.fn().mockResolvedValue(mockBlockingIssuablesResponse1),

@@ -23,10 +23,6 @@ describe('FileSha', () => {
     });
   }
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders', () => {
     createComponent();
 

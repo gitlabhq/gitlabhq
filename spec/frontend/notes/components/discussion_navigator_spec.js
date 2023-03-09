@@ -37,7 +37,6 @@ describe('notes/components/discussion_navigator', () => {
     if (wrapper) {
       wrapper.destroy();
     }
-    wrapper = null;
   });
 
   describe('on create', () => {

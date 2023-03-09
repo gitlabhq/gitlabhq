@@ -80,7 +80,7 @@ export default {
           </h3>
           <template v-if="totalCount">
             <gl-icon name="merge-request" class="gl-ml-3 gl-mr-2 gl-text-gray-500" />
-            <span data-testid="count">{{ totalCount }}</span>
+            <span data-testid="count" class="gl-text-gray-500">{{ totalCount }}</span>
           </template>
         </div>
       </div>

@@ -159,7 +159,6 @@ describe('MoveIssuesButton', () => {
   });
 
   afterEach(() => {
-    wrapper.destroy();
     fakeApollo = null;
   });
 

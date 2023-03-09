@@ -17,10 +17,6 @@ describe('AddNamespaceModal', () => {
     createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('displays modal with correct props', () => {
     const modal = findModal();
     expect(modal.exists()).toBe(true);

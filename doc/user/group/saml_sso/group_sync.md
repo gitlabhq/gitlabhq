@@ -104,6 +104,8 @@ Users granted:
 - A lower or the same role with Group Sync are displayed as having
   [inherited membership](../../project/members/index.md#display-inherited-members) of the group.
 
+SAML group membership is evaluated each time a user signs in.
+
 ### Automatic member removal
 
 After a group sync, users who are not members of a mapped SAML group are removed from the group.

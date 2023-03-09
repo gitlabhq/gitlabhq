@@ -20,10 +20,6 @@ describe('TriggerFields', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findTriggerLabel = () => wrapper.findByTestId('trigger-fields-group').find('label');
   const findAllGlFormGroups = () => wrapper.find('#trigger-fields').findAllComponents(GlFormGroup);
   const findAllGlFormCheckboxes = () => wrapper.findAllComponents(GlFormCheckbox);

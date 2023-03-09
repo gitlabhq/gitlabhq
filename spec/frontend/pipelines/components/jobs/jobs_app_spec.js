@@ -45,10 +45,6 @@ describe('Jobs app', () => {
     resolverSpy = jest.fn().mockResolvedValue(mockPipelineJobsQueryResponse);
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('loading spinner', () => {
     const setup = async () => {
       createComponent(resolverSpy);

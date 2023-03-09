@@ -69,7 +69,6 @@ describe('Frequent Items App Component', () => {
 
   afterEach(() => {
     mock.restore();
-    wrapper.destroy();
   });
 
   describe('default', () => {

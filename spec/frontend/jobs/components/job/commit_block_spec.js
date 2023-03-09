@@ -32,10 +32,6 @@ describe('Commit block', () => {
     );
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('without merge request', () => {
     beforeEach(() => {
       mountComponent();

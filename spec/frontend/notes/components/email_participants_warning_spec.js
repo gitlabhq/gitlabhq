@@ -4,11 +4,6 @@ import EmailParticipantsWarning from '~/notes/components/email_participants_warn
 describe('Email Participants Warning Component', () => {
   let wrapper;
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   const findMoreButton = () => wrapper.find('button');
 
   const createWrapper = (emails) => {

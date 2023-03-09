@@ -44,9 +44,6 @@ describe('ClustersActionsComponent', () => {
     createWrapper();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
   describe('when the certificate based clusters are enabled', () => {
     it('renders actions menu', () => {
       expect(findDropdown().exists()).toBe(true);

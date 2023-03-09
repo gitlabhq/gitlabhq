@@ -33,11 +33,6 @@ describe('popovers/components/popovers.vue', () => {
 
   const allPopovers = () => wrapper.findAllComponents(GlPopover);
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   describe('addPopovers', () => {
     it('attaches popovers to the targets specified', async () => {
       const target = createPopoverTarget();

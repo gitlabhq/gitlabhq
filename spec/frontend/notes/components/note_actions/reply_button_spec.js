@@ -9,11 +9,6 @@ describe('ReplyButton', () => {
     wrapper = shallowMount(ReplyButton);
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   it('emits startReplying on click', () => {
     wrapper.findComponent(GlButton).vm.$emit('click');
 

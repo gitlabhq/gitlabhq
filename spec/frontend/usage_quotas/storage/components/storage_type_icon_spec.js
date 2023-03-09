@@ -16,10 +16,6 @@ describe('StorageTypeIcon', () => {
   const findGlIcon = () => wrapper.findComponent(GlIcon);
 
   describe('rendering icon', () => {
-    afterEach(() => {
-      wrapper.destroy();
-    });
-
     it.each`
       expected                     | provided
       ${'doc-image'}               | ${'lfsObjectsSize'}

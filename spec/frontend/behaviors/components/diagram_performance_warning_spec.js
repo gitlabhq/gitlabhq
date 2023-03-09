@@ -11,10 +11,6 @@ describe('DiagramPerformanceWarning component', () => {
     wrapper = shallowMount(DiagramPerformanceWarning);
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders warning alert with button', () => {
     expect(findAlert().props()).toMatchObject({
       primaryButtonText: DiagramPerformanceWarning.i18n.buttonText,

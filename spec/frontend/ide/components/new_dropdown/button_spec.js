@@ -14,10 +14,6 @@ describe('IDE new entry dropdown button component', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders button with label', () => {
     createComponent();
 

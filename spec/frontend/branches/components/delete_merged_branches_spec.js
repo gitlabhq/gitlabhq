@@ -78,10 +78,6 @@ describe('Delete merged branches component', () => {
       createComponent(shallowMountExtended, stubsData);
     });
 
-    afterEach(() => {
-      wrapper.destroy();
-    });
-
     it('renders correct modal title and text', () => {
       const modalText = findModal().text();
       expect(findModal().props('title')).toBe(i18n.modalTitle);

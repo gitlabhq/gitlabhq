@@ -16,11 +16,6 @@ describe('RepoDropdown component', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   const findGlDropdown = () => wrapper.findComponent(GlDropdown);
   const findHiddenInput = () => wrapper.find('input[type="hidden"]');
 

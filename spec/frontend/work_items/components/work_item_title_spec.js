@@ -41,10 +41,6 @@ describe('WorkItemTitle component', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders title', () => {
     createComponent();
 

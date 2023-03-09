@@ -20,10 +20,6 @@ describe('IDE project header', () => {
     wrapper = shallowMount(IDEProjectHeader, { propsData: { project: mockProject } });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('template', () => {
     beforeEach(() => {
       createComponent();

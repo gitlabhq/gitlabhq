@@ -27,9 +27,7 @@ describe('~/boards/components/sidebar/board_sidebar_title.vue', () => {
 
   afterEach(() => {
     localStorage.clear();
-    wrapper.destroy();
     store = null;
-    wrapper = null;
   });
 
   const createWrapper = (item = TEST_ISSUE_A) => {

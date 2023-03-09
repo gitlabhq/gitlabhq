@@ -132,7 +132,6 @@ export default {
       skip() {
         return !this.hasSearch;
       },
-      debounce: 200,
     },
     issuesCounts: {
       query: getIssuesCountsQuery,
@@ -149,7 +148,6 @@ export default {
       skip() {
         return !this.hasSearch;
       },
-      debounce: 200,
       context: {
         isSingleRequest: true,
       },

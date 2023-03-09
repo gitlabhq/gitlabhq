@@ -11,10 +11,6 @@ describe('Code Block Highlighted', () => {
     wrapper = shallowMount(CodeBlock, { propsData });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders highlighted code if language is supported', async () => {
     createComponent({ code, language: 'javascript' });
 

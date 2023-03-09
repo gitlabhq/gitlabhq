@@ -16,11 +16,6 @@ describe('DelayedJobMixin', () => {
     template: '<div>{{remainingTime}}</div>',
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   describe('if job is empty object', () => {
     beforeEach(() => {
       wrapper = shallowMount(dummyComponent, {

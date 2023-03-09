@@ -8,7 +8,9 @@ RSpec.describe Gitlab::UrlBlocker, :stub_invalid_dns_only do
   let(:schemes) { %w[http https] }
 
   describe '#validate!' do
-    subject { described_class.validate!(import_url, schemes: schemes) }
+    let(:options) { { schemes: schemes } }
+
+    subject { described_class.validate!(import_url, **options) }
 
     shared_examples 'validates URI and hostname' do
       it 'runs the url validations' do
@@ -19,12 +21,16 @@ RSpec.describe Gitlab::UrlBlocker, :stub_invalid_dns_only do
       end
     end
 
+    shared_context 'instance configured to deny all requests' do
+      before do
+        allow(Gitlab::CurrentSettings).to receive(:current_application_settings?).and_return(true)
+        stub_application_setting(deny_all_requests_except_allowed: true)
+      end
+    end
+
     shared_examples 'a URI denied by `deny_all_requests_except_allowed`' do
-      context 'when `deny_all_requests_except_allowed` is enabled' do
-        before do
-          allow(Gitlab::CurrentSettings).to receive(:current_application_settings?).and_return(true)
-          stub_application_setting(deny_all_requests_except_allowed: true)
-        end
+      context 'when instance setting is enabled' do
+        include_context 'instance configured to deny all requests'
 
         it 'blocks the request' do
           expect { subject }.to raise_error(described_class::BlockedUrlError)
@@ -41,18 +47,51 @@ RSpec.describe Gitlab::UrlBlocker, :stub_invalid_dns_only do
         end
       end
 
-      context 'when `deny_all_requests_except_allowed` is not enabled' do
+      context 'when instance setting is not enabled' do
         it 'does not block the request' do
           expect { subject }.not_to raise_error
+        end
+      end
+
+      context 'when passed as an argument' do
+        let(:options) { super().merge(deny_all_requests_except_allowed: arg_value) }
+
+        context 'when argument is a proc that evaluates to true' do
+          let(:arg_value) { proc { true } }
+
+          it 'blocks the request' do
+            expect { subject }.to raise_error(described_class::BlockedUrlError)
+          end
+        end
+
+        context 'when argument is a proc that evaluates to false' do
+          let(:arg_value) { proc { false } }
+
+          it 'does not block the request' do
+            expect { subject }.not_to raise_error
+          end
+        end
+
+        context 'when argument is true' do
+          let(:arg_value) { true }
+
+          it 'blocks the request' do
+            expect { subject }.to raise_error(described_class::BlockedUrlError)
+          end
+        end
+
+        context 'when argument is false' do
+          let(:arg_value) { false }
+
+          it 'does not block the request' do
+            expect { subject }.not_to raise_error
+          end
         end
       end
     end
 
     shared_examples 'a URI exempt from `deny_all_requests_except_allowed`' do
-      before do
-        allow(Gitlab::CurrentSettings).to receive(:current_application_settings?).and_return(true)
-        stub_application_setting(deny_all_requests_except_allowed: true)
-      end
+      include_context 'instance configured to deny all requests'
 
       it 'does not block the request' do
         expect { subject }.not_to raise_error
@@ -105,7 +144,7 @@ RSpec.describe Gitlab::UrlBlocker, :stub_invalid_dns_only do
       end
 
       context 'when allow_object_storage is true' do
-        subject { described_class.validate!(import_url, allow_object_storage: true, schemes: schemes) }
+        let(:options) { { allow_object_storage: true, schemes: schemes } }
 
         context 'with a local domain name' do
           let(:host) { 'http://review-minio-svc.svc:9000' }
@@ -274,7 +313,7 @@ RSpec.describe Gitlab::UrlBlocker, :stub_invalid_dns_only do
     end
 
     context 'disabled DNS rebinding protection' do
-      subject { described_class.validate!(import_url, dns_rebind_protection: false, schemes: schemes) }
+      let(:options) { { dns_rebind_protection: false, schemes: schemes } }
 
       context 'when URI is internal' do
         let(:import_url) { 'http://localhost' }

@@ -132,7 +132,6 @@ describe('TrainingProviderList component', () => {
   const toggleFirstProvider = () => findFirstToggle().vm.$emit('change', testProviderIds[0]);
 
   afterEach(() => {
-    wrapper.destroy();
     apolloProvider = null;
   });
 

@@ -80,10 +80,6 @@ describe('HeaderSearchApp', () => {
     );
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findHeaderSearchForm = () => wrapper.findByTestId('header-search-form');
   const findHeaderSearchInput = () => wrapper.findComponent(GlSearchBoxByType);
   const findScopeToken = () => wrapper.findComponent(GlToken);

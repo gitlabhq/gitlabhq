@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe IssuableExportCsvWorker do
+RSpec.describe IssuableExportCsvWorker, feature_category: :team_planning do
   let(:user) { create(:user) }
   let(:project) { create(:project, creator: user) }
   let(:params) { {} }
@@ -50,6 +50,19 @@ RSpec.describe IssuableExportCsvWorker do
     end
   end
 
+  shared_examples 'export with selected fields' do
+    let(:selected_fields) { %w[Title Description'] }
+
+    it 'calls the export service with selected fields' do
+      params[:selected_fields] = selected_fields
+
+      expect(export_service)
+        .to receive(:new).with(anything, project, selected_fields).once.and_call_original
+
+      subject
+    end
+  end
+
   context 'when issuable type is MergeRequest' do
     let(:issuable_type) { :merge_request }
 
@@ -58,7 +71,7 @@ RSpec.describe IssuableExportCsvWorker do
     end
 
     it 'calls the MR export service' do
-      expect(MergeRequests::ExportCsvService).to receive(:new).with(anything, project).once.and_call_original
+      expect(MergeRequests::ExportCsvService).to receive(:new).with(anything, project, []).once.and_call_original
 
       subject
     end
@@ -67,6 +80,34 @@ RSpec.describe IssuableExportCsvWorker do
       expect(MergeRequestsFinder).to receive(:new).once.and_call_original
 
       subject
+    end
+
+    it_behaves_like 'export with selected fields' do
+      let(:export_service) { MergeRequests::ExportCsvService }
+    end
+  end
+
+  context 'for type WorkItem' do
+    let(:issuable_type) { :work_item }
+
+    it 'emails a CSV' do
+      expect { subject }.to change { ActionMailer::Base.deliveries.size }.by(1)
+    end
+
+    it 'calls the work item export service' do
+      expect(WorkItems::ExportCsvService).to receive(:new).with(anything, project, []).once.and_call_original
+
+      subject
+    end
+
+    it 'calls the WorkItemsFinder' do
+      expect(WorkItems::WorkItemsFinder).to receive(:new).once.and_call_original
+
+      subject
+    end
+
+    it_behaves_like 'export with selected fields' do
+      let(:export_service) { WorkItems::ExportCsvService }
     end
   end
 

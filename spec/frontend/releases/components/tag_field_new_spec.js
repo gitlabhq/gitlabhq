@@ -82,7 +82,6 @@ describe('releases/components/tag_field_new', () => {
   });
 
   afterEach(() => {
-    wrapper.destroy();
     mock.restore();
   });
 

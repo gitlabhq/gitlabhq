@@ -45,10 +45,6 @@ describe('~/nav/components/responsive_home.vue', () => {
     menuItemClickListener = jest.fn();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('default', () => {
     beforeEach(() => {
       createComponent();

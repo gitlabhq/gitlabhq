@@ -78,7 +78,6 @@ describe('CrmOrganizationToken', () => {
   };
 
   afterEach(() => {
-    wrapper.destroy();
     fakeApollo = null;
   });
 

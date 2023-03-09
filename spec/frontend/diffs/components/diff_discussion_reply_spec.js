@@ -26,10 +26,6 @@ describe('DiffDiscussionReply', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('if user can reply', () => {
     beforeEach(() => {
       getters = {

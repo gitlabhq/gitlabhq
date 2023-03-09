@@ -82,10 +82,6 @@ describe('DependencyProxySettings', () => {
       .mockResolvedValue(dependencyProxyUpdateTllPolicyMutationMock());
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findSettingsBlock = () => wrapper.findComponent(SettingsBlock);
   const findEnableProxyToggle = () => wrapper.findByTestId('dependency-proxy-setting-toggle');
   const findEnableTtlPoliciesToggle = () =>

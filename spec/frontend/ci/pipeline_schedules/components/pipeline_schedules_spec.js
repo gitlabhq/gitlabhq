@@ -80,10 +80,6 @@ describe('Pipeline schedules app', () => {
   const findSchedulesCharacteristics = () =>
     wrapper.findByTestId('pipeline-schedules-characteristics');
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('default', () => {
     beforeEach(() => {
       createComponent();

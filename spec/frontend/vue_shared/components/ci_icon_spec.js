@@ -7,11 +7,6 @@ describe('CI Icon component', () => {
 
   const findIconWrapper = () => wrapper.find('[data-testid="ci-icon-wrapper"]');
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   it('should render a span element with an svg', () => {
     wrapper = shallowMount(ciIcon, {
       propsData: {

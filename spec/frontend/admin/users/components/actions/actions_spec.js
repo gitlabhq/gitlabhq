@@ -22,11 +22,6 @@ describe('Action components', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   describe('CONFIRMATION_ACTIONS', () => {
     it.each(CONFIRMATION_ACTIONS)('renders a dropdown item for "%s"', (action) => {
       initComponent({

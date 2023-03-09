@@ -39,10 +39,6 @@ describe('The Pipeline Tabs', () => {
     );
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('Tabs', () => {
     it.each`
       tabName          | tabComponent

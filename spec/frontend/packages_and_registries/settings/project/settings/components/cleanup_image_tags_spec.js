@@ -61,10 +61,6 @@ describe('Cleanup image tags project settings', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('isEdited status', () => {
     it.each`
       description                                  | apiResponse                       | workingCopy                                                   | result

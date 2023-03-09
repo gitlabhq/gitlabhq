@@ -51,7 +51,6 @@ describe('Timeline events form', () => {
 
   afterEach(() => {
     createAlert.mockReset();
-    wrapper.destroy();
   });
 
   const findMarkdownField = () => wrapper.findComponent(MarkdownField);

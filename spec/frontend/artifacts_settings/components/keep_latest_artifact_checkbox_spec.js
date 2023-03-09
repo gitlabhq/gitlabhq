@@ -78,8 +78,6 @@ describe('Keep latest artifact checkbox', () => {
   };
 
   afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
     apolloProvider = null;
   });
 

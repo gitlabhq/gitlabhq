@@ -36,10 +36,6 @@ describe('RemoveAvatar', () => {
     createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('the button component', () => {
     it('displays the remove button', () => {
       const button = findButton();

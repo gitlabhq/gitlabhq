@@ -119,6 +119,7 @@ describe('Pipeline editor tabs component', () => {
   });
 
   afterEach(() => {
+    // eslint-disable-next-line @gitlab/vtu-no-explicit-wrapper-destroy
     wrapper.destroy();
   });
 

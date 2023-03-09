@@ -13,10 +13,6 @@ describe('Experimental new project creation app', () => {
 
   const findNewNamespacePage = () => wrapper.findComponent(NewNamespacePage);
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('passes custom new project guideline text to underlying component', () => {
     const DEMO_GUIDELINES = 'Demo guidelines';
     const guidelineSelector = '#new-project-guideline';

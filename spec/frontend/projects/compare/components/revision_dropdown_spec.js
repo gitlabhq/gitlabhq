@@ -33,7 +33,6 @@ describe('RevisionDropdown component', () => {
   });
 
   afterEach(() => {
-    wrapper.destroy();
     axiosMock.restore();
   });
 

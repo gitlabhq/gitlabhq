@@ -105,7 +105,6 @@ describe('RevokeTokenButton', () => {
   });
 
   afterEach(() => {
-    wrapper.destroy();
     apolloProvider = null;
     revokeSpy = null;
   });

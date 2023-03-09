@@ -42,10 +42,6 @@ describe('feature flag form', () => {
     Api.fetchFeatureFlagUserLists.mockResolvedValue({ data: [] });
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('should render provided submitText', () => {
     factory(requiredProps);
 

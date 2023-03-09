@@ -26,11 +26,6 @@ describe('Pipeline editor header', () => {
   const findPipelineStatus = () => wrapper.findComponent(PipelineStatus);
   const findValidationSegment = () => wrapper.findComponent(ValidationSegment);
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   describe('template', () => {
     it('hides the pipeline status for new projects without a CI file', () => {
       createComponent({ props: { isNewCiConfigFile: true } });

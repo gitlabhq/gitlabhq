@@ -42,11 +42,6 @@ describe('Pipelines CI Templates', () => {
   const findDocumentationLink = () => wrapper.findByTestId('documentation-link');
   const findSettingsButton = () => wrapper.findByTestId('settings-button');
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   describe('renders test template', () => {
     beforeEach(() => {
       wrapper = createWrapper();

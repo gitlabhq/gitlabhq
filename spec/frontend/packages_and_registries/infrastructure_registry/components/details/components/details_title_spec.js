@@ -39,10 +39,6 @@ describe('PackageTitle', () => {
   const pipelineProject = () => wrapper.find('[data-testid="pipeline-project"]');
   const packageRef = () => wrapper.find('[data-testid="package-ref"]');
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('module title', () => {
     it('is correctly bound', async () => {
       await createComponent();

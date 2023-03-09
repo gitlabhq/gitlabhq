@@ -62,8 +62,6 @@ describe('View branch rules', () => {
 
   beforeEach(() => createComponent());
 
-  afterEach(() => wrapper.destroy());
-
   const findBranchName = () => wrapper.findByTestId('branch');
   const findBranchTitle = () => wrapper.findByTestId('branch-title');
   const findBranchProtectionTitle = () => wrapper.findByText(I18N.protectBranchTitle);

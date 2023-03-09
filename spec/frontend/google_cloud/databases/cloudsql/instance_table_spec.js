@@ -8,10 +8,6 @@ describe('google_cloud/databases/cloudsql/instance_table', () => {
   const findEmptyState = () => wrapper.findComponent(GlEmptyState);
   const findTable = () => wrapper.findComponent(GlTable);
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('when there are no instances', () => {
     beforeEach(() => {
       const propsData = {

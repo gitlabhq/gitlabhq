@@ -102,7 +102,6 @@ describe('Manual Variables Form', () => {
 
   afterEach(() => {
     createAlert.mockClear();
-    wrapper.destroy();
   });
 
   describe('when page renders', () => {

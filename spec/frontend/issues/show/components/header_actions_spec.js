@@ -113,7 +113,6 @@ describe('HeaderActions component', () => {
     if (visitUrlSpy) {
       visitUrlSpy.mockRestore();
     }
-    wrapper.destroy();
   });
 
   describe.each`

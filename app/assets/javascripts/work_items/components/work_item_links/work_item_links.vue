@@ -304,10 +304,10 @@ export default {
     <template #header>{{ $options.i18n.title }}</template>
     <template #header-suffix>
       <span
-        class="gl-display-inline-flex gl-align-items-center gl-line-height-24 gl-ml-3"
+        class="gl-display-inline-flex gl-align-items-center gl-line-height-24 gl-ml-3 gl-font-weight-bold gl-text-gray-500"
         data-testid="children-count"
       >
-        <gl-icon :name="$options.WIDGET_TYPE_TASK_ICON" class="gl-mr-2 gl-text-secondary" />
+        <gl-icon :name="$options.WIDGET_TYPE_TASK_ICON" class="gl-mr-2" />
         {{ childrenCountLabel }}
       </span>
     </template>

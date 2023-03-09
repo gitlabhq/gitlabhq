@@ -49,10 +49,6 @@ describe('GroupFilter', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findSearchableDropdown = () => wrapper.findComponent(SearchableDropdown);
 
   describe('template', () => {

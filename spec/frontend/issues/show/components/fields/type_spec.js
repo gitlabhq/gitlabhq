@@ -60,10 +60,6 @@ describe('Issue type field component', () => {
     mockIssueStateData = jest.fn();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it.each`
     at   | text                     | icon
     ${0} | ${issuableTypes[0].text} | ${issuableTypes[0].icon}

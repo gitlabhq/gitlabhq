@@ -20,10 +20,6 @@ describe('Harbor List', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('list', () => {
     it('contains one list element for each image', () => {
       mountComponent();

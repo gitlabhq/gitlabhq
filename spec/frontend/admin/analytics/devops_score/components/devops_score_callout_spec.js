@@ -19,10 +19,6 @@ describe('DevopsScoreCallout', () => {
 
   const findBanner = () => wrapper.findComponent(GlBanner);
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('with no cookie set', () => {
     beforeEach(() => {
       utils.setCookie = jest.fn();

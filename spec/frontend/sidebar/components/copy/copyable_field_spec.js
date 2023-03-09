@@ -20,10 +20,6 @@ describe('SidebarCopyableField', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findClipboardButton = () => wrapper.findComponent(ClipboardButton);
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
 

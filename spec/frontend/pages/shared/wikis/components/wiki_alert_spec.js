@@ -15,11 +15,6 @@ describe('WikiAlert', () => {
     });
   }
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   const findGlAlert = () => wrapper.findComponent(GlAlert);
   const findGlLink = () => wrapper.findComponent(GlLink);
   const findGlSprintf = () => wrapper.findComponent(GlSprintf);

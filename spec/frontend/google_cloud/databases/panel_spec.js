@@ -23,10 +23,6 @@ describe('google_cloud/databases/panel', () => {
     wrapper = shallowMountExtended(Panel, { propsData: props });
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('contains incubation banner', () => {
     const target = wrapper.findComponent(IncubationBanner);
     expect(target.exists()).toBe(true);

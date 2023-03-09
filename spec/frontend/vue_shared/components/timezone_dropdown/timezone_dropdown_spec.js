@@ -30,11 +30,6 @@ describe('Deploy freeze timezone dropdown', () => {
   const findEmptyResultsItem = () => wrapper.findByTestId('noMatchingResults');
   const findHiddenInput = () => wrapper.find('input');
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   describe('No time zones found', () => {
     beforeEach(async () => {
       await createComponent('UTC timezone');

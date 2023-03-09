@@ -37,11 +37,6 @@ describe('Deploy freeze table', () => {
     createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   it('dispatches fetchFreezePeriods when mounted', () => {
     expect(store.dispatch).toHaveBeenCalledWith('fetchFreezePeriods');
   });

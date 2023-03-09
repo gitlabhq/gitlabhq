@@ -99,10 +99,6 @@ describe('Pipeline Editor Validate Tab', () => {
     mockBlobContentData = jest.fn();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('while initial CI content is loading', () => {
     beforeEach(() => {
       createComponent({ isBlobLoading: true });

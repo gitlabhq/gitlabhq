@@ -67,11 +67,6 @@ describe('JiraImportApp', () => {
       },
     });
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   describe('when Jira integration is not configured', () => {
     beforeEach(() => {
       wrapper = mountComponent({ isJiraConfigured: false });

@@ -67,10 +67,6 @@ describe('DeletePackages', () => {
     mutationResolver = jest.fn().mockResolvedValue(packagesDestroyMutation());
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('binds deletePackages method to the default slot', () => {
     createComponent();
 

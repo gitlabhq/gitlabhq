@@ -50,10 +50,6 @@ describe('ValueStreamMetrics', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('with successful requests', () => {
     beforeEach(() => {
       mockGetValueStreamSummaryMetrics = jest.fn().mockResolvedValue({ data: metricsData });

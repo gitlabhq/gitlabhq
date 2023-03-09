@@ -42,10 +42,6 @@ describe('~/vue_shared/components/dom_element_listener.vue', () => {
     };
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('default', () => {
     beforeEach(() => {
       createComponent();

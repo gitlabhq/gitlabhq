@@ -55,7 +55,6 @@ describe('CommitFormModal', () => {
   });
 
   afterEach(() => {
-    wrapper.destroy();
     axiosMock.restore();
   });
 

@@ -17,11 +17,6 @@ const createComponent = (props = {}) => {
 describe('InviteGroupTrigger', () => {
   let wrapper;
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   const findButton = () => wrapper.findComponent(GlButton);
 
   describe('displayText', () => {

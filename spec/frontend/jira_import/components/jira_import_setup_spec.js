@@ -17,11 +17,6 @@ describe('JiraImportSetup', () => {
     });
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   it('contains illustration', () => {
     expect(getGlEmptyStateProp('svgPath')).toBe(illustration);
   });

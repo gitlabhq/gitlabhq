@@ -21,8 +21,6 @@ describe('Board List Header Component', () => {
   const toggleListCollapsedSpy = jest.fn();
 
   afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
     fakeApollo = null;
 
     localStorage.clear();

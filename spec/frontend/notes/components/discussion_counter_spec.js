@@ -40,7 +40,6 @@ describe('DiscussionCounter component', () => {
 
   afterEach(() => {
     wrapper.vm.$destroy();
-    wrapper = null;
   });
 
   describe('has no discussions', () => {
@@ -118,8 +117,6 @@ describe('DiscussionCounter component', () => {
       await wrapper.find('.dropdown-toggle').trigger('click');
       toggleAllButton = wrapper.find('[data-testid="toggle-all-discussions-btn"]');
     };
-
-    afterEach(() => wrapper.destroy());
 
     it('calls button handler when clicked', async () => {
       await updateStoreWithExpanded(true);

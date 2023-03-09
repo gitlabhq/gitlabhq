@@ -52,7 +52,6 @@ describe('EnvironmentActions Component', () => {
   };
 
   afterEach(() => {
-    wrapper.destroy();
     confirmAction.mockReset();
   });
 

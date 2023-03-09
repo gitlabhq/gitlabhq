@@ -17,10 +17,6 @@ function createComponent(propsData) {
 describe('Work Item type component', () => {
   const findIcon = () => wrapper.findComponent(GlIcon);
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe.each`
     workItemType           | workItemIconName      | iconName                     | text              | showTooltipOnHover
     ${'TASK'}              | ${''}                 | ${'issue-type-task'}         | ${'Task'}         | ${false}

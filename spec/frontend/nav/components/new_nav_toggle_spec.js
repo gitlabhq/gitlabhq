@@ -31,10 +31,6 @@ describe('NewNavToggle', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const getByText = (text, options) =>
     createWrapper(getByTextHelper(wrapper.element, text, options));
 

@@ -19,10 +19,6 @@ describe('ValidatePopover component', () => {
   const findHelpLink = () => wrapper.findByTestId('help-link');
   const findFeedbackLink = () => wrapper.findByTestId('feedback-link');
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('template', () => {
     beforeEach(async () => {
       createComponent({

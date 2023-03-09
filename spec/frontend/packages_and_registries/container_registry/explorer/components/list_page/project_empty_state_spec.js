@@ -34,10 +34,6 @@ describe('Registry Project Empty state', () => {
     });
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('to match the default snapshot', () => {
     expect(wrapper.element).toMatchSnapshot();
   });

@@ -97,7 +97,6 @@ describe('Design discussions component', () => {
   });
 
   afterEach(() => {
-    wrapper.destroy();
     window.gon = originalGon;
     confirmAction.mockReset();
   });

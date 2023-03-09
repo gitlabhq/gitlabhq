@@ -19,11 +19,6 @@ describe('PipelineFailed', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   it('should render error status icon', () => {
     createComponent();
 

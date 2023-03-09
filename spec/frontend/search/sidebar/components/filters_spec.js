@@ -31,10 +31,6 @@ describe('GlobalSearchSidebarFilters', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findSidebarForm = () => wrapper.find('form');
   const findStatusFilter = () => wrapper.findComponent(StatusFilter);
   const findConfidentialityFilter = () => wrapper.findComponent(ConfidentialityFilter);

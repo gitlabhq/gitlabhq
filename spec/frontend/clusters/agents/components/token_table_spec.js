@@ -57,10 +57,6 @@ describe('ClusterAgentTokenTable', () => {
     return createComponent(defaultTokens);
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('displays the create token button', () => {
     expect(findCreateTokenBtn().exists()).toBe(true);
   });

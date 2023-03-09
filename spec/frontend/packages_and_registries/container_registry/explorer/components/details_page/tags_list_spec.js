@@ -68,10 +68,6 @@ describe('Tags List', () => {
     resolver = jest.fn().mockResolvedValue(imageTagsMock());
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('registry list', () => {
     beforeEach(() => {
       mountComponent();

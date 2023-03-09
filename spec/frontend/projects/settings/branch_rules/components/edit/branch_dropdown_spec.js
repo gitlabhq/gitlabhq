@@ -46,10 +46,6 @@ describe('Branch dropdown', () => {
 
   beforeEach(() => createComponent());
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders a GlDropdown component with the correct props', () => {
     expect(findGlDropdown().props()).toMatchObject({ text: value });
   });

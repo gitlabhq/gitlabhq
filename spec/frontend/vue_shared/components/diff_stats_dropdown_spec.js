@@ -110,10 +110,6 @@ describe('Diff Stats Dropdown', () => {
         createComponent({ changed, added, deleted });
       });
 
-      afterEach(() => {
-        wrapper.destroy();
-      });
-
       it(`dropdown header should be '${expectedDropdownHeader}'`, () => {
         expect(findChanged().props('text')).toBe(expectedDropdownHeader);
       });

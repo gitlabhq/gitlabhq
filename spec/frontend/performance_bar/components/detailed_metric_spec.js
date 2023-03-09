@@ -38,10 +38,6 @@ describe('detailedMetric', () => {
   const findAllSummaryItems = () =>
     wrapper.findAllByTestId('performance-bar-summary-item').wrappers.map((w) => w.text());
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('when the current request has no details', () => {
     beforeEach(() => {
       createComponent();

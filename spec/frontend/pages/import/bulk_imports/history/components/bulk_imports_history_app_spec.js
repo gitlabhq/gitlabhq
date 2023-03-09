@@ -84,7 +84,6 @@ describe('BulkImportsHistoryApp', () => {
 
   afterEach(() => {
     mock.restore();
-    wrapper.destroy();
   });
 
   describe('general behavior', () => {

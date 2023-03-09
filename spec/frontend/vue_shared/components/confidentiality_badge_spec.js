@@ -20,10 +20,6 @@ describe('ConfidentialityBadge', () => {
     wrapper = createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it.each`
     workspaceType        | issuableType  | expectedTooltip
     ${WORKSPACE_PROJECT} | ${TYPE_ISSUE} | ${'Only project members with at least the Reporter role, the author, and assignees can view or be notified about this issue.'}

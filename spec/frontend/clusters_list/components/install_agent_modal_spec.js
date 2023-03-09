@@ -139,7 +139,6 @@ describe('InstallAgentModal', () => {
   });
 
   afterEach(() => {
-    wrapper.destroy();
     apolloProvider = null;
   });
 

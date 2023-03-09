@@ -29,10 +29,6 @@ describe('~/environments/components/empty_state.vue', () => {
       provide: { newEnvironmentPath: NEW_PATH },
     });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('shows an empty state for available environments', () => {
     wrapper = createWrapper();
 

@@ -16,10 +16,6 @@ describe('Formatted Stage Count', () => {
     createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it.each`
     stageCount | expectedOutput
     ${null}    | ${'-'}

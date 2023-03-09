@@ -24,10 +24,6 @@ describe('Badge component', () => {
     wrapper = mount(Badge, { propsData });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   beforeEach(() => {
     return createComponent({ ...dummyProps }, '#dummy-element');
   });

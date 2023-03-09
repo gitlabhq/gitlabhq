@@ -38,10 +38,6 @@ describe('BadgeList component', () => {
     wrapper = mount(BadgeList, { store });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('for project badges', () => {
     it('renders a header with the badge count', () => {
       createComponent({

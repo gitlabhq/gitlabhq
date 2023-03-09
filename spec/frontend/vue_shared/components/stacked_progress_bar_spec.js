@@ -18,10 +18,6 @@ describe('StackedProgressBarComponent', () => {
     wrapper = mount(StackedProgressBarComponent, { propsData: defaultConfig });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findSuccessBar = () => wrapper.find('.status-green');
   const findNeutralBar = () => wrapper.find('.status-neutral');
   const findFailureBar = () => wrapper.find('.status-red');

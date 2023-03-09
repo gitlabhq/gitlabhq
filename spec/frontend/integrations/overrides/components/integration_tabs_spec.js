@@ -21,10 +21,6 @@ describe('IntegrationTabs', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findGlBadge = () => wrapper.findComponent(GlBadge);
   const findGlTab = () => wrapper.findComponent(GlTab);
   const findSettingsLink = () => wrapper.find('a');

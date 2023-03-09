@@ -76,10 +76,6 @@ describe('NewDirectoryModal', () => {
     await waitForPromises();
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders modal component', () => {
     createComponent();
 

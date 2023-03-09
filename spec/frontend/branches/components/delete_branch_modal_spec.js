@@ -52,10 +52,6 @@ describe('Delete branch modal', () => {
   const expectedUnmergedWarning =
     "This branch hasn't been merged into default. To avoid data loss, consider merging this branch before deleting it.";
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('Deleting a regular branch', () => {
     const expectedTitle = 'Delete branch. Are you ABSOLUTELY SURE?';
     const expectedWarning = "You're about to permanently delete the branch test_modal.";

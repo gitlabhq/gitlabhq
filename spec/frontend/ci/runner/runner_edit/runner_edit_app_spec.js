@@ -51,7 +51,6 @@ describe('RunnerEditApp', () => {
 
   afterEach(() => {
     mockRunnerQuery.mockReset();
-    wrapper.destroy();
   });
 
   it('expect GraphQL ID to be requested', async () => {

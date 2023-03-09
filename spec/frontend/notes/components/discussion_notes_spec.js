@@ -53,11 +53,6 @@ describe('DiscussionNotes', () => {
     store.dispatch('setNotesData', notesDataMock);
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   describe('rendering', () => {
     it('renders an element for each note in the discussion', () => {
       createComponent();

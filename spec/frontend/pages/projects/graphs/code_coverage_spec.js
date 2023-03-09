@@ -41,11 +41,6 @@ describe('Code Coverage', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   describe('when fetching data is successful', () => {
     beforeEach(() => {
       mockAxios = new MockAdapter(axios);

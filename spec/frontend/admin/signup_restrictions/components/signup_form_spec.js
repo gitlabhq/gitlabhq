@@ -40,8 +40,6 @@ describe('Signup Form', () => {
   const findModal = () => wrapper.findComponent(GlModal);
 
   afterEach(() => {
-    wrapper.destroy();
-
     formSubmitSpy = null;
   });
 

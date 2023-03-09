@@ -60,10 +60,6 @@ describe('LabelsSelectRoot', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('template', () => {
     const defaultClasses = ['labels-select-wrapper', 'gl-relative'];
 

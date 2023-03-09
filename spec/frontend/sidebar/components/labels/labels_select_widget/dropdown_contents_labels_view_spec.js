@@ -64,10 +64,6 @@ describe('DropdownContentsLabelsView', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findLabels = () => wrapper.findAllComponents(LabelItem);
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findObserver = () => wrapper.findComponent(GlIntersectionObserver);

@@ -16,10 +16,6 @@ describe('Repository blob page component', () => {
     });
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('has a Blob Content Viewer component', () => {
     expect(findBlobContentViewer().exists()).toBe(true);
     expect(findBlobContentViewer().props('path')).toBe(path);

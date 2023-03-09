@@ -36,10 +36,6 @@ describe('noteable_discussion component', () => {
     });
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('should not render thread header for non diff threads', () => {
     expect(wrapper.find('.discussion-header').exists()).toBe(false);
   });
@@ -173,7 +169,6 @@ describe('noteable_discussion component', () => {
     });
 
     afterEach(() => {
-      wrapper.destroy();
       window.gon = originalGon;
     });
 

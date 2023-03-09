@@ -45,10 +45,6 @@ function factory(path, appoloMockResponse = mockResponse) {
 describe('Repository table component', () => {
   const findFileTable = () => vm.findComponent(FileTable);
 
-  afterEach(() => {
-    vm.destroy();
-  });
-
   it('renders file preview', async () => {
     factory('/');
 

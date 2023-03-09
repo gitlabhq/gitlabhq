@@ -50,7 +50,6 @@ describe('IssuableItem', () => {
   });
 
   afterEach(() => {
-    wrapper.destroy();
     gon.gitlab_url = originalUrl;
   });
 

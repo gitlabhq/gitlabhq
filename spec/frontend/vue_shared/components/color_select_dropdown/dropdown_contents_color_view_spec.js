@@ -22,10 +22,6 @@ describe('DropdownContentsColorView', () => {
     createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findColors = () => wrapper.findAllComponents(ColorItem);
   const findColorList = () => wrapper.findComponent(GlDropdownForm);
 

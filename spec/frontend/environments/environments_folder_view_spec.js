@@ -24,7 +24,6 @@ describe('Environments Folder View', () => {
 
   afterEach(() => {
     mock.restore();
-    wrapper.destroy();
   });
 
   describe('successful request', () => {

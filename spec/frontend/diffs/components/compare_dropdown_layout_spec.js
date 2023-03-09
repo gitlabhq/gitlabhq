@@ -38,11 +38,6 @@ describe('CompareDropdownLayout', () => {
       isActive: listItem.classes().includes('is-active'),
     }));
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   describe('with versions', () => {
     beforeEach(() => {
       const versions = [

@@ -52,7 +52,6 @@ describe('~/access_tokens/components/new_access_token_app', () => {
 
   afterEach(() => {
     resetHTMLFixture();
-    wrapper.destroy();
     createAlert.mockClear();
   });
 

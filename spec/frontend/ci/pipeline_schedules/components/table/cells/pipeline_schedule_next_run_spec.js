@@ -21,10 +21,6 @@ describe('Pipeline schedule next run', () => {
   const findTimeAgo = () => wrapper.findComponent(TimeAgoTooltip);
   const findInactive = () => wrapper.findByTestId('pipeline-schedule-inactive');
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('displays time ago', () => {
     createComponent();
 

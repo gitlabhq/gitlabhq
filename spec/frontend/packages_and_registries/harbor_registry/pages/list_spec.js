@@ -60,10 +60,6 @@ describe('Harbor List Page', () => {
     });
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('contains harbor registry header', async () => {
     mountComponent();
     fireFirstSortUpdate();

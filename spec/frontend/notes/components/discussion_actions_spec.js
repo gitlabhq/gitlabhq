@@ -38,10 +38,6 @@ describe('DiscussionActions', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('rendering', () => {
     const createComponent = createComponentFactory();
 

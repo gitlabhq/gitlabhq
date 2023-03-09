@@ -78,10 +78,6 @@ describe('NewBranchForm', () => {
     });
   }
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('when selecting items from dropdowns', () => {
     describe('when no project selected', () => {
       beforeEach(() => {

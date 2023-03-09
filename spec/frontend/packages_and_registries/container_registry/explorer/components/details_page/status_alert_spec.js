@@ -27,11 +27,6 @@ describe('Status Alert', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   it.each`
     status              | title                                  | variant      | message                                  | link
     ${DELETE_SCHEDULED} | ${SCHEDULED_FOR_DELETION_STATUS_TITLE} | ${'info'}    | ${SCHEDULED_FOR_DELETION_STATUS_MESSAGE} | ${PACKAGE_DELETE_HELP_PAGE_PATH}

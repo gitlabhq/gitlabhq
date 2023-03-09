@@ -54,10 +54,6 @@ describe('Commit box pipeline status', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('loading state', () => {
     it('should display loading state when loading', () => {
       createComponent();

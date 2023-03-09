@@ -44,10 +44,6 @@ describe('Failed Jobs App', () => {
     resolverSpy = jest.fn().mockResolvedValue(mockFailedJobsQueryResponse);
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('loading spinner', () => {
     it('displays loading spinner when fetching failed jobs', () => {
       createComponent(resolverSpy);

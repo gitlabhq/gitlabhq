@@ -34,11 +34,6 @@ describe('Captcha Modal', () => {
     initRecaptchaScript.mockResolvedValue(grecaptcha);
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   const findGlModal = () => {
     const glModal = wrapper.findComponent(GlModal);
 

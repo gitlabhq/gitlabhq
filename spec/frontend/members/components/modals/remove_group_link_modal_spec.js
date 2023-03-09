@@ -52,11 +52,6 @@ describe('RemoveGroupLinkModal', () => {
   const getByText = (text, options) =>
     createWrapper(within(findModal().element).getByText(text, options));
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   describe('when modal is open', () => {
     beforeEach(async () => {
       createComponent();

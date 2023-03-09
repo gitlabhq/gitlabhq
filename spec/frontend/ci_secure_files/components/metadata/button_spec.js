@@ -12,10 +12,6 @@ describe('Secure File Metadata Button', () => {
 
   const findButton = () => wrapper.findComponent(GlButton);
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const createWrapper = (secureFile = {}, admin = false) => {
     wrapper = mount(Button, {
       propsData: {

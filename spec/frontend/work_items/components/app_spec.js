@@ -12,10 +12,6 @@ describe('Work Items Application', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders a component', () => {
     createComponent();
 

@@ -88,6 +88,7 @@ describe('Work items router', () => {
   });
 
   afterEach(() => {
+    // eslint-disable-next-line @gitlab/vtu-no-explicit-wrapper-destroy
     wrapper.destroy();
     window.location.hash = '';
   });

@@ -37,10 +37,6 @@ describe('GroupItemComponent', () => {
     return waitForPromises();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const withMicrodata = (group) => ({
     ...group,
     microdata: getGroupItemMicrodata(group),

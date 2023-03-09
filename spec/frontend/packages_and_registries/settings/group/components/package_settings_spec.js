@@ -56,10 +56,6 @@ describe('Packages Settings', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findSettingsBlock = () => wrapper.findComponent(SettingsBlock);
   const findDescription = () => wrapper.findByTestId('description');
   const findMavenSettings = () => wrapper.findByTestId('maven-settings');

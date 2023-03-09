@@ -34,10 +34,6 @@ describe('Environment table', () => {
     });
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('Should render a table', async () => {
     const mockItem = {
       name: 'review',

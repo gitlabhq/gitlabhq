@@ -16,11 +16,6 @@ describe('RepoDropdown component', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   beforeEach(() => {
     createComponent();
   });

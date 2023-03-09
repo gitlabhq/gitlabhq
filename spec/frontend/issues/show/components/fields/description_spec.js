@@ -33,11 +33,6 @@ describe('Description field component', () => {
     jest.spyOn(eventHub, '$emit');
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   it('renders markdown field with description', () => {
     wrapper = mountComponent();
 

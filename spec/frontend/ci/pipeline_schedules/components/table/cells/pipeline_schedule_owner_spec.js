@@ -25,10 +25,6 @@ describe('Pipeline schedule owner', () => {
     createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('displays avatar', () => {
     expect(findAvatar().exists()).toBe(true);
     expect(findAvatar().props('src')).toBe(defaultProps.schedule.owner.avatarUrl);

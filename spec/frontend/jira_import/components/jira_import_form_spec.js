@@ -106,7 +106,6 @@ describe('JiraImportForm', () => {
     axiosMock.restore();
     mutateSpy.mockRestore();
     querySpy.mockRestore();
-    wrapper.destroy();
   });
 
   describe('select dropdown project selection', () => {

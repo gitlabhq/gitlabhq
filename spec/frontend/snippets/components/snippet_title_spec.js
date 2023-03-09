@@ -26,10 +26,6 @@ describe('Snippet header component', () => {
     });
   }
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders itself', () => {
     createComponent();
     expect(wrapper.find('.snippet-header').exists()).toBe(true);

@@ -4,6 +4,7 @@
 import runnerForRegistration from 'test_fixtures/graphql/ci/runner/register/runner_for_registration.query.graphql.json';
 
 // Show runner queries
+import runnerCreateResult from 'test_fixtures/graphql/ci/runner/new/runner_create.mutation.graphql.json';
 import runnerData from 'test_fixtures/graphql/ci/runner/show/runner.query.graphql.json';
 import runnerWithGroupData from 'test_fixtures/graphql/ci/runner/show/runner.query.graphql.with_group.json';
 import runnerProjectsData from 'test_fixtures/graphql/ci/runner/show/runner_projects.query.graphql.json';
@@ -13,7 +14,6 @@ import runnerJobsData from 'test_fixtures/graphql/ci/runner/show/runner_jobs.que
 import runnerFormData from 'test_fixtures/graphql/ci/runner/edit/runner_form.query.graphql.json';
 
 // New runner queries
-import runnerCreateResult from 'test_fixtures/graphql/ci/runner/new/runner_create.mutation.graphql.json';
 
 // List queries
 import allRunnersData from 'test_fixtures/graphql/ci/runner/list/all_runners.query.graphql.json';

@@ -42,10 +42,6 @@ describe('VersionRow', () => {
     });
   }
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('has a link to the version detail', () => {
     createComponent();
 

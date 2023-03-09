@@ -10,11 +10,6 @@ describe('Board Column Component', () => {
   let wrapper;
   let store;
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   const initStore = () => {
     store = createStore();
   };

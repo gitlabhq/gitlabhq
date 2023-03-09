@@ -47,10 +47,6 @@ password = <your personal access token>`;
     createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('install command switch', () => {
     it('has the installation title component', () => {
       expect(findInstallationTitle().exists()).toBe(true);

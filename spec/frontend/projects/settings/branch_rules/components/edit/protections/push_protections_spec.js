@@ -24,10 +24,6 @@ describe('Push Protections', () => {
 
   beforeEach(() => createComponent());
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders a form group with the correct label', () => {
     expect(findFormGroup().attributes('label')).toBe(i18n.allowedToPush);
   });

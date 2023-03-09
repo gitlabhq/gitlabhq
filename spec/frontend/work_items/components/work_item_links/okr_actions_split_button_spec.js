@@ -15,10 +15,6 @@ describe('RelatedItemsTree', () => {
     wrapper = createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('OkrActionsSplitButton', () => {
     describe('template', () => {
       it('renders objective and key results sections', () => {

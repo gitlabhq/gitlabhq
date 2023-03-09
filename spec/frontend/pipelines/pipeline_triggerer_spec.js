@@ -27,10 +27,6 @@ describe('Pipelines Triggerer', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findAvatarLink = () => wrapper.findComponent(GlAvatarLink);
   const findAvatar = () => wrapper.findComponent(GlAvatar);
   const findTriggerer = () => wrapper.findByText('API');

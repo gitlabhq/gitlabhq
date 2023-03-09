@@ -97,7 +97,6 @@ describe('DependencyProxyApp', () => {
   });
 
   afterEach(() => {
-    wrapper.destroy();
     window.gon = originalGon;
     mock.restore();
   });

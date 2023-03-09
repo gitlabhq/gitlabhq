@@ -48,10 +48,6 @@ describe('Pipeline editor file nav', () => {
   const findFileTreeBtn = () => wrapper.findByTestId('file-tree-toggle');
   const findPopoverContainer = () => wrapper.findComponent(FileTreePopover);
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('template', () => {
     beforeEach(() => {
       createComponent();

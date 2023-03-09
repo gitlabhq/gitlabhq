@@ -18,10 +18,6 @@ describe('IntegrationSectionJiraTrigger', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findJiraTriggerFields = () => wrapper.findComponent(JiraTriggerFields);
 
   describe('template', () => {

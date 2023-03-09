@@ -23,10 +23,6 @@ describe('UsageQuotasApp', () => {
     createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findSubTitle = () => wrapper.findByTestId('usage-quotas-page-subtitle');
 
   it('renders the view title', () => {

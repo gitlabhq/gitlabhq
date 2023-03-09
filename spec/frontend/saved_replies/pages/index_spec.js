@@ -27,10 +27,6 @@ function createComponent(options = {}) {
 }
 
 describe('Saved replies index page component', () => {
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders list of saved replies', async () => {
     const mockApollo = createMockApolloProvider(savedRepliesResponse);
     const savedReplies = savedRepliesResponse.data.currentUser.savedReplies.nodes;

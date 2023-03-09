@@ -127,11 +127,6 @@ describe('Details Page', () => {
     jest.spyOn(Tracking, 'event');
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   describe('when isLoading is true', () => {
     it('shows the loader', () => {
       mountComponent();

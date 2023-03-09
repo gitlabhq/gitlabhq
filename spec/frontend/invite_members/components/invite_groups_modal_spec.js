@@ -44,11 +44,6 @@ describe('InviteGroupsModal', () => {
     createComponent({ isProject: false });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   const findModal = () => wrapper.findComponent(GlModal);
   const findGroupSelect = () => wrapper.findComponent(GroupSelect);
   const findInviteGroupAlert = () => wrapper.findComponent(InviteGroupNotification);

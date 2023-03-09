@@ -59,10 +59,6 @@ describe('IDE Terminal', () => {
     };
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('loading text', () => {
     [STARTING, PENDING].forEach((status) => {
       it(`shows when starting (${status})`, () => {

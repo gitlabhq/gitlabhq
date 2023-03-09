@@ -55,11 +55,6 @@ describe('tags list row', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   describe('checkbox', () => {
     it('exists', () => {
       mountComponent();

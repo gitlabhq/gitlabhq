@@ -37,10 +37,6 @@ describe('Ordered Layout', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('when slotKeys are in initial slot order', () => {
     beforeEach(() => {
       createComponent({ slotKeys: regularSlotOrder });

@@ -40,10 +40,6 @@ describe('GroupsListItem', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findGroupItemName = () => wrapper.findComponent(GroupItemName);
   const findLinkButton = () => wrapper.findComponent(GlButton);
   const clickLinkButton = () => findLinkButton().trigger('click');

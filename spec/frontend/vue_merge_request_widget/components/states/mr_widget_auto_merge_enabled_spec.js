@@ -83,8 +83,6 @@ describe('MRWidgetAutoMergeEnabled', () => {
 
   afterEach(() => {
     window.gl = oldWindowGl;
-    wrapper.destroy();
-    wrapper = null;
   });
 
   describe('computed', () => {

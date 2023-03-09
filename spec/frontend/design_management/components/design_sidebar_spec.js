@@ -68,7 +68,6 @@ describe('Design management design sidebar component', () => {
   });
 
   afterEach(() => {
-    wrapper.destroy();
     window.gon = originalGon;
   });
 

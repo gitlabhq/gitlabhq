@@ -33,10 +33,6 @@ describe('File Tree component', () => {
       ...pick(x.attributes(), Object.keys(TEST_EXTA_ARGS)),
     }));
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('file row component', () => {
     beforeEach(() => {
       createComponent({ file: {} });

@@ -115,7 +115,6 @@ describe('Design management design presentation component', () => {
   });
 
   afterEach(() => {
-    wrapper.destroy();
     window.gon = originalGon;
   });
 

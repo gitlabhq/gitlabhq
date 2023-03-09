@@ -30,7 +30,6 @@ describe('AssigneeAvatar', () => {
 
   afterEach(() => {
     window.gon = origGon;
-    wrapper.destroy();
   });
 
   const findImg = () => wrapper.find('img');

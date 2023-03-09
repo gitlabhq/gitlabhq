@@ -192,7 +192,6 @@ describe('CE IssuesListApp component', () => {
 
   afterEach(() => {
     axiosMock.reset();
-    wrapper.destroy();
   });
 
   describe('IssuableList', () => {

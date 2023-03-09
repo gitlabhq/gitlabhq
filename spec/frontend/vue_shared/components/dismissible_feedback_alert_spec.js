@@ -23,11 +23,6 @@ describe('Dismissible Feedback Alert', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   const createFullComponent = () => createComponent({ mountFn: mount });
   const findAlert = () => wrapper.findComponent(GlAlert);
 

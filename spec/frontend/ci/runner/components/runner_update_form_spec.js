@@ -107,10 +107,6 @@ describe('RunnerUpdateForm', () => {
     createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('Form has a submit button', () => {
     expect(findSubmit().exists()).toBe(true);
   });

@@ -15,10 +15,6 @@ describe('IDE commit message field', () => {
     });
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findMessage = () => wrapper.find('textarea');
   const findHighlights = () => wrapper.findAll('.highlights span');
   const findMarks = () => wrapper.findAll('mark');

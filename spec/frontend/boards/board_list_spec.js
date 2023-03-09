@@ -36,10 +36,6 @@ describe('Board list component', () => {
 
   useFakeRequestAnimationFrame();
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('When Expanded', () => {
     beforeEach(() => {
       wrapper = createComponent({ issuesCount: 1 });

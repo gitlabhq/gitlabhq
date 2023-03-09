@@ -4,9 +4,9 @@ import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import { merge, last } from 'lodash';
 import Vuex from 'vuex';
+import tags from 'test_fixtures/api/tags/tags.json';
 import commit from 'test_fixtures/api/commits/commit.json';
 import branches from 'test_fixtures/api/branches/branches.json';
-import tags from 'test_fixtures/api/tags/tags.json';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { trimText } from 'helpers/text_helper';
 import {

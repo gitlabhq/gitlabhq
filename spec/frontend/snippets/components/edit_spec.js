@@ -109,8 +109,6 @@ describe('Snippet Edit app', () => {
   });
 
   afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
     gon.relative_url_root = originalRelativeUrlRoot;
   });
 
@@ -132,10 +130,6 @@ describe('Snippet Edit app', () => {
     props = {},
     selectedLevel = VISIBILITY_LEVEL_PRIVATE_STRING,
   } = {}) => {
-    if (wrapper) {
-      throw new Error('wrapper already created');
-    }
-
     const requestHandlers = [
       [GetSnippetQuery, getSpy],
       // See `mutateSpy` declaration comment for why we send a key

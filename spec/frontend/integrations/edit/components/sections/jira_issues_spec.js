@@ -18,10 +18,6 @@ describe('IntegrationSectionJiraIssue', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findJiraIssuesFields = () => wrapper.findComponent(JiraIssuesFields);
 
   describe('template', () => {

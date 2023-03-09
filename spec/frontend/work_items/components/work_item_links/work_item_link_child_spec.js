@@ -67,10 +67,6 @@ describe('WorkItemLinkChild', () => {
     createAlert.mockClear();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it.each`
     status      | childItem             | statusIconName    | statusIconColorClass   | rawTimestamp                   | tooltipContents
     ${'open'}   | ${workItemTask}       | ${'issue-open-m'} | ${'gl-text-green-500'} | ${workItemTask.createdAt}      | ${'Created'}

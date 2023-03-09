@@ -28,10 +28,6 @@ describe('Heatmap component', () => {
       createWrapper();
     });
 
-    afterEach(() => {
-      wrapper.destroy();
-    });
-
     it('should display a label on the x axis', () => {
       expect(wrapper.vm.xAxisName).toBe(graphData.xLabel);
     });

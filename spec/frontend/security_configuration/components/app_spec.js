@@ -129,10 +129,6 @@ describe('App component', () => {
   const findAutoDevopsEnabledAlert = () => wrapper.findComponent(AutoDevopsEnabledAlert);
   const findVulnerabilityManagementTab = () => wrapper.findByTestId('vulnerability-management-tab');
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('basic structure', () => {
     beforeEach(() => {
       createComponent();

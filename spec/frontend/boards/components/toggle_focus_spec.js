@@ -18,10 +18,6 @@ describe('ToggleFocus', () => {
 
   const findButton = () => wrapper.findComponent(GlButton);
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders a button with `maximize` icon', () => {
     createComponent();
 

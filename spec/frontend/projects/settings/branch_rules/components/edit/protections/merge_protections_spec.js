@@ -24,10 +24,6 @@ describe('Merge Protections', () => {
 
   beforeEach(() => createComponent());
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders a form group with the correct label', () => {
     expect(findFormGroup().text()).toContain(i18n.allowedToMerge);
   });

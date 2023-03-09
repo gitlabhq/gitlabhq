@@ -31,10 +31,6 @@ describe('Pipeline Schedule Callout', () => {
       await nextTick();
     });
 
-    afterEach(() => {
-      wrapper.destroy();
-    });
-
     it('does not render the callout', () => {
       expect(findInnerContentOfCallout().exists()).toBe(false);
     });
@@ -44,10 +40,6 @@ describe('Pipeline Schedule Callout', () => {
     beforeEach(() => {
       Cookies.remove(cookieKey);
       createComponent();
-    });
-
-    afterEach(() => {
-      wrapper.destroy();
     });
 
     it('renders the callout container', () => {

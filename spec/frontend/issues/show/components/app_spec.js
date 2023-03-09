@@ -115,7 +115,6 @@ describe('Issuable output', () => {
     mock.restore();
     realtimeRequestCount = 0;
     wrapper.vm.poll.stop();
-    wrapper.destroy();
     resetHTMLFixture();
   });
 

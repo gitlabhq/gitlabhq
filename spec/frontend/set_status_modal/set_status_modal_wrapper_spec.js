@@ -72,7 +72,6 @@ describe('SetStatusModalWrapper', () => {
   };
 
   afterEach(() => {
-    wrapper.destroy();
     clearEmojiMock();
   });
 

@@ -19,10 +19,6 @@ describe('DiscussionNotesRepliesWrapper', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('when normal discussion', () => {
     beforeEach(() => {
       createComponent();

@@ -80,11 +80,6 @@ describe('validation directive', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   const getFormData = () => wrapper.vm.form;
   const findForm = () => wrapper.find('form');
   const findInput = () => wrapper.find('input');

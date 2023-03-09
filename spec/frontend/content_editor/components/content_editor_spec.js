@@ -48,10 +48,6 @@ describe('ContentEditor', () => {
     renderMarkdown = jest.fn();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('triggers initialized event', () => {
     createWrapper();
 

@@ -24,11 +24,6 @@ describe('PackagePath', () => {
   const findItem = (name) => wrapper.find(`[data-testid="${name}"]`);
   const findTooltip = (w) => getBinding(w.element, 'gl-tooltip');
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   describe.each`
     path                       | rootUrl       | shouldExist                                                   | shouldNotExist
     ${'foo/bar'}               | ${'/foo/bar'} | ${[]}                                                         | ${[ROOT_CHEVRON, ELLIPSIS_ICON, ELLIPSIS_CHEVRON, LEAF_LINK]}

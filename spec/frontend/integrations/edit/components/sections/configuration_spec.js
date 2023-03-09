@@ -19,10 +19,6 @@ describe('IntegrationSectionCoonfiguration', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findAllDynamicFields = () => wrapper.findAllComponents(DynamicField);
 
   describe('template', () => {

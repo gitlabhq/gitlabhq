@@ -16,10 +16,6 @@ describe('Settings Block', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findDefaultSlot = () => wrapper.findByTestId('default-slot');
   const findTitleSlot = () => wrapper.findByTestId('title-slot');
   const findDescriptionSlot = () => wrapper.findByTestId('description-slot');

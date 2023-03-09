@@ -26,10 +26,6 @@ describe('BackgroundMigrationsDatabaseListbox', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findGlCollapsibleListbox = () => wrapper.findComponent(GlCollapsibleListbox);
 
   describe('template always', () => {

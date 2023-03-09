@@ -25,10 +25,6 @@ describe('Delete branch button', () => {
     eventHubSpy = jest.spyOn(eventHub, '$emit');
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders the button with default tooltip, style, and icon', () => {
     createComponent();
 

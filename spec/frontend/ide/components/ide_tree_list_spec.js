@@ -25,10 +25,6 @@ describe('IdeTreeList component', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('normal branch', () => {
     const tree = [file('fileName')];
 

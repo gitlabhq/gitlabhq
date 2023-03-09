@@ -49,10 +49,6 @@ describe('ReportSection component', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('computed', () => {
     describe('isCollapsible', () => {
       const testMatrix = [

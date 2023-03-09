@@ -47,7 +47,6 @@ describe('Merge requests compare dropdown component', () => {
   });
 
   afterEach(() => {
-    wrapper.destroy();
     mock.restore();
   });
 

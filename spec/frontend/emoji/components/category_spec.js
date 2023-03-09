@@ -15,10 +15,6 @@ const triggerGlIntersectionObserver = () => {
 };
 
 describe('Emoji category component', () => {
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   beforeEach(() => {
     factory({
       category: 'Activity',

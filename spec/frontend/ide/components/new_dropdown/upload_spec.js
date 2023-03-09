@@ -12,10 +12,6 @@ describe('new dropdown upload', () => {
     });
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('openFile', () => {
     it('calls for each file', () => {
       const files = ['test', 'test2', 'test3'];

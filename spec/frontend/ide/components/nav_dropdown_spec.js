@@ -30,10 +30,6 @@ describe('IDE NavDropdown', () => {
     jest.spyOn(store, 'dispatch').mockImplementation(() => {});
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const createComponent = () => {
     wrapper = mount(NavDropdown, {
       store,

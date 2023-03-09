@@ -29,10 +29,6 @@ describe('SubscriptionsList', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findUnlinkButton = () => wrapper.findComponent(GlButton);
   const clickUnlinkButton = () => findUnlinkButton().trigger('click');
 

@@ -120,10 +120,6 @@ describe('import table', () => {
     axiosMock.onGet(/.*\/exists$/, () => []).reply(HTTP_STATUS_OK, { exists: false });
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('loading state', () => {
     it('renders loading icon while performing request', async () => {
       createComponent({

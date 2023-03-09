@@ -13,10 +13,6 @@ describe('Diff File Row component', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders file row component', () => {
     const sharedProps = {
       level: 4,

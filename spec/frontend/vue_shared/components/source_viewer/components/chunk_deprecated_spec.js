@@ -45,8 +45,6 @@ describe('Chunk component', () => {
     createComponent();
   });
 
-  afterEach(() => wrapper.destroy());
-
   describe('Intersection observer', () => {
     it('renders an Intersection observer component', () => {
       expect(findIntersectionObserver().exists()).toBe(true);

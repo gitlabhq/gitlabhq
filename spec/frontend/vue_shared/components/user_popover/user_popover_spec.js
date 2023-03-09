@@ -51,7 +51,6 @@ describe('User Popover Component', () => {
   });
 
   afterEach(() => {
-    wrapper.destroy();
     resetHTMLFixture();
   });
 

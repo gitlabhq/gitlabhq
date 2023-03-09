@@ -48,7 +48,6 @@ describe('Sidebar Confidentiality Widget', () => {
   };
 
   afterEach(() => {
-    wrapper.destroy();
     fakeApollo = null;
   });
 

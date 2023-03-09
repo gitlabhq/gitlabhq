@@ -13,10 +13,6 @@ describe('MemoryGraph', () => {
     [1573586433.853, '3.0066964285714284'],
   ];
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   beforeEach(() => {
     wrapper = shallowMount(Component, {
       propsData: {

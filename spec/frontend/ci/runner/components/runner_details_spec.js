@@ -37,10 +37,6 @@ describe('RunnerDetails', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('Details tab', () => {
     describe.each`
       field                    | runner                                                             | expectedValue

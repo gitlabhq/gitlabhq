@@ -15,10 +15,6 @@ describe('Pipelines Nav Controls', () => {
 
   const findRunPipeline = () => wrapper.find('.js-run-pipeline');
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('should render link to create a new pipeline', () => {
     const mockData = {
       newPipelinePath: 'foo',

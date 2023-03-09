@@ -21,10 +21,6 @@ describe('vue_shared/component/markdown/editor_mode_dropdown', () => {
       .filter((item) => item.text().startsWith(text))
       .at(0);
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe.each`
     modeText       | value         | dropdownText        | otherMode
     ${'Rich text'} | ${'richText'} | ${'View markdown'}  | ${'Markdown'}

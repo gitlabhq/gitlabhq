@@ -21,10 +21,6 @@ describe('SidebarTodo', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it.each`
     state    | classes
     ${false} | ${['gl-button', 'btn', 'btn-default', 'btn-todo', 'issuable-header-btn', 'float-right']}

@@ -27,7 +27,6 @@ describe('Feature flags > Environments dropdown', () => {
   const findDropdownMenu = () => wrapper.find('.dropdown-menu');
 
   afterEach(() => {
-    wrapper.destroy();
     mock.restore();
   });
 

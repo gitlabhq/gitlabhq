@@ -39,11 +39,6 @@ describe('~/user_lists/components/user_lists.vue', () => {
 
   const newButton = () => within(wrapper.element).queryAllByText('New user list');
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   describe('without permissions', () => {
     const provideData = {
       ...mockProvide,

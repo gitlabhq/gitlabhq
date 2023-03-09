@@ -69,10 +69,6 @@ describe('BoardFilteredSearch', () => {
 
   const findFilteredSearch = () => wrapper.findComponent(FilteredSearchBarRoot);
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('default', () => {
     beforeEach(() => {
       createComponent();

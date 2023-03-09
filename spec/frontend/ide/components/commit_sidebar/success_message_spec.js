@@ -12,10 +12,6 @@ describe('IDE commit panel successful commit state', () => {
     wrapper = shallowMount(SuccessMessage, { store });
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders last commit message when it exists', () => {
     expect(wrapper.text()).toContain('testing commit message');
   });

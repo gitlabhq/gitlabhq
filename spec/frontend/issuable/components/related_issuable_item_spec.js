@@ -53,10 +53,6 @@ describe('RelatedIssuableItem', () => {
     });
   }
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('contains issuable-info-container class when canReorder is false', () => {
     mountComponent({ props: { canReorder: false } });
 

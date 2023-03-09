@@ -34,10 +34,6 @@ describe('SignInPage', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it.each`
     jiraConnectOauthEnabled | publicKeyStorageEnabled | shouldRenderDotCom | shouldRenderMultiversion
     ${false}                | ${true}                 | ${true}            | ${false}

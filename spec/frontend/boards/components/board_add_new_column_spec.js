@@ -68,10 +68,6 @@ describe('Board card layout', () => {
     }
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('Add list button', () => {
     it('calls addList', async () => {
       const getListByLabelId = jest.fn().mockReturnValue(null);

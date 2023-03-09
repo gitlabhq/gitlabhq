@@ -45,10 +45,6 @@ describe('content_editor/components/editor_state_observer', () => {
     buildEditor();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('when editor content changes', () => {
     it('emits update, selectionUpdate, and transaction events', () => {
       const content = '<p>My paragraph</p>';

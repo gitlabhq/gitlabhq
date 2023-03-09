@@ -22,6 +22,10 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
   KROKI_URL_ERROR_MESSAGE = 'Please check your Kroki URL setting in ' \
     'Admin Area > Settings > General > Kroki'
 
+  # Validate URIs in this model according to the current value of the `deny_all_requests_except_allowed` property,
+  # rather than the persisted value.
+  ADDRESSABLE_URL_VALIDATION_OPTIONS = { deny_all_requests_except_allowed: ->(settings) { settings.deny_all_requests_except_allowed } }.freeze
+
   enum whats_new_variant: { all_tiers: 0, current_tier: 1, disabled: 2 }, _prefix: true
   enum email_confirmation_setting: { off: 0, soft: 1, hard: 2 }, _prefix: true
 
@@ -92,9 +96,9 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
   chronic_duration_attr :project_runner_token_expiration_interval_human_readable, :project_runner_token_expiration_interval
 
   validates :grafana_url,
-            system_hook_url: {
+            system_hook_url: ADDRESSABLE_URL_VALIDATION_OPTIONS.merge({
               blocked_message: "is blocked: %{exception_message}. #{GRAFANA_URL_ERROR_MESSAGE}"
-            },
+            }),
             if: :grafana_url_absolute?
 
   validate :validate_grafana_url
@@ -118,22 +122,22 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
 
   validates :home_page_url,
             allow_blank: true,
-            addressable_url: true,
+            addressable_url: ADDRESSABLE_URL_VALIDATION_OPTIONS,
             if: :home_page_url_column_exists?
 
   validates :help_page_support_url,
             allow_blank: true,
-            addressable_url: true,
+            addressable_url: ADDRESSABLE_URL_VALIDATION_OPTIONS,
             if: :help_page_support_url_column_exists?
 
   validates :help_page_documentation_base_url,
             length: { maximum: 255, message: N_("is too long (maximum is %{count} characters)") },
             allow_blank: true,
-            addressable_url: true
+            addressable_url: ADDRESSABLE_URL_VALIDATION_OPTIONS
 
   validates :after_sign_out_path,
             allow_blank: true,
-            addressable_url: true
+            addressable_url: ADDRESSABLE_URL_VALIDATION_OPTIONS
 
   validates :abuse_notification_email,
             devise_email: true,
@@ -190,7 +194,7 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
 
   validates :gitpod_url,
             presence: true,
-            addressable_url: { enforce_sanitization: true },
+            addressable_url: ADDRESSABLE_URL_VALIDATION_OPTIONS.merge({ enforce_sanitization: true }),
             if: :gitpod_enabled
 
   validates :mailgun_signing_key,
@@ -350,7 +354,7 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
             if: :asset_proxy_enabled?
 
   validates :static_objects_external_storage_url,
-            addressable_url: true, allow_blank: true
+            addressable_url: ADDRESSABLE_URL_VALIDATION_OPTIONS, allow_blank: true
 
   validates :static_objects_external_storage_auth_token,
             presence: true,
@@ -458,7 +462,7 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
             if: :external_authorization_service_enabled
 
   validates :external_authorization_service_url,
-            addressable_url: true, allow_blank: true,
+            addressable_url: ADDRESSABLE_URL_VALIDATION_OPTIONS, allow_blank: true,
             if: :external_authorization_service_enabled
 
   validates :external_authorization_service_timeout,
@@ -466,7 +470,7 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
             if: :external_authorization_service_enabled
 
   validates :spam_check_endpoint_url,
-            addressable_url: { schemes: %w(tls grpc) }, allow_blank: true
+            addressable_url: ADDRESSABLE_URL_VALIDATION_OPTIONS.merge({ schemes: %w(tls grpc) }), allow_blank: true
 
   validates :spam_check_endpoint_url,
             presence: true,
@@ -540,7 +544,7 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
   validates :jira_connect_proxy_url,
             length: { maximum: 255, message: N_('is too long (maximum is %{count} characters)') },
             allow_blank: true,
-            public_url: true
+            public_url: ADDRESSABLE_URL_VALIDATION_OPTIONS
 
   with_options(presence: true, numericality: { only_integer: true, greater_than: 0 }) do
     validates :throttle_unauthenticated_api_requests_per_period
@@ -584,7 +588,7 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
             inclusion: { in: [true, false], message: N_('must be a boolean value') }
 
   validates :external_pipeline_validation_service_url,
-            addressable_url: true, allow_blank: true
+            addressable_url: ADDRESSABLE_URL_VALIDATION_OPTIONS, allow_blank: true
 
   validates :external_pipeline_validation_service_timeout,
             allow_nil: true,
@@ -611,10 +615,10 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
   validates :sentry_enabled,
     inclusion: { in: [true, false], message: N_('must be a boolean value') }
   validates :sentry_dsn,
-    addressable_url: true, presence: true, length: { maximum: 255 },
+    addressable_url: ADDRESSABLE_URL_VALIDATION_OPTIONS, presence: true, length: { maximum: 255 },
     if: :sentry_enabled?
   validates :sentry_clientside_dsn,
-    addressable_url: true, allow_blank: true, length: { maximum: 255 },
+    addressable_url: ADDRESSABLE_URL_VALIDATION_OPTIONS, allow_blank: true, length: { maximum: 255 },
     if: :sentry_enabled?
   validates :sentry_environment,
     presence: true, length: { maximum: 255 },
@@ -624,7 +628,7 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
     inclusion: { in: [true, false], message: N_('must be a boolean value') }
   validates :error_tracking_api_url,
     presence: true,
-    addressable_url: true,
+    addressable_url: ADDRESSABLE_URL_VALIDATION_OPTIONS,
     length: { maximum: 255 },
     if: :error_tracking_enabled?
 
@@ -634,7 +638,7 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
           length: { maximum: 100, message: N_('is too long (maximum is 100 entries)') },
           allow_nil: false
 
-  validates :public_runner_releases_url, addressable_url: true, presence: true
+  validates :public_runner_releases_url, addressable_url: ADDRESSABLE_URL_VALIDATION_OPTIONS, presence: true
 
   validates :inactive_projects_min_size_mb,
             numericality: { only_integer: true, greater_than_or_equal_to: 0 }

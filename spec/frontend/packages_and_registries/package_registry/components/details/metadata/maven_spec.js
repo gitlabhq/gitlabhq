@@ -19,11 +19,6 @@ describe('Maven Metadata', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   const findMavenApp = () => wrapper.findByTestId('maven-app');
   const findMavenGroup = () => wrapper.findByTestId('maven-group');
 

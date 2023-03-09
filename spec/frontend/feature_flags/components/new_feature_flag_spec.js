@@ -46,10 +46,6 @@ describe('New feature flag form', () => {
     factory();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('with error', () => {
     it('should render the error', async () => {
       store.dispatch('receiveCreateFeatureFlagError', { message: ['The name is required'] });

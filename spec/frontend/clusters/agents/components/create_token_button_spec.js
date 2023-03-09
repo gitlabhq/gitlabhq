@@ -29,10 +29,6 @@ describe('CreateTokenButton', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('when user can create token', () => {
     beforeEach(() => {
       createWrapper();

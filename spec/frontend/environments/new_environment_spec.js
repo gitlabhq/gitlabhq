@@ -41,7 +41,6 @@ describe('~/environments/components/new.vue', () => {
 
   afterEach(() => {
     mock.restore();
-    wrapper.destroy();
   });
 
   const showsLoading = () => wrapper.findComponent(GlLoadingIcon).exists();

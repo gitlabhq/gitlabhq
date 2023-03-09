@@ -68,8 +68,6 @@ describe('Source Viewer component', () => {
     return createComponent();
   });
 
-  afterEach(() => wrapper.destroy());
-
   describe('event tracking', () => {
     it('fires a tracking event when the component is created', () => {
       const eventData = { label: EVENT_LABEL_VIEWER, property: language };

@@ -18,10 +18,6 @@ describe('content_editor/components/top_toolbar', () => {
     trackingSpy = mockTracking(undefined, null, jest.spyOn);
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe.each`
     testId            | controlProps
     ${'text-styles'}  | ${{}}

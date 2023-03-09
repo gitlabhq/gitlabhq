@@ -26,10 +26,6 @@ describe('ReviewTabContainer', () => {
     createWrapper();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('shows loading icon when commits are being loaded', () => {
     createWrapper({ isLoading: true });
     expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);

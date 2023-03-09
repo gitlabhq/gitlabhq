@@ -23,10 +23,6 @@ describe('AddNamespaceButton', () => {
     createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('displays a button', () => {
     expect(findButton().exists()).toBe(true);
   });

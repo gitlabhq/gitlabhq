@@ -124,10 +124,6 @@ describe('Container Expiration Policy Settings Form', () => {
     jest.spyOn(Tracking, 'event');
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe.each`
     model              | finder                   | fieldName         | type          | defaultValue
     ${'enabled'}       | ${findEnableToggle}      | ${'Enable'}       | ${'toggle'}   | ${false}

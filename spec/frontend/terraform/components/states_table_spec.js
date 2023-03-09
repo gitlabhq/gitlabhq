@@ -140,11 +140,6 @@ describe('StatesTable', () => {
     return createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   it.each`
     name         | toolTipText                            | hasBadge | loading  | lineNumber
     ${'state-1'} | ${'Locked by user-1 2 days ago'}       | ${true}  | ${false} | ${0}

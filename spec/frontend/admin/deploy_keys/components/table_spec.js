@@ -91,10 +91,6 @@ describe('DeployKeysTable', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders page title', () => {
     createComponent();
 

@@ -21,8 +21,6 @@ describe('ExperimentComponent', () => {
   };
 
   afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
     window.gon = oldGon;
   });
 

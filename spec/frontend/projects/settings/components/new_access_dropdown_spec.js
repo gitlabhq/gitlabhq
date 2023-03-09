@@ -89,10 +89,6 @@ describe('Access Level Dropdown', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findDropdown = () => wrapper.findComponent(GlDropdown);
   const findDropdownToggleLabel = () => findDropdown().props('text');
   const findAllDropdownItems = () => findDropdown().findAllComponents(GlDropdownItem);

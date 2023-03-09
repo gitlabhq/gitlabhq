@@ -52,10 +52,6 @@ describe('Merge request artifact Download', () => {
 
   const findDownloadDropdown = () => wrapper.findComponent(SecurityReportDownloadDropdown);
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('given the query is loading', () => {
     beforeEach(() => {
       createWrapper({

@@ -50,8 +50,6 @@ describe('Blob controls component', () => {
 
   beforeEach(() => createComponent());
 
-  afterEach(() => wrapper.destroy());
-
   it('renders a find button with the correct href', () => {
     expect(findFindButton().attributes('href')).toBe('find/file.js');
   });

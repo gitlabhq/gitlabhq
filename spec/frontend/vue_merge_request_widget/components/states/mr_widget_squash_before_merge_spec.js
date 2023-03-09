@@ -14,10 +14,6 @@ describe('Squash before merge component', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findCheckbox = () => wrapper.findComponent(GlFormCheckbox);
 
   describe('checkbox', () => {

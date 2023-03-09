@@ -47,10 +47,6 @@ describe('Repository table row component', () => {
   const findRouterLink = () => vm.findComponent(RouterLinkStub);
   const findIntersectionObserver = () => vm.findComponent(GlIntersectionObserver);
 
-  afterEach(() => {
-    vm.destroy();
-  });
-
   it('renders table row', async () => {
     factory({
       id: '1',

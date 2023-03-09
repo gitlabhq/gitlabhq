@@ -38,7 +38,6 @@ describe('ProjectsDropdown', () => {
   const findDropdown = () => wrapper.findComponent(GlCollapsibleListbox);
 
   afterEach(() => {
-    wrapper.destroy();
     spyFetchProjects.mockReset();
   });
 

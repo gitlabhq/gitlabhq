@@ -31,10 +31,6 @@ describe('UserActionDropdown', () => {
 
   const findRemoveMemberDropdownItem = () => wrapper.findComponent(RemoveMemberDropdownItem);
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('when user has `canRemove` permissions', () => {
     beforeEach(() => {
       createComponent({

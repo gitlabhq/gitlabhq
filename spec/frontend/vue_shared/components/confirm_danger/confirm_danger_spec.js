@@ -32,10 +32,6 @@ describe('Confirm Danger Modal', () => {
     wrapper = createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders the button', () => {
     expect(wrapper.html()).toContain(buttonText);
   });

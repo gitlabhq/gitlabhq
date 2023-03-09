@@ -29,10 +29,6 @@ describe('FrequentItemsListComponent', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('computed', () => {
     describe('isListEmpty', () => {
       it('should return `true` or `false` representing whether if `items` is empty or not with projects', async () => {

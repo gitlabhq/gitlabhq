@@ -118,10 +118,6 @@ describe('NewProjectUrlSelect component', () => {
     await waitForPromises();
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders the root url as a label', () => {
     wrapper = mountComponent();
 

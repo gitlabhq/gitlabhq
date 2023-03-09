@@ -57,10 +57,6 @@ describe('RunnerList', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('Displays headers', () => {
     createComponent(
       {

@@ -47,7 +47,6 @@ const findForm = () => wrapper.findByTestId('submit-gl-form');
 
 describe('Batch comments submit dropdown', () => {
   afterEach(() => {
-    wrapper.destroy();
     window.mrTabs = null;
   });
 

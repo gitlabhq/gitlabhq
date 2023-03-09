@@ -37,10 +37,6 @@ describe('TermsApp', () => {
     isLoggedIn.mockReturnValue(true);
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findFormWithAction = (path) => wrapper.find(`form[action="${path}"]`);
   const findButton = (path) => findFormWithAction(path).find('button[type="submit"]');
   const findScrollableViewport = () => wrapper.findByTestId('scrollable-viewport');

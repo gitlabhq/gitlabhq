@@ -80,10 +80,6 @@ describe('Job table app', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('loading state', () => {
     it('should display skeleton loader when loading', () => {
       createComponent();

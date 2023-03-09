@@ -22,10 +22,6 @@ describe('JiraTriggerFields', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findCommentSettings = () => wrapper.findByTestId('comment-settings');
   const findCommentDetail = () => wrapper.findByTestId('comment-detail');
   const findCommentSettingsCheckbox = () => findCommentSettings().findComponent(GlFormCheckbox);

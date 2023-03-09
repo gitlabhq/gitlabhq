@@ -138,7 +138,6 @@ describe('GroupRunnersApp', () => {
   afterEach(() => {
     mockGroupRunnersHandler.mockReset();
     mockGroupRunnersCountHandler.mockReset();
-    wrapper.destroy();
   });
 
   it('shows the runner tabs with a runner count for each type', async () => {

@@ -9,10 +9,6 @@ describe('MRWidgetRelatedLinks', () => {
     wrapper = shallowMount(RelatedLinks, { propsData });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('computed', () => {
     describe('closesText', () => {
       it('returns Closes text for open merge request', () => {

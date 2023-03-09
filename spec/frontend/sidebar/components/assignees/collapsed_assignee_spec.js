@@ -21,10 +21,6 @@ describe('CollapsedAssignee assignee component', () => {
     });
   }
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('has author name', () => {
     createComponent();
 

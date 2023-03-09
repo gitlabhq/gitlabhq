@@ -17,11 +17,6 @@ describe('snippets/components/embed_dropdown', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   const findSectionsData = () => {
     const sections = [];
     let current = {};

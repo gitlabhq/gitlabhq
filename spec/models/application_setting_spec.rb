@@ -336,7 +336,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
       end
     end
 
-    describe 'default_branch_name validaitions' do
+    describe 'default_branch_name validations' do
       context "when javascript tags get sanitized properly" do
         it "gets sanitized properly" do
           setting.update!(default_branch_name: "hello<script>alert(1)</script>")
@@ -600,6 +600,23 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
         end
 
         it_behaves_like 'usage ping enabled'
+      end
+    end
+
+    describe 'setting validated as `addressable_url` configured with external URI' do
+      before do
+        # Use any property that has the `addressable_url` validation.
+        setting.help_page_documentation_base_url = 'http://example.com'
+      end
+
+      it 'is valid by default' do
+        expect(setting).to be_valid
+      end
+
+      it 'is invalid when unpersisted `deny_all_requests_except_allowed` property is true' do
+        setting.deny_all_requests_except_allowed = true
+
+        expect(setting).not_to be_valid
       end
     end
 
@@ -1164,6 +1181,17 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
 
     it 'raises an exception' do
       expect { described_class.create_from_defaults }.to raise_error(/table is missing a primary key constraint/)
+    end
+  end
+
+  describe 'ADDRESSABLE_URL_VALIDATION_OPTIONS' do
+    it 'is applied to all addressable_url validated properties' do
+      url_validators = described_class.validators.select { |validator| validator.is_a?(AddressableUrlValidator) }
+
+      url_validators.each do |validator|
+        expect(validator.options).to match(hash_including(described_class::ADDRESSABLE_URL_VALIDATION_OPTIONS)),
+          "#{validator.attributes} should use ADDRESSABLE_URL_VALIDATION_OPTIONS"
+      end
     end
   end
 

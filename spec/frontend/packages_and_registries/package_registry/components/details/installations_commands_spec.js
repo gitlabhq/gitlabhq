@@ -40,10 +40,6 @@ describe('InstallationCommands', () => {
   const pypiInstallation = () => wrapper.findComponent(PypiInstallation);
   const composerInstallation = () => wrapper.findComponent(ComposerInstallation);
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('installation instructions', () => {
     describe.each`
       packageEntity      | selector

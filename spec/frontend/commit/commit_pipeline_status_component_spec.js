@@ -41,11 +41,6 @@ describe('Commit pipeline status component', () => {
   const findLink = () => wrapper.find('a');
   const findCiIcon = () => findLink().findComponent(CiIcon);
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   describe('Visibility management', () => {
     describe('when component is hidden', () => {
       beforeEach(() => {

@@ -35,7 +35,6 @@ describe('IssuableTabs', () => {
 
   afterEach(() => {
     setLanguage(null);
-    wrapper.destroy();
   });
 
   const findAllGlBadges = () => wrapper.findAllComponents(GlBadge);

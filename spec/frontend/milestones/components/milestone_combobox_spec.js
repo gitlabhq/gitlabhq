@@ -85,11 +85,6 @@ describe('Milestone combobox component', () => {
     mock.onGet(`/api/v4/projects/${projectId}/search`).reply((config) => searchApiCallSpy(config));
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   //
   // Finders
   //

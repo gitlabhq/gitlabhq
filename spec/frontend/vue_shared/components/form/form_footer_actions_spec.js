@@ -10,10 +10,6 @@ describe('Form Footer Actions', () => {
     });
   }
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders content properly', () => {
     const defaultSlot = 'Foo';
     const prepend = 'Bar';

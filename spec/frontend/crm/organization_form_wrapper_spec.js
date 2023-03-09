@@ -40,10 +40,6 @@ describe('Customer relations organization form wrapper', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('in edit mode', () => {
     it('should render organization form with correct props', () => {
       mountComponent({ isEditMode: true });

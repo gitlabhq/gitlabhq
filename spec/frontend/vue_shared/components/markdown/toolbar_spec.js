@@ -11,10 +11,6 @@ describe('toolbar', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('user can attach file', () => {
     beforeEach(() => {
       createMountedWrapper();

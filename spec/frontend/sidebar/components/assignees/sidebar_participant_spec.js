@@ -32,10 +32,6 @@ describe('Sidebar participant component', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('does not show `Busy` status when user is not busy', () => {
     createComponent();
 

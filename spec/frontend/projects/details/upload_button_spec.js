@@ -27,10 +27,6 @@ describe('UploadButton', () => {
     wrapper = createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('displays an upload button', () => {
     expect(wrapper.findComponent(GlButton).exists()).toBe(true);
   });

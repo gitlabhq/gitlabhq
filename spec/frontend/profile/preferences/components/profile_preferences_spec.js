@@ -83,11 +83,6 @@ describe('ProfilePreferences component', () => {
     document.body.classList.add('content-wrapper');
   }
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   it('should not render Integrations section', () => {
     wrapper = createComponent();
     const views = wrapper.findAllComponents(IntegrationView);

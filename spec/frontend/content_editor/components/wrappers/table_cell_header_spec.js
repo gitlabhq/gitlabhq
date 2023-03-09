@@ -22,10 +22,6 @@ describe('content/components/wrappers/table_cell_header', () => {
     editor = createTestEditor({});
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders a TableCellBase component', () => {
     createWrapper();
     expect(wrapper.findComponent(TableCellBaseWrapper).props()).toEqual({

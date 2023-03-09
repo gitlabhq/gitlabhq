@@ -67,8 +67,6 @@ describe('Pipeline Editor | Text editor component', () => {
   });
 
   afterEach(() => {
-    wrapper.destroy();
-
     mockUse.mockClear();
     mockRegisterCiSchema.mockClear();
   });

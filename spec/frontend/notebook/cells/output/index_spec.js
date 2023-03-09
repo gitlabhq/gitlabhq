@@ -17,10 +17,6 @@ describe('Output component', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('text output', () => {
     beforeEach(() => {
       const textType = json.cells[2];

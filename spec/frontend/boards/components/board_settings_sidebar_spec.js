@@ -65,8 +65,6 @@ describe('BoardSettingsSidebar', () => {
 
   afterEach(() => {
     jest.restoreAllMocks();
-    wrapper.destroy();
-    wrapper = null;
   });
 
   it('finds a MountingPortal component', () => {

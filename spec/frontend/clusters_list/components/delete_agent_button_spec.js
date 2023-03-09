@@ -108,7 +108,6 @@ describe('DeleteAgentButton', () => {
   });
 
   afterEach(() => {
-    wrapper.destroy();
     apolloProvider = null;
     deleteResponse = null;
     toast = null;

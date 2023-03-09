@@ -30,10 +30,6 @@ function createComponent(propsData = {}) {
 }
 
 describe('Saved replies list item component', () => {
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders list item', async () => {
     wrapper = createComponent({ reply: { name: 'test', content: '/assign_reviewer' } });
 

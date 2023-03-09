@@ -105,7 +105,6 @@ describe('BoardContent', () => {
   });
 
   afterEach(() => {
-    wrapper.destroy();
     fakeApollo = null;
   });
 

@@ -68,10 +68,6 @@ describe('~/nav/components/top_nav_menu_sections.vue', () => {
         };
       });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('default', () => {
     beforeEach(() => {
       createComponent();

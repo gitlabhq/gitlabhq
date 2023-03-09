@@ -23,10 +23,6 @@ describe('RunnerSummaryField', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('shows content in slot', () => {
     createComponent({
       slots: { default: 'content' },

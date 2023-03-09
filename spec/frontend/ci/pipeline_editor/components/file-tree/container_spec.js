@@ -35,7 +35,6 @@ describe('Pipeline editor file nav', () => {
 
   afterEach(() => {
     localStorage.clear();
-    wrapper.destroy();
   });
 
   describe('template', () => {

@@ -105,7 +105,6 @@ describe('User select dropdown', () => {
   };
 
   afterEach(() => {
-    wrapper.destroy();
     fakeApollo = null;
   });
 

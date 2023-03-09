@@ -54,7 +54,6 @@ describe('DeploymentAction component', () => {
   });
 
   afterEach(() => {
-    wrapper.destroy();
     confirmAction.mockReset();
   });
 

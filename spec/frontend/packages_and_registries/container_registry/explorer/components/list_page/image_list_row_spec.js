@@ -54,11 +54,6 @@ describe('Image List Row', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   describe('image title and path', () => {
     it('renders shortened name of image and contains a link to the details page', () => {
       mountComponent();

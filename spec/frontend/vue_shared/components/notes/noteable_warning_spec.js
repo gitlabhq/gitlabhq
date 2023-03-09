@@ -132,12 +132,6 @@ describe('Issue Warning Component', () => {
       });
     });
 
-    afterEach(() => {
-      wrapperLocked.destroy();
-      wrapperConfidential.destroy();
-      wrapperLockedAndConfidential.destroy();
-    });
-
     it('renders confidential & locked messages with noteable "issue"', () => {
       expect(findLockedBlock(wrapperLocked).text()).toContain('This issue is locked.');
       expect(findConfidentialBlock(wrapperConfidential).text()).toContain(

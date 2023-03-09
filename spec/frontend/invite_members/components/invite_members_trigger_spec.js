@@ -62,10 +62,6 @@ describe.each(triggerItems)('with triggerElement as %s', (triggerItem) => {
 
   findButton = () => wrapper.findComponent(triggerComponent[triggerItem.triggerElement]);
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('configurable attributes', () => {
     it('includes the correct displayText for the button', () => {
       createComponent();

@@ -48,10 +48,6 @@ describe('~/nav/components/top_nav_container_view.vue', () => {
   };
   const findFrequentItemsContainer = () => wrapper.find('[data-testid="frequent-items-container"]');
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it.each(['projects', 'groups'])(
     'emits frequent items event to event hub (%s)',
     async (frequentItemsDropdownType) => {

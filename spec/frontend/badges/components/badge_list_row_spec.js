@@ -43,7 +43,6 @@ describe('BadgeListRow component', () => {
   };
 
   afterEach(() => {
-    wrapper.destroy();
     resetHTMLFixture();
   });
 

@@ -27,10 +27,6 @@ describe('~/vue_shared/components/vuex_module_provider', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('provides "vuexModule" set from prop', () => {
     createComponent();
     expect(findProvidedVuexModule()).toBe(TEST_VUEX_MODULE);

@@ -51,8 +51,6 @@ describe('Design management design todo button', () => {
   });
 
   afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
     jest.clearAllMocks();
   });
 

@@ -56,10 +56,6 @@ describe('Edit Actions component', () => {
     createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders all buttons as enabled', () => {
     const buttons = findEditButtons().wrappers;
     buttons.forEach((button) => {

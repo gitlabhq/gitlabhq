@@ -140,11 +140,6 @@ describe('Settings Panel', () => {
   const findMonitorVisibilityInput = () =>
     findMonitorSettings().findComponent(ProjectFeatureSetting);
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   describe('Project Visibility', () => {
     it('should set the project visibility help path', () => {
       wrapper = mountComponent();

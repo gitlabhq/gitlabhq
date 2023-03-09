@@ -16,10 +16,6 @@ describe('app/assets/javascripts/vue_shared/components/papa_parse_alert.vue', ()
 
   const findAlert = () => wrapper.findComponent(GlAlert);
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('should render alert with correct props', async () => {
     createComponent({ errorMessages: [{ code: 'MissingQuotes' }] });
     await nextTick();

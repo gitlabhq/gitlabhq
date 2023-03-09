@@ -11,10 +11,6 @@ describe('DropdownButton component', () => {
     wrapper = mount(DropdownButton, { propsData: props, slots });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('computed', () => {
     describe('dropdownToggleText', () => {
       it('returns default toggle text', () => {

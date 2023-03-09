@@ -38,10 +38,6 @@ describe('NewMergeRequestOption component', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('when the `shouldHideNewMrOption` getter returns false', () => {
     beforeEach(() => {
       createComponent();

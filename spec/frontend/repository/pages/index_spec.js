@@ -13,8 +13,6 @@ describe('Repository index page component', () => {
   }
 
   afterEach(() => {
-    wrapper.destroy();
-
     updateElementsVisibility.mockClear();
   });
 

@@ -59,10 +59,6 @@ describe('Dashboard header', () => {
     store = createStore();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('dashboards dropdown', () => {
     beforeEach(() => {
       store.commit(`monitoringDashboard/${types.SET_INITIAL_STATE}`, {

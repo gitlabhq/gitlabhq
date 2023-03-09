@@ -157,11 +157,6 @@ describe('SidebarDropdownWidget', () => {
     jest.spyOn(wrapper.vm, 'showDropdown').mockImplementation();
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   describe('when not editing', () => {
     beforeEach(() => {
       createComponent({

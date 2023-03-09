@@ -57,11 +57,6 @@ describe('AdminUsersTable component', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   describe('when there are users', () => {
     beforeEach(() => {
       initComponent();

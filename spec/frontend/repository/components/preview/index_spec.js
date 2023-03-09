@@ -49,10 +49,6 @@ describe('Repository file preview component', () => {
     mockReadmeData.mockResolvedValue(MOCK_README_DATA);
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('handles hash after render', async () => {
     await waitForPromises();
     expect(handleLocationHash).toHaveBeenCalled();

@@ -100,10 +100,6 @@ describe('MembersTabs', () => {
     setWindowLocation('https://localhost');
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders `GlTabs` with `syncActiveTabWithQueryParams` and `queryParamName` props set', async () => {
     await createComponent();
 

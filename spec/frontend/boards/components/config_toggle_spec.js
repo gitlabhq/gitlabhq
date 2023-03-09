@@ -23,10 +23,6 @@ describe('ConfigToggle', () => {
 
   const findButton = () => wrapper.findComponent(GlButton);
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders a button with label `View scope` when `canAdminList` is `false`', () => {
     wrapper = createComponent({ canAdminList: false });
     expect(findButton().text()).toBe('View scope');

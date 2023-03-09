@@ -53,10 +53,6 @@ describe('ProjectStorageApp', () => {
   const findUsageQuotasHelpLink = () => wrapper.findByTestId('usage-quotas-help-link');
   const findUsageGraph = () => wrapper.findComponent(UsageGraph);
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('with apollo fetching successful', () => {
     let mockApollo;
 

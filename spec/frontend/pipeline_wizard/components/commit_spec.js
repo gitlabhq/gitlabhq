@@ -74,10 +74,6 @@ describe('Pipeline Wizard - Commit Page', () => {
       createComponent();
     });
 
-    afterEach(() => {
-      wrapper.destroy();
-    });
-
     it('shows a commit message input with the correct label', () => {
       expect(wrapper.findByTestId('commit_message').exists()).toBe(true);
       expect(wrapper.find('label[for="commit_message"]').text()).toBe(i18n.commitMessageLabel);
@@ -121,10 +117,6 @@ describe('Pipeline Wizard - Commit Page', () => {
       expect(wrapper.findByTestId('load-error').exists()).toBe(true);
       expect(wrapper.findByTestId('load-error').text()).toBe(i18n.errors.loadError);
     });
-
-    afterEach(() => {
-      wrapper.destroy();
-    });
   });
 
   describe('commit result handling', () => {
@@ -151,7 +143,6 @@ describe('Pipeline Wizard - Commit Page', () => {
       });
 
       afterEach(() => {
-        wrapper.destroy();
         jest.clearAllMocks();
       });
     });
@@ -178,7 +169,6 @@ describe('Pipeline Wizard - Commit Page', () => {
       });
 
       afterEach(() => {
-        wrapper.destroy();
         jest.clearAllMocks();
       });
     });
@@ -244,10 +234,6 @@ describe('Pipeline Wizard - Commit Page', () => {
           await Vue.nextTick();
 
           await waitForPromises();
-        });
-
-        afterEach(() => {
-          wrapper.destroy();
         });
 
         it('sets up without error', async () => {

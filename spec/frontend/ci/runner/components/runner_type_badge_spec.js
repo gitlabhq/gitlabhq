@@ -28,10 +28,6 @@ describe('RunnerTypeBadge', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe.each`
     type             | text
     ${INSTANCE_TYPE} | ${I18N_INSTANCE_TYPE}

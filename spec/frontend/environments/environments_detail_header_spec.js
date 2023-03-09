@@ -59,10 +59,6 @@ describe('Environments detail header component', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('default state with minimal access', () => {
     beforeEach(() => {
       createWrapper({ props: { environment: createEnvironment({ externalUrl: null }) } });

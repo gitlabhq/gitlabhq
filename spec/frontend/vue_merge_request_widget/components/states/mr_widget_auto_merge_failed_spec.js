@@ -18,10 +18,6 @@ describe('MRWidgetAutoMergeFailed', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   beforeEach(() => {
     createComponent({
       mr: { mergeError },

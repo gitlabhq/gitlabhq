@@ -61,11 +61,6 @@ describe('Suggestion Diff component', () => {
     createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   it('matches snapshot', () => {
     expect(wrapper.element).toMatchSnapshot();
   });

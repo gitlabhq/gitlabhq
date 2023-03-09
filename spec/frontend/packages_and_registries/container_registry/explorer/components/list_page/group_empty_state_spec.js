@@ -26,10 +26,6 @@ describe('Registry Group Empty state', () => {
     });
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('to match the default snapshot', () => {
     expect(wrapper.element).toMatchSnapshot();
   });

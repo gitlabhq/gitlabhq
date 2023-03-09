@@ -51,11 +51,6 @@ describe('Pipeline DAG graph wrapper', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   describe('when a query argument is undefined', () => {
     beforeEach(() => {
       createComponent({

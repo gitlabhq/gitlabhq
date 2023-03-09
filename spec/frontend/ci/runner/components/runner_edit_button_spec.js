@@ -20,10 +20,6 @@ describe('RunnerEditButton', () => {
     createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('Displays Edit text', () => {
     expect(wrapper.attributes('aria-label')).toBe('Edit');
   });

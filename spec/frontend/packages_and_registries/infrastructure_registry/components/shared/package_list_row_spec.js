@@ -54,11 +54,6 @@ describe('packages_list_row', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   it('renders', () => {
     mountComponent();
     expect(wrapper.element).toMatchSnapshot();

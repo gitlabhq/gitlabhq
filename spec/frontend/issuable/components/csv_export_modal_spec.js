@@ -29,10 +29,6 @@ describe('CsvExportModal', () => {
     });
   }
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findModal = () => wrapper.findComponent(GlModal);
   const findIcon = () => wrapper.findComponent(GlIcon);
 

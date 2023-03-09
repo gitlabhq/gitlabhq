@@ -71,7 +71,6 @@ describe('App', () => {
   };
 
   afterEach(() => {
-    wrapper.destroy();
     unmockTracking();
   });
 

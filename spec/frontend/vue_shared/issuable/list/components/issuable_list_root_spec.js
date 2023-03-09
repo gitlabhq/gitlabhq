@@ -47,10 +47,6 @@ describe('IssuableListRoot', () => {
   const findVueDraggable = () => wrapper.findComponent(VueDraggable);
   const findPageSizeSelector = () => wrapper.findComponent(PageSizeSelector);
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('computed', () => {
     beforeEach(() => {
       wrapper = createComponent();

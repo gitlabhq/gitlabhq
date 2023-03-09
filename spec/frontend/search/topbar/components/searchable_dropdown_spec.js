@@ -40,10 +40,6 @@ describe('Global Search Searchable Dropdown', () => {
     );
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findGlDropdown = () => wrapper.findComponent(GlDropdown);
   const findGlDropdownSearch = () => findGlDropdown().findComponent(GlSearchBoxByType);
   const findDropdownText = () => findGlDropdown().find('.dropdown-toggle-text');

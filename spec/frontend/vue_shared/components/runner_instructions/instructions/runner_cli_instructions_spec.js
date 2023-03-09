@@ -59,10 +59,6 @@ describe('RunnerCliInstructions component', () => {
     runnerSetupInstructionsHandler = jest.fn().mockResolvedValue(mockInstructions);
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('when the instructions are shown', () => {
     beforeEach(async () => {
       createComponent();

@@ -17,10 +17,6 @@ describe('WorkItemLinksMenu', () => {
     createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders dropdown and dropdown items', () => {
     expect(findDropdown().exists()).toBe(true);
     expect(findRemoveDropdownItem().exists()).toBe(true);

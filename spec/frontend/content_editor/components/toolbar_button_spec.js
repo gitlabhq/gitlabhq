@@ -42,10 +42,6 @@ describe('content_editor/components/toolbar_button', () => {
     buildEditor();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('displays tertiary, medium button with a provided label and icon', () => {
     buildWrapper();
 

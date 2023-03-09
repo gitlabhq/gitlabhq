@@ -18,11 +18,6 @@ describe('Remove cluster confirmation modal', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   it('renders buttons with modal included', () => {
     createComponent();
     expect(wrapper.element).toMatchSnapshot();

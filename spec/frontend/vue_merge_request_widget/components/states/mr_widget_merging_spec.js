@@ -29,10 +29,6 @@ describe('MRWidgetMerging', () => {
     });
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders information about merge request being merged', () => {
     const message = wrapper.findComponent(BoldText).props('message');
     expect(message).toContain('Merging!');

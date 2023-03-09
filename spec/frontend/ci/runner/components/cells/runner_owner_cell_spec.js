@@ -24,10 +24,6 @@ describe('RunnerOwnerCell', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('When its an instance runner', () => {
     beforeEach(() => {
       createComponent({

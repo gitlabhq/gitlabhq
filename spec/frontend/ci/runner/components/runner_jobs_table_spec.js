@@ -37,10 +37,6 @@ describe('RunnerJobsTable', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('Sets job id as a row key', () => {
     createComponent();
 

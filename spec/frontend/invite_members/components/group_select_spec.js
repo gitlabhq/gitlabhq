@@ -26,11 +26,6 @@ describe('GroupSelect', () => {
     wrapper = createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   const findSearchBoxByType = () => wrapper.findComponent(GlSearchBoxByType);
   const findDropdown = () => wrapper.findComponent(GlDropdown);
   const findDropdownToggle = () => findDropdown().find('button[aria-haspopup="true"]');

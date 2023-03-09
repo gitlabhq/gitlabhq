@@ -197,11 +197,6 @@ describe('Design management index page', () => {
     });
   }
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   describe('designs', () => {
     it('renders loading icon', () => {
       createComponent({ loading: true });

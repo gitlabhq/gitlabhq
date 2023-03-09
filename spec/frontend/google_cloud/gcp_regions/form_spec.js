@@ -16,10 +16,6 @@ describe('google_cloud/gcp_regions/form', () => {
     wrapper = shallowMount(GcpRegionsForm, { propsData });
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('contains header', () => {
     expect(findHeader().exists()).toBe(true);
   });

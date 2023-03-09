@@ -100,10 +100,6 @@ describe.each`
       bubbleMenu = wrapper.findComponent(BubbleMenu);
     });
 
-    afterEach(() => {
-      wrapper.destroy();
-    });
-
     it('renders bubble menu component', async () => {
       expect(bubbleMenu.classes()).toEqual(['gl-shadow', 'gl-rounded-base', 'gl-bg-white']);
     });

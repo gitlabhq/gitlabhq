@@ -42,10 +42,6 @@ describe('ImageDiffViewer component', () => {
     triggerEvent('mouseup', doc.body);
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders image diff for replaced', () => {
     createComponent(allProps);
     const metaInfoElements = wrapper.findAll('.image-info');

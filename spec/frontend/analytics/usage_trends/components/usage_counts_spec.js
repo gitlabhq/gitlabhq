@@ -26,10 +26,6 @@ describe('UsageCounts', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findSkeletonLoader = () => wrapper.findComponent(GlSkeletonLoader);
   const findAllSingleStats = () => wrapper.findAllComponents(GlSingleStat);
 

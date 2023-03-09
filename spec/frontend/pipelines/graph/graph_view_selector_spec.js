@@ -42,10 +42,6 @@ describe('the graph view selector component', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('when showing stage view', () => {
     beforeEach(() => {
       createComponent({ mountFn: mount });

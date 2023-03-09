@@ -18,10 +18,6 @@ describe('google_cloud/service_accounts/list', () => {
       wrapper = mount(ServiceAccountsList, { propsData });
     });
 
-    afterEach(() => {
-      wrapper.destroy();
-    });
-
     it('shows the empty state component', () => {
       expect(findEmptyState().exists()).toBe(true);
     });

@@ -18,10 +18,6 @@ function createComponent(isAddDiscussion = false) {
 describe('DesignNoteSignedOut', () => {
   let wrapper;
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders message containing register and sign-in links while user wants to reply to a discussion', () => {
     wrapper = createComponent();
 

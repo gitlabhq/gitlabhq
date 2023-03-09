@@ -42,10 +42,6 @@ describe('Pipeline Cell', () => {
     );
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('Pipeline Id', () => {
     beforeEach(() => {
       createComponent();

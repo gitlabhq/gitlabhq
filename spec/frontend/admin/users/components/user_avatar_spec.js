@@ -34,11 +34,6 @@ describe('AdminUserAvatar component', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   describe('when initialized', () => {
     beforeEach(() => {
       initComponent();

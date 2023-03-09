@@ -10,11 +10,6 @@ describe('MRWidgetNotAllowed', () => {
     wrapper = shallowMount(notAllowedComponent);
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   it('renders success icon', () => {
     expect(wrapper.findComponent(StatusIcon).exists()).toBe(true);
     expect(wrapper.findComponent(StatusIcon).props().status).toBe('success');

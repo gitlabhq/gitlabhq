@@ -20,11 +20,6 @@ describe('Package Additional Metadata', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   const findPypiRequiredPython = () => wrapper.findByTestId('pypi-required-python');
 
   beforeEach(() => {

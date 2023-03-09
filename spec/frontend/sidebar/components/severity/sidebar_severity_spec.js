@@ -48,10 +48,6 @@ describe('SidebarSeverity', () => {
     createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findSeverityToken = () => wrapper.findAllComponents(SeverityToken);
   const findEditBtn = () => wrapper.findByTestId('edit-button');
   const findDropdown = () => wrapper.findComponent(GlDropdown);

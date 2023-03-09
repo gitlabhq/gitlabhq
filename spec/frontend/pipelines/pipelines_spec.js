@@ -114,7 +114,6 @@ describe('Pipelines', () => {
   });
 
   afterEach(() => {
-    wrapper.destroy();
     mock.reset();
     window.history.pushState.mockReset();
   });

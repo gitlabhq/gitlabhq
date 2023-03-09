@@ -28,10 +28,6 @@ describe('Signup Form', () => {
   const findCheckboxLabel = () => findByTestId('label');
   const findHelpText = () => findByTestId('helpText');
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('Signup Checkbox', () => {
     beforeEach(() => {
       mountComponent();

@@ -45,10 +45,6 @@ describe('RunnerTypeCell', () => {
     createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('Displays the runner name as id and short token', () => {
     expect(wrapper.text()).toContain(
       `#${getIdFromGraphQLId(mockRunner.id)} (${mockRunner.shortSha})`,

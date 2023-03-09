@@ -34,10 +34,6 @@ describe('ScopeNavigation', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findNavElement = () => wrapper.find('nav');
   const findGlNav = () => wrapper.findComponent(GlNav);
   const findGlNavItems = () => wrapper.findAllComponents(GlNavItem);

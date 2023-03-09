@@ -29,10 +29,6 @@ describe('MrWidgetPipelineContainer', () => {
     mock.onGet().reply(HTTP_STATUS_OK, {});
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findDeploymentList = () => wrapper.findComponent(DeploymentList);
   const findCIErrorMessage = () => wrapper.findByTestId('ci-error-message');
 

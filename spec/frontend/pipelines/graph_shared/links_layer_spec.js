@@ -35,10 +35,6 @@ describe('links layer component', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('with show links off', () => {
     beforeEach(() => {
       createComponent();

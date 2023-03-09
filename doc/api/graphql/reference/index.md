@@ -6505,6 +6505,35 @@ Input type: `WorkItemDeleteTaskInput`
 | <a id="mutationworkitemdeletetaskerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationworkitemdeletetaskworkitem"></a>`workItem` | [`WorkItem`](#workitem) | Updated work item. |
 
+### `Mutation.workItemExport`
+
+WARNING:
+**Introduced** in 15.10.
+This feature is in Alpha. It can be changed or removed at any time.
+
+Input type: `WorkItemExportInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationworkitemexportauthorusername"></a>`authorUsername` **{warning-solid}** | [`String`](#string) | **Deprecated:** This feature is in Alpha. It can be changed or removed at any time. Introduced in 15.9. |
+| <a id="mutationworkitemexportclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationworkitemexportiids"></a>`iids` | [`[String!]`](#string) | List of IIDs of work items. For example, `["1", "2"]`. |
+| <a id="mutationworkitemexportin"></a>`in` | [`[IssuableSearchableField!]`](#issuablesearchablefield) | Specify the fields to perform the search in. Defaults to `[TITLE, DESCRIPTION]`. Requires the `search` argument.'. |
+| <a id="mutationworkitemexportprojectpath"></a>`projectPath` | [`ID!`](#id) | Full project path. |
+| <a id="mutationworkitemexportsearch"></a>`search` | [`String`](#string) | Search query for title or description. |
+| <a id="mutationworkitemexportselectedfields"></a>`selectedFields` | [`[AvailableExportFields!]`](#availableexportfields) | List of selected fields to be exported. Omit to export all available fields. |
+| <a id="mutationworkitemexportstate"></a>`state` | [`IssuableState`](#issuablestate) | Current state of the work item. |
+| <a id="mutationworkitemexporttypes"></a>`types` | [`[IssueType!]`](#issuetype) | Filter work items by the given work item types. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationworkitemexportclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationworkitemexporterrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+
 ### `Mutation.workItemUpdate`
 
 Updates a work item by Global ID.
@@ -19404,13 +19433,13 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="projectworkitemsauthorusername"></a>`authorUsername` **{warning-solid}** | [`String`](#string) | **Introduced** in 15.9. This feature is in Alpha. It can be changed or removed at any time. Filter work items by author username. |
-| <a id="projectworkitemsiid"></a>`iid` | [`String`](#string) | IID of the issue. For example, "1". |
+| <a id="projectworkitemsiid"></a>`iid` | [`String`](#string) | IID of the work item. For example, "1". |
 | <a id="projectworkitemsiids"></a>`iids` | [`[String!]`](#string) | List of IIDs of work items. For example, `["1", "2"]`. |
 | <a id="projectworkitemsin"></a>`in` | [`[IssuableSearchableField!]`](#issuablesearchablefield) | Specify the fields to perform the search in. Defaults to `[TITLE, DESCRIPTION]`. Requires the `search` argument.'. |
 | <a id="projectworkitemsrequirementlegacywidget"></a>`requirementLegacyWidget` **{warning-solid}** | [`RequirementLegacyFilterInput`](#requirementlegacyfilterinput) | **Deprecated** in 15.9. Use work item IID filter instead. |
 | <a id="projectworkitemssearch"></a>`search` | [`String`](#string) | Search query for title or description. |
-| <a id="projectworkitemssort"></a>`sort` | [`WorkItemSort`](#workitemsort) | Sort work items by this criteria. |
-| <a id="projectworkitemsstate"></a>`state` | [`IssuableState`](#issuablestate) | Current state of this work item. |
+| <a id="projectworkitemssort"></a>`sort` | [`WorkItemSort`](#workitemsort) | Sort work items by criteria. |
+| <a id="projectworkitemsstate"></a>`state` | [`IssuableState`](#issuablestate) | Current state of the work item. |
 | <a id="projectworkitemsstatuswidget"></a>`statusWidget` | [`StatusFilterInput`](#statusfilterinput) | Input for status widget filter. Ignored if `work_items_mvc_2` is disabled. |
 | <a id="projectworkitemstypes"></a>`types` | [`[IssueType!]`](#issuetype) | Filter work items by the given work item types. |
 
@@ -22381,6 +22410,19 @@ User availability status.
 | ----- | ----------- |
 | <a id="availabilityenumbusy"></a>`BUSY` | Busy. |
 | <a id="availabilityenumnot_set"></a>`NOT_SET` | Not Set. |
+
+### `AvailableExportFields`
+
+Available fields to be exported as CSV.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="availableexportfieldsauthor"></a>`AUTHOR` | Author name. |
+| <a id="availableexportfieldsauthor_username"></a>`AUTHOR_USERNAME` | Author username. |
+| <a id="availableexportfieldscreated_at"></a>`CREATED_AT` | Date of creation. |
+| <a id="availableexportfieldsid"></a>`ID` | Unique identifier. |
+| <a id="availableexportfieldstitle"></a>`TITLE` | Title. |
+| <a id="availableexportfieldstype"></a>`TYPE` | Type of the work item. |
 
 ### `BlobViewersType`
 

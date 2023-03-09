@@ -27,10 +27,6 @@ describe('BoardAddNewColumnTrigger', () => {
     mountComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('when button is active', () => {
     it('does not show the tooltip', () => {
       const tooltip = findTooltipText();

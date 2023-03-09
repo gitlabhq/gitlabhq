@@ -17,10 +17,6 @@ describe('import actions cell', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('when group is available for import', () => {
     beforeEach(() => {
       createComponent({ isAvailableForImport: true });

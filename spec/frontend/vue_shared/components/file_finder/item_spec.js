@@ -22,10 +22,6 @@ describe('File finder item spec', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders file name & path', () => {
     createComponent();
 

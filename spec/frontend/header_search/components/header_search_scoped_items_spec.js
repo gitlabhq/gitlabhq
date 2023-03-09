@@ -38,10 +38,6 @@ describe('HeaderSearchScopedItems', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findDropdownItems = () => wrapper.findAllComponents(GlDropdownItem);
   const findFirstDropdownItem = () => findDropdownItems().at(0);
   const findDropdownItemTitles = () => findDropdownItems().wrappers.map((w) => trimText(w.text()));

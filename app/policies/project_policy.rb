@@ -357,6 +357,7 @@ class ProjectPolicy < BasePolicy
     enable :read_ci_cd_analytics
     enable :read_external_emails
     enable :read_grafana
+    enable :export_work_items
   end
 
   # We define `:public_user_access` separately because there are cases in gitlab-ee

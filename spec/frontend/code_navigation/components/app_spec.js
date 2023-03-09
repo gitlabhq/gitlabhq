@@ -32,10 +32,6 @@ function factory(initialState = {}, props = {}) {
 }
 
 describe('Code navigation app component', () => {
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('sets initial data on mount if the correct props are passed', () => {
     const codeNavigationPath = 'code/nav/path.js';
     const path = 'blob/path.js';

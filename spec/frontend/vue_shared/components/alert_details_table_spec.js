@@ -41,11 +41,6 @@ describe('AlertDetails', () => {
     });
   }
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   const findTableComponent = () => wrapper.findComponent(GlTable);
   const findTableKeys = () => findTableComponent().findAll('tbody td:first-child');
   const findTableFieldValueByKey = (fieldKey) =>

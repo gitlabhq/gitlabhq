@@ -22,8 +22,6 @@ describe('~/feature_flags/components/users_with_id.vue', () => {
     if (wrapper?.destroy) {
       wrapper.destroy();
     }
-
-    wrapper = null;
   });
 
   it('should display the current value of the parameters', () => {

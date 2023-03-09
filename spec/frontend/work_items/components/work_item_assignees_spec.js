@@ -113,10 +113,6 @@ describe('WorkItemAssignees component', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('passes the correct data-user-id attribute', () => {
     createComponent();
 

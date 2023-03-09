@@ -13,10 +13,6 @@ describe('content/components/wrappers/details', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders a node-view-content as a ul element', () => {
     createWrapper();
 

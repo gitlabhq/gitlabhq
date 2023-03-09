@@ -26,10 +26,6 @@ describe('NoteEditedText', () => {
 
   const findUserElement = () => wrapper.findComponent(GlLink);
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('default', () => {
     beforeEach(() => {
       createWrapper();

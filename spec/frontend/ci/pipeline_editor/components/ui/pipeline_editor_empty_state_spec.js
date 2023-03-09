@@ -23,10 +23,6 @@ describe('Pipeline editor empty state', () => {
   const findConfirmButton = () => wrapper.findComponent(GlButton);
   const findDescription = () => wrapper.findComponent(GlSprintf);
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('when project uses an external CI config', () => {
     beforeEach(() => {
       createComponent({

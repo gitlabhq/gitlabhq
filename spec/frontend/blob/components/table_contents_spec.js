@@ -31,7 +31,6 @@ describe('Markdown table of contents component', () => {
   });
 
   afterEach(() => {
-    wrapper.destroy();
     resetHTMLFixture();
   });
 

@@ -19,10 +19,6 @@ function createComponent(res = {}) {
 }
 
 describe('Saved replies list component', () => {
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('does not render any list items when response is empty', () => {
     wrapper = createComponent(noSavedRepliesResponse);
 

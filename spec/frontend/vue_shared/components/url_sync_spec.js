@@ -33,10 +33,6 @@ describe('url sync component', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const expectUrlSyncWithMergeUrlParams = (
     query,
     times,

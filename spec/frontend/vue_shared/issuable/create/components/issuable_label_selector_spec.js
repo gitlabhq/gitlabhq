@@ -47,10 +47,6 @@ describe('IssuableLabelSelector', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const expectTitleWithCount = (count) => {
     const title = findTitle();
 

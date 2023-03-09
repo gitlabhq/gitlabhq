@@ -54,7 +54,6 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-  wrapper.destroy();
   mock.restore();
 });
 

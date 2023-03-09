@@ -26,10 +26,6 @@ describe('DateTimePicker', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders dropdown toggle button with selected text', async () => {
     createComponent();
     await nextTick();

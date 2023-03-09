@@ -117,8 +117,6 @@ describe('InviteMembersModal', () => {
   });
 
   afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
     mock.restore();
   });
 

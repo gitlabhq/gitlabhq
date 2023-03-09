@@ -25,10 +25,6 @@ describe('~/access_tokens/components/expires_at_field', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('should render datepicker with input info', () => {
     createComponent();
 

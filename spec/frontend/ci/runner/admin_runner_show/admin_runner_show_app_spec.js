@@ -72,7 +72,6 @@ describe('AdminRunnerShowApp', () => {
 
   afterEach(() => {
     mockRunnerQuery.mockReset();
-    wrapper.destroy();
   });
 
   describe('When showing runner details', () => {

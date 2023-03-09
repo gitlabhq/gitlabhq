@@ -90,7 +90,6 @@ describe('TagToken', () => {
 
   afterEach(() => {
     getRecentlyUsedSuggestions.mockReset();
-    wrapper.destroy();
   });
 
   describe('when the tags token is displayed', () => {

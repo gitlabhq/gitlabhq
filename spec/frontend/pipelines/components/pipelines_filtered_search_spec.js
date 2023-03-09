@@ -51,8 +51,6 @@ describe('Pipelines filtered search', () => {
 
   afterEach(() => {
     mock.restore();
-    wrapper.destroy();
-    wrapper = null;
   });
 
   it('displays UI elements', () => {

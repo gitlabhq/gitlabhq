@@ -15,11 +15,6 @@ describe('Issue note attachment', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   it('renders attachment image if it is passed in attachment prop', () => {
     createComponent({
       image: 'test-image',

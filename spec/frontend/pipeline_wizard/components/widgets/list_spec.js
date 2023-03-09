@@ -39,10 +39,6 @@ describe('Pipeline Wizard - List Widget', () => {
   };
 
   describe('component setup and interface', () => {
-    afterEach(() => {
-      wrapper.destroy();
-    });
-
     it('prints the label inside the legend', () => {
       createComponent();
 
@@ -168,10 +164,6 @@ describe('Pipeline Wizard - List Widget', () => {
   });
 
   describe('form validation', () => {
-    afterEach(() => {
-      wrapper.destroy();
-    });
-
     it('does not show validation state when untouched', async () => {
       createComponent({}, mountExtended);
       expect(findGlFormGroup().classes()).not.toContain('is-valid');

@@ -44,8 +44,6 @@ describe('HighlightMixin', () => {
 
   beforeEach(() => createComponent());
 
-  afterEach(() => wrapper.destroy());
-
   describe('initHighlightWorker', () => {
     const firstSeventyLines = contentArray.slice(0, LINES_PER_CHUNK).join('\n');
 

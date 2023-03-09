@@ -16,10 +16,6 @@ describe('BoardConfigurationOptions', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const backlogListCheckbox = () => wrapper.find('[data-testid="backlog-list-checkbox"]');
   const closedListCheckbox = () => wrapper.find('[data-testid="closed-list-checkbox"]');
 

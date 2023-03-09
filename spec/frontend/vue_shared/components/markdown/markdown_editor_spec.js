@@ -63,7 +63,6 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
   });
 
   afterEach(() => {
-    wrapper.destroy();
     mock.restore();
   });
 

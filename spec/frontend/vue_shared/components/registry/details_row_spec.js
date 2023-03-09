@@ -20,11 +20,6 @@ describe('DetailsRow', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   it('has a default slot', () => {
     mountComponent();
     expect(findDefaultSlot().exists()).toBe(true);

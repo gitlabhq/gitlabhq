@@ -15,10 +15,6 @@ function factory({ canMerge }) {
 }
 
 describe('New ready to merge state component', () => {
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it.each`
     canMerge
     ${true}

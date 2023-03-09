@@ -42,8 +42,6 @@ describe('InviteMembersBanner', () => {
   });
 
   afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
     mockAxios.restore();
     unmockTracking();
   });

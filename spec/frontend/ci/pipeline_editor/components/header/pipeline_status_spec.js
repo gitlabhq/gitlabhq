@@ -48,7 +48,6 @@ describe('Pipeline Status', () => {
 
   afterEach(() => {
     mockPipelineQuery.mockReset();
-    wrapper.destroy();
   });
 
   describe('loading icon', () => {

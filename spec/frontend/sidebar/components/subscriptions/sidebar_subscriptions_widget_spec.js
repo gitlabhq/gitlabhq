@@ -62,7 +62,6 @@ describe('Sidebar Subscriptions Widget', () => {
   };
 
   afterEach(() => {
-    wrapper.destroy();
     fakeApollo = null;
   });
 

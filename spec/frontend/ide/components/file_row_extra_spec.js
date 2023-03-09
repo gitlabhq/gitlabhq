@@ -37,8 +37,6 @@ describe('IDE extra file row component', () => {
   };
 
   afterEach(() => {
-    wrapper.destroy();
-
     stagedFilesCount = 0;
     unstagedFilesCount = 0;
     changesCount = 0;

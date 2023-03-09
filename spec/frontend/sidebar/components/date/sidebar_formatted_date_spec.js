@@ -27,10 +27,6 @@ describe('SidebarFormattedDate', () => {
     createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('displays formatted date', () => {
     expect(findFormattedDate().text()).toBe('Apr 15, 2021');
   });

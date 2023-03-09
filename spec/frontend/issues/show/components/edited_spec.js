@@ -15,10 +15,6 @@ describe('Edited component', () => {
   const mountComponent = (propsData) => mount(Edited, { propsData });
   const updatedAt = '2017-05-15T12:31:04.428Z';
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders an edited at+by string', () => {
     wrapper = mountComponent({
       updatedAt,

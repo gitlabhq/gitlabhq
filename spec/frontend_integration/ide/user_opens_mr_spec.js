@@ -34,7 +34,6 @@ describe('IDE: User opens Merge Request', () => {
 
   afterEach(() => {
     vm.$destroy();
-    vm = null;
     resetHTMLFixture();
   });
 

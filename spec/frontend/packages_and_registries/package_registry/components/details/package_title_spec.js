@@ -55,10 +55,6 @@ describe('PackageTitle', () => {
   const findSubHeaderText = () => wrapper.findByTestId('sub-header');
   const findSubHeaderTimeAgo = () => wrapper.findComponent(TimeAgoTooltip);
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('renders', () => {
     it('without tags', async () => {
       await createComponent({ ...packageData(), packageFiles: { nodes: packageFiles() } });

@@ -64,10 +64,6 @@ describe('content_editor/components/bubble_menus/code_block_bubble_menu', () => 
     buildWrapper();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders bubble menu component', async () => {
     tiptapEditor.commands.insertContent(preTag());
     bubbleMenu = wrapper.findComponent(BubbleMenu);

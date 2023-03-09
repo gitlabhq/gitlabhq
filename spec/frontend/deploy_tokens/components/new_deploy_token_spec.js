@@ -38,10 +38,6 @@ describe('New Deploy Token', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('without a container registry', () => {
     beforeEach(() => {
       wrapper = factory({ containerRegistryEnabled: false });

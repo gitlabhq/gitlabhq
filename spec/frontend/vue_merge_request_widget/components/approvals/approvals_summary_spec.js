@@ -31,8 +31,6 @@ describe('MRWidget approvals summary', () => {
   const findAvatars = () => wrapper.findComponent(UserAvatarList);
 
   afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
     gon.current_user_id = originalUserId;
   });
 

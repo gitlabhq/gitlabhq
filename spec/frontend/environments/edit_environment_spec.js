@@ -37,7 +37,6 @@ describe('~/environments/components/edit.vue', () => {
 
   afterEach(() => {
     mock.restore();
-    wrapper.destroy();
   });
 
   const findNameInput = () => wrapper.findByLabelText('Name');

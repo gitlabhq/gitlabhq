@@ -37,7 +37,6 @@ describe('New project push tip popover', () => {
   });
 
   afterEach(() => {
-    wrapper.destroy();
     resetHTMLFixture();
   });
 

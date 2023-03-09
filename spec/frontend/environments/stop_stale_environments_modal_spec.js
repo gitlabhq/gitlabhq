@@ -39,7 +39,6 @@ describe('~/environments/components/stop_stale_environments_modal.vue', () => {
 
   afterEach(() => {
     mock.restore();
-    wrapper.destroy();
     jest.resetAllMocks();
     window.gon = originalGon;
   });

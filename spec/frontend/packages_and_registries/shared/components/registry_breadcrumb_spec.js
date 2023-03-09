@@ -31,10 +31,6 @@ describe('Registry Breadcrumb', () => {
     nameGenerator.mockClear();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('when is rootRoute', () => {
     beforeEach(() => {
       mountComponent(routes[0]);

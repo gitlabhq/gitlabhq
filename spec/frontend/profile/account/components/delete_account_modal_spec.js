@@ -40,12 +40,6 @@ describe('DeleteAccountModal component', () => {
     vm = wrapper.vm;
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-    vm = null;
-  });
-
   const findElements = () => {
     const confirmation = vm.confirmWithPassword ? 'password' : 'username';
     return {

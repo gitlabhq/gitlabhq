@@ -28,11 +28,6 @@ describe('ide/components/panes/right.vue', () => {
     store = createStore();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   describe('default', () => {
     beforeEach(() => {
       createComponent();

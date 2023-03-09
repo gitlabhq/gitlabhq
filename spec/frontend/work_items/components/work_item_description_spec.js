@@ -99,10 +99,6 @@ describe('WorkItemDescription', () => {
     }
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('editing description with workItemsMvc FF enabled', () => {
     beforeEach(() => {
       workItemsMvc = true;

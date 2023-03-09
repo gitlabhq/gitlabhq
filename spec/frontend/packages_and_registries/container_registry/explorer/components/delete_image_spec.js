@@ -46,11 +46,6 @@ describe('Delete Image', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   it('executes apollo mutate on doDelete', () => {
     const mutate = jest.fn().mockResolvedValue({});
     mountComponent({ mutate });

@@ -25,10 +25,6 @@ describe('RunnerTypeBadge', () => {
     createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('renders paused state', () => {
     expect(wrapper.text()).toBe(I18N_PAUSED);
     expect(findBadge().props('variant')).toBe('warning');

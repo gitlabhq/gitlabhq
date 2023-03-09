@@ -52,8 +52,6 @@ describe('WebIDE', () => {
   });
 
   afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
     window.onbeforeunload = null;
   });
 

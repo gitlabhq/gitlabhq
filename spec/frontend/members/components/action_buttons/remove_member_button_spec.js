@@ -58,10 +58,6 @@ describe('RemoveMemberButton', () => {
     createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   it('sets attributes on button', () => {
     expect(wrapper.attributes()).toMatchObject({
       'aria-label': 'Remove member',

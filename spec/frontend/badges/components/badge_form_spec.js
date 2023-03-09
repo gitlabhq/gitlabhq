@@ -43,7 +43,6 @@ describe('BadgeForm component', () => {
   });
 
   afterEach(() => {
-    wrapper.destroy();
     axiosMock.restore();
   });
 

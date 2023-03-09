@@ -48,11 +48,6 @@ describe('RemoveGroupLinkButton', () => {
     createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   it('displays a tooltip', () => {
     const button = findButton();
 

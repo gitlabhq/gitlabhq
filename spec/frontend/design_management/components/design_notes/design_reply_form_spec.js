@@ -69,7 +69,6 @@ describe('Design reply form component', () => {
   });
 
   afterEach(() => {
-    wrapper.destroy();
     window.gon = originalGon;
     confirmAction.mockReset();
   });

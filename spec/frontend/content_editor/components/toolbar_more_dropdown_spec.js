@@ -35,10 +35,6 @@ describe('content_editor/components/toolbar_more_dropdown', () => {
     buildWrapper();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe.each`
     name                        | contentType          | command                    | params
     ${'Code block'}             | ${'codeBlock'}       | ${'setNode'}               | ${['codeBlock']}

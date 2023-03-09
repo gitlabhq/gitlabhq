@@ -54,10 +54,6 @@ describe('SourceBranchDropdown', () => {
     });
   }
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('when `selectedProject` prop is not specified', () => {
     beforeEach(() => {
       createComponent();

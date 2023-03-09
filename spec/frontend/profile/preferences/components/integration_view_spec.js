@@ -38,11 +38,6 @@ describe('IntegrationView component', () => {
   const findHiddenField = () =>
     wrapper.findByTestId('profile-preferences-integration-hidden-field');
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   it('should render the form group legend correctly', () => {
     wrapper = createComponent();
 

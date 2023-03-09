@@ -22,7 +22,6 @@ describe('FileTreePopover component', () => {
 
   afterEach(() => {
     localStorage.clear();
-    wrapper.destroy();
   });
 
   describe('default', () => {

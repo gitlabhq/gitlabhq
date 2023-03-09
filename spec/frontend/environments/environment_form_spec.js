@@ -25,10 +25,6 @@ describe('~/environments/components/form.vue', () => {
       },
     });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('default', () => {
     beforeEach(() => {
       wrapper = createWrapper();

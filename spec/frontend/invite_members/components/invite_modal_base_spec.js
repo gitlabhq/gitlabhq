@@ -54,10 +54,6 @@ describe('InviteModalBase', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findFormSelect = () => wrapper.findComponent(GlFormSelect);
   const findFormSelectOptions = () => findFormSelect().findAllComponents('option');
   const findDatepicker = () => wrapper.findComponent(GlDatepicker);

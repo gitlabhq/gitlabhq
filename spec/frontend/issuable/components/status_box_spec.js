@@ -11,11 +11,6 @@ function factory(propsData) {
 describe('Merge request status box component', () => {
   const findBadge = () => wrapper.findComponent(GlBadge);
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   describe.each`
     issuableType       | badgeText   | initialState | badgeClass                        | badgeVariant | badgeIcon
     ${'merge_request'} | ${'Open'}   | ${'opened'}  | ${'issuable-status-badge-open'}   | ${'success'} | ${'merge-request-open'}

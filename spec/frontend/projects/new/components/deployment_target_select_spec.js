@@ -47,7 +47,6 @@ describe('Deployment target select', () => {
   });
 
   afterEach(() => {
-    wrapper.destroy();
     resetHTMLFixture();
   });
 

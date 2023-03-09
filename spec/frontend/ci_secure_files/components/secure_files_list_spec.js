@@ -34,7 +34,6 @@ describe('SecureFilesList', () => {
   });
 
   afterEach(() => {
-    wrapper.destroy();
     mock.restore();
     unmockTracking();
     window.gon = originalGon;
