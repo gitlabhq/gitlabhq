@@ -44,8 +44,6 @@ echo "$variables" >>"$REVIEW_PIPELINE_YML"
 
 cp .gitlab/ci/package-and-test/main.gitlab-ci.yml "$OMNIBUS_PIPELINE_YML"
 echo "$variables" >>"$OMNIBUS_PIPELINE_YML"
-echo "  ALLURE_JOB_NAME: e2e-package-and-test" >>"$OMNIBUS_PIPELINE_YML"
-echo "  QA_RUN_TYPE: e2e-package-and-test" >>"$OMNIBUS_PIPELINE_YML"
 
 echo "Successfully generated review-app and package-and-test pipeline with following variables section:"
 echo "$variables"

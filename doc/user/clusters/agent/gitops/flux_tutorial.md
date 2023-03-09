@@ -64,31 +64,31 @@ Next, create a repository for your Kubernetes manifests:
 1. In GitLab, create a new repository called `web-app-manifests`.
 1. Add a file to `web-app-manifests` named `nginx-deployment.yaml` with the following contents:
 
-```yaml
-apiVersion: apps/v1
+   ```yaml
+   apiVersion: apps/v1
 
-kind: Deployment
+   kind: Deployment
 
-metadata:
-  name: nginx-deployment
-  labels:
-    app: nginx
-spec:
-  replicas: 3
-  selector:
-    matchLabels:
-      app: nginx
-  template:
-    metadata:
-      labels:
-        app: nginx
-    spec:
-      containers:
-      - name: nginx
-        image: nginx:1.14.2
-        ports:
-        - containerPort: 80
-```
+   metadata:
+     name: nginx-deployment
+     labels:
+       app: nginx
+   spec:
+     replicas: 3
+     selector:
+       matchLabels:
+         app: nginx
+     template:
+       metadata:
+         labels:
+           app: nginx
+       spec:
+         containers:
+         - name: nginx
+           image: nginx:1.14.2
+           ports:
+           - containerPort: 80
+   ```
 
 1. In the new repository, [create a deploy token](../../../project/deploy_tokens/index.md#create-a-deploy-token) with only the **read_repository** scope.
 1. Store your deploy token username and password somewhere safe.

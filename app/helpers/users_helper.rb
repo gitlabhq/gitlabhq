@@ -16,9 +16,7 @@ module UsersHelper
   end
 
   def user_link(user)
-    link_to(user.name, user_path(user),
-            title: user.email,
-            class: 'has-tooltip commit-committer-link')
+    link_to(user.name, user_path(user), title: user.email, class: 'has-tooltip commit-committer-link')
   end
 
   def user_email_help_text(user)
@@ -86,9 +84,9 @@ module UsersHelper
     return unless user.status
 
     content_tag :span,
-                class: 'user-status-emoji has-tooltip',
-                title: user.status.message_html,
-                data: { html: true, placement: 'top' } do
+      class: 'user-status-emoji has-tooltip',
+      title: user.status.message_html,
+      data: { html: true, placement: 'top' } do
       emoji_icon user.status.emoji
     end
   end

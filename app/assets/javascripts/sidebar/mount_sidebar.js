@@ -356,7 +356,7 @@ export function mountSidebarLabelsWidget() {
             isInIssuePage() || isInIncidentPage() || isInDesignPage()
               ? TYPE_ISSUE
               : TYPE_MERGE_REQUEST,
-          workspaceType: 'project',
+          workspaceType: WORKSPACE_PROJECT,
           attrWorkspacePath: el.dataset.projectPath,
           labelCreateType: WORKSPACE_PROJECT,
         },

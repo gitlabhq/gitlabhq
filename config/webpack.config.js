@@ -331,8 +331,21 @@ module.exports = {
         test: /\.(js|cjs)$/,
         exclude: (modulePath) =>
           /node_modules|vendor[\\/]assets/.test(modulePath) && !/\.vue\.js/.test(modulePath),
-        loader: 'babel-loader',
-        options: defaultJsOptions,
+        use: [
+          {
+            loader: 'thread-loader',
+            options: {
+              workerParallelJobs: 20,
+              poolRespawn: false,
+              poolParallelJobs: 200,
+              poolTimeout: DEV_SERVER_LIVERELOAD ? Infinity : 5000,
+            },
+          },
+          {
+            loader: 'babel-loader',
+            options: defaultJsOptions,
+          },
+        ],
       },
       WEBPACK_USE_ESBUILD_LOADER && {
         test: /\.(js|cjs)$/,

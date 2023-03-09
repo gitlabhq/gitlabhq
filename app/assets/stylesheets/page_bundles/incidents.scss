@@ -57,8 +57,6 @@
 }
 
 .timeline-entry:not(:last-child) {
-  @include gl-pb-0;
-
   .timeline-event-border {
     @include gl-pb-3;
     @include gl-border-gray-50;

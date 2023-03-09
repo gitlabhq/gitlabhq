@@ -131,10 +131,10 @@ module Ci
 
       if path
         link_to ci_icon_for_status(status, size: icon_size), path,
-                class: klass, title: title, data: data
+          class: klass, title: title, data: data
       else
         content_tag :span, ci_icon_for_status(status, size: icon_size),
-                class: klass, title: title, data: data
+          class: klass, title: title, data: data
       end
     end
 

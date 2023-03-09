@@ -1,5 +1,5 @@
 <script>
-import { GlListbox } from '@gitlab/ui';
+import { GlCollapsibleListbox } from '@gitlab/ui';
 import { debounce } from 'lodash';
 import { createAlert } from '~/alert';
 import { __ } from '~/locale';
@@ -7,7 +7,7 @@ import axios from '~/lib/utils/axios_utils';
 
 export default {
   components: {
-    GlListbox,
+    GlCollapsibleListbox,
   },
   props: {
     staticData: {
@@ -124,7 +124,7 @@ export default {
       :name="inputName"
       data-testid="target-project-input"
     />
-    <gl-listbox
+    <gl-collapsible-listbox
       v-model="selected"
       :items="filteredData"
       :toggle-text="current.text || dropdownHeader"

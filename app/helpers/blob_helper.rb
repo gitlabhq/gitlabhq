@@ -2,9 +2,7 @@
 
 module BlobHelper
   def edit_blob_path(project = @project, ref = @ref, path = @path, options = {})
-    project_edit_blob_path(project,
-                           tree_join(ref, path),
-                           options[:link_opts])
+    project_edit_blob_path(project, tree_join(ref, path), options[:link_opts])
   end
 
   def ide_edit_path(project = @project, ref = @ref, path = @path)
@@ -52,9 +50,11 @@ module BlobHelper
   def fork_path_for_current_user(project, path, with_notice: true)
     return unless current_user
 
-    project_forks_path(project,
-                      namespace_key: current_user.namespace&.id,
-                      continue: edit_blob_fork_params(path, with_notice: with_notice))
+    project_forks_path(
+      project,
+      namespace_key: current_user.namespace&.id,
+      continue: edit_blob_fork_params(path, with_notice: with_notice)
+    )
   end
 
   def encode_ide_path(path)
@@ -66,12 +66,14 @@ module BlobHelper
 
     common_classes = "btn gl-button btn-confirm js-edit-blob gl-ml-3 #{options[:extra_class]}"
 
-    edit_button_tag(blob,
-                    common_classes,
-                    _('Edit'),
-                    edit_blob_path(project, ref, path, options),
-                    project,
-                    ref)
+    edit_button_tag(
+      blob,
+      common_classes,
+      _('Edit'),
+      edit_blob_path(project, ref, path, options),
+      project,
+      ref
+    )
   end
 
   def can_modify_blob?(blob, project = @project, ref = @ref)
@@ -282,8 +284,8 @@ module BlobHelper
     fork_path = project_forks_path(project, namespace_key: current_user.namespace.id, continue: params)
 
     button_tag label,
-               class: "#{common_classes} js-edit-blob-link-fork-toggler",
-               data: { action: action, fork_path: fork_path }
+      class: "#{common_classes} js-edit-blob-link-fork-toggler",
+      data: { action: action, fork_path: fork_path }
   end
 
   def edit_disabled_button_tag(button_text, common_classes)

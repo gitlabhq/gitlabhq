@@ -27,12 +27,11 @@ module CommitsHelper
   end
 
   def commit_to_html(commit, ref, project)
-    render partial: 'projects/commits/commit', formats: :html,
-           locals: {
-        commit: commit,
-        ref: ref,
-        project: project
-      }
+    render partial: 'projects/commits/commit', formats: :html, locals: {
+      commit: commit,
+      ref: ref,
+      project: project
+    }
   end
 
   # Breadcrumb links for a Project and, if applicable, a tree path
@@ -194,10 +193,12 @@ module CommitsHelper
     entity = mode == 'raw' ? 'rawButton' : 'renderedButton'
     title = "Display #{mode} diff"
 
-    link_to("##{mode}-diff-#{file_hash}",
-            class: "btn gl-button btn-default btn-file-option has-tooltip btn-show-#{mode}-diff",
-            title: title,
-            data: { file_hash: file_hash, diff_toggle_entity: entity }) do
+    link_to(
+      "##{mode}-diff-#{file_hash}",
+      class: "btn gl-button btn-default btn-file-option has-tooltip btn-show-#{mode}-diff",
+      title: title,
+      data: { file_hash: file_hash, diff_toggle_entity: entity }
+    ) do
       sprite_icon(icon)
     end
   end

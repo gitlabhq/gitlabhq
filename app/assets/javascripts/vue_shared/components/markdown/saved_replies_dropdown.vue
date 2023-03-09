@@ -1,5 +1,5 @@
 <script>
-import { GlListbox, GlIcon, GlButton, GlTooltipDirective } from '@gitlab/ui';
+import { GlCollapsibleListbox, GlIcon, GlButton, GlTooltipDirective } from '@gitlab/ui';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import savedRepliesQuery from './saved_replies.query.graphql';
 
@@ -14,7 +14,7 @@ export default {
     },
   },
   components: {
-    GlListbox,
+    GlCollapsibleListbox,
     GlIcon,
     GlButton,
   },
@@ -56,7 +56,7 @@ export default {
 </script>
 
 <template>
-  <gl-listbox
+  <gl-collapsible-listbox
     :header-text="__('Insert saved reply')"
     :items="filteredSavedReplies"
     placement="right"
@@ -106,5 +106,5 @@ export default {
         >
       </div>
     </template>
-  </gl-listbox>
+  </gl-collapsible-listbox>
 </template>

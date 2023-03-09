@@ -181,14 +181,14 @@ module ApplicationHelper
     css_classes << html_class unless html_class.blank?
 
     content_tag :time, l(time, format: "%b %d, %Y"),
-                class: css_classes.join(' '),
-                title: l(time.to_time.in_time_zone, format: :timeago_tooltip),
-                datetime: time.to_time.getutc.iso8601,
-                data: {
-                  toggle: 'tooltip',
-                  placement: placement,
-                  container: 'body'
-                }
+      class: css_classes.join(' '),
+      title: l(time.to_time.in_time_zone, format: :timeago_tooltip),
+      datetime: time.to_time.getutc.iso8601,
+      data: {
+        toggle: 'tooltip',
+        placement: placement,
+        container: 'body'
+      }
   end
 
   def edited_time_ago_with_tooltip(object, placement: 'top', html_class: 'time_ago', exclude_author: false)

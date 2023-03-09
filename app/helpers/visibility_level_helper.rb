@@ -44,9 +44,8 @@ module VisibilityLevelHelper
     Gitlab::CurrentSettings.restricted_visibility_levels || []
   end
 
-  delegate  :default_project_visibility,
-            :default_group_visibility,
-            to: :'Gitlab::CurrentSettings.current_application_settings'
+  delegate :default_project_visibility, :default_group_visibility,
+    to: :'Gitlab::CurrentSettings.current_application_settings'
 
   def disallowed_visibility_level?(form_model, level)
     return false unless form_model.respond_to?(:visibility_level_allowed?)

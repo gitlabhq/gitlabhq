@@ -4,11 +4,11 @@ module ApplicationSettingsHelper
   extend self
 
   delegate :allow_signup?,
-           :gravatar_enabled?,
-           :password_authentication_enabled_for_web?,
-           :akismet_enabled?,
-           :spam_check_endpoint_enabled?,
-           to: :'Gitlab::CurrentSettings.current_application_settings'
+    :gravatar_enabled?,
+    :password_authentication_enabled_for_web?,
+    :akismet_enabled?,
+    :spam_check_endpoint_enabled?,
+    to: :'Gitlab::CurrentSettings.current_application_settings'
 
   def user_oauth_applications?
     Gitlab::CurrentSettings.user_oauth_applications

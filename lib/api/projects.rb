@@ -80,9 +80,8 @@ module API
       # Temporarily introduced for upload API: https://gitlab.com/gitlab-org/gitlab/-/issues/325788
       def project_attachment_size(user_project)
         return PROJECT_ATTACHMENT_SIZE_EXEMPT if exempt_from_global_attachment_size?(user_project)
-        return user_project.max_attachment_size if Feature.enabled?(:enforce_max_attachment_size_upload_api, user_project)
 
-        PROJECT_ATTACHMENT_SIZE_EXEMPT
+        user_project.max_attachment_size
       end
 
       # This is to help determine which projects to use in https://gitlab.com/gitlab-org/gitlab/-/issues/325788

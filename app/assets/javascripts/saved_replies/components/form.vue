@@ -133,7 +133,7 @@ export default {
     >
       <gl-form-input
         v-model="updateSavedReply.name"
-        :placeholder="__('Name')"
+        :placeholder="__('Enter a name for your saved reply')"
         data-testid="saved-reply-name-input"
       />
     </gl-form-group>

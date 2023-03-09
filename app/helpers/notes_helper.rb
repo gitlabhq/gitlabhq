@@ -77,8 +77,10 @@ module NotesHelper
       line_type: line_type
     }
 
-    button_tag 'Reply...', class: 'btn btn-text-field js-discussion-reply-button',
-                           data: data, title: 'Add a reply'
+    button_tag 'Reply...',
+      class: 'btn btn-text-field js-discussion-reply-button',
+      data: data,
+      title: 'Add a reply'
   end
 
   def note_max_access_for_user(note)

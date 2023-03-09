@@ -2,6 +2,7 @@ import { last } from 'lodash';
 import recentSearchesStorageKeys from 'ee_else_ce/filtered_search/recent_searches_storage_keys';
 import IssuableFilteredSearchTokenKeys from '~/filtered_search/issuable_filtered_search_token_keys';
 import { createAlert } from '~/alert';
+import { WORKSPACE_PROJECT } from '~/issues/constants';
 import {
   ENTER_KEY_CODE,
   BACKSPACE_KEY_CODE,
@@ -82,7 +83,7 @@ export default class FilteredSearchManager {
     );
     const fullPath = this.searchHistoryDropdownElement
       ? this.searchHistoryDropdownElement.dataset.fullPath
-      : 'project';
+      : WORKSPACE_PROJECT;
     const recentSearchesKey = `${fullPath}-${recentSearchesStorageKeys[this.page]}`;
     this.recentSearchesService = new RecentSearchesService(recentSearchesKey);
   }

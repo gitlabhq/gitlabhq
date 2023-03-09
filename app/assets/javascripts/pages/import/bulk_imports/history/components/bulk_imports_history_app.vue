@@ -15,6 +15,7 @@ import { parseIntPagination, normalizeHeaders } from '~/lib/utils/common_utils';
 import { joinPaths } from '~/lib/utils/url_utility';
 import { getBulkImportsHistory } from '~/rest_api';
 import ImportStatus from '~/import_entities/components/import_status.vue';
+import { WORKSPACE_GROUP, WORKSPACE_PROJECT } from '~/issues/constants';
 import PaginationBar from '~/vue_shared/components/pagination_bar/pagination_bar.vue';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
@@ -131,15 +132,15 @@ export default {
     },
 
     getPresentationUrl(item) {
-      const suffix = item.entity_type === 'group' ? '/' : '';
+      const suffix = item.entity_type === WORKSPACE_GROUP ? '/' : '';
       return `${item.destination_full_path}${suffix}`;
     },
 
     getEntityTooltip(item) {
       switch (item.entity_type) {
-        case 'project':
+        case WORKSPACE_PROJECT:
           return __('Project');
-        case 'group':
+        case WORKSPACE_GROUP:
           return __('Group');
         default:
           return '';

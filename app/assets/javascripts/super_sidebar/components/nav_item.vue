@@ -50,6 +50,7 @@ export default {
       }
       return {
         href: this.item.link,
+        'aria-current': this.isActive ? 'page' : null,
       };
     },
     linkClasses() {

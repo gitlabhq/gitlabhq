@@ -2066,19 +2066,6 @@ RSpec.describe API::Projects, feature_category: :projects do
       end
     end
 
-    context 'with upload size enforcement disabled' do
-      before do
-        stub_feature_flags(enforce_max_attachment_size_upload_api: false)
-      end
-
-      it "returns 200" do
-        post api("/projects/#{project.id}/uploads/authorize", user), headers: headers
-
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response['MaximumSize']).to eq(1.gigabyte)
-      end
-    end
-
     context 'with no Workhorse headers' do
       it "returns 403" do
         post api("/projects/#{project.id}/uploads/authorize", user)
@@ -2154,14 +2141,6 @@ RSpec.describe API::Projects, feature_category: :projects do
       end
 
       it_behaves_like 'capped upload attachments', true
-    end
-
-    context 'with upload size enforcement disabled' do
-      before do
-        stub_feature_flags(enforce_max_attachment_size_upload_api: false)
-      end
-
-      it_behaves_like 'capped upload attachments', false
     end
   end
 

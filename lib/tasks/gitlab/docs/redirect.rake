@@ -1,12 +1,13 @@
 # frozen_string_literal: true
-require 'date'
-require 'pathname'
-require "yaml"
 
 #
 # https://docs.gitlab.com/ee/development/documentation/#move-or-rename-a-page
 #
 namespace :gitlab do
+  require 'date'
+  require 'pathname'
+  require 'yaml'
+
   namespace :docs do
     desc 'GitLab | Docs | Create a doc redirect'
     task :redirect, [:old_path, :new_path] do |_, args|

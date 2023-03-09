@@ -145,8 +145,6 @@ export const YARN_PACKAGE_MANAGER = 'yarn';
 export const PROJECT_PACKAGE_ENDPOINT_TYPE = 'project';
 export const INSTANCE_PACKAGE_ENDPOINT_TYPE = 'instance';
 
-export const PROJECT_RESOURCE_TYPE = 'project';
-export const GROUP_RESOURCE_TYPE = 'group';
 export const GRAPHQL_PAGE_SIZE = 20;
 
 export const LIST_KEY_NAME = 'name';

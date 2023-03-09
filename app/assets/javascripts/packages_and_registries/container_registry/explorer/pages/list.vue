@@ -11,6 +11,7 @@ import {
 import { get } from 'lodash';
 import getContainerRepositoriesQuery from 'shared_queries/container_registry/get_container_repositories.query.graphql';
 import { createAlert } from '~/alert';
+import { WORKSPACE_GROUP, WORKSPACE_PROJECT } from '~/issues/constants';
 import Tracking from '~/tracking';
 import PersistedSearch from '~/packages_and_registries/shared/components/persisted_search.vue';
 import { FILTERED_SEARCH_TERM } from '~/vue_shared/components/filtered_search_bar/constants';
@@ -145,7 +146,7 @@ export default {
       return [];
     },
     graphqlResource() {
-      return this.config.isGroupPage ? 'group' : 'project';
+      return this.config.isGroupPage ? WORKSPACE_GROUP : WORKSPACE_PROJECT;
     },
     queryVariables() {
       return {

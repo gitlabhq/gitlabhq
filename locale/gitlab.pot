@@ -15961,6 +15961,9 @@ msgstr ""
 msgid "Enter Admin Mode"
 msgstr ""
 
+msgid "Enter a name for your saved reply"
+msgstr ""
+
 msgid "Enter a number"
 msgstr ""
 

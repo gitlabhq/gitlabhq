@@ -1,5 +1,5 @@
 <script>
-import { GlFormGroup, GlIcon, GlListbox } from '@gitlab/ui';
+import { GlFormGroup, GlIcon, GlCollapsibleListbox } from '@gitlab/ui';
 import { TYPE_INCIDENT, TYPE_ISSUE } from '~/issues/constants';
 import { __ } from '~/locale';
 import { issuableTypes } from '../../constants';
@@ -16,7 +16,7 @@ export default {
   components: {
     GlFormGroup,
     GlIcon,
-    GlListbox,
+    GlCollapsibleListbox,
   },
   inject: {
     canCreateIncident: {
@@ -73,7 +73,7 @@ export default {
     label-for="issuable-type"
     class="mb-2 mb-md-0"
   >
-    <gl-listbox
+    <gl-collapsible-listbox
       v-model="selectedIssueType"
       toggle-class="gl-mb-0"
       :items="$options.issuableTypes"
@@ -88,6 +88,6 @@ export default {
           {{ item.text }}
         </span>
       </template>
-    </gl-listbox>
+    </gl-collapsible-listbox>
   </gl-form-group>
 </template>

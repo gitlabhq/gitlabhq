@@ -65,7 +65,7 @@ qa:update-qa-cache:
   script:
     - echo "Cache has been updated and ready to be uploaded."
 
-e2e:package-and-test:
+e2e:package-and-test-ee:
   extends:
     - .production  # this makes sure GITLAB_ALLOW_SEPARATE_CI_DATABASE is passed to the child pipeline
     - .qa:rules:package-and-test
@@ -82,6 +82,8 @@ e2e:package-and-test:
     GITLAB_QA_IMAGE: "${CI_REGISTRY_IMAGE}/gitlab-ee-qa:${CI_COMMIT_SHA}"
     RUN_WITH_BUNDLE: "true"  # instructs pipeline to install and run gitlab-qa gem via bundler
     QA_PATH: qa  # sets the optional path for bundler to run from
+    ALLURE_JOB_NAME: e2e-package-and-test
+    QA_RUN_TYPE: e2e-package-and-test
   inherit:
     variables:
       - CHROME_VERSION

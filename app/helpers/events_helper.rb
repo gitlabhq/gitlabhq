@@ -29,10 +29,11 @@ module EventsHelper
       opened: s_('Event|opened'),
       updated: s_('Event|updated'),
       'removed due to membership expiration from': s_('Event|removed due to membership expiration from')
-    }.merge(localized_push_action_name_map,
-            localized_created_project_action_name_map,
-            localized_design_action_names
-           ).freeze
+    }.merge(
+      localized_push_action_name_map,
+      localized_created_project_action_name_map,
+      localized_design_action_names
+    ).freeze
   end
 
   def localized_push_action_name_map
@@ -183,13 +184,11 @@ module EventsHelper
 
   def event_feed_url(event)
     if event.issue?
-      project_issue_url(event.project,
-                                  event.issue)
+      project_issue_url(event.project, event.issue)
     elsif event.merge_request?
       project_merge_request_url(event.project, event.merge_request)
     elsif event.commit_note?
-      project_commit_url(event.project,
-                                   event.note_target)
+      project_commit_url(event.project, event.note_target)
     elsif event.note?
       if event.note_target
         event_note_target_url(event)
@@ -204,16 +203,12 @@ module EventsHelper
   def push_event_feed_url(event)
     if event.push_with_commits? && event.md_ref?
       if event.commits_count > 1
-        project_compare_url(event.project,
-                                      from: event.commit_from, to:
-                                      event.commit_to)
+        project_compare_url(event.project, from: event.commit_from, to: event.commit_to)
       else
-        project_commit_url(event.project,
-                                     id: event.commit_to)
+        project_commit_url(event.project, id: event.commit_to)
       end
     elsif event.ref_name
-      project_commits_url(event.project,
-                                    event.ref_name)
+      project_commits_url(event.project, event.ref_name)
     end
   end
 
@@ -241,26 +236,31 @@ module EventsHelper
     elsif event.design_note?
       design_url(event.note_target, anchor: dom_id(event.note))
     else
-      polymorphic_url([event.project, event.note_target],
-                        anchor: dom_id(event.target))
+      polymorphic_url([event.project, event.note_target], anchor: dom_id(event.target))
     end
   end
 
   def event_wiki_title_html(event)
     capture do
       concat content_tag(:span, _('wiki page'), class: "event-target-type gl-mr-2")
-      concat link_to(event.target_title, event_wiki_page_target_url(event),
-                     title: event.target_title,
-                     class: 'has-tooltip event-target-link gl-mr-2')
+      concat link_to(
+        event.target_title,
+        event_wiki_page_target_url(event),
+        title: event.target_title,
+        class: 'has-tooltip event-target-link gl-mr-2'
+      )
     end
   end
 
   def event_design_title_html(event)
     capture do
       concat content_tag(:span, _('design'), class: "event-target-type gl-mr-2")
-      concat link_to(event.design.reference_link_text, design_url(event.design),
-                     title: event.target_title,
-                     class: 'has-tooltip event-design event-target-link gl-mr-2')
+      concat link_to(
+        event.design.reference_link_text,
+        design_url(event.design),
+        title: event.target_title,
+        class: 'has-tooltip event-design event-target-link gl-mr-2'
+      )
     end
   end
 

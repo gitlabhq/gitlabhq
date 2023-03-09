@@ -1,14 +1,16 @@
-import toast, { instance } from '~/vue_shared/plugins/global_toast';
+import toast from '~/vue_shared/plugins/global_toast';
+
+const mockSpy = jest.fn();
+jest.mock('@gitlab/ui', () => ({
+  GlToast: (Vue) => {
+    // eslint-disable-next-line no-param-reassign
+    Vue.prototype.$toast = { show: (...args) => mockSpy(...args) };
+  },
+}));
 
 describe('Global toast', () => {
-  let spyFunc;
-
-  beforeEach(() => {
-    spyFunc = jest.spyOn(instance.$toast, 'show').mockImplementation(() => {});
-  });
-
   afterEach(() => {
-    spyFunc.mockRestore();
+    mockSpy.mockRestore();
   });
 
   it("should call GitLab UI's toast method", () => {
@@ -17,7 +19,7 @@ describe('Global toast', () => {
 
     toast(arg1, arg2);
 
-    expect(instance.$toast.show).toHaveBeenCalledTimes(1);
-    expect(instance.$toast.show).toHaveBeenCalledWith(arg1, arg2);
+    expect(mockSpy).toHaveBeenCalledTimes(1);
+    expect(mockSpy).toHaveBeenCalledWith(arg1, arg2);
   });
 });

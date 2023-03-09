@@ -51,7 +51,7 @@ that are the largest value contributors, overperforming, or underperforming.
 You can also drill down the metrics for further analysis.
 When you hover over a metric, a tooltip displays an explanation of the metric and a link to the related documentation page.
 
-## Customize the dashboard widgets
+## Customize the dashboard panels
 
 You can customize the Value Streams Dashboard and configure what subgroups and projects to include in the page.
 
@@ -59,7 +59,7 @@ A view can display maximum four subgroups or projects.
 
 To display multiple subgroups and projects, specify their path as a URL parameter.
 
-For example, the parameter `query=gitlab-org/gitlab-foss,gitlab-org/gitlab,gitlab-org/gitlab-design,gitlab-org/gitlab-docs` displays three separate widgets, one each for the:
+For example, the parameter `query=gitlab-org/gitlab-foss,gitlab-org/gitlab,gitlab-org/gitlab-design,gitlab-org/gitlab-docs` displays three separate panels, one each for the:
 
 - `gitlab-org` group
 - `gitlab-ui` project

@@ -123,6 +123,11 @@
       when: never
     - !reference [.rules:test:qa, rules]
 
+.rules:test:ee-only:
+  rules:
+    - if: $FOSS_ONLY == "true"
+      when: never
+
 # ------------------------------------------
 # Report
 # ------------------------------------------

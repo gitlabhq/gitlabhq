@@ -2,6 +2,7 @@ import $ from 'jquery';
 import { __ } from '~/locale';
 import { fixTitle, hide } from '~/tooltips';
 import { createAlert } from '~/alert';
+import { WORKSPACE_GROUP, WORKSPACE_PROJECT } from '~/issues/constants';
 import axios from '~/lib/utils/axios_utils';
 
 const tooltipTitles = {
@@ -65,7 +66,7 @@ export default class GroupLabelSubscription {
   static setNewTooltip($button) {
     if (!$button.hasClass('js-subscribe-button')) return;
 
-    const type = $button.hasClass('js-group-level') ? 'group' : 'project';
+    const type = $button.hasClass('js-group-level') ? WORKSPACE_GROUP : WORKSPACE_PROJECT;
     const newTitle = tooltipTitles[type];
 
     const $el = $('.js-unsubscribe-button', $button.closest('.label-actions-list'));

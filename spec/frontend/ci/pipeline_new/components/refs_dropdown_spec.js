@@ -1,4 +1,4 @@
-import { GlListbox, GlListboxItem } from '@gitlab/ui';
+import { GlCollapsibleListbox, GlListboxItem } from '@gitlab/ui';
 import MockAdapter from 'axios-mock-adapter';
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -19,7 +19,7 @@ describe('Pipeline New Form', () => {
   let wrapper;
   let mock;
 
-  const findDropdown = () => wrapper.findComponent(GlListbox);
+  const findDropdown = () => wrapper.findComponent(GlCollapsibleListbox);
   const findRefsDropdownItems = () => wrapper.findAllComponents(GlListboxItem);
   const findSearchBox = () => wrapper.findByTestId('listbox-search-input');
   const findListboxGroups = () => wrapper.findAll('ul[role="group"]');

@@ -1,4 +1,4 @@
-import { GlAlert, GlListbox, GlListboxItem } from '@gitlab/ui';
+import { GlAlert, GlCollapsibleListbox, GlListboxItem } from '@gitlab/ui';
 import { GlAreaChart } from '@gitlab/ui/dist/charts';
 import { shallowMount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
@@ -22,7 +22,7 @@ describe('Code Coverage', () => {
 
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findAreaChart = () => wrapper.findComponent(GlAreaChart);
-  const findListBox = () => wrapper.findComponent(GlListbox);
+  const findListBox = () => wrapper.findComponent(GlCollapsibleListbox);
   const findListBoxItems = () => wrapper.findAllComponents(GlListboxItem);
   const findFirstListBoxItem = () => findListBoxItems().at(0);
   const findSecondListBoxItem = () => findListBoxItems().at(1);
@@ -37,7 +37,7 @@ describe('Code Coverage', () => {
         graphRef,
         graphCsvPath,
       },
-      stubs: { GlListbox },
+      stubs: { GlCollapsibleListbox },
     });
   };
 

@@ -1,4 +1,4 @@
-$system-note-icon-size: 2rem;
+$system-note-icon-size: 1.5rem;
 $system-note-svg-size: 1rem;
 
 @mixin vertical-line($left) {
@@ -35,6 +35,15 @@ $system-note-svg-size: 1rem;
 
   &.timeline > .timeline-entry {
     margin: $gl-padding 0;
+
+    &.system-note {
+      margin-top: $gl-spacing-scale-1;
+      margin-bottom: 0;
+
+      .note-header-info {
+        padding-left: $gl-spacing-scale-4;
+      }
+    }
 
     &.system-note,
     &.note-form {
@@ -447,7 +456,7 @@ $system-note-svg-size: 1rem;
       height: $system-note-icon-size;
       border: 1px solid $gray-50;
       border-radius: $system-note-icon-size;
-      margin: -6px 0 0;
+      margin: -$gl-spacing-scale-1 0 0 $gl-spacing-scale-2;
 
       svg {
         width: $system-note-svg-size;

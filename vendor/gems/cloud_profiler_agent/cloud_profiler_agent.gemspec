@@ -13,8 +13,6 @@ Gem::Specification.new do |spec|
   spec.homepage      = 'https://github.com/remind101/ruby-cloud-profiler'
   spec.license       = 'BSD-2-Clause'
 
-  spec.required_ruby_version = '>= 3.0.0'
-
   spec.files = ['lib/profile_pb.rb',
     'lib/cloud_profiler_agent.rb',
     'lib/cloud_profiler_agent/agent.rb',

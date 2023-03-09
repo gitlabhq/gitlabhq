@@ -2,11 +2,6 @@
 Rake/Require:
   Details: grace period
   Exclude:
-    - 'lib/tasks/gitlab/docs/redirect.rake'
-    - 'lib/tasks/gitlab/graphql.rake'
-    - 'lib/tasks/gitlab/lfs/migrate.rake'
-    - 'lib/tasks/gitlab/metrics_exporter.rake'
-    - 'lib/tasks/gitlab/openapi.rake'
     - 'lib/tasks/gitlab/packages/events.rake'
     - 'lib/tasks/gitlab/refresh_project_statistics_build_artifacts_size.rake'
     - 'lib/tasks/tokens.rake'

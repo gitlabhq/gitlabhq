@@ -380,8 +380,10 @@ module IssuablesHelper
   end
 
   def hidden_issuable_icon(issuable)
-    title = format(_('This %{issuable} is hidden because its author has been banned'),
-                   issuable: issuable.is_a?(Issue) ? _('issue') : _('merge request'))
+    title = format(
+      _('This %{issuable} is hidden because its author has been banned'),
+      issuable: issuable.is_a?(Issue) ? _('issue') : _('merge request')
+    )
     content_tag(:span, class: 'has-tooltip', title: title) do
       sprite_icon('spam', css_class: 'gl-vertical-align-text-bottom')
     end

@@ -40,9 +40,14 @@ module DashboardHelper
       end)
 
       if doc_href.present?
-        link_to_doc = link_to(sprite_icon('question'), doc_href,
-                              class: 'gl-ml-2', title: _('Documentation'),
-                              target: '_blank', rel: 'noopener noreferrer')
+        link_to_doc = link_to(
+          sprite_icon('question'),
+          doc_href,
+          class: 'gl-ml-2',
+          title: _('Documentation'),
+          target: '_blank',
+          rel: 'noopener noreferrer'
+        )
 
         concat(link_to_doc)
       end

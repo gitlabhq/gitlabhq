@@ -4,13 +4,13 @@ import Vue from 'vue';
 import { last } from 'lodash';
 import Vuex from 'vuex';
 import stubChildren from 'helpers/stub_children';
+import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import PackagesList from '~/packages_and_registries/infrastructure_registry/list/components/packages_list.vue';
 import PackagesListRow from '~/packages_and_registries/infrastructure_registry/shared/package_list_row.vue';
 import PackagesListLoader from '~/packages_and_registries/shared/components/packages_list_loader.vue';
 import DeletePackageModal from '~/packages_and_registries/shared/components/delete_package_modal.vue';
 import { TRACKING_ACTIONS } from '~/packages_and_registries/shared/constants';
 import { TRACK_CATEGORY } from '~/packages_and_registries/infrastructure_registry/shared/constants';
-import Tracking from '~/tracking';
 import { packageList } from '../../mock_data';
 
 Vue.use(Vuex);
@@ -174,23 +174,23 @@ describe('packages_list', () => {
   });
 
   describe('tracking', () => {
-    let eventSpy;
+    let trackingSpy = null;
 
     beforeEach(() => {
       mountComponent();
-      eventSpy = jest.spyOn(Tracking, 'event');
-      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-      // eslint-disable-next-line no-restricted-syntax
-      wrapper.setData({ itemToBeDeleted: { package_type: 'conan' } });
+      trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
     });
 
-    it('deleteItemConfirmation calls event', () => {
-      wrapper.vm.deleteItemConfirmation();
-      expect(eventSpy).toHaveBeenCalledWith(
-        TRACK_CATEGORY,
-        TRACKING_ACTIONS.DELETE_PACKAGE,
-        expect.any(Object),
-      );
+    afterEach(() => {
+      unmockTracking();
+    });
+
+    it('deleteItemConfirmation calls event', async () => {
+      await findPackageListDeleteModal().vm.$emit('ok');
+
+      expect(trackingSpy).toHaveBeenCalledWith(TRACK_CATEGORY, TRACKING_ACTIONS.DELETE_PACKAGE, {
+        category: TRACK_CATEGORY,
+      });
     });
   });
 });
