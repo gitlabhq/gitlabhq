@@ -2,6 +2,15 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 15.9.3 (2023-03-09)
+
+### Fixed (4 changes)
+
+- [Fix foreign_key_exists? migration helper](gitlab-org/gitlab@7b51239b18779acfe9876fb9467f1231f56d47b4) ([merge request](gitlab-org/gitlab!114005))
+- [Enable Geo::RepositoryRegistrySyncWorker on Geo secondary site](gitlab-org/gitlab@57b542b4377bcc991b65f34a37397ac1d08846d9) ([merge request](gitlab-org/gitlab!114005)) **GitLab Enterprise Edition**
+- [Guard against dropped columns when finalizing user details migration](gitlab-org/gitlab@939d646e2cbbbabf870e15fae384c0380d371111) ([merge request](gitlab-org/gitlab!114005))
+- [Fix object deletion not working with Azure Blob Storage](gitlab-org/gitlab@9515c7a334a43c0e580543029a8da5061bdc19ce) ([merge request](gitlab-org/gitlab!114005))
+
 ## 15.9.2 (2023-03-02)
 
 ### Security (12 changes)
