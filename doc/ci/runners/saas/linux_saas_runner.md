@@ -96,7 +96,7 @@ This means that the available free disk space that your jobs can use is **less t
 
 WARNING:
 This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/391896) in GitLab 15.9
-and is planned for removal in 15.11. Use [`pre_get_sources_script`](../../../ci/yaml/index.md#hookspre_get_sources_script) instead. This change is a breaking change.
+and is planned for removal in 16.0. Use [`pre_get_sources_script`](../../../ci/yaml/index.md#hookspre_get_sources_script) instead. This change is a breaking change.
 With SaaS runners on Linux, you can run commands in a CI/CD
 job before the runner attempts to run `git init` and `git fetch` to
 download a GitLab repository. The

@@ -70,7 +70,7 @@ module Users
       @user_params[:created_by_id] = current_user&.id
       @user_params[:external] = user_external? if set_external_param?
 
-      @user_params.delete(:user_type) unless project_bot?
+      @user_params.delete(:user_type) unless allowed_user_type?
     end
 
     def set_external_param?
@@ -81,7 +81,7 @@ module Users
       user_default_internal_regex_instance.match(params[:email]).nil?
     end
 
-    def project_bot?
+    def allowed_user_type?
       user_params[:user_type]&.to_sym == :project_bot
     end
 

@@ -44,9 +44,11 @@ RSpec.describe API::DebianProjectPackages, feature_category: :package_registry d
     end
 
     describe 'GET projects/:id/packages/debian/dists/*distribution/:component/binary-:architecture/Packages' do
-      let(:url) { "/projects/#{container.id}/packages/debian/dists/#{distribution.codename}/#{component.name}/binary-#{architecture.name}/Packages" }
+      let(:target_component_file) { component_file }
+      let(:target_component_name) { component.name }
+      let(:url) { "/projects/#{container.id}/packages/debian/dists/#{distribution.codename}/#{target_component_name}/binary-#{architecture.name}/Packages" }
 
-      it_behaves_like 'Debian packages read endpoint', 'GET', :success, /Description: This is an incomplete Packages file/
+      it_behaves_like 'Debian packages index endpoint', /Description: This is an incomplete Packages file/
       it_behaves_like 'accept GET request on private project with access to package registry for everyone'
     end
 
@@ -57,30 +59,40 @@ RSpec.describe API::DebianProjectPackages, feature_category: :package_registry d
     end
 
     describe 'GET projects/:id/packages/debian/dists/*distribution/:component/binary-:architecture/by-hash/SHA256/:file_sha256' do
-      let(:url) { "/projects/#{container.id}/packages/debian/dists/#{distribution.codename}/#{component.name}/binary-#{architecture.name}/by-hash/SHA256/#{component_file_older_sha256.file_sha256}" }
+      let(:target_component_file) { component_file_older_sha256 }
+      let(:target_component_name) { component.name }
+      let(:target_sha256) { target_component_file.file_sha256 }
+      let(:url) { "/projects/#{container.id}/packages/debian/dists/#{distribution.codename}/#{target_component_name}/binary-#{architecture.name}/by-hash/SHA256/#{target_sha256}" }
 
-      it_behaves_like 'Debian packages read endpoint', 'GET', :success, /^Other SHA256$/
+      it_behaves_like 'Debian packages index sha256 endpoint', /^Other SHA256$/
       it_behaves_like 'accept GET request on private project with access to package registry for everyone'
     end
 
     describe 'GET projects/:id/packages/debian/dists/*distribution/:component/source/Sources' do
-      let(:url) { "/projects/#{container.id}/packages/debian/dists/#{distribution.codename}/#{component.name}/source/Sources" }
+      let(:target_component_file) { component_file_sources }
+      let(:target_component_name) { component.name }
+      let(:url) { "/projects/#{container.id}/packages/debian/dists/#{distribution.codename}/#{target_component_name}/source/Sources" }
 
-      it_behaves_like 'Debian packages read endpoint', 'GET', :success, /Description: This is an incomplete Sources file/
+      it_behaves_like 'Debian packages index endpoint', /^Description: This is an incomplete Sources file$/
       it_behaves_like 'accept GET request on private project with access to package registry for everyone'
     end
 
     describe 'GET projects/:id/packages/debian/dists/*distribution/:component/source/by-hash/SHA256/:file_sha256' do
-      let(:url) { "/projects/#{container.id}/packages/debian/dists/#{distribution.codename}/#{component.name}/source/by-hash/SHA256/#{component_file_sources_older_sha256.file_sha256}" }
+      let(:target_component_file) { component_file_sources_older_sha256 }
+      let(:target_component_name) { component.name }
+      let(:target_sha256) { target_component_file.file_sha256 }
+      let(:url) { "/projects/#{container.id}/packages/debian/dists/#{distribution.codename}/#{target_component_name}/source/by-hash/SHA256/#{target_sha256}" }
 
-      it_behaves_like 'Debian packages read endpoint', 'GET', :success, /^Other SHA256$/
+      it_behaves_like 'Debian packages index sha256 endpoint', /^Other SHA256$/
       it_behaves_like 'accept GET request on private project with access to package registry for everyone'
     end
 
     describe 'GET projects/:id/packages/debian/dists/*distribution/:component/debian-installer/binary-:architecture/Packages' do
-      let(:url) { "/projects/#{container.id}/packages/debian/dists/#{distribution.codename}/#{component.name}/debian-installer/binary-#{architecture.name}/Packages" }
+      let(:target_component_file) { component_file_di }
+      let(:target_component_name) { component.name }
+      let(:url) { "/projects/#{container.id}/packages/debian/dists/#{distribution.codename}/#{target_component_name}/debian-installer/binary-#{architecture.name}/Packages" }
 
-      it_behaves_like 'Debian packages read endpoint', 'GET', :success, /Description: This is an incomplete D-I Packages file/
+      it_behaves_like 'Debian packages index endpoint', /Description: This is an incomplete D-I Packages file/
       it_behaves_like 'accept GET request on private project with access to package registry for everyone'
     end
 
@@ -91,9 +103,12 @@ RSpec.describe API::DebianProjectPackages, feature_category: :package_registry d
     end
 
     describe 'GET projects/:id/packages/debian/dists/*distribution/:component/debian-installer/binary-:architecture/by-hash/SHA256/:file_sha256' do
-      let(:url) { "/projects/#{container.id}/packages/debian/dists/#{distribution.codename}/#{component.name}/debian-installer/binary-#{architecture.name}/by-hash/SHA256/#{component_file_di_older_sha256.file_sha256}" }
+      let(:target_component_file) { component_file_di_older_sha256 }
+      let(:target_component_name) { component.name }
+      let(:target_sha256) { target_component_file.file_sha256 }
+      let(:url) { "/projects/#{container.id}/packages/debian/dists/#{distribution.codename}/#{target_component_name}/debian-installer/binary-#{architecture.name}/by-hash/SHA256/#{target_sha256}" }
 
-      it_behaves_like 'Debian packages read endpoint', 'GET', :success, /^Other SHA256$/
+      it_behaves_like 'Debian packages index sha256 endpoint', /^Other SHA256$/
       it_behaves_like 'accept GET request on private project with access to package registry for everyone'
     end
 

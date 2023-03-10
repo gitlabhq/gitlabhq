@@ -33,7 +33,7 @@ RSpec.describe Gitlab::GithubImport::Stage::ImportRepositoryWorker do
             :issues, project.import_source, options
           ).and_return([{ number: 5 }].each)
 
-          expect(Issue).to receive(:track_project_iid!).with(project, 5)
+          expect(Issue).to receive(:track_namespace_iid!).with(project.project_namespace, 5)
 
           expect(Gitlab::GithubImport::Stage::ImportBaseDataWorker)
             .to receive(:perform_async)
@@ -54,7 +54,7 @@ RSpec.describe Gitlab::GithubImport::Stage::ImportRepositoryWorker do
 
           expect(InternalId).to receive(:exists?).and_return(false)
           expect(client).to receive(:each_object).with(:issues, project.import_source, options).and_return([nil].each)
-          expect(Issue).not_to receive(:track_project_iid!)
+          expect(Issue).not_to receive(:track_namespace_iid!)
 
           expect(Gitlab::GithubImport::Stage::ImportBaseDataWorker)
             .to receive(:perform_async)
@@ -74,7 +74,7 @@ RSpec.describe Gitlab::GithubImport::Stage::ImportRepositoryWorker do
 
           expect(InternalId).to receive(:exists?).and_return(true)
           expect(client).not_to receive(:each_object)
-          expect(Issue).not_to receive(:track_project_iid!)
+          expect(Issue).not_to receive(:track_namespace_iid!)
 
           expect(Gitlab::GithubImport::Stage::ImportBaseDataWorker)
             .to receive(:perform_async)
@@ -96,7 +96,7 @@ RSpec.describe Gitlab::GithubImport::Stage::ImportRepositoryWorker do
 
         expect(InternalId).to receive(:exists?).and_return(false)
         expect(client).to receive(:each_object).and_return([nil].each)
-        expect(Issue).not_to receive(:track_project_iid!)
+        expect(Issue).not_to receive(:track_namespace_iid!)
 
         expect(Gitlab::Import::ImportFailureService).to receive(:track)
                                                           .with(

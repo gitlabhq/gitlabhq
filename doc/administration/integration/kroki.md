@@ -29,11 +29,16 @@ docker run -d --name kroki -p 8080:8000 yuzutech/kroki
 
 The **Kroki URL** is the hostname of the server running the container.
 
-The [`yuzutech/kroki`](https://hub.docker.com/r/yuzutech/kroki) image contains the following diagrams libraries out-of-the-box:
+The [`yuzutech/kroki`](https://hub.docker.com/r/yuzutech/kroki) Docker image contains several diagram
+libraries out of the box. For a complete list, see the
+[`asciidoctor-kroki` README](https://github.com/ggrossetie/asciidoctor-kroki/blob/master/README.md#supported-diagram-types).
+Supported libraries include:
 
 <!-- vale gitlab.Spelling = NO -->
 
 - [Bytefield](https://bytefield-svg.deepsymmetry.org/)
+- [D2](https://d2lang.com/tour/intro/)
+- [DBML](https://www.dbml.org/home/)
 - [Ditaa](https://ditaa.sourceforge.net)
 - [Erd](https://github.com/BurntSushi/erd)
 - [GraphViz](https://www.graphviz.org/)

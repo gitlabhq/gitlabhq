@@ -105,6 +105,24 @@ For GitLab [Helm Chart](https://docs.gitlab.com/charts/) installations:
 
 For details, see [how to use the GitLab-KAS chart](https://docs.gitlab.com/charts/charts/gitlab/kas/).
 
+## Kubernetes API proxy cookie
+
+> Introduced in GitLab 15.10 [with feature flags](../feature_flags.md) named `kas_user_access` and `kas_user_access_project`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flags](../feature_flags.md) named `kas_user_access` and `kas_user_access_project`.
+
+KAS proxies Kubernetes API requests to the GitLab agent with either:
+
+- A [CI/CD job](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/blob/master/doc/kubernetes_ci_access.md).
+- [GitLab user credentials](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/blob/master/doc/kubernetes_user_access.md).
+
+To authenticate with user credentials, Rails sets a cookie for the GitLab frontend.
+This cookie is called `_gitlab_kas` and it contains an encrypted
+session ID, like the [`_gitlab_session` cookie](../../user/profile/index.md#cookies-used-for-sign-in).
+The `_gitlab_kas` cookie must be sent to the KAS proxy endpoint with every request
+to authenticate and authorize the user.
+
 ## Troubleshooting
 
 If you have issues while using the agent server for Kubernetes, view the

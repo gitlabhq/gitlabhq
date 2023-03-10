@@ -497,6 +497,7 @@ Kibana
 Kinesis
 Klar
 Knative
+KPIs
 Kramdown
 Kroki
 kubeconfig
@@ -838,8 +839,8 @@ sanitization
 SBOMs
 sbt
 SBT
-scalers
 scalar's
+scalers
 scatterplot
 scatterplots
 schedulable
@@ -1187,7 +1188,7 @@ ZAProxy
 Zeitwerk
 Zendesk
 ZenTao
+Zoekt
 zsh
 Zstandard
 Zuora
-Zoekt

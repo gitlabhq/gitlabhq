@@ -47,5 +47,12 @@ FactoryBot.define do
     trait(:object_storage) do
       file_store { Packages::PackageFileUploader::Store::REMOTE }
     end
+
+    trait(:empty) do
+      file_md5 { 'd41d8cd98f00b204e9800998ecf8427e' }
+      file_sha256 { 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855' }
+      file_fixture { nil }
+      size { 0 }
+    end
   end
 end

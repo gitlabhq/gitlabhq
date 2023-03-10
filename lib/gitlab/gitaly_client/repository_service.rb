@@ -306,18 +306,18 @@ module Gitlab
       end
 
       def search_files_by_name(ref, query, limit: 0, offset: 0)
-        request = Gitaly::SearchFilesByNameRequest.new(repository: @gitaly_repo, ref: ref, query: query, limit: limit, offset: offset)
+        request = Gitaly::SearchFilesByNameRequest.new(repository: @gitaly_repo, ref: encode_binary(ref), query: query, limit: limit, offset: offset)
         gitaly_client_call(@storage, :repository_service, :search_files_by_name, request, timeout: GitalyClient.fast_timeout).flat_map(&:files)
       end
 
       def search_files_by_content(ref, query, options = {})
-        request = Gitaly::SearchFilesByContentRequest.new(repository: @gitaly_repo, ref: ref, query: query)
+        request = Gitaly::SearchFilesByContentRequest.new(repository: @gitaly_repo, ref: encode_binary(ref), query: query)
         response = gitaly_client_call(@storage, :repository_service, :search_files_by_content, request, timeout: GitalyClient.default_timeout)
         search_results_from_response(response, options)
       end
 
       def search_files_by_regexp(ref, filter, limit: 0, offset: 0)
-        request = Gitaly::SearchFilesByNameRequest.new(repository: @gitaly_repo, ref: ref, query: '.', filter: filter, limit: limit, offset: offset)
+        request = Gitaly::SearchFilesByNameRequest.new(repository: @gitaly_repo, ref: encode_binary(ref), query: '.', filter: filter, limit: limit, offset: offset)
         gitaly_client_call(@storage, :repository_service, :search_files_by_name, request, timeout: GitalyClient.fast_timeout).flat_map(&:files)
       end
 

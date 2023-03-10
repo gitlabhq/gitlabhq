@@ -39935,6 +39935,12 @@ msgstr ""
 msgid "Service usage data"
 msgstr ""
 
+msgid "ServiceAccount|User does not have permission to create a service account in this namespace."
+msgstr ""
+
+msgid "ServiceAccount|User does not have permission to create a service account."
+msgstr ""
+
 msgid "ServiceDesk|Enable Service Desk"
 msgstr ""
 

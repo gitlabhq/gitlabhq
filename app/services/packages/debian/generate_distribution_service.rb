@@ -165,16 +165,29 @@ module Packages
       def reuse_or_create_component_file(component, component_file_type, architecture, content)
         file_md5 = Digest::MD5.hexdigest(content)
         file_sha256 = Digest::SHA256.hexdigest(content)
-        component_file = component.files
-                                  .with_file_type(component_file_type)
-                                  .with_architecture(architecture)
-                                  .with_compression_type(nil)
-                                  .with_file_sha256(file_sha256)
-                                  .last
+        component_files = component.files
+                                   .with_file_type(component_file_type)
+                                   .with_architecture(architecture)
+                                   .with_compression_type(nil)
+                                   .order_updated_asc
+        component_file = component_files.with_file_sha256(file_sha256).last
+        last_component_file = component_files.last
 
-        if component_file
+        if content.empty? && (!last_component_file || last_component_file.file_sha256 == file_sha256)
+          # Do not create empty component file for empty content
+          # when there is no last component file or when the last component file is empty too
+          component_file = last_component_file || component.files.build(
+            updated_at: release_date,
+            file_type: component_file_type,
+            architecture: architecture,
+            compression_type: nil,
+            size: 0
+          )
+        elsif component_file
+          # Reuse existing component file
           component_file.touch(time: release_date)
         else
+          # Create a new component file
           component_file = component.files.create!(
             updated_at: release_date,
             file_type: component_file_type,
@@ -182,7 +195,8 @@ module Packages
             compression_type: nil,
             file: CarrierWaveStringFile.new(content),
             file_md5: file_md5,
-            file_sha256: file_sha256
+            file_sha256: file_sha256,
+            size: content.size
           )
         end
 

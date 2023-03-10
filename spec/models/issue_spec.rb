@@ -63,8 +63,8 @@ RSpec.describe Issue, feature_category: :team_planning do
     it_behaves_like 'AtomicInternalId' do
       let(:internal_id_attribute) { :iid }
       let(:instance) { build(:issue) }
-      let(:scope) { :project }
-      let(:scope_attrs) { { project: instance.project } }
+      let(:scope) { :namespace }
+      let(:scope_attrs) { { namespace: instance.project.project_namespace } }
       let(:usage) { :issues }
     end
   end

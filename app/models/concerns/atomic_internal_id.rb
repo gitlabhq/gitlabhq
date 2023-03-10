@@ -61,6 +61,8 @@ module AtomicInternalId
         AtomicInternalId.project_init(self)
       when :group
         AtomicInternalId.group_init(self)
+      when :namespace
+        AtomicInternalId.namespace_init(self)
       else
         # We require init here to retain the ability to recalculate in the absence of a
         # InternalId record (we may delete records in `internal_ids` for example).
@@ -237,6 +239,16 @@ module AtomicInternalId
         klass.where(group_id: instance.group_id).maximum(column_name)
       elsif scope.present?
         klass.where(group: scope[:namespace]).maximum(column_name)
+      end
+    end
+  end
+
+  def self.namespace_init(klass, column_name = :iid)
+    ->(instance, scope) do
+      if instance
+        klass.where(namespace_id: instance.namespace_id).maximum(column_name)
+      elsif scope.present?
+        klass.where(**scope).maximum(column_name)
       end
     end
   end

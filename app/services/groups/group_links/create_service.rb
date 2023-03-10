@@ -36,3 +36,5 @@ module Groups
     end
   end
 end
+
+Groups::GroupLinks::CreateService.prepend_mod

@@ -58,6 +58,9 @@ RSpec.shared_context 'Debian repository shared context' do |container_type, can_
   let(:distribution) { { private: private_distribution, public: public_distribution }[visibility_level] }
   let(:architecture) { { private: private_architecture, public: public_architecture }[visibility_level] }
   let(:component) { { private: private_component, public: public_component }[visibility_level] }
+  let(:component_file) { { private: private_component_file, public: public_component_file }[visibility_level] }
+  let(:component_file_sources) { { private: private_component_file_sources, public: public_component_file_sources }[visibility_level] }
+  let(:component_file_di) { { private: private_component_file_di, public: public_component_file_di }[visibility_level] }
   let(:component_file_older_sha256) { { private: private_component_file_older_sha256, public: public_component_file_older_sha256 }[visibility_level] }
   let(:component_file_sources_older_sha256) { { private: private_component_file_sources_older_sha256, public: public_component_file_sources_older_sha256 }[visibility_level] }
   let(:component_file_di_older_sha256) { { private: private_component_file_di_older_sha256, public: public_component_file_di_older_sha256 }[visibility_level] }

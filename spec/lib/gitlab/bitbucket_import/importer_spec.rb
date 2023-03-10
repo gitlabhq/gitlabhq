@@ -358,7 +358,7 @@ RSpec.describe Gitlab::BitbucketImport::Importer, feature_category: :integration
 
     describe 'issue import' do
       it 'allocates internal ids' do
-        expect(Issue).to receive(:track_project_iid!).with(project, 6)
+        expect(Issue).to receive(:track_namespace_iid!).with(project.project_namespace, 6)
 
         importer.execute
       end

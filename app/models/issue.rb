@@ -63,7 +63,24 @@ class Issue < ApplicationRecord
   belongs_to :moved_to, class_name: 'Issue'
   has_one :moved_from, class_name: 'Issue', foreign_key: :moved_to_id
 
-  has_internal_id :iid, scope: :project, track_if: -> { !importing? }
+  has_internal_id :iid, scope: :namespace, track_if: -> { !importing? }, init: ->(issue, scope) do
+    # we need this init for the case where the IID allocation in internal_ids#last_value
+    # is higher than the actual issues.max(iid) value for a given project. For instance
+    # in case of an import where a batch of IIDs may be prealocated
+    #
+    # TODO: remove this once the UpdateIssuesInternalIdScope migration completes
+    if issue
+      [
+        InternalId.where(project: issue.project, usage: :issues).pick(:last_value).to_i,
+        issue.namespace&.issues&.maximum(:iid).to_i
+      ].max
+    else
+      [
+        InternalId.where(**scope, usage: :issues).pick(:last_value).to_i,
+        where(**scope).maximum(:iid).to_i
+      ].max
+    end
+  end
 
   has_many :events, as: :target, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
 
@@ -104,7 +121,7 @@ class Issue < ApplicationRecord
   accepts_nested_attributes_for :sentry_issue
   accepts_nested_attributes_for :incident_management_issuable_escalation_status, update_only: true
 
-  validates :project, presence: true
+  validates :project, presence: true, if: -> { !namespace || namespace.is_a?(Namespaces::ProjectNamespace) }
   validates :issue_type, presence: true
   validates :namespace, presence: true
   validates :work_item_type, presence: true
@@ -137,7 +154,7 @@ class Issue < ApplicationRecord
 
   scope :order_due_date_asc, -> { reorder(arel_table[:due_date].asc.nulls_last) }
   scope :order_due_date_desc, -> { reorder(arel_table[:due_date].desc.nulls_last) }
-  scope :order_closest_future_date, -> { reorder(Arel.sql('CASE WHEN issues.due_date >= CURRENT_DATE THEN 0 ELSE 1 END ASC, ABS(CURRENT_DATE - issues.due_date) ASC')) }
+  scope :order_closest_future_date, -> { reorder(Arel.sql("CASE WHEN issues.due_date >= CURRENT_DATE THEN 0 ELSE 1 END ASC, ABS(CURRENT_DATE - issues.due_date) ASC")) }
   scope :order_created_at_desc, -> { reorder(created_at: :desc) }
   scope :order_severity_asc, -> do
     build_keyset_order_on_joined_column(

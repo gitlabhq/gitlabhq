@@ -45,24 +45,21 @@ For example:
 
 ## Code Owners file
 
-A `CODEOWNERS` file (with no extension) can specify users or [shared groups](members/share_project_with_groups.md)
-that are responsible for specific files and directories in a repository. Each repository
-can have a single `CODEOWNERS` file, and it must be found one of these three locations:
+A `CODEOWNERS` file (with no extension) specifies the users or
+[shared groups](members/share_project_with_groups.md) responsible for
+specific files and directories in a repository.
 
-- In the root directory of the repository.
-- In the `.gitlab/` directory.
-- In the `docs/` directory.
+Each repository uses a single `CODEOWNERS` file. GitLab checks these locations
+in your repository in this order. The first `CODEOWNERS` file found is used, and
+all others are ignored:
 
-A CODEOWNERS file in any other location is ignored.
+1. In the root directory: `./CODEOWNERS`.
+1. In the `docs` directory: `./docs/CODEOWNERS`.
+1. In the `.gitlab` directory: `./.gitlab/CODEOWNERS`.
 
 ## Set up Code Owners
 
-1. Create a file named `CODEOWNERS` (with no extension) in one of these locations:
-
-- In the root directory of the repository
-- In the `.gitlab/` directory
-- In the `docs/` directory
-
+1. Create a `CODEOWNERS` file in your [preferred location](#code-owners-file).
 1. In the file, enter text that follows one of these patterns:
 
    ```plaintext
@@ -88,8 +85,7 @@ Next steps:
 
 ### Groups as Code Owners
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/53182) in GitLab 12.1.
-> - Group and subgroup hierarchy support was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32432) in GitLab 13.0.
+> Group and subgroup hierarchy support was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32432) in GitLab 13.0.
 
 You can use members of groups and subgroups as Code Owners for projects:
 
@@ -188,7 +184,7 @@ README.md @user3
 The Code Owners for the `README.md` in the root directory are `@user1`, `@user2`,
 and `@user3`. The Code Owners for `internal/README.md` are `@user4` and `@user3`.
 
-Only one CODEOWNERS pattern per section will be matched to a file path.
+Only one CODEOWNERS pattern per section is matched to a file path.
 
 ### Organize Code Owners by putting them into sections
 
@@ -403,6 +399,7 @@ if any of these conditions are true:
   Check the project [merge request approval](merge_requests/approvals/settings.md#edit-merge-request-approval-settings) settings.
 - A Code Owner group has a visibility of **private**, and the current user is not a
   member of the Code Owner group.
+- Current user is an external user who does not have permission to the internal Code Owner group.
 
 ### Approval rule is invalid. GitLab has approved this rule automatically to unblock the merge request
 

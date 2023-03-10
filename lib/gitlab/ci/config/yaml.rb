@@ -17,14 +17,22 @@ module Gitlab
             ensure_custom_tags
 
             if project.present? && ::Feature.enabled?(:ci_multi_doc_yaml, project)
-              Gitlab::Config::Loader::MultiDocYaml.new(
+              ::Gitlab::Config::Loader::MultiDocYaml.new(
                 content,
                 max_documents: MAX_DOCUMENTS,
                 additional_permitted_classes: AVAILABLE_TAGS
-              ).load!.first
+              ).load!
             else
-              Gitlab::Config::Loader::Yaml.new(content, additional_permitted_classes: AVAILABLE_TAGS).load!
+              ::Gitlab::Config::Loader::Yaml
+                .new(content, additional_permitted_classes: AVAILABLE_TAGS)
+                .load!
             end
+          end
+
+          def to_result
+            Yaml::Result.new(load!)
+          rescue ::Gitlab::Config::Loader::FormatError => e
+            Yaml::Result.new(error: e)
           end
 
           private
@@ -42,7 +50,18 @@ module Gitlab
 
         class << self
           def load!(content, project: nil)
-            Loader.new(content, project: project).load!
+            Loader.new(content, project: project).to_result.then do |result|
+              ##
+              # raise an error for backwards compatibility
+              #
+              raise result.error unless result.valid?
+
+              result.content
+            end
+          end
+
+          def load_result!(content, project: nil)
+            Loader.new(content, project: project).to_result
           end
         end
       end

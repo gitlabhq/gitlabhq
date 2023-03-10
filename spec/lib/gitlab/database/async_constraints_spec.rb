@@ -6,14 +6,20 @@ RSpec.describe Gitlab::Database::AsyncConstraints, feature_category: :database d
   describe '.validate_pending_entries!' do
     subject { described_class.validate_pending_entries! }
 
-    before do
-      create_list(:postgres_async_constraint_validation, 3)
+    let!(:fk_validation) do
+      create(:postgres_async_constraint_validation, :foreign_key, attempts: 2)
     end
 
-    it 'takes 2 pending FK validations and executes them' do
-      validations = described_class::PostgresAsyncConstraintValidation.ordered.limit(2).to_a
+    let(:check_validation) do
+      create(:postgres_async_constraint_validation, :check_constraint, attempts: 1)
+    end
 
-      expect_next_instances_of(described_class::ForeignKeyValidator, 2, validations) do |validator|
+    it 'executes pending validations' do
+      expect_next_instance_of(described_class::Validators::ForeignKey, fk_validation) do |validator|
+        expect(validator).to receive(:perform)
+      end
+
+      expect_next_instance_of(described_class::Validators::CheckConstraint, check_validation) do |validator|
         expect(validator).to receive(:perform)
       end
 
