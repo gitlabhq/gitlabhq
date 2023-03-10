@@ -20,15 +20,15 @@ RSpec.shared_examples "index validators" do |validator, expected_result|
 
   let(:connection) { database_model.connection }
 
-  let(:query_result) { instance_double('ActiveRecord::Result', rows: database_indexes) }
+  let(:schema) { connection.current_schema }
 
   let(:database) { Gitlab::Database::SchemaValidation::Database.new(connection) }
-  let(:structure_file) { Gitlab::Database::SchemaValidation::StructureSql.new(structure_file_path) }
+  let(:structure_file) { Gitlab::Database::SchemaValidation::StructureSql.new(structure_file_path, schema) }
 
   subject(:result) { validator.new(structure_file, database).execute }
 
   before do
-    allow(connection).to receive(:exec_query).and_return(query_result)
+    allow(connection).to receive(:select_rows).and_return(database_indexes)
   end
 
   it 'returns index inconsistencies' do

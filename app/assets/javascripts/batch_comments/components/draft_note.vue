@@ -99,6 +99,7 @@ export default {
       <gl-badge
         v-gl-tooltip
         variant="warning"
+        size="sm"
         class="gl-mr-2"
         :title="__('Pending comments are hidden until you submit your review.')"
       >

@@ -463,7 +463,7 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/administration/pages/ @ashrafkhamis
 /doc/administration/polling.md @axil
 /doc/administration/postgresql/ @aqualls
-/doc/administration/postgresql/multiple_databases.md @jglassman1
+/doc/administration/postgresql/multiple_databases.md @lciutacu
 /doc/administration/raketasks/ @axil
 /doc/administration/raketasks/ldap.md @jglassman1
 /doc/administration/raketasks/praefect.md @eread
@@ -710,7 +710,7 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/development/contributing/ @sselhorn
 /doc/development/database/ @aqualls
 /doc/development/database/filtering_by_label.md @msedlakjakubowski
-/doc/development/database/multiple_databases.md @jglassman1
+/doc/development/database/multiple_databases.md @lciutacu
 /doc/development/database_review.md @aqualls
 /doc/development/developing_with_solargraph.md @aqualls
 /doc/development/development_processes.md @sselhorn

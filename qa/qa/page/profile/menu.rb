@@ -8,25 +8,35 @@ module QA
         # since tablets have the regular top navigation bar but still close the left nav
         prepend QA::Mobile::Page::SubMenus::Common if QA::Runtime::Env.remote_mobile_device_name
 
-        view 'app/views/layouts/nav/sidebar/_profile.html.haml' do
-          element :access_token_link, 'link_to profile_personal_access_tokens_path' # rubocop:disable QA/ElementWithPattern
-          element :access_token_title, 'Access Tokens' # rubocop:disable QA/ElementWithPattern
-          element :top_level_items, '.sidebar-top-level-items' # rubocop:disable QA/ElementWithPattern
-          element :ssh_keys, 'SSH Keys' # rubocop:disable QA/ElementWithPattern
+        view 'lib/sidebars/user_settings/menus/access_tokens_menu.rb' do
+          element :access_token_link
+        end
+
+        view 'lib/sidebars/user_settings/menus/ssh_keys_menu.rb' do
+          element :ssh_keys_link
+        end
+
+        view 'lib/sidebars/user_settings/menus/emails_menu.rb' do
           element :profile_emails_link
+        end
+
+        view 'lib/sidebars/user_settings/menus/password_menu.rb' do
           element :profile_password_link
+        end
+
+        view 'lib/sidebars/user_settings/menus/account_menu.rb' do
           element :profile_account_link
         end
 
         def click_access_tokens
           within_sidebar do
-            click_link('Access Tokens')
+            click_element(:access_token_link)
           end
         end
 
         def click_ssh_keys
           within_sidebar do
-            click_link('SSH Keys')
+            click_element(:ssh_keys_link)
           end
         end
 

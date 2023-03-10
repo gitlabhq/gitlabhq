@@ -7,7 +7,7 @@ RSpec.describe Gitlab::Database::SchemaValidation::Runner, feature_category: :da
   let(:connection) { ActiveRecord::Base.connection }
 
   let(:database) { Gitlab::Database::SchemaValidation::Database.new(connection) }
-  let(:structure_sql) { Gitlab::Database::SchemaValidation::StructureSql.new(structure_file_path) }
+  let(:structure_sql) { Gitlab::Database::SchemaValidation::StructureSql.new(structure_file_path, 'public') }
 
   describe '#execute' do
     subject(:inconsistencies) { described_class.new(structure_sql, database).execute }

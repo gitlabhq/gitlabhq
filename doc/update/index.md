@@ -192,7 +192,7 @@ accordingly, while also consulting the
 - GitLab 12: `12.0.12` > [`12.1.17`](#1210) > [`12.10.14`](#12100)
 - GitLab 13: `13.0.14` > [`13.1.11`](#1310) > [`13.8.8`](#1388) > [`13.12.15`](#13120)
 - GitLab 14: [`14.0.12`](#1400) > [`14.3.6`](#1430) > [`14.9.5`](#1490) > [`14.10.5`](#14100)
-- GitLab 15: [`15.0.5`](#1500) > [`15.1.6`](#1510) (for GitLab instances with multiple web nodes) > [`15.4.6`](#1540) > [`15.6.x, 15.7.x or 15.8.x`](#user-profile-data-loss-bug-in-159x) > [latest `15.Y.Z`](https://gitlab.com/gitlab-org/gitlab/-/releases)
+- GitLab 15: [`15.0.5`](#1500) > [`15.1.6`](#1510) (for GitLab instances with multiple web nodes) > [`15.4.6`](#1540) > [latest `15.Y.Z`](https://gitlab.com/gitlab-org/gitlab/-/releases)
 
 NOTE:
 When not explicitly specified, upgrade GitLab to the latest available patch
@@ -266,7 +266,9 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
 
 ### 15.9.0
 
-- There is a [database migration bug in GitLab 15.9.x](#user-profile-data-loss-bug-in-159x) that can cause data to be lost from the user profile fields. This bug affects all currently available 15.9.x releases. Until a bug fix is released, you should upgrade to 15.6.x, 15.7.x, or 15.8.x first.
+- **Upgrade to patch release 15.9.3 or later**. This provides fixes for two database migration bugs:
+  - Patch releases 15.9.0, 15.9.1, 15.9.2 have [a bug that can cause data loss](#user-profile-data-loss-bug-in-159x) from the user profile fields.
+  - The second [bug fix](https://gitlab.com/gitlab-org/gitlab/-/issues/394760) ensures it is possible to upgrade directly from 15.4.x.
 - As part of the [CI Partitioning effort](../architecture/blueprints/ci_data_decay/pipeline_partitioning.md), a [new Foreign Key](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107547) was added to `ci_builds_needs`. On GitLab instances with large CI tables, adding this constraint can take longer than usual. Make sure that this migration is finished before upgrading to 15.9.
 - Praefect's metadata verifier's [invalid metadata deletion behavior](../administration/gitaly/praefect.md#enable-deletions) is now enabled by default.
 
@@ -298,7 +300,6 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
 
 ### 15.8.0
 
-- Due to a bug in GitLab 15.9.x that can cause data to be lost from certain user profile fields, 15.6, 15.7, or 15.8 is temporarily a required stop on the upgrade path. This requirement will be removed when a 15.9.x bug fix is released. [Read more about this issue](#user-profile-data-loss-bug-in-159x).
 - Git 2.38.0 and later is required by Gitaly. For installations from source, you should use the [Git version provided by Gitaly](../install/installation.md#git).
 - Due to [a bug introduced in GitLab 15.4](https://gitlab.com/gitlab-org/gitlab/-/issues/390155), if one or more Git repositories in Gitaly Cluster is [unavailable](../administration/gitaly/recovery.md#unavailable-repositories), then [Repository checks](../administration/repository_checks.md#repository-checks) and [Geo replication and verification](../administration/geo/index.md) stop running for all project or project wiki repositories in the affected Gitaly Cluster. The bug was fixed by [reverting the change in GitLab 15.9.0](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110823). Before upgrading to this version, check if you have any "unavailable" repositories. See [the bug issue](https://gitlab.com/gitlab-org/gitlab/-/issues/390155) for more information.
 - Geo: We discovered an issue where [replication and verification of projects and wikis was not keeping up](https://gitlab.com/gitlab-org/gitlab/-/issues/387980) on small number of Geo installations. Your installation may be affected if you see some projects and/or wikis persistently in the "Queued" state for verification. This can lead to data loss after a failover.
@@ -351,7 +352,6 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
 
 ### 15.7.0
 
-- Due to a bug in GitLab 15.9.x that can cause data to be lost from certain user profile fields, 15.6, 15.7, or 15.8 is temporarily a required stop on the upgrade path. This requirement will be removed when a 15.9.x bug fix is released. [Read more about this issue](#user-profile-data-loss-bug-in-159x).
 - This version validates a `NOT NULL DB` constraint on the `issues.work_item_type_id` column.
   To upgrade to this version, no records with a `NULL` `work_item_type_id` should exist on the `issues` table.
   There are multiple `BackfillWorkItemTypeIdForIssues` background migrations that will be finalized with
@@ -461,7 +461,6 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
 
 ### 15.6.0
 
-- Due to a bug in GitLab 15.9.x that can cause data to be lost from certain user profile fields, 15.6, 15.7, or 15.8 is temporarily a required stop on the upgrade path. This requirement will be removed when a 15.9.x bug fix is released. [Read more about this issue](#user-profile-data-loss-bug-in-159x).
 - You should use one of the [officially supported PostgreSQL versions](../administration/package_information/postgresql_versions.md). Some database migrations can cause stability and performance issues with older PostgreSQL versions.
 - Git 2.37.0 and later is required by Gitaly. For installations from source, we recommend you use the [Git version provided by Gitaly](../install/installation.md#git).
 - A database change to modify the behavior of four indexes fails on instances

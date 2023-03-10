@@ -9,8 +9,11 @@ RSpec.describe Gitlab::Database::SchemaValidation::Validators::BaseValidator, fe
     it 'returns an array of all validators' do
       expect(all_validators).to eq([
         Gitlab::Database::SchemaValidation::Validators::ExtraIndexes,
+        Gitlab::Database::SchemaValidation::Validators::ExtraTriggers,
         Gitlab::Database::SchemaValidation::Validators::MissingIndexes,
-        Gitlab::Database::SchemaValidation::Validators::DifferentDefinitionIndexes
+        Gitlab::Database::SchemaValidation::Validators::MissingTriggers,
+        Gitlab::Database::SchemaValidation::Validators::DifferentDefinitionIndexes,
+        Gitlab::Database::SchemaValidation::Validators::DifferentDefinitionTriggers
       ])
     end
   end

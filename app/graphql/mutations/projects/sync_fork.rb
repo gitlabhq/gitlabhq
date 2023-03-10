@@ -23,6 +23,9 @@ module Mutations
 
       def resolve(project_path:, target_branch:)
         project = authorized_find!(project_path)
+
+        return respond(nil, ['Feature flag is disabled']) unless Feature.enabled?(:synchronize_fork, project)
+
         details_resolver = Resolvers::Projects::ForkDetailsResolver.new(object: project, context: context, field: nil)
         details = details_resolver.resolve(ref: target_branch)
 

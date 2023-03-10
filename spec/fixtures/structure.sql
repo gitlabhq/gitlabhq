@@ -18,3 +18,11 @@ CREATE TABLE ci_project_mirrors (
     project_id integer NOT NULL,
     namespace_id integer NOT NULL
 );
+
+CREATE TRIGGER trigger AFTER INSERT ON public.t1 FOR EACH ROW EXECUTE FUNCTION t1();
+
+CREATE TRIGGER wrong_trigger BEFORE UPDATE ON public.t2 FOR EACH ROW EXECUTE FUNCTION my_function();
+
+CREATE TRIGGER missing_trigger_1 BEFORE INSERT OR UPDATE ON public.t3 FOR EACH ROW EXECUTE FUNCTION t3();
+
+CREATE TRIGGER projects_loose_fk_trigger AFTER DELETE ON projects REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();

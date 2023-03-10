@@ -40,6 +40,41 @@ exports[`self-monitor component When the self-monitor project has not been creat
     </p>
   </div>
    
+  <gl-alert-stub
+    class="gl-mb-3"
+    dismissible="true"
+    dismisslabel="Dismiss"
+    primarybuttonlink=""
+    primarybuttontext=""
+    secondarybuttonlink=""
+    secondarybuttontext=""
+    showicon="true"
+    title="Deprecation notice"
+    variant="danger"
+  >
+    <div>
+      Self-monitoring was 
+      <a
+        href="/help/update/deprecations.md#gitlab-self-monitoring-project"
+      >
+        deprecated
+      </a>
+       in GitLab 14.9, and is 
+      <a
+        href="https://gitlab.com/gitlab-org/gitlab/-/issues/348909"
+      >
+        scheduled for removal
+      </a>
+       in GitLab 16.0. For information on a possible replacement, 
+      <a
+        href="https://gitlab.com/groups/gitlab-org/-/epics/6976"
+      >
+        learn more about Opstrace
+      </a>
+      .
+    </div>
+  </gl-alert-stub>
+   
   <div
     class="settings-content"
   >

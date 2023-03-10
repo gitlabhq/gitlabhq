@@ -28,7 +28,7 @@ RSpec.describe EnsureTimelogsNoteIdBigintBackfillIsFinishedForGitlabDotCom, feat
 
         expect(described_class).send(
           expectation,
-          ensure_bacthed_background_migration_is_finished_for(migration_arguments)
+          ensure_batched_background_migration_is_finished_for(migration_arguments)
         )
 
         migrate!

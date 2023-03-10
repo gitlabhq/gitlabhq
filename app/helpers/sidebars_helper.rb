@@ -99,6 +99,9 @@ module SidebarsHelper
     when 'group'
       context = group_sidebar_context(group, user, **context_adds)
       Sidebars::Groups::SuperSidebarPanel.new(context)
+    when 'profile'
+      context = Sidebars::Context.new(current_user: user, container: user, **context_adds)
+      Sidebars::UserSettings::Panel.new(context)
     else
       context = your_work_sidebar_context(user, **context_adds)
       Sidebars::YourWork::Panel.new(context)

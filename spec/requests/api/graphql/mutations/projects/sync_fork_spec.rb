@@ -32,6 +32,24 @@ RSpec.describe "Sync project fork", feature_category: :source_code_management do
     source_project.change_head('feature')
   end
 
+  context 'when synchronize_fork feature flag is disabled' do
+    before do
+      stub_feature_flags(synchronize_fork: false)
+    end
+
+    it 'does not call the sync service' do
+      expect(::Projects::Forks::SyncWorker).not_to receive(:perform_async)
+
+      post_graphql_mutation(mutation, current_user: current_user)
+
+      expect(graphql_mutation_response(:project_sync_fork)).to eq(
+        {
+          'details' => nil,
+          'errors' => ['Feature flag is disabled']
+        })
+    end
+  end
+
   context 'when the user does not have permission' do
     let_it_be(:current_user) { create(:user) }
 

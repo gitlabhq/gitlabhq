@@ -15,13 +15,21 @@ module Gitlab
         # when starting and finishing execution, and optionally saves batch_metrics
         # the migration provides, if any are given.
         #
-        # The job's batch_metrics are serialized to JSON for storage.
+        # @info The job's batch_metrics are serialized to JSON for storage.
+        #
+        # @info Track exceptions that could happen when processing sub-batches
+        #       through +Gitlab::BackgroundMigration::SubBatchTimeoutException+
         def perform(batch_tracking_record)
           start_tracking_execution(batch_tracking_record)
 
           execute_batch(batch_tracking_record)
 
           batch_tracking_record.succeed!
+        rescue SubBatchTimeoutError => exception
+          caused_by = exception.caused_by
+          batch_tracking_record.failure!(error: caused_by, from_sub_batch: true)
+
+          raise caused_by
         rescue Exception => error # rubocop:disable Lint/RescueException
           batch_tracking_record.failure!(error: error)
 
@@ -67,7 +75,8 @@ module Gitlab
             sub_batch_size: tracking_record.sub_batch_size,
             pause_ms: tracking_record.pause_ms,
             job_arguments: tracking_record.migration_job_arguments,
-            connection: connection)
+            connection: connection,
+            sub_batch_exception: ::Gitlab::Database::BackgroundMigration::SubBatchTimeoutError)
 
           job_instance.perform
 

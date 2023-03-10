@@ -114,6 +114,7 @@ export default {
   defaultFetchOptions: {
     exclude_internal: true,
     active: true,
+    order_by: 'similarity',
   },
 };
 </script>

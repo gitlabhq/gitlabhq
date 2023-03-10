@@ -1,0 +1,4 @@
+%li.context-header
+  = link_to profile_path, title: _('User Settings'), class: 'has-tooltip', data: { container: 'body', placement: 'right' } do
+    = render Pajamas::AvatarComponent.new(current_user, size: 32, alt: current_user.name, class: 'gl-mr-3 js-sidebar-user-avatar', avatar_options: { data: { testid: 'sidebar-user-avatar' } })
+    %span.sidebar-context-title= _('User Settings')

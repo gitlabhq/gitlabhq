@@ -301,6 +301,28 @@ RSpec.describe Gitlab::BackgroundMigration::BatchedMigrationJob do
         perform_job
       end
 
+      context 'when using a sub batch exception for timeouts' do
+        let(:job_class) do
+          Class.new(described_class) do
+            operation_name :update
+
+            def perform(*_)
+              each_sub_batch { raise ActiveRecord::StatementTimeout } # rubocop:disable Lint/UnreachableLoop
+            end
+          end
+        end
+
+        let(:job_instance) do
+          job_class.new(start_id: 1, end_id: 10, batch_table: '_test_table', batch_column: 'id',
+                        sub_batch_size: 2, pause_ms: 1000, connection: connection,
+                        sub_batch_exception: StandardError)
+        end
+
+        it 'raises the expected error type' do
+          expect { job_instance.perform }.to raise_error(StandardError)
+        end
+      end
+
       context 'when batching_arguments are given' do
         it 'forwards them for batching' do
           expect(job_instance).to receive(:base_relation).and_return(test_table)

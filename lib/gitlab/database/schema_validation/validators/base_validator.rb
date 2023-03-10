@@ -15,8 +15,11 @@ module Gitlab
           def self.all_validators
             [
               ExtraIndexes,
+              ExtraTriggers,
               MissingIndexes,
-              DifferentDefinitionIndexes
+              MissingTriggers,
+              DifferentDefinitionIndexes,
+              DifferentDefinitionTriggers
             ]
           end
 
