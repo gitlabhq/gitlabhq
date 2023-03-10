@@ -2082,7 +2082,11 @@ class Project < ApplicationRecord
 
   # rubocop: disable CodeReuse/ServiceClass
   def open_merge_requests_count(_current_user = nil)
-    Projects::OpenMergeRequestsCountService.new(self).count
+    BatchLoader.for(self).batch do |projects, loader|
+      ::Projects::BatchOpenMergeRequestsCountService.new(projects)
+        .refresh_cache_and_retrieve_data
+        .each { |project, count| loader.call(project, count) }
+    end
   end
   # rubocop: enable CodeReuse/ServiceClass
 

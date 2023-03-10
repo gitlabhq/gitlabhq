@@ -4291,8 +4291,11 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     it 'refreshes the number of open merge requests of the target project' do
       project = subject.target_project
 
-      expect { subject.destroy! }
-        .to change { project.open_merge_requests_count }.from(1).to(0)
+      expect do
+        subject.destroy!
+
+        BatchLoader::Executor.clear_current
+      end.to change { project.open_merge_requests_count }.from(1).to(0)
     end
   end
 

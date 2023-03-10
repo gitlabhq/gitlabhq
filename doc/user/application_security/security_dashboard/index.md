@@ -133,7 +133,7 @@ The Security Center includes:
 - A [vulnerability report](../vulnerability_report/index.md).
 - A settings area to configure which projects to display.
 
-![Security Center Dashboard with projects](img/security_center_dashboard_v13_4.png)
+![Security Center Dashboard with projects](img/security_center_dashboard_v15_10.png)
 
 ### View the Security Center
 

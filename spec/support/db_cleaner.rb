@@ -75,9 +75,6 @@ module DbCleaner
 
     Gitlab::Database::Partitioning.sync_partitions_ignore_db_error
 
-    # Restore write locks
-    Gitlab::Database::TablesLocker.new.lock_writes
-
     puts "Databases re-creation done in #{Gitlab::Metrics::System.monotonic_time - start}"
   end
 

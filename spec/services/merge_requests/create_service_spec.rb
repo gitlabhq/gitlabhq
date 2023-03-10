@@ -43,8 +43,11 @@ RSpec.describe MergeRequests::CreateService, :clean_gitlab_redis_shared_state, f
       end
 
       it 'refreshes the number of open merge requests', :use_clean_rails_memory_store_caching do
-        expect { service.execute }
-          .to change { project.open_merge_requests_count }.from(0).to(1)
+        expect do
+          service.execute
+
+          BatchLoader::Executor.clear_current
+        end.to change { project.open_merge_requests_count }.from(0).to(1)
       end
 
       it 'creates exactly 1 create MR event', :sidekiq_might_not_need_inline do

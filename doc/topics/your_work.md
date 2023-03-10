@@ -18,3 +18,6 @@ The **Your work** left sidebar provides access to your:
 - [Milestones](../user/project/milestones/index.md)
 - [Snippets](../user/snippets.md#snippets)
 - [Activity](../user/profile/index.md#view-your-activity)
+- [Environments dashboard](../ci/environments/environments_dashboard.md)
+- [Operations dashboard](../user/operations_dashboard/index.md)
+- [Security center](../user/application_security/security_dashboard/index.md#security-center)

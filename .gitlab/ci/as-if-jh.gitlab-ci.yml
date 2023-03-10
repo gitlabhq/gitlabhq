@@ -35,11 +35,12 @@ prepare-as-if-jh-branch:
     - .shared-as-if-jh
     - .as-if-jh:rules:prepare-as-if-jh
   stage: prepare
-  variables:
-    GIT_DEPTH: "0"  # clone the full history so we can push
   needs:
     - add-jh-files
   script:
+    # Fetch for the history of the branch so it does not cause the following error:
+    #   ! [remote rejected] ref -> ref (shallow update not allowed)
+    - git fetch --unshallow --filter=tree:0 origin "${CI_COMMIT_SHA}"
     - git checkout -b "${AS_IF_JH_BRANCH}"
     - git add ${JH_FILES_TO_COMMIT}
     - git commit -m 'Add JH files'  # TODO: Mark which SHA we add

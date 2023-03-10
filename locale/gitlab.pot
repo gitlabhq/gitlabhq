@@ -38558,9 +38558,6 @@ msgstr ""
 msgid "Security dashboard"
 msgstr ""
 
-msgid "Security navigation"
-msgstr ""
-
 msgid "Security report is out of date. Please update your branch with the latest changes from the target branch (%{targetBranchName})"
 msgstr ""
 
@@ -50645,6 +50642,9 @@ msgid "can only be changed by a group admin."
 msgstr ""
 
 msgid "can only have one escalation policy"
+msgstr ""
+
+msgid "can't be blank"
 msgstr ""
 
 msgid "can't be enabled when delayed group deletion is disabled"

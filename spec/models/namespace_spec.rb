@@ -31,7 +31,6 @@ RSpec.describe Namespace, feature_category: :subgroups do
     it { is_expected.to have_many :pending_builds }
     it { is_expected.to have_one :namespace_route }
     it { is_expected.to have_many :namespace_members }
-    it { is_expected.to have_many :member_roles }
     it { is_expected.to have_one :cluster_enabled_grant }
     it { is_expected.to have_many(:work_items) }
     it { is_expected.to have_many :achievements }

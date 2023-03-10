@@ -88,7 +88,11 @@ RSpec.describe MergeRequests::CloseService, feature_category: :code_review_workf
     end
 
     it 'refreshes the number of open merge requests for a valid MR', :use_clean_rails_memory_store_caching do
-      expect { execute }
+      expect do
+        execute
+
+        BatchLoader::Executor.clear_current
+      end
         .to change { project.open_merge_requests_count }.from(1).to(0)
     end
 

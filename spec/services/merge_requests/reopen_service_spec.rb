@@ -92,7 +92,11 @@ RSpec.describe MergeRequests::ReopenService, feature_category: :code_review_work
     it 'refreshes the number of open merge requests for a valid MR' do
       service = described_class.new(project: project, current_user: user)
 
-      expect { service.execute(merge_request) }
+      expect do
+        service.execute(merge_request)
+
+        BatchLoader::Executor.clear_current
+      end
         .to change { project.open_merge_requests_count }.from(0).to(1)
     end
 

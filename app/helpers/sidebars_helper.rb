@@ -34,6 +34,12 @@ module SidebarsHelper
     Sidebars::Groups::Context.new(**context_data, **args)
   end
 
+  def your_work_sidebar_context(user, **args)
+    context_data = your_work_context_data(user)
+
+    Sidebars::Context.new(**context_data, **args)
+  end
+
   def super_sidebar_context(user, group:, project:, panel:)
     {
       current_menu_items: panel.super_sidebar_menu_items,
@@ -94,7 +100,8 @@ module SidebarsHelper
       context = group_sidebar_context(group, user, **context_adds)
       Sidebars::Groups::SuperSidebarPanel.new(context)
     else
-      Sidebars::YourWork::Panel.new(Sidebars::Context.new(current_user: user, container: nil, **context_adds))
+      context = your_work_sidebar_context(user, **context_adds)
+      Sidebars::YourWork::Panel.new(context)
     end
   end
 
@@ -201,6 +208,14 @@ module SidebarsHelper
     {
       current_user: user,
       container: group
+    }
+  end
+
+  def your_work_context_data(user)
+    {
+      current_user: user,
+      container: user,
+      show_security_dashboard: false
     }
   end
 end

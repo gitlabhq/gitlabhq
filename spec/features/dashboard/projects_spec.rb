@@ -248,7 +248,6 @@ RSpec.describe 'Dashboard Projects', feature_category: :projects do
     ActiveRecord::QueryRecorder.new { visit dashboard_projects_path }.count
 
     # There are a few known N+1 queries: https://gitlab.com/gitlab-org/gitlab/-/issues/214037
-    # - Project#open_merge_requests_count
     # - User#max_member_access_for_project_ids
     # - ProjectsHelper#load_pipeline_status / Ci::CommitWithPipeline#last_pipeline
     # - Ci::Pipeline#detailed_status
