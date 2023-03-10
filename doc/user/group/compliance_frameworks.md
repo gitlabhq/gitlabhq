@@ -223,6 +223,12 @@ include:  # Execute individual project's configuration (if project contains .git
 The `rules` configuration in the `include` definition avoids circular inclusion in case the compliance pipeline must be able to run in the host project itself.
 You can leave it out if your compliance pipeline only ever runs in labeled projects.
 
+#### Compliance pipelines and custom pipeline configurations
+
+Compliance pipelines don't run when an included project pipeline uses an external
+[custom CI/CD configuration file](../../ci/pipelines/settings.md#specify-a-custom-cicd-configuration-file). For more information, see
+[issue 393960](https://gitlab.com/gitlab-org/gitlab/-/issues/393960).
+
 #### Compliance pipelines in merge requests originating in project forks
 
 When a merge request originates in a fork, the branch to be merged usually only exists in the fork.

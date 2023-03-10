@@ -88,9 +88,9 @@ Below are the settings for SaaS runners on Linux.
   and [#4070](https://gitlab.com/gitlab-com/gl-infra/reliability/-/issues/4070).
 
 NOTE:
-The final disk space your jobs can use is less than 25 GB. Some disk space
-allocated to the instance is occupied by the operating system, the Docker image,
-and a copy of your cloned repository.
+SaaS runner instances are provisioned with a 25 GB storage volume. The underlying disk space of the storage volume
+is shared by the operating system, the Docker image, and a copy of your cloned repository.
+This means that the available free disk space that your jobs can use is **less than 25 GB**.
 
 ## Pre-clone script (deprecated)
 

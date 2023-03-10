@@ -105,7 +105,9 @@ export default {
       return this.hasCycleAnalyticsForGroups ? METRICS_REQUESTS : SUMMARY_METRICS_REQUEST;
     },
     showLinkToDashboard() {
-      return this.hasCycleAnalyticsForGroups && this.features?.groupAnalyticsDashboardsPage;
+      return Boolean(
+        this.features?.groupLevelAnalyticsDashboard && this.features?.groupAnalyticsDashboardsPage,
+      );
     },
     dashboardsPath() {
       const {

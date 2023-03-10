@@ -193,28 +193,29 @@ Any other group items are **not** migrated.
 
 Group items that are migrated to the destination GitLab instance include:
 
-- Badges ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/292431) in 13.11)
-- Boards ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18938) in GitLab 13.7)
-- Board Lists ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/24863) in GitLab 13.7)
-- Epics ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/250281) in 13.7)
-  - Epic resource state events ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/291983) in GitLab 15.4)
-  - Label associations ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/62074) in GitLab 13.12)
-  - State and State ID ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28203) in GitLab 13.7)
-  - System Note Metadata ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/63551) in GitLab 14.0)
-- Group Labels ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/292429) in 13.9)
-- Iterations ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/292428) in 13.10)
-- Iterations cadences ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96570) in 15.4)
-- Members ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/299415) in 13.9)
-  Group members are associated with the imported group if:
-  - The user already exists in the destination GitLab instance and
-  - The user has a public email in the source GitLab instance that matches a
-    confirmed email in the destination GitLab instance
-- Milestones ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/292427) in 13.10)
-- Namespace Settings ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85128) in GitLab 14.10)
-- Releases
-  - Milestones ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339422) in GitLab 15.0).
-- Subgroups ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18938) in GitLab 13.7)
-- Uploads ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18938) in GitLab 13.7)
+| Group item            | Introduced in                                                               |
+|:----------------------|:----------------------------------------------------------------------------|
+| Badges                | [GitLab 13.11](https://gitlab.com/gitlab-org/gitlab/-/issues/292431)        |
+| Boards                | [GitLab 13.7](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18938)  |
+| Board lists           | [GitLab 13.7](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/24863)  |
+| Epics <sup>1</sup>    | [GitLab 13.7](https://gitlab.com/gitlab-org/gitlab/-/issues/250281)         |
+| Group labels          | [GitLab 13.9](https://gitlab.com/gitlab-org/gitlab/-/issues/292429)         |
+| Iterations            | [GitLab 13.10](https://gitlab.com/gitlab-org/gitlab/-/issues/292428)        |
+| Iteration cadences    | [GitLab 15.4](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96570)  |
+| Members <sup>2</sup>  | [GitLab 13.9](https://gitlab.com/gitlab-org/gitlab/-/issues/299415)         |
+| Group milestones      | [GitLab 13.10](https://gitlab.com/gitlab-org/gitlab/-/issues/292427)        |
+| Namespace settings    | [GitLab 14.10](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85128) |
+| Release milestones    | [GitLab 15.0](https://gitlab.com/gitlab-org/gitlab/-/issues/339422)         |
+| Subgroups             | [GitLab 13.7](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18938)  |
+| Uploads               | [GitLab 13.7](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18938)  |
+
+1. Epic resource state events [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/291983) in GitLab 15.4, label
+   associations [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/62074) in GitLab 13.12, state and
+   state ID [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28203) in GitLab 13.7, and system note
+   metadata [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/63551) in GitLab 14.0.
+1. Group members are associated with the imported group if the user:
+   - Already exists in the destination GitLab instance.
+   - Has a public email in the source GitLab instance that matches a confirmed email in the destination GitLab instance.
 
 ### Migrated project items (beta)
 

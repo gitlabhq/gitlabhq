@@ -3,7 +3,6 @@ include:
   - template: Jobs/SAST.gitlab-ci.yml
   - template: Jobs/Secret-Detection.gitlab-ci.yml
   - template: Jobs/Dependency-Scanning.gitlab-ci.yml
-  - template: Jobs/License-Scanning.gitlab-ci.yml
 
 code_quality:
   extends:
@@ -126,11 +125,3 @@ package_hunter-bundler:
     - .reports:rules:package_hunter-bundler
   variables:
     PACKAGE_MANAGER: bundler
-
-license_scanning:
-  extends: .default-retry
-  stage: lint
-  needs: []
-  artifacts:
-    expire_in: 1 week  # GitLab-specific
-  rules: !reference [".reports:rules:license_scanning", rules]

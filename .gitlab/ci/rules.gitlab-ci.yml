@@ -2057,13 +2057,6 @@
     - <<: *if-merge-request
       changes: ["Gemfile.lock"]
 
-.reports:rules:license_scanning:
-  rules:
-    - if: '$LICENSE_MANAGEMENT_DISABLED || $GITLAB_FEATURES !~ /\blicense_scanning\b/'
-      when: never
-    - <<: *if-default-refs
-      changes: *dependency-patterns
-
 ################
 # Review rules #
 ################

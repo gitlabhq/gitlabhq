@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe PipelineDetailsEntity do
+RSpec.describe PipelineDetailsEntity, feature_category: :continuous_integration do
   let_it_be(:user) { create(:user) }
 
   let(:request) { double('request') }
@@ -32,7 +32,7 @@ RSpec.describe PipelineDetailsEntity do
         expect(subject[:details])
           .to include :duration, :finished_at
         expect(subject[:details])
-          .to include :stages, :manual_actions, :scheduled_actions
+          .to include :stages, :has_manual_actions, :scheduled_actions
         expect(subject[:details][:status]).to include :icon, :favicon, :text, :label
       end
 
@@ -41,6 +41,31 @@ RSpec.describe PipelineDetailsEntity do
         expect(subject[:flags])
           .to include :latest, :stuck,
                       :yaml_errors, :retryable, :cancelable
+      end
+    end
+
+    context 'when lazy_load_manual_actions feature flag is disabled' do
+      let(:pipeline) { create(:ci_pipeline, status: :success) }
+
+      before do
+        stub_feature_flags(lazy_load_manual_actions: false)
+      end
+
+      it 'contains manual_actions' do
+        expect(subject[:details]).to include :manual_actions
+        expect(subject[:details]).to include :has_manual_actions
+      end
+    end
+
+    context 'when pipeline has manual builds' do
+      let(:pipeline) { create(:ci_pipeline, status: :success) }
+
+      before do
+        create(:ci_build, :manual, pipeline: pipeline)
+      end
+
+      it 'sets :has_manual_actions to true' do
+        expect(subject[:details][:has_manual_actions]).to eq true
       end
     end
 

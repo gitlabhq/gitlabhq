@@ -166,11 +166,11 @@ describe('Value stream analytics component', () => {
     });
   });
 
-  describe('with `groupAnalyticsDashboardsPage=true` and `cycleAnalyticsForGroups=true` license', () => {
+  describe('with `groupAnalyticsDashboardsPage=true` and `groupLevelAnalyticsDashboard=true` license', () => {
     beforeEach(() => {
       wrapper = createComponent({
         initialState: {
-          features: { groupAnalyticsDashboardsPage: true, cycleAnalyticsForGroups: true },
+          features: { groupAnalyticsDashboardsPage: true, groupLevelAnalyticsDashboard: true },
         },
       });
     });

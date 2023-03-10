@@ -33607,6 +33607,9 @@ msgstr ""
 msgid "Project visibility level will be changed to match namespace rules when transferring to a group."
 msgstr ""
 
+msgid "Project was created and assigned as security policy project, but failed adding users to the project."
+msgstr ""
+
 msgid "Project was not found or you do not have permission to add this project to Security Dashboards."
 msgstr ""
 
@@ -38544,6 +38547,9 @@ msgid "Security Dashboard"
 msgstr ""
 
 msgid "Security Finding not found"
+msgstr ""
+
+msgid "Security Policy project already exists."
 msgstr ""
 
 msgid "Security and Compliance"
@@ -46922,6 +46928,9 @@ msgid "User created at"
 msgstr ""
 
 msgid "User does not have a pending request"
+msgstr ""
+
+msgid "User does not have permission to create a Security Policy project."
 msgstr ""
 
 msgid "User identity was successfully created."

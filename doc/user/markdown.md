@@ -130,7 +130,7 @@ You can generate diagrams from text by using:
 - [PlantUML](https://plantuml.com)
 - [Kroki](https://kroki.io) to create a wide variety of diagrams.
 
-In wikis you can also add diagrams created by using the [diagrams.net online editor](#create-or-edit-diagrams-by-using-diagramsnet-editor).
+In wikis, you can also add and edit diagrams created with the [diagrams.net editor](#diagramsnet-editor).
 
 #### Mermaid
 
@@ -548,51 +548,53 @@ This example links to `<wiki_root>/miscellaneous.md`:
 [Link to Related Page](/miscellaneous.md)
 ```
 
-#### Create or edit diagrams by using diagrams.net editor
+#### diagrams.net editor
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/322174) in GitLab 15.10.
 
 NOTE:
 Use of the diagrams.net editor is not available on offline environments.
 
-On wikis, you can use the [diagrams.net](https://www.diagrams.net/) editor
-to create diagrams. You can also edit diagrams previously created with the
-editor.
+In wikis, you can use the [diagrams.net](https://www.diagrams.net/) editor to create diagrams. You
+can also edit diagrams created with the diagrams.net editor. The diagram editor is available in both
+the Markdown editor and the content editor.
+
+##### Markdown editor
 
 To create a diagram in the Markdown editor:
 
-1. Select **Insert or edit diagram** (**{diagram}**) in the editor's toolbar.
-1. Use the diagrams.net editor to build the diagram.
+1. In the editor's toolbar, select **Insert or edit diagram** (**{diagram}**).
+1. Use the diagrams.net editor to create the diagram.
 1. Select **Save & exit**.
 
-A Markdown image declaration pointing to the diagram is inserted in the wiki content.
+A Markdown image reference to the diagram is inserted in the wiki content.
 
 To edit a diagram in the Markdown editor:
 
-1. Place the Markdown editor’s text field cursor in a Markdown image declaration
+1. Place the Markdown editor's text field cursor in a Markdown image reference
 that contains the diagram.
 1. Select **Insert or edit diagram** (**{diagram}**) in the Markdown editor.
 1. Use the diagrams.net editor to edit the diagram.
 1. Select **Save & exit**.
 
-A Markdown image declaration pointing to the diagram is inserted in the wiki content,
+A Markdown image reference to the diagram is inserted in the wiki content,
 replacing the previous diagram.
 
-You can also create and edit diagrams when editing Markdown in the Content Editor.
+##### Content editor
 
-To create a diagram in the Content Editor:
+To create a diagram in the content editor:
 
-1. Select **More options** (**{plus}**) in the editor’s toolbar.
-1. Select **Create or edit diagram** in the dropdown menu.
-1. Use the diagrams.net editor to build the diagram.
+1. In the editor's toolbar, select **More options** (**{plus}**).
+1. In the dropdown list, select **Create or edit diagram**.
+1. Use the diagrams.net editor to create the diagram.
 1. Select **Save & exit**.
 
 The diagram as visualized in the diagrams.net editor is inserted in the wiki content.
 
-To edit a diagram in the Content Editor:
+To edit a diagram in the content editor:
 
 1. Select the diagram that you want to edit.
-1. Select **Edit diagram** (**{diagram}**) in the floating toolbar.
+1. In the floating toolbar, select **Edit diagram** (**{diagram}**).
 1. Use the diagrams.net editor to edit the diagram.
 1. Select **Save & exit**.
 

@@ -63,16 +63,19 @@ workflow:
       variables:
         <<: *ruby2-variables
         PIPELINE_NAME: 'Ruby 2 $CI_MERGE_REQUEST_EVENT_TYPE MR pipeline'
+        NO_SOURCEMAPS: 'true'
     - if: '$CI_MERGE_REQUEST_LABELS =~ /Community contribution/'
       variables:
         <<: *ruby3-variables
         GITLAB_DEPENDENCY_PROXY_ADDRESS: ""
         PIPELINE_NAME: 'Ruby 3 $CI_MERGE_REQUEST_EVENT_TYPE MR pipeline (community contribution)'
+        NO_SOURCEMAPS: 'true'
     # For (detached) merge request pipelines.
     - if: '$CI_MERGE_REQUEST_IID'
       variables:
         <<: *ruby3-variables
         PIPELINE_NAME: 'Ruby 3 $CI_MERGE_REQUEST_EVENT_TYPE MR pipeline'
+        NO_SOURCEMAPS: 'true'
     # For the scheduled pipelines, we set specific variables.
     - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "schedule"'
       variables:

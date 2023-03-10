@@ -420,7 +420,6 @@ scope.
 
 | Component        | Milestone | Changes |
 |------------------|----------:|---------|
-| GitLab Runner    | `%16.0`   | Do not allow runner to start if `.runner_system_id` file cannot be written. |
 | GitLab Rails app | `%16.6`   | Enable `:enforce_create_runner_workflow` feature flag by default. |
 | GitLab Rails app | `%16.6`   | Start reject job requests that don't include `system_id` value. |
 
