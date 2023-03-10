@@ -165,3 +165,5 @@ export const BOARD_CARD_MOVE_TO_POSITIONS_OPTIONS = [
     action: () => {},
   },
 ];
+
+export const GroupByParamType = {};

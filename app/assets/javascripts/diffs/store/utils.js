@@ -585,3 +585,17 @@ export function parseUrlHashAsFileHash(urlHash, currentDiffFileId = '') {
 
   return id;
 }
+
+export function markTreeEntriesLoaded({ priorEntries, loadedFiles }) {
+  const newEntries = { ...priorEntries };
+
+  loadedFiles.forEach((newFile) => {
+    const entry = newEntries[newFile.new_path];
+
+    if (entry) {
+      entry.diffLoaded = true;
+    }
+  });
+
+  return newEntries;
+}

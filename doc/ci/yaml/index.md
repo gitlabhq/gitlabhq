@@ -136,11 +136,17 @@ The `include` files are:
 - Always evaluated first and then merged with the content of the `.gitlab-ci.yml` file,
   regardless of the position of the `include` keyword.
 
-You can [nest](includes.md#use-nested-includes) up to 100 includes. In [GitLab 14.9 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/28987),
-the same file can be included multiple times in nested includes, but duplicates are ignored.
+You can have up to 150 includes per pipeline, including [nested](includes.md#use-nested-includes) includes:
 
-In [GitLab 12.4 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/28212),
-the time limit to resolve all files is 30 seconds.
+- In [GitLab 15.10 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/367150) you can have up to 150 includes.
+  In nested includes, the same file can be included multiple times, but duplicated includes
+  count towards the limit.
+- From [GitLab 14.9 to GitLab 15.9](https://gitlab.com/gitlab-org/gitlab/-/issues/28987), you can have up to 100 includes.
+  The same file can be included multiple times in nested includes, but duplicates are ignored.
+- In GitLab 14.9 and earlier you can have up to 100 includes, but the same file can not
+  be included multiple times.
+
+The time limit to resolve all files is 30 seconds.
 
 **Keyword type**: Global keyword.
 

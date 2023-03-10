@@ -25,7 +25,7 @@ You can add files to a repository:
 - When you create a project.
 - After you create a project:
   - By using [the web editor](web_editor.md).
-  - [From the command line](../../../gitlab-basics/command-line-commands.md).
+  - From the command line.
 
 ## Commit changes to a repository
 

@@ -4768,6 +4768,12 @@ msgstr ""
 msgid "Analytics|Custom dashboards"
 msgstr ""
 
+msgid "Analytics|Dashboard Title"
+msgstr ""
+
+msgid "Analytics|Dashboard was saved successfully"
+msgstr ""
+
 msgid "Analytics|Dashboards are created by editing the projects dashboard files."
 msgstr ""
 
@@ -4775,6 +4781,12 @@ msgid "Analytics|Data"
 msgstr ""
 
 msgid "Analytics|Data Table"
+msgstr ""
+
+msgid "Analytics|Edit"
+msgstr ""
+
+msgid "Analytics|Error while saving Dashboard!"
 msgstr ""
 
 msgid "Analytics|For being able to create your own dashboards please configure a special project to store your dashboards."
@@ -4816,10 +4828,16 @@ msgstr ""
 msgid "Analytics|Resulting Data"
 msgstr ""
 
+msgid "Analytics|Save"
+msgstr ""
+
 msgid "Analytics|Single Statistic"
 msgstr ""
 
 msgid "Analytics|URL"
+msgstr ""
+
+msgid "Analytics|Updating dashboard %{dashboardId}"
 msgstr ""
 
 msgid "Analytics|Users"
@@ -32824,9 +32842,6 @@ msgstr ""
 msgid "ProductAnalytics|Click Events"
 msgstr ""
 
-msgid "ProductAnalytics|Code"
-msgstr ""
-
 msgid "ProductAnalytics|Compares all events against each other"
 msgstr ""
 
@@ -32849,9 +32864,6 @@ msgid "ProductAnalytics|Details on how to configure product analytics to collect
 msgstr ""
 
 msgid "ProductAnalytics|Dimensions"
-msgstr ""
-
-msgid "ProductAnalytics|Edit"
 msgstr ""
 
 msgid "ProductAnalytics|Event Type"

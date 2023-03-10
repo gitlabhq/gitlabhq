@@ -3,7 +3,7 @@ import { GlAlert } from '@gitlab/ui';
 import { breakpoints } from '@gitlab/ui/dist/utils';
 import { sortBy, throttle } from 'lodash';
 import Draggable from 'vuedraggable';
-import { mapState, mapGetters, mapActions } from 'vuex';
+import { mapState, mapActions } from 'vuex';
 import { contentTop } from '~/lib/utils/common_utils';
 import { s__ } from '~/locale';
 import eventHub from '~/boards/eventhub';
@@ -49,6 +49,10 @@ export default {
       type: Object,
       required: true,
     },
+    isSwimlanesOn: {
+      type: Boolean,
+      required: true,
+    },
   },
   data() {
     return {
@@ -85,7 +89,6 @@ export default {
   },
   computed: {
     ...mapState(['boardLists', 'error', 'addColumnForm']),
-    ...mapGetters(['isSwimlanesOn']),
     addColumnFormVisible() {
       return this.addColumnForm?.visible;
     },

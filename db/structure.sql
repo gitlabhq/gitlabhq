@@ -29454,10 +29454,6 @@ CREATE UNIQUE INDEX p_ci_builds_metadata_build_id_partition_id_idx ON ONLY p_ci_
 
 CREATE UNIQUE INDEX index_ci_builds_metadata_on_build_id_partition_id_unique ON ci_builds_metadata USING btree (build_id, partition_id);
 
-CREATE UNIQUE INDEX p_ci_builds_metadata_id_partition_id_idx ON ONLY p_ci_builds_metadata USING btree (id, partition_id);
-
-CREATE UNIQUE INDEX index_ci_builds_metadata_on_id_partition_id_unique ON ci_builds_metadata USING btree (id, partition_id);
-
 CREATE INDEX p_ci_builds_metadata_project_id_idx ON ONLY p_ci_builds_metadata USING btree (project_id);
 
 CREATE INDEX index_ci_builds_metadata_on_project_id ON ci_builds_metadata USING btree (project_id);
@@ -33911,8 +33907,6 @@ ALTER INDEX p_ci_builds_metadata_build_id_idx ATTACH PARTITION index_ci_builds_m
 ALTER INDEX p_ci_builds_metadata_build_id_id_idx ATTACH PARTITION index_ci_builds_metadata_on_build_id_and_id_and_interruptible;
 
 ALTER INDEX p_ci_builds_metadata_build_id_partition_id_idx ATTACH PARTITION index_ci_builds_metadata_on_build_id_partition_id_unique;
-
-ALTER INDEX p_ci_builds_metadata_id_partition_id_idx ATTACH PARTITION index_ci_builds_metadata_on_id_partition_id_unique;
 
 ALTER INDEX p_ci_builds_metadata_project_id_idx ATTACH PARTITION index_ci_builds_metadata_on_project_id;
 

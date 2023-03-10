@@ -184,7 +184,7 @@ module MarkupHelper
       next unless node.name == 'a'
       next node.remove if node.children.empty?
       next node.replace(node.children) if node['data-reference-type'] != 'user'
-      next node.append_class('current-user') if node['data-user'] == current_user.id.to_s
+      next node.append_class('current-user') if current_user && node['data-user'] == current_user.id.to_s
     end
 
     sanitize text, scrubber: scrubber

@@ -30,10 +30,8 @@ When importing projects:
   imported with a naming scheme similar to `GH-SHA-username/pull-request-number/fork-name/branch`. This may lead to
   a discrepancy in branches compared to those of the GitHub repository.
 
-For additional technical details, refer to the [GitHub Importer](../../../development/github_importer.md)
-developer documentation.
-
-For an overview of the import process, see the video [Migrating from GitHub to GitLab](https://youtu.be/VYOXuOg9tQI).
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For an overview of the import process, see [Migrating from GitHub to GitLab](https://youtu.be/VYOXuOg9tQI).
 
 ## Prerequisites
 
@@ -286,40 +284,6 @@ GitHub Enterprise Cloud has
 [custom repository roles](https://docs.github.com/en/enterprise-cloud@latest/organizations/managing-peoples-access-to-your-organization-with-roles/about-custom-repository-roles).
 These roles aren't supported and cause partial imports.
 
-## Alternative way to import notes and diff notes
-
-When GitHub Importer runs on extremely large projects not all notes & diff notes can be imported due to GitHub API `issues_comments` & `pull_requests_comments` endpoints limitation.
-Not all pages can be fetched due to the following error coming from GitHub API: `In order to keep the API fast for everyone, pagination is limited for this resource. Check the rel=last link relation in the Link response header to see how far back you can traverse.`.
-
-An [alternative approach](#select-additional-items-to-import) for importing comments is available.
-
-Instead of using `issues_comments` and `pull_requests_comments`, use individual resources `issue_comments` and `pull_request_comments` instead to pull notes from one object at a time.
-This allows us to carry over any missing comments, however it increases the number of network requests required to perform the import, which means its execution takes a longer time.
-
-## Reduce GitHub API request objects per page
-
-Some GitHub API endpoints may return a 500 or 502 error for project imports from large repositories.
-To reduce the chance of such errors, you can enable the feature flag
-`github_importer_lower_per_page_limit` in the group project importing the data. This reduces the
-page size from 100 to 50.
-
-To enable this feature flag, start a [Rails console](../../../administration/operations/rails_console.md#starting-a-rails-console-session)
-and run the following `enable` command:
-
-```ruby
-group = Group.find_by_full_path('my/group/fullpath')
-
-# Enable
-Feature.enable(:github_importer_lower_per_page_limit, group)
-```
-
-To disable the feature, run this command:
-
-```ruby
-# Disable
-Feature.disable(:github_importer_lower_per_page_limit, group)
-```
-
 ## Import from GitHub Enterprise on an internal network
 
 If your GitHub Enterprise instance is on a internal network that is inaccessible to the internet, you can use a reverse proxy
@@ -462,3 +426,47 @@ repository to be imported manually. Administrators can manually import the repos
    # Trigger import from second step
    Gitlab::GithubImport::Stage::ImportRepositoryWorker.perform_async(project.id)
    ```
+
+### Errors when importing large projects
+
+The GitHub importer might encounter some errors when importing large projects.
+
+#### Alternative way to import notes and diff notes
+
+When the GitHub importer runs on extremely large projects, not all notes and diff notes can be imported due to the GitHub API `issues_comments` and `pull_requests_comments` endpoint limitations.
+
+If it's not possible to fetch all pages, the GitHub API might return the following error:
+
+```plaintext
+In order to keep the API fast for everyone, pagination is limited for this resource. Check the rel=last link relation in the Link response header to see how far back you can traverse.
+```
+
+An [alternative approach](#select-additional-items-to-import) for importing comments is available.
+
+Instead of using `issues_comments` and `pull_requests_comments`, use individual resources to pull notes from one object at a time. This way, you can carry over any missing comments. However, execution takes longer because this method increases the number of network requests required to perform the import.
+
+#### Reduce GitHub API request objects per page
+
+Some GitHub API endpoints might return a `500` or `502` error for project imports from large repositories.
+To reduce the chance of these errors, in the group project importing the data, enable the
+`github_importer_lower_per_page_limit` feature flag. When enabled, the flag reduces the
+page size from `100` to `50`.
+
+To enable this feature flag:
+
+1. Start a [Rails console](../../../administration/operations/rails_console.md#starting-a-rails-console-session).
+1. Run the following `enable` command:
+
+   ```ruby
+   group = Group.find_by_full_path('my/group/fullpath')
+
+   # Enable
+   Feature.enable(:github_importer_lower_per_page_limit, group)
+   ```
+
+To disable the feature flag, run this command:
+
+```ruby
+# Disable
+Feature.disable(:github_importer_lower_per_page_limit, group)
+```

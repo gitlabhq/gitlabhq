@@ -35,6 +35,10 @@ export default {
       type: String,
       required: true,
     },
+    isSwimlanesOn: {
+      type: Boolean,
+      required: true,
+    },
   },
   data() {
     return {
@@ -106,7 +110,11 @@ export default {
         class="filter-dropdown-container gl-md-display-flex gl-flex-direction-column gl-md-flex-direction-row gl-align-items-flex-start"
       >
         <toggle-labels />
-        <toggle-epics-swimlanes v-if="swimlanesFeatureAvailable && isSignedIn" />
+        <toggle-epics-swimlanes
+          v-if="swimlanesFeatureAvailable && isSignedIn"
+          :is-swimlanes-on="isSwimlanesOn"
+          @toggleSwimlanes="$emit('toggleSwimlanes', $event)"
+        />
         <config-toggle :board-has-scope="hasScope" />
         <board-add-new-column-trigger v-if="canAdminList" />
         <toggle-focus />

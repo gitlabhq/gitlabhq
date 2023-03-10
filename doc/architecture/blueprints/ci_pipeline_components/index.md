@@ -591,6 +591,8 @@ the CI Catalog. To do that, we may need to find all resources that are
 being released and index their data and metadata.
 For example: index the content of `spec:` section for CI components.
 
+See an [example of development workflow](dev_workflow.md) for a components repository.
+
 ## Note about future resource types
 
 In the future, to support multiple types of resources in the Catalog we could

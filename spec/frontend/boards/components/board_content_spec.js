@@ -64,6 +64,7 @@ describe('BoardContent', () => {
       propsData: {
         boardId: 'gid://gitlab/Board/1',
         filterParams: {},
+        isSwimlanesOn: false,
         ...props,
       },
       provide: {

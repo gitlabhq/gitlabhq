@@ -555,6 +555,24 @@ RSpec.describe MarkupHelper do
         expect(links[0].classes).to include('current-user')
         expect(links[1].classes).not_to include('current-user')
       end
+
+      context 'when current_user is nil' do
+        before do
+          allow(helper).to receive(:current_user).and_return(nil)
+        end
+
+        it 'renders the link with no styling when current_user is nil' do
+          another_user = create(:user)
+          html = "Please have a look, @#{user.username} @#{another_user.username}!"
+
+          object = create_object(html)
+          result = helper.first_line_in_markdown(object, attribute, 100, is_todo: true, project: project)
+          links = Nokogiri::HTML.parse(result).css('//a')
+
+          expect(links[0].classes).not_to include('current-user')
+          expect(links[1].classes).not_to include('current-user')
+        end
+      end
     end
 
     context 'when the asked attribute can be redacted' do

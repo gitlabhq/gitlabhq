@@ -8,7 +8,7 @@ import {
   GlTooltipDirective,
   GlDisclosureDropdown,
 } from '@gitlab/ui';
-import { mapActions, mapGetters, mapState } from 'vuex';
+import { mapActions, mapState } from 'vuex';
 import { isListDraggable } from '~/boards/boards_util';
 import { isScopedLabel, parseBoolean } from '~/lib/utils/common_utils';
 import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
@@ -83,7 +83,6 @@ export default {
   },
   computed: {
     ...mapState(['activeId', 'boardId']),
-    ...mapGetters(['isSwimlanesOn']),
     isLoggedIn() {
       return Boolean(this.currentUserId);
     },
@@ -261,7 +260,7 @@ export default {
       return this.scopedLabelsAvailable && isScopedLabel(label);
     },
     showNewIssueForm() {
-      if (this.isSwimlanesOn) {
+      if (this.isSwimlanesHeader) {
         eventHub.$emit('open-unassigned-lane');
         this.$nextTick(() => {
           eventHub.$emit(`${toggleFormEventPrefix.issue}${this.list.id}`);

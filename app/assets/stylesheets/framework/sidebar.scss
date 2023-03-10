@@ -140,6 +140,11 @@
   .issuable-sidebar {
     padding: 0 3px;
   }
+
+  .block {
+    border-bottom: 0;
+    padding-top: 0;
+  }
 }
 
 .issuable-sidebar .labels {

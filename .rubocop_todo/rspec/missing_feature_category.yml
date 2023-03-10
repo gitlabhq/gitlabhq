@@ -4771,7 +4771,6 @@ RSpec/MissingFeatureCategory:
     - 'spec/lib/gitlab/noteable_metadata_spec.rb'
     - 'spec/lib/gitlab/null_request_store_spec.rb'
     - 'spec/lib/gitlab/object_hierarchy_spec.rb'
-    - 'spec/lib/gitlab/observability_spec.rb'
     - 'spec/lib/gitlab/omniauth_initializer_spec.rb'
     - 'spec/lib/gitlab/optimistic_locking_spec.rb'
     - 'spec/lib/gitlab/other_markup_spec.rb'

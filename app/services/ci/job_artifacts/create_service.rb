@@ -125,11 +125,13 @@ module Ci
 
       def persist_artifact(artifact, artifact_metadata, params)
         Ci::JobArtifact.transaction do
+          # NOTE: The `artifacts_expire_at` column is already deprecated and to be removed in the near future.
+          # Running it first because in migrations we lock the `ci_builds` table
+          # first and then the others. This reduces the chances of deadlocks.
+          job.update_column(:artifacts_expire_at, artifact.expire_at)
+
           artifact.save!
           artifact_metadata&.save!
-
-          # NOTE: The `artifacts_expire_at` column is already deprecated and to be removed in the near future.
-          job.update_column(:artifacts_expire_at, artifact.expire_at)
         end
 
         success(artifact: artifact)

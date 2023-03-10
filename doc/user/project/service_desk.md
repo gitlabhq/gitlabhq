@@ -8,29 +8,15 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > Moved to GitLab Free in 13.2.
 
-Service Desk is a module that allows your team to connect
-with any external party through email, without any external tools.
-An ongoing conversation in the same place as where your software
-is built ensures user feedback ends up where it's needed.
+With Service Desk, your customers
+can email you bug reports, feature requests, or general feedback.
+Service Desk provides a unique email address, so they don't need their own GitLab accounts.
 
-With Service Desk, you can provide efficient email support to your customers. They can
-email you bug reports, feature requests, or general feedback. They all end up in your
-GitLab project as new issues. In turn, your team can respond directly from the project.
+Service Desk emails are created in your GitLab project as new issues.
+Your team can respond directly from the project, while customers interact with the thread only
+through email.
 
-As Service Desk is built right into GitLab itself, the complexity and inefficiencies
-of multiple tools and external integrations are eliminated. This significantly shortens
-the cycle time from feedback to software update.
-
-For an overview, check the video demonstration on [GitLab Service Desk](https://about.gitlab.com/blog/2017/05/09/demo-service-desk/).
-
-## How it works
-
-GitLab Service Desk enables people to create issues in your
-GitLab instance without needing their own user account.
-
-It provides a unique email address for end users to create issues in a project.
-Follow-up notes can be sent either through the GitLab interface or by email. End
-users only see the thread through email.
+## Service Desk workflow
 
 For example, let's assume you develop a game for iOS or Android.
 The codebase is hosted in your GitLab instance, built and deployed
@@ -43,23 +29,24 @@ Here's how Service Desk works for you:
 1. Each email they send creates an issue in the appropriate project.
 1. Your team members go to the Service Desk issue tracker, where they can see new support
    requests and respond inside associated issues.
-1. Your team communicates back and forth with the customer to understand the request.
+1. Your team communicates with the customer to understand the request.
 1. Your team starts working on implementing code to solve your customer's problem.
-1. When your team finishes the implementation, whereupon the merge request is merged and the issue
+1. When your team finishes the implementation, the merge request is merged and the issue
    is closed automatically.
-1. The customer's requests are handled through email, without ever having access to your
-   GitLab instance.
-1. Your team saved time by not having to leave GitLab (or setup any integrations) to follow up with
-   your customer.
+
+Meanwhile:
+
+- The customer interacts with your team entirely through email, without needing access to your
+  GitLab instance.
+- Your team saves time by not having to leave GitLab (or set up integrations) to follow up with
+  your customer.
 
 ## Configuring Service Desk
 
 Users with Maintainer and higher access in a project can configure Service Desk.
 
 Service Desk issues are [confidential](issues/confidential_issues.md), so they are
-only visible to project members. In GitLab 11.7 we updated the generated email
-address format. The older format is still supported, so existing aliases or
-contacts still work.
+only visible to project members.
 
 If you have [templates](description_templates.md) in your repository, you can optionally select
 one from the selector menu to append it to all Service Desk issues.
@@ -93,7 +80,6 @@ displayed in the information note.
 
 ### Using customized email templates
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/2460) in GitLab 12.7.
 > - Moved from GitLab Premium to GitLab Free in 13.2.
 > - `UNSUBSCRIBE_URL`, `SYSTEM_HEADER`, `SYSTEM_FOOTER`, and `ADDITIONAL_TEXT` placeholders [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/285512) in GitLab 15.9.
 
@@ -173,8 +159,6 @@ To use a custom description template with Service Desk:
 1. From the dropdown list **Template to append to all Service Desk issues**, search or select your template.
 
 ### Using a custom email display name
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7529) in GitLab 12.8.
 
 You can customize the email display name. Emails sent from Service Desk have
 this name in the `From` header. The default display name is `GitLab Support Bot`.
@@ -564,8 +548,3 @@ in both issues. They continue to receive any notifications in the old issue and 
 
 Your emails might be ignored because they contain one of the
 [email headers that GitLab ignores](../../administration/incoming_email.md#rejected-headers).
-
-### Responses to a Service Desk issue do not generate emails
-
-Your issue might have been moved to a different project.
-Moved Service Desk issues do not retain email participants.

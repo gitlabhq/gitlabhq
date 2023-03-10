@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Observability do
+RSpec.describe Gitlab::Observability, feature_category: :error_tracking do
   describe '.observability_url' do
     let(:gitlab_url) { 'https://example.com' }
 
@@ -50,8 +50,8 @@ RSpec.describe Gitlab::Observability do
   end
 
   describe '.allowed_for_action?' do
-    let_it_be(:group) { build(:user) }
-    let_it_be(:user) { build(:group) }
+    let(:group) { build_stubbed(:group) }
+    let(:user) { build_stubbed(:user) }
 
     before do
       allow(described_class).to receive(:allowed?).and_call_original
@@ -82,9 +82,9 @@ RSpec.describe Gitlab::Observability do
   end
 
   describe '.allowed?' do
-    let_it_be(:group) { build(:user) }
-    let_it_be(:user) { build(:group) }
-    let_it_be(:test_permission) { :read_observability }
+    let(:user) { build_stubbed(:user) }
+    let(:group) { build_stubbed(:group) }
+    let(:test_permission) { :read_observability }
 
     before do
       allow(Ability).to receive(:allowed?).and_return(false)

@@ -11,17 +11,17 @@ Adding files to a repository is a small, but key task. Bringing files in to a re
 such as code, images, or documents, allows them to be tracked by Git, even though they
 may have been created elsewhere.
 
-You can add a file to a repository in your [terminal](#add-a-file-using-the-command-line), and
+You can add a file to a repository in your terminal, and
 then push to GitLab. You can also use the [web interface](../user/project/repository/web_editor.md#upload-a-file),
 which may be a simpler solution.
 
 If you need to create a file first, for example a `README.md` text file, that can
-also be done from the [terminal](command-line-commands.md#create-a-text-file-in-the-current-directory) or
+also be done from the terminal or
 [web interface](../user/project/repository/web_editor.md#create-a-file).
 
 ## Add a file using the command line
 
-Open a [terminal/shell](command-line-commands.md), and change into the folder of your
+Open a terminal (or shell), and change into the folder of your
 GitLab project. This usually means running the following command until you get
 to the desired destination:
 
