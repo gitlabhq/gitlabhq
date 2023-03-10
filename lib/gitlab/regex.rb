@@ -466,7 +466,7 @@ module Gitlab
         # HTML comment line:
         # <!-- some commented text -->
 
-        ^<!--\ .*\ -->\ *$
+        ^<!--\ .*?\ -->\ *$
       )
     }mx.freeze
 

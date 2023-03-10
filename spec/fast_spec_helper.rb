@@ -21,6 +21,7 @@ require_relative 'support/rspec'
 require_relative '../lib/gitlab/utils'
 require_relative '../lib/gitlab/utils/strong_memoize'
 require 'active_support/all'
+require 'pry'
 
 require_relative 'simplecov_env'
 SimpleCovEnv.start!

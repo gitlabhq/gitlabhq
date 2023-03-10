@@ -46,6 +46,22 @@ RSpec.describe Taskable, feature_category: :team_planning do
     subject { described_class.get_tasks(description) }
 
     it { is_expected.to match(expected_result) }
+
+    describe 'with single line comments' do
+      let(:description) do
+        <<~MARKDOWN
+          <!-- line comment -->
+
+          - [ ] only task item
+
+          <!-- another line comment -->
+        MARKDOWN
+      end
+
+      let(:expected_result) { [TaskList::Item.new('- [ ]', 'only task item')] }
+
+      it { is_expected.to match(expected_result) }
+    end
   end
 
   describe '#task_list_items' do
