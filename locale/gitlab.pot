@@ -5099,10 +5099,16 @@ msgstr ""
 msgid "ApplicationSettings|See %{linkStart}password policy guidelines%{linkEnd}."
 msgstr ""
 
+msgid "ApplicationSettings|Send a confirmation email during sign up. New users can log in immediately, but must confirm their email within three days."
+msgstr ""
+
 msgid "ApplicationSettings|Send a confirmation email during sign up. New users must confirm their email address before they can log in."
 msgstr ""
 
 msgid "ApplicationSettings|Sign-up enabled"
+msgstr ""
+
+msgid "ApplicationSettings|Soft"
 msgstr ""
 
 msgid "ApplicationSettings|Text shown after a user signs up. Markdown enabled."
@@ -8714,12 +8720,6 @@ msgid "Checkout|Edit"
 msgstr ""
 
 msgid "Checkout|Exp %{expirationMonth}/%{expirationYear}"
-msgstr ""
-
-msgid "Checkout|Failed to confirm your order! Please try again."
-msgstr ""
-
-msgid "Checkout|Failed to confirm your order: %{message}. Please try again."
 msgstr ""
 
 msgid "Checkout|Failed to load countries. Please try again."
@@ -19488,6 +19488,9 @@ msgstr ""
 msgid "Given epic is already related to this epic."
 msgstr ""
 
+msgid "Global SAML group membership lock"
+msgstr ""
+
 msgid "Global Search is disabled for this scope"
 msgstr ""
 
@@ -21555,6 +21558,9 @@ msgid "If checked, group owners can manage LDAP group links and LDAP member over
 msgstr ""
 
 msgid "If checked, new group memberships and permissions can only be added via LDAP synchronization"
+msgstr ""
+
+msgid "If checked, new group memberships and permissions can only be added via SAML Group Links synchronization"
 msgstr ""
 
 msgid "If disabled, a diverged local branch will not be automatically updated with commits from its remote counterpart, to prevent local data loss. If the default branch (%{default_branch}) has diverged and cannot be updated, mirroring will fail. Other diverged branches are silently ignored. %{link_start}Learn more.%{link_end}"
@@ -25900,6 +25906,9 @@ msgid "Lock File?"
 msgstr ""
 
 msgid "Lock memberships to LDAP synchronization"
+msgstr ""
+
+msgid "Lock memberships to SAML Group Links synchronization"
 msgstr ""
 
 msgid "Lock merge request"
@@ -37891,6 +37900,9 @@ msgstr ""
 msgid "SAML for %{group_name}"
 msgstr ""
 
+msgid "SAML group membership settings"
+msgstr ""
+
 msgid "SAML single sign-on"
 msgstr ""
 
@@ -38930,6 +38942,9 @@ msgstr ""
 msgid "SecurityOrchestration|No rules defined - policy will not run."
 msgstr ""
 
+msgid "SecurityOrchestration|No tags available"
+msgstr ""
+
 msgid "SecurityOrchestration|Non-existing tags have been detected in the policy yaml. As a result, rule mode has been disabled. To enable rule mode, remove those non-existing tags from the policy yaml."
 msgstr ""
 
@@ -39023,7 +39038,7 @@ msgstr ""
 msgid "SecurityOrchestration|Scan to be performed on every pipeline on the %{branches}"
 msgstr ""
 
-msgid "SecurityOrchestration|Scan will automatically choose a runner to run on because there are no tags exist on runners"
+msgid "SecurityOrchestration|Scan will automatically choose a runner to run on because there are no tags exist on runners. You can %{linkStart}create a new tag in settings%{linkEnd}."
 msgstr ""
 
 msgid "SecurityOrchestration|Security Approvals"

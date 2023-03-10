@@ -60,6 +60,8 @@ This means that new dependencies should, at a minimum, meet the following criter
 - There are no issues open that we know may impact the availability or performance of GitLab.
 - The project is tested using some form of test automation. The test suite must be passing
   using the Ruby version currently used by GitLab.
+- CI builds for all supported platforms must succeed using the new dependency. For more information, see
+  how to [build a package for testing](build_test_package.md#building-a-package-for-testing).
 - If the project uses a C extension, consider requesting an additional review from a C or MRI
   domain expert. C extensions can greatly impact GitLab stability and performance.
 

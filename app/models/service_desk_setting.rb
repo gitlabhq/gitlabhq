@@ -3,6 +3,8 @@
 class ServiceDeskSetting < ApplicationRecord
   include Gitlab::Utils::StrongMemoize
 
+  CUSTOM_EMAIL_VERIFICATION_SUBADDRESS = '+verify'
+
   attribute :custom_email_enabled, default: false
   attr_encrypted :custom_email_smtp_password,
     mode: :per_attribute_iv,
@@ -12,6 +14,7 @@ class ServiceDeskSetting < ApplicationRecord
     encode_iv: false
 
   belongs_to :project
+
   validates :project_id, presence: true
   validate :valid_issue_template
   validate :valid_project_key
@@ -32,20 +35,24 @@ class ServiceDeskSetting < ApplicationRecord
   validates :custom_email,
             presence: true,
             devise_email: true,
-            if: :custom_email_enabled?
+            if: :needs_custom_email_smtp_credentials?
   validates :custom_email_smtp_address,
             presence: true,
             hostname: { allow_numeric_hostname: true, require_valid_tld: true },
-            if: :custom_email_enabled?
+            if: :needs_custom_email_smtp_credentials?
   validates :custom_email_smtp_username,
             presence: true,
-            if: :custom_email_enabled?
+            if: :needs_custom_email_smtp_credentials?
   validates :custom_email_smtp_port,
             presence: true,
             numericality: { only_integer: true, greater_than: 0 },
-            if: :custom_email_enabled?
+            if: :needs_custom_email_smtp_credentials?
 
   scope :with_project_key, ->(key) { where(project_key: key) }
+
+  def custom_email_verification
+    project&.service_desk_custom_email_verification
+  end
 
   def custom_email_delivery_options
     {
@@ -55,6 +62,12 @@ class ServiceDeskSetting < ApplicationRecord
       domain: Mail::Address.new(custom_email).domain,
       port: custom_email_smtp_port || 587
     }
+  end
+
+  def custom_email_address_for_verification
+    return unless custom_email.present?
+
+    custom_email.sub("@", "#{CUSTOM_EMAIL_VERIFICATION_SUBADDRESS}@")
   end
 
   def issue_template_content
@@ -101,6 +114,10 @@ class ServiceDeskSetting < ApplicationRecord
     settings.any? do |setting|
       setting.project.full_path_slug == project_slug
     end
+  end
+
+  def needs_custom_email_smtp_credentials?
+    custom_email_enabled? || custom_email_verification.present?
   end
 end
 

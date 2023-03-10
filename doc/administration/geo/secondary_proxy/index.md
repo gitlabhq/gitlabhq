@@ -165,6 +165,7 @@ It does not cover all data types.
 | LFS objects (using Git)                             | **{check-circle}** Yes |
 | Pages                                               | **{dotted-circle}** No <sup>2</sup> |
 | Advanced search (using the web UI)                  | **{dotted-circle}** No |
+| Container registry                                  | **{dotted-circle}** No |
 
 1. Git reads are served from the local secondary while pushes get proxied to the primary.
    Selective sync or cases where repositories don't exist locally on the Geo secondary throw a "not found" error.

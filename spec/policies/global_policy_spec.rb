@@ -292,6 +292,7 @@ RSpec.describe GlobalPolicy, feature_category: :shared do
 
     context 'inactive user' do
       before do
+        stub_application_setting_enum('email_confirmation_setting', 'soft')
         current_user.update!(confirmed_at: nil, confirmation_sent_at: 5.days.ago)
       end
 
@@ -412,6 +413,7 @@ RSpec.describe GlobalPolicy, feature_category: :shared do
 
     describe 'inactive user' do
       before do
+        stub_application_setting_enum('email_confirmation_setting', 'soft')
         current_user.update!(confirmed_at: nil)
       end
 
@@ -516,6 +518,7 @@ RSpec.describe GlobalPolicy, feature_category: :shared do
 
     describe 'inactive user' do
       before do
+        stub_application_setting_enum('email_confirmation_setting', 'soft')
         current_user.update!(confirmed_at: nil)
       end
 

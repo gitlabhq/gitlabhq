@@ -113,7 +113,13 @@ module Ci
       end
 
       def accessibility(params)
-        params[:accessibility] || 'public'
+        accessibility = params[:accessibility]
+
+        return :public if Feature.disabled?(:non_public_artifacts, type: :development)
+
+        return accessibility if accessibility.present?
+
+        job.artifacts_public? ? :public : :private
       end
 
       def parse_artifact(artifact)

@@ -244,9 +244,8 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures, feature_cate
         context 'the user sign-up using a different email address' do
           let(:invite_email) { build_stubbed(:user).email }
 
-          context 'when soft email confirmation is not enabled' do
+          context 'when email confirmation is not set to `soft`' do
             before do
-              stub_feature_flags(soft_email_confirmation: false)
               allow(User).to receive(:allow_unconfirmed_access_for).and_return 0
               stub_feature_flags(identity_verification: false)
             end
@@ -261,9 +260,9 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures, feature_cate
             end
           end
 
-          context 'when soft email confirmation is enabled' do
+          context 'when email confirmation setting is set to `soft`' do
             before do
-              stub_feature_flags(soft_email_confirmation: true)
+              stub_application_setting_enum('email_confirmation_setting', 'soft')
               allow(User).to receive(:allow_unconfirmed_access_for).and_return 2.days
             end
 

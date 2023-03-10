@@ -90,6 +90,7 @@ module Gitlab
       def untar_with_options(archive:, dir:, options:)
         execute_cmd(%W(tar -#{options} #{archive} -C #{dir}))
         execute_cmd(%W(chmod -R #{UNTAR_MASK} #{dir}))
+        remove_symlinks(dir)
       end
 
       # rubocop:disable Gitlab/ModuleWithInstanceVariables
@@ -118,6 +119,19 @@ module Gitlab
 
         mkdir_p(destination_folder)
         FileUtils.copy_entry(source, destination)
+        true
+      end
+
+      def remove_symlinks(dir)
+        ignore_file_names = %w[. ..]
+
+        # Using File::FNM_DOTMATCH to also delete symlinks starting with "."
+        Dir.glob("#{dir}/**/*", File::FNM_DOTMATCH)
+          .reject { |f| ignore_file_names.include?(File.basename(f)) }
+          .each do |filepath|
+            FileUtils.rm(filepath) if File.lstat(filepath).symlink?
+          end
+
         true
       end
     end

@@ -106,6 +106,30 @@ Users granted:
 
 SAML group membership is evaluated each time a user signs in.
 
+### Global SAML group memberships lock **(PREMIUM SELF)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/386390) in GitLab 15.10.
+
+GitLab administrators can use the global SAML group memberships lock to prevent group members from inviting new members to subgroups that have their membership synchronized with SAML Group Links.
+
+Global group memberships lock only applies to subgroups of a top-level group where SAML Group Links synchronization is configured. No user can modify the
+membership of a top-level group configured for SAML Group Links synchronization.
+
+When global group memberships lock is enabled:
+
+- Only an administrator can manage memberships of any group including access levels.
+- Users cannot:
+  - Share a project with other groups.
+  - Invite members to a project created in a group.
+
+To enable global group memberships lock:
+
+1. [Configure SAML](../../../integration/saml.md) for your self-managed GitLab instance.
+1. On the top bar, select **Main menu > Admin**.
+1. On the left sidebar, select **Settings > General**.
+1. Expand the **Visibility and access controls** section.
+1. Ensure the **Lock memberships to SAML synchronization** checkbox is selected.
+
 ### Automatic member removal
 
 After a group sync, users who are not members of a mapped SAML group are removed from the group.

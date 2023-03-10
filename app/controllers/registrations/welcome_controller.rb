@@ -50,7 +50,7 @@ module Registrations
 
     def requires_confirmation?(user)
       return false if user.confirmed?
-      return false if Feature.enabled?(:soft_email_confirmation)
+      return false unless Gitlab::CurrentSettings.email_confirmation_setting_hard?
 
       true
     end

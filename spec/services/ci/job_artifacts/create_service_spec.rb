@@ -33,6 +33,66 @@ RSpec.describe Ci::JobArtifacts::CreateService, feature_category: :build_artifac
   describe '#execute' do
     subject { service.execute(artifacts_file, params, metadata_file: metadata_file) }
 
+    def expect_accessibility_be(accessibility)
+      if accessibility == :public
+        expect(job.job_artifacts).to all be_public_accessibility
+      else
+        expect(job.job_artifacts).to all be_private_accessibility
+      end
+    end
+
+    shared_examples 'job does not have public artifacts in the CI config' do |expected_artifacts_count, accessibility|
+      it "sets accessibility by default to #{accessibility}" do
+        expect { subject }.to change { Ci::JobArtifact.count }.by(expected_artifacts_count)
+
+        expect_accessibility_be(accessibility)
+      end
+    end
+
+    shared_examples 'job artifact set as private in the CI config' do |expected_artifacts_count, accessibility|
+      let!(:job) { create(:ci_build, :with_private_artifacts_config, project: project) }
+
+      it "sets accessibility to #{accessibility}" do
+        expect { subject }.to change { Ci::JobArtifact.count }.by(expected_artifacts_count)
+
+        expect_accessibility_be(accessibility)
+      end
+    end
+
+    shared_examples 'job artifact set as public in the CI config' do |expected_artifacts_count, accessibility|
+      let!(:job) { create(:ci_build, :with_public_artifacts_config, project: project) }
+
+      it "sets accessibility to #{accessibility}" do
+        expect { subject }.to change { Ci::JobArtifact.count }.by(expected_artifacts_count)
+
+        expect_accessibility_be(accessibility)
+      end
+    end
+
+    shared_examples 'when accessibility level passed as private' do |expected_artifacts_count, accessibility|
+      before do
+        params.merge!('accessibility' => 'private')
+      end
+
+      it 'sets accessibility to private level' do
+        expect { subject }.to change { Ci::JobArtifact.count }.by(expected_artifacts_count)
+
+        expect_accessibility_be(accessibility)
+      end
+    end
+
+    shared_examples 'when accessibility passed as public' do |expected_artifacts_count|
+      before do
+        params.merge!('accessibility' => 'public')
+      end
+
+      it 'sets accessibility level to public' do
+        expect { subject }.to change { Ci::JobArtifact.count }.by(expected_artifacts_count)
+
+        expect(job.job_artifacts).to all be_public_accessibility
+      end
+    end
+
     context 'when artifacts file is uploaded' do
       it 'logs the created artifact' do
         expect(Gitlab::Ci::Artifacts::Logger)
@@ -61,37 +121,19 @@ RSpec.describe Ci::JobArtifacts::CreateService, feature_category: :build_artifac
         expect(new_artifact.locked).to eq(job.pipeline.locked)
       end
 
-      it 'sets accessibility level by default to public' do
-        expect { subject }.to change { Ci::JobArtifact.count }.by(1)
-
-        new_artifact = job.job_artifacts.last
-        expect(new_artifact).to be_public_accessibility
-      end
-
-      context 'when accessibility level passed as private' do
+      context 'when non_public_artifacts feature flag is disabled' do
         before do
-          params.merge!('accessibility' => 'private')
+          stub_feature_flags(non_public_artifacts: false)
         end
 
-        it 'sets accessibility level to private' do
-          expect { subject }.to change { Ci::JobArtifact.count }.by(1)
-
-          new_artifact = job.job_artifacts.last
-          expect(new_artifact).to be_private_accessibility
-        end
-      end
-
-      context 'when accessibility passed as public' do
-        before do
-          params.merge!('accessibility' => 'public')
+        context 'when accessibility level not passed to the service' do
+          it_behaves_like 'job does not have public artifacts in the CI config', 1, :public
+          it_behaves_like 'job artifact set as private in the CI config', 1, :public
+          it_behaves_like 'job artifact set as public in the CI config', 1, :public
         end
 
-        it 'sets accessibility to public level' do
-          expect { subject }.to change { Ci::JobArtifact.count }.by(1)
-
-          new_artifact = job.job_artifacts.last
-          expect(new_artifact).to be_public_accessibility
-        end
+        it_behaves_like 'when accessibility level passed as private', 1, :public
+        it_behaves_like 'when accessibility passed as public', 1
       end
 
       context 'when accessibility passed as invalid value' do
@@ -103,6 +145,16 @@ RSpec.describe Ci::JobArtifacts::CreateService, feature_category: :build_artifac
           expect { subject }.to raise_error(ArgumentError)
         end
       end
+
+      context 'when accessibility level not passed to the service' do
+        it_behaves_like 'job does not have public artifacts in the CI config', 1, :public
+        it_behaves_like 'job artifact set as private in the CI config', 1, :private
+        it_behaves_like 'job artifact set as public in the CI config', 1, :public
+      end
+
+      it_behaves_like 'when accessibility level passed as private', 1, :private
+
+      it_behaves_like 'when accessibility passed as public', 1
 
       context 'when metadata file is also uploaded' do
         let(:metadata_file) do
@@ -125,12 +177,15 @@ RSpec.describe Ci::JobArtifacts::CreateService, feature_category: :build_artifac
           expect(new_artifact.locked).to eq(job.pipeline.locked)
         end
 
-        it 'sets accessibility by default to public' do
-          expect { subject }.to change { Ci::JobArtifact.count }.by(2)
-
-          new_artifact = job.job_artifacts.last
-          expect(new_artifact).to be_public_accessibility
+        context 'when accessibility level not passed to the service' do
+          it_behaves_like 'job does not have public artifacts in the CI config', 2, :public
+          it_behaves_like 'job artifact set as private in the CI config', 2, :private
+          it_behaves_like 'job artifact set as public in the CI config', 2, :public
         end
+
+        it_behaves_like 'when accessibility level passed as private', 2, :privatge
+
+        it_behaves_like 'when accessibility passed as public', 2
 
         it 'logs the created artifact and metadata' do
           expect(Gitlab::Ci::Artifacts::Logger)
@@ -138,32 +193,6 @@ RSpec.describe Ci::JobArtifacts::CreateService, feature_category: :build_artifac
             .with(an_instance_of(Ci::JobArtifact)).twice
 
           subject
-        end
-
-        context 'when accessibility level passed as private' do
-          before do
-            params.merge!('accessibility' => 'private')
-          end
-
-          it 'sets accessibility to private level' do
-            expect { subject }.to change { Ci::JobArtifact.count }.by(2)
-
-            new_artifact = job.job_artifacts.last
-            expect(new_artifact).to be_private_accessibility
-          end
-        end
-
-        context 'when accessibility passed as public' do
-          before do
-            params.merge!('accessibility' => 'public')
-          end
-
-          it 'sets accessibility level to public' do
-            expect { subject }.to change { Ci::JobArtifact.count }.by(2)
-
-            new_artifact = job.job_artifacts.last
-            expect(new_artifact).to be_public_accessibility
-          end
         end
 
         it 'sets expiration date according to application settings' do

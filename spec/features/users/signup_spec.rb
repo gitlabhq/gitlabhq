@@ -200,9 +200,8 @@ RSpec.describe 'Signup', feature_category: :user_profile do
           stub_application_setting_enum('email_confirmation_setting', 'hard')
         end
 
-        context 'when soft email confirmation is not enabled' do
+        context 'when email confirmation setting is not `soft`' do
           before do
-            stub_feature_flags(soft_email_confirmation: false)
             stub_feature_flags(identity_verification: false)
           end
 
@@ -221,9 +220,9 @@ RSpec.describe 'Signup', feature_category: :user_profile do
           end
         end
 
-        context 'when soft email confirmation is enabled' do
+        context 'when email confirmation setting is `soft`' do
           before do
-            stub_feature_flags(soft_email_confirmation: true)
+            stub_application_setting_enum('email_confirmation_setting', 'soft')
           end
 
           it 'creates the user account and sends a confirmation email' do

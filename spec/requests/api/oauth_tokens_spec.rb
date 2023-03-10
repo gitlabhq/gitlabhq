@@ -124,6 +124,8 @@ RSpec.describe 'OAuth tokens', feature_category: :system_access do
 
     context 'when user account is not confirmed' do
       before do
+        stub_application_setting_enum('email_confirmation_setting', 'soft')
+
         user.update!(confirmed_at: nil)
 
         request_oauth_token(user, client_basic_auth_header(client))

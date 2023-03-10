@@ -7102,42 +7102,104 @@ RSpec.describe User, feature_category: :user_profile do
     context 'when user is confirmed' do
       let(:user) { create(:user) }
 
-      it 'is falsey' do
-        expect(user.confirmed?).to be_truthy
-        expect(subject).to be_falsey
+      it 'is false' do
+        expect(user.confirmed?).to be(true)
+        expect(subject).to be(false)
       end
     end
 
     context 'when user is not confirmed' do
       let_it_be(:user) { build_stubbed(:user, :unconfirmed, confirmation_sent_at: Time.current) }
 
-      it 'is truthy when soft_email_confirmation feature is disabled' do
-        stub_feature_flags(soft_email_confirmation: false)
-        expect(subject).to be_truthy
+      context 'when email confirmation setting is set to `off`' do
+        before do
+          stub_application_setting_enum('email_confirmation_setting', 'off')
+        end
+
+        it { is_expected.to be(false) }
       end
 
-      context 'when soft_email_confirmation feature is enabled' do
+      context 'when email confirmation setting is set to `soft`' do
         before do
-          stub_feature_flags(soft_email_confirmation: true)
+          stub_application_setting_enum('email_confirmation_setting', 'soft')
         end
 
-        it 'is falsey when confirmation period is valid' do
-          expect(subject).to be_falsey
+        context 'when confirmation period is valid' do
+          it { is_expected.to be(false) }
         end
 
-        it 'is truthy when confirmation period is expired' do
-          travel_to(User.allow_unconfirmed_access_for.from_now + 1.day) do
-            expect(subject).to be_truthy
+        context 'when confirmation period is expired' do
+          before do
+            travel_to(User.allow_unconfirmed_access_for.from_now + 1.day)
           end
+
+          it { is_expected.to be(true) }
         end
 
         context 'when user has no confirmation email sent' do
           let(:user) { build(:user, :unconfirmed, confirmation_sent_at: nil) }
 
-          it 'is truthy' do
-            expect(subject).to be_truthy
-          end
+          it { is_expected.to be(true) }
         end
+      end
+
+      context 'when email confirmation setting is set to `hard`' do
+        before do
+          stub_application_setting_enum('email_confirmation_setting', 'hard')
+        end
+
+        it { is_expected.to be(true) }
+      end
+    end
+  end
+
+  describe '#confirmation_period_valid?' do
+    subject { user.send(:confirmation_period_valid?) }
+
+    let_it_be(:user) { create(:user) }
+
+    context 'when email confirmation setting is set to `off`' do
+      before do
+        stub_feature_flags(soft_email_confirmation: false)
+      end
+
+      it { is_expected.to be(true) }
+    end
+
+    context 'when email confirmation setting is set to `soft`' do
+      before do
+        stub_application_setting_enum('email_confirmation_setting', 'soft')
+      end
+
+      context 'when within confirmation window' do
+        before do
+          user.update!(confirmation_sent_at: Date.today)
+        end
+
+        it { is_expected.to be(true) }
+      end
+
+      context 'when outside confirmation window' do
+        before do
+          user.update!(confirmation_sent_at: Date.today - described_class.confirm_within - 7.days)
+        end
+
+        it { is_expected.to be(false) }
+      end
+    end
+
+    context 'when email confirmation setting is set to `hard`' do
+      before do
+        stub_feature_flags(soft_email_confirmation: false)
+        stub_application_setting_enum('email_confirmation_setting', 'hard')
+      end
+
+      it { is_expected.to be(true) }
+    end
+
+    describe '#in_confirmation_period?' do
+      it 'is expected to be an alias' do
+        expect(user.method(:in_confirmation_period?).original_name).to eq(:confirmation_period_valid?)
       end
     end
   end

@@ -722,6 +722,7 @@ project:
 - upstream_project_subscriptions
 - downstream_project_subscriptions
 - service_desk_setting
+- service_desk_custom_email_verification
 - security_setting
 - import_failures
 - container_expiration_policy
@@ -963,6 +964,8 @@ bulk_import_export:
   - group
 service_desk_setting:
   - file_template_project
+service_desk_custom_email_verification:
+  - triggerer
 approvals:
   - user
   - merge_request

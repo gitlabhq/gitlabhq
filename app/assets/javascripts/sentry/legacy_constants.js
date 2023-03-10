@@ -1,6 +1,6 @@
 import { __ } from '~/locale';
 
-// TODO: Remove in favor of https://gitlab.com/gitlab-org/gitlab/issues/35144
+// https://docs.sentry.io/platforms/javascript/configuration/filtering/#decluttering-sentry
 export const IGNORE_ERRORS = [
   // Random plugins/extensions
   'top.GLOBALS',

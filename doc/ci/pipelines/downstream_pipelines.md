@@ -315,18 +315,32 @@ trigger_pipeline:
 > Hover behavior for pipeline cards [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/197140/) in GitLab 13.2.
 
 In the [pipeline graph view](index.md#view-full-pipeline-graph), downstream pipelines display
-as a list of cards on the right of the graph. Hover over the pipeline's card to view
-which job triggered the downstream pipeline.
+as a list of cards on the right of the graph. From this view, you can:
 
-### Retry a downstream pipeline
+- Select a trigger job to see the triggered downstream pipeline's jobs.
+- Select **Expand jobs** **{chevron-lg-right}** on a pipeline card to expand the view
+  with the downstream pipeline's jobs. You can view one downstream pipeline at a time.
+- Hover over a pipeline card to have the job that triggered the downstream pipeline highlighted.
+
+### Retry failed and canceled jobs in a downstream pipeline
 
 > - Retry from graph view [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/354974) in GitLab 15.0 [with a flag](../../administration/feature_flags.md) named `downstream_retry_action`. Disabled by default.
 > - Retry from graph view [generally available and feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/357406) in GitLab 15.1.
 
-To retry a completed downstream pipeline, select **Retry** (**{retry}**):
+To retry failed and canceled jobs, select **Retry** (**{retry}**):
 
 - From the downstream pipeline's details page.
-- On the pipeline's card in the [pipeline graph view](index.md#view-full-pipeline-graph).
+- On the pipeline's card in the pipeline graph view.
+
+### Recreate a downstream pipeline
+
+> Retry trigger job from graph view [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/367547) in GitLab 15.10 [with a flag](../../administration/feature_flags.md) named `ci_recreate_downstream_pipeline`. Disabled by default.
+
+You can recreate a downstream pipeline by retrying its corresponding trigger job. The newly created downstream pipeline replaces the current downstream pipeline in the pipeline graph.
+
+To recreate a downstream pipeline:
+
+- Select **Run again** (**{retry}**) on the trigger job's card in the pipeline graph view.
 
 ### Cancel a downstream pipeline
 
@@ -336,7 +350,7 @@ To retry a completed downstream pipeline, select **Retry** (**{retry}**):
 To cancel a downstream pipeline that is still running, select **Cancel** (**{cancel}**):
 
 - From the downstream pipeline's details page.
-- On the pipeline's card in the [pipeline graph view](index.md#view-full-pipeline-graph).
+- On the pipeline's card in the pipeline graph view.
 
 ### Mirror the status of a downstream pipeline in the trigger job
 
@@ -371,12 +385,8 @@ trigger_job:
 After you trigger a multi-project pipeline, the downstream pipeline displays
 to the right of the [pipeline graph](index.md#visualize-pipelines).
 
-![Multi-project pipeline graph](img/multi_project_pipeline_graph_v14_3.png)
-
 In [pipeline mini graphs](index.md#pipeline-mini-graphs), the downstream pipeline
 displays to the right of the mini graph.
-
-![Multi-project pipeline mini graph](img/pipeline_mini_graph_v15_0.png)
 
 ## Fetch artifacts from an upstream pipeline
 

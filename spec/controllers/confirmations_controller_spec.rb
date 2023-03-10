@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ConfirmationsController do
+RSpec.describe ConfirmationsController, feature_category: :system_access do
   include DeviseHelpers
 
   before do
@@ -148,51 +148,69 @@ RSpec.describe ConfirmationsController do
       end
     end
 
-    context 'when reCAPTCHA is disabled' do
+    context "when `email_confirmation_setting` is set to `soft`" do
       before do
-        stub_application_setting(recaptcha_enabled: false)
+        stub_application_setting_enum('email_confirmation_setting', 'soft')
       end
 
-      it 'successfully sends password reset when reCAPTCHA is not solved' do
-        perform_request
+      context 'when reCAPTCHA is disabled' do
+        before do
+          stub_application_setting(recaptcha_enabled: false)
+        end
 
-        expect(response).to redirect_to(dashboard_projects_path)
+        it 'successfully sends password reset when reCAPTCHA is not solved' do
+          perform_request
+
+          expect(response).to redirect_to(dashboard_projects_path)
+        end
+      end
+
+      context 'when reCAPTCHA is enabled' do
+        before do
+          stub_application_setting(recaptcha_enabled: true)
+        end
+
+        context 'when the reCAPTCHA is not solved' do
+          before do
+            Recaptcha.configuration.skip_verify_env.delete('test')
+          end
+
+          it 'displays an error' do
+            perform_request
+
+            expect(response).to render_template(:new)
+            expect(flash[:alert]).to include _('There was an error with the reCAPTCHA.')
+          end
+
+          it 'sets gon variables' do
+            Gon.clear
+
+            perform_request
+
+            expect(response).to render_template(:new)
+            expect(Gon.all_variables).not_to be_empty
+          end
+        end
+
+        it 'successfully sends password reset when reCAPTCHA is solved' do
+          Recaptcha.configuration.skip_verify_env << 'test'
+
+          perform_request
+
+          expect(response).to redirect_to(dashboard_projects_path)
+        end
       end
     end
 
-    context 'when reCAPTCHA is enabled' do
+    context "when `email_confirmation_setting` is not set to `soft`" do
       before do
-        stub_application_setting(recaptcha_enabled: true)
+        stub_feature_flags(soft_email_confirmation: false)
       end
 
-      context 'when the reCAPTCHA is not solved' do
-        before do
-          Recaptcha.configuration.skip_verify_env.delete('test')
-        end
-
-        it 'displays an error' do
-          perform_request
-
-          expect(response).to render_template(:new)
-          expect(flash[:alert]).to include _('There was an error with the reCAPTCHA. Please solve the reCAPTCHA again.')
-        end
-
-        it 'sets gon variables' do
-          Gon.clear
-
-          perform_request
-
-          expect(response).to render_template(:new)
-          expect(Gon.all_variables).not_to be_empty
-        end
-      end
-
-      it 'successfully sends password reset when reCAPTCHA is solved' do
-        Recaptcha.configuration.skip_verify_env << 'test'
-
+      it 'redirects to the users_almost_there path' do
         perform_request
 
-        expect(response).to redirect_to(dashboard_projects_path)
+        expect(response).to redirect_to(users_almost_there_path)
       end
     end
   end

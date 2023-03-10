@@ -2,13 +2,14 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::ImportExport::CommandLineUtil do
+RSpec.describe Gitlab::ImportExport::CommandLineUtil, feature_category: :importers do
   include ExportFileHelper
 
   let(:path) { "#{Dir.tmpdir}/symlink_test" }
   let(:archive) { 'spec/fixtures/symlink_export.tar.gz' }
   let(:shared) { Gitlab::ImportExport::Shared.new(nil) }
   let(:tmpdir) { Dir.mktmpdir }
+  let(:archive_dir) { Dir.mktmpdir }
 
   subject do
     Class.new do
@@ -25,20 +26,38 @@ RSpec.describe Gitlab::ImportExport::CommandLineUtil do
 
   before do
     FileUtils.mkdir_p(path)
-    subject.untar_zxf(archive: archive, dir: path)
   end
 
   after do
     FileUtils.rm_rf(path)
+    FileUtils.rm_rf(archive_dir)
     FileUtils.remove_entry(tmpdir)
   end
 
-  it 'has the right mask for project.json' do
-    expect(file_permissions("#{path}/project.json")).to eq(0755) # originally 777
-  end
+  shared_examples 'deletes symlinks' do |compression, decompression|
+    it 'deletes the symlinks', :aggregate_failures do
+      Dir.mkdir("#{tmpdir}/.git")
+      Dir.mkdir("#{tmpdir}/folder")
+      FileUtils.touch("#{tmpdir}/file.txt")
+      FileUtils.touch("#{tmpdir}/folder/file.txt")
+      FileUtils.touch("#{tmpdir}/.gitignore")
+      FileUtils.touch("#{tmpdir}/.git/config")
+      File.symlink('file.txt', "#{tmpdir}/.symlink")
+      File.symlink('file.txt', "#{tmpdir}/.git/.symlink")
+      File.symlink('file.txt', "#{tmpdir}/folder/.symlink")
+      archive = File.join(archive_dir, 'archive')
+      subject.public_send(compression, archive: archive, dir: tmpdir)
 
-  it 'has the right mask for uploads' do
-    expect(file_permissions("#{path}/uploads")).to eq(0755) # originally 555
+      subject.public_send(decompression, archive: archive, dir: archive_dir)
+
+      expect(File.exist?("#{archive_dir}/file.txt")).to eq(true)
+      expect(File.exist?("#{archive_dir}/folder/file.txt")).to eq(true)
+      expect(File.exist?("#{archive_dir}/.gitignore")).to eq(true)
+      expect(File.exist?("#{archive_dir}/.git/config")).to eq(true)
+      expect(File.exist?("#{archive_dir}/.symlink")).to eq(false)
+      expect(File.exist?("#{archive_dir}/.git/.symlink")).to eq(false)
+      expect(File.exist?("#{archive_dir}/folder/.symlink")).to eq(false)
+    end
   end
 
   describe '#download_or_copy_upload' do
@@ -228,12 +247,6 @@ RSpec.describe Gitlab::ImportExport::CommandLineUtil do
   end
 
   describe '#tar_cf' do
-    let(:archive_dir) { Dir.mktmpdir }
-
-    after do
-      FileUtils.remove_entry(archive_dir)
-    end
-
     it 'archives a folder without compression' do
       archive_file = File.join(archive_dir, 'archive.tar')
 
@@ -256,12 +269,24 @@ RSpec.describe Gitlab::ImportExport::CommandLineUtil do
     end
   end
 
-  describe '#untar_xf' do
-    let(:archive_dir) { Dir.mktmpdir }
+  describe '#untar_zxf' do
+    it_behaves_like 'deletes symlinks', :tar_czf, :untar_zxf
 
-    after do
-      FileUtils.remove_entry(archive_dir)
+    it 'has the right mask for project.json' do
+      subject.untar_zxf(archive: archive, dir: path)
+
+      expect(file_permissions("#{path}/project.json")).to eq(0755) # originally 777
     end
+
+    it 'has the right mask for uploads' do
+      subject.untar_zxf(archive: archive, dir: path)
+
+      expect(file_permissions("#{path}/uploads")).to eq(0755) # originally 555
+    end
+  end
+
+  describe '#untar_xf' do
+    it_behaves_like 'deletes symlinks', :tar_cf, :untar_xf
 
     it 'extracts archive without decompression' do
       filename = 'archive.tar.gz'

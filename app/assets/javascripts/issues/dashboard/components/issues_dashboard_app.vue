@@ -459,12 +459,20 @@ export default {
     @sort="handleSort"
   >
     <template #nav-actions>
-      <gl-button :href="rssPath" icon="rss">
-        {{ $options.i18n.rssLabel }}
-      </gl-button>
-      <gl-button :href="calendarPath" icon="calendar">
-        {{ $options.i18n.calendarLabel }}
-      </gl-button>
+      <gl-button
+        v-gl-tooltip
+        :href="rssPath"
+        icon="rss"
+        :title="$options.i18n.rssLabel"
+        class="has-tooltip btn-icon"
+      />
+      <gl-button
+        v-gl-tooltip
+        :href="calendarPath"
+        icon="calendar"
+        :title="$options.i18n.calendarLabel"
+        class="has-tooltip btn-icon"
+      />
     </template>
 
     <template #timeframe="{ issuable = {} }">

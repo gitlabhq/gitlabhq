@@ -20,7 +20,7 @@ class ConfirmationsController < Devise::ConfirmationsController
   protected
 
   def after_resending_confirmation_instructions_path_for(resource)
-    return users_almost_there_path unless Feature.enabled?(:soft_email_confirmation)
+    return users_almost_there_path unless Gitlab::CurrentSettings.email_confirmation_setting_soft?
 
     stored_location_for(resource) || dashboard_projects_path
   end

@@ -109,6 +109,10 @@ RSpec.describe 'Login', :clean_gitlab_redis_sessions, feature_category: :system_
     end
 
     context 'within the grace period' do
+      before do
+        stub_application_setting_enum('email_confirmation_setting', 'soft')
+      end
+
       it 'allows to login' do
         expect(authentication_metrics).to increment(:user_authenticated_counter)
 
@@ -137,11 +141,9 @@ RSpec.describe 'Login', :clean_gitlab_redis_sessions, feature_category: :system_
     end
 
     context 'when resending the confirmation email' do
+      let_it_be(:user) { create(:user) }
+
       it 'redirects to the "almost there" page' do
-        stub_feature_flags(soft_email_confirmation: false)
-
-        user = create(:user)
-
         visit new_user_confirmation_path
         fill_in 'user_email', with: user.email
         click_button 'Resend'
@@ -971,8 +973,7 @@ RSpec.describe 'Login', :clean_gitlab_redis_sessions, feature_category: :system_
     let(:alert_message) { "To continue, you need to select the link in the confirmation email we sent to verify your email address. If you didn't get our email, select Resend confirmation email" }
 
     before do
-      stub_application_setting_enum('email_confirmation_setting', 'hard')
-      stub_feature_flags(soft_email_confirmation: true)
+      stub_application_setting_enum('email_confirmation_setting', 'soft')
       stub_feature_flags(identity_verification: false)
       allow(User).to receive(:allow_unconfirmed_access_for).and_return grace_period
     end

@@ -129,9 +129,9 @@ class RegistrationsController < Devise::RegistrationsController
   def after_inactive_sign_up_path_for(resource)
     Gitlab::AppLogger.info(user_created_message)
     return new_user_session_path(anchor: 'login-pane') if resource.blocked_pending_approval?
-    return dashboard_projects_path if Feature.enabled?(:soft_email_confirmation)
+    return dashboard_projects_path if Gitlab::CurrentSettings.email_confirmation_setting_soft?
 
-    # when email confirmation is enabled, path to redirect is saved
+    # when email_confirmation_setting is set to `hard`, path to redirect is saved
     # after user confirms and comes back, he will be redirected
     store_location_for(:redirect, after_sign_up_path)
 

@@ -196,11 +196,11 @@ accordingly, while also consulting the
 
 NOTE:
 When not explicitly specified, upgrade GitLab to the latest available patch
-release rather than the first patch release, for example `13.8.8` instead of `13.8.0`.
-This includes versions you must stop at on the upgrade path as there may
+release of the `major`.`minor` release rather than the first patch release, for example `13.8.8` instead of `13.8.0`.
+This includes `major`.`minor` versions you must stop at on the upgrade path as there may
 be fixes for issues relating to the upgrade process.
 Specifically around a [major version](#upgrading-to-a-new-major-version),
-crucial database schema and migration patches are included in the latest patch releases.
+crucial database schema and migration patches may be included in the latest patch releases.
 
 ## Upgrading between editions
 
@@ -237,7 +237,7 @@ possible.
 
 ## Version-specific upgrading instructions
 
-Each month, major, minor, or patch releases of GitLab are published along with a
+Each month, major or minor as well as possibly patch releases of GitLab are published along with a
 [release post](https://about.gitlab.com/releases/categories/releases/).
 You should read the release posts for all versions you're passing over.
 At the end of major and minor release posts, there are three sections to look for specifically:
@@ -267,7 +267,6 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
 ### 15.9.0
 
 - There is a [database migration bug in GitLab 15.9.x](#user-profile-data-loss-bug-in-159x) that can cause data to be lost from the user profile fields. This bug affects all currently available 15.9.x releases. Until a bug fix is released, you should upgrade to 15.6.x, 15.7.x, or 15.8.x first.
-- This version removes `SanitizeConfidentialTodos` background migration [added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87908/diffs) in 15.6, which removed any user inaccessible to-do items. Make sure that this migration is finished before upgrading to 15.9.
 - As part of the [CI Partitioning effort](../architecture/blueprints/ci_data_decay/pipeline_partitioning.md), a [new Foreign Key](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107547) was added to `ci_builds_needs`. On GitLab instances with large CI tables, adding this constraint can take longer than usual. Make sure that this migration is finished before upgrading to 15.9.
 - Praefect's metadata verifier's [invalid metadata deletion behavior](../administration/gitaly/praefect.md#enable-deletions) is now enabled by default.
 

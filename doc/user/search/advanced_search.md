@@ -55,6 +55,8 @@ Advanced search uses [Elasticsearch syntax](https://www.elastic.co/guide/en/elas
 
 ### Refining user search
 
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/388409) in GitLab 15.10.
+
 In user search, a [fuzzy query](https://www.elastic.co/guide/en/elasticsearch/reference/7.2/query-dsl-fuzzy-query.html) is used by default. You can refine your search with [Elasticsearch syntax](#syntax).
 
 ### Code search

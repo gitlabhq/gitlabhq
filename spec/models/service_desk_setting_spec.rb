@@ -3,6 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe ServiceDeskSetting, feature_category: :service_desk do
+  let(:verification) { build(:service_desk_custom_email_verification) }
+  let(:project) { build(:project) }
+
   describe 'validations' do
     subject(:service_desk_setting) { create(:service_desk_setting) }
 
@@ -23,6 +26,8 @@ RSpec.describe ServiceDeskSetting, feature_category: :service_desk do
 
     context 'when custom_email_enabled is true' do
       before do
+        # Test without ServiceDesk::CustomEmailVerification for simplicity
+        # See dedicated simplified tests below
         subject.custom_email_enabled = true
       end
 
@@ -55,7 +60,18 @@ RSpec.describe ServiceDeskSetting, feature_category: :service_desk do
       it { is_expected.not_to allow_value('/example').for(:custom_email_smtp_address) }
     end
 
-    describe '.valid_issue_template' do
+    context 'when custom email verification is present/was triggered' do
+      before do
+        subject.project.service_desk_custom_email_verification = verification
+      end
+
+      it { is_expected.to validate_presence_of(:custom_email) }
+      it { is_expected.to validate_presence_of(:custom_email_smtp_username) }
+      it { is_expected.to validate_presence_of(:custom_email_smtp_port) }
+      it { is_expected.to validate_presence_of(:custom_email_smtp_address) }
+    end
+
+    describe '#valid_issue_template' do
       let_it_be(:project) { create(:project, :custom_repo, files: { '.gitlab/issue_templates/service_desk.md' => 'template' }) }
 
       it 'is not valid if template does not exist' do
@@ -73,7 +89,20 @@ RSpec.describe ServiceDeskSetting, feature_category: :service_desk do
     end
   end
 
-  describe '.valid_project_key' do
+  describe '#custom_email_address_for_verification' do
+    it 'returns nil' do
+      expect(subject.custom_email_address_for_verification).to be_nil
+    end
+
+    context 'when custom_email exists' do
+      it 'returns correct verification address' do
+        subject.custom_email = 'support@example.com'
+        expect(subject.custom_email_address_for_verification).to eq('support+verify@example.com')
+      end
+    end
+  end
+
+  describe '#valid_project_key' do
     # Creates two projects with same full path slug
     # group1/test/one and group1/test-one will both have 'group-test-one' slug
     let_it_be(:group) { create(:group) }
@@ -109,15 +138,15 @@ RSpec.describe ServiceDeskSetting, feature_category: :service_desk do
     end
   end
 
-  describe 'encrypted password' do
+  describe 'encrypted #custom_email_smtp_password' do
     let_it_be(:settings) do
       create(
         :service_desk_setting,
         custom_email_enabled: true,
-        custom_email: 'supersupport@example.com',
+        custom_email: 'support@example.com',
         custom_email_smtp_address: 'smtp.example.com',
         custom_email_smtp_port: 587,
-        custom_email_smtp_username: 'supersupport@example.com',
+        custom_email_smtp_username: 'support@example.com',
         custom_email_smtp_password: 'supersecret'
       )
     end
@@ -131,6 +160,24 @@ RSpec.describe ServiceDeskSetting, feature_category: :service_desk do
   end
 
   describe 'associations' do
+    let(:custom_email_settings) do
+      build_stubbed(
+        :service_desk_setting,
+        custom_email: 'support@example.com',
+        custom_email_smtp_address: 'smtp.example.com',
+        custom_email_smtp_port: 587,
+        custom_email_smtp_username: 'support@example.com',
+        custom_email_smtp_password: 'supersecret'
+      )
+    end
+
     it { is_expected.to belong_to(:project) }
+
+    it 'can access custom email verification from project' do
+      project.service_desk_custom_email_verification = verification
+      custom_email_settings.project = project
+
+      expect(custom_email_settings.custom_email_verification).to eq(verification)
+    end
   end
 end

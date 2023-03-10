@@ -285,7 +285,7 @@ RSpec.describe BuildDetailsEntity do
       end
 
       context 'when the build has non public archive type artifacts' do
-        let(:build) { create(:ci_build, :artifacts, :non_public_artifacts, pipeline: pipeline) }
+        let(:build) { create(:ci_build, :artifacts, :with_private_artifacts_config, pipeline: pipeline) }
 
         it 'does not expose non public artifacts' do
           expect(subject.keys).not_to include(:artifact)

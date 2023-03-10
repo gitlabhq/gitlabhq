@@ -264,6 +264,7 @@ class Project < ApplicationRecord
   has_one :project_setting, inverse_of: :project, autosave: true
   has_one :alerting_setting, inverse_of: :project, class_name: 'Alerting::ProjectAlertingSetting'
   has_one :service_desk_setting, class_name: 'ServiceDeskSetting'
+  has_one :service_desk_custom_email_verification, class_name: 'ServiceDesk::CustomEmailVerification'
 
   # Merge requests for target project should be removed with it
   has_many :merge_requests, foreign_key: 'target_project_id', inverse_of: :target_project, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent

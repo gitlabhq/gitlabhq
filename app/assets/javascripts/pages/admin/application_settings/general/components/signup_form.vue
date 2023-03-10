@@ -207,6 +207,10 @@ export default {
     emailConfirmationSettingsOffHelpText: s__(
       'ApplicationSettings|New users can sign up without confirming their email address.',
     ),
+    emailConfirmationSettingsSoftLabel: s__('ApplicationSettings|Soft'),
+    emailConfirmationSettingsSoftHelpText: s__(
+      'ApplicationSettings|Send a confirmation email during sign up. New users can log in immediately, but must confirm their email within three days.',
+    ),
     emailConfirmationSettingsHardLabel: s__('ApplicationSettings|Hard'),
     emailConfirmationSettingsHardHelpText: s__(
       'ApplicationSettings|Send a confirmation email during sign up. New users must confirm their email address before they can log in.',
@@ -286,15 +290,22 @@ export default {
           v-model="form.emailConfirmationSetting"
           name="application_setting[email_confirmation_setting]"
         >
-          <gl-form-radio value="hard">
-            {{ $options.i18n.emailConfirmationSettingsHardLabel }}
-
-            <template #help> {{ $options.i18n.emailConfirmationSettingsHardHelpText }} </template>
-          </gl-form-radio>
           <gl-form-radio value="off">
             {{ $options.i18n.emailConfirmationSettingsOffLabel }}
 
             <template #help> {{ $options.i18n.emailConfirmationSettingsOffHelpText }} </template>
+          </gl-form-radio>
+
+          <gl-form-radio value="soft">
+            {{ $options.i18n.emailConfirmationSettingsSoftLabel }}
+
+            <template #help> {{ $options.i18n.emailConfirmationSettingsSoftHelpText }} </template>
+          </gl-form-radio>
+
+          <gl-form-radio value="hard">
+            {{ $options.i18n.emailConfirmationSettingsHardLabel }}
+
+            <template #help> {{ $options.i18n.emailConfirmationSettingsHardHelpText }} </template>
           </gl-form-radio>
         </gl-form-radio-group>
       </gl-form-group>

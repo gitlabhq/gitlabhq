@@ -25,13 +25,6 @@ qa:internal-as-if-foss:
     - .qa:rules:internal-as-if-foss
     - .as-if-foss
 
-qa:selectors:
-  extends:
-    - .qa-job-base
-    - .qa:rules:ee-and-foss
-  script:
-    - bundle exec bin/qa Test::Sanity::Selectors
-
 qa:master-auto-quarantine-dequarantine:
   extends:
     - .qa-job-base
@@ -49,12 +42,6 @@ qa:nightly-auto-quarantine-dequarantine:
   script:
     - bundle exec confiner -r .confiner/nightly.yml
   allow_failure: true
-
-qa:selectors-as-if-foss:
-  extends:
-    - qa:selectors
-    - .qa:rules:as-if-foss
-    - .as-if-foss
 
 qa:update-qa-cache:
   extends:

@@ -1040,7 +1040,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     end
 
     context 'non public artifacts' do
-      let(:build) { create(:ci_build, :artifacts, :non_public_artifacts, pipeline: pipeline) }
+      let(:build) { create(:ci_build, :artifacts, :with_private_artifacts_config, pipeline: pipeline) }
 
       it { is_expected.to be_falsey }
     end

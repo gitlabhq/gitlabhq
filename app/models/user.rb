@@ -2129,7 +2129,15 @@ class User < ApplicationRecord
   end
 
   def confirmation_required_on_sign_in?
-    !confirmed? && !confirmation_period_valid?
+    return false if confirmed?
+
+    if ::Gitlab::CurrentSettings.email_confirmation_setting_off?
+      false
+    elsif ::Gitlab::CurrentSettings.email_confirmation_setting_soft?
+      !in_confirmation_period?
+    elsif ::Gitlab::CurrentSettings.email_confirmation_setting_hard?
+      true
+    end
   end
 
   def impersonated?
@@ -2210,10 +2218,13 @@ class User < ApplicationRecord
 
   # override from Devise::Confirmable
   def confirmation_period_valid?
-    return false if Feature.disabled?(:soft_email_confirmation)
+    return super if ::Gitlab::CurrentSettings.email_confirmation_setting_soft?
 
-    super
+    # Following devise logic for method, we want to return `true`
+    # See: https://github.com/heartcombo/devise/blob/main/lib/devise/models/confirmable.rb#L191-L218
+    true
   end
+  alias_method :in_confirmation_period?, :confirmation_period_valid?
 
   # This is copied from Devise::Models::TwoFactorAuthenticatable#consume_otp!
   #
