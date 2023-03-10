@@ -529,8 +529,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
       expect(count_data[:projects_prometheus_active]).to eq(1)
       expect(count_data[:projects_jenkins_active]).to eq(1)
       expect(count_data[:projects_jira_active]).to eq(4)
-      expect(count_data[:projects_jira_server_active]).to eq(2)
-      expect(count_data[:projects_jira_cloud_active]).to eq(2)
       expect(count_data[:jira_imports_projects_count]).to eq(2)
       expect(count_data[:jira_imports_total_imported_count]).to eq(3)
       expect(count_data[:jira_imports_total_imported_issues_count]).to eq(13)
@@ -614,14 +612,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
         it 'raises an error' do
           expect { subject }.to raise_error(ActiveRecord::StatementInvalid)
         end
-
-        context 'when metric calls find_in_batches' do
-          let(:metric_method) { :find_in_batches }
-
-          it 'raises an error for jira_usage' do
-            expect { described_class.jira_usage }.to raise_error(ActiveRecord::StatementInvalid)
-          end
-        end
       end
 
       context 'with should_raise_for_dev? false' do
@@ -629,14 +619,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
 
         it 'does not raise an error' do
           expect { subject }.not_to raise_error
-        end
-
-        context 'when metric calls find_in_batches' do
-          let(:metric_method) { :find_in_batches }
-
-          it 'does not raise an error for jira_usage' do
-            expect { described_class.jira_usage }.not_to raise_error
-          end
         end
       end
     end

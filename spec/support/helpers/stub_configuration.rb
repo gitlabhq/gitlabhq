@@ -179,7 +179,7 @@ module StubConfiguration
   def to_settings(hash)
     hash.transform_values do |value|
       if value.is_a? Hash
-        Settingslogic.new(value.deep_stringify_keys)
+        Settingslogic.new(value.to_h.deep_stringify_keys)
       else
         value
       end

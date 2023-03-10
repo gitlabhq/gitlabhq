@@ -266,6 +266,7 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
 
 ### 15.9.0
 
+- There is a [database migration bug in GitLab 15.9.x](#user-profile-data-loss-bug-in-159x) that can cause data to be lost from the user profile fields. This bug affects all currently available 15.9.x releases. Until a bug fix is released, you should upgrade to 15.6.x, 15.7.x, or 15.8.x first.
 - This version removes `SanitizeConfidentialTodos` background migration [added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87908/diffs) in 15.6, which removed any user inaccessible to-do items. Make sure that this migration is finished before upgrading to 15.9.
 - As part of the [CI Partitioning effort](../architecture/blueprints/ci_data_decay/pipeline_partitioning.md), a [new Foreign Key](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107547) was added to `ci_builds_needs`. On GitLab instances with large CI tables, adding this constraint can take longer than usual. Make sure that this migration is finished before upgrading to 15.9.
 - Praefect's metadata verifier's [invalid metadata deletion behavior](../administration/gitaly/praefect.md#enable-deletions) is now enabled by default.
@@ -282,7 +283,6 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
   You can find repositories with invalid metadata records prior in GitLab 15.0 and later by searching for the log records outputted by the verifier. [Read more about repository verification, and to see an example log entry](../administration/gitaly/praefect.md#repository-verification).
 - Praefect configuration changes significantly in Omnibus GitLab 16.0. You can begin migrating to the new structure in Omnibus GitLab 15.9 while backwards compatibility is
   maintained in the lead up to Omnibus GitLab 16.0. [Read more about this change](#praefect-omnibus-gitlab-configuration-structure-change).
-- There is a [database migration bug in GitLab 15.9.x](#user-profile-data-loss-bug-in-159x) that can cause data to be lost from the user profile fields. This bug affects all currently available 15.9.x releases. Until a bug fix is released, you should upgrade via 15.6.x, 15.7.x, or 15.8.x.
 
 ### 15.8.2
 
@@ -299,7 +299,7 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
 
 ### 15.8.0
 
-- Due to a bug in GitLab 15.9.x that can cause data to be lost from certain user profile fields, 15.8 is temporarily a required stop on the upgrade path. This requirement will be removed when a 15.9.x bug fix is released. [Read more about this issue](#user-profile-data-loss-bug-in-159x).
+- Due to a bug in GitLab 15.9.x that can cause data to be lost from certain user profile fields, 15.6, 15.7, or 15.8 is temporarily a required stop on the upgrade path. This requirement will be removed when a 15.9.x bug fix is released. [Read more about this issue](#user-profile-data-loss-bug-in-159x).
 - Git 2.38.0 and later is required by Gitaly. For installations from source, you should use the [Git version provided by Gitaly](../install/installation.md#git).
 - Due to [a bug introduced in GitLab 15.4](https://gitlab.com/gitlab-org/gitlab/-/issues/390155), if one or more Git repositories in Gitaly Cluster is [unavailable](../administration/gitaly/recovery.md#unavailable-repositories), then [Repository checks](../administration/repository_checks.md#repository-checks) and [Geo replication and verification](../administration/geo/index.md) stop running for all project or project wiki repositories in the affected Gitaly Cluster. The bug was fixed by [reverting the change in GitLab 15.9.0](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110823). Before upgrading to this version, check if you have any "unavailable" repositories. See [the bug issue](https://gitlab.com/gitlab-org/gitlab/-/issues/390155) for more information.
 - Geo: We discovered an issue where [replication and verification of projects and wikis was not keeping up](https://gitlab.com/gitlab-org/gitlab/-/issues/387980) on small number of Geo installations. Your installation may be affected if you see some projects and/or wikis persistently in the "Queued" state for verification. This can lead to data loss after a failover.
@@ -352,7 +352,7 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
 
 ### 15.7.0
 
-- Due to a bug in GitLab 15.9.x that can cause data to be lost from certain user profile fields, 15.7 is temporarily a required stop on the upgrade path. This requirement will be removed when a 15.9.x bug fix is released. [Read more about this issue](#user-profile-data-loss-bug-in-159x).
+- Due to a bug in GitLab 15.9.x that can cause data to be lost from certain user profile fields, 15.6, 15.7, or 15.8 is temporarily a required stop on the upgrade path. This requirement will be removed when a 15.9.x bug fix is released. [Read more about this issue](#user-profile-data-loss-bug-in-159x).
 - This version validates a `NOT NULL DB` constraint on the `issues.work_item_type_id` column.
   To upgrade to this version, no records with a `NULL` `work_item_type_id` should exist on the `issues` table.
   There are multiple `BackfillWorkItemTypeIdForIssues` background migrations that will be finalized with
@@ -462,7 +462,7 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
 
 ### 15.6.0
 
-- Due to a bug in GitLab 15.9.x that can cause data to be lost from certain user profile fields, 15.6 is temporarily a required stop on the upgrade path. This requirement will be removed when a 15.9.x bug fix is released. [Read more about this issue](#user-profile-data-loss-bug-in-159x).
+- Due to a bug in GitLab 15.9.x that can cause data to be lost from certain user profile fields, 15.6, 15.7, or 15.8 is temporarily a required stop on the upgrade path. This requirement will be removed when a 15.9.x bug fix is released. [Read more about this issue](#user-profile-data-loss-bug-in-159x).
 - You should use one of the [officially supported PostgreSQL versions](../administration/package_information/postgresql_versions.md). Some database migrations can cause stability and performance issues with older PostgreSQL versions.
 - Git 2.37.0 and later is required by Gitaly. For installations from source, we recommend you use the [Git version provided by Gitaly](../install/installation.md#git).
 - A database change to modify the behavior of four indexes fails on instances
@@ -1446,67 +1446,26 @@ After upgraded to 11.11.8 you can safely upgrade to 12.0.Z.
 See our [documentation on upgrade paths](../policy/maintenance.md#upgrade-recommendations)
 for more information.
 
-### Change to Praefect-generated replica paths in GitLab 15.3
+### User profile data loss bug in 15.9.x
 
-New Git repositories created in Gitaly cluster no longer use the `@hashed` storage path.
+There is a database migration bug in 15.9 that can cause data to be lost from the user profile fields `linkedin`, `twitter`, `skype`, `website_url`, `location`, and `organization`.
 
-Praefect now generates replica paths for use by Gitaly cluster.
-This change is a pre-requisite for Gitaly cluster atomically creating, deleting, and
-renaming Git repositories.
+This bug will be fixed in a future patch release of GitLab 15.9. Until then:
 
-To identify the replica path, [query the Praefect repository metadata](../administration/gitaly/troubleshooting.md#view-repository-metadata)
-and pass the `@hashed` storage path to `-relative-path`.
+- All 15.9.x patch levels are affected.
+- The GitLab upgrade path requires an intermediate release between 15.4 and 15.9.
 
-With this information, you can correctly install [server hooks](../administration/server_hooks.md).
+If your organization uses these fields either wait for the bug fix to be released, or:
 
-### Maintenance mode issue in GitLab 13.9 to 14.4
+1. Upgrade to GitLab 15.6.x, 15.7.x, or 15.8.x (the latest patch levels are recommended at all times).
+1. [Ensure batched background migrations](background_migrations.md#batched-background-migrations) are complete.
+1. Upgrade to an affected GitLab 15.9 patch release.
 
-When [Maintenance mode](../administration/maintenance_mode/index.md) is enabled, users cannot sign in with SSO, SAML, or LDAP.
+Organizations that are already running earlier patch levels of GitLab 15.6, 15.7, or 15.8 can proceed with steps 2 and 3.
 
-Users who were signed in before Maintenance mode was enabled, continue to be signed in. If the administrator who enabled Maintenance mode loses their session, then they can't disable Maintenance mode via the UI. In that case, you can [disable Maintenance mode via the API or Rails console](../administration/maintenance_mode/index.md#disable-maintenance-mode).
+If you have already upgraded to GitLab 15.9 following these instructions, your instance will not be affected by this bug, and you don't need to apply the 15.9.x patch when it is released. 
 
-[This bug](https://gitlab.com/gitlab-org/gitlab/-/issues/329261) was fixed in GitLab 14.5.0 and backported into 14.4.3 and 14.3.5.
-
-### LFS objects import and mirror issue in GitLab 14.6.0 to 14.7.2
-
-When Geo is enabled, LFS objects fail to be saved for imported or mirrored projects.
-
-[This bug](https://gitlab.com/gitlab-org/gitlab/-/issues/352368) was fixed in GitLab 14.8.0 and backported into 14.7.3.
-
-### PostgreSQL segmentation fault issue
-
-If you run GitLab with external PostgreSQL, particularly AWS RDS, ensure you upgrade PostgreSQL
-to patch levels to a minimum of 12.7 or 13.3 before upgrading to GitLab 14.8 or later.
-
-[In 14.8](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/75511)
-for GitLab Enterprise Edition and [in 15.1](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87983)
-for GitLab Community Edition a GitLab feature called Loose Foreign Keys was enabled.
-
-After it was enabled, we have had reports of unplanned PostgreSQL restarts caused
-by a database engine bug that causes a segmentation fault.
-
-Read more [in the issue](https://gitlab.com/gitlab-org/gitlab/-/issues/364763).
-
-### Geo: Incorrect object storage LFS file deletion on secondary sites in GitLab 15.0.0 to 15.3.2
-
-[Incorrect deletion of object storage files on Geo secondary sites](https://gitlab.com/gitlab-org/gitlab/-/issues/371397)
-can occur in GitLab 15.0.0 to 15.3.2 in the following situations:
-
-- GitLab-managed object storage replication is disabled, and LFS objects are created while importing a project with object storage enabled.
-- GitLab-managed replication to sync object storage is enabled and subsequently disabled.
-
-This issue is resolved in 15.3.3. Customers who have both LFS enabled and LFS objects being replicated across Geo sites
-should upgrade directly to 15.3.3 to reduce the risk of data loss on secondary sites.
-
-### Geo: LFS transfers redirect to primary from secondary site mid-session in GitLab 15.1.0 to 15.3.2
-
-LFS transfers can [redirect to the primary from secondary site mid-session](https://gitlab.com/gitlab-org/gitlab/-/issues/371571) causing failed pull and clone requests in GitLab 15.1.0 to 15.3.2 when [Geo proxying](../administration/geo/secondary_proxy/index.md) is enabled. Geo proxying is enabled by default in GitLab 15.1 and later.
-
-This issue is resolved in GitLab 15.3.3, so customers with the following configuration should upgrade to 15.3.3 or later:
-
-- LFS is enabled.
-- LFS objects are being replicated across Geo sites.
-- Repositories are being pulled by using a Geo secondary site.
+See [issue 393216](https://gitlab.com/gitlab-org/gitlab/-/issues/393216) for more information.
 
 ### Praefect: Omnibus GitLab configuration structure change
 
@@ -1659,26 +1618,67 @@ praefect['configuration'] = {
 }
 ```
 
-### User profile data loss bug in 15.9.x
+### Change to Praefect-generated replica paths in GitLab 15.3
 
-There is a database migration bug in 15.9 that can cause data to be lost from the user profile fields `linkedin`, `twitter`, `skype`, `website_url`, `location`, and `organization`.
+New Git repositories created in Gitaly cluster no longer use the `@hashed` storage path.
 
-This bug will be fixed in a future patch release of GitLab 15.9. Until then:
+Praefect now generates replica paths for use by Gitaly cluster.
+This change is a pre-requisite for Gitaly cluster atomically creating, deleting, and
+renaming Git repositories.
 
-- All 15.9.x patch levels are affected.
-- The GitLab upgrade path requires an intermediate release between 15.4 and 15.9.
+To identify the replica path, [query the Praefect repository metadata](../administration/gitaly/troubleshooting.md#view-repository-metadata)
+and pass the `@hashed` storage path to `-relative-path`.
 
-If your organization uses these fields either wait for the bug fix to be released, or:
+With this information, you can correctly install [server hooks](../administration/server_hooks.md).
 
-1. Upgrade to GitLab 15.6.8, 15.7.8, or 15.8.4 (the latest patch levels are recommended at all times).
-1. [Ensure batched background migrations](background_migrations.md#batched-background-migrations) are complete.
-1. Upgrade to an affected GitLab 15.9 patch release.
+### Geo: LFS transfers redirect to primary from secondary site mid-session in GitLab 15.1.0 to 15.3.2
 
-Organizations that are already running earlier patch levels of GitLab 15.6, 15.7, or 15.8 can proceed with steps 2 and 3.
+LFS transfers can [redirect to the primary from secondary site mid-session](https://gitlab.com/gitlab-org/gitlab/-/issues/371571) causing failed pull and clone requests in GitLab 15.1.0 to 15.3.2 when [Geo proxying](../administration/geo/secondary_proxy/index.md) is enabled. Geo proxying is enabled by default in GitLab 15.1 and later.
 
-If you have already upgraded to GitLab 15.9 following these instructions, your instance will not be affected by this bug, and you don't need to apply the 15.9.x patch when it is released.
+This issue is resolved in GitLab 15.3.3, so customers with the following configuration should upgrade to 15.3.3 or later:
 
-See [issue 393216](https://gitlab.com/gitlab-org/gitlab/-/issues/393216) for more information.
+- LFS is enabled.
+- LFS objects are being replicated across Geo sites.
+- Repositories are being pulled by using a Geo secondary site.
+
+### Geo: Incorrect object storage LFS file deletion on secondary sites in GitLab 15.0.0 to 15.3.2
+
+[Incorrect deletion of object storage files on Geo secondary sites](https://gitlab.com/gitlab-org/gitlab/-/issues/371397)
+can occur in GitLab 15.0.0 to 15.3.2 in the following situations:
+
+- GitLab-managed object storage replication is disabled, and LFS objects are created while importing a project with object storage enabled.
+- GitLab-managed replication to sync object storage is enabled and subsequently disabled.
+
+This issue is resolved in 15.3.3. Customers who have both LFS enabled and LFS objects being replicated across Geo sites
+should upgrade directly to 15.3.3 to reduce the risk of data loss on secondary sites.
+
+### PostgreSQL segmentation fault issue
+
+If you run GitLab with external PostgreSQL, particularly AWS RDS, ensure you upgrade PostgreSQL
+to patch levels to a minimum of 12.7 or 13.3 before upgrading to GitLab 14.8 or later.
+
+[In 14.8](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/75511)
+for GitLab Enterprise Edition and [in 15.1](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87983)
+for GitLab Community Edition a GitLab feature called Loose Foreign Keys was enabled.
+
+After it was enabled, we have had reports of unplanned PostgreSQL restarts caused
+by a database engine bug that causes a segmentation fault.
+
+Read more [in the issue](https://gitlab.com/gitlab-org/gitlab/-/issues/364763).
+
+### LFS objects import and mirror issue in GitLab 14.6.0 to 14.7.2
+
+When Geo is enabled, LFS objects fail to be saved for imported or mirrored projects.
+
+[This bug](https://gitlab.com/gitlab-org/gitlab/-/issues/352368) was fixed in GitLab 14.8.0 and backported into 14.7.3.
+
+### Maintenance mode issue in GitLab 13.9 to 14.4
+
+When [Maintenance mode](../administration/maintenance_mode/index.md) is enabled, users cannot sign in with SSO, SAML, or LDAP.
+
+Users who were signed in before Maintenance mode was enabled, continue to be signed in. If the administrator who enabled Maintenance mode loses their session, then they can't disable Maintenance mode via the UI. In that case, you can [disable Maintenance mode via the API or Rails console](../administration/maintenance_mode/index.md#disable-maintenance-mode).
+
+[This bug](https://gitlab.com/gitlab-org/gitlab/-/issues/329261) was fixed in GitLab 14.5.0 and backported into 14.4.3 and 14.3.5.
 
 ## Miscellaneous
 

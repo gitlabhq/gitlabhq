@@ -42,7 +42,7 @@ to help identify if something is wrong:
 
 ![Geo health check](img/geo_site_health_v14_0.png)
 
-A site shows as "Unhealthy" if the site's status is more than 10 minutes old. In that case, try running the following in the [Rails console](../../operations/rails_console.md) on the affected site:
+A site shows as "Unhealthy" if the site's status is more than 10 minutes old. In that case, try running the following in the [Rails console](../../operations/rails_console.md) on the affected secondary site:
 
 ```ruby
 Geo::MetricsUpdateWorker.new.perform
@@ -52,7 +52,7 @@ If it raises an error, then the error is probably also preventing the jobs from 
 
 If it successfully updates the status, then something may be wrong with Sidekiq. Is it running? Do the logs show errors? This job is supposed to be enqueued every minute. It takes an exclusive lease in Redis to ensure that only one of these jobs can run at a time. The primary site updates its status directly in the PostgreSQL database. Secondary sites send an HTTP Post request to the primary site with their status data.
 
-A site also shows as "Unhealthy" if certain health checks fail. You can reveal the failure by running the following in the [Rails console](../../operations/rails_console.md) on the affected site:
+A site also shows as "Unhealthy" if certain health checks fail. You can reveal the failure by running the following in the [Rails console](../../operations/rails_console.md) on the affected secondary site:
 
 ```ruby
 Gitlab::Geo::HealthCheck.new.perform_checks

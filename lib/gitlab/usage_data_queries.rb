@@ -68,13 +68,6 @@ module Gitlab
         end
       end
 
-      def jira_integration_data
-        {
-          projects_jira_server_active: 0,
-          projects_jira_cloud_active: 0
-        }
-      end
-
       def topology_usage_data
         {
           duration_s: 0,

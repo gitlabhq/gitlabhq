@@ -359,8 +359,8 @@ To solve this, you must change the source group path to include a non-numerical 
 
 WARNING:
 This feature was [deprecated](https://gitlab.com/groups/gitlab-org/-/epics/4619) in GitLab 14.6 and replaced by
-[migrating groups by direct transfer](#migrate-groups-by-direct-transfer-recommended). To follow progress on a solution for
-[offline environments](../../application_security/offline_deployments/index.md), see
+[migrating groups by direct transfer](#migrate-groups-by-direct-transfer-recommended). However, this feature is still recommended for migrating groups between
+offline systems. To follow progress on an alternative solution for [offline environments](../../application_security/offline_deployments/index.md), see
 [the relevant epic](https://gitlab.com/groups/gitlab-org/-/epics/8985).
 
 Prerequisites:

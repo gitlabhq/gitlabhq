@@ -93,7 +93,9 @@ RSpec.describe Integrations::Campfire, feature_category: :integrations do
     subject { described_class.new.log_error('error') }
 
     it 'logs an error' do
-      expect(Gitlab::IntegrationsLogger).to receive(:error).with(anything).and_call_original
+      expect(Gitlab::IntegrationsLogger).to receive(:error).with(
+        hash_including(integration_class: 'Integrations::Campfire', message: 'error')
+      ).and_call_original
 
       is_expected.to be_truthy
     end

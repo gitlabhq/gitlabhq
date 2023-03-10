@@ -1103,11 +1103,7 @@ class Project < ApplicationRecord
   end
 
   def ancestors(hierarchy_order: nil)
-    if Feature.enabled?(:linear_project_ancestors, self)
-      group&.self_and_ancestors(hierarchy_order: hierarchy_order) || Group.none
-    else
-      ancestors_upto(hierarchy_order: hierarchy_order)
-    end
+    group&.self_and_ancestors(hierarchy_order: hierarchy_order) || Group.none
   end
 
   def ancestors_upto_ids(...)

@@ -20,7 +20,7 @@ namespace :contracts do
     end
 
     desc 'Run all pipeline schedule contract tests'
-    task 'test:pipeline_schedules', :contract_pipeline_schedules do |_t, arg|
+    task 'test:pipeline_schedules', :contract_pipeline_schedules do |_t|
       errors = %w[
         update_pipeline_schedule
       ].each_with_object([]) do |task, err|

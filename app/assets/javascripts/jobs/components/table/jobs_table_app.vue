@@ -57,6 +57,9 @@ export default {
     },
     jobsCount: {
       query: GetJobsCount,
+      context: {
+        isSingleRequest: true,
+      },
       variables() {
         return {
           fullPath: this.fullPath,

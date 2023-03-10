@@ -514,3 +514,20 @@ When the pipeline runs, GitLab:
   # This matches all `.yml` files only in subfolders of `configs`.
   include: 'configs/**/*.yml'
   ```
+
+## Troubleshooting
+
+### `Maximum of 150 nested includes are allowed!` error
+
+The maximum number of [nested included files](#use-nested-includes) for a pipeline is 150.
+If you receive the `Maximum 150 includes are allowed` error message in your pipeline,
+it's likely that either:
+
+- Some of the nested configuration includes an overly large number of additional nested `include` configuration.
+- There is an accidental loop in the nested includes. For example, `include1.yml` includes
+  `include2.yml` which includes `include1.yml`, creating a recursive loop.
+
+To help reduce the risk of this happening, edit the pipeline configuration file
+with the [pipeline editor](../pipeline_editor/index.md), which validates if the
+limit is reached. You can remove one included file at a time to try to narrow down
+which configuration file is the source of the loop or excessive included files.

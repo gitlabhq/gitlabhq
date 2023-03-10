@@ -3964,21 +3964,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
   end
 
   describe '#ancestors' do
-    context 'with linear_project_ancestors feature flag enabled' do
-      before do
-        stub_feature_flags(linear_project_ancestors: true)
-      end
-
-      include_examples '#ancestors'
-    end
-
-    context 'with linear_project_ancestors feature flag disabled' do
-      before do
-        stub_feature_flags(linear_project_ancestors: false)
-      end
-
-      include_examples '#ancestors'
-    end
+    include_examples '#ancestors'
   end
 
   describe '#ancestors_upto' do

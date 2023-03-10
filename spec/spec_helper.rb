@@ -360,13 +360,9 @@ RSpec.configure do |config|
     # The feature flag is disabled for these specs as long as they are not yet adapted.
     admin_mode_for_api_feature_flag_paths = %w[
       ./spec/requests/api/broadcast_messages_spec.rb
-      ./spec/requests/api/ci/pipelines_spec.rb
-      ./spec/requests/api/ci/runners_reset_registration_token_spec.rb
-      ./spec/requests/api/ci/runners_spec.rb
       ./spec/requests/api/deploy_keys_spec.rb
       ./spec/requests/api/deploy_tokens_spec.rb
       ./spec/requests/api/freeze_periods_spec.rb
-      ./spec/requests/api/graphql/user/starred_projects_query_spec.rb
       ./spec/requests/api/groups_spec.rb
       ./spec/requests/api/issues/get_group_issues_spec.rb
       ./spec/requests/api/issues/get_project_issues_spec.rb

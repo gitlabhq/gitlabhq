@@ -9,7 +9,7 @@ RSpec.describe ProjectMember do
 
   describe 'validations' do
     it { is_expected.to allow_value('Project').for(:source_type) }
-    it { is_expected.not_to allow_value('project').for(:source_type) }
+    it { is_expected.not_to allow_value('Group').for(:source_type) }
     it { is_expected.to validate_inclusion_of(:access_level).in_array(Gitlab::Access.values) }
   end
 

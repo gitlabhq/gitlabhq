@@ -54,8 +54,12 @@ RSpec.describe Provider::ContractSourceHelper, feature_category: :shared do
   end
 
   describe '#pact_broker_url' do
+    before do
+      stub_env('QA_PACT_BROKER_HOST', 'http://localhost')
+    end
+
     it 'returns the full url to the contract that the provider test is verifying' do
-      contract_url_path = "http://localhost:9292/pacts/provider/" \
+      contract_url_path = "http://localhost/pacts/provider/" \
                           "#{provider_url_path}/consumer/#{consumer_url_path}/latest"
 
       expect(subject.pact_broker_url(split_pact_helper_path)).to eq(contract_url_path)
