@@ -170,8 +170,6 @@ class CreatePipelineFailureIncident
       Additionally, a message can be posted in `#backend_maintainers` or `#frontend_maintainers` to get a maintainer take a look at the fix ASAP.
     - Cherry picking a change that was used to fix a similar master-broken issue.
 
-    In both cases, make sure to add the ~"pipeline:expedite" label to speed up the `stable`-fixing pipelines.
-
     ### Resolution
 
     Add a comment to this issue describing how this incident could have been prevented earlier in the Merge Request pipeline (rather than the merge commit pipeline).
