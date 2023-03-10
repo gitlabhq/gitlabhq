@@ -35,6 +35,10 @@ module API
         access_denied! unless can?(current_user, :create_note, merge_request(params: params))
       end
 
+      def authorize_admin_draft!(draft_note)
+        access_denied! unless can?(current_user, :admin_note, draft_note)
+      end
+
       def draft_note_params
         {
           note: params[:note],
@@ -110,6 +114,34 @@ module API
           present draft_note, with: Entities::DraftNote
         else
           render_validation_error!(draft_note)
+        end
+      end
+
+      desc "Modify an existing draft note" do
+        success Entities::DraftNote
+        failure [
+          { code: 401, message: 'Unauthorized' },
+          { code: 404, message: 'Not found' }
+        ]
+      end
+      params do
+        requires :id,                type: String,  desc: "The ID of a project."
+        requires :merge_request_iid, type: Integer, desc: "The ID of a merge request."
+        requires :draft_note_id,     type: Integer, desc: "The ID of a draft note"
+        optional :note,              type: String, allow_blank: false, desc: 'The content of a note.'
+      end
+      put ":id/merge_requests/:merge_request_iid/draft_notes/:draft_note_id", feature_category: :code_review_workflow do
+        bad_request!('Missing params to modify') unless params[:note].present?
+
+        draft_note = get_draft_note(params: params)
+
+        if draft_note
+          authorize_admin_draft!(draft_note)
+
+          draft_note.update!(note: params[:note])
+          present draft_note, with: Entities::DraftNote
+        else
+          not_found!("Draft Note")
         end
       end
 

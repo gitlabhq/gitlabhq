@@ -110,6 +110,10 @@ RSpec.describe WorkItems::ImportCsvService, feature_category: :team_planning do
     end
 
     context 'when user does not have permission' do
+      before do
+        project.add_guest(user)
+      end
+
       it 'raises an error' do
         expect { subject }.to raise_error(/You do not have permission to import work items in this project/)
       end

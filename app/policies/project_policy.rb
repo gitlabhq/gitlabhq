@@ -437,6 +437,7 @@ class ProjectPolicy < BasePolicy
   rule { ~request_access_enabled }.prevent :request_access
 
   rule { can?(:developer_access) & can?(:create_issue) }.enable :import_issues
+  rule { can?(:reporter_access) & can?(:create_work_item) }.enable :import_work_items
 
   rule { can?(:developer_access) }.policy do
     enable :create_package

@@ -234,21 +234,12 @@ then `artifacts:reports:dependency_scanning` must be set to `depscan.json`.
 
 ### Exit code
 
-Following the POSIX exit code standard, the scanner exits with 0 for success and any number from 1 to 255 for anything else.
+Following the POSIX exit code standard, the scanner exits with either `0` for success or `1` for failure.
 Success also includes the case when vulnerabilities are found.
 
 When a CI job fails, security report results are not ingested by GitLab, even if the job
-[allows failure](../../ci/yaml/index.md#allow_failure). The report artifacts are still uploaded to GitLab and available
+[allows failure](../../ci/yaml/index.md#allow_failure). However, the report artifacts are still uploaded to GitLab and available
 for [download in the pipeline security tab](../../user/application_security/vulnerability_report/pipeline.md#download-security-scan-outputs).
-
-When executing a scanning job using the [Docker-in-Docker privileged mode](../../user/application_security/sast/index.md#requirements),
-we reserve the following standard exit codes.
-
-| Orchestrator Exit Code | Description                      |
-|------------------------|----------------------------------|
-| 3                      | No match, no compatible analyzer |
-| 4                      | Project directory empty          |
-| 5                      | No compatible Docker image       |
 
 ### Logging
 

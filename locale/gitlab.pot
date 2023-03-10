@@ -31036,6 +31036,9 @@ msgstr ""
 msgid "Pending comments"
 msgstr ""
 
+msgid "Pending comments are hidden until you submit your review."
+msgstr ""
+
 msgid "Pending deletion"
 msgstr ""
 

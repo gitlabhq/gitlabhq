@@ -441,6 +441,36 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
     end
   end
 
+  context 'importing work items' do
+    %w(reporter developer maintainer owner).each do |role|
+      context "with #{role}" do
+        let(:current_user) { send(role) }
+
+        it { is_expected.to be_allowed(:import_work_items) }
+      end
+    end
+
+    %w(guest anonymous).each do |role|
+      context "with #{role}" do
+        let(:current_user) { send(role) }
+
+        it { is_expected.to be_disallowed(:import_work_items) }
+      end
+    end
+
+    context 'with an admin' do
+      let(:current_user) { admin }
+
+      context 'when admin mode is enabled', :enable_admin_mode do
+        it { expect_allowed(:import_work_items) }
+      end
+
+      context 'when admin mode is disabled' do
+        it { expect_disallowed(:import_work_items) }
+      end
+    end
+  end
+
   context 'reading usage quotas' do
     %w(maintainer owner).each do |role|
       context "with #{role}" do

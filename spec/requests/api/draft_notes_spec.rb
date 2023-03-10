@@ -216,6 +216,57 @@ RSpec.describe API::DraftNotes, feature_category: :code_review_workflow do
     end
   end
 
+  def update_draft_note(params = {}, url = base_url)
+    put api("#{url}/#{draft_note_by_current_user.id}", user), params: params
+  end
+
+  describe "Update a draft note" do
+    let(:basic_update_params) do
+      {
+        note: "Example updated body string"
+      }
+    end
+
+    context "when updating an existing draft note" do
+      context "with required params" do
+        it "returns 200 Success status" do
+          update_draft_note(basic_update_params)
+
+          expect(response).to have_gitlab_http_status(:success)
+        end
+
+        it "updates draft note with the new content" do
+          update_draft_note(basic_update_params)
+
+          expect(json_response["note"]).to eq(basic_update_params[:note])
+        end
+      end
+
+      context "without including an update to the note body" do
+        it "returns the draft note with no changes" do
+          expect { update_draft_note({}) }
+            .not_to change { draft_note_by_current_user.note }
+        end
+      end
+
+      context "when updating a non-existent draft note" do
+        it "returns a 404 Not Found" do
+          put api("#{base_url}/#{non_existing_record_id}", user), params: basic_update_params
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+
+      context "when updating a draft note by a different user" do
+        it "returns a 404 Not Found" do
+          put api("#{base_url}/#{draft_note_by_random_user.id}", user), params: basic_update_params
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+    end
+  end
+
   describe "Publishing a draft note" do
     let(:publish_draft_note) do
       put api(

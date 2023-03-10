@@ -26,7 +26,7 @@ module WorkItems
 
     def execute
       raise FeatureNotAvailableError if ::Feature.disabled?(:import_export_work_items_csv, project)
-      raise NotAuthorizedError unless Ability.allowed?(user, :create_work_item, project)
+      raise NotAuthorizedError unless Ability.allowed?(user, :import_work_items, project)
 
       super
     end
