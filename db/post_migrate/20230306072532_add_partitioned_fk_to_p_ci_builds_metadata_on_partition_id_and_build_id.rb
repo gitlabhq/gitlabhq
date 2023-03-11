@@ -11,7 +11,7 @@ class AddPartitionedFkToPCiBuildsMetadataOnPartitionIdAndBuildId < Gitlab::Datab
     return if foreign_key_exists?(SOURCE_TABLE_NAME, TARGET_TABLE_NAME, name: FK_NAME)
 
     with_lock_retries do
-      execute("LOCK TABLE #{TARGET_TABLE_NAME}, #{SOURCE_TABLE_NAME} IN SHARE ROW EXCLUSIVE MODE")
+      execute("LOCK TABLE #{TARGET_TABLE_NAME}, #{SOURCE_TABLE_NAME} IN ACCESS EXCLUSIVE MODE")
 
       execute(<<~SQL.squish)
         ALTER TABLE #{SOURCE_TABLE_NAME}
