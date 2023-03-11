@@ -543,6 +543,8 @@ RSpec.configure do |config|
   end
 end
 
+Support::AbilityCheck.inject(Ability.singleton_class)
+
 ActiveRecord::Migration.maintain_test_schema!
 
 Shoulda::Matchers.configure do |config|

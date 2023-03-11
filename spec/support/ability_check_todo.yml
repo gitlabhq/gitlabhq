@@ -1,0 +1,73 @@
+# This list tracks unknown abilities per policy.
+#
+# This file is used by `spec/support/ability_check.rb`.
+#
+# Each TODO entry means that an ability wasn't found in
+# the particular policy class or its delegations.
+#
+# This could be one of the reasons:
+# * The ability is misspelled.
+#     - Suggested action: Fix typo.
+# * The ability has been removed from a policy but is still in use.
+#     - Remove production code in question.
+# * The ability is defined in EE policy but is used in FOSS code.
+#     - Guard the check or move it to EE folder.
+#     - See https://docs.gitlab.com/ee/development/ee_features.html
+# * The ability is defined in another policy but delegation is missing.
+#     - Add delegation policy or guard the check with a type check.
+#     - See https://docs.gitlab.com/ee/development/policies.html#delegation
+# * The ability check is polymorphic (for example, Issuable) and some policies
+#   do not implement this ability.
+#     - Exclude TODO permanently below.
+#     - Guard the check with a type check.
+# * The ability check is defined on GraphQL field which does not support
+#   authorization on resolved field values yet.
+#   See https://gitlab.com/gitlab-org/gitlab/-/issues/300922
+---
+# <Policy class>:
+#   - <ability name>
+#   - <ability name>
+#   ...
+
+# Temporary excludes:
+
+Ci::BridgePolicy:
+- read_job_artifacts
+CommitStatusPolicy:
+- read_job_artifacts
+EpicPolicy:
+- create_timelog
+- read_emoji
+- set_issue_crm_contacts
+GlobalPolicy:
+- read_achievement
+- read_on_demand_dast_scan
+- update_max_pages_size
+GroupPolicy:
+- admin_merge_request
+- change_push_rules
+- manage_owners
+IssuePolicy:
+- create_test_case
+MergeRequestPolicy:
+- set_confidentiality
+- set_issue_crm_contacts
+Namespaces::UserNamespacePolicy:
+- read_crm_contact
+PersonalSnippetPolicy:
+- read_internal_note
+- read_project
+ProjectMemberPolicy:
+- override_project_member
+ProjectPolicy:
+- admin_feature_flags_issue_links
+- admin_vulnerability
+- create_requirement
+- create_test_case
+- read_group_saml_identity
+UserPolicy:
+- admin_observability
+- admin_terraform_state
+- read_observability
+
+# Permanent excludes (please provide a reason):

@@ -77,6 +77,8 @@ class Ability
 
       policy = policy_for(user, subject)
 
+      before_check(policy, ability.to_sym, user, subject, opts)
+
       case opts[:scope]
       when :user
         DeclarativePolicy.user_scope { policy.allowed?(ability) }
@@ -90,6 +92,11 @@ class Ability
       # See: https://gitlab.com/gitlab-org/declarative-policy/-/merge_requests/24
       # See: https://gitlab.com/gitlab-org/declarative-policy/-/merge_requests/25
       forget_runner_result(policy.runner(ability)) if policy && ability_forgetting?
+    end
+
+    # Hook call right before ability check.
+    def before_check(policy, ability, user, subject, opts)
+      # See Support::AbilityCheck.
     end
 
     def policy_for(user, subject = :global)
