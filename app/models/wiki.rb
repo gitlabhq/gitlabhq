@@ -326,6 +326,11 @@ class Wiki
           content,
           previous_path: page.path,
           **multi_commit_options(:updated, message, title))
+        repository.move_dir_files(
+          user,
+          sluggified_title(title),
+          page.url_path,
+          **multi_commit_options(:moved, message, title))
 
         after_wiki_activity
 

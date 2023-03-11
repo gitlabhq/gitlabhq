@@ -845,6 +845,26 @@ class Repository
     commit_files(user, **options)
   end
 
+  def move_dir_files(user, path, previous_path, **options)
+    regex = Regexp.new("^#{Regexp.escape(previous_path + '/')}", 'i')
+    files = ls_files(options[:branch_name])
+
+    options[:actions] = files.each_with_object([]) do |item, list|
+      next unless item =~ regex
+
+      list.push(
+        action: :move,
+        file_path: "#{path}/#{item[regex.match(item)[0].size..]}",
+        previous_path: item,
+        infer_content: true
+      )
+    end
+
+    return if options[:actions].blank?
+
+    commit_files(user, **options)
+  end
+
   def delete_file(user, path, **options)
     options[:actions] = [{ action: :delete, file_path: path }]
 
