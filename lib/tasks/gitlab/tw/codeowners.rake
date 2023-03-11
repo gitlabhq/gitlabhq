@@ -19,10 +19,13 @@ namespace :tw do
     end
 
     CODE_OWNER_RULES = [
-      CodeOwnerRule.new('Activation', '@phillipwells'),
-      CodeOwnerRule.new('Acquisition', '@phillipwells'),
+      # CodeOwnerRule.new('Activation', ''),
+      # CodeOwnerRule.new('Acquisition', ''),
+      # CodeOwnerRule.new('AI Assisted', ''),
       CodeOwnerRule.new('Anti-Abuse', '@phillipwells'),
+      CodeOwnerRule.new('Application Performance', '@jglassman1'),
       CodeOwnerRule.new('Authentication and Authorization', '@jglassman1'),
+      # CodeOwnerRule.new('Billing and Subscription Management', ''),
       CodeOwnerRule.new('Code Review', '@aqualls'),
       CodeOwnerRule.new('Compliance', '@eread'),
       CodeOwnerRule.new('Composition Analysis', '@rdickenson'),
@@ -30,6 +33,8 @@ namespace :tw do
       CodeOwnerRule.new('Container Registry', '@marcel.amirault'),
       CodeOwnerRule.new('Contributor Experience', '@eread'),
       CodeOwnerRule.new('Database', '@aqualls'),
+      # CodeOwnerRule.new('DataOps', ''),
+      # CodeOwnerRule.new('Delivery', ''),
       CodeOwnerRule.new('Development', '@sselhorn'),
       CodeOwnerRule.new('Distribution', '@axil'),
       CodeOwnerRule.new('Distribution (Charts)', '@axil'),
@@ -38,18 +43,20 @@ namespace :tw do
       CodeOwnerRule.new('Dynamic Analysis', '@rdickenson'),
       CodeOwnerRule.new('Editor', '@ashrafkhamis'),
       CodeOwnerRule.new('Foundations', '@rdickenson'),
+      # CodeOwnerRule.new('Fulfillment Platform', ''),
       CodeOwnerRule.new('Fuzz Testing', '@rdickenson'),
       CodeOwnerRule.new('Geo', '@axil'),
       CodeOwnerRule.new('Gitaly', '@eread'),
-      CodeOwnerRule.new('GitLab Dedicated', '@axil'),
+      CodeOwnerRule.new('GitLab Dedicated', '@drcatherinepope'),
       CodeOwnerRule.new('Global Search', '@ashrafkhamis'),
       CodeOwnerRule.new('Import', '@eread'),
       CodeOwnerRule.new('Infrastructure', '@sselhorn'),
       CodeOwnerRule.new('Integrations', '@ashrafkhamis'),
-      CodeOwnerRule.new('Knowledge', '@aqualls'),
-      CodeOwnerRule.new('Application Performance', '@jglassman1'),
+      # CodeOwnerRule.new('Knowledge', ''),
+      # CodeOwnerRule.new('MLOps', '')
       CodeOwnerRule.new('Observability', '@drcatherinepope'),
       CodeOwnerRule.new('Optimize', '@lciutacu'),
+      CodeOwnerRule.new('Organization', '@lciutacu'),
       CodeOwnerRule.new('Package Registry', '@marcel.amirault'),
       CodeOwnerRule.new('Pipeline Authoring', '@marcel.amirault'),
       CodeOwnerRule.new('Pipeline Execution', '@drcatherinepope'),
@@ -72,9 +79,9 @@ namespace :tw do
       CodeOwnerRule.new('Testing', '@eread'),
       CodeOwnerRule.new('Threat Insights', '@rdickenson'),
       CodeOwnerRule.new('Tutorials', '@kpaizee'),
-      CodeOwnerRule.new('Utilization', '@fneill'),
-      CodeOwnerRule.new('Vulnerability Research', '@dianalogan'),
-      CodeOwnerRule.new('Organization', '@lciutacu')
+      # CodeOwnerRule.new('US Public Sector Services', ''),
+      CodeOwnerRule.new('Utilization', '@fneill')
+      # CodeOwnerRule.new('Vulnerability Research', '')
     ].freeze
 
     ERRORS_EXCLUDED_FILES = [

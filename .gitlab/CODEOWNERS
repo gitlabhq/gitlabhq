@@ -415,7 +415,7 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/administration/compliance.md @eread
 /doc/administration/configure.md @axil
 /doc/administration/consul.md @axil
-/doc/administration/dedicated/ @axil
+/doc/administration/dedicated/ @drcatherinepope
 /doc/administration/docs_self_host.md @axil
 /doc/administration/encrypted_configuration.md @axil
 /doc/administration/environment_variables.md @axil
@@ -423,6 +423,7 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/administration/feature_flags.md @axil
 /doc/administration/file_hooks.md @ashrafkhamis
 /doc/administration/geo/ @axil
+/doc/administration/get_started.md @kpaizee
 /doc/administration/git_protocol.md @aqualls
 /doc/administration/gitaly/ @eread
 /doc/administration/housekeeping.md @eread
@@ -430,7 +431,6 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/administration/incoming_email.md @msedlakjakubowski
 /doc/administration/index.md @axil
 /doc/administration/instance_limits.md @axil
-/doc/administration/instance_review.md @phillipwells
 /doc/administration/integration/kroki.md @msedlakjakubowski
 /doc/administration/integration/mailgun.md @msedlakjakubowski
 /doc/administration/integration/plantuml.md @aqualls
@@ -501,7 +501,6 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/api/award_emoji.md @msedlakjakubowski
 /doc/api/boards.md @msedlakjakubowski
 /doc/api/branches.md @aqualls
-/doc/api/broadcast_messages.md @phillipwells
 /doc/api/bulk_imports.md @eread
 /doc/api/cluster_agents.md @phillipwells
 /doc/api/commits.md @aqualls
@@ -521,7 +520,6 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/api/epics.md @msedlakjakubowski
 /doc/api/error_tracking.md @drcatherinepope
 /doc/api/events.md @eread
-/doc/api/experiments.md @phillipwells
 /doc/api/feature_flag_user_lists.md @phillipwells
 /doc/api/feature_flags.md @phillipwells
 /doc/api/features.md @phillipwells
@@ -559,7 +557,6 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/api/instance_clusters.md @phillipwells
 /doc/api/instance_level_ci_variables.md @marcel.amirault
 /doc/api/integrations.md @ashrafkhamis
-/doc/api/invitations.md @phillipwells
 /doc/api/issue_links.md @msedlakjakubowski
 /doc/api/issues.md @msedlakjakubowski
 /doc/api/issues_statistics.md @msedlakjakubowski
@@ -609,7 +606,7 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/api/project_snippets.md @aqualls
 /doc/api/project_statistics.md @aqualls
 /doc/api/project_templates.md @aqualls
-/doc/api/project_vulnerabilities.md @aqualls
+/doc/api/project_vulnerabilities.md @rdickenson
 /doc/api/projects.md @lciutacu
 /doc/api/protected_branches.md @aqualls
 /doc/api/protected_environments.md @phillipwells
@@ -716,7 +713,6 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/development/development_processes.md @sselhorn
 /doc/development/distributed_tracing.md @msedlakjakubowski
 /doc/development/documentation/ @sselhorn
-/doc/development/experiment_guide/ @phillipwells
 /doc/development/export_csv.md @eread
 /doc/development/fe_guide/content_editor.md @ashrafkhamis
 /doc/development/fe_guide/customizable_dashboards.md @lciutacu
@@ -761,7 +757,6 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/development/pages/ @ashrafkhamis
 /doc/development/permissions.md @jglassman1
 /doc/development/policies.md @jglassman1
-/doc/development/product_qualified_lead_guide/ @phillipwells
 /doc/development/project_templates.md @aqualls
 /doc/development/prometheus_metrics.md @msedlakjakubowski
 /doc/development/real_time.md @msedlakjakubowski
@@ -819,7 +814,7 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/raketasks/x509_signatures.md @aqualls
 /doc/security/ @jglassman1
 /doc/subscriptions/ @fneill
-/doc/subscriptions/gitlab_dedicated/ @axil
+/doc/subscriptions/gitlab_dedicated/ @drcatherinepope
 /doc/topics/authentication/ @jglassman1
 /doc/topics/autodevops/ @phillipwells
 /doc/topics/awesome_co.md @rdickenson
@@ -832,7 +827,6 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/update/ @axil
 /doc/update/background_migrations.md @aqualls
 /doc/user/admin_area/analytics/ @lciutacu
-/doc/user/admin_area/broadcast_messages.md @phillipwells
 /doc/user/admin_area/credentials_inventory.md @jglassman1
 /doc/user/admin_area/custom_project_templates.md @eread
 /doc/user/admin_area/diff_limits.md @aqualls
@@ -890,7 +884,6 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/user/discussions/ @aqualls
 /doc/user/enterprise_user/ @jglassman1
 /doc/user/feature_flags.md @sselhorn
-/doc/user/free_user_limit.md @phillipwells
 /doc/user/group/ @lciutacu
 /doc/user/group/clusters/ @phillipwells
 /doc/user/group/compliance_frameworks.md @eread
@@ -972,7 +965,6 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/user/project/wiki/ @ashrafkhamis
 /doc/user/project/working_with_projects.md @lciutacu
 /doc/user/public_access.md @lciutacu
-/doc/user/read_only_namespaces.md @phillipwells
 /doc/user/report_abuse.md @phillipwells
 /doc/user/reserved_names.md @lciutacu
 /doc/user/search/ @ashrafkhamis
