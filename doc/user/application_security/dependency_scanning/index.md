@@ -926,17 +926,34 @@ include:
 merge cyclonedx sboms:
   stage: merge-cyclonedx-sboms
   image:
-    name: cyclonedx/cyclonedx-cli:0.24.0
+    name: cyclonedx/cyclonedx-cli:0.24.2
     entrypoint: [""]
   script:
-    - find . -name "gl-sbom-*.cdx.json" -exec /cyclonedx merge --output-file gl-sbom-all.cdx.json --input-files "{}" +
+    - apt-get update && apt-get install -y jq
+    - find . -name "gl-sbom-*.cdx.json" -exec cyclonedx merge --output-file gl-sbom-all.cdx.json --input-files "{}" +
+    # remove duplicates from merged file. See https://github.com/CycloneDX/cyclonedx-cli/issues/188 for details.
+    - |
+      jq '. |
+      {
+        "bomFormat": .bomFormat,
+        "specVersion": .specVersion,
+        "serialNumber": .serialNumber,
+        "version": .version,
+        "metadata": {
+          "tools": [
+            (.metadata.tools | unique[])
+          ]
+        },
+        "components": [
+          (.components | unique[])
+        ]
+      }' "gl-sbom-all.cdx.json" > gl-sbom-all.cdx.json.tmp && mv gl-sbom-all.cdx.json.tmp gl-sbom-all.cdx.json
+    # optional: validate the merged sbom
+    - cyclonedx validate --input-version v1_4 --input-file gl-sbom-all.cdx.json
   artifacts:
     paths:
       - gl-sbom-all.cdx.json
 ```
-
-NOTE:
-Merging CycloneDX SBOM files may cause [License Scanning of CycloneDX Files](../../compliance/license_scanning_of_cyclonedx_files/index.md) to not work as the [cyclonedx-cli](https://github.com/CycloneDX/cyclonedx-cli) tool [does not remove duplicates](https://github.com/CycloneDX/cyclonedx-cli/issues/188). This causes the CycloneDX file to become invalid as duplicates are not allowed within the [official CycloneDX JSON specification](https://cyclonedx.org/docs/latest/json/#components).
 
 GitLab uses [CycloneDX Properties](https://cyclonedx.org/use-cases/#properties--name-value-store)
 to store implementation-specific details in the metadata of each CycloneDX SBOM,

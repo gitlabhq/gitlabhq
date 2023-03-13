@@ -6056,9 +6056,6 @@ msgstr ""
 msgid "Authentication method updated"
 msgstr ""
 
-msgid "Authentication via U2F device failed."
-msgstr ""
-
 msgid "Authentication via WebAuthn device failed."
 msgstr ""
 
@@ -42096,9 +42093,6 @@ msgstr ""
 msgid "Successfully deactivated"
 msgstr ""
 
-msgid "Successfully deleted U2F device."
-msgstr ""
-
 msgid "Successfully deleted WebAuthn device."
 msgstr ""
 
@@ -50206,9 +50200,6 @@ msgid "Your To-Do List"
 msgstr ""
 
 msgid "Your U2F device did not send a valid JSON response."
-msgstr ""
-
-msgid "Your U2F device was registered!"
 msgstr ""
 
 msgid "Your WebAuthn device did not send a valid JSON response."

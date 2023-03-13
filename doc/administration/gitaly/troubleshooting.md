@@ -715,6 +715,10 @@ Possible solutions:
 - Provision larger VMs to gain access to larger network traffic allowances.
 - Use your cloud service's monitoring and logging to check that the Praefect nodes are not exhausting their traffic allowances.
 
+### `gitlab-ctl reconfigure` fails with error: `STDOUT: praefect: configuration error: error reading config file: toml: cannot store TOML string into a Go int`
+
+This error occurs when `praefect['database_port']` or `praefect['database_direct_port']` are configured as a string instead of an integer.
+
 ## Profiling Gitaly
 
 Gitaly exposes several of the Golang built-in performance profiling tools on the Prometheus listen port. For example, if Prometheus is listening

@@ -36,8 +36,8 @@ more information, see [Post-processing and revocation](post_processing.md).
 
 All identified secrets are reported in the:
 
-- Merge request widget
-- Pipelines' **Security** tab
+- [Merge request widget](../index.md#view-security-scan-information-in-merge-requests)
+- [Pipeline security report](../vulnerability_report/pipeline.md)
 - [Vulnerability Report](../vulnerability_report/index.md)
 
 ![Secret Detection in merge request widget](img/secret_detection_v13_2.png)

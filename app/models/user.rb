@@ -615,13 +615,12 @@ class User < ApplicationRecord
 
   def self.with_two_factor
     where(otp_required_for_login: true)
-      .or(where_exists(U2fRegistration.where(U2fRegistration.arel_table[:user_id].eq(arel_table[:id]))))
       .or(where_exists(WebauthnRegistration.where(WebauthnRegistration.arel_table[:user_id].eq(arel_table[:id]))))
   end
 
   def self.without_two_factor
     where
-      .missing(:u2f_registrations, :webauthn_registrations)
+      .missing(:webauthn_registrations)
       .where(otp_required_for_login: false)
   end
 
@@ -1070,16 +1069,6 @@ class User < ApplicationRecord
     otp_required_for_login? ||
     forti_authenticator_enabled?(self) ||
     forti_token_cloud_enabled?(self)
-  end
-
-  def two_factor_u2f_enabled?
-    return false if Feature.enabled?(:webauthn)
-
-    if u2f_registrations.loaded?
-      u2f_registrations.any?
-    else
-      u2f_registrations.exists?
-    end
   end
 
   def two_factor_webauthn_enabled?

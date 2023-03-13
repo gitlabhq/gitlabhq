@@ -984,10 +984,6 @@ RSpec.describe User, feature_category: :user_profile do
         end
       end
 
-      describe 'and U2F' do
-        it_behaves_like "returns the right users", :two_factor_via_u2f
-      end
-
       describe 'and WebAuthn' do
         it_behaves_like "returns the right users", :two_factor_via_webauthn
       end
@@ -1001,26 +997,6 @@ RSpec.describe User, feature_category: :user_profile do
 
         expect(users_without_two_factor).to include(user_without_2fa.id)
         expect(users_without_two_factor).not_to include(user_with_2fa.id)
-      end
-
-      describe 'and u2f' do
-        it 'excludes users with 2fa enabled via U2F' do
-          user_with_2fa = create(:user, :two_factor_via_u2f)
-          user_without_2fa = create(:user)
-          users_without_two_factor = described_class.without_two_factor.pluck(:id)
-
-          expect(users_without_two_factor).to include(user_without_2fa.id)
-          expect(users_without_two_factor).not_to include(user_with_2fa.id)
-        end
-
-        it 'excludes users with 2fa enabled via OTP and U2F' do
-          user_with_2fa = create(:user, :two_factor_via_otp, :two_factor_via_u2f)
-          user_without_2fa = create(:user)
-          users_without_two_factor = described_class.without_two_factor.pluck(:id)
-
-          expect(users_without_two_factor).to include(user_without_2fa.id)
-          expect(users_without_two_factor).not_to include(user_with_2fa.id)
-        end
       end
 
       describe 'and webauthn' do
@@ -2209,54 +2185,6 @@ RSpec.describe User, feature_category: :user_profile do
         end
 
         it { expect(user.two_factor_otp_enabled?).to eq(false) }
-      end
-    end
-  end
-
-  context 'two_factor_u2f_enabled?' do
-    let_it_be(:user) { create(:user, :two_factor) }
-
-    context 'when webauthn feature flag is enabled' do
-      context 'user has no U2F registration' do
-        it { expect(user.two_factor_u2f_enabled?).to eq(false) }
-      end
-
-      context 'user has existing U2F registration' do
-        it 'returns false' do
-          device = U2F::FakeU2F.new(FFaker::BaconIpsum.characters(5))
-          create(:u2f_registration,
-            name: 'my u2f device',
-            user: user,
-            certificate: Base64.strict_encode64(device.cert_raw),
-            key_handle: U2F.urlsafe_encode64(device.key_handle_raw),
-            public_key: Base64.strict_encode64(device.origin_public_key_raw))
-
-          expect(user.two_factor_u2f_enabled?).to eq(false)
-        end
-      end
-    end
-
-    context 'when webauthn feature flag is disabled' do
-      before do
-        stub_feature_flags(webauthn: false)
-      end
-
-      context 'user has no U2F registration' do
-        it { expect(user.two_factor_u2f_enabled?).to eq(false) }
-      end
-
-      context 'user has existing U2F registration' do
-        it 'returns true' do
-          device = U2F::FakeU2F.new(FFaker::BaconIpsum.characters(5))
-          create(:u2f_registration,
-            name: 'my u2f device',
-            user: user,
-            certificate: Base64.strict_encode64(device.cert_raw),
-            key_handle: U2F.urlsafe_encode64(device.key_handle_raw),
-            public_key: Base64.strict_encode64(device.origin_public_key_raw))
-
-          expect(user.two_factor_u2f_enabled?).to eq(true)
-        end
       end
     end
   end

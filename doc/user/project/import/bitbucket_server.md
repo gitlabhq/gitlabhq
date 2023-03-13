@@ -120,6 +120,16 @@ If the project import completes but LFS objects can't be downloaded or cloned, y
 password or personal access token containing special characters. For more information, see
 [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/337769).
 
+### Pull requests are missing
+
+Importing large projects spawns a process that can consume a lot of memory. Sometimes you can see messages such as `Sidekiq worker RSS out of range` in the
+[Sidekiq logs](../../../administration/logs/index.md#sidekiq-logs). This can mean that MemoryKiller is interrupting the `RepositoryImportWorker` because it's using
+too much memory.
+
+To resolve this problem, temporarily increase the `SIDEKIQ_MEMORY_KILLER_MAX_RSS` environment variable using
+[custom environment variables](https://docs.gitlab.com/omnibus/settings/environment-variables.html) from the default `2000000` value to a larger value like `3000000`.
+Consider memory constraints on the system before deciding to increase `SIDEKIQ_MEMORY_KILLER_MAX_RSS`.
+
 ## Related topics
 
 For information on automating user, group, and project import API calls, see

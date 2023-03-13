@@ -75,7 +75,6 @@ resource :profile, only: [:show, :update] do
 
     resource :two_factor_auth, only: [:show, :create, :destroy] do
       member do
-        post :create_u2f
         post :codes
         patch :skip
         post :create_webauthn

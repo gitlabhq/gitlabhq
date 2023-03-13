@@ -220,7 +220,9 @@ RSpec.describe Admin::SessionsController, :do_not_mock_admin_mode do
         end
       end
 
-      shared_examples 'when using two-factor authentication via hardware device' do
+      context 'when using two-factor authentication via WebAuthn' do
+        let(:user) { create(:admin, :two_factor_via_webauthn) }
+
         def authenticate_2fa(user_params)
           post(:create, params: { user: user_params }, session: { otp_user_id: user.id })
         end
@@ -237,10 +239,6 @@ RSpec.describe Admin::SessionsController, :do_not_mock_admin_mode do
         end
 
         it 'can login with valid auth' do
-          # we can stub both without an differentiation between webauthn / u2f
-          # as these not interfere with each other und this saves us passing aroud
-          # parameters
-          allow(U2fRegistration).to receive(:authenticate).and_return(true)
           allow_any_instance_of(Webauthn::AuthenticateService).to receive(:execute).and_return(true)
 
           expect(controller.current_user_mode.admin_mode?).to be(false)
@@ -255,7 +253,6 @@ RSpec.describe Admin::SessionsController, :do_not_mock_admin_mode do
         end
 
         it 'cannot login with invalid auth' do
-          allow(U2fRegistration).to receive(:authenticate).and_return(false)
           allow_any_instance_of(Webauthn::AuthenticateService).to receive(:execute).and_return(false)
 
           expect(controller.current_user_mode.admin_mode?).to be(false)
@@ -265,12 +262,6 @@ RSpec.describe Admin::SessionsController, :do_not_mock_admin_mode do
 
           expect(response).to render_template('admin/sessions/two_factor')
           expect(controller.current_user_mode.admin_mode?).to be(false)
-        end
-      end
-
-      context 'when using two-factor authentication via WebAuthn' do
-        it_behaves_like 'when using two-factor authentication via hardware device' do
-          let(:user) { create(:admin, :two_factor_via_webauthn) }
         end
       end
     end

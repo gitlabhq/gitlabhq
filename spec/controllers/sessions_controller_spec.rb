@@ -493,51 +493,49 @@ RSpec.describe SessionsController do
       end
     end
 
-    context 'when using two-factor authentication via U2F device' do
-      let(:user) { create(:user, :two_factor) }
+    context 'when using two-factor authentication via WebAuthn device' do
+      let(:user) { create(:user, :two_factor_via_webauthn) }
 
-      def authenticate_2fa_u2f(user_params)
+      def authenticate_2fa(user_params)
         post(:create, params: { user: user_params }, session: { otp_user_id: user.id })
-      end
-
-      before do
-        stub_feature_flags(webauthn: false)
       end
 
       context 'remember_me field' do
         it 'sets a remember_user_token cookie when enabled' do
-          allow(U2fRegistration).to receive(:authenticate).and_return(true)
+          allow_any_instance_of(Webauthn::AuthenticateService).to receive(:execute).and_return(true)
           allow(controller).to receive(:find_user).and_return(user)
-          expect(controller)
-            .to receive(:remember_me).with(user).and_call_original
+          expect(controller).to receive(:remember_me).with(user).and_call_original
 
-          authenticate_2fa_u2f(remember_me: '1', login: user.username, device_response: "{}")
+          authenticate_2fa(remember_me: '1', login: user.username, device_response: "{}")
 
           expect(response.cookies['remember_user_token']).to be_present
         end
 
         it 'does nothing when disabled' do
-          allow(U2fRegistration).to receive(:authenticate).and_return(true)
+          allow_any_instance_of(Webauthn::AuthenticateService).to receive(:execute).and_return(true)
           allow(controller).to receive(:find_user).and_return(user)
           expect(controller).not_to receive(:remember_me)
 
-          authenticate_2fa_u2f(remember_me: '0', login: user.username, device_response: "{}")
+          authenticate_2fa(remember_me: '0', login: user.username, device_response: "{}")
 
           expect(response.cookies['remember_user_token']).to be_nil
         end
       end
 
       it "creates an audit log record" do
-        allow(U2fRegistration).to receive(:authenticate).and_return(true)
-        expect { authenticate_2fa_u2f(login: user.username, device_response: "{}") }.to change { AuditEvent.count }.by(1)
-        expect(AuditEvent.last.details[:with]).to eq("two-factor-via-u2f-device")
+        allow_any_instance_of(Webauthn::AuthenticateService).to receive(:execute).and_return(true)
+
+        expect { authenticate_2fa(login: user.username, device_response: "{}") }.to(
+          change { AuditEvent.count }.by(1))
+        expect(AuditEvent.last.details[:with]).to eq("two-factor-via-webauthn-device")
       end
 
       it "creates an authentication event record" do
-        allow(U2fRegistration).to receive(:authenticate).and_return(true)
+        allow_any_instance_of(Webauthn::AuthenticateService).to receive(:execute).and_return(true)
 
-        expect { authenticate_2fa_u2f(login: user.username, device_response: "{}") }.to change { AuthenticationEvent.count }.by(1)
-        expect(AuthenticationEvent.last.provider).to eq("two-factor-via-u2f-device")
+        expect { authenticate_2fa(login: user.username, device_response: "{}") }.to(
+          change { AuthenticationEvent.count }.by(1))
+        expect(AuthenticationEvent.last.provider).to eq("two-factor-via-webauthn-device")
       end
     end
   end
