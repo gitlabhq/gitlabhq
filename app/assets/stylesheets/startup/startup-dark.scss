@@ -661,9 +661,12 @@ html {
 .dropdown-menu-toggle.dropdown-menu-toggle {
   justify-content: flex-start;
   overflow: hidden;
+  padding-top: 7px;
+  padding-bottom: 7px;
   padding-right: 25px;
   position: relative;
   text-overflow: ellipsis;
+  line-height: 16px;
   width: 160px;
 }
 .dropdown-menu {

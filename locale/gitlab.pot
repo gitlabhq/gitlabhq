@@ -3627,9 +3627,6 @@ msgstr ""
 msgid "AdminUsers|user cap"
 msgstr ""
 
-msgid "Administration"
-msgstr ""
-
 msgid "Administrators"
 msgstr ""
 
@@ -47222,6 +47219,9 @@ msgid "UserProfile|Unconfirmed user"
 msgstr ""
 
 msgid "UserProfile|User ID: %{id}"
+msgstr ""
+
+msgid "UserProfile|User profile navigation"
 msgstr ""
 
 msgid "UserProfile|View all"

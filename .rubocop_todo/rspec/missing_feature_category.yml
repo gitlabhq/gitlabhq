@@ -1135,7 +1135,6 @@ RSpec/MissingFeatureCategory:
     - 'ee/spec/lib/omni_auth/strategies/kerberos_spec.rb'
     - 'ee/spec/lib/peek/views/elasticsearch_spec.rb'
     - 'ee/spec/lib/quality/seeders/vulnerabilities_spec.rb'
-    - 'ee/spec/lib/sidebars/groups/menus/administration_menu_spec.rb'
     - 'ee/spec/lib/sidebars/groups/menus/analytics_menu_spec.rb'
     - 'ee/spec/lib/sidebars/groups/menus/security_compliance_menu_spec.rb'
     - 'ee/spec/lib/slack/api_spec.rb'

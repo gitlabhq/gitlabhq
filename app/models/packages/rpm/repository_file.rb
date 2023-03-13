@@ -13,7 +13,7 @@ module Packages
 
       enum status: { default: 0, pending_destruction: 1, processing: 2, error: 3 }
 
-      belongs_to :project, inverse_of: :repository_files
+      belongs_to :project, inverse_of: :rpm_repository_files
 
       validates :project, presence: true
       validates :file, presence: true

@@ -325,10 +325,7 @@ After you have configured your identity provider, you can:
 
 To change the identity provider:
 
-- If the `NameID` is not identical in the existing and new identity providers,
-   tell users to:
-  1. [Unlink the current SAML identity](#unlinking-accounts).
-  1. [Link their identity](#user-access-and-management) to the new identity provider.
+- If the `NameID` is not identical in the existing and new identity providers, [change the NameID for users](#change-nameid-for-one-or-more-users).
 - If the `NameID` is identical, users do not have to make any changes.
 
 ### Migrate to a different identity provider
@@ -340,18 +337,16 @@ users cannot access any of the SAML groups. To mitigate this, you can disable
 To migrate identity providers:
 
 1. [Configure](#configure-your-identity-provider) the group with the new identity provider.
-1. Tell users to:
-   1. [Unlink their account from the group](#unlinking-accounts).
-   1. [Link their account to the new SAML app](#linking-saml-to-your-existing-gitlabcom-account).
+1. [Change the NameID for users](#change-nameid-for-one-or-more-users).
 
 ### Change email domains
 
 To migrate users to a new email domain, tell users to:
 
 1. Add their new email as the primary email to their accounts and verify it.
-1. [Unlink their account from the group](#unlinking-accounts).
-1. [Link their account to the group](#linking-saml-to-your-existing-gitlabcom-account).
 1. Optional. Remove their old email from the account.
+
+If the NameID is configured with the email address, [change the NameID for users](#change-nameid-for-one-or-more-users).
 
 ## User access and management
 
@@ -395,7 +390,8 @@ On subsequent visits, you should be able to go [sign in to GitLab.com with SAML]
 
 > Update of SAML identities using the SAML API [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/227841) in GitLab 15.5.
 
-Group owners can update the SAML identities for their group members using the [SAML API](../../../api/saml.md).
+Group owners can update the SAML identities for their group members using the [SAML API](../../../api/saml.md#update-extern_uid-field-for-a-saml-identity).
+If [SCIM](scim_setup.md) is configured, group owners can update the SCIM identities using the [SCIM API](../../../api/scim.md#update-extern_uid-field-for-a-scim-identity).
 
 Alternatively, ask the users to reconnect their SAML account.
 

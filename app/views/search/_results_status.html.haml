@@ -5,7 +5,8 @@
       .gl-p-5.gl-display-flex
         .gl-md-display-flex.gl-text-left.gl-align-items-center.gl-flex-grow-1.gl-white-space-nowrap.gl-max-w-full
           - unless @search_service_presenter.without_count?
-            = search_entries_info(@search_objects, @scope, @search_term)
+            .gl-text-truncate
+              = search_entries_info(@search_objects, @scope, @search_term)
           - unless @search_service_presenter.show_snippets?
             - if @project
               - link_to_project = link_to(@project.full_name, @project, class: 'ml-md-1 gl-text-truncate search-wrap-f-md-down')

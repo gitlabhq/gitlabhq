@@ -90,7 +90,9 @@ module SidebarsHelper
     }
   end
 
-  def super_sidebar_nav_panel(nav: nil, project: nil, user: nil, group: nil, current_ref: nil, ref_type: nil)
+  def super_sidebar_nav_panel(
+    nav: nil, project: nil, user: nil, group: nil, current_ref: nil, ref_type: nil,
+    viewed_user: nil)
     context_adds = { route_is_active: method(:active_nav_link?), is_super_sidebar: true }
     case nav
     when 'project'
@@ -102,6 +104,9 @@ module SidebarsHelper
     when 'profile'
       context = Sidebars::Context.new(current_user: user, container: user, **context_adds)
       Sidebars::UserSettings::Panel.new(context)
+    when 'user_profile'
+      context = Sidebars::Context.new(current_user: user, container: viewed_user, **context_adds)
+      Sidebars::UserProfile::Panel.new(context)
     else
       context = your_work_sidebar_context(user, **context_adds)
       Sidebars::YourWork::Panel.new(context)

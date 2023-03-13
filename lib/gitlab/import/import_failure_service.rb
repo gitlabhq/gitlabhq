@@ -89,13 +89,8 @@ module Gitlab
         )
       end
 
-      def import_metrics
-        @import_metrics ||= Gitlab::Import::Metrics.new("#{project.import_type}_importer", project)
-      end
-
       def track_metrics
-        import_metrics.track_failed_import
-        import_metrics.track_import_state
+        Gitlab::Import::Metrics.new("#{project.import_type}_importer", project).track_failed_import
       end
     end
   end

@@ -261,6 +261,7 @@ class ProjectPolicy < BasePolicy
     enable :reporter_access
     enable :developer_access
     enable :maintainer_access
+    enable :add_catalog_resource
 
     enable :change_namespace
     enable :change_visibility_level

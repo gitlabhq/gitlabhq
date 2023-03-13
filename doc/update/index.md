@@ -269,7 +269,7 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
 - **Upgrade to patch release 15.9.3 or later**. This provides fixes for two database migration bugs:
   - Patch releases 15.9.0, 15.9.1, 15.9.2 have [a bug that can cause data loss](#user-profile-data-loss-bug-in-159x) from the user profile fields.
   - The second [bug fix](https://gitlab.com/gitlab-org/gitlab/-/issues/394760) ensures it is possible to upgrade directly from 15.4.x.
-- As part of the [CI Partitioning effort](../architecture/blueprints/ci_data_decay/pipeline_partitioning.md), a [new Foreign Key](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107547) was added to `ci_builds_needs`. On GitLab instances with large CI tables, adding this constraint can take longer than usual. Make sure that this migration is finished before upgrading to 15.9.
+- As part of the [CI Partitioning effort](../architecture/blueprints/ci_data_decay/pipeline_partitioning.md), a [new Foreign Key](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107547) was added to `ci_builds_needs`. On GitLab instances with large CI tables, adding this constraint can take longer than usual.
 - Praefect's metadata verifier's [invalid metadata deletion behavior](../administration/gitaly/praefect.md#enable-deletions) is now enabled by default.
 
   The metadata verifier processes replica records in the Praefect database and verifies the replicas actually exist on the Gitaly nodes. If the replica doesn't exist, its
@@ -1461,7 +1461,7 @@ If your organization uses these fields either wait for the bug fix to be release
 
 Organizations that are already running earlier patch levels of GitLab 15.6, 15.7, or 15.8 can proceed with steps 2 and 3.
 
-If you have already upgraded to GitLab 15.9 following these instructions, your instance will not be affected by this bug, and you don't need to apply the 15.9.x patch when it is released. 
+If you have already upgraded to GitLab 15.9 following these instructions, your instance will not be affected by this bug, and you don't need to apply the 15.9.x patch when it is released.
 
 See [issue 393216](https://gitlab.com/gitlab-org/gitlab/-/issues/393216) for more information.
 

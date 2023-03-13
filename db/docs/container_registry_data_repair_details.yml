@@ -1,0 +1,10 @@
+---
+table_name: container_registry_data_repair_details
+classes:
+- ContainerRegistry::DataRepairDetail
+feature_categories:
+- container_registry
+description: Contains details for the container registry data repair
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/113029
+milestone: '15.10'
+gitlab_schema: gitlab_main

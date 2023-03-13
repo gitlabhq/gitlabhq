@@ -210,17 +210,17 @@ Users on self-managed instances should update their pipelines to ensure they do 
 
 </div>
 
-<div class="deprecation removal-160 breaking-change">
+<div class="deprecation removal-166 breaking-change">
 
 ### Error Tracking UI in GitLab Rails is deprecated
 
-Planned removal: GitLab <span class="removal-milestone">16.0</span> <span class="removal-date"></span>
+Planned removal: GitLab <span class="removal-milestone">16.6</span> <span class="removal-date"></span>
 
 WARNING:
 This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
 Review the details carefully before upgrading.
 
-The [Error Tracking UI](https://docs.gitlab.com/ee/operations/error_tracking.html) is deprecated in 15.9 and will be removed in 16.0. In future versions, you should use the [GitLab Observability UI](https://gitlab.com/gitlab-org/opstrace/opstrace-ui/), which will gradually be made available on GitLab.com over the next few releases.
+The [Error Tracking UI](https://docs.gitlab.com/ee/operations/error_tracking.html) is deprecated in 15.9 and will be removed in 16.6 (milestone might change) once GitLab Observability UI is made available. In future versions, you should use the [GitLab Observability UI](https://gitlab.com/gitlab-org/opstrace/opstrace-ui/), which will gradually be made available on GitLab.com over the next few releases.
 
 During the transition to the GitLab Observability UI, we will migrate the [GitLab Observability Backend](https://gitlab.com/gitlab-org/opstrace/opstrace) from a per-cluster deployment model to a per-tenant deployment model. Because [Integrated Error Tracking](https://docs.gitlab.com/ee/operations/error_tracking.html#integrated-error-tracking) is in Open Beta, we will not migrate any existing user data. For more details about the migration, see the direction pages for:
 

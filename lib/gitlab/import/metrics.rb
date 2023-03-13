@@ -26,25 +26,20 @@ module Gitlab
         observe_histogram
         projects_counter.increment
         track_finish_metric
-        track_import_state
       end
 
       def track_failed_import
         return unless project.github_import?
 
         track_usage_event(:github_import_project_failure, project.id)
+        track_import_state('github')
       end
 
-      def track_import_state
+      def track_canceled_import
         return unless project.github_import?
 
-        Gitlab::Tracking.event(
-          importer,
-          'create',
-          label: 'github_import_project_state',
-          project: project,
-          extra: { import_type: 'github', state: project.beautified_import_status_name }
-        )
+        track_usage_event(:github_import_project_cancelled, project.id)
+        track_import_state('github')
       end
 
       def issues_counter
@@ -88,7 +83,24 @@ module Gitlab
       def track_finish_metric
         return unless project.github_import?
 
-        track_usage_event(:github_import_project_success, project.id)
+        track_import_state('github')
+
+        case project.beautified_import_status_name
+        when 'partially completed'
+          track_usage_event(:github_import_project_partially_completed, project.id)
+        when 'completed'
+          track_usage_event(:github_import_project_success, project.id)
+        end
+      end
+
+      def track_import_state(type)
+        Gitlab::Tracking.event(
+          importer,
+          'create',
+          label: "#{type}_import_project_state",
+          project: project,
+          extra: { import_type: type, state: project.beautified_import_status_name }
+        )
       end
     end
   end

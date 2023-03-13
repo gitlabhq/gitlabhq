@@ -25,7 +25,7 @@ RSpec.describe BatchedBackgroundMigration::BatchedBackgroundMigrationGenerator, 
     let(:expected_migration_spec_file) { load_expected_file('queue_my_batched_migration_spec.txt') }
     let(:expected_migration_job_file) { load_expected_file('my_batched_migration.txt') }
     let(:expected_migration_job_spec_file) { load_expected_file('my_batched_migration_spec_matcher.txt') }
-    let(:expected_migration_dictionary) { load_expected_file('my_batched_migration_dictionary.txt') }
+    let(:expected_migration_dictionary) { load_expected_file('my_batched_migration_dictionary_matcher.txt') }
 
     it 'generates expected files' do
       run_generator %w[my_batched_migration --table_name=projects --column_name=id --feature_category=database]
@@ -48,7 +48,8 @@ RSpec.describe BatchedBackgroundMigration::BatchedBackgroundMigrationGenerator, 
       end
 
       assert_file('db/docs/batched_background_migrations/my_batched_migration.yml') do |migration_dictionary|
-        expect(migration_dictionary).to eq(expected_migration_dictionary)
+        # Regex is used to match the dynamically generated 'milestone' in the dictionary
+        expect(migration_dictionary).to match(/#{expected_migration_dictionary}/)
       end
     end
   end

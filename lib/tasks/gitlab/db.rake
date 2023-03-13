@@ -458,7 +458,7 @@ namespace :gitlab do
         Rails.application.eager_load!
 
         version = Gem::Version.new(File.read('VERSION'))
-        milestone = version.release.segments[0..1].join('.')
+        milestone = version.release.segments.first(2).join('.')
 
         classes = {}
 

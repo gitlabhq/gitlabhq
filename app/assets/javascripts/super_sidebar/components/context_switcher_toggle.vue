@@ -11,6 +11,9 @@ export default {
     CollapseToggle: GlCollapseToggleDirective,
   },
   props: {
+    /*
+     * Contains metadata about the current view, e.g. `id`, `title` and `avatar`
+     */
     context: {
       type: Object,
       required: true,
@@ -23,6 +26,9 @@ export default {
   computed: {
     collapseIcon() {
       return this.expanded ? 'chevron-up' : 'chevron-down';
+    },
+    avatarShape() {
+      return this.context.avatar_shape || 'rect';
     },
   },
 };
@@ -43,7 +49,7 @@ export default {
     <gl-avatar
       v-else
       :size="24"
-      shape="rect"
+      :shape="avatarShape"
       :entity-name="context.title"
       :entity-id="context.id"
       :src="context.avatar"

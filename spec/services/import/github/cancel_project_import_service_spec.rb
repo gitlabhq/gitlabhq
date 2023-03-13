@@ -22,7 +22,7 @@ RSpec.describe Import::Github::CancelProjectImportService, feature_category: :im
             .to receive(:new)
             .with(:github_importer, project)
             .and_return(metrics_double)
-          expect(metrics_double).to receive(:track_import_state)
+          expect(metrics_double).to receive(:track_canceled_import)
 
           import_cancel.execute
         end

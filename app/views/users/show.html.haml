@@ -6,6 +6,9 @@
 - page_itemtype    'http://schema.org/Person'
 - add_page_specific_style 'page_bundles/profile'
 - link_classes = "flex-grow-1 mx-1 "
+- if show_super_sidebar?
+  - @left_sidebar = true
+  - nav "user_profile"
 
 = content_for :meta_tags do
   = auto_discovery_link_tag(:atom, user_url(@user, format: :atom), title: "#{@user.name} activity")
@@ -120,7 +123,7 @@
                   = @user.bio
 
     - if !profile_tabs.empty? && !Feature.enabled?(:profile_tabs_vue, current_user)
-      .scrolling-tabs-container
+      .scrolling-tabs-container{ class: [('gl-display-none' if show_super_sidebar?)] }
         .fade-left= sprite_icon('chevron-lg-left', size: 12)
         .fade-right= sprite_icon('chevron-lg-right', size: 12)
         %ul.nav-links.user-profile-nav.scrolling-tabs.nav.nav-tabs

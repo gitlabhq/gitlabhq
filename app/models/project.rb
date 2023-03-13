@@ -243,14 +243,22 @@ class Project < ApplicationRecord
   has_many :fork_network_projects, through: :fork_network, source: :projects
 
   # Packages
-  has_many :packages, class_name: 'Packages::Package'
-  has_many :package_files, through: :packages, class_name: 'Packages::PackageFile'
+  has_many :packages,
+           class_name: 'Packages::Package'
+  has_many :package_files,
+           through: :packages, class_name: 'Packages::PackageFile'
   # repository_files must be destroyed by ruby code in order to properly remove carrierwave uploads
-  has_many :repository_files, inverse_of: :project, class_name: 'Packages::Rpm::RepositoryFile',
-                              dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+  has_many :rpm_repository_files,
+           inverse_of: :project,
+           class_name: 'Packages::Rpm::RepositoryFile',
+           dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   # debian_distributions and associated component_files must be destroyed by ruby code in order to properly remove carrierwave uploads
-  has_many :debian_distributions, class_name: 'Packages::Debian::ProjectDistribution', dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
-  has_one :packages_cleanup_policy, class_name: 'Packages::Cleanup::Policy', inverse_of: :project
+  has_many :debian_distributions,
+           class_name: 'Packages::Debian::ProjectDistribution',
+           dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+  has_one :packages_cleanup_policy,
+          class_name: 'Packages::Cleanup::Policy',
+          inverse_of: :project
 
   has_one :import_state, autosave: true, class_name: 'ProjectImportState', inverse_of: :project
   has_one :import_export_upload, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent

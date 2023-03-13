@@ -14523,6 +14523,13 @@ CREATE TABLE container_expiration_policies (
     CONSTRAINT container_expiration_policies_name_regex_keep CHECK ((char_length(name_regex_keep) <= 255))
 );
 
+CREATE TABLE container_registry_data_repair_details (
+    missing_count integer DEFAULT 0,
+    project_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL
+);
+
 CREATE TABLE container_repositories (
     id integer NOT NULL,
     project_id integer NOT NULL,
@@ -26505,6 +26512,9 @@ ALTER TABLE ONLY compliance_management_frameworks
 ALTER TABLE ONLY container_expiration_policies
     ADD CONSTRAINT container_expiration_policies_pkey PRIMARY KEY (project_id);
 
+ALTER TABLE ONLY container_registry_data_repair_details
+    ADD CONSTRAINT container_registry_data_repair_details_pkey PRIMARY KEY (project_id);
+
 ALTER TABLE ONLY container_repositories
     ADD CONSTRAINT container_repositories_pkey PRIMARY KEY (id);
 
@@ -36228,6 +36238,9 @@ ALTER TABLE ONLY packages_debian_project_component_files
 
 ALTER TABLE ONLY namespace_aggregation_schedules
     ADD CONSTRAINT fk_rails_b565c8d16c FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY container_registry_data_repair_details
+    ADD CONSTRAINT fk_rails_b70d8111d9 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE batched_background_migration_job_transition_logs
     ADD CONSTRAINT fk_rails_b7523a175b FOREIGN KEY (batched_background_migration_job_id) REFERENCES batched_background_migration_jobs(id) ON DELETE CASCADE;

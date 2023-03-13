@@ -64,5 +64,10 @@ module BatchedBackgroundMigration
     def feature_category
       options[:feature_category]
     end
+
+    def current_milestone
+      version = Gem::Version.new(File.read('VERSION'))
+      version.release.segments.first(2).join('.')
+    end
   end
 end

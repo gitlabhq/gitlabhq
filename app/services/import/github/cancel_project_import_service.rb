@@ -9,7 +9,7 @@ module Import
 
         if project.import_in_progress?
           project.import_state.cancel
-          metrics.track_import_state
+          metrics.track_canceled_import
 
           success(project: project)
         else

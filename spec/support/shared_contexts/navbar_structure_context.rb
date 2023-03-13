@@ -140,6 +140,7 @@ RSpec.shared_context 'group navbar structure' do
         _('CI/CD'),
         _('Applications'),
         _('Packages and registries'),
+        s_('UsageQuota|Usage Quotas'),
         _('Domain Verification')
       ]
     }
@@ -150,15 +151,6 @@ RSpec.shared_context 'group navbar structure' do
       nav_item: _('Settings'),
       nav_sub_items: [
         _('Repository')
-      ]
-    }
-  end
-
-  let(:administration_nav_item) do
-    {
-      nav_item: _('Administration'),
-      nav_sub_items: [
-        s_('UsageQuota|Usage Quotas')
       ]
     }
   end

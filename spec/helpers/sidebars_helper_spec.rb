@@ -218,6 +218,10 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
       expect(helper.super_sidebar_nav_panel(nav: 'profile')).to be_a(Sidebars::UserSettings::Panel)
     end
 
+    it 'returns User profile Panel for user profile nav' do
+      expect(helper.super_sidebar_nav_panel(nav: 'user_profile')).to be_a(Sidebars::UserProfile::Panel)
+    end
+
     it 'returns "Your Work" Panel for your_work nav', :use_clean_rails_memory_store_caching do
       expect(helper.super_sidebar_nav_panel(nav: 'your_work', user: user)).to be_a(Sidebars::YourWork::Panel)
     end

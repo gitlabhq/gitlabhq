@@ -704,7 +704,7 @@ project:
 - project_registry
 - packages
 - package_files
-- repository_files
+- rpm_repository_files
 - packages_cleanup_policy
 - alerting_setting
 - project_setting
