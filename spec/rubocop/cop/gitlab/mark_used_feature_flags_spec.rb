@@ -205,14 +205,4 @@ RSpec.describe RuboCop::Cop::Gitlab::MarkUsedFeatureFlags do
     include_examples 'sets flag as used', 'deduplicate :delayed, feature_flag: :foo', 'foo'
     include_examples 'does not set any flags as used', 'deduplicate :delayed'
   end
-
-  describe "tracking of usage data metrics known events happens at the beginning of inspection" do
-    let(:usage_data_counters_known_event_feature_flags) { ['an_event_feature_flag'] }
-
-    before do
-      allow(cop).to receive(:usage_data_counters_known_event_feature_flags).and_return(usage_data_counters_known_event_feature_flags)
-    end
-
-    include_examples 'sets flag as used', "FEATURE_FLAG = :foo", %w[foo an_event_feature_flag]
-  end
 end

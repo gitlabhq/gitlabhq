@@ -33,7 +33,7 @@ RSpec.describe Gitlab::Database::TablesLocker, :suppress_gitlab_schemas_validate
     Ci::ApplicationRecord.connection.execute(create_partition_sql)
 
     create_detached_partition_sql = <<~SQL
-      CREATE TABLE IF NOT EXISTS gitlab_partitions_dynamic._test_gitlab_main_part_202201 (
+      CREATE TABLE IF NOT EXISTS #{Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA}._test_gitlab_main_part_202201 (
         id bigserial primary key not null
       )
     SQL
@@ -42,6 +42,12 @@ RSpec.describe Gitlab::Database::TablesLocker, :suppress_gitlab_schemas_validate
     Ci::ApplicationRecord.connection.execute(create_detached_partition_sql)
 
     Gitlab::Database::SharedModel.using_connection(ApplicationRecord.connection) do
+      Postgresql::DetachedPartition.create!(
+        table_name: '_test_gitlab_main_part_20220101',
+        drop_after: Time.current
+      )
+    end
+    Gitlab::Database::SharedModel.using_connection(Ci::ApplicationRecord.connection) do
       Postgresql::DetachedPartition.create!(
         table_name: '_test_gitlab_main_part_20220101',
         drop_after: Time.current
@@ -106,7 +112,7 @@ RSpec.describe Gitlab::Database::TablesLocker, :suppress_gitlab_schemas_validate
     end
   end
 
-  shared_examples "lock attached partitions" do |partition_identifier, database_name|
+  shared_examples "lock partitions" do |partition_identifier, database_name|
     let(:connection) { Gitlab::Database.database_base_models[database_name].connection }
 
     it 'locks the partition' do
@@ -126,7 +132,7 @@ RSpec.describe Gitlab::Database::TablesLocker, :suppress_gitlab_schemas_validate
     end
   end
 
-  shared_examples "unlock attached partitions" do |partition_identifier, database_name|
+  shared_examples "unlock partitions" do |partition_identifier, database_name|
     let(:connection) { Gitlab::Database.database_base_models[database_name].connection }
 
     it 'unlocks the partition' do
@@ -204,8 +210,12 @@ RSpec.describe Gitlab::Database::TablesLocker, :suppress_gitlab_schemas_validate
       it_behaves_like 'unlock tables', :gitlab_internal, 'ci'
 
       gitlab_main_partition = "#{Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA}.security_findings_test_partition"
-      it_behaves_like 'unlock attached partitions', gitlab_main_partition, 'main'
-      it_behaves_like 'lock attached partitions', gitlab_main_partition, 'ci'
+      it_behaves_like 'unlock partitions', gitlab_main_partition, 'main'
+      it_behaves_like 'lock partitions', gitlab_main_partition, 'ci'
+
+      gitlab_main_detached_partition = "#{Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA}._test_gitlab_main_part_20220101"
+      it_behaves_like 'unlock partitions', gitlab_main_detached_partition, 'main'
+      it_behaves_like 'lock partitions', gitlab_main_detached_partition, 'ci'
     end
 
     describe '#unlock_writes' do
@@ -221,8 +231,12 @@ RSpec.describe Gitlab::Database::TablesLocker, :suppress_gitlab_schemas_validate
       it_behaves_like "unlock tables", :gitlab_internal, 'ci'
 
       gitlab_main_partition = "#{Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA}.security_findings_test_partition"
-      it_behaves_like 'unlock attached partitions', gitlab_main_partition, 'main'
-      it_behaves_like 'unlock attached partitions', gitlab_main_partition, 'ci'
+      it_behaves_like 'unlock partitions', gitlab_main_partition, 'main'
+      it_behaves_like 'unlock partitions', gitlab_main_partition, 'ci'
+
+      gitlab_main_detached_partition = "#{Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA}._test_gitlab_main_part_20220101"
+      it_behaves_like 'unlock partitions', gitlab_main_detached_partition, 'main'
+      it_behaves_like 'unlock partitions', gitlab_main_detached_partition, 'ci'
     end
 
     context 'when running in dry_run mode' do

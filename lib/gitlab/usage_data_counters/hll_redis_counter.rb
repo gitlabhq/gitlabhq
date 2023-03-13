@@ -27,7 +27,6 @@ module Gitlab
       # - name: g_compliance_dashboard # Unique event name
       #   redis_slot: compliance       # Optional slot name, if not defined it will use name as a slot, used for totals
       #   aggregation: daily           # Aggregation level, keys are stored daily or weekly
-      #   feature_flag:                # The event feature flag
       #
       # Usage:
       #
@@ -97,7 +96,7 @@ module Gitlab
           Gitlab::ErrorTracking.track_and_raise_for_dev_exception(UnknownEvent.new("Unknown event #{event_name}")) unless event.present?
 
           return if event.blank?
-          return unless feature_enabled?(event)
+          return unless Feature.enabled?(:redis_hll_tracking, type: :ops)
 
           Gitlab::Redis::HLL.add(key: redis_key(event, time, context), value: values, expiry: expiry(event))
         rescue StandardError => e
@@ -123,12 +122,6 @@ module Gitlab
           return FALLBACK unless keys.any?
 
           redis_usage_data { Gitlab::Redis::HLL.count(keys: keys) }
-        end
-
-        def feature_enabled?(event)
-          return true if event[:feature_flag].blank?
-
-          Feature.enabled?(event[:feature_flag]) && Feature.enabled?(:redis_hll_tracking, type: :ops)
         end
 
         def keys_for_aggregation(aggregation, events:, start_date:, end_date:, context: '')

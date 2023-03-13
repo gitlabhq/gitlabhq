@@ -13,10 +13,23 @@ module Gitlab
         sidekiq_options retry: 3
         include GithubImport::Queue
         include ReschedulingMethods
-        include Gitlab::NotifyUponDeath
 
         feature_category :importers
         worker_has_external_dependencies!
+
+        sidekiq_retries_exhausted do |msg|
+          args = msg['args']
+          correlation_id = msg['correlation_id']
+          jid = msg['jid']
+
+          new.perform_failure(args[0], args[1], correlation_id)
+
+          # If a job is being exhausted we still want to notify the
+          # Gitlab::Import::AdvanceStageWorker to prevent the entire import from getting stuck
+          if args.length == 3 && (key = args.last) && key.is_a?(String)
+            JobWaiter.notify(key, jid)
+          end
+        end
       end
 
       NotRetriableError = Class.new(StandardError)
@@ -51,9 +64,23 @@ module Gitlab
         track_and_raise_exception(project, e, fail_import: true)
       rescue ActiveRecord::RecordInvalid, NotRetriableError => e
         # We do not raise exception to prevent job retry
-        track_exception(project, e)
+        failure = track_exception(project, e)
+        add_identifiers_to_failure(failure, object.github_identifiers)
       rescue StandardError => e
         track_and_raise_exception(project, e)
+      end
+
+      # hash - A Hash containing the details of the object to import.
+      def perform_failure(project_id, hash, correlation_id)
+        project = Project.find_by_id(project_id)
+        return unless project
+
+        failure = project.import_failures.failures_by_correlation_id(correlation_id).first
+        return unless failure
+
+        object = representation_class.from_json_hash(hash)
+
+        add_identifiers_to_failure(failure, object.github_identifiers)
       end
 
       def increment_object_counter?(_object)
@@ -104,6 +131,10 @@ module Gitlab
         track_exception(project, exception, fail_import: fail_import)
 
         raise(exception)
+      end
+
+      def add_identifiers_to_failure(failure, external_identifiers)
+        failure.update_column(:external_identifiers, external_identifiers)
       end
     end
   end

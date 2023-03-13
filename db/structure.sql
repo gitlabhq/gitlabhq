@@ -16753,7 +16753,8 @@ CREATE TABLE import_failures (
     exception_message character varying(255),
     retry_count integer,
     group_id integer,
-    source character varying(128)
+    source character varying(128),
+    external_identifiers jsonb DEFAULT '{}'::jsonb NOT NULL
 );
 
 CREATE SEQUENCE import_failures_id_seq

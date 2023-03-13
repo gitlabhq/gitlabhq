@@ -496,24 +496,12 @@ We have the following recommendations for [adding new events](#add-new-events):
 
 - Event aggregation: weekly.
 - When adding new metrics, use a [feature flag](../../operations/feature_flags.md) to control the impact.
-- For feature flags triggered by another service, set `default_enabled: false`,
-  - Events can be triggered using the `UsageData` API, which helps when there are > 10 events per change
+It's recommended to disable the new feature flag by default (set `default_enabled: false`).
+- Events can be triggered using the `UsageData` API, which helps when there are > 10 events per change
 
 ##### Enable or disable Redis HLL tracking
 
-Events are tracked behind optional [feature flags](../feature_flags/index.md) due to concerns for Redis performance and scalability.
-
-For a full list of events and corresponding feature flags, see the [`known_events/`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data_counters/known_events/) files.
-
-To enable or disable tracking for specific event in <https://gitlab.com> or <https://about.staging.gitlab.com>, run commands such as the following to
-[enable or disable the corresponding feature](../feature_flags/index.md).
-
-```shell
-/chatops run feature set <feature_name> true
-/chatops run feature set <feature_name> false
-```
-
-We can also disable tracking completely by using the global flag:
+We can disable tracking completely by using the global flag:
 
 ```shell
 /chatops run feature set redis_hll_tracking true

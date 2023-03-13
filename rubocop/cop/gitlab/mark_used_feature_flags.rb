@@ -32,12 +32,6 @@ module RuboCop
 
         RESTRICT_ON_SEND = FEATURE_METHODS + SELF_METHODS
 
-        USAGE_DATA_COUNTERS_EVENTS_YAML_GLOBS = [
-          File.expand_path("../../../config/metrics/aggregates/*.yml", __dir__),
-          File.expand_path("../../../lib/gitlab/usage_data_counters/known_events/*.yml", __dir__),
-          File.expand_path("../../../ee/lib/ee/gitlab/usage_data_counters/known_events/*.yml", __dir__)
-        ].freeze
-
         class << self
           # We track feature flags in `on_new_investigation` only once per
           # rubocop whole run instead once per file.
@@ -52,8 +46,6 @@ module RuboCop
           return if self.class.feature_flags_already_tracked
 
           self.class.feature_flags_already_tracked = true
-
-          track_usage_data_counters_known_events!
         end
 
         def on_casgn(node)
@@ -182,22 +174,6 @@ module RuboCop
 
         def trackable_flag?(node)
           feature_method?(node) || self_method?(node)
-        end
-
-        # Marking all event's feature flags as used as Gitlab::UsageDataCounters::HLLRedisCounter.track_event{,context}
-        # is mostly used with dynamic event name.
-        def track_usage_data_counters_known_events!
-          usage_data_counters_known_event_feature_flags.each { |feature_flag_name| save_used_feature_flag(feature_flag_name) }
-        end
-
-        def usage_data_counters_known_event_feature_flags
-          USAGE_DATA_COUNTERS_EVENTS_YAML_GLOBS.each_with_object(Set.new) do |glob, memo|
-            Dir.glob(glob).each do |path|
-              YAML.safe_load(File.read(path))&.each do |hash|
-                memo << hash['feature_flag'] if hash['feature_flag']
-              end
-            end
-          end
         end
 
         def defined_feature_flags
