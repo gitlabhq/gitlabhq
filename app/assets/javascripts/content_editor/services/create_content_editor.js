@@ -75,7 +75,7 @@ const createTiptapEditor = ({ extensions = [], ...options } = {}) =>
     extensions: [...extensions],
     editorProps: {
       attributes: {
-        class: 'gl-outline-0!',
+        class: 'gl-shadow-none!',
       },
     },
     ...options,

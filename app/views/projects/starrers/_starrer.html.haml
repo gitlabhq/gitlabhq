@@ -1,8 +1,8 @@
 - starrer = local_assigns.fetch(:starrer)
 
 .col-lg-3.col-md-4.col-sm-12
-  .card
-    .card-body.gl-display-flex
+  = render Pajamas::CardComponent.new(body_options: { class: 'gl-display-flex' }) do |c|
+    - c.body do
       = render Pajamas::AvatarComponent.new(starrer.user, size: 48, alt: "", class: 'gl-mr-3')
 
       .user-info

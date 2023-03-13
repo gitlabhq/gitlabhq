@@ -144,6 +144,7 @@ const { endpoint } = el.dataset;
 
 return new Vue({
   el,
+  name: 'MyComponentRoot',
   render(createElement) {
     return createElement('my-component', {
       provide: {
@@ -204,6 +205,7 @@ const { endpoint } = el.dataset;
 
 return new Vue({
   el,
+  name: 'MyComponentRoot',
   render(createElement) {
     return createElement('my-component', {
       props: {
@@ -258,6 +260,7 @@ export const initUserForm = () => {
 
   return new Vue({
     el,
+    name: 'UserFormRoot',
     render(h) {
       return h(UserForm, {
         props: {
@@ -311,6 +314,7 @@ initializing our Vue instance, and the data should be provided as `props` to the
 ```javascript
 return new Vue({
   el: '.js-vue-app',
+  name: 'MyComponentRoot',
   render(createElement) {
     return createElement('my-component', {
       props: {

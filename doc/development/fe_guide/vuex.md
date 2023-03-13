@@ -305,6 +305,7 @@ export default () => {
 
   return new Vue({
     el,
+    name: 'AwesomeVueRoot',
     store: createStore(el.dataset),
     render: h => h(AwesomeVueApp)
   });

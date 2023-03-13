@@ -144,18 +144,18 @@ In 16.0, this inbound scope limit will be the only option available for all proj
 
 </div>
 
-<div class="deprecation removal-1511 breaking-change">
+<div class="deprecation removal-160 breaking-change">
 
 ### Deprecation and planned removal for `CI_PRE_CLONE_SCRIPT` variable on GitLab SaaS
 
-End of Support: GitLab <span class="removal-milestone">15.11</span> <span class="support-end-date"></span><br />
-Planned removal: GitLab <span class="removal-milestone">15.11</span> <span class="removal-date"></span>
+End of Support: GitLab <span class="removal-milestone">16.0</span> <span class="support-end-date"></span><br />
+Planned removal: GitLab <span class="removal-milestone">16.0</span> <span class="removal-date"></span>
 
 WARNING:
 This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
 Review the details carefully before upgrading.
 
-The [`CI_PRE_CLONE_SCRIPT` variable](https://docs.gitlab.com/ee/ci/runners/saas/linux_saas_runner.html#pre-clone-script) supported by GitLab SaaS Runners is deprecated as of GitLab 15.9 and will be removed in 15.11. The `CI_PRE_CLONE_SCRIPT` variable enables you to run commands in your CI/CD job prior to the runner executing Git init and get fetch. For more information about how this feature works, see [Pre-clone script](https://docs.gitlab.com/ee/ci/runners/saas/linux_saas_runner.html#pre-clone-script). As an alternative, you can use the [`pre_get_sources_script`](https://docs.gitlab.com/ee/ci/yaml/#hookspre_get_sources_script).
+The [`CI_PRE_CLONE_SCRIPT` variable](https://docs.gitlab.com/ee/ci/runners/saas/linux_saas_runner.html#pre-clone-script) supported by GitLab SaaS Runners is deprecated as of GitLab 15.9 and will be removed in 16.0. The `CI_PRE_CLONE_SCRIPT` variable enables you to run commands in your CI/CD job prior to the runner executing Git init and get fetch. For more information about how this feature works, see [Pre-clone script](https://docs.gitlab.com/ee/ci/runners/saas/linux_saas_runner.html#pre-clone-script). As an alternative, you can use the [`pre_get_sources_script`](https://docs.gitlab.com/ee/ci/yaml/#hookspre_get_sources_script).
 
 </div>
 

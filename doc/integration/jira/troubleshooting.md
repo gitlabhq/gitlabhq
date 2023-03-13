@@ -91,7 +91,7 @@ To reset the Jira user's password for all projects with active Jira integrations
 run the following in a [Rails console](../../administration/operations/rails_console.md#starting-a-rails-console-session):
 
 ```ruby
-p = Project.find_by_sql("SELECT p.id FROM projects p LEFT JOIN services s ON p.id = s.project_id WHERE s.type = 'JiraService' AND s.active = true")
+p = Project.find_by_sql("SELECT p.id FROM projects p LEFT JOIN integrations i ON p.id = i.project_id WHERE i.type_new = 'Integrations::Jira' AND i.active = true")
 
 p.each do |project|
   project.jira_integration.update_attribute(:password, '<your-new-password>')

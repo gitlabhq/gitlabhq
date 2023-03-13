@@ -69,6 +69,7 @@ export default function mountImportProjectsTable({
 
   return new Vue({
     el: mountElement,
+    name: 'ImportProjectsRoot',
     store,
     apolloProvider,
     render(createElement) {

@@ -477,6 +477,7 @@ const apolloProvider = new VueApollo({
 
 return new Vue({
   el,
+  name: 'MyAppRoot',
   apolloProvider,
   provide: {
     // inject local state mutations to your app

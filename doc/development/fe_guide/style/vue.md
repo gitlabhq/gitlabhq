@@ -63,6 +63,7 @@ Check the [rules](https://github.com/vuejs/eslint-plugin-vue#bulb-rules) for mor
    // bad
    return new Vue({
      el: '#element',
+     name: 'ComponentNameRoot',
      components: {
        componentName
      },
@@ -81,6 +82,7 @@ Check the [rules](https://github.com/vuejs/eslint-plugin-vue#bulb-rules) for mor
 
    return new Vue({
      el: '#element',
+     name: 'ComponentNameRoot',
      components: {
        componentName
      },
@@ -106,6 +108,7 @@ Check the [rules](https://github.com/vuejs/eslint-plugin-vue#bulb-rules) for mor
    ```javascript
    return new Vue({
      el: '#element',
+     name: 'ComponentNameRoot',
      components: {
        componentName
      },

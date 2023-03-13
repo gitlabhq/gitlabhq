@@ -45,10 +45,10 @@ describe('content_editor/services/create_content_editor', () => {
     });
   });
 
-  it('sets gl-outline-0! class selector to the tiptapEditor instance', () => {
+  it('sets gl-shadow-none! class selector to the tiptapEditor instance', () => {
     expect(editor.tiptapEditor.options.editorProps).toMatchObject({
       attributes: {
-        class: 'gl-outline-0!',
+        class: 'gl-shadow-none!',
       },
     });
   });
