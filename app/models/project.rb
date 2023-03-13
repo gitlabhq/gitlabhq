@@ -967,6 +967,15 @@ class Project < ApplicationRecord
     def project_features_defaults
       PROJECT_FEATURES_DEFAULTS
     end
+
+    def by_pages_enabled_unique_domain(domain)
+      without_deleted
+        .joins(:project_setting)
+        .find_by(project_setting: {
+          pages_unique_domain_enabled: true,
+          pages_unique_domain: domain
+        })
+    end
   end
 
   def initialize(attributes = nil)

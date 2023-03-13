@@ -27,7 +27,8 @@ module EnforcesTwoFactorAuthentication
         render_error(
           format(
             _("Authentication error: enable 2FA in your profile settings to continue using GitLab: %{mfa_help_page}"),
-             mfa_help_page: mfa_help_page_url),
+            mfa_help_page: mfa_help_page_url
+          ),
           status: :unauthorized
         )
       else

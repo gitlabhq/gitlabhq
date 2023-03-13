@@ -334,9 +334,10 @@ RSpec.describe OmniauthCallbacksController, type: :controller, feature_category:
             expect(controller).to receive(:atlassian_oauth2).and_wrap_original do |m, *args|
               m.call(*args)
 
-              expect(Gitlab::ApplicationContext.current)
-                .to include('meta.user' => user.username,
-                            'meta.caller_id' => 'OmniauthCallbacksController#atlassian_oauth2')
+              expect(Gitlab::ApplicationContext.current).to include(
+                'meta.user' => user.username,
+                'meta.caller_id' => 'OmniauthCallbacksController#atlassian_oauth2'
+              )
             end
 
             post :atlassian_oauth2
@@ -441,8 +442,12 @@ RSpec.describe OmniauthCallbacksController, type: :controller, feature_category:
 
     before do
       stub_last_request_id(last_request_id)
-      stub_omniauth_saml_config(enabled: true, auto_link_saml_user: true, allow_single_sign_on: ['saml'],
-                                providers: [saml_config])
+      stub_omniauth_saml_config(
+        enabled: true,
+        auto_link_saml_user: true,
+        allow_single_sign_on: ['saml'],
+        providers: [saml_config]
+      )
       mock_auth_hash_with_saml_xml('saml', +'my-uid', user.email, mock_saml_response)
       request.env['devise.mapping'] = Devise.mappings[:user]
       request.env['omniauth.auth'] = Rails.application.env_config['omniauth.auth']
@@ -533,9 +538,10 @@ RSpec.describe OmniauthCallbacksController, type: :controller, feature_category:
         expect(controller).to receive(:saml).and_wrap_original do |m, *args|
           m.call(*args)
 
-          expect(Gitlab::ApplicationContext.current)
-            .to include('meta.user' => user.username,
-                        'meta.caller_id' => 'OmniauthCallbacksController#saml')
+          expect(Gitlab::ApplicationContext.current).to include(
+            'meta.user' => user.username,
+            'meta.caller_id' => 'OmniauthCallbacksController#saml'
+          )
         end
 
         post :saml, params: { SAMLResponse: mock_saml_response }

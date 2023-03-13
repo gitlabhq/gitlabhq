@@ -292,23 +292,34 @@ module Gitlab
       #                      order of the ALTER TABLE. This can be useful in situations where the foreign
       #                      key creation could deadlock with another process.
       #
-      # rubocop: disable Metrics/ParameterLists
-      def add_concurrent_foreign_key(source, target, column:, on_delete: :cascade, on_update: nil, target_column: :id, name: nil, validate: true, reverse_lock_order: false)
+      def add_concurrent_foreign_key(source, target, column:, **options)
+        options.reverse_merge!({
+          on_delete: :cascade,
+          on_update: nil,
+          target_column: :id,
+          validate: true,
+          reverse_lock_order: false,
+          allow_partitioned: false,
+          column: column
+        })
+
         # Transactions would result in ALTER TABLE locks being held for the
         # duration of the transaction, defeating the purpose of this method.
         if transaction_open?
           raise 'add_concurrent_foreign_key can not be run inside a transaction'
         end
 
-        options = {
-          column: column,
-          on_delete: on_delete,
-          on_update: on_update,
-          name: name.presence || concurrent_foreign_key_name(source, column),
-          primary_key: target_column
-        }
+        if !options.delete(:allow_partitioned) && table_partitioned?(source)
+          raise ArgumentError, 'add_concurrent_foreign_key can not be used on a partitioned ' \
+            'table. Please use add_concurrent_partitioned_foreign_key on the partitioned table ' \
+            'as we need to create foreign keys on each partition and a FK on the parent table'
+        end
 
-        if foreign_key_exists?(source, target, **options)
+        options[:name] ||= concurrent_foreign_key_name(source, column)
+        options[:primary_key] = options[:target_column]
+        check_options = options.slice(:column, :on_delete, :on_update, :name, :primary_key)
+
+        if foreign_key_exists?(source, target, **check_options)
           warning_message = "Foreign key not created because it exists already " \
             "(this may be due to an aborted migration or similar): " \
             "source: #{source}, target: #{target}, column: #{options[:column]}, "\
@@ -321,17 +332,18 @@ module Gitlab
           # validating it. This means we keep the ALTER TABLE lock only for a
           # short period of time. The key _is_ enforced for any newly created
           # data.
+          not_valid_option = 'NOT VALID' unless table_partitioned?(source)
 
           with_lock_retries do
-            execute("LOCK TABLE #{target}, #{source} IN SHARE ROW EXCLUSIVE MODE") if reverse_lock_order
+            execute("LOCK TABLE #{target}, #{source} IN SHARE ROW EXCLUSIVE MODE") if options[:reverse_lock_order]
             execute <<-EOF.strip_heredoc
             ALTER TABLE #{source}
             ADD CONSTRAINT #{options[:name]}
             FOREIGN KEY (#{multiple_columns(options[:column])})
-            REFERENCES #{target} (#{multiple_columns(target_column)})
+            REFERENCES #{target} (#{multiple_columns(options[:target_column])})
             #{on_update_statement(options[:on_update])}
             #{on_delete_statement(options[:on_delete])}
-            NOT VALID;
+            #{not_valid_option};
             EOF
           end
         end
@@ -345,13 +357,12 @@ module Gitlab
         #
         # Note this is a no-op in case the constraint is VALID already
 
-        if validate
+        if options[:validate]
           disable_statement_timeout do
             execute("ALTER TABLE #{source} VALIDATE CONSTRAINT #{options[:name]};")
           end
         end
       end
-      # rubocop: enable Metrics/ParameterLists
 
       def validate_foreign_key(source, column, name: nil)
         fk_name = name || concurrent_foreign_key_name(source, column)
@@ -1237,6 +1248,12 @@ into similar problems in the future (e.g. when new tables are created).
         else
           Gitlab::Database::PostgresPartition.legacy_partition_exists?(table_name)
         end
+      end
+
+      def table_partitioned?(table_name)
+        Gitlab::Database::PostgresPartitionedTable
+          .find_by_name_in_current_schema(table_name)
+          .present?
       end
 
       private

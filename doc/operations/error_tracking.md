@@ -84,7 +84,7 @@ DSN in **Sentry.io > Project Settings > Client Keys (DSN) > Show deprecated DSN*
 ERROR: Sentry failure builds=0 error=raven: dsn missing private key
 ```
 
-## Error Tracking List
+## Error Tracking list
 
 Users with at least Reporter [permissions](../user/permissions.md)
 can find the Error Tracking list at **Monitor > Error Tracking** in your project's sidebar.
@@ -92,7 +92,7 @@ Here, you can filter errors by title or by status (one of Ignored , Resolved, or
 
 ![Error Tracking list](img/error_tracking_list_v12_6.png)
 
-## Error Details
+## Error details
 
 From error list, users can go to the error details page by selecting the title of any error.
 
@@ -110,7 +110,7 @@ By default, a **Create issue** button is displayed:
 If you create a GitLab issue from the error, the **Create issue** button changes to a **View issue**
 button and a link to the GitLab issue displays in the error detail section.
 
-## Taking Action on errors
+## Taking action on errors
 
 You can take action on Sentry Errors in the GitLab UI. Marking errors as ignored or resolved requires at least Developer role.
 
@@ -140,12 +140,12 @@ If another event occurs, the error reverts to unresolved.
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-com/gl-infra/production/-/issues/7586) in GitLab 15.6.
 
 NOTE:
-Available only on GitLab.com. This feature is currently in [Open Beta](https://about.gitlab.com/handbook/product/gitlab-the-product/#open-beta).
+Available only on GitLab.com. This feature is in [Open Beta](https://about.gitlab.com/handbook/product/gitlab-the-product/#open-beta).
 
 ### Known limitations
 
 Only basic support is provided with `capture_exception` as the holding method.
-Additional features requests (see this [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/340178)) will be added on a case-by-case basis.
+Additional features requests (see this [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/340178)) are added on a case-by-case basis.
 
 ### Debugging issues
 
@@ -160,23 +160,17 @@ This example uses the `gitlab.com` instance.
 
 To enable error tracking, follow these steps:
 
-1. In your project, go to **Settings >Monitor**. Expand the **Error Tracking** tab:
-
-   ![MonitorTabPreEnable](img/Monitor_tab-pre-enable.png)
-
-1. Enable Error Tracking with GitLab as backend:
-
-   ![MonitorTabPostEnable](img/Monitor_tab-post-enable.png)
-
-1. Select the `Save Changes` button.
-
-1. Copy the DSN string. You will need this later.
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > Monitor**.
+1. Expand the **Error Tracking** tab.
+1. Under **Enable error tracking**, select the **Active** checkbox.
+1. Under **Error tracking backend**, select **GitLab**.
+1. Select **Save changes**.
+1. Copy the DSN string to use later.
 
 ### Listing captured errors
 
 Once your application has emitted errors to the Error Tracking API through the Sentry SDK, they should be available under **Monitor > Error Tracking** tab/section.
-
-![MonitorListErrors](img/Monitor-list_errors.png)
 
 For more details, refer to the [GitLab error tracking documentation](https://gitlab.com/help/operations/error_tracking#error-tracking-list).
 
@@ -188,7 +182,7 @@ gdk rails console
 Feature.enable(:integrated_error_tracking)
 ```
 
-### Emitting Errors
+### Emitting errors
 
 #### Supported Sentry types
 
@@ -206,20 +200,18 @@ Items of various types can be sent to the error tracking app, using either the S
 
 Event item types can contain various interfaces, such as exception, message, stack trace, and template. You can read more about the core data interfaces in [Sentry documentation](https://develop.sentry.dev/sdk/event-payloads/#core-interfaces).
 
-| Item type | Interface  | Can be sent through the Store endpoint | Can be sent through the Envelope endpoint | Currently Supported |
-|---------------|--------------|----------------|----------------|---------------------|
-| event         | exception    |  **{check-circle}** Yes      |  **{check-circle}** Yes       | **{check-circle}** Yes           |
-| event         | message      |  **{check-circle}** Yes       |  **{check-circle}** Yes       | **{check-circle}** Yes          |
-| event         | stack trace   |  **{check-circle}** Yes       |  **{check-circle}** Yes       | **{check-circle}** Yes          |
-| event         | template     |  **{check-circle}** Yes       |  **{check-circle}** Yes       | **{dotted-circle}** No          |
-| transaction   |     NA       |  **{dotted-circle}** No      |  **{check-circle}** Yes       | **{dotted-circle}** No           |
-| attachment    |     NA       |  **{dotted-circle}** No      |  **{check-circle}** Yes       | **{dotted-circle}** No           |
-| session       |     NA       |  **{dotted-circle}** No      |  **{check-circle}** Yes       | **{dotted-circle}** No           |
-| sessions      |     NA       |  **{dotted-circle}** No      |  **{check-circle}** Yes       | **{dotted-circle}** No           |
-| user_report   |     NA       |  **{dotted-circle}** No      |  **{check-circle}** Yes       | **{dotted-circle}** No           |
-| client_report |     NA       |  **{dotted-circle}** No      |  **{check-circle}** Yes       | **{dotted-circle}** No           |
-
-\* NA = Not Applicable
+| Item type       | Interface   | Can be sent through the Store endpoint | Can be sent through the Envelope endpoint | Supported              |
+| --------------- | ----------- | -------------------------------------- | ----------------------------------------- | ---------------------- |
+| `event`         | exception   | **{check-circle}** Yes                 | **{check-circle}** Yes                    | **{check-circle}** Yes |
+| `event`         | message     | **{check-circle}** Yes                 | **{check-circle}** Yes                    | **{check-circle}** Yes |
+| `event`         | stack trace | **{check-circle}** Yes                 | **{check-circle}** Yes                    | **{check-circle}** Yes |
+| `event`         | template    | **{check-circle}** Yes                 | **{check-circle}** Yes                    | **{dotted-circle}** No |
+| `transaction`   | N/A         | **{dotted-circle}** No                 | **{check-circle}** Yes                    | **{dotted-circle}** No |
+| `attachment`    | N/A         | **{dotted-circle}** No                 | **{check-circle}** Yes                    | **{dotted-circle}** No |
+| `session`       | N/A         | **{dotted-circle}** No                 | **{check-circle}** Yes                    | **{dotted-circle}** No |
+| `sessions`      | N/A         | **{dotted-circle}** No                 | **{check-circle}** Yes                    | **{dotted-circle}** No |
+| `user_report`   | N/A         | **{dotted-circle}** No                 | **{check-circle}** Yes                    | **{dotted-circle}** No |
+| `client_report` | N/A         | **{dotted-circle}** No                 | **{check-circle}** Yes                    | **{dotted-circle}** No |
 
 #### Supported languages
 

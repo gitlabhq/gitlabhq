@@ -1,17 +1,21 @@
 <script>
-import ActivitySort from '~/work_items/components/notes/activity_sort.vue';
-import ActivityFilter from '~/work_items/components/notes/activity_filter.vue';
+import WorkItemActivitySortFilter from '~/work_items/components/notes/work_item_activity_sort_filter.vue';
 import { s__ } from '~/locale';
 import { ASC } from '~/notes/constants';
-import { WORK_ITEM_NOTES_FILTER_ALL_NOTES } from '~/work_items/constants';
+import {
+  WORK_ITEM_NOTES_FILTER_ALL_NOTES,
+  WORK_ITEM_ACTIVITY_FILTER_OPTIONS,
+  WORK_ITEM_NOTES_FILTER_KEY,
+  WORK_ITEM_ACTIVITY_SORT_OPTIONS,
+  WORK_ITEM_NOTES_SORT_ORDER_KEY,
+} from '~/work_items/constants';
 
 export default {
   i18n: {
     activityLabel: s__('WorkItem|Activity'),
   },
   components: {
-    ActivitySort,
-    ActivityFilter,
+    WorkItemActivitySortFilter,
   },
   props: {
     disableActivityFilterSort: {
@@ -41,6 +45,12 @@ export default {
       this.$emit('changeFilter', filterValue);
     },
   },
+  WORK_ITEM_ACTIVITY_FILTER_OPTIONS,
+  WORK_ITEM_NOTES_FILTER_KEY,
+  WORK_ITEM_NOTES_FILTER_ALL_NOTES,
+  WORK_ITEM_ACTIVITY_SORT_OPTIONS,
+  WORK_ITEM_NOTES_SORT_ORDER_KEY,
+  ASC,
 };
 </script>
 
@@ -50,16 +60,30 @@ export default {
   >
     <h3 class="gl-font-base gl-m-0">{{ $options.i18n.activityLabel }}</h3>
     <div class="gl-display-flex gl-gap-3">
-      <activity-filter
-        :loading="disableActivityFilterSort"
+      <work-item-activity-sort-filter
         :work-item-type="workItemType"
-        :discussion-filter="discussionFilter"
+        :loading="disableActivityFilterSort"
+        :sort-filter-prop="discussionFilter"
+        :filter-options="$options.WORK_ITEM_ACTIVITY_FILTER_OPTIONS"
+        :storage-key="$options.WORK_ITEM_NOTES_FILTER_KEY"
+        :default-sort-filter-prop="$options.WORK_ITEM_NOTES_FILTER_ALL_NOTES"
+        tracking-action="work_item_notes_filter_changed"
+        tracking-label="item_track_notes_filtering"
+        filter-event="changeFilter"
+        data-testid="work-item-filter"
         @changeFilter="filterDiscussions"
       />
-      <activity-sort
-        :loading="disableActivityFilterSort"
-        :sort-order="sortOrder"
+      <work-item-activity-sort-filter
         :work-item-type="workItemType"
+        :loading="disableActivityFilterSort"
+        :sort-filter-prop="sortOrder"
+        :filter-options="$options.WORK_ITEM_ACTIVITY_SORT_OPTIONS"
+        :storage-key="$options.WORK_ITEM_NOTES_SORT_ORDER_KEY"
+        :default-sort-filter-prop="$options.ASC"
+        tracking-action="work_item_notes_sort_order_changed"
+        tracking-label="item_track_notes_sorting"
+        filter-event="changeSort"
+        data-testid="work-item-sort"
         @changeSort="changeNotesSortOrder"
       />
     </div>

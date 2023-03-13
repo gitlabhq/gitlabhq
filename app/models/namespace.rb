@@ -254,15 +254,6 @@ class Namespace < ApplicationRecord
       value.scan(Gitlab::Regex.group_name_regex_chars).join(' ')
     end
 
-    def find_by_pages_host(host)
-      gitlab_host = "." + Settings.pages.host.downcase
-      host = host.downcase
-      return unless host.ends_with?(gitlab_host)
-
-      name = host.delete_suffix(gitlab_host)
-      Namespace.top_most.by_path(name)
-    end
-
     def top_most
       by_parent(nil)
     end
@@ -504,22 +495,6 @@ class Namespace < ApplicationRecord
     ContainerRepository.for_project_id(all_projects)
   end
 
-  def pages_virtual_domain
-    cache = if Feature.enabled?(:cache_pages_domain_api, root_ancestor)
-              ::Gitlab::Pages::CacheControl.for_namespace(root_ancestor.id)
-            end
-
-    Pages::VirtualDomain.new(
-      trim_prefix: full_path,
-      cache: cache,
-      projects: all_projects_with_pages.includes(
-        :route,
-        :project_setting,
-        :project_feature,
-        pages_metadatum: :pages_deployment)
-    )
-  end
-
   def any_project_with_pages_deployed?
     all_projects.with_pages_deployed.any?
   end
@@ -634,6 +609,15 @@ class Namespace < ApplicationRecord
     namespace_settings&.all_ancestors_have_runner_registration_enabled?
   end
 
+  def all_projects_with_pages
+    all_projects.with_pages_deployed.includes(
+      :route,
+      :project_setting,
+      :project_feature,
+      pages_metadatum: :pages_deployment
+    )
+  end
+
   private
 
   def cross_namespace_reference?(from)
@@ -690,10 +674,6 @@ class Namespace < ApplicationRecord
     all_projects.each_batch do |projects|
       projects.touch_all
     end
-  end
-
-  def all_projects_with_pages
-    all_projects.with_pages_deployed
   end
 
   def parent_changed?

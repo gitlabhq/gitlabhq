@@ -59,7 +59,7 @@ module API
       def cache_client
         if Feature.enabled?(:cache_client_with_metrics, user_project)
           Gitlab::Cache::Client.build_with_metadata(
-            cache_identifier: "#{self.class}#content_sha",
+            cache_identifier: 'API::Files#content_sha',
             feature_category: :source_code_management,
             backing_resource: :gitaly
           )

@@ -16,20 +16,24 @@
     - !reference [.default-before_script, before_script]
     - cd qa && bundle install
 
-rails-production-environment:
+rails-production-server-boot:
   extends:
     - .preflight-job-base
     - .default-before_script
     - .production
     - .ruby-cache
-    - .setup:rules:rails-production-environment
+    - .setup:rules:rails-production-server-boot
     - .use-pg12
   variables:
     BUNDLE_WITHOUT: "development:test"
     BUNDLE_WITH: "production"
   needs: []
   script:
-    - bundle exec rails runner --environment=production 'puts Rails.env'
+    - source scripts/utils.sh
+    - bundle exec rails server -e production &
+    - sleep 40 # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114124#note_1309506358
+    - retry_times_sleep 10 5 "curl http://0.0.0.0:3000"
+    - kill $(jobs -p)
 
 no-ee-check:
   extends:

@@ -50,6 +50,7 @@ Blueprint statuses you can use:
 - "accepted"
 - "ongoing"
 - "implemented"
+- "postponed"
 - "rejected"
 
 -->

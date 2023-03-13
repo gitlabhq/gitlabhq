@@ -349,11 +349,13 @@
   - "{,ee/,jh/}{,spec/}lib/{,ee/,jh/}gitlab/background_migration/**/*"
   - "{,ee/,jh/}{,spec/}lib/{,ee/,jh/}gitlab/database{,_spec}.rb"
   - "{,ee/,jh/}{,spec/}lib/{,ee/,jh/}gitlab/database/**/*"
+  - "{,ee/,jh/}spec/support/db_cleaner.rb"
   - "{,ee/,jh/}spec/support/helpers/database/**/*"
   - "{,ee/,jh/}spec/support/helpers/migrations_helpers/**/*"
   - "lib/api/admin/batched_background_migrations.rb"
   - "lib/gitlab/markdown_cache/active_record/**/*"
   - "spec/requests/api/admin/batched_background_migrations_spec.rb"
+  - "spec/support/database_cleaner.rb"
   - "config/prometheus/common_metrics.yml"  # Used by Gitlab::DatabaseImporters::CommonMetrics::Importer
   - "{,ee/,jh/}app/models/project_statistics.rb"  # Used to calculate sizes in migration specs
   # Gitaly has interactions with background migrations: https://gitlab.com/gitlab-org/gitlab/-/issues/336538
@@ -2221,7 +2223,7 @@
     - <<: *if-default-refs
       changes: *code-backstage-patterns
 
-.setup:rules:rails-production-environment:
+.setup:rules:rails-production-server-boot:
   rules:
     - <<: *if-default-refs
       changes: *code-patterns

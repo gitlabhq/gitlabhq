@@ -1137,43 +1137,6 @@ RSpec.describe Namespace, feature_category: :subgroups do
     end
   end
 
-  describe '.find_by_pages_host' do
-    it 'finds namespace by GitLab Pages host and is case-insensitive' do
-      namespace = create(:namespace, name: 'topNAMEspace', path: 'topNAMEspace')
-      create(:namespace, name: 'annother_namespace')
-      host = "TopNamespace.#{Settings.pages.host.upcase}"
-
-      expect(described_class.find_by_pages_host(host)).to eq(namespace)
-    end
-
-    context 'when there is non-top-level group with searched name' do
-      before do
-        create(:group, :nested, path: 'pages')
-      end
-
-      it 'ignores this group' do
-        host = "pages.#{Settings.pages.host.upcase}"
-
-        expect(described_class.find_by_pages_host(host)).to be_nil
-      end
-
-      it 'finds right top level group' do
-        group = create(:group, path: 'pages')
-
-        host = "pages.#{Settings.pages.host.upcase}"
-
-        expect(described_class.find_by_pages_host(host)).to eq(group)
-      end
-    end
-
-    it "returns no result if the provided host is not subdomain of the Pages host" do
-      create(:namespace, name: 'namespace.io')
-      host = "namespace.io"
-
-      expect(described_class.find_by_pages_host(host)).to eq(nil)
-    end
-  end
-
   describe '.top_most' do
     let_it_be(:namespace) { create(:namespace) }
     let_it_be(:group) { create(:group) }
@@ -2286,34 +2249,6 @@ RSpec.describe Namespace, feature_category: :subgroups do
 
       it "is the opposite of emails_disabled" do
         expect(group.emails_enabled?).to be_truthy
-      end
-    end
-  end
-
-  describe '#pages_virtual_domain' do
-    let(:project) { create(:project, namespace: namespace) }
-    let(:virtual_domain) { namespace.pages_virtual_domain }
-
-    before do
-      project.mark_pages_as_deployed
-      project.update_pages_deployment!(create(:pages_deployment, project: project))
-    end
-
-    it 'returns the virual domain' do
-      expect(virtual_domain).to be_an_instance_of(Pages::VirtualDomain)
-      expect(virtual_domain.lookup_paths).not_to be_empty
-      expect(virtual_domain.cache_key).to match(/pages_domain_for_namespace_#{namespace.root_ancestor.id}_/)
-    end
-
-    context 'when :cache_pages_domain_api is disabled' do
-      before do
-        stub_feature_flags(cache_pages_domain_api: false)
-      end
-
-      it 'returns the virual domain' do
-        expect(virtual_domain).to be_an_instance_of(Pages::VirtualDomain)
-        expect(virtual_domain.lookup_paths).not_to be_empty
-        expect(virtual_domain.cache_key).to be_nil
       end
     end
   end

@@ -7,8 +7,7 @@ RSpec.describe Oauth::AuthorizationsController do
   let(:application_scopes) { 'api read_user' }
 
   let!(:application) do
-    create(:oauth_application, scopes: application_scopes,
-                               redirect_uri: 'http://example.com')
+    create(:oauth_application, scopes: application_scopes, redirect_uri: 'http://example.com')
   end
 
   let(:params) do

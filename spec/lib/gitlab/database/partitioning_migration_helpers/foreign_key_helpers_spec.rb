@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::ForeignKeyHelpers do
+RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::ForeignKeyHelpers, feature_category: :database do
   include Database::TableSchemaHelpers
 
   let(:migration) do
@@ -16,13 +16,21 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::ForeignKeyHelpers
   let(:partition_schema) { 'gitlab_partitions_dynamic' }
   let(:partition1_name) { "#{partition_schema}.#{source_table_name}_202001" }
   let(:partition2_name) { "#{partition_schema}.#{source_table_name}_202002" }
+  let(:validate) { true }
   let(:options) do
     {
       column: column_name,
       name: foreign_key_name,
       on_delete: :cascade,
-      validate: true
+      on_update: nil,
+      primary_key: :id
     }
+  end
+
+  let(:create_options) do
+    options
+      .except(:primary_key)
+      .merge!(reverse_lock_order: false, target_column: :id, validate: validate)
   end
 
   before do
@@ -67,18 +75,50 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::ForeignKeyHelpers
 
         expect(migration).to receive(:concurrent_partitioned_foreign_key_name).and_return(foreign_key_name)
 
-        expect_add_concurrent_fk_and_call_original(partition1_name, target_table_name, **options)
-        expect_add_concurrent_fk_and_call_original(partition2_name, target_table_name, **options)
+        expect_add_concurrent_fk_and_call_original(partition1_name, target_table_name, **create_options)
+        expect_add_concurrent_fk_and_call_original(partition2_name, target_table_name, **create_options)
 
-        expect(migration).to receive(:with_lock_retries).ordered.and_yield
-        expect(migration).to receive(:add_foreign_key)
-          .with(source_table_name, target_table_name, **options)
+        expect(migration).to receive(:add_concurrent_foreign_key)
+          .with(source_table_name, target_table_name, allow_partitioned: true, **create_options)
           .ordered
           .and_call_original
 
         migration.add_concurrent_partitioned_foreign_key(source_table_name, target_table_name, column: column_name)
 
         expect_foreign_key_to_exist(source_table_name, foreign_key_name)
+      end
+
+      context 'with validate: false option' do
+        let(:validate) { false }
+        let(:options) do
+          {
+            column: column_name,
+            name: foreign_key_name,
+            on_delete: :cascade,
+            on_update: nil,
+            primary_key: :id
+          }
+        end
+
+        it 'creates the foreign key only on partitions' do
+          expect(migration).to receive(:foreign_key_exists?)
+            .with(source_table_name, target_table_name, **options)
+            .and_return(false)
+
+          expect(migration).to receive(:concurrent_partitioned_foreign_key_name).and_return(foreign_key_name)
+
+          expect_add_concurrent_fk_and_call_original(partition1_name, target_table_name, **create_options)
+          expect_add_concurrent_fk_and_call_original(partition2_name, target_table_name, **create_options)
+
+          expect(migration).not_to receive(:add_concurrent_foreign_key)
+            .with(source_table_name, target_table_name, **create_options)
+
+          migration.add_concurrent_partitioned_foreign_key(
+            source_table_name, target_table_name,
+            column: column_name, validate: false)
+
+          expect_foreign_key_not_to_exist(source_table_name, foreign_key_name)
+        end
       end
 
       def expect_add_concurrent_fk_and_call_original(source_table_name, target_table_name, options)
@@ -100,8 +140,6 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::ForeignKeyHelpers
           .and_return(true)
 
         expect(migration).not_to receive(:add_concurrent_foreign_key)
-        expect(migration).not_to receive(:with_lock_retries)
-        expect(migration).not_to receive(:add_foreign_key)
 
         migration.add_concurrent_partitioned_foreign_key(source_table_name, target_table_name, column: column_name)
 
@@ -110,30 +148,43 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::ForeignKeyHelpers
     end
 
     context 'when additional foreign key options are given' do
-      let(:options) do
+      let(:exits_options) do
         {
           column: column_name,
           name: '_my_fk_name',
           on_delete: :restrict,
-          validate: true
+          on_update: nil,
+          primary_key: :id
         }
+      end
+
+      let(:create_options) do
+        exits_options
+          .except(:primary_key)
+          .merge!(reverse_lock_order: false, target_column: :id, validate: true)
       end
 
       it 'forwards them to the foreign key helper methods' do
         expect(migration).to receive(:foreign_key_exists?)
-          .with(source_table_name, target_table_name, **options)
+          .with(source_table_name, target_table_name, **exits_options)
           .and_return(false)
 
         expect(migration).not_to receive(:concurrent_partitioned_foreign_key_name)
 
-        expect_add_concurrent_fk(partition1_name, target_table_name, **options)
-        expect_add_concurrent_fk(partition2_name, target_table_name, **options)
+        expect_add_concurrent_fk(partition1_name, target_table_name, **create_options)
+        expect_add_concurrent_fk(partition2_name, target_table_name, **create_options)
 
-        expect(migration).to receive(:with_lock_retries).ordered.and_yield
-        expect(migration).to receive(:add_foreign_key).with(source_table_name, target_table_name, **options).ordered
+        expect(migration).to receive(:add_concurrent_foreign_key)
+          .with(source_table_name, target_table_name, allow_partitioned: true, **create_options)
+          .ordered
 
-        migration.add_concurrent_partitioned_foreign_key(source_table_name, target_table_name,
-          column: column_name, name: '_my_fk_name', on_delete: :restrict)
+        migration.add_concurrent_partitioned_foreign_key(
+          source_table_name,
+          target_table_name,
+          column: column_name,
+          name: '_my_fk_name',
+          on_delete: :restrict
+        )
       end
 
       def expect_add_concurrent_fk(source_table_name, target_table_name, options)
@@ -150,6 +201,41 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::ForeignKeyHelpers
         expect do
           migration.add_concurrent_partitioned_foreign_key(source_table_name, target_table_name, column: column_name)
         end.to raise_error(/can not be run inside a transaction/)
+      end
+    end
+  end
+
+  describe '#validate_partitioned_foreign_key' do
+    context 'when run inside a transaction block' do
+      it 'raises an error' do
+        expect(migration).to receive(:transaction_open?).and_return(true)
+
+        expect do
+          migration.validate_partitioned_foreign_key(source_table_name, column_name, name: '_my_fk_name')
+        end.to raise_error(/can not be run inside a transaction/)
+      end
+    end
+
+    context 'when run outside a transaction block' do
+      before do
+        migration.add_concurrent_partitioned_foreign_key(
+          source_table_name,
+          target_table_name,
+          column: column_name,
+          name: foreign_key_name,
+          validate: false
+        )
+      end
+
+      it 'validates FK for each partition' do
+        expect(migration).to receive(:execute).with(/SET statement_timeout TO 0/).twice
+        expect(migration).to receive(:execute).with(/RESET statement_timeout/).twice
+        expect(migration).to receive(:execute)
+          .with(/ALTER TABLE #{partition1_name} VALIDATE CONSTRAINT #{foreign_key_name}/).ordered
+        expect(migration).to receive(:execute)
+          .with(/ALTER TABLE #{partition2_name} VALIDATE CONSTRAINT #{foreign_key_name}/).ordered
+
+        migration.validate_partitioned_foreign_key(source_table_name, column_name, name: foreign_key_name)
       end
     end
   end

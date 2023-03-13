@@ -1047,41 +1047,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
     end
   end
 
-  describe '#action_monthly_active_users', :clean_gitlab_redis_shared_state do
-    let(:time_period) { { created_at: 2.days.ago..time } }
-    let(:time) { Time.zone.now }
-    let(:user1) { build(:user, id: 1) }
-    let(:user2) { build(:user, id: 2) }
-    let(:user3) { build(:user, id: 3) }
-    let(:user4) { build(:user, id: 4) }
-    let(:project) { build(:project) }
-
-    before do
-      counter = Gitlab::UsageDataCounters::EditorUniqueCounter
-
-      counter.track_web_ide_edit_action(author: user1, project: project)
-      counter.track_web_ide_edit_action(author: user1, project: project)
-      counter.track_sfe_edit_action(author: user1, project: project)
-      counter.track_snippet_editor_edit_action(author: user1, project: project)
-      counter.track_snippet_editor_edit_action(author: user1, time: time - 3.days, project: project)
-
-      counter.track_web_ide_edit_action(author: user2, project: project)
-      counter.track_sfe_edit_action(author: user2, project: project)
-
-      counter.track_web_ide_edit_action(author: user3, time: time - 3.days, project: project)
-      counter.track_snippet_editor_edit_action(author: user3, project: project)
-    end
-
-    it 'returns the distinct count of user actions within the specified time period' do
-      expect(described_class.action_monthly_active_users(time_period)).to eq(
-        {
-          action_monthly_active_users_sfe_edit: 2,
-          action_monthly_active_users_snippet_editor_edit: 2
-        }
-      )
-    end
-  end
-
   describe '.service_desk_counts' do
     subject { described_class.send(:service_desk_counts) }
 

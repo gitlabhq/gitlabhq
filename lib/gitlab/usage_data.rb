@@ -448,10 +448,7 @@ module Gitlab
           remote_mirrors: distinct_count(::Project.with_remote_mirrors.where(time_period), :creator_id),
           snippets: distinct_count(::Snippet.where(time_period), :author_id)
         }.tap do |h|
-          if time_period.present?
-            h[:merge_requests_users] = merge_requests_users(time_period)
-            h.merge!(action_monthly_active_users(time_period))
-          end
+          h[:merge_requests_users] = merge_requests_users(time_period) if time_period.present?
         end
       end
       # rubocop: enable CodeReuse/ActiveRecord
@@ -563,16 +560,6 @@ module Gitlab
       # Once https://gitlab.com/gitlab-org/gitlab/merge_requests/17568 is merged, this might be doable
       def usage_activity_by_stage_secure(time_period)
         {}
-      end
-
-      def action_monthly_active_users(time_period)
-        counter = Gitlab::UsageDataCounters::EditorUniqueCounter
-        date_range = { date_from: time_period[:created_at].first, date_to: time_period[:created_at].last }
-
-        {
-          action_monthly_active_users_sfe_edit: redis_usage_data { counter.count_sfe_edit_actions(**date_range) },
-          action_monthly_active_users_snippet_editor_edit: redis_usage_data { counter.count_snippet_editor_edit_actions(**date_range) }
-        }
       end
 
       def with_metadata

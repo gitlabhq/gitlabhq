@@ -2,7 +2,6 @@
 
 class SystemHook < WebHook
   include TriggerableHooks
-  include WebHooks::Unstoppable
 
   triggerable_hooks [
     :repository_update_hooks,

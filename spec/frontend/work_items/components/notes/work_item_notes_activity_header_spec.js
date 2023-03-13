@@ -1,7 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import WorkItemNotesActivityHeader from '~/work_items/components/notes/work_item_notes_activity_header.vue';
-import ActivitySort from '~/work_items/components/notes/activity_sort.vue';
-import ActivityFilter from '~/work_items/components/notes/activity_filter.vue';
 import { ASC } from '~/notes/constants';
 import {
   WORK_ITEM_NOTES_FILTER_ALL_NOTES,
@@ -12,8 +10,8 @@ describe('Work Item Note Activity Header', () => {
   let wrapper;
 
   const findActivityLabelHeading = () => wrapper.find('h3');
-  const findActivityFilterDropdown = () => wrapper.findComponent(ActivityFilter);
-  const findActivitySortDropdown = () => wrapper.findComponent(ActivitySort);
+  const findActivityFilterDropdown = () => wrapper.findByTestId('work-item-filter');
+  const findActivitySortDropdown = () => wrapper.findByTestId('work-item-sort');
 
   const createComponent = ({
     disableActivityFilterSort = false,
@@ -21,7 +19,7 @@ describe('Work Item Note Activity Header', () => {
     workItemType = 'Task',
     discussionFilter = WORK_ITEM_NOTES_FILTER_ALL_NOTES,
   } = {}) => {
-    wrapper = shallowMount(WorkItemNotesActivityHeader, {
+    wrapper = shallowMountExtended(WorkItemNotesActivityHeader, {
       propsData: {
         disableActivityFilterSort,
         sortOrder,

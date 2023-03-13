@@ -141,7 +141,11 @@ RSpec.describe API::Files, feature_category: :source_code_management do
       it 'caches sha256 of the content', :use_clean_rails_redis_caching do
         head api(route(file_path), current_user, **options), params: params
 
-        expect(Gitlab::Cache::Client).to receive(:build_with_metadata).and_call_original
+        expect(Gitlab::Cache::Client).to receive(:build_with_metadata).with(
+          cache_identifier: 'API::Files#content_sha',
+          feature_category: :source_code_management,
+          backing_resource: :gitaly
+        ).and_call_original
 
         expect(Rails.cache.fetch("blob_content_sha256:#{project.full_path}:#{response.headers['X-Gitlab-Blob-Id']}"))
           .to eq(content_sha256)

@@ -1,35 +1,10 @@
 <script>
 import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
-import { s__ } from '~/locale';
 import Tracking from '~/tracking';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
-import {
-  WORK_ITEM_NOTES_FILTER_ALL_NOTES,
-  WORK_ITEM_NOTES_FILTER_ONLY_COMMENTS,
-  WORK_ITEM_NOTES_FILTER_ONLY_HISTORY,
-  TRACKING_CATEGORY_SHOW,
-  WORK_ITEM_NOTES_FILTER_KEY,
-} from '~/work_items/constants';
-
-const filterOptions = [
-  {
-    key: WORK_ITEM_NOTES_FILTER_ALL_NOTES,
-    text: s__('WorkItem|All activity'),
-  },
-  {
-    key: WORK_ITEM_NOTES_FILTER_ONLY_COMMENTS,
-    text: s__('WorkItem|Comments only'),
-    testid: 'comments-activity',
-  },
-  {
-    key: WORK_ITEM_NOTES_FILTER_ONLY_HISTORY,
-    text: s__('WorkItem|History only'),
-    testid: 'history-activity',
-  },
-];
+import { TRACKING_CATEGORY_SHOW } from '~/work_items/constants';
 
 export default {
-  filterOptions,
   components: {
     GlDropdown,
     GlDropdownItem,
@@ -46,17 +21,40 @@ export default {
       type: String,
       required: true,
     },
-    discussionFilter: {
+    sortFilterProp: {
       type: String,
-      default: WORK_ITEM_NOTES_FILTER_ALL_NOTES,
-      required: false,
+      required: true,
+    },
+    filterOptions: {
+      type: Array,
+      required: true,
+    },
+    trackingLabel: {
+      type: String,
+      required: true,
+    },
+    trackingAction: {
+      type: String,
+      required: true,
+    },
+    filterEvent: {
+      type: String,
+      required: true,
+    },
+    defaultSortFilterProp: {
+      type: String,
+      required: true,
+    },
+    storageKey: {
+      type: String,
+      required: true,
     },
   },
   computed: {
     tracking() {
       return {
         category: TRACKING_CATEGORY_SHOW,
-        label: 'item_track_notes_filtering',
+        label: this.trackingLabel,
         property: `type_${this.workItemType}`,
       };
     },
@@ -65,35 +63,34 @@ export default {
     },
     selectedSortOption() {
       return (
-        filterOptions.find(({ key }) => this.discussionFilter === key) ||
-        WORK_ITEM_NOTES_FILTER_ALL_NOTES
+        this.filterOptions.find(({ key }) => this.sortFilterProp === key) ||
+        this.defaultSortFilterProp
       );
     },
   },
   methods: {
     setDiscussionFilterOption(filterValue) {
-      this.$emit('changeFilter', filterValue);
+      this.$emit(this.filterEvent, filterValue);
     },
     fetchFilteredDiscussions(filterValue) {
       if (this.isSortDropdownItemActive(filterValue)) {
         return;
       }
-      this.track('work_item_notes_filter_changed');
-      this.$emit('changeFilter', filterValue);
+      this.track(this.trackingAction);
+      this.$emit(this.filterEvent, filterValue);
     },
-    isSortDropdownItemActive(discussionFilter) {
-      return discussionFilter === this.discussionFilter;
+    isSortDropdownItemActive(value) {
+      return value === this.sortFilterProp;
     },
   },
-  WORK_ITEM_NOTES_FILTER_KEY,
 };
 </script>
 
 <template>
   <div class="gl-display-inline-block gl-vertical-align-bottom">
     <local-storage-sync
-      :value="discussionFilter"
-      :storage-key="$options.WORK_ITEM_NOTES_FILTER_KEY"
+      :value="sortFilterProp"
+      :storage-key="storageKey"
       as-string
       @input="setDiscussionFilterOption"
     />
@@ -105,7 +102,7 @@ export default {
       right
     >
       <gl-dropdown-item
-        v-for="{ text, key, testid } in $options.filterOptions"
+        v-for="{ text, key, testid } in filterOptions"
         :key="text"
         :data-testid="testid"
         is-check-item

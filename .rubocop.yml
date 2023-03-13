@@ -19,6 +19,9 @@ inherit_from:
   <% if RUBY_VERSION[/^\d+\.\d+/, 0] == '3.0' %>
   - ./rubocop/rubocop-ruby30.yml
   <% end %>
+  <% if RUBY_VERSION[/^\d+\.\d+/, 0] == '3.1' %>
+  - ./rubocop/rubocop-ruby31.yml
+  <% end %>
   - ./rubocop/rubocop-migrations.yml
   - ./rubocop/rubocop-usage-data.yml
   - ./rubocop/rubocop-code_reuse.yml

@@ -31710,12 +31710,6 @@ msgstr ""
 msgid "Pipelines|\"Hello world\" with GitLab CI"
 msgstr ""
 
-msgid "Pipelines|%{jobs} %{ref_text} in %{duration}"
-msgstr ""
-
-msgid "Pipelines|(queued for %{queued_duration})"
-msgstr ""
-
 msgid "Pipelines|1. Set up a runner"
 msgstr ""
 
@@ -44331,9 +44325,6 @@ msgstr ""
 msgid "This epic cannot be added. An epic cannot be added to itself."
 msgstr ""
 
-msgid "This epic cannot be added. An epic must belong to the same group or subgroup as its parent epic."
-msgstr ""
-
 msgid "This epic cannot be added. It is already an ancestor of the parent epic."
 msgstr ""
 
@@ -51536,6 +51527,12 @@ msgid "import flow"
 msgstr ""
 
 msgid "in"
+msgstr ""
+
+msgid "in %{duration} and was queued for %{queued_duration}"
+msgstr ""
+
+msgid "in %{duration}, using %{compute_credits} compute credits, and was queued for %{queued_duration}"
 msgstr ""
 
 msgid "in group %{link_to_group}"

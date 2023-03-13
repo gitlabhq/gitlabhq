@@ -49,11 +49,11 @@ If you would like to contribute to GitLab:
 
 The general flow of contributing to GitLab is:
 
-1. [Create a fork](../../user/project/repository/forking_workflow.md#creating-a-fork)
-   of GitLab. In some cases, you will want to set up the
+1. [Read about](https://gitlab.com/gitlab-community/meta) and [request access](https://gitlab.com/gitlab-community/meta#request-access-to-community-forks)
+   to the GitLab Community forks. In some cases, you will want to set up the
    [GitLab Development Kit](https://gitlab.com/gitlab-org/gitlab-development-kit) to
-   [develop against your fork](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/index.md#develop-in-your-own-gitlab-fork).
-1. Make your changes in your fork.
+   [develop against the GitLab community fork](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/index.md#develop-in-your-own-gitlab-fork).
+1. Create a feature branch and make changes in the [GitLab community fork](https://gitlab.com/gitlab-community/gitlab).
 1. When you're ready, [create a new merge request](../../user/project/merge_requests/creating_merge_requests.md).
 1. In the merge request's description:
    - Ensure you provide complete and accurate information.

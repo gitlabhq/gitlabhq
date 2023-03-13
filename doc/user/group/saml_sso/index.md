@@ -234,38 +234,24 @@ It can also help to compare the XML response from your provider with our [exampl
 > - [Improved](https://gitlab.com/gitlab-org/gitlab/-/issues/339888) in GitLab 14.7 to not enforce SSO checks for Git activity originating from CI/CD jobs.
 > - [Improved](https://gitlab.com/gitlab-org/gitlab/-/issues/215155) in GitLab 15.5 [with a flag](../../../administration/feature_flags.md) named `transparent_sso_enforcement` to include transparent enforcement even when SSO enforcement is not enabled. Disabled on GitLab.com.
 > - [Improved](https://gitlab.com/gitlab-org/gitlab/-/issues/375788) in GitLab 15.8 by enabling transparent SSO by default on GitLab.com.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/389562) in GitLab 15.10. Feature flag `transparent_sso_enforcement` removed.
 
-FLAG:
-On self-managed GitLab, transparent SSO enforcement is unavailable. An
-[issue exists](https://gitlab.com/gitlab-org/gitlab/-/issues/382917) to add
-transparent SSO enforcement to self-managed GitLab.
-On GitLab.com, transparent SSO enforcement is available by default. To turn off
-transparent SSO, ask a support or production team to enable the
-`transparent_sso_enforcement_override` feature flag for a specific customer
-group.
+On GitLab.com, SSO is enforced:
 
-#### Transparent SSO enforcement
-
-By default, transparent SSO enforcement is enabled in GitLab.com. This means SSO is enforced:
-
-- When users access groups and projects in the organization's
+- When SAML SSO is enabled.
+- For users with an existing SAML identity when accessing groups and projects in the organization's
   group hierarchy. Users can view other groups and projects without SSO sign in.
-- For each user with an existing SAML identity.
-
-When transparent SSO enforcement is enabled, users:
-
-- Are not prompted to sign in through SSO on each visit. GitLab checks
-  whether a user has authenticated through SSO. If the user last signed in more
-  than 24 hours ago, GitLab prompts the user to sign in again through SSO.
-- Without SAML identities are not required to use SSO unless **Enforce
-  SSO-only authentication for web activity for this group** is enabled.
 
 A user has a SAML identity if one or both of the following are true:
 
 - They have signed in to GitLab by using their GitLab group's single sign-on URL.
 - They were provisioned by SCIM.
 
-With transparent SSO enabled, SSO is enforced as follows:
+Users are not prompted to sign in through SSO on each visit. GitLab checks
+whether a user has authenticated through SSO. If the user last signed in more
+than 24 hours ago, GitLab prompts the user to sign in again through SSO.
+
+SSO is enforced as follows:
 
 | Project/Group visibility | Enforce SSO setting | Member with identity | Member without identity | Non-member or not signed in |
 |--------------------------|---------------------|--------------------| ------ |------------------------------|

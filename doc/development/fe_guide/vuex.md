@@ -6,14 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Vuex
 
-When there's a clear benefit to separating state management from components (for example, due to state complexity) we recommend using [Vuex](https://vuex.vuejs.org) over any other Flux pattern. Otherwise, feel free to manage state in the components.
-
-Vuex should be strongly considered when:
-
-- You expect multiple parts of the application to react to state changes.
-- There's a need to share data between multiple components.
-- There are complex interactions with Backend, for example, multiple API calls.
-- The app involves interacting with backend via both traditional REST API and GraphQL (especially when moving the REST API over to GraphQL is a pending backend task).
+[Vuex](https://vuex.vuejs.org) should no longer be considered a preferred path to store management and is currently in its legacy phase. This means it is acceptable to add upon existing `Vuex` stores, but we strongly recommend reducing store sizes over time and eventually migrating fully to [Apollo](https://www.apollographql.com/) whenever it's possible. Before adding any new `Vuex` store to an application, first ensure that the `Vue` application you plan to add it into **does not use** `Apollo`. `Vuex` and `Apollo` should not be combined unless absolutely necessary. Please consider reading through [our GraphQL documentation](../fe_guide/graphql.md) for more guidelines on how you can build `Apollo` based applications.
 
 The information included in this page is explained in more detail in the
 official [Vuex documentation](https://vuex.vuejs.org).

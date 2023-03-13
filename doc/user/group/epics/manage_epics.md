@@ -522,11 +522,7 @@ The maximum number of direct child epics is 100.
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/8502) in GitLab 15.6 [with a flag](../../../administration/feature_flags.md) named `child_epics_from_different_hierarchies`. Disabled by default.
 > - Minimum required role for the group [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/382503) from Reporter to Guest in GitLab 15.7.
 > - Cross-group child epics [enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/375622) in GitLab 15.9. Enabled by default.
-
-FLAG:
-On self-managed GitLab, by default this feature is available. To disable it,
-ask an administrator to [disable the feature flag](../../../administration/feature_flags.md) named `child_epics_from_different_hierarchies`.
-On GitLab.com, this feature is available.
+> - [Feature flag `child_epics_from_different_hierarchies`](https://gitlab.com/gitlab-org/gitlab/-/issues/382719)) removed in GitLab 15.10.
 
 You can add a child epic that belongs to a group that is different from the parent epic's group.
 

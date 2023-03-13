@@ -1,5 +1,6 @@
-import { s__, sprintf } from '~/locale';
+import { __, s__, sprintf } from '~/locale';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
+import { ASC, DESC } from '~/notes/constants';
 
 export const STATE_OPEN = 'OPEN';
 export const STATE_CLOSED = 'CLOSED';
@@ -182,3 +183,25 @@ export const WORK_ITEM_NOTES_FILTER_ONLY_COMMENTS = 'ONLY_COMMENTS';
 export const WORK_ITEM_NOTES_FILTER_ONLY_HISTORY = 'ONLY_HISTORY';
 
 export const WORK_ITEM_NOTES_FILTER_KEY = 'filter_key_work_item';
+
+export const WORK_ITEM_ACTIVITY_FILTER_OPTIONS = [
+  {
+    key: WORK_ITEM_NOTES_FILTER_ALL_NOTES,
+    text: s__('WorkItem|All activity'),
+  },
+  {
+    key: WORK_ITEM_NOTES_FILTER_ONLY_COMMENTS,
+    text: s__('WorkItem|Comments only'),
+    testid: 'comments-activity',
+  },
+  {
+    key: WORK_ITEM_NOTES_FILTER_ONLY_HISTORY,
+    text: s__('WorkItem|History only'),
+    testid: 'history-activity',
+  },
+];
+
+export const WORK_ITEM_ACTIVITY_SORT_OPTIONS = [
+  { key: DESC, text: __('Newest first'), testid: 'newest-first' },
+  { key: ASC, text: __('Oldest first') },
+];

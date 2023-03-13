@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::MigrationHelpers do
+RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database do
   include Database::TableSchemaHelpers
   include Database::TriggerHelpers
 
@@ -977,6 +977,65 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
               name: :fk_multiple_columns
             )
           end
+        end
+      end
+
+      context 'when creating foreign key on a partitioned table' do
+        before do
+          model.execute(<<~SQL)
+            CREATE TABLE public._test_source_partitioned_table (
+              id serial NOT NULL,
+              partition_id serial NOT NULL,
+              owner_id bigint NOT NULL,
+              PRIMARY KEY (id, partition_id)
+            ) PARTITION BY LIST(partition_id);
+
+            CREATE TABLE _test_source_partitioned_table_1
+              PARTITION OF public._test_source_partitioned_table
+              FOR VALUES IN (1);
+
+            CREATE TABLE public._test_dest_partitioned_table (
+              id serial NOT NULL,
+              partition_id serial NOT NULL,
+              PRIMARY KEY (id, partition_id)
+            );
+          SQL
+        end
+
+        it 'creates the FK without using NOT VALID', :aggregate_failures do
+          allow(model).to receive(:execute).and_call_original
+
+          expect(model).to receive(:with_lock_retries).and_yield
+
+          expect(model).to receive(:execute).with(
+            "ALTER TABLE _test_source_partitioned_table\n" \
+            "ADD CONSTRAINT fk_multiple_columns\n" \
+            "FOREIGN KEY \(partition_id, owner_id\)\n" \
+            "REFERENCES _test_dest_partitioned_table \(partition_id, id\)\n" \
+            "ON UPDATE CASCADE\n" \
+            "ON DELETE CASCADE\n;\n"
+          )
+
+          model.add_concurrent_foreign_key(
+            :_test_source_partitioned_table,
+            :_test_dest_partitioned_table,
+            column: [:partition_id, :owner_id],
+            target_column: [:partition_id, :id],
+            name: :fk_multiple_columns,
+            on_update: :cascade,
+            allow_partitioned: true
+          )
+        end
+
+        it 'raises an error if allow_partitioned is not set' do
+          expect(model).not_to receive(:with_lock_retries).and_yield
+          expect(model).not_to receive(:execute).with(/FOREIGN KEY/)
+
+          args = [:_test_source_partitioned_table, :_test_dest_partitioned_table]
+          options = { column: [:partition_id, :owner_id], target_column: [:partition_id, :id] }
+
+          expect { model.add_concurrent_foreign_key(*args, **options) }
+            .to raise_error ArgumentError, /use add_concurrent_partitioned_foreign_key/
         end
       end
     end
@@ -2892,6 +2951,20 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
 
     context "when a partition table does not exist" do
       let(:table_name) { 'partition_does_not_exist' }
+
+      it { is_expected.to be_falsey }
+    end
+  end
+
+  describe "#table_partitioned?" do
+    subject { model.table_partitioned?(table_name) }
+
+    let(:table_name) { 'p_ci_builds_metadata' }
+
+    it { is_expected.to be_truthy }
+
+    context 'with a non-partitioned table' do
+      let(:table_name) { 'users' }
 
       it { is_expected.to be_falsey }
     end

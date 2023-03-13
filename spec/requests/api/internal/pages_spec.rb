@@ -212,7 +212,98 @@ RSpec.describe API::Internal::Pages, feature_category: :pages do
                     'sha256' => deployment.file_sha256,
                     'file_size' => deployment.size,
                     'file_count' => deployment.file_count
-                  }
+                  },
+                  'unique_domain' => nil
+                }
+              ]
+            )
+          end
+        end
+      end
+
+      context 'unique domain' do
+        let(:project) { create(:project) }
+
+        before do
+          project.project_setting.update!(
+            pages_unique_domain: 'unique-domain',
+            pages_unique_domain_enabled: true)
+        end
+
+        context 'when there are no pages deployed for the related project' do
+          it 'responds with 204 No Content' do
+            query_host('unique-domain.example.com')
+
+            expect(response).to have_gitlab_http_status(:no_content)
+          end
+        end
+
+        context 'when there are pages deployed for the related project' do
+          context 'when the feature flag is disabled' do
+            before do
+              stub_feature_flags(pages_unique_domain: false)
+            end
+
+            context 'when there are no pages deployed for the related project' do
+              it 'responds with 204 No Content' do
+                deploy_pages(project)
+
+                query_host('unique-domain.example.com')
+
+                expect(response).to have_gitlab_http_status(:no_content)
+              end
+            end
+          end
+
+          context 'when the unique domain is disabled' do
+            before do
+              project.project_setting.update!(pages_unique_domain_enabled: false)
+            end
+
+            context 'when there are no pages deployed for the related project' do
+              it 'responds with 204 No Content' do
+                deploy_pages(project)
+
+                query_host('unique-domain.example.com')
+
+                expect(response).to have_gitlab_http_status(:no_content)
+              end
+            end
+          end
+
+          it 'domain lookup is case insensitive' do
+            deploy_pages(project)
+
+            query_host('Unique-Domain.example.com')
+
+            expect(response).to have_gitlab_http_status(:ok)
+          end
+
+          it 'responds with the correct domain configuration' do
+            deploy_pages(project)
+
+            query_host('unique-domain.example.com')
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response).to match_response_schema('internal/pages/virtual_domain')
+
+            deployment = project.pages_metadatum.pages_deployment
+            expect(json_response['lookup_paths']).to eq(
+              [
+                {
+                  'project_id' => project.id,
+                  'access_control' => false,
+                  'https_only' => false,
+                  'prefix' => '/',
+                  'source' => {
+                    'type' => 'zip',
+                    'path' => deployment.file.url(expire_at: 1.day.from_now),
+                    'global_id' => "gid://gitlab/PagesDeployment/#{deployment.id}",
+                    'sha256' => deployment.file_sha256,
+                    'file_size' => deployment.size,
+                    'file_count' => deployment.file_count
+                  },
+                  'unique_domain' => 'unique-domain'
                 }
               ]
             )
@@ -253,7 +344,8 @@ RSpec.describe API::Internal::Pages, feature_category: :pages do
                     'sha256' => deployment.file_sha256,
                     'file_size' => deployment.size,
                     'file_count' => deployment.file_count
-                  }
+                  },
+                  'unique_domain' => nil
                 }
               ]
             )
@@ -299,7 +391,8 @@ RSpec.describe API::Internal::Pages, feature_category: :pages do
                     'sha256' => deployment.file_sha256,
                     'file_size' => deployment.size,
                     'file_count' => deployment.file_count
-                  }
+                  },
+                  'unique_domain' => nil
                 }
               ]
             )

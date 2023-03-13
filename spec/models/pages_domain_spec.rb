@@ -546,44 +546,6 @@ RSpec.describe PagesDomain do
     end
   end
 
-  describe '#pages_virtual_domain' do
-    let(:project) { create(:project) }
-    let(:pages_domain) { create(:pages_domain, project: project) }
-
-    context 'when there are no pages deployed for the project' do
-      it 'returns nil' do
-        expect(pages_domain.pages_virtual_domain).to be_nil
-      end
-    end
-
-    context 'when there are pages deployed for the project' do
-      let(:virtual_domain) { pages_domain.pages_virtual_domain }
-
-      before do
-        project.mark_pages_as_deployed
-        project.update_pages_deployment!(create(:pages_deployment, project: project))
-      end
-
-      it 'returns the virual domain when there are pages deployed for the project' do
-        expect(virtual_domain).to be_an_instance_of(Pages::VirtualDomain)
-        expect(virtual_domain.lookup_paths).not_to be_empty
-        expect(virtual_domain.cache_key).to match(/pages_domain_for_domain_#{pages_domain.id}_/)
-      end
-
-      context 'when :cache_pages_domain_api is disabled' do
-        before do
-          stub_feature_flags(cache_pages_domain_api: false)
-        end
-
-        it 'returns the virual domain when there are pages deployed for the project' do
-          expect(virtual_domain).to be_an_instance_of(Pages::VirtualDomain)
-          expect(virtual_domain.lookup_paths).not_to be_empty
-          expect(virtual_domain.cache_key).to be_nil
-        end
-      end
-    end
-  end
-
   describe '#validate_custom_domain_count_per_project' do
     let_it_be(:project) { create(:project) }
 

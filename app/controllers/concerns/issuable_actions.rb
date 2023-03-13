@@ -151,9 +151,7 @@ module IssuableActions
     end
 
     case issuable
-    when MergeRequest
-      render_mr_discussions(discussion_notes, discussion_serializer, discussion_cache_context)
-    when Issue
+    when MergeRequest, Issue
       if stale?(etag: [discussion_cache_context, discussion_notes])
         render json: discussion_serializer.represent(discussion_notes, context: self)
       end
@@ -163,20 +161,6 @@ module IssuableActions
   end
 
   private
-
-  def render_mr_discussions(discussions, serializer, cache_context)
-    return unless stale?(etag: [cache_context, discussions])
-
-    if Feature.enabled?(:disabled_mr_discussions_redis_cache, project)
-      render json: serializer.represent(discussions, context: self)
-    else
-      render_cached_discussions(discussions, serializer, cache_context)
-    end
-  end
-
-  def render_cached_discussions(discussions, serializer, cache_context)
-    render_cached(discussions, with: serializer, cache_context: ->(_) { cache_context }, context: self)
-  end
 
   def notes_filter
     strong_memoize(:notes_filter) do

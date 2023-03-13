@@ -80,12 +80,15 @@ intent behind your changes can also help expedite merge request reviews.
 
 To create a merge request:
 
-1. [Fork](../../user/project/repository/forking_workflow.md) the project into
-   your personal namespace (or group) on GitLab.com.
-1. Create a feature branch in your fork (don't work off your [default branch](../../user/project/repository/branches/default.md)).
+1. [Read about](https://gitlab.com/gitlab-community/meta) and [request access](https://gitlab.com/gitlab-community/meta#request-access-to-community-forks)
+   to the GitLab Community forks. In some cases, you will want to set up the
+   [GitLab Development Kit](https://gitlab.com/gitlab-org/gitlab-development-kit) to
+   [develop against the GitLab community fork](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/index.md#develop-in-your-own-gitlab-fork).
+1. Create a feature branch in the [GitLab community fork](https://gitlab.com/gitlab-community/gitlab)
+   (don't work off the [default branch](../../user/project/repository/branches/default.md)).
 1. Follow the [commit messages guidelines](#commit-messages-guidelines).
 1. If you have multiple commits, combine them into a few logically organized commits.
-1. Push the commits to your working branch in your fork.
+1. Push the commits to your working branch in the fork.
 1. Submit a merge request (MR) against the default branch of the upstream project.
 1. The MR title should describe the change you want to make.
 1. The MR description should give a reason for your change.
