@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::CommitController do
+RSpec.describe Projects::CommitController, feature_category: :source_code_management do
   include ProjectForksHelper
 
   let_it_be(:project)  { create(:project, :repository) }
@@ -254,7 +254,45 @@ RSpec.describe Projects::CommitController do
         post :revert, params: { namespace_id: project.namespace, project_id: project, start_branch: 'master', id: commit.id }
 
         expect(response).to redirect_to project_commit_path(project, commit.id)
-        expect(flash[:alert]).to match('Sorry, we cannot revert this commit automatically.')
+        expect(flash[:alert]).to match('Commit revert failed:')
+      end
+    end
+
+    context 'in the context of a merge_request' do
+      let(:merge_request) { create(:merge_request, :merged, source_project: project) }
+      let(:repository) { project.repository }
+
+      before do
+        merge_commit_id = repository.merge(user,
+          merge_request.diff_head_sha,
+          merge_request,
+          'Test message')
+
+        repository.commit(merge_commit_id)
+        merge_request.update!(merge_commit_sha: merge_commit_id)
+      end
+
+      context 'when the revert was successful' do
+        it 'redirects to the merge request page' do
+          post :revert, params: { namespace_id: project.namespace, project_id: project, start_branch: 'master', id: merge_request.merge_commit_sha }
+
+          expect(response).to redirect_to project_merge_request_path(project, merge_request)
+          expect(flash[:notice]).to eq('The merge request has been successfully reverted.')
+        end
+      end
+
+      context 'when the revert failed' do
+        before do
+          post :revert, params: { namespace_id: project.namespace, project_id: project, start_branch: 'master', id: merge_request.merge_commit_sha }
+        end
+
+        it 'redirects to the merge request page' do
+          # Reverting a merge request that has been already reverted.
+          post :revert, params: { namespace_id: project.namespace, project_id: project, start_branch: 'master', id: merge_request.merge_commit_sha }
+
+          expect(response).to redirect_to project_merge_request_path(project, merge_request)
+          expect(flash[:alert]).to match('Merge request revert failed:')
+        end
       end
     end
   end
@@ -297,7 +335,44 @@ RSpec.describe Projects::CommitController do
         post :cherry_pick, params: { namespace_id: project.namespace, project_id: project, start_branch: 'master', id: master_pickable_commit.id }
 
         expect(response).to redirect_to project_commit_path(project, master_pickable_commit.id)
-        expect(flash[:alert]).to match('Sorry, we cannot cherry-pick this commit automatically.')
+        expect(flash[:alert]).to match('Commit cherry-pick failed:')
+      end
+    end
+
+    context 'in the context of a merge_request' do
+      let(:merge_request) { create(:merge_request, :merged, source_project: project) }
+      let(:repository) { project.repository }
+
+      before do
+        merge_commit_id = repository.merge(user,
+          merge_request.diff_head_sha,
+          merge_request,
+          'Test message')
+        repository.commit(merge_commit_id)
+        merge_request.update!(merge_commit_sha: merge_commit_id)
+      end
+
+      context 'when the cherry_pick was successful' do
+        it 'redirects to the merge request page' do
+          post :cherry_pick, params: { namespace_id: project.namespace, project_id: project, start_branch: 'merge-test', id: merge_request.merge_commit_sha }
+
+          expect(response).to redirect_to project_merge_request_path(project, merge_request)
+          expect(flash[:notice]).to eq('The merge request has been successfully cherry-picked into merge-test.')
+        end
+      end
+
+      context 'when the cherry_pick failed' do
+        before do
+          post :cherry_pick, params: { namespace_id: project.namespace, project_id: project, start_branch: 'merge-test', id: merge_request.merge_commit_sha }
+        end
+
+        it 'redirects to the merge request page' do
+          # Reverting a merge request that has been already cherry-picked.
+          post :cherry_pick, params: { namespace_id: project.namespace, project_id: project, start_branch: 'merge-test', id: merge_request.merge_commit_sha }
+
+          expect(response).to redirect_to project_merge_request_path(project, merge_request)
+          expect(flash[:alert]).to match('Merge request cherry-pick failed:')
+        end
       end
     end
 

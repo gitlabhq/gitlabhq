@@ -34,7 +34,7 @@ RSpec.describe 'User reverts a merge request', :js, feature_category: :code_revi
 
     revert_commit
 
-    expect(page).to have_content('Sorry, we cannot revert this merge request automatically.')
+    expect(page).to have_content('Merge request revert failed:')
   end
 
   it 'reverts a merge request in a new merge request', :sidekiq_might_not_need_inline do

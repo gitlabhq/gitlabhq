@@ -56,7 +56,7 @@ RSpec.describe 'Cherry-pick Commits', :js, feature_category: :source_code_manage
 
         cherry_pick_commit
 
-        expect(page).to have_content('Sorry, we cannot cherry-pick this commit automatically.')
+        expect(page).to have_content('Commit cherry-pick failed:')
       end
     end
 

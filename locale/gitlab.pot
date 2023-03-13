@@ -27013,6 +27013,15 @@ msgstr ""
 msgid "MergeRequests|An error occurred while saving the draft comment."
 msgstr ""
 
+msgid "MergeRequests|Can't perform this action automatically. It may have already been done, or a more recent commit may have updated some of this content. Please perform this action locally."
+msgstr ""
+
+msgid "MergeRequests|Commit cherry-pick failed"
+msgstr ""
+
+msgid "MergeRequests|Commit revert failed"
+msgstr ""
+
 msgid "MergeRequests|Create issue to resolve thread"
 msgstr ""
 
@@ -27020,6 +27029,12 @@ msgid "MergeRequests|Drafts cannot be merged until marked ready."
 msgstr ""
 
 msgid "MergeRequests|Mark as draft"
+msgstr ""
+
+msgid "MergeRequests|Merge request cherry-pick failed"
+msgstr ""
+
+msgid "MergeRequests|Merge request revert failed"
 msgstr ""
 
 msgid "MergeRequests|Reference copied"
