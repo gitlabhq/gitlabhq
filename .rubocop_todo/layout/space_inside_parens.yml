@@ -128,7 +128,6 @@ Layout/SpaceInsideParens:
     - 'spec/lib/gitlab/ci/parsers/security/common_spec.rb'
     - 'spec/lib/gitlab/ci/parsers_spec.rb'
     - 'spec/lib/gitlab/ci/pipeline/seed/build_spec.rb'
-    - 'spec/lib/gitlab/ci/reports/security/vulnerability_reports_comparer_spec.rb'
     - 'spec/lib/gitlab/ci/reports/test_suite_spec.rb'
     - 'spec/lib/gitlab/ci/templates/AWS/deploy_ecs_gitlab_ci_yaml_spec.rb'
     - 'spec/lib/gitlab/ci/templates/MATLAB_spec.rb'

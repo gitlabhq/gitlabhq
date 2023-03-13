@@ -33,4 +33,30 @@ export const FILTERED_SEARCH_TOKEN_STATUS = {
   operators: OPERATORS_IS,
 };
 
+export const DEFAULT_SORT = 'created_at_desc';
+
+export const SORT_OPTIONS = [
+  {
+    id: 10,
+    title: __('Created date'),
+    sortDirection: {
+      descending: DEFAULT_SORT,
+      ascending: 'created_at_asc',
+    },
+  },
+  {
+    id: 20,
+    title: __('Updated date'),
+    sortDirection: {
+      descending: 'updated_at_desc',
+      ascending: 'updated_at_asc',
+    },
+  },
+];
+
+export const isValidSortKey = (key) =>
+  SORT_OPTIONS.some(
+    (sort) => sort.sortDirection.ascending === key || sort.sortDirection.descending === key,
+  );
+
 export const FILTERED_SEARCH_TOKENS = [FILTERED_SEARCH_TOKEN_USER, FILTERED_SEARCH_TOKEN_STATUS];

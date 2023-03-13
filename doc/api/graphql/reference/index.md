@@ -11858,7 +11858,7 @@ CI/CD variables for a project.
 | <a id="cirunnerjobcount"></a>`jobCount` | [`Int`](#int) | Number of jobs processed by the runner (limited to 1000, plus one to indicate that more items exist). |
 | <a id="cirunnerjobexecutionstatus"></a>`jobExecutionStatus` **{warning-solid}** | [`CiRunnerJobExecutionStatus`](#cirunnerjobexecutionstatus) | **Introduced** in 15.7. This feature is in Alpha. It can be changed or removed at any time. Job execution status of the runner. |
 | <a id="cirunnerlocked"></a>`locked` | [`Boolean`](#boolean) | Indicates the runner is locked. |
-| <a id="cirunnermachines"></a>`machines` | [`CiRunnerMachineConnection`](#cirunnermachineconnection) | Machines associated with the runner configuration. (see [Connections](#connections)) |
+| <a id="cirunnermachines"></a>`machines` **{warning-solid}** | [`CiRunnerMachineConnection`](#cirunnermachineconnection) | **Introduced** in 15.10. This feature is in Alpha. It can be changed or removed at any time. Machines associated with the runner configuration. |
 | <a id="cirunnermaintenancenote"></a>`maintenanceNote` | [`String`](#string) | Runner's maintenance notes. |
 | <a id="cirunnermaintenancenotehtml"></a>`maintenanceNoteHtml` | [`String`](#string) | GitLab Flavored Markdown rendering of `maintenance_note`. |
 | <a id="cirunnermaximumtimeout"></a>`maximumTimeout` | [`Int`](#int) | Maximum timeout (in seconds) for jobs processed by the runner. |
@@ -15216,6 +15216,24 @@ Exposes aggregated value stream flow metrics.
 
 #### Fields with arguments
 
+##### `GroupValueStreamAnalyticsFlowMetrics.cycleTime`
+
+Median time from first commit to issue closed.
+
+Returns [`ValueStreamAnalyticsMetric`](#valuestreamanalyticsmetric).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="groupvaluestreamanalyticsflowmetricscycletimeassigneeusernames"></a>`assigneeUsernames` | [`[String!]`](#string) | Usernames of users assigned to the issue. |
+| <a id="groupvaluestreamanalyticsflowmetricscycletimeauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author of the issue. |
+| <a id="groupvaluestreamanalyticsflowmetricscycletimefrom"></a>`from` | [`Time!`](#time) | Issues created after the date. |
+| <a id="groupvaluestreamanalyticsflowmetricscycletimelabelnames"></a>`labelNames` | [`[String!]`](#string) | Labels applied to the issue. |
+| <a id="groupvaluestreamanalyticsflowmetricscycletimemilestonetitle"></a>`milestoneTitle` | [`String`](#string) | Milestone applied to the issue. |
+| <a id="groupvaluestreamanalyticsflowmetricscycletimeprojectids"></a>`projectIds` | [`[ID!]`](#id) | Project IDs within the group hierarchy. |
+| <a id="groupvaluestreamanalyticsflowmetricscycletimeto"></a>`to` | [`Time!`](#time) | Issues created before the date. |
+
 ##### `GroupValueStreamAnalyticsFlowMetrics.deploymentCount`
 
 Number of production deployments in the given period.
@@ -15247,6 +15265,24 @@ Returns [`ValueStreamAnalyticsMetric`](#valuestreamanalyticsmetric).
 | <a id="groupvaluestreamanalyticsflowmetricsissuecountmilestonetitle"></a>`milestoneTitle` | [`String`](#string) | Milestone applied to the issue. |
 | <a id="groupvaluestreamanalyticsflowmetricsissuecountprojectids"></a>`projectIds` | [`[ID!]`](#id) | Project IDs within the group hierarchy. |
 | <a id="groupvaluestreamanalyticsflowmetricsissuecountto"></a>`to` | [`Time!`](#time) | Issues created before the date. |
+
+##### `GroupValueStreamAnalyticsFlowMetrics.leadTime`
+
+Median time from when the issue was created to when it was closed.
+
+Returns [`ValueStreamAnalyticsMetric`](#valuestreamanalyticsmetric).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="groupvaluestreamanalyticsflowmetricsleadtimeassigneeusernames"></a>`assigneeUsernames` | [`[String!]`](#string) | Usernames of users assigned to the issue. |
+| <a id="groupvaluestreamanalyticsflowmetricsleadtimeauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author of the issue. |
+| <a id="groupvaluestreamanalyticsflowmetricsleadtimefrom"></a>`from` | [`Time!`](#time) | Issues created after the date. |
+| <a id="groupvaluestreamanalyticsflowmetricsleadtimelabelnames"></a>`labelNames` | [`[String!]`](#string) | Labels applied to the issue. |
+| <a id="groupvaluestreamanalyticsflowmetricsleadtimemilestonetitle"></a>`milestoneTitle` | [`String`](#string) | Milestone applied to the issue. |
+| <a id="groupvaluestreamanalyticsflowmetricsleadtimeprojectids"></a>`projectIds` | [`[ID!]`](#id) | Project IDs within the group hierarchy. |
+| <a id="groupvaluestreamanalyticsflowmetricsleadtimeto"></a>`to` | [`Time!`](#time) | Issues created before the date. |
 
 ### `GroupWikiRepositoryRegistry`
 
@@ -19666,6 +19702,23 @@ Exposes aggregated value stream flow metrics.
 
 #### Fields with arguments
 
+##### `ProjectValueStreamAnalyticsFlowMetrics.cycleTime`
+
+Median time from first commit to issue closed.
+
+Returns [`ValueStreamAnalyticsMetric`](#valuestreamanalyticsmetric).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectvaluestreamanalyticsflowmetricscycletimeassigneeusernames"></a>`assigneeUsernames` | [`[String!]`](#string) | Usernames of users assigned to the issue. |
+| <a id="projectvaluestreamanalyticsflowmetricscycletimeauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author of the issue. |
+| <a id="projectvaluestreamanalyticsflowmetricscycletimefrom"></a>`from` | [`Time!`](#time) | Issues created after the date. |
+| <a id="projectvaluestreamanalyticsflowmetricscycletimelabelnames"></a>`labelNames` | [`[String!]`](#string) | Labels applied to the issue. |
+| <a id="projectvaluestreamanalyticsflowmetricscycletimemilestonetitle"></a>`milestoneTitle` | [`String`](#string) | Milestone applied to the issue. |
+| <a id="projectvaluestreamanalyticsflowmetricscycletimeto"></a>`to` | [`Time!`](#time) | Issues created before the date. |
+
 ##### `ProjectValueStreamAnalyticsFlowMetrics.deploymentCount`
 
 Number of production deployments in the given period.
@@ -19695,6 +19748,23 @@ Returns [`ValueStreamAnalyticsMetric`](#valuestreamanalyticsmetric).
 | <a id="projectvaluestreamanalyticsflowmetricsissuecountlabelnames"></a>`labelNames` | [`[String!]`](#string) | Labels applied to the issue. |
 | <a id="projectvaluestreamanalyticsflowmetricsissuecountmilestonetitle"></a>`milestoneTitle` | [`String`](#string) | Milestone applied to the issue. |
 | <a id="projectvaluestreamanalyticsflowmetricsissuecountto"></a>`to` | [`Time!`](#time) | Issues created before the date. |
+
+##### `ProjectValueStreamAnalyticsFlowMetrics.leadTime`
+
+Median time from when the issue was created to when it was closed.
+
+Returns [`ValueStreamAnalyticsMetric`](#valuestreamanalyticsmetric).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectvaluestreamanalyticsflowmetricsleadtimeassigneeusernames"></a>`assigneeUsernames` | [`[String!]`](#string) | Usernames of users assigned to the issue. |
+| <a id="projectvaluestreamanalyticsflowmetricsleadtimeauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author of the issue. |
+| <a id="projectvaluestreamanalyticsflowmetricsleadtimefrom"></a>`from` | [`Time!`](#time) | Issues created after the date. |
+| <a id="projectvaluestreamanalyticsflowmetricsleadtimelabelnames"></a>`labelNames` | [`[String!]`](#string) | Labels applied to the issue. |
+| <a id="projectvaluestreamanalyticsflowmetricsleadtimemilestonetitle"></a>`milestoneTitle` | [`String`](#string) | Milestone applied to the issue. |
+| <a id="projectvaluestreamanalyticsflowmetricsleadtimeto"></a>`to` | [`Time!`](#time) | Issues created before the date. |
 
 ### `PrometheusAlert`
 
@@ -21415,10 +21485,21 @@ fields relate to interactions between the two entities.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="valuestreamanalyticsmetricidentifier"></a>`identifier` | [`String!`](#string) | Identifier for the metric. |
-| <a id="valuestreamanalyticsmetriclinks"></a>`links` | [`[String!]!`](#string) | Optional links for drilling down. |
+| <a id="valuestreamanalyticsmetriclinks"></a>`links` | [`[ValueStreamMetricLinkType!]!`](#valuestreammetriclinktype) | Optional links for drilling down. |
 | <a id="valuestreamanalyticsmetrictitle"></a>`title` | [`String!`](#string) | Title for the metric. |
 | <a id="valuestreamanalyticsmetricunit"></a>`unit` | [`String`](#string) | Unit of measurement. |
 | <a id="valuestreamanalyticsmetricvalue"></a>`value` | [`Float`](#float) | Value for the metric. |
+
+### `ValueStreamMetricLinkType`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="valuestreammetriclinktypedocslink"></a>`docsLink` | [`Boolean`](#boolean) | Link to the metric documentation. |
+| <a id="valuestreammetriclinktypelabel"></a>`label` | [`String!`](#string) | Label for the link. |
+| <a id="valuestreammetriclinktypename"></a>`name` | [`String!`](#string) | Name of the link group. |
+| <a id="valuestreammetriclinktypeurl"></a>`url` | [`String!`](#string) | Drill-down URL. |
 
 ### `VulnerabilitiesCountByDay`
 

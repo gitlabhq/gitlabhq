@@ -92,7 +92,8 @@ describe('Value stream analytics utils', () => {
     const createdAfter = '2021-09-01';
     const createdBefore = '2021-11-06';
     const groupPath = 'fake-group';
-    const fullPath = 'fake-group/fake-project';
+    const namespaceName = 'Fake project';
+    const namespaceFullPath = 'fake-group/fake-project';
     const labelsPath = '/fake-group/fake-project/-/labels.json';
     const milestonesPath = '/fake-group/fake-project/-/milestones.json';
     const requestPath = '/fake-group/fake-project/-/value_stream_analytics';
@@ -101,7 +102,8 @@ describe('Value stream analytics utils', () => {
       projectId,
       createdBefore,
       createdAfter,
-      fullPath,
+      namespaceName,
+      namespaceFullPath,
       requestPath,
       labelsPath,
       milestonesPath,
@@ -122,13 +124,13 @@ describe('Value stream analytics utils', () => {
         expect(res.createdAfter).toEqual(new Date(createdAfter));
       });
 
+      it('sets the namespace', () => {
+        expect(res.namespace.name).toBe(namespaceName);
+        expect(res.namespace.fullPath).toBe(namespaceFullPath);
+      });
+
       it('sets the endpoints', () => {
-        const { endpoints } = res;
-        expect(endpoints.fullPath).toBe(fullPath);
-        expect(endpoints.requestPath).toBe(requestPath);
-        expect(endpoints.labelsPath).toBe(labelsPath);
-        expect(endpoints.milestonesPath).toBe(milestonesPath);
-        expect(endpoints.groupPath).toBe(`groups/${groupPath}`);
+        expect(res.groupPath).toBe(`groups/${groupPath}`);
       });
 
       it('returns null when there is no stage', () => {

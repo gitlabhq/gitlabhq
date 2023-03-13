@@ -3,6 +3,9 @@
 class AbuseReportsFinder
   attr_reader :params, :reports
 
+  DEFAULT_SORT = 'created_at_desc'
+  ALLOWED_SORT = [DEFAULT_SORT, *%w[created_at_asc updated_at_desc updated_at_asc]].freeze
+
   def initialize(params = {})
     @params = params
     @reports = AbuseReport.all
@@ -10,10 +13,9 @@ class AbuseReportsFinder
 
   def execute
     filter_reports
+    sort_reports
 
-    reports.with_order_id_desc
-      .with_users
-      .page(params[:page])
+    reports.with_users.page(params[:page])
   end
 
   private
@@ -56,5 +58,17 @@ class AbuseReportsFinder
     return unless params[:user_id].present?
 
     @reports = @reports.by_user_id(params[:user_id])
+  end
+
+  def sort_reports
+    if Feature.disabled?(:abuse_reports_list)
+      @reports = @reports.with_order_id_desc
+      return
+    end
+
+    sort_by = params[:sort]
+    sort_by = DEFAULT_SORT unless sort_by.in?(ALLOWED_SORT)
+
+    @reports = @reports.order_by(sort_by)
   end
 end

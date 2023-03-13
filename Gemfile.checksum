@@ -524,7 +524,7 @@
 {"name":"rubocop-rails","version":"2.17.4","platform":"ruby","checksum":"8004149a14372d3d6cededd000357879fa7eb0421403a7a26bc717e2a98bbedb"},
 {"name":"rubocop-rspec","version":"2.18.1","platform":"ruby","checksum":"41c6455630fc98b809ebca047413389e2b7e3f68975028365c07bfea878db5ee"},
 {"name":"ruby-fogbugz","version":"0.3.0","platform":"ruby","checksum":"5e04cde474648f498a71cf1e1a7ab42c66b953862fbe224f793ec0a7a1d5f657"},
-{"name":"ruby-magic","version":"0.5.4","platform":"ruby","checksum":"2c17b185130d10a83791f63a40baa358c4b138af37da3f4dab53690121c421d5"},
+{"name":"ruby-magic","version":"0.5.5","platform":"ruby","checksum":"d2cc5b6b719831c3108a4f8a62bf3314c1af6cb09c98e2b5a3f9509bf8814e6c"},
 {"name":"ruby-progressbar","version":"1.11.0","platform":"ruby","checksum":"cc127db3866dc414ffccbf92928a241e585b3aa2b758a5563e74a6ee0f57d50a"},
 {"name":"ruby-saml","version":"1.13.0","platform":"ruby","checksum":"d31cbdf5fb8fdd6aa3187e48dba3085cfeb751af30276a5739aa3659a66f069c"},
 {"name":"ruby-statistics","version":"3.0.0","platform":"ruby","checksum":"610301370346931cb701e3a8d3d3e28eb65681162cae6066c0c11abf20efdc81"},

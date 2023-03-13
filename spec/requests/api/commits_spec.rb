@@ -132,6 +132,42 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
             it_behaves_like 'project commits'
           end
 
+          context 'with author parameter' do
+            let(:params) { { author: 'Zaporozhets' } }
+
+            it 'returns only this author commits' do
+              get api(route, user), params: params
+
+              expect(response).to have_gitlab_http_status(:ok)
+
+              author_names = json_response.map { |commit| commit['author_name'] }.uniq
+
+              expect(author_names).to contain_exactly('Dmitriy Zaporozhets')
+            end
+
+            context 'when author is missing' do
+              let(:params) { { author: '' } }
+
+              it 'returns all commits' do
+                get api(route, user), params: params
+
+                expect(response).to have_gitlab_http_status(:ok)
+                expect(json_response.count).to eq(20)
+              end
+            end
+
+            context 'when author does not exists' do
+              let(:params) { { author: 'does not exist' } }
+
+              it 'returns an empty list' do
+                get api(route, user), params: params
+
+                expect(response).to have_gitlab_http_status(:ok)
+                expect(json_response).to eq([])
+              end
+            end
+          end
+
           context 'when repository does not exist' do
             let(:project) { create(:project, creator: user, path: 'my.project') }
 

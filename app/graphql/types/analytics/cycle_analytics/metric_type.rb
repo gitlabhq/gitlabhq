@@ -29,7 +29,7 @@ module Types
           description: 'Title for the metric.'
 
         field :links,
-          [GraphQL::Types::String],
+          [LinkType],
           null: false,
           description: 'Optional links for drilling down.'
       end

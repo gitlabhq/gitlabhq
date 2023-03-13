@@ -48,12 +48,13 @@ export default {
       'selectedStageEvents',
       'selectedStageError',
       'stageCounts',
-      'endpoints',
       'features',
       'createdBefore',
       'createdAfter',
       'pagination',
       'hasNoAccessError',
+      'groupPath',
+      'namespace',
     ]),
     ...mapGetters(['pathNavigationData', 'filterParams']),
     isLoaded() {
@@ -111,7 +112,8 @@ export default {
     },
     dashboardsPath() {
       const {
-        endpoints: { groupPath, fullPath },
+        namespace: { fullPath },
+        groupPath,
       } = this;
       return this.showLinkToDashboard
         ? generateValueStreamsDashboardLink(groupPath, [fullPath])
@@ -166,7 +168,7 @@ export default {
   <div>
     <h3>{{ $options.i18n.pageTitle }}</h3>
     <value-stream-filters
-      :group-path="endpoints.groupPath"
+      :group-path="groupPath"
       :has-project-filter="false"
       :start-date="createdAfter"
       :end-date="createdBefore"
@@ -184,7 +186,7 @@ export default {
       />
     </div>
     <value-stream-metrics
-      :request-path="endpoints.fullPath"
+      :request-path="namespace.fullPath"
       :request-params="filterParams"
       :requests="metricsRequests"
       :group-by="$options.VSA_METRICS_GROUPS"

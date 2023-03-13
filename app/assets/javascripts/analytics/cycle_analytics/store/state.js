@@ -6,7 +6,11 @@ import {
 export default () => ({
   id: null,
   features: {},
-  endpoints: {},
+  groupPath: {},
+  namespace: {
+    name: null,
+    fullPath: null,
+  },
   createdAfter: null,
   createdBefore: null,
   stages: [],

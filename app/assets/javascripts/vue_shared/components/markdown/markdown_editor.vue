@@ -1,4 +1,5 @@
 <script>
+import Autosize from 'autosize';
 import axios from '~/lib/utils/axios_utils';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import { updateDraft, clearDraft, getDraft } from '~/lib/utils/autosave';
@@ -80,6 +81,7 @@ export default {
       this.markdown = val;
 
       this.saveDraft();
+      this.autosizeTextarea();
     },
   },
   mounted() {
@@ -99,6 +101,7 @@ export default {
       this.$emit('input', target.value);
 
       this.saveDraft();
+      this.autosizeTextarea();
     },
     renderMarkdown(markdown) {
       return axios.post(this.renderMarkdownPath, { text: markdown }).then(({ data }) => data.body);
@@ -129,6 +132,13 @@ export default {
       if (this.markdown) updateDraft(this.autosaveKey, this.markdown);
       else clearDraft(this.autosaveKey);
     },
+    autosizeTextarea() {
+      if (this.editingMode === EDITING_MODE_MARKDOWN_FIELD) {
+        this.$nextTick(() => {
+          Autosize.update(this.$refs.textarea);
+        });
+      }
+    },
   },
 };
 </script>
@@ -156,7 +166,7 @@ export default {
           v-bind="formFieldProps"
           ref="textarea"
           :value="markdown"
-          class="note-textarea js-gfm-input js-autosize markdown-area"
+          class="note-textarea js-gfm-input markdown-area"
           dir="auto"
           :data-supports-quick-actions="supportsQuickActions"
           data-qa-selector="markdown_editor_form_field"

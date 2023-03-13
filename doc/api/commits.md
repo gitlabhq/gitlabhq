@@ -20,6 +20,8 @@ information:
 
 ## List repository commits
 
+> Commits by author [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114417) in GitLab 15.10.
+
 Get a list of repository commits in a project.
 
 ```plaintext
@@ -33,6 +35,7 @@ GET /projects/:id/repository/commits
 | `since` | string | no | Only commits after or on this date are returned in ISO 8601 format `YYYY-MM-DDTHH:MM:SSZ` |
 | `until` | string | no | Only commits before or on this date are returned in ISO 8601 format `YYYY-MM-DDTHH:MM:SSZ` |
 | `path` | string | no | The file path |
+| `author` | string | no | Search commits by commit author.|
 | `all` | boolean | no | Retrieve every commit from the repository |
 | `with_stats` | boolean | no | Stats about each commit are added to the response |
 | `first_parent` | boolean | no | Follow only the first parent commit upon seeing a merge commit |

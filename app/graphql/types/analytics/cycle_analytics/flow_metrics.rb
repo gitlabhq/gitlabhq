@@ -25,3 +25,6 @@ module Types
     end
   end
 end
+
+mod = Types::Analytics::CycleAnalytics::FlowMetrics
+mod.prepend_mod_with('Types::Analytics::CycleAnalytics::FlowMetrics')

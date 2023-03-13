@@ -1,4 +1,5 @@
 import axios from 'axios';
+import Autosize from 'autosize';
 import MockAdapter from 'axios-mock-adapter';
 import { nextTick } from 'vue';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
@@ -10,8 +11,10 @@ import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
 import { stubComponent } from 'helpers/stub_component';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
+import waitForPromises from 'helpers/wait_for_promises';
 
 jest.mock('~/emoji');
+jest.mock('autosize');
 
 describe('vue_shared/component/markdown/markdown_editor', () => {
   useLocalStorageSpy();
@@ -104,6 +107,35 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
 
       // data-testid isn't copied over
       'data-testid': 'markdown-field',
+    });
+  });
+
+  describe('autosize', () => {
+    it('autosizes the textarea when the value changes', async () => {
+      buildWrapper();
+      await findTextarea().setValue('Lots of newlines\n\n\n\n\n\n\nMore content\n\n\nand newlines');
+
+      expect(Autosize.update).toHaveBeenCalled();
+    });
+
+    it('autosizes the textarea when the value changes from outside the component', async () => {
+      buildWrapper();
+      wrapper.setProps({ value: 'Lots of newlines\n\n\n\n\n\n\nMore content\n\n\nand newlines' });
+
+      await nextTick();
+      await waitForPromises();
+      expect(Autosize.update).toHaveBeenCalled();
+    });
+
+    it('does not autosize the textarea if markdown editor is disabled', async () => {
+      buildWrapper();
+      findMarkdownField().vm.$emit('enableContentEditor');
+
+      wrapper.setProps({ value: 'Lots of newlines\n\n\n\n\n\n\nMore content\n\n\nand newlines' });
+
+      await nextTick();
+      await waitForPromises();
+      expect(Autosize.update).not.toHaveBeenCalled();
     });
   });
 

@@ -2427,6 +2427,9 @@ msgstr ""
 msgid "Add request manually"
 msgstr ""
 
+msgid "Add start and due date"
+msgstr ""
+
 msgid "Add suggestion to batch"
 msgstr ""
 

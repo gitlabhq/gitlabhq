@@ -33,7 +33,8 @@ class Gitlab::Seeder::CycleAnalytics # rubocop:disable Style/ClassAndModuleChild
     code: 72,
     test: 5,
     review: 72,
-    deployment: 48
+    deployment: 48,
+    lead_time: 32
   }.freeze
 
   def self.seeder_based_on_env(project)
@@ -69,6 +70,7 @@ class Gitlab::Seeder::CycleAnalytics # rubocop:disable Style/ClassAndModuleChild
     create_developers!
     create_issues!
 
+    seed_lead_time!
     seed_issue_stage!
     seed_plan_stage!
     seed_code_stage!
@@ -153,6 +155,13 @@ class Gitlab::Seeder::CycleAnalytics # rubocop:disable Style/ClassAndModuleChild
       merge_request.metrics.update!(
         first_deployed_to_production_at: within_end_time(first_deployed_to_production_at)
       )
+    end
+  end
+
+  def seed_lead_time!
+    issues.each do |issue|
+      created_at = issue.created_at - MAX_DURATIONS[:lead_time].hours
+      issue.update!(created_at: created_at, closed_at: Time.now)
     end
   end
 

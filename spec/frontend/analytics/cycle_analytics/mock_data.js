@@ -219,6 +219,8 @@ export const group = {
 };
 
 export const currentGroup = convertObjectPropsToCamelCase(group, { deep: true });
+export const groupNamespace = { id: currentGroup.id, fullPath: `groups/${currentGroup.path}` };
+export const projectNamespace = { fullPath: 'some/cool/path' };
 
 export const selectedProjects = [
   {

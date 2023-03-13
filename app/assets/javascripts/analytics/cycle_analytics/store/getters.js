@@ -15,7 +15,7 @@ export const pathNavigationData = ({ stages, medians, stageCounts, selectedStage
 
 export const requestParams = (state) => {
   const {
-    endpoints: { fullPath },
+    namespace: { fullPath },
     selectedValueStream: { id: valueStreamId },
     selectedStage: { id: stageId = null },
   } = state;

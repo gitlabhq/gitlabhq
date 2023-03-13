@@ -66,17 +66,3 @@ export const descriptionHtmlWithList = `
     <li data-sourcepos="3:1-3:8">todo 3</li>
   </ul>
 `;
-
-export const descriptionHtmlWithCheckboxes = `
-  <ul dir="auto" class="task-list" data-sourcepos"3:1-5:12">
-    <li class="task-list-item" data-sourcepos="3:1-3:11">
-      <input class="task-list-item-checkbox" type="checkbox"> todo 1
-    </li>
-    <li class="task-list-item" data-sourcepos="4:1-4:12">
-      <input class="task-list-item-checkbox" type="checkbox"> todo 2
-    </li>
-    <li class="task-list-item" data-sourcepos="5:1-5:12">
-      <input class="task-list-item-checkbox" type="checkbox"> todo 3
-    </li>
-  </ul>
-`;

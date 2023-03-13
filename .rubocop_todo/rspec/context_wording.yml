@@ -1730,7 +1730,6 @@ RSpec/ContextWording:
     - 'spec/lib/gitlab/ci/pipeline_object_hierarchy_spec.rb'
     - 'spec/lib/gitlab/ci/reports/reports_comparer_spec.rb'
     - 'spec/lib/gitlab/ci/reports/security/aggregated_report_spec.rb'
-    - 'spec/lib/gitlab/ci/reports/security/vulnerability_reports_comparer_spec.rb'
     - 'spec/lib/gitlab/ci/reports/test_suite_comparer_spec.rb'
     - 'spec/lib/gitlab/ci/runner_instructions_spec.rb'
     - 'spec/lib/gitlab/ci/runner_upgrade_check_spec.rb'

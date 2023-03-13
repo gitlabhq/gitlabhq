@@ -322,7 +322,9 @@ export default {
       this.$emit('saveDescription', newDescription);
     },
     renderTaskListItemActions() {
-      const taskListItems = this.$el.querySelectorAll?.('.task-list-item:not(.inapplicable)');
+      const taskListItems = this.$el.querySelectorAll?.(
+        '.task-list-item:not(.inapplicable, table .task-list-item)',
+      );
 
       taskListItems?.forEach((item) => {
         const dropdown = this.createTaskListItemActions({ canUpdate: this.canUpdate });

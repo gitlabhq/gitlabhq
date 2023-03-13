@@ -29145,7 +29145,11 @@ CREATE INDEX idx_vulnerability_reads_project_id_scanner_id_vulnerability_id ON v
 
 CREATE UNIQUE INDEX idx_work_item_types_on_namespace_id_and_name_null_namespace ON work_item_types USING btree (btrim(lower(name)), ((namespace_id IS NULL))) WHERE (namespace_id IS NULL);
 
+CREATE INDEX index_abuse_reports_on_status_and_created_at ON abuse_reports USING btree (status, created_at);
+
 CREATE INDEX index_abuse_reports_on_status_and_id ON abuse_reports USING btree (status, id);
+
+CREATE INDEX index_abuse_reports_on_status_and_updated_at ON abuse_reports USING btree (status, updated_at);
 
 CREATE INDEX index_abuse_reports_on_status_category_and_id ON abuse_reports USING btree (status, category, id);
 

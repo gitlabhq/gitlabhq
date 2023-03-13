@@ -831,7 +831,7 @@ Gitlab.ee do
   Settings.cron_jobs['abandoned_trial_emails']['cron'] ||= "0 1 * * *"
   Settings.cron_jobs['abandoned_trial_emails']['job_class'] = 'Emails::AbandonedTrialEmailsCronWorker'
   Settings.cron_jobs['package_metadata_sync_worker'] ||= Settingslogic.new({})
-  Settings.cron_jobs['package_metadata_sync_worker']['cron'] ||= "0 * * * *"
+  Settings.cron_jobs['package_metadata_sync_worker']['cron'] ||= "*/5 * * * *"
   Settings.cron_jobs['package_metadata_sync_worker']['job_class'] = 'PackageMetadata::SyncWorker'
   Settings.cron_jobs['compliance_violations_consistency_worker'] ||= Settingslogic.new({})
   Settings.cron_jobs['compliance_violations_consistency_worker']['cron'] ||= '0 1 * * *'

@@ -40,3 +40,6 @@ export const METRICS_REQUESTS = [
   { endpoint: METRIC_TYPE_TIME_SUMMARY, name: __('time summary'), request: getValueStreamMetrics },
   ...SUMMARY_METRICS_REQUEST,
 ];
+
+export const MILESTONES_ENDPOINT = '/-/milestones.json';
+export const LABELS_ENDPOINT = '/-/labels.json';

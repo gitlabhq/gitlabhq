@@ -21,11 +21,7 @@ import {
   getIssueDetailsResponse,
   projectWorkItemTypesQueryResponse,
 } from 'jest/work_items/mock_data';
-import {
-  descriptionProps as initialProps,
-  descriptionHtmlWithList,
-  descriptionHtmlWithCheckboxes,
-} from '../mock_data/mock_data';
+import { descriptionProps as initialProps, descriptionHtmlWithList } from '../mock_data/mock_data';
 
 jest.mock('~/flash');
 jest.mock('~/lib/utils/url_utility', () => ({
@@ -292,21 +288,6 @@ describe('Description component', () => {
 
     it('renders without error', () => {
       expect(findTaskActionButtons()).toHaveLength(0);
-    });
-  });
-
-  describe('description with checkboxes', () => {
-    beforeEach(() => {
-      createComponent({
-        props: {
-          descriptionHtml: descriptionHtmlWithCheckboxes,
-        },
-      });
-      return nextTick();
-    });
-
-    it('renders a list of hidden buttons corresponding to checkboxes in description HTML', () => {
-      expect(findTaskActionButtons()).toHaveLength(3);
     });
   });
 

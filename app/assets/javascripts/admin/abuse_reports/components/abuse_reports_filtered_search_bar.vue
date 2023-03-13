@@ -2,15 +2,22 @@
 import { setUrlParams, redirectTo, queryToObject, updateHistory } from '~/lib/utils/url_utility';
 import { FILTERED_SEARCH_TERM } from '~/vue_shared/components/filtered_search_bar/constants';
 import FilteredSearchBar from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
-import { FILTERED_SEARCH_TOKENS } from '~/admin/abuse_reports/constants';
+import {
+  FILTERED_SEARCH_TOKENS,
+  DEFAULT_SORT,
+  SORT_OPTIONS,
+  isValidSortKey,
+} from '~/admin/abuse_reports/constants';
 
 export default {
   name: 'AbuseReportsFilteredSearchBar',
   components: { FilteredSearchBar },
   tokens: FILTERED_SEARCH_TOKENS,
+  sortOptions: SORT_OPTIONS,
   data() {
     return {
       initialFilterValue: [],
+      initialSortBy: DEFAULT_SORT,
     };
   },
   created() {
@@ -22,6 +29,11 @@ export default {
     if (!query.status) {
       query.status = 'open';
       updateHistory({ url: setUrlParams(query), replace: true });
+    }
+
+    const sort = this.currentSortKey();
+    if (sort) {
+      this.initialSortBy = query.sort;
     }
 
     const tokens = this.$options.tokens
@@ -37,8 +49,13 @@ export default {
     this.initialFilterValue = tokens;
   },
   methods: {
+    currentSortKey() {
+      const { sort } = queryToObject(window.location.search);
+
+      return isValidSortKey(sort) ? sort : undefined;
+    },
     handleFilter(tokens) {
-      const params = tokens.reduce((accumulator, token) => {
+      let params = tokens.reduce((accumulator, token) => {
         const { type, value } = token;
 
         // We don't support filtering reports by search term for now
@@ -52,7 +69,17 @@ export default {
         };
       }, {});
 
+      const sort = this.currentSortKey();
+      if (sort) {
+        params = { ...params, sort };
+      }
+
       redirectTo(setUrlParams(params, window.location.href, true));
+    },
+    handleSort(sort) {
+      const { page, ...query } = queryToObject(window.location.search);
+
+      redirectTo(setUrlParams({ ...query, sort }, window.location.href, true));
     },
   },
   filteredSearchNamespace: 'abuse_reports',
@@ -67,6 +94,9 @@ export default {
     :recent-searches-storage-key="$options.recentSearchesStorageKey"
     :search-input-placeholder="__('Filter reports')"
     :initial-filter-value="initialFilterValue"
+    :initial-sort-by="initialSortBy"
+    :sort-options="$options.sortOptions"
     @onFilter="handleFilter"
+    @onSort="handleSort"
   />
 </template>

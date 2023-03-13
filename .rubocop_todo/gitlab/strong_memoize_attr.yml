@@ -595,7 +595,6 @@ Gitlab/StrongMemoizeAttr:
     - 'lib/gitlab/ci/reports/accessibility_reports_comparer.rb'
     - 'lib/gitlab/ci/reports/codequality_reports_comparer.rb'
     - 'lib/gitlab/ci/reports/security/locations/base.rb'
-    - 'lib/gitlab/ci/reports/security/vulnerability_reports_comparer.rb'
     - 'lib/gitlab/ci/reports/test_reports_comparer.rb'
     - 'lib/gitlab/ci/reports/test_suite_comparer.rb'
     - 'lib/gitlab/ci/reports/test_suite_summary.rb'

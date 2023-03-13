@@ -1,5 +1,6 @@
 import { parseSeconds } from '~/lib/utils/datetime_utility';
 import { formatTimeAsSummary } from '~/lib/utils/datetime/date_format_utility';
+import { joinPaths } from '~/lib/utils/url_utility';
 
 /**
  * Takes the stages and median data, combined with the selected stage, to build an
@@ -91,25 +92,21 @@ const extractFeatures = (gon) => ({
  * @returns {Object} - The initial data to load the app with
  */
 export const buildCycleAnalyticsInitialData = ({
-  fullPath,
-  requestPath,
   projectId,
   groupPath,
-  labelsPath,
-  milestonesPath,
   stage,
   createdAfter,
   createdBefore,
+  namespaceName,
+  namespaceFullPath,
   gon,
 } = {}) => {
   return {
     projectId: parseInt(projectId, 10),
-    endpoints: {
-      requestPath,
-      fullPath,
-      labelsPath,
-      milestonesPath,
-      groupPath: `groups/${groupPath}`,
+    groupPath: `groups/${groupPath}`,
+    namespace: {
+      name: namespaceName,
+      fullPath: namespaceFullPath,
     },
     createdAfter: new Date(createdAfter),
     createdBefore: new Date(createdBefore),
@@ -117,3 +114,6 @@ export const buildCycleAnalyticsInitialData = ({
     features: extractFeatures(gon),
   };
 };
+
+export const constructPathWithNamespace = ({ fullPath }, endpoint) =>
+  joinPaths('/', fullPath, endpoint);

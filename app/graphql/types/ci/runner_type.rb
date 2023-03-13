@@ -58,7 +58,7 @@ module Types
             Types::Ci::RunnerJobExecutionStatusEnum,
             null: true,
             description: 'Job execution status of the runner.',
-            deprecated: { milestone: '15.7', reason: :alpha }
+            alpha: { milestone: '15.7' }
       field :jobs, ::Types::Ci::JobType.connection_type, null: true,
                                                          description: 'Jobs assigned to the runner. This field can only be resolved for one runner in any single request.',
                                                          authorize: :read_builds,
@@ -67,7 +67,8 @@ module Types
                                               description: 'Indicates the runner is locked.'
       field :machines, ::Types::Ci::RunnerMachineType.connection_type, null: true,
             description: 'Machines associated with the runner configuration.',
-            method: :runner_machines
+            method: :runner_machines,
+            alpha: { milestone: '15.10' }
       field :maintenance_note, GraphQL::Types::String, null: true,
                                                        description: 'Runner\'s maintenance notes.'
       field :maximum_timeout, GraphQL::Types::Int, null: true,

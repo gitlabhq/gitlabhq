@@ -38,7 +38,8 @@ const defaultState = {
   createdBefore,
   createdAfter,
   stageCounts,
-  endpoints: { fullPath, groupPath },
+  groupPath,
+  namespace: { fullPath },
 };
 
 function createStore({ initialState = {}, initialGetters = {} }) {

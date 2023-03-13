@@ -5,8 +5,8 @@ require 'spec_helper'
 RSpec.describe AbuseReportsFinder, '#execute' do
   let_it_be(:user1) { create(:user) }
   let_it_be(:user2) { create(:user) }
-  let_it_be(:abuse_report_1) { create(:abuse_report, category: 'spam', user: user1) }
-  let_it_be(:abuse_report_2) { create(:abuse_report, :closed, category: 'phishing', user: user2) }
+  let_it_be(:abuse_report_1) { create(:abuse_report, id: 20, category: 'spam', user: user1) }
+  let_it_be(:abuse_report_2) { create(:abuse_report, :closed, id: 30, category: 'phishing', user: user2) }
 
   let(:params) { {} }
 
@@ -70,6 +70,42 @@ RSpec.describe AbuseReportsFinder, '#execute' do
 
     it 'returns abuse reports with the specified category' do
       expect(subject).to match_array([abuse_report_2])
+    end
+  end
+
+  describe 'sorting' do
+    let(:params) { { sort: 'created_at_asc' } }
+
+    it 'returns reports sorted by the specified sort attribute' do
+      expect(subject).to eq [abuse_report_1, abuse_report_2]
+    end
+
+    context 'when sort is not specified' do
+      let(:params) { {} }
+
+      it "returns reports sorted by #{described_class::DEFAULT_SORT}" do
+        expect(subject).to eq [abuse_report_2, abuse_report_1]
+      end
+    end
+
+    context 'when sort is not supported' do
+      let(:params) { { sort: 'superiority' } }
+
+      it "returns reports sorted by #{described_class::DEFAULT_SORT}" do
+        expect(subject).to eq [abuse_report_2, abuse_report_1]
+      end
+    end
+
+    context 'when abuse_reports_list feature flag is disabled' do
+      let_it_be(:abuse_report_3) { create(:abuse_report, id: 10) }
+
+      before do
+        stub_feature_flags(abuse_reports_list: false)
+      end
+
+      it 'returns reports sorted by id in descending order' do
+        expect(subject).to eq [abuse_report_2, abuse_report_1, abuse_report_3]
+      end
     end
   end
 end
