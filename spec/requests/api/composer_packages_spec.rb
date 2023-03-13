@@ -504,7 +504,11 @@ RSpec.describe API::ComposerPackages, feature_category: :package_registry do
           include_context 'Composer user type', params[:user_role], params[:member] do
             if params[:expected_status] == :success
               let(:snowplow_gitlab_standard_context) do
-                { project: project, namespace: project.namespace, property: 'i_package_composer_user' }
+                if user_role == :anonymous || (project_visibility_level == 'PUBLIC' && user_token == false)
+                  { project: project, namespace: project.namespace, property: 'i_package_composer_user' }
+                else
+                  { project: project, namespace: project.namespace, property: 'i_package_composer_user', user: user }
+                end
               end
 
               it_behaves_like 'a package tracking event', described_class.name, 'pull_package'

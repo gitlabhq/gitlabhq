@@ -5,6 +5,7 @@ import { CONTENT_UPDATE_DEBOUNCE } from '~/editor/constants';
 import SourceEditor from '~/editor/source_editor';
 import { YamlEditorExtension } from '~/editor/extensions/source_editor_yaml_ext';
 import { SourceEditorExtension } from '~/editor/extensions/source_editor_extension_base';
+import { markRaw } from '~/lib/utils/vue3compat/mark_raw';
 
 export default {
   name: 'YamlEditor',
@@ -43,11 +44,13 @@ export default {
     },
   },
   mounted() {
-    this.editor = new SourceEditor().createInstance({
-      el: this.$el,
-      blobPath: this.filename,
-      language: 'yaml',
-    });
+    this.editor = markRaw(
+      new SourceEditor().createInstance({
+        el: this.$el,
+        blobPath: this.filename,
+        language: 'yaml',
+      }),
+    );
     [, this.yamlEditorExtension] = this.editor.use([
       { definition: SourceEditorExtension },
       {

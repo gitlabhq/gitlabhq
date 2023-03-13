@@ -1,6 +1,5 @@
 import { GlModal } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import { nextTick } from 'vue';
 import { stubComponent } from 'helpers/stub_component';
 import CaptchaModal from '~/captcha/captcha_modal.vue';
 import { initRecaptchaScript } from '~/captcha/init_recaptcha_script';
@@ -9,10 +8,11 @@ jest.mock('~/captcha/init_recaptcha_script');
 
 describe('Captcha Modal', () => {
   let wrapper;
-  let modal;
   let grecaptcha;
 
   const captchaSiteKey = 'abc123';
+  const showSpy = jest.fn();
+  const hideSpy = jest.fn();
 
   function createComponent({ props = {} } = {}) {
     wrapper = shallowMount(CaptchaModal, {
@@ -21,10 +21,17 @@ describe('Captcha Modal', () => {
         ...props,
       },
       stubs: {
-        GlModal: stubComponent(GlModal),
+        GlModal: stubComponent(GlModal, {
+          methods: {
+            show: showSpy,
+            hide: hideSpy,
+          },
+        }),
       },
     });
   }
+
+  const findGlModal = () => wrapper.findComponent(GlModal);
 
   beforeEach(() => {
     grecaptcha = {
@@ -34,33 +41,17 @@ describe('Captcha Modal', () => {
     initRecaptchaScript.mockResolvedValue(grecaptcha);
   });
 
-  const findGlModal = () => {
-    const glModal = wrapper.findComponent(GlModal);
-
-    jest.spyOn(glModal.vm, 'show').mockImplementation(() => glModal.vm.$emit('shown'));
-    jest
-      .spyOn(glModal.vm, 'hide')
-      .mockImplementation(() => glModal.vm.$emit('hide', { trigger: '' }));
-
-    return glModal;
-  };
-
-  const showModal = () => {
-    wrapper.setProps({ needsCaptchaResponse: true });
-  };
-
-  beforeEach(() => {
-    createComponent();
-    modal = findGlModal();
-  });
-
   describe('rendering', () => {
+    beforeEach(() => {
+      createComponent();
+    });
+
     it('renders', () => {
-      expect(modal.exists()).toBe(true);
+      expect(findGlModal().exists()).toBe(true);
     });
 
     it('assigns the modal a unique ID', () => {
-      const firstInstanceModalId = modal.props('modalId');
+      const firstInstanceModalId = findGlModal().props('modalId');
       createComponent();
       const secondInstanceModalId = findGlModal().props('modalId');
       expect(firstInstanceModalId).not.toEqual(secondInstanceModalId);
@@ -71,13 +62,12 @@ describe('Captcha Modal', () => {
     describe('when modal is shown', () => {
       describe('when initRecaptchaScript promise resolves successfully', () => {
         beforeEach(async () => {
-          showModal();
-
-          await nextTick();
+          createComponent({ props: { needsCaptchaResponse: true } });
+          findGlModal().vm.$emit('shown');
         });
 
         it('shows modal', async () => {
-          expect(findGlModal().vm.show).toHaveBeenCalled();
+          expect(showSpy).toHaveBeenCalled();
         });
 
         it('renders window.grecaptcha', () => {
@@ -103,7 +93,7 @@ describe('Captcha Modal', () => {
           it('hides modal with null trigger', async () => {
             // Assert that hide is called with zero args, so that we don't trigger the logic
             // for hiding the modal via cancel, esc, headerclose, etc, without a captcha response
-            expect(modal.vm.hide).toHaveBeenCalledWith();
+            expect(hideSpy).toHaveBeenCalledWith();
           });
         });
 
@@ -122,7 +112,7 @@ describe('Captcha Modal', () => {
               const bvModalEvent = {
                 trigger,
               };
-              modal.vm.$emit('hide', bvModalEvent);
+              findGlModal().vm.$emit('hide', bvModalEvent);
             });
 
             it(`emits receivedCaptchaResponse with ${JSON.stringify(expected)}`, () => {
@@ -136,21 +126,24 @@ describe('Captcha Modal', () => {
         const fakeError = {};
 
         beforeEach(() => {
-          initRecaptchaScript.mockImplementation(() => Promise.reject(fakeError));
+          createComponent({
+            props: { needsCaptchaResponse: true },
+          });
 
+          initRecaptchaScript.mockImplementation(() => Promise.reject(fakeError));
           jest.spyOn(console, 'error').mockImplementation();
 
-          showModal();
+          findGlModal().vm.$emit('shown');
         });
 
         it('emits receivedCaptchaResponse exactly once with null', () => {
           expect(wrapper.emitted('receivedCaptchaResponse')).toEqual([[null]]);
         });
 
-        it('hides modal with null trigger', async () => {
+        it('hides modal with null trigger', () => {
           // Assert that hide is called with zero args, so that we don't trigger the logic
           // for hiding the modal via cancel, esc, headerclose, etc, without a captcha response
-          expect(modal.vm.hide).toHaveBeenCalledWith();
+          expect(hideSpy).toHaveBeenCalledWith();
         });
 
         it('calls console.error with a message and the exception', () => {

@@ -5308,6 +5308,7 @@ Input type: `SecurityFindingDismissInput`
 | ---- | ---- | ----------- |
 | <a id="mutationsecurityfindingdismissclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationsecurityfindingdismisserrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationsecurityfindingdismisssecurityfinding"></a>`securityFinding` | [`PipelineSecurityReportFinding`](#pipelinesecurityreportfinding) | Dismissed finding. |
 | <a id="mutationsecurityfindingdismissuuid"></a>`uuid` | [`String`](#string) | UUID of dismissed finding. |
 
 ### `Mutation.securityFindingRevertToDetected`
@@ -10736,6 +10737,29 @@ The edge type for [`VulnerabilityScanner`](#vulnerabilityscanner).
 | ---- | ---- | ----------- |
 | <a id="vulnerabilityscanneredgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="vulnerabilityscanneredgenode"></a>`node` | [`VulnerabilityScanner`](#vulnerabilityscanner) | The item at the end of the edge. |
+
+#### `VulnerabilityStateTransitionTypeConnection`
+
+The connection type for [`VulnerabilityStateTransitionType`](#vulnerabilitystatetransitiontype).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="vulnerabilitystatetransitiontypeconnectionedges"></a>`edges` | [`[VulnerabilityStateTransitionTypeEdge]`](#vulnerabilitystatetransitiontypeedge) | A list of edges. |
+| <a id="vulnerabilitystatetransitiontypeconnectionnodes"></a>`nodes` | [`[VulnerabilityStateTransitionType]`](#vulnerabilitystatetransitiontype) | A list of nodes. |
+| <a id="vulnerabilitystatetransitiontypeconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `VulnerabilityStateTransitionTypeEdge`
+
+The edge type for [`VulnerabilityStateTransitionType`](#vulnerabilitystatetransitiontype).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="vulnerabilitystatetransitiontypeedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="vulnerabilitystatetransitiontypeedgenode"></a>`node` | [`VulnerabilityStateTransitionType`](#vulnerabilitystatetransitiontype) | The item at the end of the edge. |
 
 #### `WorkItemConnection`
 
@@ -21451,6 +21475,7 @@ Represents a vulnerability.
 | <a id="vulnerabilityseverity"></a>`severity` | [`VulnerabilitySeverity`](#vulnerabilityseverity) | Severity of the vulnerability (INFO, UNKNOWN, LOW, MEDIUM, HIGH, CRITICAL). |
 | <a id="vulnerabilitystate"></a>`state` | [`VulnerabilityState`](#vulnerabilitystate) | State of the vulnerability (DETECTED, CONFIRMED, RESOLVED, DISMISSED). |
 | <a id="vulnerabilitystatecomment"></a>`stateComment` | [`String`](#string) | Comment given for the vulnerability state change. |
+| <a id="vulnerabilitystatetransitions"></a>`stateTransitions` | [`VulnerabilityStateTransitionTypeConnection`](#vulnerabilitystatetransitiontypeconnection) | List of state transitions related to the vulnerability. (see [Connections](#connections)) |
 | <a id="vulnerabilitytitle"></a>`title` | [`String`](#string) | Title of the vulnerability. |
 | <a id="vulnerabilityupdatedat"></a>`updatedAt` | [`Time`](#time) | Timestamp of when the vulnerability was last updated. |
 | <a id="vulnerabilityusernotescount"></a>`userNotesCount` | [`Int!`](#int) | Number of user notes attached to the vulnerability. |
@@ -21963,6 +21988,21 @@ Represents vulnerability counts by severity.
 | <a id="vulnerabilityseveritiescountlow"></a>`low` | [`Int`](#int) | Number of vulnerabilities of LOW severity of the project. |
 | <a id="vulnerabilityseveritiescountmedium"></a>`medium` | [`Int`](#int) | Number of vulnerabilities of MEDIUM severity of the project. |
 | <a id="vulnerabilityseveritiescountunknown"></a>`unknown` | [`Int`](#int) | Number of vulnerabilities of UNKNOWN severity of the project. |
+
+### `VulnerabilityStateTransitionType`
+
+Represents a state transition of a vulnerability.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="vulnerabilitystatetransitiontypeauthor"></a>`author` | [`UserCore!`](#usercore) | User who changed the state of the vulnerability. |
+| <a id="vulnerabilitystatetransitiontypecomment"></a>`comment` | [`String`](#string) | Comment for the state change. |
+| <a id="vulnerabilitystatetransitiontypecreatedat"></a>`createdAt` | [`Time!`](#time) | Time of the state change of the vulnerability. |
+| <a id="vulnerabilitystatetransitiontypedismissalreason"></a>`dismissalReason` | [`VulnerabilityDismissalReason`](#vulnerabilitydismissalreason) | Reason for the dismissal. |
+| <a id="vulnerabilitystatetransitiontypefromstate"></a>`fromState` | [`VulnerabilityState!`](#vulnerabilitystate) | State of the vulnerability before transition. |
+| <a id="vulnerabilitystatetransitiontypetostate"></a>`toState` | [`VulnerabilityState!`](#vulnerabilitystate) | State of the vulnerability after transition. |
 
 ### `VulnerableDependency`
 

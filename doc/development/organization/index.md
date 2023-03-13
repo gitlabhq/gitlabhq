@@ -1,15 +1,15 @@
 ---
 comments: false
 type: index, dev
-stage: none
-group: Development
+stage: Data Stores
+group: Tenant Scale
 info: "See the Technical Writers assigned to Development Guidelines: https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-development-guidelines"
 description: "Development Guidelines: learn about organization when developing GitLab."
 ---
 
 # Organization
 
-The [Organization initiative](../../user/workspace/index.md) focuses on reaching feature parity between
+The [Organization initiative](../../user/organization/index.md) focuses on reaching feature parity between
 SaaS and self-managed installations.
 
 ## Consolidate groups and projects
@@ -156,4 +156,4 @@ When working on settings, we need to make sure that:
 
 - [Consolidating groups and projects](../../architecture/blueprints/consolidating_groups_and_projects/index.md)
   architecture documentation
-- [Organization user documentation](../../user/workspace/index.md)
+- [Organization user documentation](../../user/organization/index.md)

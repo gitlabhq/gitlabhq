@@ -1,5 +1,4 @@
-import { GlAlert, GlTable, GlLink } from '@gitlab/ui';
-import { nextTick } from 'vue';
+import { GlAlert, GlTableLite, GlLink, GlEmptyState } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import MlExperimentsShow from '~/ml/experiment_tracking/routes/experiments/show/ml_experiments_show.vue';
 import RegistrySearch from '~/vue_shared/components/registry/registry_search.vue';
@@ -28,9 +27,9 @@ describe('MlExperimentsShow', () => {
 
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findPagination = () => wrapper.findComponent(Pagination);
-  const findEmptyState = () => wrapper.findByText('No candidates to display');
+  const findEmptyState = () => wrapper.findComponent(GlEmptyState);
   const findRegistrySearch = () => wrapper.findComponent(RegistrySearch);
-  const findTable = () => wrapper.findComponent(GlTable);
+  const findTable = () => wrapper.findComponent(GlTableLite);
   const findTableHeaders = () => findTable().findAll('th');
   const findTableRows = () => findTable().findAll('tbody > tr');
   const findNthTableRow = (idx) => findTableRows().at(idx);
@@ -47,8 +46,6 @@ describe('MlExperimentsShow', () => {
   describe('default inputs', () => {
     beforeEach(async () => {
       createWrapper();
-
-      await nextTick();
     });
 
     it('shows empty state', () => {
@@ -59,8 +56,8 @@ describe('MlExperimentsShow', () => {
       expect(findPagination().exists()).toBe(false);
     });
 
-    it('there are no columns', () => {
-      expect(findTable().findAll('th')).toHaveLength(0);
+    it('does not show table', () => {
+      expect(findTable().exists()).toBe(false);
     });
 
     it('initializes sorting correctly', () => {
@@ -197,13 +194,12 @@ describe('MlExperimentsShow', () => {
       const expectedColumnNames = [
         'Name',
         'Created at',
-        'User',
+        'Author',
         'L1 Ratio',
         'Rmse',
         'Auc',
         'Mae',
-        '',
-        '',
+        'Artifacts',
       ];
 
       expect(findTableHeaders().wrappers.map((h) => h.text())).toEqual(expectedColumnNames);
@@ -219,7 +215,9 @@ describe('MlExperimentsShow', () => {
       });
 
       it('shows empty state when no artifact', () => {
-        expect(findColumnInRow(secondCandidateIndex, artifactColumnIndex).text()).toBe('-');
+        expect(findColumnInRow(secondCandidateIndex, artifactColumnIndex).text()).toBe(
+          'No artifacts',
+        );
       });
     });
 
@@ -250,15 +248,7 @@ describe('MlExperimentsShow', () => {
       });
 
       it('when there is no user shows nothing', () => {
-        expect(findColumnInRow(secondCandidateIndex, nameColumnIndex).text()).toBe('');
-      });
-    });
-
-    describe('Detail column', () => {
-      const detailColumn = -2;
-
-      it('is a link to details', () => {
-        expect(hrefInRowAndColumn(firstCandidateIndex, detailColumn)).toBe(firstCandidate.details);
+        expect(findColumnInRow(secondCandidateIndex, nameColumnIndex).text()).toBe('No name');
       });
     });
   });

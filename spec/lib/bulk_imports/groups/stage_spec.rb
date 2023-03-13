@@ -68,40 +68,16 @@ RSpec.describe BulkImports::Groups::Stage, feature_category: :importers do
       end
     end
 
-    context 'when bulk_import_projects feature flag is enabled' do
-      it 'includes project entities pipeline' do
-        stub_feature_flags(bulk_import_projects: true)
+    it 'includes project entities pipeline' do
+      expect(described_class.new(entity).pipelines).to include(
+        hash_including({ pipeline: BulkImports::Groups::Pipelines::ProjectEntitiesPipeline })
+      )
+    end
 
-        expect(described_class.new(entity).pipelines).to include(
-          hash_including({ pipeline: BulkImports::Groups::Pipelines::ProjectEntitiesPipeline })
-        )
-      end
-
-      describe 'migrate projects flag' do
-        context 'when true' do
-          it 'includes project entities pipeline' do
-            entity.update!(migrate_projects: true)
-
-            expect(described_class.new(entity).pipelines).to include(
-              hash_including({ pipeline: BulkImports::Groups::Pipelines::ProjectEntitiesPipeline })
-            )
-          end
-        end
-
-        context 'when false' do
-          it 'does not include project entities pipeline' do
-            entity.update!(migrate_projects: false)
-
-            expect(described_class.new(entity).pipelines).not_to include(
-              hash_including({ pipeline: BulkImports::Groups::Pipelines::ProjectEntitiesPipeline })
-            )
-          end
-        end
-      end
-
-      context 'when feature flag is enabled on root ancestor level' do
+    describe 'migrate projects flag' do
+      context 'when true' do
         it 'includes project entities pipeline' do
-          stub_feature_flags(bulk_import_projects: ancestor)
+          entity.update!(migrate_projects: true)
 
           expect(described_class.new(entity).pipelines).to include(
             hash_including({ pipeline: BulkImports::Groups::Pipelines::ProjectEntitiesPipeline })
@@ -109,24 +85,22 @@ RSpec.describe BulkImports::Groups::Stage, feature_category: :importers do
         end
       end
 
-      context 'when destination namespace is not present' do
-        it 'includes project entities pipeline' do
-          stub_feature_flags(bulk_import_projects: true)
+      context 'when false' do
+        it 'does not include project entities pipeline' do
+          entity.update!(migrate_projects: false)
 
-          entity = create(:bulk_import_entity, destination_namespace: '')
-
-          expect(described_class.new(entity).pipelines).to include(
+          expect(described_class.new(entity).pipelines).not_to include(
             hash_including({ pipeline: BulkImports::Groups::Pipelines::ProjectEntitiesPipeline })
           )
         end
       end
     end
 
-    context 'when bulk_import_projects feature flag is disabled' do
-      it 'does not include project entities pipeline' do
-        stub_feature_flags(bulk_import_projects: false)
+    context 'when destination namespace is not present' do
+      it 'includes project entities pipeline' do
+        entity = create(:bulk_import_entity, destination_namespace: '')
 
-        expect(described_class.new(entity).pipelines).not_to include(
+        expect(described_class.new(entity).pipelines).to include(
           hash_including({ pipeline: BulkImports::Groups::Pipelines::ProjectEntitiesPipeline })
         )
       end

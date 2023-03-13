@@ -48,6 +48,7 @@ class Projects::IssuesController < Projects::ApplicationController
     push_frontend_feature_flag(:preserve_unchanged_markdown, project)
     push_frontend_feature_flag(:content_editor_on_issues, project)
     push_frontend_feature_flag(:service_desk_new_note_email_native_attachments, project)
+    push_frontend_feature_flag(:saved_replies, current_user)
   end
 
   before_action only: [:index, :show] do

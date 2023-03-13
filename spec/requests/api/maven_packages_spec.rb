@@ -22,7 +22,7 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
   let_it_be(:deploy_token_for_group) { create(:deploy_token, :group, read_package_registry: true, write_package_registry: true) }
   let_it_be(:group_deploy_token) { create(:group_deploy_token, deploy_token: deploy_token_for_group, group: group) }
 
-  let(:snowplow_gitlab_standard_context) { { project: project, namespace: project.namespace, property: 'i_package_maven_user' } }
+  let(:snowplow_gitlab_standard_context) { { project: project, namespace: project.namespace, user: user, property: 'i_package_maven_user' } }
 
   let(:package_name) { 'com/example/my-app' }
   let(:headers) { workhorse_headers }
@@ -285,6 +285,8 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
 
   describe 'GET /api/v4/packages/maven/*path/:file_name' do
     context 'a public project' do
+      let(:snowplow_gitlab_standard_context) { { project: project, namespace: project.namespace, property: 'i_package_maven_user' } }
+
       subject { download_file(file_name: package_file.file_name) }
 
       shared_examples 'getting a file' do
@@ -451,6 +453,8 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
     it_behaves_like 'forwarding package requests'
 
     context 'a public project' do
+      let(:snowplow_gitlab_standard_context) { { project: project, namespace: project.namespace, property: 'i_package_maven_user' } }
+
       subject { download_file(file_name: package_file.file_name) }
 
       shared_examples 'getting a file for a group' do
@@ -660,6 +664,8 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
 
   describe 'GET /api/v4/projects/:id/packages/maven/*path/:file_name' do
     context 'a public project' do
+      let(:snowplow_gitlab_standard_context) { { project: project, namespace: project.namespace, property: 'i_package_maven_user' } }
+
       subject { download_file(file_name: package_file.file_name) }
 
       it_behaves_like 'tracking the file download event'
@@ -901,8 +907,6 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
       it_behaves_like 'package workhorse uploads'
 
       context 'event tracking' do
-        let(:snowplow_gitlab_standard_context) { { project: project, namespace: project.namespace, user: user, property: 'i_package_maven_user' } }
-
         it_behaves_like 'a package tracking event', described_class.name, 'push_package'
 
         context 'when the package file fails to be created' do

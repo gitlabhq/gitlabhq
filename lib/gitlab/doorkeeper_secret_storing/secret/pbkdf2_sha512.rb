@@ -10,9 +10,7 @@ module Gitlab
         # additional security.
         SALT = ''
 
-        def self.transform_secret(plain_secret, stored_as_hash = false)
-          return plain_secret if Feature.disabled?(:hash_oauth_secrets) && !stored_as_hash
-
+        def self.transform_secret(plain_secret)
           Devise::Pbkdf2Encryptable::Encryptors::Pbkdf2Sha512.digest(plain_secret, STRETCHES, SALT)
         end
 
@@ -28,8 +26,7 @@ module Gitlab
         # Securely compare the given +input+ value with a +stored+ value
         # processed by +transform_secret+.
         def self.secret_matches?(input, stored)
-          stored_as_hash = stored.starts_with?('$pbkdf2-')
-          transformed_input = transform_secret(input, stored_as_hash)
+          transformed_input = transform_secret(input)
           ActiveSupport::SecurityUtils.secure_compare transformed_input, stored
         end
       end

@@ -65,10 +65,6 @@ module QA
       let(:mrs) { fetch_mrs(imported_project, api_client) }
       let(:issues) { fetch_issues(imported_project, api_client) }
 
-      before do
-        Runtime::Feature.enable(:bulk_import_projects) unless Runtime::Feature.enabled?(:bulk_import_projects)
-      end
-
       # rubocop:disable RSpec/InstanceVariable
       after do |example|
         next unless defined?(@import_time)

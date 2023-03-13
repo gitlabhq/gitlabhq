@@ -106,7 +106,7 @@
 - if @merge_request.can_be_cherry_picked?
   = render "projects/commit/change", type: 'cherry-pick', commit: @merge_request.merge_commit
 
-#js-review-bar
+#js-review-bar{ data: { saved_replies_new_path: profile_saved_replies_path } }
 
 - if current_user && Feature.enabled?(:mr_experience_survey, current_user)
   #js-mr-experience-survey{ data: { account_age: current_user.account_age_in_days } }

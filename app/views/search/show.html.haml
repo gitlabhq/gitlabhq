@@ -1,6 +1,6 @@
 - @hide_top_links = true
+- breadcrumb_title _('Search')
 - page_title @search_term
-- @hide_breadcrumbs = true
 - if params[:group_id].present?
   = hidden_field_tag :group_id, params[:group_id]
 - if params[:project_id].present?

@@ -833,6 +833,9 @@ Gitlab.ee do
   Settings.cron_jobs['package_metadata_sync_worker'] ||= Settingslogic.new({})
   Settings.cron_jobs['package_metadata_sync_worker']['cron'] ||= "0 * * * *"
   Settings.cron_jobs['package_metadata_sync_worker']['job_class'] = 'PackageMetadata::SyncWorker'
+  Settings.cron_jobs['compliance_violations_consistency_worker'] ||= Settingslogic.new({})
+  Settings.cron_jobs['compliance_violations_consistency_worker']['cron'] ||= '0 1 * * *'
+  Settings.cron_jobs['compliance_violations_consistency_worker']['job_class'] = 'ComplianceManagement::MergeRequests::ComplianceViolationsConsistencyWorker'
   Gitlab.com do
     Settings.cron_jobs['free_user_cap_backfill_notification_jobs_worker'] ||= Settingslogic.new({})
     Settings.cron_jobs['free_user_cap_backfill_notification_jobs_worker']['cron'] ||= '*/5 * * * *'

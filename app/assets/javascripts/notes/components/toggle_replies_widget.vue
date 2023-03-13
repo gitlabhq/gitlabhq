@@ -39,7 +39,7 @@ export default {
     },
     liClasses() {
       return this.collapsed
-        ? 'gl-text-gray-500 gl-rounded-bottom-left-base gl-rounded-bottom-right-base'
+        ? 'gl-text-gray-500 gl-rounded-bottom-left-base! gl-rounded-bottom-right-base! replies-widget-collapsed'
         : 'gl-border-b';
     },
     buttonIcon() {

@@ -1373,6 +1373,23 @@ The bug causes all wildcard domains (`.example.com`) to be ignored except for th
 
 You can have only one wildcard domain in the `no_proxy` list.
 
+### Secondary site shows "Unhealthy" in UI after changing the value of `external_url` for the primary site
+
+If you have updated the value of `external_url` in `/etc/gitlab/gitlab.rb` for the primary site or changed the protocol from `http` to `https`, you may see that secondary sites are shown as `Unhealthy`. You may also find the following error in `geo.log`:
+
+```plaintext
+"class": "Geo::NodeStatusRequestService",
+...
+"message": "Failed to Net::HTTP::Post to primary url: http://primary-site.gitlab.tld/api/v4/geo/status",
+  "error": "Failed to open TCP connection to <PRIMARY_IP_ADDRESS>:80 (Connection refused - connect(2) for \"<PRIMARY_ID_ADDRESS>\" port 80)"
+```
+
+In this case, make sure to update the changed URL on all your sites:
+
+1. On the top bar, select **Main menu > Admin**.
+1. On the left sidebar, select **Admin > Geo > Sites**.
+1. Change the URL and save the change.
+
 ## Fixing non-PostgreSQL replication failures
 
 If you notice replication failures in `Admin > Geo > Sites` or the [Sync status Rake task](#sync-status-rake-task), you can try to resolve the failures with the following general steps:

@@ -63,43 +63,18 @@ RSpec.describe Admin::ApplicationsController do
   end
 
   describe 'POST #create' do
-    context 'with hash_oauth_secrets flag off' do
-      before do
-        stub_feature_flags(hash_oauth_secrets: false)
-      end
+    it 'creates the application' do
+      create_params = attributes_for(:application, trusted: true, confidential: false, scopes: ['api'])
 
-      it 'creates the application' do
-        create_params = attributes_for(:application, trusted: true, confidential: false, scopes: ['api'])
+      expect do
+        post :create, params: { doorkeeper_application: create_params }
+      end.to change { Doorkeeper::Application.count }.by(1)
 
-        expect do
-          post :create, params: { doorkeeper_application: create_params }
-        end.to change { Doorkeeper::Application.count }.by(1)
+      application = Doorkeeper::Application.last
 
-        application = Doorkeeper::Application.last
-
-        expect(response).to redirect_to(admin_application_path(application))
-        expect(application).to have_attributes(create_params.except(:uid, :owner_type))
-      end
-    end
-
-    context 'with hash_oauth_secrets flag on' do
-      before do
-        stub_feature_flags(hash_oauth_secrets: true)
-      end
-
-      it 'creates the application' do
-        create_params = attributes_for(:application, trusted: true, confidential: false, scopes: ['api'])
-
-        expect do
-          post :create, params: { doorkeeper_application: create_params }
-        end.to change { Doorkeeper::Application.count }.by(1)
-
-        application = Doorkeeper::Application.last
-
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(response).to render_template :show
-        expect(application).to have_attributes(create_params.except(:uid, :owner_type))
-      end
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(response).to render_template :show
+      expect(application).to have_attributes(create_params.except(:uid, :owner_type))
     end
 
     it 'renders the application form on errors' do
@@ -112,43 +87,18 @@ RSpec.describe Admin::ApplicationsController do
     end
 
     context 'when the params are for a confidential application' do
-      context 'with hash_oauth_secrets flag off' do
-        before do
-          stub_feature_flags(hash_oauth_secrets: false)
-        end
+      it 'creates a confidential application' do
+        create_params = attributes_for(:application, confidential: true, scopes: ['read_user'])
 
-        it 'creates a confidential application' do
-          create_params = attributes_for(:application, confidential: true, scopes: ['read_user'])
+        expect do
+          post :create, params: { doorkeeper_application: create_params }
+        end.to change { Doorkeeper::Application.count }.by(1)
 
-          expect do
-            post :create, params: { doorkeeper_application: create_params }
-          end.to change { Doorkeeper::Application.count }.by(1)
+        application = Doorkeeper::Application.last
 
-          application = Doorkeeper::Application.last
-
-          expect(response).to redirect_to(admin_application_path(application))
-          expect(application).to have_attributes(create_params.except(:uid, :owner_type))
-        end
-      end
-
-      context 'with hash_oauth_secrets flag on' do
-        before do
-          stub_feature_flags(hash_oauth_secrets: true)
-        end
-
-        it 'creates a confidential application' do
-          create_params = attributes_for(:application, confidential: true, scopes: ['read_user'])
-
-          expect do
-            post :create, params: { doorkeeper_application: create_params }
-          end.to change { Doorkeeper::Application.count }.by(1)
-
-          application = Doorkeeper::Application.last
-
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(response).to render_template :show
-          expect(application).to have_attributes(create_params.except(:uid, :owner_type))
-        end
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to render_template :show
+        expect(application).to have_attributes(create_params.except(:uid, :owner_type))
       end
     end
 

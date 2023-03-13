@@ -200,7 +200,8 @@ module MergeRequestsHelper
       default_suggestion_commit_message: default_suggestion_commit_message,
       source_project_default_url: @merge_request.source_project && default_url_to_repo(@merge_request.source_project),
       source_project_full_path: @merge_request.source_project&.full_path,
-      is_forked: @project.forked?.to_s
+      is_forked: @project.forked?.to_s,
+      saved_replies_new_path: profile_saved_replies_path
     }
   end
 

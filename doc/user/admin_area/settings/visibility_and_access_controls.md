@@ -207,9 +207,6 @@ To enable the export of
 
 You can enable migration of groups by direct transfer using the UI.
 
-To also migrate projects with the groups, you must enable the
-[`bulk_import_projects` feature flag](../../group/import/index.md#migrate-groups-by-direct-transfer-recommended).
-
 To enable migration of groups by direct transfer:
 
 1. Sign in to GitLab as a user with Administrator access level.

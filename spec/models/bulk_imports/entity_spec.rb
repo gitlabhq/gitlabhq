@@ -98,8 +98,6 @@ RSpec.describe BulkImports::Entity, type: :model, feature_category: :importers d
       end
 
       it 'is invalid as a project_entity' do
-        stub_feature_flags(bulk_import_projects: true)
-
         entity = build(:bulk_import_entity, :project_entity, group: build(:group), project: nil)
 
         expect(entity).not_to be_valid
@@ -109,8 +107,6 @@ RSpec.describe BulkImports::Entity, type: :model, feature_category: :importers d
 
     context 'when associated with a project and no group' do
       it 'is valid' do
-        stub_feature_flags(bulk_import_projects: true)
-
         entity = build(:bulk_import_entity, :project_entity, group: nil, project: build(:project))
 
         expect(entity).to be_valid
@@ -140,8 +136,6 @@ RSpec.describe BulkImports::Entity, type: :model, feature_category: :importers d
 
     context 'when the parent is a project import' do
       it 'is invalid' do
-        stub_feature_flags(bulk_import_projects: true)
-
         entity = build(:bulk_import_entity, parent: build(:bulk_import_entity, :project_entity))
 
         expect(entity).not_to be_valid
@@ -183,34 +177,9 @@ RSpec.describe BulkImports::Entity, type: :model, feature_category: :importers d
       end
     end
 
-    context 'when bulk_import_projects feature flag is disabled and source_type is a project_entity' do
-      it 'is invalid' do
-        stub_feature_flags(bulk_import_projects: false)
-
-        entity = build(:bulk_import_entity, :project_entity)
-
-        expect(entity).not_to be_valid
-        expect(entity.errors[:base]).to include('invalid entity source type')
-      end
-    end
-
-    context 'when bulk_import_projects feature flag is enabled and source_type is a project_entity' do
+    context 'when source_type is a project_entity' do
       it 'is valid' do
-        stub_feature_flags(bulk_import_projects: true)
-
         entity = build(:bulk_import_entity, :project_entity)
-
-        expect(entity).to be_valid
-      end
-    end
-
-    context 'when bulk_import_projects feature flag is enabled on root ancestor level and source_type is a project_entity' do
-      it 'is valid' do
-        top_level_namespace = create(:group)
-
-        stub_feature_flags(bulk_import_projects: top_level_namespace)
-
-        entity = build(:bulk_import_entity, :project_entity, destination_namespace: top_level_namespace.full_path)
 
         expect(entity).to be_valid
       end

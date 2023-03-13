@@ -681,7 +681,7 @@ $system-note-svg-size: 1rem;
 
   .discussion-reply-holder {
     border-top: 0;
-    border-radius: 0 0 $border-radius-default $border-radius-default;
+    border-radius: 0 0 $gl-border-radius-base $gl-border-radius-base;
     position: relative;
 
     .discussion-form {

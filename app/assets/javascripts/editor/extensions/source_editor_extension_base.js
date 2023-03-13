@@ -4,7 +4,7 @@ import {
   EDITOR_TYPE_CODE,
   EXTENSION_BASE_LINE_LINK_ANCHOR_CLASS,
   EXTENSION_BASE_LINE_NUMBERS_CLASS,
-  EDITOR_TOOLBAR_RIGHT_GROUP,
+  EDITOR_TOOLBAR_BUTTON_GROUPS,
   EXTENSION_SOFTWRAP_ID,
 } from '../constants';
 
@@ -56,7 +56,7 @@ export class SourceEditorExtension {
         label: __('Soft wrap'),
         icon: 'soft-wrap',
         selected: instance.getOption(116) === 'on',
-        group: EDITOR_TOOLBAR_RIGHT_GROUP,
+        group: EDITOR_TOOLBAR_BUTTON_GROUPS.settings,
         category: 'primary',
         selectedLabel: __('No wrap'),
         selectedIcon: 'soft-unwrap',

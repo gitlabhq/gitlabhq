@@ -1,28 +1,35 @@
 <script>
-import { GlTable, GlLink, GlTooltipDirective } from '@gitlab/ui';
+import { GlTableLite, GlLink, GlEmptyState } from '@gitlab/ui';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import RegistrySearch from '~/vue_shared/components/registry/registry_search.vue';
 import { FILTERED_SEARCH_TERM } from '~/vue_shared/components/filtered_search_bar/constants';
-import { FEATURE_NAME, FEATURE_FEEDBACK_ISSUE } from '~/ml/experiment_tracking/constants';
+import {
+  FEATURE_NAME,
+  FEATURE_FEEDBACK_ISSUE,
+  EMPTY_STATE_SVG,
+} from '~/ml/experiment_tracking/constants';
 import { queryToObject, setUrlParams, visitUrl } from '~/lib/utils/url_utility';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 import KeysetPagination from '~/vue_shared/components/incubation/pagination.vue';
 import IncubationAlert from '~/vue_shared/components/incubation/incubation_alert.vue';
-import { LIST_KEY_CREATED_AT, BASE_SORT_FIELDS, METRIC_KEY_PREFIX } from './constants';
+import {
+  LIST_KEY_CREATED_AT,
+  BASE_SORT_FIELDS,
+  METRIC_KEY_PREFIX,
+  CREATE_CANDIDATE_HELP_PATH,
+} from './constants';
 import * as translations from './translations';
 
 export default {
   name: 'MlExperimentsShow',
   components: {
-    GlTable,
+    GlTableLite,
     GlLink,
+    GlEmptyState,
     TimeAgo,
     IncubationAlert,
     RegistrySearch,
     KeysetPagination,
-  },
-  directives: {
-    GlTooltip: GlTooltipDirective,
   },
   props: {
     candidates: {
@@ -66,13 +73,12 @@ export default {
       if (this.candidates.length === 0) return [];
 
       return [
-        { key: 'name', label: this.$options.i18n.NAME_LABEL },
+        { key: 'nameColumn', label: this.$options.i18n.NAME_LABEL },
         { key: 'created_at', label: this.$options.i18n.CREATED_AT_LABEL },
         { key: 'user', label: this.$options.i18n.USER_LABEL },
         ...this.paramNames,
         ...this.metricNames,
-        { key: 'details', label: '' },
-        { key: 'artifact', label: '' },
+        { key: 'artifact', label: this.$options.i18n.ARTIFACTS_LABEL },
       ];
     },
     displayPagination() {
@@ -106,6 +112,18 @@ export default {
 
       return { ...filterByQuery, orderBy, orderByType, sort };
     },
+    tableItems() {
+      return this.candidates.map((candidate) => ({
+        ...candidate,
+        nameColumn: {
+          name: candidate.name,
+          details_path: candidate.details,
+        },
+      }));
+    },
+    hasItems() {
+      return this.candidates.length > 0;
+    },
   },
   methods: {
     submitFilters() {
@@ -126,6 +144,8 @@ export default {
   constants: {
     FEATURE_NAME,
     FEATURE_FEEDBACK_ISSUE,
+    CREATE_CANDIDATE_HELP_PATH,
+    EMPTY_STATE_SVG,
   },
 };
 </script>
@@ -137,10 +157,6 @@ export default {
       :link-to-feedback-issue="$options.constants.FEATURE_FEEDBACK_ISSUE"
     />
 
-    <h3>
-      {{ $options.i18n.TITLE_LABEL }}
-    </h3>
-
     <registry-search
       :filters="filters"
       :sorting="sorting"
@@ -151,53 +167,54 @@ export default {
       @filter:clear="filters = []"
     />
 
-    <gl-table
-      :fields="fields"
-      :items="candidates"
-      :empty-text="$options.i18n.EMPTY_STATE_LABEL"
-      show-empty
-      small
-      class="gl-mt-0! ml-candidate-table"
-    >
-      <template #cell()="data">
-        <div v-gl-tooltip.hover :title="data.value">{{ data.value }}</div>
-      </template>
+    <div v-if="hasItems" class="gl-overflow-x-auto">
+      <gl-table-lite
+        :fields="fields"
+        :items="tableItems"
+        show-empty
+        small
+        class="gl-mt-0! ml-candidate-table"
+      >
+        <template #cell()="data">
+          <div>{{ data.value }}</div>
+        </template>
 
-      <template #cell(artifact)="data">
-        <gl-link
-          v-if="data.value"
-          v-gl-tooltip.hover
-          :href="data.value"
-          target="_blank"
-          :title="$options.i18n.ARTIFACTS_LABEL"
-          >{{ $options.i18n.ARTIFACTS_LABEL }}</gl-link
-        >
-        <div v-else v-gl-tooltip.hover :title="$options.i18n.ARTIFACTS_LABEL">
-          {{ $options.i18n.NO_DATA_CONTENT }}
-        </div>
-      </template>
+        <template #cell(nameColumn)="data">
+          <gl-link :href="data.value.details_path">
+            <span v-if="data.value.name"> {{ data.value.name }}</span>
+            <span v-else class="gl-font-style-italic">{{ $options.i18n.NO_CANDIDATE_NAME }}</span>
+          </gl-link>
+        </template>
 
-      <template #cell(details)="data">
-        <gl-link v-gl-tooltip.hover :href="data.value" :title="$options.i18n.DETAILS_LABEL">{{
-          $options.i18n.DETAILS_LABEL
-        }}</gl-link>
-      </template>
+        <template #cell(artifact)="data">
+          <gl-link v-if="data.value" :href="data.value" target="_blank">{{
+            $options.i18n.ARTIFACTS_LABEL
+          }}</gl-link>
+          <div v-else class="gl-font-style-italic gl-text-gray-500">
+            {{ $options.i18n.NO_ARTIFACT }}
+          </div>
+        </template>
 
-      <template #cell(created_at)="data">
-        <time-ago v-gl-tooltip.hover :time="data.value" :title="data.value" />
-      </template>
+        <template #cell(created_at)="data">
+          <time-ago :time="data.value" />
+        </template>
 
-      <template #cell(user)="data">
-        <gl-link
-          v-if="data.value"
-          v-gl-tooltip.hover
-          :href="data.value.path"
-          :title="data.value.username"
-          >@{{ data.value.username }}</gl-link
-        >
-        <div v-else>{{ $options.i18n.NO_DATA_CONTENT }}</div>
-      </template>
-    </gl-table>
+        <template #cell(user)="data">
+          <gl-link v-if="data.value" :href="data.value.path">@{{ data.value.username }}</gl-link>
+          <div v-else>{{ $options.i18n.NO_DATA_CONTENT }}</div>
+        </template>
+      </gl-table-lite>
+    </div>
+
+    <gl-empty-state
+      v-else
+      :title="$options.i18n.EMPTY_STATE_TITLE_LABEL"
+      :primary-button-text="$options.i18n.CREATE_NEW_LABEL"
+      :primary-button-link="$options.constants.CREATE_CANDIDATE_HELP_PATH"
+      :svg-path="$options.constants.EMPTY_STATE_SVG"
+      :description="$options.i18n.EMPTY_STATE_DESCRIPTION_LABEL"
+      class="gl-py-8"
+    />
 
     <keyset-pagination v-if="displayPagination" v-bind="pageInfo" />
   </div>

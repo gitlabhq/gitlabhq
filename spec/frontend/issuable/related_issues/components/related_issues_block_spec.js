@@ -1,5 +1,5 @@
 import { nextTick } from 'vue';
-import { GlIcon } from '@gitlab/ui';
+import { GlIcon, GlCard } from '@gitlab/ui';
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import {
   issuable1,
@@ -78,6 +78,9 @@ describe('RelatedIssuesBlock', () => {
           pathIdSeparator: PathIdSeparator.Issue,
           issuableType: 'issue',
         },
+        stubs: {
+          GlCard,
+        },
         slots: { 'header-text': headerText },
       });
 
@@ -93,6 +96,9 @@ describe('RelatedIssuesBlock', () => {
         propsData: {
           pathIdSeparator: PathIdSeparator.Issue,
           issuableType: 'issue',
+        },
+        stubs: {
+          GlCard,
         },
         slots: { 'header-actions': headerActions },
       });
@@ -222,6 +228,9 @@ describe('RelatedIssuesBlock', () => {
             pathIdSeparator: PathIdSeparator.Issue,
             issuableType,
           },
+          stubs: {
+            GlCard,
+          },
         });
 
         const iconComponent = wrapper.findComponent(GlIcon);
@@ -238,6 +247,9 @@ describe('RelatedIssuesBlock', () => {
           pathIdSeparator: PathIdSeparator.Issue,
           relatedIssues: [issuable1, issuable2, issuable3],
           issuableType: TYPE_ISSUE,
+        },
+        stubs: {
+          GlCard,
         },
       });
     });

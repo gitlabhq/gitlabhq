@@ -36,6 +36,7 @@ RSpec.shared_examples 'handling nuget service requests' do |example_names_with_s
       with_them do
         let(:token) { user_token ? personal_access_token.token : 'wrong' }
         let(:headers) { user_role == :anonymous ? {} : basic_auth_header(user.username, token) }
+        let(:snowplow_gitlab_standard_context) { snowplow_context(user_role: user_role) }
 
         subject { get api(url), headers: headers }
 
@@ -72,6 +73,7 @@ RSpec.shared_examples 'handling nuget service requests' do |example_names_with_s
       with_them do
         let(:job) { user_token ? create(:ci_build, project: project, user: user, status: :running) : double(token: 'wrong') }
         let(:headers) { user_role == :anonymous ? {} : job_basic_auth_header(job) }
+        let(:snowplow_gitlab_standard_context) { snowplow_context(user_role: user_role) }
 
         subject { get api(url), headers: headers }
 
@@ -140,6 +142,7 @@ RSpec.shared_examples 'handling nuget metadata requests with package name' do |e
     with_them do
       let(:token) { user_token ? personal_access_token.token : 'wrong' }
       let(:headers) { user_role == :anonymous ? {} : basic_auth_header(user.username, token) }
+      let(:snowplow_gitlab_standard_context) { snowplow_context(user_role: user_role) }
 
       subject { get api(url), headers: headers }
 
@@ -207,6 +210,7 @@ RSpec.shared_examples 'handling nuget metadata requests with package name and pa
     with_them do
       let(:token) { user_token ? personal_access_token.token : 'wrong' }
       let(:headers) { user_role == :anonymous ? {} : basic_auth_header(user.username, token) }
+      let(:snowplow_gitlab_standard_context) { snowplow_context(user_role: user_role) }
 
       subject { get api(url), headers: headers }
 
@@ -277,6 +281,7 @@ RSpec.shared_examples 'handling nuget search requests' do |example_names_with_st
     with_them do
       let(:token) { user_token ? personal_access_token.token : 'wrong' }
       let(:headers) { user_role == :anonymous ? {} : basic_auth_header(user.username, token) }
+      let(:snowplow_gitlab_standard_context) { snowplow_context(user_role: user_role) }
 
       subject { get api(url), headers: headers }
 

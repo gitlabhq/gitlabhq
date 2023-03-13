@@ -5,7 +5,7 @@ import { shallowMount } from '@vue/test-utils';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import SourceEditorToolbar from '~/editor/components/source_editor_toolbar.vue';
 import SourceEditorToolbarButton from '~/editor/components/source_editor_toolbar_button.vue';
-import { EDITOR_TOOLBAR_LEFT_GROUP, EDITOR_TOOLBAR_RIGHT_GROUP } from '~/editor/constants';
+import { EDITOR_TOOLBAR_BUTTON_GROUPS } from '~/editor/constants';
 import getToolbarItemsQuery from '~/editor/graphql/get_items.query.graphql';
 import { buildButton } from './helpers';
 
@@ -45,18 +45,19 @@ describe('Source Editor Toolbar', () => {
 
   describe('groups', () => {
     it.each`
-      group                         | expectedGroup
-      ${EDITOR_TOOLBAR_LEFT_GROUP}  | ${EDITOR_TOOLBAR_LEFT_GROUP}
-      ${EDITOR_TOOLBAR_RIGHT_GROUP} | ${EDITOR_TOOLBAR_RIGHT_GROUP}
-      ${undefined}                  | ${EDITOR_TOOLBAR_RIGHT_GROUP}
-      ${'non-existing'}             | ${EDITOR_TOOLBAR_RIGHT_GROUP}
+      group                                    | expectedGroup
+      ${EDITOR_TOOLBAR_BUTTON_GROUPS.file}     | ${EDITOR_TOOLBAR_BUTTON_GROUPS.file}
+      ${EDITOR_TOOLBAR_BUTTON_GROUPS.edit}     | ${EDITOR_TOOLBAR_BUTTON_GROUPS.edit}
+      ${EDITOR_TOOLBAR_BUTTON_GROUPS.settings} | ${EDITOR_TOOLBAR_BUTTON_GROUPS.settings}
+      ${undefined}                             | ${EDITOR_TOOLBAR_BUTTON_GROUPS.settings}
+      ${'non-existing'}                        | ${EDITOR_TOOLBAR_BUTTON_GROUPS.settings}
     `('puts item with group="$group" into $expectedGroup group', ({ group, expectedGroup }) => {
       const item = buildButton('first', {
         group,
       });
       createComponentWithApollo([item]);
       expect(findButtons()).toHaveLength(1);
-      [EDITOR_TOOLBAR_RIGHT_GROUP, EDITOR_TOOLBAR_LEFT_GROUP].forEach((g) => {
+      Object.keys(EDITOR_TOOLBAR_BUTTON_GROUPS).forEach((g) => {
         if (g === expectedGroup) {
           expect(wrapper.vm.getGroupItems(g)).toEqual([expect.objectContaining({ id: 'first' })]);
         } else {
@@ -69,7 +70,7 @@ describe('Source Editor Toolbar', () => {
   describe('buttons update', () => {
     it('properly updates buttons on Apollo cache update', async () => {
       const item = buildButton('first', {
-        group: EDITOR_TOOLBAR_RIGHT_GROUP,
+        group: EDITOR_TOOLBAR_BUTTON_GROUPS.edit,
       });
       createComponentWithApollo();
 
@@ -94,12 +95,15 @@ describe('Source Editor Toolbar', () => {
   describe('click handler', () => {
     it('emits the "click" event when a button is clicked', () => {
       const item1 = buildButton('first', {
-        group: EDITOR_TOOLBAR_LEFT_GROUP,
+        group: EDITOR_TOOLBAR_BUTTON_GROUPS.file,
       });
       const item2 = buildButton('second', {
-        group: EDITOR_TOOLBAR_RIGHT_GROUP,
+        group: EDITOR_TOOLBAR_BUTTON_GROUPS.edit,
       });
-      createComponentWithApollo([item1, item2]);
+      const item3 = buildButton('third', {
+        group: EDITOR_TOOLBAR_BUTTON_GROUPS.settings,
+      });
+      createComponentWithApollo([item1, item2, item3]);
       jest.spyOn(wrapper.vm, '$emit');
       expect(wrapper.vm.$emit).not.toHaveBeenCalled();
 
@@ -109,7 +113,10 @@ describe('Source Editor Toolbar', () => {
       findButtons().at(1).vm.$emit('click');
       expect(wrapper.vm.$emit).toHaveBeenCalledWith('click', item2);
 
-      expect(wrapper.vm.$emit.mock.calls).toHaveLength(2);
+      findButtons().at(2).vm.$emit('click');
+      expect(wrapper.vm.$emit).toHaveBeenCalledWith('click', item3);
+
+      expect(wrapper.vm.$emit.mock.calls).toHaveLength(3);
     });
   });
 });

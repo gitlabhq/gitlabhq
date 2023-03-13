@@ -4,7 +4,8 @@ creation-date: "2021-02-07"
 authors: [ "@alexpooley", "@ifarkas" ]
 coach: "@grzesiek"
 approvers: [ "@m_gill", "@mushakov" ]
-owning-stage: "~devops::plan"
+author-stage: "~devops::plan"
+owning-stage: "~devops::data_stores"
 participating-stages: []
 ---
 
@@ -147,4 +148,4 @@ The initial iteration will provide a framework to house features under `Namespac
 
 ## Related topics
 
-- [Workspace developer documentation](../../../development/workspace/index.md)
+- [Organization developer documentation](../../../development/organization/index.md)

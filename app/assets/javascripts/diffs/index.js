@@ -1,5 +1,7 @@
 import Vue from 'vue';
+import VueApollo from 'vue-apollo';
 import { mapActions, mapState, mapGetters } from 'vuex';
+import { apolloProvider } from '~/graphql_shared/issuable_client';
 import { getCookie, parseBoolean, removeCookie } from '~/lib/utils/common_utils';
 import notesStore from '~/mr_notes/stores';
 
@@ -11,16 +13,23 @@ import { getReviewsForMergeRequest } from './utils/file_reviews';
 import { getDerivedMergeRequestInformation } from './utils/merge_request';
 
 export default function initDiffsApp(store = notesStore) {
+  const el = document.getElementById('js-diffs-app');
+  const { dataset } = el;
+
+  Vue.use(VueApollo);
+
   const vm = new Vue({
-    el: '#js-diffs-app',
+    el,
     name: 'MergeRequestDiffs',
     components: {
       DiffsApp,
     },
     store,
+    apolloProvider,
+    provide: {
+      newSavedRepliesPath: dataset.savedRepliesNewPath,
+    },
     data() {
-      const { dataset } = document.querySelector(this.$options.el);
-
       return {
         endpoint: dataset.endpoint,
         endpointMetadata: dataset.endpointMetadata || '',

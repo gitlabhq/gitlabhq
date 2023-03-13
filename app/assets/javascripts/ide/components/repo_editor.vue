@@ -27,6 +27,8 @@ import { performanceMarkAndMeasure } from '~/performance/utils';
 import ContentViewer from '~/vue_shared/components/content_viewer/content_viewer.vue';
 import { viewerInformationForPath } from '~/vue_shared/components/content_viewer/lib/viewer_utils';
 import DiffViewer from '~/vue_shared/components/diff_viewer/diff_viewer.vue';
+import { markRaw } from '~/lib/utils/vue3compat/mark_raw';
+
 import {
   leftSidebarViews,
   viewerTypes,
@@ -66,7 +68,7 @@ export default {
       images: {},
       rules: {},
       globalEditor: null,
-      modelManager: new ModelManager(),
+      modelManager: markRaw(new ModelManager()),
       isEditorLoading: true,
       unwatchCiYaml: null,
       SELivepreviewExtension: null,
@@ -212,7 +214,7 @@ export default {
   },
   mounted() {
     if (!this.globalEditor) {
-      this.globalEditor = new SourceEditor();
+      this.globalEditor = markRaw(new SourceEditor());
     }
     this.initEditor();
 
@@ -284,14 +286,16 @@ export default {
         const instanceOptions = isDiff ? defaultDiffEditorOptions : defaultEditorOptions;
         const method = isDiff ? EDITOR_DIFF_INSTANCE_FN : EDITOR_CODE_INSTANCE_FN;
 
-        this.editor = this.globalEditor[method]({
-          el: this.$refs.editor,
-          blobPath: this.file.path,
-          blobGlobalId: this.file.key,
-          blobContent: this.content || this.file.content,
-          ...instanceOptions,
-          ...this.editorOptions,
-        });
+        this.editor = markRaw(
+          this.globalEditor[method]({
+            el: this.$refs.editor,
+            blobPath: this.file.path,
+            blobGlobalId: this.file.key,
+            blobContent: this.content || this.file.content,
+            ...instanceOptions,
+            ...this.editorOptions,
+          }),
+        );
         this.editor.use([
           {
             definition: SourceEditorExtension,

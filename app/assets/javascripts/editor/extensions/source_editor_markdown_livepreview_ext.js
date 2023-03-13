@@ -14,7 +14,7 @@ import {
   EXTENSION_MARKDOWN_PREVIEW_UPDATE_DELAY,
   EXTENSION_MARKDOWN_PREVIEW_LABEL,
   EXTENSION_MARKDOWN_HIDE_PREVIEW_LABEL,
-  EDITOR_TOOLBAR_RIGHT_GROUP,
+  EDITOR_TOOLBAR_BUTTON_GROUPS,
 } from '../constants';
 
 const fetchPreview = (text, previewMarkdownPath) => {
@@ -116,7 +116,7 @@ export class EditorMarkdownPreviewExtension {
         label: EXTENSION_MARKDOWN_PREVIEW_LABEL,
         icon: 'live-preview',
         selected: false,
-        group: EDITOR_TOOLBAR_RIGHT_GROUP,
+        group: EDITOR_TOOLBAR_BUTTON_GROUPS.settings,
         category: 'primary',
         selectedLabel: EXTENSION_MARKDOWN_HIDE_PREVIEW_LABEL,
         onClick: () => instance.togglePreview(),

@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { mapActions, mapState, mapGetters } from 'vuex';
-import createDefaultClient from '~/lib/graphql';
+import { apolloProvider } from '~/graphql_shared/issuable_client';
 
 import { renderGFM } from '~/behaviors/markdown/render_gfm';
 import { parseBoolean } from '~/lib/utils/common_utils';
@@ -26,10 +26,6 @@ export default () => {
   }
 
   Vue.use(VueApollo);
-
-  const apolloProvider = new VueApollo({
-    defaultClient: createDefaultClient(),
-  });
 
   const notesFilterProps = getNotesFilterData(el);
   const notesDataset = el.dataset;

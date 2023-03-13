@@ -306,7 +306,8 @@ RSpec.describe API::Helpers::PackagesHelpers, feature_category: :package_registr
           label: label,
           namespace: namespace,
           property: property,
-          project: project
+          project: project,
+          user: user
         )
       end
     end

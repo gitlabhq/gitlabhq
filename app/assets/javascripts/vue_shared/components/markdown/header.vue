@@ -405,6 +405,7 @@ export default {
             :new-saved-replies-path="newSavedRepliesPath"
           />
           <toolbar-button
+            v-if="!restrictedToolBarItems.includes('full-screen')"
             class="js-zen-enter"
             :prepend="true"
             :button-title="__('Go full screen')"

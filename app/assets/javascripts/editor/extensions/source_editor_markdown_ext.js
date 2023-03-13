@@ -1,5 +1,5 @@
 import { insertMarkdownText } from '~/lib/utils/text_markdown';
-import { EDITOR_TOOLBAR_LEFT_GROUP, EXTENSION_MARKDOWN_BUTTONS } from '../constants';
+import { EDITOR_TOOLBAR_BUTTON_GROUPS, EXTENSION_MARKDOWN_BUTTONS } from '../constants';
 
 export class EditorMarkdownExtension {
   static get extensionName() {
@@ -24,7 +24,7 @@ export class EditorMarkdownExtension {
       return {
         ...btn,
         icon: btn.id,
-        group: EDITOR_TOOLBAR_LEFT_GROUP,
+        group: EDITOR_TOOLBAR_BUTTON_GROUPS.edit,
         category: 'tertiary',
         onClick: (e) => instance.insertMarkdown(e),
       };

@@ -115,6 +115,8 @@ RSpec.describe API::NpmProjectPackages, feature_category: :package_registry do
     end
 
     context 'private project' do
+      let(:snowplow_gitlab_standard_context) { { project: project, namespace: project.namespace, user: user, property: 'i_package_npm_user' } }
+
       before do
         project.update!(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
       end
@@ -143,6 +145,8 @@ RSpec.describe API::NpmProjectPackages, feature_category: :package_registry do
     end
 
     context 'internal project' do
+      let(:snowplow_gitlab_standard_context) { { project: project, namespace: project.namespace, user: user, property: 'i_package_npm_user' } }
+
       before do
         project.update!(visibility_level: Gitlab::VisibilityLevel::INTERNAL)
       end

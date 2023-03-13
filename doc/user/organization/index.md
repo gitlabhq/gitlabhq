@@ -1,6 +1,6 @@
 ---
-stage: Manage
-group: Organization
+stage: Data Stores
+group: Tenant Scale
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -39,4 +39,4 @@ For a video introduction to the new hierarchy concept for groups and projects fo
 
 ## Related topics
 
-- [Organization developer documentation](../../development/workspace/index.md)
+- [Organization developer documentation](../../development/organization/index.md)

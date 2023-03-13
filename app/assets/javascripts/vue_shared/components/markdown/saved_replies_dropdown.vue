@@ -108,3 +108,13 @@ export default {
     </template>
   </gl-collapsible-listbox>
 </template>
+
+<style>
+.saved-replies-dropdown .gl-new-dropdown-panel {
+  width: 350px;
+}
+
+.saved-replies-dropdown .gl-new-dropdown-item-check-icon {
+  display: none;
+}
+</style>

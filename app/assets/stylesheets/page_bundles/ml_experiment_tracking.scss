@@ -1,11 +1,10 @@
 @import '../page_bundles/mixins_and_variables_and_functions';
 
 table.ml-candidate-table {
-  table-layout: fixed;
-
   tr td,
   tr th {
     padding: $gl-padding-8;
+    min-width: 100px;
 
     > * {
       @include gl-display-block;

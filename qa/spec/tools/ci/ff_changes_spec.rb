@@ -12,7 +12,7 @@ RSpec.describe QA::Tools::Ci::FfChanges do
     let(:mr_diff) do
       [
         {
-          path: "config/feature_flags/development/bulk_import_projects.yml",
+          path: "config/feature_flags/development/async_commit_diff_files.yml",
           deleted_file: deleted_file
         }
       ]
@@ -21,12 +21,12 @@ RSpec.describe QA::Tools::Ci::FfChanges do
     before do
       allow(File).to receive(:read)
         .with(File.expand_path("../#{mr_diff.first[:path]}", QA::Runtime::Path.qa_root))
-        .and_return(File.read("spec/fixtures/ff/bulk_import_projects.yml"))
+        .and_return(File.read("spec/fixtures/ff/async_commit_diff_files.yml"))
     end
 
     context "with changed feature flag" do
       it "returns inverse ff state option" do
-        expect(ff_changes.fetch).to eq("bulk_import_projects=enabled")
+        expect(ff_changes.fetch).to eq("async_commit_diff_files=enabled")
       end
     end
 
@@ -34,7 +34,7 @@ RSpec.describe QA::Tools::Ci::FfChanges do
       let(:deleted_file) { true }
 
       it "returns deleted ff state option" do
-        expect(ff_changes.fetch).to eq("bulk_import_projects=deleted")
+        expect(ff_changes.fetch).to eq("async_commit_diff_files=deleted")
       end
     end
   end

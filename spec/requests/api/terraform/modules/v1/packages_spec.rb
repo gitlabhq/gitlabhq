@@ -415,12 +415,15 @@ RSpec.describe API::Terraform::Modules::V1::Packages, feature_category: :package
 
       with_them do
         let(:snowplow_gitlab_standard_context) do
-          {
+          context = {
             project: project,
-            user: user_role == :anonymous ? nil : user,
             namespace: project.namespace,
             property: 'i_package_terraform_module_user'
           }
+
+          context[:user] = user if user_role != :anonymous
+
+          context
         end
 
         before do

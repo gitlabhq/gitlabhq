@@ -140,30 +140,11 @@ RSpec.describe Oauth::ApplicationsController do
 
       subject { post :create, params: oauth_params }
 
-      context 'when hash_oauth_tokens flag set' do
-        before do
-          stub_feature_flags(hash_oauth_secrets: true)
-        end
+      it 'creates an application' do
+        subject
 
-        it 'creates an application' do
-          subject
-
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(response).to render_template :show
-        end
-      end
-
-      context 'when hash_oauth_tokens flag not set' do
-        before do
-          stub_feature_flags(hash_oauth_secrets: false)
-        end
-
-        it 'creates an application' do
-          subject
-
-          expect(response).to have_gitlab_http_status(:found)
-          expect(response).to redirect_to(oauth_application_path(Doorkeeper::Application.last))
-        end
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to render_template :show
       end
 
       it 'redirects back to profile page if OAuth applications are disabled' do

@@ -208,13 +208,6 @@ class BulkImports::Entity < ApplicationRecord
   end
 
   def validate_imported_entity_type
-    if project_entity? && !BulkImports::Features.project_migration_enabled?(destination_namespace)
-      errors.add(
-        :base,
-        s_('BulkImport|invalid entity source type')
-      )
-    end
-
     if group.present? && project_entity?
       errors.add(
         :group,

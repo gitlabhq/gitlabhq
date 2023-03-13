@@ -32,6 +32,8 @@ class BlueprintFrontMatter
   end
 
   def validate
+    return if @metadata['redirect_to']
+
     validate_status
     validate_authors
     validate_creation_date

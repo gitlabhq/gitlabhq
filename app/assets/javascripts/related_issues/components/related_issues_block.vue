@@ -1,5 +1,5 @@
 <script>
-import { GlLink, GlIcon, GlButton } from '@gitlab/ui';
+import { GlLink, GlIcon, GlButton, GlCard } from '@gitlab/ui';
 import { __, sprintf } from '~/locale';
 import {
   issuableIconMap,
@@ -16,8 +16,9 @@ export default {
   name: 'RelatedIssuesBlock',
   components: {
     GlLink,
-    GlButton,
     GlIcon,
+    GlButton,
+    GlCard,
     AddIssuableForm,
     RelatedIssuesList,
   },
@@ -181,58 +182,64 @@ export default {
 
 <template>
   <div id="related-issues" class="related-issues-block">
-    <div class="card card-slim gl-overflow-hidden gl-mt-5 gl-mb-0">
-      <div
-        :class="{
-          'gl-border-b-1': isOpen,
-          'gl-border-b-0': !isOpen,
-        }"
-        class="gl-display-flex gl-justify-content-space-between gl-line-height-24 gl-pl-5 gl-pr-4 gl-py-4 gl-bg-white gl-border-b-solid gl-border-b-gray-100"
-      >
-        <h3 class="card-title h5 gl-my-0 gl-display-flex gl-align-items-center gl-flex-grow-1">
-          <gl-link
-            id="user-content-related-issues"
-            class="anchor position-absolute gl-text-decoration-none"
-            href="#related-issues"
-            aria-hidden="true"
-          />
-          <slot name="header-text">{{ headerText }}</slot>
-
-          <div
-            class="js-related-issues-header-issue-count gl-display-inline-flex gl-mx-3 gl-text-gray-500"
-          >
-            <span class="gl-display-inline-flex gl-align-items-center">
-              <gl-icon :name="issuableTypeIcon" class="gl-mr-2 gl-text-gray-500" />
-              {{ badgeLabel }}
-            </span>
-          </div>
-        </h3>
-        <slot name="header-actions"></slot>
-        <gl-button
-          v-if="canAdmin"
-          size="small"
-          data-qa-selector="related_issues_plus_button"
-          data-testid="related-issues-plus-button"
-          :aria-label="addIssuableButtonText"
-          class="gl-ml-3"
-          @click="addButtonClick"
+    <gl-card
+      class="gl-overflow-hidden gl-mt-5 gl-mb-0"
+      header-class="gl-p-0 gl-border-0"
+      body-class="gl-p-0 gl-bg-gray-10"
+    >
+      <template #header>
+        <div
+          :class="{
+            'gl-border-b-1': isOpen,
+            'gl-border-b-0': !isOpen,
+          }"
+          class="gl-display-flex gl-justify-content-space-between gl-line-height-24 gl-pl-5 gl-pr-4 gl-py-4 gl-bg-white gl-border-b-solid gl-border-b-gray-100"
         >
-          <slot name="add-button-text">{{ __('Add') }}</slot>
-        </gl-button>
-        <div class="gl-pl-3 gl-ml-3 gl-border-l-1 gl-border-l-solid gl-border-l-gray-100">
+          <h3 class="card-title h5 gl-my-0 gl-display-flex gl-align-items-center gl-flex-grow-1">
+            <gl-link
+              id="user-content-related-issues"
+              class="anchor position-absolute gl-text-decoration-none"
+              href="#related-issues"
+              aria-hidden="true"
+            />
+            <slot name="header-text">{{ headerText }}</slot>
+
+            <div
+              class="js-related-issues-header-issue-count gl-display-inline-flex gl-mx-3 gl-text-gray-500"
+            >
+              <span class="gl-display-inline-flex gl-align-items-center">
+                <gl-icon :name="issuableTypeIcon" class="gl-mr-2 gl-text-gray-500" />
+                {{ badgeLabel }}
+              </span>
+            </div>
+          </h3>
+          <slot name="header-actions"></slot>
           <gl-button
-            category="tertiary"
+            v-if="canAdmin"
             size="small"
-            :icon="toggleIcon"
-            :aria-label="toggleLabel"
-            data-testid="toggle-links"
-            @click="handleToggle"
-          />
+            data-qa-selector="related_issues_plus_button"
+            data-testid="related-issues-plus-button"
+            :aria-label="addIssuableButtonText"
+            class="gl-ml-3"
+            @click="addButtonClick"
+          >
+            <slot name="add-button-text">{{ __('Add') }}</slot>
+          </gl-button>
+          <div class="gl-pl-3 gl-ml-3 gl-border-l-1 gl-border-l-solid gl-border-l-gray-100">
+            <gl-button
+              category="tertiary"
+              size="small"
+              :icon="toggleIcon"
+              :aria-label="toggleLabel"
+              data-testid="toggle-links"
+              @click="handleToggle"
+            />
+          </div>
         </div>
-      </div>
+      </template>
       <div
         v-if="isOpen"
-        class="linked-issues-card-body gl-bg-gray-10"
+        class="linked-issues-card-body"
         :class="{
           'gl-p-5': isFormVisible || shouldShowTokenBody,
         }"
@@ -294,6 +301,6 @@ export default {
           </p>
         </div>
       </div>
-    </div>
+    </gl-card>
   </div>
 </template>

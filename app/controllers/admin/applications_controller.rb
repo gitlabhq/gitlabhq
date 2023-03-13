@@ -13,9 +13,7 @@ class Admin::ApplicationsController < Admin::ApplicationController
     @applications = Kaminari.paginate_array(applications).page(params[:page])
   end
 
-  def show
-    @created = get_created_session if Feature.disabled?('hash_oauth_secrets')
-  end
+  def show; end
 
   def new
     @application = Doorkeeper::Application.new
@@ -30,14 +28,8 @@ class Admin::ApplicationsController < Admin::ApplicationController
     if @application.persisted?
       flash[:notice] = I18n.t(:notice, scope: [:doorkeeper, :flash, :applications, :create])
 
-      if Feature.enabled?('hash_oauth_secrets')
-        @created = true
-        render :show
-      else
-        set_created_session
-
-        redirect_to admin_application_url(@application)
-      end
+      @created = true
+      render :show
     else
       render :new
     end

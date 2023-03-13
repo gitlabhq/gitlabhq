@@ -151,14 +151,11 @@ There is an [issue where support is being discussed](https://gitlab.com/gitlab-o
    ALTER USER gitlab_replicator WITH REPLICATION ENCRYPTED PASSWORD '<replication_password>';
    ```
 
-1. Edit `/etc/gitlab/gitlab.rb`:
+1. Edit `/etc/gitlab/gitlab.rb` and set the role to `geo_primary_role` (for more information, see [Geo roles](https://docs.gitlab.com/omnibus/roles/#gitlab-geo-roles)):
 
    ```ruby
-   ## Set this node to have the primary role
+   ## Geo Primary role
    roles(['geo_primary_role'])
-
-   ## Disable automatic database migrations temporarily
-   gitlab_rails['auto_migrate'] = false
    ```
 
 1. Configure PostgreSQL to listen on network interfaces:
@@ -221,17 +218,6 @@ There is an [issue where support is being discussed](https://gitlab.com/gitlab-o
 
    ```ruby
    ##
-   ## Geo Primary role
-   ## - Configures Postgres settings for replication
-   ## - Prevents automatic upgrade of Postgres since it requires downtime of
-   ##   streaming replication to Geo secondary sites
-   ## - Enables standard single-node GitLab services like NGINX, Puma, Redis,
-   ##   or Sidekiq. If you are segregating services, then you will need to
-   ##   explicitly disable unwanted services.
-   ##
-   roles(['geo_primary_role'])
-
-   ##
    ## Primary address
    ## - replace '<primary_node_ip>' with the public or VPC address of your Geo primary node
    ##
@@ -249,11 +235,13 @@ There is an [issue where support is being discussed](https://gitlab.com/gitlab-o
    # postgresql['max_replication_slots'] = 1 # Set this to be the number of Geo secondary nodes if you have more than one
    # postgresql['max_wal_senders'] = 10
    # postgresql['wal_keep_segments'] = 10
+   ```
 
-   ##
-   ## Disable automatic database migrations temporarily
-   ## (until PostgreSQL is restarted and listening on the private address).
-   ##
+1. Disable automatic database migrations temporarily until PostgreSQL is restarted and listening on the private address.
+   Edit `/etc/gitlab/gitlab.rb` and change the configuration to false:
+
+   ```ruby
+   ## Disable automatic database migrations
    gitlab_rails['auto_migrate'] = false
    ```
 
@@ -412,6 +400,16 @@ There is an [issue where support is being discussed](https://gitlab.com/gitlab-o
    Ensure that the contents of `~gitlab-psql/data/server.crt` on the **primary** site
    match the contents of `~gitlab-psql/.postgresql/root.crt` on the **secondary** site.
 
+1. Edit `/etc/gitlab/gitlab.rb` and set the role to `geo_secondary_role` (for more information, see [Geo roles](https://docs.gitlab.com/omnibus/roles/#gitlab-geo-roles)):
+
+   ```ruby
+   ##
+   ## Geo Secondary role
+   ## - configure dependent flags automatically to enable Geo
+   ##
+   roles(['geo_secondary_role'])
+   ```
+
 1. Configure PostgreSQL:
 
    This step is similar to how you configured the **primary** instance.
@@ -421,12 +419,6 @@ There is an [issue where support is being discussed](https://gitlab.com/gitlab-o
    addresses with addresses appropriate to your network configuration:
 
    ```ruby
-   ##
-   ## Geo Secondary role
-   ## - configure dependent flags automatically to enable Geo
-   ##
-   roles(['geo_secondary_role'])
-
    ##
    ## Secondary address
    ## - replace '<secondary_site_ip>' with the public or VPC address of your Geo secondary site

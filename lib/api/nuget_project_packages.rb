@@ -125,7 +125,6 @@ module API
               'push_package',
               :nuget,
               category: 'API::NugetPackages',
-              user: current_user,
               project: package.project,
               namespace: package.project.namespace
             )
@@ -171,7 +170,6 @@ module API
               'push_symbol_package',
               :nuget,
               category: 'API::NugetPackages',
-              user: current_user,
               project: package.project,
               namespace: package.project.namespace
             )

@@ -97,7 +97,6 @@ module API
           track_package_event(
             'push_package',
             :rpm,
-            user: current_user,
             category: self.class.name,
             project: authorized_user_project,
             namespace: authorized_user_project.namespace

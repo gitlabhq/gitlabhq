@@ -1,29 +1,11 @@
 ---
-stage: enablement
-group: pods
-comments: false
-description: 'Pods: Uploads'
+redirect_to: '../cells/pods-feature-uploads.md'
+remove_date: '2023-06-13'
 ---
 
-This document is a work-in-progress and represents a very early state of the
-Pods design. Significant aspects are not documented, though we expect to add
-them in the future. This is one possible architecture for Pods, and we intend to
-contrast this with alternatives before deciding which approach to implement.
-This documentation will be kept even if we decide not to implement this so that
-we can document the reasons for not choosing this approach.
+This document was moved to [another location](../cells/pods-feature-uploads.md).
 
-# Pods: Uploads
-
-> TL;DR
-
-## 1. Definition
-
-## 2. Data flow
-
-## 3. Proposal
-
-## 4. Evaluation
-
-## 4.1. Pros
-
-## 4.2. Cons
+<!-- This redirect file can be deleted after <2023-06-13>. -->
+<!-- Redirects that point to other docs in the same project expire in three months. -->
+<!-- Redirects that point to docs in a different project or site (link is not relative and starts with `https:`) expire in one year. -->
+<!-- Before deletion, see: https://docs.gitlab.com/ee/development/documentation/redirects.html -->

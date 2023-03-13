@@ -288,7 +288,7 @@ module API
           authorize_upload!(project)
           bad_request!('File is too large') if project.actual_limits.exceeded?(:pypi_max_file_size, params[:content].size)
 
-          track_package_event('push_package', :pypi, project: project, user: current_user, namespace: project.namespace)
+          track_package_event('push_package', :pypi, project: project, namespace: project.namespace)
 
           validate_fips! if Gitlab::FIPS.enabled?
 
