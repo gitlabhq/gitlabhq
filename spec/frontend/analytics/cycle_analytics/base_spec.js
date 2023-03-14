@@ -179,7 +179,7 @@ describe('Value stream analytics component', () => {
     it('renders a link to the value streams dashboard', () => {
       expect(findOverviewMetrics().props('dashboardsPath')).toBeDefined();
       expect(findOverviewMetrics().props('dashboardsPath')).toBe(
-        '/groups/foo/-/analytics/dashboards?query=full/path/to/foo',
+        '/groups/foo/-/analytics/dashboards/value_streams_dashboard?query=full/path/to/foo',
       );
     });
   });

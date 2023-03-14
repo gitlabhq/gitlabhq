@@ -11,12 +11,9 @@ code are saved in projects, and most features are in the scope of projects.
 
 ## View projects
 
-To view projects, on the top bar, select **Main menu > Projects > View all projects**.
+To view all your projects, on the top bar, select **Main menu > Projects > View all projects**.
 
-NOTE:
-The **Explore projects** tab is visible to unauthenticated users unless the
-[**Public** visibility level](../admin_area/settings/visibility_and_access_controls.md#restrict-visibility-levels)
-is restricted. Then the tab is visible only to authenticated users.
+To browse all public projects, select **Main menu > Explore > Projects**.
 
 ### Who can view the Projects page
 

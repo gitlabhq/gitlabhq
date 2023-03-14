@@ -67,6 +67,7 @@ export default {
               :username="sidebarData.username"
               :projects-path="sidebarData.projects_path"
               :groups-path="sidebarData.groups_path"
+              :current-context="sidebarData.current_context"
             />
           </gl-collapse>
           <gl-collapse :visible="!contextSwitcherOpened">

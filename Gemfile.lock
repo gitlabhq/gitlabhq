@@ -1327,7 +1327,7 @@ GEM
     ruby-fogbugz (0.3.0)
       crack (~> 0.4)
       multipart-post (~> 2.0)
-    ruby-magic (0.5.5)
+    ruby-magic (0.6.0)
       mini_portile2 (~> 2.8)
     ruby-progressbar (1.11.0)
     ruby-saml (1.13.0)
@@ -1864,7 +1864,7 @@ DEPENDENCIES
   rspec_profiling (~> 0.0.6)
   rubocop
   ruby-fogbugz (~> 0.3.0)
-  ruby-magic (~> 0.5)
+  ruby-magic (~> 0.6)
   ruby-progressbar (~> 1.10)
   ruby-saml (~> 1.13.0)
   ruby_parser (~> 3.19)

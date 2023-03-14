@@ -788,7 +788,7 @@ Truncating filenames to resolve the error involves:
 
 #### Clean up remote uploaded files
 
-A [known issue](https://gitlab.com/gitlab-org/gitlab-foss/issues/45425) caused object store uploads to remain after a parent resource was deleted. This issue was [resolved](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/18698).
+A [known issue](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/45425) caused object store uploads to remain after a parent resource was deleted. This issue was [resolved](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/18698).
 
 To fix these files, you must clean up all remote uploaded files that are in the storage but not tracked in the `uploads` database table.
 

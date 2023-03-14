@@ -1681,6 +1681,154 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
       end
     end
 
+    describe 'merge status subscription trigger' do
+      shared_examples 'state transition not triggering GraphQL subscription mergeRequestMergeStatusUpdated' do
+        context 'when state transitions to running' do
+          it_behaves_like 'does not trigger GraphQL subscription mergeRequestMergeStatusUpdated' do
+            let(:action) { pipeline.run }
+          end
+        end
+
+        context 'when state transitions to success' do
+          it_behaves_like 'does not trigger GraphQL subscription mergeRequestMergeStatusUpdated' do
+            let(:action) { pipeline.succeed }
+          end
+        end
+
+        context 'when state transitions to failed' do
+          it_behaves_like 'does not trigger GraphQL subscription mergeRequestMergeStatusUpdated' do
+            let(:action) { pipeline.drop }
+          end
+        end
+
+        context 'when state transitions to canceled' do
+          it_behaves_like 'does not trigger GraphQL subscription mergeRequestMergeStatusUpdated' do
+            let(:action) { pipeline.cancel }
+          end
+        end
+
+        context 'when state transitions to skipped' do
+          it_behaves_like 'does not trigger GraphQL subscription mergeRequestMergeStatusUpdated' do
+            let(:action) { pipeline.skip }
+          end
+        end
+      end
+
+      shared_examples 'state transition triggering GraphQL subscription mergeRequestMergeStatusUpdated' do
+        context 'when state transitions to running' do
+          it_behaves_like 'triggers GraphQL subscription mergeRequestMergeStatusUpdated' do
+            let(:action) { pipeline.run }
+          end
+        end
+
+        context 'when state transitions to success' do
+          it_behaves_like 'triggers GraphQL subscription mergeRequestMergeStatusUpdated' do
+            let(:action) { pipeline.succeed }
+          end
+        end
+
+        context 'when state transitions to failed' do
+          it_behaves_like 'triggers GraphQL subscription mergeRequestMergeStatusUpdated' do
+            let(:action) { pipeline.drop }
+          end
+        end
+
+        context 'when state transitions to canceled' do
+          it_behaves_like 'triggers GraphQL subscription mergeRequestMergeStatusUpdated' do
+            let(:action) { pipeline.cancel }
+          end
+        end
+
+        context 'when state transitions to skipped' do
+          it_behaves_like 'triggers GraphQL subscription mergeRequestMergeStatusUpdated' do
+            let(:action) { pipeline.skip }
+          end
+        end
+
+        context 'when only_allow_merge_if_pipeline_succeeds? returns false' do
+          let(:only_allow_merge_if_pipeline_succeeds?) { false }
+
+          it_behaves_like 'state transition not triggering GraphQL subscription mergeRequestMergeStatusUpdated'
+        end
+
+        context 'when pipeline_trigger_merge_status feature flag is disabled' do
+          before do
+            stub_feature_flags(pipeline_trigger_merge_status: false)
+          end
+
+          it_behaves_like 'state transition not triggering GraphQL subscription mergeRequestMergeStatusUpdated'
+        end
+      end
+
+      context 'when pipeline has merge requests' do
+        let(:merge_request) do
+          create(
+            :merge_request,
+            :simple,
+            source_project: project,
+            target_project: project
+          )
+        end
+
+        let(:only_allow_merge_if_pipeline_succeeds?) { true }
+
+        before do
+          allow(project)
+            .to receive(:only_allow_merge_if_pipeline_succeeds?)
+            .and_return(only_allow_merge_if_pipeline_succeeds?)
+        end
+
+        context 'when for a specific merge request' do
+          let(:pipeline) do
+            create(
+              :ci_pipeline,
+              project: project,
+              merge_request: merge_request
+            )
+          end
+
+          it_behaves_like 'state transition triggering GraphQL subscription mergeRequestMergeStatusUpdated'
+
+          context 'when pipeline is a child' do
+            let(:parent_pipeline) do
+              create(
+                :ci_pipeline,
+                project: project,
+                merge_request: merge_request
+              )
+            end
+
+            let(:pipeline) do
+              create(
+                :ci_pipeline,
+                child_of: parent_pipeline,
+                merge_request: merge_request
+              )
+            end
+
+            it_behaves_like 'state transition not triggering GraphQL subscription mergeRequestMergeStatusUpdated'
+          end
+        end
+
+        context 'when for merge requests matching the source branch and SHA' do
+          let(:pipeline) do
+            create(
+              :ci_pipeline,
+              project: project,
+              ref: merge_request.source_branch,
+              sha: merge_request.diff_head_sha
+            )
+          end
+
+          it_behaves_like 'state transition triggering GraphQL subscription mergeRequestMergeStatusUpdated'
+        end
+      end
+
+      context 'when pipeline has no merge requests' do
+        it_behaves_like 'state transition not triggering GraphQL subscription mergeRequestMergeStatusUpdated'
+      end
+    end
+
     def create_build(name, *traits, queued_at: current, started_from: 0, **opts)
       create(:ci_build, *traits,
              name: name,

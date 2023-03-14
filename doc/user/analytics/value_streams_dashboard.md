@@ -18,8 +18,8 @@ The Value Streams Dashboard is a customizable dashboard that enables decision-ma
 This page is a work in progress, and we're updating the information as we add more features.
 For more information, see the [Value Stream Management category direction page](https://about.gitlab.com/direction/plan/value_stream_management/).
 
-After the feature flag is enabled, to open the new page, append this path `/analytics/dashboards` to the group URL
-(for example, `https://gitlab.com/groups/gitlab-org/-/analytics/dashboards`).
+After the feature flag is enabled, to open the new page, append this path `/analytics/dashboards/value_streams_dashboard` to the group URL
+(for example, `https://gitlab.com/groups/gitlab-org/-/analytics/dashboards/value_streams_dashboard`).
 
 ## Initial use case
 

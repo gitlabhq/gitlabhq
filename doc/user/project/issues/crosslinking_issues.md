@@ -39,10 +39,10 @@ git commit -m "this is my commit message. Ref projectname#xxx"
 ```
 
 If they are not in the same group, you can add the full URL to the issue
-(`https://gitlab.com/<username>/<projectname>/issues/<xxx>`).
+(`https://gitlab.com/<username>/<projectname>/-/issues/<xxx>`).
 
 ```shell
-git commit -m "this is my commit message. Related to https://gitlab.com/<username>/<projectname>/issues/<xxx>"
+git commit -m "this is my commit message. Related to https://gitlab.com/<username>/<projectname>/-/issues/<xxx>"
 ```
 
 Of course, you can replace `gitlab.com` with the URL of your own GitLab instance.

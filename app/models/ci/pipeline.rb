@@ -335,6 +335,22 @@ module Ci
           AutoDevops::DisableWorker.perform_async(pipeline.id) if pipeline.auto_devops_source?
         end
       end
+
+      after_transition any => [:running, *::Ci::Pipeline.completed_statuses] do |pipeline|
+        project = pipeline&.project
+
+        next unless project
+        next unless Feature.enabled?(:pipeline_trigger_merge_status, project)
+
+        pipeline.run_after_commit do
+          next if pipeline.child?
+          next unless project.only_allow_merge_if_pipeline_succeeds?(inherit_group_setting: true)
+
+          pipeline.all_merge_requests.opened.each do |merge_request|
+            GraphqlTriggers.merge_request_merge_status_updated(merge_request)
+          end
+        end
+      end
     end
 
     scope :internal, -> { where(source: internal_sources) }

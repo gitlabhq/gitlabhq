@@ -87,7 +87,8 @@ module SidebarsHelper
       gitlab_version_check: gitlab_version_check,
       gitlab_com_but_not_canary: Gitlab.com_but_not_canary?,
       gitlab_com_and_canary: Gitlab.com_and_canary?,
-      canary_toggle_com_url: Gitlab::Saas.canary_toggle_com_url
+      canary_toggle_com_url: Gitlab::Saas.canary_toggle_com_url,
+      current_context: super_sidebar_current_context(project: project, group: group)
     }
   end
 
@@ -228,6 +229,36 @@ module SidebarsHelper
       container: user,
       show_security_dashboard: false
     }
+  end
+
+  def super_sidebar_current_context(project: nil, group: nil)
+    if project&.persisted?
+      return {
+        namespace: 'projects',
+        item: {
+          id: project.id,
+          name: project.name,
+          namespace: project.full_name,
+          webUrl: project_path(project),
+          avatarUrl: project.avatar_url
+        }
+      }
+    end
+
+    if group&.persisted?
+      return {
+        namespace: 'groups',
+        item: {
+          id: group.id,
+          name: group.name,
+          namespace: group.full_name,
+          webUrl: group_path(group),
+          avatarUrl: group.avatar_url
+        }
+      }
+    end
+
+    {}
   end
 end
 

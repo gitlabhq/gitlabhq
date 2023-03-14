@@ -683,6 +683,24 @@ RSpec.describe Member, feature_category: :subgroups do
     end
   end
 
+  describe '.filter_by_user_type' do
+    let_it_be(:service_account) { create(:user, :service_account) }
+    let_it_be(:service_account_member) { create(:group_member, user: service_account) }
+    let_it_be(:other_member) { create(:group_member) }
+
+    context 'when the user type is valid' do
+      it 'returns service accounts' do
+        expect(described_class.filter_by_user_type('service_account')).to match_array([service_account_member])
+      end
+    end
+
+    context 'when the user type is invalid' do
+      it 'returns nil' do
+        expect(described_class.filter_by_user_type('invalid_type')).to eq(nil)
+      end
+    end
+  end
+
   describe '#accept_request' do
     let(:member) { create(:project_member, requested_at: Time.current.utc) }
 

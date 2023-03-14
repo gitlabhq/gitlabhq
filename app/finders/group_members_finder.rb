@@ -64,6 +64,7 @@ class GroupMembersFinder < UnionFinder
       members = members.by_access_level(params[:access_levels])
     end
 
+    members = filter_by_user_type(members)
     members = apply_additional_filters(members)
 
     by_created_at(members)
@@ -89,6 +90,12 @@ class GroupMembersFinder < UnionFinder
     unless include_relations & RELATIONS == include_relations
       raise ArgumentError, "#{(include_relations - RELATIONS).first} #{INVALID_RELATION_TYPE_ERROR_MSG}"
     end
+  end
+
+  def filter_by_user_type(members)
+    return members unless params[:user_type] && can_manage_members
+
+    members.filter_by_user_type(params[:user_type])
   end
 
   def apply_additional_filters(members)

@@ -513,6 +513,17 @@ RSpec.describe Gitlab::Database::Migrations::BatchedBackgroundMigrationHelpers d
       end
     end
 
+    context 'when within transaction' do
+      before do
+        allow(migration).to receive(:transaction_open?).and_return(true)
+      end
+
+      it 'does raise an exception' do
+        expect { ensure_batched_background_migration_is_finished }
+          .to raise_error /`ensure_batched_background_migration_is_finished` cannot be run inside a transaction./
+      end
+    end
+
     it 'finalizes the migration' do
       expect(Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas).to receive(:require_dml_mode!).twice
 

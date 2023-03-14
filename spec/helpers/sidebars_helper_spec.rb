@@ -186,6 +186,66 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
         )
       )
     end
+
+    describe 'current context' do
+      context 'when current context is a project' do
+        let_it_be(:project) { build(:project) }
+
+        subject do
+          helper.super_sidebar_context(user, group: nil, project: project, panel: panel)
+        end
+
+        before do
+          allow(project).to receive(:persisted?).and_return(true)
+        end
+
+        it 'returns project context' do
+          expect(subject[:current_context]).to eq({
+            namespace: 'projects',
+            item: {
+              id: project.id,
+              avatarUrl: project.avatar_url,
+              name: project.name,
+              namespace: project.full_name,
+              webUrl: project_path(project)
+            }
+          })
+        end
+      end
+
+      context 'when current context is a group' do
+        subject do
+          helper.super_sidebar_context(user, group: group, project: nil, panel: panel)
+        end
+
+        before do
+          allow(group).to receive(:persisted?).and_return(true)
+        end
+
+        it 'returns group context' do
+          expect(subject[:current_context]).to eq({
+            namespace: 'groups',
+            item: {
+              id: group.id,
+              avatarUrl: group.avatar_url,
+              name: group.name,
+              namespace: group.full_name,
+              webUrl: group_path(group)
+            }
+          })
+        end
+      end
+
+      context 'when current context is not tracked' do
+        subject do
+          helper.super_sidebar_context(user, group: nil, project: nil, panel: panel)
+        end
+
+        it 'returns no context' do
+          expect(subject[:current_context]).to eq({})
+        end
+      end
+    end
   end
 
   describe '#super_sidebar_nav_panel' do

@@ -1102,10 +1102,6 @@ module Ci
       ::Ci::PendingBuild.upsert_from_build!(self)
     end
 
-    def create_runtime_metadata!
-      ::Ci::RunningBuild.upsert_shared_runner_build!(self)
-    end
-
     ##
     # We can have only one queuing entry or running build tracking entry,
     # because there is a unique index on `build_id` in each table, but we need

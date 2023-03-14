@@ -12,7 +12,7 @@ All other features are considered to be Generally Available (GA).
 
 ## Alpha features
 
-Support is **not** provided for Alpha features and issues with them should be opened in the [GitLab issue tracker](https://gitlab.com/gitlab-org/gitlab/issues).
+Support is **not** provided for Alpha features and issues with them should be opened in the [GitLab issue tracker](https://gitlab.com/gitlab-org/gitlab/-/issues).
 
 Characteristics of Alpha features:
 

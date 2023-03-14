@@ -2,6 +2,7 @@
 import { GlSearchBoxByType } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import { contextSwitcherItems } from '../mock_data';
+import { trackContextAccess } from '../utils';
 import NavItem from './nav_item.vue';
 import FrequentProjectsList from './frequent_projects_list.vue';
 import FrequentGroupsList from './frequent_groups_list.vue';
@@ -30,8 +31,18 @@ export default {
       type: String,
       required: true,
     },
+    currentContext: {
+      type: Object,
+      required: false,
+      default: () => ({}),
+    },
   },
   contextSwitcherItems,
+  created() {
+    if (this.currentContext.namespace) {
+      trackContextAccess(this.username, this.currentContext);
+    }
+  },
 };
 </script>
 

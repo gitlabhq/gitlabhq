@@ -74,7 +74,7 @@ To authenticate with your GitLab account, run `glab auth login`.
 
 ## Report issues
 
-Open an issue in the [`gitlab-org/cli` repository](https://gitlab.com/gitlab-org/cli/issues/new)
+Open an issue in the [`gitlab-org/cli` repository](https://gitlab.com/gitlab-org/cli/-/issues/new)
 to send us feedback.
 
 ## Related topics

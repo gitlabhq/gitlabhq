@@ -65,7 +65,10 @@ Improving this experience is tracked in issue [339009](https://gitlab.com/gitlab
 You can view all the milestones you have access to in the entire GitLab namespace.
 You might not see some milestones because they're in projects or groups you're not a member of.
 
-To do so, on the top bar select **Main menu > Milestones**.
+To do so:
+
+1. On the top bar select **Main menu > Your work**.
+1. On the left sidebar, select **Milestones**.
 
 ### View milestone details
 

@@ -2,6 +2,7 @@
 
 class EnsureTimelogsNoteIdBigintBackfillIsFinishedForGitlabDotCom < Gitlab::Database::Migration[2.1]
   restrict_gitlab_migration gitlab_schema: :gitlab_main
+  disable_ddl_transaction!
 
   def up
     return unless should_run?

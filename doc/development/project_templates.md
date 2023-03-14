@@ -35,7 +35,7 @@ installed:
 1. In your selected namespace, create a public project.
 1. Add the project content you want to use in the template. Do not include unnecessary assets or dependencies. For an example,
 [see this project](https://gitlab.com/gitlab-org/project-templates/dotnetcore).
-1. When the project is ready for review, [create an issue](https://gitlab.com/gitlab-org/gitlab/issues) with a link to your project.
+1. When the project is ready for review, [create an issue](https://gitlab.com/gitlab-org/gitlab/-/issues) with a link to your project.
    In your issue, mention the Create:Source Code [Backend Engineering Manager and Product Manager](https://about.gitlab.com/handbook/product/categories/#source-code-group)
    for the Templates feature.
 

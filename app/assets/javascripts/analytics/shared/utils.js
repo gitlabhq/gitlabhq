@@ -132,7 +132,7 @@ export const fetchMetricsData = (requests = [], requestPath, params) => {
 export const generateValueStreamsDashboardLink = (groupPath, projectPaths = []) => {
   if (groupPath.length) {
     const query = projectPaths.length ? `?query=${projectPaths.join(',')}` : '';
-    const dashboardsSlug = '/-/analytics/dashboards';
+    const dashboardsSlug = '/-/analytics/dashboards/value_streams_dashboard';
     const segments = [gon.relative_url_root || '', '/', groupPath, dashboardsSlug];
     return joinPaths(...segments).concat(query);
   }

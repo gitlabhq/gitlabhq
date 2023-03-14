@@ -73,38 +73,68 @@ RSpec.describe API::Ci::Helpers::Runner do
 
     subject(:current_runner_machine) { helper.current_runner_machine }
 
-    context 'when runner machine already exists' do
+    context 'with create_runner_machine FF enabled' do
       before do
-        allow(helper).to receive(:params).and_return(token: runner.token, system_id: runner_machine.system_xid)
+        stub_feature_flags(create_runner_machine: true)
       end
 
-      it { is_expected.to eq(runner_machine) }
+      context 'when runner machine already exists' do
+        before do
+          allow(helper).to receive(:params).and_return(token: runner.token, system_id: runner_machine.system_xid)
+        end
 
-      it 'does not update the contacted_at field' do
-        expect(current_runner_machine.contacted_at).to eq 1.hour.ago
+        it { is_expected.to eq(runner_machine) }
+
+        it 'does not update the contacted_at field' do
+          expect(current_runner_machine.contacted_at).to eq 1.hour.ago
+        end
+      end
+
+      context 'when runner machine cannot be found' do
+        it 'creates a new runner machine', :aggregate_failures do
+          allow(helper).to receive(:params).and_return(token: runner.token, system_id: 'new_system_id')
+
+          expect { current_runner_machine }.to change { Ci::RunnerMachine.count }.by(1)
+
+          expect(current_runner_machine).not_to be_nil
+          expect(current_runner_machine.system_xid).to eq('new_system_id')
+          expect(current_runner_machine.contacted_at).to eq(Time.current)
+          expect(current_runner_machine.runner).to eq(runner)
+        end
+
+        it 'creates a new <legacy> runner machine if system_id is not specified', :aggregate_failures do
+          allow(helper).to receive(:params).and_return(token: runner.token)
+
+          expect { current_runner_machine }.to change { Ci::RunnerMachine.count }.by(1)
+
+          expect(current_runner_machine).not_to be_nil
+          expect(current_runner_machine.system_xid).to eq(::API::Ci::Helpers::Runner::LEGACY_SYSTEM_XID)
+          expect(current_runner_machine.runner).to eq(runner)
+        end
       end
     end
 
-    context 'when runner machine cannot be found' do
-      it 'creates a new runner machine', :aggregate_failures do
-        allow(helper).to receive(:params).and_return(token: runner.token, system_id: 'new_system_id')
-
-        expect { current_runner_machine }.to change { Ci::RunnerMachine.count }.by(1)
-
-        expect(current_runner_machine).not_to be_nil
-        expect(current_runner_machine.system_xid).to eq('new_system_id')
-        expect(current_runner_machine.contacted_at).to eq(Time.current)
-        expect(current_runner_machine.runner).to eq(runner)
+    context 'with create_runner_machine FF disabled' do
+      before do
+        stub_feature_flags(create_runner_machine: false)
       end
 
-      it 'creates a new <legacy> runner machine if system_id is not specified', :aggregate_failures do
+      it 'does not return runner machine if no system_id specified' do
         allow(helper).to receive(:params).and_return(token: runner.token)
 
-        expect { current_runner_machine }.to change { Ci::RunnerMachine.count }.by(1)
+        is_expected.to be_nil
+      end
 
-        expect(current_runner_machine).not_to be_nil
-        expect(current_runner_machine.system_xid).to eq(::API::Ci::Helpers::Runner::LEGACY_SYSTEM_XID)
-        expect(current_runner_machine.runner).to eq(runner)
+      context 'when runner machine can not be found' do
+        before do
+          allow(helper).to receive(:params).and_return(token: runner.token, system_id: 'new_system_id')
+        end
+
+        it 'does not create a new runner machine', :aggregate_failures do
+          expect { current_runner_machine }.not_to change { Ci::RunnerMachine.count }
+
+          expect(current_runner_machine).to be_nil
+        end
       end
     end
   end

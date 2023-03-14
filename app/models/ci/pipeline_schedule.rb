@@ -32,8 +32,6 @@ module Ci
     scope :preloaded, -> { preload(:owner, project: [:route]) }
     scope :owned_by, ->(user) { where(owner: user) }
 
-    before_destroy :nullify_dependent_associations_in_batches
-
     accepts_nested_attributes_for :variables, allow_destroy: true
 
     alias_attribute :real_next_run, :next_run_at
@@ -83,6 +81,12 @@ module Ci
 
     def worker_cron_expression
       Settings.cron_jobs['pipeline_schedule_worker']['cron']
+    end
+
+    def destroy
+      nullify_dependent_associations_in_batches
+
+      super
     end
   end
 end

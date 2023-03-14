@@ -218,9 +218,9 @@ describe('generateValueStreamsDashboardLink', () => {
   it.each`
     groupPath              | projectPaths                                      | result
     ${''}                  | ${[]}                                             | ${''}
-    ${'groups/fake-group'} | ${[]}                                             | ${'/groups/fake-group/-/analytics/dashboards'}
-    ${'groups/fake-group'} | ${['fake-path/project_1']}                        | ${'/groups/fake-group/-/analytics/dashboards?query=fake-path/project_1'}
-    ${'groups/fake-group'} | ${['fake-path/project_1', 'fake-path/project_2']} | ${'/groups/fake-group/-/analytics/dashboards?query=fake-path/project_1,fake-path/project_2'}
+    ${'groups/fake-group'} | ${[]}                                             | ${'/groups/fake-group/-/analytics/dashboards/value_streams_dashboard'}
+    ${'groups/fake-group'} | ${['fake-path/project_1']}                        | ${'/groups/fake-group/-/analytics/dashboards/value_streams_dashboard?query=fake-path/project_1'}
+    ${'groups/fake-group'} | ${['fake-path/project_1', 'fake-path/project_2']} | ${'/groups/fake-group/-/analytics/dashboards/value_streams_dashboard?query=fake-path/project_1,fake-path/project_2'}
   `(
     'generates the dashboard link when groupPath=$groupPath and projectPaths=$projectPaths',
     ({ groupPath, projectPaths, result }) => {
@@ -235,7 +235,7 @@ describe('generateValueStreamsDashboardLink', () => {
 
     it('with includes a relative path if one is set', () => {
       expect(generateValueStreamsDashboardLink('groups/fake-path', ['project_1'])).toBe(
-        '/foobar/groups/fake-path/-/analytics/dashboards?query=project_1',
+        '/foobar/groups/fake-path/-/analytics/dashboards/value_streams_dashboard?query=project_1',
       );
     });
   });

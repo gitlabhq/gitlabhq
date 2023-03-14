@@ -201,6 +201,12 @@ module Gitlab
         def ensure_batched_background_migration_is_finished(job_class_name:, table_name:, column_name:, job_arguments:, finalize: true)
           Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas.require_dml_mode!
 
+          if transaction_open?
+            raise 'The `ensure_batched_background_migration_is_finished` cannot be run inside a transaction. ' \
+              'You can disable transactions by calling `disable_ddl_transaction!` in the body of ' \
+              'your migration class.'
+          end
+
           Gitlab::Database::BackgroundMigration::BatchedMigration.reset_column_information
           migration = Gitlab::Database::BackgroundMigration::BatchedMigration.find_for_configuration(
             Gitlab::Database.gitlab_schemas_for_connection(connection),

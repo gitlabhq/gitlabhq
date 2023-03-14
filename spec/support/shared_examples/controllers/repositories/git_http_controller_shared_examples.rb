@@ -60,19 +60,6 @@ RSpec.shared_examples Repositories::GitHttpController do
         expect(response).to have_gitlab_http_status(:ok)
       end
 
-      it 'updates the user activity' do
-        activity_project = container.is_a?(PersonalSnippet) ? nil : project
-
-        activity_service = instance_double(Users::ActivityService)
-
-        args = { author: user, project: activity_project, namespace: activity_project&.namespace }
-        expect(Users::ActivityService).to receive(:new).with(args).and_return(activity_service)
-
-        expect(activity_service).to receive(:execute)
-
-        get :info_refs, params: params
-      end
-
       include_context 'parsed logs' do
         it 'adds user info to the logs' do
           get :info_refs, params: params

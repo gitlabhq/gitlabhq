@@ -29,7 +29,7 @@ For software leaders, tracking velocity alongside quality metrics ensures they'r
 
 ## DORA Metrics dashboard in Value Stream Analytics
 
-The four DORA metrics are available out-of-the-box in the [Value Stream Analytics (VSA) overview dashboard](../group/value_stream_analytics/index.md#view-dora-metrics-and-key-metrics-for-a-group).
+The four DORA metrics are available out-of-the-box in the [Value Stream Analytics (VSA) overview dashboard](../group/value_stream_analytics/index.md#view-value-stream-analytics).
 This helps you visualize the engineering work in the context of end-to-end value delivery.
 
 The One DevOps Platform [Value Stream Management](https://gitlab.com/gitlab-org/gitlab/-/value_stream_analytics) provides end-to-end visibility to the entire software delivery lifecycle.
