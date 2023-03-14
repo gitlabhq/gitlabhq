@@ -113,7 +113,7 @@ describe('IDE store terminal session controls actions', () => {
   });
 
   describe('receiveSessionStatusError', () => {
-    it('alerts message', () => {
+    it('shows an alert', () => {
       actions.receiveSessionStatusError({ dispatch });
 
       expect(createAlert).toHaveBeenCalledWith({

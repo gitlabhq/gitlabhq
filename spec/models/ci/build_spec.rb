@@ -5879,4 +5879,31 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       end
     end
   end
+
+  describe 'token format for builds transiting into pending' do
+    let(:partition_id) { 100 }
+    let(:ci_build) { described_class.new(partition_id: partition_id) }
+
+    context 'when build is initialized without a token and transits to pending' do
+      let(:partition_id_prefix_in_16_bit_encode) { partition_id.to_s(16) + '_' }
+
+      it 'generates a token' do
+        expect { ci_build.enqueue }
+          .to change { ci_build.token }.from(nil).to(a_string_starting_with(partition_id_prefix_in_16_bit_encode))
+      end
+    end
+
+    context 'when build is initialized with a token and transits to pending' do
+      let(:token) { 'an_existing_secret_token' }
+
+      before do
+        ci_build.set_token(token)
+      end
+
+      it 'does not change the existing token' do
+        expect { ci_build.enqueue }
+          .not_to change { ci_build.token }.from(token)
+      end
+    end
+  end
 end

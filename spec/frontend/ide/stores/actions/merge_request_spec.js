@@ -135,7 +135,7 @@ describe('IDE store merge request actions', () => {
         mock.onGet(/api\/(.*)\/projects\/abcproject\/merge_requests/).networkError();
       });
 
-      it('alerts message, if error', () => {
+      it('shows an alert, if error', () => {
         return store
           .dispatch('getMergeRequestsForBranch', {
             projectId: TEST_PROJECT,
@@ -519,7 +519,7 @@ describe('IDE store merge request actions', () => {
       );
     });
 
-    it('alerts message, if error', () => {
+    it('shows an alert, if error', () => {
       store.dispatch.mockRejectedValue();
 
       return openMergeRequest(store, mr).catch(() => {

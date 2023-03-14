@@ -163,7 +163,8 @@ class Group < Namespace
 
   add_authentication_token_field :runners_token,
                                  encrypted: -> { Feature.enabled?(:groups_tokens_optional_encryption) ? :optional : :required },
-                                 prefix: RunnersTokenPrefixable::RUNNERS_TOKEN_PREFIX
+                                 format_with_prefix: :runners_token_prefix,
+                                 ensure_prefix: true
 
   after_create :post_create_hook
   after_create -> { create_or_load_association(:group_feature) }
@@ -751,11 +752,6 @@ class Group < Namespace
     ensure_runners_token!
   end
 
-  override :format_runners_token
-  def format_runners_token(token)
-    "#{RunnersTokenPrefixable::RUNNERS_TOKEN_PREFIX}#{token}"
-  end
-
   def project_creation_level
     super || ::Gitlab::CurrentSettings.default_project_creation
   end
@@ -1085,6 +1081,10 @@ class Group < Namespace
 
   def enable_shared_runners!
     update!(shared_runners_enabled: true)
+  end
+
+  def runners_token_prefix
+    RunnersTokenPrefixable::RUNNERS_TOKEN_PREFIX
   end
 end
 

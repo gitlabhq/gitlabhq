@@ -46,6 +46,7 @@ module QA
               --set image.tag=#{Runtime::Env.gitlab_agentk_version}
               --set config.token=#{agent_token}
               --set config.kasAddress=wss://kas.staging.gitlab.com
+              --set config.kasHeaders="{Cookie: gitlab_canary=#{target_canary?}}"
           CMD
         end
 
@@ -57,6 +58,10 @@ module QA
             chmod 700 get_helm.sh &&
             DESIRED_VERSION=v3.7.0 ./get_helm.sh
           CMD
+        end
+
+        def target_canary?
+          Runtime::Env.qa_cookies.to_s.include?("gitlab_canary=true")
         end
 
         def login_if_not_already_logged_in

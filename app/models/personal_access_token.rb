@@ -9,7 +9,9 @@ class PersonalAccessToken < ApplicationRecord
   include Gitlab::SQL::Pattern
   extend ::Gitlab::Utils::Override
 
-  add_authentication_token_field :token, digest: true
+  add_authentication_token_field :token,
+    digest: true,
+    format_with_prefix: :prefix_from_application_current_settings
 
   # PATs are 20 characters + optional configurable settings prefix (0..20)
   TOKEN_LENGTH_RANGE = (20..40).freeze
@@ -72,11 +74,6 @@ class PersonalAccessToken < ApplicationRecord
     fuzzy_search(query, [:name])
   end
 
-  override :format_token
-  def format_token(token)
-    "#{self.class.token_prefix}#{token}"
-  end
-
   def project_access_token?
     user&.project_bot?
   end
@@ -106,6 +103,10 @@ class PersonalAccessToken < ApplicationRecord
 
   def add_admin_mode_scope
     self.scopes += [Gitlab::Auth::ADMIN_MODE_SCOPE.to_s]
+  end
+
+  def prefix_from_application_current_settings
+    self.class.token_prefix
   end
 end
 

@@ -460,6 +460,8 @@ RSpec.describe Group, feature_category: :subgroups do
 
   it_behaves_like 'a BulkUsersByEmailLoad model'
 
+  it_behaves_like 'ensures runners_token is prefixed', :group
+
   context 'after initialized' do
     it 'has a group_feature' do
       expect(described_class.new.group_feature).to be_present

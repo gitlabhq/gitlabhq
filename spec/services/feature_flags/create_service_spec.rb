@@ -46,6 +46,8 @@ RSpec.describe FeatureFlags::CreateService, feature_category: :feature_flags do
     end
 
     context 'when feature flag is saved correctly' do
+      let(:audit_event_details) { AuditEvent.last.details }
+      let(:audit_event_message) { audit_event_details[:custom_message] }
       let(:params) do
         {
           name: 'feature_flag',
@@ -88,9 +90,9 @@ RSpec.describe FeatureFlags::CreateService, feature_category: :feature_flags do
 
       it 'creates audit event', :with_license do
         expect { subject }.to change { AuditEvent.count }.by(1)
-        expect(AuditEvent.last.details[:custom_message]).to start_with('Created feature flag feature_flag with description "description".')
-        expect(AuditEvent.last.details[:custom_message]).to include('Created strategy "default" with scopes "*".')
-        expect(AuditEvent.last.details[:custom_message]).to include('Created strategy "default" with scopes "production".')
+        expect(audit_event_message).to start_with('Created feature flag feature_flag with description "description".')
+        expect(audit_event_message).to include('Created strategy "default" with scopes "*".')
+        expect(audit_event_message).to include('Created strategy "default" with scopes "production".')
       end
 
       context 'when user is reporter' do

@@ -1,4 +1,5 @@
 <script>
+import { kebabCase } from 'lodash';
 import { GlCollapse, GlIcon, GlBadge } from '@gitlab/ui';
 
 export default {
@@ -25,11 +26,17 @@ export default {
     };
   },
   computed: {
+    elem() {
+      return this.isSection ? 'button' : 'a';
+    },
     collapseIcon() {
       return this.expanded ? 'chevron-up' : 'chevron-down';
     },
     isSection() {
       return Boolean(this.item?.items?.length);
+    },
+    itemId() {
+      return kebabCase(this.item.title);
     },
     pillData() {
       return this.item.pill_count;
@@ -49,8 +56,8 @@ export default {
     linkProps() {
       if (this.isSection) {
         return {
-          href: '#',
-          'aria-hidden': true,
+          'aria-controls': this.itemId,
+          'aria-expanded': String(this.expanded),
         };
       }
       return {
@@ -61,6 +68,9 @@ export default {
     },
     computedLinkClasses() {
       return {
+        // Reset user agent styles on <button>
+        'gl-appearance-none gl-border-0 gl-bg-transparent gl-text-left': this.isSection,
+        'gl-w-full gl-focus': this.isSection,
         'gl-bg-t-gray-a-08': this.isActive,
         ...this.linkClasses,
       };
@@ -79,7 +89,8 @@ export default {
 
 <template>
   <li>
-    <a
+    <component
+      :is="elem"
       v-bind="linkProps"
       class="gl-rounded-base gl-relative gl-display-flex gl-align-items-center gl-py-3 gl-px-0 gl-line-height-normal gl-text-black-normal! gl-hover-bg-t-gray-a-08 gl-text-decoration-none!"
       :class="computedLinkClasses"
@@ -111,15 +122,20 @@ export default {
         </gl-badge>
         <gl-icon v-else-if="isSection" :name="collapseIcon" />
       </span>
-    </a>
-    <gl-collapse v-if="isSection" :id="item.title" v-model="expanded">
-      <ul class="gl-p-0">
-        <nav-item
-          v-for="subItem of item.items"
-          :key="`${item.title}-${subItem.title}`"
-          :item="subItem"
-        />
-      </ul>
+    </component>
+    <gl-collapse
+      v-if="isSection"
+      :id="itemId"
+      v-model="expanded"
+      :aria-label="item.title"
+      class="gl-list-style-none gl-p-0"
+      tag="ul"
+    >
+      <nav-item
+        v-for="subItem of item.items"
+        :key="`${item.title}-${subItem.title}`"
+        :item="subItem"
+      />
     </gl-collapse>
   </li>
 </template>

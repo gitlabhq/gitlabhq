@@ -25,13 +25,13 @@ module FeatureFlags
           end
         end
 
-        # We generate the audit event before the feature flag is saved as #changed_strategies_messages depends on the strategies' states before save
-        audit_event = audit_event(feature_flag)
+        # We generate the audit context before the feature flag is saved as #changed_strategies_messages depends on the strategies' states before save
+        saved_audit_context = audit_context feature_flag
 
         if feature_flag.save
           update_last_feature_flag_updated_at!
 
-          success(feature_flag: feature_flag, audit_event: audit_event)
+          success(feature_flag: feature_flag, audit_context: saved_audit_context)
         else
           error(feature_flag.errors.full_messages, :bad_request)
         end
@@ -48,6 +48,16 @@ module FeatureFlags
       feature_flag.run_after_commit do
         HookService.new(feature_flag, user).execute
       end
+    end
+
+    def audit_context(feature_flag)
+      {
+        name: 'feature_flag_updated',
+        message: audit_message(feature_flag),
+        author: current_user,
+        scope: feature_flag.project,
+        target: feature_flag
+      }
     end
 
     def audit_message(feature_flag)

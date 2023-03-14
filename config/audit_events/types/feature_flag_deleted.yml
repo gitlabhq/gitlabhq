@@ -1,0 +1,9 @@
+---
+name: feature_flag_deleted
+description: Triggered when a feature flag is deleted.
+introduced_by_issue: https://gitlab.com/gitlab-org/gitlab/-/issues/374109
+introduced_by_mr: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/113453
+feature_category: feature_flags
+milestone: '15.10'
+saved_to_database: true
+streamed: true

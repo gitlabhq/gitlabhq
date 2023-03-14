@@ -17,7 +17,10 @@ module Ci
 
     extend ::Gitlab::Utils::Override
 
-    add_authentication_token_field :token, encrypted: :optional, expires_at: :compute_token_expiration
+    add_authentication_token_field :token,
+                                   encrypted: :optional,
+                                   expires_at: :compute_token_expiration,
+                                   format_with_prefix: :prefix_for_new_and_legacy_runner
 
     enum access_level: {
       not_protected: 0,
@@ -495,13 +498,6 @@ module Ci
       end
     end
 
-    override :format_token
-    def format_token(token)
-      return token if registration_token_registration_type?
-
-      "#{CREATED_RUNNER_TOKEN_PREFIX}#{token}"
-    end
-
     def ensure_machine(system_xid, &blk)
       RunnerMachine.safe_find_or_create_by!(runner_id: id, system_xid: system_xid.to_s, &blk) # rubocop: disable Performance/ActiveRecordSubtransactionMethods
     end
@@ -611,6 +607,12 @@ module Ci
       return unless new_version
 
       Ci::Runners::ProcessRunnerVersionUpdateWorker.perform_async(new_version)
+    end
+
+    def prefix_for_new_and_legacy_runner
+      return if registration_token_registration_type?
+
+      CREATED_RUNNER_TOKEN_PREFIX
     end
   end
 end

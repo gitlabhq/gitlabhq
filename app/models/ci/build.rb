@@ -183,7 +183,9 @@ module Ci
 
     acts_as_taggable
 
-    add_authentication_token_field :token, encrypted: :required
+    add_authentication_token_field :token,
+      encrypted: :required,
+      format_with_prefix: :partition_id_prefix_in_16_bit_encode
 
     after_save :stick_build_if_status_changed
 
@@ -1170,11 +1172,6 @@ module Ci
       end
     end
 
-    override :format_token
-    def format_token(token)
-      "#{partition_id.to_s(16)}_#{token}"
-    end
-
     protected
 
     def run_status_commit_hooks!
@@ -1316,6 +1313,10 @@ module Ci
           event: 'i_ci_secrets_management_id_tokens_build_created'
         ).to_context]
       )
+    end
+
+    def partition_id_prefix_in_16_bit_encode
+      "#{partition_id.to_s(16)}_"
     end
   end
 end

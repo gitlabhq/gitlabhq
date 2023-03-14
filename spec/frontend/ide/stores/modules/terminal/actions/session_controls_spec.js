@@ -91,7 +91,7 @@ describe('IDE store terminal session controls actions', () => {
   });
 
   describe('receiveStartSessionError', () => {
-    it('alerts message', () => {
+    it('shows an alert', () => {
       actions.receiveStartSessionError({ dispatch });
 
       expect(createAlert).toHaveBeenCalledWith({
@@ -165,7 +165,7 @@ describe('IDE store terminal session controls actions', () => {
   });
 
   describe('receiveStopSessionError', () => {
-    it('alerts message', () => {
+    it('shows an alert', () => {
       actions.receiveStopSessionError({ dispatch });
 
       expect(createAlert).toHaveBeenCalledWith({

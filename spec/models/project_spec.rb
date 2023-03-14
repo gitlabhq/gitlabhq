@@ -14,6 +14,8 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
 
   it_behaves_like 'having unique enum values'
 
+  it_behaves_like 'ensures runners_token is prefixed', :project
+
   describe 'associations' do
     it { is_expected.to belong_to(:group) }
     it { is_expected.to belong_to(:namespace) }

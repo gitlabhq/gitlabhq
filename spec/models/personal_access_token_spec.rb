@@ -405,4 +405,26 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
       end
     end
   end
+
+  describe 'token format' do
+    let(:personal_access_token) { described_class.new }
+
+    it 'generates a token' do
+      expect { personal_access_token.ensure_token }
+        .to change { personal_access_token.token }.from(nil).to(a_string_starting_with(described_class.token_prefix))
+    end
+
+    context 'when there is an existing token' do
+      let(:token) { 'an_existing_secret_token' }
+
+      before do
+        personal_access_token.set_token(token)
+      end
+
+      it 'does not change the existing token' do
+        expect { personal_access_token.ensure_token }
+          .not_to change { personal_access_token.token }.from(token)
+      end
+    end
+  end
 end

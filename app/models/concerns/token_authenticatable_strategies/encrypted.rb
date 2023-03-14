@@ -106,11 +106,7 @@ module TokenAuthenticatableStrategies
     end
 
     def matches_prefix?(instance, token)
-      prefix = options[:prefix]
-      prefix = prefix.call(instance) if prefix.is_a?(Proc)
-      prefix = '' unless prefix.is_a?(String)
-
-      token.start_with?(prefix)
+      !options[:ensure_prefix] || token.start_with?(prefix_for(instance))
     end
 
     def token_set?(instance)

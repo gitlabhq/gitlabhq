@@ -2035,4 +2035,50 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
 
     it { is_expected.to contain_exactly(runner) }
   end
+
+  describe '#ensure_token' do
+    let(:runner) { described_class.new(registration_type: registration_type) }
+    let(:token) { 'an_existing_secret_token' }
+    let(:static_prefix) { described_class::CREATED_RUNNER_TOKEN_PREFIX }
+
+    context 'when runner is initialized without a token' do
+      context 'with registration_token' do
+        let(:registration_type) { :registration_token }
+
+        it 'generates a token' do
+          expect { runner.ensure_token }.to change { runner.token }.from(nil)
+        end
+      end
+
+      context 'with authenticated_user' do
+        let(:registration_type) { :authenticated_user }
+
+        it 'generates a token with prefix' do
+          expect { runner.ensure_token }.to change { runner.token }.from(nil).to(a_string_starting_with(static_prefix))
+        end
+      end
+    end
+
+    context 'when runner is initialized with a token' do
+      before do
+        runner.set_token(token)
+      end
+
+      context 'with registration_token' do
+        let(:registration_type) { :registration_token }
+
+        it 'does not change the existing token' do
+          expect { runner.ensure_token }.not_to change { runner.token }.from(token)
+        end
+      end
+
+      context 'with authenticated_user' do
+        let(:registration_type) { :authenticated_user }
+
+        it 'does not change the existing token' do
+          expect { runner.ensure_token }.not_to change { runner.token }.from(token)
+        end
+      end
+    end
+  end
 end

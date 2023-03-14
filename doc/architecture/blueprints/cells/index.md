@@ -26,7 +26,7 @@ We use the following terms to describe components and properties of the Cells ar
 
 A Cell is a set of infrastructure components that contains multiple top-level namespaces that belong to different organizations. The components include both datastores (PostgreSQL, Redis etc.) and stateless services (web etc.). The infrastructure components provided within a Cell are shared among organizations and their top-level namespaces but not shared with other Cells. This isolation of infrastructure components means that Cells are independent from each other.
 
-![Term Cell](images/term-pod.png)
+![Term Cell](images/term-cell.png)
 
 #### Cell properties
 

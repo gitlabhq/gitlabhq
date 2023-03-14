@@ -295,3 +295,7 @@ to @gitlab/ui by https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1709
 .gl-line-height-1 {
   line-height: 1;
 }
+
+.gl-focus:focus {
+  @include gl-focus;
+}
