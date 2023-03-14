@@ -89,9 +89,9 @@ review-build-cng:
     strategy: depend
 
 .review-workflow-base:
-  extends:
-    - .default-retry
   image: ${REVIEW_APPS_IMAGE}
+  retry:
+    max: 2 # This is confusing but this means "3 runs at max"
   variables:
     HOST_SUFFIX: "${CI_ENVIRONMENT_SLUG}"
     DOMAIN: "-${CI_ENVIRONMENT_SLUG}.${REVIEW_APPS_DOMAIN}"

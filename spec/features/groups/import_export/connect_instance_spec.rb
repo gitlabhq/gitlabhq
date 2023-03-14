@@ -26,7 +26,7 @@ RSpec.describe 'Import/Export - Connect to another instance', :js, feature_categ
         pat = 'demo-pat'
 
         expect(page).to have_content 'Import groups by direct transfer'
-        expect(page).to have_content 'Not all related objects are migrated'
+        expect(page).to have_content 'Not all group items are migrated'
 
         fill_in :bulk_import_gitlab_url, with: source_url
         fill_in :bulk_import_gitlab_access_token, with: pat

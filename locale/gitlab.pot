@@ -20693,7 +20693,7 @@ msgstr ""
 msgid "GroupsNew|No import options available"
 msgstr ""
 
-msgid "GroupsNew|Not all related objects are migrated. %{docs_link_start}More info%{docs_link_end}."
+msgid "GroupsNew|Not all group items are migrated. %{docs_link_start}What items are migrated%{docs_link_end}?"
 msgstr ""
 
 msgid "GroupsNew|Personal access token"
@@ -20714,7 +20714,7 @@ msgstr ""
 msgid "GroupsNew|Remember to enable it also on the instance you are migrating from."
 msgstr ""
 
-msgid "GroupsNew|This feature is deprecated and replaced by %{docs_link_start}group migration%{docs_link_end}."
+msgid "GroupsNew|This feature is deprecated and replaced by group migration by direct transfer. %{docs_link_start}Learn more%{docs_link_end}."
 msgstr ""
 
 msgid "GroupsNew|To import a group, navigate to the group settings for the GitLab source instance, %{link_start}generate an export file%{link_end}, and upload it here."

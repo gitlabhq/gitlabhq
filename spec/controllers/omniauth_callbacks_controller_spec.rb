@@ -430,6 +430,31 @@ RSpec.describe OmniauthCallbacksController, type: :controller, feature_category:
     end
   end
 
+  describe '#openid_connect' do
+    let(:user) { create(:omniauth_user, extern_uid: extern_uid, provider: provider) }
+    let(:extern_uid) { 'my-uid' }
+    let(:provider) { 'openid_connect' }
+
+    before do
+      prepare_provider_route('openid_connect')
+
+      mock_auth_hash(provider, extern_uid, user.email, additional_info: {})
+
+      request.env['devise.mapping'] = Devise.mappings[:user]
+      request.env['omniauth.auth'] = Rails.application.env_config['omniauth.auth']
+    end
+
+    it_behaves_like 'known sign in' do
+      let(:post_action) { post provider }
+    end
+
+    it 'allows sign in' do
+      post provider
+
+      expect(request.env['warden']).to be_authenticated
+    end
+  end
+
   describe '#saml' do
     let(:last_request_id) { 'ONELOGIN_4fee3b046395c4e751011e97f8900b5273d56685' }
     let(:user) { create(:omniauth_user, :two_factor, extern_uid: 'my-uid', provider: 'saml') }

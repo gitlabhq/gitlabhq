@@ -22,6 +22,11 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     alias_method provider, :handle_omniauth
   end
 
+  # overridden in EE
+  def openid_connect
+    handle_omniauth
+  end
+
   # Extend the standard implementation to also increment
   # the number of failed sign in attempts
   def failure

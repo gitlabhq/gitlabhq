@@ -18,7 +18,7 @@ To view an epic board:
 1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Epics > Boards**.
 
-![GitLab epic board - Premium](img/epic_board_v14_1.png)
+![GitLab epic board - Premium](img/epic_board_v15_10.png)
 
 ## Create an epic board
 
@@ -115,7 +115,7 @@ To create an epic from a list in epic board:
 1. Enter the new epic's title.
 1. Select **Create epic**.
 
-![Create a GitLab epic from an epic board](img/epic_board_epic_create_v14_1.png)
+![Create a GitLab epic from an epic board](img/epic_board_epic_create_v15_10.png)
 
 ### Filter epics
 
@@ -216,3 +216,15 @@ To edit the scope of an epic board:
    - Show or hide the Open and Closed columns.
    - Select other labels as the board's scope.
 1. Select **Save changes**.
+
+#### Display total weight on board lists
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/364503) in GitLab 15.1 [with a flag](../../../administration/feature_flags.md) named `fe_epic_board_total_weight`. Disabled by default.
+> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/364503) in GitLab 15.9.
+> - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/364503) in GitLab 15.10.
+
+FLAG:
+On self-managed GitLab, by default this feature is available. To hide the feature, ask an administrator to [disable the feature flag](../../../administration/feature_flags.md) named `fe_epic_board_total_weight`.
+On GitLab.com, this feature is available.
+
+When enabled, this feature displays total weight of all epics at the top of each list.

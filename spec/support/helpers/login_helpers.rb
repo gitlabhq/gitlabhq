@@ -213,6 +213,15 @@ module LoginHelpers
     config
   end
 
+  def prepare_provider_route(provider_name)
+    routes = Rails.application.routes
+    routes.disable_clear_and_finalize = true
+    routes.formatter.clear
+    routes.draw do
+      post "/users/auth/#{provider_name}" => "omniauth_callbacks##{provider_name}"
+    end
+  end
+
   def stub_omniauth_provider(provider, context: Rails.application)
     env = env_from_context(context)
 

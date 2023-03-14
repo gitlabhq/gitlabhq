@@ -25,9 +25,9 @@
       = render Pajamas::AlertComponent.new(dismissible: false,
         variant: :warning) do |c|
         = c.body do
-          - docs_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_path('user/group/import/index.md') }
+          - docs_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_path('user/group/import/index.md', anchor: 'migrated-group-items') }
           - docs_link_end = '</a>'.html_safe
-          = s_('GroupsNew|Not all related objects are migrated. %{docs_link_start}More info%{docs_link_end}.').html_safe % { docs_link_start: docs_link_start, docs_link_end: docs_link_end }
+          = s_('GroupsNew|Not all group items are migrated. %{docs_link_start}What items are migrated%{docs_link_end}?').html_safe % { docs_link_start: docs_link_start, docs_link_end: docs_link_end }
 
     %p.gl-mt-3
     = s_('GroupsNew|Provide credentials for the source instance to import from. You can provide this instance as a source to move groups in this instance.')
