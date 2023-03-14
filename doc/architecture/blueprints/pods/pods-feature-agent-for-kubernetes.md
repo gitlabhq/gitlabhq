@@ -1,9 +1,9 @@
 ---
-redirect_to: '../cells/pods-feature-agent-for-kubernetes.md'
+redirect_to: '../cells/cells-feature-agent-for-kubernetes.md'
 remove_date: '2023-06-13'
 ---
 
-This document was moved to [another location](../cells/pods-feature-agent-for-kubernetes.md).
+This document was moved to [another location](../cells/cells-feature-agent-for-kubernetes.md).
 
 <!-- This redirect file can be deleted after <2023-06-13>. -->
 <!-- Redirects that point to other docs in the same project expire in three months. -->

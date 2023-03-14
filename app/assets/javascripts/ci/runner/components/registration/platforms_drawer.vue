@@ -1,5 +1,5 @@
 <script>
-import { GlDrawer, GlFormGroup, GlFormSelect, GlLink, GlSprintf } from '@gitlab/ui';
+import { GlDrawer, GlFormGroup, GlFormSelect, GlIcon, GlLink, GlSprintf } from '@gitlab/ui';
 import { getContentWrapperHeight } from '~/lib/utils/dom_utils';
 import { DRAWER_Z_INDEX } from '~/lib/utils/constants';
 
@@ -19,6 +19,7 @@ export default {
     GlDrawer,
     GlFormGroup,
     GlFormSelect,
+    GlIcon,
     GlLink,
     GlSprintf,
     CliCommand,
@@ -122,7 +123,9 @@ export default {
           "
         >
           <template #link="{ content }">
-            <gl-link :href="$options.INSTALL_HELP_URL">{{ content }}</gl-link>
+            <gl-link :href="$options.INSTALL_HELP_URL">
+              {{ content }} <gl-icon name="external-link" />
+            </gl-link>
           </template>
         </gl-sprintf>
       </p>

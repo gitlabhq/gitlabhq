@@ -1,8 +1,8 @@
 import { GlAlert } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
-import MlCandidate from '~/ml/experiment_tracking/components/ml_candidate.vue';
+import MlCandidatesShow from '~/ml/experiment_tracking/routes/candidates/show';
 
-describe('MlCandidate', () => {
+describe('MlCandidatesShow', () => {
   let wrapper;
 
   const createWrapper = () => {
@@ -21,14 +21,14 @@ describe('MlCandidate', () => {
       ],
       info: {
         iid: 'candidate_iid',
-        artifact_link: 'path_to_artifact',
+        path_to_artifact: 'path_to_artifact',
         experiment_name: 'The Experiment',
         experiment_path: 'path/to/experiment',
         status: 'SUCCESS',
       },
     };
 
-    return mountExtended(MlCandidate, { propsData: { candidate } });
+    return mountExtended(MlCandidatesShow, { propsData: { candidate } });
   };
 
   const findAlert = () => wrapper.findComponent(GlAlert);

@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`MlCandidate renders correctly 1`] = `
+exports[`MlCandidatesShow renders correctly 1`] = `
 <div>
   <div
     class="gl-alert gl-alert-warning"
@@ -152,7 +152,24 @@ exports[`MlCandidate renders correctly 1`] = `
         </td>
       </tr>
        
-      <!---->
+      <tr>
+        <td />
+         
+        <td
+          class="gl-font-weight-bold"
+        >
+          Artifacts
+        </td>
+         
+        <td>
+          <a
+            class="gl-link"
+            href="path_to_artifact"
+          >
+            Artifacts
+          </a>
+        </td>
+      </tr>
        
       <tr
         class="divider"

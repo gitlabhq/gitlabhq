@@ -4771,6 +4771,9 @@ msgstr ""
 msgid "Analytics|Dashboard Title"
 msgstr ""
 
+msgid "Analytics|Dashboard not found"
+msgstr ""
+
 msgid "Analytics|Dashboard was saved successfully"
 msgstr ""
 
@@ -4802,6 +4805,9 @@ msgid "Analytics|Line Chart"
 msgstr ""
 
 msgid "Analytics|New Analytics Visualization Title"
+msgstr ""
+
+msgid "Analytics|No dashboard matches the specified URL path."
 msgstr ""
 
 msgid "Analytics|OS"
@@ -4841,6 +4847,9 @@ msgid "Analytics|Updating dashboard %{dashboardId}"
 msgstr ""
 
 msgid "Analytics|Users"
+msgstr ""
+
+msgid "Analytics|View available dashboards"
 msgstr ""
 
 msgid "Analytics|Viewport"
@@ -17132,9 +17141,6 @@ msgstr ""
 msgid "Expected documents: %{expected_documents}"
 msgstr ""
 
-msgid "Experiment"
-msgstr ""
-
 msgid "Experiments"
 msgstr ""
 
@@ -22843,9 +22849,6 @@ msgstr ""
 msgid "Indicates whether this runner can pick jobs without tags"
 msgstr ""
 
-msgid "Info"
-msgstr ""
-
 msgid "Inform users without uploaded SSH keys that they can't push over SSH until one is added"
 msgstr ""
 
@@ -27177,9 +27180,6 @@ msgstr ""
 msgid "Messages"
 msgstr ""
 
-msgid "Metadata"
-msgstr ""
-
 msgid "Method"
 msgstr ""
 
@@ -27862,10 +27862,25 @@ msgstr ""
 msgid "MlExperimentTracking|Filter candidates"
 msgstr ""
 
+msgid "MlExperimentTracking|ID"
+msgstr ""
+
+msgid "MlExperimentTracking|Info"
+msgstr ""
+
 msgid "MlExperimentTracking|Logged candidates for experiment"
 msgstr ""
 
 msgid "MlExperimentTracking|Machine learning experiment tracking"
+msgstr ""
+
+msgid "MlExperimentTracking|Metadata"
+msgstr ""
+
+msgid "MlExperimentTracking|Metrics"
+msgstr ""
+
+msgid "MlExperimentTracking|Model candidate details"
 msgstr ""
 
 msgid "MlExperimentTracking|Model experiments"
@@ -27889,6 +27904,12 @@ msgstr ""
 msgid "MlExperimentTracking|No name"
 msgstr ""
 
+msgid "MlExperimentTracking|Parameters"
+msgstr ""
+
+msgid "MlExperimentTracking|Status"
+msgstr ""
+
 msgid "MlExperimentTracking|There are no logged experiments for this project. Create a new experiment using the MLflow client."
 msgstr ""
 
@@ -27899,9 +27920,6 @@ msgid "ModalButton|Add projects"
 msgstr ""
 
 msgid "Modal|Close"
-msgstr ""
-
-msgid "Model candidate details"
 msgstr ""
 
 msgid "Modified"
@@ -30112,6 +30130,9 @@ msgstr ""
 msgid "Open Selection"
 msgstr ""
 
+msgid "Open color picker"
+msgstr ""
+
 msgid "Open errors"
 msgstr ""
 
@@ -30937,9 +30958,6 @@ msgid "Parameter"
 msgstr ""
 
 msgid "Parameter \"job_id\" cannot exceed length of %{job_id_max_size}"
-msgstr ""
-
-msgid "Parameters"
 msgstr ""
 
 msgid "Parent"
@@ -37242,6 +37260,9 @@ msgstr ""
 msgid "Runners|Add tags for the types of jobs the runner processes to ensure that the runner only runs jobs that you intend it to. %{helpLinkStart}Learn more.%{helpLinkEnd}"
 msgstr ""
 
+msgid "Runners|Admin area › Runners"
+msgstr ""
+
 msgid "Runners|Administrator"
 msgstr ""
 
@@ -37535,9 +37556,6 @@ msgstr ""
 msgid "Runners|Operating systems"
 msgstr ""
 
-msgid "Runners|Optional. Step 3"
-msgstr ""
-
 msgid "Runners|Owner"
 msgstr ""
 
@@ -37762,6 +37780,9 @@ msgstr ""
 msgid "Runners|Step 2"
 msgstr ""
 
+msgid "Runners|Step 3 (optional)"
+msgstr ""
+
 msgid "Runners|Stop the runner from accepting new jobs."
 msgstr ""
 
@@ -37813,6 +37834,9 @@ msgid "Runners|To install Runner in a container follow the instructions describe
 msgstr ""
 
 msgid "Runners|To register them, go to the %{link_start}group's Runners page%{link_end}."
+msgstr ""
+
+msgid "Runners|To view the runner, go to %{runnerListName}."
 msgstr ""
 
 msgid "Runners|Token expiry"
@@ -37882,6 +37906,9 @@ msgid "Runners|You can set up a project runner to be used by multiple projects b
 msgstr ""
 
 msgid "Runners|You have used %{quotaUsed} out of %{quotaLimit} of your shared Runners pipeline minutes."
+msgstr ""
+
+msgid "Runners|You've created a new runner!"
 msgstr ""
 
 msgid "Runners|active"
@@ -38513,12 +38540,6 @@ msgid "Seats"
 msgstr ""
 
 msgid "Seats owed"
-msgstr ""
-
-msgid "Seats usage data as of %{last_enqueue_time} (Updated daily)"
-msgstr ""
-
-msgid "Seats usage data is updated every day at 12:00pm UTC"
 msgstr ""
 
 msgid "Secondary email:"
@@ -39692,6 +39713,9 @@ msgid "Select branch or create wildcard"
 msgstr ""
 
 msgid "Select branches"
+msgstr ""
+
+msgid "Select color"
 msgstr ""
 
 msgid "Select default branch"

@@ -1,11 +1,21 @@
 <script>
 import { GlLink } from '@gitlab/ui';
-import { __ } from '~/locale';
 import { FEATURE_NAME, FEATURE_FEEDBACK_ISSUE } from '~/ml/experiment_tracking/constants';
 import IncubationAlert from '~/vue_shared/components/incubation/incubation_alert.vue';
+import {
+  TITLE_LABEL,
+  INFO_LABEL,
+  ID_LABEL,
+  STATUS_LABEL,
+  EXPERIMENT_LABEL,
+  ARTIFACTS_LABEL,
+  PARAMETERS_LABEL,
+  METRICS_LABEL,
+  METADATA_LABEL,
+} from './translations';
 
 export default {
-  name: 'MlCandidate',
+  name: 'MlCandidatesShow',
   components: {
     IncubationAlert,
     GlLink,
@@ -17,29 +27,29 @@ export default {
     },
   },
   i18n: {
-    titleLabel: __('Model candidate details'),
-    infoLabel: __('Info'),
-    idLabel: __('ID'),
-    statusLabel: __('Status'),
-    experimentLabel: __('Experiment'),
-    artifactsLabel: __('Artifacts'),
-    parametersLabel: __('Parameters'),
-    metricsLabel: __('Metrics'),
-    metadataLabel: __('Metadata'),
+    TITLE_LABEL,
+    INFO_LABEL,
+    ID_LABEL,
+    STATUS_LABEL,
+    EXPERIMENT_LABEL,
+    ARTIFACTS_LABEL,
+    PARAMETERS_LABEL,
+    METRICS_LABEL,
+    METADATA_LABEL,
   },
   computed: {
     sections() {
       return [
         {
-          sectionName: this.$options.i18n.parametersLabel,
+          sectionName: this.$options.i18n.PARAMETERS_LABEL,
           sectionValues: this.candidate.params,
         },
         {
-          sectionName: this.$options.i18n.metricsLabel,
+          sectionName: this.$options.i18n.METRICS_LABEL,
           sectionValues: this.candidate.metrics,
         },
         {
-          sectionName: this.$options.i18n.metadataLabel,
+          sectionName: this.$options.i18n.METADATA_LABEL,
           sectionValues: this.candidate.metadata,
         },
       ];
@@ -58,7 +68,7 @@ export default {
     />
 
     <h3>
-      {{ $options.i18n.titleLabel }}
+      {{ $options.i18n.TITLE_LABEL }}
     </h3>
 
     <table class="candidate-details">
@@ -66,20 +76,20 @@ export default {
         <tr class="divider"></tr>
 
         <tr>
-          <td class="gl-text-secondary gl-font-weight-bold">{{ $options.i18n.infoLabel }}</td>
-          <td class="gl-font-weight-bold">{{ $options.i18n.idLabel }}</td>
+          <td class="gl-text-secondary gl-font-weight-bold">{{ $options.i18n.INFO_LABEL }}</td>
+          <td class="gl-font-weight-bold">{{ $options.i18n.ID_LABEL }}</td>
           <td>{{ candidate.info.iid }}</td>
         </tr>
 
         <tr>
           <td></td>
-          <td class="gl-font-weight-bold">{{ $options.i18n.statusLabel }}</td>
+          <td class="gl-font-weight-bold">{{ $options.i18n.STATUS_LABEL }}</td>
           <td>{{ candidate.info.status }}</td>
         </tr>
 
         <tr>
           <td></td>
-          <td class="gl-font-weight-bold">{{ $options.i18n.experimentLabel }}</td>
+          <td class="gl-font-weight-bold">{{ $options.i18n.EXPERIMENT_LABEL }}</td>
           <td>
             <gl-link :href="candidate.info.path_to_experiment">{{
               candidate.info.experiment_name
@@ -89,10 +99,10 @@ export default {
 
         <tr v-if="candidate.info.path_to_artifact">
           <td></td>
-          <td class="gl-font-weight-bold">{{ $options.i18n.artifactsLabel }}</td>
+          <td class="gl-font-weight-bold">{{ $options.i18n.ARTIFACTS_LABEL }}</td>
           <td>
             <gl-link :href="candidate.info.path_to_artifact">{{
-              $options.i18n.artifactsLabel
+              $options.i18n.ARTIFACTS_LABEL
             }}</gl-link>
           </td>
         </tr>

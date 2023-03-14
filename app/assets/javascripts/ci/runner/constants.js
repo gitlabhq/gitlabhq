@@ -108,6 +108,12 @@ export const I18N_CLEAR_FILTER_PROJECTS = __('Clear');
 export const I18N_NO_JOBS_FOUND = s__('Runners|This runner has not run any jobs.');
 export const I18N_NO_PROJECTS_FOUND = __('No projects found');
 
+// Runner registration
+
+export const I18N_REGISTRATION_SUCCESS = s__("Runners|You've created a new runner!");
+
+export const RUNNER_REGISTRATION_POLLING_INTERVAL_MS = 2000;
+
 // Styles
 
 export const RUNNER_TAG_BADGE_VARIANT = 'info';

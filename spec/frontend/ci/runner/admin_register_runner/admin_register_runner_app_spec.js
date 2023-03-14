@@ -11,7 +11,13 @@ import { TEST_HOST } from 'helpers/test_constants';
 
 import { updateHistory } from '~/lib/utils/url_utility';
 import runnerForRegistrationQuery from '~/ci/runner/graphql/register/runner_for_registration.query.graphql';
-import { PARAM_KEY_PLATFORM, DEFAULT_PLATFORM, WINDOWS_PLATFORM } from '~/ci/runner/constants';
+import {
+  PARAM_KEY_PLATFORM,
+  DEFAULT_PLATFORM,
+  WINDOWS_PLATFORM,
+  RUNNER_REGISTRATION_POLLING_INTERVAL_MS,
+  STATUS_ONLINE,
+} from '~/ci/runner/constants';
 import AdminRegisterRunnerApp from '~/ci/runner/admin_register_runner/admin_register_runner_app.vue';
 import RegistrationInstructions from '~/ci/runner/components/registration/registration_instructions.vue';
 import PlatformsDrawer from '~/ci/runner/components/registration/platforms_drawer.vue';
@@ -35,6 +41,11 @@ describe('AdminRegisterRunnerApp', () => {
   const findRegistrationInstructions = () => wrapper.findComponent(RegistrationInstructions);
   const findPlatformsDrawer = () => wrapper.findComponent(PlatformsDrawer);
   const findBtn = () => wrapper.findComponent(GlButton);
+
+  const waitForPolling = async () => {
+    jest.advanceTimersByTime(RUNNER_REGISTRATION_POLLING_INTERVAL_MS);
+    await waitForPromises();
+  };
 
   const createComponent = () => {
     wrapper = shallowMountExtended(AdminRegisterRunnerApp, {
@@ -82,6 +93,34 @@ describe('AdminRegisterRunnerApp', () => {
     it('shows runner list button', () => {
       expect(findBtn().attributes('href')).toEqual(mockRunnersPath);
       expect(findBtn().props('variant')).toEqual('confirm');
+    });
+
+    describe('polling for changes in status', () => {
+      it('fetches data', () => {
+        expect(mockRunnerQuery).toHaveBeenCalledTimes(1);
+      });
+
+      it('polls', async () => {
+        await waitForPolling();
+        expect(mockRunnerQuery).toHaveBeenCalledTimes(2);
+
+        await waitForPolling();
+        expect(mockRunnerQuery).toHaveBeenCalledTimes(3);
+      });
+
+      it('when runner is online, stops polling', async () => {
+        mockRunnerQuery.mockResolvedValue({
+          data: {
+            runner: { ...mockRunner, status: STATUS_ONLINE },
+          },
+        });
+
+        await waitForPolling();
+        expect(mockRunnerQuery).toHaveBeenCalledTimes(2);
+
+        await waitForPolling();
+        expect(mockRunnerQuery).toHaveBeenCalledTimes(2);
+      });
     });
   });
 
@@ -145,11 +184,13 @@ describe('AdminRegisterRunnerApp', () => {
   });
 
   describe('When runner is loading', () => {
-    beforeEach(() => {
-      createComponent();
+    beforeEach(async () => {
+      mockRunnerQuery = jest.fn().mockImplementation(() => new Promise());
     });
 
-    it('shows registration instructions', () => {
+    it('shows registration instructions with no runner', () => {
+      createComponent();
+
       expect(findRegistrationInstructions().props()).toEqual({
         loading: true,
         runner: null,

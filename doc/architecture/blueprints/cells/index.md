@@ -172,7 +172,7 @@ A number of technical issues need to be resolved to implement Cells (in no parti
 
 ## Cross-section impact
 
-Cells is a fundamental architecture change that impacts other sections and stages. This section summarizes and links to other groups that may be impacted and highlights potential conflicts that need to be resolved. The Pods group is not responsible for achieving the goals of other groups but we want to ensure that dependencies are resolved.
+Cells is a fundamental architecture change that impacts other sections and stages. This section summarizes and links to other groups that may be impacted and highlights potential conflicts that need to be resolved. The Tenant Scale group is not responsible for achieving the goals of other groups but we want to ensure that dependencies are resolved.
 
 ### Summary
 
@@ -199,7 +199,7 @@ The [organization roadmap outlines](https://gitlab.com/gitlab-org/gitlab/-/issue
 
 #### Potential conflicts with Cells
 
-- Organization defines a new entity as the primary organizational object for groups and projects. 
+- Organization defines a new entity as the primary organizational object for groups and projects.
 - We will only introduce one entity
 - Group::Organization highlighted the need to further validate the key assumption that users only care about what happens within their organization.
 
@@ -328,26 +328,26 @@ This section links all different technical proposals that are being evaluated.
 The Cells architecture will impact many features requiring some of them to be rewritten, or changed significantly.
 This is the list of known affected features with the proposed solutions.
 
-- [Cells: Git Access](pods-feature-git-access.md)
-- [Cells: Data Migration](pods-feature-data-migration.md)
-- [Cells: Database Sequences](pods-feature-database-sequences.md)
-- [Cells: GraphQL](pods-feature-graphql.md)
-- [Cells: Organizations](pods-feature-organizations.md)
-- [Cells: Router Endpoints Classification](pods-feature-router-endpoints-classification.md)
-- [Cells: Schema changes (Postgres and Elasticsearch migrations)](pods-feature-schema-changes.md)
-- [Cells: Backups](pods-feature-backups.md)
-- [Cells: Global Search](pods-feature-global-search.md)
-- [Cells: CI Runners](pods-feature-ci-runners.md)
-- [Cells: Admin Area](pods-feature-admin-area.md)
-- [Cells: Secrets](pods-feature-secrets.md)
-- [Cells: Container Registry](pods-feature-container-registry.md)
-- [Cells: Contributions: Forks](pods-feature-contributions-forks.md)
-- [Cells: Personal Namespaces](pods-feature-personal-namespaces.md)
-- [Cells: Dashboard: Projects, Todos, Issues, Merge Requests, Activity, ...](pods-feature-dashboard.md)
-- [Cells: Snippets](pods-feature-snippets.md)
-- [Cells: Uploads](pods-feature-uploads.md)
-- [Cells: GitLab Pages](pods-feature-gitlab-pages.md)
-- [Cells: Agent for Kubernetes](pods-feature-agent-for-kubernetes.md)
+- [Cells: Git Access](cells-feature-git-access.md)
+- [Cells: Data Migration](cells-feature-data-migration.md)
+- [Cells: Database Sequences](cells-feature-database-sequences.md)
+- [Cells: GraphQL](cells-feature-graphql.md)
+- [Cells: Organizations](cells-feature-organizations.md)
+- [Cells: Router Endpoints Classification](cells-feature-router-endpoints-classification.md)
+- [Cells: Schema changes (Postgres and Elasticsearch migrations)](cells-feature-schema-changes.md)
+- [Cells: Backups](cells-feature-backups.md)
+- [Cells: Global Search](cells-feature-global-search.md)
+- [Cells: CI Runners](cells-feature-ci-runners.md)
+- [Cells: Admin Area](cells-feature-admin-area.md)
+- [Cells: Secrets](cells-feature-secrets.md)
+- [Cells: Container Registry](cells-feature-container-registry.md)
+- [Cells: Contributions: Forks](cells-feature-contributions-forks.md)
+- [Cells: Personal Namespaces](cells-feature-personal-namespaces.md)
+- [Cells: Dashboard: Projects, Todos, Issues, Merge Requests, Activity, ...](cells-feature-dashboard.md)
+- [Cells: Snippets](cells-feature-snippets.md)
+- [Cells: Uploads](cells-feature-uploads.md)
+- [Cells: GitLab Pages](cells-feature-gitlab-pages.md)
+- [Cells: Agent for Kubernetes](cells-feature-agent-for-kubernetes.md)
 
 ## Links
 

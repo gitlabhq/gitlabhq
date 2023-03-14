@@ -4,8 +4,7 @@ import Vue from 'vue';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { fetchPolicies } from '~/lib/graphql';
 import { __ } from '~/locale';
-import { TYPE_ISSUE, TYPE_MERGE_REQUEST } from '~/issues/constants';
-import { IssuableStates } from '~/vue_shared/issuable/list/constants';
+import { STATUS_CLOSED, STATUS_OPEN, TYPE_ISSUE, TYPE_MERGE_REQUEST } from '~/issues/constants';
 
 export const badgeState = Vue.observable({
   state: '',
@@ -81,9 +80,9 @@ export default {
       ];
     },
     badgeVariant() {
-      if (this.state === IssuableStates.Opened) {
+      if (this.state === STATUS_OPEN) {
         return 'success';
-      } else if (this.state === IssuableStates.Closed) {
+      } else if (this.state === STATUS_CLOSED) {
         return this.issuableType === TYPE_MERGE_REQUEST ? 'danger' : 'info';
       }
       return 'info';

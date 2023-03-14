@@ -48,17 +48,73 @@ sequenceDiagram
     Customers Portal ->> Marketplace partner system: Success response with order status
 ```
 
-## Prerequisites
+## Marketplace API Specification
 
-Before a marketplace partner client can use the Marketplace API, GitLab must set up the following configurations for the client:
+OpenAPI specs for the Marketplace APIs are available at [Marketplace interactive API documentation](https://customers.staging.gitlab.com/openapi_docs/marketplace).
 
-1. Client credential. Marketplace APIs are secured with OAuth 2.0. A client credential is required to get the OAuth token.
+## Access the Marketplace API
+
+To access the Marketplace API you need to:
+
+- Request access from GitLab.
+- Retrieve an OAuth access token.
+
+Marketplace API endpoints are secured with [OAuth 2.0](https://oauth.net/2/). OAuth is an authorization framework
+that grants 3rd party or client applications, like a GitLab Partner application, limited access to resources on an
+HTTP service, like the Customers Portal.
+
+OAuth 2.0 uses _grant types_ (or _flows_) that describe how a client application gets authorization in
+the form of an _access token_. An access token is a string that the client application uses to make authorized requests to
+the resource server.
+
+The Marketplace API uses the `client_credentials` grant type. The client application uses the access token to access its
+own resources, instead of accessing resources on behalf of a user.
+
+### Step 1: Request access
+
+Before you can use the Marketplace API, you must contact your GitLab Partner Manager or email [`partnerorderops`](mailto:partnerorderops@gitlab.com)
+to request access. After you request access, GitLab configures the following accounts and credentials for you:
+
+1. Client credentials. Marketplace APIs are secured with OAuth 2.0. The client credentials include the client ID and client secret
+   that you need to retrieve the OAuth access token.
 1. Invoice owner account in Zuora system. Required for invoice processing.
 1. Distributor account in Salesforce system.
 1. Trading partner account in Salesforce system.
 
-Interested GitLab Partners should contact their GitLab Partner Manager or email [`partnerorderops`](mailto:partnerorderops@gitlab.com).
+### Step 2: Retrieve an access token
 
-## Marketplace API Specification
+To retrieve an access token,
 
-OpenAPI specs for the Marketplace APIs are available at [Marketplace interactive API documentation](https://customers.staging.gitlab.com/openapi_docs/marketplace).
+- Make a POST request to the [`/oauth/token`](https://customers.staging.gitlab.com/openapi_docs/marketplace#/marketplace/post_oauth_token) endpoint with the following required parameters:
+
+| Parameter       | Type   | Required |Description                                                                                                                         |
+|-----------------|--------|----------|------------------------------------------------------------------------------------------------------------------------------------|
+| `client_id`     | string | yes      |ID of your client application record on the Customers Portal. Received from GitLab.                                                 |
+| `client_secret` | string | yes      |Secret of your client application record on the Customers Portal. Received from GitLab.                                             |
+| `grant_type`    | string | yes      |Specifies the type of credential flow. Use `client_credentials`.                                                                    |
+| `scope`         | string | yes      |Specifies the level of access. Use `marketplace.order:read` for read-only access. Use `marketplace.order:create` for create access. |
+
+If the request is successful, the response body includes the access token that you can use in subsequent requests. For an example of a successful
+response, see the [Marketplace interactive API documentation](https://customers.staging.gitlab.com/openapi_docs/marketplace)
+
+If the request is unsuccessful, the response body includes an error and error description. The errors can be:
+
+| Status | Description                                                                                                                                  |
+|--------|----------------------------------------------------------------------------------------------------------------------------------------------|
+| 400    | Invalid scope. Ensure the `scope` is `marketplace.order:read` or `marketplace.order:create`.                                                 |
+| 401    | Invalid client. Ensure that there are no typos or extra spaces on the client specific credentials. Incorrect `client_id` or `client_secret`  |
+
+### Step 3: Use the access token
+
+To use the access token from a client application:
+
+1. Set the `Authorization` header of the request to `Bearer <your_access_token>`.
+1. Set parameters or data needed for the endpoint and send the request.
+
+Example request:
+
+```shell
+curl \
+  --url "https://customers.staging.gitlab.com/api/v1/marketplace/subscriptions/:external_subscription_id" \
+  --header "Authorization: Bearer NHb_VhZhPOnBTSNfBSzmCmt28lLDWb2xtwr_c3DL148"
+```

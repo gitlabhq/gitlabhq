@@ -1018,6 +1018,34 @@ RSpec.describe Gitlab::Regex, feature_category: :tooling do
     it { is_expected.not_to match('/api/v4/groups/1234/packages/debian/pool/compon/a/pkg/file.name') }
   end
 
+  describe 'Packages::MAVEN_SNAPSHOT_DYNAMIC_PARTS' do
+    subject { described_class::Packages::MAVEN_SNAPSHOT_DYNAMIC_PARTS }
+
+    it { is_expected.to match('test-2.11-20230303.163304-1.jar') }
+    it { is_expected.to match('test-2.11-20230303.163304-1-javadoc.jar') }
+    it { is_expected.to match('test-2.11-20230303.163304-1-sources.jar') }
+    it { is_expected.to match('test-2.11-20230303.163304-1-20230303.163304-1.jar') }
+    it { is_expected.to match('test-2.11-20230303.163304-1-20230303.163304-1-javadoc.jar') }
+    it { is_expected.to match('test-2.11-20230303.163304-1-20230303.163304-1-sources.jar') }
+    it { is_expected.to match("#{'a' * 500}-20230303.163304-1-sources.jar") }
+    it { is_expected.to match("test-2.11-20230303.163304-1-#{'a' * 500}.jar") }
+    it { is_expected.to match("#{'a' * 500}-20230303.163304-1-#{'a' * 500}.jar") }
+
+    it { is_expected.not_to match('') }
+    it { is_expected.not_to match(nil) }
+    it { is_expected.not_to match('test') }
+    it { is_expected.not_to match('1.2.3') }
+    it { is_expected.not_to match('1.2.3-javadoc.jar') }
+    it { is_expected.not_to match('-202303039.163304-1.jar') }
+    it { is_expected.not_to match('test-2.11-202303039.163304-1.jar') }
+    it { is_expected.not_to match('test-2.11-20230303.16330-1.jar') }
+    it { is_expected.not_to match('test-2.11-202303039.163304.jar') }
+    it { is_expected.not_to match('test-2.11-202303039.163304-.jar') }
+    it { is_expected.not_to match("#{'a' * 2000}-20230303.163304-1-sources.jar") }
+    it { is_expected.not_to match("test-2.11-20230303.163304-1-#{'a' * 2000}.jar") }
+    it { is_expected.not_to match("#{'a' * 2000}-20230303.163304-1-#{'a' * 2000}.jar") }
+  end
+
   describe '.composer_package_version_regex' do
     subject { described_class.composer_package_version_regex }
 

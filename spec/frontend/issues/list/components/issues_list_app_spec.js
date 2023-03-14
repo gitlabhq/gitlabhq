@@ -25,10 +25,11 @@ import {
 import { createAlert, VARIANT_INFO } from '~/flash';
 import { TYPENAME_USER } from '~/graphql_shared/constants';
 import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
+import { STATUS_ALL, STATUS_CLOSED, STATUS_OPEN } from '~/issues/constants';
 import CsvImportExportButtons from '~/issuable/components/csv_import_export_buttons.vue';
 import IssuableByEmail from '~/issuable/components/issuable_by_email.vue';
 import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
-import { IssuableListTabs, IssuableStates } from '~/vue_shared/issuable/list/constants';
+import { IssuableListTabs } from '~/vue_shared/issuable/list/constants';
 import EmptyStateWithAnyIssues from '~/issues/list/components/empty_state_with_any_issues.vue';
 import EmptyStateWithoutAnyIssues from '~/issues/list/components/empty_state_without_any_issues.vue';
 import IssuesListApp from '~/issues/list/components/issues_list_app.vue';
@@ -213,7 +214,7 @@ describe('CE IssuesListApp component', () => {
         initialSortBy: CREATED_DESC,
         issuables: getIssuesQueryResponse.data.project.issues.nodes,
         tabs: IssuableListTabs,
-        currentTab: IssuableStates.Opened,
+        currentTab: STATUS_OPEN,
         tabCounts: {
           opened: 1,
           closed: 1,
@@ -431,7 +432,7 @@ describe('CE IssuesListApp component', () => {
 
     describe('state', () => {
       it('is set from the url params', () => {
-        const initialState = IssuableStates.All;
+        const initialState = STATUS_ALL;
         setWindowLocation(`?state=${initialState}`);
         wrapper = mountComponent();
 
@@ -644,16 +645,16 @@ describe('CE IssuesListApp component', () => {
         await waitForPromises();
         router.push = jest.fn();
 
-        findIssuableList().vm.$emit('click-tab', IssuableStates.Closed);
+        findIssuableList().vm.$emit('click-tab', STATUS_CLOSED);
       });
 
       it('updates ui to the new tab', () => {
-        expect(findIssuableList().props('currentTab')).toBe(IssuableStates.Closed);
+        expect(findIssuableList().props('currentTab')).toBe(STATUS_CLOSED);
       });
 
       it('updates url to the new tab', () => {
         expect(router.push).toHaveBeenCalledWith({
-          query: expect.objectContaining({ state: IssuableStates.Closed }),
+          query: expect.objectContaining({ state: STATUS_CLOSED }),
         });
       });
     });

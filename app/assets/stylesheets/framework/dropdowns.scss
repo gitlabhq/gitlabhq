@@ -997,17 +997,6 @@
   .label-item {
     padding: 8px 20px;
   }
-
-  .color-input-container {
-    .dropdown-label-color-preview {
-      border: 1px solid $gray-100;
-      border-right: 0;
-
-      &[style] {
-        border-color: transparent;
-      }
-    }
-  }
 }
 
 .bulk-update {

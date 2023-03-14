@@ -1,9 +1,9 @@
 ---
-redirect_to: '../cells/pods-feature-dashboard.md'
+redirect_to: '../cells/cells-feature-dashboard.md'
 remove_date: '2023-06-13'
 ---
 
-This document was moved to [another location](../cells/pods-feature-dashboard.md).
+This document was moved to [another location](../cells/cells-feature-dashboard.md).
 
 <!-- This redirect file can be deleted after <2023-06-13>. -->
 <!-- Redirects that point to other docs in the same project expire in three months. -->

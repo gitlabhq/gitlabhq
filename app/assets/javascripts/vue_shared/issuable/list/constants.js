@@ -1,27 +1,22 @@
+import { STATUS_ALL, STATUS_CLOSED, STATUS_OPEN } from '~/issues/constants';
 import { __ } from '~/locale';
-
-export const IssuableStates = {
-  Opened: 'opened',
-  Closed: 'closed',
-  All: 'all',
-};
 
 export const IssuableListTabs = [
   {
     id: 'state-opened',
-    name: IssuableStates.Opened,
+    name: STATUS_OPEN,
     title: __('Open'),
     titleTooltip: __('Filter by issues that are currently opened.'),
   },
   {
     id: 'state-closed',
-    name: IssuableStates.Closed,
+    name: STATUS_CLOSED,
     title: __('Closed'),
     titleTooltip: __('Filter by issues that are currently closed.'),
   },
   {
     id: 'state-all',
-    name: IssuableStates.All,
+    name: STATUS_ALL,
     title: __('All'),
     titleTooltip: __('Show all issues.'),
   },

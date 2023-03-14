@@ -12,7 +12,13 @@ import { TYPENAME_USER } from '~/graphql_shared/constants';
 import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import CsvImportExportButtons from '~/issuable/components/csv_import_export_buttons.vue';
 import IssuableByEmail from '~/issuable/components/issuable_by_email.vue';
-import { STATUS_CLOSED, WORKSPACE_GROUP, WORKSPACE_PROJECT } from '~/issues/constants';
+import {
+  STATUS_ALL,
+  STATUS_CLOSED,
+  STATUS_OPEN,
+  WORKSPACE_GROUP,
+  WORKSPACE_PROJECT,
+} from '~/issues/constants';
 import axios from '~/lib/utils/axios_utils';
 import { fetchPolicies } from '~/lib/graphql';
 import { isPositiveInteger } from '~/lib/utils/number_utils';
@@ -46,7 +52,7 @@ import {
   TOKEN_TYPE_TYPE,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
-import { IssuableListTabs, IssuableStates } from '~/vue_shared/issuable/list/constants';
+import { IssuableListTabs } from '~/vue_shared/issuable/list/constants';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import NewResourceDropdown from '~/vue_shared/components/new_resource_dropdown/new_resource_dropdown.vue';
 import {
@@ -177,7 +183,7 @@ export default {
       pageParams: {},
       showBulkEditSidebar: false,
       sortKey: CREATED_DESC,
-      state: IssuableStates.Opened,
+      state: STATUS_OPEN,
       pageSize: PAGE_SIZE,
     };
   },
@@ -273,7 +279,7 @@ export default {
       return this.sortKey === RELATIVE_POSITION_ASC;
     },
     isOpenTab() {
-      return this.state === IssuableStates.Opened;
+      return this.state === STATUS_OPEN;
     },
     showCsvButtons() {
       return this.isProject && this.isSignedIn;
@@ -459,9 +465,9 @@ export default {
     tabCounts() {
       const { openedIssues, closedIssues, allIssues } = this.issuesCounts;
       return {
-        [IssuableStates.Opened]: openedIssues?.count,
-        [IssuableStates.Closed]: closedIssues?.count,
-        [IssuableStates.All]: allIssues?.count,
+        [STATUS_OPEN]: openedIssues?.count,
+        [STATUS_CLOSED]: closedIssues?.count,
+        [STATUS_ALL]: allIssues?.count,
       };
     },
     currentTabCount() {
@@ -724,7 +730,7 @@ export default {
       const lastPageSize = getParameterByName(PARAM_LAST_PAGE_SIZE);
       const state = getParameterByName(PARAM_STATE);
 
-      const defaultSortKey = state === IssuableStates.Closed ? UPDATED_DESC : CREATED_DESC;
+      const defaultSortKey = state === STATUS_CLOSED ? UPDATED_DESC : CREATED_DESC;
       const dashboardSortKey = getSortKey(sortValue);
       const graphQLSortKey = isSortKey(sortValue?.toUpperCase()) && sortValue.toUpperCase();
 
@@ -748,7 +754,7 @@ export default {
         getParameterByName(PARAM_PAGE_BEFORE),
       );
       this.sortKey = sortKey;
-      this.state = state || IssuableStates.Opened;
+      this.state = state || STATUS_OPEN;
     },
   },
 };

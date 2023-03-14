@@ -10,6 +10,9 @@ import {
   DEFAULT_PLATFORM,
   EXECUTORS_HELP_URL,
   SERVICE_COMMANDS_HELP_URL,
+  STATUS_NEVER_CONTACTED,
+  STATUS_ONLINE,
+  I18N_REGISTRATION_SUCCESS,
 } from '~/ci/runner/constants';
 import { runnerForRegistration } from '../../mock_data';
 
@@ -143,5 +146,38 @@ describe('RegistrationInstructions', () => {
     expect(findByText('system or user service', step3).attributes('href')).toBe(
       SERVICE_COMMANDS_HELP_URL,
     );
+  });
+
+  describe('success state', () => {
+    describe('when the runner has not been registered', () => {
+      beforeEach(() => {
+        createComponent({
+          runner: {
+            ...mockRunner,
+            status: STATUS_NEVER_CONTACTED,
+          },
+        });
+      });
+
+      it('does not show success message', () => {
+        expect(wrapper.text()).not.toContain(I18N_REGISTRATION_SUCCESS);
+      });
+    });
+
+    describe('when the runner has been registered', () => {
+      beforeEach(() => {
+        createComponent({
+          runner: {
+            ...mockRunner,
+            status: STATUS_ONLINE,
+          },
+        });
+      });
+
+      it('shows success message', () => {
+        expect(wrapper.text()).toContain('🎉');
+        expect(wrapper.text()).toContain(I18N_REGISTRATION_SUCCESS);
+      });
+    });
   });
 });

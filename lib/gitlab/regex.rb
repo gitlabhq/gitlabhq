@@ -5,7 +5,12 @@ module Gitlab
     module Packages
       CONAN_RECIPE_FILES = %w[conanfile.py conanmanifest.txt conan_sources.tgz conan_export.tgz].freeze
       CONAN_PACKAGE_FILES = %w[conaninfo.txt conanmanifest.txt conan_package.tgz].freeze
+
       PYPI_NORMALIZED_NAME_REGEX_STRING = '[-_.]+'
+
+      # see https://github.com/apache/maven/blob/c1dfb947b509e195c75d4275a113598cf3063c3e/maven-artifact/src/main/java/org/apache/maven/artifact/Artifact.java#L46
+      MAVEN_SNAPSHOT_DYNAMIC_PARTS = /\A.{0,1000}(-\d{8}\.\d{6}-\d+).{0,1000}\z/.freeze
+
       API_PATH_REGEX = %r{^/api/v\d+/(projects/[^/]+/|groups?/[^/]+/-/)?packages/[A-Za-z]+}.freeze
 
       def conan_package_reference_regex

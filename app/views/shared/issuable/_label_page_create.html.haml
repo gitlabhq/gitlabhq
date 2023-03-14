@@ -10,9 +10,9 @@
     %input#new_label_name.default-dropdown-input{ type: "text", placeholder: _('Name new label') }
     .suggest-colors.suggest-colors-dropdown
       = render_suggested_colors
-    .dropdown-label-color-input
-      .dropdown-label-color-preview.js-dropdown-label-color-preview
-      %input#new_label_color.default-dropdown-input{ type: "text", placeholder: _('Assign custom color like #FF0000') }
+    .dropdown-label-color-input.gl-display-flex
+      %input.dropdown-label-color-preview.js-dropdown-label-color-preview.gl-w-7.gl-h-7.gl-border-1.gl-border-solid.gl-border-gray-500.gl-rounded-top-right-none.gl-rounded-bottom-right-none{ class: "gl-border-r-0!", type: "color", placeholder: _('Select color') }
+      %input#new_label_color.default-dropdown-input.gl-rounded-top-left-none.gl-rounded-bottom-left-none{ type: "text", placeholder: _('Assign custom color like #FF0000') }
     - if show_add_list
       .dropdown-label-input{ class: add_list_class }
         %label

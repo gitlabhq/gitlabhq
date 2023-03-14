@@ -965,12 +965,12 @@
     core-js-pure "^3.0.0"
     regenerator-runtime "^0.13.4"
 
-"@babel/runtime@^7.10.2", "@babel/runtime@^7.10.3", "@babel/runtime@^7.13.10", "@babel/runtime@^7.8.4":
-  version "7.14.0"
-  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.14.0.tgz#46794bc20b612c5f75e62dd071e24dfd95f1cbe6"
-  integrity sha512-JELkvo/DlpNdJ7dlyw/eY7E0suy5i5GQH+Vlxaq1nsNJ+H7f4Vtv3jMeCEgRhZZQFXTjldYfQgv2qmM6M1v5wA==
+"@babel/runtime@^7.1.2", "@babel/runtime@^7.10.2", "@babel/runtime@^7.10.3", "@babel/runtime@^7.13.10", "@babel/runtime@^7.8.4":
+  version "7.21.0"
+  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.21.0.tgz#5b55c9d394e5fcf304909a8b00c07dc217b56673"
+  integrity sha512-xwII0//EObnq89Ji5AKYQaRYiW/nZ3llSv29d49IuxPhKbtJoLP+9QUUZ4nVragQVtaVGeZrpB+ZtG/Pdy/POw==
   dependencies:
-    regenerator-runtime "^0.13.4"
+    regenerator-runtime "^0.13.11"
 
 "@babel/template@^7.16.7", "@babel/template@^7.18.10", "@babel/template@^7.3.3":
   version "7.18.10"
@@ -1021,11 +1021,12 @@
   resolved "https://registry.yarnpkg.com/@csstools/selector-specificity/-/selector-specificity-2.0.1.tgz#b6b8d81780b9a9f6459f4bfe9226ac6aefaefe87"
   integrity sha512-aG20vknL4/YjQF9BSV7ts4EWm/yrjagAN7OWBNmlbEOUiu0llj4OGrFoOKK3g2vey4/p2omKCoHrWtPxSwV3HA==
 
-"@cubejs-client/core@^0.31.15":
-  version "0.31.15"
-  resolved "https://registry.yarnpkg.com/@cubejs-client/core/-/core-0.31.15.tgz#db0ee90f5ba7f33a3fae6c81e5e13ab1cf2cd71b"
-  integrity sha512-VQqvvJn++nqO8aOr/dFtyUURNFYAlP3XlDiupiGLXmSsuUn0BuozJQAmJ5XxPPhvz5k9qBko7KkZuC6ikZTdcA==
+"@cubejs-client/core@^0.32.0":
+  version "0.32.0"
+  resolved "https://registry.yarnpkg.com/@cubejs-client/core/-/core-0.32.0.tgz#9018ea2e3658107adacbc188c0c1ebcc54ee9436"
+  integrity sha512-Jqpv2S/CQUN0TNgFiKzVR8JehDgQA+z19yQOM/3Z0UrE6llYXu6x5zlI7FldtuXwFaLO1gfRd4yHsjp/Mf39TA==
   dependencies:
+    "@babel/runtime" "^7.1.2"
     core-js "^3.6.5"
     cross-fetch "^3.0.2"
     dayjs "^1.10.4"
@@ -1033,12 +1034,12 @@
     url-search-params-polyfill "^7.0.0"
     uuid "^8.3.2"
 
-"@cubejs-client/vue@^0.31.19":
-  version "0.31.19"
-  resolved "https://registry.yarnpkg.com/@cubejs-client/vue/-/vue-0.31.19.tgz#cd8f588e14046091b085c3405f28a62f3e4d949d"
-  integrity sha512-SY2+flIZJARp0cpS7e9ewYwaYCqqh8ifyc11S55ENo2KJsyzdLELSIiTDqy6hppXqtALSOE4feW4Eb/blh6e0w==
+"@cubejs-client/vue@^0.32.0":
+  version "0.32.0"
+  resolved "https://registry.yarnpkg.com/@cubejs-client/vue/-/vue-0.32.0.tgz#06901d4d0fdeaf462e6374d5b973c8d5e4f26b37"
+  integrity sha512-i4Mp3zZiL+bdjdgcLj1JIKPq444pQem8ega0MUb8RBG6A4texip1HMLpXFBGcgdZ1XQ/a8MQTW8ytntMS8BE/A==
   dependencies:
-    "@cubejs-client/core" "^0.31.15"
+    "@cubejs-client/core" "^0.32.0"
     core-js "^3.6.5"
     ramda "^0.27.2"
 
@@ -10580,10 +10581,10 @@ regenerate@^1.4.2:
   resolved "https://registry.yarnpkg.com/regenerate/-/regenerate-1.4.2.tgz#b9346d8827e8f5a32f7ba29637d398b69014848a"
   integrity sha512-zrceR/XhGYU/d/opr2EKO7aRHUeiBI8qjtfHqADTwZd6Szfy16la6kqD0MIUs5z5hx6AaKa+PixpPrR289+I0A==
 
-regenerator-runtime@^0.13.4:
-  version "0.13.5"
-  resolved "https://registry.yarnpkg.com/regenerator-runtime/-/regenerator-runtime-0.13.5.tgz#d878a1d094b4306d10b9096484b33ebd55e26697"
-  integrity sha512-ZS5w8CpKFinUzOwW3c83oPeVXoNsrLsaCoLtJvAClH135j/R77RuymhiSErhm2lKcwSCIpmvIWSbDkIfAqKQlA==
+regenerator-runtime@^0.13.11, regenerator-runtime@^0.13.4:
+  version "0.13.11"
+  resolved "https://registry.yarnpkg.com/regenerator-runtime/-/regenerator-runtime-0.13.11.tgz#f6dca3e7ceec20590d07ada785636a90cdca17f9"
+  integrity sha512-kY1AZVr2Ra+t+piVaJ4gxaFaReZVH40AKNo7UCX6W+dEwBo/2oZJzqfuN1qLq1oL45o56cPaTXELwrTh8Fpggg==
 
 regenerator-transform@^0.15.0:
   version "0.15.0"

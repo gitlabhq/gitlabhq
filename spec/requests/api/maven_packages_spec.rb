@@ -966,6 +966,17 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
         expect(response).to have_gitlab_http_status(:forbidden)
       end
 
+      context 'file name is too long' do
+        let(:file_name) { 'a' * (Packages::Maven::FindOrCreatePackageService::MAX_FILE_NAME_LENGTH + 1) }
+
+        it 'rejects request' do
+          expect { upload_file_with_token(params: params, file_name: file_name) }.not_to change { project.packages.count }
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(json_response['message']).to include('File name is too long')
+        end
+      end
+
       context 'version is not correct' do
         let(:version) { '$%123' }
 
@@ -985,9 +996,9 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
           package_settings.update!(maven_duplicates_allowed: false)
         end
 
-        shared_examples 'storing the package file' do
+        shared_examples 'storing the package file' do |file_name: 'my-app-1.0-20180724.124855-1'|
           it 'stores the file', :aggregate_failures do
-            expect { upload_file_with_token(params: params) }.to change { package.package_files.count }.by(1)
+            expect { upload_file_with_token(params: params, file_name: file_name) }.to change { package.package_files.count }.by(1)
 
             expect(response).to have_gitlab_http_status(:ok)
             expect(jar_file.file_name).to eq(file_upload.original_filename)
@@ -1026,6 +1037,10 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
           end
 
           it_behaves_like 'storing the package file'
+        end
+
+        context 'when uploading a similar package file name with a classifier' do
+          it_behaves_like 'storing the package file', file_name: 'my-app-1.0-20180724.124855-1-javadoc'
         end
       end
 
@@ -1092,8 +1107,8 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
       end
     end
 
-    def upload_file(params: {}, request_headers: headers, file_extension: 'jar')
-      url = "/projects/#{project.id}/packages/maven/#{param_path}/my-app-1.0-20180724.124855-1.#{file_extension}"
+    def upload_file(params: {}, request_headers: headers, file_extension: 'jar', file_name: 'my-app-1.0-20180724.124855-1')
+      url = "/projects/#{project.id}/packages/maven/#{param_path}/#{file_name}.#{file_extension}"
       workhorse_finalize(
         api(url),
         method: :put,
@@ -1104,8 +1119,8 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
       )
     end
 
-    def upload_file_with_token(params: {}, request_headers: headers_with_token, file_extension: 'jar')
-      upload_file(params: params, request_headers: request_headers, file_extension: file_extension)
+    def upload_file_with_token(params: {}, request_headers: headers_with_token, file_extension: 'jar', file_name: 'my-app-1.0-20180724.124855-1')
+      upload_file(params: params, request_headers: request_headers, file_name: file_name, file_extension: file_extension)
     end
   end
 

@@ -928,13 +928,13 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
         it 'references the custom target columns when provided', :aggregate_failures do
           expect(model).to receive(:with_lock_retries).and_yield
           expect(model).to receive(:execute).with(
-            "ALTER TABLE projects\n" \
-            "ADD CONSTRAINT fk_multiple_columns\n" \
-            "FOREIGN KEY \(partition_number, user_id\)\n" \
-            "REFERENCES users \(partition_number, id\)\n" \
-            "ON UPDATE CASCADE\n" \
-            "ON DELETE CASCADE\n" \
-            "NOT VALID;\n"
+            "ALTER TABLE projects " \
+            "ADD CONSTRAINT fk_multiple_columns " \
+            "FOREIGN KEY \(partition_number, user_id\) " \
+            "REFERENCES users \(partition_number, id\) " \
+            "ON UPDATE CASCADE " \
+            "ON DELETE CASCADE " \
+            "NOT VALID;"
           )
 
           model.add_concurrent_foreign_key(
@@ -981,20 +981,25 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
       end
 
       context 'when creating foreign key on a partitioned table' do
+        let(:source) { :_test_source_partitioned_table }
+        let(:dest) { :_test_dest_partitioned_table }
+        let(:args) { [source, dest] }
+        let(:options) { { column: [:partition_id, :owner_id], target_column: [:partition_id, :id] } }
+
         before do
           model.execute(<<~SQL)
-            CREATE TABLE public._test_source_partitioned_table (
+            CREATE TABLE public.#{source} (
               id serial NOT NULL,
               partition_id serial NOT NULL,
               owner_id bigint NOT NULL,
               PRIMARY KEY (id, partition_id)
             ) PARTITION BY LIST(partition_id);
 
-            CREATE TABLE _test_source_partitioned_table_1
-              PARTITION OF public._test_source_partitioned_table
+            CREATE TABLE #{source}_1
+              PARTITION OF public.#{source}
               FOR VALUES IN (1);
 
-            CREATE TABLE public._test_dest_partitioned_table (
+            CREATE TABLE public.#{dest} (
               id serial NOT NULL,
               partition_id serial NOT NULL,
               PRIMARY KEY (id, partition_id)
@@ -1008,22 +1013,19 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
           expect(model).to receive(:with_lock_retries).and_yield
 
           expect(model).to receive(:execute).with(
-            "ALTER TABLE _test_source_partitioned_table\n" \
-            "ADD CONSTRAINT fk_multiple_columns\n" \
-            "FOREIGN KEY \(partition_id, owner_id\)\n" \
-            "REFERENCES _test_dest_partitioned_table \(partition_id, id\)\n" \
-            "ON UPDATE CASCADE\n" \
-            "ON DELETE CASCADE\n;\n"
+            "ALTER TABLE #{source} " \
+            "ADD CONSTRAINT fk_multiple_columns " \
+            "FOREIGN KEY \(partition_id, owner_id\) " \
+            "REFERENCES #{dest} \(partition_id, id\) " \
+            "ON UPDATE CASCADE ON DELETE CASCADE ;"
           )
 
           model.add_concurrent_foreign_key(
-            :_test_source_partitioned_table,
-            :_test_dest_partitioned_table,
-            column: [:partition_id, :owner_id],
-            target_column: [:partition_id, :id],
+            *args,
             name: :fk_multiple_columns,
             on_update: :cascade,
-            allow_partitioned: true
+            allow_partitioned: true,
+            **options
           )
         end
 
@@ -1031,11 +1033,24 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
           expect(model).not_to receive(:with_lock_retries).and_yield
           expect(model).not_to receive(:execute).with(/FOREIGN KEY/)
 
-          args = [:_test_source_partitioned_table, :_test_dest_partitioned_table]
-          options = { column: [:partition_id, :owner_id], target_column: [:partition_id, :id] }
-
           expect { model.add_concurrent_foreign_key(*args, **options) }
             .to raise_error ArgumentError, /use add_concurrent_partitioned_foreign_key/
+        end
+
+        context 'when the reverse_lock_order flag is set' do
+          it 'explicitly locks the tables in target-source order', :aggregate_failures do
+            expect(model).to receive(:with_lock_retries).and_call_original
+            expect(model).to receive(:disable_statement_timeout).and_call_original
+            expect(model).to receive(:statement_timeout_disabled?).and_return(false)
+            expect(model).to receive(:execute).with(/SET statement_timeout TO/)
+            expect(model).to receive(:execute).ordered.with(/VALIDATE CONSTRAINT/)
+            expect(model).to receive(:execute).ordered.with(/RESET statement_timeout/)
+
+            expect(model).to receive(:execute).with("LOCK TABLE #{dest}, #{source} IN ACCESS EXCLUSIVE MODE")
+            expect(model).to receive(:execute).with(/REFERENCES #{dest} \(partition_id, id\)/)
+
+            model.add_concurrent_foreign_key(*args, reverse_lock_order: true, allow_partitioned: true, **options)
+          end
         end
       end
     end

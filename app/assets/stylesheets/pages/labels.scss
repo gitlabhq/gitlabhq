@@ -71,21 +71,7 @@
 
 .dropdown-label-color-input {
   position: relative;
-  margin-bottom: 10px;
-
-  &.is-active {
-    padding-left: 32px;
-  }
-}
-
-.dropdown-label-color-preview {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 32px;
-  height: 32px;
-  border-top-left-radius: $border-radius-base;
-  border-bottom-left-radius: $border-radius-base;
+  margin-bottom: 8px;
 }
 
 .color-label {

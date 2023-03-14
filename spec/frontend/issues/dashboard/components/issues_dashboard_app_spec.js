@@ -18,6 +18,7 @@ import {
   setSortPreferenceMutationResponse,
   setSortPreferenceMutationResponseWithErrors,
 } from 'jest/issues/list/mock_data';
+import { STATUS_ALL, STATUS_CLOSED, STATUS_OPEN } from '~/issues/constants';
 import IssuesDashboardApp from '~/issues/dashboard/components/issues_dashboard_app.vue';
 import getIssuesCountsQuery from '~/issues/dashboard/queries/get_issues_counts.query.graphql';
 import { CREATED_DESC, i18n, UPDATED_DESC, urlSortParams } from '~/issues/list/constants';
@@ -36,7 +37,6 @@ import {
   TOKEN_TYPE_TYPE,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
-import { IssuableStates } from '~/vue_shared/issuable/list/constants';
 import {
   emptyIssuesQueryResponse,
   issuesCountsQueryResponse,
@@ -124,7 +124,7 @@ describe('IssuesDashboardApp component', () => {
     // eslint-disable-next-line jest/no-disabled-tests
     it.skip('renders IssuableList component', () => {
       expect(findIssuableList().props()).toMatchObject({
-        currentTab: IssuableStates.Opened,
+        currentTab: STATUS_OPEN,
         hasNextPage: true,
         hasPreviousPage: false,
         hasScopedLabelsFeature: defaultProvide.hasScopedLabelsFeature,
@@ -148,7 +148,7 @@ describe('IssuesDashboardApp component', () => {
         tabs: IssuesDashboardApp.IssuableListTabs,
         urlParams: {
           sort: urlSortParams[CREATED_DESC],
-          state: IssuableStates.Opened,
+          state: STATUS_OPEN,
         },
         useKeysetPagination: true,
       });
@@ -283,7 +283,7 @@ describe('IssuesDashboardApp component', () => {
 
     describe('state', () => {
       it('is set from the url params', () => {
-        const initialState = IssuableStates.All;
+        const initialState = STATUS_ALL;
         setWindowLocation(`?state=${initialState}`);
         mountComponent();
 
@@ -375,16 +375,16 @@ describe('IssuesDashboardApp component', () => {
       beforeEach(() => {
         mountComponent();
 
-        findIssuableList().vm.$emit('click-tab', IssuableStates.Closed);
+        findIssuableList().vm.$emit('click-tab', STATUS_CLOSED);
       });
 
       it('updates ui to the new tab', () => {
-        expect(findIssuableList().props('currentTab')).toBe(IssuableStates.Closed);
+        expect(findIssuableList().props('currentTab')).toBe(STATUS_CLOSED);
       });
 
       it('updates url to the new tab', () => {
         expect(findIssuableList().props('urlParams')).toMatchObject({
-          state: IssuableStates.Closed,
+          state: STATUS_CLOSED,
         });
       });
     });

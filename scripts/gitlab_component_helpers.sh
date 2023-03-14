@@ -67,7 +67,7 @@ fi
 
 export FIXTURES_PATH="tmp/tests/frontend/**/*"
 export FIXTURES_PACKAGE="fixtures-${FIXTURES_SHA}.tar.gz"
-export FIXTURES_PACKAGE_URL="${API_PACKAGES_BASE_URL}/fixtures/${GITLAB_EDITION}-${FIXTURES_SHA}/${FIXTURES_PACKAGE}"
+export FIXTURES_PACKAGE_URL="${API_PACKAGES_BASE_URL}/fixtures/${FIXTURES_SHA}/${FIXTURES_PACKAGE}"
 
 # Generic helper functions
 function archive_doesnt_exist() {

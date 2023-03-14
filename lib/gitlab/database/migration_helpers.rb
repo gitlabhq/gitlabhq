@@ -328,24 +328,7 @@ module Gitlab
 
           Gitlab::AppLogger.warn warning_message
         else
-          # Using NOT VALID allows us to create a key without immediately
-          # validating it. This means we keep the ALTER TABLE lock only for a
-          # short period of time. The key _is_ enforced for any newly created
-          # data.
-          not_valid_option = 'NOT VALID' unless table_partitioned?(source)
-
-          with_lock_retries do
-            execute("LOCK TABLE #{target}, #{source} IN SHARE ROW EXCLUSIVE MODE") if options[:reverse_lock_order]
-            execute <<-EOF.strip_heredoc
-            ALTER TABLE #{source}
-            ADD CONSTRAINT #{options[:name]}
-            FOREIGN KEY (#{multiple_columns(options[:column])})
-            REFERENCES #{target} (#{multiple_columns(options[:target_column])})
-            #{on_update_statement(options[:on_update])}
-            #{on_delete_statement(options[:on_delete])}
-            #{not_valid_option};
-            EOF
-          end
+          execute_add_concurrent_foreign_key(source, target, options)
         end
 
         # Validate the existing constraint. This can potentially take a very
@@ -1370,6 +1353,33 @@ into similar problems in the future (e.g. when new tables are created).
           Illegal timestamp column name! Got #{column_name}.
           Must end with `_at`}
         MESSAGE
+      end
+
+      def execute_add_concurrent_foreign_key(source, target, options)
+        # Using NOT VALID allows us to create a key without immediately
+        # validating it. This means we keep the ALTER TABLE lock only for a
+        # short period of time. The key _is_ enforced for any newly created
+        # data.
+        not_valid = 'NOT VALID'
+        lock_mode = 'SHARE ROW EXCLUSIVE'
+
+        if table_partitioned?(source)
+          not_valid = ''
+          lock_mode = 'ACCESS EXCLUSIVE'
+        end
+
+        with_lock_retries do
+          execute("LOCK TABLE #{target}, #{source} IN #{lock_mode} MODE") if options[:reverse_lock_order]
+          execute(<<~SQL.squish)
+            ALTER TABLE #{source}
+            ADD CONSTRAINT #{options[:name]}
+            FOREIGN KEY (#{multiple_columns(options[:column])})
+            REFERENCES #{target} (#{multiple_columns(options[:target_column])})
+            #{on_update_statement(options[:on_update])}
+            #{on_delete_statement(options[:on_delete])}
+            #{not_valid};
+          SQL
+        end
       end
     end
   end

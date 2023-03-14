@@ -1,9 +1,9 @@
 ---
-redirect_to: '../cells/pods-feature-git-access.md'
+redirect_to: '../cells/cells-feature-git-access.md'
 remove_date: '2023-06-13'
 ---
 
-This document was moved to [another location](../cells/pods-feature-git-access.md).
+This document was moved to [another location](../cells/cells-feature-git-access.md).
 
 <!-- This redirect file can be deleted after <2023-06-13>. -->
 <!-- Redirects that point to other docs in the same project expire in three months. -->

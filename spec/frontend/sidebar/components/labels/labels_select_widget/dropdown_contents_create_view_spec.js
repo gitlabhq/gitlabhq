@@ -99,7 +99,7 @@ describe('DropdownContentsCreateView', () => {
     findAllColors().at(0).vm.$emit('click', new Event('mouseclick'));
     await nextTick();
 
-    expect(findSelectedColor().attributes('style')).toBe('background-color: rgb(0, 153, 102);');
+    expect(findSelectedColor().attributes('value')).toBe('#009966');
   });
 
   it('shows correct color hex code after selecting a color', async () => {

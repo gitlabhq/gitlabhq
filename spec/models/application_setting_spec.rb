@@ -246,6 +246,10 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     it { is_expected.to allow_value(false).for(:allow_runner_registration_token) }
     it { is_expected.not_to allow_value(nil).for(:allow_runner_registration_token) }
 
+    it { is_expected.to allow_value(true).for(:gitlab_dedicated_instance) }
+    it { is_expected.to allow_value(false).for(:gitlab_dedicated_instance) }
+    it { is_expected.not_to allow_value(nil).for(:gitlab_dedicated_instance) }
+
     context 'when deactivate_dormant_users is enabled' do
       before do
         stub_application_setting(deactivate_dormant_users: true)

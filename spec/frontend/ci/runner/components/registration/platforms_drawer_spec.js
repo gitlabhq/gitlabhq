@@ -1,11 +1,16 @@
 import { nextTick } from 'vue';
-import { GlDrawer } from '@gitlab/ui';
+import { GlDrawer, GlLink, GlIcon, GlSprintf } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
 
 import PlatformsDrawer from '~/ci/runner/components/registration/platforms_drawer.vue';
 import CliCommand from '~/ci/runner/components/registration/cli_command.vue';
-import { LINUX_PLATFORM, MACOS_PLATFORM, WINDOWS_PLATFORM } from '~/ci/runner/constants';
+import {
+  LINUX_PLATFORM,
+  MACOS_PLATFORM,
+  WINDOWS_PLATFORM,
+  INSTALL_HELP_URL,
+} from '~/ci/runner/constants';
 import { installScript, platformArchitectures } from '~/ci/runner/components/registration/utils';
 
 const MOCK_WRAPPER_HEIGHT = '99px';
@@ -25,12 +30,16 @@ describe('RegistrationInstructions', () => {
   const findArchitectureOptions = () =>
     wrapper.findByLabelText(s__('Runners|Architecture')).findAll('option');
   const findCliCommand = () => wrapper.findComponent(CliCommand);
+  const findLink = () => wrapper.findComponent(GlLink);
 
   const createComponent = ({ props = {}, mountFn = shallowMountExtended } = {}) => {
     wrapper = mountFn(PlatformsDrawer, {
       propsData: {
         open: true,
         ...props,
+      },
+      stubs: {
+        GlSprintf,
       },
     });
   };
@@ -88,5 +97,12 @@ describe('RegistrationInstructions', () => {
     expect(findCliCommand().props('command')).toBe(
       installScript({ platform: MACOS_PLATFORM, architecture: MACOS_ARCHS[0] }),
     );
+  });
+
+  it('shows external link for more information', () => {
+    createComponent();
+
+    expect(findLink().attributes('href')).toBe(INSTALL_HELP_URL);
+    expect(findLink().findComponent(GlIcon).props('name')).toBe('external-link');
   });
 });

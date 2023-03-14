@@ -1,9 +1,9 @@
 ---
-redirect_to: '../cells/pods-feature-gitlab-pages.md'
+redirect_to: '../cells/cells-feature-gitlab-pages.md'
 remove_date: '2023-06-13'
 ---
 
-This document was moved to [another location](../cells/pods-feature-gitlab-pages.md).
+This document was moved to [another location](../cells/cells-feature-gitlab-pages.md).
 
 <!-- This redirect file can be deleted after <2023-06-13>. -->
 <!-- Redirects that point to other docs in the same project expire in three months. -->

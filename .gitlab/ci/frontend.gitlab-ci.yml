@@ -156,13 +156,6 @@ upload-frontend-fixtures:
     - run_timed_command "upload_fixtures_package"
   artifacts: {}
 
-# Uploads FOSS fixtures in the EE project, with the `ee/` folder removed (due to `as-if-foss`).
-upload-frontend-fixtures as-if-foss:
-  extends:
-    - upload-frontend-fixtures
-    - .as-if-foss
-  needs: ["rspec-all frontend_fixture as-if-foss"]
-
 graphql-schema-dump:
   variables:
     SETUP_DB: "false"

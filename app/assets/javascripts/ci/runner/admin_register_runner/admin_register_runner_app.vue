@@ -5,7 +5,13 @@ import { getParameterByName, updateHistory, mergeUrlParams } from '~/lib/utils/u
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { TYPENAME_CI_RUNNER } from '~/graphql_shared/constants';
 import runnerForRegistrationQuery from '../graphql/register/runner_for_registration.query.graphql';
-import { I18N_FETCH_ERROR, PARAM_KEY_PLATFORM, DEFAULT_PLATFORM } from '../constants';
+import {
+  I18N_FETCH_ERROR,
+  PARAM_KEY_PLATFORM,
+  DEFAULT_PLATFORM,
+  STATUS_ONLINE,
+  RUNNER_REGISTRATION_POLLING_INTERVAL_MS,
+} from '../constants';
 import RegistrationInstructions from '../components/registration/registration_instructions.vue';
 import PlatformsDrawer from '../components/registration/platforms_drawer.vue';
 import { captureException } from '../sentry_utils';
@@ -46,6 +52,13 @@ export default {
         createAlert({ message: I18N_FETCH_ERROR });
         captureException({ error, component: this.$options.name });
       },
+      pollInterval() {
+        if (this.runner?.status === STATUS_ONLINE) {
+          // stop polling
+          return 0;
+        }
+        return RUNNER_REGISTRATION_POLLING_INTERVAL_MS;
+      },
     },
   },
   watch: {
@@ -72,7 +85,9 @@ export default {
       :platform="platform"
       :loading="$apollo.queries.runner.loading"
       @toggleDrawer="onToggleDrawer"
-    />
+    >
+      <template #runner-list-name>{{ s__('Runners|Admin area › Runners') }}</template>
+    </registration-instructions>
 
     <platforms-drawer
       :platform="platform"

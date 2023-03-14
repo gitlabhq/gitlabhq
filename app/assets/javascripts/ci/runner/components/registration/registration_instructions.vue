@@ -3,7 +3,12 @@ import { GlIcon, GlLink, GlSprintf, GlSkeletonLoader } from '@gitlab/ui';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import { s__, sprintf } from '~/locale';
 
-import { EXECUTORS_HELP_URL, SERVICE_COMMANDS_HELP_URL } from '../../constants';
+import {
+  EXECUTORS_HELP_URL,
+  SERVICE_COMMANDS_HELP_URL,
+  STATUS_ONLINE,
+  I18N_REGISTRATION_SUCCESS,
+} from '../../constants';
 import CliCommand from './cli_command.vue';
 import { commandPrompt, registerCommand, runCommand } from './utils';
 
@@ -51,6 +56,9 @@ export default {
     token() {
       return this.runner?.ephemeralAuthenticationToken;
     },
+    status() {
+      return this.runner?.status;
+    },
     commandPrompt() {
       return commandPrompt({ platform: this.platform });
     },
@@ -72,6 +80,8 @@ export default {
   },
   EXECUTORS_HELP_URL,
   SERVICE_COMMANDS_HELP_URL,
+  STATUS_ONLINE,
+  I18N_REGISTRATION_SUCCESS,
 };
 </script>
 <template>
@@ -144,13 +154,15 @@ export default {
           "
         >
           <template #link="{ content }">
-            <gl-link :href="$options.EXECUTORS_HELP_URL">{{ content }}</gl-link>
+            <gl-link :href="$options.EXECUTORS_HELP_URL" target="_blank">
+              {{ content }} <gl-icon name="external-link" />
+            </gl-link>
           </template>
         </gl-sprintf>
       </p>
     </section>
     <section>
-      <h2 class="gl-font-size-h2">{{ s__('Runners|Optional. Step 3') }}</h2>
+      <h2 class="gl-font-size-h2">{{ s__('Runners|Step 3 (optional)') }}</h2>
       <p>{{ s__('Runners|Manually verify that the runner is available to pick up jobs.') }}</p>
       <cli-command :prompt="commandPrompt" :command="runCommand" />
       <p>
@@ -162,7 +174,20 @@ export default {
           "
         >
           <template #link="{ content }">
-            <gl-link :href="$options.SERVICE_COMMANDS_HELP_URL">{{ content }}</gl-link>
+            <gl-link :href="$options.SERVICE_COMMANDS_HELP_URL" target="_blank">
+              {{ content }} <gl-icon name="external-link" />
+            </gl-link>
+          </template>
+        </gl-sprintf>
+      </p>
+    </section>
+    <section v-if="status == $options.STATUS_ONLINE">
+      <h2 class="gl-font-size-h2">🎉 {{ $options.I18N_REGISTRATION_SUCCESS }}</h2>
+
+      <p class="gl-pl-6">
+        <gl-sprintf :message="s__('Runners|To view the runner, go to %{runnerListName}.')">
+          <template #runnerListName>
+            <span class="gl-font-weight-bold"><slot name="runner-list-name"></slot></span>
           </template>
         </gl-sprintf>
       </p>

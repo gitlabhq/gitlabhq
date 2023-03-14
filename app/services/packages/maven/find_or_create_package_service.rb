@@ -3,10 +3,13 @@ module Packages
   module Maven
     class FindOrCreatePackageService < BaseService
       SNAPSHOT_TERM = '-SNAPSHOT'
+      MAX_FILE_NAME_LENGTH = 5000
 
       def execute
+        return ServiceResponse.error(message: 'File name is too long') if file_name_too_long?
+
         package =
-          ::Packages::Maven::PackageFinder.new(current_user, project, path: params[:path])
+          ::Packages::Maven::PackageFinder.new(current_user, project, path: path)
                                           .execute
 
         unless Namespace::PackageSetting.duplicates_allowed?(package)
@@ -32,16 +35,16 @@ module Packages
           #   - my-company/my-app/maven-metadata.xml
           #
           # The first upload has to create the proper package (the one with the version set).
-          if params[:file_name] == Packages::Maven::Metadata.filename && !params[:path]&.ends_with?(SNAPSHOT_TERM)
-            package_name = params[:path]
+          if file_name == Packages::Maven::Metadata.filename && !snapshot_version?
+            package_name = path
             version = nil
           else
-            package_name, _, version = params[:path].rpartition('/')
+            package_name, _, version = path.rpartition('/')
           end
 
           package_params = {
             name: package_name,
-            path: params[:path],
+            path: path,
             status: params[:status],
             version: version
           }
@@ -58,21 +61,55 @@ module Packages
 
       private
 
-      def extname(filename)
-        return if filename.blank?
+      def file_name_too_long?
+        return false unless file_name
 
-        File.extname(filename)
+        file_name.size > MAX_FILE_NAME_LENGTH
       end
 
       def target_package_is_duplicate?(package)
         # duplicate metadata files can be uploaded multiple times
         return false if package.version.nil?
 
-        package
-          .package_files
-          .map { |file| extname(file.file_name) }
-          .compact
-          .include?(extname(params[:file_name]))
+        existing_file_names = strip_snapshot_parts(
+          package.package_files
+                 .map(&:file_name)
+                 .compact
+        )
+
+        published_file_name = strip_snapshot_parts_from(file_name)
+        existing_file_names.include?(published_file_name)
+      end
+
+      def strip_snapshot_parts(file_names)
+        return file_names unless snapshot_version?
+
+        Array.wrap(file_names).map { |f| strip_snapshot_parts_from(f) }
+      end
+
+      def strip_snapshot_parts_from(file_name)
+        return file_name unless snapshot_version?
+        return unless file_name
+
+        match_data = file_name.match(Gitlab::Regex::Packages::MAVEN_SNAPSHOT_DYNAMIC_PARTS)
+
+        if match_data
+          file_name.gsub(match_data.captures.last, "")
+        else
+          file_name
+        end
+      end
+
+      def snapshot_version?
+        path&.ends_with?(SNAPSHOT_TERM)
+      end
+
+      def path
+        params[:path]
+      end
+
+      def file_name
+        params[:file_name]
       end
     end
   end

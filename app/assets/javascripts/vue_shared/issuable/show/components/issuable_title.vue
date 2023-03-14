@@ -1,8 +1,8 @@
 <script>
 import { GlIcon, GlBadge, GlButton, GlIntersectionObserver, GlTooltipDirective } from '@gitlab/ui';
 import SafeHtml from '~/vue_shared/directives/safe_html';
+import { STATUS_OPEN } from '~/issues/constants';
 import { __ } from '~/locale';
-import { IssuableStates } from '~/vue_shared/issuable/list/constants';
 
 export default {
   i18n: {
@@ -39,7 +39,7 @@ export default {
   },
   computed: {
     badgeVariant() {
-      return this.issuable.state === IssuableStates.Opened ? 'success' : 'info';
+      return this.issuable.state === STATUS_OPEN ? 'success' : 'info';
     },
   },
   methods: {

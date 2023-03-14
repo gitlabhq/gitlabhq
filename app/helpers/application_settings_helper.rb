@@ -481,7 +481,8 @@ module ApplicationSettingsHelper
       :allow_runner_registration_token,
       :user_defaults_to_private_profile,
       :deactivation_email_additional_text,
-      :projects_api_rate_limit_unauthenticated
+      :projects_api_rate_limit_unauthenticated,
+      :gitlab_dedicated_instance
     ].tap do |settings|
       next if Gitlab.com?
 

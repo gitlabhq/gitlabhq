@@ -1,5 +1,6 @@
 import { __ } from '~/locale';
 
+export const STATUS_ALL = 'all';
 export const STATUS_CLOSED = 'closed';
 export const STATUS_MERGED = 'merged';
 export const STATUS_OPEN = 'opened';
