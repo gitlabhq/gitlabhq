@@ -29,7 +29,7 @@ export default {
     primaryProps() {
       return {
         text: s__('Environments|Delete environment'),
-        attributes: [{ variant: 'danger' }],
+        attributes: { variant: 'danger' },
       };
     },
     cancelProps() {

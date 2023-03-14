@@ -13,6 +13,7 @@ describe('UserBar component', () => {
   const findCreateMenu = () => wrapper.findComponent(CreateMenu);
   const findCounter = (at) => wrapper.findAllComponents(Counter).at(at);
   const findMergeRequestMenu = () => wrapper.findComponent(MergeRequestMenu);
+  const findBrandLogo = () => wrapper.findByTestId('brand-header-custom-logo');
 
   const createWrapper = (extraSidebarData = {}) => {
     wrapper = shallowMountExtended(UserBar, {
@@ -54,6 +55,11 @@ describe('UserBar component', () => {
       expect(findCounter(2).props('count')).toBe(sidebarData.todos_pending_count);
       expect(findCounter(2).props('href')).toBe('/dashboard/todos');
       expect(findCounter(2).props('label')).toBe(__('To-Do list'));
+    });
+
+    it('renders branding logo', () => {
+      expect(findBrandLogo().exists()).toBe(true);
+      expect(findBrandLogo().attributes('src')).toBe(sidebarData.logo_url);
     });
   });
 

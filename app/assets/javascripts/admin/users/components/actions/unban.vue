@@ -37,7 +37,7 @@ export default {
           },
           actionPrimary: {
             text: I18N_USER_ACTIONS.unban,
-            attributes: [{ variant: 'confirm' }],
+            attributes: { variant: 'confirm' },
           },
           messageHtml,
         },

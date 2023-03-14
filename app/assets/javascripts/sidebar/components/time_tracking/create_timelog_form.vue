@@ -56,13 +56,11 @@ export default {
     primaryProps() {
       return {
         text: s__('CreateTimelogForm|Save'),
-        attributes: [
-          {
-            variant: 'confirm',
-            disabled: this.submitDisabled,
-            loading: this.isLoading,
-          },
-        ],
+        attributes: {
+          variant: 'confirm',
+          disabled: this.submitDisabled,
+          loading: this.isLoading,
+        },
       };
     },
     cancelProps() {

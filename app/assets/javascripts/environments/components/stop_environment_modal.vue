@@ -33,7 +33,7 @@ export default {
     primaryProps() {
       return {
         text: s__('Environments|Stop environment'),
-        attributes: [{ variant: 'danger' }],
+        attributes: { variant: 'danger' },
       };
     },
     cancelProps() {

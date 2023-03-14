@@ -106,23 +106,19 @@ export default {
     primaryOptions() {
       return {
         text: this.primaryBtnText,
-        attributes: [
-          {
-            variant: 'confirm',
-            loading: this.loading,
-            disabled: !this.formCompleted || this.loading,
-          },
-        ],
+        attributes: {
+          variant: 'confirm',
+          loading: this.loading,
+          disabled: !this.formCompleted || this.loading,
+        },
       };
     },
     cancelOptions() {
       return {
         text: SECONDARY_OPTIONS_TEXT,
-        attributes: [
-          {
-            disabled: this.loading,
-          },
-        ],
+        attributes: {
+          disabled: this.loading,
+        },
       };
     },
     formattedFileSize() {

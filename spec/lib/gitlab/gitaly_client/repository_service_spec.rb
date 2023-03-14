@@ -275,7 +275,8 @@ RSpec.describe Gitlab::GitalyClient::RepositoryService do
     it 'sends a create_repository message without arguments' do
       expect_any_instance_of(Gitaly::RepositoryService::Stub)
         .to receive(:create_repository)
-        .with(gitaly_request_with_path(storage_name, relative_path).and(gitaly_request_with_params(default_branch: '')), kind_of(Hash))
+        .with(gitaly_request_with_path(storage_name, relative_path)
+        .and(gitaly_request_with_params(default_branch: '')), kind_of(Hash))
         .and_return(double)
 
       client.create_repository
@@ -284,10 +285,22 @@ RSpec.describe Gitlab::GitalyClient::RepositoryService do
     it 'sends a create_repository message with default branch' do
       expect_any_instance_of(Gitaly::RepositoryService::Stub)
         .to receive(:create_repository)
-        .with(gitaly_request_with_path(storage_name, relative_path).and(gitaly_request_with_params(default_branch: 'default-branch-name')), kind_of(Hash))
+        .with(gitaly_request_with_path(storage_name, relative_path)
+        .and(gitaly_request_with_params(default_branch: 'default-branch-name')), kind_of(Hash))
         .and_return(double)
 
       client.create_repository('default-branch-name')
+    end
+
+    it 'sends a create_repository message with default branch containing non ascii chars' do
+      expect_any_instance_of(Gitaly::RepositoryService::Stub)
+        .to receive(:create_repository)
+        .with(gitaly_request_with_path(storage_name, relative_path)
+        .and(gitaly_request_with_params(
+          default_branch: Gitlab::EncodingHelper.encode_binary('feature/新機能'))), kind_of(Hash)
+        ).and_return(double)
+
+      client.create_repository('feature/新機能')
     end
   end
 

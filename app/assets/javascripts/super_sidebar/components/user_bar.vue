@@ -52,7 +52,15 @@ export default {
 <template>
   <div class="user-bar">
     <div class="gl-display-flex gl-align-items-center gl-px-3 gl-py-2 gl-gap-2">
-      <a v-safe-html="$options.logo" :href="rootPath"></a>
+      <a :href="rootPath">
+        <img
+          v-if="sidebarData.logo_url"
+          data-testid="brand-header-custom-logo"
+          :src="sidebarData.logo_url"
+          class="gl-h-6"
+        />
+        <span v-else v-safe-html="$options.logo"></span>
+      </a>
       <gl-badge
         v-if="sidebarData.gitlab_com_and_canary"
         variant="success"

@@ -43,6 +43,7 @@ class AbuseReport < ApplicationRecord
   validate :links_to_spam_contains_valid_urls
 
   scope :by_user_id, ->(id) { where(user_id: id) }
+  scope :by_reporter_id, ->(id) { where(reporter_id: id) }
   scope :by_category, ->(category) { where(category: category) }
   scope :with_users, -> { includes(:reporter, :user) }
 

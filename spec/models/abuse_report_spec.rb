@@ -71,8 +71,17 @@ RSpec.describe AbuseReport, feature_category: :insider_threat do
   end
 
   describe 'scopes' do
-    let_it_be(:report1) { create(:abuse_report) }
+    let_it_be(:reporter) { create(:user) }
+    let_it_be(:report1) { create(:abuse_report, reporter: reporter) }
     let_it_be(:report2) { create(:abuse_report, :closed, category: 'phishing') }
+
+    describe '.by_reporter_id' do
+      subject(:results) { described_class.by_reporter_id(reporter.id) }
+
+      it 'returns reports with reporter_id equal to the given user id' do
+        expect(subject).to match_array([report1])
+      end
+    end
 
     describe '.open' do
       subject(:results) { described_class.open }

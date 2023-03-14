@@ -29154,6 +29154,8 @@ CREATE INDEX index_abuse_reports_on_status_and_updated_at ON abuse_reports USING
 
 CREATE INDEX index_abuse_reports_on_status_category_and_id ON abuse_reports USING btree (status, category, id);
 
+CREATE INDEX index_abuse_reports_on_status_reporter_id_and_id ON abuse_reports USING btree (status, reporter_id, id);
+
 CREATE INDEX index_abuse_reports_on_user_id ON abuse_reports USING btree (user_id);
 
 CREATE UNIQUE INDEX "index_achievements_on_namespace_id_LOWER_name" ON achievements USING btree (namespace_id, lower(name));

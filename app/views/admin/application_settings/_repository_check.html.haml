@@ -13,7 +13,9 @@
           = _("If you get a lot of false alarms from repository checks, you can clear all repository check information from the database.")
           - clear_repository_checks_link = _('Clear all repository checks')
           - clear_repository_checks_message = _('This clears repository check states for all projects in the database and cannot be undone. Are you sure?')
-        = link_to clear_repository_checks_link, clear_repository_check_states_admin_application_settings_path, data: { confirm: clear_repository_checks_message, confirm_btn_variant: 'danger' }, aria: { label: _('Clear repository checks') }, method: :put, class: "gl-button btn btn-sm btn-danger gl-mt-3"
+        = render Pajamas::ButtonComponent.new(variant: :danger, href: clear_repository_check_states_admin_application_settings_path, method: :put, button_options: { class: 'btn-sm gl-mt-3', data: { confirm: clear_repository_checks_message, confirm_btn_variant: 'danger' }, aria: { label: _('Clear repository checks') } }) do
+          = clear_repository_checks_link
+
 
     .sub-section
       %h4= _("Housekeeping")

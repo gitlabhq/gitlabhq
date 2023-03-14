@@ -1,10 +1,9 @@
-import { GlButton, GlLink, GlIcon, GlDropdownItem } from '@gitlab/ui';
+import { GlButton, GlLink, GlDropdownItem } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import InviteMembersTrigger from '~/invite_members/components/invite_members_trigger.vue';
 import eventHub from '~/invite_members/event_hub';
 import {
   TRIGGER_ELEMENT_BUTTON,
-  TRIGGER_ELEMENT_SIDE_NAV,
   TRIGGER_DEFAULT_QA_SELECTOR,
   TRIGGER_ELEMENT_WITH_EMOJI,
   TRIGGER_ELEMENT_DROPDOWN_WITH_EMOJI,
@@ -22,7 +21,6 @@ let findButton;
 const triggerComponent = {
   button: GlButton,
   anchor: GlLink,
-  'side-nav': GlLink,
   'text-emoji': GlLink,
   'dropdown-text-emoji': GlDropdownItem,
 };
@@ -46,10 +44,6 @@ const triggerItems = [
   },
   {
     triggerElement: 'anchor',
-  },
-  {
-    triggerElement: TRIGGER_ELEMENT_SIDE_NAV,
-    icon: 'plus',
   },
   {
     triggerElement: TRIGGER_ELEMENT_WITH_EMOJI,
@@ -98,17 +92,6 @@ describe.each(triggerItems)('with triggerElement as %s', (triggerItem) => {
         source: triggerSource,
       });
     });
-  });
-});
-
-describe('side-nav with icon', () => {
-  it('includes the specified icon with correct size when triggerElement is link', () => {
-    const findIcon = () => wrapper.findComponent(GlIcon);
-
-    createComponent({ triggerElement: TRIGGER_ELEMENT_SIDE_NAV, icon: 'plus' });
-
-    expect(findIcon().exists()).toBe(true);
-    expect(findIcon().props('name')).toBe('plus');
   });
 });
 

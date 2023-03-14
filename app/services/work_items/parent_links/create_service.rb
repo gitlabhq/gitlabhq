@@ -10,6 +10,8 @@ module WorkItems
         link = WorkItems::ParentLink.find_or_initialize_by(work_item: work_item)
         link.work_item_parent = issuable
 
+        link.move_to_end
+
         if link.changed? && link.save
           create_notes(work_item)
         end

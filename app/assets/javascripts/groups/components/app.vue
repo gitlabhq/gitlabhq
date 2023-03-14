@@ -59,7 +59,7 @@ export default {
     primaryProps() {
       return {
         text: __('Leave group'),
-        attributes: [{ variant: 'danger' }, { category: 'primary' }],
+        attributes: { variant: 'danger', category: 'primary' },
       };
     },
     cancelProps() {

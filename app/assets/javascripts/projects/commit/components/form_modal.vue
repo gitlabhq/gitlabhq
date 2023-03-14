@@ -52,16 +52,16 @@ export default {
       checked: true,
       actionPrimary: {
         text: this.i18n.actionPrimaryText,
-        attributes: [
-          { variant: 'confirm' },
-          { category: 'primary' },
-          { 'data-testid': 'submit-commit' },
-          { 'data-qa-selector': 'submit_commit_button' },
-        ],
+        attributes: {
+          variant: 'confirm',
+          category: 'primary',
+          'data-testid': 'submit-commit',
+          'data-qa-selector': 'submit_commit_button',
+        },
       },
       actionCancel: {
         text: this.i18n.actionCancelText,
-        attributes: [{ 'data-testid': 'cancel-commit' }],
+        attributes: { 'data-testid': 'cancel-commit' },
       },
     };
   },

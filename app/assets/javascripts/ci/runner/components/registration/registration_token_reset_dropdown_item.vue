@@ -73,13 +73,13 @@ export default {
     actionPrimary() {
       return {
         text: i18n.modalAction,
-        attributes: [{ variant: 'danger' }],
+        attributes: { variant: 'danger' },
       };
     },
     actionSecondary() {
       return {
         text: i18n.modalCancel,
-        attributes: [{ variant: 'default' }],
+        attributes: { variant: 'default' },
       };
     },
   },

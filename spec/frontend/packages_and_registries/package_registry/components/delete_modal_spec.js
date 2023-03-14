@@ -45,7 +45,7 @@ describe('DeleteModal', () => {
   it('passes actionPrimary prop', () => {
     expect(findModal().props('actionPrimary')).toStrictEqual({
       text: 'Permanently delete',
-      attributes: [{ variant: 'danger' }, { category: 'primary' }],
+      attributes: { variant: 'danger', category: 'primary' },
     });
   });
 

@@ -80,11 +80,11 @@ export default {
   },
   primaryAction: {
     text: s__('Milestones|Promote Milestone'),
-    attributes: [{ variant: 'confirm' }],
+    attributes: { variant: 'confirm' },
   },
   cancelAction: {
     text: __('Cancel'),
-    attributes: [],
+    attributes: {},
   },
 };
 </script>

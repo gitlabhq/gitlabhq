@@ -32,7 +32,7 @@ export default {
   modal: {
     packagesDeletePrimaryAction: {
       text: DELETE_PACKAGE_MODAL_PRIMARY_ACTION,
-      attributes: [{ variant: 'danger' }, { category: 'primary' }],
+      attributes: { variant: 'danger', category: 'primary' },
     },
     cancelAction: {
       text: __('Cancel'),

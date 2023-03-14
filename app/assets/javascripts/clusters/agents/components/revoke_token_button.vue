@@ -78,16 +78,17 @@ export default {
     primaryModalProps() {
       return {
         text: this.$options.i18n.revokeButton,
-        attributes: [
-          { disabled: this.loading || this.disableModalSubmit, loading: this.loading },
-          { variant: 'danger' },
-        ],
+        attributes: {
+          disabled: this.loading || this.disableModalSubmit,
+          loading: this.loading,
+          variant: 'danger',
+        },
       };
     },
     cancelModalProps() {
       return {
         text: this.$options.i18n.modalCancel,
-        attributes: [],
+        attributes: {},
       };
     },
     disableModalSubmit() {

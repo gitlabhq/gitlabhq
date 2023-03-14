@@ -12,7 +12,7 @@ RSpec.describe ExploreHelper do
 
   describe '#explore_nav_links' do
     it 'has all the expected links by default' do
-      menu_items = [:projects, :groups, :snippets]
+      menu_items = [:projects, :groups, :topics, :snippets]
 
       expect(helper.explore_nav_links).to contain_exactly(*menu_items)
     end

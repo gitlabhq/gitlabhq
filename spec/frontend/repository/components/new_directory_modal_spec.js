@@ -181,7 +181,7 @@ describe('NewDirectoryModal', () => {
 
       it('disables submit button', async () => {
         await fillForm({ dirName: '', branchName: '', commitMessage: '' });
-        expect(findModal().props('actionPrimary').attributes[0].disabled).toBe(true);
+        expect(findModal().props('actionPrimary').attributes.disabled).toBe(true);
       });
 
       it('creates an alert error', async () => {

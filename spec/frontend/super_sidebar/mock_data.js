@@ -68,6 +68,7 @@ export const sidebarData = {
   name: 'Administrator',
   username: 'root',
   avatar_url: 'path/to/img_administrator',
+  logo_url: 'path/to/logo',
   assigned_open_issues_count: 1,
   todos_pending_count: 3,
   issues_dashboard_path: 'path/to/issues',

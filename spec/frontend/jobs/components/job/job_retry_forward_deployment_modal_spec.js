@@ -64,13 +64,11 @@ describe('Job Retry Forward Deployment Modal', () => {
     beforeEach(createWrapper);
 
     it('should correctly configure the primary action', () => {
-      expect(findModal().props('actionPrimary').attributes).toMatchObject([
-        {
-          'data-method': 'post',
-          href: job.retry_path,
-          variant: 'danger',
-        },
-      ]);
+      expect(findModal().props('actionPrimary').attributes).toMatchObject({
+        'data-method': 'post',
+        href: job.retry_path,
+        variant: 'danger',
+      });
     });
   });
 });

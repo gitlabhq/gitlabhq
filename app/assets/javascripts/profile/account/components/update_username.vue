@@ -60,11 +60,7 @@ Please update your Git repository remotes as soon as possible.`),
     primaryProps() {
       return {
         text: __('Update username'),
-        attributes: [
-          { variant: 'confirm' },
-          { category: 'primary' },
-          { disabled: this.isRequestPending },
-        ],
+        attributes: { variant: 'confirm', category: 'primary', disabled: this.isRequestPending },
       };
     },
     cancelProps() {

@@ -7,7 +7,8 @@ info: A tutorial using Flux with Project Access Tokens
 # Tutorial: Set up Flux for GitOps **(FREE)**
 
 This tutorial teaches you how to set up Flux for GitOps. You'll set up a sample project,
-complete a bootstrap Flux installation, and authenticate your installation with a project access token.
+complete a bootstrap Flux installation, and authenticate your installation with a
+[project access token](../../../project/settings/project_access_tokens.md).
 
 You can find the fully configured tutorial project [in this GitLab repository](https://gitlab.com/gitlab-org/configure/examples/flux/flux-config). It works in conjunction with [this repository](https://gitlab.com/gitlab-org/configure/examples/flux/web-app-manifests/-/tree/main), which contains the example Kubernetes manifests.
 
@@ -20,7 +21,9 @@ To set up Flux with a project access token:
 
 Prerequisites:
 
-- On GitLab SaaS, you must have the Premium or Ultimate tier. On self-managed instances, you can have any tier.
+- On GitLab SaaS, you must have the Premium or Ultimate tier to use a project access token.
+  On self-managed instances, you can have any tier.
+- Not recommended. You can authenticate with a [personal or group access token](flux.md#bootstrap-installation) in all tiers.
 - You must have a Kubernetes cluster running.
 
 ## Create the Flux repository

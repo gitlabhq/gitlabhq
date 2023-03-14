@@ -13,7 +13,7 @@ RSpec.describe 'Create a work item', feature_category: :team_planning do
       'title' => 'new title',
       'description' => 'new description',
       'confidential' => true,
-      'workItemTypeId' => WorkItems::Type.default_by_type(:task).to_global_id.to_s
+      'workItemTypeId' => WorkItems::Type.default_by_type(:task).to_gid.to_s
     }
   end
 
@@ -43,14 +43,14 @@ RSpec.describe 'Create a work item', feature_category: :team_planning do
       expect(created_work_item.work_item_type.base_type).to eq('task')
       expect(mutation_response['workItem']).to include(
         input.except('workItemTypeId').merge(
-          'id' => created_work_item.to_global_id.to_s,
+          'id' => created_work_item.to_gid.to_s,
           'workItemType' => hash_including('name' => 'Task')
         )
       )
     end
 
     context 'when input is invalid' do
-      let(:input) { { 'title' => '', 'workItemTypeId' => WorkItems::Type.default_by_type(:task).to_global_id.to_s } }
+      let(:input) { { 'title' => '', 'workItemTypeId' => WorkItems::Type.default_by_type(:task).to_gid.to_s } }
 
       it 'does not create and returns validation errors' do
         expect do
@@ -98,8 +98,8 @@ RSpec.describe 'Create a work item', feature_category: :team_planning do
         let(:input) do
           {
             title: 'item1',
-            workItemTypeId: WorkItems::Type.default_by_type(:task).to_global_id.to_s,
-            hierarchyWidget: { 'parentId' => parent.to_global_id.to_s }
+            workItemTypeId: WorkItems::Type.default_by_type(:task).to_gid.to_s,
+            hierarchyWidget: { 'parentId' => parent.to_gid.to_s }
           }
         end
 
@@ -110,7 +110,7 @@ RSpec.describe 'Create a work item', feature_category: :team_planning do
           expect(widgets_response).to include(
             {
               'children' => { 'edges' => [] },
-              'parent' => { 'id' => parent.to_global_id.to_s },
+              'parent' => { 'id' => parent.to_gid.to_s },
               'type' => 'HIERARCHY'
             }
           )
@@ -137,6 +137,40 @@ RSpec.describe 'Create a work item', feature_category: :team_planning do
             expect(graphql_errors.first['message']).to include('No object found for `parentId')
           end
         end
+
+        context 'when adjacent is already in place' do
+          let_it_be(:adjacent) { create(:work_item, :task, project: project) }
+
+          let(:work_item) { WorkItem.last }
+
+          let(:input) do
+            {
+              title: 'item1',
+              workItemTypeId: WorkItems::Type.default_by_type(:task).to_gid.to_s,
+              hierarchyWidget: { 'parentId' => parent.to_gid.to_s }
+            }
+          end
+
+          before(:all) do
+            create(:parent_link, work_item_parent: parent, work_item: adjacent, relative_position: 0)
+          end
+
+          it 'creates work item and sets the relative position to be AFTER adjacent' do
+            expect do
+              post_graphql_mutation(mutation, current_user: current_user)
+            end.to change(WorkItem, :count).by(1)
+
+            expect(response).to have_gitlab_http_status(:success)
+            expect(widgets_response).to include(
+              {
+                'children' => { 'edges' => [] },
+                'parent' => { 'id' => parent.to_gid.to_s },
+                'type' => 'HIERARCHY'
+              }
+            )
+            expect(work_item.parent_link.relative_position).to be > adjacent.parent_link.relative_position
+          end
+        end
       end
 
       context 'when unsupported widget input is sent' do
@@ -144,7 +178,7 @@ RSpec.describe 'Create a work item', feature_category: :team_planning do
           {
             'title' => 'new title',
             'description' => 'new description',
-            'workItemTypeId' => WorkItems::Type.default_by_type(:test_case).to_global_id.to_s,
+            'workItemTypeId' => WorkItems::Type.default_by_type(:test_case).to_gid.to_s,
             'hierarchyWidget' => {}
           }
         end
@@ -181,8 +215,8 @@ RSpec.describe 'Create a work item', feature_category: :team_planning do
         let(:input) do
           {
             title: 'some WI',
-            workItemTypeId: WorkItems::Type.default_by_type(:task).to_global_id.to_s,
-            milestoneWidget: { 'milestoneId' => milestone.to_global_id.to_s }
+            workItemTypeId: WorkItems::Type.default_by_type(:task).to_gid.to_s,
+            milestoneWidget: { 'milestoneId' => milestone.to_gid.to_s }
           }
         end
 
@@ -196,7 +230,7 @@ RSpec.describe 'Create a work item', feature_category: :team_planning do
             expect(widgets_response).to include(
               {
                 'type' => 'MILESTONE',
-                'milestone' => { 'id' => milestone.to_global_id.to_s }
+                'milestone' => { 'id' => milestone.to_gid.to_s }
               }
             )
           end

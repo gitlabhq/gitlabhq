@@ -21,9 +21,8 @@ RSpec.describe 'The group dashboard', :js, feature_category: :subgroups do
       within_top_nav do
         expect(page).to have_button('Projects')
         expect(page).to have_button('Groups')
-        expect(page).to have_link('Activity')
-        expect(page).to have_link('Milestones')
-        expect(page).to have_link('Snippets')
+        expect(page).to have_link('Your work')
+        expect(page).to have_link('Explore')
       end
     end
 
@@ -36,9 +35,8 @@ RSpec.describe 'The group dashboard', :js, feature_category: :subgroups do
       within_top_nav do
         expect(page).to have_button('Projects')
         expect(page).to have_button('Groups')
-        expect(page).not_to have_link('Activity')
-        expect(page).not_to have_link('Milestones')
-        expect(page).to have_link('Snippets')
+        expect(page).to have_link('Your work')
+        expect(page).to have_link('Explore')
       end
     end
   end

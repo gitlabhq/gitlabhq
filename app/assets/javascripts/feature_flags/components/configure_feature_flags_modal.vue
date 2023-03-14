@@ -84,11 +84,9 @@ export default {
     cancelActionProps() {
       return {
         text: this.$options.translations.cancelActionLabel,
-        attributes: [
-          {
-            category: 'secondary',
-          },
-        ],
+        attributes: {
+          category: 'secondary',
+        },
       };
     },
     canRegenerateInstanceId() {
@@ -98,14 +96,12 @@ export default {
       return this.canUserRotateToken
         ? {
             text: this.$options.translations.instanceIdRegenerateActionLabel,
-            attributes: [
-              {
-                category: 'secondary',
-                disabled: !this.canRegenerateInstanceId,
-                loading: this.isRotating,
-                variant: 'danger',
-              },
-            ],
+            attributes: {
+              category: 'secondary',
+              disabled: !this.canRegenerateInstanceId,
+              loading: this.isRotating,
+              variant: 'danger',
+            },
           }
         : null;
     },

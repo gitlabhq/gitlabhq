@@ -26,7 +26,7 @@ export default {
     primaryProps() {
       return {
         text: __('Delete badge'),
-        attributes: [{ category: 'primary' }, { variant: 'danger' }],
+        attributes: { category: 'primary', variant: 'danger' },
       };
     },
     cancelProps() {

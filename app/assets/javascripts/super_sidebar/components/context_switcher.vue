@@ -46,6 +46,7 @@ export default {
           </div>
           <ul :aria-label="$options.i18n.switchTo" class="gl-p-0">
             <nav-item :item="$options.contextSwitcherItems.yourWork" />
+            <nav-item :item="$options.contextSwitcherItems.explore" />
           </ul>
         </li>
         <frequent-projects-list :username="username" :view-all-link="projectsPath" />

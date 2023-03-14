@@ -57,7 +57,7 @@ module DashboardHelper
   private
 
   def get_dashboard_nav_links
-    links = [:projects, :groups, :snippets]
+    links = [:projects, :groups, :snippets, :your_work, :explore]
 
     if can?(current_user, :read_cross_project)
       links += [:activity, :milestones]

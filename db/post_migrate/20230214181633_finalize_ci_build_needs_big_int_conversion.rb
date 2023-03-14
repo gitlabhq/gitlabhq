@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class FinalizeCiBuildNeedsBigIntConversion < Gitlab::Database::Migration[2.1]
+  disable_ddl_transaction!
+
   restrict_gitlab_migration gitlab_schema: :gitlab_ci
 
   TABLE_NAME = 'ci_build_needs'

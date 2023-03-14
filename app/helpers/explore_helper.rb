@@ -57,7 +57,7 @@ module ExploreHelper
   private
 
   def get_explore_nav_links
-    [:projects, :groups, :snippets]
+    [:projects, :groups, :topics, :snippets]
   end
 
   def request_path_with_options(options = {})

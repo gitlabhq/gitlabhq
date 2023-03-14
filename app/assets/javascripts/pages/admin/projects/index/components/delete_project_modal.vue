@@ -72,7 +72,7 @@ export default {
     primaryProps() {
       return {
         text: __('Delete project'),
-        attributes: [{ variant: 'danger' }, { category: 'primary' }, { disabled: !this.canSubmit }],
+        attributes: { variant: 'danger', category: 'primary', disabled: !this.canSubmit },
       };
     },
   },

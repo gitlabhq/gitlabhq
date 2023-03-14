@@ -2,6 +2,7 @@ import { s__ } from '~/locale';
 
 export const contextSwitcherItems = {
   yourWork: { title: s__('Navigation|Your work'), link: '/', icon: 'work' },
+  explore: { title: s__('Navigation|Explore'), link: '/explore', icon: 'compass' },
   recentProjects: [
     {
       // eslint-disable-next-line @gitlab/require-i18n-strings

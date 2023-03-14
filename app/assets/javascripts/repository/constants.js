@@ -3,7 +3,6 @@ import { __ } from '~/locale';
 export const GITALY_UNAVAILABLE_CODE = 'unavailable';
 export const TREE_PAGE_LIMIT = 1000; // the maximum amount of items per page
 export const TREE_PAGE_SIZE = 100; // the amount of items to be fetched per (batch) request
-export const TREE_INITIAL_FETCH_COUNT = TREE_PAGE_LIMIT / TREE_PAGE_SIZE; // the amount of (batch) requests to make
 
 export const COMMIT_BATCH_SIZE = 25; // we request commit data in batches of 25
 

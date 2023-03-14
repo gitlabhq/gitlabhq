@@ -103,7 +103,7 @@ Once deleted, it cannot be undone or recovered.`),
   },
   primaryProps: {
     text: s__('Milestones|Delete milestone'),
-    attributes: [{ variant: 'danger' }, { category: 'primary' }],
+    attributes: { variant: 'danger', category: 'primary' },
   },
   cancelProps: {
     text: __('Cancel'),

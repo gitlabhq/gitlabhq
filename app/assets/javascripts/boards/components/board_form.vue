@@ -128,14 +128,12 @@ export default {
     primaryProps() {
       return {
         text: this.buttonText,
-        attributes: [
-          {
-            variant: this.buttonKind,
-            disabled: this.submitDisabled,
-            loading: this.isLoading,
-            'data-qa-selector': 'save_changes_button',
-          },
-        ],
+        attributes: {
+          variant: this.buttonKind,
+          disabled: this.submitDisabled,
+          loading: this.isLoading,
+          'data-qa-selector': 'save_changes_button',
+        },
       };
     },
     cancelProps() {

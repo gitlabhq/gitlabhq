@@ -53,9 +53,9 @@ describe('UploadBlobModal', () => {
   const findBranchName = () => wrapper.findComponent(GlFormInput);
   const findMrToggle = () => wrapper.findComponent(GlToggle);
   const findUploadDropzone = () => wrapper.findComponent(UploadDropzone);
-  const actionButtonDisabledState = () => findModal().props('actionPrimary').attributes[0].disabled;
-  const cancelButtonDisabledState = () => findModal().props('actionCancel').attributes[0].disabled;
-  const actionButtonLoadingState = () => findModal().props('actionPrimary').attributes[0].loading;
+  const actionButtonDisabledState = () => findModal().props('actionPrimary').attributes.disabled;
+  const cancelButtonDisabledState = () => findModal().props('actionCancel').attributes.disabled;
+  const actionButtonLoadingState = () => findModal().props('actionPrimary').attributes.loading;
 
   describe.each`
     canPushCode | displayBranchName | displayForkedBranchMessage

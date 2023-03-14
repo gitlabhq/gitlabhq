@@ -1,13 +1,8 @@
 .page-title-holder.d-flex.align-items-center
   %h1.page-title.gl-font-size-h-display= _('Snippets')
 
-  - if current_user && current_user.snippets.any? || @snippets.any?
-    .page-title-controls
-      - if can?(current_user, :create_snippet)
-        = render Pajamas::ButtonComponent.new(href: new_snippet_path, variant: :confirm, button_options: { title: _("New snippet") }) do
-          = _("New snippet")
-
-.top-area
-  = gl_tabs_nav({ class: 'gl-border-0' }) do
-    = gl_tab_link_to _('Your snippets'), dashboard_snippets_path, { title: _('Your snippets') }
-    = gl_tab_link_to _('Explore snippets'), explore_snippets_path, { title: _('Explore snippets') }
+  .page-title-controls.gl-display-flex.gl-align-items-center.gl-gap-5
+    = link_to _("Explore snippets"), explore_snippets_path
+    - if can?(current_user, :create_snippet)
+      = render Pajamas::ButtonComponent.new(href: new_snippet_path, variant: :confirm, button_options: { title: _("New snippet") }) do
+        = _("New snippet")

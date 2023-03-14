@@ -299,3 +299,9 @@ to @gitlab/ui by https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1709
 .gl-focus:focus {
   @include gl-focus;
 }
+
+.gl-md-justify-content-space-between {
+  @include gl-media-breakpoint-up(md) {
+    justify-content: space-between;
+  }
+}

@@ -43,7 +43,7 @@ export default {
   },
   primaryAction: {
     text: PRIMARY_ACTION_TEXT,
-    attributes: [{ variant: 'danger' }],
+    attributes: { variant: 'danger' },
   },
   cancelAction: {
     text: CANCEL_TEXT,

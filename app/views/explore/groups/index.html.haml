@@ -1,14 +1,17 @@
-- @hide_top_links = true
-- page_title    _("Groups")
+- breadcrumb_title _("Groups")
+- page_title    _("Explore groups")
 - header_title  _("Groups"), dashboard_groups_path
 
 = render_dashboard_ultimate_trial(current_user)
 
-- if current_user
-  = render 'dashboard/groups_head'
-- else
-  = render 'explore/head'
-  = render 'nav'
+.page-title-holder.gl-display-flex.gl-align-items-center
+  %h1.page-title.gl-font-size-h-display= page_title
+  .page-title-controls
+    - if current_user&.can_create_group?
+      = render Pajamas::ButtonComponent.new(href: new_group_path, variant: :confirm) do
+        = _("New group")
+
+= render 'nav'
 
 - if cookies[:explore_groups_landing_dismissed] != 'true'
   .explore-groups.landing.content-block.js-explore-groups-landing.hide

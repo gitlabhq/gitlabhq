@@ -50,7 +50,7 @@ describe('Configure Feature Flags Modal', () => {
     });
 
     it('should default disable the primary action', () => {
-      const [{ disabled }] = findSecondaryAction().attributes;
+      const { disabled } = findSecondaryAction().attributes;
       expect(disabled).toBe(true);
     });
 
@@ -116,7 +116,7 @@ describe('Configure Feature Flags Modal', () => {
     it('should enable the secondary action', async () => {
       findProjectNameInput().vm.$emit('input', provide.projectName);
       await nextTick();
-      const [{ disabled }] = findSecondaryAction().attributes;
+      const { disabled } = findSecondaryAction().attributes;
       expect(disabled).toBe(false);
     });
   });

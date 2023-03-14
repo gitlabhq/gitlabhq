@@ -109,7 +109,7 @@ module Gitlab
       # rubocop: enable Metrics/ParameterLists
 
       def create_repository(default_branch = nil)
-        request = Gitaly::CreateRepositoryRequest.new(repository: @gitaly_repo, default_branch: default_branch)
+        request = Gitaly::CreateRepositoryRequest.new(repository: @gitaly_repo, default_branch: encode_binary(default_branch))
         gitaly_client_call(@storage, :repository_service, :create_repository, request, timeout: GitalyClient.fast_timeout)
       end
 

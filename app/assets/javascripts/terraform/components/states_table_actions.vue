@@ -69,7 +69,7 @@ export default {
     cancelModalProps() {
       return {
         text: this.$options.i18n.modalCancel,
-        attributes: [],
+        attributes: {},
       };
     },
     disableModalSubmit() {
@@ -81,7 +81,7 @@ export default {
     primaryModalProps() {
       return {
         text: this.$options.i18n.modalRemove,
-        attributes: [{ disabled: this.disableModalSubmit }, { variant: 'danger' }],
+        attributes: { disabled: this.disableModalSubmit, variant: 'danger' },
       };
     },
     commandModalId() {

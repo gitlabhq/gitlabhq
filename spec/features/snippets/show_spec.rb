@@ -28,11 +28,10 @@ RSpec.describe 'Snippet', :js, feature_category: :source_code_management do
   it_behaves_like 'a dashboard page with sidebar', :dashboard_snippets_path, :snippets
 
   context 'when unauthenticated' do
-    it 'does not have the sidebar' do
+    it 'shows the "Explore" sidebar' do
       visit snippet_path(snippet)
 
-      expect(page).to have_title _('Snippets')
-      expect(page).not_to have_css('aside.nav-sidebar')
+      expect(page).to have_css('aside.nav-sidebar[aria-label="Explore"]')
     end
   end
 

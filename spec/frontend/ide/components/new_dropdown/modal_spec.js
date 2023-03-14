@@ -93,11 +93,11 @@ describe('new file modal component', () => {
     it('renders modal', () => {
       expect(findGlModal().props()).toMatchObject({
         actionCancel: {
-          attributes: [{ variant: 'default' }],
+          attributes: { variant: 'default' },
           text: 'Cancel',
         },
         actionPrimary: {
-          attributes: [{ variant: 'confirm' }],
+          attributes: { variant: 'confirm' },
           text: 'Create file',
         },
         actionSecondary: null,
@@ -169,7 +169,7 @@ describe('new file modal component', () => {
         expect(findGlModal().props()).toMatchObject({
           title: modalTitle,
           actionPrimary: {
-            attributes: [{ variant: 'confirm' }],
+            attributes: { variant: 'confirm' },
             text: btnTitle,
           },
         });
@@ -297,7 +297,7 @@ describe('new file modal component', () => {
       expect(findGlModal().props()).toMatchObject({
         title,
         actionPrimary: {
-          attributes: [{ variant: 'confirm' }],
+          attributes: { variant: 'confirm' },
           text: title,
         },
       });

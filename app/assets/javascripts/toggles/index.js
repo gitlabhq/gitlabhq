@@ -17,20 +17,12 @@ export const initToggle = (el) => {
 
   return new Vue({
     el,
-    props: {
-      disabled: {
-        type: Boolean,
-        required: false,
-        default: parseBoolean(disabled),
-      },
-      isLoading: {
-        type: Boolean,
-        required: false,
-        default: parseBoolean(isLoading),
-      },
-    },
+    name: 'ToggleFromHtml',
+
     data() {
       return {
+        disabled: parseBoolean(disabled),
+        isLoading: parseBoolean(isLoading),
         value: parseBoolean(isChecked),
       };
     },

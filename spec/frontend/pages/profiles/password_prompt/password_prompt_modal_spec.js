@@ -25,8 +25,7 @@ describe('Password prompt modal', () => {
   const findField = () => wrapper.findByTestId('password-prompt-field');
   const findModal = () => wrapper.findComponent(GlModal);
   const findConfirmBtn = () => findModal().props('actionPrimary');
-  const findConfirmBtnDisabledState = () =>
-    findModal().props('actionPrimary').attributes[2].disabled;
+  const findConfirmBtnDisabledState = () => findModal().props('actionPrimary').attributes.disabled;
 
   const findCancelBtn = () => findModal().props('actionCancel');
 

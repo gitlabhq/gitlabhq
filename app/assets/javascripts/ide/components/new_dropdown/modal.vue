@@ -50,13 +50,13 @@ export default {
     actionPrimary() {
       return {
         text: this.buttonLabel,
-        attributes: [{ variant: 'confirm' }],
+        attributes: { variant: 'confirm' },
       };
     },
     actionCancel() {
       return {
         text: i18n.cancelButtonText,
-        attributes: [{ variant: 'default' }],
+        attributes: { variant: 'default' },
       };
     },
     isCreatingNewFile() {

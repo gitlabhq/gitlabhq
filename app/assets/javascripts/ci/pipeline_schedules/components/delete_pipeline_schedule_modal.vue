@@ -10,11 +10,11 @@ export default {
     ),
     actionPrimary: {
       text: s__('PipelineSchedules|Delete pipeline schedule'),
-      attributes: [{ variant: 'danger' }],
+      attributes: { variant: 'danger' },
     },
     actionCancel: {
       text: __('Cancel'),
-      attributes: [],
+      attributes: {},
     },
   },
   components: {

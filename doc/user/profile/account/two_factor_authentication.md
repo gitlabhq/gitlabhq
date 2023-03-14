@@ -200,39 +200,59 @@ Configure FortiToken Cloud in GitLab. On your GitLab server:
 
 ### Set up a WebAuthn device
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/22506) in GitLab 13.4 [with a flag](../../../administration/feature_flags.md) named `webauthn`. Disabled by default.
-> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/232671) in GitLab 14.6.
+> - WebAuthn devices [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/22506) in GitLab 13.4 [with a flag](../../../administration/feature_flags.md) named `webauthn`. Disabled by default.
+> - WebAuthn devices [enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/232671) in GitLab 14.6.
+> - Optional one-time password authentication for WebAuthn devices [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/378844) in GitLab 15.10 [with a flag](../../../administration/feature_flags.md) named `webauthn_without_topt`. [Enabled on GitLab.com and self-managed by default](https://gitlab.com/gitlab-org/gitlab/-/issues/232671).
 
 FLAG:
-On self-managed GitLab, by default this feature is available. To disable the feature, ask an administrator to
+On self-managed GitLab, by default, WebAuthn devices are available. To disable the feature, ask an administrator to
 [disable the feature flag](../../../administration/feature_flags.md) named `webauthn`. If you disable the WebAuthn
 feature flag after WebAuthn devices have been registered, these devices are not usable until you re-enable this feature.
+On GitLab.com, WebAuthn devices are available.
+
+FLAG:
+On self-managed GitLab, by default, optional one-time password authentication for WebAuthn devices is available. To hide the feature, ask an administrator to [disable the feature flag](../../../administration/feature_flags.md) named `webauthn_without_topt`.
 On GitLab.com, this feature is available.
 
-WebAuthn [supported by](https://caniuse.com/#search=webauthn):
+WebAuthn is [supported by](https://caniuse.com/#search=webauthn) the following:
 
-- The following desktop browsers:
+- Desktop browsers:
   - Chrome
   - Edge
   - Firefox
   - Opera
   - Safari
-- The following mobile browsers:
+- Mobile browsers:
   - Chrome for Android
   - Firefox for Android
   - iOS Safari (since iOS 13.3)
 
 To set up 2FA with a WebAuthn-compatible device:
 
+1. Optional. [Set up a one-time password](#enable-one-time-password).
 1. Access your [**User settings**](../index.md#access-your-user-settings).
 1. Select **Account**.
 1. Select **Enable Two-Factor Authentication**.
 1. Plug in your WebAuthn device.
+1. Enter a device name and in GitLab 15.10 and later, your GitLab account password.
+   You might not need to enter this password if you have signed in through your
+   identity provider.
 1. Select **Set up New WebAuthn Device**.
 1. Depending on your device, you might have to press a button or touch a sensor.
 
-A message displays indicating that your device was successfully set up. Recovery codes are not generated for WebAuthn
-devices.
+You should receive a message indicating that you successfully set up your device.
+
+When you set up 2FA with a WebAuthn-compatible device, that device is linked to
+a specific browser on a specific computer. Depending on the browser and WebAuthn
+device, you might be able to configure settings to use the WebAuthn device on a
+different browser or computer.
+
+If this is the first time you have set up 2FA, you
+must [download recovery codes](#recovery-codes) so you can recover access to your
+account if you lose access.
+
+WARNING:
+You can lose access to your account if you clear your browser data.
 
 ## Recovery codes
 
@@ -245,7 +265,7 @@ these recovery codes to sign in to your account.
 WARNING:
 Each code can be used only once to sign in to your account.
 
-We recommend copying and printing them, or downloading them using the **Download codes** button for storage in a safe
+You should copy and print the codes, or use **Download codes** to download them for storage in a safe
 place. If you choose to download them, the file is called `gitlab-recovery-codes.txt`.
 
 NOTE:
@@ -275,7 +295,7 @@ and you're presented with a second prompt, depending on which type of 2FA you've
 
 ### Sign in using a one-time password
 
-When asked, enter the pin from your one time password authenticator's application or a recovery code to sign in.
+When asked, enter the pin from your one-time password authenticator's application or a recovery code to sign in.
 
 ### Sign in using a WebAuthn device
 
@@ -374,7 +394,7 @@ a GitLab global administrator disable 2FA for your account:
 ## Information for GitLab administrators **(FREE SELF)**
 
 - Take care that 2FA keeps working after [restoring a GitLab backup](../../../raketasks/backup_restore.md).
-- To ensure 2FA authorizes correctly with a time-based one time passwords (TOTP) server, synchronize your GitLab
+- To ensure 2FA authorizes correctly with a time-based one-time password (TOTP) server, synchronize your GitLab
   server's time using a service like NTP. Otherwise, authorization can always fail because of time differences.
 - The GitLab WebAuthn implementation does _not_ work when the GitLab instance is accessed from multiple hostnames
   or FQDNs. Each WebAuthn registration is linked to the _current hostname_ at the time of registration, and

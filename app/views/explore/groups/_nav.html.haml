@@ -1,6 +1,4 @@
-.top-area
-  = gl_tabs_nav({ class: 'gl-display-flex gl-flex-grow-1 gl-border-none'}) do
-    = gl_tab_link_to _("Explore Groups"), explore_groups_path
+.top-area.gl-p-3.gl-justify-content-end
   .nav-controls
     = render 'shared/groups/search_form'
     = render 'shared/groups/dropdown'

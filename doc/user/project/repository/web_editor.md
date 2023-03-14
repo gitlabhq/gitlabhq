@@ -108,6 +108,9 @@ To link to a single line, you can also:
 
 To upload a binary file in the Web Editor:
 
+<!-- This list is duplicated at doc/gitlab-basics/add-file.md#from-the-ui -->
+<!-- For why we duplicated the info, see https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111072#note_1267429478 -->
+
 1. On the top bar, select **Main menu > Projects** and find your project.
 1. From the project dashboard or repository, next to the branch name, select the plus icon (**{plus}**).
 1. From the dropdown list, select **Upload file**.

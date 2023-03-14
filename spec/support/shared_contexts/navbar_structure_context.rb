@@ -259,3 +259,30 @@ RSpec.shared_context 'dashboard navbar structure' do
     ]
   end
 end
+
+RSpec.shared_context '"Explore" navbar structure' do
+  let(:structure) do
+    [
+      {
+        nav_item: "Explore",
+        nav_sub_items: []
+      },
+      {
+        nav_item: _("Projects"),
+        nav_sub_items: []
+      },
+      {
+        nav_item: _("Groups"),
+        nav_sub_items: []
+      },
+      {
+        nav_item: _("Topics"),
+        nav_sub_items: []
+      },
+      {
+        nav_item: _("Snippets"),
+        nav_sub_items: []
+      }
+    ]
+  end
+end

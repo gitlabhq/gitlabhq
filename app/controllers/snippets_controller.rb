@@ -14,7 +14,7 @@ class SnippetsController < Snippets::ApplicationController
 
   skip_before_action :authenticate_user!, only: [:index, :show, :raw]
 
-  layout 'snippets'
+  layout :determine_layout
 
   def index
     if params[:username].present?
@@ -47,5 +47,13 @@ class SnippetsController < Snippets::ApplicationController
 
   def spammable_path
     snippet_path(@snippet)
+  end
+
+  def determine_layout
+    if action_name == 'show' && @snippet.author != current_user
+      'explore'
+    else
+      'snippets'
+    end
   end
 end

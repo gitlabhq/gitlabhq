@@ -1,17 +1,16 @@
 <script>
-import { GlButton, GlLink, GlIcon, GlDropdownItem } from '@gitlab/ui';
+import { GlButton, GlLink, GlDropdownItem } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import eventHub from '../event_hub';
 import {
   TRIGGER_ELEMENT_BUTTON,
-  TRIGGER_ELEMENT_SIDE_NAV,
   TRIGGER_DEFAULT_QA_SELECTOR,
   TRIGGER_ELEMENT_WITH_EMOJI,
   TRIGGER_ELEMENT_DROPDOWN_WITH_EMOJI,
 } from '../constants';
 
 export default {
-  components: { GlButton, GlLink, GlIcon, GlDropdownItem },
+  components: { GlButton, GlLink, GlDropdownItem },
   props: {
     displayText: {
       type: String,
@@ -66,7 +65,6 @@ export default {
     },
   },
   TRIGGER_ELEMENT_BUTTON,
-  TRIGGER_ELEMENT_SIDE_NAV,
   TRIGGER_ELEMENT_WITH_EMOJI,
   TRIGGER_ELEMENT_DROPDOWN_WITH_EMOJI,
 };
@@ -82,17 +80,6 @@ export default {
   >
     {{ displayText }}
   </gl-button>
-  <gl-link
-    v-else-if="checkTrigger($options.TRIGGER_ELEMENT_SIDE_NAV)"
-    v-bind="componentAttributes"
-    data-is-link="true"
-    @click="openModal"
-  >
-    <span class="nav-icon-container">
-      <gl-icon :name="icon" />
-    </span>
-    <span class="nav-item-name"> {{ displayText }} </span>
-  </gl-link>
   <gl-link
     v-else-if="checkTrigger($options.TRIGGER_ELEMENT_WITH_EMOJI)"
     v-bind="componentAttributes"

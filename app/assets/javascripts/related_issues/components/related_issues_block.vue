@@ -1,5 +1,5 @@
 <script>
-import { GlLink, GlIcon, GlButton, GlCard } from '@gitlab/ui';
+import { GlLink, GlIcon, GlLoadingIcon, GlButton, GlCard } from '@gitlab/ui';
 import { __, sprintf } from '~/locale';
 import {
   issuableIconMap,
@@ -17,6 +17,7 @@ export default {
   components: {
     GlLink,
     GlIcon,
+    GlLoadingIcon,
     GlButton,
     GlCard,
     AddIssuableForm,
@@ -239,15 +240,12 @@ export default {
       </template>
       <div
         v-if="isOpen"
-        class="linked-issues-card-body"
-        :class="{
-          'gl-p-5': isFormVisible || shouldShowTokenBody,
-        }"
+        class="linked-issues-card-body gl-py-3 gl-px-4 gl-bg-gray-10"
         data-testid="related-issues-body"
       >
         <div
           v-if="isFormVisible"
-          class="js-add-related-issues-form-area card-body bordered-box bg-white"
+          class="js-add-related-issues-form-area card-body bg-white gl-mt-2 gl-border-1 gl-border-solid gl-border-gray-100 gl-rounded-base"
           :class="{ 'gl-mb-5': shouldShowTokenBody, 'gl-show-field-errors': hasError }"
         >
           <add-issuable-form
@@ -270,6 +268,7 @@ export default {
           />
         </div>
         <template v-if="shouldShowTokenBody">
+          <gl-loading-icon v-if="isFetching" size="sm" class="gl-py-2" />
           <related-issues-list
             v-for="(category, index) in categorisedIssues"
             :key="category.linkType"
@@ -281,13 +280,16 @@ export default {
             :issuable-type="issuableType"
             :path-id-separator="pathIdSeparator"
             :related-issues="category.issues"
-            :class="{ 'gl-mt-5': index > 0 }"
+            :class="{
+              'gl-pb-3 gl-mb-5 gl-border-b-1 gl-border-b-solid gl-border-b-gray-100':
+                index !== categorisedIssues.length - 1,
+            }"
             @relatedIssueRemoveRequest="$emit('relatedIssueRemoveRequest', $event)"
             @saveReorder="$emit('saveReorder', $event)"
           />
         </template>
         <div v-if="!shouldShowTokenBody && !isFormVisible" data-testid="related-items-empty">
-          <p class="gl-my-5 gl-px-5 gl-text-gray-500">
+          <p class="gl-p-2 gl-mb-0 gl-text-gray-500">
             {{ emptyStateMessage }}
             <gl-link
               v-if="hasHelpPath"

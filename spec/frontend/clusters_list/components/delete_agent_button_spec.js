@@ -33,7 +33,7 @@ describe('DeleteAgentButton', () => {
   const findDeleteBtn = () => wrapper.findComponent(GlButton);
   const findInput = () => wrapper.findComponent(GlFormInput);
   const findPrimaryAction = () => findModal().props('actionPrimary');
-  const findPrimaryActionAttributes = (attr) => findPrimaryAction().attributes[0][attr];
+  const findPrimaryActionAttributes = (attr) => findPrimaryAction().attributes[attr];
   const findDeleteAgentButtonTooltip = () => wrapper.findByTestId('delete-agent-button-tooltip');
   const getTooltipText = (el) => {
     const binding = getBinding(el, 'gl-tooltip');

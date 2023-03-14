@@ -136,11 +136,11 @@ export default {
       size="sm"
       :action-primary="/* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */ {
         text: $options.i18n.modalAction,
-        attributes: [{ variant: 'danger' }],
+        attributes: { variant: 'danger' },
       } /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */"
       :action-secondary="/* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */ {
         text: $options.i18n.modalCancel,
-        attributes: [{ variant: 'default' }],
+        attributes: { variant: 'default' },
       } /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */"
       @primary="handleModalPrimary"
     >

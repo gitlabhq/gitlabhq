@@ -53,7 +53,6 @@ module QA
           element :admin_area_link
           element :projects_dropdown
           element :groups_dropdown
-          element :snippets_link
           element :menu_item_link
         end
 
@@ -97,6 +96,10 @@ module QA
           within_projects_menu do
             click_element(:menu_item_link, title: 'View all projects')
           end
+        end
+
+        def go_to_snippets
+          click_element(:sidebar_menu_link, menu_item: 'Snippets')
         end
 
         def go_to_create_project

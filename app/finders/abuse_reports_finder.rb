@@ -24,6 +24,7 @@ class AbuseReportsFinder
     filter_by_user_id
 
     filter_by_user
+    filter_by_reporter
     filter_by_status
     filter_by_category
   end
@@ -48,10 +49,19 @@ class AbuseReportsFinder
   def filter_by_user
     return unless params[:user].present?
 
-    user_id = User.by_username(params[:user]).pick(:id)
+    user_id = find_user_id(params[:user])
     return unless user_id
 
     @reports = @reports.by_user_id(user_id)
+  end
+
+  def filter_by_reporter
+    return unless params[:reporter].present?
+
+    user_id = find_user_id(params[:reporter])
+    return unless user_id
+
+    @reports = @reports.by_reporter_id(user_id)
   end
 
   def filter_by_user_id
@@ -70,5 +80,9 @@ class AbuseReportsFinder
     sort_by = DEFAULT_SORT unless sort_by.in?(ALLOWED_SORT)
 
     @reports = @reports.order_by(sort_by)
+  end
+
+  def find_user_id(username)
+    User.by_username(username).pick(:id)
   end
 end

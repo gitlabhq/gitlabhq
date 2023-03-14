@@ -5,8 +5,11 @@ require 'spec_helper'
 RSpec.describe AbuseReportsFinder, '#execute' do
   let_it_be(:user1) { create(:user) }
   let_it_be(:user2) { create(:user) }
+  let_it_be(:reporter) { create(:user) }
   let_it_be(:abuse_report_1) { create(:abuse_report, id: 20, category: 'spam', user: user1) }
-  let_it_be(:abuse_report_2) { create(:abuse_report, :closed, id: 30, category: 'phishing', user: user2) }
+  let_it_be(:abuse_report_2) do
+    create(:abuse_report, :closed, id: 30, category: 'phishing', user: user2, reporter: reporter)
+  end
 
   let(:params) { {} }
 
@@ -26,17 +29,15 @@ RSpec.describe AbuseReportsFinder, '#execute' do
     end
   end
 
-  context 'when params[:user] is present' do
-    let(:params) { { user: abuse_report_1.user.username } }
-
-    it 'returns abuse reports for the specified user' do
-      expect(subject).to match_array([abuse_report_1])
+  shared_examples 'returns filtered reports' do |filter_field|
+    it "returns abuse reports filtered by #{filter_field}_id" do
+      expect(subject).to match_array(filtered_reports)
     end
 
-    context 'when no user has username = params[:user]' do
+    context "when no user has username = params[:#{filter_field}]" do
       before do
         allow(User).to receive_message_chain(:by_username, :pick)
-          .with(params[:user])
+          .with(params[filter_field])
           .with(:id)
           .and_return(nil)
       end
@@ -44,6 +45,20 @@ RSpec.describe AbuseReportsFinder, '#execute' do
       it 'returns all abuse reports' do
         expect(subject).to match_array([abuse_report_1, abuse_report_2])
       end
+    end
+  end
+
+  context 'when params[:user] is present' do
+    it_behaves_like 'returns filtered reports', :user do
+      let(:params) { { user: user1.username } }
+      let(:filtered_reports) { [abuse_report_1] }
+    end
+  end
+
+  context 'when params[:reporter] is present' do
+    it_behaves_like 'returns filtered reports', :reporter do
+      let(:params) { { reporter: reporter.username } }
+      let(:filtered_reports) { [abuse_report_2] }
     end
   end
 
