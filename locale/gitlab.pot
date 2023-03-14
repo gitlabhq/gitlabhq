@@ -26847,9 +26847,6 @@ msgstr ""
 msgid "Merge blocked: pipeline must succeed. It's waiting for a manual job to continue."
 msgstr ""
 
-msgid "Merge commit SHA"
-msgstr ""
-
 msgid "Merge commit message"
 msgstr ""
 

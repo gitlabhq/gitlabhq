@@ -546,6 +546,7 @@ end
 # Disabled because it's causing N+1 queries.
 # See https://gitlab.com/gitlab-org/gitlab/-/issues/396352.
 # Support::AbilityCheck.inject(Ability.singleton_class)
+Support::PermissionsCheck.inject(Ability.singleton_class)
 
 ActiveRecord::Migration.maintain_test_schema!
 

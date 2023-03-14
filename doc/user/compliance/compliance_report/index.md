@@ -149,19 +149,19 @@ Depending on your version of GitLab, the Chain of Custody report is either sent 
 
 #### Generate commit-specific Chain of Custody report
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/267629) in GitLab 13.6.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/267629) in GitLab 13.6.
+> - Support for including all commits instead of only merge commits [added](https://gitlab.com/gitlab-org/gitlab/-/issues/393446) in GitLab 15.10.
 
-You can generate a commit-specific Chain of Custody report for a given merge commit SHA. This report provides only the
-details for the provided merge commit SHA. Issue [393446](https://gitlab.com/gitlab-org/gitlab/-/issues/393446) proposes
-to extend the commit SHA filtering to work with all commits instead of only merge commits.
+You can generate a commit-specific Chain of Custody report for a given commit SHA. This report provides only the
+details for the provided commit SHA.
 
 To generate a commit-specific Chain of Custody report:
 
 1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Security and Compliance > Compliance report**.
-1. At the top of the compliance report, to the right of **List of all merge commits**, select the down arrow
+1. At the top of the compliance report, to the right of **List of all commits**, select the down arrow
    (**{chevron-lg-down}**).
-1. Enter the merge commit SHA, and then select **Export commit custody report**.
+1. Enter the commit SHA, and then select **Export commit custody report**.
 
 Depending on your version of GitLab, the Chain of Custody report is either sent through email or available for download.
 

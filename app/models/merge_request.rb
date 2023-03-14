@@ -156,6 +156,9 @@ class MergeRequest < ApplicationRecord
   # when creating new merge request
   attr_accessor :can_be_created, :compare_commits, :diff_options, :compare
 
+  # Flag to skip triggering mergeRequestMergeStatusUpdated GraphQL subscription.
+  attr_accessor :skip_merge_status_trigger
+
   participant :reviewers
 
   # Keep states definition to be evaluated before the state_machine block to avoid spec failures.
@@ -252,6 +255,8 @@ class MergeRequest < ApplicationRecord
     end
 
     after_transition any => [:unchecked, :cannot_be_merged_recheck, :checking, :cannot_be_merged_rechecking, :can_be_merged, :cannot_be_merged] do |merge_request, transition|
+      next if merge_request.skip_merge_status_trigger
+
       merge_request.run_after_commit do
         GraphqlTriggers.merge_request_merge_status_updated(merge_request)
       end

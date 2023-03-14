@@ -12,7 +12,7 @@ module Gitlab
         def load(string)
           return unless string
 
-          object = YAML.safe_load(string, [Symbol])
+          object = YAML.safe_load(string, permitted_classes: [Symbol])
 
           object.map do |variable|
             variable.symbolize_keys.tap do |variable|

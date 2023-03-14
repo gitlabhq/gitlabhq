@@ -96,7 +96,7 @@ class Ability
 
     # Hook call right before ability check.
     def before_check(policy, ability, user, subject, opts)
-      # See Support::AbilityCheck.
+      # See Support::AbilityCheck and Support::PermissionsCheck.
     end
 
     def policy_for(user, subject = :global)

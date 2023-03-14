@@ -969,6 +969,12 @@ Use lowercase for **personal access token**.
 
 Do not use **please**. For details, see the [Microsoft style guide](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/p/please).
 
+## prerequisites
+
+Use **prerequisites** when documenting the steps before a task. Do not use **requirements**.
+
+For more information, see [the task topic type](../topic_types/task.md).
+
 ## press
 
 Use **press** when talking about keyboard keys. For example:
@@ -1030,6 +1036,12 @@ Do not use **Reporter permissions**. A user who is assigned the Reporter role ha
 ## Repository Mirroring
 
 Use title case for **Repository Mirroring**.
+
+## requirements
+
+Use **prerequisites** when documenting the steps before a task. Do not use **requirements**.
+
+For more information, see [the task topic type](../topic_types/task.md).
 
 ## respectively
 

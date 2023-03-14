@@ -26,10 +26,31 @@ for any change you commit through the Web Editor.
 To create a text file in the Web Editor:
 
 1. On the top bar, select **Main menu > Projects** and find your project.
-1. From the project dashboard or repository, next to the branch name, select the plus icon (**{plus}**).
+1. From the project dashboard or repository, next to the branch name,
+   select the plus icon (**{plus}**).
 1. From the dropdown list, select **New file**.
-1. Complete the fields. To create a merge request with the new file, ensure the **Start a new merge request with these changes** checkbox is selected.
+1. Complete the fields.
+1. To create a merge request with the new file, ensure the **Start a new merge request with these changes** checkbox is selected, if you had chosen a **Target branch** other than the [default branch (such as `main`)](../../../user/project/repository/branches/default.md).
 1. Select **Commit changes**.
+
+### Create a file from a template
+
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, select **Repository > Files**.
+1. Next to the project name, select the plus icon (**{plus}**) to display a
+   dropdown list, then select **New file** from the list.
+1. For **Filename**, provide one of the filenames that GitLab provides a template for:
+   - `.gitignore`
+   - `.gitlab-ci.yml`
+   - `LICENSE`
+   - `Dockerfile`
+1. Select **Apply a template**, then select the template you want to apply.
+1. Make your changes to the file.
+1. Provide a **Commit message**.
+1. Enter a **Target branch** to merge into. To create a new merge request with
+   your changes, enter a branch name that is not your repository's
+   [default branch](../../../user/project/repository/branches/default.md),
+1. Select **Commit changes** to add the commit to your branch.
 
 ## Edit a file
 

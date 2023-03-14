@@ -284,6 +284,8 @@ GitHub Enterprise Cloud has
 [custom repository roles](https://docs.github.com/en/enterprise-cloud@latest/organizations/managing-peoples-access-to-your-organization-with-roles/about-custom-repository-roles).
 These roles aren't supported and cause partial imports.
 
+To import GitHub collaborators, you must have at least the Write role on the GitHub project. Otherwise collaborators import is skipped.
+
 ## Import from GitHub Enterprise on an internal network
 
 If your GitHub Enterprise instance is on a internal network that is inaccessible to the internet, you can use a reverse proxy

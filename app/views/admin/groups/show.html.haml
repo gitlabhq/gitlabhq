@@ -20,8 +20,7 @@
       - c.body do
         %ul.content-list.content-list-items-padding
           %li
-            .avatar-container.rect-avatar.s60
-              = group_icon(@group, class: "avatar s60")
+            = render Pajamas::AvatarComponent.new(@group, size: 64, alt: '')
           %li
             %span.light= _('Name:')
             %strong

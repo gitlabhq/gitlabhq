@@ -3,9 +3,8 @@
     %ul.content-list
       - @projects.each do |project|
         %li.project-row.gl-align-items-center{ class: 'gl-display-flex!' }
-          .avatar-container.rect-avatar.s40.gl-flex-shrink-0
-            = project_icon(project, alt: '', class: 'avatar project-avatar s40', width: 40, height: 40)
-          .gl-min-w-0.gl-flex-grow-1
+          = render Pajamas::AvatarComponent.new(project, size: 32, alt: '')
+          .gl-min-w-0.gl-flex-grow-1.gl-ml-3
             .title
               = link_to(admin_project_path(project)) do
                 %span.project-full-name

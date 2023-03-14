@@ -198,3 +198,124 @@ Say, for example, we extract the whole endpoint into a service. The `can?` check
 - If the finder doesn't accept `current_user`, and therefore doesn't check permissions, then probably no.
 - If the finder accepts `current_user`, and doesn't check permissions, then it would be a good idea to double check other usages of the finder, and we might consider adding authorization.
 - If the finder accepts `current_user`, and already checks permissions, then either we need to add our case, or the existing checks are appropriate.
+
+### Refactoring permissions
+
+#### Finding existing permissions checks
+
+As mentioned [above](#where-should-permissions-be-checked), permissions are
+often checked in multiple locations for a single endpoint or web request. As a
+result, finding the list of authorization checks that are run for a given endpoint
+can be challenging.
+
+To assist with this, you can locally set `GITLAB_DEBUG_POLICIES=true`.
+
+This outputs information about which abilities are checked in the requests
+made in any specs that you run. The output also includes the line of code where the
+authorization check was made. Caller information is especially helpful in cases
+where there is metaprogramming used because those cases are difficult to find by
+grepping for ability name strings.
+
+Example:
+
+```shell
+# example spec run
+
+GITLAB_DEBUG_POLICIES=true bundle exec rspec spec/controllers/groups_controller_spec.rb:162
+
+# permissions debug output when spec is run; if multiple policy checks are run they will all be in the debug output.
+
+POLICY CHECK DEBUG -> policy: GlobalPolicy, ability: create_group, called_from: ["/gitlab/app/controllers/application_controller.rb:245:in `can?'", "/gitlab/app/controllers/groups_controller.rb:255:in `authorize_create_group!'"]
+```
+
+This flag is meant to help learn more about authorization checks while
+refactoring and should not remain enabled for any specs on the default branch.
+
+#### Understanding logic for individual abilities
+
+References to an ability may appear in a `DeclarativePolicy` class many times
+and depend on conditions and rules which reference other abilities. As a result,
+it can be challenging to know exactly which conditions apply to a particular
+ability.
+
+`DeclarativePolicy` provides a `ability_map` for each Policy class, which
+pulls all Rules for an ability into an array.
+
+Example:
+
+```ruby
+> GroupPolicy.ability_map.map.select { |k,v| k == :read_group_member }
+=> {:read_group_member=>[[:enable, #<Rule can?(:read_group)>], [:prevent, #<Rule ~can_read_group_member>]]}
+
+> GroupPolicy.ability_map.map.select { |k,v| k == :read_group }
+=> {:read_group=>
+  [[:enable, #<Rule public_group>],
+   [:enable, #<Rule logged_in_viewable>],
+   [:enable, #<Rule guest>],
+   [:enable, #<Rule admin>],
+   [:enable, #<Rule has_projects>],
+   [:enable, #<Rule read_package_registry_deploy_token>],
+   [:enable, #<Rule write_package_registry_deploy_token>],
+   [:prevent, #<Rule all?(~public_group, ~admin, user_banned_from_group)>],
+   [:enable, #<Rule auditor>],
+   [:prevent, #<Rule needs_new_sso_session>],
+   [:prevent, #<Rule all?(ip_enforcement_prevents_access, ~owner, ~auditor)>]]}
+```
+
+`DeclarativePolicy` also provides a `debug` method that can be used to
+understand the logic tree for a specific object and actor. The output is similar
+to the list of rules from `ability_map`. But, `DeclarativePolicy` stops
+evaluating rules once one `prevent`s an ability, so it is possible that
+not all conditions are called.
+
+Example:
+
+```ruby
+policy = GroupPolicy.new(User.last,  Group.last)
+policy.debug(:read_group)
+
+- [0] enable when public_group ((@custom_guest_user1 : Group/139))
+- [0] enable when logged_in_viewable ((@custom_guest_user1 : Group/139))
+- [0] enable when admin ((@custom_guest_user1 : Group/139))
+- [0] enable when auditor ((@custom_guest_user1 : Group/139))
+- [14] prevent when all?(~public_group, ~admin, user_banned_from_group) ((@custom_guest_user1 : Group/139))
+- [14] prevent when needs_new_sso_session ((@custom_guest_user1 : Group/139))
+- [16] enable when guest ((@custom_guest_user1 : Group/139))
+- [16] enable when has_projects ((@custom_guest_user1 : Group/139))
+- [16] enable when read_package_registry_deploy_token ((@custom_guest_user1 : Group/139))
+- [16] enable when write_package_registry_deploy_token ((@custom_guest_user1 : Group/139))
+  [21] prevent when all?(ip_enforcement_prevents_access, ~owner, ~auditor) ((@custom_guest_user1 : Group/139))
+
+=> #<DeclarativePolicy::Runner::State:0x000000015c665050
+ @called_conditions=
+  #<Set: {
+   "/dp/condition/GroupPolicy/public_group/Group:139",
+   "/dp/condition/GroupPolicy/logged_in_viewable/User:83,Group:139",
+   "/dp/condition/BasePolicy/admin/User:83",
+   "/dp/condition/BasePolicy/auditor/User:83",
+   "/dp/condition/GroupPolicy/user_banned_from_group/User:83,Group:139",
+   "/dp/condition/GroupPolicy/needs_new_sso_session/User:83,Group:139",
+   "/dp/condition/GroupPolicy/guest/User:83,Group:139",
+   "/dp/condition/GroupPolicy/has_projects/User:83,Group:139",
+   "/dp/condition/GroupPolicy/read_package_registry_deploy_token/User:83,Group:139",
+   "/dp/condition/GroupPolicy/write_package_registry_deploy_token/User:83,Group:139"}>,
+ @enabled=false,
+ @prevented=true>
+```
+
+#### Testing that individual policies are equivalent
+
+You can use the `'equivalent project policy abilities'` shared example to ensure
+that 2 project policy abilities are equivalent for all project visibility levels
+and access levels.
+
+Example:
+
+```ruby
+  context 'when refactoring read_pipeline_schedule and read_pipeline' do
+    let(:old_policy) { :read_pipeline_schedule }
+    let(:new_policy) { :read_pipeline }
+
+    it_behaves_like 'equivalent policies'
+  end
+```

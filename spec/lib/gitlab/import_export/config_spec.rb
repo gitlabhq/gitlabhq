@@ -84,7 +84,7 @@ RSpec.describe Gitlab::ImportExport::Config, feature_category: :importers do
         EOF
       end
 
-      let(:config_hash) { YAML.safe_load(config, [Symbol]) }
+      let(:config_hash) { YAML.safe_load(config, permitted_classes: [Symbol]) }
 
       before do
         allow_any_instance_of(described_class).to receive(:parse_yaml) do
