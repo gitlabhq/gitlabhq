@@ -133,7 +133,7 @@ Now run a new pipeline for the `main` branch, by pushing a change or manually ru
 
 ## 5. Create a tag
 
-As the pipeline for `main` is green, we can now [create our first tag](../../../user/project/repository/tags/index.md#tags-sample-workflow): `v1.0`.
+As the pipeline for `main` is green, we can now [create our first tag](../../../user/project/repository/tags/index.md#create-a-tag): `v1.0`.
 
 As soon as the `v1.0` tag is created, we see a tag pipeline start.
 This time the pipeline also has a `create-release` job in the `release` stage:

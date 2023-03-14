@@ -22,6 +22,6 @@ class ClusterSerializer < BaseSerializer
   end
 
   def represent_status(resource)
-    represent(resource, { only: [:status, :status_reason, :applications] })
+    represent(resource, { only: [:status, :status_reason] })
   end
 end

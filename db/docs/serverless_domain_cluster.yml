@@ -1,7 +1,5 @@
 ---
 table_name: serverless_domain_cluster
-classes:
-- Serverless::DomainCluster
 feature_categories:
 - kubernetes_management
 description: "(Deprecated) A custom domain for a GitLab managed Knative installation"

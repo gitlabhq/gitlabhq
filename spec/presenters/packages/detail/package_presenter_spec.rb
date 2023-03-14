@@ -89,8 +89,7 @@ RSpec.describe ::Packages::Detail::PackagePresenter do
       let_it_be(:package) { create(:npm_package, :with_build, project: project) }
 
       let_it_be(:package_file_build_info) do
-        create(:package_file_build_info, package_file: package.package_files.first,
-                                         pipeline: package.pipelines.first)
+        create(:package_file_build_info, package_file: package.package_files.first, pipeline: package.pipelines.first)
       end
 
       it 'returns details with package_file pipeline' do

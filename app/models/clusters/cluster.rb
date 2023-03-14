@@ -363,12 +363,6 @@ module Clusters
       end
     end
 
-    def serverless_domain
-      strong_memoize(:serverless_domain) do
-        self.application_knative&.serverless_domain_cluster
-      end
-    end
-
     def prometheus_adapter
       integration_prometheus
     end

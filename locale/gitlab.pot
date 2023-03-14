@@ -4254,7 +4254,7 @@ msgstr ""
 msgid "Already blocked"
 msgstr ""
 
-msgid "Already have login and password?"
+msgid "Already have an account?"
 msgstr ""
 
 msgid "Also called \"Issuer\" or \"Relying party trust identifier\""
@@ -41984,6 +41984,9 @@ msgstr ""
 msgid "SubscriptionTable|Last invoice"
 msgstr ""
 
+msgid "SubscriptionTable|Last updated at %{seatsLastUpdated} UTC"
+msgstr ""
+
 msgid "SubscriptionTable|Loading subscriptions"
 msgstr ""
 
@@ -42042,6 +42045,9 @@ msgid "SubscriptionTable|Trial end date"
 msgstr ""
 
 msgid "SubscriptionTable|Trial start date"
+msgstr ""
+
+msgid "SubscriptionTable|Up to date"
 msgstr ""
 
 msgid "SubscriptionTable|Usage"

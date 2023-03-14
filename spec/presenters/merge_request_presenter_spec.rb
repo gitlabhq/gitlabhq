@@ -125,9 +125,12 @@ RSpec.describe MergeRequestPresenter do
     let_it_be(:issue_b) { create(:issue, project: project) }
 
     let_it_be(:resource) do
-      create(:merge_request,
-             source_project: project, target_project: project,
-             description: "Fixes #{issue_a.to_reference} Related #{issue_b.to_reference}")
+      create(
+        :merge_request,
+        source_project: project,
+        target_project: project,
+        description: "Fixes #{issue_a.to_reference} Related #{issue_b.to_reference}"
+      )
     end
 
     before_all do

@@ -17,10 +17,6 @@ RSpec.describe Clusters::Applications::Knative do
   include_examples 'cluster application version specs', :clusters_applications_knative
   include_examples 'cluster application initial status specs'
 
-  describe 'associations' do
-    it { is_expected.to have_one(:serverless_domain_cluster).class_name('::Serverless::DomainCluster').with_foreign_key('clusters_applications_knative_id').inverse_of(:knative) }
-  end
-
   describe 'default values' do
     it { expect(subject.version).to eq(described_class::VERSION) }
   end
@@ -247,14 +243,6 @@ RSpec.describe Clusters::Applications::Knative do
     it 'returns the domain scoped to available domains' do
       expect(subject).to receive(:available_domains).and_call_original
       expect(subject.find_available_domain(domain.id)).to eq(domain)
-    end
-  end
-
-  describe '#pages_domain' do
-    let!(:sdc) { create(:serverless_domain_cluster, knative: knative) }
-
-    it 'returns the the associated pages domain' do
-      expect(knative.reload.pages_domain).to eq(sdc.pages_domain)
     end
   end
 end

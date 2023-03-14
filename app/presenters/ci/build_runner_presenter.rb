@@ -34,9 +34,7 @@ module Ci
 
     def runner_variables
       variables
-        .sort_and_expand_all(keep_undefined: true,
-                             expand_file_refs: false,
-                             expand_raw_refs: false)
+        .sort_and_expand_all(keep_undefined: true, expand_file_refs: false, expand_raw_refs: false)
         .to_runner_variables
     end
 

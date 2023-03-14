@@ -453,6 +453,22 @@ Composition API allows you to place the logic in the `<script>` section of the c
 </script>
 ```
 
+### `v-bind` limitations
+
+Avoid using `v-bind="$attrs"` unless absolutely necessary. You might need this when
+developing a native control wrapper. (This is a good candidate for a `gitlab-ui` component.)
+In any other cases, always prefer using `props` and explicit data flow.
+
+Using `v-bind="$attrs"` leads to:
+
+1. A loss in component's contract. The `props` were designed specifically
+   to address this problem.
+1. High maintenance cost for each component in the tree. `v-bind="$attrs"` is specifically
+   hard to debug because you must scan the whole hierarchy of components to understand
+   the data flow.
+1. Problems during migration to Vue 3. `$attrs` in Vue 3 include event listeners which
+   could cause unexpected side-effects after Vue 3 migration is completed.
+
 ### Aim to have one API style per component
 
 When adding `setup()` property to Vue component, consider refactoring it to Composition API entirely. It's not always feasible, especially for large components, but we should aim to have one API style per component for readability and maintainability.

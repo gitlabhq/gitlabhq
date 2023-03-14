@@ -15,7 +15,6 @@ class PagesDomain < ApplicationRecord
 
   belongs_to :project
   has_many :acme_orders, class_name: "PagesDomainAcmeOrder"
-  has_many :serverless_domain_clusters, class_name: 'Serverless::DomainCluster', inverse_of: :pages_domain
 
   after_initialize :set_verification_code
   before_validation :clear_auto_ssl_failure, unless: :auto_ssl_enabled
