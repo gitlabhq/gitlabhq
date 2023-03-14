@@ -23,9 +23,6 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
         status: 200,
         body: Gitlab::Json.dump(tags: ['test_tag']),
         headers: { 'Content-Type' => 'application/json' })
-
-    # for the user callback: namespace_move_dir_allowed
-    allow(ContainerRegistry::GitlabApiClient).to receive(:one_project_with_container_registry_tag).and_return(nil)
   end
 
   it_behaves_like 'having unique enum values'
@@ -1243,6 +1240,8 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
       end
 
       before do
+        allow(group).to receive(:first_project_with_container_registry_tags).and_return(nil)
+
         group.parent = test_group
         group.save!
       end

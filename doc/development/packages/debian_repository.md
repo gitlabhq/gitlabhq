@@ -116,7 +116,7 @@ sequenceDiagram
     ProcessChangesService->>+ExtractChangesMetadataService: Extract changesmetadata
     ExtractChangesMetadataService->>+ExtractMetadataService: Extract file metadata
     ExtractMetadataService->>+ParseDebian822Service: run `dpkg --field` to get control file
-    ExtractMetadataService->>+ExtractDebMetadataService: If .deb or .udeb
+    ExtractMetadataService->>+ExtractDebMetadataService: If .deb, .udeb or ddeb
     ExtractDebMetadataService->>+ParseDebian822Service: run `dpkg --field` to get control file
     ParseDebian822Service-->>-ExtractDebMetadataService: Parse String as Debian RFC822 control data format
     ExtractDebMetadataService-->>-ExtractMetadataService: Return the parsed control file
@@ -127,7 +127,7 @@ sequenceDiagram
     loop process files listed in .changes
         ProcessChangesService->>+ExtractMetadataService: Process file
         ExtractMetadataService->>+ParseDebian822Service: run `dpkg --field` to get control file
-        ExtractMetadataService->>+ExtractDebMetadataService: If .deb or .udeb
+        ExtractMetadataService->>+ExtractDebMetadataService: If .deb, .udeb or ddeb
         ExtractDebMetadataService->>+ParseDebian822Service: run `dpkg --field` to get control file
         ParseDebian822Service-->>-ExtractDebMetadataService: Parse String as Debian RFC822 control data format
         ExtractDebMetadataService-->>-ExtractMetadataService: Return the parsed control file

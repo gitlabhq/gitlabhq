@@ -11368,6 +11368,9 @@ msgstr ""
 msgid "Content parsed with %{link}."
 msgstr ""
 
+msgid "ContentEditor|For %{quickActionsDocsLinkStart}quick actions%{quickActionsDocsLinkEnd}, type %{keyboardStart}/%{keyboardEnd}."
+msgstr ""
+
 msgid "ContentEditor|You have to provide a renderMarkdown function or a custom serializer"
 msgstr ""
 
@@ -46516,6 +46519,9 @@ msgstr ""
 msgid "UsageQuotas|An error occurred loading the transfer data. Please refresh the page to try again."
 msgstr ""
 
+msgid "UsageQuotas|Namespace transfer data used"
+msgstr ""
+
 msgid "UsageQuotas|The project-level storage statistics for the Container Registry are directional only and do not include savings for instance-wide deduplication."
 msgstr ""
 
@@ -47770,9 +47776,6 @@ msgstr ""
 msgid "View logs"
 msgstr ""
 
-msgid "View markdown"
-msgstr ""
-
 msgid "View milestones"
 msgstr ""
 
@@ -47803,9 +47806,6 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "View replaced file @ "
-msgstr ""
-
-msgid "View rich text"
 msgstr ""
 
 msgid "View seat usage"
@@ -47841,7 +47841,13 @@ msgstr ""
 msgid "Viewing commit"
 msgstr ""
 
+msgid "Viewing markdown"
+msgstr ""
+
 msgid "Viewing projects and designs data from a primary site is not possible when using a unified URL. Visit the secondary site directly. %{geo_help_url}"
+msgstr ""
+
+msgid "Viewing rich text"
 msgstr ""
 
 msgid "Violation"

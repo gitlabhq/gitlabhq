@@ -25,8 +25,8 @@
             .gl-p-2.gl-mb-3{ style: 'background: #fff' }
               = raw @qr_code
           .col-md-8
-            .gl-card
-              .gl-card-body
+            = render Pajamas::CardComponent.new do |c|
+              - c.body do
                 %p.gl-mt-0.gl-mb-3.gl-font-weight-bold
                   = _("Can't scan the code?")
                 %p.gl-mt-0.gl-mb-3

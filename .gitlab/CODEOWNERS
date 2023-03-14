@@ -16,6 +16,7 @@ GITALY_SERVER_VERSION @project_278964_bot6 @gitlab-org/maintainers/rails-backend
 /.gitlab/merge_request_templates/*.md
 /doc/*.md
 /doc/**/*.md
+/doc/**/*.jpg
 /doc/**/*.png
 /data/deprecations/*.yml
 /data/removals/**/*.yml

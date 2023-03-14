@@ -37,13 +37,8 @@ Some features cause breaking changes when they are removed.
 **{rss}** **To be notified of upcoming breaking changes**,
 add this URL to your RSS feed reader: `https://about.gitlab.com/breaking-changes.xml`
 
-DISCLAIMER:
-This page contains information related to upcoming products, features, and functionality.
-It is important to note that the information presented is for informational purposes only.
-Please do not rely on this information for purchasing or planning purposes.
-As with all projects, the items mentioned on this page are subject to change or delay.
-The development, release, and timing of any products, features, or functionality remain at the
-sole discretion of GitLab Inc.
+You can also view [REST API](https://docs.gitlab.com/ee/api/rest/deprecations.html)
+and [GraphQL](https://docs.gitlab.com/ee/api/graphql/removed_items.html) deprecations/removals.
 <div class="js-deprecation-filters"></div>
 <% if milestones.any? -%>
   <%- milestones.each do |milestone| %>
@@ -77,3 +72,11 @@ Review the details carefully before upgrading.
 
 Deprecated features scheduled for removal will be listed here, sorted by GitLab milestone.
 <% end -%>
+
+DISCLAIMER:
+This page contains information related to upcoming products, features, and functionality.
+It is important to note that the information presented is for informational purposes only.
+Please do not rely on this information for purchasing or planning purposes.
+As with all projects, the items mentioned on this page are subject to change or delay.
+The development, release, and timing of any products, features, or functionality remain at the
+sole discretion of GitLab Inc.

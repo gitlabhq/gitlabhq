@@ -53,11 +53,6 @@ export default {
       required: true,
       type: Boolean,
     },
-    showInlineEditButton: {
-      type: Boolean,
-      required: false,
-      default: true,
-    },
     enableAutocomplete: {
       type: Boolean,
       required: false,
@@ -498,7 +493,6 @@ export default {
         :can-update="canUpdate"
         :title-html="state.titleHtml"
         :title-text="state.titleText"
-        :show-inline-edit-button="showInlineEditButton"
       />
 
       <gl-intersection-observer

@@ -5,7 +5,7 @@ class DependencyProxy::FileUploader < GitlabUploader
   include ObjectStorage::Concern
 
   before :cache, :set_content_type
-  storage_options Gitlab.config.dependency_proxy
+  storage_location :dependency_proxy
 
   alias_method :upload, :model
 

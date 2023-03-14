@@ -18,7 +18,7 @@ RSpec.describe Packages::Debian::ProcessChangesService, feature_category: :packa
         expect { subject.execute }
           .to change { Packages::Package.count }.from(1).to(2)
           .and not_change { Packages::PackageFile.count }
-          .and change { incoming.package_files.count }.from(7).to(0)
+          .and change { incoming.package_files.count }.from(8).to(0)
           .and change { package_file.debian_file_metadatum&.reload&.file_type }.from('unknown').to('changes')
 
         created_package = Packages::Package.last

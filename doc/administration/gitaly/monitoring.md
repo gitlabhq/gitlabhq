@@ -89,9 +89,9 @@ gitaly_streamcache_filestore_removed_total{dir="/var/opt/gitlab/git-data/reposit
 gitaly_streamcache_index_entries{dir="/var/opt/gitlab/git-data/repositories/+gitaly/PackObjectsCache"} 1
 ```
 
-## Useful queries
+## Queries
 
-The following are useful queries for monitoring Gitaly:
+The following are some queries for monitoring Gitaly:
 
 - Use the following Prometheus query to observe the
   [type of connections](configure_gitaly.md#enable-tls-support) Gitaly is serving a production
@@ -133,8 +133,8 @@ The following are useful queries for monitoring Gitaly:
 
 ## Monitor Gitaly Cluster
 
-To monitor Gitaly Cluster (Praefect), you can use these Prometheus metrics. There are two separate metrics
-endpoints from which metrics can be scraped:
+To monitor Gitaly Cluster (Praefect), you can use these Prometheus metrics. Two separate metrics endpoints are
+available from which metrics can be scraped:
 
 - The default `/metrics` endpoint.
 - `/db_metrics`, which contains metrics that require database queries.

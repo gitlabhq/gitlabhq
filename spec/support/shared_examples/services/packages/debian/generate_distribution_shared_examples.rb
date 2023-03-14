@@ -165,7 +165,7 @@ RSpec.shared_examples 'Generate Debian Distribution and component files' do
 
         expected_main_sources_content = <<~EOF
         Package: #{package.name}
-        Binary: sample-dev, libsample0, sample-udeb
+        Binary: sample-dev, libsample0, sample-udeb, sample-ddeb
         Version: #{package.version}
         Maintainer: #{package_files[1].debian_fields['Maintainer']}
         Build-Depends: debhelper-compat (= 13)
@@ -174,13 +174,13 @@ RSpec.shared_examples 'Generate Debian Distribution and component files' do
         Format: 3.0 (native)
         Files:
          #{package_files[1].file_md5} #{package_files[1].size} #{package_files[1].file_name}
-         d5ca476e4229d135a88f9c729c7606c9 864 sample_1.2.3~alpha2.tar.xz
+         #{package_files[0].file_md5} 964 #{package_files[0].file_name}
         Checksums-Sha256:
          #{package_files[1].file_sha256} #{package_files[1].size} #{package_files[1].file_name}
-         40e4682bb24a73251ccd7c7798c0094a649091e5625d6a14bcec9b4e7174f3da 864 sample_1.2.3~alpha2.tar.xz
+         #{package_files[0].file_sha256} 964 #{package_files[0].file_name}
         Checksums-Sha1:
          #{package_files[1].file_sha1} #{package_files[1].size} #{package_files[1].file_name}
-         c5cfc111ea924842a89a06d5673f07dfd07de8ca 864 sample_1.2.3~alpha2.tar.xz
+         #{package_files[0].file_sha1} 964 #{package_files[0].file_name}
         Homepage: #{package_files[1].debian_fields['Homepage']}
         Section: misc
         Priority: extra

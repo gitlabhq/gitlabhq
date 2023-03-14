@@ -290,7 +290,7 @@ class User < ApplicationRecord
   validate  :check_password_weakness, if: :encrypted_password_changed?
 
   validates :namespace, presence: true
-  validate :namespace_move_dir_allowed, if: :username_changed?
+  validate :namespace_move_dir_allowed, if: :username_changed?, unless: :new_record?
 
   validate :unique_email, if: :email_changed?
   validate :notification_email_verified, if: :notification_email_changed?

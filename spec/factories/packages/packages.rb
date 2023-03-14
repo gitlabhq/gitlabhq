@@ -91,6 +91,7 @@ FactoryBot.define do
           create :debian_package_file, :deb, evaluator.file_metadatum_trait, package: package
           create :debian_package_file, :deb_dev, evaluator.file_metadatum_trait, package: package
           create :debian_package_file, :udeb, evaluator.file_metadatum_trait, package: package
+          create :debian_package_file, :ddeb, evaluator.file_metadatum_trait, package: package
           create :debian_package_file, :buildinfo, evaluator.file_metadatum_trait, package: package
           create :debian_package_file, :changes, evaluator.file_metadatum_trait, package: package
         end

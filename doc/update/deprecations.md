@@ -37,13 +37,8 @@ Some features cause breaking changes when they are removed.
 **{rss}** **To be notified of upcoming breaking changes**,
 add this URL to your RSS feed reader: `https://about.gitlab.com/breaking-changes.xml`
 
-DISCLAIMER:
-This page contains information related to upcoming products, features, and functionality.
-It is important to note that the information presented is for informational purposes only.
-Please do not rely on this information for purchasing or planning purposes.
-As with all projects, the items mentioned on this page are subject to change or delay.
-The development, release, and timing of any products, features, or functionality remain at the
-sole discretion of GitLab Inc.
+You can also view [REST API](https://docs.gitlab.com/ee/api/rest/deprecations.html)
+and [GraphQL](https://docs.gitlab.com/ee/api/graphql/removed_items.html) deprecations/removals.
 <div class="js-deprecation-filters"></div>
 
 <div class="announcement-milestone">
@@ -744,20 +739,6 @@ In some cases, like when a downstream pipeline had the `passed with warnings` st
 
 <div class="deprecation removal-160 breaking-change">
 
-### Approvers and Approver Group fields in Merge Request Approval API
-
-Planned removal: GitLab <span class="removal-milestone">16.0</span> <span class="removal-date"></span>
-
-WARNING:
-This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
-Review the details carefully before upgrading.
-
-The endpoint to get the configuration of approvals for a project returns empty arrays for `approvers` and `approval_groups`. These fields were deprecated in favor of the endpoint to [get project-level rules](https://docs.gitlab.com/ee/api/merge_request_approvals.html#get-project-level-rules) for a merge request. API users are encouraged to switch to this endpoint instead. These fields will be removed from the `get configuration` endpoint in v5 of the GitLab REST API.
-
-</div>
-
-<div class="deprecation removal-160 breaking-change">
-
 ### Auto DevOps no longer provisions a PostgreSQL database by default
 
 Planned removal: GitLab <span class="removal-milestone">16.0</span> <span class="removal-date"></span>
@@ -1338,20 +1319,6 @@ and will be moved to the JiHu GitLab codebase.
 
 </div>
 
-<div class="deprecation removal-160 breaking-change">
-
-### Single merge request changes API endpoint
-
-Planned removal: GitLab <span class="removal-milestone">16.0</span> <span class="removal-date"></span>
-
-WARNING:
-This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
-Review the details carefully before upgrading.
-
-The endpoint to get [changes from a single merge request](https://docs.gitlab.com/ee/api/merge_requests.html#get-single-merge-request-changes) has been deprecated in favor the [list merge request diffs](https://docs.gitlab.com/ee/api/merge_requests.html#list-merge-request-diffs) endpoint. API users are encouraged to switch to the new diffs endpoint instead. The `changes from a single merge request` endpoint will be removed in v5 of the GitLab REST API.
-
-</div>
-
 <div class="deprecation removal-170 breaking-change">
 
 ### Support for REST API endpoints that reset runner registration tokens
@@ -1566,20 +1533,6 @@ as part of the new [GitLab Runner token architecture](https://docs.gitlab.com/ee
 The work is planned in [this epic](https://gitlab.com/groups/gitlab-org/-/epics/7633).
 
 From GitLab 17.0 and later, the methods to register runners introduced by the new GitLab Runner token architecture will be the only supported methods.
-
-</div>
-
-<div class="deprecation removal-160 breaking-change">
-
-### merge_status API field
-
-Planned removal: GitLab <span class="removal-milestone">16.0</span> <span class="removal-date"></span>
-
-WARNING:
-This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
-Review the details carefully before upgrading.
-
-The `merge_status` field in the [merge request API](https://docs.gitlab.com/ee/api/merge_requests.html#merge-status) has been deprecated in favor of the `detailed_merge_status` field which more correctly identifies all of the potential statuses that a merge request can be in. API users are encouraged to use the new `detailed_merge_status` field instead. The `merge_status` field will be removed in v5 of the GitLab REST API.
 
 </div>
 </div>
@@ -2384,29 +2337,6 @@ To align with this change, API calls to list external status checks will also re
 
 </div>
 
-<div class="deprecation removal-160 breaking-change">
-
-### GraphQL API Runner will not accept `status` filter values of `active` or `paused`
-
-Planned removal: GitLab <span class="removal-milestone">16.0</span> <span class="removal-date"></span>
-
-WARNING:
-This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
-Review the details carefully before upgrading.
-
-The GitLab Runner GraphQL endpoints will stop accepting `paused` or `active` as a status value in GitLab 16.0.
-
-A runner's status will only relate to runner contact status, such as: `online`, `offline`.
-Status values `paused` or `active` will no longer be accepted and will be replaced by the `paused` query parameter.
-
-When checking for paused runners, API users are advised to specify `paused: true` as the query parameter.
-When checking for active runners, specify `paused: false`.
-
-The REST API endpoints will follow in the same direction in a future REST v5 API, however the new `paused`
-status value can be used in place of `active` since GitLab 14.8.
-
-</div>
-
 <div class="deprecation removal-150 breaking-change">
 
 ### GraphQL ID and GlobalID compatibility
@@ -2561,37 +2491,6 @@ This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_g
 Review the details carefully before upgrading.
 
 The `instanceStatisticsMeasurements` GraphQL node has been renamed to `usageTrendsMeasurements` in 13.10 and the old field name has been marked as deprecated. To fix the existing GraphQL queries, replace `instanceStatisticsMeasurements` with `usageTrendsMeasurements`.
-
-</div>
-
-<div class="deprecation removal-160 breaking-change">
-
-### REST and GraphQL API Runner usage of `active` replaced by `paused`
-
-Planned removal: GitLab <span class="removal-milestone">16.0</span> <span class="removal-date"></span>
-
-WARNING:
-This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
-Review the details carefully before upgrading.
-
-Occurrences of the `active` identifier in the GitLab Runner GraphQL API endpoints will be
-renamed to `paused` in GitLab 16.0.
-
-- For the GraphQL API, this change affects:
-  - the `CiRunner` property
-  - the `RunnerUpdateInput` input type for the `runnerUpdate` mutation
-  - the `runners` and `Group.runners` queries
-- In v4 of the REST API, starting in GitLab 14.8, you can use the `paused` property in place of `active`
-- In v5 of the REST API, this change will affect:
-  - endpoints taking or returning `active` property, such as:
-    - `GET /runners`
-    - `GET /runners/all`
-    - `GET /runners/:id` / `PUT /runners/:id`
-    - `PUT --form "active=false" /runners/:runner_id`
-    - `GET /projects/:id/runners` / `POST /projects/:id/runners`
-    - `GET /groups/:id/runners`
-
-The 16.0 release of GitLab Runner will start using the `paused` property when registering runners.
 
 </div>
 
@@ -3234,20 +3133,6 @@ Currently, test coverage visualizations in GitLab only support Cobertura reports
 only supported report file in 15.0, but this is the first step towards GitLab supporting other report types.
 
 </div>
-
-<div class="deprecation removal-160 breaking-change">
-
-### merged_by API field
-
-Planned removal: GitLab <span class="removal-milestone">16.0</span> <span class="removal-date"></span>
-
-WARNING:
-This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
-Review the details carefully before upgrading.
-
-The `merged_by` field in the [merge request API](https://docs.gitlab.com/ee/api/merge_requests.html#list-merge-requests) has been deprecated in favor of the `merge_user` field which more correctly identifies who merged a merge request when performing actions (merge when pipeline succeeds, add to merge train) other than a simple merge. API users are encouraged to use the new `merge_user` field instead. The `merged_by` field will be removed in v5 of the GitLab REST API.
-
-</div>
 </div>
 
 <div class="announcement-milestone">
@@ -3756,3 +3641,11 @@ The OAuth implicit grant authorization flow will be removed in our next major re
 
 </div>
 </div>
+
+DISCLAIMER:
+This page contains information related to upcoming products, features, and functionality.
+It is important to note that the information presented is for informational purposes only.
+Please do not rely on this information for purchasing or planning purposes.
+As with all projects, the items mentioned on this page are subject to change or delay.
+The development, release, and timing of any products, features, or functionality remain at the
+sole discretion of GitLab Inc.

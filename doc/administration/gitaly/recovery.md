@@ -74,7 +74,7 @@ Cluster:
 ### Unavailable repositories
 
 > - From GitLab 13.0 through 14.0, repositories became read-only if they were outdated on the primary but fully up to date on a healthy secondary. `dataloss` sub-command displays read-only repositories by default through these versions.
-> - Since GitLab 14.1, Praefect contains more responsive failover logic which immediately fails over to one of the fully up to date secondaries rather than placing the repository in read-only mode. Since GitLab 14.1, the `dataloss` sub-command displays repositories which are unavailable due to having no fully up to date copies on healthy Gitaly nodes.
+> - From GitLab 14.1, Praefect contains more responsive failover logic which immediately fails over to one of the fully up to date secondaries rather than placing the repository in read-only mode. From GitLab 14.1, the `dataloss` sub-command displays repositories which are unavailable due to having no fully up to date copies on healthy Gitaly nodes.
 
 A repository is unavailable if all of its up to date replicas are unavailable. Unavailable repositories are
 not accessible through Praefect to prevent serving stale data that may break automated tooling.
@@ -501,7 +501,7 @@ The command validates that all entries:
 
 - Are formatted correctly and contain required fields.
 - Correspond to a valid Git repository on disk.
-- Are not currently tracked in the Praefect tracking database.
+- Are not tracked in the Praefect tracking database.
 
 If any entry fails these checks, the command aborts prior to attempting to track a repository.
 

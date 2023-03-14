@@ -7,8 +7,8 @@ module Analytics
       include Gitlab::Utils::StrongMemoize
 
       included do
-        belongs_to :start_event_label, class_name: 'GroupLabel', optional: true
-        belongs_to :end_event_label, class_name: 'GroupLabel', optional: true
+        belongs_to :start_event_label, class_name: 'Label', optional: true
+        belongs_to :end_event_label, class_name: 'Label', optional: true
         belongs_to :stage_event_hash, class_name: 'Analytics::CycleAnalytics::StageEventHash', optional: true
 
         validates :name, presence: true
@@ -119,10 +119,11 @@ module Analytics
       end
 
       def label_available_for_namespace?(label_id)
-        subject = is_a?(::Analytics::CycleAnalytics::Stage) ? namespace : project.group
+        subject = namespace.is_a?(Namespaces::ProjectNamespace) ? namespace.project.group : namespace
         return unless subject
 
-        LabelsFinder.new(nil, { group_id: subject.id, include_ancestor_groups: true, only_group_labels: true })
+        LabelsFinder.new(nil,
+          { group_id: subject.id, include_ancestor_groups: true, only_group_labels: namespace.is_a?(Group) })
           .execute(skip_authorization: true)
           .id_in(label_id)
           .exists?

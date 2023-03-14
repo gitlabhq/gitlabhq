@@ -111,4 +111,4 @@ URL to use SSH.
 ### Observe Git protocol version of connections
 
 For information on observing the Git protocol versions are being used in a production environment,
-see the [relevant documentation](gitaly/monitoring.md#useful-queries).
+see the [relevant documentation](gitaly/monitoring.md#queries).

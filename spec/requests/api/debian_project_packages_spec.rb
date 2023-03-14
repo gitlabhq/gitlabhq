@@ -123,6 +123,7 @@ RSpec.describe API::DebianProjectPackages, feature_category: :package_registry d
         'sample_1.2.3~alpha2.dsc'             | /^Format: 3.0 \(native\)/
         'libsample0_1.2.3~alpha2_amd64.deb'   | /^!<arch>/
         'sample-udeb_1.2.3~alpha2_amd64.udeb' | /^!<arch>/
+        'sample-ddeb_1.2.3~alpha2_amd64.ddeb' | /^!<arch>/
         'sample_1.2.3~alpha2_amd64.buildinfo' | /Build-Tainted-By/
         'sample_1.2.3~alpha2_amd64.changes'   | /urgency=medium/
       end
@@ -177,7 +178,7 @@ RSpec.describe API::DebianProjectPackages, feature_category: :package_registry d
             let(:extra_params) { { distribution: distribution.codename, component: 'main' } }
 
             it_behaves_like "Debian packages upload request", :bad_request,
-              /^file_name Only debs and udebs can be directly added to a distribution$/
+              /^file_name Only debs, udebs and ddebs can be directly added to a distribution$/
           end
         end
       end

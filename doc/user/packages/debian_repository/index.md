@@ -141,6 +141,7 @@ Once built, several files are created:
 
 - `.deb` files: the binary packages
 - `.udeb` files: lightened .deb files, used for Debian-Installer (if needed)
+- `.ddeb` files: Ubuntu debug .deb files (if needed)
 - `.tar.{gz,bz2,xz,...}` files: Source files
 - `.dsc` file: Source metadata, and list of source files (with hashes)
 - `.buildinfo` file: Used for Reproducible builds (optional)

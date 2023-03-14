@@ -142,7 +142,7 @@ with secure tokens as you complete the setup process.
 1. `PRAEFECT_EXTERNAL_TOKEN`: repositories hosted on your Praefect cluster can
    only be accessed by Gitaly clients that carry this token.
 1. `PRAEFECT_INTERNAL_TOKEN`: this token is used for replication traffic inside
-   your Praefect cluster. This is distinct from `PRAEFECT_EXTERNAL_TOKEN`
+   your Praefect cluster. This token is distinct from `PRAEFECT_EXTERNAL_TOKEN`
    because Gitaly clients must not be able to access internal nodes of the
    Praefect cluster directly; that could lead to data loss.
 1. `PRAEFECT_SQL_PASSWORD`: this password is used by Praefect to connect to
@@ -326,8 +326,8 @@ reads distribution caching is enabled by configuration
 
 #### Use PgBouncer
 
-To reduce PostgreSQL resource consumption, we recommend setting up and configuring
-[PgBouncer](https://www.pgbouncer.org/) in front of the PostgreSQL instance. However, PgBouncer isn't required because
+To reduce PostgreSQL resource consumption, you should set up and configure [PgBouncer](https://www.pgbouncer.org/) in
+front of the PostgreSQL instance. However, PgBouncer isn't required because
 Praefect makes a low number of connections. If you choose to use PgBouncer, you can use the same PgBouncer instance for
 both the GitLab application database and the Praefect database.
 
@@ -360,12 +360,12 @@ It is not supported in `transaction` pool mode (`pool_mode = transaction`).
 To configure the additional connection, you must either:
 
 - Configure a new PgBouncer database that uses to the same PostgreSQL database endpoint,
-  but with different pool mode. That is, `pool_mode = session`.
+  but with different pool mode (`pool_mode = session`).
 - Connect Praefect directly to PostgreSQL and bypass PgBouncer.
 
 #### Configure a new PgBouncer database with `pool_mode = session`
 
-We recommend using PgBouncer with `session` pool mode. You can use the
+You should use PgBouncer with `session` pool mode. You can use the
 [bundled PgBouncer](../postgresql/pgbouncer.md) or use an external PgBouncer and
 [configure it manually](https://www.pgbouncer.org/config.html).
 
@@ -454,8 +454,8 @@ configuration option is set. For more details, consult the PgBouncer documentati
 
 #### Configure Praefect to connect directly to PostgreSQL
 
-As an alternative to configuring PgBouncer with `session` pool mode, Praefect can be configured to use different connection parameters for direct access
-to PostgreSQL. This is the connection that supports the `LISTEN` feature.
+As an alternative to configuring PgBouncer with `session` pool mode, Praefect can be configured to use different
+connection parameters for direct access to PostgreSQL. This connection supports the `LISTEN` feature.
 
 An example of Praefect configuration that bypasses PgBouncer and directly connects to PostgreSQL:
 
@@ -561,7 +561,7 @@ Updates to example must be made at:
    ```
 
 1. Configure a strong authentication token for **Praefect** by editing
-   `/etc/gitlab/gitlab.rb`. This is needed by clients outside the cluster
+   `/etc/gitlab/gitlab.rb`, which is needed by clients outside the cluster
    (like GitLab Shell) to communicate with the Praefect cluster:
 
    ```ruby
@@ -633,7 +633,7 @@ Updates to example must be made at:
 
    NOTE:
    When adding additional Gitaly nodes to a virtual storage, all storage names
-   within that virtual storage must be unique. Additionally, all Gitaly node
+   in that virtual storage must be unique. Additionally, all Gitaly node
    addresses referenced in the Praefect configuration must be unique.
 
    ```ruby
@@ -894,10 +894,9 @@ because we rely on Praefect to route operations correctly.
 
 Particular attention should be shown to:
 
-- The `gitaly['auth_token']` configured in this section must match the `token`
-  value under `praefect['configuration'][:virtual_storage][<index>][:node][<index>][:token]` on the Praefect node. This was set
-  in the [previous section](#praefect). This document uses the placeholder
-  `PRAEFECT_INTERNAL_TOKEN` throughout.
+- The `gitaly['auth_token']` configured in this section must match the `token` value under
+  `praefect['configuration'][:virtual_storage][<index>][:node][<index>][:token]` on the Praefect node. This value was
+  set in the [previous section](#praefect). This document uses the placeholder `PRAEFECT_INTERNAL_TOKEN` throughout.
 - The storage names in `git_data_dirs` configured in this section must match the
   storage names under `praefect['configuration'][:virtual_storage]` on the Praefect node. This
   was set in the [previous section](#praefect). This document uses `gitaly-1`,
@@ -950,7 +949,7 @@ For more information on Gitaly server configuration, see our
    ```
 
 1. Configure a strong `auth_token` for **Gitaly** by editing
-   `/etc/gitlab/gitlab.rb`. This is needed by clients to communicate with
+   `/etc/gitlab/gitlab.rb`, which is needed by clients to communicate with
    this Gitaly nodes. Typically, this token is the same for all Gitaly
    nodes.
 
@@ -990,7 +989,7 @@ For more information on Gitaly server configuration, see our
 
    Instead of configuring `git_data_dirs` uniquely for each Gitaly node, it is
    often easier to have include the configuration for all Gitaly nodes on every
-   Gitaly node. This is supported because the Praefect `virtual_storages`
+   Gitaly node. You can do this because the Praefect `virtual_storages`
    configuration maps each storage name (such as `gitaly-1`) to a specific node, and
    requests are routed accordingly. This means every Gitaly node in your fleet
    can share the same configuration.
@@ -1061,8 +1060,8 @@ Big-IP LTM, and Citrix Net Scaler. This documentation outlines what ports
 and protocols you need configure.
 
 NOTE:
-We recommend the equivalent of HAProxy `leastconn` load-balancing strategy because long-running operations (for example,
-clones) keep some connections open for extended periods.
+You should use the equivalent of HAProxy `leastconn` load-balancing strategy because long-running operations (for
+example, clones) keep some connections open for extended periods.
 
 | LB Port | Backend Port | Protocol |
 |:--------|:-------------|:---------|
@@ -1076,7 +1075,7 @@ To complete this section you need:
 - [Configured Gitaly nodes](#gitaly)
 
 The Praefect cluster needs to be exposed as a storage location to the GitLab
-application. This is done by updating the `git_data_dirs`.
+application, which is done by updating the `git_data_dirs`.
 
 Particular attention should be shown to:
 
@@ -1426,7 +1425,7 @@ praefect['configuration'] = {
 
 WARNING:
 Deletions were disabled by default prior to GitLab 15.9 due to a race condition with repository renames
-that can cause incorrect deletions. This is especially prominent in Geo instances as Geo performs more renames
+that can cause incorrect deletions, which is especially prominent in Geo instances as Geo performs more renames
 than instances without Geo. In GitLab 15.0 to 15.5, you should enable deletions only if the [`gitaly_praefect_generated_replica_paths` feature flag](index.md#praefect-generated-replica-paths-gitlab-150-and-later) is enabled. The feature flag was removed in GitLab 15.6 making deletions always safe to enable.
 
 By default, the worker deletes invalid metadata records. It also logs the deleted records and outputs Prometheus
@@ -1476,10 +1475,10 @@ The output includes the number of replicas that were marked unverified.
 
 ## Automatic failover and primary election strategies
 
-Praefect regularly checks the health of each Gitaly node. This is used to automatically fail over
+Praefect regularly checks the health of each Gitaly node, which is used to automatically fail over
 to a newly-elected primary Gitaly node if the current primary node is found to be unhealthy.
 
-We recommend using [repository-specific primary nodes](#repository-specific-primary-nodes). This is
+You should use [repository-specific primary nodes](#repository-specific-primary-nodes). This is
 [the only available election strategy](https://gitlab.com/gitlab-org/gitaly/-/issues/3574) from GitLab 14.0.
 
 ### Repository-specific primary nodes

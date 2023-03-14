@@ -66,7 +66,7 @@ for details.
 ### Client side gRPC logs
 
 Gitaly uses the [gRPC](https://grpc.io/) RPC framework. The Ruby gRPC
-client has its own log file which may contain useful information when
+client has its own log file which may contain helpful information when
 you are seeing Gitaly errors. You can control the log level of the
 gRPC client with the `GRPC_LOG_LEVEL` environment variable. The
 default level is `WARN`.
@@ -345,7 +345,7 @@ You might see the following in Gitaly and Praefect logs:
 }
 ```
 
-This is a gRPC call
+This information in the logs is a gRPC call
 [error response code](https://grpc.github.io/grpc/core/md_doc_statuscodes.html).
 
 If this error occurs, even though
@@ -544,9 +544,8 @@ To determine the primary node of a repository:
 - With legacy election strategies in GitLab 13.12 and earlier, the primary was the same for all repositories in a virtual storage.
   To determine the current primary Gitaly node for a specific virtual storage:
 
-  - Use the `Shard Primary Election` [Grafana chart](praefect.md#grafana) on the
+  - (Recommended) Use the `Shard Primary Election` [Grafana chart](praefect.md#grafana) on the
     [`Gitlab Omnibus - Praefect` dashboard](https://gitlab.com/gitlab-org/grafana-dashboards/-/blob/master/omnibus/praefect.json).
-    This is recommended.
   - If you do not have Grafana set up, use the following command on each host of each
     Praefect node:
 
@@ -669,7 +668,7 @@ However, the Praefect database tables are not created on initial reconfigure and
 errors that relations do not exist if either:
 
 - The `gitlab-ctl reconfigure` command isn't executed.
-- There are errors during the execution.
+- Errors occur during the execution.
 
 For example:
 

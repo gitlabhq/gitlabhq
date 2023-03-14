@@ -104,6 +104,7 @@ RSpec.describe API::DebianGroupPackages, feature_category: :package_registry do
         'sample_1.2.3~alpha2.dsc'             | /^Format: 3.0 \(native\)/
         'libsample0_1.2.3~alpha2_amd64.deb'   | /^!<arch>/
         'sample-udeb_1.2.3~alpha2_amd64.udeb' | /^!<arch>/
+        'sample-ddeb_1.2.3~alpha2_amd64.ddeb' | /^!<arch>/
         'sample_1.2.3~alpha2_amd64.buildinfo' | /Build-Tainted-By/
         'sample_1.2.3~alpha2_amd64.changes'   | /urgency=medium/
       end

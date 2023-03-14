@@ -26088,6 +26088,7 @@ Attributes for defining a CI/CD variable.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="complianceframeworkfiltersid"></a>`id` | [`ComplianceManagementFrameworkID`](#compliancemanagementframeworkid) | ID of the compliance framework. |
+| <a id="complianceframeworkfiltersnot"></a>`not` | [`NegatedComplianceFrameworkFilters`](#negatedcomplianceframeworkfilters) | Negated compliance framework filter input. |
 
 ### `ComplianceFrameworkInput`
 
@@ -26278,6 +26279,14 @@ Represents an escalation rule.
 | <a id="negatedboardissueinputreleasetag"></a>`releaseTag` | [`String`](#string) | Filter by release tag. |
 | <a id="negatedboardissueinputtypes"></a>`types` | [`[IssueType!]`](#issuetype) | Filter by the given issue types. |
 | <a id="negatedboardissueinputweight"></a>`weight` | [`String`](#string) | Filter by weight. |
+
+### `NegatedComplianceFrameworkFilters`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="negatedcomplianceframeworkfiltersid"></a>`id` | [`ComplianceManagementFrameworkID`](#compliancemanagementframeworkid) | ID of the compliance framework. |
 
 ### `NegatedEpicBoardIssueInput`
 

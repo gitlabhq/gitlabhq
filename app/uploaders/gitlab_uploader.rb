@@ -3,7 +3,7 @@
 class GitlabUploader < CarrierWave::Uploader::Base
   include ContentTypeWhitelist::Concern
 
-  class_attribute :options
+  class_attribute :storage_location_identifier
 
   PROTECTED_METHODS = %i(filename cache_dir work_dir store_dir).freeze
 
@@ -11,8 +11,13 @@ class GitlabUploader < CarrierWave::Uploader::Base
 
   class << self
     # DSL setter
-    def storage_options(options)
-      self.options = options
+    def storage_location(location)
+      self.storage_location_identifier = location
+      _ = options # Ensures that we have a valid storage_location_identifier
+    end
+
+    def options
+      ObjectStorage::Config::LOCATIONS.fetch(storage_location_identifier)
     end
 
     def root
@@ -41,7 +46,7 @@ class GitlabUploader < CarrierWave::Uploader::Base
     end
   end
 
-  storage_options Gitlab.config.uploads
+  storage_location :uploads
 
   delegate :base_dir, :file_storage?, to: :class
 
@@ -49,6 +54,10 @@ class GitlabUploader < CarrierWave::Uploader::Base
 
   def initialize(model, mounted_as = nil, **uploader_context)
     super(model, mounted_as)
+  end
+
+  def options
+    self.class.options
   end
 
   def file_cache_storage?

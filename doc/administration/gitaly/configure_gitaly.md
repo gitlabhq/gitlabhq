@@ -146,7 +146,7 @@ To configure the _Gitaly token_, edit `/etc/gitlab/gitlab.rb`:
    gitaly['auth_token'] = 'abc123secret'
    ```
 
-There are two ways to configure the _GitLab Shell token_.
+Configure the _GitLab Shell token_ in one of two ways.
 
 Method 1 (recommended):
 
@@ -523,9 +523,6 @@ To disable Gitaly on a GitLab server:
 
 ## Enable TLS support
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/22602) in GitLab 11.8.
-> - [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/3160) in GitLab 13.6, outgoing TLS connections to GitLab provide client certificates if configured.
-
 Gitaly supports TLS encryption. To communicate with a Gitaly instance that listens for secure
 connections, use the `tls://` URL scheme in the `gitaly_address` of the corresponding
 storage entry in the GitLab configuration.
@@ -695,7 +692,7 @@ To configure Gitaly with TLS:
 ### Observe type of Gitaly connections
 
 For information on observing the type of Gitaly connections being served, see the
-[relevant documentation](monitoring.md#useful-queries).
+[relevant documentation](monitoring.md#queries).
 
 ## `gitaly-ruby`
 
@@ -710,14 +707,13 @@ Gitaly Go process. Some examples of things that are implemented in `gitaly-ruby`
 - RPCs that deal with wikis.
 - RPCs that create commits on behalf of a user, such as merge commits.
 
-We recommend:
+Recommended settings:
 
 - At least 300 MB memory per worker.
 - No more than one worker per core.
 
 NOTE:
-`gitaly-ruby` is planned to be eventually removed. To track progress, see the
-[Remove the Gitaly-Ruby sidecar](https://gitlab.com/groups/gitlab-org/-/epics/2862) epic.
+[Epic 2862](https://gitlab.com/groups/gitlab-org/-/epics/2862) proposes to remove `gitaly-ruby`.
 
 ### Configure number of `gitaly-ruby` workers
 
@@ -836,7 +832,7 @@ performance.
 
 You can use control groups (cgroups) in Linux to impose limits on how much memory and CPU can be consumed by Gitaly processes.
 See the [`cgroups` Linux man page](https://man7.org/linux/man-pages/man7/cgroups.7.html) for more information.
-cgroups can be useful for protecting the system against unexpected resource exhaustion because of over consumption of memory and CPU.
+cgroups can help protect the system against unexpected resource exhaustion because of over consumption of memory and CPU.
 
 Some Git operations can consume notable resources up to the point of exhaustion in situations such as:
 
@@ -972,14 +968,14 @@ This strategy has two main benefits:
   to 3 child cgroups can concurrently burst up to their max. In general, all
   1000 cgroups would use much less than the 20 GB.
 
-## Background Repository Optimization
+## Background repository optimization
 
 Empty directories and unneeded configuration settings may accumulate in a repository and
 slow down Git operations. Gitaly can schedule a daily background task with a maximum duration
 to clean up these items and improve performance.
 
 WARNING:
-This is an experimental feature and may place significant load on the host while running.
+Background repository optimization is an experimental feature and may place significant load on the host while running.
 Make sure to schedule this during off-peak hours and keep the duration short (for example, 30-60 minutes).
 
 **For Omnibus GitLab**
@@ -1025,7 +1021,7 @@ server" and "Gitaly client" refers to the same machine.
 ### Verify authentication monitoring
 
 Before rotating a Gitaly authentication token, verify that you can
-[monitor the authentication behavior](monitoring.md#useful-queries) of your GitLab installation using
+[monitor the authentication behavior](monitoring.md#queries) of your GitLab installation using
 Prometheus.
 
 You can then continue the rest of the procedure.
@@ -1107,16 +1103,10 @@ result as you did at the start. For example:
 
 ## Pack-objects cache **(FREE SELF)**
 
-> - [Introduced](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/372) in GitLab 13.11.
-> - It's enabled on GitLab.com.
-> - It's recommended for production use.
-
 [Gitaly](index.md), the service that provides storage for Git
 repositories, can be configured to cache a short rolling window of Git
 fetch responses. This can reduce server load when your server receives
 lots of CI fetch traffic.
-
-### Overview
 
 The pack-objects cache wraps `git pack-objects`, an internal part of
 Git that gets invoked indirectly via the PostUploadPack and
@@ -1154,14 +1144,14 @@ disk write IO, it is off by default.
 
 ### Configure the cache
 
-These are the configuration settings for the pack-objects cache. Each
-setting is discussed in greater detail below.
+These configuration settings are available for the pack-objects cache. Each setting is discussed in greater detail
+below.
 
-|Setting|Default|Description|
-|:---|:---|:---|
-|`enabled`|`false`|Turns on the cache. When off, Gitaly runs a dedicated `git pack-objects` process for each request. |
-|`dir`|`<PATH TO FIRST STORAGE>/+gitaly/PackObjectsCache`|Local directory where cache files get stored.|
-|`max_age`|`5m` (5 minutes)|Cache entries older than this get evicted and removed from disk.|
+| Setting   | Default                                            | Description                                                                                        |
+|:----------|:---------------------------------------------------|:---------------------------------------------------------------------------------------------------|
+| `enabled` | `false`                                            | Turns on the cache. When off, Gitaly runs a dedicated `git pack-objects` process for each request. |
+| `dir`     | `<PATH TO FIRST STORAGE>/+gitaly/PackObjectsCache` | Local directory where cache files get stored.                                                      |
+| `max_age` | `5m` (5 minutes)                                   | Cache entries older than this get evicted and removed from disk.                                   |
 
 In `/etc/gitlab/gitlab.rb`, set:
 
@@ -1173,8 +1163,8 @@ gitaly['pack_objects_cache_enabled'] = true
 
 #### `enabled` defaults to `false`
 
-The cache is disabled by default. This is because in some cases, it
-can create an [extreme increase](https://gitlab.com/gitlab-com/gl-infra/production/-/issues/4010#note_534564684)
+The cache is disabled by default because in some cases, it can create an
+[extreme increase](https://gitlab.com/gitlab-com/gl-infra/production/-/issues/4010#note_534564684)
 in the number of bytes written to disk. On GitLab.com, we have verified
 that our repository storage disks can handle this extra workload, but
 we felt we cannot assume this is true everywhere.
@@ -1217,7 +1207,7 @@ The amount of space required depends on:
 - The size of the `max_age` cache eviction window.
 
 If your users pull 100 MB/s and you use a 5 minute window, then on average you have
-`5*60*100MB = 30GB` of data in your cache directory. This is an expected average, not
+`5*60*100MB = 30GB` of data in your cache directory. This average is an expected average, not
 a guarantee. Peak size may exceed this average.
 
 #### Cache eviction window `max_age`
@@ -1227,11 +1217,9 @@ cache hit and the average amount of storage used by cache files.
 Entries older than `max_age` get evicted from the in-memory metadata
 store, and deleted from disk.
 
-Eviction does not interfere with ongoing requests, so it is OK
-for `max_age` to be less than the time it takes to do a fetch over a
-slow connection. This is because Unix filesystems do not truly delete
-a file until all processes that are reading the deleted file have
-closed it.
+Eviction does not interfere with ongoing requests. It is OK for `max_age` to be less than the time it takes to do a
+fetch over a slow connection because Unix filesystems do not truly delete a file until all processes that are reading
+the deleted file have closed it.
 
 ### Observe the cache
 

@@ -105,7 +105,6 @@ export default {
       data-testid="work-item-add-comment"
       class="gl-mb-3"
       autofocus
-      use-bottom-toolbar
       @input="setCommentText"
       @keydown.meta.enter="$emit('submitForm', commentText)"
       @keydown.ctrl.enter="$emit('submitForm', commentText)"

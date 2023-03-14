@@ -28,7 +28,7 @@ module Packages
       end
 
       def file_type_basic
-        %i[dsc deb udeb buildinfo changes].each do |format|
+        %i[dsc deb udeb buildinfo changes ddeb].each do |format|
           return format if package_file.file_name.end_with?(".#{format}")
         end
 
@@ -51,7 +51,7 @@ module Packages
       end
 
       def file_type_debian?
-        file_type == :deb || file_type == :udeb
+        file_type == :deb || file_type == :udeb || file_type == :ddeb
       end
 
       def file_type_meta?

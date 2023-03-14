@@ -369,26 +369,6 @@ describe('Issuable output', () => {
     });
   });
 
-  describe('show inline edit button', () => {
-    it('should render by default', () => {
-      expect(findTitle().props('showInlineEditButton')).toBe(true);
-    });
-
-    it('should render if showInlineEditButton', async () => {
-      wrapper.setProps({ showInlineEditButton: true });
-
-      await nextTick();
-      expect(findTitle().props('showInlineEditButton')).toBe(true);
-    });
-
-    it('should not render if showInlineEditButton is false', async () => {
-      wrapper.setProps({ showInlineEditButton: false });
-
-      await nextTick();
-      expect(findTitle().props('showInlineEditButton')).toBe(false);
-    });
-  });
-
   describe('updateStoreState', () => {
     it('should make a request and update the state of the store', () => {
       const data = { foo: 1 };

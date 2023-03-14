@@ -272,7 +272,6 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
           expect.objectContaining({
             renderMarkdown: expect.any(Function),
             uploadsPath: window.uploads_path,
-            useBottomToolbar: false,
             markdown: value,
           }),
         );

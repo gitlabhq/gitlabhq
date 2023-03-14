@@ -318,7 +318,7 @@ DEPENDENCIES
   faraday-retry (~> 2.1)
   fog-core (= 2.1.0)
   fog-google (~> 1.19)
-  gitlab-qa (~> 9, >= 9.1.1)
+  gitlab-qa (~> 9, >= 9.1.2)
   influxdb-client (~> 2.9)
   knapsack (~> 4.0)
   nokogiri (~> 1.14, >= 1.14.2)

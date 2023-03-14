@@ -801,35 +801,18 @@ RSpec.describe Namespace, feature_category: :subgroups do
   describe '#any_project_has_container_registry_tags?' do
     subject { namespace.any_project_has_container_registry_tags? }
 
-    let!(:project_without_registry) { create(:project, namespace: namespace) }
+    let(:project) { create(:project, namespace: namespace) }
 
-    context 'without tags' do
-      it { is_expected.to be_falsey }
+    it 'returns true if there is a project with container registry tags' do
+      expect(namespace).to receive(:first_project_with_container_registry_tags).and_return(project)
+
+      expect(subject).to be_truthy
     end
 
-    context 'with tags' do
-      before do
-        repositories = create_list(:container_repository, 3)
-        create(:project, namespace: namespace, container_repositories: repositories)
+    it 'returns false if there is no project with container registry tags' do
+      expect(namespace).to receive(:first_project_with_container_registry_tags).and_return(nil)
 
-        stub_container_registry_config(enabled: true)
-      end
-
-      it 'finds tags' do
-        stub_container_registry_tags(repository: :any, tags: ['tag'])
-
-        is_expected.to be_truthy
-      end
-
-      it 'does not cause N+1 query in fetching registries' do
-        stub_container_registry_tags(repository: :any, tags: [])
-        control_count = ActiveRecord::QueryRecorder.new { namespace.any_project_has_container_registry_tags? }.count
-
-        other_repositories = create_list(:container_repository, 2)
-        create(:project, namespace: namespace, container_repositories: other_repositories)
-
-        expect { namespace.any_project_has_container_registry_tags? }.not_to exceed_query_limit(control_count + 1)
-      end
+      expect(subject).to be_falsey
     end
   end
 
@@ -837,10 +820,10 @@ RSpec.describe Namespace, feature_category: :subgroups do
     let(:container_repository) { create(:container_repository) }
     let!(:project) { create(:project, namespace: namespace, container_repositories: [container_repository]) }
 
-    context 'not on gitlab.com' do
+    context 'when Gitlab API is not supported' do
       before do
         stub_container_registry_config(enabled: true)
-        allow(Gitlab).to receive(:com?).and_return(false)
+        allow(ContainerRegistry::GitlabApiClient).to receive(:supports_gitlab_api?).and_return(false)
       end
 
       it 'returns the project' do
@@ -854,11 +837,21 @@ RSpec.describe Namespace, feature_category: :subgroups do
 
         expect(namespace.first_project_with_container_registry_tags).to be_nil
       end
+
+      it 'does not cause N+1 query in fetching registries' do
+        stub_container_registry_tags(repository: :any, tags: [])
+        control_count = ActiveRecord::QueryRecorder.new { namespace.any_project_has_container_registry_tags? }.count
+
+        other_repositories = create_list(:container_repository, 2)
+        create(:project, namespace: namespace, container_repositories: other_repositories)
+
+        expect { namespace.first_project_with_container_registry_tags }.not_to exceed_query_limit(control_count + 1)
+      end
     end
 
-    context 'on gitlab.com' do
+    context 'when Gitlab API is supported' do
       before do
-        allow(Gitlab).to receive(:com?).and_return(true)
+        allow(ContainerRegistry::GitlabApiClient).to receive(:supports_gitlab_api?).and_return(true)
         stub_container_registry_config(enabled: true, api_url: 'http://container-registry', key: 'spec/fixtures/x509_certificate_pk.key')
       end
 
@@ -886,6 +879,16 @@ RSpec.describe Namespace, feature_category: :subgroups do
           stub_container_registry_tags(repository: :any, tags: nil)
 
           expect(namespace.first_project_with_container_registry_tags).to be_nil
+        end
+
+        it 'does not cause N+1 query in fetching registries' do
+          stub_container_registry_tags(repository: :any, tags: [])
+          control_count = ActiveRecord::QueryRecorder.new { namespace.any_project_has_container_registry_tags? }.count
+
+          other_repositories = create_list(:container_repository, 2)
+          create(:project, namespace: namespace, container_repositories: other_repositories)
+
+          expect { namespace.first_project_with_container_registry_tags }.not_to exceed_query_limit(control_count + 1)
         end
       end
     end
@@ -1162,6 +1165,7 @@ RSpec.describe Namespace, feature_category: :subgroups do
 
           allow(namespace).to receive(:path_was).and_return(namespace.path)
           allow(namespace).to receive(:path).and_return('new_path')
+          allow(namespace).to receive(:first_project_with_container_registry_tags).and_return(project)
         end
 
         it 'raises an error about not movable project' do

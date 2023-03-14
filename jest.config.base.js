@@ -204,5 +204,10 @@ module.exports = (path, options = {}) => {
       url: TEST_HOST,
     },
     testRunner: 'jest-jasmine2',
+    globals: {
+      '@vue/vue2-jest': {
+        experimentalCSSCompile: false,
+      },
+    },
   };
 };

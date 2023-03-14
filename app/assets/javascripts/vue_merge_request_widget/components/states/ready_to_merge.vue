@@ -11,7 +11,7 @@ import {
   GlTooltipDirective,
   GlSkeletonLoader,
 } from '@gitlab/ui';
-import { isEmpty } from 'lodash';
+import { isEmpty, isNil } from 'lodash';
 import readyToMergeMixin from 'ee_else_ce/vue_merge_request_widget/mixins/ready_to_merge';
 import readyToMergeQuery from 'ee_else_ce/vue_merge_request_widget/queries/states/ready_to_merge.query.graphql';
 import { createAlert } from '~/alert';
@@ -86,7 +86,7 @@ export default {
           this.squashCommitMessage = this.state.defaultSquashCommitMessage;
         }
 
-        if (this.state.mergeTrainsCount !== null && this.state.mergeTrainsCount !== undefined) {
+        if (!isNil(this.state.mergeTrainsCount) && !this.pollingInterval) {
           this.initPolling();
         }
       },

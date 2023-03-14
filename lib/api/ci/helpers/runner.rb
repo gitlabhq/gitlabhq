@@ -53,8 +53,6 @@ module API
         end
 
         def current_runner_machine
-          return if Feature.disabled?(:create_runner_machine)
-
           strong_memoize(:current_runner_machine) do
             system_xid = params.fetch(:system_id, LEGACY_SYSTEM_XID)
             current_runner&.ensure_machine(system_xid) { |m| m.contacted_at = Time.current }

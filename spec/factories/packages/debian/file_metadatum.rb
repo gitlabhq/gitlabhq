@@ -30,7 +30,7 @@ FactoryBot.define do
         {
           'Format' => '3.0 (native)',
           'Source' => package_file.package.name,
-          'Binary' => 'sample-dev, libsample0, sample-udeb',
+          'Binary' => 'sample-dev, libsample0, sample-udeb, sample-ddeb',
           'Architecture' => 'any',
           'Version': package_file.package.version,
           'Maintainer' => "#{FFaker::Name.name} <#{FFaker::Internet.email}>",
@@ -39,12 +39,13 @@ FactoryBot.define do
           'Build-Depends' => 'debhelper-compat (= 13)',
           'Package-List' => <<~EOF.rstrip,
            libsample0 deb libs optional arch=any',
+           'sample-ddeb deb libs optional arch=any',
            sample-dev deb libdevel optional arch=any',
            sample-udeb udeb libs optional arch=any',
           EOF
-          'Checksums-Sha1' => "\nc5cfc111ea924842a89a06d5673f07dfd07de8ca 864 sample_1.2.3~alpha2.tar.xz",
-          'Checksums-Sha256' => "\n40e4682bb24a73251ccd7c7798c0094a649091e5625d6a14bcec9b4e7174f3da 864 sample_1.2.3~alpha2.tar.xz",
-          'Files' => "\nd5ca476e4229d135a88f9c729c7606c9 864 sample_1.2.3~alpha2.tar.xz"
+          'Checksums-Sha1' => "\n4a9cb2a7c77a68dc0fe54ba8ecef133a7c949e9d 964 sample_1.2.3~alpha2.tar.xz",
+          'Checksums-Sha256' => "\nc9d05185ca158bb804977fa9d7b922e8a0f644a2da41f99d2787dd61b1e2e2c5 964 sample_1.2.3~alpha2.tar.xz",
+          'Files' => "\nadc69e57cda38d9bb7c8d59cacfb6869 964 sample_1.2.3~alpha2.tar.xz"
         }
       end
     end
@@ -104,6 +105,13 @@ FactoryBot.define do
 
     trait(:udeb) do
       file_type { 'udeb' }
+      component { 'main' }
+      architecture { 'amd64' }
+      fields { { 'a': 'b' } }
+    end
+
+    trait(:ddeb) do
+      file_type { 'ddeb' }
       component { 'main' }
       architecture { 'amd64' }
       fields { { 'a': 'b' } }

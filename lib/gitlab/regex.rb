@@ -141,7 +141,7 @@ module Gitlab
       end
 
       def debian_direct_upload_filename_regex
-        @debian_direct_upload_filename_regex ||= %r{\A.*\.(deb|udeb)\z}o.freeze
+        @debian_direct_upload_filename_regex ||= %r{\A.*\.(deb|udeb|ddeb)\z}o.freeze
       end
 
       def helm_channel_regex

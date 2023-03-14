@@ -480,6 +480,37 @@ RSpec.describe User, feature_category: :user_profile do
           expect(user).to be_valid
         end
       end
+
+      context 'namespace_move_dir_allowed' do
+        context 'when the user is not a new record' do
+          before do
+            expect(user.new_record?).to eq(false)
+          end
+
+          it 'checks when username changes' do
+            expect(user).to receive(:namespace_move_dir_allowed)
+
+            user.username = 'newuser'
+            user.validate
+          end
+
+          it 'does not check if the username did not change' do
+            expect(user).not_to receive(:namespace_move_dir_allowed)
+            expect(user.username_changed?).to eq(false)
+
+            user.validate
+          end
+        end
+
+        it 'does not check if the user is a new record' do
+          user = User.new(username: 'newuser')
+
+          expect(user.new_record?).to eq(true)
+          expect(user).not_to receive(:namespace_move_dir_allowed)
+
+          user.validate
+        end
+      end
     end
 
     describe 'name' do

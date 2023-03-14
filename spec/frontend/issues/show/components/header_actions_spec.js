@@ -1,5 +1,5 @@
 import Vue, { nextTick } from 'vue';
-import { GlButton, GlDropdownItem, GlLink, GlModal } from '@gitlab/ui';
+import { GlDropdownItem, GlLink, GlModal, GlButton } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vuex from 'vuex';
 import { mockTracking } from 'helpers/tracking_helper';
@@ -9,12 +9,14 @@ import DeleteIssueModal from '~/issues/show/components/delete_issue_modal.vue';
 import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_selector.vue';
 import HeaderActions from '~/issues/show/components/header_actions.vue';
 import { ISSUE_STATE_EVENT_CLOSE, ISSUE_STATE_EVENT_REOPEN } from '~/issues/show/constants';
+import issuesEventHub from '~/issues/show/event_hub';
 import promoteToEpicMutation from '~/issues/show/queries/promote_to_epic.mutation.graphql';
 import * as urlUtility from '~/lib/utils/url_utility';
 import eventHub from '~/notes/event_hub';
 import createStore from '~/notes/stores';
 
 jest.mock('~/alert');
+jest.mock('~/issues/show/event_hub', () => ({ $emit: jest.fn() }));
 
 describe('HeaderActions component', () => {
   let dispatchEventSpy;
@@ -67,7 +69,8 @@ describe('HeaderActions component', () => {
     },
   };
 
-  const findToggleIssueStateButton = () => wrapper.findComponent(GlButton);
+  const findToggleIssueStateButton = () => wrapper.find(`[data-testid="toggle-button"]`);
+  const findEditButton = () => wrapper.find(`[data-testid="edit-button"]`);
 
   const findDropdownBy = (dataTestId) => wrapper.find(`[data-testid="${dataTestId}"]`);
   const findMobileDropdown = () => findDropdownBy('mobile-dropdown');
@@ -102,6 +105,9 @@ describe('HeaderActions component', () => {
         $apollo: {
           mutate: mutateMock,
         },
+      },
+      stubs: {
+        GlButton,
       },
     });
   };
@@ -237,6 +243,30 @@ describe('HeaderActions component', () => {
         it(`${isCloseIssueItemVisible ? 'shows' : 'hides'} the dropdown button`, () => {
           expect(findDropdown().exists()).toBe(isCloseIssueItemVisible);
         });
+      });
+    });
+
+    describe(`show edit button ${issueType}`, () => {
+      beforeEach(() => {
+        wrapper = mountComponent({
+          props: {
+            canUpdateIssue: true,
+            canCreateIssue: false,
+            isIssueAuthor: true,
+            issueType,
+            canReportSpam: false,
+            canPromoteToEpic: false,
+          },
+        });
+      });
+      it(`shows the edit button`, () => {
+        expect(findEditButton().exists()).toBe(true);
+      });
+
+      it('should trigger "open.form" event when clicked', async () => {
+        expect(issuesEventHub.$emit).not.toHaveBeenCalled();
+        await findEditButton().trigger('click');
+        expect(issuesEventHub.$emit).toHaveBeenCalledWith('open.form');
       });
     });
   });

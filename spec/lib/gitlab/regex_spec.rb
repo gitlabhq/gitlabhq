@@ -712,6 +712,7 @@ RSpec.describe Gitlab::Regex, feature_category: :tooling do
     it { is_expected.to match('libsample0_1.2.3~alpha2_amd64.deb') }
     it { is_expected.to match('sample-dev_1.2.3~binary_amd64.deb') }
     it { is_expected.to match('sample-udeb_1.2.3~alpha2_amd64.udeb') }
+    it { is_expected.to match('sample-ddeb_1.2.3~alpha2_amd64.ddeb') }
 
     it { is_expected.not_to match('sample_1.2.3~alpha2_amd64.buildinfo') }
     it { is_expected.not_to match('sample_1.2.3~alpha2_amd64.changes') }

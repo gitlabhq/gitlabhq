@@ -4,7 +4,7 @@ RSpec.shared_examples 'edits content using the content editor' do
   let(:content_editor_testid) { '[data-testid="content-editor"] [contenteditable].ProseMirror' }
 
   def switch_to_content_editor
-    click_button _('View rich text')
+    click_button _('Viewing markdown')
     click_button _('Rich text')
   end
 

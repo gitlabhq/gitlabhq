@@ -404,6 +404,23 @@ To enable global group memberships lock:
 1. Expand the **Visibility and access controls** section.
 1. Ensure the **Lock memberships to LDAP synchronization** checkbox is selected.
 
+### Change LDAP group synchronization settings management
+
+By default, group members with the Owner role can manage [LDAP group synchronization settings](../../../user/group/access_and_permissions.md#manage-group-memberships-via-ldap).
+
+GitLab administrators can remove this permission from group Owners:
+
+1. [Configure LDAP](index.md#configure-ldap).
+1. On the top bar, select **Main menu > Admin**.
+1. On the left sidebar, select **Settings > General**.
+1. Expand **Visibility and access controls**.
+1. Ensure the **Allow group owners to manage LDAP-related settings** checkbox is not checked.
+
+When **Allow group owners to manage LDAP-related settings** is disabled:
+
+- Group Owners cannot change LDAP synchronization settings for either top-level groups and subgroups.
+- Instance administrators can manage LDAP group synchronization settings on all groups on an instance.
+
 ### Adjust LDAP group sync schedule
 
 By default, GitLab runs a group sync process every hour, on the hour.

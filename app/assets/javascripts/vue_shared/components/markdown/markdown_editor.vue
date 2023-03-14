@@ -49,15 +49,15 @@ export default {
       required: false,
       default: false,
     },
-    useBottomToolbar: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
     autosaveKey: {
       type: String,
       required: false,
       default: null,
+    },
+    quickActionsDocsPath: {
+      type: String,
+      required: false,
+      default: '',
     },
   },
   data() {
@@ -157,6 +157,7 @@ export default {
       can-attach-file
       :textarea-value="markdown"
       :uploads-path="uploadsPath"
+      :quick-actions-docs-path="quickActionsDocsPath"
       show-content-editor-switcher
       class="bordered-box"
       @enableContentEditor="onEditingModeChange('contentEditor')"
@@ -181,8 +182,8 @@ export default {
         :render-markdown="renderMarkdown"
         :uploads-path="uploadsPath"
         :markdown="markdown"
+        :quick-actions-docs-path="quickActionsDocsPath"
         :autofocus="contentEditorAutofocused"
-        :use-bottom-toolbar="useBottomToolbar"
         @initialized="setEditorAsAutofocused"
         @change="updateMarkdownFromContentEditor"
         @keydown="$emit('keydown', $event)"

@@ -4,7 +4,7 @@ require 'spec_helper'
 require 'rspec-parameterized'
 require 'fog/core'
 
-RSpec.describe ObjectStorage::Config do
+RSpec.describe ObjectStorage::Config, feature_category: :shared do
   using RSpec::Parameterized::TableSyntax
 
   let(:region) { 'us-east-1' }

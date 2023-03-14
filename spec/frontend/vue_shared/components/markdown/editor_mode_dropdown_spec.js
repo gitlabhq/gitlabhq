@@ -22,9 +22,9 @@ describe('vue_shared/component/markdown/editor_mode_dropdown', () => {
       .at(0);
 
   describe.each`
-    modeText       | value         | dropdownText        | otherMode
-    ${'Rich text'} | ${'richText'} | ${'View markdown'}  | ${'Markdown'}
-    ${'Markdown'}  | ${'markdown'} | ${'View rich text'} | ${'Rich text'}
+    modeText       | value         | dropdownText           | otherMode
+    ${'Rich text'} | ${'richText'} | ${'Viewing rich text'} | ${'Markdown'}
+    ${'Markdown'}  | ${'markdown'} | ${'Viewing markdown'}  | ${'Rich text'}
   `('$modeText', ({ modeText, value, dropdownText, otherMode }) => {
     beforeEach(() => {
       createComponent({ value });

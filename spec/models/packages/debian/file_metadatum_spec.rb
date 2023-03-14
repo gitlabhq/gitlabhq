@@ -79,6 +79,7 @@ RSpec.describe Packages::Debian::FileMetadatum, type: :model do
     :debian_package_file      | :dsc       | true  | false | true
     :debian_package_file      | :deb       | true  | true  | true
     :debian_package_file      | :udeb      | true  | true  | true
+    :debian_package_file      | :ddeb      | true  | true  | true
     :debian_package_file      | :buildinfo | true  | false | true
     :debian_package_file      | :changes   | false | false | true
   end
