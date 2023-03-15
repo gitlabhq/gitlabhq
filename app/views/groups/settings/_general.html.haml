@@ -23,8 +23,7 @@
   = render_if_exists 'shared/repository_size_limit_setting', form: f, type: :group
 
   .form-group.gl-mt-3.gl-mb-6
-    .avatar-container.rect-avatar.s90
-      = group_icon(@group, alt: '', class: 'avatar group-avatar s90')
+    = render Pajamas::AvatarComponent.new(@group, size: 96, alt: '', class: 'gl-float-left gl-mr-5')
     = f.label :avatar, s_('Groups|Group avatar'), class: 'label-bold d-block'
     = render 'shared/choose_avatar_button', f: f
     - if @group.avatar?

@@ -58,6 +58,8 @@
 
   = yield :page_specific_javascripts
 
+  = webpack_bundle_tag 'super_sidebar' if show_super_sidebar?
+
   = webpack_controller_bundle_tags
 
   = yield :project_javascripts

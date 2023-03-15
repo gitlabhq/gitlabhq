@@ -21,16 +21,8 @@ describe('ImportErrorDetails', () => {
     });
   }
 
-  const originalApiVersion = gon.api_version;
-  beforeAll(() => {
-    gon.api_version = 'v4';
-  });
-
-  afterAll(() => {
-    gon.api_version = originalApiVersion;
-  });
-
   beforeEach(() => {
+    gon.api_version = 'v4';
     mock = new MockAdapter(axios);
   });
 

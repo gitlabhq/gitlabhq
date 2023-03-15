@@ -49,8 +49,6 @@ const forbiddenDataAttrs = defaultConfig.FORBID_ATTR;
 const acceptedDataAttrs = ['data-random', 'data-custom'];
 
 describe('~/lib/dompurify', () => {
-  let originalGon;
-
   it('uses local configuration when given', () => {
     // As dompurify uses a "Persistent Configuration", it might
     // ignore config, this check verifies we respect
@@ -104,13 +102,8 @@ describe('~/lib/dompurify', () => {
     ${'root'}     | ${rootGon}
     ${'absolute'} | ${absoluteGon}
   `('when gon contains $type icon urls', ({ type, gon }) => {
-    beforeAll(() => {
-      originalGon = window.gon;
+    beforeEach(() => {
       window.gon = gon;
-    });
-
-    afterAll(() => {
-      window.gon = originalGon;
     });
 
     it('allows no href attrs', () => {
@@ -137,12 +130,7 @@ describe('~/lib/dompurify', () => {
 
   describe('when gon does not contain icon urls', () => {
     beforeAll(() => {
-      originalGon = window.gon;
       window.gon = {};
-    });
-
-    afterAll(() => {
-      window.gon = originalGon;
     });
 
     it.each([...safeUrls.root, ...safeUrls.absolute, ...unsafeUrls])('sanitizes URL %s', (url) => {

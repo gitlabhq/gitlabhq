@@ -662,10 +662,6 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
     end
 
     context 'Network page' do
-      before do
-        stub_feature_flags(deny_all_requests_except_allowed: false)
-      end
-
       it 'changes Outbound requests settings' do
         visit network_admin_application_settings_path
 

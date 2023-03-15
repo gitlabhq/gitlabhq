@@ -22,10 +22,6 @@ describe('Sidebar date Widget', () => {
   let fakeApollo;
   const date = '2021-04-15';
 
-  window.gon = {
-    first_day_of_week: 1,
-  };
-
   const findEditableItem = () => wrapper.findComponent(SidebarEditableItem);
   const findPopoverIcon = () => wrapper.find('[data-testid="inherit-date-popover"]');
   const findDatePicker = () => wrapper.findComponent(GlDatepicker);
@@ -60,6 +56,10 @@ describe('Sidebar date Widget', () => {
       },
     });
   };
+
+  beforeEach(() => {
+    window.gon.first_day_of_week = 1;
+  });
 
   afterEach(() => {
     fakeApollo = null;

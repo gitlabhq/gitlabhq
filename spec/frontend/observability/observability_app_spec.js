@@ -51,7 +51,7 @@ describe('Observability root app', () => {
   describe('iframe src', () => {
     const TEST_USERNAME = 'test-user';
 
-    beforeAll(() => {
+    beforeEach(() => {
       gon.current_username = TEST_USERNAME;
     });
 

@@ -106,7 +106,7 @@ module TokenAuthenticatableStrategies
     end
 
     def matches_prefix?(instance, token)
-      !options[:ensure_prefix] || token.start_with?(prefix_for(instance))
+      !options[:require_prefix_for_validation] || token.start_with?(prefix_for(instance))
     end
 
     def token_set?(instance)

@@ -68,13 +68,8 @@ describe('BulkImportsHistoryApp', () => {
 
   const findLocalStorageSync = () => wrapper.findComponent(LocalStorageSync);
 
-  const originalApiVersion = gon.api_version;
-  beforeAll(() => {
+  beforeEach(() => {
     gon.api_version = 'v4';
-  });
-
-  afterAll(() => {
-    gon.api_version = originalApiVersion;
   });
 
   beforeEach(() => {

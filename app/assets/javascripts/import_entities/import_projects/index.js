@@ -73,7 +73,9 @@ export default function mountImportProjectsTable({
     store,
     apolloProvider,
     render(createElement) {
-      return createElement(Component, { props: { ...props, ...extraProps(mountElement.dataset) } });
+      // We are using attrs instead of props so root-level component with inheritAttrs
+      // will be able to pass them down
+      return createElement(Component, { attrs: { ...props, ...extraProps(mountElement.dataset) } });
     },
   });
 }

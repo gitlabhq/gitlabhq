@@ -1,19 +1,18 @@
-- deny_all_requests = Feature.enabled?(:deny_all_requests_except_allowed) && @application_setting.deny_all_requests_except_allowed
+- deny_all_requests = @application_setting.deny_all_requests_except_allowed
 
 = gitlab_ui_form_for @application_setting, url: network_admin_application_settings_path(anchor: 'js-outbound-settings'), html: { class: 'fieldset-form' } do |f|
   = form_errors(@application_setting)
 
   %fieldset
     .form-group
-      - if Feature.enabled?(:deny_all_requests_except_allowed)
-        = f.gitlab_ui_checkbox_component :deny_all_requests_except_allowed,
-            s_('OutboundRequests|Block all requests, except for IP addresses, IP ranges, and domain names defined in the allowlist'),
-            checkbox_options: { class: 'js-deny-all-requests' }
-        = render Pajamas::AlertComponent.new(variant: :warning,
-          dismissible: false,
-          alert_options: { class: "gl-mb-3 js-deny-all-requests-warning #{'gl-display-none' unless deny_all_requests}" }) do |c|
-          = c.body do
-            = s_('OutboundRequests|Webhooks and integrations might not work properly.')
+      = f.gitlab_ui_checkbox_component :deny_all_requests_except_allowed,
+          s_('OutboundRequests|Block all requests, except for IP addresses, IP ranges, and domain names defined in the allowlist'),
+          checkbox_options: { class: 'js-deny-all-requests' }
+      = render Pajamas::AlertComponent.new(variant: :warning,
+        dismissible: false,
+        alert_options: { class: "gl-mb-3 js-deny-all-requests-warning #{'gl-display-none' unless deny_all_requests}" }) do |c|
+        = c.body do
+          = s_('OutboundRequests|Webhooks and integrations might not work properly.')
       = f.gitlab_ui_checkbox_component :allow_local_requests_from_web_hooks_and_services,
           s_('OutboundRequests|Allow requests to the local network from webhooks and integrations'),
           checkbox_options: { disabled: deny_all_requests, class: 'js-allow-local-requests', data: { qa_selector: 'allow_requests_from_services_checkbox' } }

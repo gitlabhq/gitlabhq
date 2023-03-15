@@ -11,7 +11,6 @@ jest.mock('~/alert');
 
 describe('ProjectNamespace component', () => {
   let wrapper;
-  let originalGon;
 
   const data = {
     project: {
@@ -85,14 +84,8 @@ describe('ProjectNamespace component', () => {
     findListBox().vm.$emit('shown');
   };
 
-  beforeAll(() => {
-    originalGon = window.gon;
-    window.gon = { gitlab_url: gitlabUrl };
-  });
-
-  afterAll(() => {
-    window.gon = originalGon;
-    wrapper.destroy();
+  beforeEach(() => {
+    gon.gitlab_url = gitlabUrl;
   });
 
   describe('Initial state', () => {

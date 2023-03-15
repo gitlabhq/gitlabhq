@@ -1,6 +1,6 @@
 @import '../mixins_and_variables_and_functions';
 
-.geo-node-header-grid-columns {
+.geo-site-header-grid-columns {
   grid-template-columns: 1fr auto;
   grid-gap: $gl-spacing-scale-5;
 
@@ -9,7 +9,7 @@
   }
 }
 
-.geo-node-details-grid-columns {
+.geo-site-details-grid-columns {
   grid-gap: $gl-spacing-scale-5;
 
   @include media-breakpoint-up(lg) {
@@ -17,12 +17,12 @@
   }
 }
 
-.geo-node-core-details-grid-columns {
+.geo-site-core-details-grid-columns {
   grid-template-columns: 1fr 1fr;
   grid-gap: $gl-spacing-scale-5;
 }
 
-.geo-node-replication-details-grid-columns {
+.geo-site-replication-details-grid-columns {
   grid-template-columns: 1fr 1fr;
   grid-gap: 1rem;
 
@@ -31,7 +31,7 @@
   }
 }
 
-.geo-node-filter-grid-columns {
+.geo-site-filter-grid-columns {
   grid-template-columns: 1fr;
 
   @include media-breakpoint-up(md) {
@@ -39,7 +39,7 @@
   }
 }
 
-.geo-node-replication-counts-grid {
+.geo-site-replication-counts-grid {
   grid-template-columns: 2fr 1fr 1fr;
   grid-gap: 1rem;
 }

@@ -1,8 +1,0 @@
----
-name: deny_all_requests_except_allowed
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110599
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/390746
-milestone: '15.10'
-type: development
-group: group::integrations
-default_enabled: false

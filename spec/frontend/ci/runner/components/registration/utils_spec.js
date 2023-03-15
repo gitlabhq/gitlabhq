@@ -16,20 +16,10 @@ import {
 
 const REGISTRATION_TOKEN = 'REGISTRATION_TOKEN';
 const DESCRIPTION = 'RUNNER';
-const DUMMY_GON = {
-  gitlab_url: TEST_HOST,
-};
 
 describe('registration utils', () => {
-  let originalGon;
-
-  beforeAll(() => {
-    originalGon = window.gon;
-    window.gon = { ...DUMMY_GON };
-  });
-
-  afterAll(() => {
-    window.gon = originalGon;
+  beforeEach(() => {
+    window.gon.gitlab_url = TEST_HOST;
   });
 
   describe.each([LINUX_PLATFORM, MACOS_PLATFORM, WINDOWS_PLATFORM])(

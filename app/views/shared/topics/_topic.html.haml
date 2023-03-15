@@ -5,9 +5,8 @@
   = render Pajamas::CardComponent.new(card_options: { class: 'gl-mb-5' },
                                       body_options: { class: 'gl-display-flex gl-align-items-center' }) do |c|
     = c.body do
-      .avatar-container.rect-avatar.s40.gl-flex-shrink-0
-        = link_to detail_page_link do
-          = topic_icon(topic, class: "avatar s40")
+      = link_to detail_page_link do
+        = render Pajamas::AvatarComponent.new(topic, size: 48, alt: '', class: 'gl-mr-3')
       = link_to detail_page_link do
         - if topic.title_or_name.length > max_topic_title_length
           %h5.gl-str-truncated.has-tooltip{ title: topic.title_or_name }

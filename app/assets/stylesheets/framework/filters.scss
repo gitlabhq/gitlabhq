@@ -197,7 +197,7 @@
   min-width: 0;
   border: 1px solid $border-color;
   background-color: $white;
-  border-radius: $border-radius-default 0 0 $border-radius-default;
+  border-radius: $border-radius-default;
 
   @include media-breakpoint-down(sm) {
     flex: 1 1 auto;
@@ -263,6 +263,7 @@
   min-width: 0;
   height: 2rem;
   background-color: $input-bg;
+  border-radius: $border-radius-default;
 }
 
 .filtered-search-input-dropdown-menu {

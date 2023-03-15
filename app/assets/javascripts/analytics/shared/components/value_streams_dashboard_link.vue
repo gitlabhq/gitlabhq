@@ -18,7 +18,7 @@ export default {
 };
 </script>
 <template>
-  <div class="gl-display-flex gl-flex-direction-column">
+  <div class="gl-display-flex gl-flex-direction-column" data-testid="vsd-link">
     <div class="gl-display-flex gl-mb-2">
       <span>{{ $options.i18n.title }}</span>
     </div>

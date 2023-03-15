@@ -176,10 +176,12 @@ RSpec.describe ConfirmationsController, feature_category: :system_access do
           end
 
           it 'displays an error' do
+            alert_text = _('There was an error with the reCAPTCHA. Please solve the reCAPTCHA again.')
+
             perform_request
 
             expect(response).to render_template(:new)
-            expect(flash[:alert]).to include _('There was an error with the reCAPTCHA.')
+            expect(flash[:alert]).to include alert_text
           end
 
           it 'sets gon variables' do

@@ -23,7 +23,7 @@ RSpec.describe 'getting projects', feature_category: :projects do
       projects(includeSubgroups: #{include_subgroups}) {
         edges {
           node {
-            #{all_graphql_fields_for('Project', max_depth: 1)}
+            #{all_graphql_fields_for('Project', max_depth: 1, excluded: ['productAnalyticsState'])}
           }
         }
       }

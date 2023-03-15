@@ -335,8 +335,6 @@ module Gitlab
       end
 
       def deny_all_requests_except_allowed?(should_deny)
-        return unless Feature.enabled?(:deny_all_requests_except_allowed)
-
         should_deny.is_a?(Proc) ? should_deny.call : should_deny
       end
 

@@ -6,6 +6,7 @@ import { enableAutoDestroy } from '@vue/test-utils';
 import 'jquery';
 import Translate from '~/vue_shared/translate';
 import setWindowLocation from './set_window_location_helper';
+import { createGon } from './gon_helper';
 import { setGlobalDateToFakeDate } from './fake_date';
 import { TEST_HOST } from './test_constants';
 import * as customMatchers from './matchers';
@@ -71,8 +72,13 @@ beforeEach(() => {
   // eslint-disable-next-line jest/no-standalone-expect
   expect.hasAssertions();
 
-  // Reset the mocked window.location. This ensures tests don't interfere with
-  // each other, and removes the need to tidy up if it was changed for a given
-  // test.
+  // Reset globals: This ensures tests don't interfere with
+  // each other, and removes the need to tidy up if it was
+  // changed for a given test.
+
+  // Reset the mocked window.location
   setWindowLocation(TEST_HOST);
+
+  // Reset window.gon object
+  window.gon = createGon(window.IS_EE);
 });

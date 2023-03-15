@@ -65,7 +65,9 @@ tries to steal tokens from other jobs.
 
 You can control what projects a CI/CD job token can access to increase the
 job token's security. A job token might give extra permissions that aren't necessary
-to access specific private resources.
+to access specific private resources. The job token scope only controls access
+to private projects. If an accessed project is public or internal, token scoping does
+not apply.
 
 If a job token is leaked, it could potentially be used to access private data
 to the job token's user. By limiting the job token access scope, private data cannot
@@ -83,7 +85,8 @@ their `CI_JOB_TOKEN`.
 
 For example, project `A` can add project `B` to the inbound allowlist. CI/CD jobs
 in project `B` (the "allowed project") can now use their CI/CD job token to
-authenticate API calls to access project `A`.
+authenticate API calls to access project `A`. If project `A` is public or internal,
+the project can be accessed by project `B` without adding it to the inbound allowlist.
 
 By default the inbound allowlist of any project only includes itself.
 
@@ -159,8 +162,8 @@ limited only by the user's access permissions.
 For example, when the setting is enabled, jobs in a pipeline in project `A` have
 a `CI_JOB_TOKEN` scope limited to project `A`. If the job needs to use the token
 to make an API request to a private project `B`, then `B` must be added to the allowlist for `A`.
-If project `B` is public or internal, it's not required to be added to the allowlist.
-The job token scope is only for controlling access to private projects.
+If project `B` is public or internal, you do not need to add
+`B` to the allowlist to grant access.
 
 ### Configure the outbound job token scope
 

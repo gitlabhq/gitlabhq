@@ -35,16 +35,6 @@ RSpec.describe Gitlab::UrlBlocker, :stub_invalid_dns_only do
         it 'blocks the request' do
           expect { subject }.to raise_error(described_class::BlockedUrlError)
         end
-
-        context 'when the flag is disabled' do
-          before do
-            stub_feature_flags(deny_all_requests_except_allowed: false)
-          end
-
-          it 'does not block the request' do
-            expect { subject }.not_to raise_error
-          end
-        end
       end
 
       context 'when instance setting is not enabled' do

@@ -4792,9 +4792,6 @@ msgstr ""
 msgid "Analytics|Error while saving Dashboard!"
 msgstr ""
 
-msgid "Analytics|For being able to create your own dashboards please configure a special project to store your dashboards."
-msgstr ""
-
 msgid "Analytics|Host"
 msgstr ""
 
@@ -4838,6 +4835,9 @@ msgid "Analytics|Save"
 msgstr ""
 
 msgid "Analytics|Single Statistic"
+msgstr ""
+
+msgid "Analytics|To create your own dashboards, first configure a project to store your dashboards."
 msgstr ""
 
 msgid "Analytics|URL"
@@ -18581,7 +18581,7 @@ msgstr ""
 msgid "Geo|Does not match the primary storage configuration"
 msgstr ""
 
-msgid "Geo|Edit %{nodeType} site"
+msgid "Geo|Edit %{siteType} site"
 msgstr ""
 
 msgid "Geo|Edit Geo Site"
@@ -18764,7 +18764,7 @@ msgstr ""
 msgid "Geo|Remove"
 msgstr ""
 
-msgid "Geo|Remove %{nodeType} site"
+msgid "Geo|Remove %{siteType} site"
 msgstr ""
 
 msgid "Geo|Remove entry"
@@ -51195,6 +51195,9 @@ msgid "ciReport|There was an error creating the merge request. Please try again.
 msgstr ""
 
 msgid "ciReport|There was an error dismissing the vulnerability. Please try again."
+msgstr ""
+
+msgid "ciReport|There was an error dismissing the vulnerability: %{error}"
 msgstr ""
 
 msgid "ciReport|There was an error fetching the codequality report."

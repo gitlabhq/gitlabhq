@@ -112,7 +112,7 @@ class Project < ApplicationRecord
   add_authentication_token_field :runners_token,
                                  encrypted: -> { Feature.enabled?(:projects_tokens_optional_encryption) ? :optional : :required },
                                  format_with_prefix: :runners_token_prefix,
-                                 ensure_prefix: true
+                                 require_prefix_for_validation: true
 
   # Storage specific hooks
   after_initialize :use_hashed_storage

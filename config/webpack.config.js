@@ -182,6 +182,7 @@ function generateEntries() {
     sandboxed_mermaid: './lib/mermaid.js',
     redirect_listbox: './entrypoints/behaviors/redirect_listbox.js',
     sandboxed_swagger: './lib/swagger.js',
+    super_sidebar: './entrypoints/super_sidebar.js',
   };
 
   return Object.assign(manualEntries, incrementalCompiler.filterEntryPoints(autoEntries));

@@ -164,7 +164,7 @@ class Group < Namespace
   add_authentication_token_field :runners_token,
                                  encrypted: -> { Feature.enabled?(:groups_tokens_optional_encryption) ? :optional : :required },
                                  format_with_prefix: :runners_token_prefix,
-                                 ensure_prefix: true
+                                 require_prefix_for_validation: true
 
   after_create :post_create_hook
   after_create -> { create_or_load_association(:group_feature) }

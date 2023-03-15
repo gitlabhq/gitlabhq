@@ -23,7 +23,7 @@ RSpec.describe 'Topic show page', feature_category: :projects do
     it 'shows title, avatar and description as markdown' do
       expect(page).to have_content(topic.title)
       expect(page).not_to have_content(topic.name)
-      expect(page).to have_selector('.avatar-container > img.topic-avatar')
+      expect(page).to have_selector('.gl-avatar.gl-avatar-s64')
       expect(find('.topic-description')).to have_selector('p > strong')
       expect(find('.topic-description')).to have_selector('p > a[rel]')
       expect(find('.topic-description')).to have_selector('p > gl-emoji')

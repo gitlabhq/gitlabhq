@@ -16,10 +16,6 @@ import {
 } from '~/ci/runner/constants';
 import { runnerForRegistration } from '../../mock_data';
 
-const DUMMY_GON = {
-  gitlab_url: TEST_HOST,
-};
-
 const AUTH_TOKEN = 'AUTH_TOKEN';
 
 const mockRunner = {
@@ -29,7 +25,6 @@ const mockRunner = {
 
 describe('RegistrationInstructions', () => {
   let wrapper;
-  let originalGon;
 
   const findHeading = () => wrapper.find('h1');
   const findStepAt = (i) => extendedWrapper(wrapper.findAll('section').at(i));
@@ -48,13 +43,8 @@ describe('RegistrationInstructions', () => {
     });
   };
 
-  beforeAll(() => {
-    originalGon = window.gon;
-    window.gon = { ...DUMMY_GON };
-  });
-
-  afterAll(() => {
-    window.gon = originalGon;
+  beforeEach(() => {
+    window.gon.gitlab_url = TEST_HOST;
   });
 
   describe('renders heading', () => {

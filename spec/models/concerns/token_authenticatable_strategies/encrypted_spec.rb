@@ -45,12 +45,12 @@ RSpec.describe TokenAuthenticatableStrategies::Encrypted, feature_category: :sys
       end
     end
 
-    shared_examples 'finds the resource with/without setting ensure_prefix' do
+    shared_examples 'finds the resource with/without setting require_prefix_for_validation' do
       let(:standard_runner_token_prefix) { 'GR1348941' }
       it_behaves_like 'finds the resource'
 
-      context 'when a ensure_prefix is provided' do
-        let(:other_options) { { format_with_prefix: :format_with_prefix_method, ensure_prefix: true } }
+      context 'when a require_prefix_for_validation is provided' do
+        let(:other_options) { { format_with_prefix: :format_with_prefix_method, require_prefix_for_validation: true } }
 
         before do
           allow(resource).to receive(:format_with_prefix_method).and_return(standard_runner_token_prefix)
@@ -78,7 +78,7 @@ RSpec.describe TokenAuthenticatableStrategies::Encrypted, feature_category: :sys
           .and_return(resource)
       end
 
-      it_behaves_like 'finds the resource with/without setting ensure_prefix'
+      it_behaves_like 'finds the resource with/without setting require_prefix_for_validation'
     end
 
     context 'when encryption is optional' do
@@ -93,7 +93,7 @@ RSpec.describe TokenAuthenticatableStrategies::Encrypted, feature_category: :sys
           .and_return(resource)
       end
 
-      it_behaves_like 'finds the resource with/without setting ensure_prefix'
+      it_behaves_like 'finds the resource with/without setting require_prefix_for_validation'
 
       it 'uses insecure strategy when encrypted token cannot be found' do
         allow(subject.send(:insecure_strategy))
@@ -123,7 +123,7 @@ RSpec.describe TokenAuthenticatableStrategies::Encrypted, feature_category: :sys
           .and_return(resource)
       end
 
-      it_behaves_like 'finds the resource with/without setting ensure_prefix'
+      it_behaves_like 'finds the resource with/without setting require_prefix_for_validation'
     end
   end
 

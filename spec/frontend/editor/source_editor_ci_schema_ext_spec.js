@@ -17,7 +17,6 @@ describe('~/editor/editor_ci_config_ext', () => {
   let editor;
   let instance;
   let editorEl;
-  let originalGitlabUrl;
 
   const createMockEditor = ({ blobPath = defaultBlobPath } = {}) => {
     setHTMLFixture('<div id="editor"></div>');
@@ -31,16 +30,8 @@ describe('~/editor/editor_ci_config_ext', () => {
     instance.use({ definition: CiSchemaExtension });
   };
 
-  beforeAll(() => {
-    originalGitlabUrl = gon.gitlab_url;
-    gon.gitlab_url = TEST_HOST;
-  });
-
-  afterAll(() => {
-    gon.gitlab_url = originalGitlabUrl;
-  });
-
   beforeEach(() => {
+    gon.gitlab_url = TEST_HOST;
     createMockEditor();
   });
 

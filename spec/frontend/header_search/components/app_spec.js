@@ -350,8 +350,8 @@ describe('HeaderSearchApp', () => {
 
   describe('events', () => {
     beforeEach(() => {
-      createComponent();
       window.gon.current_username = MOCK_USERNAME;
+      createComponent();
     });
 
     describe('Header Search Input', () => {
@@ -459,8 +459,8 @@ describe('HeaderSearchApp', () => {
       ${2}                | ${'test1'}
     `('currentFocusedOption', ({ MOCK_INDEX, search }) => {
       beforeEach(() => {
-        createComponent({ search });
         window.gon.current_username = MOCK_USERNAME;
+        createComponent({ search });
         findHeaderSearchInput().vm.$emit('click');
       });
 
@@ -500,8 +500,8 @@ describe('HeaderSearchApp', () => {
       const MOCK_INDEX = 1;
 
       beforeEach(() => {
-        createComponent();
         window.gon.current_username = MOCK_USERNAME;
+        createComponent();
         findHeaderSearchInput().vm.$emit('click');
       });
 
