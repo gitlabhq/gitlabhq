@@ -10,12 +10,12 @@ import {
   TIMELINE_EVENT_TAGS,
   timelineEventTagsI18n,
 } from '~/issues/show/components/incidents/constants';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { useFakeDate } from 'helpers/fake_date';
 
 Vue.use(VueApollo);
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 const fakeDate = '2020-07-08T00:00:00.000Z';
 

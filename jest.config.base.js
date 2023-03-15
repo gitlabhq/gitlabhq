@@ -44,6 +44,7 @@ module.exports = (path, options = {}) => {
     Object.assign(globals, {
       'vue-jest': {
         experimentalCSSCompile: false,
+        compiler: require.resolve('./config/vue3migration/compiler'),
         compilerOptions: {
           compatConfig: {
             MODE: 2,
@@ -85,9 +86,6 @@ module.exports = (path, options = {}) => {
   const TEST_FIXTURES_PATTERN = 'test_fixtures(/.*)$';
 
   const moduleNameMapper = {
-    // temporary alias until we replace all `flash` imports for `alert`
-    // https://gitlab.com/gitlab-org/gitlab/-/merge_requests/109449
-    '^~/flash$': '<rootDir>/app/assets/javascripts/alert',
     '^~(/.*)\\?(worker|raw)$': '<rootDir>/app/assets/javascripts$1',
     '^(.*)\\?(worker|raw)$': '$1',
     '^~(/.*)$': '<rootDir>/app/assets/javascripts$1',

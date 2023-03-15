@@ -82,24 +82,13 @@ RSpec.describe Gitlab::ImportExport::Base::RelationObjectSaver, feature_category
       it 'saves valid subrelations and logs invalid subrelation' do
         expect(relation_object.notes).to receive(:<<).twice.and_call_original
         expect(relation_object).to receive(:save).and_call_original
-        expect(Gitlab::Import::Logger)
-          .to receive(:info)
-          .with(
-            message: '[Project/Group Import] Invalid subrelation',
-            project_id: project.id,
-            relation_key: 'issues',
-            error_messages: "Project does not match noteable project"
-          )
 
         saver.execute
 
         issue = project.issues.last
-        import_failure = project.import_failures.last
 
         expect(invalid_note.persisted?).to eq(false)
         expect(issue.notes.count).to eq(5)
-        expect(import_failure.source).to eq('RelationObjectSaver#save!')
-        expect(import_failure.exception_message).to eq('Project does not match noteable project')
       end
 
       context 'when invalid subrelation can still be persisted' do
@@ -111,7 +100,6 @@ RSpec.describe Gitlab::ImportExport::Base::RelationObjectSaver, feature_category
 
         it 'saves the subrelation' do
           expect(approval_1.valid?).to eq(false)
-          expect(Gitlab::Import::Logger).not_to receive(:info)
 
           saver.execute
 
@@ -128,24 +116,10 @@ RSpec.describe Gitlab::ImportExport::Base::RelationObjectSaver, feature_category
         let(:invalid_priority) { build(:label_priority, priority: -1) }
         let(:relation_object) { build(:group_label, group: importable, title: 'test', priorities: valid_priorities + [invalid_priority]) }
 
-        it 'logs invalid subrelation for a group' do
-          expect(Gitlab::Import::Logger)
-            .to receive(:info)
-            .with(
-              message: '[Project/Group Import] Invalid subrelation',
-              group_id: importable.id,
-              relation_key: 'labels',
-              error_messages: 'Priority must be greater than or equal to 0'
-            )
-
+        it 'saves relation without invalid subrelations' do
           saver.execute
 
-          label = importable.labels.last
-          import_failure = importable.import_failures.last
-
-          expect(label.priorities.count).to eq(5)
-          expect(import_failure.source).to eq('RelationObjectSaver#save!')
-          expect(import_failure.exception_message).to eq('Priority must be greater than or equal to 0')
+          expect(importable.labels.last.priorities.count).to eq(5)
         end
       end
     end

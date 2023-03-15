@@ -8,13 +8,13 @@ import IncidentTimelineEventsList from '~/issues/show/components/incidents/timel
 import CreateTimelineEvent from '~/issues/show/components/incidents/create_timeline_event.vue';
 import timelineEventsQuery from '~/issues/show/components/incidents/graphql/queries/get_timeline_events.query.graphql';
 import createMockApollo from 'helpers/mock_apollo_helper';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { timelineTabI18n } from '~/issues/show/components/incidents/constants';
 import { timelineEventsQueryListResponse, timelineEventsQueryEmptyResponse } from './mock_data';
 
 Vue.use(VueApollo);
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 const graphQLError = new Error('GraphQL error');
 const listResponse = jest.fn().mockResolvedValue(timelineEventsQueryListResponse);

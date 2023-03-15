@@ -5,7 +5,7 @@
 # after a period of time (10 minutes).
 # When an attribute is incremented by a value, the increment is added
 # to a Redis key. Then, FlushCounterIncrementsWorker will execute
-# `flush_increments_to_database!` which removes increments from Redis for a
+# `commit_increment!` which removes increments from Redis for a
 # given model attribute and updates the values in the database.
 #
 # @example:
@@ -29,8 +29,24 @@
 #     counter_attribute :conditional_one, if: -> { |object| object.use_counter_attribute? }
 #   end
 #
+# The `counter_attribute` by default will return last persisted value.
+# It's possible to always return accurate (real) value instead by using `returns_current: true`.
+# While doing this the `counter_attribute` will overwrite attribute accessor to fetch
+# the buffered information added to the last persisted value. This will incur cost a Redis call per attribute fetched.
+#
+# @example:
+#
+#   class ProjectStatistics
+#     include CounterAttribute
+#
+#     counter_attribute :commit_count, returns_current: true
+#   end
+#
+# in that case
+#   model.commit_count => persisted value + buffered amount to be added
+#
 # To increment the counter we can use the method:
-#   increment_counter(:commit_count, 3)
+#   increment_amount(:commit_count, 3)
 #
 # This method would determine whether it would increment the counter using Redis,
 # or fallback to legacy increment on ActiveRecord counters.
@@ -50,11 +66,22 @@ module CounterAttribute
   include Gitlab::Utils::StrongMemoize
 
   class_methods do
-    def counter_attribute(attribute, if: nil)
+    def counter_attribute(attribute, if: nil, returns_current: false)
       counter_attributes << {
         attribute: attribute,
-        if_proc: binding.local_variable_get(:if) # can't read `if` directly
+        if_proc: binding.local_variable_get(:if), # can't read `if` directly
+        returns_current: returns_current
       }
+
+      if returns_current
+        define_method(attribute) do
+          current_counter(attribute)
+        end
+      end
+
+      define_method("increment_#{attribute}") do |amount|
+        increment_amount(attribute, amount)
+      end
     end
 
     def counter_attributes
@@ -85,6 +112,15 @@ module CounterAttribute
       # which would be a string.
       build_counter_for(attribute.to_sym)
     end
+  end
+
+  def increment_amount(attribute, amount)
+    counter = Gitlab::Counters::Increment.new(amount: amount)
+    increment_counter(attribute, counter)
+  end
+
+  def current_counter(attribute)
+    read_attribute(attribute) + counter(attribute).get
   end
 
   def increment_counter(attribute, increment)
@@ -172,7 +208,8 @@ module CounterAttribute
 
     Gitlab::AppLogger.info(
       message: 'Acquiring lease for project statistics update',
-      project_statistics_id: id,
+      model: self.class.name,
+      model_id: id,
       project_id: project.id,
       **log_fields,
       **Gitlab::ApplicationContext.current
@@ -184,7 +221,8 @@ module CounterAttribute
   rescue Gitlab::ExclusiveLeaseHelpers::FailedToObtainLockError
     Gitlab::AppLogger.warn(
       message: 'Concurrent project statistics update detected',
-      project_statistics_id: id,
+      model: self.class.name,
+      model_id: id,
       project_id: project.id,
       **log_fields,
       **Gitlab::ApplicationContext.current

@@ -8,6 +8,10 @@ RSpec.describe Gitlab::GithubImport::Clients::Proxy, :manage, feature_category: 
   let(:access_token) { 'test_token' }
   let(:client_options) { { foo: :bar } }
 
+  it { expect(client).to delegate_method(:each_object).to(:client) }
+  it { expect(client).to delegate_method(:user).to(:client) }
+  it { expect(client).to delegate_method(:octokit).to(:client) }
+
   describe '#repos' do
     let(:search_text) { 'search text' }
     let(:pagination_options) { { limit: 10 } }

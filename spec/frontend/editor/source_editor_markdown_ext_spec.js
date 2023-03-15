@@ -17,6 +17,7 @@ describe('Markdown Extension for Source Editor', () => {
   const thirdLine = 'string with some **markup**';
   const text = `${firstLine}\n${secondLine}\n${thirdLine}`;
   const markdownPath = 'foo.md';
+  let extensions;
 
   const setSelection = (startLineNumber = 1, startColumn = 1, endLineNumber = 1, endColumn = 1) => {
     const selection = new Range(startLineNumber, startColumn, endLineNumber, endColumn);
@@ -38,7 +39,10 @@ describe('Markdown Extension for Source Editor', () => {
       blobPath: markdownPath,
       blobContent: text,
     });
-    instance.use([{ definition: ToolbarExtension }, { definition: EditorMarkdownExtension }]);
+    extensions = instance.use([
+      { definition: ToolbarExtension },
+      { definition: EditorMarkdownExtension },
+    ]);
   });
 
   afterEach(() => {
@@ -55,6 +59,25 @@ describe('Markdown Extension for Source Editor', () => {
       expect(btns).toHaveLength(EXTENSION_MARKDOWN_BUTTONS.length);
       EXTENSION_MARKDOWN_BUTTONS.forEach((btn, i) => {
         expect(btns[i].id).toBe(btn.id);
+      });
+    });
+  });
+
+  describe('markdown keystrokes', () => {
+    it('registers all keystrokes as actions', () => {
+      EXTENSION_MARKDOWN_BUTTONS.forEach((button) => {
+        if (button.data.mdShortcuts) {
+          expect(instance.getAction(button.id)).toBeDefined();
+        }
+      });
+    });
+
+    it('disposes all keystrokes on unuse', () => {
+      instance.unuse(extensions[1]);
+      EXTENSION_MARKDOWN_BUTTONS.forEach((button) => {
+        if (button.data.mdShortcuts) {
+          expect(instance.getAction(button.id)).toBeNull();
+        }
       });
     });
   });

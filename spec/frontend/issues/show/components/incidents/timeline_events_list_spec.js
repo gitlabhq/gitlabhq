@@ -11,7 +11,7 @@ import deleteTimelineEventMutation from '~/issues/show/components/incidents/grap
 import editTimelineEventMutation from '~/issues/show/components/incidents/graphql/queries/edit_timeline_event.mutation.graphql';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { useFakeDate } from 'helpers/fake_date';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import {
   mockEvents,
   timelineEventsDeleteEventResponse,
@@ -26,7 +26,7 @@ import {
 
 Vue.use(VueApollo);
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 jest.mock('~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal');
 
 const mockConfirmAction = ({ confirmed }) => {

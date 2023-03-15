@@ -6,13 +6,42 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Contribute to the GitLab documentation
 
-Everyone is welcome to update the GitLab documentation.
+Everyone is welcome to update the GitLab documentation!
 
-If you are looking for something to work on, you can review the list of
-[open issues](https://about.gitlab.com/handbook/product/ux/technical-writing/#community-contribution-opportunities)
-or work to fix [Vale](testing.md#vale) suggestions.
+## Work without an issue
 
-You don't need an issue to update the documentation, however.
+You don't need an issue to update the documentation.
+
+On [https://docs.gitlab.com](https://docs.gitlab.com), at the bottom of any page,
+you can select **View page source** or **Edit in Web IDE** and [get started with a merge request](#open-your-merge-request).
+
+You can alternately:
+
+- Choose a page [in the `/doc` directory](https://gitlab.com/gitlab-org/gitlab/-/tree/master/doc)
+  and edit it from there.
+- Try installing and running the [Vale linting tool](testing.md#vale)
+  and fixing the resulting issues.
+
+When you're developing code, the workflow for updating docs is slightly different.
+For details, see the [merge request workflow](../contributing/merge_request_workflow.md).
+
+## Search available issues
+
+If you're looking for an open issue, you can
+[review the list of documentation issues curated specifically for new contributors](https://gitlab.com/gitlab-org/gitlab/-/issues/?sort=created_date&state=opened&label_name%5B%5D=documentation&label_name%5B%5D=docs-only&label_name%5B%5D=Seeking%20community%20contributions&first_page_size=20).
+
+When you find an issue you'd like to work on:
+
+- If the issue is already assigned to someone, pick a different one.
+- If the issue is unassigned, add a comment and ask to work on the issue. For a Hackathon, use `@docs-hackathon`. Otherwise, use `@gl-docsteam`. For example:
+
+  ```plaintext
+  @docs-hackathon I would like to work on this issue
+  ```
+
+- Do not ask for more than three issues at a time.
+
+## Open your merge request
 
 When you are ready to update the documentation:
 

@@ -4,13 +4,13 @@ import Cookies from '~/lib/utils/cookies';
 import { HTTP_STATUS_BAD_REQUEST, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
 import testAction from 'helpers/vuex_action_helper';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { INTERACTIVE_RESOLVE_MODE, EDIT_RESOLVE_MODE } from '~/merge_conflicts/constants';
 import * as actions from '~/merge_conflicts/store/actions';
 import * as types from '~/merge_conflicts/store/mutation_types';
 import { restoreFileLinesState, markLine, decorateFiles } from '~/merge_conflicts/utils';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 jest.mock('~/merge_conflicts/utils');
 jest.mock('~/lib/utils/cookies');
 
@@ -114,7 +114,7 @@ describe('merge conflicts actions', () => {
       expect(window.location.assign).toHaveBeenCalledWith('hrefPath');
     });
 
-    it('on errors shows flash', async () => {
+    it('on errors shows an alert', async () => {
       mock.onPost(resolveConflictsPath).reply(HTTP_STATUS_BAD_REQUEST);
       await testAction(
         actions.submitResolvedConflicts,

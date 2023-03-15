@@ -169,6 +169,9 @@ RSpec.describe Import::GithubController, feature_category: :importers do
         if client_auth_success
           allow(proxy).to receive(:repos).and_return({ repos: provider_repos })
           allow(proxy).to receive(:client).and_return(client_stub)
+          allow_next_instance_of(Gitlab::GithubImport::ProjectRelationType) do |instance|
+            allow(instance).to receive(:for).with('example/repo').and_return('owned')
+          end
         else
           allow(proxy).to receive(:repos).and_raise(Octokit::Unauthorized)
         end
@@ -347,7 +350,13 @@ RSpec.describe Import::GithubController, feature_category: :importers do
     end
   end
 
-  describe "POST create" do
+  describe "POST create", :clean_gitlab_redis_cache do
+    before do
+      allow_next_instance_of(Gitlab::GithubImport::ProjectRelationType) do |instance|
+        allow(instance).to receive(:for).with("#{provider_username}/vim").and_return('owned')
+      end
+    end
+
     it_behaves_like 'a GitHub-ish import controller: POST create'
 
     it_behaves_like 'project import rate limiter'
@@ -376,13 +385,22 @@ RSpec.describe Import::GithubController, feature_category: :importers do
   end
 
   describe "POST cancel" do
-    let_it_be(:project) { create(:project, :import_started, import_type: 'github', import_url: 'https://fake.url') }
+    let_it_be(:project) do
+      create(
+        :project, :import_started,
+        import_type: 'github', import_url: 'https://fake.url', import_source: 'login/repo'
+      )
+    end
 
     context 'when project import was canceled' do
       before do
         allow(Import::Github::CancelProjectImportService)
           .to receive(:new).with(project, user)
           .and_return(double(execute: { status: :success, project: project }))
+
+        allow_next_instance_of(Gitlab::GithubImport::ProjectRelationType) do |instance|
+          allow(instance).to receive(:for).with('login/repo').and_return('owned')
+        end
       end
 
       it 'returns success' do

@@ -23,6 +23,12 @@ export const FILTERED_SEARCH_TOKEN_USER = {
   defaultUsers: [],
 };
 
+export const FILTERED_SEARCH_TOKEN_REPORTER = {
+  ...FILTERED_SEARCH_TOKEN_USER,
+  type: 'reporter',
+  title: __('Reporter'),
+};
+
 export const FILTERED_SEARCH_TOKEN_STATUS = {
   type: 'status',
   icon: 'status',
@@ -68,4 +74,8 @@ export const FILTERED_SEARCH_TOKEN_CATEGORY = {
   operators: OPERATORS_IS,
 };
 
-export const FILTERED_SEARCH_TOKENS = [FILTERED_SEARCH_TOKEN_USER, FILTERED_SEARCH_TOKEN_STATUS];
+export const FILTERED_SEARCH_TOKENS = [
+  FILTERED_SEARCH_TOKEN_USER,
+  FILTERED_SEARCH_TOKEN_REPORTER,
+  FILTERED_SEARCH_TOKEN_STATUS,
+];

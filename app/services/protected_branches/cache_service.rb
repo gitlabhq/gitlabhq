@@ -73,7 +73,8 @@ module ProtectedBranches
     end
 
     def redis_key
-      @redis_key ||= if Feature.enabled?(:group_protected_branches)
+      group = project_or_group.is_a?(Group) ? project_or_group : project_or_group.group
+      @redis_key ||= if Feature.enabled?(:group_protected_branches, group)
                        [CACHE_ROOT_KEY, project_or_group.class.name, project_or_group.id].join(':')
                      else
                        [CACHE_ROOT_KEY, project_or_group.id].join(':')

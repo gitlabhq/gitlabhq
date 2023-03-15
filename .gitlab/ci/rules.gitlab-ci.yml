@@ -620,6 +620,7 @@
 
 .rails:rules:run-search-tests:
   rules:
+    - !reference [".rails:rules:default-branch-schedule-nightly--code-backstage-ee-only", rules]
     - <<: *if-merge-request-labels-group-global-search
       changes: *search-backend-patterns
     - <<: *if-merge-request-labels-group-global-search

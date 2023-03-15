@@ -9,7 +9,7 @@ import createTimelineEventMutation from '~/issues/show/components/incidents/grap
 import getTimelineEvents from '~/issues/show/components/incidents/graphql/queries/get_timeline_events.query.graphql';
 import { timelineFormI18n } from '~/issues/show/components/incidents/constants';
 import createMockApollo from 'helpers/mock_apollo_helper';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { useFakeDate } from 'helpers/fake_date';
 import {
   timelineEventsCreateEventResponse,
@@ -19,7 +19,7 @@ import {
 
 Vue.use(VueApollo);
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 const fakeDate = '2020-07-08T00:00:00.000Z';
 

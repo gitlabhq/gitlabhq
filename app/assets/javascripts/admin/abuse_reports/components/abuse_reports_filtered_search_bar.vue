@@ -19,8 +19,12 @@ export default {
     return {
       initialFilterValue: [],
       initialSortBy: DEFAULT_SORT,
-      tokens: [...FILTERED_SEARCH_TOKENS, buildFilteredSearchCategoryToken(this.categories)],
     };
+  },
+  computed: {
+    tokens() {
+      return [...FILTERED_SEARCH_TOKENS, buildFilteredSearchCategoryToken(this.categories)];
+    },
   },
   created() {
     const query = queryToObject(window.location.search);

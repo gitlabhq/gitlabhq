@@ -70,7 +70,11 @@ module Gitlab
             def project
               return legacy_project if ::Feature.disabled?(:ci_batch_project_includes_context, context.project)
 
-              BatchLoader.for(project_name).batch do |project_names, loader|
+              # Although we use `where_full_path_in`, this BatchLoader does not reduce the number of queries to 1.
+              # That's because we use it in the `can_access_local_content?` and `sha` BatchLoaders
+              # as the `for` parameter. And this loads the project immediately.
+              BatchLoader.for(project_name)
+                         .batch do |project_names, loader|
                 ::Project.where_full_path_in(project_names.uniq).each do |project|
                   # We are using the same downcase in the `initialize` method.
                   loader.call(project.full_path.downcase, project)
@@ -83,13 +87,11 @@ module Gitlab
                 return legacy_can_access_local_content?
               end
 
-              context.logger.instrument(:config_file_project_validate_access) do
-                BatchLoader.for(project_name)
-                          .batch(key: context.user) do |project_names, loader, args|
-                  project_names.uniq.each do |project_name|
-                    context.logger.instrument(:config_file_project_validate_access) do
-                      loader.call(project_name, Ability.allowed?(args[:key], :download_code, project))
-                    end
+              BatchLoader.for(project)
+                         .batch(key: context.user) do |projects, loader, args|
+                projects.uniq.each do |project|
+                  context.logger.instrument(:config_file_project_validate_access) do
+                    loader.call(project, Ability.allowed?(args[:key], :download_code, project))
                   end
                 end
               end
@@ -98,9 +100,10 @@ module Gitlab
             def sha
               return legacy_sha if ::Feature.disabled?(:ci_batch_project_includes_context, context.project)
 
-              BatchLoader.for([project_name, ref_name]).batch do |project_name_ref_pairs, loader|
-                project_name_ref_pairs.uniq.each do |project_name, ref_name|
-                  loader.call([project_name, ref_name], project.commit(ref_name).try(:sha))
+              BatchLoader.for([project, ref_name])
+                         .batch do |project_ref_pairs, loader|
+                project_ref_pairs.uniq.each do |project, ref_name|
+                  loader.call([project, ref_name], project.commit(ref_name).try(:sha))
                 end
               end
             end

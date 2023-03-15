@@ -145,7 +145,10 @@ class Import::GithubController < Import::BaseController
   end
 
   def serialized_imported_projects(projects = already_added_projects)
-    ProjectSerializer.new.represent(projects, serializer: :import, provider_url: provider_url)
+    ProjectSerializer.new.represent(
+      projects,
+      serializer: :import, provider_url: provider_url, client: client_proxy
+    )
   end
 
   def expire_etag_cache

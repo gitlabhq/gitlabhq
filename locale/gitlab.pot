@@ -9537,6 +9537,9 @@ msgstr ""
 msgid "ClusterAgents|Agent %{strongStart}disconnected%{strongEnd}"
 msgstr ""
 
+msgid "ClusterAgents|Agent ID #%{agentId}"
+msgstr ""
+
 msgid "ClusterAgents|Agent access token:"
 msgstr ""
 
@@ -16348,6 +16351,9 @@ msgid "Environment|Auto stop %{time}"
 msgstr ""
 
 msgid "Environment|Deployment tier"
+msgstr ""
+
+msgid "Environment|Kubernetes overview"
 msgstr ""
 
 msgid "Epic"
@@ -32656,6 +32662,9 @@ msgid "Preferences|Layout width"
 msgstr ""
 
 msgid "Preferences|Must be a number between %{min} and %{max}"
+msgstr ""
+
+msgid "Preferences|Note: You have the new navigation enabled, so only Dark Mode theme significantly changes GitLab's appearance."
 msgstr ""
 
 msgid "Preferences|Opt out of the Web IDE Beta"

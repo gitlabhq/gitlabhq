@@ -90,7 +90,7 @@ In this file, we write the actions that call mutations for handling a list of us
 ```javascript
   import * as types from './mutation_types';
   import axios from '~/lib/utils/axios_utils';
-  import { createAlert } from '~/flash';
+  import { createAlert } from '~/alert';
 
   export const fetchUsers = ({ state, dispatch }) => {
     commit(types.REQUEST_USERS);

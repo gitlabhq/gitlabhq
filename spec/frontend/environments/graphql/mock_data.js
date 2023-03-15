@@ -798,3 +798,9 @@ export const resolvedDeploymentDetails = {
     },
   },
 };
+
+export const agent = {
+  project: 'agent-project',
+  id: '1',
+  name: 'agent-name',
+};

@@ -1794,47 +1794,37 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
   end
 
   describe '#license' do
-    where(from_gitaly: [true, false])
-    with_them do
-      subject(:license) { repository.license(from_gitaly) }
+    subject(:license) { repository.license }
 
-      context 'when no license file can be found' do
-        let_it_be(:project) { create(:project, :repository) }
-        let(:repository) { project.repository.raw_repository }
+    context 'when no license file can be found' do
+      let_it_be(:project) { create(:project, :repository) }
+      let(:repository) { project.repository.raw_repository }
 
-        before do
-          project.repository.delete_file(project.owner, 'LICENSE', message: 'remove license', branch_name: 'master')
-        end
-
-        it { is_expected.to be_nil }
+      before do
+        project.repository.delete_file(project.owner, 'LICENSE', message: 'remove license', branch_name: 'master')
       end
 
-      context 'when an mit license is found' do
-        it { is_expected.to have_attributes(key: 'mit') }
-      end
-
-      context 'when license is not recognized ' do
-        let_it_be(:project) { create(:project, :repository) }
-        let(:repository) { project.repository.raw_repository }
-
-        before do
-          project.repository.update_file(
-            project.owner,
-            'LICENSE',
-            'This software is licensed under the Dummy license.',
-            message: 'Update license',
-            branch_name: 'master')
-        end
-
-        it { is_expected.to have_attributes(key: 'other', nickname: 'LICENSE') }
-      end
+      it { is_expected.to be_nil }
     end
 
-    it 'does not crash when license is invalid' do
-      expect(Licensee::License).to receive(:new)
-        .and_raise(Licensee::InvalidLicense)
+    context 'when an mit license is found' do
+      it { is_expected.to have_attributes(key: 'mit') }
+    end
 
-      expect(repository.license(false)).to be_nil
+    context 'when license is not recognized ' do
+      let_it_be(:project) { create(:project, :repository) }
+      let(:repository) { project.repository.raw_repository }
+
+      before do
+        project.repository.update_file(
+          project.owner,
+          'LICENSE',
+          'This software is licensed under the Dummy license.',
+          message: 'Update license',
+          branch_name: 'master')
+      end
+
+      it { is_expected.to have_attributes(key: 'other', nickname: 'LICENSE') }
     end
   end
 

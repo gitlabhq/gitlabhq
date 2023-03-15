@@ -71,6 +71,11 @@ class Import::GiteaController < Import::GithubController
     end
   end
 
+  override :serialized_imported_projects
+  def serialized_imported_projects(projects = already_added_projects)
+    ProjectSerializer.new.represent(projects, serializer: :import, provider_url: provider_url)
+  end
+
   override :client_repos
   def client_repos
     @client_repos ||= filtered(client.repos)

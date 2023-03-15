@@ -5,6 +5,7 @@ import AbuseReportsFilteredSearchBar from '~/admin/abuse_reports/components/abus
 import {
   FILTERED_SEARCH_TOKENS,
   FILTERED_SEARCH_TOKEN_USER,
+  FILTERED_SEARCH_TOKEN_REPORTER,
   FILTERED_SEARCH_TOKEN_STATUS,
   FILTERED_SEARCH_TOKEN_CATEGORY,
   DEFAULT_SORT,
@@ -74,7 +75,7 @@ describe('AbuseReportsFilteredSearchBar', () => {
   });
 
   it('parses and passes search param to `FilteredSearchBar` component as `initialFilterValue` prop', () => {
-    setWindowLocation('?status=closed&user=mr_abuser');
+    setWindowLocation('?status=closed&user=mr_abuser&reporter=ms_nitch');
 
     createComponent();
 
@@ -82,6 +83,10 @@ describe('AbuseReportsFilteredSearchBar', () => {
       {
         type: FILTERED_SEARCH_TOKEN_USER.type,
         value: { data: 'mr_abuser', operator: '=' },
+      },
+      {
+        type: FILTERED_SEARCH_TOKEN_REPORTER.type,
+        value: { data: 'ms_nitch', operator: '=' },
       },
       {
         type: FILTERED_SEARCH_TOKEN_STATUS.type,
@@ -121,6 +126,10 @@ describe('AbuseReportsFilteredSearchBar', () => {
       type: FILTERED_SEARCH_TOKEN_USER.type,
       value: { data: 'mr_abuser', operator: '=' },
     };
+    const REPORTER_FILTER_TOKEN = {
+      type: FILTERED_SEARCH_TOKEN_REPORTER.type,
+      value: { data: 'ms_nitch', operator: '=' },
+    };
     const STATUS_FILTER_TOKEN = {
       type: FILTERED_SEARCH_TOKEN_STATUS.type,
       value: { data: 'open', operator: '=' },
@@ -140,7 +149,7 @@ describe('AbuseReportsFilteredSearchBar', () => {
       findFilteredSearchBar().vm.$emit('onFilter', filterTokens);
     };
 
-    it.each([USER_FILTER_TOKEN, STATUS_FILTER_TOKEN, CATEGORY_FILTER_TOKEN])(
+    it.each([USER_FILTER_TOKEN, REPORTER_FILTER_TOKEN, STATUS_FILTER_TOKEN, CATEGORY_FILTER_TOKEN])(
       'redirects with $type query param',
       (filterToken) => {
         createComponentAndFilter([filterToken]);

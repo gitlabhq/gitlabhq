@@ -17,6 +17,8 @@ module Gitlab
         BATCH_SIZE = 100
         MIN_RECORDS_SIZE = 1
 
+        attr_reader :invalid_subrelations
+
         # @param relation_object [Object] Object of a project/group, e.g. an issue
         # @param relation_key [String] Name of the object association to group/project, e.g. :issues
         # @param relation_definition [Hash] Object subrelations as defined in import_export.yml
@@ -43,14 +45,11 @@ module Gitlab
           relation_object.save!
 
           save_subrelations
-        ensure
-          log_invalid_subrelations
         end
 
         private
 
-        attr_reader :relation_object, :relation_key, :relation_definition,
-                    :importable, :collection_subrelations, :invalid_subrelations
+        attr_reader :relation_object, :relation_key, :relation_definition, :importable, :collection_subrelations
 
         # rubocop:disable GitlabSecurity/PublicSend
         def save_subrelations
@@ -92,30 +91,6 @@ module Gitlab
           end
         end
         # rubocop:enable GitlabSecurity/PublicSend
-
-        def log_invalid_subrelations
-          invalid_subrelations.flatten.each do |record|
-            Gitlab::Import::Logger.info(
-              message: '[Project/Group Import] Invalid subrelation',
-              importable_column_name => importable.id,
-              relation_key: relation_key,
-              error_messages: record.errors.full_messages.to_sentence
-            )
-
-            ImportFailure.create(
-              source: 'RelationObjectSaver#save!',
-              relation_key: relation_key,
-              exception_class: 'RecordInvalid',
-              exception_message: record.errors.full_messages.to_sentence,
-              correlation_id_value: Labkit::Correlation::CorrelationId.current_or_new_id,
-              importable_column_name => importable.id
-            )
-          end
-        end
-
-        def importable_column_name
-          @column_name ||= importable.class.reflect_on_association(:import_failures).foreign_key.to_sym
-        end
       end
     end
   end

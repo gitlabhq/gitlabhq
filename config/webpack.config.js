@@ -195,9 +195,6 @@ const alias = {
     ROOT_PATH,
     'app/assets/javascripts/sentry/sentry_browser_wrapper.js',
   ),
-  // temporary alias until we replace all `flash` imports for `alert`
-  // https://gitlab.com/gitlab-org/gitlab/-/merge_requests/109449
-  '~/flash': path.join(ROOT_PATH, 'app/assets/javascripts/alert.js'),
   '~': path.join(ROOT_PATH, 'app/assets/javascripts'),
   emojis: path.join(ROOT_PATH, 'fixtures/emojis'),
   empty_states: path.join(ROOT_PATH, 'app/views/shared/empty_states'),
@@ -301,12 +298,15 @@ if (WEBPACK_USE_ESBUILD_LOADER) {
 }
 
 const vueLoaderOptions = {
+  ident: 'vue-loader-options',
+
   cacheDirectory: path.join(CACHE_PATH, 'vue-loader'),
   cacheIdentifier: [
     process.env.NODE_ENV || 'development',
     webpack.version,
     VUE_VERSION,
     VUE_LOADER_VERSION,
+    EXPLICIT_VUE_VERSION,
   ].join('|'),
 };
 
@@ -334,6 +334,8 @@ if (USE_VUE3) {
   Object.assign(alias, {
     vue: '@vue/compat',
   });
+
+  vueLoaderOptions.compiler = require.resolve('./vue3migration/compiler');
 }
 
 module.exports = {

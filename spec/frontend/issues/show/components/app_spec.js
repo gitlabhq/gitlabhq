@@ -5,7 +5,7 @@ import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import {
   IssuableStatusText,
   STATUS_CLOSED,
@@ -34,7 +34,7 @@ import {
   zoomMeetingUrl,
 } from '../mock_data/mock_data';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 jest.mock('~/issues/show/event_hub');
 jest.mock('~/lib/utils/url_utility');
 jest.mock('~/behaviors/markdown/render_gfm');

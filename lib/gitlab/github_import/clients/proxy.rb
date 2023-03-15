@@ -6,6 +6,8 @@ module Gitlab
       class Proxy
         attr_reader :client
 
+        delegate :each_object, :user, :octokit, to: :client
+
         def initialize(access_token, client_options)
           @client = pick_client(access_token, client_options)
         end

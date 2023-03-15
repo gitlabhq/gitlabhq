@@ -6,7 +6,7 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper::Verifier, feature_category:
   include RepoHelpers
   include StubRequests
 
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project, :small_repo) }
   let_it_be(:user) { project.owner }
 
   let(:context) do
@@ -38,7 +38,7 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper::Verifier, feature_category:
     }
   end
 
-  around(:all) do |example|
+  around do |example|
     create_and_delete_files(project, project_files) do
       example.run
     end
@@ -84,8 +84,8 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper::Verifier, feature_category:
     end
 
     context 'when files are project files' do
-      let_it_be(:included_project1) { create(:project, :repository, namespace: project.namespace, creator: user) }
-      let_it_be(:included_project2) { create(:project, :repository, namespace: project.namespace, creator: user) }
+      let_it_be(:included_project1) { create(:project, :small_repo, namespace: project.namespace, creator: user) }
+      let_it_be(:included_project2) { create(:project, :small_repo, namespace: project.namespace, creator: user) }
 
       let(:files) do
         [
@@ -107,7 +107,7 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper::Verifier, feature_category:
         ]
       end
 
-      around(:all) do |example|
+      around do |example|
         create_and_delete_files(included_project1, project_files) do
           create_and_delete_files(included_project2, project_files) do
             example.run
@@ -115,10 +115,12 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper::Verifier, feature_category:
         end
       end
 
-      it 'returns an array of file objects' do
+      it 'returns an array of valid file objects' do
         expect(process.map(&:location)).to contain_exactly(
           'myfolder/file1.yml', 'myfolder/file2.yml', 'myfolder/file3.yml', 'myfolder/file1.yml', 'myfolder/file2.yml'
         )
+
+        expect(process.all?(&:valid?)).to be_truthy
       end
 
       it 'adds files to the expandset' do
@@ -139,7 +141,9 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper::Verifier, feature_category:
         projects_queries = queries.occurrences_starting_with('SELECT "projects"')
         access_check_queries = queries.occurrences_starting_with('SELECT MAX("project_authorizations"."access_level")')
 
-        expect(projects_queries.values.sum).to eq(1)
+        # We could not reduce the number of projects queries because we need to call project for
+        # the `can_access_local_content?` and `sha` BatchLoaders.
+        expect(projects_queries.values.sum).to eq(2)
         expect(access_check_queries.values.sum).to eq(2)
       end
 

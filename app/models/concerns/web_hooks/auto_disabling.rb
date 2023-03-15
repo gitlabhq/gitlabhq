@@ -8,10 +8,16 @@ module WebHooks
 
     class_methods do
       def auto_disabling_enabled?
-        ENABLED_HOOK_TYPES.include?(name) &&
+        enabled_hook_types.include?(name) &&
           Gitlab::SafeRequestStore.fetch(:auto_disabling_web_hooks) do
             Feature.enabled?(:auto_disabling_web_hooks, type: :ops)
           end
+      end
+
+      private
+
+      def enabled_hook_types
+        ENABLED_HOOK_TYPES
       end
     end
 
@@ -135,3 +141,6 @@ module WebHooks
     end
   end
 end
+
+WebHooks::AutoDisabling.prepend_mod
+WebHooks::AutoDisabling::ClassMethods.prepend_mod

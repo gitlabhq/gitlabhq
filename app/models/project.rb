@@ -2832,7 +2832,7 @@ class Project < ApplicationRecord
   end
 
   def all_protected_branches
-    if Feature.enabled?(:group_protected_branches)
+    if Feature.enabled?(:group_protected_branches, group)
       @all_protected_branches ||= ProtectedBranch.from_union([protected_branches, group_protected_branches])
     else
       protected_branches

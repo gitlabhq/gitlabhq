@@ -9,7 +9,8 @@ import { __, s__, sprintf } from '~/locale';
 import EnvironmentItem from '~/environments/components/new_environment_item.vue';
 import Deployment from '~/environments/components/deployment.vue';
 import DeployBoardWrapper from '~/environments/components/deploy_board_wrapper.vue';
-import { resolvedEnvironment, rolloutStatus } from './graphql/mock_data';
+import KubernetesOverview from '~/environments/components/kubernetes_overview.vue';
+import { resolvedEnvironment, rolloutStatus, agent } from './graphql/mock_data';
 
 Vue.use(VueApollo);
 
@@ -20,15 +21,16 @@ describe('~/environments/components/new_environment_item.vue', () => {
     return createMockApollo();
   };
 
-  const createWrapper = ({ propsData = {}, apolloProvider } = {}) =>
+  const createWrapper = ({ propsData = {}, provideData = {}, apolloProvider } = {}) =>
     mountExtended(EnvironmentItem, {
       apolloProvider,
       propsData: { environment: resolvedEnvironment, ...propsData },
-      provide: { helpPagePath: '/help', projectId: '1', projectPath: '/1' },
+      provide: { helpPagePath: '/help', projectId: '1', projectPath: '/1', ...provideData },
       stubs: { transition: stubTransition() },
     });
 
   const findDeployment = () => wrapper.findComponent(Deployment);
+  const findKubernetesOverview = () => wrapper.findComponent(KubernetesOverview);
 
   const expandCollapsedSection = async () => {
     const button = wrapper.findByRole('button', { name: __('Expand') });
@@ -36,10 +38,6 @@ describe('~/environments/components/new_environment_item.vue', () => {
 
     return button;
   };
-
-  afterEach(() => {
-    wrapper?.destroy();
-  });
 
   it('displays the name when not in a folder', () => {
     wrapper = createWrapper({ apolloProvider: createApolloProvider() });
@@ -157,7 +155,7 @@ describe('~/environments/components/new_environment_item.vue', () => {
   });
 
   describe('stop', () => {
-    it('shows a buton to stop the environment if the environment is available', () => {
+    it('shows a button to stop the environment if the environment is available', () => {
       wrapper = createWrapper({ apolloProvider: createApolloProvider() });
 
       const stop = wrapper.findByRole('button', { name: s__('Environments|Stop environment') });
@@ -165,7 +163,7 @@ describe('~/environments/components/new_environment_item.vue', () => {
       expect(stop.exists()).toBe(true);
     });
 
-    it('does not show a buton to stop the environment if the environment is stopped', () => {
+    it('does not show a button to stop the environment if the environment is stopped', () => {
       wrapper = createWrapper({
         propsData: { environment: { ...resolvedEnvironment, canStop: false } },
         apolloProvider: createApolloProvider(),
@@ -513,6 +511,73 @@ describe('~/environments/components/new_environment_item.vue', () => {
 
       const deployBoard = wrapper.findComponent(DeployBoardWrapper);
       expect(deployBoard.exists()).toBe(false);
+    });
+  });
+
+  describe('kubernetes overview', () => {
+    const environmentWithAgent = {
+      ...resolvedEnvironment,
+      agent,
+    };
+
+    it('should render if the feature flag is enabled and the environment has an agent object with the required data specified', () => {
+      wrapper = createWrapper({
+        propsData: { environment: environmentWithAgent },
+        provideData: {
+          glFeatures: {
+            kasUserAccessProject: true,
+          },
+        },
+        apolloProvider: createApolloProvider(),
+      });
+
+      expandCollapsedSection();
+
+      expect(findKubernetesOverview().props()).toMatchObject({
+        agentProjectPath: agent.project,
+        agentName: agent.name,
+        agentId: agent.id,
+      });
+    });
+
+    it('should not render if the feature flag is not enabled', () => {
+      wrapper = createWrapper({
+        propsData: { environment: environmentWithAgent },
+        apolloProvider: createApolloProvider(),
+      });
+
+      expandCollapsedSection();
+
+      expect(findKubernetesOverview().exists()).toBe(false);
+    });
+
+    it('should not render if the environment has no agent object', () => {
+      wrapper = createWrapper({
+        apolloProvider: createApolloProvider(),
+      });
+
+      expandCollapsedSection();
+
+      expect(findKubernetesOverview().exists()).toBe(false);
+    });
+
+    it('should not render if the environment has an agent object without agent id specified', () => {
+      const environment = {
+        ...resolvedEnvironment,
+        agent: {
+          project: agent.project,
+          name: agent.name,
+        },
+      };
+
+      wrapper = createWrapper({
+        propsData: { environment },
+        apolloProvider: createApolloProvider(),
+      });
+
+      expandCollapsedSection();
+
+      expect(findKubernetesOverview().exists()).toBe(false);
     });
   });
 });

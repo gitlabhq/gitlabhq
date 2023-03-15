@@ -9,10 +9,10 @@ import { VSA_METRICS_GROUPS, METRICS_POPOVER_CONTENT } from '~/analytics/shared/
 import { prepareTimeMetricsData } from '~/analytics/shared/utils';
 import MetricTile from '~/analytics/shared/components/metric_tile.vue';
 import ValueStreamsDashboardLink from '~/analytics/shared/components/value_streams_dashboard_link.vue';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { group } from './mock_data';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 describe('ValueStreamMetrics', () => {
   let wrapper;

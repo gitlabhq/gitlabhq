@@ -7,7 +7,7 @@ import { TEST_HOST } from 'helpers/test_constants';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import Description from '~/issues/show/components/description.vue';
 import eventHub from '~/issues/show/event_hub';
 import workItemQuery from '~/work_items/graphql/work_item.query.graphql';
@@ -23,7 +23,7 @@ import {
 } from 'jest/work_items/mock_data';
 import { descriptionProps as initialProps, descriptionHtmlWithList } from '../mock_data/mock_data';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 jest.mock('~/lib/utils/url_utility', () => ({
   ...jest.requireActual('~/lib/utils/url_utility'),
   updateHistory: jest.fn(),

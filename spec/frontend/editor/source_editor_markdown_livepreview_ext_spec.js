@@ -12,14 +12,14 @@ import {
 } from '~/editor/constants';
 import { EditorMarkdownPreviewExtension } from '~/editor/extensions/source_editor_markdown_livepreview_ext';
 import SourceEditor from '~/editor/source_editor';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import syntaxHighlight from '~/syntax_highlight';
 import { spyOnApi } from './helpers';
 
 jest.mock('~/syntax_highlight');
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 describe('Markdown Live Preview Extension for Source Editor', () => {
   let editor;

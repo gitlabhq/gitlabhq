@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BulkImports::NdjsonPipeline do
+RSpec.describe BulkImports::NdjsonPipeline, feature_category: :importers do
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user) }
@@ -150,12 +150,62 @@ RSpec.describe BulkImports::NdjsonPipeline do
 
   describe '#load' do
     context 'when object is not persisted' do
+      it 'saves the object using RelationObjectSaver' do
+        object = double(persisted?: false, new_record?: true)
+
+        allow(subject).to receive(:relation_definition)
+
+        expect_next_instance_of(Gitlab::ImportExport::Base::RelationObjectSaver) do |saver|
+          expect(saver).to receive(:execute)
+        end
+
+        subject.load(nil, object)
+      end
+
+      context 'when object is invalid' do
+        it 'captures invalid subrelations' do
+          entity = create(:bulk_import_entity, group: group)
+          tracker = create(:bulk_import_tracker, entity: entity)
+          context = BulkImports::Pipeline::Context.new(tracker)
+
+          allow(subject).to receive(:context).and_return(context)
+
+          object = group.labels.new(priorities: [LabelPriority.new])
+          object.validate
+
+          allow_next_instance_of(Gitlab::ImportExport::Base::RelationObjectSaver) do |saver|
+            allow(saver).to receive(:execute)
+            allow(saver).to receive(:invalid_subrelations).and_return(object.priorities)
+          end
+
+          subject.load(context, object)
+
+          failure = entity.failures.first
+
+          expect(failure.pipeline_class).to eq(tracker.pipeline_name)
+          expect(failure.exception_class).to eq('RecordInvalid')
+          expect(failure.exception_message).to eq("Project can't be blank, Priority can't be blank, and Priority is not a number")
+        end
+      end
+    end
+
+    context 'when object is persisted' do
       it 'saves the object' do
-        object = double(persisted?: false)
+        object = double(new_record?: false, invalid?: false)
 
         expect(object).to receive(:save!)
 
         subject.load(nil, object)
+      end
+
+      context 'when object is invalid' do
+        it 'raises ActiveRecord::RecordInvalid exception' do
+          object = build_stubbed(:issue)
+
+          expect(Gitlab::Import::Errors).to receive(:merge_nested_errors).with(object)
+
+          expect { subject.load(nil, object) }.to raise_error(ActiveRecord::RecordInvalid)
+        end
       end
     end
 

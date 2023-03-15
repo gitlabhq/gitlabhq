@@ -1068,7 +1068,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
   end
 
   describe "#delete_file" do
-    let(:project) { create(:project, :repository) }
+    let_it_be(:project) { create(:project, :repository) }
 
     it 'removes file successfully' do
       expect do
@@ -1469,46 +1469,38 @@ RSpec.describe Repository, feature_category: :source_code_management do
     end
   end
 
-  [true, false].each do |ff|
-    context "with feature flag license_from_gitaly=#{ff}" do
-      before do
-        stub_feature_flags(license_from_gitaly: ff)
-      end
+  describe '#license', :use_clean_rails_memory_store_caching, :clean_gitlab_redis_cache do
+    let(:project) { create(:project, :repository) }
 
-      describe '#license', :use_clean_rails_memory_store_caching, :clean_gitlab_redis_cache do
-        let(:project) { create(:project, :repository) }
+    before do
+      repository.delete_file(user, 'LICENSE',
+                             message: 'Remove LICENSE', branch_name: 'master')
+    end
 
-        before do
-          repository.delete_file(user, 'LICENSE',
-                                 message: 'Remove LICENSE', branch_name: 'master')
-        end
+    it 'returns nil when no license is detected' do
+      expect(repository.license).to be_nil
+    end
 
-        it 'returns nil when no license is detected' do
-          expect(repository.license).to be_nil
-        end
+    it 'returns nil when the repository does not exist' do
+      expect(repository).to receive(:exists?).and_return(false)
 
-        it 'returns nil when the repository does not exist' do
-          expect(repository).to receive(:exists?).and_return(false)
+      expect(repository.license).to be_nil
+    end
 
-          expect(repository.license).to be_nil
-        end
+    it 'returns other when the content is not recognizable' do
+      repository.create_file(user, 'LICENSE', 'Gitlab B.V.',
+                             message: 'Add LICENSE', branch_name: 'master')
 
-        it 'returns other when the content is not recognizable' do
-          repository.create_file(user, 'LICENSE', 'Gitlab B.V.',
-                                 message: 'Add LICENSE', branch_name: 'master')
+      expect(repository.license_key).to eq('other')
+    end
 
-          expect(repository.license_key).to eq('other')
-        end
+    it 'returns the license' do
+      license = Licensee::License.new('mit')
+      repository.create_file(user, 'LICENSE',
+                             license.content,
+                             message: 'Add LICENSE', branch_name: 'master')
 
-        it 'returns the license' do
-          license = Licensee::License.new('mit')
-          repository.create_file(user, 'LICENSE',
-                                 license.content,
-                                 message: 'Add LICENSE', branch_name: 'master')
-
-          expect(repository.license_key).to eq(license.key)
-        end
-      end
+      expect(repository.license_key).to eq(license.key)
     end
   end
 
@@ -2349,7 +2341,6 @@ RSpec.describe Repository, feature_category: :source_code_management do
           :contribution_guide,
           :changelog,
           :license_blob,
-          :license_licensee,
           :license_gitaly,
           :gitignore,
           :gitlab_ci_yml,
@@ -3004,11 +2995,10 @@ RSpec.describe Repository, feature_category: :source_code_management do
   describe '#refresh_method_caches' do
     it 'refreshes the caches of the given types' do
       expect(repository).to receive(:expire_method_caches)
-        .with(%i(readme_path license_blob license_licensee license_gitaly))
+        .with(%i(readme_path license_blob license_gitaly))
 
       expect(repository).to receive(:readme_path)
       expect(repository).to receive(:license_blob)
-      expect(repository).to receive(:license_licensee)
       expect(repository).to receive(:license_gitaly)
 
       repository.refresh_method_caches(%i(readme license))

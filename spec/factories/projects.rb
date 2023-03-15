@@ -222,7 +222,7 @@ FactoryBot.define do
     # the transient `files` attribute. Each file will be created in its own
     # commit, operating against the master branch. So, the following call:
     #
-    #     create(:project, :custom_repo, files: { 'foo/a.txt' => 'foo', 'b.txt' => bar' })
+    #     create(:project, :custom_repo, files: { 'foo/a.txt' => 'foo', 'b.txt' => 'bar' })
     #
     # will create a repository containing two files, and two commits, in master
     trait :custom_repo do
@@ -241,6 +241,19 @@ FactoryBot.define do
             message: "Automatically created file #{filename}",
             branch_name: project.default_branch || 'master'
           )
+        end
+      end
+    end
+
+    # A basic repository with a single file 'test.txt'. It also has the HEAD as the default branch.
+    trait :small_repo do
+      custom_repo
+
+      files { { 'test.txt' => 'test' } }
+
+      after(:create) do |project|
+        Sidekiq::Worker.skipping_transaction_check do
+          raise "Failed to assign the repository head!" unless project.change_head(project.default_branch_or_main)
         end
       end
     end

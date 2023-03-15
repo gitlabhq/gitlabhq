@@ -6,7 +6,7 @@ import AxiosMockAdapter from 'axios-mock-adapter';
 import { kebabCase } from 'lodash';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import * as urlUtility from '~/lib/utils/url_utility';
 import ForkForm from '~/pages/projects/forks/new/components/fork_form.vue';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -14,7 +14,7 @@ import searchQuery from '~/pages/projects/forks/new/queries/search_forkable_name
 import ProjectNamespace from '~/pages/projects/forks/new/components/project_namespace.vue';
 import { START_RULE, CONTAINS_RULE } from '~/projects/project_name_rules';
 
-jest.mock('~/flash');
+jest.mock('~/alert');
 jest.mock('~/lib/utils/csrf', () => ({ token: 'mock-csrf-token' }));
 
 describe('ForkForm component', () => {
@@ -552,7 +552,7 @@ describe('ForkForm component', () => {
         expect(urlUtility.redirectTo).toHaveBeenCalledWith(webUrl);
       });
 
-      it('display flash when POST is unsuccessful', async () => {
+      it('displays an alert when POST is unsuccessful', async () => {
         const dummyError = 'Fork project failed';
 
         jest.spyOn(axios, 'post').mockRejectedValue(dummyError);

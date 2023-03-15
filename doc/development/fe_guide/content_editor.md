@@ -64,7 +64,7 @@ Instead, you should obtain an instance of the `ContentEditor` class by listening
 
 ```html
 <script>
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { __ } from '~/locale';
 
 export default {

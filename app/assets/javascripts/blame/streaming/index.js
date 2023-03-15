@@ -1,6 +1,6 @@
 import { renderHtmlStreams } from '~/streaming/render_html_streams';
 import { handleStreamedAnchorLink } from '~/streaming/handle_streamed_anchor_link';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 import { __ } from '~/locale';
 import { rateLimitStreamRequests } from '~/streaming/rate_limit_stream_requests';
 import { toPolyfillReadable } from '~/streaming/polyfills';

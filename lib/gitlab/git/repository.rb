@@ -803,27 +803,17 @@ module Gitlab
         end
       end
 
-      def license(from_gitaly)
+      def license
         wrapped_gitaly_errors do
           response = gitaly_repository_client.find_license
 
           break nil if response.license_short_name.empty?
 
-          if from_gitaly
-            break ::Gitlab::Git::DeclaredLicense.new(key: response.license_short_name,
-                                                     name: response.license_name,
-                                                     nickname: response.license_nickname.presence,
-                                                     url: response.license_url.presence,
-                                                     path: response.license_path)
-          end
-
-          licensee_object = Licensee::License.new(response.license_short_name)
-
-          break nil if licensee_object.name.blank?
-
-          licensee_object.meta.nickname = "LICENSE" if licensee_object.key == "other"
-
-          licensee_object
+          ::Gitlab::Git::DeclaredLicense.new(key: response.license_short_name,
+                                             name: response.license_name,
+                                             nickname: response.license_nickname.presence,
+                                             url: response.license_url.presence,
+                                             path: response.license_path)
         end
       rescue Licensee::InvalidLicense => e
         Gitlab::ErrorTracking.track_exception(e)

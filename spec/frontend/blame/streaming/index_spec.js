@@ -5,14 +5,14 @@ import { renderHtmlStreams } from '~/streaming/render_html_streams';
 import { rateLimitStreamRequests } from '~/streaming/rate_limit_stream_requests';
 import { handleStreamedAnchorLink } from '~/streaming/handle_streamed_anchor_link';
 import { toPolyfillReadable } from '~/streaming/polyfills';
-import { createAlert } from '~/flash';
+import { createAlert } from '~/alert';
 
 jest.mock('~/streaming/render_html_streams');
 jest.mock('~/streaming/rate_limit_stream_requests');
 jest.mock('~/streaming/handle_streamed_anchor_link');
 jest.mock('~/streaming/polyfills');
 jest.mock('~/sentry');
-jest.mock('~/flash');
+jest.mock('~/alert');
 
 global.fetch = jest.fn();
 

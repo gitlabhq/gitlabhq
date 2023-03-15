@@ -8,6 +8,7 @@ export class EditorMarkdownExtension {
 
   onSetup(instance) {
     this.toolbarButtons = [];
+    this.actions = [];
     if (instance.toolbar) {
       this.setupToolbar(instance);
     }
@@ -17,10 +18,26 @@ export class EditorMarkdownExtension {
     if (instance.toolbar) {
       instance.toolbar.removeItems(ids);
     }
+    this.actions.forEach((action) => {
+      action.dispose();
+    });
+    this.actions = [];
   }
 
   setupToolbar(instance) {
     this.toolbarButtons = EXTENSION_MARKDOWN_BUTTONS.map((btn) => {
+      if (btn.data.mdShortcuts) {
+        this.actions.push(
+          instance.addAction({
+            id: btn.id,
+            label: btn.label,
+            keybindings: btn.data.mdShortcuts,
+            run(inst) {
+              inst.insertMarkdown(btn.data);
+            },
+          }),
+        );
+      }
       return {
         ...btn,
         icon: btn.id,
@@ -66,12 +83,8 @@ export class EditorMarkdownExtension {
         instance.setPosition(pos);
       },
       insertMarkdown: (instance, e) => {
-        const {
-          mdTag: tag,
-          mdBlock: blockTag,
-          mdPrepend,
-          mdSelect: select,
-        } = e.currentTarget.dataset;
+        const { mdTag: tag, mdBlock: blockTag, mdPrepend, mdSelect: select } =
+          e.currentTarget?.dataset || e;
 
         insertMarkdownText({
           tag,
